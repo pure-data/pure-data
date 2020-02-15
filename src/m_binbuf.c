@@ -78,7 +78,7 @@ static int strissquare(const char *s)
     {
         if (*s == ']')
             return 1;
-        if (!strisint(s))
+        if (!strisint(s) && *s != ':')
             return 0;
     }
 }
@@ -746,7 +746,31 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     const t_atom *at = x->b_vec;
     int ac = x->b_n;
     int nargs, maxnargs = 0;
-    if (ac <= SMALLMSG)
+
+    /* first we need to check if the list of arguments has dollar slices */
+    int c, d = 0, ad = 0;
+    for (c = 0; c < ac; c++)
+    {
+        if (at[c].a_type == A_SEMI || at[c].a_type == A_COMMA)
+            d = 0;
+        else if (at[c].a_type==A_DOLLSYM)
+        {
+            char *dlr = binbuf_squarechar(at[c].a_w.w_symbol->s_name);
+            if (!dlr)
+                continue;
+
+            char *midl = dlr+2;
+            int i=0, j=0, stp=0, rv=0, siz=0;
+            if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
+            {
+                d += (siz-1);
+                if (d > ad)
+                    ad = d;
+            }
+        }
+    }
+
+    if (ac+ad <= SMALLMSG)
         mstack = smallstack;
     else
     {
@@ -759,7 +783,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             destination in the message, only because the original "target"
             points there. */
         if (target == &pd_objectmaker)
-            maxnargs = ac;
+            maxnargs = ac + ad;
         else
         {
             int i, j = (target ? 0 : -1);
@@ -772,6 +796,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 else if (++j > maxnargs)
                     maxnargs = j;
             }
+            maxnargs += ad;
         }
         if (maxnargs <= SMALLMSG)
             mstack = smallstack;
@@ -781,11 +806,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             at once.  This turned out to run slower in a simple benchmark
             I tried, perhaps because the extra memory allocation
             hurt the cache hit rate. */
-        maxnargs = ac;
+        maxnargs = ac + ad;
         ATOMS_ALLOCA(mstack, maxnargs);
 #endif
 
     }
+    ac += ad;
     msp = mstack;
     while (1)
     {
@@ -884,9 +910,28 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     char *midl = dlr+2;
                     char *end = strchr(midl, ']') + 1;
                     int bare = (dlr == sym->s_name && strlen(dlr) == end-dlr);
-                    if (bare)
+
+                    int i=0, j=0, stp=0, rv=0, siz=0;
+                    if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
                     {
-                        int i = atoi(midl);
+                        if (siz < 1)
+                            SETFLOAT(msp, 0);
+                        else
+                        {
+                            if (rv)
+                                for (; i > j; i+=stp, ac--, msp++, nargs++)
+                                    *msp = argv[i-1];
+                            else
+                                for (; i < j; i+=stp, ac--, msp++, nargs++)
+                                    *msp = argv[i-1];
+                            ac++;
+                            msp--;
+                            nargs--;
+                        }
+                        break;
+                    }
+                    else if (bare)
+                    {
                         binbuf_dollar(i, msp, argc, argv, target);
                         break;
                     }
@@ -905,9 +950,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 bug("bad item in binbuf");
                 goto broken;
             }
-            msp++;
             ac--;
             at++;
+            msp++;
             nargs++;
         }
     gotmess:
