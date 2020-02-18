@@ -129,11 +129,13 @@ typedef int (*t_soundfile_endiannessfn)(int endianness);
 typedef int (*t_soundfile_seektoframefn)(t_soundfile *sf, size_t frame);
 
     /** read samples from the soundfile into the dst buffer,
+        dst is interleaved and is signed int (16 or 24 bit) or 32 bit float
         returns bytes read or < 0 on failure */
 typedef ssize_t (*t_soundfile_readsamplesfn)(t_soundfile *sf,
     unsigned char *dst, size_t size);
 
     /** write samples from the src buffer into the soundfile,
+        src is interleaved and is signed int (16 or 24 bit) or 32 bit float
         returns bytes written or < 0 on failure */
 typedef ssize_t (*t_soundfile_writesamplesfn)(t_soundfile *sf,
     const unsigned char *src, size_t size);
