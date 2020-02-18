@@ -240,7 +240,7 @@ static int wave_readheader(t_soundfile *sf)
             formattag = swap2(format->fc_fmttag, swap);
             if (formattag == WAVE_FORMAT_EXT && chunksize == WAVEFORMATSIZE)
             {
-                error("WAVE extended format not found");
+                error("wave: extended format not found");
                 return 0;
             }
             switch (formattag)
@@ -252,12 +252,12 @@ static int wave_readheader(t_soundfile *sf)
                         formattag == WAVE_FORMAT_FLOAT)
                             break;
                 default:
-                    error("WAVE unsupported format %d", formattag); return 0;
+                    error("wave: unsupported format %d", formattag); return 0;
             }
             bytespersample = swap2(format->fc_bitspersample, swap) / 8;
             if (bytespersample == 4 && formattag != WAVE_FORMAT_FLOAT)
             {
-                error("WAVE 32 bit int not supported");
+                error("wave: 32 bit int not supported");
                 return 0;
             }
             formatfound = 1;
@@ -290,7 +290,7 @@ static int wave_readheader(t_soundfile *sf)
     }
     if (!formatfound)
     {
-        error("WAVE format chunk not found");
+        error("wave: format chunk not found");
         return 0;
     }
 
@@ -474,7 +474,7 @@ static int wave_addextension(char *filename, size_t size)
 static int wave_endianness(int endianness)
 {
     if (endianness == 1)
-        error("WAVE file forced to little endian");
+        error("wave: file forced to little endian");
     return 0;
 }
 

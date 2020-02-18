@@ -185,13 +185,13 @@ static int caf_readheader(t_soundfile *sf)
         return 0;
     if (swap2(head->h_version, swap) != 1)
     {
-        error("CAF version %d unsupported", swap2(head->h_version, swap));
+        error("caf: version %d unsupported", swap2(head->h_version, swap));
         return 0;
     }
     if (swap2(head->h_flags, swap) != 0)
     {
             /* current spec says these should be empty */
-        error("CAF version 1 format flags invalid");
+        error("caf: version 1 format flags invalid");
         return 0;
     }
     if (sys_verbose)
@@ -208,7 +208,7 @@ static int caf_readheader(t_soundfile *sf)
         caf_postdesc(desc, swap);
     if (strncmp(desc->ds_fmtid, "lpcm", 4))
     {
-        error("CAF format \"%.4s\" not supported", desc->ds_fmtid);
+        error("caf: format \"%.4s\" not supported", desc->ds_fmtid);
         return 0;
     }
     nchannels = swap4(desc->ds_nchannels, swap);
@@ -220,12 +220,12 @@ static int caf_readheader(t_soundfile *sf)
         case 24: bytespersample = 3; break;
         case 32: bytespersample = 4; break;
         default:
-            error("CAF %d bit samples not supported ", bitspersample);
+            error("caf: %d bit samples not supported ", bitspersample);
             return 0;
     }
     if (bytespersample == 4 && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
     {
-        error("CAF 32 bit int not supported");
+        error("caf: 32 bit int not supported");
         return 0;
     }
     bigendian = !(fmtflags & kCAFLinearPCMFormatFlagIsLittleEndian);

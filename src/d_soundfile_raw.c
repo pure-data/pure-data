@@ -3,6 +3,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "d_soundfile.h"
+#include "s_stuff.h" /* for sys_verbose */
 
 /* read raw lpcm (16 or 24 bit int) or 32 bit float samples without header */
 
@@ -17,6 +18,9 @@ static int raw_readheader(t_soundfile *sf)
 
         /* copy sample format back to caller */
     sf->sf_bytelimit = bytelimit;
+
+    if (sys_verbose)
+        post("raw %ld", bytelimit);
 
     return 1;
 }

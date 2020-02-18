@@ -77,7 +77,7 @@ static void next_posthead(const t_nextstep *next, int swap)
     uint32_t onset = swap4(next->ns_onset, swap),
              format = swap4(next->ns_format, swap),
              datasize = swap4(next->ns_length, swap);
-    post("NEXT %.4s (%s)", next->ns_id,
+    post("next %.4s (%s)", next->ns_id,
         (next_isbigendian(next) ? "big" : "little"));
     post("  data onset %d", onset);
     if (datasize == NEXT_UNKNOWN_SIZE)
@@ -155,7 +155,7 @@ static int next_readheader(t_soundfile *sf)
         case NEXT_FORMAT_LINEAR_24: bytespersample = 3; break;
         case NEXT_FORMAT_FLOAT:     bytespersample = 4; break;
         default:
-            error("NEXT unsupported format %d", format);
+            error("next: format %d not supported", format);
             return 0;
     }
 
@@ -232,7 +232,7 @@ static int next_updateheader(t_soundfile *sf, size_t nframes)
     if (sys_verbose)
     {
         datasize = swap4(datasize, swap);
-        post("NEXT %.4s (%s)", (sf->sf_bigendian ? ".snd" : "dns."),
+        post("next %.4s (%s)", (sf->sf_bigendian ? ".snd" : "dns."),
             (sf->sf_bigendian ? "big" : "little"));
         if (datasize == NEXT_UNKNOWN_SIZE)
             post("  data length -1");
