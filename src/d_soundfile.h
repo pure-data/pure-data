@@ -47,8 +47,7 @@ typedef struct _soundfile_filetype t_soundfile_filetype;
     /** soundfile file descriptor, backend type, and format info
         note: headersize and bytelimit are signed as they are used for < 0
               comparisons, hopefully ssize_t is large enough
-        "headersize" can also be thought of as the audio data byte offset
-        TODO: should bytelimit (bytes) be framelimit (sample frames)? */
+        "headersize" can also be thought of as the audio data byte offset */
 typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */

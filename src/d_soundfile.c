@@ -98,6 +98,19 @@ static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
+    /* post system error, otherwise try to print filetype name */
+static void object_readerror(const void *x, const char *header,
+    const char *filename, int error, const t_soundfile *sf)
+{
+    if (error != EIO)
+        pd_error(x, "%s: %s: %s", header, filename, strerror(error));
+    else if(sf->sf_filetype)
+        pd_error(x, "%s: %s: unknown or bad header format (%s)",
+            header, filename, sf->sf_filetype->ft_name->s_name);
+    else
+        pd_error(x, "%s: %s: unknown or bad header format", header, filename);
+}
+
 /* ----- soundfile file type ----- */
 
 #define SFMAXFILETYPES 8 /**< enough room for now? */
@@ -374,7 +387,6 @@ badheader:
         fd = -1;
     }
     sf->sf_fd = -1;
-    sf->sf_filetype = NULL;
     if (fd >= 0)
         sys_close(fd);
     return -1;
@@ -1187,8 +1199,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
     if (fd < 0)
     {
-        pd_error(x, "soundfiler_read: %s: %s", filename, (errno == EIO ?
-            "unknown or bad header format" : strerror(errno)));
+        object_readerror(x, "soundfiler_read", filename, errno, &sf);
         goto done;
     }
     framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
@@ -1726,7 +1737,8 @@ static void *readsf_child_main(void *zz)
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
-                bytesread = sf.sf_filetype->ft_readsamplesfn(&sf, (unsigned char*)(buf + fifohead), wantbytes);
+                bytesread = sf.sf_filetype->ft_readsamplesfn(&sf,
+                    (unsigned char*)(buf + fifohead), wantbytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY)
                     break;
@@ -1763,20 +1775,22 @@ static void *readsf_child_main(void *zz)
                     /* signal parent in case it's waiting for data */
                 sfread_cond_signal(&x->x_answercondition);
             }
-        lost:
 
+        lost:
             if (x->x_requestcode == REQUEST_BUSY)
                 x->x_requestcode = REQUEST_NOTHING;
+#ifdef DEBUG_SOUNDFILE
+                pute("lost\n");
+#endif
                 /* fell out of read loop: close file if necessary,
                 set EOF and signal once more */
-            if (x->x_sf.sf_fd >= 0)
+            if (sf.sf_fd >= 0)
             {
-                soundfile_copy(&sf, &x->x_sf);
+                    /* use cached sf as x->sf's fd, filetype, & data
+                    may have changed in readsf_open() */
                 pthread_mutex_unlock(&x->x_mutex);
                 sf.sf_filetype->ft_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_sf.sf_fd = -1;
-                x->x_sf.sf_data = NULL; /* closefn freed this */
             }
             sfread_cond_signal(&x->x_answercondition);
 
@@ -1910,12 +1924,8 @@ static t_int *readsf_perform(t_int *w)
         {
             int xfersize;
             if (x->x_fileerror)
-            {
-                pd_error(x, "readsf: %s: %s", x->x_filename,
-                    (x->x_fileerror == EIO ?
-                        "unknown or bad header format" :
-                            strerror(x->x_fileerror)));
-            }
+                object_readerror(x, "readsf", x->x_filename,
+                    x->x_fileerror, &x->x_sf);
             clock_delay(x->x_clock, 0);
             x->x_state = STATE_IDLE;
 
@@ -2279,7 +2289,8 @@ static void *writesf_child_main(void *zz)
                 fifotail = x->x_fifotail;
                 soundfile_copy(&sf, &x->x_sf);
                 pthread_mutex_unlock(&x->x_mutex);
-                byteswritten = sf.sf_filetype->ft_writesamplesfn(&sf, (unsigned char*)(buf + fifotail), writebytes);
+                byteswritten = sf.sf_filetype->ft_writesamplesfn(&sf,
+                    (unsigned char*)(buf + fifotail), writebytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY &&
                     x->x_requestcode != REQUEST_CLOSE)
