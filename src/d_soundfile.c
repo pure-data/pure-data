@@ -1596,7 +1596,6 @@ static void *readsf_child_main(void *zz)
             size_t onsetframes = x->x_onsetframes;
             const char *filename = x->x_filename;
             const char *dirname = canvas_getdir(x->x_canvas)->s_name;
-            soundfile_copy(&sf, &x->x_sf);
 
 #ifdef DEBUG_SOUNDFILE
             pute("4\n");
@@ -1617,6 +1616,10 @@ static void *readsf_child_main(void *zz)
                 if (x->x_requestcode != REQUEST_BUSY)
                     goto lost;
             }
+                /* cache sf *after* closing as x->sf's fd, filetype, & data
+                    may have changed in readsf_open() */
+            soundfile_copy(&sf, &x->x_sf);
+
                 /* open the soundfile with the mutex unlocked */
             pthread_mutex_unlock(&x->x_mutex);
             open_soundfile_via_path(dirname, filename, &sf, onsetframes);
