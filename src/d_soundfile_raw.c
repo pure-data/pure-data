@@ -37,7 +37,7 @@ void soundfile_raw_setup(t_soundfile_filetype *ft)
         NULL, /* endiannessfn */
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
-        soundfile_filetype_writesamples,
+        NULL, /* writesamplesfn */
         NULL
     };
     memcpy(ft, &raw, sizeof(t_soundfile_filetype));
