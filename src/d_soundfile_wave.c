@@ -7,7 +7,7 @@
 #include "d_soundfile.h"
 #include "s_stuff.h" /* for sys_verbose */
 
-/* WAVE header (Waveform Audio File Format)
+/* WAVE (Waveform Audio File Format)
 
   * RIFF variant with sections split into data "chunks"
   * chunk and sound data are little endian
@@ -176,9 +176,9 @@ static void wave_postfact(const t_factchunk *fact, int swap)
 }
 
     /** returns 1 if format requires extended format and fact chunk */
-static int wave_isextended(const t_soundfile_info *info)
+static int wave_isextended(const t_soundfile *sf)
 {
-    return info->i_bytespersample == 4;
+    return sf->sf_bytespersample == 4;
 }
 
 /* ------------------------- WAVE ------------------------- */
@@ -189,7 +189,7 @@ static int wave_isheader(const char *buf, size_t size)
     return !strncmp(buf, "RIFF", 4);
 }
 
-static int wave_readheader(int fd, t_soundfile_info *info)
+static int wave_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
         swap = (bigendian != sys_isbigendian()), formatfound = 1;
@@ -206,7 +206,7 @@ static int wave_readheader(int fd, t_soundfile_info *info)
     t_chunk *chunk = &buf.b_chunk;
 
         /* file header */
-    if (soundfile_readbytes(fd, 0, buf.b_c, headersize) < headersize)
+    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
     if (strncmp(buf.b_c + 8, "WAVE", 4))
         return 0;
@@ -230,7 +230,7 @@ static int wave_readheader(int fd, t_soundfile_info *info)
                 /* format chunk */
             int formattag;
             t_formatchunk *format = &buf.b_formatchunk;
-            if (soundfile_readbytes(fd, headersize + 8,
+            if (soundfile_readbytes(sf->sf_fd, headersize + 8,
                                     buf.b_c + 8, chunksize) < chunksize)
                 return 0;
             if (sys_verbose)
@@ -283,7 +283,7 @@ static int wave_readheader(int fd, t_soundfile_info *info)
             if (sys_verbose)
                 wave_postchunk(chunk, swap);
         }
-        if (soundfile_readbytes(fd, seekto, buf.b_c,
+        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
                                 WAVECHUNKSIZE) < WAVECHUNKSIZE)
             return 0;
         headersize = seekto;
@@ -294,38 +294,45 @@ static int wave_readheader(int fd, t_soundfile_info *info)
         return 0;
     }
 
+        /* interpret data size from file size? */
+    if (bytelimit == WAVEMAXBYTES)
+    {
+        bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
+        if (bytelimit > WAVEMAXBYTES || bytelimit < 0)
+            bytelimit = WAVEMAXBYTES;
+    }
+
         /* copy sample format back to caller */
-    info->i_samplerate = samplerate;
-    info->i_nchannels = nchannels;
-    info->i_bytespersample = bytespersample;
-    info->i_headersize = headersize;
-    info->i_bytelimit = bytelimit;
-    info->i_bigendian = bigendian;
-    info->i_bytesperframe = nchannels * bytespersample;
+    sf->sf_samplerate = samplerate;
+    sf->sf_nchannels = nchannels;
+    sf->sf_bytespersample = bytespersample;
+    sf->sf_headersize = headersize;
+    sf->sf_bytelimit = bytelimit;
+    sf->sf_bigendian = bigendian;
+    sf->sf_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
 
-static int wave_writeheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int wave_writeheader(t_soundfile *sf, size_t nframes)
 {
-    int isextended = wave_isextended(info), swap = soundfile_info_swap(info);
+    int isextended = wave_isextended(sf), swap = soundfile_needsbyteswap(sf);
     size_t formatsize = WAVEFORMATSIZE,
-           datasize = nframes * info->i_bytesperframe;
+           datasize = nframes * sf->sf_bytesperframe;
     off_t headersize = 0;
     ssize_t byteswritten = 0;
     char buf[SFHDRBUFSIZE] = {0};
     t_head head = {"RIFF", 0, "WAVE"};
     t_formatchunk format = {
         "fmt ", swap4(16, swap),
-        WAVE_FORMAT_PCM,                                   /* format tag      */
-        swap2((uint16_t)info->i_nchannels, swap),          /* channels        */
-        swap4((uint32_t)info->i_samplerate, swap),         /* sample rate     */
-        swap4((uint32_t)(info->i_samplerate *              /* bytes per sec   */
-                         info->i_bytesperframe), swap),
-        swap2((uint16_t)info->i_bytesperframe, swap),      /* block align     */
-        swap2((uint16_t)info->i_bytespersample * 8, swap), /* bits per sample */
-        0                                                  /* extended format */
+        WAVE_FORMAT_PCM,                                  /* format tag      */
+        swap2((uint16_t)sf->sf_nchannels, swap),          /* channels        */
+        swap4((uint32_t)sf->sf_samplerate, swap),         /* sample rate     */
+        swap4((uint32_t)(sf->sf_samplerate *              /* bytes per sec   */
+                         sf->sf_bytesperframe), swap),
+        swap2((uint16_t)sf->sf_bytesperframe, swap),      /* block align     */
+        swap2((uint16_t)sf->sf_bytespersample * 8, swap), /* bits per sample */
+        0                                                 /* extended format */
     };
     t_chunk data = {"data", swap4((uint32_t)datasize, swap)};
 
@@ -334,7 +341,7 @@ static int wave_writeheader(int fd, const t_soundfile_info *info,
     headersize += WAVEHEADSIZE;
 
         /* format chunk */
-    if (info->i_bytespersample == 4)
+    if (sf->sf_bytespersample == 4)
         format.fc_fmttag = swap2(WAVE_FORMAT_FLOAT, swap);
     if (isextended)
     {
@@ -355,7 +362,7 @@ static int wave_writeheader(int fd, const t_soundfile_info *info,
     {
         t_factchunk fact = {
             "fact", swap4(4, swap),
-            swap4((uint32_t)(info->i_nchannels * nframes), swap)
+            swap4((uint32_t)(sf->sf_nchannels * nframes), swap)
         };
         memcpy(buf + headersize, &fact, WAVEFACTSIZE);
         headersize += WAVEFACTSIZE;
@@ -381,18 +388,17 @@ static int wave_writeheader(int fd, const t_soundfile_info *info,
         wave_postchunk(&data, swap);
     }
 
-    byteswritten = soundfile_writebytes(fd, 0, buf, headersize);
+    byteswritten = soundfile_writebytes(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
     /** assumes chunk order:
         * basic:    head format data
         * extended: head format+ext fact data */
-static int wave_updateheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int wave_updateheader(t_soundfile *sf, size_t nframes)
 {
-    int isextended = wave_isextended(info), swap = soundfile_info_swap(info);
-    size_t datasize = nframes * info->i_bytesperframe,
+    int isextended = wave_isextended(sf), swap = soundfile_needsbyteswap(sf);
+    size_t datasize = nframes * sf->sf_bytesperframe,
            headersize = WAVEHEADSIZE + WAVEFORMATSIZE;
     int padbyte = (datasize & 1);
     uint32_t uinttmp;
@@ -402,8 +408,9 @@ static int wave_updateheader(int fd, const t_soundfile_info *info,
         headersize += WAVE_EXT_SIZE;
 
             /* fact chunk sample length */
-        uinttmp = swap4((uint32_t)(nframes * info->i_nchannels), swap);
-        if (soundfile_writebytes(fd, headersize + 8, (char *)&uinttmp, 4) < 4)
+        uinttmp = swap4((uint32_t)(nframes * sf->sf_nchannels), swap);
+        if (soundfile_writebytes(sf->sf_fd, headersize + 8,
+                                 (char *)&uinttmp, 4) < 4)
             return 0;
         headersize += WAVEFACTSIZE;
     }
@@ -411,7 +418,8 @@ static int wave_updateheader(int fd, const t_soundfile_info *info,
         /* sound data chunk size */
     datasize += padbyte;
     uinttmp = swap4((uint32_t)datasize, swap);
-    if (soundfile_writebytes(fd, headersize + 4, (char *)&uinttmp, 4) < 4)
+    if (soundfile_writebytes(sf->sf_fd, headersize + 4,
+                             (char *)&uinttmp, 4) < 4)
         return 0;
     headersize += WAVECHUNKSIZE;
 
@@ -419,14 +427,14 @@ static int wave_updateheader(int fd, const t_soundfile_info *info,
     if (padbyte)
     {
         uinttmp = 0;
-        if (soundfile_writebytes(fd, headersize + datasize - 1,
+        if (soundfile_writebytes(sf->sf_fd, headersize + datasize - 1,
                                  (char *)&uinttmp, 1) < 1)
         return 0;
     }
 
         /* file header chunk size */
     uinttmp = swap4((uint32_t)(headersize + datasize - 8), swap);
-    if (soundfile_writebytes(fd, 4, (char *)&uinttmp, 4) < 4)
+    if (soundfile_writebytes(sf->sf_fd, 4, (char *)&uinttmp, 4) < 4)
         return 0;
 
     if (sys_verbose)
@@ -476,12 +484,17 @@ void soundfile_wave_setup()
         gensym("wave"),
         WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
         wave_isheader,
+        soundfile_filetype_open,
+        soundfile_filetype_close,
         wave_readheader,
         wave_writeheader,
         wave_updateheader,
         wave_hasextension,
         wave_addextension,
         wave_endianness,
+        soundfile_filetype_seektoframe,
+        soundfile_filetype_readsamples,
+        soundfile_filetype_writesamples,
         NULL
     };
     soundfile_addfiletype(&wave);

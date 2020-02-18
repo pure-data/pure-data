@@ -40,94 +40,154 @@ typedef SSIZE_T ssize_t;
 #define SFMAXFRAMES SIZE_MAX  /**< default max sample frames, unsigned */
 #define SFMAXBYTES  SSIZE_MAX /**< default max sample bytes, signed */
 
-/* ----- soundfile format info ----- */
+/* ----- soundfile ----- */
 
-    /** soundfile format info
+typedef struct _soundfile_filetype t_soundfile_filetype;
+
+    /** soundfile file descriptor, backend type, and format info
         note: headersize and bytelimit are signed as they are used for < 0
-              comparisons, hopefully ssize_t is large enough */
-typedef struct _soundfile_info
+              comparisons, hopefully ssize_t is large enough
+        "headersize" can also be thought of as the audio data byte offset
+        TODO: should bytelimit (bytes) be framelimit (sample frames)? */
+typedef struct _soundfile
 {
-    int i_samplerate;     /**< read: file sr, write: pd sr               */
-    int i_nchannels;      /**< number of channels                        */
-    int i_bytespersample; /**< 2: 16 bit, 3: 24 bit, 4: 32 bit           */
-    ssize_t i_headersize; /**< header size in bytes, -1 for unknown size */
-    int i_bigendian;      /**< sample endianness 1 : big or 0 : little   */
-    ssize_t i_bytelimit;  /**< max number of data bytes to read/write    */
-    int i_bytesperframe;  /**< number of bytes per sample frame          */
-} t_soundfile_info;
+    int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
+    t_soundfile_filetype *sf_filetype; /**< implementation type           */
+    void *sf_data;                     /**< implementation-specific data  */
+    /* format info */
+    int sf_samplerate;     /**< read: file sr, write: pd sr               */
+    int sf_nchannels;      /**< number of channels                        */
+    int sf_bytespersample; /**< bit rate, 2: 16 bit, 3: 24 bit, 4: 32 bit */
+    ssize_t sf_headersize; /**< header size in bytes, -1 for unknown size */
+    int sf_bigendian;      /**< sample endianness, 1 : big or 0 : little  */
+    int sf_bytesperframe;  /**< number of bytes per sample frame          */
+    ssize_t sf_bytelimit;  /**< number of sound data bytes to read/write  */
+} t_soundfile;
 
-    /** clear soundfile info struct to defaults */
-void soundfile_info_clear(t_soundfile_info *info);
+    /** clear soundfile struct to defaults, does not close or free */
+void soundfile_clear(t_soundfile *sf);
+
+    /** clear soundfile format info to defaults; leaves fd, filetype, & data */
+void soundfile_clearinfo(t_soundfile *sf);
 
     /** copy src soundfile info into dst */
-void soundfile_info_copy(t_soundfile_info *dst, const t_soundfile_info *src);
+void soundfile_copy(t_soundfile *dst, const t_soundfile *src);
 
-    /** print info struct */
-void soundfile_info_print(const t_soundfile_info *info);
+    /** print soundfile format info */
+void soundfile_printinfo(const t_soundfile *sf);
 
     /** returns 1 if bytes need to be swapped due to endianess, otherwise 0 */
-int soundfile_info_swap(const t_soundfile_info *src);
+int soundfile_needsbyteswap(const t_soundfile *sf);
 
 /* ----- soundfile file type ----- */
 
-    /** returns 1 if buffer is the beginning of a file type header */
-typedef int (*t_sf_isheaderfn)(const char *buf, size_t size);
+    /** returns 1 if buffer is the beginning of a file type header,
+        size will be at least minheadersize */
+typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
 
-    /** read header from a file into info,
-        returns 1 on success or 0 on error */
-typedef int (*t_sf_readheaderfn)(int fd, t_soundfile_info *info);
+    /** open a sound file with a file descriptor and allocate sf_data,
+        returns 1 on success and 0 on failure
+        note: fd is already valid and open when this function is called,
+              so set sf->sf_fd here  */
+typedef int (*t_soundfile_openfn)(t_soundfile *sf, int fd);
+
+    /** close a soundfile and free sf_data,
+        returns 1 on success and 0 on failure
+        note: close sf_fd here, set sf_fd = -1 & sf_data = NULL */
+typedef int (*t_soundfile_closefn)(t_soundfile *sf);
+
+    /** read format info from soundfile header,
+        returns 1 on success or 0 on error
+        note: set sf_bytelimit = sound data size  */
+typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
         returns header bytes written or -1 on error */
-typedef int (*t_sf_writeheaderfn)(int fd, const t_soundfile_info *info,
-    size_t nframes);
+typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
     /** update file header data size, returns 1 on success or 0 on error */
-typedef int (*t_sf_updateheaderfn)(int fd, const t_soundfile_info *info,
-    size_t nframes);
+typedef int (*t_soundfile_updateheaderfn)(t_soundfile *sf, size_t nframes);
 
-    /** returns 1 if the filename has an extension for the file type,
-        otherwise 0 */
-typedef int (*t_sf_hasextensionfn)(const char *filename, size_t size);
+    /** returns 1 if the filename has a file type extension, otherwise 0 */
+typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
 
     /** appends the default file type extension, returns 1 on success */
-typedef int (*t_sf_addextensionfn)(char *filename, size_t size);
+typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
-    /** returns 1 if file type prefers big endian based on
+    /** returns 1 if file type prefers big endian samples based on
         requested endianness (0 little, 1 big, -1 unspecified),
         otherwise 0 for little endian */
-typedef int (*t_sf_endiannessfn)(int endianness);
+typedef int (*t_soundfile_endiannessfn)(int endianness);
+
+    /** seek to a specified sample frame in an open file,
+        returns 1 on success or 0 on failure */
+typedef int (*t_soundfile_seektoframefn)(t_soundfile *sf, size_t frame);
+
+    /** read samples from the soundfile into the dst buffer,
+        returns bytes read or < 0 on failure */
+typedef ssize_t (*t_soundfile_readsamplesfn)(t_soundfile *sf,
+    unsigned char *dst, size_t size);
+
+    /** write samples from the src buffer into the soundfile,
+        returns bytes written or < 0 on failure */
+typedef ssize_t (*t_soundfile_writesamplesfn)(t_soundfile *sf,
+    const unsigned char *src, size_t size);
 
     /* file type specific implementation */
 typedef struct _soundfile_filetype
 {
-    t_symbol *ft_name;                     /**< file type name               */
-    size_t ft_minheadersize;               /**< minimum valid header size    */
-    t_sf_isheaderfn ft_isheaderfn;         /**< header check function        */
-    t_sf_readheaderfn ft_readheaderfn;     /**< header read function         */
-    t_sf_writeheaderfn ft_writeheaderfn;   /**< header write function        */
-    t_sf_updateheaderfn ft_updateheaderfn; /**< header update function       */
-    t_sf_hasextensionfn ft_hasextensionfn; /**< filename ext check function  */
-    t_sf_addextensionfn ft_addextensionfn; /**< filename ext add function    */
-    t_sf_endiannessfn ft_endiannessfn;     /**< file type endianness func    */
-    void *ft_data;                         /**< implementation specific data */
+    t_symbol *ft_name;       /**< file type name               */
+    size_t ft_minheadersize; /**< minimum valid header size    */
+    t_soundfile_isheaderfn ft_isheaderfn;         /**< must be non-NULL */
+    t_soundfile_openfn ft_openfn;                 /**< must be non-NULL */
+    t_soundfile_closefn ft_closefn;               /**< must be non-NULL */
+    t_soundfile_readheaderfn ft_readheaderfn;     /**< must be non-NULL */
+    t_soundfile_writeheaderfn ft_writeheaderfn;   /**< must be non-NULL */
+    t_soundfile_updateheaderfn ft_updateheaderfn; /**< must be non-NULL */
+    t_soundfile_hasextensionfn ft_hasextensionfn; /**< must be non-NULL */
+    t_soundfile_addextensionfn ft_addextensionfn; /**< must be non-NULL */
+    t_soundfile_endiannessfn ft_endiannessfn;     /**< must be non-NULL */
+    t_soundfile_seektoframefn ft_seektoframefn;   /**< must be non-NULL */
+    t_soundfile_readsamplesfn ft_readsamplesfn;   /**< must be non-NULL */
+    t_soundfile_writesamplesfn ft_writesamplesfn; /**< must be non-NULL */
+    void *ft_data; /**< implementation specific data */
 } t_soundfile_filetype;
 
-    /** add a new file type, makes a deep copy of ft
+    /** add a new file type, makes a deep copy
         returns 1 on success or 0 if max file types has been reached */
 int soundfile_addfiletype(t_soundfile_filetype *ft);
 
-/* ----- read write ----- */
+/* ----- default implementations ----- */
+
+    /** t_soundfile_openfn implementation */
+int soundfile_filetype_open(t_soundfile *sf, int fd);
+
+    /** t_soundfile_closefn implementation */
+int soundfile_filetype_close(t_soundfile *sf);
+
+    /** t_soundfile_seektoframefn implementation */
+int soundfile_filetype_seektoframe(t_soundfile *sf, size_t frame);
+
+    /** t_soundfile_readsamplesfn implementation */
+ssize_t soundfile_filetype_readsamples(t_soundfile *sf,
+    unsigned char *buf, size_t size);
+
+    /** t_soundfile_writesamplesfn implementation */
+ssize_t soundfile_filetype_writesamples(t_soundfile *sf,
+    const unsigned char *buf, size_t size);
+
+/* ----- read/write helpers ----- */
 
     /** seek to offset in file fd and read size bytes into dst,
         returns bytes written on success or -1 on failure */
-ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size);
+ssize_t soundfile_readbytes(int fd, off_t offset,
+    char *dst, size_t size);
 
     /** seek to offset in file fd and write size bytes from dst,
         returns number of bytes written on success or -1 if seek or write
         failed */
-ssize_t soundfile_writebytes(int fd, off_t offset, const char *src,
-    size_t size);
+ssize_t soundfile_writebytes(int fd, off_t offset,
+    const char *src, size_t size);
 
 /* ----- byte swappers ----- */
 

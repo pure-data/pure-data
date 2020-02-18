@@ -10,7 +10,7 @@
 #include "d_soundfile.h"
 #include "s_stuff.h" /* for sys_verbose */
 
-/* NeXTStep/Sun sound header
+/* NeXTStep/Sun sound
 
   * simple header followed by sound data
   * header and sound data can be big or little endian, depending on id:
@@ -115,11 +115,11 @@ static int next_isheader(const char *buf, size_t size)
     return 0;
 }
 
-static int next_readheader(int fd, t_soundfile_info *info)
+static int next_readheader(t_soundfile *sf)
 {
     int format, bytespersample, bigendian = 1, swap = 0;
     off_t headersize = NEXTHEADSIZE;
-    size_t bytelimit;
+    size_t bytelimit = NEXTMAXBYTES;
     union
     {
         char b_c[SFHDRBUFSIZE];
@@ -127,7 +127,7 @@ static int next_readheader(int fd, t_soundfile_info *info)
     } buf = {0};
     t_nextstep *next = &buf.b_nextstep;
 
-    if (soundfile_readbytes(fd, 0, buf.b_c, headersize) < headersize)
+    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
 
     bigendian = next_isbigendian(next);
@@ -143,7 +143,7 @@ static int next_readheader(int fd, t_soundfile_info *info)
     if (bytelimit == NEXT_UNKNOWN_SIZE)
     {
             /* interpret data size from file size */
-        bytelimit = lseek(fd, 0, SEEK_END) - headersize;
+        bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
         if (bytelimit > NEXTMAXBYTES || bytelimit < 0)
             bytelimit = NEXTMAXBYTES;
     }
@@ -163,37 +163,37 @@ static int next_readheader(int fd, t_soundfile_info *info)
         next_posthead(next, swap);
 
         /* copy sample format back to caller */
-    info->i_samplerate = swap4(next->ns_samplerate, swap);
-    info->i_nchannels = swap4(next->ns_nchannels, swap);
-    info->i_bytespersample = bytespersample;
-    info->i_headersize = headersize;
-    info->i_bytelimit = bytelimit;
-    info->i_bigendian = bigendian;
-    info->i_bytesperframe = info->i_nchannels * bytespersample;
+    sf->sf_samplerate = swap4(next->ns_samplerate, swap);
+    sf->sf_nchannels = swap4(next->ns_nchannels, swap);
+    sf->sf_bytespersample = bytespersample;
+    sf->sf_headersize = headersize;
+    sf->sf_bytelimit = bytelimit;
+    sf->sf_bigendian = bigendian;
+    sf->sf_bytesperframe = sf->sf_nchannels * bytespersample;
 
     return 1;
 }
 
-static int next_writeheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int next_writeheader(t_soundfile *sf, size_t nframes)
 {
-    int swap = soundfile_info_swap(info);
-    size_t datasize = nframes * info->i_bytesperframe;
+    int swap = soundfile_needsbyteswap(sf);
+    size_t datasize =
+        (nframes > 0 ? nframes * sf->sf_bytesperframe : NEXT_UNKNOWN_SIZE);
     off_t headersize = NEXTHEADSIZE;
     ssize_t byteswritten = 0;
     t_nextstep next = {
-        ".snd",                                    /* id          */
-        swap4((uint32_t)headersize, swap),         /* data onset  */
-        swap4((uint32_t)datasize, swap),           /* data length */
-        0,                                         /* format      */
-        swap4((uint32_t)info->i_samplerate, swap), /* sample rate */
-        swap4((uint32_t)info->i_nchannels, swap),  /* channels    */
-        "Pd "                                      /* info string */
+        ".snd",                                   /* id          */
+        swap4((uint32_t)headersize, swap),        /* data onset  */
+        swap4((uint32_t)datasize, swap),          /* data length */
+        0,                                        /* format      */
+        swap4((uint32_t)sf->sf_samplerate, swap), /* sample rate */
+        swap4((uint32_t)sf->sf_nchannels, swap),  /* channels    */
+        "Pd "                                     /* info string */
     };
 
-    if (!info->i_bigendian)
+    if (!sf->sf_bigendian)
         swapstring4(next.ns_id, 1);
-    switch (info->i_bytespersample)
+    switch (sf->sf_bytespersample)
     {
         case 2:
             next.ns_format = swap4(NEXT_FORMAT_LINEAR_16, swap);
@@ -211,29 +211,29 @@ static int next_writeheader(int fd, const t_soundfile_info *info,
     if (sys_verbose)
         next_posthead(&next, swap);
 
-    byteswritten = soundfile_writebytes(fd, 0, (char *)&next, headersize);
+    byteswritten = soundfile_writebytes(sf->sf_fd, 0,
+                                        (char *)&next, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
     /** the data length is limited to 4 bytes, so if the size is too large,
         do it the lazy way: just set the size field to "unknown size" */
-static int next_updateheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int next_updateheader(t_soundfile *sf, size_t nframes)
 {
-    int swap = soundfile_info_swap(info);
-    size_t datasize = nframes * info->i_bytesperframe;
+    int swap = soundfile_needsbyteswap(sf);
+    size_t datasize = nframes * sf->sf_bytesperframe;
 
     if (datasize > NEXTMAXBYTES)
         datasize = NEXT_UNKNOWN_SIZE;
     datasize = swap4(datasize, swap);
-    if (soundfile_writebytes(fd, 8, (char *)&datasize, 4) < 4)
+    if (soundfile_writebytes(sf->sf_fd, 8, (char *)&datasize, 4) < 4)
         return 0;
 
     if (sys_verbose)
     {
         datasize = swap4(datasize, swap);
-        post("NEXT %.4s (%s)", (info->i_bigendian ? ".snd" : "dns."),
-            (info->i_bigendian ? "big" : "little"));
+        post("NEXT %.4s (%s)", (sf->sf_bigendian ? ".snd" : "dns."),
+            (sf->sf_bigendian ? "big" : "little"));
         if (datasize == NEXT_UNKNOWN_SIZE)
             post("  data length -1");
         else
@@ -280,12 +280,17 @@ void soundfile_next_setup()
         gensym("next"),
         NEXTHEADSIZE - 4, /* without info string */
         next_isheader,
+        soundfile_filetype_open,
+        soundfile_filetype_close,
         next_readheader,
         next_writeheader,
         next_updateheader,
         next_hasextension,
         next_addextension,
         next_endianness,
+        soundfile_filetype_seektoframe,
+        soundfile_filetype_readsamples,
+        soundfile_filetype_writesamples,
         NULL
     };
     soundfile_addfiletype(&next);

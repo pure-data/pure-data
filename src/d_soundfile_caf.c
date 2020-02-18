@@ -9,7 +9,7 @@
 #include <math.h>
 #include <inttypes.h>
 
-/* CAF header (Core Audio Format)
+/* CAF (Core Audio Format)
 
   * RIFF variant with sections split into data "chunks"
   * chunk data is big-endian
@@ -73,7 +73,7 @@ typedef struct _descchunk {
     char ds_fmtid[4];            /**< format id, 4 letter char code   */
     uint32_t ds_fmtflags;        /**< format flags, set 0 for "none"  */
     uint32_t ds_bytesperpacket;  /**< bytes per packet                */
-    uint32_t ds_framesperpacket; /**< for lpcm, 1 packet = 1 frame    */
+    uint32_t ds_framesperpacket; /**< uncompressed: 1 pckt = 1 frame  */
     uint32_t ds_nchannels;       /**< number of channels              */
     uint32_t ds_bitsperchannel;  /**< bits per chan in 1 sample frame */
 } t_descchunk;
@@ -160,11 +160,10 @@ static int caf_isheader(const char *buf, size_t size)
     return !strncmp(buf, "caff", 4);
 }
 
-static int caf_readheader(int fd, t_soundfile_info *info)
+static int caf_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, bigendian = 1,
+    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         fmtflags, bitspersample, swap = !sys_isbigendian();
-    double samplerate = 44100;
     off_t headersize = CAFHEADSIZE + CAFDESCSIZE;
     ssize_t bytelimit = CAFMAXBYTES;
     union
@@ -180,7 +179,7 @@ static int caf_readheader(int fd, t_soundfile_info *info)
     t_descchunk *desc = &buf.b_descchunk;
 
         /* file header */
-    if (soundfile_readbytes(fd, 0, buf.b_c, headersize) < headersize)
+    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
     if (strncmp(head->h_id, "caff", 4))
         return 0;
@@ -234,7 +233,7 @@ static int caf_readheader(int fd, t_soundfile_info *info)
     headersize += CAFDESCSIZE;
 
         /* prepare second chunk */
-    if (soundfile_readbytes(fd, headersize, buf.b_c,
+    if (soundfile_readbytes(sf->sf_fd, headersize, buf.b_c,
                             CAFCHUNKSIZE) < CAFCHUNKSIZE)
         return 0;
 
@@ -252,7 +251,7 @@ static int caf_readheader(int fd, t_soundfile_info *info)
             if (sys_verbose)
             {
                 t_datachunk *data = &buf.b_datachunk;
-                if (soundfile_readbytes(fd, headersize + CAFCHUNKSIZE,
+                if (soundfile_readbytes(sf->sf_fd, headersize + CAFCHUNKSIZE,
                                         buf.b_c + CAFCHUNKSIZE, 4) < 4)
                     return 0;
                 caf_postdata(data, swap);
@@ -261,7 +260,7 @@ static int caf_readheader(int fd, t_soundfile_info *info)
             if (chunksize == CAF_UNKNOWN_SIZE)
             {
                     /* interpret data size from file size */
-                bytelimit = lseek(fd, 0, SEEK_END) - headersize;
+                bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
                 if (bytelimit > CAFMAXBYTES || bytelimit < 0)
                     bytelimit = CAFMAXBYTES;
             }
@@ -276,28 +275,28 @@ static int caf_readheader(int fd, t_soundfile_info *info)
                 caf_postchunk(chunk, swap);
         }
         headersize = seekto;
-        if (soundfile_readbytes(fd, seekto, buf.b_c,
+        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
                                 CAFCHUNKSIZE) < CAFCHUNKSIZE)
             return 0;
     }
 
         /* copy sample format back to caller */
-    info->i_samplerate = samplerate;
-    info->i_nchannels = nchannels;
-    info->i_bytespersample = bytespersample;
-    info->i_headersize = headersize;
-    info->i_bytelimit = bytelimit;
-    info->i_bigendian = bigendian;
-    info->i_bytesperframe = nchannels * bytespersample;
+    sf->sf_samplerate = samplerate;
+    sf->sf_nchannels = nchannels;
+    sf->sf_bytespersample = bytespersample;
+    sf->sf_headersize = headersize;
+    sf->sf_bytelimit = bytelimit;
+    sf->sf_bigendian = bigendian;
+    sf->sf_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
 
-static int caf_writeheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int caf_writeheader(t_soundfile *sf, size_t nframes)
 {
     int swap = !sys_isbigendian();
-    size_t datasize = nframes * info->i_bytesperframe;
+    size_t datasize =
+        (nframes > 0 ? nframes * sf->sf_bytesperframe : CAF_UNKNOWN_SIZE);
     off_t headersize = 0;
     ssize_t byteswritten = 0;
     uint32_t uinttmp = 0;
@@ -312,17 +311,17 @@ static int caf_writeheader(int fd, const t_soundfile_info *info,
 
         /* description chunk */
     caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE - CAFCHUNKSIZE, swap);
-    caf_setsamplerate(&desc, info->i_samplerate, swap);
+    caf_setsamplerate(&desc, sf->sf_samplerate, swap);
     strncpy(desc.ds_fmtid, "lpcm", 4);
-    if (info->i_bytespersample == 4)
+    if (sf->sf_bytespersample == 4)
         uinttmp |= kCAFLinearPCMFormatFlagIsFloat;
-    if (!info->i_bigendian)
+    if (!sf->sf_bigendian)
         uinttmp |= kCAFLinearPCMFormatFlagIsLittleEndian;
     desc.ds_fmtflags = swap4(uinttmp, swap);
-    desc.ds_bytesperpacket = swap4(info->i_bytesperframe, swap);
+    desc.ds_bytesperpacket = swap4(sf->sf_bytesperframe, swap);
     desc.ds_framesperpacket = swap4(1, swap);
-    desc.ds_nchannels = swap4(info->i_nchannels, swap);
-    desc.ds_bitsperchannel = swap4(info->i_bytespersample * 8, swap);
+    desc.ds_nchannels = swap4(sf->sf_nchannels, swap);
+    desc.ds_bitsperchannel = swap4(sf->sf_bytespersample * 8, swap);
     memcpy(buf + headersize, &desc, CAFDESCSIZE);
     headersize += CAFDESCSIZE;
 
@@ -338,19 +337,18 @@ static int caf_writeheader(int fd, const t_soundfile_info *info,
         caf_postdata(&data, swap);
     }
 
-    byteswritten = soundfile_writebytes(fd, 0, buf, headersize);
+    byteswritten = soundfile_writebytes(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
     /** assumes chunk order: head desc data */
-static int caf_updateheader(int fd, const t_soundfile_info *info,
-    size_t nframes)
+static int caf_updateheader(t_soundfile *sf, size_t nframes)
 {
     int swap = !sys_isbigendian();
-    int64_t datasize = swap8s((nframes * info->i_bytesperframe) + 4, swap);
+    int64_t datasize = swap8s((nframes * sf->sf_bytesperframe) + 4, swap);
 
         /* data chunk size */
-    if (soundfile_writebytes(fd, CAFHEADSIZE + CAFDESCSIZE + 4,
+    if (soundfile_writebytes(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4,
                              (char *)&datasize, 8) < 8) /* + edit count */
         return 0;
 
@@ -396,12 +394,17 @@ void soundfile_caf_setup()
         gensym("caf"),
         CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
         caf_isheader,
+        soundfile_filetype_open,
+        soundfile_filetype_close,
         caf_readheader,
         caf_writeheader,
         caf_updateheader,
         caf_hasextension,
         caf_addextension,
         caf_endianness,
+        soundfile_filetype_seektoframe,
+        soundfile_filetype_readsamples,
+        soundfile_filetype_writesamples,
         NULL
     };
     soundfile_addfiletype(&caf);
