@@ -1570,6 +1570,7 @@ static void *readsf_child_main(void *zz)
 {
     t_readsf *x = zz;
     t_soundfile sf = {0};
+    soundfile_clear(&sf);
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
@@ -2153,6 +2154,7 @@ static void *writesf_child_main(void *zz)
 {
     t_writesf *x = zz;
     t_soundfile sf = {0};
+    soundfile_clear(&sf);
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
