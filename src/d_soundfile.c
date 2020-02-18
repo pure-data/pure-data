@@ -1800,9 +1800,9 @@ static void *readsf_child_main(void *zz)
         }
         else if (x->x_requestcode == REQUEST_CLOSE)
         {
-            if (x->x_sf.sf_fd >= 0)
+            if (sf.sf_fd >= 0)
             {
-                soundfile_copy(&sf, &x->x_sf);
+                    /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sf.sf_filetype->ft_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
@@ -1815,9 +1815,9 @@ static void *readsf_child_main(void *zz)
         }
         else if (x->x_requestcode == REQUEST_QUIT)
         {
-            if (x->x_sf.sf_fd >= 0)
+            if (sf.sf_fd >= 0)
             {
-                soundfile_copy(&sf, &x->x_sf);
+                    /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sf.sf_filetype->ft_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
