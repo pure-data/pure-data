@@ -314,12 +314,7 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
     off_t offset;
     errno = 0;
     if (sf->sf_headersize >= 0) /* header detection overridden */
-    {
-        sf->sf_fd = fd;
         sf->sf_filetype = &sf_rawfiletype;
-        if (!sf->sf_filetype->ft_openfn(sf, fd))
-            goto badheader;
-    }
     else
     {
         char buf[SFHDRBUFSIZE];
@@ -340,11 +335,13 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
             /* rewind and read header */
         if (lseek(fd, 0, SEEK_SET) < 0)
             goto badheader;
-        if (!sf->sf_filetype->ft_openfn(sf, fd))
-            goto badheader;
-        if (!sf->sf_filetype->ft_readheaderfn(sf))
-            goto badheader;
     }
+
+        /* read header */
+    if (!sf->sf_filetype->ft_openfn(sf, fd))
+        goto badheader;
+    if (!sf->sf_filetype->ft_readheaderfn(sf))
+        goto badheader;
 
         /* seek past header and any sample frames to skip */
     if (!sf->sf_filetype->ft_seektoframefn(sf, skipframes))
@@ -1058,7 +1055,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int fd = -1, resize = 0, ascii = 0, i;
     size_t skipframes = 0, finalsize = 0, maxsize = SFMAXFRAMES,
            framesread = 0, bufframes, j;
-    ssize_t nframes;
+    ssize_t nframes, framesinfile;
     char endianness;
     const char *filename;
     t_garray *garrays[MAXSFCHANS];
@@ -1171,11 +1168,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             "unknown or bad header format" : strerror(errno)));
         goto done;
     }
+    framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
 
     if (resize)
     {
             /* figure out what to resize to using header info */
-        size_t framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
         if (framesinfile > maxsize)
         {
             pd_error(x, "soundfiler_read: truncated to %ld elements", maxsize);
@@ -1199,8 +1196,19 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     }
 
     if (!finalsize) finalsize = SFMAXFRAMES;
-    if (finalsize > sf.sf_bytelimit / sf.sf_bytesperframe)
-        finalsize = sf.sf_bytelimit / sf.sf_bytesperframe;
+    if (finalsize > framesinfile)
+        finalsize = framesinfile;
+
+        /* no tablenames, try to use header info instead of reading */
+    if (argc == 0 &&
+        !(sf.sf_filetype == &sf_rawfiletype || /* always read raw */
+        finalsize == SFMAXFRAMES))             /* unknown, read */
+    {
+        framesread = finalsize;
+        goto done;
+    }
+
+        /* read */
     bufframes = SAMPBUFSIZE / sf.sf_bytesperframe;
     for (framesread = 0; framesread < finalsize;)
     {
@@ -1214,6 +1222,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             (unsigned char *)sampbuf, nframes);
         framesread += nframes;
     }
+
         /* zero out remaining elements of vectors */
     for (i = 0; i < argc; i++)
     {
