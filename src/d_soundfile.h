@@ -51,8 +51,10 @@ typedef struct _soundfile_filetype t_soundfile_filetype;
 typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
+    /* implementation */
     t_soundfile_filetype *sf_filetype; /**< implementation type           */
-    void *sf_data;                     /**< implementation-specific data  */
+    t_outlet *sf_metaout;  /**< read: meta data outlet, if meta supported */
+    void *sf_data;         /**< implementation-specific data              */
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
@@ -104,6 +106,10 @@ typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
         returns header bytes written or -1 on error */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
+    /** write meta data to the soundfile header and updates headersize
+        returns 1 on success or 0 on failure */
+typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
+
     /** update file header data size, returns 1 on success or 0 on error */
 typedef int (*t_soundfile_updateheaderfn)(t_soundfile *sf, size_t nframes);
 
@@ -142,6 +148,7 @@ typedef struct _soundfile_filetype
     t_soundfile_closefn ft_closefn;               /**< must be non-NULL */
     t_soundfile_readheaderfn ft_readheaderfn;     /**< must be non-NULL */
     t_soundfile_writeheaderfn ft_writeheaderfn;   /**< must be non-NULL */
+    t_soundfile_writemetafn ft_writemetafn;       /**< NULL if not supported */
     t_soundfile_updateheaderfn ft_updateheaderfn; /**< must be non-NULL */
     t_soundfile_hasextensionfn ft_hasextensionfn; /**< must be non-NULL */
     t_soundfile_addextensionfn ft_addextensionfn; /**< must be non-NULL */

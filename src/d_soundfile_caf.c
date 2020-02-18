@@ -398,6 +398,7 @@ void soundfile_caf_setup()
         soundfile_filetype_close,
         caf_readheader,
         caf_writeheader,
+        NULL, /* writemetafn */
         caf_updateheader,
         caf_hasextension,
         caf_addextension,

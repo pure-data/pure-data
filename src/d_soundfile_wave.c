@@ -488,6 +488,7 @@ void soundfile_wave_setup()
         soundfile_filetype_close,
         wave_readheader,
         wave_writeheader,
+        NULL, /* writemetafn */
         wave_updateheader,
         wave_hasextension,
         wave_addextension,

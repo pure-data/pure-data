@@ -284,6 +284,7 @@ void soundfile_next_setup()
         soundfile_filetype_close,
         next_readheader,
         next_writeheader,
+        NULL, /* writemetafn */
         next_updateheader,
         next_hasextension,
         next_addextension,

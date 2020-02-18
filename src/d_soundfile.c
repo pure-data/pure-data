@@ -1074,7 +1074,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile sf = {0};
-    int fd = -1, resize = 0, ascii = 0, i;
+    int fd = -1, resize = 0, ascii = 0, meta = 0, i;
     size_t skipframes = 0, finalsize = 0, maxsize = SFMAXFRAMES,
            framesread = 0, bufframes, j;
     ssize_t nframes, framesinfile;
@@ -1145,6 +1145,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             resize = 1;     /* maxsize implies resize. */
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(flag, "meta"))
+        {
+            meta = 1;
+            argc -= 1; argv += 1;
+        }
         else
         {
                 /* check for file type by name */
@@ -1195,6 +1200,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             argc, garrays, vecs, resize, finalsize);
         return;
     }
+    if (meta) /* pass outlet to filetype readheaderfn for meta data output */
+        sf.sf_metaout = x->x_out2;
 
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
     if (fd < 0)
@@ -2530,6 +2537,39 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     pthread_mutex_unlock(&x->x_mutex);
 }
 
+    /** write metadata method.  Called as: meta args... and passed to
+        filetype implementation */
+static void writesf_meta(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (x->x_state == STATE_IDLE)
+    {
+        pd_error(x, "writesf: meta with no prior 'open'");
+        return;
+    }
+    if (x->x_state == STATE_STREAM)
+    {
+        pd_error(x, "writesf: meta after 'start'");
+        return;
+    }
+    if (!x->x_sf.sf_filetype)
+    {
+        /* this shouldn't happen... */
+        pd_error(x, "writesf: meta ignored, unknown filetype");
+        return;
+    }
+    if (!x->x_sf.sf_filetype->ft_writemetafn)
+    {
+        pd_error(x, "writesf: %s does not support writing metadata",
+            x->x_sf.sf_filetype->ft_name->s_name);
+        return;
+    }
+    if (!x->x_sf.sf_filetype->ft_writemetafn(&x->x_sf, argc, argv))
+    {
+        pd_error(x, "writesf: writing %s metadata failed",
+            x->x_sf.sf_filetype->ft_name->s_name);
+    }
+}
+
 static void writesf_dsp(t_writesf *x, t_signal **sp)
 {
     int i, ninlets = x->x_sf.sf_nchannels;
@@ -2596,6 +2636,8 @@ static void writesf_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(writesf_class, (t_method)writesf_open,
         gensym("open"), A_GIMME, 0);
+    class_addmethod(writesf_class, (t_method)writesf_meta,
+        gensym("meta"), A_GIMME, 0);
     class_addmethod(writesf_class, (t_method)writesf_print, gensym("print"), 0);
     CLASS_MAINSIGNALIN(writesf_class, t_writesf, x_f);
 }

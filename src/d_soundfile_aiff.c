@@ -567,6 +567,7 @@ void soundfile_aiff_setup()
         soundfile_filetype_close,
         aiff_readheader,
         aiff_writeheader,
+        NULL,
         aiff_updateheader,
         aiff_hasextension,
         aiff_addextension,
