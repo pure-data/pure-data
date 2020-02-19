@@ -103,7 +103,8 @@ typedef int (*t_soundfile_closefn)(t_soundfile *sf);
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
         note: set sf_bytelimit = sound data size
-        this may be called in a background thread */
+        this may be called in a background thread, but
+        sf_metaout is only set when called on main thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
