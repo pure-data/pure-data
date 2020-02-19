@@ -83,40 +83,48 @@ int soundfile_needsbyteswap(const t_soundfile *sf);
 /* ----- soundfile file type ----- */
 
     /** returns 1 if buffer is the beginning of a file type header,
-        size will be at least minheadersize */
+        size will be at least minheadersize
+        this may be called in a background thread */
 typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
 
     /** open a sound file with a file descriptor and allocate sf_data,
         returns 1 on success and 0 on failure
         note: fd is already valid and open when this function is called,
-              so set sf->sf_fd here  */
+              so set sf->sf_fd here
+        this may be called in a background thread */
 typedef int (*t_soundfile_openfn)(t_soundfile *sf, int fd);
 
     /** close a soundfile and free sf_data,
         returns 1 on success and 0 on failure
-        note: close sf_fd here, set sf_fd = -1 & sf_data = NULL */
+        note: close sf_fd here, set sf_fd = -1 & sf_data = NULL
+        this may be called in a background thread */
 typedef int (*t_soundfile_closefn)(t_soundfile *sf);
 
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
-        note: set sf_bytelimit = sound data size  */
+        note: set sf_bytelimit = sound data size
+        this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
-        returns header bytes written or -1 on error */
+        returns header bytes written or -1 on error
+        this may be called in a background thread */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
     /** write meta data to the soundfile header and updates headersize
         returns 1 on success or 0 on failure */
 typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
 
-    /** update file header data size, returns 1 on success or 0 on error */
+    /** update file header data size, returns 1 on success or 0 on error
+        this may be called in a background thread */
 typedef int (*t_soundfile_updateheaderfn)(t_soundfile *sf, size_t nframes);
 
-    /** returns 1 if the filename has a file type extension, otherwise 0 */
+    /** returns 1 if the filename has a file type extension, otherwise 0
+        this may be called in a background thread */
 typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
 
-    /** appends the default file type extension, returns 1 on success */
+    /** appends the default file type extension, returns 1 on success
+        this may be called in a background thread */
 typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
     /** returns 1 if file type prefers big endian samples based on
@@ -125,18 +133,21 @@ typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 typedef int (*t_soundfile_endiannessfn)(int endianness);
 
     /** seek to a specified sample frame in an open file,
-        returns 1 on success or 0 on failure */
+        returns 1 on success or 0 on failure
+        this may be called in a background thread */
 typedef int (*t_soundfile_seektoframefn)(t_soundfile *sf, size_t frame);
 
     /** read samples from the soundfile into the dst buffer,
         dst is interleaved and is signed int (16 or 24 bit) or 32 bit float
-        returns bytes read or < 0 on failure */
+        returns bytes read or < 0 on failure
+        this may be called in a background thread */
 typedef ssize_t (*t_soundfile_readsamplesfn)(t_soundfile *sf,
     unsigned char *dst, size_t size);
 
     /** write samples from the src buffer into the soundfile,
         src is interleaved and is signed int (16 or 24 bit) or 32 bit float
-        returns bytes written or < 0 on failure */
+        returns bytes written or < 0 on failure
+        this may be called in a background thread */
 typedef ssize_t (*t_soundfile_writesamplesfn)(t_soundfile *sf,
     const unsigned char *src, size_t size);
 
