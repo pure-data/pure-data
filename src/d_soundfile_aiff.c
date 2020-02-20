@@ -312,6 +312,20 @@ static off_t aiff_findchunk(const t_soundfile *sf, const char *name,
     }
 }
 
+    /** write chunk and data bytes at offset, returns 1 on success */
+static int aiff_writechunk(const t_soundfile *sf, off_t offset, t_chunk *chunk,
+                           const char *data, size_t size)
+{
+    if (soundfile_writebytes(sf->sf_fd, offset, (char *)chunk,
+                                 AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        return 0;
+    if (size == 0) return 1;
+    if (soundfile_writebytes(sf->sf_fd, offset + AIFFCHUNKSIZE,
+                             data, size) < size)
+        return 0;
+    return 1;
+}
+
     /* sets the total chunk size in the file header,
        assumes the file header has already been written to sf->sf_fd */
 static int aiff_setheadchunksize(const t_soundfile *sf, int32_t size, int swap)
@@ -683,26 +697,36 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
     while (1)
     {
         int32_t chunksize = swap4s(chunk.c_size, swap);
-        if (!strncmp(chunk.c_id, "NAME", 4) ||
-            !strncmp(chunk.c_id, "AUTH", 4) ||
-            !strncmp(chunk.c_id, "(c) ", 4) ||
-            !strncmp(chunk.c_id, "ANNO", 4))
+        if (!strncmp(chunk.c_id, "MIDI", 4))
+        {
+            int i;
+            uint8_t bytes[chunksize];
+            t_atom list[chunksize+1];
+            if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                                   (char *)bytes, chunksize) < chunksize)
+                return 0;
+            SETSYMBOL((t_atom *)list, gensym("midi"));
+            for (i = 0; i < chunksize+1; ++i)
+                SETFLOAT((t_atom *)list+1+i, bytes[i]);
+            outlet_list(out, &s_list, chunksize+1, (t_atom *)list);
+            if (sys_verbose)
+                aiff_postchunk(&chunk, swap);
+        }
+        else if (!strncmp(chunk.c_id, "NAME", 4) ||
+                 !strncmp(chunk.c_id, "AUTH", 4) ||
+                 !strncmp(chunk.c_id, "(c) ", 4) ||
+                 !strncmp(chunk.c_id, "ANNO", 4))
         {
                 /* text chunk */
             t_atom list[2];
             t_symbol *name;
-            char str[MAXPDSTRING];
-            int len = chunksize;
-            if (len > MAXPDSTRING-1) len = MAXPDSTRING-1;
-            if (soundfile_readbytes(sf->sf_fd,
-                                    headersize + AIFFCHUNKSIZE,
-                                    str, len) < len) return 0;
-            str[len] = '\0';
-            if (sys_verbose)
-            {
-                aiff_postchunk(&chunk, swap);
-                post("  \"%s\"", str);
-            }
+            char text[MAXPDSTRING];
+            int textlen = chunksize;
+            if (textlen > MAXPDSTRING-1) textlen = MAXPDSTRING-1;
+            if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                                    text, textlen) < textlen)
+                return 0;
+            text[textlen] = '\0';
             if (!strncmp(chunk.c_id, "NAME", 4))
                 name = gensym("name");
             else if (!strncmp(chunk.c_id, "AUTH", 4))
@@ -712,8 +736,13 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             else /* ANNO */
                 name = gensym("annotation");
             SETSYMBOL((t_atom *)list, name);
-            SETSYMBOL((t_atom *)list+1, gensym(str));
+            SETSYMBOL((t_atom *)list+1, gensym(text));
             outlet_list(out, &s_list, 2, (t_atom *)list);
+            if (sys_verbose)
+            {
+                aiff_postchunk(&chunk, swap);
+                post("  \"%s\"", text);
+            }
         }
         if (!strncmp(chunk.c_id, "SSND", 4))
             break; /* done */
@@ -748,8 +777,35 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
     datasize = swap4s(chunk.c_size, swap);
 
         /* add new chunk */
-    if (!strcmp(meta, "name") || !strcmp(meta, "author") ||
-        !strcmp(meta, "copyright") || !strcmp(meta, "annotation"))
+    if (!strcmp(meta, "midi"))
+    {
+            /* midi chunk, move data forward */
+        int i;
+        size_t movesize = filesize - datapos;
+        off_t moveto = datapos + AIFFCHUNKSIZE + argc;
+        uint8_t bytes[argc];
+        for (i = 0; i < argc; i++)
+        {
+            if (argv[i].a_type != A_FLOAT || argv[i].a_w.w_float > 255)
+                goto usage;
+            bytes[i] = argv[i].a_w.w_float;
+        }
+        strncpy(chunk.c_id, "MIDI", 4);
+        chunk.c_size = swap4s(argc, swap);
+        headersize += AIFFCHUNKSIZE + argc;
+        if (argc & 1) /* pad up to even number of bytes */
+        {
+           moveto++;
+           headersize++;
+        }
+        if (soundfile_movebytes(sf->sf_fd, moveto,
+                                datapos, movesize) < movesize)
+            return 0;
+        if (!aiff_writechunk(sf, datapos, &chunk, (char *)bytes, argc))
+            return 0;
+    }
+    else if (!strcmp(meta, "name") || !strcmp(meta, "author") ||
+             !strcmp(meta, "copyright") || !strcmp(meta, "annotation"))
     {
             /* text chunk */
         const char *text = argv->a_w.w_symbol->s_name;
@@ -830,20 +886,8 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
             /* write new/updated chunk */
         strncpy(chunk.c_id, textid, 4);
         chunk.c_size = swap4s(textlen, swap);
-        if (soundfile_writebytes(sf->sf_fd, textpos, (char *)&chunk,
-                                 AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        if (!aiff_writechunk(sf, textpos, &chunk, text, textlen))
             return 0;
-        if (soundfile_writebytes(sf->sf_fd, textpos + AIFFCHUNKSIZE,
-                                 text, textlen) < textlen)
-            return 0;
-
-        if (sys_verbose)
-        {
-            post("FORM %d", headersize - 8);
-            post("  %s", (aiff_isaiffc(sf) ? "AIFC" : "AIFF"));
-            aiff_postchunk(&chunk, swap);
-            post("  %s", text);
-        }
     }
 
         /* update file header chunk size */
@@ -854,12 +898,19 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
     sf->sf_headersize = headersize;
     lseek(sf->sf_fd, 0, SEEK_END);
 
+    if (sys_verbose)
+    {
+        post("FORM %d", headersize - 8);
+        post("  %s", (aiff_isaiffc(sf) ? "AIFC" : "AIFF"));
+        aiff_postchunk(&chunk, swap);
+    }
+
     return 1;
 
 usage:
     error("usage: meta <type>...");
     post("type: name <symbol>, author <symbol>, copyright <symbol>...");
-    post("annotation <symbol>");
+    post("annotation <symbol>, midi <0-255...>");
     return 0;
 }
 
