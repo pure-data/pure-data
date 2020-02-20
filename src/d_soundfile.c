@@ -1414,7 +1414,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         }
     }
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
-        sf, 0)) < 0)//wa.wa_nframes)) < 0)
+        sf, wa.wa_nframes)) < 0)
     {
         post("%s: %s\n", wa.wa_filesym->s_name, strerror(errno));
         goto fail;
