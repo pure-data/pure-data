@@ -35,7 +35,6 @@ void soundfile_raw_setup(t_soundfile_filetype *ft)
         soundfile_filetype_close,
         raw_readheader,
         NULL, /* writeheaderfn */
-        NULL, /* writemetafn */
         NULL, /* updateheaderfn */
         NULL, /* hasextensionfn */
         NULL, /* addextensionfn */
@@ -43,7 +42,9 @@ void soundfile_raw_setup(t_soundfile_filetype *ft)
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         NULL, /* writesamplesfn */
-        NULL
+        NULL, /* readmetafn */
+        NULL, /* writemetafn */
+        NULL  /* data */
     };
     memcpy(ft, &raw, sizeof(t_soundfile_filetype));
 }

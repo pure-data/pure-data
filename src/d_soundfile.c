@@ -167,7 +167,7 @@ int soundfile_addfiletype(t_soundfile_filetype *ft)
     return 1;
 }
 
-    /** return file types head */
+    /** return file type list head */
 static t_soundfile_filetype *soundfile_firstfiletype() {
     return &sf_filetypes[0];
 }
@@ -230,6 +230,54 @@ ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size)
     if (lseek(fd, offset, SEEK_SET) != offset)
         return -1;
     return write(fd, src, size);
+}
+
+ssize_t soundfile_movebytes(int fd, off_t dst, off_t src, size_t size)
+{
+    int forward = (src < dst);
+    char buf[4096];
+    size_t blocksize;
+    ssize_t bytesmoved = 0;
+    off_t readpos = src, writepos = dst;
+    if (dst == src) return 0; /* nothing to do */
+    if (forward)
+    {
+            /* move forward, copy blocks from back to front */
+        readpos += size;
+        writepos += size;
+        while (bytesmoved < size)
+        {
+            blocksize = size - bytesmoved;
+            if (blocksize > 4096)
+                blocksize = 4096;
+            readpos -= blocksize;
+            writepos -= blocksize;
+            if (soundfile_readbytes(fd, readpos, buf, blocksize) < blocksize)
+                return -1;
+            if (soundfile_writebytes(fd, writepos, buf, blocksize) < blocksize)
+                return -1;
+            bytesmoved += blocksize;
+        }
+    }
+    else
+    {
+            /* move backward, copy blocks from front to back */
+        while (bytesmoved < size)
+        {
+            blocksize = size - bytesmoved;
+            if (blocksize > 4096)
+                blocksize = 4096;
+            if (soundfile_readbytes(fd, readpos, buf, blocksize) < blocksize)
+                return -1;
+            if (soundfile_writebytes(fd, writepos, buf, blocksize) < blocksize)
+                return -1;
+            bytesmoved += blocksize;
+            readpos += blocksize;
+            writepos += blocksize;
+        }
+
+    }
+    return bytesmoved;
 }
 
 /* ----- byte swappers ----- */
@@ -738,7 +786,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
             return -1;
     filenamebuf[MAXPDSTRING-10] = 0; /* FIXME: what is the 10 for? */
     canvas_makefilename(canvas, filenamebuf, pathbuf, MAXPDSTRING);
-    if ((fd = sys_open(pathbuf, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
+    if ((fd = sys_open(pathbuf, O_RDWR | O_CREAT | O_TRUNC, 0666)) < 0)
         return -1;
     if (!sf->sf_filetype->ft_openfn(sf, fd))
         goto badcreate;
@@ -1200,8 +1248,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             argc, garrays, vecs, resize, finalsize);
         return;
     }
-    if (meta) /* pass outlet to filetype readheaderfn for meta data output */
-        sf.sf_metaout = x->x_out2;
 
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
     if (fd < 0)
@@ -1210,6 +1256,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         goto done;
     }
     framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
+
+        /* read meta data to outlet */
+    if (meta && sf.sf_filetype->ft_readmetafn)
+        if (!sf.sf_filetype->ft_readmetafn(&sf, x->x_out2))
+            pd_error(x, "soundfiler_read: reading meta data failed");
 
     if (resize)
     {
@@ -1363,7 +1414,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         }
     }
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
-        sf, wa.wa_nframes)) < 0)
+        sf, 0)) < 0)//wa.wa_nframes)) < 0)
     {
         post("%s: %s\n", wa.wa_filesym->s_name, strerror(errno));
         goto fail;

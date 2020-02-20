@@ -284,7 +284,6 @@ void soundfile_next_setup()
         soundfile_filetype_close,
         next_readheader,
         next_writeheader,
-        NULL, /* writemetafn */
         next_updateheader,
         next_hasextension,
         next_addextension,
@@ -292,7 +291,9 @@ void soundfile_next_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL
+        NULL, /* readmetafn */
+        NULL, /* writemetafn */
+        NULL  /* data */
     };
     soundfile_addfiletype(&next);
 }

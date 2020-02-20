@@ -11,18 +11,23 @@
 /* AIFF (Audio Interchange File Format) and AIFF-C (AIFF Compressed)
 
   * RIFF variant with sections split into data "chunks"
+  * chunk sizes do not include the chunk id or size (- 8)
+  * the file header's size is the total size of all subsequent chunks (- 8)
   * chunk data is big endian
   * sound data is big endian, unless AIFF-C "sowt" compression type
   * the sound data chunk can be omitted if common chunk sample frames is 0
-  * chunk string values are pascal strings:
+  * chunks start on even byte offsets
+  * some chunk string values are pascal strings:
     - first byte is string length, limited to 255 chars
-    - total length must be even, pad with a '\0' byte
+    - total length must be even, pad with a '\0' byte, max 256
     - padding is not added to string length byte value
-  * AIFF-C compression 4 char types & name strings:
+  * other chunk string values have variable length denoted by the chunk size
+    ie. text chunks, there is no c string \0 end byte
+  * AIFF-C compression 4 char types & name (pascal) strings:
     - NONE "not compressed" big endian
     - sowt "not compressed" little endian
-    - fl32 "32-bit floating point"
-    - FL32 "Float 32"
+    - fl32 "32-bit floating point" big endian
+    - FL32 "Float 32" big endian
     - the rest are not relevant to Pd...
   * limited to ~2 GB files as sizes are signed 32 bit ints
 
@@ -30,9 +35,10 @@
 
   * supports AIFF and AIFF-C
   * implicitly writes AIFF-C header for 32 bit float (see below)
-  * implements chunks: common, data, version (AIFF-C)
-  * ignores chunks: marker, instrument, comment, name, author, copyright,
-                    annotation, audio recording, MIDI data, application, ID3
+  * implements chunks: common, data, version (AIFF-C), name, author, copyright,
+                    annotation
+  * ignores chunks: marker, instrument, comment, audio recording, MIDI data,
+                    application, ID3
   * assumes common chunk is always before sound data chunk
   * ignores any chunks after finding the sound data chunk
   * assumes there is always a sound data chunk
@@ -50,16 +56,17 @@
 #define AIFFVERSIZE   12 /**< chunk header and data */
 #define AIFFCOMMSIZE  26 /**< chunk header and data */
 #define AIFFDATASIZE  16 /**< chunk header, offset, and block size data */
+#define AIFFMARKERSIZE 10
 
 #define AIFFCVER1    0xA2805140 /**< 2726318400 decimal */
 #define AIFFMAXBYTES 0x7fffffff /**< max signed 32 bit size */
 
     /* pascal string defines */
-#define AIFF_NONE_STR "\x0E""not compressed"
-#define AIFF_FL32_STR "\x16""32-bit floating point"
+#define AIFF_NONE_PSTR "\x0E""not compressed"
+#define AIFF_FL32_PSTR "\x16""32-bit floating point"
 
-#define AIFF_NONE_LEN 16 /**< 1 len byte + 15 bytes + 1 \0 pad byte */
-#define AIFF_FL32_LEN 22 /**< 1 len byte + 22 bytes, no pad byte */
+#define AIFF_NONE_LEN 16 /**< 1 len byte + 14 bytes + 1 \0 pad byte */
+#define AIFF_FL32_LEN 22 /**< 1 len byte + 21 bytes, no pad byte */
 
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
@@ -94,21 +101,78 @@ typedef struct _commchunk
     /** sound data chunk, min 16 bytes before data */
 typedef struct _datachunk
 {
-    char dc_id[4];                  /**< chunk id "SSND"               */
-    int32_t dc_size;                /**< chunk data length             */
-    uint32_t dc_offset;             /**< additional offset in bytes    */
-    uint32_t dc_block;              /**< block size                    */
+    char dc_id[4];                   /**< chunk id "SSND"              */
+    int32_t dc_size;                 /**< chunk data length            */
+    uint32_t dc_offset;              /**< additional offset in bytes   */
+    uint32_t dc_block;               /**< block size                   */
 } t_datachunk;
 
     /** AIFF-C format version chunk, 12 bytes */
 typedef struct _verchunk
 {
-    char vc_id[4];                  /**< chunk id "FVER"               */
-    int32_t vc_size;                /**< chunk data length, 4 bytes    */
-    uint32_t vc_timestamp;          /**< AIFF-C version timestamp      */
+    char vc_id[4];                   /**< chunk id "FVER"              */
+    int32_t vc_size;                 /**< chunk data length, 4 bytes   */
+    uint32_t vc_timestamp;           /**< AIFF-C version timestamp     */
 } t_verchunk;
 
+    /** marker, min 6 bytes */
+typedef struct _marker {
+       int8_t m_id;                  /**< marker id, must be > 0       */
+       uint32_t m_frame;             /**< sample frame position        */
+       char m_name;                  /**< name, pascal str             */
+} t_marker;
+
+    /** marker chunk, min 10 bytes before marker list */
+typedef struct _markerchunk {
+    char mc_id[4];                   /**< chunk id "MARK"              */
+    int32_t mc_size;                 /**< chunk data length, 4 bytes   */
+    uint16_t mc_nmarkers;
+} t_markerchunk;
+
+    /** instrument chunk loop, 4 bytes  */
+typedef struct _loop {
+    int16_t l_playmode; /**< loop playback mode, 0 : no loop, 1 : forward,
+                                                 2: forward backward */
+    int8_t l_begin;     /**< begin marker id */
+    int8_t l_end;       /**< end marker id   */
+} t_loop;
+
+    /** instrument chunk, 24 bytes */
+typedef struct _instchunk
+{
+    char ic_id[4];                  /**< chunk id "INST"               */
+    int32_t ic_size;                /**< chunk data length, 4 bytes    */
+    int8_t ic_basenote;             /**< original pitch, MIDI 0 to 127 */
+    int8_t ic_detune;               /**< detune cents, -50 to 50       */
+    int8_t ic_lownote;              /**< playback low, MIDI 0 to 127   */
+    int8_t ic_highnote;             /**< playback high, MIDI 0 to 127  */
+    int8_t ic_lowvelocity;          /**< noteon low, MIDI 1 to 127     */
+    int8_t ic_highvelocity;         /**< noteon high, MIDI 1 to 127    */
+    uint16_t ic_gain;               /**< gain adjustment, +/- dB       */
+    t_loop   ic_sustainloop;        /**< sustain loop points           */
+    t_loop   ic_releaseloop;        /**< release loop points           */
+} t_instchunk;
+
 /* ----- helpers ----- */
+
+    /** pascal string to c string, max size 256 */
+static void aiff_getpstring(const char* pstring, char *cstring, size_t size)
+{
+    uint8_t len = (uint8_t)pstring[0];
+    if (len > size - 1) len = size - 1;
+    memcpy(cstring, pstring + 1, len);
+    cstring[len+1] = '\0';
+}
+    /** c string to pascal string, max size 256 */
+static void aiff_setpstring(char *pstring, const char *cstring, size_t size)
+{
+    uint8_t len = strlen(cstring);
+    if (len > 255) len = 255;
+    if (len > size) len = size;
+    pstring[0] = len;
+    memcpy(pstring + 1, cstring, len);
+    if (!(len & 1)) pstring[len] = '\0'; /* pad byte */
+}
 
 static uint64_t aiff_getframes(const t_commchunk *comm, int swap)
 {
@@ -183,12 +247,10 @@ static void aiff_postcomm(const t_commchunk *comm, int isaiffc, int swap)
     if (isaiffc)
     {
             /* handle pascal string */
-        char str[256];
-        uint8_t len = (uint8_t)comm->cc_compname[0];
-        memcpy(str, comm->cc_compname + 1, len);
-        str[len+1] = '\0';
+        char name[256];
+        aiff_getpstring(comm->cc_compname, name, 256);
         post("  comp type %.4s", comm->cc_comptype);
-        post("  comp name \"%s\"", str);
+        post("  comp name \"%s\"", name);
     }
 }
 
@@ -206,6 +268,60 @@ static int aiff_isaiffc(const t_soundfile *sf)
     return (!sf->sf_bigendian || sf->sf_bytespersample == 4);
 }
 
+    /** read first chunk, returns filled chunk and offset on success or -1 */
+static off_t aiff_firstchunk(const t_soundfile *sf, t_chunk *chunk)
+{
+    if (soundfile_readbytes(sf->sf_fd, AIFFHEADSIZE, (char *)chunk,
+                                AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        return -1;
+    return AIFFHEADSIZE;
+}
+
+    /** read next chunk, chunk should be filled when calling
+        returns fills chunk offset on success or -1 */
+static off_t aiff_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
+{
+    int32_t chunksize = swap4s(chunk->c_size, !sys_isbigendian());
+    off_t seekto = offset + AIFFCHUNKSIZE + chunksize;
+    if (seekto & 1) /* pad up to even number of bytes */
+        seekto++;
+    if (soundfile_readbytes(sf->sf_fd, seekto, (char *)chunk,
+                                AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        return -1;
+    return seekto;
+}
+
+    /** look for a chunk by name starting at an offset,
+        chunk should be filled if offset > 0
+        fills chunk and returns offset on success or -1 */
+static off_t aiff_findchunk(const t_soundfile *sf, const char *name,
+    off_t offset, t_chunk *chunk)
+{
+    if (offset <= 0)
+        offset = aiff_firstchunk(sf, chunk);
+    else
+        offset = aiff_nextchunk(sf, offset, chunk);
+    if (offset == -1)
+        return -1;
+    while (1)
+    {
+        if (!strncmp(chunk->c_id, name, 4))
+            return offset;
+        if((offset = aiff_nextchunk(sf, offset, chunk)) == -1)
+            return -1;
+    }
+}
+
+    /* sets the total chunk size in the file header,
+       assumes the file header has already been written to sf->sf_fd */
+static int aiff_setheadchunksize(const t_soundfile *sf, int32_t size, int swap)
+{
+    size = swap4s(size, swap);
+    if (soundfile_writebytes(sf->sf_fd, 4, (char *)&size, 4) < 4)
+        return 0;
+    return 1;
+}
+
 /* ------------------------- AIFF ------------------------- */
 
 static int aiff_isheader(const char *buf, size_t size)
@@ -214,11 +330,12 @@ static int aiff_isheader(const char *buf, size_t size)
     return !strncmp(buf, "FORM", 4);
 }
 
+    /** loop through chunks to find comm and data */
 static int aiff_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
-    off_t headersize = AIFFHEADSIZE + AIFFCHUNKSIZE;
+    off_t headersize = AIFFHEADSIZE;
     size_t bytelimit = AIFFMAXBYTES;
     union
     {
@@ -244,17 +361,12 @@ static int aiff_readheader(t_soundfile *sf)
     if (sys_verbose)
         aiff_posthead(head, swap);
 
-        /* copy the first chunk header to beginning of buffer */
-    memcpy(buf.b_c, buf.b_c + AIFFHEADSIZE, AIFFCHUNKSIZE);
-    headersize = AIFFHEADSIZE;
-
         /* read chunks in loop until we find the sound data chunk */
+    if ((headersize = aiff_firstchunk(sf, chunk)) == -1)
+        return 0;
     while (1)
     {
         int32_t chunksize = swap4s(chunk->c_size, swap);
-        off_t seekto = headersize + AIFFCHUNKSIZE + chunksize, seekout;
-        if (seekto & 1) /* pad up to even number of bytes */
-            seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
         if (!strncmp(chunk->c_id, "FVER", 4))
         {
@@ -301,16 +413,17 @@ static int aiff_readheader(t_soundfile *sf)
             {
                 if (!strncmp(comm->cc_comptype, "NONE", 4))
                 {
-                    /* big endian */
+                        /* big endian */
                 }
                 else if (!strncmp(comm->cc_comptype, "sowt", 4))
                 {
-                    /* little endian */
+                        /* little endian */
                     bigendian = 0;
                 }
                 else if (!strncmp(comm->cc_comptype, "fl32", 4) ||
                          !strncmp(comm->cc_comptype, "FL32", 4))
                 {
+                        /* big endian float */
                     if (bytespersample != 4)
                     {
                         error("aiff: wrong byte size for format %.4s",
@@ -361,10 +474,8 @@ static int aiff_readheader(t_soundfile *sf)
             if (sys_verbose)
                 aiff_postchunk(chunk, swap);
         }
-        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
-                                AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        if((headersize = aiff_nextchunk(sf, headersize, chunk)) == -1)
             return 0;
-        headersize = seekto;
     }
     if (!commfound)
     {
@@ -372,7 +483,8 @@ static int aiff_readheader(t_soundfile *sf)
         return 0;
     }
 
-        /* interpret data size from file size? */
+        /* interpret data size from file size? this is not supported by the
+           AIFF spec, but let's do it just in case */
     if (bytelimit == AIFFMAXBYTES)
     {
         bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
@@ -392,6 +504,7 @@ static int aiff_readheader(t_soundfile *sf)
     return 1;
 }
 
+    /** write basic header with order: head [ver] comm data */
 static int aiff_writeheader(t_soundfile *sf, size_t nframes)
 {
     int isaiffc = aiff_isaiffc(sf), swap = !sys_isbigendian();
@@ -438,17 +551,17 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
         if (sf->sf_bytespersample == 4)
         {
             strncpy(comm.cc_comptype, "fl32", 4);
-            strncpy(comm.cc_compname, AIFF_FL32_STR, AIFF_FL32_LEN);
+            strncpy(comm.cc_compname, AIFF_FL32_PSTR, AIFF_FL32_LEN);
             commsize += 4 + AIFF_FL32_LEN;
         }
         else
         {
             strncpy(comm.cc_comptype, (sf->sf_bigendian ? "NONE" : "sowt"), 4);
-            strncpy(comm.cc_compname, AIFF_NONE_STR, AIFF_NONE_LEN);
+            strncpy(comm.cc_compname, AIFF_NONE_PSTR, AIFF_NONE_LEN);
             commsize += 4 + AIFF_NONE_LEN;
         }
     }
-    comm.cc_size = swap4(commsize - 8, swap);
+    comm.cc_size = swap4(commsize - AIFFCHUNKSIZE, swap);
     memcpy(buf + headersize, &comm, commsize);
     headersize += commsize;
 
@@ -458,7 +571,7 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
     headersize += AIFFDATASIZE;
 
         /* update total chunk size */
-    head.h_size = swap4s((int32_t)(datasize + headersize - 8), swap);
+    head.h_size = swap4s((int32_t)(headersize + datasize - 8), swap);
     memcpy(buf + 4, (char *)&head.h_size, 4);
 
     if (sys_verbose)
@@ -472,51 +585,52 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
-    /** assumes chunk order:
-        * AIFF  : head comm data
-        * AIFF-C: head version comm data, comm chunk size variable due to str */
+    /** loop through chunks to update comm and data,
+        assumes order: head [ver] comm [meta...] data */
 static int aiff_updateheader(t_soundfile *sf, size_t nframes)
 {
-    int isaiffc = aiff_isaiffc(sf), swap = !sys_isbigendian();
-    size_t datasize = nframes * sf->sf_bytesperframe,
-           headersize = AIFFHEADSIZE, commsize = AIFFCOMMSIZE;
-    uint32_t uinttmp;
-    int32_t inttmp;
+    int swap = !sys_isbigendian(), datafound = 0;
+    size_t datasize = nframes * sf->sf_bytesperframe;
+    off_t headersize;
+    t_chunk chunk = {0};
 
-    if (isaiffc)
+    if ((headersize = aiff_firstchunk(sf, &chunk)) == -1)
+        return 0;
+    while (1)
     {
-            /* AIFF-C compression info */
-        if (sf->sf_bytespersample == 4)
-            commsize += 4 + AIFF_FL32_LEN;
-        else
-            commsize += 4 + AIFF_NONE_LEN;
-        headersize += AIFFVERSIZE;
+        if (!strncmp(chunk.c_id, "COMM", 4))
+        {
+                /* num frames */
+            uint32_t uinttmp = swap4((uint32_t)nframes, swap);
+            if (soundfile_writebytes(sf->sf_fd, headersize + 10,
+                                     (char *)&uinttmp, 4) < 4)
+                return 0;
+        }
+        else if(!strncmp(chunk.c_id, "SSND", 4))
+        {
+                /* data chunk size */
+            int32_t inttmp = swap4s((int32_t)datasize + 8, swap);
+            if (soundfile_writebytes(sf->sf_fd, headersize + 4,
+                                     (char *)&inttmp, 4) < 4)
+                return 0;
+            datafound = 1;
+            break;
+        }
+        if((headersize = aiff_nextchunk(sf, headersize, &chunk)) == -1)
+            return 0;
     }
-
-        /* num frames */
-    uinttmp = swap4((uint32_t)nframes, swap);
-    if (soundfile_writebytes(sf->sf_fd, headersize + 10,
-                             (char *)&uinttmp, 4) < 4)
-        return 0;
-    headersize += commsize;
-
-        /* data chunk size */
-    inttmp = swap4s((int32_t)datasize + 8, swap);
-    if (soundfile_writebytes(sf->sf_fd, headersize + 4,
-                             (char *)&inttmp, 4) < 4)
-        return 0;
-    headersize += AIFFDATASIZE;
+    if (!datafound)
+        return 0; /* shouldn't happen */
 
         /* file header chunk size */
-    inttmp = swap4s((int32_t)(headersize + datasize - 8), swap);
-    if (soundfile_writebytes(sf->sf_fd, 4, (char *)&inttmp, 4) < 4)
+    if (!aiff_setheadchunksize(sf, headersize + datasize - 8, swap))
         return 0;
 
     if (sys_verbose)
     {
         post("FORM %d", headersize + datasize - 8);
         post("  %s", (aiff_isaiffc(sf) ? "AIFC" : "AIFF"));
-        post("COMM %d", commsize);
+        post("COMM");
         post("  frames %d", nframes);
         post("SSND %d", datasize + 8);
     }
@@ -557,6 +671,198 @@ static int aiff_endianness(int endianness)
     return 1;
 }
 
+    /** read relevant meta chunk info and outputs lists to out,
+        assumes order: head [ver] comm [meta...] data */
+static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
+    int swap = !sys_isbigendian();
+    off_t headersize;
+    t_chunk chunk;
+
+    if ((headersize = aiff_firstchunk(sf, &chunk)) == -1)
+        return 0;
+    while (1)
+    {
+        int32_t chunksize = swap4s(chunk.c_size, swap);
+        if (!strncmp(chunk.c_id, "NAME", 4) ||
+            !strncmp(chunk.c_id, "AUTH", 4) ||
+            !strncmp(chunk.c_id, "(c) ", 4) ||
+            !strncmp(chunk.c_id, "ANNO", 4))
+        {
+                /* text chunk */
+            t_atom list[2];
+            t_symbol *name;
+            char str[MAXPDSTRING];
+            int len = chunksize;
+            if (len > MAXPDSTRING-1) len = MAXPDSTRING-1;
+            if (soundfile_readbytes(sf->sf_fd,
+                                    headersize + AIFFCHUNKSIZE,
+                                    str, len) < len) return 0;
+            str[len] = '\0';
+            if (sys_verbose)
+            {
+                aiff_postchunk(&chunk, swap);
+                post("  \"%s\"", str);
+            }
+            if (!strncmp(chunk.c_id, "NAME", 4))
+                name = gensym("name");
+            else if (!strncmp(chunk.c_id, "AUTH", 4))
+                name = gensym("author");
+            else if (!strncmp(chunk.c_id, "(c) ", 4))
+                name = gensym("copyright");
+            else /* ANNO */
+                name = gensym("annotation");
+            SETSYMBOL((t_atom *)list, name);
+            SETSYMBOL((t_atom *)list+1, gensym(str));
+            outlet_list(out, &s_list, 2, (t_atom *)list);
+        }
+        if (!strncmp(chunk.c_id, "SSND", 4))
+            break; /* done */
+        if((headersize = aiff_nextchunk(sf, headersize, &chunk)) == -1)
+            return 0;
+    }
+
+    return 1;
+}
+
+    /** write meta data chunks by moving existing chunks to make room,
+        keeps order: head [ver] comm [meta...] data */
+static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
+{
+    int swap = !sys_isbigendian();
+    off_t headersize = sf->sf_headersize, filesize, datapos;
+    int32_t datasize;
+    char *meta;
+    t_chunk chunk = {0};
+
+    if (argc < 2 || argv->a_type != A_SYMBOL)
+        goto usage;
+    meta = (char *)argv->a_w.w_symbol->s_name;
+    argc--; argv++;
+
+    if ((filesize = lseek(sf->sf_fd, 0, SEEK_END)) == -1)
+        return 0;
+
+        /* find data chunk */
+    if ((datapos = aiff_findchunk(sf, "SSND", 0, &chunk)) == -1)
+        return 0;
+    datasize = swap4s(chunk.c_size, swap);
+
+        /* add new chunk */
+    if (!strcmp(meta, "name") || !strcmp(meta, "author") ||
+        !strcmp(meta, "copyright") || !strcmp(meta, "annotation"))
+    {
+            /* text chunk */
+        const char *text = argv->a_w.w_symbol->s_name;
+        char *textid;
+        size_t textlen = 0, movesize = 0;
+        off_t textpos, movefrom, moveto;
+
+        if (argv->a_type != A_SYMBOL)
+            goto usage;
+        textlen = strlen(text);
+        if (textlen == 0)
+        {
+            post("aiff: meta %s ignored, symbol is empty", meta);
+            return 1;
+        }
+
+        if (!strcmp(meta, "annotation"))
+        {
+                /* there can be multiple ANNO chunks, move data forward */
+            textid = "ANNO";
+            movefrom = datapos;
+            moveto = datapos + AIFFCHUNKSIZE + textlen;
+            movesize = AIFFDATASIZE;
+            textpos = datapos;
+            headersize = moveto;
+        }
+        else
+        {
+                /* there can only be 1 of these chunks */
+            if (!strcmp(meta, "name"))
+                textid = "NAME";
+            else if (!strcmp(meta, "author"))
+                textid = "AUTH";
+            else /* copyright */
+                textid = "(c) ";
+
+                /* look for existing chunk */
+            if ((textpos = aiff_findchunk(sf, textid, 0, &chunk)) == -1)
+            {
+                    /* not found, move data forward */
+                movefrom = datapos;
+                moveto = datapos + AIFFCHUNKSIZE + textlen;
+                movesize = AIFFDATASIZE;
+                textpos = datapos;
+                headersize = moveto;
+            }
+            else
+            {
+                    /* found */
+                int32_t oldtextlen = swap4s(chunk.c_size, swap),
+                        diff = textlen - oldtextlen;
+                if (diff != 0)
+                {
+                        /* shrink or grow */
+                    movefrom = textpos + AIFFCHUNKSIZE + oldtextlen;
+                    if (oldtextlen & 1) movefrom++; /* dont cp prev pad byte */
+                    moveto = textpos + AIFFCHUNKSIZE + textlen;
+                    movesize = filesize - movefrom;
+                    headersize += diff;
+                }
+                    /* else same size */
+            }
+        }
+
+            /* make room? */
+        if (movesize > 0)
+        {
+            if (moveto & 1) /* pad up to even number of bytes */
+            {
+               moveto++;
+               headersize++;
+            }
+            if (soundfile_movebytes(sf->sf_fd, moveto, movefrom,
+                                    movesize) < movesize)
+                return 0;
+        }
+
+            /* write new/updated chunk */
+        strncpy(chunk.c_id, textid, 4);
+        chunk.c_size = swap4s(textlen, swap);
+        if (soundfile_writebytes(sf->sf_fd, textpos, (char *)&chunk,
+                                 AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+            return 0;
+        if (soundfile_writebytes(sf->sf_fd, textpos + AIFFCHUNKSIZE,
+                                 text, textlen) < textlen)
+            return 0;
+
+        if (sys_verbose)
+        {
+            post("FORM %d", headersize - 8);
+            post("  %s", (aiff_isaiffc(sf) ? "AIFC" : "AIFF"));
+            aiff_postchunk(&chunk, swap);
+            post("  %s", text);
+        }
+    }
+
+        /* update file header chunk size */
+    if (!aiff_setheadchunksize(sf, headersize + datasize, swap))
+        return 0;
+
+        /* update headersize and seek to end for subsequent sample writes */
+    sf->sf_headersize = headersize;
+    lseek(sf->sf_fd, 0, SEEK_END);
+
+    return 1;
+
+usage:
+    error("usage: meta <type>...");
+    post("type: name <symbol>, author <symbol>, copyright <symbol>...");
+    post("annotation <symbol>");
+    return 0;
+}
+
 void soundfile_aiff_setup()
 {
     t_soundfile_filetype aiff = {
@@ -567,7 +873,6 @@ void soundfile_aiff_setup()
         soundfile_filetype_close,
         aiff_readheader,
         aiff_writeheader,
-        NULL,
         aiff_updateheader,
         aiff_hasextension,
         aiff_addextension,
@@ -575,7 +880,9 @@ void soundfile_aiff_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL
+        aiff_readmeta,
+        aiff_writemeta,
+        NULL /* data */
     };
     soundfile_addfiletype(&aiff);
 }
