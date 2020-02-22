@@ -1163,17 +1163,18 @@ void kbdnav_magnetic_connect(t_canvas *x)
         /* if we are using a number key */
         int count = 0;
         t_magtrav *mag = kbdnav->kn_magtrav;
-        while( count < kbdnav->kn_chosennumber)
+        while( count <= kbdnav->kn_chosennumber)
         {
-            if(!mag){
-                post("digit connector: there is no %d connection", mag->mt_ioindex);
+            if(!mag)
+            {
+                post("Digit connector error. Invalid number %d", kbdnav->kn_chosennumber);
                 return;
             }
+            mag_objindex = mag->mt_objindex;
+            mag_connindex = mag->mt_ioindex;
             mag = mag->mt_next;
             ++count;
         }
-        mag_objindex = mag->mt_objindex;
-        mag_connindex = mag->mt_ioindex;
     }
 
     t_object *sel_obj = kbdnav->kn_selobj;
