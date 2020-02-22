@@ -232,12 +232,12 @@ ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size)
     return write(fd, src, size);
 }
 
-ssize_t soundfile_movebytes(int fd, off_t dst, off_t src, size_t size)
+ssize_t soundfile_copybytes(int fd, off_t dst, off_t src, size_t size)
 {
     int forward = (src < dst);
     char buf[4096];
     size_t blocksize;
-    ssize_t bytesmoved = 0;
+    ssize_t bytescopied = 0;
     off_t readpos = src, writepos = dst;
     if (dst == src) return 0; /* nothing to do */
     if (forward)
@@ -245,9 +245,9 @@ ssize_t soundfile_movebytes(int fd, off_t dst, off_t src, size_t size)
             /* move forward, copy blocks from back to front */
         readpos += size;
         writepos += size;
-        while (bytesmoved < size)
+        while (bytescopied < size)
         {
-            blocksize = size - bytesmoved;
+            blocksize = size - bytescopied;
             if (blocksize > 4096)
                 blocksize = 4096;
             readpos -= blocksize;
@@ -256,28 +256,28 @@ ssize_t soundfile_movebytes(int fd, off_t dst, off_t src, size_t size)
                 return -1;
             if (soundfile_writebytes(fd, writepos, buf, blocksize) < blocksize)
                 return -1;
-            bytesmoved += blocksize;
+            bytescopied += blocksize;
         }
     }
     else
     {
             /* move backward, copy blocks from front to back */
-        while (bytesmoved < size)
+        while (bytescopied < size)
         {
-            blocksize = size - bytesmoved;
+            blocksize = size - bytescopied;
             if (blocksize > 4096)
                 blocksize = 4096;
             if (soundfile_readbytes(fd, readpos, buf, blocksize) < blocksize)
                 return -1;
             if (soundfile_writebytes(fd, writepos, buf, blocksize) < blocksize)
                 return -1;
-            bytesmoved += blocksize;
+            bytescopied += blocksize;
             readpos += blocksize;
             writepos += blocksize;
         }
 
     }
-    return bytesmoved;
+    return bytescopied;
 }
 
 /* ----- byte swappers ----- */
@@ -338,6 +338,13 @@ uint16_t swap2(uint16_t n, int doit)
 {
     if (doit)
         return (((n & 0x00ff) << 8) | ((n & 0xff00) >> 8));
+    return n;
+}
+
+int16_t swap2s(int16_t n, int doit)
+{
+    if (doit)
+        return (n << 8) | ((n >> 8) & 0xff);
     return n;
 }
 

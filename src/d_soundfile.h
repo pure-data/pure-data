@@ -213,9 +213,9 @@ ssize_t soundfile_readbytes(int fd, off_t offset,
 ssize_t soundfile_writebytes(int fd, off_t offset,
     const char *src, size_t size);
 
-    /** move size bytes from src location to dst location, assumes fd is O_RDWR
+    /** copy size bytes in file fd from src pos to dst pos, assumes fd is O_RDWR
         returns bytes moved on success or -1 on failure */
-ssize_t soundfile_movebytes(int fd, off_t dst, off_t src, size_t size);
+ssize_t soundfile_copybytes(int fd, off_t dst, off_t src, size_t size);
 
 /* ----- byte swappers ----- */
 
@@ -236,6 +236,9 @@ int32_t swap4s(int32_t n, int doit);
 
     /** swap 2 bytes and return if doit = 1, otherwise return n */
 uint16_t swap2(uint16_t n, int doit);
+
+    /** swap a 16 bit signed int and return if doit = 1, otherwise return n */
+int16_t swap2s(int16_t n, int doit);
 
     /** swap a 4 byte string in place if do it = 1, otherewise do nothing */
 void swapstring4(char *foo, int doit);

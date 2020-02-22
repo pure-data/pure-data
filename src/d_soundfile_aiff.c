@@ -61,12 +61,9 @@
 #define AIFFCVER1    0xA2805140 /**< 2726318400 decimal */
 #define AIFFMAXBYTES 0x7fffffff /**< max signed 32 bit size */
 
-    /* pascal string defines */
-#define AIFF_NONE_PSTR "\x0E""not compressed"
-#define AIFF_FL32_PSTR "\x16""32-bit floating point"
-
-#define AIFF_NONE_LEN 16 /**< 1 len byte + 14 bytes + 1 \0 pad byte */
-#define AIFF_FL32_LEN 22 /**< 1 len byte + 21 bytes, no pad byte */
+    /* compression string defines */
+#define AIFF_NONE_STR "not compressed"
+#define AIFF_FL32_STR "32-bit floating point"
 
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
@@ -95,7 +92,7 @@ typedef struct _commchunk
     uint8_t cc_samplerate[10];       /**< sample rate, 80-bit float!   */
     /* AIFF-C */
     char cc_comptype[4];             /**< compression type             */
-    char cc_compname[AIFF_FL32_LEN]; /**< compression name, pascal str */
+    char cc_compname[256];           /**< compression name, pascal str */
 } t_commchunk;
 
     /** sound data chunk, min 16 bytes before data */
@@ -115,24 +112,25 @@ typedef struct _verchunk
     uint32_t vc_timestamp;           /**< AIFF-C version timestamp     */
 } t_verchunk;
 
-    /** marker, min 6 bytes */
+    /** marker, min 7 bytes
+        note: sample frame is split to avoid struct alignment padding  */
 typedef struct _marker {
-       int8_t m_id;                  /**< marker id, must be > 0       */
-       uint32_t m_frame;             /**< sample frame position        */
-       char m_name;                  /**< name, pascal str             */
+       int16_t m_id;                 /**< marker id, must be > 0       */
+       uint8_t m_sampleframe[4];     /**< sample frame position        */
+       char m_name[256];             /**< name, pascal str             */
 } t_marker;
 
     /** marker chunk, min 10 bytes before marker list */
 typedef struct _markerchunk {
     char mc_id[4];                   /**< chunk id "MARK"              */
     int32_t mc_size;                 /**< chunk data length, 4 bytes   */
-    uint16_t mc_nmarkers;
+    uint16_t mc_nmarkers;            /**< number of markers            */
 } t_markerchunk;
 
     /** instrument chunk loop, 4 bytes  */
 typedef struct _loop {
     int16_t l_playmode; /**< loop playback mode, 0 : no loop, 1 : forward,
-                                                 2: forward backward */
+                                                 2: forward backward   */
     int8_t l_begin;     /**< begin marker id */
     int8_t l_end;       /**< end marker id   */
 } t_loop;
@@ -155,50 +153,58 @@ typedef struct _instchunk
 
 /* ----- helpers ----- */
 
-    /** pascal string to c string, max size 256 */
-static void aiff_getpstring(const char* pstring, char *cstring, size_t size)
+    /** pascal string to c string, max size 256, returns *total* pstring size */
+static int aiff_getpstring(const char* pstring, char *cstring)
 {
     uint8_t len = (uint8_t)pstring[0];
-    if (len > size - 1) len = size - 1;
     memcpy(cstring, pstring + 1, len);
-    cstring[len+1] = '\0';
+    cstring[len] = '\0';
+    len++; /* length byte */
+    if (len & 1) len++; /* pad byte */
+    return len;
 }
-    /** c string to pascal string, max size 256 */
-static void aiff_setpstring(char *pstring, const char *cstring, size_t size)
+    /** c string to pascal string, max size 256, returns *total* pstring size */
+static int aiff_setpstring(char *pstring, const char *cstring)
 {
     uint8_t len = strlen(cstring);
-    if (len > 255) len = 255;
-    if (len > size) len = size;
     pstring[0] = len;
     memcpy(pstring + 1, cstring, len);
-    if (!(len & 1)) pstring[len] = '\0'; /* pad byte */
+    len++; /* length byte */
+    if (len & 1)
+    {
+        pstring[len] = '\0'; /* pad byte */
+        len++;
+    }
+    return len;
 }
 
-static uint64_t aiff_getframes(const t_commchunk *comm, int swap)
+    /** read byte buffer to unsigned 32 bit int */
+static uint32_t aiff_get4(const uint8_t *src, int swap)
 {
-    uint32_t nframes = 0;
-    memcpy(&nframes, comm->cc_nframes, 4);
-    return swap4(nframes, swap);
+    uint32_t uinttmp = 0;
+    memcpy(&uinttmp, src, 4);
+    return swap4(uinttmp, swap);
 }
 
-static void aiff_setframes(t_commchunk *comm, uint32_t nframes, int swap)
+    /** write unsigned 32 bit int to byte buffer */
+static void aiff_set4(uint8_t* dst, uint32_t ui, int swap)
 {
-    nframes = swap4(nframes, swap);
-    memcpy(comm->cc_nframes, &nframes, 4);
+    ui = swap4(ui, swap);
+    memcpy(dst, &ui, 4);
 }
 
     /** read sample rate from comm chunk 80-bit AIFF-compatible number */
-static double aiff_getsamplerate(const t_commchunk *comm, int swap)
+static double aiff_getsamplerate(const uint8_t *src, int swap)
 {
-    unsigned char temp[10], *src = temp, exp;
+    unsigned char temp[10], *p = temp, exponent;
     unsigned long mantissa, last = 0;
 
-    memcpy(temp, (char *)comm->cc_samplerate, 10);
-    swapstring4((char *)src + 2, swap);
+    memcpy(temp, (char *)src, 10);
+    swapstring4((char *)p + 2, swap);
 
-    mantissa = (unsigned long) *((unsigned long *)(src + 2));
-    exp = 30 - *(src + 1);
-    while (exp--)
+    mantissa = (uint32_t) *((uint32_t *)(p + 2));
+    exponent = 30 - *(p + 1);
+    while (exponent--)
     {
         last = mantissa;
         mantissa >>= 1;
@@ -208,9 +214,8 @@ static double aiff_getsamplerate(const t_commchunk *comm, int swap)
 }
 
     /** write a sample rate to comm chunk 80-bit AIFF-compatible number */
-static void aiff_setsamplerate(t_commchunk *comm, double sr)
+static void aiff_setsamplerate(uint8_t *dst, double sr)
 {
-    unsigned char *dst = (unsigned char *)comm->cc_samplerate;
     int exponent;
     double mantissa = frexp(sr, &exponent);
     unsigned long fixmantissa = ldexp(mantissa, 32);
@@ -241,14 +246,14 @@ static void aiff_postcomm(const t_commchunk *comm, int isaiffc, int swap)
 {
     aiff_postchunk((const t_chunk *)comm, swap);
     post("  channels %u", swap2(comm->cc_nchannels, swap));
-    post("  frames %u", aiff_getframes(comm, swap));
+    post("  frames %u", aiff_get4(comm->cc_nframes, swap));
     post("  bits per sample %u", swap2(comm->cc_bitspersample, swap));
-    post("  sample rate %g", aiff_getsamplerate(comm, swap));
+    post("  sample rate %g", aiff_getsamplerate(comm->cc_samplerate, swap));
     if (isaiffc)
     {
             /* handle pascal string */
         char name[256];
-        aiff_getpstring(comm->cc_compname, name, 256);
+        aiff_getpstring(comm->cc_compname, name);
         post("  comp type %.4s", comm->cc_comptype);
         post("  comp name \"%s\"", name);
     }
@@ -291,7 +296,7 @@ static off_t aiff_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
     return seekto;
 }
 
-    /** look for a chunk by name starting at an offset,
+    /** look for a chunk by name starting at a chunk offset or 0,
         chunk should be filled if offset > 0
         fills chunk and returns offset on success or -1 */
 static off_t aiff_findchunk(const t_soundfile *sf, const char *name,
@@ -422,7 +427,7 @@ static int aiff_readheader(t_soundfile *sf)
                     error("aiff: %d bit samples not supported", bitspersample);
                     return 0;
             }
-            samplerate = aiff_getsamplerate(comm, swap);
+            samplerate = aiff_getsamplerate(comm->cc_samplerate, swap);
             if (isaiffc)
             {
                 if (!strncmp(comm->cc_comptype, "NONE", 4))
@@ -556,23 +561,21 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
 
         /* comm chunk */
     comm.cc_nchannels = swap2(sf->sf_nchannels, swap);
-    aiff_setframes(&comm, nframes, swap);
+    aiff_set4(comm.cc_nframes, nframes, swap);
     comm.cc_bitspersample = swap2(8 * sf->sf_bytespersample, swap);
-    aiff_setsamplerate(&comm, sf->sf_samplerate);
+    aiff_setsamplerate(comm.cc_samplerate, sf->sf_samplerate);
     if (isaiffc)
     {
             /* AIFF-C compression info */
         if (sf->sf_bytespersample == 4)
         {
             strncpy(comm.cc_comptype, "fl32", 4);
-            strncpy(comm.cc_compname, AIFF_FL32_PSTR, AIFF_FL32_LEN);
-            commsize += 4 + AIFF_FL32_LEN;
+            commsize += 4 + aiff_setpstring(comm.cc_compname, AIFF_FL32_STR);
         }
         else
         {
             strncpy(comm.cc_comptype, (sf->sf_bigendian ? "NONE" : "sowt"), 4);
-            strncpy(comm.cc_compname, AIFF_NONE_PSTR, AIFF_NONE_LEN);
-            commsize += 4 + AIFF_NONE_LEN;
+            commsize += 4 + aiff_setpstring(comm.cc_compname, AIFF_NONE_STR);
         }
     }
     comm.cc_size = swap4(commsize - AIFFCHUNKSIZE, swap);
@@ -686,7 +689,7 @@ static int aiff_endianness(int endianness)
 }
 
     /** read relevant meta chunk info and outputs lists to out,
-        assumes order: head [ver] comm [meta...] data */
+        assumes order: head [ver] comm [meta...] data [meta...] */
 static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
     int swap = !sys_isbigendian();
     off_t headersize;
@@ -697,27 +700,89 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
     while (1)
     {
         int32_t chunksize = swap4s(chunk.c_size, swap);
-        if (!strncmp(chunk.c_id, "MIDI", 4))
+        if (!strncmp(chunk.c_id, "INST", 4))
         {
+                /* instrument chunk */
+            if (sys_verbose)
+                aiff_postchunk(&chunk, swap);
+            t_instchunk inst = {0};
+            t_atom list[8];
+            memcpy((char *)&inst, (char *)&chunk, AIFFCHUNKSIZE);
+            if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                                ((char *)&inst) + AIFFCHUNKSIZE, chunksize) < chunksize)
+                return 0;
+            SETSYMBOL((t_atom *)list, gensym("instrument"));
+            SETFLOAT((t_atom *)list+1, inst.ic_basenote);
+            SETFLOAT((t_atom *)list+2, inst.ic_detune);
+            SETFLOAT((t_atom *)list+3, inst.ic_lownote);
+            SETFLOAT((t_atom *)list+4, inst.ic_highnote);
+            SETFLOAT((t_atom *)list+5, inst.ic_lowvelocity);
+            SETFLOAT((t_atom *)list+6, inst.ic_highvelocity);
+            SETFLOAT((t_atom *)list+7, swap2(inst.ic_gain, swap));
+            outlet_list(out, &s_list, 8, (t_atom *)list);
+        }
+        else if(!strncmp(chunk.c_id, "MARK", 4))
+        {
+                /* marker chunk */
+            t_markerchunk mark = {0};
+            uint16_t nmarkers;
+            if (soundfile_readbytes(sf->sf_fd, headersize, ((char *)&mark),
+                                    AIFFMARKERSIZE) < AIFFMARKERSIZE)
+                return 0;
+            nmarkers = swap2(mark.mc_nmarkers, swap);
+            if (sys_verbose)
+            {
+                aiff_postchunk(&chunk, swap);
+                post("  markers %d", nmarkers);
+            }
+            if (nmarkers > 0)
+            {
+                int i;
+                char buf[chunksize-2];
+                t_marker *m = (t_marker *)buf;
+                if (soundfile_readbytes(sf->sf_fd, headersize + AIFFMARKERSIZE,
+                                        buf, chunksize - 2) < chunksize - 2)
+                    return 0;
+                int mpos = 0;
+                for (i = 0; i < nmarkers; ++i)
+                {
+                    t_atom list[4];
+                    char name[256];
+                    int namelen = aiff_getpstring(m->m_name, name);
+
+                    SETSYMBOL((t_atom *)list, gensym("marker"));
+                    SETFLOAT((t_atom *)list+1, swap2s(m->m_id, swap));
+                    SETFLOAT((t_atom *)list+2, aiff_get4(m->m_sampleframe, swap));
+                    SETSYMBOL((t_atom *)list+3, gensym(name));
+                    outlet_list(out, &s_list, 4, (t_atom *)list);
+
+                    mpos += 6 + namelen;
+                    m = (t_marker *)(((char *)buf) + mpos);
+                }
+            }
+        }
+        else if (!strncmp(chunk.c_id, "MIDI", 4))
+        {
+                /* midi chunk */
             int i;
             uint8_t bytes[chunksize];
             t_atom list[chunksize+1];
             if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
                                    (char *)bytes, chunksize) < chunksize)
                 return 0;
+            if (sys_verbose)
+                aiff_postchunk(&chunk, swap);
             SETSYMBOL((t_atom *)list, gensym("midi"));
             for (i = 0; i < chunksize+1; ++i)
                 SETFLOAT((t_atom *)list+1+i, bytes[i]);
             outlet_list(out, &s_list, chunksize+1, (t_atom *)list);
-            if (sys_verbose)
-                aiff_postchunk(&chunk, swap);
         }
         else if (!strncmp(chunk.c_id, "NAME", 4) ||
                  !strncmp(chunk.c_id, "AUTH", 4) ||
                  !strncmp(chunk.c_id, "(c) ", 4) ||
                  !strncmp(chunk.c_id, "ANNO", 4))
         {
-                /* text chunk */
+                /* text chunk, chunk data is ascii string w/o '\0' byte  */
             t_atom list[2];
             t_symbol *name;
             char text[MAXPDSTRING];
@@ -727,6 +792,11 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                                     text, textlen) < textlen)
                 return 0;
             text[textlen] = '\0';
+            if (sys_verbose)
+            {
+                aiff_postchunk(&chunk, swap);
+                post("  \"%s\"", text);
+            }
             if (!strncmp(chunk.c_id, "NAME", 4))
                 name = gensym("name");
             else if (!strncmp(chunk.c_id, "AUTH", 4))
@@ -738,16 +808,9 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             SETSYMBOL((t_atom *)list, name);
             SETSYMBOL((t_atom *)list+1, gensym(text));
             outlet_list(out, &s_list, 2, (t_atom *)list);
-            if (sys_verbose)
-            {
-                aiff_postchunk(&chunk, swap);
-                post("  \"%s\"", text);
-            }
         }
-        if (!strncmp(chunk.c_id, "SSND", 4))
-            break; /* done */
         if((headersize = aiff_nextchunk(sf, headersize, &chunk)) == -1)
-            return 0;
+            break; /* end of file */
     }
 
     return 1;
@@ -777,7 +840,84 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
     datasize = swap4s(chunk.c_size, swap);
 
         /* add new chunk */
-    if (!strcmp(meta, "midi"))
+    if (!strcmp(meta, "marker"))
+    {
+            /* marker chunk, there can only be 1 */
+        int32_t chunksize;
+        size_t markersize, namelen = 0, movesize = 0;
+        off_t markerpos, movefrom, moveto;
+        t_markerchunk marker = {0};
+        t_marker m = {0};
+        int16_t markerid = 1;
+        uint32_t sampleframe;
+
+        if (argc < 2 || argv[0].a_type != A_FLOAT ||
+                ((sampleframe = argv[0].a_w.w_float) < 0) ||
+                argv[1].a_type != A_SYMBOL ||
+                argv[1].a_w.w_symbol->s_name == NULL)
+                    return 0;
+        aiff_set4(m.m_sampleframe, sampleframe, swap);
+        namelen = aiff_setpstring(m.m_name, argv[1].a_w.w_symbol->s_name);
+        markersize = 6 + namelen;
+
+            /* look for existing chunk */
+        if ((markerpos = aiff_findchunk(sf, "MARK", 0,
+                                        (t_chunk *)&marker)) == -1)
+        {
+                /* not found, move data forward */
+            strncpy(marker.mc_id, "MARK", 4);
+            chunksize = 2;
+            marker.mc_size = swap4s(chunksize + markersize, swap);
+            marker.mc_nmarkers = swap2(1, swap);
+
+            movefrom = datapos;
+            moveto = datapos + AIFFCHUNKSIZE + chunksize + markersize;
+            movesize = filesize - movefrom;
+            markerpos = datapos;
+            headersize = moveto + AIFFDATASIZE;
+        }
+        else
+        {
+                /* found, move data forward, increment num markers */
+            chunksize = swap4s(marker.mc_size, swap);
+            if (soundfile_readbytes(sf->sf_fd, markerpos + AIFFCHUNKSIZE,
+                                     (char *)&marker.mc_nmarkers, 2) < 2)
+                return 0;
+            marker.mc_size = swap4s(chunksize + markersize, swap);
+            markerid = swap2(marker.mc_nmarkers, swap) + 1;
+            marker.mc_nmarkers = swap2(markerid, swap);
+
+            movefrom = markerpos + AIFFCHUNKSIZE + chunksize;
+            moveto = movefrom + markersize;
+            movesize = filesize - movefrom;
+            headersize += markersize;
+        }
+
+            /* make room */
+        if (moveto & 1) /* pad up to even number of bytes */
+        {
+           moveto++;
+           headersize++;
+        }
+        if (soundfile_copybytes(sf->sf_fd, moveto, movefrom,
+                                movesize) < movesize)
+            return 0;
+
+            /* write new/updated chunk */
+        if (soundfile_writebytes(sf->sf_fd, markerpos, (char *)&marker,
+                    AIFFCHUNKSIZE + 2) < AIFFCHUNKSIZE + 2)
+            return 0;
+        markerpos += AIFFCHUNKSIZE + chunksize;
+        m.m_id = swap2(markerid, swap);
+        if (soundfile_writebytes(sf->sf_fd, markerpos, (char *)&m,
+                                 markersize) < markersize)
+            return 0;
+
+            /* copy chunk info for verbose print */
+        if (sys_verbose)
+            memcpy((char *)&chunk, (char *)&marker, AIFFCHUNKSIZE);
+    }
+    else if (!strcmp(meta, "midi"))
     {
             /* midi chunk, move data forward */
         int i;
@@ -798,7 +938,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
            moveto++;
            headersize++;
         }
-        if (soundfile_movebytes(sf->sf_fd, moveto,
+        if (soundfile_copybytes(sf->sf_fd, moveto,
                                 datapos, movesize) < movesize)
             return 0;
         if (!aiff_writechunk(sf, datapos, &chunk, (char *)bytes, argc))
@@ -807,7 +947,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
     else if (!strcmp(meta, "name") || !strcmp(meta, "author") ||
              !strcmp(meta, "copyright") || !strcmp(meta, "annotation"))
     {
-            /* text chunk */
+            /* text chunk, chunk data is ascii string w/o '\0' byte */
         const char *text = argv->a_w.w_symbol->s_name;
         char *textid;
         size_t textlen = 0, movesize = 0;
@@ -828,7 +968,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
             textid = "ANNO";
             movefrom = datapos;
             moveto = datapos + AIFFCHUNKSIZE + textlen;
-            movesize = AIFFDATASIZE;
+            movesize = filesize - movefrom;
             textpos = datapos;
             headersize = moveto;
         }
@@ -848,9 +988,9 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
                     /* not found, move data forward */
                 movefrom = datapos;
                 moveto = datapos + AIFFCHUNKSIZE + textlen;
-                movesize = AIFFDATASIZE;
+                movesize = filesize - movefrom;
                 textpos = datapos;
-                headersize = moveto;
+                headersize = moveto + AIFFDATASIZE;
             }
             else
             {
@@ -878,7 +1018,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
                moveto++;
                headersize++;
             }
-            if (soundfile_movebytes(sf->sf_fd, moveto, movefrom,
+            if (soundfile_copybytes(sf->sf_fd, moveto, movefrom,
                                     movesize) < movesize)
                 return 0;
         }
@@ -889,6 +1029,8 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
         if (!aiff_writechunk(sf, textpos, &chunk, text, textlen))
             return 0;
     }
+    else
+        goto usage;
 
         /* update file header chunk size */
     if (!aiff_setheadchunksize(sf, headersize + datasize, swap))
@@ -910,7 +1052,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
 usage:
     error("usage: meta <type>...");
     post("type: name <symbol>, author <symbol>, copyright <symbol>...");
-    post("annotation <symbol>, midi <0-255...>");
+    post("annotation <symbol>, marker <sample> <string>, midi <0-255...>");
     return 0;
 }
 
