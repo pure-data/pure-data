@@ -10,6 +10,10 @@
 /* This file contains the core of navigating
    and connecting stuff using the keyboard. */
 
+/* ------------------ forward declarations --------------- */
+t_kbdnav* canvas_get_kbdnav(t_canvas *x);
+int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
+
 
 /* in/outlet traverser for the magnetic connector.
    It is also used by the digit connector. */
@@ -23,7 +27,6 @@ typedef struct _magtrav
 } t_magtrav;
 
 
-t_kbdnav* canvas_get_kbdnav(t_canvas *x);
 
 
 void kbdnav_debug(t_canvas *x)
@@ -989,13 +992,13 @@ void kbdnav_magnetic_connect_start(t_canvas *x)
     t_object *selobj = kbdnav->kn_selobj;
     int selobj_io = kbdnav->kn_ioindex;
     /* positional information about current selected in/outlet */
-    int sel_io_xpos, sel_io_ypos, widthWhichWillNotBeUsed, heightWhichWillNotBeUsed;
+    int sel_io_xpos, sel_io_ypos, width_not_used, height_not_used;
     kbdnav_io_pos(x,
         kbdnav->kn_selobj,
         selobj_io,
         kbdnav->kn_iotype,
         &sel_io_xpos, &sel_io_ypos,
-        &widthWhichWillNotBeUsed, &heightWhichWillNotBeUsed);
+        &width_not_used, &height_not_used);
 
     int objcount = 0;
     t_gobj *curr;
@@ -1037,16 +1040,20 @@ void kbdnav_magnetic_connect_start(t_canvas *x)
                    we check to see if there is already a connection */
 
                 int already_connected;
+                int is_conn_legal;
+
                 if( kbdnav->kn_iotype == IO_OUTLET )
                 {
                     already_connected = canvas_isconnected(x, selobj, selobj_io, obj, curr_io_index);
+                    is_conn_legal = canconnect(x, selobj, selobj_io, obj, curr_io_index);
                 }
                 else
                 {
                     already_connected = canvas_isconnected(x, obj, curr_io_index, selobj, selobj_io);
+                    is_conn_legal = canconnect(x, obj, curr_io_index, selobj, selobj_io);
                 }
 
-                if (already_connected){
+                if ( already_connected || !is_conn_legal ){
                     continue;
                 }
 
@@ -1069,6 +1076,7 @@ void kbdnav_magnetic_connect_start(t_canvas *x)
     }
     if (foundqty==0)
     {
+        kbdnav->kn_magtrav = NULL;
         kbdnav->kn_state = KN_IO_SELECTED;
         return;
     }
@@ -1130,12 +1138,12 @@ void kbdnav_magnetic_connect_next(t_canvas *x)
     }
 }
 
-
 /* reads data from t_kbdnav and connects the selected in/outlet to
    the current out/inlet */
 void kbdnav_magnetic_connect(t_canvas *x)
 {
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if (!kbdnav->kn_magtrav) return;
     int selobj_index = glist_getindex(x, &kbdnav->kn_selobj->ob_g);
 
     /* info on the chosen object*/

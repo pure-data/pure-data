@@ -2655,7 +2655,7 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     return (0);
 }
 
-static int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
     if (!src || !sink || sink == src) /* do source and sink exist (and are not the same)?*/
         return 0;
