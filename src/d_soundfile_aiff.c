@@ -35,12 +35,11 @@
 
   * supports AIFF and AIFF-C
   * implicitly writes AIFF-C header for 32 bit float (see below)
-  * implements chunks: common, data, version (AIFF-C), name, author, copyright,
-                    annotation
-  * ignores chunks: marker, instrument, comment, audio recording, MIDI data,
-                    application, ID3
+  * implements chunks: common, data, version (AIFF-C), instrument, marker, name,
+                       author, copyright, annotation, midi
+  * ignores chunks: comment, audio recording, application, ID3
   * assumes common chunk is always before sound data chunk
-  * ignores any chunks after finding the sound data chunk
+  * ignores chunks after the sound data chunk, unless reading meta data
   * assumes there is always a sound data chunk
   * does not block align sound data
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
@@ -51,12 +50,12 @@
 */
 
     /* explicit byte sizes, sizeof(struct) may return alignment-padded values */
-#define AIFFCHUNKSIZE  8 /**< chunk header only */
-#define AIFFHEADSIZE  12 /**< chunk header and file format only */
-#define AIFFVERSIZE   12 /**< chunk header and data */
-#define AIFFCOMMSIZE  26 /**< chunk header and data */
-#define AIFFDATASIZE  16 /**< chunk header, offset, and block size data */
-#define AIFFMARKERSIZE 10
+#define AIFFCHUNKSIZE   8 /**< chunk header only */
+#define AIFFHEADSIZE   12 /**< chunk header and file format only */
+#define AIFFVERSIZE    12 /**< chunk header and data */
+#define AIFFCOMMSIZE   26 /**< chunk header and data */
+#define AIFFDATASIZE   16 /**< chunk header, offset, and block size data */
+#define AIFFMARKERSIZE 10 /**< chunk header and num markers only */
 
 #define AIFFCVER1    0xA2805140 /**< 2726318400 decimal */
 #define AIFFMAXBYTES 0x7fffffff /**< max signed 32 bit size */
@@ -112,7 +111,7 @@ typedef struct _verchunk
     uint32_t vc_timestamp;           /**< AIFF-C version timestamp     */
 } t_verchunk;
 
-    /** marker, min 7 bytes
+    /** marker, min 8 bytes
         note: sample frame is split to avoid struct alignment padding  */
 typedef struct _marker {
        int16_t m_id;                 /**< marker id, must be > 0       */
@@ -127,12 +126,12 @@ typedef struct _markerchunk {
     uint16_t mc_nmarkers;            /**< number of markers            */
 } t_markerchunk;
 
-    /** instrument chunk loop, 4 bytes  */
+    /** instrument chunk loop, 6 bytes  */
 typedef struct _loop {
     int16_t l_playmode; /**< loop playback mode, 0 : no loop, 1 : forward,
                                                  2: forward backward   */
-    int8_t l_begin;     /**< begin marker id */
-    int8_t l_end;       /**< end marker id   */
+    int16_t l_begin;    /**< begin marker id */
+    int16_t l_end;      /**< end marker id   */
 } t_loop;
 
     /** instrument chunk, 24 bytes */
@@ -691,8 +690,10 @@ static int aiff_endianness(int endianness)
     /** read relevant meta chunk info and outputs lists to out,
         assumes order: head [ver] comm [meta...] data [meta...] */
 static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
-    int swap = !sys_isbigendian();
-    off_t headersize;
+    int swap = !sys_isbigendian(), markersfound = 0;
+    uint16_t nmarkers = 0;
+    size_t markersize = 0;
+    off_t headersize, markerpos = -1;
     t_chunk chunk;
 
     if ((headersize = aiff_firstchunk(sf, &chunk)) == -1)
@@ -703,13 +704,14 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
         if (!strncmp(chunk.c_id, "INST", 4))
         {
                 /* instrument chunk */
-            if (sys_verbose)
-                aiff_postchunk(&chunk, swap);
+            int sustainloop = 0, releaseloop = 0;
             t_instchunk inst = {0};
             t_atom list[8];
-            memcpy((char *)&inst, (char *)&chunk, AIFFCHUNKSIZE);
+            if (sys_verbose)
+                aiff_postchunk(&chunk, swap);
+            memcpy(&inst, &chunk, AIFFCHUNKSIZE);
             if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
-                                ((char *)&inst) + AIFFCHUNKSIZE, chunksize) < chunksize)
+                ((char *)&inst) + AIFFCHUNKSIZE, chunksize) < chunksize)
                 return 0;
             SETSYMBOL((t_atom *)list, gensym("instrument"));
             SETFLOAT((t_atom *)list+1, inst.ic_basenote);
@@ -720,16 +722,108 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             SETFLOAT((t_atom *)list+6, inst.ic_highvelocity);
             SETFLOAT((t_atom *)list+7, swap2(inst.ic_gain, swap));
             outlet_list(out, &s_list, 8, (t_atom *)list);
+
+                /* read markers for loop points */
+            sustainloop = swap2s(inst.ic_sustainloop.l_playmode, swap);
+            releaseloop = swap2s(inst.ic_releaseloop.l_playmode, swap);
+            if (sustainloop > 0 || releaseloop > 0)
+            {
+                if (!markersfound)
+                {
+                        /* INST before MARK, look ahead */
+                    t_markerchunk mark = {0};
+                    memcpy(&mark, &chunk, AIFFCHUNKSIZE);
+                    markerpos = aiff_findchunk(sf, "MARK",
+                        headersize, (t_chunk *)&mark);
+                    if (markerpos != -1)
+                    {
+                        if (soundfile_readbytes(sf->sf_fd, markerpos,
+                            (char *)&mark, AIFFMARKERSIZE) < AIFFMARKERSIZE)
+                            return 0;
+                        markersize = swap4s(mark.mc_size, swap) - 2;
+                        nmarkers = swap2(mark.mc_nmarkers, swap);
+                    }
+                    markerpos += AIFFMARKERSIZE;
+                    markersfound = 1;
+                }
+                if (markersfound)
+                {
+                    int mpos = 0, i;
+                    char buf[markersize];
+                    t_marker *m = (t_marker *)buf;
+                    struct {
+                        int16_t beginmarker; /* begin marker id    */
+                        int16_t endmarker;   /* end marker id      */
+                        uint32_t begin;      /* begin sample frame */
+                        uint32_t end;        /* end sample frame   */
+                    } sustain = {0}, release = {0};
+
+                    sustain.beginmarker =
+                        swap2s(inst.ic_sustainloop.l_begin, swap);
+                    sustain.endmarker =
+                        swap2s(inst.ic_sustainloop.l_end, swap);
+                    release.beginmarker =
+                        swap2s(inst.ic_releaseloop.l_begin, swap);
+                    release.endmarker =
+                        swap2s(inst.ic_releaseloop.l_end, swap);
+
+                    if (soundfile_readbytes(sf->sf_fd, markerpos,
+                                        buf, markersize) < markersize)
+                        return 0;
+                    for (i = 0; i < nmarkers; ++i)
+                    {
+                        int16_t markerid = swap2s(m->m_id, swap);
+                        int namelen = m->m_name[0] + 1;
+                        if (namelen & 1) namelen++;
+
+                        if (markerid == sustain.beginmarker)
+                            sustain.begin = aiff_get4(m->m_sampleframe, swap);
+                        else if (markerid == sustain.endmarker)
+                            sustain.end = aiff_get4(m->m_sampleframe, swap);
+                        else if (markerid == release.beginmarker)
+                            release.begin = aiff_get4(m->m_sampleframe, swap);
+                        else if (markerid == release.endmarker)
+                            release.end = aiff_get4(m->m_sampleframe, swap);
+
+                        mpos += 6 + namelen;
+                        m = (t_marker *)(((char *)buf) + mpos);
+                    }
+
+                    if (sustainloop > 0 && sustain.end > 0 &&
+                        sustain.begin < sustain.end)
+                    {
+                        t_atom list[5];
+                        SETSYMBOL((t_atom *)list, gensym("loop"));
+                        SETSYMBOL((t_atom *)list+1, gensym("sustain"));
+                        SETFLOAT((t_atom *)list+2, sustain.begin);
+                        SETFLOAT((t_atom *)list+3, sustain.end);
+                        SETFLOAT((t_atom *)list+4, sustainloop);
+                        outlet_list(out, &s_list, 5, (t_atom *)list);
+                    }
+
+                    if (releaseloop > 0 && release.end > 0 &&
+                        release.begin < release.end)
+                    {
+                        t_atom list[5];
+                        SETSYMBOL((t_atom *)list, gensym("loop"));
+                        SETSYMBOL((t_atom *)list+1, gensym("release"));
+                        SETFLOAT((t_atom *)list+2, release.begin);
+                        SETFLOAT((t_atom *)list+3, release.end);
+                        SETFLOAT((t_atom *)list+4, releaseloop);
+                        outlet_list(out, &s_list, 5, (t_atom *)list);
+                    }
+                }
+            }
         }
         else if(!strncmp(chunk.c_id, "MARK", 4))
         {
                 /* marker chunk */
             t_markerchunk mark = {0};
-            uint16_t nmarkers;
-            if (soundfile_readbytes(sf->sf_fd, headersize, ((char *)&mark),
+            if (soundfile_readbytes(sf->sf_fd, headersize, (char *)&mark,
                                     AIFFMARKERSIZE) < AIFFMARKERSIZE)
                 return 0;
             nmarkers = swap2(mark.mc_nmarkers, swap);
+            markersize = chunksize - 2;
             if (sys_verbose)
             {
                 aiff_postchunk(&chunk, swap);
@@ -737,12 +831,16 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             }
             if (nmarkers > 0)
             {
+                    /* read through markers */
                 int i;
-                char buf[chunksize-2];
+                char buf[markersize];
                 t_marker *m = (t_marker *)buf;
                 if (soundfile_readbytes(sf->sf_fd, headersize + AIFFMARKERSIZE,
-                                        buf, chunksize - 2) < chunksize - 2)
+                                        buf, markersize) < markersize)
                     return 0;
+                markerpos = headersize + AIFFMARKERSIZE;
+                markersize = chunksize - 2;
+                markersfound = 1;
                 int mpos = 0;
                 for (i = 0; i < nmarkers; ++i)
                 {
@@ -752,7 +850,8 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
 
                     SETSYMBOL((t_atom *)list, gensym("marker"));
                     SETFLOAT((t_atom *)list+1, swap2s(m->m_id, swap));
-                    SETFLOAT((t_atom *)list+2, aiff_get4(m->m_sampleframe, swap));
+                    SETFLOAT((t_atom *)list+2,
+                        aiff_get4(m->m_sampleframe, swap));
                     SETSYMBOL((t_atom *)list+3, gensym(name));
                     outlet_list(out, &s_list, 4, (t_atom *)list);
 
@@ -915,7 +1014,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
 
             /* copy chunk info for verbose print */
         if (sys_verbose)
-            memcpy((char *)&chunk, (char *)&marker, AIFFCHUNKSIZE);
+            memcpy(&chunk, &marker, AIFFCHUNKSIZE);
     }
     else if (!strcmp(meta, "midi"))
     {
