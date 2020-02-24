@@ -19,7 +19,7 @@ inputs to int and their outputs back to float. */
 # define LOG logf
 # define EXP expf
 # define FABS fabsf
-# define MAXLOG 87.3365
+# define MAXLOG 87.3365 /* log(FLT_MAX / 4.) */
 #else
 # define POW pow
 # define SIN sin
@@ -30,7 +30,7 @@ inputs to int and their outputs back to float. */
 # define LOG log
 # define EXP exp
 # define FABS fabs
-# define MAXLOG 87.3365
+# define MAXLOG 708.396 /* log(DBL_MAX / 4.) */
 #endif
 
 typedef struct _binop
