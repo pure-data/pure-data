@@ -39,7 +39,7 @@
     - read/write: common, sound data, version (AIFF-C), marker, name, author,
                   copyright, annotation, midi data
     - read: instrument,  comment
-  * ignores chunks: audio recording, application specific, ID3
+  * ignores chunks: audio recording, application specific, id3
   * assumes common chunk is always before sound data chunk
   * ignores chunks after the sound data chunk, unless reading meta data
   * assumes there is always a sound data chunk
@@ -133,10 +133,10 @@ typedef struct _markerchunk {
 
     /** instrument chunk loop, 6 bytes  */
 typedef struct _loop {
-    int16_t l_playmode; /**< loop playback mode, 0 : no loop, 1 : forward,
-                                                 2: forward backward   */
-    int16_t l_begin;    /**< begin marker id */
-    int16_t l_end;      /**< end marker id   */
+    int16_t l_playmode; /**< loop playback mode, 0 : no loop,
+                             1 : forward, 2 : forward backward         */
+    int16_t l_begin;    /**< begin marker id                           */
+    int16_t l_end;      /**< end marker id                             */
 } t_loop;
 
     /** instrument chunk, 24 bytes */
@@ -146,10 +146,10 @@ typedef struct _instchunk
     int32_t ic_size;                /**< chunk data length, 4 bytes    */
     int8_t ic_basenote;             /**< original pitch, MIDI 0 to 127 */
     int8_t ic_detune;               /**< detune cents, -50 to 50       */
-    int8_t ic_lownote;              /**< playback low, MIDI 0 to 127   */
-    int8_t ic_highnote;             /**< playback high, MIDI 0 to 127  */
-    int8_t ic_lowvelocity;          /**< noteon low, MIDI 1 to 127     */
-    int8_t ic_highvelocity;         /**< noteon high, MIDI 1 to 127    */
+    int8_t ic_lownote;              /**< note range low, MIDI 0 to 127 */
+    int8_t ic_highnote;             /**< note range hi, MIDI 0 to 127  */
+    int8_t ic_lowvelocity;          /**< vel range low, MIDI 1 to 127  */
+    int8_t ic_highvelocity;         /**< vel range hi, MIDI 1 to 127   */
     uint16_t ic_gain;               /**< gain adjustment, +/- dB       */
     t_loop   ic_sustainloop;        /**< sustain loop points           */
     t_loop   ic_releaseloop;        /**< release loop points           */
@@ -747,7 +747,7 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             SETFLOAT((t_atom *)list+7, swap2(inst.ic_gain, swap));
             outlet_list(out, &s_list, 8, (t_atom *)list);
 
-                /* read markers for loop points */
+                /* have to read markers for loop points, annoying */
             sustainloop = swap2s(inst.ic_sustainloop.l_playmode, swap);
             releaseloop = swap2s(inst.ic_releaseloop.l_playmode, swap);
             if (sustainloop > 0 || releaseloop > 0)
@@ -769,61 +769,61 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                         markerpos += AIFFMARKERSIZE;
                         markersfound = 1;
                     }
-                }
+                } /* else MARK before INST, already found */
                 if (markersfound)
                 {
-                    int mpos = 0, i;
-                    char buf[markersize];
-                    t_marker *m = (t_marker *)buf;
+                    int i;
+                    off_t mpos = markerpos, mend = mpos + markersize;
+                    t_marker m = {0};
                     struct
                     {
-                        int16_t beginmarker; /* begin marker id    */
-                        int16_t endmarker;   /* end marker id      */
-                        uint32_t begin;      /* begin sample frame */
-                        uint32_t end;        /* end sample frame   */
+                        int16_t beginid; /* begin marker id    */
+                        int16_t endid;   /* end marker id      */
+                        uint32_t begin;  /* begin sample frame */
+                        uint32_t end;    /* end sample frame   */
                     } sustain = {0}, release = {0};
 
-                    sustain.beginmarker =
-                        swap2s(inst.ic_sustainloop.l_begin, swap);
-                    sustain.endmarker =
-                        swap2s(inst.ic_sustainloop.l_end, swap);
-                    release.beginmarker =
-                        swap2s(inst.ic_releaseloop.l_begin, swap);
-                    release.endmarker =
-                        swap2s(inst.ic_releaseloop.l_end, swap);
+                    sustain.beginid = swap2s(inst.ic_sustainloop.l_begin, swap);
+                    sustain.endid = swap2s(inst.ic_sustainloop.l_end, swap);
+                    release.beginid = swap2s(inst.ic_releaseloop.l_begin, swap);
+                    release.endid = swap2s(inst.ic_releaseloop.l_end, swap);
 
-                    if (soundfile_readbytes(sf->sf_fd, markerpos,
-                                        buf, markersize) < markersize)
+                    if (soundfile_readbytes(sf->sf_fd, mpos, (char *)&m, 8) < 8)
                         return 0;
                     for (i = 0; i < nmarkers; ++i)
                     {
-                        int16_t markerid = swap2s(m->m_id, swap);
-                        int namelen = m->m_name[0] + 1;
+                        int16_t markerid = swap2s(m.m_id, swap);
+                        int namelen = m.m_name[0] + 1;
                         if (namelen & 1) namelen++; /* even pad byte */
 
-                        if (markerid == sustain.beginmarker)
-                            sustain.begin = aiff_get4(m->m_sampleframe, swap);
-                        else if (markerid == sustain.endmarker)
-                            sustain.end = aiff_get4(m->m_sampleframe, swap);
-                        else if (markerid == release.beginmarker)
-                            release.begin = aiff_get4(m->m_sampleframe, swap);
-                        else if (markerid == release.endmarker)
-                            release.end = aiff_get4(m->m_sampleframe, swap);
+                        if (markerid == sustain.beginid)
+                            sustain.begin = aiff_get4(m.m_sampleframe, swap);
+                        else if (markerid == sustain.endid)
+                            sustain.end = aiff_get4(m.m_sampleframe, swap);
+                        else if (markerid == release.beginid)
+                            release.begin = aiff_get4(m.m_sampleframe, swap);
+                        else if (markerid == release.endid)
+                            release.end = aiff_get4(m.m_sampleframe, swap);
 
                         mpos += 6 + namelen;
-                        m = (t_marker *)(((char *)buf) + mpos);
+                        if (mpos >= mend)
+                            break;
+                        if (soundfile_readbytes(sf->sf_fd, mpos,
+                                            (char *)&m, 8) < 8)
+                            return 0;
                     }
 
                     if (sustainloop > 0 && sustain.end > 0 &&
                         sustain.begin < sustain.end)
                     {
-                        t_atom list[5];
+                        t_atom list[6];
                         SETSYMBOL((t_atom *)list, gensym("loop"));
-                        SETSYMBOL((t_atom *)list+1, gensym("sustain"));
+                        SETFLOAT((t_atom *)list+1, 0); /* id */
                         SETFLOAT((t_atom *)list+2, sustain.begin);
                         SETFLOAT((t_atom *)list+3, sustain.end);
                         SETFLOAT((t_atom *)list+4, sustainloop);
-                        outlet_list(out, &s_list, 5, (t_atom *)list);
+                        SETFLOAT((t_atom *)list+5, 0); /* play count */
+                        outlet_list(out, &s_list, 6, (t_atom *)list);
                     }
 
                     if (releaseloop > 0 && release.end > 0 &&
@@ -831,11 +831,12 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                     {
                         t_atom list[5];
                         SETSYMBOL((t_atom *)list, gensym("loop"));
-                        SETSYMBOL((t_atom *)list+1, gensym("release"));
+                        SETFLOAT((t_atom *)list+1, 1); /* id */
                         SETFLOAT((t_atom *)list+2, release.begin);
                         SETFLOAT((t_atom *)list+3, release.end);
                         SETFLOAT((t_atom *)list+4, releaseloop);
-                        outlet_list(out, &s_list, 5, (t_atom *)list);
+                        SETFLOAT((t_atom *)list+5, 1); /* play count */
+                        outlet_list(out, &s_list, 6, (t_atom *)list);
                     }
                 }
             }
@@ -857,42 +858,51 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             if (nmarkers > 0)
             {
                     /* read through markers */
-                int mpos = 0, i;
-                char buf[markersize];
-                t_marker *m = (t_marker *)buf;
-                if (soundfile_readbytes(sf->sf_fd, chunkpos + AIFFMARKERSIZE,
-                                        buf, markersize) < markersize)
-                    return 0;
-                markerpos = chunkpos + AIFFMARKERSIZE;
+                int i;
+                off_t mpos = chunkpos + AIFFMARKERSIZE,
+                      mend = mpos + chunksize - 2;
+                t_marker m = {0};
+                markerpos = mpos;
                 markersize = chunksize - 2;
                 markersfound = 1;
+
+                if (soundfile_readbytes(sf->sf_fd, mpos,  (char *)&m, 8) < 8)
+                    return 0;
                 for (i = 0; i < nmarkers; ++i)
                 {
                     t_atom list[4];
                     char name[256];
-                    int namelen = aiff_getpstring(m->m_name, name);
+                    int namelen = m.m_name[0] + 1;
+                    if (namelen & 1) namelen++; /* even pad byte */
 
+                    if (soundfile_readbytes(sf->sf_fd, mpos + 6,
+                        (char *)&m.m_name, namelen) < namelen)
+                        return 0;
+                    namelen = aiff_getpstring(m.m_name, name);
                     if (sys_verbose)
                     {
-                        post("  %d frame %d \"%s\"", swap2s(m->m_id, swap),
-                            aiff_get4(m->m_sampleframe, swap), name);
+                        post("  %d frame %d \"%s\"", swap2s(m.m_id, swap),
+                            aiff_get4(m.m_sampleframe, swap), name);
                     }
 
                     SETSYMBOL((t_atom *)list, gensym("marker"));
-                    SETFLOAT((t_atom *)list+1, swap2s(m->m_id, swap));
+                    SETFLOAT((t_atom *)list+1, swap2s(m.m_id, swap));
                     SETFLOAT((t_atom *)list+2,
-                        aiff_get4(m->m_sampleframe, swap));
+                        aiff_get4(m.m_sampleframe, swap));
                     SETSYMBOL((t_atom *)list+3, gensym(name));
                     outlet_list(out, &s_list, 4, (t_atom *)list);
 
                     mpos += 6 + namelen;
-                    m = (t_marker *)(((char *)buf) + mpos);
+                    if (mpos >= mend)
+                        break;
+                    if (soundfile_readbytes(sf->sf_fd, mpos, (char *)&m, 8) < 8)
+                        return 0;
                 }
             }
         }
         else if (!strncmp(chunk.c_id, "COMT", 4))
         {
-                /* comment chunk, can hold longer text than text chunks */
+                /* comment chunk, text is ascii string w/o '\0' */
             int32_t commentsize = chunksize - 2;
             uint16_t ncomments = 0;
             t_commentchunk comment = {0};
@@ -908,11 +918,11 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
             if (ncomments > 0)
             {
                     /* read through comments */
-                int cpos = 0, i;
-                char buf[commentsize];
-                t_comment *c = (t_comment *)buf;
-                if (soundfile_readbytes(sf->sf_fd, chunkpos + AIFFCOMMENTSIZE,
-                                        buf, commentsize) < commentsize)
+                int i;
+                off_t cpos = chunkpos + AIFFCOMMENTSIZE,
+                      cend = cpos + commentsize;
+                t_comment c = {0};
+                if (soundfile_readbytes(sf->sf_fd, cpos, (char *)&c, 8) < 8)
                     return 0;
                 for (i = 0; i < ncomments; ++i)
                 {
@@ -920,27 +930,32 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                     char text[MAXPDSTRING];
                     uint16_t textlen = 0;
 
-                    textlen = swap2(c->c_textlen, swap);
+                    textlen = swap2(c.c_textlen, swap);
                     if (textlen > MAXPDSTRING-1)
                         textlen = MAXPDSTRING-1;
-                    memcpy(text, ((char *)buf) + cpos + 8, textlen);
+                    if (soundfile_readbytes(sf->sf_fd, cpos + 8, text,
+                                            textlen) < textlen)
+                        return 0;
                     text[textlen] = '\0';
                     if (sys_verbose)
                     {
                         post("  %d marker %d textlen %d \"%s\"", i+1,
-                            swap2s(c->c_marker, swap),
-                            swap2(c->c_textlen, swap),
+                            swap2s(c.c_marker, swap),
+                            swap2(c.c_textlen, swap),
                             text);
                     }
 
                     SETSYMBOL((t_atom *)list, gensym("comment"));
                     SETSYMBOL((t_atom *)list+1, gensym(text));
-                    SETFLOAT((t_atom *)list+2, swap2s(c->c_marker, swap));
+                    SETFLOAT((t_atom *)list+2, swap2s(c.c_marker, swap));
                     outlet_list(out, &s_list, 3, (t_atom *)list);
 
                     cpos += 8 + textlen;
                     if (textlen & 1) cpos++; /* even pad byte */
-                    c = (t_comment *)(((char *)buf) + cpos);
+                    if (cpos >= cend)
+                        break;
+                    if (soundfile_readbytes(sf->sf_fd, cpos, (char *)&c, 8) < 8)
+                        return 0;
                 }
             }
         }
@@ -949,7 +964,7 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                  !strncmp(chunk.c_id, "(c) ", 4) ||
                  !strncmp(chunk.c_id, "ANNO", 4))
         {
-                /* text chunk, chunk data is ascii string w/o '\0' byte  */
+                /* text chunk, data is ascii string w/o '\0' byte  */
             t_atom list[2];
             t_symbol *name;
             char text[MAXPDSTRING];
@@ -966,13 +981,13 @@ static int aiff_readmeta(t_soundfile *sf, t_outlet *out) {
                 post("  \"%s\"", text);
             }
             if (!strncmp(chunk.c_id, "NAME", 4))
-                name = gensym("name");
+                name = gensym("title");
             else if (!strncmp(chunk.c_id, "AUTH", 4))
-                name = gensym("author");
+                name = gensym("artist");
             else if (!strncmp(chunk.c_id, "(c) ", 4))
                 name = gensym("copyright");
             else /* ANNO */
-                name = gensym("annotation");
+                name = gensym("comment");
             SETSYMBOL((t_atom *)list, name);
             SETSYMBOL((t_atom *)list+1, gensym(text));
             outlet_list(out, &s_list, 2, (t_atom *)list);
@@ -1128,8 +1143,8 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
         if (!aiff_writechunk(sf, datapos, &chunk, (char *)bytes, argc))
             return 0;
     }
-    else if (!strcmp(meta, "name") || !strcmp(meta, "author") ||
-             !strcmp(meta, "copyright") || !strcmp(meta, "annotation"))
+    else if (!strcmp(meta, "title") || !strcmp(meta, "artist") ||
+             !strcmp(meta, "copyright") || !strcmp(meta, "comment"))
     {
             /* text chunk, chunk data is ascii string w/o '\0' byte */
         const char *text = argv->a_w.w_symbol->s_name;
@@ -1146,7 +1161,7 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
             return 1;
         }
 
-        if (!strcmp(meta, "annotation"))
+        if (!strcmp(meta, "comment"))
         {
                 /* there can be multiple ANNO chunks, move data forward */
             textid = "ANNO";
@@ -1159,9 +1174,9 @@ static int aiff_writemeta(t_soundfile *sf, int argc, t_atom *argv)
         else
         {
                 /* there can only be 1 of these chunks */
-            if (!strcmp(meta, "name"))
+            if (!strcmp(meta, "title"))
                 textid = "NAME";
-            else if (!strcmp(meta, "author"))
+            else if (!strcmp(meta, "artist"))
                 textid = "AUTH";
             else /* copyright */
                 textid = "(c) ";

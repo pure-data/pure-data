@@ -12,6 +12,8 @@
   * RIFF variant with sections split into data "chunks"
   * chunk sizes do not include the chunk id or size (- 8)
   * chunk and sound data are little endian
+  * chunks start on even byte offsets
+  * chunk string values are \0 terminated
   * format and sound data chunks are required
   * format tags:
     - PCM   linear PCM
@@ -601,24 +603,27 @@ static int wave_readmeta(t_soundfile *sf, t_outlet *out) {
             if (nloops > 0)
             {
                     /* read through loops */
-                int lpos = 0, i;
-                char buf[loopsize];
-                t_loop *l = (t_loop *)buf;
-                if (soundfile_readbytes(sf->sf_fd, chunkpos + WAVESAMPSIZE,
-                                        buf, loopsize) < loopsize)
-                    return 0;
-                for (i = 0; i < nloops; ++i)
+                int i;
+                off_t lpos = chunkpos + WAVESAMPSIZE, lend = lpos + loopsize;
+                t_loop l = {0};
+
+                for (i = 0; i < nloops && lpos < lend; ++i)
                 {
                     t_atom list[6];
+
+                    if (soundfile_readbytes(sf->sf_fd, lpos,
+                                           (char *)&l, 24) < 24)
+                        return 0;
+
                     SETSYMBOL((t_atom *)list, gensym("loop"));
-                    SETFLOAT((t_atom *)list+1, swap4(l->l_id, swap));
-                    SETFLOAT((t_atom *)list+2, swap4(l->l_start, swap));
-                    SETFLOAT((t_atom *)list+3, swap4(l->l_end, swap));
-                    SETFLOAT((t_atom *)list+4, swap4(l->l_type, swap));
-                    SETFLOAT((t_atom *)list+5, swap4(l->l_playcount, swap));
+                    SETFLOAT((t_atom *)list+1, swap4(l.l_id, swap));
+                    SETFLOAT((t_atom *)list+2, swap4(l.l_start, swap));
+                    SETFLOAT((t_atom *)list+3, swap4(l.l_end, swap));
+                    SETFLOAT((t_atom *)list+4, swap4(l.l_type, swap));
+                    SETFLOAT((t_atom *)list+5, swap4(l.l_playcount, swap));
                     outlet_list(out, &s_list, 6, (t_atom *)list);
+
                     lpos += 24;
-                    l = (t_loop *)(((char *)buf) + lpos);
                 }
             }
         }
