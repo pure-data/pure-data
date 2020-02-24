@@ -32,9 +32,11 @@
 
   * supports basic and extended format chunks (WAVE Rev. 3)
   * implicitly writes extended format for 32 bit float (see below)
-  * implements chunks: format, fact, sound data
-  * ignores chunks: info, cset, cue, playlist, associated data, instrument,
-                    sample, display, junk, pad, time code, digitization time
+  * implements chunks
+    - read/write: format, fact, sound data
+    - read: instrument, sampler
+  * ignores chunks: info, cset, cue, playlist, associated data, display, junk,
+                    pad, time code, digitization time
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
   * does not support 64-bit variants or BWF file-splitting
@@ -53,6 +55,7 @@
 #define WAVEHEADSIZE   12 /**< chunk header and file format only */
 #define WAVEFORMATSIZE 24 /**< chunk header and data */
 #define WAVEFACTSIZE   12 /**< chunk header and data */
+#define WAVESAMPSIZE   44 /**< chunk header and data up to loops list */
 
 #define WAVEMAXBYTES 0xffffffff /**< max unsigned 32 bit size */
 
@@ -69,43 +72,95 @@
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
 {
-    char c_id[4];                  /**< data chunk id                   */
-    uint32_t c_size;               /**< length of data chunk            */
+    char c_id[4];                  /**< data chunk id                    */
+    uint32_t c_size;               /**< length of data chunk             */
 } t_chunk;
 
     /** file header, 12 bytes */
 typedef struct _head
 {
-    char h_id[4];                   /**< chunk id "RIFF"                */
-    uint32_t h_size;                /**< chunk data length              */
-    char h_formtype[4];             /**< format: "WAVE"                 */
+    char h_id[4];                   /**< chunk id "RIFF"                 */
+    uint32_t h_size;                /**< chunk data length               */
+    char h_formtype[4];             /**< format: "WAVE"                  */
 } t_head;
 
     /** format chunk, 24 (basic) or 48 (extended) */
 typedef struct _formatchunk
 {
-    char fc_id[4];                   /**< chunk id "fmt "               */
-    uint32_t fc_size;                /**< chunk data length             */
-    uint16_t fc_fmttag;              /**< format tag                    */
-    uint16_t fc_nchannels;           /**< number of channels            */
-    uint32_t fc_samplerate;          /**< sample rate in hz             */
-    uint32_t fc_bytespersecond;      /**< average bytes per second      */
-    uint16_t fc_blockalign;          /**< number of bytes per frame     */
-    uint16_t fc_bitspersample;       /**< number of bits in a sample    */
+    char fc_id[4];                   /**< chunk id "fmt "                */
+    uint32_t fc_size;                /**< chunk data length              */
+    uint16_t fc_fmttag;              /**< format tag                     */
+    uint16_t fc_nchannels;           /**< number of channels             */
+    uint32_t fc_samplerate;          /**< sample rate in hz              */
+    uint32_t fc_bytespersecond;      /**< average bytes per second       */
+    uint16_t fc_blockalign;          /**< number of bytes per frame      */
+    uint16_t fc_bitspersample;       /**< number of bits in a sample     */
     /* extended format */
-    uint16_t fc_extsize;             /**< extended format info length   */
-    uint16_t fc_validbitspersample;  /**< number of valid bits          */
-    uint32_t fc_channelmask;         /**< speaker pos channel mask      */
-    char fc_subformat[16];           /**< format tag is bytes 0 & 1     */
+    uint16_t fc_extsize;             /**< extended format info length    */
+    uint16_t fc_validbitspersample;  /**< number of valid bits           */
+    uint32_t fc_channelmask;         /**< speaker pos channel mask       */
+    char fc_subformat[16];           /**< format tag is bytes 0 & 1      */
 } t_formatchunk;
 
     /** fact chunk, 12 bytes */
 typedef struct _factchunk
 {
-    char fc_id[4];                   /**< chunk id "fact"               */
-    uint32_t fc_size;                /**< chunk data length             */
-    uint32_t fc_samplelength;        /**< number of samples per channel */
+    char fc_id[4];                   /**< chunk id "fact"                */
+    uint32_t fc_size;                /**< chunk data length              */
+    uint32_t fc_samplelength;        /**< number of samples per channel  */
 } t_factchunk;
+
+    /** instrument chunk, 16 bytes */
+typedef struct _instchunk
+{
+    char ic_id[4];                   /**< chunk id "inst"                */
+    uint32_t ic_size;                /**< chunk data length, 4 bytes     */
+    uint8_t ic_basenote;             /**< original pitch, MIDI 0 to 127  */
+    int8_t ic_detune;                /**< detune, cents -50 to 50        */
+    int8_t ic_gain;                  /**< gain adjustment, +/- dB        */
+    uint8_t ic_lownote;              /**< note range low, MIDI 0 to 127  */
+    uint8_t ic_highnote;             /**< note range hi, MIDI 0 to 127   */
+    uint8_t ic_lowvelocity;          /**< vel range low, MIDI 0 to 127   */
+    uint8_t ic_highvelocity;         /**< vel range high, MIDI 0 to 127  */
+    uint8_t ic_pad;
+} t_instchunk;
+
+    /** sampler chunk loop, 24 bytes  */
+typedef struct _loop {
+    uint32_t l_id;                   /**< loop id                        */
+    uint32_t l_type;                 /**< loop type, 0 : forward,
+                                          1 : forward/backward, 2 : backward,
+                                          32+ : manufacturer-defined     */
+    uint32_t l_start;                /**< start sample frame position    */
+    uint32_t l_end;                  /**< end sample frame position      */
+    uint32_t l_fraction;             /**< fine tuning for fractional areas
+                                          between samples                */
+    uint32_t l_playcount;            /**< number of times to play loop,
+                                          0 is infinite sustain          */
+} t_loop;
+
+    /** sampler chunk, min 44 bytes before loops list */
+typedef struct _sampchunk
+{
+    char sc_id[4];                   /**< chunk id "smpl"                */
+    uint32_t sc_size;                /**< chunk data length, 4 bytes     */
+    uint32_t sc_manufacturer;        /**< target device MMA manufacturer
+                                          code, 0 for unspecified        */
+    uint32_t sc_product;             /**< target device product code,
+                                          0 for unspecified              */
+    uint32_t sc_sampleperiod;        /**< period of 1 sample in ns,
+                                          nominally 1/samplerate         */
+    uint32_t sc_unitynote;           /**< MIDI base note                 */
+    uint32_t sc_pitchfraction;       /**< fine tuning, +/- semitones     */
+    uint32_t sc_smpteformat;         /**< SMPTE offset time format:
+                                          24, 25, 29, or 30 fps, or
+                                          0 if unspecified               */
+    uint32_t sc_smpteoffset;         /**< SMPTE offset, 0 if unspecifed  */
+    uint32_t sc_nloops;              /**< number of loops                */
+    uint32_t sc_datasize;            /**< number of bytes for optional
+                                          data after loops               */
+    /* loops list follows */
+} t_sampchunk;
 
 /* ----- helpers ----- */
 
@@ -182,6 +237,29 @@ static int wave_isextended(const t_soundfile *sf)
     return sf->sf_bytespersample == 4;
 }
 
+    /** read first chunk, returns filled chunk and offset on success or -1 */
+static off_t wave_firstchunk(const t_soundfile *sf, t_chunk *chunk)
+{
+    if (soundfile_readbytes(sf->sf_fd, WAVEHEADSIZE, (char *)chunk,
+                                WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        return -1;
+    return WAVEHEADSIZE;
+}
+
+    /** read next chunk, chunk should be filled when calling
+        returns fills chunk offset on success or -1 */
+static off_t wave_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
+{
+    uint32_t chunksize = swap4(chunk->c_size, sys_isbigendian());
+    off_t seekto = offset + WAVECHUNKSIZE + chunksize;
+    if (seekto & 1) /* pad up to even number of bytes */
+        seekto++;
+    if (soundfile_readbytes(sf->sf_fd, seekto, (char *)chunk,
+                                WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        return -1;
+    return seekto;
+}
+
 /* ------------------------- WAVE ------------------------- */
 
 static int wave_isheader(const char *buf, size_t size)
@@ -214,17 +292,12 @@ static int wave_readheader(t_soundfile *sf)
     if (sys_verbose)
         wave_posthead(&buf.b_head, swap);
 
-        /* copy the first chunk header to beginnning of buffer */
-    memcpy(buf.b_c, buf.b_c + WAVEHEADSIZE, WAVECHUNKSIZE);
-    headersize = WAVEHEADSIZE;
-
         /* read chunks in loop until we find the sound data chunk */
+    if ((headersize = wave_firstchunk(sf, chunk)) == -1)
+        return 0;
     while (1)
     {
         uint32_t chunksize = swap4(chunk->c_size, swap);
-        long seekto = headersize + chunksize + 8, seekout;
-        if (seekto & 1) /* pad up to even number of bytes */
-            seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
         if (!strncmp(chunk->c_id, "fmt ", 4))
         {
@@ -284,10 +357,8 @@ static int wave_readheader(t_soundfile *sf)
             if (sys_verbose)
                 wave_postchunk(chunk, swap);
         }
-        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
-                                WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        if ((headersize = wave_nextchunk(sf, headersize, chunk)) == -1)
             return 0;
-        headersize = seekto;
     }
     if (!formatfound)
     {
@@ -479,6 +550,87 @@ static int wave_endianness(int endianness)
     return 0;
 }
 
+    /** read relevant meta chunk info and outputs lists to out,
+        assumes order: head [fact] format [meta...] data [meta...] */
+static int wave_readmeta(t_soundfile *sf, t_outlet *out) {
+    int swap = sys_isbigendian();
+    off_t chunkpos;
+    t_chunk chunk;
+
+    if ((chunkpos = wave_firstchunk(sf, &chunk)) == -1)
+        return 0;
+    while (1)
+    {
+        uint32_t chunksize = swap4(chunk.c_size, swap);
+        if (!strncmp(chunk.c_id, "inst", 4))
+        {
+                /* instrument chunk */
+            t_instchunk inst = {0};
+            t_atom list[8];
+            if (sys_verbose)
+                wave_postchunk(&chunk, swap);
+            memcpy(&inst, &chunk, WAVECHUNKSIZE);
+            if (soundfile_readbytes(sf->sf_fd, chunkpos + WAVECHUNKSIZE,
+                ((char *)&inst) + WAVECHUNKSIZE, chunksize) < chunksize)
+                return 0;
+            SETSYMBOL((t_atom *)list, gensym("instrument"));
+            SETFLOAT((t_atom *)list+1, inst.ic_basenote);
+            SETFLOAT((t_atom *)list+2, inst.ic_detune);
+            SETFLOAT((t_atom *)list+3, inst.ic_lownote);
+            SETFLOAT((t_atom *)list+4, inst.ic_highnote);
+            SETFLOAT((t_atom *)list+5, inst.ic_lowvelocity);
+            SETFLOAT((t_atom *)list+6, inst.ic_highvelocity);
+            SETFLOAT((t_atom *)list+7, inst.ic_gain);
+            outlet_list(out, &s_list, 8, (t_atom *)list);
+        }
+        else if (!strncmp(chunk.c_id, "smpl", 4))
+        {
+                /* sampler chunk */
+            uint32_t loopsize = 0, nloops = 0;
+            t_sampchunk samp = {0};
+            if (soundfile_readbytes(sf->sf_fd, chunkpos, (char *)&samp,
+                                    WAVESAMPSIZE) < WAVESAMPSIZE)
+                return 0;
+            nloops = swap4(samp.sc_nloops, swap);
+            loopsize = chunksize - swap4(samp.sc_datasize, swap) - 36;
+            if (sys_verbose)
+            {
+                wave_postchunk(&chunk, swap);
+                post("  loops %d", nloops);
+            }
+            if (nloops > 0)
+            {
+                    /* read through loops */
+                int lpos = 0, i;
+                char buf[loopsize];
+                t_loop *l = (t_loop *)buf;
+                if (soundfile_readbytes(sf->sf_fd, chunkpos + WAVESAMPSIZE,
+                                        buf, loopsize) < loopsize)
+                    return 0;
+                for (i = 0; i < nloops; ++i)
+                {
+                    t_atom list[6];
+
+                    SETSYMBOL((t_atom *)list, gensym("loop"));
+                    SETFLOAT((t_atom *)list+1, swap4(l->l_id, swap));
+                    SETFLOAT((t_atom *)list+2, swap4(l->l_start, swap));
+                    SETFLOAT((t_atom *)list+3, swap4(l->l_end, swap));
+                    SETFLOAT((t_atom *)list+4, swap4(l->l_type, swap));
+                    SETFLOAT((t_atom *)list+5, swap4(l->l_playcount, swap));
+                    outlet_list(out, &s_list, 6, (t_atom *)list);
+
+                    lpos += 24;
+                    l = (t_loop *)(((char *)buf) + lpos);
+                }
+            }
+        }
+        if((chunkpos = wave_nextchunk(sf, chunkpos, &chunk)) == -1)
+            break; /* end of file */
+    }
+
+    return 1;
+}
+
 void soundfile_wave_setup()
 {
     t_soundfile_filetype wave = {
@@ -496,7 +648,7 @@ void soundfile_wave_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL, /* readmetafn */
+        wave_readmeta,
         NULL, /* writemetafn */
         NULL  /* data */
     };
