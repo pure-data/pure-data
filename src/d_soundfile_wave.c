@@ -34,9 +34,9 @@
   * implicitly writes extended format for 32 bit float (see below)
   * implements chunks
     - read/write: format, fact, sound data
-    - read: instrument, sampler
-  * ignores chunks: info, cset, cue, playlist, associated data, display, junk,
-                    pad, time code, digitization time
+    - read: instrument, sampler, info
+  * ignores chunks: cset, cue, playlist, associated data, display, junk, pad,
+                    time code, digitization time, id3
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
   * does not support 64-bit variants or BWF file-splitting
@@ -610,7 +610,6 @@ static int wave_readmeta(t_soundfile *sf, t_outlet *out) {
                 for (i = 0; i < nloops; ++i)
                 {
                     t_atom list[6];
-
                     SETSYMBOL((t_atom *)list, gensym("loop"));
                     SETFLOAT((t_atom *)list+1, swap4(l->l_id, swap));
                     SETFLOAT((t_atom *)list+2, swap4(l->l_start, swap));
@@ -618,9 +617,65 @@ static int wave_readmeta(t_soundfile *sf, t_outlet *out) {
                     SETFLOAT((t_atom *)list+4, swap4(l->l_type, swap));
                     SETFLOAT((t_atom *)list+5, swap4(l->l_playcount, swap));
                     outlet_list(out, &s_list, 6, (t_atom *)list);
-
                     lpos += 24;
                     l = (t_loop *)(((char *)buf) + lpos);
+                }
+            }
+        }
+        else if (!strncmp(chunk.c_id, "LIST", 4))
+        {
+                /* list of subchunks, data is list id & subchunks */
+            char listid[4] = {0};
+            t_chunk infochunk = {0};
+            off_t infopos, infoend;
+            if (soundfile_readbytes(sf->sf_fd, chunkpos + WAVECHUNKSIZE,
+                                    listid, 4) < 4)
+                return 0;
+            if (!strncmp(listid, "INFO", 4))
+            {
+                    /* info chunks list */
+                infopos = chunkpos + WAVECHUNKSIZE + 4,
+                infoend = infopos + chunksize - 4;
+                if (soundfile_readbytes(sf->sf_fd, infopos,
+                    (char *)&infochunk, WAVECHUNKSIZE) < WAVECHUNKSIZE)
+                    return 0;
+                while (infopos < infoend)
+                {
+                        /* info chunk, data is NULL-terminated ascii string */
+                    t_symbol *name = NULL;
+                    char text[MAXPDSTRING];
+                    int textlen = swap4(infochunk.c_size, swap);
+
+                    if (textlen > MAXPDSTRING-1)
+                        textlen = MAXPDSTRING-1;
+                    if (soundfile_readbytes(sf->sf_fd,
+                        infopos + WAVECHUNKSIZE, text, textlen) < textlen)
+                        return 0;
+                    text[textlen-1] = '\0'; /* just in case */
+                    if (sys_verbose)
+                    {
+                        wave_postchunk(&infochunk, swap);
+                        post("  \"%s\"", text);
+                    }
+                    if (!strncmp(infochunk.c_id, "INAM", 4))
+                        name = gensym("name");
+                    else if (!strncmp(infochunk.c_id, "IART", 4))
+                        name = gensym("artist");
+                    else if (!strncmp(infochunk.c_id, "ICOP", 4))
+                        name = gensym("copyright");
+                    else if (!strncmp(infochunk.c_id, "ICMT", 4))
+                        name = gensym("comment");
+                    if (name)
+                    {
+                        t_atom list[2];
+                        SETSYMBOL((t_atom *)list, name);
+                        SETSYMBOL((t_atom *)list+1, gensym(text));
+                        outlet_list(out, &s_list, 2, (t_atom *)list);
+                    }
+
+                    if ((infopos =
+                        wave_nextchunk(sf, infopos, &infochunk)) == -1)
+                        return 0;
                 }
             }
         }
