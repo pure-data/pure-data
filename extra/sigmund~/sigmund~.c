@@ -19,6 +19,7 @@
 #include "ext_proto.h"
 #include "ext_obex.h"
 typedef double t_floatarg;
+typedef float t_float;
 #define t_resizebytes(a, b, c) t_resizebytes((char *)(a), (b), (c))
 #endif
 

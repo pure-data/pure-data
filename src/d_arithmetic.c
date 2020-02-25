@@ -780,7 +780,7 @@ t_int *scalarmin_perf8(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
     t_float g = *(t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
     for (; n; n -= 8, in += 8, out += 8)
     {

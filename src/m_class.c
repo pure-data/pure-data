@@ -1184,3 +1184,32 @@ void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...)
 {
     bug("'c_addmess' not implemented.");
 }
+
+/* provide 'class_new' fallbacks, in case a double-precision Pd attempts to
+ * load a single-precision external, or vice versa
+ */
+#ifdef class_new
+# undef class_new
+#endif
+t_class *
+#if PD_FLOATSIZE == 32
+  class_new64
+#else
+  class_new
+#endif
+   (t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+    const int ext_floatsize =
+#if PD_FLOATSIZE == 32
+        64
+#else
+        32
+#endif
+        ;
+    static int loglevel = 0;
+    logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
+    loglevel=3;
+
+    return 0;
+}
