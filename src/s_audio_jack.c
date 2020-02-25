@@ -100,7 +100,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         for (j = 0; j < outport_count;  j++)
         {
             if (out = jack_port_get_buffer (output_port[j], nframes))
-                memset(out, 0, sizeof (float) * nframes);
+                memset(out, 0, sizeof (jack_default_audio_sample_t) * nframes);
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
         jack_filled = 0;

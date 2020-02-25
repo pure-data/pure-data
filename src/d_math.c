@@ -8,7 +8,8 @@
 
 #include "m_pd.h"
 #include <math.h>
-#define LOGTEN 2.302585092994
+#include <limits.h>
+#define LOGTEN 2.302585092994046
 
 /* ------------------------- clip~ -------------------------- */
 static t_class *clip_class;
@@ -100,7 +101,7 @@ t_float q8_rsqrt(t_float f0)
     } u;
     u.f=f0;
     if (u.f < 0) return (0);
-    else return (rsqrt_exptab[(u.l >> 23) & 0xff] *
+    else return (t_float)(rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
@@ -112,7 +113,7 @@ t_float q8_sqrt(t_float f0)
     } u;
     u.f=f0;
     if (u.f < 0) return (0);
-    else return (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
+    else return (t_float)(u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
@@ -256,8 +257,10 @@ static t_int *sigwrap_perform(t_int *w)
     int n = (int)w[3];
     while (n--)
     {
+        int k;
         t_sample f = *in++;
-        int k = f;
+        f = (f>INT_MAX || f<INT_MIN)?0.:f;
+        k = (int)f;
         if (k <= f) *out++ = f-k;
         else *out++ = f - (k-1);
     }
@@ -613,7 +616,7 @@ t_int *pow_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f1 = *in1++, f2 = *in2++;
+        t_sample f1 = *in1++, f2 = *in2++;
         *out++ = (f1 == 0 && f2 < 0) ||
             (f1 < 0 && (f2 - (int)f2) != 0) ?
                 0 : pow(f1, f2);
@@ -704,7 +707,7 @@ t_int *log_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f = *in1++, g = *in2++;
+        t_sample f = *in1++, g = *in2++;
         if (f <= 0)
             *out = -1000;   /* rather than blow up, output a number << 0 */
         else if (g <= 0)
@@ -753,7 +756,7 @@ t_int *abs_tilde_perform(t_int *w)
     int n = (int)(w[3]);
     while (n--)
     {
-        float f = *in1++;
+        t_sample f = *in1++;
         *out++ = (f >= 0 ? f : -f);
     }
     return (w+4);
