@@ -136,7 +136,7 @@ static int next_readheader(t_soundfile *sf)
     swap = (bigendian != sys_isbigendian());
 
     headersize = swap4(next->ns_onset, swap);
-    if (headersize < NEXTHEADSIZE - 4) /* min valid header size */
+    if (headersize < NEXTHEADSIZE - 4) /* min valid header w/o info string */
         return 0;
 
     bytelimit = swap4(next->ns_length, swap);
@@ -211,7 +211,7 @@ static int next_writeheader(t_soundfile *sf, size_t nframes)
     if (sys_verbose)
         next_posthead(&next, swap);
 
-    byteswritten = fd_write(sf->sf_fd, 0, (char *)&next, headersize);
+    byteswritten = fd_write(sf->sf_fd, 0, &next, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
@@ -225,7 +225,7 @@ static int next_updateheader(t_soundfile *sf, size_t nframes)
     if (datasize > NEXTMAXBYTES)
         datasize = NEXT_UNKNOWN_SIZE;
     datasize = swap4(datasize, swap);
-    if (fd_write(sf->sf_fd, 8, (char *)&datasize, 4) < 4)
+    if (fd_write(sf->sf_fd, 8, &datasize, 4) < 4)
         return 0;
 
     if (sys_verbose)
@@ -277,7 +277,7 @@ void soundfile_next_setup()
 {
     t_soundfile_filetype next = {
         gensym("next"),
-        NEXTHEADSIZE - 4, /* without info string */
+        NEXTHEADSIZE - 4, /* - info string */
         NULL,  /* data */
         next_isheader,
         soundfile_filetype_open,

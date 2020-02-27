@@ -208,12 +208,12 @@ ssize_t soundfile_filetype_writesamples(t_soundfile *sf,
 
     /** seek to offset in file fd and read size bytes into dst,
         returns bytes written on success or -1 on failure */
-ssize_t fd_read(int fd, off_t offset, char *dst, size_t size);
+ssize_t fd_read(int fd, off_t offset, void *dst, size_t size);
 
     /** seek to offset in file fd and write size bytes from dst,
         returns number of bytes written on success or -1 if seek or write
         failed */
-ssize_t fd_write(int fd, off_t offset, const char *src, size_t size);
+ssize_t fd_write(int fd, off_t offset, const void *src, size_t size);
 
 /* ----- byte swappers ----- */
 

@@ -265,7 +265,7 @@ static int caf_readheader(t_soundfile *sf)
                     bytelimit = CAFMAXBYTES;
             }
             else
-                bytelimit = chunksize - 4; /* subtract edit count */
+                bytelimit = chunksize - 4; /* - edit count */
             break;
         }
         else
@@ -324,8 +324,8 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     memcpy(buf + headersize, &desc, CAFDESCSIZE);
     headersize += CAFDESCSIZE;
 
-        /* data chunk */
-    caf_setchunksize((t_chunk *)&data, datasize + 4, swap); /* + edit count */
+        /* data chunk (+ edit count) */
+    caf_setchunksize((t_chunk *)&data, datasize + 4, swap);
     memcpy(buf + headersize, &data, CAFDATASIZE);
     headersize += CAFDATASIZE;
 
@@ -346,9 +346,8 @@ static int caf_updateheader(t_soundfile *sf, size_t nframes)
     int swap = !sys_isbigendian();
     int64_t datasize = swap8s((nframes * sf->sf_bytesperframe) + 4, swap);
 
-        /* data chunk size */
-    if (fd_write(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4,
-            (char *)&datasize, 8) < 8) /* + edit count */
+        /* data chunk size (+ edit count) */
+    if (fd_write(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4, &datasize, 8) < 8)
         return 0;
 
     if (sys_verbose)

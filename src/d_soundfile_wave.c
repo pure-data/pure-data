@@ -345,7 +345,7 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
         format.fc_fmttag = swap2(WAVE_FORMAT_FLOAT, swap);
     if (isextended)
     {
-        format.fc_extsize = swap2(WAVE_EXT_SIZE - 2, swap);
+        format.fc_extsize = swap2(WAVE_EXT_SIZE - 2, swap); /* - fmttag */
         format.fc_validbitspersample = format.fc_bitspersample;
         format.fc_channelmask = 0; /* no specific speaker positions */
         memcpy(format.fc_subformat, &format.fc_fmttag, 2); /* move tag */
@@ -377,9 +377,9 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
     memcpy(buf + headersize, &data, WAVECHUNKSIZE);
     headersize += WAVECHUNKSIZE;
 
-        /* update total chunk size */
+        /* update file header chunk size (- chunk header) */
     head.h_size = swap4s((int32_t)(datasize + headersize - 8), swap);
-    memcpy(buf + 4, (char *)&head.h_size, 4);
+    memcpy(buf + 4, &head.h_size, 4);
 
     if (sys_verbose)
     {
@@ -409,7 +409,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
 
             /* fact chunk sample length */
         uinttmp = swap4((uint32_t)(nframes * sf->sf_nchannels), swap);
-        if (fd_write(sf->sf_fd, headersize + 8, (char *)&uinttmp, 4) < 4)
+        if (fd_write(sf->sf_fd, headersize + 8, &uinttmp, 4) < 4)
             return 0;
         headersize += WAVEFACTSIZE;
     }
@@ -417,7 +417,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
         /* sound data chunk size */
     datasize += padbyte;
     uinttmp = swap4((uint32_t)datasize, swap);
-    if (fd_write(sf->sf_fd, headersize + 4, (char *)&uinttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, headersize + 4, &uinttmp, 4) < 4)
         return 0;
     headersize += WAVECHUNKSIZE;
 
@@ -425,14 +425,13 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
     if (padbyte)
     {
         uinttmp = 0;
-        if (fd_write(sf->sf_fd, headersize + datasize - 1,
-                (char *)&uinttmp, 1) < 1)
+        if (fd_write(sf->sf_fd, headersize + datasize - 1, &uinttmp, 1) < 1)
             return 0;
     }
 
-        /* file header chunk size */
+        /* file header chunk size (- chunk header) */
     uinttmp = swap4((uint32_t)(headersize + datasize - 8), swap);
-    if (fd_write(sf->sf_fd, 4, (char *)&uinttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, 4, &uinttmp, 4) < 4)
         return 0;
 
     if (sys_verbose)
