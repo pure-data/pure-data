@@ -45,6 +45,13 @@
 
 #define CAF_UNKNOWN_SIZE 0xffffffffffffffff /** aka -1 */
 
+    /* CAF-specific errors */
+enum caf_errno
+{
+    CAF_ERR_VER      = -1,
+    CAF_ERR_VERFLAGS = -2
+};
+
     /** Apple-style description format flags */
 enum {
     kCAFLinearPCMFormatFlagIsFloat        = (1L << 0),
@@ -186,13 +193,13 @@ static int caf_readheader(t_soundfile *sf)
         return 0;
     if (swap2(head->h_version, swap) != 1)
     {
-        error("caf: version %d unsupported", swap2(head->h_version, swap));
+        errno = CAF_ERR_VER;
         return 0;
     }
     if (swap2(head->h_flags, swap) != 0)
     {
             /* current spec says these should be empty */
-        error("caf: version 1 format flags invalid");
+        errno = CAF_ERR_VERFLAGS;
         return 0;
     }
     if (sys_verbose)
@@ -209,7 +216,7 @@ static int caf_readheader(t_soundfile *sf)
         caf_postdesc(desc, swap);
     if (strncmp(desc->ds_fmtid, "lpcm", 4))
     {
-        error("caf: format \"%.4s\" not supported", desc->ds_fmtid);
+        errno = SOUNDFILE_ERR_SAMPLEFMT;
         return 0;
     }
     nchannels = swap4(desc->ds_nchannels, swap);
@@ -221,12 +228,12 @@ static int caf_readheader(t_soundfile *sf)
         case 24: bytespersample = 3; break;
         case 32: bytespersample = 4; break;
         default:
-            error("caf: %d bit samples not supported ", bitspersample);
+            errno = SOUNDFILE_ERR_SAMPLEFMT;
             return 0;
     }
     if (bytespersample == 4 && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
     {
-        error("caf: 32 bit int not supported");
+        errno = SOUNDFILE_ERR_SAMPLEFMT;
         return 0;
     }
     bigendian = !(fmtflags & kCAFLinearPCMFormatFlagIsLittleEndian);
@@ -386,6 +393,19 @@ static int caf_endianness(int endianness)
     return endianness;
 }
 
+static const char* caf_strerror(int errnum)
+{
+    switch(errnum)
+    {
+        case CAF_ERR_VER:
+            return "unsupported CAF version > 1";
+        case CAF_ERR_VERFLAGS:
+            return "CAF version 1 format flags invalid";
+        default:
+            return strerror(errnum);
+    }
+}
+
 void soundfile_caf_setup()
 {
     t_soundfile_filetype caf = {
@@ -405,7 +425,8 @@ void soundfile_caf_setup()
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
         NULL, /* readmetafn */
-        NULL  /* writemetafn */
+        NULL, /* writemetafn */
+        caf_strerror
     };
     soundfile_addfiletype(&caf);
 }

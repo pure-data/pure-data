@@ -66,6 +66,14 @@
 /** 14 byte extended subformat GUID */
 #define WAVE_EXT_GUID "\x00\x00\x00\x00\x10\x00\x80\x00\x00\xAA\x00\x38\x9B\x71"
 
+    /* WAVE-specific errors */
+enum wave_errno
+{
+    WAVE_ERR_EXTFMT    = -1,
+    WAVE_ERR_FMTCHUNK  = -2,
+    WAVE_ERR_SAMPLEFMT = -3
+};
+
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
 {
@@ -241,7 +249,7 @@ static int wave_readheader(t_soundfile *sf)
             formattag = swap2(format->fc_fmttag, swap);
             if (formattag == WAVE_FORMAT_EXT && chunksize == WAVEFORMATSIZE)
             {
-                error("wave: extended format not found");
+                errno = WAVE_ERR_EXTFMT;
                 return 0;
             }
             switch (formattag)
@@ -253,12 +261,15 @@ static int wave_readheader(t_soundfile *sf)
                         formattag == WAVE_FORMAT_FLOAT)
                             break;
                 default:
-                    error("wave: unsupported format %d", formattag); return 0;
+                {
+                    errno = WAVE_ERR_SAMPLEFMT;
+                    return 0;
+                }
             }
             bytespersample = swap2(format->fc_bitspersample, swap) / 8;
             if (bytespersample == 4 && formattag != WAVE_FORMAT_FLOAT)
             {
-                error("wave: 32 bit int not supported");
+                errno = WAVE_ERR_SAMPLEFMT;
                 return 0;
             }
             formatfound = 1;
@@ -290,7 +301,7 @@ static int wave_readheader(t_soundfile *sf)
     }
     if (!formatfound)
     {
-        error("wave: format chunk not found");
+        errno = WAVE_ERR_FMTCHUNK;
         return 0;
     }
 
@@ -475,6 +486,19 @@ static int wave_endianness(int endianness)
     return 0;
 }
 
+static const char* wave_strerror(int errnum)
+{
+    switch(errnum)
+    {
+        case WAVE_ERR_EXTFMT:
+            return "extended format not found";
+        case WAVE_ERR_FMTCHUNK:
+            return "format chunk not found";
+        default:
+            return strerror(errnum);
+    }
+}
+
 void soundfile_wave_setup()
 {
     t_soundfile_filetype wave = {
@@ -494,7 +518,8 @@ void soundfile_wave_setup()
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
         NULL, /* readmetafn */
-        NULL  /* writemetafn */
+        NULL, /* writemetafn */
+        wave_strerror
     };
     soundfile_addfiletype(&wave);
 }

@@ -18,7 +18,6 @@ objects use Posix-like threads. */
 #include <fcntl.h>
 #include <stdio.h>
 #include <pthread.h>
-#include <errno.h>
 #include <math.h>
 
 /* Supported sample formats: LPCM (16 or 24 bit int) & 32 bit float */
@@ -85,6 +84,21 @@ int soundfile_needsbyteswap(const t_soundfile *sf)
     return sf->sf_bigendian != sys_isbigendian();
 }
 
+const char* soundfile_strerror(int errnum, const t_soundfile *sf)
+{
+    switch (errnum)
+    {
+        case SOUNDFILE_ERR_SAMPLEFMT:
+            return "supported sample formats: uncompressed "
+                   "16 bit int, 24 bit int, or 32 bit float";
+        default:
+            if (sf && sf->sf_filetype && sf->sf_filetype->ft_strerrorfn)
+                return sf->sf_filetype->ft_strerrorfn(errnum);
+            else
+                return strerror(errnum);
+    }
+}
+
     /** output soundfile format info as a list */
 static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
 {
@@ -98,15 +112,21 @@ static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
-    /* post system error, otherwise try to print filetype name */
+    /* post system error, otherwise try to print filetype name and error str
+       EIO is used as generic "couldn't read header" errnum */
 static void object_readerror(const void *x, const char *header,
-    const char *filename, int error, const t_soundfile *sf)
+    const char *filename, int errnum, const t_soundfile *sf)
 {
-    if (error != EIO)
-        pd_error(x, "%s: %s: %s", header, filename, strerror(error));
+    if (errnum != EIO && errnum > 0) /* C/POSIX error */
+        pd_error(x, "%s: %s: %s", header, filename, strerror(errnum));
     else if(sf->sf_filetype)
+    {
+            /* filetype error? */
         pd_error(x, "%s: %s: unknown or bad header format (%s)",
             header, filename, sf->sf_filetype->ft_name->s_name);
+        if (errnum != EIO && sf->sf_filetype->ft_strerrorfn)
+            error("%s", soundfile_strerror(errnum, sf));
+    }
     else
         pd_error(x, "%s: %s: unknown or bad header format", header, filename);
 }
@@ -380,7 +400,7 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
 badheader:
         /* the header wasn't recognized.  We're threadable here so let's not
         print out the error... */
-    errno = EIO;
+    if (!errno) errno = EIO;
     if (sf->sf_fd >= 0 && sf->sf_filetype)
     {
         sf->sf_filetype->ft_closefn(sf);
@@ -1489,7 +1509,8 @@ areas.
 #define MAXBUFSIZE 16777216     /* arbitrary; just don't want to hang malloc */
 
     /* read/write thread request type */
-typedef enum _soundfile_request {
+typedef enum _soundfile_request
+{
     REQUEST_NOTHING = 0,
     REQUEST_OPEN    = 1,
     REQUEST_CLOSE   = 2,
@@ -1498,7 +1519,8 @@ typedef enum _soundfile_request {
 } t_soundfile_request;
 
     /* read/write thread state */
-typedef enum _soundfile_state {
+typedef enum _soundfile_state
+{
     STATE_IDLE    = 0,
     STATE_STARTUP = 1,
     STATE_STREAM  = 2

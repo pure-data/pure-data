@@ -64,6 +64,14 @@
 #define AIFF_NONE_LEN 16 /**< 1 len byte + 15 bytes + 1 \0 pad byte */
 #define AIFF_FL32_LEN 22 /**< 1 len byte + 22 bytes, no pad byte */
 
+    /* AIFF-specific errors */
+enum aiff_errno
+{
+    AIFF_ERR_AIFCVER    = -1,
+    AIFF_ERR_VERCHUNK   = -2,
+    AIFF_ERR_COMMCHUNK  = -3
+};
+
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
 {
@@ -290,7 +298,7 @@ static int aiff_readheader(t_soundfile *sf)
                 /* AIFF-C format version chunk */
             if (!isaiffc)
             {
-                error("aiff: found FVER chunk, but not AIFF-C");
+                errno = AIFF_ERR_VERCHUNK;
                 return 0;
             }
             if (fd_read(sf->sf_fd, headersize + AIFFCHUNKSIZE,
@@ -298,7 +306,7 @@ static int aiff_readheader(t_soundfile *sf)
                 return 0;
             if (swap4(buf.b_verchunk.vc_timestamp, swap) != AIFFCVER1)
             {
-                error("aiff: unsupported AIFF-C version");
+                errno = AIFF_ERR_AIFCVER;
                 return 0;
             }
         }
@@ -320,8 +328,10 @@ static int aiff_readheader(t_soundfile *sf)
                 case 24: bytespersample = 3; break;
                 case 32: bytespersample = 4; break;
                 default:
-                    error("aiff: %d bit samples not supported", bitspersample);
+                {
+                    errno = SOUNDFILE_ERR_SAMPLEFMT;
                     return 0;
+                }
             }
             samplerate = aiff_getsamplerate(comm->cc_samplerate, swap);
             if (isaiffc)
@@ -340,22 +350,20 @@ static int aiff_readheader(t_soundfile *sf)
                 {
                     if (bytespersample != 4)
                     {
-                        error("aiff: wrong byte size for format %.4s",
-                              comm->cc_comptype);
+                        errno = SOUNDFILE_ERR_SAMPLEFMT;
                         return 0;
                     }
                     isfloat = 1;
                 }
                 else
                 {
-                    error("aiff: format \"%.4s\" not supported",
-                          comm->cc_comptype);
+                    errno = SOUNDFILE_ERR_SAMPLEFMT;
                     return 0;
                 }
             }
             if (bytespersample == 4 && !isfloat)
             {
-                error("aiff: 32 bit int not supported");
+                errno = SOUNDFILE_ERR_SAMPLEFMT;
                 return 0;
             }
             commfound = 1;
@@ -379,7 +387,7 @@ static int aiff_readheader(t_soundfile *sf)
         else if (!strncmp(chunk->c_id, "CSND", 4))
         {
                 /* AIFF-C compressed sound data chunk */
-            error("aiff: compressed format not support");
+            errno = SOUNDFILE_ERR_SAMPLEFMT;
             return 0;
         }
         else
@@ -394,8 +402,7 @@ static int aiff_readheader(t_soundfile *sf)
     }
     if (!commfound)
     {
-        error("aiff: common chunk not found");
-        return 0;
+        return AIFF_ERR_COMMCHUNK;
     }
 
         /* interpret data size from file size? this is not supported by the
@@ -581,6 +588,21 @@ static int aiff_endianness(int endianness)
     return 1;
 }
 
+static const char* aiff_strerror(int errnum)
+{
+    switch(errnum)
+    {
+        case AIFF_ERR_AIFCVER:
+            return "unsupported AIFF-C version";
+        case AIFF_ERR_VERCHUNK:
+            return "found FVER chunk, but not AIFF-C";
+        case AIFF_ERR_COMMCHUNK:
+            return "COMM chunk not found";
+        default:
+            return strerror(errnum);
+    }
+}
+
 void soundfile_aiff_setup()
 {
     t_soundfile_filetype aiff = {
@@ -600,7 +622,8 @@ void soundfile_aiff_setup()
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
         NULL, /* readmetafn */
-        NULL  /* writemetafn */
+        NULL, /* writemetafn */
+        aiff_strerror
     };
     soundfile_addfiletype(&aiff);
 }

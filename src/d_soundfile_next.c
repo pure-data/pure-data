@@ -155,7 +155,7 @@ static int next_readheader(t_soundfile *sf)
         case NEXT_FORMAT_LINEAR_24: bytespersample = 3; break;
         case NEXT_FORMAT_FLOAT:     bytespersample = 4; break;
         default:
-            error("next: format %d not supported", format);
+            errno = SOUNDFILE_ERR_SAMPLEFMT;
             return 0;
     }
 
@@ -292,7 +292,8 @@ void soundfile_next_setup()
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
         NULL, /* readmetafn */
-        NULL  /* writemetafn */
+        NULL, /* writemetafn */
+        NULL  /* strerrfn */
     };
     soundfile_addfiletype(&next);
 }

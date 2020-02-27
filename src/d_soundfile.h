@@ -12,6 +12,7 @@
 #endif
 #include <string.h>
 #include <limits.h>
+#include <errno.h>
 
 /* GLIBC large file support */
 #ifdef _LARGEFILE64_SOURCE
@@ -79,6 +80,17 @@ void soundfile_printinfo(const t_soundfile *sf);
     /** returns 1 if bytes need to be swapped due to endianess, otherwise 0 */
 int soundfile_needsbyteswap(const t_soundfile *sf);
 
+    /** generic file type errors, file type-specific error codes should
+        start below these, ie. -1, -2, etc */
+typedef enum _soundfile_errno
+{
+    SOUNDFILE_ERR_SAMPLEFMT = -1000
+} t_soundfile_errno;
+
+    /** returns an error string for a filetype error otherwise calls strerror,
+        set sf to call the file's filetype strerrorfn */
+const char* soundfile_strerror(int errnum, const t_soundfile *sf);
+
 /* ----- soundfile file type ----- */
 
     /** returns 1 if buffer is the beginning of a file type header,
@@ -101,19 +113,15 @@ typedef int (*t_soundfile_closefn)(t_soundfile *sf);
 
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
-        note: set sf_bytelimit = sound data size
-        this may be called in a background thread, but
-        sf_metaout is only set when called on main thread */
+        note: set sf_bytelimit = sound data size, optionaly set errno for
+              for descriptive filetype error read via strerrorfn
+        this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
-        returns header bytes written or -1 on error
+        returns header bytes written or < 0 on error
         this may be called in a background thread */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
-
-    /** write meta data to the soundfile header and updates headersize
-        returns 1 on success or 0 on failure */
-typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
 
     /** update file header data size, returns 1 on success or 0 on error
         this may be called in a background thread */
@@ -127,9 +135,9 @@ typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
         this may be called in a background thread */
 typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
-    /** returns 1 if file type prefers big endian samples based on
-        requested endianness (0 little, 1 big, -1 unspecified),
-        otherwise 0 for little endian */
+    /** returns filetype's preferred sample endianness based on the
+        requested endianness (0 little, 1 big, -1 unspecified)
+        returns 1 for big endian, 0 for little endian */
 typedef int (*t_soundfile_endiannessfn)(int endianness);
 
     /** seek to a specified sample frame in an open file,
@@ -159,6 +167,11 @@ typedef int (*t_soundfile_readmetafn)(t_soundfile *sf, t_outlet *out);
         returns 1 on success or 0 on failure */
 typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
 
+    /** returns an error string for a filetype error otherwise calls
+        soundfile_filetype_strerror, currently only used for descriptive
+        readheaderfn errors */
+typedef const char* (*t_soundfile_strerrorfn)(int errnum);
+
     /* file type specific implementation */
 typedef struct _soundfile_filetype
 {
@@ -179,6 +192,7 @@ typedef struct _soundfile_filetype
     t_soundfile_writesamplesfn ft_writesamplesfn; /**< must be non-NULL */
     t_soundfile_readmetafn ft_readmetafn;         /**< NULL if not supported */
     t_soundfile_writemetafn ft_writemetafn;       /**< NULL if not supported */
+    t_soundfile_strerrorfn ft_strerrorfn;         /**< NULL if not supported */
 } t_soundfile_filetype;
 
     /** add a new file type, makes a deep copy
