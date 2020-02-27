@@ -79,7 +79,7 @@ typedef struct _chunk
     int32_t c_size;                  /**< chunk data length            */
 } t_chunk;
 
-    /** file header, 12 bytes */
+    /** file head container chunk, 12 bytes */
 typedef struct _head
 {
     char h_id[4];                    /**< chunk id "FORM"              */
@@ -608,7 +608,7 @@ void soundfile_aiff_setup()
     t_soundfile_type aiff = {
         gensym("aiff"),
         AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE,
-        NULL,  /* data */
+        NULL, /* data */
         aiff_isheader,
         soundfile_type_open,
         soundfile_type_close,

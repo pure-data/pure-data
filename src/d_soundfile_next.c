@@ -278,7 +278,7 @@ void soundfile_next_setup()
     t_soundfile_type next = {
         gensym("next"),
         NEXTHEADSIZE - 4, /* - info string */
-        NULL,  /* data */
+        NULL, /* data */
         next_isheader,
         soundfile_type_open,
         soundfile_type_close,
@@ -293,7 +293,7 @@ void soundfile_next_setup()
         soundfile_type_writesamples,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
-        NULL  /* strerrfn */
+        NULL  /* strerrorfn */
     };
     soundfile_addtype(&next);
 }

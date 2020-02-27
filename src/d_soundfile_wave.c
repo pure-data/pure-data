@@ -81,7 +81,7 @@ typedef struct _chunk
     uint32_t c_size;               /**< length of data chunk            */
 } t_chunk;
 
-    /** file header, 12 bytes */
+    /** file head container chunk, 12 bytes */
 typedef struct _head
 {
     char h_id[4];                   /**< chunk id "RIFF"                */
@@ -502,7 +502,7 @@ void soundfile_wave_setup()
     t_soundfile_type wave = {
         gensym("wave"),
         WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
-        NULL,  /* data */
+        NULL, /* data */
         wave_isheader,
         soundfile_type_open,
         soundfile_type_close,

@@ -65,7 +65,7 @@ typedef struct _chunk {
     uint8_t c_size[8];           /**< chunk data length, int64_t      */
 } t_chunk;
 
-    /** file header, 8 bytes */
+    /** file head container chunk, 8 bytes */
 typedef struct _head {
     char h_id[4];                /**< file id "caff"                  */
     uint16_t h_version;          /**< file version, probably 1        */
@@ -411,7 +411,7 @@ void soundfile_caf_setup()
     t_soundfile_type caf = {
         gensym("caf"),
         CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
-        NULL,  /* data */
+        NULL, /* data */
         caf_isheader,
         soundfile_type_open,
         soundfile_type_close,
