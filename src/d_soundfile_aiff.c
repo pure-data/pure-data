@@ -605,25 +605,25 @@ static const char* aiff_strerror(int errnum)
 
 void soundfile_aiff_setup()
 {
-    t_soundfile_filetype aiff = {
+    t_soundfile_type aiff = {
         gensym("aiff"),
         AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE,
         NULL,  /* data */
         aiff_isheader,
-        soundfile_filetype_open,
-        soundfile_filetype_close,
+        soundfile_type_open,
+        soundfile_type_close,
         aiff_readheader,
         aiff_writeheader,
         aiff_updateheader,
         aiff_hasextension,
         aiff_addextension,
         aiff_endianness,
-        soundfile_filetype_seektoframe,
-        soundfile_filetype_readsamples,
-        soundfile_filetype_writesamples,
+        soundfile_type_seektoframe,
+        soundfile_type_readsamples,
+        soundfile_type_writesamples,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         aiff_strerror
     };
-    soundfile_addfiletype(&aiff);
+    soundfile_addtype(&aiff);
 }

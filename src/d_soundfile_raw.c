@@ -25,26 +25,26 @@ static int raw_readheader(t_soundfile *sf)
     return 1;
 }
 
-void soundfile_raw_setup(t_soundfile_filetype *ft)
+void soundfile_raw_setup(t_soundfile_type *type)
 {
-    t_soundfile_filetype raw = {
+    t_soundfile_type raw = {
         gensym("raw"),
         0,
         NULL,  /* data */
         NULL, /* isheaderfn */
-        soundfile_filetype_open,
-        soundfile_filetype_close,
+        soundfile_type_open,
+        soundfile_type_close,
         raw_readheader,
         NULL, /* writeheaderfn */
         NULL, /* updateheaderfn */
         NULL, /* hasextensionfn */
         NULL, /* addextensionfn */
         NULL, /* endiannessfn */
-        soundfile_filetype_seektoframe,
-        soundfile_filetype_readsamples,
+        soundfile_type_seektoframe,
+        soundfile_type_readsamples,
         NULL, /* writesamplesfn */
         NULL, /* readmetafn */
         NULL  /* writemetafn */
     };
-    memcpy(ft, &raw, sizeof(t_soundfile_filetype));
+    memcpy(type, &raw, sizeof(t_soundfile_type));
 }

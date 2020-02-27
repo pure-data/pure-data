@@ -43,7 +43,7 @@ typedef SSIZE_T ssize_t;
 
 /* ----- soundfile ----- */
 
-typedef struct _soundfile_filetype t_soundfile_filetype;
+typedef struct _soundfile_type t_soundfile_type;
 
     /** soundfile file descriptor, backend type, and format info
         note: headersize and bytelimit are signed as they are used for < 0
@@ -53,8 +53,8 @@ typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
     /* implementation */
-    t_soundfile_filetype *sf_filetype; /**< implementation type           */
-    void *sf_data;         /**< implementation-specific data              */
+    t_soundfile_type *sf_type; /**< implementation type                   */
+    void *sf_data;             /**< implementation data                   */
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
@@ -68,7 +68,7 @@ typedef struct _soundfile
     /** clear soundfile struct to defaults, does not close or free */
 void soundfile_clear(t_soundfile *sf);
 
-    /** clear soundfile format info to defaults; leaves fd, filetype, & data */
+    /** clear soundfile format info to defaults; leaves fd, type, & data */
 void soundfile_clearinfo(t_soundfile *sf);
 
     /** copy src soundfile info into dst */
@@ -80,20 +80,20 @@ void soundfile_printinfo(const t_soundfile *sf);
     /** returns 1 if bytes need to be swapped due to endianess, otherwise 0 */
 int soundfile_needsbyteswap(const t_soundfile *sf);
 
-    /** generic file type errors, file type-specific error codes should
-        start below these, ie. -1, -2, etc */
+    /** generic soundfile errors, descriptive type implementation error codes
+        should start above these, ie. -1, -2, etc */
 typedef enum _soundfile_errno
 {
     SOUNDFILE_ERR_SAMPLEFMT = -1000
 } t_soundfile_errno;
 
-    /** returns an error string for a filetype error otherwise calls strerror,
-        set sf to call the file's filetype strerrorfn */
+    /** returns an error string for a type implementation error otherwise calls
+        strerror, set sf to call the file's type strerrorfn */
 const char* soundfile_strerror(int errnum, const t_soundfile *sf);
 
-/* ----- soundfile file type ----- */
+/* ----- soundfile type ----- */
 
-    /** returns 1 if buffer is the beginning of a file type header,
+    /** returns 1 if buffer is the beginning of a supported file header,
         size will be at least minheadersize
         this may be called in a background thread */
 typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
@@ -114,7 +114,7 @@ typedef int (*t_soundfile_closefn)(t_soundfile *sf);
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
         note: set sf_bytelimit = sound data size, optionaly set errno for
-              for descriptive filetype error read via strerrorfn
+              for descriptive type error read via strerrorfn
         this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
@@ -127,15 +127,15 @@ typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
         this may be called in a background thread */
 typedef int (*t_soundfile_updateheaderfn)(t_soundfile *sf, size_t nframes);
 
-    /** returns 1 if the filename has a file type extension, otherwise 0
+    /** returns 1 if the filename has a supported file extension, otherwise 0
         this may be called in a background thread */
 typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
 
-    /** appends the default file type extension, returns 1 on success
+    /** appends the default file extension, returns 1 on success
         this may be called in a background thread */
 typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
-    /** returns filetype's preferred sample endianness based on the
+    /** returns the type's preferred sample endianness based on the
         requested endianness (0 little, 1 big, -1 unspecified)
         returns 1 for big endian, 0 for little endian */
 typedef int (*t_soundfile_endiannessfn)(int endianness);
@@ -167,55 +167,55 @@ typedef int (*t_soundfile_readmetafn)(t_soundfile *sf, t_outlet *out);
         returns 1 on success or 0 on failure */
 typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
 
-    /** returns an error string for a filetype error otherwise calls
-        soundfile_filetype_strerror, currently only used for descriptive
+    /** returns an error string for a type implemenrtation error otherwise
+        calls soundfile_strerror, currently only used for descriptive
         readheaderfn errors */
 typedef const char* (*t_soundfile_strerrorfn)(int errnum);
 
-    /* file type specific implementation */
-typedef struct _soundfile_filetype
+    /* type implementation, this could be for single or multiple file formats */
+typedef struct _soundfile_type
 {
-    t_symbol *ft_name;       /**< file type name               */
-    size_t ft_minheadersize; /**< minimum valid header size    */
-    void *ft_data;           /**< implementation specific data */
-    t_soundfile_isheaderfn ft_isheaderfn;         /**< must be non-NULL */
-    t_soundfile_openfn ft_openfn;                 /**< must be non-NULL */
-    t_soundfile_closefn ft_closefn;               /**< must be non-NULL */
-    t_soundfile_readheaderfn ft_readheaderfn;     /**< must be non-NULL */
-    t_soundfile_writeheaderfn ft_writeheaderfn;   /**< must be non-NULL */
-    t_soundfile_updateheaderfn ft_updateheaderfn; /**< must be non-NULL */
-    t_soundfile_hasextensionfn ft_hasextensionfn; /**< must be non-NULL */
-    t_soundfile_addextensionfn ft_addextensionfn; /**< must be non-NULL */
-    t_soundfile_endiannessfn ft_endiannessfn;     /**< must be non-NULL */
-    t_soundfile_seektoframefn ft_seektoframefn;   /**< must be non-NULL */
-    t_soundfile_readsamplesfn ft_readsamplesfn;   /**< must be non-NULL */
-    t_soundfile_writesamplesfn ft_writesamplesfn; /**< must be non-NULL */
-    t_soundfile_readmetafn ft_readmetafn;         /**< NULL if not supported */
-    t_soundfile_writemetafn ft_writemetafn;       /**< NULL if not supported */
-    t_soundfile_strerrorfn ft_strerrorfn;         /**< NULL if not supported */
-} t_soundfile_filetype;
+    t_symbol *t_name;       /**< type name, unique & w/o white spaces       */
+    size_t t_minheadersize; /**< minimum valid header size                  */
+    void *t_data;           /**< implementation data                        */
+    t_soundfile_isheaderfn t_isheaderfn;         /**< must be non-NULL      */
+    t_soundfile_openfn t_openfn;                 /**< must be non-NULL      */
+    t_soundfile_closefn t_closefn;               /**< must be non-NULL      */
+    t_soundfile_readheaderfn t_readheaderfn;     /**< must be non-NULL      */
+    t_soundfile_writeheaderfn t_writeheaderfn;   /**< must be non-NULL      */
+    t_soundfile_updateheaderfn t_updateheaderfn; /**< must be non-NULL      */
+    t_soundfile_hasextensionfn t_hasextensionfn; /**< must be non-NULL      */
+    t_soundfile_addextensionfn t_addextensionfn; /**< must be non-NULL      */
+    t_soundfile_endiannessfn t_endiannessfn;     /**< must be non-NULL      */
+    t_soundfile_seektoframefn t_seektoframefn;   /**< must be non-NULL      */
+    t_soundfile_readsamplesfn t_readsamplesfn;   /**< must be non-NULL      */
+    t_soundfile_writesamplesfn t_writesamplesfn; /**< must be non-NULL      */
+    t_soundfile_readmetafn t_readmetafn;         /**< NULL if not supported */
+    t_soundfile_writemetafn t_writemetafn;       /**< NULL if not supported */
+    t_soundfile_strerrorfn t_strerrorfn;         /**< NULL if not supported */
+} t_soundfile_type;
 
-    /** add a new file type, makes a deep copy
-        returns 1 on success or 0 if max file types has been reached */
-int soundfile_addfiletype(t_soundfile_filetype *ft);
+    /** add a new type implementation, makes a deep copy
+        returns 1 on success or 0 if max types has been reached */
+int soundfile_addtype(t_soundfile_type *t);
 
 /* ----- default implementations ----- */
 
     /** default t_soundfile_openfn implementation */
-int soundfile_filetype_open(t_soundfile *sf, int fd);
+int soundfile_type_open(t_soundfile *sf, int fd);
 
     /** default t_soundfile_closefn implementation */
-int soundfile_filetype_close(t_soundfile *sf);
+int soundfile_type_close(t_soundfile *sf);
 
     /** default t_soundfile_seektoframefn implementation */
-int soundfile_filetype_seektoframe(t_soundfile *sf, size_t frame);
+int soundfile_type_seektoframe(t_soundfile *sf, size_t frame);
 
     /** default t_soundfile_readsamplesfn implementation */
-ssize_t soundfile_filetype_readsamples(t_soundfile *sf,
+ssize_t soundfile_type_readsamples(t_soundfile *sf,
     unsigned char *buf, size_t size);
 
     /** default t_soundfile_writesamplesfn implementation */
-ssize_t soundfile_filetype_writesamples(t_soundfile *sf,
+ssize_t soundfile_type_writesamples(t_soundfile *sf,
     const unsigned char *buf, size_t size);
 
 /* ----- read/write helpers ----- */

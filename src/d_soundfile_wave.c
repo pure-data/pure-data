@@ -501,25 +501,25 @@ static const char* wave_strerror(int errnum)
 
 void soundfile_wave_setup()
 {
-    t_soundfile_filetype wave = {
+    t_soundfile_type wave = {
         gensym("wave"),
         WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
         NULL,  /* data */
         wave_isheader,
-        soundfile_filetype_open,
-        soundfile_filetype_close,
+        soundfile_type_open,
+        soundfile_type_close,
         wave_readheader,
         wave_writeheader,
         wave_updateheader,
         wave_hasextension,
         wave_addextension,
         wave_endianness,
-        soundfile_filetype_seektoframe,
-        soundfile_filetype_readsamples,
-        soundfile_filetype_writesamples,
+        soundfile_type_seektoframe,
+        soundfile_type_readsamples,
+        soundfile_type_writesamples,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         wave_strerror
     };
-    soundfile_addfiletype(&wave);
+    soundfile_addtype(&wave);
 }

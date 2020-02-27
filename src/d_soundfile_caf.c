@@ -408,25 +408,25 @@ static const char* caf_strerror(int errnum)
 
 void soundfile_caf_setup()
 {
-    t_soundfile_filetype caf = {
+    t_soundfile_type caf = {
         gensym("caf"),
         CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
         NULL,  /* data */
         caf_isheader,
-        soundfile_filetype_open,
-        soundfile_filetype_close,
+        soundfile_type_open,
+        soundfile_type_close,
         caf_readheader,
         caf_writeheader,
         caf_updateheader,
         caf_hasextension,
         caf_addextension,
         caf_endianness,
-        soundfile_filetype_seektoframe,
-        soundfile_filetype_readsamples,
-        soundfile_filetype_writesamples,
+        soundfile_type_seektoframe,
+        soundfile_type_readsamples,
+        soundfile_type_writesamples,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         caf_strerror
     };
-    soundfile_addfiletype(&caf);
+    soundfile_addtype(&caf);
 }

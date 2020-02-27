@@ -275,25 +275,25 @@ static int next_endianness(int endianness)
 
 void soundfile_next_setup()
 {
-    t_soundfile_filetype next = {
+    t_soundfile_type next = {
         gensym("next"),
         NEXTHEADSIZE - 4, /* - info string */
         NULL,  /* data */
         next_isheader,
-        soundfile_filetype_open,
-        soundfile_filetype_close,
+        soundfile_type_open,
+        soundfile_type_close,
         next_readheader,
         next_writeheader,
         next_updateheader,
         next_hasextension,
         next_addextension,
         next_endianness,
-        soundfile_filetype_seektoframe,
-        soundfile_filetype_readsamples,
-        soundfile_filetype_writesamples,
+        soundfile_type_seektoframe,
+        soundfile_type_readsamples,
+        soundfile_type_writesamples,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         NULL  /* strerrfn */
     };
-    soundfile_addfiletype(&next);
+    soundfile_addtype(&next);
 }

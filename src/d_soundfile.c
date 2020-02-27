@@ -92,8 +92,8 @@ const char* soundfile_strerror(int errnum, const t_soundfile *sf)
             return "supported sample formats: uncompressed "
                    "16 bit int, 24 bit int, or 32 bit float";
         default:
-            if (sf && sf->sf_filetype && sf->sf_filetype->ft_strerrorfn)
-                return sf->sf_filetype->ft_strerrorfn(errnum);
+            if (sf && sf->sf_type && sf->sf_type->t_strerrorfn)
+                return sf->sf_type->t_strerrorfn(errnum);
             else
                 return strerror(errnum);
     }
@@ -112,102 +112,102 @@ static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
-    /* post system error, otherwise try to print filetype name and error str
+    /* post system error, otherwise try to print type name and error str
        EIO is used as generic "couldn't read header" errnum */
 static void object_readerror(const void *x, const char *header,
     const char *filename, int errnum, const t_soundfile *sf)
 {
     if (errnum != EIO && errnum > 0) /* C/POSIX error */
         pd_error(x, "%s: %s: %s", header, filename, strerror(errnum));
-    else if(sf->sf_filetype)
+    else if(sf->sf_type)
     {
-            /* filetype error? */
+            /* type implementation error? */
         pd_error(x, "%s: %s: unknown or bad header format (%s)",
-            header, filename, sf->sf_filetype->ft_name->s_name);
-        if (errnum != EIO && sf->sf_filetype->ft_strerrorfn)
+            header, filename, sf->sf_type->t_name->s_name);
+        if (errnum != EIO && sf->sf_type->t_strerrorfn)
             error("%s", soundfile_strerror(errnum, sf));
     }
     else
         pd_error(x, "%s: %s: unknown or bad header format", header, filename);
 }
 
-/* ----- soundfile file type ----- */
+/* ----- soundfile type ----- */
 
-#define SFMAXFILETYPES 8 /**< enough room for now? */
+#define SFMAXTYPES 8 /**< enough room for now? */
 
 /* TODO: should these globals be PERTHREAD? */
 
-    /** supported file types */
-static t_soundfile_filetype sf_filetypes[SFMAXFILETYPES] = {0};
+    /** supported type implementations */
+static t_soundfile_type sf_types[SFMAXTYPES] = {0};
 
-    /** number of file types */
-static size_t sf_numfiletypes = 0;
+    /** number of types */
+static size_t sf_numtypes = 0;
 
-    /** min required header size, largest among the current file types */
+    /** min required header size, largest among the current types */
 static int sf_minheadersize = 0;
 
-    /** printable file type argument list,
+    /** printable type argument list,
        dash prepended and separated by spaces */
-static char sf_filetypeargs[MAXPDSTRING] = {0};
+static char sf_typeargs[MAXPDSTRING] = {0};
 
-    /** special read-only raw file type */
-static t_soundfile_filetype sf_rawfiletype = {0};
+    /** special read-only raw type */
+static t_soundfile_type sf_rawtype = {0};
 
-    /* built-in file types */
+    /* built-in type implementations */
 void soundfile_wave_setup();
 void soundfile_aiff_setup();
 void soundfile_caf_setup();
 void soundfile_next_setup();
-void soundfile_raw_setup(t_soundfile_filetype *ft);
+void soundfile_raw_setup(t_soundfile_type *type);
 
-    /** set up built-in file types*/
-void soundfile_filetype_setup()
+    /** set up built-in types*/
+void soundfile_type_setup()
 {
     soundfile_wave_setup(); /* default first */
     soundfile_aiff_setup();
     soundfile_caf_setup();
     soundfile_next_setup();
-    soundfile_raw_setup(&sf_rawfiletype); /* not added to sf_filetypes */
+    soundfile_raw_setup(&sf_rawtype); /* not added to sf_types */
 }
 
-int soundfile_addfiletype(t_soundfile_filetype *ft)
+int soundfile_addtype(t_soundfile_type *type)
 {
     int i;
-    if (sf_numfiletypes == SFMAXFILETYPES)
+    if (sf_numtypes == SFMAXTYPES)
     {
-        error("soundfile: max number of file types reached");
+        error("soundfile: max number of type implementations reached");
         return 0;
     }
-    memcpy(&sf_filetypes[sf_numfiletypes], ft, sizeof(t_soundfile_filetype));
-    sf_numfiletypes++;
-    if (ft->ft_minheadersize > sf_minheadersize)
-        sf_minheadersize = ft->ft_minheadersize;
-    strcat(sf_filetypeargs, (sf_numfiletypes > 1 ? " -" : "-"));
-    strcat(sf_filetypeargs, ft->ft_name->s_name);
+    memcpy(&sf_types[sf_numtypes], type, sizeof(t_soundfile_type));
+    sf_numtypes++;
+    if (type->t_minheadersize > sf_minheadersize)
+        sf_minheadersize = type->t_minheadersize;
+    strcat(sf_typeargs, (sf_numtypes > 1 ? " -" : "-"));
+    strcat(sf_typeargs, type->t_name->s_name);
     return 1;
 }
 
-    /** return file type list head */
-static t_soundfile_filetype *soundfile_firstfiletype() {
-    return &sf_filetypes[0];
+    /** return type list head */
+static t_soundfile_type *soundfile_firsttype() {
+    return &sf_types[0];
 }
 
-    /** return next file type or NULL if at the end */
-static t_soundfile_filetype *soundfile_nextfiletype(t_soundfile_filetype *ft) {
-    if (ft == &sf_filetypes[sf_numfiletypes-1])
+    /** return next type or NULL if at the end */
+static t_soundfile_type *soundfile_nexttype(t_soundfile_type *type) {
+    if (type == &sf_types[sf_numtypes-1])
         return NULL;
-    return ++ft;
+    return ++type;
 }
 
 /* ----- default implementations ----- */
 
-int soundfile_filetype_open(t_soundfile *sf, int fd)
+int soundfile_type_open(t_soundfile *sf, int fd)
 {
     sf->sf_fd = fd;
     return 1;
 }
 
-int soundfile_filetype_close(t_soundfile *sf)
+int soundfile_type_close(t_soundfile *sf)
 {
     if (sf->sf_fd >= 0)
         sys_close(sf->sf_fd);
@@ -215,7 +215,7 @@ int soundfile_filetype_close(t_soundfile *sf)
     return 1;
 }
 
-int soundfile_filetype_seektoframe(t_soundfile *sf, size_t frame)
+int soundfile_type_seektoframe(t_soundfile *sf, size_t frame)
 {
     off_t offset = sf->sf_headersize +
         (sf->sf_bytesperframe * frame);
@@ -224,13 +224,13 @@ int soundfile_filetype_seektoframe(t_soundfile *sf, size_t frame)
     return 1;
 }
 
-ssize_t soundfile_filetype_readsamples(t_soundfile *sf,
+ssize_t soundfile_type_readsamples(t_soundfile *sf,
     unsigned char *buf, size_t size)
 {
     return read(sf->sf_fd, buf, size);
 }
 
-ssize_t soundfile_filetype_writesamples(t_soundfile *sf,
+ssize_t soundfile_type_writesamples(t_soundfile *sf,
     const unsigned char *buf, size_t size)
 {
     return write(sf->sf_fd, buf, size);
@@ -340,8 +340,8 @@ void swapstring8(char *foo, int doit)
         values. Only 2- and 3-byte fixed-point samples and 4-byte floating point
         samples are supported.  If sf->sf_headersize is nonzero, the caller
         should supply the number of channels, endinanness, and bytes per sample;
-        the header is ignored.  If sf->sf_filetype is non-NULL, the given
-        filetype is used. Otherwise, the routine tries to read the header
+        the header is ignored.  If sf->sf_type is non-NULL, the given type
+        implementation is used. Otherwise, the routine tries to read the header
         and fill in the properties. Fills sf struct on success, closes fd on
         failure. */
 int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
@@ -349,30 +349,30 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
     off_t offset;
     errno = 0;
     if (sf->sf_headersize >= 0) /* header detection overridden */
-        sf->sf_filetype = &sf_rawfiletype;
+        sf->sf_type = &sf_rawtype;
     else
     {
         char buf[SFHDRBUFSIZE];
         ssize_t bytesread = read(fd, buf, sf_minheadersize);
 
-        if (!sf->sf_filetype)
+        if (!sf->sf_type)
         {
-                /* check header for filetype */
-            t_soundfile_filetype *filetype = soundfile_firstfiletype();
-            while (filetype)
+                /* check header for type */
+            t_soundfile_type *type = soundfile_firsttype();
+            while (type)
             {
-                if (filetype->ft_isheaderfn(buf, bytesread))
+                if (type->t_isheaderfn(buf, bytesread))
                     break;
-                filetype = soundfile_nextfiletype(filetype);
+                type = soundfile_nexttype(type);
             }
-            if (!filetype) /* not recognized */
+            if (!type) /* not recognized */
                 goto badheader;
-            sf->sf_filetype = filetype;
+            sf->sf_type = type;
         }
         else
         {
-                /* check header using given filetype */
-            if (!sf->sf_filetype->ft_isheaderfn(buf, bytesread))
+                /* check header using given type */
+            if (!sf->sf_type->t_isheaderfn(buf, bytesread))
                 goto badheader;
         }
 
@@ -382,13 +382,13 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
     }
 
         /* read header */
-    if (!sf->sf_filetype->ft_openfn(sf, fd))
+    if (!sf->sf_type->t_openfn(sf, fd))
         goto badheader;
-    if (!sf->sf_filetype->ft_readheaderfn(sf))
+    if (!sf->sf_type->t_readheaderfn(sf))
         goto badheader;
 
         /* seek past header and any sample frames to skip */
-    if (!sf->sf_filetype->ft_seektoframefn(sf, skipframes))
+    if (!sf->sf_type->t_seektoframefn(sf, skipframes))
         goto badheader;
     sf->sf_bytelimit -= sf->sf_bytesperframe * skipframes;
     if (sf->sf_bytelimit < 0)
@@ -401,9 +401,9 @@ badheader:
         /* the header wasn't recognized.  We're threadable here so let's not
         print out the error... */
     if (!errno) errno = EIO;
-    if (sf->sf_fd >= 0 && sf->sf_filetype)
+    if (sf->sf_fd >= 0 && sf->sf_type)
     {
-        sf->sf_filetype->ft_closefn(sf);
+        sf->sf_type->t_closefn(sf);
         fd = -1;
     }
     sf->sf_fd = -1;
@@ -608,7 +608,7 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
 typedef struct _soundfiler_writeargs
 {
     t_symbol *wa_filesym;              /* file path symbol */
-    t_soundfile_filetype *wa_filetype; /* file type */
+    t_soundfile_type *wa_type;         /* type implementation */
     int wa_samplerate;                 /* sample rate */
     int wa_bytespersample;             /* number of bytes per sample */
     int wa_bigendian;                  /* is sample data bigendian? */
@@ -632,7 +632,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     size_t nframes = SFMAXFRAMES, onsetframes = 0;
     int normalize = 0;
     t_symbol *filesym;
-    t_soundfile_filetype *filetype = NULL;
+    t_soundfile_type *type = NULL;
 
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
@@ -685,24 +685,24 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
         else if (!strcmp(flag, "nextstep"))
         {
                 /* handle old "-nextsep" alias */
-            filetype = soundfile_firstfiletype();
-            while (filetype) {
-                if (!strcmp("next", filetype->ft_name->s_name))
+            type = soundfile_firsttype();
+            while (type) {
+                if (!strcmp("next", type->t_name->s_name))
                     break;
-                filetype = soundfile_nextfiletype(filetype);
+                type = soundfile_nexttype(type);
             }
             argc -= 1; argv += 1;
         }
         else
         {
-                /* check for file type by name */
-            filetype = soundfile_firstfiletype();
-            while (filetype) {
-                if (!strcmp(flag, filetype->ft_name->s_name))
+                /* check for type by name */
+            type = soundfile_firsttype();
+            while (type) {
+                if (!strcmp(flag, type->t_name->s_name))
                     break; 
-                filetype = soundfile_nextfiletype(filetype);
+                type = soundfile_nexttype(type);
             }
-            if (!filetype)
+            if (!type)
                 return -1; /* unknown flag */
             argc -= 1; argv += 1;
         }
@@ -712,28 +712,28 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     filesym = argv->a_w.w_symbol;
 
         /* deduce from filename extension? */
-    if (!filetype)
+    if (!type)
     {
-        filetype = soundfile_firstfiletype();
-        while (filetype)
+        type = soundfile_firsttype();
+        while (type)
         {
-            if (filetype->ft_hasextensionfn(filesym->s_name, MAXPDSTRING))
+            if (type->t_hasextensionfn(filesym->s_name, MAXPDSTRING))
                 break;
-            filetype = soundfile_nextfiletype(filetype);
+            type = soundfile_nexttype(type);
         }
-        if (!filetype)
-            filetype = soundfile_firstfiletype(); /* default if unknown */
+        if (!type)
+            type = soundfile_firsttype(); /* default if unknown */
     }
 
         /* check requested endianness */
-    bigendian = filetype->ft_endiannessfn(endianness);
+    bigendian = type->t_endiannessfn(endianness);
 
         /* return to caller */
     argc--; argv++;
     *p_argc = argc;
     *p_argv = argv;
     wa->wa_filesym = filesym;
-    wa->wa_filetype = filetype;
+    wa->wa_type = type;
     wa->wa_samplerate = samplerate;
     wa->wa_bytespersample = bytespersample;
     wa->wa_bigendian = bigendian;
@@ -753,18 +753,18 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
 
         /* create file */
     strncpy(filenamebuf, filename, MAXPDSTRING);
-    if (!sf->sf_filetype->ft_hasextensionfn(filenamebuf, MAXPDSTRING-10))
-        if (!sf->sf_filetype->ft_addextensionfn(filenamebuf, MAXPDSTRING-10))
+    if (!sf->sf_type->t_hasextensionfn(filenamebuf, MAXPDSTRING-10))
+        if (!sf->sf_type->t_addextensionfn(filenamebuf, MAXPDSTRING-10))
             return -1;
     filenamebuf[MAXPDSTRING-10] = 0; /* FIXME: what is the 10 for? */
     canvas_makefilename(canvas, filenamebuf, pathbuf, MAXPDSTRING);
     if ((fd = sys_open(pathbuf, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
         return -1;
-    if (!sf->sf_filetype->ft_openfn(sf, fd))
+    if (!sf->sf_type->t_openfn(sf, fd))
         goto badcreate;
 
         /* write header */
-    headersize = sf->sf_filetype->ft_writeheaderfn(sf, nframes);
+    headersize = sf->sf_type->t_writeheaderfn(sf, nframes);
     if (headersize < 0)
         goto badcreate;
     sf->sf_headersize = headersize;
@@ -772,7 +772,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
 
 badcreate:
     if (sf->sf_fd >= 0)
-        sf->sf_filetype->ft_closefn(sf);
+        sf->sf_type->t_closefn(sf);
     else
         sys_close(fd);
     return -1;
@@ -785,7 +785,7 @@ static void soundfile_finishwrite(void *obj, const char *filename,
     if (nframes < SFMAXFRAMES)
         pd_error(obj, "soundfiler_write: %ld out of %ld frames written",
             frameswritten, nframes);
-    if (sf->sf_filetype->ft_updateheaderfn(sf, frameswritten))
+    if (sf->sf_type->t_updateheaderfn(sf, frameswritten))
         return;
     pd_error(obj, "soundfiler_write: %s: %s", filename, strerror(errno));
 }
@@ -1172,16 +1172,16 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else
         {
-                /* check for file type by name */
-            t_soundfile_filetype *filetype = soundfile_firstfiletype();
-            while (filetype) {
-                if (!strcmp(flag, filetype->ft_name->s_name))
+                /* check for type by name */
+            t_soundfile_type *type = soundfile_firsttype();
+            while (type) {
+                if (!strcmp(flag, type->t_name->s_name))
                     break;
-                filetype = soundfile_nextfiletype(filetype);
+                type = soundfile_nexttype(type);
             }
-            if (!filetype)
+            if (!type)
                 goto usage; /* unknown flag */
-            sf.sf_filetype = filetype;
+            sf.sf_type = type;
             argc -= 1; argv += 1;
         }
     }
@@ -1230,8 +1230,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
 
         /* read meta data to outlet */
-     if (meta && sf.sf_filetype->ft_readmetafn)
-         if (!sf.sf_filetype->ft_readmetafn(&sf, x->x_out2))
+     if (meta && sf.sf_type->t_readmetafn)
+         if (!sf.sf_type->t_readmetafn(&sf, x->x_out2))
              pd_error(x, "soundfiler_read: reading meta data failed");
 
     if (resize)
@@ -1265,8 +1265,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
 
         /* no tablenames, try to use header info instead of reading */
     if (argc == 0 &&
-        !(sf.sf_filetype == &sf_rawfiletype || /* always read raw */
-        finalsize == SFMAXFRAMES))             /* unknown, read */
+        !(sf.sf_type == &sf_rawtype || /* always read raw */
+        finalsize == SFMAXFRAMES))     /* unknown, read */
     {
         framesread = finalsize;
         goto done;
@@ -1279,7 +1279,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         size_t thisread = finalsize - framesread;
         thisread = (thisread > bufframes ? bufframes : thisread);
         nframes =
-            sf.sf_filetype->ft_readsamplesfn(&sf, (unsigned char *)sampbuf,
+            sf.sf_type->t_readsamplesfn(&sf, (unsigned char *)sampbuf,
                 thisread * sf.sf_bytesperframe) / sf.sf_bytesperframe;
         if (nframes <= 0) break;
         soundfile_xferin_words(&sf, argc, vecs, framesread,
@@ -1310,13 +1310,13 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename [tablename]...");
-    post("flags: -skip <n> -resize -maxsize <n> %s...", sf_filetypeargs);
+    post("flags: -skip <n> -resize -maxsize <n> %s...", sf_typeargs);
     post("-raw <headerbytes> <channels> <bytespersample> "
          "<endian (b, l, or n)>");
 done:
-    if (sf.sf_fd >= 0 && sf.sf_filetype)
+    if (sf.sf_fd >= 0 && sf.sf_type)
     {
-        sf.sf_filetype->ft_closefn(&sf);
+        sf.sf_type->t_closefn(&sf);
         fd = -1;
     }
     if (fd >= 0)
@@ -1341,7 +1341,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     soundfile_clear(sf);
     if (soundfiler_parsewriteargs(obj, &argc, &argv, &wa))
         goto usage;
-    sf->sf_filetype = wa.wa_filetype;
+    sf->sf_type = wa.wa_type;
     sf->sf_nchannels = argc;
     sf->sf_samplerate = wa.wa_samplerate;
     sf->sf_bytespersample = wa.wa_bytespersample;
@@ -1414,7 +1414,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         datasize = sf->sf_bytesperframe * thiswrite;
         soundfile_xferout_words(sf, vectors, (unsigned char *)sampbuf,
             thiswrite, wa.wa_onsetframes, normfactor);
-        byteswritten = sf->sf_filetype->ft_writesamplesfn(sf,
+        byteswritten = sf->sf_type->t_writesamplesfn(sf,
             (const unsigned char*)sampbuf, datasize);
         if (byteswritten < datasize)
         {
@@ -1430,19 +1430,19 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     {
         soundfile_finishwrite(obj, wa.wa_filesym->s_name, sf,
                 wa.wa_nframes, frameswritten);
-        sf->sf_filetype->ft_closefn(sf);
+        sf->sf_type->t_closefn(sf);
         fd = -1;
     }
     return frameswritten;
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
-    post("flags: -skip <n> -nframes <n> -bytes <n> %s ...", sf_filetypeargs);
+    post("flags: -skip <n> -nframes <n> -bytes <n> %s ...", sf_typeargs);
     post("-big -little -normalize");
     post("(defaults to a 16-bit wave file)");
 fail:
-    if (sf->sf_fd >= 0 && sf->sf_filetype)
+    if (sf->sf_fd >= 0 && sf->sf_type)
     {
-        sf->sf_filetype->ft_closefn(sf);
+        sf->sf_type->t_closefn(sf);
         fd = -1;
     }
     soundfile_clear(sf); /* clear any bad data */
@@ -1461,14 +1461,14 @@ static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     outlet_float(x->x_obj.ob_outlet, (t_float)frameswritten);
 }
 
-    /* list supported file types */
+    /* list supported types implementations */
 static void soundfiler_list(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     int i;
-    t_atom list[SFMAXFILETYPES];
-    for (i = 0; i < sf_numfiletypes; i++)
-        SETSYMBOL(&list[i], sf_filetypes[i].ft_name);
+    t_atom list[SFMAXTYPES];
+    for (i = 0; i < sf_numtypes; i++)
+        SETSYMBOL(&list[i], sf_types[i].t_name);
     outlet_list(x->x_obj.ob_outlet, &s_list, i, list);
 }
 
@@ -1642,14 +1642,14 @@ static void *readsf_child_main(void *zz)
             if (x->x_sf.sf_fd >= 0)
             {
                 pthread_mutex_unlock(&x->x_mutex);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
                 x->x_sf.sf_fd = -1;
                 x->x_sf.sf_data = NULL; /* closefn freed this */
                 if (x->x_requestcode != REQUEST_BUSY)
                     goto lost;
             }
-                /* cache sf *after* closing as x->sf's fd, filetype, & data
+                /* cache sf *after* closing as x->sf's fd, type, & data
                     may have changed in readsf_open() */
             soundfile_copy(&sf, &x->x_sf);
 
@@ -1773,7 +1773,7 @@ static void *readsf_child_main(void *zz)
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
-                bytesread = sf.sf_filetype->ft_readsamplesfn(&sf,
+                bytesread = sf.sf_type->t_readsamplesfn(&sf,
                     (unsigned char*)(buf + fifohead), wantbytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY)
@@ -1822,10 +1822,10 @@ static void *readsf_child_main(void *zz)
                 set EOF and signal once more */
             if (sf.sf_fd >= 0)
             {
-                    /* use cached sf as x->sf's fd, filetype, & data
+                    /* use cached sf as x->sf's fd, type, & data
                     may have changed in readsf_open() */
                 pthread_mutex_unlock(&x->x_mutex);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
             }
             sfread_cond_signal(&x->x_answercondition);
@@ -1837,7 +1837,7 @@ static void *readsf_child_main(void *zz)
             {
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
                 x->x_sf.sf_fd = -1;
                 x->x_sf.sf_data = NULL; /* closefn freed this */
@@ -1852,7 +1852,7 @@ static void *readsf_child_main(void *zz)
             {
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
                 x->x_sf.sf_fd = -1;
                 x->x_sf.sf_data = NULL; /* closefn freed this */
@@ -2036,26 +2036,26 @@ static void readsf_float(t_readsf *x, t_floatarg f)
         open [flags] filename [onsetframes headersize channels bytespersample endianness]
         (if headersize is zero, header is taken to be automatically detected;
         thus, use the special "-1" to mean a truly headerless file.)
-        if filetype flag is set, pass this to open unless headersize is -1 */
+        if type implementation is set, pass this to open unless headersize is -1 */
 static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *filesym, *endian;
     t_float onsetframes, headersize, nchannels, bytespersample;
-    t_soundfile_filetype *filetype = NULL;
+    t_soundfile_type *type = NULL;
 
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
         const char *flag = argv->a_w.w_symbol->s_name + 1;
 
-            /* check for file type by name */
-        filetype = soundfile_firstfiletype();
-        while (filetype) {
-            if (!strcmp(flag, filetype->ft_name->s_name))
+            /* check for type by name */
+        type = soundfile_firsttype();
+        while (type) {
+            if (!strcmp(flag, type->t_name->s_name))
                 break;
-            filetype = soundfile_nextfiletype(filetype);
+            type = soundfile_nexttype(type);
         }
-        if (!filetype)
+        if (!type)
             goto usage; /* unknown flag */
         argc -= 1; argv += 1;
     }
@@ -2087,14 +2087,14 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_sf.sf_nchannels = (nchannels >= 1 ? nchannels : 1);
     x->x_sf.sf_bytespersample = (bytespersample > 2 ? bytespersample : 2);
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
-    if (filetype && x->x_sf.sf_headersize >= 0)
+    if (type && x->x_sf.sf_headersize >= 0)
     {
         post("readsf_open: '-%s' overridden by headersize",
-            filetype->ft_name->s_name);
-        x->x_sf.sf_filetype = NULL;
+            type->t_name->s_name);
+        x->x_sf.sf_type = NULL;
     }
     else
-        x->x_sf.sf_filetype = filetype;
+        x->x_sf.sf_type = type;
     x->x_eof = 0;
     x->x_fileerror = 0;
     x->x_state = STATE_STARTUP;
@@ -2104,7 +2104,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
 usage:
     pd_error(x, "usage: open [flags] filename...");
     post("[onset] [headersize] [nchannels] [bytespersample] [endian (b or l)]");
-    post("flags: %s", sf_filetypeargs);
+    post("flags: %s", sf_typeargs);
 }
 
 static void readsf_dsp(t_readsf *x, t_signal **sp)
@@ -2230,7 +2230,7 @@ static void *writesf_child_main(void *zz)
                 pthread_mutex_unlock(&x->x_mutex);
                 soundfile_finishwrite(x, filename, &sf,
                     SFMAXFRAMES, frameswritten);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
 
                 x->x_sf.sf_fd = -1;
@@ -2326,7 +2326,7 @@ static void *writesf_child_main(void *zz)
                 fifotail = x->x_fifotail;
                 soundfile_copy(&sf, &x->x_sf);
                 pthread_mutex_unlock(&x->x_mutex);
-                byteswritten = sf.sf_filetype->ft_writesamplesfn(&sf,
+                byteswritten = sf.sf_type->t_writesamplesfn(&sf,
                     (unsigned char*)(buf + fifotail), writebytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY &&
@@ -2368,7 +2368,7 @@ static void *writesf_child_main(void *zz)
                 pthread_mutex_unlock(&x->x_mutex);
                 soundfile_finishwrite(x, filename, &sf,
                     SFMAXFRAMES, frameswritten);
-                sf.sf_filetype->ft_closefn(&sf);
+                sf.sf_type->t_closefn(&sf);
                 pthread_mutex_lock(&x->x_mutex);
                 x->x_sf.sf_fd = -1;
                 x->x_sf.sf_data = NULL; /* closefn freed this */
@@ -2519,7 +2519,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (soundfiler_parsewriteargs(x, &argc, &argv, &wa))
     {
         pd_error(x, "usage: open [flags] filename...");
-        post("flags: -bytes <n> %s ...", sf_filetypeargs);
+        post("flags: -bytes <n> %s ...", sf_typeargs);
         post("-big -little -rate <n>");
         return;
     }
@@ -2534,7 +2534,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
     }
     x->x_filename = wa.wa_filesym->s_name;
-    x->x_sf.sf_filetype = wa.wa_filetype;
+    x->x_sf.sf_type = wa.wa_type;
     if (wa.wa_samplerate > 0)
         x->x_sf.sf_samplerate = wa.wa_samplerate;
     else if (x->x_insamplerate > 0)
@@ -2564,8 +2564,8 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     pthread_mutex_unlock(&x->x_mutex);
 }
 
-    /** write metadata method.  Called as: meta args... and passed to
-        filetype implementation */
+    /** write metadata method.  Called as: meta args... and passed to the
+        type implementation */
 static void writesf_meta(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->x_state == STATE_IDLE)
@@ -2578,22 +2578,22 @@ static void writesf_meta(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         pd_error(x, "writesf: meta after 'start'");
         return;
     }
-    if (!x->x_sf.sf_filetype)
+    if (!x->x_sf.sf_type)
     {
         /* this shouldn't happen... */
-        pd_error(x, "writesf: meta ignored, unknown filetype");
+        pd_error(x, "writesf: meta ignored, unknown type implementation");
         return;
     }
-    if (!x->x_sf.sf_filetype->ft_writemetafn)
+    if (!x->x_sf.sf_type->t_writemetafn)
     {
         pd_error(x, "writesf: %s does not support writing metadata",
-            x->x_sf.sf_filetype->ft_name->s_name);
+            x->x_sf.sf_type->t_name->s_name);
         return;
     }
-    if (!x->x_sf.sf_filetype->ft_writemetafn(&x->x_sf, argc, argv))
+    if (!x->x_sf.sf_type->t_writemetafn(&x->x_sf, argc, argv))
     {
         pd_error(x, "writesf: writing %s metadata failed",
-            x->x_sf.sf_filetype->ft_name->s_name);
+            x->x_sf.sf_type->t_name->s_name);
     }
 }
 
@@ -2673,7 +2673,7 @@ static void writesf_setup(void)
 
 void d_soundfile_setup(void)
 {
-    soundfile_filetype_setup();
+    soundfile_type_setup();
     soundfiler_setup();
     readsf_setup();
     writesf_setup();
