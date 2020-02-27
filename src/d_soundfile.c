@@ -1035,14 +1035,14 @@ static t_soundfiler *soundfiler_new(void)
     return x;
 }
 
-static void soundfiler_readascii(t_soundfiler *x, const char *filename,
+static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     int narray, t_garray **garrays, t_word **vecs, int resize, int finalsize)
 {
     t_binbuf *b = binbuf_new();
     int n, i, j, nframes, vecsize;
     t_atom *atoms, *ap;
     if (binbuf_read_via_canvas(b, filename, x->x_canvas, 0))
-        return;
+        return 0;
     n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
     nframes = n / narray;
@@ -1052,7 +1052,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     if (nframes < 1)
     {
         pd_error(x, "soundfiler_read: %s: empty or very short file", filename);
-        return;
+        return 0;
     }
     if (resize)
     {
@@ -1083,7 +1083,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
 #ifdef DEBUG_SOUNDFILE
     post("read 3");
 #endif
-    
+    return nframes;
 }
 
     /* soundfiler_read ...
@@ -1095,6 +1095,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
            -raw <headersize channels bytes endian>
            -resize
            -maxsize <max-size>
+           -ascii
     */
 
 static void soundfiler_read(t_soundfiler *x, t_symbol *s,
@@ -1223,8 +1224,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     }
     if (ascii)
     {
-        soundfiler_readascii(x, filename,
+        framesread = soundfiler_readascii(x, filename,
             argc, garrays, vecs, resize, finalsize);
+        outlet_float(x->x_obj.ob_outlet, (t_float)framesread);
         return;
     }
 

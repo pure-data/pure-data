@@ -59,8 +59,7 @@ soundfile need not match the number of arrays given (extras are dropped
 and unsupplied channels are zeroed out.), f 64;
 #X text 330 184 optionally resize;
 #X text 436 214 override header;
-#X msg 66 241 read -ascii table.txt array1;
-#X text 279 240 ... read from an ascii file, f 32;
+#X text 331 240 ... read from an ascii file, f 28;
 #X text 44 454 Left outlet outputs the number of samples. Right outlet
 outputs info as a list: samplerate \, headersize \, num channels \,
 bytespersample \, & endianness ("b" or "l"). If no array name is given
@@ -71,6 +70,7 @@ fields are replaced by zero. If multiple arrays are specified \, the
 first elements of each array should come first in the file \, followed
 by all the second elements and so on., f 61;
 #X text 787 635 updated for Pd version 0.51;
+#X msg 66 241 read -ascii -resize table.txt array1;
 #X connect 2 0 9 0;
 #X connect 2 1 33 0;
 #X connect 3 0 2 0;
@@ -79,4 +79,4 @@ by all the second elements and so on., f 61;
 #X connect 10 0 2 0;
 #X connect 11 0 2 0;
 #X connect 12 0 2 0;
-#X connect 41 0 2 0;
+#X connect 45 0 2 0;
