@@ -40,6 +40,8 @@ objects use Posix-like threads. */
 
 #define SCALE (1. / (1024. * 1024. * 1024. * 2.))
 
+#define TYPENAME(type) type->t_name->s_name
+
     /* float sample conversion wrapper */
 typedef union _floatuint {
   float f;
@@ -123,7 +125,7 @@ static void object_readerror(const void *x, const char *header,
     {
             /* type implementation error? */
         pd_error(x, "%s: %s: unknown or bad header format (%s)",
-            header, filename, sf->sf_type->t_name->s_name);
+            header, filename, TYPENAME(sf->sf_type));
         if (errnum != EIO && sf->sf_type->t_strerrorfn)
             error("%s", soundfile_strerror(errnum, sf));
     }
@@ -183,7 +185,7 @@ int soundfile_addtype(t_soundfile_type *type)
     if (type->t_minheadersize > sf_minheadersize)
         sf_minheadersize = type->t_minheadersize;
     strcat(sf_typeargs, (sf_numtypes > 1 ? " -" : "-"));
-    strcat(sf_typeargs, type->t_name->s_name);
+    strcat(sf_typeargs, TYPENAME(type));
     return 1;
 }
 
@@ -687,7 +689,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
                 /* handle old "-nextsep" alias */
             type = soundfile_firsttype();
             while (type) {
-                if (!strcmp("next", type->t_name->s_name))
+                if (!strcmp("next", TYPENAME(type)))
                     break;
                 type = soundfile_nexttype(type);
             }
@@ -698,7 +700,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
                 /* check for type by name */
             type = soundfile_firsttype();
             while (type) {
-                if (!strcmp(flag, type->t_name->s_name))
+                if (!strcmp(flag, TYPENAME(type)))
                     break; 
                 type = soundfile_nexttype(type);
             }
@@ -727,6 +729,11 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
 
         /* check requested endianness */
     bigendian = type->t_endiannessfn(endianness);
+    if (endianness != -1 && endianness != bigendian)
+    {
+        error("%s: file forced to %s endian", TYPENAME(type),
+            (bigendian ? "big" : "little"));
+    }
 
         /* return to caller */
     argc--; argv++;
@@ -1175,7 +1182,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 /* check for type by name */
             t_soundfile_type *type = soundfile_firsttype();
             while (type) {
-                if (!strcmp(flag, type->t_name->s_name))
+                if (!strcmp(flag, TYPENAME(type)))
                     break;
                 type = soundfile_nexttype(type);
             }
@@ -2051,7 +2058,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
             /* check for type by name */
         type = soundfile_firsttype();
         while (type) {
-            if (!strcmp(flag, type->t_name->s_name))
+            if (!strcmp(flag, TYPENAME(type)))
                 break;
             type = soundfile_nexttype(type);
         }
@@ -2089,8 +2096,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_sf.sf_bytesperframe = x->x_sf.sf_nchannels * x->x_sf.sf_bytespersample;
     if (type && x->x_sf.sf_headersize >= 0)
     {
-        post("readsf_open: '-%s' overridden by headersize",
-            type->t_name->s_name);
+        post("readsf_open: '-%s' overridden by headersize", TYPENAME(type));
         x->x_sf.sf_type = NULL;
     }
     else
@@ -2102,8 +2108,8 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     pthread_mutex_unlock(&x->x_mutex);
     return;
 usage:
-    pd_error(x, "usage: open [flags] filename...");
-    post("[onset] [headersize] [nchannels] [bytespersample] [endian (b or l)]");
+    pd_error(x, "usage: open [flags] filename [onset] [headersize]...");
+    error("[nchannels] [bytespersample] [endian (b or l)]");
     post("flags: %s", sf_typeargs);
 }
 
@@ -2587,13 +2593,13 @@ static void writesf_meta(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (!x->x_sf.sf_type->t_writemetafn)
     {
         pd_error(x, "writesf: %s does not support writing metadata",
-            x->x_sf.sf_type->t_name->s_name);
+            TYPENAME(x->x_sf.sf_type));
         return;
     }
     if (!x->x_sf.sf_type->t_writemetafn(&x->x_sf, argc, argv))
     {
         pd_error(x, "writesf: writing %s metadata failed",
-            x->x_sf.sf_type->t_name->s_name);
+            TYPENAME(x->x_sf.sf_type));
     }
 }
 

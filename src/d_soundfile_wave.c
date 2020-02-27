@@ -481,8 +481,6 @@ static int wave_addextension(char *filename, size_t size)
     /* force little endian */
 static int wave_endianness(int endianness)
 {
-    if (endianness == 1)
-        error("wave: file forced to little endian");
     return 0;
 }
 
