@@ -180,7 +180,7 @@ static int caf_readheader(t_soundfile *sf)
     t_descchunk *desc = &buf.b_descchunk;
 
         /* file header */
-    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
+    if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
     if (strncmp(head->h_id, "caff", 4))
         return 0;
@@ -234,8 +234,7 @@ static int caf_readheader(t_soundfile *sf)
     headersize += CAFDESCSIZE;
 
         /* prepare second chunk */
-    if (soundfile_readbytes(sf->sf_fd, headersize, buf.b_c,
-                            CAFCHUNKSIZE) < CAFCHUNKSIZE)
+    if (fd_read(sf->sf_fd, headersize, buf.b_c, CAFCHUNKSIZE) < CAFCHUNKSIZE)
         return 0;
 
         /* read chunks in loop until we find the sound data chunk */
@@ -252,8 +251,8 @@ static int caf_readheader(t_soundfile *sf)
             if (sys_verbose)
             {
                 t_datachunk *data = &buf.b_datachunk;
-                if (soundfile_readbytes(sf->sf_fd, headersize + CAFCHUNKSIZE,
-                                        buf.b_c + CAFCHUNKSIZE, 4) < 4)
+                if (fd_read(sf->sf_fd, headersize + CAFCHUNKSIZE,
+                        buf.b_c + CAFCHUNKSIZE, 4) < 4)
                     return 0;
                 caf_postdata(data, swap);
             }
@@ -276,8 +275,7 @@ static int caf_readheader(t_soundfile *sf)
                 caf_postchunk(chunk, swap);
         }
         headersize = seekto;
-        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
-                                CAFCHUNKSIZE) < CAFCHUNKSIZE)
+        if (fd_read(sf->sf_fd, seekto, buf.b_c, CAFCHUNKSIZE) < CAFCHUNKSIZE)
             return 0;
     }
 
@@ -338,7 +336,7 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
         caf_postdata(&data, swap);
     }
 
-    byteswritten = soundfile_writebytes(sf->sf_fd, 0, buf, headersize);
+    byteswritten = fd_write(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
@@ -349,8 +347,8 @@ static int caf_updateheader(t_soundfile *sf, size_t nframes)
     int64_t datasize = swap8s((nframes * sf->sf_bytesperframe) + 4, swap);
 
         /* data chunk size */
-    if (soundfile_writebytes(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4,
-                             (char *)&datasize, 8) < 8) /* + edit count */
+    if (fd_write(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4,
+            (char *)&datasize, 8) < 8) /* + edit count */
         return 0;
 
     if (sys_verbose)

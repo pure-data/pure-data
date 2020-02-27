@@ -127,7 +127,7 @@ static int next_readheader(t_soundfile *sf)
     } buf = {0};
     t_nextstep *next = &buf.b_nextstep;
 
-    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
+    if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
 
     bigendian = next_isbigendian(next);
@@ -211,8 +211,7 @@ static int next_writeheader(t_soundfile *sf, size_t nframes)
     if (sys_verbose)
         next_posthead(&next, swap);
 
-    byteswritten = soundfile_writebytes(sf->sf_fd, 0,
-                                        (char *)&next, headersize);
+    byteswritten = fd_write(sf->sf_fd, 0, (char *)&next, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
@@ -226,7 +225,7 @@ static int next_updateheader(t_soundfile *sf, size_t nframes)
     if (datasize > NEXTMAXBYTES)
         datasize = NEXT_UNKNOWN_SIZE;
     datasize = swap4(datasize, swap);
-    if (soundfile_writebytes(sf->sf_fd, 8, (char *)&datasize, 4) < 4)
+    if (fd_write(sf->sf_fd, 8, (char *)&datasize, 4) < 4)
         return 0;
 
     if (sys_verbose)

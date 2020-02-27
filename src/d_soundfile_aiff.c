@@ -233,14 +233,6 @@ static int aiff_isaiffc(const t_soundfile *sf)
 {
     return (!sf->sf_bigendian || sf->sf_bytespersample == 4);
 }
-/** read first chunk, returns filled chunk and offset on success or -1 */
- static off_t aiff_firstchunk(const t_soundfile *sf, t_chunk *chunk)
- {
-     if (soundfile_readbytes(sf->sf_fd, AIFFHEADSIZE, (char *)chunk,
-                                 AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
-         return -1;
-     return AIFFHEADSIZE;
- }
 
 /* ------------------------- AIFF ------------------------- */
 
@@ -270,7 +262,7 @@ static int aiff_readheader(t_soundfile *sf)
     t_chunk *chunk = &buf.b_chunk;
 
         /* file header */
-    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
+    if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
     if (strncmp(head->h_formtype, "AIFF", 4))
     {
@@ -301,9 +293,8 @@ static int aiff_readheader(t_soundfile *sf)
                 error("aiff: found FVER chunk, but not AIFF-C");
                 return 0;
             }
-            if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
-                                    buf.b_c + AIFFCHUNKSIZE,
-                                    chunksize) < chunksize)
+            if (fd_read(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                    buf.b_c + AIFFCHUNKSIZE, chunksize) < chunksize)
                 return 0;
             if (swap4(buf.b_verchunk.vc_timestamp, swap) != AIFFCVER1)
             {
@@ -316,9 +307,8 @@ static int aiff_readheader(t_soundfile *sf)
                 /* common chunk */
             int bitspersample, isfloat = 0;
             t_commchunk *comm = &buf.b_commchunk;
-            if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
-                                    buf.b_c + AIFFCHUNKSIZE,
-                                    chunksize) < chunksize)
+            if (fd_read(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                    buf.b_c + AIFFCHUNKSIZE, chunksize) < chunksize)
                 return 0;
             if (sys_verbose)
                 aiff_postcomm(comm, isaiffc, swap);
@@ -376,8 +366,8 @@ static int aiff_readheader(t_soundfile *sf)
             if (sys_verbose)
             {
                 t_datachunk *data = &buf.b_datachunk;
-                if (soundfile_readbytes(sf->sf_fd, headersize + AIFFCHUNKSIZE,
-                                        buf.b_c + AIFFCHUNKSIZE, 8) < 8)
+                if (fd_read(sf->sf_fd, headersize + AIFFCHUNKSIZE,
+                        buf.b_c + AIFFCHUNKSIZE, 8) < 8)
                     return 0;
                 if (sys_verbose)
                     aiff_postdata(data, swap);
@@ -398,8 +388,7 @@ static int aiff_readheader(t_soundfile *sf)
             if (sys_verbose)
                 aiff_postchunk(chunk, swap);
         }
-        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
-                                AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        if (fd_read(sf->sf_fd, seekto, buf.b_c, AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
             return 0;
         headersize = seekto;
     }
@@ -505,7 +494,7 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
         aiff_postdata(&data, swap);
     }
 
-    byteswritten = soundfile_writebytes(sf->sf_fd, 0, buf, headersize);
+    byteswritten = fd_read(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
@@ -532,21 +521,19 @@ static int aiff_updateheader(t_soundfile *sf, size_t nframes)
 
         /* num frames */
     uinttmp = swap4((uint32_t)nframes, swap);
-    if (soundfile_writebytes(sf->sf_fd, headersize + 10,
-                             (char *)&uinttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, headersize + 10, (char *)&uinttmp, 4) < 4)
         return 0;
     headersize += commsize;
 
         /* data chunk size */
     inttmp = swap4s((int32_t)datasize + 8, swap);
-    if (soundfile_writebytes(sf->sf_fd, headersize + 4,
-                             (char *)&inttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, headersize + 4, (char *)&inttmp, 4) < 4)
         return 0;
     headersize += AIFFDATASIZE;
 
         /* file header chunk size */
     inttmp = swap4s((int32_t)(headersize + datasize - 8), swap);
-    if (soundfile_writebytes(sf->sf_fd, 4, (char *)&inttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, 4, (char *)&inttmp, 4) < 4)
         return 0;
 
     if (sys_verbose)

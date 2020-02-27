@@ -207,7 +207,7 @@ static int wave_readheader(t_soundfile *sf)
     t_chunk *chunk = &buf.b_chunk;
 
         /* file header */
-    if (soundfile_readbytes(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
+    if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
     if (strncmp(buf.b_c + 8, "WAVE", 4))
         return 0;
@@ -231,8 +231,8 @@ static int wave_readheader(t_soundfile *sf)
                 /* format chunk */
             int formattag;
             t_formatchunk *format = &buf.b_formatchunk;
-            if (soundfile_readbytes(sf->sf_fd, headersize + 8,
-                                    buf.b_c + 8, chunksize) < chunksize)
+            if (fd_read(sf->sf_fd, headersize + 8,
+                    buf.b_c + 8, chunksize) < chunksize)
                 return 0;
             if (sys_verbose)
                 wave_postformat(format, swap);
@@ -284,8 +284,7 @@ static int wave_readheader(t_soundfile *sf)
             if (sys_verbose)
                 wave_postchunk(chunk, swap);
         }
-        if (soundfile_readbytes(sf->sf_fd, seekto, buf.b_c,
-                                WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        if (fd_read(sf->sf_fd, seekto, buf.b_c, WAVECHUNKSIZE) < WAVECHUNKSIZE)
             return 0;
         headersize = seekto;
     }
@@ -389,7 +388,7 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
         wave_postchunk(&data, swap);
     }
 
-    byteswritten = soundfile_writebytes(sf->sf_fd, 0, buf, headersize);
+    byteswritten = fd_write(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
@@ -410,8 +409,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
 
             /* fact chunk sample length */
         uinttmp = swap4((uint32_t)(nframes * sf->sf_nchannels), swap);
-        if (soundfile_writebytes(sf->sf_fd, headersize + 8,
-                                 (char *)&uinttmp, 4) < 4)
+        if (fd_write(sf->sf_fd, headersize + 8, (char *)&uinttmp, 4) < 4)
             return 0;
         headersize += WAVEFACTSIZE;
     }
@@ -419,8 +417,7 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
         /* sound data chunk size */
     datasize += padbyte;
     uinttmp = swap4((uint32_t)datasize, swap);
-    if (soundfile_writebytes(sf->sf_fd, headersize + 4,
-                             (char *)&uinttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, headersize + 4, (char *)&uinttmp, 4) < 4)
         return 0;
     headersize += WAVECHUNKSIZE;
 
@@ -428,14 +425,14 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
     if (padbyte)
     {
         uinttmp = 0;
-        if (soundfile_writebytes(sf->sf_fd, headersize + datasize - 1,
-                                 (char *)&uinttmp, 1) < 1)
-        return 0;
+        if (fd_write(sf->sf_fd, headersize + datasize - 1,
+                (char *)&uinttmp, 1) < 1)
+            return 0;
     }
 
         /* file header chunk size */
     uinttmp = swap4((uint32_t)(headersize + datasize - 8), swap);
-    if (soundfile_writebytes(sf->sf_fd, 4, (char *)&uinttmp, 4) < 4)
+    if (fd_write(sf->sf_fd, 4, (char *)&uinttmp, 4) < 4)
         return 0;
 
     if (sys_verbose)

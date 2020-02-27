@@ -218,14 +218,14 @@ ssize_t soundfile_filetype_writesamples(t_soundfile *sf,
 
 /* ----- read write ----- */
 
-ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size)
+ssize_t fd_read(int fd, off_t offset, char *dst, size_t size)
 {
     if (lseek(fd, offset, SEEK_SET) != offset)
         return -1;
     return read(fd, dst, size);
 }
 
-ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size)
+ssize_t fd_write(int fd, off_t offset, const char *src, size_t size)
 {
     if (lseek(fd, offset, SEEK_SET) != offset)
         return -1;
