@@ -10,6 +10,7 @@
 /* WAVE (Waveform Audio File Format)
 
   * RIFF variant with sections split into data "chunks"
+  * chunk sizes do not include the chunk id or size (- 8)
   * chunk and sound data are little endian
   * format and sound data chunks are required
   * format tags:
@@ -483,12 +484,12 @@ void soundfile_wave_setup()
     t_soundfile_filetype wave = {
         gensym("wave"),
         WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
+        NULL,  /* data */
         wave_isheader,
         soundfile_filetype_open,
         soundfile_filetype_close,
         wave_readheader,
         wave_writeheader,
-        NULL, /* writemetafn */
         wave_updateheader,
         wave_hasextension,
         wave_addextension,
@@ -496,7 +497,8 @@ void soundfile_wave_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL
+        NULL, /* readmetafn */
+        NULL  /* writemetafn */
     };
     soundfile_addfiletype(&wave);
 }

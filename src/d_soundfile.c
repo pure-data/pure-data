@@ -167,7 +167,7 @@ int soundfile_addfiletype(t_soundfile_filetype *ft)
     return 1;
 }
 
-    /** return file types head */
+    /** return file type list head */
 static t_soundfile_filetype *soundfile_firstfiletype() {
     return &sf_filetypes[0];
 }
@@ -1200,8 +1200,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             argc, garrays, vecs, resize, finalsize);
         return;
     }
-    if (meta) /* pass outlet to filetype readheaderfn for meta data output */
-        sf.sf_metaout = x->x_out2;
 
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
     if (fd < 0)
@@ -1210,6 +1208,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         goto done;
     }
     framesinfile = sf.sf_bytelimit / sf.sf_bytesperframe;
+
+        /* read meta data to outlet */
+     if (meta && sf.sf_filetype->ft_readmetafn)
+         if (!sf.sf_filetype->ft_readmetafn(&sf, x->x_out2))
+             pd_error(x, "soundfiler_read: reading meta data failed");
 
     if (resize)
     {

@@ -279,12 +279,12 @@ void soundfile_next_setup()
     t_soundfile_filetype next = {
         gensym("next"),
         NEXTHEADSIZE - 4, /* without info string */
+        NULL,  /* data */
         next_isheader,
         soundfile_filetype_open,
         soundfile_filetype_close,
         next_readheader,
         next_writeheader,
-        NULL, /* writemetafn */
         next_updateheader,
         next_hasextension,
         next_addextension,
@@ -292,7 +292,8 @@ void soundfile_next_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL
+        NULL, /* readmetafn */
+        NULL  /* writemetafn */
     };
     soundfile_addfiletype(&next);
 }

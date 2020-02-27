@@ -12,6 +12,7 @@
 /* CAF (Core Audio Format)
 
   * RIFF variant with sections split into data "chunks"
+  * chunk sizes do not include the chunk id or size (- 12)
   * chunk data is big-endian
   * sound data can be big or little endian (set in desc fmtflags)
   * header is immediately followed by description chunk
@@ -393,12 +394,12 @@ void soundfile_caf_setup()
     t_soundfile_filetype caf = {
         gensym("caf"),
         CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
+        NULL,  /* data */
         caf_isheader,
         soundfile_filetype_open,
         soundfile_filetype_close,
         caf_readheader,
         caf_writeheader,
-        NULL, /* writemetafn */
         caf_updateheader,
         caf_hasextension,
         caf_addextension,
@@ -406,7 +407,8 @@ void soundfile_caf_setup()
         soundfile_filetype_seektoframe,
         soundfile_filetype_readsamples,
         soundfile_filetype_writesamples,
-        NULL
+        NULL, /* readmetafn */
+        NULL  /* writemetafn */
     };
     soundfile_addfiletype(&caf);
 }
