@@ -1172,15 +1172,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else if (!strcmp(flag, "ascii"))
         {
-            if (sf.sf_headersize >= 0)
-                post("soundfiler_read: '-raw' overridden by '-ascii'");
             ascii = 1;
             argc--; argv++;
         }
         else if (!strcmp(flag, "raw"))
         {
-            if (ascii)
-                post("soundfiler_read: '-raw' overridden by '-ascii'");
             if (argc < 5 ||
                 argv[1].a_type != A_FLOAT ||
                 ((sf.sf_headersize = argv[1].a_w.w_float) < 0) ||
@@ -1243,6 +1239,29 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             argc -= 1; argv += 1;
         }
     }
+    if (ascii)
+    {
+        if (sf.sf_headersize >= 0)
+        {
+            post("soundfiler_read: '-raw' overridden by '-ascii'");
+            sf.sf_headersize = -1;
+        }
+        if (sf.sf_type)
+        {
+            post("soundfiler_read: '-%s' overridden by '-ascii'",
+                TYPENAME(sf.sf_type));
+            sf.sf_type = NULL;
+        }
+    }
+    else if (sf.sf_headersize >= 0)
+    {
+        if (sf.sf_type)
+        {
+            post("soundfiler_read: '-%s' overridden by '-raw'",
+                TYPENAME(sf.sf_type));
+            sf.sf_type = NULL;
+        }
+    }
     if (argc < 1 ||                           /* no filename or tables */
         argc > MAXSFCHANS + 1 ||              /* too many tables */
         argv[0].a_type != A_SYMBOL)           /* bad filename */
@@ -1274,6 +1293,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     }
     if (ascii)
     {
+        if (!argc)
+        {
+            pd_error(x, "'-ascii' requires at least one table");
+            goto done;
+        }
         framesread = soundfiler_readascii(x, filename,
             argc, garrays, vecs, resize, finalsize);
         outlet_float(x->x_obj.ob_outlet, (t_float)framesread);
@@ -1369,7 +1393,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename [tablename]...");
-    post("flags: -skip <n> -resize -maxsize <n> %s --...", sf_typeargs);
+    post("flags: -skip <n> -resize -maxsize <n> -ascii %s --...", sf_typeargs);
     post("-raw <headerbytes> <channels> <bytespersample> "
          "<endian (b, l, or n)>");
 done:
