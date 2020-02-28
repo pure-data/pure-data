@@ -605,6 +605,7 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
          -next / -nextstep
          -big
          -little
+         -ascii
          -- (stop parsing flags)
     */
 
@@ -621,6 +622,7 @@ typedef struct _soundfiler_writeargs
     size_t wa_nframes;                 /* number of sample frames to write */
     size_t wa_onsetframes;             /* sample frame onset when writing */
     int wa_normalize;                  /* normalize samples? */
+    int wa_ascii;                      /* write ascii? */
     int wa_nmeta;                      /* number of meta messages */
     struct
     {
@@ -642,7 +644,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     t_atom *argv = *p_argv;
     int samplerate = -1, bytespersample = 2, bigendian = 0, endianness = -1;
     size_t nframes = SFMAXFRAMES, onsetframes = 0;
-    int normalize = 0;
+    int normalize = 0, ascii = 0;
     t_symbol *filesym;
     t_soundfile_type *type = NULL;
 
@@ -723,6 +725,11 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
             wa->wa_meta[wa->wa_nmeta].argv = v;
             wa->wa_nmeta++;
         }
+        else if (!strcmp(flag, "ascii"))
+        {
+            ascii = 1;
+            argc -= 1; argv += 1;
+        }
         else if (!strcmp(flag, "-"))
         {
             argc -= 1; argv += 1;
@@ -791,6 +798,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     wa->wa_nframes = nframes;
     wa->wa_onsetframes = onsetframes;
     wa->wa_normalize = normalize;
+    wa->wa_ascii = ascii;
     return 0;
 }
 
@@ -1086,7 +1094,10 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     int n, i, j, nframes, vecsize;
     t_atom *atoms, *ap;
     if (binbuf_read_via_canvas(b, filename, x->x_canvas, 0))
-        return 0;
+    {
+        nframes = 0;
+        goto done;
+    }
     n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
     nframes = n / narray;
@@ -1096,7 +1107,8 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     if (nframes < 1)
     {
         pd_error(x, "soundfiler_read: %s: empty or very short file", filename);
-        return 0;
+        nframes = 0;
+        goto done;
     }
     if (resize)
     {
@@ -1127,6 +1139,8 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
 #ifdef DEBUG_SOUNDFILE
     post("read 3");
 #endif
+done:
+    binbuf_free(b);
     return nframes;
 }
 
@@ -1300,8 +1314,18 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         framesread = soundfiler_readascii(x, filename,
             argc, garrays, vecs, resize, finalsize);
-        outlet_float(x->x_obj.ob_outlet, (t_float)framesread);
-        return;
+        if (framesread == 0)
+        {
+            pd_error(x, "soundfiler_read: reading ascii failed");
+            goto done;
+        }
+            /* fill in for info outlet */
+        sf.sf_samplerate = sys_getsr();
+        sf.sf_headersize = 0;
+        sf.sf_nchannels = argc;
+        sf.sf_bytespersample = 4;
+        sf.sf_bigendian = sys_isbigendian();
+        goto done;
     }
 
     fd = open_soundfile_via_canvas(x->x_canvas, filename, &sf, skipframes);
@@ -1408,6 +1432,26 @@ done:
     outlet_float(x->x_obj.ob_outlet, (t_float)framesread);
 }
 
+    /** write to an ascii text file, channels (nvecs) are interleaved,
+        assumes all vectors are at least nframes in length
+        adapted from garray_savecontentsto()
+        returns frames written on success or 0 on error */
+int soundfiler_writeascii(t_canvas *canvas, const char *filename,
+    int nvecs, t_word **vecs, int nframes, t_sample normalfactor)
+{
+    t_binbuf *b = binbuf_new();
+    int i, j, ret = 1;
+    if (nframes > 200000)
+        post("warning: writing table(s) with %d points!");
+    for (i = 0; i < nframes; ++i)
+        for (j = 0; j < nvecs; ++j)
+            binbuf_addv(b, "f", vecs[j][i].w_float * normalfactor);
+    binbuf_addv(b, ";");
+    ret = !binbuf_write(b, filename, "", 1); /* convert semis to cr */
+    binbuf_free(b);
+    return (ret ? ret : nframes);
+}
+
     /** this is broken out from soundfiler_write below so garray_write can
         call it too... not done yet though. */
 size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
@@ -1419,12 +1463,12 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
-    t_sample normfactor, biggest = 0;
+    t_sample normfactor = 1, biggest = 0;
 
     soundfile_clear(sf);
     if (soundfiler_parsewriteargs(obj, &argc, &argv, &wa))
         goto usage;
-    sf->sf_type = wa.wa_type;
+    sf->sf_type = (wa.wa_ascii ? NULL : wa.wa_type);
     sf->sf_nchannels = argc;
     sf->sf_samplerate = wa.wa_samplerate;
     sf->sf_bytespersample = wa.wa_bytespersample;
@@ -1457,6 +1501,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
             wa.wa_onsetframes);
         goto fail;
     }
+
         /* find biggest sample for normalizing */
     for (i = 0; i < sf->sf_nchannels; i++)
     {
@@ -1468,6 +1513,29 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
                 biggest = -vectors[i][j].w_float;
         }
     }
+
+        /* write to ascii text file? */
+    if (wa.wa_ascii)
+    {
+        if (wa.wa_nmeta)
+            post("soundfiler_write: '-meta' overridden by '-ascii'");
+        if (wa.wa_normalize)
+            normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
+        frameswritten = soundfiler_writeascii(canvas, wa.wa_filesym->s_name,
+            sf->sf_nchannels, vectors, wa.wa_nframes, normfactor);
+        if (frameswritten == 0)
+        {
+            pd_error(obj, "soundfiler_write: writing ascii failed");
+            goto fail;
+        }
+            /* fill in for info outlet */
+        sf->sf_headersize = 0;
+        sf->sf_bytespersample = 4;
+        sf->sf_bigendian = sys_isbigendian();
+        return frameswritten;
+    }
+
+        /* create file and detect if int samples should be clipped */
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
         sf, wa.wa_nframes)) < 0)
     {
@@ -1486,7 +1554,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     }
     if (wa.wa_normalize)
         normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
-    else normfactor = 1;
+
         /* write meta data */
     if (wa.wa_nmeta)
     {
@@ -1497,7 +1565,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
             {
                 if (!sf->sf_type->t_writemetafn(sf,
                         wa.wa_meta[i].argc, wa.wa_meta[i].argv))
-                    pd_error(obj, "writesf: writing %s metadata failed",
+                    pd_error(obj, "soundfiler_write: writing %s metadata failed",
                         TYPENAME(sf->sf_type));
             }
         }
@@ -1508,6 +1576,8 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
                 TYPENAME(sf->sf_type));
         }
     }
+
+        /* write samples */
     bufframes = SAMPBUFSIZE / sf->sf_bytesperframe;
     for (frameswritten = 0; frameswritten < wa.wa_nframes;)
     {
@@ -1518,7 +1588,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         soundfile_xferout_words(sf, vectors, (unsigned char *)sampbuf,
             thiswrite, wa.wa_onsetframes, normfactor);
         byteswritten = sf->sf_type->t_writesamplesfn(sf,
-            (const unsigned char*)sampbuf, datasize);
+            (const unsigned char *)sampbuf, datasize);
         if (byteswritten < datasize)
         {
             post("%s: %s", wa.wa_filesym->s_name, strerror(errno));
@@ -1529,6 +1599,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         frameswritten += thiswrite;
         wa.wa_onsetframes += thiswrite;
     }
+        /* update header frame size */
     if (fd >= 0)
     {
         soundfile_finishwrite(obj, wa.wa_filesym->s_name, sf,
@@ -1540,7 +1611,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
     post("flags: -skip <n> -nframes <n> -bytes <n> %s ...", sf_typeargs);
-    post("-big -little -normalize -meta <type> [args...] --");
+    post("-ascii -big -little -normalize -meta <type> [args...] --");
     post("(defaults to a 16 bit wave file)");
 fail:
     if (sf->sf_fd >= 0 && sf->sf_type)
@@ -2625,7 +2696,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     t_soundfiler_writeargs wa = {0};
     if (x->x_state != STATE_IDLE)
         writesf_stop(x);
-    if (soundfiler_parsewriteargs(x, &argc, &argv, &wa))
+    if (soundfiler_parsewriteargs(x, &argc, &argv, &wa) || wa.wa_ascii)
     {
         pd_error(x, "usage: open [flags] filename...");
         post("flags: -bytes <n> %s ...", sf_typeargs);
