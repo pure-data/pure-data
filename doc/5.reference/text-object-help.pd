@@ -498,7 +498,7 @@ are used as a waiting point, f 43;
 #X text 35 13 "text sequence" outputs lines from a text buffer \, either
 to an outlet \, or as messages to named destinations. The text is interpreted
 as a sequence of lists \, and possibly some interspersed waiting instructions
-(called "waits" here). You can ask for one line at a time ("step" message")
+(called "waits" here). You can ask for one line at a time ("step" message)
 \, or to proceed without delay to the next wait ("bang") \, or to automatically
 sequence through a series of waits (with each wait specifying a delay
 in milliseconds), f 70;
