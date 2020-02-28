@@ -1369,7 +1369,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename [tablename]...");
-    post("flags: -skip <n> -resize -maxsize <n> %s...", sf_typeargs);
+    post("flags: -skip <n> -resize -maxsize <n> %s --...", sf_typeargs);
     post("-raw <headerbytes> <channels> <bytespersample> "
          "<endian (b, l, or n)>");
 done:
@@ -2189,7 +2189,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
 usage:
     pd_error(x, "usage: open [flags] filename [onset] [headersize]...");
     error("[nchannels] [bytespersample] [endian (b or l)]");
-    post("flags: %s", sf_typeargs);
+    post("flags: %s --", sf_typeargs);
 }
 
 static void readsf_dsp(t_readsf *x, t_signal **sp)
@@ -2605,7 +2605,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     {
         pd_error(x, "usage: open [flags] filename...");
         post("flags: -bytes <n> %s ...", sf_typeargs);
-        post("-big -little -rate <n>");
+        post("-big -little -rate <n> --");
         return;
     }
     if (wa.wa_normalize || wa.wa_onsetframes || (wa.wa_nframes != SFMAXFRAMES))
