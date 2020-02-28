@@ -605,8 +605,12 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
          -next / -nextstep
          -big
          -little
+         -- (stop parsing flags)
     */
 
+#define SFMAXWRITEMETA 8 /**< max write args meta messages */
+
+    /** parsed write arguments */
 typedef struct _soundfiler_writeargs
 {
     t_symbol *wa_filesym;              /* file path symbol */
@@ -617,6 +621,12 @@ typedef struct _soundfiler_writeargs
     size_t wa_nframes;                 /* number of sample frames to write */
     size_t wa_onsetframes;             /* sample frame onset when writing */
     int wa_normalize;                  /* normalize samples? */
+    int wa_nmeta;                      /* number of meta messages */
+    struct
+    {
+        int argc;
+        t_atom *argv;
+    } wa_meta[8];                      /* meta message arguments */
 } t_soundfiler_writeargs;
 
 /* the routine which actually does the work should LATER also be called
@@ -683,6 +693,40 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
                 ((samplerate = argv[1].a_w.w_float) <= 0))
                     return -1;
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(flag, "meta"))
+        {
+                /* save meta args for use later */
+            t_atom *v;
+            int c = 0;
+            argc -= 1; argv += 1;
+            v = argv;
+            while (argc > 0)
+            {
+                if (argv->a_type == A_SYMBOL &&
+                    *argv->a_w.w_symbol->s_name == '-')
+                    break;
+                argc -= 1; argv+= 1;
+                c++;
+            }
+            if (!c)
+            {
+                error("ignoring empty -meta flag");
+                break;
+            }
+            if (wa->wa_nmeta == SFMAXWRITEMETA)
+            {
+                error("max -meta flags reached, ignoring");
+                break;
+            }
+            wa->wa_meta[wa->wa_nmeta].argc = c;
+            wa->wa_meta[wa->wa_nmeta].argv = v;
+            wa->wa_nmeta++;
+        }
+        else if (!strcmp(flag, "-"))
+        {
+            argc -= 1; argv += 1;
+            break;
         }
         else if (!strcmp(flag, "nextstep"))
         {
@@ -1096,6 +1140,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
            -resize
            -maxsize <max-size>
            -ascii
+           -- (stop parsing flags)
     */
 
 static void soundfiler_read(t_soundfiler *x, t_symbol *s,
@@ -1177,6 +1222,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         {
             meta = 1;
             argc -= 1; argv += 1;
+        }
+        else if (!strcmp(flag, "-"))
+        {
+            argc -= 1; argv += 1;
+            break;
         }
         else
         {
@@ -1383,7 +1433,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
             wa.wa_onsetframes);
         goto fail;
     }
-    /* find biggest sample for normalizing */
+        /* find biggest sample for normalizing */
     for (i = 0; i < sf->sf_nchannels; i++)
     {
         for (j = wa.wa_onsetframes; j < wa.wa_nframes + wa.wa_onsetframes; j++)
@@ -1397,7 +1447,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
         sf, wa.wa_nframes)) < 0)
     {
-        post("%s: %s\n", wa.wa_filesym->s_name, strerror(errno));
+        post("%s: %s\n", wa.wa_filesym->s_name, soundfile_strerror(errno, sf));
         goto fail;
     }
     if (!wa.wa_normalize)
@@ -1413,7 +1463,27 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     if (wa.wa_normalize)
         normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
     else normfactor = 1;
-
+        /* write meta data */
+    if (wa.wa_nmeta)
+    {
+        if (sf->sf_type->t_writemetafn)
+        {
+            int i;
+            for (i = 0; i < wa.wa_nmeta; ++i)
+            {
+                if (!sf->sf_type->t_writemetafn(sf,
+                        wa.wa_meta[i].argc, wa.wa_meta[i].argv))
+                    pd_error(obj, "writesf: writing %s metadata failed",
+                        TYPENAME(sf->sf_type));
+            }
+        }
+        else
+        {
+            pd_error(obj,
+                "soundfiler_write: %s does not support writing metadata",
+                TYPENAME(sf->sf_type));
+        }
+    }
     bufframes = SAMPBUFSIZE / sf->sf_bytesperframe;
     for (frameswritten = 0; frameswritten < wa.wa_nframes;)
     {
@@ -1446,8 +1516,8 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
     post("flags: -skip <n> -nframes <n> -bytes <n> %s ...", sf_typeargs);
-    post("-big -little -normalize");
-    post("(defaults to a 16-bit wave file)");
+    post("-big -little -normalize -meta <type> [args...] --");
+    post("(defaults to a 16 bit wave file)");
 fail:
     if (sf->sf_fd >= 0 && sf->sf_type)
     {
@@ -2056,17 +2126,24 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
         *argv->a_w.w_symbol->s_name == '-')
     {
         const char *flag = argv->a_w.w_symbol->s_name + 1;
-
-            /* check for type by name */
-        type = soundfile_firsttype();
-        while (type) {
-            if (!strcmp(flag, TYPENAME(type)))
-                break;
-            type = soundfile_nexttype(type);
+        if (!strcmp(flag, "-"))
+        {
+            argc -= 1; argv += 1;
+            break;
         }
-        if (!type)
-            goto usage; /* unknown flag */
-        argc -= 1; argv += 1;
+        else
+        {
+                /* check for type by name */
+            type = soundfile_firsttype();
+            while (type) {
+                if (!strcmp(flag, TYPENAME(type)))
+                    break;
+                type = soundfile_nexttype(type);
+            }
+            if (!type)
+                goto usage; /* unknown flag */
+            argc -= 1; argv += 1;
+        }
     }
     filesym = atom_getsymbolarg(0, argc, argv);
     onsetframes = atom_getfloatarg(1, argc, argv);
@@ -2517,7 +2594,7 @@ static void writesf_stop(t_writesf *x)
     pthread_mutex_unlock(&x->x_mutex);
 }
 
-    /** open method.  Called as: open [args] filename with args as in
+    /** open method.  Called as: open [flags] filename with args as in
         soundfiler_parsewriteargs(). */
 static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 {

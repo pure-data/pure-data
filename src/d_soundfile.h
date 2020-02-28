@@ -113,13 +113,14 @@ typedef int (*t_soundfile_closefn)(t_soundfile *sf);
 
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
-        note: set sf_bytelimit = sound data size, optionaly set errno for
+        note: set sf_bytelimit = sound data size, optionaly set errno
               for descriptive type error read via strerrorfn
         this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
         returns header bytes written or < 0 on error
+        note: optionaly set errno for descriptive type error read via strerrorfn
         this may be called in a background thread */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
@@ -168,8 +169,8 @@ typedef int (*t_soundfile_readmetafn)(t_soundfile *sf, t_outlet *out);
 typedef int (*t_soundfile_writemetafn)(t_soundfile *sf, int argc, t_atom *argv);
 
     /** returns an error string for a type implemenrtation error otherwise
-        calls soundfile_strerror, currently only used for descriptive
-        readheaderfn errors */
+        calls soundfile_strerror, currently used for descriptive readheaderfn
+        and writeheaderfn errors */
 typedef const char* (*t_soundfile_strerrorfn)(int errnum);
 
     /* type implementation, this could be for single or multiple file formats */
