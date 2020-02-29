@@ -2655,7 +2655,7 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     return (0);
 }
 
-int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+int canvas_canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
     if (!src || !sink || sink == src) /* do source and sink exist (and are not the same)?*/
         return 0;
@@ -2669,7 +2669,7 @@ int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 
 static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
-    if(canconnect(x, src, nout, sink, nin))
+    if(canvas_canconnect(x, src, nout, sink, nin))
     {
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         if(oc)
@@ -2818,12 +2818,12 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                             if (!ob || (ob1 == ob) || (ob2 == ob))
                                 continue;
 
-                            if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
+                            if (canvas_canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
                             {
                                 sinks += 1;
                                 ysinks += ob->te_ypix;
                             }
-                            if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
+                            if (canvas_canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
                             {
                                 sources += 1;
                                 ysources += ob->te_ypix;
@@ -4148,7 +4148,7 @@ static void canvas_duplicate(t_canvas *x)
         outobj = (t_object*)outgobj;
         inobj = (t_object*)ingobj;
 
-        while(!canconnect(x, outobj, outno, inobj, inno))
+        while(!canvas_canconnect(x, outobj, outno, inobj, inno))
         {
             if (!outobj || obj_noutlets(outobj) <= outno)
                 return;
@@ -4646,8 +4646,8 @@ static void canvas_connect_selection(t_canvas *x)
             b = glist_nth(x, x->gl_editor->e_selectline_index2);
             objsink = b?pd_checkobject(&b->g_pd):0;
 
-            if(canconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0)
-               && canconnect(x, obj, 0, objsink, x->gl_editor->e_selectline_inno))
+            if(canvas_canconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0)
+               && canvas_canconnect(x, obj, 0, objsink, x->gl_editor->e_selectline_inno))
             {
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
                 tryconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0);

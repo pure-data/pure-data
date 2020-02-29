@@ -12,7 +12,7 @@
 
 /* ------------------ forward declarations --------------- */
 t_kbdnav* canvas_get_kbdnav(t_canvas *x);
-int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
+int canvas_canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
 
 
 /* in/outlet traverser for the magnetic connector.
@@ -1045,12 +1045,12 @@ void kbdnav_magnetic_connect_start(t_canvas *x)
                 if( kbdnav->kn_iotype == IO_OUTLET )
                 {
                     already_connected = canvas_isconnected(x, selobj, selobj_io, obj, curr_io_index);
-                    is_conn_legal = canconnect(x, selobj, selobj_io, obj, curr_io_index);
+                    is_conn_legal = canvas_canconnect(x, selobj, selobj_io, obj, curr_io_index);
                 }
                 else
                 {
                     already_connected = canvas_isconnected(x, obj, curr_io_index, selobj, selobj_io);
-                    is_conn_legal = canconnect(x, obj, curr_io_index, selobj, selobj_io);
+                    is_conn_legal = canvas_canconnect(x, obj, curr_io_index, selobj, selobj_io);
                 }
 
                 if ( already_connected || !is_conn_legal ){
