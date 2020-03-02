@@ -817,7 +817,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
             return -1;
     filenamebuf[MAXPDSTRING-10] = 0; /* FIXME: what is the 10 for? */
     canvas_makefilename(canvas, filenamebuf, pathbuf, MAXPDSTRING);
-    if ((fd = sys_open(pathbuf, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
+    if ((fd = sys_open(pathbuf, O_RDWR | O_CREAT | O_TRUNC, 0666)) < 0)
         return -1;
     if (!sf->sf_type->t_openfn(sf, fd))
         goto badcreate;
