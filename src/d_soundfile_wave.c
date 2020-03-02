@@ -5,7 +5,6 @@
 /* ref: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html */
 
 #include "d_soundfile.h"
-#include "s_stuff.h" /* for sys_verbose */
 
 /* WAVE (Waveform Audio File Format)
 
@@ -117,6 +116,14 @@ typedef struct _factchunk
 
 /* ----- helpers ----- */
 
+    /** returns 1 if format requires extended format and fact chunk */
+static int wave_isextended(const t_soundfile *sf)
+{
+    return sf->sf_bytespersample == 4;
+}
+
+#ifdef DEBUG_SOUNDFILE
+
     /** post chunk info for debugging */
 static void wave_postchunk(const t_chunk *chunk, int swap)
 {
@@ -184,11 +191,7 @@ static void wave_postfact(const t_factchunk *fact, int swap)
     post("  sample length %d", swap4(fact->fc_samplelength, swap));
 }
 
-    /** returns 1 if format requires extended format and fact chunk */
-static int wave_isextended(const t_soundfile *sf)
-{
-    return sf->sf_bytespersample == 4;
-}
+#endif /* DEBUG_SOUNDFILE */
 
 /* ------------------------- WAVE ------------------------- */
 
@@ -219,8 +222,9 @@ static int wave_readheader(t_soundfile *sf)
         return 0;
     if (strncmp(buf.b_c + 8, "WAVE", 4))
         return 0;
-    if (sys_verbose)
+#ifdef DEBUG_SOUNDFILE
         wave_posthead(&buf.b_head, swap);
+#endif
 
         /* copy the first chunk header to beginnning of buffer */
     memcpy(buf.b_c, buf.b_c + WAVEHEADSIZE, WAVECHUNKSIZE);
@@ -242,8 +246,9 @@ static int wave_readheader(t_soundfile *sf)
             if (fd_read(sf->sf_fd, headersize + 8,
                     buf.b_c + 8, chunksize) < chunksize)
                 return 0;
-            if (sys_verbose)
-                wave_postformat(format, swap);
+#ifdef DEBUG_SOUNDFILE
+            wave_postformat(format, swap);
+#endif
             nchannels = swap2(format->fc_nchannels, swap);
             samplerate = swap4(format->fc_samplerate, swap);
             formattag = swap2(format->fc_fmttag, swap);
@@ -274,27 +279,28 @@ static int wave_readheader(t_soundfile *sf)
             }
             formatfound = 1;
         }
-        else if (!strncmp(chunk->c_id, "fact", 4))
-        {
-                /* extended format fact chunk */
-            if (sys_verbose)
-                wave_postfact(&buf.b_factchunk, swap);
-        }
         else if(!strncmp(chunk->c_id, "data", 4))
         {
                 /* sound data chunk */
             bytelimit = swap4(chunk->c_size, swap);
             headersize += WAVECHUNKSIZE;
-            if (sys_verbose)
-                wave_postchunk(chunk, swap);
+#ifdef DEBUG_SOUNDFILE
+            wave_postchunk(chunk, swap);
+#endif
             break;
+        }
+#ifdef DEBUG_SOUNDFILE
+        else if (!strncmp(chunk->c_id, "fact", 4))
+        {
+                /* extended format fact chunk */
+            wave_postfact(&buf.b_factchunk, swap);
         }
         else
         {
                 /* everything else */
-            if (sys_verbose)
-                wave_postchunk(chunk, swap);
+            wave_postchunk(chunk, swap);
         }
+#endif
         if (fd_read(sf->sf_fd, seekto, buf.b_c, WAVECHUNKSIZE) < WAVECHUNKSIZE)
             return 0;
         headersize = seekto;
@@ -392,12 +398,11 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
     head.h_size = swap4s((int32_t)(datasize + headersize - 8), swap);
     memcpy(buf + 4, &head.h_size, 4);
 
-    if (sys_verbose)
-    {
-        wave_posthead(&head, swap);
-        wave_postformat(&format, swap);
-        wave_postchunk(&data, swap);
-    }
+#ifdef DEBUG_SOUNDFILE
+    wave_posthead(&head, swap);
+    wave_postformat(&format, swap);
+    wave_postchunk(&data, swap);
+#endif
 
     byteswritten = fd_write(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
@@ -445,12 +450,11 @@ static int wave_updateheader(t_soundfile *sf, size_t nframes)
     if (fd_write(sf->sf_fd, 4, &uinttmp, 4) < 4)
         return 0;
 
-    if (sys_verbose)
-    {
+#ifdef DEBUG_SOUNDFILE
         post("RIFF %d", headersize + datasize - 8);
         post("  WAVE");
         post("data %d", datasize);
-    }
+#endif
 
     return 1;
 }

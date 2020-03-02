@@ -5,7 +5,6 @@
 /* ref: https://developer.apple.com/library/archive/documentation/MusicAudio/Reference/CAFSpec/CAF_spec/CAF_spec.html */
 
 #include "d_soundfile.h"
-#include "s_stuff.h" /* for sys_verbose */
 #include <math.h>
 #include <inttypes.h>
 
@@ -123,6 +122,8 @@ static void caf_setsamplerate(t_descchunk *desc, double sr, int swap)
     swapstring8((char *)desc->ds_samplerate, swap);
 }
 
+#ifdef DEBUG_SOUNDFILE
+
     /** post head info for debugging */
 static void caf_posthead(const t_head *head, int swap)
 {
@@ -159,6 +160,8 @@ static void caf_postdata(const t_datachunk *data, int swap)
     caf_postchunk((t_chunk *)data, swap);
     post("  edit count %d", swap4(data->dc_editcount, swap));
 }
+
+#endif /* DEBUG_SOUNDFILE */
 
 /* ------------------------- CAF -------------------------- */
 
@@ -202,8 +205,9 @@ static int caf_readheader(t_soundfile *sf)
         errno = CAF_ERR_VERFLAGS;
         return 0;
     }
-    if (sys_verbose)
-        caf_posthead(head, swap);
+#ifdef DEBUG_SOUNDFILE
+    caf_posthead(head, swap);
+#endif
 
         /* copy the first chunk header to beginning of buffer */
     memcpy(buf.b_c, buf.b_c + CAFHEADSIZE, CAFDESCSIZE);
@@ -212,8 +216,9 @@ static int caf_readheader(t_soundfile *sf)
         /* first chunk must be description */
     if (strncmp(desc->ds_id, "desc", 4))
         return 0;
-    if (sys_verbose)
+#ifdef DEBUG_SOUNDFILE
         caf_postdesc(desc, swap);
+#endif
     if (strncmp(desc->ds_fmtid, "lpcm", 4))
     {
         errno = SOUNDFILE_ERR_SAMPLEFMT;
@@ -255,14 +260,13 @@ static int caf_readheader(t_soundfile *sf)
         if (!strncmp(chunk->c_id, "data", 4))
         {
                 /* sound data chunk */
-            if (sys_verbose)
-            {
-                t_datachunk *data = &buf.b_datachunk;
-                if (fd_read(sf->sf_fd, headersize + CAFCHUNKSIZE,
-                        buf.b_c + CAFCHUNKSIZE, 4) < 4)
-                    return 0;
-                caf_postdata(data, swap);
-            }
+#ifdef DEBUG_SOUNDFILE
+            t_datachunk *data = &buf.b_datachunk;
+            if (fd_read(sf->sf_fd, headersize + CAFCHUNKSIZE,
+                    buf.b_c + CAFCHUNKSIZE, 4) < 4)
+                return 0;
+            caf_postdata(data, swap);
+#endif
             headersize += CAFDATASIZE;
             if (chunksize == CAF_UNKNOWN_SIZE)
             {
@@ -275,12 +279,13 @@ static int caf_readheader(t_soundfile *sf)
                 bytelimit = chunksize - 4; /* - edit count */
             break;
         }
+#ifdef DEBUG_SOUNDFILE
         else
         {
                 /* everything else */
-            if (sys_verbose)
-                caf_postchunk(chunk, swap);
+            caf_postchunk(chunk, swap);
         }
+#endif
         headersize = seekto;
         if (fd_read(sf->sf_fd, seekto, buf.b_c, CAFCHUNKSIZE) < CAFCHUNKSIZE)
             return 0;
@@ -336,12 +341,11 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     memcpy(buf + headersize, &data, CAFDATASIZE);
     headersize += CAFDATASIZE;
 
-    if (sys_verbose)
-    {
-        caf_posthead(&head, swap);
-        caf_postdesc(&desc, swap);
-        caf_postdata(&data, swap);
-    }
+#ifdef DEBUG_SOUNDFILE
+    caf_posthead(&head, swap);
+    caf_postdesc(&desc, swap);
+    caf_postdata(&data, swap);
+#endif
 
     byteswritten = fd_write(sf->sf_fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
@@ -357,11 +361,10 @@ static int caf_updateheader(t_soundfile *sf, size_t nframes)
     if (fd_write(sf->sf_fd, CAFHEADSIZE + CAFDESCSIZE + 4, &datasize, 8) < 8)
         return 0;
 
-    if (sys_verbose)
-    {
-        post("caff");
-        post("data %" PRId64, swap8s(datasize, swap));
-    }
+#ifdef DEBUG_SOUNDFILE
+    post("caff");
+    post("data %" PRId64, swap8s(datasize, swap));
+#endif
 
     return 1;
 }

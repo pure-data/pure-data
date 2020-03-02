@@ -1102,7 +1102,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     atoms = binbuf_getvec(b);
     nframes = n / narray;
 #ifdef DEBUG_SOUNDFILE
-    post("read 1 %d", n);
+    post("ascii: read 1 %d", n);
 #endif
     if (nframes < 1)
     {
@@ -1121,7 +1121,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     else if (finalsize < nframes)
         nframes = finalsize;
 #ifdef DEBUG_SOUNDFILE
-    post("read 2");
+    post("ascii: read 2");
 #endif
     for (j = 0, ap = atoms; j < nframes; j++)
         for (i = 0; i < narray; i++)
@@ -1137,7 +1137,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     for (i = 0; i < narray; i++)
         garray_redraw(garrays[i]);
 #ifdef DEBUG_SOUNDFILE
-    post("read 3");
+    post("ascii: read 3");
 #endif
 done:
     binbuf_free(b);
@@ -1737,13 +1737,8 @@ typedef struct _readsf
 
 /* ----- the child thread which performs file I/O ----- */
 
-#if 0
-static void pute(const char *s)   /* debug routine */
-{
-    write(2, s, strlen(s));
-}
-#define DEBUG_SOUNDFILE
-#endif
+    /** thread state debug prints to stderr */
+//#define DEBUG_SOUNDFILE_THREADS
 
 #if 1
 #define sfread_cond_wait pthread_cond_wait
@@ -1770,31 +1765,30 @@ static void *readsf_child_main(void *zz)
     t_readsf *x = zz;
     t_soundfile sf = {0};
     soundfile_clear(&sf);
-#ifdef DEBUG_SOUNDFILE
-    pute("1\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "readsf: 1\n");
 #endif
     pthread_mutex_lock(&x->x_mutex);
     while (1)
     {
         int fifohead;
         char *buf;
-#ifdef DEBUG_SOUNDFILE
-        pute("0\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+        fprintf(stderr, "readsf: 0\n");
 #endif
         if (x->x_requestcode == REQUEST_NOTHING)
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("wait 2\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: wait 2\n");
 #endif
             sfread_cond_signal(&x->x_answercondition);
             sfread_cond_wait(&x->x_requestcondition, &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-            pute("3\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: 3\n");
 #endif
         }
         else if (x->x_requestcode == REQUEST_OPEN)
         {
-            char boo[80];
             ssize_t bytesread;
             size_t wantbytes;
 
@@ -1804,8 +1798,8 @@ static void *readsf_child_main(void *zz)
             const char *filename = x->x_filename;
             const char *dirname = canvas_getdir(x->x_canvas)->s_name;
 
-#ifdef DEBUG_SOUNDFILE
-            pute("4\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: 4\n");
 #endif
                 /* alter the request code so that an ensuing "open" will get
                 noticed. */
@@ -1832,8 +1826,8 @@ static void *readsf_child_main(void *zz)
             open_soundfile_via_path(dirname, filename, &sf, onsetframes);
             pthread_mutex_lock(&x->x_mutex);
 
-#ifdef DEBUG_SOUNDFILE
-            pute("5\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: 5\n");
 #endif
                 /* copy back into the instance structure. */
             soundfile_copy(&x->x_sf, &sf);
@@ -1841,18 +1835,17 @@ static void *readsf_child_main(void *zz)
             {
                 x->x_fileerror = errno;
                 x->x_eof = 1;
-#ifdef DEBUG_SOUNDFILE
-                pute("open failed\n");
-                pute(filename);
-                pute(dirname);
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "readsf: open failed %s %s\n",
+                    filename, dirname);
 #endif
                 goto lost;
             }
                 /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
                 goto lost;
-#ifdef DEBUG_SOUNDFILE
-            pute("6\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: 6\n");
 #endif
             x->x_fifohead = 0;
                     /* set fifosize from bufsize.  fifosize must be a
@@ -1865,10 +1858,8 @@ static void *readsf_child_main(void *zz)
                 (x->x_sf.sf_bytesperframe * MAXVECSIZE));
                     /* arrange for the "request" condition to be signaled 16
                     times per buffer */
-#ifdef DEBUG_SOUNDFILE
-            sprintf(boo, "fifosize %d\n",
-                x->x_fifosize);
-            pute(boo);
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: fifosize %d\n", x->x_fifosize);
 #endif
             x->x_sigcountdown = x->x_sigperiod = (x->x_fifosize /
                 (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
@@ -1877,8 +1868,8 @@ static void *readsf_child_main(void *zz)
             while (x->x_requestcode == REQUEST_BUSY)
             {
                 int fifosize = x->x_fifosize;
-#ifdef DEBUG_SOUNDFILE
-                pute("77\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "readsf: 77\n");
 #endif
                 if (x->x_eof)
                     break;
@@ -1897,24 +1888,23 @@ static void *readsf_child_main(void *zz)
                             wantbytes = READSIZE;
                         if (wantbytes > x->x_sf.sf_bytelimit)
                             wantbytes = x->x_sf.sf_bytelimit;
-#ifdef DEBUG_SOUNDFILE
-                        sprintf(boo, "head %d, tail %d, size %ld\n",
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: head %d, tail %d, size %ld\n",
                             x->x_fifohead, x->x_fifotail, wantbytes);
-                        pute(boo);
 #endif
                     }
                     else
                     {
-#ifdef DEBUG_SOUNDFILE
-                        pute("wait 7a...\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: wait 7a...\n");
 #endif
                         sfread_cond_signal(&x->x_answercondition);
-#ifdef DEBUG_SOUNDFILE
-                        pute("signaled\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: signaled...\n");
 #endif
                         sfread_cond_wait(&x->x_requestcondition, &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-                        pute("7a done\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: 7a ... done\n");
 #endif
                         continue;
                     }
@@ -1926,13 +1916,13 @@ static void *readsf_child_main(void *zz)
                     wantbytes =  x->x_fifotail - x->x_fifohead - 1;
                     if (wantbytes < READSIZE)
                     {
-#ifdef DEBUG_SOUNDFILE
-                        pute("wait 7...\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: wait 7...\n");
 #endif
                         sfread_cond_signal(&x->x_answercondition);
                         sfread_cond_wait(&x->x_requestcondition, &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-                        pute("7 done\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                        fprintf(stderr, "readsf: 7 ... done\n");
 #endif
                         continue;
                     }
@@ -1940,8 +1930,8 @@ static void *readsf_child_main(void *zz)
                     if (wantbytes > x->x_sf.sf_bytelimit)
                         wantbytes = x->x_sf.sf_bytelimit;
                 }
-#ifdef DEBUG_SOUNDFILE
-                pute("8\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "readsf: 8\n");
 #endif
                 sf.sf_fd = x->x_sf.sf_fd;
                 buf = x->x_buf;
@@ -1954,8 +1944,8 @@ static void *readsf_child_main(void *zz)
                     break;
                 if (bytesread < 0)
                 {
-#ifdef DEBUG_SOUNDFILE
-                    pute("fileerror\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                    fprintf(stderr, "readsf: fileerror %d\n", errno);
 #endif
                     x->x_fileerror = errno;
                     break;
@@ -1977,10 +1967,9 @@ static void *readsf_child_main(void *zz)
                         break;
                     }
                 }
-#ifdef DEBUG_SOUNDFILE
-                sprintf(boo, "after: head %d, tail %d\n",
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "readsf: after, head %d tail %d\n",
                     x->x_fifohead, x->x_fifotail);
-                pute(boo);
 #endif
                     /* signal parent in case it's waiting for data */
                 sfread_cond_signal(&x->x_answercondition);
@@ -1989,8 +1978,8 @@ static void *readsf_child_main(void *zz)
         lost:
             if (x->x_requestcode == REQUEST_BUSY)
                 x->x_requestcode = REQUEST_NOTHING;
-#ifdef DEBUG_SOUNDFILE
-                pute("lost\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "readsf: lost\n");
 #endif
                 /* fell out of read loop: close file if necessary,
                 set EOF and signal once more */
@@ -2037,13 +2026,13 @@ static void *readsf_child_main(void *zz)
         }
         else
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("13\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: 13\n");
 #endif
         }
     }
-#ifdef DEBUG_SOUNDFILE
-    pute("thread exit\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "readsf: thread exit\n");
 #endif
     pthread_mutex_unlock(&x->x_mutex);
     return 0;
@@ -2116,8 +2105,8 @@ static t_int *readsf_perform(t_int *w)
         while (!x->x_eof && x->x_fifohead >= x->x_fifotail &&
                 x->x_fifohead < x->x_fifotail + wantbytes-1)
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("wait...\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: wait...\n");
 #endif
             sfread_cond_signal(&x->x_requestcondition);
             sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
@@ -2125,8 +2114,8 @@ static t_int *readsf_perform(t_int *w)
             vecsize = x->x_vecsize;
             soundfile_copy(&sf, &x->x_sf);
             wantbytes = vecsize * sf.sf_bytesperframe;
-#ifdef DEBUG_SOUNDFILE
-            pute("done\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "readsf: ... done\n");
 #endif
         }
         if (x->x_eof && x->x_fifohead >= x->x_fifotail &&
@@ -2360,29 +2349,28 @@ static void *writesf_child_main(void *zz)
     t_writesf *x = zz;
     t_soundfile sf = {0};
     soundfile_clear(&sf);
-#ifdef DEBUG_SOUNDFILE
-    pute("1\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "writesf: 1\n");
 #endif
     pthread_mutex_lock(&x->x_mutex);
     while (1)
     {
-#ifdef DEBUG_SOUNDFILE
-        pute("0\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+        fprintf(stderr, "writesf: 0\n");
 #endif
         if (x->x_requestcode == REQUEST_NOTHING)
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("wait 2\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: wait 2\n");
 #endif
             sfread_cond_signal(&x->x_answercondition);
             sfread_cond_wait(&x->x_requestcondition, &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-            pute("3\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: 3\n");
 #endif
         }
         else if (x->x_requestcode == REQUEST_OPEN)
         {
-            char boo[80];
             ssize_t byteswritten;
             size_t writebytes;
 
@@ -2394,8 +2382,8 @@ static void *writesf_child_main(void *zz)
 
                 /* alter the request code so that an ensuing "open" will get
                 noticed. */
-#ifdef DEBUG_SOUNDFILE
-            pute("4\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: 4\n");
 #endif
             x->x_requestcode = REQUEST_BUSY;
             x->x_fileerror = 0;
@@ -2416,11 +2404,10 @@ static void *writesf_child_main(void *zz)
                 x->x_sf.sf_fd = -1;
                 x->x_sf.sf_data = NULL; /* closefn freed this */
 
-#ifdef DEBUG_SOUNDFILE
+#ifdef DEBUG_SOUNDFILE_THREADS
                 {
-                    char s[1000];
-                    sprintf(s, "bug??? ditched %ld\n", frameswritten);
-                    pute(s);
+                    fprintf(stderr, "writesf: bug??? ditched %ld\n",
+                        frameswritten);
                 }
 #endif
                 if (x->x_requestcode != REQUEST_BUSY)
@@ -2433,8 +2420,8 @@ static void *writesf_child_main(void *zz)
             create_soundfile(canvas, filename, &sf, 0);
             pthread_mutex_lock(&x->x_mutex);
 
-#ifdef DEBUG_SOUNDFILE
-            pute("5\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: 5\n");
 #endif
 
             if (sf.sf_fd < 0)
@@ -2443,9 +2430,8 @@ static void *writesf_child_main(void *zz)
                 x->x_sf.sf_data = NULL; /* create_soundfile freed this */
                 x->x_eof = 1;
                 x->x_fileerror = errno;
-#ifdef DEBUG_SOUNDFILE
-                pute("open failed\n");
-                pute(filename);
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "writesf: open failed %s\n", filename);
 #endif
                 x->x_requestcode = REQUEST_NOTHING;
                 continue;
@@ -2453,8 +2439,8 @@ static void *writesf_child_main(void *zz)
                 /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
                 continue;
-#ifdef DEBUG_SOUNDFILE
-            pute("6\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: 6\n");
 #endif
             soundfile_copy(&x->x_sf, &sf);
             x->x_fifotail = 0;
@@ -2467,8 +2453,8 @@ static void *writesf_child_main(void *zz)
             {
                 int fifosize = x->x_fifosize, fifotail;
                 char *buf = x->x_buf;
-#ifdef DEBUG_SOUNDFILE
-                pute("77\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "writesf: 77\n");
 #endif
                     /* if the head is < the tail, we can immediately write
                     from tail to end of fifo to disk; otherwise we hold off
@@ -2486,22 +2472,22 @@ static void *writesf_child_main(void *zz)
                 }
                 else
                 {
-#ifdef DEBUG_SOUNDFILE
-                    pute("wait 7a...\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                    fprintf(stderr, "writesf: wait 7a...\n");
 #endif
                     sfread_cond_signal(&x->x_answercondition);
-#ifdef DEBUG_SOUNDFILE
-                    pute("signaled\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                    fprintf(stderr, "writesf: signaled...\n");
 #endif
                     sfread_cond_wait(&x->x_requestcondition,
                         &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-                    pute("7a done\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                    fprintf(stderr, "writesf: 7a ... done\n");
 #endif
                     continue;
                 }
-#ifdef DEBUG_SOUNDFILE
-                pute("8\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "writesf: 8\n");
 #endif
                 fifotail = x->x_fifotail;
                 soundfile_copy(&sf, &x->x_sf);
@@ -2514,8 +2500,8 @@ static void *writesf_child_main(void *zz)
                         break;
                 if (byteswritten < writebytes)
                 {
-#ifdef DEBUG_SOUNDFILE
-                    pute("fileerror\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+                    fprintf(stderr, "writesf: fileerror %D\n", errno);
 #endif
                     x->x_fileerror = errno;
                     break;
@@ -2527,10 +2513,9 @@ static void *writesf_child_main(void *zz)
                         x->x_fifotail = 0;
                 }
                 x->x_frameswritten += byteswritten / x->x_sf.sf_bytesperframe;
-#ifdef DEBUG_SOUNDFILE
-                sprintf(boo, "after: head %d, tail %d written %ld\n",
+#ifdef DEBUG_SOUNDFILE_THREADS
+                fprintf(stderr, "writesf: after, head %d tail %d written %ld\n",
                     x->x_fifohead, x->x_fifotail, x->x_frameswritten);
-                pute(boo);
 #endif
                     /* signal parent in case it's waiting for data */
                 sfread_cond_signal(&x->x_answercondition);
@@ -2560,13 +2545,13 @@ static void *writesf_child_main(void *zz)
         }
         else
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("13\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: 13\n");
 #endif
         }
     }
-#ifdef DEBUG_SOUNDFILE
-    pute("thread exit\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "writesf: thread exit\n");
 #endif
     pthread_mutex_unlock(&x->x_mutex);
     return 0;
@@ -2655,8 +2640,8 @@ static t_int *writesf_perform(t_int *w)
             x->x_fifohead = 0;
         if ((--x->x_sigcountdown) <= 0)
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("signal 1\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+            fprintf(stderr, "writesf: signal 1\n");
 #endif
             sfread_cond_signal(&x->x_requestcondition);
             x->x_sigcountdown = x->x_sigperiod;
@@ -2682,8 +2667,8 @@ static void writesf_stop(t_writesf *x)
     pthread_mutex_lock(&x->x_mutex);
     x->x_state = STATE_IDLE;
     x->x_requestcode = REQUEST_CLOSE;
-#ifdef DEBUG_SOUNDFILE
-    pute("signal 2\n");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "writesf: signal 2\n");
 #endif
     sfread_cond_signal(&x->x_requestcondition);
     pthread_mutex_unlock(&x->x_mutex);
@@ -2807,14 +2792,14 @@ static void writesf_free(t_writesf *x)
     void *threadrtn;
     pthread_mutex_lock(&x->x_mutex);
     x->x_requestcode = REQUEST_QUIT;
-#ifdef DEBUG_SOUNDFILE
-    post("stopping writesf thread...");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "writesf: stopping thread...\n");
 #endif
     sfread_cond_signal(&x->x_requestcondition);
     while (x->x_requestcode != REQUEST_NOTHING)
     {
-#ifdef DEBUG_SOUNDFILE
-        post("signaling...");
+#ifdef DEBUG_SOUNDFILE_THREADS
+        fprintf(stderr, "writesf: signaling...\n");
 #endif
         sfread_cond_signal(&x->x_requestcondition);
         sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
@@ -2822,8 +2807,8 @@ static void writesf_free(t_writesf *x)
     pthread_mutex_unlock(&x->x_mutex);
     if (pthread_join(x->x_childthread, &threadrtn))
         error("writesf_free: join failed");
-#ifdef DEBUG_SOUNDFILE
-    post("... done.");
+#ifdef DEBUG_SOUNDFILE_THREADS
+    fprintf(stderr, "writesf: ... done\n");
 #endif
 
     pthread_cond_destroy(&x->x_requestcondition);

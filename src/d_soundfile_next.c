@@ -8,7 +8,6 @@
          http://soundfile.sapp.org/doc/NextFormat */
 
 #include "d_soundfile.h"
-#include "s_stuff.h" /* for sys_verbose */
 
 /* NeXTStep/Sun sound
 
@@ -71,6 +70,8 @@ static int next_isbigendian(const t_nextstep *next)
     return -1;
 }
 
+#ifdef DEBUG_SOUNDFILE
+
     /** post head info for debugging */
 static void next_posthead(const t_nextstep *next, int swap)
 {
@@ -104,6 +105,8 @@ static void next_posthead(const t_nextstep *next, int swap)
     post("  info \"%.4s%s\"",
         next->ns_info, (onset > NEXTHEADSIZE ? "..." : ""));
 }
+
+#endif /* DEBUG_SOUNDFILE */
 
 /* ------------------------- NEXT ------------------------- */
 
@@ -159,8 +162,9 @@ static int next_readheader(t_soundfile *sf)
             return 0;
     }
 
-    if (sys_verbose)
-        next_posthead(next, swap);
+#ifdef DEBUG_SOUNDFILE
+    next_posthead(next, swap);
+#endif
 
         /* copy sample format back to caller */
     sf->sf_samplerate = swap4(next->ns_samplerate, swap);
@@ -208,8 +212,9 @@ static int next_writeheader(t_soundfile *sf, size_t nframes)
             return 0;
     }
 
-    if (sys_verbose)
-        next_posthead(&next, swap);
+#ifdef DEBUG_SOUNDFILE
+    next_posthead(&next, swap);
+#endif
 
     byteswritten = fd_write(sf->sf_fd, 0, &next, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
@@ -228,16 +233,15 @@ static int next_updateheader(t_soundfile *sf, size_t nframes)
     if (fd_write(sf->sf_fd, 8, &datasize, 4) < 4)
         return 0;
 
-    if (sys_verbose)
-    {
-        datasize = swap4(datasize, swap);
-        post("next %.4s (%s)", (sf->sf_bigendian ? ".snd" : "dns."),
-            (sf->sf_bigendian ? "big" : "little"));
-        if (datasize == NEXT_UNKNOWN_SIZE)
-            post("  data length -1");
-        else
-            post("  data length %d", datasize);
-    }
+#ifdef DEBUG_SOUNDFILE
+    datasize = swap4(datasize, swap);
+    post("next %.4s (%s)", (sf->sf_bigendian ? ".snd" : "dns."),
+        (sf->sf_bigendian ? "big" : "little"));
+    if (datasize == NEXT_UNKNOWN_SIZE)
+        post("  data length -1");
+    else
+        post("  data length %d", datasize);
+#endif
 
     return 1;
 }

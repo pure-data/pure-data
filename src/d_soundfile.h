@@ -41,6 +41,9 @@ typedef SSIZE_T ssize_t;
 #define SFMAXFRAMES SIZE_MAX  /**< default max sample frames, unsigned */
 #define SFMAXBYTES  SSIZE_MAX /**< default max sample bytes, signed */
 
+    /** sound file read/write debug posts */
+//#define DEBUG_SOUNDFILE
+
 /* ----- soundfile ----- */
 
 typedef struct _soundfile_type t_soundfile_type;
