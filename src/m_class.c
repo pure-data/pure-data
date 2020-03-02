@@ -119,7 +119,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     int i;
     t_methodentry *m;
     for (i = 0; i < nmethod; i++)
-        if ((*methodlist)[i].me_name == sel)
+        if (sel && (*methodlist)[i].me_name == sel)
     {
         char nbuf[80];
         snprintf(nbuf, 80, "%s_aliased", sel->s_name);
@@ -440,8 +440,12 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d args typechecked; use A_GIMME",
-                s->s_name, MAXPDARG);
+            if (s)
+                error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                      s->s_name, MAXPDARG);
+            else
+                error("unnamed class: sorry: only %d args typechecked; use A_GIMME",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -455,7 +459,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-        if (class_loadsym && !zgetfn(&pd_objectmaker, class_loadsym))
+        if (s && class_loadsym && !zgetfn(&pd_objectmaker, class_loadsym))
         {
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
@@ -562,8 +566,12 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d creation args allowed",
-                s->s_name, MAXPDARG);
+            if(s)
+                error("class %s: sorry: only %d creation args allowed",
+                      s->s_name, MAXPDARG);
+            else
+                error("unnamed class: sorry: only %d creation args allowed",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -631,13 +639,13 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
         }
         if (argtype != A_NULL)
             error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
-                c->c_name->s_name, sel->s_name);
+                (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
         for (i = 0; i < pd_ninstances; i++)
         {
             class_addmethodtolist(c, &c->c_methods[i], c->c_nmethod,
-                (t_gotfn)fn, dogensym(sel->s_name, 0, pd_instances[i]),
+                (t_gotfn)fn, sel?dogensym(sel->s_name, 0, pd_instances[i]):0,
                     argvec, pd_instances[i]);
         }
 #else
@@ -649,7 +657,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     goto done;
 phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
-        c->c_name->s_name, sel->s_name);
+        (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
 done:
     va_end(ap);
     return;
