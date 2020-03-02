@@ -1208,8 +1208,11 @@ t_class *
 #endif
         ;
     static int loglevel = 0;
-    logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
-    loglevel=3;
+    if(s) {
+        logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
+        loglevel=3;
+    } else
+        logpost(0, 3, "refusing to load unnamed %dbit-float object into %dbit-float Pd", ext_floatsize, PD_FLOATSIZE);
 
     return 0;
 }
