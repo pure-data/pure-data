@@ -202,6 +202,29 @@ static void aiff_setsamplerate(uint8_t *dst, double sr)
     dst[6] = dst[7] = dst[8] = dst[9] = 0;
 }
 
+    /** read first chunk, returns filled chunk and offset on success or -1 */
+static off_t aiff_firstchunk(const t_soundfile *sf, t_chunk *chunk)
+{
+    if (fd_read(sf->sf_fd, AIFFHEADSIZE, (char *)chunk,
+        AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        return -1;
+    return AIFFHEADSIZE;
+}
+
+    /** read next chunk, chunk should be filled when calling
+        returns fills chunk offset on success or -1 */
+static off_t aiff_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
+{
+    int32_t chunksize = swap4s(chunk->c_size, !sys_isbigendian());
+    off_t seekto = offset + AIFFCHUNKSIZE + chunksize;
+    if (seekto & 1) /* pad up to even number of bytes */
+        seekto++;
+    if (fd_read(sf->sf_fd, seekto, (char *)chunk,
+        AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        return -1;
+    return seekto;
+}
+
 #ifdef DEBUG_SOUNDFILE
 
     /** post chunk info for debugging */
@@ -258,7 +281,7 @@ static int aiff_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
-    off_t headersize = AIFFHEADSIZE + AIFFCHUNKSIZE;
+    off_t headersize = AIFFHEADSIZE;
     size_t bytelimit = AIFFMAXBYTES;
     union
     {
@@ -285,17 +308,12 @@ static int aiff_readheader(t_soundfile *sf)
     aiff_posthead(head, swap);
 #endif
 
-        /* copy the first chunk header to beginning of buffer */
-    memcpy(buf.b_c, buf.b_c + AIFFHEADSIZE, AIFFCHUNKSIZE);
-    headersize = AIFFHEADSIZE;
-
         /* read chunks in loop until we find the sound data chunk */
+    if ((headersize = aiff_firstchunk(sf, chunk)) == -1)
+        return 0;
     while (1)
     {
         int32_t chunksize = swap4s(chunk->c_size, swap);
-        off_t seekto = headersize + AIFFCHUNKSIZE + chunksize, seekout;
-        if (seekto & 1) /* pad up to even number of bytes */
-            seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
         if (!strncmp(chunk->c_id, "FVER", 4))
         {
@@ -400,9 +418,8 @@ static int aiff_readheader(t_soundfile *sf)
             aiff_postchunk(chunk, swap);
         }
 #endif
-        if (fd_read(sf->sf_fd, seekto, buf.b_c, AIFFCHUNKSIZE) < AIFFCHUNKSIZE)
+        if ((headersize = aiff_nextchunk(sf, headersize, chunk)) == -1)
             return 0;
-        headersize = seekto;
     }
     if (!commfound)
     {

@@ -122,6 +122,29 @@ static void caf_setsamplerate(t_descchunk *desc, double sr, int swap)
     swapstring8((char *)desc->ds_samplerate, swap);
 }
 
+    /** read first chunk, returns filled chunk and offset on success or -1 */
+static off_t caf_firstchunk(const t_soundfile *sf, t_chunk *chunk)
+{
+    if (fd_read(sf->sf_fd, CAFHEADSIZE, (char *)chunk,
+        CAFCHUNKSIZE) < CAFCHUNKSIZE)
+        return -1;
+    return CAFHEADSIZE;
+}
+
+    /** read next chunk, chunk should be filled when calling
+        returns fills chunk offset on success or -1 */
+static off_t caf_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
+{
+    int64_t chunksize = caf_getchunksize(chunk, !sys_isbigendian());
+    off_t seekto = offset + CAFCHUNKSIZE + chunksize;
+    if (seekto & 1) /* pad up to even number of bytes */
+        seekto++;
+    if (fd_read(sf->sf_fd, seekto, (char *)chunk,
+        CAFCHUNKSIZE) < CAFCHUNKSIZE)
+        return -1;
+    return seekto;
+}
+
 #ifdef DEBUG_SOUNDFILE
 
     /** post head info for debugging */
@@ -243,13 +266,10 @@ static int caf_readheader(t_soundfile *sf)
     }
     bigendian = !(fmtflags & kCAFLinearPCMFormatFlagIsLittleEndian);
     samplerate = caf_getsamplerate(desc, swap);
-    headersize += CAFDESCSIZE;
-
-        /* prepare second chunk */
-    if (fd_read(sf->sf_fd, headersize, buf.b_c, CAFCHUNKSIZE) < CAFCHUNKSIZE)
-        return 0;
 
         /* read chunks in loop until we find the sound data chunk */
+    if ((headersize = caf_nextchunk(sf, headersize, chunk)) == -1)
+        return 0;
     while (1)
     {
         int64_t chunksize = caf_getchunksize(chunk, swap);
@@ -286,8 +306,7 @@ static int caf_readheader(t_soundfile *sf)
             caf_postchunk(chunk, swap);
         }
 #endif
-        headersize = seekto;
-        if (fd_read(sf->sf_fd, seekto, buf.b_c, CAFCHUNKSIZE) < CAFCHUNKSIZE)
+        if ((headersize = caf_nextchunk(sf, headersize, chunk)) == -1)
             return 0;
     }
 

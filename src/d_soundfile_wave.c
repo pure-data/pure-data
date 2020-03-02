@@ -122,6 +122,29 @@ static int wave_isextended(const t_soundfile *sf)
     return sf->sf_bytespersample == 4;
 }
 
+    /** read first chunk, returns filled chunk and offset on success or -1 */
+static off_t wave_firstchunk(const t_soundfile *sf, t_chunk *chunk)
+{
+    if (fd_read(sf->sf_fd, WAVEHEADSIZE, (char *)chunk,
+        WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        return -1;
+    return WAVEHEADSIZE;
+}
+
+    /** read next chunk, chunk should be filled when calling
+        returns fills chunk offset on success or -1 */
+static off_t wave_nextchunk(const t_soundfile *sf, off_t offset, t_chunk *chunk)
+{
+    uint32_t chunksize = swap4(chunk->c_size, sys_isbigendian());
+    off_t seekto = offset + WAVECHUNKSIZE + chunksize;
+    if (seekto & 1) /* pad up to even number of bytes */
+        seekto++;
+    if (fd_read(sf->sf_fd, seekto, (char *)chunk,
+        WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        return -1;
+    return seekto;
+}
+
 #ifdef DEBUG_SOUNDFILE
 
     /** post chunk info for debugging */
@@ -205,7 +228,7 @@ static int wave_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
         swap = (bigendian != sys_isbigendian()), formatfound = 1;
-    off_t headersize = WAVEHEADSIZE + WAVECHUNKSIZE;
+    off_t headersize = WAVEHEADSIZE;
     size_t bytelimit = WAVEMAXBYTES;
     union
     {
@@ -226,17 +249,12 @@ static int wave_readheader(t_soundfile *sf)
         wave_posthead(&buf.b_head, swap);
 #endif
 
-        /* copy the first chunk header to beginnning of buffer */
-    memcpy(buf.b_c, buf.b_c + WAVEHEADSIZE, WAVECHUNKSIZE);
-    headersize = WAVEHEADSIZE;
-
         /* read chunks in loop until we find the sound data chunk */
+    if ((headersize = wave_firstchunk(sf, chunk)) == -1)
+        return 0;
     while (1)
     {
         uint32_t chunksize = swap4(chunk->c_size, swap);
-        long seekto = headersize + chunksize + 8, seekout;
-        if (seekto & 1) /* pad up to even number of bytes */
-            seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
         if (!strncmp(chunk->c_id, "fmt ", 4))
         {
@@ -301,9 +319,8 @@ static int wave_readheader(t_soundfile *sf)
             wave_postchunk(chunk, swap);
         }
 #endif
-        if (fd_read(sf->sf_fd, seekto, buf.b_c, WAVECHUNKSIZE) < WAVECHUNKSIZE)
+        if ((headersize = wave_nextchunk(sf, headersize, chunk)) == -1)
             return 0;
-        headersize = seekto;
     }
     if (!formatfound)
     {
