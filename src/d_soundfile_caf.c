@@ -442,10 +442,10 @@ void soundfile_caf_setup()
         caf_updateheader,
         caf_hasextension,
         caf_addextension,
-        caf_endianness,
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        caf_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         caf_strerror

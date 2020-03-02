@@ -532,10 +532,10 @@ void soundfile_wave_setup()
         wave_updateheader,
         wave_hasextension,
         wave_addextension,
-        wave_endianness,
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        wave_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         wave_strerror

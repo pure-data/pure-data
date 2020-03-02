@@ -103,8 +103,8 @@ typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
 
     /** open a sound file with a file descriptor and allocate sf_data,
         returns 1 on success and 0 on failure
-        note: fd is already valid and open when this function is called,
-              so set sf->sf_fd here
+        note: fd is already open when this function is called so set
+              sf->sf_fd here, fd will be closed if 0 is returned
         this may be called in a background thread */
 typedef int (*t_soundfile_openfn)(t_soundfile *sf, int fd);
 
@@ -139,11 +139,6 @@ typedef int (*t_soundfile_hasextensionfn)(const char *filename, size_t size);
         this may be called in a background thread */
 typedef int (*t_soundfile_addextensionfn)(char *filename, size_t size);
 
-    /** returns the type's preferred sample endianness based on the
-        requested endianness (0 little, 1 big, -1 unspecified)
-        returns 1 for big endian, 0 for little endian */
-typedef int (*t_soundfile_endiannessfn)(int endianness);
-
     /** seek to a specified sample frame in an open file,
         returns 1 on success or 0 on failure
         this may be called in a background thread */
@@ -162,6 +157,11 @@ typedef ssize_t (*t_soundfile_readsamplesfn)(t_soundfile *sf,
         this may be called in a background thread */
 typedef ssize_t (*t_soundfile_writesamplesfn)(t_soundfile *sf,
     const unsigned char *src, size_t size);
+
+    /** returns the type's preferred sample endianness based on the
+        requested endianness (0 little, 1 big, -1 unspecified)
+        returns 1 for big endian, 0 for little endian */
+typedef int (*t_soundfile_endiannessfn)(int endianness);
 
     /** read meta data from the soundfile header to the given outlet
         returns 1 on success or 0 on failure */
@@ -190,10 +190,10 @@ typedef struct _soundfile_type
     t_soundfile_updateheaderfn t_updateheaderfn; /**< must be non-NULL      */
     t_soundfile_hasextensionfn t_hasextensionfn; /**< must be non-NULL      */
     t_soundfile_addextensionfn t_addextensionfn; /**< must be non-NULL      */
-    t_soundfile_endiannessfn t_endiannessfn;     /**< must be non-NULL      */
     t_soundfile_seektoframefn t_seektoframefn;   /**< must be non-NULL      */
     t_soundfile_readsamplesfn t_readsamplesfn;   /**< must be non-NULL      */
     t_soundfile_writesamplesfn t_writesamplesfn; /**< must be non-NULL      */
+    t_soundfile_endiannessfn t_endiannessfn;     /**< NULL if not relevant  */
     t_soundfile_readmetafn t_readmetafn;         /**< NULL if not supported */
     t_soundfile_writemetafn t_writemetafn;       /**< NULL if not supported */
     t_soundfile_strerrorfn t_strerrorfn;         /**< NULL if not supported */
@@ -216,11 +216,11 @@ int soundfile_type_seektoframe(t_soundfile *sf, size_t frame);
 
     /** default t_soundfile_readsamplesfn implementation */
 ssize_t soundfile_type_readsamples(t_soundfile *sf,
-    unsigned char *buf, size_t size);
+    unsigned char *dst, size_t size);
 
     /** default t_soundfile_writesamplesfn implementation */
 ssize_t soundfile_type_writesamples(t_soundfile *sf,
-    const unsigned char *buf, size_t size);
+    const unsigned char *src, size_t size);
 
 /* ----- read/write helpers ----- */
 

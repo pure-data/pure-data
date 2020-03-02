@@ -636,10 +636,10 @@ void soundfile_aiff_setup()
         aiff_updateheader,
         aiff_hasextension,
         aiff_addextension,
-        aiff_endianness,
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        aiff_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         aiff_strerror

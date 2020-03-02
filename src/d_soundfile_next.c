@@ -291,10 +291,10 @@ void soundfile_next_setup()
         next_updateheader,
         next_hasextension,
         next_addextension,
-        next_endianness,
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        next_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         NULL  /* strerrorfn */

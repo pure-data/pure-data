@@ -39,10 +39,10 @@ void soundfile_raw_setup(t_soundfile_type *type)
         NULL, /* updateheaderfn */
         NULL, /* hasextensionfn */
         NULL, /* addextensionfn */
-        NULL, /* endiannessfn */
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         NULL, /* writesamplesfn */
+        NULL, /* endiannessfn */
         NULL, /* readmetafn */
         NULL, /* writemetafn */
         NULL  /* strerrorfn */

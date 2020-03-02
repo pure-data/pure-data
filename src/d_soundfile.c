@@ -114,14 +114,12 @@ static void outlet_soundfileinfo(t_outlet *out, t_soundfile *sf)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
-    /* post system error, otherwise try to print type name and error str
+    /* post read error, try to print type name and error str
        EIO is used as generic "couldn't read header" errnum */
 static void object_readerror(const void *x, const char *header,
     const char *filename, int errnum, const t_soundfile *sf)
 {
-    if (errnum != EIO && errnum > 0) /* C/POSIX error */
-        pd_error(x, "%s: %s: %s", header, filename, strerror(errnum));
-    else if(sf->sf_type)
+    if (sf->sf_type)
     {
             /* type implementation error? */
         pd_error(x, "%s: %s: unknown or bad header format (%s)",
@@ -129,6 +127,8 @@ static void object_readerror(const void *x, const char *header,
         if (errnum != EIO && sf->sf_type->t_strerrorfn)
             error("%s", soundfile_strerror(errnum, sf));
     }
+    else if (errnum != EIO && errnum > 0) /* C/POSIX error */
+        pd_error(x, "%s: %s: %s", header, filename, strerror(errnum));
     else
         pd_error(x, "%s: %s: unknown or bad header format", header, filename);
 }
@@ -162,7 +162,7 @@ void soundfile_caf_setup();
 void soundfile_next_setup();
 void soundfile_raw_setup(t_soundfile_type *type);
 
-    /** set up built-in types*/
+    /** set up built-in types */
 void soundfile_type_setup()
 {
     soundfile_wave_setup(); /* default first */
@@ -227,15 +227,15 @@ int soundfile_type_seektoframe(t_soundfile *sf, size_t frame)
 }
 
 ssize_t soundfile_type_readsamples(t_soundfile *sf,
-    unsigned char *buf, size_t size)
+    unsigned char *dst, size_t size)
 {
-    return read(sf->sf_fd, buf, size);
+    return read(sf->sf_fd, dst, size);
 }
 
 ssize_t soundfile_type_writesamples(t_soundfile *sf,
-    const unsigned char *buf, size_t size)
+    const unsigned char *src, size_t size)
 {
-    return write(sf->sf_fd, buf, size);
+    return write(sf->sf_fd, src, size);
 }
 
 /* ----- read write ----- */
@@ -779,12 +779,17 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     }
 
         /* check requested endianness */
-    bigendian = type->t_endiannessfn(endianness);
-    if (endianness != -1 && endianness != bigendian)
+    if (type->t_endiannessfn)
     {
-        error("%s: file forced to %s endian", TYPENAME(type),
-            (bigendian ? "big" : "little"));
+        bigendian = type->t_endiannessfn(endianness);
+        if (endianness != -1 && endianness != bigendian)
+        {
+            error("%s: file forced to %s endian", TYPENAME(type),
+                (bigendian ? "big" : "little"));
+        }
     }
+    else /* machine native */
+        bigendian = sys_isbigendian();
 
         /* return to caller */
     argc--; argv++;
