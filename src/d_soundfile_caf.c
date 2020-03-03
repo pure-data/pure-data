@@ -188,12 +188,6 @@ static void caf_postdata(const t_datachunk *data, int swap)
 
 /* ------------------------- CAF -------------------------- */
 
-static int caf_isheader(const char *buf, size_t size)
-{
-    if (size < 4) return 0;
-    return !strncmp(buf, "caff", 4);
-}
-
 static int caf_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
@@ -214,8 +208,6 @@ static int caf_readheader(t_soundfile *sf)
 
         /* file header */
     if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
-        return 0;
-    if (strncmp(head->h_id, "caff", 4))
         return 0;
     if (swap2(head->h_version, swap) != 1)
     {
@@ -407,6 +399,12 @@ static int caf_addextension(char *filename, size_t size)
     return 1;
 }
 
+static int caf_isheader(const char *buf, size_t size)
+{
+    if (size < 4) return 0;
+    return !strncmp(buf, "caff", 4);
+}
+
     /* default to big endian if not specified */
 static int caf_endianness(int endianness)
 {
@@ -434,7 +432,6 @@ void soundfile_caf_setup()
         gensym("caf"),
         CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
         NULL, /* data */
-        caf_isheader,
         soundfile_type_open,
         soundfile_type_close,
         caf_readheader,
@@ -445,6 +442,7 @@ void soundfile_caf_setup()
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        caf_isheader,
         caf_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */

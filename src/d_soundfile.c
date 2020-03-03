@@ -363,9 +363,20 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
             t_soundfile_type *type = soundfile_firsttype();
             while (type)
             {
-                if (type->t_isheaderfn(buf, bytesread))
+                if (type->t_isheaderfn && type->t_isheaderfn(buf, bytesread))
                     break;
                 type = soundfile_nexttype(type);
+            }
+            if (!type) /* try opening */
+            {
+                type = soundfile_firsttype();
+                while (type)
+                {
+                    if (!type->t_isheaderfn)
+                        if (type->t_openfn(sf, fd))
+                            break;
+                    type = soundfile_nexttype(type);
+                }
             }
             if (!type) /* not recognized */
                 goto badheader;
@@ -374,8 +385,16 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
         else
         {
                 /* check header using given type */
-            if (!sf->sf_type->t_isheaderfn(buf, bytesread))
-                goto badheader;
+            if (sf->sf_type->t_isheaderfn)
+            {
+                if (!sf->sf_type->t_isheaderfn(buf, bytesread))
+                    goto badheader;
+            }
+            else /* try opening */
+            {
+                if (sf->sf_type->t_openfn(sf, fd))
+                    goto badheader;
+            }
         }
 
             /* rewind and read header */
@@ -384,8 +403,9 @@ int open_soundfile_via_fd(int fd, t_soundfile *sf, size_t skipframes)
     }
 
         /* read header */
-    if (!sf->sf_type->t_openfn(sf, fd))
-        goto badheader;
+    if (sf->sf_fd == -1)
+        if (!sf->sf_type->t_openfn(sf, fd))
+            goto badheader;
     if (!sf->sf_type->t_readheaderfn(sf))
         goto badheader;
 

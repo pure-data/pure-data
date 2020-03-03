@@ -270,12 +270,6 @@ static void aiff_postdata(const t_datachunk *data, int swap)
 
 /* ------------------------- AIFF ------------------------- */
 
-static int aiff_isheader(const char *buf, size_t size)
-{
-    if (size < 4) return 0;
-    return !strncmp(buf, "FORM", 4);
-}
-
     /** loop through chunks to find comm and data */
 static int aiff_readheader(t_soundfile *sf)
 {
@@ -298,12 +292,7 @@ static int aiff_readheader(t_soundfile *sf)
         /* file header */
     if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
-    if (strncmp(head->h_formtype, "AIFF", 4))
-    {
-        if (strncmp(head->h_formtype, "AIFC", 4))
-            return 0;
-        isaiffc = 1;
-    }
+    isaiffc = !strncmp(head->h_formtype, "AIFC", 4);
 #ifdef DEBUG_SOUNDFILE
     aiff_posthead(head, swap);
 #endif
@@ -599,6 +588,13 @@ static int aiff_addextension(char *filename, size_t size)
     return 1;
 }
 
+static int aiff_isheader(const char *buf, size_t size)
+{
+    if (size < AIFFHEADSIZE) return 0;
+    return !strncmp(buf, "FORM", 4) &&
+        (!strncmp(buf + 8, "AIFF", 4) || !strncmp(buf + 8, "AIFC", 4));
+}
+
     /* default to big endian unless overridden */
 static int aiff_endianness(int endianness)
 {
@@ -628,7 +624,6 @@ void soundfile_aiff_setup()
         gensym("aiff"),
         AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE,
         NULL, /* data */
-        aiff_isheader,
         soundfile_type_open,
         soundfile_type_close,
         aiff_readheader,
@@ -639,6 +634,7 @@ void soundfile_aiff_setup()
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        aiff_isheader,
         aiff_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */

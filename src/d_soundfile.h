@@ -96,11 +96,6 @@ const char* soundfile_strerror(int errnum, const t_soundfile *sf);
 
 /* ----- soundfile type ----- */
 
-    /** returns 1 if buffer is the beginning of a supported file header,
-        size will be at least minheadersize
-        this may be called in a background thread */
-typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
-
     /** open a sound file with a file descriptor and allocate sf_data,
         returns 1 on success and 0 on failure
         note: fd is already open when this function is called so set
@@ -115,6 +110,7 @@ typedef int (*t_soundfile_openfn)(t_soundfile *sf, int fd);
 typedef int (*t_soundfile_closefn)(t_soundfile *sf);
 
     /** read format info from soundfile header,
+        only called after isheaderfn and/or openfn succeed
         returns 1 on success or 0 on error
         note: set sf_bytelimit = sound data size, optionaly set errno
               for descriptive type error read via strerrorfn
@@ -158,6 +154,11 @@ typedef ssize_t (*t_soundfile_readsamplesfn)(t_soundfile *sf,
 typedef ssize_t (*t_soundfile_writesamplesfn)(t_soundfile *sf,
     const unsigned char *src, size_t size);
 
+    /** returns 1 if buffer is the beginning of a supported file header,
+        size will be at least minheadersize
+        this may be called in a background thread */
+typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
+
     /** returns the type's preferred sample endianness based on the
         requested endianness (0 little, 1 big, -1 unspecified)
         returns 1 for big endian, 0 for little endian */
@@ -182,7 +183,6 @@ typedef struct _soundfile_type
     t_symbol *t_name;       /**< type name, unique & w/o white spaces       */
     size_t t_minheadersize; /**< minimum valid header size                  */
     void *t_data;           /**< implementation data                        */
-    t_soundfile_isheaderfn t_isheaderfn;         /**< must be non-NULL      */
     t_soundfile_openfn t_openfn;                 /**< must be non-NULL      */
     t_soundfile_closefn t_closefn;               /**< must be non-NULL      */
     t_soundfile_readheaderfn t_readheaderfn;     /**< must be non-NULL      */
@@ -193,6 +193,7 @@ typedef struct _soundfile_type
     t_soundfile_seektoframefn t_seektoframefn;   /**< must be non-NULL      */
     t_soundfile_readsamplesfn t_readsamplesfn;   /**< must be non-NULL      */
     t_soundfile_writesamplesfn t_writesamplesfn; /**< must be non-NULL      */
+    t_soundfile_isheaderfn t_isheaderfn;         /**< NULL if not relevant  */
     t_soundfile_endiannessfn t_endiannessfn;     /**< NULL if not relevant  */
     t_soundfile_readmetafn t_readmetafn;         /**< NULL if not supported */
     t_soundfile_writemetafn t_writemetafn;       /**< NULL if not supported */

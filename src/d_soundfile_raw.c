@@ -31,7 +31,6 @@ void soundfile_raw_setup(t_soundfile_type *type)
         gensym("raw"),
         0,
         NULL, /* data */
-        NULL, /* isheaderfn */
         soundfile_type_open,
         soundfile_type_close,
         raw_readheader,
@@ -42,6 +41,7 @@ void soundfile_raw_setup(t_soundfile_type *type)
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         NULL, /* writesamplesfn */
+        NULL, /* isheaderfn */
         NULL, /* endiannessfn */
         NULL, /* readmetafn */
         NULL, /* writemetafn */

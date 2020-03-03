@@ -110,14 +110,6 @@ static void next_posthead(const t_nextstep *next, int swap)
 
 /* ------------------------- NEXT ------------------------- */
 
-static int next_isheader(const char *buf, size_t size)
-{
-    if (size < 4) return 0;
-    if (!strncmp(buf, ".snd", 4) || !strncmp(buf, "dns.", 4))
-        return 1;
-    return 0;
-}
-
 static int next_readheader(t_soundfile *sf)
 {
     int format, bytespersample, bigendian = 1, swap = 0;
@@ -269,6 +261,14 @@ static int next_addextension(char *filename, size_t size)
     return 1;
 }
 
+static int next_isheader(const char *buf, size_t size)
+{
+    if (size < 4) return 0;
+    if (!strncmp(buf, ".snd", 4) || !strncmp(buf, "dns.", 4))
+        return 1;
+    return 0;
+}
+
     /* machine native if not specified */
 static int next_endianness(int endianness)
 {
@@ -283,7 +283,6 @@ void soundfile_next_setup()
         gensym("next"),
         NEXTHEADSIZE - 4, /* - info string */
         NULL, /* data */
-        next_isheader,
         soundfile_type_open,
         soundfile_type_close,
         next_readheader,
@@ -294,6 +293,7 @@ void soundfile_next_setup()
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        next_isheader,
         next_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */

@@ -218,12 +218,6 @@ static void wave_postfact(const t_factchunk *fact, int swap)
 
 /* ------------------------- WAVE ------------------------- */
 
-static int wave_isheader(const char *buf, size_t size)
-{
-    if (size < 4) return 0;
-    return !strncmp(buf, "RIFF", 4);
-}
-
 static int wave_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
@@ -241,11 +235,9 @@ static int wave_readheader(t_soundfile *sf)
     t_chunk *chunk = &buf.b_chunk;
 
         /* file header */
+#ifdef DEBUG_SOUNDFILE
     if (fd_read(sf->sf_fd, 0, buf.b_c, headersize) < headersize)
         return 0;
-    if (strncmp(buf.b_c + 8, "WAVE", 4))
-        return 0;
-#ifdef DEBUG_SOUNDFILE
         wave_posthead(&buf.b_head, swap);
 #endif
 
@@ -499,6 +491,12 @@ static int wave_addextension(char *filename, size_t size)
     return 1;
 }
 
+static int wave_isheader(const char *buf, size_t size)
+{
+    if (size < WAVEHEADSIZE) return 0;
+    return !strncmp(buf, "RIFF", 4) && !strncmp(buf + 8, "WAVE", 4);
+}
+
     /* force little endian */
 static int wave_endianness(int endianness)
 {
@@ -524,7 +522,6 @@ void soundfile_wave_setup()
         gensym("wave"),
         WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
         NULL, /* data */
-        wave_isheader,
         soundfile_type_open,
         soundfile_type_close,
         wave_readheader,
@@ -535,6 +532,7 @@ void soundfile_wave_setup()
         soundfile_type_seektoframe,
         soundfile_type_readsamples,
         soundfile_type_writesamples,
+        wave_isheader,
         wave_endianness,
         NULL, /* readmetafn */
         NULL, /* writemetafn */
