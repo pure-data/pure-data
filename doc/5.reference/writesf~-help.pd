@@ -10,34 +10,35 @@
 #X obj 147 243 writesf~ 2;
 #X msg 115 46 open /tmp/foo.wav;
 #X obj 177 604 soundfiler;
-#X text 400 601 updated for Pd version 0.37;
 #X text 102 603 see also:;
 #X obj 184 213 osc~ 440;
 #X text 61 291 writesf~ creates a subthread whose task is to write
 audio streams to disk. You need not provide any disk access time between
 "open" and "start" \, but between "stop" and the next "open" you must
-give the object time to flush all the output to disk.;
+give the object time to flush all the output to disk., f 68;
 #X msg 147 97 open -bytes 4 /tmp/foo.wav;
-#X text 244 46 create a new 16-bit soundfile;
-#X text 326 72 create 24-bit soundfile;
-#X text 340 96 create 32-bit floating-point soundfile;
 #X msg 135 72 open -bytes 3 /tmp/foo.wav;
-#X text 60 373 The soundfile is 2- or 3-byte fixed point ("pcm") or
-4-byte floating-point. The soundfile format is determined by the file
-extent ("foo.wav" \, "foo.aiff" \, or "foo.snd").;
 #X obj 259 604 readsf~;
-#X text 93 447 -wave \, -nextstep \, -aiff;
-#X text 94 468 -big \, -little (nextstep only!);
-#X text 94 489 -bytes <2 \, 3 \, or 4>;
-#X text 94 511 -rate <sample rate>;
+#X text 94 494 -bytes <2 \, 3 \, or 4>;
+#X text 94 516 -rate <sample rate>;
 #X text 59 429 The "open" message may take flag-style arguments as
 follows:;
-#X text 63 552 (setting sample rate will affect the soundfile header
-but the file will _not_ be resampled.);
-#X text 229 240 creation argument is number of channels (1 to 64).
-, f 27;
 #X obj 45 12 writesf~;
 #X text 111 11 - write audio signals to a soundfile;
+#X text 244 46 create a new 16-bit integer soundfile;
+#X text 326 72 create a 24-bit integer soundfile;
+#X text 340 96 create a 32-bit floating point soundfile;
+#X text 94 452 -wave \, -aiff \, -caf \, -next;
+#X text 94 473 -big \, -little (sample endianness);
+#X text 63 550 (Setting the sample rate will affect the soundfile header
+but the file will _not_ be resampled.), f 65;
+#X text 400 601 updated for Pd version 0.51;
+#X text 229 240 The creation argument is the number of channels (1
+to 64)., f 29;
+#X text 60 368 The soundfile is uncompressed 2- or 3-byte integer ("pcm")
+or 4-byte floating point. The soundfile format is determined by the
+file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
+, f 68;
 #X connect 1 0 8 0;
 #X connect 2 0 3 0;
 #X connect 2 0 5 0;
@@ -45,6 +46,6 @@ but the file will _not_ be resampled.);
 #X connect 4 0 8 0;
 #X connect 5 0 4 0;
 #X connect 9 0 8 0;
-#X connect 13 0 8 0;
+#X connect 12 0 8 0;
+#X connect 14 0 8 0;
 #X connect 15 0 8 0;
-#X connect 19 0 8 0;

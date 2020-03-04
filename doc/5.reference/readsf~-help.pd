@@ -1,4 +1,4 @@
-#N canvas 408 23 785 533 12;
+#N canvas 408 23 772 529 12;
 #X msg 246 277 \; pd dsp 1;
 #X msg 60 253 1;
 #X msg 67 277 0;
@@ -18,22 +18,12 @@
 #X obj 119 390 *~ 0.1;
 #X obj 60 390 *~ 0.1;
 #X msg 37 203 open ../sound/bell.aiff;
-#X text 512 422 when the soundfile is done.;
-#X text 511 408 last outlet gives a "bang";
-#X text 318 195 Open takes a filename \, an onset in sample frames
-\, and \, as an override \, you may also supply a header size to skip
-\, a number of channels \, bytes per channel \, and endianness., f
-44;
+#X text 512 426 when the soundfile is done.;
 #X text 46 53 The readsf~ object reads a soundfile into its signal
 outputs. You must open the soundfile in advance (a couple of seconds
 before you'll need it) using the "open" message. The object immediately
 starts reading from the file \, but output will only appear after you
 send a "1" to start playback. A "0" stops it., f 75;
-#X text 46 130 The wave \, aiff \, and nextstep formats are parsed
-automatically \, although only 2- 3- and 4- byte samples are accepted
-(4 bytes implies floating point and is not available in aiff format.)
-, f 75;
-#X text 502 470 Updated for version 0.37;
 #X obj 153 468 soundfiler;
 #X text 74 468 see also:;
 #X obj 234 468 readsf~;
@@ -41,9 +31,18 @@ automatically \, although only 2- 3- and 4- byte samples are accepted
 #X text 99 278 0 stops it;
 #X obj 49 16 readsf~;
 #X text 105 17 - read a soundfile;
-#X text 524 312 optional arguments:, f 19;
-#X text 524 333 number of channels \; buffer size per channel in bytes.
+#X text 318 195 Open takes a filename \, an onset in sample frames
+\, and \, as an override \, you may also supply a header size to skip
+\, a number of channels \, bytes per sample \, and endianness., f
+43;
+#X text 524 312 Optional arguments:;
+#X text 511 412 The last outlet gives a "bang";
+#X text 502 470 Updated for version 0.51;
+#X text 524 333 number of channels \; per channel buffer size in bytes
 ;
+#X text 46 129 The wave \, aiff \, caf \, and next formats are parsed
+automatically \, although only uncompressed 2- or 3-byte integer ("pcm")
+and 4-byte floating point samples are accepted., f 75;
 #X connect 1 0 10 0;
 #X connect 2 0 10 0;
 #X connect 4 0 5 0;
