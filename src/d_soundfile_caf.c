@@ -190,7 +190,7 @@ static int caf_isheader(const char *buf, size_t size)
 static int caf_readheader(t_soundfile *sf)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
-        fmtflags, bitspersample, swap = !sys_isbigendian();
+        fmtflags, swap = !sys_isbigendian();
     off_t headersize = CAFHEADSIZE + CAFDESCSIZE;
     ssize_t bytelimit = CAFMAXBYTES;
     union
@@ -242,12 +242,10 @@ static int caf_readheader(t_soundfile *sf)
     }
     nchannels = swap4(desc->ds_nchannels, swap);
     fmtflags = swap4(desc->ds_fmtflags, swap);
-    bitspersample = swap4(desc->ds_bitsperchannel, swap);
-    switch (bitspersample)
+    bytespersample = swap4(desc->ds_bitsperchannel, swap) / 8;
+    switch (bytespersample)
     {
-        case 16: bytespersample = 2; break;
-        case 24: bytespersample = 3; break;
-        case 32: bytespersample = 4; break;
+        case 2: case 3: case 4: break;
         default:
             errno = SOUNDFILE_ERRSAMPLEFMT;
             return 0;

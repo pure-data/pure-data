@@ -282,11 +282,17 @@ static int wave_readheader(t_soundfile *sf)
                 }
             }
             bytespersample = swap2(format->fc_bitspersample, swap) / 8;
-            if (bytespersample == 4 && formattag != WAVE_FORMAT_FLOAT)
+            switch (bytespersample)
             {
-                errno = SOUNDFILE_ERRSAMPLEFMT;
-                return 0;
+                case 2: case 3: break;
+                case 4:
+                    if (formattag == WAVE_FORMAT_FLOAT) /* 32 bit int? */
+                        break;
+                default:
+                    errno = SOUNDFILE_ERRSAMPLEFMT;
+                    return 0;
             }
+
             formatfound = 1;
         }
         else if(!strncmp(chunk->c_id, "data", 4))
