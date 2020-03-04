@@ -182,6 +182,38 @@ static t_soundfile_type *soundfile_findtype(const char *name)
     return (t ? *t : NULL);
 }
 
+/* ----- ASCII ----- */
+
+    /** compound ascii read/write args  */
+typedef struct _asciiargs
+{
+    ssize_t aa_onsetframe;  /* start frame */
+    ssize_t aa_nframes;     /* nframes to read/write */
+    int aa_nchannels;       /* number of channels to read/write */
+    t_word **aa_vectors;    /* vectors to read into/write out of */
+    t_garray **aa_garrays;  /* read: arrays to resize & read into */
+    int aa_resize;          /* read: resize when reading? */
+    size_t aa_maxsize;      /* read: max size to read/resize to */
+    t_sample aa_normfactor; /* write: normalization factor */
+} t_asciiargs;
+
+static int ascii_hasextension(const char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len >= 5 && !strncmp(filename + (len - 4), ".txt", 4))
+        return 1;
+    return 0;
+}
+
+static int ascii_addextension(char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len + 4 > size)
+        return 0;
+    strncat(filename, ".txt", 4);
+    return 1;
+}
+
 /* ----- read write ----- */
 
 ssize_t fd_read(int fd, off_t offset, void *dst, size_t size)
@@ -556,9 +588,9 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
          -aiff
          -caf
          -next / -nextstep
+         -ascii
          -big
          -little
-         -ascii
     */
 
     /** parsed write arguments */
@@ -575,11 +607,12 @@ typedef struct _soundfiler_writeargs
     int wa_ascii;                     /* write ascii? */
 } t_soundfiler_writeargs;
 
+
 /* the routine which actually does the work should LATER also be called
 from garray_write16. */
 
     /** Parse arguments for writing.  The "obj" argument is only for flagging
-        errors.  For streaming to a file the "normalize", "onset" and "nframes"
+        errors.  For streaming to a file the "normalize" and "nframes"
         arguments shouldn't be set but the calling routine flags this. */
 static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
     t_soundfiler_writeargs *wa)
@@ -656,6 +689,7 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
                 /* check for type by name */
             if (!(type = soundfile_findtype(flag)))
                 return -1; /* unknown flag */
+            ascii = 0; /* replaced */
             argc -= 1; argv += 1;
         }
     }
@@ -674,7 +708,11 @@ static int soundfiler_parsewriteargs(void *obj, int *p_argc, t_atom **p_argv,
             t = soundfile_nexttype(t);
         }
         if (!t)
+        {
+            if (!ascii)
+                ascii = ascii_hasextension(filesym->s_name, MAXPDSTRING);
             t = soundfile_firsttype(); /* default if unknown */
+        }
         type = *t;
     }
 
@@ -986,54 +1024,67 @@ static t_soundfiler *soundfiler_new(void)
 }
 
 static int soundfiler_readascii(t_soundfiler *x, const char *filename,
-    int narray, t_garray **garrays, t_word **vecs, int resize, int finalsize)
+    t_asciiargs *a)
 {
     t_binbuf *b = binbuf_new();
-    int n, i, j, nframes, vecsize;
+    int i, j, vecsize;
+    ssize_t framesinfile, nframes = a->aa_nframes;
     t_atom *atoms, *ap;
     if (binbuf_read_via_canvas(b, filename, x->x_canvas, 0))
     {
         nframes = 0;
         goto done;
     }
-    n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
-    nframes = n / narray;
+    framesinfile = binbuf_getnatom(b) / a->aa_nchannels;
 #ifdef DEBUG_SOUNDFILE
     post("ascii: read 1 %d", n);
 #endif
-    if (nframes < 1)
+    if (framesinfile < 1)
     {
-        pd_error(x, "soundfiler read: %s: empty or very short file", filename);
-        nframes = 0;
+        pd_error(x, "soundfiler read: %s: empty or very short ascii file",
+            filename);
+        framesinfile = 0;
         goto done;
     }
-    if (resize)
+    if (a->aa_resize)
     {
-        for (i = 0; i < narray; i++)
+        if (framesinfile > a->aa_maxsize)
         {
-            garray_resize_long(garrays[i], nframes);
-            garray_getfloatwords(garrays[i], &vecsize, &vecs[i]);
+            pd_error(x, "soundfiler read: truncated to %ld elements",
+                a->aa_maxsize);
+            framesinfile = a->aa_maxsize;
+        }
+        nframes = framesinfile;
+        for (i = 0; i < a->aa_nchannels; i++)
+        {
+            garray_resize_long(a->aa_garrays[i], nframes);
+            garray_setsaveit(a->aa_garrays[i], 0);
+            if (!garray_getfloatwords(a->aa_garrays[i], &vecsize,
+                &a->aa_vectors[i]) || (vecsize != framesinfile))
+            {
+                pd_error(x, "soundfiler read: resize failed");
+                goto done;
+            }
         }
     }
-    else if (finalsize < nframes)
-        nframes = finalsize;
 #ifdef DEBUG_SOUNDFILE
     post("ascii: read 2");
 #endif
+    if (a->aa_onsetframe > 0)
+        atoms += a->aa_onsetframe;
     for (j = 0, ap = atoms; j < nframes; j++)
-        for (i = 0; i < narray; i++)
-            vecs[i][j].w_float = atom_getfloat(ap++);
+        for (i = 0; i < a->aa_nchannels; i++)
+            a->aa_vectors[i][j].w_float = atom_getfloat(ap++);
         /* zero out remaining elements of vectors */
-    for (i = 0; i < narray; i++)
+    for (i = 0; i < a->aa_nchannels; i++)
     {
-        int vecsize;
-        if (garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+        if (garray_getfloatwords(a->aa_garrays[i], &vecsize, &a->aa_vectors[i]))
             for (j = nframes; j < vecsize; j++)
-                vecs[i][j].w_float = 0;
+                a->aa_vectors[i][j].w_float = 0;
     }
-    for (i = 0; i < narray; i++)
-        garray_redraw(garrays[i]);
+    for (i = 0; i < a->aa_nchannels; i++)
+        garray_redraw(a->aa_garrays[i]);
 #ifdef DEBUG_SOUNDFILE
     post("ascii: read 3");
 #endif
@@ -1047,10 +1098,13 @@ done:
        usage: read [flags] filename table ...
        flags:
            -skip <frames> ... frames to skip in file
-           -onset <frames> ... onset in table to read into (NOT DONE YET)
-           -raw <headersize channels bytes endian>
+           -raw <headersize channels bytespersample endian>
            -resize
-           -maxsize <max-size>
+           -maxsize <maxsize>
+           -wave
+           -aiff
+           -caf
+           -next
            -ascii
     */
 
@@ -1083,11 +1137,17 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else if (!strcmp(flag, "ascii"))
         {
+            if (sf.sf_headersize >= 0)
+                post("'-ascii' overridden by '-raw'");
             ascii = 1;
             argc--; argv++;
         }
         else if (!strcmp(flag, "raw"))
         {
+            if (ascii)
+                post("'-ascii' overridden by '-raw'");
+            else if (sf.sf_type)
+                post("'-%s' overridden by '-raw'", sf.sf_type->t_name);
             if (argc < 5 ||
                 argv[1].a_type != A_FLOAT ||
                 ((sf.sf_headersize = argv[1].a_w.w_float) < 0) ||
@@ -1122,7 +1182,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 ((maxsize = (argv[1].a_w.w_float > SFMAXFRAMES ?
                 SFMAXFRAMES : argv[1].a_w.w_float)) < 0))
                     goto usage;
-            resize = 1;     /* maxsize implies resize. */
+            resize = 1;     /* maxsize implies resize */
             argc -= 2; argv += 2;
         }
         else
@@ -1130,31 +1190,16 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 /* check for type by name */
             if (!(sf.sf_type = soundfile_findtype(flag)))
                 goto usage; /* unknown flag */
+            ascii = 0; /* replaced */
+            if (sf.sf_headersize >= 0)
+                post("'-%s' overridden by '-raw'", sf.sf_type->t_name);
             argc -= 1; argv += 1;
         }
     }
-    if (ascii)
+    if (sf.sf_headersize >= 0)
     {
-        if (sf.sf_headersize >= 0)
-        {
-            post("soundfiler_read: '-raw' overridden by '-ascii'");
-            sf.sf_headersize = -1;
-        }
-        if (sf.sf_type)
-        {
-            post("soundfiler_read: '-%s' overridden by '-ascii'",
-                sf.sf_type->t_name);
-            sf.sf_type = NULL;
-        }
-    }
-    else if (sf.sf_headersize >= 0)
-    {
-        if (sf.sf_type)
-        {
-            post("soundfiler_read: '-%s' overridden by '-raw'",
-                sf.sf_type->t_name);
-            sf.sf_type = NULL;
-        }
+        ascii = 0;
+        sf.sf_type = NULL;
     }
     if (argc < 1 ||                           /* no filename or tables */
         argc > MAXSFCHANS + 1 ||              /* too many tables */
@@ -1162,6 +1207,10 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
+
+        /* check for implicit ascii */
+    if (!sf.sf_type && sf.sf_headersize < 0)
+        ascii = ascii_hasextension(filename, MAXPDSTRING);
 
     for (i = 0; i < argc; i++)
     {
@@ -1181,22 +1230,22 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 argv[i].a_w.w_symbol->s_name);
         if (finalsize && finalsize != vecsize && !resize)
         {
-            post("soundfiler read: arrays have different lengths, resizing...");
+            post("arrays have different lengths, resizing...");
             resize = 1;
         }
         finalsize = vecsize;
     }
     if (ascii)
     {
+        t_asciiargs a =
+            {skipframes, finalsize, argc, vecs, garrays, resize, maxsize, 0};
         if (!argc)
         {
             pd_error(x, "soundfiler read: "
                         "'-ascii' requires at least one table");
             goto done;
         }
-        framesread = soundfiler_readascii(x, filename,
-            argc, garrays, vecs, resize, finalsize);
-        if (framesread == 0)
+        if ((framesread = soundfiler_readascii(x, filename, &a)) == 0)
         {
             pd_error(x, "soundfiler read: reading ascii failed");
             goto done;
@@ -1308,20 +1357,19 @@ done:
         assumes all vectors are at least nframes in length
         adapted from garray_savecontentsto()
         returns frames written on success or 0 on error */
-int soundfiler_writeascii(t_canvas *canvas, const char *filename,
-    int nvecs, t_word **vecs, int nframes, t_sample normalfactor)
+int soundfiler_writeascii(t_soundfiler *x, const char *filename, t_asciiargs *a)
 {
     t_binbuf *b = binbuf_new();
     int i, j, ret = 1;
-    if (nframes > 200000)
-        post("warning: writing table(s) with %d points to ascii!");
-    for (i = 0; i < nframes; ++i)
-        for (j = 0; j < nvecs; ++j)
-            binbuf_addv(b, "f", vecs[j][i].w_float * normalfactor);
+    if (a->aa_nframes > 200000)
+        post("warning: writing %d table points to ascii file!");
+    for (i = a->aa_onsetframe; i < a->aa_nframes; ++i)
+        for (j = 0; j < a->aa_nchannels; ++j)
+            binbuf_addv(b, "f", a->aa_vectors[j][i].w_float * a->aa_normfactor);
     binbuf_addv(b, ";");
-    ret = !binbuf_write(b, filename, "", 1); /* convert semis to cr */
+    ret = binbuf_write(b, filename, "", 1); /* convert semis to cr */
     binbuf_free(b);
-    return (ret ? ret : nframes);
+    return (ret == 0 ? a->aa_nframes : 0);
 }
 
     /** this is broken out from soundfiler_write below so garray_write can
@@ -1390,11 +1438,17 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         /* write to ascii text file? */
     if (wa.wa_ascii)
     {
+        char filenamebuf[MAXPDSTRING];
+        t_asciiargs a =
+            {wa.wa_onsetframes, wa.wa_nframes, sf->sf_nchannels, vectors, 0};
+        strcpy(filenamebuf, wa.wa_filesym->s_name);
+        if (!ascii_hasextension(filenamebuf, MAXPDSTRING))
+            ascii_addextension(filenamebuf, MAXPDSTRING);
         if (wa.wa_normalize)
-            normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
-        frameswritten = soundfiler_writeascii(canvas, wa.wa_filesym->s_name,
-            sf->sf_nchannels, vectors, wa.wa_nframes, normfactor);
-        if (frameswritten == 0)
+            a.aa_normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
+        else
+            a.aa_normfactor = 1;
+        if ((frameswritten = soundfiler_writeascii(obj, filenamebuf, &a)) == 0)
         {
             pd_error(obj, "soundfiler write: writing ascii failed");
             goto fail;
@@ -1406,7 +1460,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         return frameswritten;
     }
 
-        /* create file and detect if int samples should be clipped */
+        /* create file and detect if int samples should be normalized */
     if ((fd = create_soundfile(canvas, wa.wa_filesym->s_name,
         sf, wa.wa_nframes)) < 0)
     {
@@ -1416,7 +1470,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     }
     if (!wa.wa_normalize)
     {
-        if ((sf->sf_bytespersample != 4) && (biggest > 1))
+        if (sf->sf_bytespersample != 4 && biggest > 1)
         {
             post("%s: reducing max amplitude %f to 1",
                 wa.wa_filesym->s_name, biggest);
