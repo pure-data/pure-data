@@ -12,29 +12,28 @@
 #X msg 42 157 read ../sound/bell.aiff array2;
 #X msg 58 214 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
 ;
-#X text 558 72 Flags for reading:;
-#X text 575 90 -skip <sample frames to skip in file>;
+#X text 557 65 Flags for reading:;
+#X text 575 101 -skip <sample frames to skip in file>;
 #X floatatom 49 422 0 0 0 0 - - -;
 #X msg 50 185 read -resize ../sound/bell.aiff array2;
-#X msg 98 314 write -wave -nframes 10000 /tmp/foo2 array2;
 #X text 303 286 write a file;
 #X text 425 342 write stereo;
-#X text 575 145 -raw <headersize> <channels> <bytespersample> <endianness>
+#X text 575 156 -raw <headersize> <channels> <bytespersample> <endianness>
 ;
-#X text 575 108 -resize;
-#X text 575 126 -maxsize <maximum number of samples we can resize to>
+#X text 575 119 -resize;
+#X text 575 137 -maxsize <maximum number of samples we can resize to>
 ;
-#X text 645 329 Flags for writing:;
-#X text 661 391 -skip <number of sample frames to skip in array>;
-#X text 661 413 -nframes <maximum number to write>;
-#X text 661 457 -normalize;
-#X text 661 435 -bytes <2 \, 3 \, or 4>;
+#X text 645 337 Flags for writing:;
+#X text 661 399 -skip <number of sample frames to skip in array>;
+#X text 661 421 -nframes <maximum number to write>;
+#X text 661 465 -normalize;
+#X text 661 443 -bytes <2 \, 3 \, or 4>;
 #X obj 790 568 tabwrite~;
 #X obj 790 592 tabread4~;
 #X obj 895 546 tabplay~;
 #X obj 895 593 writesf~;
 #X obj 895 570 readsf~;
-#X text 661 477 -rate <sample rate>;
+#X text 661 485 -rate <sample rate>;
 #X obj 116 423 print;
 #X text 790 544 See also:;
 #X text 262 157 read a file to zero or more arrays;
@@ -48,40 +47,43 @@
 #X msg 108 368 write -ascii /tmp/foo1.txt array2;
 #X text 351 368 ... write to an ascii file;
 #X msg 102 341 write -next -bytes 4 /tmp/foo3 array1 array2;
-#X text 557 13 When reading you can leave soundfiler to figure out
-which of the known soundfile formats the file belongs to or override
-all header information using the "-raw" flag.;
-#X text 575 226 -ascii - read a file containing ascii numbers;
-#X text 594 245 May be combined with -resize. Newlines in the file
-are ignored \; non-numeric fields are replaced by zero. If multiple
-arrays are specified \, the first elements of each array should come
-first in the file \, followed by all the second elements and so on
-(interleaved).;
-#X text 661 369 -big \, -little (sample endianness);
-#X text 660 350 -wave \, -aiff \, -caf \, -next \, -ascii;
-#X text 593 163 This causes all header information to be ignored. Endianness
-is "l" ("little") for Intel machines or "b" ("big") for older PPC Macintoshes.
-You can give "n" (natural) to take the byte order your machine prefers.
-;
-#X text 44 454 Left outlet outputs the number of samples. Right outlet
+#X text 575 237 -ascii - read a file containing ascii numbers;
+#X text 661 377 -big \, -little (sample endianness);
+#X text 660 358 -wave \, -aiff \, -caf \, -next \, -ascii;
+#X text 44 456 Left outlet outputs the number of samples. Right outlet
 outputs info as a list: samplerate \, headersize \, num channels \,
 bytes per sample \, & endianness ("b" or "l"). If no array name is
-given \, no samples are read but the info is provided anyway., f 68
+given \, no samples are read but the info is provided anyway., f 77
 ;
-#X text 662 502 The number of channels is limited to 64;
+#X text 661 513 The number of channels is limited to 64;
 #X text 31 46 The soundfiler object reads and writes floating point
 arrays to binary soundfiles which may contain uncompressed 2- or 3-byte
 integer ("pcm") or 4-byte floating point samples in wave \, aiff \,
 caf \, next \, or ascii text formats. The number of channels of the
 soundfile need not match the number of arrays given (extras are dropped
 and unsupplied channels are zeroed out)., f 64;
+#X text 593 255 May be combined with -resize. Newlines in the file
+are ignored \, non-numeric fields are replaced by zero. If multiple
+arrays are specified \, the first elements of each array should come
+first in the file \, followed by all the second elements and so on
+(interleaved).;
+#X msg 98 314 write -nframes 10000 /tmp/foo2.wav array2;
+#X text 397 314 set type by file ext;
+#X text 575 83 -wave \, -aiff \, -caf \, -next;
+#X text 593 174 This causes all header and type information to be ignored.
+Endianness is "l" ("little") for Intel machines or "b" ("big") for
+older PPC Macintoshes. You can give "n" (natural) to take the byte
+order your machine prefers.;
+#X text 557 14 When reading you can leave soundfiler to figure out
+which of the known soundfile formats the file belongs to or override
+all header and type information using the "-raw" flag., f 66;
 #X connect 2 0 8 0;
-#X connect 2 1 27 0;
+#X connect 2 1 26 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 9 0 2 0;
-#X connect 10 0 2 0;
+#X connect 35 0 2 0;
 #X connect 36 0 2 0;
-#X connect 37 0 2 0;
-#X connect 39 0 2 0;
+#X connect 38 0 2 0;
+#X connect 46 0 2 0;
