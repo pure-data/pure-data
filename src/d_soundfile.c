@@ -1044,7 +1044,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     {
         pd_error(x, "soundfiler read: %s: empty or very short ascii file",
             filename);
-        framesinfile = 0;
+        nframes = 0;
         goto done;
     }
     if (a->aa_resize)
