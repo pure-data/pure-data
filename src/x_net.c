@@ -138,17 +138,20 @@ static void netsend_readbin(t_netsend *x, int fd)
         {
             if (ret < 0)
             {
-                /* only close a UDP socket if there really was an error.
-                (socket_errno_udp() ignores some error codes) */
+                /* socket_errno_udp() ignores some error codes */
                 if (x->x_protocol == SOCK_DGRAM && !socket_errno_udp())
                     return;
                 sys_sockerror("recv (bin)");
             }
             if (x->x_obj.ob_pd == netreceive_class)
             {
-                sys_rmpollfn(fd);
-                sys_closesocket(fd);
-                netreceive_notify((t_netreceive *)x, fd);
+                    /* never close UDP socket because we can't really notify it */
+                if (x->x_protocol != SOCK_DGRAM)
+                {
+                    sys_rmpollfn(fd);
+                    sys_closesocket(fd);
+                    netreceive_notify((t_netreceive *)x, fd);
+                }
             }
             else /* properly shutdown netsend */
                 netsend_disconnect(x);
@@ -561,7 +564,12 @@ static void netreceive_notify(t_netreceive *x, int fd)
             x->x_nconnections--;
         }
     }
-    outlet_float(x->x_ns.x_connectout, x->x_nconnections);
+    if (x->x_ns.x_connectout)
+    {
+        outlet_float(x->x_ns.x_connectout, x->x_nconnections);
+    }
+    else
+        bug("netreceive_notify");
 }
 
     /* socketreceiver from sockaddr_in */
@@ -803,8 +811,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
         {
-            t_socketreceiver *y = socketreceiver_new((void *)x,
-                (t_socketnotifier)netreceive_notify,
+                /* a UDP receiver doesn't get notifications! */
+            t_socketreceiver *y = socketreceiver_new(x, 0,
                     (x->x_ns.x_msgout ? netsend_read : 0), 1);
             if (x->x_ns.x_fromout)
                 socketreceiver_set_fromaddrfn(y,

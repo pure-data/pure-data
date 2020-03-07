@@ -504,15 +504,17 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
-                /* only close the socket if there really was an error.
-                (socket_errno_udp() ignores some error codes) */
+                /* socket_errno_udp() ignores some error codes */
             if (socket_errno_udp())
             {
                 sys_sockerror("recv (udp)");
+                    /* only notify and shutdown a UDP sender! */
                 if (x->sr_notifier)
+                {
                     (*x->sr_notifier)(x->sr_owner, fd);
-                sys_rmpollfn(fd);
-                sys_closesocket(fd);
+                    sys_rmpollfn(fd);
+                    sys_closesocket(fd);
+                }
             }
             return;
         }
