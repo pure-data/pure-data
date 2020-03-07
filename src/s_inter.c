@@ -518,6 +518,13 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         }
         else if (ret > 0)
         {
+                /* handle too large UDP packets */
+            if (ret > INBUFSIZE)
+            {
+                post("warning: incoming UDP packet truncated from %d to %d bytes.",
+                    ret, INBUFSIZE);
+                ret = INBUFSIZE;
+            }
             buf[ret] = 0;
     #if 0
             post("%s", buf);

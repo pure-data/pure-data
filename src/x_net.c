@@ -159,6 +159,13 @@ static void netsend_readbin(t_netsend *x, int fd)
             t_atom *ap;
             if (x->x_fromout)
                 outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
+                /* handle too large UDP packets */
+            if (ret > INBUFSIZE)
+            {
+                post("warning: incoming UDP packet truncated from %d to %d bytes.",
+                    ret, INBUFSIZE);
+                ret = INBUFSIZE;
+            }
             ap = (t_atom *)alloca(ret * sizeof(t_atom));
             for (i = 0; i < ret; i++)
                 SETFLOAT(ap+i, inbuf[i]);
