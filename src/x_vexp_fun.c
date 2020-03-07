@@ -537,7 +537,7 @@ ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 FUNC_EVAL_UNARY(left, toint, (int), optr, 0);
         }
 
-#ifdef __MSC__
+#ifdef _MSC_VER
 #if (_MSC_VER < 1800)
 /* rint is not available for Visual Studio Version < Visual Studio 2013 */
 static double rint(double x)
