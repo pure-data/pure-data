@@ -1038,7 +1038,8 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
     atoms = binbuf_getvec(b);
     framesinfile = binbuf_getnatom(b) / a->aa_nchannels;
 #ifdef DEBUG_SOUNDFILE
-    post("ascii: read 1 %d", n);
+    post("ascii: read 1 natoms %d frames %d onset %d channels %d",
+        binbuf_getnatom(b), nframes, a->aa_onsetframe, a->aa_nchannels);
 #endif
     if (framesinfile < 1)
     {
@@ -1064,12 +1065,15 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
                 &a->aa_vectors[i]) || (vecsize != framesinfile))
             {
                 pd_error(x, "soundfiler read: resize failed");
+                nframes = 0;
                 goto done;
             }
         }
     }
+    else if (nframes > framesinfile)
+        nframes = framesinfile;
 #ifdef DEBUG_SOUNDFILE
-    post("ascii: read 2");
+    post("ascii: read 2 frames %d", nframes);
 #endif
     if (a->aa_onsetframe > 0)
         atoms += a->aa_onsetframe;
@@ -1359,15 +1363,21 @@ done:
         returns frames written on success or 0 on error */
 int soundfiler_writeascii(t_soundfiler *x, const char *filename, t_asciiargs *a)
 {
+    char path[MAXPDSTRING];
     t_binbuf *b = binbuf_new();
     int i, j, ret = 1;
+#ifdef DEBUG_SOUNDFILE
+    post("ascii write: frames %d onset %d channels %d",
+        a->aa_nframes, a->aa_onsetframe, a->aa_nchannels);
+#endif
+    canvas_makefilename(x->x_canvas, filename, path, MAXPDSTRING);
     if (a->aa_nframes > 200000)
         post("warning: writing %d table points to ascii file!");
     for (i = a->aa_onsetframe; i < a->aa_nframes; ++i)
         for (j = 0; j < a->aa_nchannels; ++j)
             binbuf_addv(b, "f", a->aa_vectors[j][i].w_float * a->aa_normfactor);
     binbuf_addv(b, ";");
-    ret = binbuf_write(b, filename, "", 1); /* convert semis to cr */
+    ret = binbuf_write(b, path, "", 1); /* convert semis to cr */
     binbuf_free(b);
     return (ret == 0 ? a->aa_nframes : 0);
 }
