@@ -44,8 +44,6 @@
 #X text 331 240 ... read from an ascii file, f 28;
 #X text 787 635 updated for Pd version 0.51;
 #X msg 66 241 read -ascii -resize table.txt array1;
-#X msg 108 368 write -ascii /tmp/foo1.txt array2;
-#X text 351 368 ... write to an ascii file;
 #X msg 102 341 write -next -bytes 4 /tmp/foo3 array1 array2;
 #X text 575 237 -ascii - read a file containing ascii numbers;
 #X text 661 377 -big \, -little (sample endianness);
@@ -77,6 +75,9 @@ order your machine prefers.;
 #X text 557 14 When reading you can leave soundfiler to figure out
 which of the known soundfile formats the file belongs to or override
 all header and type information using the "-raw" flag., f 66;
+#X text 304 368 ... write to an ascii file;
+#X msg 108 368 write /tmp/foo1.txt array2;
+#X text 331 390 "-ascii" set via file ext;
 #X connect 2 0 8 0;
 #X connect 2 1 26 0;
 #X connect 3 0 2 0;
@@ -85,5 +86,5 @@ all header and type information using the "-raw" flag., f 66;
 #X connect 9 0 2 0;
 #X connect 35 0 2 0;
 #X connect 36 0 2 0;
-#X connect 38 0 2 0;
-#X connect 46 0 2 0;
+#X connect 44 0 2 0;
+#X connect 50 0 2 0;
