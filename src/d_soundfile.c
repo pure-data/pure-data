@@ -1056,13 +1056,13 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
                 a->aa_maxsize);
             framesinfile = a->aa_maxsize;
         }
-        nframes = framesinfile;
+        nframes = framesinfile - a->aa_onsetframe;
         for (i = 0; i < a->aa_nchannels; i++)
         {
             garray_resize_long(a->aa_garrays[i], nframes);
             garray_setsaveit(a->aa_garrays[i], 0);
             if (!garray_getfloatwords(a->aa_garrays[i], &vecsize,
-                &a->aa_vectors[i]) || (vecsize != framesinfile))
+                &a->aa_vectors[i]) || (vecsize != nframes))
             {
                 pd_error(x, "soundfiler read: resize failed");
                 nframes = 0;
@@ -1071,12 +1071,12 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
         }
     }
     else if (nframes > framesinfile)
-        nframes = framesinfile;
+        nframes = framesinfile - a->aa_onsetframe;
 #ifdef DEBUG_SOUNDFILE
     post("ascii: read 2 frames %d", nframes);
 #endif
     if (a->aa_onsetframe > 0)
-        atoms += a->aa_onsetframe;
+        atoms += a->aa_onsetframe * a->aa_nchannels;
     for (j = 0, ap = atoms; j < nframes; j++)
         for (i = 0; i < a->aa_nchannels; i++)
             a->aa_vectors[i][j].w_float = atom_getfloat(ap++);
@@ -1250,10 +1250,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             goto done;
         }
         if ((framesread = soundfiler_readascii(x, filename, &a)) == 0)
-        {
-            pd_error(x, "soundfiler read: reading ascii failed");
             goto done;
-        }
             /* fill in for info outlet */
         sf.sf_samplerate = sys_getsr();
         sf.sf_headersize = 0;
