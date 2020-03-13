@@ -1397,7 +1397,7 @@ static void text_search_list(t_text_search *x,
                             bug("text search 2");
                     if (argv[j].a_type == A_FLOAT)      /* arg is a float */
                     {
-                        float thisv = vec[thisstart+field].a_w.w_float,
+                        t_float thisv = vec[thisstart+field].a_w.w_float,
                             bestv = (beststart >= 0 ?
                                 vec[beststart+field].a_w.w_float : -1e20);
                         switch (binop)
@@ -1435,7 +1435,7 @@ static void text_search_list(t_text_search *x,
                                 }
                                 else
                                 {
-                                    float d1 = thisv - argv[j].a_w.w_float,
+                                    t_float d1 = thisv - argv[j].a_w.w_float,
                                         d2 = bestv - argv[j].a_w.w_float;
                                     if (d1 < 0)
                                         d1 = -d1;

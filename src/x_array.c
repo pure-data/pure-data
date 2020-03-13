@@ -116,11 +116,11 @@ static void array_define_yrange(t_glist *x, t_floatarg ylo, t_floatarg yhi)
 static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *arrayname = &s_;
-    float arraysize = 100;
+    t_float arraysize = 100;
     t_glist *x;
     int keep = 0;
-    float ylo = -1, yhi = 1;
-    float xpix = 500, ypix = 300;
+    t_float ylo = -1, yhi = 1;
+    t_float xpix = 500, ypix = 300;
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
