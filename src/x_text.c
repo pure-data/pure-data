@@ -366,7 +366,7 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_text_define *x = (t_text_define *)z;
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
-        (float)x->x_ob.te_xpix, (float)x->x_ob.te_ypix);
+        (t_float)x->x_ob.te_xpix, (t_float)x->x_ob.te_ypix);
     binbuf_addbinbuf(bb, x->x_ob.ob_binbuf);
     binbuf_addsemi(bb);
     if (x->x_keep)

@@ -106,7 +106,7 @@ static void array_define_yrange(t_glist *x, t_floatarg ylo, t_floatarg yhi)
             "ffff", 0., yhi, (double)(n == 1 ? n : n-1), ylo);
         vmess(&x->gl_list->g_pd, gensym("xlabel"),
             "fff", ylo + glist_pixelstoy(gl, 2) - glist_pixelstoy(gl, 0),
-                0., (float)(n-1));
+                0., (t_float)(n-1));
         vmess(&x->gl_list->g_pd, gensym("ylabel"),
             "fff", glist_pixelstox(gl, 0) - glist_pixelstox(gl, 5), ylo, yhi);
     }
@@ -186,7 +186,7 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     t_glist *x = (t_glist *)z;
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
-        (float)x->gl_obj.te_xpix, (float)x->gl_obj.te_ypix);
+        (t_float)x->gl_obj.te_xpix, (t_float)x->gl_obj.te_ypix);
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
 

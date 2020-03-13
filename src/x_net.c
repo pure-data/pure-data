@@ -36,7 +36,7 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     {
         t_atom ap[2];
         SETSYMBOL(&ap[0], gensym(addrstr));
-        SETFLOAT(&ap[1], (float)port);
+        SETFLOAT(&ap[1], (t_float)port);
         outlet_list(o, NULL, 2, ap);
     }
 }
