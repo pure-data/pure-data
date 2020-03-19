@@ -22,6 +22,8 @@ standard output. */
 
 #include "s_net.h"
 
+#define BUFSIZE 65536
+
 typedef struct _fdpoll
 {
     int fdp_fd;
@@ -36,6 +38,7 @@ static t_fdpoll *fdpoll;
 static int maxfd;
 static int sockfd;
 static int protocol;
+char recvbuf[BUFSIZE];
 
 static void sockerror(char *s);
 static void dopoll(void);
@@ -43,8 +46,6 @@ static void sockerror(char *s);
 
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
-
-#define BUFSIZE 4096
 
 int main(int argc, char **argv)
 {
@@ -297,8 +298,7 @@ static void makeoutput(char *buf, int len)
 
 static void udpread(void)
 {
-    char buf[BUFSIZE];
-    int ret = recv(sockfd, buf, BUFSIZE, 0);
+    int ret = recv(sockfd, recvbuf, BUFSIZE, 0);
     if (ret < 0)
     {
         sockerror("recv (udp)");
@@ -306,7 +306,7 @@ static void udpread(void)
         exit(EXIT_FAILURE);
     }
     else if (ret > 0)
-        makeoutput(buf, ret);
+        makeoutput(recvbuf, ret);
 }
 
 static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
