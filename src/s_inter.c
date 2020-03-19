@@ -81,7 +81,7 @@ typedef struct _fdpoll
     void *fdp_ptr;
 } t_fdpoll;
 
-#define INBUFSIZE 4096
+#define INBUFSIZE 65536 // must be power of 2!
 
 struct _socketreceiver
 {
@@ -495,12 +495,12 @@ static int socketreceiver_doread(t_socketreceiver *x)
 
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
-    char buf[INBUFSIZE+1];
+    char *buf = x->sr_inbuf;
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     int ret, readbytes = 0;
     while (1)
     {
-        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
+        ret = (int)recvfrom(fd, buf, INBUFSIZE-1, 0,
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
@@ -521,11 +521,11 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         else if (ret > 0)
         {
                 /* handle too large UDP packets */
-            if (ret > INBUFSIZE)
+            if (ret > INBUFSIZE-1)
             {
                 post("warning: incoming UDP packet truncated from %d to %d bytes.",
-                    ret, INBUFSIZE);
-                ret = INBUFSIZE;
+                    ret, INBUFSIZE-1);
+                ret = INBUFSIZE-1;
             }
             buf[ret] = 0;
     #if 0
