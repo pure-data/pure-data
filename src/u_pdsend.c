@@ -18,7 +18,7 @@ static void sockerror(char *s);
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
 
-#define BUFSIZE 4096
+char sendbuf[NET_MAXPACKETSIZE];
 
 int main(int argc, char **argv)
 {
@@ -113,12 +113,12 @@ int main(int argc, char **argv)
     /* now loop reading stdin and sending it to socket */
     while (1)
     {
-        char buf[BUFSIZE], *bp;
+        char *bp;
         int nsent, nsend;
-        if (!fgets(buf, BUFSIZE, stdin))
+        if (!fgets(sendbuf, NET_MAXPACKETSIZE, stdin))
             break;
-        nsend = strlen(buf);
-        for (bp = buf, nsent = 0; nsent < nsend;)
+        nsend = strlen(sendbuf);
+        for (bp = sendbuf, nsent = 0; nsent < nsend;)
         {
             int res = 0;
             if (protocol == SOCK_DGRAM)
