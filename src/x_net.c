@@ -22,7 +22,9 @@
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
 
-#define INBUFSIZE 4096
+#define INBUFSIZE 65536
+
+static PERTHREAD unsigned char *netreceive_buf;
 
 /* ----------------------------- helpers ------------------------- */
 
@@ -118,7 +120,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char inbuf[INBUFSIZE];
+    unsigned char *inbuf = netreceive_buf;
     int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
@@ -918,16 +920,25 @@ static void netreceive_free(t_netreceive *x)
     netreceive_closeall(x);
 }
 
+void netreceive_class_cleanup(t_class *c)
+{
+    free(netreceive_buf);
+    netreceive_buf = 0;
+}
+
 static void netreceive_setup(void)
 {
     netreceive_class = class_new(gensym("netreceive"),
         (t_newmethod)netreceive_new, (t_method)netreceive_free,
         sizeof(t_netreceive), 0, A_GIMME, 0);
+    class_setfreefn(netreceive_class, netreceive_class_cleanup);
     class_addmethod(netreceive_class, (t_method)netreceive_listen,
         gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
     class_addlist(netreceive_class, (t_method)netreceive_send);
+
+    netreceive_buf = malloc(INBUFSIZE);
 }
 
 void x_net_setup(void)
