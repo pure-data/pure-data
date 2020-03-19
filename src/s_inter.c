@@ -81,8 +81,6 @@ typedef struct _fdpoll
     void *fdp_ptr;
 } t_fdpoll;
 
-#define INBUFSIZE 65536 // must be power of 2!
-
 struct _socketreceiver
 {
     char *sr_inbuf;
@@ -449,7 +447,7 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_udp = udp;
     x->sr_fromaddr = NULL;
     x->sr_fromaddrfn = NULL;
-    if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
+    if (!(x->sr_inbuf = malloc(NET_MAXBUFSIZE))) bug("t_socketreceiver");
     return (x);
 }
 
@@ -464,13 +462,13 @@ void socketreceiver_free(t_socketreceiver *x)
     sitting on the stack while the messages are getting passed. */
 static int socketreceiver_doread(t_socketreceiver *x)
 {
-    char messbuf[INBUFSIZE], *bp = messbuf;
+    char messbuf[NET_MAXBUFSIZE], *bp = messbuf;
     int indx, first = 1;
     int inhead = x->sr_inhead;
     int intail = x->sr_intail;
     char *inbuf = x->sr_inbuf;
     for (indx = intail; first || (indx != inhead);
-        first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
+        first = 0, (indx = (indx+1)&(NET_MAXBUFSIZE-1)))
     {
             /* if we hit a semi that isn't preceded by a \, it's a message
             boundary.  LATER we should deal with the possibility that the
@@ -478,7 +476,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
         char c = *bp++ = inbuf[indx];
         if (c == ';' && (!indx || inbuf[indx-1] != '\\'))
         {
-            intail = (indx+1)&(INBUFSIZE-1);
+            intail = (indx+1)&(NET_MAXBUFSIZE-1);
             binbuf_text(pd_this->pd_inter->i_inbinbuf, messbuf, bp - messbuf);
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
@@ -500,7 +498,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
     int ret, readbytes = 0;
     while (1)
     {
-        ret = (int)recvfrom(fd, buf, INBUFSIZE-1, 0,
+        ret = (int)recvfrom(fd, buf, NET_MAXBUFSIZE-1, 0,
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
@@ -521,11 +519,11 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         else if (ret > 0)
         {
                 /* handle too large UDP packets */
-            if (ret > INBUFSIZE-1)
+            if (ret > NET_MAXBUFSIZE-1)
             {
                 post("warning: incoming UDP packet truncated from %d to %d bytes.",
-                    ret, INBUFSIZE-1);
-                ret = INBUFSIZE-1;
+                    ret, NET_MAXBUFSIZE-1);
+                ret = NET_MAXBUFSIZE-1;
             }
             buf[ret] = 0;
     #if 0
@@ -553,7 +551,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             }
             readbytes += ret;
             /* throttle */
-            if (readbytes >= INBUFSIZE)
+            if (readbytes >= NET_MAXBUFSIZE)
                 return;
             /* check for pending UDP packets */
             if (socket_bytes_available(fd) <= 0)
@@ -572,7 +570,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
     {
         char *semi;
         int readto =
-            (x->sr_inhead >= x->sr_intail ? INBUFSIZE : x->sr_intail-1);
+            (x->sr_inhead >= x->sr_intail ? NET_MAXBUFSIZE : x->sr_intail-1);
         int ret;
 
             /* the input buffer might be full.  If so, drop the whole thing */
@@ -580,7 +578,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
         {
             fprintf(stderr, "pd: dropped message from gui\n");
             x->sr_inhead = x->sr_intail = 0;
-            readto = INBUFSIZE;
+            readto = NET_MAXBUFSIZE;
         }
         else
         {
@@ -612,7 +610,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
             else
             {
                 x->sr_inhead += ret;
-                if (x->sr_inhead >= INBUFSIZE) x->sr_inhead = 0;
+                if (x->sr_inhead >= NET_MAXBUFSIZE) x->sr_inhead = 0;
                 while (socketreceiver_doread(x))
                 {
                     if (x->sr_fromaddrfn)

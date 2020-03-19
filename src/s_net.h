@@ -18,6 +18,8 @@ typedef int socklen_t;
 #include <netdb.h>
 #endif
 
+#define NET_MAXBUFSIZE 65536 /* should be power of 2 */
+
 /* socket address */
 
 /// getaddrinfo() convenience wrapper which generates a list of IPv4 and IPv6

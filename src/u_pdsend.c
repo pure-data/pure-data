@@ -18,9 +18,7 @@ static void sockerror(char *s);
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
 
-#define BUFSIZE 65536
-
-char sendbuf[BUFSIZE];
+char sendbuf[NET_MAXBUFSIZE];
 
 int main(int argc, char **argv)
 {
@@ -111,7 +109,7 @@ int main(int argc, char **argv)
     {
         char *bp;
         int nsent, nsend;
-        if (!fgets(sendbuf, BUFSIZE, stdin))
+        if (!fgets(sendbuf, NET_MAXBUFSIZE, stdin))
             break;
         nsend = strlen(sendbuf);
         for (bp = sendbuf, nsent = 0; nsent < nsend;)
