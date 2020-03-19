@@ -22,8 +22,6 @@
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
 
-static PERTHREAD unsigned char *netreceive_buf;
-
 /* ----------------------------- helpers ------------------------- */
 
 void socketreceiver_free(t_socketreceiver *x);
@@ -42,6 +40,38 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
 }
 
 /* ----------------------------- net ------------------------- */
+
+static PERTHREAD unsigned char *netreceive_buf;
+static PERTHREAD int netreceive_refcount;
+
+unsigned char * netreceive_getbuf(void)
+{
+    if (!netreceive_buf)
+    {
+        /* called from a different thread than netreceive_setup(),
+           will inevitably leak memory */
+        netreceive_buf = getbytes(NET_MAXBUFSIZE);
+    }
+    return netreceive_buf;
+}
+
+void netreceive_init(void)
+{
+    if (!netreceive_buf)
+    {
+        netreceive_buf = getbytes(NET_MAXBUFSIZE);
+    }
+    netreceive_refcount++;
+}
+
+void netreceive_term(t_class *c)
+{
+    if (--netreceive_refcount == 0)
+    {
+        freebytes(netreceive_buf, NET_MAXBUFSIZE);
+        netreceive_buf = 0;
+    }
+}
 
 static t_class *netsend_class;
 
@@ -118,7 +148,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char *inbuf = netreceive_buf;
+    unsigned char *inbuf;
     int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
@@ -127,6 +157,7 @@ static void netsend_readbin(t_netsend *x, int fd)
         bug("netsend_readbin");
         return;
     }
+    inbuf = netreceive_getbuf();
     while (1)
     {
         if (x->x_protocol == SOCK_DGRAM)
@@ -918,25 +949,19 @@ static void netreceive_free(t_netreceive *x)
     netreceive_closeall(x);
 }
 
-void netreceive_class_cleanup(t_class *c)
-{
-    free(netreceive_buf);
-    netreceive_buf = 0;
-}
-
 static void netreceive_setup(void)
 {
     netreceive_class = class_new(gensym("netreceive"),
         (t_newmethod)netreceive_new, (t_method)netreceive_free,
         sizeof(t_netreceive), 0, A_GIMME, 0);
-    class_setfreefn(netreceive_class, netreceive_class_cleanup);
+    class_setfreefn(netreceive_class, netreceive_term);
     class_addmethod(netreceive_class, (t_method)netreceive_listen,
         gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
     class_addlist(netreceive_class, (t_method)netreceive_send);
 
-    netreceive_buf = malloc(NET_MAXBUFSIZE);
+    netreceive_init();
 }
 
 void x_net_setup(void)
