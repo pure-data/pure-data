@@ -251,6 +251,10 @@ typedef struct _text_define
 #define x_binbuf x_textbuf.b_binbuf
 #define x_canvas x_textbuf.b_canvas
 
+static void text_define_binbuf2scalar(t_text_define*x) {
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf;
+}
+
 static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_define *x = (t_text_define *)pd_new(text_define_class);
@@ -285,7 +289,7 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
         /* set up a scalar and a pointer to it that we can output */
     x->x_scalar = scalar_new(canvas_getcurrent(), gensym("pd-text"));
     binbuf_free(x->x_scalar->sc_vec[2].w_binbuf);
-    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf;
+    text_define_binbuf2scalar(x);
     x->x_out = outlet_new(&x->x_ob, &s_pointer);
     x->x_notifyout = outlet_new(&x->x_ob, 0);
     gpointer_init(&x->x_gp);
@@ -582,6 +586,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     }
     binbuf_free(x->x_binbuf);
     x->x_binbuf = newb;
+    text_define_binbuf2scalar(x);
     freebytes(sortbuf, nlines * sizeof(*sortbuf));
     textbuf_senditup(&x->x_textbuf);
 }
