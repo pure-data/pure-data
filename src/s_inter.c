@@ -110,6 +110,7 @@ struct _instanceinter
     int i_maxfd;
     int i_guisock;
     t_socketreceiver *i_socketreceiver;
+    unsigned char *i_recvbuf;
     t_guiqueue *i_guiqueuehead;
     t_binbuf *i_inbinbuf;
     char *i_guibuf;
@@ -386,6 +387,11 @@ void sys_set_priority(int mode)
 #endif /* __linux__ */
 
 /* ------------------ receiving incoming messages over sockets ------------- */
+
+unsigned char *sys_getrecvbuf(void)
+{
+    return pd_this->pd_inter->i_recvbuf;
+}
 
 void sys_sockerror(const char *s)
 {
@@ -1557,6 +1563,7 @@ void sys_stopgui(void)
 void s_inter_newpdinstance(void)
 {
     pd_this->pd_inter = getbytes(sizeof(*pd_this->pd_inter));
+    pd_this->pd_inter->i_recvbuf = getbytes(NET_MAXBUFSIZE);
 #if PDTHREADS
     pthread_mutex_init(&pd_this->pd_inter->i_mutex, NULL);
     pd_this->pd_islocked = 0;
@@ -1569,6 +1576,7 @@ void s_inter_newpdinstance(void)
 
 void s_inter_free(t_instanceinter *inter)
 {
+    freebytes(inter->i_recvbuf, NET_MAXBUFSIZE);
     if (inter->i_fdpoll)
     {
         binbuf_free(inter->i_inbinbuf);
