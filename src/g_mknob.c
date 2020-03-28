@@ -23,6 +23,10 @@
 #include <unistd.h>
 #endif
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 #define MKNOB_TANGLE 100
 #define MKNOB_DEFAULTH 100
 #define MKNOB_DEFAULTSIZE 25
