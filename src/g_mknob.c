@@ -23,8 +23,6 @@
 #include <unistd.h>
 #endif
 
-#include <dlfcn.h>
-
 #define MKNOB_TANGLE 100
 #define MKNOB_DEFAULTH 100
 #define MKNOB_DEFAULTSIZE 25
