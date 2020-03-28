@@ -281,12 +281,15 @@ static void mknob_save(t_gobj *z, t_binbuf *b)
     int bflcol_compat[3];
     t_symbol *bflcol[3];
     t_symbol *srl[3];
+    int h = x->x_gui.x_h;
+
+    if(h > 0) h /= IEMGUI_ZOOM(x);
 
     iemgui_save(&x->x_gui, srl, bflcol);
     binbuf_addv(b, "ssiisiiffiisssiiiisssii", gensym("#X"),gensym("obj"),
         (t_int)x->x_gui.x_obj.te_xpix, (t_int)x->x_gui.x_obj.te_ypix,
         atom_getsymbol(binbuf_getvec(x->x_gui.x_obj.te_binbuf)),
-        x->x_gui.x_w, x->x_gui.x_h,
+        x->x_gui.x_w/IEMGUI_ZOOM(x), h,
         (float)x->x_min, (float)x->x_max,
         x->x_lin0_log1, iem_symargstoint(&x->x_gui.x_isa),
         srl[0], srl[1], srl[2],
@@ -307,21 +310,21 @@ void mknob_update_H(t_mknob *x)
     x->x_H = H;
 
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_H/IEMGUI_ZOOM(x) - 1);
+        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_H - 1);
     else
-        x->x_k = (x->x_max - x->x_min)/(double)(x->x_H/IEMGUI_ZOOM(x) - 1);
+        x->x_k = (x->x_max - x->x_min)/(double)(x->x_H - 1);
 }
 
 void mknob_check_wh(t_mknob *x, int w, int h)
 {
     int H;
-
-    if(w < MKNOB_MINSIZE) w = MKNOB_MINSIZE;
-    x->x_gui.x_w = w * IEMGUI_ZOOM(x);
+    if(w < MKNOB_MINSIZE * IEMGUI_ZOOM(x))
+        w = MKNOB_MINSIZE * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = w;
 
     if(h < -1) h = -1;
     if((h > 0) && (h < 20)) h = 20;
-    x->x_gui.x_h = h * IEMGUI_ZOOM(x);
+    x->x_gui.x_h = h;
 
     mknob_update_H(x);
 }
@@ -357,7 +360,9 @@ static void mknob_properties(t_gobj *z, t_glist *owner)
     t_mknob *x = (t_mknob *)z;
     char buf[800];
     t_symbol *srl[3];
+    int h = x->x_gui.x_h;
 
+    if(h > 0) h /= IEMGUI_ZOOM(x);
     iemgui_properties(&x->x_gui, srl);
     sprintf(buf, "pdtk_iemgui_dialog %%s mknob \
             --------dimension(pix):-------- %d %d size: %d %d mouse: \
@@ -367,7 +372,7 @@ static void mknob_properties(t_gobj *z, t_glist *owner)
             %s %d %d \
             %d %d \
             #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), MKNOB_MINSIZE, x->x_gui.x_h/IEMGUI_ZOOM(x), -1,
+            x->x_gui.x_w/IEMGUI_ZOOM(x), MKNOB_MINSIZE, h, -1,
             x->x_min, x->x_max, 0.0,/*no_schedule*/
             x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_steady, -1,/*no multi, but iem-characteristic*/
             srl[0]->s_name, srl[1]->s_name,
@@ -438,7 +443,7 @@ static void mknob_bang(t_mknob *x)
 static void mknob_dialog(t_mknob *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int w = (int)atom_getintarg(0, argc, argv);
+    int w = (int)atom_getintarg(0, argc, argv) * IEMGUI_ZOOM(x);
     int h = (int)atom_getintarg(1, argc, argv);
     double min = (double)atom_getfloatarg(2, argc, argv);
     double max = (double)atom_getfloatarg(3, argc, argv);
@@ -454,6 +459,7 @@ static void mknob_dialog(t_mknob *x, t_symbol *s, int argc, t_atom *argv)
         x->x_steady = 0;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
 
+    if(h > 0) h *= IEMGUI_ZOOM(x);
     mknob_check_wh(x, w, h);
     mknob_check_minmax(x, min, max);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
@@ -687,7 +693,9 @@ static void mknob_float(t_mknob *x, t_floatarg f)
 
 static void mknob_zoom(t_mknob *x, t_floatarg f)
 {
-    if(x->x_gui.x_h > 0) 
+    int h = x->x_gui.x_h;
+
+    if(x->x_gui.x_h > 0)
     {
     /* scale current pixel value */
         x->x_val = (IEMGUI_ZOOM(x) == 2 ? (x->x_val)/2 : (x->x_val)*2);
@@ -695,6 +703,7 @@ static void mknob_zoom(t_mknob *x, t_floatarg f)
         x->x_pos = x->x_val;
     }
     iemgui_zoom(&x->x_gui, f);
+    if(h < 0) x->x_gui.x_h = h;
 }
 
 static void mknob_loadbang(t_mknob *x, t_floatarg action)
@@ -788,12 +797,12 @@ static void *mknob_new(t_symbol *s, int argc, t_atom *argv)
     if(fs < 4) fs = 4;
     x->x_gui.x_fontsize = fs;
 
-    mknob_check_wh(x, w, h);
-
-    mknob_check_minmax(x, min, max);
-
     iemgui_verify_snd_ne_rcv(&x->x_gui);
+    mknob_check_minmax(x, min, max);
+    mknob_check_wh(x, w, h);
     iemgui_newzoom(&x->x_gui);
+    mknob_update_H(x);
+
     x->x_fval = mknob_getfval(x);
     x->x_show_io = 0;
     x->x_io_visible = 0;
