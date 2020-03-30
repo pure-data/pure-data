@@ -58,7 +58,7 @@ static void knb_draw_io(t_knb *x,t_glist *glist);
 static void knb_update_knob(t_knb *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    float val = (x->x_val + 50.0) / 100.0 / x->x_H;
+    float val = ((x->x_val - 50.0)/ 100.0) / (x->x_H - 1 * IEMGUI_ZOOM(x));
     float angle;
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
