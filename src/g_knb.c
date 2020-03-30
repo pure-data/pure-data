@@ -58,7 +58,7 @@ static void knb_draw_io(t_knb *x,t_glist *glist);
 static void knb_update_knob(t_knb *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    float val = ((x->x_val - 50.0)/ 100.0) / (x->x_H - 1 * IEMGUI_ZOOM(x));
+    float val = (x->x_val / 100.0) / (x->x_H - 1.0) - 0.005;
     float angle;
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
@@ -315,9 +315,9 @@ void knb_update_H(t_knb *x)
     x->x_H = H;
 
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_H - 1);
+        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_H / IEMGUI_ZOOM(x) - 1);
     else
-        x->x_k = (x->x_max - x->x_min)/(double)(x->x_H - 1);
+        x->x_k = (x->x_max - x->x_min)/(double)(x->x_H / IEMGUI_ZOOM(x) - 1);
 }
 
 void knb_check_wh(t_knb *x, int w, int h)
@@ -607,7 +607,7 @@ static int knb_newclick(t_gobj *z, struct _glist *glist,
 
 static void knb_size(t_knb *x, t_floatarg f)
 {
-    int w = (int)f;
+    int w = (int)f * IEMGUI_ZOOM(x);
     int h = x->x_gui.x_h;
 
     knb_check_wh(x, w, h);
@@ -617,7 +617,7 @@ static void knb_size(t_knb *x, t_floatarg f)
 static void knb_sensitivity(t_knb *x, t_floatarg f)
 {
     int w = x->x_gui.x_w;
-    int h = (int)f;
+    int h = (int)f * IEMGUI_ZOOM(x);
 
     knb_check_wh(x, w, h);
     iemgui_size((void *)x, &x->x_gui);
