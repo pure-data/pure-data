@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "-------dimensions(digits)(pix):-------"
@@ -482,10 +482,10 @@ msgstr ""
 msgid "Sensitivity:"
 msgstr ""
 
-msgid "270°"
+msgid "270 deg"
 msgstr ""
 
-msgid "360°"
+msgid "360 deg"
 msgstr ""
 
 msgid "Vradio"

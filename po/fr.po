@@ -485,11 +485,11 @@ msgstr "Knob"
 msgid "Sensitivity:"
 msgstr "Sensibilité :"
 
-msgid "270°"
-msgstr "270°"
+msgid "270 deg"
+msgstr ""
 
-msgid "360°"
-msgstr "360°"
+msgid "360 deg"
+msgstr ""
 
 msgid "Vradio"
 msgstr "Sélecteur vertical"
@@ -1087,6 +1087,12 @@ msgstr "'%s' n'existe pas ; ignorer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' ne semble pas être un fichier Pd ; ignorer"
+
+#~ msgid "270°"
+#~ msgstr "270°"
+
+#~ msgid "360°"
+#~ msgstr "360°"
 
 #~ msgid "Create"
 #~ msgstr "Créer"

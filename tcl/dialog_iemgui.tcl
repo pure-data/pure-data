@@ -562,8 +562,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"]
-            set $var_iemgui_steady0 [_ "270°"]
-            set $var_iemgui_steady1 [_ "360°"] }
+            set $var_iemgui_steady0 [_ "270 deg"]
+            set $var_iemgui_steady1 [_ "360 deg"] }
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
             set wdt_label [_ "Size:"]

@@ -524,10 +524,10 @@ msgstr ""
 msgid "Sensitivity:"
 msgstr ""
 
-msgid "270°"
+msgid "270 deg"
 msgstr ""
 
-msgid "360°"
+msgid "360 deg"
 msgstr ""
 
 #, fuzzy
