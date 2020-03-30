@@ -291,13 +291,17 @@ proc ::dialog_iemgui::stdy_jmp {mytoplevel} {
 
     set var_iemgui_steady [concat iemgui_steady_$vid]
     global $var_iemgui_steady
+    set var_iemgui_steady0 [concat iemgui_steady0_$vid]
+    global $var_iemgui_steady0
+    set var_iemgui_steady1 [concat iemgui_steady1_$vid]
+    global $var_iemgui_steady1
 
     if {[eval concat $$var_iemgui_steady]} {
         set $var_iemgui_steady 0
-        $mytoplevel.para.stdy_jmp configure -text [_ "Jump on click"]
+        $mytoplevel.para.stdy_jmp configure -text [ eval concat $$var_iemgui_steady0]
     } else {
         set $var_iemgui_steady 1
-        $mytoplevel.para.stdy_jmp configure -text [_ "Steady on click"]
+        $mytoplevel.para.stdy_jmp configure -text [ eval concat $$var_iemgui_steady1]
     }
 }
 
@@ -448,6 +452,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     global $var_iemgui_num
     set var_iemgui_steady [concat iemgui_steady_$vid]
     global $var_iemgui_steady
+    set var_iemgui_steady0 [concat iemgui_steady0_$vid]
+    global $var_iemgui_steady0
+    set var_iemgui_steady1 [concat iemgui_steady1_$vid]
+    global $var_iemgui_steady1
     set var_iemgui_snd [concat iemgui_snd_$vid]
     global $var_iemgui_snd
     set var_iemgui_rcv [concat iemgui_rcv_$vid]
@@ -484,6 +492,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     set $var_iemgui_loadbang $loadbang
     set $var_iemgui_num $num
     set $var_iemgui_steady $steady
+    set $var_iemgui_steady0 [_ "Jump on click"]
+    set $var_iemgui_steady1 [_ "Steady on click"]
     if {$snd == "empty"} {set $var_iemgui_snd [format ""]
     } else {set $var_iemgui_snd [format "%s" $snd]}
     if {$rcv == "empty"} {set $var_iemgui_rcv [format ""]
@@ -545,6 +555,15 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"] }
+        "|knb|" {
+            set iemgui_type [_ "Knob"]
+            set wdt_label [_ "Size:"]
+            set hgt_label [_ "Sensitivity:"]
+            set iemgui_range_header [_ "Output Range"]
+            set min_rng_label [_ "Lower:"]
+            set max_rng_label [_ "Upper:"]
+            set $var_iemgui_steady0 [_ "270°"]
+            set $var_iemgui_steady1 [_ "360°"] }
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
             set wdt_label [_ "Size:"]
@@ -628,10 +647,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
 
     if {[eval concat $$var_iemgui_steady] == 0} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Jump on click"] }
+            -text [ eval concat $$var_iemgui_steady0] }
     if {[eval concat $$var_iemgui_steady] == 1} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Steady on click"] }
+            -text [ eval concat $$var_iemgui_steady1] }
     if {[eval concat $$var_iemgui_lin0_log1] >= 0} {
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_loadbang] >= 0} {

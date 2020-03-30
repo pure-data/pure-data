@@ -1,0 +1,78 @@
+#N canvas 54 302 683 403 10;
+#X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 -262144 -1109 0
+;
+#X floatatom 55 178 5 0 0 0 - - -;
+#X floatatom 55 97 5 0 0 0 - - -;
+#X text 75 242 Just an adaptation of musil's slider.;
+#X obj 111 257 hsl 128 15 0 127 0 0 empty empty empty -2 -6 0 8 -262144
+-1 -1 0 1;
+#X text 75 257 See:;
+#X msg 3 136 set \$1;
+#X floatatom 183 170 5 0 0 0 - - -;
+#X obj 183 151 r foo-snd;
+#X floatatom 183 114 5 0 0 0 - - -;
+#X obj 183 132 s foo-rcv;
+#X obj 142 113 knb 25 100 0 100 0 0 foo-snd foo-rcv empty -2 -6 0 8
+-225271 -1 -1 0 0;
+#X obj 55 114 knb 30 100 0 127 0 0 empty empty empty -2 -6 0 8 -241291
+-24198 -1 0 0;
+#X obj 55 155 knb 15 100 127 0 0 0 empty empty empty -2 -6 0 8 -258699
+-24198 -1 0 0;
+#X obj 398 266 knb 25 100 0 127 0 0 empty empty empty -2 -6 0 8 -262144
+-1 -1 0 0;
+#X text 492 149 high sens;
+#X text 511 171 default;
+#X text 514 195 angular control;
+#N canvas 512 232 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 105 AUTHOR Antoine Rousseau;
+#X text 12 125 HELP_PATCH_AUTHORS Antoine Rousseau. "pd meta" information
+added by Jonathan Wilkes for Pd version 0.42.;
+#X text 12 45 DESCRIPTION round gui knob;
+#X text 12 5 KEYWORDS control GUI;
+#X text 12 65 INLET_0 float size;
+#X text 12 85 OUTLET_0 float;
+#X restore 614 349 pd META;
+#X obj 374 43, f 4;
+#X text 377 43 knb;
+#X text 16 43 To create a new knob \, just add an object (Ctrl+1) and
+type:;
+#X text 115 12 gui-round-knob:;
+#X text 13 306 note: when selected \, knb shows its inlet \, outlet
+and a rectangular outline \, in order to help connecting. When edit
+mode is switched off \, they disapear after the mkob is hovered by
+the mouse or the knob value is changed., f 107;
+#X text 54 65 right click for properties to modify geometry \, colors
+\, etc., f 30;
+#X text 10 194 shift-click & drag for fine-tuning (0.01 pixels), f
+25;
+#X text 6 355 (c) Antoine Rousseau 2003-2020;
+#X msg 440 214 full 0;
+#X msg 448 235 full 1;
+#X text 487 215 270° rotation;
+#X text 494 236 360° rotation;
+#X text 362 101 "full" sets full rotation to 270 or 360 degrees.;
+#X msg 292 157 size \$1;
+#X floatatom 292 136 5 0 0 0 - - -;
+#X text 361 75 "sensitivity" parameter sets mouse excursion for full
+range., f 35;
+#X msg 369 125 sensitivity 300;
+#X msg 398 148 sensitivity 10;
+#X text 466 124 low sensitivity;
+#X msg 413 170 sensitivity 100;
+#X msg 427 194 sensitivity 0;
+#X connect 2 0 12 0;
+#X connect 6 0 12 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 13 0 1 0;
+#X connect 27 0 14 0;
+#X connect 28 0 14 0;
+#X connect 32 0 14 0;
+#X connect 33 0 32 0;
+#X connect 35 0 14 0;
+#X connect 36 0 14 0;
+#X connect 38 0 14 0;
+#X connect 39 0 14 0;
