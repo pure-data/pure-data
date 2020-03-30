@@ -502,6 +502,18 @@ msgstr "Slider verticale"
 msgid "Hslider"
 msgstr "Slider orizzontale"
 
+msgid "Knob"
+msgstr ""
+
+msgid "Sensitivity:"
+msgstr ""
+
+msgid "270°"
+msgstr ""
+
+msgid "360°"
+msgstr ""
+
 msgid "Vradio"
 msgstr "Radio verticale"
 

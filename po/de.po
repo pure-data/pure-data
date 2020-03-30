@@ -491,6 +491,18 @@ msgstr "Vslider"
 msgid "Hslider"
 msgstr "Hslider"
 
+msgid "Knob"
+msgstr ""
+
+msgid "Sensitivity:"
+msgstr ""
+
+msgid "270°"
+msgstr ""
+
+msgid "360°"
+msgstr ""
+
 msgid "Vradio"
 msgstr "Vradio"
 
@@ -620,15 +632,9 @@ msgstr ""
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
-#, tcl-format
-msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
-
-#, tcl-format
-msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
-"[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
-"%2$s]"
+#, fuzzy, tcl-format
+msgid "installed version [%1$s] > %2$s...skipping!"
+msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s"
 
 #, fuzzy, tcl-format
 msgid "installed version [%1$s] < %2$s...overwriting!"
@@ -636,8 +642,7 @@ msgstr "überschreibe die installierte Version [%1$s] mit %2$s!"
 
 #, fuzzy, tcl-format
 msgid "installed version [%1$s] == %2$s...skipping!"
-msgstr ""
-"die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s"
+msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s"
 
 #, fuzzy, tcl-format
 msgid "successfully unzipped %1$s into %2$s"
@@ -1103,6 +1108,14 @@ msgstr "Überspringe '%s': existiert nicht"
 #, fuzzy, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "Überspringe '%s': kein Pd-File"
+
+#~ msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+#~ msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
+
+#~ msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
+#~ msgstr ""
+#~ "[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
+#~ "%2$s]"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "Die Suche schlug fehl. Sind Sie online?"

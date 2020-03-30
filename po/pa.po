@@ -519,6 +519,18 @@ msgstr ""
 msgid "Hslider"
 msgstr "ਓਹਲੇ"
 
+msgid "Knob"
+msgstr ""
+
+msgid "Sensitivity:"
+msgstr ""
+
+msgid "270°"
+msgstr ""
+
+msgid "360°"
+msgstr ""
+
 #, fuzzy
 msgid "Vradio"
 msgstr "ਵਰਜਨ"
