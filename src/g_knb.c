@@ -47,11 +47,11 @@ typedef struct _knb
     double   x_k;
     t_float  x_fval;
     int      x_lin0_log1:1;
-    int      x_full:1;
-    int      x_show_io:1;
-    int      x_io_visible:1;
-    int      x_wiper_visible:1;
-    int      x_arc_visible:1;
+    unsigned int      x_full:1;
+    unsigned int      x_show_io:1;
+    unsigned int      x_io_visible:1;
+    unsigned int      x_wiper_visible:1;
+    unsigned int      x_arc_visible:1;
 } t_knb;
 
 t_widgetbehavior knb_widgetbehavior;
@@ -69,7 +69,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
     int x0, y0, x1, y1, xc, yc, xp, yp, xpc, ypc;
-    int arcwidth = x->x_gui.x_w * ARC_WIDTH;
+    int arcwidth = x->x_gui.x_w * ARC_WIDTH + 0.99;
 
     if(miniradius < 3.0) miniradius = 3.0;
 
@@ -138,7 +138,7 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     int xc = xpos + x->x_gui.x_w / 2;
     int yc = ypos + x->x_gui.x_w / 2;
     t_canvas *canvas = glist_getcanvas(glist);
-    int arcwidth = x->x_gui.x_w * ARC_WIDTH;
+    int arcwidth = x->x_gui.x_w * ARC_WIDTH + 0.99;
 
     x->x_currentstyle = x->x_style;
     sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -width %d -tags %lxBASE\n",
@@ -264,7 +264,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
                 x, x->x_gui.x_fcol);
         else 
             sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -width %d\n", canvas, 
-                x, x->x_gui.x_fcol, 2 * x->x_gui.x_w * ARC_WIDTH * IEMGUI_ZOOM(x));
+                x, x->x_gui.x_fcol, 2 * (int)(x->x_gui.x_w * ARC_WIDTH + 0.99));
     }
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
@@ -458,7 +458,7 @@ static void knb_properties(t_gobj *z, t_glist *owner)
             #%06x #%06x #%06x\n",
             x->x_gui.x_w / IEMGUI_ZOOM(x), MKNOB_MINSIZE, x->x_gui.x_h / IEMGUI_ZOOM(x), 0,
             x->x_min, x->x_max, 0.0,/*no_schedule*/
-            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, (int)x->x_full, x->x_style,/*no multi, but iem-characteristic*/
+            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_full, x->x_style,/*no multi, but iem-characteristic*/
             srl[0]->s_name, srl[1]->s_name,
             srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
             x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
