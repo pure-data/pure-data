@@ -46,7 +46,7 @@ typedef struct _knb
     int   	 x_H;
     double   x_k;
     t_float  x_fval;
-    int      x_lin0_log1:1;
+    unsigned int      x_lin0_log1:1;
     unsigned int      x_full:1;
     unsigned int      x_force_outline_visible:1;
     unsigned int      x_outline_visible:1;
