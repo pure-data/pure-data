@@ -44,11 +44,11 @@ proc ::dialog_iemgui::clip_num {mytoplevel} {
 
     if {[eval concat $$var_iemgui_num] > 2000} {
         set $var_iemgui_num 2000
-        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
+        $mytoplevel.para.std.num.ent configure -textvariable $var_iemgui_num
     }
     if {[eval concat $$var_iemgui_num] < 1} {
         set $var_iemgui_num 1
-        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
+        $mytoplevel.para.std.num.ent configure -textvariable $var_iemgui_num
     }
 }
 
@@ -231,12 +231,12 @@ proc ::dialog_iemgui::lilo {mytoplevel} {
 
     if {[eval concat $$var_iemgui_lin0_log1] == 0} {
         set $var_iemgui_lin0_log1 1
-        $mytoplevel.para.lilo configure -text [eval concat $$var_iemgui_lilo1]
+        $mytoplevel.para.std.lilo configure -text [eval concat $$var_iemgui_lilo1]
         ::dialog_iemgui::verify_rng $mytoplevel
         ::dialog_iemgui::sched_rng $mytoplevel
     } else {
         set $var_iemgui_lin0_log1 0
-        $mytoplevel.para.lilo configure -text [eval concat $$var_iemgui_lilo0]
+        $mytoplevel.para.std.lilo configure -text [eval concat $$var_iemgui_lilo0]
     }
 }
 
@@ -271,6 +271,40 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     $mytoplevel.colors.sections.exp.lb_bk configure -font $current_font_spec
 }
 
+proc ::dialog_iemgui::knob_wpopup {mytoplevel} {
+    $mytoplevel.wiperpopup unpost
+    set button $mytoplevel.para.knob2.wiper.ent
+    set x [expr [winfo rootx $button] + ( [winfo width $button] / 2 )]
+    set y [expr [winfo rooty $button] + ( [winfo height $button] / 2 )]
+    tk_popup $mytoplevel.wiperpopup $x $y 0
+}
+
+proc ::dialog_iemgui::toggle_knob_wpopup {mytoplevel gn_f} {
+    set vid [string trimleft $mytoplevel .]
+
+    set var_iemgui_wiper_style [concat iemgui_wiper_style_$vid]
+    global $var_iemgui_wiper_style
+    set $var_iemgui_wiper_style [$mytoplevel.wiperpopup entrycget $gn_f -label]
+    $mytoplevel.para.knob2.wiper.ent configure -text [eval concat $$var_iemgui_wiper_style]
+}
+
+proc ::dialog_iemgui::knob_apopup {mytoplevel} {
+    $mytoplevel.arcpopup unpost
+    set button $mytoplevel.para.knob2.arc.ent
+    set x [expr [winfo rootx $button] + ( [winfo width $button] / 2 )]
+    set y [expr [winfo rooty $button] + ( [winfo height $button] / 2 )]
+    tk_popup $mytoplevel.arcpopup $x $y 0
+}
+
+proc ::dialog_iemgui::toggle_knob_apopup {mytoplevel gn_f} {
+    set vid [string trimleft $mytoplevel .]
+
+    set var_iemgui_arc_style [concat iemgui_arc_style_$vid]
+    global $var_iemgui_arc_style
+    set $var_iemgui_arc_style [$mytoplevel.arcpopup entrycget $gn_f -label]
+    $mytoplevel.para.knob2.arc.ent configure -text [eval concat $$var_iemgui_arc_style]
+}
+
 proc ::dialog_iemgui::lb {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
@@ -279,10 +313,10 @@ proc ::dialog_iemgui::lb {mytoplevel} {
 
     if {[eval concat $$var_iemgui_loadbang] == 0} {
         set $var_iemgui_loadbang 1
-        $mytoplevel.para.lb configure -text [_ "Init"]
+        $mytoplevel.para.std.lb configure -text [_ "Init"]
     } else {
         set $var_iemgui_loadbang 0
-        $mytoplevel.para.lb configure -text [_ "No init"]
+        $mytoplevel.para.std.lb configure -text [_ "No init"]
     }
 }
 
@@ -298,11 +332,85 @@ proc ::dialog_iemgui::stdy_jmp {mytoplevel} {
 
     if {[eval concat $$var_iemgui_steady]} {
         set $var_iemgui_steady 0
-        $mytoplevel.para.stdy_jmp configure -text [ eval concat $$var_iemgui_steady0]
+        $mytoplevel.para.std.stdy_jmp configure -text [ eval concat $$var_iemgui_steady0]
     } else {
         set $var_iemgui_steady 1
-        $mytoplevel.para.stdy_jmp configure -text [ eval concat $$var_iemgui_steady1]
+        $mytoplevel.para.std.stdy_jmp configure -text [ eval concat $$var_iemgui_steady1]
     }
+}
+
+proc ::dialog_iemgui::create_knb_properties {mytoplevel start_angle end_angle wiper_style arc_style} {
+    #puts "start=$start_angle end=$end_angle wiper_style=$wiper_style arc_style=$arc_style"
+    #labelframe $mytoplevel.knob -borderwidth 1 -padx 5 -pady 5 -text [_ "Knob parameters"]
+    #pack $mytoplevel.knob -side top -fill x -pady 5
+    set vid [string trimleft $mytoplevel .]
+
+    menu $mytoplevel.wiperpopup
+    $mytoplevel.wiperpopup add command \
+        -label [_ "None"] \
+        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 0"
+    $mytoplevel.wiperpopup add command \
+        -label "Triangle" \
+        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 1"
+    $mytoplevel.wiperpopup add command \
+        -label "Line" \
+        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 2"
+
+    set var_iemgui_start_angle [concat iemgui_start_angle_$vid]
+    global $var_iemgui_start_angle
+    set $var_iemgui_start_angle $start_angle
+    set var_iemgui_end_angle [concat iemgui_end_angle_$vid]
+    global $var_iemgui_end_angle
+    set $var_iemgui_end_angle $end_angle
+    set var_iemgui_wiper_style [concat iemgui_wiper_style_$vid]
+    global $var_iemgui_wiper_style
+    set $var_iemgui_wiper_style $wiper_style
+    set var_iemgui_arc_style [concat iemgui_arc_style_$vid]
+    global $var_iemgui_arc_style
+    set $var_iemgui_arc_style $arc_style
+
+    frame $mytoplevel.para.knob1 -padx 20 -pady 1
+    pack $mytoplevel.para.knob1 -side top -fill x
+
+    frame $mytoplevel.para.knob1.start
+    label $mytoplevel.para.knob1.start.lab -text [_ "Start angle: "]
+    entry $mytoplevel.para.knob1.start.ent -textvariable $var_iemgui_start_angle -width 5
+    pack $mytoplevel.para.knob1.start.ent $mytoplevel.para.knob1.start.lab -side right -anchor e
+
+    label $mytoplevel.para.knob1.dummy1 -text " " -width 1
+
+    frame $mytoplevel.para.knob1.end
+    label $mytoplevel.para.knob1.end.lab -text [_ "End angle: "]
+    entry $mytoplevel.para.knob1.end.ent -textvariable $var_iemgui_end_angle -width 5
+    pack $mytoplevel.para.knob1.end.ent $mytoplevel.para.knob1.end.lab -side right -anchor e
+
+    pack $mytoplevel.para.knob1.start $mytoplevel.para.knob1.dummy1 $mytoplevel.para.knob1.end -side left
+
+    frame $mytoplevel.para.knob2 -padx 20 -pady 1
+    pack $mytoplevel.para.knob2 -side top -fill x
+    
+    frame $mytoplevel.para.knob2.wiper
+    label $mytoplevel.para.knob2.wiper.lab -text [_ "Wiper style: "]
+    button $mytoplevel.para.knob2.wiper.ent -text [_ [eval concat $$var_iemgui_wiper_style]] \
+        -command "::dialog_iemgui::knob_wpopup $mytoplevel"
+
+    #\
+        #-font [list $current_font 16 $::font_weight] -pady 4 \
+        #-command "::dialog_iemgui::font_popup $mytoplevel"
+    #entry $mytoplevel.para.knob2.wiper.ent -textvariable $var_iemgui_wiper_style -width 8
+    pack $mytoplevel.para.knob2.wiper.ent $mytoplevel.para.knob2.wiper.lab -side right -anchor e
+
+    label $mytoplevel.para.knob2.dummy1 -text " " -width 1
+    
+    frame $mytoplevel.para.knob2.arc
+    label $mytoplevel.para.knob2.arc.lab -text [_ "Arc style: "]
+    #entry $mytoplevel.para.knob2.arc.ent -textvariable $var_iemgui_arc_style -width 8
+    button $mytoplevel.para.knob2.arc.ent -text [_ [eval concat $$var_iemgui_arc_style]]
+    pack $mytoplevel.para.knob2.arc.ent $mytoplevel.para.knob2.arc.lab -side right -anchor e
+
+    pack $mytoplevel.para.knob2.wiper $mytoplevel.para.knob2.dummy1 $mytoplevel.para.knob2.arc -side left
+
+
 }
 
 proc ::dialog_iemgui::apply {mytoplevel} {
@@ -422,7 +530,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
                                        snd rcv \
                                        gui_name \
                                        gn_dx gn_dy gn_f gn_fs \
-                                       bcol fcol lcol} {
+                                       bcol fcol lcol \
+                                       args} {
 
     set vid [string trimleft $mytoplevel .]
 
@@ -562,8 +671,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"]
-            set $var_iemgui_steady0 [_ "270 deg"]
-            set $var_iemgui_steady1 [_ "360 deg"] }
+            set $var_iemgui_steady0 [_ "Linear control"]
+            set $var_iemgui_steady1 [_ "Angular control"] }
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
             set wdt_label [_ "Size:"]
@@ -628,37 +737,43 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
+    frame $mytoplevel.para.std
+    pack $mytoplevel.para.std -side top -fill x
     if {[eval concat $$var_iemgui_lin0_log1] == 0} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] \
+        button $mytoplevel.para.std.lilo -text [_ [eval concat $$var_iemgui_lilo0]] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_lin0_log1] == 1} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] \
+        button $mytoplevel.para.std.lilo -text [_ [eval concat $$var_iemgui_lilo1]] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_loadbang] == 0} {
-        button $mytoplevel.para.lb -text [_ "No init"] \
+        button $mytoplevel.para.std.lb -text [_ "No init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
     if {[eval concat $$var_iemgui_loadbang] == 1} {
-        button $mytoplevel.para.lb -text [_ "Init"] \
+        button $mytoplevel.para.std.lb -text [_ "Init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
-    frame $mytoplevel.para.num
-    label $mytoplevel.para.num.lab -text [_ $num_label]
-    entry $mytoplevel.para.num.ent -textvariable $var_iemgui_num -width 4
-    pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
+    frame $mytoplevel.para.std.num
+    label $mytoplevel.para.std.num.lab -text [_ $num_label]
+    entry $mytoplevel.para.std.num.ent -textvariable $var_iemgui_num -width 4
+    pack $mytoplevel.para.std.num.ent $mytoplevel.para.std.num.lab -side right -anchor e
 
     if {[eval concat $$var_iemgui_steady] == 0} {
-        button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
+        button $mytoplevel.para.std.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [ eval concat $$var_iemgui_steady0] }
     if {[eval concat $$var_iemgui_steady] == 1} {
-        button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
+        button $mytoplevel.para.std.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [ eval concat $$var_iemgui_steady1] }
     if {[eval concat $$var_iemgui_lin0_log1] >= 0} {
-        pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
+        pack $mytoplevel.para.std.lilo -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_loadbang] >= 0} {
-        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10}
-    if {[eval concat $$var_iemgui_num] > 0} {
-        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10}
+        pack $mytoplevel.para.std.lb -side left -expand 1 -ipadx 10}
+    if {[eval concat $$var_iemgui_num] > 0 || $mainheader == "|knb|"} {
+        pack $mytoplevel.para.std.num -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_steady] >= 0} {
-        pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10}
+        pack $mytoplevel.para.std.stdy_jmp -side left -expand 1 -ipadx 10}
+    
+    if {$mainheader == "|knb|"} {
+        ::dialog_iemgui::create_knb_properties $mytoplevel {*}$args
+    }
 
     # messages
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
@@ -826,7 +941,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         bind $mytoplevel.dim.h_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.rng.min.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.rng.max_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.para.num.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.std.num.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.label.name_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.s_r.send.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.s_r.receive.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
@@ -839,7 +954,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.dim.h_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.rng.min.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.rng.max_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.para.num.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.std.num.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.label.name_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.s_r.send.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.s_r.receive.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
