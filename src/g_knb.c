@@ -32,7 +32,6 @@
 #define MKNOB_DEFAULTSIZE 25
 #define MKNOB_MINSIZE 12
 
-#define ARC_WIDTH 0.05
 /* ------------ knb  ----------------------- */
 typedef struct _knb
 {
@@ -78,8 +77,8 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
     int x0, y0, x1, y1, xc, yc, xp, yp, xpc, ypc;
-    int arcwidth = x->x_gui.x_w * ARC_WIDTH + 0.99;
-
+    int xA0, yA0, xA1, yA1;
+    
     if(miniradius < 3.0) miniradius = 3.0;
 
     x0 = text_xpix(&x->x_gui.x_obj, glist);
@@ -107,7 +106,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         x->x_force_outline_visible = 0;
         knb_draw_io(x, glist);
     }
-    switch(x->x_style) {
+    /*switch(x->x_style) {
     case 1:
         sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n",
             canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
@@ -118,17 +117,31 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f\n",
             canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI);
         break;
-     case 3:
+     case 3:*/
+    if(x->x_wiper_visible)
         sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n",
             canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
+
+    if(x->x_arc_visible) {
+        if(x->x_arc_width > 0) {
+            xA0 = x0 + (x->x_arc_width / 2) + 1;
+            yA0 = y0 + (x->x_arc_width / 2) + 1;
+            xA1 = x1 - (x->x_arc_width / 2) - 1;
+            yA1 = y1 - (x->x_arc_width / 2) - 1;
+        } else {
+            xA0 = xc + (x->x_arc_width / 2) + 1;
+            yA0 = yc + (x->x_arc_width / 2) + 1;
+            xA1 = xc - (x->x_arc_width / 2) - 1;
+            yA1 = yc - (x->x_arc_width / 2) - 1;
+        }
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
-            canvas, x, x0 + arcwidth + 1, y0 + arcwidth + 1,
-            x1 - arcwidth - 1, y1 - arcwidth - 1);
+            canvas, x, xA0, yA0, xA1, yA1);
         sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f -width %d\n",
             canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI,
-            2 * arcwidth);
-        break;
+            abs(x->x_arc_width));
     }
+        /*break;
+    }*/
 }
 
 static void knb_draw_update(t_knb *x, t_glist *glist)
@@ -146,7 +159,6 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     int xc = xpos + x->x_gui.x_w / 2;
     int yc = ypos + x->x_gui.x_w / 2;
     t_canvas *canvas = glist_getcanvas(glist);
-    int arcwidth = x->x_gui.x_w * ARC_WIDTH + 0.99;
 
     x->x_currentstyle = x->x_style;
     sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -width %d -tags %lxBASE\n",
@@ -154,30 +166,18 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
         x->x_gui.x_bcol, IEMGUI_ZOOM(x),
         x);
     knb_draw_io(x, glist);
-    switch(x->x_style) {
-    case 1:
-        x->x_wiper_visible = 1;
-        sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -tags %lxWIPER\n",
-            canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol,x);
-        break;
-    case 2:
-        x->x_arc_visible = 1;
-         sys_vgui(".x%lx.c create arc %d %d %d %d -fill #%06x -width 0 -tags %lxARC\n",
-            canvas, xpos + 1, ypos + 1, xpos + x->x_gui.x_w - 1, ypos + x->x_gui.x_w - 1,
-            x->x_gui.x_fcol, x);
-        break;
-    case 3:
-        x->x_wiper_visible = 1;
-        sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -tags %lxWIPER\n",
-            canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, x);
-        x->x_arc_visible = 1;
-         sys_vgui(".x%lx.c create arc %d %d %d %d -style arc -outline #%06x \
-            -width %d -tags %lxARC\n",
-            canvas, xpos + arcwidth + 1, ypos + arcwidth + 1, 
-            xpos + x->x_gui.x_w - arcwidth - 1, ypos + x->x_gui.x_w - arcwidth - 1,
-            x->x_gui.x_fcol, arcwidth * 2, x);
-        break;
-    }
+
+    x->x_wiper_visible = (x->x_wiper_style != gensym("none"));
+    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
+        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, 
+        x->x_wiper_visible ? "normal" : "hidden", x);
+    x->x_arc_visible = (x->x_arc_width != 0);
+    sys_vgui(".x%lx.c create arc %d %d %d %d -style arc -outline #%06x \
+        -width %d -state %s -tags %lxARC\n",
+        canvas, xpos + (x->x_arc_width / 2) + 1, ypos + (x->x_arc_width / 2) + 1, 
+        xpos + x->x_gui.x_w - (x->x_arc_width / 2) - 1, ypos + x->x_gui.x_w - (x->x_arc_width / 2) - 1,
+        x->x_gui.x_fcol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden", x);
+
     knb_update_knob(x,glist);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
         -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
@@ -223,14 +223,14 @@ static void knb_draw_erase(t_knb *x,t_glist *glist)
     t_canvas *canvas=glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    if(x->x_wiper_visible) {
+    //if(x->x_wiper_visible) {
         sys_vgui(".x%lx.c delete %lxWIPER\n", canvas, x);
-        x->x_wiper_visible = 0;
-    }
-    if(x->x_arc_visible) {
+        //x->x_wiper_visible = 0;
+    //}
+    //if(x->x_arc_visible) {
         sys_vgui(".x%lx.c delete %lxARC\n", canvas, x);
-        x->x_arc_visible = 0;
-    }
+        //x->x_arc_visible = 0;
+    //}
     sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
     if(x->x_outline_visible) {
         sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
@@ -264,17 +264,14 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
-    if(x->x_wiper_visible)
-        sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d\n", canvas, 
-            x, x->x_gui.x_fcol, IEMGUI_ZOOM(x));
-    if(x->x_arc_visible) {
-        if(x->x_style == 2)
-            sys_vgui(".x%lx.c itemconfigure %lxARC -fill #%06x \n", canvas, 
-                x, x->x_gui.x_fcol);
-        else 
-            sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -width %d\n", canvas, 
-                x, x->x_gui.x_fcol, 2 * (int)(x->x_gui.x_w * ARC_WIDTH + 0.99));
-    }
+
+    x->x_wiper_visible = (x->x_wiper_style != gensym("none"));
+    sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas, 
+        x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
+    x->x_arc_visible = (x->x_arc_width != 0);
+    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -width %d -state %s\n", canvas, 
+        x, x->x_gui.x_fcol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden");
+
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
 
