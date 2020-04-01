@@ -39,10 +39,9 @@ typedef struct _knb
     t_iemgui x_gui;
     int      x_pos;
     int      x_val;
-    t_symbol *x_wiperstyle;
-    t_symbol *x_currentwiperstyle;
-    t_symbol *x_arcstyle;
-    t_symbol *x_currentarcstyle;
+    t_symbol *x_wiper_style;
+    t_symbol *x_current_wiper_style;
+    int      x_arc_width;
     int      x_start_angle;
     int      x_end_angle;
     int      x_style;
@@ -403,7 +402,7 @@ static void knb_save(t_gobj *z, t_binbuf *b)
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiffiisssiiiisssiiiii", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiiffiisssiiiisssiiiiisiii", gensym("#X"),gensym("obj"),
         (t_int)x->x_gui.x_obj.te_xpix, (t_int)x->x_gui.x_obj.te_ypix,
         atom_getsymbol(binbuf_getvec(x->x_gui.x_obj.te_binbuf)),
         x->x_gui.x_w / IEMGUI_ZOOM(x), x->x_gui.x_h / IEMGUI_ZOOM(x),
@@ -413,7 +412,8 @@ static void knb_save(t_gobj *z, t_binbuf *b)
         x->x_gui.x_ldx, x->x_gui.x_ldy,
         iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
         bflcol[0], bflcol[1], bflcol[2],
-        x->x_val, x->x_full, x->x_style, x->x_angular, x->x_ticks);
+        x->x_val, x->x_full, x->x_style, x->x_angular, x->x_ticks,
+        x->x_wiper_style, x->x_arc_width, x->x_start_angle, x->x_end_angle);
     binbuf_addv(b, ";");
 }
 
@@ -487,15 +487,15 @@ static void knb_properties(t_gobj *z, t_glist *owner)
             %s %d %d \
             %d %d \
             #%06x #%06x #%06x\
-            %d %d %s %s\n",
+            %d %s %d %d %d\n",
             x->x_gui.x_w / IEMGUI_ZOOM(x), MKNOB_MINSIZE, x->x_gui.x_h / IEMGUI_ZOOM(x), 0,
             x->x_min, x->x_max, 0.0,/*no_schedule*/
-            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_angular, x->x_ticks,/*no multi, but iem-characteristic*/
+            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_angular, -1,/*no multi, but iem-characteristic*/
             srl[0]->s_name, srl[1]->s_name,
             srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
             x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
             0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol,
-            x->x_start_angle, x->x_end_angle, x->x_wiperstyle->s_name, x->x_arcstyle->s_name);
+            x->x_ticks, x->x_wiper_style->s_name, x->x_arc_width, x->x_start_angle, x->x_end_angle);
     gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
 }
 
@@ -566,7 +566,12 @@ static void knb_dialog(t_knb *x, t_symbol *s, int argc, t_atom *argv)
     double max = (double)atom_getfloatarg(3, argc, argv);
     int lilo = (int)atom_getintarg(4, argc, argv);
     int angular = (int)atom_getintarg(17, argc, argv);
-    int ticks = (int)atom_getintarg(6, argc, argv);
+    int ticks = (int)atom_getintarg(18, argc, argv);
+    t_symbol *wiperstyle = atom_getsymbolarg(19, argc, argv);
+    int arcwidth = (int)atom_getintarg(20, argc, argv);
+    int startangle = (int)atom_getintarg(21, argc, argv);
+    int endangle = (int)atom_getintarg(22, argc, argv);
+
     int sr_flags;
 
     if(lilo != 0) lilo = 1;
@@ -577,6 +582,11 @@ static void knb_dialog(t_knb *x, t_symbol *s, int argc, t_atom *argv)
     x->x_style = style;*/
     if(ticks < 0) ticks = 0;
     x->x_ticks = ticks;
+    x->x_wiper_style = wiperstyle;
+    x->x_arc_width = arcwidth;
+    x->x_start_angle = startangle;
+    x->x_end_angle = endangle;
+    
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
 
     if(h > 0) h *= IEMGUI_ZOOM(x);
@@ -869,8 +879,8 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     t_knb *x = (t_knb *)pd_new(knb_class);
     int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULTH;
     int fs = 8, lilo = 0, ldx = -2, ldy = -6, f = 0, v = 0, full = 0, style = 1;
-    int angular = 0, ticks = 0, start_angle = -135, end_angle = 135;
-    t_symbol *wiperstyle = gensym("triangle"), *arcstyle = gensym("none");
+    int angular = 0, ticks = 0, arcwidth = 0, start_angle = -135, end_angle = 135;
+    t_symbol *wiperstyle = gensym("line");
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE - 1);
     char str[144];
 
@@ -909,22 +919,20 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     else iemgui_new_getnames(&x->x_gui, 6, 0);
 
     argc -= 17; argv += 17;
-    if(argc && IS_A_FLOAT(argv,0)) full = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_FLOAT(argv,0)) style = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_FLOAT(argv,0)) angular = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_FLOAT(argv,0)) ticks = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_FLOAT(argv,0)) start_angle = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_FLOAT(argv,0)) end_angle = (int)atom_getint(argv); argc--; argv++;
-    if(argc && IS_A_SYMBOL(argv,0)) wiperstyle = atom_getsymbol(argv); argc--; argv++;
-    if(argc && IS_A_SYMBOL(argv,0)) arcstyle = atom_getsymbol(argv); argc--; argv++;
-    
-    /*if((argc >= 18)&&IS_A_FLOAT(argv,17))
-        full = (int)atom_getintarg(17, argc, argv);
-    if((argc >= 19)&&IS_A_FLOAT(argv,18))
-        style = (int)atom_getintarg(18, argc, argv);
-    if((argc >= 20)&&IS_A_FLOAT(argv,19))
-        angular = (int)atom_getintarg(18, argc, argv);*/
-        
+    if((argc > 7) && (IS_A_FLOAT(argv,0)) && (IS_A_FLOAT(argv,1)) 
+        && (IS_A_FLOAT(argv,2)) && (IS_A_FLOAT(argv,3)) 
+        && (IS_A_SYMBOL(argv,4)) && (IS_A_FLOAT(argv,5)) 
+        && (IS_A_FLOAT(argv,6)) && (IS_A_FLOAT(argv,7)))
+    {
+        full = (int)atom_getint(argv++);
+        style = (int)atom_getint(argv++);
+        angular = (int)atom_getint(argv++);
+        ticks = (int)atom_getint(argv++);
+        wiperstyle = atom_getsymbol(argv++);
+        arcwidth = (int)atom_getint(argv++);
+        start_angle = (int)atom_getint(argv++);
+        end_angle = (int)atom_getint(argv++);
+    }
 
     x->x_gui.x_draw = (t_iemfunptr)knb_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
@@ -972,10 +980,10 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     if(style < 1) style = 1;
     x->x_currentstyle = x->x_style = style;
     
+    x->x_current_wiper_style = x->x_wiper_style = wiperstyle;
+    x->x_arc_width = arcwidth;
     x->x_start_angle = start_angle;
     x->x_end_angle = end_angle;
-    x->x_currentwiperstyle = x->x_wiperstyle = wiperstyle;
-    x->x_currentarcstyle = x->x_arcstyle = arcstyle;
 
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     knb_check_wh(x, w, h);
