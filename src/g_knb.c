@@ -400,7 +400,7 @@ void knb_update_H(t_knb *x)
     int H;
 
     H = x->x_gui.x_h;
-    if(x->x_angular) H = x->x_full ? 360 : 270;
+    if(x->x_angular) H = abs(x->x_start_angle - x->x_end_angle); //x->x_full ? 360 : 270;
     x->x_H = H;
 
     if(x->x_lin0_log1)
@@ -612,47 +612,23 @@ static void knb_motion(t_knb *x, t_floatarg dx, t_floatarg dy)
     }
 }
 
-static void knb_motion_circular(t_knb *x, t_floatarg dx, t_floatarg dy)
+static void knb_motion_angular(t_knb *x, t_floatarg dx, t_floatarg dy)
 {
     int xc = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w / 2;
     int yc = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w / 2;
     int old = x->x_val;
     float alpha;
-
+    int alphacenter = (x->x_end_angle + x->x_start_angle) / 2;
     xm += dx;
     ym += dy;
 
-    alpha = atan2(xm - xc, ym - yc) * 180.0 / M_PI;
+    alpha = atan2(xm - xc, -ym + yc) * 180.0 / M_PI;
+    x->x_pos = (int)((alpha - alphacenter + 180 + 360) * 100.0) % 36000 
+                + (alphacenter - x->x_start_angle - 180) * 100;
+    if(x->x_pos < 0) x->x_pos = 0;
+    if(x->x_pos > (x->x_end_angle - x->x_start_angle) * 100 - 100)
+        x->x_pos = (x->x_end_angle - x->x_start_angle) * 100 - 100;
 
-    x->x_pos = (int)(31500 - alpha * 100.0) % 36000;
-    if(x->x_pos > 31500) x->x_pos = 0;
-    else if(x->x_pos > (27000 - 100)) x->x_pos = 27000 - 100;
-
-    x->x_val = x->x_pos;
-    x->x_fval = knb_getfval(x);
-
-    if(old != x->x_val)
-    {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-        knb_bang(x);
-    }
-}
-
-static void knb_motion_fullcircular(t_knb *x, t_floatarg dx, t_floatarg dy)
-{
-    int xc = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w / 2;
-    int yc = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w / 2;
-    int old = x->x_val;
-    float alpha;
-
-    xm += dx;
-    ym += dy;
-
-    alpha = atan2(xm - xc, ym - yc) * 180.0 / M_PI;
-
-    x->x_pos = (int)(36000 - (alpha + (x->x_end_angle - x->x_start_angle) / 2.0) * 100.0) % 36000;
-
-    if(x->x_pos > (36000 - 100)) x->x_pos = 36000 - 100;
     x->x_val = x->x_pos;
     x->x_fval = knb_getfval(x);
 
@@ -677,16 +653,10 @@ static void knb_click(t_knb *x, t_floatarg xpos, t_floatarg ypos,
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     knb_bang(x);
 
-    if(x->x_angular) {
-        if(abs(x->x_end_angle - x->x_start_angle) >= 360)
-            glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
-                (t_glistmotionfn)knb_motion_fullcircular, 0, xpos, ypos);
-        else
-            glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
-                (t_glistmotionfn)knb_motion_circular, 0, xpos, ypos);
-    }
-    else
+    if(x->x_angular) 
         glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
+            (t_glistmotionfn)knb_motion_angular, 0, xpos, ypos);
+    else glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
             (t_glistmotionfn)knb_motion, 0, xpos, ypos);
 }
 
