@@ -505,10 +505,10 @@ msgstr ""
 msgid "Sensitivity:"
 msgstr ""
 
-msgid "270 deg"
+msgid "Linear control"
 msgstr ""
 
-msgid "360 deg"
+msgid "Angular control"
 msgstr ""
 
 #, fuzzy
@@ -559,6 +559,22 @@ msgid "Compose color"
 msgstr "Σύνθεση χρώματος"
 
 msgid "Test label"
+msgstr ""
+
+msgid "Ticks: "
+msgstr ""
+
+msgid "Wiper style: "
+msgstr ""
+
+#, fuzzy
+msgid "Arc width: "
+msgstr "Εύρος:"
+
+msgid "Start angle: "
+msgstr ""
+
+msgid "End angle: "
 msgstr ""
 
 #, fuzzy
