@@ -88,14 +88,8 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     xc = (x0 + x1) / 2;
     yc = (y0 + y1) / 2;
 
-    if(x->x_full) {
-        angle = val * M_PI * 2.0 + M_PI / 2.0;
-        angle0 = M_PI / 2.0;
-    }
-    else {
-        angle = val * M_PI * 1.5 + 3.0 * M_PI / 4.0;
-        angle0 = 3.0 * M_PI / 4.0;
-    }
+    angle0 = (x->x_start_angle / 90.0 - 1) * M_PI / 2.0;
+    angle = angle0 + val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
     
     xp = xc + radius * cos(angle);
     yp = yc + radius * sin(angle);
@@ -106,18 +100,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         x->x_force_outline_visible = 0;
         knb_draw_io(x, glist);
     }
-    /*switch(x->x_style) {
-    case 1:
-        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n",
-            canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
-        break;
-    case 2:
-        sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
-            canvas, x, x0 + 1, y0 + 1, x1 - 1, y1 - 1);
-        sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f\n",
-            canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI);
-        break;
-     case 3:*/
+
     if(x->x_wiper_visible)
         sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n",
             canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
@@ -140,8 +123,6 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI,
             abs(x->x_arc_width));
     }
-        /*break;
-    }*/
 }
 
 static void knb_draw_update(t_knb *x, t_glist *glist)
@@ -669,7 +650,7 @@ static void knb_motion_fullcircular(t_knb *x, t_floatarg dx, t_floatarg dy)
 
     alpha = atan2(xm - xc, ym - yc) * 180.0 / M_PI;
 
-    x->x_pos = (int)(36000 - alpha * 100.0) % 36000;
+    x->x_pos = (int)(36000 - (alpha + (x->x_end_angle - x->x_start_angle) / 2.0) * 100.0) % 36000;
 
     if(x->x_pos > (36000 - 100)) x->x_pos = 36000 - 100;
     x->x_val = x->x_pos;
@@ -697,7 +678,7 @@ static void knb_click(t_knb *x, t_floatarg xpos, t_floatarg ypos,
     knb_bang(x);
 
     if(x->x_angular) {
-        if(x->x_full == 1)
+        if(abs(x->x_end_angle - x->x_start_angle) >= 360)
             glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
                 (t_glistmotionfn)knb_motion_fullcircular, 0, xpos, ypos);
         else

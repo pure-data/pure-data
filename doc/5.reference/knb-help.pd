@@ -1,4 +1,4 @@
-#N canvas 303 182 717 401 12;
+#N canvas 531 92 717 401 12;
 #X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 -262144 -1109 0
 ;
 #X floatatom 63 177 5 0 0 0 - - -;
@@ -7,13 +7,13 @@
 #X floatatom 191 171 5 0 0 0 - - -;
 #X floatatom 191 98 5 0 0 0 - - -;
 #X obj 146 126 knb 40 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
--4160 -257985 -1 4500 0 3 0;
+-4160 -257985 -1 9900 0 1 0 0 line 5 -135 135;
 #X obj 63 113 knb 30 100 0 127 0 0 empty empty empty -2 -6 0 8 -4160
--1 -1 0 0 1 0;
+-1 -1 0 0 1 0 0 line 0 -135 135;
 #X obj 63 154 knb 20 100 127 0 0 0 empty empty empty -2 -6 0 8 -258113
--1 -1 0 0 1 0;
+-1 -1 0 0 1 0 0 line 0 -135 135;
 #X obj 398 262 knb 30 100 0 127 0 1 empty empty empty -2 -6 0 8 -262144
--1 -1 18131 1 2 1;
+-1 -1 3247 0 1 1 0 line 0 -135 135;
 #X text 512 89 high sens;
 #X text 532 112 default;
 #X text 531 135 angular control;
@@ -285,8 +285,14 @@ range., f 35;
 #X msg 466 251 style 3;
 #X msg 466 206 style 1;
 #X msg 307 234 angular \$1;
-#X obj 306 214 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 306 214 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
+#X obj 233 228 knb 40 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
+-4160 -257985 -1 11022 0 1 1 1 line 0 -135 132;
+#X obj 263 160 knb 40 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
+-4160 -257985 -1 10748 0 1 1 1 line 0 -135 132;
+#X obj 280 32 knb 40 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
+-4160 -257985 -1 14064 0 1 1 0 line 5 -180 180;
 #X connect 2 0 7 0;
 #X connect 3 0 7 0;
 #X connect 5 0 32 0;
