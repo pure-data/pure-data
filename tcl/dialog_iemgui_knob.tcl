@@ -19,7 +19,6 @@ proc ::dialog_iemgui::toggle_knob_wpopup {mytoplevel gn_f} {
     $mytoplevel.para.knbstyle.wiper.ent configure -text [eval concat $$var_iemgui_wiper_style]
 }
 
-
 proc ::dialog_iemgui::create_knb_properties {mytoplevel ticks wiper_style arc_width start_angle end_angle} {
     #puts "start=$start_angle end=$end_angle wiper_style=$wiper_style arc_style=$arc_style"
     set vid [string trimleft $mytoplevel .]
@@ -110,6 +109,39 @@ proc ::dialog_iemgui::knb_apply {mytoplevel} {
     global $var_iemgui_start_angle
     set var_iemgui_end_angle [concat iemgui_end_angle_$vid]
     global $var_iemgui_end_angle
+    set var_iemgui_wdt [concat iemgui_wdt_$vid]
+    global $var_iemgui_wdt
+
+    if {[eval concat $$var_iemgui_end_angle] < -360 } { set $var_iemgui_end_angle -360 }
+    if {[eval concat $$var_iemgui_end_angle] > 360 } { set $var_iemgui_end_angle 360 }
+    if {[eval concat $$var_iemgui_start_angle] < -360 } { set $var_iemgui_start_angle -360 }
+    if {[eval concat $$var_iemgui_start_angle] > 360 } { set $var_iemgui_start_angle 360 }
+
+    if {[eval concat $$var_iemgui_end_angle] < [eval concat $$var_iemgui_start_angle] } {
+        set endangle [eval concat $$var_iemgui_end_angle]
+        set $var_iemgui_end_angle [eval concat $$var_iemgui_start_angle]
+        set $var_iemgui_start_angle $endangle
+    }
+
+    if {[eval concat $$var_iemgui_end_angle] - [eval concat $$var_iemgui_start_angle] > 360 } {
+        set $var_iemgui_end_angle [expr [eval concat $$var_iemgui_start_angle] + 360]
+    }
+
+    if {[eval concat $$var_iemgui_end_angle] == [eval concat $$var_iemgui_start_angle]} {
+        set $var_iemgui_end_angle [expr [eval concat $$var_iemgui_start_angle] + 1]
+    }
+
+    if {[eval concat $$var_iemgui_ticks] < 0 } { set $var_iemgui_ticks 0 }
+    if {[eval concat $$var_iemgui_ticks] > 360 } { set $var_iemgui_ticks 360 }
+
+    set max_arc_width [expr ([eval concat $$var_iemgui_wdt ] - 1) / 2]
+    set min_arc_width [expr -([eval concat $$var_iemgui_wdt ] / 2 + 1)]
+    if {[eval concat $$var_iemgui_arc_width] < $min_arc_width } {
+        set $var_iemgui_arc_width $min_arc_width
+    }
+    if {[eval concat $$var_iemgui_arc_width] > $max_arc_width } {
+        set $var_iemgui_arc_width $max_arc_width
+    }
 
     return [list [eval concat $$var_iemgui_ticks] \
         [eval concat $$var_iemgui_wiper_style] [eval concat $$var_iemgui_arc_width] \
