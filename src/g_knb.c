@@ -77,7 +77,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
     int x0, y0, x1, y1, xc, yc, xp, yp, xpc, ypc;
-    int xA0, yA0, xA1, yA1;
+    int xA0, yA0, xA1, yA1, aA_2, arcwidth;
     
     if(miniradius < 3.0) miniradius = 3.0;
 
@@ -106,22 +106,22 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
 
     if(x->x_arc_visible) {
-        if(x->x_arc_width > 0) {
-            xA0 = x0 + (x->x_arc_width / 2) + 1;
-            yA0 = y0 + (x->x_arc_width / 2) + 1;
-            xA1 = x1 - (x->x_arc_width / 2) - 1;
-            yA1 = y1 - (x->x_arc_width / 2) - 1;
-        } else {
-            xA0 = xc + (x->x_arc_width / 2) + 1;
-            yA0 = yc + (x->x_arc_width / 2) + 1;
-            xA1 = xc - (x->x_arc_width / 2) - 1;
-            yA1 = yc - (x->x_arc_width / 2) - 1;
-        }
+        arcwidth = x->x_arc_width;
+        if(arcwidth > ((x->x_gui.x_w - 1) / 2)) arcwidth = (x->x_gui.x_w - 1) / 2;
+        if(arcwidth < -(x->x_gui.x_w / 2 + 1)) arcwidth = -(x->x_gui.x_w / 2 + 1);
+
+        if(arcwidth > 0) aA_2 = arcwidth / 2 + 1;
+        else aA_2 = (x->x_gui.x_w - arcwidth) / 2;
+
+        xA0 = x0 + aA_2;
+        yA0 = y0 + aA_2;
+        xA1 = x1 - aA_2;
+        yA1 = y1 - aA_2;
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
             canvas, x, xA0, yA0, xA1, yA1);
         sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f -width %d\n",
             canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI,
-            abs(x->x_arc_width));
+            abs(arcwidth));
     }
 }
 
