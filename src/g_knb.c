@@ -62,6 +62,7 @@ typedef struct _knb
 t_widgetbehavior knb_widgetbehavior;
 static t_class *knb_class;
 
+static t_symbol *s_none, *s_triangle, *s_line;
 /* widget helper functions */
 
 static void knb_draw_io(t_knb *x,t_glist *glist);
@@ -71,35 +72,49 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     float val = (x->x_val / 100.0) / (x->x_H - 1.0) - 0.001;
     float angle, angle0;
-    float radius = x->x_gui.x_w / 2.0;
-    float miniradius = radius / 6.0;
-    int x0, y0, x1, y1, xc, yc, xp, yp, xpc, ypc;
-    
-    if(miniradius < 3.0) miniradius = 3.0;
+    int x0, y0, x1, y1;
 
     x0 = text_xpix(&x->x_gui.x_obj, glist);
     y0 = text_ypix(&x->x_gui.x_obj, glist);
     x1 = x0 + x->x_gui.x_w;
     y1 = y0 + x->x_gui.x_w;
-    xc = (x0 + x1) / 2;
-    yc = (y0 + y1) / 2;
 
     angle0 = (x->x_start_angle / 90.0 - 1) * M_PI / 2.0;
     angle = angle0 + val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
     
-    xp = xc + radius * cos(angle);
-    yp = yc + radius * sin(angle);
-    xpc = miniradius * cos(angle-M_PI/2);
-    ypc = miniradius * sin(angle-M_PI/2);
 
     if(x->x_force_outline_visible && !x->x_gui.x_fsf.x_selected) {
         x->x_force_outline_visible = 0;
         knb_draw_io(x, glist);
     }
 
-    if(x->x_wiper_visible)
-        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n",
-            canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
+    #define NEAR(x) ((int)(x + 0.51))
+    if(x->x_wiper_visible) {
+        float xc = (x0 + x1) / 2.0;
+        float yc = (y0 + y1) / 2.0;
+        float radius = x->x_gui.x_w / 2.0;
+        float xp, yp, xpc, ypc;
+        if(x->x_wiper_style == s_triangle) {
+            float miniradius = radius / 6.0;
+            if(miniradius < 3.0) miniradius = 3.0;
+            xp = xc + radius * cos(angle);
+            yp = yc + radius * sin(angle);
+            xpc = miniradius * cos(angle-M_PI/2);
+            ypc = miniradius * sin(angle-M_PI/2);
+            sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n", canvas, x,
+                NEAR(xp), NEAR(yp),
+                NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
+        } else if(x->x_wiper_style == s_line) {
+            float miniradius = 1.5;
+            xp = xc + radius * cos(angle);
+            yp = yc + radius * sin(angle);
+            xpc = miniradius * cos(angle-M_PI/2);
+            ypc = miniradius * sin(angle-M_PI/2);
+            sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
+                NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
+                NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
+        }
+    }
 
     if(x->x_arc_visible) {
         int xA0, yA0, xA1, yA1, aA_2, arcwidth;
@@ -152,7 +167,7 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
         x);
     knb_draw_io(x, glist);
 
-    x->x_wiper_visible = (x->x_wiper_style != gensym("none"));
+    x->x_wiper_visible = (x->x_wiper_style != s_none);
     sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
         canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, 
         x->x_wiper_visible ? "normal" : "hidden", x);
@@ -234,7 +249,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
 
-    x->x_wiper_visible = (x->x_wiper_style != gensym("none"));
+    x->x_wiper_visible = (x->x_wiper_style != s_none);
     sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas, 
         x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
     x->x_arc_visible = (x->x_arc_width != 0);
@@ -956,6 +971,10 @@ void canvas_knb(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 
 void g_knb_setup(void)
 {
+    s_none = gensym("none");
+    s_triangle = gensym("triangle");
+    s_line = gensym("line");
+
     knb_class = class_new(gensym("knb"), (t_newmethod)knb_new,
                             (t_method)knb_free, sizeof(t_knb), 0, A_GIMME, 0);
 

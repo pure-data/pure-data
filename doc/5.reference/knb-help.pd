@@ -7,13 +7,13 @@
 #X floatatom 217 165 5 0 0 0 - - -;
 #X floatatom 217 92 5 0 0 0 - - -;
 #X obj 126 89 knb 80 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
--4160 -257985 -1 7400 0 0 line 5 -135 135;
+-4160 -257985 -1 8300 0 0 line 5 -135 135;
 #X obj 63 113 knb 30 100 0 127 0 0 empty empty empty -2 -6 0 8 -4160
 -1 -1 0 0 0 line 0 -135 135;
 #X obj 63 154 knb 20 100 127 0 0 0 empty empty empty -2 -6 0 8 -258113
 -1 -1 0 0 0 line 0 -135 135;
 #X obj 369 284 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
--1 -1 6400 0 0 triangle 7 -180 178;
+-1 -1 5800 0 0 triangle 0 -180 178;
 #X text 503 63 high sens;
 #X text 523 86 default;
 #X text 68 12 gui-round-knob:;
