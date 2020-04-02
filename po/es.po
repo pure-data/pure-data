@@ -485,10 +485,10 @@ msgstr ""
 msgid "Sensitivity:"
 msgstr ""
 
-msgid "270 deg"
+msgid "Linear control"
 msgstr ""
 
-msgid "360 deg"
+msgid "Angular control"
 msgstr ""
 
 msgid "Vradio"
@@ -536,6 +536,23 @@ msgstr "Componer color"
 
 msgid "Test label"
 msgstr "Etiqueta prueba"
+
+msgid "Ticks: "
+msgstr ""
+
+msgid "Wiper style: "
+msgstr ""
+
+#, fuzzy
+msgid "Arc width: "
+msgstr "Ancho:"
+
+#, fuzzy
+msgid "Start angle: "
+msgstr "Banderas de Inicio:"
+
+msgid "End angle: "
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Enviar un mensaje Pd"

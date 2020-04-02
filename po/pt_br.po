@@ -513,10 +513,10 @@ msgstr ""
 msgid "Sensitivity:"
 msgstr ""
 
-msgid "270 deg"
+msgid "Linear control"
 msgstr ""
 
-msgid "360 deg"
+msgid "Angular control"
 msgstr ""
 
 msgid "Vradio"
@@ -565,6 +565,24 @@ msgstr "Compor cor"
 
 msgid "Test label"
 msgstr "Rótulo teste"
+
+msgid "Ticks: "
+msgstr ""
+
+msgid "Wiper style: "
+msgstr ""
+
+# iemgui
+#, fuzzy
+msgid "Arc width: "
+msgstr "largura:"
+
+#, fuzzy
+msgid "Start angle: "
+msgstr "Marcadores de inicialização:"
+
+msgid "End angle: "
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Enviar mensagens"
