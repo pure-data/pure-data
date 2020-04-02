@@ -77,7 +77,6 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     float radius = x->x_gui.x_w / 2.0;
     float miniradius = radius / 6.0;
     int x0, y0, x1, y1, xc, yc, xp, yp, xpc, ypc;
-    int xA0, yA0, xA1, yA1, aA_2, arcwidth;
     
     if(miniradius < 3.0) miniradius = 3.0;
 
@@ -106,13 +105,22 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             canvas, x, xp, yp, xc + xpc, yc + ypc, xc - xpc, yc - ypc);
 
     if(x->x_arc_visible) {
+        int xA0, yA0, xA1, yA1, aA_2, arcwidth;
+        float zero_angle, zero_val;
+         
         arcwidth = x->x_arc_width;
         if(arcwidth > ((x->x_gui.x_w - 1) / 2)) arcwidth = (x->x_gui.x_w - 1) / 2;
         if(arcwidth < -(x->x_gui.x_w / 2 + 1)) arcwidth = -(x->x_gui.x_w / 2 + 1);
 
         if(arcwidth > 0) aA_2 = arcwidth / 2 + 1;
         else aA_2 = (x->x_gui.x_w - arcwidth) / 2;
-
+        
+        if((x->x_min * x->x_max) < 0) {
+            if(x->x_min < 0) zero_val = -x->x_min / (abs(x->x_min) + abs(x->x_max));
+            else zero_val = -x->x_max / (abs(x->x_min) + abs(x->x_max));
+            zero_angle = angle0 + zero_val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
+            angle0 = zero_angle;
+        }
         xA0 = x0 + aA_2;
         yA0 = y0 + aA_2;
         xA1 = x1 - aA_2;
