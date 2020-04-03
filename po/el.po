@@ -914,6 +914,9 @@ msgstr "Επιλογή Όλων"
 msgid "Clear Console"
 msgstr "Καθαρισμός Κονσόλας"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

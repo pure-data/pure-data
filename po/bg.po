@@ -943,6 +943,9 @@ msgstr "Изтрива всички"
 msgid "Clear Console"
 msgstr "Изчистване на списъка"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

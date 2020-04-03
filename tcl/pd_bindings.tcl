@@ -46,7 +46,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-d>      {menu_send %W duplicate}
     bind all <$::modifier-Key-e>      {menu_toggle_editmode}
     bind all <$::modifier-Key-f>      {menu_find_dialog}
-    bind all <$::modifier-Key-g>      {menu_send %W findagain}
+    bind all <$::modifier-Key-g>      {::dialog_goto::pdtk_goto_open "$::focused_window"}
     bind all <$::modifier-Key-k>      {menu_send %W connect_selection}
     bind all <$::modifier-Key-n>      {menu_new}
     bind all <$::modifier-Key-o>      {menu_open}
@@ -82,13 +82,13 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-F> {menu_send %W findagain}
     bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
     bind all <$::modifier-Shift-Key-L> {menu_clear_console}
     bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
     bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-O> {::dialog_goto::pdtk_goto_open "$::focused_window"}
     bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
     bind all <$::modifier-Shift-Key-R> {menu_send %W tidy}
     bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
@@ -102,13 +102,13 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-f> {menu_send %W findagain}
     bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
     bind all <$::modifier-Shift-Key-l> {menu_clear_console}
     bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
     bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-o> {::dialog_goto::pdtk_goto_open "$::focused_window"}
     bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
     bind all <$::modifier-Shift-Key-r> {menu_send %W tidy}
     bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}

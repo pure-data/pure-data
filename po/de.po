@@ -927,6 +927,9 @@ msgstr "Alles auswählen"
 msgid "Clear Console"
 msgstr "Konsole löschen"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr "Objekt"
 

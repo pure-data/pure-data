@@ -915,6 +915,9 @@ msgstr "Mindent kijelöl"
 msgid "Clear Console"
 msgstr "Konzolt ürít"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr "Object"
 

@@ -944,6 +944,9 @@ msgstr "Guztia Aukeratu"
 msgid "Clear Console"
 msgstr "Kontsola Garbitu"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr "Objektu"
 

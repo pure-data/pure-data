@@ -904,6 +904,9 @@ msgstr "Seleccionar Todo"
 msgid "Clear Console"
 msgstr "Limpiar Consola"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr "Objeto"
 

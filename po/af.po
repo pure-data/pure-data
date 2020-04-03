@@ -949,6 +949,9 @@ msgstr "Uitvee Alle"
 msgid "Clear Console"
 msgstr "Maak lys skoon"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

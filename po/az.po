@@ -942,6 +942,9 @@ msgstr "Hamısı Sil"
 msgid "Clear Console"
 msgstr "Siyahını təmizlə"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

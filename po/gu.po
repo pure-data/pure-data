@@ -944,6 +944,9 @@ msgstr "રંગ પસંદ કરો"
 msgid "Clear Console"
 msgstr "યાદી સાફ કરો"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

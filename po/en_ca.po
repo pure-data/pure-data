@@ -877,6 +877,9 @@ msgstr ""
 msgid "Clear Console"
 msgstr ""
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

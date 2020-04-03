@@ -942,6 +942,9 @@ msgstr "Chọn màu"
 msgid "Clear Console"
 msgstr "Xóa danh sách"
 
+msgid "Go to object"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 
