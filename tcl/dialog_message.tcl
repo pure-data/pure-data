@@ -41,7 +41,7 @@ proc ::dialog_message::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_message::cancel {mytoplevel} {
-    destroy .message
+    wm withdraw .message
 }
 
 # the message panel is opened from the menu and key bindings
@@ -49,7 +49,7 @@ proc ::dialog_message::open_message_dialog {mytoplevel} {
     if {[winfo exists .message]} {
         wm deiconify .message
         raise .message
-        focus .message
+        focus .message.f.entry
     } else {
         create_dialog $mytoplevel
     }
