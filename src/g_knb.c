@@ -783,7 +783,10 @@ static void knb_wiper(t_knb *x, t_symbol *style)
 static void knb_arc(t_knb *x, t_floatarg f)
 {
     x->x_arc_width = f;
-    knb_draw_update(x, x->x_gui.x_glist);
+    if(glist_isvisible(x->x_gui.x_glist)) {
+        knb_draw_config(x, x->x_gui.x_glist);
+        knb_draw_update(x, x->x_gui.x_glist);
+    }
 }
 
 static void knb_angle(t_knb *x, t_floatarg start, t_floatarg end)
