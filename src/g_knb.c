@@ -192,7 +192,6 @@ static void knb_draw_move(t_knb *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int r = xpos + (x->x_val + 50) / 100;
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -378,7 +377,6 @@ static void knb_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2,
 static void knb_save(t_gobj *z, t_binbuf *b)
 {
     t_knb *x = (t_knb *)z;
-    int bflcol_compat[3];
     t_symbol *bflcol[3];
     t_symbol *srl[3];
 
@@ -414,7 +412,6 @@ void knb_update_H(t_knb *x)
 
 void knb_check_wh(t_knb *x, int w, int h)
 {
-    int H;
     if(w < MKNOB_MINSIZE * IEMGUI_ZOOM(x))
         w = MKNOB_MINSIZE * IEMGUI_ZOOM(x);
     x->x_gui.x_w = w;
@@ -427,8 +424,6 @@ void knb_check_wh(t_knb *x, int w, int h)
 
 void knb_check_minmax(t_knb *x, double min, double max)
 {
-    int H;
-
     if(x->x_lin0_log1)
     {
         if((min == 0.0)&&(max == 0.0))
@@ -813,8 +808,6 @@ static void knb_angle(t_knb *x, t_floatarg start, t_floatarg end)
 
 static void knb_float(t_knb *x, t_floatarg f)
 {
-    double out;
-
     knb_set(x, f);
     if(x->x_gui.x_fsf.x_put_in2out)
         knb_bang(x);
@@ -845,11 +838,10 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_knb *x = (t_knb *)pd_new(knb_class);
     int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULTH;
-    int fs = 8, lilo = 0, ldx = -2, ldy = -6, f = 0, v = 0;
+    int fs = 8, lilo = 0, ldx = -2, ldy = -6, v = 0;
     int angular = 0, ticks = 0, arcwidth = 0, start_angle = -135, end_angle = 135;
     t_symbol *wiperstyle = gensym("line");
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE - 1);
-    char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
