@@ -980,7 +980,7 @@ void g_knb_setup(void)
     class_addmethod(knb_class, (t_method)knb_motion, gensym("motion"),
                     A_FLOAT, A_FLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_dialog, gensym("dialog"), A_GIMME, 0);
-    class_addmethod(knb_class, (t_method)knb_loadbang, gensym("loadbang"), 0);
+    class_addmethod(knb_class, (t_method)knb_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_set, gensym("set"), A_FLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_size, gensym("size"), A_FLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_sensitivity, gensym("sensitivity"), A_FLOAT, 0);
