@@ -61,7 +61,7 @@ typedef struct _knb
 t_widgetbehavior knb_widgetbehavior;
 static t_class *knb_class;
 
-static t_symbol *s_none, *s_triangle, *s_line;
+static t_symbol *s_none, *s_line;
 /* widget helper functions */
 
 static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags);
@@ -87,26 +87,14 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         float yc = (y0 + y1) / 2.0;
         float radius = x->x_gui.x_w / 2.0;
         float xp, yp, xpc, ypc;
-        if(x->x_wiper_style == s_triangle) {
-            float miniradius = radius / 6.0;
-            if(miniradius < 3.0) miniradius = 3.0;
-            xp = xc + radius * cos(angle);
-            yp = yc + radius * sin(angle);
-            xpc = miniradius * cos(angle-M_PI/2);
-            ypc = miniradius * sin(angle-M_PI/2);
-            sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d\n", canvas, x,
-                NEAR(xp), NEAR(yp),
-                NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
-        } else if(x->x_wiper_style == s_line) {
-            float miniradius = 1.5;
-            xp = xc + radius * cos(angle);
-            yp = yc + radius * sin(angle);
-            xpc = miniradius * cos(angle-M_PI/2);
-            ypc = miniradius * sin(angle-M_PI/2);
-            sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
-                NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
-                NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
-        }
+        float miniradius = 1.5;
+        xp = xc + radius * cos(angle);
+        yp = yc + radius * sin(angle);
+        xpc = miniradius * cos(angle-M_PI/2);
+        ypc = miniradius * sin(angle-M_PI/2);
+        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
+            NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
+            NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
     }
 
     if(x->x_arc_visible) {
@@ -941,7 +929,6 @@ void canvas_knb(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 void g_knb_setup(void)
 {
     s_none = gensym("none");
-    s_triangle = gensym("triangle");
     s_line = gensym("line");
 
     knb_class = class_new(gensym("knb"), (t_newmethod)knb_new,

@@ -30,9 +30,6 @@ proc ::dialog_iemgui::create_knb_properties {mytoplevel ticks wiper_style arc_wi
     $mytoplevel.wiperpopup add command \
         -label "line" \
         -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 1"
-    $mytoplevel.wiperpopup add command \
-        -label "triangle" \
-        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 2"
 
     set var_iemgui_ticks [concat iemgui_ticks_$vid]
     global $var_iemgui_ticks
