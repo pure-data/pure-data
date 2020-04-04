@@ -406,7 +406,7 @@ void knb_check_minmax(t_knb *x, double min, double max)
 {
     if(x->x_lin0_log1)
     {
-        if((min == 0.0)&&(max == 0.0))
+        if((min == 0.0) && (max == 0.0))
             max = 1.0;
         if(max > 0.0)
         {
@@ -421,7 +421,7 @@ void knb_check_minmax(t_knb *x, double min, double max)
     x->x_max = max;
 
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_H / IEMGUI_ZOOM(x) - 1);
+        x->x_k = log(x->x_max / x->x_min)/(double)(x->x_H / IEMGUI_ZOOM(x) - 1);
     else
         x->x_k = (x->x_max - x->x_min)/(double)(x->x_H / IEMGUI_ZOOM(x) - 1);
 }
@@ -563,19 +563,19 @@ static void knb_motion(t_knb *x, t_floatarg dx, t_floatarg dy)
     if(x->x_gui.x_fsf.x_finemoved)
         x->x_pos += (int)d;
     else
-        x->x_pos += 100*(int)d;
+        x->x_pos += 100 * (int)d;
     x->x_val = x->x_pos;
-    if(x->x_val > (100*x->x_H - 100))
+    if(x->x_val > (100 * x->x_H - 100))
     {
-        x->x_val = 100*x->x_H - 100;
+        x->x_val = 100 * x->x_H - 100;
         x->x_pos += 50;
-        x->x_pos -= x->x_pos%100;
+        x->x_pos -= x->x_pos % 100;
     }
     if(x->x_val < 0)
     {
         x->x_val = 0;
         x->x_pos -= 50;
-        x->x_pos -= x->x_pos%100;
+        x->x_pos -= x->x_pos % 100;
     }
     x->x_fval = knb_getfval(x);
     if(old != x->x_val)
