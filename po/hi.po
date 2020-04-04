@@ -909,6 +909,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "मोड"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "यूगांडा"
@@ -940,9 +946,6 @@ msgstr "रंग चुनें"
 #, fuzzy
 msgid "Clear Console"
 msgstr "सूची साफ करें"
-
-msgid "Go to object"
-msgstr ""
 
 msgid "Object"
 msgstr ""

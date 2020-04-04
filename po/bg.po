@@ -911,6 +911,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Режим \"Редакция\""
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Уганда"
@@ -942,9 +948,6 @@ msgstr "Изтрива всички"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Изчистване на списъка"
-
-msgid "Go to object"
-msgstr ""
 
 msgid "Object"
 msgstr ""

@@ -879,6 +879,12 @@ msgstr "Triggeriser"
 msgid "Edit Mode"
 msgstr "Mode d'édition"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr "Défaire"
 
@@ -905,9 +911,6 @@ msgstr "Tout sélectionner"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
-
-msgid "Go to object"
-msgstr ""
 
 msgid "Object"
 msgstr "Objet"

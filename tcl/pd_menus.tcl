@@ -72,7 +72,8 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
     $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
-    $menubar.edit entryconfigure [_ "Go to object"] -state disabled
+    $menubar.edit entryconfigure [_ "Go to Object"] -state disabled
+    $menubar.edit entryconfigure [_ "Connect Objects"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
     $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
@@ -104,7 +105,8 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state normal
     $menubar.edit entryconfigure [_ "Triggerize"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
-    $menubar.edit entryconfigure [_ "Go to object"] -state normal
+    $menubar.edit entryconfigure [_ "Go to Object"] -state normal
+    $menubar.edit entryconfigure [_ "Connect Objects"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
     for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
@@ -149,7 +151,8 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
     $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
-    $menubar.edit entryconfigure [_ "Go to object"] -state disabled
+    $menubar.edit entryconfigure [_ "Go to Object"] -state disabled
+    $menubar.edit entryconfigure [_ "Connect Objects"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
     $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
@@ -219,9 +222,11 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
-    $mymenu add command -label [_ "Go to object"] \
+    $mymenu add command -label [_ "Go to Object"] \
         -accelerator "$accelerator+G" \
         -command {::dialog_goto::pdtk_goto_open "$::focused_window"}
+    $mymenu add command -label [_ "Connect Objects" ]  \
+        -command {::dialog_kbdconnect::pdtk_kbdconnect_open "$::focused_window"}
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \

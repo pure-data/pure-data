@@ -909,6 +909,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Рэжым"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Уганда"
@@ -942,9 +948,6 @@ msgstr "Вылучце колер"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Ачысціць спіс"
-
-msgid "Go to object"
-msgstr ""
 
 msgid "Object"
 msgstr ""

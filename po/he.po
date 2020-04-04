@@ -896,6 +896,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "עריכת תפריט משתמש"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr ""
 
@@ -924,9 +930,6 @@ msgid "Select All"
 msgstr "בחר גופן"
 
 msgid "Clear Console"
-msgstr ""
-
-msgid "Go to object"
 msgstr ""
 
 msgid "Object"

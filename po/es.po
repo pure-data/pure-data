@@ -877,6 +877,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Modo Edición"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr "Deshacer"
 
@@ -903,9 +909,6 @@ msgstr "Seleccionar Todo"
 
 msgid "Clear Console"
 msgstr "Limpiar Consola"
-
-msgid "Go to object"
-msgstr ""
 
 msgid "Object"
 msgstr "Objeto"

@@ -927,7 +927,10 @@ msgstr "Alles auswählen"
 msgid "Clear Console"
 msgstr "Konsole löschen"
 
-msgid "Go to object"
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
 msgstr ""
 
 msgid "Object"
