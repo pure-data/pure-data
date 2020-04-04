@@ -110,15 +110,15 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     }
 
     if(x->x_arc_visible) {
-        int xA0, yA0, xA1, yA1, aA_2, arcwidth;
-        float zero_angle, zero_val;
+        int xA0, yA0, xA1, yA1, arcwidth;
+        float zero_angle, zero_val, aA_2;
          
         arcwidth = x->x_arc_width * IEMGUI_ZOOM(x);
         if(arcwidth > ((x->x_gui.x_w - 1) / 2)) arcwidth = (x->x_gui.x_w - 1) / 2;
         if(arcwidth < -(x->x_gui.x_w / 2 + 1)) arcwidth = -(x->x_gui.x_w / 2 + 1);
 
-        if(arcwidth > 0) aA_2 = arcwidth / 2 + 1;
-        else aA_2 = (x->x_gui.x_w - arcwidth) / 2;
+        if(arcwidth > 0) aA_2 = arcwidth / 2.0 + 1;
+        else aA_2 = (x->x_gui.x_w - arcwidth) / 2.0;
         
         if((x->x_min * x->x_max) < 0) {
             if(x->x_min < 0) zero_val = -x->x_min / (abs(x->x_min) + abs(x->x_max));
@@ -126,10 +126,10 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             zero_angle = angle0 + zero_val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
             angle0 = zero_angle;
         }
-        xA0 = x0 + aA_2;
-        yA0 = y0 + aA_2;
-        xA1 = x1 - aA_2;
-        yA1 = y1 - aA_2;
+        xA0 = floor(x0 + aA_2);
+        yA0 = floor(y0 + aA_2);
+        xA1 = ceil(x1 - aA_2);
+        yA1 = ceil(y1 - aA_2);
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
             canvas, x, xA0, yA0, xA1, yA1);
         sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f -width %d\n",
