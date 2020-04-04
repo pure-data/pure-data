@@ -87,9 +87,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
     bind all <$::modifier-Shift-Key-L> {menu_clear_console}
     bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
-    bind all <quotedbl> {::entry_canvasmsg::openclose_canvasmsg $::focused_window}
     bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-O> {::entry_canvasmsg::open_canvas_msg_dialog_with_text "$::focused_window" "goto "} 
+    bind all <$::modifier-Shift-Key-O> {::dialog_goto::pdtk_goto_open "$::focused_window"}
     bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
     bind all <$::modifier-Shift-Key-R> {menu_send %W tidy}
     bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
@@ -109,7 +108,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-l> {menu_clear_console}
     bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
     bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-o> {::entry_canvasmsg::open_canvas_msg_dialog_with_text "$::focused_window" "goto "}
+    bind all <$::modifier-Shift-Key-o> {::dialog_goto::pdtk_goto_open "$::focused_window"}
     bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
     bind all <$::modifier-Shift-Key-r> {menu_send %W tidy}
     bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}

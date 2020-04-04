@@ -308,7 +308,7 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
     }
 
     /* Mod+Tab display the object indexes. This is useful for the goto feature
-       Note: for some reason "Tab" is only detected on key release events! (tested only on Win7) */
+       Note: for some reason "Tab" is only detected on key release events! (tested on Win7 and Win10) */
     if( !down && kbdnav->kn_moddown && !strcmp(gotkeysym->s_name, "Tab"))
     {
         kbdnav->kn_indexvis = !kbdnav->kn_indexvis;
@@ -534,15 +534,11 @@ void kbdnav_up(t_canvas *x, int shift)
                     kbdnav->kn_state = KN_IO_SELECTED;
                     /* note we don't use the .c in the .x%lx.c */
                     char *str = "source_obj_n source_io_n";
-                    sys_vgui("::entry_canvasmsg::open_canvas_msg_dialog_with_text .x%lx \"connect %s %d %d\"\n",
+                    sys_vgui("::dialog_kbdconnect::pdtk_kbdconnect_prefilled .x%lx \"\" \"\" %d %d\n",
                         x,
-                        str,
                         glist_getindex(x, &kbdnav->kn_selobj->ob_g),
                         kbdnav->kn_ioindex);
-                    sys_vgui("::entry_canvasmsg::select_range .x%lx %d %d\n",
-                        x,
-                        strlen("connect "),
-                        strlen(str)+strlen("connect ") );
+                    sys_vgui("::dialog_kbdconnect::set_focus .x%lx 0\n", x);
                     kbdnav->kn_indexvis = 1;
                 }
                 break;
@@ -643,15 +639,12 @@ void kbdnav_down(t_canvas *x, int shift)
                     kbdnav->kn_state = KN_IO_SELECTED;
                     /* note we don't use the .c in the .x%lx.c */
                     char *str = "dest_obj_n dest_io_n";
-                    sys_vgui("::entry_canvasmsg::open_canvas_msg_dialog_with_text .x%lx \"connect %d %d %s\"\n",
+                    sys_vgui("::dialog_kbdconnect::pdtk_kbdconnect_prefilled .x%lx %d %d \"\" \"\"\n",
                         x,
                         glist_getindex(x, &kbdnav->kn_selobj->ob_g),
-                        kbdnav->kn_ioindex,
-                        str);
-                    sys_vgui("::entry_canvasmsg::select_last_n_chars .x%lx %d\n",
-                        x,
-                        strlen(str) );
+                        kbdnav->kn_ioindex);
                     kbdnav->kn_indexvis = 1;
+                    sys_vgui("::dialog_kbdconnect::set_focus .x%lx 2\n", x);
                 }
                 break;
             default:
@@ -942,12 +935,9 @@ void kbdnav_traverse_inlet_sources_prev(t_canvas *x)
 void kbdnav_displayindices(t_canvas *x)
 {
     t_gobj *gobj = x->gl_list;
-    if ( !gobj ){
-        return;
-    }
     int i = 0;
-    int there_is_next = 1;
-    while ( there_is_next ){
+    while ( gobj )
+    {
         t_object *obj = pd_checkobject(&gobj->g_pd);
         int objindex = canvas_getindex(x,gobj);
         sys_vgui(".x%lx.c create text %d %d -text {%d} -tags [list objindex%d obj_index_number] -fill blue\n",
@@ -967,7 +957,6 @@ void kbdnav_displayindices(t_canvas *x)
                 objindex);
         ++i;
         gobj = gobj->g_next;
-        there_is_next = gobj ? 1 : 0;
     }
 }
 
@@ -2098,6 +2087,7 @@ void canvas_goto(t_canvas *x, t_floatarg indexarg)
             kbdnav->kn_indexvis = 0;
         }
         glist_select(x, gobj);
+        kbdnav_deactivate(x);
         canvas_redraw(x);
     }
     else
@@ -2106,7 +2096,7 @@ void canvas_goto(t_canvas *x, t_floatarg indexarg)
     }
 }
 
-void canvas_toggle_indices_visibility(t_canvas *x, t_floatarg indexarg)
+void canvas_set_indices_visibility(t_canvas *x, t_floatarg indexarg)
 {
     int i = indexarg;
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
@@ -2114,6 +2104,8 @@ void canvas_toggle_indices_visibility(t_canvas *x, t_floatarg indexarg)
     kbdnav->kn_indexvis = i != 0;
     if( kbdnav->kn_indexvis )
         kbdnav_displayindices(x);
+    else
+        canvas_redraw(x);
 }
 
 void kbdnav_displaceselection(t_canvas *x, int dx, int dy, t_selection *sel)

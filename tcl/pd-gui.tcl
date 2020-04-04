@@ -44,7 +44,8 @@ package require dialog_font
 package require dialog_gatom
 package require dialog_iemgui
 package require dialog_message
-package require entry_canvasmsg
+package require dialog_kbdconnect
+package require dialog_goto
 package require dialog_midi
 package require dialog_path
 package require dialog_startup
