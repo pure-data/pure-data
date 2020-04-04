@@ -1,4 +1,4 @@
-#N canvas 576 182 717 443 12;
+#N canvas 576 182 642 469 12;
 #X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 -262144 -1109 0
 ;
 #X floatatom 63 177 5 0 0 0 - - -;
@@ -11,25 +11,21 @@
 #X obj 63 113 knb 30 100 0 127 0 0 empty empty empty -2 -6 0 8 -4160
 -1 -1 0 0 0 line 0 -135 135;
 #X obj 63 154 knb 20 100 127 0 0 0 empty empty empty -2 -6 0 8 -258113
--1 -1 0 0 0 line 0 -135 135;
-#X obj 369 284 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
--1 -1 5800 0 0 triangle 0 -180 178;
+-1 -1 9900 0 0 line 0 -135 135;
+#X obj 369 332 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
+-1 -1 5000 0 0 line 0 -180 178;
 #X text 503 63 high sens;
 #X text 523 86 default;
 #X text 68 12 gui-round-knob:;
-#X text 31 349 note: when selected \, knb shows its inlet \, outlet
-and a rectangular outline \, in order to help connecting. When edit
-mode is switched off \, they disapear after the mkob is hovered by
-the mouse or the knob value is changed., f 76;
 #X text 33 48 right click for properties to modify geometry \, colors
 \, etc., f 30;
-#X text 29 204 shift-click & drag for fine-tuning (0.01 pixels), f
+#X text 29 198 shift-click & drag for fine-tuning (0.01 pixels), f
 25;
-#X text 1 399 (c) Antoine Rousseau 2003-2020;
+#X text 2 432 (c) Antoine Rousseau 2003-2020;
 #X text 543 157 270° rotation;
 #X text 541 181 360° rotation;
-#X msg 299 98 size \$1;
-#X floatatom 299 77 5 0 0 0 - - -;
+#X msg 311 79 size \$1;
+#X floatatom 311 58 5 0 0 0 - - -;
 #X text 366 8 "sensitivity" parameter sets mouse excursion for full
 range., f 35;
 #X msg 369 40 sensitivity 300;
@@ -298,27 +294,37 @@ range., f 35;
 #X msg 433 133 angular 1;
 #X floatatom 456 275 5 0 0 1 arc_width - -;
 #X msg 456 298 arc \$1;
-#X obj 210 277 knb 50 100 -1 1 0 1 empty empty empty -2 -6 0 8 -258113
--1 -1 8300 0 0 none 15 -135 135;
-#X text 196 259 +/- knob:;
+#X obj 52 273 knb 50 100 -1 1 0 1 empty empty empty -2 -6 0 8 -258113
+-1 -1 0 0 0 none 15 -135 135;
+#X floatatom 52 325 5 0 0 0 - - -;
+#X text 11 241 when Lower and Upper settings are of opposite sign \,
+the arc turns to +/- mode:, f 37;
+#X text 11 355 if Receive or Send symbol is empty \, an square outline
+is drawn. If both Send and Receive are defined \, the outline is hidden:
+, f 45;
+#X obj 44 401 knb 25 100 0 127 0 0 empty empty empty -2 -6 0 8 -262144
+-1 -1 0 0 0 line 0 -135 135;
+#X obj 79 401 knb 25 100 0 127 0 0 \$0-send_is_defined \$0-receive_is_defined
+empty -2 -6 0 8 -262144 -1 -1 0 0 0 line 0 -135 135;
 #X connect 2 0 7 0;
 #X connect 3 0 7 0;
-#X connect 5 0 27 0;
+#X connect 5 0 26 0;
 #X connect 7 0 8 0;
 #X connect 8 0 3 0;
 #X connect 8 0 1 0;
-#X connect 19 0 9 0;
-#X connect 20 0 19 0;
+#X connect 18 0 9 0;
+#X connect 19 0 18 0;
+#X connect 21 0 9 0;
 #X connect 22 0 9 0;
-#X connect 23 0 9 0;
-#X connect 25 0 9 0;
-#X connect 28 0 4 0;
+#X connect 24 0 9 0;
+#X connect 27 0 4 0;
+#X connect 28 0 9 0;
 #X connect 29 0 9 0;
 #X connect 30 0 9 0;
 #X connect 31 0 9 0;
 #X connect 32 0 9 0;
 #X connect 33 0 9 0;
-#X connect 34 0 9 0;
-#X connect 37 0 9 0;
-#X connect 38 0 39 0;
-#X connect 39 0 9 0;
+#X connect 36 0 9 0;
+#X connect 37 0 38 0;
+#X connect 38 0 9 0;
+#X connect 39 0 40 0;
