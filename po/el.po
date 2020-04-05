@@ -568,9 +568,6 @@ msgstr "Χρώμα ετικέτας"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Εύρος:"

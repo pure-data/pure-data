@@ -564,9 +564,6 @@ msgstr "Cor da legenda"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Largura:"

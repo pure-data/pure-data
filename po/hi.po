@@ -587,9 +587,6 @@ msgstr "रंग चुनें"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 msgid "Arc width: "
 msgstr ""
 

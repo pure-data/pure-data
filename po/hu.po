@@ -570,9 +570,6 @@ msgstr "Címkeszín"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Szélesség:"

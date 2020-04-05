@@ -588,9 +588,6 @@ msgstr "Лакальныя колеры:"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 msgid "Arc width: "
 msgstr ""
 

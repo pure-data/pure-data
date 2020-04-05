@@ -573,9 +573,6 @@ msgstr "Cor do rótulo"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 # iemgui
 #, fuzzy
 msgid "Arc width: "

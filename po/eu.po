@@ -591,9 +591,6 @@ msgstr "Etiketaren kolorea"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Zabalera:"

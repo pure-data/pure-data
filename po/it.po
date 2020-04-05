@@ -569,9 +569,6 @@ msgstr "Colore etichetta"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Larghezza:"

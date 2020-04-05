@@ -543,9 +543,6 @@ msgstr "Couleur de l'arc"
 msgid "Ticks: "
 msgstr "Graduations : "
 
-msgid "Wiper style: "
-msgstr "Style du wiper : "
-
 msgid "Arc width: "
 msgstr "Largeur arc : "
 
@@ -1108,6 +1105,9 @@ msgstr "'%s' n'existe pas ; ignorer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' ne semble pas être un fichier Pd ; ignorer"
+
+#~ msgid "Wiper style: "
+#~ msgstr "Style du wiper : "
 
 #~ msgid "270°"
 #~ msgstr "270°"

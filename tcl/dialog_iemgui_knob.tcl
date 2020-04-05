@@ -42,41 +42,13 @@ proc ::dialog_iemgui::set_col_example_knb {mytoplevel} {
         -activeforeground [eval concat $$var_iemgui_acol]
 }
 
-proc ::dialog_iemgui::knob_wpopup {mytoplevel} {
-    $mytoplevel.wiperpopup unpost
-    set button $mytoplevel.para.knbstyle.wiper.ent
-    set x [expr [winfo rootx $button] + ( [winfo width $button] / 2 )]
-    set y [expr [winfo rooty $button] + ( [winfo height $button] / 2 )]
-    tk_popup $mytoplevel.wiperpopup $x $y 0
-}
-
-proc ::dialog_iemgui::toggle_knob_wpopup {mytoplevel gn_f} {
+proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_width \
+        start_angle end_angle} {
     set vid [string trimleft $mytoplevel .]
-
-    set var_iemgui_wiper_style [concat iemgui_wiper_style_$vid]
-    global $var_iemgui_wiper_style
-    set $var_iemgui_wiper_style [$mytoplevel.wiperpopup entrycget $gn_f -label]
-    $mytoplevel.para.knbstyle.wiper.ent configure -text [eval concat $$var_iemgui_wiper_style]
-}
-
-proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_width \
-        start_angle end_angle arc_color} {
-    set vid [string trimleft $mytoplevel .]
-
-    menu $mytoplevel.wiperpopup
-    $mytoplevel.wiperpopup add command \
-        -label "none" \
-        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 0"
-    $mytoplevel.wiperpopup add command \
-        -label "line" \
-        -command "::dialog_iemgui::toggle_knob_wpopup $mytoplevel 1"
 
     set var_iemgui_ticks [concat iemgui_ticks_$vid]
     global $var_iemgui_ticks
     set $var_iemgui_ticks $ticks
-    set var_iemgui_wiper_style [concat iemgui_wiper_style_$vid]
-    global $var_iemgui_wiper_style
-    set $var_iemgui_wiper_style $wiper_style
     set var_iemgui_arc_width [concat iemgui_arc_width_$vid]
     global $var_iemgui_arc_width
     set $var_iemgui_arc_width $arc_width
@@ -97,21 +69,12 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_wi
 
     label $mytoplevel.para.knbstyle.dummy1 -text " " -width 1
 
-    frame $mytoplevel.para.knbstyle.wiper
-    label $mytoplevel.para.knbstyle.wiper.lab -text [_ "Wiper style: "]
-    button $mytoplevel.para.knbstyle.wiper.ent -text [_ [eval concat $$var_iemgui_wiper_style]] \
-        -command "::dialog_iemgui::knob_wpopup $mytoplevel"
-    pack $mytoplevel.para.knbstyle.wiper.ent $mytoplevel.para.knbstyle.wiper.lab -side right -anchor e
-
-    label $mytoplevel.para.knbstyle.dummy2 -text " " -width 1
-    
     frame $mytoplevel.para.knbstyle.arc
     label $mytoplevel.para.knbstyle.arc.lab -text [_ "Arc width: "]
     entry $mytoplevel.para.knbstyle.arc.ent -textvariable $var_iemgui_arc_width -width 5
     pack $mytoplevel.para.knbstyle.arc.ent $mytoplevel.para.knbstyle.arc.lab -side right -anchor e
 
     pack $mytoplevel.para.knbstyle.ticks $mytoplevel.para.knbstyle.dummy1 \
-        $mytoplevel.para.knbstyle.wiper $mytoplevel.para.knbstyle.dummy2 \
         $mytoplevel.para.knbstyle.arc -side left
 
 
@@ -163,8 +126,6 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
 
     set var_iemgui_ticks [concat iemgui_ticks_$vid]
     global $var_iemgui_ticks
-    set var_iemgui_wiper_style [concat iemgui_wiper_style_$vid]
-    global $var_iemgui_wiper_style
     set var_iemgui_arc_width [concat iemgui_arc_width_$vid]
     global $var_iemgui_arc_width
     set var_iemgui_start_angle [concat iemgui_start_angle_$vid]
@@ -208,8 +169,7 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
     }
 
     return [list [eval concat $$var_iemgui_ticks] \
-        [eval concat $$var_iemgui_wiper_style] [eval concat $$var_iemgui_arc_width] \
-        [eval concat $$var_iemgui_start_angle] [eval concat $$var_iemgui_end_angle] \
-        [eval concat $$var_iemgui_acol]]
+        [eval concat $$var_iemgui_acol] [eval concat $$var_iemgui_arc_width] \
+        [eval concat $$var_iemgui_start_angle] [eval concat $$var_iemgui_end_angle]]
 }
 

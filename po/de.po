@@ -556,9 +556,6 @@ msgstr "Beschriftungsfarbe"
 msgid "Ticks: "
 msgstr ""
 
-msgid "Wiper style: "
-msgstr ""
-
 #, fuzzy
 msgid "Arc width: "
 msgstr "Breite:"
