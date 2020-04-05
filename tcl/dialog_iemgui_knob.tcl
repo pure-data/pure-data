@@ -19,7 +19,7 @@ proc ::dialog_iemgui::toggle_knob_wpopup {mytoplevel gn_f} {
     $mytoplevel.para.knbstyle.wiper.ent configure -text [eval concat $$var_iemgui_wiper_style]
 }
 
-proc ::dialog_iemgui::create_knb_properties {mytoplevel ticks wiper_style arc_width start_angle end_angle} {
+proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_width start_angle end_angle} {
     #puts "start=$start_angle end=$end_angle wiper_style=$wiper_style arc_style=$arc_style"
     set vid [string trimleft $mytoplevel .]
 
@@ -93,7 +93,7 @@ proc ::dialog_iemgui::create_knb_properties {mytoplevel ticks wiper_style arc_wi
     pack $mytoplevel.para.knbangle.start $mytoplevel.para.knbangle.dummy1 $mytoplevel.para.knbangle.end -side left
 }
 
-proc ::dialog_iemgui::knb_apply {mytoplevel} {
+proc ::dialog_iemgui::apply_knb {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
     set var_iemgui_ticks [concat iemgui_ticks_$vid]

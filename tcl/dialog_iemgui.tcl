@@ -14,6 +14,22 @@ namespace eval ::dialog_iemgui:: {
 
 source [file join [file dirname [info script]] "dialog_iemgui_knob.tcl"]
 
+proc procExists p {
+    return uplevel 1 [expr {[llength [info procs $p]] > 0}]
+}
+
+proc ::dialog_iemgui::callGUIproc {mytoplevel p args} {
+    set vid [string trimleft $mytoplevel .]
+    set var_iemgui_guitype [concat iemgui_guitype_$vid]
+    global $var_iemgui_guitype
+
+    set gui_proc [concat $p[eval concat $$var_iemgui_guitype]]
+
+    if {[procExists $gui_proc]} {
+        return [$gui_proc $mytoplevel {*}$args]
+    }
+}
+
 # TODO convert Init/No Init and Steady on click/Jump on click to checkbuttons
 
 proc ::dialog_iemgui::clip_dim {mytoplevel} {
@@ -385,10 +401,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {[eval concat $$var_iemgui_gn_dx] eq ""} {set $var_iemgui_gn_dx 0}
     if {[eval concat $$var_iemgui_gn_dy] eq ""} {set $var_iemgui_gn_dy 0}
 
-    set additonal_output {}
-    if {[eval concat $$var_iemgui_guitype] == "|knb|"} {
-        set additonal_output [::dialog_iemgui::knb_apply $mytoplevel]
-    }
+    set additonal_output [::dialog_iemgui::callGUIproc $mytoplevel ::dialog_iemgui::apply_]
     
     pdsend [concat $mytoplevel dialog \
             [eval concat $$var_iemgui_wdt] \
@@ -439,7 +452,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
 
     set var_iemgui_guitype [concat iemgui_guitype_$vid]
     global $var_iemgui_guitype
-    set $var_iemgui_guitype $mainheader
+    set $var_iemgui_guitype "_unknown_"
 
 
     set var_iemgui_wdt [concat iemgui_wdt_$vid]
@@ -572,6 +585,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"] }
         "|knb|" {
+            set $var_iemgui_guitype "knb"
             set iemgui_type [_ "Knob"]
             set wdt_label [_ "Size:"]
             set hgt_label [_ "Sensitivity:"]
@@ -677,10 +691,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         pack $mytoplevel.para.std.num -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_steady] >= 0} {
         pack $mytoplevel.para.std.stdy_jmp -side left -expand 1 -ipadx 10}
-    
-    if {$mainheader == "|knb|"} {
-        ::dialog_iemgui::create_knb_properties $mytoplevel {*}$args
-    }
 
     # messages
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
@@ -881,6 +891,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.cao.ok config -highlightthickness 0
         $mytoplevel.cao.cancel config -highlightthickness 0
     }
+
+    ::dialog_iemgui::callGUIproc $mytoplevel ::dialog_iemgui::create_properties_ {*}$args
 
     position_over_window $mytoplevel $::focused_window
 }
