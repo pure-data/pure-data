@@ -86,7 +86,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         int xA0, yA0, xA1, yA1, arcwidth;
         float zero_angle, zero_val, aA_2;
          
-        arcwidth = x->x_arc_width * IEMGUI_ZOOM(x);
+        arcwidth = ((x->x_arc_width * IEMGUI_ZOOM(x))/2) * 2 + 1;
         if(arcwidth > ((x->x_gui.x_w - 1) / 2)) arcwidth = (x->x_gui.x_w - 1) / 2;
         if(arcwidth < -(x->x_gui.x_w / 2 + 1)) arcwidth = -(x->x_gui.x_w / 2 + 1);
 
