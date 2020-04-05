@@ -82,22 +82,6 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     angle0 = (x->x_start_angle / 90.0 - 1) * M_PI / 2.0;
     angle = angle0 + val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
 
-    #define NEAR(x) ((int)(x + 0.51))
-    if(x->x_wiper_visible) {
-        float xc = (x0 + x1) / 2.0;
-        float yc = (y0 + y1) / 2.0;
-        float radius = x->x_gui.x_w / 2.0;
-        float xp, yp, xpc, ypc;
-        float miniradius = 1.5;
-        xp = xc + radius * cos(angle);
-        yp = yc + radius * sin(angle);
-        xpc = miniradius * cos(angle-M_PI/2);
-        ypc = miniradius * sin(angle-M_PI/2);
-        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
-            NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
-            NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
-    }
-
     if(x->x_arc_visible) {
         int xA0, yA0, xA1, yA1, arcwidth;
         float zero_angle, zero_val, aA_2;
@@ -125,6 +109,22 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI,
             abs(arcwidth));
     }
+
+    #define NEAR(x) ((int)(x + 0.51))
+    if(x->x_wiper_visible) {
+        float xc = (x0 + x1) / 2.0;
+        float yc = (y0 + y1) / 2.0;
+        float radius = x->x_gui.x_w / 2.0;
+        float xp, yp, xpc, ypc;
+        float miniradius = 1.5;
+        xp = xc + radius * cos(angle);
+        yp = yc + radius * sin(angle);
+        xpc = miniradius * cos(angle-M_PI/2);
+        ypc = miniradius * sin(angle-M_PI/2);
+        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
+            NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
+            NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
+    }
 }
 
 static void knb_draw_update(t_knb *x, t_glist *glist)
@@ -150,16 +150,16 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     x->x_outline_visible = x->x_outlet_visible = x->x_inlet_visible = 0;
     knb_draw_io(x, glist, 0);
 
-    x->x_wiper_visible = (x->x_wiper_style != s_none);
-    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
-        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, 
-        x->x_wiper_visible ? "normal" : "hidden", x);
     x->x_arc_visible = (x->x_arc_width != 0);
     sys_vgui(".x%lx.c create arc %d %d %d %d -style arc -outline #%06x \
         -width %d -state %s -tags %lxARC\n",
         canvas, xpos + (x->x_arc_width / 2) + 1, ypos + (x->x_arc_width / 2) + 1, 
         xpos + x->x_gui.x_w - (x->x_arc_width / 2) - 1, ypos + x->x_gui.x_w - (x->x_arc_width / 2) - 1,
         x->x_acol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden", x);
+    x->x_wiper_visible = (x->x_wiper_style != s_none);
+    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
+        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, 
+        x->x_wiper_visible ? "normal" : "hidden", x);
 
     knb_update_knob(x,glist);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
@@ -231,12 +231,12 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
 
-    x->x_wiper_visible = (x->x_wiper_style != s_none);
-    sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas, 
-        x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
     x->x_arc_visible = (x->x_arc_width != 0);
     sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -width %d -state %s\n", canvas, 
         x, x->x_acol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden");
+    x->x_wiper_visible = (x->x_wiper_style != s_none);
+    sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas, 
+        x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
 
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
