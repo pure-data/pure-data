@@ -562,6 +562,10 @@ msgstr "Crea colore"
 msgid "Test label"
 msgstr "Test etichetta"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Colore etichetta"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -576,6 +580,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy

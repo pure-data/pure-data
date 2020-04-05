@@ -566,6 +566,10 @@ msgstr "Compor cor"
 msgid "Test label"
 msgstr "Rótulo teste"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Cor do rótulo"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -582,6 +586,9 @@ msgid "Start angle: "
 msgstr "Marcadores de inicialização:"
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 msgid "Send a Pd message"

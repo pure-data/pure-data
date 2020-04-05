@@ -534,6 +534,9 @@ msgstr ""
 msgid "Test label"
 msgstr ""
 
+msgid "Arc color"
+msgstr ""
+
 msgid "Ticks: "
 msgstr ""
 
@@ -547,6 +550,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 msgid "Send a Pd message"

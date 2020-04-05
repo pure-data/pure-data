@@ -7,13 +7,13 @@
 #X floatatom 217 165 5 0 0 0 - - -;
 #X floatatom 217 92 5 0 0 0 - - -;
 #X obj 126 89 knb 80 100 0 127 0 1 kii_snd kii_rcv empty -2 -6 0 8
--4160 -257985 -1 8300 0 0 line 5 -135 135;
+-4160 -257985 -1 6600 0 0 line 3 -135 135 #c7c6ff;
 #X obj 63 113 knb 30 100 0 127 0 0 empty empty empty -2 -6 0 8 -4160
--1 -1 0 0 0 line 0 -135 135;
+-1 -1 0 0 0 line 0 -135 135 #000000;
 #X obj 63 154 knb 20 100 127 0 0 0 empty empty empty -2 -6 0 8 -258113
--1 -1 0 0 0 line 0 -135 135;
+-1 -1 0 0 0 line 0 -135 135 #000000;
 #X obj 369 332 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
--1 -1 5000 0 0 line 0 -180 178;
+-1 -1 34619 1 0 line 4 -180 180 #fc2828;
 #X text 503 63 high sens;
 #X text 523 86 default;
 #X text 68 12 gui-round-knob:;
@@ -292,7 +292,7 @@ range., f 35;
 #X floatatom 456 275 5 0 0 1 arc_width - -;
 #X msg 456 298 arc \$1;
 #X obj 52 273 knb 50 100 -1 1 0 1 empty empty empty -2 -6 0 8 -258113
--1 -1 0 0 0 none 15 -135 135;
+-1 -1 2800 0 0 line 11 -135 135 #faff00;
 #X floatatom 52 325 5 0 0 0 - - -;
 #X text 11 241 when Lower and Upper settings are of opposite sign \,
 the arc turns to +/- mode:, f 37;
@@ -300,9 +300,9 @@ the arc turns to +/- mode:, f 37;
 is drawn. If both Send and Receive are defined \, the outline is hidden:
 , f 45;
 #X obj 44 401 knb 25 100 0 127 0 0 empty empty empty -2 -6 0 8 -262144
--1 -1 0 0 0 line 0 -135 135;
+-1 -1 0 0 0 line 0 -135 135 #000000;
 #X obj 79 401 knb 25 100 0 127 0 0 \$0-send_is_defined \$0-receive_is_defined
-empty -2 -6 0 8 -262144 -1 -1 0 0 0 line 0 -135 135;
+empty -2 -6 0 8 -262144 -1 -1 0 0 0 line 0 -135 135 #000000;
 #X connect 2 0 7 0;
 #X connect 3 0 7 0;
 #X connect 5 0 26 0;

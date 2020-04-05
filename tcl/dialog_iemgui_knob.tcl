@@ -2,6 +2,46 @@
 # WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 # Copyright (c) 1997-2009 Miller Puckette.
 
+proc ::dialog_iemgui::preset_col_knb {mytoplevel presetcol} {
+    set vid [string trimleft $mytoplevel .]
+    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
+    global $var_iemgui_l2_f1_b0
+    set var_iemgui_acol [concat iemgui_acol_$vid]
+    global $var_iemgui_acol
+
+    if { [eval concat $$var_iemgui_l2_f1_b0] == 3 } { set $var_iemgui_acol $presetcol }
+}
+
+proc ::dialog_iemgui::choose_col_knb {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
+    global $var_iemgui_l2_f1_b0
+    set var_iemgui_acol [concat iemgui_acol_$vid]
+    global $var_iemgui_acol
+
+    if {[eval concat $$var_iemgui_l2_f1_b0] == 3} {
+        set $var_iemgui_acol [eval concat $$var_iemgui_acol]
+        set helpstring [tk_chooseColor -title [_ "Arc color"] -initialcolor [eval concat $$var_iemgui_acol]]
+        if { $helpstring ne "" } {
+            set $var_iemgui_acol $helpstring }
+    }
+}
+
+proc ::dialog_iemgui::set_col_example_knb {mytoplevel} {
+    set vid [string trimleft $mytoplevel .]
+
+    set var_iemgui_bcol [concat iemgui_bcol_$vid]
+    global $var_iemgui_bcol
+    set var_iemgui_acol [concat iemgui_acol_$vid]
+    global $var_iemgui_acol
+
+    $mytoplevel.colors.sections.exp.arc_bk configure \
+        -background [eval concat $$var_iemgui_bcol] \
+        -activebackground [eval concat $$var_iemgui_bcol] \
+        -foreground [eval concat $$var_iemgui_acol] \
+        -activeforeground [eval concat $$var_iemgui_acol]
+}
+
 proc ::dialog_iemgui::knob_wpopup {mytoplevel} {
     $mytoplevel.wiperpopup unpost
     set button $mytoplevel.para.knbstyle.wiper.ent
@@ -19,8 +59,8 @@ proc ::dialog_iemgui::toggle_knob_wpopup {mytoplevel gn_f} {
     $mytoplevel.para.knbstyle.wiper.ent configure -text [eval concat $$var_iemgui_wiper_style]
 }
 
-proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_width start_angle end_angle} {
-    #puts "start=$start_angle end=$end_angle wiper_style=$wiper_style arc_style=$arc_style"
+proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_width \
+        start_angle end_angle arc_color} {
     set vid [string trimleft $mytoplevel .]
 
     menu $mytoplevel.wiperpopup
@@ -91,6 +131,31 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks wiper_style arc_wi
     pack $mytoplevel.para.knbangle.end.ent $mytoplevel.para.knbangle.end.lab -side right -anchor e
 
     pack $mytoplevel.para.knbangle.start $mytoplevel.para.knbangle.dummy1 $mytoplevel.para.knbangle.end -side left
+
+    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
+    global $var_iemgui_l2_f1_b0
+    radiobutton $mytoplevel.colors.select.radio3 -value 3 -variable \
+        $var_iemgui_l2_f1_b0 -text [_ "Arc"] -justify left
+    pack $mytoplevel.colors.select.radio3 $mytoplevel.colors.select.radio2 -side left
+    
+    set var_iemgui_bcol [concat iemgui_bcol_$vid]
+    global $var_iemgui_bcol
+    set var_iemgui_fcol [concat iemgui_fcol_$vid]
+    global $var_iemgui_fcol
+    set var_iemgui_lcol [concat iemgui_lcol_$vid]
+    global $var_iemgui_lcol
+    set var_iemgui_acol [concat iemgui_acol_$vid]
+    global $var_iemgui_acol
+    set $var_iemgui_acol $arc_color
+    $mytoplevel.colors.sections.exp.lb_bk configure -text [_ "Label"]
+    label $mytoplevel.colors.sections.exp.arc_bk -text [_ "Arc"] \
+        -background [eval concat $$var_iemgui_bcol] \
+        -activebackground [eval concat $$var_iemgui_bcol] \
+        -foreground [eval concat $$var_iemgui_lcol] \
+        -activeforeground [eval concat $$var_iemgui_lcol] \
+        -font [list $::font_family 14 $::font_weight] -padx 2 -pady 2 -relief ridge
+    pack $mytoplevel.colors.sections.exp.arc_bk \
+        -side right -anchor e -expand yes -fill both -pady 7
 }
 
 proc ::dialog_iemgui::apply_knb {mytoplevel} {
@@ -108,6 +173,8 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
     global $var_iemgui_end_angle
     set var_iemgui_wdt [concat iemgui_wdt_$vid]
     global $var_iemgui_wdt
+    set var_iemgui_acol [concat iemgui_acol_$vid]
+    global $var_iemgui_acol
 
     if {[eval concat $$var_iemgui_end_angle] < -360 } { set $var_iemgui_end_angle -360 }
     if {[eval concat $$var_iemgui_end_angle] > 360 } { set $var_iemgui_end_angle 360 }
@@ -142,6 +209,7 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
 
     return [list [eval concat $$var_iemgui_ticks] \
         [eval concat $$var_iemgui_wiper_style] [eval concat $$var_iemgui_arc_width] \
-        [eval concat $$var_iemgui_start_angle] [eval concat $$var_iemgui_end_angle]]
+        [eval concat $$var_iemgui_start_angle] [eval concat $$var_iemgui_end_angle] \
+        [eval concat $$var_iemgui_acol]]
 }
 

@@ -179,6 +179,8 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
             -foreground [eval concat $$var_iemgui_bcol] \
             -activeforeground [eval concat $$var_iemgui_bcol]}
 
+    ::dialog_iemgui::callGUIproc $mytoplevel ::dialog_iemgui::set_col_example_
+
     # for OSX live updates
     if {$::windowingsystem eq "aqua"} {
         ::dialog_iemgui::apply_and_rebind_return $mytoplevel
@@ -200,6 +202,8 @@ proc ::dialog_iemgui::preset_col {mytoplevel presetcol} {
     if { [eval concat $$var_iemgui_l2_f1_b0] == 0 } { set $var_iemgui_bcol $presetcol }
     if { [eval concat $$var_iemgui_l2_f1_b0] == 1 } { set $var_iemgui_fcol $presetcol }
     if { [eval concat $$var_iemgui_l2_f1_b0] == 2 } { set $var_iemgui_lcol $presetcol }
+
+    ::dialog_iemgui::callGUIproc $mytoplevel ::dialog_iemgui::preset_col_ $presetcol
     ::dialog_iemgui::set_col_example $mytoplevel
 }
 
@@ -232,6 +236,7 @@ proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
         if { $helpstring ne "" } {
             set $var_iemgui_lcol $helpstring }
     }
+    ::dialog_iemgui::callGUIproc $mytoplevel ::dialog_iemgui::choose_col_
     ::dialog_iemgui::set_col_example $mytoplevel
 }
 

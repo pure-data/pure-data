@@ -557,6 +557,10 @@ msgstr "Criar uma cor"
 msgid "Test label"
 msgstr "teste"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Cor da legenda"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -571,6 +575,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy

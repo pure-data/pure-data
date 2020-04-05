@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.50.2\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2020-04-02 18:06+0200\n"
+"PO-Revision-Date: 2020-04-05 23:51+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
 "Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
@@ -537,6 +537,9 @@ msgstr "Créer la couleur"
 msgid "Test label"
 msgstr "Label de test"
 
+msgid "Arc color"
+msgstr "Couleur de l'arc"
+
 msgid "Ticks: "
 msgstr "Graduations : "
 
@@ -551,6 +554,9 @@ msgstr "Angle début : "
 
 msgid "End angle: "
 msgstr "Angle fin : "
+
+msgid "Arc"
+msgstr "Arc"
 
 msgid "Send a Pd message"
 msgstr "Envoyer un message à Pd"

@@ -537,6 +537,10 @@ msgstr "Componer color"
 msgid "Test label"
 msgstr "Etiqueta prueba"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Color de Etiqueta"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -552,6 +556,9 @@ msgid "Start angle: "
 msgstr "Banderas de Inicio:"
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 msgid "Send a Pd message"

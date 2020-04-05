@@ -585,6 +585,10 @@ msgstr ""
 msgid "Test label"
 msgstr "Toets almal"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Die kleure aandui:"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -598,6 +602,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy

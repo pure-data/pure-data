@@ -584,6 +584,10 @@ msgstr "Kolorea osatu"
 msgid "Test label"
 msgstr "Probaren etiketa"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Etiketaren kolorea"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -598,6 +602,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy

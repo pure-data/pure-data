@@ -549,6 +549,10 @@ msgstr "Farbe einstellen"
 msgid "Test label"
 msgstr "Test Beschriftung"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Beschriftungsfarbe"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -564,6 +568,9 @@ msgid "Start angle: "
 msgstr "Kommandozeilenoptionen:"
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 msgid "Send a Pd message"

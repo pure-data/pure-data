@@ -583,6 +583,10 @@ msgstr ""
 msgid "Test label"
 msgstr "બધું ચકાસો"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "રંગ પસંદ કરો"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -596,6 +600,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy

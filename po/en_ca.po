@@ -534,6 +534,10 @@ msgstr "Compose colour"
 msgid "Test label"
 msgstr ""
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Label colour"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -547,6 +551,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 msgid "Send a Pd message"

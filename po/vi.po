@@ -581,6 +581,10 @@ msgstr ""
 msgid "Test label"
 msgstr "Kiểm tra tất cả"
 
+#, fuzzy
+msgid "Arc color"
+msgstr "Chọn màu"
+
 msgid "Ticks: "
 msgstr ""
 
@@ -594,6 +598,9 @@ msgid "Start angle: "
 msgstr ""
 
 msgid "End angle: "
+msgstr ""
+
+msgid "Arc"
 msgstr ""
 
 #, fuzzy
