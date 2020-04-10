@@ -40,6 +40,7 @@ typedef int socklen_t;
 #include "ext_proto.h"
 #include "ext_obex.h"
 
+typedef float t_float;
 typedef double t_floatarg;
 #define w_symbol w_sym
 #define A_SYMBOL A_SYM
@@ -292,13 +293,13 @@ gotone:
     /* but in the argument vector paths must be quoted if they contain whitespace */
     if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
     {
-        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf);
-        strcpy(pdexecbuf, tmpbuf);
+        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
+            strcpy(pdexecbuf, tmpbuf);
     }
     if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
     {
-        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf);
-        strcpy(schedbuf, tmpbuf);
+        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
+            strcpy(schedbuf, tmpbuf);
     }
     if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
         snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
@@ -415,12 +416,8 @@ gotone:
         execv(cmdbuf, execargv);
         _exit(1);
     }
-    do {
-      unsigned int i;
-      for(i=FIXEDARG; execargv[i]; i++) {
+    for (i=FIXEDARG; execargv[i]; i++)
         free(execargv[i]);
-      }
-    } while(0);
 
 #endif /* _WIN32 */
         /* done with fork/exec or spawn; parent continues here */

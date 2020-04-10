@@ -81,24 +81,18 @@ script settings on the commandline:
     # build Pd using a system installed PortAudio
     ./configure --without-local-portaudio
 
-An important configure option is --enable-universal which allows you to specify
-the desired architecture(s) when building Pd. For Intel/AMD processors, 32 bit
-is called "i386" and 64 bit is "x86_64". By default, Pd is built for the
-architecture of the current system, however you may want a 32 bit Pd to work
-with existing 32 bit externals on a 64 bit system. You can override the defaults
-with --enable-universal:
+An important configure option for some platforms is --enable-universal which
+allows you to specify the desired architecture(s) when building Pd. For Intel
+and AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". By default,
+Pd is built for the architecture of the current system, however you may want a
+32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can
+override the defaults with --enable-universal:
 
     # build 32 bit Pd
     ./configure --enable-universal=i386
 
     # build 64 bit Pd
     ./configure --with-universal=x86_64
-
-    # build a "fat" Pd for both 32 and 64 bit (not useful on all platforms)
-    ./configure --enable-universal=i386,x86_64
-
-    # build a "fat" Pd for all detected architectures (macOS: i386, x86_64, ppc)
-    ./configure --enable-universal
 
 The full list of available configuration options can printed by running:
 
@@ -203,12 +197,30 @@ need. For example, to install the autotools & gettext using Homebrew:
     brew link --force gettext
 
 By default, Pd is built for the current system architecture, usually 64 bit. If
+you want to override this you can use the --enable-universal configure option
+which allows you to specify the desired architecture(s) when building Pd. For
+Intel/AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". By
+default, Pd is built for the architecture of the current system, however you may
+want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You
+can override the defaults with --enable-universal:
 you want to override this you can use the --enable-universal configure option,
 as mentioned in the main Autotools Build section. On macOS, running this option
-without arguments will build Pd for all architectures supported by the compiler:
+without arguments will build a "fat" Pd for all architectures supported by the
+compiler:
 
-* 10.6: i386, x86_64, ppc
-* 10.7+: i386, x86_64
+* macOS 10.6: i386, x86_64, ppc
+* macOS 10.7+: i386, x86_64
+
+Note: a "fat" Pd may not work on all systems and/or be able to load both 32 or
+64 bit externals. Additonally, you can specify multiple architectures directly:
+
+    # build a "fat" Pd for both 32 and 64 bit
+    # may not work on all systems
+    ./configure --enable-universal=i386,x86_64
+
+    # build a "fat" Pd for all detected architectures (macOS: i386, x86_64, ppc)
+    # may not work on all systems
+    ./configure --enable-universal
 
 The JACK audio server is supported by Pd on macOS. By default, Pd can use the
 Jack OS X runtime framework from http://www.jackosx.com if it is installed on
@@ -216,7 +228,7 @@ the system. Optionally, Pd can also be built with Jack installed via Homebrew or
 Macports, however the runtime framework support must be disabled:
 
     brew install jack
-    ./configure --without-jack-framework
+    ./configure --disable-jack-framework
 
 You should now be ready to build Pd. Once built, there are two options for
 installation:
@@ -228,9 +240,9 @@ To build the Pd macOS application, simply run:
 
     make app
 
-This builds Pd-#.#.#.app in the Pd source directory which can be then be
-double-clicked and/or copied to /Applications. For more info &
-options regarding the Pd .app bundle, see mac/README.txt
+This builds Pd-#.##.#.app in the Pd source directory which can be then be
+double-clicked and/or copied to /Applications. For more info & options regarding
+the Pd .app bundle, see mac/README.txt
 
 If you want to have both the Pd application *and* use Pd from the commandline,
 add command aliases to the binaries inside the .app to your ~/.bash_profile:
@@ -245,9 +257,9 @@ Next, reload the profile by either opening a new Terminal window or running:
 
     source ~/.bash_profile
 
-If you install Pd to your system with "make install", the Tk 8.5.9
-currently included with the system is buggy and should *not* be used. It is
-recommended to install a newer version, either via Homebrew or from the
+If you install Pd to your system with "make install", the Tk 8.5.9 currently
+included with the system (as of macOS 10.14) is buggy and should *not* be used.
+It is recommended to install a newer version, either via Homebrew or from the
 ActiveState Tcl/Tk downloads.
 
 To see which version the Pd GUI is using: set the log level to 3 & look for the

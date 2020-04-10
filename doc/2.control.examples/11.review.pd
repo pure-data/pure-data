@@ -1,42 +1,43 @@
-#N canvas 255 248 675 539 12;
-#X text 406 511 updated for Pd version 0.34;
-#X obj 39 232 receive;
-#X obj 39 203 send;
-#X obj 39 289 pack;
-#X obj 111 233 r;
-#X obj 82 203 s;
-#X obj 40 348 timer;
-#X obj 40 60 float;
-#X obj 39 175 select;
-#X obj 40 89 +;
-#X obj 40 117 >=;
-#X obj 39 146 print;
-#X obj 39 260 trigger;
-#X obj 95 61 f;
-#X obj 100 176 sel;
-#X obj 111 259 t;
-#X obj 39 318 unpack;
-#X obj 40 435 pipe;
-#X obj 40 377 delay;
-#X obj 40 406 metro;
-#X text 20 8 So far we've seen the following objects \, some of which
-have abbreviations. Right click on any one to get reference documentation:
-;
-#X text 150 205 wireless message send;
-#X text 151 229 wireless message receive;
-#X text 145 175 test for two equal numbers;
-#X text 151 258 control message order and format;
-#X text 148 293 combine atoms (e.g. \, numbers) into a list;
-#X text 146 319 take a list apart into atoms;
-#X text 146 146 printout;
-#X text 147 90 arithmetic;
-#X text 75 89 (etc.);
-#X text 74 117 (etc.);
-#X text 145 117 comparison;
-#X text 145 60 store a number;
-#X text 145 348 measure elapsed time;
-#X text 145 379 pass a message after delay;
-#X text 145 437 multiple delay;
-#X text 143 409 repeated message;
-#X text 38 473 There are many others... you can see a complete list
-in INTRO.txt in the reference patches (../5.reference).;
+#N canvas 470 105 528 594 12;
+#X text 271 546 updated for Pd version 0.34;
+#X obj 71 245 receive;
+#X obj 71 216 send;
+#X obj 71 302 pack;
+#X obj 143 246 r;
+#X obj 114 216 s;
+#X obj 72 361 timer;
+#X obj 72 73 float;
+#X obj 71 188 select;
+#X obj 72 102 +;
+#X obj 72 130 >=;
+#X obj 71 159 print;
+#X obj 71 273 trigger;
+#X obj 127 74 f;
+#X obj 132 189 sel;
+#X obj 143 272 t;
+#X obj 71 331 unpack;
+#X obj 72 448 pipe;
+#X obj 72 390 delay;
+#X obj 72 419 metro;
+#X text 182 218 wireless message send;
+#X text 183 242 wireless message receive;
+#X text 177 188 test for two equal numbers;
+#X text 183 271 control message order and format;
+#X text 180 306 combine atoms (e.g. \, numbers) into a list;
+#X text 178 332 take a list apart into atoms;
+#X text 178 159 printout;
+#X text 179 103 arithmetic;
+#X text 107 102 (etc.);
+#X text 106 130 (etc.);
+#X text 177 130 comparison;
+#X text 177 73 store a number;
+#X text 177 361 measure elapsed time;
+#X text 177 392 pass a message after delay;
+#X text 177 450 multiple delay;
+#X text 175 422 repeated message;
+#X text 31 11 So far we've seen the following objects \, some of which
+have abbreviations. Right click on any one to get the reference documentation
+by selecting "Help":;
+#X text 63 493 There are many others... you can see a complete list
+by right clicking into an empty spot of your patch window and selecting
+"Help".;

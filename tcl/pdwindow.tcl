@@ -60,6 +60,7 @@ proc ::pdwindow::buffer_message {object_id level message} {
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
+    set message [subst -nocommands -novariables $message]
     if {$object_id eq ""} {
         .pdwindow.text.internal insert end $message log$level
     } else {
@@ -88,7 +89,7 @@ proc ::pdwindow::filter_buffer_to_text {args} {
         incr i
     }
     .pdwindow.text.internal yview end
-    ::pdwindow::verbose 10 "The Pd window filtered $i lines\n"
+    ::pdwindow::verbose 10 "the Pd window filtered $i lines\n"
 }
 
 proc ::pdwindow::select_by_id {args} {
@@ -160,7 +161,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
     foreach {object_id level message} $logbuffer {
-        puts $f [string trimright $message]
+        puts -nonewline $f $message
     }
     ::pdwindow::post "saved console to: $filename\n"
     close $f

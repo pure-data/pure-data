@@ -257,7 +257,7 @@ typedef struct _vline
 static t_int *vline_tilde_perform(t_int *w)
 {
     t_vline *x = (t_vline *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]), i;
     double f = x->x_value;
     double inc = x->x_inc;
@@ -690,7 +690,7 @@ static void env_tilde_ff(t_sigenv *x)           /* cleanup on free */
 }
 
 
-void env_tilde_setup(void )
+void env_tilde_setup(void)
 {
     env_tilde_class = class_new(gensym("env~"), (t_newmethod)env_tilde_new,
         (t_method)env_tilde_ff, sizeof(t_sigenv), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
@@ -819,7 +819,7 @@ static void threshold_tilde_ff(t_threshold_tilde *x)
     clock_free(x->x_clock);
 }
 
-static void threshold_tilde_setup( void)
+static void threshold_tilde_setup(void)
 {
     threshold_tilde_class = class_new(gensym("threshold~"),
         (t_newmethod)threshold_tilde_new, (t_method)threshold_tilde_ff,

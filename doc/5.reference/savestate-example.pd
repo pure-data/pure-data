@@ -15,7 +15,7 @@
 #X obj 103 207 / 1;
 #X text 63 19 this pulse generator is used by the savestate help file.
 ;
-#X text 31 386 This is a waveshaping pulse generator using a Gaussian
+#X text 80 388 This is a waveshaping pulse generator using a Gaussian
 table lookup \, as described in Theory and Technique of electronic
 music \, chapter 6 The controls are "F" to set fundamental frequency
 \, and "BW" to set bandwidth \, both in cycles per second.;

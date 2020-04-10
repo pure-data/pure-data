@@ -1,16 +1,16 @@
 #N struct template8 float x float y float w float h float q;
-#N canvas 628 474 586 452 12;
-#X floatatom 53 347 0 0 0 0 - - -;
-#X floatatom 53 299 0 0 0 0 - - -;
-#X floatatom 53 251 0 0 0 0 - - -;
-#X floatatom 53 203 0 0 0 0 - - -;
-#X floatatom 342 283 0 0 0 0 - - -;
-#X floatatom 301 283 0 0 0 0 - - -;
-#X floatatom 258 283 0 0 0 0 - - -;
-#X floatatom 215 283 0 0 0 0 - - -;
-#X floatatom 374 283 0 0 0 0 - - -;
-#X floatatom 53 394 0 0 0 0 - - -;
-#N canvas 17 52 388 446 data8 1;
+#N canvas 330 164 520 488 12;
+#X floatatom 91 364 0 0 0 0 - - -;
+#X floatatom 91 316 0 0 0 0 - - -;
+#X floatatom 91 268 0 0 0 0 - - -;
+#X floatatom 91 220 0 0 0 0 - - -;
+#X floatatom 371 304 0 0 0 0 - - -;
+#X floatatom 332 304 0 0 0 0 - - -;
+#X floatatom 292 304 0 0 0 0 - - -;
+#X floatatom 253 304 0 0 0 0 - - -;
+#X floatatom 411 304 0 0 0 0 - - -;
+#X floatatom 91 411 0 0 0 0 - - -;
+#N canvas 926 152 388 446 data8 1;
 #X scalar template8 29 182 0 16 917 \;;
 #X scalar template8 290 272 0 32 66 \;;
 #X scalar template8 186 29 46 71 78 \;;
@@ -31,38 +31,39 @@
 #X scalar template8 217 249 24 73 214 \;;
 #X scalar template8 214 312 50 78 652 \;;
 #X scalar template8 288 91 72 19 325 \;;
-#X restore 410 359 pd data8;
-#N canvas 280 471 688 314 template8 0;
-#X obj 25 177 filledpolygon q 0 1 0 0 w 0 w h 0 h;
-#X obj 26 200 drawnumber q 0 0 0;
-#X obj 24 19 struct template8 float x float y float w float h float
+#X restore 404 365 pd data8;
+#N canvas 280 471 467 248 template8 0;
+#X obj 75 160 filledpolygon q 0 1 0 0 w 0 w h 0 h;
+#X obj 76 187 drawnumber q 0 0 0;
+#X obj 32 19 struct template8 float x float y float w float h float
 q;
-#X obj 24 74 route select;
-#X obj 24 103 outlet;
-#X obj 32 46 print struct-template8;
-#X text 151 72 "struct" outputs messages notifying you when objects
+#X obj 32 74 route select;
+#X obj 32 103 outlet;
+#X obj 40 46 print struct-template8;
+#X text 136 78 "struct" outputs messages notifying you when objects
 of this structure are selected or deselected. Here we only catch selection.
-;
+, f 44;
 #X connect 2 0 3 0;
 #X connect 2 0 5 0;
 #X connect 3 0 4 0;
-#X restore 215 208 pd template8;
-#X text 46 5 This patch demonstrates catching the selection so you
+#X restore 253 225 pd template8;
+#X text 46 15 This patch demonstrates catching the selection so you
 can make control panels to edit parameters. The "struct" object outputs
-a pointer to any selected object of type struct8.;
-#X obj 53 227 set template8 x;
-#X obj 53 275 set template8 y;
-#X obj 53 323 set template8 w;
-#X obj 53 370 set template8 h;
-#X obj 53 417 set template8 q;
-#X obj 215 259 get template8 x y w h q;
+a pointer to any selected object of type struct8., f 62;
+#X obj 91 244 set template8 x;
+#X obj 91 292 set template8 y;
+#X obj 91 340 set template8 w;
+#X obj 91 387 set template8 h;
+#X obj 91 434 set template8 q;
+#X obj 253 276 get template8 x y w h q;
 #X text 46 68 To try it \, unlock the subpatch (data8) and select something.
 The 5 parameters should show up under the "get" object in this window
-\, and you should be able to change them with the "set" object.;
-#X text 332 405 updated for Pd version 0.39;
+\, and you should be able to change them with the "set" object., f
+62;
+#X text 292 423 updated for Pd version 0.39;
 #X text 47 136 The blue "selection" rectangle ought to notice when
 the object that got selected gets moved or resized \, but this isn't
-done yet (as of Pd version 0.39).;
+done yet (as of Pd version 0.39)., f 62;
 #X connect 0 0 16 0;
 #X connect 1 0 15 0;
 #X connect 2 0 14 0;

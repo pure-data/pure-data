@@ -1,30 +1,28 @@
-#N canvas 262 0 692 819 12;
-#X obj 38 593 cos~;
-#X obj 38 570 *~;
-#X obj 81 593 cos~;
-#X obj 137 527 wrap~;
-#X obj 101 527 -~;
-#X obj 81 570 +~;
-#X obj 74 623 -~;
-#X obj 94 655 *~;
-#X obj 56 655 +~;
-#X obj 100 500 samphold~;
-#X floatatom 159 378 4 0 500 0 - - -;
-#X obj 159 401 / 10;
-#X text 157 311 center;
-#X obj 159 449 line~;
-#X text 157 359 fundamental);
-#X obj 159 426 pack 0 50;
-#X obj 39 446 phasor~;
-#X floatatom 39 425 4 0 0 0 - - -;
-#X text 19 398 fundamental;
-#X text 303 460 index;
-#X text 303 477 (percent);
-#X floatatom 303 498 4 0 500 0 - - -;
-#X obj 303 544 line~;
-#X obj 224 564 *~;
-#X obj 303 521 pack 0 50;
-#N canvas 0 0 450 300 graph4 0;
+#N canvas 493 23 690 811 12;
+#X obj 45 501 cos~;
+#X obj 45 448 *~;
+#X obj 88 511 cos~;
+#X obj 141 450 wrap~;
+#X obj 105 453 -~;
+#X obj 88 488 +~;
+#X obj 88 549 -~;
+#X obj 123 585 *~;
+#X obj 105 615 +~;
+#X obj 105 423 samphold~;
+#X floatatom 143 286 4 0 500 0 - - -;
+#X obj 143 309 / 10;
+#X obj 143 357 line~;
+#X obj 143 334 pack 0 50;
+#X obj 45 354 phasor~;
+#X floatatom 45 333 4 0 0 0 - - -;
+#X text 28 311 fundamental;
+#X text 264 386 index;
+#X text 264 403 (percent);
+#X floatatom 267 426 4 0 500 0 - - -;
+#X obj 267 472 line~;
+#X obj 201 472 *~;
+#X obj 267 449 pack 0 50;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array bell-curve 200 float 1;
 #A 0 1.12535e-07 1.54727e-07 2.12059e-07 2.89706e-07 3.94519e-07 5.35535e-07
 7.24633e-07 9.77371e-07 1.31404e-06 1.76105e-06 2.35258e-06 3.13275e-06
@@ -56,19 +54,19 @@
 3.13275e-06 2.35258e-06 1.76105e-06 1.31404e-06 9.77371e-07 7.24633e-07
 5.35535e-07 3.94519e-07 2.89706e-07 2.12059e-07 1.54727e-07;
 #X coords 0 1 199 0 200 140 1;
-#X restore 443 555 graph;
-#N canvas 94 264 600 388 make-table 0;
-#X msg 81 44 bang;
-#X obj 81 73 t b b;
-#X obj 159 142 f;
-#X obj 197 142 + 1;
-#X msg 175 112 0;
-#X obj 81 102 until;
-#X obj 161 177 t f f;
-#X obj 76 306 tabwrite bell-curve;
-#X obj 52 270 expr exp(-$f1*$f1);
-#X obj 63 168 sel 199;
-#X obj 51 241 expr ($f1-100)/25;
+#X restore 423 545 graph;
+#N canvas 94 264 319 348 make-table 0;
+#X msg 75 31 bang;
+#X obj 75 60 t b b;
+#X obj 168 149 f;
+#X obj 206 149 + 1;
+#X msg 186 119 0;
+#X obj 75 99 until;
+#X obj 168 184 t f f;
+#X obj 70 283 tabwrite bell-curve;
+#X obj 68 251 expr exp(-$f1*$f1);
+#X obj 82 139 sel 199;
+#X obj 68 222 expr ($f1-100)/25;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
@@ -83,61 +81,84 @@
 #X connect 8 0 7 0;
 #X connect 9 0 5 1;
 #X connect 10 0 8 0;
-#X restore 507 515 pd make-table;
-#X obj 224 541 cos~;
-#X obj 224 518 -~ 0.25;
-#X obj 224 587 +~ 100;
-#X obj 224 610 tabread4~ bell-curve;
-#X obj 95 684 *~;
-#X text 131 682 <--ring mod step;
-#X text 256 635 waveshaper;
-#X text 425 791 updated for Pd version 0.37;
-#X text 157 326 frequency;
-#X text 157 342 (tenths of;
-#X text 441 698 0;
-#X text 632 697 200;
-#N canvas 0 0 450 300 graph1 0;
+#X restore 490 481 pd make-table;
+#X obj 201 449 cos~;
+#X obj 201 426 -~ 0.25;
+#X obj 201 495 +~ 100;
+#X obj 201 518 tabread4~ bell-curve;
+#X obj 105 654 *~;
+#X text 233 543 waveshaper;
+#X text 448 749 updated for Pd version 0.37;
+#X text 421 688 0;
+#X text 612 687 200;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array F12-spectrum 259 float 0;
 #X coords 0 0.51 258 -0.008 256 130 1;
-#X restore 421 308 graph;
-#X text 418 440 0;
-#X text 475 444 -- frequency --;
-#X text 644 441 2700;
-#X obj 95 756 output~;
-#X obj 94 725 hip~;
-#N canvas 122 211 558 609 fft 0;
-#X obj 23 55 inlet~;
-#X obj 210 303 inlet;
-#X obj 27 215 rfft~;
-#X obj 27 248 *~;
-#X obj 58 248 *~;
-#X obj 27 278 sqrt~;
-#X obj 334 200 block~ 4096 1;
-#X obj 27 304 biquad~ 0 0 0 0 1;
-#X text 91 216 Fourier series;
-#X text 96 269 magnitude;
-#X text 94 254 calculate;
-#X text 21 3 This subpatch computes the spectrum of the incoming signal
+#X restore 393 300 graph;
+#X text 390 432 0;
+#X text 447 436 -- frequency --;
+#X text 616 433 2700;
+#X obj 82 735 output~;
+#X obj 105 698 hip~;
+#X obj 182 638 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 202 663 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X text 34 42 Instead of using the two cosines as FM carrier oscillators
+\, we can use them as ring modulators for a natural or synthetic tone.
+Here we use waveshaping - to wit \, a sinusoid looking up a Gaussian
+bell curve. This has the nice properties that the partials are always
+positive cosines in phase \, and the spectrum spreads out smoothly
+as the index changes., f 78;
+#X text 63 12 PAF: TWO-COSINE RING MODULATOR FOR WAVESHAPER;
+#X text 34 214 Then with ~* we do the ring modulation and we're done.
+This is the PAF (phase-aligned formant) synthesis algorithm (patented
+1993 by IRCAM)., f 70;
+#X obj 201 400 *~ 0.5;
+#X text 34 120 For phase coherency \, the waveshaper and the cosine
+pair are driven from the same phasor~ object. Since the waveshaping
+is done using a symmetric curve \, its output is at double the frequency
+of the input. So for each cycle of the phasor we compute a half-cycle
+of the sine function (by multiplying by 0.5 and subtracting 0.25 before
+the cosine lookup). We center the cosine output for lookup in a 200-point
+table containing a bell curve., f 78;
+#X text 181 287 center frequency (tenths of fundamental), f 23;
+#X text 46 639 ring mod step =>, f 10;
+#X text 203 637 <= graph once;
+#X text 223 664 <= repeatedly;
+#N canvas 828 136 534 605 fft 0;
+#X obj 95 134 inlet~;
+#X obj 209 404 inlet;
+#X obj 95 266 rfft~;
+#X obj 95 299 *~;
+#X obj 127 299 *~;
+#X obj 127 330 sqrt~;
+#X obj 337 244 block~ 4096 1;
+#X obj 127 356 biquad~ 0 0 0 0 1;
+#X text 159 267 Fourier series;
+#X text 173 318 magnitude;
+#X text 173 303 calculate;
+#X text 52 23 This subpatch computes the spectrum of the incoming signal
 with a (rectangular windowed) FFT. FFTs aren't properly introduced
 until much later.;
-#X text 83 61 signal to analyze;
-#X text 195 255 delay two samples;
-#X text 193 273 for better graphing;
-#X obj 292 79 samplerate~;
-#X obj 240 352 metro 500;
-#X obj 240 329 inlet;
-#X text 293 327 toggle to graph repeatedly;
-#X text 264 303 bang to graph once;
-#X obj 27 328 /~ 4096;
-#X obj 292 54 bang~;
-#X msg 211 413 \; pd dsp 1;
-#X obj 292 102 / 4096;
-#X obj 58 135 osc~;
-#X obj 58 163 +~ 1;
-#X obj 28 188 *~;
-#X text 113 138 hanning window;
-#X obj 254 79 0.5;
-#X obj 240 390 tabwrite~ F12-spectrum;
+#X text 88 99 signal to analyze, f 9;
+#X text 256 351 delay two samples;
+#X text 254 369 for better graphing;
+#X obj 202 129 samplerate~;
+#X obj 236 463 metro 500;
+#X obj 236 440 inlet;
+#X text 284 438 toggle to graph repeatedly;
+#X text 253 405 bang to graph once;
+#X obj 127 380 /~ 4096;
+#X obj 202 104 bang~;
+#X msg 210 534 \; pd dsp 1;
+#X obj 202 152 / 4096;
+#X obj 113 184 osc~;
+#X obj 113 212 +~ 1;
+#X obj 95 237 *~;
+#X text 157 197 hanning window;
+#X obj 164 142 0.5;
+#X obj 236 501 tabwrite~ F12-spectrum;
 #X connect 0 0 26 0;
 #X connect 1 0 22 0;
 #X connect 1 0 29 0;
@@ -161,31 +182,7 @@ until much later.;
 #X connect 25 0 26 1;
 #X connect 26 0 2 0;
 #X connect 28 0 24 1;
-#X restore 148 725 pd fft;
-#X obj 208 704 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 208 725 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
-#X text 229 724 <-- repeatedly;
-#X text 230 704 <-- graph once;
-#X text 17 21 Instead of using the two cosines as FM carrier oscillators
-\, we can use them as ring modulators for a natural or synthetic tone.
-Here we use waveshaping - to wit \, a sinusoid looking up a Gaussian
-bell curve. This has the nice properties that the partials are always
-positive cosines in phase \, and the spectrum spreads out smoothly
-as the index changes.;
-#X text 98 1 PAF: TWO-COSINE RING MODULATOR FOR WAVESHAPER;
-#X text 17 253 Then with ~* we do the ring modulation and we're done.
-This is the PAF (phase-aligned formant) synthesis algorithm (patented
-1993 by IRCAM).;
-#X obj 224 492 *~ 0.5;
-#X text 17 129 For phase coherency \, the waveshaper and the cosine
-pair are driven from the same phasor~ object. Since the waveshaping
-is done using a symmetric curve \, its output is at double the frequency
-of the input. So for each cycle of the phasor we compute a half-cycle
-of the sine function (by multiplying by 0.5 and subtracting 0.25 before
-the cosine lookup). We center the cosine output for lookup in a 200-point
-table containing a bell curve.;
+#X restore 163 689 pd fft;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;
@@ -197,30 +194,30 @@ table containing a bell curve.;
 #X connect 5 0 2 0;
 #X connect 6 0 7 0;
 #X connect 7 0 8 1;
-#X connect 8 0 31 0;
+#X connect 8 0 29 0;
 #X connect 9 0 4 0;
 #X connect 9 0 3 0;
 #X connect 10 0 11 0;
-#X connect 11 0 15 0;
-#X connect 13 0 9 0;
-#X connect 15 0 13 0;
-#X connect 16 0 9 1;
-#X connect 16 0 5 1;
-#X connect 16 0 1 0;
-#X connect 16 0 53 0;
-#X connect 17 0 16 0;
-#X connect 21 0 24 0;
-#X connect 22 0 23 1;
-#X connect 23 0 29 0;
-#X connect 24 0 22 0;
-#X connect 27 0 23 0;
-#X connect 28 0 27 0;
-#X connect 29 0 30 0;
-#X connect 30 0 31 1;
-#X connect 31 0 44 0;
-#X connect 31 0 45 0;
-#X connect 44 0 43 0;
-#X connect 44 0 43 1;
-#X connect 46 0 45 1;
-#X connect 47 0 45 2;
-#X connect 53 0 28 0;
+#X connect 11 0 13 0;
+#X connect 12 0 9 0;
+#X connect 13 0 12 0;
+#X connect 14 0 9 1;
+#X connect 14 0 5 1;
+#X connect 14 0 1 0;
+#X connect 14 0 45 0;
+#X connect 15 0 14 0;
+#X connect 19 0 22 0;
+#X connect 20 0 21 1;
+#X connect 21 0 27 0;
+#X connect 22 0 20 0;
+#X connect 25 0 21 0;
+#X connect 26 0 25 0;
+#X connect 27 0 28 0;
+#X connect 28 0 29 1;
+#X connect 29 0 39 0;
+#X connect 29 0 51 0;
+#X connect 39 0 38 0;
+#X connect 39 0 38 1;
+#X connect 40 0 51 1;
+#X connect 41 0 51 2;
+#X connect 45 0 26 0;

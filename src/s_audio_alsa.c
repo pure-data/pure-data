@@ -36,7 +36,7 @@
 #define ALSAAPI9
 #endif
 
-static void alsa_checkiosync( void);
+static void alsa_checkiosync(void);
 static void alsa_numbertoname(int iodev, char *devname, int nchar);
 static int alsa_jittermax;
 #define ALSA_DEFJITTERMAX 5
@@ -504,7 +504,7 @@ int alsa_send_dacs(void)
                 for (j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
             {
-                float s1 = *fp2 * INT32_MAX;
+                t_sample s1 = *fp2 * INT32_MAX;
                 ((t_alsa_sample32 *)alsa_snd_buf)[j] = CLIP32(s1);
             }
             for (; i < thisdevchans; i++, ch++)
@@ -631,7 +631,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = (float) ((t_alsa_sample32 *)alsa_snd_buf)[j]
+                    *fp2 = (t_sample) ((t_alsa_sample32 *)alsa_snd_buf)[j]
                         * (1./ INT32_MAX);
             }
         }
@@ -642,7 +642,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = ((float) (
+                    *fp2 = ((t_sample) (
                         (((unsigned char *)alsa_snd_buf)[3*j] << 8)
                         | (((unsigned char *)alsa_snd_buf)[3*j+1] << 16)
                         | (((unsigned char *)alsa_snd_buf)[3*j+2] << 24)))
@@ -658,7 +658,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
-                        *fp2 = (float) ((t_alsa_sample16 *)alsa_snd_buf)[j]
+                        *fp2 = (t_sample) ((t_alsa_sample16 *)alsa_snd_buf)[j]
                             * 3.051850e-05;
             }
         }
@@ -692,7 +692,7 @@ int alsa_send_dacs(void)
     return (SENDDACS_YES);
 }
 
-void alsa_printstate( void)
+void alsa_printstate(void)
 {
     int i, result, iodev = 0;
     snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
@@ -757,7 +757,7 @@ void alsa_getzeros(int iodev, int n)
 }
 
     /* call this only if both input and output are open */
-static void alsa_checkiosync( void)
+static void alsa_checkiosync(void)
 {
     int i, result, giveup = 50, alreadylogged = 0, iodev = 0, err;
     snd_pcm_sframes_t minphase, maxphase, thisphase, outdelay;

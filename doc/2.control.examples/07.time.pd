@@ -1,34 +1,36 @@
-#N canvas 490 83 724 474 12;
-#X text 34 13 Besides the metronome \, there are three objects for
-dealing with time:;
-#X obj 64 117 print;
-#X msg 64 59 bang;
-#X msg 110 61 stop;
-#X obj 64 89 delay 2000;
-#X msg 76 192 bang;
-#X obj 76 239 timer;
-#X text 160 117 The right inlet can be used to set the time value without
-scheduling any output.;
-#X obj 106 214 delay 123.45;
-#X floatatom 76 264 0 0 0 0 - - -;
-#X text 34 288 Note that all time calculations are idealized \; they
-do not show the effects of computation time or OS latency. This way
-you can write deterministic algorithms dealing with time passage.;
-#X obj 74 387 pipe 2000;
-#X floatatom 74 360 0 0 0 0 - - -;
-#X floatatom 74 413 0 0 0 0 - - -;
-#X text 165 361 The pipe object allocates memory dynamically in order
+#N canvas 490 83 651 500 12;
+#X text 34 18 Besides the metronome \, there are three objects for
+dealing with time:, f 69;
+#X obj 57 113 print;
+#X msg 57 55 bang;
+#X msg 103 57 stop;
+#X obj 57 85 delay 2000;
+#X msg 356 170 bang;
+#X obj 356 220 timer;
+#X text 154 118 The right inlet can be used to set the time value without
+scheduling any output., f 44;
+#X obj 388 195 delay 123.45;
+#X floatatom 356 245 0 0 0 0 - - -;
+#X obj 68 381 pipe 2000;
+#X floatatom 68 354 0 0 0 0 - - -;
+#X floatatom 68 407 0 0 0 0 - - -;
+#X text 159 365 The pipe object allocates memory dynamically in order
 to schedule any number of delayed events. The events may hold any collection
 of data (as usual \, for more details you can consult the help window.)
 ;
-#X text 442 440 updated for Pd version 0.43;
-#X text 35 154 The timer \, shown below \, measures the time elapsed
-between the arrival of 'bang' messages to its left and right inlets:
-;
-#X text 159 40 The delay object schedules an event for a future time
+#X text 413 448 updated for Pd version 0.43;
+#X text 154 51 The delay object schedules an event for a future time
 expressed in milliseconds. Unlike in Max \, time values need not be
 integers. If a delay has been scheduled and you "bang" it again \,
-it is rescheduled (the previously scheduled output is canceled.);
+it is rescheduled (the previously scheduled output is canceled.),
+f 64;
+#X text 45 189 The timer \, shown to the right \, measures the time
+elapsed between the arrival of 'bang' messages to its left and right
+inlets:, f 40;
+#X text 46 283 Note that all time calculations are idealized. They
+do not show the effects of computation time or OS latency. This way
+you can write deterministic algorithms dealing with time passage.,
+f 63;
 #X connect 2 0 4 0;
 #X connect 3 0 4 0;
 #X connect 4 0 1 0;
@@ -36,5 +38,5 @@ it is rescheduled (the previously scheduled output is canceled.);
 #X connect 5 0 8 0;
 #X connect 6 0 9 0;
 #X connect 8 0 6 1;
-#X connect 11 0 13 0;
-#X connect 12 0 11 0;
+#X connect 10 0 12 0;
+#X connect 11 0 10 0;

@@ -119,7 +119,7 @@ typedef struct _multidev {
 int oss_reset(int fd) {
      int err;
      if ((err = ioctl(fd,SNDCTL_DSP_RESET)) < 0)
-          error("OSS: Could not reset");
+          error("OSS: could not reset");
      return err;
 }
 
@@ -178,7 +178,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
 
         param = orig = (nfragment<<16) + logfragsize;
         if (ioctl(fd,SNDCTL_DSP_SETFRAGMENT, &param) == -1)
-            error("OSS: Could not set or read fragment size\n");
+            error("OSS: could not set or read fragment size\n");
         if (param != orig)
         {
             nfragment = ((param >> 16) & 0xffff);
@@ -481,7 +481,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     return (0);
 }
 
-void oss_close_audio( void)
+void oss_close_audio(void)
 {
      int i;
      for (i=0;i<linux_nindevs;i++)
@@ -542,7 +542,7 @@ void linux_audiostatus(void)
 /* this call resyncs audio output and input which will cause discontinuities
 in audio output and/or input. */
 
-static void oss_doresync( void)
+static void oss_doresync(void)
 {
     int dev, zeroed = 0, wantsize;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
@@ -770,7 +770,7 @@ int oss_send_dacs(void)
                 sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)
             {
                 for (j=0;j<nchannels;j++)
-                    fp1[j*DEFDACBLKSIZE] = (float)sp[j]*(float)3.051850e-05;
+                    fp1[j*DEFDACBLKSIZE] = (t_sample)sp[j]*(t_sample)3.051850e-05;
             }
         }
         thischan += nchannels;

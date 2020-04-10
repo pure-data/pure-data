@@ -1,38 +1,38 @@
-#N canvas 89 36 756 792 12;
-#X obj 127 608 cos~;
-#X obj 127 585 *~;
-#X obj 170 608 cos~;
-#X obj 225 553 wrap~;
-#X obj 189 553 -~;
-#X obj 170 585 +~;
-#X obj 163 638 -~;
-#X obj 183 670 *~;
-#X obj 145 670 +~;
-#X obj 189 521 samphold~;
-#X floatatom 189 321 4 0 127 0 - - -;
-#X text 185 283 center;
-#X obj 189 388 line~;
-#X obj 189 365 pack 0 50;
-#X obj 80 464 phasor~;
-#X floatatom 80 370 4 0 127 0 - - -;
-#X text 71 331 fundamental;
-#X floatatom 387 384 4 0 127 0 - - -;
-#X obj 387 455 line~;
-#X obj 298 584 *~;
-#X obj 387 432 pack 0 50;
-#N canvas 94 264 600 388 make-table 0;
-#X msg 81 44 bang;
-#X obj 81 73 t b b;
-#X obj 159 142 f;
-#X obj 197 142 + 1;
-#X msg 175 112 0;
-#X obj 81 102 until;
-#X obj 161 177 t f f;
-#X obj 76 306 tabwrite bell-curve;
-#X obj 52 270 expr exp(-$f1*$f1);
-#X obj 63 168 sel 199;
-#X obj 51 241 expr ($f1-100)/25;
-#N canvas 0 0 450 300 graph4 0;
+#N canvas 454 23 631 797 12;
+#X obj 114 537 cos~;
+#X obj 114 458 *~;
+#X obj 172 537 cos~;
+#X obj 229 468 wrap~;
+#X obj 193 468 -~;
+#X obj 172 514 +~;
+#X obj 171 579 -~;
+#X obj 211 609 *~;
+#X obj 193 637 +~;
+#X obj 193 436 samphold~;
+#X floatatom 193 233 4 0 127 0 - - -;
+#X text 235 225 center;
+#X obj 193 303 line~;
+#X obj 193 280 pack 0 50;
+#X obj 114 379 phasor~;
+#X floatatom 114 275 4 0 127 0 - - -;
+#X text 75 236 fundamental;
+#X floatatom 379 297 4 0 127 0 - - -;
+#X obj 379 368 line~;
+#X obj 302 508 *~;
+#X obj 379 345 pack 0 50;
+#N canvas 270 258 499 360 make-table 0;
+#X msg 74 33 bang;
+#X obj 74 62 t b b;
+#X obj 152 131 f;
+#X obj 190 131 + 1;
+#X msg 170 101 0;
+#X obj 74 91 until;
+#X obj 152 166 t f f;
+#X obj 54 281 tabwrite bell-curve;
+#X obj 50 245 expr exp(-$f1*$f1);
+#X obj 86 157 sel 199;
+#X obj 50 216 expr ($f1-100)/25;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array bell-curve 200 float 1;
 #A 0 1.12535e-07 1.54727e-07 2.12059e-07 2.89706e-07 3.94519e-07 5.35535e-07
 7.24633e-07 9.77371e-07 1.31404e-06 1.76105e-06 2.35258e-06 3.13275e-06
@@ -64,7 +64,7 @@
 3.13275e-06 2.35258e-06 1.76105e-06 1.31404e-06 9.77371e-07 7.24633e-07
 5.35535e-07 3.94519e-07 2.89706e-07 2.12059e-07 1.54727e-07;
 #X coords 0 1 199 0 200 140 1;
-#X restore 342 85 graph;
+#X restore 253 106 graph;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
@@ -79,47 +79,47 @@
 #X connect 8 0 7 0;
 #X connect 9 0 5 1;
 #X connect 10 0 8 0;
-#X restore 536 647 pd make-table;
-#X obj 298 558 cos~;
-#X obj 298 533 -~ 0.25;
-#X obj 298 610 +~ 100;
-#X obj 298 633 tabread4~ bell-curve;
-#X obj 184 699 *~;
-#X text 330 658 waveshaper;
-#X text 31 2 CHANGING PAF CONTROLS TO NATURAL UNITS;
-#X obj 80 394 mtof;
-#X obj 211 413 expr 1/$f1;
-#X obj 189 341 mtof;
-#X text 184 298 freq.;
-#X obj 189 437 *~;
-#X text 385 357 bandwidth;
-#X obj 387 406 mtof;
-#X obj 387 491 *~;
-#X obj 387 515 *~ 25;
-#X text 18 23 The more "natural" units for describing a formant might
+#X restore 445 639 pd make-table;
+#X obj 292 476 cos~;
+#X obj 292 451 -~ 0.25;
+#X obj 302 534 +~ 100;
+#X obj 302 557 tabread4~ bell-curve;
+#X obj 212 667 *~;
+#X text 311 584 waveshaper;
+#X text 27 15 CHANGING PAF CONTROLS TO NATURAL UNITS;
+#X obj 114 299 mtof;
+#X obj 211 331 expr 1/$f1;
+#X obj 193 256 mtof;
+#X text 236 240 freq.;
+#X obj 193 355 *~;
+#X text 377 272 bandwidth;
+#X obj 379 319 mtof;
+#X obj 379 404 *~;
+#X obj 379 428 *~ 25;
+#X text 30 41 The more "natural" units for describing a formant might
 be center frequency and bandwidth \, so that you can change the fundamental
 without having the formant shift up and down in parallel. Here all
 three frequencies are expressed in MIDI units. The bandwidth and center
 frequency have to be divided by the fundamental (the expr 1/$f1 takes
-its reciprocal and two *~ objects finish the division.);
-#X text 427 490 divide by fundamental;
-#X text 445 514 range for table;
-#X text 364 609 offset to middle of table;
-#X text 196 459 C.F. relative;
-#X text 197 475 to fundamental;
-#X text 69 346 (MIDI units);
-#X text 220 697 ring mod;
-#X obj 184 726 output~;
-#X text 483 762 updated for Pd version 0.37;
-#X text 19 137 Here we take a somewhat lax approach to sampholding
+its reciprocal and two *~ objects finish the division.), f 81;
+#X text 419 403 divide by fundamental;
+#X text 437 427 range for table;
+#X text 357 532 offset to middle of table;
+#X text 200 374 C.F. relative;
+#X text 201 390 to fundamental;
+#X text 73 251 (MIDI units);
+#X text 248 665 ring mod;
+#X obj 189 707 output~;
+#X text 382 728 updated for Pd version 0.37;
+#X text 30 119 Here we take a somewhat lax approach to sampholding
 the center frequency control. The frequency itself changes instantly
 \, but the center/fundamental frequency ratio waits for the next period.
 This gives a slight "chirp" if the fundamental is abruptly raised a
 couple of octaves. There's no easy way using Pd's built-in primitives
 to avoid this. Note however that there's a "paf~" extern available
 which solves this problem better and \, moreover \, runs much faster.
-;
-#X obj 298 508 *~ 0.5;
+, f 81;
+#X obj 292 426 *~ 0.5;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;

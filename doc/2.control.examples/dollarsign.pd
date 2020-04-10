@@ -1,24 +1,24 @@
-#N canvas 2 52 620 406 12;
-#X obj 207 44 inlet;
-#X obj 207 71 s \$1-a;
-#X obj 302 72 s \$1-b;
-#X text 331 352 updated for Pd version 0.34;
-#X text 63 7 This is an abstraction used in example 12 \, "locality".
+#N canvas 370 81 567 462 12;
+#X obj 208 46 inlet;
+#X obj 208 73 s \$1-a;
+#X obj 303 73 s \$1-b;
+#X text 302 396 updated for Pd version 0.34;
+#X text 64 9 This is an abstraction used in example 12 \, "locality".
 ;
-#X obj 302 47 inlet;
-#X obj 62 264 s \$1-c;
-#X obj 62 294 r \$1-c;
-#X floatatom 62 233 5 0 0 0 - - -, f 5;
-#X floatatom 62 322 5 0 0 0 - - -, f 5;
-#X obj 164 265 s here's-what-happens-if-you-dont;
-#X obj 163 295 r here's-what-happens-if-you-dont;
-#X floatatom 163 323 5 0 0 0 - - -, f 5;
-#X floatatom 164 235 5 0 0 0 - - -, f 5;
-#X floatatom 487 239 5 0 0 0 - - -, f 5;
-#X floatatom 488 322 5 0 0 0 - - -, f 5;
-#X obj 487 266 s \$0-d;
-#X obj 488 296 r \$0-d;
-#X text 47 94 The sends above get named "one-a" and "one-b" \, for
+#X obj 303 46 inlet;
+#X obj 63 281 s \$1-c;
+#X obj 63 311 r \$1-c;
+#X floatatom 63 250 5 0 0 0 - - -;
+#X floatatom 63 339 5 0 0 0 - - -;
+#X obj 165 281 s here's-what-happens-if-you-dont;
+#X obj 164 311 r here's-what-happens-if-you-dont;
+#X floatatom 164 339 5 0 0 0 - - -;
+#X floatatom 165 250 5 0 0 0 - - -;
+#X floatatom 438 250 5 0 0 0 - - -;
+#X floatatom 439 339 5 0 0 0 - - -;
+#X obj 438 281 s \$0-d;
+#X obj 439 311 r \$0-d;
+#X text 48 111 The sends above get named "one-a" and "one-b" \, for
 instance. The window title bar tells you the creation arguments for
 this particular instance. You can use this to make internal local connections
 as shown below. The "\$1-c" boxes act locally whereas the middle boxes

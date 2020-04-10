@@ -224,7 +224,7 @@ int alsamm_open_audio(int rate, int blocksize)
   /* opening alsa debug channel */
   err = snd_output_stdio_attach(&alsa_stdout, stdout, 0);
   if (err < 0) {
-    check_error(err,"attaching alsa debug Output to stdout failed");
+    check_error(err,"attaching alsa debug output to stdout failed");
     /*    return; no so bad ... and never should happe */
   }
 
@@ -244,7 +244,7 @@ int alsamm_open_audio(int rate, int blocksize)
     alsamm_buffersize = blocksize;
 
   if(sys_verbose)
-    post("syschedadvance=%d us(%d Samples)so buffertime max should be this=%d"
+    post("syschedadvance=%d us(%d samples) so buffertime max should be this=%d"
          "or sys_blocksize=%d (samples) to use buffersize=%d",
          sys_schedadvance,sys_advance_samples,alsamm_buffertime,
          blocksize,alsamm_buffersize);
@@ -329,7 +329,7 @@ int alsamm_open_audio(int rate, int blocksize)
                                alsa_outdev[i].a_handle)) == 0){
         alsa_indev[i].a_synced = alsa_outdev[i].a_synced = 1;
         if(sys_verbose)
-          post("Linking in and outs of card %d",i);
+          post("linking in and outs of card %d",i);
       }
       else
         check_error(err,"could not link in and outs");
@@ -435,7 +435,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   /* choose all parameters */
   err = snd_pcm_hw_params_any(handle, params);
   if (err < 0) {
-    check_error(err,"Broken configuration: no configurations available");
+    check_error(err,"broken configuration: no configurations available");
     return err;
   }
 
@@ -445,24 +445,24 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   if (err >= 0) {
 #ifdef ALSAMM_DEBUG
     if(sys_verbose)
-      post("Access type %s available","SND_PCM_ACCESS_MMAP_NONINTERLEAVED");
+      post("access type %s available","SND_PCM_ACCESS_MMAP_NONINTERLEAVED");
 #endif
   }
   else{
-    check_error(err,"No Accesstype SND_PCM_ACCESS_MMAP_NONINTERLEAVED");
+    check_error(err,"no Accesstype SND_PCM_ACCESS_MMAP_NONINTERLEAVED");
     return err;
   }
 
   /* set the sample format */
   err = snd_pcm_hw_params_set_format(handle, params, ALSAMM_FORMAT);
   if (err < 0) {
-    check_error(err,"Sample format not available for playback");
+    check_error(err,"sample format not available for playback");
     return err;
   }
 
 #ifdef ALSAMM_DEBUG
   if(sys_verbose)
-    post("Setting format to %s",snd_pcm_format_name(ALSAMM_FORMAT));
+    post("setting format to %s",snd_pcm_format_name(ALSAMM_FORMAT));
 #endif
 
   /* first check samplerate since channels numbers
@@ -473,23 +473,23 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
 
 #ifdef ALSAMM_DEBUG
   if(sys_verbose)
-    post("Samplerate request: %i Hz",rrate);
+    post("samplerate request: %i Hz",rrate);
 #endif
 
   dir=-1;
   err = snd_pcm_hw_params_set_rate_near(handle, params, &rrate, &dir);
   if (err < 0) {
-    check_error(err,"Rate not available");
+    check_error(err,"rate not available");
     return err;
   }
 
   if (rrate != alsamm_sr) {
-    post("Warning: rate %iHz doesn't match requested %iHz", rrate,alsamm_sr);
+    post("warning: rate %iHz doesn't match requested %iHz", rrate,alsamm_sr);
     alsamm_sr = rrate;
   }
   else
     if(sys_verbose)
-      post("Samplerate is set to %iHz",alsamm_sr);
+      post("samplerate is set to %iHz",alsamm_sr);
 
   /* Info on channels */
   {
@@ -497,18 +497,18 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
 
     if((err = snd_pcm_hw_params_get_channels_max(params,
         (unsigned int *)&maxchs)) < 0){
-      check_error(err,"Getting channels_max not available");
+      check_error(err,"getting channels_max not available");
       return err;
     }
     if((err = snd_pcm_hw_params_get_channels_min(params,
         (unsigned int *)&minchs)) < 0){
-      check_error(err,"Getting channels_min not available");
+      check_error(err,"getting channels_min not available");
       return err;
     }
 
 #ifdef ALSAMM_DEBUG
     if(sys_verbose)
-      post("Getting channels:min=%d, max= %d for request=%d",minchs,maxchs,channels);
+      post("getting channels: min=%d, max= %d for request=%d",minchs,maxchs,channels);
 #endif
     if(channels < 0)channels=maxchs;
     if(channels > maxchs)channels = maxchs;
@@ -527,17 +527,17 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   /* set the count of channels */
   err = snd_pcm_hw_params_set_channels(handle, params, *chs);
   if (err < 0) {
-    check_error(err,"Channels count not available");
+    check_error(err,"unable to set channels");
     return err;
   }
 
   /* testing for channels */
   if((err = snd_pcm_hw_params_get_channels(params,(unsigned int *)chs)) < 0)
-    check_error(err,"Get channels not available");
+    check_error(err,"unable to get channels");
 #ifdef ALSAMM_DEBUG
   else
     if(sys_verbose)
-      post("When setting channels count and got %d",*chs);
+      post("when setting channels count and got %d",*chs);
 #endif
 
   /* if buffersize is set use this instead buffertime */
@@ -554,7 +554,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
     err = snd_pcm_hw_params_set_buffer_size_near(handle, params,
         (unsigned long *)&alsamm_buffer_size);
     if (err < 0) {
-      check_error(err,"Unable to set max buffer size");
+      check_error(err,"unable to set max buffer size");
       return err;
     }
 
@@ -572,7 +572,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
     err = snd_pcm_hw_params_set_buffer_time_near(handle, params,
         &alsamm_buffertime, &dir);
     if (err < 0) {
-      check_error(err,"Unable to set max buffer time");
+      check_error(err,"unable to set max buffer time");
       return err;
     }
   }
@@ -580,7 +580,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   err = snd_pcm_hw_params_get_buffer_time(params,
     (unsigned int *)&alsamm_buffertime, &dir);
   if (err < 0) {
-    check_error(err,"Unable to get buffer time");
+    check_error(err,"unable to get buffer time");
     return err;
   }
 
@@ -593,37 +593,37 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   err = snd_pcm_hw_params_get_buffer_size(params,
     (unsigned long *)&alsamm_buffer_size);
   if (err < 0) {
-    check_error(err,"Unable to get buffer size");
+    check_error(err,"unable to get buffer size");
     return err;
   }
 
 #ifdef ALSAMM_DEBUG
   if(sys_verbose)
-    post("hw_params: got  buffersize to %d samples",(int) alsamm_buffer_size);
+    post("hw_params: got buffersize to %d samples",(int) alsamm_buffer_size);
 #endif
 
   err = snd_pcm_hw_params_get_period_size(params,
     (unsigned long *)&alsamm_period_size, &dir);
   if (err > 0) {
-    check_error(err,"Unable to get period size");
+    check_error(err,"unable to get period size");
     return err;
   }
 
 #ifdef ALSAMM_DEBUG
   if(sys_verbose)
-    post("Got period size of %d", (int) alsamm_period_size);
+    post("got period size of %d", (int) alsamm_period_size);
 #endif
   {
     unsigned int pmin,pmax;
 
     err = snd_pcm_hw_params_get_periods_min(params, &pmin, &dir);
     if (err > 0) {
-      check_error(err,"Unable to get period size");
+      check_error(err,"unable to get period size");
       return err;
     }
     err = snd_pcm_hw_params_get_periods_min(params, &pmax, &dir);
     if (err > 0) {
-      check_error(err,"Unable to get period size");
+      check_error(err,"unable to get period size");
       return err;
     }
 
@@ -635,19 +635,19 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
 
     err = snd_pcm_hw_params_set_periods(handle, params, alsamm_periods, dir);
     if (err > 0) {
-      check_error(err,"Unable to set periods");
+      check_error(err,"unable to set periods");
       return err;
     }
 
 
     err = snd_pcm_hw_params_get_periods(params, &pmin, &dir);
     if (err > 0) {
-      check_error(err,"Unable to get periods");
+      check_error(err,"unable to get periods");
       return err;
     }
 #ifdef ALSAMM_DEBUG
     if(sys_verbose)
-      post("Got periods of %d, where periodsmin=%d, periodsmax=%d",
+      post("got periods of %d, where periodsmin=%d, periodsmax=%d",
            alsamm_periods,pmin,pmax);
 #endif
   }
@@ -655,7 +655,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
   /* write the parameters to device */
   err = snd_pcm_hw_params(handle, params);
   if (err < 0) {
-    check_error(err,"Unable to set hw params");
+    check_error(err,"unable to set hw params");
     return err;
   }
 #endif /* ALSAAPI9 */
@@ -672,7 +672,7 @@ static int set_swparams(snd_pcm_t *handle, snd_pcm_sw_params_t *swparams, int pl
   /* get the current swparams */
   err = snd_pcm_sw_params_current(handle, swparams);
   if (err < 0) {
-    check_error(err,"Unable to determine current swparams for playback");
+    check_error(err,"unable to determine current swparams for playback");
     return err;
   }
 
@@ -681,7 +681,7 @@ static int set_swparams(snd_pcm_t *handle, snd_pcm_sw_params_t *swparams, int pl
 
   err = snd_pcm_sw_params_set_start_threshold(handle, swparams, 0U);
   if (err < 0) {
-    check_error(err,"Unable to set start threshold mode");
+    check_error(err,"unable to set start threshold mode");
     return err;
   }
 
@@ -698,7 +698,7 @@ static int set_swparams(snd_pcm_t *handle, snd_pcm_sw_params_t *swparams, int pl
 
   err = snd_pcm_sw_params_set_stop_threshold(handle, swparams, (snd_pcm_uframes_t)-1);
   if (err < 0) {
-    check_error(err,"Unable to set stop threshold mode");
+    check_error(err,"unable to set stop threshold mode");
     return err;
   }
 
@@ -739,21 +739,21 @@ static int set_swparams(snd_pcm_t *handle, snd_pcm_sw_params_t *swparams, int pl
 
   err = snd_pcm_sw_params_set_avail_min(handle, swparams, alsamm_transfersize/2);
   if (err < 0) {
-    check_error(err,"Unable to set avail min for");
+    check_error(err,"unable to set avail min");
     return err;
     }
 
   snd_pcm_sw_params_get_avail_min(swparams, &ps);
 #ifdef ALSAMM_DEBUG
   if(sys_verbose)
-    post("sw_params: set avail_min= %d (was  %d)", (int) ps, (int) ops);
+    post("sw_params: set avail_min = %d (was  %d)", (int) ps, (int) ops);
 #endif
 
   /* write the parameters to the playback device */
 
   err = snd_pcm_sw_params(handle, swparams);
   if (err < 0) {
-    check_error(err,"Unable to set sw params");
+    check_error(err,"unable to set sw params");
     return err;
   }
 
@@ -786,11 +786,11 @@ static int xrun_recovery(snd_pcm_t *handle, int err)
   if (err == -EPIPE) {    /* under-run */
     err = snd_pcm_prepare(handle);
     if (err < 0)
-      check_error(err,"Can't recovery from underrun, prepare failed.");
+      check_error(err,"couldn't recover from underrun, prepare failed");
 
     err = snd_pcm_start(handle);
     if (err < 0)
-      check_error(err,"Can't start when recover from underrun.");
+      check_error(err,"couldn't start when recovering from underrun");
 
     return 0;
   } else if (err == -ESTRPIPE) {
@@ -799,11 +799,11 @@ static int xrun_recovery(snd_pcm_t *handle, int err)
     if (err < 0) {
       err = snd_pcm_prepare(handle);
       if (err < 0)
-        check_error(err,"Can't recovery from suspend, prepare failed.");
+        check_error(err,"couldn't recover from suspend, prepare failed");
 
       err = snd_pcm_start(handle);
       if (err < 0)
-        check_error(err,"Can't start when recover from underrun.");
+        check_error(err,"couldn't start when recovering from underrun");
     }
     return 0;
   }
@@ -901,7 +901,7 @@ static int alsamm_start()
 
 #ifdef ALSAMM_DEBUG
       if(sys_verbose)
-        post("start: now channels cleared, out with avail=%d, offset=%d,comitted=%d",
+        post("start: now channels cleared, out with avail=%d, offset=%d, comitted=%d",
              avail,offset,comitted);
 #endif
     }
@@ -939,7 +939,7 @@ static int alsamm_start()
 
     /* cleaning out mmap buffer before start */
 #ifdef ALSAMM_DEBUG
-    post("start in: set in mems for avail=%d,offset=%d at buffersize=%d",
+    post("start in: set in mems for avail=%d, offset=%d at buffersize=%d",
          iavail,ioffset,alsamm_buffer_size);
 #endif
 
@@ -1035,7 +1035,7 @@ static int alsamm_stop()
 
 Problems to solve:
 
-   a) Since in ALSA MMAP, the MMAP reagion can change (don't ask me why)
+   a) Since in ALSA MMAP, the MMAP region can change (don't ask me why)
    we have to do it each cycle or we say on RME HAMMERFALL/HDSP/DSPMADI
    it never changes to it once. so maybe we can do it once in open
 
@@ -1074,7 +1074,7 @@ int alsamm_send_dacs(void)
     post("dac send called in %d, out %d, xrun %d",inchannels,outchannels, alsamm_xruns);
 
   if(alsamm_xruns && (alsamm_xruns % 1000) == 0)
-    post("1000 xruns accoured");
+    post("1000 xruns occured");
 
   if(dac_send < WATCH_PERIODS){
     out_cm[dac_send] = -1;
@@ -1205,7 +1205,7 @@ int alsamm_send_dacs(void)
 
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < oframes; i++,fp2++)
           {
-            float s1 = *fp2 * F32MAX;
+            t_sample s1 = *fp2 * F32MAX;
             /* better but slower, better never clip ;-)
                buf[i]= CLIP32(s1); */
             buf[i]= ((int) s1 & 0xFFFFFF00);
@@ -1313,14 +1313,14 @@ int alsamm_send_dacs(void)
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < iframes; i++,fp2++)
           {
             /* mask the lowest bits, since subchannels info can make zero samples nonzero */
-            *fp2 = (float) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
-              * (1.0 / (float) INT32_MAX);
+            *fp2 = (t_sample) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
+              * (1.0 / (t_sample) INT32_MAX);
           }
       }
 
       commitres = snd_pcm_mmap_commit(in, ioffset, iframes);
       if (commitres < 0 || commitres != iframes) {
-        post("please never");
+        //post("please never");
         if ((err = xrun_recovery(in, commitres >= 0 ? -EPIPE : commitres)) < 0) {
           check_error(err,"MMAP synced in commit error");
           return SENDDACS_NO;
@@ -1358,7 +1358,7 @@ void alsamm_showstat(snd_pcm_t *handle)
 
   snd_pcm_status_alloca(&status);
   if ((err = snd_pcm_status(handle, status)) < 0) {
-    check_error(err, "Get Stream status error");
+    check_error(err, "get stream status error");
     return;
   }
   snd_pcm_status_dump(status, alsa_stdout);

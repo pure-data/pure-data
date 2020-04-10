@@ -609,7 +609,7 @@ typedef struct _list_trim
     t_object x_obj;
 } t_list_trim;
 
-static void *list_trim_new( void)
+static void *list_trim_new(void)
 {
     t_list_trim *x = (t_list_trim *)pd_new(list_trim_class);
     outlet_new(&x->x_obj, &s_list);
@@ -650,7 +650,7 @@ typedef struct _list_length
     t_object x_obj;
 } t_list_length;
 
-static void *list_length_new( void)
+static void *list_length_new(void)
 {
     t_list_length *x = (t_list_length *)pd_new(list_length_class);
     outlet_new(&x->x_obj, &s_float);
@@ -688,7 +688,7 @@ typedef struct _list_fromsymbol
     t_object x_obj;
 } t_list_fromsymbol;
 
-static void *list_fromsymbol_new( void)
+static void *list_fromsymbol_new(void)
 {
     t_list_fromsymbol *x = (t_list_fromsymbol *)pd_new(list_fromsymbol_class);
     outlet_new(&x->x_obj, &s_list);
@@ -723,7 +723,7 @@ typedef struct _list_tosymbol
     t_object x_obj;
 } t_list_tosymbol;
 
-static void *list_tosymbol_new( void)
+static void *list_tosymbol_new(void)
 {
     t_list_tosymbol *x = (t_list_tosymbol *)pd_new(list_tosymbol_class);
     outlet_new(&x->x_obj, &s_symbol);

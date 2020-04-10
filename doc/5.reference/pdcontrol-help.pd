@@ -1,0 +1,57 @@
+#N canvas 449 68 647 499 12;
+#X obj 27 15 pdcontrol;
+#X text 106 15 -- communicate with pd and/or this patch;
+#X text 403 457 updated for Pd version 0.50.;
+#X obj 41 286 pdcontrol;
+#X obj 41 313 print;
+#X msg 49 161 isvisible;
+#X msg 47 413 isvisible;
+#N canvas 564 534 287 200 subpatch 0;
+#X obj 39 39 inlet;
+#X obj 39 91 pdcontrol;
+#X obj 39 128 print;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 47 438 pd subpatch;
+#X text 134 412 open and shut the subpatch to test "isvisible" message
+;
+#X text 130 159 1 if this patch is visible \, 0 if not;
+#X msg 57 187 dir;
+#X text 100 187 get directory this patch is in;
+#X msg 63 225 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#N canvas 689 91 529 365 args 0;
+#X obj 127 209 print;
+#X text 185 140 <= get arguments;
+#X obj 127 174 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
+#X msg 127 140 args 0;
+#X text 40 23 This is useful for managing a variable number of arguments.
+When it receives the 'args' message \, [pdcontrol] outputs the loaded
+arguments. An optional argument specifies this patch (0) \, owning
+patch (1) \, its own owner (2) \, and so on. (Ownership number is silently
+reduced if owners don't exist \, so here anything greater than zero
+is ignored.), f 65;
+#X text 44 247 Above there's a simple abstraction to show how it works.
+Note how dollar signs (such as "\$0" \, "\$1" or "\$2-x") get expanded
+unless you escape them with a backlash ("\$2-x" may appear as an unexpanded
+symbol \, but it actually gets expanded if this abstraction is called
+inside another that contains arguments).;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;
+#X restore 43 360 pd args;
+#X text 106 360 get the patch's arguments;
+#X text 243 130 open a URL in a browser;
+#X msg 41 131 browse http://msp.ucsd.edu;
+#X text 312 217 Optional argument to specify this patch (0) \, owning
+patch (1) \, its own owner (2) \, and so on \, and optionally also
+a filename relative to the patch's directory. (Ownership number is
+silently reduced if owners don't exist \, so here anything greater
+than zero is ignored.), f 42;
+#X text 37 52 pdcontrol lets you communicate with the patch to get
+its owning directory \, arguments \, its visible/invisible state \,
+or to open a URL in a web browser.;
+#X connect 3 0 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 10 0 3 0;
+#X connect 12 0 3 0;
+#X connect 16 0 3 0;

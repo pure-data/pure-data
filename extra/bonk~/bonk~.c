@@ -67,6 +67,7 @@ decay and other times in msec
 #include "ext_obex.h"
 
 typedef double t_floatarg;      /* from m_pd.h */
+typedef float t_float;               /* from m_pd.h */
 #define flog log
 #define fexp exp
 #define fsqrt sqrt
