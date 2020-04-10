@@ -1266,21 +1266,25 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     	char *outline;
 		if(x->te_type == T_ATOM) {
 			if(state)
-				sys_vgui(".x%lx.c itemconfigure %sR -fill [::pdtk_canvas::get_color select_color .x%lx]\n",
-				glist, rtext_gettag(y), glist);
+				sys_vgui(".x%lx.c itemconfigure %sR -fill "
+					"[::pdtk_canvas::get_color select_color .x%lx]\n",
+					glist, rtext_gettag(y), glist);
 			else
 				sys_vgui(".x%lx.c itemconfigure %sR -fill black\n",
-				glist, rtext_gettag(y));
+					glist, rtext_gettag(y));
 		} else if(x->te_type == T_TEXT) {
-			sys_vgui(".x%lx.c itemconfigure %sR -fill [::pdtk_canvas::get_color %s .x%lx]\n",
-					glist, rtext_gettag(y), (state? "select_color" : "comment_color"), glist);
+			sys_vgui(".x%lx.c itemconfigure %sR -fill "
+				"[::pdtk_canvas::get_color %s .x%lx]\n",
+				glist, rtext_gettag(y),
+				(state? "select_color" : "comment_color"), glist);
 		} else {
 			if (pd_class(&x->te_pd) == text_class)
 				outline = "dash_outline";
 			else if (x->te_type == T_MESSAGE) outline = "msg_box_outline";
 			else outline = "obj_box_outline";
-			sys_vgui(".x%lx.c itemconfigure %sR -outline [::pdtk_canvas::get_color %s .x%lx]\n", glist,
-					 rtext_gettag(y), (state? "select_color" : outline), glist);
+			sys_vgui(".x%lx.c itemconfigure %sR -outline "
+				"[::pdtk_canvas::get_color %s .x%lx]\n", glist,
+				rtext_gettag(y), (state? "select_color" : outline), glist);
 		}
     }
 }

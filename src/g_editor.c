@@ -72,7 +72,8 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill [::pdtk_canvas::get_color select_color .x%lx]\n",
+        sys_vgui(".x%lx.c itemconfigure l%lx -fill "
+        	"[::pdtk_canvas::get_color select_color .x%lx]\n",
             x, x->gl_editor->e_selectline_tag, x);
         sys_vgui(".x%lx.c raise l%lx\n",
             x, x->gl_editor->e_selectline_tag);
@@ -95,7 +96,8 @@ void glist_deselectline(t_glist *x)
             issignal = 1;
         else
             issignal = 0;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill [::pdtk_canvas::get_color %s .x%lx]\n",
+        sys_vgui(".x%lx.c itemconfigure l%lx -fill "
+        	"[::pdtk_canvas::get_color %s .x%lx]\n",
             x, x->gl_editor->e_selectline_tag,
             (issignal ? "signal_cord" : "msg_cord"), x);
     }
@@ -2374,7 +2376,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
 
                         sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
-                          ".x%lx.c create line %d %d %d %d -fill [::pdtk_canvas::get_color select_color .x%lx] -width %d -tags x\n",
+                          ".x%lx.c create line %d %d %d %d -fill "
+                          "[::pdtk_canvas::get_color select_color .x%lx] "
+                          "-width %d -tags x\n",
                                 x, xpos, ypos, xpos, ypos, x,
                                 (issignal ? 2 : 1) * x->gl_zoom);
                     }
@@ -2519,7 +2523,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (doit)
     {
         if (!shiftmod) glist_noselect(x);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -outline [::pdtk_canvas::get_color selrect_color .x%lx] -tags x\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -outline "
+        	"[::pdtk_canvas::get_color selrect_color .x%lx] -tags x\n",
               x, xpos, ypos, xpos, ypos, x);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
@@ -2585,7 +2590,9 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            sys_vgui(".x%lx.c create line %d %d %d %d -fill [::pdtk_canvas::get_color %s .x%lx] -width %d -tags [list l%lx cord]\n",
+            sys_vgui(".x%lx.c create line %d %d %d %d -fill "
+            	"[::pdtk_canvas::get_color %s .x%lx] -width %d -tags "
+            	"[list l%lx cord]\n",
                     glist_getcanvas(x),
                         lx1, ly1, lx2, ly2,
                     (issignal ? "signal_cord" : "msg_cord"),
@@ -4349,7 +4356,8 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x) && x->gl_havewindow)
     {
         sys_vgui(
-    ".x%lx.c create line %d %d %d %d -width %d -fill [::pdtk_canvas::get_color %s .x%lx] -tags [list l%lx cord]\n",
+    ".x%lx.c create line %d %d %d %d -width %d -fill "
+    "[::pdtk_canvas::get_color %s .x%lx] -tags [list l%lx cord]\n",
             glist_getcanvas(x), 0, 0, 0, 0,
             (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
             (obj_issignaloutlet(objsrc, outno) ? "signal_cord" : "msg_cord"),

@@ -459,7 +459,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 				case T_TEXT: txtcolor = "comment_color"; break;
 				case T_MESSAGE: txtcolor = "msg_txt_color";
 			}
-            sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } %d [::pdtk_canvas::get_color %s .x%lx]\n",
+            sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } "
+            	"%d [::pdtk_canvas::get_color %s .x%lx]\n",
 				canvas, x->x_tag, rtext_gettype(x)->s_name,
 				text_xpix(x->x_text, x->x_glist) + lmargin,
 				text_ypix(x->x_text, x->x_glist) + tmargin,
@@ -562,8 +563,10 @@ void rtext_select(t_rtext *x, int state)
 {
     if(x->x_text->te_type == T_ATOM) {
     	if(state)
-				sys_vgui(".x%lx.c itemconfigure %s -fill [::pdtk_canvas::get_color select_color .x%lx]\n",
-				glist_getcanvas(x->x_glist), x->x_tag, glist_getcanvas(x->x_glist));
+			sys_vgui(".x%lx.c itemconfigure %s -fill "
+				"[::pdtk_canvas::get_color select_color .x%lx]\n",
+				glist_getcanvas(x->x_glist), x->x_tag,
+				glist_getcanvas(x->x_glist));
 		else
 			sys_vgui(".x%lx.c itemconfigure %s -fill black\n",
 			glist_getcanvas(x->x_glist), x->x_tag);
@@ -581,7 +584,8 @@ void rtext_select(t_rtext *x, int state)
 				break;
 			case T_MESSAGE: txtcolor = "msg_txt_color";
 		}
-		sys_vgui(".x%lx.c itemconfigure %s -fill [::pdtk_canvas::get_color %s .x%lx]\n",
+		sys_vgui(".x%lx.c itemconfigure %s -fill "
+			"[::pdtk_canvas::get_color %s .x%lx]\n",
 			glist_getcanvas(x->x_glist), x->x_tag,
 			(state? "select_color" : txtcolor), glist_getcanvas(x->x_glist));
     }
