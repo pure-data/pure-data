@@ -736,7 +736,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_gobj *g;
         t_symbol *arrayname;
         char *selected =
-        	(state ? "select_color" : "graph_outline");
+        	(state ? "selected" : "graph_outline");
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
@@ -1000,11 +1000,11 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         sys_vgui(".x%lx.c itemconfigure %sR -fill "
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
        		glist, rtext_gettag(y),
-        	(state? "select_color" : "graph_outline"), glist);
+        	(state? "selected" : "graph_outline"), glist);
         sys_vgui(".x%lx.c itemconfigure graph%lx -fill "
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
             glist_getcanvas(glist), z,
-            (state? "select_color" : "graph_outline"), glist);
+            (state? "selected" : "graph_outline"), glist);
     }
 }
 

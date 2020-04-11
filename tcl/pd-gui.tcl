@@ -238,24 +238,24 @@ set redo_action no
 
 # color scheme
 array set ::pd_colors {
-canvas_fill "white"
-gopbox_color "#FF8080"
-obj_txt_color "#000"
-msg_txt_color "#000"
-comment_color "#000"
-select_color "#00f"
-dash_outline "#f00"
-obj_box_outline "#ccc"
-msg_box_outline "#ccc"
-msg_box_fill ""
-obj_box_fill ""
-signal_cord "#558"
+selection_rectangle "#000"
+selected "#00f"
+txt_highlight "#C3C3C3"
+msg_iolet "#fff"
+signal_iolet "#558"
 msg_cord "#121"
-msg_nlet "#fff"
+signal_cord "#558"
+obj_box_outline "#000"
+obj_box_fill ""
+obj_text "#000"
+msg_box_outline "#000"
+msg_box_fill ""
+msg_text "#000"
+obj_box_outline_broken "#000"
+canvas_fill "white"
+comment "#000"
 graph_outline "#000"
-signal_nlet "#558"
-selrect_color "#000"
-txt_hilight "#37e744"
+gop_box "#FF8080"
 }
 
 namespace eval ::pdgui:: {
@@ -390,6 +390,7 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
+            set ::pd_colors(txt_highlight) "SystemHighlight"
         }
         "win32" {
             set ::modifier "Control"
@@ -434,6 +435,7 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
+            set ::pd_colors(txt_highlight) "SystemHighlight"
         }
     }
 }

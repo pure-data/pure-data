@@ -73,7 +73,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
         sys_vgui(".x%lx.c itemconfigure l%lx -fill "
-        	"[::pdtk_canvas::get_color select_color .x%lx]\n",
+        	"[::pdtk_canvas::get_color selected .x%lx]\n",
             x, x->gl_editor->e_selectline_tag, x);
         sys_vgui(".x%lx.c raise l%lx\n",
             x, x->gl_editor->e_selectline_tag);
@@ -2377,7 +2377,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
                           ".x%lx.c create line %d %d %d %d -fill "
-                          "[::pdtk_canvas::get_color select_color .x%lx] "
+                          "[::pdtk_canvas::get_color selected .x%lx] "
                           "-width %d -tags x\n",
                                 x, xpos, ypos, xpos, ypos, x,
                                 (issignal ? 2 : 1) * x->gl_zoom);
@@ -2524,7 +2524,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         if (!shiftmod) glist_noselect(x);
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -outline "
-        	"[::pdtk_canvas::get_color selrect_color .x%lx] -tags x\n",
+        	"[::pdtk_canvas::get_color selection_rectangle .x%lx] -tags x\n",
               x, xpos, ypos, xpos, ypos, x);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;

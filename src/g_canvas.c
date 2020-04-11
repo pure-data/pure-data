@@ -770,7 +770,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-fill [::pdtk_canvas::get_color gopbox_color .x%lx] "
+            "-fill [::pdtk_canvas::get_color gop_box .x%lx] "
             "-width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
                 glist_getcanvas(x), x->gl_zoom);
