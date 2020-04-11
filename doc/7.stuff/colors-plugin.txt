@@ -19,6 +19,11 @@ graph_outline "blue"
 selection_rectangle "light green"
 txt_highlight "black"
 }
+
+# how to set individual colors
+#set ::pd_colors(msg_box_fill) "white"
+#set ::pd_colors(obj_box_fill) "white"
+
 #random colors for everything
 #proc ::pdtk_canvas::get_color {type {window 0}} {
 #	return [format #%06x [expr {int(rand() * 0xFFFFFF)}]]
