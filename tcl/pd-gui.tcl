@@ -240,7 +240,7 @@ set redo_action no
 array set ::pd_colors {
 selection_rectangle "#000"
 selected "#00f"
-txt_highlight "#C3C3C3"
+txt_highlight ""
 msg_iolet "#000"
 signal_iolet "#000"
 msg_cord "#000"
@@ -390,7 +390,6 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
-            set ::pd_colors(txt_highlight) "SystemHighlight"
         }
         "win32" {
             set ::modifier "Control"
@@ -435,7 +434,6 @@ proc init_for_platform {} {
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
             set ::cursor_editmode_resize "sb_h_double_arrow"
-            set ::pd_colors(txt_highlight) "SystemHighlight"
         }
     }
 }
