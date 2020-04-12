@@ -759,9 +759,9 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             i -= glist_fontheight(x);
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
                 "-font {{%s} -%d %s} -fill [::pdtk_canvas::get_color %s .x%lx] "
-                "-tags [list %s label graph]\n",
+                "-tags [list %s name graph]\n",
                 glist_getcanvas(x),  x1, i, arrayname->s_name, sys_font,
-                fs, sys_fontweight, (state ? "selected" : "array_text"),
+                fs, sys_fontweight, (state ? "selected" : "array_name"),
                 glist_getcanvas(x), tag);
         }
 
@@ -1001,15 +1001,15 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
        		glist, rtext_gettag(y),
         	(state? "selected" : "graph_text"), glist);
-        sys_vgui(".x%lx.c itemconfigure graph%lx -fill "
+        sys_vgui(".x%lx.c itemconfigure graph%lx&&!name -fill "
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
             glist_getcanvas(glist), z,
             (state? "selected" : "graph_outline"), glist);
         if (x->gl_list && pd_class(&x->gl_list->g_pd) == garray_class)
-            sys_vgui(".x%lx.c itemconfigure graph%lx&&label -fill "
+            sys_vgui(".x%lx.c itemconfigure graph%lx&&name -fill "
 				"[::pdtk_canvas::get_color %s .x%lx]\n",
 				glist_getcanvas(glist), z,
-				(state? "selected" : "array_text"), glist);
+				(state? "selected" : "array_name"), glist);
     }
 }
 
