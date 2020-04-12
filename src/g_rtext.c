@@ -423,6 +423,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (action == SEND_FIRST)
     {
         int lmargin = LMARGIN, tmargin = TMARGIN;
+        const char *txtcolor;
         if (glist_getzoom(x->x_glist) > 1)
         {
             /* zoom margins */
@@ -433,41 +434,29 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-    	if (x->x_text->te_type == T_ATOM) {
-			sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d "
-			"{%s } %d black\n",
-				canvas, x->x_tag, rtext_gettype(x)->s_name,
-				text_xpix(x->x_text, x->x_glist) + lmargin,
-				text_ypix(x->x_text, x->x_glist) + tmargin,
-				escbuf,
-				guifontsize);
-		} else {
-			const char *txtcolor;
-    		switch (x->x_text->te_type) {
-				case T_OBJECT:
-				/*SS: check if we're gop */
-					if (pd_class(&x->x_text->te_pd) == canvas_class &&
-						glist_isgraph((t_glist *)(x->x_text)))
-					{
-						if(glist_isselected(((t_glist *)(x->x_text))->gl_owner,
-							&x->x_text->te_g))
-						txtcolor = "selected";
-						else txtcolor = "graph_outline";
-					}
-					else txtcolor = "obj_text";
-					break;
-				case T_TEXT: txtcolor = "comment"; break;
-				case T_MESSAGE: txtcolor = "msg_text";
-			}
-            sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } "
-            	"%d [::pdtk_canvas::get_color %s .x%lx]\n",
-				canvas, x->x_tag, rtext_gettype(x)->s_name,
-				text_xpix(x->x_text, x->x_glist) + lmargin,
-				text_ypix(x->x_text, x->x_glist) + tmargin,
-				escbuf,
-				guifontsize, txtcolor,
-				canvas);
-    	}
+		switch (x->x_text->te_type) {
+			case T_OBJECT:
+			/*SS: check if we're gop */
+				if (pd_class(&x->x_text->te_pd) == canvas_class &&
+					glist_isgraph((t_glist *)(x->x_text)))
+				{
+					if(glist_isselected(((t_glist *)(x->x_text))->gl_owner,
+						&x->x_text->te_g))
+					txtcolor = "selected";
+					else txtcolor = "graph_text";
+				}
+				else txtcolor = "obj_box_text";
+				break;
+			case T_TEXT: txtcolor = "comment"; break;
+			case T_MESSAGE: txtcolor = "msg_box_text"; break;
+			case T_ATOM: txtcolor = "atom_box_text";
+		}
+		sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } "
+			"%d [::pdtk_canvas::get_color %s .x%lx]\n",
+			canvas, x->x_tag, rtext_gettype(x)->s_name,
+			text_xpix(x->x_text, x->x_glist) + lmargin,
+			text_ypix(x->x_text, x->x_glist) + tmargin,
+			escbuf, guifontsize, txtcolor, canvas);
     }
     else if (action == SEND_UPDATE)
     {
@@ -567,27 +556,23 @@ void rtext_select(t_rtext *x, int state)
 			glist_getcanvas(x->x_glist), x->x_tag,
 			glist_getcanvas(x->x_glist));
 	else {
-		if(x->x_text->te_type == T_ATOM) {
-			sys_vgui(".x%lx.c itemconfigure %s -fill black\n",
-				glist_getcanvas(x->x_glist), x->x_tag);
-		} else {
-			char* txtcolor;
-			switch (x->x_text->te_type) {
-				case T_TEXT: txtcolor = "comment"; break;
-				case T_OBJECT:
-					/*SS: check if we're gop */
-					if (pd_class(&x->x_text->te_pd) == canvas_class &&
-					glist_isgraph((t_glist *)(x->x_text)))
-						txtcolor = "graph_outline";
-					else txtcolor = "obj_text";
-					break;
-				case T_MESSAGE: txtcolor = "msg_text";
-			}
-			sys_vgui(".x%lx.c itemconfigure %s -fill "
-				"[::pdtk_canvas::get_color %s .x%lx]\n",
-				glist_getcanvas(x->x_glist), x->x_tag,
-				txtcolor, glist_getcanvas(x->x_glist));
+		char* txtcolor;
+		switch (x->x_text->te_type) {
+			case T_TEXT: txtcolor = "comment"; break;
+			case T_OBJECT:
+				/*SS: check if we're gop */
+				if (pd_class(&x->x_text->te_pd) == canvas_class &&
+				glist_isgraph((t_glist *)(x->x_text)))
+					txtcolor = "graph_text";
+				else txtcolor = "obj_box_text";
+				break;
+			case T_MESSAGE: txtcolor = "msg_box_text"; break;
+			case T_ATOM: txtcolor = "atom_box_text";
 		}
+		sys_vgui(".x%lx.c itemconfigure %s -fill "
+			"[::pdtk_canvas::get_color %s .x%lx]\n",
+			glist_getcanvas(x->x_glist), x->x_tag,
+			txtcolor, glist_getcanvas(x->x_glist));
 	}
 }
 

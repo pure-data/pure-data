@@ -760,9 +760,9 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
                 "-font {{%s} -%d %s} -fill [::pdtk_canvas::get_color %s .x%lx] "
                 "-tags [list %s label graph]\n",
-                glist_getcanvas(x),  x1, i,
-                arrayname->s_name, sys_font,
-                fs, sys_fontweight, selected, (long)glist_getcanvas(x), tag);
+                glist_getcanvas(x),  x1, i, arrayname->s_name, sys_font,
+                fs, sys_fontweight, (state ? "selected" : "array_text"),
+                glist_getcanvas(x), tag);
         }
 
             /* draw ticks on horizontal borders.  If lperb field is
@@ -1000,11 +1000,16 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         sys_vgui(".x%lx.c itemconfigure %sR -fill "
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
        		glist, rtext_gettag(y),
-        	(state? "selected" : "graph_outline"), glist);
+        	(state? "selected" : "graph_text"), glist);
         sys_vgui(".x%lx.c itemconfigure graph%lx -fill "
         	"[::pdtk_canvas::get_color %s .x%lx]\n",
             glist_getcanvas(glist), z,
             (state? "selected" : "graph_outline"), glist);
+        if (x->gl_list && pd_class(&x->gl_list->g_pd) == garray_class)
+            sys_vgui(".x%lx.c itemconfigure graph%lx&&label -fill "
+				"[::pdtk_canvas::get_color %s .x%lx]\n",
+				glist_getcanvas(glist), z,
+				(state? "selected" : "array_text"), glist);
     }
 }
 

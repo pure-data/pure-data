@@ -2,8 +2,8 @@
 array set ::pd_colors {
 canvas_fill "#FF8800"
 gop_box "white"
-obj_text "green"
-msg_text "light blue"
+obj_box_text "green"
+msg_box_text "light blue"
 comment "white"
 selected "yellow"
 obj_box_outline_broken "blue"
@@ -18,6 +18,11 @@ signal_iolet "#99c0ff"
 graph_outline "blue"
 selection_rectangle "light green"
 txt_highlight "black"
+graph_text "purple"
+array_text "green"
+atom_box_fill "black"
+atom_box_text "red"
+atom_box_label "steel blue"
 }
 
 # how to set individual colors
