@@ -23,6 +23,7 @@ array_text "green"
 atom_box_fill "black"
 atom_box_text "red"
 atom_box_label "steel blue"
+atom_box_outline "red"
 }
 
 # how to set individual colors
