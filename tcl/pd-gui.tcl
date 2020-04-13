@@ -267,6 +267,12 @@ text_window_fill "#FFFFFF"
 text_window_text "#000"
 text_window_highlight ""
 text_window_cursor "#000"
+pdwindow_fill "#FFFFFF"
+pdwindow_fatal_text "#D00"
+pdwindow_fatal_highlight "#FFE0E8"
+pdwindow_error_text "#D00"
+pdwindow_post_text "#000"
+pdwindow_debug_text "#484848"
 }
 
 namespace eval ::pdgui:: {
@@ -603,6 +609,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::create_window_finalize
     ::pdtk_canvas::create_popup
     load_startup_plugins
+    ::pdwindow::set_colors
     open_filestoopen
     set ::done_init 1
 }

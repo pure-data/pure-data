@@ -29,6 +29,12 @@ text_window_fill "black"
 text_window_text "white"
 text_window_highlight "green"
 text_window_cursor "green"
+pdwindow_fill "#000"
+pdwindow_fatal_text "#D00"
+pdwindow_fatal_highlight "#FFE0E8"
+pdwindow_error_text "#D00"
+pdwindow_post_text "deep sky blue"
+pdwindow_debug_text "green"
 }
 
 # how to set individual colors

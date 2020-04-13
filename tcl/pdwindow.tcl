@@ -29,10 +29,15 @@ namespace eval ::pdwindow:: {
 
 proc ::pdwindow::set_layout {} {
     variable maxloglevel
-    .pdwindow.text.internal tag configure log0 -foreground "#d00" -background "#ffe0e8"
-    .pdwindow.text.internal tag configure log1 -foreground "#d00"
-    # log2 messages are normal black on white
-    .pdwindow.text.internal tag configure log3 -foreground "#484848"
+    .pdwindow.text.internal tag configure log0 -foreground \
+    	[::pdtk_canvas::get_color pdwindow_fatal_text .pdwindow] -background \
+    	[::pdtk_canvas::get_color pdwindow_fatal_highlight .pdwindow]
+    .pdwindow.text.internal tag configure log1 -foreground \
+    	[::pdtk_canvas::get_color pdwindow_error_text .pdwindow]
+    .pdwindow.text.internal tag configure log2 -foreground \
+    	[::pdtk_canvas::get_color pdwindow_post_text .pdwindow]
+    .pdwindow.text.internal tag configure log3 -foreground \
+    	[::pdtk_canvas::get_color pdwindow_debug_text .pdwindow]
 
     # 0-20(4-24) is a rough useful range of 'verbose' levels for impl debugging
     set start 4
@@ -479,9 +484,6 @@ proc ::pdwindow::create_window {} {
     after idle [list after 0 ::pdwindow::filter_buffer_to_text]
 
     set ::loaded(.pdwindow) 1
-
-    # set some layout variables
-    ::pdwindow::set_layout
 }
 
 #--configure the window menu---------------------------------------------------#
@@ -503,4 +505,12 @@ proc ::pdwindow::create_window_finalize {} {
 # menu is not replaced by the custom Apple menu on OSX
 proc ::pdwindow::configure_menubar {} {
     .pdwindow configure -menu .menubar
+}
+
+proc ::pdwindow::set_colors {} {
+	# set some layout variables
+    # have to do this here to get colors from plugins in (after they load)
+    ::pdwindow::set_layout
+    .pdwindow.text configure -background \
+    	[::pdtk_canvas::get_color pdwindow_fill .pdwindow]
 }
