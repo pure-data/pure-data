@@ -572,7 +572,7 @@ static void knb_motion(t_knb *x, t_floatarg dx, t_floatarg dy)
     if (abs(dx)>abs(dy)) d=dx;
 
     if(x->x_gui.x_fsf.x_finemoved)
-        x->x_pos += (int)d;
+        x->x_pos += (int)(d * IEMGUI_ZOOM(x));
     else
         x->x_pos += 100 * (int)d;
     x->x_val = x->x_pos;
