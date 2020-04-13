@@ -382,7 +382,7 @@ static void knb_save(t_gobj *z, t_binbuf *b)
         x->x_gui.x_ldx, x->x_gui.x_ldy,
         iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
         bflcol[0], bflcol[1], bflcol[2],
-        x->x_val, x->x_angular, x->x_ticks,
+        x->x_val / (x->x_angular ? 1 : IEMGUI_ZOOM(x)), x->x_angular, x->x_ticks,
         gensym(acol_str), x->x_arc_width, x->x_start_angle, x->x_end_angle);
     binbuf_addv(b, ";");
 }
@@ -885,18 +885,18 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
 
+    if(lilo != 0) lilo = 1;
+    x->x_lin0_log1 = lilo;
+
+    x->x_angular = (angular != 0);
+
     if(x->x_gui.x_isa.x_loadinit)
-        x->x_val = v;
+        x->x_val = v * (x->x_angular ? 1 : IEMGUI_ZOOM(x));
     else
         x->x_val = 0;
 
     x->x_pos = x->x_val;
 
-    if(lilo != 0) lilo = 1;
-    x->x_lin0_log1 = lilo;
-
-    x->x_angular = (angular != 0);
-    
     if(ticks < 0) ticks = 0;
     if(ticks > 100) ticks = 100;
     x->x_ticks = ticks;
