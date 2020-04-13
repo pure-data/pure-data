@@ -159,8 +159,8 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
     if {[eval concat $$var_iemgui_ticks] < 0 } { set $var_iemgui_ticks 0 }
     if {[eval concat $$var_iemgui_ticks] > 360 } { set $var_iemgui_ticks 360 }
 
-    set max_arc_width [expr ([eval concat $$var_iemgui_wdt ] - 1) / 2]
-    set min_arc_width [expr -([eval concat $$var_iemgui_wdt ] / 2 + 1)]
+    set max_arc_width [expr ([eval concat $$var_iemgui_wdt] - 1) / 2]
+    set min_arc_width [expr -(([eval concat $$var_iemgui_wdt] - 1) / 2 + 1)]
     if {[eval concat $$var_iemgui_arc_width] < $min_arc_width } {
         set $var_iemgui_arc_width $min_arc_width
     }

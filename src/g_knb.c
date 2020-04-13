@@ -59,6 +59,7 @@ typedef struct _knb
     unsigned int      x_outlet_visible:1;
     unsigned int      x_wiper_visible:1;
     unsigned int      x_arc_visible:1;
+    unsigned int      x_center_visible:1;
 } t_knb;
 
 t_widgetbehavior knb_widgetbehavior;
@@ -85,40 +86,44 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     angle = angle0 + val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
 
     if(x->x_arc_visible) {
-        int xA0, yA0, xA1, yA1, arcwidth;
-        float zero_angle, zero_val, aA_2;
-         
-        arcwidth = ((x->x_arc_width * IEMGUI_ZOOM(x))/2) * 2 + 1;
-        if(arcwidth > ((x->x_gui.x_w - 1) / 2)) arcwidth = (x->x_gui.x_w - 1) / 2;
-        if(arcwidth < -(x->x_gui.x_w / 2 + 1)) arcwidth = -(x->x_gui.x_w / 2 + 1);
+        float zero_angle, zero_val;
+        int arcwidth, aD, cD;
+        int realw = x->x_gui.x_w / IEMGUI_ZOOM(x);
 
-        if(arcwidth > 0) aA_2 = arcwidth / 2.0 + 1;
-        else aA_2 = (x->x_gui.x_w - arcwidth) / 2.0;
-        
+        arcwidth = x->x_arc_width;
+        if(arcwidth > (realw - 1) / 2) arcwidth = (realw - 1) / 2;
+        if(arcwidth < -((realw - 1) / 2 + 1)) arcwidth = -((realw - 1) / 2 + 1);
+
         if((x->x_min * x->x_max) < 0) {
             if(x->x_min < 0) zero_val = -x->x_min / (abs(x->x_min) + abs(x->x_max));
             else zero_val = -x->x_max / (abs(x->x_min) + abs(x->x_max));
             zero_angle = angle0 + zero_val * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
             angle0 = zero_angle;
         }
-        xA0 = floor(x0 + aA_2);
-        yA0 = floor(y0 + aA_2);
-        xA1 = ceil(x1 - aA_2);
-        yA1 = ceil(y1 - aA_2);
+
+        if(arcwidth > 0) aD = 1;
+        else aD = (((realw + 1)/ 2) + arcwidth) * IEMGUI_ZOOM(x) ;
+
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
-            canvas, x, xA0, yA0, xA1, yA1);
-        sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f -width %d\n",
-            canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI,
-            abs(arcwidth));
+            canvas, x, x0 + aD, y0 + aD, x1 - aD, y1 - aD);
+        sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f \n",
+            canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI);
+
+        if(x->x_center_visible) {
+            cD = (arcwidth + 1) * IEMGUI_ZOOM(x);
+            sys_vgui(".x%lx.c coords %lxCENTER %d %d %d %d\n",
+                canvas, x, x0 + cD, y0 + cD, x1 - cD, y1 - cD);
+        }
     }
 
     #define NEAR(x) ((int)(x + 0.51))
     if(x->x_wiper_visible) {
-        float xc = (x0 + x1) / 2.0;
-        float yc = (y0 + y1) / 2.0;
         float radius = x->x_gui.x_w / 2.0;
         float xp, yp, xpc, ypc;
-        float miniradius = 1.5;
+        float miniradius = 1.5 * IEMGUI_ZOOM(x);
+        float xc, yc;
+        xc = (x0 + x1) / 2.0;
+        yc = (y0 + y1) / 2.0;
         xp = xc + radius * cos(angle);
         yp = yc + radius * sin(angle);
         xpc = miniradius * cos(angle-M_PI/2);
@@ -153,14 +158,19 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     knb_draw_io(x, glist, 0);
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c create arc %d %d %d %d -style arc -outline #%06x \
-        -width %d -state %s -tags %lxARC\n",
-        canvas, xpos + (x->x_arc_width / 2) + 1, ypos + (x->x_arc_width / 2) + 1, 
-        xpos + x->x_gui.x_w - (x->x_arc_width / 2) - 1, ypos + x->x_gui.x_w - (x->x_arc_width / 2) - 1,
-        x->x_acol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden", x);
+    sys_vgui(".x%lx.c create arc %d %d %d %d -outline #%06x -fill #%06x -state %s -tags %lxARC\n",
+        canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
+        x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", x);
+
+    x->x_center_visible = (x->x_arc_width > 0) && 
+        (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
+    sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -tags %lxCENTER\n",
+        canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
+        x->x_gui.x_bcol, x->x_gui.x_bcol, x->x_center_visible ? "normal" : "hidden", x);
+
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
     sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
-        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol, 
+        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol,
         x->x_wiper_visible ? "normal" : "hidden", x);
 
     knb_update_knob(x,glist);
@@ -209,6 +219,7 @@ static void knb_draw_erase(t_knb *x,t_glist *glist)
     sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxWIPER\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxARC\n", canvas, x);
+    sys_vgui(".x%lx.c delete %lxCENTER\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
     if(x->x_outline_visible) {
         sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
@@ -234,10 +245,16 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -width %d -state %s\n", canvas, 
-        x, x->x_acol, abs(x->x_arc_width), x->x_arc_visible ? "normal" : "hidden");
+    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -fill #%06x -state %s\n", canvas,
+        x, x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden");
+
+    x->x_center_visible = (x->x_arc_width > 0) &&
+        (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
+    sys_vgui(".x%lx.c itemconfigure %lxCENTER -outline #%06x -fill #%06x -state %s\n", canvas,
+        x, x->x_gui.x_bcol, x->x_gui.x_bcol, x->x_center_visible ? "normal" : "hidden");
+
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas, 
+    sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas,
         x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
 
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
@@ -453,7 +470,7 @@ static t_float knb_getfval(t_knb *x)
     t_float fval;
     int zoom = x->x_angular ? 1 : IEMGUI_ZOOM(x);
     int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
-        x->x_val / zoom : (x->x_val / (100 * zoom)) * 100;
+        x->x_val / zoom : (x->x_val / (100.0 * zoom)) * 100;
 
     if (x->x_lin0_log1)
         fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
@@ -552,7 +569,6 @@ static void knb_motion(t_knb *x, t_floatarg dx, t_floatarg dy)
 {
     int old = x->x_val;
     float d=-dy;
-
     if (abs(dx)>abs(dy)) d=dx;
 
     if(x->x_gui.x_fsf.x_finemoved)
@@ -652,6 +668,11 @@ static void knb_size(t_knb *x, t_floatarg f)
 
     knb_check_wh(x, w, h);
     iemgui_size((void *)x, &x->x_gui);
+    if(glist_isvisible(x->x_gui.x_glist)) {
+        knb_draw_config(x, x->x_gui.x_glist);
+        knb_draw_update(x, x->x_gui.x_glist);
+    }
+
 }
 
 static void knb_sensitivity(t_knb *x, t_floatarg f)
@@ -740,9 +761,12 @@ static void knb_init(t_knb *x, t_floatarg f)
     x->x_gui.x_isa.x_loadinit = (f == 0.0 ? 0 : 1);
 }
 
-static void knb_arc(t_knb *x, t_floatarg f)
+static void knb_arc(t_knb *x, t_floatarg arcwidth)
 {
-    x->x_arc_width = f;
+    int realw = x->x_gui.x_w / IEMGUI_ZOOM(x);
+    if(arcwidth > (realw - 1) / 2) arcwidth = (realw - 1) / 2;
+    if(arcwidth < -((realw - 1) / 2 + 1)) arcwidth = -((realw - 1) / 2 + 1);
+    x->x_arc_width = arcwidth;
     if(glist_isvisible(x->x_gui.x_glist)) {
         knb_draw_config(x, x->x_gui.x_glist);
         knb_draw_update(x, x->x_gui.x_glist);
@@ -803,7 +827,7 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_knb *x = (t_knb *)pd_new(knb_class);
     int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULTH;
-    int fs = 8, lilo = 0, ldx = -2, ldy = -6, v = 0;
+    int fs = 10, lilo = 0, ldx = 0, ldy = -6, v = 0;
     int angular = 0, ticks = 0, arcwidth = 0, start_angle = -135, end_angle = 135;
     t_symbol *acol_sym = gensym("#00");
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE - 1);
