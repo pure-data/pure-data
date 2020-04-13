@@ -263,6 +263,10 @@ graph_text "#000"
 array_name "#000"
 array_values "#000"
 gop_box "#FF8080"
+text_window_fill "#FFFFFF"
+text_window_text "#000"
+text_window_highlight ""
+text_window_cursor "#000"
 }
 
 namespace eval ::pdgui:: {

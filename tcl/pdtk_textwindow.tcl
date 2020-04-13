@@ -25,7 +25,15 @@ proc pdtk_textwindow_open {name geometry title font} {
         text $name.text -relief raised -highlightthickness 0 -bd 2 \
             -font [get_font_for_size $font] \
             -exportselection 1 -undo 1 \
-            -yscrollcommand "$name.scroll set" -background white
+            -yscrollcommand "$name.scroll set" -background \
+            [::pdtk_canvas::get_color text_window_fill $name] \
+            -foreground [::pdtk_canvas::get_color text_window_text $name] \
+			-insertbackground \
+			[::pdtk_canvas::get_color text_window_cursor $name]
+        set tmpcol [::pdtk_canvas::get_color text_window_highlight $name]
+		if {$tmpcol ne ""} {
+			$name.text configure -selectbackground $tmpcol
+		}
         scrollbar $name.scroll -command "$name.text yview"
         pack $name.scroll -side right -fill y
         pack $name.text -side left -fill both -expand 1

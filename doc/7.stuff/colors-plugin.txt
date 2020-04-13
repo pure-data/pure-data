@@ -25,6 +25,10 @@ atom_box_fill "black"
 atom_box_text "red"
 atom_box_label "steel blue"
 atom_box_outline "red"
+text_window_fill "black"
+text_window_text "white"
+text_window_highlight "green"
+text_window_cursor "green"
 }
 
 # how to set individual colors
