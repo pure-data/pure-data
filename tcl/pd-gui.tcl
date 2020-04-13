@@ -261,6 +261,7 @@ comment "#000"
 graph_outline "#000"
 graph_text "#000"
 array_name "#000"
+array_values "#000"
 gop_box "#FF8080"
 }
 
