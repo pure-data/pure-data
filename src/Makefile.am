@@ -66,6 +66,7 @@ pd_SOURCES_core = \
     g_hdial.c \
     g_hslider.c \
     g_io.c \
+    g_knob.c \
     g_mycanvas.c \
     g_numbox.c \
     g_readwrite.c \

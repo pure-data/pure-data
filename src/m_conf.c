@@ -14,6 +14,7 @@ void g_guiconnect_setup(void);
 void g_bang_setup(void);
 void g_hradio_setup(void);
 void g_hslider_setup(void);
+void g_knb_setup(void);
 void g_mycanvas_setup(void);
 void g_numbox_setup(void);
 void g_toggle_setup(void);
@@ -65,6 +66,7 @@ void conf_init(void)
     g_bang_setup();
     g_hradio_setup();
     g_hslider_setup();
+    g_knb_setup();
     g_mycanvas_setup();
     g_numbox_setup();
     g_toggle_setup();

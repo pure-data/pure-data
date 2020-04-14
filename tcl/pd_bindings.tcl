@@ -85,6 +85,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-K> {menu_send %W knb}
     bind all <$::modifier-Shift-Key-L> {menu_clear_console}
     bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
     bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
@@ -104,6 +105,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-k> {menu_send %W knb}
     bind all <$::modifier-Shift-Key-l> {menu_clear_console}
     bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
     bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}

@@ -252,6 +252,8 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window vradio}
     $mymenu add command -label [_ "Hradio"]   -accelerator "Shift+$accelerator+I" \
         -command {menu_send $::focused_window hradio}
+    $mymenu add command -label [_ "Knob"]   -accelerator "Shift+$accelerator+K" \
+        -command {menu_send $::focused_window knb}
     $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U" \
         -command {menu_send $::focused_window vumeter}
     $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
