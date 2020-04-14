@@ -737,7 +737,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_symbol *arrayname;
         char selected[56];
         sprintf(selected, "[::pdtk_canvas::get_color %s .x%lx]",
-        	(state ? "selected" : "graph_outline"), c);
+        	(state ? "selected" : "graph_outline"), (long)c);
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
