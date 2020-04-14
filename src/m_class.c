@@ -212,8 +212,10 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
-        freebytes(c->c_methods[instanceno],
-            c->c_nmethod * sizeof(**c->c_methods));
+        if(c->c_methods[instanceno])
+            freebytes(c->c_methods[instanceno],
+                      c->c_nmethod * sizeof(**c->c_methods));
+        c->c_methods[instanceno] = NULL;
         for (i = instanceno; i < pd_ninstances-1; i++)
             c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
@@ -524,7 +526,11 @@ void class_free(t_class *c)
         c->c_classfreefn(c);
 #if PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
-        freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+    {
+        if(c->c_methods[i])
+            freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+        c->c_methods[i] = NULL;
+    }
     freebytes(c->c_methods, pd_ninstances * sizeof(*c->c_methods));
 #else
     freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
