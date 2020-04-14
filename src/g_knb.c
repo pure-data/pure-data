@@ -101,7 +101,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
             angle0 = zero_angle;
         }
 
-        if(arcwidth > 0) aD = 1;
+        if(arcwidth > 0) aD = IEMGUI_ZOOM(x);
         else aD = (((realw + 1)/ 2) + arcwidth) * IEMGUI_ZOOM(x) ;
 
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
@@ -194,15 +194,16 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     knb_draw_io(x, glist, 0);
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c create arc %d %d %d %d -outline #%06x -fill #%06x -state %s -tags %lxARC\n",
+    sys_vgui(".x%lx.c create arc %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags %lxARC\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-        x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", x);
+        x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x);
 
     x->x_center_visible = (x->x_arc_width > 0) && 
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
-    sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -tags %lxCENTER\n",
+    sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags %lxCENTER\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-        x->x_gui.x_bcol, x->x_gui.x_bcol, x->x_center_visible ? "normal" : "hidden", x);
+        x->x_gui.x_bcol, x->x_gui.x_bcol, 
+        x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x);
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
     sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
@@ -285,13 +286,14 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -fill #%06x -state %s\n", canvas,
-        x, x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden");
+    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -fill #%06x -state %s -width %d\n", 
+        canvas, x, x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x));
 
     x->x_center_visible = (x->x_arc_width > 0) &&
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
-    sys_vgui(".x%lx.c itemconfigure %lxCENTER -outline #%06x -fill #%06x -state %s\n", canvas,
-        x, x->x_gui.x_bcol, x->x_gui.x_bcol, x->x_center_visible ? "normal" : "hidden");
+    sys_vgui(".x%lx.c itemconfigure %lxCENTER -outline #%06x -fill #%06x -state %s -width %d\n", 
+        canvas, x, x->x_gui.x_bcol, x->x_gui.x_bcol,
+        x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x));
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
     sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas,
