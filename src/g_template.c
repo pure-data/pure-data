@@ -1794,13 +1794,18 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
     if (tovis)
     {
+        char outline[56];
+        t_float color;
+        color = fielddesc_getfloat(&x->x_outlinecolor, template, data, 1);
+        if(color < 0)
+            sprintf(outline, "[::pdtk_canvas::get_color array_values .x%lx]",
+                (long)glist_getcanvas(glist));
+        else
+            numbertocolor(color, outline);
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
-            char color[20];
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), color);
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
                 t_float yval, xpix, ypix, nextxloc;
@@ -1841,7 +1846,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
                         inextx, (int)(glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth), color, data);
+                                + linewidth), outline, data);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
@@ -1851,13 +1856,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         }
         else
         {
-            char outline[20];
             int lastpixel = -1, ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
-            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), outline);
             if (wonset >= 0)
             {
                     /* found "w" field which controls linewidth.  The trace is
