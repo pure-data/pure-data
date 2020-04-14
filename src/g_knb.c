@@ -837,6 +837,16 @@ static void knb_arc(t_knb *x, t_floatarg arcwidth)
     }
 }
 
+static void knb_ticks(t_knb *x, t_floatarg f)
+{
+    x->x_ticks = (int)f;
+    if(f <= 0) x->x_ticks = 0;
+
+    if(glist_isvisible(x->x_gui.x_glist)) {
+        knb_update_ticks(x, x->x_gui.x_glist);
+    }
+}
+
 static void knb_angle(t_knb *x, t_floatarg start, t_floatarg end)
 {
     float tmp;
@@ -851,7 +861,7 @@ static void knb_angle(t_knb *x, t_floatarg start, t_floatarg end)
     }
     if((end - start) > 360) end = start + 360;
     if(end == start) end = start + 1;
-    
+
     x->x_start_angle = start;
     x->x_end_angle = end;
     knb_update_H(x);
@@ -1052,6 +1062,7 @@ void g_knb_setup(void)
     class_addmethod(knb_class, (t_method)knb_init, gensym("init"), A_FLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_arc, gensym("arc"), A_DEFFLOAT, 0);
     class_addmethod(knb_class, (t_method)knb_angle, gensym("angle"), A_FLOAT, A_DEFFLOAT, 0);
+    class_addmethod(knb_class, (t_method)knb_ticks, gensym("ticks"), A_DEFFLOAT, 0);
 
     class_addmethod(knb_class, (t_method)knb_zoom, gensym("zoom"), A_CANT, 0);
 

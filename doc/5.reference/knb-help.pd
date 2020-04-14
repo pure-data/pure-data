@@ -1,4 +1,4 @@
-#N canvas 576 182 663 469 12;
+#N canvas 576 182 688 469 12;
 #X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 -262144 -1109 0
 ;
 #X floatatom 63 177 5 0 0 0 - - -;
@@ -12,8 +12,8 @@
 -1 -1 0 0 0 #000000 0 -135 135;
 #X obj 63 154 knb 20 100 127 0 0 0 empty empty empty -2 -6 0 8 -258113
 -1 -1 0 0 0 #000000 0 -135 135;
-#X obj 369 256 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
--1 -1 11656 1 0 #fc2828 5 -180 180;
+#X obj 369 266 knb 60 100 0 1 0 1 empty empty empty -2 -6 0 8 -262144
+-1 -1 11656 1 8 #fc2828 5 -180 180;
 #X text 503 63 high sens;
 #X text 523 86 default;
 #X text 68 12 gui-round-knob:;
@@ -320,6 +320,8 @@ empty -2 -6 0 8 -262144 -1 -1 0 0 0 #000000 0 -135 135;
 -262144 -262144 -1 9900 0 0 #202020 24 -90 90;
 #X text 354 350 if background and front colors are equal \, then the
 cursor is not shown:, f 30;
+#X floatatom 555 205 5 0 100 1 ticks - -;
+#X msg 555 228 ticks \$1;
 #X connect 2 0 7 0;
 #X connect 3 0 7 0;
 #X connect 5 0 26 0;
@@ -339,3 +341,5 @@ cursor is not shown:, f 30;
 #X connect 34 0 35 0;
 #X connect 35 0 9 0;
 #X connect 36 0 37 0;
+#X connect 44 0 45 0;
+#X connect 45 0 9 0;
