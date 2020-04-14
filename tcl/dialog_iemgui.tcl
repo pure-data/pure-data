@@ -12,6 +12,8 @@ namespace eval ::dialog_iemgui:: {
     namespace export pdtk_iemgui_dialog
 }
 
+source [file join [file dirname [info script]] "dialog_iemgui_knob.tcl"]
+
 proc proc_exists p {
     return uplevel 1 [expr {[llength [info procs $p]] > 0}]
 }
@@ -575,6 +577,16 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"] }
+        "|knb|" {
+            set $var_iemgui_guitype "knb"
+            set iemgui_type [_ "Knob"]
+            set wdt_label [_ "Size:"]
+            set hgt_label [_ "Sensitivity:"]
+            set iemgui_range_header [_ "Output Range"]
+            set min_rng_label [_ "Lower:"]
+            set max_rng_label [_ "Upper:"]
+            set $var_iemgui_steady0 [_ "Linear control"]
+            set $var_iemgui_steady1 [_ "Angular control"] }
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
             set wdt_label [_ "Size:"]

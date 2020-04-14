@@ -30,6 +30,7 @@ TCLFILES = \
     AppMain.tcl \
     dialog_data.tcl \
     dialog_iemgui.tcl \
+    dialog_iemgui_knob.tcl \
     dialog_startup.tcl \
     pd_connect.tcl \
     pkgIndex.tcl \

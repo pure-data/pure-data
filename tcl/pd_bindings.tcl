@@ -95,6 +95,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Shift-Key G {menu_send %W graph}
     bind_capslock all $::modifier-Shift-Key J {menu_send %W hslider}
     bind_capslock all $::modifier-Shift-Key I {menu_send %W hradio}
+    bind_capslock all $::modifier-Shift-Key K {menu_send %W knb}
     bind_capslock all $::modifier-Shift-Key L {menu_clear_console}
     bind_capslock all $::modifier-Shift-Key M {menu_message_dialog}
     bind_capslock all $::modifier-Shift-Key N {menu_send %W numbox}
@@ -106,6 +107,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Shift-Key V {menu_send %W vslider}
     bind_capslock all $::modifier-Shift-Key W {::pd_bindings::window_close %W 1}
     bind_capslock all $::modifier-Shift-Key Z {menu_redo}
+
     bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
 
     # OS-specific bindings

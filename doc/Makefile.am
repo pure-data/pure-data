@@ -363,6 +363,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/message-help.pd \
      ./5.reference/metro-help.pd \
      ./5.reference/midi-help.pd \
+     ./5.reference/knb-help.pd \
      ./5.reference/moses-help.pd \
      ./5.reference/namecanvas-help.pd \
      ./5.reference/nbx-help.pd \

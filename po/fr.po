@@ -3,7 +3,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.49-0\n"
+"Project-Id-Version: Pure Data 0.50.2\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2021-09-14 19:22+0200\n"
@@ -488,6 +488,18 @@ msgstr "Slider vertical"
 msgid "Hslider"
 msgstr "Slider horizontal"
 
+msgid "Knob"
+msgstr "Knob"
+
+msgid "Sensitivity:"
+msgstr "Sensibilité :"
+
+msgid "Linear control"
+msgstr "Contrôle lineaire"
+
+msgid "Angular control"
+msgstr "Contrôle angulaire"
+
 msgid "Vradio"
 msgstr "Sélecteur vertical"
 
@@ -533,6 +545,24 @@ msgstr "Créer la couleur"
 
 msgid "Test label"
 msgstr "Label de test"
+
+msgid "Arc color"
+msgstr "Couleur de l'arc"
+
+msgid "Ticks: "
+msgstr "Graduations : "
+
+msgid "Arc width: "
+msgstr "Largeur arc : "
+
+msgid "Start angle: "
+msgstr "Angle début : "
+
+msgid "End angle: "
+msgstr "Angle fin : "
+
+msgid "Arc"
+msgstr "Arc"
 
 msgid "Send a Pd message"
 msgstr "Envoyer un message à Pd"
@@ -932,17 +962,6 @@ msgstr "[deken] Aucun external correspondant trouvé."
 msgid "Try using the full name e.g. 'freeverb~'."
 msgstr "Essayez avec le nom complet, par exemple 'freeverb~'"
 
-msgid "No matching externals found."
-msgstr "Aucun external correspondant trouvé."
-
-msgid "Please select a (writable) installation directory!"
-msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
-
-#, tcl-format
-msgid "Install %1$s to %2$s?"
-msgstr "Installer %1$s dans %2$s ?"
-
-#, tcl-format
 msgid "Cancelling download of %s: No installation directory given."
 msgstr ""
 "Annulation du téléchargement de %s : aucun répertoire d'installation n'a "
