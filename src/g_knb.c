@@ -137,29 +137,51 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
 static void knb_update_ticks(t_knb *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int tick, divs;
-    int x0, y0, x1, y1;
+    int tick;
+    int x0, y0;
     float xc, yc, xTc, yTc, r1, r2;
-    float alpha, dalpha;
+    float alpha0, dalpha, dalphan = 0;
 
     sys_vgui(".x%lx.c delete %lxTICKS\n", canvas, x);
     if(!x->x_ticks) return;
 
     x0 = text_xpix(&x->x_gui.x_obj, glist);
     y0 = text_ypix(&x->x_gui.x_obj, glist);
-    x1 = x0 + x->x_gui.x_w;
-    y1 = y0 + x->x_gui.x_w;
-    xc = (x0 + x1) / 2.0;
-    yc = (y0 + y1) / 2.0;
+    xc = x0 + x->x_gui.x_w / 2.0;
+    yc = y0 + x->x_gui.x_w / 2.0;
+
     r1 = x->x_gui.x_w / 2.0 - IEMGUI_ZOOM(x) * 2.0;
     r2 = IEMGUI_ZOOM(x) * 1.0 ;
-    divs = x->x_ticks;
-    if((divs > 1) && ((x->x_end_angle - x->x_start_angle + 360) % 360 != 0))
-        divs = divs - 1;
-    dalpha = (x->x_end_angle - x->x_start_angle) / (float)divs;
+
+    if((x->x_min * x->x_max) < 0) {
+        float val0;
+        if(x->x_min < 0) val0 = -x->x_min / (abs(x->x_min) + abs(x->x_max));
+        else val0 = -x->x_max / (abs(x->x_min) + abs(x->x_max));
+        alpha0 = x->x_start_angle + val0 * (x->x_end_angle - x->x_start_angle);
+        dalpha = (x->x_end_angle - alpha0) / ((float)x->x_ticks - 1);
+        dalphan = (alpha0 - x->x_start_angle) / ((float)x->x_ticks - 1);
+    } else {
+        int divs = x->x_ticks;
+        if((divs > 1) && ((x->x_end_angle - x->x_start_angle + 360) % 360 != 0))
+            divs = divs - 1;
+        dalpha = (x->x_end_angle - x->x_start_angle) / (float)divs;
+        alpha0 = x->x_start_angle;
+    }
+
     for(tick = 0; tick < x->x_ticks; tick++) {
-        alpha = x->x_start_angle + tick * dalpha - 90.0;
-        alpha *= M_PI / 180.0;
+        float alpha = (alpha0 + dalpha * tick - 90.0) * M_PI / 180.0;
+        xTc = xc + r1 * cos(alpha);
+        yTc = yc + r1 * sin(alpha);
+        sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags %lxTICKS\n",
+            canvas,
+            NEAR(xTc - r2), NEAR(yTc - r2),
+            NEAR(xTc + r2), NEAR(yTc + r2),
+            x->x_gui.x_fcol, x->x_gui.x_fcol, x);
+    }
+
+    /* if x_min x_max are of opposite signs, then double the ticks for the negative side: */
+    if(dalphan != 0) for(tick = 0; tick < x->x_ticks; tick++) {
+        float alpha = (alpha0 - dalphan * tick - 90.0) * M_PI / 180.0;
         xTc = xc + r1 * cos(alpha);
         yTc = yc + r1 * sin(alpha);
         sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags %lxTICKS\n",
