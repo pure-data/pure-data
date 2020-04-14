@@ -35,6 +35,9 @@ pdwindow_fatal_highlight "#FFE0E8"
 pdwindow_error_text "#D00"
 pdwindow_post_text "deep sky blue"
 pdwindow_debug_text "green"
+helpbrowser_fill "#000"
+helpbrowser_text "deep sky blue"
+helpbrowser_highlight "red"
 }
 
 # how to set individual colors

@@ -273,6 +273,9 @@ pdwindow_fatal_highlight "#FFE0E8"
 pdwindow_error_text "#D00"
 pdwindow_post_text "#000"
 pdwindow_debug_text "#484848"
+helpbrowser_fill "#FFFFFF"
+helpbrowser_text "#000"
+helpbrowser_highlight ""
 }
 
 namespace eval ::pdgui:: {
