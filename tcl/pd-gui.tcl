@@ -344,6 +344,7 @@ proc init_for_platform {} {
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile
+            option add *DialogWindow*foreground "black" startupFile
             option add *DialogWindow*Entry.background "white" startupFile
             option add *DialogWindow*Menu.foreground "black" startupFile
             # Mac OS X needs a menubar all the time

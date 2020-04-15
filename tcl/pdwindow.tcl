@@ -347,7 +347,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.pad1 -side left -padx 12
 
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
-        -takefocus 1 -background lightgray \
+        -takefocus 1 -background lightgray -foreground black\
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 
@@ -373,7 +373,7 @@ proc ::pdwindow::create_window {} {
         -side top
 
     label .pdwindow.header.loglabel -text [_ "Log:"] -anchor e \
-        -background lightgray
+        -background lightgray -foreground black
     pack .pdwindow.header.loglabel -side left
 
     set loglevels {0 1 2 3 4}
@@ -384,7 +384,7 @@ proc ::pdwindow::create_window {} {
     lappend logmenuitems "4 [_ all]"
     set logmenu \
         [eval tk_optionMenu .pdwindow.header.logmenu ::loglevel $loglevels]
-    .pdwindow.header.logmenu configure -background lightgray
+    .pdwindow.header.logmenu configure -background lightgray -foreground black
     foreach i $loglevels {
         $logmenu entryconfigure $i -label [lindex $logmenuitems $i]
     }
