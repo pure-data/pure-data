@@ -344,9 +344,18 @@ proc init_for_platform {} {
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile
-            option add *DialogWindow*foreground "black" startupFile
+            #keep system foreground in menus for tk > 8.5
+            option add *DialogWindow*Button.foreground "black" startupFile
+            option add *DialogWindow*Label.foreground "black" startupFile
+            option add *DialogWindow*Labelframe.foreground "black" startupFile
             option add *DialogWindow*Entry.background "white" startupFile
-            option add *DialogWindow*Menu.foreground "black" startupFile
+            option add *DialogWindow*Entry.foreground "black" startupFile
+            option add *DialogWindow*Checkbutton.foreground "black" startupFile
+            option add *DialogWindow*Menubutton.foreground "black" startupFile
+            if {$::tcl_version < 8.6} {
+            	option add *DialogWindow*Menu.foreground \
+            		"black" startupFile
+            }
             # Mac OS X needs a menubar all the time
             set ::dialog_menubar ".menubar"
             # set file types that open/save recognize
