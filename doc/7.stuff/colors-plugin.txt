@@ -39,6 +39,7 @@ helpbrowser_fill "#000"
 helpbrowser_text "deep sky blue"
 helpbrowser_highlight "red"
 }
+set ::pd_colors(txt_highlight_front) $::pd_colors(selected)
 
 # how to set individual colors
 #set ::pd_colors(msg_box_fill) "white"

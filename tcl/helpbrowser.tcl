@@ -87,9 +87,15 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
         -highlightbackground white -highlightthickness 5 -highlightcolor white \
-        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0 \
-        -background [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser] \
-        -foreground [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]]
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+    set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -background $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -foreground $tmpcol
+	}
 	set tmpcol [::pdtk_canvas::get_color helpbrowser_highlight .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -selectbackground $tmpcol
@@ -225,9 +231,15 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
         -highlightbackground white -highlightthickness 5 -highlightcolor white \
-        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0 \
-        -background [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser] \
-        -foreground [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]]
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+    set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -background $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -foreground $tmpcol
+	}
     set tmpcol [::pdtk_canvas::get_color helpbrowser_highlight .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -selectbackground $tmpcol
@@ -288,9 +300,15 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
         -yscrollcommand "$b-scroll set" -highlightbackground white \
         -highlightthickness 5 -highlightcolor white -selectborderwidth 0 \
-        -height 20 -width 24 -exportselection 0 -bd 0 \
-        -background [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser] \
-        -foreground [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]]
+        -height 20 -width 24 -exportselection 0 -bd 0]
+    set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -background $tmpcol
+	}
+	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
+    if {$tmpcol ne ""} {
+		$current_listbox configure -foreground $tmpcol
+	}
     set tmpcol [::pdtk_canvas::get_color helpbrowser_highlight .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -selectbackground $tmpcol

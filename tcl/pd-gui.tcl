@@ -241,6 +241,7 @@ array set ::pd_colors {
 selected "#00f"
 selection_rectangle "#000"
 txt_highlight ""
+txt_highlight_front ""
 msg_iolet "#000"
 signal_iolet "#000"
 obj_box_outline "#000"
