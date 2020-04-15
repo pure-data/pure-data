@@ -352,6 +352,7 @@ proc init_for_platform {} {
             option add *DialogWindow*Entry.foreground "black" startupFile
             option add *DialogWindow*Checkbutton.foreground "black" startupFile
             option add *DialogWindow*Menubutton.foreground "black" startupFile
+            option add *DialogWindow*Radiobutton.foreground "black" startupFile
             if {$::tcl_version < 8.6} {
             	option add *DialogWindow*Menu.foreground \
             		"black" startupFile
