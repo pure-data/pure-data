@@ -176,7 +176,6 @@ typedef struct _hslider
 {
     t_iemgui x_gui;
     int      x_pos;
-    int      x_val;
     int      x_lin0_log1;
     int      x_steady;
     double   x_min;
@@ -216,7 +215,6 @@ typedef struct _vslider
 {
     t_iemgui x_gui;
     int      x_pos;
-    int      x_val;
     int      x_lin0_log1;
     int      x_steady;
     double   x_min;

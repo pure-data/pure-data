@@ -37,7 +37,7 @@ static void vslider_draw_update(t_gobj *client, t_glist *glist)
     if (glist_isvisible(glist))
     {
         int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h -
-            ((x->x_val + 50)/100);
+            ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
 
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
@@ -52,7 +52,7 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    int r = ypos + x->x_gui.x_h - ((x->x_val + 50)/100);
+    int r = ypos + x->x_gui.x_h - ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
@@ -91,7 +91,7 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    int r = ypos + x->x_gui.x_h - ((x->x_val+ 50)/100);
+    int r = ypos + x->x_gui.x_h - ((x->x_pos+ 50)/100) * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
@@ -243,7 +243,7 @@ static void vslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_val, x->x_steady);
+                x->x_pos, x->x_steady);
     binbuf_addv(b, ";");
 }
 
@@ -252,10 +252,9 @@ void vslider_check_height(t_vslider *x, int h)
     if(h < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         h = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
     x->x_gui.x_h = h;
-    if(x->x_val > (x->x_gui.x_h*100 - 100))
+    if(x->x_pos > ((x->x_gui.x_h/IEMGUI_ZOOM(x)) * 100 - 100))
     {
-        x->x_pos = x->x_gui.x_h*100 - 100;
-        x->x_val = x->x_pos;
+        x->x_pos = (x->x_gui.x_h/IEMGUI_ZOOM(x)) * 100 - 100;
     }
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max / x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
@@ -318,12 +317,10 @@ static void vslider_properties(t_gobj *z, t_glist *owner)
 static t_float vslider_getfval(t_vslider *x)
 {
     t_float fval;
-    int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
-        x->x_val/IEMGUI_ZOOM(x) : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
 
     if (x->x_lin0_log1)
-        fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
-    else fval = (double)(zoomval) * 0.01 * x->x_k + x->x_min;
+        fval = x->x_min * exp(x->x_k * (double)(x->x_pos) * 0.01);
+    else fval = (double)(x->x_pos) * 0.01 * x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
@@ -370,27 +367,22 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
 
 static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
 {
-    int old = x->x_val;
+    int old = x->x_pos;
 
     if(x->x_gui.x_fsf.x_finemoved)
-        x->x_pos -= (int)dy;
+        x->x_pos -= (int)(dy);
     else
-        x->x_pos -= 100 * (int)dy;
-    x->x_val = x->x_pos;
-    if(x->x_val > (100*x->x_gui.x_h - 100))
+        x->x_pos -= (int)(100 * dy / IEMGUI_ZOOM(x));
+    if(x->x_pos > (100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100))
     {
-        x->x_val = 100*x->x_gui.x_h - 100;
-        x->x_pos += 50;
-        x->x_pos -= x->x_pos % 100;
+        x->x_pos = 100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100;
     }
-    if(x->x_val < 0)
+    if(x->x_pos < 0)
     {
-        x->x_val = 0;
-        x->x_pos -= 50;
-        x->x_pos -= x->x_pos % 100;
+        x->x_pos = 0;
     }
     x->x_fval = vslider_getfval(x);
-    if (old != x->x_val)
+    if (old != x->x_pos)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         vslider_bang(x);
@@ -401,13 +393,13 @@ static void vslider_click(t_vslider *x, t_floatarg xpos, t_floatarg ypos,
                           t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
-        x->x_val = (int)(100.0 * (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos));
-    if(x->x_val > (100*x->x_gui.x_h - 100))
-        x->x_val = 100*x->x_gui.x_h - 100;
-    if(x->x_val < 0)
-        x->x_val = 0;
+        x->x_pos = (int)(100.0 * 
+            (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos) / IEMGUI_ZOOM(x));
+    if(x->x_pos > (100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100))
+        x->x_pos = 100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100;
+    if(x->x_pos < 0)
+        x->x_pos = 0;
     x->x_fval = vslider_getfval(x);
-    x->x_pos = x->x_val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     vslider_bang(x);
     glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
@@ -433,7 +425,7 @@ static int vslider_newclick(t_gobj *z, struct _glist *glist,
 
 static void vslider_set(t_vslider *x, t_floatarg f)
 {
-    int old = x->x_val;
+    int old = x->x_pos;
     double g;
 
     x->x_fval = f;
@@ -455,9 +447,8 @@ static void vslider_set(t_vslider *x, t_floatarg f)
         g = log(f/x->x_min) / x->x_k;
     else
         g = (f - x->x_min) / x->x_k;
-    x->x_val = IEMGUI_ZOOM(x) * (int)(100.0*g + 0.49999);
-    x->x_pos = x->x_val;
-    if(x->x_val != old)
+    x->x_pos = (int)(100.0*g + 0.49999);
+    if(x->x_pos != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
@@ -530,9 +521,6 @@ static void vslider_steady(t_vslider *x, t_floatarg f)
 
 static void vslider_zoom(t_vslider *x, t_floatarg f)
 {
-    /* scale current pixel value */
-    x->x_val = (IEMGUI_ZOOM(x) == 2 ? (x->x_val)/2 : (x->x_val)*2);
-    x->x_pos = x->x_val;
     iemgui_zoom(&x->x_gui, f);
 }
 
@@ -593,9 +581,8 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (x->x_gui.x_isa.x_loadinit)
-        x->x_val = v;
-    else x->x_val = 0;
-    x->x_pos = x->x_val;
+        x->x_pos = v;
+    else x->x_pos = 0;
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
     if(steady != 0) steady = 1;
@@ -613,10 +600,12 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
         fs = 4;
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(w);
-    vslider_check_height(x, h);
+    x->x_gui.x_h = iemgui_clip_size(h);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
+    vslider_check_height(x, x->x_gui.x_h);
     vslider_check_minmax(x, min, max);
+
     outlet_new(&x->x_gui.x_obj, &s_float);
     x->x_fval = vslider_getfval(x);
     return (x);
