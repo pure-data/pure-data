@@ -1,12 +1,12 @@
-#N canvas 366 152 1042 671 12;
+#N canvas 260 88 1042 787 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 77971 float 0;
 #X coords 0 1 77970 -1 300 100 1;
-#X restore 32 549 graph;
+#X restore 32 538 graph;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array2 155944 float 0;
 #X coords 0 1 155943 -1 300 100 1;
-#X restore 341 549 graph;
+#X restore 341 538 graph;
 #X obj 49 395 soundfiler;
 #X msg 73 308 write -aiff /tmp/foo1 array2;
 #X msg 42 157 read ../sound/bell.aiff array2;
@@ -71,6 +71,23 @@ fields are replaced by zero. If multiple arrays are specified \, the
 first elements of each array should come first in the file \, followed
 by all the second elements and so on., f 61;
 #X text 787 635 updated for Pd version 0.51;
+#X obj 460 665 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 460 685 openpanel;
+#X msg 460 709 read -resize \$1 array3;
+#X obj 460 733 soundfiler -threaded;
+#X obj 657 711 table array3;
+#X text 479 663 <- open a big soundfile;
+#X obj 597 756 print threaded info;
+#X floatatom 460 757 8 0 0 0 - - -;
+#X text 31 646 THREADED option:;
+#X text 29 667 If the soundfiler is instantiated with the "-threaded"
+argument \, then the soundfiler operates in the background \, using
+a helper thread (only for reading at the moment \, and "ascii" is not
+yet supported).;
+#X text 30 729 The operation is no longer "instantaneous" \, and must
+be waited for completion (indicated by the output of the outlets) before
+a new one can be requested.;
 #X connect 2 0 9 0;
 #X connect 2 1 33 0;
 #X connect 3 0 2 0;
@@ -80,3 +97,8 @@ by all the second elements and so on., f 61;
 #X connect 11 0 2 0;
 #X connect 12 0 2 0;
 #X connect 41 0 2 0;
+#X connect 46 0 47 0;
+#X connect 47 0 48 0;
+#X connect 48 0 49 0;
+#X connect 49 0 53 0;
+#X connect 49 1 52 0;
