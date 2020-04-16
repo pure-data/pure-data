@@ -391,7 +391,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             float z_f;
             uint32_t z_i;
         } z;
-        float f;
+        t_float f;
         int blobsize;
         switch ((int)(argv[i].a_w.w_float))
         {

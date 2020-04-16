@@ -84,7 +84,7 @@ tempo 4;
 #X text 396 549 click to reload qlist2.txt;
 #X obj 208 612 output~;
 #X text 247 46 This is an analog-synth sound made using a wavetable
-oscillator and a "vcf~' object. Unlike the "floyd" example earlier
+oscillator and a "vcf~" object. Unlike the "floyd" example earlier
 \, we use a qlist object to do the sequencing. This can also be adapted
 to make a keyboard synth.;
 #X text 245 114 The qlist reads the file \, "qlist2.txt" \, which contains
