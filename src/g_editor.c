@@ -4213,7 +4213,8 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         int objectcount = glist_getindex(x, 0);
             /* only cycle selection if the current selection contains exactly 1 item */
         t_gobj* y = x->gl_editor->e_selection->sel_next ? 0 : x->gl_editor->e_selection->sel_what;
-        if(!y)return;
+        if (!y || !objectcount)
+            return;
         newindex = (glist_getindex(x, y) + offset) % objectcount;
         if (newindex < 0) newindex += objectcount;
         glist_deselect(x, y);
@@ -4244,6 +4245,9 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             } else
                 offset--;
         }
+
+        if (!connectioncount)
+            offset = 0;
 
             /* if the offset is non-0, wrap it... */
         if (offset)
