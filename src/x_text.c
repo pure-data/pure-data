@@ -581,7 +581,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     skipit: ;
     }
     binbuf_free(x->x_binbuf);
-    x->x_binbuf = newb;
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf = newb;
     freebytes(sortbuf, nlines * sizeof(*sortbuf));
     textbuf_senditup(&x->x_textbuf);
 }

@@ -1417,7 +1417,7 @@ void sigfiddle_dsp(t_sigfiddle *x, t_signal **sp)
     x->x_sr = sp[0]->s_sr;
     sigfiddle_reattack(x, x->x_attacktime, x->x_attackthresh);
     sigfiddle_vibrato(x, x->x_vibtime, x->x_vibdepth);
-    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, sp[0]->s_n);
+    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
     /* This is the callback function for the clock, but also acts as
@@ -1677,7 +1677,7 @@ void sigfiddle_dsp(t_sigfiddle *x, t_signal **sp)
         }
         sigfiddle_reattack(x, x->x_attacktime, x->x_attackthresh);
     sigfiddle_vibrato(x, x->x_vibtime, x->x_vibdepth);
-    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, sp[0]->s_n);
+    dsp_add(fiddle_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 void sigfiddle_tick(t_sigfiddle *x)     /* callback function for the clock MSP*/
