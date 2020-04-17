@@ -707,7 +707,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        canvas_applybinbuf(x, buf->u_reconnectbuf);
+        if (buf)
+            canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
