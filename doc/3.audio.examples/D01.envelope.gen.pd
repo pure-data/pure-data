@@ -27,7 +27,7 @@ msec \, the second message sends the line~ back down to 1 over another
 #X msg 280 332 stop;
 #X text 48 143 You can hit the "attack" and/or "release" while something
 is still going on from a previous attack or release \, and the envelope
-generator does the ``right thing". In particular \, the release button
+generator does the "right thing". In particular \, the release button
 sends a "stop" to the "del" object \, in case it is still scheduled
 to go off from a previous attack.;
 #X text 50 227 The synthesis method is a form of waveshaping \, which

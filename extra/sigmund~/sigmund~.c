@@ -19,6 +19,7 @@
 #include "ext_proto.h"
 #include "ext_obex.h"
 typedef double t_floatarg;
+typedef float t_float;
 #define t_resizebytes(a, b, c) t_resizebytes((char *)(a), (b), (c))
 #endif
 
@@ -1072,6 +1073,15 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
         if (x->x_hop % sp[0]->s_n)
             post("sigmund: adjusting hop size to %d",
                 (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+        if (x->x_infill % sp[0]->s_n) {
+            if (x->x_inbuf) {
+                int i;
+                t_sample*inbuf = x->x_inbuf;
+                for(i=0; i<x->x_npts; i++)
+                    *inbuf++ = 0.;
+            }
+            x->x_infill = 0;
+        }
         x->x_sr = sp[0]->s_sr;
         dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }

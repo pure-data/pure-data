@@ -486,7 +486,7 @@ static int stupid_sortcompare(const void *z1, const void *z2) {
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
@@ -566,10 +566,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    (a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float) ||
-                    (a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol))
+                    a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float ||
+                    a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol)
                             goto doit;
             }
         }
@@ -581,7 +581,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     skipit: ;
     }
     binbuf_free(x->x_binbuf);
-    x->x_binbuf = newb;
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf = newb;
     freebytes(sortbuf, nlines * sizeof(*sortbuf));
     textbuf_senditup(&x->x_textbuf);
 }

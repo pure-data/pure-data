@@ -257,7 +257,7 @@ typedef struct _vline
 static t_int *vline_tilde_perform(t_int *w)
 {
     t_vline *x = (t_vline *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]), i;
     double f = x->x_value;
     double inc = x->x_inc;
