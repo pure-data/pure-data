@@ -81,7 +81,7 @@
 #define IEM_GUI_DRAW_MODE_CONFIG 5
 #define IEM_GUI_DRAW_MODE_IO     6
 
-#define IEM_GUI_IOHEIGHT 2
+#define IEM_GUI_IOHEIGHT 3
 
 #define IS_A_POINTER(atom,index) ((atom+index)->a_type == A_POINTER)
 #define IS_A_FLOAT(atom,index) ((atom+index)->a_type == A_FLOAT)
