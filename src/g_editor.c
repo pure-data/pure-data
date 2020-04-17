@@ -1198,9 +1198,12 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
             /* now fix links in the hole made in the list due to moving of the oldy
              * (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
              */
-        if (oldy_next) /* there is indeed more after oldy position */
-            oldy_prev->g_next = oldy_next;
-        else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        if (oldy_prev)
+        {
+            if (oldy_next) /* there is indeed more after oldy position */
+                oldy_prev->g_next = oldy_next;
+            else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        }
 
 #if 0
             /* and finally redraw */
