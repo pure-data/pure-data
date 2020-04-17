@@ -26,9 +26,8 @@
     #define M_PI 3.14159265358979323846
 #endif
 
-#define MKNOB_TANGLE 100
-#define MKNOB_DEFAULTH 128
-#define MKNOB_DEFAULTSIZE 25
+#define MKNOB_DEFAULT_SENSITIVITY 128
+#define MKNOB_DEFAULTSIZE 35
 #define MKNOB_MINSIZE 12
 
 /* ------------ knb  ----------------------- */
@@ -177,7 +176,7 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
             x->x_gui.x_fcol, x->x_gui.x_fcol, x);
     }
 
-    /* if x_min x_max are of opposite signs, then double the ticks for the negative side: */
+        /* if x_min x_max are of opposite signs, then double the ticks for the negative side: */
     if (dalphan != 0) for (tick = 0; tick < x->x_ticks; tick++)
     {
         float alpha = (alpha0 - dalphan * tick - 90.0) * M_PI / 180.0;
@@ -868,12 +867,12 @@ static void knb_loadbang(t_knb *x, t_floatarg action)
 static void *knb_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_knb *x = (t_knb *)pd_new(knb_class);
-    int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULTH;
-    int fs = 10, lilo = 0, ldx = 0, ldy = -6;
+    int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULT_SENSITIVITY;
+    int fs = 12, lilo = 0, ldx = 0, ldy = -6;
     float v = 0;
     int angular = 0, ticks = 0, arcwidth = 0, start_angle = -135, end_angle = 135;
     t_symbol *acol_sym = gensym("#00");
-    double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE - 1);
+    double min = 0.0, max = (double)(MKNOB_DEFAULT_SENSITIVITY - 1);
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
