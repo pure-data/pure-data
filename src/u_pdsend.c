@@ -103,6 +103,12 @@ int main(int argc, char **argv)
         break;
     }
     freeaddrinfo(ailist);
+    if (sockfd < 0)
+    {
+        fprintf(stderr, "couldn't create socket to connect to %s://%s:%d\n",
+            (SOCK_STREAM==protocol)?"tcp":"udp", hostname, portno);
+        exit(EXIT_FAILURE);
+    }
 
     /* now loop reading stdin and sending it to socket */
     while (1)
