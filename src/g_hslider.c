@@ -545,8 +545,8 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_hslider *x = (t_hslider *)pd_new(hslider_class);
     int w = IEM_SL_DEFAULTSIZE, h = IEM_GUI_DEFAULTSIZE;
-    int lilo = 0, ldx = -2, ldy = -8, steady = 1;
-    int fs = 10;
+    int lilo = 0, ldx = -2, ldy = -9, steady = 1;
+    int fs = IEM_DEFFONT_SIZE;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
     t_float v = 0;
 

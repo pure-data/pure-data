@@ -549,8 +549,8 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vslider *x = (t_vslider *)pd_new(vslider_class);
     int w = IEM_GUI_DEFAULTSIZE, h = IEM_SL_DEFAULTSIZE;
-    int lilo = 0, f = 0, ldx = 0, ldy = -9;
-    int fs = 10, steady = 1;
+    int lilo = 0, f = 0, ldx = 0, ldy = -11;
+    int fs = IEM_DEFFONT_SIZE, steady = 1;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
     char str[144];
     float v = 0;

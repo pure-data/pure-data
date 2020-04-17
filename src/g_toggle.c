@@ -406,8 +406,8 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_toggle *x = (t_toggle *)pd_new(toggle_class);
     int a = IEM_GUI_DEFAULTSIZE, f = 0;
-    int ldx = 17, ldy = 7;
-    int fs = 10;
+    int ldx = 22, ldy = 10;
+    int fs = IEM_DEFFONT_SIZE;
     t_float on = 0.0, nonzero = 1.0;
     char str[144];
 
