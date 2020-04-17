@@ -41,7 +41,7 @@
 
 #define IEM_GUI_MAX_COLOR            30
 
-#define IEM_GUI_DEFAULTSIZE 15
+#define IEM_GUI_DEFAULTSIZE 18
 #define IEM_GUI_MINSIZE     8
 #define IEM_GUI_MAXSIZE     1000
 #define IEM_SL_DEFAULTSIZE  128

@@ -770,9 +770,9 @@ static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_my_numbox *x = (t_my_numbox *)pd_new(my_numbox_class);
-    int w = 5, h = 14;
+    int w = 5, h = IEM_GUI_DEFAULTSIZE;
     int lilo = 0, ldx = 0, ldy = -8;
-    int fs = 10;
+    int fs = 12;
     int log_height = 256;
     double min = -1.0e+37, max = 1.0e+37, v = 0.0;
 
