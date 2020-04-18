@@ -362,16 +362,10 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     } else {
         set hhhgui_nam [eval concat $$var_iemgui_gui_nam]}
 
-    if {[string index $hhhsnd 0] == "$"} {
-        set hhhsnd [string replace $hhhsnd 0 0 #] }
-    if {[string index $hhhrcv 0] == "$"} {
-        set hhhrcv [string replace $hhhrcv 0 0 #] }
-    if {[string index $hhhgui_nam 0] == "$"} {
-        set hhhgui_nam [string replace $hhhgui_nam 0 0 #] }
 
-    set hhhsnd [unspace_text $hhhsnd]
-    set hhhrcv [unspace_text $hhhrcv]
-    set hhhgui_nam [unspace_text $hhhgui_nam]
+    set hhhsnd [string map {"$" {\$}} [unspace_text $hhhsnd]]
+    set hhhrcv [string map {"$" {\$}} [unspace_text $hhhrcv]]
+    set hhhgui_nam [string map {"$" {\$}} [unspace_text $hhhgui_nam]]
 
     # make sure the offset boxes have a value
     if {[eval concat $$var_iemgui_gn_dx] eq ""} {set $var_iemgui_gn_dx 0}
@@ -485,18 +479,12 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     set $var_iemgui_num $num
     set $var_iemgui_steady $steady
     if {$snd == "empty"} {set $var_iemgui_snd [format ""]
-    } else {set $var_iemgui_snd [format "%s" $snd]}
+    } else {set $var_iemgui_snd [respace_text [format "%s" $snd]]}
     if {$rcv == "empty"} {set $var_iemgui_rcv [format ""]
-    } else {set $var_iemgui_rcv [format "%s" $rcv]}
+    } else {set $var_iemgui_rcv [respace_text [format "%s" $rcv]]}
     if {$gui_name == "empty"} {set $var_iemgui_gui_nam [format ""]
-    } else {set $var_iemgui_gui_nam [format "%s" $gui_name]}
+    } else {set $var_iemgui_gui_nam [respace_text [format "%s" $gui_name]]}
 
-    if {[string index [eval concat $$var_iemgui_snd] 0] == "#"} {
-        set $var_iemgui_snd [string replace [eval concat $$var_iemgui_snd] 0 0 $] }
-    if {[string index [eval concat $$var_iemgui_rcv] 0] == "#"} {
-        set $var_iemgui_rcv [string replace [eval concat $$var_iemgui_rcv] 0 0 $] }
-    if {[string index [eval concat $$var_iemgui_gui_nam] 0] == "#"} {
-        set $var_iemgui_gui_nam [string replace [eval concat $$var_iemgui_gui_nam] 0 0 $] }
     set $var_iemgui_gn_dx $gn_dx
     set $var_iemgui_gn_dy $gn_dy
     set $var_iemgui_gn_f $gn_f

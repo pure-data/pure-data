@@ -637,6 +637,7 @@ EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
 /* ------------- IEMGUI routines used in other g_ files ---------------- */
 EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
+EXTERN t_symbol *iemgui_put_in_braces(t_symbol *s);
 
 /*-------------  g_clone.c ------------- */
 extern t_class *clone_class;

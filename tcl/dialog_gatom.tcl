@@ -20,19 +20,19 @@ proc ::dialog_gatom::escape {sym} {
         if {[string equal -length 1 $sym "-"]} {
             set ret [string replace $sym 0 0 "--"]
         } else {
-            set ret [string map {"$" "#"} $sym]
+            set ret $sym
         }
     }
-    return [unspace_text $ret]
+    return [string map {"$" {\$}} [unspace_text $ret]]
 }
 
 proc ::dialog_gatom::unescape {sym} {
     if {[string equal -length 1 $sym "-"]} {
         set ret [string replace $sym 0 0 ""]
     } else {
-        set ret [string map {"#" "$"} $sym]
+        set ret $sym
     }
-    return $ret
+    return [respace_text $ret]
 }
 
 proc ::dialog_gatom::apply {mytoplevel} {

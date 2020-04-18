@@ -150,7 +150,14 @@ proc enquote_path {message} {
 #enquote a string to send it to Pd.  Blow off semi and comma; alias spaces
 #we also blow off "{", "}", "\" because they'll just cause bad trouble later.
 proc unspace_text {x} {
-    set y [string map {" " "_" ";" "" "," "" "{" "" "}" "" "\\" ""} $x]
+    set y [string map {" " {\ } ";" "" "," "" "{" "" "}" "" "\\" ""} $x]
+    if {$y eq ""} {set y "empty"}
+    concat $y
+}
+
+#dequote a string received from Pd.
+proc respace_text {x} {
+    set y [string map {{\ } " "} $x]
     if {$y eq ""} {set y "empty"}
     concat $y
 }
