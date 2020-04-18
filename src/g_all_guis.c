@@ -183,6 +183,31 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
     return(gensym(buf));
 }
 
+t_symbol *iemgui_put_in_braces(t_symbol *s)
+{
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
+    int i = 0;
+    if (strlen(s->s_name) >= MAXPDSTRING)
+        return (s);
+    for (s1 = s->s_name, s2 = buf; ; s1++, s2++, i++)
+    {
+        if (i == 0)
+        {
+            *s2 = '{';
+            s2++;
+        }           
+        if (!(*s2 = *s1))
+        {
+            *s2 = '}';
+            s2++;
+            *s2 = '\0';
+            break;
+        }
+    }
+    return(gensym(buf));
+}
+
 void iemgui_verify_snd_ne_rcv(t_iemgui *iemgui)
 {
     iemgui->x_fsf.x_put_in2out = 1;
@@ -375,6 +400,13 @@ void iemgui_all_raute2dollar(t_symbol **srlsym)
     srlsym[0] = iemgui_raute2dollar(srlsym[0]);
     srlsym[1] = iemgui_raute2dollar(srlsym[1]);
     srlsym[2] = iemgui_raute2dollar(srlsym[2]);
+}
+
+void iemgui_all_put_in_braces(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_put_in_braces(srlsym[0]);
+    srlsym[1] = iemgui_put_in_braces(srlsym[1]);
+    srlsym[2] = iemgui_put_in_braces(srlsym[2]);
 }
 
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -615,6 +647,7 @@ void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
     srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
     iemgui_all_dollar2raute(srl);
+    iemgui_all_put_in_braces(srl);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
