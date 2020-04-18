@@ -646,7 +646,6 @@ void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
     srl[1] = iemgui->x_rcv;
     srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
-    iemgui_all_dollar2raute(srl);
     iemgui_all_put_in_braces(srl);
 }
 
