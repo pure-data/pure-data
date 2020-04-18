@@ -2377,7 +2377,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
+                    else return (TEMPLATE->array_motion_fatten ?
+                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
                 }
             }
         }
