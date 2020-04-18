@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 
 #include "g_all_guis.h"
 #include <math.h>
@@ -179,6 +180,27 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
             *s2 = '$';
         else if (!(*s2 = *s1))
             break;
+    }
+    return(gensym(buf));
+}
+
+t_symbol *iemgui_put_in_braces(t_symbol *s)
+{
+    const char *s1;
+    char buf[MAXPDSTRING], *s2;
+    int i = 0;
+    if (strlen(s->s_name) >= MAXPDSTRING)
+        return (s);
+    for (s1 = s->s_name, s2 = buf; ; s1++, s2++, i++)
+    {
+        if (i == 0)
+            *(s2++) = '{';
+        if (!(*s2 = *s1))
+        {
+            *(s2++) = '}';
+            *s2 = '\0';
+            break;
+        }
     }
     return(gensym(buf));
 }
@@ -378,6 +400,13 @@ void iemgui_all_raute2dollar(t_symbol **srlsym)
     srlsym[2] = iemgui_raute2dollar(srlsym[2]);
 }
 
+void iemgui_all_put_in_braces(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_put_in_braces(srlsym[0]);
+    srlsym[1] = iemgui_put_in_braces(srlsym[1]);
+    srlsym[2] = iemgui_put_in_braces(srlsym[2]);
+}
+
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *snd;
@@ -446,10 +475,14 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_lab_unexpanded = iemgui_raute2dollar(s);
     iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
+    char lab_escaped[MAXPDSTRING];
+    lab_escaped[MAXPDSTRING-1] = 0;
+    pdgui_strnescape( lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
+
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} \n",
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape \"%s \"] \n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 strcmp(s->s_name, "empty")?iemgui->x_lab->s_name:"");
+                 strcmp(s->s_name, "empty")?lab_escaped:"");
 }
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -613,9 +646,16 @@ void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
-    srl[2] = iemgui->x_lab;
-    iemgui_all_sym2dollararg(iemgui, srl);
+
+    char label[MAXPDSTRING];
+    strcpy(label, iemgui->x_lab->s_name);
+    pdgui_strnescape(label, MAXPDSTRING,
+                    iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name));
+    srl[2] = gensym(label);
+
     iemgui_all_dollar2raute(srl);
+    iemgui_all_sym2dollararg(iemgui, srl);
+    iemgui_all_put_in_braces(srl);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
