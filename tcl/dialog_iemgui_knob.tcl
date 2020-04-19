@@ -59,42 +59,51 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
     global $var_iemgui_end_angle
     set $var_iemgui_end_angle $end_angle
 
+    # style
     frame $mytoplevel.para.knbstyle -padx 20 -pady 1
     pack $mytoplevel.para.knbstyle -side top -fill x
+
+    label $mytoplevel.para.knbstyle.dummy1 -text "" -width 0
     
     frame $mytoplevel.para.knbstyle.ticks
     label $mytoplevel.para.knbstyle.ticks.lab -text [_ "Ticks: "]
     entry $mytoplevel.para.knbstyle.ticks.ent -textvariable $var_iemgui_ticks -width 5
     pack $mytoplevel.para.knbstyle.ticks.ent $mytoplevel.para.knbstyle.ticks.lab -side right -anchor e
 
-    label $mytoplevel.para.knbstyle.dummy1 -text " " -width 1
+    label $mytoplevel.para.knbstyle.dummy2 -text " " -width 1
 
     frame $mytoplevel.para.knbstyle.arc
     label $mytoplevel.para.knbstyle.arc.lab -text [_ "Arc width: "]
     entry $mytoplevel.para.knbstyle.arc.ent -textvariable $var_iemgui_arc_width -width 5
     pack $mytoplevel.para.knbstyle.arc.ent $mytoplevel.para.knbstyle.arc.lab -side right -anchor e
 
-    pack $mytoplevel.para.knbstyle.ticks $mytoplevel.para.knbstyle.dummy1 \
+    pack $mytoplevel.para.knbstyle.dummy1 -side left -expand 1
+    pack $mytoplevel.para.knbstyle.ticks $mytoplevel.para.knbstyle.dummy2 \
         $mytoplevel.para.knbstyle.arc -side left
 
-
+    # angle
     frame $mytoplevel.para.knbangle -padx 20 -pady 1
     pack $mytoplevel.para.knbangle -side top -fill x
+
+    label $mytoplevel.para.knbangle.dummy1 -text "" -width 0
 
     frame $mytoplevel.para.knbangle.start
     label $mytoplevel.para.knbangle.start.lab -text [_ "Start angle: "]
     entry $mytoplevel.para.knbangle.start.ent -textvariable $var_iemgui_start_angle -width 5
     pack $mytoplevel.para.knbangle.start.ent $mytoplevel.para.knbangle.start.lab -side right -anchor e
 
-    label $mytoplevel.para.knbangle.dummy1 -text " " -width 1
+    label $mytoplevel.para.knbangle.dummy2 -text " " -width 1
 
     frame $mytoplevel.para.knbangle.end
     label $mytoplevel.para.knbangle.end.lab -text [_ "End angle: "]
     entry $mytoplevel.para.knbangle.end.ent -textvariable $var_iemgui_end_angle -width 5
     pack $mytoplevel.para.knbangle.end.ent $mytoplevel.para.knbangle.end.lab -side right -anchor e
 
-    pack $mytoplevel.para.knbangle.start $mytoplevel.para.knbangle.dummy1 $mytoplevel.para.knbangle.end -side left
+    pack $mytoplevel.para.knbangle.dummy1 -side left -expand 1
+    pack $mytoplevel.para.knbangle.start $mytoplevel.para.knbangle.dummy2 \
+        $mytoplevel.para.knbangle.end -side left
 
+    # arc color
     set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
     global $var_iemgui_l2_f1_b0
     radiobutton $mytoplevel.colors.select.radio3 -value 3 -variable \
@@ -172,4 +181,3 @@ proc ::dialog_iemgui::apply_knb {mytoplevel} {
         [eval concat $$var_iemgui_acol] [eval concat $$var_iemgui_arc_width] \
         [eval concat $$var_iemgui_start_angle] [eval concat $$var_iemgui_end_angle]]
 }
-
