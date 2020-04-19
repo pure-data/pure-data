@@ -754,7 +754,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                         SETFLOAT(msp, 0);
                     else
                     {
-                        error("$%d: argument number out of range",
+                        pd_error(target, "$%d: argument number out of range",
                             at->a_w.w_index);
                         SETFLOAT(msp, 0);
                     }
@@ -765,7 +765,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     target == &pd_objectmaker);
                 if (!s9)
                 {
-                    error("%s: argument number out of range", at->a_w.w_symbol->s_name);
+                    pd_error(target, "%s: argument number out of range", at->a_w.w_symbol->s_name);
                     SETSYMBOL(msp, at->a_w.w_symbol);
                 }
                 else SETSYMBOL(msp, s9);

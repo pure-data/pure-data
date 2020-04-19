@@ -3513,12 +3513,14 @@ static void canvas_find_parent(t_canvas *x)
         canvas_vis(glist_getcanvas(x->gl_owner), 1);
 }
 
+extern t_pd *message_get_responder(t_gobj *x);
+
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if ((const void *)g == error_object)
+        if (((const void *)g == error_object) || (message_get_responder(g) == error_object))
         {
                 /* got it... now show it. */
             glist_noselect(gl);

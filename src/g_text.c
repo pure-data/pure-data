@@ -326,7 +326,7 @@ typedef struct _message
     t_clock *m_clock;
 } t_message;
 
-static t_class *message_class, *messresponder_class;
+static t_class *messresponder_class;
 
 static void messresponder_bang(t_messresponder *x)
 {
@@ -503,6 +503,13 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
+}
+
+    /* for the needs of g_editor::glist_dofinderror() */
+t_pd *message_get_responder(t_gobj *x)
+{
+    if (pd_class(&x->g_pd) != message_class) return NULL;
+    else return (t_pd *)&((t_message *)x)->m_messresponder.mr_pd;
 }
 
 /* ---------------------- the "atom" text item ------------------------ */
