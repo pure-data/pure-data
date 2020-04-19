@@ -411,7 +411,6 @@ void iemgui_all_put_in_braces(t_symbol **srlsym)
 
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
-    t_symbol *snd;
     int sndable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
@@ -420,9 +419,8 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
         oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) sndable = 0;
-    snd = iemgui_raute2dollar(s);
-    iemgui->x_snd_unexpanded = snd;
-    iemgui->x_snd = snd = canvas_realizedollar(iemgui->x_glist, snd);
+    iemgui->x_snd_unexpanded = s;
+    iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
@@ -440,7 +438,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) rcvable = 0;
-    rcv = iemgui_raute2dollar(s);
+    rcv = s;
     iemgui->x_rcv_unexpanded = rcv;
     rcv = canvas_realizedollar(iemgui->x_glist, rcv);
     if(rcvable)
@@ -474,7 +472,7 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
         /* tb } */
 
     old = iemgui->x_lab;
-    iemgui->x_lab_unexpanded = iemgui_raute2dollar(s);
+    iemgui->x_lab_unexpanded = s;
     iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
@@ -691,7 +689,6 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     iemgui->x_isa.x_loadinit = init;
     if(!strcmp(srl[0]->s_name, "empty")) sndable = 0;
     if(!strcmp(srl[1]->s_name, "empty")) rcvable = 0;
-    iemgui_all_raute2dollar(srl);
     iemgui_all_dollararg2sym(iemgui, srl);
     if(rcvable)
     {
