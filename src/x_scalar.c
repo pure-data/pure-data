@@ -146,7 +146,7 @@ static void scalar_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_glist *x = (t_glist *)z;
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
-        (float)x->gl_obj.te_xpix, (float)x->gl_obj.te_ypix);
+        (t_float)x->gl_obj.te_xpix, (t_float)x->gl_obj.te_ypix);
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
     if (x->gl_private && x->gl_list &&

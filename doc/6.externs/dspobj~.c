@@ -40,7 +40,7 @@ static t_int *dspobj_perform(t_int *w)
     out the samples. */
 static void dspobj_dsp(t_dspobj *x, t_signal **sp)
 {
-    dsp_add(dspobj_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(dspobj_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void *dspobj_new(void)

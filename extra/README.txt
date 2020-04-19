@@ -19,7 +19,7 @@ externs aimed at particular tasks:
 pd~ - embed one Pd inside another one
 stdout - send messages to standard out (useful in pd~ sub-process)
 bob~ - Moog ladder filter simulation using a Runge-Kutte ODE solver
-choose - find the best fit of a vector to a set of example vectors
+choice - find the best fit of a vector to a set of example vectors
 loop~ - sample looper
 
 obsolete:

@@ -16,7 +16,7 @@
 #X obj 36 136 plot -w w1 a 0 2 5 0;
 #X obj 38 192 plot -w w2 a 0 2 5 15;
 #X obj 45 85 plot -y amp(0:100)(0:100) a 500 2 5 30;
-#X text 46 63 Graph (x \, amp) pairs (using "amp" as the "y" field"):
+#X text 46 63 Graph (x \, amp) pairs (using "amp" as the "y" field):
 ;
 #X text 38 110 Graph "w1" as width ("y" is zero);
 #X text 35 170 also "w2" \, at (5 \, 15) to disambiguate the one at
