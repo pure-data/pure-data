@@ -26,9 +26,9 @@
     #define M_PI 3.14159265358979323846
 #endif
 
-#define MKNOB_DEFAULT_SENSITIVITY 128
-#define MKNOB_DEFAULTSIZE 35
-#define MKNOB_MINSIZE 12
+#define DEFAULT_SENSITIVITY 128
+#define DEFAULT_SIZE 35
+#define MIN_SIZE 12
 
 /* ------------ knb  ----------------------- */
 typedef struct _knb
@@ -475,8 +475,8 @@ static void knb_save(t_gobj *z, t_binbuf *b)
 
 void knb_check_wh(t_knb *x, int w, int h)
 {
-    if (w < MKNOB_MINSIZE * IEMGUI_ZOOM(x))
-        w = MKNOB_MINSIZE * IEMGUI_ZOOM(x);
+    if (w < MIN_SIZE * IEMGUI_ZOOM(x))
+        w = MIN_SIZE * IEMGUI_ZOOM(x);
 
     x->x_gui.x_w = w;
 
@@ -520,7 +520,7 @@ static void knb_properties(t_gobj *z, t_glist *owner)
             %d %d \
             #%06x #%06x #%06x\
             %d #%06x %d %d %d\n",
-            x->x_gui.x_w / IEMGUI_ZOOM(x), MKNOB_MINSIZE, x->x_gui.x_h / IEMGUI_ZOOM(x), 0,
+            x->x_gui.x_w / IEMGUI_ZOOM(x), MIN_SIZE, x->x_gui.x_h / IEMGUI_ZOOM(x), 0,
             x->x_min, x->x_max, 0.0,/*no_schedule*/
             x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_angular, -1,/*no multi, but iem-characteristic*/
             srl[0]->s_name, srl[1]->s_name,
@@ -900,12 +900,12 @@ static void knb_loadbang(t_knb *x, t_floatarg action)
 static void *knb_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_knb *x = (t_knb *)pd_new(knb_class);
-    int w = MKNOB_DEFAULTSIZE, h = MKNOB_DEFAULT_SENSITIVITY;
+    int w = DEFAULT_SIZE, h = DEFAULT_SENSITIVITY;
     int fs = 12, lilo = 0, ldx = 0, ldy = -6;
     float v = 0;
     int angular = 0, ticks = 0, arcwidth = 0, start_angle = -135, end_angle = 135;
     t_symbol *acol_sym = gensym("#00");
-    double min = 0.0, max = (double)(MKNOB_DEFAULT_SENSITIVITY - 1);
+    double min = 0.0, max = (double)(DEFAULT_SENSITIVITY - 1);
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
