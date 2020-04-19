@@ -141,7 +141,7 @@ void resample_dsp(t_resample *x,
     }
     switch (method) {
     default:
-      dsp_add(downsampling_perform_0, 4, in, out, insize/outsize, insize);
+      dsp_add(downsampling_perform_0, 4, in, out, (t_int)(insize/outsize), (t_int)insize);
     }
 
 
@@ -152,7 +152,7 @@ void resample_dsp(t_resample *x,
     }
     switch (method) {
     case 1:
-      dsp_add(upsampling_perform_hold, 4, in, out, outsize/insize, insize);
+      dsp_add(upsampling_perform_hold, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
     case 2:
       if (x->bufsize != 1) {
@@ -160,10 +160,10 @@ void resample_dsp(t_resample *x,
         x->bufsize = 1;
         x->buffer = t_getbytes(x->bufsize*sizeof(*x->buffer));
       }
-      dsp_add(upsampling_perform_linear, 5, x, in, out, outsize/insize, insize);
+      dsp_add(upsampling_perform_linear, 5, x, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
     default:
-      dsp_add(upsampling_perform_0, 4, in, out, outsize/insize, insize);
+      dsp_add(upsampling_perform_0, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
     }
   }
 }

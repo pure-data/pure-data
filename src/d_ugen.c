@@ -91,9 +91,9 @@ t_int *zero_perf8(t_int *w)
 void dsp_add_zero(t_sample *out, int n)
 {
     if (n&7)
-        dsp_add(zero_perform, 2, out, n);
+        dsp_add(zero_perform, 2, out, (t_int)n);
     else
-        dsp_add(zero_perf8, 2, out, n);
+        dsp_add(zero_perf8, 2, out, (t_int)n);
 }
 
 /* ---------------------------- block~ ----------------------------- */

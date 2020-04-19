@@ -73,7 +73,7 @@ to make sense).;
 ;
 #X msg 79 364 delete;
 #X text 140 360 delete the current object and output the next one (or
-send a "bang to bangout if it was the last one in the list);
+send a "bang" to bangout if it was the last one in the list);
 #X text 219 410 send pointer to a named object =>;
 #X connect 12 0 16 0;
 #X connect 12 1 17 0;

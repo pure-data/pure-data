@@ -690,14 +690,10 @@ void sys_loadpreferences(const char *filename, int startingup)
     if (sys_defeatrt)
         sys_hipriority = 0;
     else
-#if defined(__linux__) || defined(__CYGWIN__)
-        sys_hipriority = 1;
-#else
-#if defined(_WIN32) || defined(ANDROID)
+#if defined(ANDROID)
         sys_hipriority = 0;
 #else
         sys_hipriority = 1;
-#endif
 #endif
     if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_zoom_open);
