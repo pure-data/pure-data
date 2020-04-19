@@ -196,7 +196,7 @@ t_symbol *iemgui_put_in_braces(t_symbol *s)
         {
             *s2 = '{';
             s2++;
-        }           
+        }
         if (!(*s2 = *s1))
         {
             *s2 = '}';
