@@ -391,11 +391,6 @@ void sys_close_audio(void)
         mmio_close_audio();
     else
 #endif
-#ifdef USEAPI_AUDIOUNIT
-    if (sys_audioapiopened == API_AUDIOUNIT)
-        audiounit_close_audio();
-    else
-#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapiopened == API_DUMMY)
         dummy_close_audio();
@@ -474,12 +469,6 @@ void sys_reopen_audio(void)
                 audio_blocksize);
     else
 #endif
-#ifdef USEAPI_AUDIOUNIT
-    if (sys_audioapi == API_AUDIOUNIT)
-        outcome = audiounit_open_audio((naudioindev > 0 ? chindev[0] : 0),
-            (naudioindev > 0 ? choutdev[0] : 0), rate);
-    else
-#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapi == API_DUMMY)
         outcome = dummy_open_audio(naudioindev, naudiooutdev, rate);
@@ -554,11 +543,6 @@ int sys_send_dacs(void)
 #ifdef USEAPI_MMIO
     if (sys_audioapi == API_MMIO)
         return (mmio_send_dacs());
-    else
-#endif
-#ifdef USEAPI_AUDIOUNIT
-    if (sys_audioapi == API_AUDIOUNIT)
-        return (audiounit_send_dacs());
     else
 #endif
 #ifdef USEAPI_DUMMY
@@ -654,12 +638,6 @@ static void audio_getdevs(char *indevlist, int *nindevs,
     {
         mmio_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
-    }
-    else
-#endif
-#ifdef USEAPI_AUDIOUNIT
-    if (sys_audioapi == API_AUDIOUNIT)
-    {
     }
     else
 #endif
@@ -884,11 +862,6 @@ void sys_listdevs(void)
         sys_listaudiodevs();
     else
 #endif
-#ifdef USEAPI_AUDIOUNIT
-    if (sys_audioapi == API_AUDIOUNIT)
-        sys_listaudiodevs();
-    else
-#endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapi == API_DUMMY)
         sys_listaudiodevs();
@@ -926,9 +899,6 @@ void sys_set_audio_api(int which)
 #endif
 #ifdef USEAPI_MMIO
     ok += (which == API_MMIO);
-#endif
-#ifdef USEAPI_AUDIOUNIT
-    ok += (which == API_AUDIOUNIT);
 #endif
 #ifdef USEAPI_DUMMY
     ok += (which == API_DUMMY);
@@ -1018,9 +988,6 @@ void sys_get_audio_apis(char *buf)
 #endif
 #ifdef USEAPI_JACK
     sprintf(buf + strlen(buf), "{jack %d} ", API_JACK); n++;
-#endif
-#ifdef USEAPI_AUDIOUNIT
-    sprintf(buf + strlen(buf), "{AudioUnit %d} ", API_AUDIOUNIT); n++;
 #endif
 #ifdef USEAPI_DUMMY
     sprintf(buf + strlen(buf), "{dummy %d} ", API_DUMMY); n++;

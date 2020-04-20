@@ -129,7 +129,7 @@ noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-    s_audio_audiounit.c
+    $(empty)
 
 # add WISH define if it's set
 WISH=@WISH@

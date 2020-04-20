@@ -458,10 +458,6 @@ static char *(usagemessage[]) = {
 "-mmio            -- use MMIO audio API (default for Windows)\n",
 #endif
 
-#ifdef USEAPI_AUDIOUNIT
-"-audiounit       -- use Apple AudioUnit API\n",
-#endif
-
 
 "      (default audio API for this platform:  ", API_DEFSTRING, ")\n\n",
 
@@ -871,13 +867,6 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-mmio"))
         {
             fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
-            argc--; argv++;
-        }
-#endif
-#ifdef USEAPI_AUDIOUNIT
-        else if (!strcmp(*argv, "-audiounit"))
-        {
-            sys_set_audio_api(API_AUDIOUNIT);
             argc--; argv++;
         }
 #endif

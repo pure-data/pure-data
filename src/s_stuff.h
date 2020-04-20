@@ -196,7 +196,7 @@ void sys_setalarm(int microsec);
 #define API_PORTAUDIO 4
 #define API_JACK 5
 #define API_SGI 6           /* gone */
-#define API_AUDIOUNIT 7
+#define API_AUDIOUNIT 7     /* gone */
 #define API_ESD 8           /* gone */
 #define API_DUMMY 9
 
@@ -215,9 +215,6 @@ void sys_setalarm(int microsec);
 #elif defined(USEAPI_OSS)
 # define API_DEFAULT API_OSS
 # define API_DEFSTRING "OSS"
-#elif defined(USEAPI_AUDIOUNIT)
-# define API_DEFAULT API_AUDIOUNIT
-# define API_DEFSTRING "AudioUnit"
 #elif defined(USEAPI_PORTAUDIO)
 # define API_DEFAULT API_PORTAUDIO
 # define API_DEFSTRING "portaudio"
@@ -301,16 +298,6 @@ void mmio_close_audio(void);
 void mmio_reportidle(void);
 int mmio_send_dacs(void);
 void mmio_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti,
-        int maxndev, int devdescsize);
-
-int audiounit_open_audio(int naudioindev, int *audioindev, int nchindev,
-    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate);
-void audiounit_close_audio(void);
-int audiounit_send_dacs(void);
-void audiounit_listdevs(void);
-void audiounit_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
