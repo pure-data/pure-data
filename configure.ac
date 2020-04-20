@@ -592,7 +592,7 @@ AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
 AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
 AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
- AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
+ AC_MSG_WARN([ASIO requested but no SDK found... disabled (See asio/README.txt)]))
 
 # TODO portaudio
 
