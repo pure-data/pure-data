@@ -3444,6 +3444,9 @@ static int atoms_match(int inargc, t_atom *inargv, int searchargc,
     return (0);
 }
 
+extern int clone_get_n(t_gobj *x);
+extern t_glist *clone_get_instance(t_gobj *x, int n);
+
     /* find an atom or string of atoms */
 static int canvas_dofind(t_canvas *x, int *myindexp)
 {
@@ -3455,6 +3458,7 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
         t_object *ob = 0;
         if ((ob = pd_checkobject(&y->g_pd)))
         {
+            int n;
             if (atoms_match(binbuf_getnatom(ob->ob_binbuf),
                 binbuf_getvec(ob->ob_binbuf), findargc, findargv,
                     EDITOR->canvas_find_wholeword))
@@ -3468,6 +3472,15 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
                     didit = 1;
                 }
                 (*myindexp)++;
+            }
+            if ((n = clone_get_n((t_gobj *)ob)) != 0)
+            {
+                int i = 0;
+                    /* should we search in every clone instance, or only the first one? */
+                /*for(i = 0; i < n; i++)
+                {*/
+                    didit |= canvas_dofind((t_canvas *)clone_get_instance((t_gobj *)ob, i), myindexp);
+                /*}*/
             }
         }
     }
@@ -3514,8 +3527,6 @@ static void canvas_find_parent(t_canvas *x)
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
-extern int clone_get_n(t_gobj *x);
-extern t_glist *clone_get_instance(t_gobj *x, int n);
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
@@ -3538,7 +3549,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             if (glist_dofinderror((t_canvas *)g, error_object))
                 return (1);
         }
-        else if (n = clone_get_n(g))
+        else if ((n = clone_get_n(g)) != 0)
         {
             int i;
             for(i = 0; i < n; i++)
