@@ -17,6 +17,7 @@
 typedef struct _pd_pulseclient {
     pa_simple*client;
     pa_sample_spec spec;
+    pa_buffer_attr bufattr;
     float*buffer;
     size_t bufsize;
 } t_pd_pulseclient;
@@ -35,7 +36,7 @@ static t_pd_pulseclient*free_client(t_pd_pulseclient*client) {
     return NULL;
 }
 
-static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int rate)
+static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int rate, int blocksize)
 {
     const char *client_name = sys_get_audio_clientname("Pure Data");
     const char *stream_name = (PA_STREAM_RECORD==dir)?"In":"Out";
@@ -46,6 +47,8 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
         return client;
     if(channels > 255)
         channels = 255;
+    if(blocksize < DEFDACBLKSIZE)
+        blocksize = DEFDACBLKSIZE;
 
     client = getbytes(sizeof(t_pd_pulseclient));
     if(!client)
@@ -57,6 +60,12 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
     client->bufsize = sizeof(*client->buffer) * channels * DEFDACBLKSIZE;
     client->buffer = getbytes(client->bufsize);
 
+    client->bufattr.maxlength = -1;
+    client->bufattr.tlength = sizeof(float) * channels * blocksize;
+    client->bufattr.prebuf = -1;
+    client->bufattr.minreq = -1;
+    client->bufattr.fragsize = sizeof(float) * channels * DEFDACBLKSIZE;
+
     client->client = pa_simple_new(
         NULL,               // Use the default server.
         client_name,        // Our application's name.
@@ -65,7 +74,7 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
         stream_name,        // Description of our stream.
         &client->spec,      // Our sample format.
         NULL,               // Use default channel map
-        NULL,               // buffer attributes
+        &client->bufattr,   // buffer attributes
         &err);
 
     if (!client->client)
@@ -80,10 +89,10 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
 }
 
 int
-pulse_open_audio(int inchans, int outchans, int rate)
+pulse_open_audio(int inchans, int outchans, int rate, int blocksize)
 {
-    pulse_sink = make_client(PA_STREAM_PLAYBACK, outchans, rate);
-    pulse_source = make_client(PA_STREAM_RECORD, inchans, rate);
+    pulse_sink = make_client(PA_STREAM_PLAYBACK, outchans, rate, blocksize);
+    pulse_source = make_client(PA_STREAM_RECORD, inchans, rate, blocksize);
 
     return !(pulse_sink || pulse_source);
 }

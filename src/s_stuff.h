@@ -292,7 +292,7 @@ void jack_listdevs(void);
 void jack_client_name(char *name);
 void jack_autoconnect(int);
 
-int pulse_open_audio(int wantinchans, int wantoutchans, int srate);
+int pulse_open_audio(int wantinchans, int wantoutchans, int srate, int blocksize);
 void pulse_close_audio(void);
 int pulse_send_dacs(void);
 void pulse_getdevs(char *indevlist, int *nindevs,

@@ -446,7 +446,7 @@ void sys_reopen_audio(void)
 #ifdef USEAPI_PULSEAUDIO
     if (sys_audioapi == API_PULSEAUDIO)
         outcome = pulse_open_audio((naudioindev > 0 ? chindev[0] : 0),
-            (naudiooutdev > 0 ? choutdev[0] : 0), rate);
+            (naudiooutdev > 0 ? choutdev[0] : 0), rate, audio_blocksize);
 
     else
 #endif
