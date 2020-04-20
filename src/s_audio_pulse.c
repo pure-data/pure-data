@@ -85,6 +85,14 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
     if (!client->buffer || !client->client) {
         client = free_client(client);
     }
+    if(client && sys_verbose)
+    {
+        pa_usec_t latency;
+        if ((latency = pa_simple_get_latency(client->client, &err)) == (pa_usec_t) -1) {
+            error("pa_simple_get_latency() failed: %s", pa_strerror(err));
+        } else
+            post("PulseAudio latency '%s':\t%0.0f ms (%d bytes)", stream_name, (float)latency/1000., client->bufattr.tlength);
+    }
     return client;
 }
 
