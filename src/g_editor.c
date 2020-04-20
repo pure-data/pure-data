@@ -3514,10 +3514,14 @@ static void canvas_find_parent(t_canvas *x)
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
+extern int clone_get_n(t_gobj *x);
+extern t_glist *clone_get_instance(t_gobj *x, int n);
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
+    int n;
+    
     for (g = gl->gl_list; g; g = g->g_next)
     {
         if (((const void *)g == error_object) || (message_get_responder(g) == error_object))
@@ -3533,6 +3537,15 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
         {
             if (glist_dofinderror((t_canvas *)g, error_object))
                 return (1);
+        }
+        else if (n = clone_get_n(g))
+        {
+            int i;
+            for(i = 0; i < n; i++)
+            {
+                if (glist_dofinderror(clone_get_instance(g, i), error_object))
+                    return 1;
+            }
         }
     }
     return (0);
