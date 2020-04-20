@@ -479,11 +479,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     set $var_iemgui_num $num
     set $var_iemgui_steady $steady
     if {$snd == "empty"} {set $var_iemgui_snd [format ""]
-    } else {set $var_iemgui_snd [format "%s" $snd]}
+    } else {set $var_iemgui_snd [respace_text [format "%s" $snd]]}
     if {$rcv == "empty"} {set $var_iemgui_rcv [format ""]
-    } else {set $var_iemgui_rcv [format "%s" $rcv]}
+    } else {set $var_iemgui_rcv [respace_text [format "%s" $rcv]]}
     if {$gui_name == "empty"} {set $var_iemgui_gui_nam [format ""]
-    } else {set $var_iemgui_gui_nam [format "%s" $gui_name]}
+    } else {set $var_iemgui_gui_nam [respace_text [format "%s" $gui_name]]}
 
     set $var_iemgui_gn_dx $gn_dx
     set $var_iemgui_gn_dy $gn_dy

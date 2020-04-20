@@ -32,7 +32,7 @@ proc ::dialog_gatom::unescape {sym} {
     } else {
         set ret $sym
     }
-    return $ret
+    return [respace_text $ret]
 }
 
 proc ::dialog_gatom::apply {mytoplevel} {
