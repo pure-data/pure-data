@@ -346,9 +346,8 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             STUFF->st_inchannels = STUFF->st_outchannels = 0;
             return 1;
         }
-        if (status & JackNameNotUnique)
-            jack_client_name(jack_get_client_name(jack_client));
-        verbose(1, "JACK: registered as '%s'", desired_client_name);
+        verbose(1, "JACK: registered as '%s'", jack_get_client_name(jack_client));
+
 
         STUFF->st_inchannels = inchans;
         STUFF->st_outchannels = outchans;
