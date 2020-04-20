@@ -40,6 +40,7 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
     const char *client_name = sys_get_audio_clientname("Pure Data");
     char *stream_name = "Music";
     t_pd_pulseclient*client = getbytes(sizeof(t_pd_pulseclient));
+    int err = 0;
     if(!client)
         return 0;
 
@@ -60,8 +61,15 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
         dir,
         NULL,               // Use the default device.
         stream_name,        // Description of our stream.
-        &client->spec,          // Our sample format.
-        NULL, NULL, NULL);
+        &client->spec,      // Our sample format.
+        NULL,               // Use default channel map
+        NULL,               // buffer attributes
+        &err);
+
+    if (!client->client)
+    {
+        error("Failed to initialize Pulse Audio: %s", pa_strerror(err));
+    }
 
     if (!client->buffer || !client->client) {
         client = free_client(client);
