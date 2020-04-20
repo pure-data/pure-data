@@ -264,7 +264,6 @@ int oss_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *choutdev, int rate, int blocksize);
 void oss_close_audio(void);
 int oss_send_dacs(void);
-void oss_reportidle(void);
 void oss_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
@@ -274,7 +273,6 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *choutdev, int rate, int blocksize);
 void alsa_close_audio(void);
 int alsa_send_dacs(void);
-void alsa_reportidle(void);
 void alsa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
@@ -283,7 +281,6 @@ int jack_open_audio(int wantinchans, int wantoutchans, int srate,
     t_audiocallback callback);
 void jack_close_audio(void);
 int jack_send_dacs(void);
-void jack_reportidle(void);
 void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
@@ -295,7 +292,6 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
     int nchoutdev, int *choutdev, int rate, int blocksize);
 void mmio_close_audio(void);
-void mmio_reportidle(void);
 int mmio_send_dacs(void);
 void mmio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
