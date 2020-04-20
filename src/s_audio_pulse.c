@@ -38,16 +38,18 @@ static t_pd_pulseclient*free_client(t_pd_pulseclient*client) {
 static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int rate)
 {
     const char *client_name = sys_get_audio_clientname("Pure Data");
-    t_pd_pulseclient*client = getbytes(sizeof(t_pd_pulseclient));
     const char *stream_name = (PA_STREAM_RECORD==dir)?"In":"Out";
+    t_pd_pulseclient*client = NULL;
     int err = 0;
-    if(!client)
-        return 0;
 
-    if(channels < 0)
-        channels = 0;
+    if(channels <= 0)
+        return client;
     if(channels > 255)
         channels = 255;
+
+    client = getbytes(sizeof(t_pd_pulseclient));
+    if(!client)
+        return 0;
 
     client->spec.format = PA_SAMPLE_FLOAT32;
     client->spec.rate = rate;
