@@ -427,6 +427,7 @@ static char *(usagemessage[]) = {
 "-callback        -- use callbacks if possible\n",
 "-nocallback      -- use polling-mode (true by default)\n",
 "-listdev         -- list audio and MIDI devices\n",
+"-audioname       -- name under which Pd should appear (on systems that support it, e.g. JACK)"
 
 #ifdef USEAPI_OSS
 "-oss             -- use OSS audio API\n",
@@ -439,7 +440,7 @@ static char *(usagemessage[]) = {
 
 #ifdef USEAPI_JACK
 "-jack            -- use JACK audio API\n",
-"-jackname <name> -- a name for your JACK client\n",
+"-jackname <name> -- a name for your JACK client (shortcut for '-jack -audioname <name>')\n",
 "-nojackconnect   -- do not automatically connect pd to the JACK graph\n",
 "-jackconnect     -- automatically connect pd to the JACK graph [default]\n",
 
@@ -746,6 +747,15 @@ int sys_argparse(int argc, char **argv)
             sys_nsoundin=sys_nsoundout = 0;
             sys_nchin = sys_nchout = 0;
             argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-audioname"))
+        {
+            if (argc < 2)
+                goto usage;
+
+            sys_set_audio_clientname(argv[1]);
+            argc -= 2; argv +=2;
+
         }
 #ifdef USEAPI_OSS
         else if (!strcmp(*argv, "-oss"))
