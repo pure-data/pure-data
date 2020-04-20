@@ -38,8 +38,8 @@ static t_pd_pulseclient*free_client(t_pd_pulseclient*client) {
 static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int rate)
 {
     const char *client_name = sys_get_audio_clientname("Pure Data");
-    char *stream_name = "Music";
     t_pd_pulseclient*client = getbytes(sizeof(t_pd_pulseclient));
+    const char *stream_name = (PA_STREAM_RECORD==dir)?"In":"Out";
     int err = 0;
     if(!client)
         return 0;
@@ -68,7 +68,7 @@ static t_pd_pulseclient*make_client(pa_stream_direction_t dir, int channels, int
 
     if (!client->client)
     {
-        error("Failed to initialize Pulse Audio: %s", pa_strerror(err));
+        error("Failed to initialize PulseAudio '%s': %s", stream_name, pa_strerror(err));
     }
 
     if (!client->buffer || !client->client) {
