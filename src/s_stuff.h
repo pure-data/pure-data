@@ -311,8 +311,6 @@ EXTERN int sys_audioapi;
 EXTERN void sys_set_audio_state(int onoff);
 
 /* API dependent audio flags and settings */
-void oss_set32bit(void);
-void linux_alsa_devname(char *devname);
 
 EXTERN void sys_get_audio_params(
     int *pnaudioindev, int *paudioindev, int *chindev,
