@@ -209,6 +209,14 @@ if ASIO
 pd_LDADD_core += $(top_builddir)/asio/libasio.a
 endif
 
+##### Pulse Audio #####
+if PULSEAUDIO
+pd_CFLAGS += -DUSEAPI_PULSEAUDIO @PULSEAUDIO_CFLAGS@
+pd_LDADD_core += @PULSEAUDIO_LIBS@
+pd_SOURCES_core += s_audio_pulse.c
+endif
+
+
 ##### PortMidi #####
 if PORTMIDI
 pd_SOURCES_core += s_midi_pm.c
