@@ -1070,3 +1070,24 @@ void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
     else *name = 0;
     name[namesize-1] = 0;
 }
+
+static char * desired_client_name = NULL;
+const char*sys_set_audio_clientname(const char *name)
+{
+    if (desired_client_name) {
+      free(desired_client_name);
+      desired_client_name = NULL;
+    }
+    if (name) {
+      desired_client_name = (char*)getbytes(strlen(name) + 1);
+      strcpy(desired_client_name, name);
+    }
+    return desired_client_name;
+}
+
+const char*sys_get_audio_clientname(const char*default_name)
+{
+    if (!desired_client_name || !strlen(desired_client_name))
+        return default_name;
+    return desired_client_name;
+}

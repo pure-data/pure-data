@@ -311,6 +311,8 @@ EXTERN int sys_audioapi;
 EXTERN void sys_set_audio_state(int onoff);
 
 /* API dependent audio flags and settings */
+const char*sys_set_audio_clientname(const char*default_name);
+const char*sys_get_audio_clientname(const char*default_name);
 
 EXTERN void sys_get_audio_params(
     int *pnaudioindev, int *paudioindev, int *chindev,
