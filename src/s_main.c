@@ -819,7 +819,7 @@ int sys_argparse(int argc, char **argv)
             if (argc < 2)
                 goto usage;
 
-            sys_set_audio_api(API_JACK), jack_client_name(argv[1]);
+            sys_set_audio_api(API_JACK), sys_set_audio_clientname(argv[1]);
             argc -= 2; argv +=2;
 
         }
