@@ -443,7 +443,10 @@ static char *(usagemessage[]) = {
 "-jackname <name> -- a name for your JACK client (shortcut for '-jack -audioname <name>')\n",
 "-nojackconnect   -- do not automatically connect pd to the JACK graph\n",
 "-jackconnect     -- automatically connect pd to the JACK graph [default]\n",
+#endif
 
+#ifdef USEAPI_PULSEAUDIO
+"-pulseaudio      -- use PulseAudio API\n",
 #endif
 
 #ifdef USEAPI_PORTAUDIO
@@ -846,6 +849,19 @@ int sys_argparse(int argc, char **argv)
                 goto usage;
             fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
             argc -= 2; argv +=2;
+        }
+#endif
+#ifdef USEAPI_PULSEAUDIO
+        else if (!strcmp(*argv, "-pulseaudio"))
+        {
+            sys_set_audio_api(API_PULSEAUDIO);
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-pulseaudio"))
+        {
+            fprintf(stderr, "Pd compiled without PulseAudio-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
         }
 #endif
 #ifdef USEAPI_PORTAUDIO
