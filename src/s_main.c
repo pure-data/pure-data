@@ -462,9 +462,6 @@ static char *(usagemessage[]) = {
 "-audiounit       -- use Apple AudioUnit API\n",
 #endif
 
-#ifdef USEAPI_ESD
-"-esd             -- use Enlightenment Sound Daemon (ESD) API\n",
-#endif
 
 "      (default audio API for this platform:  ", API_DEFSTRING, ")\n\n",
 
@@ -881,13 +878,6 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-audiounit"))
         {
             sys_set_audio_api(API_AUDIOUNIT);
-            argc--; argv++;
-        }
-#endif
-#ifdef USEAPI_ESD
-        else if (!strcmp(*argv, "-esd"))
-        {
-            sys_set_audio_api(API_ESD);
             argc--; argv++;
         }
 #endif

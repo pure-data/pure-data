@@ -197,7 +197,7 @@ void sys_setalarm(int microsec);
 #define API_JACK 5
 #define API_SGI 6           /* gone */
 #define API_AUDIOUNIT 7
-#define API_ESD 8           /* no idea what this was, probably gone now */
+#define API_ESD 8           /* gone */
 #define API_DUMMY 9
 
     /* figure out which API should be the default.  The one we judge most
@@ -218,9 +218,6 @@ void sys_setalarm(int microsec);
 #elif defined(USEAPI_AUDIOUNIT)
 # define API_DEFAULT API_AUDIOUNIT
 # define API_DEFSTRING "AudioUnit"
-#elif defined(USEAPI_ESD)
-# define API_DEFAULT API_ESD
-# define API_DEFSTRING "ESD (?)"
 #elif defined(USEAPI_PORTAUDIO)
 # define API_DEFAULT API_PORTAUDIO
 # define API_DEFSTRING "portaudio"
@@ -314,16 +311,6 @@ void audiounit_close_audio(void);
 int audiounit_send_dacs(void);
 void audiounit_listdevs(void);
 void audiounit_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti,
-        int maxndev, int devdescsize);
-
-int esd_open_audio(int naudioindev, int *audioindev, int nchindev,
-    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate);
-void esd_close_audio(void);
-int esd_send_dacs(void);
-void esd_listdevs(void);
-void esd_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
