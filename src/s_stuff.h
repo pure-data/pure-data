@@ -199,6 +199,7 @@ void sys_setalarm(int microsec);
 #define API_AUDIOUNIT 7     /* gone */
 #define API_ESD 8           /* gone */
 #define API_DUMMY 9
+#define API_PULSEAUDIO 10
 
     /* figure out which API should be the default.  The one we judge most
     likely to offer a working device takes precedence so that if you
@@ -209,6 +210,9 @@ void sys_setalarm(int microsec);
 #if defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
 # define API_DEFSTRING "MMIO"
+#elif defined(USEAPI_PULSEAUDIO)
+# define API_DEFAULT API_PULSEAUDIO
+# define API_DEFSTRING "PulseAudio"
 #elif defined(USEAPI_ALSA)
 # define API_DEFAULT API_ALSA
 # define API_DEFSTRING "ALSA"
@@ -287,6 +291,15 @@ void jack_getdevs(char *indevlist, int *nindevs,
 void jack_listdevs(void);
 void jack_client_name(char *name);
 void jack_autoconnect(int);
+
+int pulse_open_audio(int wantinchans, int wantoutchans, int srate);
+void pulse_close_audio(void);
+int pulse_send_dacs(void);
+void pulse_getdevs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti,
+        int maxndev, int devdescsize);
+void pulse_listdevs(void);
+void pulse_client_name(char *name);
 
 int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,

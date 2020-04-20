@@ -371,6 +371,11 @@ void sys_close_audio(void)
         pa_close_audio();
     else
 #endif
+#ifdef USEAPI_PULSEAUDIO
+    if (sys_audioapiopened == API_PULSEAUDIO)
+        pulse_close_audio();
+    else
+#endif
 #ifdef USEAPI_JACK
     if (sys_audioapiopened == API_JACK)
         jack_close_audio();
@@ -436,6 +441,13 @@ void sys_reopen_audio(void)
               (naudiooutdev > 0 ? audiooutdev[0] : 0),
                (callback ? sched_audio_callbackfn : 0));
     }
+    else
+#endif
+#ifdef USEAPI_PULSEAUDIO
+    if (sys_audioapi == API_PULSEAUDIO)
+        outcome = pulse_open_audio((naudioindev > 0 ? chindev[0] : 0),
+            (naudiooutdev > 0 ? choutdev[0] : 0), rate);
+
     else
 #endif
 #ifdef USEAPI_JACK
@@ -525,6 +537,11 @@ int sys_send_dacs(void)
         return (pa_send_dacs());
     else
 #endif
+#ifdef USEAPI_PULSEAUDIO
+      if (sys_audioapi == API_PULSEAUDIO)
+        return (pulse_send_dacs());
+    else
+#endif
 #ifdef USEAPI_JACK
       if (sys_audioapi == API_JACK)
         return (jack_send_dacs());
@@ -605,6 +622,14 @@ static void audio_getdevs(char *indevlist, int *nindevs,
         pa_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
         *cancallback = 1;
+    }
+    else
+#endif
+#ifdef USEAPI_PULSEAUDIO
+    if (sys_audioapi == API_PULSEAUDIO)
+    {
+        pulse_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
+            maxndev, devdescsize);
     }
     else
 #endif
@@ -842,6 +867,11 @@ void sys_listdevs(void)
         sys_listaudiodevs();
     else
 #endif
+#ifdef USEAPI_PULSEAUDIO
+    if (sys_audioapi == API_PULSEAUDIO)
+        pulse_listdevs();
+    else
+#endif
 #ifdef USEAPI_JACK
     if (sys_audioapi == API_JACK)
         jack_listdevs();
@@ -887,6 +917,9 @@ void sys_set_audio_api(int which)
     int ok = 0;    /* check if the API is actually compiled in */
 #ifdef USEAPI_PORTAUDIO
     ok += (which == API_PORTAUDIO);
+#endif
+#ifdef USEAPI_PULSEAUDIO
+    ok += (which == API_PULSEAUDIO);
 #endif
 #ifdef USEAPI_JACK
     ok += (which == API_JACK);
@@ -988,6 +1021,9 @@ void sys_get_audio_apis(char *buf)
 #endif
 #ifdef USEAPI_JACK
     sprintf(buf + strlen(buf), "{jack %d} ", API_JACK); n++;
+#endif
+#ifdef USEAPI_PULSEAUDIO
+    sprintf(buf + strlen(buf), "{PulseAudio %d} ", API_PULSEAUDIO); n++;
 #endif
 #ifdef USEAPI_DUMMY
     sprintf(buf + strlen(buf), "{dummy %d} ", API_DUMMY); n++;
