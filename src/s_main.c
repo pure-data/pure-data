@@ -427,7 +427,7 @@ static char *(usagemessage[]) = {
 "-callback        -- use callbacks if possible\n",
 "-nocallback      -- use polling-mode (true by default)\n",
 "-listdev         -- list audio and MIDI devices\n",
-"-audioname       -- name under which Pd should appear (on systems that support it, e.g. JACK)"
+"-audioname       -- name under which Pd should appear (on systems that support it, e.g. JACK)",
 
 #ifdef USEAPI_OSS
 "-oss             -- use OSS audio API\n",
