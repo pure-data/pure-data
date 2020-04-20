@@ -262,6 +262,8 @@ AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
 AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
+AC_SUBST([PULSEAUDIO_CFLAGS])
+AC_SUBST([PULSEAUDIO_LIBS])
 
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
@@ -387,6 +389,21 @@ if test x$portaudio = xyes ; then
     fi
 fi
 
+##### PULSE AUDIO #####
+AC_ARG_ENABLE([pulseaudio],
+    [AS_HELP_STRING([--disable-pulseaudio], [do not use Pulse Audio])],
+    [pulseaudio=$enableval], [pulseaudio=yes])
+AS_IF([test x$pulseaudio = xyes],
+    AC_CHECK_LIB([pulse], [pa_strerror],
+      AC_CHECK_LIB([pulse-simple], [pa_simple_new],
+          [
+            PULSEAUDIO_LIBS="-lpulse-simple -lpulse"
+            PULSEAUDIO_CFLAGS="-D_REENTRANT"
+            pulseaudio=yes
+          ], [pulseaudio=no]), [pulseaudio=no])
+      )
+
+
 ##### PortMidi #####
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
@@ -484,6 +501,11 @@ AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 AM_CONDITIONAL(LOCAL_PORTMIDI, test x$local_portmidi = xyes)
 AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
+
+##### PulseAudio #####
+AM_CONDITIONAL(PULSEAUDIO, test x$pulseaudio = xyes)
+AS_IF([test x$pulseaudio = xyes], [audio_backends="PulseAudio ${audio_backends}"])
+
 
 ##### DUMMY #####
 # warn if we end up trying to build without an audio or midi api
@@ -589,6 +611,8 @@ AS_IF([test x$enable_jack = xyes -a x$jack = xno ],
  AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
 AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
  AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_pulseaudio = xyes -a x$pulseaudio = xno ],
+ AC_MSG_WARN([PulseAudio requested but no development files found... disabled (See INSTALL.txt)]))
 AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
 AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
