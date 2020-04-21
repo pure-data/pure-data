@@ -68,7 +68,7 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
     pack $mytoplevel.para.knbstyle.ticks.ent $mytoplevel.para.knbstyle.ticks.lab -side right -anchor e
 
     frame $mytoplevel.para.knbstyle.arc
-    label $mytoplevel.para.knbstyle.arc.lab -text [_ "Arc width: "]
+    label $mytoplevel.para.knbstyle.arc.lab -text [_ "Arc thickness: "]
     entry $mytoplevel.para.knbstyle.arc.ent -textvariable $var_iemgui_arc_width -width 5
     pack $mytoplevel.para.knbstyle.arc.ent $mytoplevel.para.knbstyle.arc.lab -side right -anchor e
 

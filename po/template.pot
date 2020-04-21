@@ -549,7 +549,7 @@ msgstr ""
 msgid "Ticks: "
 msgstr ""
 
-msgid "Arc width: "
+msgid "Arc thickness: "
 msgstr ""
 
 msgid "Start angle: "
