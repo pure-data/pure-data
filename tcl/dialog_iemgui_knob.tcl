@@ -113,7 +113,8 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
         -activeforeground [eval concat $$var_iemgui_lcol] \
         -font [list $::font_family 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     pack $mytoplevel.colors.sections.exp.arc_bk \
-        -side right -anchor e -expand yes -fill both -pady 7
+        -side right -anchor e -expand yes -fill both -pady 7 \
+        -before $mytoplevel.colors.sections.exp.lb_bk
 
     # live widget updates on OSX in lieu of Apply button
     if {$::windowingsystem eq "aqua"} {
