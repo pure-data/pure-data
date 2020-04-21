@@ -543,8 +543,8 @@ msgstr "Couleur de l'arc"
 msgid "Ticks: "
 msgstr "Graduations : "
 
-msgid "Arc width: "
-msgstr "Largeur arc : "
+msgid "Arc thickness: "
+msgstr "Épaisseur arc : "
 
 msgid "Start angle: "
 msgstr "Angle début : "
