@@ -122,14 +122,14 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
         # call apply on Return in entry boxes that are in focus & rebind Return to ok button
         bind $mytoplevel.para.knbstyle.ticks.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.para.knbstyle.arc.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.para.knbangle.start.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
-        bind $mytoplevel.para.knbangle.end.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.knbstyle.start.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.knbstyle.end.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
 
         # unbind Return from ok button when an entry takes focus
         $mytoplevel.para.knbstyle.ticks.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
         $mytoplevel.para.knbstyle.arc.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.para.knbangle.start.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
-        $mytoplevel.para.knbangle.end.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.knbstyle.start.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.knbstyle.end.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
     }
 }
 
