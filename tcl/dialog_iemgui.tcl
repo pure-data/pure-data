@@ -15,7 +15,7 @@ namespace eval ::dialog_iemgui:: {
 source [file join [file dirname [info script]] "dialog_iemgui_knob.tcl"]
 
 proc proc_exists p {
-    return uplevel 1 [expr {[llength [info procs $p]] > 0}]
+    return [expr {[llength [info procs $p]] > 0}]
 }
 
 proc ::dialog_iemgui::call_gui_proc {mytoplevel p args} {
@@ -26,7 +26,7 @@ proc ::dialog_iemgui::call_gui_proc {mytoplevel p args} {
     set gui_proc [concat $p[eval concat $$var_iemgui_guitype]]
 
     if {[proc_exists $gui_proc]} {
-        return [$gui_proc $mytoplevel {*}$args]
+        return [eval $gui_proc $mytoplevel [eval concat $args]]
     }
 }
 
@@ -897,7 +897,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.cao.cancel config -highlightthickness 0
     }
 
-    ::dialog_iemgui::call_gui_proc $mytoplevel ::dialog_iemgui::create_properties_ {*}$args
+    ::dialog_iemgui::call_gui_proc $mytoplevel ::dialog_iemgui::create_properties_ $args
 
     position_over_window $mytoplevel $::focused_window
 }
