@@ -94,15 +94,12 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
     outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
-#ifdef _MSC_VER
-#define strtof(a,b) _atoldbl(a,*b)
-#endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
 {
     t_float f = 0.0f;
     char *str_end = NULL;
-    f = strtof(s->s_name, &str_end);
+    f = strtod(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
         pd_error(x, "couldn't convert %s to float", s->s_name);
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);

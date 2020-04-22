@@ -1205,7 +1205,7 @@ int alsamm_send_dacs(void)
 
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < oframes; i++,fp2++)
           {
-            float s1 = *fp2 * F32MAX;
+            t_sample s1 = *fp2 * F32MAX;
             /* better but slower, better never clip ;-)
                buf[i]= CLIP32(s1); */
             buf[i]= ((int) s1 & 0xFFFFFF00);
@@ -1313,8 +1313,8 @@ int alsamm_send_dacs(void)
         for (i = 0, fp2 = fp1 + chn*alsamm_transfersize; i < iframes; i++,fp2++)
           {
             /* mask the lowest bits, since subchannels info can make zero samples nonzero */
-            *fp2 = (float) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
-              * (1.0 / (float) INT32_MAX);
+            *fp2 = (t_sample) ((t_alsa_sample32) (buf[i] & 0xFFFFFF00))
+              * (1.0 / (t_sample) INT32_MAX);
           }
       }
 

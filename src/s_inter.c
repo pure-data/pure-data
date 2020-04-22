@@ -389,7 +389,7 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-void sys_sockerror(char *s)
+void sys_sockerror(const char *s)
 {
     char buf[MAXPDSTRING];
     int err = socket_errno();
@@ -504,20 +504,29 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
-                /* only close the socket if there really was an error.
-                (socket_errno_udp() ignores some error codes) */
+                /* socket_errno_udp() ignores some error codes */
             if (socket_errno_udp())
             {
                 sys_sockerror("recv (udp)");
+                    /* only notify and shutdown a UDP sender! */
                 if (x->sr_notifier)
+                {
                     (*x->sr_notifier)(x->sr_owner, fd);
-                sys_rmpollfn(fd);
-                sys_closesocket(fd);
+                    sys_rmpollfn(fd);
+                    sys_closesocket(fd);
+                }
             }
             return;
         }
         else if (ret > 0)
         {
+                /* handle too large UDP packets */
+            if (ret > INBUFSIZE)
+            {
+                post("warning: incoming UDP packet truncated from %d to %d bytes.",
+                    ret, INBUFSIZE);
+                ret = INBUFSIZE;
+            }
             buf[ret] = 0;
     #if 0
             post("%s", buf);
@@ -712,7 +721,7 @@ int sys_havegui(void)
     return (pd_this->pd_inter->i_havegui);
 }
 
-void sys_vgui(char *fmt, ...)
+void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
@@ -770,7 +779,7 @@ void sys_vgui(char *fmt, ...)
     pd_this->pd_inter->i_bytessincelastping += msglen;
 }
 
-void sys_gui(char *s)
+void sys_gui(const char *s)
 {
     sys_vgui("%s", s);
 }

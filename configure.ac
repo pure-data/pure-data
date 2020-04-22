@@ -562,6 +562,7 @@ AC_MSG_NOTICE([
     Installation prefix:  $prefix
 
     Compiler:             $CC
+    CPPFLAGS:             $CPPFLAGS
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS

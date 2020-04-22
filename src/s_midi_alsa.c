@@ -221,24 +221,25 @@ void sys_alsa_poll_midi(void)
 {
    unsigned char buf[ALSA_MAX_EVENT_SIZE];
    int count, alsa_source;
-   int i;
    snd_seq_event_t *midievent = NULL;
 
-   if (alsa_nmidiout == 0 && alsa_nmidiin == 0) return;
+   if (!alsa_nmidiout && !alsa_nmidiin) return;
 
    snd_midi_event_init(midiev);
 
-   if (!alsa_nmidiout && !alsa_nmidiin) return;
-   count = snd_seq_event_input_pending(midi_handle, 1);
-   if (count != 0)
-        count = snd_seq_event_input(midi_handle, &midievent);
-   if (midievent != NULL)
-   {
-       count = snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
-       alsa_source = midievent->dest.port;
-       for(i = 0; i < count; i++)
-           sys_midibytein(alsa_source, (buf[i] & 0xff));
-       //post("received %d MIDI bytes\n", count);
+   while (snd_seq_event_input_pending(midi_handle, 1) > 0) {
+       while (snd_seq_event_input_pending(midi_handle, 0) > 0) {
+           int rslt = snd_seq_event_input(midi_handle, &midievent);
+           if(rslt >= 0) {
+               long length = snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
+               long i;
+               alsa_source = midievent->dest.port;
+               for(i = 0; i < length; i++)
+                   sys_midibytein(alsa_source, (buf[i] & 0xff));
+           } else if (rslt == -ENOSPC) {
+               error("MIDI input queue overflow!");
+           }
+       }
    }
 }
 

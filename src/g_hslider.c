@@ -548,7 +548,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     int lilo = 0, ldx = -2, ldy = -8, steady = 1;
     int fs = 10;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
-    float v = 0;
+    t_float v = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
