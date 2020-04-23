@@ -116,18 +116,13 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     if (x->x_wiper_visible)
     {
         float radius = x->x_gui.x_w / 2.0;
-        float xp, yp, xpc, ypc;
-        float miniradius = 1.5 * IEMGUI_ZOOM(x);
-        float xc, yc;
+        float xc, yc, xp, yp;
         xc = (x0 + x1) / 2.0;
         yc = (y0 + y1) / 2.0;
         xp = xc + radius * cos(angle);
         yp = yc + radius * sin(angle);
-        xpc = miniradius * cos(angle-M_PI/2);
-        ypc = miniradius * sin(angle-M_PI/2);
-        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d %d %d %d %d\n", canvas, x,
-            NEAR(xp - xpc), NEAR(yp - ypc), NEAR(xp + xpc), NEAR(yp + ypc),
-            NEAR(xc + xpc), NEAR(yc + ypc), NEAR(xc - xpc), NEAR(yc - ypc));
+        sys_vgui(".x%lx.c coords %lxWIPER %d %d %d %d\n", canvas, x,
+            NEAR(xc), NEAR(yc), NEAR(xp), NEAR(yp));
     }
 }
 
@@ -232,8 +227,8 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
         x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x);
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d -fill #%06x -state %s -tags %lxWIPER\n",
-        canvas, xc, ypos, xc - 4, yc, xc + 4, yc, x->x_gui.x_fcol,
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -state %s -tags %lxWIPER\n",
+        canvas, xc, yc, xc, yc, 3 * IEMGUI_ZOOM(x), x->x_gui.x_fcol,
         x->x_wiper_visible ? "normal" : "hidden", x);
 
     knb_update_knob(x, glist);
@@ -326,7 +321,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
     sys_vgui(".x%lx.c itemconfigure %lxWIPER -fill #%06x -width %d -state %s\n", canvas,
-        x, x->x_gui.x_fcol, IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
+        x, x->x_gui.x_fcol, 3 * IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
 
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
