@@ -951,9 +951,20 @@ void add_to_list(t_detected_names *detected_names, const char *name)
     strcpy(detected_names->names[n], name);
 }
 
+void free_list(t_detected_names *detected_names)
+{
+    const char *name;
+    for (int i = 0; i < detected_names->n; ++i) {
+        free(detected_names->names[i]);
+    }
+    free(detected_names->names);
+    detected_names->n = 0;
+    detected_names->names = NULL;
+}
+
 static int get_devs(char *devlist, int maxndev, int devdescsize, t_detected_names *detected_names, alsa_pcm_list_dir dir)
 {
-    detected_names->n = 0;
+    free_list(detected_names);
     alsa_pcm_list_t *info = alsa_pcm_list_init(dir);
     const char *name = NULL;
     while ((name = alsa_pcm_list_get_next(info)) != NULL) {
