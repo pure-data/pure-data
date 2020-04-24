@@ -30,6 +30,7 @@
 #define DEFAULT_SIZE 35
 #define MIN_SIZE 12
 
+#define POS_MARGIN 0.01
 /* ------------ knb  ----------------------- */
 typedef struct _knb
 {
@@ -65,6 +66,10 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     float angle, angle0;
     int x0, y0, x1, y1;
+    t_float pos = (x->x_pos - POS_MARGIN) / (1 - 2 * POS_MARGIN);
+
+    if(pos < 0.0) pos = 0.0;
+    else if(pos > 1.0) pos = 1.0;
 
     x0 = text_xpix(&x->x_gui.x_obj, glist);
     y0 = text_ypix(&x->x_gui.x_obj, glist);
@@ -72,7 +77,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     y1 = y0 + x->x_gui.x_w;
 
     angle0 = (x->x_start_angle / 90.0 - 1) * M_PI / 2.0;
-    angle = angle0 + x->x_pos * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
+    angle = angle0 + pos * (x->x_end_angle - x->x_start_angle) / 180.0 * M_PI;
 
     if (x->x_arc_visible)
     {
@@ -530,11 +535,15 @@ static void knb_properties(t_gobj *z, t_glist *owner)
 static t_float knb_getfval(t_knb *x)
 {
     t_float fval;
+    t_float pos = (x->x_pos - POS_MARGIN) / (1 - 2 * POS_MARGIN);
+
+    if(pos < 0.0) pos = 0.0;
+    else if(pos > 1.0) pos = 1.0;
 
     if (x->x_lin0_log1)
-        fval = x->x_min * exp(log(x->x_max/x->x_min) * x->x_pos);
+        fval = x->x_min * exp(log(x->x_max / x->x_min) * pos);
     else
-        fval = x->x_pos * (x->x_max - x->x_min) + x->x_min;
+        fval = pos * (x->x_max - x->x_min) + x->x_min;
 
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
@@ -564,6 +573,8 @@ static void knb_set(t_knb *x, t_floatarg f)
         x->x_pos = log(f/x->x_min) / log(x->x_max/x->x_min);
     else
         x->x_pos = (f - x->x_min) / (x->x_max - x->x_min);
+
+    x->x_pos = x->x_pos * (1 - 2 * POS_MARGIN) + POS_MARGIN;
 
     if (x->x_pos != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -728,7 +739,6 @@ static void knb_size(t_knb *x, t_floatarg f)
         knb_draw_config(x, x->x_gui.x_glist);
         knb_draw_update(x, x->x_gui.x_glist);
     }
-
 }
 
 static void knb_sensitivity(t_knb *x, t_floatarg f)
