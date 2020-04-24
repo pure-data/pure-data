@@ -102,7 +102,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         sys_vgui(".x%lx.c coords %lxARC %d %d %d %d\n",
             canvas, x, x0 + aD, y0 + aD, x1 - aD, y1 - aD);
         sys_vgui(".x%lx.c itemconfigure %lxARC -start %f -extent %f \n",
-            canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -180.0 / M_PI);
+            canvas, x, angle0 * -180.0 / M_PI, (angle - angle0) * -179.99 / M_PI);
 
         if (x->x_center_visible)
         {
