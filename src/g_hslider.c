@@ -31,12 +31,14 @@ static t_class *hslider_class;
 
 /* widget helper functions */
 
+#define GET_KNOB_X(x) (((x->x_pos + 50) / 100) * IEMGUI_ZOOM(x))
+
 static void hslider_draw_update(t_gobj *client, t_glist *glist)
 {
     t_hslider *x = (t_hslider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_xpix(&x->x_gui.x_obj, glist) + ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
+        int r = text_xpix(&x->x_gui.x_obj, glist) + GET_KNOB_X(x);
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
         t_canvas *canvas = glist_getcanvas(glist);
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
@@ -51,7 +53,7 @@ static void hslider_draw_new(t_hslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int lmargin = LMARGIN * IEMGUI_ZOOM(x), rmargin = RMARGIN * IEMGUI_ZOOM(x);
-    int r = xpos + ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
+    int r = xpos + GET_KNOB_X(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
@@ -90,7 +92,7 @@ static void hslider_draw_move(t_hslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int lmargin = LMARGIN * IEMGUI_ZOOM(x), rmargin = RMARGIN * IEMGUI_ZOOM(x);
-    int r = xpos + ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
+    int r = xpos + GET_KNOB_X(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
@@ -244,14 +246,16 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
+#define POS_MAX(x) (100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100)
+
 void hslider_check_width(t_hslider *x, int w)
 {
     if(w < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         w = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
     x->x_gui.x_w = w;
-    if(x->x_pos > ((x->x_gui.x_w/IEMGUI_ZOOM(x)) * 100 - 100))
+    if(x->x_pos > POS_MAX(x))
     {
-        x->x_pos = (x->x_gui.x_w/IEMGUI_ZOOM(x)) * 100 - 100;
+        x->x_pos = POS_MAX(x);
     }
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max/x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
@@ -398,9 +402,9 @@ static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
         x->x_pos += (int)(dx);
     else
         x->x_pos += (int)(100 * dx / IEMGUI_ZOOM(x));
-    if(x->x_pos > (100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100))
+    if(x->x_pos > POS_MAX(x))
     {
-        x->x_pos = 100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100;
+        x->x_pos = POS_MAX(x);
     }
     if(x->x_pos < 0)
     {
@@ -420,8 +424,8 @@ static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
     if(!x->x_steady)
         x->x_pos = (int)
             (100.0 * (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)) / IEMGUI_ZOOM(x));
-    if(x->x_pos > (100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100))
-        x->x_pos = 100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100;
+    if(x->x_pos > POS_MAX(x))
+        x->x_pos = POS_MAX(x);
     if(x->x_pos < 0)
         x->x_pos = 0;
     x->x_fval = hslider_getfval(x);

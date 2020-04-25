@@ -31,13 +31,14 @@ static t_class *vslider_class;
 
 /* widget helper functions */
 
+#define GET_KNOB_Y(x) (x->x_gui.x_h - ((x->x_pos + 50) / 100) * IEMGUI_ZOOM(x))
+
 static void vslider_draw_update(t_gobj *client, t_glist *glist)
 {
     t_vslider *x = (t_vslider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h -
-            ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
+        int r = text_ypix(&x->x_gui.x_obj, glist) + GET_KNOB_Y(x);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
 
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
@@ -52,7 +53,7 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    int r = ypos + x->x_gui.x_h - ((x->x_pos + 50)/100) * IEMGUI_ZOOM(x);
+    int r = ypos + GET_KNOB_Y(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
@@ -91,7 +92,7 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    int r = ypos + x->x_gui.x_h - ((x->x_pos+ 50)/100) * IEMGUI_ZOOM(x);
+    int r = ypos + GET_KNOB_Y(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
@@ -247,14 +248,16 @@ static void vslider_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
+#define POS_MAX(x) (100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100)
+
 void vslider_check_height(t_vslider *x, int h)
 {
     if(h < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         h = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
     x->x_gui.x_h = h;
-    if(x->x_pos > ((x->x_gui.x_h/IEMGUI_ZOOM(x)) * 100 - 100))
+    if(x->x_pos > POS_MAX(x))
     {
-        x->x_pos = (x->x_gui.x_h/IEMGUI_ZOOM(x)) * 100 - 100;
+        x->x_pos = POS_MAX(x);
     }
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max / x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
@@ -373,9 +376,9 @@ static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
         x->x_pos -= (int)(dy);
     else
         x->x_pos -= (int)(100 * dy / IEMGUI_ZOOM(x));
-    if(x->x_pos > (100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100))
+    if(x->x_pos > POS_MAX(x))
     {
-        x->x_pos = 100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100;
+        x->x_pos = POS_MAX(x);
     }
     if(x->x_pos < 0)
     {
@@ -395,8 +398,8 @@ static void vslider_click(t_vslider *x, t_floatarg xpos, t_floatarg ypos,
     if(!x->x_steady)
         x->x_pos = (int)(100.0 * 
             (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos) / IEMGUI_ZOOM(x));
-    if(x->x_pos > (100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100))
-        x->x_pos = 100 * (x->x_gui.x_h / IEMGUI_ZOOM(x)) - 100;
+    if(x->x_pos > POS_MAX(x))
+        x->x_pos = POS_MAX(x);
     if(x->x_pos < 0)
         x->x_pos = 0;
     x->x_fval = vslider_getfval(x);
