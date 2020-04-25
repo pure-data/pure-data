@@ -568,13 +568,13 @@ int alsa_send_dacs(void)
             sys_log_error(ERR_DATALATE);
             if (result == -EPIPE)
             {
-                result = snd_pcm_prepare(alsa_indev[iodev].a_handle);
+                result = snd_pcm_prepare(alsa_outdev[iodev].a_handle);
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
             else
             {
-                fprintf(stderr, "read error: %s (%d)\n",
+                fprintf(stderr, "write error: %s (%d)\n",
                     strerror(-result), result);
                 goterror = 1;
             }
