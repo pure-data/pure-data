@@ -201,7 +201,8 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
     check_error(err, out, "snd_pcm_hw_params");
-
+    if (err < 0)
+        return (-1);
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
     if (alsa_snd_buf)
