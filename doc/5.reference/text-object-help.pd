@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 583 92 562 579 12;
+#N canvas 929 100 562 579 12;
 #X obj 123 531 list;
 #X obj 68 12 text;
 #X text 46 530 see also:;
@@ -12,85 +12,63 @@
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
-#N canvas 573 69 710 786 define 0;
-#X msg 49 106 clear;
-#X msg 67 132 read text-object-help.txt;
-#X msg 80 161 write text-object-help.txt;
-#X text 109 25 "text define" maintains a text object and can name it
+#N canvas 766 102 679 680 define 0;
+#X msg 90 74 clear;
+#X msg 108 100 read text-object-help.txt;
+#X msg 121 129 write text-object-help.txt;
+#X text 107 25 "text define" maintains a text object and can name it
 so that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 158 462 click to open and edit text:;
-#X text 395 472 creation arguments:;
-#X text 423 490 optional -k flag to keep contents;
-#X text 425 507 optional name;
-#X text 254 130 read from a file;
-#X text 276 161 write to a file;
-#X text 98 105 clear;
-#X obj 98 193 bng 17 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 88 550 t b p;
-#X obj 88 602 text get -s text t;
-#X msg 88 577 0;
-#X obj 88 652 print;
-#X obj 88 627 list trim;
-#X obj 88 489 text define -k text-help-1;
+#X text 146 417 click to open and edit text:, f 16;
+#X text 395 432 creation arguments:;
+#X text 423 450 optional -k flag to keep contents;
+#X text 425 467 optional name;
+#X text 295 98 read from a file;
+#X text 317 129 write to a file;
+#X text 139 73 clear;
+#X obj 150 245 bng 17 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 88 510 t b p;
+#X obj 88 562 text get -s text t;
+#X msg 88 537 0;
+#X obj 88 612 print;
+#X obj 88 587 list trim;
+#X obj 88 449 text define -k text-help-1;
 #A set this is a message \; this is another 1 ... \;;
-#X msg 151 373 write -c /tmp/test-cr.txt;
-#X obj 267 519 print notify-outlet;
-#X text 173 633 First outlet is pointer to a "text" scalar containing
+#X msg 136 204 write -c /tmp/test-cr.txt;
+#X obj 267 479 print notify-outlet;
+#X text 173 593 First outlet is pointer to a "text" scalar containing
 the text \, which is output when the object is sent a "bang". For example
 \, here's machinery for printing out first line of text., f 46;
-#X text 119 187 bang to output a pointer to a scalar (struct) containing
+#X text 171 239 bang to output a pointer to a scalar (struct) containing
 the text - see first outlet below, f 45;
-#X text 265 544 Second outlet notifies you when text changes. As of
+#X text 265 504 Second outlet notifies you when text changes. As of
 Pd 0.48 this only outputs the message "updated" when text changes \,
 but this might be extended to offer more information in the future.
 , f 42;
-#X msg 149 416 click;
-#X msg 197 416 close;
-#X text 245 416 open and close text window;
-#X msg 129 275 send text-help-send;
-#X text 275 275 send pointer to a named receive object;
-#X obj 101 521 r text-help-send;
-#X text 147 308 (optionally you can read or write to/from a file interpreting
+#X msg 164 352 click;
+#X msg 212 352 close;
+#X text 260 352 open and close text window;
+#X msg 156 287 send text-help-send;
+#X text 301 287 send pointer to a named receive object;
+#X obj 101 481 r text-help-send;
+#X text 132 152 (optionally you can read or write to/from a file interpreting
 carriage returns as separators \; this should allow reading some text
-file formats - like this:), f 48;
-#X msg 118 239 sort;
-#N canvas 797 203 637 524 sorting-text 0;
-#X obj 64 264 text define text-help-sorting;
-#X msg 84 59 sort;
-#X msg 101 86 sort -r;
-#X msg 110 120 sort -k 1;
-#X msg 65 26 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 2 1 4 \\\; 1 \\\;
-2 \\\; 1 2 3;
-#X msg 119 207 sort -u;
-#X text 86 313 Numbers come before symbols \, which are sorted alphabetically
-(in the sense of "strcmp" - this will probably yield nonsense for non-ASCII
-symbols \, but even in that case it should give some repeatable order).
-Shorter lines come before longer ones that match the entire shorter
-lines. As a special case empty lines come before anything else., f
-61;
-#X text 187 111 only compare contents of line starting at field 1 (counting
-from zero). If two lines are identical (even if both are empty) starting
-at the first field compared \, we preserve the original order the lines
-appeared in \, even if earlier fields then appear out of order., f
-56;
-#X text 187 192 unique - suppress identical lines if they are sorted
-to consecutive positions (this is not always true when "-k" is also
-present)., f 45;
-#X text 165 86 reverse order;
-#X text 86 407 If the last line in the text isn't terminated a semicolon
-is added to it before sorting., f 61;
-#X text 86 446 linee terminated by commas are treated as equal to ones
-terminated by semicolons. There is probably only confusion to be won
-from sorting texts mixing commas and semicolons., f 61;
+file formats - like this:), f 64;
+#X msg 156 323 sort;
+#X text 203 321 sort the contents. details here:;
+#N canvas 1070 128 647 361 sorting-text 0;
+#X obj 45 126 text define text-help-sorting;
+#X msg 76 89 sort;
+#X msg 44 54 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 1 \\\; 2 \;;
+#X text 63 168 Numbers come before symbols \, which are sorted alphabetically
+(details such as case sensitivity (does 'b' come before 'A'?) may depend
+on operating system). Shorter lines come before longer ones that match
+the entire shorter lines. As a special case empty lines come before
+anything else.;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X connect 3 0 0 0;
-#X connect 4 0 0 0;
-#X connect 5 0 0 0;
-#X restore 419 238 pd sorting-text;
-#X text 164 238 sort the contents - details here =>;
+#X restore 446 322 pd sorting-text;
 #X connect 0 0 17 0;
 #X connect 1 0 17 0;
 #X connect 2 0 17 0;
@@ -535,7 +513,7 @@ are used as a waiting point, f 43;
 #X text 35 13 "text sequence" outputs lines from a text buffer \, either
 to an outlet \, or as messages to named destinations. The text is interpreted
 as a sequence of lists \, and possibly some interspersed waiting instructions
-(called "waits" here). You can ask for one line at a time ("step" message")
+(called "waits" here). You can ask for one line at a time ("step" message)
 \, or to proceed without delay to the next wait ("bang") \, or to automatically
 sequence through a series of waits (with each wait specifying a delay
 in milliseconds), f 70;
