@@ -80,7 +80,7 @@ SYSSRC = s_midi_oss.c
 # conditionally add code and flags for various audio APIs
 ifeq ($(ALSA), true)
 CPPFLAGS += -DUSEAPI_ALSA
-SYSSRC += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+SYSSRC += s_audio_alsa.c s_audio_alsamm.c s_alsa_pcm_list.c s_midi_alsa.c
 LIB += -lasound
 HAVEAUDIOAPI=true
 endif
