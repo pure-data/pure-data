@@ -938,7 +938,7 @@ static void alsa_numbertoname(const t_detected_names *detected_names, int devno,
     else snprintf(devname, nchar, "???");
 }
 
-void add_to_list(t_detected_names *detected_names, const char *name)
+static void add_to_list(t_detected_names *detected_names, const char *name)
 {
     int n = detected_names->n;
     if (n == 0)
@@ -951,7 +951,7 @@ void add_to_list(t_detected_names *detected_names, const char *name)
     strcpy(detected_names->names[n], name);
 }
 
-void free_list(t_detected_names *detected_names)
+static void free_list(t_detected_names *detected_names)
 {
     const char *name;
     for (int i = 0; i < detected_names->n; ++i) {
@@ -965,18 +965,39 @@ void free_list(t_detected_names *detected_names)
 static int get_devs(char *devlist, int maxndev, int devdescsize, t_detected_names *detected_names, alsa_pcm_list_dir dir)
 {
     free_list(detected_names);
-    alsa_pcm_list_t *info = alsa_pcm_list_init(dir);
-    const char *name = NULL;
-    while ((name = alsa_pcm_list_get_next(info)) != NULL) {
-        snprintf(devlist + detected_names->n * devdescsize, devdescsize,
-                 "%s", name);
-        //devlist[(detected_names->n+1) * devdescsize - 1] = '\0';
-        add_to_list(detected_names, name);
-        ++(detected_names->n);
-        if (detected_names->n == maxndev)
-            break;
+
+    // get names such as: default, pulse, front, etc.
+    {
+        alsa_pcm_list_t *info = alsa_pcm_list_init(dir);
+        const char *name = NULL;
+        
+        while ((name = alsa_pcm_list_get_next(info)) != NULL) {
+            snprintf(devlist + detected_names->n * devdescsize, devdescsize,
+                     "%s", name);
+            add_to_list(detected_names, name);
+            ++(detected_names->n);
+            if (detected_names->n == maxndev)
+                break;
+        }
+        alsa_pcm_list_free(info);
     }
-    alsa_pcm_list_free(info);
+
+    // get names such as: hw:0,0
+    {
+        alsa_hw_list_t *hw = alsa_hw_list_init(dir);
+        const char *hwname;
+
+        while (hwname = alsa_hw_list_get_next(hw, NULL)) {
+            snprintf(devlist + detected_names->n * devdescsize, devdescsize,
+                     "%s", hwname);
+            add_to_list(detected_names, hwname);
+            ++(detected_names->n);
+            if (detected_names->n == maxndev)
+                break;
+        }
+        alsa_hw_list_free(hw);
+    }
+    
     return detected_names->n;
 }
 
