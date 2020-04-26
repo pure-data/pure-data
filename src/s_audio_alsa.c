@@ -576,7 +576,7 @@ int alsa_send_dacs(void)
             }
             else
             {
-                fprintf(stderr, "read error: %s (%d)\n",
+                fprintf(stderr, "write error: %s (%d)\n",
                     strerror(-result), result);
                 goterror = 1;
             }
