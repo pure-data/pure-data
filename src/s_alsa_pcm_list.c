@@ -86,7 +86,7 @@ err_malloc:
     return NULL;
 }
 
-const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **name)
+const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **cardname, const char **pcmname)
 {
     int err;
     if (!hw)
@@ -96,10 +96,12 @@ const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **name)
         goto continue_from_before; // i.e. not the first call into this function
 
     while (snd_card_next(&hw->card) >= 0 && hw->card >= 0) {
-        char namefragment[7];
-        snprintf(namefragment, sizeof(namefragment), "hw:%d", hw->card);
-        if ((err = snd_ctl_open(&hw->handle, namefragment, 0)) < 0) {
-            continue;
+        {
+            char namefragment[7];
+            snprintf(namefragment, sizeof(namefragment), "hw:%d", hw->card);
+            if ((err = snd_ctl_open(&hw->handle, namefragment, 0)) < 0) {
+                continue;
+            }
         }
         if ((err = snd_ctl_card_info(hw->handle, hw->info)) < 0) {
             snd_ctl_close(hw->handle);
@@ -119,14 +121,18 @@ const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **name)
                 continue;
             }
             snprintf(hw->hwname, sizeof(hw->hwname), "hw:%d,%d", hw->card, hw->dev);
-            if (name)
-                *name = snd_pcm_info_get_name(hw->pcminfo);
+            if (cardname)
+                *cardname = snd_ctl_card_info_get_id(hw->info);
+            if (pcmname)
+                *pcmname = snd_pcm_info_get_name(hw->pcminfo);
             return hw->hwname;
         }
         snd_ctl_close(hw->handle);
     }
-    if (name)
-        *name = "";
+    if (cardname)
+        *cardname = "";
+    if (pcmname)
+        *pcmname = "";
     return NULL;
 }
 

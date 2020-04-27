@@ -38,7 +38,7 @@ typedef struct {
 } alsa_hw_list_t;
 
 alsa_hw_list_t *alsa_hw_list_init(alsa_pcm_list_dir dir);
-const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **name);
+const char *alsa_hw_list_get_next(alsa_hw_list_t *hw, const char **cardname, const char **pcmname);
 void alsa_hw_list_free(alsa_hw_list_t *hw);
 
 #endif

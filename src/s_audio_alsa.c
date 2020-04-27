@@ -962,22 +962,44 @@ static void free_list(t_detected_names *detected_names)
     detected_names->names = NULL;
 }
 
+static int str_in_array(const char * const * const arr, size_t len, const char * const str)
+{
+    int found = 0;
+    const char * const * const lim = arr + len;
+    for (const char * const *s = arr; s < lim; ++s) {
+        if (strcmp(*s, str) == 0) {
+            found = 1;
+            break;
+        }
+    }
+    return found;
+}
+
 static int get_devs(char *devlist, int maxndev, int devdescsize, t_detected_names *detected_names, alsa_pcm_list_dir dir)
 {
     free_list(detected_names);
 
-    // get names such as: default, pulse, front, etc.
+    
+    // get names such as: default, pulse etc. (see pcm_names_of_interest below)
     {
+        // We don't list all names provided by
+        //    aplay -L | grep '^[[:graph:]]' | cut -d: -f1 | uniq
+        // but only those that exist and are in pcm_names_of_interest:
+        static const char * const pcm_names_of_interest[] = {"default", "pulse", "oss", "jack"};
+        const size_t arrlen = sizeof(pcm_names_of_interest) / sizeof(*pcm_names_of_interest);
+        
         alsa_pcm_list_t *info = alsa_pcm_list_init(dir);
         const char *name = NULL;
         
         while ((name = alsa_pcm_list_get_next(info)) != NULL) {
-            snprintf(devlist + detected_names->n * devdescsize, devdescsize,
-                     "%s", name);
-            add_to_list(detected_names, name);
-            ++(detected_names->n);
-            if (detected_names->n == maxndev)
-                break;
+            if (str_in_array(pcm_names_of_interest, arrlen, name)) {
+                snprintf(devlist + detected_names->n * devdescsize, devdescsize,
+                         "%s", name);
+                add_to_list(detected_names, name);
+                ++(detected_names->n);
+                if (detected_names->n == maxndev)
+                    break;
+            }
         }
         alsa_pcm_list_free(info);
     }
@@ -986,10 +1008,12 @@ static int get_devs(char *devlist, int maxndev, int devdescsize, t_detected_name
     {
         alsa_hw_list_t *hw = alsa_hw_list_init(dir);
         const char *hwname;
+        const char *cardname;
+        const char *pcmname;
 
-        while (hwname = alsa_hw_list_get_next(hw, NULL)) {
+        while (hwname = alsa_hw_list_get_next(hw, &cardname, &pcmname)) {
             snprintf(devlist + detected_names->n * devdescsize, devdescsize,
-                     "%s", hwname);
+                     "%s (%s : %s)", hwname, cardname, pcmname);
             add_to_list(detected_names, hwname);
             ++(detected_names->n);
             if (detected_names->n == maxndev)
