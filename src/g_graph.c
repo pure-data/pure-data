@@ -191,7 +191,7 @@ void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,
 
 t_canvas *glist_getcanvas(t_glist *x)
 {
-    while (x->gl_owner && !x->gl_havewindow && x->gl_isgraph)
+    while (x->gl_owner && !x->gl_isclone && !x->gl_havewindow && x->gl_isgraph)
             x = x->gl_owner;
     return((t_canvas *)x);
 }
@@ -662,7 +662,7 @@ void glist_redraw(t_glist *x)
                 canvas_drawredrect(x, 1);
             }
         }
-        if (x->gl_owner && glist_isvisible(x->gl_owner))
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         {
             graph_vis(&x->gl_gobj, x->gl_owner, 0);
             graph_vis(&x->gl_gobj, x->gl_owner, 1);
