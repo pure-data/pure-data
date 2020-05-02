@@ -320,10 +320,11 @@ static void vslider_properties(t_gobj *z, t_glist *owner)
 static t_float vslider_getfval(t_vslider *x)
 {
     t_float fval;
+    int rounded_pos = (x->x_gui.x_fsf.x_finemoved) ? x->x_pos : (x->x_pos / 100) * 100;
 
     if (x->x_lin0_log1)
-        fval = x->x_min * exp(x->x_k * (double)(x->x_pos) * 0.01);
-    else fval = (double)(x->x_pos) * 0.01 * x->x_k + x->x_min;
+        fval = x->x_min * exp(x->x_k * (double)(rounded_pos) * 0.01);
+    else fval = (double)(rounded_pos) * 0.01 * x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
