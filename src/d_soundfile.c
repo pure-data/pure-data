@@ -1247,6 +1247,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     //post("read 1 %d", n);
     if (nframes < 1)
     {
+        binbuf_free(b);
         pd_error(x, "soundfiler_read: %s: empty or very short file", filename);
         return;
     }
@@ -1255,7 +1256,8 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
         for (i = 0; i < narray; i++)
         {
             garray_resize_long(garrays[i], nframes);
-            garray_getfloatwords(garrays[i], &vecsize, &vecs[i]);
+            if (!garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+                bug("garray_getfloatwords[%d]", i);
         }
     }
     else if (finalsize < nframes)
