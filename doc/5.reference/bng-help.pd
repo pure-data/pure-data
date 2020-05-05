@@ -207,8 +207,8 @@ gui-objects, f 31;
 #X floatatom 546 266 5 100 3000 0 - - -;
 #X obj 493 288 pack 0 0;
 #X msg 493 313 \; foo5_rcv flashtime \$1 \$2;
-#X text 549 237 interrupt-time;
-#X text 587 267 hold-time;
+#X text 549 237 minimum;
+#X text 587 267 maximum;
 #X text 522 432 init bang on loadbang;
 #X text 468 218 flash-time:;
 #X obj 484 241 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
