@@ -264,19 +264,25 @@ than zero) or no init (if equal to zero - the default value)., f 48
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X restore 172 157 pd init;
-#N canvas 104 163 540 377 flash-time 0;
-#X floatatom 230 133 4 10 100 0 - - -;
-#X text 122 132 interrupt-time;
-#X obj 230 278 s \$0-set-bng;
-#X msg 230 230 flashtime \$1 \$2;
-#X obj 230 189 pack 50 250;
-#X obj 272 160 t b f;
-#X floatatom 272 133 5 100 3000 0 - - -;
-#X text 316 131 hold-time;
+#N canvas 630 236 548 458 flash-time 0;
+#X floatatom 220 133 4 10 100 0 - - -;
+#X text 112 132 interrupt-time;
+#X obj 220 278 s \$0-set-bng;
+#X msg 220 230 flashtime \$1 \$2;
+#X obj 220 189 pack 50 250;
+#X obj 262 160 t b f;
+#X floatatom 262 133 5 100 3000 0 - - -;
+#X text 306 131 hold-time;
 #X text 75 29 The flashtime message controls the time the button stays
 activated. It takes a list that sets the interrupt time (minimum 10)
 and hold time (minimum 50) and in ms. Note that the interrupt time
-needs to be smaller or equal than the interrupt time.;
+needs to be smaller or equal than the interrupt time., f 57;
+#X text 75 334 The "interrupt" time is actually the minimum flash time
+\, while "hold" is the maximum time. This time varies depending on
+the rate the bang is being activated. If the last it was activated
+is shorter than twice the hold time \, then the flash time is half
+the peiod since the last time the bang was activated (if this is higher
+than interrupt).;
 #X connect 0 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 3 0;
