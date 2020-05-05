@@ -38,6 +38,12 @@ respectively:, f 69;
 #X text 799 199 Connect to "localhost" port number, f 22;
 #X obj 423 393 netsend -b;
 #X msg 628 207 connect localhost 3003;
+#X text 35 71 The Netsend object connects to another machine over the
+network for sending TCP ("stream") or UDP ("datagram") messages. An
+outlet reports whether the connection is open or not. A connection
+request should specify the name or IP address of the other host and
+the port number. There should be a "netreceive" on the remote host
+with a matching port number., f 68;
 #X text 541 35 By default the messages are ASCII text messages compatible
 with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" creation argument specifies binary messages
@@ -108,15 +114,8 @@ for backwards compatibility., f 70;
 #X connect 16 0 15 0;
 #X connect 17 0 14 0;
 #X restore 847 573 pd IP version and multicast;
-#X text 35 71 The Netsend object connects to another machine over the
-network for sending TCP ("stream") or UDP ("datagram") messages. An
-outlet reports whether the connection is open or not. A connection
-request should specify the name or IP address of the other host and
-the port number. Two netsend objects should have different addresses
-and there should be a "netreceive" on the remote host with a matching
-port number., f 68;
 #X connect 0 0 8 0;
-#X connect 0 1 38 0;
+#X connect 0 1 39 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
@@ -125,7 +124,7 @@ port number., f 68;
 #X connect 6 0 16 0;
 #X connect 7 0 16 0;
 #X connect 16 0 9 0;
-#X connect 16 1 41 0;
+#X connect 16 1 42 0;
 #X connect 20 0 5 0;
 #X connect 22 0 35 0;
 #X connect 24 0 25 0;
@@ -135,9 +134,9 @@ port number., f 68;
 #X connect 29 0 31 0;
 #X connect 31 0 32 0;
 #X connect 32 0 28 0;
-#X connect 32 1 42 0;
+#X connect 32 1 43 0;
 #X connect 35 0 23 0;
-#X connect 35 1 39 0;
+#X connect 35 1 40 0;
 #X connect 36 0 32 0;
-#X connect 44 0 32 0;
-#X connect 53 0 35 0;
+#X connect 45 0 32 0;
+#X connect 54 0 35 0;
