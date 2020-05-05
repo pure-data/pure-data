@@ -141,7 +141,7 @@ pattern specify respectively wether the exponential character is lower
 #X connect 5 0 1 0;
 #X connect 7 0 0 0;
 #X restore 80 153 pd %f;
-#N canvas 783 176 612 539 %g/%G 0;
+#N canvas 521 79 612 539 %g/%G 0;
 #X floatatom 304 368 10 0 0 0 - - -;
 #X symbolatom 154 464 18 0 0 0 - - -;
 #X symbolatom 304 464 18 0 0 0 - - -;
@@ -162,7 +162,8 @@ scientific notation into a symbol (symbols are converted to 0). The
 '%g' or '%G' pattern specify respectively wether the exponential character
 is lower (e) or upper (E) case. The scientific notation is only used
 if there's not enough digit resolution. The default precision is 6
-digits and we'll see how to change that later., f 78;
+digits and we'll see how to change that later. Also \, the decimal
+point is not included on whole numbers., f 78;
 #X connect 0 0 4 0;
 #X connect 0 0 11 0;
 #X connect 3 0 0 0;
