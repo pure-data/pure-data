@@ -486,6 +486,17 @@ static void pdcontrol_editmode(t_pdcontrol *x, t_floatarg f)
     outlet_float(x->x_outlet, c->gl_edit);
 }
 
+static void pdcontrol_version(t_pdcontrol *x)
+{
+    t_atom at[3];
+    int major = 0, minor = 0, bugfix = 0;
+    sys_getversion(&major, &minor, &bugfix);
+    SETFLOAT(at, major);
+    SETFLOAT(at+1, minor);
+    SETFLOAT(at+2, bugfix);
+    outlet_list(x->x_outlet, &s_list, 3, at);
+}
+
 static void pdcontrol_isvisible(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
@@ -512,6 +523,8 @@ static void pdcontrol_setup(void)
         gensym("isvisible"), A_DEFFLOAT , 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_editmode,
         gensym("editmode"), A_DEFFLOAT , 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_version,
+        gensym("version"), 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */

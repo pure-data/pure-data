@@ -1,10 +1,10 @@
-#N canvas 574 48 682 640 12;
-#X obj 38 30 pdcontrol;
-#X text 117 30 -- communicate with pd and/or this patch;
-#X obj 52 381 pdcontrol;
-#X obj 52 408 print;
-#X msg 91 263 isvisible;
-#X msg 58 452 isvisible;
+#N canvas 630 103 682 640 12;
+#X obj 48 30 pdcontrol;
+#X text 127 30 -- communicate with pd and/or this patch;
+#X obj 62 401 pdcontrol;
+#X obj 62 428 print;
+#X msg 101 283 isvisible;
+#X msg 68 472 isvisible;
 #N canvas 564 534 495 194 subpatch 0;
 #X obj 44 15 inlet;
 #X obj 44 97 pdcontrol;
@@ -18,30 +18,30 @@ to test it., f 30;
 #X connect 1 0 2 0;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
-#X restore 58 487 pd subpatch;
-#X msg 68 178 dir;
-#X text 108 178 get directory this patch is in;
-#X msg 84 206 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
-#X text 254 145 open a URL in a browser;
-#X msg 52 146 browse http://msp.ucsd.edu;
-#X text 330 202 Optional argument to specify this patch (0) \, owning
+#X restore 68 507 pd subpatch;
+#X msg 78 198 dir;
+#X text 118 198 get directory this patch is in;
+#X msg 94 226 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X text 264 165 open a URL in a browser;
+#X msg 62 166 browse http://msp.ucsd.edu;
+#X text 340 222 Optional argument to specify this patch (0) \, owning
 patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 40;
-#X text 48 67 pdcontrol lets you communicate with the patch to get
+#X text 58 67 pdcontrol lets you communicate with the patch to get
 its owning directory \, arguments \, its visible/invisible state \,
 or to open a URL in a web browser.;
-#X text 401 568 updated for Pd version 0.51.;
-#X text 148 451 open and shut the subpatch to test "isvisible" message.
+#X text 419 575 updated for Pd version 0.51.;
+#X text 158 471 open and shut the subpatch to test "isvisible" message.
 An optional argument specifies the level: this window (0) \, owning
 window (1) and so on., f 55;
-#X text 168 257 1 if this window is visible \, 0 if not, f 19;
-#X msg 100 308 editmode;
-#X text 169 294 1 if this window is in edit mode \, 0 if not, f 19
+#X text 178 277 1 if this window is visible \, 0 if not, f 19;
+#X msg 110 328 editmode;
+#X text 179 314 1 if this window is in edit mode \, 0 if not, f 19
 ;
-#X msg 104 346 args;
-#X text 143 347 get patch's arguments (or a bang if they don't exist)
+#X msg 114 366 args;
+#X text 153 367 get patch's arguments (or a bang if they don't exist)
 ;
 #N canvas 805 100 587 337 editmode-example 0;
 #X obj 168 173 pdcontrol;
@@ -80,7 +80,7 @@ this., f 29;
 #X connect 10 1 13 0;
 #X connect 11 0 9 1;
 #X connect 13 0 7 0;
-#X restore 58 534 pd editmode-example;
+#X restore 68 554 pd editmode-example;
 #N canvas 689 91 529 365 args-example 0;
 #X obj 127 209 print;
 #X text 185 140 <= get arguments;
@@ -99,7 +99,10 @@ symbol \, but it actually gets expanded if this abstraction is called
 inside another that contains arguments).;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
-#X restore 59 573 pd args-example;
+#X restore 69 593 pd args-example;
+#X msg 37 136 version;
+#X text 98 136 outputs a list with Pd's version (major \, minor \,
+bugfix);
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
 #X connect 5 0 6 0;
@@ -108,3 +111,4 @@ inside another that contains arguments).;
 #X connect 11 0 2 0;
 #X connect 17 0 2 0;
 #X connect 19 0 2 0;
+#X connect 23 0 2 0;
