@@ -1,34 +1,35 @@
-#N canvas 600 71 533 542 12;
-#X msg 56 120 bang;
-#X text 101 119 output the value;
-#X text 157 151 set and output the value;
-#X obj 55 332 symbol foo;
-#X obj 81 22 symbol;
-#X text 137 24 - STORE A SYMBOL (I.E. \, STRING);
-#X text 47 58 The symbol object stores a symbol \, Pd's data type for
+#N canvas 600 71 570 551 12;
+#X msg 53 107 bang;
+#X text 98 106 output the value;
+#X text 154 138 set and output the value;
+#X obj 65 22 symbol;
+#X text 121 24 - STORE A SYMBOL (I.E. \, STRING);
+#X text 31 58 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
-in pd).;
-#X msg 70 152 symbol bar;
-#X symbolatom 55 361 10 0 0 0 - - -;
-#X symbolatom 122 306 10 0 0 0 - - -;
-#X msg 76 182 zorglub;
-#X text 274 493 updated for Pd version 0.51;
-#X floatatom 88 213 5 0 0 0 - - -;
-#X text 144 332 creation argument initializes the symbol value;
-#X text 141 174 a string without the symbol selector is 'converted'
+in pd)., f 68;
+#X msg 67 139 symbol bar;
+#X symbolatom 52 368 10 0 0 0 - - -;
+#X symbolatom 126 293 10 0 0 0 - - -;
+#X msg 73 169 zorglub;
+#X text 334 500 updated for Pd version 0.51;
+#X floatatom 85 200 5 0 0 0 - - -;
+#X text 138 161 a string without the symbol selector is 'converted'
 , f 29;
-#X text 132 213 a float is also converted;
-#X text 56 424 note: unlike "float" \, etc. \, there's no "send" message
+#X text 129 200 a float is also converted;
+#X text 53 431 note: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
-#X text 198 304 set the value (needs to be a symbol message);
-#X text 54 492 see also:;
-#X obj 130 492 makefilename;
-#X obj 55 389 print;
-#X msg 100 245 list a b c;
-#X msg 111 272 list 1 2 3;
-#X text 194 257 lists convert only the first item;
-#N canvas 759 152 476 460 convert-lists-to-symbol 0;
+#X text 202 291 set the value (needs to be a symbol message);
+#X text 79 497 see also:;
+#X obj 155 497 makefilename;
+#X obj 52 396 print;
+#X msg 97 232 list a b c;
+#X msg 108 259 list 1 2 3;
+#X text 191 244 lists convert only the first item;
+#X obj 52 329 symbol a\ b;
+#X text 148 323 creation argument initializes the value and needs to
+be a symbol atom (note \ can be used to escape spaces), f 54;
+#N canvas 759 152 514 475 convert-anything-to-symbol 0;
 #X obj 74 173 trigger bang list bang;
 #X obj 206 306 list prepend;
 #X obj 74 302 list;
@@ -64,8 +65,8 @@ of converting arbitrary messages to symbols.;
 #X obj 149 233 symbol;
 #X msg 90 68 list pure data;
 #X msg 104 100 1 2 3;
-#X text 222 48 If you need to convert lists and anythings to a symbol.
-Here's an example on how to do it., f 28;
+#X text 217 101 If you need to convert full lists and anythings to
+a symbol. Here's an example on how to do it., f 34;
 #X connect 0 0 2 0;
 #X connect 0 1 7 0;
 #X connect 0 2 1 1;
@@ -81,13 +82,13 @@ Here's an example on how to do it., f 28;
 #X connect 10 0 5 0;
 #X connect 11 0 6 0;
 #X connect 12 0 6 0;
-#X restore 264 377 pd convert-lists-to-symbol;
-#X connect 0 0 3 0;
-#X connect 3 0 8 0;
-#X connect 7 0 3 0;
-#X connect 8 0 20 0;
-#X connect 9 0 3 1;
-#X connect 10 0 3 0;
-#X connect 12 0 3 0;
-#X connect 21 0 3 0;
-#X connect 22 0 3 0;
+#X restore 248 380 pd convert-anything-to-symbol;
+#X connect 0 0 22 0;
+#X connect 6 0 22 0;
+#X connect 7 0 18 0;
+#X connect 8 0 22 1;
+#X connect 9 0 22 0;
+#X connect 11 0 22 0;
+#X connect 19 0 22 0;
+#X connect 20 0 22 0;
+#X connect 22 0 7 0;
