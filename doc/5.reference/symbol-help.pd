@@ -1,29 +1,33 @@
-#N canvas 600 71 529 480 12;
+#N canvas 600 71 533 542 12;
 #X msg 56 120 bang;
 #X text 101 119 output the value;
 #X text 157 151 set and output the value;
-#X obj 55 282 symbol foo;
+#X obj 55 332 symbol foo;
 #X obj 81 22 symbol;
 #X text 137 24 - STORE A SYMBOL (I.E. \, STRING);
 #X text 47 58 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
 in pd).;
 #X msg 70 152 symbol bar;
-#X symbolatom 55 311 10 0 0 0 - - -;
-#X symbolatom 122 256 10 0 0 0 - - -;
+#X symbolatom 55 361 10 0 0 0 - - -;
+#X symbolatom 122 306 10 0 0 0 - - -;
 #X msg 76 182 zorglub;
-#X text 274 443 updated for Pd version 0.51;
+#X text 274 493 updated for Pd version 0.51;
 #X floatatom 88 213 5 0 0 0 - - -;
-#X text 144 282 creation argument initializes the symbol value;
+#X text 144 332 creation argument initializes the symbol value;
 #X text 141 174 a string without the symbol selector is 'converted'
 , f 29;
 #X text 132 213 a float is also converted;
-#X text 56 374 note: unlike "float" \, etc. \, there's no "send" message
+#X text 56 424 note: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
-#X text 198 254 set the value (needs to be a symbol message);
-#X text 54 442 see also:;
-#X obj 130 442 makefilename;
+#X text 198 304 set the value (needs to be a symbol message);
+#X text 54 492 see also:;
+#X obj 130 492 makefilename;
+#X obj 55 389 print;
+#X msg 100 245 list a b c;
+#X msg 111 272 list 1 2 3;
+#X text 194 257 lists convert only the first item;
 #N canvas 759 152 476 460 convert-lists-to-symbol 0;
 #X obj 74 173 trigger bang list bang;
 #X obj 206 306 list prepend;
@@ -60,7 +64,7 @@ of converting arbitrary messages to symbols.;
 #X obj 149 233 symbol;
 #X msg 90 68 list pure data;
 #X msg 104 100 1 2 3;
-#X text 221 58 If you need to convert lists and anythings to a symbol.
+#X text 222 48 If you need to convert lists and anythings to a symbol.
 Here's an example on how to do it., f 28;
 #X connect 0 0 2 0;
 #X connect 0 1 7 0;
@@ -77,12 +81,13 @@ Here's an example on how to do it., f 28;
 #X connect 10 0 5 0;
 #X connect 11 0 6 0;
 #X connect 12 0 6 0;
-#X restore 239 327 pd convert-lists-to-symbol;
-#X obj 55 339 print;
+#X restore 264 377 pd convert-lists-to-symbol;
 #X connect 0 0 3 0;
 #X connect 3 0 8 0;
 #X connect 7 0 3 0;
-#X connect 8 0 21 0;
+#X connect 8 0 20 0;
 #X connect 9 0 3 1;
 #X connect 10 0 3 0;
 #X connect 12 0 3 0;
+#X connect 21 0 3 0;
+#X connect 22 0 3 0;

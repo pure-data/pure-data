@@ -178,6 +178,8 @@ static void pdsymbol_list(t_pdsymbol *x, t_symbol *s, int ac, t_atom *av)
         pdsymbol_bang(x);
     else if (av->a_type == A_SYMBOL)
         pdsymbol_symbol(x, av->a_w.w_symbol);
+    else if (av->a_type == A_FLOAT)
+        pdsymbol_float(x, av->a_w.w_float);
     else pdsymbol_anything(x, s, ac, av);
 }
 
@@ -187,6 +189,7 @@ void pdsymbol_setup(void)
         sizeof(t_pdsymbol), 0, A_SYMBOL, 0);
     class_addbang(pdsymbol_class, pdsymbol_bang);
     class_addfloat(pdsymbol_class, pdsymbol_float);
+    class_addlist(pdsymbol_class, pdsymbol_list);
     class_addsymbol(pdsymbol_class, pdsymbol_symbol);
     class_addanything(pdsymbol_class, pdsymbol_anything);
 }
