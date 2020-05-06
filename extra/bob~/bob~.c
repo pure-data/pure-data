@@ -128,6 +128,8 @@ typedef struct _bob
 {
     t_object x_obj;
     t_float x_f;
+    t_inlet *x_inlet_freq;
+    t_inlet *x_inlet_reson;
     t_outlet *x_out1;    /* signal output */
 #ifdef CALCERROR
     t_outlet *x_out2;    /* error estimate */
@@ -184,12 +186,14 @@ static void bob_print(t_bob *x)
     post("oversample %d", x->x_oversample);
 }
 
-static void *bob_new( void)
+static void *bob_new(t_floatarg cutoff, t_floatarg resonance)
 {
     t_bob *x = (t_bob *)pd_new(bob_class);
     x->x_out1 = outlet_new(&x->x_obj, gensym("signal"));
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    x->x_inlet_freq = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    pd_float((t_pd *)x->x_inlet_freq, cutoff);
+    x->x_inlet_reson = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    pd_float((t_pd *)x->x_inlet_reson, resonance);
     x->x_f = 0;
     bob_clear(x);
     bob_saturation(x, 3); 
@@ -241,7 +245,7 @@ void bob_tilde_setup(void)
 {
     int i;
     bob_class = class_new(gensym("bob~"),
-        (t_newmethod)bob_new, 0, sizeof(t_bob), 0, 0);
+        (t_newmethod)bob_new, 0, sizeof(t_bob), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(bob_class, (t_method)bob_saturation, gensym("saturation"),
         A_FLOAT, 0);
     class_addmethod(bob_class, (t_method)bob_oversample, gensym("oversample"),
