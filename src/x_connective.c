@@ -148,6 +148,13 @@ static void pdsymbol_bang(t_pdsymbol *x)
     outlet_symbol(x->x_obj.ob_outlet, x->x_s);
 }
 
+static void pdsymbol_float(t_pdsymbol *x, t_floatarg f)
+{
+    char buf[MAXPDSTRING];
+    sprintf(buf, "%g", f);
+    outlet_symbol(x->x_obj.ob_outlet, x->x_s = gensym(buf));
+}
+
 static void pdsymbol_symbol(t_pdsymbol *x, t_symbol *s)
 {
     outlet_symbol(x->x_obj.ob_outlet, x->x_s = s);
@@ -179,6 +186,7 @@ void pdsymbol_setup(void)
     pdsymbol_class = class_new(gensym("symbol"), (t_newmethod)pdsymbol_new, 0,
         sizeof(t_pdsymbol), 0, A_SYMBOL, 0);
     class_addbang(pdsymbol_class, pdsymbol_bang);
+    class_addfloat(pdsymbol_class, pdsymbol_float);
     class_addsymbol(pdsymbol_class, pdsymbol_symbol);
     class_addanything(pdsymbol_class, pdsymbol_anything);
 }

@@ -1,26 +1,30 @@
-#N canvas 531 220 512 412 12;
-#X msg 44 107 bang;
-#X text 134 244 creation argument initializes the value;
-#X text 271 372 updated for Pd version 0.45;
-#X text 89 104 output the value;
-#X text 153 130 set and output the value;
-#X obj 43 241 symbol foo;
+#N canvas 630 143 512 434 12;
+#X msg 44 99 bang;
+#X text 89 98 output the value;
+#X text 145 130 set and output the value;
+#X obj 43 261 symbol foo;
 #X obj 69 12 symbol;
 #X text 125 14 - STORE A SYMBOL (I.E. \, STRING);
 #X text 35 37 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
 in pd).;
 #X msg 58 131 symbol bar;
-#X symbolatom 44 269 10 0 0 0 - - -;
-#X text 186 213 set the value;
-#X symbolatom 110 215 10 0 0 0 - - -;
+#X symbolatom 43 290 10 0 0 0 - - -;
+#X text 186 233 set the value;
+#X symbolatom 110 235 10 0 0 0 - - -;
 #X msg 64 161 zorglub;
-#X text 133 161 any other message is 'converted';
-#X text 62 303 note: unlike "float" \, etc. \, there's no "s" message
+#X text 62 323 note: unlike "float" \, etc. \, there's no "s" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
-#X connect 0 0 5 0;
-#X connect 5 0 10 0;
-#X connect 9 0 5 0;
-#X connect 12 0 5 1;
-#X connect 13 0 5 0;
+#X text 271 394 updated for Pd version 0.51;
+#X floatatom 76 192 5 0 0 0 - - -;
+#X text 132 261 creation argument initializes the symbol value;
+#X text 129 153 a string without the symbol selector is 'converted'
+, f 29;
+#X text 120 192 a float is also converted;
+#X connect 0 0 3 0;
+#X connect 3 0 8 0;
+#X connect 7 0 3 0;
+#X connect 10 0 3 1;
+#X connect 11 0 3 0;
+#X connect 14 0 3 0;
