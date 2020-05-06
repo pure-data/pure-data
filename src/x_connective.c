@@ -133,10 +133,20 @@ typedef struct _pdsymbol
     t_symbol *x_s;
 } t_pdsymbol;
 
-static void *pdsymbol_new(t_pd *dummy, t_symbol *s)
+static void *pdsymbol_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     t_pdsymbol *x = (t_pdsymbol *)pd_new(pdsymbol_class);
-    x->x_s = s;
+    x->x_s = &s_;
+    if(argc){
+        if (argv->a_type == A_SYMBOL)
+            x->x_s = argv->a_w.w_symbol;
+        else if (argv->a_type == A_FLOAT)
+        {
+            char buf[MAXPDSTRING];
+            sprintf(buf, "%g", argv->a_w.w_float);
+            x->x_s = gensym(buf);
+        }
+    }
     outlet_new(&x->x_obj, &s_symbol);
     symbolinlet_new(&x->x_obj, &x->x_s);
     pd_this->pd_newest = &x->x_obj.ob_pd;
@@ -186,7 +196,7 @@ static void pdsymbol_list(t_pdsymbol *x, t_symbol *s, int ac, t_atom *av)
 void pdsymbol_setup(void)
 {
     pdsymbol_class = class_new(gensym("symbol"), (t_newmethod)pdsymbol_new, 0,
-        sizeof(t_pdsymbol), 0, A_SYMBOL, 0);
+        sizeof(t_pdsymbol), 0, A_GIMME, 0);
     class_addbang(pdsymbol_class, pdsymbol_bang);
     class_addfloat(pdsymbol_class, pdsymbol_float);
     class_addlist(pdsymbol_class, pdsymbol_list);
