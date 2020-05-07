@@ -332,7 +332,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         saved file or copy buffer */
     pd_bind(&x->x_gobj.g_pd, asym);
 
-    garray_redraw(x);
+    glist_redraw(gl);
     canvas_update_dsp();
     return (x);
 }
