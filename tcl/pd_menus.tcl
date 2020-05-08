@@ -82,8 +82,14 @@ proc ::pd_menus::configure_for_pdwindow {} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    # workaround for help menu bug on osx that disables entries immediately before a 
+	# separator
+	if {$::windowingsystem eq "aqua"} {
+		for {set i 0} {$i <= [$menubar.help index end]} {incr i} {
+			# catch errors that happen when trying to disable separators
+			catch {$menubar.help entryconfigure $i -state normal }
+		}
+	}
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
@@ -113,8 +119,14 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     }
     update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    # workaround for help menu bug on osx that disables entries immediately before a 
+	# separator
+    if {$::windowingsystem eq "aqua"} {
+		for {set i 0} {$i <= [$menubar.help index end]} {incr i} {
+			# catch errors that happen when trying to disable separators
+			catch {$menubar.help entryconfigure $i -state normal }
+		}
+	}
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
@@ -157,8 +169,14 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    # workaround for help menu bug on osx that disables entries immediately before a 
+	# separator
+    if {$::windowingsystem eq "aqua"} {
+		for {set i 0} {$i <= [$menubar.help index end]} {incr i} {
+			# catch errors that happen when trying to disable separators
+			catch {$menubar.help entryconfigure $i -state normal }
+		}
+	}
 }
 
 
