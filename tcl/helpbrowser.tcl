@@ -85,12 +85,14 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable helplist
 
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
-        -highlightbackground white -highlightthickness 5 -highlightcolor white \
-        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" \
+    	-yscrollcommand "$b-scroll set" -highlightthickness 5 \
+    	-selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
     set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -background $tmpcol
+		$current_listbox configure -highlightbackground $tmpcol
+		$current_listbox configure -highlightcolor $tmpcol
 	}
 	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
     if {$tmpcol ne ""} {
@@ -229,12 +231,14 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
 
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
-        -highlightbackground white -highlightthickness 5 -highlightcolor white \
-        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
+    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" \
+    	-yscrollcommand "$b-scroll set" -highlightthickness 5 \
+    	-selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
     set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -background $tmpcol
+		$current_listbox configure -highlightbackground $tmpcol
+		$current_listbox configure -highlightcolor $tmpcol
 	}
 	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
     if {$tmpcol ne ""} {
@@ -298,12 +302,13 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
-        -yscrollcommand "$b-scroll set" -highlightbackground white \
-        -highlightthickness 5 -highlightcolor white -selectborderwidth 0 \
-        -height 20 -width 24 -exportselection 0 -bd 0]
+        -yscrollcommand "$b-scroll set" -highlightthickness 5 \
+        -selectborderwidth 0 -height 20 -width 24 -exportselection 0 -bd 0]
     set tmpcol [::pdtk_canvas::get_color helpbrowser_fill .helpbrowser]
     if {$tmpcol ne ""} {
 		$current_listbox configure -background $tmpcol
+		$current_listbox configure -highlightbackground $tmpcol
+		$current_listbox configure -highlightcolor $tmpcol
 	}
 	set tmpcol [::pdtk_canvas::get_color helpbrowser_text .helpbrowser]
     if {$tmpcol ne ""} {
