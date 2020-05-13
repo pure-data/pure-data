@@ -11,7 +11,6 @@
    and connecting stuff using the keyboard. */
 
 /* ------------------ forward declarations --------------- */
-t_kbdnav* canvas_get_kbdnav(t_canvas *x);
 int canvas_canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
 
 

@@ -48,6 +48,7 @@ EXTERN void canvas_clearline(t_canvas *x);
 /* ------- functions on glists related to keyboard navigation  ------- */
 
 EXTERN t_kbdnav* kbdnav_new();
+EXTERN t_kbdnav* canvas_get_kbdnav(t_canvas *x);
 EXTERN void kbdnav_free(t_kbdnav *x);
 EXTERN t_object *kbdnav_get_selected_obj(t_canvas *x);
 EXTERN int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum,

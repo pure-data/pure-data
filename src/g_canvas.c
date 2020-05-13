@@ -663,10 +663,6 @@ void canvas_drawredrect(t_canvas *x, int doit)
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
-#ifdef HAVE_KEYBOARDNAV
-t_kbdnav* canvas_get_kbdnav(t_canvas *x);
-#endif
-
     /* the window becomes "mapped" (visible and not miniaturized) or
     "unmapped" (either miniaturized or just plain gone.)  This should be
     called from the GUI after the fact to "notify" us that we're mapped. */
