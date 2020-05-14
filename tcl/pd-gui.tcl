@@ -749,19 +749,22 @@ proc load_plugin_script {filename} {
 
     set basename [file tail $filename]
     if {[lsearch $::loaded_plugins $basename] > -1} {
-        ::pdwindow::post [_ "'$basename' already loaded, ignoring: '$filename'\n"]
+        ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+        ::pdwindow::post "\n"
         return
     }
 
-    ::pdwindow::debug [_ "Loading plugin: $filename\n"]
+    ::pdwindow::debug [ format [_ "Loading plugin: %s"] $filename ]
+    ::pdwindow::debug "\n"
     set tclfile [open $filename]
     set tclcode [read $tclfile]
     close $tclfile
     if {[catch {uplevel #0 $tclcode} errorname]} {
         ::pdwindow::error "-----------\n"
-        ::pdwindow::error [_ "UNHANDLED ERROR: $errorInfo\n"]
-        ::pdwindow::error [_ "FAILED TO LOAD $filename\n"]
-        ::pdwindow::error "-----------\n"
+        ::pdwindow::error [ format [_ "UNHANDLED ERROR: %s"] $errorInfo ]
+        ::pdwindow::error "\n"
+        ::pdwindow::error [ format [_ "FAILED TO LOAD %s"] $filename ]
+        ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
     }
