@@ -648,6 +648,7 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
     }
     my_numbox_calc_fontwidth(x);
     iemgui_size((void *)x, &x->x_gui);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void my_numbox_delta(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
