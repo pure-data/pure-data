@@ -4,6 +4,7 @@
 
 #include "m_pd.h"
 #include <math.h>
+#include <string.h>
 #define DIM 4
 #define FLOAT double
 
@@ -186,9 +187,49 @@ static void bob_print(t_bob *x)
     post("oversample %d", x->x_oversample);
 }
 
-static void *bob_new(t_floatarg cutoff, t_floatarg resonance)
+static void *bob_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bob *x = (t_bob *)pd_new(bob_class);
+    float saturation = 3;
+    float oversample = 2;
+    float cutoff = 0;
+    float resonance = 0;
+    while (argc && argv->a_type == A_SYMBOL &&
+    *argv->a_w.w_symbol->s_name == '-')
+    {
+        t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
+        if (!strcmp(firstarg->s_name, "-saturation"))
+        {
+            saturation = atom_getfloatarg(1, argc, argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(firstarg->s_name, "-oversample"))
+        {
+            oversample = atom_getfloatarg(1, argc, argv);
+            argc--; argv++;
+        }
+        else
+        {
+            error("bob~ unknown flag ...");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        cutoff = argv->a_w.w_float;
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        resonance = argv->a_w.w_float;
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: bob~ ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
     x->x_out1 = outlet_new(&x->x_obj, gensym("signal"));
     x->x_inlet_freq = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     pd_float((t_pd *)x->x_inlet_freq, cutoff);
@@ -196,8 +237,8 @@ static void *bob_new(t_floatarg cutoff, t_floatarg resonance)
     pd_float((t_pd *)x->x_inlet_reson, resonance);
     x->x_f = 0;
     bob_clear(x);
-    bob_saturation(x, 3); 
-    bob_oversample(x, 2);
+    bob_saturation(x, saturation);
+    bob_oversample(x, oversample);
 #ifdef CALCERROR
     x->x_cumerror = 0;
     x->x_errorcount = 0;
@@ -245,7 +286,7 @@ void bob_tilde_setup(void)
 {
     int i;
     bob_class = class_new(gensym("bob~"),
-        (t_newmethod)bob_new, 0, sizeof(t_bob), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        (t_newmethod)bob_new, 0, sizeof(t_bob), 0, A_GIMME, 0);
     class_addmethod(bob_class, (t_method)bob_saturation, gensym("saturation"),
         A_FLOAT, 0);
     class_addmethod(bob_class, (t_method)bob_oversample, gensym("oversample"),
