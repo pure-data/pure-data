@@ -530,6 +530,10 @@ typedef struct _gatom
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
+
+static void atom_drawborder(t_gatom *x, t_text *t, t_glist *glist,
+    const char *tag, int width2, int height2, int firsttime);
+
     /* prepend "-" as necessary to avoid empty strings, so we can
     use them in Pd messages.  A more complete solution would be
     to introduce some quoting mechanism; but then we'd be much more
@@ -799,24 +803,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_float wherelabel = atom_getfloatarg(4, argc, argv);
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
-
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
-    if (!*symfrom->s_name && *x->a_symfrom->s_name)
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
-    else if (*symfrom->s_name && !*x->a_symfrom->s_name && x->a_text.te_inlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            x->a_text.te_inlet, 0);
-        inlet_free(x->a_text.te_inlet);
-    }
-    if (!*symto->s_name && *x->a_symto->s_name)
-        outlet_new(&x->a_text, 0);
-    else if (*symto->s_name && !*x->a_symto->s_name && x->a_text.te_outlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            0, x->a_text.te_outlet);
-        outlet_free(x->a_text.te_outlet);
-    }
     if (draglo >= draghi)
         draglo = draghi = 0;
     x->a_draglo = draglo;
@@ -877,7 +864,17 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_gatom *x = (t_gatom*)z;
-    text_displace(z, glist, dx, dy);
+    t_text *t = (t_text *)z;
+    t->te_xpix += dx;
+    t->te_ypix += dy;
+    if (glist_isvisible(glist))
+    {
+        t_rtext *y = glist_findrtext(glist, t);
+        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
+        atom_drawborder(x, t, glist, rtext_gettag(y),
+            rtext_width(y), rtext_height(y), 0);
+        canvas_fixlinesfor(glist, t);
+    }
     sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
         x, dx * glist->gl_zoom, dy * glist->gl_zoom);
 }
@@ -885,7 +882,30 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_gatom *x = (t_gatom*)z;
-    text_vis(z, glist, vis);
+    
+//    text_vis(z, glist, vis);
+    t_text *t = (t_text *)z;
+    if (vis)
+    {
+        if (gobj_shouldvis(&t->te_g, glist))
+        {
+            t_rtext *y = glist_findrtext(glist, t);
+            glist_retext(glist, t);
+            atom_drawborder(x, t, glist, rtext_gettag(y),
+                rtext_width(y), rtext_height(y), 1);
+            rtext_draw(y);
+        }
+    }
+    else
+    {
+        t_rtext *y = glist_findrtext(glist, t);
+        if (gobj_shouldvis(&t->te_g, glist))
+        {
+            text_eraseborder(t, glist, rtext_gettag(y));
+            rtext_erase(y);
+        }
+    }
+    
     if (*x->a_label->s_name)
     {
         if (vis)
@@ -935,6 +955,9 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         SETSYMBOL(&at, &s_symbol);
     }
     binbuf_add(x->a_text.te_binbuf, 1, &at);
+    outlet_new(&x->a_text,
+        x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
+    inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
             label, receive-name, send-name */
@@ -957,20 +980,12 @@ void canvas_atom(t_glist *gl, t_atomtype type,
 
         x->a_symto = gatom_unescapit(atom_getsymbolarg(8, argc, argv));
         x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
-        if (x->a_symto == &s_)
-            outlet_new(&x->a_text,
-                x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
-        if (x->a_symfrom == &s_)
-            inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         glist_add(gl, &x->a_text.te_g);
     }
     else
     {
         int connectme, xpix, ypix, indx, nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
-        outlet_new(&x->a_text,
-            x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
@@ -1352,20 +1367,6 @@ void text_drawborder(t_text *x, t_glist *glist,
                 x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,
                 x1, y2,  x1, y1);
     }
-    else if (x->te_type == T_ATOM)
-    {
-        corner = ((y2-y1)/4);
-        if (firsttime)
-            sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
-                "-width %d -capstyle projecting -tags [list %sR atom]\n",
-                glist_getcanvas(glist),
-                x1, y1,  x2-corner, y1,  x2, y1+corner, x2, y2,  x1, y2,  x1, y1,
-                glist->gl_zoom, tag);
-        else
-            sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d\n",
-                glist_getcanvas(glist), tag,
-                x1, y1,  x2-corner, y1,  x2, y1+corner,  x2, y2,  x1, y2,  x1, y1);
-    }
         /* for comments, just draw a bar on RHS if unlocked; when a visible
         canvas is unlocked we have to call this anew on all comments, and when
         locked we erase them all via the annoying "commentbar" tag. */
@@ -1383,6 +1384,79 @@ void text_drawborder(t_text *x, t_glist *glist,
 
     if ((ob = pd_checkobject(&x->te_pd)))
         glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
+    if (firsttime) /* raise cords over everything else */
+        sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
+}
+
+void glist_drawiofor_atoms(t_gatom *x, t_glist *glist, t_object *ob, int firsttime,
+    const char *tag, int x1, int y1, int x2, int y2)
+{
+    int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
+    int width = x2 - x1;
+    int iow = IOWIDTH * glist->gl_zoom;
+    int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
+    /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
+    if(!*x->a_symto->s_name){
+        for (i = 0; i < n; i++)
+        {
+            int onset = x1 + (width - iow) * i / nplus;
+            if (firsttime)
+                sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                    "-tags [list %so%d outlet] -fill black\n",
+                    glist_getcanvas(glist),
+                    onset, y2 - oh + glist->gl_zoom,
+                    onset + iow, y2,
+                    tag, i);
+            else
+                sys_vgui(".x%lx.c coords %so%d %d %d %d %d\n",
+                    glist_getcanvas(glist), tag, i,
+                    onset, y2 - oh + glist->gl_zoom,
+                    onset + iow, y2);
+        }
+    }
+    n = obj_ninlets(ob);
+    nplus = (n == 1 ? 1 : n-1);
+    if(!*x->a_symfrom->s_name){
+        for (i = 0; i < n; i++)
+        {
+            int onset = x1 + (width - iow) * i / nplus;
+            if (firsttime)
+                sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                    "-tags [list %si%d inlet] -fill black\n",
+                    glist_getcanvas(glist),
+                    onset, y1,
+                    onset + iow, y1 + ih - glist->gl_zoom,
+                    tag, i);
+            else
+                sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
+                    glist_getcanvas(glist), tag, i,
+                    onset, y1,
+                    onset + iow, y1 + ih - glist->gl_zoom);
+        }
+    }
+}
+
+void atom_drawborder(t_gatom *x, t_text *t, t_glist *glist,
+    const char *tag, int width2, int height2, int firsttime)
+{
+    t_object *ob;
+    int x1, y1, x2, y2, width, height, corner;
+    text_getrect(&t->te_g, glist, &x1, &y1, &x2, &y2);
+    width = x2 - x1;
+    height = y2 - y1;
+    corner = ((y2-y1)/4);
+    if (firsttime)
+        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
+            "-width %d -capstyle projecting -tags [list %sR atom]\n",
+            glist_getcanvas(glist),
+            x1, y1,  x2-corner, y1,  x2, y1+corner, x2, y2,  x1, y2,  x1, y1,
+            glist->gl_zoom, tag);
+    else
+        sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d\n",
+            glist_getcanvas(glist), tag,
+            x1, y1,  x2-corner, y1,  x2, y1+corner,  x2, y2,  x1, y2,  x1, y1);
+    if ((ob = pd_checkobject(&t->te_pd)))
+        glist_drawiofor_atoms(x, glist, ob, firsttime, tag, x1, y1, x2, y2);
     if (firsttime) /* raise cords over everything else */
         sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
 }
