@@ -1217,8 +1217,7 @@ void text_save(t_gobj *z, t_binbuf *b)
     else if (x->te_type == T_ATOM)
     {
         t_atomtype t = ((t_gatom *)x)->a_atom.a_type;
-        t_symbol *sel = (t == A_SYMBOL ? gensym("symbolatom") :
-            (t == A_FLOAT ? gensym("floatatom") : gensym("intatom")));
+        t_symbol *sel = (t == A_SYMBOL ? gensym("symbolatom") : gensym("floatatom"));
         t_symbol *label = gatom_escapit(((t_gatom *)x)->a_label);
         t_symbol *symfrom = gatom_escapit(((t_gatom *)x)->a_symfrom);
         t_symbol *symto = gatom_escapit(((t_gatom *)x)->a_symto);
