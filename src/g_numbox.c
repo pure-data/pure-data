@@ -20,6 +20,11 @@
 #include <unistd.h>
 #endif
 
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan _isnan
+#endif
+
 #define MINDIGITS 1
 #define MINFONT   4
 
@@ -588,7 +593,12 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    if(x->x_val != f)
+    if(isnan(f))
+    {
+        x->x_val = f;
+        sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    }
+    else if(x->x_val != f)
     {
         x->x_val = f;
         my_numbox_clip(x);
