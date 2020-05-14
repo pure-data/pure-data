@@ -776,11 +776,23 @@ proc load_startup_plugins {} {
     foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
-        foreach filename [glob -directory $dir -nocomplain -types {f} -- \
-                              *-plugin/*-plugin.tcl *-plugin.tcl] {
-            set ::current_plugin_loadpath [file dirname $filename]
-            load_plugin_script $filename
-        }
+        if { [ catch {
+                   foreach filename [glob -directory $dir -nocomplain -types {f} -- \
+                                          *-plugin/*-plugin.tcl *-plugin.tcl] {
+                       set ::current_plugin_loadpath [file dirname $filename]
+                       if { [ catch {
+                                  load_plugin_script $filename
+                              } ] } {
+                              ::pdwindow::debug [ format [ _ "Failed to read plugin %s ...skipping!"] $filename ]
+                              ::pdwindow::debug "\n"
+                          }
+                   }
+               } ] } {
+               # this is triggered in weird cases, e.g. when ~/Documents/Pd/externals is not readable,
+               # but ~/Documents/Pd/ is...
+               ::pdwindow::debug [ format [_ "Failed to find plugins in %s ...skipping!" ] $dir ]
+               ::pdwindow::debug "\n"
+           }
     }
 }
 
