@@ -78,7 +78,7 @@ You can combat this by raising the oversampling factor.;
 #X obj 253 281 +~;
 #X obj 253 317 outlet~;
 #X obj 316 135 *~ 2;
-#X obj 316 166 -~ -1;
+#X obj 316 166 -~ 1;
 #X connect 0 0 22 1;
 #X connect 1 0 27 0;
 #X connect 2 0 3 0;
