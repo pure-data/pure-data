@@ -20,6 +20,11 @@
 #include <unistd.h>
 #endif
 
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan _isnan
+#endif
+
 #define MINDIGITS 1
 #define MINFONT   4
 
@@ -35,15 +40,6 @@ static t_class *my_numbox_class;
 
 /* widget helper functions */
 
-static void my_numbox_tick_reset(t_my_numbox *x)
-{
-    if(x->x_gui.x_fsf.x_change && x->x_gui.x_glist)
-    {
-        x->x_gui.x_fsf.x_change = 0;
-        sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
-    }
-}
-
 static void my_numbox_tick_wait(t_my_numbox *x)
 {
     sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
@@ -51,10 +47,13 @@ static void my_numbox_tick_wait(t_my_numbox *x)
 
 void my_numbox_clip(t_my_numbox *x)
 {
-    if(x->x_val < x->x_min)
-        x->x_val = x->x_min;
-    if(x->x_val > x->x_max)
-        x->x_val = x->x_max;
+    if (x->x_min != 0 || x->x_max != 0)
+    {
+        if(x->x_val < x->x_min)
+            x->x_val = x->x_min;
+        if(x->x_val > x->x_max)
+            x->x_val = x->x_max;
+    }
 }
 
 void my_numbox_calc_fontwidth(t_my_numbox *x)
@@ -335,7 +334,6 @@ static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
         if(x->x_gui.x_fsf.x_change)
         {
             x->x_gui.x_fsf.x_change = 0;
-            clock_unset(x->x_clock_reset);
             x->x_buf[0] = 0;
             sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         }
@@ -402,7 +400,6 @@ static void my_numbox_save(t_gobj *z, t_binbuf *b)
     if(x->x_gui.x_fsf.x_change)
     {
         x->x_gui.x_fsf.x_change = 0;
-        clock_unset(x->x_clock_reset);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
     binbuf_addv(b, "ssiisiiffiisssiiiisssfi", gensym("#X"), gensym("obj"),
@@ -439,15 +436,18 @@ int my_numbox_check_minmax(t_my_numbox *x, double min, double max)
     }
     x->x_min = min;
     x->x_max = max;
-    if(x->x_val < x->x_min)
+    if(x->x_min != 0 || x->x_max != 0)
     {
-        x->x_val = x->x_min;
-        ret = 1;
-    }
-    if(x->x_val > x->x_max)
-    {
-        x->x_val = x->x_max;
-        ret = 1;
+        if(x->x_val < x->x_min)
+        {
+            x->x_val = x->x_min;
+            ret = 1;
+        }
+        if(x->x_val > x->x_max)
+        {
+            x->x_val = x->x_max;
+            ret = 1;
+        }
     }
     if(x->x_lin0_log1)
         x->x_k = exp(log(x->x_max/x->x_min) / (double)(x->x_log_height));
@@ -466,7 +466,6 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
     if(x->x_gui.x_fsf.x_change)
     {
         x->x_gui.x_fsf.x_change = 0;
-        clock_unset(x->x_clock_reset);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
     sprintf(buf, "pdtk_iemgui_dialog %%s |nbx| \
@@ -544,7 +543,6 @@ static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy)
     my_numbox_clip(x);
     sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     my_numbox_bang(x);
-    clock_unset(x->x_clock_reset);
 }
 
 static void my_numbox_click(t_my_numbox *x, t_floatarg xpos, t_floatarg ypos,
@@ -571,14 +569,12 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
         {
             clock_delay(x->x_clock_wait, 50);
             x->x_gui.x_fsf.x_change = 1;
-            clock_delay(x->x_clock_reset, 3000);
 
             x->x_buf[0] = 0;
         }
         else
         {
             x->x_gui.x_fsf.x_change = 0;
-            clock_unset(x->x_clock_reset);
             x->x_buf[0] = 0;
             sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         }
@@ -588,10 +584,16 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    if(x->x_val != f)
+    if(isnan(f))
     {
         x->x_val = f;
-        my_numbox_clip(x);
+        sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    }
+    else if(x->x_val != f)
+    {
+        x->x_val = f;
+        if (pd_compatibilitylevel < 51)
+            my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
 }
@@ -631,6 +633,7 @@ static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
     }
     my_numbox_calc_fontwidth(x);
     iemgui_size((void *)x, &x->x_gui);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void my_numbox_delta(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
@@ -719,7 +722,6 @@ static void my_numbox_key(void *z, t_floatarg fkey)
     if(c == 0)
     {
         x->x_gui.x_fsf.x_change = 0;
-        clock_unset(x->x_clock_reset);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         return;
     }
@@ -747,12 +749,11 @@ static void my_numbox_key(void *z, t_floatarg fkey)
         x->x_val = atof(x->x_buf);
         x->x_buf[0] = 0;
         x->x_gui.x_fsf.x_change = 0;
-        clock_unset(x->x_clock_reset);
-        my_numbox_clip(x);
+        if (pd_compatibilitylevel < 51)
+            my_numbox_clip(x);
         my_numbox_bang(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
-    clock_delay(x->x_clock_reset, 3000);
 }
 
 static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
@@ -774,7 +775,7 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     int lilo = 0, ldx = 0, ldy = -8;
     int fs = 10;
     int log_height = 256;
-    double min = -1.0e+37, max = 1.0e+37, v = 0.0;
+    double min = 0, max = 0, v = 0.0;
 
     x->x_gui.x_bcol = 0xFCFCFC;
     x->x_gui.x_fcol = 0x00;
@@ -845,7 +846,6 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     x->x_buf[0] = 0;
     my_numbox_check_minmax(x, min, max);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    x->x_clock_reset = clock_new(x, (t_method)my_numbox_tick_reset);
     x->x_clock_wait = clock_new(x, (t_method)my_numbox_tick_wait);
     x->x_gui.x_fsf.x_change = 0;
     iemgui_newzoom(&x->x_gui);
@@ -858,7 +858,6 @@ static void my_numbox_free(t_my_numbox *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    clock_free(x->x_clock_reset);
     clock_free(x->x_clock_wait);
     gfxstub_deleteforkey(x);
 }
