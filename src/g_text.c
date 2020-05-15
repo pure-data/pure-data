@@ -733,7 +733,7 @@ static void gatom_key(void *z, t_floatarg f)
             /* for numbers, only let reasonable characters through */
         if ((x->a_atom.a_type == A_SYMBOL) ||
             ((c >= '0' && c <= '9') || c == '.' || c == '-'
-                || c == 'e' || c == 'E'))
+                || c == '+' || c == 'e' || c == 'E'))
         {
             /* the wchar could expand to up to 4 bytes, which
              * which might overrun our a_buf;
