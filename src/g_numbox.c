@@ -726,7 +726,7 @@ static void my_numbox_key(void *z, t_floatarg fkey)
         return;
     }
     if(((c >= '0') && (c <= '9')) || (c == '.') || (c == '-') ||
-        (c == 'e') || (c == 'E'))
+        (c == 'e') || (c == '+') || (c == 'E'))
     {
         if(strlen(x->x_buf) < (IEMGUI_MAX_NUM_LEN-2))
         {
