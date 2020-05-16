@@ -2107,11 +2107,19 @@ void kbdnav_virtual_click(t_canvas *x)
 
     t_object *ob = kbdnav_get_selected_obj(x);
     t_gobj *g = &(ob->ob_g);
-    int xpos, ypos, dummy;
-    gobj_getrect(g, x, &xpos, &ypos, &dummy, &dummy);
+    const char *name = g->g_pd->c_name->s_name;
+    if( !strcmp(name, "canvas") ||
+        !strcmp(name, "message") ||
+        !strcmp(name, "bng") ||
+        !strcmp(name, "tgl")
+        )
+    {
+        int xpos, ypos, dummy;
+        gobj_getrect(g, x, &xpos, &ypos, &dummy, &dummy);
 
-    gobj_click(g, x, xpos, ypos, 0, 0, 0, 1);
-    gobj_click(g, x, xpos, ypos, 0, 0, 0, 0);
+        gobj_click(g, x, xpos, ypos, 0, 0, 0, 1);
+        gobj_click(g, x, xpos, ypos, 0, 0, 0, 0);
+    }
 }
 
 void kbdnav_reselect(t_canvas *x)
