@@ -4893,12 +4893,6 @@ void g_editor_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-#ifdef HAVE_KEYBOARDNAV
-    class_addmethod(canvas_class, (t_method)canvas_goto, gensym("goto"),
-        A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)kbdnav_set_indices_visibility, gensym("set_indices_visibility"),
-        A_FLOAT, A_NULL);
-#endif
 
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,

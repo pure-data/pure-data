@@ -43,6 +43,9 @@ proc ::pdtk_kbdnav::bind_activators {} {
 
     # canvas reselect (toggle editing rtext)
     bind all <Control-Key-Return> {pdsend "[winfo toplevel %W] kbdnav_reselect";break}
+
+    # goto
+    bind all <$::modifier-Key-g> {::dialog_goto::pdtk_goto_open "$::focused_window"}
 }
 
 # we use kbdnav_bind instead of bind to avoid conflicts with
