@@ -715,14 +715,16 @@ static void gatom_key(void *z, t_floatarg f)
     }
     else if (c == '\n')
     {
-        if (x->a_atom.a_type == A_FLOAT)
-            x->a_atom.a_w.w_float = atof(x->a_buf);
-        else if (x->a_atom.a_type == A_SYMBOL)
-            x->a_atom.a_w.w_symbol = gensym(x->a_buf);
-        else bug("gatom_key");
+        if(x->a_buf[0]){
+            if (x->a_atom.a_type == A_FLOAT)
+                x->a_atom.a_w.w_float = atof(x->a_buf);
+            else if (x->a_atom.a_type == A_SYMBOL)
+                x->a_atom.a_w.w_symbol = gensym(x->a_buf);
+            else bug("gatom_key");
+            gatom_retext(x, 1);
+            x->a_buf[0] = 0;
+        }
         gatom_bang(x);
-        gatom_retext(x, 1);
-        x->a_buf[0] = 0;
     }
     else if (len < (ATOMBUFSIZE-1))
     {
