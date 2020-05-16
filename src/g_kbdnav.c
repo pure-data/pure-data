@@ -1963,6 +1963,7 @@ void canvas_goto(t_canvas *x, t_floatarg indexarg)
 }
 
 void canvas_set_indices_visibility(t_canvas *x, t_floatarg indexarg)
+void kbdnav_set_indices_visibility(t_canvas *x, t_floatarg indexarg)
 {
     int i = indexarg;
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
