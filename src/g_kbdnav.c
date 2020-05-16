@@ -227,28 +227,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
             return 0;
         }
     }
-
-
-    /* Mod+Tab display the object indexes. This is useful for the goto feature
-       Note: for some reason "Tab" is only detected on key release events! (tested on Win7 and Win10) */
-    if( !down && kbdnav->kn_moddown && !strcmp(gotkeysym->s_name, "Tab"))
-    {
-        kbdnav->kn_indexvis = !kbdnav->kn_indexvis;
-        canvas_redraw(x);
-        return 0;
-    }
-
-    /* ------- digit connector ------- */
-
-
-
-    if (down & !strcmp(gotkeysym->s_name, "F3"))
-    {
-        kbdnav_debug(x);
-        return 0;
-    }
-
-    return 1;
 }
 
 int kbdnav_count_selected_objects(t_canvas *x)
@@ -1962,7 +1940,14 @@ void canvas_goto(t_canvas *x, t_floatarg indexarg)
     }
 }
 
-void canvas_set_indices_visibility(t_canvas *x, t_floatarg indexarg)
+void kbdnav_toggle_indices_visibility(t_canvas *x)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if(!kbdnav) return;
+    kbdnav->kn_indexvis = !kbdnav->kn_indexvis;
+    canvas_redraw(x);
+}
+
 void kbdnav_set_indices_visibility(t_canvas *x, t_floatarg indexarg)
 {
     int i = indexarg;
@@ -2146,6 +2131,13 @@ void kbdnav_register(t_class *canvas_class)
                     A_NULL);
     class_addmethod(canvas_class, (t_method)kbdnav_reselect, gensym("kbdnav_reselect"),
                     A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_toggle_indices_visibility, gensym("kbdnav_toggle_indices_visibility"),
+                    A_NULL);
+    /* dialogs */
+    class_addmethod(canvas_class, (t_method)canvas_goto, gensym("goto"),
+        A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_set_indices_visibility, gensym("set_indices_visibility"),
+        A_FLOAT, A_NULL);
 }
 #else
 void kbdnav_register(t_class *canvas_class){}

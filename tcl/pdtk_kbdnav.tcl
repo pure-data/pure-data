@@ -35,6 +35,9 @@ proc ::pdtk_kbdnav::bind_activators {} {
     bind all <$::modifier-Left>  {pdsend "[winfo toplevel %W] kbdnav_arrow left 0"}
     bind all <$::modifier-Right> {pdsend "[winfo toplevel %W] kbdnav_arrow right 0"}
 
+    # toggle displaying object indices
+    bind all <$::modifier-Key-i> {pdsend "[winfo toplevel %W] kbdnav_toggle_indices_visibility";break}
+
     # virtual click
     bind all <Shift-Key-Return> {pdsend "[winfo toplevel %W] kbdnav_virtual_click";break}
 
