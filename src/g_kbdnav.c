@@ -189,6 +189,7 @@ void kbdnav_activate_kbdnav(t_canvas *x, int io_type)
         kbdnav_deactivate(x);
         return;
     }
+    sys_vgui("::pdtk_kbdnav::pdtk_canvas_kbdnavmode .x%lx 1\n",x);
 }
 
 /* called when the user exits keyboard navigation */
@@ -204,6 +205,7 @@ void kbdnav_deactivate(t_canvas *x)
     kbdnav->kn_chosennumber = -1;
     kbdnav_magnetic_connect_free(x);
     canvas_redraw(x);
+    sys_vgui("::pdtk_kbdnav::pdtk_canvas_kbdnavmode .x%lx 0\n",x);
 }
 
 
@@ -241,33 +243,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
     /* Navigation with arrow keys */
     int isArrowKey = !strcmp(gotkeysym->s_name, "Up") || !strcmp(gotkeysym->s_name, "Down")
                  || !strcmp(gotkeysym->s_name, "Left") || !strcmp(gotkeysym->s_name, "Right");
-    if (down && isArrowKey)
-    {
-        if( kbdnav->kn_moddown )
-        {
-            kbdnav_magnetic_connect_free(x);
-            if (!strcmp(gotkeysym->s_name, "Up"))
-                kbdnav_up(x, shift);
-            else if (!strcmp(gotkeysym->s_name, "Down"))
-                kbdnav_down(x, shift);
-            else if (!strcmp(gotkeysym->s_name, "Left"))
-                kbdnav_left(x, shift);
-            else if (!strcmp(gotkeysym->s_name, "Right"))
-                kbdnav_right(x, shift);
-            /* we call canvas_redraw because the code that draws the io/outlet highlighting
-               is inside glist_drawiofor(). Maybe later we could keep track of the things we draw
-               so we can just move/delete them. For now we need to redraw the patch. */
-            canvas_redraw(x);
-            /* after it's redrawn we can display the numbers*/
-            if (kbdnav->kn_state == KN_WAITING_NUMBER)
-                kbdnav_digit_connect_display_numbers(x);
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
-    }
 
     /* Escape leaves kbd navigation */
     if( down && kbdnav->kn_state != KN_INACTIVE && !strcmp(gotkeysym->s_name, "Escape") )
@@ -2192,3 +2167,34 @@ int kbdnav_connect_new(t_glist *gl, int nobj, int indx)
     canvas_redraw(gl);
     return 1;
 }
+
+void kbdnav_arrow(t_canvas *x, t_symbol *key, int shift)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if ( !strcmp(key->s_name, "up") )
+        kbdnav_up(x, shift);
+    else if ( !strcmp(key->s_name, "down") )
+        kbdnav_down(x, shift);
+    else if ( !strcmp(key->s_name, "left") )
+        kbdnav_left(x, shift);
+    else if ( !strcmp(key->s_name, "right") )
+        kbdnav_right(x, shift);
+    else
+        bug("kbdnav_arrow() error. Wrong key argument: %s", key->s_name);
+    /* we call canvas_redraw because the code that draws the io/outlet highlighting
+       is inside glist_drawiofor(). Maybe later we could keep track of the things we draw
+       so we can just move/delete them. For now we need to redraw the patch. */
+    canvas_redraw(x);
+    /* after it's redrawn we can display the numbers*/
+    if (kbdnav->kn_state == KN_WAITING_NUMBER)
+        kbdnav_digit_connect_display_numbers(x);
+}
+#ifdef HAVE_KEYBOARDNAV
+void kbdnav_register(t_class *canvas_class)
+{
+    class_addmethod(canvas_class, (t_method)kbdnav_arrow, gensym("kbdnav_arrow"),
+                    A_SYMBOL, A_FLOAT, A_NULL);
+}
+#else
+void kbdnav_register(t_class *canvas_class){}
+#endif

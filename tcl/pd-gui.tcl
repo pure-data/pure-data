@@ -44,6 +44,7 @@ package require dialog_font
 package require dialog_gatom
 package require dialog_iemgui
 package require dialog_message
+package require pdtk_kbdnav
 package require dialog_kbdconnect
 package require dialog_goto
 package require dialog_midi

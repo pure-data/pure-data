@@ -2002,6 +2002,10 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
+
+/* -------------- keyboard navigation  ---------------- */
+    kbdnav_register( canvas_class );
+
 }
 
     /* functions to add basic gui (e.g., clicking but not editing) to things

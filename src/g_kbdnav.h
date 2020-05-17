@@ -162,5 +162,6 @@ typedef struct _my_numbox t_my_numbox;
 
 EXTERN void kbdnav_my_numbox_draw_io_selection(t_my_numbox *x, t_glist *glist, int xpos, int ypos, int zoom, int iow, int ioh);
 EXTERN void kbdnav_my_numbox_move(t_my_numbox *x, t_glist *glist, int xpos, int ypos, int zoom, int iow, int ioh);
+EXTERN void kbdnav_register(t_class *canvas_class);
 
 #endif

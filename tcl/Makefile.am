@@ -36,6 +36,7 @@ dist_libpdtcl_DATA = \
     dialog_array.tcl \
     dialog_find.tcl \
     dialog_message.tcl \
+    pdtk_kbdnav.tcl \
     dialog_kbdconnect.tcl \
     dialog_goto.tcl \
     helpbrowser.tcl \

@@ -2,6 +2,7 @@ package provide pd_bindings 0.1
 
 package require pd_menucommands
 package require dialog_find
+package require pdtk_kbdnav
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -152,6 +153,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0 %k}
     bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1 %k}
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
+
+    ::pdtk_kbdnav::bind_activators
 }
 
 # bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
