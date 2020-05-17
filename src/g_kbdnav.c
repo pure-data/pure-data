@@ -208,27 +208,6 @@ void kbdnav_deactivate(t_canvas *x)
     sys_vgui("::pdtk_kbdnav::pdtk_canvas_kbdnavmode .x%lx 0\n",x);
 }
 
-
-/* parse key press/release events related to keyboard navigation*/
-int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int down, int shift, t_symbol *gotkeysym)
-{
-    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
-    if( !kbdnav ) return 1;
-
-    /* Leave kbdnavigation if # of selected objects != 1 */
-    if ( down
-         && kbdnav->kn_state != KN_INACTIVE
-         && (!strcmp(gotkeysym->s_name, "Up") || !strcmp(gotkeysym->s_name, "Down")
-            || !strcmp(gotkeysym->s_name, "Left") || !strcmp(gotkeysym->s_name, "Right")) )
-    {
-        if ( kbdnav_count_selected_objects(x) != 1)
-        {
-            kbdnav_deactivate(x);
-            return 0;
-        }
-    }
-}
-
 int kbdnav_count_selected_objects(t_canvas *x)
 {
     t_selection *curr_sel_obj;

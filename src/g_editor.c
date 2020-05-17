@@ -3139,9 +3139,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     }
     if (!x || !x->gl_editor)  /* if that 'invis'ed the window,  stop. */
         return;
-#ifdef HAVE_KEYBOARDNAV
-    if( !kbdnav_key(x, s, ac, av, keynum, down, shift, gotkeysym) ) return;
-#endif
+
     if (x && down)
     {
             /* cancel any dragging action */

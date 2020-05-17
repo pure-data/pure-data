@@ -51,8 +51,6 @@ EXTERN t_kbdnav* kbdnav_new();
 EXTERN t_kbdnav* canvas_get_kbdnav(t_canvas *x);
 EXTERN void kbdnav_free(t_kbdnav *x);
 EXTERN t_object *kbdnav_get_selected_obj(t_canvas *x);
-EXTERN int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum,
-                            int down, int shift, t_symbol *gotkeysym);
 EXTERN void kbdnav_up(t_canvas *x, int shift);
 EXTERN void kbdnav_down(t_canvas *x, int shift);
 EXTERN void kbdnav_left(t_canvas *x, int shift);
