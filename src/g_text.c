@@ -898,7 +898,27 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_gatom *x = (t_gatom*)z;
-    text_vis(z, glist, vis);
+    t_text *t = (t_text *)z;
+    if (vis)
+    {
+        if (gobj_shouldvis(&t->te_g, glist))
+        {
+            t_rtext *y = glist_findrtext(glist, t);
+            glist_retext(glist, t);
+            atom_drawborder(x, t, glist, rtext_gettag(y),
+                rtext_width(y), rtext_height(y), 1);
+            rtext_draw(y);
+        }
+    }
+    else
+    {
+        t_rtext *y = glist_findrtext(glist, t);
+        if (gobj_shouldvis(&t->te_g, glist))
+        {
+            text_eraseborder(t, glist, rtext_gettag(y));
+            rtext_erase(y);
+        }
+    }
     if (*x->a_label->s_name)
     {
         if (vis)
