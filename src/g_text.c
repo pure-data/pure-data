@@ -949,6 +949,9 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         SETSYMBOL(&at, &s_symbol);
     }
     binbuf_add(x->a_text.te_binbuf, 1, &at);
+    outlet_new(&x->a_text,
+        x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
+    inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
             label, receive-name, send-name */
@@ -971,20 +974,12 @@ void canvas_atom(t_glist *gl, t_atomtype type,
 
         x->a_symto = gatom_unescapit(atom_getsymbolarg(8, argc, argv));
         x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
-        if (x->a_symto == &s_)
-            outlet_new(&x->a_text,
-                x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
-        if (x->a_symfrom == &s_)
-            inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         glist_add(gl, &x->a_text.te_g);
     }
     else
     {
         int connectme, xpix, ypix, indx, nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
-        outlet_new(&x->a_text,
-            x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
