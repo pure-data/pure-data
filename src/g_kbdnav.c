@@ -301,6 +301,9 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
         }
         else if ( !shift && kbdnav->kn_moddown)
         {
+            if( !(x->gl_editor->e_textedfor) ){
+                kbdnav_deactivate(x);
+            }
             canvas_reselect(x);
             return 0;
         }
