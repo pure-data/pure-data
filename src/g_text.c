@@ -882,8 +882,6 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_gatom *x = (t_gatom*)z;
-    
-//    text_vis(z, glist, vis);
     t_text *t = (t_text *)z;
     if (vis)
     {
@@ -905,7 +903,6 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
             rtext_erase(y);
         }
     }
-    
     if (*x->a_label->s_name)
     {
         if (vis)
