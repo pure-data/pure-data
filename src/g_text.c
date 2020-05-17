@@ -530,6 +530,9 @@ typedef struct _gatom
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
+static void atom_drawborder(t_gatom *x, t_text *t, t_glist *glist,
+    const char *tag, int width2, int height2, int firsttime);
+
     /* prepend "-" as necessary to avoid empty strings, so we can
     use them in Pd messages.  A more complete solution would be
     to introduce some quoting mechanism; but then we'd be much more
@@ -1384,6 +1387,79 @@ void text_drawborder(t_text *x, t_glist *glist,
 
     if ((ob = pd_checkobject(&x->te_pd)))
         glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
+    if (firsttime) /* raise cords over everything else */
+        sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
+}
+
+void glist_drawiofor_atoms(t_gatom *x, t_glist *glist, t_object *ob, int firsttime,
+    const char *tag, int x1, int y1, int x2, int y2)
+{
+    int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
+    int width = x2 - x1;
+    int iow = IOWIDTH * glist->gl_zoom;
+    int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
+    /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
+    if(!*x->a_symto->s_name){
+        for (i = 0; i < n; i++)
+        {
+            int onset = x1 + (width - iow) * i / nplus;
+            if (firsttime)
+                sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                    "-tags [list %so%d outlet] -fill black\n",
+                    glist_getcanvas(glist),
+                    onset, y2 - oh + glist->gl_zoom,
+                    onset + iow, y2,
+                    tag, i);
+            else
+                sys_vgui(".x%lx.c coords %so%d %d %d %d %d\n",
+                    glist_getcanvas(glist), tag, i,
+                    onset, y2 - oh + glist->gl_zoom,
+                    onset + iow, y2);
+        }
+    }
+    n = obj_ninlets(ob);
+    nplus = (n == 1 ? 1 : n-1);
+    if(!*x->a_symfrom->s_name){
+        for (i = 0; i < n; i++)
+        {
+            int onset = x1 + (width - iow) * i / nplus;
+            if (firsttime)
+                sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                    "-tags [list %si%d inlet] -fill black\n",
+                    glist_getcanvas(glist),
+                    onset, y1,
+                    onset + iow, y1 + ih - glist->gl_zoom,
+                    tag, i);
+            else
+                sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
+                    glist_getcanvas(glist), tag, i,
+                    onset, y1,
+                    onset + iow, y1 + ih - glist->gl_zoom);
+        }
+    }
+}
+
+void atom_drawborder(t_gatom *x, t_text *t, t_glist *glist,
+    const char *tag, int width2, int height2, int firsttime)
+{
+    t_object *ob;
+    int x1, y1, x2, y2, width, height, corner;
+    text_getrect(&t->te_g, glist, &x1, &y1, &x2, &y2);
+    width = x2 - x1;
+    height = y2 - y1;
+    corner = ((y2-y1)/4);
+    if (firsttime)
+        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
+            "-width %d -capstyle projecting -tags [list %sR atom]\n",
+            glist_getcanvas(glist),
+            x1, y1,  x2-corner, y1,  x2, y1+corner, x2, y2,  x1, y2,  x1, y1,
+            glist->gl_zoom, tag);
+    else
+        sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d\n",
+            glist_getcanvas(glist), tag,
+            x1, y1,  x2-corner, y1,  x2, y1+corner,  x2, y2,  x1, y2,  x1, y1);
+    if ((ob = pd_checkobject(&t->te_pd)))
+        glist_drawiofor_atoms(x, glist, ob, firsttime, tag, x1, y1, x2, y2);
     if (firsttime) /* raise cords over everything else */
         sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
 }
