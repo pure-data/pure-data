@@ -331,6 +331,7 @@ void kbdnav_up(t_canvas *x, int shift)
                     /* there are inlets */
                     kbdnav->kn_iotype = IO_INLET;
                     kbdnav->kn_ioindex = kbdnav->kn_ioindex > obj_ninlets(kbdnav->kn_selobj)-1 ? obj_ninlets(kbdnav->kn_selobj)-1 : kbdnav->kn_ioindex;
+                    kbdnav_magnetic_connect_free(x);
                 }
                 break;
             case IO_INLET:
@@ -375,6 +376,7 @@ void kbdnav_up(t_canvas *x, int shift)
                     kbdnav->kn_linetraverser->tr_ob, IO_OUTLET);
                 kbdnav->kn_ioindex = kbdnav->kn_linetraverser->tr_outno;
                 kbdnav->kn_outconnect = NULL;
+                kbdnav_magnetic_connect_free(x);
                 break;
             case IO_OUTLET:
                 /* if we ARE selecting a connection and we are going DOWN
@@ -430,14 +432,17 @@ void kbdnav_down(t_canvas *x, int shift)
         switch(kbdnav->kn_iotype)
         {
             case IO_INLET:
+                /*we are on an inlet -> go to outlet */
                 if ( obj_noutlets(kbdnav->kn_selobj) > 0)
                 {
                     /* there are outlets */
                     kbdnav->kn_iotype = IO_OUTLET;
                     kbdnav->kn_ioindex = kbdnav->kn_ioindex > obj_noutlets(kbdnav->kn_selobj)-1 ? obj_noutlets(kbdnav->kn_selobj)-1 : kbdnav->kn_ioindex;
+                    kbdnav_magnetic_connect_free(x);
                 }
                 break;
             case IO_OUTLET:
+                /* we are on an outlet. */
                 if( shift )
                 {
                     /* initialize numeric magnetic connection */
@@ -447,10 +452,10 @@ void kbdnav_down(t_canvas *x, int shift)
                 else
                 {
                     /* search for connections! */
-                    /* get first outlet */
                     int n_of_connections = kbdnav_noutconnections(kbdnav->kn_selobj, kbdnav->kn_ioindex);
                     if( n_of_connections > 0)
                     {
+                        /* get first outlet */
                         kbdnav_traverse_outconnections_start(x);
                     }
                 }
@@ -479,6 +484,7 @@ void kbdnav_down(t_canvas *x, int shift)
                     kbdnav->kn_linetraverser->tr_ob2, IO_INLET); //IO_INLET doesn't matter here
                 kbdnav->kn_ioindex = kbdnav->kn_linetraverser->tr_inno;
                 kbdnav->kn_outconnect = NULL;
+                kbdnav_magnetic_connect_free(x);
                 break;
             case IO_INLET:
                 /* if we ARE selecting a connection and we are going UP
@@ -529,7 +535,7 @@ void kbdnav_left(t_canvas *x, int shift)
     if(kbdnav->kn_state == KN_IO_SELECTED)
     {
         if (kbdnav->kn_ioindex > 0)
-            --kbdnav->kn_ioindex;
+            kbdnav->kn_ioindex--;
     }
     else if(kbdnav->kn_state == KN_CONN_SELECTED)
     {
@@ -537,9 +543,11 @@ void kbdnav_left(t_canvas *x, int shift)
         {
             case IO_OUTLET:
                 kbdnav_traverse_outconnections_prev(x);
+                kbdnav_magnetic_connect_free(x);
                 break;
             case IO_INLET:
                 kbdnav_traverse_inlet_sources_prev(x);
+                kbdnav_magnetic_connect_free(x);
                 break;
             default:
                 bug("kbdnav left");
@@ -567,9 +575,11 @@ void kbdnav_right(t_canvas *x, int shift)
         {
             case IO_OUTLET:
                 kbdnav_traverse_outconnections_next(x);
+                kbdnav_magnetic_connect_free(x);
                 break;
             case IO_INLET:
                 kbdnav_traverse_inlet_sources_next(x);
+                kbdnav_magnetic_connect_free(x);
                 break;
             default:
                 bug("kbdnav right");
