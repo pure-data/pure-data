@@ -275,18 +275,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
         return 0;
     }
 
-    /* check for backspace or clear */
-    if (keynum == 8 || keynum == 127)
-    {
-        if(kbdnav->kn_state != KN_INACTIVE)
-        {
-            kbdnav_delete_connection(x);
-            return 0;
-        }
-        else
-            return 1;
-    }
-
     return 1;
 }
 

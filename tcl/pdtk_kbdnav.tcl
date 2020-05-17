@@ -66,6 +66,8 @@ proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
     bind $mytoplevel <Key-9> {pdsend "[winfo toplevel %W] kbdnav_digit 9 1";break}
 
     bind $mytoplevel <Shift-KeyPress> {::pdtk_kbdnav::digits "[winfo toplevel %W]" "%k"}
+
+    bind $mytoplevel <Key-Delete> {pdsend "[winfo toplevel %W] kbdnav_delete";break}
 }
 
 proc ::pdtk_kbdnav::kbdnav_unbind { mytoplevel } {
@@ -97,6 +99,8 @@ proc ::pdtk_kbdnav::kbdnav_unbind { mytoplevel } {
     bind $mytoplevel <Key-9> {}
 
     bind $mytoplevel <Shift-KeyPress> {}
+
+    bind $mytoplevel <Key-Delete> {}
 }
 
 # see
