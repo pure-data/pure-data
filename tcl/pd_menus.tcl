@@ -222,12 +222,17 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
+
+    # keyboard navigation
     $mymenu add command -label [_ "Go to Object"] \
         -accelerator "$accelerator+G" \
         -command {::dialog_goto::pdtk_goto_open "$::focused_window"}
     $mymenu add command -label [_ "Connect Objects" ]  \
         -command {::dialog_kbdconnect::pdtk_kbdconnect_open "$::focused_window"}
+    $mymenu add check -label [_ "Keyboard Navigation"] -variable ::kbdnav_enabled \
+        -command {::pdtk_kbdnav::set_enabled $::kbdnav_enabled}
     $mymenu add  separator
+
     #TODO madness! how to set the state of the check box without invoking the menu!
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \

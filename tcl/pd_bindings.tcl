@@ -153,7 +153,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1 %k}
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
 
-    ::pdtk_kbdnav::bind_activators
+    ::pdtk_kbdnav::set_enabled 1
 }
 
 # bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
