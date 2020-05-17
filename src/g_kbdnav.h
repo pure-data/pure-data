@@ -73,7 +73,7 @@ EXTERN void kbdnav_traverse_inlet_sources_prev(t_canvas *x);
 EXTERN void kbdnav_displayindices(t_canvas *x);
 EXTERN void canvas_set_indices_visibility(t_canvas *x, t_floatarg indexarg);
 EXTERN void kbdnav_debug(t_canvas *x);
-EXTERN void kbdnav_magnetic_connect(t_canvas *x);
+EXTERN void kbdnav_magnetic_connect(t_canvas *x, int shift);
 EXTERN void kbdnav_magnetic_disconnect(t_canvas *x);
 EXTERN void kbdnav_magnetic_connect_start(t_canvas *x);
 EXTERN void kbdnav_magnetic_connect_next(t_canvas *x);

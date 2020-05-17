@@ -215,18 +215,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
     if( !kbdnav ) return 1;
 
-    /* set our modifier state */
-#if defined(__APPLE__)
-    if( !strcmp(gotkeysym->s_name, "Meta_L") )
-#else
-    /* TCL reports Right Control keyup events as Control_L */
-    /* https://wiki.tcl-lang.org/page/Modifier+Keys*/
-    if( ( !strcmp(gotkeysym->s_name, "Control_L") || !strcmp(gotkeysym->s_name, "Control_R")) )
-#endif
-    {
-        kbdnav->kn_moddown = down ? 1 : 0 ;
-    }
-
     /* Leave kbdnavigation if # of selected objects != 1 */
     if ( down
          && kbdnav->kn_state != KN_INACTIVE
@@ -238,22 +226,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
             kbdnav_deactivate(x);
             return 0;
         }
-    }
-
-    /* Navigation with arrow keys */
-    int isArrowKey = !strcmp(gotkeysym->s_name, "Up") || !strcmp(gotkeysym->s_name, "Down")
-                 || !strcmp(gotkeysym->s_name, "Left") || !strcmp(gotkeysym->s_name, "Right");
-
-    /* Escape leaves kbd navigation */
-    if( down && kbdnav->kn_state != KN_INACTIVE && !strcmp(gotkeysym->s_name, "Escape") )
-    {
-        /* The GUI has a binding (on pd_bindings.tcl) which calls
-           deselect all on an escape press so we store the object again
-           so we can select it again */
-        t_gobj *gobj = &kbdnav->kn_selobj->te_g;
-        kbdnav_deactivate(x);
-        glist_select(x, gobj);
-        return 0;
     }
 
     /* Shift+Return simulates a click on the selected object */
@@ -293,95 +265,9 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
         return 0;
     }
 
-
-    /* ------- magnetic connector ------- */
-
-    if (down
-        /* && kbdnav->kn_moddown */
-        && (keynum == 103 || keynum == 71) /* g or G*/
-        && !x->gl_editor->e_textedfor
-        && kbdnav->kn_state == KN_IO_SELECTED)
-    {
-            if( !kbdnav->kn_magtrav )
-            {
-                kbdnav_magnetic_connect_start(x);
-                kbdnav_magnetic_connect(x);
-                return 0;
-            }
-            else
-            {
-                if ( keynum == 71 /* upper case (G) means shift is pressed */
-                     && kbdnav->kn_magtrav )
-                {
-                    kbdnav_magnetic_disconnect(x);
-                }
-                kbdnav_magnetic_connect_next(x);
-                return 0;
-            }
-    }
-
     /* ------- digit connector ------- */
 
-    /* if we received a digit and we are waiting to make a connection */
-    if (down
-        && keynum >= 48 && keynum <= 57
-        && kbdnav->kn_state == KN_WAITING_NUMBER)
-    {
-        kbdnav->kn_chosennumber = keynum-48;
-        kbdnav_digitconnect_choose(x, 1);
-        return 0;
-    }
 
-    /* if the user press shift+digit it will arrive as symbol, like the following
-       !@#$%¨&*()
-       so we have to check for them */
-
-    if (down && kbdnav->kn_state == KN_WAITING_NUMBER)
-    {
-        int shift_digit_pressed = 1;
-        switch(keynum)
-        {
-            case 33:
-                kbdnav->kn_chosennumber = 1;
-                break;
-            case 64:
-                kbdnav->kn_chosennumber = 2;
-                break;
-            case 35:
-                kbdnav->kn_chosennumber = 3;
-                break;
-            case 36:
-                kbdnav->kn_chosennumber = 4;
-                break;
-            case 37:
-                kbdnav->kn_chosennumber = 5;
-                break;
-            case 168:
-                kbdnav->kn_chosennumber = 6;
-                break;
-            case 38:
-                kbdnav->kn_chosennumber = 7;
-                break;
-            case 42:
-                kbdnav->kn_chosennumber = 8;
-                break;
-            case 40:
-                kbdnav->kn_chosennumber = 9;
-                break;
-            case 41:
-                kbdnav->kn_chosennumber = 0;
-                break;
-            default:
-                shift_digit_pressed = 0;
-                break;
-        }
-
-        if(shift_digit_pressed)
-        {
-            kbdnav_digitconnect_choose(x, 0);
-            return 0;
-        }
-    }
 
     if (down & !strcmp(gotkeysym->s_name, "F3"))
     {
@@ -1050,7 +936,8 @@ void kbdnav_magnetic_connect_start(t_canvas *x)
     /* sort it */
     for( t_magtrav *a = kbdnav->kn_magtrav ; a ; a = a->mt_next )
     {
-        if ( a->mt_next ) /* TODO: is this needed or the condition "b" on the "for" is enough? */
+        /* TODO: is this needed or the condition "b" on the "for" is enough? */
+        if ( a->mt_next )
         {
             for( t_magtrav *b = a->mt_next ; b ; b = b->mt_next )
             {
@@ -1091,7 +978,6 @@ void kbdnav_magnetic_connect_next(t_canvas *x)
     {
         /* start again */
         kbdnav_magnetic_connect_start(x);
-        kbdnav_magnetic_connect(x);
     }
     else
     {
@@ -1099,53 +985,84 @@ void kbdnav_magnetic_connect_next(t_canvas *x)
         t_magtrav *old = kbdnav->kn_magtrav;
         kbdnav->kn_magtrav = kbdnav->kn_magtrav->mt_next;
         freebytes(old, sizeof(*old));
-
-        kbdnav_magnetic_connect(x);
     }
 }
 
 /* reads data from t_kbdnav and connects the selected in/outlet to
    the current out/inlet */
-void kbdnav_magnetic_connect(t_canvas *x)
+void kbdnav_magnetic_connect(t_canvas *x, int keep_last)
 {
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
-    if (!kbdnav->kn_magtrav) return;
-    int selobj_index = glist_getindex(x, &kbdnav->kn_selobj->ob_g);
+
+    int selobj_index;
+    t_object *sel_obj;
 
     /* info on the chosen object*/
     int mag_objindex;
     int mag_connindex;
+    t_gobj *mag_gobj;
+    t_object *mag_obj;
 
-    /* MAGNETIC CONNECTOR */
-    /* if we are using the G key */
-    if( kbdnav->kn_state != KN_WAITING_NUMBER )
+
+    if( kbdnav->kn_state != KN_IO_SELECTED &&
+        kbdnav->kn_state != KN_WAITING_NUMBER )
     {
-        mag_objindex = kbdnav->kn_magtrav->mt_objindex;
-        mag_connindex = kbdnav->kn_magtrav->mt_ioindex;
+        return;
     }
-    else
+    if(x->gl_editor->e_textedfor)
+    {
+        post("kbdnav_magnetic_connect() ---> x->gl_editor->e_textedfor");
+        return;
+    }
+
+    selobj_index = glist_getindex(x, &kbdnav->kn_selobj->ob_g);
+
+    switch(kbdnav->kn_state)
     {
         /* DIGIT CONNECTOR */
-        /* if we are using a number key */
-        int count = 0;
-        t_magtrav *mag = kbdnav->kn_magtrav;
-        while( count <= kbdnav->kn_chosennumber)
+        case KN_WAITING_NUMBER:
         {
-            if(!mag)
+            int count = 0;
+            t_magtrav *mag = kbdnav->kn_magtrav;
+            while( count <= kbdnav->kn_chosennumber)
             {
-                post("Digit connector error. Invalid number %d", kbdnav->kn_chosennumber);
-                return;
+                if(!mag)
+                {
+                    post("Digit connector error. Invalid number %d", kbdnav->kn_chosennumber);
+                    return;
+                }
+                mag_objindex = mag->mt_objindex;
+                mag_connindex = mag->mt_ioindex;
+                mag = mag->mt_next;
+                ++count;
             }
-            mag_objindex = mag->mt_objindex;
-            mag_connindex = mag->mt_ioindex;
-            mag = mag->mt_next;
-            ++count;
+            break;
         }
+        /* MAGNETIC CONNECTOR */
+        case KN_IO_SELECTED:
+        {
+            if (!kbdnav->kn_magtrav)
+                kbdnav_magnetic_connect_start(x);
+            else
+            {
+                if(!keep_last){
+                    kbdnav_magnetic_disconnect(x);
+                }
+                kbdnav_magnetic_connect_next(x);
+            }
+            /* no possible connections found */
+            if (!kbdnav->kn_magtrav) return;
+            mag_objindex = kbdnav->kn_magtrav->mt_objindex;
+            mag_connindex = kbdnav->kn_magtrav->mt_ioindex;
+            break;
+        }
+        default:
+            bug("kbdnav_magnetic_connect() error. kbdnav->kn_state: %i", kbdnav->kn_state);
     }
 
-    t_object *sel_obj = kbdnav->kn_selobj;
-    t_gobj *mag_gobj = glist_nth(x, mag_objindex);
-    t_object *mag_obj = pd_checkobject(&mag_gobj->g_pd);
+    sel_obj = kbdnav->kn_selobj;
+    mag_gobj = glist_nth(x, mag_objindex);
+    mag_obj = pd_checkobject(&mag_gobj->g_pd);
 
     switch( kbdnav->kn_iotype )
     {
@@ -1251,8 +1168,9 @@ void kbdnav_digit_connect_display_numbers(t_canvas *x)
 void kbdnav_digitconnect_choose(t_canvas *x, int exit_after_connecting)
 {
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
-    kbdnav_magnetic_connect(x);
-    if( exit_after_connecting ){
+    kbdnav_magnetic_connect(x, !exit_after_connecting);
+    if( exit_after_connecting )
+    {
         kbdnav->kn_state = KN_IO_SELECTED;
         canvas_redraw(x); /* get rid of the numbers */
     }
@@ -2168,9 +2086,11 @@ int kbdnav_connect_new(t_glist *gl, int nobj, int indx)
     return 1;
 }
 
-void kbdnav_arrow(t_canvas *x, t_symbol *key, int shift)
+void kbdnav_arrow(t_canvas *x, t_symbol *key, t_floatarg shift)
 {
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if(!kbdnav) return;
+
     if ( !strcmp(key->s_name, "up") )
         kbdnav_up(x, shift);
     else if ( !strcmp(key->s_name, "down") )
@@ -2189,11 +2109,30 @@ void kbdnav_arrow(t_canvas *x, t_symbol *key, int shift)
     if (kbdnav->kn_state == KN_WAITING_NUMBER)
         kbdnav_digit_connect_display_numbers(x);
 }
+
+void kbdnav_digit(t_canvas *x, t_floatarg digit, t_floatarg exit_after_connecting)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if(!kbdnav) return;
+    if(kbdnav->kn_state != KN_WAITING_NUMBER) return;
+
+    kbdnav->kn_chosennumber = digit;
+    post("digit = %i", digit);
+    post("kbdnav->kn_chosennumber = %i", kbdnav->kn_chosennumber);
+    kbdnav_digitconnect_choose(x, exit_after_connecting);
+}
+
 #ifdef HAVE_KEYBOARDNAV
 void kbdnav_register(t_class *canvas_class)
 {
     class_addmethod(canvas_class, (t_method)kbdnav_arrow, gensym("kbdnav_arrow"),
                     A_SYMBOL, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_deactivate, gensym("kbdnav_deactivate"),
+                    A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_magnetic_connect, gensym("kbdnav_magnetic_connect"),
+                    A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_digit, gensym("kbdnav_digit"),
+                    A_FLOAT, A_FLOAT, A_NULL);
 }
 #else
 void kbdnav_register(t_class *canvas_class){}
