@@ -932,6 +932,9 @@ msgstr "בחר גופן"
 msgid "Clear Console"
 msgstr ""
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

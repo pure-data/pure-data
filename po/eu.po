@@ -950,6 +950,9 @@ msgstr "Guztia Aukeratu"
 msgid "Clear Console"
 msgstr "Kontsola Garbitu"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr "Objektu"
 

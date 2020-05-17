@@ -949,6 +949,9 @@ msgstr "Вылучце колер"
 msgid "Clear Console"
 msgstr "Ачысціць спіс"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

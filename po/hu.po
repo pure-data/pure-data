@@ -921,6 +921,9 @@ msgstr "Mindent kijelöl"
 msgid "Clear Console"
 msgstr "Konzolt ürít"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr "Object"
 

@@ -955,6 +955,9 @@ msgstr "Uitvee Alle"
 msgid "Clear Console"
 msgstr "Maak lys skoon"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

@@ -948,6 +948,9 @@ msgstr "Chọn màu"
 msgid "Clear Console"
 msgstr "Xóa danh sách"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

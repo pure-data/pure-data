@@ -910,6 +910,9 @@ msgstr "Seleccionar Todo"
 msgid "Clear Console"
 msgstr "Limpiar Consola"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr "Objeto"
 

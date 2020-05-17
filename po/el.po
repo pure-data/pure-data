@@ -920,6 +920,9 @@ msgstr "Επιλογή Όλων"
 msgid "Clear Console"
 msgstr "Καθαρισμός Κονσόλας"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

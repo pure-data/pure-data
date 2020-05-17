@@ -950,6 +950,9 @@ msgstr "રંગ પસંદ કરો"
 msgid "Clear Console"
 msgstr "યાદી સાફ કરો"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

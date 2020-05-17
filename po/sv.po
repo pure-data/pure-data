@@ -929,6 +929,9 @@ msgstr "Markera allt"
 msgid "Clear Console"
 msgstr "Rensa konsoll"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr "Objekt"
 

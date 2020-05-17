@@ -949,6 +949,9 @@ msgstr "Изтрива всички"
 msgid "Clear Console"
 msgstr "Изчистване на списъка"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

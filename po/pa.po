@@ -949,6 +949,9 @@ msgstr "ਚੋਣ ਰੰਗ"
 msgid "Clear Console"
 msgstr "ਸੂਚੀ ਸਾਫ਼"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 

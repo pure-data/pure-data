@@ -948,6 +948,9 @@ msgstr "Hamısı Sil"
 msgid "Clear Console"
 msgstr "Siyahını təmizlə"
 
+msgid "Keyboard Navigation"
+msgstr ""
+
 msgid "Object"
 msgstr ""
 
