@@ -34,6 +34,12 @@ proc ::pdtk_kbdnav::bind_activators {} {
     bind all <$::modifier-Down>  {pdsend "[winfo toplevel %W] kbdnav_arrow down 0"}
     bind all <$::modifier-Left>  {pdsend "[winfo toplevel %W] kbdnav_arrow left 0"}
     bind all <$::modifier-Right> {pdsend "[winfo toplevel %W] kbdnav_arrow right 0"}
+
+    # virtual click
+    bind all <Shift-Key-Return> {pdsend "[winfo toplevel %W] kbdnav_virtual_click";break}
+
+    # canvas reselect (toggle editing rtext)
+    bind all <Control-Key-Return> {pdsend "[winfo toplevel %W] kbdnav_reselect";break}
 }
 
 # we use kbdnav_bind instead of bind to avoid conflicts with
@@ -67,6 +73,7 @@ proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
 
     bind $mytoplevel <Shift-KeyPress> {::pdtk_kbdnav::digits "[winfo toplevel %W]" "%k"}
 
+    # delete
     bind $mytoplevel <Key-Delete> {pdsend "[winfo toplevel %W] kbdnav_delete";break}
 }
 
@@ -100,6 +107,7 @@ proc ::pdtk_kbdnav::kbdnav_unbind { mytoplevel } {
 
     bind $mytoplevel <Shift-KeyPress> {}
 
+    # delete
     bind $mytoplevel <Key-Delete> {}
 }
 

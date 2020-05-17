@@ -228,33 +228,6 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
         }
     }
 
-    /* Shift+Return simulates a click on the selected object */
-    if( down
-        && !strcmp(gotkeysym->s_name, "Return")
-        && kbdnav_count_selected_objects(x) == 1)
-    {
-        if( shift && !kbdnav->kn_moddown)
-        {
-            t_object *ob = kbdnav_get_selected_obj(x);
-            t_gobj *g = &(ob->ob_g);
-            int xpos, ypos, dummy;
-            gobj_getrect(g, x, &xpos, &ypos, &dummy, &dummy);
-
-            gobj_click(g, x, xpos, ypos, 0, 0, 0, 1);
-            gobj_click(g, x, xpos, ypos, 0, 0, 0, 0);
-            /* this second gobj_click() call (mouse up) doesn't solve the problem with sliders and radios */
-            /* TODO: we shouldn't allow this "click" on sliders and radios as there is no control the user will have on where they're clicking! */
-            return 0;
-        }
-        else if ( !shift && kbdnav->kn_moddown)
-        {
-            if( !(x->gl_editor->e_textedfor) ){
-                kbdnav_deactivate(x);
-            }
-            canvas_reselect(x);
-            return 0;
-        }
-    }
 
     /* Mod+Tab display the object indexes. This is useful for the goto feature
        Note: for some reason "Tab" is only detected on key release events! (tested on Win7 and Win10) */
@@ -2120,6 +2093,33 @@ void kbdnav_digit(t_canvas *x, t_floatarg digit, t_floatarg exit_after_connectin
     kbdnav_digitconnect_choose(x, exit_after_connecting);
 }
 
+void kbdnav_delete(t_canvas *x)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if(kbdnav->kn_state != KN_INACTIVE)
+        kbdnav_delete_connection(x);
+}
+
+/* Simulate a click on a |msg(, [bng], [tgl] or opens abstractions and subpatches */
+void kbdnav_virtual_click(t_canvas *x)
+{
+    if( kbdnav_count_selected_objects(x) != 1) return;
+
+    t_object *ob = kbdnav_get_selected_obj(x);
+    t_gobj *g = &(ob->ob_g);
+    int xpos, ypos, dummy;
+    gobj_getrect(g, x, &xpos, &ypos, &dummy, &dummy);
+
+    gobj_click(g, x, xpos, ypos, 0, 0, 0, 1);
+    gobj_click(g, x, xpos, ypos, 0, 0, 0, 0);
+}
+
+void kbdnav_reselect(t_canvas *x)
+{
+    if( !(x->gl_editor->e_textedfor) ) kbdnav_deactivate(x);
+    canvas_reselect(x);
+}
+
 #ifdef HAVE_KEYBOARDNAV
 void kbdnav_register(t_class *canvas_class)
 {
@@ -2131,6 +2131,12 @@ void kbdnav_register(t_class *canvas_class)
                     A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)kbdnav_digit, gensym("kbdnav_digit"),
                     A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_delete, gensym("kbdnav_delete"),
+                    A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_virtual_click, gensym("kbdnav_virtual_click"),
+                    A_NULL);
+    class_addmethod(canvas_class, (t_method)kbdnav_reselect, gensym("kbdnav_reselect"),
+                    A_NULL);
 }
 #else
 void kbdnav_register(t_class *canvas_class){}
