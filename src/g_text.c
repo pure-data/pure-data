@@ -571,7 +571,8 @@ static void gatom_retext(t_gatom *x, int senditup)
 {
     binbuf_clear(x->a_text.te_binbuf);
     binbuf_add(x->a_text.te_binbuf, 1, &x->a_atom);
-    if (senditup && glist_isvisible(x->a_glist))
+    if (senditup && glist_isvisible(x->a_glist)
+        && gobj_shouldvis(&x->a_text.te_g, x->a_glist))
             sys_queuegui(x, x->a_glist, gatom_redraw);
 }
 
@@ -732,7 +733,7 @@ static void gatom_key(void *z, t_floatarg f)
             /* for numbers, only let reasonable characters through */
         if ((x->a_atom.a_type == A_SYMBOL) ||
             ((c >= '0' && c <= '9') || c == '.' || c == '-'
-                || c == '+' || c == 'e' || c == 'E'))
+                || c == 'e' || c == 'E'))
         {
             /* the wchar could expand to up to 4 bytes, which
              * which might overrun our a_buf;
@@ -881,6 +882,8 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_gatom *x = (t_gatom*)z;
+    
+//    text_vis(z, glist, vis);
     t_text *t = (t_text *)z;
     if (vis)
     {
@@ -902,6 +905,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
             rtext_erase(y);
         }
     }
+    
     if (*x->a_label->s_name)
     {
         if (vis)
