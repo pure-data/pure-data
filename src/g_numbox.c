@@ -748,7 +748,6 @@ static void my_numbox_key(void *z, t_floatarg fkey)
     {
         x->x_val = atof(x->x_buf);
         x->x_buf[0] = 0;
-        x->x_gui.x_fsf.x_change = 0;
         if (pd_compatibilitylevel < 51)
             my_numbox_clip(x);
         my_numbox_bang(x);
