@@ -802,24 +802,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_float wherelabel = atom_getfloatarg(4, argc, argv);
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
-
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
-    if (!*symfrom->s_name && *x->a_symfrom->s_name)
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
-    else if (*symfrom->s_name && !*x->a_symfrom->s_name && x->a_text.te_inlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            x->a_text.te_inlet, 0);
-        inlet_free(x->a_text.te_inlet);
-    }
-    if (!*symto->s_name && *x->a_symto->s_name)
-        outlet_new(&x->a_text, 0);
-    else if (*symto->s_name && !*x->a_symto->s_name && x->a_text.te_outlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            0, x->a_text.te_outlet);
-        outlet_free(x->a_text.te_outlet);
-    }
     if (draglo >= draghi)
         draglo = draghi = 0;
     x->a_draglo = draglo;
@@ -842,8 +825,6 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
     gobj_vis(&x->a_text.te_g, x->a_glist, 1);
     canvas_dirty(x->a_glist, 1);
-
-    /* glist_retext(x->a_glist, &x->a_text); */
 }
 
     /* ---------------- gatom-specific widget functions --------------- */
