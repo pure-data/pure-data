@@ -880,7 +880,17 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     int dx, int dy)
 {
     t_gatom *x = (t_gatom*)z;
-    text_displace(z, glist, dx, dy);
+    t_text *t = (t_text *)z;
+    t->te_xpix += dx;
+    t->te_ypix += dy;
+    if (glist_isvisible(glist))
+    {
+        t_rtext *y = glist_findrtext(glist, t);
+        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
+        atom_drawborder(x, t, glist, rtext_gettag(y),
+            rtext_width(y), rtext_height(y), 0);
+        canvas_fixlinesfor(glist, t);
+    }
     sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
         x, dx * glist->gl_zoom, dy * glist->gl_zoom);
 }
