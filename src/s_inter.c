@@ -120,6 +120,7 @@ struct _instanceinter
     int i_guisize;
     int i_waitingforping;
     int i_bytessincelastping;
+    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -215,8 +216,10 @@ static int sys_domicrosleep(int microsec, int pollem)
         if(select(pd_this->pd_inter->i_maxfd+1,
                   &readset, &writeset, &exceptset, &timout) < 0)
           perror("microsleep select");
-        for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
-            if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
+        pd_this->pd_inter->i_fdschanged = 0;
+        for (i = 0; i < pd_this->pd_inter->i_nfdpoll &&
+            !pd_this->pd_inter->i_fdschanged; i++)
+                if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
@@ -413,6 +416,7 @@ void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
     pd_this->pd_inter->i_nfdpoll = nfd + 1;
     if (fd >= pd_this->pd_inter->i_maxfd)
         pd_this->pd_inter->i_maxfd = fd + 1;
+    pd_this->pd_inter->i_fdschanged = 1;
 }
 
 void sys_rmpollfn(int fd)
@@ -420,6 +424,7 @@ void sys_rmpollfn(int fd)
     int nfd = pd_this->pd_inter->i_nfdpoll;
     int i, size = nfd * sizeof(t_fdpoll);
     t_fdpoll *fp;
+    pd_this->pd_inter->i_fdschanged = 1;
     for (i = nfd, fp = pd_this->pd_inter->i_fdpoll; i--; fp++)
     {
         if (fp->fdp_fd == fd)
