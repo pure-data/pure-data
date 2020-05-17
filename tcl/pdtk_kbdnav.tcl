@@ -9,7 +9,22 @@ namespace eval ::pdtk_kbdnav:: {
 # process key bindings selectively
 set ::pdtk_kbdnav::active {}
 
+# enable/disable keyboard navigation globally
+proc ::pdtk_kbdnav::set_enabled {state} {
+    set ::kbdnav_enabled $state
+    if {$state} {
+        ::pdtk_kbdnav::bind_activators
+    } else {
+        ::pdtk_kbdnav::unbind_activators
+        foreach canvas $::pdtk_kbdnav::active {
+            # Note that in TCL you can remove while iterating
+            # (the core will call pdtk_canvas_kbdnavmode)
+            pdsend "$canvas kbdnav_deactivate"
+        }
+    }
+}
 
+# activate/deactivate keyboard navigation for a given patch window
 proc ::pdtk_kbdnav::pdtk_canvas_kbdnavmode {mytoplevel flag} {
     if {$flag eq 0} {
         set idx [lsearch $::pdtk_kbdnav::active $mytoplevel]
@@ -27,8 +42,13 @@ proc ::pdtk_kbdnav::pdtk_canvas_is_kbdnav_active {mytoplevel} {
     return [lsearch $::pdtk_kbdnav::active $mytoplevel]
 }
 
-# this proc creates the bindings for the key commands that
+# This proc creates the bindings for the key commands that
 # will be used to activate keyboard navigation
+# Note that in the deactivated state the <$::modifier-Shift-Arrow>
+# will still fire <$::modifier-Arrow>
+#
+# It also contains kbdnav related bindings that might be used
+# when kbdnav is inactive.
 proc ::pdtk_kbdnav::bind_activators {} {
     bind all <$::modifier-Up>    {pdsend "[winfo toplevel %W] kbdnav_arrow up 0"}
     bind all <$::modifier-Down>  {pdsend "[winfo toplevel %W] kbdnav_arrow down 0"}
@@ -48,10 +68,28 @@ proc ::pdtk_kbdnav::bind_activators {} {
     bind all <$::modifier-Key-g> {::dialog_goto::pdtk_goto_open "$::focused_window"}
 }
 
+proc ::pdtk_kbdnav::unbind_activators {} {
+    bind all <$::modifier-Up>    {}
+    bind all <$::modifier-Down>  {}
+    bind all <$::modifier-Left>  {}
+    bind all <$::modifier-Right> {}
+
+    # toggle displaying object indices
+    bind all <$::modifier-Key-i> {}
+
+    # virtual click
+    bind all <Shift-Key-Return> {}
+
+    # canvas reselect (toggle editing rtext)
+    bind all <Control-Key-Return> {}
+
+    # goto
+    bind all <$::modifier-Key-g> {}
+}
+
 # we use kbdnav_bind instead of bind to avoid conflicts with
 # tcl's bind inside this file
 proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
-    ::pdwindow::post "kbdnav ON $mytoplevel\n"
     # deactivating kbdnav
     bind $mytoplevel <KeyPress-Escape> {pdsend "[winfo toplevel %W] kbdnav_deactivate";break}
     # arrow keys
@@ -84,7 +122,6 @@ proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
 }
 
 proc ::pdtk_kbdnav::kbdnav_unbind { mytoplevel } {
-    ::pdwindow::post "kbdnav OFF $mytoplevel\n"
     # deactivating kbdnav
     bind $mytoplevel <KeyPress-Escape> {}
 

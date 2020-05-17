@@ -1149,7 +1149,8 @@ void kbdnav_delete_connection(t_canvas *x)
     } else
     {
         /* not selecting a connection */
-        /* Possibility: just run normal delete when the user press delete and is not selecting a connection? */
+        /* Possibility: just run normal delete when the user
+         * press delete and is not selecting a connection? */
     }
 }
 
@@ -2053,8 +2054,6 @@ void kbdnav_digit(t_canvas *x, t_floatarg digit, t_floatarg exit_after_connectin
     if(kbdnav->kn_state != KN_WAITING_NUMBER) return;
 
     kbdnav->kn_chosennumber = digit;
-    post("digit = %i", digit);
-    post("kbdnav->kn_chosennumber = %i", kbdnav->kn_chosennumber);
     kbdnav_digitconnect_choose(x, exit_after_connecting);
 }
 
@@ -2119,5 +2118,8 @@ void kbdnav_register(t_class *canvas_class)
         A_FLOAT, A_NULL);
 }
 #else
-void kbdnav_register(t_class *canvas_class){}
+void kbdnav_register(t_class *canvas_class)
+{
+    // no keyboard navigation
+}
 #endif

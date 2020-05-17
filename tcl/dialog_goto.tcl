@@ -28,7 +28,7 @@ proc ::dialog_goto::create_goto_dialog {mytoplevel} {
     set max_objects 999
 
     frame $canvas.goto
-    
+
     label $canvas.goto.label -text "go to object:" -padx 2m
 
     # Spinbox to select the object index
@@ -53,11 +53,11 @@ proc ::dialog_goto::create_goto_dialog {mytoplevel} {
     grid $canvas.goto.help -column 2 -row 0 -rowspan 2
     grid configure $canvas.goto.help -sticky ne -padx 4 -pady 2
     # hack for anchoring to the east
-    grid columnconfigure $canvas.goto 2 -weight 100 
+    grid columnconfigure $canvas.goto 2 -weight 100
 
     pack $canvas.goto -anchor s -fill x -expand 1
 
-    # bindings for accepting / canceling the operation 
+    # bindings for accepting / canceling the operation
     bind $canvas.goto.index <KeyPress-Return> "dialog_goto::ok $mytoplevel"
 
     # open help patch with Return (default is only Space)
@@ -83,8 +83,8 @@ proc ::dialog_goto::create_goto_dialog {mytoplevel} {
 proc ::dialog_goto::ok {mytoplevel} {
     set canvas [tkcanvas_name $mytoplevel]
     set i [$canvas.goto.index get]
-    if { $i eq "" } { 
-        return 
+    if { $i eq "" } {
+        return
     }
     pdsend "$mytoplevel goto $i"
     ::dialog_goto::cancel $mytoplevel

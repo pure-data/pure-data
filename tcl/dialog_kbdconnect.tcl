@@ -54,7 +54,7 @@ proc ::dialog_kbdconnect::create_kbdconnect_dialog {mytoplevel} {
     spinbox $canvas.kbdconn.obj2_inlet -from 0 -to 999 -width $w -relief \
         solid -highlightthickness 1 -highlightcolor blue -borderwidth 1 \
         -vcmd "::dialog_kbdconnect::validate_spinbox %P"
-    
+
     # We configure validation *after* declaring the spinboxes otherwise the validate command
     # will be run *before* the spinbox is created
     $canvas.kbdconn.obj1_index configure -validate key
@@ -82,7 +82,7 @@ proc ::dialog_kbdconnect::create_kbdconnect_dialog {mytoplevel} {
     grid $canvas.kbdconn.help -column 6 -row 0 -rowspan 2
     grid configure $canvas.kbdconn.help -sticky ne -padx 4 -pady 2
     # hack for anchoring to the east
-    grid columnconfigure $canvas.kbdconn 6 -weight 100 
+    grid columnconfigure $canvas.kbdconn 6 -weight 100
 
 
     pack $canvas.kbdconn -anchor s -fill x -expand 1
@@ -105,10 +105,10 @@ proc ::dialog_kbdconnect::create_kbdconnect_dialog {mytoplevel} {
     bind $canvas.kbdconn.obj1_outlet <Shift-Return> "::dialog_kbdconnect::ok $mytoplevel 0"
     bind $canvas.kbdconn.obj2_index <Shift-Return> "::dialog_kbdconnect::ok $mytoplevel 0"
     bind $canvas.kbdconn.obj2_inlet <Shift-Return> "::dialog_kbdconnect::ok $mytoplevel 0"
-    
+
     # open help patch with Return (default is only Space)
     bind $canvas.kbdconn.help <KeyPress-Return> "$canvas.kbdconn.help invoke; break"
-    
+
     # Add a break statement to stop the "<KeyPress-Escape>"
     # in the "all" bindtags from executing (bound in pd_bindings.tcl)
     bind $mytoplevel <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
@@ -118,7 +118,7 @@ proc ::dialog_kbdconnect::create_kbdconnect_dialog {mytoplevel} {
     bind $mytoplevel <KeyPress> {break}
 
     # Override the <Key> { break } binding on the toplevel
-    bind $mytoplevel <KeyPress-Tab> {#nothing} 
+    bind $mytoplevel <KeyPress-Tab> {#nothing}
 
     $canvas.kbdconn.obj1_index set ""
     $canvas.kbdconn.obj1_outlet set ""

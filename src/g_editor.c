@@ -28,8 +28,7 @@ typedef struct _editor_private {
 t_kbdnav* canvas_get_kbdnav(t_canvas *x)
 {
     t_editor_private *private = x && x->gl_editor ? (x->gl_editor->e_privatedata) : 0;
-    if(private)
-        return private->kbdnav;
+    if(private) return private->kbdnav;
     return 0;
 }
 #endif
@@ -4955,7 +4954,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 #ifdef HAVE_KEYBOARDNAV
-/* --------------- to be used with the console ----------------------- */
+/* --------------- to be used by the kbdconnect dialog ----------------------- */
     class_addmethod(canvas_class, (t_method)canvas_connect_with_undo,
         gensym("connect_with_undo"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 #endif
