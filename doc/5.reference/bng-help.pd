@@ -1,4 +1,4 @@
-#N canvas 528 55 541 469 12;
+#N canvas 558 43 541 469 12;
 #X msg 190 149 bang;
 #X floatatom 142 150 5 0 0 0 - - -;
 #X symbolatom 245 190 7 0 0 0 - - -;
@@ -75,8 +75,8 @@ in the patch. Check below:, f 41;
 #X connect 17 0 18 0;
 #X connect 19 0 3 0;
 #X restore 399 245 pd position;
-#N canvas 452 245 357 405 properties 0;
-#N canvas 778 135 631 565 colors 0;
+#N canvas 453 113 357 405 properties 0;
+#N canvas 795 55 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - -;
 #X floatatom 107 244 3 0 29 0 - - -;
 #X floatatom 176 249 3 0 29 0 - - -;
@@ -88,7 +88,7 @@ in the patch. Check below:, f 41;
 #X obj 71 306 pack 0 22 22, f 20;
 #X text 180 343 presets;
 #X symbolatom 506 340 9 0 0 0 - - -;
-#N canvas 350 71 390 482 label 0;
+#N canvas 882 167 390 482 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 0 1;
 #X obj 109 225 t b f;
@@ -124,7 +124,7 @@ in the patch. Check below:, f 41;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 506 158 pd label;
 #X symbolatom 420 339 9 0 0 0 - - -;
-#N canvas 350 71 390 482 label 0;
+#N canvas 899 211 390 482 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 0 1;
 #X obj 109 225 t b f;
@@ -160,7 +160,7 @@ in the patch. Check below:, f 41;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 420 158 pd label;
 #X symbolatom 334 339 9 0 0 0 - - -;
-#N canvas 350 71 390 482 label 0;
+#N canvas 799 177 390 482 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 12700 1;
 #X obj 109 225 t b f;
@@ -220,8 +220,8 @@ background \, front and label colors \, respectively. Integers from
 #X text 345 133 Set RGB values in the sliders;
 #X text 60 157 Open subpatches for the conversion from RGB to hexadecimal
 ============>, f 38;
-#N canvas 582 82 560 622 old_way 0;
-#N canvas 639 23 402 495 label 0;
+#N canvas 922 106 554 538 old_way 0;
+#N canvas 1136 244 402 495 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 0 1;
 #X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
@@ -242,18 +242,15 @@ background \, front and label colors \, respectively. Integers from
 #X connect 6 0 4 0;
 #X connect 6 1 4 1;
 #X coords 0 -1 1 1 80 170 2 50 50;
-#X restore 387 143 pd label;
-#X obj 124 324 loadbang;
-#X msg 247 422 color \$1 \$2 \$3;
-#X obj 247 519 bng 50 250 50 0 empty empty Label 55 24 0 20 -262144
+#X restore 373 148 pd label;
+#X obj 85 266 loadbang;
+#X obj 261 430 bng 50 250 50 0 empty empty Label 55 24 0 20 -262144
 -1 -1;
-#X obj 124 393 metro 500;
-#X obj 124 361 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 85 329 metro 500;
+#X obj 85 300 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X text 226 118 Set RGB values in the sliders;
-#X obj 387 355 t b f;
-#X obj 301 355 t b f;
-#N canvas 507 58 465 495 label 0;
+#X text 212 123 Set RGB values in the sliders;
+#N canvas 955 131 392 476 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 12700 1;
 #X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
@@ -283,8 +280,8 @@ background \, front and label colors \, respectively. Integers from
 #X connect 9 0 2 0;
 #X connect 10 0 3 0;
 #X coords 0 -1 1 1 80 170 2 50 50;
-#X restore 215 143 pd label;
-#N canvas 639 23 402 495 label 0;
+#X restore 201 148 pd label;
+#N canvas 1096 192 402 495 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
 -262144 -1 0 1;
 #X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
@@ -305,27 +302,48 @@ background \, front and label colors \, respectively. Integers from
 #X connect 5 0 3 0;
 #X connect 5 1 3 1;
 #X coords 0 -1 1 1 80 170 2 50 50;
-#X restore 301 143 pd label;
-#X obj 268 461 print old-way;
-#X obj 247 393 pack float -1 -1, f 25;
-#X text 64 172 Open subpatches for the conversion ====>, f 20;
-#X text 67 40 The RGB color scheme can also be encoded \, for backwards
-compatibility \, as negative inetegers. FOR R (red) G (green) B (blue)
-values from o to 255 \, the conversion formula is \; -(R * 65536 +
-G * 256 + B + 1);
-#X connect 0 0 7 0;
+#X restore 287 148 pd label;
+#X text 49 177 Open subpatches for the conversion ====>, f 20;
+#X msg 261 385 color -1.67772e+07 -1 -1;
+#N canvas 574 194 328 335 pack 0;
+#X obj 73 47 inlet;
+#X obj 123 47 inlet;
+#X obj 206 47 inlet;
+#X msg 73 152 color \$1 \$2 \$3;
+#X obj 206 85 t b f;
+#X obj 123 85 t b f;
+#X obj 73 123 pack float -1 -1, f 24;
+#X obj 73 187 list prepend set;
+#X obj 73 213 list trim;
+#X obj 73 246 t b a;
+#X obj 73 283 outlet;
+#X connect 0 0 6 0;
 #X connect 1 0 5 0;
-#X connect 2 0 11 0;
-#X connect 2 0 3 0;
+#X connect 2 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 6 0;
+#X connect 4 1 6 2;
+#X connect 5 0 6 0;
+#X connect 5 1 6 1;
+#X connect 6 0 3 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 9 1 10 0;
+#X restore 261 349 pd pack;
+#X f 8;
+#X text 122 33 The RGB color scheme can also be encoded \, for backwards
+compatibility \, as negative inetegers. For "R" (red) \, "G" (green)
+& "B" (blue) values from 0 to 255 \, the conversion formula is \; float
+= -(R * 65536 + G * 256 + B + 1)., f 47;
+#X connect 0 0 10 2;
+#X connect 1 0 4 0;
+#X connect 3 0 2 0;
 #X connect 4 0 3 0;
-#X connect 5 0 4 0;
-#X connect 7 0 12 0;
-#X connect 7 1 12 2;
-#X connect 8 0 12 0;
-#X connect 8 1 12 1;
-#X connect 9 0 12 0;
-#X connect 10 0 8 0;
-#X connect 12 0 2 0;
+#X connect 6 0 10 0;
+#X connect 7 0 10 1;
+#X connect 9 0 2 0;
+#X connect 10 0 9 0;
 #X restore 62 508 pd old_way;
 #X text 34 450 open subpatch below for the old way of encoding RGB
 values., f 20;
@@ -366,14 +384,14 @@ followed by "#" \, check it below., f 77;
 #X floatatom 140 124 3 8 100 0 - - -;
 #X text 167 124 size;
 #X msg 140 161 size \$1;
-#X obj 140 209 bng 100 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 140 209 bng 42 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 65 38 The size message sets the object's size. The value represents
 the width in pixels for each side of the square., f 35;
 #X connect 0 0 2 0;
 #X connect 2 0 3 0;
 #X restore 172 100 pd size;
-#N canvas 800 224 598 452 label 0;
+#N canvas 810 92 598 452 label 0;
 #X msg 92 286 label \$1;
 #X floatatom 239 168 4 0 3 0 - - -;
 #X obj 281 195 t b f;
@@ -391,51 +409,53 @@ the width in pixels for each side of the square., f 35;
 #X obj 435 211 t b f;
 #X floatatom 435 184 5 -150 150 0 - - -;
 #X msg 393 281 label_pos \$1 \$2;
-#X obj 393 239 pack 17 7, f 11;
 #X text 375 183 x;
 #X text 479 182 y;
 #X text 388 160 label offset:;
-#X obj 240 365 bng 30 250 50 0 empty empty \$0-x 33 14 0 12 -262144
+#X obj 240 365 bng 30 250 50 0 empty empty label 35 15 0 15 -262144
 -1 -1;
-#X obj 239 224 pack 1 12, f 11;
 #X msg 72 189 symbol label;
 #X msg 92 218 symbol my\ label;
 #X text 99 28 The 'label' message sets the label symbol \, setting
 it to "empty" clears it. The 'label_font' message sets font type and
 font size \, while 'label_pos' sets the x/y coordinates.;
-#X connect 0 0 20 0;
-#X connect 1 0 21 0;
-#X connect 2 0 21 0;
-#X connect 2 1 21 1;
+#X obj 393 239 pack 35 15, f 11;
+#X obj 239 224 pack 0 15, f 11;
+#X connect 0 0 19 0;
+#X connect 1 0 24 0;
+#X connect 2 0 24 0;
+#X connect 2 1 24 1;
 #X connect 3 0 2 0;
-#X connect 4 0 20 0;
+#X connect 4 0 19 0;
 #X connect 7 0 1 0;
 #X connect 11 0 0 0;
-#X connect 12 0 16 0;
-#X connect 13 0 16 0;
-#X connect 13 1 16 1;
+#X connect 12 0 23 0;
+#X connect 13 0 23 0;
+#X connect 13 1 23 1;
 #X connect 14 0 13 0;
-#X connect 15 0 20 0;
-#X connect 16 0 15 0;
-#X connect 21 0 4 0;
-#X connect 22 0 0 0;
-#X connect 23 0 0 0;
+#X connect 15 0 19 0;
+#X connect 20 0 0 0;
+#X connect 21 0 0 0;
+#X connect 23 0 15 0;
+#X connect 24 0 4 0;
 #X restore 165 212 pd label;
-#N canvas 837 210 425 339 init 0;
-#X msg 174 207 init \$1;
-#X obj 174 175 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#N canvas 896 171 425 339 init 0;
+#X msg 174 197 init \$1;
+#X obj 174 165 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 174 250 bng 30 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 174 240 bng 30 250 50 1 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 48 29 The 'init' message takes a float and sets to 'init mode'
 (if different than zero) or 'no init' (if equal to zero - the default
 value)., f 48;
 #X text 48 84 When in 'init mode' \, the bang GUI is activated when
 loading the patch \, in the same way as a loadbang object., f 48;
+#X obj 174 288 print bng-init;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
+#X connect 2 0 5 0;
 #X restore 172 156 pd init;
-#N canvas 814 153 489 585 flash-time 0;
+#N canvas 890 34 489 585 flash-time 0;
 #X floatatom 219 307 4 10 100 0 - - -;
 #X text 111 306 interrupt-time;
 #X msg 219 418 flashtime \$1 \$2;
@@ -452,24 +472,25 @@ loading the patch \, in the same way as a loadbang object., f 48;
 #X floatatom 167 408 5 10 1000 0 - - -;
 #X obj 219 538 print flash;
 #X msg 134 373 200;
-#X text 51 212 If a bang is activated in a higher rate than it can
-flash (the interrupt time) \, then the button reactivates before finishing
-the flash \, prolonging the flash time. This may look as if the button
-froze \, but the bang messages keep coming out at the correct rate.
-, f 56;
-#X text 51 26 The bang button flashes to indicate is has been activated.
-The flashtime message controls the time the button flahses and takes
-a list that sets the "interrupt" and "hold" in ms., f 56;
-#X text 51 87 The "interrupt" time is actually the minimum flash time
+#X text 27 85 The "interrupt" time is actually the minimum flash time
 \, while "hold" is the maximum time (hence \, interrupt time needs
 to be smaller than or equal to the hold time). The actual flash time
 varies depending on the rate the bang is being activated. If the time
 from the last time it was activated is shorter than twice the hold
 time \, then the flash time is half the period since it was last activated
-- unless this is shorter than the minimum (interrupt) time., f 56
+- unless this is shorter than the minimum (interrupt) time., f 58
 ;
 #X text 124 323 (minimum);
 #X text 308 323 (maximum);
+#X text 43 404 click =>;
+#X text 27 24 The bang button flashes to indicate is has been activated.
+The 'flashtime' message controls the time the button flahses and takes
+a list that sets the "interrupt" and "hold" in ms., f 58;
+#X text 27 210 If a bang is activated in a higher rate than it can
+flash (the interrupt time) \, the button reactivates before finishing
+the flash \, prolonging the flash time. This may look as if the button
+froze \, but the bang messages keep coming out at the correct rate.
+, f 58;
 #X connect 0 0 3 0;
 #X connect 2 0 7 0;
 #X connect 3 0 2 0;
@@ -483,7 +504,7 @@ time \, then the flash time is half the period since it was last activated
 #X connect 11 0 9 1;
 #X connect 13 0 11 0;
 #X restore 130 128 pd flash-time;
-#N canvas 849 183 473 487 send-receive 0;
+#N canvas 862 44 473 487 send-receive 0;
 #X obj 78 202 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X msg 222 191 receive empty;
@@ -513,7 +534,7 @@ set it directly via the properties window., f 53;
 #X connect 8 0 4 0;
 #X connect 10 0 2 0;
 #X restore 116 184 pd send-receive;
-#N canvas 875 263 450 298 loading-args 0;
+#N canvas 874 183 450 298 loading-args 0;
 #X obj 171 220 bng 50 500 50 0 empty empty \$0-label 58 24 0 13 -228856
 -4125 -155649;
 #X text 59 26 Note that all the parameters that you can set by inserting
