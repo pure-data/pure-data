@@ -595,8 +595,10 @@ static void vu_label(t_vu *x, t_symbol *s)
 static void vu_label_pos(t_vu *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_label_pos((void *)x, &x->x_gui, s, ac, av);}
 
-static void vu_label_font(t_vu *x, t_symbol *s, int ac, t_atom *av)
-{iemgui_label_font((void *)x, &x->x_gui, s, ac, av);}
+static void vu_label_font(t_vu *x, t_symbol *s, int ac, t_atom *av){
+    iemgui_label_font((void *)x, &x->x_gui, s, ac, av);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
+}
 
 static void vu_float(t_vu *x, t_floatarg rms)
 {
