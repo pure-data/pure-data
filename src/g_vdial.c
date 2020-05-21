@@ -171,8 +171,8 @@ void vradio_draw_io(t_vradio* x, t_glist* glist, int old_snd_rcv_flags)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
                  canvas,
-                 xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-                 xpos + iow, ypos + x->x_gui.x_h,
+                 xpos, ypos + (x->x_gui.x_h * x->x_number) + IEMGUI_ZOOM(x) - ioh,
+                 xpos + iow, ypos + (x->x_gui.x_h * x->x_number),
                  x, 0);
         /* keep these above outlet */
         if(x->x_on == 0) {
