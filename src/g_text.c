@@ -706,8 +706,7 @@ static void gatom_key(void *z, t_floatarg f)
     if (c == 0)
     {
         /* we're being notified that no more keys will come for this grab */
-        if (x->a_buf[0])
-            gatom_retext(x, 1);
+        gatom_retext(x, 1);
         return;
     }
     else if (c == '\b')
