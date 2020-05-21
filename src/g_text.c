@@ -724,6 +724,8 @@ static void gatom_key(void *z, t_floatarg f)
             gatom_retext(x, 1);
             x->a_buf[0] = 0;
         }
+        else
+            gatom_retext(x, 1);
         gatom_bang(x);
     }
     else if (len < (ATOMBUFSIZE-1))
