@@ -147,19 +147,6 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              canvas, mid, ypos + PEAKHEIGHT * IEMGUI_ZOOM(x),
              mid, ypos + PEAKHEIGHT * IEMGUI_ZOOM(x),
              (x->x_led_size+1)*IEMGUI_ZOOM(x), x->x_gui.x_bcol, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas,
-             xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
-             x, 0);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]x\n",
-             canvas,
-             xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
-             x, 1);
-    }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
@@ -172,6 +159,16 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
              xpos + x->x_gui.x_w + hmargin, ypos - vmargin - IEMGUI_ZOOM(x) + ioh,
              x, 1);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+            canvas,
+            xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
+            x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]x\n",
+            canvas,
+            xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
+            x, 1);
     }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
@@ -264,15 +261,12 @@ static void vu_draw_erase(t_vu* x,t_glist* glist)
     sys_vgui(".x%lx.c delete %lxPLED\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxRCOVER\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 1);
-    }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 1);
+        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 1);
     }
 }
 
@@ -319,26 +313,6 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
-    if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
-             canvas,
-             xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
-             x, 0);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
-             canvas,
-             xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
-             x, 1);
-        /* keep above outlets */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 1);
-    }
-    if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 1);
-    }
     if((old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && !x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxIN%d\n",
@@ -353,11 +327,25 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
              x, 1);
         /* keep above inlets */
         sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 1);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
+            canvas,
+            xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
+            x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
+            canvas,
+            xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
+            x, 1);
+        /* keep above outlets */
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 1);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 1);
+        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 1);
     }
 }
 
