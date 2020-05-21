@@ -758,7 +758,6 @@ void g_vumeter_setup(void)
     vu_widgetbehavior.w_visfn =        iemgui_vis;
     vu_widgetbehavior.w_clickfn =      NULL;
     class_setwidget(vu_class,&vu_widgetbehavior);
-    class_sethelpsymbol(vu_class, gensym("vu"));
     class_setsavefn(vu_class, vu_save);
     class_setpropertiesfn(vu_class, vu_properties);
 }
