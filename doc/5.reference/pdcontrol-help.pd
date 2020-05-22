@@ -1,70 +1,81 @@
-#N canvas 630 103 682 640 12;
-#X obj 48 30 pdcontrol;
-#X text 127 30 -- communicate with pd and/or this patch;
-#X obj 62 401 pdcontrol;
-#X obj 62 428 print;
-#X msg 101 283 isvisible;
-#X msg 68 472 isvisible;
-#N canvas 564 534 495 194 subpatch 0;
-#X obj 44 15 inlet;
-#X obj 44 97 pdcontrol;
-#X obj 153 148 print;
-#X msg 153 56 isvisible 1;
-#X obj 153 97 pdcontrol;
-#X text 252 42 You can also check it parent window is visible or not
-(this is particularly useful inside abstractions). Hide the above window
-to test it., f 30;
-#X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 3 0 4 0;
-#X connect 4 0 2 0;
-#X restore 68 507 pd subpatch;
-#X msg 78 198 dir;
-#X text 118 198 get directory this patch is in;
-#X msg 94 226 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
-#X text 264 165 open a URL in a browser;
-#X msg 62 166 browse http://msp.ucsd.edu;
-#X text 340 222 Optional argument to specify this patch (0) \, owning
+#N canvas 704 23 537 520 12;
+#X obj 78 32 pdcontrol;
+#X text 157 32 -- communicate with pd and/or this patch;
+#X obj 49 247 pdcontrol;
+#X text 276 208 open a URL in a browser;
+#X msg 74 209 browse http://msp.ucsd.edu;
+#X text 286 465 updated for Pd version 0.51.;
+#X msg 50 169 version;
+#X text 111 169 outputs a list with Pd's version (major \, minor \,
+bugfix);
+#X text 211 267 More examples:;
+#N canvas 259 45 717 246 dir 0;
+#X obj 82 140 pdcontrol;
+#X obj 82 167 print;
+#X msg 81 47 dir;
+#X text 121 47 get directory this patch is in;
+#X msg 97 75 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X text 353 76 Optional argument to specify this patch (0) \, owning
 patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 40;
-#X text 58 67 pdcontrol lets you communicate with the patch to get
-its owning directory \, arguments \, its visible/invisible state \,
-or to open a URL in a web browser.;
-#X text 419 575 updated for Pd version 0.51.;
-#X text 158 471 open and shut the subpatch to test "isvisible" message.
-An optional argument specifies the level: this window (0) \, owning
-window (1) and so on., f 55;
-#X text 178 277 1 if this window is visible \, 0 if not, f 19;
-#X msg 110 328 editmode;
-#X text 179 314 1 if this window is in edit mode \, 0 if not, f 19
+#X connect 0 0 1 0;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X restore 233 297 pd dir;
+#X text 287 297 - query for owning directory;
+#N canvas 506 186 641 343 isvisible 0;
+#X msg 134 48 isvisible;
+#X text 211 42 1 if this window is visible \, 0 if not, f 19;
+#X msg 123 221 isvisible;
+#N canvas 564 534 495 194 subpatch 0;
+#X obj 44 15 inlet;
+#X obj 44 97 pdcontrol;
+#X msg 153 56 isvisible 1;
+#X obj 153 97 pdcontrol;
+#X obj 153 148 print subpatch-visibility;
+#X text 252 42 You can also check it parent window is visible or not
+(this is particularly useful inside abstractions). Hide the parent
+window to test it., f 30;
+#X connect 0 0 1 0;
+#X connect 1 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X restore 123 256 pd subpatch;
+#X obj 134 93 pdcontrol;
+#X obj 134 130 print isvisible;
+#X text 122 170 An optional argument specifies the level: this window
+(0) \, owning window (1) and so on.;
+#X text 213 255 <= open and shut to test "isvisible" message., f 45
 ;
-#X msg 114 366 args;
-#X text 153 367 get patch's arguments (or a bang if they don't exist)
-;
-#N canvas 805 100 587 337 editmode-example 0;
-#X obj 168 173 pdcontrol;
-#X msg 168 144 editmode;
-#X obj 102 135 key;
-#X obj 102 193 spigot;
-#X obj 102 162 t f b;
-#X obj 168 200 == 0;
-#X floatatom 102 227 5 0 0 0 - - -;
-#X obj 408 166 pdcontrol;
-#X obj 342 128 key;
-#X obj 342 186 spigot;
-#X obj 342 155 t f b;
-#X obj 408 193 == 0;
-#X floatatom 342 220 5 0 0 0 - - -;
-#X msg 408 137 editmode 1;
-#X text 92 38 Here we use the editmode message to filter the output
+#X connect 0 0 4 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X restore 191 325 pd isvisible;
+#X text 287 324 - query for visible status;
+#N canvas 776 152 581 338 editmode 0;
+#X obj 156 174 pdcontrol;
+#X msg 156 145 editmode;
+#X obj 90 136 key;
+#X obj 90 194 spigot;
+#X obj 90 163 t f b;
+#X obj 156 201 == 0;
+#X floatatom 90 228 5 0 0 0 - - -;
+#X obj 396 167 pdcontrol;
+#X obj 330 129 key;
+#X obj 330 187 spigot;
+#X obj 330 156 t f b;
+#X obj 396 194 == 0;
+#X floatatom 330 221 5 0 0 0 - - -;
+#X msg 396 138 editmode 1;
+#X text 80 39 Here we use the editmode message to filter the output
 of [key] so they only go through if the patch window is in run mode.
 And optional argument specifies the level: this window (0) \, owning
 window (1) and so on.;
-#X text 327 254 change the edit status of the parent window to test
+#X text 315 255 change the edit status of the parent window to test
 this., f 29;
-#X text 75 257 change the edit status of this window to test this.
+#X text 63 258 change the edit status of this window to test this.
 , f 29;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
@@ -80,35 +91,70 @@ this., f 29;
 #X connect 10 1 13 0;
 #X connect 11 0 9 1;
 #X connect 13 0 7 0;
-#X restore 68 554 pd editmode-example;
-#N canvas 689 91 529 365 args-example 0;
-#X obj 127 209 print;
-#X text 185 140 <= get arguments;
-#X obj 127 174 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
-#X msg 127 140 args 0;
-#X text 40 23 This is useful for managing a variable number of arguments.
+#X restore 198 355 pd editmode;
+#X text 287 354 - query for edit mode status;
+#N canvas 795 166 602 389 args 0;
+#X obj 56 220 print;
+#X text 114 151 <= get arguments;
+#X obj 56 185 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
+#X text 72 27 This is useful for managing a variable number of arguments.
 When it receives the 'args' message \, [pdcontrol] outputs the loaded
 arguments. An optional argument specifies this patch (0) \, owning
 patch (1) \, its own owner (2) \, and so on. (Ownership number is silently
 reduced if owners don't exist \, so here anything greater than zero
 is ignored.), f 65;
-#X text 44 247 Above there's a simple abstraction to show how it works.
+#X text 62 280 Above there's a simple abstraction to show how it works.
 Note how dollar signs (such as "\$0" \, "\$1" or "\$2-x") get expanded
 unless you escape them with a backlash ("\$2-x" may appear as an unexpanded
 symbol \, but it actually gets expanded if this abstraction is called
-inside another that contains arguments).;
+inside another that contains arguments)., f 71;
+#X msg 56 151 args;
+#X obj 358 225 print;
+#X msg 358 156 args;
+#X obj 358 190 pdcontrol-abs;
+#X text 402 152 outputs a bang if there are no arguments., f 23;
 #X connect 2 0 0 0;
-#X connect 3 0 2 0;
-#X restore 69 593 pd args-example;
-#X msg 37 136 version;
-#X text 98 136 outputs a list with Pd's version (major \, minor \,
-bugfix);
-#X connect 2 0 3 0;
+#X connect 5 0 2 0;
+#X connect 7 0 8 0;
+#X connect 8 0 6 0;
+#X restore 227 384 pd args;
+#X text 287 385 - query for arguments;
+#N canvas 773 210 520 392 dollarzero 0;
+#X obj 46 187 pdcontrol;
+#X symbolatom 46 225 10 0 0 0 - - -;
+#X obj 187 187 pdcontrol-abs;
+#X msg 46 151 dollarzero \\\$0-x;
+#X msg 187 151 dollarzero \\\$0-x;
+#X symbolatom 187 225 10 0 0 0 - - -;
+#X obj 325 187 pdcontrol-abs;
+#X symbolatom 325 225 10 0 0 0 - - -;
+#X msg 325 151 dollarzero \\\$0-x 1;
+#X text 52 24 The dollarzero message allows you to expand a symbol
+that contains a \$0 as part of it. This way \, it gets expanded to
+the unique patch number ID. It takes the symbol to expand as an obrigatory
+argument. An optional argument specifies this patch (0) \, owning patch
+(1) \, its own owner (2) \, and so on. (Ownership number is silently
+reduced if owners don't exist \, so here anything greater than zero
+is ignored.);
+#X text 42 283 The first example above \, to the left \, expands according
+to this patch. In the middle example \, we can see it expands according
+to the value of "\$0" inside the abstraction. In the example to the
+right \, the abstraction queries for the parent patch's \$0 value.
+, f 61;
+#X connect 0 0 1 0;
+#X connect 2 0 5 0;
+#X connect 3 0 0 0;
 #X connect 4 0 2 0;
-#X connect 5 0 6 0;
-#X connect 7 0 2 0;
-#X connect 9 0 2 0;
-#X connect 11 0 2 0;
-#X connect 17 0 2 0;
-#X connect 19 0 2 0;
-#X connect 23 0 2 0;
+#X connect 6 0 7 0;
+#X connect 8 0 6 0;
+#X restore 187 414 pd dollarzero;
+#X text 287 413 - expand dollarzero symbols;
+#X obj 49 280 print version:;
+#X text 43 71 pdcontrol has several functionalitites. you can query
+for the current Pd version \, ask Pd to open a link for you and get
+some useful information from the patch or its parent \, like: owning
+directory \, arguments \, its visible and edit status. It also allows
+you to expand symbols with dollarzero., f 65;
+#X connect 2 0 19 0;
+#X connect 4 0 2 0;
+#X connect 6 0 2 0;

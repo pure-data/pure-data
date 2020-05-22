@@ -497,6 +497,17 @@ static void pdcontrol_version(t_pdcontrol *x)
     outlet_list(x->x_outlet, &s_list, 3, at);
 }
 
+static void pdcontrol_dollarzero(t_pdcontrol *x, t_symbol *s, t_floatarg f)
+{
+    t_canvas *c = x->x_canvas;
+    for (int i = 0; i < (int)f; i++)
+    {
+        if (c->gl_owner)  /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    outlet_symbol(x->x_outlet, canvas_realizedollar(c, s));
+}
+
 static void pdcontrol_isvisible(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
@@ -525,6 +536,8 @@ static void pdcontrol_setup(void)
         gensym("editmode"), A_DEFFLOAT , 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_version,
         gensym("version"), 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_dollarzero,
+        gensym("dollarzero"), A_SYMBOL, A_DEFFLOAT, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
