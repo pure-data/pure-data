@@ -1,4 +1,4 @@
-#N canvas 704 23 537 520 12;
+#N canvas 632 23 537 520 12;
 #X obj 78 32 pdcontrol;
 #X text 157 32 -- communicate with pd and/or this patch;
 #X obj 49 247 pdcontrol;
@@ -119,42 +119,61 @@ inside another that contains arguments)., f 71;
 #X connect 8 0 6 0;
 #X restore 227 384 pd args;
 #X text 287 385 - query for arguments;
-#N canvas 773 210 520 392 dollarzero 0;
-#X obj 46 187 pdcontrol;
-#X symbolatom 46 225 10 0 0 0 - - -;
-#X obj 187 187 pdcontrol-abs;
-#X msg 46 151 dollarzero \\\$0-x;
-#X msg 187 151 dollarzero \\\$0-x;
-#X symbolatom 187 225 10 0 0 0 - - -;
-#X obj 325 187 pdcontrol-abs;
-#X symbolatom 325 225 10 0 0 0 - - -;
-#X msg 325 151 dollarzero \\\$0-x 1;
-#X text 52 24 The dollarzero message allows you to expand a symbol
-that contains a \$0 as part of it. This way \, it gets expanded to
-the unique patch number ID. It takes the symbol to expand as an obrigatory
-argument. An optional argument specifies this patch (0) \, owning patch
-(1) \, its own owner (2) \, and so on. (Ownership number is silently
-reduced if owners don't exist \, so here anything greater than zero
-is ignored.);
-#X text 42 283 The first example above \, to the left \, expands according
-to this patch. In the middle example \, we can see it expands according
-to the value of "\$0" inside the abstraction. In the example to the
-right \, the abstraction queries for the parent patch's \$0 value.
-, f 61;
-#X connect 0 0 1 0;
-#X connect 2 0 5 0;
-#X connect 3 0 0 0;
-#X connect 4 0 2 0;
-#X connect 6 0 7 0;
-#X connect 8 0 6 0;
-#X restore 187 414 pd dollarzero;
-#X text 287 413 - expand dollarzero symbols;
 #X obj 49 280 print version:;
+#N canvas 329 118 977 394 realizedollar 0;
+#X obj 85 212 pdcontrol;
+#X symbolatom 85 250 10 0 0 0 - - -;
+#X obj 728 126 pdcontrol-abs;
+#X symbolatom 728 164 10 0 0 0 - - -;
+#X text 43 21 The realizedollar message allows you to expand a symbol
+that contains dollarsigns (\$0 \, \$1 \, \$2 \, etc...) as part of
+it. This way \, it gets expanded according to the unique patch number
+ID (\$0) or arguments (\$1 \, \$2 \, etc..). It takes the symbol to
+expand as an obrigatory argument. An optional argument specifies this
+patch (0) \, owning patch (1) \, its own owner (2) \, and so on. (Ownership
+number is silently reduced if owners don't exist \, so here anything
+greater than zero is ignored.);
+#X obj 251 212 pdcontrol-abs hi;
+#X symbolatom 251 253 10 0 0 0 - - -;
+#X symbolatom 550 162 10 0 0 0 - - -;
+#X obj 550 121 pdcontrol-abs;
+#X text 47 300 The first example above \, to the left \, expands \$0
+according to this patch's ID number. In the on to the right \, we can
+see it expands according to the the 1st argument of the abstraction.
+, f 61;
+#X text 520 20 Below to the left \, we expand value of "\$0" inside
+the abstraction \, and the to the right \, the abstraction expands
+according to the parent patch's "\$0" value.;
+#X symbolatom 555 228 10 0 0 0 - - -;
+#X msg 555 257 realizedollar \$1;
+#X symbolatom 555 319 10 0 0 0 - - -;
+#X obj 555 288 pdcontrol-abs;
+#X text 697 231 Note that when you type a symbol that contains dollarsigns
+into a symbol box \, the $ characters get escaped by \ and you need
+to expand them if needed with the realizedollar method. Try typng "\$0-x"
+for instance., f 33;
+#X msg 85 176 realizedollar \\\$0-x;
+#X msg 251 176 realizedollar \\\$1-there;
+#X msg 550 85 realizedollar \\\$0-x;
+#X msg 728 90 realizedollar \\\$0-x 1;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
+#X connect 5 0 6 0;
+#X connect 8 0 7 0;
+#X connect 11 0 12 0;
+#X connect 12 0 14 0;
+#X connect 14 0 13 0;
+#X connect 16 0 0 0;
+#X connect 17 0 5 0;
+#X connect 18 0 8 0;
+#X connect 19 0 2 0;
+#X restore 164 414 pd realizedollar;
+#X text 287 413 - expand dollar symbols;
 #X text 43 71 pdcontrol has several functionalitites. you can query
 for the current Pd version \, ask Pd to open a link for you and get
 some useful information from the patch or its parent \, like: owning
 directory \, arguments \, its visible and edit status. It also allows
-you to expand symbols with dollarzero., f 65;
-#X connect 2 0 19 0;
+you to expand symbols with dollar signs., f 65;
+#X connect 2 0 17 0;
 #X connect 4 0 2 0;
 #X connect 6 0 2 0;
