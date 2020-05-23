@@ -115,6 +115,18 @@ proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
     bind $mytoplevel <Key-8> {pdsend "[winfo toplevel %W] kbdnav_digit 8 1";break}
     bind $mytoplevel <Key-9> {pdsend "[winfo toplevel %W] kbdnav_digit 9 1";break}
 
+    # Those bindings override the "$mytoplevel <Key-N>" bindings above
+    # when the modifier is held.
+    #
+    # This way the less-specific "all <$::modifier-Key-N>" bindings
+    # defined in ::pd_bindings::global_bindings can run
+    # Thus allowing the "put obj", "put msg", etc bindings to be fired.
+    bind $mytoplevel <$::modifier-Key-1> { continue }
+    bind $mytoplevel <$::modifier-Key-2> { continue }
+    bind $mytoplevel <$::modifier-Key-3> { continue }
+    bind $mytoplevel <$::modifier-Key-4> { continue }
+    bind $mytoplevel <$::modifier-Key-5> { continue }
+
     bind $mytoplevel <Shift-KeyPress> {::pdtk_kbdnav::digits "[winfo toplevel %W]" "%k"}
 
     # delete
