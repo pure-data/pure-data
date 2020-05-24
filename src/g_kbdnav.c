@@ -48,7 +48,6 @@ void kbdnav_debug(t_canvas *x)
         post("   selected object text = NULL");
     }
     post("   kn_ioindex = %d", kbdnav->kn_ioindex);
-    post("   kn_moddown = %d", kbdnav->kn_moddown);
     post("   kn_connindex = %d", kbdnav->kn_connindex);
     post("   kn_chosennumber = %d", kbdnav->kn_chosennumber);
     post("   kn_indexvis = %d", kbdnav->kn_indexvis);
@@ -151,15 +150,17 @@ void kbdnav_debug(t_canvas *x)
 t_kbdnav* kbdnav_new()
 {
     t_kbdnav *x = getbytes(sizeof(*x));
-    x->kn_ioindex = 0;
     x->kn_state = KN_INACTIVE;
-    x->kn_moddown = 0;
+    x->kn_ioindex = 0;
     x->kn_connindex = 0;
     x->kn_outconnect = NULL;
+    x->kn_selobj = NULL;
     x->kn_highlight = "blue";
     x->kn_linetraverser = (t_linetraverser *)getbytes(sizeof(*x->kn_linetraverser));
     x->kn_magtrav = NULL;
     x->kn_chosennumber = -1;
+    x->kn_iotype = -1;
+    x->kn_indexvis = 0;
     return x;
 }
 

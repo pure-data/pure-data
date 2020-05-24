@@ -9,14 +9,12 @@ typedef struct _kbdnav
 {
     int kn_state;        /* see KN_ consts below */
     int kn_ioindex;      /* selected inlet/outlet, 0-based*/
-    int kn_moddown;      /* is our modifier key down? */
     int kn_connindex;    /* selected in/out connection, 0-based */
     t_outconnect *kn_outconnect;
     t_object *kn_selobj; /* currently selected object */
     char* kn_highlight;  /* highlight_color */
     struct _linetraverser *kn_linetraverser;
     struct _magtrav *kn_magtrav; /* linked list of connections for the magnetic connector*/
-    int kn_waitingfornumber;
     int kn_chosennumber; /* used by the digit connector */
     int kn_iotype;       /* IO_INLET/IO_OUTLET */
     int kn_indexvis;     /* boolean: should we visualize object indexes? */
