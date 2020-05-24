@@ -792,9 +792,9 @@ static void gatom_click(t_gatom *x,
             {
                 x->a_toggle = x->a_atom.a_w.w_float;
                 gatom_float(x, 0);
-                return;
             }
             else gatom_float(x, x->a_toggle);
+            return;
         }
         x->a_shift = shift;
         x->a_buf[0] = 0;
