@@ -707,6 +707,12 @@ static void gatom_key(void *z, t_floatarg f)
     {
         /* we're being notified that no more keys will come for this grab */
         gatom_retext(x, 1);
+        if (glist_isvisible(x->a_glist))
+        {
+            t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+            sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+                glist_getcanvas(x->a_glist), rtext_gettag(y), x->a_glist->gl_zoom);
+        }
         return;
     }
     else if (c == '\b')
@@ -766,6 +772,12 @@ static void gatom_click(t_gatom *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl,
     t_floatarg alt)
 {
+    if (glist_isvisible(x->a_glist))
+    {
+        t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+        sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+            glist_getcanvas(x->a_glist), rtext_gettag(y), 2 * x->a_glist->gl_zoom);
+    }
     if (x->a_text.te_width == 1)
     {
         if (x->a_atom.a_type == A_FLOAT)
@@ -1162,9 +1174,11 @@ static int text_click(t_gobj *z, struct _glist *glist,
     }
     else if (x->te_type == T_ATOM)
     {
-        if (doit)
+        if (doit){
             gatom_click((t_gatom *)x, (t_floatarg)xpix, (t_floatarg)ypix,
                 (t_floatarg)shift, (t_floatarg)0, (t_floatarg)alt);
+            
+        }
         return (1);
     }
     else if (x->te_type == T_MESSAGE)
