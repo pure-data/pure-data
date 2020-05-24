@@ -312,10 +312,9 @@ void kbdnav_up(t_canvas *x, int shift)
         switch( kbdnav->kn_iotype )
         {
             case IO_INLET:
-                if( shift && kbdnav->kn_moddown)
+                if( shift )
                 {
                     kbdnav->kn_state = KN_IO_SELECTED;
-                    /* note we don't use the .c in the .x%lx.c */
                     char *str = "source_obj_n source_io_n";
                     sys_vgui("::dialog_kbdconnect::pdtk_kbdconnect_prefilled .x%lx \"\" \"\" %d %d\n",
                         x,
@@ -421,10 +420,9 @@ void kbdnav_down(t_canvas *x, int shift)
                 kbdnav->kn_state = KN_IO_SELECTED;
                 break;
             case IO_OUTLET:
-                if( shift && kbdnav->kn_moddown )
+                if( shift )
                 {
                     kbdnav->kn_state = KN_IO_SELECTED;
-                    /* note we don't use the .c in the .x%lx.c */
                     char *str = "dest_obj_n dest_io_n";
                     sys_vgui("::dialog_kbdconnect::pdtk_kbdconnect_prefilled .x%lx %d %d \"\" \"\"\n",
                         x,
