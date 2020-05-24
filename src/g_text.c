@@ -524,6 +524,7 @@ typedef struct _gatom
     t_symbol *a_label;      /* symbol to show as label next to box */
     t_symbol *a_symfrom;    /* "receive" name -- bind ourselvs to this */
     t_symbol *a_symto;      /* "send" name -- send to this on output */
+    t_clock *a_clock;       /* a clock for activity flash */
     char a_buf[ATOMBUFSIZE];/* string buffer for typing */
     char a_shift;           /* was shift key down when dragging started? */
     char a_wherelabel;      /* 0-3 for left, right, above, below */
@@ -772,16 +773,17 @@ static void gatom_click(t_gatom *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl,
     t_floatarg alt)
 {
-    if (glist_isvisible(x->a_glist))
-    {
-        t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
-        sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
-            glist_getcanvas(x->a_glist), rtext_gettag(y), 2 * x->a_glist->gl_zoom);
-    }
     if (x->a_text.te_width == 1)
     {
         if (x->a_atom.a_type == A_FLOAT)
             gatom_float(x, (x->a_atom.a_w.w_float == 0));
+        if (glist_isvisible(x->a_glist))
+        {
+            t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+            sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+                glist_getcanvas(x->a_glist), rtext_gettag(y), 2 * x->a_glist->gl_zoom);
+        }
+        clock_delay(x->a_clock, 120);
     }
     else
     {
@@ -794,7 +796,20 @@ static void gatom_click(t_gatom *x,
                 gatom_float(x, 0);
             }
             else gatom_float(x, x->a_toggle);
+            if (glist_isvisible(x->a_glist))
+            {
+                t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+                sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+                    glist_getcanvas(x->a_glist), rtext_gettag(y), 2 * x->a_glist->gl_zoom);
+            }
+            clock_delay(x->a_clock, 120);
             return;
+        }
+        if (glist_isvisible(x->a_glist))
+        {
+            t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+            sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+                glist_getcanvas(x->a_glist), rtext_gettag(y), 2 * x->a_glist->gl_zoom);
         }
         x->a_shift = shift;
         x->a_buf[0] = 0;
@@ -930,6 +945,17 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         sys_unqueuegui(x);
 }
 
+static void gatom_tick(t_gatom *x)
+{
+    if (glist_isvisible(x->a_glist))
+    {
+        t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+        sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+            glist_getcanvas(x->a_glist), rtext_gettag(y),
+            glist_getzoom(x->a_glist));
+    }
+}
+
 void canvas_atom(t_glist *gl, t_atomtype type,
     t_symbol *s, int argc, t_atom *argv)
 {
@@ -947,6 +973,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_label = &s_;
     x->a_symfrom = &s_;
     x->a_symto = x->a_expanded_to = &s_;
+    x->a_clock = clock_new(x, (t_method)gatom_tick);
     if (type == A_FLOAT)
     {
         x->a_atom.a_w.w_float = 0;
@@ -1021,6 +1048,7 @@ static void gatom_free(t_gatom *x)
         pd_unbind(&x->a_text.te_pd,
             canvas_realizedollar(x->a_glist, x->a_symfrom));
     gfxstub_deleteforkey(x);
+    clock_free(x->a_clock);
 }
 
 static void gatom_properties(t_gobj *z, t_glist *owner)
