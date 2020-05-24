@@ -499,7 +499,7 @@ static char *(usagemessage[]) = {
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
-"-d <n>           -- specify debug level\n",
+"-d <n>           -- specify debug level for inspecting the GUI communication\n",
 "-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
