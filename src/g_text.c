@@ -1078,8 +1078,8 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
     if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        width = (x->te_width > 0 ? x->te_width : 6) * glist_fontwidth(glist);
-        height = glist_fontheight(glist);
+        width = x->te_width * glist_fontwidth(glist) + 2 * glist_getzoom(glist);
+        height = glist_fontheight(glist) + glist_getzoom(glist);
         if (glist_getzoom(glist) > 1)
         {
             /* zoom margins */
