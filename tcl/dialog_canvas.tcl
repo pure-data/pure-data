@@ -179,9 +179,9 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     entry $mytoplevel.range.x.from_entry -width 6
     label $mytoplevel.range.x.to_label -text [_ "to"]
     entry $mytoplevel.range.x.to_entry -width 6
-    label $mytoplevel.range.x.size_label -text [_ "Size:"]
+    label $mytoplevel.range.x.size_label -text [_ "X Size:"]
     entry $mytoplevel.range.x.size_entry -width 4
-    label $mytoplevel.range.x.margin_label -text [_ "Margin:"]
+    label $mytoplevel.range.x.margin_label -text [_ "X Margin:"]
     entry $mytoplevel.range.x.margin_entry -width 4
     pack $mytoplevel.range.x.from_label $mytoplevel.range.x.from_entry \
         $mytoplevel.range.x.to_label $mytoplevel.range.x.to_entry \
@@ -194,9 +194,9 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     entry $mytoplevel.range.y.from_entry -width 6
     label $mytoplevel.range.y.to_label -text [_ "to"]
     entry $mytoplevel.range.y.to_entry -width 6
-    label $mytoplevel.range.y.size_label -text [_ "Size:"]
+    label $mytoplevel.range.y.size_label -text [_ "Y Size:"]
     entry $mytoplevel.range.y.size_entry -width 4
-    label $mytoplevel.range.y.margin_label -text [_ "Margin:"]
+    label $mytoplevel.range.y.margin_label -text [_ "Y Margin:"]
     entry $mytoplevel.range.y.margin_entry -width 4
     pack $mytoplevel.range.y.from_label $mytoplevel.range.y.from_entry \
         $mytoplevel.range.y.to_label $mytoplevel.range.y.to_entry \
