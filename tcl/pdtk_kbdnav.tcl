@@ -1,7 +1,6 @@
 package provide pdtk_kbdnav 0.1
 
 namespace eval ::pdtk_kbdnav:: {
-    #namespace export pdtk_canvas_kbdnavmode
     namespace export pdtk_canvas_is_kbdnav_active
 }
 
@@ -14,8 +13,10 @@ proc ::pdtk_kbdnav::set_enabled {state} {
     set ::kbdnav_enabled $state
     if {$state} {
         ::pdtk_kbdnav::bind_activators
+        ::pdtk_kbdnav::bind_context
     } else {
         ::pdtk_kbdnav::unbind_activators
+        ::pdtk_kbdnav::unbind_context
         foreach canvas $::pdtk_kbdnav::active {
             # Note that in TCL you can remove while iterating
             # (the core will call pdtk_canvas_kbdnavmode)
@@ -30,11 +31,11 @@ proc ::pdtk_kbdnav::pdtk_canvas_kbdnavmode {mytoplevel flag} {
         set idx [lsearch $::pdtk_kbdnav::active $mytoplevel]
         if {$idx ne -1} {
             set ::pdtk_kbdnav::active [lreplace $::pdtk_kbdnav::active $idx $idx]
-            ::pdtk_kbdnav::kbdnav_unbind $mytoplevel
+            ::pdtk_kbdnav::kbdnav_remove_tag $mytoplevel
         }
     } else {
         lappend ::pdtk_kbdnav::active $mytoplevel
-            ::pdtk_kbdnav::kbdnav_bind $mytoplevel
+            ::pdtk_kbdnav::kbdnav_add_tag $mytoplevel
     }
 }
 
@@ -42,10 +43,8 @@ proc ::pdtk_kbdnav::pdtk_canvas_is_kbdnav_active {mytoplevel} {
     return [lsearch $::pdtk_kbdnav::active $mytoplevel]
 }
 
-# This proc creates the bindings for the key commands that
+# Creates the bindings for the key commands that
 # will be used to activate keyboard navigation
-# Note that in the deactivated state the <$::modifier-Shift-Arrow>
-# will still fire <$::modifier-Arrow>
 #
 # It also contains kbdnav related bindings that might be used
 # when kbdnav is inactive.
@@ -87,83 +86,100 @@ proc ::pdtk_kbdnav::unbind_activators {} {
     bind all <$::modifier-Key-g> {}
 }
 
-# we use kbdnav_bind instead of bind to avoid conflicts with
-# tcl's bind inside this file
-proc ::pdtk_kbdnav::kbdnav_bind { mytoplevel } {
+# Create all the bindings for the tag "kbdnav"
+# Those will only work while keyboard-navigating
+proc ::pdtk_kbdnav::bind_context {} {
     # deactivating kbdnav
-    bind $mytoplevel <KeyPress-Escape> {pdsend "[winfo toplevel %W] kbdnav_deactivate";break}
+    bind "kbdnav" <KeyPress-Escape> {pdsend "[winfo toplevel %W] kbdnav_deactivate";break}
     # arrow keys
-    bind $mytoplevel <$::modifier-Shift-Up> {pdsend "[winfo toplevel %W] kbdnav_arrow up 1";break}
-    bind $mytoplevel <$::modifier-Shift-Down> {pdsend "[winfo toplevel %W] kbdnav_arrow down 1";break}
+    bind "kbdnav" <$::modifier-Shift-Up> {pdsend "[winfo toplevel %W] kbdnav_arrow up 1";break}
+    bind "kbdnav" <$::modifier-Shift-Down> {pdsend "[winfo toplevel %W] kbdnav_arrow down 1";break}
 
     # magnetic connector
-    bind $mytoplevel <c> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 0";break}
+    bind "kbdnav" <c> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 0";break}
         # Caps Lock Off
-    bind $mytoplevel <Shift-C> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 1";break}
+    bind "kbdnav" <Shift-C> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 1";break}
         # Caps Lock On
-    bind $mytoplevel <Shift-c> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 1";break}
+    bind "kbdnav" <Shift-c> {pdsend "[winfo toplevel %W] kbdnav_magnetic_connect 1";break}
 
     # digits connector
-    bind $mytoplevel <Key-0> {pdsend "[winfo toplevel %W] kbdnav_digit 0 1";break}
-    bind $mytoplevel <Key-1> {pdsend "[winfo toplevel %W] kbdnav_digit 1 1";break}
-    bind $mytoplevel <Key-2> {pdsend "[winfo toplevel %W] kbdnav_digit 2 1";break}
-    bind $mytoplevel <Key-3> {pdsend "[winfo toplevel %W] kbdnav_digit 3 1";break}
-    bind $mytoplevel <Key-4> {pdsend "[winfo toplevel %W] kbdnav_digit 4 1";break}
-    bind $mytoplevel <Key-5> {pdsend "[winfo toplevel %W] kbdnav_digit 5 1";break}
-    bind $mytoplevel <Key-6> {pdsend "[winfo toplevel %W] kbdnav_digit 6 1";break}
-    bind $mytoplevel <Key-7> {pdsend "[winfo toplevel %W] kbdnav_digit 7 1";break}
-    bind $mytoplevel <Key-8> {pdsend "[winfo toplevel %W] kbdnav_digit 8 1";break}
-    bind $mytoplevel <Key-9> {pdsend "[winfo toplevel %W] kbdnav_digit 9 1";break}
+    bind "kbdnav" <Key-0> {pdsend "[winfo toplevel %W] kbdnav_digit 0 1";break}
+    bind "kbdnav" <Key-1> {pdsend "[winfo toplevel %W] kbdnav_digit 1 1";break}
+    bind "kbdnav" <Key-2> {pdsend "[winfo toplevel %W] kbdnav_digit 2 1";break}
+    bind "kbdnav" <Key-3> {pdsend "[winfo toplevel %W] kbdnav_digit 3 1";break}
+    bind "kbdnav" <Key-4> {pdsend "[winfo toplevel %W] kbdnav_digit 4 1";break}
+    bind "kbdnav" <Key-5> {pdsend "[winfo toplevel %W] kbdnav_digit 5 1";break}
+    bind "kbdnav" <Key-6> {pdsend "[winfo toplevel %W] kbdnav_digit 6 1";break}
+    bind "kbdnav" <Key-7> {pdsend "[winfo toplevel %W] kbdnav_digit 7 1";break}
+    bind "kbdnav" <Key-8> {pdsend "[winfo toplevel %W] kbdnav_digit 8 1";break}
+    bind "kbdnav" <Key-9> {pdsend "[winfo toplevel %W] kbdnav_digit 9 1";break}
 
-    # Those bindings override the "$mytoplevel <Key-N>" bindings above
-    # when the modifier is held.
+    # Those bindings override the "kbdnav" <Key-N> bindings above
+    # for the case where the modifier is held.
     #
     # This way the less-specific "all <$::modifier-Key-N>" bindings
     # defined in ::pd_bindings::global_bindings can run
-    # Thus allowing the "put obj", "put msg", etc bindings to be fired.
-    bind $mytoplevel <$::modifier-Key-1> { continue }
-    bind $mytoplevel <$::modifier-Key-2> { continue }
-    bind $mytoplevel <$::modifier-Key-3> { continue }
-    bind $mytoplevel <$::modifier-Key-4> { continue }
-    bind $mytoplevel <$::modifier-Key-5> { continue }
+    # Thus allowing the "put obj", "put msg", etc bindings to be
+    # fired while kbd-navigating
+    bind "kbdnav" <$::modifier-Key-1> { continue }
+    bind "kbdnav" <$::modifier-Key-2> { continue }
+    bind "kbdnav" <$::modifier-Key-3> { continue }
+    bind "kbdnav" <$::modifier-Key-4> { continue }
+    bind "kbdnav" <$::modifier-Key-5> { continue }
 
-    bind $mytoplevel <Shift-KeyPress> {::pdtk_kbdnav::digits "[winfo toplevel %W]" "%k"}
+    bind "kbdnav" <Shift-KeyPress> {::pdtk_kbdnav::digits "[winfo toplevel %W]" "%k"}
 
     # delete
-    bind $mytoplevel <Key-Delete> {pdsend "[winfo toplevel %W] kbdnav_delete";break}
+    bind "kbdnav" <Key-Delete> {pdsend "[winfo toplevel %W] kbdnav_delete";break}
 }
 
-proc ::pdtk_kbdnav::kbdnav_unbind { mytoplevel } {
+proc ::pdtk_kbdnav::unbind_context {} {
     # deactivating kbdnav
-    bind $mytoplevel <KeyPress-Escape> {}
+    bind "kbdnav" <KeyPress-Escape> {}
 
     # arrow keys
-    bind $mytoplevel <$::modifier-Shift-Up> {}
-    bind $mytoplevel <$::modifier-Shift-Down> {}
+    bind "kbdnav" <$::modifier-Shift-Up> {}
+    bind "kbdnav" <$::modifier-Shift-Down> {}
 
     # magnetic connector
-    bind $mytoplevel <c> {}
+    bind "kbdnav" <c> {}
         # Caps Lock Off
-    bind $mytoplevel <Shift-c> {}
+    bind "kbdnav" <Shift-c> {}
         # Caps Lock On
-    bind $mytoplevel <Shift-C> {}
+    bind "kbdnav" <Shift-C> {}
 
     #digits connector
-    bind $mytoplevel <Key-0> {}
-    bind $mytoplevel <Key-1> {}
-    bind $mytoplevel <Key-2> {}
-    bind $mytoplevel <Key-3> {}
-    bind $mytoplevel <Key-4> {}
-    bind $mytoplevel <Key-5> {}
-    bind $mytoplevel <Key-6> {}
-    bind $mytoplevel <Key-7> {}
-    bind $mytoplevel <Key-8> {}
-    bind $mytoplevel <Key-9> {}
+    bind "kbdnav" <Key-0> {}
+    bind "kbdnav" <Key-1> {}
+    bind "kbdnav" <Key-2> {}
+    bind "kbdnav" <Key-3> {}
+    bind "kbdnav" <Key-4> {}
+    bind "kbdnav" <Key-5> {}
+    bind "kbdnav" <Key-6> {}
+    bind "kbdnav" <Key-7> {}
+    bind "kbdnav" <Key-8> {}
+    bind "kbdnav" <Key-9> {}
 
-    bind $mytoplevel <Shift-KeyPress> {}
+    bind "kbdnav" <Shift-KeyPress> {}
 
     # delete
-    bind $mytoplevel <Key-Delete> {}
+    bind "kbdnav" <Key-Delete> {}
+}
+
+proc ::pdtk_kbdnav::kbdnav_add_tag { mytoplevel } {
+    set bt [linsert [bindtags $mytoplevel] 0 "kbdnav"]
+    bindtags $mytoplevel $bt
+}
+
+proc ::pdtk_kbdnav::kbdnav_remove_tag { mytoplevel } {
+    set bt [bindtags $mytoplevel]
+    set idx [lsearch $bt "kbdnav"]
+    if {$idx ne -1} {
+        set bt [lreplace $bt $idx $idx]
+        bindtags $mytoplevel $bt
+    } else {
+        ::pdwindow::error "Cannot remove kbdnav bindtag"
+    }
 }
 
 # see

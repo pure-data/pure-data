@@ -110,15 +110,26 @@ proc ::dialog_kbdconnect::create_kbdconnect_dialog {mytoplevel} {
     bind $canvas.kbdconn.help <KeyPress-Return> "$canvas.kbdconn.help invoke; break"
 
     # Add a break statement to stop the "<KeyPress-Escape>"
-    # in the "all" bindtags from executing (bound in pd_bindings.tcl)
-    bind $mytoplevel <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
+    # in the kbdnav "$mytoplevel" bindtags from executing
+    bind $canvas.kbdconn.obj1_index <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
+    bind $canvas.kbdconn.obj1_outlet <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
+    bind $canvas.kbdconn.obj2_index <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
+    bind $canvas.kbdconn.obj2_inlet <KeyPress-Escape> "dialog_kbdconnect::cancel $mytoplevel; break"
 
-    # Stop the "bind all <KeyPress>" in pd_bindings.tcl from sending
-    # key presses to the canvas window
-    bind $mytoplevel <KeyPress> {break}
+    # remove the toplevel and "all" bindtags so key presses don't
+    # end up being sent to the canvas
+    bindtags $canvas.kbdconn.obj1_index [lrange [bindtags $canvas.kbdconn.obj1_index] 0 1]
+    bindtags $canvas.kbdconn.obj1_outlet [lrange [bindtags $canvas.kbdconn.obj1_outlet] 0 1]
+    bindtags $canvas.kbdconn.obj2_index [lrange [bindtags $canvas.kbdconn.obj2_index] 0 1]
+    bindtags $canvas.kbdconn.obj2_inlet [lrange [bindtags $canvas.kbdconn.obj2_inlet] 0 1]
+    bindtags $canvas.kbdconn.help [lrange [bindtags $canvas.kbdconn.help] 0 1]
 
-    # Override the <Key> { break } binding on the toplevel
-    bind $mytoplevel <KeyPress-Tab> {#nothing}
+    # consequently we have to manually bind the Tab as focus traversal
+    bind $canvas.kbdconn.obj1_index <KeyPress-Tab> "focus $canvas.kbdconn.obj1_outlet"
+    bind $canvas.kbdconn.obj1_outlet <KeyPress-Tab> "focus $canvas.kbdconn.obj2_index"
+    bind $canvas.kbdconn.obj2_index <KeyPress-Tab> "focus $canvas.kbdconn.obj2_inlet"
+    bind $canvas.kbdconn.obj2_inlet <KeyPress-Tab> "focus $canvas.kbdconn.help"
+    bind $canvas.kbdconn.help <KeyPress-Tab> "focus $canvas.kbdconn.obj1_index"
 
     $canvas.kbdconn.obj1_index set ""
     $canvas.kbdconn.obj1_outlet set ""
@@ -156,13 +167,6 @@ proc ::dialog_kbdconnect::ok {mytoplevel {close 1}} {
 
 proc ::dialog_kbdconnect::cancel {mytoplevel} {
     set canvas [tkcanvas_name $mytoplevel]
-    # first we remove our binding with the break statement so the
-    # toplevel will process keypresses again
-    bind $mytoplevel <KeyPress> {}
-    # remove the others
-    bind $mytoplevel <KeyPress-Return> {}
-    bind $mytoplevel <KeyPress-Escape> {}
-    bind $mytoplevel <KeyPress-Tab> {}
     destroy $canvas.kbdconn
     pdsend "$mytoplevel set_indices_visibility 0"
 }

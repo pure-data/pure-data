@@ -64,16 +64,19 @@ proc ::dialog_goto::create_goto_dialog {mytoplevel} {
     bind $canvas.goto.help <KeyPress-Return> "$canvas.goto.help invoke; break"
 
     # Add a break statement to stop the "<KeyPress-Escape>"
-    #  in the "all" bindtags from executing (bound in pd_bindings.tcl)
-    bind $mytoplevel <KeyPress-Escape> "dialog_goto::cancel $mytoplevel; break"
+    # in the kbdnav "$mytoplevel" bindtags from executing
+    bind $canvas.goto.index <KeyPress-Escape> "dialog_goto::cancel $mytoplevel; break"
+    bind $canvas.goto.help <KeyPress-Escape> "dialog_goto::cancel $mytoplevel; break"
 
-    # Stop the "bind all <KeyPress>" in pd_bindings.tcl from sending
-    # key presses to the canvas window
-    bind $mytoplevel <KeyPress> {break}
+    # remove the toplevel and "all" bindtags so key presses don't
+    # end up being sent to the canvas
+    bindtags $canvas.goto.index [lrange [bindtags $canvas.goto.index] 0 1]
+    bindtags $canvas.goto.help [lrange [bindtags $canvas.goto.help] 0 1]
 
-    # Override the <Key> { break } binding on the toplevel
-    # (so Tab can change focus)
-    bind $mytoplevel <KeyPress-Tab> {#nothing}
+    # consequently we have to manually bind the Tab as focus traversal
+    bind $canvas.goto.index <KeyPress-Tab> "focus $canvas.goto.help"
+    bind $canvas.goto.help <KeyPress-Tab> "focus $canvas.goto.index"
+
 
     $canvas.goto.index selection range 0 end
     pdsend "$mytoplevel set_indices_visibility 1"
@@ -92,11 +95,6 @@ proc ::dialog_goto::ok {mytoplevel} {
 
 proc ::dialog_goto::cancel {mytoplevel} {
     set canvas [tkcanvas_name $mytoplevel]
-    # remove our binding with the break statement so the
-    # toplevel will process keypresses again
-    bind $mytoplevel <KeyPress> {}
-    bind $mytoplevel <KeyPress-Tab> {}
-    bind $mytoplevel <KeyPress-Escape> {}
     destroy $canvas.goto
     pdsend "$mytoplevel set_indices_visibility 0"
 }
