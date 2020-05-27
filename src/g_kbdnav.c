@@ -11,7 +11,11 @@
    and connecting stuff using the keyboard. */
 
 /* ------------------ forward declarations --------------- */
-int canvas_canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
+extern int canvas_canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin);
+extern void canvas_connect_with_undo(t_canvas *x, t_float index1, t_float outno,
+                                         t_float index2, t_float inno);
+extern void canvas_disconnect_with_undo(t_canvas *x, t_float index1, t_float outno,
+                                         t_float index2, t_float inno);
 
 
 /* in/outlet traverser for the magnetic connector.

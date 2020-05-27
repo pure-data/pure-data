@@ -35,10 +35,6 @@ typedef struct _kbdnav
 
 /* stuff from g_editor.c */
 
-EXTERN void canvas_connect_with_undo(t_canvas *x, t_float index1, t_float outno,
-                                         t_float index2, t_float inno);
-EXTERN void canvas_disconnect_with_undo(t_canvas *x, t_float index1, t_float outno,
-                                         t_float index2, t_float inno);
 EXTERN void canvas_reselect(t_canvas *x);
 EXTERN void canvas_clearline(t_canvas *x);
 
