@@ -14,7 +14,7 @@
 #include <sys/time.h>
 #endif
 
-// Windows XP winsock doesn't provide inet_ntop
+    /* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
@@ -47,14 +47,14 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                              int port, int protocol) {
     struct addrinfo hints;
-    char portstr[10]; // largest port is 65535
+    char portstr[10]; /* largest port is 65535 */
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; // IPv4 or IPv6
+    hints.ai_family = AF_UNSPEC; /* IPv4 or IPv6 */
     hints.ai_socktype = protocol;
     hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
-    hints.ai_flags = AI_ALL |        // both IPv4 and IPv6 addrs
-                     AI_V4MAPPED |   // fallback to IPv4-mapped IPv6 addrs
-                     AI_PASSIVE;     // listen to any addr if hostname is NULL
+    hints.ai_flags = AI_ALL |       /* both IPv4 and IPv6 addrs */
+                     AI_V4MAPPED |  /* fallback to IPv4-mapped IPv6 addrs */
+                     AI_PASSIVE;    /* listen to any addr if hostname is NULL */
     portstr[0] = '\0';
     sprintf(portstr, "%d", port);
     return getaddrinfo(hostname, portstr, &hints, ailist);
@@ -215,11 +215,11 @@ int socket_init(void)
     return 0;
 }
 
-// kudos to https://stackoverflow.com/a/46062474/6063908
+    /* kudos to https://stackoverflow.com/a/46062474/6063908 */
 int socket_connect(int socket, const struct sockaddr *addr,
                    socklen_t addrlen, float timeout)
 {
-    // set nonblocking and connect
+    /* set nonblocking and connect */
     socket_set_nonblocking(socket, 1);
 
     if (connect(socket, addr, addrlen) < 0)
@@ -232,24 +232,24 @@ int socket_connect(int socket, const struct sockaddr *addr,
     #else
         if (socket_errno() != EINPROGRESS)
     #endif
-            return -1; // break on "real" error
+            return -1; /* break on "real" error */
 
-        // block with select using timeout
+        /* block with select using timeout */
         if (timeout < 0) timeout = 0;
         timeoutval.tv_sec = (int)timeout;
         timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
         FD_ZERO(&writefds);
-        FD_SET(socket, &writefds); // socket is connected when writable
+        FD_SET(socket, &writefds); /* socket is connected when writable */
         FD_ZERO(&errfds);
-        FD_SET(socket, &errfds); // catch exceptions
+        FD_SET(socket, &errfds); /* catch exceptions */
 
         status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
-        if (status < 0) // select failed
+        if (status < 0) /* select failed */
         {
             fprintf(stderr, "socket_connect: select failed");
             return -1;
         }
-        else if (status == 0) // connection timed out
+        else if (status == 0) /* connection timed out */
         {
         #ifdef _WIN32
             WSASetLastError(WSAETIMEDOUT);
@@ -259,7 +259,7 @@ int socket_connect(int socket, const struct sockaddr *addr,
             return -1;
         }
 
-        if (FD_ISSET(socket, &errfds)) // connection failed
+        if (FD_ISSET(socket, &errfds)) /* connection failed */
         {
             int err; socklen_t len = sizeof(err);
             getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
@@ -271,7 +271,7 @@ int socket_connect(int socket, const struct sockaddr *addr,
             return -1;
         }
     }
-    // done, set blocking again
+    /* done, set blocking again */
     socket_set_nonblocking(socket, 0);
     return 0;
 }
@@ -396,7 +396,7 @@ int socket_errno(void)
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
-    if (err == 10044) // WSAESOCKTNOSUPPORT
+    if (err == 10044) /* WSAESOCKTNOSUPPORT */
     {
         fprintf(stderr,
             "Warning: you might not have TCP/IP \"networking\" turned on\n");
@@ -411,8 +411,8 @@ int socket_errno_udp(void)
 {
 #ifdef _WIN32
     int err = socket_errno();
-    // ignore WSAECONNRESET to prevent UDP sockets
-    // from closing in case of a missing receiver
+    /* ignore WSAECONNRESET to prevent UDP sockets
+       from closing in case of a missing receiver */
     if (err == 10054)
         return 0;
     else
