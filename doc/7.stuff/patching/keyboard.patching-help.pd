@@ -1,8 +1,5 @@
-#N canvas 82 19 634 635 10;
+#N canvas 80 19 634 635 10;
 #N canvas 715 19 502 464 object_positioning 0;
-#X text 39 54 When you have an inlet/outlet selected and you create
-a new object/msg/float/ or symbol atom PD will position that new box
-automatically above/or below that object and connect it for you.;
 #X obj 41 128 notein;
 #X obj 271 397 list;
 #X obj 292 376 pack float float;
@@ -12,22 +9,25 @@ automatically above/or below that object and connect it for you.;
 #X obj 292 334 r foo1;
 #X obj 61 397 list;
 #X text 105 128 select the 3rd outlet and create an number atom.;
-#X text 37 272 Now you can effectively 'patch upwards'. Try selecting
-a inlet and creating objects. Select the [list] object on the left
-and recreate the object chain on the right., f 62;
+#X text 39 54 When you have an inlet/outlet selected and you create
+a new object/msg/float/symbol atom it will be placed accordingly \,
+aligned with the selected inlet/outlet.;
+#X text 37 272 You can effectively 'patch upwards'. Try selecting a
+inlet and creating objects. Select the [list] object on the left and
+recreate the object chain on the right., f 62;
+#X connect 2 0 1 1;
 #X connect 3 0 2 1;
-#X connect 4 0 3 1;
-#X connect 5 0 4 0;
-#X connect 6 0 3 0;
-#X connect 7 0 6 0;
-#X restore 307 376 pd object_positioning;
-#N canvas 719 17 450 223 editing_objects 0;
-#X text 33 97 Try it:;
-#X obj 118 98 pack f f f;
-#X text 33 37 You can now enter/exit the object's text editing but
-using <mod>+return.;
-#X restore 307 403 pd editing_objects;
-#N canvas 717 19 448 384 canvas_goto 0;
+#X connect 4 0 3 0;
+#X connect 5 0 2 0;
+#X connect 6 0 5 0;
+#X restore 307 390 pd object_positioning;
+#N canvas 715 19 444 208 editing_objects 0;
+#X obj 158 109 pack f f f;
+#X text 33 37 You can press <mod>+return to start/stop editing an object's
+text.;
+#X text 33 77 Try changing it to an "unpack":;
+#X restore 307 417 pd editing_objects;
+#N canvas 715 19 448 384 canvas_goto 0;
 #X obj 59 234 makenote;
 #X obj 59 191 unpack f f f;
 #X obj 59 265 pack f f;
@@ -40,14 +40,13 @@ using <mod>+return.;
 #X obj 259 282 select C;
 #X obj 259 191 unpack f s;
 #X obj 259 215 + 10;
-#X text 48 27 You can select any object using the "go to" feature.
-;
 #X text 48 47 Press <mod>+G to open the "go to" dialog. The index of
 each object will be shown. Enter the number of the object you want
 to select and press Enter., f 54;
-#X text 46 96 (You can manually toggle the display of object indices
-by pressing <mod>+Tab.);
 #X text 47 139 You can also find "go to" in the Edit menu.;
+#X text 46 96 (You can manually toggle the display of object indices
+by pressing <mod>+i.);
+#X text 48 27 You can select any object using the "go to" dialog.;
 #X connect 0 0 2 0;
 #X connect 0 1 2 1;
 #X connect 1 0 0 0;
@@ -63,129 +62,80 @@ by pressing <mod>+Tab.);
 #X connect 10 0 11 0;
 #X connect 10 1 7 1;
 #X connect 11 0 7 0;
-#X restore 307 428 pd canvas_goto;
-#N canvas 717 20 436 399 digit_connector 0;
+#X restore 307 442 pd canvas_goto;
+#N canvas 715 19 428 319 magnetic_connector 0;
+#X obj 40 135 noise~;
+#X obj 40 176 *~ 1;
+#X obj 80 176 *~ 0.5;
+#X obj 129 176 *~ 0.25;
+#X obj 315 176 *~ 0.666;
+#X text 32 28 When you have an inlet/outlet selected you can press
+C to use the magnetic connector.;
+#X text 33 101 Select the [noise~] outlet and press c multiple times:
+;
+#X text 34 275 You can also press shift+c to keep the last connection
+made.;
+#X text 34 225 Note that since the [noise~] outlet outputs a signal
+the magnetic connector skips the non-signal inlets.;
+#X text 32 68 It connects the selected inlet/outlet to the outlets/inlets
+that are close enough \, in ascending order of distance.;
+#X restore 307 467 pd magnetic_connector;
+#N canvas 715 19 436 399 digit_connector 0;
 #X obj 36 143 loadbang;
 #X obj 36 194 s a;
 #X obj 86 194 s b;
 #X obj 133 194 s c;
 #X obj 183 194 +, f 4;
-#X text 28 232 (you can press the mod+opposite arrow key to exit the
-digit connector.);
-#X text 35 27 You can press <mod>+shift+up/down on an Inlet/Outlet
-to activate the 'digit selector'. It will display numbers in possible
-connections \, ranging from 0 to 9 \, in ascending order of distance
-(i.e. the closest possible connection receives a 0).;
-#X text 34 99 Select loadbang's outlet and press <mod>+shift+down \,
-then choose an inlet an press it's number.;
 #X text 28 283 The digit connector only works for close inlets/outlets.
 For connecting to distant objects see 'connecting with the keyboard'
 ;
-#X restore 307 479 pd digit_connector;
-#N canvas 718 19 428 319 magnetic_connector 0;
-#X text 32 28 When you have an inlet/outlet selected you can press
-G to use the magnetic connector.;
-#X text 32 68 It connects the selected inlet/outlet to the outlets/inlets
-that are close enough \, in ascending order of distance.;
-#X text 34 235 You can also press shift+g to change the connection
-to the next inlet/outlet.;
-#X obj 40 135 noise~;
-#X obj 40 176 *~ 1;
-#X text 33 101 Select the [noise~] outlet and press G multiple times:
+#X text 34 99 Select [loadbang]'s outlet and press <mod>+shift+down
+\, then choose an inlet an press it's number.;
+#X text 28 232 you can press <mod> and the opposite arrow key to exit
+the digit connector;
+#X text 35 27 You can press <mod>+shift+up/down on an inlet/outlet
+to activate the 'digit selector'. It will display numbers for possible
+connections \, ranging from 0 to 9 \, in ascending order of distance.
 ;
-#X obj 80 176 *~ 0.5;
-#X obj 129 176 *~ 0.25;
-#X obj 315 176 *~ 0.666;
-#X restore 307 453 pd magnetic_connector;
-#N canvas 717 19 450 300 "clicking"_with_the_keyboard 0;
-#X text 48 17 When there is only 1 object selected you can press Shift+Enter
-to simulate a click on that object.;
-#N canvas 468 196 209 48 test 0;
-#X text 26 14 Hello World!;
-#X restore 53 178 pd test;
-#X obj 53 98 float 6;
-#X text 115 97 does nothing;
-#X msg 52 227 add2 Sinusoidal;
-#X text 163 226 send the message;
-#X text 116 177 opens the subpatch (also works for abstractions);
-#X obj 53 140 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X restore 307 493 pd digit_connector;
+#N canvas 715 19 631 696 connecting_with_the_keyboard 0;
+#X obj 38 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X text 116 140 sends a bang;
-#X text 46 53 Try it below:;
-#X msg 52 248;
-#X connect 4 0 10 0;
-#X restore 307 535 pd "clicking"_with_the_keyboard;
-#X text 52 23 You can fully navegate the patch with the keyboard.;
-#X text 296 242 After a connection is selected pressing up or down
-again will go to that connection's source/destination., f 43;
-#X text 297 332 Press Escape to exit keyboard navigation.;
-#X text 51 88 To get started select a single object and press mod+up/down.
-;
-#X text 296 296 You can also press delete when navigating through a
-connection to erase it., f 43;
-#X obj 79 304 rfft~;
-#X obj 79 348 *~;
-#X obj 111 348 *~;
-#X obj 79 383 sqrt~;
-#X obj 79 488 /~;
-#X obj 79 277 osc~;
-#X obj 79 523 outlet~;
-#X obj 94 419 loadbang;
-#X msg 94 440 64;
-#X obj 94 462 / 2;
-#X text 131 441 block size;
-#X obj 79 168 t f b;
-#X obj 79 212 *;
-#X obj 94 191 samplerate~;
-#X obj 79 234 / 100;
-#X floatatom 79 255 8 0 0 0 - - -;
-#X floatatom 79 147 5 0 100 0 - - -;
-#X text 296 132 Try it now \, starting on the top object.;
-#X text 52 45 You'll be using a modifier <mod> key for keyboard navigation.
-It is <Control> if you're on Windows or Linux and <Cmd> if you're on
-a Mac., f 80;
-#X text 295 153 Then press <mod>+up/down to navigate through the object
-inlets and outlets., f 43;
-#X text 296 182 Pressing mod+down on an outlet or <mod>+up on an inlet
-will select a connection. Then press <mod>+left/right to cycle through
-the connections., f 43;
-#N canvas 717 19 631 652 connecting_with_the_keyboard 0;
-#X obj 38 263 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X msg 62 321 10;
-#X obj 62 343 until;
-#X obj 62 364 random 7;
-#X obj 62 385 t b f;
-#X msg 62 407 48 50 52 53 55 57 59 60;
-#X obj 62 454 list split;
-#X obj 119 433 - 1;
-#X obj 90 476 list split 1;
-#X floatatom 90 498 5 0 0 0 - - -;
-#X msg 168 529 set;
-#X msg 90 519 add2 \$1;
-#X obj 38 289 trigger bang bang bang;
-#X obj 38 594 print;
-#X text 201 290 <- SOURCE;
-#X text 222 529 <- DESTINATION;
-#X text 34 14 You can easily connect any two inlets/outlets \, even
-for distant objects by using the "Conect Objects" dialog., f 92;
-#X text 32 53 Press <mod>+shift+up/down while the digit connector is
+#X msg 62 368 10;
+#X obj 62 390 until;
+#X obj 62 411 random 7;
+#X obj 62 432 t b f;
+#X msg 62 454 48 50 52 53 55 57 59 60;
+#X obj 62 501 list split;
+#X obj 119 480 - 1;
+#X obj 90 523 list split 1;
+#X floatatom 90 545 5 0 0 0 - - -;
+#X msg 167 576 set;
+#X msg 90 566 add2 \$1;
+#X obj 38 336 trigger bang bang bang;
+#X obj 38 641 print;
+#X text 201 337 <- SOURCE;
+#X text 222 576 <- DESTINATION;
+#X text 32 48 Press <mod>+shift+up/down while the digit connector is
 active., f 93;
-#X text 31 81 As an example we will show how you can connect the [trigger
-bang bang bang] object to the [set( message only with the keyboard.
-, f 94;
-#X text 30 208 The dialog should be something like this: 12 2 -> 1
-0 If the numbers were typed correcly then the [trigger bang bang bang]
-3rd outlet should be connected to the inlet of the |set( msg box.,
-f 95;
-#X msg 38 573;
 #X text 33 123 1) Select the [trigger bang bang bang] object below
 \, enter keyboard navigation and select it's 3rd outlet., f 93;
-#X text 33 153 2) Press <mod>+shift+Down once to activate the digit
-connector and then press it again., f 93;
-#X text 33 172 3) Since you have an outlet selected that object and
+#X text 33 182 3) Since you have an outlet selected that object and
 outlet numbers are already filled. Now enter the index of the object
 and the desired inlet (0-based) and press Enter., f 93;
+#X text 30 268 If the numbers were typed correcly then the [trigger
+bang bang bang] 3rd outlet should be connected to the inlet of the
+|set( msg box., f 95;
+#X text 30 218 The dialog should be something like this:, f 95;
+#X text 60 243 12 2 -> 10 0;
+#X msg 38 620;
+#X text 33 153 2) Press <mod>+shift+Down once to activate the digit
+connector and then press it again to open the "Connect Objects" pre-filled
+with the selected outlet details., f 93;
+#X text 34 14 You can easily connect any two inlets/outlets using the
+"Connect Objects" dialog., f 92;
+#X text 31 81 As an example we will show how you can connect the [trigger
+bang bang bang] object to the [set( message box., f 94;
 #X connect 0 0 12 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
@@ -197,28 +147,85 @@ and the desired inlet (0-based) and press Enter., f 93;
 #X connect 7 0 6 1;
 #X connect 8 0 9 0;
 #X connect 9 0 11 0;
-#X connect 10 0 20 0;
-#X connect 11 0 20 0;
-#X connect 12 0 20 0;
+#X connect 10 0 22 0;
+#X connect 11 0 22 0;
+#X connect 12 0 22 0;
 #X connect 12 1 1 0;
-#X connect 20 0 13 0;
-#X restore 307 506 pd connecting_with_the_keyboard;
-#X connect 11 0 12 0;
-#X connect 11 0 12 1;
-#X connect 11 1 13 0;
-#X connect 11 1 13 1;
-#X connect 12 0 14 0;
-#X connect 13 0 14 0;
+#X connect 22 0 13 0;
+#X restore 307 520 pd connecting_with_the_keyboard;
+#N canvas 717 19 450 300 "clicking"_with_the_keyboard 0;
+#X text 48 17 When there is only 1 object selected you can press Shift+Enter
+to simulate a click on that object.;
+#N canvas 468 196 222 124 test 0;
+#X text 66 48 Hello World!;
+#X restore 53 205 pd test;
+#X obj 53 98 float 6;
+#X text 115 97 does nothing;
+#X text 133 246 send the message;
+#X text 116 204 opens the subpatch (also works for abstractions);
+#X obj 53 140 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 116 141 sends a bang;
+#X text 46 53 Try it below:;
+#X obj 53 168 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 116 167 toggles;
+#X symbolatom 52 268 10 0 0 0 - - -;
+#X msg 52 247 symbol foo;
+#X connect 12 0 11 0;
+#X restore 307 549 pd "clicking"_with_the_keyboard;
+#X obj 79 315 rfft~;
+#X obj 79 357 *~;
+#X obj 111 357 *~;
+#X obj 79 392 sqrt~;
+#X obj 79 497 /~;
+#X obj 79 286 osc~;
+#X obj 79 532 outlet~;
+#X obj 94 428 loadbang;
+#X msg 94 449 64;
+#X obj 94 471 / 2;
+#X text 131 450 block size;
+#X obj 79 167 t f b;
+#X obj 79 215 *;
+#X obj 94 192 samplerate~;
+#X obj 79 239 / 100;
+#X floatatom 79 262 8 0 0 0 - - -;
+#X floatatom 79 144 5 0 100 0 - - -;
+#X text 52 23 You can fully navegate the patch with the keyboard.;
+#X text 296 235 After a connection is selected pressing up or down
+again will go to that connection's source/destination., f 43;
+#X text 297 323 Press Escape to exit keyboard navigation.;
+#X text 296 287 You can also press delete when navigating through a
+connection to erase it., f 43;
+#X text 294 125 Try it now \, starting on the top object.;
+#X text 295 146 Then press <mod>+up/down to navigate through the object
+inlets and outlets., f 43;
+#X text 296 175 Pressing <mod>+down on an outlet or <mod>+up on an
+inlet will select a connection. Then press <mod>+left/right to cycle
+through the connections., f 43;
+#X text 52 45 You'll be using a modifier (<mod>) key for keyboard navigation.
+It is <Control> if you're on Windows or Linux and <Cmd> if you're on
+a Mac., f 80;
+#X text 51 88 To get started select a single object and press <mod>+up/down.
+, f 80;
+#X text 297 346 You can enable/disable keyboard navigation in the edit
+menu., f 44;
+#X connect 7 0 8 1;
+#X connect 7 0 8 0;
+#X connect 7 1 9 1;
+#X connect 7 1 9 0;
+#X connect 8 0 10 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 13 0;
+#X connect 12 0 7 0;
 #X connect 14 0 15 0;
-#X connect 15 0 17 0;
-#X connect 16 0 11 0;
+#X connect 15 0 16 0;
+#X connect 16 0 11 1;
 #X connect 18 0 19 0;
-#X connect 19 0 20 0;
-#X connect 20 0 15 1;
-#X connect 22 0 23 0;
-#X connect 22 1 24 0;
-#X connect 23 0 25 0;
-#X connect 24 0 23 1;
-#X connect 25 0 26 0;
-#X connect 26 0 16 0;
-#X connect 27 0 22 0;
+#X connect 18 1 20 0;
+#X connect 19 0 21 0;
+#X connect 20 0 19 1;
+#X connect 21 0 22 0;
+#X connect 22 0 12 0;
+#X connect 23 0 18 0;
