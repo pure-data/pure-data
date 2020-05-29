@@ -1015,7 +1015,7 @@ static void text_insert_list(t_text_insert *x,
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int start, end, n, nwas, i,
-         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : (int)x->x_f1);
 
     t_atom *vec;
     if (!b)
