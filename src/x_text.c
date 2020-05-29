@@ -566,10 +566,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float ||
-                    a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
                             goto doit;
             }
         }

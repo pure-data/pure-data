@@ -312,15 +312,11 @@ static int sys_getpreference(const char *key, char *value, int size)
         int ret = 0;
         if (CFDictionaryGetValueIfPresent(sys_prefdict, k,
                                           (const void **)&v)) {
-            const char *s = CFStringGetCStringPtr((CFStringRef)v,
-                                                  kCFStringEncodingUTF8);
-            if (s)
-            {
-                ret = (strncpy(value, s, size) != NULL);
+            ret = CFStringGetCString((CFStringRef)v, value, size,
+                                     kCFStringEncodingUTF8);
 #if 0
-                if (ret) fprintf(stderr, "plist read %s = %s\n", key, value);
+            if (ret) fprintf(stderr, "plist read %s = %s\n", key, value);
 #endif
-            }
             if (v) CFRelease(v);
         }
         CFRelease(k);
@@ -354,7 +350,7 @@ static int sys_getpreference(const char *key, char *value, int size)
         value[nread] = 0;
         if (value[nread-1] == '\n')     /* remove newline character at end */
             value[nread-1] = 0;
-        return(1);
+        return (1);
     }
 }
 

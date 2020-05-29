@@ -8,7 +8,7 @@
 
 if test x$1 = x
 then
-   echo usage: ./build-msw-64.sh 0.38-0 or 0.38-0test4
+   echo usage: ./build-wxp-64.sh 0.38-0 or 0.38-0test4
    exit 1
 fi
 
@@ -29,7 +29,7 @@ cd pd-$pdversion
 #do an autotools build
 ./autogen.sh
 ./configure --host=x86_64-w64-mingw32 --with-wish=wish86.exe \
-    CPPFLAGS='-DWISH=\"wish86.exe\" -DWINVER=0x0600 -D_WIN32_WINNT=0x0600'
+    CPPFLAGS='-DWISH=\"wish86.exe\"'
 
 # for some reason, the generated libtool file has a reference to the 'msvcrt'
 # lib which breaks compilation... so get rid of it.  This might no longer be
@@ -56,13 +56,9 @@ cp /usr/x86_64-w64-mingw32/sys-root/mingw/bin/libwinpthread-1.dll \
    pd-$pdversion/bin/
 
 # make the zip archive
-zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
-
-# make an installer
-~/pd/msw/build-nsi.sh  `pwd`/pd-$pdversion $pdversion wish86.exe
+zip -r /tmp/pd-$pdversion.wxp.zip  pd-$pdversion
 
 # for convenience echo the finished filename and a command to quickly test
 # it in wine
-echo /tmp/pd-$pdversion.msw.zip
-echo /tmp/pd-$installerversion
+echo /tmp/pd-$pdversion.wxp.zip
 echo wine `pwd`/pd-$pdversion/bin/wish86.exe `pwd`/pd-$pdversion/tcl/pd-gui.tcl
