@@ -2366,9 +2366,10 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
 
                         sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
-                            ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
-                            x, xpos, ypos, xpos, ypos,
-                            (issignal ? 2 : 1) * x->gl_zoom);
+                            "::pdtk_canvas::pdtk_connect %d %d %d %d %d "
+                            "x .x%lx.c\n",
+                            xpos, ypos, xpos, ypos,
+                            (issignal ? 2 : 1) * x->gl_zoom, x);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2577,12 +2578,12 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 + iom;
             ly2 = y21;
             sys_vgui(
-                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                glist_getcanvas(x),
+                "::pdtk_canvas::pdtk_connect %d %d %d %d %d [list l%lx cord] "
+        		".x%lx.c\n",
                 lx1, ly1, lx2, ly2,
                 (obj_issignaloutlet(src, nout) ? 2 : 1) *
                 x->gl_zoom,
-                oc);
+                oc, glist_getcanvas(x));
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
                     canvas_getindex(x, &sink->ob_g), nin));
@@ -2608,9 +2609,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
         sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 1\n", x);
         sys_vgui(".x%lx.c delete x\n", x);
     }
-    else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
-                  x, x->gl_editor->e_xwas,
-                  x->gl_editor->e_ywas, xpos, ypos);
+    else sys_vgui("::pdtk_canvas::pdtk_coords "
+            	"%d %d %d %d x .x%lx.c\n",
+                  x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                  xpos, ypos, x);
 
     if ((y1 = canvas_findhitbox(x, xwas, ywas, &x11, &y11, &x12, &y12))
         && (y2 = canvas_findhitbox(x, xpos, ypos, &x21, &y21, &x22, &y22)))
@@ -3480,7 +3482,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     int n;
-    
+
     for (g = gl->gl_list; g; g = g->g_next)
     {
         if (((const void *)g == error_object) || (message_get_responder(g) == error_object))
@@ -4332,9 +4334,10 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x) && x->gl_havewindow)
     {
         sys_vgui(
-            ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-            glist_getcanvas(x), 0, 0, 0, 0,
-            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
+            "::pdtk_canvas::pdtk_connect 0 0 0 0 %d [list l%lx cord] "
+        	".x%lx.c\n",
+            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+            oc, glist_getcanvas(x));
         canvas_fixlinesfor(x, objsrc);
     }
     return;
