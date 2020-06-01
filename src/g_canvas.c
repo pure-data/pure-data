@@ -13,7 +13,6 @@ to be different but are now unified except for some fossilized names.) */
 #include "s_utf8.h"
 #include "g_canvas.h"
 #include <string.h>
-#include <math.h>
 #include "g_all_guis.h"
 #include "g_undo.h"
 
