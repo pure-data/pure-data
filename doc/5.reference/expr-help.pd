@@ -1,4 +1,4 @@
-#N canvas 156 196 942 546 12;
+#N canvas 316 89 942 546 12;
 #X obj 184 40 expr;
 #X obj 235 40 expr~;
 #X obj 294 40 fexpr~;
@@ -64,12 +64,12 @@ size;
 #X restore 778 346 pd Arrays;
 #X text 531 176 Basic examples:;
 #X text 723 316 Further details:;
-#N canvas 168 109 950 501 Dealing_with_"\$0" 0;
-#X obj 623 138 expr $s2[$f1];
-#X obj 711 107 symbol \$0-x;
-#X floatatom 623 112 5 0 99 0 - - -;
-#X floatatom 623 166 5 0 0 0 - - -;
-#X obj 711 84 loadbang;
+#N canvas 279 141 950 501 Dealing_with_"\$0" 0;
+#X obj 624 154 expr $s2[$f1];
+#X obj 712 123 symbol \$0-x;
+#X floatatom 624 128 5 0 99 0 - - -;
+#X floatatom 624 182 5 0 0 0 - - -;
+#X obj 712 100 loadbang;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-x 100 float 1;
 #A 0 -0.720016 -0.706683 -0.693349 -0.680016 -0.666682 -0.653348 -0.640015
@@ -103,10 +103,6 @@ operator \, so '\$0-x' is interpreted as "Id number" minus 'x'.;
 -1 -1;
 #X floatatom 650 403 5 0 0 0 - - -;
 #X floatatom 590 403 5 0 0 0 - - -;
-#X text 499 37 A solution for such issues is to send the table name
-as a symbol:;
-#X text 511 231 But a simpler practice is to just avoid these issues
-by having '\$0' after a symbol character \, such as:;
 #X text 21 27 '\$0' - the patch ID number used to force locality in
 Pd - may be used in the definition of arrays or variables names. But
 it is important to note the restrictions of adopting the C-style expression
@@ -116,7 +112,13 @@ case \, the object won't load!;
 #X text 209 399 It loads \, but the symbol is interpreted as "\$0 -
 x" \, so it is not a valid symbol character and not a table name -
 see Pd window for error., f 40;
-#X text 690 166 <= works now;
+#X text 691 182 <= works now;
+#X text 500 23 A solution for such issues is to send the table name
+as a symbol \, but this doesn't deal with variable names as these can't
+be loadeds as symbols:;
+#X text 514 245 A simpler practice that will always work for both table
+names and variables is to just having '\$0' after a symbol character
+\, such as:;
 #X connect 0 0 3 0;
 #X connect 1 0 0 1;
 #X connect 2 0 0 0;

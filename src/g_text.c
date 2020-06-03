@@ -1373,20 +1373,20 @@ void text_drawborder(t_text *x, t_glist *glist,
     else if (x->te_type == T_ATOM)
     {
         int grabbed = glist->gl_zoom * ((t_gatom *)x)->a_grabbed;
-        y2 -= grabbed;
+        int x1p = x1 + grabbed, y1p = y1 + grabbed;
         corner = ((y2-y1)/4);
         if (firsttime)
             sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
                 "-width %d -capstyle projecting -tags [list %sR atom]\n",
                 glist_getcanvas(glist),
-                x1, y1+grabbed,  x2-corner, y1+grabbed,  x2, y1+corner, x2, y2,
-                    x1, y2,  x1, y1+grabbed, glist->gl_zoom+grabbed, tag);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,
+                    x1p, y2,  x1p, y1p, glist->gl_zoom+grabbed, tag);
         else
         {
             sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1+grabbed,  x2-corner, y1+grabbed,  x2, y1+corner,  x2, y2,
-                    x1, y2,  x1, y1+grabbed);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,
+                    x1p, y2,  x1p, y1p);
             sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
                 glist_getcanvas(glist), tag, glist->gl_zoom+grabbed);
         }
