@@ -3539,8 +3539,8 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
         {
                 /* got it... now show it. */
             glist_noselect(gl);
-            canvas_vis(glist_getcanvas(gl), 1);
-            canvas_editmode(glist_getcanvas(gl), 1.);
+            canvas_vis((t_canvas *)gl, 1);
+            canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
             return (1);
         }
