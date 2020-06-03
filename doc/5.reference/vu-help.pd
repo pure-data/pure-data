@@ -1,4 +1,4 @@
-#N canvas 640 46 476 492 12;
+#N canvas 640 46 476 514 12;
 #X obj 26 23 vu 15 160 empty empty -1 -8 0 12 -66577 -1 1 0;
 #X obj 154 248 vu 16 120 foo7_rcv VU-Meter 60 0 0 10 -1 -147457 1 0
 ;
@@ -18,13 +18,13 @@ float to set RMS and the right inlet takes a float to set peak level
 #X text 95 133 Insert it from the Put menu (named as "VU Meter") or
 its shortcut. Alternatively \, create it by typing "vu" into an object
 box., f 49;
-#X text 271 368 (c) musil@iem.kug.ac.at;
-#X text 307 384 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 32 444 see also:;
-#X obj 106 445 x_all_guis;
-#X text 236 313 This object is part of the "iemguis" library \, natively
+#X text 271 386 (c) musil@iem.kug.ac.at;
+#X text 307 402 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 29 445 see also:;
+#X obj 103 446 x_all_guis;
+#X text 238 311 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 240 444 updated for Pd version 0.51;
+#X text 249 469 updated for Pd version 0.51;
 #N canvas 689 106 613 643 position 0;
 #X floatatom 142 132 4 0 1000 0 - - -;
 #X obj 191 159 t b f;
@@ -472,77 +472,75 @@ pair., f 32;
 #X restore 320 238 pd properties;
 #X text 24 273 Right click for properties (to set size \, colors \,
 labels \, etc) ===>, f 17;
-#N canvas 703 35 552 553 example 0;
-#X obj 238 279 vu 15 160 empty empty -1 -8 0 12 -66577 -1 1 0;
-#N canvas 329 161 597 392 vu 0;
+#N canvas 703 35 528 592 example 0;
+#X obj 268 317 vu 15 160 empty empty -1 -8 0 12 -66577 -1 1 0;
+#N canvas 329 161 625 417 vu 0;
 #X obj 59 129 env~ 1024;
 #X obj 161 111 abs~;
 #X obj 161 213 snapshot~;
 #X obj 161 256 rmstodb;
-#X obj 161 30 inlet~;
+#X obj 161 21 inlet~;
 #X obj 161 288 - 100;
 #X obj 59 287 - 100;
-#X obj 59 341 outlet;
-#X obj 161 341 outlet;
-#X text 342 323 Check the help file of env~ and slop~ for more details.
-, f 28;
-#X text 341 131 The env~ object is dedicated to RMS analysis. Its output
-is in dB but needs to be converted to dBFS (and we do that by simply
-subtracting 100)., f 28;
+#X obj 59 361 outlet;
+#X obj 161 361 outlet;
+#X text 344 307 Check the help file of env~ and slop~ for more details.
+, f 31;
 #X obj 239 89 expr 1000 / $f1;
 #X floatatom 239 117 5 0 0 0 - - -;
 #X obj 161 146 slop~ 0 0 0 0 1e+09;
-#X obj 239 27 inlet;
+#X obj 239 18 inlet;
 #X floatatom 239 57 5 0 0 0 - - -;
 #X text 359 89 convert to hz;
 #X text 282 118 hz;
 #X text 284 57 peak decay time in ms;
-#X text 342 222 The slop~ object is very versatile and is used here
-for peak detection. We need to convert the output to dB with rmstodb
-and also subract by 100 to convert it to dBFS., f 28;
 #X obj 59 171 t f b;
-#X connect 0 0 20 0;
-#X connect 1 0 13 0;
+#X text 345 132 The env~ object is dedicated to RMS analysis. Its output
+is in dB (0-100 range \, pd style) but needs to be converted to dBFS
+(and we do that by simply subtracting 100)., f 31;
+#X text 345 225 The slop~ object is used here for peak detection. We
+need to convert the output to dB with rmstodb and also subract by 100
+to convert it to dBFS., f 31;
+#X connect 0 0 18 0;
+#X connect 1 0 12 0;
 #X connect 2 0 3 0;
 #X connect 3 0 5 0;
 #X connect 4 0 0 0;
 #X connect 4 0 1 0;
 #X connect 5 0 8 0;
 #X connect 6 0 7 0;
-#X connect 11 0 12 0;
-#X connect 12 0 13 3;
-#X connect 13 0 2 0;
-#X connect 14 0 15 0;
-#X connect 15 0 11 0;
-#X connect 20 0 6 0;
-#X connect 20 1 2 0;
-#X restore 237 236 pd vu;
-#X obj 134 111 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X connect 10 0 11 0;
+#X connect 11 0 12 3;
+#X connect 12 0 2 0;
+#X connect 13 0 14 0;
+#X connect 14 0 10 0;
+#X connect 18 0 6 0;
+#X connect 18 1 2 0;
+#X restore 245 274 pd vu;
+#X obj 144 179 tgl 18 0 empty empty empty 17 7 0 10 -228856 -1 -1 0
 1;
-#X floatatom 247 462 8 0 0 0 - - -;
-#X floatatom 237 491 8 0 0 0 - - -;
-#X text 309 462 Peak;
-#X text 299 492 RMS;
-#X msg 269 175 500;
-#X floatatom 269 202 6 0 0 0 - - -;
-#X obj 269 147 loadbang;
-#X text 325 202 <= peak decay time in ms;
-#X text 94 21 In order to use vu to display RMS and peak levels \,
-you need to analyze a sound source and send it values. This can be
-done in Pd with the env~ and slop~ objects. Open the subpatch [pd vu]
-to see how this is done., f 55;
-#X text 158 111 <= turn on test sound;
-#X obj 134 308 out1~;
-#X text 44 313 raise "lvl" to hear ==->, f 12;
-#N canvas 391 189 299 308 noise-burst 0;
-#X obj 123 174 *~;
-#X obj 105 251 outlet~;
-#X obj 123 145 vline~;
-#X obj 123 45 inlet;
-#X obj 53 134 noise~;
-#X msg 123 115 1 \, 0 100;
-#X obj 105 202 *~;
-#X obj 123 83 metro 500;
+#X floatatom 277 500 8 0 0 0 - - -;
+#X floatatom 267 529 8 0 0 0 - - -;
+#X text 339 500 Peak;
+#X text 329 530 RMS;
+#X floatatom 277 220 6 0 1000 0 - decay -;
+#N canvas 391 189 453 455 noise-burst 0;
+#X obj 160 196 *~;
+#X obj 142 373 outlet~;
+#X obj 160 167 vline~;
+#X obj 160 47 inlet;
+#X obj 89 140 noise~;
+#X msg 160 137 1 \, 0 100;
+#X obj 142 224 *~;
+#X obj 160 105 metro 500;
+#X obj 250 203 pow 4;
+#X obj 250 254 line~;
+#X msg 250 228 \$1 10;
+#X obj 232 281 *~;
+#X obj 232 312 dac~;
+#X obj 250 47 inlet;
+#X obj 323 109 loadbang;
+#X msg 323 137 \; decay 500 \; pd dsp 1;
 #X connect 0 0 6 1;
 #X connect 2 0 0 0;
 #X connect 2 0 0 1;
@@ -550,23 +548,41 @@ to see how this is done., f 55;
 #X connect 4 0 6 0;
 #X connect 5 0 2 0;
 #X connect 6 0 1 0;
+#X connect 6 0 11 0;
 #X connect 7 0 5 0;
-#X coords 0 308 1 307 150 60 0;
-#X restore 134 147 pd noise-burst;
-#X text 324 252 (This same analysis structure is also implemented inside
-the out1~ abstraction.), f 22;
-#X text 284 234 <==== open for analysis;
+#X connect 8 0 10 0;
+#X connect 9 0 11 1;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
+#X connect 11 0 12 1;
+#X connect 13 0 8 0;
+#X connect 14 0 15 0;
+#X coords 0 455 1 454 150 60 0;
+#X restore 144 209 pd noise-burst;
+#X text 292 273 <== open for analysis;
+#X obj 242 183 hsl 128 15 0 1 0 0 empty empty Volume -2 -10 0 13 -228856
+-1 -1 0 1;
+#X text 55 178 turn on ==> test sound, f 12;
+#X text 325 220 <=;
+#X text 347 220 peak decay time in ms, f 10;
+#X text 66 21 In order to use vu to display RMS and peak levels \,
+you need to analyze a sound source and send it values. This can be
+done in Pd with the env~ and slop~ objects., f 55;
+#X text 65 76 VU meters usually have a decay time for the peak level.
+You can set this parameter in the number box below. The peak level
+and decay is obtained via the slop~ object. Open the subpatch [pd vu]
+to see how this is done., f 55;
 #X connect 0 0 4 0;
 #X connect 0 1 3 0;
 #X connect 1 0 0 0;
 #X connect 1 1 0 1;
-#X connect 2 0 15 0;
-#X connect 7 0 8 0;
-#X connect 8 0 1 1;
-#X connect 9 0 7 0;
-#X connect 15 0 1 0;
-#X connect 15 0 13 0;
+#X connect 2 0 8 0;
+#X connect 7 0 1 1;
+#X connect 8 0 1 0;
+#X connect 10 0 8 1;
 #X restore 341 209 pd example;
+#X obj 83 477 env~;
+#X obj 124 477 slop~, f 7;
 #X connect 1 0 6 0;
 #X connect 1 1 5 0;
 #X connect 2 0 1 1;
