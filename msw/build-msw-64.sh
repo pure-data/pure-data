@@ -45,8 +45,7 @@ cd msw
 cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
 
 # run the app building script itself
-/home/msp/bis/work/pd-versions/build-tk-on-win64/msw/msw-app.sh \
-   --builddir ..  --tk tcltk-$tkversion $pdversion
+./msw-app.sh  --builddir ..  --tk tcltk-$tkversion $pdversion
 
 # On my machine at least, the wrong winpthread library gets loaded (the
 # 32 bit one I think) - manually copy the correct one in.  This too is
