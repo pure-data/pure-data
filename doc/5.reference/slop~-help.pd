@@ -1,4 +1,4 @@
-#N canvas 426 72 942 572 12;
+#N canvas 250 127 942 572 12;
 #X obj 32 115 osc~;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-graph 1000 float 1;
@@ -534,7 +534,6 @@ to the units needed by slop~., f 60;
 #X text 383 42 Envelope follower for use in peak metering;
 #X text 417 433 See the HTML documentation (link on main page of this
 patch) for more details., f 54;
-#X obj 104 353 out1~;
 #X floatatom 213 92 5 1 100 2 pulse-length #0-pulse-length-init -;
 #X obj 145 197 env~ 1024;
 #X obj 237 169 abs~;
@@ -548,7 +547,7 @@ the RMS meter acts badly but the slop~-driven one still shows the peak.
 #X obj 145 231 t f b;
 #X obj 145 272 - 100;
 #X obj 237 290 - 100;
-#X obj 104 43 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 104 43 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 128 42 <= turn on test pulse;
 #X obj 315 137 expr 1000 / $f1;
@@ -563,29 +562,27 @@ by a slop~ object set to rise quickly (1e9 asymptotic rise speed \,
 0 up-slew needed to engage it) and with controllable decay (asymptotic
 downward speed controlled by a number box). There is no linear region
 at all so the linear cutoff frequency has no effect., f 54;
-#X text 19 358 raise "lvl" to hear ==>, f 11;
 #X floatatom 315 163 5 0 0 0 - - -;
 #X text 359 164 hz;
 #X text 417 340 The output is sampled using a snapshot~ object. Both
 envelope followers are converted to dBFS for the IEM VU meter., f
 54;
-#X connect 0 0 18 0;
-#X connect 1 0 4 0;
+#X connect 0 0 17 0;
+#X connect 1 0 5 0;
 #X connect 1 0 6 0;
-#X connect 1 0 7 0;
-#X connect 5 0 1 1;
-#X connect 6 0 13 0;
-#X connect 7 0 11 0;
-#X connect 8 0 9 0;
-#X connect 9 0 15 0;
-#X connect 11 0 8 0;
-#X connect 13 0 14 0;
-#X connect 13 1 8 0;
-#X connect 14 0 10 0;
-#X connect 15 0 10 1;
-#X connect 16 0 1 0;
-#X connect 18 0 23 0;
-#X connect 23 0 11 3;
+#X connect 4 0 1 1;
+#X connect 5 0 12 0;
+#X connect 6 0 10 0;
+#X connect 7 0 8 0;
+#X connect 8 0 14 0;
+#X connect 10 0 7 0;
+#X connect 12 0 13 0;
+#X connect 12 1 7 0;
+#X connect 13 0 9 0;
+#X connect 14 0 9 1;
+#X connect 15 0 1 0;
+#X connect 17 0 21 0;
+#X connect 21 0 10 3;
 #X restore 701 267 pd peak-meter;
 #X text 126 125 set state (previously stored output);
 #N canvas 467 45 850 454 jitter-remover 0;
