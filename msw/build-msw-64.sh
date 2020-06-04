@@ -55,8 +55,9 @@ cp /usr/x86_64-w64-mingw32/sys-root/mingw/bin/libwinpthread-1.dll \
    pd-$pdversion/bin/
    
 # use pdfontloader for wish86 and 64bit Windows
+rm -f pd-$pdversion/bin/pdfontloader.dll
 unzip pdfontloader-64bit-for-wish86.zip -d pd-$pdversion/bin/
-  
+
 
 # make the zip archive
 zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
