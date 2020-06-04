@@ -405,7 +405,7 @@ proc init_for_platform {} {
             if {[file exists [file join "$::sys_libdir" "font"]]} {
                 catch {
                     load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
-                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf" "DejaVuSansMono-Oblique.ttf" "DejaVuSansMono-BoldOblique.ttf"}
                     foreach font $localfonts {
                         set path [file join "$::sys_libdir" "font/$font"]
                         pdfontloader::load $path
