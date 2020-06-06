@@ -335,6 +335,14 @@ pacman -S mingw-w64-i686-nsis</pre>
 <p>To build a .msi Windows installer for Pd, see msw/build-nsi.sh.</p>
 <p>Note: The standard &quot;make install&quot; requires Tcl/Tk and won't work outside your Cygwin/Msys2 environment (if at all).</p>
 
+
+
+<h3 id="Double precision">Double precision</h3>
+
+<p>As of Pd 0.51-0 you can compile a "Double precision" Pd. On the autotools do:</p>
+
+<pre>./configure CPPFLAGS="-DPD_FLOATSIZE=64"</pre>
+
 <h3 id="cross-compilation-for-windows-on-linux">Cross-compilation for Windows on Linux</h3>
 
 <p>You can also build a Windows binary of Pd on a Linux system, using a cross-compilation toolchain.</p>
