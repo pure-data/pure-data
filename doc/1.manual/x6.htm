@@ -29,7 +29,7 @@ distribution comes with two build systems:</P>
 <li>makefile: smaller &amp; simpler, used for Pd binary downloads</li>
 </ul>
 
-<h3 id="requirements">Requirements</h3>
+<h3 id="s6.1">6.1. Requirements</h3>
 
 <p>Core build requirements:</p>
 
@@ -53,7 +53,7 @@ distribution comes with two build systems:</P>
 <li>FFTW: use the optimized FFTW Fast Fourier Transform library</li>
 </ul>
 
-<h3 id="autotools-build-recommended">Autotools Build (recommended)</h3>
+<h3 id="s6.2">6.2. Autotools Build (recommended)</h3>
 
 <p>Building Pd using the GNU autotools involves the following steps for all platforms:</p>
 
@@ -160,7 +160,7 @@ file Pd.app/Contents/Resources/bin/pd
 ...
 Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
-<h3 id="linux-bsd">Linux &amp; BSD</h3>
+<h3 id="s6.3">6.3 Linux &amp; BSD</h3>
 
 <p>Platform requirements:</p>
 
@@ -189,7 +189,7 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 <p>Most distributions come with Tcl/Tk installed, so you should be able to run Pd after it is built.</p>
 <p>Once your build system is set up, you can follow the general autotools build steps to build Pd.</p>
 
-<h3 id="macos">macOS</h3>
+<h3 id="s6.4">6.4. macOS</h3>
 
 <p>macOS is built on top of a BSD system and the bash commandline can be accessed with the Terminal application in the /Applications/Utility directory.</p>
 <p>The clang compiler and associated tools are provided by Apple. If you are running macOS 10.9+, you <em>do not</em> need to install the full Xcode application and can install the Commandline Tools Package only by running the following:</p>
@@ -268,7 +268,7 @@ brew link --force gettext</pre>
 
 <p>Note: Pd installed to your system or run from the build/bin directory will not use the default font and will be missing the various macOS GUI hints (such as retina rendering) which are specified by the Info.plist file inside the .app bundle. Again, it is recommended to build a .app and use the aforementioned aliases to provide the pd command.</p>
 
-<h3 id="windows">Windows</h3>
+<h3 id="s6.5">6.5. Windows</h3>
 
 <p>Pd on Windows can be built with either MinGW or Cygwin which provide the core build requirements: a compiler chain &amp; shell environment.</p>
 <p>It is recommended to use the Msys2 distribution which provides both a Unix command shell and MinGW. Download the Msys2 &quot;x86_64&quot; 64 bit installer (or &quot;i686&quot; if you are using 32 bit Windows) from:</p>
@@ -337,13 +337,13 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 
 
-<h3 id="Double precision">Double precision</h3>
+<h3 id="s6.6">6.6. Double precision</h3>
 
 <p>As of Pd 0.51-0 you can compile a "Double precision" Pd. On the autotools do:</p>
 
 <pre>./configure CPPFLAGS="-DPD_FLOATSIZE=64"</pre>
 
-<h3 id="cross-compilation-for-windows-on-linux">Cross-compilation for Windows on Linux</h3>
+<h3 id="s6.7">6.7. Cross-compilation for Windows on Linux</h3>
 
 <p>You can also build a Windows binary of Pd on a Linux system, using a cross-compilation toolchain.</p>
 <p>For Debian based systems (e.g. Ubuntu), you can install the toolchain with:</p>
@@ -367,7 +367,7 @@ sudo apt-get install nsis</pre>
 
 <pre>make app</pre>
 
-<h3 id="makefile-build">Makefile Build</h3>
+<h3 id="s6.8">6.8. Makefile Build</h3>
 
 <p>Alternatively, and often more simply, to the autotools build, you can use the fallback makefiles in the src directory:</p>
 
@@ -413,7 +413,7 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <p>On macOS, you can build a clickable Pd .app bundle using the supplemental build scripts in the mac directory. See mac/README.txt for more info.</p>
 
-<h3 id="reporting-bugs">Reporting Bugs</h3>
+<h3 id="s6.9">6.9. Reporting Bugs</h3>
 
 <p>Let us know if you run into any bugs or issues with building or installing Pd:</p>
 
