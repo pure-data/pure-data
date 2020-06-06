@@ -79,6 +79,8 @@ PRE {
    font-size: 80%;
    background-color:rgb(240, 240, 240);
    text-align:  left;
+   border-radius: 8px;
+   padding: 8px;
 }
 
 ol{
@@ -132,12 +134,6 @@ background-color: rgb(255, 240, 179);
 p.fig {
 text-align: center;
 }
-
-
-
-
-
-
 
 
 
