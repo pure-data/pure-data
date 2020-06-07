@@ -343,7 +343,11 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>./configure CPPFLAGS="-DPD_FLOATSIZE=64"</pre>
 
-<h3 id="s6.7">6.7. Cross-compilation for Windows on Linux</h3>
+<h3 id="s6.7">6.7. Other flags</h3>
+
+<p>More flags to be documented here.</p>
+
+<h3 id="s6.8">6.8. Cross-compilation for Windows on Linux</h3>
 
 <p>You can also build a Windows binary of Pd on a Linux system, using a cross-compilation toolchain.</p>
 <p>For Debian based systems (e.g. Ubuntu), you can install the toolchain with:</p>
@@ -367,7 +371,7 @@ sudo apt-get install nsis</pre>
 
 <pre>make app</pre>
 
-<h3 id="s6.8">6.8. Makefile Build</h3>
+<h3 id="s6.9">6.9. Makefile Build</h3>
 
 <p>Alternatively, and often more simply, to the autotools build, you can use the fallback makefiles in the src directory:</p>
 
@@ -413,7 +417,7 @@ cd ../fiddle~ &amp;&amp; make pd_nt
 
 <p>On macOS, you can build a clickable Pd .app bundle using the supplemental build scripts in the mac directory. See mac/README.txt for more info.</p>
 
-<h3 id="s6.9">6.9. Reporting Bugs</h3>
+<h3 id="s6.10">6.10. Reporting Bugs</h3>
 
 <p>Let us know if you run into any bugs or issues with building or installing Pd:</p>
 
