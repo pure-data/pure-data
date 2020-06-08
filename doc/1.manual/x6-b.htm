@@ -167,8 +167,24 @@ Pd GUI tries to load pdfontloader and, if successful, tries to load the included
 Pd font.</p>
 
 <p>Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz
-tarball. To build pdfontloader, see <a href="https://github.com/pure-data/pdfontloader">https://github.com/pure-data/pdfontloader</a>
+tarball. To build pdfontloader, see <a href="https://github.com/pure-data/pdfontloader" target="_blank">https://github.com/pure-data/pdfontloader</a>
 source.</p>
+
+<h3 id="s6.5.2">6.5.2. Windows ASIO Support</h3>
+
+<p>In order to build ASIO support into Pd on Windows, you need to download the
+ASIO sources from Steinberg directly. Their license does not let us
+redistribute their source files.</p>
+
+<p>Install the ASIO SDK by doing the following:</p>
+
+<ul>
+<li>1. Download the ASIO SDK: <a href="https://www.steinberg.net/en/company/developer.html" target="_blank">https://www.steinberg.net/en/company/developer.html</a></li>
+<li>2. Uncompress asiosdk2.3.zip (or higher) into pure-data/asio/</li>
+<li>3. remove the version number so that you get pure-data/asio/ASIOSDK</li>
+</ul>
+
+<p>Now build Pd and it should include ASIO as one of the audio backends.</p>
 
 </br>
 <p><a class=green href="x6.htm#more-windows" >back to ch6</a> <a href="index.htm#s6"> back to table of contents </a></p>
