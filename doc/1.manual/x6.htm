@@ -243,7 +243,7 @@ brew link --force gettext</pre>
 
 <pre>make app</pre>
 
-<p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle, see mac/README.txt</p>
+<p>This builds Pd-#.##.#.app in the Pd source directory which can be then be double-clicked and/or copied to /Applications. For more info &amp; options regarding the Pd .app bundle, see <a href="x6-a.htm">6.4.1 macOS resources</a>.</p>
 <p>If you want to have both the Pd application <em>and</em> use Pd from the commandline, add command aliases to the binaries inside the .app to your ~/.bash_profile:</p>
 
 <h4 id="pd-commandline">pd commandline</h4>
@@ -321,7 +321,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>./configure --disable-mmio</pre>
 
-<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see asio/README.txt for further instructions.</p>
+<p>Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source files. If you want to build Pd with ASIO support, see <a href="x6-b.htm#s6.5.2">6.5.2 Windows ASIO Support </a> for further instructions.</p>
 <p>Once built Pd is built, you can either:</p>
 
 <ul>
@@ -333,7 +333,7 @@ pacman -S mingw-w64-i686-nsis</pre>
 
 <pre>make app</pre>
 
-<p>This will create a &quot;pd-VERSION&quot; directory (ie. pd-0.48.1) which can then be used by running pd.exe in the bin directory and placed wherever on your system. For more info &amp; options regarding the Pd app directory, see msw/README.txt</p>
+<p>This will create a &quot;pd-VERSION&quot; directory (ie. pd-0.48.1) which can then be used by running pd.exe in the bin directory and placed wherever on your system. For more info &amp; options regarding the Pd app directory, see <a href="x6-b.htm">6.5.1 Windows resources.</a> </p>
 <p>To build a .msi Windows installer for Pd, see msw/build-nsi.sh.</p>
 <p>Note: The standard &quot;make install&quot; requires Tcl/Tk and won't work outside your Cygwin/Msys2 environment (if at all).</p>
 
