@@ -96,6 +96,9 @@ p{
 	line-height: 1.6;
 }
 
+
+/* standard link */
+
 a:link {
     text-decoration: none;
 	color: blue;
@@ -117,6 +120,33 @@ a:active {
     text-decoration: none;
 	color: blue;
 }
+
+
+/* green link (like a button) */
+
+a.green:link {
+	font-family:sans-serif;
+	background-color: #4CAF50; /* Green */
+    border-radius: 4px;
+    color: white;
+    padding: 0px 8px ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 80%;
+	
+}
+
+a.green:hover {
+    text-decoration: none;
+	background-color: #4CAF50;	
+}
+
+a.green:visited {
+	color: white;
+}
+
+/* standard images */
 
 IMG {
  
