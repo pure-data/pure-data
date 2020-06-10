@@ -21,6 +21,8 @@
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
+#else
+#include <wordexp.h>
 #endif
 
 #ifdef _WIN32
@@ -528,49 +530,66 @@ gotone:
 }
 
 int sys_argparse(int argc, char **argv);
+
 void sys_doflags(void)
 {
-    int i, beginstring = 0, state = 0, len;
-    int rcargc = 0;
-    char *rcargv[MAXPDSTRING];
+#ifdef _WIN32
+    wchar_t buf[MAXPDSTRING];
+    LPWSTR *wargv;
+    char **argv;
+    int argc, i;
+#else
+    wordexp_t we;
+#endif
+    int len;
+
     if (!sys_flags)
         sys_flags = &s_;
     len = (int)strlen(sys_flags->s_name);
-    if (len > MAXPDSTRING)
+    if (len >= MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
         return;
     }
-    for (i = 0; i < len+1; i++)
+
+#ifdef _WIN32
+    // CommandLineToArgvW only exists as unicode version!
+    u8_utf8toucs2(buf, MAXPDSTRING, (char *)sys_flags->s_name, len);
+    wargv = CommandLineToArgvW(buf, &argc);
+    if (wargv == NULL)
     {
-        int c = sys_flags->s_name[i];
-        if (state == 0)
-        {
-            if (c && !isspace(c))
-            {
-                beginstring = i;
-                state = 1;
-            }
-        }
-        else
-        {
-            if (!c || isspace(c))
-            {
-                char *foo = malloc(i - beginstring + 1);
-                if (!foo)
-                    return;
-                strncpy(foo, sys_flags->s_name + beginstring, i - beginstring);
-                foo[i - beginstring] = 0;
-                rcargv[rcargc] = foo;
-                rcargc++;
-                if (rcargc >= MAXPDSTRING)
-                    break;
-                state = 0;
-            }
-        }
+        error("CommandLineToArgvW failed");
+        return;
     }
-    if (sys_argparse(rcargc, rcargv))
+    argv = malloc(sizeof(char *) * argc);
+        // convert individual arguments back to utf8
+    for (i = 0; i < argc; ++i)
+    {
+        char arg[MAXPDSTRING];
+        int size = u8_ucs2toutf8(arg, MAXPDSTRING, wargv[i], wcslen(wargv[i]));
+        argv[i] = malloc(size + 1);
+        strcpy(argv[i], arg);
+    }
+    LocalFree(wargv);
+
+    if (sys_argparse(argc, argv))
         error("error parsing startup arguments");
+
+    for (i = 0; i < argc; ++i)
+        free(argv[i]);
+    free(argv);
+#else
+    if (wordexp(sys_flags->s_name, &we, 0))
+    {
+        error("wordexp failed");
+        return;
+    }
+
+    if (sys_argparse((int)we.we_wordc, we.we_wordv))
+        error("error parsing startup arguments");
+
+    wordfree(&we);
+#endif
 }
 
 /* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
