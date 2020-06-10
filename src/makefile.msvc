@@ -57,6 +57,7 @@ PDLIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:libcpmt /NODEFAULTLIB:oldnames \
     /NODEFAULTLIB:libc /NODEFAULTLIB:uuid /NODEFAULTLIB:ole32 \
     $(EXTRA_LIBPATH) \
     kernel32.lib \
+    shell32.lib \
     ws2_32.lib winmm.lib \
     advapi32.lib setupapi.lib \
     ../bin/pthreadVC.lib \
