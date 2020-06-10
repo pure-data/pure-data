@@ -722,8 +722,8 @@ void glob_start_startup_dialog(t_pd *dummy)
     char buf[MAXPDSTRING];
 
     sys_set_startup();
-    sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
-        (sys_flags? sys_flags->s_name : ""));
+    snprintf(buf, MAXPDSTRING, "pdtk_startup_dialog %%s %d {%s}\n",
+        sys_defeatrt, (sys_flags ? sys_flags->s_name : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
 
