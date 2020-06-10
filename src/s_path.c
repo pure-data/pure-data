@@ -808,6 +808,7 @@ int string2args(const char * cmd, int * retArgc, const char *** retArgv)
 
             /* Now reallocate the argument table to hold the argument, add add it. */
         if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
+            free(argument);
             errCode= 23; goto ouch;
         } else argTable = newArgTable;
 
@@ -826,7 +827,10 @@ int string2args(const char * cmd, int * retArgc, const char *** retArgv)
     argTable[argCount] = NULL;
 
     if(retArgc) *retArgc = argCount;
-    if(retArgv) *retArgv = argTable;
+    if(retArgv)
+        *retArgv = argTable;
+    else
+        free(argTable);
     return argCount;
 
  ouch:
