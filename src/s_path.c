@@ -42,6 +42,10 @@
 #include <fcntl.h>
 #include <ctype.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 #ifdef _LARGEFILE64_SOURCE
 # define open  open64
 # define lseek lseek64
