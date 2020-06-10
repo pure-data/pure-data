@@ -1,35 +1,34 @@
-#N canvas 3 69 706 702 12;
-#X obj 171 576 oscparse;
-#X text 52 663 see also:;
-#X obj 140 663 oscformat;
-#X obj 224 663 netreceive;
-#X text 435 666 updated for Pd version 0.46;
-#X obj 171 599 print parse-output;
-#X obj 314 663 list;
-#X obj 419 521 netreceive -u -b;
-#X msg 419 466 listen 5000;
-#X msg 431 494 listen 0;
-#X text 520 493 stop listening;
-#X msg 57 471 1 2 3 foo 5;
-#X text 51 446 numbers and symbols;
-#X obj 57 496 oscformat dog cat;
-#X obj 222 496 oscformat -f b weasel;
-#X msg 222 471 -1 1 2 3 4 5;
-#X obj 57 576 print packet;
-#X text 234 445 a blob;
-#X text 416 442 packets from network;
-#X text 521 466 listen on port 5000;
-#X text 558 521 UDP packets \, binary output, f 13;
-#X text 45 41 oscparse take incoming lists of numbers \, interpreting
+#N canvas 408 52 680 603 12;
+#X obj 203 469 oscparse;
+#X text 47 538 see also:;
+#X obj 135 538 oscformat;
+#X obj 219 538 netreceive;
+#X text 414 529 updated for Pd version 0.46;
+#X obj 203 492 print parse-output;
+#X obj 309 538 list;
+#X obj 370 428 netreceive -u -b;
+#X msg 370 373 listen 5000;
+#X msg 382 401 listen 0;
+#X text 471 400 stop listening;
+#X msg 48 394 1 2 3 foo 5;
+#X text 42 369 numbers and symbols;
+#X obj 48 419 oscformat dog cat;
+#X obj 203 419 oscformat -f b weasel;
+#X msg 203 394 -1 1 2 3 4 5;
+#X obj 48 479 print packet;
+#X text 215 368 a blob;
+#X text 367 349 packets from network;
+#X text 472 373 listen on port 5000;
+#X text 509 428 UDP packets \, binary output, f 13;
+#X text 52 54 oscparse take incoming lists of numbers \, interpreting
 them as the bytes in an OSC message. The output is a list containing
 \, first \, the symbols making up the address of the OSC packet \,
 and following that \, numbers and symbols as present in the OSC message.
 OSC messages may contain 'float' \, 'int' \, 'string' \, or 'blob'
 elements. Blobs are arrays of bytes (numbers between 0 and 255) and
-are copied to the output preceded by the blob's byte count.;
-#X text 80 11 oscparse - parse Open Sound Control (OSC) packets into
-Pd messages, f 67;
-#X text 44 187 OSC is a complicated networking protocol (FUDI \, as
+are copied to the output preceded by the blob's byte count., f 75
+;
+#X text 54 155 OSC is a complicated networking protocol (FUDI \, as
 used in netsend/netreceive is simpler and better but less widely used).
 oscparse and oscformat make no attempt to deal with timetags or aggregates
 of packets \, nor with streaming OSC. Also \, no attempt is made here
@@ -37,10 +36,14 @@ to clearly distinguish between the OSC address (symbols) and the following
 data \, nor between blobs and lists of numbers - it is assumed that
 you know what types the message should contain. You can alternatively
 use the OSC objects from mrpeach which have more features than these.
-;
-#X text 42 356 OSC messages may be combined in "bundles". If oscparse
+, f 77;
+#X text 54 285 OSC messages may be combined in "bundles". If oscparse
 receives a bundle it simply parses all the messages in the bundle in
-the order they appear \, and ignores the bundle's time tag.;
+the order they appear \, and ignores the bundle's time tag., f 77
+;
+#X obj 47 14 oscparse;
+#X text 117 15 - parse Open Sound Control (OSC) packets into Pd messages
+, f 58;
 #X connect 0 0 5 0;
 #X connect 7 0 0 0;
 #X connect 8 0 7 0;

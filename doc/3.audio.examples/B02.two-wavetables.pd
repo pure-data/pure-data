@@ -1,5 +1,5 @@
-#N canvas 74 98 749 466 12;
-#X graph graph1 0 -1.02 258 1.02 475 298 733 168;
+#N canvas 378 104 729 494 12;
+#N canvas 0 22 450 278 (subpatch) 0;
 #X array waveform11 259 float 1;
 #A 0 -0.0896033 0 0.0896033 0.178356 0.265425 0.350007 0.431348 0.508756
 0.58161 0.649372 0.711597 0.767935 0.818137 0.862053 0.89963 0.930912
@@ -37,8 +37,9 @@
 -0.956033 -0.930918 -0.899638 -0.862061 -0.818147 -0.767947 -0.71161
 -0.649386 -0.581625 -0.508772 -0.431366 -0.350025 -0.265443 -0.178375
 -0.0896226 -1.94061e-05 0.089584;
-#X pop;
-#X floatatom 202 171 0 0 100;
+#X coords 0 1.02 258 -1.02 258 130 1;
+#X restore 399 191 graph;
+#X floatatom 215 209 0 0 100 0 - - -;
 #N canvas 159 26 532 285 output 0;
 #X obj 338 160 t b;
 #X obj 338 110 f;
@@ -92,14 +93,12 @@
 #X connect 23 0 20 0;
 #X connect 26 0 5 0;
 #X connect 27 0 21 0;
-#X restore 164 199 pd output;
-#X msg 240 172 MUTE;
-#X text 30 123 oscillator -->;
-#X text 485 445 updated for Pd version 0.34;
-#X text 33 8 WAVETABLE OSCILLATORS;
-#X text 36 106 wavetable;
-#X text 88 54 pitch->;
-#X graph graph2 0 0 258 1000 475 155 734 15;
+#X restore 185 237 pd output;
+#X msg 245 210 MUTE;
+#X text 466 449 updated for Pd version 0.34;
+#X text 59 41 WAVETABLE OSCILLATORS;
+#X text 87 144 wavetable;
+#N canvas 0 22 450 278 (subpatch) 0;
 #X array pitch11 259 float 1;
 #A 0 757.143 757.143 735.714 700 671.429 650 621.429 600 571.429 550
 521.429 507.143 485.714 464.286 442.857 428.571 414.286 400 378.571
@@ -129,19 +128,22 @@
 207.143 921.429 921.429 921.429 921.429 207.143 207.143 200 200 957.143
 957.143 950 214.286 214.286 207.143 207.143 957.143 957.143 950 200
 207.143 207.143 942.857 942.857 942.857 950 950;
-#X pop;
-#X obj 164 87 tabosc4~ pitch11;
-#X obj 164 123 tabosc4~ waveform11;
-#X obj 164 55 sig~ 0.5;
-#X text 13 319 Here's a tabosc4~ controlling the frequency of another
+#X coords 0 1000 258 0 259 140 1;
+#X restore 399 28 graph;
+#X obj 185 125 tabosc4~ pitch11;
+#X obj 185 161 tabosc4~ waveform11;
+#X obj 185 93 sig~ 0.5;
+#X text 71 347 Here's a tabosc4~ controlling the frequency of another
 one. If you get properties on the two arrays \, you'll see that the
 top graph has a vertical scale from 0 to 1000 \; we're looping through
 that at a frequency of 0.5 Hz. and the output is used as the frequency
 input of the second tabosc4~. I've detected Klingons \, Captain Kirk...
 ;
+#X text 81 161 oscillator =>;
+#X text 109 92 pitch =>;
 #X connect 1 0 2 1;
 #X connect 2 0 1 0;
 #X connect 3 0 2 2;
-#X connect 10 0 11 0;
-#X connect 11 0 2 0;
-#X connect 12 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 2 0;
+#X connect 10 0 8 0;

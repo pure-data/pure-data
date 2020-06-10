@@ -1,5 +1,5 @@
-#N canvas 601 188 580 659 12;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 604 54 543 688 12;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array table24 259 float 1;
 #A 0 -0.294693 0 0.294693 0.4 0.28948 0.10749 0.022875 0.0789655 0.181673
 0.218249 0.171348 0.115564 0.119192 0.169863 0.201356 0.178657 0.137857
@@ -39,49 +39,49 @@
 -0.0228734 -0.107456 -0.289441 -0.399997 -0.294741 -7.20325e-05 0.294645
 ;
 #X coords 0 1.02 258 -1.02 258 130 1;
-#X restore 93 408 graph;
-#X obj 33 288 line~;
-#X msg 33 237 500 \, 1423 4000;
-#X floatatom 41 262 5 0 0 0 - - -;
-#X text 24 556 Synthesis techniques vary in their tendency to make
+#X restore 192 399 graph;
+#X obj 77 311 line~;
+#X msg 77 260 500 \, 1423 4000;
+#X floatatom 85 285 5 0 0 0 - - -;
+#X text 50 553 Synthesis techniques vary in their tendency to make
 foldover. For higher pitched sounds you'll want to try out relatively
 foldover-resistant ones.;
-#X obj 33 342 output~;
-#X obj 201 281 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 60 378 output~;
+#X obj 291 271 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#N canvas 0 0 618 384 make-tab 0;
-#X obj 13 28 inlet;
-#X obj 99 28 inlet;
-#X obj 183 28 inlet;
-#X obj 255 29 inlet;
-#X msg 38 176 \; table24 sinesum 256 1 1 1 1 0 0 0 0 1 0 0 0 0 0 0
+#N canvas 739 154 597 347 make-tab 0;
+#X obj 40 29 inlet;
+#X obj 126 29 inlet;
+#X obj 210 29 inlet;
+#X obj 282 30 inlet;
+#X msg 126 151 \; table24 sinesum 256 1 1 1 1 0 0 0 0 1 0 0 0 0 0 0
 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 1 \, normalize
 0.4;
-#X msg 14 277 \; table24 sinesum 256 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#X msg 41 228 \; table24 sinesum 256 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 \, normalize
 0.2;
-#X msg 183 101 \; table24 const 0 \, 0 1 1 1 1 1;
-#X msg 255 58 \; table24 const 0;
+#X msg 210 106 \; table24 const 0 \, 0 1 1 1 1 1;
+#X msg 282 59 \; table24 const 0;
 #X connect 0 0 5 0;
 #X connect 1 0 4 0;
 #X connect 2 0 6 0;
 #X connect 3 0 7 0;
-#X restore 201 355 pd make-tab;
-#X obj 232 300 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 291 355 pd make-tab;
+#X obj 315 290 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 263 317 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 340 310 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 295 334 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 365 332 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 222 276 sine;
-#X text 252 297 complex;
-#X text 284 314 rectangle;
-#X text 313 332 clear;
-#X obj 33 315 tabosc4~ table24;
-#X text 56 2 THE NYQUIST THEOREM AND FOLDOVER;
-#X text 30 33 WARNING: PLAY THIS QUIETLY TO AVOID UNPLEASANTNESS AND
-POSSIBLE EAR DAMAGE.;
-#X text 29 77 Foldover occurs when you synthesize frequencies greater
+#X text 309 266 sine;
+#X text 335 287 complex;
+#X text 361 307 rectangle;
+#X text 383 330 clear;
+#X obj 77 338 tabosc4~ table24;
+#X text 101 17 THE NYQUIST THEOREM AND FOLDOVER;
+#X text 47 52 WARNING: PLAY THIS QUIETLY TO AVOID UNPLEASANTNESS AND
+POSSIBLE EAR DAMAGE., f 39;
+#X text 46 99 Foldover occurs when you synthesize frequencies greater
 than the Nyquist frequency (half the sample rate). In this example
 \, the fundamental only reaches 1423 \, but the tables contain high
 partials. As the partials sweep upward you hear them reflect off the
@@ -89,8 +89,8 @@ Nyquist frequency. Also \, partials can come into contact with each
 other causing beating. The value of 1423 was chosen to make the beating
 effect especially strong if you're running at a sample rate of 44100
 (the usual one.);
-#X text 330 616 updated for Pd version 0.37;
-#X text 219 245 waveforms:;
+#X text 294 632 updated for Pd version 0.37;
+#X text 289 237 waveforms:;
 #X connect 1 0 15 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;

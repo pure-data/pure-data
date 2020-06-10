@@ -178,3 +178,12 @@ Some important per-application settings required by the GUI include:
                                    enables key repeat for all keys
 
 These are set in `tcl/pd_guiprefs.tcl`.
+
+## Code Signing
+
+As of Pd 0.51, the mac/osx-app.sh script performs "ad-hoc code signing" in order
+to set entitlements to open un-validated dynamic libraries on macOS 10.15+. This
+is required due to the new security settings. Note: ad-hoc signing doesn't
+actually sign the .app bundle with an account certificate, so the unidentified
+developer warning is still shown when the downloaded .app is run for the first
+time.

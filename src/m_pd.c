@@ -13,8 +13,10 @@
 t_pd *pd_new(t_class *c)
 {
     t_pd *x;
-    if (!c)
+    if (!c) {
         bug ("pd_new: apparently called before setup routine");
+        return NULL;
+    }
     x = (t_pd *)t_getbytes(c->c_size);
     *x = c;
     if (c->c_patchable)

@@ -94,17 +94,14 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
     outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
-#ifdef _MSC_VER
-#define strtof(a,b) _atoldbl(a,*b)
-#endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
 {
     t_float f = 0.0f;
     char *str_end = NULL;
-    f = strtof(s->s_name, &str_end);
+    f = strtod(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
-        pd_error(x, "Couldn't convert %s to float.", s->s_name);
+        pd_error(x, "couldn't convert %s to float", s->s_name);
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
@@ -1621,6 +1618,13 @@ static void value_symbol2(t_value *x, t_symbol *s)
     x->x_floatstar = value_get(s);
 }
 
+static void value_send(t_value *x, t_symbol *s)
+{
+    if (s->s_thing)
+        pd_float(s->s_thing, *x->x_floatstar);
+    else pd_error(x, "%s: no such object", s->s_name);
+}
+
 static void value_ff(t_value *x)
 {
     value_release(x->x_sym);
@@ -1636,6 +1640,7 @@ static void value_setup(void)
     class_addfloat(value_class, value_float);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
+    class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
     class_addfloat(vcommon_class, vcommon_float);

@@ -2,51 +2,51 @@
 template-pitch array amp template-amp;
 #N struct template-pitch float x float y float w;
 #N struct template-amp float x float y float w;
-#N canvas 123 60 556 609 12;
-#N canvas 565 104 524 166 template-toplevel 0;
-#X obj 25 86 plot pitch voiceno 3 10 0;
-#X obj 25 113 plot amp 0 3 10 0;
-#X obj 25 21 struct template-toplevel float x float y float voiceno
+#N canvas 279 49 556 659 12;
+#N canvas 565 104 469 174 template-toplevel 0;
+#X obj 30 97 plot pitch voiceno 3 10 0;
+#X obj 30 124 plot amp 0 3 10 0;
+#X obj 29 32 struct template-toplevel float x float y float voiceno
 array pitch template-pitch array amp template-amp;
-#X obj 27 61 filledpolygon 9 9 0 0 -2 0 2 5 2 5 -2;
-#X restore 55 385 pd template-toplevel;
-#N canvas 0 50 419 102 template-amp 0;
+#X obj 29 72 filledpolygon 9 9 0 0 -2 0 2 5 2 5 -2;
+#X restore 171 380 pd template-toplevel;
+#N canvas 164 144 383 111 template-amp 0;
 #X obj 15 41 struct template-amp float x float y float w;
-#X restore 55 407 pd template-amp;
-#N canvas 42 221 452 87 template-pitch 0;
+#X restore 171 404 pd template-amp;
+#N canvas 42 221 414 98 template-pitch 0;
 #X obj 21 29 struct template-pitch float x float y float w;
-#X restore 57 430 pd template-pitch;
-#N canvas 323 50 551 562 synthesis 0;
-#X msg 125 220 next;
-#X msg 108 172 traverse pd-data \, next;
-#X obj 108 250 pointer template-toplevel;
-#X obj 108 273 t p p;
-#X obj 108 296 get template-toplevel voiceno;
-#X obj 108 325 pack 0 p;
-#X obj 108 4 inlet;
-#X obj 108 33 route start stop;
-#X msg 161 54 \; reset bang;
-#X obj 298 30 r reset;
-#X obj 152 112 s reset;
-#X obj 125 194 r next-evt;
-#X obj 108 354 route 0 9 90 900 99 909 990;
-#X obj 55 372 voice;
-#X obj 55 536 outlet~;
-#X msg 298 58 \; reset-stop stop \; time-of-last-evt 0 \; pd-data sort
+#X restore 171 428 pd template-pitch;
+#N canvas 347 73 539 692 synthesis 0;
+#X msg 126 275 next;
+#X msg 109 217 traverse pd-data \, next;
+#X obj 109 305 pointer template-toplevel;
+#X obj 109 328 t p p;
+#X obj 109 351 get template-toplevel voiceno;
+#X obj 109 380 pack 0 p;
+#X obj 109 29 inlet;
+#X obj 109 58 route start stop;
+#X msg 162 79 \; reset bang;
+#X obj 299 55 r reset;
+#X obj 154 140 s reset;
+#X obj 126 249 r next-evt;
+#X obj 109 409 route 0 9 90 900 99 909 990;
+#X obj 56 447 voice;
+#X obj 56 621 outlet~;
+#X msg 299 83 \; reset-stop stop \; time-of-last-evt 0 \; pd-data sort
 ;
-#X obj 372 351 s delay-multiplier;
-#X obj 375 276 t b f;
-#X msg 372 303 1000;
-#X obj 389 327 /;
-#X obj 375 250 r tempo;
-#X obj 108 90 t b b b;
-#X msg 130 136 \; pd-data sort;
-#X obj 55 395 voice;
-#X obj 55 418 voice;
-#X obj 55 441 voice;
-#X obj 55 465 voice;
-#X obj 55 488 voice;
-#X obj 55 511 voice;
+#X obj 373 386 s delay-multiplier;
+#X obj 376 311 t b f;
+#X msg 373 338 1000;
+#X obj 390 362 /;
+#X obj 376 285 r tempo;
+#X obj 109 115 t b b b;
+#X msg 132 171 \; pd-data sort;
+#X obj 56 470 voice;
+#X obj 56 493 voice;
+#X obj 56 516 voice;
+#X obj 56 540 voice;
+#X obj 56 563 voice;
+#X obj 56 586 voice;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
@@ -81,11 +81,11 @@ array pitch template-pitch array amp template-amp;
 #X connect 26 0 27 0;
 #X connect 27 0 28 0;
 #X connect 28 0 14 0;
-#X restore 55 511 pd synthesis;
-#X floatatom 269 464 0 0 0 0 - - -;
-#X msg 55 484 start;
-#X msg 106 484 stop;
-#N canvas 466 82 415 496 data 1;
+#X restore 199 535 pd synthesis;
+#X floatatom 385 464 0 0 0 0 - - -;
+#X msg 148 498 start;
+#X msg 199 498 stop;
+#N canvas 869 73 415 496 data 1;
 #X scalar template-toplevel 22 86 900 \; 0 0 12 \; 10 0 12 \; \; 0
 0 0 \; 10 0 2.5 \; 11 0 0 \; \;;
 #X scalar template-toplevel 33 80 990 \; 0 0 12 \; 10 0 12 \; \; 0
@@ -104,43 +104,43 @@ array pitch template-pitch array amp template-amp;
 #X scalar template-toplevel 338 63.5 909 \; 0 0 12 \; 50 0 12 \; \;
 0 0 4 \; 10 0 2.5 \; 50 0 0 \; \;;
 #X coords 0 124 1 123.75 0 0 0;
-#X restore 55 364 pd data;
-#N canvas 82 467 332 145 stuff 0;
-#X msg 1 101 \; pd-data write xx.txt;
-#X msg -3 39 \; pd-data read score.txt;
-#X obj 208 7 loadbang;
-#X msg 208 34 \; tempo 60;
-#X msg 198 101 \; pd-data sort;
+#X restore 171 356 pd data;
+#N canvas 433 234 400 206 stuff 0;
+#X msg 35 115 \; pd-data write xx.txt;
+#X msg 31 53 \; pd-data read score.txt;
+#X obj 242 21 loadbang;
+#X msg 242 48 \; tempo 60;
+#X msg 232 115 \; pd-data sort;
 #X connect 2 0 3 0;
-#X restore 56 452 pd stuff;
-#X obj 269 417 r tempo;
-#X msg 269 440 set \$1;
-#X obj 269 488 s tempo;
-#X text 13 4 This patch shows an example of how to use data collections
+#X restore 171 451 pd stuff;
+#X obj 385 417 r tempo;
+#X msg 385 440 set \$1;
+#X obj 385 488 s tempo;
+#X text 39 11 This patch shows an example of how to use data collections
 as musical sequences (with apologies to Yuasa and Stockhausen). Here
 the black traces show dynamics and the colored ones show pitch. The
 fatness of the pitch traces give bandwidth. Any of the three can change
-over the life of the event.;
-#X text 11 97 To hear the result \, turn the volume up to 70 or so
+over the life of the event., f 61;
+#X text 38 93 To hear the result \, turn the volume up to 70 or so
 (higher if it's not loud enough the first time) and hit "start". You
 can set the tempo lower if that helps you follow the "score" the first
-couple of times.;
-#X text 302 464 <--- tempo;
-#X obj 55 539 output~;
-#X text 304 574 Updated for Pd version 0.39;
-#X text 10 259 This confuses Tk's scroll bars \, by the way \, and
+couple of times., f 61;
+#X obj 199 573 output~;
+#X text 330 608 Updated for Pd version 0.39;
+#X text 38 254 This confuses Tk's scroll bars \, by the way \, and
 when you resize the window the image still sticks to the top and not
 the bottom of the window as it should. When you resize a canvas with
 y having positive units (growing upward) \, just hit 'save' and Pd
-will check the scrolling and correct if necessary.;
-#X text 10 161 Note the screen units in the "data" window (open it
+will check the scrolling and correct if necessary., f 61;
+#X text 38 159 Note the screen units in the "data" window (open it
 and get "properties" to see them.) Normally \, there are -1 y units
 per pixel - that is \, adding 1 to y moves down one pixel. This is
 the "natural" y unit for most drawing programs. In the data window
 \, each pixel is 0.25 units \, meaning that adding one to a 'y' value
-moves it up four pixels.;
-#X connect 3 0 15 0;
-#X connect 3 0 15 1;
+moves it up four pixels., f 61;
+#X text 418 464 <-= tempo;
+#X connect 3 0 14 0;
+#X connect 3 0 14 1;
 #X connect 4 0 11 0;
 #X connect 5 0 3 0;
 #X connect 6 0 3 0;

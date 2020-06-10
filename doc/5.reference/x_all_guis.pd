@@ -1,20 +1,45 @@
-#N canvas 209 342 290 271 10;
-#X obj 23 31 bng 15 250 50 532480 \$1 \$1 empty 20 8 192 8 -262144
--1 -1;
-#X obj 23 63 tgl 15 1.06496e+06 \$2 \$2 empty 20 8 192 8 -262144 -1
--1 0 1;
-#X obj 22 95 vsl 15 128 0 127 0 1.59744e+06 \$3 \$3 empty 20 8 192
-8 -262144 -1 -1 0 1;
-#X obj 65 30 hsl 128 15 0 127 0 2.12992e+06 \$4 \$4 empty 20 8 192
-8 -262144 -1 -1 0 1;
-#X obj 63 63 hdl 15 1 2.6624e+06 8 \$5 \$5 empty 20 8 192 8 -262144
--1 -1 0;
-#X obj 62 99 vu 15 120 \$6 empty 35 8 64 8 -66577 -1 1 49152;
-#X obj 115 99 cnv 15 100 60 \$7 \$7 \$7 20 12 917696 14 -233017 -66577
-3.72736e+06;
-#X obj 41 308 inlet;
-#X obj 41 334 outlet;
-#X obj 227 30 vdl 15 1 4.79232e+06 8 \$9 \$9 empty 20 8 192 8 -262144
--1 -1 0;
-#X obj 116 176 nbx 5 14 -1e+37 1e+37 0 4.25984e+06 \$8 \$8 empty 45
-7 192 10 -262144 -1 -1 0;
+#N canvas 641 42 527 577 12;
+#X obj 313 181 bng 18 250 50 0 empty empty empty -8 -12 0 12 -262144
+-1 -4160;
+#X obj 313 214 tgl 18 1.04858e+06 empty empty empty -6 -11 0 12 -262144
+-1 -4160 0 1;
+#X obj 166 111 vsl 18 128 0 127 0 1.04858e+06 empty empty empty -7
+-13 0 12 -262144 -1 -4160 0 1;
+#X obj 306 144 hsl 128 18 0 127 0 0 empty empty empty 2 -12 0 12 -262144
+-1 -4160 0 1;
+#X obj 302 95 hradio 18 1 0 8 empty empty empty 4 -12 0 12 -262144
+-1 -4160 1;
+#X obj 75 100 vu 15 160 \$6 empty -4 -16 0 12 -33289 -1 1 0;
+#X obj 55 299 cnv 60 100 60 empty empty empty 2 -12 0 12 -228856 -4160
+1.04858e+06;
+#X obj 235 109 vradio 18 1 0 8 empty empty empty -17 -11 0 12 -262144
+-1 -4160 4;
+#X obj 198 307 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 1 -13 0
+12 -262144 -1 -4160 0 256;
+#X text 337 180 Bang Button;
+#X text 338 213 Toggle Button;
+#X text 314 289 (c) musil@iem.kug.ac.at;
+#X text 350 305 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 196 281 Number Box;
+#X text 57 278 Canvas;
+#X symbolatom 89 507 10 0 0 0 - - -;
+#X floatatom 38 507 5 0 0 0 - - -;
+#X text 63 73 VU Meter;
+#X text 149 71 Vertical;
+#X text 155 86 Slider;
+#X text 219 69 Vertical;
+#X text 225 84 Radio;
+#X text 300 71 Horizontal Radio;
+#X text 301 123 Horizontal Slider;
+#X text 168 507 (atom boxes);
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array 100 float 2;
+#X coords 0 1 100 -1 200 140 1 0 0;
+#X restore 290 414 graph;
+#X text 20 407 See also:;
+#X text 10 370 ----------------------------------------------------------------------
+, f 70;
+#X text 93 19 All IEM GUIs (objects from the "iemguis" library \, natively
+included in Pd version 0.34):, f 49;
+#X text 23 434 The atom boxes and the array were the only GUI objects
+in Pd until the incorporation of "IEM GUIs"., f 35;

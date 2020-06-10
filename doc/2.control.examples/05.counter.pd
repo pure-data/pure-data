@@ -1,45 +1,55 @@
-#N canvas 0 0 685 496 12;
-#X floatatom 107 424 0 0 0;
-#X msg 53 344 bang;
-#X obj 107 399 + 1;
-#X obj 376 262 + 1;
-#X floatatom 152 197 0 0 0;
-#X floatatom 108 245 0 0 0;
-#X msg 108 196 bang;
-#X floatatom 169 107 0 0 0;
-#X msg 112 58 bang;
-#X obj 169 82 + 1;
-#X text 31 21 Here's a simple counter. Click repeatedly on the "bang
-message to see it:;
-#X text 422 263 to its cold inlet.;
-#X text 25 284 The incremented value is stored for the next "bang"
-to spit out.;
-#X text 28 322 Here's a timed counter. Hit the "bang" to start it...
-;
-#X obj 53 373 metro 500;
-#X msg 99 344 stop;
-#X obj 112 83 float;
-#X text 28 132 The "float" box is a storage element holding one floating-point
-number. The cold inlet (i.e. \, the one on the right) stores numbers.
-Sending the message "bang" to the hot inlet gets the number back out:
-;
-#X obj 108 221 float;
-#X obj 53 399 float;
-#X text 25 263 Float's outlet above is connected via;
-#X text 384 462 updated for Pd version 0.34;
-#X text 142 373 <-- new object: metronome. The "500" means every 500
-milliseconds--i.e. \, twice a second.;
-#X connect 1 0 14 0;
+#N canvas 664 27 438 649 12;
+#X floatatom 126 565 0 0 0 0 - - -;
+#X msg 72 485 bang;
+#X obj 126 540 + 1;
+#X obj 186 351 + 1;
+#X floatatom 161 238 0 0 0 0 - - -;
+#X floatatom 129 287 0 0 0 0 - - -;
+#X msg 117 237 bang;
+#X floatatom 191 113 0 0 0 0 - - -;
+#X msg 134 64 bang;
+#X obj 191 88 + 1;
+#X text 50 18 Here's a simple counter. Click repeatedly on the "bang"
+message to see it:, f 41;
+#X text 49 433 Here's a timed counter. Hit the "bang" to start it...
+, f 39;
+#X obj 72 514 metro 500;
+#X msg 118 485 stop;
+#X obj 134 89 float;
+#X obj 129 263 float;
+#X obj 72 540 float;
+#X text 200 606 updated for Pd version 0.34;
+#X text 49 380 Thus \, the incremented value is stored for the next
+"bang" to spit out., f 45;
+#X text 151 512 <= new object: metronome.;
+#X text 181 529 The "500" means every 500 milliseconds - i.e. \, twice
+a second., f 25;
+#X text 47 142 The "float" (or just "f") box is a storage element holding
+one floating-point number. The cold inlet (i.e. \, the one on the right)
+stores numbers. Sending the message "bang" to the hot inlet gets the
+number back out:, f 48;
+#X text 186 265 same as:;
+#X floatatom 289 236 0 0 0 0 - - -;
+#X floatatom 271 287 0 0 0 0 - - -;
+#X msg 245 235 bang;
+#X obj 271 263 f;
+#X text 215 352 to its cold inlet.;
+#X text 50 329 Float's outlet in the first example;
+#X text 50 352 above connects via;
+#X connect 1 0 12 0;
 #X connect 2 0 0 0;
-#X connect 2 0 19 1;
-#X connect 4 0 18 1;
-#X connect 6 0 18 0;
-#X connect 8 0 16 0;
+#X connect 2 0 16 1;
+#X connect 4 0 15 1;
+#X connect 6 0 15 0;
+#X connect 8 0 14 0;
 #X connect 9 0 7 0;
-#X connect 9 0 16 1;
-#X connect 14 0 19 0;
-#X connect 15 0 14 0;
-#X connect 15 0 14 0;
-#X connect 16 0 9 0;
-#X connect 18 0 5 0;
-#X connect 19 0 2 0;
+#X connect 9 0 14 1;
+#X connect 12 0 16 0;
+#X connect 13 0 12 0;
+#X connect 13 0 12 0;
+#X connect 14 0 9 0;
+#X connect 15 0 5 0;
+#X connect 16 0 2 0;
+#X connect 23 0 26 1;
+#X connect 25 0 26 0;
+#X connect 26 0 24 0;

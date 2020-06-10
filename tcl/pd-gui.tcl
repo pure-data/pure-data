@@ -485,7 +485,7 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "Detected font: $::font_family\n"
+    ::pdwindow::verbose 0 "detected font: $::font_family\n"
 }
 
 proc set_base_font {family weight} {
@@ -493,7 +493,7 @@ proc set_base_font {family weight} {
         set ::font_family $family
     } else {
         ::pdwindow::post [format \
-            [_ "WARNING: Font family '%s' not found, using default (%s)\n"] \
+            [_ "WARNING: font family '%s' not found, using default (%s)\n"] \
                 $family $::font_family]
     }
     if {[lsearch -exact {bold normal} $weight] > -1} {
@@ -501,10 +501,10 @@ proc set_base_font {family weight} {
         set using_defaults 0
     } else {
         ::pdwindow::post [format \
-            [_ "WARNING: Font weight '%s' not found, using default (%s)\n"] \
+            [_ "WARNING: font weight '%s' not found, using default (%s)\n"] \
                 $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "Using font: $::font_family $::font_weight\n"
+    ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
 }
 
 # create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
@@ -537,11 +537,11 @@ proc fit_font_into_metrics {} {
         set lastwidth $width
         set lastheight $height
     }
-    # ::pdwindow::verbose 0 "Measured font metrics:\n"
+    # ::pdwindow::verbose 0 "measured font metrics:\n"
     # foreach {size width height} $::font_measured {
     #     ::pdwindow::verbose 0 "$size $width $height\n"
     # }
-    # ::pdwindow::verbose 0 "Measured zoom2 font metrics:\n"
+    # ::pdwindow::verbose 0 "measured zoom2 font metrics:\n"
     # foreach {size width height} $::font_zoom2_measured {
     #     ::pdwindow::verbose 0 "$size $width $height\n"
     # }
@@ -749,19 +749,22 @@ proc load_plugin_script {filename} {
 
     set basename [file tail $filename]
     if {[lsearch $::loaded_plugins $basename] > -1} {
-        ::pdwindow::post [_ "'$basename' already loaded, ignoring: '$filename'\n"]
+        ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+        ::pdwindow::post "\n"
         return
     }
 
-    ::pdwindow::debug [_ "Loading plugin: $filename\n"]
+    ::pdwindow::debug [ format [_ "Loading plugin: %s"] $filename ]
+    ::pdwindow::debug "\n"
     set tclfile [open $filename]
     set tclcode [read $tclfile]
     close $tclfile
     if {[catch {uplevel #0 $tclcode} errorname]} {
         ::pdwindow::error "-----------\n"
-        ::pdwindow::error [_ "UNHANDLED ERROR: $errorInfo\n"]
-        ::pdwindow::error [_ "FAILED TO LOAD $filename\n"]
-        ::pdwindow::error "-----------\n"
+        ::pdwindow::error [ format [_ "UNHANDLED ERROR: %s"] $errorInfo ]
+        ::pdwindow::error "\n"
+        ::pdwindow::error [ format [_ "FAILED TO LOAD %s"] $filename ]
+        ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
     }
@@ -776,11 +779,23 @@ proc load_startup_plugins {} {
     foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
-        foreach filename [glob -directory $dir -nocomplain -types {f} -- \
-                              *-plugin/*-plugin.tcl *-plugin.tcl] {
-            set ::current_plugin_loadpath [file dirname $filename]
-            load_plugin_script $filename
-        }
+        if { [ catch {
+                   foreach filename [glob -directory $dir -nocomplain -types {f} -- \
+                                          *-plugin/*-plugin.tcl *-plugin.tcl] {
+                       set ::current_plugin_loadpath [file dirname $filename]
+                       if { [ catch {
+                                  load_plugin_script $filename
+                              } ] } {
+                              ::pdwindow::debug [ format [ _ "Failed to read plugin %s ...skipping!"] $filename ]
+                              ::pdwindow::debug "\n"
+                          }
+                   }
+               } ] } {
+               # this is triggered in weird cases, e.g. when ~/Documents/Pd/externals is not readable,
+               # but ~/Documents/Pd/ is...
+               ::pdwindow::debug [ format [_ "Failed to find plugins in %s ...skipping!" ] $dir ]
+               ::pdwindow::debug "\n"
+           }
     }
 }
 

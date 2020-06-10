@@ -28,16 +28,16 @@ typedef struct _vinlet
     t_canvas *x_canvas;
     t_inlet *x_inlet;
     int x_bufsize;
-    t_float *x_buf;         /* signal buffer; zero if not a signal */
-    t_float *x_endbuf;
-    t_float *x_fill;
-    t_float *x_read;
+    t_sample *x_buf;         /* signal buffer; zero if not a signal */
+    t_sample *x_endbuf;
+    t_sample *x_fill;
+    t_sample *x_read;
     int x_hop;
   /* if not reblocking, the next slot communicates the parent's inlet
      signal from the prolog to the DSP routine: */
     t_signal *x_directsignal;
-
-  t_resample x_updown;
+    t_resample x_updown;
+    t_outlet *x_fwdout;  /* optional outlet for forwarding messages to inlet~ */
 } t_vinlet;
 
 static void *vinlet_new(t_symbol *s)
@@ -104,13 +104,20 @@ int vinlet_issignal(t_vinlet *x)
 t_int *vinlet_perform(t_int *w)
 {
     t_vinlet *x = (t_vinlet *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    t_float *in = x->x_read;
+    t_sample *in = x->x_read;
     while (n--) *out++ = *in++;
     if (in == x->x_endbuf) in = x->x_buf;
     x->x_read = in;
     return (w+4);
+}
+
+
+static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
+        outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
 }
 
 static void vinlet_dsp(t_vinlet *x, t_signal **sp)
@@ -126,7 +133,7 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
     }
     else
     {
-        dsp_add(vinlet_perform, 3, x, outsig->s_vec, outsig->s_vecsize);
+        dsp_add(vinlet_perform, 3, x, outsig->s_vec, (t_int)outsig->s_vecsize);
         x->x_read = x->x_buf;
     }
 }
@@ -135,12 +142,12 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
 t_int *vinlet_doprolog(t_int *w)
 {
     t_vinlet *x = (t_vinlet *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    t_float *out = x->x_fill;
+    t_sample *out = x->x_fill;
     if (out == x->x_endbuf)
     {
-      t_float *f1 = x->x_buf, *f2 = x->x_buf + x->x_hop;
+        t_sample *f1 = x->x_buf, *f2 = x->x_buf + x->x_hop;
         int nshift = x->x_bufsize - x->x_hop;
         out -= x->x_hop;
         while (nshift--) *f1++ = *f2++;
@@ -195,9 +202,9 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         if (bufsize < myvecsize) bufsize = myvecsize;
         if (bufsize != (oldbufsize = x->x_bufsize))
         {
-            t_float *buf = x->x_buf;
+            t_sample *buf = x->x_buf;
             t_freebytes(buf, oldbufsize * sizeof(*buf));
-            buf = (t_float *)t_getbytes(bufsize * sizeof(*buf));
+            buf = (t_sample *)t_getbytes(bufsize * sizeof(*buf));
             memset((char *)buf, 0, bufsize * sizeof(*buf));
             x->x_bufsize = bufsize;
             x->x_endbuf = buf + bufsize;
@@ -213,14 +220,14 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
 
             if (upsample * downsample == 1)
                     dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
-                        re_parentvecsize);
+                        (t_int)re_parentvecsize);
             else {
               int method = (x->x_updown.method == 3?
-                (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
+                  (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
               resamplefrom_dsp(&x->x_updown, insig->s_vec, parentvecsize,
-                re_parentvecsize, method);
+                  re_parentvecsize, method);
               dsp_add(vinlet_doprolog, 3, x, x->x_updown.s_vec,
-                re_parentvecsize);
+                  (t_int)re_parentvecsize);
         }
 
             /* if the input signal's reference count is zero, we have
@@ -244,11 +251,12 @@ static void *vinlet_newsig(t_symbol *s)
     t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
     x->x_canvas = canvas_getcurrent();
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, &s_signal);
-    x->x_endbuf = x->x_buf = (t_float *)getbytes(0);
+    x->x_endbuf = x->x_buf = (t_sample *)getbytes(0);
     x->x_bufsize = 0;
     x->x_directsignal = 0;
+    x->x_fwdout = 0;
     outlet_new(&x->x_obj, &s_signal);
-
+    inlet_new(&x->x_obj, (t_pd *)x->x_inlet, 0, 0);
     resample_init(&x->x_updown);
 
     /* this should be though over:
@@ -258,13 +266,15 @@ static void *vinlet_newsig(t_symbol *s)
      * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
      */
     if (s == gensym("hold"))
-        x->x_updown.method=1;       /* up: sample and hold */
+        x->x_updown.method = 1;       /* up: sample and hold */
     else if (s == gensym("lin") || s == gensym("linear"))
-        x->x_updown.method=2;       /* up: linear interpolation */
+        x->x_updown.method = 2;       /* up: linear interpolation */
     else if (s == gensym("pad"))
-        x->x_updown.method=0;       /* up: zero-padding */
-    else x->x_updown.method=3;      /* sample/hold unless version<0.44 */
+        x->x_updown.method = 0;       /* up: zero-padding */
+    else x->x_updown.method = 3;      /* sample/hold unless version<0.44 */
 
+    if (s == gensym("fwd"))         /* turn on forwarding */
+        x->x_fwdout = outlet_new(&x->x_obj, 0);
     return (x);
 }
 
@@ -279,9 +289,11 @@ static void vinlet_setup(void)
     class_addsymbol(vinlet_class, vinlet_symbol);
     class_addlist(vinlet_class, vinlet_list);
     class_addanything(vinlet_class, vinlet_anything);
+    class_addmethod(vinlet_class,(t_method)vinlet_fwd,  gensym("fwd"),
+        A_GIMME, 0);
     class_addmethod(vinlet_class, (t_method)vinlet_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(vinlet_class, gensym("pd"));
+    class_sethelpsymbol(vinlet_class, gensym("inlet-outlet"));
 }
 
 /* ------------------------- voutlet -------------------------- */
@@ -375,7 +387,7 @@ int voutlet_issignal(t_voutlet *x)
 t_int *voutlet_perform(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     t_sample *out = x->x_write, *outwas = out;
     while (n--)
@@ -451,7 +463,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
     if (!x->x_buf) return;
     insig = sp[0];
     if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
+        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, (t_int)insig->s_n);
     else if (x->x_directsignal)
     {
             /* if we're just going to make the signal available on the
@@ -460,7 +472,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
         signal_setborrowed(x->x_directsignal, sp[0]);
     }
     else
-        dsp_add(voutlet_perform, 3, x, insig->s_vec, insig->s_n);
+        dsp_add(voutlet_perform, 3, x, insig->s_vec, (t_int)insig->s_n);
 }
 
         /* set up epilog DSP code.  If we're reblocking, this is the
@@ -521,12 +533,12 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
             x->x_empty = x->x_buf + re_parentvecsize * epilogphase;
             if (upsample * downsample == 1)
                 dsp_add(voutlet_doepilog, 3, x, outsig->s_vec,
-                    re_parentvecsize);
+                    (t_int)re_parentvecsize);
             else
             {
                 int method = (x->x_updown.method == 3?
                     (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
-                dsp_add(voutlet_doepilog_resampling, 2, x, re_parentvecsize);
+                dsp_add(voutlet_doepilog_resampling, 2, x, (t_int)re_parentvecsize);
                 resampleto_dsp(&x->x_updown, outsig->s_vec, re_parentvecsize,
                     parentvecsize, method);
             }
@@ -587,7 +599,7 @@ static void voutlet_setup(void)
     class_addanything(voutlet_class, voutlet_anything);
     class_addmethod(voutlet_class, (t_method)voutlet_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(voutlet_class, gensym("pd"));
+    class_sethelpsymbol(voutlet_class, gensym("inlet-outlet"));
 }
 
 

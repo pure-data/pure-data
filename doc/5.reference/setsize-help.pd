@@ -1,60 +1,60 @@
 #N struct help-setsize-template float x float y array array1 help-setsize-array1-template
 ;
 #N struct help-setsize-array1-template float y;
-#N canvas 490 274 666 517 12;
-#X text 32 443 see also:;
+#N canvas 568 117 643 519 12;
+#X text 58 443 see also:;
 #N canvas 393 50 495 265 help-setsize-template 0;
 #X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 27 76 plot array1 500 1 10 15 10;
 #X obj 24 16 struct help-setsize-template float x float y array array1
 help-setsize-array1-template;
-#X restore 367 365 pd help-setsize-template;
-#N canvas 2 52 299 169 help-setsize-data 1;
+#X restore 46 379 pd help-setsize-template;
+#N canvas 190 215 299 169 help-setsize-data 1;
 #X scalar help-setsize-template 31 23 \; 0 \; 10 \; 0 \; 10 \; 20 \;
 10 \; 20 \; 70 \; 0 \; 0 \; 0 \; \;;
-#X restore 366 344 pd help-setsize-data;
+#X restore 45 358 pd help-setsize-data;
 #N canvas 196 292 369 138 help-setsize-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-setsize-array1-template float y;
-#X restore 366 388 pd help-setsize-array1-template;
-#X obj 108 463 pointer;
-#X obj 243 463 setsize;
-#X obj 307 265 pointer;
-#X msg 307 241 traverse pd-help-setsize-data \, next;
-#X floatatom 24 238 5 0 0 0 - - -, f 5;
-#X text 327 319 arguments: template \, field name;
-#X obj 24 322 setsize help-setsize-template array1;
-#X text 114 292 inlet for pointer;
-#X obj 36 11 setsize;
-#X obj 175 463 element;
-#X text 30 205 number sets;
-#X text 29 219 size;
-#X text 99 12 -- resize an array;
-#X text 25 34 "setsize" takes a pointer to a scalar at left and a number
+#X restore 45 402 pd help-setsize-array1-template;
+#X obj 123 464 pointer;
+#X obj 248 465 setsize;
+#X obj 302 265 pointer;
+#X msg 302 241 traverse pd-help-setsize-data \, next;
+#X floatatom 25 238 5 0 0 0 - - -;
+#X text 320 321 arguments: template \, field name;
+#X obj 25 322 setsize help-setsize-template array1, f 40;
+#X text 115 292 inlet for pointer;
+#X obj 37 11 setsize;
+#X obj 186 464 element;
+#X text 31 205 number sets;
+#X text 30 219 size;
+#X text 100 12 -- resize an array;
+#X text 26 34 "setsize" takes a pointer to a scalar at left and a number
 at right. Its creation arguments specify the template of the pointer
 and the name of an array field. Sending a number then sets the number
 of elements of the array.;
-#X text 23 100 The smallest possible size is one. If the array is resized
+#X text 24 100 The smallest possible size is one. If the array is resized
 downward the extra data are lost. If resized upward \, the new elements
 are initialized to default values.;
-#X msg 565 422 bang;
-#X text 298 424 click to reload from file -->;
-#X text 309 222 click here first;
-#N canvas 458 61 439 176 readit 1;
+#X msg 502 370 bang;
+#X text 304 222 click here first;
+#N canvas 458 61 439 176 readit 0;
 #X msg 66 65 \; pd-help-setsize-data read setsize.txt;
-#X obj 107 18 inlet;
+#X obj 67 29 inlet;
 #X msg 62 123 \; pd-help-setsize-data write setsize.txt;
 #X connect 1 0 0 0;
-#X restore 565 448 pd readit;
-#X obj 29 463 struct;
-#X text 417 479 updated for Pd version 0.47;
-#X text 67 250 set template and field name;
-#X text 20 154 If you don't know the template name you may specify
+#X restore 502 396 pd readit;
+#X obj 65 464 struct;
+#X text 404 456 updated for Pd version 0.47;
+#X text 68 250 set template and field name;
+#X text 21 154 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity.;
-#X msg 33 272 set help-setsize-template array1;
+#X msg 34 272 set help-setsize-template array1;
+#X text 296 369 click to reload from file =>;
 #X connect 6 0 10 1;
 #X connect 7 0 6 0;
 #X connect 8 0 10 0;
-#X connect 19 0 22 0;
-#X connect 27 0 10 0;
+#X connect 19 0 21 0;
+#X connect 26 0 10 0;

@@ -40,6 +40,7 @@ static PERTHREAD int ooura_maxn;
 static PERTHREAD int *ooura_bitrev;
 static PERTHREAD int ooura_bitrevsize;
 static PERTHREAD FFTFLT *ooura_costab;
+static PERTHREAD FFTFLT *ooura_buffer;
 
 static int ooura_init( int n)
 {
@@ -54,6 +55,7 @@ static int ooura_init( int n)
             {
                 t_freebytes(ooura_bitrev, ooura_bitrevsize);
                 t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
+                t_freebytes(ooura_buffer, ooura_maxn * sizeof(FFTFLT));
             }
             ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
             ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
@@ -72,6 +74,15 @@ static int ooura_init( int n)
                 ooura_maxn = 0;
                 return (0);
             }
+            ooura_buffer = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT));
+            if (!ooura_buffer)
+            {
+                error("out of memory allocating FFT buffer");
+                t_freebytes(ooura_bitrev, ooura_bitrevsize);
+                t_freebytes(ooura_costab, n * sizeof(FFTFLT) / 2);
+                ooura_maxn = 0;
+                return (0);
+            }
             ooura_maxn = n;
             ooura_bitrev[0] = 0;
         }
@@ -85,6 +96,7 @@ static void ooura_term( void)
         return;
     t_freebytes(ooura_bitrev, ooura_bitrevsize);
     t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT)/2);
+    t_freebytes(ooura_buffer, ooura_maxn * sizeof(FFTFLT));
     ooura_maxn = 0;
     ooura_bitrev = 0;
     ooura_bitrevsize = 0;
@@ -92,7 +104,7 @@ static void ooura_term( void)
 }
 
 /* -------- initialization and cleanup -------- */
-static int mayer_refcount = 0;
+static PERTHREAD int mayer_refcount = 0;
 
 void mayer_init( void)
 {
@@ -116,9 +128,9 @@ EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
     FFTFLT *buf, *fp3;
     int i;
     t_sample *fp1, *fp2;
-    buf = alloca(n * (2 * sizeof(FFTFLT)));
     if (!ooura_init(2*n))
         return;
+    buf = ooura_buffer;
     for (i = 0, fp1 = fz1, fp2 = fz2, fp3 = buf; i < n; i++)
     {
         fp3[0] = *fp1++;
@@ -149,9 +161,9 @@ EXTERN void mayer_realfft(int n, t_sample *fz)
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
     t_sample *fp1, *fp2;
-    buf = alloca(n * sizeof(FFTFLT));
     if (!ooura_init(n))
         return;
+    buf = ooura_buffer;
     for (i = 0, fp1 = fz, fp3 = buf; i < n; i++, fp1++, fp3++)
         buf[i] = fz[i];
     rdft(n, 1, buf, ooura_bitrev, ooura_costab);
@@ -167,9 +179,9 @@ EXTERN void mayer_realifft(int n, t_sample *fz)
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
     t_sample *fp1, *fp2;
-    buf = alloca(n * sizeof(FFTFLT));
     if (!ooura_init(n))
         return;
+    buf = ooura_buffer;
     buf[0] = fz[0];
     buf[1] = fz[nover2];
     for (i = 1, fp1 = fz+1, fp2 = fz+(n-1), fp3 = buf+2; i < nover2;

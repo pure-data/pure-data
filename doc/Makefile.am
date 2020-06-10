@@ -337,12 +337,12 @@ nobase_dist_libpd_DATA = \
      ./5.reference/gatom-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
-     ./5.reference/graph-help.pd \
-     ./5.reference/hdial-help.pd \
+     ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/hradio-help.pd \
      ./5.reference/hslider-help.pd \
+     ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
      ./5.reference/key-help.pd \
      ./5.reference/line-help.pd \
@@ -370,7 +370,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/oscparse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/otherbinops-help.pd \
-     ./5.reference/out1~.pd \
      ./5.reference/pack-help.pd \
      ./5.reference/pd-help.pd \
      ./5.reference/pdcontrol-abs.pd \
@@ -444,7 +443,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdial-help.pd \
+     ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vradio-help.pd \
      ./5.reference/vslider-help.pd \

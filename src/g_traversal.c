@@ -121,7 +121,7 @@ void gpointer_copy(const t_gpointer *gpfrom, t_gpointer *gpto)
     else bug("gpointer_copy");
 }
 
-    /* clear a gpointer that was previously set, releasing the associted
+    /* clear a gpointer that was previously set, releasing the associated
     gstub if this was the last reference to it. */
 void gpointer_unset(t_gpointer *gp)
 {
@@ -396,6 +396,36 @@ static void ptrobj_delete(t_ptrobj *x)
     }
 }
 
+static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
+{
+    t_symbol *templatesym;
+    int n, which, result;
+    t_typedout *to;
+    if (!gpointer_check(&x->x_gp, 1))
+    {
+        pd_error(x, "pointer_bang: empty pointer");
+        return;
+    }
+    /* we don't care for the actual type in the union because they are all pointers */
+    result = (gp->gp_stub->gs_un.gs_glist == x->x_gp.gp_stub->gs_un.gs_glist) &&
+        (gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
+    if (!result)
+    {
+        outlet_bang(x->x_bangout);
+        return;
+    }
+    templatesym = gpointer_gettemplatesym(&x->x_gp);
+    for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
+    {
+        if (to->to_type == templatesym)
+        {
+            outlet_pointer(to->to_outlet, &x->x_gp);
+            return;
+        }
+    }
+    outlet_pointer(x->x_otherout, &x->x_gp);
+}
+
     /* send a message to the window containing the object pointed to */
 static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -512,6 +542,7 @@ static void ptrobj_setup(void)
     class_addmethod(ptrobj_class, (t_method)ptrobj_vnext, gensym("vnext"),
         A_DEFFLOAT, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_delete, gensym("delete"), 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_equal, gensym("equal"), A_POINTER, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,

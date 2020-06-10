@@ -1,4 +1,4 @@
-#N canvas 288 82 829 640 12;
+#N canvas 288 82 910 558 12;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array99 5 float 1;
 #A 0 0.32 0.499999 -0.406667 -0.753333 0.00666714;
@@ -6,40 +6,40 @@
 #A 0 -0.0933342 0.306665 0.0266657 0.239999 0.573332 -0.200001 0.533332
 ;
 #X coords 0 1 5 -1 200 150 1;
-#X restore 569 154 graph;
-#X text 155 15 MORE ON ARRAYS;
-#X msg 17 229 \; array99 rename george;
-#X msg 221 229 \; george rename array99;
-#X msg 317 166 \; array99 3 -0.5 0.5;
-#X text 17 207 renaming an array:;
-#X text 16 276 setting the bounds rectangle:;
-#X msg 18 296 \; array99 bounds 0 -2 10 2;
-#X msg 245 294 \; array99 bounds 0 -1 5 1;
-#X msg 19 395 \; array99 xticks 0 1 1;
-#X msg 212 394 \; array99 yticks 0 0.1 5;
-#X text 15 342 adding x and y labels: give a point to put a tick \,
+#X restore 554 183 graph;
+#X text 177 17 MORE ON ARRAYS;
+#X msg 39 237 \; array99 rename george;
+#X msg 222 237 \; george rename array99;
+#X msg 289 170 \; array99 3 -0.5 0.5;
+#X text 39 215 renaming an array:;
+#X text 38 287 setting the bounds rectangle:;
+#X msg 40 307 \; array99 bounds 0 -2 10 2;
+#X msg 256 305 \; array99 bounds 0 -1 5 1;
+#X msg 41 407 \; array99 xticks 0 1 1;
+#X msg 234 406 \; array99 yticks 0 0.1 5;
+#X text 37 354 adding x and y labels: give a point to put a tick \,
 the interval between ticks \, and the number of ticks overall per large
-tick.;
-#X msg 15 472 \; array99 xlabel -1.1 0 1 2 3 4 5;
-#X text 12 436 adding labels. Give a y value and a bunch of x values
-or vice versa:;
-#X msg 17 166 \; array98 0 -1 1 -1 1 -1 1 -1 1 -1;
-#X msg 305 472 \; array99 ylabel 5.15 -1 0 1;
-#X text 10 39 Arrays have methods to set their values explicitly \;
+tick., f 51;
+#X msg 37 484 \; array99 xlabel -1.1 0 1 2 3 4 5;
+#X text 38 448 adding labels. Give a y value and a bunch of x values
+or vice versa:, f 40;
+#X msg 39 170 \; array98 0 -1 1 -1 1 -1 1 -1 1 -1;
+#X msg 277 484 \; array99 ylabel 5.15 -1 0 1;
+#X text 32 45 Arrays have methods to set their values explicitly \;
 to set their "bounds" rectangles \, to rename them (but if you have
 two with the same name this won't necessarily do what you want) and
 to add markings. To set values by message \, send a list whose first
 element gives the index to start at. The second example sets two values
 starting at index three. Indices count up from zero.;
-#X text 539 314 you can put more than one array in a single "graph"
+#X text 507 364 you can put more than one array in a single "graph"
 (which is Pd's name for the bounding rectangle \, and is a synonym
 for "canvas".) Arrays' sizes need not match the bounds of the containing
 graph. But if you resize an array \, and if it is the only array contained
 in a graph \, then the graph automaticallly resets its bounds to match.
-, f 36;
-#X text 556 575 last updated for release 0.48;
-#X text 11 522 You can also change x and y range and size in the "properties"
+, f 51;
+#X text 654 493 last updated for release 0.48;
+#X text 508 27 You can also change x and y range and size in the "properties"
 dialog. Note that information about size and ranges is saved \, but
 ticks and labels are lost between Pd sessions. The contents of the
-array may be saved as part of the patch or discarded \; this is set
-in the 'properties" dialog.;
+array may be saved as part of the patch or discarded., f 46;
+#X text 510 118 This is set in the "properties" dialog.;

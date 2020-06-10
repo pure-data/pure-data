@@ -8,7 +8,7 @@ proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
     if { ! [file exists $filename]} {
-        ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::post [format [_ "ignoring '%s': doesn't exist"] $filename]
         ::pdwindow::post "\n"
         # remove from recent files
         ::pd_guiprefs::update_recentfiles $filename true
@@ -20,7 +20,7 @@ proc open_file {filename} {
         # now this is done in pd_guiprefs
         ::pd_guiprefs::update_recentfiles $filename
     } else {
-        ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
+        ::pdwindow::post [format [_ "ignoring '%s': doesn't look like a Pd file"] $filename]
         ::pdwindow::post "\n"
     }
 }
@@ -28,17 +28,33 @@ proc open_file {filename} {
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 
-proc pdtk_openpanel {target localdir} {
+proc pdtk_openpanel {target localdir {mode 0}} {
     if {! [file isdirectory $localdir]} {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
         }
         set localdir $::fileopendir
     }
-    set filename [tk_getOpenFile -initialdir $localdir]
-    if {$filename ne ""} {
-        set ::fileopendir [file dirname $filename]
-        pdsend "$target callback [enquote_path $filename]"
+    # 0: file, 1: directory, 2: multiple files
+    switch $mode {
+        0 { set result [tk_getOpenFile -initialdir $localdir] }
+        1 { set result [tk_chooseDirectory -initialdir $localdir] }
+        2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
+        default { ::pdwindow::error "bad value for 'mode' argument" }
+    }
+    if {$result ne ""} {
+        if { $mode == 2 } {
+            # 'result' is a list
+            set ::fileopendir [file dirname [lindex $result 0]]
+            set args {}
+            foreach path $result {
+                lappend args [enquote_path $path]
+            }
+            pdsend "$target callback [join $args]"
+        } else {
+            set ::fileopendir [expr {$mode == 0 ? [file dirname $result] : $result}]
+            pdsend "$target callback [enquote_path $result]"
+        }
     }
 }
 

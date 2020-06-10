@@ -1,32 +1,250 @@
-#N canvas 138 65 675 508 12;
-#X floatatom 107 9 0 0 0;
-#X text 155 10 atoms (number boxes);
-#X floatatom 38 85 0 0 0;
-#X floatatom 38 125 0 0 0;
-#X msg 51 260 set 45;
-#X floatatom 51 288 0 0 0;
-#X floatatom 51 317 0 0 0;
-#X text 84 40 Number boxes allow you to display numbers or to enter
-numbers using the mouse and keyboard. When a number arrives at the
-number box's inlet \, it is displayed and sent to the outlet. You can
-click on a number box and drag upward or downward to change the value
-continuously.;
-#X text 88 130 You can shift-click and drag to change the number by
-hundredths instead of units. Alt clicking toggles the value between
-0 and the last nonzero value.;
-#X text 83 184 You can also type in values by clicking and typing a
-number followed by "enter.";
-#X text 30 220 the "set" message sets the number box's value but does
-not send it to the outlet.;
-#X text 423 482 updated for Pd version 0.34;
-#X text 39 339 You can set the width of the box by right-clicking and
-choosing "properties." By default the width is 5 characters. If you
-select a width of 0 \, the number box will grow as needed to hold the
-number--BUT BEWARE \, THIS IS EXPENSIVE IN CPU TIME. In a production
-patch \, you'll want to set a specific width.;
-#X floatatom 547 439 1 0 0;
-#X text 41 438 A width of one gives a clickable toggle switch à la Max:
+#N canvas 347 90 930 482 12;
+#X msg 70 362 set 45;
+#X floatatom 130 405 5 0 0 0 - - -;
+#X symbolatom 112 23 10 0 0 0 - - -;
+#X floatatom 58 23 5 0 0 0 - - -;
+#X text 756 262 more details:;
+#X symbolatom 561 291 15 0 0 0 - - -;
+#X msg 577 257 set hi;
+#X msg 561 229 symbol hello\ world;
+#X obj 561 324 print symbol_box;
+#X obj 130 438 print number_box;
+#X msg 130 362 bang;
+#X msg 516 257 bang;
+#X msg 179 362 12;
+#X text 704 447 updated for Pd version 0.51;
+#X text 469 76 A symbol sent to its inlet is displayed and sent to
+the outlet (a list is truncated to the first item). The "set" message
+sets the symbol box's value but doesn't send it to the outlet. A bang
+outputs the box's symbol value., f 61;
+#N canvas 306 243 427 393 properties 0;
+#N canvas 804 125 490 506 width 0;
+#X floatatom 281 445 1 0 0 0 - - -;
+#X floatatom 173 183 5 0 0 0 - - -;
+#X text 219 184 <= default (5 characters);
+#X floatatom 215 384 0 0 0 0 - - -;
+#X msg 158 347 1;
+#X msg 215 347 -1.2345e+12;
+#X msg 187 152 100;
+#X msg 173 126 -100000;
+#X msg 161 102 100000;
+#X floatatom 173 213 7 0 0 0 - - -;
+#X text 232 214 <= width of 7;
+#X text 99 438 A width of one gives a clickable toggle switch, f 23
 ;
-#X connect 2 0 3 0;
-#X connect 4 0 5 0;
-#X connect 5 0 6 0;
+#X text 299 446 <= click;
+#X text 42 249 Note that if you select a width of 0 \, the number box
+will actually have a minimum width of 3 digits and grow as needed to
+hold the typed or received number - BUT BEWARE \, THIS IS EXPENSIVE
+IN CPU TIME. In a production patch \, you'll want to set a specific
+width., f 58;
+#X text 115 385 width of 0 =>;
+#X text 42 22 The width is 5 characters by default. The number box
+fails to display numbers with more characters and only gives you its
+sign instead. Hence \, you need to increase the width to dislpay it
+properly.;
+#X connect 1 0 9 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 6 0 1 0;
+#X connect 7 0 1 0;
+#X connect 8 0 1 0;
+#X restore 190 171 pd width;
+#X floatatom 73 79 5 0 0 0 - - -;
+#X text 116 78 <= right click for properties;
+#N canvas 795 289 419 235 label 0;
+#X floatatom 180 118 5 -10 10 0 left-label - -;
+#X floatatom 237 118 5 -10 10 2 top-label: - -;
+#X floatatom 237 152 5 -10 10 3 bottom-label: - -;
+#X floatatom 108 152 5 -10 10 1 right-label - -;
+#X text 86 40 You can give it a label and place it in 4 different preset
+positions:, f 36;
+#X restore 190 234 pd label;
+#N canvas 789 217 438 400 send/receive 0;
+#X floatatom 130 310 5 0 0 0 - #0-number -;
+#X floatatom 126 133 5 0 0 0 - - -;
+#X obj 130 348 print;
+#X floatatom 130 199 5 0 0 0 - - #0-number;
+#X text 181 197 <= send symbol \$0-number;
+#X text 181 311 <= receive symbol \$0-number;
+#X text 51 25 The properties also allows you to set a send and receive
+symbol \, in which cases the inlet/outlet are removed (so no connections
+are possible anymore). This way \, the object can communicate to [send]
+and [receive] objects., f 49;
+#X obj 129 235 receive \$0-number;
+#X obj 126 164 send \$0-number;
+#X floatatom 129 273 5 0 0 0 - - -;
+#X connect 0 0 2 0;
+#X connect 1 0 8 0;
+#X connect 7 0 9 0;
+#X restore 142 265 pd send/receive;
+#X text 41 22 You can right click on the object and ask for the properties
+window to change its parameters., f 47;
+#X text 54 124 The subpatches below offer details on each parameter
+from the properties window., f 43;
+#N canvas 779 178 525 491 limits 0;
+#X floatatom 197 158 5 -10 10 0 - - -;
+#X msg 197 119 100;
+#X text 71 158 click and drag =>;
+#X text 244 158 (range from -10 to 10);
+#X text 44 27 By default \, the number box has no range limits \, but
+you can define a range with a lower and upper limit values. Note that
+this limit is only for clicking and dragging. Numbers outside this
+range are accepted if you type it in or receive it via the inlet.;
+#X msg 235 119 set -100;
+#X text 71 174 and also type a value outside the range, f 15;
+#X obj 197 201 print number-range;
+#X floatatom 86 427 0 0 0 0 - - -;
+#X floatatom 216 427 0 0 0 0 - - -;
+#X msg 86 350 bang;
+#X text 70 254 Setting the lower and upper range to the same value
+(like "0" \, "0" - the default) removes the limit. Note that a ridiculously
+large number becomes infinity (negative infinity is also possible).
+The number box will display these and also 'NaN' (Not a Number).,
+f 55;
+#X obj 86 385 expr pow(2 \, 1e+10) \; -pow(2 \, 1e+10);
+#X floatatom 307 427 0 0 0 0 - - -;
+#X msg 307 350 bang;
+#X obj 307 388 expr log(-1);
+#X text 125 351 infinity;
+#X text 345 350 nan;
+#X connect 0 0 7 0;
+#X connect 1 0 0 0;
+#X connect 5 0 0 0;
+#X connect 10 0 12 0;
+#X connect 12 0 8 0;
+#X connect 12 1 9 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X restore 183 202 pd limits;
+#N canvas 721 346 450 298 loading-args 0;
+#X floatatom 224 229 5 0 0 0 #0-label - -;
+#X text 63 114 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X text 63 25 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, lower/upper limits \, label and send/receive
+symbols., f 49;
+#X restore 149 333 pd loading-args;
+#X text 61 303 Loading arguments in properties:;
+#X restore 291 408 pd properties;
+#N canvas 635 260 459 406 properties 0;
+#N canvas 934 145 509 520 width 0;
+#X symbolatom 162 162 10 0 0 0 - - -;
+#X text 238 163 <= default (10 characters);
+#X symbolatom 162 192 15 0 0 0 - - -;
+#X text 275 193 <= width of 15;
+#X msg 120 101 symbol a\ long\ symbol;
+#X msg 162 130 symbol short;
+#X msg 180 364 symbol a\ long\ symbol;
+#X symbolatom 243 427 0 0 0 0 - - -;
+#X msg 243 393 symbol a;
+#X text 58 247 Note that if you select a width of 0 \, the symbol box
+will actually have a minimum width of 3 characters and grow as needed
+to hold the typed or received symbol - BUT BEWARE \, THIS IS EXPENSIVE
+IN CPU TIME. In a production patch \, you'll want to set a specific
+width. A width of 2 is the The minimum functional size., f 57;
+#X text 54 22 By default the width is 10 characters. If the symbol
+box tries to display a larger symbol \, it gets truncated and the last
+displayed character is ">".;
+#X connect 0 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 7 0;
+#X connect 8 0 7 0;
+#X restore 233 216 pd width;
+#X text 171 77 <= right click for properties;
+#N canvas 903 345 354 184 label 0;
+#X symbolatom 126 81 10 0 0 0 left-label - -;
+#X symbolatom 57 113 10 0 0 1 right-label - -;
+#X symbolatom 224 81 10 0 0 2 top-label - -;
+#X symbolatom 224 113 10 0 0 3 bottom-label - -;
+#X text 57 19 You can give it a label and place it in 4 different preset
+positions:, f 35;
+#X restore 233 248 pd label;
+#N canvas 979 272 457 442 send/receive 0;
+#X obj 105 374 print;
+#X symbolatom 101 131 10 0 0 0 - - -;
+#X symbolatom 100 221 10 0 0 0 - - #0-symbol;
+#X text 179 220 <= send symbol: \$0-symbol;
+#X text 184 335 <= receive symbol: \$0-symbol;
+#X symbolatom 105 336 10 0 0 0 - #0-symbol -;
+#X text 55 28 The properties also allows you to set a send and receive
+symbol \, in which cases the inlet/outlet are removed (so no connections
+are possible anymore). This way \, the object can communicate to [send]
+and [receive] objects., f 49;
+#X obj 101 168 send \$0-symbol;
+#X obj 101 259 receive \$0-symbol;
+#X symbolatom 101 293 10 0 0 0 - - -;
+#X connect 1 0 7 0;
+#X connect 5 0 0 0;
+#X connect 8 0 9 0;
+#X restore 185 279 pd send/receive;
+#X symbolatom 86 77 10 0 0 0 - - -;
+#X text 69 22 You can right click on the object and ask for the properties
+window to change its parameters., f 47;
+#X text 43 122 The subpatches below offer details on each parameter
+from the properties window. The properties window is the same as the
+number box's and the behaviour is basically the same. One main difference
+is that the "limits" are not valid for the symbol box., f 53;
+#N canvas 912 421 450 289 loading-args 0;
+#X text 61 114 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X symbolatom 220 228 10 0 0 0 #0-label - -;
+#X text 61 25 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, label and send/receive symbols., f 49;
+#X restore 196 357 pd loading-args;
+#X text 108 327 Loading arguments in properties:;
+#X restore 756 285 pd properties;
+#X text 291 382 more details:;
+#X obj 589 375 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
+-262144 -1 -1 0 256;
+#X text 469 17 Symbol boxes are created via the Put menu (named as
+"Symbol") or its shortcut. It allows you to display or to enter symbols
+using the keyboard. Click on the object \, type a symbol and then 'enter'
+to finish and output it., f 61;
+#X text 31 101 Number boxes are created via the Put menu (named as
+"Number") or its shortcut. It allows you to display or to enter numbers
+using the mouse and keyboard. Click on the object \, type a number
+value and then 'enter' to finish and output it. You can also click
+on it and drag upward or downward to change the value continuously
+(use shift-click & drag to change values by hundredths instead of units).
+, f 58;
+#X text 31 201 A float sent to its inlet is displayed and sent to the
+outlet (a list is truncated to the first item). The "set" message sets
+the number box's value but doesn't send it to the outlet. A bang outputs
+the box's value.;
+#X text 198 22 atom (number/symbol) box;
+#X text 663 376 <= number box from "iemguis";
+#X text 511 387 See also:;
+#X text 46 49 These are GUI (Graphical User Interface) objects that
+display and send atoms (numbers or symbols).;
+#X text 31 261 If you click on the number box while pressing "control"
+(in Linux/Windows) or "command" (Mac) \, the object toggles between
+0 and a non zero value. The non zero value is the last non zero value
+that the box holds (by default \, this value is "1")., f 58;
+#X text 469 136 Note that when you type symbols with special characters
+(space \, comma \, semicolon \, backslash \, dollar signs) \, the object
+automatically adds the backslash escape symbol ( \ ). Also note that
+typing a float will generate a symbol (for instance \, "symbol 4").
+, f 61;
+#X obj 589 399 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 613 400 <= toggle from "iemguis";
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
+#X connect 5 0 8 0;
+#X connect 6 0 5 0;
+#X connect 7 0 5 0;
+#X connect 10 0 1 0;
+#X connect 11 0 5 0;
+#X connect 12 0 1 0;

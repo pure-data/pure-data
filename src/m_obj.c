@@ -9,6 +9,12 @@ behavior for "gobjs" appears at the end of this file.  */
 #include "m_pd.h"
 #include "m_imp.h"
 
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#endif
+
 union inletunion
 {
     t_symbol *iu_symto;
@@ -76,6 +82,7 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
 }
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
+extern t_class *vinlet_class;
 
     /* LATER figure out how to make these efficient: */
 static void inlet_bang(t_inlet *x)
@@ -85,6 +92,8 @@ static void inlet_bang(t_inlet *x)
     else if (!x->i_symfrom) pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
         inlet_list(x, &s_bang, 0, 0);
+    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+        vmess(x->i_dest, gensym("fwd"), "s", &s_bang);
     else inlet_wrong(x, &s_bang);
 }
 
@@ -130,7 +139,20 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
         SETSYMBOL(&a, s);
         inlet_list(x, &s_symbol, 1, &a);
     }
+    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+        vmess(x->i_dest, gensym("fwd"), "ss", &s_symbol, s);
     else inlet_wrong(x, &s_symbol);
+}
+
+    /* forward a message to an inlet~ object */
+static void inlet_fwd(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom *argvec = (t_atom *)alloca((argc+1) * sizeof(t_atom));
+    int i;
+    SETSYMBOL(argvec, s);
+    for (i = 0; i < argc; i++)
+        argvec[i+1] = argv[i];
+    typedmess(x->i_dest, gensym("fwd"), argc+1, argvec);
 }
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -146,7 +168,9 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
       inlet_float(x, atom_getfloat(argv));
     else if (argc==1 && argv->a_type == A_SYMBOL)
       inlet_symbol(x, atom_getsymbol(argv));
-    else inlet_wrong(x, &s_list);
+    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+        inlet_fwd(x, &s_list, argc, argv);
+    else post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -155,6 +179,8 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
         typedmess(x->i_dest, x->i_symto, argc, argv);
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
+    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
+        inlet_fwd(x, s, argc, argv);
     else inlet_wrong(x, s);
 }
 

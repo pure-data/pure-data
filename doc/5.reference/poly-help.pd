@@ -1,27 +1,27 @@
-#N canvas 205 55 655 444 12;
-#X text 406 383 updated for Pd version 0.25;
-#X text 42 383 see also:;
-#X obj 62 15 poly;
-#X text 101 14 - MIDI-STYLE POLYPHONIC VOICE ALLOCATOR;
-#X text 12 42 The poly object takes a stream of pitch/velocity pairs
+#N canvas 473 88 573 394 12;
+#X text 329 318 updated for Pd version 0.25;
+#X text 51 323 see also:;
+#X obj 69 16 poly;
+#X text 108 15 - MIDI-STYLE POLYPHONIC VOICE ALLOCATOR;
+#X text 33 49 The poly object takes a stream of pitch/velocity pairs
 and outputs triples containing voice number \, pitch and velocity.
 You can pack the output and use the route object to route messages
 among a bank of voices depending on the first outlet. Poly can be configured
 to do voice stealing or not (the default.);
-#X obj 120 384 route;
-#X obj 174 384 makenote;
-#X obj 52 254 poly 4 1;
-#X text 150 254 <-- first argument \, number of voices \; second argument
+#X obj 129 324 route;
+#X obj 183 324 makenote;
+#X obj 124 214 poly 4 1;
+#X text 222 214 <-- first argument \, number of voices \; second argument
 selects voice stealing;
-#X msg 52 168 60 64;
-#X msg 103 168 60 0;
-#X msg 147 168 62 64;
-#X msg 198 168 62 0;
-#X obj 52 280 pack 0 0 0;
-#X obj 52 306 print;
-#X text 97 305 Output is in the printout window.;
-#X msg 258 177 stop;
-#X msg 302 177 clear;
+#X msg 73 158 60 64;
+#X msg 124 158 60 0;
+#X msg 168 158 62 64;
+#X msg 219 158 62 0;
+#X obj 124 240 pack 0 0 0;
+#X obj 124 266 print;
+#X text 169 265 Output is in the printout window.;
+#X msg 279 167 stop;
+#X msg 323 167 clear;
 #X connect 7 0 13 0;
 #X connect 7 1 13 1;
 #X connect 7 2 13 2;

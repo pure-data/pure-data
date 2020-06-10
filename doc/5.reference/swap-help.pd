@@ -1,28 +1,28 @@
-#N canvas 475 187 615 593 12;
-#X msg 72 167 bang;
-#X floatatom 72 292 0 0 0 0 - - -;
-#X floatatom 84 200 0 0 0 0 - - -;
-#X floatatom 139 237 0 0 0 0 - - -;
-#X obj 33 15 swap;
-#X text 81 16 - SWAP TWO NUMBERS \, RESPECTING RIGHT-TO-LEFT ORDER
+#N canvas 553 45 536 593 12;
+#X msg 78 168 bang;
+#X floatatom 78 293 0 0 0 0 - - -;
+#X floatatom 90 201 0 0 0 0 - - -;
+#X floatatom 145 238 0 0 0 0 - - -;
+#X obj 39 16 swap;
+#X text 87 17 - SWAP TWO NUMBERS \, RESPECTING RIGHT-TO-LEFT ORDER
 ;
-#X text 117 166 outputs 2 stored values;
-#X obj 72 266 swap 6.5;
-#X text 115 200 sets second value and outputs both;
-#X text 171 238 sets first value;
-#X text 157 266 creation argument initializes first value;
-#X floatatom 139 291 0 0 0 0 - - -;
-#X obj 139 331 print right;
-#X obj 72 367 print left;
-#X text 43 427 A common use of swap is to reverse the operands in arithmetic
+#X text 123 167 outputs 2 stored values;
+#X obj 78 267 swap 6.5;
+#X text 121 201 sets second value and outputs both;
+#X text 177 239 sets first value;
+#X text 163 267 creation argument initializes first value;
+#X floatatom 145 292 0 0 0 0 - - -;
+#X obj 145 332 print right;
+#X obj 78 368 print left;
+#X text 57 409 A common use of swap is to reverse the operands in arithmetic
 objects like this:;
-#X obj 72 491 swap;
-#X obj 72 519 -;
-#X floatatom 72 541 5 0 0 0 - - -;
-#X floatatom 103 469 3 0 0 0 - - -;
-#X floatatom 72 469 3 0 0 0 - - -;
-#X text 291 549 updated for Pd version 0.41;
-#X text 32 52 The swap object swaps the positions of two incoming numbers.
+#X obj 147 486 swap;
+#X obj 147 514 -;
+#X floatatom 147 536 5 0 0 0 - - -;
+#X floatatom 178 464 3 0 0 0 - - -;
+#X floatatom 147 464 3 0 0 0 - - -;
+#X text 273 513 updated for Pd version 0.41;
+#X text 38 53 The swap object swaps the positions of two incoming numbers.
 The number coming in through the right inlet will be sent to the left
 outlet and the number coming in left will come out right. Only the
 left inlet is hot and triggers output on both outlets. Output order
