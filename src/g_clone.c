@@ -73,6 +73,8 @@ void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
 static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
     int n;
+    if (!x->i_owner->x_nin)
+        return;
     if (argc < 1 || argv[0].a_type != A_FLOAT)
         pd_error(x->i_owner, "clone: no instance number in message");
     else if ((n = argv[0].a_w.w_float - x->i_owner->x_startvoice) < 0 ||
@@ -91,9 +93,9 @@ static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
     int phase = x->i_owner->x_phase;
     if (phase < 0 || phase >= x->i_owner->x_n)
         phase = 0;
-    if (argc <= 0)
+    if (argc <= 0 || !x->i_owner->x_nin)
         return;
-    else if (argv->a_type == A_SYMBOL)
+    if (argv->a_type == A_SYMBOL)
         obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
             argv[0].a_w.w_symbol, argc-1, argv+1);
     else obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
@@ -514,18 +516,30 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             goto fail;
         /* inlets */
     x->x_nin = obj_ninlets(&c->gl_obj);
-    x->x_invec = (t_in *)getbytes(x->x_nin * sizeof(*x->x_invec));
-    for (i = 0; i < x->x_nin; i++)
+    if (x->x_nin > 0)
     {
-        x->x_invec[i].i_pd = clone_in_class;
-        x->x_invec[i].i_owner = x;
-        x->x_invec[i].i_signal =
-            obj_issignalinlet(&c->gl_obj, i);
-        x->x_invec[i].i_n = i;
-        if (x->x_invec[i].i_signal)
-            inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
-                &s_signal, &s_signal);
-        else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
+        x->x_invec = (t_in *)getbytes(x->x_nin * sizeof(*x->x_invec));
+        for (i = 0; i < x->x_nin; i++)
+        {
+            x->x_invec[i].i_pd = clone_in_class;
+            x->x_invec[i].i_owner = x;
+            x->x_invec[i].i_signal =
+                obj_issignalinlet(&c->gl_obj, i);
+            x->x_invec[i].i_n = i;
+            if (x->x_invec[i].i_signal)
+                inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
+                    &s_signal, &s_signal);
+            else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
+        }
+    }
+    else /* fake inlet to send messages like "vis" or "resize" */
+    {
+        x->x_invec = (t_in *)getbytes(sizeof(*x->x_invec));
+        x->x_invec->i_pd = clone_in_class;
+        x->x_invec->i_owner = x;
+        x->x_invec->i_signal = 0;
+        x->x_invec->i_n = 0;
+        inlet_new(&x->x_obj, &x->x_invec->i_pd, 0, 0);
     }
         /* outlets */
     x->x_nout = obj_noutlets(&c->gl_obj);
@@ -572,7 +586,10 @@ static void clone_free(t_clone *x)
             clone_freeinstance(x, i);
         t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
-        t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
+        if (x->x_nin)
+            t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
+        else /* fake inlet */
+            t_freebytes(x->x_invec, sizeof(*x->x_invec));
         t_freebytes(x->x_outvec, x->x_nout * sizeof(*x->x_outvec));
         clone_voicetovis = voicetovis;
     }
