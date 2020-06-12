@@ -144,6 +144,15 @@ static void clone_in_fwd(t_in *x, t_symbol *s, int argc, t_atom *argv)
         typedmess(&x->i_pd, argv->a_w.w_symbol, argc-1, argv+1);
 }
 
+static void clone_setn(t_clone *, t_floatarg);
+
+static void clone_in_resize(t_in *x, t_floatarg f)
+{
+    canvas_setcurrent(x->i_owner->x_canvas);
+    clone_setn(x->i_owner, f);
+    canvas_unsetcurrent(x->i_owner->x_canvas);
+}
+
 static void clone_out_anything(t_outproxy *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
@@ -595,6 +604,8 @@ void clone_setup(void)
         A_FLOAT, A_FLOAT, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_fwd, gensym("fwd"),
         A_GIMME, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_resize, gensym("resize"),
+        A_FLOAT, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
