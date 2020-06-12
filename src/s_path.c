@@ -21,6 +21,8 @@
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
+#else
+#include <wordexp.h>
 #endif
 
 #ifdef _WIN32
@@ -530,35 +532,67 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-int sys_argparse(int argc, const char **argv);
-static int string2args(const char * cmd, int * retArgc, const char *** retArgv);
+int sys_argparse(int argc, char **argv);
 
 void sys_doflags(void)
 {
-    int rcargc=0;
-    const char**rcargv = NULL;
+#ifdef _WIN32
+    wchar_t buf[MAXPDSTRING];
+    LPWSTR *wargv;
+    char **argv;
+    int argc, i;
+#else
+    wordexp_t we;
+#endif
     int len;
-    int rcode = 0;
+
     if (!sys_flags)
         sys_flags = &s_;
     len = (int)strlen(sys_flags->s_name);
-    if (len > MAXPDSTRING)
+    if (len >= MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
         return;
     }
-    rcode = string2args(sys_flags->s_name, &rcargc, &rcargv);
-    if(rcode < 0) {
-        error("error#%d while parsing flags", rcode);
+
+#ifdef _WIN32
+    // CommandLineToArgvW only exists as unicode version!
+    u8_utf8toucs2(buf, MAXPDSTRING, (char *)sys_flags->s_name, len);
+    wargv = CommandLineToArgvW(buf, &argc);
+    if (wargv == NULL)
+    {
+        error("CommandLineToArgvW failed");
+        return;
+    }
+    argv = malloc(sizeof(char *) * argc);
+        // convert individual arguments back to utf8
+    for (i = 0; i < argc; ++i)
+    {
+        char arg[MAXPDSTRING];
+        int size = u8_ucs2toutf8(arg, MAXPDSTRING, wargv[i], wcslen(wargv[i]));
+        argv[i] = malloc(size + 1);
+        strcpy(argv[i], arg);
+    }
+    LocalFree(wargv);
+
+    if (sys_argparse(argc, argv))
+        error("error parsing startup arguments");
+
+    for (i = 0; i < argc; ++i)
+        free(argv[i]);
+    free(argv);
+#else
+    if (wordexp(sys_flags->s_name, &we, 0))
+    {
+        error("wordexp failed");
         return;
     }
 
-    if (sys_argparse(rcargc, rcargv))
+    if (sys_argparse((int)we.we_wordc, we.we_wordv))
         error("error parsing startup arguments");
 
-    for(len=0; len<rcargc; len++)
-        free((void*)rcargv[len]);
-    free(rcargv);
+    wordfree(&we);
+#endif
 }
 
 /* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
@@ -712,128 +746,4 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, s->s_name);
     }
-}
-
-
-/*
- * the following string2args function is based on from sash-3.8 (the StandAlone SHell)
- * Copyright (c) 2014 by David I. Bell
- * Permission is granted to use, distribute, or modify this source,
- * provided that this copyright notice remains intact.
- */
-#define	isBlank(ch)	(((ch) == ' ') || ((ch) == '\t'))
-int string2args(const char * cmd, int * retArgc, const char *** retArgv)
-{
-    int errCode = 1;
-    int len = strlen(cmd), argCount = 0;
-    char strings[MAXPDSTRING], *cp;
-    const char **argTable = 0, **newArgTable;
-
-    if(retArgc) *retArgc = 0;
-    if(retArgv) *retArgv = NULL;
-
-        /*
-         * Copy the command string into a buffer that we can modify,
-         * reallocating it if necessary.
-         */
-    if(len >= MAXPDSTRING) {
-        errCode = 1; goto ouch;
-    }
-    memset(strings, 0, MAXPDSTRING);
-    memcpy(strings, cmd, len);
-    cp = strings;
-
-        /* Keep parsing the command string as long as there are any arguments left. */
-    while (*cp) {
-        const char *cpIn = cp;
-        char *cpOut = cp, *argument;
-        int quote = '\0';
-
-            /*
-             * Loop over the string collecting the next argument while
-             * looking for quoted strings or quoted characters.
-             */
-        while (*cp) {
-            int ch = *cp++;
-
-                /* If we are not in a quote and we see a blank then this argument is done. */
-            if (isBlank(ch) && (quote == '\0'))
-                break;
-
-                /* If we see a backslash then accept the next character no matter what it is. */
-            if (ch == '\\') {
-                ch = *cp++;
-                if (ch == '\0') { /* but only if there is a next char */
-                    errCode = 10; goto ouch;
-                }
-                *cpOut++ = ch;
-                continue;
-            }
-
-                /* If we were in a quote and we saw the same quote character again then the quote is done. */
-            if (ch == quote) {
-                quote = '\0';
-                continue;
-            }
-
-                /* If we weren't in a quote and we see either type of quote character,
-                 * then remember that we are now inside of a quote. */
-            if ((quote == '\0') && ((ch == '\'') || (ch == '"')))  {
-                quote = ch;
-                continue;
-            }
-
-                /* Store the character. */
-            *cpOut++ = ch;
-        }
-
-        if (quote) { /* Unmatched quote character */
-            errCode = 11; goto ouch;
-        }
-
-            /*
-             * Null terminate the argument if it had shrunk, and then
-             * skip over all blanks to the next argument, nulling them
-             * out too.
-             */
-        if (cp != cpOut)
-            *cpOut = '\0';
-        while (isBlank(*cp))
-            *cp++ = '\0';
-
-        if (!(argument = calloc(1+cpOut-cpIn, 1))) {
-            errCode = 22; goto ouch;
-        }
-        memcpy(argument, cpIn, cpOut-cpIn);
-
-            /* Now reallocate the argument table to hold the argument, add add it. */
-        if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
-            free(argument);
-            errCode= 23; goto ouch;
-        } else argTable = newArgTable;
-
-        argTable[argCount] = argument;
-
-        argCount++;
-    }
-
-        /*
-         * Null terminate the argument list and return it.
-         */
-    if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
-        errCode = 23; goto ouch;
-    } else argTable = newArgTable;
-
-    argTable[argCount] = NULL;
-
-    if(retArgc) *retArgc = argCount;
-    if(retArgv)
-        *retArgv = argTable;
-    else
-        free(argTable);
-    return argCount;
-
- ouch:
-    free(argTable);
-    return -errCode;
 }
