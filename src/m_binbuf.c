@@ -1480,35 +1480,65 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */
-void binbuf_evalfile(t_symbol *name, t_symbol *dir)
+void binbuf_evalfile(t_symbol* name, t_symbol* dir)
 {
-    t_binbuf *b = binbuf_new();
+    t_binbuf* b = binbuf_new();
     int import = !strcmp(name->s_name + strlen(name->s_name) - 4, ".pat") ||
         !strcmp(name->s_name + strlen(name->s_name) - 4, ".mxt");
     int dspstate = canvas_suspend_dsp();
-        /* set filename so that new canvases can pick them up */
+    /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
     if (binbuf_read(b, name->s_name, dir->s_name, 0))
         error("%s: read failed; %s", name->s_name, strerror(errno));
     else
     {
-            /* save bindings of symbols #N, #A (and restore afterward) */
-        t_pd *bounda = gensym("#A")->s_thing, *boundn = s__N.s_thing;
+        /* save bindings of symbols #N, #A (and restore afterward) */
+        t_pd* bounda = gensym("#A")->s_thing, * boundn = s__N.s_thing;
         gensym("#A")->s_thing = 0;
         s__N.s_thing = &pd_canvasmaker;
         if (import)
         {
-            t_binbuf *newb = binbuf_convert(b, 1);
+            t_binbuf* newb = binbuf_convert(b, 1);
             binbuf_free(b);
             b = newb;
         }
         binbuf_eval(b, 0, 0, 0);
-            /* avoid crashing if no canvas was created by binbuf eval */
+        /* avoid crashing if no canvas was created by binbuf eval */
         if (s__X.s_thing && *s__X.s_thing == canvas_class)
-            canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
+            canvas_initbang((t_canvas*)(s__X.s_thing)); /* JMZ*/
         gensym("#A")->s_thing = bounda;
         s__N.s_thing = boundn;
     }
+    glob_setfilename(0, &s_, &s_);
+    binbuf_free(b);
+    canvas_resume_dsp(dspstate);
+}
+
+void binbuf_evaltext(const char* data, size_t length, t_symbol* name, t_symbol* dir)
+{
+    t_binbuf* b = binbuf_new();
+    int import = !strcmp(name->s_name + strlen(name->s_name) - 4, ".pat") ||
+        !strcmp(name->s_name + strlen(name->s_name) - 4, ".mxt");
+    int dspstate = canvas_suspend_dsp();
+    /* set filename so that new canvases can pick them up */
+    glob_setfilename(0, name, dir);
+    binbuf_text(b, data, length);
+    /* save bindings of symbols #N, #A (and restore afterward) */
+    t_pd* bounda = gensym("#A")->s_thing, * boundn = s__N.s_thing;
+    gensym("#A")->s_thing = 0;
+    s__N.s_thing = &pd_canvasmaker;
+    if (import)
+    {
+        t_binbuf* newb = binbuf_convert(b, 1);
+        binbuf_free(b);
+        b = newb;
+    }
+    binbuf_eval(b, 0, 0, 0);
+    /* avoid crashing if no canvas was created by binbuf eval */
+    if (s__X.s_thing && *s__X.s_thing == canvas_class)
+        canvas_initbang((t_canvas*)(s__X.s_thing)); /* JMZ*/
+    gensym("#A")->s_thing = bounda;
+    s__N.s_thing = boundn;
     glob_setfilename(0, &s_, &s_);
     binbuf_free(b);
     canvas_resume_dsp(dspstate);

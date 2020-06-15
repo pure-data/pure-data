@@ -537,14 +537,6 @@ ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 FUNC_EVAL_UNARY(left, toint, (int), optr, 0);
         }
 
-#ifdef _MSC_VER
-/* rint is now advertised as part of the microsoft SDK but my MSVC still
-doesn't find it - so here it is again. */
-static double rint(double x)
-{
-        return (floor(x + 0.5));
-}
-#endif
 
 /*
  * ex_rint -- rint() round to the nearest int according to the common

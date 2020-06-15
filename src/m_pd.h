@@ -362,7 +362,8 @@ EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *d
     int crflag);
 EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
     int crflag);
-EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
+EXTERN void binbuf_evalfile(t_symbol* name, t_symbol* dir);
+EXTERN void binbuf_evaltext(const char* data, size_t length, t_symbol* name, t_symbol* dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
 

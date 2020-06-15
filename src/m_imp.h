@@ -93,7 +93,8 @@ void pd_globalunlock(void);
 /* misc */
 #define SYMTABHASHSIZE 1024
 
-EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
+EXTERN t_pd* glob_evalfile(t_pd* ignore, t_symbol* name, t_symbol* dir);
+EXTERN t_pd* glob_evaltext(const char* data, size_t length, t_symbol* name, t_symbol* dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
 EXTERN void glob_quit(void *dummy);
 EXTERN void open_via_helppath(const char *name, const char *dir);
