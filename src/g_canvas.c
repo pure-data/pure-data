@@ -2045,19 +2045,19 @@ void pd_doloadbang(void);
 
     /* evaluate a file, which is expected to create a patch, and perform
     post-evaluation cleanup and loadbang */
-t_pd* glob_evalfile(t_pd* ignore, t_symbol* name, t_symbol* dir)
+t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
-    t_pd* x = 0, * boundx;
+    t_pd *x = 0, *boundx;
     int dspstate;
 
-    /* even though binbuf_evalfile appears to take care of dspstate,
-    we have to do it again here, because canvas_startdsp() assumes
-    that all toplevel canvases are visible.  LATER check if this
-    is still necessary -- probably not. */
+        /* even though binbuf_evalfile appears to take care of dspstate,
+        we have to do it again here, because canvas_startdsp() assumes
+        that all toplevel canvases are visible.  LATER check if this
+        is still necessary -- probably not. */
     dspstate = canvas_suspend_dsp();
     boundx = s__X.s_thing;
-    s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
-                            for the caller to grab it. */
+        s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
+                                for the caller to grab it. */
     binbuf_evalfile(name, dir);
     while ((x != s__X.s_thing) && s__X.s_thing)
     {
@@ -2071,9 +2071,9 @@ t_pd* glob_evalfile(t_pd* ignore, t_symbol* name, t_symbol* dir)
     return x;
 }
 
-t_pd* glob_evaltext(const char* data, size_t length, t_symbol* name, t_symbol* dir)
+t_pd *glob_evaltext(const char *data, size_t length, t_symbol *name, t_symbol *dir)
 {
-    t_pd* x = 0, * boundx;
+    t_pd *x = 0, *boundx;
     int dspstate;
 
     /* even though binbuf_evalfile appears to take care of dspstate,
