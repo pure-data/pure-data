@@ -1,26 +1,26 @@
-#N canvas 117 105 685 426 12;
-#X obj 58 220 metro 500;
-#X obj 58 195 r metro;
-#X msg 575 106 \; metro 0;
-#X msg 574 48 \; pd dsp 1 \; metro 1;
-#X floatatom 42 121 0 0 0 0 - - -;
-#X floatatom 42 277 0 0 0 0 - - -;
-#X obj 574 21 loadbang;
-#X obj 42 244 snapshot~;
-#X obj 42 147 sig~;
-#X obj 36 16 wrap~;
-#X text 93 16 - remainder modulo 1;
-#X text 18 45 wrap~ gives the difference between the input and the
+#N canvas 645 53 641 367 12;
+#X obj 71 229 metro 500;
+#X obj 71 204 r metro;
+#X msg 500 115 \; metro 0;
+#X msg 499 57 \; pd dsp 1 \; metro 1;
+#X floatatom 55 130 0 0 0 0 - - -;
+#X floatatom 55 286 0 0 0 0 - - -;
+#X obj 499 30 loadbang;
+#X obj 55 253 snapshot~;
+#X obj 55 156 sig~;
+#X obj 58 25 wrap~;
+#X text 112 25 - remainder modulo 1;
+#X text 31 54 wrap~ gives the difference between the input and the
 largest integer not exceeding it (for positive numbers this is the
 fractional part).;
-#X obj 42 171 wrap~;
-#X text 127 123 <-- shift-drag here to get non-integers to try;
-#X text 446 391 updated for Pd version 0.48;
-#X msg 273 275 \; pd compatibility 0.47;
-#X text 181 200 COMPATIBILITY NOTE: in Pd versions before 0.48 \, wrap~
+#X obj 55 180 wrap~;
+#X text 146 320 updated for Pd version 0.48;
+#X msg 404 262 \; pd compatibility 0.47;
+#X text 188 191 COMPATIBILITY NOTE: in Pd versions before 0.48 \, wrap~
 with an input of 0 output 1 (but now correctly outputs 0). To get the
 old behavior \, set "compatibility" to 0.47 or below in Pd's command
-line or by a message:;
+line or by a message:, f 54;
+#X text 89 128 <= shift-drag here to get non-integers to try;
 #X connect 0 0 7 0;
 #X connect 1 0 0 0;
 #X connect 1 0 0 0;

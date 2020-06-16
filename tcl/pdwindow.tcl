@@ -89,7 +89,7 @@ proc ::pdwindow::filter_buffer_to_text {args} {
         incr i
     }
     .pdwindow.text.internal yview end
-    ::pdwindow::verbose 10 "The Pd window filtered $i lines\n"
+    ::pdwindow::verbose 10 "the Pd window filtered $i lines\n"
 }
 
 proc ::pdwindow::select_by_id {args} {

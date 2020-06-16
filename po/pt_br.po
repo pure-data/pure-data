@@ -178,9 +178,9 @@ msgstr "configurações do Pd apagadas"
 msgid "no Pd settings to erase"
 msgstr "Nenhuma configuração do Pd para apagar"
 
-msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
-"pulando carregar preferências... o Pd parece ter travado na inicialização."
+"pulando carregar preferências... o Pd parece ter travado na inicialização"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(re-salvar preferências para reinstancia-las)"
@@ -636,58 +636,57 @@ msgstr "(Tcl) NOME DE COMANDO INVÁLIDO: "
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr "(Tcl) ERRO NÃO TRATADO:"
 
-#, tcl-format
-msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
-msgstr "[deken]: versão instalada [%1$s] > %2$s...pulando!"
-
-#, tcl-format
-msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr "[deken]: versão instalada [%1$s] < %2$s...sobrescrevendo!"
-
-#, tcl-format
-msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr "[deken]: versão instalada [%1$s] == %2$s...pulando!"
-
-msgid "[deken]: "
-msgstr "[deken]: "
-
-#, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
-msgstr "%1$s descompactado em %2$s com sucesso."
-
-msgid "[deken]: Unable to extract package automatically."
-msgstr "[deken]: Incapaz de extrair o pacote automaticamente."
-
-msgid "Please perform the following steps manually:"
-msgstr "Por favor realize os seguintes passos manualmente:"
-
-#, tcl-format
-msgid "1. Unzip %s."
-msgstr "1. Descompactar %s."
-
-#, tcl-format
-msgid "2. Copy the contents into %s."
-msgstr "2. Copiar o conteúdo para %s."
-
-#, tcl-format
-msgid "[deken] uninstalling '%s'"
-msgstr "[deken] desinstalando '%s'"
-
-#, tcl-format
-msgid "Uninstalling %1$s from %2$s failed!"
-msgstr "Falha ao desinstalar %1$s de %2$s!"
-
-#, tcl-format
-msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
-
-#, tcl-format
-msgid "[deken] Platform detected: %s"
-msgstr "[deken] Platforma detectada: %s"
+#, fuzzy, tcl-format
+msgid "installed version [%1$s] > %2$s...skipping!"
+msgstr "versão instalada [%1$s] > %2$s...pulando!"
 
 #, fuzzy, tcl-format
-msgid "[deken] Platform re-detected: %s"
-msgstr "[deken] Platforma redetectada: %s"
+msgid "installed version [%1$s] < %2$s...overwriting!"
+msgstr "versão instalada [%1$s] < %2$s...sobrescrevendo!"
+
+#, fuzzy, tcl-format
+msgid "installed version [%1$s] == %2$s...skipping!"
+msgstr "versão instalada [%1$s] == %2$s...pulando!"
+
+#, fuzzy, tcl-format
+msgid "successfully unzipped %1$s into %2$s"
+msgstr "%1$s descompactado em %2$s com sucesso."
+
+#, fuzzy
+msgid "unable to extract package automatically"
+msgstr "incapaz de extrair o pacote automaticamente"
+
+#, fuzzy
+msgid "please perform the following steps manually:"
+msgstr "por favor realize os seguintes passos manualmente:"
+
+#, fuzzy, tcl-format
+msgid "1. unzip %s"
+msgstr "1. descompactar %s"
+
+#, fuzzy, tcl-format
+msgid "2. copy the contents into %s"
+msgstr "2. copiar o conteúdo para %s"
+
+#, tcl-format
+msgid "uninstalling '%s'"
+msgstr "desinstalando '%s'"
+
+#, fuzzy, tcl-format
+msgid "uninstalling %1$s from %2$s failed!"
+msgstr "falha ao desinstalar %1$s de %2$s!"
+
+#, fuzzy, tcl-format
+msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
+msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s"
+
+#, fuzzy, tcl-format
+msgid "platform detected: %s"
+msgstr "platforma detectada: %s"
+
+#, fuzzy, tcl-format
+msgid "platform re-detected: %s"
+msgstr "platforma redetectada: %s"
 
 msgid "Show all"
 msgstr "Mostrar todos"
@@ -741,12 +740,13 @@ msgstr "Esconder arquiteturas estrangeiras?"
 msgid "Deken %s Preferences"
 msgstr "Deken %s Preferências"
 
-msgid "[deken]: Start searching for externals..."
-msgstr "[deken]: Procurando por externals"
+#, fuzzy
+msgid "start searching for externals..."
+msgstr "procurando por externals..."
 
-#, tcl-format
-msgid "[deken]: online? %s"
-msgstr "[deken]: Você está online? %s"
+#, fuzzy, tcl-format
+msgid "online? %s"
+msgstr "você está online? %s"
 
 msgid "Are you online?"
 msgstr "Você está online?"
@@ -754,11 +754,13 @@ msgstr "Você está online?"
 msgid "Unable to perform search."
 msgstr "Incapaz de realizar busca."
 
-msgid "[deken]: No matching externals found."
-msgstr "[deken]: Nenhum external encontrado."
+#, fuzzy
+msgid "no matching externals found"
+msgstr "nenhum external encontrado"
 
-msgid "Try using the full name e.g. 'freeverb'."
-msgstr "Tente usar o nome completo (como 'freeverb')."
+#, fuzzy
+msgid "try using the full name e.g. 'freeverb'"
+msgstr "tente usar o nome completo (como 'freeverb')"
 
 msgid "No matching externals found."
 msgstr "Nenhum external encontrado."
@@ -770,47 +772,51 @@ msgstr "Por favor escolha um diretório de instalação com permissão de escrit
 msgid "Install %1$s to %2$s?"
 msgstr "Instalar %1$s em %2$s?"
 
-#, tcl-format
+#, fuzzy, tcl-format
 msgid ""
-"Commencing downloading of:\n"
+"commencing downloading of:\n"
 "%1$s\n"
-"Into %2$s..."
+"into %2$s..."
 msgstr ""
-"Começando a baixar:\n"
+"começando a baixar:\n"
 "%1$s\n"
-"Em %2$s..."
+"em %2$s..."
 
 #, fuzzy
-msgid "aborting.\n"
-msgstr "abortando."
+msgid "... aborting"
+msgstr "... abortando"
 
-#, tcl-format
-msgid "Unable to add %s to search paths"
-msgstr "Incapaz de adicionar %s aos caminhos de busca"
+#, fuzzy, tcl-format
+msgid "unable to add %s to search paths"
+msgstr "incapaz de adicionar %s aos caminhos de busca"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
 msgstr "Adicionar %s aos caminhos de busca do Pd?"
 
-#, tcl-format
-msgid "Added %s to search paths"
+#, fuzzy, tcl-format
+msgid "added %s to search paths"
 msgstr "%s adicionado aos caminhos de busca"
 
-#, tcl-format
-msgid "Unable to download from %1$s [%2$s]"
-msgstr "Incapaz de baixar de %1$s [%2$s]"
+#, fuzzy, tcl-format
+msgid "unable to download from %1$s [%2$s]"
+msgstr "incapaz de baixar de %1$s [%2$s]"
 
-#, tcl-format
-msgid "Unable to remove stray file %s"
-msgstr "Incapaz de remover arquivo %s"
+#, fuzzy, tcl-format
+msgid "unable to remove stray file %s"
+msgstr "incapaz de remover arquivo %s"
 
-#, tcl-format
-msgid "Unable to rename downloaded file to %s"
-msgstr "Incapaz de renomear o arquivo baixado para %s"
+#, fuzzy, tcl-format
+msgid "unable to rename downloaded file to %s"
+msgstr "incapaz de renomear o arquivo baixado para %s"
 
 #, tcl-format
 msgid "searching for '%s'"
 msgstr "procurando por '%s'"
+
+#, fuzzy
+msgid "unable to perform search"
+msgstr "incapaz de realizar busca"
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
@@ -856,13 +862,13 @@ msgstr ""
 "\n"
 "Escolher uma nova localização?"
 
-#, tcl-format
-msgid "Couldn't create Pd documents directory: %s\n"
-msgstr "Impossível criar diretório de documentos Pd: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create Pd documents directory: %s\n"
+msgstr "impossível criar diretório de documentos Pd: %s\n"
 
-#, tcl-format
-msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Impossível criar diretório \"externals\" em: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr "impossível criar diretório \"externals\" em: %s\n"
 
 #, fuzzy, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
@@ -1100,13 +1106,13 @@ msgstr "Editar..."
 msgid "Delete"
 msgstr "Deletar"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't exist"
-msgstr "Ignorando '%s': não existe"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "ignorando '%s': não existe"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr "Ignorando '%s': não parece ser um arquivo de Pd válido"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "ignorando '%s': não parece ser um arquivo de Pd válido"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "Incapaz de realizar busca. Você está online?"

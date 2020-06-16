@@ -1,60 +1,60 @@
-#N canvas 192 35 659 724 12;
-#X obj 148 9 delay;
-#X floatatom 153 416 0 0 0 0 - - -;
-#X text 193 10 - CALLBACK AFTER TIME DELAY;
-#X msg 20 182 stop;
-#X text 33 665 see also:;
-#X obj 158 664 timer;
-#X obj 110 664 metro;
-#X msg 20 206 2000;
-#X obj 21 470 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#N canvas 526 34 630 729 12;
+#X obj 57 23 delay;
+#X obj 447 23 del;
+#X text 339 22 Also known as:;
+#X text 102 22 - callback after time delay;
+#X floatatom 158 421 0 0 0 0 - - -;
+#X msg 32 197 stop;
+#X text 55 673 see also:;
+#X obj 180 672 timer;
+#X obj 132 672 metro;
+#X msg 44 224 2000;
+#X obj 43 475 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 20 160 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 22 175 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 165 640 del;
-#X text 42 640 Also known as:;
-#X text 396 657 updated for Pd version 0.45;
-#X text 41 157 bang: start;
-#X text 80 180 stop: cancel the delay;
-#X text 79 206 number: set delay time and start;
-#X text 182 417 <-- number in inlet: set delay time but don't start
-;
-#X text 207 444 <-- optional creation arguments:;
-#X obj 20 443 delay 1000 1 msec;
-#X msg 20 232 tempo 0.5 msec;
-#X text 256 463 - delay time (float);
-#X text 257 481 - tempo (float) and time unit (symbol) as in "tempo"
+#X text 411 677 updated for Pd version 0.45;
+#X text 43 172 bang: start;
+#X text 72 195 stop: cancel the delay;
+#X text 83 224 number: set delay time and start;
+#X obj 42 448 delay 1000 1 msec;
+#X msg 52 257 tempo 0.5 msec;
+#X text 223 468 - delay time (float);
+#X text 224 486 - tempo (float) and time unit (symbol) as in "tempo"
 message, f 31;
-#X obj 299 545 delay 1 60 permin;
-#X text 39 536 example: specify a delay of one beat at 60 beats per
+#X obj 279 550 delay 1 60 permin;
+#X text 51 544 example: specify a delay of one beat at 60 beats per
 minute, f 31;
-#X obj 330 602 delay 1 1 persec;
-#X obj 330 578 delay 1 1 sec;
-#X obj 471 578 delay 1 44100 samp;
-#X obj 471 602 delay 44100 1 samp;
-#X obj 330 625 delay 0.01676 1 min;
-#X text 39 577 other possible ways to get a one-second delay (but the
-rightmost ones are sample-rate dependent), f 35;
-#X text 70 35 The delay object sends a bang to its outlet after a delay
+#X obj 283 610 delay 1 1 persec;
+#X obj 283 586 delay 1 1 sec;
+#X obj 433 586 delay 1 44100 samp;
+#X obj 433 610 delay 44100 1 samp;
+#X obj 283 633 delay 0.01676 1 min;
+#X text 84 58 The delay object sends a bang to its outlet after a delay
 in milliseconds specified by its right inlet or its creation argument.
 Sending a bang to a delay which is already set will reschedule its
-output \, replacing any previous setting.;
-#X text 67 112 Delays are in milliseconds by default \, but you can
+output \, replacing any previous setting., f 61;
+#X text 86 125 Delays are in milliseconds by default \, but you can
 set the time units in the creation arguments or with a "tempo" message.
 , f 63;
-#X text 142 366 If the tempo is changed while the delay is in progress
+#X text 164 371 If the tempo is changed while the delay is in progress
 \, the change only applies to the remaining fraction of the delay.
 ;
-#X text 150 232 Set tempo. Units can be milliseconds (msec for short)
+#X text 165 246 Set tempo. Units can be milliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). In this example
 the unit is set to 1/2 millisecond so that '1000' gives a delay of
 500 msec (1/2 second). Equivalently you can say "tempo 2 permsec" or
 even "120000 permin". A more traditionally musical way to specify a
 one-second delay would be "delay 1" with "tempo 60 permin" as in the
 second example below.;
-#X connect 1 0 18 1;
-#X connect 3 0 18 0;
-#X connect 7 0 18 0;
-#X connect 9 0 18 0;
-#X connect 18 0 8 0;
-#X connect 19 0 18 0;
+#X text 187 422 <= number in inlet: set delay time but don't start
+;
+#X text 174 449 <= optional creation arguments:;
+#X text 51 590 other possible ways to get a one second delay (but the
+rightmost ones are sample-rate dependent), f 32;
+#X connect 4 0 16 1;
+#X connect 5 0 16 0;
+#X connect 9 0 16 0;
+#X connect 11 0 16 0;
+#X connect 16 0 10 0;
+#X connect 17 0 16 0;

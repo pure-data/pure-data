@@ -1,41 +1,41 @@
-#N canvas 21 53 588 671 12;
-#X text 324 642 updated for Pd version 0.34;
-#X obj 88 107 send \$1;
-#X obj 199 106 + \$2;
-#X floatatom 303 88 0 0 0 0 - - -;
-#X obj 303 139 print;
-#X msg 303 113 blah \$1;
-#X text 36 163 This may sound inconsistent \, but it's not--object
+#N canvas 533 36 520 705 12;
+#X text 293 662 updated for Pd version 0.34;
+#X obj 88 119 send \$1;
+#X obj 199 119 + \$2;
+#X floatatom 303 93 0 0 0 0 - - -;
+#X obj 303 144 print;
+#X msg 303 119 blah \$1;
+#X text 36 173 This may sound inconsistent \, but it's not--object
 and message boxes are both actually messages \, but in the case of
 the Object box the message is passed at creation time \, and for the
 Message box \, at message time.;
-#X msg 188 272 bang;
-#X obj 188 300 symbol \$1;
-#X msg 98 272 bang;
-#X obj 98 300 float \$2;
-#X floatatom 98 327 5 0 0 0 - - -;
-#X symbolatom 188 329 10 0 0 0 - - -;
-#X text 36 233 So how do you put creation arguments in messages? Use
+#X msg 188 284 bang;
+#X obj 188 312 symbol \$1;
+#X msg 98 284 bang;
+#X obj 98 312 float \$2;
+#X floatatom 98 339 5 0 0 0 - - -;
+#X symbolatom 188 341 10 0 0 0 - - -;
+#X text 36 241 So how do you put creation arguments in messages? Use
 "float" and "symbol" as shown:;
-#X msg 97 383 bang;
-#X obj 97 407 float \$2;
-#X msg 97 434 five \$1;
-#X text 41 357 Then if you wish \, connect to a message box as in:
+#X msg 97 395 bang;
+#X obj 97 419 float \$2;
+#X msg 97 446 five \$1;
+#X text 41 369 Then if you wish \, connect to a message box as in:
 ;
-#X obj 97 459 print;
-#X msg 143 512 bang;
-#X obj 143 564 symbol \$1;
-#X obj 237 560 f \$2;
-#X obj 143 540 t b b;
-#X obj 142 587 pack symbol float;
-#X msg 142 613 six \$1 \$2;
-#X obj 142 640 print;
-#X text 31 485 For messages combining more than one creation argument
+#X obj 97 471 print;
+#X msg 144 532 bang;
+#X obj 144 586 symbol \$1;
+#X obj 260 586 f \$2;
+#X obj 144 613 pack symbol float;
+#X msg 144 639 six \$1 \$2;
+#X obj 144 666 print;
+#X text 37 499 For messages combining more than one creation argument
 try:;
-#X text 37 50 In Object boxes \, dollar signs refer to the abstraction's
+#X text 37 40 In Object boxes \, dollar signs refer to the abstraction's
 creation arguments. In Messages \, they change dynamically:;
-#X text 34 6 This is an abstraction used in example 14 \, "dollarsigns".
+#X text 41 8 This is an abstraction used in example 14 \, "dollarsigns".
 ;
+#X obj 144 558 trigger bang bang;
 #X connect 3 0 5 0;
 #X connect 5 0 4 0;
 #X connect 7 0 8 0;
@@ -45,10 +45,10 @@ creation arguments. In Messages \, they change dynamically:;
 #X connect 14 0 15 0;
 #X connect 15 0 16 0;
 #X connect 16 0 18 0;
-#X connect 19 0 22 0;
-#X connect 20 0 23 0;
-#X connect 21 0 23 1;
-#X connect 22 0 20 0;
-#X connect 22 1 21 0;
+#X connect 19 0 28 0;
+#X connect 20 0 22 0;
+#X connect 21 0 22 1;
+#X connect 22 0 23 0;
 #X connect 23 0 24 0;
-#X connect 24 0 25 0;
+#X connect 28 0 20 0;
+#X connect 28 1 21 0;

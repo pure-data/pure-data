@@ -566,10 +566,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float ||
-                    a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
                             goto doit;
             }
         }
@@ -581,7 +581,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     skipit: ;
     }
     binbuf_free(x->x_binbuf);
-    x->x_binbuf = newb;
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf = newb;
     freebytes(sortbuf, nlines * sizeof(*sortbuf));
     textbuf_senditup(&x->x_textbuf);
 }
@@ -2350,3 +2350,20 @@ void x_qlist_setup(void)
     class_addbang(textfile_class, textfile_bang);
 }
 
+/* public interface to get text buffers by name */
+
+t_binbuf *text_getbufbyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        return (y->x_textbuf.b_binbuf);
+    else return (0);
+}
+
+    /* notify text object that binbuf was modified */
+void text_notifybyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        text_define_notify(y);
+}

@@ -1,5 +1,5 @@
-#N canvas 55 137 777 467 12;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 393 112 692 465 12;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array pitchmod14 131 float 1;
 #A 0 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.863077
@@ -20,8 +20,8 @@
 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.800308 -0.800308
 -0.800308 -0.800308 -0.800308 -0.800308 -0.800308;
 #X coords 0 1.02 130 -1.02 258 130 1;
-#X restore 462 30 graph;
-#X floatatom 191 277 0 0 100 0 - - -;
+#X restore 375 78 graph;
+#X floatatom 199 256 0 0 100 0 - - -;
 #N canvas 159 26 532 285 output 0;
 #X obj 338 160 t b;
 #X obj 338 110 f;
@@ -75,26 +75,26 @@
 #X connect 23 0 20 0;
 #X connect 26 0 5 0;
 #X connect 27 0 21 0;
-#X restore 153 305 pd output;
-#X msg 229 278 MUTE;
-#X floatatom 153 95 4 0 0 0 - - -;
-#X text 153 69 frequency;
-#X floatatom 195 206 4 0 0 0 - - -;
-#X text 155 50 modulation;
-#X obj 152 157 *~;
-#X text 255 150 modulation;
-#X text 253 169 depth;
-#X floatatom 201 157 4 0 0 0 - - -;
-#X obj 152 205 +~;
-#X text 250 212 frequency;
-#X obj 152 237 osc~;
-#X obj 153 122 tabosc4~ pitchmod14;
-#X text 254 194 carrier;
-#X text 33 8 FREQUENCY MODULATION BY WAVETABLE;
-#X text 47 356 This tabosc4~ controls the pitch of a sinusoidal oscillator
+#X restore 169 284 pd output;
+#X msg 229 257 MUTE;
+#X floatatom 169 74 4 0 0 0 - - -;
+#X text 81 87 frequency;
+#X floatatom 218 185 4 0 0 0 - - -;
+#X text 83 68 modulation;
+#X obj 169 136 *~;
+#X text 265 129 modulation;
+#X text 263 148 depth;
+#X floatatom 218 136 4 0 0 0 - - -;
+#X obj 169 184 +~;
+#X text 257 191 frequency;
+#X obj 169 216 osc~;
+#X obj 169 101 tabosc4~ pitchmod14;
+#X text 261 173 carrier;
+#X text 39 14 FREQUENCY MODULATION BY WAVETABLE;
+#X text 90 341 This tabosc4~ controls the pitch of a sinusoidal oscillator
 (osc~). Try changing the waveform as well as the three familiar parameters.
 ;
-#X text 520 438 updated for Pd version 0.37;
+#X text 429 418 updated for Pd version 0.37;
 #X connect 1 0 2 1;
 #X connect 2 0 1 0;
 #X connect 3 0 2 2;

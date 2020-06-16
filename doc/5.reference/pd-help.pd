@@ -1,4 +1,4 @@
-#N canvas 241 181 652 514 12;
+#N canvas 241 181 666 534 12;
 #N canvas 0 0 600 400 (subpatch) 0;
 #X restore 23 13 pd;
 #X text 57 14 - subpatch;
@@ -19,16 +19,16 @@ name the subpatch with an argument:;
 #X text 19 161 and you can put inlets and outlets by making "inlet"
 objects \, etc \, in the subpatch (open the patch below to see them.)
 ;
-#X obj 361 329 print~;
-#X obj 359 249 sig~ 12;
+#X obj 315 317 print~;
+#X obj 315 245 sig~ 12;
 #X floatatom 50 253 0 0 0 0 - - -;
 #X floatatom 50 305 0 0 0 0 - - -;
-#X text 388 306 (check that audio is on);
+#X text 345 293 (check that audio is on);
 #X text 20 232 messages in and out;
-#X text 329 226 audio in and out;
-#X text 10 444 see also:;
-#X obj 94 444 block~;
-#X obj 371 307 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X text 285 222 audio in and out;
+#X text 13 470 see also:;
+#X obj 97 470 block~;
+#X obj 325 295 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 868 141 634 613 up/downsampling 0;
 #X obj 29 395 print~;
@@ -118,33 +118,77 @@ command line or by a message:;
 #X connect 13 1 2 0;
 #X connect 13 2 4 0;
 #X restore 20 370 pd up/downsampling;
-#N canvas 103 180 600 392 subpatch-with-inlets-and-outlets 0;
+#N canvas 103 180 836 342 subpatch-with-inlets-and-outlets 0;
 #X obj 64 83 inlet;
 #X text 16 53 control inlet for receiving messages;
 #X floatatom 64 111 0 0 0 0 - - -;
 #X floatatom 67 212 0 0 0 0 - - -;
 #X obj 67 244 outlet;
 #X text 31 182 control outlet for sending message;
-#X obj 399 78 inlet~;
-#X obj 399 129 print~;
-#X msg 414 103 bang;
-#X obj 398 271 outlet~;
-#X obj 398 245 sig~ 34;
-#X text 392 32 same for;
-#X text 393 51 signals.;
+#X obj 517 157 inlet~;
+#X obj 517 208 print~;
+#X msg 532 182 bang;
+#X obj 526 292 outlet~;
+#X obj 526 266 sig~ 34;
+#X floatatom 498 132 5 0 0 0 - - -;
+#X text 366 6 Same for signals. Inlet~ objects take float messages
+to set the value if there's no signal connected (the same as with signal
+inlets to other Pd objects) and you can also set this value by a "float"
+message to the inlet~ object. (You'll have to disconnect the signal
+connection on the parent to see this happen.) You can use a "loadbang"
+object to pass arguments to initialize signal inlets in abstractions.
+;
 #X connect 0 0 2 0;
 #X connect 3 0 4 0;
 #X connect 6 0 7 0;
 #X connect 8 0 7 0;
 #X connect 10 0 9 0;
+#X connect 11 0 6 0;
 #X restore 50 279 pd subpatch-with-inlets-and-outlets;
-#X text 193 368 <- here are some ugly details on;
-#X text 219 386 up/downsampling for inlet~ and outlet~;
-#X text 390 435 updated for Pd version 0.44;
-#X text 183 470 (documents new default upsampling behavior for reblocked
-inlet~ and outlet~.);
+#X text 164 369 <- details on up/downsampling for inlet~ and outlet~
+;
+#X text 387 458 updated for Pd version 0.51;
+#X text 350 489 (new: messages to inlet~ objects);
+#X text 169 428 <- catching messages to inlet~ objects;
+#N canvas 868 141 593 411 inlet~-forwarding 0;
+#X obj 59 177 inlet~ fwd;
+#X obj 59 140 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 84 139 5 0 0 0 - - -;
+#X msg 127 140 1 2 3;
+#X msg 174 141 poodle 50;
+#X obj 128 207 print;
+#X obj 60 278 print~;
+#X text 90 254 (check that audio is on);
+#X obj 70 256 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 50 11 you can pass "fwd" as an argument to inlet~ to ask for
+a second outlet that forwards messages. Float messages aren't forwarded
+though - instead \, they set the signal output value in case the parent
+inlet isn't connected. Messages to the inlet~ object are treated the
+same as messages to the inlet on the parent.;
+#X text 56 309 (note: inlet~ objects inside patches that are copied
+using clone~ are always connected to incoming signals \, so a float
+message to such an inlet~ has no effect.);
+#X connect 0 0 6 0;
+#X connect 0 1 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 8 0 6 0;
+#X restore 20 430 pd inlet~-forwarding;
+#X obj 20 398 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 45 397 5 0 0 0 - - -;
+#X msg 88 398 1 2 3;
+#X msg 135 399 poodle 50;
 #X connect 14 0 24 1;
 #X connect 15 0 24 0;
 #X connect 22 0 13 0;
 #X connect 24 0 16 0;
 #X connect 24 1 13 0;
+#X connect 30 0 29 0;
+#X connect 31 0 29 0;
+#X connect 32 0 29 0;
+#X connect 33 0 29 0;

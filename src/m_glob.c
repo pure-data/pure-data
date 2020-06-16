@@ -71,7 +71,7 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
-static void glob_version(t_pd *dummy, float f)
+static void glob_version(t_pd *dummy, t_float f)
 {
     if (f > (PD_MAJOR_VERSION + 0.01*PD_MINOR_VERSION + 0.001))
     {
@@ -85,7 +85,7 @@ static void glob_version(t_pd *dummy, float f)
     }
 }
 
-static void glob_perf(t_pd *dummy, float f)
+static void glob_perf(t_pd *dummy, t_float f)
 {
     sys_perf = (f != 0);
 }

@@ -140,6 +140,12 @@ static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
     canvas_vis(x->i_owner->x_vec[n].c_gl, (vis != 0));
 }
 
+static void clone_in_fwd(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 0 && argv->a_type == A_SYMBOL)
+        typedmess(&x->i_pd, argv->a_w.w_symbol, argc-1, argv+1);
+}
+
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
@@ -155,11 +161,19 @@ static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
     ATOMS_FREEA(outv, outc);
 }
 
+static PERTHREAD int clone_voicetovis = -1;
+
 static void clone_free(t_clone *x)
 {
     if (x->x_vec)
     {
-        int i;
+        int i, voicetovis = -1;
+        if (THISGUI->i_reloadingabstraction)
+        {
+            for (i = 0; i < x->x_n; i++)
+                if (x->x_vec[i].c_gl == THISGUI->i_reloadingabstraction)
+                    voicetovis = i;
+        }
         for (i = 0; i < x->x_n; i++)
         {
             canvas_closebang(x->x_vec[i].c_gl);
@@ -171,6 +185,7 @@ static void clone_free(t_clone *x)
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
         t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
         t_freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
+        clone_voicetovis = voicetovis;
     }
 }
 
@@ -283,7 +298,7 @@ void signal_makereusable(t_signal *sig);
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
     int i, j, nin, nout;
-    t_signal **tempsigs;
+    t_signal **tempsigs, **tempio;
     if (!x->x_n)
         return;
     for (i = nin = 0; i < x->x_nin; i++)
@@ -305,31 +320,33 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             return;
         }
     }
-    tempsigs = (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
+    tempsigs = (t_signal **)alloca((nin + 2 * nout) * sizeof(*tempsigs));
+    tempio = tempsigs + nout;
         /* load input signals into signal vector to send subpatches */
     for (i = 0; i < nin; i++)
     {
             /* we already have one reference "counted" for our presumed
-            use of this input signal but we must add the others. */
+            use of this input signal but add one for each additional copy. */
         sp[i]->s_refcount += x->x_n-1;
-        tempsigs[2 * nout + i] = sp[i];
+        tempio[i] = sp[i];
     }
         /* for first copy, write output to first nout temp sigs */
     for (i = 0; i < nout; i++)
-        tempsigs[i] = tempsigs[2 * nout + nin + i] = signal_newfromcontext(1);
-    canvas_dodsp(x->x_vec[0].c_gl, 0, tempsigs + 2*nout);
-        /* for remaining copies, write to second nout temp sigs */
-    for (j = 1; j < x->x_n; j++)
+        tempsigs[i] = signal_newfromcontext(0);
+
+    for (j = 0; j < x->x_n; j++)
     {
         for (i = 0; i < nout; i++)
-            tempsigs[nout+i] = tempsigs[2 * nout + nin + i] =
-                signal_newfromcontext(1);
-        canvas_dodsp(x->x_vec[j].c_gl, 0, tempsigs + 2*nout);
+            tempio[nin + i] = signal_newfromcontext(1);
+        canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
         for (i = 0; i < nout; i++)
         {
-            dsp_add_plus(tempsigs[nout + i]->s_vec, tempsigs[i]->s_vec,
-                tempsigs[i]->s_vec, tempsigs[i]->s_n);
-            signal_makereusable(tempsigs[nout + i]);
+            if (j == 0)
+                dsp_add_copy(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
+                    tempsigs[i]->s_n);
+            else dsp_add_plus(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
+                    tempsigs[i]->s_vec, tempsigs[i]->s_n);
+            signal_makereusable(tempio[nin + i]);
         }
     }
         /* copy to output signsls */
@@ -344,12 +361,13 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *)pd_new(clone_class);
     t_canvas *c;
-    int wantn, dspstate, i;
+    int wantn, dspstate, i, voicetovis = clone_voicetovis;
     t_out *outvec;
     x->x_invec = 0;
     x->x_outvec = 0;
     x->x_startvoice = 0;
     x->x_suppressvoice = 0;
+    clone_voicetovis = -1;
     if (argc == 0)
     {
         x->x_vec = 0;
@@ -399,7 +417,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         if (x->x_invec[i].i_signal)
-            signalinlet_new(&x->x_obj, 0);
+            inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
+                &s_signal, &s_signal);
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
@@ -420,6 +439,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     clone_setn(x, (t_floatarg)(wantn));
     x->x_phase = wantn-1;
     canvas_resume_dsp(dspstate);
+    if (voicetovis >= 0 && voicetovis < x->x_n)
+        canvas_vis(x->x_vec[voicetovis].c_gl, 1);
     return (x);
 usage:
     error("usage: clone [-s starting-number] <number> <name> [arguments]");
@@ -452,6 +473,8 @@ void clone_setup(void)
         A_GIMME, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_vis, gensym("vis"),
         A_FLOAT, A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_fwd, gensym("fwd"),
+        A_GIMME, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,

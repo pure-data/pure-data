@@ -1,61 +1,113 @@
-#N canvas 115 149 813 713 12;
-#X obj 100 359 netreceive 3000;
-#X floatatom 217 447 0 0 0 0 - - -;
-#X text 251 448 <--- number of open connections;
-#X text 85 12 Netreceive -- listen for incoming messages from network
-;
-#X text 112 667 see also:;
-#X obj 198 669 netsend;
-#X obj 100 447 print tcp;
-#X obj 99 553 print udp;
-#X text 29 167 There are some possibilities for intercommunication
+#N canvas 620 23 692 730 12;
+#X obj 61 357 netreceive 3000;
+#X floatatom 163 453 0 0 0 0 - - -;
+#X text 197 454 <--- number of open connections;
+#X text 97 690 see also:;
+#X obj 183 691 netsend;
+#X obj 61 453 print tcp;
+#X obj 36 577 print udp;
+#X text 33 154 There are some possibilities for intercommunication
 with other programs... see the help for "netsend.", f 85;
-#X obj 593 606 netreceive 3003 1;
-#X text 607 582 (UDP port 3003);
-#X text 26 618 An old (pre-0.45) calling convention is provided for
-compatibility: port number and following "0" or "1" for TCP or UDP
-respectively:, f 67;
-#X text 564 666 updated for Pd version 0.45;
-#X obj 99 525 netreceive -u 3001;
-#X text 234 355 creation arguments:;
-#X text 302 374 optional -u flag for UDP;
-#X text 302 393 optional -b flag for binary;
-#X text 301 414 optional port number;
-#X obj 505 529 netreceive -u -b 3003;
-#X obj 291 550 netreceive -b 3002;
-#X obj 291 578 print tcp-binary;
-#X obj 504 557 print udp-binary;
-#X msg 100 283 listen 0;
-#X text 210 259 listen message to set or change port;
-#X text 206 284 (0 or negative number to close);
-#X msg 100 257 listen 3000;
-#X text 33 36 The Netreceive object opens a socket for TCP ("stream")
-or UDP ("datagram") network reception on a specified port. If using
-TCP \, an outlet gives you the number of Netsend objects (or other
-compatible clients) that have opened connections here., f 84;
-#X text 31 205 SECURITY NOTE: don't publish the port number of your
-netreceive unless you wouldn't mind other people being able to send
-you messages., f 85;
-#X text 31 93 By default the messages are ASCII text messages compatible
+#X obj 36 549 netreceive -u 3001;
+#X text 195 341 creation arguments:;
+#X text 263 360 optional -u flag for UDP;
+#X text 263 378 optional -b flag for binary;
+#X text 263 414 optional port number;
+#X obj 219 549 netreceive -b 3002;
+#X obj 219 577 print tcp-binary;
+#X obj 403 577 print udp-binary;
+#X msg 71 274 listen 0;
+#X text 171 245 listen message to set or change port;
+#X text 177 275 (0 or negative number to close);
+#X msg 61 243 listen 3000;
+#X text 33 88 By default the messages are ASCII text messages compatible
 with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this for OSC messages \, for example.), f 83;
-#X msg 121 332 send foo \$1;
-#X floatatom 121 309 0 0 0 0 - - -;
-#X msg 290 526 send foo \$1;
-#X floatatom 290 503 0 0 0 0 - - -;
-#X text 232 479 other examples:;
-#X text 158 309 "send" (for TCP connections only) sends back to connected
+#X msg 82 328 send foo \$1;
+#X floatatom 82 305 0 0 0 0 - - -;
+#X floatatom 219 500 0 0 0 0 - - -;
+#X text 119 305 "send" (for TCP connections only) sends back to connected
 netreceive objects, f 76;
-#X connect 0 0 6 0;
+#X text 35 621 An old (pre-0.45) calling convention is provided for
+compatibility \, port number and following "0" or "1" for TCP or UDP
+respectively:, f 67;
+#X text 34 490 Other examples:;
+#X text 530 607 (UDP port 3004);
+#X obj 403 549 netreceive -u -b -f 3003;
+#X obj 568 577 print from;
+#X text 33 192 SECURITY NOTE: Don't publish the port number of your
+netreceive unless you wouldn't mind other people being able to send
+you messages., f 85;
+#X text 33 36 The netreceive object opens a socket for TCP ("stream")
+or UDP ("datagram") network reception on a specified port. If using
+TCP \, an outlet gives you the number of netsend objects (or other
+compatible clients) that have opened connections here., f 84;
+#X text 85 12 netreceive -- listen for incoming messages from network
+;
+#X obj 531 633 netreceive 3004 1;
+#X msg 219 524 4 5 6 \$1;
+#N canvas 694 147 526 506 IP 0;
+#X obj 23 421 print udp-hostname;
+#X text 284 279 IPv4 multicast;
+#X text 269 311 IPv6 multicast;
+#X obj 23 383 netreceive -u -f;
+#X obj 170 421 print from-hostname;
+#X msg 124 345 listen 0;
+#X msg 96 310 listen 3005 ff00::114;
+#X msg 76 279 listen 3005 239.200.200.200;
+#X msg 46 214 listen 3005 ::1;
+#X msg 37 179 listen 3005 127.0.0.1;
+#X msg 57 247 listen 3005 localhost;
+#X text 202 179 IPv4 messages;
+#X obj 325 395 netreceive 3005 ::1;
+#X obj 325 422 print tcp-hostname;
+#X text 324 358 listen for IPv6 TCP messages on localhost, f 22;
+#X msg 23 146 listen 3005;
+#X text 119 145 any IPv4 and IPv6 messages (default);
+#X text 167 215 IPv6 messages *);
+#X text 219 239 IPv4 and/or IPv6 messages (system dependent!), f 26
+;
+#X text 23 451 *) On some systems you can also receive IPv4 messages.
+This certainly doesn't work on Windows!, f 54;
+#X text 21 115 For backwards comptability \, hostname resolution favors
+IPv4 results., f 69;
+#X text 20 63 By default \, netreceive listens on all IPv4 and IPv6
+interfaces \, but you can restrict it to a specific interface \, e.g.
+"127.0.0.1" to only receive IPv4 messages from the same computer.,
+f 66;
+#X text 21 13 As of Pd 0.51+ \, netreceive accepts a hostname which
+can be a UDP multicast address or a network interface. Note that you
+can't specify a remote host - that is the job of a firewall., f 61
+;
+#X connect 3 0 0 0;
+#X connect 3 1 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 0;
+#X connect 8 0 3 0;
+#X connect 9 0 3 0;
+#X connect 10 0 3 0;
+#X connect 12 0 13 0;
+#X connect 15 0 3 0;
+#X restore 403 493 pd IP version and multicast;
+#X text 263 396 optional -f flag for from address & port outlet (0.51+)
+;
+#X text 263 433 optional UDP hostname or multicast address (0.51+)
+;
+#X text 289 524 lists work like "send" (Pd 0.51+);
+#X text 453 690 updated for Pd version 0.51.;
+#X text 36 658 As of 0.51 \, Pd supports IPv6 addresses.;
+#X connect 0 0 5 0;
 #X connect 0 1 1 0;
-#X connect 13 0 7 0;
-#X connect 18 0 21 0;
-#X connect 19 0 20 0;
-#X connect 22 0 0 0;
-#X connect 25 0 0 0;
-#X connect 29 0 0 0;
-#X connect 30 0 29 0;
-#X connect 31 0 19 0;
-#X connect 32 0 31 0;
+#X connect 8 0 6 0;
+#X connect 13 0 14 0;
+#X connect 16 0 0 0;
+#X connect 19 0 0 0;
+#X connect 21 0 0 0;
+#X connect 22 0 21 0;
+#X connect 23 0 34 0;
+#X connect 28 0 15 0;
+#X connect 28 1 29 0;
+#X connect 34 0 13 0;

@@ -1458,7 +1458,7 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 if (!expr->exp_var[eptr->ex_int].ex_ptr) {
                                 if (!(expr->exp_error & EE_NOVAR)) {
                                         post("expr: syntax error: no string for inlet %d", eptr->ex_int + 1);
-                                        post("expr: No more table errors will be reported");
+                                        post("expr: no more table errors will be reported");
                                         post("expr: till the next reset");
                                         expr->exp_error |= EE_NOVAR;
                                 }

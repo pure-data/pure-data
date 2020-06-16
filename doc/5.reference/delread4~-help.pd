@@ -1,35 +1,44 @@
-#N canvas 395 121 628 486 12;
-#X floatatom 58 275 0 0 1000 0 - - -;
-#X text 166 394 signal output (delayed signal);
-#X text 128 327 signal input (delay time in ms);
-#X text 262 359 creation argument: name of delay line;
-#X text 44 442 see also:;
-#X obj 132 445 delwrite~;
-#X obj 221 444 delread~;
-#X obj 28 17 delread4~;
-#X text 37 85 delread4~ implements a 4-point interpolating delay tap
+#N canvas 57 183 516 542 12;
+#X floatatom 53 286 0 0 1000 0 - - -;
+#X text 107 338 signal input (delay time in ms);
+#X text 191 371 creation argument: name of delay line;
+#X text 48 479 see also:;
+#X obj 124 479 delwrite~;
+#X obj 201 478 delread~;
+#X obj 30 17 delread4~;
+#X text 48 89 delread4~ implements a 4-point interpolating delay tap
 from a corresponding delwrite~ object. The delay in milliseconds of
 the tap is specified by the incoming signal.;
-#X text 140 12 read a signal from a delay line at a variable delay
+#X text 122 12 read a signal from a delay line at a variable delay
 time (4-point-interpolation), f 44;
-#X obj 30 52 vd~;
-#X text 72 53 old \, slightly rude synonym;
-#X text 383 440 updated for Pd version 0.47;
-#X text 38 139 The delay time is always at least one sample and at
+#X obj 32 52 vd~;
+#X text 65 53 old \, slightly rude synonym;
+#X text 304 477 updated for Pd version 0.47;
+#X text 49 141 The delay time is always at least one sample and at
 most the length of the delay line (specified by a corresponding delwrite~).
 In addition \, in case the delwrite~ runs later in the DSP loop than
 the delread4~ \, the delay is constrained below by one vector length
 (64 samples.) An example showing how to control this to obtain very
 short delays is included in doc/3.audio.examples/G05.execution.order.pd
 ;
-#X obj 58 360 delread4~ \$0-delay;
-#X obj 419 307 delwrite~ \$0-delay 1000;
-#X obj 59 303 pack 0 1000;
-#X obj 59 328 line~;
-#X obj 419 282 osc~ 440;
-#X obj 57 386 out1~;
-#X connect 0 0 16 0;
-#X connect 14 0 19 0;
-#X connect 16 0 17 0;
+#X obj 53 371 delread4~ \$0-delay;
+#X obj 191 294 delwrite~ \$0-delay 1000;
+#X obj 53 314 pack 0 1000;
+#X obj 53 339 line~;
+#X obj 191 269 osc~ 440;
+#X msg 415 262 \; pd dsp 1;
+#X msg 415 311 \; pd dsp 0;
+#X obj 53 395 *~;
+#X obj 53 419 dac~;
+#X floatatom 125 399 5 0 100 0 - - -;
+#X text 170 402 output level;
+#X obj 125 420 / 1000;
+#X connect 0 0 15 0;
+#X connect 13 0 20 0;
+#X connect 15 0 16 0;
+#X connect 16 0 13 0;
 #X connect 17 0 14 0;
-#X connect 18 0 15 0;
+#X connect 20 0 21 0;
+#X connect 20 0 21 1;
+#X connect 22 0 24 0;
+#X connect 24 0 20 1;

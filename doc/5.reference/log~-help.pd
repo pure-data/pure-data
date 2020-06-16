@@ -1,26 +1,26 @@
-#N canvas 363 269 531 296 10;
-#X obj 19 103 sig~;
-#X obj 54 169 loadbang;
-#X obj 54 193 metro 100;
-#X obj 54 217 snapshot~;
-#X floatatom 19 79 5 0 0 0 - - -, f 5;
-#X floatatom 54 242 7 0 0 0 - - -, f 7;
-#X obj 21 14 log~;
-#X text 60 14 - logarithms;
-#X text 70 131 <-- optional creation argument initializes right inlet
-(the base of the logarithm)., f 42;
-#X text 76 31 computes the logarithm of the left inlet \, to the base
+#N canvas 363 269 532 362 12;
+#X obj 87 146 sig~;
+#X obj 103 225 loadbang;
+#X obj 103 249 metro 100;
+#X obj 87 281 snapshot~;
+#X floatatom 87 122 5 0 0 0 - - -;
+#X floatatom 87 306 7 0 0 0 - - -;
+#X obj 46 17 log~;
+#X text 85 17 - logarithms;
+#X text 46 48 computes the logarithm of the left inlet \, to the base
 'e' (about 2.718) \, or to another base specified by the inlet or a
 creation argument.;
-#X obj 71 105 sig~;
-#X floatatom 71 81 5 0 0 0 - - -, f 5;
-#X obj 20 132 log~;
-#X text 316 257 updated for Pd version 0.47.;
-#X connect 0 0 12 0;
+#X obj 139 148 sig~;
+#X floatatom 139 124 5 0 0 0 - - -;
+#X obj 87 175 log~;
+#X text 259 287 updated for Pd version 0.47.;
+#X text 126 175 <= optional creation argument initializes right inlet
+(the base of the logarithm)., f 42;
+#X connect 0 0 11 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 5 0;
 #X connect 4 0 0 0;
-#X connect 10 0 12 1;
-#X connect 11 0 10 0;
-#X connect 12 0 3 0;
+#X connect 9 0 11 1;
+#X connect 10 0 9 0;
+#X connect 11 0 3 0;
