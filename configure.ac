@@ -378,7 +378,7 @@ AS_IF([test x$portaudio = xyes],[
             portaudio=no
         ])
     ])
-])
+],[local_portaudio=no])
 
 ##### PortMidi #####
 AC_ARG_ENABLE([portmidi],
@@ -406,7 +406,7 @@ AS_IF([test x$portmidi = xyes],[
             portmidi=no
         ])
     ])
-])
+],[local_portmidi=no])
 
 ##### fftw v3 #####
 AC_ARG_ENABLE([fftw],
