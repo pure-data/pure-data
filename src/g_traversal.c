@@ -121,7 +121,7 @@ void gpointer_copy(const t_gpointer *gpfrom, t_gpointer *gpto)
     else bug("gpointer_copy");
 }
 
-    /* clear a gpointer that was previously set, releasing the associted
+    /* clear a gpointer that was previously set, releasing the associated
     gstub if this was the last reference to it. */
 void gpointer_unset(t_gpointer *gp)
 {

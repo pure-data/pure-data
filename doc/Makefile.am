@@ -342,6 +342,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/hip~-help.pd \
      ./5.reference/hradio-help.pd \
      ./5.reference/hslider-help.pd \
+     ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
      ./5.reference/key-help.pd \
      ./5.reference/line-help.pd \
@@ -369,7 +370,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/oscparse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/otherbinops-help.pd \
-     ./5.reference/out1~.pd \
      ./5.reference/pack-help.pd \
      ./5.reference/pd-help.pd \
      ./5.reference/pdcontrol-abs.pd \
