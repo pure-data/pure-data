@@ -522,13 +522,19 @@ static void hradio_number(t_hradio *x, t_floatarg num)
         n = IEM_RADIO_MAX;
     if(n != x->x_number)
     {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
+        if(gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist)
+        && glist_isvisible(x->x_gui.x_glist))
+            (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
         x->x_number = n;
         if(x->x_on >= x->x_number)
             x->x_on = x->x_number - 1;
         x->x_on_old = x->x_on;
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
-        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+        if(gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist)
+        && glist_isvisible(x->x_gui.x_glist))
+        {
+            (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+            canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+        }
     }
 }
 
