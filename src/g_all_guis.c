@@ -425,7 +425,7 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
-    if(glist_isvisible(iemgui->x_glist))
+    if(glist_isvisible(iemgui->x_glist) && gobj_shouldvis((t_gobj *)x, iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
@@ -460,7 +460,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     }
     iemgui->x_fsf.x_rcv_able = rcvable;
     iemgui_verify_snd_ne_rcv(iemgui);
-    if(glist_isvisible(iemgui->x_glist))
+    if(glist_isvisible(iemgui->x_glist) && gobj_shouldvis((t_gobj *)x, iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
