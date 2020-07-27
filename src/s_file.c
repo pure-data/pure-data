@@ -41,39 +41,39 @@ static PERTHREAD FILE *sys_prefsavefp;
 
 static void sys_initloadpreferences_file(const char *filename)
 {
-    int fd;
+    t_fileops_handle fd;
     long length;
-    if ((fd = open(filename, 0)) < 0)
+    if (!sys_fileops.open(filename, 0, &fd))
     {
         if (sys_verbose)
             perror(filename);
         return;
     }
-    length = lseek(fd, 0, 2);
+    length = sys_fileops.seek(fd, 0, 2);
     if (length < 0)
     {
         if (sys_verbose)
             perror(filename);
-        close(fd);
+        sys_fileops.close(fd);
         return;
     }
-    lseek(fd, 0, 0);
+    sys_fileops.seek(fd, 0, 0);
     if (!(sys_prefbuf = malloc(length + 2)))
     {
         error("couldn't allocate memory for preferences buffer");
-        close(fd);
+        sys_fileops.close(fd);
         return;
     }
     sys_prefbuf[0] = '\n';
-    if (read(fd, sys_prefbuf+1, length) < length)
+    if (sys_fileops.read(fd, sys_prefbuf+1, length) < length)
     {
         perror(filename);
         sys_prefbuf[0] = 0;
-        close(fd);
+        sys_fileops.close(fd);
         return;
     }
     sys_prefbuf[length+1] = 0;
-    close(fd);
+    sys_fileops.close(fd);
     if (sys_verbose)
         post("success reading preferences from: %s", filename);
 }

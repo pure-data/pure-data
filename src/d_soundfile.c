@@ -18,7 +18,7 @@ objects use Posix-like threads.  */
 #ifdef _WIN32
 #include <io.h>
 #endif
-#include <fcntl.h>
+#include "s_fileops.h"
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -259,7 +259,7 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 * header and fill in the properties.
 */
 
-int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
+bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, long skipframes)
 {
     int nchannels, bigendian, bytespersamp, samprate, swap;
     int headersize = 0;
@@ -285,7 +285,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             t_datachunk b_datachunk;
             t_comm b_commchunk;
         } buf;
-        long bytesread = read(fd, buf.b_c, READHDRSIZE);
+        long bytesread = sys_fileops.read(fd, buf.b_c, READHDRSIZE);
         int format;
         if (bytesread < 4)
             goto badheader;
@@ -358,10 +358,10 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 if (!strncmp(wavechunk->wc_id, "fmt ", 4))
                 {
                     long commblockonset = headersize + 8;
-                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)sys_fileops.seek(fd, commblockonset, FILEOPS_SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
+                    if (sys_fileops.read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
                             goto badheader;
                     nchannels = swap2(buf.b_fmt.f_nchannels, swap);
                     format = swap2(buf.b_fmt.f_nbitspersample, swap);
@@ -374,10 +374,10 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
-                seekout = (long)lseek(fd, seekto, SEEK_SET);
+                seekout = (long)sys_fileops.seek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (read(fd, buf.b_c, sizeof(t_wavechunk)) <
+                if (sys_fileops.read(fd, buf.b_c, sizeof(t_wavechunk)) <
                     (int) sizeof(t_wavechunk))
                         goto badheader;
                 /* post("new chunk %c %c %c %c at %d",
@@ -421,10 +421,10 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 {
                     long commblockonset = headersize + 8;
                     t_comm *commchunk;
-                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)sys_fileops.seek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (read(fd, buf.b_c, sizeof(t_comm)) <
+                    if (sys_fileops.read(fd, buf.b_c, sizeof(t_comm)) <
                         (int) sizeof(t_comm))
                             goto badheader;
                     commchunk = &buf.b_commchunk;
@@ -437,10 +437,10 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = readaiffsamprate((char *)commchunk->c_samprate, swap);
                 }
-                seekout = (long)lseek(fd, seekto, SEEK_SET);
+                seekout = (long)sys_fileops.seek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (read(fd, buf.b_c, sizeof(t_datachunk)) <
+                if (sys_fileops.read(fd, buf.b_c, sizeof(t_datachunk)) <
                     (int) sizeof(t_datachunk))
                         goto badheader;
                 headersize = (int)seekto;
@@ -450,7 +450,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
         }
     }
         /* seek past header and any sample frames to skip */
-    sysrtn = (long)lseek(fd,
+    sysrtn = (long)sys_fileops.seek(fd,
         ((off_t)nchannels) * bytespersamp * skipframes + headersize, 0);
     if (sysrtn != nchannels * bytespersamp * skipframes + headersize)
         return (-1);
@@ -464,46 +464,48 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
     p_info->bytespersample = bytespersamp;
     p_info->bytelimit = bytelimit;
     p_info->samplerate = samprate;
-    return (fd);
+    return true;
 badheader:
         /* the header wasn't recognized.  We're threadable here so let's not
         print out the error... */
     errno = EIO;
-    return (-1);
+    return false;
 }
 
     /* open a soundfile, using open_via_path().  This is used by readsf~ in
     a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
     version of open_soundfile_via_canvas() */
-int open_soundfile(const char *dirname, const char *filename,
+bool open_soundfile(const char *dirname, const char *filename, t_fileops_handle *file,
     t_soundfile_info *p_info, long skipframes)
 {
     char buf[OBUFSIZE], *bufptr;
-    int fd, sf_fd;
-    fd = open_via_path(dirname, filename, "", buf, &bufptr, MAXPDSTRING, 1);
-    if (fd < 0)
-        return (-1);
-    sf_fd = open_soundfile_via_fd(fd, p_info, skipframes);
-    if (sf_fd < 0)
-        sys_close(fd);
-    return (sf_fd);
+    t_fileops_handle fd, sf_fd;
+    if (!open_via_path(dirname, filename, "", buf, &bufptr, &fd, MAXPDSTRING, 1))
+        return false;
+    if (!open_soundfile_via_handle(fd, p_info, skipframes)) {
+        sys_fileops.close(fd);
+        return false;
+    }
+    *file = fd;
+    return true;
 }
 
     /* open a soundfile, using open_via_canvas().  This is used by readsf~ in
     a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
     version of open_soundfile_via_canvas() */
-int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
+bool open_soundfile_via_canvas(t_canvas *canvas, const char *filename, t_fileops_handle *file,
     t_soundfile_info *p_info, long skipframes)
 {
     char buf[OBUFSIZE], *bufptr;
-    int fd, sf_fd;
-    fd = canvas_open(canvas, filename, "", buf, &bufptr, MAXPDSTRING, 1);
-    if (fd < 0)
-        return (-1);
-    sf_fd = open_soundfile_via_fd(fd, p_info, skipframes);
-    if (sf_fd < 0)
-        sys_close(fd);
-    return (sf_fd);
+    t_fileops_handle fd;
+    if (!canvas_open(canvas, filename, "", buf, &bufptr, &fd, MAXPDSTRING, 1))
+        return false;
+    if (open_soundfile_via_handle(fd, p_info, skipframes)) {
+        sys_fileops.close(fd);
+        return false;
+    }
+    *file = fd;
+    return true;
 }
 
 static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
@@ -828,7 +830,7 @@ usage:
 }
 
 /* p_headersize is a getter, set to NULL if not needed */
-static int create_soundfile(t_canvas *canvas, const char *filename,
+static bool create_soundfile(t_canvas *canvas, const char *filename, t_fileops_handle *file,
     int filetype, long nframes, int bytespersamp, int bigendian, int nchannels,
     int swap, t_float samplerate, int *p_headersize)
 {
@@ -837,7 +839,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     t_wave *wavehdr = (t_wave *)headerbuf;
     t_nextstep *nexthdr = (t_nextstep *)headerbuf;
     t_aiff *aiffhdr = (t_aiff *)headerbuf;
-    int fd, headersize = 0;
+    t_fileops_handle fd; int headersize = 0;
 
     strncpy(filenamebuf, filename, MAXPDSTRING);
     filenamebuf[MAXPDSTRING-10] = 0;
@@ -906,20 +908,21 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     }
 
     canvas_makefilename(canvas, filenamebuf, buf2, MAXPDSTRING);
-    if ((fd = sys_open(buf2, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
-        return (-1);
+    if (!sys_fileops.open(buf2, FILEOPS_WRITE | FILEOPS_CREAT | FILEOPS_TRUNC, &fd))
+        return false;
 
-    if (write(fd, headerbuf, headersize) < headersize)
+    if (sys_fileops.write(fd, headerbuf, headersize) < headersize)
     {
-        close (fd);
-        return (-1);
+        sys_fileops.close (fd);
+        return false;
     }
+    *file = fd;
     if(p_headersize)
         *p_headersize = headersize;
-    return (fd);
+    return true;
 }
 
-static void soundfile_finishwrite(void *obj, const char *filename, int fd,
+static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_handle fd,
     int filetype, long nframes, long itemswritten, int bytesperframe, int swap)
 {
     if (itemswritten < nframes)
@@ -932,53 +935,53 @@ static void soundfile_finishwrite(void *obj, const char *filename, int fd,
         {
             long datasize = itemswritten * bytesperframe, mofo;
 
-            if (lseek(fd,
+            if (sys_fileops.seek(fd,
                 ((char *)(&((t_wave *)0)->w_chunksize)) - (char *)0,
-                    SEEK_SET) == 0)
+                    FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)(datasize + sizeof(t_wave) - 8), swap);
-            if (write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
-            if (lseek(fd,
+            if (sys_fileops.seek(fd,
                 ((char *)(&((t_wave *)0)->w_datachunksize)) - (char *)0,
                     SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)datasize, swap);
-            if (write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
         }
         if (filetype == FORMAT_AIFF)
         {
             long mofo;
-            if (lseek(fd,
+            if (sys_fileops.seek(fd,
                 ((char *)(&((t_aiff *)0)->a_nframeshi)) - (char *)0,
-                    SEEK_SET) == 0)
+                    FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)itemswritten, swap);
-            if (write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
-            if (lseek(fd,
+            if (sys_fileops.seek(fd,
                 ((char *)(&((t_aiff *)0)->a_chunksize)) - (char *)0,
-                    SEEK_SET) == 0)
+                    FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)(itemswritten*bytesperframe+AIFFHDRSIZE), swap);
-            if (write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
-            if (lseek(fd, (AIFFHDRSIZE+4), SEEK_SET) == 0)
+            if (sys_fileops.seek(fd, (AIFFHDRSIZE+4), SEEK_SET) == 0)
                 goto baddonewrite;
             mofo = swap4((uint32_t)(itemswritten*bytesperframe), swap);
-            if (write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
         }
         if (filetype == FORMAT_NEXT)
         {
             /* do it the lazy way: just set the size field to 'unknown size'*/
             uint32_t nextsize = 0xffffffff;
-            if (lseek(fd, 8, SEEK_SET) == 0)
+            if (sys_fileops.seek(fd, 8, FILEOPS_SEEK_SET) == 0)
             {
                 goto baddonewrite;
             }
-            if (write(fd, &nextsize, 4) < 4)
+            if (sys_fileops.write(fd, &nextsize, 4) < 4)
             {
                 goto baddonewrite;
             }
@@ -1246,7 +1249,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int resize = 0, i;
     long skipframes = 0, finalsize = 0,
         maxsize = DEFMAXSIZE, itemsread = 0, j;
-    int fd = -1;
+    t_fileops_handle fd;
+    bool fdclosed = true;
     char endianness;
     const char *filename;
     t_garray *garrays[MAXSFCHANS];
@@ -1254,7 +1258,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     char sampbuf[SAMPBUFSIZE];
     int bufframes;
     long nitems;
-    FILE *fp;
     info.samplerate = 0,
     info.channels = 0,
     info.bytespersample = 0,
@@ -1341,28 +1344,28 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         finalsize = vecsize;
     }
-    fd = open_soundfile_via_canvas(x->x_canvas, filename, &info, skipframes);
 
-    if (fd < 0)
+    if (!open_soundfile_via_canvas(x->x_canvas, filename, &fd, &info, skipframes))
     {
         pd_error(x, "soundfiler_read: %s: %s", filename, (errno == EIO ?
             "unknown or bad header format" : strerror(errno)));
         goto done;
     }
+    fdclosed = false;
 
     if (resize)
     {
             /* figure out what to resize to */
         long poswas, eofis, framesinfile;
 
-        poswas = (long)lseek(fd, 0, SEEK_CUR);
-        eofis = (long)lseek(fd, 0, SEEK_END);
+        poswas = (long)sys_fileops.seek(fd, 0, FILEOPS_SEEK_CUR);
+        eofis = (long)sys_fileops.seek(fd, 0, FILEOPS_SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
             pd_error(x, "soundfiler_read: lseek failed");
             goto done;
         }
-        lseek(fd, poswas, SEEK_SET);
+        sys_fileops.seek(fd, poswas, SEEK_SET);
         framesinfile = (eofis - poswas) / (info.channels * info.bytespersample);
         if (framesinfile > maxsize)
         {
@@ -1391,14 +1394,13 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     if (!finalsize) finalsize = 0x7fffffff;
     if (finalsize > info.bytelimit / (info.channels * info.bytespersample))
         finalsize = info.bytelimit / (info.channels * info.bytespersample);
-    fp = fdopen(fd, "rb");
     bufframes = SAMPBUFSIZE / (info.channels * info.bytespersample);
 
     for (itemsread = 0; itemsread < finalsize; )
     {
         long thisread = finalsize - itemsread;
         thisread = (thisread > bufframes ? bufframes : thisread);
-        nitems = fread(sampbuf, info.channels * info.bytespersample, thisread, fp);
+        nitems = sys_fileops.read(fd, sampbuf, info.channels * info.bytespersample * thisread);
         if (nitems <= 0) break;
         soundfile_xferin_words(info.channels, argc, vecs, itemsread,
             (unsigned char *)sampbuf, nitems, info.bytespersample, info.bigendian);
@@ -1424,16 +1426,16 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         /* do all graphics updates */
     for (i = 0; i < argc; i++)
         garray_redraw(garrays[i]);
-    fclose(fp);
-    fd = -1;
+    sys_fileops.close(fd);
+    fdclosed = true;
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename tablename...");
     post("flags: -skip <n> -resize -maxsize <n> ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:
-    if (fd >= 0)
-        close (fd);
+    if (!fdclosed)
+        sys_fileops.close (fd);
     outlet_soundfile_info(x->x_out2, &info);
     outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
 }
@@ -1450,7 +1452,8 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
     int bufframes;
-    int fd = -1;
+    t_fileops_handle fd;
+    bool fdclosed = true;
     t_sample normfactor, biggest = 0;
     t_float samplerate;
     t_symbol *filesym;
@@ -1498,13 +1501,14 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
                 biggest = -vectors[i][j].w_float;
         }
     }
-    if ((fd = create_soundfile(canvas, filesym->s_name, filetype,
+    if (!create_soundfile(canvas, filesym->s_name, &fd, filetype,
         nframes, info->bytespersample, info->bigendian, info->channels,
-            swap, info->samplerate, &info->headersize)) < 0)
+            swap, info->samplerate, &info->headersize))
     {
         post("%s: %s\n", filesym->s_name, strerror(errno));
         goto fail;
     }
+    fdclosed = false;
     if (!normalize)
     {
         if ((info->bytespersample != 4) && (biggest > 1))
@@ -1527,7 +1531,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         soundfile_xferout_words(argc, vectors, (unsigned char *)sampbuf,
             thiswrite, onset, info->bytespersample, info->bigendian, normfactor);
-        nbytes = write(fd, sampbuf, info->channels * info->bytespersample * thiswrite);
+        nbytes = sys_fileops.write(fd, sampbuf, info->channels * info->bytespersample * thiswrite);
         if (nbytes < info->channels * info->bytespersample * thiswrite)
         {
             post("%s: %s", filesym->s_name, strerror(errno));
@@ -1538,11 +1542,11 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         itemswritten += thiswrite;
         onset += thiswrite;
     }
-    if (fd >= 0)
+    if (!fdclosed)
     {
         soundfile_finishwrite(obj, filesym->s_name, fd,
             filetype, nframes, itemswritten, info->channels * info->bytespersample, swap);
-        close (fd);
+        sys_fileops.close (fd);
     }
     return ((float)itemswritten);
 usage:
@@ -1551,8 +1555,8 @@ usage:
     post("-big -little -normalize");
     post("(defaults to a 16-bit wave file).");
 fail:
-    if (fd >= 0)
-        close (fd);
+    if (!fdclosed)
+        sys_fileops.close (fd);
     return (0);
 }
 
@@ -1643,7 +1647,8 @@ typedef struct _readsf
     t_float x_samplerate;     /* sample rate of soundfile */
     long x_onsetframes;     /* number of sample frames to skip */
     long x_bytelimit;       /* max number of data bytes to read */
-    int x_fd;               /* filedesc */
+    t_fileops_handle x_fd;  /* filedesc */
+    bool x_fdopen;
     int x_fifosize;         /* buffer size appropriately rounded down */
     int x_fifohead;         /* index of next byte to get from file */
     int x_fifotail;         /* index of next byte the ugen will read */
@@ -1700,7 +1705,9 @@ static void *readsf_child_main(void *zz)
     pthread_mutex_lock(&x->x_mutex);
     while (1)
     {
-        int fd, fifohead;
+        t_fileops_handle fd;
+        bool fdopen;
+        int fifohead;
         char *buf;
 #ifdef DEBUG_SOUNDFILE
         pute("0\n");
@@ -1742,19 +1749,19 @@ static void *readsf_child_main(void *zz)
             x->x_fileerror = 0;
 
                 /* if there's already a file open, close it */
-            if (x->x_fd >= 0)
+            if (x->x_fdopen)
             {
-                fd = x->x_fd;
+                int close_fd = x->x_fd;
                 pthread_mutex_unlock(&x->x_mutex);
-                close (fd);
+                sys_fileops.close (close_fd);
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_fd = -1;
+                x->x_fdopen = false;
                 if (x->x_requestcode != REQUEST_BUSY)
                     goto lost;
             }
                 /* open the soundfile with the mutex unlocked */
             pthread_mutex_unlock(&x->x_mutex);
-            fd = open_soundfile(dirname, filename, &info, onsetframes);
+            fdopen = open_soundfile(dirname, filename, &fd, &info, onsetframes);
             pthread_mutex_lock(&x->x_mutex);
 
 #ifdef DEBUG_SOUNDFILE
@@ -1765,8 +1772,9 @@ static void *readsf_child_main(void *zz)
             x->x_sfchannels = info.channels;
             x->x_bigendian = info.bigendian;
             x->x_fd = fd;
+            x->x_fdopen = fdopen;
             x->x_bytelimit = info.bytelimit;
-            if (fd < 0)
+            if (fdopen)
             {
                 x->x_fileerror = errno;
                 x->x_eof = 1;
@@ -1880,7 +1888,7 @@ static void *readsf_child_main(void *zz)
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
-                sysrtn = read(fd, buf + fifohead, wantbytes);
+                sysrtn = sys_fileops.read(fd, buf + fifohead, wantbytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY)
                     break;
@@ -2275,7 +2283,9 @@ static void *writesf_child_main(void *zz)
         else if (x->x_requestcode == REQUEST_OPEN)
         {
             char boo[80];
-            int fd, writebytes;
+            t_fileops_handle fd;
+            bool fdopen;
+            int writebytes;
             long sysrtn;
 
                 /* copy file stuff out of the data structure so we can
@@ -2328,7 +2338,7 @@ static void *writesf_child_main(void *zz)
             }
                 /* open the soundfile with the mutex unlocked */
             pthread_mutex_unlock(&x->x_mutex);
-            fd = create_soundfile(canvas, filename, filetype, 0,
+            fdopen = create_soundfile(canvas, filename, &fd, filetype, 0,
                     bytespersample, bigendian, sfchannels,
                         garray_ambigendian() != bigendian, samplerate, 0);
             pthread_mutex_lock(&x->x_mutex);

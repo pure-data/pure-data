@@ -813,7 +813,7 @@ broken:
 int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
 {
     long length;
-    int fd;
+    t_fileops_handle fd;
     int readret;
     char *buf;
     char namebuf[MAXPDSTRING];
@@ -824,13 +824,13 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
     namebuf[MAXPDSTRING-1] = 0;
 
-    if ((fd = sys_open(namebuf, 0)) < 0)
+    if (!sys_fileops.open(namebuf, 0, &fd))
     {
         fprintf(stderr, "open: ");
         perror(namebuf);
         return (1);
     }
-    if ((length = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
+    if ((length = (long)sys_fileops.seek(fd, 0, FILEOPS_SEEK_END)) < 0 || sys_fileops.seek(fd, 0, FILEOPS_SEEK_SET) < 0
         || !(buf = t_getbytes(length)))
     {
         fprintf(stderr, "lseek: ");
@@ -838,9 +838,9 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         close(fd);
         return(1);
     }
-    if ((readret = (int)read(fd, buf, length)) < length)
+    if ((readret = (int)sys_fileops.read(fd, buf, length)) < length)
     {
-        fprintf(stderr, "read (%d %ld) -> %d\n", fd, length, readret);
+        fprintf(stderr, "read (%" PRIx64 " %ld) -> %d\n", (unsigned long long)fd, length, readret);
         perror(namebuf);
         close(fd);
         t_freebytes(buf, length);
@@ -869,15 +869,15 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
     int crflag)
 {
-    int filedesc;
+    t_fileops_handle filedesc;
     char buf[MAXPDSTRING], *bufptr;
-    if ((filedesc = canvas_open(canvas, filename, "",
-        buf, &bufptr, MAXPDSTRING, 0)) < 0)
+    if (!canvas_open(canvas, filename, "",
+        buf, &bufptr, &filedesc, MAXPDSTRING, 0))
     {
         error("%s: can't open", filename);
         return (1);
     }
-    else close (filedesc);
+    else sys_fileops.close (filedesc);
     if (binbuf_read(b, bufptr, buf, crflag))
         return (1);
     else return (0);
@@ -887,15 +887,15 @@ int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *ca
 int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag)
 {
-    int filedesc;
+    t_fileops_handle filedesc;
     char buf[MAXPDSTRING], *bufptr;
-    if ((filedesc = open_via_path(
-        dirname, filename, "", buf, &bufptr, MAXPDSTRING, 0)) < 0)
+    if (!open_via_path(
+        dirname, filename, "", buf, &bufptr, &filedesc, MAXPDSTRING, 0))
     {
         error("%s: can't open", filename);
         return (1);
     }
-    else close (filedesc);
+    else sys_fileops.close (filedesc);
     if (binbuf_read(b, bufptr, buf, crflag))
         return (1);
     else return (0);
@@ -908,7 +908,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd);
     semicolons. */
 int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int crflag)
 {
-    FILE *f = 0;
+    t_fileops_handle fd; bool fdopen = false;
     char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
     t_atom *ap;
     t_binbuf *y = 0;
@@ -929,12 +929,13 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         x = y;
     }
 
-    if (!(f = sys_fopen(fbuf, "w")))
+    if (!sys_fileops.open(fbuf, FILEOPS_WRITE, &fd))
     {
         fprintf(stderr, "open: ");
         sys_unixerror(fbuf);
         goto fail;
     }
+    fdopen = true;
     for (ap = z->b_vec, indx = z->b_n; indx--; ap++)
     {
         int length;
@@ -945,7 +946,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         else length = 40;
         if (ep - bp < length)
         {
-            if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
+            if (sys_fileops.write(fd, sbuf, bp-sbuf))
             {
                 sys_unixerror(fbuf);
                 goto fail;
@@ -972,13 +973,13 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
             ncolumn++;
         }
     }
-    if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
+    if (sys_fileops.write(fd, sbuf, bp-sbuf) < 1)
     {
         sys_unixerror(fbuf);
         goto fail;
     }
 
-    if (fflush(f) != 0)
+    if (sys_fileops.flush(fd) != 0)
     {
         sys_unixerror(fbuf);
         goto fail;
@@ -986,13 +987,13 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
 
     if (y)
         binbuf_free(y);
-    fclose(f);
+    sys_fileops.close(fd);
     return (0);
 fail:
     if (y)
         binbuf_free(y);
-    if (f)
-        fclose(f);
+    if (fdopen)
+        sys_fileops.close(fd);
     return (1);
 }
 

@@ -991,13 +991,12 @@ static void bonk_read(t_bonk *x, t_symbol *s)
     t_float *fp2;
 
     /* fbar: canvas_open code taken from g_array.c */
-    FILE *fd;
+    t_fileops_handle fd;
     char buf[MAXPDSTRING], *bufptr;
-    int filedesc;
+    t_fileops_handle filedesc;
 
-    if ((filedesc = canvas_open(x->x_canvas,
-            s->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0 
-                || !(fd = fdopen(filedesc, "r")))
+    if (!canvas_open(x->x_canvas,
+            s->s_name, "", buf, &bufptr, &filedesc, MAXPDSTRING, 0))
     {
         post("%s: open failed", s->s_name);
         return;
@@ -1007,7 +1006,7 @@ static void bonk_read(t_bonk *x, t_symbol *s)
     while (1)
     {
         for (i = x->x_nfilters, fp = vec; i--; fp++)
-            if (fscanf(fd, "%f", fp) < 1) goto nomore;
+            if (sys_fileops.scanf(fd, "%f", fp) < 1) goto nomore;
         x->x_template = (t_template *)t_resizebytes(x->x_template,
             ntemplate * sizeof(t_template),
                 (ntemplate + 1) * sizeof(t_template));
@@ -1027,7 +1026,7 @@ nomore:
     }
     post("bonk: read %d templates\n", ntemplate);
     x->x_ntemplate = ntemplate;
-    fclose(fd);
+    sys_fileops.close(fd);
 }
 #endif
 
