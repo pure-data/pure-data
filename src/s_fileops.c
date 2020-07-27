@@ -14,7 +14,7 @@ static bool null_stat(t_fileops_handle handle, t_fileops_stat *stat) {
     return false;
 }
 static int64_t null_seek(t_fileops_handle handle, int64_t offset, t_fileops_flags flags) {
-    return 0;
+    return -1;
 }
 static ssize_t null_read(t_fileops_handle handle, void *buf, size_t nbyte) {
     return 0;
