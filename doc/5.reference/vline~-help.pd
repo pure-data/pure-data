@@ -1,44 +1,57 @@
-#N canvas 612 59 815 504 12;
-#X obj 55 458 snapshot~;
-#X floatatom 55 481 5 0 0 0 - - -, f 5;
-#X obj 65 431 metro 100;
-#X obj 65 406 r start;
-#X msg 550 21 \; pd dsp 1 \; start bang;
-#X msg 55 241 1 1000;
-#X msg 83 357 stop;
-#X msg 72 288 0;
-#X text 644 36 Click to start;
-#X text 639 94 Click to stop;
-#X text 209 463 see also:;
-#X obj 295 465 line;
-#X msg 550 75 \; pd dsp 0 \; start 0;
-#X obj 341 465 line~;
-#X obj 21 7 vline~;
-#X text 85 7 - high-precision audio ramp generator;
-#X obj 55 383 vline~;
-#X text 15 44 The vline~ object \, like line~ \, generates linear ramps
-whose levels and timing are determined by messages you send it. The
-messages consist of a target value \, a time interval (zero if not
-supplied) \, and an initial delay (also zero if not supplied.) Ramps
-may start and stop between audio samples \, in which case the output
-is interpolated accordingly.;
-#X text 15 155 Any number of future ramps may be scheduled and vline~
+#N canvas 718 55 557 781 12;
+#X obj 61 697 snapshot~;
+#X floatatom 61 723 5 0 0 0 - - -;
+#X obj 77 660 metro 100;
+#X obj 77 635 r start;
+#X msg 234 374 \; pd dsp 1 \; start bang;
+#X msg 41 376 1 1000;
+#X msg 90 509 stop;
+#X msg 79 426 0;
+#X text 228 354 Click to start;
+#X text 342 354 Click to stop;
+#X text 171 715 see also:;
+#X obj 247 716 line;
+#X msg 344 376 \; pd dsp 0 \; start 0;
+#X obj 293 716 line~;
+#X obj 41 16 vline~;
+#X text 105 16 - high-precision audio ramp generator;
+#X obj 61 602 vline~;
+#X text 43 267 Any number of future ramps may be scheduled and vline~
 will remember them and execute them in order. They must be specified
 in increasing order of initial delay however \, since a segment cancels
-all planned segments at any future time.;
-#X text 120 238 ramp up;
-#X msg 64 263 0 1000;
-#X text 127 266 ramp down;
-#X text 84 308 ramp up \, jump down \, ramp up again;
-#X text 110 287 jump down;
-#X text 126 356 "stop" message freezes vline~ at its current value
+all planned segments at any future time., f 61;
+#X text 96 373 ramp up;
+#X msg 61 400 0 1000;
+#X text 114 401 ramp down;
+#X text 90 448 ramp up \, jump down \, ramp up again;
+#X text 112 425 jump down;
+#X text 133 508 "stop" message freezes vline~ at its current value
 ;
-#X msg 78 329 1 1000 \, 0 0 2000 \, 1 1000 3000;
-#X text 340 333 note: times (2000 \, 3000) are cumulative \, not incremental.
-;
-#X text 561 465 updated for version 0.47;
-#X text 333 402 !!! BUG: vline~ objects inside reblocked subpatches
+#X msg 84 474 1 1000 \, 0 0 2000 \, 1 1000 3000;
+#X text 302 467 note: times (2000 \, 3000) are cumulative \, not incremental.
+, f 29;
+#X text 344 714 updated for version 0.47;
+#X text 184 626 !!! BUG: vline~ objects inside reblocked subpatches
 can have slightly incorrect timing !!!, f 41;
+#X floatatom 100 575 5 0 0 0 - - -;
+#X floatatom 99 541 5 0 0 0 - - -;
+#X text 142 533 middle inlet sets next ramp time (cleared when ramp
+starts!), f 32;
+#X text 142 571 right inlet sets next delay time (cleared when ramp
+starts!), f 32;
+#X text 43 53 The vline~ object \, like line~ \, generates linear ramps
+whose levels and timing are determined by messages you send it. It
+takes a target value \, a time interval in miliseconds and an initial
+delay (also in ms). Ramps may start and stop between audio samples
+\, in which case the output is interpolated accordingly., f 61;
+#X text 43 142 A list up to three floats distributes the value over
+the inlets \, as usual in Pd. Note that the middle and right inlet
+(that sets the time and delay) do not remember old values (unlike every
+other inlet in Pd). Thus \, if you send vline~ a float without priorly
+specifying a ramp time and delay and sent \, it jumps immediately to
+the target value. On the other hand \, a list of two values will not
+have a delay time if no delay time was priorily set in the right inlet.
+, f 61;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
@@ -46,5 +59,7 @@ can have slightly incorrect timing !!!, f 41;
 #X connect 6 0 16 0;
 #X connect 7 0 16 0;
 #X connect 16 0 0 0;
-#X connect 20 0 16 0;
-#X connect 25 0 16 0;
+#X connect 19 0 16 0;
+#X connect 24 0 16 0;
+#X connect 28 0 16 2;
+#X connect 29 0 16 1;

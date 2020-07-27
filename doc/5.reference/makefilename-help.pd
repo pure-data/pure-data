@@ -1,90 +1,654 @@
-#N canvas 87 80 595 558 12;
-#X floatatom 30 200 0 0 0 0 - - -;
-#X obj 30 302 print;
-#X obj 30 275 makefilename dog%d.aif;
-#X msg 28 350 symbol meat;
-#X msg 41 374 symbol hair;
-#X obj 28 429 print;
-#X obj 28 402 makefilename dog%s.aif;
-#X obj 33 18 makefilename;
-#X text 141 18 - format a "name" with a variable field;
-#X msg 45 226 set cat%d.wav;
-#X msg 45 250 set %d-zebra;
-#X text 64 200 <- numbers replace "%d" in string;
-#X text 164 227 <- "set" message replaces format;
-#X text 220 277 <- creation argument is format;
-#X text 26 176 SUBSTITUTING A NUMBER;
-#X text 25 328 SUBSTITUTING A SYMBOL;
-#N canvas 105 144 550 361 all_possible_patterns 0;
-#X text 33 86 %c;
-#X text 110 86 character;
-#X text 33 106 %d or %i;
-#X text 110 106 signed decimal integer;
-#X text 33 126 %e;
-#X text 110 126 scientific notation using "e" character;
-#X text 33 146 %E;
-#X text 110 146 scientific notation using "e" character;
-#X text 33 166 %f;
-#X text 33 186 %o;
-#X text 110 186 signed octal;
-#X text 33 206 %s;
-#X text 110 206 symbol;
-#X text 33 226 %u;
-#X text 110 226 unsigned integer;
-#X text 33 246 %x;
-#X text 110 246 unsigned hexadecimal in lowercase;
-#X text 33 266 %X;
-#X text 110 266 unsigned hexadecimal in CAPS;
-#X text 33 286 %p;
-#X text 110 286 unsigned hexadecimal in lowercase preceded by "0x"
+#N canvas 521 43 620 443 12;
+#X floatatom 43 186 0 0 0 0 - - -;
+#X msg 392 186 symbol meat;
+#X msg 405 213 symbol hair;
+#X obj 68 24 makefilename;
+#X text 166 24 - format a "name" with a variable field;
+#X msg 66 236 set %d-zebra;
+#X text 76 185 <= numbers replace "%d" in string;
+#X text 174 212 <= "set" message replaces format, f 16;
+#X text 499 212 <= symbols replace "%s", f 13;
+#X symbolatom 43 305 14 0 0 0 - - -;
+#X obj 43 342 print Integer;
+#X symbolatom 392 284 14 0 0 0 - - -;
+#X obj 392 317 print Symbol;
+#X text 221 264 <= argument is format string, f 14;
+#N canvas 703 91 509 425 multiple_substitutions 0;
+#X msg 50 111 symbol aif;
+#X msg 63 138 symbol wav;
+#X msg 49 229 set \$1;
+#X floatatom 61 274 0 0 0 0 - - -;
+#X obj 49 306 makefilename not-set-yet;
+#X symbolatom 49 197 14 0 0 0 - - -;
+#X text 43 21 MULTIPLE SUBSTITUTIONS:;
+#X symbolatom 49 335 14 0 0 0 - - -;
+#X obj 49 367 print Multiple;
+#X text 97 274 <= and then this number replaces "%d".;
+#X text 240 148 LITERAL %: You can format a string with a literal '%'
+if you escape it with another '%' (where "%%" becomes "%" \, "%%%%"
+becomes "%%" and so on), f 36;
+#X obj 49 168 makefilename dog\ %%d.%s;
+#X text 107 229 <= this becomes "set dog %d.aif" \, for example.,
+f 35;
+#X text 38 46 You can connect two or more objects for multiple substitutions.
+For that \, you need to use literal '%' to set the format string of
+another makefilename object., f 63;
+#X connect 0 0 11 0;
+#X connect 1 0 11 0;
+#X connect 2 0 4 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 2 0;
+#X connect 7 0 8 0;
+#X connect 11 0 5 0;
+#X restore 392 365 pd multiple_substitutions;
+#N canvas 728 108 479 517 possible_types_&_syntax 0;
+#N canvas 640 222 489 460 %c 0;
+#X obj 147 214 list fromsymbol;
+#X floatatom 147 313 5 0 0 0 - - -;
+#X symbolatom 147 167 7 0 0 0 - - -;
+#X symbolatom 147 388 7 0 0 0 - - -;
+#X msg 164 248 64;
+#X text 200 247 <= click (at symbol);
+#X msg 174 278 123;
+#X text 210 277 <= click (left curly);
+#X text 71 27 %c - character:;
+#X text 209 167 <=;
+#X text 232 167 type a character to convert to float, f 23;
+#X obj 147 350 makefilename [%c];
+#X text 69 61 This pattern allows you to convert from a float to a
+character (symbols are converted to 0) and insert it into a symbol.
+By the way \, you can also perform the opposite conversion (from a
+character to a float) by using the [list fromsymbol] object., f 53
 ;
-#X text 20 37 This is a listing of all possible printf patterns used
-in Pd's [makefilename]:;
-#X text 110 166 decimal floating point (currently broken);
-#X text 7 1 [makefilename] All Possible Patterns;
-#X restore 29 492 pd all_possible_patterns;
-#X text 25 526 updated for Pd version 0.48;
-#X text 26 47 The Makefilename object generates symbols according to
-a format string \, for use as a series of filenames \, table names
-\, or whatnot. You can plug in a variable number or symbol by using
-"%s" \, "%c" \, "%d" \, or "%X" in the string (see subpatch below).
-If you put "%s" in the string be sure to send it a symbol and vice
-versa... there's no checking. Each [makefilename] object can have only
-one variable.;
-#N canvas 542 23 574 393 multiple_substitutions 0;
-#X obj 48 192 print;
-#X obj 47 90 makefilename dog%%d.%s;
-#X msg 47 114 set \$1;
-#X obj 47 168 makefilename not-set-yet;
-#X floatatom 56 139 0 0 0 0 - - -;
-#X msg 47 38 symbol aif;
-#X msg 60 62 symbol wav;
-#X text 43 14 GANG THEM TO DO DOUBLE (OR N-TUPLE) SUBSTITUTION;
-#X text 257 58 "%s" is replaced by the symbol;
-#X text 258 41 here \, "%%" becomes "%" and;
-#X text 113 117 ... so this becomes "set dog%d.aif" \, for example.
-;
-#X text 107 139 ... and then the number fills in "%d".;
-#X msg 50 246 symbol aif;
-#X msg 63 270 symbol wav;
-#X text 180 264 "%s" is replaced by the symbol;
-#X obj 50 298 makefilename dog%%%%d.%s;
-#X obj 50 328 print;
-#X text 257 298 here \, "%%%%" becomes "%%";
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X connect 3 0 0 0;
-#X connect 4 0 3 0;
-#X connect 5 0 1 0;
+#X connect 0 0 1 0;
+#X connect 1 0 11 0;
+#X connect 2 0 0 0;
+#X connect 4 0 1 0;
 #X connect 6 0 1 0;
-#X connect 12 0 15 0;
-#X connect 13 0 15 0;
-#X connect 15 0 16 0;
-#X restore 29 463 pd multiple_substitutions;
+#X connect 11 0 3 0;
+#X restore 80 69 pd %c;
+#N canvas 847 204 524 571 %d/%i 0;
+#X floatatom 244 368 0 0 0 0 - - -;
+#X symbolatom 94 464 12 0 0 0 - - -;
+#X text 56 35 %d or %i - signed decimal integer:;
+#X symbolatom 244 464 12 0 0 0 - - -;
+#X msg 244 153 127;
+#X msg 258 185 -255;
+#X msg 269 221 1;
+#X msg 275 251 -1;
+#X obj 94 416 makefilename [%d];
+#X msg 194 189 12.9;
+#X msg 286 288 1e+06;
+#X msg 294 322 -1e+07;
+#X text 54 64 Both '%d' and '%i' are the same. This pattern allows
+you to insert a signed (negative or positive) decimal integer into
+a symbol (symbols are converted to 0). Floats are truncated.;
+#X obj 244 416 makefilename [%i];
+#X connect 0 0 8 0;
+#X connect 0 0 13 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 1 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X connect 11 0 0 0;
+#X connect 13 0 3 0;
+#X restore 59 97 pd %d/%i;
+#N canvas 762 278 567 409 %e/%E 0;
+#X floatatom 269 239 10 0 0 0 - - -;
+#X symbolatom 119 335 18 0 0 0 - - -;
+#X symbolatom 269 335 18 0 0 0 - - -;
+#X obj 119 287 makefilename [%e];
+#X msg 269 164 1.23456;
+#X msg 241 136 2.345e-05;
+#X msg 298 199 -18;
+#X text 54 26 %e or %E - scientific notation using "e" or "E" character:
+;
+#X obj 269 287 makefilename [%E];
+#X text 53 53 This pattern allows you to insert a number with scientific
+notation into a symbol (symbols are converted to 0). The '%e' or '%E'
+pattern specify respectively wether the exponential character is lower
+(e) or upper (E) case., f 71;
+#X connect 0 0 3 0;
+#X connect 0 0 8 0;
+#X connect 3 0 1 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 8 0 2 0;
+#X restore 59 125 pd %e/%E;
+#X text 127 68 - character;
+#X text 127 96 - signed decimal integer;
+#X text 128 152 - decimal floating point;
+#N canvas 787 279 483 431 %f 0;
+#X symbolatom 166 358 18 0 0 0 - - -;
+#X floatatom 166 268 8 0 0 0 - - -;
+#X msg 166 164 1.234;
+#X msg 180 196 -18;
+#X msg 135 132 2.3e-05;
+#X msg 191 231 0.997;
+#X text 70 29 %f - decimal floating point:;
+#X obj 166 310 makefilename [%f];
+#X text 68 63 This pattern allows you to format a float into a symbol
+(symbols are converted to 0)., f 43;
+#X connect 1 0 7 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 7 0 0 0;
+#X restore 80 153 pd %f;
+#N canvas 521 79 612 539 %g/%G 0;
+#X floatatom 304 368 10 0 0 0 - - -;
+#X symbolatom 154 464 18 0 0 0 - - -;
+#X symbolatom 304 464 18 0 0 0 - - -;
+#X msg 332 250 1.23456;
+#X obj 154 416 makefilename [%g];
+#X msg 349 321 0.99999;
+#X msg 304 222 2.345e-05;
+#X msg 346 282 1.1e+08;
+#X msg 278 191 -1800;
+#X msg 240 191 179;
+#X text 36 20 %g or %G - numbers with or without scientific notation:
+;
+#X obj 304 416 makefilename [%G];
+#X text 34 142 This means that \, unlike '%e' or '%E' \, not at all
+numbers are converted to scientific notation., f 78;
+#X text 34 53 This pattern allows you to insert a number with or without
+scientific notation into a symbol (symbols are converted to 0). The
+'%g' or '%G' pattern specify respectively wether the exponential character
+is lower (e) or upper (E) case. The scientific notation is only used
+if there's not enough digit resolution. The default precision is 6
+digits and we'll see how to change that later. Also \, the decimal
+point is not included on whole numbers., f 78;
+#X connect 0 0 4 0;
+#X connect 0 0 11 0;
+#X connect 3 0 0 0;
+#X connect 4 0 1 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;
+#X connect 9 0 0 0;
+#X connect 11 0 2 0;
+#X restore 59 181 pd %g/%G;
+#X text 128 124 - decimal floating point in scientific notation;
+#X text 128 180 - numbers with or without scientific notation;
+#N canvas 836 149 529 506 %o 0;
+#X floatatom 208 337 0 0 0 0 - - -;
+#X symbolatom 208 433 14 0 0 0 - - -;
+#X msg 219 190 1;
+#X msg 230 220 -1;
+#X msg 127 232 1.9;
+#X msg 172 154 9;
+#X msg 208 154 16;
+#X msg 253 291 1e+12;
+#X msg 243 255 1e+09;
+#X text 52 27 %o - unsigned octal:;
+#X obj 208 385 makefilename [%o];
+#X text 53 59 This pattern allows you to insert an unsigned (only positive)
+octal integer into a symbol (symbols are converted to 0). Floats are
+truncated. Note that since this is an unsigned format \, sending negative
+numbers doesn't work., f 61;
+#X connect 0 0 10 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;
+#X connect 10 0 1 0;
+#X restore 80 209 pd %o;
+#X text 126 208 - unsigned octal;
+#N canvas 788 215 489 431 %s 0;
+#X symbolatom 129 133 7 0 0 0 - - -;
+#X symbolatom 167 356 10 0 0 0 - - -;
+#X obj 167 308 makefilename [%s];
+#X floatatom 167 166 5 0 0 0 - - -;
+#X msg 197 205 symbol dog;
+#X msg 206 243 -1;
+#X msg 249 243 1.9;
+#X msg 249 273 1e-07;
+#X text 186 133 <= send it a symbol;
+#X text 214 165 <= send it a float;
+#X text 73 65 This pattern allows you to insert a symbol \, but note
+it also works for float messages., f 49;
+#X text 76 31 %s - symbol string:;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X connect 3 0 6 0;
-#X connect 4 0 6 0;
-#X connect 6 0 5 0;
-#X connect 9 0 2 0;
-#X connect 10 0 2 0;
+#X connect 3 0 2 0;
+#X connect 4 0 2 0;
+#X connect 5 0 2 0;
+#X connect 6 0 2 0;
+#X connect 7 0 2 0;
+#X restore 80 237 pd %s;
+#X text 126 264 - signed decimal integer;
+#N canvas 766 264 519 474 %u 0;
+#X floatatom 185 337 0 0 0 0 - - -;
+#X symbolatom 185 415 12 0 0 0 - - -;
+#X msg 185 152 127;
+#X msg 199 184 -255;
+#X msg 210 220 1;
+#X msg 216 250 -1;
+#X msg 135 188 12.9;
+#X text 45 25 %u - unsigned decimal integer:;
+#X obj 185 376 makefilename [%u];
+#X msg 227 287 1e+09;
+#X text 43 60 This pattern is the same as "%d" or "%i" \, but it is
+unsigned (only positive) \, hence it allows you to insert a decimal
+integer into a symbol (symbols are converted to 0). Floats are truncated
+to integers. Note that since this is an unsigned format \, sending
+negative numbers doesn't work.;
+#X connect 0 0 8 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 8 0 1 0;
+#X connect 9 0 0 0;
+#X restore 80 265 pd %u;
+#X text 127 292 - unsigned hexadecimal;
+#N canvas 781 226 510 490 %x/%X 0;
+#X floatatom 262 338 0 0 0 0 - - -;
+#X symbolatom 112 434 12 0 0 0 - - -;
+#X symbolatom 262 434 12 0 0 0 - - -;
+#X msg 262 153 127;
+#X msg 287 221 1;
+#X msg 293 251 -1;
+#X msg 304 288 1e+09;
+#X obj 112 386 makefilename [%x];
+#X msg 276 185 255;
+#X msg 212 189 9.9;
+#X text 70 11 %x or %X - unsigned hexadecimal:;
+#X obj 262 386 makefilename [%X];
+#X text 61 46 This pattern is allows you to insert a signed (only positive)
+hexadecimal integer into a symbol (symbols are converted to 0). Floats
+are trunctaed. The '%x' or '%X' pattern specify respectively wether
+the the characters are lower or upper case. Note that since this is
+an unsigned format \, sending negative numbers doesn't work., f 61
+;
+#X connect 0 0 7 0;
+#X connect 0 0 11 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 1 0;
+#X connect 8 0 0 0;
+#X connect 9 0 0 0;
+#X connect 11 0 2 0;
+#X restore 59 293 pd %x/%X;
+#N canvas 921 253 483 354 %p 0;
+#X symbolatom 164 163 10 0 0 0 - - -;
+#X symbolatom 164 259 14 0 0 0 - - -;
+#X obj 164 210 makefilename [%p];
+#X text 57 44 %p - pointer representation:;
+#X text 54 77 This pattern formats to a platform specific pointer representation
+of an incoming symbol (floats are cast to int and also converted).
+, f 53;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 80 321 pd %p;
+#X text 126 320 - pointer representation;
+#X text 163 414 flags:;
+#N canvas 216 23 794 593 + 0;
+#X text 65 38 The "+" flag Prepends a plus sign for positive signed
+numeric types (%d/%i/%e/%E/%f/%g/%G):, f 47;
+#X floatatom 150 188 0 0 0 0 - - -;
+#X symbolatom 150 263 12 0 0 0 - - -;
+#X msg 109 105 127;
+#X msg 150 105 -255;
+#X msg 168 137 1e+06;
+#X msg 220 137 -1e+07;
+#X obj 150 225 makefilename [%+d];
+#X floatatom 167 431 10 0 0 0 - - -;
+#X symbolatom 167 514 18 0 0 0 - - -;
+#X msg 169 326 1.23456;
+#X msg 94 326 2.345e-05;
+#X msg 196 391 -18;
+#X msg 183 358 1.999e+07;
+#X obj 167 466 makefilename [%+e];
+#X symbolatom 516 191 18 0 0 0 - - -;
+#X floatatom 516 103 8 0 0 0 - - -;
+#X msg 530 61 -18;
+#X msg 450 30 2.3e-05;
+#X obj 516 143 makefilename [%+f];
+#X msg 516 29 257;
+#X floatatom 540 424 10 0 0 0 - - -;
+#X symbolatom 540 511 18 0 0 0 - - -;
+#X msg 568 306 1.23456;
+#X msg 585 377 0.99999;
+#X msg 540 278 2.345e-05;
+#X msg 582 338 1.1e+08;
+#X msg 514 247 -1800;
+#X msg 476 247 179;
+#X obj 540 463 makefilename [%+G];
+#X connect 1 0 7 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 1 0;
+#X connect 7 0 2 0;
+#X connect 8 0 14 0;
+#X connect 10 0 8 0;
+#X connect 11 0 8 0;
+#X connect 12 0 8 0;
+#X connect 13 0 8 0;
+#X connect 14 0 9 0;
+#X connect 16 0 19 0;
+#X connect 17 0 16 0;
+#X connect 18 0 16 0;
+#X connect 19 0 15 0;
+#X connect 20 0 16 0;
+#X connect 21 0 29 0;
+#X connect 23 0 21 0;
+#X connect 24 0 21 0;
+#X connect 25 0 21 0;
+#X connect 26 0 21 0;
+#X connect 27 0 21 0;
+#X connect 28 0 21 0;
+#X connect 29 0 22 0;
+#X restore 216 415 pd +;
+#N canvas 806 77 728 472 # 0;
+#X floatatom 148 115 0 0 0 0 - - -;
+#X symbolatom 148 178 14 0 0 0 - - -;
+#X msg 148 73 1;
+#X msg 80 73 9;
+#X msg 116 73 16;
+#X msg 183 73 1e+09;
+#X obj 148 146 makefilename [%#o];
+#X floatatom 196 326 0 0 0 0 - - -;
+#X symbolatom 196 399 14 0 0 0 - - -;
+#X msg 196 284 1;
+#X msg 128 284 9;
+#X msg 164 284 16;
+#X msg 231 284 1e+09;
+#X text 44 222 For "%x" and "%X" \, the number is preceeded by "0x"
+(if %x) or ""0X" (if %5)., f 43;
+#X symbolatom 55 399 14 0 0 0 - - -;
+#X obj 55 361 makefilename [%#x];
+#X obj 196 361 makefilename [%#X];
+#X text 25 22 The '#' flag presents an alternate form of some numeric
+types. For "%o" \, the number is preceeded by a "0".;
+#X floatatom 532 240 10 0 0 0 - - -;
+#X symbolatom 382 336 18 0 0 0 - - -;
+#X symbolatom 532 336 18 0 0 0 - - -;
+#X msg 532 193 -1800;
+#X msg 494 193 179;
+#X obj 382 288 makefilename [%#g];
+#X obj 532 288 makefilename [%G];
+#X text 362 139 For %g and %G \, the decimal point and zeroes are not
+removed for integers in no scientific notation., f 48;
+#X msg 585 194 1e+08;
+#X connect 0 0 6 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 1 0;
+#X connect 7 0 15 0;
+#X connect 7 0 16 0;
+#X connect 9 0 7 0;
+#X connect 10 0 7 0;
+#X connect 11 0 7 0;
+#X connect 12 0 7 0;
+#X connect 15 0 14 0;
+#X connect 16 0 8 0;
+#X connect 18 0 23 0;
+#X connect 18 0 24 0;
+#X connect 21 0 18 0;
+#X connect 22 0 18 0;
+#X connect 23 0 19 0;
+#X connect 24 0 20 0;
+#X connect 26 0 18 0;
+#X restore 271 415 pd #;
+#X text 50 20 This is a listing of possible printf pattern types. Open
+subpatches for more details and examples., f 51;
+#X text 163 444 width:;
+#N canvas 583 148 928 523 width 0;
+#X floatatom 102 171 0 0 0 0 - - -;
+#X symbolatom 102 235 12 0 0 0 - - -;
+#X obj 102 203 makefilename [%5d];
+#X msg 102 114 1;
+#X msg 138 114 -1000;
+#X msg 64 114 10;
+#X floatatom 194 387 0 0 0 0 - - -;
+#X symbolatom 194 463 12 0 0 0 - - -;
+#X msg 194 352 1;
+#X symbolatom 282 235 12 0 0 0 - - -;
+#X obj 282 203 makefilename [%5s];
+#X symbolatom 282 171 10 0 0 0 - - -;
+#X msg 295 143 symbol abcde;
+#X msg 261 92 symbol a;
+#X msg 282 117 symbol abc;
+#X msg 150 139 -1e+06;
+#X msg 156 352 31;
+#X msg 234 352 1e+06;
+#X obj 194 426 makefilename [%05x];
+#X text 39 286 The width field takes an optional preceeding '0' flag
+that fills the extra characters with zeroes instead of spaces.;
+#X floatatom 539 176 0 0 0 0 - - -;
+#X symbolatom 539 240 12 0 0 0 - - -;
+#X msg 539 119 1;
+#X msg 575 119 -1000;
+#X msg 501 119 10;
+#X msg 587 144 -1e+06;
+#X obj 539 208 makefilename [%+5d];
+#X floatatom 707 175 0 0 0 0 - - -;
+#X symbolatom 707 239 12 0 0 0 - - -;
+#X msg 707 118 1;
+#X msg 743 118 -1000;
+#X msg 669 118 10;
+#X msg 755 143 -1e+06;
+#X obj 707 207 makefilename [%+05d];
+#X floatatom 556 372 0 0 0 0 - - -;
+#X symbolatom 556 436 12 0 0 0 - - -;
+#X msg 556 315 1;
+#X msg 604 340 -1e+06;
+#X floatatom 724 371 0 0 0 0 - - -;
+#X symbolatom 724 435 12 0 0 0 - - -;
+#X msg 724 314 1;
+#X msg 772 339 -1e+06;
+#X text 498 63 You can combine the width field with the preceeding
++/# flags where pertinent., f 40;
+#X msg 592 315 100;
+#X msg 760 314 100;
+#X msg 686 314 31;
+#X msg 518 315 31;
+#X obj 556 404 makefilename [%#5x];
+#X obj 724 403 makefilename [%#08X];
+#X text 24 18 The width field takes an integer that sets the number
+of minimum characters and adds spaces to fill them. This works for
+all types but float point numbers ('%f' and '%e'/'%E'). In the case
+of '%g'/'%G' \, the width field is valid only for the integer output.
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 18 0;
+#X connect 8 0 6 0;
+#X connect 10 0 9 0;
+#X connect 11 0 10 0;
+#X connect 12 0 11 0;
+#X connect 13 0 11 0;
+#X connect 14 0 11 0;
+#X connect 15 0 0 0;
+#X connect 16 0 6 0;
+#X connect 17 0 6 0;
+#X connect 18 0 7 0;
+#X connect 20 0 26 0;
+#X connect 22 0 20 0;
+#X connect 23 0 20 0;
+#X connect 24 0 20 0;
+#X connect 25 0 20 0;
+#X connect 26 0 21 0;
+#X connect 27 0 33 0;
+#X connect 29 0 27 0;
+#X connect 30 0 27 0;
+#X connect 31 0 27 0;
+#X connect 32 0 27 0;
+#X connect 33 0 28 0;
+#X connect 34 0 47 0;
+#X connect 36 0 34 0;
+#X connect 37 0 34 0;
+#X connect 38 0 48 0;
+#X connect 40 0 38 0;
+#X connect 41 0 38 0;
+#X connect 43 0 34 0;
+#X connect 44 0 38 0;
+#X connect 45 0 38 0;
+#X connect 46 0 34 0;
+#X connect 47 0 35 0;
+#X connect 48 0 39 0;
+#X restore 216 445 pd width;
+#X text 135 474 precision:;
+#N canvas 619 439 448 268 precision 0;
+#N canvas 842 141 470 564 strings 0;
+#X symbolatom 219 496 0 0 0 0 - - -;
+#X symbolatom 219 418 10 0 0 0 - - -;
+#X obj 219 458 makefilename [%3.4s];
+#X symbolatom 231 223 0 0 0 0 - - -;
+#X symbolatom 231 154 10 0 0 0 - - -;
+#X obj 231 189 makefilename [%.4s];
+#X msg 231 115 symbol abcde;
+#X msg 127 115 symbol abcd;
+#X text 61 260 In this case \, the width field can be preceeded to
+set a minimum of characters filled with spaces., f 48;
+#X msg 141 316 symbol ab;
+#X msg 219 316 symbol abc;
+#X msg 246 383 symbol abcde;
+#X msg 234 350 symbol abcd;
+#X text 54 33 For symbol srtrings (%s) \, the precisio sets a maximum
+character limit. Below \, we have a maximum of 4 characters \, hence
+\, the symbol "abcde" gets truncated., f 53;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 3 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 9 0 1 0;
+#X connect 10 0 1 0;
+#X connect 11 0 1 0;
+#X connect 12 0 1 0;
+#X restore 159 133 pd strings;
+#N canvas 788 237 558 412 integers 0;
+#X symbolatom 126 293 0 0 0 0 - - -;
+#X obj 126 249 makefilename [%.4d];
+#X symbolatom 287 288 0 0 0 0 - - -;
+#X floatatom 287 205 5 0 0 0 - - -;
+#X msg 287 172 -3;
+#X obj 287 249 makefilename [%04d];
+#X msg 325 173 3;
+#X text 78 40 For integer types ('%d'/'%i'/'%o'/'%u'/'%x'/'%X'/'%p')
+\, the precision field does not set a maximum number of characters.
+Instead \, it sets a fixed number of digits and adds zeroes to the
+left as a fill. This is slightly different than setting a width field
+with a '0' flag. But the difference is only observed for numbers of
+different sign as below. Note how the width field will suprress a zero
+to include a "-" character.;
+#X connect 1 0 0 0;
+#X connect 3 0 5 0;
+#X connect 3 0 1 0;
+#X connect 4 0 3 0;
+#X connect 5 0 2 0;
+#X connect 6 0 3 0;
+#X restore 159 167 pd integers;
+#N canvas 424 199 702 507 floats 0;
+#X floatatom 81 252 10 0 0 0 - - -;
+#X symbolatom 82 440 18 0 0 0 - - -;
+#X symbolatom 98 348 18 0 0 0 - - -;
+#X obj 82 392 makefilename [%e];
+#X msg 83 147 1.23456;
+#X msg 55 119 2.345e-05;
+#X msg 110 212 -18;
+#X obj 98 300 makefilename [%.2E];
+#X msg 97 179 1.999e+07;
+#X text 62 34 For floats \, the precision field sets the maximum number
+of digits to the right of the decimal point. Note that there's a default
+of 6 digits. Also note that this affects the resolution and can cause
+the number to be rounded., f 78;
+#X symbolatom 250 443 18 0 0 0 - - -;
+#X floatatom 250 248 8 0 0 0 - - -;
+#X symbolatom 290 345 18 0 0 0 - - -;
+#X msg 250 144 1.234;
+#X msg 264 176 -18;
+#X obj 290 297 makefilename [%.2f];
+#X msg 219 112 2.3e-05;
+#X msg 275 211 0.997;
+#X obj 250 395 makefilename [%f];
+#X symbolatom 470 445 18 0 0 0 - - -;
+#X floatatom 470 250 8 0 0 0 - - -;
+#X symbolatom 510 347 18 0 0 0 - - -;
+#X msg 470 146 1.234;
+#X msg 439 114 2.3e-05;
+#X msg 495 213 0.997;
+#X obj 510 299 makefilename [%.2g];
+#X msg 484 178 -1800;
+#X obj 470 397 makefilename [%#g];
+#X connect 0 0 3 0;
+#X connect 0 0 7 0;
+#X connect 3 0 1 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 2 0;
+#X connect 8 0 0 0;
+#X connect 11 0 15 0;
+#X connect 11 0 18 0;
+#X connect 13 0 11 0;
+#X connect 14 0 11 0;
+#X connect 15 0 12 0;
+#X connect 16 0 11 0;
+#X connect 17 0 11 0;
+#X connect 18 0 10 0;
+#X connect 20 0 25 0;
+#X connect 20 0 27 0;
+#X connect 22 0 20 0;
+#X connect 23 0 20 0;
+#X connect 24 0 20 0;
+#X connect 25 0 21 0;
+#X connect 26 0 20 0;
+#X connect 27 0 19 0;
+#X restore 159 201 pd floats;
+#X text 41 23 The precision field behaves differently according to
+the type (strings \, integers of floats). The syntax of this field
+is specified by a "." and is followed by the precision number. See
+subpatches below for the examples., f 51;
+#X restore 216 475 pd precision;
+#X text 127 236 - string;
+#X text 33 366 The types can be preceeded by optional fields \, which
+can be combined and included in the order below:;
+#X restore 392 395 pd possible_types_&_syntax;
+#X text 43 394 updated for Pd version 0.51;
+#X msg 58 213 set cat\ %d.wav;
+#X obj 43 265 makefilename dog\ %d.aif;
+#X obj 392 250 makefilename dog\ %s.aif;
+#X text 283 394 More details =>;
+#X text 388 158 SUBSTITUTING A SYMBOL:;
+#X text 39 158 SUBSTITUTING AN INTEGER NUMBER:;
+#X text 24 63 The Makefilename object generates name symbols according
+to a format string \, for use as a series of filenames \, table names
+\, or whatnot. You can plug in a variable number or symbol by using
+different types in the string ("such as %s" \, "%c" \, "%d" \, "%X
+and others - see subpatch below with possible types). Each object can
+have only one variable pattern \, but you can cascade objects for multiple
+substitutions., f 82;
+#X text 163 301 (Note you can use backlashes to escape and insert a
+space character in the symbol), f 29;
+#X connect 0 0 18 0;
+#X connect 1 0 19 0;
+#X connect 2 0 19 0;
+#X connect 5 0 18 0;
+#X connect 9 0 10 0;
+#X connect 11 0 12 0;
+#X connect 17 0 18 0;
+#X connect 18 0 9 0;
+#X connect 19 0 11 0;

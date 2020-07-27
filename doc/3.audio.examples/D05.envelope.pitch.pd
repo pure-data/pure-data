@@ -1,44 +1,43 @@
-#N canvas 222 84 686 544 12;
-#X obj 48 106 r trigger;
-#X obj 48 154 tabread4~ dbtorms;
-#X text 144 313 <-- attack;
-#X text 568 305 <-- release;
-#X obj 48 208 *~;
-#N canvas 151 343 812 522 make-table 0;
-#X msg 82 49 bang;
-#X obj 82 78 t b b;
-#X obj 141 142 f;
-#X obj 179 142 + 1;
-#X msg 150 112 0;
-#X obj 82 107 until;
-#X obj 141 176 t f f;
-#X floatatom 369 67 0 0 0 0 - - -;
-#X floatatom 369 127 0 0 0 0 - - -;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 475 73 651 705 12;
+#X obj 63 166 r trigger;
+#X obj 63 214 tabread4~ dbtorms;
+#X obj 63 268 *~;
+#N canvas 513 374 809 554 make-table 0;
+#X msg 67 39 bang;
+#X obj 67 68 t b b;
+#X obj 130 100 f;
+#X obj 168 100 + 1;
+#X msg 148 70 0;
+#X obj 67 97 until;
+#X obj 176 156 t f f;
+#X floatatom 335 132 0 0 0 0 - - -;
+#X floatatom 335 196 0 0 0 0 - - -;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array dbtorms 123 float 1;
 #A 0 0 0 1.25893e-05 1.41254e-05 1.58489e-05 1.77828e-05 1.99526e-05
 2.23872e-05 2.51189e-05 2.81838e-05 3.16228e-05 3.54813e-05 3.98107e-05
 4.46684e-05 5.01187e-05 5.62341e-05 6.30957e-05 7.07946e-05 7.94328e-05
-8.91251e-05 1e-04 0.000112202 0.000125893 0.000141254 0.000158489 0.000177828
-0.000199526 0.000223872 0.000251189 0.000281838 0.000316228 0.000354813
-0.000398107 0.000446684 0.000501187 0.000562341 0.000630957 0.000707946
-0.000794328 0.000891251 0.001 0.00112202 0.00125893 0.00141254 0.00158489
-0.00177828 0.00199526 0.00223872 0.00251189 0.00281838 0.00316228 0.00354813
-0.00398107 0.00446684 0.00501187 0.00562341 0.00630957 0.00707946 0.00794328
-0.00891251 0.01 0.0112202 0.0125893 0.0141254 0.0158489 0.0177828 0.0199526
-0.0223872 0.0251189 0.0281838 0.0316228 0.0354813 0.0398107 0.0446684
-0.0501187 0.0562341 0.0630957 0.0707946 0.0794328 0.0891251 0.1 0.112202
-0.125893 0.141254 0.158489 0.177828 0.199526 0.223872 0.251189 0.281838
-0.316228 0.354813 0.398107 0.446684 0.501187 0.562341 0.630957 0.707946
-0.794328 0.891251 1 1.12202 1.25893 1.41254 1.58489 1.77828 1.99526
-2.23872 2.51189 2.81838 3.16228 3.54813 3.98107 4.46684 5.01187 5.62341
-6.30957 7.07946 7.94328 8.91251 10 11.2202 12.5893;
+8.91251e-05 0.0001 0.000112202 0.000125893 0.000141254 0.000158489
+0.000177828 0.000199526 0.000223872 0.000251189 0.000281838 0.000316228
+0.000354813 0.000398107 0.000446684 0.000501187 0.000562341 0.000630957
+0.000707946 0.000794328 0.000891251 0.001 0.00112202 0.00125893 0.00141254
+0.00158489 0.00177828 0.00199526 0.00223872 0.00251189 0.00281838 0.00316228
+0.00354813 0.00398107 0.00446684 0.00501187 0.00562341 0.00630957 0.00707946
+0.00794328 0.00891251 0.01 0.0112202 0.0125893 0.0141254 0.0158489
+0.0177828 0.0199526 0.0223872 0.0251189 0.0281838 0.0316228 0.0354813
+0.0398107 0.0446684 0.0501187 0.0562341 0.0630957 0.0707946 0.0794328
+0.0891251 0.1 0.112202 0.125893 0.141254 0.158489 0.177828 0.199526
+0.223872 0.251189 0.281838 0.316228 0.354813 0.398107 0.446684 0.501187
+0.562341 0.630957 0.707946 0.794328 0.891251 1 1.12202 1.25893 1.41254
+1.58489 1.77828 1.99526 2.23872 2.51189 2.81838 3.16228 3.54813 3.98107
+4.46684 5.01187 5.62341 6.30957 7.07946 7.94328 8.91251 10 11.2202
+12.5893;
 #X coords 0 10 123 0 200 100 1;
-#X restore 538 298 graph;
-#X text 740 391 0;
-#X text 742 291 10;
-#X text 544 403 ------ 123 samples ------;
-#N canvas 0 0 450 300 graph2 0;
+#X restore 483 265 graph;
+#X text 685 358 0;
+#X text 687 258 10;
+#X text 489 370 ------ 123 samples ------;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array mtof 130 float 1;
 #A 0 8.1758 8.66196 9.17702 9.72272 10.3009 10.9134 11.5623 12.2499
 12.9783 13.75 14.5676 15.4339 16.3516 17.3239 18.354 19.4454 20.6017
@@ -56,36 +55,35 @@
 7040 7458.62 7902.13 8372.02 8869.84 9397.27 9956.06 10548.1 11175.3
 11839.8 12543.9 13289.8 14080;
 #X coords 0 12000 130 0 200 100 1;
-#X restore 537 130 graph;
-#X obj 283 102 mtof;
-#X floatatom 282 127 0 0 0 0 - - -;
-#X text 541 237 ------ 130 samples ------;
-#X text 746 223 0;
-#X text 748 123 12000;
-#X obj 81 203 mtof;
-#X obj 72 167 sel 129;
-#X obj 80 229 tabwrite mtof;
-#X obj 369 99 tabread4 mtof;
-#X obj 71 418 moses 2;
-#X msg 55 267 bang;
-#X obj 55 296 t b b;
-#X obj 126 357 f;
-#X obj 164 357 + 1;
-#X msg 148 329 0;
-#X obj 55 325 until;
-#X obj 47 385 sel 122;
-#X msg 71 449 0;
-#X obj 115 450 dbtorms;
-#X obj 126 385 t f f;
-#X obj 71 482 tabwrite dbtorms;
-#X text 312 40 ... and test accuracy;
-#X text 23 15 patch to recalculate the mtof table;
-#X text 107 267 bang to recalculate dbtorms table;
+#X restore 482 97 graph;
+#X obj 259 167 mtof;
+#X floatatom 259 196 0 0 0 0 - - -;
+#X text 486 204 ------ 130 samples ------;
+#X text 691 190 0;
+#X text 693 90 12000;
+#X obj 120 185 mtof;
+#X obj 130 127 sel 129;
+#X obj 120 214 tabwrite mtof;
+#X obj 335 167 tabread4 mtof;
+#X obj 141 420 moses 2;
+#X msg 115 269 bang;
+#X obj 115 298 t b b;
+#X obj 173 334 f;
+#X obj 211 334 + 1;
+#X msg 191 306 0;
+#X obj 115 349 until;
+#X msg 141 451 0;
+#X obj 187 452 dbtorms;
+#X obj 218 387 t f f;
+#X obj 141 484 tabwrite dbtorms;
+#X text 248 105 ... and test accuracy;
+#X text 105 38 patch to recalculate the mtof table;
+#X text 157 269 bang to recalculate dbtorms table;
+#X obj 173 362 sel 123;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
 #X connect 2 0 3 0;
-#X connect 2 0 6 0;
 #X connect 2 0 20 0;
 #X connect 3 0 2 1;
 #X connect 4 0 2 1;
@@ -97,57 +95,61 @@
 #X connect 14 0 15 0;
 #X connect 19 0 21 0;
 #X connect 20 0 5 1;
+#X connect 20 1 6 0;
 #X connect 22 0 8 0;
-#X connect 23 0 31 0;
-#X connect 23 1 32 0;
+#X connect 23 0 30 0;
+#X connect 23 1 31 0;
 #X connect 24 0 25 0;
 #X connect 25 0 29 0;
 #X connect 25 1 28 0;
 #X connect 26 0 27 0;
-#X connect 26 0 30 0;
-#X connect 26 0 33 0;
+#X connect 26 0 37 0;
 #X connect 27 0 26 1;
 #X connect 28 0 26 1;
 #X connect 29 0 26 0;
-#X connect 30 0 29 1;
-#X connect 31 0 34 0;
-#X connect 32 0 34 0;
-#X connect 33 0 23 0;
-#X connect 33 1 34 1;
-#X restore 451 222 pd make-table;
-#X text 35 6 PITCH ENVELOPES;
-#X text 125 24 For pitch envelopes \, unlike amplitude envelopes \,
+#X connect 30 0 33 0;
+#X connect 31 0 33 0;
+#X connect 32 0 23 0;
+#X connect 32 1 33 1;
+#X connect 37 0 29 1;
+#X connect 37 1 32 0;
+#X restore 333 321 pd make-table;
+#X text 78 22 PITCH ENVELOPES;
+#X text 78 57 For pitch envelopes \, unlike amplitude envelopes \,
 discontinuities are allowed and sometimes you would rather the envelope
 generator actually jump to zero when it's triggered. The "adsr" object
 does this for you if you send a negative trigger instead of a positive
 one:;
-#X obj 280 106 r trigger2;
-#X obj 280 178 tabread4~ mtof;
-#X obj 280 202 osc~;
-#X msg 46 299 \; pd dsp 1 \; trigger 1 \; trigger2 1;
-#X text 358 297 <-- attack;
-#X msg 249 293 \; pd dsp 1 \; trigger 1 \; trigger2 -1;
-#X msg 472 293 \; pd dsp 1 \; trigger 0 \; trigger2 0;
-#X obj 280 154 +~ 69;
-#X text 358 314 restarting;
-#X text 363 331 pitch env;
-#X text 37 377 We have added a new table \, mtof \, for converting
+#X obj 255 183 r trigger2;
+#X obj 255 255 tabread4~ mtof;
+#X obj 255 279 osc~;
+#X msg 73 411 \; pd dsp 1 \; trigger 1 \; trigger2 1;
+#X msg 236 411 \; pd dsp 1 \; trigger 1 \; trigger2 -1;
+#X msg 429 411 \; pd dsp 1 \; trigger 0 \; trigger2 0;
+#X obj 255 231 +~ 69;
+#X text 322 431 restarting;
+#X text 322 444 pitch env;
+#X text 93 518 We have added a new table \, mtof \, for converting
 audio signals from pitch to frequency. Its range is 1-127 \, so you
-want to add a base pitch in before you start reading from it.;
-#X text 37 443 This is an extreme use of pitch enveloping. In a real
+want to add a base pitch in before you start reading from it., f 61
+;
+#X text 93 573 This is an extreme use of pitch enveloping. In a real
 situation you might want an envelope controlling vibrato depth or the
-like instead of straight pitch.;
-#X obj 48 130 adsr 100 50 200 90 1000;
-#X obj 280 130 adsr 20 200 100 100 1000;
-#X text 413 497 updated for Pd version 0.37;
-#X obj 48 233 output~;
-#X connect 0 0 20 0;
-#X connect 1 0 4 0;
-#X connect 4 0 23 0;
-#X connect 4 0 23 1;
-#X connect 8 0 21 0;
-#X connect 9 0 10 0;
-#X connect 10 0 4 1;
-#X connect 15 0 9 0;
-#X connect 20 0 1 0;
-#X connect 21 0 15 0;
+like instead of straight pitch., f 61;
+#X obj 63 190 adsr 100 50 200 90 1000;
+#X obj 255 207 adsr 20 200 100 100 1000;
+#X text 399 646 updated for Pd version 0.37;
+#X obj 63 319 output~;
+#X text 152 437 <= attack;
+#X text 322 417 <= attack;
+#X text 510 430 <= release;
+#X connect 0 0 17 0;
+#X connect 1 0 2 0;
+#X connect 2 0 20 0;
+#X connect 2 0 20 1;
+#X connect 6 0 18 0;
+#X connect 7 0 8 0;
+#X connect 8 0 2 1;
+#X connect 12 0 7 0;
+#X connect 17 0 1 0;
+#X connect 18 0 12 0;

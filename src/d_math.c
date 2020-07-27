@@ -8,7 +8,8 @@
 
 #include "m_pd.h"
 #include <math.h>
-#define LOGTEN 2.302585092994
+#include <limits.h>
+#define LOGTEN 2.302585092994046
 
 /* ------------------------- clip~ -------------------------- */
 static t_class *clip_class;
@@ -51,7 +52,7 @@ static t_int *clip_perform(t_int *w)
 
 static void clip_dsp(t_clip *x, t_signal **sp)
 {
-    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(clip_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void clip_setup(void)
@@ -100,7 +101,7 @@ t_float q8_rsqrt(t_float f0)
     } u;
     u.f=f0;
     if (u.f < 0) return (0);
-    else return (rsqrt_exptab[(u.l >> 23) & 0xff] *
+    else return (t_float)(rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
@@ -112,7 +113,7 @@ t_float q8_sqrt(t_float f0)
     } u;
     u.f=f0;
     if (u.f < 0) return (0);
-    else return (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
+    else return (t_float)(u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
@@ -160,7 +161,7 @@ static t_int *sigrsqrt_perform(t_int *w)
 
 static void sigrsqrt_dsp(t_sigrsqrt *x, t_signal **sp)
 {
-    dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(sigrsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void sigrsqrt_setup(void)
@@ -219,7 +220,7 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
 
 static void sigsqrt_dsp(t_sigsqrt *x, t_signal **sp)
 {
-    dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(sigsqrt_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void sigsqrt_setup(void)
@@ -256,8 +257,10 @@ static t_int *sigwrap_perform(t_int *w)
     int n = (int)w[3];
     while (n--)
     {
+        int k;
         t_sample f = *in++;
-        int k = f;
+        f = (f>INT_MAX || f<INT_MIN)?0.:f;
+        k = (int)f;
         if (k <= f) *out++ = f-k;
         else *out++ = f - (k-1);
     }
@@ -283,7 +286,7 @@ static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
     dsp_add((pd_compatibilitylevel < 48 ?
         sigwrap_old_perform : sigwrap_perform),
-            3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+            3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void sigwrap_setup(void)
@@ -332,7 +335,7 @@ static t_int *mtof_tilde_perform(t_int *w)
 
 static void mtof_tilde_dsp(t_mtof_tilde *x, t_signal **sp)
 {
-    dsp_add(mtof_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(mtof_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void mtof_tilde_setup(void)
@@ -376,7 +379,7 @@ static t_int *ftom_tilde_perform(t_int *w)
 
 static void ftom_tilde_dsp(t_ftom_tilde *x, t_signal **sp)
 {
-    dsp_add(ftom_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(ftom_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void ftom_tilde_setup(void)
@@ -426,7 +429,7 @@ static t_int *dbtorms_tilde_perform(t_int *w)
 
 static void dbtorms_tilde_dsp(t_dbtorms_tilde *x, t_signal **sp)
 {
-    dsp_add(dbtorms_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(dbtorms_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void dbtorms_tilde_setup(void)
@@ -475,7 +478,7 @@ static t_int *rmstodb_tilde_perform(t_int *w)
 
 static void rmstodb_tilde_dsp(t_rmstodb_tilde *x, t_signal **sp)
 {
-    dsp_add(rmstodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(rmstodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void rmstodb_tilde_setup(void)
@@ -525,7 +528,7 @@ static t_int *dbtopow_tilde_perform(t_int *w)
 
 static void dbtopow_tilde_dsp(t_dbtopow_tilde *x, t_signal **sp)
 {
-    dsp_add(dbtopow_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(dbtopow_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void dbtopow_tilde_setup(void)
@@ -574,7 +577,7 @@ static t_int *powtodb_tilde_perform(t_int *w)
 
 static void powtodb_tilde_dsp(t_powtodb_tilde *x, t_signal **sp)
 {
-    dsp_add(powtodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(powtodb_tilde_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 void powtodb_tilde_setup(void)
@@ -613,7 +616,7 @@ t_int *pow_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f1 = *in1++, f2 = *in2++;
+        t_sample f1 = *in1++, f2 = *in2++;
         *out++ = (f1 == 0 && f2 < 0) ||
             (f1 < 0 && (f2 - (int)f2) != 0) ?
                 0 : pow(f1, f2);
@@ -624,7 +627,7 @@ t_int *pow_tilde_perform(t_int *w)
 static void pow_tilde_dsp(t_pow_tilde *x, t_signal **sp)
 {
     dsp_add(pow_tilde_perform, 4,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void pow_tilde_setup(void)
@@ -665,7 +668,7 @@ t_int *exp_tilde_perform(t_int *w)
 static void exp_tilde_dsp(t_exp_tilde *x, t_signal **sp)
 {
     dsp_add(exp_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void exp_tilde_setup(void)
@@ -704,7 +707,7 @@ t_int *log_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f = *in1++, g = *in2++;
+        t_sample f = *in1++, g = *in2++;
         if (f <= 0)
             *out = -1000;   /* rather than blow up, output a number << 0 */
         else if (g <= 0)
@@ -718,7 +721,7 @@ t_int *log_tilde_perform(t_int *w)
 static void log_tilde_dsp(t_log_tilde *x, t_signal **sp)
 {
     dsp_add(log_tilde_perform, 4,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void log_tilde_setup(void)
@@ -753,7 +756,7 @@ t_int *abs_tilde_perform(t_int *w)
     int n = (int)(w[3]);
     while (n--)
     {
-        float f = *in1++;
+        t_sample f = *in1++;
         *out++ = (f >= 0 ? f : -f);
     }
     return (w+4);
@@ -762,7 +765,7 @@ t_int *abs_tilde_perform(t_int *w)
 static void abs_tilde_dsp(t_abs_tilde *x, t_signal **sp)
 {
     dsp_add(abs_tilde_perform, 3,
-        sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void abs_tilde_setup(void)

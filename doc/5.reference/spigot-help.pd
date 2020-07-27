@@ -1,24 +1,24 @@
-#N canvas 59 19 612 342 12;
-#X obj 35 11 spigot;
-#X text 100 12 - pass or block messages;
-#X text 35 63 Spigot passes messages from its left inlet to its outlet
+#N canvas 437 86 551 343 12;
+#X obj 44 11 spigot;
+#X text 109 12 - pass or block messages;
+#X text 44 57 Spigot passes messages from its left inlet to its outlet
 \, as long as a nonzero number is sent to its right inlet. When its
 right inlet gets zero \, incoming messages are "blocked \, " i.e. \,
 ignored.;
-#X msg 25 157 0.5 1000;
-#X obj 25 300 print;
-#X msg 38 210 walk the cat;
-#X msg 31 182 bang;
-#X text 128 240 control: nonzero to pass messages \, zero to stop them
+#X msg 53 143 0.5 1000;
+#X obj 70 286 print;
+#X msg 80 196 walk the cat;
+#X msg 70 168 bang;
+#X text 145 226 control: nonzero to pass messages \, zero to stop them
 ;
-#X obj 25 267 spigot 0;
-#X text 349 310 updated for Pd version 0.38;
-#X obj 92 244 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+#X text 280 296 updated for Pd version 0.38;
+#X obj 109 230 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X text 146 253 optional arg sets the initial state (0 by default)
 ;
-#X text 125 267 optional arg sets the initial state (0 by default)
-;
-#X connect 3 0 8 0;
-#X connect 5 0 8 0;
-#X connect 6 0 8 0;
-#X connect 8 0 4 0;
-#X connect 10 0 8 1;
+#X obj 70 253 spigot;
+#X connect 3 0 11 0;
+#X connect 5 0 11 0;
+#X connect 6 0 11 0;
+#X connect 9 0 11 1;
+#X connect 11 0 4 0;

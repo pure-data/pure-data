@@ -1,57 +1,58 @@
 #N struct help-element-template float x float y array array1 help-element-array1-template
 ;
 #N struct help-element-array1-template float y;
-#N canvas 36 82 671 548 12;
-#X text 31 474 see also:;
+#N canvas 464 60 645 551 12;
+#X text 32 486 see also:;
 #N canvas 393 50 503 273 help-element-template 0;
 #X obj 27 76 plot array1 500 1 10 15 20;
 #X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 24 15 struct help-element-template float x float y array array1
 help-element-array1-template;
-#X restore 421 450 pd help-element-template;
-#N canvas 2 79 292 163 help-element-data 1;
+#X restore 423 435 pd help-element-template;
+#N canvas 105 131 292 163 help-element-data 1;
 #X scalar help-element-template 35 24 \; 0 \; 10 \; 0 \; 10 \; 20 \;
 10 \; 20 \; 70 \; 10 \; \;;
-#X restore 457 429 pd help-element-data;
+#X restore 459 414 pd help-element-data;
 #N canvas 196 292 373 142 help-element-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-element-array1-template float y;
-#X restore 361 472 pd help-element-array1-template;
-#X obj 22 11 element;
-#X text 91 10 -- get pointer to an element of an array;
-#X obj 105 494 pointer;
-#X obj 173 494 getsize;
-#X obj 241 494 setsize;
-#X text 31 37 "element" takes a pointer at right and a number at left.
+#X restore 363 457 pd help-element-array1-template;
+#X obj 29 11 element;
+#X obj 101 509 pointer;
+#X obj 162 509 getsize;
+#X obj 221 509 setsize;
+#X text 39 46 "element" takes a pointer at right and a number at left.
 It looks up a field from the pointer \, which should be an array \,
 and outputs the element of the array specified by the number. There
 are no pointers to arrays themselves \, just to individual elements.
-The template and field name are specified as creation arguments.;
-#X obj 336 300 pointer;
-#X msg 336 276 traverse pd-help-element-data \, next;
-#X floatatom 45 270 5 0 0 0 - - -, f 5;
-#X obj 45 357 element help-element-template array1;
-#X obj 45 404 get help-element-array1-template y;
-#X floatatom 45 431 5 0 0 0 - - -, f 5;
-#X text 358 353 arguments: template \, field name;
-#X text 337 323 pointer inlet;
-#X text 43 249 index;
-#X text 50 378 outlet is pointer to single element;
-#X text 96 429 here we just get the value of y.;
-#X text 34 142 Indices range from 0 to the number of elements minus
+The template and field name are specified as creation arguments.,
+f 63;
+#X obj 316 312 pointer;
+#X msg 316 288 traverse pd-help-element-data \, next;
+#X floatatom 46 282 5 0 0 0 - - -;
+#X obj 46 369 element help-element-template array1, f 39;
+#X obj 46 418 get help-element-array1-template y;
+#X floatatom 46 445 5 0 0 0 - - -;
+#X text 335 368 arguments: template \, field name;
+#X text 330 341 pointer inlet;
+#X text 44 261 index;
+#X text 51 392 outlet is pointer to single element;
+#X text 97 443 here we just get the value of y.;
+#X text 38 143 Indices range from 0 to the number of elements minus
 one \; indices out of range are quietly replaced by the nearest endpoint.
 ;
-#X text 335 254 click here first;
-#X obj 28 494 struct;
-#X text 414 517 updated for Pd version 0.47;
-#X msg 55 321 set help-element-template array1;
-#X text 89 299 set template and field name;
-#X text 35 195 If you don't know the template name you may specify
+#X text 315 266 click here first;
+#X obj 44 509 struct;
+#X text 415 504 updated for Pd version 0.47;
+#X msg 56 333 set help-element-template array1;
+#X text 79 311 set template and field name;
+#X text 38 198 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiency and clarity.;
-#X connect 10 0 13 1;
-#X connect 11 0 10 0;
+\, at some possible cost in efficiency and clarity., f 65;
+#X text 98 10 - get pointer to an element of an array;
+#X connect 9 0 12 1;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
 #X connect 12 0 13 0;
 #X connect 13 0 14 0;
-#X connect 14 0 15 0;
-#X connect 25 0 13 0;
+#X connect 24 0 12 0;

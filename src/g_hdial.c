@@ -390,7 +390,7 @@ static void hradio_bang(t_hradio *x)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
         outlet_float(x->x_gui.x_obj.ob_outlet, outval);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
             pd_float(x->x_gui.x_snd->s_thing, outval);
@@ -430,7 +430,7 @@ static void hradio_fout(t_hradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -479,7 +479,7 @@ static void hradio_float(t_hradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -578,7 +578,7 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     int a = IEM_GUI_DEFAULTSIZE, on = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
     int fs = 10;
-    float fval = 0;
+    t_float fval = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
@@ -705,10 +705,6 @@ void g_hradio_setup(void)
         gensym("init"), A_FLOAT, 0);
     class_addmethod(hradio_class, (t_method)hradio_number,
         gensym("number"), A_FLOAT, 0);
-    class_addmethod(hradio_class, (t_method)hradio_single_change,
-        gensym("single_change"), 0);
-    class_addmethod(hradio_class, (t_method)hradio_double_change,
-        gensym("double_change"), 0);
     class_addmethod(hradio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     hradio_widgetbehavior.w_getrectfn = hradio_getrect;
@@ -769,5 +765,4 @@ void g_hradio_setup(void)
     class_addmethod(hradio_old_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     class_setwidget(hradio_old_class, &hradio_widgetbehavior);
-    class_sethelpsymbol(hradio_old_class, gensym("hradio"));
 }

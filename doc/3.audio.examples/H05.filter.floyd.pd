@@ -1,6 +1,6 @@
-#N canvas 288 109 559 650 12;
-#N canvas 0 22 604 396 conversion-tables 0;
-#N canvas 0 22 450 300 graph1 0;
+#N canvas 488 23 587 719 12;
+#N canvas 357 23 418 396 conversion-tables 0;
+#N canvas 0 22 450 300 (subpatch) 0;
 #X array dbtorms 123 float 1;
 #A 0 0 0 1.25893e-05 1.41254e-05 1.58489e-05 1.77828e-05 1.99526e-05
 2.23872e-05 2.51189e-05 2.81838e-05 3.16228e-05 3.54813e-05 3.98107e-05
@@ -21,11 +21,11 @@
 4.46684 5.01187 5.62341 6.30957 7.07946 7.94328 8.91251 10 11.2202
 12.5893;
 #X coords 0 10 123 0 200 100 1;
-#X restore 302 48 graph;
-#X text 504 141 0;
-#X text 506 41 10;
-#X text 321 151 ------ 123 samples ------;
-#N canvas 0 22 450 300 graph2 0;
+#X restore 93 50 graph;
+#X text 295 143 0;
+#X text 297 43 10;
+#X text 112 153 ------ 123 samples ------;
+#N canvas 0 22 450 300 (subpatch) 0;
 #X array mtof 130 float 1;
 #A 0 8.1758 8.66196 9.17702 9.72272 10.3009 10.9134 11.5623 12.2499
 12.9783 13.75 14.5676 15.4339 16.3516 17.3239 18.354 19.4454 20.6017
@@ -43,91 +43,91 @@
 7040 7458.62 7902.13 8372.02 8869.84 9397.27 9956.06 10548.1 11175.3
 11839.8 12543.9 13289.8 14080;
 #X coords 0 12000 130 0 200 100 1;
-#X restore 309 225 graph;
-#X text 319 333 ------ 130 samples ------;
-#X text 518 318 0;
-#X text 520 218 12000;
-#X restore 121 588 pd conversion-tables;
-#X obj 31 411 line~;
-#X obj 31 387 pack 0 100;
-#X floatatom 31 339 3 0 150 0 - #0-cf -;
-#X floatatom 47 461 3 0 999 0 - #0-q -;
-#X obj 16 512 vcf~;
-#X obj 31 436 tabread4~ mtof;
-#X text 81 461 <-- Q (selectivity);
-#X text 88 5 ANOTHER SWEEPING FILTER EXAMPLE;
-#X obj 15 267 clip~ 0 0.5;
-#X obj 15 291 *~ 2;
-#X obj 15 315 -~;
-#X text 119 268 trick to;
-#X text 120 285 make symmetric;
-#X text 118 302 triangle wave;
-#X obj 22 147 f;
-#X obj 55 145 + 1;
-#X obj 22 217 mtof;
-#X obj 55 169 mod 8;
-#N canvas 0 22 450 300 graph1 0;
+#X restore 100 227 graph;
+#X text 110 335 ------ 130 samples ------;
+#X text 309 320 0;
+#X text 311 220 12000;
+#X restore 390 330 pd conversion-tables;
+#X obj 167 451 line~;
+#X obj 167 427 pack 0 100;
+#X floatatom 167 379 3 0 150 0 - #0-cf -;
+#X floatatom 179 505 3 0 999 0 - #0-q -;
+#X obj 122 557 vcf~;
+#X obj 167 476 tabread4~ mtof;
+#X text 51 28 ANOTHER SWEEPING FILTER EXAMPLE;
+#X obj 149 318 clip~ 0 0.5;
+#X obj 149 340 *~ 2;
+#X obj 121 385 -~;
+#X text 29 298 trick to;
+#X text 30 315 make symmetric;
+#X text 28 332 triangle wave;
+#X obj 139 183 f;
+#X obj 172 181 + 1;
+#X obj 139 261 mtof;
+#X obj 172 205 mod 8;
+#N canvas 0 22 450 300 (subpatch) 0;
 #X array \$0-array1 8 float 2;
 #X coords 0 96 8 36 200 100 1;
-#X restore 340 144 graph;
-#X text 73 336 <-- center frequency;
-#X obj 22 123 metro 85;
-#X text 107 147 sequencer for;
-#X text 122 164 8 note loop;
-#X obj 16 576 output~;
-#X obj 22 104 tgl 15 0 empty \$0-metro empty 0 -6 0 8 -262144 -1 -1
-0 1;
+#X restore 346 175 graph;
+#X obj 139 154 metro 85;
+#X text 206 182 sequencer for;
+#X text 228 200 8 note loop;
+#X obj 124 636 output~;
+#X obj 139 130 tgl 15 0 empty \$0-metro empty 0 -6 0 8 -262144 -1 -1
+1 1;
 #N canvas 876 177 379 259 startup 0;
-#X obj 22 24 loadbang;
-#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 35 27 loadbang;
+#X obj 35 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 22 67 f \$0;
-#X text 35 195 This subpatch loads initial;
-#X text 31 219 values in number boxes.;
-#X msg 22 91 \; \$1-cf 61 \; \$1-q 10 \; \$1-metro 1 \; \$1-array1
+#X obj 35 70 f \$0;
+#X msg 35 94 \; \$1-cf 61 \; \$1-q 10 \; \$1-metro 1 \; \$1-array1
 0 45 48 50 48 55 53 55 57;
+#X text 66 190 This subpatch loads initial values in number boxes.
+, f 27;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 2 0 5 0;
-#X restore 121 611 pd startup;
-#X text 96 364 at least 61;
-#X obj 22 241 phasor~;
-#X text 294 616 updated for Pd version 0.39;
-#X obj 22 193 tabread \$0-array1;
-#X obj 16 540 vcf~;
-#X obj 31 362 max 61;
-#X text 82 409 smooth & convert to Hz.;
-#X obj 47 482 max 3;
-#X text 105 483 at least 3;
-#X text 11 28 Here's an approximate reconstruction of an old riff by
+#X connect 2 0 3 0;
+#X restore 390 353 pd startup;
+#X text 220 401 at least 61;
+#X obj 139 285 phasor~;
+#X text 357 665 updated for Pd version 0.39;
+#X obj 139 237 tabread \$0-array1;
+#X obj 154 596 vcf~;
+#X obj 167 402 max 61;
+#X text 218 449 smooth & convert to Hz.;
+#X obj 179 529 max 3;
+#X text 227 530 at least 3;
+#X text 67 59 Here's an approximate reconstruction of an old riff by
 Pink Floyd. Because we're filtering a waveform with odd partials \,
 it's easier to pick out the partials in the filtered sound than if
-we had had both even and odd ones.;
-#X text 78 527 rejection of the stop bands without having;
-#X text 79 509 Put two vcf objects in series for better;
-#X text 77 545 to make the passband excessively narrow.;
+we had had both even and odd ones., f 66;
+#X text 200 588 rejection of the stop bands without having;
+#X text 201 570 Put two vcf objects in series for better;
+#X text 199 606 to make the passband excessively narrow.;
+#X text 213 505 <= Q (selectivity);
+#X text 200 376 <= center frequency;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;
-#X connect 3 0 32 0;
-#X connect 4 0 34 0;
-#X connect 5 0 31 0;
+#X connect 3 0 30 0;
+#X connect 4 0 32 0;
+#X connect 5 0 29 0;
 #X connect 6 0 5 1;
-#X connect 6 0 31 1;
+#X connect 6 0 29 1;
+#X connect 8 0 9 0;
 #X connect 9 0 10 0;
-#X connect 10 0 11 0;
-#X connect 11 0 5 0;
-#X connect 15 0 16 0;
-#X connect 15 0 30 0;
-#X connect 16 0 18 0;
-#X connect 17 0 28 0;
-#X connect 18 0 15 1;
-#X connect 21 0 15 0;
-#X connect 25 0 21 0;
-#X connect 28 0 9 0;
-#X connect 28 0 11 1;
-#X connect 30 0 17 0;
-#X connect 31 0 24 0;
-#X connect 31 0 24 1;
-#X connect 32 0 2 0;
-#X connect 34 0 5 2;
-#X connect 34 0 31 2;
+#X connect 10 0 5 0;
+#X connect 14 0 15 0;
+#X connect 14 0 28 0;
+#X connect 15 0 17 0;
+#X connect 16 0 26 0;
+#X connect 17 0 14 1;
+#X connect 19 0 14 0;
+#X connect 23 0 19 0;
+#X connect 26 0 8 0;
+#X connect 26 0 10 1;
+#X connect 28 0 16 0;
+#X connect 29 0 22 0;
+#X connect 29 0 22 1;
+#X connect 30 0 2 0;
+#X connect 32 0 5 2;
+#X connect 32 0 29 2;

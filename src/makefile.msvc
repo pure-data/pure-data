@@ -57,7 +57,7 @@ PDLIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:libcpmt /NODEFAULTLIB:oldnames \
     /NODEFAULTLIB:libc /NODEFAULTLIB:uuid /NODEFAULTLIB:ole32 \
     $(EXTRA_LIBPATH) \
     kernel32.lib \
-    wsock32.lib winmm.lib \
+    ws2_32.lib winmm.lib \
     advapi32.lib setupapi.lib \
     ../bin/pthreadVC.lib \
     libcmt.lib oldnames.lib
@@ -88,7 +88,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
-    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_utf8.c \
+    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
     d_delay.c d_resample.c d_soundfile.c \
@@ -145,13 +145,13 @@ pd: ../bin/pd.exe ../bin/pd.com
 	$(MSLN) /DLL /OUT:../bin/pd.dll /EXPORT:sys_main $(LFLAGS) $(OBJC) \
 	    $(PDLIB)
 
-../bin/pdsend.exe: u_pdsend.obj
+../bin/pdsend.exe: u_pdsend.obj s_net.obj
 	$(MSLN) $(LFLAGS) /out:../bin/pdsend.exe /INCREMENTAL:NO \
-		u_pdsend.obj  $(PDLIB)
+		u_pdsend.obj s_net.obj  $(PDLIB)
 
-../bin/pdreceive.exe: u_pdreceive.obj
+../bin/pdreceive.exe: u_pdreceive.obj s_net.obj
 	$(MSLN) $(LFLAGS) /out:../bin/pdreceive.exe /INCREMENTAL:NO \
-	    u_pdreceive.obj $(PDLIB)
+	    u_pdreceive.obj s_net.obj $(PDLIB)
 
 ../bin/pd.com: s_entry_com.obj ../bin/pd.lib
 	$(MSLN) $(LFLAGS) /out:../bin/pd.com /INCREMENTAL:NO s_entry_com.obj \

@@ -1,43 +1,45 @@
-#N canvas 530 64 651 484 12;
-#X obj 124 11 bp~;
-#X text 159 11 - BANDPASS FILTER;
-#X floatatom 113 293 5 0 0 0 - - -, f 5;
-#X floatatom 151 199 0 0 0 0 - - -;
-#X floatatom 16 294 5 0 0 0 - - -, f 5;
-#X text 203 271 env~ gives the amplitude of the signal envelop in dB.
-;
-#X floatatom 16 130 0 0 0 0 - - -;
-#X msg 544 67 \; pd dsp 0;
-#X obj 16 153 osc~ 100;
-#X text 61 128 <-- scroll to change input frequency;
-#X msg 105 176 clear;
-#X text 155 175 <-- reinitialize internal state;
-#X msg 544 28 \; pd dsp 1;
-#X text 13 73 The left inlet is the incoming audio signal \, the middle
-control input sets center frequency and the right input sets "Q".;
-#X text 183 200 <-- center frequency;
-#X obj 113 243 bp~ 100 10;
-#X text 212 247 Arguments initialize center frequency and Q.;
-#X text 16 318 Compare the amplitude of the original signal on the
+#N canvas 473 71 504 559 12;
+#X obj 38 13 bp~;
+#X floatatom 149 344 5 0 0 0 - - -;
+#X floatatom 182 215 0 0 0 0 - - -;
+#X floatatom 53 305 5 0 0 0 - - -;
+#X floatatom 52 151 0 0 0 0 - - -;
+#X msg 359 134 \; pd dsp 0;
+#X obj 52 194 osc~ 100;
+#X msg 149 187 clear;
+#X msg 283 134 \; pd dsp 1;
+#X text 34 80 The left inlet is the incoming audio signal \, the middle
+control input sets center frequency and the right input sets "Q".,
+f 56;
+#X obj 149 274 bp~ 100 10;
+#X text 30 376 Compare the amplitude of the original signal on the
 left with the amplitude of the filtered signal on the right.;
-#X floatatom 190 221 0 0 0 0 - - -;
-#X text 222 222 <-- Q;
-#X text 11 35 bp~ passes a sinusoid at the center frequency at unit
-gain (approximately). Other frequencies are attenuated.;
-#X text 23 445 see also:;
-#X obj 108 445 vcf~;
-#X obj 15 268 env~ 8192;
-#X obj 113 268 env~ 8192;
-#X text 400 449 updated for Pd version 0.46;
-#X text 15 363 NOTE: the maximum center frequency is sample rate divided
+#X floatatom 216 240 0 0 0 0 - - -;
+#X text 33 42 bp~ passes a sinusoid at the center frequency at unit
+gain (approximately). Other frequencies are attenuated., f 56;
+#X text 58 501 see also:;
+#X obj 130 501 vcf~;
+#X obj 52 279 env~ 8192;
+#X obj 149 309 env~ 8192;
+#X text 261 503 updated for Pd version 0.46;
+#X text 29 420 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X connect 3 0 15 1;
-#X connect 6 0 8 0;
-#X connect 8 0 15 0;
-#X connect 8 0 23 0;
-#X connect 10 0 15 0;
-#X connect 15 0 24 0;
-#X connect 18 0 15 2;
-#X connect 23 0 4 0;
-#X connect 24 0 2 0;
+#X text 73 13 - bandpass filter;
+#X text 248 241 <= Q;
+#X text 214 216 <= center frequency;
+#X text 196 186 <= reinitialize internal state;
+#X text 90 148 <= scroll to change input frequency, f 19;
+#X text 237 266 Arguments initialize center frequency and Q, f 22
+;
+#X text 223 304 env~ gives the amplitude of the signal envelop in dB
+, f 27;
+#X connect 2 0 10 1;
+#X connect 4 0 6 0;
+#X connect 6 0 10 0;
+#X connect 6 0 16 0;
+#X connect 7 0 10 0;
+#X connect 10 0 17 0;
+#X connect 12 0 10 2;
+#X connect 16 0 3 0;
+#X connect 17 0 1 0;

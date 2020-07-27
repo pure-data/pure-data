@@ -1,30 +1,30 @@
-#N canvas 569 67 656 640 12;
-#X text 167 -1 PHASER;
-#N canvas 2 52 660 424 chord 0;
-#X obj 87 97 -~ 0.5;
-#X obj 87 146 clip~ -0.5 0.5;
-#X obj 87 169 cos~;
-#X obj 91 252 hip~ 5;
-#X obj 91 315 outlet~;
-#X obj 87 122 *~ 3;
-#X obj 87 74 phasor~ 220;
-#X obj 221 97 -~ 0.5;
-#X obj 221 146 clip~ -0.5 0.5;
-#X obj 221 169 cos~;
-#X obj 221 122 *~ 3;
-#X obj 356 100 -~ 0.5;
-#X obj 356 149 clip~ -0.5 0.5;
-#X obj 356 172 cos~;
-#X obj 356 125 *~ 3;
-#X obj 491 100 -~ 0.5;
-#X obj 491 149 clip~ -0.5 0.5;
-#X obj 491 172 cos~;
-#X obj 491 125 *~ 3;
-#X obj 221 74 phasor~ 251;
-#X obj 356 77 phasor~ 281;
-#X obj 491 77 phasor~ 311;
-#X text 147 32 test sound for phaser;
-#X obj 91 285 *~ 0.2;
+#N canvas 569 67 602 647 12;
+#X text 37 20 PHASER;
+#N canvas 411 147 659 385 chord 0;
+#X obj 82 97 -~ 0.5;
+#X obj 82 146 clip~ -0.5 0.5;
+#X obj 82 169 cos~;
+#X obj 216 260 hip~ 5;
+#X obj 216 323 outlet~;
+#X obj 82 122 *~ 3;
+#X obj 82 74 phasor~ 220;
+#X obj 216 97 -~ 0.5;
+#X obj 216 146 clip~ -0.5 0.5;
+#X obj 216 169 cos~;
+#X obj 216 122 *~ 3;
+#X obj 351 100 -~ 0.5;
+#X obj 351 149 clip~ -0.5 0.5;
+#X obj 351 172 cos~;
+#X obj 351 125 *~ 3;
+#X obj 486 100 -~ 0.5;
+#X obj 486 149 clip~ -0.5 0.5;
+#X obj 486 172 cos~;
+#X obj 486 125 *~ 3;
+#X obj 216 74 phasor~ 251;
+#X obj 351 77 phasor~ 281;
+#X obj 486 77 phasor~ 311;
+#X text 142 32 test sound for phaser;
+#X obj 216 293 *~ 0.2;
 #X connect 0 0 5 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
@@ -47,34 +47,34 @@
 #X connect 20 0 11 0;
 #X connect 21 0 15 0;
 #X connect 23 0 4 0;
-#X restore 61 306 pd chord;
-#X obj 60 568 output~;
-#X obj 83 360 rpole~;
-#X obj 83 335 rzero_rev~;
-#X obj 83 409 rpole~;
-#X obj 83 384 rzero_rev~;
-#X obj 83 457 rpole~;
-#X obj 83 432 rzero_rev~;
-#X obj 83 506 rpole~;
-#X obj 83 481 rzero_rev~;
-#X obj 60 536 +~;
-#X obj 238 452 phasor~ 0.3;
-#X obj 238 484 expr~ 1 - 0.03 - 0.6*abs($v1-0.5)*abs($v1-0.5);
-#X text 21 163 Many variations of this have been used. A more pronounced
+#X restore 67 288 pd chord;
+#X obj 66 560 output~;
+#X obj 83 352 rpole~;
+#X obj 83 327 rzero_rev~;
+#X obj 83 401 rpole~;
+#X obj 83 376 rzero_rev~;
+#X obj 83 449 rpole~;
+#X obj 83 424 rzero_rev~;
+#X obj 83 498 rpole~;
+#X obj 83 473 rzero_rev~;
+#X obj 66 528 +~;
+#X obj 238 444 phasor~ 0.3;
+#X obj 238 476 expr~ 1 - 0.03 - 0.6*abs($v1-0.5)*abs($v1-0.5);
+#X text 31 171 Many variations of this have been used. A more pronounced
 effect can be got by using 12 all-pass filters and adding the outputs
 of the 4th \, 8th \, and 12th one to the original. Various stereo configurations
 are possible. Some designers have used 6 instead of the 4 stages used
 here. Controls are often added to set the frequency of sweeping and
-the range of the all-pass coefficients.;
-#X text 367 605 updated for Pd version 0.47;
-#X text 21 20 The phaser ranks \, along with fuzz and wah-wah \, as
+the range of the all-pass coefficients., f 66;
+#X text 330 584 updated for Pd version 0.47;
+#X text 31 47 The phaser ranks \, along with fuzz and wah-wah \, as
 one of the great guitar pedals. A phaser adds an all-pass filtered
 copy of a signal to the original \, causing phase reinforcement and
 cancellation at frequencies that depend on the all-pass coefficients.
 In this example the coefficients range from 0.88 to 0.98 \, controlled
 by a phasor~ object (no relation). The phasor~ is converted to a triangle
 wave (abs($v1-0.5)) and then nonlinearly mapped into a suitable range.
-;
+, f 66;
 #X connect 1 0 4 0;
 #X connect 1 0 11 0;
 #X connect 3 0 6 0;
