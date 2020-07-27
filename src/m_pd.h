@@ -73,9 +73,18 @@ typedef unsigned __int32  uint32_t;
 typedef unsigned __int64  uint64_t;
 typedef unsigned __int64  ssize_t;
 typedef unsigned __int8   bool;
+#ifndef false
 #define false 0
+#endif
+#ifndef true
 #define true 1
+#endif
+#ifndef PRIxPTR
 #define PRIxPTR "p"
+#endif
+#ifndef PRIx64
+#define PRIx64 "I64x"
+#endif
 #define tobool(x) ((x)?true:false)
 #else
 #include <stdint.h>
