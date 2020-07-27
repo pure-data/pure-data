@@ -3,6 +3,9 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
+#include "s_utf8.h"
+
+#include <stdlib.h>
 
 static bool null_open(const char *path, t_fileops_flags flags, t_fileops_handle *handle) {
     return false;
@@ -22,16 +25,16 @@ static ssize_t null_read(t_fileops_handle handle, void *buf, size_t nbyte) {
 static ssize_t null_write(t_fileops_handle handle, const void *buf, size_t nbyte) {
     return 0;
 }
-static ssize_t null_scanf(t_fileops_handle handle, const char * restrict format, ...) {
+static ssize_t null_scanf(t_fileops_handle handle, const char *format, ...) {
     return 0;
 }
-static ssize_t null_vscanf(t_fileops_handle handle, const char * restrict format, va_list ap) {
+static ssize_t null_vscanf(t_fileops_handle handle, const char *format, va_list ap) {
     return 0;
 }
-static ssize_t null_printf(t_fileops_handle handle, const char * restrict format, ...) {
+static ssize_t null_printf(t_fileops_handle handle, const char *format, ...) {
     return 0;
 }
-static ssize_t null_vprintf(t_fileops_handle handle, const char * restrict format, va_list ap) {
+static ssize_t null_vprintf(t_fileops_handle handle, const char *format, va_list ap) {
     return 0;
 }
 static bool null_flush(t_fileops_handle handle) {
@@ -162,7 +165,7 @@ static ssize_t std_write(t_fileops_handle handle, const void *buf, size_t nbyte)
     FILE *f = SYS_FROMHANDLE(handle);
     return fwrite(buf, 1, nbyte, f);
 }
-static ssize_t std_scanf(t_fileops_handle handle, const char * restrict format, ...) {
+static ssize_t std_scanf(t_fileops_handle handle, const char *format, ...) {
     FILE *f = SYS_FROMHANDLE(handle);
     va_list ap;
     int result;
@@ -173,11 +176,11 @@ static ssize_t std_scanf(t_fileops_handle handle, const char * restrict format, 
 
     return result;
 }
-static ssize_t std_vscanf(t_fileops_handle handle, const char * restrict format, va_list ap) {
+static ssize_t std_vscanf(t_fileops_handle handle, const char *format, va_list ap) {
     FILE *f = SYS_FROMHANDLE(handle);
     return vfscanf(f, format, ap);
 }
-static ssize_t std_printf(t_fileops_handle handle, const char * restrict format, ...) {
+static ssize_t std_printf(t_fileops_handle handle, const char *format, ...) {
     FILE *f = SYS_FROMHANDLE(handle);
     va_list ap;
     int result;
@@ -188,7 +191,7 @@ static ssize_t std_printf(t_fileops_handle handle, const char * restrict format,
 
     return result;
 }
-static ssize_t std_vprintf(t_fileops_handle handle, const char * restrict format, va_list ap) {
+static ssize_t std_vprintf(t_fileops_handle handle, const char *format, va_list ap) {
     FILE *f = SYS_FROMHANDLE(handle);
     return vfprintf(f, format, ap);
 }
