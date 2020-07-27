@@ -18,7 +18,6 @@ objects use Posix-like threads.  */
 #ifdef _WIN32
 #include <io.h>
 #endif
-#include "s_fileops.h"
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>

@@ -2,7 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include "s_fileops.h"
+#include "m_pd.h"
 
 static bool null_open(const char *path, t_fileops_flags flags, t_fileops_handle *handle) {
     return false;
