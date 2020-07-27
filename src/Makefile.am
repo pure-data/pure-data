@@ -118,7 +118,7 @@ pd_SOURCES_core = \
 libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
-pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x_vexp.h
+pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x_vexp.h s_fileops.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h

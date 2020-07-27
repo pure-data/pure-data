@@ -1,4 +1,5 @@
-#pragma once
+#ifndef S_FILEOPS_H
+#define S_FILEOPS_H
 
 /* Copyright (c) 2020 Andi McClure.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -42,3 +43,5 @@ typedef struct _t_fileops /* All function pointers return true on success */
 } t_fileops;
 
 extern t_fileops sys_fileops;
+
+#endif // S_FILEOPS_H
