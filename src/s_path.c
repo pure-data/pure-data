@@ -622,6 +622,3 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
                 namelist_append_files(STUFF->st_externlist, s->s_name);
     }
 }
-
-// FIXME: This is bonkers, but I don't want to try to add my .c file to all these buildfiles until my patch is accepted :P -- Andi
-#include "s_fileops.c"

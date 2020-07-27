@@ -90,6 +90,7 @@ pd_SOURCES_core = \
     m_sched.c \
     s_audio.c \
     s_file.c \
+    s_fileops.c \
     s_inter.c \
     s_loader.c \
     s_main.c \
