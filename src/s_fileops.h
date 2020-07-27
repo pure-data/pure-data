@@ -41,6 +41,4 @@ typedef struct _t_fileops /* All function pointers return true on success */
 	bool (*flush)(t_fileops_handle handle);
 } t_fileops;
 
-// Also search: fstat, sys_fopen
-
 extern t_fileops sys_fileops;

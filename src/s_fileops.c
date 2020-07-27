@@ -42,7 +42,7 @@ static bool null_flush(t_fileops_handle handle) {
 
 const t_fileops sys_fileops_null = FILEOPS_NULL_VALUES;
 
-#ifndef _PD_METAFILE_NO_DEFAULT
+#ifndef _PD_FILEOPS_NO_DEFAULT
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -102,19 +102,22 @@ static bool std_open(const char *path, t_fileops_flags flags, t_fileops_handle *
     mbstowcs(ucs2mode, mode, MAXPDSTRING);
     FILE * f = _wfopen(ucs2buf, ucs2mode);
 #else
-  char namebuf[MAXPDSTRING];
-  sys_bashfilename(path, namebuf);
-  FILE *f = fopen(namebuf, mode);
+    char namebuf[MAXPDSTRING];
+    sys_bashfilename(path, namebuf);
+    FILE *f = fopen(namebuf, mode);
 #endif
 
-  if (f && doreopen) {
-    std_flags_to_fopen_string(mode, flags & ~(FILEOPS_CREAT), NULL);
-    f = freopen(path, mode, f);
-  }
+    // O_CREAT is emulated by opening the file "r+", then reopening it as "w".
+    // The "r+" will fail early if the file is not writable or does not exist.
+    if (f && doreopen) {
+        std_flags_to_fopen_string(mode, flags & ~(FILEOPS_CREAT), NULL);
+        f = freopen(path, mode, f);
+    }
 
-  *handle = (intptr_t)(void *)f;
-  return tobool(f);
+    *handle = (intptr_t)(void *)f;
+    return tobool(f);
 }
+
 static bool std_close(t_fileops_handle handle) {
     FILE *f = (FILE *)(void *)handle;
     int result = fclose(f);
@@ -149,7 +152,7 @@ static int64_t std_seek(t_fileops_handle handle, int64_t offset, t_fileops_flags
     int64_t result = fseek(f, offset, whence);
     if (result<0)
         return -1;
-    return ftell(f);
+    return ftell(f); // Emulate lseek
 }
 static ssize_t std_read(t_fileops_handle handle, void *buf, size_t nbyte) {
     FILE *f = SYS_FROMHANDLE(handle);
