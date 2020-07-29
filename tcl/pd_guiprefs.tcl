@@ -137,6 +137,26 @@ proc ::pd_guiprefs::init {} {
                 }
                 return
             }
+            # ------------------------------------------------------------------------------
+            # macOS: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                if {[catch {
+                    if {$key == ""} {
+                        exec defaults delete ${domain}
+                    } {
+                        exec defaults delete ${domain} ${key}
+                    }
+                }] errorMsg} {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
+            }
 
             # Disable window state saving by default for 10.7+ as there is a chance
             # pd will hang on start due to conflicting patch resources until the state
@@ -183,6 +203,28 @@ proc ::pd_guiprefs::init {} {
                 }
                 return
             }
+            # ------------------------------------------------------------------------------
+            # w32: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                package require registry
+                set domain [join [list ${::pd_guiprefs::registrypath} ${domain}] \\]
+                if {[catch {
+                    if {$key == ""} {
+                        registry delete ${domain}
+                    } {
+                        registry delete ${domain} ${key}
+                    }
+                }] errorMsg} {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
+            }
         }
         "file" {
             set ::pd_guiprefs::recentfiles_key "recentfiles"
@@ -200,6 +242,32 @@ proc ::pd_guiprefs::init {} {
             #
             proc ::pd_guiprefs::write_config {data domain key {arr false}} {
                 return [::pd_guiprefs::write_config_file $data $domain $key $arr]
+            }
+            # ------------------------------------------------------------------------------
+            # linux: delete config from registry (if $key is empty, delete the entire $domain)
+            proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+                if { "${domain}" == "" } { set domain ${::pd_guiprefs::domain} }
+                if { "${domain}" == "" } {
+                    ::pdwindow::error [concat "delete_config: " [_ "refusing to delete empty domain" ] "\n"]
+                    return 0
+                }
+                set fullconfigdir [file join ${::pd_guiprefs::configdir} ${domain}]
+                set filename [file join ${fullconfigdir} ${key}.conf]
+
+                if {[file isdirectory $fullconfigdir] != 1} {
+                    return 0
+                }
+                if {[catch {
+                    if {$key == ""} {
+                        file delete -force $fullconfigdir
+                    } {
+                        file delete $filename
+                    }
+                } errorMsg] } {
+                    ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
+                    return 0
+                }
+                return 1
             }
         }
         default {
@@ -262,6 +330,10 @@ proc ::pd_guiprefs::write_config {data domain key {arr false}} {
 }
 proc ::pd_guiprefs::get_config {domain key {arr false}} {
     ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::platform\n"
+}
+proc ::pd_guiprefs::delete_config {{domain {}} {key {}}} {
+    ::pdwindow::error "::pd_guiprefs::delete_config not implemented for $::platform\n"
+    return 0
 }
 
 # simple API (with a default domain)
