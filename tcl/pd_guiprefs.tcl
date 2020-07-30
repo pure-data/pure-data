@@ -151,7 +151,7 @@ proc ::pd_guiprefs::init {} {
                     } {
                         exec defaults delete ${domain} ${key}
                     }
-                }] errorMsg} {
+                } errorMsg] } {
                     ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
                     return 0
                 }
@@ -219,7 +219,7 @@ proc ::pd_guiprefs::init {} {
                     } {
                         registry delete ${domain} ${key}
                     }
-                }] errorMsg} {
+                } errorMsg] } {
                     ::pdwindow::error "delete_config ${domain}::${key}: $errorMsg\n"
                     return 0
                 }
