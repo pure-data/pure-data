@@ -21,45 +21,61 @@
 </P> 
 
 
-<H3> <A id=s1> 4. External Objects & Libraries </A> </H2>
+<H3> <A id=> 4. Externals </A> </H2>
 
-<H3> <A id=s1.1> 4.1. What are: Vanilla Objects, Internals & Externals? </A> </H3>
+<p> This section explains what are external objects and libraries. It also
+describes everything on how to install and load them in Pure Data.
 
-<p> Basically, internals are the objects that come as part of the Pd Vanilla (the main binary distribution of Pure Data, provided by Miller Puckette : <a href="http://msp.ucsd.edu/software.html">http://msp.ucsd.edu/software.html </a>)
-, whereas external objects are not! Besides internals, the Pd Vanilla
-distribution also comes with a few "extra" objects that are not part of its
-binary. Therefore, Vanilla objects (the built-in objects in Pd) include internals
-and externals.
+<p>You can write your own external objects that you and others can use in
+their Pd applications in C or (if you're smart and brave) in C++ or FORTRAN.
+In the "6.externs" subdirectory of the documentation you can find simple
+examples of externals with their source code and test patches.
 
-<p> Nonetheless, "externals" most commonly refer to objects that do not
-available in the Pd Vanilla distribution, meaning that usually you have to
-download these objects and install them properly so they can be loaded into
-Pd patches.
+<p>There’s also an excellent guide to writing externals project by IOhannes
+zmölnig at  <a href="https://github.com/pure-data/externals-howto">https://github.com/pure-data/externals-howto</a>. Check also the
+pd-lib-builder project (a helper makefile for Pure Data external libraries by
+Katja Vetter) at <a href="http://github.com/pure-data/pd-lib-builder"> http://github.com/pure-data/pd-lib-builder<a/>
+
+
+<H3> <A id=s1> 4.1 External Objects & Libraries </A> </H2>
+
+<H3> <A id=s1.1> 4.1.1 What are: Vanilla Objects, Internals & Externals? </A> </H3>
+
+<p> Internal objects come as part of the Pd binary, whereas external objects
+are separate from it. The main Pd distribution (a.k.a. “Pd Vanilla”) also comes
+with a few “extra” objects that are not part of its binary. Therefore, the set of
+“vanilla objects” (the built-in objects in Pd) include internals and externals.
+Nonetheless, “externals” mostly refer objects not available in the Pd Vanilla
+distribution, that you need to download and install them properly so they can
+be loaded into Pd patches.
+
+<p> To get a full list of all objects in Pd Vanilla, go to the <b>Help</b> menu and
+then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
+patch’s window and select “help” - this loads the help-intro.pd file (see below).
 
 
 <p><img src=fig4.1.png >
 
-<p class=fig><i>Figure 4.1 - Excerpt from list of Vanilla objects (help-intro.pd file)</i>
+<br>
 
-<p> To get a full list of all objects in Pd Vanilla, go to the <b>Help</b> menu and
-then select <b>List of Objects</b>, or alternatively right click on an empty spot of a
-patch's window and select "help" - this loads the help-intro.pd file.
+<p> The set of externals that come with Pd are available in the ‘extra’ library
+and is located in a folder named “extra” inside the Pd application. These
+appear at the very end of the “help-intro.pd” and can also be viewed in the
+Help Browser menu (Help => Browser). See figure below, which shows how
+the browser looks in a fresh install of Pd and lists the objects in the extra
+folder.
 
 <p><img src=fig4.2.png >
-<p class=fig><i>Figure 4.2 - Extra objects from Pd Vanilla</i>
 
-<p> The extra objects, which reside in a folder named "extra" inside the Pd
-application, are presented at the very end of the "help-intro.pd". They can
-also be viewed in the Help Browser menu (Help => Browser). See Figure 4.2
-above, which shows how the browser looks in a fresh install of Pd and lists
-the objects in the extra folder.
+<br>
+
 
 <H3> <A id=s1.2> 4.1.2. What are the Types of External Objects? </A> </H3>
 
 <p> An object in Pd can be either a patch - meaning a Pd file (a.k.a
 abstraction) - or a compiled binary (note that a binary can contain only one or
-several external objects, as discussed further on). More details about these
-two possible types below.
+several external objects, as discussed further on).
+
 
 <H3> <A id=s1.2.1> 4.1.2.1. Compiled objects: </A> </H3>
 
@@ -78,12 +94,12 @@ instance:
 	
 <H3> <A id=s1.2.2> 4.1.2.2. Abstractions:</A> </H3>
 
-<p>You can save pd patches and make them behave like objects by
-loading them into your patches, these are usually called "Abstractions". Note
-that some of the "extra" objects from Vanilla that you can see in <i>Figure 4.2</i> are
-Pd files/patches. Note that abstractions, like any other Pd file, may contain
-any kind of objects (internals, compiled externals and even other
-abstractions).
+<p>You can have a Pd patch behave like an object by loading it into other
+patches - these are usually called “abstractions”. Note that some of the
+externals in “extra” are abstractions (for instance, rev1~ or hilbert~). Like any
+other Pd patch, an abstraction may contain any kind of objects (internals,
+compiled externals and even other abstractions).
+
 
 
 
@@ -92,7 +108,17 @@ abstractions).
 <p>In practical terms, an external library is a collection of external objects of any kind (abstractions or compiled objects). But when it comes to compiled objects, a library can provide several objects as a <b>single binary pack</b> or as a <b>set of
 separate binaries</b> (where each object has its own binary).
 
-<p>The "classic" library is a single binary pack (with two or more externals), but splitting into separate binaries became very common. A single external binary (not part of any set of objects) is still technically a library with just one object, and a library with separate binaries could be considered as a set of libraries. But again, in practical terms, the more general concept of a library is that it is just a set of objects. What’s important to note is that there are significant differences for loading externals wether if they are a single binary pack or a set of separate binaries (as we’ll see in this tutorial later on).
+<p>The “classic” library format is a single binary pack (with two or more
+externals), but splitting into separate binaries became a very common
+practice. A single external binary (not part of any set of objects) is still,
+technically, a library with just one object. But again, the prevailing idea is that
+a library is that it is just a set of objects.
+
+<p> It’s important to note that there are differences on how externals are
+loaded depending if they’re a single binary pack or a set of separate binaries
+(as explained in the next subsections).
+
+
 
 <H3> <A id=s1.4> 4.1.4. What are the types of External Libraries? </A> </H3>
 
@@ -126,71 +152,40 @@ abstractions or any combination of them.
 
 
 
-<H3> <A id=s2>4.2. Writing Pd objects in C </A> </H3>
+<H3> <A id=s2>4.2. Installing External Objects and Libraries
+</A> </H3>
 
-<P>You can write your own objects that you and others can use in their Pd
-applications.  You can write them in C or (if you're smart and brave) in C++ or
-FORTRAN. 
-
-<P> HOW EXTERNS ARE LOADED 
-
-<P> Whenever you type the name of an object
-(into an "object" text box) that Pd doesn't yet know about, Pd looks for a
-relocatable object file, named, for instance, "profile.pd_irix5".  Pd looks
-first in the directory containing the patch, then in directories in its
-"path."  Pd will then add whatever object is defined there to its "class list,"
-which is the set of all Pd classes you can use.  If all this works, Pd then
-attempts again to create the object you asked for, this time perhaps
-successfully.  There is no difference between an object defined this way and an
-object built into Pd.
-
-<P> Once you load a new object into Pd, it's there for the duration of your Pd
-session.  If you load another Pd document which supplies a different version of
-some Pd object, the object won't be updated.  IF you're working on a new object
-and decide to change it, you have to exit and re-enter Pd to get the change to
-take.
-
-<P> In the "externs" subdirectory of the documentation you
-can find simple examples of "externs" with their source code and test patches;
-there are many other on the web (see <a href="x1.htm#s2">section 1.2 </A>).
-
-<P> IOhannes zm&ouml;lnig has written an excellent guide to writing externs at
-<A href="http://pdstatic.iem.at/externals-HOWTO/">
-         http://pdstatic.iem.at/externals-HOWTO/</A> .
 		 
 		 
-		 
-<hr>		 
-		 
-<H3> <A id=s3>4.3. Installing External Objects and Libraries </A> </H3>
+
 
 <p>Installing externals in Pd is quite simple, all you need to do is download
 your externals from somewhere, such as from Pd Vanilla directly, and include
 them in a proper folder.
 
-<H3> <A id=s3.1>4.3.1. Where to include the externals?</A> </H3>
+<H3> <A id=s2.1>4.2.1. Where to include the externals?</A> </H3>
 
-<p>You can have externals basically anywhere in your computer, but Pd
-must know where to look for them. Since Pd 0.48, Pd can automatically
-create a documents directory for patches and external libraries. At launching
-Pd for the first time, it asks you to create this folder, which is the current best
-practice. This automatically includes the folder in the search paths (under
-Preferences => Path).
+<p>Currently, when launching for the first time with a fresh install, Pd asks if
+you want to create a documents directory for patches that includes an
+“externals” subdirectory. This externals folder is where it’s advised to include
+external libraries and it’s automatically included in the user added search
+paths (under Preferences => Path), see figure below.
 
 <p><img src=fig4.3.png >
 
-<p class=fig><i>Figure 4.3 - Preferences => Path window</i>
+<br>
 
-<p>If you accept that Pd creates that folder for you, you should have
-something like this in a fresh install of Pd under Preferences => Path. This is
-for macOS, where the "Pd" folder is created under ~/Documents, and inside it
-we have a folder for externals. Even if you did not create this folder, here is
-where you can create it by clicking the "Reset" button under "Pd Documents
-Directory".
 
-<p>Pd can actually search for externals anywhere, they just need to be
-included in the search paths. Nontheless, Pd also has other places it can
-search for externals. This can be the same folder that your patch is saved on
+<p>The figure above is a screenshot, where the “Pd” folder is
+created under ~/Documents, and inside it we have the externals subfolder.
+Even if you did not create this folder, here is where you can create it by
+clicking the “Reset” button under “Pd Documents Directory”.
+
+
+<p>Externals can actually be anywhere in your computer, but Pd must
+know where to look for them. Pd looks for files (including externals) in the
+user added search paths, but it also searches in other folders not listed there
+such as: the same folder that your patch is saved on
 (the <u>Relative Path</u>) or the <u>Standard Paths</u>, which are:
 <UL>
 	<LI>A) <u>Application-specific</u>: The "extra" folder inside a particular Pure Data
@@ -199,21 +194,22 @@ application.
 	<LI>C) <u>Global</u>: A system folder for all users on the machine.
 </UL>
 
-<p>The Standard Paths are not listed in Preferences => Path, as those
-only include paths added by the user. And again, the current best practice is
-to have external folders inside an external folder added to Pd search paths
-(as ~/Documents/Pd/externals). Earlier practices made use of these standard
-paths above, but note that the user-specific and global standard paths are not
-automatically created by Pd.
+<p>Officially, there’s only one ‘Standard Path’ which is the ‘extra’ folder.
+The others are not automatically created by Pd and are part of an old
+structure. Currently, the best practice is to use the default external folders or
+user added paths, but these other options are documented here anyway and
+may be useful in some edge cases.
 
-<p>This structure is still kept as an old heritage of Pd and is documented
-here because of that. It may also serve some edge cases. The <u>Global</u> folder
+
+<p> The <u>Global</u> folder
 affects all Pure Data Applications for all users. The <u>User-specific</u> folder affects
 all Pure Data Applications for that user. And since you can have different
 versions of Pd installed in your system, the <u>Application-specific</u> folder affects
-only that particular Pd Application. This can be not only an older and a newer
-version of Pd, but also both 32-bit and 64-bit versions. For reference, here's
-the list of the Standard Paths for all operating systems:
+only that particular Pd Application - multiple
+Pd applications can be of different versions (an older and a newer one or
+both 32-bit and 64-bit). For reference, here’s the list of the Standard Paths for
+all operating systems:
+
 
 <p>A) macOS:
 <UL>
@@ -249,157 +245,209 @@ or ~/pd-externals (deprecated but still usable).
 	<LI><u>Global</u>: <mark><b> /usr/local/lib/pd-externals</b></mark>.
 </UL>
 
-<H3> <A id=s3.2>4.3.2. How to Download Externals from Pd Vanilla?</A> </H3>
+<H3> <A id=s2.2>4.2.2. How to Download Externals from Pd Vanilla?</A> </H3>
 
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a
-built in .tcl plug-in named "deken" <https://github.com/pure-data/deken> that
-has been incorporated into the Pd Vanilla distribution to manage the
-download of external libraries and externals.
+built in .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
+for reference).  Open it by selecting the <b>Help => Find externals</b> tab. Then you
+can type the library’s name you’re looking for and hit ‘enter’ or click ‘search’.
+You can also look for an external name and the library that contains it might
+be shown. All available versions of the library specific for your operating
+system will be shown to you. See figure below.
 
-<p>So you can just open Pd, click on the "Help" menu and select <b>Help >
-Find externals</b>. Then you can just type the library's name you want and hit
-enter or click "search". You can also look for an external name and the library
-that contains it might be shown. All available versions of the library specific for
-your operating system will be shown to you. See figure below.
+
+
+
+
+
+
+
+
+
 
 <p><img src=fig4.4.png >
-<p class=fig><i>Figure 4.4 - Searching for External Libraries from Pd Vanilla</i>
 
-<p>When you click on the version you want, by default, Pd asks if you want
-to download it to the external folder set under Preferences => Path. If you say
-no, you can specify somewhere else to download it to. If you say yes, there is
-where it gets downloaded to.
+<br>
+
+<p>When you click on the version you want, Pd asks if you want to the
+external folder set in “Path => Prferences”, which should be
+10
+~/Documents/Pd/external by default. If you say yes, there is where it gets
+downloaded to, but if you say no, you can specify somewhere else.
 <br>
 <br>
 <hr>
-<H3> <A id=s4>4.4. Loading Externals </A> </H3>
+<H3> <A id=s3>4.3. Loading Externals </A> </H3>
 
-<p>The current best practice is to use the [declare] object, but there are
-alternatives. If the library is a single binary pack, it needs to be loaded so you
-can create externals. This is done either via the [declare] object or manually
-via Preferences => Startup.
+<p>Before loading an external, we need to make sure Pd finds it. The
+current best practice is to use the declare object, but there are alternatives.
 
-<p>Now, if the external library only contains abstractions or objects
-compiled as a set of separate binaries, Pd just needs to know its. Again, this
-can be done with [declare] or manually (via Preferences => Path).
+<p> If the library is a single binary pack, this binary needs to be pre loaded
+so Pd can load its externals. This is done either with declare or manually via
+Preferences => Startup.
 
-<H3> <A id=s4.1>4.4.1. Using the [declare] object:</A> </H3>
+<p>If the external library only contains abstractions or objects compiled as
+a set of separate binaries, Pd just needs to know its path. Again, this can be
+done with declare or manually via Preferences => Path, but yet another
+option here is to use slash declarations.
 
-<p>The [declare] object from Pd Vanilla behaves quite similarly to adding
-search paths to the user added paths (under Preferences => Path) or adding
-libraries (under Preferences => Startup). The difference is that it'll only work
-for the patch containing the [declare]. This means that when you add
-manually via preferences, it installs it permanently and for any patch.
+<H3> <A id=s3.1>4.3.1. Using the [declare] object:</A> </H3>
 
-<H3> <A id=s4.1.1>4.4.1.1. [declare -path]:</A> </H3>
+<p>The declare object behaves quite similarly to adding search paths to the
+user added paths (under Preferences => Path) or adding libraries (under
+Preferences => Startup). The difference is that this will only work for the patch
+containing that contain the declare object - unlike using path/startup, which
+installs permanently for any patch.
 
-<p>Let's take for an example the ELSE library (<a href="http://github.com/porres/pd-else">http://github.com/porres/pd-else</a>) . This library contains 2
+<H3> <A id=s3.1.1>4.3.1.1. [declare -path]:</A> </H3>
+
+<p>Let's take for an example the <a href="http://github.com/porres/pd-else"> ELSE</a> library.  This library contains
 separate binaries and abstractions, so Pd only needs to know its location
-path. So we can do something like [declare -path else] and Pd will look for a
-folder named else to add it to the search path.
+11
+path, hence we use the -path flag as in [declare -path else]. This makes Pd
+look for a folder named else to add it to the search path.
 
-<p>But where does Pd look the else folder? In the locations it knows where
+<p>But where does Pd look for this folder? In the locations it knows where
 to look (the Relative Path, the Standard Paths or the User Added Paths). So
-let's say you downloaded the else library folder into "~/Documents/Pd/
-externals", which is the current best practice. Pd will know to look for it there
-and will find it!
+let’s say you put the ELSE library folder in “~/Documents/Pd/externals”, which
+is the current best practice, Pd will know to look for it there and will find it!
 
-<H3> <A id=s4.1.2>4.4.1.2. [declare -lib]:</A> </H3>
+<p> Now, in the case of a single external, the best practice is to include it in
+a folder with the same name, like the freeverb~ external. In this situation, you
+don’t need to add the external folder to the path. For example, if you
+download the freeverb~ external into “~/Documents/Pd/externals” and try to
+load it, the trick is that If Pd finds a ‘freeverb~’ folder, it knows it should look
+inside it for the actual external, so it will succeed in finding it just by that!
 
-<p>This is needed for the classic Pd library format, which is a single binary
-pack with many externals. One such example is the "zexy" library. So once
-you have downloaded it, you can use [declare -lib zexy]. In the same way, Pd
-will search for the zexy binary in locations it knows where to look (as in "~/
-Documents/Pd/externals").
+
+
+<H3> <A id=s3.1.2>4.3.1.2. [declare -lib]:</A> </H3>
+
+<p>The -lib flag is needed for the classic Pd library format, which is a
+single binary pack with many externals. One such example is the <a href="https://git.iem.at/pd/zexy/"> zexy </a> library.
+So once you’ve downloaded it, you can use [declare -lib zexy]. In the same
+way, Pd will search for the zexy binary in locations it knows where to look (as
+in “~/Documents/Pd/externals”).
 
 <p>Does this mean you need to also include the zexy folder path, so Pd
-knows to search for the zexy binary inside? Not really, because there's a trick
-here. If Pd finda a 'zexy' location, it knows it can look inside it for the 'zexy'
-binary, so it will succeed in finding it just with that!
+knows to search for the zexy binary inside? Not really! Just like the freeverb~
+example, if Pd finds a ‘zexy’ folder in the locations it’s searching, it knows to
+look for the ‘zexy’ binary there!
 
-<H3> <A id=s4.2>4.4.2. Using Path and Startup:</A> </H3>
+<H3> <A id=s3.2>4.3.2. Load via Path and Startup:</A> </H3>
 
 <p>This is basically the same as using [declare] but it will permanently work
-every time Pd starts and for any patch.
+every time Pd starts, and for any patch you open.
 
-<H3> <A id=s4.2.1>4.4.2.1. User added Path:</A> </H3>
 
-<p>You can add User Added Paths in Preferences => Path. We've seen
-that even if you have a folder into "~/Documents/Pd/externals" you still need
-to tell Pd to look for it. You can do this manually added to Pd's search paths
-so it can be automatically by clicking "New".
+<H3> <A id=s3.2.1>4.3.2.1. User added Path:</A> </H3>
 
-<p>Another possibility is that "Deken"offers a preference tabs where you
-can click once on "Should newly installed libraries be added to Pd's search
-Path?" to prompt you if you want to add a downloaded library to the user
-added search paths after you download it. By default, it never asks you to do
-it. You can also click twice so it always add anything you download from
-deken to the search path, which is not quite recomended as sometimes you'll
-download a single binary pack, where adding it to the search path doesn't
-really help.
+<p>We’ve seen that even if you have a folder into
+“~/Documents/Pd/externals” you still need to tell Pd to look for it. You can
+manually add a User Added Paths in Preferences => Path by clicking “New”.
 
-<H3> <A id=s4.2.2>4.4.2.2. Startup:</A> </H3>
+<p>Another possibility is that under deken’s preferences tabs you can click
+once on “Should newly installed libraries be added to Pd’s search Path?”.
+This prompts you if you want to add a downloaded library to the user added
+search paths (by default, it never asks you to do it). You can also click twice
+so it always adds anything you download to the search path, which is not
+quite recommended as sometimes you’ll download a single binary pack,
+where adding it to the search path doesn’t really help.
+
+
+<H3> <A id=s3.2.2>4.3.2.2. Startup:</A> </H3>
 
 <p>In "Preferences => Startup", you load a window that says <i> "Pd libraries
 to load on startup"</i>. This is where you can manually and permanently load
-single binary pack libraries. As we've seen with 'zexy', it's common that the
-name of the binary is the same as the library's, so you don't need to worry
-about setting the path. Another example is the 'cyclone' library,
+single binary pack libraries. But since this is only leaded during startup,
+you need to restart Pd. The startup is also used for configuring Pd in many
+ways, see <a href="x3.htm#s4">3.6. Preferences and startup options</a> for reference.
 
 <p><img src=fig4.5.png >
-<p class=fig><i>Figure 4.5 - Loading the cyclone and zexy binaries/libraries in "Startup"</i>
+<br>
 
-<p>As previously mentioned, cyclone 0.3 is a special case that includes
-objects as abstractions, as a <u>set of separate binaries</u> but also has a set a
+<p>As we’ve seen with ‘zexy’, it’s common that the name of the binary is
+the same as the library’s, so you don’t need to worry about setting the path.
+Another example is the ‘cyclone’ library. As previously mentioned, cyclone 0.3
+is a special case that includes objects as abstractions, as a <u>set of separate binaries</u> and also has a set a
 <u>single binary pack</u> that loads objects with non alphanumeric names, which
-need to be loaded as a <u>single binary pack</u> to avoid issues. One particularity of
-cylone is that loading its binary will also force Pd to add its path to the search
-paths, so you don't need to bother adding it to the path as well so you can
-load its abstractions or separate binaries.
+need to be loaded as a <u>single binary pack</u> (which loads objects with non
+alphanumeric names that need to be loaded as such to avoid issues). One
+particularity of cyclone is that loading its binary will also force Pd to add its
+path to the search paths, so you don’t need to bother adding it to the path as
+well in order to be able to load its abstractions or separate binaries. Another
+example that uses this feature is <a href="https://github.com/umlaeute/Gem"> Gem </a>, which loads as a binary pack but also
+includes a few abstractions that rely on the path search.
 
-<p>It depends on the developer, but it is common and a good practice that
-when you load a library, Pd's terminal window will print something to tell us
-that the libraries were loaded successfully. Here's a screenshot of the result
+<p>It depends on the developer, but it is a common and good practice that
+when you load a library, Pd’s terminal window will print something to tell us
+that the libraries were loaded successfully. Here’s a screenshot of the result
 of loading cyclone and zexy via the startup (same happens if you load them
 via [declare], clearly).
 
 <p><img src=fig4.6.png >
-<p class=fig><i>Figure 4.6 - Pd's terminal window after loading cyclone and zexy</i>
+<br>
 
-<H3> <A id=s4.3>4.4.3. Slash declarations:</A> </H3>
+<H3> <A id=s3.3>4.3.3. Slash declarations:</A> </H3>
 
-<p>You can also use slash declarations to search for libraries in
-paths that are relative to these. For instance, let's say you downloaded the
-ELSE library into ~/Documents/Pd/externals, or any other folder Pd will
-eventually search for. Instead of using [declare -path] or adding the ELSE
-folder to the user added paths, you can just prepend "else/" before an object
-name that Pd will try to find this object in a folder called else in one of its
-search paths! Here's an example:
+<p>You can also use slash declarations to search for externals in paths that
+are relative to the locations Pd automatically searches for files. But this
+doesn’t work for single binary packs.
+
+<p>For instance, let’s say you’ve downloaded the ELSE library into
+~/Documents/Pd/externals. Instead of using [declare -path else] or adding the
+ELSE folder to the user added paths manually, you can just prepend “else/“
+before an object name. This will make Pd look for this object in a folder called
+‘else’ in one of its search paths (which includes ~/Documents/Pd/externals)
+and find it! Here’s an example:
+
 
 <p><img src=fig4.7.png >
 
 
 
-<p>Note that if you do that, you can still add the 'else' folder to Pd's search
-path or use [declare -path else], but it will just be redundanct. Now, what are
-the diffences of this method over using [declare] or adding the path to the
-user added paths? The only use case is if you have two externals with the
-same name from two different libraries in the same patch. With this method
+<p>Now, what’s the difference over using [declare] or adding the folder to
+the user added paths? The only use case is if you have two externals with the
+same name from two different libraries in the same patch. With this method,
 you can specify which one is which!
+
 
 <p>A library name prefix may also be pertinent in the context of single
 binary packs. The cyclone library has a set of 12 objects with non
-alphanumeric names, such as [>~]. But it uses an internal trick of adding a
+15
+alphanumeric names, such as [>~], and uses an internal trick of adding a
 class creator, so creating the object as [cyclone/>~] also works. But note that
 the library still needs to be loaded anyway (via startup or [declare]).
 
-<p>There's also the case where you can find a single binary pack that has
-a different name than that of the library. One example is timbreID, which has
-a timbreIDLib as the binary file. In this case you need to specify the timbreID
-folder with a slash declaration as in "timbreID/timbreiIDLib" in Startup. This
-also works in declare as in [declare -lib timbreID/timbreiIDLib].
+<p>There’s also the case where you can have placed single binary pack
+library in a folder with a different name not added to the user paths. Not that
+you should have done that, but a slash declaration with “folder/libname” in
+Startup or declare would also work for that matter.
 		 
+<H3> <A id=s4>4.4. How externals are loaded</A> </H3>
 
+<p>Once you make sure Pd can load an external, this is what happens
+when you create it. Whenever you type the name of an object (into an "object"
+text box) that Pd doesn't yet know about, Pd looks for a relocatable object file,
+named, for instance, "profile.pd_linux". Pd looks first in the directory
+containing the patch, then in directories listed as user added paths, then in
+the standard paths. Pd will then add whatever object is found there to its
+"class list," which is the set of all Pd classes you can use. If all this works, Pd
+then attempts again to create the object you asked for, this time perhaps
+successfully. There is no difference between an object defined this way and
+an object built into Pd (an internal).
+
+
+<p>In the case of compiled externals, once the new object is loaded into
+Pd, it's there for the duration of your Pd session. This means that if you
+replace the binary for a new one, the object won't be updated even if you
+recreate it. Hence, if you're working on a new object and decide to change it,
+16
+you have to exit and re-enter Pd to get the change to take. This is not needed
+for abstractions, which get updated any time they’re replaced and reloaded.
+
+<br>
+<br>
 
 </BODY>
 </HTML>

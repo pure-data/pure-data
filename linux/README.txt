@@ -1,7 +1,8 @@
 
 release checklist
     update doc/Makefile.am list: cd pd/doc;
-        find . -type f | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+        (find . -type f | sort | awk '{print "    ", $1, "\\"}';\
+            echo '     $(empty)') > /tmp/foo.txt
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
@@ -17,8 +18,8 @@ release checklist
             scp tarballs back to linux
         ... compile on windows:
             cd msw
-            ./sbuild-msw-64.sh <version>
-            ./sbuild-msw-32.sh <version>
+            ./build-msw-64.sh <version>
+            ./build-msw-32.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push origin
