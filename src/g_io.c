@@ -116,8 +116,13 @@ t_int *vinlet_perform(t_int *w)
 
 static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
-        outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
+    if (x->x_buf) /* signal inlet: forward message to second outlet */
+    {
+        if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
+            outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
+    }
+    else /* otherwise just pass it through */
+        vinlet_anything(x, s, argc, argv);
 }
 
 static void vinlet_dsp(t_vinlet *x, t_signal **sp)
