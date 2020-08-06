@@ -160,13 +160,14 @@ t_int *vinlet_perform(t_int *w)
     return (w+6);
 }
 
-static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
+int vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-
-    if (!x->x_rb)   /* if we're not signal, just forward */
-        outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
-    else if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
-        outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
+    if (x->x_rb && x->x_fwdout)
+    {
+        outlet_anything(x->x_fwdout, s, argc, argv);
+        return 1;
+    }
+    return 0;
 }
 
 static void vinlet_dsp(t_vinlet *x, t_signal **sp)
@@ -353,8 +354,6 @@ static void vinlet_setup(void)
     class_addsymbol(vinlet_class, vinlet_symbol);
     class_addlist(vinlet_class, vinlet_list);
     class_addanything(vinlet_class, vinlet_anything);
-    class_addmethod(vinlet_class,(t_method)vinlet_fwd,  gensym("fwd"),
-        A_GIMME, 0);
     class_addmethod(vinlet_class, (t_method)vinlet_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(vinlet_class, gensym("inlet-outlet"));

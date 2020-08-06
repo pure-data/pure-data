@@ -86,34 +86,49 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
         x->i_symfrom->s_name, s->s_name);
 }
 
-static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
 extern t_class *vinlet_class;
+struct _vinlet;
+int vinlet_fwd(struct _vinlet *x, t_symbol *s, int argc, t_atom *argv);
+
+static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
+
+    /* try to forward a message to an inlet~ object */
+static int inlet_tryfwd(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (x->i_symfrom == &s_signal && pd_class(x->i_dest) == vinlet_class)
+        return vinlet_fwd((struct _vinlet *)x->i_dest, s, argc, argv);
+    else
+        return 0;
+}
 
     /* LATER figure out how to make these efficient: */
 static void inlet_bang(t_inlet *x)
 {
     if (x->i_symfrom == &s_bang)
         pd_vmess(x->i_dest, x->i_symto, "");
-    else if (!x->i_symfrom) pd_bang(x->i_dest);
+    else if (!x->i_symfrom)
+        pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
         inlet_list(x, &s_bang, 0, 0);
-    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
-        vmess(x->i_dest, gensym("fwd"), "s", &s_bang);
-    else inlet_wrong(x, &s_bang);
+    else if (!inlet_tryfwd(x, &s_bang, 0, 0))
+        inlet_wrong(x, &s_bang);
 }
 
 static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
     if (x->i_symfrom == &s_pointer)
         pd_vmess(x->i_dest, x->i_symto, "p", gp);
-    else if (!x->i_symfrom) pd_pointer(x->i_dest, gp);
-    else if (x->i_symfrom == &s_list)
+    else if (!x->i_symfrom)
+        pd_pointer(x->i_dest, gp);
+    else
     {
         t_atom a;
         SETPOINTER(&a, gp);
-        inlet_list(x, &s_pointer, 1, &a);
+        if (x->i_symfrom == &s_list)
+            inlet_list(x, &s_pointer, 1, &a);
+        else if (!inlet_tryfwd(x, &s_pointer, 1, &a))
+            inlet_wrong(x, &s_pointer);
     }
-    else inlet_wrong(x, &s_pointer);
 }
 
 static void inlet_float(t_inlet *x, t_float f)
@@ -130,34 +145,25 @@ static void inlet_float(t_inlet *x, t_float f)
         SETFLOAT(&a, f);
         inlet_list(x, &s_float, 1, &a);
     }
-    else inlet_wrong(x, &s_float);
+    else
+        inlet_wrong(x, &s_float);
 }
 
 static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
     if (x->i_symfrom == &s_symbol)
         pd_vmess(x->i_dest, x->i_symto, "s", s);
-    else if (!x->i_symfrom) pd_symbol(x->i_dest, s);
-    else if (x->i_symfrom == &s_list)
+    else if (!x->i_symfrom)
+        pd_symbol(x->i_dest, s);
+    else
     {
         t_atom a;
         SETSYMBOL(&a, s);
-        inlet_list(x, &s_symbol, 1, &a);
+        if (x->i_symfrom == &s_list)
+            inlet_list(x, &s_symbol, 1, &a);
+        else if (!inlet_tryfwd(x, &s_symbol, 1, &a))
+            inlet_wrong(x, &s_symbol);
     }
-    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
-        vmess(x->i_dest, gensym("fwd"), "ss", &s_symbol, s);
-    else inlet_wrong(x, &s_symbol);
-}
-
-    /* forward a message to an inlet~ object */
-static void inlet_fwd(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_atom *argvec = (t_atom *)alloca((argc+1) * sizeof(t_atom));
-    int i;
-    SETSYMBOL(argvec, s);
-    for (i = 0; i < argc; i++)
-        argvec[i+1] = argv[i];
-    typedmess(x->i_dest, gensym("fwd"), argc+1, argvec);
 }
 
 static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -166,16 +172,18 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     if (x->i_symfrom == &s_list || x->i_symfrom == &s_float
         || x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
             typedmess(x->i_dest, x->i_symto, argc, argv);
-    else if (!x->i_symfrom) pd_list(x->i_dest, s, argc, argv);
+    else if (!x->i_symfrom)
+        pd_list(x->i_dest, s, argc, argv);
     else if (!argc)
-      inlet_bang(x);
+        inlet_bang(x);
     else if (argc==1 && argv->a_type == A_FLOAT)
-      inlet_float(x, atom_getfloat(argv));
+        inlet_float(x, argv->a_w.w_float);
     else if (argc==1 && argv->a_type == A_SYMBOL)
-      inlet_symbol(x, atom_getsymbol(argv));
-    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
-        inlet_fwd(x, &s_list, argc, argv);
-    else post("class %s", class_getname(*x->i_dest)), inlet_wrong(x, &s_list);
+        inlet_symbol(x, argv->a_w.w_symbol);
+    else if (argc==1 && argv->a_type == A_POINTER)
+        inlet_pointer(x, argv->a_w.w_gpointer);
+    else if (!inlet_tryfwd(x, s, argc, argv))
+        inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
@@ -192,9 +200,8 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     }
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
-    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
-        inlet_fwd(x, s, argc, argv);
-    else inlet_wrong(x, s);
+    else if (!inlet_tryfwd(x, s, argc, argv))
+        inlet_wrong(x, s);
 }
 
 void inlet_free(t_inlet *x)
