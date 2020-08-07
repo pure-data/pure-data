@@ -19,7 +19,7 @@ release checklist
         ... compile on windows:
             cd msw
             ./build-msw-64.sh <version>
-            ./build-msw-32.sh <version>
+            ./build-wxp-32.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push origin
@@ -29,7 +29,7 @@ release checklist
     copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/
-    chmod -R g-w ~/bis/lib/public_html/Pd_documentation/
+    chmod -R go-w ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     nedit-client /home/msp/bis/lib/public_html/software.htm
