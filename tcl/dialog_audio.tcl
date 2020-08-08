@@ -161,13 +161,23 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
     frame $mytoplevel.settings.bsc
     pack $mytoplevel.settings.bsc -side top -fill x
+    button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
+        -command "set audio_sr 48000"
+    button $mytoplevel.settings.bsc.rate2 -text [_ "44k1"] \
+        -command "set audio_sr 44100"
+    button $mytoplevel.settings.bsc.rate3 -text [_ "96k"] \
+        -command "set audio_sr 96000"
+    pack $mytoplevel.settings.bsc.rate1 \
+        $mytoplevel.settings.bsc.rate2 \
+        $mytoplevel.settings.bsc.rate3 \
+         -side left
     label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
 
-    pack $mytoplevel.settings.bsc.bs_label -side left -padx {0 10}
-    pack $mytoplevel.settings.bsc.bs_popup -side left
+    pack $mytoplevel.settings.bsc.bs_popup -side right
+    pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
     if {$audio_callback >= 0} {
         checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
             -text [_ "Use callbacks"] -anchor w
