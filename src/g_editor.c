@@ -4746,7 +4746,8 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
     }
     else
     {
-        glist_noselect(x);
+        glist_noselect(x);  /* this can knock us back into edit mode so : */
+        x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
