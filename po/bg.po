@@ -164,7 +164,7 @@ msgstr ""
 msgid "no Pd settings to erase"
 msgstr ""
 
-msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
 
 msgid "(re-save preferences to reinstate them)"
@@ -655,56 +655,53 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
+msgid "installed version [%1$s] > %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+msgid "installed version [%1$s] < %2$s...overwriting!"
 msgstr ""
 
 #, tcl-format
-msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
-
-msgid "[deken]: "
+msgid "installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
+msgid "successfully unzipped %1$s into %2$s"
 msgstr ""
 
-msgid "[deken]: Unable to extract package automatically."
+msgid "unable to extract package automatically"
 msgstr ""
 
-msgid "Please perform the following steps manually:"
-msgstr ""
-
-#, tcl-format
-msgid "1. Unzip %s."
+msgid "please perform the following steps manually:"
 msgstr ""
 
 #, tcl-format
-msgid "2. Copy the contents into %s."
+msgid "1. unzip %s"
 msgstr ""
 
 #, tcl-format
-msgid "[deken] uninstalling '%s'"
+msgid "2. copy the contents into %s"
 msgstr ""
 
 #, tcl-format
-msgid "Uninstalling %1$s from %2$s failed!"
+msgid "uninstalling '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgid "uninstalling %1$s from %2$s failed!"
 msgstr ""
 
 #, tcl-format
-msgid "[deken] Platform detected: %s"
+msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
 msgstr ""
 
 #, tcl-format
-msgid "[deken] Platform re-detected: %s"
+msgid "platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "platform re-detected: %s"
 msgstr ""
 
 msgid "Show all"
@@ -756,11 +753,12 @@ msgstr ""
 msgid "Deken %s Preferences"
 msgstr "Настройки"
 
-msgid "[deken]: Start searching for externals..."
-msgstr ""
+#, fuzzy
+msgid "start searching for externals..."
+msgstr "Търсене из текста..."
 
 #, tcl-format
-msgid "[deken]: online? %s"
+msgid "online? %s"
 msgstr ""
 
 msgid "Are you online?"
@@ -769,10 +767,10 @@ msgstr ""
 msgid "Unable to perform search."
 msgstr ""
 
-msgid "[deken]: No matching externals found."
+msgid "no matching externals found"
 msgstr ""
 
-msgid "Try using the full name e.g. 'freeverb'."
+msgid "try using the full name e.g. 'freeverb'"
 msgstr ""
 
 msgid "No matching externals found."
@@ -787,16 +785,16 @@ msgstr ""
 
 #, tcl-format
 msgid ""
-"Commencing downloading of:\n"
+"commencing downloading of:\n"
 "%1$s\n"
-"Into %2$s..."
+"into %2$s..."
 msgstr ""
 
-msgid "aborting.\n"
+msgid "... aborting"
 msgstr ""
 
 #, tcl-format
-msgid "Unable to add %s to search paths"
+msgid "unable to add %s to search paths"
 msgstr ""
 
 #, tcl-format
@@ -804,24 +802,27 @@ msgid "Add %s to the Pd search paths?"
 msgstr ""
 
 #, tcl-format
-msgid "Added %s to search paths"
+msgid "added %s to search paths"
 msgstr ""
 
 #, tcl-format
-msgid "Unable to download from %1$s [%2$s]"
+msgid "unable to download from %1$s [%2$s]"
 msgstr ""
 
 #, tcl-format
-msgid "Unable to remove stray file %s"
+msgid "unable to remove stray file %s"
 msgstr ""
 
 #, tcl-format
-msgid "Unable to rename downloaded file to %s"
+msgid "unable to rename downloaded file to %s"
 msgstr ""
 
 #, fuzzy, tcl-format
 msgid "searching for '%s'"
 msgstr "Търсене из текста..."
+
+msgid "unable to perform search"
+msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
@@ -856,11 +857,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "Couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s\n"
 msgstr ""
 
 #, tcl-format
-msgid "Couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr ""
 
 #, tcl-format
@@ -1127,11 +1128,11 @@ msgid "Delete"
 msgstr "Изтриване"
 
 #, tcl-format
-msgid "Ignoring '%s': doesn't exist"
+msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
 #, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
+msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
 
 #, fuzzy

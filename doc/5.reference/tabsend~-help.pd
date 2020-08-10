@@ -4,7 +4,7 @@
 ;
 #X msg 64 125 set my-table;
 #X text 380 202 updated for Pd version 0.43;
-#X text 21 77 By default a block is 64 samples but this can be reset
+#X text 39 72 By default a block is 64 samples but this can be reset
 using the block~ object.;
 #X text 225 161 creation argument: initializes table name;
 #X text 180 125 'set' message to change table name;

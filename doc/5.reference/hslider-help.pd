@@ -1,329 +1,666 @@
-#N canvas 333 147 509 514 10;
-#X obj 1 1 cnv 8 100 60 empty empty hslider=hsl 20 20 1 18 -262144
--1109 0;
-#X floatatom 38 127 9 0 0 0 - - -, f 9;
-#X msg 47 84 set \$1;
-#X floatatom 38 41 7 0 0 0 - - -, f 7;
-#X text 13 355 (c) musil@iem.kug.ac.at;
-#X text 55 368 IEM KUG;
-#X obj 38 149 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
--1;
-#X obj 18 41 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
--1;
-#X obj 41 107 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 0 10
--225280 -1109 -1 6200 1;
-#X text 174 11 gui-horizontal-slider:;
-#X floatatom 47 62 7 0 0 0 - - -, f 7;
-#X floatatom 116 150 9 0 0 0 - - -, f 9;
-#X obj 110 308 r goo2_snd;
-#X obj 145 248 s goo2_rcv;
-#X floatatom 105 40 7 0 0 0 - - -, f 7;
-#X floatatom 145 206 7 0 0 0 - - -, f 7;
-#X obj 60 170 print;
-#N canvas 276 200 290 224 once 0;
-#X obj 38 47 t b b f;
-#X msg 56 85 1;
-#X obj 31 108 f 0;
-#X obj 31 131 pack 0 0;
-#X obj 31 156 route 0;
-#X obj 38 24 inlet;
-#X obj 31 180 outlet;
-#X connect 0 0 1 0;
-#X connect 0 1 2 0;
-#X connect 0 2 3 1;
-#X connect 1 0 2 1;
-#X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 4 0 6 0;
-#X connect 5 0 0 0;
-#X restore 60 147 pd once;
-#X obj 40 265 hsl 73 15 55 3520 1 1 goo2_snd goo2_rcv log.freq. 8 -8
-0 10 -42246 -260818 -90133 1600 1;
-#X obj 37 308 ftom;
-#X floatatom 37 330 9 0 0 0 - - -, f 9;
-#X floatatom 64 287 9 0 0 0 - - -, f 9;
-#X floatatom 110 329 9 0 0 0 - - -, f 9;
-#X text 175 176 click properties to;
-#X floatatom 37 203 8 0 0 0 - - -, f 8;
-#X obj 37 226 mtof;
-#X text 12 184 --------------------;
-#X text 163 187 modify geometry \, colors \, etc.;
-#X obj 105 82 s foo1_rcv;
-#X obj 116 130 r foo1_snd;
-#X msg 105 61 set \$1;
-#X msg 145 227 set \$1;
-#X text 197 120 (0.01 pixels);
-#X text 183 99 shift-click & drag;
-#X text 189 109 for fine-tuning;
-#X text 148 270 UP- \, DOWN- \, LEFT- or RIGHT-key;
-#X text 147 281 for moving selected gui-objects;
-#N canvas 207 113 716 530 edit 0;
-#X obj 32 220 f;
-#X msg 10 199 bang;
-#X floatatom 48 198 3 63 88 0 - - -, f 3;
-#X floatatom 83 220 3 0 37 0 - - -, f 3;
-#X obj 32 243 pack 0 0;
-#X text 110 220 y-label;
-#X text 76 198 x-label;
-#X obj 279 246 f;
-#X msg 257 225 bang;
-#X floatatom 295 224 3 -10 10 0 - - -, f 3;
-#X floatatom 330 246 3 -10 10 0 - - -, f 3;
-#X obj 279 269 pack 0 0;
-#X obj 292 358 f;
-#X msg 270 337 bang;
-#X floatatom 308 336 3 20 60 0 - - -, f 3;
-#X floatatom 343 358 3 150 200 0 - - -, f 3;
-#X obj 292 381 pack 0 0;
-#X text 323 224 x-delta;
-#X text 357 246 y-delta;
-#X text 336 336 x-position;
-#X text 370 358 y-position;
-#X obj 52 335 f;
-#X msg 30 314 bang;
-#X floatatom 68 313 3 0 2 0 - - -, f 3;
-#X floatatom 103 335 3 4 36 0 - - -, f 3;
-#X obj 52 358 pack 0 0;
-#X text 96 313 font;
-#X text 132 335 height;
-#X floatatom 476 188 1 0 1 0 - - -, f 1;
-#X text 523 401 no init;
-#X text 493 453 init value on loadbang;
-#X msg 47 154 \; goo2_rcv color \$1 \$2 \$3;
-#X msg 32 268 \; goo2_rcv label_pos \$1 \$2;
-#X msg 52 383 \; goo2_rcv label_font \$1 \$2;
-#X msg 34 427 \; goo2_rcv label blabla;
-#X msg 292 406 \; goo2_rcv pos \$1 \$2;
-#X msg 279 294 \; goo2_rcv delta \$1 \$2;
-#X msg 475 21 \; goo2_rcv send goo2a_snd;
-#X msg 475 59 \; goo2_rcv send goo2_snd;
-#X msg 476 105 \; goo2_rcv receive goo2a_rcv;
-#X msg 476 143 \; goo2a_rcv receive goo2_rcv;
-#X msg 502 420 \; goo2_rcv init 0;
-#X msg 503 471 \; goo2_rcv init 1;
-#X text 520 188 steady;
-#X obj 486 291 f;
-#X msg 464 270 bang;
-#X floatatom 502 269 3 55 440 0 - - -, f 3;
-#X floatatom 537 291 6 440 3520 0 - - -, f 6;
-#X obj 486 314 pack 0 0;
-#X text 530 269 left-range-bound;
-#X text 586 291 right-range-bound;
-#X msg 486 339 \; goo2_rcv range \$1 \$2;
-#X msg 363 465 \; goo2_rcv log;
-#X msg 269 466 \; goo2_rcv lin;
-#X text 269 448 linear / logarithmic;
-#X obj 275 133 f;
-#X msg 250 112 bang;
-#X floatatom 291 111 3 15 73 0 - - -, f 3;
-#X floatatom 326 133 3 8 50 0 - - -, f 3;
-#X obj 275 156 pack 0 0;
-#X text 319 111 width;
-#X text 357 134 height;
-#X msg 275 181 \; goo2_rcv size \$1 \$2;
-#X msg 34 463 \; goo2_rcv label log.freq.;
-#X msg 476 212 \; goo2_rcv steady \$1;
-#X obj 47 100 pack 0 0 0;
-#X obj 47 72 f;
-#X msg 24 24 bang;
-#X floatatom 63 22 3 0 29 0 - - -, f 3;
-#X floatatom 79 42 3 0 29 0 - - -, f 3;
-#X floatatom 112 58 3 0 29 0 - - -, f 3;
-#X text 91 22 background;
-#X text 106 42 front-color;
-#X text 140 59 label-color;
-#X msg 277 22 back;
-#X msg 277 42 front;
-#X msg 277 62 label;
-#X msg 239 22 bang;
-#N canvas 15 207 606 448 RGB_____________ 0;
-#X obj 97 56 inlet;
-#X obj 262 53 inlet;
-#X obj 339 55 inlet;
-#X obj 405 56 inlet;
-#X obj 97 270 bang;
-#X msg 77 295 0;
-#X msg 104 295 1;
-#X obj 146 268 bang;
-#X msg 132 295 0;
-#X msg 160 295 1;
-#X obj 196 269 bang;
-#X msg 187 295 0;
-#X msg 214 295 1;
-#X obj 265 313 spigot;
-#X obj 312 313 spigot;
-#X obj 359 313 spigot;
-#X obj 249 385 outlet;
-#X text 93 33 select;
-#X text 267 28 red;
-#X text 337 30 green;
-#X text 409 30 blue;
-#X obj 405 102 t b f;
-#X obj 339 160 +;
-#X obj 339 185 t b f;
-#X obj 339 216 +;
-#X obj 296 385 outlet;
-#X obj 343 385 outlet;
-#X obj 28 180 loadbang;
-#X obj 97 135 route back front label bang;
-#X obj 343 362 f;
-#X obj 296 361 f;
-#X obj 249 361 f;
-#X obj 262 79 * -65536;
-#X obj 339 80 * -256;
-#X obj 405 80 * -1;
-#X obj 339 247 - 1;
-#X obj 235 168 t b b b b;
-#X connect 0 0 28 0;
-#X connect 1 0 32 0;
-#X connect 2 0 33 0;
-#X connect 3 0 34 0;
-#X connect 4 0 5 0;
-#X connect 4 0 6 0;
-#X connect 5 0 14 1;
-#X connect 5 0 15 1;
-#X connect 6 0 13 1;
-#X connect 7 0 8 0;
-#X connect 7 0 9 0;
-#X connect 8 0 13 1;
-#X connect 8 0 15 1;
-#X connect 9 0 14 1;
-#X connect 10 0 11 0;
-#X connect 10 0 12 0;
-#X connect 11 0 13 1;
-#X connect 11 0 14 1;
-#X connect 12 0 15 1;
-#X connect 13 0 31 1;
-#X connect 14 0 30 1;
-#X connect 15 0 29 1;
-#X connect 21 0 22 0;
-#X connect 21 1 22 1;
-#X connect 22 0 23 0;
-#X connect 23 0 24 0;
-#X connect 23 1 24 1;
-#X connect 24 0 35 0;
-#X connect 27 0 6 0;
-#X connect 28 0 4 0;
-#X connect 28 1 7 0;
-#X connect 28 2 10 0;
-#X connect 28 3 36 0;
-#X connect 29 0 26 0;
-#X connect 30 0 25 0;
-#X connect 31 0 16 0;
-#X connect 32 0 24 0;
-#X connect 33 0 22 0;
-#X connect 34 0 21 0;
-#X connect 35 0 15 0;
-#X connect 35 0 14 0;
-#X connect 35 0 13 0;
-#X connect 36 0 31 0;
-#X connect 36 1 30 0;
-#X connect 36 2 29 0;
-#X connect 36 3 35 0;
-#X restore 277 82 pd RGB_____________;
-#X floatatom 319 52 3 0 255 0 - - -, f 3;
-#X floatatom 362 52 3 0 255 0 - - -, f 3;
-#X floatatom 405 53 3 0 255 0 - - -, f 3;
-#X text 34 -1 preset-colors;
-#X text 290 1 RGB-colors;
-#X text 319 34 red;
-#X text 355 33 green;
-#X text 403 33 blue;
-#X connect 0 0 4 0;
-#X connect 1 0 0 0;
-#X connect 2 0 0 1;
-#X connect 3 0 4 1;
-#X connect 4 0 32 0;
-#X connect 7 0 11 0;
-#X connect 8 0 7 0;
-#X connect 9 0 7 1;
-#X connect 10 0 11 1;
-#X connect 11 0 36 0;
-#X connect 12 0 16 0;
-#X connect 13 0 12 0;
-#X connect 14 0 12 1;
-#X connect 15 0 16 1;
-#X connect 16 0 35 0;
-#X connect 21 0 25 0;
-#X connect 22 0 21 0;
-#X connect 23 0 21 1;
-#X connect 24 0 25 1;
-#X connect 25 0 33 0;
-#X connect 28 0 64 0;
-#X connect 44 0 48 0;
-#X connect 45 0 44 0;
-#X connect 46 0 44 1;
-#X connect 47 0 48 1;
-#X connect 48 0 51 0;
-#X connect 55 0 59 0;
-#X connect 56 0 55 0;
-#X connect 57 0 55 1;
-#X connect 58 0 59 1;
-#X connect 59 0 62 0;
-#X connect 65 0 31 0;
-#X connect 66 0 65 0;
-#X connect 67 0 66 0;
-#X connect 68 0 66 1;
-#X connect 69 0 65 1;
-#X connect 70 0 65 2;
-#X connect 74 0 78 0;
-#X connect 75 0 78 0;
-#X connect 76 0 78 0;
-#X connect 77 0 78 0;
-#X connect 78 0 65 0;
-#X connect 78 1 65 1;
-#X connect 78 2 65 2;
-#X connect 79 0 78 1;
-#X connect 80 0 78 2;
-#X connect 81 0 78 3;
-#X restore 314 245 pd edit;
-#X obj 221 61 hsl 128 15 0 127 0 0 ddd ddd empty 20 8 0 8 -262144 -1
--1 0 1;
-#X text 30 380 graz \, austria 2002;
-#X obj 168 34 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
-#N canvas 108 94 494 298 old-behavior 0;
-#X floatatom 65 127 5 0 0 0 - - -, f 5;
-#X floatatom 65 173 5 0 0 0 - - -, f 5;
-#X msg 60 208 \; pd compatibility 0.45;
-#X msg 239 209 \; pd compatibility 0.46;
-#X text 77 246 Old "compatible" behavior, f 16;
-#X text 246 246 Mew "correct" behavior;
-#X text 38 21 Prior to Pd version 0.46 \, values sent to IEM controls
-were restricted to the control's own values before passing them through
-to the output. This behavior is changed in 0.46. You can toggle back
-and forth between the two behaviors using the messages boxes below.
-If you want to get the behavior in an up-to-date patch \, you can use
-"int" and "clip" objects to quantize and restrict the range o numbers.
-;
-#X msg 111 126 0.5;
-#X msg 146 126 -12;
-#X obj 69 151 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+#N canvas 565 40 543 552 12;
+#X floatatom 156 335 7 0 0 0 - - -;
+#X msg 206 231 set \$1;
+#X obj 125 219 bng 18 250 50 0 empty empty empty 8 -8 0 10 -262144
+-1 -1;
+#N canvas 837 70 559 433 old-behavior 0;
+#X floatatom 134 318 5 0 0 0 - - -;
+#X floatatom 112 387 5 0 0 0 - - -;
+#X msg 88 193 \; pd compatibility 0.45;
+#X msg 282 193 \; pd compatibility 0.46;
+#X text 99 156 Old "compatible" behavior, f 16;
+#X obj 115 343 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
-#X connect 0 0 9 0;
-#X connect 7 0 9 0;
-#X connect 8 0 9 0;
-#X connect 9 0 1 0;
-#X restore 260 446 pd old-behavior;
-#X text 40 403 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
-numbers outside the object's range. You can get the old behavior back
-this way:, f 48;
-#X text 219 480 updated for Pd version 0.46;
+#X text 278 163 New "correct" behavior;
+#X floatatom 275 263 5 0 0 0 - - -;
+#X msg 321 262 100;
+#X msg 366 262 -100;
+#X floatatom 321 377 5 0 0 0 - - -;
+#X obj 324 333 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X obj 321 300 clip 0 127;
+#X text 407 293 forcing clip before input, f 13;
+#X msg 134 289 100;
+#X msg 175 289 -100;
+#X obj 74 255 bng 18 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X msg 112 255 set -13.7;
+#X text 48 19 Prior to Pd version 0.46 \, values sent to IEM GUIs were
+restricted to the control's own values before passing them through
+to the output. This behavior changed in 0.46 to allow values outside
+the range to pass through. You can toggle back and forth between the
+two behaviors using the messages boxes below. If you want to get this
+behavior in an up-to-date patch \, you can use a "clip" object to restrict
+the range of numbers. Note this also affects the 'set' message., f
+67;
+#X connect 0 0 5 0;
+#X connect 5 0 1 0;
+#X connect 7 0 12 0;
+#X connect 8 0 12 0;
+#X connect 9 0 12 0;
+#X connect 11 0 10 0;
+#X connect 12 0 11 0;
+#X connect 14 0 0 0;
+#X connect 15 0 0 0;
+#X connect 16 0 5 0;
+#X connect 17 0 5 0;
+#X restore 371 383 pd old-behavior;
+#X obj 156 374 print hsl;
+#X floatatom 156 219 5 0 0 0 - - -;
+#X floatatom 206 208 5 0 0 0 - - -;
+#X obj 159 286 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14
+-228856 -1 -4160 0 1;
+#X obj 53 24 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X text 285 429 (c) musil@iem.kug.ac.at;
+#X text 321 445 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 61 506 see also:;
+#X obj 135 506 x_all_guis;
+#X text 75 430 This object is part of the "iemguis" library \, natively
+included in Pd version 0.34., f 28;
+#X text 292 505 updated for Pd version 0.51;
+#X text 22 140 Insert it from the Put menu (named as "Hslider") or
+its shortcut. Alternatively \, create it by typing "hslider" or "hsl"
+into an object box. Right click for properties (to set size \, colors
+\, labels \, etc)., f 69;
+#X text 193 24 - [hslider]/[hsl]: Horizontal Slider;
+#X text 29 280 click & drag ==> (shift-click for fine tuning). Right
+click for properties., f 16;
+#X text 271 333 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
+Check details and how to get it back:, f 33;
+#N canvas 665 62 613 486 position 0;
+#X floatatom 142 146 4 0 1000 0 - - -;
+#X obj 191 173 t b f;
+#X floatatom 191 146 5 0 500 0 - - -;
+#X msg 142 243 pos \$1 \$2;
+#X text 63 146 x-position;
+#X text 235 145 y-position;
+#X msg 264 183 delta 1 0;
+#X text 337 182 increase x by 1;
+#X msg 274 205 delta -1 0;
+#X text 353 204 decrease x by 1;
+#X msg 286 239 delta 0 1;
+#X msg 292 261 delta 0 -1;
+#X text 363 238 increase y by 1;
+#X text 376 263 decrease y by 1;
+#X msg 301 293 delta 1 1;
+#X text 376 294 increase both by 1;
+#X text 394 315 decrease both by -1;
+#X msg 308 315 delta -1 -1;
+#X obj 142 202 pack 265 350;
+#X text 293 66 The 'delta' message changes the position of the object
+by a difference amount. It takes a list of x/y delta in pixels., f
+40;
+#X text 40 66 The 'pos' message takes a list of x/y coordinates in
+pixels and sets the objects's position., f 33;
+#X text 159 19 You can also set and change the position of the object
+in the patch. Check below:, f 41;
+#X obj 265 350 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X connect 0 0 18 0;
+#X connect 1 0 18 0;
+#X connect 1 1 18 1;
+#X connect 2 0 1 0;
+#X connect 3 0 22 0;
+#X connect 6 0 22 0;
+#X connect 8 0 22 0;
+#X connect 10 0 22 0;
+#X connect 11 0 22 0;
+#X connect 14 0 22 0;
+#X connect 17 0 22 0;
+#X connect 18 0 3 0;
+#X restore 412 255 pd position;
+#N canvas 487 137 358 407 properties 0;
+#N canvas 841 92 656 573 colors 0;
+#X floatatom 72 244 3 0 29 0 - - -;
+#X floatatom 108 244 3 0 29 0 - - -;
+#X floatatom 177 249 3 0 29 0 - - -;
+#X text 104 224 front;
+#X text 170 224 label;
+#X obj 108 273 t b f;
+#X obj 177 275 t b f;
+#X msg 72 343 color \$1 \$2 \$3;
+#X obj 72 306 pack 0 22 22, f 20;
+#X text 181 343 presets;
+#X symbolatom 507 340 9 0 0 0 - - -;
+#X symbolatom 421 339 9 0 0 0 - - -;
+#X symbolatom 335 339 9 0 0 0 - - -;
+#X obj 475 370 t b s;
+#X obj 389 370 t b s;
+#X obj 258 224 loadbang;
+#X obj 335 408 pack symbol symbol symbol;
+#X msg 335 437 color \$1 \$2 \$3;
+#X msg 258 258 list #ffffff #000000 #000000, f 7;
+#X text 21 224 background;
+#X text 444 438 RGB in hexadecimal;
+#X text 67 17 The 'color' message takes a list of three values to set
+background \, front and label colors \, respectively. Integers from
+0 to 29 represent the 30 preset colors found in the properties window
+\, values above are wraped., f 77;
+#X text 68 68 Negative integers were used to encode RGB values (and
+that still works for backwards compatibility). But since Pd 0.47-0
+\, you can set colors with hexadecimal RGB symbol values \, which are
+followed by "#"., f 77;
+#X text 346 133 Set RGB values in the sliders;
+#X text 61 157 Open subpatches for the conversion from RGB to hexadecimal
+============>, f 38;
+#X obj 338 509 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 -262144
+-1 -1 0 1;
+#N canvas 1044 268 390 482 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 109 225 t b f;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 80 341 pack s s s;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X obj 81 250 t b f;
+#X obj 147 257 makefilename %02x;
+#X obj 113 284 makefilename %02x;
+#X obj 74 311 makefilename %02x;
+#X text 66 56 label;
+#X obj 80 406 outlet;
+#X msg 80 370 symbol #\$1\$2\$3;
+#X obj 161 185 loadbang;
+#X msg 161 217 0;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 6 0;
+#X connect 2 0 5 0;
+#X connect 3 0 11 0;
+#X connect 4 0 8 0;
+#X connect 5 0 4 0;
+#X connect 5 1 7 0;
+#X connect 6 0 3 2;
+#X connect 7 0 3 1;
+#X connect 8 0 3 0;
+#X connect 11 0 10 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 13 0 7 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 507 158 pd label;
+#N canvas 965 279 390 482 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 109 225 t b f;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 74 341 pack s s s;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X obj 81 250 t b f;
+#X obj 146 257 makefilename %02x;
+#X obj 112 284 makefilename %02x;
+#X obj 74 311 makefilename %02x;
+#X obj 74 406 outlet;
+#X text 69 56 front;
+#X msg 74 370 symbol #\$1\$2\$3;
+#X obj 177 168 loadbang;
+#X msg 177 200 0;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 6 0;
+#X connect 2 0 5 0;
+#X connect 3 0 11 0;
+#X connect 4 0 8 0;
+#X connect 5 0 4 0;
+#X connect 5 1 7 0;
+#X connect 6 0 3 2;
+#X connect 7 0 3 1;
+#X connect 8 0 3 0;
+#X connect 11 0 9 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 13 0 7 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 421 158 pd label;
+#N canvas 894 296 390 482 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 12700 1;
+#X obj 109 225 t b f;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 12700 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 12700 1;
+#X obj 81 250 t b f;
+#X obj 221 257 makefilename %02x;
+#X obj 141 284 makefilename %02x;
+#X obj 61 321 makefilename %02x;
+#X obj 61 416 outlet;
+#X text 52 56 background;
+#X msg 61 380 symbol #\$1\$2\$3;
+#X obj 176 59 loadbang;
+#X msg 176 91 set 255;
+#X obj 176 176 route set;
+#X obj 61 351 pack symbol symbol symbol;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 5 0;
+#X connect 2 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 4 1 6 0;
+#X connect 5 0 14 2;
+#X connect 6 0 14 1;
+#X connect 7 0 14 0;
+#X connect 10 0 8 0;
+#X connect 11 0 12 0;
+#X connect 12 0 3 0;
+#X connect 12 0 2 0;
+#X connect 12 0 0 0;
+#X connect 12 0 13 0;
+#X connect 13 0 5 0;
+#X connect 13 0 6 0;
+#X connect 14 0 10 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 335 158 pd label;
+#N canvas 642 125 486 521 old_way 0;
+#X obj 240 448 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 -262144
+-1 -1 0 1;
+#N canvas 1136 244 402 495 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X text 66 56 label;
+#X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
+#X obj 311 319 t b f;
+#X obj 169 319 t b f;
+#X obj 59 413 outlet;
+#X connect 0 0 5 0;
 #X connect 1 0 6 0;
-#X connect 2 0 8 0;
-#X connect 3 0 8 0;
+#X connect 2 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 4 0;
+#X connect 5 1 4 2;
+#X connect 6 0 4 0;
+#X connect 6 1 4 1;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 349 144 pd label;
+#X text 188 119 Set RGB values in the sliders;
+#N canvas 955 131 392 476 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 12700 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 12700 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 12700 1;
+#X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
+#X obj 313 269 t b f;
+#X obj 171 269 t b f;
+#X obj 61 413 outlet;
+#X text 52 56 background;
+#X obj 180 83 loadbang;
+#X msg 202 134 set 255;
+#X msg 181 195 255 255 255;
+#X connect 0 0 4 0;
+#X connect 1 0 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 2;
+#X connect 5 0 3 0;
+#X connect 5 1 3 1;
+#X connect 8 0 9 0;
+#X connect 8 0 10 0;
+#X connect 9 0 0 0;
+#X connect 9 0 1 0;
+#X connect 9 0 2 0;
+#X connect 10 0 3 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 177 144 pd label;
+#N canvas 1096 192 402 495 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
+#X obj 311 319 t b f;
+#X obj 169 319 t b f;
+#X obj 59 413 outlet;
+#X text 66 56 front;
+#X connect 0 0 4 0;
+#X connect 1 0 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 2;
+#X connect 5 0 3 0;
+#X connect 5 1 3 1;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 263 144 pd label;
+#X text 25 173 Open subpatches for the conversion ====>, f 20;
+#X msg 237 381 color -1.67772e+07 -1 -1;
+#N canvas 574 194 328 335 pack 0;
+#X obj 73 47 inlet;
+#X obj 123 47 inlet;
+#X obj 206 47 inlet;
+#X msg 73 152 color \$1 \$2 \$3;
+#X obj 206 85 t b f;
+#X obj 123 85 t b f;
+#X obj 73 123 pack float -1 -1, f 24;
+#X obj 73 187 list prepend set;
+#X obj 73 213 list trim;
+#X obj 73 246 t b a;
+#X obj 73 283 outlet;
+#X connect 0 0 6 0;
+#X connect 1 0 5 0;
+#X connect 2 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 6 0;
+#X connect 4 1 6 2;
+#X connect 5 0 6 0;
+#X connect 5 1 6 1;
+#X connect 6 0 3 0;
 #X connect 7 0 8 0;
-#X connect 8 0 1 0;
-#X connect 8 0 17 0;
-#X connect 10 0 2 0;
-#X connect 12 0 22 0;
-#X connect 14 0 30 0;
-#X connect 15 0 31 0;
-#X connect 17 0 16 0;
-#X connect 18 0 21 0;
-#X connect 18 0 19 0;
-#X connect 19 0 20 0;
-#X connect 24 0 25 0;
-#X connect 25 0 18 0;
-#X connect 29 0 11 0;
-#X connect 30 0 28 0;
-#X connect 31 0 13 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 9 1 10 0;
+#X restore 237 345 pd pack;
+#X f 8;
+#X text 98 29 The RGB color scheme can also be encoded \, for backwards
+compatibility \, as negative inetegers. For "R" (red) \, "G" (green)
+& "B" (blue) values from 0 to 255 \, the conversion formula is \; float
+= -(R * 65536 + G * 256 + B + 1)., f 47;
+#X connect 1 0 7 2;
+#X connect 3 0 7 0;
+#X connect 4 0 7 1;
+#X connect 6 0 0 0;
+#X connect 7 0 6 0;
+#X restore 74 508 pd old_way;
+#X text 46 450 open subpatch below for the old way of encoding RGB
+values., f 20;
+#X text 47 432 See also:;
+#X connect 0 0 8 0;
+#X connect 1 0 5 0;
+#X connect 2 0 6 0;
+#X connect 5 0 8 0;
+#X connect 5 1 8 1;
+#X connect 6 0 8 0;
+#X connect 6 1 8 2;
+#X connect 7 0 25 0;
+#X connect 8 0 7 0;
+#X connect 10 0 13 0;
+#X connect 11 0 14 0;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
+#X connect 13 1 16 2;
+#X connect 14 0 16 0;
+#X connect 14 1 16 1;
+#X connect 15 0 18 0;
+#X connect 16 0 17 0;
+#X connect 17 0 25 0;
+#X connect 18 0 16 0;
+#X connect 26 0 10 0;
+#X connect 27 0 11 0;
+#X connect 28 0 12 0;
+#X coords 0 0 1 1 85 60 0;
+#X restore 159 284 pd colors;
+#N canvas 834 188 471 396 size 0;
+#X obj 101 257 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X floatatom 98 119 4 50 300 0 - - -;
+#X obj 140 146 t b f;
+#X floatatom 140 119 5 10 100 0 - - -;
+#X msg 98 216 size \$1 \$2;
+#X text 50 118 width;
+#X text 184 118 height;
+#X obj 98 175 pack 128 18;
+#X text 72 36 The size message sets the object's size and takes width
+and height values in pixels., f 29;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 2 1 7 1;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 7 0 4 0;
+#X restore 173 88 pd size;
+#N canvas 851 171 551 450 label 0;
+#X msg 79 283 label \$1;
+#X floatatom 226 165 4 0 3 0 - - -;
+#X obj 268 192 t b f;
+#X floatatom 268 165 5 5 50 0 - - -;
+#X msg 226 262 label_font \$1 \$2;
+#X text 188 164 type;
+#X text 312 163 size;
+#X obj 226 102 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X text 247 101 DejaVu Sans Mono;
+#X text 247 117 Helvetica;
+#X text 247 132 Times;
+#X msg 91 251 symbol empty;
+#X floatatom 380 181 4 -150 200 0 - - -;
+#X obj 422 208 t b f;
+#X floatatom 422 181 5 -150 150 0 - - -;
+#X msg 380 278 label_pos \$1 \$2;
+#X text 362 180 x;
+#X text 466 179 y;
+#X text 375 157 label offset:;
+#X msg 59 186 symbol label;
+#X obj 229 372 hsl 128 18 0 127 0 1 empty empty label 135 10 0 20 -262144
+-1 -1 1700 1;
+#X msg 79 214 symbol my\ label;
+#X text 86 25 The 'label' message sets the label symbol \, setting
+it to "empty" clears it. The 'label_font' message sets font type and
+size and 'label_pos' sets the x/y coordinates., f 54;
+#X obj 227 221 pack 0 20, f 11;
+#X obj 380 237 pack 135 10;
+#X connect 0 0 20 0;
+#X connect 1 0 23 0;
+#X connect 2 0 23 0;
+#X connect 2 1 23 1;
+#X connect 3 0 2 0;
+#X connect 4 0 20 0;
+#X connect 7 0 1 0;
+#X connect 11 0 0 0;
+#X connect 12 0 24 0;
+#X connect 13 0 24 0;
+#X connect 13 1 24 1;
+#X connect 14 0 13 0;
+#X connect 15 0 20 0;
+#X connect 19 0 0 0;
+#X connect 21 0 0 0;
+#X connect 23 0 4 0;
+#X connect 24 0 15 0;
+#X restore 166 256 pd label;
+#N canvas 906 195 433 307 init 0;
+#X msg 144 164 init \$1;
+#X obj 144 132 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 147 203 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 -262144
+-1 -1 1700 1;
+#X text 167 132 init on/off;
+#X obj 144 244 print hsl-init;
+#X text 46 23 The 'init' message takes a float and sets to 'init mode'
+(if different than zero) or 'no init' (if equal to zero - the default
+value)., f 46;
+#X text 46 74 If in 'init mode' \, when loading the patch \, the objects
+sends its holding value from when the patch was last saved., f 46
+;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 2 0 4 0;
+#X restore 173 172 pd init;
+#N canvas 883 96 459 451 send-receive 0;
+#X msg 210 202 receive empty;
+#X msg 241 266 send empty;
+#X floatatom 61 179 5 0 0 0 - - -;
+#X floatatom 61 299 5 0 0 0 - - -;
+#X obj 213 314 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 -262144
+-1 -1 1700 1;
+#X text 39 96 The 'send' and 'receive' messages take a symbol to set
+\, respectively \, the send and receive symbol. If you set these to
+"empty" \, the symbols are cleared., f 50;
+#X text 39 20 The object can have a send and receive symbol \, in which
+cases the inlet/outlet are visually hidden (but still functional in
+the patch). This way \, the object can communicate to [send] and [receive]
+objects., f 50;
+#X text 54 365 Note how you need to escape dollar signs with backslashes
+to set something like "\$0-x". But the backslash is not needed if you
+set it directly via the properties window., f 50;
+#X msg 194 177 receive \\\$0-hsl_rcv;
+#X msg 232 242 send \\\$0-hsl_snd;
+#X obj 61 213 s \$0-hsl_rcv;
+#X obj 61 268 r \$0-hsl_snd;
+#X connect 0 0 4 0;
+#X connect 1 0 4 0;
+#X connect 2 0 10 0;
+#X connect 8 0 4 0;
+#X connect 9 0 4 0;
+#X connect 11 0 3 0;
+#X restore 117 228 pd send-receive;
+#N canvas 872 191 424 359 steady-on-click 0;
+#X msg 113 204 steady \$1;
+#X obj 113 173 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 31 105 The 'steady' message takes a non zero value to set it
+to "steady on click" mode. A zero value sets it to "jump on click"
+mode., f 52;
+#X msg 130 239 steady 1;
+#X msg 141 266 steady 0;
+#X text 210 266 jump on click;
+#X text 199 240 steady on click (default);
+#X obj 116 303 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X text 31 16 By default \, the slider is in "steady on click" mode
+\, where you click and drag from its current position (regardless where
+you click on). Alternatively \, in "jump on click" mode \, the value
+jumps to the position you clicked on the slider and drags from there.
+, f 52;
+#X connect 0 0 7 0;
+#X connect 1 0 0 0;
+#X connect 3 0 7 0;
+#X connect 4 0 7 0;
+#X restore 96 200 pd steady-on-click;
+#N canvas 914 225 471 325 linear/log 0;
+#X obj 154 208 hsl 128 18 1 1000 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X msg 151 137 lin;
+#X msg 164 168 log;
+#X text 182 139 linear;
+#X text 198 168 logarithmic;
+#X floatatom 151 245 8 0 0 0 - - -;
+#X text 133 208 1;
+#X text 288 208 1000;
+#X text 57 29 The slider's behavior can be linear (default) or logarithmic
+and you can set this with the 'lin' or 'log' messages \, respectively.
+Check below the difference. In the logarithmic mode \, the minimum
+range can never be 0 or negative., f 48;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 131 144 pd linear/log;
+#N canvas 893 185 398 379 range 0;
+#X floatatom 169 106 4 -100 0 0 - - -;
+#X obj 211 133 t b f;
+#X floatatom 211 106 5 0 100 0 - - -;
+#X obj 172 260 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X msg 169 204 range \$1 \$2;
+#X obj 169 162 pack 0 127, f 11;
+#X text 110 105 minimum;
+#X text 255 104 maximum;
+#X floatatom 169 301 5 0 0 0 - - -;
+#X floatatom 97 206 5 0 0 0 - - -;
+#X text 39 21 The 'range' message sets the object's range. Note that
+values sent to the GUI can be outside this range and the values are
+passed through., f 44;
+#X connect 0 0 5 0;
+#X connect 1 0 5 0;
+#X connect 1 1 5 1;
+#X connect 2 0 1 0;
+#X connect 3 0 8 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 9 0 3 0;
+#X restore 166 116 pd range;
+#N canvas 892 162 450 312 loading-args 0;
+#X text 59 127 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X obj 148 256 hsl 128 18 0 127 0 0 empty empty \$0-Label 43 -11 0
+14 -228856 -1 -4160 0 1;
+#X text 59 26 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, height \, lower and upper range \, send/receive
+symbols \, label \, label offset and font size., f 49;
+#X restore 141 356 pd loading-args;
+#X text 36 325 Loading arguments in properties:;
+#X text 45 13 All the parameters from the properties window can be
+set via messages as well. See examples and more details on each parameter
+in the subpatches below:, f 39;
+#X restore 398 227 pd properties;
+#X text 22 55 The horizontal slider is a GUI (Graphical User Interface)
+that sends numbers. Click on it and drag to output values - use shift-click
+and drag for fine-tuning by a factor of a hundredth. Incomming floats
+set the slider's value and are passed through (even if outside the
+slider's range). The 'set' message only sets the slider value without
+output. A bang message sends the slider's value., f 69;
+#N canvas 781 223 444 403 example-discrete 0;
+#X floatatom 81 206 8 0 0 0 - - -;
+#X obj 81 351 print fixed-steps;
+#X floatatom 81 318 6 0 0 0 - - -;
+#N canvas 463 235 650 334 discrete 0;
+#X obj 100 283 outlet;
+#X obj 210 45 inlet;
+#X obj 272 45 inlet;
+#X text 387 109 The trick here is to use two sliders. The one in the
+front just acts as a display \, but we're in fact interacting to the
+one in the background., f 29;
+#X text 276 21 steps;
+#X text 209 21 value;
+#X obj 100 251 change;
+#X obj 100 214 expr int($f1 * $f2) / $f2;
+#X obj 272 179 int;
+#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -228856
+-1 -1 0 1;
+#X msg 49 140 set \$1;
+#X connect 1 0 9 0;
+#X connect 2 0 8 0;
+#X connect 6 0 0 0;
+#X connect 6 0 11 0;
+#X connect 7 0 6 0;
+#X connect 8 0 7 1;
+#X connect 9 0 7 0;
+#X connect 11 0 10 0;
+#X coords 0 -1 1 1 155 38 2 200 100;
+#X restore 81 250 pd discrete;
+#X floatatom 229 222 5 1 10 1 - - -;
+#X obj 229 169 loadbang;
+#X text 278 193 number of steps, f 8;
+#X text 79 18 Here's an example (or a 'hack') on how to use the slider
+in a discrete way. This is for a range from 0 to 1 \, but you can rescale
+it if needed., f 34;
+#X text 79 92 This example allows you to set the number of steps dinamically.
+, f 34;
+#X text 250 264 <= click and drag.;
+#X text 270 283 Right click and open for more details., f 20;
+#X msg 229 197 8;
+#X text 274 221 (besides 0);
+#X obj 84 172 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X connect 0 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 1;
+#X connect 5 0 11 0;
+#X connect 11 0 4 0;
+#X connect 13 0 0 0;
+#X restore 357 283 pd example-discrete;
+#X connect 0 0 4 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 5 0 7 0;
+#X connect 6 0 1 0;
+#X connect 7 0 0 0;

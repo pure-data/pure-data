@@ -60,7 +60,7 @@
     /* implementation */
 static PaStream *pa_stream;
 static int pa_inchans, pa_outchans;
-static float *pa_soundin, *pa_soundout;
+static t_sample *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
 
 static int pa_started;
@@ -125,7 +125,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
 
         if ( err != paNoError )
         {
-            post("Error opening audio: %s", err, Pa_GetErrorText(err));
+            post("error#%d opening audio: %s", err, Pa_GetErrorText(err));
             return;
         }
         initialized = 1;
@@ -139,7 +139,8 @@ static int pa_lowlevel_callback(const void *inputBuffer,
 {
     int i;
     unsigned int n, j;
-    float *fbuf, *fp2, *fp3, *soundiop;
+    float *fbuf, *fp2, *fp3;
+    t_sample *soundiop;
     if (nframes % DEFDACBLKSIZE)
     {
         post("warning: audio nframes %ld not a multiple of blocksize %d",
@@ -155,12 +156,12 @@ static int pa_lowlevel_callback(const void *inputBuffer,
             for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
                     for (j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
                         j++, fp3 += pa_inchans)
-                            *soundiop++ = *fp3;
+                            *soundiop++ = (t_sample)*fp3;
         }
         else memset((void *)pa_soundin, 0,
-            DEFDACBLKSIZE * pa_inchans * sizeof(float));
+            DEFDACBLKSIZE * pa_inchans * sizeof(t_sample));
         memset((void *)pa_soundout, 0,
-            DEFDACBLKSIZE * pa_outchans * sizeof(float));
+            DEFDACBLKSIZE * pa_outchans * sizeof(t_sample));
         (*pa_callback)();
         if (outputBuffer != NULL)
         {
@@ -169,7 +170,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
             for (i = 0, fp2 = fbuf; i < pa_outchans; i++, fp2++)
                 for (j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
                     j++, fp3 += pa_outchans)
-                        *fp3 = *soundiop++;
+                        *fp3 = (float)*soundiop++;
         }
     }
     return 0;

@@ -1,28 +1,29 @@
-#N canvas 234 84 702 287 12;
-#X floatatom 80 194 0 0 0 0 - - -;
-#X floatatom 205 194 0 0 0 0 - - -;
-#X floatatom 243 194 0 0 0 0 - - -;
-#X floatatom 46 194 0 0 0 0 - - -;
-#X obj 117 194 print foo;
-#X obj 133 249 pack;
-#X text 51 248 See also;
-#X obj 101 9 unpack;
-#X text 164 8 - split a message to atoms;
-#X text 196 153 <-- creation arguments specify the types of atoms expected
-;
-#X msg 46 116 1 2;
-#X msg 85 116 3 4 shut;
-#X msg 164 116 5 6 pick 7 8;
-#X text 368 245 updated for Pd version 0.33;
-#X obj 46 153 unpack 0 0 s 0 0;
-#X text 25 36 unpack takes lists of atoms and distributes them to its
+#N canvas 750 202 622 332 12;
+#X floatatom 153 226 0 0 0 0 - - -;
+#X floatatom 281 226 0 0 0 0 - - -;
+#X floatatom 345 226 0 0 0 0 - - -;
+#X floatatom 89 226 0 0 0 0 - - -;
+#X obj 160 277 pack;
+#X obj 69 24 unpack;
+#X text 132 23 - split a message to atoms;
+#X msg 50 148 1 2;
+#X msg 89 148 3 4 shut;
+#X msg 168 148 5 6 pick 7 8;
+#X text 312 286 updated for Pd version 0.33;
+#X text 362 184 <= creation arguments specify the types of atoms expected
+, f 29;
+#X obj 89 185 unpack float float symbol float float;
+#X symbolatom 217 227 6 0 0 0 - - -;
+#X text 80 276 See also:;
+#X text 36 60 unpack takes lists of atoms and distributes them to its
 outlets. The creation arguments specify float (any number or the symbol
-'f') \, pointer (symbol 'p') or symbol (symbol 's').;
-#X connect 10 0 14 0;
-#X connect 11 0 14 0;
-#X connect 12 0 14 0;
-#X connect 14 0 3 0;
-#X connect 14 1 0 0;
-#X connect 14 2 4 0;
-#X connect 14 3 1 0;
-#X connect 14 4 2 0;
+'float'/'f') \, pointer (symbol 'pointer'/'p') or symbol (symbol 'symbol'/'s').
+, f 65;
+#X connect 7 0 12 0;
+#X connect 8 0 12 0;
+#X connect 9 0 12 0;
+#X connect 12 0 3 0;
+#X connect 12 1 0 0;
+#X connect 12 2 13 0;
+#X connect 12 3 1 0;
+#X connect 12 4 2 0;

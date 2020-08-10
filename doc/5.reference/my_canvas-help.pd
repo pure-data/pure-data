@@ -1,265 +1,647 @@
-#N canvas 916 304 571 309 10;
-#X obj 1 1 cnv 15 300 60 foo10_snd foo10_rcv my_canvas=cnv 63 37 0
-17 -163881 -2025 0;
-#X text 4 232 (c) musil@iem.kug.ac.at;
-#X text 46 245 IEM KUG;
-#N canvas 1079 274 713 535 edit 0;
-#X obj 39 226 f;
-#X msg 17 205 bang;
-#X floatatom 55 204 3 63 88 0 - - -, f 3;
-#X floatatom 90 226 3 0 37 0 - - -, f 3;
-#X obj 39 249 pack 0 0;
-#X text 117 226 y-label;
-#X text 83 204 x-label;
-#X obj 296 311 f;
-#X msg 274 290 bang;
-#X floatatom 312 289 3 -10 10 0 - - -, f 3;
-#X floatatom 347 311 3 -10 10 0 - - -, f 3;
-#X obj 296 334 pack 0 0;
-#X obj 308 426 f;
-#X msg 286 405 bang;
-#X floatatom 324 404 3 20 60 0 - - -, f 3;
-#X floatatom 359 426 3 150 200 0 - - -, f 3;
-#X obj 308 449 pack 0 0;
-#X text 340 289 x-delta;
-#X text 374 311 y-delta;
-#X text 352 404 x-position;
-#X text 386 426 y-position;
-#X obj 59 341 f;
-#X msg 37 320 bang;
-#X floatatom 75 319 3 0 2 0 - - -, f 3;
-#X floatatom 110 341 3 4 36 0 - - -, f 3;
-#X obj 59 364 pack 0 0;
-#X text 103 319 font;
-#X text 139 341 height;
-#X floatatom 274 213 3 2 20 0 - - -, f 3;
-#X msg 39 274 \; foo10_rcv label_pos \$1 \$2;
-#X msg 59 390 \; foo10_rcv label_font \$1 \$2;
-#X msg 36 430 \; foo10_rcv label blabla;
-#X msg 36 466 \; foo10_rcv label my_canvas;
-#X msg 308 474 \; foo10_rcv pos \$1 \$2;
-#X msg 296 359 \; foo10_rcv delta \$1 \$2;
-#X obj 505 234 f;
-#X msg 483 213 bang;
-#X floatatom 521 212 5 100 1000 0 - - -, f 5;
-#X floatatom 556 234 4 50 500 0 - - -, f 4;
-#X obj 505 257 pack 0 0;
-#X text 566 212 width;
-#X text 594 236 height;
-#X msg 505 282 \; foo10_rcv vis_size \$1 \$2;
-#X msg 274 241 \; foo10_rcv size \$1;
-#X text 304 213 selectable size;
-#X msg 483 156 \; foo10a_rcv receive foo10_rcv;
-#X msg 483 119 \; foo10_rcv receive foo10a_rcv;
-#X msg 482 29 \; foo10_rcv send foo10a_snd;
-#X msg 482 67 \; foo10_rcv send foo10_snd;
-#X msg 509 372 \; foo10_rcv get_pos;
-#X obj 510 407 r foo10_snd;
-#X obj 510 428 unpack 0 0;
-#X floatatom 510 453 4 0 0 0 - - -, f 4;
-#X floatatom 575 452 4 0 0 0 - - -, f 4;
-#X text 490 452 x=;
-#X text 557 452 y=;
-#X obj 52 79 f;
-#X msg 29 31 bang;
-#X floatatom 68 29 3 0 29 0 - - -, f 3;
-#X floatatom 103 47 3 0 29 0 - - -, f 3;
-#X text 96 29 background;
-#X text 131 48 label-color;
-#X msg 290 25 back;
-#X msg 290 49 label;
-#X msg 252 25 bang;
-#N canvas 14 206 606 448 RGB_____________ 0;
-#X obj 97 56 inlet;
-#X obj 262 53 inlet;
-#X obj 339 55 inlet;
-#X obj 405 56 inlet;
-#X obj 97 270 bang;
-#X msg 77 295 0;
-#X msg 104 295 1;
-#X obj 146 268 bang;
-#X msg 132 295 0;
-#X msg 160 295 1;
-#X obj 265 313 spigot;
-#X obj 312 313 spigot;
-#X obj 249 385 outlet;
-#X text 93 33 select;
-#X text 267 28 red;
-#X text 337 30 green;
-#X text 409 30 blue;
-#X obj 405 102 t b f;
-#X obj 339 160 +;
-#X obj 339 185 t b f;
-#X obj 339 216 +;
-#X obj 296 385 outlet;
-#X obj 28 180 loadbang;
-#X obj 296 361 f;
-#X obj 249 361 f;
-#X obj 262 79 * -65536;
-#X obj 339 80 * -256;
-#X obj 405 80 * -1;
-#X obj 339 247 - 1;
-#X obj 97 135 route back label bang;
-#X obj 235 168 t b b b;
-#X connect 0 0 29 0;
-#X connect 1 0 25 0;
-#X connect 2 0 26 0;
+#N canvas 521 38 554 461 12;
+#X obj 151 217 cnv 40 150 102 empty empty Canvas 20 50 0 30 -165539
+-262144 0;
+#X obj 28 10 cnv 15 100 60 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X text 135 14 - [my_canvas]/[cnv]: Canvas;
+#N canvas 424 168 359 352 properties 0;
+#N canvas 815 23 654 646 colors 0;
+#X floatatom 82 251 3 0 29 0 - - -;
+#X floatatom 187 256 3 0 29 0 - - -;
+#X text 180 231 label;
+#X obj 187 282 t b f;
+#X msg 82 350 color \$1 \$2 \$3;
+#X text 191 350 presets;
+#X symbolatom 485 347 9 0 0 0 - - -;
+#N canvas 1126 148 390 482 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 109 225 t b f;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 80 341 pack s s s;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X obj 81 250 t b f;
+#X obj 147 257 makefilename %02x;
+#X obj 113 284 makefilename %02x;
+#X obj 74 311 makefilename %02x;
+#X text 66 56 label;
+#X obj 80 406 outlet;
+#X msg 80 370 symbol #\$1\$2\$3;
+#X obj 161 185 loadbang;
+#X msg 161 217 0;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 6 0;
+#X connect 2 0 5 0;
+#X connect 3 0 11 0;
+#X connect 4 0 8 0;
+#X connect 5 0 4 0;
+#X connect 5 1 7 0;
+#X connect 6 0 3 2;
+#X connect 7 0 3 1;
+#X connect 8 0 3 0;
+#X connect 11 0 10 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X connect 13 0 7 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 485 165 pd label;
+#X symbolatom 345 346 9 0 0 0 - - -;
+#N canvas 968 124 390 482 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 11206 1;
+#X obj 109 225 t b f;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 11206 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 11206 1;
+#X obj 81 250 t b f;
+#X obj 221 257 makefilename %02x;
+#X obj 141 284 makefilename %02x;
+#X obj 61 321 makefilename %02x;
+#X obj 61 416 outlet;
+#X text 52 56 background;
+#X msg 61 380 symbol #\$1\$2\$3;
+#X obj 176 59 loadbang;
+#X obj 176 176 route set;
+#X obj 61 351 pack symbol symbol symbol;
+#X obj 277 71 cnv 15 100 60 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X msg 176 91 set 225;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 5 0;
+#X connect 2 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 4 1 6 0;
+#X connect 5 0 13 2;
+#X connect 6 0 13 1;
+#X connect 7 0 13 0;
+#X connect 10 0 8 0;
+#X connect 11 0 15 0;
+#X connect 12 0 5 0;
+#X connect 12 0 6 0;
+#X connect 13 0 10 0;
+#X connect 15 0 3 0;
+#X connect 15 0 2 0;
+#X connect 15 0 0 0;
+#X connect 15 0 12 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 345 165 pd label;
+#X obj 485 377 t b s;
+#X obj 267 231 loadbang;
+#X obj 345 415 pack symbol symbol symbol;
+#X msg 345 444 color \$1 \$2 \$3;
+#X text 72 231 background;
+#X text 454 445 RGB in hexadecimal;
+#X text 356 140 Set RGB values in the sliders;
+#X text 71 164 Open subpatches for the conversion from RGB to hexadecimal
+============>, f 38;
+#X obj 193 540 cnv 15 200 60 empty \$0-colors Label 35 30 0 40 -233017
+-1 0;
+#X obj 345 481 send \$0-colors;
+#X msg 267 270 list #e1e1e1 #000000 #000000, f 7;
+#X obj 82 313 pack 1 22 22, f 20;
+#N canvas 755 128 818 419 old-behaviour 0;
+#X floatatom 395 117 3 0 29 0 - - -;
+#X floatatom 500 122 3 0 29 0 - - -;
+#X text 493 97 label;
+#X obj 500 158 t b f;
+#X msg 395 226 color \$1 \$2 \$3;
+#X text 393 97 background;
+#X obj 496 320 cnv 15 200 60 empty \$0-old-behaviour Label 35 30 0
+40 -233017 -1 0;
+#X obj 395 266 send \$0-old-behaviour;
+#X floatatom 600 116 3 0 29 0 - - -;
+#X floatatom 705 121 3 0 29 0 - - -;
+#X text 698 96 label;
+#X obj 705 157 t b f;
+#X text 590 96 background;
+#X obj 600 265 send \$0-old-behaviour;
+#X obj 600 188 pack 1 22, f 20;
+#X msg 600 225 color \$1 \$2;
+#X text 48 302 Old "compatible" behavior, f 16;
+#X text 215 306 New "correct" behavior;
+#X msg 37 339 \; pd compatibility 0.46;
+#X msg 219 339 \; pd compatibility 0.47;
+#X text 22 110 Since Pd version 0.47 \, you cannot use the color message
+with only 2 values \, as the 2nd value just gets ignored. You need
+to have 3 values where the third sets the label color., f 46;
+#X text 22 168 You can use the "pd compatibility" message to get the
+old behavior back., f 46;
+#X text 22 201 Note that this is valid for all ways of using the color
+message (including the new way of using hexadecimal notation introduced
+in Pd 0.47) \, but in this example we're just using the "presets" option
+for convenience., f 46;
+#X text 410 29 When the compatibility is set to 0.47 or higher \, the
+example below to the right doesn't work to set the label color., f
+48;
+#X text 22 37 Until Pd version 0.46 \, you could have a color message
+with only two values \, where the second value would set the label
+color. You could also have 3 values \, where the 2nd value was ignored
+and the 3rd value would set the color., f 46;
+#X text 692 226 <= Pd 0.46 way;
+#X obj 408 147 loadbang;
+#X obj 395 189 pack 10 0 22, f 20;
+#X connect 0 0 27 0;
+#X connect 1 0 3 0;
 #X connect 3 0 27 0;
-#X connect 4 0 5 0;
-#X connect 4 0 6 0;
-#X connect 5 0 11 1;
-#X connect 6 0 10 1;
-#X connect 7 0 8 0;
-#X connect 7 0 9 0;
-#X connect 8 0 10 1;
-#X connect 9 0 11 1;
-#X connect 10 0 24 1;
-#X connect 11 0 23 1;
-#X connect 17 0 18 0;
-#X connect 17 1 18 1;
-#X connect 18 0 19 0;
-#X connect 19 0 20 0;
-#X connect 19 1 20 1;
-#X connect 20 0 28 0;
-#X connect 22 0 6 0;
-#X connect 23 0 21 0;
-#X connect 24 0 12 0;
-#X connect 25 0 20 0;
-#X connect 26 0 18 0;
-#X connect 27 0 17 0;
-#X connect 28 0 11 0;
-#X connect 28 0 10 0;
-#X connect 29 0 4 0;
-#X connect 29 1 7 0;
-#X connect 29 2 30 0;
-#X connect 30 0 24 0;
-#X connect 30 1 23 0;
-#X connect 30 2 28 0;
-#X restore 252 82 pd RGB_____________;
-#X floatatom 332 55 3 0 255 0 - - -, f 3;
-#X floatatom 375 55 3 0 255 0 - - -, f 3;
-#X floatatom 418 56 3 0 255 0 - - -, f 3;
-#X text 39 3 preset-colors;
-#X text 301 0 RGB-colors;
-#X text 332 37 red;
-#X text 368 36 green;
-#X text 416 36 blue;
-#X obj 52 112 pack 0 0 0;
-#X msg 51 135 \; foo10_rcv color \$1 \$2 \$3;
-#X floatatom 118 72 3 0 29 0 - - -, f 3;
-#X text 146 73 label-color;
-#X text 47 166 note: this changed in version 0.47 \; run "pd -compatibility
-0.46" for old behavior;
+#X connect 3 1 27 2;
+#X connect 4 0 7 0;
+#X connect 8 0 14 0;
+#X connect 9 0 11 0;
+#X connect 11 0 14 0;
+#X connect 11 1 14 1;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X connect 26 0 27 0;
+#X connect 27 0 4 0;
+#X restore 467 590 pd old-behaviour;
+#X text 435 523 COMPATIBILITY NOTE: The behavior changed in Pd 0.47!
+Check details and how to get it back:, f 23;
+#N canvas 720 84 576 472 old_way 0;
+#N canvas 1004 177 402 495 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 0 1;
+#X text 66 56 label;
+#X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
+#X obj 311 319 t b f;
+#X obj 169 319 t b f;
+#X obj 59 413 outlet;
+#X connect 0 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 4 0;
+#X connect 4 0 7 0;
+#X connect 5 0 4 0;
+#X connect 5 1 4 2;
+#X connect 6 0 4 0;
+#X connect 6 1 4 1;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 335 137 pd label;
+#X text 228 112 Set RGB values in the sliders;
+#N canvas 828 139 516 513 label 0;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
+-262144 -1 11206 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
+-1 -1 11206 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
+-1 -1 11206 1;
+#X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
+#X obj 313 269 t b f;
+#X obj 171 269 t b f;
+#X obj 61 413 outlet;
+#X text 52 56 background;
+#X obj 180 83 loadbang;
+#X msg 202 134 set 225;
+#X msg 181 195 225 225 225;
 #X connect 0 0 4 0;
-#X connect 1 0 0 0;
-#X connect 2 0 0 1;
-#X connect 3 0 4 1;
-#X connect 4 0 29 0;
-#X connect 7 0 11 0;
-#X connect 8 0 7 0;
-#X connect 9 0 7 1;
-#X connect 10 0 11 1;
-#X connect 11 0 34 0;
-#X connect 12 0 16 0;
-#X connect 13 0 12 0;
-#X connect 14 0 12 1;
-#X connect 15 0 16 1;
-#X connect 16 0 33 0;
-#X connect 21 0 25 0;
-#X connect 22 0 21 0;
-#X connect 23 0 21 1;
-#X connect 24 0 25 1;
-#X connect 25 0 30 0;
-#X connect 28 0 43 0;
-#X connect 35 0 39 0;
-#X connect 36 0 35 0;
-#X connect 37 0 35 1;
-#X connect 38 0 39 1;
-#X connect 39 0 42 0;
-#X connect 50 0 51 0;
-#X connect 51 0 52 0;
-#X connect 51 1 53 0;
-#X connect 56 0 74 0;
-#X connect 57 0 56 0;
-#X connect 58 0 56 1;
-#X connect 59 0 74 1;
-#X connect 62 0 65 0;
-#X connect 63 0 65 0;
-#X connect 64 0 65 0;
-#X connect 65 0 74 0;
-#X connect 65 1 74 2;
-#X connect 66 0 65 1;
-#X connect 67 0 65 2;
-#X connect 68 0 65 3;
-#X connect 74 0 75 0;
-#X connect 76 0 74 2;
-#X restore 315 20 pd edit;
-#X floatatom 110 193 4 0 0 0 - - -, f 4;
-#X floatatom 147 193 4 0 0 0 - - -, f 4;
-#X text 121 209 x;
-#X text 158 209 y;
-#X obj 7 161 metro 100;
-#X obj 33 141 tgl 15 1 empty empty empty 20 8 0 10 -262144 -1 -1 1
-1;
-#X obj 110 145 r from_K1;
-#X floatatom 188 194 4 0 0 0 - - -, f 4;
-#X floatatom 225 194 4 0 0 0 - - -, f 4;
-#X text 198 210 x;
-#X text 236 210 y;
-#X obj 188 146 r from_K2;
-#X msg 7 185 \; to_K get_pos;
-#N canvas 0 296 395 395 room 0;
-#X obj 1 1 cnv 1 400 400 empty empty type...ctrl+e 150 140 2 17 -33289
--24198 0;
-#X obj 15 16 cnv 1 1 360 empty empty move_K1_and_K2 115 160 2 17 -166441
--24198 0;
-#X obj 374 15 cnv 1 1 360 empty empty empty 20 12 2 20 -99865 -66577
-0;
-#X obj 15 15 cnv 1 360 1 empty empty empty 20 12 2 20 -166441 -66577
-0;
-#X obj 17 375 cnv 1 358 1 empty empty empty 20 12 2 20 -99865 -66577
-0;
-#X obj 23 22 cnv 25 25 25 from_K1 to_K K1 1 13 2 14 -261681 -123526
-0;
-#X obj 342 342 cnv 25 25 25 from_K2 to_K K2 1 13 2 14 -225280 -1109
-0;
-#X restore 307 147 pd room;
-#X obj 110 169 unpack;
-#X obj 188 170 unpack;
-#X text 51 92 to modify geometry \, colors \, etc.;
-#X obj 2 115 cnv 1 470 1 empty empty empty 20 12 2 20 -261681 -66577
-0;
-#X text 40 78 of the light-blue;
-#X text 166 78 my_canvas-object \,;
-#X text 5 64 click the properties-dialog on the top-left corner;
-#X obj 361 195 r foo10_rcv;
-#X obj 403 215 s ggg;
-#X text 21 257 graz \, austria 2002;
-#X obj 187 236 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
-#X text 313 46 For cnv's creation arguments:;
-#N canvas 880 439 467 369 canvas-creation-arguments 0;
-#X msg 7 12 canvas: cnv selectableSize xSize ySize sendName recieveName
-Label labelXOff labelYOff Font# fontSize bgColor lblColor 0;
-#X text 9 169 For example \, a canvas called thusly:;
-#X obj 9 248 cnv 15 200 100 myCanvas myCanvasR Canvas_Demo 20 12 2
-14 -62784 -195568 0;
-#X text 9 226 will result in this:;
-#X text 8 59 Canvas can be called with 13 creation arguments. These
-are not "optional" - all parameters must be filled or the canvas will
-not instantiate correctly.;
-#X text 10 114 The function of the final "0" is unknown to me (it is
-found in the textual entry for a canvas object in a .pd file) but can
-be safely left off without ill effects.;
-#X msg 9 191 cnv 15 200 100 myCanvas myCanvasR Canvas_Demo 20 12 2
-14 18 20;
-#X restore 314 63 pd canvas-creation-arguments;
-#X text 172 257 updated for Pd version 0.35;
-#X connect 8 0 16 0;
+#X connect 1 0 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 2;
+#X connect 5 0 3 0;
+#X connect 5 1 3 1;
+#X connect 8 0 9 0;
+#X connect 8 0 10 0;
+#X connect 9 0 0 0;
+#X connect 9 0 1 0;
+#X connect 9 0 2 0;
+#X connect 10 0 3 0;
+#X coords 0 -1 1 1 80 170 2 50 50;
+#X restore 243 137 pd label;
+#X text 91 166 Open subpatches for the conversion ====>, f 20;
+#X msg 282 374 color -1.48034e+07 -1 -1;
+#N canvas 574 194 328 335 pack 0;
+#X obj 73 47 inlet;
+#X obj 206 47 inlet;
+#X msg 73 152 color \$1 \$2 \$3;
+#X obj 206 85 t b f;
+#X obj 73 123 pack float -1 -1, f 24;
+#X obj 73 187 list prepend set;
+#X obj 73 213 list trim;
+#X obj 73 246 t b a;
+#X obj 73 283 outlet;
+#X connect 0 0 4 0;
+#X connect 1 0 3 0;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 3 1 4 2;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 7 1 8 0;
+#X restore 282 338 pd pack;
+#X f 8;
+#X obj 46 355 cnv 15 200 60 empty \$0-colors-old-way Label 35 30 0
+40 -233017 -1 0;
+#X obj 282 410 send \$0-colors-old-way;
+#X text 93 22 The RGB color scheme can also be encoded \, for backwards
+compatibility \, as negative inetegers. For "R" (red) \, "G" (green)
+& "B" (blue) values from 0 to 255 \, the conversion formula is \; float
+= -(R * 65536 + G * 256 + B + 1)., f 47;
+#X connect 0 0 5 1;
+#X connect 2 0 5 0;
+#X connect 4 0 7 0;
+#X connect 5 0 4 0;
+#X restore 64 542 pd old_way;
+#X text 29 481 open subpatch below for the old way of encoding RGB
+values., f 20;
+#X text 30 463 See also:;
+#X text 58 18 The 'color' message takes a list of three values \, but
+only the first and the third are valid and set \, respectively \, background
+and label colors (as there's no "front" color \, the 2nd value is ignored).
+, f 76;
+#X text 58 65 Integers from 0 to 29 represent the 30 preset colors
+found in the properties window \, values above are wraped. Negative
+integers were used to encode RGB values (and that still works for backwards
+compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal
+RGB symbol values \, which are followed by "#"., f 76;
+#X connect 0 0 21 0;
+#X connect 1 0 3 0;
+#X connect 3 0 21 0;
+#X connect 3 1 21 2;
+#X connect 4 0 19 0;
+#X connect 6 0 10 0;
+#X connect 7 0 6 0;
+#X connect 8 0 12 0;
 #X connect 9 0 8 0;
-#X connect 10 0 18 0;
-#X connect 15 0 19 0;
-#X connect 18 0 4 0;
-#X connect 18 1 5 0;
-#X connect 19 0 11 0;
-#X connect 19 1 12 0;
-#X connect 25 0 26 0;
+#X connect 10 0 12 0;
+#X connect 10 1 12 2;
+#X connect 11 0 20 0;
+#X connect 12 0 13 0;
+#X connect 13 0 19 0;
+#X connect 20 0 12 0;
+#X connect 21 0 4 0;
+#X coords 0 0 1 1 85 60 0;
+#X restore 182 216 pd colors;
+#N canvas 925 42 425 489 size 0;
+#X floatatom 158 241 3 18 100 0 - - -;
+#X text 185 241 size;
+#X msg 158 278 size \$1;
+#X obj 158 361 cnv 18 18 18 empty \$0-size empty 20 12 0 14 -258113
+-66577 0;
+#X obj 158 315 send \$0-size;
+#X text 25 18 The size message sets the object's size (not to be confused
+with the size of the visible rectangle). This is the actual object's
+area \, which is the selectable square area that gets highlighted with
+a light blue outline when you select it (as usual with any other object
+in Pd)., f 52;
+#X text 25 104 Below \, the visible rectangular size is a square of
+18 pixels. Increase the size of the object and note that the object's
+size is also visible if it is larger than the visible rectangle. The
+benefit from having a small object size is that canvases are usually
+used in the background of something else and this prevents you from
+right clicking on it when you want to interact with an object in front.
+, f 52;
+#X connect 0 0 2 0;
+#X connect 2 0 4 0;
+#X restore 196 104 pd size;
+#N canvas 904 23 566 528 label 0;
+#X msg 88 275 label \$1;
+#X floatatom 239 168 4 0 3 0 - - -;
+#X obj 281 195 t b f;
+#X floatatom 281 168 5 5 50 0 - - -;
+#X msg 239 265 label_font \$1 \$2;
+#X text 201 167 type;
+#X text 325 166 size;
+#X obj 239 105 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X text 260 104 DejaVu Sans Mono;
+#X text 260 120 Helvetica;
+#X text 260 135 Times;
+#X msg 100 243 symbol empty;
+#X floatatom 393 184 4 -100 250 0 - - -;
+#X obj 435 211 t b f;
+#X floatatom 435 184 5 -150 150 0 - - -;
+#X msg 393 281 label_pos \$1 \$2;
+#X text 375 183 x;
+#X text 479 182 y;
+#X text 388 160 label offset:;
+#X msg 68 178 symbol label;
+#X msg 88 207 symbol my\ label;
+#X text 78 29 The 'label' message sets the label symbol \, setting
+it to "empty" clears it. The 'label_font' message sets font type and
+size and 'label_pos' sets the x/y coordinates., f 64;
+#X obj 155 407 cnv 15 300 100 empty \$0-label label 17 20 0 25 -233017
+-66577 0;
+#X obj 239 360 send \$0-label;
+#X obj 393 239 pack 17 20, f 11;
+#X obj 239 224 pack 0 25, f 11;
+#X connect 0 0 23 0;
+#X connect 1 0 25 0;
+#X connect 2 0 25 0;
+#X connect 2 1 25 1;
+#X connect 3 0 2 0;
+#X connect 4 0 23 0;
+#X connect 7 0 1 0;
+#X connect 11 0 0 0;
+#X connect 12 0 24 0;
+#X connect 13 0 24 0;
+#X connect 13 1 24 1;
+#X connect 14 0 13 0;
+#X connect 15 0 23 0;
+#X connect 19 0 0 0;
+#X connect 20 0 0 0;
+#X connect 24 0 15 0;
+#X connect 25 0 4 0;
+#X restore 189 188 pd label;
+#N canvas 740 42 487 614 send-receive 0;
+#X msg 97 203 receive empty;
+#X text 68 513 Note you need to escape dollar signs with bacslashes
+to set something like "\$0-x". But the bacslash is not needed if you
+set it directly via the properties window., f 53;
+#X text 65 28 The object can have a send and receive symbol. Since
+it has no inlet or outlet \, this is the only way it can receive and
+send messages., f 50;
+#X obj 169 433 cnv 15 100 60 empty \$0-cnv_rcv1 empty 20 12 0 14 -233017
+-66577 0;
+#X msg 81 172 receive \\\$0-cnv_rcv2;
+#X msg 268 203 receive empty;
+#X msg 251 172 receive \\\$0-cnv_rcv1;
+#X msg 122 347 receive empty;
+#X obj 87 384 s \$0-cnv_rcv1;
+#X obj 80 241 send \$0-cnv_rcv1;
+#X obj 251 241 send \$0-cnv_rcv2;
+#X msg 88 285 send \\\$0-cnv_snd2;
+#X msg 103 318 send \\\$0-cnv_snd1;
+#X msg 287 348 receive empty;
+#X msg 253 286 send \\\$0-cnv_snd2;
+#X msg 268 319 send \\\$0-cnv_snd1;
+#X obj 252 385 s \$0-cnv_rcv2;
+#X text 65 74 The 'send' and 'receive' messages take a symbol to set
+\, respectively \, the send and receive symbol. If you set these to
+"empty" \, the symbols are cleared (and can only be inserted back in
+the properties window)., f 50;
+#X connect 0 0 9 0;
+#X connect 4 0 9 0;
+#X connect 5 0 10 0;
+#X connect 6 0 10 0;
+#X connect 7 0 8 0;
+#X connect 11 0 8 0;
+#X connect 12 0 8 0;
+#X connect 13 0 16 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 0;
+#X restore 140 160 pd send-receive;
+#N canvas 936 145 464 331 loading-args 0;
+#X text 58 115 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X obj 158 231 cnv 15 150 60 empty empty \$0-label 20 18 0 14 -233017
+-66577 0;
+#X text 58 26 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: size \, visible size \, send/receive symbols \, label
+\, label offset and font size., f 49;
+#X restore 152 291 pd loading-args;
+#X text 64 261 Loading arguments in properties:;
+#N canvas 910 74 447 428 visible-rectangle 0;
+#X obj 153 283 cnv 15 100 60 empty \$0-vis_size empty 20 12 0 14 -191407
+-66577 0;
+#X obj 156 164 pack 100 60;
+#X obj 198 136 t b f;
+#X floatatom 198 111 4 18 100 0 - - -;
+#X floatatom 156 111 4 18 100 0 - - -;
+#X obj 156 223 send \$0-vis_size;
+#X msg 156 194 vis_size \$1 \$2;
+#X text 78 110 horizontal;
+#X text 233 110 vertical;
+#X text 47 27 The 'vis_size' message sets the visible rectangle size.
+It takes two values that set \, respectively \, horizontal and vertical
+sizes in pixels., f 49;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 2 1 1 1;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 6 0 5 0;
+#X restore 105 132 pd visible-rectangle;
+#X text 46 23 All the parameters from the properties window can be
+set via messages as well. See examples and more details on each parameter
+in the subpatches below:, f 39;
+#X restore 401 217 pd properties;
+#X text 293 347 (c) musil@iem.kug.ac.at;
+#X text 329 363 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 65 419 see also:;
+#X obj 139 420 x_all_guis;
+#X text 73 348 This object is part of the "iemguis" library \, natively
+included in Pd version 0.34., f 28;
+#X text 296 419 updated for Pd version 0.51;
+#N canvas 360 93 481 370 example-room 0;
+#X obj 335 217 tgl 15 1 empty empty empty 20 8 0 10 -262144 -1 -1 0
+1;
+#X msg 335 267 \; to_K get_pos;
+#X obj 335 192 loadbang;
+#N canvas 899 89 382 383 room 0;
+#X obj 1 1 cnv 40 380 380 empty empty empty 150 140 2 17 -99865 -24198
+0;
+#X obj 2 2 cnv 378 1 1 empty empty empty 115 160 2 17 -258113 -24198
+0;
+#X obj 12 16 cnv 25 25 25 from_K1 to_K K1 4 13 0 14 -240482 -147457
+0;
+#X obj 330 333 cnv 25 25 25 from_K2 to_K K2 4 13 2 14 -155126 -1109
+0;
+#X restore 182 179 pd room;
+#X text 120 180 click =>;
+#X obj 335 240 metro 5;
+#X floatatom 70 310 4 0 0 0 - - -;
+#X floatatom 123 310 4 0 0 0 - - -;
+#X text 56 310 x;
+#X text 154 309 y;
+#X obj 70 278 unpack, f 8;
+#N canvas 317 55 451 443 from_K1 0;
+#X obj 124 136 t f f;
+#X obj 110 201 ||;
+#X obj 64 137 t f f;
+#X obj 110 232 sel 1;
+#X obj 155 288 list;
+#X obj 64 73 trigger list list;
+#X obj 64 107 unpack;
+#X obj 128 170 !=;
+#X obj 68 171 !=;
+#X obj 155 371 outlet;
+#X obj 64 43 receive from_K1;
+#X text 212 274 The list is ouput only if either of the values has
+changed, f 23;
+#X obj 175 334 print K1;
+#X connect 0 0 7 1;
+#X connect 0 1 7 0;
+#X connect 1 0 3 0;
+#X connect 2 0 8 1;
+#X connect 2 1 8 0;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 4 0 12 0;
+#X connect 5 0 6 0;
+#X connect 5 1 4 1;
+#X connect 6 0 2 0;
+#X connect 6 1 0 0;
+#X connect 7 0 1 1;
+#X connect 8 0 1 0;
+#X connect 10 0 5 0;
+#X restore 70 246 pd from_K1;
+#X floatatom 210 310 4 0 0 0 - - -;
+#X floatatom 263 310 4 0 0 0 - - -;
+#X text 196 309 x;
+#X text 294 309 y;
+#X obj 210 278 unpack, f 8;
+#X text 46 24 In this example \, we drag canvases in a subpatch and
+get their position at a rate from a metro object (below to the right).
+The values are then received below to the left., f 52;
+#X text 45 86 Open the subpatch below ([pd room]) and move the "K1"
+and "K2" canvases. Note that the subpatch needs to be in edit mode
+so the objects can be selected and dragged. Hence \, click to open
+it and then get into the edit mode to move them., f 52;
+#N canvas 317 55 455 465 from_K2 0;
+#X obj 124 136 t f f;
+#X obj 110 201 ||;
+#X obj 64 137 t f f;
+#X obj 110 232 sel 1;
+#X obj 155 288 list;
+#X obj 64 73 trigger list list;
+#X obj 64 107 unpack;
+#X obj 128 170 !=;
+#X obj 68 171 !=;
+#X obj 155 381 outlet;
+#X text 212 274 The list is ouput only if either of the values has
+changed, f 23;
+#X obj 64 43 receive from_K2;
+#X obj 180 336 print K2;
+#X connect 0 0 7 1;
+#X connect 0 1 7 0;
+#X connect 1 0 3 0;
+#X connect 2 0 8 1;
+#X connect 2 1 8 0;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 4 0 12 0;
+#X connect 5 0 6 0;
+#X connect 5 1 4 1;
+#X connect 6 0 2 0;
+#X connect 6 1 0 0;
+#X connect 7 0 1 1;
+#X connect 8 0 1 0;
+#X connect 11 0 5 0;
+#X restore 210 246 pd from_K2;
+#X connect 0 0 5 0;
+#X connect 2 0 0 0;
+#X connect 5 0 1 0;
+#X connect 10 0 6 0;
+#X connect 10 1 7 0;
+#X connect 11 0 10 0;
+#X connect 16 0 12 0;
+#X connect 16 1 13 0;
+#X connect 19 0 16 0;
+#X restore 387 273 pd example-room;
+#N canvas 665 62 632 612 position 0;
+#X floatatom 200 146 4 0 1000 0 - - -;
+#X obj 249 173 t b f;
+#X floatatom 249 146 5 0 500 0 - - -;
+#X msg 200 233 pos \$1 \$2;
+#X text 121 146 x-position;
+#X text 293 145 y-position;
+#X msg 327 236 delta 1 0;
+#X text 400 235 increase x by 1;
+#X msg 334 258 delta -1 0;
+#X text 416 257 decrease x by 1;
+#X msg 349 286 delta 0 1;
+#X msg 353 308 delta 0 -1;
+#X text 426 285 increase y by 1;
+#X text 437 310 decrease y by 1;
+#X msg 364 337 delta 1 1;
+#X text 439 338 increase both by 1;
+#X text 455 359 decrease both by -1;
+#X msg 369 359 delta -1 -1;
+#X text 318 24 The 'delta' message changes the position of the object
+by a difference amount. It takes a list of x/y delta in pixels., f
+40;
+#X text 27 75 The 'pos' message takes a list of x/y coordinates in
+pixels and sets the objects's position., f 36;
+#X obj 265 450 cnv 50 50 50 \$0-get_pos \$0-position empty 20 12 0
+14 -128940 -66577 0;
+#X obj 309 401 send \$0-position;
+#X msg 308 197 get_pos;
+#X obj 64 304 receive \$0-get_pos;
+#X floatatom 64 366 4 0 1000 0 - - -;
+#X floatatom 187 366 5 0 500 0 - - -;
+#X text 43 387 x-position;
+#X text 168 385 y-position;
+#X obj 64 334 unpack float float;
+#X text 27 16 You can also set and change the position of the object
+in the patch. Moreover \, you can get the object's position., f 36
+;
+#X text 318 83 The 'get_pos' message makes the object send its position.
+, f 40;
+#X text 369 196 <= get position;
+#X text 64 280 receive position:;
+#X obj 200 201 pack 265 450;
+#X text 88 234 set position =>;
+#X connect 0 0 33 0;
+#X connect 1 0 33 0;
+#X connect 1 1 33 1;
+#X connect 2 0 1 0;
+#X connect 3 0 21 0;
+#X connect 6 0 21 0;
+#X connect 8 0 21 0;
+#X connect 10 0 21 0;
+#X connect 11 0 21 0;
+#X connect 14 0 21 0;
+#X connect 17 0 21 0;
+#X connect 22 0 21 0;
+#X connect 23 0 28 0;
+#X connect 28 0 24 0;
+#X connect 28 1 25 0;
+#X connect 33 0 3 0;
+#X restore 415 245 pd position;
+#X text 31 223 Right click ===> for properties., f 16;
+#X text 19 149 Right click for properties (to set size \, colors \,
+labels \, etc). Note you need to right click on the selectable area
+(on the top left corner). When the object is selected \, this area
+is highlighted as light blue., f 71;
+#N canvas 781 30 461 491 display-example 0;
+#X obj 120 259 send \$0-display;
+#X floatatom 120 165 5 1 50 0 - - -;
+#X msg 120 230 label \$1;
+#X obj 79 307 nbx 15 30 1 100 0 0 \$0-file empty empty 0 -8 0 10 -262144
+-1 -1 1 256;
+#X obj 79 307 cnv 1 148 30 empty \$0-display file\\\ 050.wav 9 15 0
+16 -1 -259673 0;
+#X text 236 316 <= also click and drag;
+#X text 166 164 <= click and drag;
+#X obj 120 201 makefilename file\ %03d.wav;
+#X text 60 368 We also have another trick here \, which is hiding a
+number box behind the canvas. This way you end up interacting with
+it and so you can also click and drag on the canvas to change its display
+symbol. Note that this number box sends value to the atom box above
+via an internal send symbol., f 48;
+#X obj 120 137 receive \$0-file;
+#X text 64 27 Here we're using a canvas to display a symbol by using
+it to set the label., f 43;
+#X text 64 64 The file name is set with a [makefilename] object below
+and you can click and drag on the number box to set the file name.
+, f 43;
+#X connect 1 0 7 0;
+#X connect 2 0 0 0;
+#X connect 7 0 2 0;
+#X connect 9 0 1 0;
+#X restore 366 301 pd display-example;
+#X text 159 40 The canvas object is a simple GUI (Graphical User Interface)
+used as a background and/or to dysplay a symbol. It can also send its
+position when queried., f 51;
+#X text 19 88 Insert it from the Put menu (named as "Canvas") or its
+shortcut. Alternatively \, create it by typing "my_canvas" or "cnv"
+into an object box. This object has no inlet or outlet \, so it can
+only communicate via send and receive symbols set via the properties
+window., f 71;

@@ -78,7 +78,7 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof *x);
 }
 
-char *rtext_gettag(t_rtext *x)
+const char *rtext_gettag(t_rtext *x)
 {
     return (x->x_tag);
 }

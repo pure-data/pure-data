@@ -28,7 +28,8 @@ Optional features:
 
 ## Autotools Build (recommended)
 
-Building Pd using the GNU autotools involves the following steps:
+Building Pd using the GNU autotools involves the following steps for all
+platforms:
 
 1. configure: detect & set library and platform options
 2. make: compile Pd, associated tools, and resource files (ie. translations)
@@ -40,6 +41,9 @@ Overview:
     ./autogen.sh
     ./configure
     make
+
+Note: Additional platform-specific options and build targets are listed in
+following subsections.
 
 Start by opening a commandline shell and navigating to the Pd source directory:
 
@@ -168,6 +172,9 @@ In case you are using jackd1 instead of jackd2, use:
 Most distributions come with Tcl/Tk installed, so you should be able to run Pd
 after it is built.
 
+Once your build system is set up, you can follow the general autotools build
+steps to build Pd.
+
 ### macOS
 
 macOS is built on top of a BSD system and the bash commandline can be accessed
@@ -230,8 +237,8 @@ Macports, however the runtime framework support must be disabled:
     brew install jack
     ./configure --disable-jack-framework
 
-You should now be ready to build Pd. Once built, there are two options for
-installation:
+You should now be ready to build Pd by following the general autotools build
+steps. Once built, there are two options for installation:
 
 * build a standalone macOS application (recommended)
 * install to your system as a commandline program
@@ -297,28 +304,27 @@ if you are using 32 bit Windows) from:
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
-release is 32 bit for Windows, so it is recommended to set up and use the MinGW
-32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
-shell however this is currently considered *experimental*. Due to how MinGW is
-designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
-also means the Pd configure --enable-universal build option has no effect in
-MinGW.
+Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50, the Pd
+release is 64 bit for Windows, so it is recommended to set up and use the MinGW
+64 bit shell. If you want to build a 32 bit Pd, similarly use the MinGW 32 bit
+shell. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit
+MinGW and vice versa. This also means the Pd configure --enable-universal build
+option has no effect in MinGW.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
 
 Open an Msys2 shell and install the compiler chain, autotools, & gettext via:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
-              make pkgconfig autoconf automake libtool \
-              mingw-w64-i686-gettext
-
     # 64 bit
     pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
               make pkgconfig autoconf automake libtool \
               mingw-w64-x86_64-gettext
+
+    # 32 bit
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
+              make pkgconfig autoconf automake libtool \
+              mingw-w64-i686-gettext
 
 Install git if you want to clone the Pd sources from Github, etc:
 
@@ -326,17 +332,18 @@ Install git if you want to clone the Pd sources from Github, etc:
 
 and/or the nsis installer tool if you want to build the Pd Windows installer:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-nsis
-
     # 64 bit
     pacman -S mingw-w64-x86_64-nsis
+
+    # 32 bit
+    pacman -S mingw-w64-i686-nsis
 
 Note: You can also search for packages in Msys2 with:
 
     pacman -S -s <searchterm>
 
-Once the packages are installed, you should now be ready to build Pd.
+Once the packages are installed, you should now be ready to build Pd by
+following the general autotools build steps.
 
 The following audio APIS are available on Windows and can be enabled/disabled
 via their configure flags:
@@ -353,7 +360,7 @@ Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source
 files. If you want to build Pd with ASIO support, see asio/README.txt for
 further instructions.
 
-You should now be ready to build Pd. Once built, you can either:
+Once built Pd is built, you can either:
 
 * build a Pd application directory for Windows (recommended)
 * build a Windows installer
@@ -399,9 +406,7 @@ For example, to build a 32 bit Pd:
 
 Similarily, to build a 64 bit Pd without ASIO support:
 
-    ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
-
-(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
+    ./configure --disable-asio --host=x86_64-w64-mingw32
 
 If all went well, you should now be ready to build Pd, as explained in the
 instructions above in the "Windows" section:

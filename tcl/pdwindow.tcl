@@ -89,7 +89,7 @@ proc ::pdwindow::filter_buffer_to_text {args} {
         incr i
     }
     .pdwindow.text.internal yview end
-    ::pdwindow::verbose 10 "The Pd window filtered $i lines\n"
+    ::pdwindow::verbose 10 "the Pd window filtered $i lines\n"
 }
 
 proc ::pdwindow::select_by_id {args} {
@@ -439,6 +439,10 @@ proc ::pdwindow::create_window_finalize {} {
     # this ought to be called after all elements of the window (including the
     # menubar!) have been created!
     if {![winfo viewable .pdwindow.text]} { tkwait visibility .pdwindow.text }
+    set fontsize [::pd_guiprefs::read menu-fontsize]
+    if {$fontsize != ""} {
+        ::dialog_font::apply .pdwindow $fontsize
+    }
 }
 
 proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {

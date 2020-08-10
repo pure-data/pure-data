@@ -1,62 +1,62 @@
-#N canvas 19 47 635 576 12;
-#X obj 32 291 metro 500;
-#X obj 70 9 metro;
-#X floatatom 101 268 4 0 0 0 - - -, f 4;
-#X msg 32 125 1;
-#X text 92 135 nonzero number or "bang" to start;
-#X msg 49 172 0;
-#X msg 38 148 bang;
-#X msg 49 194 stop;
-#X text 121 8 - metronome;
-#X text 23 35 The metro object sends a series of bangs at regular time
+#N canvas 540 68 652 607 12;
+#X obj 51 314 metro 500;
+#X obj 60 18 metro;
+#X floatatom 111 291 4 0 0 0 - - -;
+#X msg 47 127 1;
+#X text 98 137 nonzero number or "bang" to start;
+#X msg 62 183 0;
+#X msg 53 150 bang;
+#X msg 68 207 stop;
+#X text 111 17 - metronome;
+#X text 30 52 The metro object sends a series of bangs at regular time
 intervals. The right inlet takes the value in milliseconds between
 each bang. The left inlet takes a 1 or 0 \, turning the metronome on
-or off.;
-#X obj 32 317 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+or off., f 67;
+#X obj 51 340 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X text 116 292 <-- optional creation arguments:;
-#X text 165 311 - delay time (float);
-#X text 166 329 - tempo (float) and time unit (symbol) as in "tempo"
+#X text 184 334 - delay time (float);
+#X text 185 352 - tempo (float) and time unit (symbol) as in "tempo"
 message, f 31;
-#X msg 51 220 tempo 2 msec;
-#X text 69 502 see also:;
-#X obj 163 500 timer;
-#X obj 330 460 metro 1 120 permin;
-#X obj 330 384 tgl 20 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 74 243 tempo 2 msec;
+#X text 76 541 see also:;
+#X obj 153 541 timer;
+#X obj 382 483 metro 1 120 permin, f 19;
+#X obj 349 422 tgl 20 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 330 485 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 382 510 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 210 465 delay;
-#X text 347 531 Updated for Pd version 0.48;
-#X text 99 181 zero or "stop" to stop;
-#X obj 493 436 /;
-#X msg 493 411 1 \$1;
-#X msg 493 380 0.5;
-#X msg 529 380 1;
-#X msg 565 380 4;
-#X text 524 437 beat length;
-#X msg 369 409 tempo \$1 permin;
-#X floatatom 369 384 5 0 0 0 - - -, f 5;
-#X text 165 219 set tempo in units of milliseconds (msec for short)
-\, seconds (sec) \, minutes (min) or samples (samp), f 51;
-#X text 150 268 right inlet sets the rate in msec per tick or tempo
+#X obj 195 484 delay;
+#X text 420 559 Updated for Pd version 0.48;
+#X text 110 195 zero or "stop" to stop;
+#X obj 512 449 /;
+#X msg 512 424 1 \$1;
+#X msg 476 392 0.5;
+#X msg 512 392 1;
+#X msg 548 392 4;
+#X text 543 450 beat length;
+#X msg 382 433 tempo \$1 permin;
+#X floatatom 382 408 5 0 0 0 - - -;
+#X text 175 234 set tempo in units of milliseconds (msec for short)
+\, seconds (sec) \, minutes (min) or samples (samp), f 47;
+#X text 150 291 right inlet sets the rate in msec per tick or tempo
 unit length, f 64;
-#X text 40 458 for details on tempo setting \, see:, f 20;
-#X text 41 403 for example \, a metronome at intervals of one beat
+#X text 55 471 for details on tempo setting \, see:, f 19;
+#X text 56 416 for example \, a metronome at intervals of one beat
 at 120 beats per minute:, f 37;
+#X text 127 315 <= optional creation arguments:;
 #X connect 0 0 10 0;
 #X connect 2 0 0 1;
 #X connect 3 0 0 0;
 #X connect 5 0 0 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
-#X connect 14 0 0 0;
-#X connect 17 0 19 0;
-#X connect 18 0 17 0;
-#X connect 23 0 17 1;
+#X connect 13 0 0 0;
+#X connect 16 0 18 0;
+#X connect 17 0 16 0;
+#X connect 22 0 16 1;
+#X connect 23 0 22 0;
 #X connect 24 0 23 0;
-#X connect 25 0 24 0;
-#X connect 26 0 24 0;
-#X connect 27 0 24 0;
-#X connect 29 0 17 0;
-#X connect 30 0 29 0;
+#X connect 25 0 23 0;
+#X connect 26 0 23 0;
+#X connect 28 0 16 0;
+#X connect 29 0 28 0;

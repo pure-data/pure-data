@@ -1,26 +1,26 @@
-#N canvas 182 263 726 378 12;
-#X obj 68 211 metro 500;
-#X obj 68 186 r metro;
-#X msg 575 106 \; metro 0;
-#X msg 574 48 \; pd dsp 1 \; metro 1;
-#X floatatom 52 112 0 0 0 0 - - -;
-#X floatatom 52 268 0 0 0 0 - - -;
-#X obj 574 21 loadbang;
-#X obj 52 235 snapshot~;
-#X floatatom 51 351 9 0 0 0 - - -, f 9;
-#X obj 51 295 t f f;
-#X obj 51 322 *;
-#X obj 52 138 sig~;
-#X obj 36 16 rsqrt~;
-#X text 105 14 - signal reciprocal square root;
-#X text 18 45 rsqrt~ takes the approximate reciprocal square root of
+#N canvas 481 159 551 426 12;
+#X obj 83 215 metro 500;
+#X obj 83 190 r metro;
+#X msg 316 173 \; metro 0;
+#X msg 212 170 \; pd dsp 1 \; metro 1;
+#X floatatom 67 116 0 0 0 0 - - -;
+#X floatatom 67 272 0 0 0 0 - - -;
+#X obj 212 143 loadbang;
+#X obj 67 239 snapshot~;
+#X floatatom 66 355 9 0 0 0 - - -;
+#X obj 66 299 t f f;
+#X obj 66 326 *;
+#X obj 67 142 sig~;
+#X obj 51 20 rsqrt~;
+#X text 120 18 - signal reciprocal square root;
+#X text 33 49 rsqrt~ takes the approximate reciprocal square root of
 the incoming signal \, using a fast \, approximate algorithm which
 is probably accurate to about 120 dB (20 bits).;
-#X obj 52 162 rsqrt~;
-#X text 226 196 An older object \, q8_sqrt \, is included in Pd for
+#X obj 67 166 rsqrt~;
+#X text 199 253 An older object \, q8_sqrt \, is included in Pd for
 back compatibility but should probably not be used. It only gives about
 8 bit accuracy., f 45;
-#X text 434 332 updated for Pd version 0.47.;
+#X text 233 351 updated for Pd version 0.47.;
 #X connect 0 0 7 0;
 #X connect 1 0 0 0;
 #X connect 1 0 0 0;

@@ -36,7 +36,7 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     {
         t_atom ap[2];
         SETSYMBOL(&ap[0], gensym(addrstr));
-        SETFLOAT(&ap[1], (float)port);
+        SETFLOAT(&ap[1], (t_float)port);
         outlet_list(o, NULL, 2, ap);
     }
 }
@@ -138,17 +138,20 @@ static void netsend_readbin(t_netsend *x, int fd)
         {
             if (ret < 0)
             {
-                /* only close a UDP socket if there really was an error.
-                (socket_errno_udp() ignores some error codes) */
+                /* socket_errno_udp() ignores some error codes */
                 if (x->x_protocol == SOCK_DGRAM && !socket_errno_udp())
                     return;
                 sys_sockerror("recv (bin)");
             }
             if (x->x_obj.ob_pd == netreceive_class)
             {
-                sys_rmpollfn(fd);
-                sys_closesocket(fd);
-                netreceive_notify((t_netreceive *)x, fd);
+                    /* never close UDP socket because we can't really notify it */
+                if (x->x_protocol != SOCK_DGRAM)
+                {
+                    sys_rmpollfn(fd);
+                    sys_closesocket(fd);
+                    netreceive_notify((t_netreceive *)x, fd);
+                }
             }
             else /* properly shutdown netsend */
                 netsend_disconnect(x);
@@ -159,6 +162,13 @@ static void netsend_readbin(t_netsend *x, int fd)
             t_atom *ap;
             if (x->x_fromout)
                 outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
+                /* handle too large UDP packets */
+            if (ret > INBUFSIZE)
+            {
+                post("warning: incoming UDP packet truncated from %d to %d bytes.",
+                    ret, INBUFSIZE);
+                ret = INBUFSIZE;
+            }
             ap = (t_atom *)alloca(ret * sizeof(t_atom));
             for (i = 0; i < ret; i++)
                 SETFLOAT(ap+i, inbuf[i]);
@@ -313,7 +323,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
-            post("connecting to %s %d, src port %d", hostbuf, portno, sportno);
+            verbose(1, "connecting to %s %d, src port %d", hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
@@ -346,9 +356,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if (hostname && multicast)
-            post("connecting to %s %d (multicast)", hostbuf, portno);
+            verbose(1, "connecting to %s %d (multicast)", hostbuf, portno);
         else
-            post("connecting to %s %d", hostbuf, portno);
+            verbose(1, "connecting to %s %d", hostbuf, portno);
 
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -463,7 +473,7 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
         {
             if (timeafter > lastwarntime + 2)
             {
-                post("netsend/netreceive: blocked %d msec",
+                verbose(0, "netsend/netreceive: blocked %d msec",
                      (int)(1000 * ((timeafter - timebefore) +
                      pleasewarn)));
                 pleasewarn = 0;
@@ -554,7 +564,12 @@ static void netreceive_notify(t_netreceive *x, int fd)
             x->x_nconnections--;
         }
     }
-    outlet_float(x->x_ns.x_connectout, x->x_nconnections);
+    if (x->x_ns.x_connectout)
+    {
+        outlet_float(x->x_ns.x_connectout, x->x_nconnections);
+    }
+    else
+        bug("netreceive_notify");
 }
 
     /* socketreceiver from sockaddr_in */
@@ -769,11 +784,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             char hostbuf[256];
             sockaddr_get_addrstr(ai->ai_addr,
                 hostbuf, sizeof(hostbuf));
-            post("listening on %s %d%s", hostbuf, portno,
+            verbose(1, "listening on %s %d%s", hostbuf, portno,
                 (multicast ? " (multicast)" : ""));
         }
         else
-            post("listening on %d", portno);
+            verbose(1, "listening on %d", portno);
         break;
     }
     freeaddrinfo(ailist);
@@ -796,8 +811,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
         {
-            t_socketreceiver *y = socketreceiver_new((void *)x,
-                (t_socketnotifier)netreceive_notify,
+                /* a UDP receiver doesn't get notifications! */
+            t_socketreceiver *y = socketreceiver_new(x, 0,
                     (x->x_ns.x_msgout ? netsend_read : 0), 1);
             if (x->x_ns.x_fromout)
                 socketreceiver_set_fromaddrfn(y,

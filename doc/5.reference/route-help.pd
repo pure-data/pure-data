@@ -1,61 +1,61 @@
-#N canvas 58 56 699 665 12;
-#X obj 183 213 print x1;
-#X obj 261 213 print x2;
-#X obj 339 213 print x3;
-#X obj 422 213 print x4;
-#X obj 183 185 route 23 54 1;
-#X msg 183 155 234 345 456;
-#X msg 308 155 23 34 45;
-#X msg 414 155 54 43;
-#X msg 485 155 1 foo bar;
-#X msg 254 247 impeach ringo starr;
-#X obj 191 275 route big apple;
-#X msg 435 248 apple pie;
-#X msg 191 247 1 2 3;
-#X msg 523 248 big apple pie;
-#X msg 578 155 walk the dog;
-#X text 45 33 Route checks the first element of a message against each
+#N canvas 407 27 649 658 12;
+#X obj 196 220 print x1;
+#X obj 274 220 print x2;
+#X obj 352 220 print x3;
+#X obj 431 220 print x4;
+#X obj 196 192 route 23 54 1, f 34;
+#X msg 101 160 234 345 456;
+#X msg 196 160 23 34 45;
+#X msg 272 160 54 43;
+#X msg 323 160 1 foo bar;
+#X msg 218 272 impeach ringo starr;
+#X obj 218 302 route big apple, f 23;
+#X msg 369 272 apple pie;
+#X msg 161 272 1 2 3;
+#X msg 447 272 big apple pie;
+#X msg 406 160 walk the dog;
+#X text 45 49 Route checks the first element of a message against each
 of its arguments \, which may be numbers or symbols (but not a mixture
-of the two.);
-#X text 44 85 If a match is found \, the rest of the message appears
+of the two.), f 74;
+#X text 45 87 If a match is found \, the rest of the message appears
 on the corresponding outlet. If no match \, the message is repeated
 to the last "rejection" outlet. The number of outlets is the number
-of arguments plus one.;
-#X text 19 185 numeric arguments:;
-#X text 17 275 symbolic arguments:;
-#X obj 157 489 print z1;
-#X obj 233 489 print z2;
-#X msg 124 424 bang;
-#X msg 170 424 list;
-#X msg 213 424 5;
-#X msg 251 424 float 5;
-#X msg 320 424 list 5;
-#X msg 385 424 symbol pie;
-#X msg 560 424 pie;
-#X msg 483 424 list pie;
-#X msg 70 424 1 2 3;
-#X obj 157 461 route list float symbol bang;
-#X obj 310 489 print z3;
-#X obj 387 489 print z4;
-#X obj 461 489 print z5;
-#X obj 191 305 print y1;
-#X obj 269 305 print y2;
-#X obj 347 305 print y3;
-#X text 76 344 To avoid confusion between \, say \, the number 5 and
+of arguments plus one., f 74;
+#X text 60 192 numeric arguments:;
+#X text 72 302 symbolic arguments:;
+#X obj 198 507 print z1;
+#X obj 276 507 print z2;
+#X msg 109 442 bang;
+#X msg 155 442 list;
+#X msg 198 442 5;
+#X msg 233 442 float 5;
+#X msg 302 442 list 5;
+#X msg 357 442 symbol pie;
+#X msg 515 442 pie;
+#X msg 444 442 list pie;
+#X msg 55 442 1 2 3;
+#X obj 198 479 route list float symbol bang, f 45;
+#X obj 354 507 print z3;
+#X obj 432 507 print z4;
+#X obj 510 507 print z5;
+#X obj 218 332 print y1;
+#X obj 297 332 print y2;
+#X obj 376 332 print y3;
+#X text 57 368 To avoid confusion between \, say \, the number 5 and
 the list containing only the number 5 \, both messages match "float"
 \, and ditto for symbols. An empty list matches "bang". In Pd these
-are all considered special cases of lists.;
+are all considered special cases of lists., f 75;
 #X text 97 9 - route messages according to their first element;
 #X obj 43 8 route;
-#X text 482 627 updated for Pd version 0.43;
-#X obj 82 562 route 4;
-#X msg 26 537 1 2 3;
-#X floatatom 137 538 5 0 0 0 - - -, f 5;
-#X msg 82 537 4 5 6;
-#X obj 81 588 print w1;
-#X obj 150 589 print w2;
-#X text 210 547 With zero or one argument \, route sprouts an inlet
-to set the argument (which may be float or symbol).;
+#X text 399 619 updated for Pd version 0.43;
+#X obj 82 578 route 4, f 9;
+#X msg 26 553 1 2 3;
+#X floatatom 142 554 5 0 0 0 - - -;
+#X msg 82 553 4 5 6;
+#X obj 81 604 print w1;
+#X obj 150 605 print w2;
+#X text 226 555 With zero or one argument \, route sprouts an inlet
+to set the argument (which may be float or symbol)., f 51;
 #X connect 4 0 0 0;
 #X connect 4 1 1 0;
 #X connect 4 2 2 0;

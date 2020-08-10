@@ -100,7 +100,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         for (j = 0; j < outport_count;  j++)
         {
             if (out = jack_port_get_buffer (output_port[j], nframes))
-                memset(out, 0, sizeof (float) * nframes);
+                memset(out, 0, sizeof (jack_default_audio_sample_t) * nframes);
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
         jack_filled = 0;
@@ -341,8 +341,8 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         jack_client = jack_client_open (desired_client_name, JackNoStartServer,
           &status, NULL);
         if (status & JackFailure) {
-            error("JACK: Failure.  Is JACK running?");
-            verbose(1, "JACK: Returned status is: %d", status);
+            error("JACK: couldn't connect to server, is JACK running?");
+            verbose(1, "JACK: returned status is: %d", status);
             jack_client=NULL;
             /* jack spits out enough messages already, do not warn */
             STUFF->st_inchannels = STUFF->st_outchannels = 0;

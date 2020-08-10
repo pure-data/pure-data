@@ -67,7 +67,11 @@ proc ::pd_docsdir::init {{reset false}} {
         }
         set docspath_default [file join $docspath_default "Pd"]
         # prompt
-        set msg [_ "Do you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        if {[file isdir ${docspath_default}]} {
+            set msg [_ "Do you want Pd to use the existing documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        } {
+            set msg [_ "Do you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        }
         set _args "-message \"[format $msg $docspath_default]\" -type yesnocancel -default yes -icon question -parent .pdwindow"
         switch -- [eval tk_messageBox ${_args}] {
             yes {
@@ -186,7 +190,7 @@ proc ::pd_docsdir::create_path {path} {
     if {[file mkdir [file normalize "$path"]] eq ""} {
         return 1
     }
-    ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s\n"] $path]
+    ::pdwindow::error [format [_ "couldn't create Pd documents directory: %s\n"] $path]
     return 0
 }
 
@@ -220,7 +224,7 @@ proc ::pd_docsdir::create_externals_path {{path ""}} {
     if {[file mkdir "$newpath" ] eq ""} {
         return 1
     }
-    ::pdwindow::error [format [_ "Couldn't create \"externals\" directory in: %s\n"] $path]
+    ::pdwindow::error [format [_ "couldn't create \"externals\" directory in: %s\n"] $path]
     return 0
 }
 
