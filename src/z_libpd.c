@@ -212,7 +212,7 @@ int libpd_process_double(const int ticks, const double *inBuffer, double *outBuf
   t_sample *p; \
   size_t i; \
   sys_lock(); \
-  sys_microsleep(0); \
+  sys_pollgui(); \
   for (p = STUFF->st_soundin, i = 0; i < n_in; i++) { \
     *p++ = *inBuffer++ _x; \
   } \

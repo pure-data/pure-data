@@ -19,11 +19,11 @@ extern "C"
 
 #include "m_pd.h"
 
-/* initializing pd */
+/* initializing Pd */
 
 /// initialize libpd; it is safe to call this more than once
 /// returns 0 on success or -1 if libpd was already initialized
-/// note: sets SIGFPE handler to keep bad pd patches from crashing due to divide
+/// note: sets SIGFPE handler to keep bad Pd patches from crashing due to divide
 ///       by 0, set any custom handling after calling this function
 EXTERN int libpd_init(void);
 
@@ -51,7 +51,7 @@ EXTERN int libpd_getdollarzero(void *p);
 
 /* audio processing */
 
-/// returns the block size of Pd
+/// return Pd's fixed block size: the number of sample frames per 1 Pd tick
 EXTERN int libpd_blocksize(void);
 
 /// initialize audio rendering
@@ -129,7 +129,7 @@ EXTERN int libpd_read_array(float *dest, const char *name, int offset, int n);
 EXTERN int libpd_write_array(const char *name, int offset,
 	const float *src, int n);
 
-/* sending messages to pd */
+/* sending messages to Pd */
 
 /// send a bang to a destination receiver
 /// ex: libpd_bang("foo") will send a bang to [s foo] on the next tick
@@ -207,7 +207,7 @@ EXTERN int libpd_list(const char *recv, int argc, t_atom *argv);
 EXTERN int libpd_message(const char *recv, const char *msg,
 	int argc, t_atom *argv);
 
-/* receiving messages from pd */
+/* receiving messages from Pd */
 
 /// subscribe to messages sent to a source receiver
 /// ex: libpd_bind("foo") adds a "virtual" [r foo] which forwards messages to
@@ -317,7 +317,7 @@ EXTERN const char *libpd_get_symbol(t_atom *a);
 /// returns next atom or NULL, assuming the atom vector is NULL-terminated
 EXTERN t_atom *libpd_next_atom(t_atom *a);
 
-/* sending MIDI messages to pd */
+/* sending MIDI messages to Pd */
 
 /// send a MIDI note on message to [notein] objects
 /// channel is 0-indexed, pitch is 0-127, and velocity is 0-127
@@ -372,50 +372,50 @@ EXTERN int libpd_sysex(int port, int byte);
 /// returns 0 on success or -1 if an argument is out of range
 EXTERN int libpd_sysrealtime(int port, int byte);
 
-/* receiving MIDI messages from pd */
+/* receiving MIDI messages from Pd */
 
 /// MIDI note on receive hook signature
 /// channel is 0-indexed, pitch is 0-127, and value is 0-127
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
 /// note: there is no note off message, note on w/ velocity = 0 is used instead
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_noteonhook)(int channel, int pitch, int velocity);
 
 /// MIDI control change receive hook signature
 /// channel is 0-indexed, controller is 0-127, and value is 0-127
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_controlchangehook)(int channel,
     int controller, int value);
 
 /// MIDI program change receive hook signature
 /// channel is 0-indexed and value is 0-127
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_programchangehook)(int channel, int value);
 
 /// MIDI pitch bend receive hook signature
 /// channel is 0-indexed and value is -8192-8192
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
 /// note: [bendin] outputs 0-16383 while [bendout] accepts -8192-8192
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_pitchbendhook)(int channel, int value);
 
 /// MIDI after touch receive hook signature
 /// channel is 0-indexed and value is 0-127
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_aftertouchhook)(int channel, int value);
 
 /// MIDI poly after touch receive hook signature
 /// channel is 0-indexed, pitch is 0-127, and value is 0-127
 /// channels encode MIDI ports via: libpd_channel = pd_channel + 16 * pd_port
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_polyaftertouchhook)(int channel, int pitch, int value);
 
 /// raw MIDI byte receive hook signature
 /// port is 0-indexed and byte is 0-256
-/// note: out of range values from pd are clamped
+/// note: out of range values from Pd are clamped
 typedef void (*t_libpd_midibytehook)(int port, int byte);
 
 /// set the MIDI note on hook to receive from [noteout] objects, NULL by default
@@ -455,7 +455,7 @@ EXTERN void libpd_set_midibytehook(const t_libpd_midibytehook hook);
 /* GUI */
 
 /// open the current patches within a Pd vanilla GUI
-/// requires the path to Pd's main folder that contains bin/, tcl/, etc
+/// requires the path to pd's main folder that contains bin/, tcl/, etc
 /// for a macOS .app bundle: /path/to/Pd-#.#-#.app/Contents/Resources
 /// returns 0 on success
 EXTERN int libpd_start_gui(char *path);
@@ -471,28 +471,28 @@ EXTERN void libpd_poll_gui(void);
 
 /* multiple instances */
 
-/// create a new pd instance
+/// create a new Pd instance
 /// returns new instance or NULL when libpd is not compiled with PDINSTANCE
 EXTERN t_pdinstance *libpd_new_instance(void);
 
-/// set the current pd instance
+/// set the current Pd instance
 /// subsequent libpd calls will affect this instance only
 /// does nothing when libpd is not compiled with PDINSTANCE
 EXTERN void libpd_set_instance(t_pdinstance *p);
 
-/// free a pd instance
+/// free a Pd instance
 /// does nothing when libpd is not compiled with PDINSTANCE
 EXTERN void libpd_free_instance(t_pdinstance *p);
 
-/// get the current pd instance
+/// get the current Pd instance
 EXTERN t_pdinstance *libpd_this_instance(void);
 
-/// get a pd instance by index
+/// get a Pd instance by index
 /// returns NULL if index is out of bounds or "this" instance when libpd is not
 /// compiled with PDINSTANCE
 EXTERN t_pdinstance *libpd_get_instance(int index);
 
-/// get the number of pd instances
+/// get the number of Pd instances
 /// returns number or 1 when libpd is not compiled with PDINSTANCE
 EXTERN int libpd_num_instances(void);
 
