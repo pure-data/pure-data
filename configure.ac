@@ -227,6 +227,9 @@ AC_PROG_LIBTOOL
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+if test x$MACOSX = xyes ; then
+    AC_PROG_OBJCXX
+fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S

@@ -42,6 +42,7 @@ extern int sys_verbose;
 EXTERN int sys_noloadbang;
 EXTERN int sys_havegui(void);
 extern const char *sys_guicmd;
+extern int sys_eventloop;
 
 EXTERN int sys_nearestfontsize(int fontsize);
 
@@ -437,3 +438,9 @@ EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
 EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
     va_list argptr);
 
+/* event loop */
+#ifdef PD_EVENTLOOP
+void sys_eventloop_setup(void);
+void sys_eventloop_run(void);
+void sys_eventloop_quit(void);
+#endif

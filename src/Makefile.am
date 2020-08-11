@@ -196,6 +196,11 @@ pd_SOURCES_standalone = \
     s_midi.c \
     $(empty)
 
+if MACOSX
+pd_CFLAGS += -DPD_EVENTLOOP
+pd_SOURCES_core += s_macos.mm
+endif
+
 # pd-watchdog and "local" pd symlink location for tcl scripts
 libpdbindir = $(pkglibdir)/bin
 
@@ -298,7 +303,7 @@ endif
 
 # need Carbon framework for PA on Mac
 if MACOSX
-LIBS += -framework Carbon
+LIBS += -framework Carbon -framework CoreFoundation -framework AppKit
 endif
 
 endif

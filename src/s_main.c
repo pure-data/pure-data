@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -58,6 +59,7 @@ int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
 int sys_defeatrt;       /* flag to cancel real-time */
+int sys_eventloop;
 t_symbol *sys_flags;    /* more command-line flags */
 
 const char *sys_guicmd;
@@ -363,6 +365,8 @@ static void sys_fakefromgui(void)
 
 static void sys_afterargparse(void);
 static void sys_printusage(void);
+static int sys_run(void);
+static void *sys_runthread(void *);
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
@@ -450,6 +454,46 @@ int sys_main(int argc, const char **argv)
             clock_new(0, (t_method)sys_fakefromgui)), 0);
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
+    if (sys_eventloop && !sys_batch)
+    {
+        pthread_t thread;
+        int ret, err;
+        /* First setup event loop. This is necessary in case sys_run()
+           returns before we get a chance to call sys_eventloop_run(). */
+    #ifdef PD_EVENTLOOP
+        /* fprintf(stderr, "start event loop\n"); */
+        sys_eventloop_setup();
+    #endif
+        if ((err = pthread_create(&thread, 0, sys_runthread, &ret)))
+        {
+            fprintf(stderr, "pthread_create() failed with %d\n", err);
+            return (1);
+        }
+        /* run event loop in main thread until we receive a quit event */
+    #ifdef PD_EVENTLOOP
+        sys_eventloop_run();
+        /* fprintf(stderr, "event loop finished\n"); */
+    #endif
+        pthread_join(thread, 0);
+        return ret;
+    }
+    else
+        return sys_run();
+}
+
+static void *sys_runthread(void *x)
+{
+    int *ret = (int *)x;
+    *ret = sys_run();
+#ifdef PD_EVENTLOOP
+    /* fprintf(stderr, "quit event loop\n"); */
+    sys_eventloop_quit();
+#endif
+    return 0;
+}
+
+static int sys_run(void)
+{
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
@@ -588,7 +632,12 @@ static char *(usagemessage[]) = {
 "-nobatch         -- run interactively (true by default)\n",
 "-autopatch       -- enable auto-patching to new objects (true by default)\n",
 "-noautopatch     -- defeat auto-patching\n",
-"-compatibility <f> -- set back-compatibility to version <f>\n",
+#ifdef PD_EVENTLOOP
+"-eventloop       -- enable event loop. NOTE: on macOS, this breaks externals\n",
+"                    which create their own event loop, e.g. Gem or ophelia\n",
+"-noeventloop     -- disable event loop\n",
+#endif
+"-compatibility <f> -- set back-compatibility to version <f>\n"
 };
 
 static void sys_printusage(void)
@@ -1327,6 +1376,18 @@ int sys_argparse(int argc, const char **argv)
             sys_guicmd = argv[1];
             argc -= 2; argv += 2;
         }
+#ifdef PD_EVENTLOOP
+        else if (!strcmp(*argv, "-eventloop"))
+        {
+            sys_eventloop = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-noeventloop"))
+        {
+            sys_eventloop = 0;
+            argc--; argv++;
+        }
+#endif
         else if (!strcmp(*argv, "-send"))
         {
             if (argc < 2)
