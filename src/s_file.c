@@ -744,7 +744,10 @@ void sys_loadpreferences(const char *filename, int startingup)
 #endif
     if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_zoom_open);
-
+#ifdef PD_EVENTLOOP
+    if (sys_getpreference("eventloop", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &sys_eventloop);
+#endif
     sys_doneloadpreferences();
 }
 
@@ -866,6 +869,10 @@ void sys_savepreferences(const char *filename)
     sprintf(buf1, "%d", sys_zoom_open);
     sys_putpreference("zoom", buf1);
     sys_putpreference("loading", "no");
+#ifdef PD_EVENTLOOP
+    sprintf(buf1, "%d", sys_eventloop);
+    sys_putpreference("eventloop", buf1);
+#endif
 
     sys_donesavepreferences();
 }
