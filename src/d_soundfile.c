@@ -1362,7 +1362,7 @@ int soundfiler_writeascii(t_soundfiler *x, const char *filename, t_asciiargs *a)
 {
     char path[MAXPDSTRING];
     t_binbuf *b = binbuf_new();
-    int i, j, ret = 1;
+    int i, j, frameswritten = 0, ret = 1;
 #ifdef DEBUG_SOUNDFILE
     post("ascii write: frames %d onset %d channels %d",
         a->aa_nframes, a->aa_onsetframe, a->aa_nchannels);
@@ -1370,13 +1370,16 @@ int soundfiler_writeascii(t_soundfiler *x, const char *filename, t_asciiargs *a)
     canvas_makefilename(x->x_canvas, filename, path, MAXPDSTRING);
     if (a->aa_nframes > 200000)
         post("warning: writing %d table points to ascii file!");
-    for (i = a->aa_onsetframe; i < a->aa_nframes; ++i)
+    for (i = a->aa_onsetframe; frameswritten < a->aa_nframes; ++i)
+    {
         for (j = 0; j < a->aa_nchannels; ++j)
             binbuf_addv(b, "f", a->aa_vectors[j][i].w_float * a->aa_normfactor);
+        frameswritten++;
+    }
     binbuf_addv(b, ";");
     ret = binbuf_write(b, path, "", 1); /* convert semis to cr */
     binbuf_free(b);
-    return (ret == 0 ? a->aa_nframes : 0);
+    return (ret == 0 ? frameswritten : 0);
 }
 
     /** this is broken out from soundfiler_write below so garray_write can
