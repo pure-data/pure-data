@@ -75,11 +75,6 @@
 #define isdigit(x)      (x >= '0' && x <= '9')
 #endif
 
-#ifdef _MSC_VER
-#define strtof(a, b) _atoldbl(a, *b)
-#endif
-
-
 char *atoif(char *s, long int *value, long int *type);
 
 static struct ex_ex *ex_lex(struct expr *expr, long int *n);
