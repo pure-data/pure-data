@@ -1092,6 +1092,11 @@ void sys_init_fdpoll(void)
 void sys_gui_preferences(void)
 {
     unsigned int nsearch, ntemp, nstatic, nlibs;
+#ifdef PD_EVENTLOOP
+    int eventloop = sys_eventloop;
+#else
+    int eventloop = -1; /* hide button */
+#endif
     const char**searchpath = namelist2strings(STUFF->st_searchpath, &nsearch);
     const char**temppath = namelist2strings(STUFF->st_temppath, &ntemp);
     const char**staticpath = namelist2strings(STUFF->st_staticpath, &nstatic);
@@ -1110,6 +1115,7 @@ void sys_gui_preferences(void)
     sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
     sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
     sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
+    sys_vgui("set_escaped ::sys_eventloop %d\n", eventloop);
     sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
     pdgui_vmess("::dialog_startup::set_flags", "s",
                 (sys_flags? sys_flags->s_name : ""));

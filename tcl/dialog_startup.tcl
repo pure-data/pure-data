@@ -88,14 +88,15 @@ proc ::dialog_startup::commit { new_startup } {
 
     # libraries
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::sys_defeatrt $::sys_eventloop \
+        [pdtk_encodedialog $::sys_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
-proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
+proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt eventloop flags} {
     set ::sys_defeatrt $defeatrt
+    set ::sys_eventloop $eventloop
     if {$flags ne ""} {variable ::sys_flags [subst -nocommands $flags]}
-
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -245,11 +246,21 @@ proc ::dialog_startup::fill_frame {frame} {
         -variable ::sys_verbose
     pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
+    # defeatrt
     if {$::windowingsystem ne "win32"} {
         checkbutton $frame.optionframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::sys_defeatrt
         pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
+    }
+
+    # event loop
+    # -1 means that Pd is built without event loop support
+    if { $::sys_eventloop >= 0 } {
+        checkbutton $frame.optionframe.eventloop -anchor w \
+            -text [_ "Enable event loop"] \
+            -variable ::sys_eventloop
+        pack $frame.optionframe.eventloop -side top -anchor w -expand 1
     }
 
     labelframe $frame.flags -text [_ "Startup flags:" ]

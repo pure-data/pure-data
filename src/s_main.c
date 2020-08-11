@@ -1703,11 +1703,16 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
+#ifdef PD_EVENTLOOP
+    int eventloop = sys_eventloop;
+#else
+    int eventloop = -1; /* hide button */
+#endif
     sys_gui_preferences();
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_startup_dialog", (void *)glob_start_path_dialog,
-        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
+        "iis", sys_defeatrt, eventloop, sys_flags ? sys_flags->s_name : "");
 }
 
     /* new values from dialog window */
@@ -1717,10 +1722,14 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
     sys_defeatrt = atom_getfloatarg(0, argc, argv);
-    sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for (i = 0; i < argc-2; i++)
+#ifdef PD_EVENTLOOP
+    sys_eventloop = atom_getfloatarg(1, argc, argv);
+#endif
+    sys_flags = sys_decodedialog(atom_getsymbolarg(2, argc, argv));
+    argc -= 3; argv += 3;
+    for (i = 0; i < argc; i++)
     {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
+        t_symbol *s = sys_decodedialog(atom_getsymbol(argv + i));
         if (*s->s_name)
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, s->s_name);
