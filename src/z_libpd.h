@@ -526,6 +526,12 @@ EXTERN void libpd_stop_gui(void);
 /// to poll again, up to some reasonable limit
 EXTERN int libpd_poll_gui(void);
 
+/// tell libpd whether there is a global event loop (1: true, 0: false)
+/// this is especially relevant for macOS because there can only be a single
+/// Cocoa event loop (which must run on the main thread).
+/// Pd externals can query the value with sys_have_eventloop()
+EXTERN void libpd_set_eventloop(int b);
+
 /* multiple instances */
 
 /// create a new pd instance and set as current
