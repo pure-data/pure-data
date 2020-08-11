@@ -163,7 +163,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.settings.bsc -side top -fill x
     button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
         -command "set audio_sr 48000"
-    button $mytoplevel.settings.bsc.rate2 -text [_ "44k1"] \
+    button $mytoplevel.settings.bsc.rate2 -text [_ "44.1k"] \
         -command "set audio_sr 44100"
     button $mytoplevel.settings.bsc.rate3 -text [_ "96k"] \
         -command "set audio_sr 96000"
