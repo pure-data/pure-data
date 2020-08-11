@@ -230,12 +230,10 @@ proc ::dialog_startup::fill_frame {frame} {
     pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
     # defeatrt
-    if {$::windowingsystem ne "win32"} {
-        checkbutton $frame.optionframe.defeatrt -anchor w \
-            -text [_ "Defeat real-time scheduling"] \
-            -variable ::sys_defeatrt
-        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
-    }
+    checkbutton $frame.optionframe.defeatrt -anchor w \
+        -text [_ "Defeat real-time scheduling"] \
+        -variable ::sys_defeatrt
+    pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
 
     # event loop (only OSX for now)
     if {$::windowingsystem eq "aqua"} {
