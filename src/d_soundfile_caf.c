@@ -225,15 +225,16 @@ static int caf_readheader(t_soundfile *sf)
     caf_posthead(head, swap);
 #endif
 
-        /* copy the first chunk header to beginning of buffer */
-    memcpy(buf.b_c, buf.b_c + CAFHEADSIZE, CAFDESCSIZE);
+        /* copy the first chunk header to beginning of buffer,
+           use memmove as src & dst are the same */
+    memmove(buf.b_c, buf.b_c + CAFHEADSIZE, CAFDESCSIZE);
     headersize = CAFHEADSIZE;
 
         /* first chunk must be description */
     if (strncmp(desc->ds_id, "desc", 4))
         return 0;
 #ifdef DEBUG_SOUNDFILE
-        caf_postdesc(desc, swap);
+    caf_postdesc(desc, swap);
 #endif
     if (strncmp(desc->ds_fmtid, "lpcm", 4))
     {
