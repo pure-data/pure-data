@@ -137,7 +137,7 @@ typedef struct _soundfile_type
     t_soundfile_endiannessfn t_endiannessfn;     /**< must be non-NULL      */
 } t_soundfile_type;
 
-    /** add a new type implementation, makes a deep copy
+    /** add a new type implementation
         returns 1 on success or 0 if max types has been reached */
 int soundfile_addtype(const t_soundfile_type *t);
 
@@ -154,7 +154,7 @@ ssize_t fd_write(int fd, off_t offset, const void *src, size_t size);
 
 /* ----- byte swappers ----- */
 
-    /** returns 1 is system is bigendian */
+    /** returns 1 if system is bigendian */
 int sys_isbigendian(void);
 
     /** swap 8 bytes and return if doit = 1, otherwise return n */
