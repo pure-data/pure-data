@@ -438,7 +438,10 @@ EXTERN int pd_snprintf(char *buf, size_t size, const char *fmt, ...);
 EXTERN int pd_vsnprintf(char *buf, size_t size, const char *fmt,
     va_list argptr);
 
-/* event loop */
+/* For now, the event loop is only implemented for macOS (see s_macos.mm) where it is
+ * badly needed (because the GUI event loop *must* run on the main thread).
+ * A Windows and Linux implementation might follow later, together with API methods for
+ * dispatching function calls to the UI thread (similar to "dispatch_async_f" on macOS) */
 #ifdef PD_EVENTLOOP
 void sys_eventloop_setup(void);
 void sys_eventloop_run(void);

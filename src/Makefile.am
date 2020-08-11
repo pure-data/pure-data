@@ -301,7 +301,7 @@ else
 pd_LDADD_standalone += -lportaudio
 endif
 
-# need Carbon framework for PA on Mac
+# need Carbon framework for PA on Mac and AppKit for the Cocoa event loop
 if MACOSX
 LIBS += -framework Carbon -framework CoreFoundation -framework AppKit
 endif
