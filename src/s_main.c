@@ -1387,6 +1387,12 @@ int sys_argparse(int argc, const char **argv)
             sys_eventloop = 0;
             argc--; argv++;
         }
+#else
+        else if (!strcmp(*argv, "-eventloop") || !strcmp(*argv, "-noeventloop"))
+        {
+            fprintf(stderr, "Pd compiled without event loop support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
 #endif
         else if (!strcmp(*argv, "-send"))
         {
