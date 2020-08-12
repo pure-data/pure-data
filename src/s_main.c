@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#ifdef PD_EVENTLOOP
 #include <pthread.h>
+#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -366,7 +368,17 @@ static void sys_fakefromgui(void)
 static void sys_afterargparse(void);
 static void sys_printusage(void);
 static int sys_run(void);
-static void *sys_runthread(void *);
+
+#ifdef PD_EVENTLOOP
+static void *sys_runthread(void *x)
+{
+    int *ret = (int *)x;
+    *ret = sys_run();
+    /* fprintf(stderr, "quit event loop\n"); */
+    sys_eventloop_quit();
+    return 0;
+}
+#endif
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
@@ -454,42 +466,30 @@ int sys_main(int argc, const char **argv)
             clock_new(0, (t_method)sys_fakefromgui)), 0);
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
+#ifdef PD_EVENTLOOP
     if (sys_eventloop && !sys_batch)
     {
         pthread_t thread;
         int ret, err;
-        /* First setup event loop. This is necessary in case sys_run()
-           returns before we get a chance to call sys_eventloop_run(). */
-    #ifdef PD_EVENTLOOP
+            /* First setup event loop. This is necessary in case sys_run()
+               returns before we get a chance to call sys_eventloop_run(). */
         /* fprintf(stderr, "start event loop\n"); */
         sys_eventloop_setup();
-    #endif
         if ((err = pthread_create(&thread, 0, sys_runthread, &ret)))
         {
             fprintf(stderr, "pthread_create() failed with %d\n", err);
             return (1);
         }
-        /* run event loop in main thread until we receive a quit event */
-    #ifdef PD_EVENTLOOP
+            /* run event loop in main thread until we receive a quit event */
         sys_eventloop_run();
         /* fprintf(stderr, "event loop finished\n"); */
-    #endif
+
         pthread_join(thread, 0);
         return ret;
     }
     else
-        return sys_run();
-}
-
-static void *sys_runthread(void *x)
-{
-    int *ret = (int *)x;
-    *ret = sys_run();
-#ifdef PD_EVENTLOOP
-    /* fprintf(stderr, "quit event loop\n"); */
-    sys_eventloop_quit();
 #endif
-    return 0;
+        return sys_run();
 }
 
 static int sys_run(void)
