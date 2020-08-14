@@ -42,4 +42,4 @@ in a graph \, then the graph automaticallly resets its bounds to match.
 dialog. Note that information about size and ranges is saved \, but
 ticks and labels are lost between Pd sessions. The contents of the
 array may be saved as part of the patch or discarded., f 46;
-#X text 510 118 This is set in the 'properties" dialog.;
+#X text 510 118 This is set in the "properties" dialog.;

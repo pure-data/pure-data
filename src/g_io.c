@@ -116,7 +116,10 @@ t_int *vinlet_perform(t_int *w)
 
 static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
+
+    if (!x->x_buf)   /* if we're not signal, just forward */
+        outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+    else if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
         outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
 }
 
@@ -133,7 +136,7 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
     }
     else
     {
-        dsp_add(vinlet_perform, 3, x, outsig->s_vec, outsig->s_vecsize);
+        dsp_add(vinlet_perform, 3, x, outsig->s_vec, (t_int)outsig->s_vecsize);
         x->x_read = x->x_buf;
     }
 }
@@ -220,14 +223,14 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
 
             if (upsample * downsample == 1)
                     dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
-                        re_parentvecsize);
+                        (t_int)re_parentvecsize);
             else {
               int method = (x->x_updown.method == 3?
-                (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
+                  (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
               resamplefrom_dsp(&x->x_updown, insig->s_vec, parentvecsize,
-                re_parentvecsize, method);
+                  re_parentvecsize, method);
               dsp_add(vinlet_doprolog, 3, x, x->x_updown.s_vec,
-                re_parentvecsize);
+                  (t_int)re_parentvecsize);
         }
 
             /* if the input signal's reference count is zero, we have
@@ -463,7 +466,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
     if (!x->x_buf) return;
     insig = sp[0];
     if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
+        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, (t_int)insig->s_n);
     else if (x->x_directsignal)
     {
             /* if we're just going to make the signal available on the
@@ -472,7 +475,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
         signal_setborrowed(x->x_directsignal, sp[0]);
     }
     else
-        dsp_add(voutlet_perform, 3, x, insig->s_vec, insig->s_n);
+        dsp_add(voutlet_perform, 3, x, insig->s_vec, (t_int)insig->s_n);
 }
 
         /* set up epilog DSP code.  If we're reblocking, this is the
@@ -533,12 +536,12 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
             x->x_empty = x->x_buf + re_parentvecsize * epilogphase;
             if (upsample * downsample == 1)
                 dsp_add(voutlet_doepilog, 3, x, outsig->s_vec,
-                    re_parentvecsize);
+                    (t_int)re_parentvecsize);
             else
             {
                 int method = (x->x_updown.method == 3?
                     (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
-                dsp_add(voutlet_doepilog_resampling, 2, x, re_parentvecsize);
+                dsp_add(voutlet_doepilog_resampling, 2, x, (t_int)re_parentvecsize);
                 resampleto_dsp(&x->x_updown, outsig->s_vec, re_parentvecsize,
                     parentvecsize, method);
             }

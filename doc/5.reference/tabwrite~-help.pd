@@ -28,7 +28,7 @@ documentation \, and these objects:, f 43;
 #X text 161 292 set destination array;
 #X text 31 49 Tabwrite~ records an audio signal sequentially into an
 array. Sending it "bang" writes from beginning to end of the array.
-To avoid writing all the way to the end \, you can send a "stop message
+To avoid writing all the way to the end \, you can send a "stop" message
 at an appropriate later time. The "start" message allows setting the
 array location at which the first sample is written. (Starting and
 stopping occur on block boundaries \, typically multiples of 64 samples

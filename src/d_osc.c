@@ -104,7 +104,7 @@ static t_int *phasor_perform(t_int *w)
 static void phasor_dsp(t_phasor *x, t_signal **sp)
 {
     x->x_conv = 1./sp[0]->s_sr;
-    dsp_add(phasor_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(phasor_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void phasor_ft1(t_phasor *x, t_float f)
@@ -198,7 +198,7 @@ static t_int *cos_perform(t_int *w)
 
 static void cos_dsp(t_cos *x, t_signal **sp)
 {
-    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void cos_maketable(void)
@@ -321,7 +321,7 @@ static t_int *osc_perform(t_int *w)
 static void osc_dsp(t_osc *x, t_signal **sp)
 {
     x->x_conv = COSTABSIZE/sp[0]->s_sr;
-    dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void osc_ft1(t_osc *x, t_float f)
@@ -451,7 +451,7 @@ static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
     x->x_ctl->c_isr = 6.28318f/sp[0]->s_sr;
     dsp_add(sigvcf_perform, 6,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-            x->x_ctl, sp[0]->s_n);
+            x->x_ctl, (t_int)sp[0]->s_n);
 }
 
 static
@@ -504,7 +504,7 @@ static t_int *noise_perform(t_int *w)
 
 static void noise_dsp(t_noise *x, t_signal **sp)
 {
-    dsp_add(noise_perform, 3, sp[0]->s_vec, &x->x_val, sp[0]->s_n);
+    dsp_add(noise_perform, 3, sp[0]->s_vec, &x->x_val, (t_int)sp[0]->s_n);
 }
 
 static void noise_float(t_noise *x, t_float f)

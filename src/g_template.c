@@ -515,7 +515,10 @@ t_canvas *template_findcanvas(t_template *template)
 {
     t_gtemplate *gt;
     if (!template)
+    {
         bug("template_findcanvas");
+        return (0);
+    }
     if (!(gt = template->t_list))
         return (0);
     return (gt->x_owner);
@@ -1626,7 +1629,8 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, xsum, yval, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, yval, vis, scalarvis;
+    double xsum;
     t_array *array;
     int x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
     int i;
@@ -1741,8 +1745,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, usexloc, xsum, yval, vis,
-        scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, usexloc, yval, vis, scalarvis;
+    double xsum;
     t_array *array;
     int nelem;
     char *elem;
@@ -2110,16 +2114,15 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     /* try clicking on an element of the array as a scalar (if clicking
     on the trace of the array failed) */
 static int array_doclick_element(t_array *array, t_glist *glist,
-    t_scalar *sc, t_array *ap,
     t_symbol *elemtemplatesym,
-    t_float linewidth, t_float xloc, t_float xinc, t_float yloc,
+    t_float xloc, t_float xinc, t_float yloc,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i, incr, hit;
-    t_float xsum;
+    double xsum;
 
     if (elemtemplatesym == &s_float)
         return (0);
@@ -2154,14 +2157,13 @@ static int array_doclick_element(t_array *array, t_glist *glist,
 
 static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
     t_array *ap, t_symbol *elemtemplatesym,
-    t_float linewidth, t_float xloc, t_float xinc, t_float yloc,
-    t_float scalarvis,
+    t_float xloc, t_float xinc, t_float yloc, t_float scalarvis,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
-    int elemsize, yonset, wonset, xonset, i, callmotion = 0;
+    int elemsize, yonset, wonset, xonset, i;
 
     if (!array_getfields(elemtemplatesym, &elemtemplatecanvas,
         &elemtemplate, &elemsize, xfield, yfield, wfield,
@@ -2213,6 +2215,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         }
         else
         {
+                /* First we get the closest distance to any element */
             for (i = 0; i < array->a_n; i += incr)
             {
                 t_float pxpix, pypix, pwpix, dx, dy;
@@ -2242,15 +2245,23 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         best = dx + dy;
                 }
             }
+                /* If we're not too close, we first try to click a scalar
+                (if visible). This would not affect the array */
             if (best > 8)
             {
                 if (scalarvis != 0)
-                    return (array_doclick_element(array, glist, sc, ap,
-                        elemtemplatesym, linewidth, xloc, xinc, yloc,
+                {
+                    return (array_doclick_element(array, glist,
+                        elemtemplatesym, xloc, xinc, yloc,
                             xfield, yfield, wfield,
                             xpix, ypix, shift, alt, dbl, doit));
+
+                }
                 else return (0);
             }
+                /* Now we walk over the array again and decide whether we
+                a) grab an element, b) change the line width,
+                c) delete an element or d) add a new element */
             best += 0.001;  /* add truncation error margin */
             for (i = 0; i < array->a_n; i += incr)
             {
@@ -2366,7 +2377,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
+                    else return (TEMPLATE->array_motion_fatten ?
+                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
                 }
             }
         }
@@ -2390,9 +2402,8 @@ static int plot_click(t_gobj *z, t_glist *glist,
         &vis, &scalarvis,
         &xfielddesc, &yfielddesc, &wfielddesc) && (vis != 0))
     {
-        return (array_doclick(array, glist, sc, ap,
-            elemtemplatesym,
-            linewidth, basex + xloc, xinc, basey + yloc, scalarvis,
+        return (array_doclick(array, glist, sc, ap, elemtemplatesym,
+            basex + xloc, xinc, basey + yloc, scalarvis,
             xfielddesc, yfielddesc, wfielddesc,
             xpix, ypix, shift, alt, dbl, doit));
     }

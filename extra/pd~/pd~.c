@@ -608,7 +608,7 @@ static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
     for (i = 0, g = x->x_outsig; i < x->x_noutsig; i++, g++)
         *g = (*(sp++))->s_vec;
     
-    dsp_add(pd_tilde_perform, 2, x, n);
+    dsp_add(pd_tilde_perform, 2, x, (t_int)n);
 }
 
 static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,

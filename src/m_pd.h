@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 50
-#define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 51
+#define PD_BUGFIX_VERSION 1
+#define PD_TEST_VERSION "test1"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -83,7 +83,7 @@ typedef unsigned __int64  uint64_t;
 
 /* signed and unsigned integer types the size of a pointer:  */
 #if !defined(PD_LONGINTTYPE)
-#if defined(_WIN32) && defined(__x86_64__)
+#if defined(_WIN32) && defined(_WIN64)
 #define PD_LONGINTTYPE long long
 #else
 #define PD_LONGINTTYPE long
@@ -98,11 +98,11 @@ typedef unsigned __int64  uint64_t;
 #if PD_FLOATSIZE == 32
 # define PD_FLOATTYPE float
 /* an unsigned int of the same size as FLOATTYPE: */
-# define PD_FLOATUINTTYPE unsigned int
+# define PD_FLOATUINTTYPE uint32_t
 
 #elif PD_FLOATSIZE == 64
 # define PD_FLOATTYPE double
-# define PD_FLOATUINTTYPE unsigned long
+# define PD_FLOATUINTTYPE uint64_t
 #else
 # error invalid FLOATSIZE: must be 32 or 64
 #endif
@@ -279,7 +279,7 @@ EXTERN t_symbol *gensym(const char *s);
 EXTERN t_gotfn getfn(const t_pd *x, t_symbol *s);
 EXTERN t_gotfn zgetfn(const t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
-EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
+EXTERN void pd_vmess(t_pd *x, t_symbol *s, const char *fmt, ...);
 
 /* the following macros are for sending non-type-checkable messages, i.e.,
 using function lookup but circumventing type checking on arguments.  Only
@@ -473,7 +473,7 @@ EXTERN t_class *class_new64(t_symbol *name, t_newmethod newmethod,
 
 EXTERN void class_free(t_class *c);
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 EXTERN t_class *class_getfirst(void);
 #endif
 
@@ -693,8 +693,8 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(char *fmt, ...);
-EXTERN void sys_gui(char *s);
+EXTERN void sys_vgui(const char *fmt, ...);
+EXTERN void sys_gui(const char *s);
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);

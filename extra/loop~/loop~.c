@@ -142,7 +142,7 @@ static void loop_dsp(t_loop *x, t_signal **sp)
 {
     dsp_add(loop_perform, 6,
         &x->x_loopctl, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-            sp[0]->s_n);
+            (t_int)sp[0]->s_n);
 }
 
 static void loop_set(t_loop *x, t_floatarg val)
