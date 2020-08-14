@@ -31,7 +31,7 @@ static t_class *hslider_class;
 
 /* widget helper functions */
 
-#define GET_KNOB_X(x) (((x->x_pos + 50) / 100) * IEMGUI_ZOOM(x))
+#define GET_KNOB_X(x) (((x->x_val + 50) / 100) * IEMGUI_ZOOM(x))
 
 static void hslider_draw_update(t_gobj *client, t_glist *glist)
 {
@@ -242,20 +242,20 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_pos, x->x_steady);
+                x->x_val, x->x_steady);
     binbuf_addv(b, ";");
 }
 
-#define POS_MAX(x) (100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100)
+#define VAL_MAX(x) (100 * (x->x_gui.x_w / IEMGUI_ZOOM(x)) - 100)
 
 void hslider_check_width(t_hslider *x, int w)
 {
     if(w < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         w = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
     x->x_gui.x_w = w;
-    if(x->x_pos > POS_MAX(x))
+    if(x->x_val > VAL_MAX(x))
     {
-        x->x_pos = POS_MAX(x);
+        x->x_val = VAL_MAX(x);
     }
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max/x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
@@ -315,7 +315,7 @@ static void hslider_properties(t_gobj *z, t_glist *owner)
 
 static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
 {
-    int old = x->x_pos;
+    int old = x->x_val;
     double g;
 
     x->x_fval = f;
@@ -337,8 +337,8 @@ static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
         g = log(f/x->x_min) / x->x_k;
     else
         g = (f - x->x_min) / x->x_k;
-    x->x_pos = (int)(100.0*g + 0.49999);
-    if(x->x_pos != old)
+    x->x_val = (int)(100.0*g + 0.49999);
+    if(x->x_val != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
@@ -346,11 +346,11 @@ static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
 static t_float hslider_getfval(t_hslider *x)
 {
     t_float fval;
-    int rounded_pos = (x->x_gui.x_fsf.x_finemoved) ? x->x_pos : (x->x_pos / 100) * 100;
+    int rounded_val = (x->x_gui.x_fsf.x_finemoved) ? x->x_val : (x->x_val / 100) * 100;
 
     if (x->x_lin0_log1)
-        fval = x->x_min * exp(x->x_k * (double)(rounded_pos) * 0.01);
-    else fval = (double)(rounded_pos) * 0.01 * x->x_k + x->x_min;
+        fval = x->x_min * exp(x->x_k * (double)(rounded_val) * 0.01);
+    else fval = (double)(rounded_val) * 0.01 * x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
@@ -397,22 +397,22 @@ static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
 
 static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
 {
-    int old = x->x_pos;
+    int old = x->x_val;
 
     if(x->x_gui.x_fsf.x_finemoved)
-        x->x_pos += (int)(dx);
+        x->x_val += (int)(dx);
     else
-        x->x_pos += (int)(100 * dx / IEMGUI_ZOOM(x));
-    if(x->x_pos > POS_MAX(x))
+        x->x_val += (int)(100 * dx / IEMGUI_ZOOM(x));
+    if(x->x_val > VAL_MAX(x))
     {
-        x->x_pos = POS_MAX(x);
+        x->x_val = VAL_MAX(x);
     }
-    if(x->x_pos < 0)
+    if(x->x_val < 0)
     {
-        x->x_pos = 0;
+        x->x_val = 0;
     }
     x->x_fval = hslider_getfval(x);
-    if (old != x->x_pos)
+    if (old != x->x_val)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         hslider_bang(x);
@@ -423,12 +423,12 @@ static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
                           t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
-        x->x_pos = (int)
+        x->x_val = (int)
             (100.0 * (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)) / IEMGUI_ZOOM(x));
-    if(x->x_pos > POS_MAX(x))
-        x->x_pos = POS_MAX(x);
-    if(x->x_pos < 0)
-        x->x_pos = 0;
+    if(x->x_val > VAL_MAX(x))
+        x->x_val = VAL_MAX(x);
+    if(x->x_val < 0)
+        x->x_val = 0;
     x->x_fval = hslider_getfval(x);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     hslider_bang(x);
@@ -581,8 +581,8 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (x->x_gui.x_isa.x_loadinit)
-        x->x_pos = v;
-    else x->x_pos = 0;
+        x->x_val = v;
+    else x->x_val = 0;
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
     if(steady != 0) steady = 1;
