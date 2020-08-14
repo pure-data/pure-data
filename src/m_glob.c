@@ -142,7 +142,7 @@ void glob_init(void)
         A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_open, gensym("open"),
         A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("quit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);
