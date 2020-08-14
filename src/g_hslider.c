@@ -393,6 +393,7 @@ static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    hslider_set(x, x->x_fval);
 }
 
 static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
@@ -459,6 +460,7 @@ static void hslider_size(t_hslider *x, t_symbol *s, int ac, t_atom *av)
     if(ac > 1)
         x->x_gui.x_h = iemgui_clip_size((int)atom_getfloatarg(1, ac, av))*IEMGUI_ZOOM(x);
     iemgui_size((void *)x, &x->x_gui);
+    hslider_set(x, x->x_fval);
 }
 
 static void hslider_delta(t_hslider *x, t_symbol *s, int ac, t_atom *av)
@@ -471,6 +473,7 @@ static void hslider_range(t_hslider *x, t_symbol *s, int ac, t_atom *av)
 {
     hslider_check_minmax(x, (double)atom_getfloatarg(0, ac, av),
                             (double)atom_getfloatarg(1, ac, av));
+    hslider_set(x, x->x_fval);
 }
 
 static void hslider_color(t_hslider *x, t_symbol *s, int ac, t_atom *av)
@@ -495,12 +498,14 @@ static void hslider_log(t_hslider *x)
 {
     x->x_lin0_log1 = 1;
     hslider_check_minmax(x, x->x_min, x->x_max);
+    hslider_set(x, x->x_fval);
 }
 
 static void hslider_lin(t_hslider *x)
 {
     x->x_lin0_log1 = 0;
     x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
+    hslider_set(x, x->x_fval);
 }
 
 static void hslider_init(t_hslider *x, t_floatarg f)
