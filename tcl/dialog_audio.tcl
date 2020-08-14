@@ -153,7 +153,8 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     frame $mytoplevel.settings.srd
     pack $mytoplevel.settings.srd -side top -fill x
     label $mytoplevel.settings.srd.sr_label -text [_ "Sample rate:"]
-    entry $mytoplevel.settings.srd.sr_entry -textvariable audio_sr -width 8
+    ttk::combobox $mytoplevel.settings.srd.sr_entry -textvariable audio_sr \
+        -width 8  -values {44100 48000 96000}
     label $mytoplevel.settings.srd.d_label -text [_ "Delay (msec):"]
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
@@ -161,16 +162,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
     frame $mytoplevel.settings.bsc
     pack $mytoplevel.settings.bsc -side top -fill x
-    button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
-        -command "set audio_sr 48000"
-    button $mytoplevel.settings.bsc.rate2 -text [_ "44.1k"] \
-        -command "set audio_sr 44100"
-    button $mytoplevel.settings.bsc.rate3 -text [_ "96k"] \
-        -command "set audio_sr 96000"
-    pack $mytoplevel.settings.bsc.rate1 \
-        $mytoplevel.settings.bsc.rate2 \
-        $mytoplevel.settings.bsc.rate3 \
-         -side left
     label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
@@ -181,7 +172,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     if {$audio_callback >= 0} {
         checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
             -text [_ "Use callbacks"] -anchor w
-        pack $mytoplevel.settings.bsc.c_button -side right
+        pack $mytoplevel.settings.bsc.c_button -side left
     }
 
     # input devices
@@ -364,8 +355,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # set focus
-    $mytoplevel.settings.srd.sr_entry select from 0
-    $mytoplevel.settings.srd.sr_entry select adjust end
     focus $mytoplevel.settings.srd.sr_entry
 
     # for focus handling on OSX
