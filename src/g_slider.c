@@ -28,6 +28,9 @@
 t_widgetbehavior slider_widgetbehavior;
 static t_class *slider_class;
 
+/* forward declarations */
+static void slider_set(t_slider *x, t_floatarg f);
+
 /* widget helper functions */
 
 static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
@@ -415,6 +418,7 @@ static void slider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
     }
 
     iemgui_size(x, &x->x_gui);
+    slider_set(x, x->x_fval);
 }
 
 static void slider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
@@ -560,6 +564,7 @@ static void slider_size(t_slider *x, t_symbol *s, int ac, t_atom *av)
             x->x_gui.x_h = slider_check_range(x, h*IEMGUI_ZOOM(x));
     }
     iemgui_size((void *)x, &x->x_gui);
+    slider_set(x, x->x_fval);
 }
 
 static void slider_delta(t_slider *x, t_symbol *s, int ac, t_atom *av)
@@ -574,6 +579,7 @@ static void slider_range(t_slider *x, t_symbol *s, int ac, t_atom *av)
         (double)atom_getfloatarg(0, ac, av),
         (double)atom_getfloatarg(1, ac, av),
         (x->x_orientation==horizontal)?x->x_gui.x_w:x->x_gui.x_h);
+    slider_set(x, x->x_fval);
 }
 
 static void slider_color(t_slider *x, t_symbol *s, int ac, t_atom *av)
@@ -599,6 +605,7 @@ static void slider_log(t_slider *x)
     x->x_lin0_log1 = 1;
     slider_check_minmax(x, x->x_min, x->x_max,
         (x->x_orientation==horizontal)?x->x_gui.x_w:x->x_gui.x_h);
+    slider_set(x, x->x_fval);
 }
 
 static void slider_lin(t_slider *x)
@@ -606,6 +613,7 @@ static void slider_lin(t_slider *x)
     double v = (x->x_orientation==horizontal)?x->x_gui.x_w:x->x_gui.x_h;
     x->x_lin0_log1 = 0;
     x->x_k = (x->x_max - x->x_min) / (v/IEMGUI_ZOOM(x) - 1);
+    slider_set(x, x->x_fval);
 }
 
 static void slider_init(t_slider *x, t_floatarg f)
