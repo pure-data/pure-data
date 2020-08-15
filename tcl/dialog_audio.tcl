@@ -366,7 +366,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         bind $mytoplevel.outputs.out1f.x2 <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel"
 
         # unbind Return from ok button when an entry takes focus
-        $mytoplevel.settings.srd.sr_entry config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
         $mytoplevel.settings.srd.d_entry config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
         $mytoplevel.outputs.out1f.x2 config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
 
