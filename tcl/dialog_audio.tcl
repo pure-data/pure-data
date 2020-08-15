@@ -179,9 +179,11 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.settings.bsc.bs_popup -side right
     pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
     if {$audio_callback >= 0} {
-        checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
-            -text [_ "Use callbacks"] -anchor w
-        pack $mytoplevel.settings.bsc.c_button -side right
+        frame $mytoplevel.settings.callback
+        pack $mytoplevel.settings.callback -side bottom -fill x
+        checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
+            -text [_ "Use callbacks"]
+        pack $mytoplevel.settings.callback.c_button -side right
     }
 
     # input devices
@@ -354,11 +356,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_audio::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
-    if {$::windowingsystem ne "aqua"} {
-        button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
-            -command "::dialog_audio::apply $mytoplevel"
-        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
-    }
+    button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
+        -command "::dialog_audio::apply $mytoplevel"
+    pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_audio::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
