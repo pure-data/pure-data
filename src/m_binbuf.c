@@ -831,14 +831,14 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
     {
         fprintf(stderr, "lseek: ");
         perror(namebuf);
-        close(fd);
+        sys_fileops.close(fd);
         return(1);
     }
     if ((readret = (int)sys_fileops.read(fd, buf, length)) < length)
     {
         fprintf(stderr, "read (%" PRIx64 " %ld) -> %d\n", (unsigned long long)fd, length, readret);
         perror(namebuf);
-        close(fd);
+        sys_fileops.close(fd);
         t_freebytes(buf, length);
         return(1);
     }
@@ -857,7 +857,7 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 #endif
 
     t_freebytes(buf, length);
-    close(fd);
+    sys_fileops.close(fd);
     return (0);
 }
 
