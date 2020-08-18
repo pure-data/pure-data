@@ -61,8 +61,14 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
-#ifdef _MSC_VER
+/* Microsoft Visual Studio is not C99. However it started adding C99 headers
+   beginning with VS2015: https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#C */
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#include <stdint.h>
+#include <stdbool.h>
+#include <inttypes.h>
+#define tobool(x) ((bool)(x))
+#elif defined(_MSC_VER)
 typedef signed __int8     int8_t;
 typedef signed __int16    int16_t;
 typedef signed __int32    int32_t;
@@ -71,8 +77,30 @@ typedef unsigned __int8   uint8_t;
 typedef unsigned __int16  uint16_t;
 typedef unsigned __int32  uint32_t;
 typedef unsigned __int64  uint64_t;
+
+#if _MSC_VER >= 1800
+/* VS2013 didn't have stdbool.h, but it did have the underlying _Bool type */
+typedef unsigned _Bool    bool;
 #else
-# include <stdint.h>
+typedef unsigned __int8   bool;
+#endif
+#ifndef false
+#define false 0
+#endif
+#ifndef true
+#define true 1
+#endif
+#ifndef PRIxPTR
+#define PRIxPTR "p"
+#endif
+#ifndef PRIx64
+#define PRIx64 "I64x"
+#endif
+#define tobool(x) ((x)?true:false)
+
+#endif
+#if defined(_MSC_VER)
+typedef signed   __int64  ssize_t;
 #endif
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
@@ -304,6 +332,10 @@ typedef void (*t_gotfn5)(void *x,
 EXTERN void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN t_pd *pd_newest(void);
 
+/* --------------- fileops -------------------- */
+
+#include "s_fileops.h"
+
 /* --------------- memory management -------------------- */
 EXTERN void *getbytes(size_t nbytes);
 EXTERN void *getzbytes(size_t nbytes);
@@ -443,8 +475,8 @@ EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
 EXTERN int sys_fontwidth(int fontsize);
 EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
-EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN bool canvas_open(const t_canvas *x, const char *name, const char *ext,
+    char *dirresult, char **nameresult, t_fileops_handle *fd, unsigned int size, int bin);
 
 /* ---------------- widget behaviors ---------------------- */
 
@@ -545,20 +577,11 @@ EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
 EXTERN int sys_isabsolutepath(const char *dir);
 EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
-EXTERN int open_via_path(const char *dir, const char *name, const char *ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN bool open_via_path(const char *dir, const char *name, const char *ext,
+    char *dirresult, char **nameresult, t_fileops_handle *file, unsigned int size, int bin);
 EXTERN int sched_geteventno(void);
 EXTERN double sys_getrealtime(void);
 EXTERN int (*sys_idlehook)(void);   /* hook to add idle time computation */
-
-/* Win32's open()/fopen() do not handle UTF-8 filenames so we need
- * these internal versions that handle UTF-8 filenames the same across
- * all platforms.  They are recommended for use in external
- * objectclasses as well so they work with Unicode filenames on Windows */
-EXTERN int sys_open(const char *path, int oflag, ...);
-EXTERN int sys_close(int fd);
-EXTERN FILE *sys_fopen(const char *filename, const char *mode);
-EXTERN int sys_fclose(FILE *stream);
 
 /* ------------  threading ------------------- */
 EXTERN void sys_lock(void);

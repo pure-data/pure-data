@@ -1704,16 +1704,19 @@ typedef struct _canvasopen
     char **nameresult;
     unsigned int size;
     int bin;
-    int fd;
+    bool have_fd;
+    t_fileops_handle fd;
 } t_canvasopen;
 
 static int canvas_open_iter(const char *path, t_canvasopen *co)
 {
-    int fd;
-    if ((fd = sys_trytoopenone(path, co->name, co->ext,
-        co->dirresult, co->nameresult, co->size, co->bin)) >= 0)
+    t_fileops_handle fd;
+    co->have_fd = false;
+    if (!sys_trytoopenone(path, co->name, co->ext,
+        co->dirresult, co->nameresult, &fd, co->size, co->bin))
     {
         co->fd = fd;
+        co->have_fd = true;
         return 0;
     }
     return 1;
@@ -1731,15 +1734,14 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
     attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
-int canvas_open(const t_canvas *x, const char *name, const char *ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin)
+bool canvas_open(const t_canvas *x, const char *name, const char *ext,
+    char *dirresult, char **nameresult, t_fileops_handle *fd, unsigned int size, int bin)
 {
-    int fd = -1;
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
-    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
-        return (fd);
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, fd))
+        return true;
 
         /* otherwise "name" is relative; iterate over all the search-paths */
     co.name = name;
@@ -1752,7 +1754,8 @@ int canvas_open(const t_canvas *x, const char *name, const char *ext,
 
     canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
 
-    return (co.fd);
+    *fd = co.fd;
+    return true;
 }
 
 /*

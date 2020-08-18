@@ -122,7 +122,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
-    int i, hexmunge = 0, fd;
+    int i, hexmunge = 0;
+    t_fileops_handle fd;
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
@@ -170,8 +171,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if (sys_trytoopenone(path, objectname, *dllextent,
+            dirbuf, &nameptr, &fd, MAXPDSTRING, 1))
                 goto gotone;
     }
         /* next try (objectname)/(classname).(sys_dllextent) ... */
@@ -182,8 +183,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     filename[MAXPDSTRING-1] = 0;
     for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, filename, *dllextent,
-            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+        if (sys_trytoopenone(path, filename, *dllextent,
+            dirbuf, &nameptr, &fd, MAXPDSTRING, 1))
                 goto gotone;
     }
 #ifdef ANDROID
@@ -194,13 +195,13 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if (libname[len-1] == '~' && len < MAXPDSTRING - 6) {
         strcpy(libname+len-1, "_tilde");
     }
-    if ((fd = sys_trytoopenone(path, libname, ".so",
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    if (sys_trytoopenone(path, libname, ".so",
+        dirbuf, &nameptr, &fd, MAXPDSTRING, 1))
             goto gotone;
 #endif
     return (0);
 gotone:
-    close(fd);
+    sys_fileops.close(fd);
     class_set_extern_dir(gensym(dirbuf));
 
         /* rebuild the absolute pathname */
@@ -441,18 +442,18 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
         t_glist *glist = (t_glist *)canvas_getcurrent();
         t_canvas *canvas = (t_canvas*)glist_getcanvas(glist);
-        int fd = -1;
+        t_fileops_handle fd;
 
         t_pd *was = s__X.s_thing;
         snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-        if ((fd = canvas_open(canvas, objectname, ".pd",
-                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-            (fd = canvas_open(canvas, objectname, ".pat",
-                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-            (fd = canvas_open(canvas, classslashclass, ".pd",
-                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
+        if (canvas_open(canvas, objectname, ".pd",
+                dirbuf, &nameptr, &fd, MAXPDSTRING, 0) ||
+            canvas_open(canvas, objectname, ".pat",
+                dirbuf, &nameptr, &fd, MAXPDSTRING, 0) ||
+            canvas_open(canvas, classslashclass, ".pd",
+                dirbuf, &nameptr, &fd, MAXPDSTRING, 0))
         {
-            close(fd);
+            sys_fileops.close(fd);
             canvas_setargs(argc, argv);
 
             binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
@@ -473,7 +474,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
 static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     const char *path)
 {
-    int fd;
+    t_fileops_handle fd;
     static t_gobj*abstraction_classes = 0;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
         /* NULL-path is only used as a last resort,
@@ -481,15 +482,15 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     if (!path) return (0);
 
     snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-    if ((fd = sys_trytoopenone(path, objectname, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, objectname, ".pat",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
-        (fd = sys_trytoopenone(path, classslashclass, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    if (sys_trytoopenone(path, objectname, ".pd",
+            dirbuf, &nameptr, &fd, MAXPDSTRING, 1) ||
+        sys_trytoopenone(path, objectname, ".pat",
+            dirbuf, &nameptr, &fd, MAXPDSTRING, 1) ||
+        sys_trytoopenone(path, classslashclass, ".pd",
+            dirbuf, &nameptr, &fd, MAXPDSTRING, 1))
     {
         t_class*c=0;
-        close(fd);
+        sys_fileops.close(fd);
             /* found an abstraction, now register it as a new pseudo-class */
         class_set_extern_dir(gensym(dirbuf));
         if((c=class_new(gensym(objectname),

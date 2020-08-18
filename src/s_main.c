@@ -204,11 +204,11 @@ int sys_defaultfont;
 static void openit(const char *dirname, const char *filename)
 {
     char dirbuf[MAXPDSTRING], *nameptr;
-    int fd = open_via_path(dirname, filename, "", dirbuf, &nameptr,
-        MAXPDSTRING, 0);
-    if (fd >= 0)
+    t_fileops_handle fd;
+    if (open_via_path(dirname, filename, "", dirbuf, &nameptr,
+        &fd, MAXPDSTRING, 0))
     {
-        close (fd);
+        sys_fileops.close (fd);
         glob_evalfile(0, gensym(nameptr), gensym(dirbuf));
     }
     else

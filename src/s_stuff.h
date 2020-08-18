@@ -22,10 +22,10 @@ void namelist_free(t_namelist *listwas);
 const char *namelist_get(const t_namelist *namelist, int n);
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
-int sys_open_absolute(const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp);
-int sys_trytoopenone(const char *dir, const char *name, const char* ext,
-    char *dirresult, char **nameresult, unsigned int size, int bin);
+bool sys_open_absolute(const char *name, const char* ext,
+    char *dirresult, char **nameresult, unsigned int size, int bin, t_fileops_handle *fdp);
+bool sys_trytoopenone(const char *dir, const char *name, const char* ext,
+    char *dirresult, char **nameresult, t_fileops_handle *file, unsigned int size, int bin);
 t_symbol *sys_decodedialog(t_symbol *s);
 
 /* s_file.c */

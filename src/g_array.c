@@ -1080,8 +1080,8 @@ static void garray_rename(t_garray *x, t_symbol *s)
 
 static void garray_read(t_garray *x, t_symbol *filename)
 {
-    int nelem, filedesc, i;
-    FILE *fd;
+    int nelem, i;
+    t_fileops_handle fd;
     char buf[MAXPDSTRING], *bufptr;
     int yonset, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -1091,9 +1091,8 @@ static void garray_read(t_garray *x, t_symbol *filename)
         return;
     }
     nelem = array->a_n;
-    if ((filedesc = canvas_open(glist_getcanvas(x->x_glist),
-            filename->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0
-                || !(fd = fdopen(filedesc, "r")))
+    if (!canvas_open(glist_getcanvas(x->x_glist),
+            filename->s_name, "", buf, &bufptr, &fd, MAXPDSTRING, 0))
     {
         error("%s: can't open", filename->s_name);
         return;
@@ -1101,7 +1100,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
     for (i = 0; i < nelem; i++)
     {
         double f;
-        if (!fscanf(fd, "%lf", &f))
+        if (!sys_fileops.scanf(fd, "%lf", &f))
         {
             post("%s: read %d elements into table of size %d",
                 filename->s_name, i, nelem);
@@ -1112,13 +1111,13 @@ static void garray_read(t_garray *x, t_symbol *filename)
     while (i < nelem)
         *((t_float *)(array->a_vec +
             elemsize * i) + yonset) = 0, i++;
-    fclose(fd);
+    sys_fileops.close(fd);
     garray_redraw(x);
 }
 
 static void garray_write(t_garray *x, t_symbol *filename)
 {
-    FILE *fd;
+    t_fileops_handle fd;
     char buf[MAXPDSTRING];
     int yonset, elemsize, i;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -1129,21 +1128,21 @@ static void garray_write(t_garray *x, t_symbol *filename)
     }
     canvas_makefilename(glist_getcanvas(x->x_glist), filename->s_name,
         buf, MAXPDSTRING);
-    if (!(fd = sys_fopen(buf, "w")))
+    if (!sys_fileops.open(buf, FILEOPS_WRITE, &fd))
     {
         error("%s: can't create", buf);
         return;
     }
     for (i = 0; i < array->a_n; i++)
     {
-        if (fprintf(fd, "%g\n",
+        if (sys_fileops.printf(fd, "%g\n",
             *(t_float *)(((array->a_vec + sizeof(t_word) * i)) + yonset)) < 1)
         {
             post("%s: write error", filename->s_name);
             break;
         }
     }
-    fclose(fd);
+    sys_fileops.close(fd);
 }
 
 

@@ -90,6 +90,7 @@ pd_SOURCES_core = \
     m_sched.c \
     s_audio.c \
     s_file.c \
+    s_fileops.c \
     s_inter.c \
     s_loader.c \
     s_main.c \
@@ -120,7 +121,7 @@ libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
 pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
-    s_net.h x_vexp.h
+    s_net.h x_vexp.h s_fileops.h
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
