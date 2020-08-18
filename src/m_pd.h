@@ -61,8 +61,14 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
-#ifdef _MSC_VER
+/* Microsoft Visual Studio is not C99. However it started adding C99 headers
+   beginning with VS2015: https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#C */
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#include <stdint.h>
+#include <stdbool.h>
+#include <inttypes.h>
+#define tobool(x) ((bool)(x))
+#elif defined(_MSC_VER)
 typedef signed __int8     int8_t;
 typedef signed __int16    int16_t;
 typedef signed __int32    int32_t;
@@ -71,8 +77,13 @@ typedef unsigned __int8   uint8_t;
 typedef unsigned __int16  uint16_t;
 typedef unsigned __int32  uint32_t;
 typedef unsigned __int64  uint64_t;
-typedef unsigned __int64  ssize_t;
+
+#if _MSC_VER >= 1800
+/* VS2013 didn't have stdbool.h, but it did have the underlying _Bool type */
+typedef unsigned _Bool    bool;
+#else
 typedef unsigned __int8   bool;
+#endif
 #ifndef false
 #define false 0
 #endif
@@ -86,11 +97,10 @@ typedef unsigned __int8   bool;
 #define PRIx64 "I64x"
 #endif
 #define tobool(x) ((x)?true:false)
-#else
-#include <stdint.h>
-#include <stdbool.h>
-#include <inttypes.h>
-#define tobool(x) ((bool)(x))
+
+#endif
+#if defined(_MSC_VER)
+typedef signed   __int64  ssize_t;
 #endif
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */

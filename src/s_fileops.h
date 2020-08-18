@@ -5,9 +5,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdarg.h>
+// Do not include directly, include from m_pd.h, so that types are defined and stdint, stdbool, stdarg included
 
 typedef intptr_t t_fileops_handle;
 
@@ -42,6 +40,6 @@ typedef struct _t_fileops /* All function pointers return true on success */
 	bool (*flush)(t_fileops_handle handle);
 } t_fileops;
 
-extern t_fileops sys_fileops;
+EXTERN t_fileops sys_fileops;
 
 #endif // S_FILEOPS_H

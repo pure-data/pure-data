@@ -6,6 +6,7 @@
 #include "s_utf8.h"
 
 #include <stdlib.h>
+#include <stdarg.h>
 
 static bool null_open(const char *path, t_fileops_flags flags, t_fileops_handle *handle) {
     return false;
