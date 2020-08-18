@@ -360,6 +360,8 @@ proc ::pd_menus::build_help_menu {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
         -command {menu_openfile {http://puredata.info}}
+    $mymenu add command -label [_ "Check for updates"] -command {menu_openfile \
+        {http://pdlatest.puredata.info}}
     $mymenu add command -label [_ "Report a bug"] -command {menu_openfile \
         {http://bugs.puredata.info}}
 }
