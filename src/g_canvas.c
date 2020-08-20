@@ -1708,11 +1708,12 @@ typedef struct _canvasopen
     t_fileops_handle fd;
 } t_canvasopen;
 
+// Fn returns 0 on "found"
 static int canvas_open_iter(const char *path, t_canvasopen *co)
 {
     t_fileops_handle fd;
     co->have_fd = false;
-    if (!sys_trytoopenone(path, co->name, co->ext,
+    if (sys_trytoopenone(path, co->name, co->ext,
         co->dirresult, co->nameresult, &fd, co->size, co->bin))
     {
         co->fd = fd;
@@ -1752,10 +1753,10 @@ bool canvas_open(const t_canvas *x, const char *name, const char *ext,
     co.bin = bin;
     co.fd = -1;
 
-    canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
+    int results = canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
 
     *fd = co.fd;
-    return true;
+    return results > 0;
 }
 
 /*
