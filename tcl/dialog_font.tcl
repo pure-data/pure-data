@@ -23,10 +23,10 @@ namespace eval ::dialog_font:: {
 proc ::dialog_font::apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
-            font configure $font -size -$myfontsize
+            font configure $font -size $myfontsize
         }
         if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size -$myfontsize"
+            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
         }
 
         # repeat a "pack" command so the font dialog can resize itself
