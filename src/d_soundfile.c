@@ -374,7 +374,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                     else goto badheader;
                     samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
-                seekout = (long)sys_fileops.seek(fd, seekto, SEEK_SET);
+                seekout = (long)sys_fileops.seek(fd, seekto, FILEOPS_SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (sys_fileops.read(fd, buf.b_c, sizeof(t_wavechunk)) <
@@ -421,7 +421,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                 {
                     long commblockonset = headersize + 8;
                     t_comm *commchunk;
-                    seekout = (long)sys_fileops.seek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)sys_fileops.seek(fd, commblockonset, FILEOPS_SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (sys_fileops.read(fd, buf.b_c, sizeof(t_comm)) <
@@ -437,7 +437,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                     else goto badheader;
                     samprate = readaiffsamprate((char *)commchunk->c_samprate, swap);
                 }
-                seekout = (long)sys_fileops.seek(fd, seekto, SEEK_SET);
+                seekout = (long)sys_fileops.seek(fd, seekto, FILEOPS_SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (sys_fileops.read(fd, buf.b_c, sizeof(t_datachunk)) <
@@ -500,7 +500,7 @@ bool open_soundfile_via_canvas(t_canvas *canvas, const char *filename, t_fileops
     t_fileops_handle fd;
     if (!canvas_open(canvas, filename, "", buf, &bufptr, &fd, MAXPDSTRING, 1))
         return false;
-    if (open_soundfile_via_handle(fd, p_info, skipframes)) {
+    if (!open_soundfile_via_handle(fd, p_info, skipframes)) {
         sys_fileops.close(fd);
         return false;
     }
@@ -950,7 +950,7 @@ static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_han
                 goto baddonewrite;
             if (sys_fileops.seek(fd,
                 ((char *)(&((t_wave *)0)->w_datachunksize)) - (char *)0,
-                    SEEK_SET) == 0)
+                    FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)datasize, swap);
             if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
@@ -973,7 +973,7 @@ static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_han
             mofo = swap4((uint32_t)(itemswritten*bytesperframe+AIFFHDRSIZE), swap);
             if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
-            if (sys_fileops.seek(fd, (AIFFHDRSIZE+4), SEEK_SET) == 0)
+            if (sys_fileops.seek(fd, (AIFFHDRSIZE+4), FILEOPS_SEEK_SET) == 0)
                 goto baddonewrite;
             mofo = swap4((uint32_t)(itemswritten*bytesperframe), swap);
             if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
@@ -1432,7 +1432,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             pd_error(x, "soundfiler_read: lseek failed");
             goto done;
         }
-        sys_fileops.seek(fd, poswas, SEEK_SET);
+        sys_fileops.seek(fd, poswas, FILEOPS_SEEK_SET);
         framesinfile = (eofis - poswas) / (info.channels * info.bytespersample);
         if (framesinfile > maxsize)
         {
