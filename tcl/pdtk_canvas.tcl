@@ -130,6 +130,10 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     if {$tmpcol ne ""} {
         $tkcanvas configure -background $tmpcol
     }
+    set tmpcol [::pdtk_canvas::get_color canvas_text_cursor $mytoplevel]
+    if {$tmpcol ne ""} {
+        $tkcanvas configure -insertbackground $tmpcol
+    }
     #in Tk 8.6 the selectforeground is set by the os theme?
     set tmpcol [::pdtk_canvas::get_color txt_highlight_front $mytoplevel]
     if {$tmpcol ne ""} {

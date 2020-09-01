@@ -1,4 +1,5 @@
 # canvas_fill - the canvas (patch background)
+# canvas_text_cursor - text insertion cursor for all canvas objects
 # gop_box - the GOP rectangle (when editing GOP patches)
 # obj_box_text - text in an object box
 # msg_box_text - text in a message box
@@ -42,7 +43,7 @@
 array set ::pd_colors {
 canvas_fill "#FF8800"
 gop_box "white"
-obj_box_text "00FF00"
+obj_box_text "#00FF00"
 msg_box_text "light blue"
 comment "white"
 selected "yellow"
@@ -78,6 +79,7 @@ pdwindow_debug_text "green"
 helpbrowser_fill "#000"
 helpbrowser_text "deep sky blue"
 helpbrowser_highlight "red"
+canvas_text_cursor "deep sky blue"
 }
 set ::pd_colors(txt_highlight_front) $::pd_colors(selected)
 
