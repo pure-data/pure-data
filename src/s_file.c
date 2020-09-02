@@ -68,7 +68,7 @@ static void sys_initloadpreferences_file(const char *filename)
         return;
     }
     sys_prefbuf[0] = '\n';
-    if (sys_fileops.read(fd, sys_prefbuf+1, length) < length)
+    if (sys_fileops.read(fd, sys_prefbuf+1, 1, length) < length)
     {
         perror(filename);
         sys_prefbuf[0] = 0;

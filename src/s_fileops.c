@@ -20,10 +20,10 @@ static bool null_stat(t_fileops_handle handle, t_fileops_stat *stat) {
 static int64_t null_seek(t_fileops_handle handle, int64_t offset, t_fileops_flags flags) {
     return -1;
 }
-static ssize_t null_read(t_fileops_handle handle, void *buf, size_t nbyte) {
+static ssize_t null_read(t_fileops_handle handle, void *buf, size_t itemsize, size_t nitems) {
     return 0;
 }
-static ssize_t null_write(t_fileops_handle handle, const void *buf, size_t nbyte) {
+static ssize_t null_write(t_fileops_handle handle, const void *buf, size_t itemsize, size_t nitems) {
     return 0;
 }
 static ssize_t null_scanf(t_fileops_handle handle, const char *format, ...) {
@@ -158,13 +158,13 @@ static int64_t std_seek(t_fileops_handle handle, int64_t offset, t_fileops_flags
         return -1;
     return ftell(f); // Emulate lseek
 }
-static ssize_t std_read(t_fileops_handle handle, void *buf, size_t nbyte) {
+static ssize_t std_read(t_fileops_handle handle, void *buf, size_t itemsize, size_t nitems) {
     FILE *f = SYS_FROMHANDLE(handle);
-    return fread(buf, 1, nbyte, f);
+    return fread(buf, itemsize, nitems, f);
 }
-static ssize_t std_write(t_fileops_handle handle, const void *buf, size_t nbyte) {
+static ssize_t std_write(t_fileops_handle handle, const void *buf, size_t itemsize, size_t nitems) {
     FILE *f = SYS_FROMHANDLE(handle);
-    return fwrite(buf, 1, nbyte, f);
+    return fwrite(buf, itemsize, nitems, f);
 }
 static ssize_t std_scanf(t_fileops_handle handle, const char *format, ...) {
     FILE *f = SYS_FROMHANDLE(handle);

@@ -285,7 +285,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
             t_datachunk b_datachunk;
             t_comm b_commchunk;
         } buf;
-        long bytesread = sys_fileops.read(fd, buf.b_c, READHDRSIZE);
+        long bytesread = sys_fileops.read(fd, buf.b_c, 1, READHDRSIZE);
         int format;
         if (bytesread < 4)
             goto badheader;
@@ -361,7 +361,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                     seekout = (long)sys_fileops.seek(fd, commblockonset, FILEOPS_SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (sys_fileops.read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
+                    if (sys_fileops.read(fd, buf.b_c, 1, sizeof(t_fmt)) < (int) sizeof(t_fmt))
                             goto badheader;
                     nchannels = swap2(buf.b_fmt.f_nchannels, swap);
                     format = swap2(buf.b_fmt.f_nbitspersample, swap);
@@ -377,7 +377,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                 seekout = (long)sys_fileops.seek(fd, seekto, FILEOPS_SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (sys_fileops.read(fd, buf.b_c, sizeof(t_wavechunk)) <
+                if (sys_fileops.read(fd, buf.b_c, 1, sizeof(t_wavechunk)) <
                     (int) sizeof(t_wavechunk))
                         goto badheader;
                 /* post("new chunk %c %c %c %c at %d",
@@ -424,7 +424,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                     seekout = (long)sys_fileops.seek(fd, commblockonset, FILEOPS_SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (sys_fileops.read(fd, buf.b_c, sizeof(t_comm)) <
+                    if (sys_fileops.read(fd, buf.b_c, 1, sizeof(t_comm)) <
                         (int) sizeof(t_comm))
                             goto badheader;
                     commchunk = &buf.b_commchunk;
@@ -440,7 +440,7 @@ bool open_soundfile_via_handle(t_fileops_handle fd, t_soundfile_info *p_info, lo
                 seekout = (long)sys_fileops.seek(fd, seekto, FILEOPS_SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (sys_fileops.read(fd, buf.b_c, sizeof(t_datachunk)) <
+                if (sys_fileops.read(fd, buf.b_c, 1, sizeof(t_datachunk)) <
                     (int) sizeof(t_datachunk))
                         goto badheader;
                 headersize = (int)seekto;
@@ -917,7 +917,7 @@ static bool create_soundfile(t_canvas *canvas, const char *filename, t_fileops_h
     if (!sys_fileops.open(buf2, FILEOPS_WRITE | FILEOPS_CREAT | FILEOPS_TRUNC, &fd))
         return false;
 
-    if (sys_fileops.write(fd, headerbuf, headersize) < headersize)
+    if (sys_fileops.write(fd, headerbuf, 1, headersize) < headersize)
     {
         sys_fileops.close (fd);
         return false;
@@ -946,14 +946,14 @@ static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_han
                     FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)(datasize + sizeof(t_wave) - 8), swap);
-            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 1, 4) < 4)
                 goto baddonewrite;
             if (sys_fileops.seek(fd,
                 ((char *)(&((t_wave *)0)->w_datachunksize)) - (char *)0,
                     FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)datasize, swap);
-            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 1, 4) < 4)
                 goto baddonewrite;
         }
         if (filetype == FORMAT_AIFF)
@@ -964,19 +964,19 @@ static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_han
                     FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)itemswritten, swap);
-            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 1, 4) < 4)
                 goto baddonewrite;
             if (sys_fileops.seek(fd,
                 ((char *)(&((t_aiff *)0)->a_chunksize)) - (char *)0,
                     FILEOPS_SEEK_SET) == 0)
                         goto baddonewrite;
             mofo = swap4((uint32_t)(itemswritten*bytesperframe+AIFFHDRSIZE), swap);
-            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 1, 4) < 4)
                 goto baddonewrite;
             if (sys_fileops.seek(fd, (AIFFHDRSIZE+4), FILEOPS_SEEK_SET) == 0)
                 goto baddonewrite;
             mofo = swap4((uint32_t)(itemswritten*bytesperframe), swap);
-            if (sys_fileops.write(fd, (char *)(&mofo), 4) < 4)
+            if (sys_fileops.write(fd, (char *)(&mofo), 1, 4) < 4)
                 goto baddonewrite;
         }
         if (filetype == FORMAT_NEXT)
@@ -987,7 +987,7 @@ static void soundfile_finishwrite(void *obj, const char *filename, t_fileops_han
             {
                 goto baddonewrite;
             }
-            if (sys_fileops.write(fd, &nextsize, 4) < 4)
+            if (sys_fileops.write(fd, &nextsize, 1, 4) < 4)
             {
                 goto baddonewrite;
             }
@@ -1467,7 +1467,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     {
         long thisread = finalsize - itemsread;
         thisread = (thisread > bufframes ? bufframes : thisread);
-        nitems = sys_fileops.read(fd, sampbuf, info.channels * info.bytespersample * thisread);
+        nitems = sys_fileops.read(fd, sampbuf, info.channels * info.bytespersample, thisread);
         if (nitems <= 0) break;
         soundfile_xferin_words(info.channels, argc, vecs, itemsread,
             (unsigned char *)sampbuf, nitems, info.bytespersample, info.bigendian);
@@ -1598,7 +1598,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         soundfile_xferout_words(argc, vectors, (unsigned char *)sampbuf,
             thiswrite, onset, info->bytespersample, info->bigendian, normfactor);
-        nbytes = sys_fileops.write(fd, sampbuf, info->channels * info->bytespersample * thiswrite);
+        nbytes = sys_fileops.write(fd, sampbuf, 1, info->channels * info->bytespersample * thiswrite);
         if (nbytes < info->channels * info->bytespersample * thiswrite)
         {
             post("%s: %s", filesym->s_name, strerror(errno));
@@ -1955,7 +1955,7 @@ static void *readsf_child_main(void *zz)
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
-                sysrtn = sys_fileops.read(fd, buf + fifohead, wantbytes);
+                sysrtn = sys_fileops.read(fd, buf + fifohead, 1, wantbytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY)
                     break;

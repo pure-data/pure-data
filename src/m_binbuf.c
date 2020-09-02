@@ -834,7 +834,7 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
         sys_fileops.close(fd);
         return(1);
     }
-    if ((readret = (int)sys_fileops.read(fd, buf, length)) < length)
+    if ((readret = (int)sys_fileops.read(fd, buf, 1, length)) < length)
     {
         fprintf(stderr, "read (%" PRIx64 " %ld) -> %d\n", (unsigned long long)fd, length, readret);
         perror(namebuf);
@@ -938,7 +938,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         else length = 40;
         if (ep - bp < length)
         {
-            if (sys_fileops.write(fd, sbuf, bp-sbuf))
+            if (sys_fileops.write(fd, sbuf, 1, bp-sbuf))
                 sys_unixerror(fbuf);
             bp = sbuf;
         }
@@ -962,7 +962,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
             ncolumn++;
         }
     }
-    if (sys_fileops.write(fd, sbuf, bp-sbuf) < 1)
+    if (sys_fileops.write(fd, sbuf, 1, bp-sbuf) < 1)
         goto fail;
 
     if (sys_fileops.flush(fd) != 0)
