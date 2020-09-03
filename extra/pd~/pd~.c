@@ -47,7 +47,7 @@ typedef int socklen_t;
 #include "ext_support.h"
 #include "ext_proto.h"
 #include "ext_obex.h"
-#include <alloca.h>
+#include <malloc.h>
 
 typedef float t_float;
 typedef float t_pdsample;
