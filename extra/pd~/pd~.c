@@ -1170,7 +1170,7 @@ void pd_tilde_setup(void)
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"),
         A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
-    post("pd~ version 0.5");
+    post("pd~ version 0.51");
 }
 #endif
 
@@ -1328,7 +1328,7 @@ void ext_main( void *r)
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-    post("pd~ version 0.5");
+    post("pd~ version 0.51");
 }
 
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
