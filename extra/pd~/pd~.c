@@ -54,8 +54,6 @@ typedef float t_pdsample;
 #define PD_FLOATSIZE 32
 #define w_symbol w_sym
 #define A_SYMBOL A_SYM
-#define getbytes t_getbytes
-#define freebytes t_freebytes
 #define PDERROR error(
 void *pd_tilde_class;
 #define MAXPDSTRING 4096
@@ -71,6 +69,9 @@ typedef struct _binbuf
 #define SETFLOAT(atom, f) ((atom)->a_type = A_FLOAT, (atom)->a_w.w_float = (f))
 #define SETSYMBOL(atom, s) ((atom)->a_type = A_SYMBOL, \
     (atom)->a_w.w_symbol = (s))
+
+void critical_enter(int z);
+void critical_exit(int z);
 
 #else   /* not MSP  */
 #define t_pdsample t_sample
@@ -144,6 +145,7 @@ typedef struct _pd_tilde
     void *x_outlet1;
     void *x_clock;
     int x_clockisset;
+    t_pdsample *x_sampbuf;
 #endif /* MSP */
     FILE *x_infd;
     FILE *x_outfd;
@@ -163,7 +165,6 @@ typedef struct _pd_tilde
 
 #ifdef MSP
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av);
-static void pd_tilde_tick(t_pd_tilde *x);
 static void pd_tilde_dsp64(t_pd_tilde *x, t_object *dsp64, short *count,
     double samplerate, long maxvectorsize, long flags);
 void pd_tilde_assist(t_pd_tilde *x, void *b, long m, long a, char *s);
@@ -403,20 +404,45 @@ void barf2(const char *s, int n1, int n2)
     sprintf(buf2, s, n1, n2);
     barf(buf2);
 }
+
+#ifdef getc     /* if debugging is on, copy all getc() output to /tmp/foo.txt */
+#undef getc
+#endif
+
+int barf_getc(FILE *fd)
+{
+    int poodle = getc(fd);
+#if 0
+    if (poodle < 0)
+        barf("barf_getc oops");
+    else
+    {
+        if (!barf_fd)
+            barf_fd = fopen("/tmp/foo.txt", "w");
+        if (barf_fd)
+            putc(poodle, barf_fd);
+    }
+#endif
+    return (poodle);
+}
+
+#define getc barf_getc
+
 #endif /* debugging */
 
 #endif /* MAX */
 
-static void pd_tilde_tick(t_pd_tilde *x);
 static void pd_tilde_close(t_pd_tilde *x)
 {
 #ifdef _WIN32
     int termstat;
 #endif
-    if (x->x_outfd)
-        fclose(x->x_outfd);
-    if (x->x_infd)
-        fclose(x->x_infd);
+    FILE *infd = x->x_infd, *outfd = x->x_outfd;
+    x->x_infd = x->x_outfd = 0;
+    if (outfd)
+        fclose(outfd);
+    if (infd)
+        fclose(infd);
     if (x->x_childpid > 0)
 #ifdef _WIN32
         _cwait(&termstat, x->x_childpid, WAIT_CHILD);
@@ -428,7 +454,7 @@ static void pd_tilde_close(t_pd_tilde *x)
     x->x_childpid = -1;
 }
 
-static int pd_tilde_readmessages(t_pd_tilde *x)
+static int pd_tilde_readmessages(t_pd_tilde *x, FILE *infd)
 {
     t_atom at;
     if (x->x_binary)
@@ -436,7 +462,7 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
         int nonempty = 0;
         while (1)
         {
-            if (!pd_tilde_getatom(&at, x->x_infd))
+            if (!pd_tilde_getatom(&at, infd))
                 return 0;
             if (!nonempty && at.a_type == A_SEMI)
                 break;
@@ -452,24 +478,20 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
             char msgbuf[MAXPDSTRING];
             int c, infill = 0, n;
             t_atom *vec;
-            while (isspace((c = getc(x->x_infd))) && c != EOF)
+            while (isspace((c = getc(infd))) && c != EOF)
                 ;
             if (c == EOF)
                 return 0;
             do
                 msgbuf[infill++] = c;
-            while (!isspace((c = getc(x->x_infd))) && c != ';' && c != EOF
+            while (!isspace((c = getc(infd))) && c != ';' && c != EOF
                 && infill < MAXPDSTRING-1) ;
+            if (c == ';' && infill < MAXPDSTRING-1)
+                msgbuf[infill++] = c;
             binbuf_text(tmpb, msgbuf, infill);
             n = binbuf_getnatom(tmpb);
             vec = binbuf_getvec(tmpb);
-#ifdef MAX
-            critical_enter(0);
-#endif
             binbuf_add(x->x_binbuf, n, vec);
-#ifdef MAX
-            critical_exit(0);
-#endif
             if (!n)
             {
                 post("bug: pd~");
@@ -478,10 +500,7 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
             if (vec[0].a_type == A_SEMI)
                 break;
         }
-        /* barf1("msgs %d", binbuf_getnatom(x->x_binbuf)); */
         binbuf_free(tmpb);
-        /* if (binbuf_getnatom(x->x_binbuf) > 1)
-            binbuf_print(x->x_binbuf); */
     }
 #ifdef MAX
         /* in Max, since control and DSP may be asynchronous, we might
@@ -494,7 +513,7 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
 #else
     clock_delay(x->x_clock, 0);
 #endif
-    return 1;
+    return (1);
 }
 
 #define FIXEDARG 13
@@ -505,18 +524,19 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
 #define EXTENT ""
 #endif
 
-static void pd_tilde_donew(t_pd_tilde *x, const char *pddir,
+    /* only call this if we're not already running (x->x_infd = 0, etc.) */
+static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
     const char *schedlibdir, const char *patchdir_c, int argc, t_atom *argv,
     int ninsig, int noutsig, int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
+    FILE *infd, *outfd;
     char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
         tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
     const char**dllextent;
     struct stat statbuf;
-    x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
     if (argc > MAXARG)
     {
@@ -606,8 +626,8 @@ gotone:
             /* because Mac pathnames sometimes have an evil preceeding
             colon character, we test for and silently eat them */
         if (argv[i].a_type == A_SYM)
-            strncpy(tmpbuf, (*argv->a_w.w_sym->s_name == ':'?
-                argv->a_w.w_sym->s_name+1 : argv->a_w.w_sym->s_name),
+            strncpy(tmpbuf, (*argv[i].a_w.w_sym->s_name == ':'?
+                argv[i].a_w.w_sym->s_name+1 : argv[i].a_w.w_sym->s_name),
                 MAXPDSTRING-3);
         else if (argv[i].a_type == A_LONG)
             sprintf(tmpbuf, "%ld", (long)argv->a_w.w_long);
@@ -673,12 +693,12 @@ gotone:
         if (pipe1[0] != 0)
         {
             dup2(pipe1[0], 0);
-            close (pipe1[0]);
+            close(pipe1[0]);
         }
         if (pipe2[1] != 1)
         {
             dup2(pipe2[1], 1);
-            close (pipe2[1]);
+            close(pipe2[1]);
         }
         if (pipe1[1] >= 2)
             close(pipe1[1]);
@@ -698,21 +718,23 @@ gotone:
     fcntl(pipe1[1],  F_SETFD, FD_CLOEXEC);
     fcntl(pipe2[0],  F_SETFD, FD_CLOEXEC);
 #endif
-    x->x_outfd = fdopen(pipe1[1], "w");
-    x->x_infd = fdopen(pipe2[0], "r");
+    outfd = fdopen(pipe1[1], "w");
+    infd = fdopen(pipe2[0], "r");
     x->x_childpid = pid;
     for (i = 0; i < fifo; i++)
         if (x->x_binary)
     {
-        pd_tilde_putsemi(x->x_outfd);
-        pd_tilde_putfloat(0, x->x_outfd);
-        pd_tilde_putsemi(x->x_outfd);
+        pd_tilde_putsemi(outfd);
+        pd_tilde_putfloat(0, outfd);
+        pd_tilde_putsemi(outfd);
     }
-    else fprintf(x->x_outfd, "%s", ";\n0;\n");
+    else fprintf(outfd, "%s", ";\n0;\n");
 
-    fflush(x->x_outfd);
+    fflush(outfd);
     binbuf_clear(x->x_binbuf);
-    pd_tilde_readmessages(x);
+    pd_tilde_readmessages(x, infd);
+    x->x_outfd = outfd;
+    x->x_infd = infd;
     return;
 #ifndef _WIN32
 fail3:
@@ -755,10 +777,12 @@ static void pd_tilde_doperf(t_pd_tilde *x)
 {
     int n = x->x_blksize, i, j, nsigs, numbuffill = 0, c;
     char numbuf[80];
-    FILE *infd = x->x_infd;
     if (n > DEFDACBLKSIZE)
         n = DEFDACBLKSIZE;
-    if (!infd)
+#ifdef MAX
+    critical_enter(0);
+#endif
+    if (!x->x_infd)
         goto zeroit;
     if (x->x_binary)
     {
@@ -797,7 +821,7 @@ static void pd_tilde_doperf(t_pd_tilde *x)
         while (1)
         {
             t_atom at;
-            if (!pd_tilde_getatom(&at, infd))
+            if (!pd_tilde_getatom(&at, x->x_infd))
             {
                 if (errno)
                     PDERROR "pd~: %s", strerror(errno));
@@ -823,7 +847,7 @@ static void pd_tilde_doperf(t_pd_tilde *x)
         {
             while (1)
             {
-                c = getc(infd);
+                c = getc(x->x_infd);
                 if (c == EOF)
                 {
                     if (errno)
@@ -864,24 +888,30 @@ static void pd_tilde_doperf(t_pd_tilde *x)
         }
     }
     if (nsigs < x->x_noutsig)
-        post("sigs %d, j %d", nsigs, j);
+        post("pd~: short audio signals (sigs %d, fragment %d)", nsigs, j);
     for (; nsigs < x->x_noutsig; nsigs++, j = 0)
     {
-        for (; j < DEFDACBLKSIZE; j++)
+        for (; j < x->x_blksize; j++)
             x->x_outsig[nsigs][j] = 0;
     }
-    if (!pd_tilde_readmessages(x))
+    if (!pd_tilde_readmessages(x, x->x_infd))
     {
         if (errno)
             PDERROR "pd~: %s", strerror(errno));
         else PDERROR "pd~: subprocess exited");
         pd_tilde_close(x);
     }
+#ifdef MAX
+    critical_exit(0);
+#endif
     return;
 zeroit:
+#ifdef MAX
+    critical_exit(0);
+#endif
     for (i = 0; i < x->x_noutsig; i++)
     {
-        for (j = 0; j < DEFDACBLKSIZE; j++)
+        for (j = 0; j < x->x_blksize; j++)
             x->x_outsig[i][j] = 0;
     }
 }
@@ -896,8 +926,14 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
+#ifdef MAX
+    critical_enter(0);
+#endif
         if (x->x_infd)
             pd_tilde_close(x);
+#ifdef MAX
+    critical_exit(0);
+#endif
         pdargstring[0] = 0;
         argc--; argv++;
 #ifdef PD
@@ -917,14 +953,20 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
             else snprintf(scheddirstring, MAXPDSTRING, "%s/extra/pd~", pds);
             schedlibdir = gensym(scheddirstring);
         }
-        pd_tilde_donew(x, x->x_pddir->s_name, schedlibdir->s_name,
+        pd_tilde_dostart(x, x->x_pddir->s_name, schedlibdir->s_name,
             patchdir, argc, argv, x->x_ninsig, x->x_noutsig, x->x_fifo,
                 x->x_sr);
     }
     else if (sel == gensym("stop"))
     {
+#ifdef MAX
+    critical_enter(0);
+#endif
         if (x->x_infd)
             pd_tilde_close(x);
+#ifdef MAX
+    critical_exit(0);
+#endif
     }
     else if (sel == gensym("pddir"))
     {
@@ -949,6 +991,8 @@ static void pd_tilde_free(t_pd_tilde *x)
     t_freebytes(x->x_insig, x->x_ninsig * sizeof(*x->x_insig));
     t_freebytes(x->x_outsig, x->x_noutsig * sizeof(*x->x_outsig));
 #ifdef MSP
+    if (x->x_sampbuf)
+        free(x->x_sampbuf);
     dsp_free((t_pxobject *)x);
 #endif
 }
@@ -1126,7 +1170,7 @@ void pd_tilde_setup(void)
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"),
         A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
-    post("pd~ version 0.4");
+    post("pd~ version 0.5");
 }
 #endif
 
@@ -1139,14 +1183,10 @@ static void pd_tilde_perf64(t_pd_tilde *x, t_object *dsp64,
 {
     int i, j, nin = (numins < x->x_ninsig ? numins : x->x_ninsig),
         nout = (numouts < x->x_noutsig ? numouts : x->x_noutsig);
-    t_pdsample *sampbuf = alloca((x->x_ninsig + x->x_noutsig) *
-        sampleframes * sizeof(t_pdsample)), *sp;
 
+    if (sampleframes > DEFDACBLKSIZE)
+        sampleframes = DEFDACBLKSIZE;   /* LATER iterate through them */
     x->x_blksize = sampleframes;
-    for (i = 0, sp = sampbuf; i < x->x_ninsig; i++)
-        x->x_insig[i] = sp, sp += sampleframes;
-    for (i = 0; i < x->x_noutsig; i++)
-        x->x_outsig[i] = sp, sp += sampleframes;
 
     for (i = 0; i < nin; i++)
         for (j = 0; j < sampleframes; j++)
@@ -1167,6 +1207,17 @@ static void pd_tilde_perf64(t_pd_tilde *x, t_object *dsp64,
 static void pd_tilde_dsp64(t_pd_tilde *x, t_object *dsp64,
     short *count, double samplerate, long maxvectorsize, long flags)
 {
+    int i;
+    t_pdsample *sp;
+
+    if (x->x_sampbuf)
+        free(x->x_sampbuf);
+    x->x_sampbuf = malloc((x->x_ninsig + x->x_noutsig) *
+        DEFDACBLKSIZE * sizeof(t_pdsample));
+    for (i = 0, sp = x->x_sampbuf; i < x->x_ninsig; i++)
+        x->x_insig[i] = sp, sp += DEFDACBLKSIZE;
+    for (i = 0; i < x->x_noutsig; i++)
+        x->x_outsig[i] = sp, sp += DEFDACBLKSIZE;
     object_method(dsp64, gensym("dsp_add64"), x, pd_tilde_perf64, 0, 0);
 }
 
@@ -1175,23 +1226,13 @@ static void pd_tilde_tick(t_pd_tilde *x)
     int messstart = 0, i, n = 0;
     t_atom *vec;
     t_binbuf *b;
-    /* binbuf_print(b); */
+
     critical_enter(0);
     b = x->x_binbuf;
     x->x_binbuf = binbuf_new();
     critical_exit(0);
     n = binbuf_getnatom(b);
     vec = binbuf_getvec(b);
-#if 0
-    for (i = 0; i < n; i++)
-        if (vec[0].a_type != A_SEMI)
-    {
-        barf1("tick %d", n);
-        for (i = 0; i < n; i++)
-            barf1("type %d", vec[i].a_type);
-        break;
-    }
-#endif
     for (i = 0; i < n; i++)
     {
         if (vec[i].a_type == A_SEMI)
@@ -1287,7 +1328,7 @@ void ext_main( void *r)
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-    post("pd~ version 0.4");
+    post("pd~ version 0.5");
 }
 
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
@@ -1361,11 +1402,11 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
         x->x_schedlibdir = scheddir;
         x->x_infd = 0;
         x->x_outfd = 0;
-        x->x_outfd = 0;
         x->x_childpid = -1;
         x->x_binbuf = binbuf_new();
         x->x_clockisset = 0;
         x->x_binary = binary;
+        x->x_sampbuf = 0;
     }
     return (x);
 }
