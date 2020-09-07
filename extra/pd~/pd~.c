@@ -18,7 +18,6 @@ learning XCode.  */
 #include <process.h>
 #include <windows.h>
 typedef int socklen_t;
-#define EADDRINUSE WSAEADDRINUSE
 #else
 #include <stdio.h>
 #include <string.h>
@@ -47,7 +46,6 @@ typedef int socklen_t;
 #include "ext_support.h"
 #include "ext_proto.h"
 #include "ext_obex.h"
-#include <alloca.h>
 
 typedef float t_float;
 typedef float t_pdsample;
