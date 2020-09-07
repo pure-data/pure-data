@@ -1427,7 +1427,7 @@ void sys_setrealtime(const char *libdir)
             close(pipe9[1]);
 
             if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
-            execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+            execl(cmdbuf, cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
         }
