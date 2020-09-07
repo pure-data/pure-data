@@ -529,13 +529,14 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
 {
     int i, pid, pipe1[2], pipe2[2];
     FILE *infd, *outfd;
-    char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
+    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
         tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
     const char**dllextent;
     struct stat statbuf;
     x->x_childpid = -1;
+    post("start 1");
     if (argc > MAXARG)
     {
         post("pd~: args truncated to %d items", MAXARG);
@@ -581,24 +582,9 @@ gotone:
 %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
-    /* _spawnv wants the command without quotes */
-    strcpy(cmdbuf, pdexecbuf);
-    /* but in the argument vector paths must be quoted if they contain
-        whitespace */
-    if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
-    {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
-            strcpy(pdexecbuf, tmpbuf);
-    }
-    if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
-    {
-        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
-            strcpy(schedbuf, tmpbuf);
-    }
-    if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
-        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
-    else
-        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+
+    /* snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf); */
+    snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
 
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
@@ -636,6 +622,10 @@ gotone:
         strcpy(execargv[FIXEDARG+i], tmpbuf);
     }
     execargv[argc+FIXEDARG] = 0;
+#if 1
+    for (i = 0; i < argc+FIXEDARG; i++)
+        post("arg %d = %s", i, execargv[i]);
+#endif
 #ifdef _WIN32
     if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
 #else
@@ -663,7 +653,7 @@ gotone:
             _dup2(pipe1[0], 0);
         if (pipe2[1] != 1)
             _dup2(pipe2[1], 1);
-        pid = _spawnv(P_NOWAIT, cmdbuf, (const char * const *)execargv);
+        pid = _spawnv(P_NOWAIT, pdexecbuf, (const char * const *)execargv);
         if (pid < 0)
         {
             post("%s: couldn't start subprocess (%s)\n", execargv[0],
@@ -702,7 +692,7 @@ gotone:
             close(pipe1[1]);
         if (pipe2[0] >= 2)
             close(pipe2[0]);
-        execv(cmdbuf, execargv);
+        execv(pdexecbuf, execargv);
         _exit(1);
     }
     for (i=FIXEDARG; execargv[i]; i++)
@@ -733,6 +723,7 @@ gotone:
     pd_tilde_readmessages(x, infd);
     x->x_outfd = outfd;
     x->x_infd = infd;
+    post("start 2");
     return;
 #ifndef _WIN32
 fail3:
