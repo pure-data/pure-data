@@ -529,7 +529,7 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
 {
     int i, pid, pipe1[2], pipe2[2];
     FILE *infd, *outfd;
-    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
+    char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
         tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
@@ -582,9 +582,26 @@ gotone:
 %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
-
-    /* snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf); */
-    snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+    snprintf(cmdbuf, MAXPDSTRING, "%s", pdexecbuf);
+#ifdef _WIN32
+    /* _spawnv wants the command without quotes as in cmdbuf above;
+        but in the argument vector paths must be quoted if they contain
+        whitespace */
+    if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
+    {
+        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf) >= 0)
+            snprintf(pdexecbuf, MAXPDSTRING, "%s", tmpbuf);
+    }
+    if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
+    {
+        if (snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf) >= 0)
+            snprintf(schedbuf, MAXPDSTRING, "%s", tmpbuf);
+    }
+    if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
+        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
+    else
+#endif /* _WIN32 */
+        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
 
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
@@ -618,11 +635,20 @@ gotone:
         else if (argv[i].a_type == A_FLOAT)
             sprintf(tmpbuf,  "%f", (float)argv->a_w.w_float);
 #endif
+#ifdef _WIN32
+            /* and now, for Windows (whether Max or Pd), spaces need quotes */
+        if (strchr(tmpbuf, ' ') && *tmpbuf != '"' && *tmpbuf != '\'')
+        {
+            char nutherbuf[MAXPDSTRING];
+            snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
+            snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", nutherbuf);
+        }
+#endif /* _WIN32 */
         execargv[FIXEDARG+i] = malloc(strlen(tmpbuf) + 1);
         strcpy(execargv[FIXEDARG+i], tmpbuf);
     }
     execargv[argc+FIXEDARG] = 0;
-#if 1
+#if 0
     for (i = 0; i < argc+FIXEDARG; i++)
         post("arg %d = %s", i, execargv[i]);
 #endif
@@ -653,7 +679,7 @@ gotone:
             _dup2(pipe1[0], 0);
         if (pipe2[1] != 1)
             _dup2(pipe2[1], 1);
-        pid = _spawnv(P_NOWAIT, pdexecbuf, (const char * const *)execargv);
+        pid = _spawnv(P_NOWAIT, cmdbuf, (const char * const *)execargv);
         if (pid < 0)
         {
             post("%s: couldn't start subprocess (%s)\n", execargv[0],
@@ -692,7 +718,7 @@ gotone:
             close(pipe1[1]);
         if (pipe2[0] >= 2)
             close(pipe2[0]);
-        execv(pdexecbuf, execargv);
+        execv(cmdbuf, execargv);
         _exit(1);
     }
     for (i=FIXEDARG; execargv[i]; i++)
@@ -1159,7 +1185,7 @@ void pd_tilde_setup(void)
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"),
         A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
-    post("pd~ version 0.51");
+    post("pd~ version 0.53");
 }
 #endif
 
@@ -1317,7 +1343,7 @@ void ext_main( void *r)
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-    post("pd~ version 0.51");
+    post("pd~ version 0.53");
 }
 
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
