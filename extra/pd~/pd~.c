@@ -517,7 +517,7 @@ static int pd_tilde_readmessages(t_pd_tilde *x, FILE *infd)
 #define FIXEDARG 13
 #define MAXARG 100
 #ifdef _WIN32
-#define EXTENT ".com"
+#define EXTENT ".exe"
 #else
 #define EXTENT ""
 #endif
