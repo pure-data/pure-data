@@ -12,6 +12,7 @@ learning XCode.  */
 #define MSP
 #endif
 
+#include <stdio.h>
 #ifdef _WIN32
 #include <io.h>
 #include <fcntl.h>
@@ -19,7 +20,6 @@ learning XCode.  */
 #include <windows.h>
 typedef int socklen_t;
 #else
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
