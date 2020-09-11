@@ -536,7 +536,6 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
     const char**dllextent;
     struct stat statbuf;
     x->x_childpid = -1;
-    post("start 1");
     if (argc > MAXARG)
     {
         post("pd~: args truncated to %d items", MAXARG);
@@ -749,7 +748,6 @@ gotone:
     pd_tilde_readmessages(x, infd);
     x->x_outfd = outfd;
     x->x_infd = infd;
-    post("start 2");
     return;
 #ifndef _WIN32
 fail3:
