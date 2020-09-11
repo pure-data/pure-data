@@ -19,7 +19,6 @@ learning XCode.  */
 #include <windows.h>
 typedef int socklen_t;
 #else
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -31,6 +30,7 @@ typedef int socklen_t;
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
