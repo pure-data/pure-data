@@ -620,7 +620,10 @@ gotone:
     for (i = 0; i < argc; i++)
     {
 #ifdef PD
-        atom_string(&argv[i], tmpbuf, MAXPDSTRING);
+        if (argv[i].a_type == A_SYMBOL)
+            snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
+        else if (argv[i].a_type == A_FLOAT)
+            sprintf(tmpbuf,  "%f", (float)argv->a_w.w_float);
 #endif
 #ifdef MSP
             /* because Mac pathnames sometimes have an evil preceeding
