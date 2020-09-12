@@ -623,7 +623,7 @@ gotone:
         if (argv[i].a_type == A_SYMBOL)
             snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
         else if (argv[i].a_type == A_FLOAT)
-            sprintf(tmpbuf,  "%f", (float)argv->a_w.w_float);
+            sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef MSP
             /* because Mac pathnames sometimes have an evil preceeding
@@ -633,9 +633,9 @@ gotone:
                 argv[i].a_w.w_sym->s_name+1 : argv[i].a_w.w_sym->s_name),
                 MAXPDSTRING-3);
         else if (argv[i].a_type == A_LONG)
-            sprintf(tmpbuf, "%ld", (long)argv->a_w.w_long);
+            sprintf(tmpbuf, "%ld", (long)argv[i].a_w.w_long);
         else if (argv[i].a_type == A_FLOAT)
-            sprintf(tmpbuf,  "%f", (float)argv->a_w.w_float);
+            sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef _WIN32
             /* and now, for Windows (whether Max or Pd), spaces need quotes */
