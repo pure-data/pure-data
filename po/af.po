@@ -915,6 +915,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Redigeermodus"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Uganda "
@@ -948,6 +954,9 @@ msgstr "Uitvee Alle"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Maak lys skoon"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr ""

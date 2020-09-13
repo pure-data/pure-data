@@ -16,6 +16,8 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 #include "g_undo.h"
 
+#include "g_kbdnav.h"
+
 #ifdef _MSC_VER
 #include <io.h>
 #define snprintf _snprintf
@@ -687,6 +689,11 @@ void canvas_map(t_canvas *x, t_floatarg f)
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);
             sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+#ifdef HAVE_KEYBOARDNAV
+            t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+            if ( kbdnav && kbdnav->kn_indexvis )
+                kbdnav_displayindices(x);
+#endif
         }
     }
     else
@@ -815,6 +822,10 @@ void canvas_free(t_canvas *x)
 
 static void canvas_drawlines(t_canvas *x)
 {
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_canvas_drawlines(x);
+    return;
+#endif
     t_linetraverser t;
     t_outconnect *oc;
     {
@@ -833,7 +844,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    
+
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
@@ -1991,6 +2002,10 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
+
+/* -------------- keyboard navigation  ---------------- */
+    kbdnav_register( canvas_class );
+
 }
 
     /* functions to add basic gui (e.g., clicking but not editing) to things

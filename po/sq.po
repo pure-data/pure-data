@@ -910,6 +910,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Mënyrë"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Uganda"
@@ -941,6 +947,9 @@ msgstr "Fshij Tërë"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Fshij listë"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr ""

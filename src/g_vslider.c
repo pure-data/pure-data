@@ -21,6 +21,8 @@
 #include <unistd.h>
 #endif
 
+#include "g_kbdnav.h"
+
 #define TMARGIN 2
 #define BMARGIN 3
 
@@ -83,6 +85,9 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vslider_draw_io_selection(x, glist, xpos, ypos, tmargin, bmargin, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void vslider_draw_move(t_vslider *x, t_glist *glist)
@@ -114,6 +119,9 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
              canvas, x, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vslider_move(x, glist, xpos, ypos, tmargin, bmargin, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void vslider_draw_erase(t_vslider* x, t_glist* glist)

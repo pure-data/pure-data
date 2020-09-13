@@ -26,6 +26,8 @@
 #define VMARGIN 2
 #define PEAKHEIGHT 10
 
+#include "g_kbdnav.h"
+
 /* ----- vu  gui-peak- & rms- vu-meter-display ---------- */
 
 t_widgetbehavior vu_widgetbehavior;
@@ -181,6 +183,9 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              x->x_gui.x_lcol, x);
     x->x_updaterms = x->x_updatepeak = 1;
     sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vu_draw_io_selection(x, glist, xpos, ypos, hmargin, vmargin, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void vu_draw_move(t_vu *x, t_glist *glist)
@@ -242,6 +247,9 @@ static void vu_draw_move(t_vu *x, t_glist *glist)
              xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
              xpos + x->x_gui.x_w + hmargin, ypos - vmargin - IEMGUI_ZOOM(x) + ioh);
     }
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vu_move(x, glist, xpos, ypos, hmargin, vmargin, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void vu_draw_erase(t_vu* x,t_glist* glist)

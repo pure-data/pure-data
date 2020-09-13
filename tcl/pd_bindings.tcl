@@ -2,6 +2,7 @@ package provide pd_bindings 0.1
 
 package require pd_menucommands
 package require dialog_find
+package require pdtk_kbdnav
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -46,7 +47,6 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-d>      {menu_send %W duplicate}
     bind all <$::modifier-Key-e>      {menu_toggle_editmode}
     bind all <$::modifier-Key-f>      {menu_find_dialog}
-    bind all <$::modifier-Key-g>      {menu_send %W findagain}
     bind all <$::modifier-Key-k>      {menu_send %W connect_selection}
     bind all <$::modifier-Key-n>      {menu_new}
     bind all <$::modifier-Key-o>      {menu_open}
@@ -82,6 +82,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-F> {menu_send %W findagain}
     bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
@@ -101,6 +102,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-f> {menu_send %W findagain}
     bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
     bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
@@ -150,6 +152,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0 %k}
     bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1 %k}
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
+
+    ::pdtk_kbdnav::set_enabled 1
 }
 
 # bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
@@ -267,13 +271,6 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
             bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
         }
     }
-
-    # <Tab> key to cycle through selection
-    bind $tkcanvas <KeyPress-Tab>        "::pd_bindings::canvas_cycle %W  1 %K %A 0 %k"
-    bind $tkcanvas <Shift-Tab>           "::pd_bindings::canvas_cycle %W -1 %K %A 1 %k"
-    # on X11, <Shift-Tab> is a different key by the name 'ISO_Left_Tab'...
-    # other systems (at least aqua) do not like this name, so we 'catch' any errors
-    catch {bind $tkcanvas <KeyPress-ISO_Left_Tab> "::pd_bindings::canvas_cycle %W -1 %K %A 1 %k" } stderr
 
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""

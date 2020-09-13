@@ -887,6 +887,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Szerkesztő üzemmód"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr "Mégsem!"
 
@@ -914,6 +920,9 @@ msgstr "Mindent kijelöl"
 
 msgid "Clear Console"
 msgstr "Konzolt ürít"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr "Object"

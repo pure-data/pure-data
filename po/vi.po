@@ -910,6 +910,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Chế độ"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "U-gan-đa"
@@ -941,6 +947,9 @@ msgstr "Chọn màu"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Xóa danh sách"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr ""

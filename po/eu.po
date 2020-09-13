@@ -912,6 +912,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Edizio Modua"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Desegin"
@@ -943,6 +949,9 @@ msgstr "Guztia Aukeratu"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Kontsola Garbitu"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr "Objektu"

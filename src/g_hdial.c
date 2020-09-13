@@ -24,6 +24,8 @@ put out a "float" as in sliders, toggles, etc. */
 #include <unistd.h>
 #endif
 
+#include "g_kbdnav.h"
+
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
 t_widgetbehavior hradio_widgetbehavior;
@@ -90,6 +92,9 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_hradio_draw_io_selection(x, glist, xx11b, yy12, yy11, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void hradio_draw_move(t_hradio *x, t_glist *glist)
@@ -128,6 +133,9 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
              canvas, x, 0,
              xx11b, yy11,
              xx11b + iow, yy11 - IEMGUI_ZOOM(x) + ioh);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_hradio_move(x, glist, xx11b, yy12, yy11, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void hradio_draw_erase(t_hradio* x, t_glist* glist)

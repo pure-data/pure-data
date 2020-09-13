@@ -21,6 +21,8 @@
 #include <unistd.h>
 #endif
 
+#include "g_kbdnav.h"
+
 /* --------------- bng     gui-bang ------------------------- */
 
 t_widgetbehavior bng_widgetbehavior;
@@ -75,6 +77,9 @@ void bng_draw_new(t_bng *x, t_glist *glist)
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_bng_draw_io_selection(x, glist, xpos, ypos, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void bng_draw_move(t_bng *x, t_glist *glist)
@@ -106,6 +111,9 @@ void bng_draw_move(t_bng *x, t_glist *glist)
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
              canvas, x, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_bng_move(x, glist, xpos, ypos, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void bng_draw_erase(t_bng* x, t_glist* glist)

@@ -17,6 +17,8 @@ put out a "float" as in sliders, toggles, etc. */
 #include "g_all_guis.h"
 #include <math.h>
 
+#include "g_kbdnav.h"
+
 /* ------------- vdl     gui-vertical radio button ---------------------- */
 
 t_widgetbehavior vradio_widgetbehavior;
@@ -85,6 +87,9 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vradio_draw_io_selection(x, glist, xx11, yy11, yy11b, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void vradio_draw_move(t_vradio *x, t_glist *glist)
@@ -122,6 +127,9 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
              canvas, x, xx11 + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_vradio_move(x, glist, xx11, yy11, yy11b, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 void vradio_draw_erase(t_vradio* x, t_glist* glist)

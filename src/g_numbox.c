@@ -23,6 +23,8 @@
 #define MINDIGITS 1
 #define MINFONT   4
 
+#include "g_kbdnav.h"
+
 /*------------------ global functions -------------------------*/
 
 static void my_numbox_key(void *z, t_floatarg fkey);
@@ -219,6 +221,9 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
              canvas, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d,
              x->x_buf, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x),
              sys_fontweight, (x->x_gui.x_fsf.x_change ? IEM_GUI_COLOR_EDITED : x->x_gui.x_fcol), x);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_my_numbox_draw_io_selection(x, glist, xpos, ypos, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
@@ -260,6 +265,9 @@ static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
     sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n",
              canvas, x, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d);
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_my_numbox_move(x, glist, xpos, ypos, IEMGUI_ZOOM(x), iow, ioh);
+#endif
 }
 
 static void my_numbox_draw_erase(t_my_numbox* x, t_glist* glist)

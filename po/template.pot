@@ -850,6 +850,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr ""
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr ""
 
@@ -875,6 +881,9 @@ msgid "Select All"
 msgstr ""
 
 msgid "Clear Console"
+msgstr ""
+
+msgid "Keyboard Navigation"
 msgstr ""
 
 msgid "Object"

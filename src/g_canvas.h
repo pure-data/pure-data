@@ -117,6 +117,7 @@ typedef struct _editor
     t_clock *e_clock;               /* clock to filter GUI move messages */
     int e_xnew;                     /* xpos for next move event */
     int e_ynew;                     /* ypos, similarly */
+    void *e_privatedata;
 } t_editor;
 
 #define MA_NONE    0    /* e_onmotion: do nothing on mouse motion */
@@ -440,6 +441,11 @@ EXTERN void canvas_create_editor(t_glist *x);
 EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
+
+EXTERN t_gobj *glist_nth(t_glist *x, int n);
+EXTERN int glist_getindex(t_glist *x, t_gobj *y);
+EXTERN void glist_selectline(t_glist *x, t_outconnect *oc, int index1, int outno,
+    int index2, int inno);
 
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize);

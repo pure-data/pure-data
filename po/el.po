@@ -886,6 +886,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Κατάσταση Επεξεργασίας"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr "Αναίρεση"
 
@@ -913,6 +919,9 @@ msgstr "Επιλογή Όλων"
 
 msgid "Clear Console"
 msgstr "Καθαρισμός Κονσόλας"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr ""

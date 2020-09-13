@@ -910,6 +910,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Təfərruatlar"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 #, fuzzy
 msgid "Undo"
 msgstr "Uqanda"
@@ -941,6 +947,9 @@ msgstr "Hamısı Sil"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Siyahını təmizlə"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr ""

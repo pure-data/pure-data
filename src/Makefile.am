@@ -66,6 +66,7 @@ pd_SOURCES_core = \
     g_hdial.c \
     g_hslider.c \
     g_io.c \
+    g_kbdnav.c \
     g_mycanvas.c \
     g_numbox.c \
     g_readwrite.c \
@@ -124,7 +125,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h g_kbdnav.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \

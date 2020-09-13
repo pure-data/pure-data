@@ -894,6 +894,12 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Redigeringsläge"
 
+msgid "Go to Object"
+msgstr ""
+
+msgid "Connect Objects"
+msgstr ""
+
 msgid "Undo"
 msgstr "Ångra"
 
@@ -922,6 +928,9 @@ msgstr "Markera allt"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Rensa konsoll"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr "Objekt"

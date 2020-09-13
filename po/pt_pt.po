@@ -881,6 +881,13 @@ msgstr ""
 msgid "Edit Mode"
 msgstr "Modo de edição"
 
+#, fuzzy
+msgid "Go to Object"
+msgstr "Ir para Objeto"
+
+msgid "Connect Objects"
+msgstr "Conectar Objetos"
+
 msgid "Undo"
 msgstr "Anular"
 
@@ -908,6 +915,9 @@ msgstr "Escolher tudo"
 
 msgid "Clear Console"
 msgstr "Limpar consola"
+
+msgid "Keyboard Navigation"
+msgstr ""
 
 msgid "Object"
 msgstr "Object"
