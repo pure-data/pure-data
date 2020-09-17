@@ -14,7 +14,9 @@
 # signal_cord - signal cord and outline of signal inlets
 # msg_cord - message cord and outline of message inlets
 # msg_iolet - message inlet/outlet fill
+# msg_iolet_border - border/outline of message inlet
 # signal_iolet - signal inlet/outlet fill
+# signal_iolet_border - border/outline of signal iolet
 # graph_outline - outline of arrays and GOP patches in the parent patch
 # graph_text - color of the names of GOP patches in the parent patch
 # selection_rectangle - selection rectangle color in edit mode
@@ -82,6 +84,8 @@ helpbrowser_highlight "red"
 canvas_text_cursor "deep sky blue"
 }
 set ::pd_colors(txt_highlight_front) $::pd_colors(selected)
+set ::pd_colors(msg_iolet_border) $::pd_colors(msg_cord)
+set ::pd_colors(signal_iolet_border) $::pd_colors(signal_cord)
 
 # how to set individual colors
 #set ::pd_colors(msg_box_fill) "white"
