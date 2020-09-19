@@ -1427,7 +1427,7 @@ void sys_setrealtime(const char *libdir)
             close(pipe9[1]);
 
             if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
-            execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+            execl(cmdbuf, cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
         }
@@ -1494,7 +1494,7 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-void glob_quit(void *dummy)
+void glob_exit(void *dummy, t_float status)
 {
     sys_close_audio();
     sys_close_midi();
@@ -1503,7 +1503,11 @@ void glob_quit(void *dummy)
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
     }
-    exit(0);
+    exit((int)status);
+}
+void glob_quit(void *dummy)
+{
+    glob_exit(dummy, 0);
 }
 
     /* recursively descend to all canvases and send them "vis" messages

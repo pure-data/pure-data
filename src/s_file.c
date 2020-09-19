@@ -841,11 +841,19 @@ void glob_savepreferences(t_pd *dummy, t_symbol *filesym)
 void glob_forgetpreferences(t_pd *dummy)
 {
 #if !defined(_WIN32) && !defined(__APPLE__)
-    if (system("cat ~/.pdsettings >& /dev/null\n"))
+    char user_prefs_file[MAXPDSTRING]; /* user prefs file */
+    const char *homedir = getenv("HOME");
+    struct stat statbuf;
+    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
+        (homedir ? homedir : "."));
+    user_prefs_file[MAXPDSTRING-1] = 0;
+    if (stat(user_prefs_file, &statbuf) != 0) {
         post("no Pd settings to clear");
-    else if (!system("rm ~/.pdsettings\n"))
-        post("removed .pdsettings file");
-    else post("couldn't delete .pdsettings file");
+    } else if (!unlink(user_prefs_file)) {
+        post("removed %s file", user_prefs_file);
+    } else {
+        post("couldn't delete %s file: %s", user_prefs_file, strerror(errno));
+    }
 #endif  /* !defined(_WIN32) && !defined(__APPLE__) */
 #ifdef __APPLE__
     char cmdbuf[MAXPDSTRING];

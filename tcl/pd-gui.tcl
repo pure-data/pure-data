@@ -579,18 +579,28 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::done_init 1
 }
 
-##### routine to ask user if OK and, if so, send a message on to Pd ######
-proc pdtk_check {mytoplevel message reply_to_pd default} {
+##### routine to ask user if OK and, if so return '1' (or else '0')
+# (this really should be in some other file)
+proc pdtk_yesnodialog {mytoplevel message default} {
     wm deiconify $mytoplevel
     raise $mytoplevel
     if {$::windowingsystem eq "win32"} {
-        set answer [tk_messageBox -message [_ $message] -type yesno -default $default \
-                        -icon question -title [wm title $mytoplevel]]
-    } else {
-        set answer [tk_messageBox -message [_ $message] -type yesno \
-                        -default $default -parent $mytoplevel -icon question]
-    }
+           set answer [tk_messageBox -message [_ $message] -type yesno \
+                                     -default $default -icon question \
+                                     -title [wm title $mytoplevel]]
+       } {
+           set answer [tk_messageBox -message [_ $message] -type yesno \
+                                     -default $default -icon question \
+                                     -parent $mytoplevel]
+       }
     if {$answer eq "yes"} {
+           return 1
+    }
+    return 0
+}
+##### routine to ask user if OK and, if so, send a message on to Pd ######
+proc pdtk_check {mytoplevel message reply_to_pd default} {
+    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
         pdsend $reply_to_pd
     }
 }

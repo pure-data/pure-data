@@ -176,6 +176,7 @@ Some important per-application settings required by the GUI include:
 * NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving
 * ApplePressAndHoldEnabled: false, disables character compose popup,
                                    enables key repeat for all keys
+* NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+
 
 These are set in `tcl/pd_guiprefs.tcl`.
 
