@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Pd wants to hear the sounds</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Pd wants to see the sights</string>
 	<key>ATSApplicationFontsPath</key>
 	<string>font</string>
 	<key>CFBundleDevelopmentRegion</key>
