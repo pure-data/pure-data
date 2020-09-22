@@ -472,6 +472,10 @@ static void m_pollingscheduler(void)
 
         sys_addhist(0);
     waitfortick:
+        if ((sched_fastforward > 0) && (sched_useaudio == SCHED_AUDIO_NONE)) {
+            sched_referencerealtime -= sched_fastforward/1000.;
+        }
+
         while (sched_fastforward > 0)
         {
             double beforetick = pd_this->pd_systime;
