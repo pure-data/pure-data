@@ -718,6 +718,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     inlet_new(&x->x_gui.x_obj, &x->x_gui.x_obj.ob_pd, &s_float, gensym("ft1"));
     x->x_out_rms = outlet_new(&x->x_gui.x_obj, &s_float);
     x->x_out_peak = outlet_new(&x->x_gui.x_obj, &s_float);
+    x->x_gui.x_h /= IEMGUI_ZOOM(x); /* unzoom, to prevent double-application in iemgui_newzoom */
     iemgui_newzoom(&x->x_gui);
     return (x);
 }

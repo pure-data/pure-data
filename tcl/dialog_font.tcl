@@ -31,10 +31,16 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
         if {[lsearch [font names] TkMenuFont] >= 0} {
             font configure TkMenuFont -size -$myfontsize
         }
-        .pdwindow.text.internal configure -font "-size -$myfontsize"
+        if {[winfo exists ${mytoplevel}.text]} {
+            ${mytoplevel}.text.internal configure -font "-size -$myfontsize"
+        }
 
-# repeat a "pack" command so the font dialog can resize itself
-        pack .font.buttonframe -side bottom -fill x -pady 2m
+        # repeat a "pack" command so the font dialog can resize itself
+        if {[winfo exists .font]} {
+            pack .font.buttonframe -side bottom -fill x -pady 2m
+        }
+
+        ::pd_guiprefs::write menu-fontsize "$myfontsize"
 
     } else {
         variable stretchval
@@ -81,6 +87,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     variable fontsize $initsize
     variable whichstretch 1
     variable stretchval 100
+    if {$fontsize < 0} {set fontsize [expr -$fontsize]}
     if {$fontsize < 8} {set fontsize 12}
     if {[winfo exists .font]} {
         wm deiconify .font

@@ -51,7 +51,7 @@ static void print_bang(t_print *x)
 
 static void print_pointer(t_print *x, t_gpointer *gp)
 {
-    logpost(x, 2, "%s%s(gpointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    logpost(x, 2, "%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
 }
 
 static void print_float(t_print *x, t_float f)
@@ -59,38 +59,9 @@ static void print_float(t_print *x, t_float f)
     logpost(x, 2, "%s%s%g", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""), f);
 }
 
-static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
-{
-    int i;
-
-    if (argc && argv->a_type == A_FLOAT)
-    {
-        if(*x->x_sym->s_name)
-            startlogpost(x, 2, "%s:", x->x_sym->s_name);
-        else {
-                /* print first (numeric) atom, to avoid a trailing space */
-            startlogpost(x, 2, "%g", atom_getfloat(argv));
-            argc--; argv++;
-        }
-    }
-    else startlogpost(x, 2, "%s%s%s", x->x_sym->s_name,
-        (*x->x_sym->s_name ? ": " : ""),
-        (argc > 1 ? s_list.s_name : (argc == 1 ? s_symbol.s_name :
-            s_bang.s_name)));
-
-    for (i = 0; i < argc; i++)
-    {
-        char buf[MAXPDSTRING];
-        atom_string(argv+i, buf, MAXPDSTRING);
-        startlogpost(x, 2, " %s", buf);
-    }
-    endpost();
-}
-
 static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-
     startlogpost(x, 2, "%s%s%s", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""),
         s->s_name);
     for (i = 0; i < argc; i++)
@@ -100,6 +71,51 @@ static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
         startlogpost(x, 2, " %s", buf);
     }
     endpost();
+}
+
+static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (!argc)
+        print_bang(x);
+    else if (argc == 1)
+    {
+        switch (argv->a_type)
+        {
+        case A_FLOAT:
+            print_float(x, argv->a_w.w_float);
+            break;
+        case A_SYMBOL:
+            print_anything(x, &s_symbol, 1, argv);
+            break;
+        case A_POINTER:
+            print_pointer(x, argv->a_w.w_gpointer);
+            break;
+        default:
+            bug("print");
+            break;
+        }
+    }
+    else if (argv->a_type == A_FLOAT)
+    {
+        int i;
+        if (*x->x_sym->s_name)
+            startlogpost(x, 2, "%s: ", x->x_sym->s_name);
+        else
+        {
+            /* print first (numeric) atom, to avoid a trailing space */
+            startlogpost(x, 2, "%g", atom_getfloat(argv));
+            argc--; argv++;
+        }
+        for (i = 0; i < argc; i++)
+        {
+            char buf[MAXPDSTRING];
+            atom_string(argv+i, buf, MAXPDSTRING);
+            startlogpost(x, 2, " %s", buf);
+        }
+        endpost();
+    }
+    else
+        print_anything(x, &s_list, argc, argv);
 }
 
 static void print_setup(void)

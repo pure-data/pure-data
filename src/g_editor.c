@@ -707,7 +707,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        canvas_applybinbuf(x, buf->u_reconnectbuf);
+        if (buf)
+            canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
@@ -1197,9 +1198,12 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
             /* now fix links in the hole made in the list due to moving of the oldy
              * (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
              */
-        if (oldy_next) /* there is indeed more after oldy position */
-            oldy_prev->g_next = oldy_next;
-        else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        if (oldy_prev)
+        {
+            if (oldy_next) /* there is indeed more after oldy position */
+                oldy_prev->g_next = oldy_next;
+            else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        }
 
 #if 0
             /* and finally redraw */
@@ -2098,15 +2102,15 @@ void canvas_properties(t_gobj*z, t_glist*unused)
                 0., 0.,
                 glist_isgraph(x) ,
                 x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
-                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
-                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
+                (int)x->gl_pixwidth, (int)x->gl_pixheight,
+                (int)x->gl_xmargin, (int)x->gl_ymargin);
     else sprintf(graphbuf,
             "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
                 glist_dpixtodx(x, 1), -glist_dpixtody(x, 1),
                 0,
                 0., -1., 1., 1.,
-                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
-                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
+                (int)x->gl_pixwidth, (int)x->gl_pixheight,
+                (int)x->gl_xmargin, (int)x->gl_ymargin);
     gfxstub_new(&x->gl_pd, x, graphbuf);
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
@@ -2146,10 +2150,10 @@ static void canvas_donecanvasdialog(t_glist *x,
            applies to individual objects */
     canvas_undo_add(x, UNDO_CANVAS_APPLY, "apply", canvas_undo_set_canvas(x));
 
-    x->gl_pixwidth = xpix * x->gl_zoom;
-    x->gl_pixheight = ypix * x->gl_zoom;
-    x->gl_xmargin = xmargin * x->gl_zoom;
-    x->gl_ymargin = ymargin * x->gl_zoom;
+    x->gl_pixwidth = xpix;
+    x->gl_pixheight = ypix;
+    x->gl_xmargin = xmargin;
+    x->gl_ymargin = ymargin;
 
     yperpix = -yperpix;
     if (xperpix == 0)
@@ -4212,7 +4216,8 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         int objectcount = glist_getindex(x, 0);
             /* only cycle selection if the current selection contains exactly 1 item */
         t_gobj* y = x->gl_editor->e_selection->sel_next ? 0 : x->gl_editor->e_selection->sel_what;
-        if(!y)return;
+        if (!y || !objectcount)
+            return;
         newindex = (glist_getindex(x, y) + offset) % objectcount;
         if (newindex < 0) newindex += objectcount;
         glist_deselect(x, y);
@@ -4243,6 +4248,9 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             } else
                 offset--;
         }
+
+        if (!connectioncount)
+            offset = 0;
 
             /* if the offset is non-0, wrap it... */
         if (offset)
@@ -4331,7 +4339,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             inlet_new(objsink, &objsink->ob_pd, 0, 0);
 
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
-    if (glist_isvisible(x))
+    if (glist_isvisible(x) && x->gl_havewindow)
     {
         sys_vgui(
             ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
@@ -4738,7 +4746,8 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
     }
     else
     {
-        glist_noselect(x);
+        glist_noselect(x);  /* this can knock us back into edit mode so : */
+        x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);

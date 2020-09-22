@@ -1244,9 +1244,10 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
     nframes = n/narray;
-    post("read 1 %d", n);
+    //post("read 1 %d", n);
     if (nframes < 1)
     {
+        binbuf_free(b);
         pd_error(x, "soundfiler_read: %s: empty or very short file", filename);
         return;
     }
@@ -1255,12 +1256,13 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
         for (i = 0; i < narray; i++)
         {
             garray_resize_long(garrays[i], nframes);
-            garray_getfloatwords(garrays[i], &vecsize, &vecs[i]);
+            if (!garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+                bug("garray_getfloatwords[%d]", i);
         }
     }
     else if (finalsize < nframes)
         nframes = finalsize;
-    post("read 2");
+    //post("read 2");
     for (j = 0, ap = atoms; j < nframes; j++)
         for (i = 0; i < narray; i++)
             vecs[i][j].w_float = atom_getfloat(ap++);
@@ -1274,7 +1276,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     }
     for (i = 0; i < narray; i++)
         garray_redraw(garrays[i]);
-    post("read 3");
+    //post("read 3");
     
 }
 

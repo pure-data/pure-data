@@ -9,7 +9,7 @@
 #X floatatom 191 113 0 0 0 0 - - -;
 #X msg 134 64 bang;
 #X obj 191 88 + 1;
-#X text 50 18 Here's a simple counter. Click repeatedly on the "bang
+#X text 50 18 Here's a simple counter. Click repeatedly on the "bang"
 message to see it:, f 41;
 #X text 49 433 Here's a timed counter. Hit the "bang" to start it...
 , f 39;
