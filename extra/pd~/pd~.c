@@ -19,7 +19,6 @@ learning XCode.  */
 #include <windows.h>
 typedef int socklen_t;
 #else
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -31,6 +30,7 @@ typedef int socklen_t;
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
@@ -536,7 +536,6 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
     const char**dllextent;
     struct stat statbuf;
     x->x_childpid = -1;
-    post("start 1");
     if (argc > MAXARG)
     {
         post("pd~: args truncated to %d items", MAXARG);
@@ -621,7 +620,10 @@ gotone:
     for (i = 0; i < argc; i++)
     {
 #ifdef PD
-        atom_string(&argv[i], tmpbuf, MAXPDSTRING);
+        if (argv[i].a_type == A_SYMBOL)
+            snprintf(tmpbuf, MAXPDSTRING, "%s", argv[i].a_w.w_symbol->s_name);
+        else if (argv[i].a_type == A_FLOAT)
+            sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef MSP
             /* because Mac pathnames sometimes have an evil preceeding
@@ -631,9 +633,9 @@ gotone:
                 argv[i].a_w.w_sym->s_name+1 : argv[i].a_w.w_sym->s_name),
                 MAXPDSTRING-3);
         else if (argv[i].a_type == A_LONG)
-            sprintf(tmpbuf, "%ld", (long)argv->a_w.w_long);
+            sprintf(tmpbuf, "%ld", (long)argv[i].a_w.w_long);
         else if (argv[i].a_type == A_FLOAT)
-            sprintf(tmpbuf,  "%f", (float)argv->a_w.w_float);
+            sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef _WIN32
             /* and now, for Windows (whether Max or Pd), spaces need quotes */
@@ -749,7 +751,6 @@ gotone:
     pd_tilde_readmessages(x, infd);
     x->x_outfd = outfd;
     x->x_infd = infd;
-    post("start 2");
     return;
 #ifndef _WIN32
 fail3:
