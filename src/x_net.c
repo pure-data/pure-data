@@ -454,7 +454,8 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
     {
         static double lastwarntime;
         static double pleasewarn;
-        double timebefore = sys_getrealtime();
+        double timebefore = sys_getrealtime(), timeafter;
+        int late;
 
         int res = 0;
         if (x->x_protocol == SOCK_DGRAM)
@@ -467,8 +468,8 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
         else
             res = (int)send(sockfd, bp, length-sent, 0);
 
-        double timeafter = sys_getrealtime();
-        int late = (timeafter - timebefore > 0.005);
+        timeafter = sys_getrealtime();
+        late = (timeafter - timebefore > 0.005);
         if (late || pleasewarn)
         {
             if (timeafter > lastwarntime + 2)
