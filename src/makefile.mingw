@@ -9,6 +9,7 @@
 CC = gcc
 CXX = g++
 WINDRES = windres
+MKDIR_P = mkdir -p
 
 pd_src = ..
 DLL_DIR = $(pd_src)/src
@@ -186,23 +187,23 @@ $(PMOBJ) : %.o : %.c
 $(VOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
 
-$(PDSEND): u_pdsend.o s_net.o
+$(PDSEND): $(EXECDIR) u_pdsend.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
 	$(STRIP) $(PDSEND)
 
-$(PDRECEIVE): u_pdreceive.o s_net.o
+$(PDRECEIVE): $(EXECDIR) u_pdreceive.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o s_net.o $(LIBS)
 	$(STRIP) $(PDRECEIVE)
 
-$(PDEXEC): s_entry.o pd.res
+$(PDEXEC): $(EXECDIR) s_entry.o pd.res
 	$(CXX) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) pd.a
 	$(STRIP) -s $(PDEXEC)
 
-$(PDCOM): s_entry.o
+$(PDCOM): $(EXECDIR) s_entry.o
 	$(CXX) $(LDFLAGS) -o $(PDCOM) s_entry.o $(LIBS) pd.a
 	$(STRIP) -s $(PDCOM)
 
-$(PDDLL): $(OBJC)
+$(PDDLL): $(EXECDIR) $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
 		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
 	$(STRIP) $(PDDLL)
@@ -210,11 +211,14 @@ $(PDDLL): $(OBJC)
 pd.res: pd.rc
 	$(WINDRES) pd.rc -O coff -o pd.res
 
-../bin/pdstatic.exe: $(OBJC)
+$(EXECDIR)/pdstatic.exe: $(OBJC) $(EXECDIR)
 	$(CXX) -static \
-            $(LDFLAGS) -o ../bin/pdstatic.exe $(OBJC) \
+            $(LDFLAGS) -o $@ $(OBJC) \
             $(LIBS) -lole32 -static-libgcc -static-libstdc++
-	$(STRIP) -s ../bin/pdstatic.exe
+	$(STRIP) -s $@
+
+$(EXECDIR):
+	$(MKDIR_P) $@
 
 #vstschedlib.dll: $(VOBJ)
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
