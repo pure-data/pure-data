@@ -12,6 +12,8 @@ GUINAME= libPdTcl.dylib
 ARCH= -arch i386 -arch ppc
 EXTRAARCH= -arch i386 -arch x86_64 -arch ppc
 
+MKDIR_P = mkdir -p
+
 prefix = /usr/local
 exec_prefix = ${prefix}
 bindir = ${exec_prefix}/bin
@@ -128,6 +130,11 @@ bin: pd $(BIN_DIR)/pd-watchdog gui $(BIN_DIR)/pdsend \
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
+
+$(OBJ): $(OBJ_DIR)
+
+$(OBJ_DIR):
+	$(MKDIR_P) $@
 
 pd: $(PDEXEC)
 
