@@ -10,8 +10,7 @@ CC = gcc
 CXX = g++
 WINDRES = windres
 
-cvs_root_dir = ../..
-pd_src = $(cvs_root_dir)/pd
+pd_src = ..
 DLL_DIR = $(pd_src)/src
 
 BIN_DIR = ../bin
