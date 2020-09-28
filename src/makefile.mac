@@ -68,7 +68,7 @@ SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c    \
     $(PADIR)/src/common/pa_debugprint.c  \
     $(PADIR)/src/common/pa_ringbuffer.c  \
     $(PADIR)/src/os/unix/pa_unix_util.c  \
-    $(PADIR)/src/os/mac_osx/pa_mac_hostapis.c              \
+    $(PADIR)/src/os/unix/pa_unix_hostapis.c                \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core.c           \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core_blocking.c  \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core_utilities.c \
