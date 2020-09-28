@@ -44,7 +44,9 @@ DLLWRAP= dllwrap
 MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/lib/ASIOSDK
+
+asiodir := $(firstword $(wildcard $(pd_src)/lib/ASIOSDK $(pd_src)/asio/ASIOSDK))
+ASIODIR ?= $(asiodir)
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
