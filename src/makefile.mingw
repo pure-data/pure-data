@@ -247,7 +247,7 @@ install:  all
 	install -p ../tcl/*.tcl $(DESTDIR)$(bindir)/
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
 	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
-	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
+	install -p $(PDDLL) $(DESTDIR)$(bindir)/pd.dll
 	install -p ../tcl/pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
 	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
