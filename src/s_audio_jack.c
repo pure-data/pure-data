@@ -21,7 +21,6 @@
 #define MAX_CLIENTS 100
 #define MAX_JACK_PORTS 128  /* higher values seem to give bad xrun problems */
 #define BUF_JACK 4096
-#define JACK_OUT_MAX  64
 
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
@@ -46,8 +45,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
     jack_default_audio_sample_t *out, *in;
 
     pthread_mutex_lock(&jack_mutex);
-    if (nframes > JACK_OUT_MAX) jack_out_max = nframes;
-    else jack_out_max = JACK_OUT_MAX;
+    jack_out_max = nframes;
     if (nframes >= DEFDACBLKSIZE && jack_filled >= nframes)
     {
         if (jack_filled != nframes)
