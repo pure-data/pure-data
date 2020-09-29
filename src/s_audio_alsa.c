@@ -25,6 +25,7 @@
 #include <sched.h>
 #include <sys/mman.h>
 #include "s_audio_alsa.h"
+#include "s_alsa_pcm_list.h"
 #include <endian.h>
 
 /* Defines */
@@ -37,7 +38,8 @@
 #endif
 
 static void alsa_checkiosync(void);
-static void alsa_numbertoname(int iodev, char *devname, int nchar);
+static void alsa_out_numbertoname(int devno, char *devname, int nchar);
+static void alsa_in_numbertoname(int devno, char *devname, int nchar);
 static int alsa_jittermax;
 #define ALSA_DEFJITTERMAX 5
 
@@ -291,7 +293,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
 
     for (iodev = 0; iodev < naudioindev; iodev++)
     {
-        alsa_numbertoname(audioindev[iodev], devname, 512);
+        alsa_in_numbertoname(audioindev[iodev], devname, 512);
         err = snd_pcm_open(&alsa_indev[alsa_nindev].a_handle, devname,
             SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK);
         check_error(err, 0, "snd_pcm_open");
@@ -305,7 +307,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     }
     for (iodev = 0; iodev < naudiooutdev; iodev++)
     {
-        alsa_numbertoname(audiooutdev[iodev], devname, 512);
+        alsa_out_numbertoname(audiooutdev[iodev], devname, 512);
         err = snd_pcm_open(&alsa_outdev[alsa_noutdev].a_handle, devname,
             SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
         check_error(err, 1, "snd_pcm_open");
@@ -895,8 +897,17 @@ static void alsa_checkiosync(void)
 #endif
 }
 
+typedef struct {
+    int n;
+    char **names;
+} t_detected_names;
+t_detected_names detected_in_names = {0, NULL};
+t_detected_names detected_out_names = {0, NULL};
+
 static int alsa_nnames = 0;
 static const char **alsa_names = 0;
+
+static void alsa_numbertoname(const t_detected_names *detected_names, int devno, char *devname, int nchar);
 
 void alsa_adddev(char *name)
 {
@@ -909,80 +920,140 @@ void alsa_adddev(char *name)
     alsa_nnames++;
 }
 
-static void alsa_numbertoname(int devno, char *devname, int nchar)
+static void alsa_out_numbertoname(int devno, char *devname, int nchar)
 {
-    int ndev = 0, cardno = -1;
-    while (!snd_card_next(&cardno) && cardno >= 0)
-        ndev++;
-    if (devno < 2*ndev)
-    {
-        if (devno & 1)
-            snprintf(devname, nchar, "plughw:%d", devno/2);
-        else snprintf(devname, nchar, "hw:%d", devno/2);
-    }
-    else if (devno <2*ndev + alsa_nnames)
-        snprintf(devname, nchar, "%s", alsa_names[devno - 2*ndev]);
+    alsa_numbertoname(&detected_out_names, devno, devname, nchar);
+}
+
+static void alsa_in_numbertoname(int devno, char *devname, int nchar)
+{
+    alsa_numbertoname(&detected_in_names, devno, devname, nchar);
+}
+
+static void alsa_numbertoname(const t_detected_names *detected_names, int devno, char *devname, int nchar)
+{
+    if (devno < detected_names->n)
+        snprintf(devname, nchar, "%s", detected_names->names[devno]);
+    else if (devno < detected_names->n + alsa_nnames)
+        snprintf(devname, nchar, "%s", alsa_names[devno - detected_names->n]);
     else snprintf(devname, nchar, "???");
 }
 
-    /* For each hardware card found, we list two devices, the "hard" and
-    "plug" one.  The card scan is derived from portaudio code. */
+static void add_to_list(t_detected_names *detected_names, const char *name)
+{
+    int n = detected_names->n;
+    if (n == 0)
+        detected_names->names = (char **)t_getbytes(sizeof(char *));
+    else
+        detected_names->names = (char **)t_resizebytes(detected_names->names,
+                                n * sizeof(char *),
+                                (n+1) * sizeof(char *));
+    detected_names->names[n] = t_getbytes(strlen(name)+1);
+    strcpy(detected_names->names[n], name);
+}
+
+static void free_list(t_detected_names *detected_names)
+{
+    const char *name;
+    for (int i = 0; i < detected_names->n; ++i) {
+        free(detected_names->names[i]);
+    }
+    free(detected_names->names);
+    detected_names->n = 0;
+    detected_names->names = NULL;
+}
+
+static int str_in_array(const char * const * const arr, size_t len, const char * const str)
+{
+    int found = 0;
+    const char * const * const lim = arr + len;
+    for (const char * const *s = arr; s < lim; ++s) {
+        if (strcmp(*s, str) == 0) {
+            found = 1;
+            break;
+        }
+    }
+    return found;
+}
+
+static int get_devs(char *devlist, int maxndev, int devdescsize, t_detected_names *detected_names, alsa_pcm_list_dir dir)
+{
+    free_list(detected_names);
+
+    
+    // get names such as: default, pulse etc. (see pcm_names_of_interest below)
+    {
+        // We don't list all names provided by
+        //    aplay -L | grep '^[[:graph:]]' | cut -d: -f1 | uniq
+        // but only those that exist and are in pcm_names_of_interest:
+        static const char * const pcm_names_of_interest[] = {"default", "pulse", "oss", "jack"};
+        const size_t arrlen = sizeof(pcm_names_of_interest) / sizeof(*pcm_names_of_interest);
+        
+        alsa_pcm_list_t *info = alsa_pcm_list_init(dir);
+        const char *name = NULL;
+        
+        while ((name = alsa_pcm_list_get_next(info)) != NULL) {
+            if (str_in_array(pcm_names_of_interest, arrlen, name)) {
+                snprintf(devlist + detected_names->n * devdescsize, devdescsize,
+                         "%s", name);
+                add_to_list(detected_names, name);
+                ++(detected_names->n);
+                if (detected_names->n == maxndev)
+                    break;
+            }
+        }
+        alsa_pcm_list_free(info);
+    }
+
+    // get names such as: hw:0,0
+    {
+        alsa_hw_list_t *hw = alsa_hw_list_init(dir);
+        const char *hwname;
+        const char *cardname;
+        const char *pcmname;
+
+        while (hwname = alsa_hw_list_get_next(hw, &cardname, &pcmname)) {
+            snprintf(devlist + detected_names->n * devdescsize, devdescsize,
+                     "%s (%s : %s)", hwname, cardname, pcmname);
+            add_to_list(detected_names, hwname);
+            ++(detected_names->n);
+            if (detected_names->n == maxndev)
+                break;
+        }
+        alsa_hw_list_free(hw);
+    }
+    
+    return detected_names->n;
+}
+
 void alsa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
-    int ndev = 0, cardno = -1, i, j;
+    int i, j;
     *canmulti = 2;  /* supports multiple devices */
-    while (!snd_card_next(&cardno) && cardno >= 0)
+
+    // input devices
+    int nin = get_devs(indevlist, maxndev, devdescsize, &detected_in_names, ALSA_PCM_INPUT_LIST);
+    
+    // output devices
+    int nout = get_devs(outdevlist, maxndev, devdescsize, &detected_out_names, ALSA_PCM_OUTPUT_LIST);
+
+    // manually listed devices
+    for (i = 0; i < alsa_nnames; ++i)
     {
-        snd_ctl_t *ctl;
-        snd_ctl_card_info_t *info;
-        char devname[80];
-        const char *desc;
-        if (2 * ndev + 2  > maxndev)
-            break;
-        sprintf(devname, "hw:%d", cardno );
-        /* fprintf(stderr, "\ntry %s...\n", devname); */
-        if (snd_ctl_open(&ctl, devname, 0) >= 0)
-        {
-            snd_ctl_card_info_malloc(&info);
-            snd_ctl_card_info(ctl, info);
-            desc = snd_ctl_card_info_get_name(info);
-            snprintf(indevlist + 2*ndev * devdescsize, devdescsize,
-                "%s (hardware)", desc);
-            snprintf(indevlist + (2*ndev + 1) * devdescsize, devdescsize,
-                "%s (plug-in)", desc);
-            snprintf(outdevlist + 2*ndev * devdescsize, devdescsize,
-                "%s (hardware)", desc);
-            snprintf(outdevlist + (2*ndev + 1) * devdescsize, devdescsize,
-                "%s (plug-in)", desc);
-            indevlist[(2*ndev+1) * devdescsize - 1] =
-                indevlist[(2*ndev+2) * devdescsize - 1] =
-                    outdevlist[(2*ndev+1) * devdescsize - 1] =
-                        outdevlist[(2*ndev+2) * devdescsize - 1] = 0;
-            snd_ctl_card_info_free(info);
+        if (nin < maxndev) {
+            snprintf(indevlist + nin * devdescsize, devdescsize, "%s",
+                     alsa_names[i]);
+            ++nin;
         }
-        else
-        {
-            fprintf(stderr, "ALSA card scan error\n");
-            sprintf(indevlist + 2*ndev * devdescsize, "???");
-            sprintf(indevlist + (2*ndev + 1) * devdescsize, "???");
-            sprintf(outdevlist + 2*ndev * devdescsize, "???");
-            sprintf(outdevlist + (2*ndev + 1) * devdescsize, "???");
+        if (nout < maxndev) {
+            snprintf(outdevlist + nout * devdescsize, devdescsize, "%s",
+                     alsa_names[i]);
+            ++nout;
         }
-        /* fprintf(stderr, "name: %s\n", snd_ctl_card_info_get_name(info)); */
-        ndev++;
     }
-    for (i = 0, j = 2*ndev; i < alsa_nnames; i++, j++)
-    {
-        if (j >= maxndev)
-            break;
-        snprintf(indevlist + j * devdescsize, devdescsize, "%s",
-            alsa_names[i]);
-        snprintf(outdevlist + j * devdescsize, devdescsize, "%s",
-            alsa_names[i]);
-        indevlist[(i+1) * devdescsize - 1] =
-            outdevlist[(i+1) * devdescsize - 1] = 0;
-    }
-    *nindevs = *noutdevs = j;
+
+    *nindevs  = nin;
+    *noutdevs = nout;
 }

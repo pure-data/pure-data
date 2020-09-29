@@ -124,7 +124,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS = s_audio_alsa.h s_alsa_pcm_list.h s_audio_paring.h s_utf8.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
@@ -143,7 +143,7 @@ pd_CFLAGS += $(WISHDEFINE)
 if ALSA
 pd_CFLAGS += -DUSEAPI_ALSA
 pd_LDADD_core += @ALSA_LIBS@
-pd_SOURCES_core += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+pd_SOURCES_core += s_audio_alsa.c s_audio_alsamm.c s_alsa_pcm_list.c s_midi_alsa.c
 endif
 
 ##### OSX CoreAudio #####
