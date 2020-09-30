@@ -75,7 +75,7 @@
 #define isdigit(x)      (x >= '0' && x <= '9')
 #endif
 
-#ifdef _MSC_VER
+#if defined _MSC_VER && (_MSC_VER < 1800)
 #define strtof(a, b) _atoldbl(a, *b)
 #endif
 

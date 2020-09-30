@@ -41,6 +41,7 @@ void glob_loadpreferences(t_pd *dummy, t_symbol *s);
 void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);
 void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
+void glob_fastforward(t_pd *ignore, t_floatarg f);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -141,7 +142,7 @@ void glob_init(void)
         A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_open, gensym("open"),
         A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_exit, gensym("quit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);
@@ -196,6 +197,8 @@ void glob_init(void)
         gensym("plugin-dispatch"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_helpintro,
         gensym("help-intro"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_fastforward,
+         gensym("fast-forward"), A_FLOAT, 0);
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);

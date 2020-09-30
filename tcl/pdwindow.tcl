@@ -439,6 +439,10 @@ proc ::pdwindow::create_window_finalize {} {
     # this ought to be called after all elements of the window (including the
     # menubar!) have been created!
     if {![winfo viewable .pdwindow.text]} { tkwait visibility .pdwindow.text }
+    set fontsize [::pd_guiprefs::read menu-fontsize]
+    if {$fontsize != ""} {
+        ::dialog_font::apply .pdwindow $fontsize
+    }
 }
 
 proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {

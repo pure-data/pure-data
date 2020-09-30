@@ -548,9 +548,18 @@ proc ::pd_menus::loadpreferences {} {
 }
 
 proc ::pd_menus::forgetpreferences {} {
-    pdtk_check .pdwindow \
-        [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
-        {pd forget-preferences} yes
+    if {[pdtk_yesnodialog .pdwindow \
+             [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
+             yes]} {
+        pdsend "pd forget-preferences"
+        if {[::pd_guiprefs::delete_config]} {
+            ::pdwindow::post [_ "removed GUI settings" ]
+        } {
+            ::pdwindow::post [_ "no Pd-GUI settings to clear" ]
+        }
+        ::pdwindow::post "\n"
+
+    }
 }
 
 proc ::pd_menus::create_preferences_menu {mymenu} {

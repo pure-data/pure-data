@@ -44,3 +44,5 @@ zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
 echo /tmp/pd-$pdversion.msw.zip
 echo /tmp/pd-$pdversion.windows-installer.exe
+
+echo wine `pwd`/pd-$pdversion/bin/wish85.exe `pwd`/pd-$pdversion/tcl/pd-gui.tcl
