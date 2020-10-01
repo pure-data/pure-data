@@ -26,7 +26,7 @@ typedef long t_pa_sample;
 #define SYS_BYTESPERCHAN (DEFDACBLKSIZE * SYS_SAMPLEWIDTH)
 #define SYS_XFERSAMPS (SYS_DEFAULTCH*DEFDACBLKSIZE)
 #define SYS_XFERSIZE (SYS_SAMPLEWIDTH * SYS_XFERSAMPS)
-#define MAXNDEV 20
+#define MAXNDEV 128
 #define DEVDESCSIZE 1024
 
 static void audio_getdevs(char *indevlist, int *nindevs,
