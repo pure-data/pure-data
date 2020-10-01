@@ -23,6 +23,11 @@
 #define snprintf _snprintf
 #endif
 
+    /* initial symbol table size */
+#ifndef SYMTABHASHSIZE
+#define SYMTABHASHSIZE 1024
+#endif
+
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
 static void pd_defaultfloat(t_pd *x, t_float f);
 static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
@@ -74,9 +79,12 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     x->pd_clock_setlist = 0;
     x->pd_canvaslist = 0;
     x->pd_templatelist = 0;
+        /* init symbol table */
     x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
     for (i = 0; i < SYMTABHASHSIZE; i++)
         x->pd_symhash[i] = 0;
+    x->pd_symhashsize = SYMTABHASHSIZE;
+    x->pd_symhashcount = 0;
 #ifdef PDINSTANCE
     dogensym("pointer",   &x->pd_s_pointer,  x);
     dogensym("float",     &x->pd_s_float,    x);
@@ -837,27 +845,87 @@ t_propertiesfn class_getpropertiesfn(const t_class *c)
 
 /* ---------------- the symbol table ------------------------ */
 
+#ifndef SYMTABMAXLOAD
+#define SYMTABMAXLOAD 0.75
+#endif
+
+#define SYMTABDEBUG 0
+
+static unsigned int hashstring(const char *s, int *length)
+{
+    unsigned int hash = 5381;
+    int count = 0;
+    const char *s2 = s;
+    while (*s2) /* djb2 hash algo */
+    {
+        hash = ((hash << 5) + hash) + *s2;
+        count++;
+        s2++;
+    }
+    *length = count;
+    return hash;
+}
+
+static void symtab_rehash(t_pdinstance *pdinstance)
+{
+    int i, oldsize = pdinstance->pd_symhashsize,
+        oldcount = pdinstance->pd_symhashcount,
+        newsize = oldsize * 2; /* grow table by power of 2 */
+    t_symbol **oldhash = pdinstance->pd_symhash;
+#if SYMTABDEBUG
+    double now = sys_getrealtime();
+    post("symtab_rehash (old size: %d, new size: %d)",
+        oldsize, newsize);
+#endif
+    pdinstance->pd_symhashsize = newsize;
+    pdinstance->pd_symhashcount = 0;
+    pdinstance->pd_symhash =
+        getbytes(newsize * sizeof(*pdinstance->pd_symhash));
+    for (i = 0; i < newsize; i++)
+        pdinstance->pd_symhash[i] = 0;
+        /* reinsert symbols into new symbol table */
+    for (i = 0; i < oldsize; ++i)
+    {
+        t_symbol *s, *next;
+        for (s = oldhash[i]; s; s = next)
+        {
+            t_symbol **symhashloc, *s2;
+            int length; /* dummy */
+            unsigned int hash = hashstring(s->s_name, &length);
+            symhashloc = pdinstance->pd_symhash + (hash & (newsize-1));
+            while ((s2 = *symhashloc))
+                symhashloc = &s2->s_next;
+            next = s->s_next;
+            *symhashloc = s;
+            s->s_next = 0;
+            pdinstance->pd_symhashcount++;
+        }
+    }
+    freebytes(oldhash, oldsize * sizeof(*oldhash));
+    if (oldcount != pdinstance->pd_symhashcount)
+        bug("symtab_rehash");
+#if SYMTABDEBUG
+    post("measured time (ms): %f", (sys_getrealtime() - now) * 1000.);
+#endif
+}
+
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance)
 {
     char *symname = 0;
     t_symbol **symhashloc, *sym2;
-    unsigned int hash = 5381;
-    int length = 0;
-    const char *s2 = s;
-    while (*s2) /* djb2 hash algo */
-    {
-        hash = ((hash << 5) + hash) + *s2;
-        length++;
-        s2++;
-    }
-    symhashloc = pdinstance->pd_symhash + (hash & (SYMTABHASHSIZE-1));
+    float loadfactor;
+    int length, hashsize = pdinstance->pd_symhashsize;
+        /* try to find existing symbol */
+    unsigned int hash = hashstring(s, &length);
+    symhashloc = pdinstance->pd_symhash + (hash & (hashsize-1));
     while ((sym2 = *symhashloc))
     {
         if (!strcmp(sym2->s_name, s))
             return(sym2);
         symhashloc = &sym2->s_next;
     }
+        /* insert new symbol */
     if (oldsym)
         sym2 = oldsym;
     else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
@@ -867,7 +935,18 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     sym2->s_thing = 0;
     sym2->s_name = symname;
     *symhashloc = sym2;
-    return (sym2);
+        /* check load factor and rehash if necessary */
+    loadfactor = ++pdinstance->pd_symhashcount / (float)hashsize;
+#if SYMTABDEBUG
+    post("new symbol '%s' (count: %d)", s, pdinstance->pd_symhashcount);
+#endif
+    if (loadfactor > SYMTABMAXLOAD)
+    {
+        symtab_rehash(pdinstance);
+        return dogensym(s, 0, pdinstance);
+    }
+    else
+        return (sym2);
 }
 
 t_symbol *gensym(const char *s)

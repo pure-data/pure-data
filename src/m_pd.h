@@ -847,6 +847,8 @@ struct _pdinstance
 #if PDTHREADS
     int pd_islocked;
 #endif
+    int pd_symhashsize;
+    int pd_symhashcount;
 };
 #define t_pdinstance struct _pdinstance
 EXTERN t_pdinstance pd_maininstance;
