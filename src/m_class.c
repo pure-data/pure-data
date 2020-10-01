@@ -54,6 +54,11 @@ void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
+#define t_symtab struct _symtab
+
+static t_symtab * symtab_new(void);
+static void symtab_free(t_symtab *x);
+
 void s_stuff_newpdinstance(void)
 {
     STUFF = getbytes(sizeof(*STUFF));
@@ -67,6 +72,7 @@ void s_stuff_freepdinstance(void)
     freebytes(STUFF, sizeof(*STUFF));
 }
 
+
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
     int i;
@@ -74,9 +80,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     x->pd_clock_setlist = 0;
     x->pd_canvaslist = 0;
     x->pd_templatelist = 0;
-    x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
-    for (i = 0; i < SYMTABHASHSIZE; i++)
-        x->pd_symhash[i] = 0;
+    x->pd_symhash = symtab_new();
 #ifdef PDINSTANCE
     dogensym("pointer",   &x->pd_s_pointer,  x);
     dogensym("float",     &x->pd_s_float,    x);
@@ -222,34 +226,11 @@ EXTERN void pdinstance_free(t_pdinstance *x)
             pd_ninstances * sizeof(*c->c_methods),
             (pd_ninstances - 1) * sizeof(*c->c_methods));
     }
-    for (i =0; i < SYMTABHASHSIZE; i++)
-    {
-        while ((s = x->pd_symhash[i]))
-        {
-            x->pd_symhash[i] = s->s_next;
-            if(s != &x->pd_s_pointer &&
-               s != &x->pd_s_float &&
-               s != &x->pd_s_symbol &&
-               s != &x->pd_s_bang &&
-               s != &x->pd_s_list &&
-               s != &x->pd_s_anything &&
-               s != &x->pd_s_signal &&
-               s != &x->pd_s__N &&
-               s != &x->pd_s__X &&
-               s != &x->pd_s_x &&
-               s != &x->pd_s_y &&
-               s != &x->pd_s_)
-            {
-                freebytes((void *)s->s_name, strlen(s->s_name)+1);
-                freebytes(s, sizeof(*s));
-            }
-        }
-    }
-    freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
     x_midi_freepdinstance();
     g_canvas_freepdinstance();
     d_ugen_freepdinstance();
     s_stuff_freepdinstance();
+    symtab_free(x->pd_symhash);
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
@@ -837,13 +818,112 @@ t_propertiesfn class_getpropertiesfn(const t_class *c)
 
 /* ---------------- the symbol table ------------------------ */
 
+#ifndef DEFSYMTABSIZE
+#define DEFSYMTABSIZE 4096
+#endif
+
+#ifndef SYMTABMAXLOAD
+#define SYMTABMAXLOAD 0.75
+#endif
+
+#ifndef SYMTABGROW
+#define SYMTABGROW 4
+#endif
+
+#define DEBUGSYMTAB 0
+
+    /* we use an array of seperate symbol tables which grows
+    once the last symbol table exceeds the maximum load factor.
+    of course, we could just grow and rehash the symbol table,
+    but this can cause significant CPU spikes for large tables. */
+struct _symtab
+{
+    struct _symhash *st_vec;
+    int st_size;
+};
+
+typedef struct _symhash
+{
+    t_symbol **sh_tab;
+    int sh_size;
+    int sh_count;
+} t_symhash;
+
+static void symhash_init(t_symhash *x, int size)
+{
+    int i;
+#if DEBUGSYMTAB
+    float now;
+    post("new symbol table (size = %d)", size);
+    now = sys_getrealtime();
+#endif
+    x->sh_tab = getbytes(sizeof(t_symbol *) * size);
+    for (i = 0; i < size; i++)
+        x->sh_tab[i] = 0;
+    x->sh_size = size;
+    x->sh_count = 0;
+#if DEBUGSYMTAB
+    post("time needed: %f ms",
+        (sys_getrealtime() - now) * 1000.0);
+#endif
+}
+
+static t_symtab * symtab_new(void)
+{
+    t_symtab *x = (t_symtab *)getbytes(sizeof(t_symtab));
+    x->st_vec = (t_symhash *)getbytes(sizeof(t_symhash));
+    x->st_size = 1;
+    symhash_init(x->st_vec, DEFSYMTABSIZE);
+    return x;
+}
+
+static void symtab_free(t_symtab *x)
+{
+    int i, j;
+    t_symhash *sh;
+    t_symbol *s;
+    for (i = 0; i < x->st_size; i++)
+    {
+        sh = &x->st_vec[i];
+        for (j = 0; j < sh->sh_size; j++)
+        {
+            while ((s = sh->sh_tab[j]))
+            {
+                sh->sh_tab[j] = s->s_next;
+                if(s != &s_pointer &&
+                   s != &s_float &&
+                   s != &s_symbol &&
+                   s != &s_bang &&
+                   s != &s_list &&
+                   s != &s_anything &&
+                   s != &s_signal &&
+                   s != &s__N &&
+                   s != &s__X &&
+                   s != &s_x &&
+                   s != &s_y &&
+                   s != &s_)
+                {
+                    freebytes((void *)s->s_name,
+                        strlen(s->s_name)+1);
+                    freebytes(s, sizeof(*s));
+                }
+            }
+        }
+        freebytes(sh->sh_tab, sh->sh_size * sizeof(t_symbol *));
+    }
+    freebytes(x->st_vec, sizeof(t_symhash) * x->st_size);
+    freebytes(x, sizeof(t_symtab));
+}
+
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance)
 {
     char *symname = 0;
+    t_symtab *symtab = pdinstance->pd_symhash;
+    t_symhash *symhash;
     t_symbol **symhashloc, *sym2;
     unsigned int hash = 5381;
-    int length = 0;
+    int i, length = 0;
     const char *s2 = s;
     while (*s2) /* djb2 hash algo */
     {
@@ -851,12 +931,16 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
         length++;
         s2++;
     }
-    symhashloc = pdinstance->pd_symhash + (hash & (SYMTABHASHSIZE-1));
-    while ((sym2 = *symhashloc))
+    for (i = 0; i < symtab->st_size; i++)
     {
-        if (!strcmp(sym2->s_name, s))
-            return(sym2);
-        symhashloc = &sym2->s_next;
+        symhash = &symtab->st_vec[i];
+        symhashloc = symhash->sh_tab + (hash & (symhash->sh_size-1));
+        while ((sym2 = *symhashloc))
+        {
+            if (!strcmp(sym2->s_name, s))
+                return(sym2);
+            symhashloc = &sym2->s_next;
+        }
     }
     if (oldsym)
         sym2 = oldsym;
@@ -867,6 +951,16 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     sym2->s_thing = 0;
     sym2->s_name = symname;
     *symhashloc = sym2;
+        /* check load factor and grow symbol table array if necessary */
+    if (++symhash->sh_count > ((float )symhash->sh_size * SYMTABMAXLOAD))
+    {
+        int newsize = symhash->sh_size * SYMTABGROW;
+        symtab->st_vec = resizebytes(symtab->st_vec,
+            symtab->st_size * sizeof(t_symhash),
+            (symtab->st_size + 1) * sizeof(t_symhash));
+        symhash_init(&symtab->st_vec[symtab->st_size], newsize);
+        symtab->st_size++;
+    }
     return (sym2);
 }
 

@@ -823,7 +823,7 @@ struct _pdinstance
     t_canvas *pd_canvaslist;    /* list of all root canvases */
     struct _template *pd_templatelist;  /* list of all templates */
     int pd_instanceno;          /* ordinal number of this instance */
-    t_symbol **pd_symhash;      /* symbol table hash table */
+    struct _symtab *pd_symhash; /* symbol table */
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
     t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
     t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */

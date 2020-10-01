@@ -91,9 +91,6 @@ EXTERN t_float *obj_findsignalscalar(const t_object *x, int m);
 void pd_globallock(void);
 void pd_globalunlock(void);
 
-/* misc */
-#define SYMTABHASHSIZE 1024
-
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
 EXTERN void glob_quit(void *dummy); /* glob_exit(0); */
