@@ -862,9 +862,9 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
         sym2 = oldsym;
     else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
     symname = t_getbytes(length+1);
+    memcpy(symname, s, length+1);
     sym2->s_next = 0;
     sym2->s_thing = 0;
-    strcpy(symname, s);
     sym2->s_name = symname;
     *symhashloc = sym2;
     return (sym2);
