@@ -1266,6 +1266,8 @@ static void canvas_start_dsp(void)
         pd_bang(gensym("pd-dsp-started")->s_thing);
 }
 
+void symtab_rehash(void);
+
 static void canvas_stop_dsp(void)
 {
     if (THISGUI->i_dspstate)
@@ -1276,6 +1278,8 @@ static void canvas_stop_dsp(void)
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
     }
+        /* use the opportunity to clean up the symbol table */
+    symtab_rehash();
 }
 
     /* DSP can be suspended before, and resumed after, operations which

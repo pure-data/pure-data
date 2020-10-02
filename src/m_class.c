@@ -868,6 +868,11 @@ static void symhash_init(t_symhash *x, int size)
 #endif
 }
 
+static void symhash_free(t_symhash *x)
+{
+    freebytes(x->sh_tab, x->sh_size * sizeof(t_symbol *));
+}
+
 static t_symtab * symtab_new(void)
 {
     t_symtab *x = (t_symtab *)getbytes(sizeof(t_symtab));
@@ -880,11 +885,10 @@ static t_symtab * symtab_new(void)
 static void symtab_free(t_symtab *x)
 {
     int i, j;
-    t_symhash *sh;
     t_symbol *s;
     for (i = 0; i < x->st_size; i++)
     {
-        sh = &x->st_vec[i];
+        t_symhash *sh = &x->st_vec[i];
         for (j = 0; j < sh->sh_size; j++)
         {
             while ((s = sh->sh_tab[j]))
@@ -909,10 +913,80 @@ static void symtab_free(t_symtab *x)
                 }
             }
         }
-        freebytes(sh->sh_tab, sh->sh_size * sizeof(t_symbol *));
+        symhash_free(sh);
     }
     freebytes(x->st_vec, sizeof(t_symhash) * x->st_size);
     freebytes(x, sizeof(t_symtab));
+}
+
+static unsigned int hashstring(const char *s, int *length)
+{
+    unsigned int hash = 5381;
+    int i, count = 0;
+    const char *s2 = s;
+    while (*s2) /* djb2 hash algo */
+    {
+        hash = ((hash << 5) + hash) + *s2;
+        count++;
+        s2++;
+    }
+    *length = count;
+    return hash;
+}
+
+    /* collapse and rehash symbol tables */
+static void symtab_dorehash(t_symtab *x)
+{
+    t_symhash *sh, *newsh;
+    int i, j, totalcount = 0, newsize;
+    for (i = 0; i < x->st_size; i++)
+        totalcount += x->st_vec[i].sh_count;
+#if DEBUGSYMTAB
+    post("symtab_rehash");
+    post("total number of symbols: %d", totalcount);
+#endif
+        /* take size of last table and increase if needed */
+    newsize = x->st_vec[x->st_size-1].sh_size;
+    while (totalcount > (float)newsize * SYMTABMAXLOAD)
+        newsize *= SYMTABGROW;
+    newsh = getbytes(sizeof(t_symhash));
+    symhash_init(newsh, newsize);
+        /* insert existing symbols into new hash table */
+    for (i = 0; i < x->st_size; i++)
+    {
+        sh = &x->st_vec[i];
+        for (j = 0; j < sh->sh_size; j++)
+        {
+            t_symbol *s, *next;
+            for (s = sh->sh_tab[j]; s; s = next)
+            {
+                t_symbol **symhashloc, *s2;
+                int dummy;
+                unsigned int hash = hashstring(s->s_name, &dummy);
+                symhashloc = newsh->sh_tab + (hash & (newsize-1));
+                while ((s2 = *symhashloc))
+                    symhashloc = &s2->s_next;
+                next = s->s_next;
+                s->s_next = 0;
+                *symhashloc = s;
+                newsh->sh_count++;
+            }
+        }
+        symhash_free(sh);
+    }
+    freebytes(x->st_vec, x->st_size * sizeof(t_symhash));
+    x->st_vec = newsh;
+    x->st_size = 1;
+    if (newsh->sh_count != totalcount)
+        bug("symtab_rehash");
+}
+
+    /* called in canvas_stop_dsp() */
+void symtab_rehash(void)
+{
+    t_symtab *st = pd_this->pd_symhash;
+    if (st->st_size > 1)
+        symtab_dorehash(st);
 }
 
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
@@ -922,15 +996,8 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_symtab *symtab = pdinstance->pd_symhash;
     t_symhash *symhash;
     t_symbol **symhashloc, *sym2;
-    unsigned int hash = 5381;
-    int i, length = 0;
-    const char *s2 = s;
-    while (*s2) /* djb2 hash algo */
-    {
-        hash = ((hash << 5) + hash) + *s2;
-        length++;
-        s2++;
-    }
+    int i, length;
+    unsigned int hash = hashstring(s, &length);
     for (i = 0; i < symtab->st_size; i++)
     {
         symhash = &symtab->st_vec[i];
@@ -951,15 +1018,20 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     sym2->s_thing = 0;
     sym2->s_name = symname;
     *symhashloc = sym2;
-        /* check load factor and grow symbol table array if necessary */
+        /* check load factor */
     if (++symhash->sh_count > ((float )symhash->sh_size * SYMTABMAXLOAD))
     {
-        int newsize = symhash->sh_size * SYMTABGROW;
-        symtab->st_vec = resizebytes(symtab->st_vec,
-            symtab->st_size * sizeof(t_symhash),
-            (symtab->st_size + 1) * sizeof(t_symhash));
-        symhash_init(&symtab->st_vec[symtab->st_size], newsize);
-        symtab->st_size++;
+        if (pd_getdspstate())
+        {       /* DSP on: add another symbol table to avoid rehashing */
+            int newsize = symhash->sh_size * SYMTABGROW;
+            symtab->st_vec = resizebytes(symtab->st_vec,
+                symtab->st_size * sizeof(t_symhash),
+                (symtab->st_size + 1) * sizeof(t_symhash));
+            symhash_init(&symtab->st_vec[symtab->st_size], newsize);
+            symtab->st_size++;
+        }
+        else /* DSP off: rehash */
+            symtab_dorehash(symtab);
     }
     return (sym2);
 }
