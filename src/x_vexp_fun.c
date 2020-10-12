@@ -36,19 +36,24 @@
  *              round
  *              nearbyint -
  *  November 2015
- *                              - drem() is now obsolete but it is kept here so that other patches do not break
- *                              - added remainder() - floating-point remainder function
- *                              - fixed the bug that unary operators could be used as
- *                                binary ones (10 ~ 1)
- *                              - fixed ceil() and floor() which should have only one argument
- *                              - added copysign  (the previous one "copysig" which was
- *                                defined with one argument was kept for compatibility)
- *                              - fixed sum("table"), and Sum("table", x, y)
- *                              - deleted avg(), Avg() as they can be simple expressions
- *                              - deleted store as this can be achieved by the '=' operator
+ *       - drem() is now obsolete but it is kept here so that other
+ *         patches do not break
+ *       - added remainder() - floating-point remainder function
+ *       - fixed the bug that unary operators could be used as
+ *         binary ones (10 ~ 1)
+ *       - fixed ceil() and floor() which should have only one argument
+ *       - added copysign  (the previous one "copysig" which was
+ *         defined with one argument was kept for compatibility)
+ *       - fixed sum("table"), and Sum("table", x, y)
+ *       - deleted avg(), Avg() as they can be simple expressions
+ *       - deleted store as this can be achieved by the '=' operator
  *  July 2017 --sdy
  *
- *              - ex_if() is reworked to only evaluate either the left or the right arg
+ *      - ex_if() is reworked to only evaluate either the left or the right arg
+ *	October 2020 --sdy
+ *		- fact() (factorial) now calculates and returns its value in double
+ *		- Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
+ *
  */
 
 
@@ -118,6 +123,12 @@ struct ex_ex * ex_if(t_expr *expr, struct ex_ex *argv, struct ex_ex *optr,
 static void ex_ldexp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_imodf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_modf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_mtof(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_ftom(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_dbtorms(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_rmstodb(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_dbtopow(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+static void ex_powtodb(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 #if !defined(_MSC_VER) || (_MSC_VER >= 1700)
 static void ex_cbrt(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_erf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -133,6 +144,7 @@ static void ex_remainder(t_expr *expr, long argc, struct ex_ex *argv, struct ex_
 static void ex_round(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_trunc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_nearbyint(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+
 #endif
 #ifdef notdef
 /* the following will be added once they are more popular in math libraries */
@@ -172,6 +184,12 @@ t_ex_func ex_funcs[] = {
         {"ldexp",       ex_ldexp,       2},
         {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
+		{"mtof",		ex_mtof,		1},
+		{"ftom",		ex_ftom,		1},
+		{"dbtorms",		ex_dbtorms,		1},
+		{"rmstodb",		ex_rmstodb,		1},
+		{"dbtopow",		ex_dbtopow,		1},
+		{"powtodb",		ex_powtodb,		1},
 #if !defined(_MSC_VER) || (_MSC_VER >= 1700)
         {"asinh",       ex_asinh,       1},
         {"acosh",       ex_acosh,       1},
@@ -910,10 +928,10 @@ ex_atanh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 #endif
 
-static int
+static double
 ex_dofact(int i)
 {
-        int ret = 0;
+        float ret = 0;
 
         if (i > 0)
                 ret = 1;
@@ -938,7 +956,7 @@ ex_fact(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
         left = argv++;
 
-        FUNC_EVAL_UNARY(left, ex_dofact,  (int), optr, 0);
+        FUNC_EVAL_UNARY(left, ex_dofact,  (int), optr, 1);
 }
 
 static int
@@ -1261,6 +1279,14 @@ fracmodf(double x)
         return(modf(x, &xx));
 }
 FUNC_DEF_UNARY(ex_modf, fracmodf, (double), 1);
+
+
+FUNC_DEF_UNARY(ex_mtof, mtof, (double), 1);
+FUNC_DEF_UNARY(ex_ftom, ftom, (double), 1);
+FUNC_DEF_UNARY(ex_dbtorms, dbtorms, (double), 1);
+FUNC_DEF_UNARY(ex_rmstodb, rmstodb, (double), 1);
+FUNC_DEF_UNARY(ex_dbtopow, dbtopow, (double), 1);
+FUNC_DEF_UNARY(ex_powtodb, powtodb, (double), 1);
 
 /*
  * ex_ldexp  -  multiply floating-point number by integral power of 2
