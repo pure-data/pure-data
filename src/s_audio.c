@@ -776,6 +776,11 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
             &blocksize);
 
+    /* don't offer callbacks unless it's already on - turning them on and off
+    dynamically crashes Pd.  LATER get callbacks working again.  */
+    if (!callback)
+        cancallback = 0;
+
     /* post("naudioindev %d naudiooutdev %d longform %f",
             naudioindev, naudiooutdev, flongform); */
     if (naudioindev > 1 || naudiooutdev > 1)
