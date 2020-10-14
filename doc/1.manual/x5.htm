@@ -23,6 +23,18 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.51-3 ------------------------------
+
+<P> New functions for expr: mtof, ftom, rmstodb, dbtorms, powtodb, dbtopow, and two
+bug fixes.
+
+<P> The "use callbacks" switch in the audio dialog only appears if it's already on
+(via the command line or app default settings).  It was crashing and hanging Pd in
+several situations.  It might still be useful for reducing audio latency by a block
+or so, but won't buy you much in any case.  I'll try to fix it later.
+
+<P> More white-space fixes (primarily affecting pd~ on Windows).
+
 <P> ------------------ 0.51-2 ------------------------------
 
 <P> Better support for white space in file path to pd, especially for pd~ object.
