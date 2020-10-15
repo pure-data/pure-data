@@ -59,12 +59,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig1.3.jpg \
      ./1.manual/fig1.4.png \
      ./1.manual/fig1.5.jpg \
-     ./1.manual/fig11.1.png \
-     ./1.manual/fig11.2.png \
-     ./1.manual/fig11.3.png \
-     ./1.manual/fig11.4.png \
      ./1.manual/fig3.1.jpg \
-     ./1.manual/fig3.10.jpg \
      ./1.manual/fig3.2.jpg \
      ./1.manual/fig3.3.jpg \
      ./1.manual/fig3.4.jpg \
@@ -73,6 +68,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig3.7.jpg \
      ./1.manual/fig3.8.jpg \
      ./1.manual/fig3.9.jpg \
+     ./1.manual/fig3.10.jpg \
      ./1.manual/fig4.1.png \
      ./1.manual/fig4.2.png \
      ./1.manual/fig4.3.png \
@@ -95,6 +91,10 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig9.1.jpg \
      ./1.manual/fig9.2.jpg \
      ./1.manual/fig9.3.jpg \
+     ./1.manual/fig11.1.png \
+     ./1.manual/fig11.2.png \
+     ./1.manual/fig11.3.png \
+     ./1.manual/fig11.4.png \
      ./1.manual/index.htm \
      ./1.manual/pdmanual.css \
      ./1.manual/x1.htm \
@@ -102,6 +102,9 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
+     ./1.manual/x6.htm \
+     ./1.manual/x6-a.htm \
+     ./1.manual/x6-b.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
