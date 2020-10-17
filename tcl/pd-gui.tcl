@@ -786,7 +786,7 @@ proc load_startup_plugins {} {
     load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
-    foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
+    foreach pathdir [concat $::sys_temppath $::sys_searchpath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
         if { [ catch {
