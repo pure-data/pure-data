@@ -374,13 +374,13 @@ static int do_open_via_path(const char *dir, const char *name,
         dirresult, nameresult, size, bin)) >= 0)
             return (fd);
 
-        /* next go through the search path */
-    for (nl = searchpath; nl; nl = nl->nl_next)
+        /* next go through the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
-        /* next go through the temp paths from the commandline */
-    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        /* next look in built-in paths like "extra" */
+    for (nl = searchpath; nl; nl = nl->nl_next)
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
@@ -671,15 +671,21 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 
     /* add one item to search path (intended for use by Deken plugin).
-    if "saveit" is set, also save all settings.  */
+    if "saveit" is > 0, this also saves all settings,
+    if "saveit" is < 0, the path is only added temporarily */
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 {
+    int saveflag = (int)saveit;
     t_symbol *s = sys_decodedialog(path);
     if (*s->s_name)
     {
-        STUFF->st_searchpath =
-            namelist_append_files(STUFF->st_searchpath, s->s_name);
-        if (saveit != 0)
+        if (saveflag < 0)
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, s->s_name);
+        else
+            STUFF->st_searchpath =
+                namelist_append_files(STUFF->st_searchpath, s->s_name);
+        if (saveit > 0)
             sys_savepreferences(0);
     }
 }

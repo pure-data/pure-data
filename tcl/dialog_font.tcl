@@ -22,17 +22,11 @@ namespace eval ::dialog_font:: {
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
-        if {[lsearch [font names] TkTextFont] >= 0} {
-            font configure TkTextFont -size -$myfontsize
-        }
-        if {[lsearch [font names] TkDefaultFont] >= 0} {
-            font configure TkDefaultFont -size -$myfontsize
-        }
-        if {[lsearch [font names] TkMenuFont] >= 0} {
-            font configure TkMenuFont -size -$myfontsize
+        foreach font [font names] {
+            font configure $font -size $myfontsize
         }
         if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size -$myfontsize"
+            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
         }
 
         # repeat a "pack" command so the font dialog can resize itself

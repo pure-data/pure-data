@@ -511,8 +511,8 @@ void sys_pollmidiqueue(void)
 
 /******************** dialog window and device listing ********************/
 
-#define MAXNDEV 20
-#define DEVDESCSIZE 80
+#define MAXNDEV 128
+#define DEVDESCSIZE 1024
 
 #define DEVONSET 1  /* To agree with command line flags, normally start at 1 */
 

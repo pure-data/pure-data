@@ -10,8 +10,8 @@ extern "C" {
 
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 51
-#define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION ""
+#define PD_BUGFIX_VERSION 3
+#define PD_TEST_VERSION "test1"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -61,8 +61,10 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
-#ifdef _MSC_VER
+/* Microsoft Visual Studio is not C99, but since VS2015 has included most C99 headers:
+   https://docs.microsoft.com/en-us/previous-versions/hh409293(v=vs.140)#c-runtime-library
+   These definitions recreate stdint.h types, but only in pre-2015 Visual Studio: */
+#if defined(_MSC_VER) && _MSC_VER < 1900
 typedef signed __int8     int8_t;
 typedef signed __int16    int16_t;
 typedef signed __int32    int32_t;
