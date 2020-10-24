@@ -60,7 +60,7 @@ unzip pdfontloader-64bit-for-wish86.zip -d pd-$pdversion/bin/
 
 
 # make the zip archive
-zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
+zip -r -q /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
 # make an installer
 ~/pd/msw/build-nsi.sh  `pwd`/pd-$pdversion $pdversion wish86.exe
