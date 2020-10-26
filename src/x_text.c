@@ -475,7 +475,8 @@ found in msvcrt (which indeed it isn't in).  Rather than waste more time
 on this, just call qsort if we're Microsoft and single-instance.  I hope nobody
 will try to compile multi-instance Pd for 32-bit windows, but if they
 do, they might run into my qsort_s problem again. */
-#if defined(_WIN32) && !defined(PDINSTANCE)
+// FIXME Remove change on next line before submitting vfs patch-- if it is submitted it should be part of a different patch -- Andi 2020-10-26
+#if (defined(_WIN32) || defined(__ANDROID__)) && !defined(PDINSTANCE)
 #define MICROSOFT_STUPID_SORT
 static void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2) {
