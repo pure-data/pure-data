@@ -472,10 +472,10 @@ equal:
 
 
 /* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
- * Both are not available in Emscripten and older MSVC versions.
+ * Both are not available in Emscripten, Android or older MSVC versions.
  * 'stupid_sortcompare' is thread-safe but not reentrant.
  */
-#if defined(_WIN32) || defined(__EMSCRIPTEN__)
+#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #define STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2)
