@@ -242,6 +242,29 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
 
+    # clear interim compose character by sending a virtual BackSpace,
+    # these events are pulled from Tk library/entry.tcl
+    # should we try to keep track of the "marked text" selection which may be
+    # more than a single character? ie. start & length of marked text
+    catch {
+        bind $tkcanvas <<TkStartIMEMarkedText>> {
+            ::pdwindow::post "%W start marked text\n"
+        }
+        bind $tkcanvas <<TkEndIMEMarkedText>> {
+            ::pdwindow::post "%W end marked text\n"
+        }
+        bind $tkcanvas <<TkClearIMEMarkedText>> {
+            ::pdwindow::post "%W clear marked text\n"
+            ::pd_bindings::sendkey %W 1 BackSpace "" 0
+            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+        }
+        bind $tkcanvas <<TkAccentBackspace>> {
+            ::pdwindow::post "%W accent backspace\n"
+            ::pd_bindings::sendkey %W 1 BackSpace "" 0
+            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+        }
+    } stderr
+
     # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem {
         "aqua" {
