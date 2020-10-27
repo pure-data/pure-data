@@ -3527,7 +3527,7 @@ static void canvas_find_again(t_canvas *x)
 static void canvas_find_parent(t_canvas *x)
 {
     if (x->gl_owner)
-        canvas_vis(glist_getcanvas(x->gl_owner), 1);
+        canvas_vis(x->gl_owner, 1);
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
