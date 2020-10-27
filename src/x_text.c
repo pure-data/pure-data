@@ -566,10 +566,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float ||
-                    a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
                             goto doit;
             }
         }
@@ -1015,7 +1015,7 @@ static void text_insert_list(t_text_insert *x,
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int start, end, n, nwas, i,
-         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : (int)x->x_f1);
 
     t_atom *vec;
     if (!b)

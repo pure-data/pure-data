@@ -120,6 +120,7 @@ struct _instanceinter
     int i_guisize;
     int i_waitingforping;
     int i_bytessincelastping;
+    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -215,8 +216,10 @@ static int sys_domicrosleep(int microsec, int pollem)
         if(select(pd_this->pd_inter->i_maxfd+1,
                   &readset, &writeset, &exceptset, &timout) < 0)
           perror("microsleep select");
-        for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
-            if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
+        pd_this->pd_inter->i_fdschanged = 0;
+        for (i = 0; i < pd_this->pd_inter->i_nfdpoll &&
+            !pd_this->pd_inter->i_fdschanged; i++)
+                if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
@@ -413,6 +416,7 @@ void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
     pd_this->pd_inter->i_nfdpoll = nfd + 1;
     if (fd >= pd_this->pd_inter->i_maxfd)
         pd_this->pd_inter->i_maxfd = fd + 1;
+    pd_this->pd_inter->i_fdschanged = 1;
 }
 
 void sys_rmpollfn(int fd)
@@ -420,6 +424,7 @@ void sys_rmpollfn(int fd)
     int nfd = pd_this->pd_inter->i_nfdpoll;
     int i, size = nfd * sizeof(t_fdpoll);
     t_fdpoll *fp;
+    pd_this->pd_inter->i_fdschanged = 1;
     for (i = nfd, fp = pd_this->pd_inter->i_fdpoll; i--; fp++)
     {
         if (fp->fdp_fd == fd)
@@ -561,8 +566,6 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         }
     }
 }
-
-void sys_exit(void);
 
 void socketreceiver_read(t_socketreceiver *x, int fd)
 {
@@ -1422,7 +1425,7 @@ void sys_setrealtime(const char *libdir)
             close(pipe9[1]);
 
             if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
-            execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+            execl(cmdbuf, cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
         }
@@ -1464,8 +1467,6 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
-extern void sys_exit(void);
-
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1489,8 +1490,12 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-void glob_quit(void *dummy)
+extern void sys_exit(void);
+
+void glob_exit(void *dummy, t_float status)
 {
+        /* sys_exit() sets the sys_quit flag, so all loops end */
+    sys_exit();
     sys_close_audio();
     sys_close_midi();
     if (sys_havegui())
@@ -1498,7 +1503,11 @@ void glob_quit(void *dummy)
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
     }
-    exit(0);
+    exit((int)status);
+}
+void glob_quit(void *dummy)
+{
+    glob_exit(dummy, 0);
 }
 
     /* recursively descend to all canvases and send them "vis" messages

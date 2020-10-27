@@ -579,18 +579,28 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::done_init 1
 }
 
-##### routine to ask user if OK and, if so, send a message on to Pd ######
-proc pdtk_check {mytoplevel message reply_to_pd default} {
+##### routine to ask user if OK and, if so return '1' (or else '0')
+# (this really should be in some other file)
+proc pdtk_yesnodialog {mytoplevel message default} {
     wm deiconify $mytoplevel
     raise $mytoplevel
     if {$::windowingsystem eq "win32"} {
-        set answer [tk_messageBox -message [_ $message] -type yesno -default $default \
-                        -icon question -title [wm title $mytoplevel]]
-    } else {
-        set answer [tk_messageBox -message [_ $message] -type yesno \
-                        -default $default -parent $mytoplevel -icon question]
-    }
+           set answer [tk_messageBox -message [_ $message] -type yesno \
+                                     -default $default -icon question \
+                                     -title [wm title $mytoplevel]]
+       } {
+           set answer [tk_messageBox -message [_ $message] -type yesno \
+                                     -default $default -icon question \
+                                     -parent $mytoplevel]
+       }
     if {$answer eq "yes"} {
+           return 1
+    }
+    return 0
+}
+##### routine to ask user if OK and, if so, send a message on to Pd ######
+proc pdtk_check {mytoplevel message reply_to_pd default} {
+    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
         pdsend $reply_to_pd
     }
 }
@@ -749,19 +759,22 @@ proc load_plugin_script {filename} {
 
     set basename [file tail $filename]
     if {[lsearch $::loaded_plugins $basename] > -1} {
-        ::pdwindow::post [_ "'$basename' already loaded, ignoring: '$filename'\n"]
+        ::pdwindow::post [ format [_ "'%1\$s' already loaded, ignoring: '%2\$s'"] $basename $filename]
+        ::pdwindow::post "\n"
         return
     }
 
-    ::pdwindow::debug [_ "Loading plugin: $filename\n"]
+    ::pdwindow::debug [ format [_ "Loading plugin: %s"] $filename ]
+    ::pdwindow::debug "\n"
     set tclfile [open $filename]
     set tclcode [read $tclfile]
     close $tclfile
     if {[catch {uplevel #0 $tclcode} errorname]} {
         ::pdwindow::error "-----------\n"
-        ::pdwindow::error [_ "UNHANDLED ERROR: $errorInfo\n"]
-        ::pdwindow::error [_ "FAILED TO LOAD $filename\n"]
-        ::pdwindow::error "-----------\n"
+        ::pdwindow::error [ format [_ "UNHANDLED ERROR: %s"] $errorInfo ]
+        ::pdwindow::error "\n"
+        ::pdwindow::error [ format [_ "FAILED TO LOAD %s"] $filename ]
+        ::pdwindow::error "\n-----------\n"
     } else {
         lappend ::loaded_plugins $basename
     }
@@ -773,14 +786,26 @@ proc load_startup_plugins {} {
     load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
-    foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
+    foreach pathdir [concat $::sys_temppath $::sys_searchpath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
-        foreach filename [glob -directory $dir -nocomplain -types {f} -- \
-                              *-plugin/*-plugin.tcl *-plugin.tcl] {
-            set ::current_plugin_loadpath [file dirname $filename]
-            load_plugin_script $filename
-        }
+        if { [ catch {
+                   foreach filename [glob -directory $dir -nocomplain -types {f} -- \
+                                          *-plugin/*-plugin.tcl *-plugin.tcl] {
+                       set ::current_plugin_loadpath [file dirname $filename]
+                       if { [ catch {
+                                  load_plugin_script $filename
+                              } ] } {
+                              ::pdwindow::debug [ format [ _ "Failed to read plugin %s ...skipping!"] $filename ]
+                              ::pdwindow::debug "\n"
+                          }
+                   }
+               } ] } {
+               # this is triggered in weird cases, e.g. when ~/Documents/Pd/externals is not readable,
+               # but ~/Documents/Pd/ is...
+               ::pdwindow::debug [ format [_ "Failed to find plugins in %s ...skipping!" ] $dir ]
+               ::pdwindow::debug "\n"
+           }
     }
 }
 

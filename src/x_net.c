@@ -323,7 +323,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
-            post("connecting to %s %d, src port %d", hostbuf, portno, sportno);
+            verbose(1, "connecting to %s %d, src port %d", hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
@@ -356,9 +356,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if (hostname && multicast)
-            post("connecting to %s %d (multicast)", hostbuf, portno);
+            verbose(1, "connecting to %s %d (multicast)", hostbuf, portno);
         else
-            post("connecting to %s %d", hostbuf, portno);
+            verbose(1, "connecting to %s %d", hostbuf, portno);
 
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -454,7 +454,8 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
     {
         static double lastwarntime;
         static double pleasewarn;
-        double timebefore = sys_getrealtime();
+        double timebefore = sys_getrealtime(), timeafter;
+        int late;
 
         int res = 0;
         if (x->x_protocol == SOCK_DGRAM)
@@ -467,13 +468,13 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
         else
             res = (int)send(sockfd, bp, length-sent, 0);
 
-        double timeafter = sys_getrealtime();
-        int late = (timeafter - timebefore > 0.005);
+        timeafter = sys_getrealtime();
+        late = (timeafter - timebefore > 0.005);
         if (late || pleasewarn)
         {
             if (timeafter > lastwarntime + 2)
             {
-                post("netsend/netreceive: blocked %d msec",
+                verbose(0, "netsend/netreceive: blocked %d msec",
                      (int)(1000 * ((timeafter - timebefore) +
                      pleasewarn)));
                 pleasewarn = 0;
@@ -784,11 +785,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             char hostbuf[256];
             sockaddr_get_addrstr(ai->ai_addr,
                 hostbuf, sizeof(hostbuf));
-            post("listening on %s %d%s", hostbuf, portno,
+            verbose(1, "listening on %s %d%s", hostbuf, portno,
                 (multicast ? " (multicast)" : ""));
         }
         else
-            post("listening on %d", portno);
+            verbose(1, "listening on %d", portno);
         break;
     }
     freeaddrinfo(ailist);

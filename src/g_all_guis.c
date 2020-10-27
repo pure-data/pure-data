@@ -305,7 +305,10 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
         if ('#' == s->s_name[0])
-            return (int)strtol(s->s_name+1, 0, 16);
+        {
+            int col = (int)strtol(s->s_name+1, 0, 16);
+            return col & 0xFFFFFF;
+        }
     }
     return 0;
 }

@@ -532,8 +532,9 @@ typedef struct _gatom
     t_symbol *a_symfrom;    /* "receive" name -- bind ourselvs to this */
     t_symbol *a_symto;      /* "send" name -- send to this on output */
     char a_buf[ATOMBUFSIZE];/* string buffer for typing */
-    char a_shift;           /* was shift key down when dragging started? */
-    char a_wherelabel;      /* 0-3 for left, right, above, below */
+    unsigned int a_shift:1;         /* was shift key down when drag started? */
+    unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
+    unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
@@ -700,6 +701,13 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy)
     }
 }
 
+static void gatom_reborder(t_gatom *x)
+{
+    t_rtext *y = glist_findrtext(x->a_glist, &x->a_text);
+    text_drawborder(&x->a_text, x->a_glist, rtext_gettag(y),
+        rtext_width(y), rtext_height(y), 0);
+}
+
 static void gatom_key(void *z, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
@@ -710,8 +718,10 @@ static void gatom_key(void *z, t_floatarg f)
     if (c == 0)
     {
         /* we're being notified that no more keys will come for this grab */
-        if (x->a_buf[0])
-            gatom_retext(x, 1);
+        x->a_grabbed = 0;
+        gatom_reborder(x);
+        gatom_retext(x, 1);
+        gatom_redraw(&x->a_text.te_g, x->a_glist);
         return;
     }
     else if (c == '\b')
@@ -790,6 +800,8 @@ static void gatom_click(t_gatom *x,
             else gatom_float(x, x->a_toggle);
         }
         x->a_shift = shift;
+        x->a_grabbed = 1;
+        gatom_reborder(x);
         x->a_buf[0] = 0;
         glist_grab(x->a_glist, &x->a_text.te_g, gatom_motion, gatom_key,
             xpos, ypos);
@@ -929,6 +941,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_label = &s_;
     x->a_symfrom = &s_;
     x->a_symto = x->a_expanded_to = &s_;
+    x->a_grabbed = 0;
     if (type == A_FLOAT)
     {
         x->a_atom.a_w.w_float = 0;
@@ -1330,7 +1343,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
         if (firsttime)
             sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-                " -dash %s -width %d -capstyle projecting -tags [list %sR obj]\n",
+                "-dash %s -width %d -capstyle projecting "
+                "-tags [list %sR obj]\n",
                 glist_getcanvas(glist),
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1,  pattern,
                 glist->gl_zoom, tag);
@@ -1346,33 +1360,43 @@ void text_drawborder(t_text *x, t_glist *glist,
     else if (x->te_type == T_MESSAGE)
     {
         corner = ((y2-y1)/4);
-        if (corner > 10*glist->gl_zoom) corner = 10*glist->gl_zoom; /* looks bad if too big */
+        if (corner > 10*glist->gl_zoom)
+            corner = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
-            sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d %d %d "
+            sys_vgui(".x%lx.c create line "
+                "%d %d %d %d %d %d %d %d %d %d %d %d %d %d "
                 "-width %d -capstyle projecting -tags [list %sR msg]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,
-                x1, y2,  x1, y1,
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2,
+                y2-corner,  x2+corner, y2, x1, y2,  x1, y1,
                 glist->gl_zoom, tag);
         else
-            sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
+            sys_vgui(".x%lx.c coords %sR "
+            "%d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,
-                x1, y2,  x1, y1);
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2,
+                y2-corner,  x2+corner, y2, x1, y2,  x1, y1);
     }
     else if (x->te_type == T_ATOM)
     {
+        int grabbed = glist->gl_zoom * ((t_gatom *)x)->a_grabbed;
+        int x1p = x1 + grabbed, y1p = y1 + grabbed;
         corner = ((y2-y1)/4);
         if (firsttime)
             sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
                 "-width %d -capstyle projecting -tags [list %sR atom]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2-corner, y1,  x2, y1+corner, x2, y2,  x1, y2,  x1, y1,
-                glist->gl_zoom, tag);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,
+                    x1p, y2,  x1p, y1p, glist->gl_zoom+grabbed, tag);
         else
+        {
             sys_vgui(".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2-corner, y1,  x2, y1+corner,  x2, y2,  x1, y2,  x1, y1);
+                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2,
+                    x1p, y2,  x1p, y1p);
+            sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+                glist_getcanvas(glist), tag, glist->gl_zoom+grabbed);
+        }
     }
         /* for comments, just draw a bar on RHS if unlocked; when a visible
         canvas is unlocked we have to call this anew on all comments, and when
@@ -1380,7 +1404,8 @@ void text_drawborder(t_text *x, t_glist *glist,
     else if (x->te_type == T_TEXT && glist->gl_edit)
     {
         if (firsttime)
-            sys_vgui(".x%lx.c create line %d %d %d %d -tags [list %sR commentbar]\n",
+            sys_vgui(".x%lx.c create line %d %d %d %d "
+            "-tags [list %sR commentbar]\n",
                 glist_getcanvas(glist),
                 x2, y1,  x2, y2, tag);
         else

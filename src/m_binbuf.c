@@ -791,7 +791,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (nargs == 1) pd_float(target, mstack->a_w.w_float);
                 else pd_list(target, 0, nargs, mstack);
                 break;
+            case A_POINTER:
+                if (nargs == 1) pd_pointer(target, mstack->a_w.w_gpointer);
+                else pd_list(target, 0, nargs, mstack);
+                break;
             default:
+                bug("bad selector");
                 break;
             }
         }
