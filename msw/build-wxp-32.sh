@@ -32,7 +32,7 @@ if make
     then echo -n ; else exit 1; fi
 
 cd msw
-cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
+cp -a $HOME/bis/work/pd-versions/tcltk-$tkversion .
 /home/msp/pd/msw/msw-app.sh \
    --builddir ..  --tk tcltk-$tkversion $pdversion
 
