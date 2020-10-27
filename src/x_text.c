@@ -470,14 +470,15 @@ equal:
     else return (1);
 }
 
-/* I can't seem to get to qsort_s on W2K - clicking on Pd complains it isn't
-found in msvcrt (which indeed it isn't in).  Rather than waste more time
-on this, just call qsort if we're Microsoft and single-instance.  I hope nobody
-will try to compile multi-instance Pd for 32-bit windows, but if they
-do, they might run into my qsort_s problem again. */
+/* I can't seem to find qsort_r or qsort_s on W2K - clicking on Pd complains
+it isn't in msvcrt (and indeed it isn't).  Rather than waste more time
+on this, just make a workaround for anyone who doesn't have it.  It seems to be
+a GNU extension.  This is also apparently a problem for libpd on Android and
+might well come up for other platforms, so the MICROSOFT_STUPID_SORT variable
+was badly named.  */
 #if defined(_WIN32) && !defined(PDINSTANCE)
 #define MICROSOFT_STUPID_SORT
-static void *stupid_zkeyinfo;
+static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2) {
     return (text_sortcompare(z1, z2, stupid_zkeyinfo)); }
 #endif

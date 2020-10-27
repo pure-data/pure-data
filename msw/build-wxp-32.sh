@@ -32,12 +32,12 @@ if make
     then echo -n ; else exit 1; fi
 
 cd msw
-cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
+cp -a $HOME/bis/work/pd-versions/tcltk-$tkversion .
 /home/msp/pd/msw/msw-app.sh \
    --builddir ..  --tk tcltk-$tkversion $pdversion
 
 # make zip archive
-zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
+zip -r -q /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
 # make installer
 ~/pd/msw/build-nsi.sh  `pwd`/pd-$pdversion $pdversion  wish85.exe

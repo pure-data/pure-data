@@ -102,6 +102,9 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
+     ./1.manual/x6.htm \
+     ./1.manual/x6-a.htm \
+     ./1.manual/x6-b.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \

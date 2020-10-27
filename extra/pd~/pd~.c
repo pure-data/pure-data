@@ -643,7 +643,7 @@ gotone:
         {
             char nutherbuf[MAXPDSTRING];
             snprintf(nutherbuf, MAXPDSTRING, "\"%s\"", tmpbuf);
-            snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", nutherbuf);
+            snprintf(tmpbuf, MAXPDSTRING, "%s", nutherbuf);
         }
 #endif /* _WIN32 */
         execargv[FIXEDARG+i] = malloc(strlen(tmpbuf) + 1);
@@ -1186,7 +1186,7 @@ void pd_tilde_setup(void)
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"),
         A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
-    post("pd~ version 0.53");
+    post("pd~ version 0.54");
 }
 #endif
 
@@ -1344,7 +1344,7 @@ void ext_main( void *r)
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-    post("pd~ version 0.53");
+    post("pd~ version 0.54");
 }
 
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)

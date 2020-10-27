@@ -40,7 +40,7 @@ Usage: osx-app.sh [OPTIONS] [VERSION]
 
   Creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
 
-  Uses the included Tk 8.4 Wish.app at mac/stuff/wish-shell.tgz by default
+  Uses the included Tk Wish.app at mac/stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
