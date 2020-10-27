@@ -247,19 +247,19 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # should we try to keep track of the "marked text" selection which may be
     # more than a single character? ie. start & length of marked text
     catch {
-        bind $tkcanvas <<TkStartIMEMarkedText>> {
-            ::pdwindow::post "%W start marked text\n"
-        }
-        bind $tkcanvas <<TkEndIMEMarkedText>> {
-            ::pdwindow::post "%W end marked text\n"
-        }
+        # bind $tkcanvas <<TkStartIMEMarkedText>> {
+        #     ::pdwindow::post "%W start marked text\n"
+        # }
+        # bind $tkcanvas <<TkEndIMEMarkedText>> {
+        #     ::pdwindow::post "%W end marked text\n"
+        # }
         bind $tkcanvas <<TkClearIMEMarkedText>> {
-            ::pdwindow::post "%W clear marked text\n"
+            # ::pdwindow::post "%W clear marked text\n"
             ::pd_bindings::sendkey %W 1 BackSpace "" 0
             ::pd_bindings::sendkey %W 0 BackSpace "" 0
         }
         bind $tkcanvas <<TkAccentBackspace>> {
-            ::pdwindow::post "%W accent backspace\n"
+            # ::pdwindow::post "%W accent backspace\n"
             ::pd_bindings::sendkey %W 1 BackSpace "" 0
             ::pd_bindings::sendkey %W 0 BackSpace "" 0
         }
