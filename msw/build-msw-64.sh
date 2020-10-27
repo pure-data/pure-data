@@ -14,7 +14,7 @@ fi
 
 pdversion=$1
 installerversion=$1.windows-installer.exe
-tkversion=8.6.8
+tkversion=8.6.10
 
 
 cd /tmp
