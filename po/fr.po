@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2019-12-01 14:28+0100\n"
+"PO-Revision-Date: 2020-10-28 11:37+0100\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
 "Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
@@ -259,6 +259,15 @@ msgstr "Fréquence d'échantillonnage :"
 
 msgid "Delay (msec):"
 msgstr "Délai(ms) :"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44,1k"
+
+msgid "96k"
+msgstr "96k"
 
 msgid "Block size:"
 msgstr "Échantillons par bloc :"
@@ -796,6 +805,23 @@ msgstr "_"
 
 #, tcl-format
 msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Voulez-vous que Pd utilise le dossier Documents existant pour les patchs "
+"et les externals ?\n"
+"\n"
+"Emplacement : %s\n"
+"\n"
+"Vous pourrez changer ou désactiver cet emplacement plus tard, dans les "
+"préférences de Chemins."
+
+#, tcl-format
+msgid ""
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
@@ -831,6 +857,9 @@ msgstr "impossible de créer le dossier Documents : %s\n"
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+
+msgid "refusing to delete empty domain"
+msgstr "refus de supprimer un domaine vide"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
@@ -983,6 +1012,12 @@ msgid ""
 msgstr ""
 "Effacer toutes les préférences ?\n"
 "(prendra effet au prochain redémarrage)"
+
+msgid "removed GUI settings"
+msgstr "les paramètres de l'interface graphique ont été supprimés"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "aucun paramètre d'interface graphique à supprimer"
 
 msgid "Path..."
 msgstr "Chemins..."
