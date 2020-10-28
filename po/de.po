@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2020-10-28 13:15+0100\n"
+"PO-Revision-Date: 2020-10-28 13:30+0100\n"
 "Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
@@ -815,6 +815,22 @@ msgstr ""
 
 #, tcl-format
 msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Wollen Sie, dass Pd das vorhandene Dokumenten-Verzeichnis für Patches und "
+"Bibliotheken verwendet?\n"
+"\n"
+"Verzeichnis: %s\n"
+"\n"
+"Sie können Ihre Entscheidung jederzeit in den Suchpfad-Einstellungen ändern."
+
+#, tcl-format
+msgid ""
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
@@ -850,6 +866,9 @@ msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
+
+msgid "refusing to delete empty domain"
+msgstr "leere Domäne kann nicht gelöscht werden"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
@@ -1002,6 +1021,12 @@ msgid ""
 msgstr ""
 "Alle Einstellungen löschen?\n"
 "(Benötigt Neustart von Pd)"
+
+msgid "removed GUI settings"
+msgstr "GUI-Einstellungen entfernt"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "Keine Pd-GUI Einstellungen zum Zurücksetzen"
 
 msgid "Path..."
 msgstr "Suchpfade..."
