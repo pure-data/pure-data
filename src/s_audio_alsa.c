@@ -201,7 +201,8 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
     check_error(err, out, "snd_pcm_hw_params");
-
+    if (err < 0)
+        return (-1);
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
     if (alsa_snd_buf)
@@ -504,7 +505,7 @@ int alsa_send_dacs(void)
                 for (j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
             {
-                float s1 = *fp2 * INT32_MAX;
+                t_sample s1 = *fp2 * INT32_MAX;
                 ((t_alsa_sample32 *)alsa_snd_buf)[j] = CLIP32(s1);
             }
             for (; i < thisdevchans; i++, ch++)
@@ -568,13 +569,13 @@ int alsa_send_dacs(void)
             sys_log_error(ERR_DATALATE);
             if (result == -EPIPE)
             {
-                result = snd_pcm_prepare(alsa_indev[iodev].a_handle);
+                result = snd_pcm_prepare(alsa_outdev[iodev].a_handle);
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
             else
             {
-                fprintf(stderr, "read error: %s (%d)\n",
+                fprintf(stderr, "write error: %s (%d)\n",
                     strerror(-result), result);
                 goterror = 1;
             }
@@ -631,7 +632,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = (float) ((t_alsa_sample32 *)alsa_snd_buf)[j]
+                    *fp2 = (t_sample) ((t_alsa_sample32 *)alsa_snd_buf)[j]
                         * (1./ INT32_MAX);
             }
         }
@@ -642,7 +643,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
-                    *fp2 = ((float) (
+                    *fp2 = ((t_sample) (
                         (((unsigned char *)alsa_snd_buf)[3*j] << 8)
                         | (((unsigned char *)alsa_snd_buf)[3*j+1] << 16)
                         | (((unsigned char *)alsa_snd_buf)[3*j+2] << 24)))
@@ -658,7 +659,7 @@ int alsa_send_dacs(void)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
-                        *fp2 = (float) ((t_alsa_sample16 *)alsa_snd_buf)[j]
+                        *fp2 = (t_sample) ((t_alsa_sample16 *)alsa_snd_buf)[j]
                             * 3.051850e-05;
             }
         }

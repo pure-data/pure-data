@@ -32,9 +32,6 @@ BUILD=..
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
 
-# the app Get Info string
-GETINFO="Pure Data: a free real-time computer music system"
-
 # Help message
 #----------------------------------------------------------
 help() {
@@ -281,7 +278,8 @@ INFO_PLIST=$APP/Contents/Info.plist
 PLIST_VERSION=${PD_VERSION/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
 $PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $INFO_PLIST
 $PLIST_BUDDY -c "Set:CFBundleShortVersionString \"$PLIST_VERSION\"" $INFO_PLIST
-$PLIST_BUDDY -c "Set:CFBundleGetInfoString \"$GETINFO\"" $INFO_PLIST
+# remove deprecated key as this will display in Finder instead of the version
+$PLIST_BUDDY -c "Delete:CFBundleGetInfoString" $INFO_PLIST
 
 # install binaries
 mkdir -p $DEST/bin
@@ -357,6 +355,16 @@ find $DEST -name "Makefile*" -type f -delete
 cd $DEST
 ln -s tcl Scripts
 cd - > /dev/null # quiet
+
+# "code signing" which also sets entitlements
+# note: "-" identity results in "ad-hoc signing" aka no signing is performed
+# for one, this allows loading un-validated external libraries on macOS 10.15+:
+# https://cutecoder.org/programming/shared-framework-hardened-runtime
+codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
+    ${APP}/Contents/Frameworks/Tcl.framework/Versions/Current
+codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
+    ${APP}/Contents/Frameworks/Tk.framework/Versions/Current
+codesign $verbose --deep -s "-" --entitlements stuff/pd.entitlements $APP
 
 # finish up
 touch $APP

@@ -1,51 +1,60 @@
-#N canvas 430 148 700 651 12;
-#X floatatom 22 428 8 0 0 0 - - -, f 8;
-#X msg 32 231 0 1000;
-#X msg 47 253 39;
-#X obj 66 15 line;
-#X text 106 14 - ramp generator;
-#X msg 23 208 1 1000;
-#X text 94 220 send a pair to ramp to a new value;
-#X text 97 255 send a single number to jump;
-#X text 39 601 see also:;
-#X obj 139 601 line~;
-#X msg 58 278 stop;
-#X text 103 280 "stop" message to stop output;
-#X obj 22 402 line 0 100;
-#X text 120 408 creation arguments:;
-#X text 279 400 1 initial value;
-#X msg 67 308 set 5;
-#X text 120 308 "set" to change value (and stop) without output;
-#X obj 185 601 vline~;
-#X floatatom 89 365 0 0 0 0 - - -;
-#X floatatom 85 338 0 0 0 0 - - -;
-#X text 278 416 2 time grain in milliseconds (20 by default);
-#X msg 235 547 \; pd compatibility 0.47;
-#X text 54 470 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
+#N canvas 429 35 617 744 12;
+#X floatatom 35 527 8 0 0 0 - - -;
+#X msg 71 365 39;
+#X obj 71 18 line;
+#X text 111 17 - ramp generator;
+#X text 29 703 see also:;
+#X obj 110 703 line~;
+#X msg 48 298 stop;
+#X text 84 301 "stop" message to stop output;
+#X obj 35 501 line 0 100;
+#X text 139 506 creation arguments:;
+#X text 279 499 1 initial value;
+#X msg 61 332 set 5;
+#X obj 156 703 vline~;
+#X floatatom 102 464 0 1 100 0 - - -;
+#X floatatom 98 437 0 0 0 0 - - -;
+#X text 278 515 2 time grain in milliseconds (20 by default);
+#X msg 206 636 \; pd compatibility 0.47;
+#X text 34 568 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
 stop message followed by a new ramp message would incorrectly ramp
 from the previous start. It now ramps from wherever in the previous
 segment the object was stopped at. To get the old behavior \, set "compatibility"
 to 0.47 or below in Pd's command line or by a message:, f 74;
-#X text 442 599 updated for Pd version 0.48;
-#X text 22 36 The line object takes (target \, time) pairs and ramps
-(slews) to the specified target over the time given \, updating its
-output at a "grain rate" given by the creation argument. If you don't
-specify a time \, line jumps immediately to the target. Note that the
-middle inlet (that sets the time) does not remember old values (unlike
-every other inlet in Pd) -- sending a float causes a jump in the output
-regardless of whatever time value was specified in some previous message.
-If the line object receives a message specifying some new target before
-reaching the previous one \, it takes off from its current value.,
-f 70;
-#X text 117 338 middle inlet sets next ramp time (cleared when ramp
+#X text 389 701 updated for Pd version 0.48;
+#X text 130 437 middle inlet sets next ramp time (cleared when ramp
 starts!);
-#X text 125 366 right inlet sets grain (not cleared \, acts as normal
+#X text 138 465 right inlet sets grain (not cleared \, acts as normal
 inlet);
-#X connect 1 0 12 0;
-#X connect 2 0 12 0;
-#X connect 5 0 12 0;
-#X connect 10 0 12 0;
-#X connect 12 0 0 0;
-#X connect 15 0 12 0;
-#X connect 18 0 12 2;
-#X connect 19 0 12 1;
+#X text 108 332 "set" to set initial ramp value (without output);
+#X msg 36 262 \$1 1000;
+#X obj 36 241 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 80 400 0 \, 1 1000 100;
+#X text 99 261 a pair sets target and ramp time;
+#X text 182 400 float jumps to value \, list sets target \, time and
+grain;
+#X text 105 359 A float jumps to the value if no ramp time is set via
+the middle inlet, f 37;
+#X text 39 52 The line object takes values for target/time/grain and
+ramps to the specified target over the time given in miliseconds \,
+updating its output at the "grain rate" (also in miliseconds). A list
+up to 3 floats distributes the values to the inlets \, as usual in
+Pd. Note that the middle inlet (that sets the time) does not set values
+for the next ramp (unlike every other inlet in Pd) - thus \, sending
+a float to the left inlet without priorly setting a value in the middle
+inlet causes a jump in the output regardless of whatever time value
+was specified in some previous message. On the other hand \, setting
+a grain value persists. A grain value of 0 ir less becomes 20 (the
+default value). If the line object receives a message specifying some
+new target before reaching the previous one \, it takes off from its
+current value., f 75;
+#X connect 1 0 8 0;
+#X connect 6 0 8 0;
+#X connect 8 0 0 0;
+#X connect 11 0 8 0;
+#X connect 13 0 8 2;
+#X connect 14 0 8 1;
+#X connect 22 0 8 0;
+#X connect 23 0 22 0;
+#X connect 24 0 8 0;

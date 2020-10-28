@@ -1,49 +1,50 @@
-#N canvas 146 65 733 567 12;
-#X msg 592 11 \; pd dsp 1;
-#X msg 141 163 print;
-#X msg 53 83 bang;
-#X msg 140 115 start;
-#X msg 142 141 stop;
-#X obj 53 114 del 1000;
-#X text 41 9 writesf~ -- write audio signals to a soundfile;
-#X text 230 212 creation argument is number of channels;
-#X text 259 234 (1 to 64).;
-#X text 193 115 start streaming audio;
-#X text 188 141 stop streaming audio;
-#X obj 131 207 writesf~ 2;
-#X msg 131 31 open /tmp/foo.wav;
-#X obj 131 538 soundfiler;
-#X text 485 540 updated for Pd version 0.37;
-#X text 36 539 see also:;
-#X obj 145 185 osc~ 440;
-#X text 34 257 writesf~ creates a subthread whose task is to write
+#N canvas 624 61 638 654 12;
+#X msg 419 158 \; pd dsp 1;
+#X msg 174 179 print;
+#X msg 53 78 bang;
+#X msg 155 125 start;
+#X msg 162 153 stop;
+#X obj 53 119 del 1000;
+#X text 199 127 start streaming audio;
+#X text 201 153 stop streaming audio;
+#X obj 147 243 writesf~ 2;
+#X msg 115 46 open /tmp/foo.wav;
+#X obj 177 604 soundfiler;
+#X text 400 601 updated for Pd version 0.37;
+#X text 102 603 see also:;
+#X obj 184 213 osc~ 440;
+#X text 61 291 writesf~ creates a subthread whose task is to write
 audio streams to disk. You need not provide any disk access time between
 "open" and "start" \, but between "stop" and the next "open" you must
 give the object time to flush all the output to disk.;
-#X msg 131 86 open -bytes 4 /tmp/foo.wav;
-#X text 300 30 create a new 16-bit soundfile;
-#X text 377 59 create 24-bit soundfile;
-#X text 376 86 create 32-bit floating-point soundfile;
-#X msg 131 59 open -bytes 3 /tmp/foo.wav;
-#X text 33 339 The soundfile is 2- or 3-byte fixed point ("pcm") or
+#X msg 147 97 open -bytes 4 /tmp/foo.wav;
+#X text 244 46 create a new 16-bit soundfile;
+#X text 326 72 create 24-bit soundfile;
+#X text 340 96 create 32-bit floating-point soundfile;
+#X msg 135 72 open -bytes 3 /tmp/foo.wav;
+#X text 60 373 The soundfile is 2- or 3-byte fixed point ("pcm") or
 4-byte floating-point. The soundfile format is determined by the file
 extent ("foo.wav" \, "foo.aiff" \, or "foo.snd").;
-#X obj 233 540 readsf~;
-#X text 66 413 -wave \, -nextstep \, -aiff;
-#X text 67 434 -big \, -little (nextstep only!);
-#X text 67 455 -bytes <2 \, 3 \, or 4>;
-#X text 67 477 -rate <sample rate>;
-#X text 32 395 The "open" message may take flag-style arguments as
+#X obj 259 604 readsf~;
+#X text 93 447 -wave \, -nextstep \, -aiff;
+#X text 94 468 -big \, -little (nextstep only!);
+#X text 94 489 -bytes <2 \, 3 \, or 4>;
+#X text 94 511 -rate <sample rate>;
+#X text 59 429 The "open" message may take flag-style arguments as
 follows:;
-#X text 27 498 (setting sample rate will affect the soundfile header
+#X text 63 552 (setting sample rate will affect the soundfile header
 but the file will _not_ be resampled.);
-#X connect 1 0 11 0;
+#X text 229 240 creation argument is number of channels (1 to 64).
+, f 27;
+#X obj 45 12 writesf~;
+#X text 111 11 - write audio signals to a soundfile;
+#X connect 1 0 8 0;
 #X connect 2 0 3 0;
 #X connect 2 0 5 0;
-#X connect 3 0 11 0;
-#X connect 4 0 11 0;
+#X connect 3 0 8 0;
+#X connect 4 0 8 0;
 #X connect 5 0 4 0;
-#X connect 12 0 11 0;
-#X connect 16 0 11 0;
-#X connect 18 0 11 0;
-#X connect 22 0 11 0;
+#X connect 9 0 8 0;
+#X connect 13 0 8 0;
+#X connect 15 0 8 0;
+#X connect 19 0 8 0;

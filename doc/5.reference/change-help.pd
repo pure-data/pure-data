@@ -1,20 +1,20 @@
-#N canvas 376 130 540 355 12;
-#X msg 67 124 bang;
-#X floatatom 67 266 0 0 0 0 - - -;
-#X floatatom 79 154 0 0 0 0 - - -;
-#X floatatom 104 182 0 0 0 0 - - -;
-#X text 284 309 updated for Pd version 0.27;
-#X text 173 239 creation argument initializes first value;
+#N canvas 482 116 481 344 12;
+#X msg 64 117 bang;
+#X floatatom 64 259 0 0 0 0 - - -;
+#X floatatom 76 147 0 0 0 0 - - -;
+#X floatatom 102 177 0 0 0 0 - - -;
+#X text 235 285 updated for Pd version 0.27;
+#X text 152 233 creation argument initializes first value;
 #X obj 57 15 change;
-#X text 12 42 The change object outputs its input only when it changes.
+#X text 27 54 The change object outputs its input only when it changes.
 You can "set" the current value \, or bang to force output.;
-#X obj 67 240 change 6.5;
-#X msg 105 211 set \$1;
-#X text 136 183 set the value;
-#X text 112 123 output current value;
-#X text 110 154 if different from current value \, output and set;
-#X obj 67 293 print;
-#X text 114 16 - ELIMINATE REDUNDANCY IN A NUMBER STREAM;
+#X obj 64 233 change 6.5;
+#X msg 102 204 set \$1;
+#X text 134 178 set the value;
+#X text 109 116 output current value;
+#X text 107 147 if different from current value \, output and set;
+#X obj 64 286 print;
+#X text 114 16 - eliminate redundancy in a number stream;
 #X connect 0 0 8 0;
 #X connect 1 0 13 0;
 #X connect 2 0 8 0;

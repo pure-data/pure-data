@@ -1,47 +1,47 @@
-#N canvas 898 77 582 488 12;
-#X msg 36 125 bang;
-#X obj 37 343 float 6.5;
-#X floatatom 37 373 0 0 0 0 - - -;
-#X floatatom 48 151 0 0 0 0 - - -;
-#X floatatom 106 313 0 0 0 0 - - -;
-#X obj 55 12 float;
-#X text 97 11 - STORE A (FLOATING POINT) NUMBER;
-#X text 31 43 The float object stores a number \, initialized by its
+#N canvas 535 81 582 475 12;
+#X msg 44 130 bang;
+#X obj 45 348 float 6.5;
+#X floatatom 45 378 0 0 0 0 - - -;
+#X floatatom 56 156 0 0 0 0 - - -;
+#X floatatom 105 318 0 0 0 0 - - -;
+#X obj 57 15 float;
+#X text 33 46 The float object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
 by sending it the "bang" message. Sending a number sets a new value
-and outputs it.;
-#X text 141 315 sets the value;
-#X text 115 344 creation argument initializes the value;
-#X floatatom 442 197 5 0 0 0 - - -;
-#X text 81 126 output the value;
-#X text 78 150 set and output the value;
-#X obj 442 173 r float-help;
-#X msg 53 180 send float-help;
-#X obj 71 246 makefilename %f;
-#X msg 71 222 42.23;
-#X text 190 237 symbols that look like floats are converted., f 23
+and outputs it., f 61;
+#X text 140 320 sets the value;
+#X text 123 349 creation argument initializes the value;
+#X floatatom 444 200 5 0 0 0 - - -;
+#X text 89 131 output the value;
+#X text 86 155 set and output the value;
+#X obj 444 176 r float-help;
+#X msg 61 185 send float-help;
+#X obj 79 251 makefilename %f;
+#X msg 79 227 42.23;
+#X text 198 242 symbols that look like floats are converted., f 23
 ;
-#X symbolatom 71 272 10 0 0 0 - - -;
-#X text 157 271 <= type a number on a symbol box;
-#X text 369 451 updated for Pd version 0.48;
-#X text 43 417 see also:;
-#X obj 170 418 value;
-#X obj 223 418 send;
-#X floatatom 449 268 5 0 0 0 - - -;
-#X obj 449 244 v float-help;
-#X obj 449 224 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X symbolatom 79 277 10 0 0 0 - - -;
+#X text 165 276 <= type a number on a symbol box;
+#X text 345 422 updated for Pd version 0.48;
+#X text 63 423 see also:;
+#X obj 175 424 value;
+#X obj 228 424 send;
+#X floatatom 451 271 5 0 0 0 - - -;
+#X obj 451 247 v float-help;
+#X obj 451 227 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 174 181 send to a named object such as a;
-#X text 294 197 receive or value:;
-#X obj 132 419 int;
+#X text 182 186 send to a named object such as a;
+#X text 306 206 receive or value:;
+#X obj 137 424 int;
+#X text 99 14 - store a (floating point) number;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 3 0 1 0;
 #X connect 4 0 1 1;
-#X connect 13 0 10 0;
-#X connect 14 0 1 0;
-#X connect 15 0 18 0;
-#X connect 16 0 15 0;
-#X connect 18 0 1 0;
+#X connect 12 0 9 0;
+#X connect 13 0 1 0;
+#X connect 14 0 17 0;
+#X connect 15 0 14 0;
+#X connect 17 0 1 0;
+#X connect 24 0 23 0;
 #X connect 25 0 24 0;
-#X connect 26 0 25 0;

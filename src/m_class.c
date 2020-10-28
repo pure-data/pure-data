@@ -119,7 +119,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     int i;
     t_methodentry *m;
     for (i = 0; i < nmethod; i++)
-        if ((*methodlist)[i].me_name == sel)
+        if (sel && (*methodlist)[i].me_name == sel)
     {
         char nbuf[80];
         snprintf(nbuf, 80, "%s_aliased", sel->s_name);
@@ -212,8 +212,10 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
-        freebytes(c->c_methods[instanceno],
-            c->c_nmethod * sizeof(**c->c_methods));
+        if(c->c_methods[instanceno])
+            freebytes(c->c_methods[instanceno],
+                      c->c_nmethod * sizeof(**c->c_methods));
+        c->c_methods[instanceno] = NULL;
         for (i = instanceno; i < pd_ninstances-1; i++)
             c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
@@ -238,7 +240,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
                s != &x->pd_s_y &&
                s != &x->pd_s_)
             {
-                freebytes(s->s_name, strlen(s->s_name)+1);
+                freebytes((void *)s->s_name, strlen(s->s_name)+1);
                 freebytes(s, sizeof(*s));
             }
         }
@@ -440,8 +442,12 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d args typechecked; use A_GIMME",
-                s->s_name, MAXPDARG);
+            if (s)
+                error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                      s->s_name, MAXPDARG);
+            else
+                error("unnamed class: sorry: only %d args typechecked; use A_GIMME",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -455,7 +461,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-        if (class_loadsym)
+        if (s && class_loadsym && !zgetfn(&pd_objectmaker, class_loadsym))
         {
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
@@ -524,7 +530,11 @@ void class_free(t_class *c)
         c->c_classfreefn(c);
 #if PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
-        freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+    {
+        if(c->c_methods[i])
+            freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+        c->c_methods[i] = NULL;
+    }
     freebytes(c->c_methods, pd_ninstances * sizeof(*c->c_methods));
 #else
     freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
@@ -562,8 +572,12 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d creation args allowed",
-                s->s_name, MAXPDARG);
+            if(s)
+                error("class %s: sorry: only %d creation args allowed",
+                      s->s_name, MAXPDARG);
+            else
+                error("unnamed class: sorry: only %d creation args allowed",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -631,13 +645,13 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
         }
         if (argtype != A_NULL)
             error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
-                c->c_name->s_name, sel->s_name);
+                (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
         for (i = 0; i < pd_ninstances; i++)
         {
             class_addmethodtolist(c, &c->c_methods[i], c->c_nmethod,
-                (t_gotfn)fn, dogensym(sel->s_name, 0, pd_instances[i]),
+                (t_gotfn)fn, sel?dogensym(sel->s_name, 0, pd_instances[i]):0,
                     argvec, pd_instances[i]);
         }
 #else
@@ -649,7 +663,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     goto done;
 phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
-        c->c_name->s_name, sel->s_name);
+        (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
 done:
     va_end(ap);
     return;
@@ -948,8 +962,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_pd *bonzo;
 
         /* check for messages that are handled by fixed slots in the class
-        structure.  We don't catch "pointer" though so that sending "pointer"
-        to pd_objectmaker doesn't require that we supply a pointer value. */
+        structure. */
     if (s == &s_float)
     {
         if (!argc) (*c->c_floatmethod)(x, 0.);
@@ -974,6 +987,15 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
         else
             (*c->c_symbolmethod)(x, &s_);
+        return;
+    }
+        /* pd_objectmaker doesn't require
+        an actual pointer value */
+    if (s == &s_pointer && x != &pd_objectmaker)
+    {
+        if (argc && argv->a_type == A_POINTER)
+            (*c->c_pointermethod)(x, argv->a_w.w_gpointer);
+        else goto badarg;
         return;
     }
 #ifdef PDINSTANCE
@@ -1087,12 +1109,12 @@ badarg:
     /* convenience routine giving a stdarg interface to typedmess().  Only
     ten args supported; it seems unlikely anyone will need more since
     longer messages are likely to be programmatically generated anyway. */
-void pd_vmess(t_pd *x, t_symbol *sel, char *fmt, ...)
+void pd_vmess(t_pd *x, t_symbol *sel, const char *fmt, ...)
 {
     va_list ap;
     t_atom arg[10], *at = arg;
     int nargs = 0;
-    char *fp = fmt;
+    const char *fp = fmt;
 
     va_start(ap, fmt);
     while (1)
@@ -1183,4 +1205,36 @@ void c_extern(t_externclass *cls, t_newmethod newroutine,
 void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...)
 {
     bug("'c_addmess' not implemented.");
+}
+
+/* provide 'class_new' fallbacks, in case a double-precision Pd attempts to
+ * load a single-precision external, or vice versa
+ */
+#ifdef class_new
+# undef class_new
+#endif
+t_class *
+#if PD_FLOATSIZE == 32
+  class_new64
+#else
+  class_new
+#endif
+   (t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+    const int ext_floatsize =
+#if PD_FLOATSIZE == 32
+        64
+#else
+        32
+#endif
+        ;
+    static int loglevel = 0;
+    if(s) {
+        logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
+        loglevel=3;
+    } else
+        logpost(0, 3, "refusing to load unnamed %dbit-float object into %dbit-float Pd", ext_floatsize, PD_FLOATSIZE);
+
+    return 0;
 }

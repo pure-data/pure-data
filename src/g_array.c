@@ -1160,6 +1160,8 @@ void garray_resize_long(t_garray *x, long n)
     t_array *array = garray_getarray(x);
     if (n < 1)
         n = 1;
+    if (n == array->a_n)
+        return;
     garray_fittograph(x, (int)n, template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1));

@@ -78,7 +78,7 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof *x);
 }
 
-char *rtext_gettag(t_rtext *x)
+const char *rtext_gettag(t_rtext *x)
 {
     return (x->x_tag);
 }
@@ -313,6 +313,10 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     }
     escbuf = (tempbuf == smallbuf)?smallescbuf:t_getbytes(2 * outchars_b + 1);
     pdgui_strnescape(escbuf, 2 * outchars_b + 1, tempbuf, outchars_b);
+
+    if (action && !canvas->gl_havewindow)
+        action = 0;
+
     if (action == SEND_FIRST)
     {
         int lmargin = LMARGIN, tmargin = TMARGIN;

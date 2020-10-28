@@ -8,6 +8,7 @@
 #include "m_pd.h"
 #include "math.h"
 
+#define BIGFLOAT 1.0e+19
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
 
@@ -58,8 +59,8 @@ typedef struct _phasor
 {
     t_object x_obj;
     double x_phase;
-    float x_conv;
-    float x_f;      /* scalar frequency */
+    t_float x_conv;
+    t_float x_f;						// scalar frequency
 } t_phasor;
 
 static void *phasor_new(t_floatarg f)
@@ -76,13 +77,13 @@ static void *phasor_new(t_floatarg f)
 static t_int *phasor_perform(t_int *w)
 {
     t_phasor *x = (t_phasor *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_float *)(w[2]);
+    t_sample *out = (t_float *)(w[3]);
     int n = (int)(w[4]);
     double dphase = x->x_phase + (double)UNITBIT32;
     union tabfudge tf;
     int normhipart;
-    float conv = x->x_conv;
+    t_float conv = x->x_conv;
 
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
@@ -103,12 +104,12 @@ static t_int *phasor_perform(t_int *w)
 static void phasor_dsp(t_phasor *x, t_signal **sp)
 {
     x->x_conv = 1./sp[0]->s_sr;
-    dsp_add(phasor_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(phasor_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void phasor_ft1(t_phasor *x, t_float f)
 {
-    x->x_phase = f;
+    x->x_phase = (double)f;
 }
 
 static void phasor_setup(void)
@@ -133,23 +134,24 @@ static t_class *cos_class;
 typedef struct _cos
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;			// scalar frequency
 } t_cos;
 
-static void *cos_new(void)
+static void *cos_new(t_floatarg f)
 {
     t_cos *x = (t_cos *)pd_new(cos_class);
     outlet_new(&x->x_obj, gensym("signal"));
-    x->x_f = 0;
+    x->x_f = f;
     return (x);
 }
 
 static t_int *cos_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    float *tab = cos_table, *addr, f1, f2, frac;
+    float *tab = cos_table, *addr;
+    t_float f1, f2, frac;
     double dphase;
     int normhipart;
     union tabfudge tf;
@@ -196,7 +198,7 @@ static t_int *cos_perform(t_int *w)
 
 static void cos_dsp(t_cos *x, t_signal **sp)
 {
-    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(cos_perform, 3, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void cos_maketable(void)
@@ -243,8 +245,8 @@ typedef struct _osc
 {
     t_object x_obj;
     double x_phase;
-    float x_conv;
-    float x_f;      /* frequency if scalar */
+    t_float x_conv;
+    t_float x_f;						// scalar frequency
 } t_osc;
 
 static void *osc_new(t_floatarg f)
@@ -261,10 +263,11 @@ static void *osc_new(t_floatarg f)
 static t_int *osc_perform(t_int *w)
 {
     t_osc *x = (t_osc *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
-    float *tab = cos_table, *addr, f1, f2, frac;
+    float *tab = cos_table, *addr;
+    t_float f1, f2, frac;
     double dphase = x->x_phase + UNITBIT32;
     int normhipart;
     union tabfudge tf;
@@ -318,7 +321,7 @@ static t_int *osc_perform(t_int *w)
 static void osc_dsp(t_osc *x, t_signal **sp)
 {
     x->x_conv = COSTABSIZE/sp[0]->s_sr;
-    dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add(osc_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void osc_ft1(t_osc *x, t_float f)
@@ -341,10 +344,10 @@ static void osc_setup(void)
 
 typedef struct vcfctl
 {
-    float c_re;
-    float c_im;
-    float c_q;
-    float c_isr;
+    t_float c_re;
+    t_float c_im;
+    t_float c_q;
+    t_float c_isr;
 } t_vcfctl;
 
 typedef struct sigvcf
@@ -352,7 +355,7 @@ typedef struct sigvcf
     t_object x_obj;
     t_vcfctl x_cspace;
     t_vcfctl *x_ctl;
-    float x_f;
+    t_float x_f;
 } t_sigvcf;
 
 t_class *sigvcf_class;
@@ -373,27 +376,29 @@ static void *sigvcf_new(t_floatarg q)
     return (x);
 }
 
-static void sigvcf_ft1(t_sigvcf *x, t_floatarg f)
+static void sigvcf_ft1(t_sigvcf *x, t_float f)
 {
-    x->x_ctl->c_q = (f > 0 ? f : 0.f);
+    if(f < 0.) f = 0.;
+    if(f > BIGFLOAT) f = BIGFLOAT;
+    x->x_ctl->c_q = f;
 }
 
 static t_int *sigvcf_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out1 = (float *)(w[3]);
-    float *out2 = (float *)(w[4]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out1 = (t_sample *)(w[3]);
+    t_sample *out2 = (t_sample *)(w[4]);
     t_vcfctl *c = (t_vcfctl *)(w[5]);
     int n = (int)w[6];
     int i;
-    float re = c->c_re, re2;
-    float im = c->c_im;
-    float q = c->c_q;
-    float qinv = (q > 0? 1.0f/q : 0);
-    float ampcorrect = 2.0f - 2.0f / (q + 2.0f);
-    float isr = c->c_isr;
-    float coefr, coefi;
+    t_float re = c->c_re, re2;
+    t_float im = c->c_im;
+    t_float q = c->c_q;
+    t_float isr = c->c_isr;
+    t_float qinv = (q > 0? 1.0f/q : 0);
+    t_float ampcorrect = 2. - 2. / (q + 2.);
+    t_float coefr, coefi;
     float *tab = cos_table, *addr, f1, f2, frac;
     double dphase;
     int normhipart, tabindex;
@@ -446,9 +451,10 @@ static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
     x->x_ctl->c_isr = 6.28318f/sp[0]->s_sr;
     dsp_add(sigvcf_perform, 6,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-            x->x_ctl, sp[0]->s_n);
+            x->x_ctl, (t_int)sp[0]->s_n);
 }
 
+static
 void sigvcf_setup(void)
 {
     sigvcf_class = class_new(gensym("vcf~"), (t_newmethod)sigvcf_new, 0,
@@ -488,8 +494,8 @@ static t_int *noise_perform(t_int *w)
     int val = *vp;
     while (n--)
     {
-        *out++ = ((float)((val & 0x7fffffff) - 0x40000000)) *
-            (float)(1.0 / 0x40000000);
+        *out++ = ((t_sample)((val & 0x7fffffff) - 0x40000000)) *
+            (t_sample)(1.0 / 0x40000000);
         val = val * 435898247 + 382842987;
     }
     *vp = val;
@@ -498,7 +504,7 @@ static t_int *noise_perform(t_int *w)
 
 static void noise_dsp(t_noise *x, t_signal **sp)
 {
-    dsp_add(noise_perform, 3, sp[0]->s_vec, &x->x_val, sp[0]->s_n);
+    dsp_add(noise_perform, 3, sp[0]->s_vec, &x->x_val, (t_int)sp[0]->s_n);
 }
 
 static void noise_float(t_noise *x, t_float f)

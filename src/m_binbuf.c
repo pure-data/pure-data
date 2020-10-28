@@ -485,68 +485,72 @@ int canvas_getdollarzero(void);
  * buf="10"
  * return value = 1; (s+1=="-bla")
  */
-int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, const t_atom *av, int tonew)
+static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
+    int ac, const t_atom *av, int tonew)
 {
-  int argno = (int)atol(s);
-  int arglen=0;
-  const char*cs=s;
-  char c=*cs;
-  *buf=0;
+    int argno = (int)atol(s);
+    int arglen = 0;
+    const char *cs = s;
+    char c = *cs;
 
-  while(c&&(c>='0')&&(c<='9')){
-    c=*cs++;
-    arglen++;
-  }
-
-  if (cs==s) { /* invalid $-expansion (like "$bla") */
-    sprintf(buf, "$");
-    return 0;
-  }
-  else if (argno < 0 || argno > ac) /* undefined argument */
+    *buf=0;
+    while (c && (c>='0') && (c<='9'))
     {
-      if(!tonew)return 0;
-      sprintf(buf, "$%d", argno);
+        c = *cs++;
+        arglen++;
     }
-  else if (argno == 0){ /* $0 */
-    atom_string(&dollar0, buf, MAXPDSTRING/2-1);
-  }
-  else{ /* fine! */
-    atom_string(av+(argno-1), buf, MAXPDSTRING/2-1);
-  }
-  return (arglen-1);
+
+    if (cs==s)      /* invalid $-expansion (like "$bla") */
+    {
+        sprintf(buf, "$");
+        return 0;
+    }
+    else if (argno < 0 || argno > ac) /* undefined argument */
+    {
+        if (!tonew)
+            return 0;
+        sprintf(buf, "$%d", argno);
+    }
+    else        /* well formed; expand it */
+    {
+        const t_atom *dollarvalue = (argno ? &av[argno-1] : dollar0);
+        if (dollarvalue->a_type == A_SYMBOL)
+        {
+            strncpy(buf, dollarvalue->a_w.w_symbol->s_name, MAXPDSTRING/2-1);
+            buf[MAXPDSTRING/2-2] = 0;
+        }
+        else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
+    }
+    return (arglen-1);
 }
 
+/* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
+context of a message to create a new object; in this case out-of-range '$'
+args become 0 - otherwise zero is returned and the caller has to check the
+result. */
 /* LATER remove the dependence on the current canvas for $0; should be another
 argument. */
-t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew)
+t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
+    int tonew)
 {
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
     const char*str=s->s_name;
     char*substr;
-    int next=0, i=MAXPDSTRING;
+    int next=0;
     t_atom dollarnull;
     SETFLOAT(&dollarnull, canvas_getdollarzero());
-    while(i--)buf2[i]=0;
+    buf2[0] = buf2[MAXPDSTRING-1] = 0;
 
-#if 1
-    /* JMZ: currently, a symbol is detected to be A_DOLLSYM if it starts with '$'
-     * the leading $ is stripped and the rest stored in "s"
-     * i would suggest to NOT strip the leading $
-     * and make everything a A_DOLLSYM that contains(!) a $
-     *
-     * whenever this happened, enable this code
-     */
     substr=strchr(str, '$');
     if (!substr || substr-str >= MAXPDSTRING)
         return (s);
 
-    strncat(buf2, str, (substr-str));
+    strncpy(buf2, str, (substr-str));
+    buf2[substr-str] = 0;
     str=substr+1;
 
-#endif
-
-    while((next=binbuf_expanddollsym(str, buf, dollarnull, ac, av, tonew))>=0)
+    while((next=binbuf_expanddollsym(str, buf, &dollarnull, ac, av, tonew))>=0)
     {
         /*
         * JMZ: i am not sure what this means, so i might have broken it
@@ -556,7 +560,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         * this happens, when expanding in a message-box, but does not happen
         * when the A_DOLLSYM is the name of a subpatch
         */
-        if(!tonew&&(0==next)&&(0==*buf))
+        if (!tonew && (0==next) && (0==*buf))
         {
             return 0; /* JMZ: this should mimic the original behaviour */
         }
@@ -564,7 +568,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         strncat(buf2, buf, MAXPDSTRING-strlen(buf2)-1);
         str+=next;
         substr=strchr(str, '$');
-        if(substr)
+        if (substr)
         {
             unsigned long n = substr-str;
             if(n>MAXPDSTRING-strlen(buf2)-1) n=MAXPDSTRING-strlen(buf2)-1;
@@ -787,7 +791,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (nargs == 1) pd_float(target, mstack->a_w.w_float);
                 else pd_list(target, 0, nargs, mstack);
                 break;
+            case A_POINTER:
+                if (nargs == 1) pd_pointer(target, mstack->a_w.w_gpointer);
+                else pd_list(target, 0, nargs, mstack);
+                break;
             default:
+                bug("bad selector");
                 break;
             }
         }
@@ -858,8 +867,8 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 }
 
     /* read a binbuf from a file, via the search patch of a canvas */
-int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
-    int crflag)
+int binbuf_read_via_canvas(t_binbuf *b, const char *filename,
+    const t_canvas *canvas, int crflag)
 {
     int filedesc;
     char buf[MAXPDSTRING], *bufptr;
@@ -922,11 +931,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     }
 
     if (!(f = sys_fopen(fbuf, "w")))
-    {
-        fprintf(stderr, "open: ");
-        sys_unixerror(fbuf);
         goto fail;
-    }
     for (ap = z->b_vec, indx = z->b_n; indx--; ap++)
     {
         int length;
@@ -938,10 +943,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         if (ep - bp < length)
         {
             if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-            {
-                sys_unixerror(fbuf);
                 goto fail;
-            }
             bp = sbuf;
         }
         if ((ap->a_type == A_SEMI || ap->a_type == A_COMMA) &&
@@ -965,16 +967,10 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         }
     }
     if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (fflush(f) != 0)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (y)
         binbuf_free(y);

@@ -26,7 +26,7 @@ typedef long t_pa_sample;
 #define SYS_BYTESPERCHAN (DEFDACBLKSIZE * SYS_SAMPLEWIDTH)
 #define SYS_XFERSAMPS (SYS_DEFAULTCH*DEFDACBLKSIZE)
 #define SYS_XFERSIZE (SYS_SAMPLEWIDTH * SYS_XFERSAMPS)
-#define MAXNDEV 20
+#define MAXNDEV 128
 #define DEVDESCSIZE 1024
 
 static void audio_getdevs(char *indevlist, int *nindevs,
@@ -775,6 +775,11 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     sys_get_audio_params(&naudioindev, audioindev, chindev,
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
             &blocksize);
+
+    /* don't offer callbacks unless it's already on - turning them on and off
+    dynamically crashes Pd.  LATER get callbacks working again.  */
+    if (!callback)
+        cancallback = 0;
 
     /* post("naudioindev %d naudiooutdev %d longform %f",
             naudioindev, naudiooutdev, flongform); */

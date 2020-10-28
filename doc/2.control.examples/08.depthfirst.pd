@@ -1,48 +1,48 @@
-#N canvas 144 162 632 551 12;
-#X msg 64 51 1;
-#X obj 89 150 + 1;
-#X obj 209 187 print x1;
-#X obj 64 209 print x3;
-#X obj 114 122 print x2;
-#X obj 209 100 + 1;
-#X obj 209 129 + 1;
-#X obj 209 158 + 1;
-#X obj 64 80 t f f f f;
-#X obj 89 179 print x2;
-#X text 34 13 In Pd \, message passing is depth first \, so that in
-this patch:;
-#X text 104 51 <-- click here;
-#X text 17 243 ... you get "x1" first \, notwithstanding the fact
-that "x2" and "x3" appear to be closer to the source. This means that
-you shouldn't do this:;
-#X msg 76 304 1;
-#X text 116 304 <-- maybe you shouldn't click here;
-#X obj 115 334 + 1;
-#X obj 76 333 f;
-#X floatatom 76 365 0 0 0;
-#X text 377 520 updated for Pd version 0.34;
-#X text 35 393 ... because the "depth" is infinite. The counters you've
+#N canvas 643 23 468 574 12;
+#X msg 70 63 1;
+#X obj 141 123 + 1;
+#X obj 284 212 print x1;
+#X obj 212 154 print x2;
+#X obj 284 122 + 1;
+#X obj 284 154 + 1;
+#X obj 284 183 + 1;
+#X text 42 13 In Pd \, message passing is depth first \, so that in
+this patch:, f 46;
+#X msg 115 310 1;
+#X obj 154 340 + 1;
+#X obj 115 339 f;
+#X floatatom 115 371 0 0 0 0 - - -;
+#X text 229 509 updated for Pd version 0.34;
+#X text 44 400 ... because the "depth" is infinite. The counters you've
 seen always have the message chain terminated somewhere in a cold inlet:
-;
-#X msg 75 453 1;
-#X obj 114 483 + 1;
-#X obj 75 482 f;
-#X floatatom 75 514 0 0 0;
-#X text 115 453 <-- better;
-#X connect 0 0 8 0;
-#X connect 1 0 9 0;
+, f 52;
+#X msg 106 464 1;
+#X obj 145 494 + 1;
+#X obj 106 493 f;
+#X floatatom 106 525 0 0 0 0 - - -;
+#X text 142 464 <= better;
+#X text 146 309 <= maybe you shouldn't click here;
+#X text 106 63 <= click here;
+#X obj 70 92 trigger float float float float;
+#X obj 141 154 print x3;
+#X obj 70 154 print x4;
+#X text 44 247 ... you get "x1" first \, notwithstanding the fact that
+"x2" \, "x3" and "x4" appear to be closer to the source. This means
+that you shouldn't do this:, f 48;
+#X connect 0 0 21 0;
+#X connect 1 0 22 0;
+#X connect 4 0 5 0;
 #X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 2 0;
-#X connect 8 0 3 0;
-#X connect 8 1 1 0;
-#X connect 8 2 4 0;
-#X connect 8 3 5 0;
-#X connect 13 0 16 0;
-#X connect 15 0 16 0;
+#X connect 6 0 2 0;
+#X connect 8 0 10 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 10 0 9 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 1;
 #X connect 16 0 17 0;
 #X connect 16 0 15 0;
-#X connect 20 0 22 0;
-#X connect 21 0 22 1;
-#X connect 22 0 23 0;
-#X connect 22 0 21 0;
+#X connect 21 0 23 0;
+#X connect 21 1 1 0;
+#X connect 21 2 3 0;
+#X connect 21 3 4 0;
