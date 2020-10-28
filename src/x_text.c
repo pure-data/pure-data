@@ -470,17 +470,18 @@ equal:
     else return (1);
 }
 
-/* I can't seem to find qsort_r or qsort_s on W2K - clicking on Pd complains
-it isn't in msvcrt (and indeed it isn't).  Rather than waste more time
-on this, just make a workaround for anyone who doesn't have it.  It seems to be
-a GNU extension.  This is also apparently a problem for libpd on Android and
-might well come up for other platforms, so the MICROSOFT_STUPID_SORT variable
-was badly named.  */
-#if defined(_WIN32) && !defined(PDINSTANCE)
-#define MICROSOFT_STUPID_SORT
+
+/* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
+ * Both are not available in Emscripten, Android or older MSVC versions.
+ * 'stupid_sortcompare' is thread-safe but not reentrant.
+ */
+#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+#define STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
-static int stupid_sortcompare(const void *z1, const void *z2) {
-    return (text_sortcompare(z1, z2, stupid_zkeyinfo)); }
+static int stupid_sortcompare(const void *z1, const void *z2)
+{
+    return (text_sortcompare(z1, z2, stupid_zkeyinfo));
+}
 #endif
 
     /* sort the contents */
@@ -543,7 +544,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
         }
         startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
-#ifdef MICROSOFT_STUPID_SORT
+#ifdef STUPID_SORT
     stupid_zkeyinfo = &k;
     qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
 #else
@@ -552,7 +553,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
 #else /* __APPLE__ */
     qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
 #endif /* __APPLE__ */
-#endif /* MICROSOFT_STUPID_SORT */
+#endif /* STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
     {
