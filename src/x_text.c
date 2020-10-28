@@ -470,16 +470,18 @@ equal:
     else return (1);
 }
 
-/* I can't seem to get to qsort_s on W2K - clicking on Pd complains it isn't
-found in msvcrt (which indeed it isn't in).  Rather than waste more time
-on this, just call qsort if we're Microsoft and single-instance.  I hope nobody
-will try to compile multi-instance Pd for 32-bit windows, but if they
-do, they might run into my qsort_s problem again. */
-#if defined(_WIN32) && !defined(PDINSTANCE)
-#define MICROSOFT_STUPID_SORT
-static void *stupid_zkeyinfo;
-static int stupid_sortcompare(const void *z1, const void *z2) {
-    return (text_sortcompare(z1, z2, stupid_zkeyinfo)); }
+
+/* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
+ * Both are not available in Emscripten, Android or older MSVC versions.
+ * 'stupid_sortcompare' is thread-safe but not reentrant.
+ */
+#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+#define STUPID_SORT
+static PERTHREAD void *stupid_zkeyinfo;
+static int stupid_sortcompare(const void *z1, const void *z2)
+{
+    return (text_sortcompare(z1, z2, stupid_zkeyinfo));
+}
 #endif
 
     /* sort the contents */
@@ -542,7 +544,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
         }
         startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
-#ifdef MICROSOFT_STUPID_SORT
+#ifdef STUPID_SORT
     stupid_zkeyinfo = &k;
     qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
 #else
@@ -551,7 +553,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
 #else /* __APPLE__ */
     qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
 #endif /* __APPLE__ */
-#endif /* MICROSOFT_STUPID_SORT */
+#endif /* STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
     {

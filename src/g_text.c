@@ -720,7 +720,12 @@ static void gatom_key(void *z, t_floatarg f)
     else if (c == '\b')
     {
         if (len > 0)
-        x->a_buf[len-1] = 0;
+        {
+            /* walk back multi-byte chars when needed */
+            int i = len;
+            u8_dec(x->a_buf, &i);
+            x->a_buf[i] = 0;
+        }
         goto redraw;
     }
     else if (c == '\n')
