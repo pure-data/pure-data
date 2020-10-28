@@ -367,6 +367,13 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
+static float sched_fastforward;
+
+void glob_fastforward(void *dummy, t_floatarg f)
+{
+    sched_fastforward = f;
+}
+
 void dsp_tick(void);
 
 static int sched_useaudio = SCHED_AUDIO_NONE;
@@ -465,6 +472,12 @@ static void m_pollingscheduler(void)
 
         sys_addhist(0);
     waitfortick:
+        while (sched_fastforward > 0)
+        {
+            double beforetick = pd_this->pd_systime;
+            sched_tick();
+            sched_fastforward -= clock_gettimesince(beforetick);
+        }
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
             sys_unlock();

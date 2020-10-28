@@ -61,9 +61,9 @@ argument, a "Pd.app" is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.
 
-A pre-built universal (32/64 bit) Tk 8.5.19 Wish with patches applied is
+A pre-built universal (32/64 bit) Tk 8.6.10 Wish with patches applied is
 included with the Pd source distribution and works across the majority of macOS
-versions up to 10.14. This is the default Wish.app when using osx-app.sh. If you
+versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
 want to use a different Wish.app (a newer version, a custom build, a system
 version), you can specify the donor via commandline options, for example:
 
@@ -176,5 +176,15 @@ Some important per-application settings required by the GUI include:
 * NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving
 * ApplePressAndHoldEnabled: false, disables character compose popup,
                                    enables key repeat for all keys
+* NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+
 
 These are set in `tcl/pd_guiprefs.tcl`.
+
+## Code Signing
+
+As of Pd 0.51, the mac/osx-app.sh script performs "ad-hoc code signing" in order
+to set entitlements to open un-validated dynamic libraries on macOS 10.15+. This
+is required due to the new security settings. Note: ad-hoc signing doesn't
+actually sign the .app bundle with an account certificate, so the unidentified
+developer warning is still shown when the downloaded .app is run for the first
+time.

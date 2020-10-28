@@ -40,7 +40,7 @@ Usage: osx-app.sh [OPTIONS] [VERSION]
 
   Creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
 
-  Uses the included Tk 8.4 Wish.app at mac/stuff/wish-shell.tgz by default
+  Uses the included Tk Wish.app at mac/stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
@@ -355,6 +355,16 @@ find $DEST -name "Makefile*" -type f -delete
 cd $DEST
 ln -s tcl Scripts
 cd - > /dev/null # quiet
+
+# "code signing" which also sets entitlements
+# note: "-" identity results in "ad-hoc signing" aka no signing is performed
+# for one, this allows loading un-validated external libraries on macOS 10.15+:
+# https://cutecoder.org/programming/shared-framework-hardened-runtime
+codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
+    ${APP}/Contents/Frameworks/Tcl.framework/Versions/Current
+codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
+    ${APP}/Contents/Frameworks/Tk.framework/Versions/Current
+codesign $verbose --deep -s "-" --entitlements stuff/pd.entitlements $APP
 
 # finish up
 touch $APP
