@@ -259,6 +259,15 @@ msgstr "Velocidad de Sampleo:"
 msgid "Delay (msec):"
 msgstr "Retardo (msec):"
 
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
+
 msgid "Block size:"
 msgstr "Tamaño de Bloque:"
 
@@ -836,6 +845,9 @@ msgstr "no se ha podido crear el directorio de documentos de Pd: %s\n"
 #, fuzzy, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "no se ha podido crear el directorio \"externals\" en: %s\n"
+
+msgid "refusing to delete empty domain"
+msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"

@@ -272,6 +272,15 @@ msgstr "Samplingrate:"
 msgid "Delay (msec):"
 msgstr "Verzögerung (msec):"
 
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
+
 msgid "Block size:"
 msgstr "Blocklänge:"
 
