@@ -13,7 +13,7 @@ or online:
     http://msp.ucsd.edu/Pd_documentation/
 
 More extensive FLOSS documentation is available on:
-    http://en.flossmanuals.net/PureData (English)
+    https://en.flossmanuals.net/pure-data/_full/ (English)
     http://fr.flossmanuals.net/PureData (Francais)
 
 Information of all sorts (guides, development, meetings, etc):
