@@ -145,7 +145,7 @@
 #X obj 26 2306 rifft~;
 #X text 126 2306 - real inverse discrete Fourier transform;
 #X obj 26 2360 framp~;
-#X text 126 2360 - output a ramp for each block;
+#X text 126 2360 - estimate frequency and amplitude of FFT components;
 #X obj 26 2390 mtof~;
 #X obj 77 2390 ftom~;
 #X obj 127 2390 rmstodb~;
