@@ -517,7 +517,7 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
     int bytespersample = bytespersamp;
     int bytesperframe = bytespersample * sfchannels;
-    int framesread = itemsread, nframes = nitems;
+    long framesread = itemsread, nframes = nitems;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersample)
     {
         if (bytespersample == 2)
