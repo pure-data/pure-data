@@ -260,7 +260,7 @@ gotone:
         makeout = (t_xxx)dlsym(dlobj,  "setup");
 #else
 #warning "No dynamic loading mechanism specified, \
-    libdl or WIN32 required for loading externals!"
+libdl or WIN32 required for loading externals!"
 #endif
 
     if (!makeout)
