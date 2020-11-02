@@ -593,10 +593,12 @@ void libpd_stop_gui(void) {
   sys_unlock();
 }
 
-void libpd_poll_gui(void) {
+int libpd_poll_gui(void) {
+  int retval;
   sys_lock();
-  sys_pollgui();
+  retval = sys_pollgui();
   sys_unlock();
+  return (retval);
 }
 
 t_pdinstance *libpd_new_instance(void) {

@@ -20,7 +20,8 @@ typedef struct ring_buffer {
     int read_idx;
 } ring_buffer;
 
-/// create a ring buffer, returns NULL on failure
+/// create a ring buffer, size must be a multiple of 256
+/// returns NULL on failure
 ring_buffer *rb_create(int size);
 
 /// free a ring buffer
@@ -41,10 +42,20 @@ int rb_available_to_read(ring_buffer *buffer);
 /// returns 0 on success
 int rb_write_to_buffer(ring_buffer *buffer, int n, ...);
 
+/// writes single byte value n times to the ring buffer (if the ring buffer has
+/// enough space)
+/// note: call this from a single writer thread only
+/// returns 0 on success
+int rb_write_value_to_buffer(ring_buffer *buffer, int value, int n);
+
 /// read given number of bytes from the ring buffer to dest (if the ring
 /// buffer has enough data)
 /// note: call this from a single reader thread only
 /// returns 0 on success
 int rb_read_from_buffer(ring_buffer *buffer, char *dest, int len);
+
+/// clears the contents of the ring buffer
+/// this is safe to call from any thread
+void rb_clear_buffer(ring_buffer *buffer);
 
 #endif
