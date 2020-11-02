@@ -56,13 +56,13 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         {
             for (j = 0; j < STUFF->st_outchannels;  j++)
             {
-                if (out = jack_port_get_buffer(output_port[j], nframes))
+                if ((out = jack_port_get_buffer(output_port[j], nframes)))
                     memcpy(out, jack_outbuf + (j * BUF_JACK),
                         sizeof (jack_default_audio_sample_t) * nframes);
             }
             for (j = 0; j < STUFF->st_inchannels; j++)
             {
-                if (in = jack_port_get_buffer(input_port[j], nframes))
+                if ((in = jack_port_get_buffer(input_port[j], nframes)))
                     memcpy(jack_inbuf + (j * BUF_JACK), in,
                         sizeof (jack_default_audio_sample_t) * nframes);
             }
@@ -73,7 +73,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             t_sample*data;
             for (j = 0; j < STUFF->st_outchannels;  j++)
             {
-                if (out = jack_port_get_buffer (output_port[j], nframes))
+                if ((out = jack_port_get_buffer(output_port[j], nframes)))
                 {
                     data = jack_outbuf + (j * BUF_JACK);
                     for (frame=0; frame<nframes; frame++)
@@ -82,7 +82,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             }
             for (j = 0; j < STUFF->st_inchannels; j++)
             {
-                if (in = jack_port_get_buffer( input_port[j], nframes))
+                if ((in = jack_port_get_buffer(input_port[j], nframes)))
                 {
                     data = jack_inbuf + (j * BUF_JACK);
                     for (frame=0; frame<nframes; frame++)
@@ -104,7 +104,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         if (jack_started) jack_dio_error = 1;
         for (j = 0; j < outport_count;  j++)
         {
-            if (out = jack_port_get_buffer (output_port[j], nframes))
+            if ((out = jack_port_get_buffer(output_port[j], nframes)))
                 memset(out, 0, sizeof (jack_default_audio_sample_t) * nframes);
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
