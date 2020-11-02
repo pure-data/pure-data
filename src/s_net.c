@@ -429,14 +429,16 @@ int socket_errno_udp(void)
 
 void socket_strerror(int err, char *buf, int size)
 {
-    if (size <= 0)
-        return;
-#ifdef _WIN32
-    buf[0] = '\0';
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-                   size, NULL);
-#else
-    snprintf(buf, size, "%s", strerror(err));
-#endif
+    if (size > 0)
+    {
+    #ifdef _WIN32
+        wchar_t wbuf[1024];
+        int count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, 1024, NULL);
+        if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, size, 0, 0))
+            *buf = '\0';
+    #else
+        snprintf(buf, size, "%s", strerror(err));
+    #endif
+    }
 }

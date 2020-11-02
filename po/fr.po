@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-09-11 16:22+0200\n"
+"PO-Revision-Date: 2020-10-28 11:37+0100\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
 "Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "------dimensions(chiffres)(pix):------"
@@ -259,6 +259,15 @@ msgstr "Fréquence d'échantillonnage :"
 
 msgid "Delay (msec):"
 msgstr "Délai(ms) :"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44,1k"
+
+msgid "96k"
+msgstr "96k"
 
 msgid "Block size:"
 msgstr "Échantillons par bloc :"
@@ -606,55 +615,53 @@ msgstr "(Tcl) COMMANDE INVALIDE : "
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr "(Tcl) ERREUR : "
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "installed version [%1$s] > %2$s...skipping!"
-msgstr "version installée [%1$s] > %2$s...ignorer !"
+msgstr "version installée [%1$s] > %2$s... ignorer !"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "installed version [%1$s] < %2$s...overwriting!"
-msgstr "version installée [%1$s] < %2$s...remplacer !"
+msgstr "version installée [%1$s] < %2$s... remplacer !"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "installed version [%1$s] == %2$s...skipping!"
-msgstr "version installée [%1$s] == %2$s...ignorer !"
+msgstr "version installée [%1$s] == %2$s... ignorer !"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "successfully unzipped %1$s into %2$s"
 msgstr "%1$s décompressé avec succès dans %2$s"
 
-#, fuzzy
 msgid "unable to extract package automatically"
-msgstr "impossible de décompresser l'archive automatiquement"
+msgstr "impossible d'extraire l'archive automatiquement"
 
-#, fuzzy
 msgid "please perform the following steps manually:"
 msgstr "effectuez manuellement les étapes suivantes :"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "1. unzip %s"
 msgstr "1. décompresser %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "2. copy the contents into %s"
-msgstr "2. copier le dossier obtenu dans %s."
+msgstr "2. copier le dossier obtenu dans %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "uninstalling '%s'"
 msgstr "désinstallation de '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "uninstalling %1$s from %2$s failed!"
-msgstr "Échec de la désinstallation de %1$s de %2$s !"
+msgstr "échec de la désinstallation de %1$s de %2$s !"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
-msgstr "deken-plugin.tcl (recherche d'externals) chargé depuis %s"
+msgstr "deken-plugin.tcl (recherche d'externals Pd) chargé depuis %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "platform detected: %s"
 msgstr "plateforme détectée : %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "platform re-detected: %s"
 msgstr "plateforme re-détectée : %s"
 
@@ -710,11 +717,10 @@ msgstr "Cacher les architectures étrangères ?"
 msgid "Deken %s Preferences"
 msgstr "Préférences de Deken %s"
 
-#, fuzzy
 msgid "start searching for externals..."
 msgstr "démarrage de la recherche d'externals..."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "online? %s"
 msgstr "connecté ? %s"
 
@@ -724,11 +730,9 @@ msgstr "Êtes-vous connecté(e) ?"
 msgid "Unable to perform search."
 msgstr "Recherche impossible."
 
-#, fuzzy
 msgid "no matching externals found"
 msgstr "aucun external correspondant trouvé"
 
-#, fuzzy
 msgid "try using the full name e.g. 'freeverb'"
 msgstr "essayez avec le nom complet, par exemple 'freeverb'"
 
@@ -742,7 +746,7 @@ msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
 msgid "Install %1$s to %2$s?"
 msgstr "Installer %1$s dans %2$s ?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid ""
 "commencing downloading of:\n"
 "%1$s\n"
@@ -752,11 +756,10 @@ msgstr ""
 "%1$s\n"
 "dans %2$s..."
 
-#, fuzzy
 msgid "... aborting"
 msgstr "... abandon"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to add %s to search paths"
 msgstr "impossible d'ajouter %s aux chemins de recherche"
 
@@ -764,19 +767,19 @@ msgstr "impossible d'ajouter %s aux chemins de recherche"
 msgid "Add %s to the Pd search paths?"
 msgstr "Ajouter %s aux chemins de recherche ?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "added %s to search paths"
 msgstr "%s a été ajouté aux chemins de recherche"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to download from %1$s [%2$s]"
 msgstr "impossible de télécharger %1$s [%2$s]"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to remove stray file %s"
 msgstr "impossible d'effacer le ficher temporaire %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to rename downloaded file to %s"
 msgstr "impossible de donner au fichier téléchargé le nom %s"
 
@@ -784,7 +787,6 @@ msgstr "impossible de donner au fichier téléchargé le nom %s"
 msgid "searching for '%s'"
 msgstr "recherche de '%s'"
 
-#, fuzzy
 msgid "unable to perform search"
 msgstr "recherche impossible"
 
@@ -800,6 +802,23 @@ msgstr "Ouvrir une page web"
 
 msgid "_"
 msgstr "_"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Voulez-vous que Pd utilise le dossier Documents existant pour les patchs "
+"et les externals ?\n"
+"\n"
+"Emplacement : %s\n"
+"\n"
+"Vous pourrez changer ou désactiver cet emplacement plus tard, dans les "
+"préférences de Chemins."
 
 #, tcl-format
 msgid ""
@@ -831,17 +850,20 @@ msgstr ""
 "\n"
 "Choisir un nouvel emplacement ?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s\n"
 msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
-#, fuzzy, tcl-format
+msgid "refusing to delete empty domain"
+msgstr "refus de supprimer un domaine vide"
+
+#, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr "Impossible de créer des préférences '%1$s' en %2$s"
+msgstr "Impossible de créer des préférences \"%1$s\" en %2$s"
 
 msgid "About Pd"
 msgstr "À propos de Pd"
@@ -991,6 +1013,12 @@ msgstr ""
 "Effacer toutes les préférences ?\n"
 "(prendra effet au prochain redémarrage)"
 
+msgid "removed GUI settings"
+msgstr "les paramètres de l'interface graphique ont été supprimés"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "aucun paramètre d'interface graphique à supprimer"
+
 msgid "Path..."
 msgstr "Chemins..."
 
@@ -1075,13 +1103,13 @@ msgstr "Éditer..."
 msgid "Delete"
 msgstr "Supprimer"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr "'%s' n'existe pas"
+msgstr "ignorer '%s' : n'existe pas"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr "'%s' ne semble pas être un fichier Pd"
+msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
 #~ msgid "Create"
 #~ msgstr "Créer"

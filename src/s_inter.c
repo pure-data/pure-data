@@ -567,8 +567,6 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
     }
 }
 
-void sys_exit(void);
-
 void socketreceiver_read(t_socketreceiver *x, int fd)
 {
     if (x->sr_udp)   /* UDP ("datagram") socket protocol */
@@ -1427,7 +1425,7 @@ void sys_setrealtime(const char *libdir)
             close(pipe9[1]);
 
             if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
-            execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+            execl(cmdbuf, cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
         }
@@ -1469,8 +1467,6 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
-extern void sys_exit(void);
-
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1494,8 +1490,12 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-void glob_quit(void *dummy)
+extern void sys_exit(void);
+
+void glob_exit(void *dummy, t_float status)
 {
+        /* sys_exit() sets the sys_quit flag, so all loops end */
+    sys_exit();
     sys_close_audio();
     sys_close_midi();
     if (sys_havegui())
@@ -1503,7 +1503,11 @@ void glob_quit(void *dummy)
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
     }
-    exit(0);
+    exit((int)status);
+}
+void glob_quit(void *dummy)
+{
+    glob_exit(dummy, 0);
 }
 
     /* recursively descend to all canvases and send them "vis" messages

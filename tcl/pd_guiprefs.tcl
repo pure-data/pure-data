@@ -167,6 +167,9 @@ proc ::pd_guiprefs::init {} {
 
             # Disable Character Accent Selector popup so key repeat works for all keys.
             exec defaults write $::pd_guiprefs::domain ApplePressAndHoldEnabled -bool false
+
+            # Disable Dark Mode for 10.14+
+            exec defaults write $::pd_guiprefs::domain NSRequiresAquaSystemAppearance -bool true
         }
         "registry" {
             # windows uses registry

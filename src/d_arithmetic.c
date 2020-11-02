@@ -115,7 +115,7 @@ void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n)
 
 static void plus_dsp(t_plus *x, t_signal **sp)
 {
-    dsp_add_plus(sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add_plus(sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
 }
 
 static void scalarplus_dsp(t_scalarplus *x, t_signal **sp)

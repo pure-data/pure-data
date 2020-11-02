@@ -21,9 +21,36 @@
 
 <P>This section tracks changes in Pd's current implementation.</P>
 
-<H3> <A id="s2"> 5.1. release notes </A> </H3>
+<H3> <A id="s1"> 5.1. release notes </A> </H3>
 
-<P> ------------------ 0.52-0 ------------------------------
+<P> ------------------ 0.51-3 ------------------------------
+
+<P> New functions for expr: mtof, ftom, rmstodb, dbtorms, powtodb, dbtopow, and two
+bug fixes.
+
+<P> The "use callbacks" switch in the audio dialog only appears if it's already on
+(via the command line or app default settings).  It was crashing and hanging Pd in
+several situations.  It might still be useful for reducing audio latency by a block
+or so, but won't buy you much in any case.  I'll try to fix it later.
+
+<P> More white-space fixes (primarily affecting pd~ on Windows).
+
+<P> ------------------ 0.51-2 ------------------------------
+
+<P> Better support for white space in file path to pd, especially for pd~ object.
+Also fixed an annoyamce in which pd~ started up a command prompt window on PCs.
+The pd~ source is also now updated to work (again) in Max/MSP, on Mac or PC.
+
+<P> ------------------ 0.51-1 ------------------------------
+
+<P> Bug fixes, mostly from the git updates branch
+
+<P> (long overdue) Buttons in the audio dialog to set some standard sample
+rates.  You can still run Pd at 3.14159 Hz if you want to but you'll have to
+type that one in.
+
+<P> On Macintosh tcl/tk is updgraded to 8.6.10 (should work on MacOS from
+10.6 to 11.0 aka "Bug Sur").
 
 <P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full
 speed, without waiting for A/D/A or the real-time clock.  Useful for running
@@ -2155,8 +2182,8 @@ The following max-like objects are included:
 <H3> <A id="s2"> 5.2. known bugs </A> </H3>
 
 <P> These are now tracked on the
-<A href=https://sourceforge.net/projects/pure-data/>
-Pd Sourceforge project page</A>.
+<A href=https://github.com/pure-data/pure-data/issues target="_blank">
+Pd GitHub project page</A>.
 
 <H3> <A id="s3"> 5.3. differences from Max/MSP </A> </H3>
 

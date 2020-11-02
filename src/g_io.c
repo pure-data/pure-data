@@ -466,7 +466,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
     if (!x->x_buf) return;
     insig = sp[0];
     if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, (t_int)insig->s_n);
+        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
     else if (x->x_directsignal)
     {
             /* if we're just going to make the signal available on the
