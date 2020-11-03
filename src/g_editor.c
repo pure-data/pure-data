@@ -4903,9 +4903,6 @@ void g_editor_setup(void)
 
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
-/* -------------- copy buffer ------------------ */
-    EDITOR->copy_binbuf = binbuf_new();
 }
 
 void canvas_editor_for_class(t_class *c)
@@ -4929,6 +4926,8 @@ void canvas_editor_for_class(t_class *c)
 void g_editor_newpdinstance(void)
 {
     EDITOR = getbytes(sizeof(*EDITOR));
+        /* other stuff is null-checked but this needs to exist: */
+    EDITOR->copy_binbuf = binbuf_new();
 }
 
 void g_editor_freepdinstance(void)
