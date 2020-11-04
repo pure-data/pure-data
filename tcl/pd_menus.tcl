@@ -225,7 +225,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
 proc ::pd_menus::build_put_menu {mymenu} {
     variable accelerator
     # The trailing 0 in menu_send_float basically means leave the object box
-    # sticking to the mouse cursor. The iemguis alway do that when created
+    # sticking to the mouse cursor. The iemguis always do that when created
     # from the menu, as defined in canvas_iemguis()
     $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
         -command {menu_send_float $::focused_window obj 0}
