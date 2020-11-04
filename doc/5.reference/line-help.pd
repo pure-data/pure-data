@@ -37,8 +37,8 @@ grain;
 #X text 105 359 A float jumps to the value if no ramp time is set via
 the middle inlet, f 37;
 #X text 39 52 The line object takes values for target/time/grain and
-ramps to the specified target over the time given in miliseconds \,
-updating its output at the "grain rate" (also in miliseconds). A list
+ramps to the specified target over the time given in milliseconds \,
+updating its output at the "grain rate" (also in milliseconds). A list
 up to 3 floats distributes the values to the inlets \, as usual in
 Pd. Note that the middle inlet (that sets the time) does not set values
 for the next ramp (unlike every other inlet in Pd) - thus \, sending
