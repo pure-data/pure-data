@@ -35,7 +35,7 @@ starting at index three. Indices count up from zero.;
 (which is Pd's name for the bounding rectangle \, and is a synonym
 for "canvas".) Arrays' sizes need not match the bounds of the containing
 graph. But if you resize an array \, and if it is the only array contained
-in a graph \, then the graph automaticallly resets its bounds to match.
+in a graph \, then the graph automatically resets its bounds to match.
 , f 51;
 #X text 654 493 last updated for release 0.48;
 #X text 508 27 You can also change x and y range and size in the "properties"

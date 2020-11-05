@@ -6,7 +6,7 @@ dnl with or without modifications, as long as this notice is preserved.
 # enables the "--with-android" flag; 
 # if the androidSDK is detected, this will 
 #  - set the CC & CPP to the cross-compiler ( resp preprocessor)
-#  - as well as the apropriate CFLAGS, INCLUDES and LDFLAGS
+#  - as well as the appropriate CFLAGS, INCLUDES and LDFLAGS
 #  - these values can also be found in ANDROID_CC, ANDROID_CPP, 
 #    ANDROID_INCLUDES, ANDROID_ARCH, ANDROID_CFLAGS, ANDROID_LDFLAGS
 #  it will then call ACTION_IF_FOUND

@@ -41,7 +41,7 @@ width., f 58;
 #X text 115 385 width of 0 =>;
 #X text 42 22 The width is 5 characters by default. The number box
 fails to display numbers with more characters and only gives you its
-sign instead. Hence \, you need to increase the width to dislpay it
+sign instead. Hence \, you need to increase the width to display it
 properly.;
 #X connect 1 0 9 0;
 #X connect 4 0 3 0;
