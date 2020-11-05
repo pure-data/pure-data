@@ -626,7 +626,7 @@ gotone:
             sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef MSP
-            /* because Mac pathnames sometimes have an evil preceeding
+            /* because Mac pathnames sometimes have an evil preceding
             colon character, we test for and silently eat them */
         if (argv[i].a_type == A_SYM)
             strncpy(tmpbuf, (*argv[i].a_w.w_sym->s_name == ':'?
