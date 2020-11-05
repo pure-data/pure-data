@@ -45,7 +45,7 @@ extern char *sys_guicmd;
 EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
-EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
+EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 
 /* s_loader.c */
 
