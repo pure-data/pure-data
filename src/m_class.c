@@ -198,13 +198,15 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
-    int i, instanceno = x->pd_instanceno;
+    int i, instanceno;
     t_class *c;
-    t_instanceinter *inter = x->pd_inter;
+    t_instanceinter *inter;
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-
+    
+    instanceno = x->pd_instanceno;
+    inter = x->pd_inter;
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
