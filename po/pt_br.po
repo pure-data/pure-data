@@ -281,6 +281,15 @@ msgstr "Taxa de amostragem:"
 msgid "Delay (msec):"
 msgstr "Latência (ms):"
 
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
+
 # iemgui
 msgid "Block size:"
 msgstr "Tamanho do bloco:"
@@ -869,6 +878,9 @@ msgstr "impossível criar diretório de documentos Pd: %s\n"
 #, fuzzy, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "impossível criar diretório \"externals\" em: %s\n"
+
+msgid "refusing to delete empty domain"
+msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
