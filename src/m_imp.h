@@ -92,7 +92,9 @@ void pd_globallock(void);
 void pd_globalunlock(void);
 
 /* misc */
-#define SYMTABHASHSIZE 1024
+#ifndef SYMTABHASHSIZE  /* set this to, say, 1024 for small memory footprint */
+#define SYMTABHASHSIZE 16384
+#endif /* SYMTABHASHSIZE */
 
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
