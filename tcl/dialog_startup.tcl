@@ -69,7 +69,7 @@ proc ::dialog_startup::commit { new_startup } {
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     variable defeatrt_button $defeatrt
-    if {$flags ne ""} {variable ::startup_flags $flags}
+    if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
