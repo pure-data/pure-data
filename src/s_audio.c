@@ -20,6 +20,10 @@
 #include <string.h>
 #include <errno.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 #define SYS_DEFAULTCH 2
 typedef long t_pa_sample;
 #define SYS_SAMPLEWIDTH sizeof(t_pa_sample)
@@ -746,7 +750,7 @@ static void sys_listaudiodevs(void)
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
+    char buf[MAXPDSTRING];
         /* these are the devices you're using: */
     int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
@@ -802,7 +806,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     audiooutchan2 = (naudiooutdev > 1 ? choutdev[1] : 0);
     audiooutchan3 = (naudiooutdev > 2 ? choutdev[2] : 0);
     audiooutchan4 = (naudiooutdev > 3 ? choutdev[3] : 0);
-    sprintf(buf,
+    snprintf(buf, MAXPDSTRING,
 "pdtk_audio_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d %d %d %d %d %d %d %d \

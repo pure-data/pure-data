@@ -34,7 +34,7 @@ typedef int socklen_t;
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #define stat _stat
 #endif
 
