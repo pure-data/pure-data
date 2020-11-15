@@ -110,7 +110,7 @@ a symbol (symbols are converted to 0). Floats are truncated.;
 #X obj 269 287 makefilename [%E];
 #X text 53 53 This pattern allows you to insert a number with scientific
 notation into a symbol (symbols are converted to 0). The '%e' or '%E'
-pattern specify respectively wether the exponential character is lower
+pattern specify respectively whether the exponential character is lower
 (e) or upper (E) case., f 71;
 #X connect 0 0 3 0;
 #X connect 0 0 8 0;
@@ -159,7 +159,7 @@ pattern specify respectively wether the exponential character is lower
 numbers are converted to scientific notation., f 78;
 #X text 34 53 This pattern allows you to insert a number with or without
 scientific notation into a symbol (symbols are converted to 0). The
-'%g' or '%G' pattern specify respectively wether the exponential character
+'%g' or '%G' pattern specify respectively whether the exponential character
 is lower (e) or upper (E) case. The scientific notation is only used
 if there's not enough digit resolution. The default precision is 6
 digits and we'll see how to change that later. Also \, the decimal
@@ -268,7 +268,7 @@ negative numbers doesn't work.;
 #X obj 262 386 makefilename [%X];
 #X text 61 46 This pattern is allows you to insert a signed (only positive)
 hexadecimal integer into a symbol (symbols are converted to 0). Floats
-are trunctaed. The '%x' or '%X' pattern specify respectively wether
+are trunctaed. The '%x' or '%X' pattern specify respectively whether
 the the characters are lower or upper case. Note that since this is
 an unsigned format \, sending negative numbers doesn't work., f 61
 ;
@@ -368,13 +368,13 @@ numeric types (%d/%i/%e/%E/%f/%g/%G):, f 47;
 #X msg 128 284 9;
 #X msg 164 284 16;
 #X msg 231 284 1e+09;
-#X text 44 222 For "%x" and "%X" \, the number is preceeded by "0x"
+#X text 44 222 For "%x" and "%X" \, the number is preceded by "0x"
 (if %x) or ""0X" (if %5)., f 43;
 #X symbolatom 55 399 14 0 0 0 - - -;
 #X obj 55 361 makefilename [%#x];
 #X obj 196 361 makefilename [%#X];
 #X text 25 22 The '#' flag presents an alternate form of some numeric
-types. For "%o" \, the number is preceeded by a "0".;
+types. For "%o" \, the number is preceded by a "0".;
 #X floatatom 532 240 10 0 0 0 - - -;
 #X symbolatom 382 336 18 0 0 0 - - -;
 #X symbolatom 532 336 18 0 0 0 - - -;
@@ -430,7 +430,7 @@ subpatches for more details and examples., f 51;
 #X msg 156 352 31;
 #X msg 234 352 1e+06;
 #X obj 194 426 makefilename [%05x];
-#X text 39 286 The width field takes an optional preceeding '0' flag
+#X text 39 286 The width field takes an optional preceding '0' flag
 that fills the extra characters with zeroes instead of spaces.;
 #X floatatom 539 176 0 0 0 0 - - -;
 #X symbolatom 539 240 12 0 0 0 - - -;
@@ -454,7 +454,7 @@ that fills the extra characters with zeroes instead of spaces.;
 #X symbolatom 724 435 12 0 0 0 - - -;
 #X msg 724 314 1;
 #X msg 772 339 -1e+06;
-#X text 498 63 You can combine the width field with the preceeding
+#X text 498 63 You can combine the width field with the preceding
 +/# flags where pertinent., f 40;
 #X msg 592 315 100;
 #X msg 760 314 100;
@@ -519,7 +519,7 @@ of '%g'/'%G' \, the width field is valid only for the integer output.
 #X obj 231 189 makefilename [%.4s];
 #X msg 231 115 symbol abcde;
 #X msg 127 115 symbol abcd;
-#X text 61 260 In this case \, the width field can be preceeded to
+#X text 61 260 In this case \, the width field can be preceded to
 set a minimum of characters filled with spaces., f 48;
 #X msg 141 316 symbol ab;
 #X msg 219 316 symbol abc;
@@ -624,7 +624,7 @@ is specified by a "." and is followed by the precision number. See
 subpatches below for the examples., f 51;
 #X restore 216 475 pd precision;
 #X text 127 236 - string;
-#X text 33 366 The types can be preceeded by optional fields \, which
+#X text 33 366 The types can be preceded by optional fields \, which
 can be combined and included in the order below:;
 #X restore 392 395 pd possible_types_&_syntax;
 #X text 43 394 updated for Pd version 0.51;

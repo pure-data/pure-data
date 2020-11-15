@@ -1173,7 +1173,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 /*
- * ex_avg -- calculate the avarage of a table
+ * ex_avg -- calculate the average of a table
  */
 
 void
@@ -1207,7 +1207,7 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
 
 /*
- * ex_Avg -- calculate the avarage of table with the given boundaries
+ * ex_Avg -- calculate the average of table with the given boundaries
  */
 
 void

@@ -159,7 +159,7 @@ static const char *strtokcpy(char *to, size_t to_len, const char *from, char del
 }
 
 /* add a single item to a namelist.  If "allowdup" is true, duplicates
-may be added; othewise they're dropped.  */
+may be added; otherwise they're dropped.  */
 
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
 {

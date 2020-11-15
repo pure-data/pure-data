@@ -11,7 +11,7 @@ if test -f ../build/pd-$1.src.tar.gz
 then
    /bin/echo -n
 else
-   echo cant find file ../build/pd-$1.src.tar.gz
+   echo can not find file ../build/pd-$1.src.tar.gz
    exit 1
 fi
 

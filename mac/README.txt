@@ -188,3 +188,32 @@ is required due to the new security settings. Note: ad-hoc signing doesn't
 actually sign the .app bundle with an account certificate, so the unidentified
 developer warning is still shown when the downloaded .app is run for the first
 time.
+
+## Privacy Permissions
+
+macOS 10.14 introduced system privacy permissions for actions applications can
+undertake on a user account, such as accessing files or reading microphone or
+camera input. When an application is started for the first time and tries to
+access something that is covered by the privacy settings, a permissions prompt
+is displayed by the system requesting access. The action is then allowed or
+denied and this setting is saved and applied when the application is run again
+in the future.
+
+As of macOS 10.15, running Pd will request access for the following:
+
+* Files and Folders: Documents
+* Files and Folders: Desktop
+* Microphone
+
+Additionally, using an external such as Gem for camera input will request
+access to the Camera.
+
+The current permissions can be changed in Privacy panel in System Preferences.
+They can also be reset on the commandline using the "tccutil" command and the
+Pd .app bundle id:
+
+    # reset Pd's Microphone privacy setting
+    tccutil reset Microphone org.puredata.pd.pd-gui
+
+    # reset all of Pd's privacy settings
+    tccutil reset All org.puredata.pd.pd-gui

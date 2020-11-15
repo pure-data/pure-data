@@ -169,7 +169,7 @@ only the first and the third are valid and set \, respectively \, background
 and label colors (as there's no "front" color \, the 2nd value is ignored).
 , f 76;
 #X text 28 63 Integers from 0 to 29 represent the 30 preset colors
-found in the properties window \, values above are wraped. Negative
+found in the properties window \, values above are wrapped. Negative
 integers were used to encode RGB values (and that still works for backwards
 compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal
 RGB symbol values \, which are followed by "#"., f 76;
@@ -462,7 +462,7 @@ usual with other Pd objects., f 50;
 ;
 #X obj 147 102 vu 15 160 empty empty -1 -8 0 12 -66577 -1 0 0;
 #X obj 164 102 vu 15 160 empty empty -1 -8 0 12 -66577 -1 1 0;
-#X text 156 23 The 'scale' message toggles the dB-scale lable on or
+#X text 156 23 The 'scale' message toggles the dB-scale label on or
 off (on by default)., f 40;
 #X text 230 157 It's convenient hiding the scale of a [vu] for a stereo
 pair., f 32;
@@ -499,7 +499,7 @@ labels \, etc) ===>, f 17;
 is in dB (0-100 range \, pd style) but needs to be converted to dBFS
 (and we do that by simply subtracting 100)., f 31;
 #X text 345 225 The slop~ object is used here for peak detection. We
-need to convert the output to dB with rmstodb and also subract by 100
+need to convert the output to dB with rmstodb and also subtract by 100
 to convert it to dBFS., f 31;
 #X connect 0 0 18 0;
 #X connect 1 0 12 0;

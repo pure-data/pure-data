@@ -24,7 +24,7 @@ set ::pd_guiprefs::configdir ""
 set ::pd_guiprefs::recentfiles_is_array false
 
 #################################################################
-# perferences storage locations
+# preferences storage locations
 #
 # legacy
 #   registry
@@ -234,7 +234,7 @@ proc ::pd_guiprefs::init {} {
             prepare_configdir ${::pd_guiprefs::domain}
 
             # ------------------------------------------------------------------------------
-            # linux: read a config file and return its lines splitted.
+            # linux: read a config file and return its lines split.
             #
             proc ::pd_guiprefs::get_config {domain key {arr false}} {
                 return [::pd_guiprefs::get_config_file $domain $key $arr]
@@ -289,7 +289,7 @@ proc ::pd_guiprefs::init {} {
 }
 
 # ------------------------------------------------------------------------------
-# read a config file and return its lines splitted.
+# read a config file and return its lines split.
 #
 proc ::pd_guiprefs::get_config_file {domain key {arr false}} {
     set filename [file join ${::pd_guiprefs::configdir} ${domain} ${key}.conf]

@@ -342,7 +342,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             nchannels = 1;
             bytespersamp = 2;
             samprate = 44100;
-                /* copy the first chunk header to beginnning of buffer. */
+                /* copy the first chunk header to beginning of buffer. */
             memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_wavechunk));
             /* post("chunk %c %c %c %c",
                     ((t_wavechunk *)buf)->wc_id[0],
@@ -403,7 +403,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             nchannels = 1;
             bytespersamp = 2;
             samprate = 44100;
-                /* copy the first chunk header to beginnning of buffer. */
+                /* copy the first chunk header to beginning of buffer. */
             memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_datachunk));
                 /* read chunks in loop until we get to the data chunk */
             datachunk = &buf.b_datachunk;

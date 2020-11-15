@@ -39,7 +39,7 @@ typedef struct _canvas_private
 #define GLIST_DEFCANVASHEIGHT 300
 
 /* since the window decorations aren't included, open new windows a few
-pixels down so you can posibly move the window later.  Apple needs less
+pixels down so you can possibly move the window later.  Apple needs less
 because its menus are at top of screen; we're more generous for other
 desktops because the borders have both window title area and menus. */
 #ifdef __APPLE__

@@ -76,7 +76,7 @@ in the patch. Check below:, f 41;
 #X connect 17 0 21 0;
 #X connect 22 0 3 0;
 #X restore 335 421 pd position;
-#X text 85 49 WARNING: This object is still in Pd for backwarss compatibilty
+#X text 85 49 WARNING: This object is still in Pd for backwarss compatibility
 but has been deprecated in Pd 0.36. Just use the new [vradio] instead
 now., f 39;
 #X obj 390 25 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
@@ -108,7 +108,7 @@ now., f 39;
 #X text 67 17 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 68 68 Negative integers were used to encode RGB values (and
 that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are

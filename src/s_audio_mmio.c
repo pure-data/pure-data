@@ -164,7 +164,7 @@ int mmio_do_open_audio(void)
     }
     for (nad=0; nad < nt_nwavein; nad++)
     {
-        /* Open waveform device(s), sucessively numbered, for input */
+        /* Open waveform device(s), successively numbered, for input */
 
         mmresult = waveInOpen(&ntsnd_indev[nad], nt_whichadc+nad,
                 (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
@@ -199,7 +199,7 @@ int mmio_do_open_audio(void)
 
     for (nda = 0; nda < nt_nwaveout; nda++)
     {
-            /* Open a waveform device for output in sucessiv device numbering*/
+            /* Open a waveform device for output in successive device numbering*/
         mmresult = waveOutOpen(&ntsnd_outdev[nda], nt_whichdac + nda,
             (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
 
