@@ -542,7 +542,7 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
         x->x_bufsize = newsize;
 
-/* at Guenter's suggestion, use 'n>31' to test wither a character might
+/* at Guenter's suggestion, use 'n>31' to test whether a character might
 be printable in whatever 8-bit character set we find ourselves. */
 
 /*-- moo:

@@ -745,7 +745,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
  * ex_checklval -- check the left value for all stores ('=')
  *                 all left values should either be a variable or a table
  *                 return 1 if syntax error
- *                 return 0 on sucess
+ *                 return 0 on success
  */
 
 static int
@@ -1034,7 +1034,7 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the expr object data pointer */
 /* the operation stack */
 /* the result pointer */
-/* the sample numnber processed for fexpr~ */
+/* the sample number processed for fexpr~ */
 {
         int i, j;
         t_float *lp, *rp, *op; /* left, right, and out pointer to vectors */
@@ -1855,8 +1855,8 @@ retry:
                         post("$y works only for fexpr~");
                                 /* falls through */
                                 /*
-                                 * allow $# for abstration argument substitution
-                                 *  $1+1 is translated to 0+1 and in abstration substitution
+                                 * allow $# for abstraction argument substitution
+                                 *  $1+1 is translated to 0+1 and in abstraction substitution
                                  *  the value is replaced with the new string
                                  */
                                 case '0':
@@ -1906,7 +1906,7 @@ retry:
                 /*
                  * until we can change the input type of inlets on
                  * the fly (at pd_new()
-                 * time) the first input to expr~ is always a vectore
+                 * time) the first input to expr~ is always a vector
                  * and $f1 or $i1 is
                  * illegal for fexpr~
                  */

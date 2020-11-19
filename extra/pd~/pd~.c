@@ -34,7 +34,7 @@ typedef int socklen_t;
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #define stat _stat
 #endif
 
@@ -626,7 +626,7 @@ gotone:
             sprintf(tmpbuf,  "%f", (float)argv[i].a_w.w_float);
 #endif
 #ifdef MSP
-            /* because Mac pathnames sometimes have an evil preceeding
+            /* because Mac pathnames sometimes have an evil preceding
             colon character, we test for and silently eat them */
         if (argv[i].a_type == A_SYM)
             strncpy(tmpbuf, (*argv[i].a_w.w_sym->s_name == ':'?

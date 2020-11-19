@@ -41,7 +41,7 @@ starts!), f 32;
 starts!), f 32;
 #X text 43 53 The vline~ object \, like line~ \, generates linear ramps
 whose levels and timing are determined by messages you send it. It
-takes a target value \, a time interval in miliseconds and an initial
+takes a target value \, a time interval in milliseconds and an initial
 delay (also in ms). Ramps may start and stop between audio samples
 \, in which case the output is interpolated accordingly., f 61;
 #X text 43 142 A list up to three floats distributes the value over
@@ -50,7 +50,7 @@ the inlets \, as usual in Pd. Note that the middle and right inlet
 other inlet in Pd). Thus \, if you send vline~ a float without priorly
 specifying a ramp time and delay and sent \, it jumps immediately to
 the target value. On the other hand \, a list of two values will not
-have a delay time if no delay time was priorily set in the right inlet.
+have a delay time if no delay time was priorly set in the right inlet.
 , f 61;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;

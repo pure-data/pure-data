@@ -488,7 +488,7 @@ static int stupid_sortcompare(const void *z1, const void *z2)
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
@@ -542,7 +542,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                 bug("text_define_sort");
             sortbuf[thisline++] = vec+i;
         }
-        startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
+        startline = (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
 #ifdef STUPID_SORT
     stupid_zkeyinfo = &k;
@@ -1493,7 +1493,7 @@ typedef struct _text_sequence
     t_atom *x_argv;
     t_symbol *x_waitsym;    /* symbol to initiate wait, zero if none */
     int x_waitargc;         /* how many leading numbers to use for waiting */
-    t_clock *x_clock;       /* calback for auto mode */
+    t_clock *x_clock;       /* callback for auto mode */
     t_float x_nextdelay;
     t_symbol *x_lastto;     /* destination symbol if we're after a comma */
     unsigned char x_eaten;  /* true if we've eaten leading numbers already */

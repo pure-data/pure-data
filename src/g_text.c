@@ -207,7 +207,7 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         post("unable to create stub object in closed canvas!");
     else
     {
-            /* interactively create new obect */
+            /* interactively create new object */
         t_binbuf *b = binbuf_new();
         int connectme, xpix, ypix, indx, nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
@@ -522,7 +522,7 @@ typedef struct _gatom
     t_float a_draghi;       /* high end of drag range */
     t_float a_draglo;       /* low end of drag range */
     t_symbol *a_label;      /* symbol to show as label next to box */
-    t_symbol *a_symfrom;    /* "receive" name -- bind ourselvs to this */
+    t_symbol *a_symfrom;    /* "receive" name -- bind ourselves to this */
     t_symbol *a_symto;      /* "send" name -- send to this on output */
     char a_buf[ATOMBUFSIZE];/* string buffer for typing */
     unsigned int a_shift:1;         /* was shift key down when drag started? */

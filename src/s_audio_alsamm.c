@@ -96,7 +96,7 @@ static unsigned int alsamm_buffertime = 0;
 static unsigned int alsamm_buffersize = 0;
 static int alsamm_transfersize = DEFDACBLKSIZE;
 
-/* bad style: we asume all cards give the same answer at init so we make this vars global
+/* bad style: we assume all cards give the same answer at init so we make this vars global
    to have a faster access in writing reading during send_dacs */
 static snd_pcm_sframes_t alsamm_period_size;
 static unsigned int alsamm_periods;
@@ -1074,7 +1074,7 @@ int alsamm_send_dacs(void)
     post("dac send called in %d, out %d, xrun %d",inchannels,outchannels, alsamm_xruns);
 
   if(alsamm_xruns && (alsamm_xruns % 1000) == 0)
-    post("1000 xruns occured");
+    post("1000 xruns occurred");
 
   if(dac_send < WATCH_PERIODS){
     out_cm[dac_send] = -1;
@@ -1093,7 +1093,7 @@ int alsamm_send_dacs(void)
   /* here we should check if in and out samples are here.
      but, the point is if out samples available also in sample should,
      so we don't make a precheck of insamples here and let outsample check be the
-     the first of the forst card.
+     the first of the first card.
   */
 
 
@@ -1129,7 +1129,7 @@ int alsamm_send_dacs(void)
     }
 
     /* check if we are late and have to (able to) catch up */
-    /* xruns will be ignored since you cant do anything since already happened */
+    /* xruns will be ignored since you can't do anything since already happened */
     state = snd_pcm_state(out);
     if (state == SND_PCM_STATE_XRUN) {
       err = xrun_recovery(out, -EPIPE);
@@ -1166,7 +1166,7 @@ int alsamm_send_dacs(void)
     fp1 = fpo;
     ooffset = 0;
 
-    /* since this can go over a buffer boundery we maybe need two steps to
+    /* since this can go over a buffer boundary we maybe need two steps to
        transfer (normally when buffersize is a multiple of transfersize
        this should never happen) */
 
@@ -1280,7 +1280,7 @@ int alsamm_send_dacs(void)
     fp1 = fpi;
     ioffset = 0;
 
-    /* since sysdata can go over a driver buffer boundery we maybe need two steps to
+    /* since sysdata can go over a driver buffer boundary we maybe need two steps to
        transfer (normally when buffersize is a multiple of transfersize
        this should never happen) */
 

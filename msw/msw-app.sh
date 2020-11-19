@@ -209,7 +209,7 @@ if [ "x$prototype_tk" = xfalse ] ; then
     cp -R $TK/bin $APP/
     cp -R $TK/lib $APP/
 
-    # remove bundled Tcl packges Pd doesn't need
+    # remove bundled Tcl packages Pd doesn't need
     rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
 fi
 
