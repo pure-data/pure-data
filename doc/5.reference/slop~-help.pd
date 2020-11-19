@@ -504,7 +504,7 @@ down., f 60;
 #X text 154 122 max downward slope;
 #X text 206 210 max upward slope;
 #X text 387 34 The slew limiter is a filter whose cutoff frequency
-is infinite (so that the output folows teh input exactly) unless the
+is infinite (so that the output follows the input exactly) unless the
 input varies from the previous output by more than the highest slope
 we allow (the slew limit) times the sample period (i.e. \, the maximum
 variation allowed over the space of a sample). This limit is therefore
@@ -656,7 +656,7 @@ envelope followers are converted to dBFS for the IEM VU meter., f
 #X text 69 27 jitter remover;
 #X text 378 68 If you have a noisy sensor \, one approach to smoothing
 it is to set slop~ u pto only react to motion past a certain window.
-The linear frequeny cutoff is set to zero so that the output only changes
+The linear frequency cutoff is set to zero so that the output only changes
 when the input strays by more than the maximum upward or downward slew.
 ;
 #X text 377 159 Set the jitter range to zero to see the original signal

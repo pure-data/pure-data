@@ -42,7 +42,7 @@ includedir = ${prefix}/include
 libdir = ${exec_prefix}/lib
 mandir = ${prefix}/share/man
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
+# variables to match packages/Makefile.buildlayout so that they can be easily
 # overridden when building Pd-extended builds. <hans@at.or.at>
 libpddir = $(libdir)/pd
 pddocdir = $(libpddir)/doc
