@@ -393,9 +393,9 @@ static int caf_hasextension(const char *filename, size_t size)
 static int caf_addextension(char *filename, size_t size)
 {
     int len = strnlen(filename, size);
-    if (len + 4 > size)
+    if (len + 4 >= size)
         return 0;
-    strncat(filename, ".caf", 4);
+    strcpy(filename + len, ".caf");
     return 1;
 }
 
