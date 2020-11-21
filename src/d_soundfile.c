@@ -2308,8 +2308,7 @@ static void *writesf_child_main(void *zz)
 #ifdef DEBUG_SOUNDFILE_THREADS
                 fprintf(stderr, "writesf~: open failed %s\n", filename);
 #endif
-                x->x_requestcode = REQUEST_NOTHING;
-                continue;
+                goto bail;
             }
                 /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
@@ -2375,10 +2374,10 @@ static void *writesf_child_main(void *zz)
                 if (byteswritten < writebytes)
                 {
 #ifdef DEBUG_SOUNDFILE_THREADS
-                    fprintf(stderr, "writesf~: fileerror %D\n", errno);
+                    fprintf(stderr, "writesf~: fileerror %d\n", errno);
 #endif
                     x->x_fileerror = errno;
-                    break;
+                    goto bail;
                 }
                 else
                 {
@@ -2393,6 +2392,23 @@ static void *writesf_child_main(void *zz)
 #endif
                     /* signal parent in case it's waiting for data */
                 sfread_cond_signal(&x->x_answercondition);
+                continue;
+
+         bail:
+             if (x->x_requestcode == REQUEST_BUSY)
+                 x->x_requestcode = REQUEST_NOTHING;
+                 /* hit an error; close file if necessary,
+                 set EOF and signal once more */
+             if (sf.sf_fd >= 0)
+             {
+                 pthread_mutex_unlock(&x->x_mutex);
+                 sys_close(sf.sf_fd);
+                 sf.sf_fd = -1;
+                 pthread_mutex_lock(&x->x_mutex);
+                 x->x_eof = 1;
+                 x->x_sf.sf_fd = -1;
+             }
+             sfread_cond_signal(&x->x_answercondition);
             }
         }
         else if (x->x_requestcode == REQUEST_CLOSE ||
@@ -2493,7 +2509,7 @@ static t_int *writesf_perform(t_int *w)
         roominfifo = x->x_fifotail - x->x_fifohead;
         if (roominfifo <= 0)
             roominfifo += x->x_fifosize;
-        while (roominfifo < wantbytes + 1)
+        while (!x->x_eof && roominfifo < wantbytes + 1)
         {
             fprintf(stderr, "writesf waiting for disk write..\n");
             fprintf(stderr, "(head %d, tail %d, room %d, want %ld)\n",
@@ -2504,6 +2520,16 @@ static t_int *writesf_perform(t_int *w)
             roominfifo = x->x_fifotail - x->x_fifohead;
             if (roominfifo <= 0)
                 roominfifo += x->x_fifosize;
+        }
+        if (x->x_eof)
+        {
+            if (x->x_fileerror)
+                object_sferror(x, "writesf~", x->x_filename,
+                    x->x_fileerror, &x->x_sf);
+            x->x_state = STATE_IDLE;
+            sfread_cond_signal(&x->x_requestcondition);
+            pthread_mutex_unlock(&x->x_mutex);
+            return w + 2;
         }
 
         soundfile_xferout_sample(&sf, x->x_outvec,
