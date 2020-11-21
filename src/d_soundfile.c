@@ -1726,6 +1726,9 @@ typedef struct _readsf
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
     pthread_t x_childthread;
+#ifdef PDINSTANCE
+    t_pdinstance *x_pd_this; /* pointer to the owner pd instance */
+#endif
 } t_readsf;
 
 
@@ -1762,6 +1765,9 @@ static void readsf_fakewait(pthread_mutex_t *b)
 static void *readsf_child_main(void *zz)
 {
     t_readsf *x = zz;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
@@ -2085,6 +2091,9 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    x->x_pd_this = pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, readsf_child_main, x);
     return (x);
 }
@@ -2320,6 +2329,9 @@ static t_class *writesf_class;
 static void *writesf_child_main(void *zz)
 {
     t_writesf *x = zz;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
@@ -2586,6 +2598,9 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    x->x_pd_this = pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, writesf_child_main, x);
     return (x);
 }
