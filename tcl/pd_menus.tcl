@@ -82,8 +82,9 @@ proc ::pd_menus::configure_for_pdwindow {} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
@@ -113,8 +114,9 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     }
     update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
@@ -157,8 +159,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 
@@ -629,7 +632,17 @@ proc ::pd_menus::build_media_menu_aqua {mymenu} {
 proc ::pd_menus::build_window_menu_aqua {mymenu} {
 }
 
-# the "Help" does not have cross-platform differences
+# FIXME: remove this when it is no longer necessary
+# there is a Tk Cocoa bug where Help menu items after separators may be
+# disabled after windows are cycled, as of Nov 2020 this is fixed via a fresh
+# upstream patch in our Tk 8.6.10 build distributed with Pd but we keep this in
+# case other versions of Tk are used such as those installed to the system
+proc ::pd_menus::reenable_help_items_aqua {mymenu} {
+    #if {$::tcl_version < 8.6} {
+        $mymenu.help entryconfigure [_ "List of objects..."] -state normal
+        $mymenu.help entryconfigure [_ "Report a bug"] -state normal
+    #}
+}
 
 # ------------------------------------------------------------------------------
 # menu building functions for UNIX/X11
