@@ -23,7 +23,7 @@ index 735f7d292..08e7501a7 100644
 -			}
 -			[item setEnabled: !(submePtr->state == ENTRY_DISABLED)];
 -			i++;
-+			NSMenuItem *item = (NSMenuItem *) mePtr->platformEntryData;
++			NSMenuItem *item = (NSMenuItem *) submePtr->platformEntryData;
 +			[item setEnabled: submePtr->state != ENTRY_DISABLED];
  		    }
  		}

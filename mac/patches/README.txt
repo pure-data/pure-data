@@ -40,6 +40,7 @@ Fixes key release events and adds repeat handling, see
 Fixes help menu items disabling after switching windows, see
 
 	https://core.tcl-lang.org/tk/info/ad7edbfafdda63e6
+	https://core.tcl-lang.org/tk/vinfo/8c9db659a45831ee
 
 ### tk8.6.10_keyfix.patch
 
