@@ -587,9 +587,9 @@ static int aiff_hasextension(const char *filename, size_t size)
 static int aiff_addextension(char *filename, size_t size)
 {
     int len = strnlen(filename, size);
-    if (len + 4 > size)
+    if (len + 4 >= size)
         return 0;
-    strncat(filename, ".aif", 4);
+    strcpy(filename + len, ".aif");
     return 1;
 }
 

@@ -263,9 +263,9 @@ static int next_hasextension(const char *filename, size_t size)
 static int next_addextension(char *filename, size_t size)
 {
     int len = strnlen(filename, size);
-    if (len + 4 > size)
+    if (len + 4 >= size)
         return 0;
-    strncat(filename, ".snd", 4);
+    strcpy(filename + len, ".snd");
     return 1;
 }
 

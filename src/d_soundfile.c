@@ -208,9 +208,9 @@ static int ascii_hasextension(const char *filename, size_t size)
 static int ascii_addextension(char *filename, size_t size)
 {
     int len = strnlen(filename, size);
-    if (len + 4 > size)
+    if (len + 4 >= size)
         return 0;
-    strncat(filename, ".txt", 4);
+    strcpy(filename + len, ".txt");
     return 1;
 }
 
@@ -1726,8 +1726,6 @@ static void *readsf_child_main(void *zz)
 #ifdef DEBUG_SOUNDFILE_THREADS
             fprintf(stderr, "readsf~: 5\n");
 #endif
-                /* copy back into the instance structure. */
-            soundfile_copy(&x->x_sf, &sf);
             if (sf.sf_fd < 0)
             {
                 x->x_fileerror = errno;
@@ -1738,6 +1736,8 @@ static void *readsf_child_main(void *zz)
 #endif
                 goto lost;
             }
+                /* copy back into the instance structure. */
+            soundfile_copy(&x->x_sf, &sf);
                 /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
                 goto lost;
@@ -1752,14 +1752,14 @@ static void *readsf_child_main(void *zz)
                     problem here if the vector size increases while a
                     soundfile is being played...  */
             x->x_fifosize = x->x_bufsize - (x->x_bufsize %
-                (x->x_sf.sf_bytesperframe * MAXVECSIZE));
+                (sf.sf_bytesperframe * MAXVECSIZE));
                     /* arrange for the "request" condition to be signaled 16
                     times per buffer */
 #ifdef DEBUG_SOUNDFILE_THREADS
             fprintf(stderr, "readsf~: fifosize %d\n", x->x_fifosize);
 #endif
             x->x_sigcountdown = x->x_sigperiod = (x->x_fifosize /
-                (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
+                (16 * sf.sf_bytesperframe * x->x_vecsize));
                 /* in a loop, wait for the fifo to get hungry and feed it */
 
             while (x->x_requestcode == REQUEST_BUSY)
@@ -1783,8 +1783,8 @@ static void *readsf_child_main(void *zz)
                         wantbytes = fifosize - x->x_fifohead;
                         if (wantbytes > READSIZE)
                             wantbytes = READSIZE;
-                        if (wantbytes > x->x_sf.sf_bytelimit)
-                            wantbytes = x->x_sf.sf_bytelimit;
+                        if (wantbytes > sf.sf_bytelimit)
+                            wantbytes = sf.sf_bytelimit;
 #ifdef DEBUG_SOUNDFILE_THREADS
                         fprintf(stderr, "readsf~: head %d, tail %d, size %ld\n",
                             x->x_fifohead, x->x_fifotail, wantbytes);
@@ -1824,13 +1824,12 @@ static void *readsf_child_main(void *zz)
                         continue;
                     }
                     else wantbytes = READSIZE;
-                    if (wantbytes > x->x_sf.sf_bytelimit)
-                        wantbytes = x->x_sf.sf_bytelimit;
+                    if (wantbytes > sf.sf_bytelimit)
+                        wantbytes = sf.sf_bytelimit;
                 }
 #ifdef DEBUG_SOUNDFILE_THREADS
                 fprintf(stderr, "readsf~: 8\n");
 #endif
-                sf.sf_fd = x->x_sf.sf_fd;
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
@@ -1854,10 +1853,10 @@ static void *readsf_child_main(void *zz)
                 else
                 {
                     x->x_fifohead += bytesread;
-                    x->x_sf.sf_bytelimit -= bytesread;
+                    sf.sf_bytelimit -= bytesread;
                     if (x->x_fifohead == fifosize)
                         x->x_fifohead = 0;
-                    if (x->x_sf.sf_bytelimit <= 0)
+                    if (sf.sf_bytelimit <= 0)
                     {
                         x->x_eof = 1;
                         break;
@@ -1886,6 +1885,8 @@ static void *readsf_child_main(void *zz)
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
+                x->x_eof = 1;
+                x->x_sf.sf_fd = -1;
             }
             sfread_cond_signal(&x->x_answercondition);
         }
@@ -2289,10 +2290,12 @@ static void *writesf_child_main(void *zz)
                 if (x->x_requestcode != REQUEST_BUSY)
                     continue;
             }
+                /* cache sf *after* closing as x->sf's type
+                    may have changed in readsf_open() */
+            soundfile_copy(&sf, &x->x_sf);
 
                 /* open the soundfile with the mutex unlocked */
             pthread_mutex_unlock(&x->x_mutex);
-            soundfile_copy(&sf, &x->x_sf);
             create_soundfile(canvas, filename, &sf, 0);
             pthread_mutex_lock(&x->x_mutex);
 
@@ -2316,6 +2319,7 @@ static void *writesf_child_main(void *zz)
 #ifdef DEBUG_SOUNDFILE_THREADS
             fprintf(stderr, "writesf~: 6\n");
 #endif
+                /* copy back into the instance structure. */
             soundfile_copy(&x->x_sf, &sf);
             x->x_fifotail = 0;
             x->x_frameswritten = 0;
@@ -2385,7 +2389,7 @@ static void *writesf_child_main(void *zz)
                     if (x->x_fifotail == fifosize)
                         x->x_fifotail = 0;
                 }
-                x->x_frameswritten += byteswritten / x->x_sf.sf_bytesperframe;
+                x->x_frameswritten += byteswritten / sf.sf_bytesperframe;
 #ifdef DEBUG_SOUNDFILE_THREADS
                 fprintf(stderr, "writesf~: after head %d tail %d written %ld\n",
                     x->x_fifohead, x->x_fifotail, x->x_frameswritten);
