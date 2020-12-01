@@ -69,7 +69,6 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
          * NOTE: this also seems to affect Android!
          * In practice, this means we can't use dual stack sockets,
          * so we fall back to IPv4 networking... */
-#if defined(__ANDROID__) || defined(__FreeBSD__ ) || defined(__NetBSD__) || defined(__OpenBSD__)
     if (result == EAI_BADFLAGS)
     {
         hints.ai_family = AF_INET;
@@ -77,7 +76,6 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
         result = getaddrinfo(hostname, portstr, &hints, ailist);
     }
     return result;
-#endif
 }
 
 int addrinfo_ipv4_first(const struct addrinfo* ai1, const struct addrinfo* ai2)
