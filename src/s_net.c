@@ -71,6 +71,14 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
          * so we fall back to IPv4 networking... */
     if (result == EAI_BADFLAGS)
     {
+        static int warned = 0;
+        if (!warned)
+        {
+            fprintf(stderr, "Warning: can't create IPv6 dual-stack socket - falling "
+                "back to IPv4. (This is a known bug in the BSD libc, which doesn't "
+                "implement the AI_ALL and AI_V4MAPPED flags for getaddrinfo().)\n");
+            warned = 1;
+        }
         hints.ai_family = AF_INET;
         hints.ai_flags = AI_PASSIVE;
         result = getaddrinfo(hostname, portstr, &hints, ailist);
