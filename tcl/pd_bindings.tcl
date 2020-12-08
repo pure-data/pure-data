@@ -347,6 +347,8 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     if {$width == 1 || $height == 1} {
         # make sure the window is fully created
         update idletasks
+        set width [winfo width $mytoplevel]
+        set height [winfo height $mytoplevel]
     }
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:
