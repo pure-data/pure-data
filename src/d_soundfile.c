@@ -1630,6 +1630,9 @@ typedef struct _readsf
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
     pthread_t x_childthread;
+#ifdef PDINSTANCE
+    t_pdinstance *x_pd_this;  /**< pointer to the owner pd instance */
+#endif
 } t_readsf;
 
 /* ----- the child thread which performs file I/O ----- */
@@ -1662,6 +1665,9 @@ static void *readsf_child_main(void *zz)
     t_readsf *x = zz;
     t_soundfile sf = {0};
     soundfile_clear(&sf);
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE_THREADS
     fprintf(stderr, "readsf~: 1\n");
 #endif
@@ -1976,6 +1982,9 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, readsf_child_main, x);
     return x;
 }
@@ -2231,6 +2240,9 @@ static void *writesf_child_main(void *zz)
     t_writesf *x = zz;
     t_soundfile sf = {0};
     soundfile_clear(&sf);
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE_THREADS
     fprintf(stderr, "writesf~: 1\n");
 #endif
@@ -2494,6 +2506,9 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, writesf_child_main, x);
     return x;
 }
