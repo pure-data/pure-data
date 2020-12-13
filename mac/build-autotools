@@ -11,7 +11,7 @@ if test -f pd-$1.src.tar.gz
 then
    /bin/echo -n
 else
-   echo cant find file pd-$1.src.tar.gz
+   echo can not find file pd-$1.src.tar.gz
    exit 1
 fi
 
@@ -34,7 +34,8 @@ rm -rf po
 cp -pr ../po/ po/
 
 cd mac
-./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app $1
+./osx-app.sh  --wish \
+  /Users/msp/work/build/tcltk/pd-wish-8.6.10/mac/Wish-8.6.10.app $1
 mv Pd-$1.app ../../
 cd ../..
 tar czf pd-$1.mac.tar.gz Pd-$1.app

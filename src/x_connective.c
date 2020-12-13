@@ -94,17 +94,14 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
     outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
-#ifdef _MSC_VER
-#define strtof(a,b) _atoldbl(a,*b)
-#endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
 {
     t_float f = 0.0f;
     char *str_end = NULL;
-    f = strtof(s->s_name, &str_end);
+    f = strtod(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
-        pd_error(x, "Couldn't convert %s to float.", s->s_name);
+        pd_error(x, "couldn't convert %s to float", s->s_name);
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
@@ -509,7 +506,7 @@ typedef struct _route
 {
     t_object x_obj;
     t_atomtype x_type;
-    t_int x_nelement;
+    int x_nelement;
     t_routeelement *x_vec;
     t_outlet *x_rejectout;
 } t_route;
@@ -520,7 +517,7 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
         {
             if (argc > 0 && argv[0].a_type == A_SYMBOL)
@@ -544,7 +541,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         if (argv->a_type != A_FLOAT)
             goto rejected;
         f = atom_getfloat(argv);
-        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             if (argc > 1 && argv[1].a_type == A_SYMBOL)
@@ -558,7 +555,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     {
         if (argc > 1)       /* 2 or more args: treat as "list" */
         {
-            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_list)
                 {
@@ -572,7 +569,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argc == 0)         /* no args: treat as "bang" */
         {
-            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_bang)
                 {
@@ -581,9 +578,9 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 }
             }
         }
-        else if (argv[0].a_type == A_FLOAT)     /* one float arg */
+        else if (argv[0].a_type == A_FLOAT)    /* one float arg */
         {
-            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_float)
                 {
@@ -592,9 +589,20 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 }
             }
         }
-        else
+        else if (argv[0].a_type == A_POINTER)    /* one pointer arg */
         {
-            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            {
+                if (e->e_w.w_symbol == &s_pointer)
+                {
+                    outlet_pointer(e->e_outlet, argv[0].a_w.w_gpointer);
+                    return;
+                }
+            }
+        }
+        else                                     /* one symbol arg */
+        {
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_symbol)
                 {
@@ -1027,7 +1035,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
         else if (u->u_type == TR_POINTER)
         {
             if (!argc || argv->a_type != TR_POINTER)
-                pd_error(x, "unpack: bad pointer");
+                pd_error(x, "trigger: bad pointer");
             else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
         }
         else outlet_list(u->u_outlet, &s_list, argc, argv);
@@ -1621,6 +1629,13 @@ static void value_symbol2(t_value *x, t_symbol *s)
     x->x_floatstar = value_get(s);
 }
 
+static void value_send(t_value *x, t_symbol *s)
+{
+    if (s->s_thing)
+        pd_float(s->s_thing, *x->x_floatstar);
+    else pd_error(x, "%s: no such object", s->s_name);
+}
+
 static void value_ff(t_value *x)
 {
     value_release(x->x_sym);
@@ -1636,6 +1651,7 @@ static void value_setup(void)
     class_addfloat(value_class, value_float);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
+    class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
     class_addfloat(vcommon_class, vcommon_float);

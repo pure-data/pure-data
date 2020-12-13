@@ -1,41 +1,41 @@
-#N canvas 323 179 848 495 12;
-#X obj 11 249 tabread4~ array99;
+#N canvas 323 179 823 556 12;
+#X obj 37 294 tabread4~ array99;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array99 10 float 3;
 #A 0 -0.5 -0.5 -0.5 0.5 0.5 0.5 0 0 0 0;
 #X coords 0 1 10 -1 250 200 1;
-#X restore 537 237 graph;
-#X text 127 21 4-point-interpolating table lookup;
-#X obj 11 337 snapshot~;
-#X obj 30 311 metro 200;
-#X obj 11 124 sig~;
-#X floatatom 11 98 6 0 10 0 - - -, f 6;
-#X obj 30 285 r readout;
-#X floatatom 11 363 0 0 0 0 - - -;
-#X text 65 92 incoming signal is index. Indices should range from 1
+#X restore 523 279 graph;
+#X text 131 22 4-point-interpolating table lookup;
+#X obj 37 382 snapshot~;
+#X obj 56 356 metro 200;
+#X obj 37 129 sig~;
+#X floatatom 37 103 6 0 10 0 - - -;
+#X obj 56 330 r readout;
+#X floatatom 37 408 0 0 0 0 - - -;
+#X text 91 97 incoming signal is index. Indices should range from 1
 to (size-2) so that the 4-point interpolation is meaningful. You can
 shift-drag the number box to see the effect of interpolation.;
-#X msg 23 161 set array99;
-#X text 119 160 "set" message permits you to switch between arrays
+#X msg 49 206 set array99;
+#X text 139 207 "set" message permits you to switch between arrays
 ;
-#X text 157 249 creation argument initializes array name;
-#X text 11 390 see also the "array" tutorial in section 2 of the Pd
+#X text 183 294 creation argument initializes array name;
+#X text 37 435 see also the "array" tutorial in section 2 of the Pd
 documentation \, and these objects:;
-#X obj 47 21 tabread4~;
-#X text 563 16 click here to test;
-#X obj 12 442 tabwrite~;
-#X obj 167 442 tabread;
-#X obj 236 442 tabwrite;
-#X obj 311 442 tabsend~;
-#X obj 386 442 tabreceive~;
-#X text 7 55 Tabread4~ is used to build samplers and other table lookup
+#X obj 51 22 tabread4~;
+#X text 567 17 click here to test;
+#X obj 38 487 tabwrite~;
+#X obj 193 487 tabread;
+#X obj 262 487 tabwrite;
+#X obj 337 487 tabsend~;
+#X obj 412 487 tabreceive~;
+#X text 11 56 Tabread4~ is used to build samplers and other table lookup
 algorithms. The interpolation scheme is 4-point polynomial.;
-#X obj 93 442 tabplay~;
-#X text 596 452 updated for Pd version 0.42;
-#X msg 582 40 \; readout 1 \; pd dsp 1 \;;
-#X floatatom 111 190 3 0 10 0 - - -, f 3;
-#X text 20 225 signal input;
-#X text 138 183 inlet sets onset into table. You can use this to improve
+#X obj 119 487 tabplay~;
+#X text 572 499 updated for Pd version 0.42;
+#X msg 586 41 \; readout 1 \; pd dsp 1 \;;
+#X floatatom 152 241 3 0 10 0 - - -;
+#X text 44 164 signal input;
+#X text 179 234 inlet sets onset into table. You can use this to improve
 the accuracy of indexing into the array. See B15.tabread4~-onset.pd
 for details.;
 #X connect 0 0 3 0;

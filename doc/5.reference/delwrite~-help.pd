@@ -1,20 +1,24 @@
-#N canvas 8 93 638 325 12;
-#X obj 24 16 delwrite~;
-#X obj 25 200 delwrite~ del_line_xxx 500;
-#X text 88 123 signal input;
-#X text 116 16 writes a signal in a delay line;
-#X text 272 198 1st argument: name of delay line;
-#X text 412 285 updated for Pd version 0.33;
-#X obj 24 124 sig~ 0;
-#X text 295 228 (= max. delay time);
-#X text 272 214 2nd argument: length of delay line in msec;
-#X text 25 245 see also:;
-#X obj 113 247 delread~;
-#X obj 194 247 delread4~;
-#X msg 55 164 clear;
-#X text 19 50 Delwrite~ allocates memory for a delay line and writes
+#N canvas 215 146 554 330 12;
+#X obj 32 18 delwrite~;
+#X obj 33 216 delwrite~ del_line_xxx 500;
+#X text 96 139 signal input;
+#X text 230 214 1st argument: name of delay line;
+#X text 321 287 updated for Pd version 0.33;
+#X text 253 244 (= max. delay time);
+#X text 230 230 2nd argument: length of delay line in msec;
+#X text 43 291 see also:;
+#X obj 113 291 delread~;
+#X obj 184 291 delread4~;
+#X msg 63 180 clear;
+#X text 27 52 Delwrite~ allocates memory for a delay line and writes
 an audio signal into it. Delread~ objects by the same name read from
 the delay line.;
-#X text 105 164 set all samples of delay line to zero.;
-#X connect 6 0 1 0;
-#X connect 12 0 1 0;
+#X text 108 180 set all samples of delay line to zero.;
+#X text 114 18 - writes a signal in a delay line;
+#X obj 32 140 sig~ 4;
+#X floatatom 32 110 5 0 0 0 - - -;
+#X msg 279 117 \; pd dsp 1;
+#X msg 359 117 \; pd dsp 0;
+#X connect 10 0 1 0;
+#X connect 14 0 1 0;
+#X connect 15 0 14 0;

@@ -18,6 +18,13 @@ The default font weight on Linux is bold.
 
 ## macOS
 
+Note: As of Pd 0.51-3, the default font for macOS has been changed to Menlo.
+There is an issue with DejaVu Sans Mono where characters are rendered thin and
+closer together in the patch canvas than on previous versions of macOS which
+causes problems with object sizing and text edit selections. Menlo is an Apple
+font provided with systems back to 10.6 and is based on Bitstream Vera Mono and
+DejaVu Sans Mono, so there should be no issues with patch sizing or positioning.
+
 DVSM is included within the Pd .app bundle. If Pd is run from the commandline
 DVSM needs to be installed to the system otherwise the fallback font is Monaco.
 

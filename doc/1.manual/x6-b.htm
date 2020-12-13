@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<HTML>
+  <HEAD>
+  <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	 <TITLE>Pd Documentation 6</TITLE>
+    <meta http-equiv="Content-Type" content="text/html">
+	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+  </HEAD>
+  
+<BODY>
+
+<p><a class=green href="x6.htm#more-windows" >back to ch6</a> <a href="index.htm#s6"> back to table of contents </a></p>
+
+<h3 id="s6.5.1">6.5.1 Windows resources</h3>
+
+<p>Directory pure-data/msw contains support files for building a Pure Data Windows
+application, as it is built for the &lsquo;vanilla&rsquo; releases on msp.ucsd.edu.</p>
+
+<h3 id="Notes.about.compiling.on.Microsoft.Windows">Notes about compiling on Microsoft Windows</h3>
+
+<p>As of Pd version 0.50, all releases are compiled using Dan Wilcox&rsquo;s scripts,
+msw-app.sh, and optionally tcltk-dir.sh (which builds a version of TCL/TK in
+case you don&rsquo;t already have one).</p>
+
+<p>The Pd sources aren&rsquo;t completely self-contained: Because of licensing
+restrictions, the ASIO support files are not included in the Pd source tree.
+The msw-app.sh script presumes you&rsquo;ve downloaded the ASIO SDK and can point
+msw-app.sh to it.</p>
+
+<p>It&rsquo;s also possible to compile Pd using Visual C.  This is not managed
+automatically but you can look in &ldquo;how-to-use-msvc.sh&rdquo; to see how it can be
+done.  This compiler gives different warnings which are sometimes useful, and
+refuses to compile code that has variable declarations in the middle of a
+block.  It&rsquo;s a good idea to test pull requests against MSVC if you can.  The
+file &ldquo;pdprototype.zip&rdquo; contains all the garbage that Pd needs in addition to its
+own files, including tcl/tk.  MSVC compilation works in 32 bits only.</p>
+
+<p>The scripts build-msw-32.sh and build-msw-64.sh are the ones used by Miller to
+make Pd releases.  These files work on Linux only and will not work out of
+the box unless your file tree resembles Miller&rsquo;s in some ways (pd source is in
+~/pd for instance) but you can presumably make your own version if you need to.</p>
+
+<p>But to first get things working, it&rsquo;s best to use msw-app.sh and tcltk-dir.sh
+directly.</p>
+
+<h3 id="Pd.Application.Directory">Pd Application Directory</h3>
+
+<p>Pd for Windows is essentially a stand-alone application directory which contains
+the compiled binaries, resource files, and contextual information.</p>
+
+<p>The basic layout is:</p>
+
+<pre>pd
+  /bin      &lt;- pd binaries
+  /doc      &lt;- built in docs &amp; help files
+  /extra    &lt;- core externals
+  /font     &lt;- included fonts
+  /lib      &lt;- embedded Tcl/Tk frameworks
+  /po       &lt;- text translation files
+  /src      &lt;- Pd source header files
+  /tcl      &lt;- Pd GUI scripts</pre>
+
+<p>The Pure Data GUI utilizes the Tk windowing shell aka &ldquo;wish##.exe&rdquo; at runtime
+which is included with Pd in the /bin directory. A Pure Data app directory
+includes both the Pd binaries and resources as well as a precompiled Tk.</p>
+
+<h3 id="App.Bundle.Helpers">App Bundle Helpers</h3>
+
+<ul>
+<li>msw-app.sh: creates a Pd app directory for Windows using precompiled Tcl/Tk</li>
+<li>tcltk-dir.sh: downloads and builds Tcl/Tk for Windows</li>
+</ul>
+
+
+<p>These scripts complement the autotools build system described in INSTALL.txt and
+are meant to be run after Pd is configured and built. The following usage, for
+example, downloads and builds 32 bit Tk 8.6.8 which is used to create
+a Windows pd-0.48-1 directory:</p>
+
+<pre>msw/tcltk-dir.sh 8.6.8
+msw/msw-app.sh --tk tcltk-8.6.8 0.48-1
+</pre>
+
+<p>Both msw-app.sh &amp; tcltck-dir.sh have extensive help output using the &ndash;help
+commandline option:</p>
+
+<pre>msw/msw-app.sh --help
+msw/tcltk-dir.sh --help
+</pre>
+
+<p>The msw-app.sh script automates building the Pd app directory and is used in the
+&ldquo;make app&rdquo; makefile target. This default action can be invoked manually after
+Pd is built:</p>
+
+<pre>msw/msw-app.sh 0.47-1
+</pre>
+
+<p>This builds a &ldquo;pd-0.47-1&rdquo; directory using the default copy of Tk. If you omit
+the version argument, a &ldquo;pd&rdquo; directory is built. The version argument is only
+used as a suffix to the directory name.</p>
+
+<p>The &ldquo;msw/pdprototype.tgz&rdquo; archive contains the basic requirements for running Pd
+on Windows: a precompiled copy of Tcl/Tk and various .dll library files. This is
+the default Tcl/Tk when using msw-app.</p>
+
+<p>If you want to use a newer Tcl/Tk version or a custom build, you can specify the
+version or directory via commandline options, for example:</p>
+
+<pre># create pd-0.48-1 directory, download and build Tcl/Tk 8.5.19
+msw/msw-app.sh --tk 8.5.19 0.48-1
+
+# create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
+msw/msw-app.sh --tk tcltk-8.5.19 0.48-1
+</pre>
+
+<p>Note: Depending on which version of Tcl/Tk you want to use, you may need to set
+the Tk Wish command when configuring Pd. To build Pd to use Tk 8.6:</p>
+
+<pre>./configure --with-wish=wish86.exe
+make
+</pre>
+
+<p>The tcltk-dir.sh script automates building Tcl/Tk for Windows, either from the
+release distributions or from a git clone:</p>
+
+<pre># build tcltk-8.5.19 directory with Tcl/Tk 8.5.19
+msw/tcltk-dir.sh 8.5.19
+
+# build tcltk-master-git with the latest master branch from git
+msw/tcltk-dir.sh --git master-git
+</pre>
+
+<p>Once your custom Tcl/Tk is built, you can use it as the Tk directory source for
+msw-app.sh with the -t/&ndash;tk option:</p>
+
+<pre># build Pd with a custom Tcl/Tk 8.6.8 directory
+msw/msw-app.sh -t tcltk-8.6.8
+</pre>
+
+<p>Downloading and building Tcl/Tk takes some time. If you are doing lots of builds
+of Pd and/or are experimenting with different versions of Tcl/Tk, building the
+tcltk directories you need with tcltk-dir.sh can save you some time as they
+can be reused when (re)making the Pd app directory.</p>
+
+<p>Usually, it&rsquo;s best to use stable releases of Tcl/Tk. However, there are times
+when building from the current development version is useful. For instance,
+if there is a bug in the Tcl/Tk sources, you can then see if there is a fix for
+this in the Tcl/Tk development version on GitHub. If so, then you can test by
+using the tcltk-dir.sh &ndash;git commandline option.</p>
+
+<p>The tcltk-dir.sh script tries to detect if it&rsquo;s building in a 64 bit
+environment, ie. MinGW 64. If this detection fails, you can force 64 bit with
+the &ndash;64bit option:</p>
+
+<pre># force 64 bit Tcl/Tk 8.6.8 build
+tcltk-dir.sh --64bit 8.6.8
+</pre>
+
+<h3 id="pdfontloader">pdfontloader</h3>
+
+<p>Tk cannot load local font files by default on Windows. Pd accomplishes this
+through a tiny, custom Tcl extension, pdfontloader.dll. On initialization, the
+Pd GUI tries to load pdfontloader and, if successful, tries to load the included
+Pd font.</p>
+
+<p>Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz
+tarball. To build pdfontloader, see <a href="https://github.com/pure-data/pdfontloader" target="_blank">https://github.com/pure-data/pdfontloader</a>
+source.</p>
+
+<h3 id="s6.5.2">6.5.2. Windows ASIO Support</h3>
+
+<p>In order to build ASIO support into Pd on Windows, you need to download the
+ASIO sources from Steinberg directly. Their license does not let us
+redistribute their source files.</p>
+
+<p>Install the ASIO SDK by doing the following:</p>
+
+<ul>
+<li>1. Download the ASIO SDK: <a href="https://www.steinberg.net/en/company/developer.html" target="_blank">https://www.steinberg.net/en/company/developer.html</a></li>
+<li>2. Uncompress asiosdk2.3.zip (or higher) into pure-data/asio/</li>
+<li>3. remove the version number so that you get pure-data/asio/ASIOSDK</li>
+</ul>
+
+<p>Now build Pd and it should include ASIO as one of the audio backends.</p>
+
+</br>
+<p><a class=green href="x6.htm#more-windows" >back to ch6</a> <a href="index.htm#s6"> back to table of contents </a></p>
+</br>
+</br>
+</br>
+
+</BODY>
+</HTML>

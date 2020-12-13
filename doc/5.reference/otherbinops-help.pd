@@ -1,86 +1,85 @@
-#N canvas 104 52 651 713 12;
-#X floatatom 116 488 0 0 0 0 - - -;
-#X floatatom 79 487 0 0 0 0 - - -;
-#X floatatom 39 486 0 0 0 0 - - -;
-#X floatatom 191 487 0 0 0 0 - - -;
-#X floatatom 153 487 0 0 0 0 - - -;
-#X obj 116 461 <;
-#X floatatom 396 487 0 0 0 0 - - -;
-#X floatatom 358 487 0 0 0 0 - - -;
-#X floatatom 278 487 0 0 0 0 - - -;
-#X floatatom 314 487 0 0 0 0 - - -;
-#X obj 501 223 &;
-#X obj 541 222 |;
-#X obj 519 156 &&;
-#X obj 519 182 ||;
-#X obj 358 460 &;
-#X obj 396 460 |;
-#X obj 278 460 &&;
-#X obj 314 460 ||;
-#X obj 24 101 >;
-#X obj 73 101 >=;
-#X obj 26 132 ==;
-#X obj 164 102 <=;
-#X obj 120 101 <;
-#X obj 39 460 >;
-#X obj 79 461 >=;
-#X obj 191 461 ==;
-#X obj 153 461 <=;
-#X floatatom 78 319 0 0 0 0 - - -;
-#X floatatom 149 320 0 0 0 0 - - -;
-#X obj 149 348 t b f;
-#X obj 70 132 !=;
-#X text 64 293 set left and right inputs here;
-#X floatatom 484 488 0 0 0 0 - - -;
-#X floatatom 436 487 0 0 0 0 - - -;
-#X obj 501 252 <<;
-#X obj 542 251 >>;
-#X obj 484 461 <<;
-#X obj 436 460 >>;
-#X text 25 58 Relational operators output 1 or 0 depending on whether
+#N canvas 411 27 645 744 12;
+#X floatatom 136 503 0 0 0 0 - - -;
+#X floatatom 99 502 0 0 0 0 - - -;
+#X floatatom 59 501 0 0 0 0 - - -;
+#X floatatom 211 502 0 0 0 0 - - -;
+#X floatatom 173 502 0 0 0 0 - - -;
+#X obj 136 476 <;
+#X floatatom 416 502 0 0 0 0 - - -;
+#X floatatom 378 502 0 0 0 0 - - -;
+#X floatatom 298 502 0 0 0 0 - - -;
+#X floatatom 334 502 0 0 0 0 - - -;
+#X obj 478 230 &;
+#X obj 518 229 |;
+#X obj 495 161 &&;
+#X obj 495 187 ||;
+#X obj 378 475 &;
+#X obj 416 475 |;
+#X obj 298 475 &&;
+#X obj 334 475 ||;
+#X obj 61 106 >;
+#X obj 110 106 >=;
+#X obj 63 137 ==;
+#X obj 201 107 <=;
+#X obj 157 106 <;
+#X obj 59 475 >;
+#X obj 99 476 >=;
+#X obj 211 476 ==;
+#X obj 173 476 <=;
+#X floatatom 98 334 0 0 0 0 - - -;
+#X floatatom 169 335 0 0 0 0 - - -;
+#X obj 169 363 t b f;
+#X obj 107 137 !=;
+#X text 84 308 set left and right inputs here;
+#X floatatom 504 503 0 0 0 0 - - -;
+#X floatatom 456 502 0 0 0 0 - - -;
+#X obj 478 254 <<;
+#X obj 519 253 >>;
+#X obj 504 476 <<;
+#X obj 456 475 >>;
+#X text 62 63 Relational operators output 1 or 0 depending on whether
 the relation is true or false.;
-#X text 202 104 greater than \, etc.;
-#X text 116 129 equals and not-equals;
-#X obj 77 349 f;
-#X floatatom 230 487 0 0 0 0 - - -;
-#X obj 230 461 !=;
-#X text 20 157 Logical operators: "&&" ("and") outputs one if both
+#X text 239 109 greater than \, etc.;
+#X text 153 134 equals and not-equals;
+#X obj 97 364 f;
+#X floatatom 250 502 0 0 0 0 - - -;
+#X obj 250 476 !=;
+#X text 57 162 Logical operators: "&&" ("and") outputs one if both
 inputs are nonzero and 0 otherwise. "||" ("or") outputs 1 if either
 one is nonzero.;
-#X text 17 221 Bitwise operators: "&" and "|" perform "and" and "or"
+#X text 54 227 Bitwise operators: "&" and "|" perform "and" and "or"
 on each bit of the inputs considered as binary numbers. ">>" and "<<"
 perform left and right signed bit shifts.;
-#X text 360 10 Fixed-point binary operations;
-#X obj 30 12 >;
-#X obj 68 13 >=;
-#X obj 142 14 <=;
-#X obj 106 13 <;
-#X obj 177 14 ==;
-#X obj 214 13 !=;
-#X text 410 305 You can supply a creation argument to initialize the
+#X text 333 22 Fixed-point binary operations;
+#X obj 57 21 >;
+#X obj 91 21 >=;
+#X obj 159 21 <=;
+#X obj 125 21 <;
+#X obj 193 21 ==;
+#X obj 228 21 !=;
+#X text 372 325 You can supply a creation argument to initialize the
 right inlet:, f 25;
-#X floatatom 492 364 0 0 0 0 - - -;
-#X floatatom 492 414 0 0 0 0 - - -;
-#X obj 492 389 == 0;
-#X floatatom 545 365 0 0 0 0 - - -;
-#X floatatom 545 415 0 0 0 0 - - -;
-#X obj 545 390 < 5;
-#X obj 252 13 div;
-#X obj 287 14 mod;
-#X floatatom 91 643 0 0 0 0 - - -;
-#X floatatom 51 642 0 0 0 0 - - -;
-#X floatatom 51 543 0 0 0 0 - - -;
-#X floatatom 93 545 0 0 0 0 - - -;
-#X obj 93 575 t b f;
-#X obj 51 574 f;
-#X obj 51 616 div;
-#X obj 91 617 mod;
-#X text 36 376 see also:;
-#X text 404 674 Updated for version 0.47;
-#X obj 301 635 +;
-#X text 336 636 (etc) - arithmetic;
-#X text 205 634 see also:;
-#X text 166 540 div and mod do integer division. div outputs the integer
+#X floatatom 499 368 0 0 0 0 - - -;
+#X floatatom 499 418 0 0 0 0 - - -;
+#X obj 499 393 == 0;
+#X floatatom 552 369 0 0 0 0 - - -;
+#X floatatom 552 419 0 0 0 0 - - -;
+#X obj 552 394 < 5;
+#X obj 262 21 div;
+#X obj 297 21 mod;
+#X floatatom 111 658 0 0 0 0 - - -;
+#X floatatom 71 657 0 0 0 0 - - -;
+#X floatatom 71 558 0 0 0 0 - - -;
+#X floatatom 113 560 0 0 0 0 - - -;
+#X obj 113 590 t b f;
+#X obj 71 589 f;
+#X obj 71 631 div;
+#X obj 111 632 mod;
+#X text 414 693 Updated for version 0.47;
+#X obj 345 650 +;
+#X text 380 651 (etc) - arithmetic;
+#X text 269 649 see also:;
+#X text 186 555 div and mod do integer division. div outputs the integer
 quotient and mod outputs the remainder (modulus). In addition the "%"
 operator (provided for back compatibility) is like "mod" but acts differently
 for negative inputs (and might act variously depending on CPU design).

@@ -1,13 +1,13 @@
-#N canvas 218 166 619 368 12;
+#N canvas 496 136 619 368 12;
 #X msg 382 133 \; metro 0;
 #X text 462 92 <-Click to start;
 #X text 455 137 <-Click to stop;
 #X text 47 13 switch and block - turn DSP on and off for subpatches
 and control block size;
-#N canvas 15 32 598 301 switched 1;
+#N canvas 356 136 505 325 switched 0;
 #X obj 265 148 switch~;
-#X floatatom 265 121 1 0 0;
-#X floatatom 75 168 4 0 0;
+#X floatatom 265 121 1 0 0 0 - - -;
+#X floatatom 75 168 4 0 0 0 - - -;
 #X obj 75 104 noise~;
 #X obj 75 136 env~ 512;
 #X text 25 26 DSP in this subwindow is turned on and off by the switch~
@@ -23,7 +23,7 @@ reblocked.;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
 #X restore 139 124 pd switched;
-#N canvas 13 421 564 200 blocked 1;
+#N canvas 526 323 464 195 blocked 0;
 #X obj 184 35 block~ 1024 4;
 #X text 14 76 This object specified that DSP in this subwindow is to
 be computed at a block size of 1024 \, and an overlap of 4 \, i.e.

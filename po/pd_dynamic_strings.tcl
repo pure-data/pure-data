@@ -36,7 +36,7 @@ puts [_ "couldn't delete .pdsettings file"]
 puts [_ "failed to erase Pd settings"]
 puts [_ "erased Pd settings"]
 puts [_ "no Pd settings to erase"]
-puts [_ "skipping loading preferences... Pd seems to have crashed on startup."]
+puts [_ "skipping loading preferences... Pd seems to have crashed on startup"]
 puts [_ "(re-save preferences to reinstate them)"]
 
 # These are strings which, for some reason or another, are used in the Pd GUI

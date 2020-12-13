@@ -367,6 +367,13 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
+static float sched_fastforward;
+
+void glob_fastforward(void *dummy, t_floatarg f)
+{
+    sched_fastforward = f;
+}
+
 void dsp_tick(void);
 
 static int sched_useaudio = SCHED_AUDIO_NONE;
@@ -465,12 +472,18 @@ static void m_pollingscheduler(void)
 
         sys_addhist(0);
     waitfortick:
+        while (sched_fastforward > 0)
+        {
+            double beforetick = pd_this->pd_systime;
+            sched_tick();
+            sched_fastforward -= clock_gettimesince(beforetick);
+        }
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
             sys_unlock();
             timeforward = sys_send_dacs();
             sys_lock();
-#if 0   /* in linux and windoes, sometimes audio devices would freeze, which
+#if 0   /* in linux and windows, sometimes audio devices would freeze, which
                in turn would freeze Pd.  This code unfroze things by closing
                audio in such cases.  But this seems no longer necessary, and
                on Macs at least, this seems to cause audio to get dropped if

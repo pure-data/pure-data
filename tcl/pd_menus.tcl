@@ -225,7 +225,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
 proc ::pd_menus::build_put_menu {mymenu} {
     variable accelerator
     # The trailing 0 in menu_send_float basically means leave the object box
-    # sticking to the mouse cursor. The iemguis alway do that when created
+    # sticking to the mouse cursor. The iemguis always do that when created
     # from the menu, as defined in canvas_iemguis()
     $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
         -command {menu_send_float $::focused_window obj 0}
@@ -548,9 +548,18 @@ proc ::pd_menus::loadpreferences {} {
 }
 
 proc ::pd_menus::forgetpreferences {} {
-    pdtk_check .pdwindow \
-        [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
-        {pd forget-preferences} yes
+    if {[pdtk_yesnodialog .pdwindow \
+             [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
+             yes]} {
+        pdsend "pd forget-preferences"
+        if {[::pd_guiprefs::delete_config]} {
+            ::pdwindow::post [_ "removed GUI settings" ]
+        } {
+            ::pdwindow::post [_ "no Pd-GUI settings to clear" ]
+        }
+        ::pdwindow::post "\n"
+
+    }
 }
 
 proc ::pd_menus::create_preferences_menu {mymenu} {

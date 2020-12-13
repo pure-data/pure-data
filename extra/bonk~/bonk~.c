@@ -67,6 +67,7 @@ decay and other times in msec
 #include "ext_obex.h"
 
 typedef double t_floatarg;      /* from m_pd.h */
+typedef float t_float;               /* from m_pd.h */
 #define flog log
 #define fexp exp
 #define fsqrt sqrt
@@ -820,7 +821,7 @@ static void bonk_dsp(t_bonk *x, t_signal **sp)
     for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
         gp->g_invec = (*(sp++))->s_vec;
     
-    dsp_add(bonk_perform, 2, x, n);
+    dsp_add(bonk_perform, 2, x, (t_int)n);
 }
 
 static void bonk_thresh(t_bonk *x, t_floatarg f1, t_floatarg f2)

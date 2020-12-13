@@ -490,7 +490,7 @@ static void list_store_prepend(t_list_store *x, t_symbol *s,
     x->x_alist.l_n += argc;
 }
 
-static void list_store_get(t_list_store *x, float f1, float f2)
+static void list_store_get(t_list_store *x, t_float f1, t_float f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;

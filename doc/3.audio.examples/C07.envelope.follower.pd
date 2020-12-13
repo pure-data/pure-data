@@ -1,81 +1,80 @@
-#N canvas 66 7 617 909 12;
-#X text 164 5 ENVELOPE FOLLOWERS;
-#X text 10 25 The env~ object reports the RMS signal level over the
+#N canvas 414 23 1039 698 12;
+#X text 86 41 ENVELOPE FOLLOWERS;
+#X text 68 224 The env~ object reports the RMS signal level over the
 last 256 samples (by default) or any other power of 2 that's at least
 twice the block size. The analysis is done in an overlapped fashion
 so that results appear every N/2 points if N is the analysis window
 size. So the larger the window \, the stabler the result and the less
 frequently it appears. Computation time doesn't depend heavily on N.
-;
-#X text 11 135 Envelope followers are frequently used to detect attacks
+, f 54;
+#X text 67 349 Envelope followers are frequently used to detect attacks
 and periods of silence. (There are fancier attack detectors out there
 \, though.) Here is a simple threshold-based attack and rest detector.
-;
-#X obj 102 297 dbtorms;
-#X obj 23 293 osc~ 440;
-#X obj 23 339 env~;
-#X floatatom 78 329 0 0 0 0 - - -;
-#X floatatom 102 274 0 0 0 0 - - -;
-#X msg 451 320 \; pd dsp 1;
-#X obj 119 380 t b f;
-#X floatatom 119 403 0 0 0 0 - - -;
-#X obj 126 458 pack;
-#X obj 126 481 route 0 1;
-#X obj 126 504 > 55;
-#X obj 176 504 < 45;
-#X obj 126 527 sel 1;
-#X obj 176 527 sel 1;
-#X msg 90 538 1;
-#X msg 90 516 0;
-#X obj 126 564 print attack;
-#X obj 119 435 != 0;
-#X obj 24 612 t b f;
-#X floatatom 15 638 0 0 0 0 - - -;
-#X obj 27 688 pack;
-#X obj 27 711 route 0 1;
-#X obj 27 749 sel 1;
-#X msg 6 856 1;
-#X msg 7 879 0;
-#X obj 20 666 != 0;
-#X obj 58 639 < 45;
-#X obj 31 783 timer;
-#X obj 113 712 sel 0;
-#X obj 95 832 sel 0;
-#X obj 45 832 sel 1;
-#X obj 45 873 print rest;
-#X obj 31 806 > 1000;
-#X text 162 403 state -- 1 if waiting for low threshold \,;
-#X text 199 418 0 if we've attained it and now want the;
-#X text 202 434 high one.;
-#X text 209 480 route the RMS value according to state;
-#X text 239 506 if off \, 55 dB means attack. If on \, 45;
-#X text 240 527 dB or less means state changes to off.;
-#X text 132 359 ATTACK DETECTION;
-#X text 40 594 REST DETECTION;
-#X text 100 637 Here we always will test RMS against a low value;
-#X text 125 654 but as before we route the result according to;
-#X text 147 671 our state \, 1 if "resting" \, 0 if not.;
-#X text 163 709 regardless of state \, when RMS isn't low;
-#X text 185 724 reset the timer;
-#X text 202 846 RMS isn't low enough.;
-#X text 120 744 If we're not in rest \, and the RMS is low \,;
-#X text 143 761 check elapsed time since RMS last wasn't low.;
-#X text 122 802 If more than 1 second \, report a rest.;
-#X text 170 828 If we're at rest \, pop out of it when;
-#X text 11 201 Both detectors are state machines with two states \,
+, f 54;
+#X obj 587 58 dbtorms;
+#X obj 511 45 osc~ 440;
+#X obj 511 101 env~;
+#X floatatom 511 144 0 0 0 0 - - -;
+#X floatatom 587 35 0 0 0 0 - - -;
+#X msg 176 132 \; pd dsp 1;
+#X obj 615 128 t b f;
+#X floatatom 615 155 0 0 0 0 - - -;
+#X obj 627 206 pack;
+#X obj 627 229 route 0 1;
+#X obj 607 254 > 55;
+#X obj 657 254 < 45;
+#X obj 607 277 sel 1;
+#X obj 657 277 sel 1;
+#X msg 534 310 1;
+#X msg 571 311 0;
+#X obj 607 312 print attack;
+#X obj 615 181 != 0;
+#X obj 511 350 t b f, f 7;
+#X floatatom 510 384 0 0 0 0 - - -;
+#X obj 522 434 pack;
+#X obj 522 457 route 0 1;
+#X obj 511 485 sel 1;
+#X msg 401 628 1;
+#X msg 439 628 0;
+#X obj 515 412 != 0;
+#X obj 557 385 < 45;
+#X obj 479 549 timer;
+#X obj 602 457 sel 0;
+#X obj 552 598 sel 0;
+#X obj 492 598 sel 1;
+#X obj 492 639 print rest;
+#X obj 479 572 > 1000;
+#X text 699 228 route the RMS value according to state;
+#X text 660 127 ATTACK DETECTION;
+#X text 568 350 REST DETECTION;
+#X text 67 420 Both detectors are state machines with two states \,
 on and off. If on \, a test is run to determine whether to turn off
 \, and vice versa. The tests are run at each output of the rms~ object.
-;
-#X text 355 884 updated for Pd version 0.37;
-#X text 109 320 note 3.01 dB difference between;
-#X text 113 336 peak and RMS amplitudes.;
-#X obj 451 297 loadbang;
-#X obj 23 316 *~;
-#X connect 3 0 59 1;
-#X connect 4 0 59 0;
+, f 54;
+#X text 95 569 updated for Pd version 0.37;
+#X obj 176 101 loadbang;
+#X obj 511 78 *~;
+#X text 385 111 note 3.01 dB difference between peak and RMS amplitudes.
+, f 16;
+#X text 651 451 regardless of state \, when RMS isn't low reset the
+timer, f 29;
+#X text 578 491 If we're not in rest \, and the RMS is low \, check
+elapsed time since RMS last wasn't low., f 45;
+#X text 599 374 Here we always will test RMS against a low value but
+as before we route the result according to our state \, 1 if "resting"
+\, 0 if not., f 50;
+#X text 678 155 state -- 1 if waiting for low threshold \, 0 if we've
+attained it and now want the high one., f 30;
+#X text 705 259 if off \, 55 dB means attack. If on \, 45 dB or less
+means state changes to off., f 40;
+#X text 560 564 If more than 1 second \, report a rest.;
+#X text 603 591 If we're at rest \, pop out of it when RMS isn't low
+enough., f 29;
+#X connect 3 0 42 1;
+#X connect 4 0 42 0;
 #X connect 5 0 6 0;
 #X connect 5 0 9 0;
-#X connect 5 0 21 0;
+#X connect 6 0 21 0;
 #X connect 7 0 3 0;
 #X connect 9 0 10 0;
 #X connect 9 1 11 1;
@@ -109,5 +108,5 @@ on and off. If on \, a test is run to determine whether to turn off
 #X connect 33 0 26 0;
 #X connect 33 0 34 0;
 #X connect 35 0 33 0;
-#X connect 58 0 8 0;
-#X connect 59 0 5 0;
+#X connect 41 0 8 0;
+#X connect 42 0 5 0;

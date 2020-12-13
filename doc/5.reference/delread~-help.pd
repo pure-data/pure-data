@@ -1,32 +1,34 @@
-#N canvas 23 52 796 472 12;
-#X text 351 276 1st argument: name of delay line;
-#X floatatom 116 253 0 0 0 0 - - -;
-#X text 151 255 float input (delay time in ms);
-#X text 127 310 signal output (delayed signal);
-#X text 21 52 You can use more than one delread~ objects for the same
-delay line.;
-#X text 20 81 If the specified delay time is longer than the size of
+#N canvas 583 102 612 502 12;
+#X text 317 293 1st argument: name of delay line, f 33;
+#X floatatom 128 262 0 0 0 0 - - -;
+#X text 163 264 float input (delay time in ms);
+#X text 139 347 signal output (delayed signal);
+#X text 31 56 You can use more than one delread~ objects for the same
+delay line., f 69;
+#X text 30 79 If the specified delay time is longer than the size of
 the delay line or less than zero it is clipped to the length of the
-delay line.;
-#X obj 383 226 delwrite~ del_example 1000;
-#X floatatom 383 177 0 0 0 0 - - -;
-#X obj 116 375 snapshot~;
-#X floatatom 116 399 0 0 0 0 - - -;
-#X obj 24 246 loadbang;
-#X obj 24 313 metro 200;
-#X msg 32 273 \; pd dsp 1;
-#X obj 116 286 delread~ del_example 1000;
-#X obj 24 16 delread~;
-#X text 424 176 input to delay line;
-#X obj 383 201 sig~;
-#X text 433 443 updated for Pd version 0.33;
-#X text 89 16 - read a signal from a delay line;
-#X text 21 133 Note: if the delwrite~ runs after the delread~ the
-minimum delay is actually one DSP period \, not zero.;
-#X text 351 292 2nd argument: (initial) delay time in ms;
-#X obj 126 444 delwrite~;
-#X text 36 443 see also:;
-#X obj 217 444 delread4~;
+delay line., f 69;
+#X obj 212 226 delwrite~ del_example 1000;
+#X floatatom 212 177 0 0 0 0 - - -;
+#X obj 128 389 snapshot~;
+#X floatatom 128 413 0 0 0 0 - - -;
+#X obj 34 210 loadbang;
+#X obj 34 277 metro 200;
+#X msg 42 237 \; pd dsp 1;
+#X obj 128 303 delread~ del_example 1000;
+#X obj 34 20 delread~;
+#X text 249 176 input to delay line;
+#X obj 212 201 sig~;
+#X text 388 451 updated for Pd version 0.33;
+#X text 99 20 - read a signal from a delay line;
+#X text 30 118 Note: if the delwrite~ runs after the delread~ the minimum
+delay is actually one DSP period \, not zero., f 69;
+#X text 317 313 2nd argument: (initial) delay time in ms;
+#X obj 135 465 delwrite~;
+#X text 55 464 see also:;
+#X obj 216 465 delread4~;
+#X msg 479 172 \; pd dsp 1;
+#X msg 479 221 \; pd dsp 0;
 #X connect 1 0 13 0;
 #X connect 7 0 16 0;
 #X connect 8 0 9 0;
