@@ -29,6 +29,12 @@ To skip applying patches, use the tcltk-wish.sh --no-patches commandline option.
 
 ## Current Patches
 
+### tk8.6.10_scrollbars.patch
+
+Backport commit which fixes scrollbars not (re)drawing, see
+
+    https://core.tcl-lang.org/tk/info/71433282feea6ae9
+
 ### tk8.5.19_keyfix.patch
 
 Fixes key release events and adds repeat handling, see
