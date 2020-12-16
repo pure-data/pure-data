@@ -408,6 +408,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.saveall config -highlightthickness 0
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
+
+        # don't use -topmost on macOS with Tk 8.6+ as it places the window above
+        # *all* windows including those of other applications
+        catch {wm attributes $mytoplevel -topmost 0}
     }
 
     # set min size based on widget sizing & pos over pdwindow
