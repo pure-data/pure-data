@@ -842,8 +842,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             {
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 buf->u_vec[i].e_index = indx;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
                 i++;
             }
     }
@@ -853,8 +853,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         {
             gobj_getrect(y, x, &x1, &y1, &x2, &y2);
             buf->u_vec[indx].e_index = indx;
-            buf->u_vec[indx].e_xpix = x1;
-            buf->u_vec[indx].e_ypix = y1;
+            buf->u_vec[indx].e_xpix = x1/x->gl_zoom;
+            buf->u_vec[indx].e_ypix = y1/x->gl_zoom;
         }
     }
     EDITOR->canvas_undo_already_set_move = 1;
@@ -882,10 +882,10 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 EDITOR->canvas_undo_already_set_move = 1;
-                canvas_displaceselection(x, newx-x1, newy - y1);
+                canvas_displaceselection(x, newx-x1/x->gl_zoom, newy - y1/x->gl_zoom);
                 EDITOR->canvas_undo_already_set_move = doing;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
