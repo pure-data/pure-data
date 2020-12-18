@@ -143,7 +143,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
 
     frame .font.buttonframe
     pack .font.buttonframe -side bottom -pady 2m
-    button .font.buttonframe.ok -text [_ "OK"] \
+    button .font.buttonframe.ok -text [_ "Close"] \
         -command "::dialog_font::cancel $gfxstub" -default active
     pack .font.buttonframe.ok -side left -expand 1 -fill x -ipadx 10
 
