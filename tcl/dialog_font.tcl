@@ -20,7 +20,7 @@ namespace eval ::dialog_font:: {
 # there is a single properties panel that adjusts based on which PatchWindow
 # has focus
 
-proc ::dialog_font::radioapply {mytoplevel myfontsize} {
+proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
             font configure $font -size $myfontsize
@@ -40,11 +40,15 @@ proc ::dialog_font::radioapply {mytoplevel myfontsize} {
         pdsend "$mytoplevel font $myfontsize 0 2"
     }
 }
-proc ::dialog_font::stretchapply {gfxstub} {
+
+proc ::dialog_font::stretch_apply {gfxstub} {
     if {$gfxstub ne ".pdwindow"} {
         variable fontsize
         variable stretchval
         variable whichstretch
+        if {$stretchval == ""} {
+            set stretchval 100
+        }
         pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
     }
 }
@@ -95,7 +99,7 @@ proc ::dialog_font::arrow_fontchange {change} {
     set max [llength $sizes]
     if {$position >= $max} {set position [expr $max-1]}
     set fontsize [lindex $sizes $position]
-    ::dialog_font::radioapply $canvaswindow $fontsize
+    ::dialog_font::radio_apply $canvaswindow $fontsize
 }
 
 # this should be called pdtk_font_dialog like the rest of the panels, but it
@@ -151,7 +155,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
             -variable ::dialog_font::fontsize \
-            -command [format {::dialog_font::radioapply \
+            -command [format {::dialog_font::radio_apply \
                 $::dialog_font::canvaswindow %s} $size]
         pack .font.fontsize.radio$size -side top -anchor w
     }
@@ -160,7 +164,8 @@ proc ::dialog_font::create_dialog {gfxstub} {
         -width [::msgcat::mcmax "Stretch"] -labelanchor n
     pack .font.stretch -side left -padx 5 -fill y
 
-    entry .font.stretch.entry -textvariable ::dialog_font::stretchval -width 5
+    entry .font.stretch.entry -textvariable ::dialog_font::stretchval -width 5 \
+        -validate key -vcmd {string is int %P}
     pack .font.stretch.entry -side top -pady 5
 
     radiobutton .font.stretch.radio1 -text [_ "X and Y"] \
@@ -176,7 +181,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     pack .font.stretch.radio3 -side top -anchor w
     
     button .font.stretch.apply -text [_ "Apply"] \
-        -command "::dialog_font::stretchapply $gfxstub" -default active
+        -command "::dialog_font::stretch_apply $gfxstub" -default active
     
     pack .font.stretch.apply -side left -expand 1 -fill x -ipadx 10 \
         -anchor s
