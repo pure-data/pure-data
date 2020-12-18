@@ -20,6 +20,27 @@ namespace eval ::dialog_font:: {
 # there is a single properties panel that adjusts based on which PatchWindow
 # has focus
 
+proc ::dialog_font::radioapply {mytoplevel myfontsize} {
+    if {$mytoplevel eq ".pdwindow"} {
+        foreach font [font names] {
+            font configure $font -size $myfontsize
+        }
+        if {[winfo exists ${mytoplevel}.text]} {
+            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
+        }
+
+        # repeat a "pack" command so the font dialog can resize itself
+        if {[winfo exists .font]} {
+            pack .font.buttonframe -side bottom -fill x -pady 2m
+        }
+
+        ::pd_guiprefs::write menu-fontsize "$myfontsize"
+
+    } else {
+        pdsend "$mytoplevel font $myfontsize 0 2"
+    }
+}
+
 proc ::dialog_font::apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
@@ -72,7 +93,7 @@ proc ::dialog_font::arrow_fontchange {change} {
     set max [llength $sizes]
     if {$position >= $max} {set position [expr $max-1]}
     set fontsize [lindex $sizes $position]
-    ::dialog_font::apply $canvaswindow $fontsize
+    ::dialog_font::radioapply $canvaswindow $fontsize
 }
 
 # this should be called pdtk_font_dialog like the rest of the panels, but it
@@ -128,7 +149,8 @@ proc ::dialog_font::create_dialog {gfxstub} {
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
             -variable ::dialog_font::fontsize \
-            -command [format {::dialog_font::apply $::dialog_font::canvaswindow %s} $size]
+            -command [format {::dialog_font::radioapply \
+                $::dialog_font::canvaswindow %s} $size]
         pack .font.fontsize.radio$size -side top -anchor w
     }
 
