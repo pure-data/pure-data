@@ -40,6 +40,14 @@ proc ::dialog_font::radioapply {mytoplevel myfontsize} {
         pdsend "$mytoplevel font $myfontsize 0 2"
     }
 }
+proc ::dialog_font::stretchapply {gfxstub} {
+    if {$gfxstub ne ".pdwindow"} {
+        variable fontsize
+        variable stretchval
+        variable whichstretch
+        pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
+    }
+}
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
@@ -69,12 +77,6 @@ proc ::dialog_font::cancel {gfxstub} {
         pdsend "$gfxstub cancel"
     }
     destroy .font
-}
-
-proc ::dialog_font::ok {gfxstub} {
-    variable fontsize
-    apply $gfxstub $fontsize
-    cancel $gfxstub
 }
 
 proc ::dialog_font::update_font_dialog {mytoplevel} {
@@ -128,7 +130,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     # replace standard bindings to work around the gfxstub stuff and use
     # break to prevent the close window command from going to other bindings.
     # .font won't exist anymore, so it'll cause errors down the line...
-    bind .font <KeyPress-Return> "::dialog_font::ok $gfxstub; break"
+    bind .font <KeyPress-Return> "::dialog_font::cancel $gfxstub; break"
     bind .font <KeyPress-Escape> "::dialog_font::cancel $gfxstub; break"
     bind .font <$::modifier-Key-w> "::dialog_font::cancel $gfxstub; break"
     wm protocol .font WM_DELETE_WINDOW "dialog_font::cancel $gfxstub"
@@ -138,7 +140,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     frame .font.buttonframe
     pack .font.buttonframe -side bottom -pady 2m
     button .font.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_font::ok $gfxstub" -default active
+        -command "::dialog_font::cancel $gfxstub" -default active
     pack .font.buttonframe.ok -side left -expand 1 -fill x -ipadx 10
 
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
@@ -167,10 +169,17 @@ proc ::dialog_font::create_dialog {gfxstub} {
         -value 2 -variable ::dialog_font::whichstretch
     radiobutton .font.stretch.radio3 -text [_ "Y only"] \
         -value 3 -variable ::dialog_font::whichstretch
+    
 
     pack .font.stretch.radio1 -side top -anchor w
     pack .font.stretch.radio2 -side top -anchor w
     pack .font.stretch.radio3 -side top -anchor w
+    
+    button .font.stretch.apply -text [_ "Apply"] \
+        -command "::dialog_font::stretchapply $gfxstub" -default active
+    
+    pack .font.stretch.apply -side left -expand 1 -fill x -ipadx 10 \
+        -anchor s
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
