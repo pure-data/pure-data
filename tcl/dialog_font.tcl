@@ -20,6 +20,8 @@ namespace eval ::dialog_font:: {
 # there is a single properties panel that adjusts based on which PatchWindow
 # has focus
 
+# this could probably just be apply, but keep the old one for tcl plugins that
+# might use apply for "stretch"
 proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
@@ -174,7 +176,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
         -value 2 -variable ::dialog_font::whichstretch
     radiobutton .font.stretch.radio3 -text [_ "Y only"] \
         -value 3 -variable ::dialog_font::whichstretch
-    
 
     pack .font.stretch.radio1 -side top -anchor w
     pack .font.stretch.radio2 -side top -anchor w
@@ -182,7 +183,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
     
     button .font.stretch.apply -text [_ "Apply"] \
         -command "::dialog_font::stretch_apply $gfxstub" -default active
-    
     pack .font.stretch.apply -side left -expand 1 -fill x -ipadx 10 \
         -anchor s
 
