@@ -71,10 +71,11 @@ int sys_nmidiin = -1;
 int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
-char sys_font[100] = "DejaVu Sans Mono";
 #if __APPLE__
+char sys_font[100] = "Menlo"; /* hack until DVSM bug is fixed on macOS 10.15+ */
 char sys_fontweight[10] = "normal";
 #else
+char sys_font[100] = "DejaVu Sans Mono";
 char sys_fontweight[10] = "bold";
 #endif
 static int sys_main_srate;
@@ -499,7 +500,7 @@ static char *(usagemessage[]) = {
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
-"-d <n>           -- specify debug level\n",
+"-d <n>           -- specify debug level for inspecting the GUI communication\n",
 "-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
@@ -507,7 +508,7 @@ static char *(usagemessage[]) = {
 "-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
-"-guicmd \"cmd...\" -- start alternatve GUI program (e.g., remote via ssh)\n",
+"-guicmd \"cmd...\" -- start alternative GUI program (e.g., remote via ssh)\n",
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
 "-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",

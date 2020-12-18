@@ -116,7 +116,10 @@ t_int *vinlet_perform(t_int *w)
 
 static void vinlet_fwd(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
+
+    if (!x->x_buf)   /* if we're not signal, just forward */
+        outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+    else if (x->x_fwdout && argc > 0 && argv->a_type == A_SYMBOL)
         outlet_anything(x->x_fwdout, argv->a_w.w_symbol, argc-1, argv+1);
 }
 
@@ -463,7 +466,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
     if (!x->x_buf) return;
     insig = sp[0];
     if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, (t_int)insig->s_n);
+        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
     else if (x->x_directsignal)
     {
             /* if we're just going to make the signal available on the

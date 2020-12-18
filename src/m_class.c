@@ -198,13 +198,15 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
-    int i, instanceno = x->pd_instanceno;
+    int i, instanceno;
     t_class *c;
-    t_instanceinter *inter = x->pd_inter;
+    t_instanceinter *inter;
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-
+    
+    instanceno = x->pd_instanceno;
+    inter = x->pd_inter;
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
@@ -962,8 +964,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_pd *bonzo;
 
         /* check for messages that are handled by fixed slots in the class
-        structure.  We don't catch "pointer" though so that sending "pointer"
-        to pd_objectmaker doesn't require that we supply a pointer value. */
+        structure. */
     if (s == &s_float)
     {
         if (!argc) (*c->c_floatmethod)(x, 0.);
@@ -988,6 +989,15 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
         else
             (*c->c_symbolmethod)(x, &s_);
+        return;
+    }
+        /* pd_objectmaker doesn't require
+        an actual pointer value */
+    if (s == &s_pointer && x != &pd_objectmaker)
+    {
+        if (argc && argv->a_type == A_POINTER)
+            (*c->c_pointermethod)(x, argv->a_w.w_gpointer);
+        else goto badarg;
         return;
     }
 #ifdef PDINSTANCE

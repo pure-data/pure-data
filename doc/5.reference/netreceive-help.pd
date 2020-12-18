@@ -71,7 +71,7 @@ compatible clients) that have opened connections here., f 84;
 ;
 #X text 23 451 *) On some systems you can also receive IPv4 messages.
 This certainly doesn't work on Windows!, f 54;
-#X text 21 115 For backwards comptability \, hostname resolution favors
+#X text 21 115 For backwards compatibility \, hostname resolution favors
 IPv4 results., f 69;
 #X text 20 63 By default \, netreceive listens on all IPv4 and IPv6
 interfaces \, but you can restrict it to a specific interface \, e.g.

@@ -18,7 +18,7 @@ creates another t_undo_action and saves its contents there and updates "last"
 pointer inside the t_canvas (t_glist).
 
 t_undo_action requires canvas information in case we've deleted a canvas and
-then undoed its deletion which will in effect change its pointer (memory
+then undo its deletion which will in effect change its pointer (memory
 location). Then we need to call check_canvas_pointers to update all of the old
 (stale) undo actions to corresepond with the new memory location.
 
@@ -31,7 +31,7 @@ Types of undo data:
 1  - connect
 2  - disconnect
 3  - cut, clear & typing into objects
-4  - motion, inculding "tidy up" and stretching
+4  - motion, including "tidy up" and stretching
 5  - paste & duplicate
 6  - apply
 7  - arrange (to front/back)

@@ -67,7 +67,7 @@ This patch is used as an abstraction in various examples.;
 send to line~, f 22;
 #X text 387 420 send to line~;
 #X text 645 356 send to line~;
-#X text 649 412 get atack/decay/release lines, f 23;
+#X text 649 412 get attack/decay/release lines, f 23;
 #X text 644 456 generate envelope;
 #X connect 0 0 3 0;
 #X connect 1 0 5 1;

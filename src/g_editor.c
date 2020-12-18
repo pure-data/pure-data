@@ -707,7 +707,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        canvas_applybinbuf(x, buf->u_reconnectbuf);
+        if (buf)
+            canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
@@ -841,8 +842,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             {
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 buf->u_vec[i].e_index = indx;
-                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
-                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
+                buf->u_vec[i].e_xpix = x1 / x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1 / x->gl_zoom;
                 i++;
             }
     }
@@ -852,8 +853,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         {
             gobj_getrect(y, x, &x1, &y1, &x2, &y2);
             buf->u_vec[indx].e_index = indx;
-            buf->u_vec[indx].e_xpix = x1/x->gl_zoom;
-            buf->u_vec[indx].e_ypix = y1/x->gl_zoom;
+            buf->u_vec[indx].e_xpix = x1 / x->gl_zoom;
+            buf->u_vec[indx].e_ypix = y1 / x->gl_zoom;
         }
     }
     EDITOR->canvas_undo_already_set_move = 1;
@@ -1197,9 +1198,12 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
             /* now fix links in the hole made in the list due to moving of the oldy
              * (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
              */
-        if (oldy_next) /* there is indeed more after oldy position */
-            oldy_prev->g_next = oldy_next;
-        else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        if (oldy_prev)
+        {
+            if (oldy_next) /* there is indeed more after oldy position */
+                oldy_prev->g_next = oldy_next;
+            else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
+        }
 
 #if 0
             /* and finally redraw */
@@ -4198,7 +4202,8 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         int objectcount = glist_getindex(x, 0);
             /* only cycle selection if the current selection contains exactly 1 item */
         t_gobj* y = x->gl_editor->e_selection->sel_next ? 0 : x->gl_editor->e_selection->sel_what;
-        if(!y)return;
+        if (!y || !objectcount)
+            return;
         newindex = (glist_getindex(x, y) + offset) % objectcount;
         if (newindex < 0) newindex += objectcount;
         glist_deselect(x, y);
@@ -4229,6 +4234,9 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             } else
                 offset--;
         }
+
+        if (!connectioncount)
+            offset = 0;
 
             /* if the offset is non-0, wrap it... */
         if (offset)
@@ -4317,7 +4325,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             inlet_new(objsink, &objsink->ob_pd, 0, 0);
 
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
-    if (glist_isvisible(x))
+    if (glist_isvisible(x) && x->gl_havewindow)
     {
         sys_vgui(
             ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
@@ -4345,7 +4353,7 @@ static void canvas_tidy(t_canvas *x)
     int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
     int histogram[NHIST], *ip, i, besthist, bestdist;
         /* if nobody is selected, this means do it to all boxes;
-           othewise just the selection */
+           otherwise just the selection */
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
     canvas_undo_add(x, UNDO_MOTION, "{tidy up}", canvas_undo_set_move(x, !all));
@@ -4724,7 +4732,8 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
     }
     else
     {
-        glist_noselect(x);
+        glist_noselect(x);  /* this can knock us back into edit mode so : */
+        x->gl_edit = (unsigned int) state;
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
@@ -4880,9 +4889,6 @@ void g_editor_setup(void)
 
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
-/* -------------- copy buffer ------------------ */
-    EDITOR->copy_binbuf = binbuf_new();
 }
 
 void canvas_editor_for_class(t_class *c)
@@ -4906,6 +4912,8 @@ void canvas_editor_for_class(t_class *c)
 void g_editor_newpdinstance(void)
 {
     EDITOR = getbytes(sizeof(*EDITOR));
+        /* other stuff is null-checked but this needs to exist: */
+    EDITOR->copy_binbuf = binbuf_new();
 }
 
 void g_editor_freepdinstance(void)

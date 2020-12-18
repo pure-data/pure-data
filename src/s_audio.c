@@ -20,14 +20,18 @@
 #include <string.h>
 #include <errno.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 #define SYS_DEFAULTCH 2
 typedef long t_pa_sample;
 #define SYS_SAMPLEWIDTH sizeof(t_pa_sample)
 #define SYS_BYTESPERCHAN (DEFDACBLKSIZE * SYS_SAMPLEWIDTH)
 #define SYS_XFERSAMPS (SYS_DEFAULTCH*DEFDACBLKSIZE)
 #define SYS_XFERSIZE (SYS_SAMPLEWIDTH * SYS_XFERSAMPS)
-#define MAXNDEV 20
-#define DEVDESCSIZE 1024
+#define MAXNDEV 128
+#define DEVDESCSIZE 128
 
 static void audio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
@@ -746,7 +750,7 @@ static void sys_listaudiodevs(void)
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
+    char buf[MAXPDSTRING];
         /* these are the devices you're using: */
     int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
@@ -776,6 +780,11 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
             &blocksize);
 
+    /* don't offer callbacks unless it's already on - turning them on and off
+    dynamically crashes Pd.  LATER get callbacks working again.  */
+    if (!callback)
+        cancallback = 0;
+
     /* post("naudioindev %d naudiooutdev %d longform %f",
             naudioindev, naudiooutdev, flongform); */
     if (naudioindev > 1 || naudiooutdev > 1)
@@ -797,7 +806,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     audiooutchan2 = (naudiooutdev > 1 ? choutdev[1] : 0);
     audiooutchan3 = (naudiooutdev > 2 ? choutdev[2] : 0);
     audiooutchan4 = (naudiooutdev > 3 ? choutdev[3] : 0);
-    sprintf(buf,
+    snprintf(buf, MAXPDSTRING,
 "pdtk_audio_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d %d %d %d %d %d %d %d \

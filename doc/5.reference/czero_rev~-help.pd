@@ -96,7 +96,6 @@ for an introduction to the necessary theory.), f 68;
 #X obj 217 255 sig~;
 #X text 262 294 coefficient (real and imaginary part);
 #X msg 133 179 set 0.6 0.8;
-#X text 50 324 The action of czero~ is:;
 #X text 66 374 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient (all complex numbers). The filter is always
 stable., f 64;
@@ -134,9 +133,10 @@ two inlets). The impulse response is that of "rzero" reversed in time.
 #X text 168 127 <= signal to filter (real part);
 #X text 166 152 <= clear internal state to zero;
 #X text 219 180 <= set internal state (real&imaginary parts);
-#X connect 0 0 11 0;
-#X connect 1 0 11 0;
-#X connect 4 0 11 1;
-#X connect 5 0 11 2;
-#X connect 6 0 11 3;
-#X connect 8 0 11 0;
+#X text 50 324 The action of czero_rev~ is:;
+#X connect 0 0 10 0;
+#X connect 1 0 10 0;
+#X connect 4 0 10 1;
+#X connect 5 0 10 2;
+#X connect 6 0 10 3;
+#X connect 8 0 10 0;

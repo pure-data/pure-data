@@ -75,7 +75,7 @@ static void check_error(int err, int fn, const char *why)
 }
 
 /* figure out, when opening ALSA device, whether we should use the code in
-this file or defer to Winfried Ritch's code to do mmaped transfers (handled
+this file or defer to Winfried Ritch's code to do mapped transfers (handled
 in s_audio_alsamm.c). */
 static int alsaio_canmmap(t_alsa_dev *dev)
 {
@@ -201,7 +201,8 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
     check_error(err, out, "snd_pcm_hw_params");
-
+    if (err < 0)
+        return (-1);
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
     if (alsa_snd_buf)
@@ -568,13 +569,13 @@ int alsa_send_dacs(void)
             sys_log_error(ERR_DATALATE);
             if (result == -EPIPE)
             {
-                result = snd_pcm_prepare(alsa_indev[iodev].a_handle);
+                result = snd_pcm_prepare(alsa_outdev[iodev].a_handle);
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
             else
             {
-                fprintf(stderr, "read error: %s (%d)\n",
+                fprintf(stderr, "write error: %s (%d)\n",
                     strerror(-result), result);
                 goterror = 1;
             }

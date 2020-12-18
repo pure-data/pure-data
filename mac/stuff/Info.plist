@@ -49,8 +49,12 @@
 	<string>Pure Data</string>
 	<key>CFBundleVersion</key>
 	<string>????</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for live video input.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is required for audio input.</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
