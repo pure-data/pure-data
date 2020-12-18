@@ -4824,11 +4824,10 @@ static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
             gobj_displace(y, x, nx1-x1, ny1-y1);
         }
     }
-    if (glist_isvisible(x))
-        glist_redraw(x);
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_checkglist(&y->g_pd)  && !canvas_isabstraction((t_canvas *)y))
             canvas_dofont((t_canvas *)y, font, xresize, yresize);
+    if(x->gl_havewindow) canvas_redraw(x);
 }
 
     /* canvas_menufont calls up a TK dialog which calls this back */
@@ -4848,6 +4847,8 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
+    if ((realresx != 1 || realresx != 1) || (oldfont != (int)font))
+        canvas_dirty(x2, 1);
     canvas_undo_add(x2, UNDO_FONT, "font",
         canvas_undo_set_font(x2, oldfont, realresize, whichresize));
 
