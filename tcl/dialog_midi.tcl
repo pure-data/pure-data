@@ -121,8 +121,6 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     $id configure -menu $::dialog_menubar
     $id configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $id "midi"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $id -topmost 1}
 
     # input devices
     labelframe $id.inputs -text [_ "Input Devices"] -padx 5 -pady 5 -borderwidth 1
@@ -406,10 +404,6 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.saveall config -highlightthickness 0
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
-
-        # don't use -topmost on macOS with Tk 8.6+ as it places the window above
-        # *all* windows including those of other applications
-        catch {wm attributes $id -topmost 0}
     }
 
     # set min size based on widget sizing & pos over pdwindow

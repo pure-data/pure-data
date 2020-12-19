@@ -143,8 +143,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $mytoplevel -topmost 1}
 
     # settings
     labelframe $mytoplevel.settings -text [_ "Settings"] -padx 5 -pady 5 -borderwidth 1
@@ -408,10 +406,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.saveall config -highlightthickness 0
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
-
-        # don't use -topmost on macOS with Tk 8.6+ as it places the window above
-        # *all* windows including those of other applications
-        catch {wm attributes $mytoplevel -topmost 0}
     }
 
     # set min size based on widget sizing & pos over pdwindow
