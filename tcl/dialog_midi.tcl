@@ -406,6 +406,10 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.saveall config -highlightthickness 0
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
+
+        # don't use -topmost on macOS with Tk 8.6+ as it places the window above
+        # *all* windows including those of other applications
+        catch {wm attributes $id -topmost 0}
     }
 
     # set min size based on widget sizing & pos over pdwindow

@@ -118,7 +118,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     pack .font.buttonframe -side bottom -pady 2m
     button .font.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_font::ok $gfxstub" -default active
-    pack .font.buttonframe.ok -side left -expand 1 -fill x -ipadx 10
+    pack .font.buttonframe.ok -side left -expand 1 -padx 15 -ipadx 10
 
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
         -width [::msgcat::mcmax "Font Size"] -labelanchor n
