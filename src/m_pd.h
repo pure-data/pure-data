@@ -29,6 +29,7 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #endif /* _MSC_VER */
 
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
+#ifndef EXTERN
 #ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
@@ -38,6 +39,7 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #else
 #define EXTERN extern
 #endif /* _WIN32 */
+#endif /* EXTERN */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
     structure whose elements are defined elsewhere.  On MSVC, when compiling
