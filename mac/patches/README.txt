@@ -29,11 +29,16 @@ To skip applying patches, use the tcltk-wish.sh --no-patches commandline option.
 
 ## Current Patches
 
-### tk8.5.19_keyfix.patch
+### tk8.6.10_zombiewindows.patch
 
-Fixes key release events and adds repeat handling, see
+Backport fix for zombie windows on systems with the Touchbar which could cause
+Pd to crash when closing the Font dialog due to a nil window pointer.
 
-    https://github.com/pure-data/pure-data/issues/213
+### tk8.6.10_scrollbars.patch
+
+Backport commit which fixes scrollbars not (re)drawing, see
+
+    https://core.tcl-lang.org/tk/info/71433282feea6ae9
 
 ### tk8.6.10_helpmenu.patch:
 
@@ -45,3 +50,9 @@ Fixes help menu items disabling after switching windows, see
 ### tk8.6.10_keyfix.patch
 
 The tk8.5.19_keyfix.patch updated for Tk 8.6.10.
+
+### tk8.5.19_keyfix.patch
+
+Fixes key release events and adds repeat handling, see
+
+    https://github.com/pure-data/pure-data/issues/213
