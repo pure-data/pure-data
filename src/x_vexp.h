@@ -15,6 +15,7 @@
 #else /* MSP */
 #include "ext.h"
 #include "z_dsp.h"
+typedef float t_float;      // t_float is from m_pd.h
 #endif
 
 #define fts_malloc malloc
@@ -220,7 +221,7 @@ typedef struct ex_funcs {
         long f_argc;                            /* number of arguments */
 } t_ex_func;
 
-/* function prototypes for pd-related functions called withing vexp.h */
+/* function prototypes for pd-related functions called within vexp.h */
 
 extern int
 max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,

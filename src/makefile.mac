@@ -12,6 +12,8 @@ GUINAME= libPdTcl.dylib
 ARCH= -arch i386 -arch ppc
 EXTRAARCH= -arch i386 -arch x86_64 -arch ppc
 
+MKDIR_P = mkdir -p
+
 prefix = /usr/local
 exec_prefix = ${prefix}
 bindir = ${exec_prefix}/bin
@@ -19,7 +21,7 @@ includedir = ${prefix}/include
 libdir = ${exec_prefix}/lib
 mandir = ${prefix}/man
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
+# variables to match packages/Makefile.buildlayout so that they can be easily
 # overridden when building Pd-extended builds. <hans@at.or.at>
 libpddir = $(libdir)/pd
 pddocdir = $(libpddir)/doc
@@ -68,7 +70,7 @@ SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c    \
     $(PADIR)/src/common/pa_debugprint.c  \
     $(PADIR)/src/common/pa_ringbuffer.c  \
     $(PADIR)/src/os/unix/pa_unix_util.c  \
-    $(PADIR)/src/os/mac_osx/pa_mac_hostapis.c              \
+    $(PADIR)/src/os/unix/pa_unix_hostapis.c                \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core.c           \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core_blocking.c  \
     $(PADIR)/src/hostapi/coreaudio/pa_mac_core_utilities.c \
@@ -128,6 +130,11 @@ bin: pd $(BIN_DIR)/pd-watchdog gui $(BIN_DIR)/pdsend \
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
+
+$(OBJ): $(OBJ_DIR)
+
+$(OBJ_DIR):
+	$(MKDIR_P) $@
 
 pd: $(PDEXEC)
 

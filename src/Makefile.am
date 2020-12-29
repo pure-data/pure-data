@@ -318,7 +318,7 @@ CLEANFILES += pd.res
 
 # hide the console
 pd_LDFLAGS += -mwindows
-# link with ressources and pd.dll import library
+# link with resources and pd.dll import library
 pd_LDADD += pd.res pd.lib
 
 pd_OBJECTS_core = $(pd_SOURCES_core:.c=.o)
@@ -361,7 +361,7 @@ endif
 ##### Windows MinGW #####
 if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
-# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
+# XP SP1. WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
 # On the other hand, Msys2 wants a minimum of 0x0600  (Windows Vista)
 # for some necessary defines in <ws2tcpip.h> (for IP6 support).

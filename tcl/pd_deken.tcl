@@ -187,7 +187,7 @@ If NOT fso.FolderExists(ExtractTo) Then
    fso.CreateFolder(ExtractTo)
 End If
 
-'Extract the contants of the zip file.
+'Extract the contents of the zip file.
 set objShell = CreateObject("Shell.Application")
 set FilesInZip=objShell.NameSpace(ZipFile).items
 objShell.NameSpace(ExtractTo).CopyHere(FilesInZip)
@@ -1386,7 +1386,7 @@ proc urldecode {str} {
 ## API draft
 
 # each backend is implemented via a single proc
-## that takes a single argument "term", the term to search fo
+## that takes a single argument "term", the term to search for
 ## an empty term indicates "search for all"
 # the backend then returns a list of results
 ## each result is a list of the following elements:

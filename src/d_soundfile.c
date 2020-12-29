@@ -45,10 +45,11 @@ objects use Posix-like threads.  */
 
 /***************** soundfile header structures ************************/
 
-typedef union _samplelong {
-  t_sample f;
-  long     l;
-} t_sampleuint;
+    /* float sample conversion wrapper */
+typedef union _floatuint {
+  float f;
+  uint32_t ui;
+} t_floatuint;
 
 #define FORMAT_WAVE 0
 #define FORMAT_AIFF 1
@@ -341,7 +342,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             nchannels = 1;
             bytespersamp = 2;
             samprate = 44100;
-                /* copy the first chunk header to beginnning of buffer. */
+                /* copy the first chunk header to beginning of buffer. */
             memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_wavechunk));
             /* post("chunk %c %c %c %c",
                     ((t_wavechunk *)buf)->wc_id[0],
@@ -402,7 +403,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             nchannels = 1;
             bytespersamp = 2;
             samprate = 44100;
-                /* copy the first chunk header to beginnning of buffer. */
+                /* copy the first chunk header to beginning of buffer. */
             memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_datachunk));
                 /* read chunks in loop until we get to the data chunk */
             datachunk = &buf.b_datachunk;
@@ -514,62 +515,71 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
     unsigned char *sp, *sp2;
     t_sample *fp;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
-    int bytesperframe = bytespersamp * sfchannels;
-    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
+    int bytespersample = bytespersamp;
+    int bytesperframe = bytespersample * sfchannels;
+    long framesread = itemsread, nframes = nitems;
+    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersample)
     {
-        if (bytespersamp == 2)
+        if (bytespersample == 2)
         {
             if (bigendian)
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
                         *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16));
             }
             else
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
                         *fp = SCALE * ((sp2[1] << 24) | (sp2[0] << 16));
             }
         }
-        else if (bytespersamp == 3)
+        else if (bytespersample == 3)
         {
             if (bigendian)
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16)
-                            | (sp2[2] << 8));
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
+                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16) |
+                                       (sp2[2] << 8));
             }
             else
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *fp = SCALE * ((sp2[2] << 24) | (sp2[1] << 16)
-                            | (sp2[0] << 8));
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
+                        *fp = SCALE * ((sp2[2] << 24) | (sp2[1] << 16) |
+                                       (sp2[0] << 8));
             }
         }
-        else if (bytespersamp == 4)
+        else if (bytespersample == 4)
         {
+            t_floatuint alias;
             if (bigendian)
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *(long *)fp = ((sp2[0] << 24) | (sp2[1] << 16)
-                            | (sp2[2] << 8) | sp2[3]);
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
+                {
+                    alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
+                                (sp2[2] << 8)  |  sp2[3]);
+                    *fp = (t_sample)alias.f;
+                }
             }
             else
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
-                    j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *(long *)fp = ((sp2[3] << 24) | (sp2[2] << 16)
-                            | (sp2[1] << 8) | sp2[0]);
+                for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
+                    j < nframes; j++, sp2 += bytesperframe, fp++)
+                {
+                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
+                                (sp2[1] << 8)  |  sp2[0]);
+                    *fp = (t_sample)alias.f;
+                }
             }
         }
     }
         /* zero out other outputs */
     for (i = sfchannels; i < nvecs; i++)
-        for (j = nitems, fp = vecs[i]; j--; )
+        for (j = nframes, fp = vecs[i]; j--; )
             *fp++ = 0;
 
 }
@@ -583,15 +593,11 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
     unsigned char *sp, *sp2;
     t_word *wp;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
-    int bytesperframe = bytespersamp * sfchannels;
-    union
+    int bytespersample = bytespersamp;
+    int bytesperframe = bytespersample * sfchannels;
+    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersample)
     {
-        long long32;
-        float float32;
-    } word32;
-    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
-    {
-        if (bytespersamp == 2)
+        if (bytespersample == 2)
         {
             if (bigendian)
             {
@@ -606,7 +612,7 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
                         wp->w_float = SCALE * ((sp2[1] << 24) | (sp2[0] << 16));
             }
         }
-        else if (bytespersamp == 3)
+        else if (bytespersample == 3)
         {
             if (bigendian)
             {
@@ -623,16 +629,17 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
                             | (sp2[0] << 8));
             }
         }
-        else if (bytespersamp == 4)
+        else if (bytespersample == 4)
         {
+            t_floatuint alias;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    word32.long32 = (sp2[0] << 24) |
-                            (sp2[1] << 16) | (sp2[2] << 8) | sp2[3];
-                    wp->w_float = word32.float32;
+                    alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
+                                (sp2[2] << 8)  |  sp2[3]);
+                    wp->w_float = (t_float)alias.f;
                 }
             }
             else
@@ -640,9 +647,9 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
                 for (j = 0, sp2 = sp, wp = vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    word32.long32 = (sp2[3] << 24) |
-                        (sp2[2] << 16) | (sp2[1] << 8) | sp2[0];
-                    wp->w_float = word32.float32;
+                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
+                                (sp2[1] << 8)  |  sp2[0]);
+                    wp->w_float = (t_float)alias.f;
                 }
             }
         }
@@ -1071,15 +1078,15 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint f2;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    t_sampleuint f2;
                     f2.f = *fp * normalfactor;
-                    sp2[0] = (f2.l >> 24); sp2[1] = (f2.l >> 16);
-                    sp2[2] = (f2.l >> 8); sp2[3] = f2.l;
+                    sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
+                    sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
                 }
             }
             else
@@ -1087,10 +1094,9 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    t_sampleuint f2;
                     f2.f = *fp * normalfactor;
-                    sp2[3] = (f2.l >> 24); sp2[2] = (f2.l >> 16);
-                    sp2[1] = (f2.l >> 8); sp2[0] = f2.l;
+                    sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
                 }
             }
         }
@@ -1179,15 +1185,15 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint f2;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    t_sampleuint f2;
                     f2.f = wp->w_float * normalfactor;
-                    sp2[0] = (f2.l >> 24); sp2[1] = (f2.l >> 16);
-                    sp2[2] = (f2.l >> 8); sp2[3] = f2.l;
+                    sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
+                    sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
                 }
             }
             else
@@ -1195,10 +1201,9 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
                 for (j = 0, sp2 = sp, wp = vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    t_sampleuint f2;
                     f2.f = wp->w_float * normalfactor;
-                    sp2[3] = (f2.l >> 24); sp2[2] = (f2.l >> 16);
-                    sp2[1] = (f2.l >> 8); sp2[0] = f2.l;
+                    sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
                 }
             }
         }
@@ -1239,9 +1244,10 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
     nframes = n/narray;
-    post("read 1 %d", n);
+    //post("read 1 %d", n);
     if (nframes < 1)
     {
+        binbuf_free(b);
         pd_error(x, "soundfiler_read: %s: empty or very short file", filename);
         return;
     }
@@ -1250,12 +1256,13 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
         for (i = 0; i < narray; i++)
         {
             garray_resize_long(garrays[i], nframes);
-            garray_getfloatwords(garrays[i], &vecsize, &vecs[i]);
+            if (!garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+                bug("garray_getfloatwords[%d]", i);
         }
     }
     else if (finalsize < nframes)
         nframes = finalsize;
-    post("read 2");
+    //post("read 2");
     for (j = 0, ap = atoms; j < nframes; j++)
         for (i = 0; i < narray; i++)
             vecs[i][j].w_float = atom_getfloat(ap++);
@@ -1269,7 +1276,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
     }
     for (i = 0; i < narray; i++)
         garray_redraw(garrays[i]);
-    post("read 3");
+    //post("read 3");
     
 }
 
@@ -1719,6 +1726,9 @@ typedef struct _readsf
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
     pthread_t x_childthread;
+#ifdef PDINSTANCE
+    t_pdinstance *x_pd_this; /* pointer to the owner pd instance */
+#endif
 } t_readsf;
 
 
@@ -1755,6 +1765,9 @@ static void readsf_fakewait(pthread_mutex_t *b)
 static void *readsf_child_main(void *zz)
 {
     t_readsf *x = zz;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
@@ -2078,6 +2091,9 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    x->x_pd_this = pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, readsf_child_main, x);
     return (x);
 }
@@ -2313,6 +2329,9 @@ static t_class *writesf_class;
 static void *writesf_child_main(void *zz)
 {
     t_writesf *x = zz;
+#ifdef PDINSTANCE
+    pd_this = x->x_pd_this;
+#endif
 #ifdef DEBUG_SOUNDFILE
     pute("1\n");
 #endif
@@ -2406,8 +2425,7 @@ static void *writesf_child_main(void *zz)
                 pute("open failed\n");
                 pute(filename);
 #endif
-                x->x_requestcode = REQUEST_NOTHING;
-                continue;
+                goto bail;
             }
             /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
@@ -2477,7 +2495,7 @@ static void *writesf_child_main(void *zz)
                     pute("fileerror\n");
 #endif
                     x->x_fileerror = errno;
-                    break;
+                    goto bail;
                 }
                 else
                 {
@@ -2495,6 +2513,22 @@ static void *writesf_child_main(void *zz)
                     /* signal parent in case it's waiting for data */
                 sfread_cond_signal(&x->x_answercondition);
             }
+            continue;
+
+        bail:
+            if (x->x_requestcode == REQUEST_BUSY)
+                x->x_requestcode = REQUEST_NOTHING;
+                /* hit an error; close file if necessary,
+                set EOF and signal once more */
+            if (x->x_fd >= 0)
+            {
+                pthread_mutex_unlock(&x->x_mutex);
+                close (x->x_fd);
+                pthread_mutex_lock(&x->x_mutex);
+                x->x_eof = 1;
+                x->x_fd = -1;
+            }
+            sfread_cond_signal(&x->x_answercondition);
         }
         else if (x->x_requestcode == REQUEST_CLOSE ||
             x->x_requestcode == REQUEST_QUIT)
@@ -2579,6 +2613,9 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_buf = buf;
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
+#ifdef PDINSTANCE
+    x->x_pd_this = pd_this;
+#endif
     pthread_create(&x->x_childthread, 0, writesf_child_main, x);
     return (x);
 }
@@ -2597,7 +2634,7 @@ static t_int *writesf_perform(t_int *w)
         roominfifo = x->x_fifotail - x->x_fifohead;
         if (roominfifo <= 0)
             roominfifo += x->x_fifosize;
-        while (roominfifo < wantbytes + 1)
+        while (!x->x_eof && roominfifo < wantbytes + 1)
         {
             fprintf(stderr, "writesf waiting for disk write..\n");
             fprintf(stderr, "(head %d, tail %d, room %d, want %d)\n",
@@ -2608,6 +2645,20 @@ static t_int *writesf_perform(t_int *w)
             roominfifo = x->x_fifotail - x->x_fifohead;
             if (roominfifo <= 0)
                 roominfifo += x->x_fifosize;
+        }
+        if (x->x_eof)
+        {
+            if (x->x_fileerror)
+            {
+                pd_error(x, "dsp: %s: %s", x->x_filename,
+                    (x->x_fileerror == EIO ?
+                        "unknown or bad header format" :
+                            strerror(x->x_fileerror)));
+            }
+            x->x_state = STATE_IDLE;
+            sfread_cond_signal(&x->x_requestcondition);
+            pthread_mutex_unlock(&x->x_mutex);
+            return (w+2);
         }
 
         soundfile_xferout_sample(sfchannels, x->x_outvec,

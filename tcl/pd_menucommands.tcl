@@ -89,7 +89,10 @@ proc ::pd_menucommands::menu_toggle_editmode {} {
 
 # send a message to a pd canvas receiver
 proc ::pd_menucommands::menu_send {window message} {
-    set mytoplevel [winfo toplevel $window]
+    if { [catch {set mytoplevel [winfo toplevel $window]} ] } {
+        ::pdwindow::logpost {} 4 "menu_send: skipping unknown window '$window'\n"
+        return
+    }
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel $message"
     } elseif {$mytoplevel eq ".pdwindow"} {

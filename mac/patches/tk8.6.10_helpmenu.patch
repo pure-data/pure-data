@@ -1,0 +1,30 @@
+diff --git a/macosx/tkMacOSXMenu.c b/macosx/tkMacOSXMenu.c
+index 735f7d292..08e7501a7 100644
+--- a/macosx/tkMacOSXMenu.c
++++ b/macosx/tkMacOSXMenu.c
+@@ -701,22 +701,10 @@ TkpConfigureMenuEntry(
+ 		     * re-enable the entries here.
+ 		     */
+ 
+-		    int i = 0;
+-		    NSArray *itemArray = [submenu itemArray];
+-
+-		    for (NSMenuItem *item in itemArray) {
++		    for (int i = 0; i < menuRefPtr->menuPtr->numEntries; i++) {
+ 			TkMenuEntry *submePtr = menuRefPtr->menuPtr->entries[i];
+-
+-			/*
+-			 * Work around an apparent bug where itemArray can have
+-			 * more items than the menu's entries[] array.
+-			 */
+-
+-			if (i >= (int) menuRefPtr->menuPtr->numEntries) {
+-			    break;
+-			}
+-			[item setEnabled: !(submePtr->state == ENTRY_DISABLED)];
+-			i++;
++			NSMenuItem *item = (NSMenuItem *) submePtr->platformEntryData;
++			[item setEnabled: submePtr->state != ENTRY_DISABLED];
+ 		    }
+ 		}
+ 	    }

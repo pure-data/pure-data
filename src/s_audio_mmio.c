@@ -35,8 +35,8 @@ static int nt_naudiobuffer = DEFBUFFER;
 
 static int nt_whichapi = API_MMIO;
 static int nt_meters;        /* true if we're metering */
-static float nt_inmax;       /* max input amplitude */
-static float nt_outmax;      /* max output amplitude */
+static t_sample nt_inmax;       /* max input amplitude */
+static t_sample nt_outmax;      /* max output amplitude */
 static int nt_nwavein, nt_nwaveout;     /* number of WAVE devices in and out */
 
 typedef struct _sbuf
@@ -164,7 +164,7 @@ int mmio_do_open_audio(void)
     }
     for (nad=0; nad < nt_nwavein; nad++)
     {
-        /* Open waveform device(s), sucessively numbered, for input */
+        /* Open waveform device(s), successively numbered, for input */
 
         mmresult = waveInOpen(&ntsnd_indev[nad], nt_whichadc+nad,
                 (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
@@ -199,7 +199,7 @@ int mmio_do_open_audio(void)
 
     for (nda = 0; nda < nt_nwaveout; nda++)
     {
-            /* Open a waveform device for output in sucessiv device numbering*/
+            /* Open a waveform device for output in successive device numbering*/
         mmresult = waveOutOpen(&ntsnd_outdev[nda], nt_whichdac + nda,
             (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
 
@@ -494,7 +494,7 @@ int mmio_send_dacs(void)
     HANDLE hFormat;
     int i, j;
     short *sp1, *sp2;
-    float *fp1, *fp2;
+    t_sample *fp1, *fp2;
     int nextfill, doxfer = 0;
     int nda, nad;
     if (!nt_nwavein && !nt_nwaveout) return (0);
@@ -503,11 +503,11 @@ int mmio_send_dacs(void)
     if (nt_meters)
     {
         int i, n;
-        float maxsamp;
+        t_sample maxsamp;
         for (i = 0, n = 2 * nt_nwavein * DEFDACBLKSIZE, maxsamp = nt_inmax;
             i < n; i++)
         {
-            float f = STUFF->st_soundin[i];
+            t_sample f = STUFF->st_soundin[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -515,7 +515,7 @@ int mmio_send_dacs(void)
         for (i = 0, n = 2 * nt_nwaveout * DEFDACBLKSIZE, maxsamp = nt_outmax;
             i < n; i++)
         {
-            float f = STUFF->st_soundout[i];
+            t_sample f = STUFF->st_soundout[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -596,7 +596,7 @@ int mmio_send_dacs(void)
             for (j = 0, fp2 = fp1, sp2 = sp1; j < DEFDACBLKSIZE;
                 j++, fp2++, sp2 += CHANNELS_PER_DEVICE)
             {
-                *fp2 = ((float)(1./32767.)) * (float)(*sp2);
+                *fp2 = ((t_sample)(1./32767.)) * (t_sample)(*sp2);
             }
         }
     }
