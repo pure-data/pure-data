@@ -1983,7 +1983,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
 #ifdef PDINSTANCE
-    pd_this = x->x_pd_this;
+    x->x_pd_this = pd_this;
 #endif
     pthread_create(&x->x_childthread, 0, readsf_child_main, x);
     return x;
@@ -2410,21 +2410,21 @@ static void *writesf_child_main(void *zz)
                 sfread_cond_signal(&x->x_answercondition);
                 continue;
 
-         bail:
-             if (x->x_requestcode == REQUEST_BUSY)
-                 x->x_requestcode = REQUEST_NOTHING;
-                 /* hit an error; close file if necessary,
-                 set EOF and signal once more */
-             if (sf.sf_fd >= 0)
-             {
-                 pthread_mutex_unlock(&x->x_mutex);
-                 sys_close(sf.sf_fd);
-                 sf.sf_fd = -1;
-                 pthread_mutex_lock(&x->x_mutex);
-                 x->x_eof = 1;
-                 x->x_sf.sf_fd = -1;
-             }
-             sfread_cond_signal(&x->x_answercondition);
+             bail:
+                 if (x->x_requestcode == REQUEST_BUSY)
+                     x->x_requestcode = REQUEST_NOTHING;
+                     /* hit an error; close file if necessary,
+                     set EOF and signal once more */
+                 if (sf.sf_fd >= 0)
+                 {
+                     pthread_mutex_unlock(&x->x_mutex);
+                     sys_close(sf.sf_fd);
+                     sf.sf_fd = -1;
+                     pthread_mutex_lock(&x->x_mutex);
+                     x->x_eof = 1;
+                     x->x_sf.sf_fd = -1;
+                 }
+                 sfread_cond_signal(&x->x_answercondition);
             }
         }
         else if (x->x_requestcode == REQUEST_CLOSE ||
@@ -2507,7 +2507,7 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
 #ifdef PDINSTANCE
-    pd_this = x->x_pd_this;
+    x->x_pd_this = pd_this;
 #endif
     pthread_create(&x->x_childthread, 0, writesf_child_main, x);
     return x;

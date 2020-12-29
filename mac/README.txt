@@ -227,4 +227,12 @@ longer their inner text and text selection positioning is off.
 
 To remedy this for now, Pd 0.51-3 changed Pd's default font for macOS to Menlo
 which is included with the system since 10.6. Menlo is based on Bitstream Vera
-Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or positioning.
+Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or
+positioning.
+
+## Dark Mode
+
+Pd currently disables Dark Mode support by setting the
+NSRequiresAquaSystemAppearance key to true in both the app bundle's Info.plist
+and the GUI defaults preference file. This restruction may be removed in the
+future once Dark Mode is handled in the GUI.

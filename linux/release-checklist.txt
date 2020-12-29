@@ -1,0 +1,66 @@
+release checklist
+
+test compilation on linux/msw/mac:
+
+VERSION=0.51-4test4
+MAC=x64
+
+------------- remake po: ----------------
+rm -rf /tmp/pd* /tmp/Pd*
+cd ~/pd/linux
+cd /tmp/
+tar xzf ~/pd/dist/pd-$VERSION.src.tar.gz
+cd /tmp/pd-$VERSION
+./autogen.sh && ./configure && make && rsync -avl --delete \
+    po/ ~/bis/work/pd-versions/po/
+rsync -avl ~/bis/work/pd-versions/po/ $MAC:work/build/po/
+
+------------- release build ----------
+cd ~/pd/linux
+./make-release $VERSION
+
+---- build on macosx 10.7 machine:
+scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
+ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
+    scp -p $MAC:work/build/pd-$VERSION-macosx7.mac.tar.gz ~/pd/dist/
+ssh $MAC 'cd work/b32/; ./build-386 ' $VERSION && \
+    scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
+
+--------- build osx10.14 version:
+rsync -avl --delete $MAC:work/build/pd-$VERSION/ /tmp/pd-$VERSION/
+rsync -e "ssh -p 2200" -avzl /tmp/pd-$VERSION/ \
+    localhost:work/build/pd-$VERSION/
+ssh -p 2200 localhost 'cd work/build; ./build-maxosx14 '$VERSION
+scp -P 2200 -p localhost:work/build/pd-$VERSION.mac.tar.gz ~/pd/dist/
+
+---------- build for windows:
+cd ~/pd/msw
+rm -rf /tmp/pd-*
+./build-msw-64.sh $VERSION
+./build-wxp-32.sh $VERSION
+mv /tmp/pd-$VERSION*.{zip,exe} ~/pd/dist
+rm -rf /tmp/pd-*
+
+--------- once the above checks out with a tmp version, proceed:
+update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
+copyright date in ../README.txt
+release notes:
+    nedit-client  ../doc/1.manual/x5.htm
+git commit -a
+.... (go back and rebuild as above) ...
+git tag | tail (to see existing tags)
+git tag 0.43-3test1 (e.g.)
+git push origin
+git push origin --tags
+    ... (I don't use 'mirror' here because afraid of deleting PR branches)
+git push sourceforge --mirror
+cp -i ~/pd/dist/* ~/bis/lib/public_html/Software/
+rsync -avzl --delete ~/pd/doc/1.manual/ \
+    ~/bis/lib/public_html/Pd_documentation/
+chmod -R go-w ~/bis/lib/public_html/Pd_documentation/
+cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
+(cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
+nedit-client /home/msp/bis/lib/public_html/software.htm
+copy-out.sh +
+
+mail release notice from /home/msp/pd/attic/pd-announce
