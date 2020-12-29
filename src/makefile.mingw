@@ -9,9 +9,9 @@
 CC = gcc
 CXX = g++
 WINDRES = windres
+MKDIR_P = mkdir -p
 
-cvs_root_dir = ../..
-pd_src = $(cvs_root_dir)/pd
+pd_src = ..
 DLL_DIR = $(pd_src)/src
 
 BIN_DIR = ../bin
@@ -27,7 +27,7 @@ bindir = $(exec_prefix)/bin
 
 GFLAGS = -DINSTALL_PREFIX=\"$(prefix)\"
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
+# variables to match packages/Makefile.buildlayout so that they can be easily
 # overridden when building Pd-extended builds. <hans@at.or.at>
 libpddir = $(prefix)
 pddocdir = $(libpddir)/doc
@@ -45,7 +45,9 @@ DLLWRAP= dllwrap
 MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/lib/ASIOSDK
+
+asiodir := $(firstword $(wildcard $(pd_src)/lib/ASIOSDK $(pd_src)/asio/ASIOSDK))
+ASIODIR ?= $(asiodir)
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
@@ -62,8 +64,8 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
 # Some old code in asio/ASIOSDK/common/combase.h needs to be ignored,
 # we do this by setting the WINVER macro to min Windows XP aka 5.1.
-# Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
-# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
+# Also, for SetDllDirectory() s_loader.c, we need a minimum of Windows
+# XP SP1.  WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.
 ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME -DWINVER=0x0502 \
      -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"'
@@ -185,23 +187,23 @@ $(PMOBJ) : %.o : %.c
 $(VOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
 
-$(PDSEND): u_pdsend.o s_net.o
+$(PDSEND): $(EXECDIR) u_pdsend.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
 	$(STRIP) $(PDSEND)
 
-$(PDRECEIVE): u_pdreceive.o s_net.o
+$(PDRECEIVE): $(EXECDIR) u_pdreceive.o s_net.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o s_net.o $(LIBS)
 	$(STRIP) $(PDRECEIVE)
 
-$(PDEXEC): s_entry.o pd.res
+$(PDEXEC): $(EXECDIR) s_entry.o pd.res
 	$(CXX) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) pd.a
 	$(STRIP) -s $(PDEXEC)
 
-$(PDCOM): s_entry.o
+$(PDCOM): $(EXECDIR) s_entry.o
 	$(CXX) $(LDFLAGS) -o $(PDCOM) s_entry.o $(LIBS) pd.a
 	$(STRIP) -s $(PDCOM)
 
-$(PDDLL): $(OBJC)
+$(PDDLL): $(EXECDIR) $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
 		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
 	$(STRIP) $(PDDLL)
@@ -209,11 +211,14 @@ $(PDDLL): $(OBJC)
 pd.res: pd.rc
 	$(WINDRES) pd.rc -O coff -o pd.res
 
-../bin/pdstatic.exe: $(OBJC)
+$(EXECDIR)/pdstatic.exe: $(OBJC) $(EXECDIR)
 	$(CXX) -static \
-            $(LDFLAGS) -o ../bin/pdstatic.exe $(OBJC) \
+            $(LDFLAGS) -o $@ $(OBJC) \
             $(LIBS) -lole32 -static-libgcc -static-libstdc++
-	$(STRIP) -s ../bin/pdstatic.exe
+	$(STRIP) -s $@
+
+$(EXECDIR):
+	$(MKDIR_P) $@
 
 #vstschedlib.dll: $(VOBJ)
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
@@ -242,7 +247,7 @@ install:  all
 	install -p ../tcl/*.tcl $(DESTDIR)$(bindir)/
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
 	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
-	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
+	install -p $(PDDLL) $(DESTDIR)$(bindir)/pd.dll
 	install -p ../tcl/pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
 	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)

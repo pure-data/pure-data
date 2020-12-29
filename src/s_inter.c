@@ -120,6 +120,7 @@ struct _instanceinter
     int i_guisize;
     int i_waitingforping;
     int i_bytessincelastping;
+    int i_fdschanged;   /* flag to break fdpoll loop if fd list changes */
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
@@ -215,8 +216,10 @@ static int sys_domicrosleep(int microsec, int pollem)
         if(select(pd_this->pd_inter->i_maxfd+1,
                   &readset, &writeset, &exceptset, &timout) < 0)
           perror("microsleep select");
-        for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
-            if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
+        pd_this->pd_inter->i_fdschanged = 0;
+        for (i = 0; i < pd_this->pd_inter->i_nfdpoll &&
+            !pd_this->pd_inter->i_fdschanged; i++)
+                if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
@@ -389,7 +392,7 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-void sys_sockerror(char *s)
+void sys_sockerror(const char *s)
 {
     char buf[MAXPDSTRING];
     int err = socket_errno();
@@ -413,6 +416,7 @@ void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
     pd_this->pd_inter->i_nfdpoll = nfd + 1;
     if (fd >= pd_this->pd_inter->i_maxfd)
         pd_this->pd_inter->i_maxfd = fd + 1;
+    pd_this->pd_inter->i_fdschanged = 1;
 }
 
 void sys_rmpollfn(int fd)
@@ -420,6 +424,7 @@ void sys_rmpollfn(int fd)
     int nfd = pd_this->pd_inter->i_nfdpoll;
     int i, size = nfd * sizeof(t_fdpoll);
     t_fdpoll *fp;
+    pd_this->pd_inter->i_fdschanged = 1;
     for (i = nfd, fp = pd_this->pd_inter->i_fdpoll; i--; fp++)
     {
         if (fp->fdp_fd == fd)
@@ -504,20 +509,29 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
-                /* only close the socket if there really was an error.
-                (socket_errno_udp() ignores some error codes) */
+                /* socket_errno_udp() ignores some error codes */
             if (socket_errno_udp())
             {
                 sys_sockerror("recv (udp)");
+                    /* only notify and shutdown a UDP sender! */
                 if (x->sr_notifier)
+                {
                     (*x->sr_notifier)(x->sr_owner, fd);
-                sys_rmpollfn(fd);
-                sys_closesocket(fd);
+                    sys_rmpollfn(fd);
+                    sys_closesocket(fd);
+                }
             }
             return;
         }
         else if (ret > 0)
         {
+                /* handle too large UDP packets */
+            if (ret > INBUFSIZE)
+            {
+                post("warning: incoming UDP packet truncated from %d to %d bytes.",
+                    ret, INBUFSIZE);
+                ret = INBUFSIZE;
+            }
             buf[ret] = 0;
     #if 0
             post("%s", buf);
@@ -552,8 +566,6 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         }
     }
 }
-
-void sys_exit(void);
 
 void socketreceiver_read(t_socketreceiver *x, int fd)
 {
@@ -712,7 +724,7 @@ int sys_havegui(void)
     return (pd_this->pd_inter->i_havegui);
 }
 
-void sys_vgui(char *fmt, ...)
+void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
@@ -770,7 +782,7 @@ void sys_vgui(char *fmt, ...)
     pd_this->pd_inter->i_bytessincelastping += msglen;
 }
 
-void sys_gui(char *s)
+void sys_gui(const char *s)
 {
     sys_vgui("%s", s);
 }
@@ -1022,6 +1034,7 @@ static void sys_init_deken(void)
 
 static int sys_do_startgui(const char *libdir)
 {
+    char quotebuf[MAXPDSTRING];
     char apibuf[256], apibuf2[256];
     struct addrinfo *ailist = NULL, *ai;
     int sockfd = -1;
@@ -1340,7 +1353,9 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
-             apibuf, apibuf2, sys_font, sys_fontweight);
+             apibuf, apibuf2,
+             pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
+             sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
@@ -1413,7 +1428,7 @@ void sys_setrealtime(const char *libdir)
             close(pipe9[1]);
 
             if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
-            execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+            execl(cmdbuf, cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
         }
@@ -1455,8 +1470,6 @@ void sys_setrealtime(const char *libdir)
 #endif /* __APPLE__ */
 }
 
-extern void sys_exit(void);
-
 /* This is called when something bad has happened, like a segfault.
 Call glob_quit() below to exit cleanly.
 LATER try to save dirty documents even in the bad case. */
@@ -1480,8 +1493,12 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-void glob_quit(void *dummy)
+extern void sys_exit(void);
+
+void glob_exit(void *dummy, t_float status)
 {
+        /* sys_exit() sets the sys_quit flag, so all loops end */
+    sys_exit();
     sys_close_audio();
     sys_close_midi();
     if (sys_havegui())
@@ -1489,7 +1506,11 @@ void glob_quit(void *dummy)
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
     }
-    exit(0);
+    exit((int)status);
+}
+void glob_quit(void *dummy)
+{
+    glob_exit(dummy, 0);
 }
 
     /* recursively descend to all canvases and send them "vis" messages

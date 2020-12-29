@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2019-01-05 21:25+0100\n"
-"Last-Translator: Winfried Ritsch\n"
+"PO-Revision-Date: 2020-10-28 13:30+0100\n"
+"Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.4.1\n"
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
@@ -234,11 +234,13 @@ msgstr "Bézier-Kurve"
 msgid "Put array into:"
 msgstr "Array einfügen in:"
 
+# "Put array into:" + "New graph"
 msgid "New graph"
-msgstr "neuer Graph"
+msgstr "neuen Graph"
 
+# "Put array into:" + "Last graph"
 msgid "Last graph"
-msgstr "letztes Feld"
+msgstr "letzten Graph"
 
 msgid "Options"
 msgstr "Optionen"
@@ -269,6 +271,15 @@ msgstr "Samplingrate:"
 
 msgid "Delay (msec):"
 msgstr "Verzögerung (msec):"
+
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
 
 msgid "Block size:"
 msgstr "Blocklänge:"
@@ -538,7 +549,7 @@ msgid "Test label"
 msgstr "Test Beschriftung"
 
 msgid "Send a Pd message"
-msgstr "Pd Message senden..."
+msgstr "Pd Message senden"
 
 msgid "(use arrow keys for history)"
 msgstr "(benutzen Sie die Pfeiltasten zum Blättern)"
@@ -609,7 +620,7 @@ msgid "Defeat real-time scheduling"
 msgstr "Echtzeit-Modus unterdrücken"
 
 msgid "Help Browser"
-msgstr "Hilfebrowser..."
+msgstr "Hilfebrowser"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
@@ -621,63 +632,54 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
+msgid "installed version [%1$s] > %2$s...skipping!"
+msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
 
 #, tcl-format
-msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
-"[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
-"%2$s]"
-
-#, fuzzy, tcl-format
 msgid "installed version [%1$s] < %2$s...overwriting!"
 msgstr "überschreibe die installierte Version [%1$s] mit %2$s!"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "installed version [%1$s] == %2$s...skipping!"
-msgstr ""
-"die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s"
+msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "successfully unzipped %1$s into %2$s"
-msgstr "erfolgreich %1$s nach %2$s entpackt"
+msgstr "%1$s erfolgreich nach %2$s entpackt"
 
-#, fuzzy
 msgid "unable to extract package automatically"
 msgstr "Paket konnte nicht automatisch entpackt werden"
 
-#, fuzzy
 msgid "please perform the following steps manually:"
 msgstr "bitte führen Sie die folgenden Schritte manuell aus:"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "1. unzip %s"
-msgstr "1. entpacken von %s"
+msgstr "1. entpacken Sie %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "2. copy the contents into %s"
 msgstr "2. kopieren Sie den Inhalt nach %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "uninstalling '%s'"
 msgstr "deinstalliere '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "uninstalling %1$s from %2$s failed!"
-msgstr "deinstallation von '%1$s' aus %2$s schlug fehl!"
+msgstr "Deinstallation von '%1$s' aus %2$s schlug fehl!"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
 msgstr "Pd Paketmanager vom Pfad %s geladen"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "platform detected: %s"
-msgstr "Plattform gefunden: %s"
+msgstr "Paketarchitektur gefunden: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "platform re-detected: %s"
-msgstr "Plattform gefunden: %s"
+msgstr "Paketarchitektur korrigiert: %s"
 
 msgid "Show all"
 msgstr "Alle anzeigen"
@@ -733,11 +735,10 @@ msgstr "Sollen inkompatible Externals versteckt werden?"
 msgid "Deken %s Preferences"
 msgstr "Deken %s Einstellungen"
 
-#, fuzzy
 msgid "start searching for externals..."
 msgstr "starte Paketsuche..."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "online? %s"
 msgstr "Verbindungsprobleme! %s"
 
@@ -747,11 +748,9 @@ msgstr "Sind Sie online?"
 msgid "Unable to perform search."
 msgstr "Die Suche schlug fehl."
 
-#, fuzzy
 msgid "no matching externals found"
 msgstr "Keine passenden Pakete gefunden."
 
-#, fuzzy
 msgid "try using the full name e.g. 'freeverb'"
 msgstr "Tipp: Suchen Sie nach dem vollen Namen, z.B. 'freeverb'"
 
@@ -765,18 +764,20 @@ msgstr "Bitte wählen Sie ein (beschreibbares) Verzeichnis aus!"
 msgid "Install %1$s to %2$s?"
 msgstr "%1$s nach %2$s installieren?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid ""
 "commencing downloading of:\n"
 "%1$s\n"
 "into %2$s..."
-msgstr "Lade %1$s nach %2$s herunter..."
+msgstr ""
+"Herunterladen von\n"
+"%1$s\n"
+"nach %2$s..."
 
-#, fuzzy
 msgid "... aborting"
-msgstr "... abbruch"
+msgstr "... Abbruch"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to add %s to search paths"
 msgstr "konnte %s nicht zu Pds Suchpfad hinzufügen"
 
@@ -784,19 +785,19 @@ msgstr "konnte %s nicht zu Pds Suchpfad hinzufügen"
 msgid "Add %s to the Pd search paths?"
 msgstr "Soll %s zu Pds Suchpfad hinzugefügt werden?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "added %s to search paths"
 msgstr "%s zum Suchpfad hinzugefügt"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to download from %1$s [%2$s]"
 msgstr "konnte keine Inhalte von %1$s herunterladen [%2$s]"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to remove stray file %s"
 msgstr "konnte Datei %s nicht entfernen"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "unable to rename downloaded file to %s"
 msgstr "konnte heruntergeladene Datei %s nicht umbenennen"
 
@@ -804,13 +805,12 @@ msgstr "konnte heruntergeladene Datei %s nicht umbenennen"
 msgid "searching for '%s'"
 msgstr "such nach '%s'"
 
-#, fuzzy
 msgid "unable to perform search"
 msgstr "die Suche schlug fehl"
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "von %1$s am %2$s hochgeladen"
+msgstr "Von %1$s am %2$s hochgeladen"
 
 msgid "Install package"
 msgstr "Paket installieren"
@@ -821,6 +821,22 @@ msgstr "Webseite öffnen"
 # parser glitch. don't translate this
 msgid "_"
 msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Wollen Sie, dass Pd das vorhandene Dokumenten-Verzeichnis für Patches und "
+"Bibliotheken verwendet?\n"
+"\n"
+"Verzeichnis: %s\n"
+"\n"
+"Sie können Ihre Entscheidung jederzeit in den Suchpfad-Einstellungen ändern."
 
 #, tcl-format
 msgid ""
@@ -852,17 +868,20 @@ msgstr ""
 "\n"
 "Wollen Sie einen neuen Speicherort wählen?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s\n"
-msgstr "Konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
+msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
-msgstr "Konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
+msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
 
-#, fuzzy, tcl-format
+msgid "refusing to delete empty domain"
+msgstr "leere Domäne kann nicht gelöscht werden"
+
+#, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr "Konnte keine Einstellungen erstellen '%1$s' in %2$s erzeugen"
+msgstr "Konnte Einstellungen '%1$s' nicht in %2$s erzeugen"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -1012,6 +1031,12 @@ msgstr ""
 "Alle Einstellungen löschen?\n"
 "(Benötigt Neustart von Pd)"
 
+msgid "removed GUI settings"
+msgstr "GUI-Einstellungen entfernt"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "Keine Pd-GUI Einstellungen zum Zurücksetzen"
+
 msgid "Path..."
 msgstr "Suchpfade..."
 
@@ -1096,13 +1121,21 @@ msgstr "Bearbeiten..."
 msgid "Delete"
 msgstr "Löschen"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr "Überspringe '%s': existiert nicht"
+msgstr "überspringe '%s': existiert nicht"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr "Überspringe '%s': kein Pd-File"
+msgstr "überspringe '%s': kein Pd-File"
+
+#~ msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+#~ msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
+
+#~ msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
+#~ msgstr ""
+#~ "[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
+#~ "%2$s]"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "Die Suche schlug fehl. Sind Sie online?"

@@ -11,7 +11,7 @@ to compile externs using mingw but this makefile doesn't support that).
 To compile, type "make pd_linux", "nmake pd_nt" (for windows), or
 "make pd_darwin" (for Mac OSX).
 
-If you have saved these files to a new location (other than the Pd distrubution
+If you have saved these files to a new location (other than the Pd distribution
 itself), it will probably be necessary to customize the makefile by changing the
 definition of "PDNTINCLUDE" (windows) or "LINUXINCLUDE" (linux or Mac)
 to point back to the PD source directory.

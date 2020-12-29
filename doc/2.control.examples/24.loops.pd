@@ -18,7 +18,7 @@
 #X text 338 684 updated for Pd 0.41;
 #X text 39 17 Looping with the "until" object;
 #X text 41 48 It is sometimes desirable to make a loop without an embedded
-delay (as in 06.more.counters.pd") but rather to make the entire loop
+delay (as in "06.more.counters.pd") but rather to make the entire loop
 take place in the context of a single incoming message. The "until"
 object is provided to make this possible.;
 #X text 262 286 make nonnegative;

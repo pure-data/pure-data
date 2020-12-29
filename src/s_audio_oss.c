@@ -770,7 +770,7 @@ int oss_send_dacs(void)
                 sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)
             {
                 for (j=0;j<nchannels;j++)
-                    fp1[j*DEFDACBLKSIZE] = (float)sp[j]*(float)3.051850e-05;
+                    fp1[j*DEFDACBLKSIZE] = (t_sample)sp[j]*(t_sample)3.051850e-05;
             }
         }
         thischan += nchannels;

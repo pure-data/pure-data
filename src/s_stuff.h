@@ -45,7 +45,7 @@ extern char *sys_guicmd;
 EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
-EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
+EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 
 /* s_loader.c */
 
@@ -179,7 +179,7 @@ EXTERN t_socketreceiver *socketreceiver_new(void *owner,
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
 EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     t_socketfromaddrfn fromaddrfn);
-EXTERN void sys_sockerror(char *s);
+EXTERN void sys_sockerror(const char *s);
 EXTERN void sys_closesocket(int fd);
 
 typedef void (*t_fdpollfn)(void *ptr, int fd);
