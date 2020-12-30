@@ -458,7 +458,7 @@ EXTERN void libpd_set_midibytehook(const t_libpd_midibytehook hook);
 /// requires the path to pd's main folder that contains bin/, tcl/, etc
 /// for a macOS .app bundle: /path/to/Pd-#.#-#.app/Contents/Resources
 /// returns 0 on success
-EXTERN int libpd_start_gui(char *path);
+EXTERN int libpd_start_gui(const char *path);
 
 /// stop the pd vanilla GUI
 EXTERN void libpd_stop_gui(void);
@@ -467,8 +467,8 @@ EXTERN void libpd_stop_gui(void);
 /// this is called automatically when using a libpd_process function,
 /// note: this also facilitates network message processing, etc so it can be
 ///       useful to call repeatedly when idle for more throughput
-///       Returns 1 if the poll found something, in which case it might be
-///       desirable to poll again, up to some reasonable limit.
+/// returns 1 if the poll found something, in which case it might be desirable
+/// to poll again, up to some reasonable limit
 EXTERN int libpd_poll_gui(void);
 
 /* multiple instances */
