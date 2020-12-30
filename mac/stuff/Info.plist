@@ -50,11 +50,13 @@
 	<key>CFBundleVersion</key>
 	<string>????</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Microphone access is required for audio input.</string>
+	<string>Camera access is required for live video input.</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Camera access is required for live video input.</string>
+	<string>Microphone access is required for audio input.</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

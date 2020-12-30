@@ -143,8 +143,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $mytoplevel -topmost 1}
 
     # settings
     labelframe $mytoplevel.settings -text [_ "Settings"] -padx 5 -pady 5 -borderwidth 1

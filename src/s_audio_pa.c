@@ -10,9 +10,9 @@
     is requested, either we call portaudio in non-blocking mode, or else we
     call portaudio in callback mode and manage our own FIFO se we can offer
     Pd "blocking" I/O calls.  To do the latter we define FAKEBLOCKING; this
-    works better in MAXOSX (gets 40 msec lower latency!) and might also in
+    works better in MACOSX (gets 40 msec lower latency!) and might also in
     Windows.  If FAKEBLOCKING is defined we can choose between two methods
-    for waiting on the (presumebly other-thread) I/O to complete, either
+    for waiting on the (presumably other-thread) I/O to complete, either
     correct thread synchronization (by defining THREADSIGNAL) or just sleeping
     and polling; the latter seems to work better so far.
 */
@@ -177,7 +177,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
 }
 
 #ifdef FAKEBLOCKING
-    /* callback for "non-callback" case in which we actualy open portaudio
+    /* callback for "non-callback" case in which we actually open portaudio
     in callback mode but fake "blocking mode". We communicate with the
     main thread via FIFO.  First read the audio output FIFO (which
     we sync on, not waiting for it but supplying zeros to the audio output if

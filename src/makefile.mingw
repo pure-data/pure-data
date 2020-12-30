@@ -27,7 +27,7 @@ bindir = $(exec_prefix)/bin
 
 GFLAGS = -DINSTALL_PREFIX=\"$(prefix)\"
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
+# variables to match packages/Makefile.buildlayout so that they can be easily
 # overridden when building Pd-extended builds. <hans@at.or.at>
 libpddir = $(prefix)
 pddocdir = $(libpddir)/doc
@@ -64,8 +64,8 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
 # Some old code in asio/ASIOSDK/common/combase.h needs to be ignored,
 # we do this by setting the WINVER macro to min Windows XP aka 5.1.
-# Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
-# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
+# Also, for SetDllDirectory() s_loader.c, we need a minimum of Windows
+# XP SP1.  WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.
 ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME -DWINVER=0x0502 \
      -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"'

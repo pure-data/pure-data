@@ -165,7 +165,7 @@ proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
     set oldfilename $filename
     set filename [regsub -- "$extension$" $filename [string tolower $extension]]
     if { ! [regexp -- "\.(pd|pat|mxt)$" $filename]} {
-        # we need the file extention even on Mac OS X
+        # we need the file extension even on Mac OS X
         set filename $filename.pd
     }
     # test again after downcasing and maybe adding a ".pd" on the end

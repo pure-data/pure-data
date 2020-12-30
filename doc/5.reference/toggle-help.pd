@@ -216,7 +216,7 @@ in the patch. Check below:, f 41;
 #X text 47 17 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 345 133 Set RGB values in the sliders;
 #X text 60 157 Open subpatches for the conversion from RGB to hexadecimal
 ============>, f 38;

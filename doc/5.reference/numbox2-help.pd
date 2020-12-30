@@ -24,7 +24,7 @@ click for properties., f 16;
 sends numbers. Click on it and drag to output values - use shift-click
 and drag for fine-tuning by a factor of a hundredth. You can also click
 on the object \, type a number value and then 'enter' to output it.
-Incomming floats set the number box's value and are passed through.
+Incoming floats set the number box's value and are passed through.
 The 'set' message only sets the value without output. A bang message
 sends the number box's value., f 70;
 #X text 28 156 Insert it from the Put menu (named as "Number2") or
@@ -99,7 +99,7 @@ in the patch. Check below:, f 41;
 #X text 67 17 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 68 68 Negative integers were used to encode RGB values (and
 that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are
@@ -378,7 +378,7 @@ values., f 20;
 #X text 44 35 The size message sets the object's size and takes number
 of digits and height values (in number of pixels). The number of digits
 affect the box width \, but note that the box's width also depends
-on the height paramater \, as well as the font type and font size.
+on the height parameter \, as well as the font type and font size.
 , f 51;
 #X connect 0 0 7 0;
 #X connect 1 0 7 0;
@@ -585,7 +585,7 @@ to the one in the background., f 29;
 #X text 204 210 increment value;
 #X text 66 33 Here's an example (or a 'hack') on how to use the number
 box in a discrete way., f 34;
-#X text 66 85 This example allows you to set the increment value dinamically.
+#X text 66 85 This example allows you to set the increment value dynamically.
 , f 34;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;

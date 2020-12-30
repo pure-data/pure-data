@@ -73,7 +73,7 @@ using "read-pt" and "chunk size" can be in the same units (seconds.)
 #X text 584 28 <= transposition \, halftones/10, f 17;
 #N canvas 457 259 614 280 table 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array table22 44103 float 0;
+#X array table23 44103 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
 #X restore 363 64 graph;
 #X text 365 198 --- 44103 samples ---;
@@ -83,8 +83,8 @@ using "read-pt" and "chunk size" can be in the same units (seconds.)
 #X msg 67 91 bang;
 #X obj 48 202 soundfiler;
 #X text 141 155 v-- re-read original table;
-#X obj 52 118 tabwrite~ table22;
-#X msg 48 175 read ../sound/voice.wav table22;
+#X obj 52 118 tabwrite~ table23;
+#X msg 48 175 read ../sound/voice.wav table23;
 #X text 108 91 <= record;
 #X connect 2 0 9 0;
 #X connect 3 0 4 0;

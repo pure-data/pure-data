@@ -1493,7 +1493,7 @@ typedef struct _text_sequence
     t_atom *x_argv;
     t_symbol *x_waitsym;    /* symbol to initiate wait, zero if none */
     int x_waitargc;         /* how many leading numbers to use for waiting */
-    t_clock *x_clock;       /* calback for auto mode */
+    t_clock *x_clock;       /* callback for auto mode */
     t_float x_nextdelay;
     t_symbol *x_lastto;     /* destination symbol if we're after a comma */
     unsigned char x_eaten;  /* true if we've eaten leading numbers already */

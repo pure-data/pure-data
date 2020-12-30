@@ -89,7 +89,7 @@ int sys_midiapi =
     /* this is our current estimate for at what "system" real time the
     current logical time's output should occur. */
 static double sys_dactimeminusrealtime;
-    /* same for input, should be schduler advance earlier. */
+    /* same for input, should be scheduler advance earlier. */
 static double sys_adctimeminusrealtime;
 
 static double sys_newdactimeminusrealtime = -1e20;

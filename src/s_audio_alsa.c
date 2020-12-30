@@ -75,7 +75,7 @@ static void check_error(int err, int fn, const char *why)
 }
 
 /* figure out, when opening ALSA device, whether we should use the code in
-this file or defer to Winfried Ritch's code to do mmaped transfers (handled
+this file or defer to Winfried Ritch's code to do mapped transfers (handled
 in s_audio_alsamm.c). */
 static int alsaio_canmmap(t_alsa_dev *dev)
 {
