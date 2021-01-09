@@ -317,7 +317,6 @@ void sys_setsignalhandlers(void)
     signal(SIGHUP, sys_huphandler);
     signal(SIGINT, sys_exithandler);
     signal(SIGQUIT, sys_exithandler);
-    signal(SIGILL, sys_exithandler);
 # ifdef SIGIOT
     signal(SIGIOT, sys_exithandler);
 # endif
