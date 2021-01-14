@@ -56,7 +56,7 @@ proc ::pdwindow::busyrelease {} {
 
 proc ::pdwindow::buffer_message {object_id level message} {
     variable logbuffer
-    lappend logbuffer $object_id $level $message
+    lappend logbuffer [list $object_id $level $message]
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
@@ -80,9 +80,11 @@ proc ::pdwindow::filter_buffer_to_text {args} {
     variable maxloglevel
     .pdwindow.text.internal delete 0.0 end
     set i 0
-    foreach {object_id level message} $logbuffer {
-        if { $level <= $::loglevel || $maxloglevel == $::loglevel} {
-            insert_log_line $object_id $level $message
+    foreach logentry $logbuffer {
+        foreach {object_id level message} $logentry {
+            if { $level <= $::loglevel || $maxloglevel == $::loglevel} {
+                insert_log_line $object_id $level $message
+            }
         }
         # this could take a while, so update the GUI every 10000 lines
         if { [expr $i % 10000] == 0} {update idletasks}
@@ -160,8 +162,10 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     set f [open $filename w]
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
-    foreach {object_id level message} $logbuffer {
-        puts -nonewline $f $message
+    foreach logentry $logbuffer {
+        foreach {object_id level message} $logentry {
+            puts -nonewline $f $message
+        }
     }
     ::pdwindow::post "saved console to: $filename\n"
     close $f
