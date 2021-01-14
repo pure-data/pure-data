@@ -2,6 +2,8 @@
 package provide pdwindow 0.1
 
 namespace eval ::pdwindow:: {
+    variable maxlogbuffer 21000 ;# if the logbuffer grows beyond this number, cut it
+    variable keeplogbuffer 1000 ;# if the logbuffer gets automatically cut, keep this many elements
     variable logbuffer {}
     variable tclentry {}
     variable tclentry_history {"console show"}
@@ -56,7 +58,16 @@ proc ::pdwindow::busyrelease {} {
 
 proc ::pdwindow::buffer_message {object_id level message} {
     variable logbuffer
+    variable maxlogbuffer
+    variable keeplogbuffer
     lappend logbuffer [list $object_id $level $message]
+    set len [llength $logbuffer]
+    if {$len > $maxlogbuffer} {
+        set logbuffer [lrange $logbuffer end-$keeplogbuffer end]
+        set msg [format [_ "dropped %d lines from the Pd window" ] [expr $len - [llength $logbuffer]]]
+        ::pdwindow::verbose 10 "$msg\n"
+        ::pdwindow::filter_logbuffer
+    }
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
@@ -74,8 +85,7 @@ proc ::pdwindow::insert_log_line {object_id level message} {
     }
 }
 
-# this has 'args' to satisfy trace, but its not used
-proc ::pdwindow::filter_buffer_to_text {args} {
+proc ::pdwindow::filter_logbuffer {} {
     variable logbuffer
     variable maxloglevel
     .pdwindow.text.internal delete 0.0 end
@@ -91,7 +101,13 @@ proc ::pdwindow::filter_buffer_to_text {args} {
         incr i
     }
     .pdwindow.text.internal yview end
-    ::pdwindow::verbose 10 "the Pd window filtered $i lines\n"
+    return $i
+}
+# this has 'args' to satisfy trace, but its not used
+proc ::pdwindow::filter_buffer_to_text {args} {
+    set i [::pdwindow::filter_logbuffer]
+    set msg [format [_ "the Pd window filtered %d lines" ] $i ]
+    ::pdwindow::verbose 10 "$msg\n"
 }
 
 proc ::pdwindow::select_by_id {args} {
