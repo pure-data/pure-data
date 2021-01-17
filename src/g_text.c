@@ -507,7 +507,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 
 /* ---------------------- the "atom" text item ------------------------ */
 
-#define ATOMBUFSIZE 40
+#define ATOMBUFSIZE 200
 #define ATOM_LABELLEFT 0
 #define ATOM_LABELRIGHT 1
 #define ATOM_LABELUP 2
@@ -840,8 +840,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_draghi = draghi;
     if (width < 0)
         width = 4;
-    else if (width > 80)
-        width = 80;
+    else if (width > 120)
+        width = 120;
     x->a_text.te_width = width;
     x->a_wherelabel = ((int)wherelabel & 3);
     x->a_label = label;
