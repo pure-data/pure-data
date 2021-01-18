@@ -746,6 +746,15 @@ void sys_closesocket(int sockfd)
 #define GUI_UPDATESLICE 512 /* how much we try to do in one idle period */
 #define GUI_BYTESPERPING 1024 /* how much we send up per ping */
 
+static void gui_failed(const char* s)
+{
+    if(s)
+        perror(s);
+    else
+        perror("communication to GUI failed");
+    sys_bail(1);
+}
+
 static void sys_trytogetmoreguibuf(int newsize)
 {
         /* newsize can be negative if it overflows (at 0x7FFFFFFF)
@@ -790,10 +799,7 @@ static void sys_trytogetmoreguibuf(int newsize)
                 INTER->i_guibuf + INTER->i_guitail + written,
                 bytestowrite, 0);
             if (res < 0)
-            {
-                perror("pd output pipe");
-                sys_bail(1);
-            }
+                gui_failed("pd output pipe");
             else
             {
                 written += res;
@@ -949,10 +955,7 @@ static int sys_flushtogui(void)
 #endif
 
     if (nwrote < 0)
-    {
-        perror("pd-to-gui socket");
-        sys_bail(1);
-    }
+        gui_failed("pd-to-gui socket");
     else if (!nwrote)
         return (0);
     else if (nwrote >= INTER->i_guihead - INTER->i_guitail)
