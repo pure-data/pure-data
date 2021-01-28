@@ -86,6 +86,8 @@ typedef struct _selection
 {
     t_gobj *sel_what;
     struct _selection *sel_next;
+    t_float sel_width;
+    t_float sel_height;
 } t_selection;
 
     /* this structure is instantiated whenever a glist becomes visible. */
