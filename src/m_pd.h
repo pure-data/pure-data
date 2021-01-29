@@ -368,6 +368,8 @@ EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
 
+EXTERN int strisdollar(const char *s); /* dollar/dollsym atom string checker */
+
 /* ------------------  clocks --------------- */
 
 EXTERN t_clock *clock_new(void *owner, t_method fn);
@@ -728,7 +730,7 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
-#ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
+#ifndef _MSC_VER /* Microsoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
 #if PD_FLOATSIZE == 32
