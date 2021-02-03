@@ -239,7 +239,7 @@ which are all frequently called and which don't fit into simple categories.
 Important packages are:
 (pd-gui:)   pdgui -- everything
 (pd:)	    pd -- functions common to all "pd" objects
-    	    obj -- fuctions common to all "patchable" objects ala Max
+    	    obj -- functions common to all "patchable" objects ala Max
     	    sys -- "system" level functions
     	    binbuf -- functions manipulating binbufs
     	    class -- functions manipulating classes
