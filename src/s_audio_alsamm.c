@@ -884,7 +884,7 @@ static int alsamm_start()
 
     if(avail > 0){
 
-      int comitted = 0;
+      int committed = 0;
 
       if ((err = alsamm_get_channels(dev->a_handle, &avail, &offset,
                                      dev->a_channels,dev->a_addr)) < 0) {
@@ -895,14 +895,14 @@ static int alsamm_start()
       for (chn = 0; chn < dev->a_channels; chn++)
         memset(dev->a_addr[chn],0,avail*ALSAMM_SAMPLEWIDTH_32);
 
-      comitted = snd_pcm_mmap_commit (dev->a_handle, offset, avail);
+      committed = snd_pcm_mmap_commit (dev->a_handle, offset, avail);
 
       avail = snd_pcm_avail_update(dev->a_handle);
 
 #ifdef ALSAMM_DEBUG
       if(sys_verbose)
-        post("start: now channels cleared, out with avail=%d, offset=%d, comitted=%d",
-             avail,offset,comitted);
+        post("start: now channels cleared, out with avail=%d, offset=%d, committed=%d",
+             avail,offset,committed);
 #endif
     }
     /* now start, should be autostarted */
