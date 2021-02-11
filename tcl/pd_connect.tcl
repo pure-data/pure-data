@@ -3,7 +3,7 @@ package provide pd_connect 0.1
 
 namespace eval ::pd_connect:: {
     variable pd_socket
-    variable cmds_from_pd ""
+    variable cmdbuf ""
     variable plugin_dispatch_receivers
 
     namespace export to_pd
@@ -70,20 +70,20 @@ proc ::pd_connect::register_plugin_dispatch_receiver { nameatom callback } {
 
 proc ::pd_connect::pd_readsocket {} {
      variable pd_socket
-     variable cmds_from_pd
+     variable cmdbuf
      if {[eof $pd_socket]} {
          # if we lose the socket connection, that means pd quit, so we quit
          close $pd_socket
          exit
-     } 
-     append cmds_from_pd [read $pd_socket]
-     if {[string index $cmds_from_pd end] ne "\n" || \
-             ![info complete $cmds_from_pd]} {
+     }
+     append cmdbuf [read $pd_socket]
+     if {[string index $cmdbuf end] ne "\n" || \
+             ![info complete $cmdbuf]} {
          # the block is incomplete, wait for the next block of data
          return
      } else {
-         set docmds $cmds_from_pd
-         set cmds_from_pd ""
+         set docmds $cmdbuf
+         set cmdbuf ""
          if {![catch {uplevel #0 $docmds} errorname]} {
              # we ran the command block without error, reset the buffer
          } else {
