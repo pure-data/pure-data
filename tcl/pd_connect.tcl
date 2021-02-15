@@ -68,22 +68,47 @@ proc ::pd_connect::register_plugin_dispatch_receiver { nameatom callback } {
     lappend plugin_dispatch_receivers($nameatom) $callback
 }
 
+proc ::pd_connect::do_cmdassemble {A B} {
+    # assembles A & B into two strings cmds & rest
+    #  cmds: string that can be evaluated
+    #  rest: the remainder
+    # assembling is done from the end of $B (to get the maximum)
+    set lfi end
+    set ok 0
+    while { [set lfi [string last "\n" $B $lfi]] >= 0 } {
+        set ab $A[string range $B 0 $lfi]
+        set b [string range $B [expr $lfi + 1] end]
+        incr lfi -1
+        if {[info complete $ab]} {
+            set A $ab
+            set B $b
+            set ok 1
+            break
+        }
+        set ab ""
+        set b ""
+    }
+    if { $ok } {
+        list $A $B
+    } {
+        list {} [append A $B]
+    }
+}
+
 proc ::pd_connect::pd_readsocket {} {
      variable pd_socket
      variable cmdbuf
+
      if {[eof $pd_socket]} {
          # if we lose the socket connection, that means pd quit, so we quit
          close $pd_socket
          exit
      }
-     append cmdbuf [read $pd_socket]
-     if {[string index $cmdbuf end] ne "\n" || \
-             ![info complete $cmdbuf]} {
-         # the block is incomplete, wait for the next block of data
-         return
-     } else {
-         set docmds $cmdbuf
-         set cmdbuf ""
+
+    set cmds_rest [do_cmdassemble $cmdbuf [read $pd_socket]]
+    set docmds [lindex $cmds_rest 0]
+    set cmdbuf [lindex $cmds_rest 1]
+    if { [string length $docmds] > 0 } {
          if {![catch {uplevel #0 $docmds} errorname]} {
              # we ran the command block without error, reset the buffer
          } else {
