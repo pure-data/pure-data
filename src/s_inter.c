@@ -669,7 +669,17 @@ void sys_closesocket(int sockfd)
 
 static void sys_trytogetmoreguibuf(int newsize)
 {
-    char *newbuf = realloc(INTER->i_guibuf, newsize);
+        /* newsize can be negative if it overflows (at 0x7FFFFFFF)
+         * which only happens if we push a huge amount of data to the GUI,
+         * such as printing a billion numbers
+         *
+         * we could fix this by using size_t (or ssize_t), but this will
+         * possibly lead to memory exhaustion.
+         * as the overflow happens at 2GB which is rather large anyhow but
+         * but most machines will still be able to handle this without swapping
+         * and crashing, we just use the 2GB limit to trigger a synchronous write
+         */
+    char *newbuf = (newsize>=0)?realloc(INTER->i_guibuf, newsize):0;
 #if 0
     static int sizewas;
     if (newsize > 70000 && sizewas < 70000)
