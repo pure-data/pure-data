@@ -675,8 +675,7 @@ static void sys_trytogetmoreguibuf(int newsize)
     if (newsize > 70000 && sizewas < 70000)
     {
         int i;
-        for (i = INTER->i_guitail;
-            i < INTER->i_guihead; i++)
+        for (i = INTER->i_guitail; i < INTER->i_guihead; i++)
                 fputc(INTER->i_guibuf[i], stderr);
     }
     sizewas = newsize;
@@ -691,14 +690,14 @@ static void sys_trytogetmoreguibuf(int newsize)
         this by intentionally setting newbuf to zero */
     if (!newbuf)
     {
-        int bytestowrite = INTER->i_guitail -
-            INTER->i_guihead;
+        int bytestowrite = INTER->i_guitail - INTER->i_guihead;
         int written = 0;
         while (1)
         {
-            int res = (int)send(INTER->i_guisock,
-                INTER->i_guibuf + INTER->i_guitail +
-                    written, bytestowrite, 0);
+            int res = (int)send(
+                INTER->i_guisock,
+                INTER->i_guibuf + INTER->i_guitail + written,
+                bytestowrite, 0);
             if (res < 0)
             {
                 perror("pd output pipe");
@@ -742,15 +741,14 @@ void sys_vgui(const char *fmt, ...)
         INTER->i_guisize = GUI_ALLOCCHUNK;
         INTER->i_guihead = INTER->i_guitail = 0;
     }
-    if (INTER->i_guihead > INTER->i_guisize -
-        (GUI_ALLOCCHUNK/2))
-            sys_trytogetmoreguibuf(INTER->i_guisize +
-                GUI_ALLOCCHUNK);
+    if (INTER->i_guihead > INTER->i_guisize - (GUI_ALLOCCHUNK/2)) {
+            sys_trytogetmoreguibuf(INTER->i_guisize + GUI_ALLOCCHUNK);
+    }
     va_start(ap, fmt);
-    msglen = vsnprintf(INTER->i_guibuf +
-        INTER->i_guihead,
-            INTER->i_guisize - INTER->i_guihead,
-                fmt, ap);
+    msglen = vsnprintf(
+        INTER->i_guibuf  + INTER->i_guihead,
+        INTER->i_guisize - INTER->i_guihead,
+        fmt, ap);
     va_end(ap);
     if(msglen < 0)
     {
@@ -760,25 +758,25 @@ void sys_vgui(const char *fmt, ...)
     }
     if (msglen >= INTER->i_guisize - INTER->i_guihead)
     {
-        int msglen2, newsize = INTER->i_guisize + 1 +
-            (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
+        int msglen2, newsize =
+            INTER->i_guisize
+            + 1
+            + (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
         sys_trytogetmoreguibuf(newsize);
 
         va_start(ap, fmt);
-        msglen2 = vsnprintf(INTER->i_guibuf +
-            INTER->i_guihead,
-                INTER->i_guisize - INTER->i_guihead,
-                    fmt, ap);
+        msglen2 = vsnprintf(
+            INTER->i_guibuf  + INTER->i_guihead,
+            INTER->i_guisize - INTER->i_guihead,
+            fmt, ap);
         va_end(ap);
         if (msglen2 != msglen)
             bug("sys_vgui");
-        if (msglen >= INTER->i_guisize -
-            INTER->i_guihead) msglen =
-                INTER->i_guisize - INTER->i_guihead;
+        if (msglen >= INTER->i_guisize - INTER->i_guihead)
+            msglen  = INTER->i_guisize - INTER->i_guihead;
     }
     if (sys_debuglevel & DEBUG_MESSUP)
-        fprintf(stderr, "%s",
-            INTER->i_guibuf + INTER->i_guihead);
+        fprintf(stderr, "%s", INTER->i_guibuf + INTER->i_guihead);
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }
@@ -793,9 +791,10 @@ static int sys_flushtogui(void)
     int writesize = INTER->i_guihead - INTER->i_guitail,
         nwrote = 0;
     if (writesize > 0)
-        nwrote = (int)send(INTER->i_guisock,
+        nwrote = (int)send(
+            INTER->i_guisock,
             INTER->i_guibuf + INTER->i_guitail,
-                writesize, 0);
+            writesize, 0);
 
 #if 0
     if (writesize)
@@ -809,20 +808,17 @@ static int sys_flushtogui(void)
     }
     else if (!nwrote)
         return (0);
-    else if (nwrote >= INTER->i_guihead -
-        INTER->i_guitail)
-            INTER->i_guihead = INTER->i_guitail = 0;
+    else if (nwrote >= INTER->i_guihead - INTER->i_guitail)
+        INTER->i_guihead = INTER->i_guitail = 0;
     else if (nwrote)
     {
         INTER->i_guitail += nwrote;
         if (INTER->i_guitail > (INTER->i_guisize >> 2))
         {
             memmove(INTER->i_guibuf,
-                INTER->i_guibuf + INTER->i_guitail,
-                    INTER->i_guihead -
-                        INTER->i_guitail);
-            INTER->i_guihead = INTER->i_guihead -
-                INTER->i_guitail;
+                INTER->i_guibuf  + INTER->i_guitail,
+                INTER->i_guihead - INTER->i_guitail);
+            INTER->i_guihead = INTER->i_guihead - INTER->i_guitail;
             INTER->i_guitail = 0;
         }
     }
@@ -919,23 +915,21 @@ void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f)
 void sys_unqueuegui(void *client)
 {
     t_guiqueue *gq, *gq2;
-    while (INTER->i_guiqueuehead &&
-        INTER->i_guiqueuehead->gq_client == client)
+    while (INTER->i_guiqueuehead && INTER->i_guiqueuehead->gq_client == client)
     {
         gq = INTER->i_guiqueuehead;
-        INTER->i_guiqueuehead =
-            INTER->i_guiqueuehead->gq_next;
+        INTER->i_guiqueuehead = INTER->i_guiqueuehead->gq_next;
         t_freebytes(gq, sizeof(*gq));
     }
     if (!INTER->i_guiqueuehead)
         return;
     for (gq = INTER->i_guiqueuehead; (gq2 = gq->gq_next); gq = gq2)
         if (gq2->gq_client == client)
-    {
-        gq->gq_next = gq2->gq_next;
-        t_freebytes(gq2, sizeof(*gq2));
-        break;
-    }
+        {
+            gq->gq_next = gq2->gq_next;
+            t_freebytes(gq2, sizeof(*gq2));
+            break;
+        }
 }
 
     /* poll for any incoming packets, or for GUI updates to send.  call with
