@@ -136,7 +136,7 @@ proc ::pdwindow::logpost {object_id level message} {
         after idle .pdwindow.text.internal yview end
     }
     # -stderr only sets $::stderr if 'pd-gui' is started before 'pd'
-    if {$::stderr} {puts stderr $message}
+    if {$::stderr} {puts -nonewline stderr $message}
 }
 
 # shortcuts for posting to the Pd window
