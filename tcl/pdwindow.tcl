@@ -12,7 +12,8 @@ namespace eval ::pdwindow:: {
     variable logmenuitems
     variable maxloglevel 4
 
-    variable lastlevel 0
+    # private variables
+    variable _lastlevel 0       ;# loglevel of last post (for automatic endpost level)
 
     namespace export create_window
     namespace export pdtk_post
@@ -123,7 +124,7 @@ proc ::pdwindow::select_by_id {args} {
 # information about the patches they are building
 proc ::pdwindow::logpost {object_id level message} {
     variable maxloglevel
-    variable lastlevel $level
+    variable _lastlevel $level
 
     buffer_message $object_id $level $message
     if {[llength [info commands .pdwindow.text.internal]] &&
@@ -151,8 +152,8 @@ proc ::pdwindow::pdtk_post {message} {post $message}
 
 proc ::pdwindow::endpost {} {
     variable linecolor
-    variable lastlevel
-    logpost {} $lastlevel "\n"
+    variable _lastlevel
+    logpost {} $_lastlevel "\n"
     set linecolor [expr ! $linecolor]
 }
 
