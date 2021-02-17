@@ -14,6 +14,7 @@ namespace eval ::pdwindow:: {
 
     # private variables
     variable _lastlevel 0       ;# loglevel of last post (for automatic endpost level)
+    variable _curlogbuffer 0    ;# number of \n currently in the logbuffer
 
     namespace export create_window
     namespace export pdtk_post
@@ -61,11 +62,40 @@ proc ::pdwindow::buffer_message {object_id level message} {
     variable logbuffer
     variable maxlogbuffer
     variable keeplogbuffer
+    variable _curlogbuffer
     lappend logbuffer [list $object_id $level $message]
-    set len [llength $logbuffer]
-    if {$len > $maxlogbuffer} {
-        set logbuffer [lrange $logbuffer end-$keeplogbuffer end]
-        set msg [format [_ "dropped %d lines from the Pd window" ] [expr $len - [llength $logbuffer]]]
+    set lfi 0
+    while { [set lfi [string first "\n" $message $lfi]] >= 0 } {
+        incr lfi
+        incr _curlogbuffer
+    }
+    # what we are actually counting here is not the number of *lines* in the logbuffer,
+    # but the number of buffer_messages, which is much higher
+    # e.g. printing a 10 element list ([1 2 3 4 5 6 7 8 9 10( -> [print])
+    # will add 22 messages (one prefix, one per atom, one per space-between-atoms, one LF)
+    # LATER we could try to track "\n"
+    # buffer-size limiting is only done if maxlogbuffer is > 0
+    if {$maxlogbuffer > 0 && $_curlogbuffer > $maxlogbuffer} {
+        # so we now have more lines (counting "\n") in the buffer than we actually want
+        set keeplines ${keeplogbuffer}
+        if {$keeplines > $maxlogbuffer} {set keeplines $maxlogbuffer}
+        set count 0
+        set keepitems 0
+        # check how many elements we need to save to keep ${keeplines} lines
+        foreach x [lreverse $logbuffer] {
+            set x [lindex $x 2]
+            set lfi 0
+            while { [set lfi [string first "\n" $x $lfi] ] >= 0} { incr lfi
+                incr count
+            }
+            if { $count >= $keeplines } {
+                break
+            }
+            incr keepitems
+        }
+        set logbuffer [lrange $logbuffer end-$keepitems end]
+        set msg [format [_ "dropped %d lines from the Pd window" ] [expr $_curlogbuffer - $count]]
+        set _curlogbuffer 0
         ::pdwindow::verbose 10 "$msg\n"
         ::pdwindow::filter_logbuffer
     }
