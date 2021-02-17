@@ -198,6 +198,7 @@ proc ::pdwindow::verbose {level message} {
 # clear the log and the buffer
 proc ::pdwindow::clear_console {} {
     variable logbuffer {}
+    variable _curlogbuffer 0
     .pdwindow.text.internal delete 0.0 end
 }
 
