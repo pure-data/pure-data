@@ -2,7 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/*  send~, delread~, throw~, catch~ */
+/*  delwrite~, delread~,  delread4~ */
 
 #include "m_pd.h"
 #include <string.h>
