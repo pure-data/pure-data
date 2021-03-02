@@ -295,7 +295,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
-     ./5.reference/0_all_guis-INTRO.txt \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
