@@ -1,30 +1,32 @@
-#N canvas 702 123 557 412 12;
+#N canvas 702 123 556 434 12;
 #X obj 32 18 delwrite~;
-#X obj 33 286 delwrite~ del_line_xxx 500;
-#X text 96 139 signal input;
-#X text 230 284 1st argument: name of delay line;
-#X text 253 314 (= max. delay time);
-#X text 230 300 2nd argument: length of delay line in msec;
-#X text 43 361 see also:;
-#X obj 113 361 delread~;
-#X obj 184 361 delread4~;
-#X msg 83 250 clear;
-#X text 27 52 Delwrite~ allocates memory for a delay line and writes
-an audio signal into it. Delread~ objects by the same name read from
-the delay line.;
-#X text 128 250 set all samples of delay line to zero.;
+#X obj 38 311 delwrite~ del_line_xxx 500;
+#X text 101 154 signal input;
+#X text 235 309 1st argument: name of delay line;
+#X text 258 339 (= max. delay time);
+#X text 235 325 2nd argument: length of delay line in msec;
+#X text 48 386 see also:;
+#X obj 118 386 delread~;
+#X obj 189 386 delread4~;
+#X msg 91 273 clear;
+#X text 141 273 set all samples of delay line to zero.;
 #X text 114 18 - writes a signal in a delay line;
-#X obj 32 140 sig~ 4;
-#X floatatom 32 110 5 0 0 0 - - -;
-#X msg 279 117 \; pd dsp 1;
-#X msg 359 117 \; pd dsp 0;
-#X msg 58 204 freeze \$1;
-#X obj 58 179 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 37 155 sig~ 4;
+#X floatatom 37 125 5 0 0 0 - - -;
+#X msg 284 132 \; pd dsp 1;
+#X msg 364 132 \; pd dsp 0;
+#X msg 63 227 freeze \$1;
+#X obj 63 194 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 137 204 stops recording into the delay line;
-#X text 325 368 updated for Pd version 0.52;
+#X text 330 393 updated for Pd version 0.52;
+#X text 85 192 <= freeze/unfreeze;
+#X text 146 219 non zero stops recording into the delay line and keeps
+what's been recorded \, zero unfreezes., f 47;
+#X text 34 52 Delwrite~ allocates memory for a delay line and writes
+an audio signal into it. Delread~ and delread4~ objects with the same
+name read from the delay line.;
 #X connect 9 0 1 0;
-#X connect 13 0 1 0;
-#X connect 14 0 13 0;
-#X connect 17 0 1 0;
-#X connect 18 0 17 0;
+#X connect 12 0 1 0;
+#X connect 13 0 12 0;
+#X connect 16 0 1 0;
+#X connect 17 0 16 0;
