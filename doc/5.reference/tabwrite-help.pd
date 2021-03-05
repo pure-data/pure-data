@@ -1,24 +1,25 @@
-#N canvas 381 129 637 456 12;
+#N canvas 768 78 672 449 12;
 #X obj 42 25 tabwrite;
-#X floatatom 44 200 0 0 0 0 - - -;
-#X obj 44 326 tabwrite array99, f 20;
+#X floatatom 44 201 0 0 0 0 - - -;
+#X obj 44 360 tabwrite array99, f 20;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array array99 10 float 0;
-#X coords 0 10 10 0 250 200 1;
-#X restore 352 218 graph;
-#X msg 35 69 \; readout 1 \; array99 resize 10 \; array99 bounds 0
-0 10 10 \; array99 xlabel -0.5 0 1 2 3 4 5 6 7 8 9 10 \; array99 ylabel
--1 0 1 2 3 4 5 6 7 8 9 10 \; array99 0 1 4 2 8 5 6 1 4 2 8;
-#X text 359 115 click here to initialize;
-#X floatatom 181 291 0 0 0 0 - - -;
-#X text 193 313 creation argument;
-#X text 195 331 is array name;
-#X text 81 198 set y value;
-#X text 122 268 right inlet selects x value;
-#X msg 60 228 set array99;
-#X text 168 227 change array name;
-#X text 59 381 updated for Pd version 0.33;
+#X array array99 10 float 2;
+#X coords 0 0 10 10 250 200 1 0 0;
+#X restore 394 212 graph;
+#X floatatom 181 326 0 0 0 0 - - -;
+#X text 196 349 creation argument;
+#X text 198 367 is array name;
+#X text 80 199 set y value;
+#X msg 65 235 set array99;
+#X text 154 236 change array name;
+#X text 40 408 updated for Pd version 0.33;
 #X text 114 25 - write numbers to a table;
+#X msg 76 68 \; readout 1 \; array99 resize 10 \; array99 bounds 0
+0 10 10 \; array99 xlabel 11 0 1 2 3 4 5 6 7 8 9 10 \; array99 ylabel
+-0.3 0 1 2 3 4 5 6 7 8 9 10 \; array99 0 1 4 2 8 5 6 1 4 2 8;
+#X text 84 272 right inlet selects x value (indexed from 0). Note that
+input values are clipped to the range from 0 to size-1, f 37;
+#X text 389 109 click here to initialize;
 #X connect 1 0 2 0;
-#X connect 6 0 2 1;
-#X connect 11 0 2 0;
+#X connect 4 0 2 1;
+#X connect 8 0 2 0;
