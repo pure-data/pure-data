@@ -88,7 +88,7 @@ send a "bang" to bangout if it was the last one in the list);
 #X text 32 105 2) compare different pointers with source, f 20;
 #X obj 180 327 print equal;
 #X obj 304 327 print not-equal;
-#X text 48 21 The "equal" message allows to compare an incoming pointer
+#X text 48 21 The "equal" message allows one to compare an incoming pointer
 with the stored pointer. On success \, the pointer is sent to its corresponding
 outlet. On fail \, a bang is sent through the right-most outlet.,
 f 69;

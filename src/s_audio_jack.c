@@ -416,7 +416,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     for (j = 0; j < inchans; j++)
     {
-        sprintf(port_name, "input%d", j);
+        sprintf(port_name, "input_%d", j+1);
         if (!input_port[j]) input_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         if (!input_port[j])
@@ -430,7 +430,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     for (j = 0; j < outchans; j++)
     {
-        sprintf(port_name, "output%d", j);
+        sprintf(port_name, "output_%d", j+1);
         if (!output_port[j]) output_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])

@@ -199,11 +199,11 @@ with sys_lock() set.  We will temporarily release the lock if we actually
 sleep. */
 static int sys_domicrosleep(int microsec, int pollem)
 {
-    struct timeval timout;
+    struct timeval timeout;
     int i, didsomething = 0;
     t_fdpoll *fp;
-    timout.tv_sec = 0;
-    timout.tv_usec = 0;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
     if (pollem && pd_this->pd_inter->i_nfdpoll)
     {
         fd_set readset, writeset, exceptset;
@@ -214,7 +214,7 @@ static int sys_domicrosleep(int microsec, int pollem)
             i = pd_this->pd_inter->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
         if(select(pd_this->pd_inter->i_maxfd+1,
-                  &readset, &writeset, &exceptset, &timout) < 0)
+                  &readset, &writeset, &exceptset, &timeout) < 0)
           perror("microsleep select");
         pd_this->pd_inter->i_fdschanged = 0;
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll &&
@@ -284,10 +284,10 @@ static void sys_alarmhandler(int n)
 
 static void sys_huphandler(int n)
 {
-    struct timeval timout;
-    timout.tv_sec = 0;
-    timout.tv_usec = 30000;
-    select(1, 0, 0, 0, &timout);
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 30000;
+    select(1, 0, 0, 0, &timeout);
 }
 
 void sys_setalarm(int microsec)
@@ -317,7 +317,6 @@ void sys_setsignalhandlers(void)
     signal(SIGHUP, sys_huphandler);
     signal(SIGINT, sys_exithandler);
     signal(SIGQUIT, sys_exithandler);
-    signal(SIGILL, sys_exithandler);
 # ifdef SIGIOT
     signal(SIGIOT, sys_exithandler);
 # endif
