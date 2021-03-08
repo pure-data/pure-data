@@ -132,7 +132,14 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_advance $advance
     set audio_callback $callback
     set audio_blocksize $blocksize
+
+    # FIXME: simple hack to disable samplerate & blocksize when using JACK
     set audio_isfixedsr 0
+    set audio_isfixedbs 0
+    if {[lindex $audio_indevlist $audio_indev1] == "JACK"} {
+        set audio_isfixedsr 1
+        set audio_isfixedbs 1
+    }
 
     toplevel $mytoplevel -class DialogWindow
     wm withdraw $mytoplevel
@@ -170,13 +177,23 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.settings.bsc.rate2 \
         $mytoplevel.settings.bsc.rate3 \
          -side left
+    if {$audio_isfixedsr == 1} {
+        $mytoplevel.settings.srd.sr_entry config -state "disabled"
+        $mytoplevel.settings.bsc.rate1 config -state "disabled"
+        $mytoplevel.settings.bsc.rate2 config -state "disabled"
+        $mytoplevel.settings.bsc.rate3 config -state "disabled"
+    }
+
     label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
-
     pack $mytoplevel.settings.bsc.bs_popup -side right
     pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
+    if {$audio_isfixedbs == 1} {
+        $mytoplevel.settings.bsc.bs_popup config -state "disabled"
+    }
+
     if {$audio_callback >= 0} {
         frame $mytoplevel.settings.callback
         pack $mytoplevel.settings.callback -side bottom -fill x
@@ -202,17 +219,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.inputs.in1f.x0 -side left
     pack $mytoplevel.inputs.in1f.x1 -side left -fill x -expand 1
     pack $mytoplevel.inputs.in1f.x2 $mytoplevel.inputs.in1f.l2 -side right
-
-    # FIXME: simple hack to disable samplerate when using JACK
-    if {[lindex $audio_indevlist $audio_indev1] == "JACK"} {
-        set audio_isfixedsr 1
-    }
-    if {$audio_isfixedsr == 1} {
-        $mytoplevel.settings.srd.sr_entry config -state "disabled"
-        $mytoplevel.settings.bsc.rate1 config -state "disabled"
-        $mytoplevel.settings.bsc.rate2 config -state "disabled"
-        $mytoplevel.settings.bsc.rate3 config -state "disabled"
-    }
 
     # input device 2
     if {$longform && $multi > 1 && [llength $audio_indevlist] > 1} {
