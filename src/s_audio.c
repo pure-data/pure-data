@@ -65,7 +65,7 @@ static int audio_naudiooutdev = -1;
 static int audio_audiooutdev[MAXAUDIOOUTDEV];
 static int audio_audiochoutdev[MAXAUDIOOUTDEV];
 static char audio_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
-static int audio_rate;
+static int audio_rate = 0;
 static int audio_advance = -1;
 static int audio_callback;
 static int audio_blocksize;
@@ -80,6 +80,16 @@ int audio_isopen(void)
     return (audio_state &&
         ((audio_naudioindev > 0 && audio_audiochindev[0] > 0)
             || (audio_naudiooutdev > 0 && audio_audiochoutdev[0] > 0)));
+}
+
+int audio_isfixedsr(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own samplerate */
+    return (sys_audioapi == API_JACK);
+#else
+    return 0;
+#endif
 }
 
 void sys_get_audio_params(
@@ -106,7 +116,7 @@ void sys_get_audio_params(
         else paudiooutdev[i] = audio_audiooutdev[i];
         choutdev[i] = audio_audiochoutdev[i];
     }
-    *prate = audio_rate;
+    *prate = (audio_isfixedsr() ? STUFF->st_dacsr : audio_rate);
     *padvance = audio_advance;
     *pcallback = audio_callback;
     *pblocksize = audio_blocksize;
@@ -134,7 +144,8 @@ void sys_save_audio_params(
         sys_audiodevnumbertoname(1, audiooutdev[i],
             &audio_outdevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
-    audio_rate = rate;
+    if (!audio_isfixedsr() || audio_rate == 0)
+        audio_rate = rate;
     audio_advance = advance;
     audio_callback = callback;
     audio_blocksize = blocksize;
@@ -176,7 +187,9 @@ void sys_setchsr(int chin, int chout, int sr)
                 (DEFDACBLKSIZE*sizeof(t_sample)));
     STUFF->st_inchannels = chin;
     STUFF->st_outchannels = chout;
-    STUFF->st_dacsr = sr;
+    if (!audio_isfixedsr())
+        STUFF->st_dacsr = sr;
+
     sys_advance_samples = (sys_schedadvance * STUFF->st_dacsr) / (1000000.);
     if (sys_advance_samples < DEFDACBLKSIZE)
         sys_advance_samples = DEFDACBLKSIZE;

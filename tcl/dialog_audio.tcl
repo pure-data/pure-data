@@ -132,6 +132,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_advance $advance
     set audio_callback $callback
     set audio_blocksize $blocksize
+    set audio_isfixedsr 0
 
     toplevel $mytoplevel -class DialogWindow
     wm withdraw $mytoplevel
@@ -201,6 +202,17 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.inputs.in1f.x0 -side left
     pack $mytoplevel.inputs.in1f.x1 -side left -fill x -expand 1
     pack $mytoplevel.inputs.in1f.x2 $mytoplevel.inputs.in1f.l2 -side right
+
+    # FIXME: simple hack to disable samplerate when using JACK
+    if {[lindex $audio_indevlist $audio_indev1] == "JACK"} {
+        set audio_isfixedsr 1
+    }
+    if {$audio_isfixedsr == 1} {
+        $mytoplevel.settings.srd.sr_entry config -state "disabled"
+        $mytoplevel.settings.bsc.rate1 config -state "disabled"
+        $mytoplevel.settings.bsc.rate2 config -state "disabled"
+        $mytoplevel.settings.bsc.rate3 config -state "disabled"
+    }
 
     # input device 2
     if {$longform && $multi > 1 && [llength $audio_indevlist] > 1} {
@@ -360,11 +372,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_audio::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
-
-    # set focus
-    $mytoplevel.settings.srd.sr_entry select from 0
-    $mytoplevel.settings.srd.sr_entry select adjust end
-    focus $mytoplevel.settings.srd.sr_entry
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
