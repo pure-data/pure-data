@@ -830,12 +830,12 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 "pdtk_audio_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d %d %d %d %d %d %d %d \
-%s%d %d %d %d %d %s%d\n",
+%s%d %d %d %s%d %d %s%d\n",
         audioindev1, audioindev2, audioindev3, audioindev4,
         audioinchan1, audioinchan2, audioinchan3, audioinchan4,
         audiooutdev1, audiooutdev2, audiooutdev3, audiooutdev4,
         audiooutchan1, audiooutchan2, audiooutchan3, audiooutchan4,
-        audio_isfixedsr()?"!":"", rate, advance, canmulti, (cancallback ? callback : -1),
+        audio_isfixedsr()?"!":"", rate, advance, canmulti, cancallback?"":"!", callback,
         (flongform != 0), audio_isfixedblocksize()?"!":"", blocksize);
     gfxstub_deleteforkey(0);
     gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);

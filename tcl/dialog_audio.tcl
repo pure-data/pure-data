@@ -196,15 +196,14 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.settings.bsc.bs_popup config -state "disabled"
     }
 
-    if {$audio_callback >= 0} {
-        frame $mytoplevel.settings.callback
-        pack $mytoplevel.settings.callback -side bottom -fill x
-        checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
-            -text [_ "Use callbacks"]
-        pack $mytoplevel.settings.callback.c_button -side right
-        if {$audio_isfixedcallback == 1} {
-            $mytoplevel.settings.callback.c_button config -state "disabled"
-        }
+    frame $mytoplevel.settings.callback
+    pack $mytoplevel.settings.callback -side bottom -fill x
+    checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
+        -text [_ "Use callbacks"]
+    pack $mytoplevel.settings.callback.c_button -side right
+    puts "callback: $audio_callback ($audio_isfixedcallback)"
+    if {$audio_isfixedcallback == 1} {
+        $mytoplevel.settings.callback.c_button config -state "disabled"
     }
 
     # input devices
