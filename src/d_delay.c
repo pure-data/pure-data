@@ -30,6 +30,7 @@ typedef struct _sigdelwrite
     int x_sortno;   /* DSP sort number at which this was last put on chain */
     int x_rsortno;  /* DSP sort # for first delread or write in chain */
     int x_vecsize;  /* vector size for delread~ to use */
+    t_float x_sr;   /* sample rate */
     t_float x_f;
 } t_sigdelwrite;
 
@@ -58,6 +59,16 @@ static void sigdelwrite_clear (t_sigdelwrite *x) /* added by Orm Finnendahl */
     memset(x->x_cspace.c_vec, 0, sizeof(t_sample)*(x->x_cspace.c_n + XTRASAMPS));
 }
 
+static void sigdelwrite_resize (t_sigdelwrite *x, t_floatarg f) /* added by Porres */
+{
+    if(f < 0)
+        f = 0;
+    if(f != x->x_deltime){
+        x->x_deltime = f;
+        sigdelwrite_clear(x);
+        sigdelwrite_updatesr(x, x->x_sr);
+    }
+}
 
     /* routine to check that all delwrites/delreads/vds have same vecsize */
 static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
@@ -88,6 +99,7 @@ static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
     x->x_cspace.c_vec = getbytes(XTRASAMPS * sizeof(t_sample));
     x->x_sortno = 0;
     x->x_vecsize = 0;
+    x->x_sr = 1;
     x->x_f = 0;
     return (x);
 }
@@ -126,7 +138,7 @@ static void sigdelwrite_dsp(t_sigdelwrite *x, t_signal **sp)
     dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, (t_int)sp[0]->s_n);
     x->x_sortno = ugen_getsortno();
     sigdelwrite_checkvecsize(x, sp[0]->s_n);
-    sigdelwrite_updatesr(x, sp[0]->s_sr);
+    sigdelwrite_updatesr(x, x->x_sr = sp[0]->s_sr);
 }
 
 static void sigdelwrite_free(t_sigdelwrite *x)
@@ -146,6 +158,8 @@ static void sigdelwrite_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_clear,
                     gensym("clear"), 0);
+    class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_resize,
+                    gensym("resize"), A_DEFFLOAT, 0);
 }
 
 /* ----------------------------- delread~ ----------------------------- */
@@ -157,7 +171,7 @@ typedef struct _sigdelread
     t_symbol *x_sym;
     t_float x_deltime;  /* delay in msec */
     int x_delsamps;     /* delay in samples */
-    t_float x_sr;       /* samples per msec */
+    t_float x_sr;       /* sample rate */
     t_float x_n;        /* vector size */
     int x_zerodel;      /* 0 or vecsize depending on read/write order */
 } t_sigdelread;
