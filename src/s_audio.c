@@ -87,9 +87,8 @@ int audio_isfixedsr(void)
 #ifdef USEAPI_JACK
     /* JACK server sets it's own samplerate */
     return (sys_audioapi == API_JACK);
-#else
-    return 0;
 #endif
+    return 0;
 }
 
 void sys_get_audio_params(
