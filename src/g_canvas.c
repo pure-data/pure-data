@@ -1789,24 +1789,25 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < argc; i++)
     {
         const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
-        if ((argc > i+1) && !strcmp(flag, "-path"))
+        const char *item = (argc > i+1)?atom_getsymbolarg(i+1, argc, argv)->s_name:0;
+        if ((item) && !strcmp(flag, "-path"))
         {
-            canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_path(x, e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
+        else if ((item) && !strcmp(flag, "-stdpath"))
         {
-            canvas_stdpath(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_stdpath(e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-lib"))
+        else if ((item) && !strcmp(flag, "-lib"))
         {
-            canvas_lib(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_lib(x, e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
+        else if ((item) && !strcmp(flag, "-stdlib"))
         {
-            canvas_stdlib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_stdlib(e, item);
             i++;
         }
         else post("declare: %s: unknown declaration", flag);
