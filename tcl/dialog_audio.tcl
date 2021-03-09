@@ -76,13 +76,10 @@ proc audio_popup {name buttonname varname devlist} {
     tk_popup $name.popup $x $y 0
 }
 
-# start a dialog window to select audio devices and settings.  "multi"
-# is 0 if only one device is allowed; 1 if one apiece may be specified for
-# input and output; and 2 if we can select multiple devices.  "longform"
-# (which only makes sense if "multi" is 2) asks us to make controls for
-# opening several devices; if not, we get an extra button to turn longform
-# on and restart the dialog.
 
+# check if the value has an 'unchangeable' marker (a '!'-prefix)
+# returns the value (without the marker) and a boolean whether the marker was set
+# e.g. '!44100' -> {44100 1}
 proc ::dialog_audio::isfixed {value} {
     set fixed 0
     if { [string match "!*" ${value}] } {
@@ -91,6 +88,15 @@ proc ::dialog_audio::isfixed {value} {
     list [string trimleft "${value}" "!"] $fixed
 }
 
+# start a dialog window to select audio devices and settings.  "multi"
+# is 0 if only one device is allowed; 1 if one apiece may be specified for
+# input and output; and 2 if we can select multiple devices.  "longform"
+# (which only makes sense if "multi" is 2) asks us to make controls for
+# opening several devices; if not, we get an extra button to turn longform
+# on and restart the dialog.
+#
+# sr, advance, callback and blocksize can be prefixed with '!', indicating
+# that these values must not be changed by the GUI
 proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         indev1 indev2 indev3 indev4 \
         inchan1 inchan2 inchan3 inchan4 \

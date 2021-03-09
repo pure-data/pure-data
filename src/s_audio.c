@@ -93,7 +93,7 @@ static int audio_isfixedsr(void)
 static int audio_isfixedblocksize(void)
 {
 #ifdef USEAPI_JACK
-    /* JACK server sets it's own samplerate */
+    /* JACK server sets it's own blocksize */
     return (sys_audioapi == API_JACK);
 #endif
     return 0;
@@ -827,6 +827,9 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     audiooutchan2 = (naudiooutdev > 1 ? choutdev[1] : 0);
     audiooutchan3 = (naudiooutdev > 2 ? choutdev[2] : 0);
     audiooutchan4 = (naudiooutdev > 3 ? choutdev[3] : 0);
+
+        /* values that are fixed and must not be changed by the GUI are prefixed with '!';
+         * the GUI will then display these values but disable their widgets */
     snprintf(buf, MAXPDSTRING,
 "pdtk_audio_dialog %%s \
 %d %d %d %d %d %d %d %d \
