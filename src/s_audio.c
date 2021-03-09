@@ -90,11 +90,25 @@ static int audio_isfixedsr(void)
 #endif
     return 0;
 }
+
 static int audio_isfixedblocksize(void)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own blocksize */
     return (sys_audioapi == API_JACK);
+#endif
+    return 0;
+}
+
+#ifdef USEAPI_JACK
+int jack_get_blocksize(void);
+#endif
+
+static int audio_getfixedblocksize(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own blocksize */
+    return (sys_audioapi == API_JACK ? jack_get_blocksize() : 0);
 #endif
     return 0;
 }
@@ -126,7 +140,7 @@ void sys_get_audio_params(
     *prate = (audio_isfixedsr() ? STUFF->st_dacsr : audio_rate);
     *padvance = audio_advance;
     *pcallback = audio_callback;
-    *pblocksize = audio_blocksize;
+    *pblocksize = (audio_isfixedblocksize() ? audio_getfixedblocksize() : audio_blocksize);
 }
 
 void sys_save_audio_params(
