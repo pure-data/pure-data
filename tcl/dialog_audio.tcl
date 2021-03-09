@@ -137,8 +137,8 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_outenable4 [expr $outchan4 > 0 ]
 
     foreach {audio_sr audio_isfixedsr} [::dialog_audio::isfixed $sr] {}
-    set audio_advance $advance
-    set audio_callback $callback
+    foreach {audio_advance audio_isfixedadvance} [::dialog_audio::isfixed $advance] {}
+    foreach {audio_callback audio_isfixedcallback} [::dialog_audio::isfixed $callback] {}
     foreach {audio_blocksize audio_isfixedbs} [::dialog_audio::isfixed $blocksize] {}
 
     toplevel $mytoplevel -class DialogWindow
@@ -164,7 +164,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
     pack $mytoplevel.settings.srd.d_entry $mytoplevel.settings.srd.d_label -side right
-
+    if {$audio_isfixedadvance == 1} {
+        $mytoplevel.settings.srd.d_entry config -state "disabled"
+    }
     frame $mytoplevel.settings.bsc
     pack $mytoplevel.settings.bsc -side top -fill x
     button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
@@ -200,6 +202,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
             -text [_ "Use callbacks"]
         pack $mytoplevel.settings.callback.c_button -side right
+        if {$audio_isfixedcallback == 1} {
+            $mytoplevel.settings.callback.c_button config -state "disabled"
+        }
     }
 
     # input devices
