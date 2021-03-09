@@ -155,7 +155,8 @@ void sys_save_audio_params(
         audio_rate = rate;
     audio_advance = advance;
     audio_callback = callback;
-    audio_blocksize = blocksize;
+    if (!audio_isfixedblocksize() || audio_blocksize == 0)
+        audio_blocksize = blocksize;
 }
 
     /* init routines for any API which needs to set stuff up before
