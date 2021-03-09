@@ -59,7 +59,7 @@ static void sigdelwrite_clear (t_sigdelwrite *x) /* added by Orm Finnendahl */
     memset(x->x_cspace.c_vec, 0, sizeof(t_sample)*(x->x_cspace.c_n + XTRASAMPS));
 }
 
-static void sigdelwrite_size (t_sigdelwrite *x, t_floatarg f) /* added by Porres */
+static void sigdelwrite_resize (t_sigdelwrite *x, t_floatarg f) /* added by Porres */
 {
     if(f < 0)
         f = 0;
@@ -158,8 +158,8 @@ static void sigdelwrite_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_clear,
                     gensym("clear"), 0);
-    class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_size,
-                    gensym("size"), A_DEFFLOAT, 0);
+    class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_resize,
+                    gensym("resize"), A_DEFFLOAT, 0);
 }
 
 /* ----------------------------- delread~ ----------------------------- */
