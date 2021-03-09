@@ -83,6 +83,14 @@ proc audio_popup {name buttonname varname devlist} {
 # opening several devices; if not, we get an extra button to turn longform
 # on and restart the dialog.
 
+proc ::dialog_audio::isfixed {value} {
+    set fixed 0
+    if { [string match "!*" ${value}] } {
+        set fixed 1
+    }
+    list [string trimleft "${value}" "!"] $fixed
+}
+
 proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         indev1 indev2 indev3 indev4 \
         inchan1 inchan2 inchan3 inchan4 \
@@ -128,18 +136,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_outchan4 [expr ( $outchan4 > 0 ? $outchan4 : -$outchan4 ) ]
     set audio_outenable4 [expr $outchan4 > 0 ]
 
-    set audio_sr $sr
+    foreach {audio_sr audio_isfixedsr} [::dialog_audio::isfixed $sr] {}
     set audio_advance $advance
     set audio_callback $callback
-    set audio_blocksize $blocksize
-
-    # FIXME: simple hack to disable samplerate & blocksize when using JACK
-    set audio_isfixedsr 0
-    set audio_isfixedbs 0
-    if {[lindex $audio_indevlist $audio_indev1] == "JACK"} {
-        set audio_isfixedsr 1
-        set audio_isfixedbs 1
-    }
+    foreach {audio_blocksize audio_isfixedbs} [::dialog_audio::isfixed $blocksize] {}
 
     toplevel $mytoplevel -class DialogWindow
     wm withdraw $mytoplevel
