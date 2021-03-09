@@ -90,6 +90,14 @@ static int audio_isfixedsr(void)
 #endif
     return 0;
 }
+static int audio_isfixedblocksize(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own samplerate */
+    return (sys_audioapi == API_JACK);
+#endif
+    return 0;
+}
 
 void sys_get_audio_params(
     int *pnaudioindev, int *paudioindev, int *chindev,
