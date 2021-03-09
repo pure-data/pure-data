@@ -170,7 +170,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
     pack $mytoplevel.settings.srd.d_entry $mytoplevel.settings.srd.d_label -side right
-    if {$audio_isfixedadvance == 1} {
+    if {$audio_isfixedadvance} {
         $mytoplevel.settings.srd.d_entry config -state "disabled"
     }
     frame $mytoplevel.settings.bsc
@@ -185,7 +185,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.settings.bsc.rate2 \
         $mytoplevel.settings.bsc.rate3 \
          -side left
-    if {$audio_isfixedsr == 1} {
+    if {$audio_isfixedsr} {
         $mytoplevel.settings.srd.sr_entry config -state "disabled"
         $mytoplevel.settings.bsc.rate1 config -state "disabled"
         $mytoplevel.settings.bsc.rate2 config -state "disabled"
@@ -198,7 +198,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
     pack $mytoplevel.settings.bsc.bs_popup -side right
     pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
-    if {$audio_isfixedbs == 1} {
+    if {$audio_isfixedbs} {
         $mytoplevel.settings.bsc.bs_popup config -state "disabled"
     }
 
@@ -207,7 +207,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
         -text [_ "Use callbacks"]
     pack $mytoplevel.settings.callback.c_button
-    if {$audio_isfixedcallback == 1} {
+    if {$audio_isfixedcallback} {
         $mytoplevel.settings.callback.c_button config -state "disabled"
     }
 
