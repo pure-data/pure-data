@@ -206,7 +206,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.settings.callback -side bottom -fill x
     checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
         -text [_ "Use callbacks"]
-    pack $mytoplevel.settings.callback.c_button -side right
+    pack $mytoplevel.settings.callback.c_button
     if {$audio_isfixedcallback == 1} {
         $mytoplevel.settings.callback.c_button config -state "disabled"
     }
