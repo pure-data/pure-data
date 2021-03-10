@@ -68,7 +68,7 @@ proc ::pd_connect::register_plugin_dispatch_receiver { nameatom callback } {
     lappend plugin_dispatch_receivers($nameatom) $callback
 }
 
-proc ::pd_connect::do_cmdassemble {A B} {
+proc ::pd_connect::assemble_cmd {A B} {
     # assembles A & B into two strings cmds & rest
     #  cmds: string that can be evaluated
     #  rest: the remainder
@@ -105,9 +105,7 @@ proc ::pd_connect::pd_readsocket {} {
          exit
      }
 
-    set cmds_rest [do_cmdassemble $cmdbuf [read $pd_socket]]
-    set docmds [lindex $cmds_rest 0]
-    set cmdbuf [lindex $cmds_rest 1]
+    foreach {docmds cmdbuf} [assemble_cmd $cmdbuf [read $pd_socket]] { break; }
     if { [string length $docmds] > 0 } {
          if {![catch {uplevel #0 $docmds} errorname]} {
              # we ran the command block without error, reset the buffer

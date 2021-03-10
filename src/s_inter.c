@@ -675,9 +675,11 @@ static void sys_trytogetmoreguibuf(int newsize)
          *
          * we could fix this by using size_t (or ssize_t), but this will
          * possibly lead to memory exhaustion.
-         * as the overflow happens at 2GB which is rather large anyhow but
+         * as the overflow happens at 2GB which is rather large anyhow,
          * but most machines will still be able to handle this without swapping
-         * and crashing, we just use the 2GB limit to trigger a synchronous write
+         * and crashing, we just use the 2GB limit to trigger a synchronous write.
+	 * also note that on the Tcl/Tk side, the maximum size of a buffer is 2GB,
+	 * so there's a nice analogy here.
          */
     char *newbuf = (newsize>=0)?realloc(INTER->i_guibuf, newsize):0;
 #if 0
