@@ -21,6 +21,7 @@ TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
+SIGNATURE_ID="-"
 
 # source dir, relative to this script
 SRC=..
@@ -49,6 +50,9 @@ Options:
   -v,--verbose        verbose copy prints
 
   -w,--wish APP       use a specific Wish.app
+
+  --sign SIGNATURE_ID use SIGNATURE_ID for signing the app.
+                      the default is "-", which means ad-hoc signing
 
   -s,--system-tk VER  use a version of the Tk Wish.app installed on the system,
                       searches in /Library first then /System/Library second,
@@ -96,6 +100,14 @@ EOF
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
     case $1 in
+        --sign)
+            shift 1
+            if [ $# = 0 ] ; then
+                echo "--sign option requires a SIGNATURE_ID argument"
+                exit 1
+            fi
+            SIGNATURE_ID=$1
+            ;;
         -t|--tk)
             shift 1
             if [ $# = 0 ] ; then
@@ -362,11 +374,12 @@ cd - > /dev/null # quiet
 # note: "-" identity results in "ad-hoc signing" aka no signing is performed
 # for one, this allows loading un-validated external libraries on macOS 10.15+:
 # https://cutecoder.org/programming/shared-framework-hardened-runtime
-codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
-    ${APP}/Contents/Frameworks/Tcl.framework/Versions/Current
-codesign $verbose -f -s "-" --entitlements stuff/pd.entitlements \
-    ${APP}/Contents/Frameworks/Tk.framework/Versions/Current
-codesign $verbose --deep -s "-" --entitlements stuff/pd.entitlements $APP
+codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}/Contents/Frameworks/Tcl.framework/Versions/Current" \
+    "${APP}/Contents/Frameworks/Tk.framework/Versions/Current"
+codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}"
 
 # finish up
 touch $APP
