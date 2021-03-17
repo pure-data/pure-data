@@ -259,6 +259,16 @@ AC_SUBST([JACK_LIBS])
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
+##### Build with debug flags? #####
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug], [use debugging support])],
+    [debug=$enableval], [debug=no])
+AS_IF([test x$debug = xyes],[
+    CFLAGS="$CFLAGS $DEBUG_CFLAGS"
+],[
+    CFLAGS="$CFLAGS $RELEASE_CFLAGS"
+])
+
 #########################################
 ##### Configure Options #####
 AC_ARG_ENABLE([libpd],
@@ -274,16 +284,6 @@ AM_CONDITIONAL(LIBPD, test x$enable_libpd = xyes)
 AM_CONDITIONAL(LIBPD_UTILS, test x$enable_libpd_utils = xyes)
 AM_CONDITIONAL(LIBPD_EXTRA, test x$enable_libpd_extra = xyes)
 AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
-
-##### Build with debug flags? #####
-AC_ARG_ENABLE([debug],
-    [AS_HELP_STRING([--enable-debug], [use debugging support])],
-    [debug=$enableval], [debug=no])
-AS_IF([test x$debug = xyes],[
-    CFLAGS="$CFLAGS $DEBUG_CFLAGS"
-],[
-    CFLAGS="$CFLAGS $RELEASE_CFLAGS"
-])
 
 ##### Universal/multi architecture build on macOS #####
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
