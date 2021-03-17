@@ -274,6 +274,8 @@ AS_IF([test x$debug = xyes],[
 AC_ARG_ENABLE([libpd],
     [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
 AC_ARG_ENABLE([libpd-utils],
+AC_ARG_ENABLE([libpd-instance],
+    [AS_HELP_STRING([--enable-libpd-instance], [enable multi-instance support for libpd])])
     [AS_HELP_STRING([--enable-libpd-utils], [enable utilities if building libpd])])
 AC_ARG_ENABLE([libpd-extra],
     [AS_HELP_STRING([--enable-libpd-extra], [include extra objects (sigmund~,pd~,...) in libpd])])
@@ -283,6 +285,7 @@ AC_ARG_ENABLE([libpd-setlocale],
 AM_CONDITIONAL(LIBPD, test x$enable_libpd = xyes)
 AM_CONDITIONAL(LIBPD_UTILS, test x$enable_libpd_utils = xyes)
 AM_CONDITIONAL(LIBPD_EXTRA, test x$enable_libpd_extra = xyes)
+AM_CONDITIONAL(LIBPD_MULTIINSTANCE, test x$enable_libpd_instance = xyes)
 AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
 
 ##### Universal/multi architecture build on macOS #####
@@ -525,9 +528,11 @@ AS_IF([test ! "x${WISH}" = "x"],[
 AS_IF([test "x${enable_libpd}" = "xyes"],[
         libpd="yes"
         libpd_=""
-        AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils"])
-        AS_IF([test "x${enable_libpd_setlocal}" = "xno"],[ libpd_="${libpd_}-setlocale"])
-        AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd}(${libpd_})"])
+        AS_IF([test "x${enable_libpd_instance}" = "xyes"],[ libpd_="${libpd_}+multi "])
+        AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
+        AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
+        AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
+        AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd} ( ${libpd_})"])
 ],[
         libpd="no"
 ])
@@ -595,7 +600,6 @@ AC_MSG_NOTICE([
     midi APIs:            $midi_backends
     libpd:                $libpd
 ])
-
 
 AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
  AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))

@@ -66,6 +66,10 @@ if LIBPD_NO_SETLOCALE
     libpd_la_CPPFLAGS += -DLIBPD_NO_NUMERIC=1
 endif
 
+if LIBPD_MULTIINSTANCE
+    libpd_la_CPPFLAGS += -DPDINSTANCE=1 -DPDTHREADS=1
+endif
+
 if LIBPD_EXTRA
     libpd_la_CPPFLAGS += -DLIBPD_EXTRA=1
 libpd_la_SOURCES += \
