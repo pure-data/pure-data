@@ -265,11 +265,14 @@ AC_ARG_ENABLE([libpd],
     [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
 AC_ARG_ENABLE([libpd-utils],
     [AS_HELP_STRING([--enable-libpd-utils], [enable utilities if building libpd])])
+AC_ARG_ENABLE([libpd-extra],
+    [AS_HELP_STRING([--enable-libpd-extra], [include extra objects (sigmund~,pd~,...) in libpd])])
 AC_ARG_ENABLE([libpd-setlocale],
     [AS_HELP_STRING([--disable-libpd-setlocale], [prevent libpd from calling setlocale() - if you need to control LC_NUMERIC manually ])])
 
 AM_CONDITIONAL(LIBPD, test x$enable_libpd = xyes)
 AM_CONDITIONAL(LIBPD_UTILS, test x$enable_libpd_utils = xyes)
+AM_CONDITIONAL(LIBPD_EXTRA, test x$enable_libpd_extra = xyes)
 AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
 
 ##### Build with debug flags? #####

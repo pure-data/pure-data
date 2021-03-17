@@ -66,6 +66,24 @@ if LIBPD_NO_SETLOCALE
     libpd_la_CPPFLAGS += -DLIBPD_NO_NUMERIC
 endif
 
+if LIBPD_EXTRA
+    libpd_la_CPPFLAGS += -DLIBPD_EXTRA
+libpd_la_SOURCES += \
+    $(top_srcdir)/extra/bob~/bob~.c \
+    $(top_srcdir)/extra/bonk~/bonk~.c \
+    $(top_srcdir)/extra/choice/choice.c \
+    $(top_srcdir)/extra/fiddle~/fiddle~.c \
+    $(top_srcdir)/extra/loop~/loop~.c \
+    $(top_srcdir)/extra/lrshift~/lrshift~.c \
+    $(top_srcdir)/extra/pique/pique.c \
+    $(top_srcdir)/extra/pd~/pdsched.c \
+    $(top_srcdir)/extra/pd~/pd~.c \
+    $(top_srcdir)/extra/sigmund~/sigmund~.c \
+    $(top_srcdir)/extra/stdout/stdout.c \
+    $(empty)
+endif
+
+
 
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
 # (where all the logic resides), that's why we have to split the sources
