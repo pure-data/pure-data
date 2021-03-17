@@ -19,7 +19,7 @@ env:
         ## which branches are submitted to coverity scan (all)
         - COVERITY_SCAN_BRANCH_PATTERN=".*"
         - COVERITY_SCAN_BUILD_COMMAND="make"
-        - CONFIGURE_FLAGS="--enable-libpd --enable-libpd-utils"
+        - CONFIGURE_FLAGS="--enable-jack --enable-libpd --enable-libpd-utils"
 
 
 ## build-matrix that builds on both gcc and clang.

@@ -36,6 +36,7 @@ char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
+static int jack_blocksize = 0; /* should this be PERTHREAD? */
 pthread_mutex_t jack_mutex;
 pthread_cond_t jack_sem;
 
@@ -162,10 +163,16 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 static int
 jack_srate (jack_nframes_t srate, void *arg)
 {
-        STUFF->st_dacsr = srate;
-        return 0;
+    STUFF->st_dacsr = srate;
+    return 0;
 }
 
+static int
+jack_bsize (jack_nframes_t bufsize, void *arg)
+{
+    jack_blocksize = bufsize;
+    return 0;
+}
 
 void glob_audio_setapi(void *dummy, t_floatarg f);
 
@@ -177,6 +184,7 @@ jack_shutdown (void *arg)
   jack_deactivate (jack_client);
   //jack_client_close(jack_client); /* likely to hang if the server shut down */
   jack_client = NULL;
+  jack_blocksize = 0;
 
   glob_audio_setapi(NULL, API_NONE); // set pd_whichapi 0
 }
@@ -382,12 +390,17 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         jack_set_xrun_callback (jack_client, jack_xrun, NULL);
 #endif
 
-        /* tell the JACK server to call `srate()' whenever
+        /* tell the JACK server to call `jack_srate()' whenever
            the sample rate of the system changes.
         */
 
         jack_set_sample_rate_callback (jack_client, jack_srate, 0);
 
+        /* tell the JACK server to call `jack_bsize()' whenever
+           the buffer size of the system changes.
+        */
+
+        jack_set_buffer_size_callback (jack_client, jack_bsize, 0);
 
         /* tell the JACK server to call `jack_shutdown()' if
            it ever shuts down, either entirely, or if it
@@ -404,19 +417,20 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         new_jack = 1;
     }
 
-    /* display the current sample rate. once the client is activated
+    /* display the current sample rate & block size. once the client is activated
        (see below), you should rely on your own sample rate
        callback (see above) for this value.
     */
 
     srate = jack_get_sample_rate (jack_client);
     STUFF->st_dacsr = srate;
+    jack_blocksize = jack_get_buffer_size (jack_client);
 
     /* create the ports */
 
     for (j = 0; j < inchans; j++)
     {
-        sprintf(port_name, "input%d", j);
+        sprintf(port_name, "input_%d", j+1);
         if (!input_port[j]) input_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         if (!input_port[j])
@@ -430,7 +444,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     for (j = 0; j < outchans; j++)
     {
-        sprintf(port_name, "output%d", j);
+        sprintf(port_name, "output_%d", j+1);
         if (!output_port[j]) output_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])
@@ -473,8 +487,9 @@ void jack_close_audio(void)
         jack_client_close(jack_client);
     }
 
-    jack_client=NULL;
+    jack_client = NULL;
     jack_started = 0;
+    jack_blocksize = 0;
 
     pthread_cond_broadcast(&jack_sem);
 
@@ -572,6 +587,11 @@ void jack_client_name(char *name)
       desired_client_name = (char*)getbytes(strlen(name) + 1);
       strcpy(desired_client_name, name);
     }
+}
+
+int jack_get_blocksize(void)
+{
+    return jack_blocksize;
 }
 
 #endif /* JACK */

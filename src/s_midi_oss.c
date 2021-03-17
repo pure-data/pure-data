@@ -144,7 +144,7 @@ void sys_putmidibyte(int portno, int byte)
 void sys_poll_midi(void)
 {
     int i, throttle = 100;
-    struct timeval timout;
+    struct timeval timeout;
     int did = 1, maxfd = 0;
     while (did)
     {
@@ -152,8 +152,8 @@ void sys_poll_midi(void)
         did = 0;
         if (throttle-- < 0)
             break;
-        timout.tv_sec = 0;
-        timout.tv_usec = 0;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
 
         FD_ZERO(&writeset);
         FD_ZERO(&readset);
@@ -164,7 +164,7 @@ void sys_poll_midi(void)
                 maxfd = oss_midiinfd[i];
             FD_SET(oss_midiinfd[i], &readset);
         }
-        select(maxfd+1, &readset, &writeset, &exceptset, &timout);
+        select(maxfd+1, &readset, &writeset, &exceptset, &timeout);
         for (i = 0; i < oss_nmidiin; i++)
             if (FD_ISSET(oss_midiinfd[i], &readset))
         {
@@ -183,7 +183,7 @@ void sys_poll_midi(void)
 void sys_poll_midi(void)
 {
     int i, throttle = 100;
-    struct timeval timout;
+    struct timeval timeout;
     int did = 1, maxfd = 0;
     while (did)
     {
