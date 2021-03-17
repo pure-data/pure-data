@@ -48,6 +48,7 @@ int sys_pollgui(void);
   void fiddle_tilde_setup(void);
   void loop_tilde_setup(void);
   void lrshift_tilde_setup(void);
+  void pd_tilde_setup(void);
   void pique_setup(void);
   void sigmund_tilde_setup(void);
   void stdout_setup(void);
@@ -99,6 +100,7 @@ int libpd_init(void) {
   fiddle_tilde_setup();
   loop_tilde_setup();
   lrshift_tilde_setup();
+  pd_tilde_setup();
   pique_setup();
   sigmund_tilde_setup();
   stdout_setup();
