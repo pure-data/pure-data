@@ -9,6 +9,18 @@ AC_CONFIG_MACRO_DIR([m4/generated])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CANONICAL_HOST
 
+
+########################################
+#### ohoh. automake<<1.16 do not like $(top_srcdir) in _SOURCES.
+AS_IF([test "x${am__api_version}" = "x1.15" ], [
+  enable_dependency_tracking=no
+  AC_MSG_WARN([legacy automake detected: disabled dependency-tracking!
+	       to get rid of this warning and enable dependency-tracking,
+	       please install at least automake-1.16 and rerun './autogen.sh'
+	       ])
+])
+
+
 #########################################
 ##### Default values #####
 
