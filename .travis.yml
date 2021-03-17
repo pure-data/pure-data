@@ -35,17 +35,20 @@ matrix:
       compiler: clang
     - os: osx
 
+jobs:
+  allow_failures:
+    - os: osx
+
 addons:
   apt:
     packages:
       - libasound2-dev
       - libjack-dev
+  homebrew:
+    packages:
+      - libtool
 
 before_script:
-## fix glibtool on OSX...
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cleanup; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall --ignore-dependencies libtool; brew install libtool; fi
 ## basic autoconf setup
   - ./autogen.sh
   - ./configure ${CONFIGURE_FLAGS}
