@@ -34,8 +34,6 @@ matrix:
     - os: linux
       compiler: clang
     - os: osx
-
-jobs:
   allow_failures:
     - os: osx
 
