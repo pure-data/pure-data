@@ -375,8 +375,8 @@ cd - > /dev/null # quiet
 # for one, this allows loading un-validated external libraries on macOS 10.15+:
 # https://cutecoder.org/programming/shared-framework-hardened-runtime
 codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}/Contents/Frameworks/Tcl.framework/Versions/Current"
 codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
-    "${APP}/Contents/Frameworks/Tcl.framework/Versions/Current" \
     "${APP}/Contents/Frameworks/Tk.framework/Versions/Current"
 codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
     "${APP}"
