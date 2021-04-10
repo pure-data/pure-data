@@ -44,7 +44,7 @@ menu.
 
 Except as otherwise noted, all files in the Pd distribution are
 
-    Copyright (c) 1997-2017 Miller Puckette and others.
+    Copyright (c) 1997-2021 Miller Puckette and others.
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see LICENSE.txt included in the Pd distribution.
