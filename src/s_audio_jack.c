@@ -577,15 +577,15 @@ void jack_autoconnect(int v)
     jack_should_autoconnect = v;
 }
 
-void jack_client_name(char *name)
+void jack_client_name(const char *name)
 {
     if (desired_client_name) {
-      free(desired_client_name);
-      desired_client_name = NULL;
+        free(desired_client_name);
+        desired_client_name = NULL;
     }
     if (name) {
-      desired_client_name = (char*)getbytes(strlen(name) + 1);
-      strcpy(desired_client_name, name);
+        desired_client_name = (char*)getbytes(strlen(name) + 1);
+        strcpy(desired_client_name, name);
     }
 }
 
