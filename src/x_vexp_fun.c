@@ -1201,9 +1201,13 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                 if (condtrue) {
                         eptr = ex_eval(e, eptr, argv, idx);
                         res = argv++;
+                        if (!eptr)
+                                return (exNULL);
                         eptr = eptr->ex_end; /* no right processing */
 
                 } else {
+                        if (!eptr)
+                                return (exNULL);
                         eptr = eptr->ex_end; /* no left rocessing */
                         eptr = ex_eval(e, eptr, argv, idx);
                         res = argv++;

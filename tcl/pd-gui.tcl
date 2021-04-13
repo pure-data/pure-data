@@ -159,7 +159,7 @@ set sys_guidir {}
 set sys_searchpath {}
 # user-specified search paths from the commandline -path option
 set sys_temppath {}
-# hard-coded search patchs for objects, help, plugins, etc.
+# hard-coded search paths for objects, help, plugins, etc.
 set sys_staticpath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}

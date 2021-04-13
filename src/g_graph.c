@@ -941,8 +941,10 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     {
         x->gl_obj.te_xpix += dx;
         x->gl_obj.te_ypix += dy;
-        glist_redraw(x);
-        canvas_fixlinesfor(glist, &x->gl_obj);
+        if (glist_isvisible(glist)) {
+            glist_redraw(x);
+            canvas_fixlinesfor(glist, &x->gl_obj);
+        }
     }
 }
 

@@ -1750,11 +1750,11 @@ static void pute(char *s)   /* debug routine */
 #include <sys/types.h>
 static void readsf_fakewait(pthread_mutex_t *b)
 {
-    struct timeval timout;
-    timout.tv_sec = 0;
-    timout.tv_usec = 1000000;
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 1000000;
     pthread_mutex_unlock(b);
-    select(0, 0, 0, 0, &timout);
+    select(0, 0, 0, 0, &timeout);
     pthread_mutex_lock(b);
 }
 
