@@ -51,6 +51,13 @@ extern "C" {
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
 
+#define GLIST_DEFCANVASXLOC 0
+#ifdef __APPLE__
+#define GLIST_DEFCANVASYLOC 22
+#else
+#define GLIST_DEFCANVASYLOC 50
+#endif
+
 /* ----------------------- data ------------------------------- */
 
 typedef struct _updateheader

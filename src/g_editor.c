@@ -1967,11 +1967,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
             canvas_create_editor(x);
-            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
-                (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                x->gl_edit);
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
+            {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d {} %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    x->gl_edit);
+            } else {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    (int)(x->gl_screenx1), (int)(x->gl_screeny1),
+                    x->gl_edit);
+            }
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
             while (c->gl_owner && !c->gl_isclone) {
