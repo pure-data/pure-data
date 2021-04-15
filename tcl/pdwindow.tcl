@@ -338,7 +338,7 @@ proc ::pdwindow::create_window {} {
     } else {
         wm minsize .pdwindow 400 51
     }
-    wm geometry .pdwindow =500x400+20+50
+    wm geometry .pdwindow =500x400
 
     frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
     pack .pdwindow.header -side top -fill x -ipady 5
