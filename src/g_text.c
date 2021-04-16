@@ -1443,7 +1443,7 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     /* change text; if T_OBJECT, remake it.  */
 void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
 {
-    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
+    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);
     if (x->te_type == T_OBJECT)
     {
         t_binbuf *b = binbuf_new();
@@ -1497,7 +1497,21 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
         canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
            (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
             &x->te_g, pos));
-        binbuf_text(x->te_binbuf, buf, bufsize);
+        if (x->te_type == T_TEXT) {
+                /* don't evaluate the contents of a comment into a binbuf.
+                 * use it as a literal
+                 */
+            char*buf0 = getbytes(bufsize+1);
+            if(buf0) {
+                strncpy(buf0, buf, bufsize);
+                buf0[bufsize] = 0;
+                binbuf_clear(x->te_binbuf);
+                binbuf_addv(x->te_binbuf, "s", gensym(buf0));
+                freebytes(buf0, bufsize);
+            }
+        } else {
+            binbuf_text(x->te_binbuf, buf, bufsize);
+        }
 
     }
 }
