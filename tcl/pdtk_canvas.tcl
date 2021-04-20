@@ -50,7 +50,7 @@ if {$::tcl_version < 8.5 || \
         }
         if {$h > $height} {
             # 30 for window framing
-            set h [expr $height - $::menubarsize - $::windowframey]
+            set h [expr $height - $::menubarsize]
             set y $::menubarsize
         }
 
@@ -71,16 +71,9 @@ if {$::tcl_version < 8.5 || \
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
-    ::pdwindow::configure_window_offset
-
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    set xywh [pdtk_canvas_wrap_window \
-        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
-    set x [lindex $xywh 0]
-    set y [lindex $xywh 1]
-    set w [lindex $xywh 2]
-    set h [lindex $xywh 3]
+    foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
     return [list ${w} ${h} ${w}x${h}+${x}+${y}]
 }
 
@@ -89,10 +82,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
-    set l [pdtk_canvas_place_window $width $height $geometry]
-    set width [lindex $l 0]
-    set height [lindex $l 1]
-    set geometry [lindex $l 2]
+    foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
 
