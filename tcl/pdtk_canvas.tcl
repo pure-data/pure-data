@@ -72,9 +72,14 @@ if {$::tcl_version < 8.5 || \
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
     # read back the current geometry +posx+posy into variables
-    scan $geometry {%[+]%d%[+]%d} - x - y
-    foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
-    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
+    set w $width
+    set h $height
+    if { "" != ${geometry} } {
+        scan $geometry {%[+]%d%[+]%d} - x - y
+        foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
+        set geometry +${x}+${y}
+    }
+    return [list ${w} ${h} ${geometry}]
 }
 
 
@@ -100,7 +105,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # started_loading_file proc.  Perhaps this doesn't make sense tho
     event generate $mytoplevel <<Loading>>
 
-    wm geometry $mytoplevel $geometry
+    if { "" != ${geometry} } {
+        wm geometry $mytoplevel $geometry
+    }
     wm minsize $mytoplevel $::canvas_minwidth $::canvas_minheight
 
     set tkcanvas [tkcanvas_name $mytoplevel]
