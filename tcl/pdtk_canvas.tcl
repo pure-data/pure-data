@@ -12,6 +12,7 @@ namespace eval ::pdtk_canvas:: {
 
     namespace export pdtk_canvas_popup
     namespace export pdtk_canvas_editmode
+    namespace export pdtk_canvas_snaptogrid
     namespace export pdtk_canvas_getscroll
     namespace export pdtk_canvas_setparents
     namespace export pdtk_canvas_reflecttitle
@@ -158,6 +159,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # this should be at the end so that the window and canvas are all ready
     # before this variable changes.
     set ::editmode($mytoplevel) $editable
+    set ::snaptogrid($mytoplevel) 0
 }
 
 # if the patch canvas window already exists, then make it come to the front
@@ -331,6 +333,7 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
 
     # set editmode to make sure the menu item is in the right state
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
+    pdtk_canvas_snaptogrid $mytoplevel $::snaptogrid($mytoplevel)
     set ::loaded($mytoplevel) 1
     # send the virtual events now that everything is loaded
     event generate $mytoplevel <<Loaded>>
@@ -360,6 +363,13 @@ proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
     set ::editmode_button $state
     set ::editmode($mytoplevel) $state
     event generate $mytoplevel <<EditMode>>
+}
+
+# check or uncheck the "snap to grid" menu item
+proc ::pdtk_canvas::pdtk_canvas_snaptogrid {mytoplevel state} {
+    set ::snaptogrid_button $state
+    set ::snaptogrid($mytoplevel) $state
+    event generate $mytoplevel <<SnaptoGrid>>
 }
 
 # message from Pd to update the currently available undo/redo action

@@ -94,6 +94,17 @@ proc ::pd_menucommands::menu_toggle_editmode {} {
     menu_editmode [expr {! $::editmode_button}]
 }
 
+#snap to grid
+proc ::pd_menucommands::menu_snaptogrid {state} {
+    if {[winfo class $::focused_window] ne "PatchWindow"} {return}
+    set ::snaptogrid($::focused_window) $state
+    pdsend "$::focused_window snaptogrid $state"
+}
+
+proc ::pd_menucommands::menu_toggle_snaptogrid {} {
+    menu_snaptogrid [expr {! $::snaptogrid_button}]
+}
+
 # ------------------------------------------------------------------------------
 # generic procs for sending menu events
 
