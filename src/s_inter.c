@@ -488,7 +488,8 @@ static int socketreceiver_doread(t_socketreceiver *x)
             binbuf_text(INTER->i_inbinbuf, messbuf, bp - messbuf);
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
-                fprintf(stderr, "<< %.*s\n", bp-messbuf, messbuf);
+                size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
+                fprintf(stderr, "<< %.*s\n", bufsize, messbuf);
             }
             x->sr_inhead = inhead;
             x->sr_intail = intail;
