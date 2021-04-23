@@ -71,6 +71,7 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Key v {menu_send %W paste}
     bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
     bind_capslock all $::modifier-Key x {menu_send %W cut}
+    bind_capslock all $::modifier-Key y {menu_toggle_snaptogrid}
     bind_capslock all $::modifier-Key z {menu_undo}
     bind all <$::modifier-Key-1>        {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
     bind all <$::modifier-Key-2>        {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
@@ -381,6 +382,7 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
 proc ::pd_bindings::patch_destroy {window} {
     set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
+    unset ::snaptogrid($mytoplevel)
     unset ::undo_actions($mytoplevel)
     unset ::redo_actions($mytoplevel)
     unset ::editingtext($mytoplevel)
