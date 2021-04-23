@@ -74,6 +74,8 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
+    $menubar.edit entryconfigure [_ "Snap to Grid"] -state disabled
+    pdtk_canvas_snaptogrid .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
     $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
     $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
@@ -106,6 +108,8 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.edit entryconfigure [_ "Triggerize"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
+    $menubar.edit entryconfigure [_ "Snap to Grid"] -state normal
+    pdtk_canvas_snaptogrid $mytoplevel $::snaptogrid($mytoplevel)   
     # Put menu
     for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
         # catch errors that happen when trying to disable separators
@@ -151,6 +155,8 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
+    $menubar.edit entryconfigure [_ "Snap to Grid"] -state disabled
+    pdtk_canvas_snaptogrid $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
     $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
     $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
@@ -224,6 +230,9 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \
         -command {::pd_menucommands::scheduleAction menu_editmode $::editmode_button}
+    $mymenu add check -label [_ "Snap to Grid"]    -accelerator "$accelerator+Y" \
+        -variable ::snaptogrid_button \
+        -command {menu_snaptogrid $::snaptogrid_button}
 }
 
 proc ::pd_menus::build_put_menu {mymenu} {
