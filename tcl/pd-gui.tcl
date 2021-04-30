@@ -315,7 +315,7 @@ proc init_for_platform {} {
             # trying loading icon in the GUI directory
             if {$::tcl_version >= 8.5} {
                 set icon [file join $::sys_guidir pd.gif]
-                if {[file readable $icon]} { 
+                if {[file readable $icon]} {
                     catch {
                         wm iconphoto . -default [image create photo -file "$icon"]
                     }
