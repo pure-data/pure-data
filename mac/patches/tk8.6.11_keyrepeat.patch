@@ -1,0 +1,13 @@
+diff --git a/macosx/tkMacOSXKeyEvent.c b/macosx/tkMacOSXKeyEvent.c
+index 1dc39827e..08301b3ef 100644
+--- a/macosx/tkMacOSXKeyEvent.c
++++ b/macosx/tkMacOSXKeyEvent.c
+@@ -255,6 +255,8 @@ static NSUInteger textInputModifiers;
+      */
+ 
+     if (type == NSKeyDown && [theEvent isARepeat]) {
++    // ignore repeats if they are turned off in the system settings
++    if ([NSEvent keyRepeatDelay] < 0) return theEvent;
+ 
+ 	xEvent.xany.type = KeyRelease;
+ 	Tk_QueueWindowEvent(&xEvent, TCL_QUEUE_TAIL);
