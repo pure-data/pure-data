@@ -4341,7 +4341,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
 
         /* check if objects are already connected */
     if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
-        logpost(src, 3, "this pair of iolets is already connected");
+        logpost(src, 3, "io pair already connected");
         goto bad;
     }
 
