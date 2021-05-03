@@ -4342,14 +4342,30 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (EDITOR->paste_canvas == x) whoout += EDITOR->paste_onset,
         whoin += EDITOR->paste_onset;
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) goto bad; /* bug fix thanks to Hannes */
+        if (!src->g_next) {
+            src = NULL;
+            logpost(sink, 3, "cannot connect non-existing object");
+            goto bad; /* bug fix thanks to Hannes */
+        }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) goto bad;
+        if (!sink->g_next) {
+            sink = NULL;
+            logpost(src, 3, "cannot connect to non-existing object");
+            goto bad;
+        }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
-        !(objsink = pd_checkobject(&sink->g_pd)))
-            goto bad;
+        !(objsink = pd_checkobject(&sink->g_pd))) {
+        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        goto bad;
+    }
+
+        /* check if objects are already connected */
+    if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
+        logpost(src, 3, "io pair already connected");
+        goto bad;
+    }
 
         /* if object creation failed, make dummy inlets or outlets
            as needed */
