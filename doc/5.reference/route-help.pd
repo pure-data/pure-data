@@ -1,4 +1,4 @@
-#N canvas 573 109 1072 536 12;
+#N canvas 332 89 1072 536 12;
 #X obj 193 306 print x1;
 #X obj 271 306 print x2;
 #X obj 349 306 print x3;
@@ -42,78 +42,91 @@ of 0 and creates a second inlet so you can change the argument value
 can be changed to another float. In the same way \, a single symbol
 argument adds an inlet that expects a symbol message to change the
 argument., f 64;
-#N canvas 573 209 990 677 special-selectors/message-types 0;
-#X obj 550 295 print z1;
-#X obj 627 295 print z2;
-#X msg 448 123 bang;
-#X msg 551 178 5;
-#X msg 591 178 symbol pie;
-#X msg 527 152 1 2 3;
-#X obj 705 295 print z3;
-#X obj 783 295 print z4;
-#X obj 861 295 print z5;
-#X msg 150 482 list a b c;
-#X obj 150 551 route list symbol;
-#X floatatom 135 157 5 0 0 0 - - -;
-#X obj 176 242 print route-list;
-#X msg 125 117 1 2 3;
-#X floatatom 122 239 5 0 0 0 - - -;
-#X obj 122 278 print route-float;
-#X obj 122 200 route float list;
-#X msg 172 514 symbol zorglub;
-#X obj 208 594 print untrimmed;
-#X obj 150 630 print trimmed;
-#X obj 550 268 list;
-#X msg 492 123 list x y z;
-#X msg 473 406 list;
-#X msg 509 436 list 5;
-#X msg 535 472 list pie;
-#X text 511 406 becomes a bang;
-#X text 561 435 becomes a float;
-#X text 602 471 becomes a symbol;
-#X obj 473 522 print;
-#X text 448 338 Also note that we have special cases of list messages.
+#N canvas 475 41 977 682 special-selectors/message-types 0;
+#X obj 522 288 print z1;
+#X obj 599 288 print z2;
+#X msg 420 116 bang;
+#X msg 523 171 5;
+#X msg 563 171 symbol pie;
+#X msg 499 145 1 2 3;
+#X obj 677 288 print z3;
+#X obj 755 288 print z4;
+#X obj 833 288 print z5;
+#X msg 43 467 list a b c;
+#X obj 43 536 route list symbol;
+#X floatatom 137 145 5 0 0 0 - - -;
+#X obj 178 219 print route-list;
+#X msg 124 113 1 2 3;
+#X floatatom 124 216 5 0 0 0 - - -;
+#X obj 124 253 print route-float;
+#X obj 124 178 route float list;
+#X msg 65 499 symbol zorglub;
+#X obj 101 579 print untrimmed;
+#X obj 43 615 print trimmed;
+#X obj 522 261 list;
+#X msg 464 116 list x y z;
+#X msg 443 406 list;
+#X msg 479 436 list 5;
+#X msg 505 472 list pie;
+#X text 481 406 becomes a bang;
+#X text 531 435 becomes a float;
+#X text 574 465 becomes a symbol, f 8;
+#X obj 443 522 print;
+#X text 433 333 Also note that we have special cases of list messages.
 A list with no elements is converted by Pd into a 'bang' \, whereas
 a single number becomes a float message and a single symbol becomes
 a symbol message., f 71;
-#X obj 536 520 route bang float symbol;
-#X symbolatom 641 547 10 0 0 0 - - -;
-#X floatatom 588 547 5 0 0 0 - - -;
-#X obj 536 550 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 506 520 route bang float symbol;
+#X symbolatom 611 547 10 0 0 0 - - -;
+#X floatatom 558 547 5 0 0 0 - - -;
+#X obj 506 550 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 765 481 route pie;
-#X msg 765 447 pie;
-#X obj 765 518 print;
-#X obj 859 518 print;
-#X msg 859 447 12;
-#X obj 859 481 route 12;
-#X obj 550 240 route list float symbol bang pure, f 56;
-#X msg 604 206 pure data;
-#X text 426 17 The bang message is another special selector that you
-can also use as a symbol argument for [route]. Below we abuse this
-behaviour to route messages according to its type. Note that we have
-a [list] object to give the 'list' selector back in the case of list
-messages that start with a symbol. Note also that you can still use
-other symbols to route other mesages., f 75;
-#X text 679 207 not a special selector;
-#X text 39 16 Numbers in Pd are always given a 'float' selector. Similarly
+#X msg 818 475 pie;
+#X obj 522 233 route list float symbol bang pure, f 56;
+#X msg 576 199 pure data;
+#X text 651 200 not a special selector;
+#X text 26 16 Numbers in Pd are always given a 'float' selector. Similarly
 \, lists that start with floats are given the 'list' selector. These
 are implicit selectors and they stick to the message even if you can't
 see it and [route] cannot trim them!, f 50;
-#X text 39 345 On the other hand \, a "list a b c" message gets its
+#X text 27 296 On the other hand \, a "list a b c" message gets its
 list selector trimmed - as the usual behaviour of the object. The execption
 and inconsistency is with 'symbol' messages \, where the symbol selector
 is kept. This is a known bug that's been here forever and just won't
 be fixed anymore., f 50;
-#X text 450 589 One last special case of [route] is that it outputs
-bangs when matching to messages that have no further elements. In a
-sense it outputs a zero element list and that becomes a bang. Note
-how in this case the behaviour is the same of the [select] object.
-, f 71;
-#X connect 2 0 40 0;
-#X connect 3 0 40 0;
-#X connect 4 0 40 0;
-#X connect 5 0 40 0;
+#X obj 265 596 route a b;
+#X obj 265 558 list trim;
+#X msg 276 504 list b 52;
+#X msg 265 472 list a 3;
+#X floatatom 265 631 3 0 0 0 - - -;
+#X floatatom 295 631 3 0 0 0 - - -;
+#X text 27 389 On the other hand \, if you want to route according
+to the first element of a list message \, you need to trim its selector
+with [list trim]., f 50;
+#X text 411 17 The bang message can also be used as a symbol argument
+for [route] and it matches to a bang input. Below we route messages
+according to its type. Note that we have a [list] object to give the
+'list' selector back in the case of list messages that start with a
+symbol. Note also that you can still use other symbols to route other
+mesages., f 75;
+#X obj 818 550 print;
+#X obj 818 517 route pie;
+#X msg 859 462 symbol pie;
+#X obj 859 489 list trim;
+#X text 781 411 Note that [list trim] also trims the symbol selector.
+, f 21;
+#X obj 720 531 print;
+#X obj 720 498 route 12;
+#X msg 720 464 12;
+#X text 435 589 One last special case of [route] is that it outputs
+bangs when matching to messages that have no further elements (see
+above). What happens is that it outputs an empty list \, which corresponds
+to a bang message. Note how in this case the behaviour is the same
+of the [select] object., f 71;
+#X connect 2 0 35 0;
+#X connect 3 0 35 0;
+#X connect 4 0 35 0;
+#X connect 5 0 35 0;
 #X connect 9 0 10 0;
 #X connect 10 0 19 0;
 #X connect 10 1 18 0;
@@ -124,7 +137,7 @@ how in this case the behaviour is the same of the [select] object.
 #X connect 16 1 12 0;
 #X connect 17 0 10 0;
 #X connect 20 0 0 0;
-#X connect 21 0 40 0;
+#X connect 21 0 35 0;
 #X connect 22 0 28 0;
 #X connect 22 0 30 0;
 #X connect 23 0 28 0;
@@ -134,16 +147,23 @@ how in this case the behaviour is the same of the [select] object.
 #X connect 30 0 33 0;
 #X connect 30 1 32 0;
 #X connect 30 2 31 0;
-#X connect 34 0 36 0;
-#X connect 35 0 34 0;
-#X connect 38 0 39 0;
-#X connect 39 0 37 0;
-#X connect 40 0 20 0;
-#X connect 40 1 1 0;
-#X connect 40 2 6 0;
-#X connect 40 3 7 0;
-#X connect 40 4 8 0;
+#X connect 34 0 49 0;
+#X connect 35 0 20 0;
+#X connect 35 1 1 0;
+#X connect 35 2 6 0;
+#X connect 35 3 7 0;
+#X connect 35 4 8 0;
+#X connect 36 0 35 0;
+#X connect 40 0 44 0;
+#X connect 40 1 45 0;
 #X connect 41 0 40 0;
+#X connect 42 0 41 0;
+#X connect 43 0 41 0;
+#X connect 49 0 48 0;
+#X connect 50 0 51 0;
+#X connect 51 0 49 0;
+#X connect 54 0 53 0;
+#X connect 55 0 54 0;
 #X restore 712 430 pd special-selectors/message-types;
 #X text 618 489 see also:;
 #X obj 696 490 select;
