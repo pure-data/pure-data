@@ -1,14 +1,14 @@
-#N canvas 496 66 824 665 12;
+#N canvas 514 69 824 665 12;
 #X floatatom 63 140 0 0 0 0 - - -;
 #X floatatom 123 267 0 0 0 0 - - -;
 #X floatatom 63 334 0 0 0 0 - - -;
-#X floatatom 609 443 0 0 0 0 - - -;
-#X floatatom 598 556 0 0 0 0 - - -;
-#X obj 609 469 t f f f;
-#X obj 632 500 + 1;
-#X obj 666 499 + 2;
-#X floatatom 649 554 0 0 0 0 - - -;
-#X floatatom 700 555 0 0 0 0 - - -;
+#X floatatom 612 454 0 0 0 0 - - -;
+#X floatatom 601 567 0 0 0 0 - - -;
+#X obj 612 480 t f f f;
+#X obj 635 511 + 1;
+#X obj 669 510 + 2;
+#X floatatom 652 565 0 0 0 0 - - -;
+#X floatatom 703 566 0 0 0 0 - - -;
 #X text 367 618 see also:;
 #X obj 63 300 pipe 2000;
 #X text 95 140 numbers to store and output later;
@@ -34,18 +34,18 @@
 time (0 by default), f 37;
 #X text 120 222 bang outputs the last received message after the delay
 time, f 30;
-#X floatatom 508 115 0 0 0 0 - - -;
-#X floatatom 508 288 0 0 0 0 - - -;
-#X floatatom 573 288 0 0 0 0 - - -;
-#X obj 580 468 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X floatatom 545 142 0 0 0 0 - - -;
+#X floatatom 545 312 0 0 0 0 - - -;
+#X floatatom 610 312 0 0 0 0 - - -;
+#X obj 583 479 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 598 528 pipe 5 6 7 1000;
-#X obj 508 151 t f f b, f 12;
-#X msg 594 190 symbol stop;
-#X obj 551 190 + 1;
-#X symbolatom 638 288 10 0 0 0 - - -;
-#X floatatom 638 221 5 0 0 0 - - -;
-#X text 681 221 delay time;
+#X obj 601 539 pipe 5 6 7 1000;
+#X obj 545 175 t f f b, f 12;
+#X msg 631 214 symbol stop;
+#X obj 588 214 + 1;
+#X symbolatom 675 312 10 0 0 0 - - -;
+#X floatatom 675 245 5 0 0 0 - - -;
+#X text 718 245 delay time;
 #X floatatom 272 528 0 0 0 0 - - -;
 #X text 305 528 set delay time;
 #X text 24 48 The [pipe] object stores a sequence of messages and outputs
@@ -57,13 +57,16 @@ affect the messages that are already scheduled., f 58;
 (which is a float by default). A symbol argument "s" \, "f" \, or "p"
 specifies a "symbol" \, "float" (number) \, or pointer type (untested).
 The delay time comes then as the last argument.;
-#X obj 508 250 pipe f f s 1000, f 19;
-#X text 475 27 You can specify compound messages (lists) by adding
+#X obj 545 274 pipe f f s 1000, f 19;
+#X text 475 17 You can specify compound messages (lists) by adding
 more than one argument. Again \, the delay time comes as the last argument
 and is also changed by the last inlet., f 42;
-#X text 502 342 A float value can be used to set a float type and also
+#X text 502 355 A float value can be used to set a float type and also
 initialize its value. In the example below you can test the initialized
 values with the bang message., f 36;
+#X msg 459 215 50 70 hey;
+#X text 475 82 A list input is possible in this example as Pd can distribute
+its elements to the inlets., f 42;
 #X connect 0 0 11 0;
 #X connect 1 0 11 1;
 #X connect 2 0 24 0;
@@ -96,3 +99,4 @@ values with the bang message., f 36;
 #X connect 48 0 33 0;
 #X connect 48 1 34 0;
 #X connect 48 2 40 0;
+#X connect 51 0 48 0;

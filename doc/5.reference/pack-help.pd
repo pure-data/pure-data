@@ -1,4 +1,4 @@
-#N canvas 432 225 700 400 12;
+#N canvas 596 190 700 400 12;
 #X floatatom 23 99 0 0 0 0 - - -;
 #X msg 44 128 bang;
 #X floatatom 75 161 0 0 0 0 - - -;
@@ -20,14 +20,14 @@ number of inlets., f 71;
 and their types: a number make a numeric outlet (and initializes the
 value). A symbol argument can start with "s" \, "f" \, or "p" to specify
 a "symbol" \, "float" (number) \, or pointer outlet.;
-#X text 255 210 <= as with any Pd object \, you can send a list whose
-atoms are automatically distributed to the corresponding inlets.;
 #X text 232 158 <= numbers and symbols in the corresponding inlets
 change the values without causing output (see "trigger" for a way to
 change this behavior.);
 #X text 85 127 <= bang generates output without resetting first value
 ;
 #X text 57 98 <= number in first inlet generates output;
+#X text 255 210 <= you can also send a list as Pd distributes its elements
+to the corresponding inlets., f 45;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 2 0 11 1;
