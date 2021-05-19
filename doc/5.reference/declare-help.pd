@@ -39,7 +39,7 @@ Or \, if you have files installed in the directory extra/stillmore
 ;
 #X text 128 187 load a library \, relative to Pd (the 'extra' folder)
 ;
-#X text 30 371 Note that the 'extra' folder is the last in the search
-priority. This means that user added paths are searched before. You
-can use [declare -stdpath .] wto make sure it has priority., f 68
-;
+#X text 30 371 Note that by default the 'extra' folder is the last
+in the search priority. This means that user added paths are searched
+before. You can use [declare -stdpath .] to make sure it has priority.
+, f 68;
