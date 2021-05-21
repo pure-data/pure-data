@@ -167,8 +167,6 @@ greater than maximum), f 41;
 #X obj 392 38 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #N canvas 343 25 1015 691 compander-limiter 0;
-#X obj 445 38 bng 15 250 50 0 \$0-compander empty empty 17 7 0 10 -262144
--1 -1;
 #N canvas 622 189 476 482 generate-test 0;
 #X obj 77 159 osc~ 440;
 #X obj 197 162 line~;
@@ -191,7 +189,7 @@ greater than maximum), f 41;
 #X connect 8 0 3 0;
 #X connect 8 0 2 0;
 #X restore 221 64 pd generate-test;
-#X obj 88 101 tgl 16 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 88 101 tgl 16 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 88 126 metro 500;
 #X obj 88 156 s \$0-testpulse;
@@ -199,7 +197,6 @@ greater than maximum), f 41;
 #X array \$0-test-in 20000 float 2;
 #X coords 0 1 20000 -1 500 140 1 0 0;
 #X restore 33 260 graph;
-#X text 461 66 (under construction...);
 #N canvas 323 324 347 253 resize 0;
 #X obj 83 52 inlet;
 #X msg 83 79 resize \$1;
@@ -419,7 +416,6 @@ the difference between the measured and desired level, f 27;
 #X msg 766 442 100 0 0 50 100 100;
 #X text 36 22 Using slop~ to make a compressor/expander/limiter;
 #X msg 746 384 90 10 0 100 0 50;
-#X text 469 35 <= open details in web browser;
 #N canvas 601 360 267 339 (subpatch) 0;
 #X obj 108 109 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 -228856
 -1 -1 0 1;
@@ -456,19 +452,21 @@ the difference between the measured and desired level, f 27;
 #X connect 5 0 6 1;
 #X coords 0 -1 1 1 116 32 2 100 100;
 #X restore 221 186 pd;
-#X connect 1 0 19 0;
-#X connect 1 0 34 0;
+#X text 428 44 See the HTML documentation (link on main page of this
+patch) for details.;
+#X connect 0 0 17 0;
+#X connect 0 0 31 0;
+#X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 8 0 7 0;
-#X connect 19 0 35 0;
-#X connect 20 0 7 0;
-#X connect 21 0 7 0;
-#X connect 22 0 12 0;
-#X connect 23 0 12 0;
-#X connect 29 0 12 0;
-#X connect 30 0 12 0;
-#X connect 32 0 12 0;
+#X connect 6 0 5 0;
+#X connect 17 0 32 0;
+#X connect 18 0 5 0;
+#X connect 19 0 5 0;
+#X connect 20 0 10 0;
+#X connect 21 0 10 0;
+#X connect 27 0 10 0;
+#X connect 28 0 10 0;
+#X connect 30 0 10 0;
 #X restore 701 294 pd compander-limiter;
 #X text 515 99 The slop~ object is a low-pass filter whose frequency
 response (i.e. \, reaction speed) can vary according to the filter's
@@ -654,14 +652,14 @@ envelope followers are converted to dBFS for the IEM VU meter., f
 #X obj 132 218 / 1000;
 #X text 179 193 jitter range \, 0 to 0.1;
 #X text 69 27 jitter remover;
-#X text 378 68 If you have a noisy sensor \, one approach to smoothing
-it is to set slop~ u pto only react to motion past a certain window.
-The linear frequency cutoff is set to zero so that the output only changes
-when the input strays by more than the maximum upward or downward slew.
-;
 #X text 377 159 Set the jitter range to zero to see the original signal
 and raise it to see smoothing.;
 #X text 120 306 <= start metronome to graph output, f 18;
+#X text 378 68 If you have a noisy sensor \, one approach to smoothing
+it is to set slop~ up to only react to motion past a certain window.
+The linear frequency cutoff is set to zero so that the output only
+changes when the input strays by more than the maximum upward or downward
+slew.;
 #X connect 0 0 11 0;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
