@@ -2019,6 +2019,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 canvas_destroy_editor(x);
             return;
         }
+        sys_vgui("event generate .x%lx <<WindowClosing>>\n", x);
         glist_noselect(x);
         if (glist_isvisible(x))
             canvas_map(x, 0);
