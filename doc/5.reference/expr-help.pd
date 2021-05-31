@@ -1,4 +1,4 @@
-#N canvas 473 34 679 700 12;
+#N canvas 567 46 679 700 12;
 #X obj 91 36 expr;
 #X obj 84 61 expr~;
 #X obj 78 99 fexpr~;
@@ -122,7 +122,7 @@ it as starting with a number. in this case \, the object won't load!
 #X text 27 647 see also:;
 #X obj 273 659 block~;
 #X obj 327 659 value;
-#N canvas 911 232 489 542 All_functions 0;
+#N canvas 834 236 489 525 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
 #X floatatom 57 63 5 0 0 0 - - -;
@@ -148,7 +148,7 @@ it as starting with a number. in this case \, the object won't load!
 #X connect 8 0 11 0;
 #X connect 10 0 7 0;
 #X connect 11 0 9 0;
-#X restore 147 131 pd Arithmetic-operators;
+#X restore 165 136 pd Arithmetic-operators;
 #N canvas 513 126 621 391 Bitwise-operators 0;
 #X floatatom 47 218 5 0 0 0 - - -;
 #X obj 47 188 expr ~ $f1;
@@ -187,7 +187,7 @@ it as starting with a number. in this case \, the object won't load!
 #X connect 19 0 21 0;
 #X connect 21 0 18 0;
 #X connect 22 0 1 0;
-#X restore 147 162 pd Bitwise-operators;
+#X restore 165 167 pd Bitwise-operators;
 #N canvas 444 131 689 317 Comparison-operators 0;
 #X floatatom 48 55 5 0 0 0 - - -;
 #X floatatom 48 110 5 0 0 0 - - -;
@@ -239,7 +239,7 @@ it as starting with a number. in this case \, the object won't load!
 #X connect 29 0 27 0;
 #X connect 30 0 33 0;
 #X connect 33 0 31 0;
-#X restore 147 193 pd Comparison-operators;
+#X restore 165 198 pd Comparison-operators;
 #N canvas 458 88 472 464 If-function 0;
 #X floatatom 82 53 5 0 0 0 - - -;
 #X floatatom 82 112 5 0 0 0 - - -;
@@ -263,7 +263,7 @@ it as starting with a number. in this case \, the object won't load!
 #X connect 6 0 8 0;
 #X connect 8 0 7 0;
 #X connect 10 0 1 0;
-#X restore 147 226 pd If-function;
+#X restore 165 231 pd If-function;
 #N canvas 444 91 491 376 Random-function 0;
 #X floatatom 107 206 5 0 0 0 - - -;
 #X obj 107 175 expr random(10 \, 20);
@@ -282,7 +282,7 @@ first argument to the second argument minus one., f 51;
 #X connect 2 0 1 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 0;
-#X restore 147 257 pd Random-function;
+#X restore 165 262 pd Random-function;
 #N canvas 558 74 604 529 Table-functions 0;
 #X obj 63 73 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -341,7 +341,7 @@ Note that the syntax requires that the array name is inside quotes.
 #X connect 18 1 14 0;
 #X connect 19 0 16 0;
 #X connect 19 1 17 0;
-#X restore 147 326 pd Table-functions;
+#X restore 165 331 pd Table-functions;
 #N canvas 576 55 570 578 Power-functions 0;
 #X floatatom 62 60 5 0 0 0 - - -;
 #X floatatom 62 119 5 0 0 0 - - -;
@@ -413,7 +413,7 @@ Note that the syntax requires that the array name is inside quotes.
 #X connect 31 0 29 0;
 #X connect 35 0 10 0;
 #X connect 35 1 18 0;
-#X restore 147 359 pd Power-functions;
+#X restore 165 364 pd Power-functions;
 #N canvas 411 157 648 422 Trigonometric-functions 0;
 #X floatatom 34 34 5 0 0 0 - - -;
 #X floatatom 34 93 5 0 0 0 - - -;
@@ -477,7 +477,7 @@ Note that the syntax requires that the array name is inside quotes.
 #X connect 37 0 36 0;
 #X connect 38 0 37 1;
 #X connect 40 0 19 0;
-#X restore 147 392 pd Trigonometric-functions;
+#X restore 165 397 pd Trigonometric-functions;
 #N canvas 332 23 592 281 Store-function 0;
 #X text 40 26 The store function is defined with "=" \, and it can
 store the result of any operation into a variable or table index.;
@@ -496,11 +496,11 @@ store the result of any operation into a variable or table index.;
 #X connect 4 0 2 0;
 #X connect 4 1 3 0;
 #X connect 7 0 6 0;
-#X restore 147 291 pd Store-function;
-#X text 28 14 Here are all the operators and functions available for
+#X restore 165 296 pd Store-function;
+#X text 46 19 Here are all the operators and functions available for
 [expr] \, [expr~] and [fexpr~] \, even though the given examples are
 only presented with [expr]., f 52;
-#X text 28 71 These are organized in different groups. Click on the
+#X text 46 76 These are organized in different groups. Click on the
 subpatches below to check each group:, f 52;
 #N canvas 385 128 850 540 Other-functions 0;
 #X floatatom 54 26 5 0 0 0 - - -;
@@ -612,30 +612,34 @@ subpatches below to check each group:, f 52;
 #X connect 64 0 41 0;
 #X connect 64 1 42 0;
 #X connect 64 2 60 0;
-#X restore 146 457 pd Other-functions;
-#N canvas 432 69 544 311 acousticts 0;
-#X floatatom 31 21 0 0 0 0 - - -;
-#X floatatom 31 76 0 0 0 0 - - -;
-#X floatatom 31 125 0 0 0 0 - - -;
-#X obj 31 49 expr mtof($f1);
-#X obj 31 101 expr ftom($f1);
-#X floatatom 177 21 0 0 0 0 - - -;
-#X floatatom 177 76 0 0 0 0 - - -;
-#X floatatom 177 125 0 0 0 0 - - -;
-#X floatatom 338 24 0 0 0 0 - - -;
-#X floatatom 338 79 0 0 0 0 - - -;
-#X floatatom 338 128 0 0 0 0 - - -;
-#X obj 177 49 expr dbtorms($f1);
-#X obj 177 101 expr rmstodb($f1);
-#X obj 25 239 mtof;
-#X obj 81 239 ftom;
-#X obj 137 240 dbtorms;
-#X obj 213 240 rmstodb;
-#X obj 292 240 dbtopow;
-#X obj 369 240 powtodb;
-#X text 25 204 See also:;
-#X obj 338 52 expr dbtopow($f1);
-#X obj 338 104 expr powtodb($f1);
+#X restore 164 462 pd Other-functions;
+#N canvas 962 216 564 371 Acousticts 0;
+#X floatatom 70 109 0 0 0 0 - - -;
+#X floatatom 70 164 0 0 0 0 - - -;
+#X floatatom 70 213 0 0 0 0 - - -;
+#X obj 70 137 expr mtof($f1);
+#X obj 70 189 expr ftom($f1);
+#X floatatom 216 109 0 0 0 0 - - -;
+#X floatatom 216 164 0 0 0 0 - - -;
+#X floatatom 216 213 0 0 0 0 - - -;
+#X floatatom 377 112 0 0 0 0 - - -;
+#X floatatom 377 167 0 0 0 0 - - -;
+#X floatatom 377 216 0 0 0 0 - - -;
+#X obj 216 137 expr dbtorms($f1);
+#X obj 216 189 expr rmstodb($f1);
+#X obj 63 314 mtof;
+#X obj 119 314 ftom;
+#X obj 175 315 dbtorms;
+#X obj 251 315 rmstodb;
+#X obj 330 315 dbtopow;
+#X obj 407 315 powtodb;
+#X text 63 279 See also:;
+#X obj 377 140 expr dbtopow($f1);
+#X obj 377 192 expr powtodb($f1);
+#X text 63 77 MTDI x Hertz;
+#X text 79 33 Accoustic conversions;
+#X text 238 81 dB x RMS;
+#X text 396 82 dB x Power;
 #X connect 0 0 3 0;
 #X connect 1 0 4 0;
 #X connect 3 0 1 0;
@@ -648,7 +652,7 @@ subpatches below to check each group:, f 52;
 #X connect 12 0 7 0;
 #X connect 20 0 9 0;
 #X connect 21 0 10 0;
-#X restore 146 425 pd acousticts;
+#X restore 164 430 pd Acousticts;
 #X restore 445 561 pd All_functions \; and operators;
 #N canvas 400 40 973 679 [expr] 0;
 #X obj 208 123 expr 1;
@@ -780,7 +784,7 @@ of this type ar presented in [pd Arrays] in the parent patch)., f
 #X text 320 29 audio off;
 #X obj 478 290 expr~ max(min($v1 \, $f2) \, -$f2);
 #X obj 685 145 vsl 20 100 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 6000 1;
+-1 -1 0 1;
 #X text 460 187 Move the slider to change the limiter threshold (from
 0-1)., f 29;
 #X text 64 29 make sure to turn on the audio for the [expr~] examples
@@ -1164,12 +1168,18 @@ f 51;
 #X text 501 652 updated for Pd 0.51-3;
 #X obj 473 60 bng 15 250 50 0 empty empty empty 17 7 0 10 -228856 -1
 -1;
-#N canvas 0 23 450 300 reference 0;
-#X msg 114 49 browse http://yadegari.org/expr/expr.html;
-#X obj 114 73 pdcontrol;
-#X obj 117 23 inlet;
-#X connect 0 0 1 0;
-#X connect 2 0 0 0;
+#N canvas 798 148 456 264 reference 0;
+#X obj 101 59 inlet;
+#X obj 101 190 pdcontrol;
+#X obj 101 130 pdcontrol;
+#X msg 101 105 dir;
+#X msg 101 159 browse \$1/../8.topics/expr.html;
+#X text 205 94 this window opens the html reference link via the [pdcontrol]
+object., f 25;
+#X connect 0 0 3 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
 #X restore 473 94 pd reference;
 #X text 62 8 Expression evaluation family of objects By Shahrokh Yadegari
 - Version 0.57, f 75;
