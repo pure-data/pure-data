@@ -204,7 +204,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-    
+
     instanceno = x->pd_instanceno;
     inter = x->pd_inter;
     canvas_suspend_dsp();
