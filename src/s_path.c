@@ -609,6 +609,65 @@ int sys_fclose(FILE *stream)
     return fclose(stream);
 }
 
+static int do_open_via_helppath(const char *dir, const char *name,
+    const char *ext, char *dirresult, char **nameresult, unsigned int size)
+{
+    int bin=0;
+    int fd=-1;
+    t_namelist*nl;
+
+        /* first check if "name" is absolute (and if so, try to open) */
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
+        return (fd);
+        /* otherwise "name" is relative; try the directory "dir" first. */
+    if ((fd = sys_trytoopenone(dir, name, ext,
+        dirresult, nameresult, size, bin)) >= 0)
+            return (fd);
+
+        /* next look in temp help paths from the commandline */
+    for (nl = namedlist_getlist("helppath.temp"); nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in temp search paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in preference help paths */
+    for (nl = STUFF->st_helppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in preference search paths */
+    for (nl = STUFF->st_searchpath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in built-in help paths like "doc/5.reference" */
+    if (sys_usestdpath)
+        for (nl = namedlist_getlist("helppath.static"); nl; nl = nl->nl_next)
+            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin)) >= 0)
+                    return (fd);
+
+        /* next look in built-in search paths like "extra" */
+    if (sys_usestdpath)
+        for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
+            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin)) >= 0)
+                    return (fd);
+
+        /* give up */
+    *dirresult = 0;
+    *nameresult = dirresult;
+    return (-1);
+}
+
     /* Open a help file using the help search path.  We expect the ".pd"
     suffix here, even though we have to tear it back off for one of the
     search attempts. */
@@ -625,16 +684,16 @@ void open_via_helppath(const char *name, const char *dir)
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
-    if ((fd = do_open_via_path(usedir, realname, "-help.pd", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+    if ((fd = do_open_via_helppath(usedir, realname, "-help.pd",
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
             goto gotone;
 
         /* 2. "help-objectname.pd" */
     strcpy(realname, "help-");
     strncat(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-1] = 0;
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+    if ((fd = do_open_via_helppath(usedir, realname, "",
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
             goto gotone;
 
     post("sorry, couldn't find help patch for \"%s\"", name);
