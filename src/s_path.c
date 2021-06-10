@@ -868,6 +868,20 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
             sys_savepreferences(0);
     }
 }
+void glob_addtohelppath(t_pd *dummy, t_symbol *path, t_float saveit)
+{
+    int saveflag = (int)saveit;
+    t_symbol *s = sys_decodedialog(path);
+    if (*s->s_name)
+    {
+        if (saveflag < 0)
+            namedlist_append_files("helppath.temp", s->s_name);
+        else
+            namedlist_append_files("helppath.main", s->s_name);
+        if (saveit > 0)
+            sys_savepreferences(0);
+    }
+}
 
     /* set the global list vars for startup libraries and flags */
 void sys_set_startup(void)
