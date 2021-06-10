@@ -481,9 +481,7 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
 
 static void pdcontrol_pdversion(t_pdcontrol *x)
 {
-
     t_atom version[5];
-
     SETSYMBOL(&version[0], gensym("Pd"));
     SETFLOAT(&version[1], (t_float)PD_MAJOR_VERSION);
     SETFLOAT(&version[2], (t_float)PD_MINOR_VERSION);
@@ -491,7 +489,6 @@ static void pdcontrol_pdversion(t_pdcontrol *x)
     SETSYMBOL(&version[4], gensym(PD_TEST_VERSION));
 
     outlet_list(x->x_outlet, &s_list, 5, version);
-
 }
 
 static void pdcontrol_setup(void)
