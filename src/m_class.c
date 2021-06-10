@@ -48,6 +48,8 @@ void x_midi_newpdinstance( void);
 void x_midi_freepdinstance( void);
 void s_inter_newpdinstance( void);
 void s_inter_free(t_instanceinter *inter);
+void s_path_newpdinstance( void);
+void s_path_freepdinstance( void);
 void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
@@ -60,11 +62,13 @@ void s_stuff_newpdinstance(void)
     STUFF->st_externlist = STUFF->st_searchpath =
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
+    s_path_newpdinstance();
 }
 
 void s_stuff_freepdinstance(void)
 {
     freebytes(STUFF, sizeof(*STUFF));
+    s_path_freepdinstance();
 }
 
 static t_pdinstance *pdinstance_init(t_pdinstance *x)

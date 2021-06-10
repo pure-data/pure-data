@@ -51,6 +51,17 @@
 # define snprintf _snprintf
 #endif
 
+
+typedef struct _namedlist {
+    t_symbol   *name;
+    t_namelist *list;
+    struct _namedlist *next;
+} t_namedlist;
+typedef struct _pathstuff {
+    t_namedlist *ps_namedlists;
+} t_pathstuff;
+#define PATHSTUFF ((t_pathstuff*)(pd_this->pd_stuff->st_private))
+
     /* change '/' characters to the system's native file separator */
 void sys_bashfilename(const char *from, char *to)
 {
@@ -233,6 +244,109 @@ const char *namelist_get(const t_namelist *namelist, int n)
         ;
     return (nl ? nl->nl_string : 0);
 }
+
+
+static
+t_namelist **default_namedlist(const char*listname) {
+#define DEFAULT_NAMEDLIST(name, member) \
+    if(!strncmp(listname, name, MAXPDSTRING))  \
+        return &(STUFF->member)
+    DEFAULT_NAMEDLIST("searchpath.temp", st_temppath);
+    DEFAULT_NAMEDLIST("searchpath.main", st_searchpath);
+    DEFAULT_NAMEDLIST("searchpath.static", st_staticpath);
+    DEFAULT_NAMEDLIST("helppath.main", st_helppath);
+    return 0;
+}
+static
+t_namelist **namedlist_do_getlist(const char*listname) {
+    t_namedlist*namedlists=PATHSTUFF->ps_namedlists, *nl=0;
+    t_namelist**defaultlist=default_namedlist(listname);
+    t_symbol*listname_sym=0;
+    if(defaultlist)
+        return defaultlist;
+    if(!listname)
+        return 0;
+    listname_sym = gensym(listname);
+    for(nl=namedlists; nl; nl=nl->next) {
+        if(nl->name == listname_sym)
+            return &nl->list;
+    }
+    return 0;
+}
+t_namelist *namedlist_getlist(const char*listname) {
+    t_namelist**nl=namedlist_do_getlist(listname);
+    if(nl)
+        return *nl;
+    return 0;
+}
+        /* append a new name to the named list;
+         * if 'name' is non-NULL it is added to the list (modulo allowdup)
+         *+ and any non-existing list is created
+         */
+void namedlist_append(const char*listname, const char*name, int allowdup) {
+        /* FIXXME: implement namedlist_append */
+    t_namelist**namelistp=namedlist_do_getlist(listname);
+    t_namelist*namelist=namelistp?*namelistp:0;
+    if(!name)
+        return;
+    if(!listname)
+        return;
+    if(!namelistp) {
+            /* list does not exist: create it */
+        t_namedlist*nl = (t_namedlist *)(getbytes(sizeof(*nl)));
+        if(!nl)
+            return;
+        nl->name = gensym(listname);
+        nl->next = PATHSTUFF->ps_namedlists;
+        PATHSTUFF->ps_namedlists = nl;
+        namelist = nl->list;
+        namelistp = &nl->list;
+    }
+
+        /* append the name to the namelist, possibly creating it */
+    namelist = namelist_append(namelist, name, allowdup);
+        /* and store the new list-address for later use */
+    *namelistp = namelist;
+    return;
+}
+void namedlist_append_files(const char *listname, const char *s) {
+    const char *npos;
+    char temp[MAXPDSTRING];
+
+    npos = s;
+    do {
+        npos = strtokcpy(temp, sizeof(temp), npos, SEPARATOR);
+        if (! *temp) continue;
+        namedlist_append(listname, temp, 0);
+    } while (npos);
+    return namedlist_append(listname, 0, 0);
+}
+
+void namedlist_free(const char*listname) {
+    t_namelist**defaultlist=default_namedlist(listname);
+    t_namelist*namelist=defaultlist?*defaultlist:0;
+    t_namedlist*namedlists=PATHSTUFF->ps_namedlists, *nl=0;
+    if(!listname)
+        return;
+    if(!namelist) {
+            /* not a default list: find the list of the given name (and create one if it doesn't exist) */
+        t_symbol*listname_sym = gensym(listname);
+        for(nl=namedlists; nl; nl=nl->next) {
+            if(nl->name == listname_sym)
+                break;
+        }
+            /* not freeing non-existant list */
+        if(!nl) return;
+
+        namelist = nl->list;
+    }
+    namelist_free(namelist);
+    if(defaultlist)
+        *defaultlist = 0;
+    if(nl)
+        nl->list = 0;
+}
+
 
 int sys_usestdpath = 1;
 
@@ -842,4 +956,27 @@ int string2args(const char * cmd, int * retArgc, const char *** retArgv)
  ouch:
     free(argTable);
     return -errCode;
+}
+
+void s_path_newpdinstance(void)
+{
+        /* we claim st_private for now.
+         * if others need to put some private data into STUFF as well,
+         * we need to add another layer of indirection;
+         * but for now we are the only one, so let's keep it simple
+         */
+    STUFF->st_private = getbytes(sizeof(t_pathstuff));
+}
+
+void s_path_freepdinstance(void)
+{
+    t_namedlist *namedlist = PATHSTUFF->ps_namedlists;
+    while(namedlist) {
+        t_namedlist*nl = namedlist;
+        namedlist = namedlist->next;
+        namelist_free(nl->list);
+        freebytes(nl, sizeof(*nl));
+    }
+
+    freebytes(PATHSTUFF, sizeof(t_pathstuff));
 }
