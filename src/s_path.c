@@ -505,13 +505,13 @@ void open_via_helppath(const char *name, const char *dir)
     const char *usedir = (*dir ? dir : "./");
     int fd;
 
+
         /* 1. "objectname-help.pd" */
     strncpy(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
-    strcat(realname, "-help.pd");
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
+    if ((fd = do_open_via_path(usedir, realname, "-help.pd", dirbuf, &basename,
         MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
             goto gotone;
 
