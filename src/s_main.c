@@ -1010,8 +1010,7 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_temppath =
-                namelist_append_files(STUFF->st_temppath, argv[1]);
+            namedlist_append_files("searchpath.temp", argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
@@ -1028,8 +1027,7 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_helppath =
-                namelist_append_files(STUFF->st_helppath, argv[1]);
+            namedlist_append_files("helppath.main", argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-open"))
@@ -1402,7 +1400,7 @@ static void sys_afterargparse(void)
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
-    STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
+    namedlist_append_files("helppath.main", sbuf);
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were

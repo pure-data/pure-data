@@ -655,8 +655,7 @@ void sys_loadpreferences(const char *filename, int startingup)
         sprintf(keybuf, "path%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
             break;
-        STUFF->st_searchpath =
-            namelist_append_files(STUFF->st_searchpath, prefbuf);
+        namedlist_append_files("searchpath.main", prefbuf);
     }
     if (sys_getpreference("nhelppath", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &maxi);
@@ -666,8 +665,7 @@ void sys_loadpreferences(const char *filename, int startingup)
         sprintf(keybuf, "helppath%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
             break;
-        STUFF->st_helppath =
-            namelist_append_files(STUFF->st_helppath, prefbuf);
+        namedlist_append_files("helppath.main", prefbuf);
     }
     if (sys_getpreference("standardpath", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_usestdpath);
