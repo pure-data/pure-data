@@ -487,7 +487,6 @@ static void pdcontrol_pdversion(t_pdcontrol *x)
     SETFLOAT(&version[2], (t_float)PD_MINOR_VERSION);
     SETFLOAT(&version[3], (t_float)PD_BUGFIX_VERSION);
     SETSYMBOL(&version[4], gensym(PD_TEST_VERSION));
-
     outlet_list(x->x_outlet, &s_list, 5, version);
 }
 
