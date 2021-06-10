@@ -479,6 +479,21 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
     outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
 }
 
+static void pdcontrol_pdversion(t_pdcontrol *x)
+{
+
+    t_atom version[5];
+
+    SETSYMBOL(&version[0], gensym("Pd"));
+    SETFLOAT(&version[1], (t_float)PD_MAJOR_VERSION);
+    SETFLOAT(&version[2], (t_float)PD_MINOR_VERSION);
+    SETFLOAT(&version[3], (t_float)PD_BUGFIX_VERSION);
+    SETSYMBOL(&version[4], gensym(PD_TEST_VERSION));
+
+    outlet_list(x->x_outlet, &s_list, 5, version);
+
+}
+
 static void pdcontrol_setup(void)
 {
     pdcontrol_class = class_new(gensym("pdcontrol"),
@@ -491,6 +506,8 @@ static void pdcontrol_setup(void)
         gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_pdversion,
+        gensym("version"), 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
