@@ -803,6 +803,8 @@ void sys_set_searchpaths(void)
     do_gui_setnamelist("::sys_temppath", STUFF->st_temppath);
         /* send the hard-coded search path to pd-gui */
     do_gui_setnamelist("::sys_staticpath", STUFF->st_staticpath);
+        /* set the help paths from the prefs */
+    do_gui_setnamelist("::sys_helppath", namedlist_getlist("helppath.main"));
 }
 
     /* start a search path dialog window */
@@ -811,6 +813,7 @@ void glob_start_path_dialog(t_pd *dummy)
     char buf[MAXPDSTRING];
 
     do_gui_setnamelist("::sys_searchpath", STUFF->st_searchpath);
+    do_gui_setnamelist("::sys_helppath", namedlist_getlist("helppath.main"));
     snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
