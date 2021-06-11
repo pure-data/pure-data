@@ -787,47 +787,30 @@ t_symbol *sys_decodedialog(t_symbol *s)
 }
 
     /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
+static void do_gui_setnamelist(const char*listname, t_namelist*nl)
 {
     int i;
-    t_namelist *nl;
-
     sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
+    for (i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
+    sys_vgui("set %s %s\n", listname, "$::tmp_path");
 }
-
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
+void sys_set_searchpaths(void)
 {
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
+        /* set the search paths from the prefs */
+    do_gui_setnamelist("::sys_searchpath", STUFF->st_searchpath);
+        /* send the temp paths from the commandline to pd-gui */
+    do_gui_setnamelist("::sys_temppath", STUFF->st_temppath);
+        /* send the hard-coded search path to pd-gui */
+    do_gui_setnamelist("::sys_staticpath", STUFF->st_staticpath);
 }
 
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-     char buf[MAXPDSTRING];
+    char buf[MAXPDSTRING];
 
-    sys_set_searchpath();
+    do_gui_setnamelist("::sys_searchpath", STUFF->st_searchpath);
     snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
