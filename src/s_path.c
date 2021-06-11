@@ -676,6 +676,7 @@ static int do_open_via_helppath(const char *dir, const char *name,
     search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
+    char localext[MAXPDLOCALESTRING+10]; /* lang + -help..pd */
     char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
         /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
@@ -687,6 +688,20 @@ void open_via_helppath(const char *name, const char *dir)
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
+
+    if(PATHSTUFF->ps_lang_region[0]) {
+        snprintf(localext, sizeof(localext), "-help.%s.pd", PATHSTUFF->ps_lang_region);
+        if ((fd = do_open_via_helppath(usedir, realname, localext,
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
+            goto gotone;
+    }
+    if(PATHSTUFF->ps_lang[0]) {
+        snprintf(localext, sizeof(localext), "-help.%s.pd", PATHSTUFF->ps_lang);
+        if ((fd = do_open_via_helppath(usedir, realname, localext,
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
+            goto gotone;
+    }
+
     if ((fd = do_open_via_helppath(usedir, realname, "-help.pd",
                                    dirbuf, &basename, MAXPDSTRING)) >= 0)
             goto gotone;
