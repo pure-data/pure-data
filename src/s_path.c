@@ -57,8 +57,11 @@ typedef struct _namedlist {
     t_namelist *list;
     struct _namedlist *next;
 } t_namedlist;
+#define MAXPDLOCALESTRING 10
 typedef struct _pathstuff {
     t_namedlist *ps_namedlists;
+    char ps_lang[MAXPDLOCALESTRING];
+    char ps_lang_region[MAXPDLOCALESTRING];
 } t_pathstuff;
 #define PATHSTUFF ((t_pathstuff*)(pd_this->pd_stuff->st_private))
 
@@ -1024,7 +1027,44 @@ void s_path_newpdinstance(void)
          * we need to add another layer of indirection;
          * but for now we are the only one, so let's keep it simple
          */
+    const char *language = getenv("LANG");
     STUFF->st_private = getbytes(sizeof(t_pathstuff));
+    memset(PATHSTUFF->ps_lang, 0, sizeof(PATHSTUFF->ps_lang));
+    memset(PATHSTUFF->ps_lang_region, 0, sizeof(PATHSTUFF->ps_lang_region));
+    if(language) {
+        char lang[MAXPDLOCALESTRING];
+        int idx, region=0;
+        strncpy(lang, language, sizeof(lang));
+        lang[sizeof(lang)-1] = 0;
+            /* normalize the language string: lowercase; '-' -> '_'; now '.'-suffix */
+        for(idx=0; idx<sizeof(lang); idx++) {
+            char c = tolower(lang[idx]);
+            switch(c) {
+            case '-': c='_'; break;
+            case '.': c=0; break;
+            default: break;
+            }
+            lang[idx] = c;
+            if(!c)
+                break;
+            if ('_' == c)region=idx;
+        }
+            /* now i18n for 'C' and 'POSIX' locale */
+        if(strcmp("c", lang) && strcmp("posix", lang)) {
+            if(region>0) {
+                strncpy(PATHSTUFF->ps_lang_region, lang, sizeof(PATHSTUFF->ps_lang_region)-1);
+                lang[region] = 0;
+            }
+            strncpy(PATHSTUFF->ps_lang, lang, sizeof(PATHSTUFF->ps_lang)-1);
+        }
+    }
+#if 0
+    dprintf(2, "==========================\n");
+    dprintf(2, "LANG       : %s\n", language);
+    dprintf(2, "lang       : %s\n", PATHSTUFF->ps_lang);
+    dprintf(2, "lang_region: %s\n", PATHSTUFF->ps_lang_region);
+    dprintf(2, "==========================\n");
+#endif
 }
 
 void s_path_freepdinstance(void)
