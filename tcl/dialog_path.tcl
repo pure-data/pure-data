@@ -8,6 +8,7 @@ namespace eval ::dialog_path:: {
     variable verbose_button 0
     variable docspath ""
     variable installpath ""
+    variable helppath_widget
     namespace export pdtk_path_dialog
 }
 
@@ -44,6 +45,7 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
 proc ::dialog_path::create_dialog {mytoplevel} {
     global docspath
     global installpath
+    global helppath_widget
     ::scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, audio, text and other files"] \
@@ -138,6 +140,18 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    # help path
+    labelframe $mytoplevel.helppath -text [_ "Additional Pd Help Paths"] \
+        -borderwidth 1 -padx 5 -pady 5
+    ::scrollbox::make $mytoplevel.helppath $::sys_helppath  ::dialog_path::add_help  ::dialog_path::edit_help
+    $mytoplevel.helppath.listbox.box configure -height 3
+    $mytoplevel.helppath.listbox.box selection clear 0 end
+    pack $mytoplevel.helppath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
+    set helppath_widget $mytoplevel.helppath
+
+    # remove focus from helppath-widget by giving it to the searchpath widget
+    focus $mytoplevel.listbox.box
 
     # re-adjust height based on optional sections
     update
@@ -247,6 +261,7 @@ proc ::dialog_path::commit {new_path} {
     global verbose_button
     global docspath
     global installpath
+    global helppath_widget
 
     # save buttons and search paths
     set changed false
@@ -267,4 +282,17 @@ proc ::dialog_path::commit {new_path} {
         # run this after since it checks ::deken::installpath value
         ::pd_docsdir::update_path $docspath
     }
+
+    # save helppath
+    set ::sys_helppath [::scrollboxwindow::get_listdata ${helppath_widget}]
+    pdsend "pd set-pathlist helppath.main [pdtk_encode ${::sys_helppath}]"
+}
+
+############ pdtk_helppath_dialog -- dialog window for help path #########
+proc ::dialog_path::add_help {} {
+    return [::dialog_path::choosePath "" [_ "Add a new help path"]]
+}
+
+proc ::dialog_path::edit_help {currentpath} {
+    return [::dialog_path::choosePath $currentpath "Edit existing help path \[$currentpath\]"]
 }

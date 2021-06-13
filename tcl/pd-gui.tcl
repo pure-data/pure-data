@@ -161,6 +161,8 @@ set sys_searchpath {}
 set sys_temppath {}
 # hard-coded search paths for objects, help, plugins, etc.
 set sys_staticpath {}
+# user-specified help paths
+set sys_helppath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
 # a list of plugins that were loaded

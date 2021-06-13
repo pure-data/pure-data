@@ -91,6 +91,23 @@ proc add_to_searchpaths {path {save true}} {
     lappend ::sys_searchpath "$path"
 }
 
+# adds to the sys_helppath user help paths directly
+proc add_to_helppaths {path {save true}} {
+    # try not to add duplicates
+    foreach helppath $::sys_helppath {
+        set dir [string trimright $helppath [file separator]]
+        if {"$dir" eq "$path"} {
+            return
+        }
+    }
+    # tell pd about the new path
+    if {$save} {set save 1} else {set save 0}
+    pdsend "pd add-to-helppath [pdtk_encodedialog ${path}] $save"
+    # append to help paths as this won't be
+    # updated from the pd core until a restart
+    lappend ::sys_helppath "$path"
+}
+
 # ------------------------------------------------------------------------------
 # window info (name, path, parents, children, etc.)
 
