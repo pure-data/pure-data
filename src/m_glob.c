@@ -31,6 +31,7 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_midi_setapi(t_pd *dummy, t_floatarg f);
 void glob_start_path_dialog(t_pd *dummy, t_floatarg flongform);
 void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
+void glob_set_pathlist(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit);
 void glob_addtohelppath(t_pd *dummy, t_symbol *path, t_float saveit);
 void glob_start_startup_dialog(t_pd *dummy, t_floatarg flongform);
@@ -177,6 +178,8 @@ void glob_init(void)
         gensym("add-to-path"), A_SYMBOL, A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_addtohelppath,
         gensym("add-to-helppath"), A_SYMBOL, A_DEFFLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_set_pathlist,
+        gensym("set-pathlist"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_start_startup_dialog,
         gensym("start-startup-dialog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_startup_dialog,

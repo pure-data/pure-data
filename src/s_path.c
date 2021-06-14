@@ -815,21 +815,32 @@ void glob_start_path_dialog(t_pd *dummy)
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
 
+
+static void do_set_path(const char*listname, int argc, t_atom *argv) {
+    namedlist_free(listname);
+    while(argc--) {
+        t_symbol *s = sys_decodedialog(atom_getsymbolarg(0, 1, argv++));
+        if (*s->s_name)
+            namedlist_append_files(listname, s->s_name);
+    }
+}
+
+void glob_set_pathlist(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
+    s = atom_getsymbolarg(0, argc, argv);
+    if(argc<1) {
+        bug("set-pathlist");
+        return;
+    }
+    do_set_path(s->s_name, argc-1, argv+1);
+}
+
     /* new values from dialog window */
 void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    namelist_free(STUFF->st_searchpath);
-    STUFF->st_searchpath = 0;
     sys_usestdpath = atom_getfloatarg(0, argc, argv);
     sys_verbose = atom_getfloatarg(1, argc, argv);
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, s->s_name);
-    }
+    do_set_path("searchpath.main", argc, argv);
 }
 
     /* add one item to search path (intended for use by Deken plugin).
