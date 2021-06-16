@@ -453,12 +453,24 @@ proc load_locale {} {
     } elseif {$::tcl_platform(platform) eq "windows"} {
         # using LANG on Windows is useful for easy debugging
         if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-            ::msgcat::mclocale $::env(LANG)
-        } elseif {![catch {package require registry}]} {
-            ::msgcat::mclocale [string tolower \
-                                    [string range \
-                                         [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-        }
+               ::msgcat::mclocale $::env(LANG)
+           } elseif {![catch {package require registry}]} {
+               set lang ""
+               # on modern systems (>= Vista?) the locale can be found in HKCU\Control Panel\International :: LocaleName
+               catch {
+                   set lang [ registry get {HKEY_CURRENT_USER\Control Panel\International} LocaleName]
+               }
+               # on older systems (XP,...) there's a similar string on HKCU\Control Panel\International :: sLanguage
+               # (upper-case 3-letters; of MS own invention; luckily the first two letters are often the same)
+               if { ${lang} == "" } {
+                   set lang [string tolower \
+                       [string range \
+                           [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
+               }
+               if { ${lang} ne "" } {
+                   ::msgcat::mclocale ${lang}
+               }
+           }
     }
     ::msgcat::mcload [file join [file dirname [info script]] .. po]
 
