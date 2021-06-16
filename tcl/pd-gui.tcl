@@ -458,7 +458,7 @@ proc load_locale {} {
                set lang ""
                # on modern systems (>= Vista?) the locale can be found in HKCU\Control Panel\International :: LocaleName
                catch {
-                   set lang [ registry get {HKEY_CURRENT_USER\Control Panel\International} LocaleName]
+                   set lang [ registry get {HKEY_CURRENT_USER\Control Panel\International} LocaleName ]
                }
                # on older systems (XP,...) there's a similar string on HKCU\Control Panel\International :: sLanguage
                # (upper-case 3-letters; of MS own invention; luckily the first two letters are often the same)
@@ -468,7 +468,8 @@ proc load_locale {} {
                            [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
                }
                if { ${lang} ne "" } {
-                   ::msgcat::mclocale ${lang}
+                   # need to normalize the locale from '<lang>-<region>' to '<lang>_<region>'
+                   ::msgcat::mclocale [ string map {- _} ${lang} ]
                }
            }
     }
