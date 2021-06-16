@@ -33,7 +33,7 @@ send a "1" to start playback. A "0" stops it., f 75;
 automatically \, although only 2- 3- and 4- byte samples are accepted
 (4 bytes implies floating point and is not available in aiff format.)
 , f 75;
-#X text 502 470 Updated for version 0.37;
+#X text 502 470 Updated for Pd version 0.37;
 #X obj 153 468 soundfiler;
 #X text 74 468 see also:;
 #X obj 234 468 readsf~;
