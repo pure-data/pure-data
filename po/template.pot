@@ -683,13 +683,19 @@ msgstr ""
 msgid "Installation options:"
 msgstr ""
 
-msgid "Try to remove libraries before (re)installing them?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
 
-msgid "Show README of newly installed libraries (if present)?"
+msgid "Try to remove libraries before (re)installing them"
 msgstr ""
 
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
 msgid "Platform settings:"
@@ -702,7 +708,11 @@ msgstr ""
 msgid "User-defined platform:"
 msgstr ""
 
-msgid "Hide foreign architectures?"
+msgid "Hide foreign architectures"
+msgstr ""
+
+#, tcl-format
+msgid "Only show the newest version of a library\n(treats other versions like foreign architectures)"
 msgstr ""
 
 #, tcl-format
@@ -729,6 +739,35 @@ msgid "try using the full name e.g. 'freeverb'"
 msgstr ""
 
 msgid "No matching externals found."
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Search for: "
+msgstr ""
+
+msgid "libraries"
+msgstr ""
+
+msgid "objects"
+msgstr ""
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "More..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr ""
+msgid "Install DEK file..."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
