@@ -1054,9 +1054,53 @@ void s_path_newpdinstance(void)
          * but for now we are the only one, so let's keep it simple
          */
     const char *language = getenv("LANG");
+    if(language && !*language)
+        language=0;
+
     STUFF->st_private = getbytes(sizeof(t_pathstuff));
     memset(PATHSTUFF->ps_lang, 0, sizeof(PATHSTUFF->ps_lang));
     memset(PATHSTUFF->ps_lang_region, 0, sizeof(PATHSTUFF->ps_lang_region));
+
+#ifdef _WIN32
+        /* on Windows, the LANG envvar is typically unused.
+         * instead we need to query the registry.
+         * of course, there are multiple keys, depending on the OS version...
+         */
+    if (!language)
+    {
+        LSTATUS err;
+        HKEY hkey;
+        if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_CURRENT_USER,
+                                          "Control Panel\\International",
+                                          0,
+                                          KEY_QUERY_VALUE, &hkey))
+        {
+            char szBuffer[MAXPDSTRING];
+            DWORD dwBufferSize = sizeof(szBuffer);
+            t_symbol*s=0;
+
+                /* on >=Vista there's a LocalName key which holds a proper language specifier */
+            if(!s && ERROR_SUCCESS == RegQueryValueEx(hkey, "LocaleName", 0, NULL, (LPBYTE)szBuffer, &dwBufferSize)) {
+                s = gensym(szBuffer);
+            }
+
+                /* on older systems, the sLanguage holds a 3-char specifier of redmonds own invention
+                 * luckily the first two characters are mostly compatible with iso639-1
+                 */
+            if(!s && ERROR_SUCCESS == RegQueryValueEx(hkey, "sLanguage", 0, NULL, (LPBYTE)szBuffer, &dwBufferSize)) {
+                szBuffer[2] = 0;
+                s = gensym(szBuffer);
+            }
+
+                /* hopefully, by now we have a valid language specifier */
+            if(s)
+                language=s->s_name;
+            RegCloseKey(hkey);
+        }
+
+    }
+#endif /* _WIN32 */
+
     if(language) {
         char lang[MAXPDLOCALESTRING];
         int idx, region=0;
@@ -1085,11 +1129,11 @@ void s_path_newpdinstance(void)
         }
     }
 #if 0
-    dprintf(2, "==========================\n");
-    dprintf(2, "LANG       : %s\n", language);
-    dprintf(2, "lang       : %s\n", PATHSTUFF->ps_lang);
-    dprintf(2, "lang_region: %s\n", PATHSTUFF->ps_lang_region);
-    dprintf(2, "==========================\n");
+    fprintf(stderr, "==========================\n");
+    fprintf(stderr, "LANG       : %s\n", language);
+    fprintf(stderr, "lang       : %s\n", PATHSTUFF->ps_lang);
+    fprintf(stderr, "lang_region: %s\n", PATHSTUFF->ps_lang_region);
+    fprintf(stderr, "==========================\n");
 #endif
 }
 
