@@ -573,6 +573,9 @@ msgstr ""
 msgid "Externals Install Directory"
 msgstr ""
 
+msgid "Additional Pd Help Paths"
+msgstr ""
+
 msgid "Clear"
 msgstr ""
 
