@@ -9,7 +9,6 @@
 #X floatatom 156 226 5 0 0 0 - - -;
 #X obj 37 15 vsl 18 128 0 127 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
-#X text 64 15 <= [vslider]/[vsl]: Vertical Slider;
 #X text 79 46 The vertical slider is a GUI (Graphical User Interface)
 that sends numbers. Click on it and drag to output values - use shift-click
 and drag for fine-tuning by a factor of a hundredth. Incoming floats
@@ -613,9 +612,9 @@ included in Pd version 0.34., f 28;
 #X floatatom 58 385 6 0 0 0 - - -;
 #N canvas 463 235 547 426 discrete 0;
 #X obj 208 110 vsl 18 128 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 208 110 vsl 18 128 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 12700 1;
+-1 -1 0 1;
 #X obj 98 353 outlet;
 #X obj 208 45 inlet;
 #X obj 270 45 inlet;
@@ -658,9 +657,10 @@ dynamically., f 34;
 #X connect 6 0 12 0;
 #X connect 12 0 5 0;
 #X restore 315 298 pd example-discrete;
+#X text 64 15 - [vslider]/[vsl]: Vertical Slider;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
-#X connect 3 0 21 0;
+#X connect 3 0 20 0;
 #X connect 4 0 3 0;
 #X connect 5 0 0 0;
-#X connect 21 0 2 0;
+#X connect 20 0 2 0;

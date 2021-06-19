@@ -2,7 +2,6 @@
 #X text 329 318 updated for Pd version 0.25;
 #X text 51 323 see also:;
 #X obj 69 16 poly;
-#X text 108 15 - MIDI-STYLE POLYPHONIC VOICE ALLOCATOR;
 #X text 33 49 The poly object takes a stream of pitch/velocity pairs
 and outputs triples containing voice number \, pitch and velocity.
 You can pack the output and use the route object to route messages
@@ -22,13 +21,14 @@ selects voice stealing;
 #X text 169 265 Output is in the printout window.;
 #X msg 279 167 stop;
 #X msg 323 167 clear;
-#X connect 7 0 13 0;
-#X connect 7 1 13 1;
-#X connect 7 2 13 2;
-#X connect 9 0 7 0;
-#X connect 10 0 7 0;
-#X connect 11 0 7 0;
-#X connect 12 0 7 0;
-#X connect 13 0 14 0;
-#X connect 16 0 7 0;
-#X connect 17 0 7 0;
+#X text 108 15 - MIDI-style polyphonic voice allocator;
+#X connect 6 0 12 0;
+#X connect 6 1 12 1;
+#X connect 6 2 12 2;
+#X connect 8 0 6 0;
+#X connect 9 0 6 0;
+#X connect 10 0 6 0;
+#X connect 11 0 6 0;
+#X connect 12 0 13 0;
+#X connect 15 0 6 0;
+#X connect 16 0 6 0;

@@ -1,9 +1,9 @@
-#N canvas 571 120 694 592 12;
+#N canvas 571 120 691 648 12;
 #X floatatom 92 309 4 0 0 0 - - -;
 #X obj 92 339 sig~ 100;
 #X obj 394 271 table table1;
 #X obj 493 272 table table2;
-#X text 425 529 Updated for Pd version 0.33;
+#X text 302 582 Updated for Pd version 0.33;
 #X obj 58 17 tabosc4~;
 #X msg 112 390 set table1;
 #X obj 92 466 tabosc4~ table1, f 18;
@@ -33,6 +33,8 @@ f 64;
 #X msg 305 311 \; table1 sinesum 512 1 1 1 1 \, normalize \; table2
 cosinesum 512 0 1;
 #X obj 91 513 output~;
+#X text 370 543 see also:;
+#X obj 453 543 osc~;
 #X connect 0 0 1 0;
 #X connect 1 0 7 0;
 #X connect 6 0 7 0;

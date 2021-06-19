@@ -1,4 +1,4 @@
-#N canvas 468 121 567 528 12;
+#N canvas 496 92 567 528 12;
 #X obj 126 267 env~;
 #X floatatom 126 293 0 0 0 0 - - -;
 #X floatatom 165 215 0 0 0 0 - - -;
@@ -12,7 +12,7 @@
 #X msg 126 188 clear;
 #X obj 74 13 hip~;
 #X text 119 12 - one-pole high pass filter;
-#X text 42 478 updated for Pd version 0.44;
+#X text 312 486 updated for Pd version 0.44;
 #X msg 285 428 \; pd compatibility 0.43;
 #X text 47 50 hip~ is a one-pole high pass filter with a specified
 cutoff frequency.;
@@ -29,6 +29,11 @@ To get the old (0.43 and earlier) behavior \, set "compatibility" to
 0.43 in Pd's command line or by a message:, f 67;
 #X text 175 188 <= reinitialize internal state;
 #X text 107 140 <= scroll to change input frequency;
+#X text 67 460 see also:;
+#X obj 68 486 lop~;
+#X obj 107 486 bp~;
+#X obj 181 486 bob~;
+#X obj 141 486 vcf~;
 #X connect 0 0 1 0;
 #X connect 2 0 3 1;
 #X connect 3 0 0 0;

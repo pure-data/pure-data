@@ -1,6 +1,6 @@
 #N canvas 437 86 551 343 12;
-#X obj 44 11 spigot;
-#X text 109 12 - pass or block messages;
+#X obj 51 17 spigot;
+#X text 108 16 - pass or block messages;
 #X text 44 57 Spigot passes messages from its left inlet to its outlet
 \, as long as a nonzero number is sent to its right inlet. When its
 right inlet gets zero \, incoming messages are "blocked \, " i.e. \,

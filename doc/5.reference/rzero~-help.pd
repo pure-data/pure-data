@@ -1,10 +1,8 @@
-#N canvas 430 91 630 559 12;
+#N canvas 634 47 573 586 12;
 #X floatatom 114 177 0 0 0 0 - - -;
 #X obj 61 92 osc~ 100;
 #X msg 77 124 clear;
-#X obj 120 508 lop~;
-#X text 37 508 see also:;
-#X text 397 490 updated for Pd version-0.38;
+#X text 321 550 updated for Pd version-0.38;
 #X obj 128 447 rzero~;
 #X obj 63 471 cpole~;
 #X obj 63 447 rpole~;
@@ -51,9 +49,7 @@
 #X connect 14 0 2 0;
 #X connect 14 0 11 0;
 #X restore 462 419 pd test;
-#X text 164 508 etc.: user-friendly filters;
 #X obj 60 7 rzero~;
-#X text 122 7 real one-zero (non-recursive) filter \, raw;
 #X text 34 35 Rzero~ filters an audio signal (left inlet) via a one-zero
 real filter \, whose coefficient is controlled by a creation argument
 or by an audio signal (right inlet).;
@@ -73,7 +69,15 @@ for an introduction to the necessary theory.), f 70;
 #X text 147 177 <= filter coefficient (may be a signal);
 #X text 134 202 <= creation argument initializes filter coefficient
 ;
-#X connect 0 0 24 1;
-#X connect 1 0 24 0;
-#X connect 2 0 24 0;
-#X connect 18 0 24 0;
+#X text 122 7 - real one-zero (non-recursive) filter \, raw;
+#X obj 122 513 lop~;
+#X text 43 514 see also:;
+#X obj 163 513 hip~;
+#X obj 205 513 bp~;
+#X obj 242 513 vcf~;
+#X text 327 513 - user-friendly filters;
+#X obj 287 513 bob~;
+#X connect 0 0 20 1;
+#X connect 1 0 20 0;
+#X connect 2 0 20 0;
+#X connect 16 0 20 0;

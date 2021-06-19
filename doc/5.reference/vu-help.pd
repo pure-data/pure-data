@@ -4,7 +4,6 @@
 ;
 #X floatatom 164 215 5 -100 12 0 - - -;
 #X floatatom 119 215 5 0 0 0 - - -;
-#X text 87 20 - [vu] VU meter;
 #X floatatom 164 380 5 0 0 0 - - -;
 #X floatatom 153 405 5 0 0 0 - - -;
 #X text 203 381 Peak;
@@ -499,8 +498,8 @@ labels \, etc) ===>, f 17;
 is in dB (0-100 range \, pd style) but needs to be converted to dBFS
 (and we do that by simply subtracting 100)., f 31;
 #X text 345 225 The slop~ object is used here for peak detection. We
-need to convert the output to dB with rmstodb and also subtract by 100
-to convert it to dBFS., f 31;
+need to convert the output to dB with rmstodb and also subtract by
+100 to convert it to dBFS., f 31;
 #X connect 0 0 18 0;
 #X connect 1 0 12 0;
 #X connect 2 0 3 0;
@@ -583,7 +582,8 @@ to see how this is done., f 55;
 #X restore 341 209 pd example;
 #X obj 83 477 env~;
 #X obj 124 477 slop~, f 7;
-#X connect 1 0 6 0;
-#X connect 1 1 5 0;
+#X text 87 20 - [vu]: VU meter;
+#X connect 1 0 5 0;
+#X connect 1 1 4 0;
 #X connect 2 0 1 1;
 #X connect 3 0 1 0;

@@ -1,9 +1,6 @@
-#N canvas 461 35 572 679 12;
+#N canvas 461 35 574 703 12;
 #X obj 47 130 osc~ 100;
 #X msg 65 157 clear;
-#X obj 107 620 lop~;
-#X text 27 621 see also:;
-#X text 362 648 updated for Pd version-0.38;
 #X obj 113 558 rzero~;
 #X obj 54 583 cpole~;
 #X obj 54 558 rpole~;
@@ -86,7 +83,6 @@
 #X connect 29 0 21 0;
 #X connect 30 0 21 1;
 #X restore 427 563 pd test;
-#X text 147 623 etc.: user-friendly filters;
 #X text 26 451 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
@@ -94,10 +90,9 @@ for an introduction to the necessary theory.), f 68;
 #X obj 96 212 sig~;
 #X obj 128 236 sig~;
 #X obj 160 260 sig~;
-#X text 207 302 coefficient (real and imaginary part);
+#X text 207 306 coefficient (real and imaginary part);
 #X msg 75 183 set 0.6 0.8;
 #X obj 57 12 czero~;
-#X text 117 12 complex one-zero (non-recursive) filter \, raw;
 #X text 22 46 Czero~ filters a complex audio signal (first two inlets)
 via a one-zero filter \, whose coefficients are controlled by creation
 arguments or by another complex audio signal (remaining two inlets).
@@ -108,17 +103,26 @@ arguments or by another complex audio signal (remaining two inlets).
 the filter coefficient (all complex numbers). The filter is always
 stable., f 63;
 #X text 28 422 The transfer function is H(Z) = 1 - aZ^-1.;
-#X obj 65 284 czero~ 0.9 0.4;
+#X obj 65 288 czero~ 0.9 0.4;
 #X text 113 130 <= signal to filter (real part);
 #X text 110 157 <= clear internal state to zero;
 #X text 162 183 <= set internal state (real&imaginary parts);
 #X text 135 211 <= signal to filter (imaginary part);
 #X text 170 235 <= filter coefficient (real part);
-#X text 179 286 <= creation arguments initialize filter;
+#X text 179 290 <= creation arguments initialize filter;
 #X text 200 260 <= filter coefficient (imaginary part);
-#X connect 0 0 32 0;
-#X connect 1 0 32 0;
-#X connect 20 0 32 1;
-#X connect 21 0 32 2;
-#X connect 22 0 32 3;
-#X connect 24 0 32 0;
+#X obj 130 628 lop~;
+#X text 51 629 see also:;
+#X obj 171 628 hip~;
+#X obj 213 628 bp~;
+#X obj 250 628 vcf~;
+#X text 335 628 - user-friendly filters;
+#X obj 295 628 bob~;
+#X text 332 664 updated for Pd version 0.38;
+#X text 117 12 - complex one-zero (non-recursive) filter \, raw;
+#X connect 0 0 27 0;
+#X connect 1 0 27 0;
+#X connect 16 0 27 1;
+#X connect 17 0 27 2;
+#X connect 18 0 27 3;
+#X connect 20 0 27 0;

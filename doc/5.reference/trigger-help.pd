@@ -1,29 +1,31 @@
-#N canvas 460 103 685 355 12;
-#X msg 41 157 2.5;
-#X msg 139 159 bang;
-#X msg 81 158 23 64;
-#X obj 43 26 trigger;
-#X text 114 27 - sequence messages in right-to-left order;
-#X text 453 302 updated for Pd version 0.33;
-#X text 102 294 the above can be abbreviated as:;
-#X msg 185 160 symbol dog;
-#X text 39 70 The trigger object outputs its input from right to left
+#N canvas 501 103 685 355 12;
+#X msg 37 168 2.5;
+#X msg 135 170 bang;
+#X msg 77 169 23 64;
+#X obj 49 18 trigger;
+#X text 114 19 - sequence messages in right-to-left order;
+#X text 449 313 updated for Pd version 0.33;
+#X text 98 305 the above can be abbreviated as:;
+#X msg 181 171 symbol dog;
+#X text 35 81 The trigger object outputs its input from right to left
 \, converting to the types indicated by its creation arguments. There
 is also a "pointer" argument type (see the pointer object.), f 67
 ;
-#X obj 337 295 t f b s l a;
-#X msg 434 186 dog my cats;
-#X obj 434 218 trigger bang anything;
-#X obj 434 259 print y1;
-#X obj 578 257 print y2;
-#X obj 81 210 trigger float bang symbol list anything;
-#X text 432 141 "anythings" can only;
-#X text 429 161 be converted to bang:;
-#X obj 81 250 print f;
-#X obj 148 250 print b;
-#X obj 216 248 print s;
-#X obj 283 248 print l;
-#X obj 351 250 print a;
+#X obj 333 306 t f b s l a;
+#X msg 430 197 dog my cats;
+#X obj 430 229 trigger bang anything;
+#X obj 430 270 print y1;
+#X obj 574 268 print y2;
+#X obj 77 221 trigger float bang symbol list anything;
+#X text 428 152 "anythings" can only;
+#X text 425 172 be converted to bang:;
+#X obj 77 261 print f;
+#X obj 144 261 print b;
+#X obj 212 259 print s;
+#X obj 279 259 print l;
+#X obj 347 261 print a;
+#X obj 77 43 t;
+#X text 115 43 - abbreviation;
 #X connect 0 0 14 0;
 #X connect 1 0 14 0;
 #X connect 2 0 14 0;

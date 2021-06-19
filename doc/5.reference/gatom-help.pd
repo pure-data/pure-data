@@ -1,4 +1,4 @@
-#N canvas 347 90 930 482 12;
+#N canvas 419 84 930 482 12;
 #X msg 70 362 set 45;
 #X floatatom 130 405 5 0 0 0 - - -;
 #X symbolatom 112 23 10 0 0 0 - - -;
@@ -223,7 +223,6 @@ on it and drag upward or downward to change the value continuously
 outlet (a list is truncated to the first item). The "set" message sets
 the number box's value but doesn't send it to the outlet. A bang outputs
 the box's value.;
-#X text 198 22 atom (number/symbol) box;
 #X text 663 376 <= number box from "iemguis";
 #X text 511 387 See also:;
 #X text 46 49 These are GUI (Graphical User Interface) objects that
@@ -240,6 +239,7 @@ typing a float will generate a symbol (for instance \, "symbol 4").
 #X obj 589 399 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 613 400 <= toggle from "iemguis";
+#X text 196 22 - atom (number/symbol) box;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
 #X connect 5 0 8 0;

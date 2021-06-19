@@ -540,7 +540,6 @@ box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 64;
 #X text 243 340 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
 Check details and how to get it back:, f 33;
-#X text 199 24 <= [hradio]: Horizontal Radio Button;
 #X text 27 59 The horizontal radio button is a GUI (Graphical User
 Interface) that sends numbers. Click on its cells to output corresponding
 values. Incoming floats set the value and are passed through (even
@@ -574,6 +573,7 @@ turns the previous toggle off before turning the new one on., f 29
 #X connect 6 0 0 0;
 #X connect 8 0 5 0;
 #X restore 317 251 pd switch-example;
+#X text 199 24 - [hradio]: Horizontal Radio Button;
 #X connect 0 0 5 0;
 #X connect 1 0 8 0;
 #X connect 2 0 5 0;

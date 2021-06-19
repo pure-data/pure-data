@@ -1,10 +1,8 @@
-#N canvas 511 124 585 555 12;
+#N canvas 657 24 594 605 12;
 #X floatatom 132 197 0 0 0 0 - - -;
 #X obj 51 113 osc~ 100;
 #X msg 67 145 clear;
-#X obj 92 509 lop~;
-#X text 13 509 see also:;
-#X text 371 495 updated for Pd version-0.38;
+#X text 355 567 updated for Pd version-0.38;
 #X obj 99 456 rzero~;
 #X obj 40 480 cpole~;
 #X obj 40 456 rpole~;
@@ -51,12 +49,9 @@
 #X connect 14 0 2 0;
 #X connect 14 0 11 0;
 #X restore 460 431 pd test;
-#X text 136 509 etc.: user-friendly filters;
 #X text 37 291 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient. The filter is always stable., f 56;
 #X obj 53 11 rzero_rev~;
-#X text 142 11 real one-zero (non-recursive) "reverse" filter \, raw
-;
 #X obj 51 223 rzero_rev~ 1;
 #X text 18 40 Rzero_rev~ filters an audio signal (left inlet) via a
 one-zero real filter \, whose coefficient is controlled by a creation
@@ -75,7 +70,16 @@ for an introduction to the necessary theory.), f 70;
 #X text 111 144 <= clear internal state to zero;
 #X text 122 113 <= signal to filter;
 #X text 43 251 The action of rzero_rev~ is:;
-#X connect 0 0 24 1;
-#X connect 1 0 24 0;
-#X connect 2 0 24 0;
-#X connect 18 0 24 0;
+#X text 142 11 - real one-zero (non-recursive) "reverse" filter \,
+raw;
+#X obj 119 529 lop~;
+#X text 40 530 see also:;
+#X obj 160 529 hip~;
+#X obj 202 529 bp~;
+#X obj 239 529 vcf~;
+#X text 324 529 - user-friendly filters;
+#X obj 284 529 bob~;
+#X connect 0 0 20 1;
+#X connect 1 0 20 0;
+#X connect 2 0 20 0;
+#X connect 16 0 20 0;

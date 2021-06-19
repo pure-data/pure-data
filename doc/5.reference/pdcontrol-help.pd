@@ -1,6 +1,5 @@
 #N canvas 449 68 647 499 12;
 #X obj 27 15 pdcontrol;
-#X text 106 15 -- communicate with pd and/or this patch;
 #X text 403 457 updated for Pd version 0.50.;
 #X obj 41 286 pdcontrol;
 #X obj 41 313 print;
@@ -49,9 +48,10 @@ than zero is ignored.), f 42;
 #X text 37 52 pdcontrol lets you communicate with the patch to get
 its owning directory \, arguments \, its visible/invisible state \,
 or to open a URL in a web browser.;
-#X connect 3 0 4 0;
-#X connect 5 0 3 0;
-#X connect 6 0 7 0;
-#X connect 10 0 3 0;
-#X connect 12 0 3 0;
-#X connect 16 0 3 0;
+#X text 106 15 - communicate with pd and/or this patch;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X connect 9 0 2 0;
+#X connect 11 0 2 0;
+#X connect 15 0 2 0;

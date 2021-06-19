@@ -1,4 +1,4 @@
-#N canvas 389 117 571 589 12;
+#N canvas 487 93 571 589 12;
 #X obj 112 230 openpanel;
 #X msg 112 142 bang;
 #X obj 112 264 print;
@@ -19,7 +19,7 @@
 #X obj 110 429 openpanel 0;
 #X obj 74 25 openpanel;
 #X text 303 528 updated for Pd version 0.51.;
-#X text 141 25 - query for files or directories;
+#X text 147 25 - query for files or directories;
 #X text 47 69 When openpanel gets a "bang" \, a file browser appears
 on the screen. By default \, if you select a file \, its name appears
 on the outlet.;

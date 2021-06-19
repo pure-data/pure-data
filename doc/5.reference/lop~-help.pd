@@ -1,4 +1,4 @@
-#N canvas 490 219 616 426 12;
+#N canvas 578 42 616 426 12;
 #X obj 107 256 env~;
 #X floatatom 107 284 0 0 0 0 - - -;
 #X floatatom 146 201 0 0 0 0 - - -;
@@ -19,14 +19,16 @@ frequency., f 51;
 #X text 51 323 Compare the strength of the original signal on the left
 with that of the filtered signal on the right.;
 #X text 147 255 env~ gives the amplitude of the signal in dB.;
-#X text 76 373 see also:;
-#X obj 155 372 hip~;
-#X obj 200 372 bp~;
-#X obj 237 372 vcf~;
-#X text 384 380 updated for Pd version-0.38;
+#X text 76 377 see also:;
+#X obj 155 376 hip~;
+#X obj 200 376 bp~;
+#X obj 237 376 vcf~;
 #X text 79 124 <= scroll to change input frequency;
 #X text 151 172 <= reinitialize internal state;
 #X text 178 202 <= set cutoff frequency;
+#X obj 281 376 bob~;
+#X msg 433 141 \; pd dsp 1;
+#X text 384 380 updated for Pd version 0.38;
 #X connect 0 0 1 0;
 #X connect 2 0 12 1;
 #X connect 3 0 4 0;

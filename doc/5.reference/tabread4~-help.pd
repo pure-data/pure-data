@@ -1,11 +1,10 @@
-#N canvas 323 179 823 556 12;
+#N canvas 458 117 823 556 12;
 #X obj 37 294 tabread4~ array99;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array99 10 float 3;
 #A 0 -0.5 -0.5 -0.5 0.5 0.5 0.5 0 0 0 0;
 #X coords 0 1 10 -1 250 200 1;
 #X restore 523 279 graph;
-#X text 131 22 4-point-interpolating table lookup;
 #X obj 37 382 snapshot~;
 #X obj 56 356 metro 200;
 #X obj 37 129 sig~;
@@ -38,11 +37,12 @@ algorithms. The interpolation scheme is 4-point polynomial.;
 #X text 179 234 inlet sets onset into table. You can use this to improve
 the accuracy of indexing into the array. See B15.tabread4~-onset.pd
 for details.;
-#X connect 0 0 3 0;
-#X connect 3 0 8 0;
-#X connect 4 0 3 0;
-#X connect 5 0 0 0;
-#X connect 6 0 5 0;
-#X connect 7 0 4 0;
-#X connect 10 0 0 0;
-#X connect 25 0 0 1;
+#X text 131 22 - 4-point-interpolating table lookup;
+#X connect 0 0 2 0;
+#X connect 2 0 7 0;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 4 0;
+#X connect 6 0 3 0;
+#X connect 9 0 0 0;
+#X connect 24 0 0 1;
