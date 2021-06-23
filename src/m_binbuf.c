@@ -927,7 +927,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
         y = binbuf_convert(x, 0);
-        x = y;
+        z = y;
     }
 
     if (!(f = sys_fopen(fbuf, "w")))
