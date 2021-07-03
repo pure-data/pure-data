@@ -434,6 +434,7 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+
     /* make a new glist and add it to this glist.  It will appear as
     a "graph", not a text object.  */
 t_glist *glist_addglist(t_glist *g, t_symbol *sym,
@@ -1919,6 +1920,11 @@ void g_canvas_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_scalar,
         gensym("scalar"), A_GIMME, A_NULL);
+
+/* -------------- connect method used in reading files ------------------ */
+    class_addmethod(canvas_class, (t_method)canvas_connect,
+        gensym("connect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+
 
 /* -------------- IEMGUI: button, toggle, slider, etc.  ------------ */
     class_addmethod(canvas_class, (t_method)canvas_bng, gensym("bng"),
