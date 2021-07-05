@@ -16,7 +16,7 @@ typedef struct _methodentry
 {
     t_symbol *me_name;
     t_gotfn me_fun;
-    t_atomtype me_arg[MAXPDARG+1];
+    unsigned char me_arg[MAXPDARG+1];
 } t_methodentry;
 
 EXTERN_STRUCT _widgetbehavior;

@@ -957,7 +957,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_method *f;
     t_class *c = *x;
     t_methodentry *m, *mlist;
-    t_atomtype *wp, wanttype;
+    unsigned char *wp, wanttype;
     int i;
     t_int ai[MAXPDARG+1], *ap = ai;
     t_floatarg ad[MAXPDARG+1], *dp = ad;
