@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 4</TITLE>
-    <meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Documentation 4</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
 
 
 <BODY>
+
+
+<div class="butt">
+<button class="btn-toggle-theme">&#9680;</button><button class="btn-toggle-font">f</button>
+</div>
+
+<div id=corpus>
 
 <H2>Pd Documentation chapter 4: externals</H2>
 
@@ -82,15 +89,78 @@ several external objects, as discussed further on).
 <p> These are Pd objects compiled to binaries from programming code (like
 in C or C++). They have to be compiled for your operating system, which
 means the binaries have different extensions according to each platform. For
-instance:
-
- 
-	<UL>
-	<LI> <b>.pd_darwin</b>: macOS binary extension
-	<LI> <b>.dll</b>: Windows binary extension
-	<LI> <b>.pd_linux</b>: Linux binary extension 
+instance:	
 	
-	</UL>
+<table>
+<thead valign="bottom">
+<tr><th>Operating System</th>
+<th>CPU-architecture</th>
+<th>filename</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Linux</td>
+<td><em>unspecified</em>
+(any architecture)</td>
+<td><code>my_lib.pd_linux</code></td>
+</tr>
+<tr><td>Linux</td>
+<td>i386 (Intel/AMD 32bit)</td>
+<td><code>my_lib.l_i386</code></td>
+</tr>
+<tr><td>Linux</td>
+<td>amd64 (Intel/AMD 64bit)</td>
+<td><code>my_lib.l_amd64</code></td>
+</tr>
+<tr><td>Linux</td>
+<td>arm (e.g. RaspberryPi)</td>
+<td><code>my_lib.l_arm</code></td>
+</tr>
+<tr><td>Linux</td>
+<td>arm64</td>
+<td><code>my_lib.l_arm64</code></td>
+</tr>
+<tr><td>macOS</td>
+<td><em>unspecified</em>
+(any architecture)</td>
+<td><code>my_lib.pd_darwin</code></td>
+</tr>
+<tr><td>macOS</td>
+<td>fat (multiple archs)</td>
+<td><code>my_lib.d_fat</code></td>
+</tr>
+<tr><td>macOS</td>
+<td>PowerPC</td>
+<td><code>my_lib.d_ppc</code></td>
+</tr>
+<tr><td>macOS</td>
+<td>i386 (Intel 32bit)</td>
+<td><code>my_lib.d_i386</code></td>
+</tr>
+<tr><td>macOS</td>
+<td>amd64 (Intel 64bit)</td>
+<td><code>my_lib.d_amd64</code></td>
+</tr>
+<tr><td>macOS</td>
+<td>arm64 (Apple Silicon)</td>
+<td><code>my_lib.d_arm64</code></td>
+</tr>
+<tr><td>Windows</td>
+<td><em>unspecified</em>
+(any architecture)</td>
+<td><code>my_lib.dll</code></td>
+</tr>
+<tr><td>Windows</td>
+<td>i386 (Intel/AMD 32bit)</td>
+<td><code>my_lib.m_i386</code></td>
+</tr>
+<tr><td>Windows</td>
+<td>amd64 (Intel/AMD 64bit)</td>
+<td><code>my_lib.m_amd64</code></td>
+</tr>
+</tbody>
+</table>
+
 	
 <H3> <A id=s1.2.2> 4.1.2.2. Abstractions:</A> </H3>
 
@@ -271,8 +341,7 @@ system will be shown to you. See figure below.
 
 <p>When you click on the version you want, Pd asks if you want to the
 external folder set in “Path => Prferences”, which should be
-10
-~/Documents/Pd/external by default. If you say yes, there is where it gets
+"~/Documents/Pd/externals" by default. If you say yes, there is where it gets
 downloaded to, but if you say no, you can specify somewhere else.
 <br>
 <br>
@@ -442,12 +511,19 @@ an object built into Pd (an internal).
 Pd, it's there for the duration of your Pd session. This means that if you
 replace the binary for a new one, the object won't be updated even if you
 recreate it. Hence, if you're working on a new object and decide to change it,
-16
 you have to exit and re-enter Pd to get the change to take. This is not needed
 for abstractions, which get updated any time they’re replaced and reloaded.
 
-<br>
-<br>
 
+<P>
+<BR><BR>
+<A href="x5.htm"> next chapter </A><BR>
+<A href="index.htm#s4"> back to table of contents </A> 
+<BR><BR>
+</P>
+
+</div>
+
+<script src="pdmanual.js"></script>
 </BODY>
 </HTML>

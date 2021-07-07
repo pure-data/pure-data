@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 1</TITLE>
-    <meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Documentation 1</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
 
 <BODY>
+
+
+<div class="butt">
+<button class="btn-toggle-theme">&#9680;</button><button class="btn-toggle-font">f</button>
+</div>
+
+<div id=corpus>
 
 <H2>Pd Documentation chapter 1: introduction</H2>
 
@@ -29,17 +36,45 @@ go to
 to get it.
 <H3> <A id=s1> 1.1. guide to the documentation </A> </H3>
 
-<P> Pd's documentation consists of:
+<P> Pd's documentation lives in the "doc" folder of the distribution and consists of:
 
 <UL>
-<LI> this HTML manual
-<LI> "reference" patches, one for each kind of object in Pd
-<LI> "example" patches showing how to do things
-<LI> sample C code
+<LI> this HTML manual<br>
+<PRE>
+Pd/
+├── doc/
+    ├── 1.manual/ 
+</PRE>
+	
+<LI> "reference" patches, one for each kind of object in Pd<br>	
+<PRE>
+Pd/
+├── doc/
+    ├── 5.reference/ 
+</PRE>
+	
+<LI> "example" patches showing how to do things<br>
+	
+	 
+<PRE>
+Pd/
+├── doc/
+    ├── 2.control.examples/
+    ├── 3.audio.examples/
+    ├── 4.data.structures/ 
+</PRE>
+	
+<LI> sample C code<br>
+<PRE>
+Pd/
+├── doc/
+    ├── 6.externs/
+</PRE>
+
 </UL>
 
 <P>
-This manual has five sections:
+This HTML manual has five sections:
 
 <OL>
 <LI> this overview
@@ -52,17 +87,14 @@ This manual has five sections:
 </OL>
 
 <P>
-For a list of all the objects you can use in Pd, see the text file,
-"0.INTRO.txt" in the directory, "../5.reference".  To get help on any
+For a list of all the objects you can use menu <b>Help/List of objects</b>.  To get help on any
 Pd object you can right click on it; or you can browse the help patches
-by choosing "Browser..." in the Pd help menu and looking in
-5.reference.
+by choosing menu <b>Help/Browser</b> and looking in
+"Pure Data/5.reference".
 
 <P>
-The example patches are also available from the "Browser..." item
-in Pd's "help" menu.  They appear in subdirectories named
-"2.control.examples", "3.audio.examples" and "4.fft.examples."  Some additional
-patches in "7.stuff" might also be helpful.
+The "example" patches are also available from Pd's browser</b>.  
+Some additional patches in "7.stuff" might also be helpful.
 
 <P>
 To get started writing your own C extensions, refer to <A href=x4.htm>chapter 4 </A>of this manual.
@@ -76,7 +108,7 @@ downloads; to forums, member pages, and a patch exchange.
 You can check <A href=http://puredata.info/docs/BooksAboutPd/>
 puredata.info/docs/BooksAboutPd/</A>.
 
-<P> More documentation is available on the Pd FLOSS site:
+<P> More documentation (warning: very outdated specially on "how to install Pd") is available on the Pd FLOSS site:
 <A href=https://en.flossmanuals.net/pure-data/_full/>
 en.flossmanuals.net/pure-data/_full/</A> (English) and
 <A href=http://fr.flossmanuals.net/PureData/>
@@ -101,8 +133,14 @@ Guenter Geiger, and now maintained by IOhannes zm&ouml;lnig. You can get
 it from: <A href="http://gem.iem.at/">http://gem.iem.at/</A>, via "Find externals"
 or package manager of your Linux distribution.
 
-<P> Here are some
-<a href="http://msp.ucsd.edu/external-links.htm">
-more external links</A>.
+<P>
+<BR><BR>
+<A href="x2.htm"> next chapter </A><BR>
+<A href="index.htm#s1"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
+<script src="pdmanual.js"></script>
 </BODY>
 </HTML>
