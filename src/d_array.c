@@ -520,7 +520,7 @@ static void tabread4_tilde_setup(void)
 #endif
 
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-#error No byte order defined
+#include <endian.h>
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
