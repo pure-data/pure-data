@@ -58,6 +58,70 @@ void binbuf_clear(t_binbuf *x)
     x->b_n = 0;
 }
 
+static int strisdigit(const char *s)
+{
+    return (*s >= '0' && *s <= '9');
+}
+
+    /* dollar atom string checker */
+static int strisint(const char *s)
+{
+    return (strisdigit(s) || *s == '-' && !strisdigit(s-1) && strisdigit(s+1));
+}
+
+    /* square-bracketed dollsym atom string checker */
+static int strissquare(const char *s)
+{
+    if (*s != '[')
+        return 0;
+    int check = 1;
+    for (s++ ;; ++s)
+    {
+        if (*s == ']')
+            return check;
+        if (*s == ':' && check <= 4)
+            check++;
+        else if (!strisint(s))
+        {
+            if (check != 4)
+                return 0;
+            else check++;
+        }
+    }
+}
+    /* string checker for both dollar and dollsym atoms */
+int strisdollar(const char *s)
+{
+    return (strisint(s) || strissquare(s));
+}
+
+    /* returns the start of a valid dollar or dollsym */
+static char *binbuf_dollarchar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (strisdollar(s+1))
+            break;
+    return ((char *)s);
+}
+
+    /* returns the start of a valid square-bracketed dollsym */
+static char *binbuf_squarechar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (strissquare(s+1))
+            break;
+    return ((char *)s);
+}
+
+    /* returns the start of a valid dollar slice */
+static char *binbuf_slicechar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (strissquare(s+1) > 1)
+            break;
+    return ((char *)s);
+}
+
     /* convert text to a binbuf */
 void binbuf_text(t_binbuf *x, const char *text, size_t size)
 {
@@ -146,9 +210,8 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                         if (!digit) floatstate = -1;
                     }
                 }
-                if (!lastslash && c == '$' && (textp != etext &&
-                    textp[0] >= '0' && textp[0] <= '9'))
-                        dollar = 1;
+                if (!lastslash && c=='$' && textp!=etext && strisdollar(textp))
+                    dollar = 1;
                 if (!slash) bufp++;
                 else if (lastslash)
                 {
@@ -175,7 +238,7 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                 if (buf[0] != '$')
                     dollar = 0;
                 for (bufp = buf+1; *bufp; bufp++)
-                    if (*bufp < '0' || *bufp > '9')
+                    if (!strisint(bufp))
                         dollar = 0;
                 if (dollar)
                     SETDOLLAR(ap, atoi(buf+1));
@@ -386,7 +449,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                             slashed = 1;
                         else
                         {
-                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                            if (*sp2 == '$' && strisdollar(sp2+1))
                                 dollar = 1;
                             *sp1++ = *sp2;
                             slashed = 0;
@@ -396,14 +459,14 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     usestr = buf;
                 }
                 else usestr = str;
-                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
-                    str2[1] >= '0' && str2[1] <= '9'))
+                if (dollar || usestr == str &&
+                    (str2 = binbuf_dollarchar(usestr)))
                 {
                     int dollsym = 0;
                     if (*usestr != '$')
                         dollsym = 1;
                     else for (str2 = usestr + 1; *str2; str2++)
-                        if (*str2 < '0' || *str2 > '9')
+                        if (!strisint(str2))
                     {
                         dollsym = 1;
                         break;
@@ -469,6 +532,19 @@ int binbuf_resize(t_binbuf *x, int newsize)
 
 int canvas_getdollarzero(void);
 
+static void binbuf_stratom(const t_atom *at, char *buf, unsigned int bufsize)
+{
+    if (at->a_type == A_SYMBOL)
+    {
+        unsigned int len = strlen(at->a_w.w_symbol->s_name);
+        if (len >= bufsize)
+            len = bufsize-1;
+        strncpy(buf, at->a_w.w_symbol->s_name, len);
+        buf[len] = 0;
+    }
+    else atom_string(at, buf, bufsize);
+}
+
 /* JMZ:
  * s points to the first character after the $
  * (e.g. if the org.symbol is "$1-bla", then s will point to "1-bla")
@@ -488,24 +564,34 @@ int canvas_getdollarzero(void);
 static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     int ac, const t_atom *av, int tonew)
 {
-    int argno = (int)atol(s);
-    int arglen = 0;
     const char *cs = s;
     char c = *cs;
+    int arglen = 0, brak = 0;
+
+    if (c == '[')
+        brak = 1, c = *++cs, arglen++;
+    int argno = (int)atol(cs);
 
     *buf=0;
-    while (c && (c>='0') && (c<='9'))
+    while (c && (c>='0' && c<='9' || c=='-' || c==']' && brak))
     {
-        c = *cs++;
+        if (c == '-' && (strisdigit(cs-1) || !strisdigit(cs+1)))
+            break;
+        if (c == ']')
+        {
+            c = *++cs, arglen++;
+            break;
+        }
+        c = *++cs;
         arglen++;
     }
 
-    if (cs==s)      /* invalid $-expansion (like "$bla") */
+    if (cs==s || brak && cs[-1] != ']') /* invalid $-expansion (like "$bla") */
     {
         sprintf(buf, "$");
         return 0;
     }
-    else if (argno < 0 || argno > ac) /* undefined argument */
+    else if (argno < -ac || argno > ac) /* undefined argument */
     {
         if (!tonew)
             return 0;
@@ -513,15 +599,12 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     }
     else        /* well formed; expand it */
     {
+        if (argno < 0)
+            argno += ac+1;
         const t_atom *dollarvalue = (argno ? &av[argno-1] : dollar0);
-        if (dollarvalue->a_type == A_SYMBOL)
-        {
-            strncpy(buf, dollarvalue->a_w.w_symbol->s_name, MAXPDSTRING/2-1);
-            buf[MAXPDSTRING/2-2] = 0;
-        }
-        else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
+        binbuf_stratom(dollarvalue, buf, MAXPDSTRING/2-1);
     }
-    return (arglen-1);
+    return arglen;
 }
 
 /* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
@@ -585,6 +668,204 @@ done:
     return (gensym(buf2));
 }
 
+    /* limit a slice's start and stop positions */
+static void binbuf_slicelim(int *i, int rv, int ac)
+{
+    if (*i < 0)
+    {
+        *i += ac+1;
+        if (*i < 0)
+            *i = rv ? 0 : 1;
+    }
+    else if (*i > ac)
+        *i = rv ? ac : ac+1;
+}
+
+    /* set up the properties of a slice */
+static int binbuf_slice(int *i, int *j, int *stp,
+    int *rv, int *siz, char *sep, int ac, char *midl)
+{
+    char *slice, *step, *separator;
+    *i = atoi(midl);
+    if (slice = strchr(midl, ':'))
+    {
+        *j = atoi(slice+1);
+        if (step = strchr(slice+1, ':'))
+        {
+            *stp = atoi(step+1);
+            if (separator = strchr(step+1, ':'))
+                *sep = (separator[1] == ']') ? '\0' : separator[1];
+        }
+        if (!*stp)
+            *stp = 1;
+        *rv = (*stp < 0);
+
+        if (!*i)
+            *i = *rv ? ac : 1;
+        else binbuf_slicelim(i, *rv, ac);
+
+        if (!*j)
+            *j = *rv ? 0 : ac+1;
+        else binbuf_slicelim(j, *rv, ac);
+
+        if (*rv)
+        {
+            if (*j < *i)
+                *siz = (*i-*j-1) / -*stp + 1;
+        }
+        else if (*i < *j)
+            *siz = (*j-*i-1) / *stp + 1;
+
+        return 1;
+    }
+    else return 0;
+}
+
+static void binbuf_dollar(int i, t_atom *msp,
+    int argc, const t_atom *argv, t_pd *target)
+{
+    if (i < 0)
+        i += argc+1;
+    if (i > 0 && i <= argc)
+        *msp = argv[i-1];
+    else if (i == 0)
+        SETFLOAT(msp, canvas_getdollarzero());
+    else
+    {
+        if (target == &pd_objectmaker)
+            SETFLOAT(msp, 0);
+        else
+        {
+            error("$%d: argument number out of range", i);
+            SETFLOAT(msp, 0);
+        }
+    }
+}
+
+    /* apply any prefixes/suffixes to an item in a slice */
+static void binbuf_expandslice(const t_atom *at, char *buf, int size,
+    const char *bgn, const char *dlr, const char *end)
+{
+    int len = dlr - bgn;
+    if (len >= size)
+        len = size-1;
+    strncpy(buf, bgn, len);
+    size -= len;
+    buf += len;
+
+    binbuf_stratom(at, buf, size);
+    len = strlen(buf);
+    size -= len;
+    buf += len;
+
+    len = strlen(end);
+    if (len >= size)
+        len = size-1;
+    strncpy(buf, end, len);
+    buf[len] = 0;
+}
+
+static void binbuf_dollsym(t_symbol *sym, t_atom **msp, int *ac, int *nargs,
+    int argc, const t_atom *argv, t_pd *target)
+{
+    t_symbol *s9;
+    const char *s = sym->s_name, *sp;
+    char *dlr;
+    int dlrs = 0;
+
+    for (sp = s; (sp = strchr(sp, '$')) && dlrs<=1; ++sp)
+        if (strisdollar(sp+1))
+            dlrs++;
+    if (dlrs > 1) // expand the non-slices first
+    {
+        s9 = binbuf_realizedollsym(sym, argc, argv, target == &pd_objectmaker);
+        if (s9)
+            s = s9->s_name;
+    }
+
+    if (dlr = binbuf_squarechar(s))
+    {
+        char *midl = dlr+2;
+        char *end = strchr(midl, ']') + 1;
+        int bare = (dlr == s && strlen(dlr) == end-dlr);
+
+        char sep = ' ';
+        int i=0, j=0, stp=0, rv=0, siz=0;
+        if (binbuf_slice(&i, &j, &stp, &rv, &siz, &sep, argc, midl))
+        {
+            int rem = MAXPDSTRING/2;
+            if (siz < 1)
+                SETFLOAT(*msp, 0);
+            else if (sep != ' ' && siz > 1)
+            {
+                char buf[MAXPDSTRING/2], *b = buf;
+                int len, next = 0;
+                if (rv)
+                    for (; i > j; i+=stp, rem-=len, b+=len, next=1)
+                {
+                    if (next && sep && rem > 1)
+                        *b++ = sep, rem--, *b = 0;
+                    binbuf_expandslice(&argv[i-1], b, rem, s, dlr, end);
+                    len = strlen(b);
+                }
+                else
+                    for (; i < j; i+=stp, rem-=len, b+=len, next=1)
+                {
+                    if (next && sep && rem > 1)
+                        *b++ = sep, rem--, *b = 0;
+                    binbuf_expandslice(&argv[i-1], b, rem, s, dlr, end);
+                    len = strlen(b);
+                }
+                SETSYMBOL(*msp, gensym(buf));
+            }
+            else
+            {
+                if (bare)
+                {
+                    if (rv)
+                        for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                            **msp = argv[i-1];
+                    else
+                        for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                            **msp = argv[i-1];
+                }
+                else
+                {
+                    char buf[MAXPDSTRING/2];
+                    if (rv)
+                        for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                    {
+                        binbuf_expandslice(&argv[i-1], buf, rem, s, dlr, end);
+                        SETSYMBOL(*msp, gensym(buf));
+                    }
+                    else
+                        for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                    {
+                        binbuf_expandslice(&argv[i-1], buf, rem, s, dlr, end);
+                        SETSYMBOL(*msp, gensym(buf));
+                    }
+                }
+                (*ac)++;
+                (*msp)--;
+                (*nargs)--;
+            }
+            return;
+        }
+        else if (bare)
+        {
+            binbuf_dollar(i, *msp, argc, argv, target);
+            return;
+        }
+    }
+    s9 = binbuf_realizedollsym(sym, argc, argv, target == &pd_objectmaker);
+    if (!s9)
+    {
+        error("%s: argument number out of range", sym->s_name);
+        SETSYMBOL(*msp, sym);
+    }
+    else SETSYMBOL(*msp, s9);
+}
+
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
@@ -617,7 +898,33 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     const t_atom *at = x->b_vec;
     int ac = x->b_n;
     int nargs, maxnargs = 0;
-    if (ac <= SMALLMSG)
+
+    /* first we need to check if the list of arguments has dollar slices */
+    int c, d = 0, ad = 0;
+    for (c = 0; c < ac; c++)
+    {
+        if (at[c].a_type == A_SEMI || at[c].a_type == A_COMMA)
+            d = 0;
+        else if (at[c].a_type==A_DOLLSYM)
+        {
+            char *dlr = binbuf_slicechar(at[c].a_w.w_symbol->s_name);
+            if (!dlr)
+                continue;
+
+            char sep = ' ';
+            char *midl = dlr+2;
+            int i=0, j=0, stp=0, rv=0, siz=0;
+            binbuf_slice(&i, &j, &stp, &rv, &siz, &sep, argc, midl);
+            if (sep != ' ')
+                continue;
+
+            d += (siz-1);
+            if (d > ad)
+                ad = d;
+        }
+    }
+
+    if (ac+ad <= SMALLMSG)
         mstack = smallstack;
     else
     {
@@ -630,7 +937,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             destination in the message, only because the original "target"
             points there. */
         if (target == &pd_objectmaker)
-            maxnargs = ac;
+            maxnargs = ac + ad;
         else
         {
             int i, j = (target ? 0 : -1);
@@ -643,6 +950,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 else if (++j > maxnargs)
                     maxnargs = j;
             }
+            maxnargs += ad;
         }
         if (maxnargs <= SMALLMSG)
             mstack = smallstack;
@@ -652,11 +960,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             at once.  This turned out to run slower in a simple benchmark
             I tried, perhaps because the extra memory allocation
             hurt the cache hit rate. */
-        maxnargs = ac;
+        maxnargs = ac + ad;
         ATOMS_ALLOCA(mstack, maxnargs);
 #endif
 
     }
+    ac += ad;
     msp = mstack;
     while (1)
     {
@@ -715,7 +1024,6 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         nexttarget = target;
         while (1)
         {
-            t_symbol *s9;
             if (!ac) goto gotmess;
             switch (at->a_type)
             {
@@ -744,39 +1052,19 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 *msp = *at;
                 break;
             case A_DOLLAR:
-                if (at->a_w.w_index > 0 && at->a_w.w_index <= argc)
-                    *msp = argv[at->a_w.w_index-1];
-                else if (at->a_w.w_index == 0)
-                    SETFLOAT(msp, canvas_getdollarzero());
-                else
-                {
-                    if (target == &pd_objectmaker)
-                        SETFLOAT(msp, 0);
-                    else
-                    {
-                        error("$%d: argument number out of range",
-                            at->a_w.w_index);
-                        SETFLOAT(msp, 0);
-                    }
-                }
+                binbuf_dollar(at->a_w.w_index, msp, argc, argv, target);
                 break;
             case A_DOLLSYM:
-                s9 = binbuf_realizedollsym(at->a_w.w_symbol, argc, argv,
-                    target == &pd_objectmaker);
-                if (!s9)
-                {
-                    error("%s: argument number out of range", at->a_w.w_symbol->s_name);
-                    SETSYMBOL(msp, at->a_w.w_symbol);
-                }
-                else SETSYMBOL(msp, s9);
+                binbuf_dollsym(at->a_w.w_symbol, &msp, &ac, &nargs,
+                    argc, argv, target);
                 break;
             default:
                 bug("bad item in binbuf");
                 goto broken;
             }
-            msp++;
             ac--;
             at++;
+            msp++;
             nargs++;
         }
     gotmess:
@@ -1000,7 +1288,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
     t_atom *vec = oldb->b_vec;
     t_int n = oldb->b_n, nextindex, stackdepth = 0, stack[MAXSTACK] = {0},
         nobj = 0, gotfontsize = 0;
-	int i;
+    int i;
     t_atom outmess[MAXSTACK], *nextmess;
     t_float fontsize = 10;
     if (!maxtopd)
