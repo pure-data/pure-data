@@ -17,7 +17,7 @@ right inlet:, f 34;
 #X obj 213 19 max;
 #X obj 248 19 min;
 #X text 287 18 - binary arithmetic operators;
-#X text 397 430 last updated for version 0.47;
+#X text 397 430 last updated for Pd version 0.47;
 #X text 171 360 (etc) - signal arithmetic;
 #X obj 131 385 div;
 #X text 230 384 (etc) - integer arithmetic and logic;

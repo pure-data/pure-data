@@ -159,7 +159,7 @@ set sys_guidir {}
 set sys_searchpath {}
 # user-specified search paths from the commandline -path option
 set sys_temppath {}
-# hard-coded search patchs for objects, help, plugins, etc.
+# hard-coded search paths for objects, help, plugins, etc.
 set sys_staticpath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
@@ -315,7 +315,7 @@ proc init_for_platform {} {
             # trying loading icon in the GUI directory
             if {$::tcl_version >= 8.5} {
                 set icon [file join $::sys_guidir pd.gif]
-                if {[file readable $icon]} { 
+                if {[file readable $icon]} {
                     catch {
                         wm iconphoto . -default [image create photo -file "$icon"]
                     }
@@ -512,44 +512,46 @@ proc set_base_font {family weight} {
     ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
 }
 
-# create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
-# into the metrics given by $::font_fixed_metrics for any given font/weight
-proc fit_font_into_metrics {} {
+# finds sizes of the chosen font that just fit into the requried metrics
+# e.g. if the metric requires the 'M' to be 15x10 pixels,
+# and the given font at size 12 is 15x7 and at size 16 it is 19x10,
+# then we would pick size 12.
+# <wantmetrics> is a list of <w> <h> pairs for which we are seeking font-sizes.
+# the proc returns a list of matching <size0> <width0> <height0> <size1> ...
+proc fit_font_into_metrics {family weight wantmetrics} {
     set lastsize 0
     set lastwidth 0
     set lastheight 0
-
-    for {set fsize 6} {$fsize < 120 && [llength $::font_zoom2_metrics] > 1} \
-            {incr fsize} {
-        set foo [list $::font_family -$fsize $::font_weight]
+    set result {}
+    if { [llength $wantmetrics] < 2} {
+        return $result
+    }
+    for {set fsize 1} {$fsize < 120} {incr fsize} {
+        set foo [list $family -$fsize $weight]
         set height [font metrics $foo -linespace]
         set width [font measure $foo M]
-        # puts stderr [concat $fsize $width $height]
-        if {[llength $::font_metrics] > 1 && \
-            ( $width > [lindex $::font_metrics 0] || \
-            $height > [lindex $::font_metrics 1] )} {
-                # puts [concat SINGLE $fsize]
-                lappend ::font_measured $lastsize $lastwidth $lastheight
-                set ::font_metrics [lrange $::font_metrics 2 end]
+        if { $lastsize < 1 } {
+            # just in case even the smallest font does not fit,
+            # we just use it nevertheless
+            set lastsize $fsize
+            set lastwidth $width
+            set lastheight $height
         }
-        if {$width > [lindex $::font_zoom2_metrics 0] || \
-            $height > [lindex $::font_zoom2_metrics 1]} {
-                # puts [concat DOUBLE $fsize]
-                lappend ::font_zoom2_measured $lastsize $lastwidth $lastheight
-                set ::font_zoom2_metrics [lrange $::font_zoom2_metrics 2 end]
+
+        if { $width > [lindex $wantmetrics 0] || $height > [lindex $wantmetrics 1] } {
+            # oops, this font is already too big; use the last one
+            lappend result $lastsize $lastwidth $lastheight
+            # and search for the next one
+            set wantmetrics [lrange $wantmetrics 2 end]
+            if { [llength $wantmetrics] < 2} {
+                break
+            }
         }
         set lastsize $fsize
         set lastwidth $width
         set lastheight $height
     }
-    # ::pdwindow::verbose 0 "measured font metrics:\n"
-    # foreach {size width height} $::font_measured {
-    #     ::pdwindow::verbose 0 "$size $width $height\n"
-    # }
-    # ::pdwindow::verbose 0 "measured zoom2 font metrics:\n"
-    # foreach {size width height} $::font_zoom2_measured {
-    #     ::pdwindow::verbose 0 "$size $width $height\n"
-    # }
+    return $result
 }
 
 # ------------------------------------------------------------------------------
@@ -567,7 +569,8 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::verbose 0 "Tk [info patchlevel]\n"
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
-    fit_font_into_metrics
+    set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
+    set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
     ::pd_guiprefs::init
     pdsend "pd init [enquote_path [pwd]] $oldtclversion \
         $::font_measured $::font_zoom2_measured"
