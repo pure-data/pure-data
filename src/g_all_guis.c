@@ -270,9 +270,7 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
 }
 
 static t_symbol* color2symbol(int col) {
-    const int  compat = (pd_compatibilitylevel < 48)?1:
-        /* FIXXME: for Pd>=0.48, the default compatibility mode should be OFF */
-        1;
+    const int  compat = (pd_compatibilitylevel < 48) ? 1 : 0;
 
     char colname[MAXPDSTRING];
     colname[0] = colname[MAXPDSTRING-1] = 0;
