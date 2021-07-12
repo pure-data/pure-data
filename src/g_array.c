@@ -1146,15 +1146,6 @@ static void garray_write(t_garray *x, t_symbol *filename)
     fclose(fd);
 }
 
-
-    /* this should be renamed and moved... */
-int garray_ambigendian(void)
-{
-    unsigned short s = 1;
-    unsigned char c = *(char *)(&s);
-    return (c==0);
-}
-
 void garray_resize_long(t_garray *x, long n)
 {
     t_array *array = garray_getarray(x);
