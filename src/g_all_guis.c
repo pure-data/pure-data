@@ -702,6 +702,34 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     return(oldsndrcvable);
 }
 
+int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
+{
+#define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
+    t_float zoom = iemgui->x_glist->gl_zoom;
+    t_symbol *srl[3];
+    int i;
+    for(i=0; i<argc; i++)
+        SETFLOAT(argv+i, -1); /* initialize */
+
+    iemgui_properties(iemgui, srl);
+
+    if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
+    if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
+    if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
+    if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
+    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
+    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
+    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
+    if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
+    if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
+    if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
+    if(argc>13) SETFLOAT (argv+13, iemgui->x_fontsize);
+    if(argc>14) SETCOLOR (argv+14, iemgui->x_bcol);
+    if(argc>15) SETCOLOR (argv+15, iemgui->x_fcol);
+    if(argc>16) SETCOLOR (argv+16, iemgui->x_lcol);
+}
+
+
 /* pre-0.46 the flags were 1 for 'loadinit' and 1<<20 for 'scale'.
 Starting in 0.46, take either 1<<20 or 1<<1 for 'scale' and save to both
 bits (so that old versions can read files we write).  In the future (2015?)

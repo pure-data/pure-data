@@ -306,6 +306,7 @@ EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
 EXTERN void iemgui_newzoom(t_iemgui *iemgui);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
+EXTERN int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv);
 
 EXTERN int canvas_getdollarzero(void);
 

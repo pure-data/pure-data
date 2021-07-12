@@ -824,6 +824,18 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
 
+    t_atom undo[7];
+    SETFLOAT (undo+0, x->a_text.te_width);
+    SETFLOAT (undo+1, x->a_draglo);
+    SETFLOAT (undo+2, x->a_draghi);
+    SETSYMBOL(undo+3, gatom_escapit(x->a_label));
+    SETFLOAT (undo+4, x->a_wherelabel);
+    SETSYMBOL(undo+5, gatom_escapit(x->a_symfrom));
+    SETSYMBOL(undo+6, gatom_escapit(x->a_symto));
+    pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
+                            7, undo,
+                            argc, argv);
+
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
     if (!*symfrom->s_name && *x->a_symfrom->s_name)
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);

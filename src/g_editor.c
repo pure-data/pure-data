@@ -816,8 +816,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
 typedef struct _undo_move_elem
 {
     int e_index;
-    int e_xpix;
-    int e_ypix;
+    t_float e_xpix;
+    t_float e_ypix;
 } t_undo_move_elem;
 
 typedef struct _undo_move
@@ -870,8 +870,8 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
         int i;
         for (i = 0; i < buf->u_n; i++)
         {
-            int newx = buf->u_vec[i].e_xpix;
-            int newy = buf->u_vec[i].e_ypix;
+            float newx = (buf->u_vec[i].e_xpix)*x->gl_zoom;
+            float newy = (buf->u_vec[i].e_ypix)*x->gl_zoom;
             t_gobj*y = glist_nth(x, buf->u_vec[i].e_index);
             if (y)
             {
@@ -882,10 +882,10 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 EDITOR->canvas_undo_already_set_move = 1;
-                canvas_displaceselection(x, newx-x1 / x->gl_zoom, newy - y1 / x->gl_zoom);
+                canvas_displaceselection(x, (newx - x1)/(x->gl_zoom), (newy - y1)/(x->gl_zoom));
                 EDITOR->canvas_undo_already_set_move = doing;
-                buf->u_vec[i].e_xpix = x1 / x->gl_zoom;
-                buf->u_vec[i].e_ypix = y1 / x->gl_zoom;
+                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
@@ -1686,29 +1686,15 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
     {
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
-#if 0
-            /* skipping open font editor for now */
-        t_int properties = gfxstub_haveproperties((void *)x2);
-        if (properties)
-        {
-            char tagbuf[MAXPDSTRING];
-            sprintf(tagbuf, ".gfxstub%lx", (long unsigned int)properties);
-            gui_vmess("gui_font_dialog_change_size", "si",
-                tagbuf,
-                u_f->font);
-        }
-        else
-#else
-        if(1)
-#endif
-        {
-            int whichresize = u_f->which;
-            t_float realresize = 100./u_f->resize;
-            t_float realresx = 1, realresy = 1;
-            if (whichresize != 3) realresx = realresize;
-            if (whichresize != 2) realresy = realresize;
-            canvas_dofont(x2, u_f->font, realresx, realresy);
-        }
+
+        int whichresize = u_f->which;
+        t_float realresize = 1./u_f->resize;
+        t_float realresx = 1, realresy = 1;
+        if (whichresize != 3) realresx = realresize;
+        if (whichresize != 2) realresy = realresize;
+        canvas_dofont(x2, u_f->font, realresx, realresy);
+
+        u_f->resize = realresize;
         u_f->font = tmp_font;
     }
     else if (action == UNDO_FREE)
