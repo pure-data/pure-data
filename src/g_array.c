@@ -1278,26 +1278,6 @@ static void garray_edit(t_garray *x, t_floatarg f)
     x->x_edit = (int)f;
 }
 
-static void garray_vis_msg(t_garray *x, t_floatarg f)
-{
-    int viswas, vis = f != 0;
-    t_template *scalartemplate;
-    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
-    {
-        error("array: no template of type %s",
-            x->x_scalar->sc_template->s_name);
-        return;
-    }
-    viswas = template_getfloat(
-        scalartemplate, gensym("v"), x->x_scalar->sc_vec, 1);
-    if (vis != viswas)
-    {
-        template_setfloat(scalartemplate, gensym("v"),
-            x->x_scalar->sc_vec, vis, 0);
-        garray_redraw(x);
-    }
-}
-
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1342,8 +1322,6 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_edit, gensym("edit"),
-        A_FLOAT, 0);
-    class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);
