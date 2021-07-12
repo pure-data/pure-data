@@ -210,7 +210,6 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     }
     retval = (t_canvas *)pd_this->pd_newest;
     pd_this->pd_newest = 0;
-    retval->gl_owner = 0;
     retval->gl_isclone = 1;
     return (retval);
 }

@@ -98,15 +98,15 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
     t_object *ob;
+    int has_parent = !glist->gl_havewindow && glist->gl_isgraph
+        && glist->gl_owner && !glist->gl_isclone;
         /* if our parent is a graph, and if that graph itself isn't
            visible, then we aren't either. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_owner
-        && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
+    if (has_parent && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
             return (0);
         /* if we're graphing-on-parent and the object falls outside the
            graph rectangle, don't draw it. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-        glist->gl_owner)
+    if (has_parent && glist->gl_goprect)
     {
         int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
             /* for some reason the bounds check on arrays and scalars
@@ -763,7 +763,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
                 /* LATER disable redrawing here */
             if (x->gl_havewindow)
                 canvas_redraw(x);
-            if (x->gl_owner && glist_isvisible(x->gl_owner))
+            if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
             {
                 gobj_vis((t_gobj *)x, x->gl_owner, 0);
                 gobj_vis((t_gobj *)x, x->gl_owner, 1);
@@ -1447,7 +1447,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         {
             canvas_redraw(x);
         }
-        if (x->gl_owner && glist_isvisible(x->gl_owner))
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         {
             glist_noselect(x);
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
@@ -1988,7 +1988,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 x->gl_edit);
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
-            while (c->gl_owner) {
+            while (c->gl_owner && !c->gl_isclone) {
                 int cbuflen;
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
@@ -2028,7 +2028,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             ;
             /* if we're a graph on our parent, and if the parent exists
                and is visible, show ourselves on parent. */
-        if (glist_isgraph(x) && x->gl_owner)
+        if (glist_isgraph(x) && x->gl_owner && !x->gl_isclone)
         {
             t_glist *gl2 = x->gl_owner;
             if (glist_isvisible(gl2))
@@ -2052,12 +2052,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
        any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
+    int can_graph_on_parent = x->gl_owner && !x->gl_isclone && !x->gl_loading
+        && glist_isvisible(x->gl_owner);
     if (!flag && glist_isgraph(x))
     {
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = x->gl_hidetext = 0;
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2071,14 +2073,14 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
         if (x->gl_pixheight <= 0)
             x->gl_pixheight = GLIST_DEFGRAPHHEIGHT;
 
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
         if (glist_isvisible(x) && x->gl_goprect)
             glist_redraw(x);
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2200,7 +2202,7 @@ static void canvas_donecanvasdialog(t_glist *x,
     canvas_dirty(x, 1);
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (glist_isvisible(x->gl_owner))
+    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -3321,7 +3323,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
     int force = fforce;
     t_glist *g;
-    if ((x->gl_owner || x->gl_isclone) && (force == 0 || force == 1))
+    if (x->gl_owner && (force == 0 || force == 1))
         canvas_vis(x, 0);   /* if subpatch, just invis it */
     else if (force == 0)
     {
@@ -3346,7 +3348,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
     else if (force == 2)
     {
         canvas_dirty(x, 0);
-        while (x->gl_owner)
+        while (x->gl_owner && !x->gl_isclone)
             x = x->gl_owner;
         g = glist_finddirty(x);
         if (g)
