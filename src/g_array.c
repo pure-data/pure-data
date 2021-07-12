@@ -120,8 +120,8 @@ static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
 static const char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct float-array array z float float style\n\
-float linewidth float color;\n\
-#X obj 43 70 plot z color linewidth 0 0 1 style;\n\
+float linewidth float color float v;\n\
+#X obj 43 70 plot -v v z color linewidth 0 0 1 style;\n\
 ";
 static const char garray_floattemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
@@ -323,6 +323,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         style, 1);
     template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec,
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
+    template_setfloat(template, gensym("v"), x->x_scalar->sc_vec, 1, 1);
 
            /* bashily unbind #A -- this would create garbage if #A were
            multiply bound but we believe in this context it's at most
@@ -331,8 +332,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         /* and now bind #A to us to receive following messages in the
         saved file or copy buffer */
     pd_bind(&x->x_gobj.g_pd, asym);
-
-    glist_redraw(gl);
+    garray_fittograph(x, n, style);
     canvas_update_dsp();
     return (x);
 }
@@ -460,6 +460,8 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             garray_fittograph(x, (int)size, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
+        template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
+            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 0);
 
         garray_setsaveit(x, (saveit != 0));
         garray_redraw(x);
@@ -1064,6 +1066,100 @@ static void garray_ylabel(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
     typedmess(&x->x_glist->gl_pd, s, argc, argv);
 }
+
+static void garray_style(t_garray *x, t_floatarg fstyle)
+{
+    int stylewas, style = fstyle;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    stylewas = template_getfloat(
+        scalartemplate, gensym("style"), x->x_scalar->sc_vec, 1);
+    if (style != stylewas)
+    {
+        t_array *a = garray_getarray(x);
+        if (!a)
+        {
+            pd_error(x, "can't find array\n");
+            return;
+        }
+        if (style == PLOTSTYLE_POINTS || stylewas == PLOTSTYLE_POINTS)
+            garray_fittograph(x, a->a_n, style);
+        template_setfloat(scalartemplate, gensym("style"),
+            x->x_scalar->sc_vec, (t_float)style, 0);
+    #if 1
+        template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
+            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
+    #endif
+        garray_redraw(x);
+    }
+}
+
+static void garray_width(t_garray *x, t_floatarg width)
+{
+    t_float widthwas;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    widthwas = template_getfloat(
+        scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec, 1);
+    if (width < 1) width = 1;
+    if (width != widthwas)
+    {
+        template_setfloat(scalartemplate, gensym("linewidth"),
+            x->x_scalar->sc_vec, width, 0);
+        garray_redraw(x);
+    }
+}
+
+static void garray_color(t_garray *x, t_floatarg color)
+{
+    t_float colorwas;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    colorwas = template_getfloat(
+        scalartemplate, gensym("color"), x->x_scalar->sc_vec, 1);
+    if (color != colorwas)
+    {
+        template_setfloat(scalartemplate, gensym("color"),
+            x->x_scalar->sc_vec, color, 0);
+        garray_redraw(x);
+    }
+}
+
+static void garray_vis_msg(t_garray *x, t_floatarg fvis)
+{
+    int viswas, vis = fvis != 0;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    viswas = template_getfloat(
+        scalartemplate, gensym("v"), x->x_scalar->sc_vec, 1);
+    if (vis != viswas)
+    {
+        template_setfloat(scalartemplate, gensym("v"),
+            x->x_scalar->sc_vec, vis, 0);
+        garray_redraw(x);
+    }
+}
+
     /* change the name of a garray. */
 static void garray_rename(t_garray *x, t_symbol *s)
 {
@@ -1197,6 +1293,14 @@ void g_array_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_ylabel, gensym("ylabel"),
         A_GIMME, 0);
+    class_addmethod(garray_class, (t_method)garray_style, gensym("style"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_width, gensym("width"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_color, gensym("color"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_rename, gensym("rename"),
         A_SYMBOL, 0);
     class_addmethod(garray_class, (t_method)garray_read, gensym("read"),

@@ -1780,6 +1780,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
+            char color[20];
+            numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
+                data, 1), color);
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
                 t_float yval, xpix, ypix, nextxloc;
@@ -1814,13 +1817,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if (i == nelem-1 || inextx != ixpix)
                 {
                     sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                        "-fill black -width 0 -tags [list plot%lx array]\n",
+                        "-fill %s -width 0 -tags [list plot%lx array]\n",
                         glist_getcanvas(glist),
                         ixpix, (int)glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
                         inextx, (int)(glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth), data);
+                                + linewidth), color, data);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
