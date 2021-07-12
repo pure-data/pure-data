@@ -114,6 +114,7 @@ struct _garray
     char x_saveit;          /* true if we should save this with parent */
     char x_listviewing;     /* true if list view window is open */
     char x_hidename;        /* don't print name above graph */
+    char x_edit;            /* true if we can edit the array */
 };
 
 static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
@@ -170,6 +171,7 @@ static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
     x->x_usedindsp = 0;
     x->x_saveit = saveit;
     x->x_listviewing = 0;
+    x->x_edit = 1;
     glist_add(gl, &x->x_gobj);
     x->x_glist = gl;
     return (x);
@@ -696,8 +698,11 @@ static int garray_click(t_gobj *z, t_glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_garray *x = (t_garray *)z;
-    return (gobj_click(&x->x_scalar->sc_gobj, glist,
-        xpix, ypix, shift, alt, dbl, doit));
+    if (x->x_edit)
+        return (gobj_click(&x->x_scalar->sc_gobj, glist,
+            xpix, ypix, shift, alt, dbl, doit));
+    else
+        return (0);
 }
 
 #define ARRAYWRITECHUNKSIZE 1000
@@ -1268,6 +1273,31 @@ static void garray_zoom(t_garray *x, t_floatarg f)
 {
 }
 
+static void garray_edit(t_garray *x, t_floatarg f)
+{
+    x->x_edit = (int)f;
+}
+
+static void garray_vis_msg(t_garray *x, t_floatarg f)
+{
+    int viswas, vis = f != 0;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    viswas = template_getfloat(
+        scalartemplate, gensym("v"), x->x_scalar->sc_vec, 1);
+    if (vis != viswas)
+    {
+        template_setfloat(scalartemplate, gensym("v"),
+            x->x_scalar->sc_vec, vis, 0);
+        garray_redraw(x);
+    }
+}
+
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1310,6 +1340,10 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
         A_FLOAT, A_NULL);
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_edit, gensym("edit"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);
