@@ -311,6 +311,17 @@ static void vradio_dialog(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
     int chg = (int)atom_getfloatarg(4, argc, argv);
     int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+1, 0);
+    SETFLOAT(undo+2, 0);
+    SETFLOAT(undo+3, 0);
+    SETFLOAT(undo+4, (pd_class(&x->x_gui.x_obj.ob_pd) == vradio_old_class)?x->x_change:-1);
+    SETFLOAT(undo+6, x->x_number);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     if(chg != 0) chg = 1;
     x->x_change = chg;
