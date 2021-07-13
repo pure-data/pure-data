@@ -1,19 +1,53 @@
-#N canvas 70 117 585 333 12;
-#X obj 128 196 openpanel;
-#X msg 128 108 bang;
-#X obj 128 221 print;
-#X text 31 11 openpanel -- query you for a filename;
-#X text 48 278 see also:;
-#X obj 136 279 savepanel;
-#X text 28 44 When openpanel gets a "bang" an "Open file" browser appears
-on the screen. If you select a file \, its name appears on the outlet.
-;
-#X text 285 289 updated for Pd version 0.40.;
-#X text 178 109 Starts open panel in current directory;
-#X msg 144 136 symbol /tmp;
-#X msg 146 161 symbol C:/;
-#X text 252 137 Starts in a specified directory;
+#N canvas 389 117 571 589 12;
+#X obj 112 230 openpanel;
+#X msg 112 142 bang;
+#X obj 112 264 print;
+#X text 56 519 see also:;
+#X obj 134 520 savepanel;
+#X msg 128 170 symbol /tmp;
+#X msg 140 199 symbol C:/;
+#X obj 235 456 print;
+#X obj 235 429 openpanel 1;
+#X obj 357 456 print;
+#X obj 357 429 openpanel 2;
+#X msg 235 401 bang;
+#X msg 357 401 bang;
+#X text 233 380 directory;
+#X text 356 380 multiple files;
+#X obj 110 456 print;
+#X msg 110 401 bang;
+#X obj 110 429 openpanel 0;
+#X obj 74 25 openpanel;
+#X text 303 528 updated for Pd version 0.51.;
+#X text 141 25 - query for files or directories;
+#X text 47 69 When openpanel gets a "bang" \, a file browser appears
+on the screen. By default \, if you select a file \, its name appears
+on the outlet.;
+#X text 51 320 A mode argument allow you to select a directory or multiple
+files. See below;
+#N canvas 710 182 389 296 current-directory 0;
+#X obj 155 149 pdcontrol;
+#X msg 155 119 dir;
+#X obj 155 185 openpanel;
+#X text 47 34 With the 'dir' message to the [pdcontrol] object \, you
+can make openpanel open the current directory for querying for files.
+, f 41;
+#X obj 155 219 print;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
-#X connect 9 0 0 0;
-#X connect 10 0 0 0;
+#X connect 2 0 4 0;
+#X restore 273 250 pd current-directory;
+#X text 88 378 file (default);
+#X text 223 173 Start in a specified directory given as a symbol,
+f 31;
+#X text 157 141 Starts in default directory;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 8 0 7 0;
+#X connect 10 0 9 0;
+#X connect 11 0 8 0;
+#X connect 12 0 10 0;
+#X connect 16 0 17 0;
+#X connect 17 0 15 0;

@@ -64,12 +64,12 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
 
     if (nmidiin > MAXMIDIINDEV )
     {
-        post("midi input ports reduced to maximum %d", MAXMIDIINDEV);
+        post("MIDI input ports reduced to maximum %d", MAXMIDIINDEV);
         nmidiin = MAXMIDIINDEV;
     }
     if (nmidiout > MAXMIDIOUTDEV)
     {
-        post("midi output ports reduced to maximum %d", MAXMIDIOUTDEV);
+        post("MIDI output ports reduced to maximum %d", MAXMIDIOUTDEV);
         nmidiout = MAXMIDIOUTDEV;
     }
 
@@ -114,7 +114,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
-    post("opened alsa client %d in:%d out:%d", client, nmidiin, nmidiout);
+    post("opened alsa MIDI client %d in:%d out:%d", client, nmidiin, nmidiout);
     sys_setalarm(0);
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &midiev);
     alsa_nmidiout = nmidiout;
@@ -145,7 +145,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 snd_seq_ev_set_noteoff(&ev, channel, b, c);
                 break;
             case MIDI_POLYAFTERTOUCH:
-                snd_seq_ev_set_chanpress(&ev, channel, b);
+                snd_seq_ev_set_keypress(&ev, channel, b, c);
                 break;
             case MIDI_CONTROLCHANGE:
                 snd_seq_ev_set_controller(&ev, channel, b, c);
@@ -180,7 +180,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 ev.data.raw8.d[1] = b & 0x7f; /* data */
                 break;
             default:
-                bug("couldn't put alsa midi message");
+                bug("couldn't put alsa MIDI message");
                 break;
         }
         snd_seq_ev_set_direct(&ev);
@@ -221,24 +221,25 @@ void sys_alsa_poll_midi(void)
 {
    unsigned char buf[ALSA_MAX_EVENT_SIZE];
    int count, alsa_source;
-   int i;
    snd_seq_event_t *midievent = NULL;
 
-   if (alsa_nmidiout == 0 && alsa_nmidiin == 0) return;
+   if (!alsa_nmidiout && !alsa_nmidiin) return;
 
    snd_midi_event_init(midiev);
 
-   if (!alsa_nmidiout && !alsa_nmidiin) return;
-   count = snd_seq_event_input_pending(midi_handle, 1);
-   if (count != 0)
-        count = snd_seq_event_input(midi_handle, &midievent);
-   if (midievent != NULL)
-   {
-       count = snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
-       alsa_source = midievent->dest.port;
-       for(i = 0; i < count; i++)
-           sys_midibytein(alsa_source, (buf[i] & 0xff));
-       //post("received %d midi bytes\n", count);
+   while (snd_seq_event_input_pending(midi_handle, 1) > 0) {
+       while (snd_seq_event_input_pending(midi_handle, 0) > 0) {
+           int rslt = snd_seq_event_input(midi_handle, &midievent);
+           if(rslt >= 0) {
+               long length = snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
+               long i;
+               alsa_source = midievent->dest.port;
+               for(i = 0; i < length; i++)
+                   sys_midibytein(alsa_source, (buf[i] & 0xff));
+           } else if (rslt == -ENOSPC) {
+               error("MIDI input queue overflow!");
+           }
+       }
    }
 }
 

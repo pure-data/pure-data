@@ -21,21 +21,26 @@
  *              $x[-1] was not equal $x1[-1], not accessing the previous block
  *              (bug fix by Dan Ellis)
  *
- *  July 2017 --sdy
- *      - Version 0.55
- *
+ *  July 2017,  Version 0.55
  *      - The arrays now redraw after a store into one of their members
- *              - ex_if() (the "if()" function is reworked to only evaluate either
- *                the left or the right args depending on the truth value of the condition.
- *                However, if the condition is a vector, both the left and the right
- *                are evaluated regradless.
- *              - priority of ',' and '=' was switched to fix the bug of using store "=" in
- *                functions with multiple arguments, which caused an error during execution.
+ *              - ex_if() (the "if()" function is reworked to only evaluate
+ *                either the left or the right args depending on the truth
+ *                value of the condition. However, if the condition is a
+ *                vector, both the left and the right are evaluated regardless.
+ *              - priority of ',' and '=' was switched to fix the bug of using
+ *                store "=" in functions with multiple arguments, which caused
+ *                an error during execution.
  *              - The number of inlet and outlets (MAX_VARS) is now set at 100
  *
- *       - Version 0.56
+ *  Jan 2018, Version 0.56
  *              -fexpr~ now accepts a float in its first input
  *              -Added avg() and Avg() back to the list of functions
+ *
+ * Oct 2020, Version 0.57
+ *		- fixed a bug in fact()
+ *		- fixed the bad lvalue bug - "4 + 5 = 3" was not caught before
+ *		- fact() (factorial) now calculates and returns its value in double
+ *		- Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()
  */
 
 /*
@@ -75,7 +80,7 @@
 #define isdigit(x)      (x >= '0' && x <= '9')
 #endif
 
-#ifdef _MSC_VER
+#if defined _MSC_VER && (_MSC_VER < 1800)
 #define strtof(a, b) _atoldbl(a, *b)
 #endif
 
@@ -86,6 +91,7 @@ static struct ex_ex *ex_lex(struct expr *expr, long int *n);
 struct ex_ex *ex_match(struct ex_ex *eptr, long int op);
 struct ex_ex *ex_parse(struct expr *expr, struct ex_ex *iptr,
                                         struct ex_ex *optr, long int *argc);
+static int ex_checklval (struct ex_ex *eptr);
 struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int i);
 
@@ -111,7 +117,7 @@ void ex_dzdetect(struct expr *expr);
 #define MAX_ARGS        10
 extern t_ex_func ex_funcs[];
 
-struct ex_ex nullex;
+struct ex_ex nullex = { 0 };
 
 void set_tokens (char *s);
 int getoken (struct expr *expr, struct ex_ex *eptr);
@@ -280,7 +286,7 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
                                 expr->exp_stack[expr->exp_nexpr][max_node-1].ex_type=0;
                 expr->exp_nexpr++;
                 ret = ex_match(list, (long)0);
-                if (expr->exp_nexpr > MAX_VARS)
+                if (expr->exp_nexpr  > MAX_VARS)
                     /* we cannot exceed MAX_VARS '$' variables */
                 {
                         post_error((fts_object_t *) expr,
@@ -292,7 +298,7 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
                         goto error;
                 ret = ex_parse(expr,
                         list, expr->exp_stack[expr->exp_nexpr - 1], (long *)0);
-                if (!ret)
+                if (!ret || ex_checklval(expr->exp_stack[expr->exp_nexpr - 1]))
                         goto error;
                 fts_free(list);
         }
@@ -539,8 +545,8 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
 {
         struct ex_ex *eptr;
         struct ex_ex *lowpre = 0;       /* pointer to the lowest precedence */
-        struct ex_ex savex;
-                struct ex_ex *tmpex;
+        struct ex_ex savex = { 0 };
+        struct ex_ex *tmpex;
         long pre = HI_PRE;
         long count;
 
@@ -734,6 +740,35 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                 optr->ex_end = eptr;
         return (eptr);
 }
+
+/*
+ * ex_checklval -- check the left value for all stores ('=')
+ *                 all left values should either be a variable or a table
+ *                 return 1 if syntax error
+ *                 return 0 on success
+ */
+
+static int
+ex_checklval(struct ex_ex *eptr)
+{
+        struct ex_ex *extmp;
+
+        extmp = eptr->ex_end;
+        while (eptr->ex_type && eptr != extmp) {
+				if (eptr->ex_type == ET_OP && eptr->ex_op == OP_STORE) {
+                        if (eptr[1].ex_type != ET_VAR &&
+                            eptr[1].ex_type != ET_SI &&
+                            eptr[1].ex_type != ET_TBL) {
+                                post("Bad left value: ");
+                                ex_print(eptr);
+                               return (1);
+                         }
+				}
+				eptr++;
+        }
+        return (0);
+}
+
 
 /*
  * this is the divide zero check for a non divide operator
@@ -999,13 +1034,13 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the expr object data pointer */
 /* the operation stack */
 /* the result pointer */
-/* the sample numnber processed for fexpr~ */
+/* the sample number processed for fexpr~ */
 {
         int i, j;
         t_float *lp, *rp, *op; /* left, right, and out pointer to vectors */
         t_float scalar;
         int nullret = 0;                /* did we have an error */
-        struct ex_ex left, right;       /* left and right operands */
+        struct ex_ex left = { 0 }, right = { 0 };       /* left and right operands */
 
         left.ex_type = 0;
         left.ex_int = 0;
@@ -1321,8 +1356,8 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
-        struct ex_ex rval;
+        struct ex_ex arg = { 0 };
+        struct ex_ex rval = { 0 };
         struct ex_ex *retp;
         char *tbl = (char *) 0;
         char *var = (char *) 0;
@@ -1400,7 +1435,7 @@ eval_tab(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
+        struct ex_ex arg = { 0 };
         char *tbl = (char *) 0;
         int notable = 0;
 
@@ -1458,7 +1493,7 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 if (!expr->exp_var[eptr->ex_int].ex_ptr) {
                                 if (!(expr->exp_error & EE_NOVAR)) {
                                         post("expr: syntax error: no string for inlet %d", eptr->ex_int + 1);
-                                        post("expr: No more table errors will be reported");
+                                        post("expr: no more table errors will be reported");
                                         post("expr: till the next reset");
                                         expr->exp_error |= EE_NOVAR;
                                 }
@@ -1490,7 +1525,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the result pointer */
 /* the index */
 {
-        struct ex_ex arg;
+        struct ex_ex arg = { 0 };
         struct ex_ex *reteptr;
         int i = 0;
         t_float fi = 0,         /* index in float */
@@ -1820,8 +1855,8 @@ retry:
                         post("$y works only for fexpr~");
                                 /* falls through */
                                 /*
-                                 * allow $# for abstration argument substitution
-                                 *  $1+1 is translated to 0+1 and in abstration substitution
+                                 * allow $# for abstraction argument substitution
+                                 *  $1+1 is translated to 0+1 and in abstraction substitution
                                  *  the value is replaced with the new string
                                  */
                                 case '0':
@@ -1871,7 +1906,7 @@ retry:
                 /*
                  * until we can change the input type of inlets on
                  * the fly (at pd_new()
-                 * time) the first input to expr~ is always a vectore
+                 * time) the first input to expr~ is always a vector
                  * and $f1 or $i1 is
                  * illegal for fexpr~
                  */
@@ -1898,7 +1933,7 @@ noinletnum:
                 break;
         case '"':
                 {
-                        struct ex_ex ex;
+                        struct ex_ex ex = { 0 };
 
                         p = expr->exp_str;
                         if (!*expr->exp_str || *expr->exp_str == '"') {

@@ -41,7 +41,7 @@ proc ::dialog_message::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_message::cancel {mytoplevel} {
-    destroy .message
+    wm withdraw .message
 }
 
 # the message panel is opened from the menu and key bindings
@@ -49,7 +49,7 @@ proc ::dialog_message::open_message_dialog {mytoplevel} {
     if {[winfo exists .message]} {
         wm deiconify .message
         raise .message
-        focus .message
+        focus .message.f.entry
     } else {
         create_dialog $mytoplevel
     }
@@ -66,8 +66,6 @@ proc ::dialog_message::create_dialog {mytoplevel} {
     .message configure -menu $::dialog_menubar
     .message configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .message "message"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $id -topmost 1}
 
     frame .message.f
     pack .message.f -side top -fill x -expand 1

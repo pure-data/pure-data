@@ -15,7 +15,7 @@ else
    exit 1
 fi
 
-rm -rf pd-$1 Pd-$1.app
+rm -rf pd-$1 Pd-$1-macosx7.app
 
 tar xzf pd-$1.src.tar.gz
 cd pd-$1
@@ -34,7 +34,8 @@ rm -rf po
 cp -pr ../po/ po/
 
 cd mac
-./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app $1
-mv Pd-$1.app ../../
+./osx-app.sh  --wish \
+  /Users/msp/work/build/tcltk/pd-wish-8.6.10/mac/Wish-8.6.10.app $1-macosx7
+mv Pd-$1-macosx7.app ../../
 cd ../..
-tar czf pd-$1.mac.tar.gz Pd-$1.app
+tar czf pd-$1-macosx7.mac.tar.gz Pd-$1-macosx7.app

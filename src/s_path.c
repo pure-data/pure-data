@@ -47,6 +47,9 @@
 # define stat  stat64
 #endif
 
+#ifdef _MSC_VER
+# define snprintf _snprintf
+#endif
 
     /* change '/' characters to the system's native file separator */
 void sys_bashfilename(const char *from, char *to)
@@ -156,7 +159,7 @@ static const char *strtokcpy(char *to, size_t to_len, const char *from, char del
 }
 
 /* add a single item to a namelist.  If "allowdup" is true, duplicates
-may be added; othewise they're dropped.  */
+may be added; otherwise they're dropped.  */
 
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
 {
@@ -374,13 +377,13 @@ static int do_open_via_path(const char *dir, const char *name,
         dirresult, nameresult, size, bin)) >= 0)
             return (fd);
 
-        /* next go through the search path */
-    for (nl = searchpath; nl; nl = nl->nl_next)
+        /* next go through the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
-        /* next go through the temp paths from the commandline */
-    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        /* next look in built-in paths like "extra" */
+    for (nl = searchpath; nl; nl = nl->nl_next)
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
@@ -527,12 +530,15 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-int sys_argparse(int argc, char **argv);
+int sys_argparse(int argc, const char **argv);
+static int string2args(const char * cmd, int * retArgc, const char *** retArgv);
+
 void sys_doflags(void)
 {
-    int i, beginstring = 0, state = 0, len;
-    int rcargc = 0;
-    char *rcargv[MAXPDSTRING];
+    int rcargc=0;
+    const char**rcargv = NULL;
+    int len;
+    int rcode = 0;
     if (!sys_flags)
         sys_flags = &s_;
     len = (int)strlen(sys_flags->s_name);
@@ -541,36 +547,18 @@ void sys_doflags(void)
         error("flags: %s: too long", sys_flags->s_name);
         return;
     }
-    for (i = 0; i < len+1; i++)
-    {
-        int c = sys_flags->s_name[i];
-        if (state == 0)
-        {
-            if (c && !isspace(c))
-            {
-                beginstring = i;
-                state = 1;
-            }
-        }
-        else
-        {
-            if (!c || isspace(c))
-            {
-                char *foo = malloc(i - beginstring + 1);
-                if (!foo)
-                    return;
-                strncpy(foo, sys_flags->s_name + beginstring, i - beginstring);
-                foo[i - beginstring] = 0;
-                rcargv[rcargc] = foo;
-                rcargc++;
-                if (rcargc >= MAXPDSTRING)
-                    break;
-                state = 0;
-            }
-        }
+    rcode = string2args(sys_flags->s_name, &rcargc, &rcargv);
+    if(rcode < 0) {
+        error("error#%d while parsing flags", rcode);
+        return;
     }
+
     if (sys_argparse(rcargc, rcargv))
         error("error parsing startup arguments");
+
+    for(len=0; len<rcargc; len++)
+        free((void*)rcargv[len]);
+    free(rcargv);
 }
 
 /* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
@@ -649,7 +637,7 @@ void glob_start_path_dialog(t_pd *dummy)
      char buf[MAXPDSTRING];
 
     sys_set_searchpath();
-    sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
+    snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
 
@@ -671,15 +659,21 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 
     /* add one item to search path (intended for use by Deken plugin).
-    if "saveit" is set, also save all settings.  */
+    if "saveit" is > 0, this also saves all settings,
+    if "saveit" is < 0, the path is only added temporarily */
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 {
+    int saveflag = (int)saveit;
     t_symbol *s = sys_decodedialog(path);
     if (*s->s_name)
     {
-        STUFF->st_searchpath =
-            namelist_append_files(STUFF->st_searchpath, s->s_name);
-        if (saveit != 0)
+        if (saveflag < 0)
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, s->s_name);
+        else
+            STUFF->st_searchpath =
+                namelist_append_files(STUFF->st_searchpath, s->s_name);
+        if (saveit > 0)
             sys_savepreferences(0);
     }
 }
@@ -689,9 +683,10 @@ void sys_set_startup(void)
 {
     int i;
     t_namelist *nl;
+    char obuf[MAXPDSTRING];
 
-    sys_vgui("set ::startup_flags {%s}\n",
-        (sys_flags? sys_flags->s_name : ""));
+    sys_vgui("set ::startup_flags [subst -nocommands {%s}]\n",
+        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
     sys_gui("set ::startup_libraries {}\n");
     for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
@@ -701,10 +696,10 @@ void sys_set_startup(void)
 void glob_start_startup_dialog(t_pd *dummy)
 {
     char buf[MAXPDSTRING];
-
+    char obuf[MAXPDSTRING];
     sys_set_startup();
-    sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
-        (sys_flags? sys_flags->s_name : ""));
+    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
+        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
 
@@ -726,3 +721,125 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 
 
+/*
+ * the following string2args function is based on from sash-3.8 (the StandAlone SHell)
+ * Copyright (c) 2014 by David I. Bell
+ * Permission is granted to use, distribute, or modify this source,
+ * provided that this copyright notice remains intact.
+ */
+#define	isBlank(ch)	(((ch) == ' ') || ((ch) == '\t'))
+int string2args(const char * cmd, int * retArgc, const char *** retArgv)
+{
+    int errCode = 1;
+    int len = strlen(cmd), argCount = 0;
+    char strings[MAXPDSTRING], *cp;
+    const char **argTable = 0, **newArgTable;
+
+    if(retArgc) *retArgc = 0;
+    if(retArgv) *retArgv = NULL;
+
+        /*
+         * Copy the command string into a buffer that we can modify,
+         * reallocating it if necessary.
+         */
+    if(len >= MAXPDSTRING) {
+        errCode = 1; goto ouch;
+    }
+    memset(strings, 0, MAXPDSTRING);
+    memcpy(strings, cmd, len);
+    cp = strings;
+
+        /* Keep parsing the command string as long as there are any arguments left. */
+    while (*cp) {
+        const char *cpIn = cp;
+        char *cpOut = cp, *argument;
+        int quote = '\0';
+
+            /*
+             * Loop over the string collecting the next argument while
+             * looking for quoted strings or quoted characters.
+             */
+        while (*cp) {
+            int ch = *cp++;
+
+                /* If we are not in a quote and we see a blank then this argument is done. */
+            if (isBlank(ch) && (quote == '\0'))
+                break;
+
+                /* If we see a backslash then accept the next character no matter what it is. */
+            if (ch == '\\') {
+                ch = *cp++;
+                if (ch == '\0') { /* but only if there is a next char */
+                    errCode = 10; goto ouch;
+                }
+                *cpOut++ = ch;
+                continue;
+            }
+
+                /* If we were in a quote and we saw the same quote character again then the quote is done. */
+            if (ch == quote) {
+                quote = '\0';
+                continue;
+            }
+
+                /* If we weren't in a quote and we see either type of quote character,
+                 * then remember that we are now inside of a quote. */
+            if ((quote == '\0') && ((ch == '\'') || (ch == '"')))  {
+                quote = ch;
+                continue;
+            }
+
+                /* Store the character. */
+            *cpOut++ = ch;
+        }
+
+        if (quote) { /* Unmatched quote character */
+            errCode = 11; goto ouch;
+        }
+
+            /*
+             * Null terminate the argument if it had shrunk, and then
+             * skip over all blanks to the next argument, nulling them
+             * out too.
+             */
+        if (cp != cpOut)
+            *cpOut = '\0';
+        while (isBlank(*cp))
+            *cp++ = '\0';
+
+        if (!(argument = calloc(1+cpOut-cpIn, 1))) {
+            errCode = 22; goto ouch;
+        }
+        memcpy(argument, cpIn, cpOut-cpIn);
+
+            /* Now reallocate the argument table to hold the argument, add add it. */
+        if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
+            free(argument);
+            errCode= 23; goto ouch;
+        } else argTable = newArgTable;
+
+        argTable[argCount] = argument;
+
+        argCount++;
+    }
+
+        /*
+         * Null terminate the argument list and return it.
+         */
+    if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
+        errCode = 23; goto ouch;
+    } else argTable = newArgTable;
+
+    argTable[argCount] = NULL;
+
+    if(retArgc) *retArgc = argCount;
+    if(retArgv)
+        *retArgv = argTable;
+    else
+        free(argTable);
+    return argCount;
+
+ ouch:
+    free(argTable);
+    return -errCode;
+}

@@ -53,7 +53,7 @@ proc ::dialog_find::ok {mytoplevel} {
         if {$::windowingsystem eq "aqua"} {bell}
         return
     }
-    # start seaching
+    # start searching
     set $is_searching 1
     if {$find_in_window eq ".pdwindow"} {
         if {$::tcl_version < 8.5} {

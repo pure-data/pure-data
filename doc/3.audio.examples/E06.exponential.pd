@@ -1,54 +1,54 @@
-#N canvas 85 89 754 729 12;
+#N canvas 468 23 872 731 12;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
-#X restore 509 46 graph;
-#X obj 14 265 hip~ 5;
+#X restore 540 242 graph;
+#X obj 125 288 hip~ 5;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-spectrum 128 float 0;
 #X coords 0 4300 127 -40 257 130 1;
-#X restore 463 222 graph;
-#N canvas 45 83 558 569 fft 0;
-#X obj 19 61 inlet~;
-#X obj 208 212 inlet;
-#X obj 29 92 rfft~;
-#X obj 29 125 *~;
-#X obj 60 125 *~;
-#X obj 29 155 sqrt~;
-#X obj 332 109 block~ 4096 1;
-#X obj 29 181 biquad~ 0 0 0 0 1;
-#X text 93 93 Fourier series;
-#X text 98 146 magnitude;
-#X text 96 131 calculate;
-#X text 21 3 This subpatch computes the spectrum of the incoming signal
+#X restore 521 434 graph;
+#N canvas 455 72 538 658 fft 0;
+#X obj 47 77 inlet~;
+#X obj 236 228 inlet;
+#X obj 57 108 rfft~;
+#X obj 57 141 *~;
+#X obj 89 143 *~;
+#X obj 57 171 sqrt~;
+#X obj 360 125 block~ 4096 1;
+#X obj 57 197 biquad~ 0 0 0 0 1;
+#X text 121 109 Fourier series;
+#X text 126 162 magnitude;
+#X text 124 147 calculate;
+#X text 35 8 This subpatch computes the spectrum of the incoming signal
 with a (rectangular windowed) FFT. FFTs aren't properly introduced
 until much later.;
-#X text 83 61 signal to analyze;
-#X text 193 164 delay two samples;
-#X text 191 182 for better graphing;
-#X obj 16 425 samplerate~;
-#X obj 16 402 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X text 111 77 signal to analyze;
+#X text 221 180 delay two samples;
+#X text 219 198 for better graphing;
+#X obj 66 473 samplerate~;
+#X obj 66 450 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X floatatom 16 472 5 0 0 0 - - -;
-#X obj 16 448 / 256;
-#X obj 16 378 loadbang;
-#X floatatom 16 541 5 0 0 0 - - -;
-#X obj 24 494 s fundamental;
-#X obj 16 517 ftom;
-#X text 14 319 At load time \, calculate a good choice of fundamental
+#X floatatom 66 540 5 0 0 0 - - -;
+#X obj 66 516 / 256;
+#X obj 66 426 loadbang;
+#X floatatom 66 609 5 0 0 0 - - -;
+#X obj 74 562 s fundamental;
+#X obj 66 585 ftom;
+#X text 64 367 At load time \, calculate a good choice of fundamental
 frequency for showing spectra: the 16th bin in a 4096-point spectrum
 \, so SR*16/4096 or SR/256.;
-#X floatatom 191 480 5 0 0 0 - - -;
-#X obj 191 456 / 4096;
-#X text 187 425 One bin is SR/4096:;
-#X obj 191 502 s freq-step;
-#X obj 208 295 tabwrite~ E06-spectrum;
-#X obj 19 295 tabwrite~ E06-signal;
-#X text 71 540 <-fundamental pitch;
-#X obj 220 257 metro 500;
-#X obj 220 234 inlet;
-#X text 273 232 toggle to graph repeatedly;
-#X text 262 212 bang to graph once;
+#X floatatom 241 548 5 0 0 0 - - -;
+#X obj 241 524 / 4096;
+#X text 237 500 One bin is SR/4096:;
+#X obj 241 570 s freq-step;
+#X obj 236 311 tabwrite~ E06-spectrum;
+#X obj 47 311 tabwrite~ E06-signal;
+#X obj 248 273 metro 500;
+#X obj 248 250 inlet;
+#X text 301 248 toggle to graph repeatedly;
+#X text 290 228 bang to graph once;
+#X text 111 608 <= fundamental pitch;
 #X connect 0 0 2 0;
 #X connect 0 0 29 0;
 #X connect 1 0 28 0;
@@ -71,34 +71,34 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 22 0 20 0;
 #X connect 24 0 27 0;
 #X connect 25 0 24 0;
-#X connect 31 0 28 0;
-#X connect 31 0 29 0;
-#X connect 32 0 31 0;
-#X restore 22 238 pd fft;
-#X text 509 178 ---- 0.02 seconds ----;
-#X obj 82 217 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X connect 30 0 28 0;
+#X connect 30 0 29 0;
+#X connect 31 0 30 0;
+#X restore 189 286 pd fft;
+#X text 562 375 ---- 0.02 seconds ----;
+#X obj 208 258 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 14 293 output~;
-#X text 499 708 updated for Pd version 0.37;
-#X text 494 355 1;
-#X text 528 355 2;
-#X text 560 355 3;
-#X text 592 355 4;
-#X text 625 355 5;
-#X text 655 355 6;
-#X text 686 355 7;
-#X text 462 355 0;
-#X text 496 372 -- partial number --;
-#X text 711 100 0;
-#X obj 12 30 r fundamental;
-#X obj 12 57 osc~;
-#X text 573 26 WAVEFORM;
-#X text 557 204 SPECTRUM;
-#X text 723 338 0;
-#X text 721 217 1;
-#X text 722 276 0.5;
-#X obj 82 238 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 125 326 output~;
+#X text 584 645 updated for Pd version 0.37;
+#X text 552 567 1;
+#X text 586 567 2;
+#X text 618 567 3;
+#X text 650 567 4;
+#X text 683 567 5;
+#X text 713 567 6;
+#X text 744 567 7;
+#X text 520 567 0;
+#X text 571 586 -- partial number --;
+#X text 742 296 0;
+#X obj 124 61 r fundamental;
+#X obj 124 87 osc~;
+#X text 633 216 WAVEFORM;
+#X text 637 413 SPECTRUM;
+#X text 781 550 0;
+#X text 779 429 1;
+#X text 780 488 0.5;
+#X obj 243 287 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-tab 1003 float 1;
 #A 0 1.01005 1 0.99005 0.980199 0.970446 0.960789 0.951229 0.941765
@@ -249,21 +249,21 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 4.82073e-05 4.77276e-05 4.72527e-05 4.67826e-05 4.63171e-05;
 #A 1000 0 0 0;
 #X coords 0 1 1002 0 180 100 1;
-#X restore 254 118 graph;
-#N canvas 140 79 589 249 make-table 0;
-#X obj 164 81 t b b;
-#X obj 236 106 f;
-#X obj 274 106 + 1;
-#X msg 258 83 0;
-#X obj 164 104 until;
-#X obj 236 136 t f f;
-#X obj 164 62 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 538 75 graph;
+#N canvas 352 106 412 285 make-table 0;
+#X obj 142 98 t b b;
+#X obj 214 123 f;
+#X obj 252 123 + 1;
+#X msg 232 99 0;
+#X obj 142 121 until;
+#X obj 214 153 t f f;
+#X obj 142 79 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 104 164 expr exp(-($f1-1)/100);
-#X obj 163 132 sel 999;
-#X text 35 10 This patch computes a decaying exponential function \,
-100 points per unit.;
-#X obj 137 196 tabwrite E06-tab;
+#X obj 84 183 expr exp(-($f1-1)/100);
+#X obj 141 149 sel 999;
+#X text 48 18 This patch computes a decaying exponential function \,
+100 points per unit., f 42;
+#X obj 137 213 tabwrite E06-tab;
 #X connect 0 0 4 0;
 #X connect 0 1 3 0;
 #X connect 1 0 2 0;
@@ -277,38 +277,34 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 6 0 0 0;
 #X connect 7 0 10 0;
 #X connect 8 0 4 1;
-#X restore 302 258 pd make-table;
-#X text 252 85 waveshaping function;
-#X text 438 210 0;
-#X text 437 114 1;
-#X obj 12 168 +~ 1;
-#X obj 12 146 *~ 100;
-#X obj 12 83 +~ 1;
-#X floatatom 68 53 5 0 200 0 - - -;
-#X obj 68 96 pack 0 50;
-#X obj 68 120 line~;
-#X text 157 69 tenths;
-#X obj 68 73 / 10;
-#X obj 12 124 *~;
-#X obj 13 190 tabread4~ E06-tab;
-#X text 711 40 1;
-#X text 712 160 -1;
-#X text 103 237 <-- repeatedly;
-#X text 104 217 <-- graph once;
-#X text 121 0 Waveshaping using an exponential function;
-#X text 120 53 <--index in;
-#X text 250 218 0;
-#X text 417 220 10;
-#X text 14 652 When the index of modulation exceeds 5 we scan past
+#X restore 327 175 pd make-table;
+#X text 536 42 waveshaping function;
+#X text 722 167 0;
+#X text 721 71 1;
+#X obj 124 200 +~ 1;
+#X obj 124 174 *~ 100;
+#X obj 124 113 +~ 1;
+#X floatatom 194 91 5 0 200 0 - - -;
+#X obj 194 135 pack 0 50;
+#X obj 194 159 line~;
+#X text 259 107 tenths;
+#X obj 194 112 / 10;
+#X obj 124 147 *~;
+#X obj 124 226 tabread4~ E06-tab;
+#X text 742 236 1;
+#X text 743 356 -1;
+#X text 534 175 0;
+#X text 701 177 10;
+#X text 25 641 When the index of modulation exceeds 5 we scan past
 the right hand border of the table (the thousandth point \, corresponding
 to exp(-10). This isn't a problem because the values are all close
-to zero there.;
-#X text 14 555 Table lookup is prepared as follows. First add one to
+to zero there., f 61;
+#X text 25 549 Table lookup is prepared as follows. First add one to
 the sinusoid and adjust its amplitude according to index \; it ranges
 from 0 to 2*index. Then adjust for the table's input scale (100 points
 per unit \, so multiply by 100) and add one to skip the interpolation
-point at the beginning of the table.;
-#X text 13 398 Here we use an exponential function as a waveshaping
+point at the beginning of the table., f 61;
+#X text 25 401 Here we use an exponential function as a waveshaping
 transfer function. The theory is shown in detail in the accompanying
 book \, but in short \, we adjust the sinusoid so that \, as the index
 increases \, we scan starting from the left of the transfer function
@@ -316,7 +312,11 @@ increases \, we scan starting from the left of the transfer function
 exp(-x) with x varying from 0 to 10 When the index is zero \, the output
 is the constant 1 and the spectrum holds only DC. As the index grows
 \, the output is a sequence of steadily narrower pulses \, whose spectrum
-gets progressively fatter.;
+gets progressively fatter., f 61;
+#X text 230 258 <= graph once;
+#X text 264 286 <= repeatedly;
+#X text 237 91 <= index in;
+#X text 48 10 WAVESHAPING USING AN EXPONENTIAL FUNCTION;
 #X connect 1 0 6 0;
 #X connect 1 0 6 1;
 #X connect 5 0 3 1;

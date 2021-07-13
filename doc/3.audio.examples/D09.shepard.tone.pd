@@ -1,66 +1,66 @@
-#N canvas 124 20 599 828 12;
-#X floatatom 169 520 0 0 0 0 - - -;
-#X floatatom 169 446 0 0 0 0 - - -;
-#X text 462 208 START;
-#X floatatom 190 303 0 0 0 0 - - -;
-#X obj 190 280 r incr;
-#X obj 168 255 metro 50;
-#X floatatom 168 373 5 0 0 0 - - -;
-#X obj 168 394 s phase;
-#X obj 168 350 +;
-#X obj 169 469 s dropoff+;
-#X obj 169 622 s interval+;
-#X floatatom 169 599 0 0 0 0 - - -;
-#X obj 169 543 s pitch+;
-#X obj 169 423 r dropoff;
-#X obj 169 497 r pitch;
-#X obj 169 576 r interval;
-#X obj 168 212 r metro;
-#X obj 228 345 f;
-#X obj 12 212 shepvoice 0;
-#X floatatom 83 708 0 0 0 0 - - -;
-#X obj 83 685 r rev;
-#X obj 138 685 r revtime;
-#X floatatom 138 708 0 0 0 0 - - -;
-#X obj 228 368 mod 10000;
-#X obj 168 327 f;
-#X obj 73 742 rev2~;
-#X obj 12 769 output~;
-#X obj 168 235 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+#N canvas 400 23 489 841 12;
+#X floatatom 185 527 0 0 0 0 - - -;
+#X floatatom 185 453 0 0 0 0 - - -;
+#X text 347 210 START;
+#X floatatom 202 310 0 0 0 0 - - -;
+#X obj 202 287 r incr;
+#X obj 184 262 metro 50;
+#X floatatom 184 380 5 0 0 0 - - -;
+#X obj 184 401 s phase;
+#X obj 184 357 +;
+#X obj 185 476 s dropoff+;
+#X obj 185 629 s interval+;
+#X floatatom 185 606 0 0 0 0 - - -;
+#X obj 185 550 s pitch+;
+#X obj 185 430 r dropoff;
+#X obj 185 504 r pitch;
+#X obj 185 583 r interval;
+#X obj 184 219 r metro;
+#X obj 241 352 f;
+#X obj 24 213 shepvoice 0;
+#X floatatom 93 708 0 0 0 0 - - -;
+#X obj 93 685 r rev;
+#X obj 148 685 r revtime;
+#X floatatom 148 708 0 0 0 0 - - -;
+#X obj 241 375 mod 10000;
+#X obj 184 334 f;
+#X obj 85 736 rev2~;
+#X obj 24 764 output~;
+#X obj 184 242 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X msg 446 225 \; dropoff 10 \; pitch 60 \; interval 120 \; metro 1
+#X msg 331 227 \; dropoff 10 \; pitch 60 \; interval 120 \; metro 1
 \; rev 84 \; revtime 87 \; incr -2 \; pd dsp 1;
-#X text 27 7 SHEPARD TONE;
-#X text 339 804 updated for Pd version 0.37;
-#X obj 12 235 shepvoice 500;
-#X obj 12 258 shepvoice 1000;
-#X obj 12 281 shepvoice 1500;
-#X obj 12 304 shepvoice 2000;
-#X obj 12 327 shepvoice 2500;
-#X obj 12 350 shepvoice 3000;
-#X obj 12 373 shepvoice 3500;
-#X obj 12 396 shepvoice 4000;
-#X obj 12 419 shepvoice 4500;
-#X obj 12 442 shepvoice 5000;
-#X obj 12 465 shepvoice 5500;
-#X obj 12 488 shepvoice 6000;
-#X obj 12 511 shepvoice 6500;
-#X obj 12 534 shepvoice 7000;
-#X obj 12 557 shepvoice 7500;
-#X obj 12 580 shepvoice 8000;
-#X obj 12 603 shepvoice 8500;
-#X obj 12 626 shepvoice 9000;
-#X obj 12 649 shepvoice 9500;
-#X text 25 31 This patch is a bank of 20 sinusoids \, arranged so that
+#X text 28 7 SHEPARD TONE;
+#X text 250 789 updated for Pd version 0.37;
+#X obj 24 235 shepvoice 500;
+#X obj 24 259 shepvoice 1000;
+#X obj 24 282 shepvoice 1500;
+#X obj 24 305 shepvoice 2000;
+#X obj 24 328 shepvoice 2500;
+#X obj 24 351 shepvoice 3000;
+#X obj 24 374 shepvoice 3500;
+#X obj 24 397 shepvoice 4000;
+#X obj 24 420 shepvoice 4500;
+#X obj 24 443 shepvoice 5000;
+#X obj 24 466 shepvoice 5500;
+#X obj 24 489 shepvoice 6000;
+#X obj 24 512 shepvoice 6500;
+#X obj 24 535 shepvoice 7000;
+#X obj 24 558 shepvoice 7500;
+#X obj 24 581 shepvoice 8000;
+#X obj 24 604 shepvoice 8500;
+#X obj 24 627 shepvoice 9000;
+#X obj 24 650 shepvoice 9500;
+#X text 26 31 This patch is a bank of 20 sinusoids \, arranged so that
 their frequencies sweep upward or downward in parallel \, and their
 amplitudes fade in and out so that each one is quiet when it wraps
 around from one end to the other. The overall "phase" computed here
 is added to each voice's relative phase (its creation argument). The
-"incr" parameter controls how fast the phase changes \, "dropoff"
-the slope at which the amplitudes fall off at the ends \, "pitch" the
-center pitch of the cluster \, "interval" the number of (tenths of
-halftones) between successive voices \, and "rev" and "revtime" the
-reverberator at bottom.;
+"incr" parameter controls how fast the phase changes \, "dropoff" the
+slope at which the amplitudes fall off at the ends \, "pitch" the center
+pitch of the cluster \, "interval" the number of (tenths of halftones)
+between successive voices \, and "rev" and "revtime" the reverberator
+at bottom.;
 #X connect 0 0 12 0;
 #X connect 1 0 9 0;
 #X connect 3 0 24 1;

@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 # Creates macOS .app bundle from pd build.
 #
@@ -21,6 +21,7 @@ TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
+SIGNATURE_ID="-"
 
 # source dir, relative to this script
 SRC=..
@@ -32,18 +33,16 @@ BUILD=..
 # PlistBuddy command for editing app bundle Info.plist from template
 PLIST_BUDDY=/usr/libexec/PlistBuddy
 
-# the app Get Info string
-GETINFO="Pure Data: a free real-time computer music system"
-
 # Help message
 #----------------------------------------------------------
 help() {
-echo -e "
+cat <<EOF
+
 Usage: osx-app.sh [OPTIONS] [VERSION]
 
   Creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
 
-  Uses the included Tk 8.4 Wish.app at mac/stuff/wish-shell.tgz by default
+  Uses the included Tk Wish.app at mac/stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
@@ -52,14 +51,17 @@ Options:
 
   -w,--wish APP       use a specific Wish.app
 
+  --sign SIGNATURE_ID use SIGNATURE_ID for signing the app.
+                      the default is "-", which means ad-hoc signing
+
   -s,--system-tk VER  use a version of the Tk Wish.app installed on the system,
                       searches in /Library first then /System/Library second,
-                      naming is \"8.4\", \"8.5\", \"Current\", etc
+                      naming is "8.4", "8.5", "Current", etc
 
   -t,--tk VER         use a version of Wish.app with embedded Tcl/Tk
                       frameworks, downloads and builds using tcltk-wish.sh
 
-  --universal         \"universal\" multi-arch build when using -t,--tk:
+  --universal         "universal" multi-arch build when using -t,--tk:
                       i386 & x86_64 (& ppc if 10.6 SDK found)
 
   --builddir          set pd build directory path
@@ -85,21 +87,30 @@ Examples:
     # create Pd-0.47-0.app by downloading & building Tk 8.5.19
     osx-app.sh --tk 8.5.19 0.47-0
 
-    # same as above, but with a \"universal\" multi-arch build
+    # same as above, but with a "universal" multi-arch build
     osx-app.sh --tk 8.5.19 --universal 0.47-0
 
     # use Wish-8.6.5.app manually built with tcltk-wish.sh
     osx-app.sh --wish Wish-8.6.5 0.47-0
-"
+
+EOF
 }
 
 # Parse command line arguments
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
     case $1 in
+        --sign)
+            shift 1
+            if [ $# = 0 ] ; then
+                echo "--sign option requires a SIGNATURE_ID argument"
+                exit 1
+            fi
+            SIGNATURE_ID=$1
+            ;;
         -t|--tk)
             shift 1
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "-t,--tk option requires a VER argument"
                 exit 1
             fi
@@ -114,7 +125,7 @@ while [ "$1" != "" ] ; do
             included_wish=false
             ;;
         -w|--wish)
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "-w,--wish option requires an APP argument"
                 exit 1
             fi
@@ -126,7 +137,7 @@ while [ "$1" != "" ] ; do
             universal=--universal
             ;;
         --builddir)
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "--builddir options requires a DIR argument"
                 exit 1
             fi
@@ -159,8 +170,8 @@ fi
 #----------------------------------------------------------
 
 # make sure custom build directory is an absolute path
-if [[ $custom_builddir == true ]] ; then
-    if [[ "${BUILD:0:1}" != "/" ]] ; then
+if [ $custom_builddir = true ] ; then
+    if [ "${BUILD}" = "${BUILD#/}" ] ; then
        BUILD=$(pwd)/$BUILD
     fi
 fi
@@ -191,7 +202,7 @@ if [ "$verbose" != "" ] ; then
 fi
 
 # extract included Wish app
-if [ $included_wish == true ] ; then
+if [ $included_wish = true ] ; then
     tar xzf stuff/wish-shell.tgz
     if [ -e "Wish Shell.app" ] ; then
         mv "Wish Shell.app" Wish.app
@@ -199,7 +210,7 @@ if [ $included_wish == true ] ; then
     WISH=Wish.app
 
 # build Wish or use the system Wish
-elif [ "$WISH" == "" ] ; then
+elif [ "$WISH" = "" ] ; then
     if [ "$TK" != "" ] ; then
         echo "Using custom $TK Wish.app"
         ./tcltk-wish.sh $universal $TK
@@ -278,10 +289,11 @@ INFO_PLIST=$APP/Contents/Info.plist
 
 # set version identifiers & contextual strings in Info.plist,
 # version strings can only use 0-9 and periods, so replace "-" & "test" with "."
-PLIST_VERSION=${PD_VERSION/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
+PLIST_VERSION=$(echo ${PD_VERSION} | sed -e 's/[^0-9]/./g' -e 's/\.\.*/./g' -e 's/^\.//' -e 's/\.$//')
 $PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $INFO_PLIST
 $PLIST_BUDDY -c "Set:CFBundleShortVersionString \"$PLIST_VERSION\"" $INFO_PLIST
-$PLIST_BUDDY -c "Set:CFBundleGetInfoString \"$GETINFO\"" $INFO_PLIST
+# remove deprecated key as this will display in Finder instead of the version
+$PLIST_BUDDY -c "Delete:CFBundleGetInfoString" $INFO_PLIST
 
 # install binaries
 mkdir -p $DEST/bin
@@ -357,6 +369,17 @@ find $DEST -name "Makefile*" -type f -delete
 cd $DEST
 ln -s tcl Scripts
 cd - > /dev/null # quiet
+
+# "code signing" which also sets entitlements
+# note: "-" identity results in "ad-hoc signing" aka no signing is performed
+# for one, this allows loading un-validated external libraries on macOS 10.15+:
+# https://cutecoder.org/programming/shared-framework-hardened-runtime
+codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}/Contents/Frameworks/Tcl.framework/Versions/Current"
+codesign $verbose --force --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}/Contents/Frameworks/Tk.framework/Versions/Current"
+codesign $verbose --deep  --sign "${SIGNATURE_ID}" --entitlements stuff/pd.entitlements \
+    "${APP}"
 
 # finish up
 touch $APP

@@ -19,6 +19,7 @@
 #include "ext_proto.h"
 #include "ext_obex.h"
 typedef double t_floatarg;
+typedef float t_float;
 #define t_resizebytes(a, b, c) t_resizebytes((char *)(a), (b), (c))
 #endif
 
@@ -43,6 +44,24 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #ifdef _MSC_VER
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4305 )
+#endif
+
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+
+/* limit stack allocation to ~400kB (enough for 16384 points).
+ * usually the stack size is at least 1 MB */
+#define ALLOCA_MAXBYTES 400000
+
+#if HAVE_ALLOCA
+#define BUF_ALLOCA(n) ((n) < ALLOCA_MAXBYTES ?  \
+        alloca(n) : getbytes(n))
+#define BUF_FREEA(x, n) ( \
+    (((n) < ALLOCA_MAXBYTES) || (freebytes((x), (n)), 0)))
+#else
+#define BUF_ALLOCA(n) (getbytes(n))
+#define BUF_FREEA(x, n) (freebytes((x), (n)))
 #endif
 
 typedef struct peak
@@ -242,16 +261,17 @@ static void sigmund_remask(int maxbin, int bestindex, t_float powmask,
 #define PEAKTHRESHFACTOR 0.6
 
 static void sigmund_getrawpeaks(int npts, t_float *insamps,
-    int npeak, t_peak *peakv, int *nfound, t_float *power, t_float srate, int loud,
-    t_float hifreq)
+    int npeak, t_peak *peakv, int *nfound, t_float *power, t_float srate,
+    int loud, t_float hifreq)
 {
     t_float oneovern = 1.0/ (t_float)npts;
     t_float fperbin = 0.5 * srate * oneovern, totalpower = 0;
-    int npts2 = 2*npts, i, bin;
+    int npts2 = 2*npts, i, bin, bufsize = sizeof (t_float ) *
+        (2*NEGBINS + 6*npts);
     int peakcount = 0;
     t_float *fp1, *fp2;
     t_float *rawreal, *rawimag, *maskbuf, *powbuf;
-    t_float *bigbuf = alloca(sizeof (t_float ) * (2*NEGBINS + 6*npts));
+    t_float *bigbuf = (t_float *)BUF_ALLOCA(bufsize);
     int maxbin = hifreq/fperbin;
     if (maxbin > npts - NEGBINS)
         maxbin = npts - NEGBINS;
@@ -284,7 +304,8 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
 #if 1
     for (i = 0, fp1 = rawreal, fp2 = rawimag; i < maxbin; i++, fp1++, fp2++)
     {
-        t_float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1], p = powbuf[i] = x1*x1+x2*x2; 
+        t_float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1],
+            p = powbuf[i] = x1*x1+x2*x2;
         if (i >= 2)
            totalpower += p;
     }
@@ -304,7 +325,8 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
             pow1 = powbuf[bin];
             if (pow1 > maxpower && pow1 > maskbuf[bin])
             {
-                t_float thresh = PEAKTHRESHFACTOR * (powbuf[bin-2]+powbuf[bin+2]);
+                t_float thresh = PEAKTHRESHFACTOR *
+                    (powbuf[bin-2]+powbuf[bin+2]);
                 if (pow1 > thresh)
                     maxpower = pow1, bestindex = bin;
             }
@@ -362,6 +384,7 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
         peakv[i].p_db = sigmund_powtodb(peakv[i].p_amp);
     }
     *nfound = peakcount;
+    BUF_FREEA(bigbuf, bufsize);
 }
 
 /*************** Routines for finding fundamental pitch *************/
@@ -1050,8 +1073,17 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
         if (x->x_hop % sp[0]->s_n)
             post("sigmund: adjusting hop size to %d",
                 (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+        if (x->x_infill % sp[0]->s_n) {
+            if (x->x_inbuf) {
+                int i;
+                t_sample*inbuf = x->x_inbuf;
+                for(i=0; i<x->x_npts; i++)
+                    *inbuf++ = 0.;
+            }
+            x->x_infill = 0;
+        }
         x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
 }
 
@@ -1309,7 +1341,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     int onset = atom_getfloatarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
-    int arraysize, totstorage, nfound, i;
+    int arraysize, totstorage, nfound, i, bufsize;
     t_garray *a;
     t_float *arraypoints, pit;
     t_word *wordarray = 0;
@@ -1334,22 +1366,25 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         error("sigmund: bad samplerate");
         return;
     }
-    arraypoints = alloca(sizeof(t_float)*npts);
+    bufsize = sizeof(t_float)*npts;
+    arraypoints = (t_float *)getbytes(bufsize);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
     {
         error("%s: array missing or too small", syminput->s_name);
-        return;
+        goto cleanup;
     }
     if (arraysize < npts)
     {
         error("sigmund~: too few points in array");
-        return;
+        goto cleanup;
     }
     for (i = 0; i < npts; i++)
         arraypoints[i] = wordarray[i+onset].w_float;
     sigmund_doit(x, npts, arraypoints, loud, srate);
+cleanup:
+    freebytes(arraypoints, bufsize);
 }
 
 static void sigmund_clear(t_sigmund *x)
@@ -1385,7 +1420,8 @@ void sigmund_tilde_setup(void)
     sigmund_class = class_new(gensym("sigmund~"), (t_newmethod)sigmund_new,
         (t_method)sigmund_free, sizeof(t_sigmund), 0, A_GIMME, 0);
     class_addlist(sigmund_class, sigmund_list);
-    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), A_CANT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"),
+        A_CANT, 0);
     CLASS_MAINSIGNALIN(sigmund_class, t_sigmund, x_f);
     class_addmethod(sigmund_class, (t_method)sigmund_param1,
         gensym("param1"), A_FLOAT, 0);

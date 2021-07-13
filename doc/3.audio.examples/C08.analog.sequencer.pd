@@ -1,11 +1,11 @@
-#N canvas 57 74 829 559 12;
+#N canvas 453 94 812 654 12;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array 29-sequence 9 float 3;
 #A 0 110 550 385 495 165 385 495 275 615;
-#X coords 0 500 9 0 200 100 1;
-#X restore 618 42 graph;
-#X obj 27 426 *~;
-#X obj 27 454 hip~ 5;
+#X coords 0 650 9 0 200 100 1 0 0;
+#X restore 533 77 graph;
+#X obj 95 493 *~;
+#X obj 95 521 hip~ 5;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array 29-envelope 103 float 1;
 #A 0 -0.0199988 1.0673e-06 0.0500008 0.13 0.16 0.28 0.5 0.6 0.7 0.8
@@ -21,8 +21,8 @@
 0.157776 0.157776 0.157776 0.147776 0.147776 0.147776 0.137776 0.137776
 0.111111 0.1 0.0888889 0.0777778 0.0666667 0.0555556 0.0444444 0.0333333
 0.0222222 0.0111111 0 -0.0111111;
-#X coords 0 1 102 0 200 100 1;
-#X restore 618 162 graph;
+#X coords 0 1.01 102 -0.01 200 100 1 0 0;
+#X restore 533 197 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array 29-sample 259 float 1;
 #A 0 0.989177 1 0.989177 0.95694 0.903989 0.83147 0.740952 0.634394
@@ -61,79 +61,78 @@
 -0.19512 -0.0490981 0.0979867 0.24295 0.382655 0.514076 0.634369 0.74093
 0.831452 0.903976 0.956931 0.989172 1 0.989181;
 #X coords 0 1 258 -1 200 100 1;
-#X restore 618 281 graph;
-#X text 566 533 updated for Pd version 0.37;
-#X obj 26 218 tabread~ 29-sequence;
-#X obj 106 241 wrap~;
-#X obj 106 265 *~ 100;
-#X obj 106 289 +~ 1;
-#X obj 26 242 phasor~;
-#X obj 26 266 -~ 0.5;
-#X obj 27 377 cos~;
-#X obj 84 336 *~;
-#X obj 28 488 output~;
-#X obj 84 408 tabread4~ 29-sample;
-#X obj 106 313 tabread4~ 29-envelope;
-#X obj 84 360 *~ 128;
-#X obj 84 384 +~ 129;
-#X obj 27 401 +~ 1;
-#X obj 26 194 *~ 9;
-#N canvas 328 85 609 424 make-tables 0;
-#X msg 109 52 bang;
-#X obj 109 77 t b b;
-#X obj 152 134 f;
-#X obj 190 134 + 1;
-#X msg 174 106 0;
-#X obj 109 103 until;
-#X obj 152 162 t f f;
-#X obj 27 190 moses 10;
-#X obj 18 272 tabwrite 29-envelope;
-#X obj 75 159 sel 102;
-#X obj 23 218 expr ($f1-1)/10;
-#X obj 35 243 expr (101-$f1)/90;
-#X msg 120 380 \; 29-sample cosinesum 256 0 0 0 0 0 0 1;
-#X msg 120 338 \; 29-sequence 0 55 550 385 495 165 385 495 275 615
+#X restore 533 316 graph;
+#X text 542 566 updated for Pd version 0.37;
+#X obj 72 257 tabread~ 29-sequence;
+#X obj 131 289 wrap~;
+#X obj 131 312 *~ 100;
+#X obj 131 336 +~ 1;
+#X obj 72 289 phasor~;
+#X obj 72 320 -~ 0.5;
+#X obj 72 411 cos~;
+#X obj 113 387 *~;
+#X obj 95 561 output~;
+#X obj 113 463 tabread4~ 29-sample;
+#X obj 131 360 tabread4~ 29-envelope;
+#X obj 113 411 *~ 128;
+#X obj 113 435 +~ 129;
+#X obj 72 435 +~ 1;
+#X obj 131 226 *~ 9;
+#N canvas 711 183 533 565 make-tables 0;
+#X msg 162 81 bang;
+#X obj 162 106 t b b;
+#X obj 205 163 f;
+#X obj 243 163 + 1;
+#X msg 223 134 0;
+#X obj 162 132 until;
+#X obj 206 221 t f f;
+#X obj 101 259 moses 10;
+#X obj 101 341 tabwrite 29-envelope;
+#X obj 101 287 expr ($f1-1)/10;
+#X obj 112 312 expr (101-$f1)/90;
+#X msg 116 487 \; 29-sample cosinesum 256 0 0 0 0 0 0 1;
+#X msg 116 445 \; 29-sequence 0 55 550 385 495 165 385 495 275 615
 ;
-#X text 30 8 bang to recalculate the envelope table (I did this but
-then went in and changed it with the mouse afterward.);
-#X text 84 299 The sequence is just a list of specified frequencies
-\; the wavetable is a cosine.;
+#X text 74 22 bang to recalculate the envelope table (I did this but
+then went in and changed it with the mouse afterward.), f 55;
+#X obj 160 197 sel 103;
+#X text 84 388 The sequence is just a list of specified frequencies.
+the wavetable is a cosine.;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
-#X connect 2 0 3 0;
-#X connect 2 0 6 0;
-#X connect 2 0 9 0;
+#X connect 2 0 14 0;
 #X connect 3 0 2 1;
 #X connect 4 0 2 1;
 #X connect 5 0 2 0;
 #X connect 6 0 7 0;
 #X connect 6 1 8 1;
-#X connect 7 0 10 0;
-#X connect 7 1 11 0;
-#X connect 9 0 5 1;
+#X connect 7 0 9 0;
+#X connect 7 1 10 0;
+#X connect 9 0 8 0;
 #X connect 10 0 8 0;
-#X connect 11 0 8 0;
-#X restore 689 401 pd make-tables;
-#X text 46 1 ANALOG-SYNTH-STYLE SEQUENCER;
-#X obj 26 170 phasor~ 0.6;
-#X text 97 194 main loop: sawtooth of amplitude 9;
-#X text 218 219 read frequency sequence;
-#X text 162 241 9x original frequency sawtooth;
-#X text 173 266 adjust for reading;
-#X text 346 266 envelope sample;
-#X text 123 336 multiply envelope by audio-frequency sawtooth;
-#X text 147 361 adjust amplitude and center for wavetable;
-#X text 62 428 multiply by raised-cosine smoothing function;
-#X text 478 401 how to make the tables:;
-#X text 27 27 Some control operations can be carried out entirely by
+#X connect 14 0 5 1;
+#X connect 14 1 6 0;
+#X restore 590 473 pd make-tables;
+#X text 64 13 ANALOG-SYNTH-STYLE SEQUENCER;
+#X obj 131 198 phasor~ 0.6;
+#X text 172 226 main loop: sawtooth of amplitude 9;
+#X text 221 258 read frequency sequence;
+#X text 187 288 9x original frequency sawtooth;
+#X text 198 313 adjust for reading;
+#X text 371 313 envelope sample;
+#X text 149 387 multiply envelope by audio-frequency sawtooth;
+#X text 169 420 adjust amplitude and center for wavetable;
+#X text 128 493 multiply by raised-cosine smoothing function;
+#X text 549 451 how to make the tables:;
+#X text 49 41 Some control operations can be carried out entirely by
 tilde objects passing audio signals around. Here is an imitation of
 an analog sequencer and envelope generator. A phasor~ loops through
 the "sequence" table at 0.6 Hz \, generating 9 frequencies. Simultaneously
 \, by multiplying by 9 and wrapping \, we create a sawtooth at 9*0.6=5.4
 Hz \, which reads a second table for an envelope shape. This becomes
 the grain size for a sampler based on the 18.sampler.looped example
-earlier.;
+earlier., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 14 0;
 #X connect 2 0 14 1;

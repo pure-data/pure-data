@@ -1,37 +1,37 @@
-#N canvas 0 466 571 483 12;
-#X obj 32 393 ftom;
-#X obj 8 10 mtof;
-#X obj 32 341 mtof;
-#X floatatom 32 313 0 0 0 0 - - -;
-#X floatatom 32 368 0 0 0 0 - - -;
-#X obj 64 10 ftom;
-#X floatatom 32 417 0 0 0 0 - - -;
-#X obj 120 11 dbtorms;
-#X obj 196 11 rmstodb;
-#X obj 275 11 dbtopow;
-#X obj 352 11 powtodb;
-#X floatatom 164 309 0 0 0 0 - - -;
-#X floatatom 164 364 0 0 0 0 - - -;
-#X floatatom 164 413 0 0 0 0 - - -;
-#X obj 164 337 dbtorms;
-#X obj 164 389 rmstodb;
-#X floatatom 278 310 0 0 0 0 - - -;
-#X floatatom 278 365 0 0 0 0 - - -;
-#X floatatom 278 414 0 0 0 0 - - -;
-#X obj 278 338 dbtopow;
-#X obj 278 390 powtodb;
-#X text 23 245 Finally \, dbtopow and powtodb convert decibels to and
+#N canvas 387 127 593 506 12;
+#X obj 131 403 ftom;
+#X obj 85 21 mtof;
+#X obj 131 351 mtof;
+#X floatatom 131 323 0 0 0 0 - - -;
+#X floatatom 131 378 0 0 0 0 - - -;
+#X obj 141 21 ftom;
+#X floatatom 131 427 0 0 0 0 - - -;
+#X obj 197 22 dbtorms;
+#X obj 273 22 rmstodb;
+#X obj 352 22 dbtopow;
+#X obj 429 22 powtodb;
+#X floatatom 246 319 0 0 0 0 - - -;
+#X floatatom 246 374 0 0 0 0 - - -;
+#X floatatom 246 423 0 0 0 0 - - -;
+#X obj 246 347 dbtorms;
+#X obj 246 399 rmstodb;
+#X floatatom 360 320 0 0 0 0 - - -;
+#X floatatom 360 375 0 0 0 0 - - -;
+#X floatatom 360 424 0 0 0 0 - - -;
+#X obj 360 348 dbtopow;
+#X obj 360 400 powtodb;
+#X text 75 256 Finally \, dbtopow and powtodb convert decibels to and
 from power units \, equal to the square of the "RMS" amplitude.;
-#X text 304 448 updated for Pd version 0.40.;
-#X text 21 53 The mtof object transposes a midi value into a frequency
+#X text 372 468 updated for Pd version 0.40.;
+#X text 73 64 The mtof object transposes a midi value into a frequency
 in Hertz \, so that "69" goes to "440". You can specify microtonal
 pitches as in "69.5" (a quarter tone higher than 69). Ftom does the
 reverse. A frequency of zero Hertz is given a MIDI value of -1500 (strictly
 speaking \, it is negative infinity.);
-#X text 22 149 The dbtorms and rmstodb objects convert from decibels
+#X text 74 160 The dbtorms and rmstodb objects convert from decibels
 to linear ("RMS") amplitude \, so that 100 dB corresponds to an "RMS"
 of 1 Zero amplitude (strictly speaking \, minus infinity dB) is clipped
-to zero dB \, and zero dB \, which should correspond to 1e-04 in "RMS"
+to zero dB \, and zero dB \, which should correspond to 0.0001 in "RMS"
 \, is instead rounded down to zero.;
 #X connect 0 0 6 0;
 #X connect 2 0 4 0;

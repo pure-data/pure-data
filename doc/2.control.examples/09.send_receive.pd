@@ -1,32 +1,32 @@
-#N canvas 136 31 738 479 12;
-#X floatatom 88 199 0 0 0;
-#X obj 88 172 receive crackers;
-#X floatatom 248 204 0 0 0;
-#X obj 248 177 receive pickles;
-#X obj 88 145 send crackers;
-#X obj 250 139 send pickles;
-#X obj 389 138 send pickles;
-#X floatatom 392 203 0 0 0;
-#X obj 392 176 receive pickles;
-#X msg 51 306 \; pickles 99 \; crackers 56;
-#X floatatom 88 118 0 0 0;
-#X floatatom 250 112 0 0 0;
-#X floatatom 389 111 0 0 0;
-#X obj 371 404 r crackers;
-#X obj 371 377 s crackers;
-#X text 39 392 send and receive can be abbreviated:;
-#X text 48 245 You can use the semicolon feature of message boxes to
+#N canvas 507 73 590 475 12;
+#X floatatom 85 198 0 0 0 0 - - -;
+#X obj 85 171 receive crackers;
+#X floatatom 245 203 0 0 0 0 - - -;
+#X obj 245 176 receive pickles;
+#X obj 85 144 send crackers;
+#X obj 247 138 send pickles;
+#X obj 386 137 send pickles;
+#X floatatom 389 202 0 0 0 0 - - -;
+#X obj 389 175 receive pickles;
+#X msg 75 312 \; pickles 99 \; crackers 56;
+#X floatatom 85 117 0 0 0 0 - - -;
+#X floatatom 247 111 0 0 0 0 - - -;
+#X floatatom 386 110 0 0 0 0 - - -;
+#X obj 211 421 r crackers;
+#X obj 211 394 s crackers;
+#X text 65 398 send and receive can be abbreviated:, f 19;
+#X text 50 245 You can use the semicolon feature of message boxes to
 address receives \, too. This is useful if you want to do a whole list
-of things:;
-#X text 166 305 The transaction takes place in zero time---i.e. \,
+of things:, f 63;
+#X text 173 311 The transaction takes place in zero time---i.e. \,
 if you tried to use "timer" to measure the time delay between the two
-\, you would get zero.;
-#X text 459 447 updated for Pd version 0.34;
-#X text 51 6 The send and receive objects allow you to make non-local
+\, you would get zero., f 48;
+#X text 342 407 updated for Pd version 0.34;
+#X text 44 15 The send and receive objects allow you to make non-local
 connections. These work globally--you can use them to make two different
 patches intercommunicate if you wish. Any message a "send" gets appears
 at the output of every receive of the same name. There can be any number
-of sends and receives sharing the same name:;
+of sends and receives sharing the same name:, f 69;
 #X connect 1 0 0 0;
 #X connect 3 0 2 0;
 #X connect 8 0 7 0;

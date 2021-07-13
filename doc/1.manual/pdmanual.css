@@ -79,6 +79,8 @@ PRE {
    font-size: 80%;
    background-color:rgb(240, 240, 240);
    text-align:  left;
+   border-radius: 8px;
+   padding: 8px;
 }
 
 ol{
@@ -93,6 +95,9 @@ p{
 	text-align:  left;
 	line-height: 1.6;
 }
+
+
+/* standard link */
 
 a:link {
     text-decoration: none;
@@ -116,6 +121,33 @@ a:active {
 	color: blue;
 }
 
+
+/* green link (like a button) */
+
+a.green:link {
+	font-family:sans-serif;
+	background-color: #4CAF50; /* Green */
+    border-radius: 4px;
+    color: white;
+    padding: 0px 8px ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 80%;
+	
+}
+
+a.green:hover {
+    text-decoration: none;
+	background-color: #4CAF50;	
+}
+
+a.green:visited {
+	color: white;
+}
+
+/* standard images */
+
 IMG {
  
     display: block;
@@ -132,12 +164,6 @@ background-color: rgb(255, 240, 179);
 p.fig {
 text-align: center;
 }
-
-
-
-
-
-
 
 
 

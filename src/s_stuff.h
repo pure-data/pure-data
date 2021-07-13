@@ -45,7 +45,7 @@ extern char *sys_guicmd;
 EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
-EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
+EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 
 /* s_loader.c */
 
@@ -171,11 +171,15 @@ EXTERN_STRUCT _socketreceiver;
 
 typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
+    /* from addr sockaddr_storage struct, optional */
+typedef void (*t_socketfromaddrfn)(void *x, const void *fromaddr);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,
     t_socketnotifier notifier, t_socketreceivefn socketreceivefn, int udp);
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
-EXTERN void sys_sockerror(char *s);
+EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
+    t_socketfromaddrfn fromaddrfn);
+EXTERN void sys_sockerror(const char *s);
 EXTERN void sys_closesocket(int fd);
 
 typedef void (*t_fdpollfn)(void *ptr, int fd);
@@ -290,7 +294,7 @@ void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 void jack_listdevs(void);
-void jack_client_name(char *name);
+void jack_client_name(const char *name);
 void jack_autoconnect(int);
 
 int mmio_open_audio(int naudioindev, int *audioindev,
