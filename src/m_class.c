@@ -434,6 +434,26 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 extern void text_save(t_gobj *z, t_binbuf *b);
 
+    /* if the extern name doesn't end with the class name we might be a
+    multi-object-per-binary library, so we prepend the library name to
+    the creator symbol to avoid possible nameclashes with other libraries. */
+
+static void class_addnamespace(t_newmethod newmethod, t_symbol *s,
+    t_atomtype *vec, const char *classname)
+{
+    const char *loadstring = class_extern_sym->s_name;
+    size_t l1 = strlen(classname), l2 = strlen(loadstring);
+    if (l2 < l1 || strcmp(classname, loadstring + (l2 - l1)))
+    {
+        char buf[MAXPDSTRING];
+        buf[MAXPDSTRING-1] = 0;
+        pd_snprintf(buf, MAXPDSTRING-1, "%s/%s", loadstring, s->s_name);
+        /* post("add alias: %s", buf); */
+        class_addmethod(pd_objectmaker, (t_method)newmethod,
+            gensym(buf), vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+    }
+}
+
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
@@ -482,24 +502,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
                     vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
         }
         if (class_extern_sym)
-        {
-                /* if the extern name doesn't end with the class name
-                we are most likely a multi-object-per-binary library,
-                so we prepend the library name to the class name to
-                avoid possible nameclashes with other libraries. */
-            const char *loadstring = class_extern_sym->s_name;
-            size_t l1 = strlen(s->s_name), l2 = strlen(loadstring);
-            if (l2 < l1 || strcmp(s->s_name, loadstring + (l2 - l1)))
-            {
-                char buf[MAXPDSTRING];
-                buf[MAXPDSTRING-1] = 0;
-                pd_snprintf(buf, MAXPDSTRING-1, "%s/%s", loadstring, s->s_name);
-                /* post("add alias: %s", buf); */
-                class_addmethod(pd_objectmaker, (t_method)newmethod,
-                    gensym(buf),
-                    vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-            }
-        }
+            class_addnamespace(newmethod, s, vec, s->s_name);
     }
     c = (t_class *)t_getbytes(sizeof(*c));
     c->c_name = c->c_helpname = s;
@@ -638,25 +641,7 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         }
     }
     if (class_extern_sym && class_newest)
-    {
-            /* if the extern name doesn't end with the class name
-            we might be a multi-object-per-binary library,
-            so we prepend the library name to the alias to
-            avoid possible nameclashes with other libraries. */
-        const char *loadstring = class_extern_sym->s_name,
-                *classname = class_newest->c_name->s_name;
-        size_t l1 = strlen(classname), l2 = strlen(loadstring);
-        if (l2 < l1 || strcmp(classname, loadstring + (l2 - l1)))
-        {
-            char buf[MAXPDSTRING];
-            buf[MAXPDSTRING-1] = 0;
-            snprintf(buf, MAXPDSTRING-1, "%s/%s", loadstring, s->s_name);
-            /* post("add alias: %s", buf); */
-            class_addmethod(pd_objectmaker, (t_method)newmethod,
-                gensym(buf),
-                vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-        }
-    }
+        class_addnamespace(newmethod, s, vec, class_newest->c_name->s_name);
 }
 
 void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
