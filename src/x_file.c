@@ -30,7 +30,13 @@
 # include <ftw.h>
 #endif
 
-
+#ifdef _MSC_VER
+# include <BaseTsd.h>
+typedef unsigned int mode_t;
+typedef SSIZE_T ssize_t;
+# define wstat _wstat
+# define snprintf _snprintf
+#endif
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -40,6 +46,12 @@
 # include <stdlib.h> /* BSDs for example */
 #endif
 
+#ifndef S_ISREG
+  #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+#endif
+#ifndef S_ISDIR
+# define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#endif
 
 #ifdef _WIN32
 static int do_delete_ucs2(wchar_t*pathname) {
@@ -626,14 +638,20 @@ static void file_stat_symbol(t_file_handle*x, t_symbol*filename) {
     do_dataout_float(x, "gid", (int)(sb.st_gid));
     do_dataout_float(x, "permissions", (int)(sb.st_mode & 0777));
     switch (sb.st_mode & S_IFMT) {
-    case S_IFBLK:  s = gensym("blockdevice");     break;
-    case S_IFCHR:  s = gensym("characterdevice"); break;
+    case S_IFREG:  s = gensym("file");            break;
     case S_IFDIR:  s = gensym("directory");       break;
+#ifdef S_IFBLK
+    case S_IFBLK:  s = gensym("blockdevice");     break;
+#endif
+#ifdef S_IFCHR
+    case S_IFCHR:  s = gensym("characterdevice"); break;
+#endif
+#ifdef S_IFIFO
     case S_IFIFO:  s = gensym("pipe");            break;
+#endif
 #ifdef S_IFLNK
     case S_IFLNK:  s = gensym("symlink");         break;
 #endif
-    case S_IFREG:  s = gensym("file");            break;
 #ifdef S_IFSOCK
     case S_IFSOCK: s = gensym("socket");          break;
 #endif
