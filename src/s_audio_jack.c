@@ -21,7 +21,9 @@
 #define MAX_CLIENTS 100
 #define MAX_JACK_PORTS 128  /* higher values seem to give bad xrun problems */
 #define BUF_JACK 4096
-#define JACK_OUT_MAX  64
+/* taken from the PipeWire libjack implementation: the larger of the
+ * `JACK_CLIENT_NAME_SIZE` definitions I could find in the wild. */
+#define CLIENT_NAME_SIZE_FALLBACK 128
 
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
@@ -37,6 +39,7 @@ char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
+static int jack_blocksize = 0; /* should this be PERTHREAD? */
 pthread_mutex_t jack_mutex;
 pthread_cond_t jack_sem;
 
@@ -46,9 +49,8 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
     jack_default_audio_sample_t *out, *in;
 
     pthread_mutex_lock(&jack_mutex);
-    if (nframes > JACK_OUT_MAX) jack_out_max = nframes;
-    else jack_out_max = JACK_OUT_MAX;
-    if (jack_filled >= nframes)
+    jack_out_max = nframes;
+    if (nframes >= DEFDACBLKSIZE && jack_filled >= nframes)
     {
         if (jack_filled != nframes)
             fprintf(stderr,"Partial read\n");
@@ -58,13 +60,13 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         {
             for (j = 0; j < STUFF->st_outchannels;  j++)
             {
-                if (out = jack_port_get_buffer(output_port[j], nframes))
+                if ((out = jack_port_get_buffer(output_port[j], nframes)))
                     memcpy(out, jack_outbuf + (j * BUF_JACK),
                         sizeof (jack_default_audio_sample_t) * nframes);
             }
             for (j = 0; j < STUFF->st_inchannels; j++)
             {
-                if (in = jack_port_get_buffer(input_port[j], nframes))
+                if ((in = jack_port_get_buffer(input_port[j], nframes)))
                     memcpy(jack_inbuf + (j * BUF_JACK), in,
                         sizeof (jack_default_audio_sample_t) * nframes);
             }
@@ -75,7 +77,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             t_sample*data;
             for (j = 0; j < STUFF->st_outchannels;  j++)
             {
-                if (out = jack_port_get_buffer (output_port[j], nframes))
+                if ((out = jack_port_get_buffer(output_port[j], nframes)))
                 {
                     data = jack_outbuf + (j * BUF_JACK);
                     for (frame=0; frame<nframes; frame++)
@@ -84,7 +86,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             }
             for (j = 0; j < STUFF->st_inchannels; j++)
             {
-                if (in = jack_port_get_buffer( input_port[j], nframes))
+                if ((in = jack_port_get_buffer(input_port[j], nframes)))
                 {
                     data = jack_inbuf + (j * BUF_JACK);
                     for (frame=0; frame<nframes; frame++)
@@ -96,11 +98,18 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
     }
     else
     {           /* PD could not keep up ! */
+        if (nframes < DEFDACBLKSIZE)
+        {
+            static int firsttime = 1;
+            if(firsttime)
+                fprintf(stderr,"jack: nframes %d smaller than blocksize %d: NO SOUND!\n", nframes, DEFDACBLKSIZE);
+            firsttime = 0;
+        }
         if (jack_started) jack_dio_error = 1;
         for (j = 0; j < outport_count;  j++)
         {
-            if (out = jack_port_get_buffer (output_port[j], nframes))
-                memset(out, 0, sizeof (float) * nframes);
+            if ((out = jack_port_get_buffer(output_port[j], nframes)))
+                memset(out, 0, sizeof (jack_default_audio_sample_t) * nframes);
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
         jack_filled = 0;
@@ -157,10 +166,16 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 static int
 jack_srate (jack_nframes_t srate, void *arg)
 {
-        STUFF->st_dacsr = srate;
-        return 0;
+    STUFF->st_dacsr = srate;
+    return 0;
 }
 
+static int
+jack_bsize (jack_nframes_t bufsize, void *arg)
+{
+    jack_blocksize = bufsize;
+    return 0;
+}
 
 void glob_audio_setapi(void *dummy, t_floatarg f);
 
@@ -172,6 +187,7 @@ jack_shutdown (void *arg)
   jack_deactivate (jack_client);
   //jack_client_close(jack_client); /* likely to hang if the server shut down */
   jack_client = NULL;
+  jack_blocksize = 0;
 
   glob_audio_setapi(NULL, API_NONE); // set pd_whichapi 0
 }
@@ -185,6 +201,8 @@ static int jack_xrun(void* arg) {
 static char** jack_get_clients(void)
 {
     const char **jack_ports;
+    int tmp_client_name_size = jack_client_name_size ? jack_client_name_size() : CLIENT_NAME_SIZE_FALLBACK;
+    char* tmp_client_name = (char*)getbytes(tmp_client_name_size);
     int i,j;
     int num_clients = 0;
     regex_t port_regex;
@@ -198,7 +216,6 @@ static char** jack_get_clients(void)
     {
         int client_seen;
         regmatch_t match_info;
-        char tmp_client_name[100];
 
         if(num_clients>=MAX_CLIENTS)break;
 
@@ -246,6 +263,7 @@ static char** jack_get_clients(void)
 
     /*    for (i=0;i<num_clients;i++) post("client: %s",jack_client_names[i]); */
 
+    freebytes( tmp_client_name, tmp_client_name_size );
     free( jack_ports );
     return jack_client_names;
 }
@@ -377,12 +395,17 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         jack_set_xrun_callback (jack_client, jack_xrun, NULL);
 #endif
 
-        /* tell the JACK server to call `srate()' whenever
+        /* tell the JACK server to call `jack_srate()' whenever
            the sample rate of the system changes.
         */
 
         jack_set_sample_rate_callback (jack_client, jack_srate, 0);
 
+        /* tell the JACK server to call `jack_bsize()' whenever
+           the buffer size of the system changes.
+        */
+
+        jack_set_buffer_size_callback (jack_client, jack_bsize, 0);
 
         /* tell the JACK server to call `jack_shutdown()' if
            it ever shuts down, either entirely, or if it
@@ -399,19 +422,20 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         new_jack = 1;
     }
 
-    /* display the current sample rate. once the client is activated
+    /* display the current sample rate & block size. once the client is activated
        (see below), you should rely on your own sample rate
        callback (see above) for this value.
     */
 
     srate = jack_get_sample_rate (jack_client);
     STUFF->st_dacsr = srate;
+    jack_blocksize = jack_get_buffer_size (jack_client);
 
     /* create the ports */
 
     for (j = 0; j < inchans; j++)
     {
-        sprintf(port_name, "input%d", j);
+        sprintf(port_name, "input_%d", j+1);
         if (!input_port[j]) input_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         if (!input_port[j])
@@ -425,7 +449,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     for (j = 0; j < outchans; j++)
     {
-        sprintf(port_name, "output%d", j);
+        sprintf(port_name, "output_%d", j+1);
         if (!output_port[j]) output_port[j] = jack_port_register (jack_client,
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])
@@ -468,8 +492,9 @@ void jack_close_audio(void)
         jack_client_close(jack_client);
     }
 
-    jack_client=NULL;
+    jack_client = NULL;
     jack_started = 0;
+    jack_blocksize = 0;
 
     pthread_cond_broadcast(&jack_sem);
 
@@ -557,16 +582,21 @@ void jack_autoconnect(int v)
     jack_should_autoconnect = v;
 }
 
-void jack_client_name(char *name)
+void jack_client_name(const char *name)
 {
     if (desired_client_name) {
-      free(desired_client_name);
-      desired_client_name = NULL;
+        free(desired_client_name);
+        desired_client_name = NULL;
     }
     if (name) {
-      desired_client_name = (char*)getbytes(strlen(name) + 1);
-      strcpy(desired_client_name, name);
+        desired_client_name = (char*)getbytes(strlen(name) + 1);
+        strcpy(desired_client_name, name);
     }
+}
+
+int jack_get_blocksize(void)
+{
+    return jack_blocksize;
 }
 
 #endif /* JACK */

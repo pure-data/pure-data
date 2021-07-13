@@ -279,6 +279,15 @@ msgstr ""
 msgid "Delay (msec):"
 msgstr ""
 
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
+
 msgid "Block size:"
 msgstr ""
 
@@ -839,6 +848,16 @@ msgstr ""
 
 #, tcl-format
 msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
@@ -862,6 +881,9 @@ msgstr ""
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr ""
+
+msgid "refusing to delete empty domain"
 msgstr ""
 
 #, tcl-format
@@ -1035,6 +1057,12 @@ msgstr "Изчистване на списъка"
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
+msgstr ""
+
+msgid "removed GUI settings"
+msgstr ""
+
+msgid "no Pd-GUI settings to clear"
 msgstr ""
 
 msgid "Path..."

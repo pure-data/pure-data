@@ -42,7 +42,7 @@ includedir = ${prefix}/include
 libdir = ${exec_prefix}/lib
 mandir = ${prefix}/share/man
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
+# variables to match packages/Makefile.buildlayout so that they can be easily
 # overridden when building Pd-extended builds. <hans@at.or.at>
 libpddir = $(libdir)/pd
 pddocdir = $(libpddir)/doc
@@ -121,7 +121,8 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     s_audio_paring.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
-    d_delay.c d_resample.c d_soundfile.c \
+    d_delay.c d_resample.c d_soundfile.c d_soundfile_aiff.c d_soundfile_caf.c \
+    d_soundfile_next.c d_soundfile_wave.c \
     x_arithmetic.c x_connective.c x_interface.c x_midi.c x_misc.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
     x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c \

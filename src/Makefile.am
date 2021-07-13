@@ -53,6 +53,10 @@ pd_SOURCES_core = \
     d_osc.c \
     d_resample.c \
     d_soundfile.c \
+    d_soundfile_aiff.c \
+    d_soundfile_caf.c \
+    d_soundfile_next.c \
+    d_soundfile_wave.c \
     d_ugen.c \
     g_all_guis.c \
     g_array.c \
@@ -129,7 +133,7 @@ noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-    s_audio_audiounit.c s_audio_esd.c
+    d_soundfile.h s_audio_audiounit.c s_audio_esd.c
 
 # add WISH define if it's set
 WISH=@WISH@
@@ -318,7 +322,7 @@ CLEANFILES += pd.res
 
 # hide the console
 pd_LDFLAGS += -mwindows
-# link with ressources and pd.dll import library
+# link with resources and pd.dll import library
 pd_LDADD += pd.res pd.lib
 
 pd_OBJECTS_core = $(pd_SOURCES_core:.c=.o)
@@ -361,7 +365,7 @@ endif
 ##### Windows MinGW #####
 if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
-# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
+# XP SP1. WINVER isn't fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
 # On the other hand, Msys2 wants a minimum of 0x0600  (Windows Vista)
 # for some necessary defines in <ws2tcpip.h> (for IP6 support).

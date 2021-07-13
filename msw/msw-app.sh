@@ -209,7 +209,7 @@ if [ "x$prototype_tk" = xfalse ] ; then
     cp -R $TK/bin $APP/
     cp -R $TK/lib $APP/
 
-    # remove bundled Tcl packges Pd doesn't need
+    # remove bundled Tcl packages Pd doesn't need
     rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
 fi
 
@@ -230,7 +230,7 @@ cp -v ../LICENSE.txt $APP/
 cp -vR ../font $APP/
 
 # strip executables,
-# use temp files as stripping in place doesn't seem to work reliable on Windows
+# use temp files as stripping in place doesn't seem to work reliably on Windows
 if [ "x$strip" = xtrue ] ; then
     find "${APP}" -type f '(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
     | while read file ; do \
