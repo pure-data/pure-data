@@ -106,6 +106,7 @@ pd_SOURCES_core = \
     x_arithmetic.c \
     x_array.c \
     x_connective.c \
+    x_file.c \
     x_gui.c \
     x_interface.c \
     x_list.c \
