@@ -108,10 +108,11 @@ static fts_symbol_t *dsp_symbol = 0;
 #endif /* MSP */
 
 #ifdef MSP
-#define t_floatarg double
 #include "ext.h"
 #include "z_dsp.h"
 #include "fft_mayer.proto.h"
+typedef float t_float;
+typedef double t_floatarg;
 #endif /* MSP */
 
 #include <math.h>

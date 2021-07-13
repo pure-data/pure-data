@@ -121,8 +121,6 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     $id configure -menu $::dialog_menubar
     $id configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $id "midi"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $id -topmost 1}
 
     # input devices
     labelframe $id.inputs -text [_ "Input Devices"] -padx 5 -pady 5 -borderwidth 1

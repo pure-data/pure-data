@@ -20,14 +20,18 @@
 #include <string.h>
 #include <errno.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 #define SYS_DEFAULTCH 2
 typedef long t_pa_sample;
 #define SYS_SAMPLEWIDTH sizeof(t_pa_sample)
 #define SYS_BYTESPERCHAN (DEFDACBLKSIZE * SYS_SAMPLEWIDTH)
 #define SYS_XFERSAMPS (SYS_DEFAULTCH*DEFDACBLKSIZE)
 #define SYS_XFERSIZE (SYS_SAMPLEWIDTH * SYS_XFERSAMPS)
-#define MAXNDEV 20
-#define DEVDESCSIZE 1024
+#define MAXNDEV 128
+#define DEVDESCSIZE 128
 
 static void audio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
@@ -61,7 +65,7 @@ static int audio_naudiooutdev = -1;
 static int audio_audiooutdev[MAXAUDIOOUTDEV];
 static int audio_audiochoutdev[MAXAUDIOOUTDEV];
 static char audio_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
-static int audio_rate;
+static int audio_rate = 0;
 static int audio_advance = -1;
 static int audio_callback;
 static int audio_blocksize;
@@ -76,6 +80,37 @@ int audio_isopen(void)
     return (audio_state &&
         ((audio_naudioindev > 0 && audio_audiochindev[0] > 0)
             || (audio_naudiooutdev > 0 && audio_audiochoutdev[0] > 0)));
+}
+
+static int audio_isfixedsr(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own samplerate */
+    return (sys_audioapiopened == API_JACK);
+#endif
+    return 0;
+}
+
+static int audio_isfixedblocksize(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own blocksize */
+    return (sys_audioapiopened == API_JACK);
+#endif
+    return 0;
+}
+
+#ifdef USEAPI_JACK
+int jack_get_blocksize(void);
+#endif
+
+static int audio_getfixedblocksize(void)
+{
+#ifdef USEAPI_JACK
+    /* JACK server sets it's own blocksize */
+    return (sys_audioapiopened == API_JACK ? jack_get_blocksize() : 0);
+#endif
+    return 0;
 }
 
 void sys_get_audio_params(
@@ -102,10 +137,10 @@ void sys_get_audio_params(
         else paudiooutdev[i] = audio_audiooutdev[i];
         choutdev[i] = audio_audiochoutdev[i];
     }
-    *prate = audio_rate;
+    *prate = (audio_isfixedsr() ? STUFF->st_dacsr : audio_rate);
     *padvance = audio_advance;
     *pcallback = audio_callback;
-    *pblocksize = audio_blocksize;
+    *pblocksize = (audio_isfixedblocksize() ? audio_getfixedblocksize() : audio_blocksize);
 }
 
 void sys_save_audio_params(
@@ -130,10 +165,12 @@ void sys_save_audio_params(
         sys_audiodevnumbertoname(1, audiooutdev[i],
             &audio_outdevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
-    audio_rate = rate;
+    if (!audio_isfixedsr() || audio_rate == 0)
+        audio_rate = rate;
     audio_advance = advance;
     audio_callback = callback;
-    audio_blocksize = blocksize;
+    if (!audio_isfixedblocksize() || audio_blocksize == 0)
+        audio_blocksize = blocksize;
 }
 
     /* init routines for any API which needs to set stuff up before
@@ -172,7 +209,9 @@ void sys_setchsr(int chin, int chout, int sr)
                 (DEFDACBLKSIZE*sizeof(t_sample)));
     STUFF->st_inchannels = chin;
     STUFF->st_outchannels = chout;
-    STUFF->st_dacsr = sr;
+    if (!audio_isfixedsr())
+        STUFF->st_dacsr = sr;
+
     sys_advance_samples = (sys_schedadvance * STUFF->st_dacsr) / (1000000.);
     if (sys_advance_samples < DEFDACBLKSIZE)
         sys_advance_samples = DEFDACBLKSIZE;
@@ -746,7 +785,7 @@ static void sys_listaudiodevs(void)
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
+    char buf[MAXPDSTRING];
         /* these are the devices you're using: */
     int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
@@ -776,6 +815,11 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
             &blocksize);
 
+    /* don't offer callbacks unless it's already on - turning them on and off
+    dynamically crashes Pd.  LATER get callbacks working again.  */
+    if (!callback)
+        cancallback = 0;
+
     /* post("naudioindev %d naudiooutdev %d longform %f",
             naudioindev, naudiooutdev, flongform); */
     if (naudioindev > 1 || naudiooutdev > 1)
@@ -797,17 +841,20 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     audiooutchan2 = (naudiooutdev > 1 ? choutdev[1] : 0);
     audiooutchan3 = (naudiooutdev > 2 ? choutdev[2] : 0);
     audiooutchan4 = (naudiooutdev > 3 ? choutdev[3] : 0);
-    sprintf(buf,
+
+        /* values that are fixed and must not be changed by the GUI are prefixed with '!';
+         * the GUI will then display these values but disable their widgets */
+    snprintf(buf, MAXPDSTRING,
 "pdtk_audio_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d\n",
+%s%d %d %d %s%d %d %s%d\n",
         audioindev1, audioindev2, audioindev3, audioindev4,
         audioinchan1, audioinchan2, audioinchan3, audioinchan4,
         audiooutdev1, audiooutdev2, audiooutdev3, audiooutdev4,
         audiooutchan1, audiooutchan2, audiooutchan3, audiooutchan4,
-        rate, advance, canmulti, (cancallback ? callback : -1),
-        (flongform != 0), blocksize);
+        audio_isfixedsr()?"!":"", rate, advance, canmulti, cancallback?"":"!", callback,
+        (flongform != 0), audio_isfixedblocksize()?"!":"", blocksize);
     gfxstub_deleteforkey(0);
     gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
 }
