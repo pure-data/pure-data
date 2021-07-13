@@ -2077,5 +2077,6 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
         canvas_vis(gl, 1);
         return;
     }
-    glob_evalfile(ignore, name, dir);
+    if (!glob_evalfile(ignore, name, dir))
+        sys_vgui("::pdwindow::busyrelease\n");
 }

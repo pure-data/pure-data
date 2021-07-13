@@ -117,7 +117,7 @@ void ex_dzdetect(struct expr *expr);
 #define MAX_ARGS        10
 extern t_ex_func ex_funcs[];
 
-struct ex_ex nullex;
+struct ex_ex nullex = { 0 };
 
 void set_tokens (char *s);
 int getoken (struct expr *expr, struct ex_ex *eptr);
@@ -545,7 +545,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
 {
         struct ex_ex *eptr;
         struct ex_ex *lowpre = 0;       /* pointer to the lowest precedence */
-        struct ex_ex savex;
+        struct ex_ex savex = { 0 };
         struct ex_ex *tmpex;
         long pre = HI_PRE;
         long count;
@@ -1040,7 +1040,7 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         t_float *lp, *rp, *op; /* left, right, and out pointer to vectors */
         t_float scalar;
         int nullret = 0;                /* did we have an error */
-        struct ex_ex left, right;       /* left and right operands */
+        struct ex_ex left = { 0 }, right = { 0 };       /* left and right operands */
 
         left.ex_type = 0;
         left.ex_int = 0;
@@ -1356,8 +1356,8 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
-        struct ex_ex rval;
+        struct ex_ex arg = { 0 };
+        struct ex_ex rval = { 0 };
         struct ex_ex *retp;
         char *tbl = (char *) 0;
         char *var = (char *) 0;
@@ -1435,7 +1435,7 @@ eval_tab(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
+        struct ex_ex arg = { 0 };
         char *tbl = (char *) 0;
         int notable = 0;
 
@@ -1525,7 +1525,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the result pointer */
 /* the index */
 {
-        struct ex_ex arg;
+        struct ex_ex arg = { 0 };
         struct ex_ex *reteptr;
         int i = 0;
         t_float fi = 0,         /* index in float */
@@ -1933,7 +1933,7 @@ noinletnum:
                 break;
         case '"':
                 {
-                        struct ex_ex ex;
+                        struct ex_ex ex = { 0 };
 
                         p = expr->exp_str;
                         if (!*expr->exp_str || *expr->exp_str == '"') {

@@ -30,7 +30,7 @@ all planned segments at any future time., f 61;
 #X msg 84 474 1 1000 \, 0 0 2000 \, 1 1000 3000;
 #X text 302 467 note: times (2000 \, 3000) are cumulative \, not incremental.
 , f 29;
-#X text 344 714 updated for version 0.47;
+#X text 344 714 updated for Pd version 0.47;
 #X text 184 626 !!! BUG: vline~ objects inside reblocked subpatches
 can have slightly incorrect timing !!!, f 41;
 #X floatatom 100 575 5 0 0 0 - - -;

@@ -36,7 +36,7 @@ struct _instanceugen
     t_int *u_dspchain;         /* DSP chain */
     int u_dspchainsize;        /* number of elements in DSP chain */
     t_signal *u_signals;       /* list of signals used by DSP chain */
-    int u_sortno;               /* number of DSP sortings so far */
+    int u_sortno;              /* number of DSP sortings so far */
         /* list of signals which can be reused, sorted by buffer size */
     t_signal *u_freelist[MAXLOGSIG+1];
         /* list of reusable "borrowed" signals (which don't own sample buffers) */

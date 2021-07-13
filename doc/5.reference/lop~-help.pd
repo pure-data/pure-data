@@ -23,7 +23,7 @@ with that of the filtered signal on the right.;
 #X obj 155 372 hip~;
 #X obj 200 372 bp~;
 #X obj 237 372 vcf~;
-#X text 384 380 updated for Pd version-0.38;
+#X text 384 380 updated for Pd version 0.38;
 #X text 79 124 <= scroll to change input frequency;
 #X text 151 172 <= reinitialize internal state;
 #X text 178 202 <= set cutoff frequency;
