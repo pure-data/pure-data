@@ -191,7 +191,7 @@ void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,
 
 t_canvas *glist_getcanvas(t_glist *x)
 {
-    while (x->gl_owner && !x->gl_havewindow && x->gl_isgraph)
+    while (x->gl_owner && !x->gl_isclone && !x->gl_havewindow && x->gl_isgraph)
             x = x->gl_owner;
     return((t_canvas *)x);
 }
@@ -292,7 +292,7 @@ void glist_sort(t_glist *x)
 t_inlet *canvas_addinlet(t_canvas *x, t_pd *who, t_symbol *s)
 {
     t_inlet *ip = inlet_new(&x->gl_obj, who, s, 0);
-    if (!x->gl_loading && x->gl_owner && glist_isvisible(x->gl_owner))
+    if (!x->gl_loading && x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -304,7 +304,7 @@ t_inlet *canvas_addinlet(t_canvas *x, t_pd *who, t_symbol *s)
 
 void canvas_rminlet(t_canvas *x, t_inlet *ip)
 {
-    t_canvas *owner = x->gl_owner;
+    t_canvas *owner = x->gl_isclone ? NULL : x->gl_owner;
     int redraw = (owner && glist_isvisible(owner) && (!owner->gl_isdeleting)
         && glist_istoplevel(owner));
 
@@ -357,14 +357,14 @@ void canvas_resortinlets(t_canvas *x)
         obj_moveinletfirst(&x->gl_obj, ip);
     }
     freebytes(vec, ninlets * sizeof(*vec));
-    if (x->gl_owner && glist_isvisible(x->gl_owner))
+    if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
 }
 
 t_outlet *canvas_addoutlet(t_canvas *x, t_pd *who, t_symbol *s)
 {
     t_outlet *op = outlet_new(&x->gl_obj, s);
-    if (!x->gl_loading && x->gl_owner && glist_isvisible(x->gl_owner))
+    if (!x->gl_loading && !x->gl_isclone && x->gl_owner && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -376,7 +376,7 @@ t_outlet *canvas_addoutlet(t_canvas *x, t_pd *who, t_symbol *s)
 
 void canvas_rmoutlet(t_canvas *x, t_outlet *op)
 {
-    t_canvas *owner = x->gl_owner;
+    t_canvas *owner = x->gl_isclone ? NULL : x->gl_owner;
     int redraw = (owner && glist_isvisible(owner) && (!owner->gl_isdeleting)
         && glist_istoplevel(owner));
 
@@ -430,7 +430,7 @@ void canvas_resortoutlets(t_canvas *x)
         obj_moveoutletfirst(&x->gl_obj, ip);
     }
     freebytes(vec, noutlets * sizeof(*vec));
-    if (x->gl_owner && glist_isvisible(x->gl_owner))
+    if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
 }
 
@@ -662,7 +662,7 @@ void glist_redraw(t_glist *x)
                 canvas_drawredrect(x, 1);
             }
         }
-        if (x->gl_owner && glist_isvisible(x->gl_owner))
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         {
             graph_vis(&x->gl_gobj, x->gl_owner, 0);
             graph_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -941,8 +941,10 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     {
         x->gl_obj.te_xpix += dx;
         x->gl_obj.te_ypix += dy;
-        glist_redraw(x);
-        canvas_fixlinesfor(glist, &x->gl_obj);
+        if (glist_isvisible(glist)) {
+            glist_redraw(x);
+            canvas_fixlinesfor(glist, &x->gl_obj);
+        }
     }
 }
 

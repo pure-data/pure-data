@@ -4,7 +4,7 @@
 #X msg 77 124 clear;
 #X obj 120 508 lop~;
 #X text 37 508 see also:;
-#X text 397 490 updated for Pd version-0.38;
+#X text 397 490 updated for Pd version 0.38;
 #X obj 128 447 rzero~;
 #X obj 63 471 cpole~;
 #X obj 63 447 rpole~;

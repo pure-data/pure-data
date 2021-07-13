@@ -326,7 +326,7 @@ typedef struct _message
     t_clock *m_clock;
 } t_message;
 
-static t_class *message_class, *messresponder_class;
+static t_class *messresponder_class;
 
 static void messresponder_bang(t_messresponder *x)
 {
@@ -503,6 +503,13 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
+}
+
+    /* for the needs of g_editor::glist_dofinderror() */
+t_pd *message_get_responder(t_gobj *x)
+{
+    if (pd_class(&x->g_pd) != message_class) return NULL;
+    else return (t_pd *)&((t_message *)x)->m_messresponder.mr_pd;
 }
 
 /* ---------------------- the "atom" text item ------------------------ */
@@ -817,6 +824,18 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
 
+    t_atom undo[7];
+    SETFLOAT (undo+0, x->a_text.te_width);
+    SETFLOAT (undo+1, x->a_draglo);
+    SETFLOAT (undo+2, x->a_draghi);
+    SETSYMBOL(undo+3, gatom_escapit(x->a_label));
+    SETFLOAT (undo+4, x->a_wherelabel);
+    SETSYMBOL(undo+5, gatom_escapit(x->a_symfrom));
+    SETSYMBOL(undo+6, gatom_escapit(x->a_symto));
+    pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
+                            7, undo,
+                            argc, argv);
+
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
     if (!*symfrom->s_name && *x->a_symfrom->s_name)
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
@@ -895,8 +914,9 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 {
     t_gatom *x = (t_gatom*)z;
     text_displace(z, glist, dx, dy);
-    sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
-        x, dx * glist->gl_zoom, dy * glist->gl_zoom);
+    if (glist_isvisible(glist))
+        sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
+            x, dx * glist->gl_zoom, dy * glist->gl_zoom);
 }
 
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)

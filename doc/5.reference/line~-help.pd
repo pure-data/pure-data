@@ -17,7 +17,7 @@
 #X obj 124 516 line;
 #X msg 312 407 \; pd dsp 0 \; start 0;
 #X text 95 27 - audio ramp generator;
-#X text 291 523 updated for version 0.33;
+#X text 291 523 updated for Pd version 0.33;
 #X obj 170 516 vline~;
 #X floatatom 82 336 5 0 0 0 - - -;
 #X text 109 281 a single number jumps to value immediately if no value

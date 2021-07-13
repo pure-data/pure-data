@@ -65,7 +65,7 @@ if test "$universal_binary" != no; then
     
     dnl add to arch list if it passes the linker
     AC_MSG_CHECKING([if linker accepts arch: $arch])
-    AC_TRY_LINK([], [return 0;], [
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])], [
       _pd_universal="$_pd_universal -arch $arch"
       AC_MSG_RESULT([yes])
     ], [

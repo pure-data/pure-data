@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.51.2\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-29 15:12-0300\n"
+"PO-Revision-Date: 2021-06-16 22:43+0000\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "-------dimensiones(dígitos)(pix):-------"
@@ -670,7 +670,7 @@ msgid "platform re-detected: %s"
 msgstr "plataforma re-detectada: %s"
 
 msgid "Show all"
-msgstr "Ver todo"
+msgstr "Mostrar todos"
 
 msgid "Search"
 msgstr "Buscar"
@@ -692,16 +692,21 @@ msgstr "Preferencias"
 msgid "Installation options:"
 msgstr "Opciones de instalación:"
 
-msgid "Try to remove libraries before (re)installing them?"
-msgstr "¿Intentar remover librerias antes de (re)instalarlas?"
-
-msgid "Show README of newly installed libraries (if present)?"
-msgstr "¿Mostrar README (si existe) de las librerías recién instaladas?"
-
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
-"¿Deben las librerías recién instaladas ser agregadas a las rutas de búsqueda "
-"de Pd?"
+"Intentar verificar el checksum de la(s) librería(s) antes de (re)instalarla"
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr "Intentar remover librerías antes de (re)instalarlas"
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr "Mostrar README (si existe) de las librerías recién instaladas"
+
+msgid "Keep package files after installation"
+msgstr "Mantener archivo(s) de paquete después de la instalación"
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr "Agregar librerías recién instaladas a las rutas de búsqueda de Pd"
 
 msgid "Platform settings:"
 msgstr "Configuración de plataforma:"
@@ -713,8 +718,16 @@ msgstr "Plataforma predeterminada: %s"
 msgid "User-defined platform:"
 msgstr "Plataforma definida por el usuario:"
 
-msgid "Hide foreign architectures?"
-msgstr "¿Ocultar arquitecturas ajenas?"
+msgid "Hide foreign architectures"
+msgstr "Ocultar arquitecturas ajenas"
+
+#, tcl-format
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+"Mostrar solo la nueva version de la libreria\n"
+"(trata las otras versiones como arquitecturas ajenas)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
@@ -742,6 +755,36 @@ msgstr "pruebe usando el nombre completo, por ejemplo: 'freeverb'"
 
 msgid "No matching externals found."
 msgstr "No se han encontrado externos con ese nombre."
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Check"
+msgstr "Probar"
+
+msgid "Search for: "
+msgstr "Buscar:"
+
+msgid "libraries"
+msgstr "librerias"
+
+msgid "objects"
+msgstr "objetos"
+
+msgid "both"
+msgstr "ambos"
+
+msgid "translations"
+msgstr "traducciones"
+
+msgid "More..."
+msgstr "Mas..."
+
+msgid "Preferences..."
+msgstr "Preferencias."
+
+msgid "Install DEK file..."
+msgstr "Instalar archivo DEK..."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
@@ -898,7 +941,7 @@ msgid "Tidy Up"
 msgstr "Ordenar"
 
 msgid "(Dis)Connect Selection"
-msgstr ""
+msgstr "(Des)Conectar Seleccion"
 
 msgid "Triggerize"
 msgstr ""

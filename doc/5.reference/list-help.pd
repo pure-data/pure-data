@@ -173,7 +173,7 @@ f 33;
 #X msg 67 99 list cis boom bah;
 #X msg 103 185 bang;
 #X msg 233 299 bang;
-#X obj 80 358 print append;
+#X obj 80 358 print prepend;
 #X msg 35 59 walk the dog;
 #X msg 221 248 list x y z;
 #X msg 210 222 go dog go;

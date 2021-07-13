@@ -3,7 +3,7 @@
 #X msg 65 157 clear;
 #X obj 107 620 lop~;
 #X text 27 621 see also:;
-#X text 362 648 updated for Pd version-0.38;
+#X text 362 648 updated for Pd version 0.38;
 #X obj 113 558 rzero~;
 #X obj 54 583 cpole~;
 #X obj 54 558 rpole~;
