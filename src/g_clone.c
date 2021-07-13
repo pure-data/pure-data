@@ -210,7 +210,6 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     }
     retval = (t_canvas *)pd_this->pd_newest;
     pd_this->pd_newest = 0;
-    retval->gl_owner = 0;
     retval->gl_isclone = 1;
     return (retval);
 }
@@ -481,3 +480,27 @@ void clone_setup(void)
         sizeof(t_in), CLASS_PD, 0);
     class_addanything(clone_out_class, (t_method)clone_out_anything);
 }
+
+    /* for the needs of g_editor::glist_dofinderror(): */
+
+int clone_get_n(t_gobj *x)
+{
+    if (pd_class(&x->g_pd) != clone_class) return 0;
+    else return ((t_clone *)x)->x_n;
+}
+
+t_glist *clone_get_instance(t_gobj *x, int n)
+{
+    t_clone *c;
+    
+    if (pd_class(&x->g_pd) != clone_class) return NULL;
+
+    c = (t_clone *)x;
+    n -= c->x_startvoice;
+    if (n < 0)
+        n = 0;
+    else if (n >= c->x_n)
+        n = c->x_n - 1;
+    return  c->x_vec[n].c_gl;
+}
+

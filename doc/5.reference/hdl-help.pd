@@ -78,7 +78,7 @@ included in Pd version 0.34., f 28;
 #X obj 258 394 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
 #X text 120 100 the new [hdradio] object:;
-#X text 35 57 WARNING: This object is still in Pd for backwarss compatibilty
+#X text 35 57 WARNING: This object is still in Pd for backwarss compatibility
 but has been deprecated in Pd 0.36. Just use the new [hradio] instead:
 , f 63;
 #X obj 78 302 hdl 20 1 0 8 empty empty empty 20 -8 192 10 -99865 -262144
@@ -119,7 +119,7 @@ route object and connect to toggles., f 28;
 #X text 67 16 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 68 67 Negative integers were used to encode RGB values (and
 that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are

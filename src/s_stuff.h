@@ -45,7 +45,7 @@ extern char *sys_guicmd;
 EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
-EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
+EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 
 /* s_loader.c */
 
@@ -294,7 +294,7 @@ void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 void jack_listdevs(void);
-void jack_client_name(char *name);
+void jack_client_name(const char *name);
 void jack_autoconnect(int);
 
 int mmio_open_audio(int naudioindev, int *audioindev,

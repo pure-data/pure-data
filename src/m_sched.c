@@ -483,7 +483,7 @@ static void m_pollingscheduler(void)
             sys_unlock();
             timeforward = sys_send_dacs();
             sys_lock();
-#if 0   /* in linux and windoes, sometimes audio devices would freeze, which
+#if 0   /* in linux and windows, sometimes audio devices would freeze, which
                in turn would freeze Pd.  This code unfroze things by closing
                audio in such cases.  But this seems no longer necessary, and
                on Macs at least, this seems to cause audio to get dropped if

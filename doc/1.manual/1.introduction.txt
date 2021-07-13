@@ -12,9 +12,8 @@ Reference documentation for Pd lives in:
 or online:
     http://msp.ucsd.edu/Pd_documentation/
 
-More extensive FLOSS documentation is available on:
-    http://en.flossmanuals.net/PureData (English)
-    http://fr.flossmanuals.net/PureData (Francais)
+More extensive documentation is available on:
+    https://puredata.info/docs/BooksAboutPd/
 
 Information of all sorts (guides, development, meetings, etc):
     http://puredata.info

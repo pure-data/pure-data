@@ -48,7 +48,7 @@ echo "==== Downloading portaudio $VERSION"
 if [ -d $SRC ] ; then
     rm -rf $SRC
 fi
-git clone https://git.assembla.com/portaudio.git $SRC
+git clone --depth 1 https://github.com/PortAudio/portaudio.git $SRC
 if [[ "$VERSION" != "" ]] ; then
     cd $SRC && git checkout $VERSION && cd -
 fi

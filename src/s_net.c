@@ -47,6 +47,7 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                              int port, int protocol) {
     struct addrinfo hints;
+    int result;
     char portstr[10]; /* largest port is 65535 */
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC; /* IPv4 or IPv6 */
@@ -62,7 +63,27 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                      AI_PASSIVE;    /* listen to any addr if hostname is NULL */
     portstr[0] = '\0';
     sprintf(portstr, "%d", port);
-    return getaddrinfo(hostname, portstr, &hints, ailist);
+    result = getaddrinfo(hostname, portstr, &hints, ailist);
+        /* There's currently a bug in the BSD libc where getaddrinfo()
+         * will return EAI_BADFLAGS for the AI_ALL and AI_V4MAPPED flags.
+         * NOTE: this also seems to affect Android!
+         * In practice, this means we can't use dual stack sockets,
+         * so we fall back to IPv4 networking... */
+    if (result == EAI_BADFLAGS)
+    {
+        static int warned = 0;
+        if (!warned)
+        {
+            fprintf(stderr, "Warning: can't create IPv6 dual-stack socket - falling "
+                "back to IPv4. (This is a known bug in the BSD libc, which doesn't "
+                "implement the AI_ALL and AI_V4MAPPED flags for getaddrinfo().)\n");
+            warned = 1;
+        }
+        hints.ai_family = AF_INET;
+        hints.ai_flags = AI_PASSIVE;
+        result = getaddrinfo(hostname, portstr, &hints, ailist);
+    }
+    return result;
 }
 
 int addrinfo_ipv4_first(const struct addrinfo* ai1, const struct addrinfo* ai2)
@@ -429,14 +450,16 @@ int socket_errno_udp(void)
 
 void socket_strerror(int err, char *buf, int size)
 {
-    if (size <= 0)
-        return;
-#ifdef _WIN32
-    buf[0] = '\0';
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-                   size, NULL);
-#else
-    snprintf(buf, size, "%s", strerror(err));
-#endif
+    if (size > 0)
+    {
+    #ifdef _WIN32
+        wchar_t wbuf[1024];
+        int count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, 1024, NULL);
+        if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, size, 0, 0))
+            *buf = '\0';
+    #else
+        snprintf(buf, size, "%s", strerror(err));
+    #endif
+    }
 }

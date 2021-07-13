@@ -377,6 +377,16 @@ static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
     int lilo = (int)atom_getfloatarg(4, argc, argv);
     int steady = (int)atom_getfloatarg(17, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+2, x->x_min);
+    SETFLOAT(undo+3, x->x_max);
+    SETFLOAT(undo+4, x->x_lin0_log1);
+    SETFLOAT(undo+17, x->x_steady);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
