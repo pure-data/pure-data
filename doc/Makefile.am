@@ -333,6 +333,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/expr-help.pd \
      ./5.reference/exp~-help.pd \
      ./5.reference/fft~-help.pd \
+     ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
      ./5.reference/framp~-help.pd \
      ./5.reference/fudiformat-help.pd \
