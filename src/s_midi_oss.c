@@ -26,11 +26,39 @@ static int oss_midiinfd[MAXMIDIINDEV];
 static int oss_nmidiout;
 static int oss_midioutfd[MAXMIDIOUTDEV];
 
+static void close_one_midi_fd(int fd)
+{
+    int i, j;
+    close(fd);
+    for (i = 0; i < oss_nmidiin; i++)
+    {
+        if (oss_midiinfd[i] == fd)
+        {
+            for (j = i; j < oss_nmidiin-1; j++)
+                oss_midiinfd[j] = oss_midiinfd[j+1];
+            oss_nmidiin--;
+        }
+    }
+    for (i = 0; i < oss_nmidiout; i++)
+    {
+        if (oss_midioutfd[i] == fd)
+        {
+            for (j = i; j < oss_nmidiout-1; j++)
+                oss_midioutfd[j] = oss_midioutfd[j+1];
+            oss_nmidiout--;
+        }
+    }
+}
+
 static void oss_midiout(int fd, int n)
 {
     char b = n;
     if ((write(fd, (char *) &b, 1)) != 1)
+    {
         perror("MIDI write");
+        if (errno == ENODEV)  /* probably a USB dev got unplugged */
+            close_one_midi_fd(fd);
+    }
 }
 
 #define O_MIDIFLAG O_NDELAY
@@ -139,11 +167,9 @@ void sys_putmidibyte(int portno, int byte)
 void sys_poll_midi(void)
 {
     int i, throttle = 100;
-    struct timeval timeout;
     int did = 1, maxfd = 0;
     while (did)
     {
-        fd_set readset, writeset, exceptset;
         did = 0;
         if (throttle-- < 0)
             break;
@@ -153,7 +179,12 @@ void sys_poll_midi(void)
             int ret = read(oss_midiinfd[i], &c, 1);
             if (ret < 0)
             {
-                if (errno != EAGAIN)
+                if (errno == ENODEV)
+                {
+                    close_one_midi_fd(oss_midiinfd[i]);
+                    return; /* oss_nmidiinfd changed so blow off the rest */
+                }
+                else if (errno != EAGAIN)
                     perror("MIDI");
             }
             else if (ret != 0)
