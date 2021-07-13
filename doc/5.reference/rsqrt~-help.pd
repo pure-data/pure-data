@@ -1,4 +1,4 @@
-#N canvas 481 159 551 426 12;
+#N canvas 515 115 551 446 12;
 #X obj 83 215 metro 500;
 #X obj 83 190 r metro;
 #X msg 316 173 \; metro 0;
@@ -17,10 +17,14 @@
 the incoming signal \, using a fast \, approximate algorithm which
 is probably accurate to about 120 dB (20 bits).;
 #X obj 67 166 rsqrt~;
-#X text 199 253 An older object \, q8_sqrt \, is included in Pd for
+#X text 294 402 updated for Pd version 0.47.;
+#X text 67 405 see also:;
+#X obj 146 405 sqrt~;
+#X text 389 334 - deprecated;
+#X obj 317 332 q8_rsqrt~;
+#X text 219 256 An older object \, q8_rsqrt~ \, is included in Pd for
 back compatibility but should probably not be used. It only gives about
-8 bit accuracy., f 45;
-#X text 233 351 updated for Pd version 0.47.;
+8 bit accuracy., f 37;
 #X connect 0 0 7 0;
 #X connect 1 0 0 0;
 #X connect 1 0 0 0;

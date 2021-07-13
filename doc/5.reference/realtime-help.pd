@@ -1,8 +1,8 @@
-#N canvas 487 211 565 269 12;
+#N canvas 533 153 574 328 12;
 #X msg 107 140 bang;
 #X msg 54 109 bang;
 #X floatatom 54 200 0 0 0 0 - - -;
-#X text 95 107 Click here to reset;
+#X text 95 108 Click here to reset;
 #X text 51 226 Output is in milliseconds;
 #X text 148 141 Click here to get elapsed CPU time;
 #X obj 66 15 realtime;
@@ -10,7 +10,10 @@
 measured by your operating system.;
 #X obj 54 170 realtime;
 #X text 134 15 - ask OS for elapsed real time;
-#X text 326 220 updated for Pd version 0.33;
+#X text 302 243 updated for Pd version 0.33;
+#X text 44 268 see also:;
+#X obj 120 268 cputime;
+#X obj 188 268 timer;
 #X connect 0 0 8 1;
 #X connect 1 0 8 0;
 #X connect 8 0 2 0;

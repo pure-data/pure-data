@@ -11,8 +11,6 @@
 #X obj 70 300 print packet;
 #X text 350 150 packets from network;
 #X text 479 224 UDP packets \, binary output, f 13;
-#X text 54 21 fudiparse - parse FUDI packets into Pd messages, f 49
-;
 #X obj 70 223 fudiformat;
 #X obj 214 226 fudiformat -u;
 #X text 214 161 without packet separator, f 14;
@@ -27,13 +25,15 @@ lists of numbers \, interpreting them as the bytes in a FUDI message
 (as received when sending Pd-messages via [netreceive -b]). The '-u'
 creation argument switches to "UDP" mode \, omitting the packet separator.
 , f 79;
+#X obj 59 18 fudiparse;
+#X text 135 18 - parse FUDI packets into Pd messages, f 49;
 #X connect 0 0 2 0;
 #X connect 3 0 0 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
-#X connect 7 0 13 0;
+#X connect 7 0 12 0;
+#X connect 12 0 9 0;
+#X connect 12 0 0 0;
 #X connect 13 0 9 0;
 #X connect 13 0 0 0;
-#X connect 14 0 9 0;
-#X connect 14 0 0 0;
-#X connect 16 0 14 0;
+#X connect 15 0 13 0;

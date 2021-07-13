@@ -1,5 +1,4 @@
 #N canvas 544 30 647 538 12;
-#X text 73 22 fudiformat - convert lists to FUDI packets, f 44;
 #X msg 95 219 1 2 3;
 #X obj 79 371 fudiparse;
 #X obj 99 332 print packet;
@@ -29,13 +28,15 @@ is a networking protocol used by Pd. The fudiformat object makes FUDI
 messages suitable for sending over the network via netsend (in UDP
 mode). Incoming messages are output as FUDI messages \, byte by byte.
 , f 74;
-#X connect 1 0 14 0;
-#X connect 2 0 9 0;
-#X connect 4 0 5 0;
-#X connect 6 0 5 0;
-#X connect 7 0 8 0;
-#X connect 8 0 5 0;
-#X connect 14 0 7 0;
-#X connect 14 0 3 0;
-#X connect 14 0 2 0;
-#X connect 15 0 14 0;
+#X obj 64 19 fudiformat;
+#X text 149 18 - convert lists to FUDI packets;
+#X connect 0 0 13 0;
+#X connect 1 0 8 0;
+#X connect 3 0 4 0;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 4 0;
+#X connect 13 0 6 0;
+#X connect 13 0 2 0;
+#X connect 13 0 1 0;
+#X connect 14 0 13 0;

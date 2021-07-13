@@ -12,7 +12,7 @@ if all "delay" and "metro" objects were exact.;
 by default., f 63;
 #X text 127 218 Bang in inlet: output elapsed time;
 #X text 100 115 bang: reset elapsed time to zero, f 33;
-#X text 108 469 see also:;
+#X text 26 467 see also:;
 #X obj 360 316 tgl 17 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 360 398 bng 17 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -22,7 +22,7 @@ by default., f 63;
 #X obj 399 394 sel 1;
 #X floatatom 399 449 5 0 0 0 - - -;
 #X obj 360 338 t f f;
-#X obj 196 469 metro;
+#X obj 105 467 metro;
 #X obj 360 364 metro 1 90 permin;
 #X obj 399 424 timer 90 permin;
 #X text 67 325 for example \, this metronome outputs at intervals of
@@ -33,6 +33,8 @@ to that tempo:, f 37;
 #X text 170 151 set tempo in units of milliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). Also persec (units
 per second) \, etc - see below., f 52;
+#X obj 153 467 realtime;
+#X obj 225 467 cputime;
 #X connect 0 0 2 1;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;

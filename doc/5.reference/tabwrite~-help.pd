@@ -22,7 +22,7 @@ documentation \, and these objects:, f 43;
 #X msg 62 241 start 500;
 #X text 135 242 start in middle of table;
 #X text 448 372 updated for Pd version 0.40.;
-#X text 119 17 - write a signal in an array;
+#X text 107 17 - write a signal in an array;
 #X obj 42 192 phasor~ 200;
 #X text 92 217 start recording;
 #X text 161 292 set destination array;

@@ -2,7 +2,6 @@
 #X obj 29 15 key;
 #X obj 62 14 keyup;
 #X obj 113 14 keyname;
-#X text 181 13 -- grab keyboard;
 #X obj 38 67 key;
 #X floatatom 38 95 3 0 0 0 - - -;
 #X floatatom 77 93 3 0 0 0 - - -;
@@ -18,7 +17,8 @@ keys like shift or "F1".;
 #X text 26 200 Caveat -- this only works if Pd actually gets the key
 events which can depend on the stacking order of windows and/or the
 pointer location \, depending on the system.;
-#X connect 4 0 5 0;
-#X connect 7 0 6 0;
-#X connect 9 0 8 0;
-#X connect 9 1 10 0;
+#X text 181 13 - grab keyboard;
+#X connect 3 0 4 0;
+#X connect 6 0 5 0;
+#X connect 8 0 7 0;
+#X connect 8 1 9 0;

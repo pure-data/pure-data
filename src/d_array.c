@@ -851,6 +851,7 @@ static void tabreceive_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_set,
         gensym("set"), A_SYMBOL, 0);
+    class_sethelpsymbol(tabreceive_class, gensym("tabsend~"));
 }
 
 /* ---------- tabread: control, non-interpolating ------------------------ */

@@ -1,37 +1,55 @@
-#N canvas 432 225 700 400 12;
-#X floatatom 23 99 0 0 0 0 - - -;
-#X msg 44 128 bang;
-#X floatatom 75 161 0 0 0 0 - - -;
-#X floatatom 194 161 0 0 0 0 - - -;
-#X obj 44 277 print;
-#X msg 107 161 symbol cat;
-#X obj 54 11 pack;
-#X obj 126 337 unpack;
-#X text 45 51 The pack object takes a series of inputs and outputs
-a concatenated list. The number of creation arguments determines the
-number of inlets., f 71;
-#X msg 188 213 1 2 dog;
-#X obj 187 337 trigger;
-#X obj 44 250 pack 100 0 s 0;
-#X text 93 11 - combine several atoms into one message;
-#X text 446 341 updated for Pd version 0.34;
-#X text 47 335 See also:;
-#X text 159 249 <= creation arguments specify the number of inlets
-and their types: a number make a numeric outlet (and initializes the
-value). A symbol argument can start with "s" \, "f" \, or "p" to specify
-a "symbol" \, "float" (number) \, or pointer outlet.;
-#X text 255 210 <= as with any Pd object \, you can send a list whose
-atoms are automatically distributed to the corresponding inlets.;
-#X text 232 158 <= numbers and symbols in the corresponding inlets
-change the values without causing output (see "trigger" for a way to
-change this behavior.);
-#X text 85 127 <= bang generates output without resetting first value
+#N canvas 594 88 592 596 12;
+#X floatatom 68 156 0 0 0 0 - - -;
+#X msg 89 185 bang;
+#X floatatom 132 262 0 0 0 0 - - -;
+#X floatatom 219 289 0 0 0 0 - - -;
+#X obj 89 349 print;
+#X msg 175 263 symbol cat;
+#X obj 108 26 pack;
+#X obj 136 561 unpack;
+#X msg 105 213 1 2 dog;
+#X text 147 26 - combine several atoms into one message;
+#X text 326 560 updated for Pd version 0.34;
+#X text 57 560 See also:;
+#X text 130 184 <= bang generates output without resetting first value
 ;
-#X text 57 98 <= number in first inlet generates output;
-#X connect 0 0 11 0;
-#X connect 1 0 11 0;
-#X connect 2 0 11 1;
-#X connect 3 0 11 3;
-#X connect 5 0 11 2;
-#X connect 9 0 11 0;
-#X connect 11 0 4 0;
+#X text 102 155 <= number in first inlet generates output;
+#X text 172 210 <= you can also send a list as Pd distributes its elements
+to the corresponding inlets., f 45;
+#X obj 89 317 pack 100 0 symbol 0;
+#X text 262 263 <= numbers and symbols in the right inlets change the
+values without causing output, f 43;
+#X obj 399 443 pack;
+#X obj 429 412 t b f;
+#X floatatom 429 386 0 0 0 0 - - -;
+#X floatatom 399 386 0 0 0 0 - - -;
+#X obj 399 474 print;
+#X obj 121 508 print;
+#X msg 121 400 a;
+#X obj 121 477 pack s f;
+#X floatatom 174 437 5 0 0 0 - - -;
+#X text 156 395 pack accepts 'anythings' in the left inlet, f 24;
+#X text 314 321 By default \, pack takes two floats. You can use trigger
+to force an output on secondary inlets., f 34;
+#X text 28 463 abbreviated arguments =>, f 13;
+#X text 27 63 The pack object takes a series of inputs and outputs
+a concatenated list. The number of creation arguments determines the
+number of inletsand their type: float ('float'/'f') \, pointer ('pointer'/'p')
+or symbol ('symbol'/'s'). A number sets a numeric inlet and initializes
+the value., f 76;
+#X text 472 411 <= trigger;
+#X connect 0 0 15 0;
+#X connect 1 0 15 0;
+#X connect 2 0 15 1;
+#X connect 3 0 15 3;
+#X connect 5 0 15 2;
+#X connect 8 0 15 0;
+#X connect 15 0 4 0;
+#X connect 17 0 21 0;
+#X connect 18 0 17 0;
+#X connect 18 1 17 1;
+#X connect 19 0 18 0;
+#X connect 20 0 17 0;
+#X connect 23 0 24 0;
+#X connect 24 0 22 0;
+#X connect 25 0 24 1;

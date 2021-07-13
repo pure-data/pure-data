@@ -295,7 +295,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
-     ./5.reference/0_all_guis-INTRO.txt \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
@@ -374,7 +373,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/osc~-help.pd \
      ./5.reference/otherbinops-help.pd \
      ./5.reference/pack-help.pd \
-     ./5.reference/pd-help.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
@@ -428,7 +426,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabreceive~-help.pd \
      ./5.reference/tabsend~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \

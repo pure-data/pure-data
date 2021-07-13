@@ -1,11 +1,11 @@
-#N canvas 576 114 502 293 12;
+#N canvas 576 114 537 303 12;
 #X msg 65 127 23 0;
 #X obj 65 202 print x1;
 #X obj 139 202 print x2;
 #X obj 65 166 stripnote, f 11;
 #X msg 105 127 34.5 67.8;
-#X obj 124 245 makenote;
-#X text 86 13 - send note-on messages and schedule note-off for later
+#X obj 137 245 makenote;
+#X text 105 11 - send note-on messages and schedule note-off for later
 ;
 #X text 254 215 updated for Pd version 0.28;
 #X obj 26 11 stripnote;

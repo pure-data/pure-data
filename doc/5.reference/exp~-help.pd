@@ -1,18 +1,19 @@
-#N canvas 561 135 457 292 12;
-#X obj 39 121 sig~;
-#X obj 90 146 loadbang;
-#X obj 90 170 metro 100;
-#X obj 90 204 snapshot~;
-#X floatatom 39 93 5 0 0 0 - - -;
-#X floatatom 90 229 7 0 0 0 - - -;
-#X obj 40 25 exp~;
-#X text 79 25 - exponential function;
-#X text 109 69 raises the Euler number 'e' (about 2.718) \, to the
-power of the input signal., f 43;
-#X text 217 140 See also:;
-#X obj 291 139 pow~;
-#X obj 39 148 exp~;
-#X text 215 217 updated for Pd version 0.47.;
+#N canvas 703 105 382 381 12;
+#X obj 45 124 sig~;
+#X obj 96 149 loadbang;
+#X obj 96 173 metro 100;
+#X obj 96 207 snapshot~;
+#X floatatom 45 96 5 0 0 0 - - -;
+#X floatatom 96 232 7 0 0 0 - - -;
+#X obj 63 29 exp~;
+#X text 102 29 - exponential function;
+#X text 114 82 raises the Euler number 'e' (about 2.718) \, to the
+power of the input signal., f 27;
+#X text 45 292 See also:;
+#X obj 119 292 pow~;
+#X obj 45 151 exp~;
+#X text 159 339 updated for Pd version 0.47.;
+#X obj 159 291 exp;
 #X connect 0 0 11 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

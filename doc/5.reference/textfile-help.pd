@@ -1,4 +1,4 @@
-#N canvas 217 94 1015 528 12;
+#N canvas 300 93 1015 528 12;
 #X msg 435 30 rewind;
 #X obj 507 414 print done;
 #X text 635 190 read a file;
@@ -43,7 +43,8 @@ messages., f 38;
 #X msg 515 347 print;
 #X text 557 347 debugging printout;
 #X text 770 458 updated for Pd version 0.33;
-#X text 146 34 -- read and write text files;
+#X text 146 34 - read and write text files;
+#X obj 253 460 text;
 #X connect 0 0 5 0;
 #X connect 5 0 16 0;
 #X connect 5 1 1 0;

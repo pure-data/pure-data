@@ -1,4 +1,4 @@
-#N canvas 421 70 827 615 12;
+#N canvas 421 70 833 669 12;
 #X obj 30 184 +~;
 #X obj 167 184 -~;
 #X obj 294 184 *~;
@@ -20,7 +20,7 @@
 #X msg 39 224 bang;
 #X obj 181 20 max~;
 #X obj 223 20 min~;
-#X text 584 543 modified for Pd version 0.27;
+#X text 526 606 modified for Pd version 0.27;
 #X obj 688 256 tabwrite~ array1;
 #X obj 563 256 tabwrite~ array1;
 #X obj 563 184 max~;
@@ -30,14 +30,18 @@
 #X msg 445 224 bang;
 #X msg 575 224 bang;
 #X msg 705 224 bang;
-#X text 455 311 The binary signal operators can be configured to combine
-two signals as above \, or \, if you give a numeric argument \, audio
-signals are combined with scalars:, f 45;
-#X obj 597 393 +~ 5;
-#X text 464 445 The right inlet takes audio signals or numbers depending
-on whether the argument is present or not., f 46;
+#X obj 585 460 +~ 5;
 #X msg 658 53 \; pd dsp 1;
-#X text 271 19 <== operators on audio signals;
+#X text 271 19 - operators on audio signals;
+#X text 52 603 see also:;
+#X obj 174 604 +;
+#X text 208 606 (etc.)- arithmetic operators;
+#X obj 130 604 pow~;
+#X floatatom 610 434 5 0 0 0 - - -;
+#X text 472 335 These objects combine two signals as above \, or \,
+if you give a numeric argument \, the right inlet only takes floats
+(no signals) and the argument initializes the right inlet value:,
+f 36;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 2 0 12 0;
@@ -62,3 +66,4 @@ on whether the argument is present or not., f 46;
 #X connect 25 0 9 0;
 #X connect 26 0 20 0;
 #X connect 27 0 19 0;
+#X connect 35 0 28 1;

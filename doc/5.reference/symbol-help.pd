@@ -1,26 +1,27 @@
-#N canvas 531 220 512 412 12;
-#X msg 44 107 bang;
-#X text 134 244 creation argument initializes the value;
-#X text 271 372 updated for Pd version 0.45;
-#X text 89 104 output the value;
-#X text 153 130 set and output the value;
-#X obj 43 241 symbol foo;
+#N canvas 566 107 512 412 12;
+#X msg 44 104 bang;
+#X text 128 240 creation argument initializes the value;
+#X text 271 375 updated for Pd version 0.45;
+#X text 84 102 output the value;
+#X text 150 133 set and output the value;
+#X obj 43 244 symbol foo;
 #X obj 69 12 symbol;
-#X text 125 14 - STORE A SYMBOL (I.E. \, STRING);
 #X text 35 37 The symbol object stores a symbol \, Pd's data type for
+#X text 35 40 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
 in pd).;
-#X msg 58 131 symbol bar;
-#X symbolatom 44 269 10 0 0 0 - - -;
-#X text 186 213 set the value;
-#X symbolatom 110 215 10 0 0 0 - - -;
-#X msg 64 161 zorglub;
-#X text 133 161 any other message is 'converted';
-#X text 62 303 note: unlike "float" \, etc. \, there's no "s" message
+#X msg 58 134 symbol bar;
+#X symbolatom 44 272 10 0 0 0 - - -;
+#X text 186 209 set the value;
+#X symbolatom 110 211 10 0 0 0 - - -;
+#X msg 64 164 zorglub;
+#X text 127 164 any other message is 'converted';
+#X text 125 14 - store a symbol (i.e. \, string);
+#X text 56 306 note: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
 #X connect 0 0 5 0;
-#X connect 5 0 10 0;
-#X connect 9 0 5 0;
-#X connect 12 0 5 1;
-#X connect 13 0 5 0;
+#X connect 5 0 9 0;
+#X connect 8 0 5 0;
+#X connect 11 0 5 1;
+#X connect 12 0 5 0;

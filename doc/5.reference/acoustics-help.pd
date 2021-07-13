@@ -1,47 +1,53 @@
-#N canvas 387 127 593 506 12;
-#X obj 131 403 ftom;
-#X obj 85 21 mtof;
-#X obj 131 351 mtof;
-#X floatatom 131 323 0 0 0 0 - - -;
-#X floatatom 131 378 0 0 0 0 - - -;
-#X obj 141 21 ftom;
-#X floatatom 131 427 0 0 0 0 - - -;
-#X obj 197 22 dbtorms;
-#X obj 273 22 rmstodb;
-#X obj 352 22 dbtopow;
-#X obj 429 22 powtodb;
-#X floatatom 246 319 0 0 0 0 - - -;
-#X floatatom 246 374 0 0 0 0 - - -;
-#X floatatom 246 423 0 0 0 0 - - -;
-#X obj 246 347 dbtorms;
-#X obj 246 399 rmstodb;
-#X floatatom 360 320 0 0 0 0 - - -;
-#X floatatom 360 375 0 0 0 0 - - -;
-#X floatatom 360 424 0 0 0 0 - - -;
-#X obj 360 348 dbtopow;
-#X obj 360 400 powtodb;
-#X text 75 256 Finally \, dbtopow and powtodb convert decibels to and
-from power units \, equal to the square of the "RMS" amplitude.;
-#X text 372 468 updated for Pd version 0.40.;
-#X text 73 64 The mtof object transposes a midi value into a frequency
-in Hertz \, so that "69" goes to "440". You can specify microtonal
-pitches as in "69.5" (a quarter tone higher than 69). Ftom does the
-reverse. A frequency of zero Hertz is given a MIDI value of -1500 (strictly
-speaking \, it is negative infinity.);
-#X text 74 160 The dbtorms and rmstodb objects convert from decibels
+#N canvas 563 49 541 570 12;
+#X obj 118 395 ftom;
+#X obj 37 21 mtof;
+#X obj 118 327 mtof;
+#X floatatom 118 296 0 0 0 0 - - -;
+#X floatatom 118 360 9 0 0 0 - - -;
+#X obj 78 21 ftom;
+#X floatatom 118 429 0 0 0 0 - - -;
+#X obj 117 21 dbtorms;
+#X obj 176 21 rmstodb;
+#X obj 234 21 dbtopow;
+#X obj 295 21 powtodb;
+#X floatatom 233 296 0 0 0 0 - - -;
+#X floatatom 233 425 0 0 0 0 - - -;
+#X obj 233 327 dbtorms;
+#X obj 233 395 rmstodb;
+#X floatatom 357 296 0 0 0 0 - - -;
+#X floatatom 357 426 0 0 0 0 - - -;
+#X obj 357 327 dbtopow;
+#X obj 357 395 powtodb;
+#X text 46 241 Finally \, dbtopow and powtodb convert decibels to and
+from power units \, equal to the square of the "RMS" amplitude., f
+66;
+#X text 304 526 updated for Pd version 0.40.;
+#X text 46 157 The dbtorms and rmstodb objects convert from decibels
 to linear ("RMS") amplitude \, so that 100 dB corresponds to an "RMS"
 of 1 Zero amplitude (strictly speaking \, minus infinity dB) is clipped
 to zero dB \, and zero dB \, which should correspond to 0.0001 in "RMS"
-\, is instead rounded down to zero.;
+\, is instead rounded down to zero., f 66;
+#X text 355 20 - acoustic conversions;
+#X floatatom 233 360 9 0 0 0 - - -;
+#X floatatom 357 360 9 0 0 0 - - -;
+#X text 43 483 see also:;
+#X obj 120 483 mtof~;
+#X text 167 482 (etc.) - acoustic conversions for audio signals;
+#X text 46 66 The mtof object transposes a midi value into a frequency
+in Hertz \, so that "69" goes to "440". You can specify microtonal
+pitches as in "69.5" \, which is a quarter tone (or 50 cents) higher
+than 69 (so 0.01 = 1 cent). Ftom does the reverse. A frequency of zero
+Hertz is given a MIDI value of -1500 (strictly speaking \, it is negative
+infinity.), f 66;
 #X connect 0 0 6 0;
 #X connect 2 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 0 0;
-#X connect 11 0 14 0;
-#X connect 12 0 15 0;
+#X connect 11 0 13 0;
+#X connect 13 0 23 0;
 #X connect 14 0 12 0;
-#X connect 15 0 13 0;
-#X connect 16 0 19 0;
-#X connect 17 0 20 0;
-#X connect 19 0 17 0;
-#X connect 20 0 18 0;
+#X connect 15 0 17 0;
+#X connect 17 0 24 0;
+#X connect 18 0 16 0;
+#X connect 23 0 14 0;
+#X connect 24 0 18 0;

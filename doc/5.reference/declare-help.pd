@@ -1,38 +1,45 @@
-#N canvas 523 55 562 645 12;
+#N canvas 598 57 549 677 12;
 #X declare;
-#X obj 49 13 declare;
-#X text 121 14 - set environment for loading patch;
-#X text 45 43 A declare object adds one or more directories to the
+#X obj 53 14 declare;
+#X text 120 15 - set environment for loading patch;
+#X text 34 49 A declare object adds one or more directories to the
 search path \, and/or pre-loads one or more libraries ("extensions")
 to Pd in preparation for opening the patch from a file. Usage is "declare
-[-flag value] [-flag value] ..." where the flag can be:;
-#X text 41 179 -lib;
-#X text 41 196 -stdlib;
-#X text 41 143 -path;
-#X text 41 160 -stdpath;
-#X text 139 161 add to search path \, relative to Pd;
-#X text 43 554 BUG: The name "-stdpath" is confusing \, as it has a
-quite different effect from "-stdpath" on the pd command line.;
-#X text 41 398 WARNING: as of version 0.47 \, "declare -path" and "declare
+[-flag value] [-flag value] ..." where the flag can be:, f 67;
+#X text 30 170 -lib;
+#X text 30 187 -stdlib;
+#X text 30 134 -path;
+#X text 30 151 -stdpath;
+#X text 30 560 BUG: The name "-stdpath" is confusing \, as it has a
+quite different effect from "-stdpath" on the pd command line., f
+68;
+#X text 30 422 WARNING: as of version 0.47 \, "declare -path" and "declare
 -stdpath" inside abstractions take effect only within those abstractions.
 If Pd's compatibility version is set to 0.46 or earlier the old (buggy)
-behavior takes effect.;
-#X text 328 605 updated for Pd version 0.49;
-#X text 139 143 add to search path \, relative to the patch or user
+behavior takes effect., f 68;
+#X text 317 627 updated for Pd version 0.49;
+#X text 128 134 add to search path \, relative to the patch or user
 paths;
-#X text 139 179 load a library \, relative to the patch or user paths
+#X text 128 170 load a library \, relative to the patch or user paths
 ;
-#X text 41 234 (For any of these you may use a full pathname such as
+#X text 30 235 (For any of these you may use a full pathname such as
 "/tmp/dir" or \, in Windows \, "C:/garbage" instead of a relative path).
-;
-#X text 42 471 As of version 0.49 \, "declare -path" and "declare -lib"
+, f 68;
+#X text 30 488 As of version 0.49 \, "declare -path" and "declare -lib"
 will fall back to user search paths if the relative path to the patch
 does not exist. To avoid checking further \, use an explicit relative
-path by prepending "./" or "../" to the path or lib name.;
-#X text 139 196 load a library \, relative to Pd;
-#X text 41 296 For instance \, if you put abstractions and/or other
+path by prepending "./" or "../" to the path or lib name., f 68;
+#X text 30 278 For instance \, if you put abstractions and/or other
 supporting files in a subdirectory "more" \, you can put an object
 "declare -path more" to make sure Pd sees them when the patch is loaded.
 Or \, if you have files installed in the directory extra/stillmore
 (in the Pd installation) you can get it using "declare -stdpath stillmore".
+, f 68;
+#X text 128 152 add to search path \, relative to Pd (the 'extra' folder)
 ;
+#X text 128 187 load a library \, relative to Pd (the 'extra' folder)
+;
+#X text 30 357 Note that by default the 'extra' folder is the last
+in the search priority. This means that user added paths are searched
+before. You can use [declare -stdpath .] to ensure that 'extra' is
+searched before other search paths., f 68;

@@ -38,7 +38,7 @@ next message \, for you to use in designing your own sequencer.;
 #X msg 541 260 read qlist.txt;
 #X msg 547 283 write /tmp/qlist.txt;
 #X text 64 482 see also:;
-#X obj 140 482 textfile;
+#X obj 142 473 textfile;
 #X text 25 365 You can also record textual messages and save them to
 a file. Send "clear" to empty the qlist and "add" to add messages (terminated
 with semicolons.) The message \, "add2" adds a list of atoms without
@@ -62,6 +62,7 @@ in this directory., f 35;
 #X text 821 481 updated for Pd version 0.35;
 #X msg 479 32 print;
 #X text 525 31 print contents to Pd window;
+#X obj 142 500 text;
 #X connect 0 0 3 0;
 #X connect 0 1 9 0;
 #X connect 1 0 0 0;
