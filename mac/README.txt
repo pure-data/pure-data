@@ -61,11 +61,11 @@ argument, a "Pd.app" is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.
 
-An older copy of Tk 8.4 Wish is included with the Pd source distribution and
-works across the majority of macOS versions up to 10.12. This is the default
-Wish.app when using osx-app.sh. If you want to use a different Wish.app (a newer
-version, a custom build, a system version), you can specify the donor via
-commandline options, for example:
+A pre-built universal (32/64 bit) Tk 8.6.10 Wish with patches applied is
+included with the Pd source distribution and works across the majority of macOS
+versions up to 10.15. This is the default Wish.app when using osx-app.sh. If you
+want to use a different Wish.app (a newer version, a custom build, a system
+version), you can specify the donor via commandline options, for example:
 
     # build Pd-0.47-1.app using Tk 8.6 installed to the system
     mac/osx-app.sh --system-tk 8.6 0.47-1
@@ -176,5 +176,63 @@ Some important per-application settings required by the GUI include:
 * NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving
 * ApplePressAndHoldEnabled: false, disables character compose popup,
                                    enables key repeat for all keys
+* NSRequiresAquaSystemAppearance: true, disables dark mode for Pd GUI on 10.14+
 
 These are set in `tcl/pd_guiprefs.tcl`.
+
+## Code Signing
+
+As of Pd 0.51, the mac/osx-app.sh script performs "ad-hoc code signing" in order
+to set entitlements to open un-validated dynamic libraries on macOS 10.15+. This
+is required due to the new security settings. Note: ad-hoc signing doesn't
+actually sign the .app bundle with an account certificate, so the unidentified
+developer warning is still shown when the downloaded .app is run for the first
+time.
+
+## Privacy Permissions
+
+macOS 10.14 introduced system privacy permissions for actions applications can
+undertake on a user account, such as accessing files or reading microphone or
+camera input. When an application is started for the first time and tries to
+access something that is covered by the privacy settings, a permissions prompt
+is displayed by the system requesting access. The action is then allowed or
+denied and this setting is saved and applied when the application is run again
+in the future.
+
+As of macOS 10.15, running Pd will request access for the following:
+
+* Files and Folders: Documents
+* Files and Folders: Desktop
+* Microphone
+
+Additionally, using an external such as Gem for camera input will request
+access to the Camera.
+
+The current permissions can be changed in Privacy panel in System Preferences.
+They can also be reset on the commandline using the "tccutil" command and the
+Pd .app bundle id:
+
+    # reset Pd's Microphone privacy setting
+    tccutil reset Microphone org.puredata.pd.pd-gui
+
+    # reset all of Pd's privacy settings
+    tccutil reset All org.puredata.pd.pd-gui
+
+## Font Issues with macOS 10.15+
+
+macOS 10.15 furthered changes to font rendering begin with 10.14 with the weird
+result that Pd's default font, DejaVu Sans Mono, renders thin and closer
+together than system fonts. This results in objects on the patch canvas that are 
+longer their inner text and text selection positioning is off.
+
+To remedy this for now, Pd 0.51-3 changed Pd's default font for macOS to Menlo
+which is included with the system since 10.6. Menlo is based on Bitstream Vera
+Mono and DejaVu Sans Mono, so there should be no issues with patch sizing or
+positioning.
+
+## Dark Mode
+
+Pd currently disables Dark Mode support by setting the
+NSRequiresAquaSystemAppearance key to true in both the app bundle's Info.plist
+and the GUI defaults preference file. This restruction may be removed in the
+future once Dark Mode is handled in the GUI.

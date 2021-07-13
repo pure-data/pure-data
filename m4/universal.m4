@@ -6,7 +6,7 @@ dnl with or without modifications, as long as this notice is preserved.
 # PD_CHECK_UNIVERSAL([VARIABLE-NAME], [ACTION-IF-SUCCESS], [ACTION-IF-NO-SUCCESS])
 # will enable the "--enable-universal=<ARCHS>" flag
 # if <ARCH> is "yes", platform defaults are used
-# the system tries to build a test program with the archs, on succes it calls ACTION-IF-SUCCESS, and ACTION-IF-NO-SUCCESS otherwise
+# the system tries to build a test program with the archs, on success it calls ACTION-IF-SUCCESS, and ACTION-IF-NO-SUCCESS otherwise
 # on success it will also add the flags to:
 # [VARIABLE-NAME]_CFLAGS will hold a list of cflags to compile for all requested archs
 # [VARIABLE-NAME]_LDFLAGS will hold a list of ldflags to link for all requested archs
@@ -65,7 +65,7 @@ if test "$universal_binary" != no; then
     
     dnl add to arch list if it passes the linker
     AC_MSG_CHECKING([if linker accepts arch: $arch])
-    AC_TRY_LINK([], [return 0;], [
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])], [
       _pd_universal="$_pd_universal -arch $arch"
       AC_MSG_RESULT([yes])
     ], [

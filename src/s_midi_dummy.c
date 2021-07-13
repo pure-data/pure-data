@@ -12,7 +12,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
 {
 }
 
-void sys_close_midi( void)
+void sys_close_midi(void)
 {
 }
 

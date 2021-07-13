@@ -1,4 +1,4 @@
-#N canvas 68 38 317 151 12;
+#N canvas 564 127 286 180 12;
 #X msg 68 52 5;
 #X msg 100 52 rats;
 #X obj 67 90 obj1;

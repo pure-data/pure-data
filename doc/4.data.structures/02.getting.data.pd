@@ -1,77 +1,80 @@
 #N struct template2 float x float y float z float q float zz;
-#N canvas 138 2 630 580 12;
-#X text 345 543 updated for Pd version 0.32.;
-#N canvas 42 312 598 266 stuff 0;
-#X obj 353 159 pointer;
-#X obj 117 103 t b b b;
-#X msg 117 62 bang;
-#X obj 117 31 loadbang;
-#X text 163 62 click here to re-initialize;
-#X text 127 242 Explained later...;
-#X obj 28 208 append template2 x y z q;
-#X msg 353 101 \; pd-data2 clear;
-#X msg 353 137 traverse pd-data2 \, bang;
-#X msg 28 185 50 150 30 9 \, 200 100 -20 900 \, 100 100 -50 30;
-#X connect 0 0 6 4;
+#N canvas 362 87 652 624 12;
+#X text 401 580 updated for Pd version 0.32.;
+#N canvas 454 366 566 337 stuff 0;
+#X obj 322 191 pointer;
+#X msg 85 64 bang;
+#X obj 85 33 loadbang;
+#X text 125 64 click here to re-initialize;
+#X text 183 257 Explained later...;
+#X obj 157 228 append template2 x y z q;
+#X msg 321 103 \; pd-data2 clear;
+#X msg 322 169 traverse pd-data2 \, bang;
+#X msg 85 176 50 150 30 9 \, 200 100 -20 900 \, 100 100 -50 30, f
+29;
+#X obj 85 105 trigger bang bang bang;
+#X connect 0 0 5 4;
 #X connect 1 0 9 0;
-#X connect 1 1 8 0;
-#X connect 1 2 7 0;
 #X connect 2 0 1 0;
-#X connect 3 0 2 0;
-#X connect 8 0 0 0;
-#X connect 9 0 6 0;
-#X restore 506 310 pd stuff;
-#X text 506 242 subpatches:;
-#X obj 15 303 pointer;
-#X msg 27 271 next;
-#X text 75 301 <- object that outputs pointers to scalars;
-#N canvas 13 22 307 198 data2 1;
+#X connect 7 0 0 0;
+#X connect 8 0 5 0;
+#X connect 9 0 8 0;
+#X connect 9 1 7 0;
+#X connect 9 2 6 0;
+#X restore 505 358 pd stuff;
+#X text 505 290 subpatches:;
+#X obj 67 326 pointer;
+#X msg 79 294 next;
+#N canvas 1056 105 307 198 data2 1;
 #X scalar template2 50 150 30 9 0 \;;
 #X scalar template2 200 100 -20 900 0 \;;
 #X scalar template2 100 100 -50 30 0 \;;
-#X restore 506 265 pd data2;
-#N canvas 315 125 554 155 template2 1;
-#X text 13 79 The template for the two scalars \, as in the last patch
+#X restore 505 313 pd data2;
+#N canvas 442 234 453 133 template2 0;
+#X text 38 87 The template for the two scalars \, as in the last patch
 ;
-#X obj 15 46 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X obj 14 21 struct template2 float x float y float z float q;
-#X restore 506 288 pd template2;
-#X obj 15 355 get template2 x y z q;
-#X floatatom 15 384 5 0 0 0 - - -;
-#X floatatom 76 384 5 0 0 0 - - -;
-#X floatatom 137 384 5 0 0 0 - - -;
-#X floatatom 199 385 5 0 0 0 - - -;
-#X msg 15 246 traverse pd-data2;
-#X obj 59 330 print;
-#X text 111 331 <- this gets a bang when we reach the end;
-#X text 211 353 <- this takes incoming pointers;
-#X text 214 367 and outputs the values of x \, y \, z \, and q.;
-#X text 172 245 <- go to head of list (click first);
-#X text 68 273 <- output next item (click 4 times);
-#X text 14 5 The simplest thing you can do with a collection of scalars
+#X obj 40 54 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X obj 39 29 struct template2 float x float y float z float q;
+#X restore 505 336 pd template2;
+#X obj 67 378 get template2 x y z q;
+#X floatatom 67 407 5 0 0 0 - - -;
+#X floatatom 115 407 5 0 0 0 - - -;
+#X floatatom 163 407 5 0 0 0 - - -;
+#X floatatom 211 407 5 0 0 0 - - -;
+#X msg 67 269 traverse pd-data2;
+#X obj 113 353 print;
+#X text 287 391 and outputs the values of x \, y \, z \, and q., f
+22;
+#X text 79 22 The simplest thing you can do with a collection of scalars
 (a list) is to traverse it \, getting the numbers back out. This is
 done using two objects \, "pointer" which does the traversal \, and
 "get" which \, given a pointer to a scalar \, extracts numeric quantities
-from it.;
-#X text 14 85 You can send the "pointer" object a "traverse" message
+from it., f 60;
+#X text 79 102 You can send the "pointer" object a "traverse" message
 to point it to the head of the list. The argument "pd-data2" indicates
 the Pd window named "data2." The head of the list means \, not the
 first scalar in the list \, but the position before the first scalar
-\, which is a valid pointer in Pd but has no data or template.;
-#X text 14 180 The "next" message tells the "pointer" object to go
+\, which is a valid pointer in Pd but has no data or template., f
+60;
+#X text 79 197 The "next" message tells the "pointer" object to go
 to the next scalar in the list and output it. If there are no more
 \, "pointer" outputs a bang at right.;
-#X text 19 424 The "get" object takes a pointer \, checks that its
+#X text 99 453 The "get" object takes a pointer \, checks that its
 template agrees with what "get" is expecting \, i.e. \, "template2"
 \, and if so outputs the values of x \, y \, z \, and q in the usual
-reverse order.;
-#X text 18 492 The pointer sent from "pointer" to "get" is an elementary
+reverse order., f 60;
+#X text 99 516 The pointer sent from "pointer" to "get" is an elementary
 Pd type on a level with "float" and "symbol".;
-#X connect 3 0 8 0;
-#X connect 3 1 14 0;
+#X text 165 354 <= this gets a bang when we reach the end;
+#X text 127 324 <= object that outputs pointers to scalars;
+#X text 120 296 <= output next item (click 4 times);
+#X text 200 268 <= go to head of list (click first);
+#X text 224 376 <= this takes incoming pointers;
+#X connect 3 0 7 0;
+#X connect 3 1 13 0;
 #X connect 4 0 3 0;
-#X connect 8 0 9 0;
-#X connect 8 1 10 0;
-#X connect 8 2 11 0;
-#X connect 8 3 12 0;
-#X connect 13 0 3 0;
+#X connect 7 0 8 0;
+#X connect 7 1 9 0;
+#X connect 7 2 10 0;
+#X connect 7 3 11 0;
+#X connect 12 0 3 0;

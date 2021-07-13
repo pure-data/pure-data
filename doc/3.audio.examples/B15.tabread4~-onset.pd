@@ -1,6 +1,6 @@
-#N canvas 87 57 580 690 12;
-#X text 355 655 updated for Pd version 0.42;
-#X text 28 36 Pd is usually compiled to work on 32-bit audio samples.
+#N canvas 433 61 580 690 12;
+#X text 354 646 updated for Pd version 0.42;
+#X text 39 45 Pd is usually compiled to work on 32-bit audio samples.
 These do not \, in general \, have enough precision for use as indices
 into an array of more than about 32K samples. This is because the mantissa
 of a 32-bit floating point number has only 24 bits \, out of which
@@ -8,43 +8,43 @@ you would be using 16 bits or more to address a sample more than 32K
 into the array \, so there would remain 8 or fewer bits to supply the
 fraction. In the most extreme situation possible \, the sample could
 contain a Nyquist frequency sinusoid and the output would then have
-only about 8 bits of accuracy!;
-#X text 29 196 You can use the "onset" inlet to tabread4~ to get good
+only about 8 bits of accuracy!, f 64;
+#X text 39 184 You can use the "onset" inlet to tabread4~ to get good
 accuracy reading longer arrays. The tabread4~ object adds the index
 and the "main" (signal) inlet in 64-bit precision. So if \, for example
 \, the onset inlet could specify an integer exactly up to about 8 million
 (190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement.
-;
-#X text 116 13 USING ONSETS INTO TABREAD4~ TO IMPROVE ACCURACY;
-#X obj 41 587 output~;
-#X obj 395 507 samplerate~;
-#X obj 395 531 / 2;
-#X obj 384 445 loadbang;
-#X obj 384 582 tabwrite~ \$0-tab;
-#X obj 40 557 tabread4~ \$0-tab;
-#X obj 395 555 osc~;
-#X obj 172 557 tabread4~ \$0-tab;
-#X obj 173 589 output~;
-#X obj 384 486 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+, f 64;
+#X text 56 11 USING ONSETS INTO TABREAD4~ TO IMPROVE ACCURACY;
+#X obj 40 582 output~;
+#X obj 385 489 samplerate~;
+#X obj 385 513 / 2;
+#X obj 374 417 loadbang;
+#X obj 374 564 tabwrite~ \$0-tab;
+#X obj 40 548 tabread4~ \$0-tab;
+#X obj 385 537 osc~;
+#X obj 171 548 tabread4~ \$0-tab;
+#X obj 171 582 output~;
+#X obj 374 461 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 408 468 \; pd dsp 1;
-#X obj 41 474 *~ 10000;
-#X obj 41 527 +~;
-#X floatatom 192 476 6 0 0 0 - - -;
-#X msg 247 446 1;
-#X obj 383 610 table \$0-tab 200000;
-#X obj 42 446 phasor~ 0.02;
-#X msg 192 446 150001;
-#X text 28 310 At left below an onset (1 or 150000 samples) is added
+#X msg 398 443 \; pd dsp 1;
+#X obj 40 465 *~ 10000;
+#X obj 40 518 +~;
+#X floatatom 280 467 6 0 0 0 - - -;
+#X msg 280 437 1;
+#X obj 373 592 table \$0-tab 200000;
+#X obj 40 436 phasor~ 0.02;
+#X msg 225 437 150001;
+#X text 39 280 At left below an onset (1 or 150000 samples) is added
 to the index of a table lookup. If you select the onset of 150001 \,
 you should hear the truncation error. (The table contains a Nyquist
 signal and the "correct" output should be a 100 Hz. tone.) At right
 \, the onset is presented in the separate onset inlet. The worst-case
-truncation error drops by about 30 dB.;
-#X text 57 647 BAD;
-#X text 190 646 GOOD;
-#X text 193 425 ONSET INTO TABLE;
-#X text 384 426 This loads the table:;
+truncation error drops by about 30 dB., f 64;
+#X text 56 642 BAD;
+#X text 188 639 GOOD;
+#X text 226 416 ONSET INTO TABLE;
+#X text 374 396 This loads the table:;
 #X connect 5 0 6 0;
 #X connect 6 0 10 0;
 #X connect 7 0 13 0;

@@ -1,24 +1,24 @@
 #N struct rect float x float y float w float h;
-#N canvas 193 140 549 265 10;
-#N canvas 457 224 643 316 rect 0;
-#X obj 134 219 pointer;
-#X msg 134 188 traverse pd-test \, bang;
-#X obj 69 99 filledpolygon 0 0 0 0 0 0 h w h w 0 0 0;
-#X obj 46 252 append rect x y w h;
-#X obj 68 76 struct rect float x float y float w float h;
-#X msg 46 219 50 50 50 2;
-#X obj 432 201 r this-ptr;
-#X obj 347 257 s this-ptr;
-#X obj 344 202 r add-rect;
-#X obj 346 232 append rect x y w h;
+#N canvas 427 129 397 213 12;
+#N canvas 457 224 653 284 rect 0;
+#X obj 211 156 pointer;
+#X msg 211 125 traverse pd-test \, bang;
+#X obj 80 69 filledpolygon 0 0 0 0 0 0 h w h w 0 0 0;
+#X obj 80 189 append rect x y w h;
+#X obj 79 38 struct rect float x float y float w float h;
+#X msg 80 156 50 50 50 2;
+#X obj 535 134 r this-ptr;
+#X obj 405 192 s this-ptr;
+#X obj 405 135 r add-rect;
+#X obj 405 165 append rect x y w h;
 #X connect 0 0 3 4;
 #X connect 1 0 0 0;
 #X connect 5 0 3 0;
 #X connect 6 0 9 4;
 #X connect 8 0 9 0;
 #X connect 9 0 7 0;
-#X restore 27 186 pd rect;
-#N canvas 34 58 616 659 output 1;
+#X restore 115 121 pd rect;
+#N canvas 861 61 649 658 output 1;
 #X scalar rect 57 179 2 10 \;;
 #X scalar rect 82 179 1 10 \;;
 #X scalar rect 107 179 1 10 \;;
@@ -333,88 +333,88 @@
 #X scalar rect 357 29 2 450 \;;
 #X scalar rect 457 29 2 280 \;;
 #X scalar rect 557 29 2 150 \;;
-#X text 21 50 3:2;
-#X text 21 78 5:2;
-#X text 21 107 7:2;
-#X text 18 170 2:3;
-#X text 19 200 4:3;
-#X text 20 231 5:3;
-#X text 19 260 7:3;
-#X text 20 287 8:3;
-#X text 20 349 3:4;
-#X text 21 378 5:4;
-#X text 21 408 7:4;
-#X text 19 467 4:5;
-#X text 19 499 6:5;
-#X text 21 528 7:5;
-#X text 21 558 8:5;
-#X text 303 93 Inspired by Ed Harkins's rhythm seminar.;
-#X text 307 32 Dual rhythmic patterns: the dark marks are;
-#X text 305 53 the beats and the lighter ones help;
-#X text 304 73 show the proportions.;
-#X coords 0 659 1 658 0 0 0;
-#X restore 26 208 pd output;
-#N canvas 386 64 781 519 generator 0;
-#X obj 646 4 r start;
-#X obj 645 71 pointer;
-#X obj 646 27 symbol;
-#X obj 645 92 s this-ptr;
-#X msg 645 49 traverse \$1 \, bang;
-#X msg 69 16 \; pd-output clear;
-#X msg 187 18 \; start pd-output;
+#X text 21 49 3:2;
+#X text 21 77 5:2;
+#X text 21 106 7:2;
+#X text 18 169 2:3;
+#X text 19 199 4:3;
+#X text 20 230 5:3;
+#X text 19 259 7:3;
+#X text 20 286 8:3;
+#X text 20 348 3:4;
+#X text 21 377 5:4;
+#X text 21 407 7:4;
+#X text 19 466 4:5;
+#X text 19 498 6:5;
+#X text 21 527 7:5;
+#X text 21 557 8:5;
+#X text 303 92 Inspired by Ed Harkins's rhythm seminar.;
+#X text 307 31 Dual rhythmic patterns: the dark marks are;
+#X text 305 52 the beats and the lighter ones help;
+#X text 304 72 show the proportions.;
+#X coords 0 658 1 657 0 0 0;
+#X restore 114 149 pd output;
+#N canvas 386 64 783 579 generator 0;
+#X obj 632 40 r start;
+#X obj 632 119 pointer;
+#X obj 632 68 symbol;
+#X obj 632 143 s this-ptr;
+#X msg 632 94 traverse \$1 \, bang;
+#X msg 52 34 \; pd-output clear;
+#X msg 180 34 \; start pd-output;
 #X obj 57 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 208 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 362 171 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 57 138 r add-pts1;
-#X obj 52 258 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 208 128 r add-pts1;
+#X obj 52 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 187 259 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 187 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 322 260 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 323 280 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 53 230 r add-pts1;
+#X obj 187 230 r add-pts1;
 #X obj 57 190 beat-maker 3 2 600;
 #X obj 208 189 beat-maker 5 2 570;
 #X obj 362 190 beat-maker 7 2 540;
-#X obj 454 259 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 463 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 593 257 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 602 277 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 56 343 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 56 363 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 191 344 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 191 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 326 345 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 328 365 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 57 315 r add-pts1;
-#X obj 52 445 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 191 335 r add-pts1;
+#X obj 52 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 187 446 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 197 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 322 447 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 334 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 53 417 r add-pts1;
-#X obj 460 448 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 197 447 r add-pts1;
+#X obj 472 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 53 278 beat-maker 2 3 480;
-#X obj 323 278 beat-maker 5 3 420;
-#X obj 455 278 beat-maker 7 3 390;
-#X obj 594 276 beat-maker 8 3 360;
-#X obj 55 363 beat-maker 3 4 300;
-#X obj 189 364 beat-maker 5 4 270;
-#X obj 328 364 beat-maker 7 4 240;
-#X obj 52 465 beat-maker 4 5 180;
-#X obj 186 466 beat-maker 6 5 150;
-#X obj 324 466 beat-maker 7 5 120;
-#X obj 462 467 beat-maker 8 5 90;
-#X obj 187 279 beat-maker 4 3 450;
-#X msg 450 14 \; add-rect 40 30 2 580 \; add-rect 140 30 2 580 \; add-rect
+#X obj 53 301 beat-maker 2 3 480;
+#X obj 323 301 beat-maker 5 3 420;
+#X obj 463 301 beat-maker 7 3 390;
+#X obj 602 301 beat-maker 8 3 360;
+#X obj 55 387 beat-maker 3 4 300;
+#X obj 191 388 beat-maker 5 4 270;
+#X obj 328 388 beat-maker 7 4 240;
+#X obj 52 520 beat-maker 4 5 180;
+#X obj 197 520 beat-maker 6 5 150;
+#X obj 334 520 beat-maker 7 5 120;
+#X obj 472 520 beat-maker 8 5 90;
+#X obj 187 301 beat-maker 4 3 450;
+#X msg 432 34 \; add-rect 40 30 2 580 \; add-rect 140 30 2 580 \; add-rect
 240 30 2 580 \; add-rect 340 30 2 450 \; add-rect 440 30 2 280 \; add-rect
 540 30 2 150 \;;
-#X msg 305 19 \; add-pts1 bang \;;
+#X msg 308 34 \; add-pts1 bang \;;
 #X connect 0 0 2 0;
 #X connect 1 0 3 0;
 #X connect 2 0 4 0;
@@ -449,7 +449,7 @@
 #X connect 27 0 26 0;
 #X connect 27 0 28 0;
 #X connect 28 0 39 0;
-#X restore 27 166 pd generator;
-#X text 27 21 Example: computing and graphing beat patterns. I made
+#X restore 115 93 pd generator;
+#X text 41 21 Example: computing and graphing beat patterns. I made
 this to make it easier to practice performing a-in-the-time-of-b time
-divisions.;
+divisions., f 46;

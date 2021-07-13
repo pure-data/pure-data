@@ -9,6 +9,8 @@ moment it also defines "text" but it may later be better to split this off. */
 #include "g_canvas.h"    /* just for glist_getfont, bother */
 #include <string.h>
 #include <stdio.h>
+#define __USE_GNU     /* needed so stdlib will define qsort_r */
+#include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -23,6 +25,10 @@ static t_class *text_define_class;
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
+#endif
+
+#ifdef _WIN32
+#define qsort_r qsort_s   /* of course Microsoft decides to be different */
 #endif
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
@@ -205,7 +211,7 @@ static void textbuf_free(t_textbuf *x)
         pd_unbind(x2, gensym("#A"));
 }
 
-    /* random helper function */
+    /* random helper function to find the nth line in a text buffer */
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
     int i, cnt = 0;
@@ -351,6 +357,7 @@ void text_define_bang(t_text_define *x)
     /* set from a list */
 void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
 {
+    binbuf_clear(x->x_binbuf);
     binbuf_restore(x->x_binbuf, argc, argv);
     textbuf_senditup(&x->x_textbuf);
 }
@@ -382,6 +389,203 @@ static void text_define_send(t_text_define *x, t_symbol *s)
         gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
         pd_pointer(s->s_thing, &x->x_gp);
     }
+}
+
+typedef struct _keyinfo
+{
+    int ki_forward; /* one if forward, -1 if reversed */
+    int ki_onset;   /* number of fields to skip over */
+} t_keyinfo;
+
+    /* apple products seem to have their own prototypes for qsort_r (?) */
+#ifdef __APPLE__
+static int text_sortcompare(void *zkeyinfo, const void *z1, const void *z2)
+#else
+static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
+#endif
+{
+    const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
+    t_keyinfo *k = (t_keyinfo *)zkeyinfo;
+    int count;
+        /* advance first line by key onset and react if we run out early */
+    for (count = k->ki_onset; count--; a1++)
+    {
+        if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
+        {
+                /* if second line runs out early too consider them equal */
+            for (count = k->ki_onset; count--; a2++)
+                if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+                    goto equal;
+            return (-k->ki_forward);
+        }
+    }
+    for (count = k->ki_onset; count--; a2++)
+        if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+            return (-k->ki_forward);
+        /* compare remaining fields */
+    for (; ; a1++, a2++)
+    {
+        if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
+        {
+                /* hit end of first line */
+            if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+                 goto equal;
+            else return (-k->ki_forward);
+        }
+        else if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+            return (k->ki_forward); /* hit end of second line */
+
+            /* otherwise if they're different return something, and
+            if not proceed to next field */
+        else if (a1->a_type == A_FLOAT)
+        {
+            if (a2->a_type == A_FLOAT)
+            {
+                if (a1->a_w.w_float < a2->a_w.w_float)
+                    return (-k->ki_forward);
+                else if (a1->a_w.w_float > a2->a_w.w_float)
+                    return (k->ki_forward);
+            }
+            else return (-k->ki_forward);
+        }
+        else if (a1->a_type == A_SYMBOL)
+        {
+            if (a2->a_type == A_SYMBOL)
+            {
+                int z = strcmp(a1->a_w.w_symbol->s_name,
+                    a2->a_w.w_symbol->s_name);
+                if (z)
+                    return (z * k->ki_forward);
+            }
+            else return (k->ki_forward);
+        }
+    }
+equal:
+    /* ran out of both lines at same time, so we're "equal".
+    in this case compare pointers so that "equal" lines (which
+    might not be identical because of a nonzero onset) stay in the
+    same order as before. */
+    if (a1 < a2)
+        return (-1);
+    else return (1);
+}
+
+
+/* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
+ * Both are not available in Emscripten, Android or older MSVC versions.
+ * 'stupid_sortcompare' is thread-safe but not reentrant.
+ */
+#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+#define STUPID_SORT
+static PERTHREAD void *stupid_zkeyinfo;
+static int stupid_sortcompare(const void *z1, const void *z2)
+{
+    return (text_sortcompare(z1, z2, stupid_zkeyinfo));
+}
+#endif
+
+    /* sort the contents */
+static void text_define_sort(t_text_define *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+        thisline, startline;
+    t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
+    t_binbuf *newb;
+    t_keyinfo k;
+    k.ki_forward = 1;
+    k.ki_onset = 0;
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+            unique = 1;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-r"))
+            k.ki_forward = -1;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-k")  && argc > 1
+            && argv[1].a_type == A_FLOAT)
+        {
+            if ((k.ki_onset = argv[1].a_w.w_float) < 0)
+                k.ki_onset = 0;
+            argc--; argv++;
+        }
+        else
+        {
+            pd_error(x, "text define sort: unknown flag ...");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: text define sort ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
+    if (!natom)
+        return;
+            /* last thing in buffer should be a terminator */
+    if (vec[natom-1].a_type != A_SEMI &&
+        vec[natom-1].a_type != A_COMMA)
+            binbuf_addsemi(x->x_binbuf),
+                vec = binbuf_getvec(x->x_binbuf),
+                    natom = binbuf_getnatom(x->x_binbuf),
+                        nlines++;
+    for (i = nlines = 0; i < natom; i++)
+        if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
+            nlines++;
+    sortbuf = (t_atom **)getbytes(nlines * sizeof(*sortbuf));
+    for (i = thisline = 0, startline = 1; i < natom; i++)
+    {
+        if (startline)
+        {
+            if (thisline >= nlines)
+                bug("text_define_sort");
+            sortbuf[thisline++] = vec+i;
+        }
+        startline = (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
+    }
+#ifdef STUPID_SORT
+    stupid_zkeyinfo = &k;
+    qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
+#else
+#ifdef __APPLE__
+    qsort_r(sortbuf, nlines, sizeof(*sortbuf), &k, text_sortcompare);
+#else /* __APPLE__ */
+    qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
+#endif /* __APPLE__ */
+#endif /* STUPID_SORT */
+    newb = binbuf_new();
+    for (thisline = 0; thisline < nlines; thisline++)
+    {
+        if (unique && thisline > 0)   /* check for duplicates */
+        {
+            for (a1 = sortbuf[thisline-1], a2 = sortbuf[thisline]; ; a1++, a2++)
+            {
+                if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
+                {
+                    if (a1->a_type == a2->a_type)
+                        goto skipit; /* duplicate line, don't copy */
+                    else goto doit;
+                }
+                else if (a1->a_type != a2->a_type ||
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
+                            goto doit;
+            }
+        }
+    doit:
+        for (i = 0, a1 = sortbuf[thisline];
+            a1->a_type != A_SEMI && a1->a_type != A_COMMA; i++, a1++)
+                ;
+        binbuf_add(newb, i+1, sortbuf[thisline]);
+    skipit: ;
+    }
+    binbuf_free(x->x_binbuf);
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf = newb;
+    freebytes(sortbuf, nlines * sizeof(*sortbuf));
+    textbuf_senditup(&x->x_textbuf);
 }
 
     /* notification from GUI that we've been updated */
@@ -813,7 +1017,7 @@ static void text_insert_list(t_text_insert *x,
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int start, end, n, nwas, i,
-         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : (int)x->x_f1);
 
     t_atom *vec;
     if (!b)
@@ -1034,6 +1238,8 @@ typedef struct _text_search
     t_text_client x_tc;
     t_outlet *x_out1;       /* line indices */
     int x_nkeys;
+    int x_onset;        /* first line to include in search */
+    int x_range;        /* max number of lines to search */
     t_key *x_keyvec;
 } t_text_search;
 
@@ -1049,6 +1255,8 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     if (nkey == 0)
         nkey = 1;
     x->x_nkeys = nkey;
+    x->x_onset = 0;
+    x->x_range = 0x7fffffff;
     x->x_keyvec = (t_key *)getbytes(nkey * sizeof(*x->x_keyvec));
     if (!argc)
         x->x_keyvec[0].k_field = 0, x->x_keyvec[0].k_binop = KB_EQ;
@@ -1110,8 +1318,14 @@ static void text_search_list(t_text_search *x,
     {
         if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA || i == n-1)
         {
-            int thisn = i - thisstart, j, field = x->x_keyvec[0].k_field,
-                binop = x->x_keyvec[0].k_binop;
+            int thisn, j, field, binop;
+            if (lineno < x->x_onset)
+                goto nomatch;
+            if (lineno >= x->x_onset + x->x_range)
+                break;
+            thisn = i - thisstart;
+            field = x->x_keyvec[0].k_field;
+            binop = x->x_keyvec[0].k_binop;
                 /* do we match? */
             for (j = 0; j < argc; )
             {
@@ -1258,6 +1472,13 @@ static void text_search_list(t_text_search *x,
     outlet_float(x->x_out1, bestline);
 }
 
+static void text_search_range(t_text_search *x, t_floatarg onset,
+    t_floatarg range)
+{
+    x->x_onset = (onset >= 0x7fffffff ? 0x7ffffff : (onset < 0 ? 0 : onset));
+    x->x_range = (range >= 0x7fffffff ? 0x7ffffff : (range < 0 ? 0 : range));
+}
+
 /* ---------------- text_sequence object - sequencer ----------- */
 t_class *text_sequence_class;
 
@@ -1272,7 +1493,7 @@ typedef struct _text_sequence
     t_atom *x_argv;
     t_symbol *x_waitsym;    /* symbol to initiate wait, zero if none */
     int x_waitargc;         /* how many leading numbers to use for waiting */
-    t_clock *x_clock;       /* calback for auto mode */
+    t_clock *x_clock;       /* callback for auto mode */
     t_float x_nextdelay;
     t_symbol *x_lastto;     /* destination symbol if we're after a comma */
     unsigned char x_eaten;  /* true if we've eaten leading numbers already */
@@ -1667,7 +1888,7 @@ static void qlist_tick(t_qlist *x);
 
 static t_class *qlist_class;
 
-static void *qlist_new( void)
+static void *qlist_new(void)
 {
     t_qlist *x = (t_qlist *)pd_new(qlist_class);
     textbuf_init(&x->x_textbuf, gensym("qlist"));
@@ -1895,7 +2116,7 @@ static void qlist_free(t_qlist *x)
 
 static t_class *textfile_class;
 
-static void *textfile_new( void)
+static void *textfile_new(void)
 {
     t_qlist *x = (t_qlist *)pd_new(textfile_class);
     textbuf_init(&x->x_textbuf, gensym("textfile"));
@@ -1957,7 +2178,7 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-void text_template_init( void)
+void text_template_init(void)
 {
     t_binbuf *b;
     b = binbuf_new();
@@ -1971,7 +2192,7 @@ void text_template_init( void)
     binbuf_free(b);
 }
 
-void x_qlist_setup(void )
+void x_qlist_setup(void)
 {
     text_template_init();
     text_define_class = class_new(gensym("text define"),
@@ -1995,6 +2216,8 @@ void x_qlist_setup(void )
         gensym("read"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_send,
         gensym("send"), A_SYMBOL, 0);
+    class_addmethod(text_define_class, (t_method)text_define_sort,
+        gensym("sort"), A_GIMME, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
@@ -2048,6 +2271,8 @@ void x_qlist_setup(void )
         (t_newmethod)text_search_new, (t_method)text_client_free,
             sizeof(t_text_search), 0, A_GIMME, 0);
     class_addlist(text_search_class, text_search_list);
+    class_addmethod(text_search_class, (t_method)text_search_range,
+        gensym("range"), A_FLOAT, A_FLOAT, 0);
     class_sethelpsymbol(text_search_class, gensym("text-object"));
 
     text_sequence_class = class_new(gensym("text sequence"),
@@ -2127,3 +2352,20 @@ void x_qlist_setup(void )
     class_addbang(textfile_class, textfile_bang);
 }
 
+/* public interface to get text buffers by name */
+
+t_binbuf *text_getbufbyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        return (y->x_textbuf.b_binbuf);
+    else return (0);
+}
+
+    /* notify text object that binbuf was modified */
+void text_notifybyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        text_define_notify(y);
+}

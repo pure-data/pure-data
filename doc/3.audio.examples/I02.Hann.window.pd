@@ -1,37 +1,38 @@
-#N canvas 279 221 567 589 12;
-#N canvas 228 148 651 544 fft-analysis 0;
-#X obj 15 164 *~;
-#X obj 14 99 inlet~;
-#X obj 15 218 rfft~;
-#X obj 36 140 tabreceive~ \$0-hann;
-#X obj 14 306 *~;
-#X obj 56 306 *~;
-#X obj 15 356 sqrt~;
-#X obj 14 498 tabwrite~ \$0-magnitude;
-#X obj 23 386 loadbang;
-#X obj 23 470 metro 250;
-#X obj 23 449 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+#N canvas 565 147 568 608 12;
+#N canvas 228 148 612 574 fft-analysis 0;
+#X obj 45 184 *~;
+#X obj 44 119 inlet~;
+#X obj 45 238 rfft~;
+#X obj 66 160 tabreceive~ \$0-hann;
+#X obj 44 326 *~;
+#X obj 86 326 *~;
+#X obj 45 376 sqrt~;
+#X obj 44 518 tabwrite~ \$0-magnitude;
+#X obj 53 406 loadbang;
+#X obj 53 490 metro 250;
+#X obj 53 469 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
 ;
-#X msg 31 411 \; pd dsp 1;
-#X obj 15 8 block~ 512;
-#X text 225 131 tabreceive~ outputs array contents \,;
-#X text 225 149 constantly \, every block. Here it's;
-#X text 223 169 used to get the Hann window to;
-#X text 225 187 multiply by the input.;
-#X text 120 7 block~ object does no computation but declares this;
-#X text 120 24 window to be operating at a different block size from
+#X msg 61 431 \; pd dsp 1;
+#X obj 35 35 block~ 512;
+#X text 255 151 tabreceive~ outputs array contents \,;
+#X text 255 169 constantly \, every block. Here it's;
+#X text 253 189 used to get the Hann window to;
+#X text 255 207 multiply by the input.;
+#X text 131 13 block~ object does no computation but declares this
 ;
-#X text 122 58 Fourier transform.;
-#X text 121 40 the parent window. This determines the size of the;
-#X text 76 99 The inlet~ automatically re-blocks to the new block size.
+#X text 131 30 window to be operating at a different block size from
 ;
-#X obj 15 332 +~;
-#X text 94 308 Take the magnitude by squaring real and imaginary part
+#X text 133 64 Fourier transform.;
+#X text 132 46 the parent window. This determines the size of the;
+#X text 106 119 The inlet~ automatically re-blocks to the new block
+size.;
+#X obj 45 352 +~;
+#X text 124 328 Take the magnitude by squaring real and imaginary part
 \, adding and taking square root.;
-#X text 110 424 periodically graph the output. It appears every 512
+#X text 140 444 periodically graph the output. It appears every 512
 samples (about 12 milliseconds) but we only update the graph 4 times
 per second. The graph is back on the main (parent) window.;
-#X text 82 215 forward real FFT. Like "fft~" \, but only one inlet
+#X text 112 235 forward real FFT. Like "fft~" \, but only one inlet
 (for the real part) and only the first half of the output signals are
 used. (The others are determined by symmetry: they're complex conjugates
 of the first half \, in reverse order.) This takes 1/2 the CPU time
@@ -51,22 +52,22 @@ of "fft".;
 #X connect 9 0 7 0;
 #X connect 10 0 9 0;
 #X connect 22 0 6 0;
-#X restore 26 289 pd fft-analysis;
+#X restore 26 293 pd fft-analysis;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-magnitude 256 float 0;
 #X coords 0 256 255 0 256 100 1;
-#X restore 287 208 graph;
-#X text 110 6 WINDOWING AND BLOCKING FOURIER TRANSFORMS;
-#X obj 25 264 osc~;
-#X floatatom 25 218 5 0 0 0 - - -;
-#X obj 25 240 * 10;
-#X text 305 559 updated for Pd version 0.39;
-#X text 445 186 magnitude;
-#X text 284 311 0;
-#X text 522 311 255;
-#X text 273 297 0;
-#X text 255 253 128;
-#X text 254 203 256;
+#X restore 256 212 graph;
+#X text 89 17 WINDOWING AND BLOCKING FOURIER TRANSFORMS;
+#X obj 26 266 osc~;
+#X floatatom 26 217 5 0 0 0 - - -;
+#X obj 26 242 * 10;
+#X text 306 561 updated for Pd version 0.39;
+#X text 414 190 magnitude;
+#X text 253 315 0;
+#X text 491 315 255;
+#X text 242 301 0;
+#X text 224 257 128;
+#X text 223 207 256;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 512 float 1;
 #A 0 0 3.76403e-05 0.000150591 0.000338793 0.000602275 0.000940949
@@ -137,36 +138,36 @@ of "fft".;
 0.00135431 0.000940561 0.000601947 0.000338584 0.000150442 3.75807e-05
 ;
 #X coords 0 1 511 0 200 120 1;
-#X restore 278 401 graph;
-#X msg 156 415 0;
-#X obj 50 464 osc~;
-#X obj 50 416 samplerate~;
-#X obj 50 487 *~ -0.5;
-#X obj 50 510 +~ 0.5;
-#X obj 42 535 tabwrite~ \$0-hann;
-#X text 264 393 1;
-#X text 257 511 0;
-#X text 273 524 0;
-#X obj 50 440 / 512;
-#X obj 42 393 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 286 380 graph;
+#X msg 157 417 0;
+#X obj 51 466 osc~;
+#X obj 51 418 samplerate~;
+#X obj 51 489 *~ -0.5;
+#X obj 51 512 +~ 0.5;
+#X obj 43 537 tabwrite~ \$0-hann;
+#X text 272 372 1;
+#X text 265 490 0;
+#X text 281 503 0;
+#X obj 51 442 / 512;
+#X obj 43 395 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 383 378 Hann window;
-#X text 98 462 period 512;
-#X text 40 368 recalculate Hann;
-#X text 75 383 window table;
-#X text 100 233 tens of Hz.;
-#X text 80 215 <- frequency \,;
-#X text 98 270 click here and;
-#X text 170 286 <- see;
-#X text 21 32 In this example we use a sub-patch ("pd fft-analysis")
+#X text 391 357 Hann window;
+#X text 99 464 period 512;
+#X text 41 370 recalculate Hann;
+#X text 76 385 window table;
+#X text 91 233 tens of Hz.;
+#X text 86 273 click here and;
+#X text 34 50 In this example we use a sub-patch ("pd fft-analysis")
 to re-block the Fourier transform to 512 points. The signal is multiplied
 by the Hann window function (which is just a raised cosine.) The magnitude
 \, which is computed in the sub-patch \, is graphed below in this window.
 The point at 255 corresponds to just below the Nyquist frequency. Phase
 isn't shown \, and unlike the previous patch we don't control the initial
 phase of the oscillator. (For fun \, try drawing other window functions
-with the mouse...);
-#X text 459 527 511;
+with the mouse...), f 68;
+#X text 467 506 511;
+#X text 142 292 <= see;
+#X text 71 215 <= frequency \,;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
 #X connect 5 0 3 0;

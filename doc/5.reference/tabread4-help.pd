@@ -1,38 +1,38 @@
-#N canvas 61 69 685 536 12;
-#X text 89 188 index;
-#X obj 36 9 tabread;
-#X floatatom 52 189 0 0 0 0 - - -;
+#N canvas 414 107 751 546 12;
+#X text 89 178 index;
+#X obj 66 11 tabread;
+#X floatatom 52 179 0 0 0 0 - - -;
 #X floatatom 52 285 0 0 0 0 - - -;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array array99 10 float 3;
 #A 0 9 0 8 1 7 2 6 3 5 4;
 #X coords 0 10 10 0 250 200 1 0 0;
-#X restore 398 219 graph;
+#X restore 435 192 graph;
 #X text 90 286 output = array99[index];
 #X text 196 243 creation argument;
 #X text 198 259 gives array name;
 #X msg 62 211 set array99;
 #X text 174 211 change array name;
-#X text 109 9 - read numbers from a table;
+#X text 139 11 - read numbers from a table;
 #X msg 36 363 \; array99 xlabel -0.5 0 1 2 3 4 5 6 7 8 9 10 \; array99
 ylabel -1 0 1 2 3 4 5 6 7 8 9 10;
-#X text 449 486 updated for Pd version 0.43;
+#X text 517 485 updated for Pd version 0.43;
 #X obj 37 337 loadbang;
-#X text 8 433 see also the "array" tutorial in section 2 of the Pd
+#X text 32 445 see also the "array" tutorial in section 2 of the Pd
 documentation \, and these objects:;
-#X obj 9 472 tabwrite~;
-#X obj 213 472 tabwrite;
-#X obj 278 472 tabsend~;
-#X obj 343 472 tabreceive~;
-#X obj 80 472 tabplay~;
+#X obj 33 484 tabwrite~;
+#X obj 237 484 tabwrite;
+#X obj 302 484 tabsend~;
+#X obj 367 484 tabreceive~;
+#X obj 104 484 tabplay~;
 #X obj 52 251 tabread4 array99;
-#X obj 148 472 tabread;
-#X text 59 44 The tabread4 object reads values from an array ("table")
+#X obj 172 484 tabread;
+#X text 68 58 The tabread4 object reads values from an array ("table")
 according to an index \, applying four-point polynomial interpolation.
 Indices should range from 1 to (size-2) so that the 4-point interpolation
 is meaningful. You can shift-drag the number box to see the effect
-of interpolation. Indices outside of the range are replaced by the nearest
-index in range (from 1 to 8 in this example).;
+of interpolation. Indices outside of the range are replaced by the
+nearest index in range (from 1 to 8 in this example)., f 73;
 #X connect 2 0 20 0;
 #X connect 8 0 20 0;
 #X connect 13 0 11 0;

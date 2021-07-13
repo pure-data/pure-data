@@ -125,13 +125,13 @@ void clock_setunit(t_clock *x, double timeunit, int sampflag)
 
     /* get current logical time.  We don't specify what units this is in;
     use clock_gettimesince() to measure intervals from time of this call. */
-double clock_getlogicaltime( void)
+double clock_getlogicaltime(void)
 {
     return (pd_this->pd_systime);
 }
 
     /* OBSOLETE (misleading) function name kept for compatibility */
-double clock_getsystime( void) { return (pd_this->pd_systime); }
+double clock_getsystime(void) { return (pd_this->pd_systime); }
 
     /* elapsed time in milliseconds since the given system time */
 double clock_gettimesince(double prevsystime)
@@ -175,7 +175,7 @@ static int sys_histogram[NHIST][NBIN];
 static double sys_histtime;
 static int sched_diddsp, sched_didpoll, sched_didnothing;
 
-void sys_clearhist( void)
+void sys_clearhist(void)
 {
     unsigned int i, j;
     for (i = 0; i < NHIST; i++)
@@ -184,7 +184,7 @@ void sys_clearhist( void)
     sched_diddsp = sched_didpoll = sched_didnothing = 0;
 }
 
-void sys_printhist( void)
+void sys_printhist(void)
 {
     unsigned int i, j;
     for (i = 0; i < NHIST; i++)
@@ -298,7 +298,7 @@ static int sched_lastinclip, sched_lastoutclip,
 
 void glob_watchdog(t_pd *dummy);
 
-static void sched_pollformeters( void)
+static void sched_pollformeters(void)
 {
     int inclip, outclip, indb, outdb;
     static int sched_nextmeterpolltime, sched_nextpingtime;
@@ -367,6 +367,13 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
+static float sched_fastforward;
+
+void glob_fastforward(void *dummy, t_floatarg f)
+{
+    sched_fastforward = f;
+}
+
 void dsp_tick(void);
 
 static int sched_useaudio = SCHED_AUDIO_NONE;
@@ -397,7 +404,7 @@ void sched_set_using_audio(int flag)
 }
 
     /* take the scheduler forward one DSP tick, also handling clock timeouts */
-void sched_tick( void)
+void sched_tick(void)
 {
     double next_sys_time = pd_this->pd_systime +
         (STUFF->st_schedblocksize/STUFF->st_dacsr) * TIMEUNITPERSECOND;
@@ -434,15 +441,15 @@ call.  This call returns true if samples were transferred; false means that
 the audio I/O system is still busy with previous transfers.
 */
 
-void sys_pollmidiqueue( void);
-void sys_initmidiqueue( void);
+void sys_pollmidiqueue(void);
+void sys_initmidiqueue(void);
 
  /* sys_idlehook is a hook the user can fill in to grab idle time.  Return
 nonzero if you actually used the time; otherwise we're really really idle and
 will now sleep. */
 int (*sys_idlehook)(void);
 
-static void m_pollingscheduler( void)
+static void m_pollingscheduler(void)
 {
     int idlecount = 0;
 
@@ -465,12 +472,18 @@ static void m_pollingscheduler( void)
 
         sys_addhist(0);
     waitfortick:
+        while (sched_fastforward > 0)
+        {
+            double beforetick = pd_this->pd_systime;
+            sched_tick();
+            sched_fastforward -= clock_gettimesince(beforetick);
+        }
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
             sys_unlock();
             timeforward = sys_send_dacs();
             sys_lock();
-#if 0   /* in linux and windoes, sometimes audio devices would freeze, which
+#if 0   /* in linux and windows, sometimes audio devices would freeze, which
                in turn would freeze Pd.  This code unfroze things by closing
                audio in such cases.  But this seems no longer necessary, and
                on Macs at least, this seems to cause audio to get dropped if

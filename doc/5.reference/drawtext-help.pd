@@ -1,49 +1,55 @@
-#N struct help-drawnumber-template float x float y float cat float
-dog symbol weasel;
-#N canvas 445 324 600 204 12;
-#X text 15 103 see also:;
-#X obj 18 7 drawnumber;
-#X obj 187 132 plot;
-#X obj 83 131 drawpolygon;
-#X text 240 0 -- draw numeric fields from data structures;
-#N canvas 11 52 375 224 help-drawnumber-data 1;
-#X scalar help-drawnumber-template 50 100 23 43 ethel \;;
-#X scalar help-drawnumber-template 150 50 3.14 -1.618 fred \;;
-#X restore 273 71 pd help-drawnumber-data;
-#N canvas 439 52 565 765 help-drawnumber-template 1;
-#X text 25 567 This object defines the fields for this template. Their
+#N struct help-draw-data float x float y float cat float dog symbol
+weasel text boom;
+#N canvas 610 149 573 219 12;
+#X text 43 126 see also:;
+#X obj 46 18 drawnumber;
+#X obj 215 155 plot;
+#X obj 111 154 drawpolygon;
+#X obj 50 153 struct;
+#X obj 46 45 drawsymbol;
+#X obj 46 74 drawtext;
+#N canvas 733 37 530 678 help-draw-template 0;
+#X text 28 523 This object defines the fields for this template. Their
 values are initialized in the "works" subwindow. You can see them by
 right-clicking on the object in the "data" window and selecting "properties."
 ;
-#X text 42 211 - RGB color (0=black \, 999=white \, 900=red \, 90=green
+#X text 44 211 - RGB color (0=black \, 999=white \, 900=red \, 90=green
 \, 9=blue \, 555=grey \, etc.);
-#X text 19 316 When not in "edit" mode \, you can click and drag vertically
+#X text 21 316 When not in "edit" mode \, you can click and drag vertically
 on the numbers to change their values. (In edit mode you can move \,
 cut \, copy \, and paste the objects.);
-#X text 21 365 Keyboard entry isn't supported yet.;
-#X obj 25 56 drawnumber cat 0 0 0 cat=;
-#X obj 260 57 drawnumber dog 0 -15 900 dog=;
-#X text 42 243 - an optional label ("cat=" for instance);
-#X text 27 85 drawnumber takes arguments specifying:;
-#X text 42 191 - an (x \, y) pair giving relative coordinates \;;
-#X text 42 171 - the number to draw;
-#X text 44 24 "0" in inlet makes invisible;
-#X obj 25 27 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+#X text 44 243 - an optional label ("cat=" for instance);
+#X text 44 191 - an (x \, y) pair giving relative coordinates \;;
+#X text 46 24 "0" in inlet makes invisible;
+#X obj 27 27 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
 ;
-#X text 46 112 - optional "-n" flag to make invisible initially;
-#X text 44 133 - alternatively \, an optional "-v [variable]" flag
+#X text 48 112 - optional "-n" flag to make invisible initially;
+#X text 46 133 - alternatively \, an optional "-v [variable]" flag
 to assign a variable to make this visible/invisible.;
-#X text 20 273 Any of these (except the two flags) can be numbers or
-field names \, like "dog" and "cat" here.;
-#X obj 27 646 struct help-drawnumber-template float x float y float
-cat float dog symbol weasel;
-#X obj 26 460 drawsymbol weasel 0 -30 0 weasel=;
-#X text 26 405 To draw a symbol \, use the drawsymbol object. Same
-arguments. No way to edit symbols though - they can only be changed
-through "set" objects..;
-#X connect 11 0 4 0;
-#X restore 273 44 pd help-drawnumber-template;
-#X obj 22 130 struct;
-#X text 275 159 updated for Pd version 0.39;
-#X obj 107 8 drawsymbol;
-#X obj 107 40 drawtext;
+#X text 29 85 drawnumber/drawsymbol/drawtext takes arguments specifying:
+;
+#X text 44 171 - the field name to draw;
+#X text 22 273 Any of these (except the two flags) can be numbers or
+field names \, like "cat" and "dog" here.;
+#X obj 27 56 drawnumber cat 0 0 0 cat=;
+#X obj 262 57 drawnumber dog 0 -15 900 dog=;
+#X obj 91 459 drawsymbol weasel 0 -30 0 weasel=;
+#X text 23 365 Keyboard entry is also supported \, just click and type.
+;
+#X obj 91 486 drawtext boom 0 -45 0 boom=;
+#X obj 30 601 struct help-draw-data float x float y float cat float
+dog symbol weasel text boom;
+#X text 29 394 Here we use the drawsymbol and drawtext to draw a symbol
+and a text. There's no way to edit symbols/text though - they can only
+be changed through "set" and "text" objects \, respectively., f 63
+;
+#X connect 6 0 12 0;
+#X restore 328 79 pd help-draw-template;
+#N canvas 128 115 455 265 help-draw-data 1;
+#X scalar help-draw-data 63 134 628 651 weasel \; a b c \\\; \;;
+#X scalar help-draw-data 255 95 628 651 weasel \; a b c \\\; \;;
+#X restore 328 106 pd help-draw-data;
+#X text 313 155 updated for Pd version 0.50.;
+#X text 140 22 -- currently \, all these objects are aliases of the
+same class \, which is used to draw either numbers \, symbols or texts
+fields., f 51;

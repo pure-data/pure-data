@@ -78,7 +78,7 @@ void rtext_free(t_rtext *x)
     freebytes(x, sizeof *x);
 }
 
-char *rtext_gettag(t_rtext *x)
+const char *rtext_gettag(t_rtext *x)
 {
     return (x->x_tag);
 }
@@ -186,6 +186,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int inindex_c = 0;
     int selstart_b = 0, selend_b = 0;
     int x_bufsize_c = u8_charnum(x->x_buf, x->x_bufsize);
+    char smallescbuf[400], *escbuf = 0;
+    size_t escchars = 0;
         /* if we're a GOP (the new, "goprect" style) borrow the font size
         from the inside to preserve the spacing */
     if (pd_class(&x->x_text->te_pd) == canvas_class &&
@@ -309,6 +311,12 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             x->x_text->te_width = widthwas;
         else x->x_text->te_width = 0;
     }
+    escbuf = (tempbuf == smallbuf)?smallescbuf:t_getbytes(2 * outchars_b + 1);
+    pdgui_strnescape(escbuf, 2 * outchars_b + 1, tempbuf, outchars_b);
+
+    if (action && !canvas->gl_havewindow)
+        action = 0;
+
     if (action == SEND_FIRST)
     {
         int lmargin = LMARGIN, tmargin = TMARGIN;
@@ -322,18 +330,18 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s } %d %s\n",
+        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%s } %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
             dispx + lmargin, dispy + tmargin,
-            outchars_b, tempbuf,
+            escbuf,
             sys_hostfontsize(font, glist_getzoom(x->x_glist)),
             (glist_isselected(x->x_glist,
                 &x->x_glist->gl_gobj)? "blue" : "black"));
     }
     else if (action == SEND_UPDATE)
     {
-        sys_vgui("pdtk_text_set .x%lx.c %s {%.*s }\n",
-            canvas, x->x_tag, outchars_b, tempbuf);
+        sys_vgui("pdtk_text_set .x%lx.c %s {%s }\n",
+            canvas, x->x_tag, escbuf);
         if (pixwide != x->x_drawnwidth || pixhigh != x->x_drawnheight)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
                 pixwide, pixhigh, 0);
@@ -363,6 +371,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     *heightp = pixhigh;
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
+    if(escbuf != smallescbuf)
+        t_freebytes(escbuf, 2 * outchars_b + 1);
 }
 
 void rtext_retext(t_rtext *x)
@@ -532,7 +542,7 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
         x->x_bufsize = newsize;
 
-/* at Guenter's suggestion, use 'n>31' to test wither a character might
+/* at Guenter's suggestion, use 'n>31' to test whether a character might
 be printable in whatever 8-bit character set we find ourselves. */
 
 /*-- moo:

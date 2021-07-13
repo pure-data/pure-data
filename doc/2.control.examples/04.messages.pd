@@ -1,26 +1,32 @@
-#N canvas 0 0 591 442 12;
-#X floatatom 225 110 0 0 0;
-#X floatatom 184 109 0 0 0;
-#X msg 184 56 5 6;
-#X floatatom 132 108 0 0 0;
-#X floatatom 64 105 0 0 0;
-#X text 30 21 Most Pd messages are just numbers or short lists of numbers:;
-#X msg 64 55 5;
-#X obj 64 80 + 9;
-#X obj 132 83 +;
-#X obj 184 84 unpack;
-#X msg 288 55 5;
-#X obj 288 107 print;
-#X obj 288 81 pack 34 78;
-#X msg 132 55 5 6;
-#X floatatom 195 328 0 0 0;
-#X obj 195 303 +;
-#X msg 195 254 1.2 3.4;
-#X msg 205 277 5 6;
-#X text 36 206 Unlike Max \, in Pd all numbers are floating point. Numbers whose values happen to be integers are displayed without decimal points.;
-#X text 31 363 For more on messages \, get help on any message box by right-clicking.;
-#X text 329 409 updated for Pd release 0.33;
-#X text 34 149 If you send a list to an object with more than one inlet \, the items in the list are spread out over the inlets \, as seen in the 5+6 example above.;
+#N canvas 447 23 517 455 12;
+#X floatatom 228 110 0 0 0 0 - - -;
+#X floatatom 187 109 0 0 0 0 - - -;
+#X msg 187 56 5 6;
+#X floatatom 135 108 0 0 0 0 - - -;
+#X floatatom 67 105 0 0 0 0 - - -;
+#X text 33 21 Most Pd messages are just numbers or short lists of numbers:
+;
+#X msg 67 55 5;
+#X obj 67 80 + 9;
+#X obj 135 83 +;
+#X obj 187 84 unpack;
+#X msg 291 55 5;
+#X obj 291 107 print;
+#X obj 291 81 pack 34 78;
+#X msg 135 55 5 6;
+#X floatatom 198 328 0 0 0 0 - - -;
+#X obj 198 303 +;
+#X msg 198 254 1.2 3.4;
+#X msg 208 277 5 6;
+#X text 39 206 Unlike Max \, in Pd all numbers are floating point.
+Numbers whose values happen to be integers are displayed without decimal
+points.;
+#X text 34 363 For more on messages \, get help on any message box
+by right-clicking.;
+#X text 297 411 updated for Pd release 0.33;
+#X text 37 149 If you send a list to an object with more than one inlet
+\, the items in the list are spread out over the inlets \, as seen
+in the 5+6 example above.;
 #X connect 2 0 9 0;
 #X connect 6 0 7 0;
 #X connect 7 0 4 0;

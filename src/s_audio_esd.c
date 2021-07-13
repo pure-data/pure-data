@@ -58,7 +58,7 @@ int esd_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     return (0);
 }
 
-void esd_close_audio( void)
+void esd_close_audio(void)
 {
   close(esd_socket_out);
   close(esd_socket_in);
@@ -113,7 +113,7 @@ int esd_send_dacs(void)
   return (SENDDACS_YES);
 }
 
-void esd_listdevs( void)
+void esd_listdevs(void)
 {
     post("device listing not implemented for ESD yet\n");
 }

@@ -225,13 +225,20 @@ gotone:
         if (s && *s)
           *s = '\0';
         if (!SetDllDirectory(dirname))
-           error("Could not set '%s' as DllDirectory(), '%s' might not load.",
+           error("could not set '%s' as DllDirectory(), '%s' might not load.",
                  dirname, basename);
         /* now load the DLL for the external */
         ntdll = LoadLibrary(filename);
         if (!ntdll)
         {
-            error("%s: couldn't load", filename);
+            wchar_t wbuf[MAXPDSTRING];
+            char buf[MAXPDSTRING];
+            DWORD count, err = GetLastError();
+            count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, MAXPDSTRING, NULL);
+            if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, MAXPDSTRING, 0, 0))
+                *buf = '\0';
+            error("%s: %s (%d)", filename, buf, err);
             class_set_extern_dir(&s_);
             return (0);
         }
@@ -253,7 +260,7 @@ gotone:
         makeout = (t_xxx)dlsym(dlobj,  "setup");
 #else
 #warning "No dynamic loading mechanism specified, \
-    libdl or WIN32 required for loading externals!"
+libdl or WIN32 required for loading externals!"
 #endif
 
     if (!makeout)
@@ -348,7 +355,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         sys_loadlib_iter(dirbuf, &data);
     }
     data.classname = classname;
-    if(!data.ok)
+    if(!data.ok && !sys_isabsolutepath(classname)) /* don't iterate if classname is absolute */
         canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
             &data);
 

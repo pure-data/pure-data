@@ -1,5 +1,5 @@
-#N canvas 55 137 835 504 12;
-#X graph graph1 0 -1.02 130 1.02 565 153 823 23;
+#N canvas 391 107 801 545 12;
+#N canvas 0 22 450 278 (subpatch) 0;
 #X array waveshape15a 131 float 1;
 #A 0 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.863077
@@ -19,8 +19,9 @@
 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.800308 -0.800308
 -0.800308 -0.800308 -0.800308 -0.800308 -0.800308;
-#X pop;
-#X floatatom 194 299 0 0 100;
+#X coords 0 1.02 130 -1.02 258 130 1;
+#X restore 485 29 graph;
+#X floatatom 186 296 0 0 100 0 - - -;
 #N canvas 159 26 532 285 output 0;
 #X obj 338 160 t b;
 #X obj 338 110 f;
@@ -74,11 +75,11 @@
 #X connect 23 0 20 0;
 #X connect 26 0 5 0;
 #X connect 27 0 21 0;
-#X restore 156 327 pd output;
-#X msg 232 300 MUTE;
-#X text 581 481 updated for Pd version 0.34;
-#X text 33 8 SWITCHING BETWEEN TABLES;
-#X graph graph1 0 -1.02 130 1.02 565 308 823 178;
+#X restore 156 321 pd output;
+#X msg 216 297 MUTE;
+#X text 563 471 updated for Pd version 0.34;
+#X text 44 8 SWITCHING BETWEEN TABLES;
+#N canvas 0 22 450 278 (subpatch) 0;
 #X array waveshape15b 131 float 1;
 #A 0 -0.659077 -0.643385 -0.643385 -0.627692 -0.612 -0.612 -0.596308
 -0.596308 -0.580615 -0.580615 -0.580615 -0.580615 -0.580615 -0.580615
@@ -99,22 +100,23 @@
 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
 -0.784615 -0.784615 -0.784615 -0.800308 -0.800308 -0.800308 -0.800308
 -0.800308 -0.800308 -0.800308;
-#X pop;
-#X obj 156 274 tabosc4~ waveshape15a;
-#X obj 156 186 sig~ 110;
-#X msg 181 215 set waveshape15a;
-#X msg 182 244 set waveshape15b;
-#X text 20 51 During a performance you're unlikely to want to draw
+#X coords 0 1.02 130 -1.02 258 130 1;
+#X restore 485 184 graph;
+#X obj 156 268 tabosc4~ waveshape15a;
+#X obj 156 180 sig~ 110;
+#X msg 181 209 set waveshape15a;
+#X msg 182 238 set waveshape15b;
+#X text 24 45 During a performance you're unlikely to want to draw
 or recalculate wavetables on the fly \, because you don't want to give
 Pd computationally intensive atomic tasks that could make Pd miss a
 DAC deadline. Instead \, use "set" messages to switch tabosc~ or tabread4~
 between pre-prepared tables. Indeed \, you will eventually want to
 save screen space by throwing all your wavetables in a subpatch somewhere.
 ;
-#X obj 161 401 table waveshape15c 131;
-#X text 41 362 There's also a "text object" hook so that you can have
+#X obj 166 403 table waveshape15c 131;
+#X text 43 355 There's also a "text object" hook so that you can have
 arrays with parameterizable names and sizes:;
-#X text 31 431 You would use this if you want to include one or more
+#X text 44 439 You would use this if you want to include one or more
 arrays in an abstraction. In this invocation you can't save the state
 of the array--instead \, juts read it in from a file or calculate it
 at startup.;
