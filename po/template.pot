@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.49.0\n"
+"Project-Id-Version: Pure Data 0.51.3\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -255,6 +255,15 @@ msgid "Sample rate:"
 msgstr ""
 
 msgid "Delay (msec):"
+msgstr ""
+
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
 msgstr ""
 
 msgid "Block size:"
@@ -674,13 +683,19 @@ msgstr ""
 msgid "Installation options:"
 msgstr ""
 
-msgid "Try to remove libraries before (re)installing them?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
 
-msgid "Show README of newly installed libraries (if present)?"
+msgid "Try to remove libraries before (re)installing them"
 msgstr ""
 
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
 msgid "Platform settings:"
@@ -693,7 +708,11 @@ msgstr ""
 msgid "User-defined platform:"
 msgstr ""
 
-msgid "Hide foreign architectures?"
+msgid "Hide foreign architectures"
+msgstr ""
+
+#, tcl-format
+msgid "Only show the newest version of a library\n(treats other versions like foreign architectures)"
 msgstr ""
 
 #, tcl-format
@@ -720,6 +739,35 @@ msgid "try using the full name e.g. 'freeverb'"
 msgstr ""
 
 msgid "No matching externals found."
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Search for: "
+msgstr ""
+
+msgid "libraries"
+msgstr ""
+
+msgid "objects"
+msgstr ""
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "More..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr ""
+msgid "Install DEK file..."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
@@ -785,6 +833,16 @@ msgstr ""
 
 #, tcl-format
 msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
@@ -808,6 +866,9 @@ msgstr ""
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr ""
+
+msgid "refusing to delete empty domain"
 msgstr ""
 
 #, tcl-format
@@ -958,6 +1019,12 @@ msgstr ""
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
+msgstr ""
+
+msgid "removed GUI settings"
+msgstr ""
+
+msgid "no Pd-GUI settings to clear"
 msgstr ""
 
 msgid "Path..."

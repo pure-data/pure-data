@@ -21,7 +21,7 @@
 #X obj 119 438 float;
 #X msg 76 203 9.6;
 #X msg 86 225 -9.6;
-#X text 126 213 <= non-integers get truncated torward zero;
+#X text 126 213 <= non-integers get truncated toward zero;
 #X text 331 437 updated for Pd version 0.48;
 #X obj 458 324 value int-help;
 #X text 200 257 send to a named object such as a;

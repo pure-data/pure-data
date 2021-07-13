@@ -316,6 +316,17 @@ static void hradio_dialog(t_hradio *x, t_symbol *s, int argc, t_atom *argv)
     int chg = (int)atom_getfloatarg(4, argc, argv);
     int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+1, 0);
+    SETFLOAT(undo+2, 0);
+    SETFLOAT(undo+3, 0);
+    SETFLOAT(undo+4, (pd_class(&x->x_gui.x_obj.ob_pd) == hradio_old_class)?x->x_change:-1);
+    SETFLOAT(undo+6, x->x_number);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     if(chg != 0) chg = 1;
     x->x_change = chg;
@@ -390,7 +401,7 @@ static void hradio_bang(t_hradio *x)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
         outlet_float(x->x_gui.x_obj.ob_outlet, outval);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
             pd_float(x->x_gui.x_snd->s_thing, outval);
@@ -430,7 +441,7 @@ static void hradio_fout(t_hradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -479,7 +490,7 @@ static void hradio_float(t_hradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -578,7 +589,7 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     int a = IEM_GUI_DEFAULTSIZE, on = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
     int fs = 10;
-    float fval = 0;
+    t_float fval = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);

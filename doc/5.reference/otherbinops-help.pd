@@ -75,7 +75,7 @@ right inlet:, f 25;
 #X obj 71 589 f;
 #X obj 71 631 div;
 #X obj 111 632 mod;
-#X text 414 693 Updated for version 0.47;
+#X text 414 693 Updated for Pd version 0.47;
 #X obj 345 650 +;
 #X text 380 651 (etc) - arithmetic;
 #X text 269 649 see also:;
