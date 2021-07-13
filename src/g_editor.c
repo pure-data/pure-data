@@ -98,15 +98,15 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
     t_object *ob;
+    int has_parent = !glist->gl_havewindow && glist->gl_isgraph
+        && glist->gl_owner && !glist->gl_isclone;
         /* if our parent is a graph, and if that graph itself isn't
            visible, then we aren't either. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_owner
-        && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
+    if (has_parent && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
             return (0);
         /* if we're graphing-on-parent and the object falls outside the
            graph rectangle, don't draw it. */
-    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-        glist->gl_owner)
+    if (has_parent && glist->gl_goprect)
     {
         int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
             /* for some reason the bounds check on arrays and scalars
@@ -763,7 +763,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
                 /* LATER disable redrawing here */
             if (x->gl_havewindow)
                 canvas_redraw(x);
-            if (x->gl_owner && glist_isvisible(x->gl_owner))
+            if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
             {
                 gobj_vis((t_gobj *)x, x->gl_owner, 0);
                 gobj_vis((t_gobj *)x, x->gl_owner, 1);
@@ -816,8 +816,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
 typedef struct _undo_move_elem
 {
     int e_index;
-    int e_xpix;
-    int e_ypix;
+    t_float e_xpix;
+    t_float e_ypix;
 } t_undo_move_elem;
 
 typedef struct _undo_move
@@ -842,8 +842,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             {
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 buf->u_vec[i].e_index = indx;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                buf->u_vec[i].e_xpix = x1 / x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1 / x->gl_zoom;
                 i++;
             }
     }
@@ -853,8 +853,8 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         {
             gobj_getrect(y, x, &x1, &y1, &x2, &y2);
             buf->u_vec[indx].e_index = indx;
-            buf->u_vec[indx].e_xpix = x1;
-            buf->u_vec[indx].e_ypix = y1;
+            buf->u_vec[indx].e_xpix = x1 / x->gl_zoom;
+            buf->u_vec[indx].e_ypix = y1 / x->gl_zoom;
         }
     }
     EDITOR->canvas_undo_already_set_move = 1;
@@ -870,8 +870,8 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
         int i;
         for (i = 0; i < buf->u_n; i++)
         {
-            int newx = buf->u_vec[i].e_xpix;
-            int newy = buf->u_vec[i].e_ypix;
+            float newx = (buf->u_vec[i].e_xpix)*x->gl_zoom;
+            float newy = (buf->u_vec[i].e_ypix)*x->gl_zoom;
             t_gobj*y = glist_nth(x, buf->u_vec[i].e_index);
             if (y)
             {
@@ -882,10 +882,10 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
                 EDITOR->canvas_undo_already_set_move = 1;
-                canvas_displaceselection(x, newx-x1, newy - y1);
+                canvas_displaceselection(x, (newx - x1)/(x->gl_zoom), (newy - y1)/(x->gl_zoom));
                 EDITOR->canvas_undo_already_set_move = doing;
-                buf->u_vec[i].e_xpix = x1;
-                buf->u_vec[i].e_ypix = y1;
+                buf->u_vec[i].e_xpix = x1/x->gl_zoom;
+                buf->u_vec[i].e_ypix = y1/x->gl_zoom;
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
@@ -1447,7 +1447,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         {
             canvas_redraw(x);
         }
-        if (x->gl_owner && glist_isvisible(x->gl_owner))
+        if (x->gl_owner && !x->gl_isclone && glist_isvisible(x->gl_owner))
         {
             glist_noselect(x);
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
@@ -1686,29 +1686,15 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
     {
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
-#if 0
-            /* skipping open font editor for now */
-        t_int properties = gfxstub_haveproperties((void *)x2);
-        if (properties)
-        {
-            char tagbuf[MAXPDSTRING];
-            sprintf(tagbuf, ".gfxstub%lx", (long unsigned int)properties);
-            gui_vmess("gui_font_dialog_change_size", "si",
-                tagbuf,
-                u_f->font);
-        }
-        else
-#else
-        if(1)
-#endif
-        {
-            int whichresize = u_f->which;
-            t_float realresize = 100./u_f->resize;
-            t_float realresx = 1, realresy = 1;
-            if (whichresize != 3) realresx = realresize;
-            if (whichresize != 2) realresy = realresize;
-            canvas_dofont(x2, u_f->font, realresx, realresy);
-        }
+
+        int whichresize = u_f->which;
+        t_float realresize = 1./u_f->resize;
+        t_float realresx = 1, realresy = 1;
+        if (whichresize != 3) realresx = realresize;
+        if (whichresize != 2) realresy = realresize;
+        canvas_dofont(x2, u_f->font, realresx, realresy);
+
+        u_f->resize = realresize;
         u_f->font = tmp_font;
     }
     else if (action == UNDO_FREE)
@@ -1988,7 +1974,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 x->gl_edit);
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
-            while (c->gl_owner) {
+            while (c->gl_owner && !c->gl_isclone) {
                 int cbuflen;
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
@@ -2028,7 +2014,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             ;
             /* if we're a graph on our parent, and if the parent exists
                and is visible, show ourselves on parent. */
-        if (glist_isgraph(x) && x->gl_owner)
+        if (glist_isgraph(x) && x->gl_owner && !x->gl_isclone)
         {
             t_glist *gl2 = x->gl_owner;
             if (glist_isvisible(gl2))
@@ -2052,12 +2038,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
        any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
+    int can_graph_on_parent = x->gl_owner && !x->gl_isclone && !x->gl_loading
+        && glist_isvisible(x->gl_owner);
     if (!flag && glist_isgraph(x))
     {
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = x->gl_hidetext = 0;
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2071,14 +2059,14 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
         if (x->gl_pixheight <= 0)
             x->gl_pixheight = GLIST_DEFGRAPHHEIGHT;
 
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
         x->gl_goprect = !nogoprect;
         if (glist_isvisible(x) && x->gl_goprect)
             glist_redraw(x);
-        if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
+        if (can_graph_on_parent)
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
@@ -2200,7 +2188,7 @@ static void canvas_donecanvasdialog(t_glist *x,
     canvas_dirty(x, 1);
     if (x->gl_havewindow)
         canvas_redraw(x);
-    else if (glist_isvisible(x->gl_owner))
+    else if (!x->gl_isclone && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -3321,7 +3309,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
     int force = fforce;
     t_glist *g;
-    if ((x->gl_owner || x->gl_isclone) && (force == 0 || force == 1))
+    if (x->gl_owner && (force == 0 || force == 1))
         canvas_vis(x, 0);   /* if subpatch, just invis it */
     else if (force == 0)
     {
@@ -3346,7 +3334,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
     else if (force == 2)
     {
         canvas_dirty(x, 0);
-        while (x->gl_owner)
+        while (x->gl_owner && !x->gl_isclone)
             x = x->gl_owner;
         g = glist_finddirty(x);
         if (g)
@@ -3448,6 +3436,9 @@ static int atoms_match(int inargc, t_atom *inargv, int searchargc,
     return (0);
 }
 
+extern int clone_get_n(t_gobj *x);
+extern t_glist *clone_get_instance(t_gobj *x, int n);
+
     /* find an atom or string of atoms */
 static int canvas_dofind(t_canvas *x, int *myindexp)
 {
@@ -3459,6 +3450,7 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
         t_object *ob = 0;
         if ((ob = pd_checkobject(&y->g_pd)))
         {
+            int n;
             if (atoms_match(binbuf_getnatom(ob->ob_binbuf),
                 binbuf_getvec(ob->ob_binbuf), findargc, findargv,
                     EDITOR->canvas_find_wholeword))
@@ -3472,6 +3464,15 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
                     didit = 1;
                 }
                 (*myindexp)++;
+            }
+            if ((n = clone_get_n((t_gobj *)ob)) != 0)
+            {
+                int i = 0;
+                    /* should we search in every clone instance, or only the first one? */
+                /*for(i = 0; i < n; i++)
+                {*/
+                    didit |= canvas_dofind((t_canvas *)clone_get_instance((t_gobj *)ob, i), myindexp);
+                /*}*/
             }
         }
     }
@@ -3514,20 +3515,24 @@ static void canvas_find_again(t_canvas *x)
 static void canvas_find_parent(t_canvas *x)
 {
     if (x->gl_owner)
-        canvas_vis(glist_getcanvas(x->gl_owner), 1);
+        canvas_vis(x->gl_owner, 1);
 }
+
+extern t_pd *message_get_responder(t_gobj *x);
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
+    int n;
+    
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if ((const void *)g == error_object)
+        if (((const void *)g == error_object) || (message_get_responder(g) == error_object))
         {
                 /* got it... now show it. */
             glist_noselect(gl);
-            canvas_vis(glist_getcanvas(gl), 1);
-            canvas_editmode(glist_getcanvas(gl), 1.);
+            canvas_vis((t_canvas *)gl, 1);
+            canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
             return (1);
         }
@@ -3535,6 +3540,15 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
         {
             if (glist_dofinderror((t_canvas *)g, error_object))
                 return (1);
+        }
+        else if ((n = clone_get_n(g)) != 0)
+        {
+            int i;
+            for(i = 0; i < n; i++)
+            {
+                if (glist_dofinderror(clone_get_instance(g, i), error_object))
+                    return 1;
+            }
         }
     }
     return (0);

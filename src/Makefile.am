@@ -53,6 +53,10 @@ pd_SOURCES_core = \
     d_osc.c \
     d_resample.c \
     d_soundfile.c \
+    d_soundfile_aiff.c \
+    d_soundfile_caf.c \
+    d_soundfile_next.c \
+    d_soundfile_wave.c \
     d_ugen.c \
     g_all_guis.c \
     g_array.c \
@@ -129,7 +133,7 @@ noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-    s_audio_audiounit.c s_audio_esd.c
+    d_soundfile.h s_audio_audiounit.c s_audio_esd.c
 
 # add WISH define if it's set
 WISH=@WISH@

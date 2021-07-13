@@ -76,13 +76,27 @@ proc audio_popup {name buttonname varname devlist} {
     tk_popup $name.popup $x $y 0
 }
 
+
+# check if the value has an 'unchangeable' marker (a '!'-prefix)
+# returns the value (without the marker) and a boolean whether the marker was set
+# e.g. '!44100' -> {44100 1}
+proc ::dialog_audio::isfixed {value} {
+    set fixed 0
+    if { [string match "!*" ${value}] } {
+        set fixed 1
+    }
+    list [string trimleft "${value}" "!"] $fixed
+}
+
 # start a dialog window to select audio devices and settings.  "multi"
 # is 0 if only one device is allowed; 1 if one apiece may be specified for
 # input and output; and 2 if we can select multiple devices.  "longform"
 # (which only makes sense if "multi" is 2) asks us to make controls for
 # opening several devices; if not, we get an extra button to turn longform
 # on and restart the dialog.
-
+#
+# sr, advance, callback and blocksize can be prefixed with '!', indicating
+# that these values must not be changed by the GUI
 proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         indev1 indev2 indev3 indev4 \
         inchan1 inchan2 inchan3 inchan4 \
@@ -128,10 +142,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_outchan4 [expr ( $outchan4 > 0 ? $outchan4 : -$outchan4 ) ]
     set audio_outenable4 [expr $outchan4 > 0 ]
 
-    set audio_sr $sr
-    set audio_advance $advance
-    set audio_callback $callback
-    set audio_blocksize $blocksize
+    foreach {audio_sr audio_isfixedsr} [::dialog_audio::isfixed $sr] {}
+    foreach {audio_advance audio_isfixedadvance} [::dialog_audio::isfixed $advance] {}
+    foreach {audio_callback audio_isfixedcallback} [::dialog_audio::isfixed $callback] {}
+    foreach {audio_blocksize audio_isfixedbs} [::dialog_audio::isfixed $blocksize] {}
 
     toplevel $mytoplevel -class DialogWindow
     wm withdraw $mytoplevel
@@ -156,7 +170,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
     pack $mytoplevel.settings.srd.d_entry $mytoplevel.settings.srd.d_label -side right
-
+    if {$audio_isfixedadvance} {
+        $mytoplevel.settings.srd.d_entry config -state "disabled"
+    }
     frame $mytoplevel.settings.bsc
     pack $mytoplevel.settings.bsc -side top -fill x
     button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
@@ -169,19 +185,29 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.settings.bsc.rate2 \
         $mytoplevel.settings.bsc.rate3 \
          -side left
+    if {$audio_isfixedsr} {
+        $mytoplevel.settings.srd.sr_entry config -state "disabled"
+        $mytoplevel.settings.bsc.rate1 config -state "disabled"
+        $mytoplevel.settings.bsc.rate2 config -state "disabled"
+        $mytoplevel.settings.bsc.rate3 config -state "disabled"
+    }
+
     label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
-
     pack $mytoplevel.settings.bsc.bs_popup -side right
     pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
-    if {$audio_callback >= 0} {
+    if {$audio_isfixedbs} {
+        $mytoplevel.settings.bsc.bs_popup config -state "disabled"
+    }
+
+    if {$audio_isfixedcallback} {} else {
         frame $mytoplevel.settings.callback
         pack $mytoplevel.settings.callback -side bottom -fill x
         checkbutton $mytoplevel.settings.callback.c_button -variable audio_callback \
             -text [_ "Use callbacks"]
-        pack $mytoplevel.settings.callback.c_button -side right
+        pack $mytoplevel.settings.callback.c_button
     }
 
     # input devices
@@ -360,11 +386,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_audio::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
-
-    # set focus
-    $mytoplevel.settings.srd.sr_entry select from 0
-    $mytoplevel.settings.srd.sr_entry select adjust end
-    focus $mytoplevel.settings.srd.sr_entry
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
