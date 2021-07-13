@@ -40,11 +40,14 @@ proc pdtk_text_set {tkcanvas tag text} {
 # paste into an existing text box by literally "typing" the contents of the
 # clipboard, i.e. send the contents one character at a time via 'pd key'
 proc pdtk_pastetext {tkcanvas} {
-    if { [catch {set pdtk_pastebuffer [clipboard get]}] } {
+    if { [catch {set buf [clipboard get]}] } {
         # no selection... do nothing
     } else {
-        for {set i 0} {$i < [string length $pdtk_pastebuffer]} {incr i 1} {
-            set cha [string index $pdtk_pastebuffer $i]
+        # turn unicode-encoded stuff (\u...) into unicode characters
+        # 'unescape' needs a trailing space...
+        set buf [::pdtk_text::unescape "${buf} " ]
+        for {set i 0} {$i < [string length $buf]} {incr i 1} {
+            set cha [string index $buf $i]
             scan $cha %c keynum
             pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"
         }

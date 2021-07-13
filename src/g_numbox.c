@@ -507,6 +507,17 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     int lilo = (int)atom_getfloatarg(4, argc, argv);
     int log_height = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+0, x->x_numwidth);
+    SETFLOAT(undo+2, x->x_min);
+    SETFLOAT(undo+3, x->x_max);
+    SETFLOAT(undo+4, x->x_lin0_log1);
+    SETFLOAT(undo+6, x->x_log_height);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;

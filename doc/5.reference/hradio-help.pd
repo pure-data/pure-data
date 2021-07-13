@@ -133,7 +133,7 @@ in the patch. Check below:, f 41;
 #X text 67 16 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 68 67 Negative integers were used to encode RGB values (and
 that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are
@@ -543,7 +543,7 @@ Check details and how to get it back:, f 33;
 #X text 199 24 <= [hradio]: Horizontal Radio Button;
 #X text 27 59 The horizontal radio button is a GUI (Graphical User
 Interface) that sends numbers. Click on its cells to output corresponding
-values. Incomming floats set the value and are passed through (even
+values. Incoming floats set the value and are passed through (even
 if outside the range). The 'set' message only sets the value without
 output. A bang message sends the internal value., f 64;
 #N canvas 761 61 435 279 switch-example 0;

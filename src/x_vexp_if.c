@@ -16,6 +16,7 @@
  *  version 0.50 - March 2016
  *  version 0.55 - July 2017
  *  version 0.56 - January 2018
+ *  version 0.57 - October 2020
  */
 
 #include <stdio.h>
@@ -24,7 +25,7 @@
 
 #include "x_vexp.h"
 
-static char *exp_version = "0.55";
+static char *exp_version = "0.57";
 
 extern struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int n);
@@ -1172,7 +1173,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 /*
- * ex_avg -- calculate the avarage of a table
+ * ex_avg -- calculate the average of a table
  */
 
 void
@@ -1206,7 +1207,7 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
 
 /*
- * ex_Avg -- calculate the avarage of table with the given boundaries
+ * ex_Avg -- calculate the average of table with the given boundaries
  */
 
 void

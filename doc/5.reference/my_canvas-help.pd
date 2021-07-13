@@ -261,7 +261,7 @@ only the first and the third are valid and set \, respectively \, background
 and label colors (as there's no "front" color \, the 2nd value is ignored).
 , f 76;
 #X text 58 65 Integers from 0 to 29 represent the 30 preset colors
-found in the properties window \, values above are wraped. Negative
+found in the properties window \, values above are wrapped. Negative
 integers were used to encode RGB values (and that still works for backwards
 compatibility). But since Pd 0.47-0 \, you can set colors with hexadecimal
 RGB symbol values \, which are followed by "#"., f 76;
@@ -473,7 +473,7 @@ included in Pd version 0.34., f 28;
 #X obj 68 171 !=;
 #X obj 155 371 outlet;
 #X obj 64 43 receive from_K1;
-#X text 212 274 The list is ouput only if either of the values has
+#X text 212 274 The list is output only if either of the values has
 changed, f 23;
 #X obj 175 334 print K1;
 #X connect 0 0 7 1;
@@ -515,7 +515,7 @@ it and then get into the edit mode to move them., f 52;
 #X obj 128 170 !=;
 #X obj 68 171 !=;
 #X obj 155 381 outlet;
-#X text 212 274 The list is ouput only if either of the values has
+#X text 212 274 The list is output only if either of the values has
 changed, f 23;
 #X obj 64 43 receive from_K2;
 #X obj 180 336 print K2;

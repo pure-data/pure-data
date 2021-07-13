@@ -25,7 +25,7 @@ before triggering again.;
 #X text 244 163 "set" to change the parameters;
 #X text 271 219 zero or nonzero in inlet to set the state to "high"
 or "low". There is no debounce period after this.;
-#X text 161 11 - triger from audio signal;
+#X text 161 11 - trigger from audio signal;
 #X connect 3 0 4 0;
 #X connect 4 0 8 0;
 #X connect 4 1 9 0;

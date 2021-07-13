@@ -36,7 +36,7 @@ struct _instanceugen
     t_int *u_dspchain;         /* DSP chain */
     int u_dspchainsize;        /* number of elements in DSP chain */
     t_signal *u_signals;       /* list of signals used by DSP chain */
-    int u_sortno;               /* number of DSP sortings so far */
+    int u_sortno;              /* number of DSP sortings so far */
         /* list of signals which can be reused, sorted by buffer size */
     t_signal *u_freelist[MAXLOGSIG+1];
         /* list of reusable "borrowed" signals (which don't own sample buffers) */
@@ -748,7 +748,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     t_class *class = pd_class(&u->u_obj->ob_pd);
     int i, n;
         /* suppress creating new signals for the outputs of signal
-        inlets and subpatchs; except in the case we're an inlet and "blocking"
+        inlets and subpatches; except in the case we're an inlet and "blocking"
         is set.  We don't yet know if a subcanvas will be "blocking" so there
         we delay new signal creation, which will be handled by calling
         signal_setborrowed in the ugen_done_graph routine below. */

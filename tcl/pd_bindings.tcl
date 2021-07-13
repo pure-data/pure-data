@@ -11,6 +11,15 @@ namespace eval ::pd_bindings:: {
 }
 set ::pd_bindings::key2iso ""
 
+
+# wrapper around bind(3tk)to deal with CapsLock
+# the actual bind-sequence is is build as '<${seq_prefix}-${seq_nocase}',
+# with the $seq_nocase part bing bound both as upper-case and lower-case
+proc ::pd_bindings::bind_capslock {tag seq_prefix seq_nocase script} {
+    bind $tag <${seq_prefix}-[string tolower ${seq_nocase}]> $script
+    bind $tag <${seq_prefix}-[string toupper ${seq_nocase}]> $script
+}
+
 # TODO rename pd_bindings to window_bindings after merge is done
 
 # Some commands are bound using "" quotations so that the $mytoplevel is
@@ -40,31 +49,31 @@ proc ::pd_bindings::global_bindings {} {
     # we use 'bind all' everywhere to get as much of Tk's automatic binding
     # behaviors as possible, things like not sending an event for 'O' when
     # 'Control-O' is pressed
-    bind all <$::modifier-Key-a>      {menu_send %W selectall}
-    bind all <$::modifier-Key-b>      {menu_helpbrowser}
-    bind all <$::modifier-Key-c>      {menu_send %W copy}
-    bind all <$::modifier-Key-d>      {menu_send %W duplicate}
-    bind all <$::modifier-Key-e>      {menu_toggle_editmode}
-    bind all <$::modifier-Key-f>      {menu_find_dialog}
-    bind all <$::modifier-Key-g>      {menu_send %W findagain}
-    bind all <$::modifier-Key-k>      {menu_send %W connect_selection}
-    bind all <$::modifier-Key-n>      {menu_new}
-    bind all <$::modifier-Key-o>      {menu_open}
-    bind all <$::modifier-Key-p>      {menu_print $::focused_window}
-    bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
-    bind all <$::modifier-Key-s>      {menu_send %W menusave}
-    bind all <$::modifier-Key-t>      {menu_send %W triggerize}
-    bind all <$::modifier-Key-v>      {menu_send %W paste}
-    bind all <$::modifier-Key-w>      {::pd_bindings::window_close %W}
-    bind all <$::modifier-Key-x>      {menu_send %W cut}
-    bind all <$::modifier-Key-z>      {menu_undo}
-    bind all <$::modifier-Key-1>      {menu_send_float %W obj 0}
-    bind all <$::modifier-Key-2>      {menu_send_float %W msg 0}
-    bind all <$::modifier-Key-3>      {menu_send_float %W floatatom 0}
-    bind all <$::modifier-Key-4>      {menu_send_float %W symbolatom 0}
-    bind all <$::modifier-Key-5>      {menu_send_float %W text 0}
-    bind all <$::modifier-Key-slash>  {pdsend "pd dsp 1"}
-    bind all <$::modifier-Key-period> {pdsend "pd dsp 0"}
+    bind_capslock all $::modifier-Key a {menu_send %W selectall}
+    bind_capslock all $::modifier-Key b {menu_helpbrowser}
+    bind_capslock all $::modifier-Key c {menu_send %W copy}
+    bind_capslock all $::modifier-Key d {menu_send %W duplicate}
+    bind_capslock all $::modifier-Key e {menu_toggle_editmode}
+    bind_capslock all $::modifier-Key f {menu_find_dialog}
+    bind_capslock all $::modifier-Key g {menu_send %W findagain}
+    bind_capslock all $::modifier-Key k {menu_send %W connect_selection}
+    bind_capslock all $::modifier-Key n {menu_new}
+    bind_capslock all $::modifier-Key o {menu_open}
+    bind_capslock all $::modifier-Key p {menu_print $::focused_window}
+    bind_capslock all $::modifier-Key r {menu_raise_pdwindow}
+    bind_capslock all $::modifier-Key s {menu_send %W menusave}
+    bind_capslock all $::modifier-Key t {menu_send %W triggerize}
+    bind_capslock all $::modifier-Key v {menu_send %W paste}
+    bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
+    bind_capslock all $::modifier-Key x {menu_send %W cut}
+    bind_capslock all $::modifier-Key z {menu_undo}
+    bind all <$::modifier-Key-1>        {menu_send_float %W obj 0}
+    bind all <$::modifier-Key-2>        {menu_send_float %W msg 0}
+    bind all <$::modifier-Key-3>        {menu_send_float %W floatatom 0}
+    bind all <$::modifier-Key-4>        {menu_send_float %W symbolatom 0}
+    bind all <$::modifier-Key-5>        {menu_send_float %W text 0}
+    bind all <$::modifier-Key-slash>    {pdsend "pd dsp 1"}
+    bind all <$::modifier-Key-period>   {pdsend "pd dsp 0"}
 
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
@@ -78,51 +87,32 @@ proc ::pd_bindings::global_bindings {} {
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
     # annoying, but Tk's bind needs uppercase letter to get the Shift
-    bind all <$::modifier-Shift-Key-A> {menu_send %W menuarray}
-    bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
-    bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
-    bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
-    bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
-    bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
-    bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
-    bind all <$::modifier-Shift-Key-L> {menu_clear_console}
-    bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
-    bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
-    bind all <$::modifier-Shift-Key-R> {menu_send %W tidy}
-    bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
-    bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
-    bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
-    bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
-    bind all <$::modifier-Shift-Key-W> {::pd_bindings::window_close %W 1}
-    bind all <$::modifier-Shift-Key-Z> {menu_redo}
-    # lowercase bindings, for the CapsLock case
-    bind all <$::modifier-Shift-Key-a> {menu_send %W menuarray}
-    bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
-    bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
-    bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
-    bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
-    bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
-    bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
-    bind all <$::modifier-Shift-Key-l> {menu_clear_console}
-    bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
-    bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
-    bind all <$::modifier-Shift-Key-r> {menu_send %W tidy}
-    bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}
-    bind all <$::modifier-Shift-Key-t> {menu_send %W toggle}
-    bind all <$::modifier-Shift-Key-u> {menu_send %W vumeter}
-    bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
-    bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
-    bind all <$::modifier-Shift-Key-z> {menu_redo}
+    bind_capslock all $::modifier-Shift-Key A {menu_send %W menuarray}
+    bind_capslock all $::modifier-Shift-Key B {menu_send %W bng}
+    bind_capslock all $::modifier-Shift-Key C {menu_send %W mycnv}
+    bind_capslock all $::modifier-Shift-Key D {menu_send %W vradio}
+    bind_capslock all $::modifier-Shift-Key G {menu_send %W graph}
+    bind_capslock all $::modifier-Shift-Key J {menu_send %W hslider}
+    bind_capslock all $::modifier-Shift-Key I {menu_send %W hradio}
+    bind_capslock all $::modifier-Shift-Key L {menu_clear_console}
+    bind_capslock all $::modifier-Shift-Key M {menu_message_dialog}
+    bind_capslock all $::modifier-Shift-Key N {menu_send %W numbox}
+    bind_capslock all $::modifier-Shift-Key Q {pdsend "pd quit"}
+    bind_capslock all $::modifier-Shift-Key R {menu_send %W tidy}
+    bind_capslock all $::modifier-Shift-Key S {menu_send %W menusaveas}
+    bind_capslock all $::modifier-Shift-Key T {menu_send %W toggle}
+    bind_capslock all $::modifier-Shift-Key U {menu_send %W vumeter}
+    bind_capslock all $::modifier-Shift-Key V {menu_send %W vslider}
+    bind_capslock all $::modifier-Shift-Key W {::pd_bindings::window_close %W 1}
+    bind_capslock all $::modifier-Shift-Key Z {menu_redo}
     bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
          # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
-            bind all <$::modifier-Key-m>       {menu_minimize %W}
+            bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+            bind_capslock all $::modifier-Key m       {menu_minimize %W}
             bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
         # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
@@ -136,8 +126,8 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
-        bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
-        bind all <$::modifier-Key-m>       {menu_minimize %W}
+        bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+        bind_capslock all $::modifier-Key m       {menu_minimize %W}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
@@ -160,21 +150,20 @@ proc ::pd_bindings::global_bindings {} {
 proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     variable modifier
 
-    bind $mytoplevel <KeyPress-Escape>   "dialog_${dialogname}::cancel $mytoplevel"
-    bind $mytoplevel <KeyPress-Return>   "dialog_${dialogname}::ok $mytoplevel"
-    bind $mytoplevel <$::modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <KeyPress-Escape>          "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <KeyPress-Return>          "dialog_${dialogname}::ok $mytoplevel"
+    bind_capslock $mytoplevel $::modifier-Key w "dialog_${dialogname}::cancel $mytoplevel"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
     if {$mytoplevel ne ".find"} {
-        bind $mytoplevel <$::modifier-Key-s>       {bell; break}
-        bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
-        bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
-        bind $mytoplevel <$::modifier-Key-p>       {bell; break}
+        bind_capslock $mytoplevel $::modifier-Key s       {bell; break}
+        bind_capslock $mytoplevel $::modifier-Shift-Key s {bell; break}
+        bind_capslock $mytoplevel $::modifier-Key p       {bell; break}
     } else {
         # find may may allow passthrough to it's target search patch
         ::dialog_find::update_bindings
     }
-    bind $mytoplevel <$::modifier-Key-t>           {bell; break}
+    bind_capslock $mytoplevel $::modifier-Key t           {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
@@ -252,6 +241,29 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     }
     bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
+
+    # clear interim compose character by sending a virtual BackSpace,
+    # these events are pulled from Tk library/entry.tcl
+    # should we try to keep track of the "marked text" selection which may be
+    # more than a single character? ie. start & length of marked text
+    catch {
+        # bind $tkcanvas <<TkStartIMEMarkedText>> {
+        #     ::pdwindow::post "%W start marked text\n"
+        # }
+        # bind $tkcanvas <<TkEndIMEMarkedText>> {
+        #     ::pdwindow::post "%W end marked text\n"
+        # }
+        bind $tkcanvas <<TkClearIMEMarkedText>> {
+            # ::pdwindow::post "%W clear marked text\n"
+            ::pd_bindings::sendkey %W 1 BackSpace "" 0
+            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+        }
+        bind $tkcanvas <<TkAccentBackspace>> {
+            # ::pdwindow::post "%W accent backspace\n"
+            ::pd_bindings::sendkey %W 1 BackSpace "" 0
+            ::pd_bindings::sendkey %W 0 BackSpace "" 0
+        }
+    } stderr
 
     # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem {
@@ -335,6 +347,8 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     if {$width == 1 || $height == 1} {
         # make sure the window is fully created
         update idletasks
+        set width [winfo width $mytoplevel]
+        set height [winfo height $mytoplevel]
     }
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:

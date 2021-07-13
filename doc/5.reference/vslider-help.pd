@@ -12,7 +12,7 @@
 #X text 64 15 <= [vslider]/[vsl]: Vertical Slider;
 #X text 79 46 The vertical slider is a GUI (Graphical User Interface)
 that sends numbers. Click on it and drag to output values - use shift-click
-and drag for fine-tuning by a factor of a hundredth. Incomming floats
+and drag for fine-tuning by a factor of a hundredth. Incoming floats
 set the slider's value and are passed through (even if outside the
 slider's range). The 'set' message only sets the slider value without
 output. A bang message sends the slider's value., f 56;
@@ -130,7 +130,7 @@ in the patch. Check below:, f 41;
 #X text 67 17 The 'color' message takes a list of three values to set
 background \, front and label colors \, respectively. Integers from
 0 to 29 represent the 30 preset colors found in the properties window
-\, values above are wraped., f 77;
+\, values above are wrapped., f 77;
 #X text 68 68 Negative integers were used to encode RGB values (and
 that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are
@@ -645,7 +645,7 @@ one in the background., f 29;
 in a discrete way. This is for a range from 0 to 1 \, but you can rescale
 it if needed., f 34;
 #X text 114 113 This example allows you to set the number of steps
-dinamically., f 34;
+dynamically., f 34;
 #X text 100 306 <= click and drag.;
 #X text 120 325 Right click and open for more details., f 20;
 #X msg 150 203 8;

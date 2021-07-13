@@ -379,7 +379,7 @@ proc ::helpbrowser::findfiles {basedir pattern} {
     set filelist {}
 
     # Look in the current directory for matching files, -type {f r}
-    # means ony readable normal files are looked at, -nocomplain stops
+    # means only readable normal files are looked at, -nocomplain stops
     # an error being thrown if the returned list is empty
     foreach filename [glob -nocomplain -type {f r} -path $basedir $pattern] {
         lappend filelist $filename

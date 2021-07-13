@@ -21,7 +21,26 @@
 
 <P>This section tracks changes in Pd's current implementation.</P>
 
-<H3> <A id="s2"> 5.1. release notes </A> </H3>
+<H3> <A id="s1"> 5.1. release notes </A> </H3>
+
+<P> ------------------ 0.51-4 ------------------------------
+
+<P> Bug fixes: infinite loop on Windows if  writesf~ encountered a write error;
+another hack at TCL/TK window size confusion; and better libpd and build support
+
+<P> ------------------ 0.51-3 ------------------------------
+
+<P> New functions for expr: mtof, ftom, rmstodb, dbtorms, powtodb, dbtopow, and two
+bug fixes.
+
+<P> The "use callbacks" switch in the audio dialog only appears if it's already on
+(via the command line or app default settings).  It was crashing and hanging Pd in
+several situations.  It might still be useful for reducing audio latency by a block
+or so, but won't buy you much in any case.  I'll try to fix it later.
+
+<P> More white-space fixes (primarily affecting pd~ on Windows).
+
+<P> Much work dealing with upgrade issues in MACOS 10.15 (thanks Dan Wilcox)
 
 <P> ------------------ 0.51-2 ------------------------------
 
@@ -70,7 +89,7 @@ outlet.
 
 <P> ------------------ 0.50-1 ------------------------------
 
-<P> improved handling of tilde chartacters for Portugues and Spanish keyboard
+<P> improved handling of tilde chartacters for Portuguese and Spanish keyboard
 maps
 
 <P> handling spaces in path to HTML file open message to pdcontrol object
@@ -412,7 +431,7 @@ although not yet perfect.
 
 <P> Objects/messages/comments have settable box widths.  By default they're
 auto, but you can change that by dragging on the right-hand-side border.  You can
-set it back to the default just by dragging ot to whatever width the default
+set it back to the default just by dragging or to whatever width the default
 would have been.  If a box's width isn't "auto" and you open the patch back in
 Pd version 0.44 you'll see a warning; if you open it in earlier versions you'll
 get pages of error messages but no real harm.  You can open and save a patch in
@@ -1749,7 +1768,7 @@ behavior for non-root users who start pd.
 hole in your system.)
 
 <P>
-The Pd commend line can take multiple "open" arguments.
+The Pd command line can take multiple "open" arguments.
 
 <P>
 The file search path feature was fixed and generalized.
@@ -2170,8 +2189,8 @@ The following max-like objects are included:
 <H3> <A id="s2"> 5.2. known bugs </A> </H3>
 
 <P> These are now tracked on the
-<A href=https://sourceforge.net/projects/pure-data/>
-Pd Sourceforge project page</A>.
+<A href=https://github.com/pure-data/pure-data/issues target="_blank">
+Pd GitHub project page</A>.
 
 <H3> <A id="s3"> 5.3. differences from Max/MSP </A> </H3>
 

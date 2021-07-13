@@ -171,7 +171,7 @@ case $nsis_exit in
   2) error "NSIS is not found.  install, e.g., mingw32-nsis."
      cleanup 1
      ;;
-  *) error "Unkown error"
+  *) error "Unknown error"
      cleanup 1
      ;;
 esac
@@ -181,7 +181,7 @@ if makensis -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
-  error "Some error occured during compilation of ${NSIFILE}"
+  error "Some error occurred during compilation of ${NSIFILE}"
   exit 1
 fi
 cleanup 0

@@ -1,4 +1,4 @@
-#N canvas 316 89 942 546 12;
+#N canvas 374 94 942 546 12;
 #X obj 184 40 expr;
 #X obj 235 40 expr~;
 #X obj 294 40 fexpr~;
@@ -148,7 +148,7 @@ defined as:, f 62;
 #X text 511 396 see also:;
 #X obj 554 498 block~;
 #X obj 609 498 value;
-#N canvas 708 54 478 476 All_functions 0;
+#N canvas 1065 204 489 542 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
 #X floatatom 57 63 5 0 0 0 - - -;
@@ -638,7 +638,43 @@ subpatches below to check each group:, f 52;
 #X connect 64 0 41 0;
 #X connect 64 1 42 0;
 #X connect 64 2 60 0;
-#X restore 147 424 pd Other-functions;
+#X restore 146 457 pd Other-functions;
+#N canvas 432 69 544 311 acousticts 0;
+#X floatatom 31 21 0 0 0 0 - - -;
+#X floatatom 31 76 0 0 0 0 - - -;
+#X floatatom 31 125 0 0 0 0 - - -;
+#X obj 31 49 expr mtof($f1);
+#X obj 31 101 expr ftom($f1);
+#X floatatom 177 21 0 0 0 0 - - -;
+#X floatatom 177 76 0 0 0 0 - - -;
+#X floatatom 177 125 0 0 0 0 - - -;
+#X floatatom 338 24 0 0 0 0 - - -;
+#X floatatom 338 79 0 0 0 0 - - -;
+#X floatatom 338 128 0 0 0 0 - - -;
+#X obj 177 49 expr dbtorms($f1);
+#X obj 177 101 expr rmstodb($f1);
+#X obj 25 239 mtof;
+#X obj 81 239 ftom;
+#X obj 137 240 dbtorms;
+#X obj 213 240 rmstodb;
+#X obj 292 240 dbtopow;
+#X obj 369 240 powtodb;
+#X text 25 204 See also:;
+#X obj 338 52 expr dbtopow($f1);
+#X obj 338 104 expr powtodb($f1);
+#X connect 0 0 3 0;
+#X connect 1 0 4 0;
+#X connect 3 0 1 0;
+#X connect 4 0 2 0;
+#X connect 5 0 11 0;
+#X connect 6 0 12 0;
+#X connect 8 0 20 0;
+#X connect 9 0 21 0;
+#X connect 11 0 6 0;
+#X connect 12 0 7 0;
+#X connect 20 0 9 0;
+#X connect 21 0 10 0;
+#X restore 146 425 pd acousticts;
 #X restore 778 426 pd All_functions \; and operators;
 #N canvas 157 32 919 558 [expr] 0;
 #X obj 49 115 expr 1;
@@ -722,15 +758,15 @@ an inlet defined as a float.;
 #X obj 253 627 tabsend~ a3;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array a2 64 float 1;
-#A 0 0.490464 0.530591 0.561583 0.582984 0.594493 0.596061 0.587785
-0.569989 0.54319 0.508042 0.465416 0.416299 0.361806 0.303179 0.241715
-0.178785 0.115786 0.0541077 -0.00487759 -0.0598593 -0.109604 -0.152988
--0.189004 -0.216807 -0.235703 -0.245178 -0.244921 -0.234794 -0.214872
--0.185422 -0.146892 -0.0999281 -0.0453311 0.015938 0.0827861 0.154004
-0.228302 0.304323 0.38067 0.455957 0.528782 0.597829 0.661836 0.719613
-0.77016 0.812553 0.846064 0.870149 0.884382 0.888628 0.88288 0.867337
-0.842418 0.808683 0.766921 0.718048 0.663095 0.603268 0.539813 0.474079
-0.407456 0.341316 0.277072 0.216062;
+#A 0 0.530196 0.493227 0.449005 0.398544 0.342991 0.283607 0.221703
+0.158664 0.0958842 0.0347507 -0.0233764 -0.0772001 -0.12551 -0.167212
+-0.201328 -0.227054 -0.243737 -0.250908 -0.248297 -0.23581 -0.213572
+-0.181894 -0.14127 -0.0923861 -0.0360805 0.0266521 0.0946922 0.166807
+0.241691 0.317971 0.394249 0.46914 0.541249 0.60928 0.671989 0.728225
+0.777008 0.817446 0.848847 0.870713 0.882671 0.88463 0.876621 0.858902
+0.831942 0.796326 0.752889 0.70256 0.646422 0.585702 0.52166 0.455666
+0.389109 0.323371 0.259849 0.199867 0.144686 0.0954752 0.0532721 0.0189827
+-0.00665291 -0.0230664 -0.0298758 -0.0268905;
 #X coords 0 1 63 -1 200 140 1;
 #X restore 395 520 graph;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -1121,8 +1157,6 @@ check it:, f 68;
 #X connect 34 0 33 0;
 #X connect 35 0 32 0;
 #X restore 778 372 pd [value];
-#X text 771 506 updated for Pd 0.48-2;
-#X text 366 42 Version 0.56;
 #X text 16 134 - [expr~]: used for evaluation of audio signal expression
 - on a vector by vector basis \, where the vector/block size is defined
 by the [block~] or [switch~] objects., f 62;
@@ -1131,6 +1165,8 @@ The syntax is quite similar to how expressions are written in C. A
 semicolon can be used to create and separate different expressions.
 If so \, an outlet is created for each expression and they're evaluated
 from right to left (or bottom to up) order:;
+#X text 366 42 Version 0.57;
+#X text 771 506 updated for Pd 0.51-3;
 #X connect 3 0 16 0;
 #X connect 4 0 35 0;
 #X connect 5 0 35 0;

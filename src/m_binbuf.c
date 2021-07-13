@@ -617,6 +617,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     const t_atom *at = x->b_vec;
     int ac = x->b_n;
     int nargs, maxnargs = 0;
+    t_pd *initial_target = target;
+
     if (ac <= SMALLMSG)
         mstack = smallstack;
     else
@@ -672,13 +674,13 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             {
                 if (at->a_w.w_index <= 0 || at->a_w.w_index > argc)
                 {
-                    error("$%d: not enough arguments supplied",
+                    pd_error(initial_target, "$%d: not enough arguments supplied",
                             at->a_w.w_index);
                     goto cleanup;
                 }
                 else if (argv[at->a_w.w_index-1].a_type != A_SYMBOL)
                 {
-                    error("$%d: symbol needed as message destination",
+                    pd_error(initial_target, "$%d: symbol needed as message destination",
                         at->a_w.w_index);
                     goto cleanup;
                 }
@@ -689,7 +691,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 if (!(s = binbuf_realizedollsym(at->a_w.w_symbol,
                     argc, argv, 0)))
                 {
-                    error("$%s: not enough arguments supplied",
+                    pd_error(initial_target, "$%s: not enough arguments supplied",
                         at->a_w.w_symbol->s_name);
                     goto cleanup;
                 }
@@ -697,7 +699,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             else s = atom_getsymbol(at);
             if (!(target = s->s_thing))
             {
-                error("%s: no such object", s->s_name);
+                pd_error(initial_target, "%s: no such object ", s->s_name);
             cleanup:
                 do at++, ac--;
                 while (ac && at->a_type != A_SEMI);
@@ -754,7 +756,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                         SETFLOAT(msp, 0);
                     else
                     {
-                        error("$%d: argument number out of range",
+                        pd_error(target, "$%d: argument number out of range",
                             at->a_w.w_index);
                         SETFLOAT(msp, 0);
                     }
@@ -765,7 +767,7 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     target == &pd_objectmaker);
                 if (!s9)
                 {
-                    error("%s: argument number out of range", at->a_w.w_symbol->s_name);
+                    pd_error(target, "%s: argument number out of range", at->a_w.w_symbol->s_name);
                     SETSYMBOL(msp, at->a_w.w_symbol);
                 }
                 else SETSYMBOL(msp, s9);
@@ -927,7 +929,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
         y = binbuf_convert(x, 0);
-        x = y;
+        z = y;
     }
 
     if (!(f = sys_fopen(fbuf, "w")))

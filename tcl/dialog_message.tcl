@@ -66,8 +66,6 @@ proc ::dialog_message::create_dialog {mytoplevel} {
     .message configure -menu $::dialog_menubar
     .message configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .message "message"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $id -topmost 1}
 
     frame .message.f
     pack .message.f -side top -fill x -expand 1
