@@ -1137,16 +1137,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ "[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
 #~ "%2$s]"
 
-#, tcl-format
-#~ msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-#~ msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
-
-#, tcl-format
-#~ msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-#~ msgstr ""
-#~ "[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
-#~ "%2$s]"
-
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "Die Suche schlug fehl. Sind Sie online?"
 
