@@ -1,33 +1,40 @@
-#N canvas 99 89 737 480 12;
-#X floatatom 52 127 0 0 0;
-#X floatatom 127 227 0 0 0;
-#X floatatom 52 284 0 0 0;
-#X floatatom 544 281 0 0 0;
-#X floatatom 535 392 0 0 0;
-#X obj 534 364 pipe 5 6 7 1000;
-#X obj 543 307 t f f f;
-#X obj 563 338 + 1;
-#X obj 597 337 + 2;
-#X floatatom 590 390 0 0 0;
-#X floatatom 658 391 0 0 0;
-#X text 32 433 see also:;
-#X text 129 13 pipe -- message "delay line";
-#X obj 52 253 pipe 2000;
-#X text 91 125 numbers to store and output later;
-#X text 117 148 output all stored messages immediately;
-#X msg 63 152 flush;
-#X msg 65 180 clear;
-#X text 113 180 forget all stored messages;
-#X text 91 286 delayed output;
-#X obj 116 435 delay;
-#X obj 167 435 timer;
-#X text 51 42 The Pipe object stores a sequence of messages and outputs them after a specified delay time in milliseconds. You can change the delay time as you wish. The outputs are sorted automatically.;
-#X text 140 254 creation argument initializes delay time;
-#X text 163 228 set delay time;
-#X text 487 449 updated for Pd version 0.33;
-#X text 21 330 You can specify compound messages (lists) by adding arguments which set their type and initial value as in "pack." In this case the delay time comes last and is changed by the last inlet. You can also pack symbols and pointers but this feature is UNTESTED.;
-#X connect 0 0 13 0;
-#X connect 1 0 13 1;
+#N canvas 217 122 631 481 12;
+#X floatatom 52 130 0 0 0 0 - - -;
+#X floatatom 112 230 0 0 0 0 - - -;
+#X floatatom 52 287 0 0 0 0 - - -;
+#X floatatom 441 271 0 0 0 0 - - -;
+#X floatatom 430 384 0 0 0 0 - - -;
+#X obj 430 356 pipe 5 6 7 1000;
+#X obj 441 297 t f f f;
+#X obj 464 328 + 1;
+#X obj 498 327 + 2;
+#X floatatom 481 382 0 0 0 0 - - -;
+#X floatatom 532 383 0 0 0 0 - - -;
+#X text 55 413 see also:;
+#X obj 52 256 pipe 2000;
+#X text 91 128 numbers to store and output later;
+#X text 117 151 output all stored messages immediately;
+#X msg 63 155 flush;
+#X msg 73 183 clear;
+#X text 120 184 forget all stored messages;
+#X text 91 289 delayed output;
+#X obj 130 413 delay;
+#X obj 181 413 timer;
+#X text 51 45 The Pipe object stores a sequence of messages and outputs
+them after a specified delay time in milliseconds. You can change the
+delay time as you wish. The outputs are sorted automatically.;
+#X text 125 257 creation argument initializes delay time;
+#X text 148 231 set delay time;
+#X text 378 427 updated for Pd version 0.33;
+#X text 21 317 You can specify compound messages (lists) by adding
+arguments which set their type and initial value as in "pack." In this
+case the delay time comes last and is changed by the last inlet. You
+can also pack symbols and pointers but this feature is UNTESTED.,
+f 51;
+#X obj 52 16 pipe;
+#X text 90 14 - message "delay line";
+#X connect 0 0 12 0;
+#X connect 1 0 12 1;
 #X connect 3 0 6 0;
 #X connect 5 0 4 0;
 #X connect 5 1 9 0;
@@ -37,5 +44,6 @@
 #X connect 6 2 8 0;
 #X connect 7 0 5 1;
 #X connect 8 0 5 2;
-#X connect 13 0 2 0;
-#X connect 16 0 13 0;
+#X connect 12 0 2 0;
+#X connect 15 0 12 0;
+#X connect 16 0 12 0;

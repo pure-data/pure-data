@@ -1,44 +1,44 @@
-#N canvas 161 46 660 441 12;
-#X msg 103 95 bang;
-#X text 389 414 updated for Pd version 0.35;
-#X text 44 19 You can generate weighted random numbers from uniformly
+#N canvas 383 49 514 542 12;
+#X msg 145 94 bang;
+#X text 255 488 updated for Pd version 0.35;
+#X text 44 18 You can generate weighted random numbers from uniformly
 distributed ones. If you just want two possible outcomes with a varying
 probability for each one \, you can do as shown:;
-#X obj 103 121 random 100;
-#X obj 102 174 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 145 123 random 100;
+#X obj 144 209 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 169 174 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 198 209 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X floatatom 205 148 3 0 100;
-#X text 250 148 <-- change probability;
-#X obj 103 149 moses 80;
-#X text 152 93 <-- click to test;
-#X text 61 219 This outputs a number at left 80% of the time \, otherwise
+#X floatatom 198 152 3 0 100 0 - - -;
+#X obj 145 181 moses 80;
+#X text 52 248 This outputs a number at left 80% of the time \, otherwise
 at right \, unless you override the "80" using the number box. You
 may extend this to more than two possible outcomes \, for instance
-like this:;
-#X msg 106 305 bang;
-#X obj 106 331 random 100;
-#X obj 105 384 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+like this:, f 56;
+#X msg 102 337 bang;
+#X obj 102 363 random 100;
+#X obj 101 420 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 195 387 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 192 420 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 155 303 <-- click to test;
-#X obj 106 359 moses 10;
-#X obj 196 360 moses 30;
-#X obj 263 387 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 102 391 moses 10;
+#X obj 192 391 moses 30;
+#X obj 245 420 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 103 409 10%;
-#X text 193 410 20%;
-#X text 265 409 70%;
+#X text 99 445 10%;
+#X text 190 445 20%;
+#X text 247 445 70%;
+#X text 230 152 <= change probability;
+#X text 186 92 <= click to test;
+#X text 142 335 <= click to test;
 #X connect 0 0 3 0;
-#X connect 3 0 8 0;
-#X connect 6 0 8 1;
-#X connect 8 0 4 0;
-#X connect 8 1 5 0;
-#X connect 11 0 12 0;
-#X connect 12 0 16 0;
-#X connect 16 0 13 0;
-#X connect 16 1 17 0;
-#X connect 17 0 14 0;
-#X connect 17 1 18 0;
+#X connect 3 0 7 0;
+#X connect 6 0 7 1;
+#X connect 7 0 4 0;
+#X connect 7 1 5 0;
+#X connect 9 0 10 0;
+#X connect 10 0 13 0;
+#X connect 13 0 11 0;
+#X connect 13 1 14 0;
+#X connect 14 0 12 0;
+#X connect 14 1 15 0;

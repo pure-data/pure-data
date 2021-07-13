@@ -38,7 +38,7 @@ char pd_compiledate[] = __DATE__;
 void pd_init(void);
 int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
-void sys_setsignalhandlers( void);
+void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
@@ -71,10 +71,11 @@ int sys_nmidiin = -1;
 int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
-char sys_font[100] = "DejaVu Sans Mono";
 #if __APPLE__
+char sys_font[100] = "Menlo"; /* hack until DVSM bug is fixed on macOS 10.15+ */
 char sys_fontweight[10] = "normal";
 #else
+char sys_font[100] = "DejaVu Sans Mono";
 char sys_fontweight[10] = "bold";
 #endif
 static int sys_main_srate;
@@ -199,7 +200,7 @@ int sys_fontheight(int fontsize)
 }
 
 int sys_defaultfont;
-#define DEFAULTFONT 10
+#define DEFAULTFONT 12
 
 static void openit(const char *dirname, const char *filename)
 {
@@ -292,6 +293,7 @@ static int defaultfontshit[] = {
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static t_clock *sys_fakefromguiclk;
+int socket_init(void);
 static void sys_fakefromgui(void)
 {
         /* fake the GUI's message giving cwd and font sizes in case
@@ -330,12 +332,6 @@ int sys_main(int argc, char **argv)
     /* use Win32 "binary" mode by default since we don't want the
      * translation that Win32 does by default */
 #ifdef _WIN32
-    {
-        short version = MAKEWORD(2, 0);
-        WSADATA nobby;
-        if (WSAStartup(version, &nobby))
-            sys_sockerror("WSAstartup");
-    }
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
@@ -355,6 +351,8 @@ int sys_main(int argc, char **argv)
         setuid(getuid());
     }
 #endif  /* _WIN32 */
+    if (socket_init())
+        sys_sockerror("socket_init()");
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
@@ -380,6 +378,8 @@ int sys_main(int argc, char **argv)
     sys_afterargparse();                    /* post-argparse settings */
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
         pd_version, pd_compiletime, pd_compiledate);
+    if (sys_verbose)
+        fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
     sys_setsignalhandlers();
@@ -493,14 +493,14 @@ static char *(usagemessage[]) = {
 "-stdpath         -- search standard directory (true by default)\n",
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
-"-lib <file>      -- load object library(s)\n",
+"-lib <file>      -- load object library(s) (omit file extensions)\n",
 "-font-size <n>      -- specify default font size in points\n",
 "-font-face <name>   -- specify default font\n",
 "-font-weight <name> -- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
-"-d <n>           -- specify debug level\n",
+"-d <n>           -- specify debug level for inspecting the GUI communication\n",
 "-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
@@ -508,7 +508,7 @@ static char *(usagemessage[]) = {
 "-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
-"-guicmd \"cmd...\" -- start alternatve GUI program (e.g., remote via ssh)\n",
+"-guicmd \"cmd...\" -- start alternative GUI program (e.g., remote via ssh)\n",
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
 "-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",
@@ -519,7 +519,7 @@ static char *(usagemessage[]) = {
 #endif
 "-sleep           -- sleep when idle, don't spin (true by default)\n",
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
-"-schedlib <file> -- plug in external scheduler\n",
+"-schedlib <file> -- plug in external scheduler (omit file extensions)\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",

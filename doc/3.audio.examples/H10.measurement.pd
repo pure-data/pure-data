@@ -1,88 +1,62 @@
-#N canvas 595 180 890 441 12;
-#X obj 27 369 filter-graph2 tab1 tab2;
+#N canvas 283 177 890 441 12;
+#X obj 108 367 filter-graph2 tab1 tab2;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array tab1 100 float 1;
-#A 0 0.830739 0.844714 0.882737 0.953104 1.05919 1.19408 1.30927 1.28356
-1.08532 0.848205 0.656605 0.517756 0.418204 0.345281 0.290799 0.249389
-0.216703 0.190579 0.169381 0.151914 0.137422 0.12526 0.114872 0.105963
-0.0982917 0.0916059 0.0857987 0.0806621 0.0761869 0.0722028 0.0686727
-0.0655319 0.0627325 0.0601819 0.0580026 0.0560086 0.0542273 0.0526266
-0.0511933 0.0499331 0.0488657 0.0478795 0.0470264 0.0462894 0.0456655
-0.0451292 0.0447278 0.0444219 0.0442321 0.0443363 0.0445433 0.0406212
-0.044237 0.0444791 0.0447274 0.0451519 0.0456706 0.0462819 0.0470208
-0.047843 0.0488554 0.0499668 0.0512238 0.0526266 0.0541961 0.0559707
-0.0580026 0.0602343 0.0627324 0.065522 0.0686727 0.0722051 0.076187
-0.0806892 0.0857991 0.0916198 0.0982917 0.10593 0.114799 0.125156 0.137483
-0.152001 0.169418 0.190549 0.216609 0.249199 0.291106 0.345514 0.418206
-0.51769 0.656605 0.848216 1.08532 1.28264 1.30927 1.19526 1.05919 0.95193
-0.882761 0.851609;
-#X coords 0 2 99 0 200 140 1;
-#X restore 636 30 graph;
+#X array tab1 100 float 0;
+#X coords 0 2 99 0 200 140 1 0 0;
+#X restore 572 28 graph;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array tab2 100 float 3;
-#A 0 -8.59498e-06 6.2502 6.20394 6.13994 6.03276 5.85774 5.58534 5.23555
-4.91043 4.68474 4.55106 4.4788 4.44502 4.43574 4.44271 4.4609 4.48711
-4.51925 4.55589 4.59604 4.63895 4.6841 4.73108 4.77957 4.82934 4.88017
-4.93192 4.98446 5.03768 5.09149 5.14582 5.2006 5.25578 5.31132 5.36717
-5.4233 5.47967 5.53626 5.59304 5.65 5.70711 5.76435 5.82171 5.87913
-5.93672 5.99424 6.05201 6.10932 6.16648 6.21553 -4.25974e-06 0.0674756
-0.116521 0.173676 0.230985 0.288763 0.346275 0.403871 0.461293 0.518653
-0.57589 0.633001 0.689956 0.746743 0.803332 0.859703 0.91583 0.971679
-1.02722 1.0824 1.13718 1.19151 1.24532 1.29854 1.35108 1.40283 1.45366
-1.50342 1.55192 1.5989 1.64405 1.68696 1.72711 1.76375 1.79589 1.8221
-1.84029 1.84726 1.83799 1.8042 1.73194 1.59826 1.37257 1.04745 0.697661
-0.425264 0.250239 0.143062 0.0790573 0.0402135;
-#X coords 0 6.283 99 0 200 140 1;
-#X restore 641 231 graph;
-#X text 623 87 1;
-#X text 635 373 0;
-#X text 617 296 pi;
-#X text 610 226 2pi;
-#X obj 27 234 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X array tab2 100 float 2;
+#X coords 0 6.283 99 0 200 140 1 0 0;
+#X restore 577 229 graph;
+#X text 559 85 1;
+#X text 571 371 0;
+#X text 553 294 pi;
+#X text 546 224 2pi;
+#X obj 81 252 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X floatatom 35 280 5 0 0 0 - - -, f 5;
-#X text 623 23 2;
-#X text 106 25 MEASURING FILTER FREQUENCY AND PHASE RESPONSE;
-#X text 612 413 updated for Pd version 0.39;
-#X text 693 176 frequency;
-#X text 633 172 0;
-#X text 816 175 44100;
-#N canvas 876 177 375 255 startup 0;
-#X obj 22 24 loadbang;
-#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X floatatom 81 310 5 0 0 0 - - -;
+#X text 559 21 2;
+#X text 54 20 MEASURING FILTER FREQUENCY AND PHASE RESPONSE;
+#X text 581 404 updated for Pd version 0.39;
+#X text 629 174 frequency;
+#X text 569 170 0;
+#X text 752 173 44100;
+#N canvas 876 177 298 247 startup 0;
+#X obj 47 24 loadbang;
+#X obj 47 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 22 67 f \$0;
-#X text 35 195 This subpatch loads initial;
-#X text 31 219 values in number boxes.;
-#X msg 22 91 \; \$1-freq 3000 \; \$1-q 3;
+#X obj 47 67 f \$0;
+#X text 61 174 This subpatch loads initial;
+#X text 64 194 values in number boxes.;
+#X msg 47 91 \; \$1-freq 3000 \; \$1-q 3;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
-#X restore 287 381 pd startup;
-#X floatatom 240 288 5 0 10000 0 - #0-freq -, f 5;
-#X floatatom 251 311 3 0 999 0 - #0-q -, f 3;
-#X text 14 49 You can use the "filter-graph1" and "filter-graph2" abstractions
+#X restore 329 358 pd startup;
+#X floatatom 275 276 5 0 10000 0 - #0-freq -;
+#X floatatom 284 299 3 0 999 0 - #0-q -;
+#X text 36 59 You can use the "filter-graph1" and "filter-graph2" abstractions
 as shown to test filters. Connect them as shown with a filter between
 them. Try varying the parameters and/or substituting other filters.
-;
-#X text 577 158 gain=0;
-#X text 576 358 phase=0;
-#X obj 27 257 filter-graph1 100 44100;
-#X obj 229 341 bp~;
-#X text 46 233 <-- compute;
-#X text 36 297 index;
-#X text 292 285 <-- center frequency;
-#X text 290 310 <-- "Q";
-#X text 11 117 "filter-graph1" takes as arguments the number of points
-to graph and the frequency range. "filter-graph2 takes as arguments
+, f 64;
+#X text 513 156 gain=0;
+#X text 512 356 phase=0;
+#X obj 81 275 filter-graph1 100 44100;
+#X obj 266 329 bp~;
+#X text 37 311 index;
+#X text 36 127 "filter-graph1" takes as arguments the number of points
+to graph and the frequency range. "filter-graph2" takes as arguments
 the name of a table to hold the (frequency dependent) gain \, and another
-\, if specified \, for the phase.;
-#X text 10 184 You can edit this patch to replace "bp" with any other
-filter you're curious about.;
+\, if specified \, for the phase., f 64;
+#X text 36 193 You can edit this patch to replace "bp" with any other
+filter you're curious about., f 64;
+#X text 314 298 <= "Q";
+#X text 317 275 <= center frequency;
+#X text 100 251 <= compute;
 #X connect 7 0 21 0;
+#X connect 8 0 0 0;
 #X connect 16 0 22 1;
 #X connect 17 0 22 2;
-#X connect 21 0 0 0;
 #X connect 21 0 8 0;
 #X connect 21 1 0 1;
 #X connect 21 1 22 0;

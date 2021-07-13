@@ -1,0 +1,7 @@
+#N canvas 197 74 389 162 12;
+#X msg 65 73 set \$1;
+#X obj 65 41 r \$1;
+#X obj 65 103 s \$1-set;
+#X text 142 73 used in the help file of slop~;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;

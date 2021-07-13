@@ -39,7 +39,7 @@ typedef struct _canvas_private
 #define GLIST_DEFCANVASHEIGHT 300
 
 /* since the window decorations aren't included, open new windows a few
-pixels down so you can posibly move the window later.  Apple needs less
+pixels down so you can possibly move the window later.  Apple needs less
 because its menus are at top of screen; we're more generous for other
 desktops because the borders have both window title area and menus. */
 #ifdef __APPLE__
@@ -70,7 +70,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
-void canvas_updatewindowlist( void)
+void canvas_updatewindowlist(void)
 {
             /* not if we're in a reload */
     if (!THISGUI->i_reloadingabstraction)
@@ -146,7 +146,7 @@ t_canvasenvironment *canvas_getenv(const t_canvas *x)
     return (x->gl_env);
 }
 
-int canvas_getdollarzero( void)
+int canvas_getdollarzero(void)
 {
     t_canvas *x = canvas_getcurrent();
     t_canvasenvironment *env = (x ? canvas_getenv(x) : 0);
@@ -216,13 +216,13 @@ void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir)
     canvas_unbind(x);
     x->gl_name = s;
     canvas_bind(x);
-    if (x->gl_havewindow)
-        canvas_reflecttitle(x);
     if (dir && dir != &s_)
     {
         t_canvasenvironment *e = canvas_getenv(x);
         e->ce_dir = dir;
     }
+    if (x->gl_havewindow)
+        canvas_reflecttitle(x);
 }
 
 /* --------------- traversing the set of lines in a canvas ----------- */
@@ -319,6 +319,7 @@ void glist_init(t_glist *x)
     x->gl_valid = ++glist_valid;
     x->gl_xlabel = (t_symbol **)t_getbytes(0);
     x->gl_ylabel = (t_symbol **)t_getbytes(0);
+    x->gl_privatedata = getbytes(sizeof(t_canvas_private));
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
@@ -332,7 +333,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
-    t_canvas_private*private = 0;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -377,9 +377,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     else x->gl_env = 0;
 
         /* initialize private data, like the undo-queue */
-    private = getbytes(sizeof(*private));
-    x->gl_privatedata = private;
-    private->undo.u_queue = canvas_undo_init(x);
+    canvas_undo_init(x);
 
     x->gl_x1 = 0;
     x->gl_y1 = 0;
@@ -408,7 +406,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_willvis = vis;
     x->gl_edit = !strncmp(x->gl_name->s_name, "Untitled", 8);
     x->gl_font = sys_nearestfontsize(font);
-    x->gl_zoom = 1;
+    x->gl_zoom = (owner ? owner->gl_zoom : 1);
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -417,6 +415,9 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
+          /* FIXME: this is a stopgap - we should always be using
+            glist_getzoom() and never gl_zoom in rest of code. */
+    x->gl_zoom = glist_getzoom(x);
     x->gl_x1 = atom_getfloatarg(0, argc, argv);
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
@@ -486,7 +487,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
-    x->gl_zoom = 1;
+    x->gl_zoom = g->gl_zoom;
     x->gl_screenx1 = 0;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
@@ -496,6 +497,9 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_isgraph = 1;
     x->gl_goprect = 0;
     x->gl_obj.te_binbuf = binbuf_new();
+        /* initialize private data, like the undo-queue */
+    canvas_undo_init(x);
+
     binbuf_addv(x->gl_obj.te_binbuf, "s", gensym("graph"));
     if (!menu)
         pd_pushsym(&x->gl_pd);
@@ -556,13 +560,13 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
             parent. */
         t_float diff = x->gl_y1 - x->gl_y2;
         t_gobj *y;
-        x->gl_y1 = heightwas * diff;
+        x->gl_y1 = heightwas * diff/x->gl_zoom;
         x->gl_y2 = x->gl_y1 - diff;
             /* and move text objects accordingly; they should stick
             to the bottom, not the top. */
         for (y = x->gl_list; y; y = y->g_next)
             if (pd_checkobject(&y->g_pd))
-                gobj_displace(y, x, 0, heightchange);
+                gobj_displace(y, x, 0, heightchange/x->gl_zoom);
         canvas_redraw(x);
     }
 }
@@ -594,6 +598,11 @@ void canvas_reflecttitle(t_canvas *x)
 {
     char namebuf[MAXPDSTRING];
     t_canvasenvironment *env = canvas_getenv(x);
+    if (!x->gl_havewindow)
+    {
+        bug("canvas_reflecttitle");
+        return;
+    }
     if (env->ce_argc)
     {
         int i;
@@ -639,14 +648,16 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
+    {
+        int x1 = x->gl_zoom * x->gl_xmargin,
+            x2 = x1 + x->gl_zoom * x->gl_pixwidth,
+            y1 = x->gl_zoom * x->gl_ymargin,
+            y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
             "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x),
-            x->gl_xmargin, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
+            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
+                x->gl_zoom);
+    }
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
@@ -682,6 +693,11 @@ void canvas_map(t_canvas *x, t_floatarg f)
     {
         if (glist_isvisible(x))
         {
+            if (!x->gl_havewindow)
+            {
+                bug("canvas_map");
+                return;
+            }
                 /* just clear out the whole canvas */
             sys_vgui(".x%lx.c delete all\n", x);
             x->gl_mapped = 0;
@@ -801,14 +817,13 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
     {
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
             sys_vgui(
         ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                 glist_getcanvas(x),
-                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset,
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
                 (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
                 oc);
     }
@@ -818,7 +833,6 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
     
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
@@ -827,7 +841,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         {
             sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
                 glist_getcanvas(x), oc,
-                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset);
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }
     }
 }
@@ -1466,7 +1480,7 @@ static void canvas_completepath(const char *from, char *to, int bufsize,
     {
         /* append canvas dir */
         const char *dir = canvas_getdir(x)->s_name;
-        int dirlen = strlen(dir);
+        int dirlen = (int)strlen(dir);
         strncpy(to, dir, bufsize-dirlen);
         to[bufsize-dirlen-1] = '\0';
         strcat(to, "/");
@@ -2002,7 +2016,7 @@ void canvas_add_for_class(t_class *c)
     /* g_graph_setup_class(c); */
 }
 
-void g_canvas_newpdinstance( void)
+void g_canvas_newpdinstance(void)
 {
     THISGUI = getbytes(sizeof(*THISGUI));
     THISGUI->i_newfilename = THISGUI->i_newdirectory = &s_;
@@ -2015,7 +2029,7 @@ void g_canvas_newpdinstance( void)
     g_template_newpdinstance();
 }
 
-void g_canvas_freepdinstance( void)
+void g_canvas_freepdinstance(void)
 {
     g_editor_freepdinstance();
     g_template_freepdinstance();
@@ -2072,5 +2086,6 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
         canvas_vis(gl, 1);
         return;
     }
-    glob_evalfile(ignore, name, dir);
+    if (!glob_evalfile(ignore, name, dir))
+        sys_vgui("::pdwindow::busyrelease\n");
 }
