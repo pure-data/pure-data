@@ -23,7 +23,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_linux
 libportmidi_a_SOURCES += \
     portmidi/porttime/ptlinux.c \
     portmidi/pm_linux/pmlinux.c \
-    portmidi/pm_linux/pmlinuxalsa.c
+    portmidi/pm_linux/pmlinuxalsa.c \
+    portmidi/pm_linux/finddefault.c
 endif
 
 # disable portmidi rate limiting on macos
