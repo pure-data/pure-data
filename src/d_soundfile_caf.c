@@ -6,7 +6,9 @@
 
 #include "d_soundfile.h"
 #include <math.h>
+#ifndef _MSC_VER
 #include <inttypes.h>
+#endif
 
 /* CAF (Core Audio Format)
 
