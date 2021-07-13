@@ -1527,30 +1527,41 @@ typedef struct vcommon
 {
     t_pd c_pd;
     int c_refcount;
-    t_float c_f;
+    t_atom c_atom;
 } t_vcommon;
 
 typedef struct _value
 {
     t_object x_obj;
     t_symbol *x_sym;
-    t_float *x_floatstar;
+    t_atom *x_atomstar;
 } t_value;
 
-    /* get a pointer to a named floating-point variable.  The variable
+    /* get a pointer to a named float variable.  The variable
     belongs to a "vcommon" object, which is created if necessary. */
 t_float *value_get(t_symbol *s)
+{
+    t_atom *a = value_getatom(s);
+    if (a->a_type == A_FLOAT)
+        return &a->a_w.w_float;
+    static t_float f = 0; // safety fallback
+    return &f;
+}
+
+    /* get a pointer to a named variable's underlying atom.  The variable
+    belongs to a "vcommon" object, which is created if necessary. */
+t_atom *value_getatom(t_symbol *s)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
     {
         c = (t_vcommon *)pd_new(vcommon_class);
-        c->c_f = 0;
+        SETFLOAT(&c->c_atom, 0);
         c->c_refcount = 0;
         pd_bind(&c->c_pd, s);
     }
     c->c_refcount++;
-    return (&c->c_f);
+    return (&c->c_atom);
 }
 
     /* release a variable.  This only frees the "vcommon" resource when the
@@ -1571,14 +1582,16 @@ void value_release(t_symbol *s)
 
 /*
  * value_getfloat -- obtain the float value of a "value" object
- *                  return 0 on success, 1 otherwise
+ *                  return 0 on success, 1 if non-existent, or 2 if wrong type
  */
 int value_getfloat(t_symbol *s, t_float *f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
         return (1);
-    *f = c->c_f;
+    if (c->c_atom.a_type != A_FLOAT)
+        return (2);
+    *f = c->c_atom.a_w.w_float;
     return (0);
 }
 
@@ -1591,13 +1604,46 @@ int value_setfloat(t_symbol *s, t_float f)
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
         return (1);
-    c->c_f = f;
+    SETFLOAT(&c->c_atom, f);
+    return (0);
+}
+
+/*
+ * value_getsymbol -- obtain the symbol value of a "value" object
+ *                  return 0 on success, 1 if non-existent, or 2 if wrong type
+ */
+int value_getsymbol(t_symbol *s, t_symbol **s2)
+{
+    t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
+    if (!c)
+        return (1);
+    if (c->c_atom.a_type != A_SYMBOL)
+        return (2);
+    *s2 = c->c_atom.a_w.w_symbol;
+    return (0);
+}
+
+/*
+ * value_setsymbol -- set the symbol value of a "value" object
+ *                  return 0 on success, 1 otherwise
+ */
+int value_setsymbol(t_symbol *s, t_symbol **s2)
+{
+    t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
+    if (!c)
+        return (1);
+    SETSYMBOL(&c->c_atom, *s2);
     return (0);
 }
 
 static void vcommon_float(t_vcommon *x, t_float f)
 {
-    x->c_f = f;
+    SETFLOAT(&x->c_atom, f);
+}
+
+static void vcommon_symbol(t_vcommon *x, t_symbol *s)
+{
+    SETSYMBOL(&x->c_atom, s);
 }
 
 static void *value_new(t_symbol *s)
@@ -1606,19 +1652,35 @@ static void *value_new(t_symbol *s)
     if (!*s->s_name)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
     x->x_sym = s;
-    x->x_floatstar = value_get(s);
-    outlet_new(&x->x_obj, &s_float);
+    x->x_atomstar = value_getatom(s);
+    outlet_new(&x->x_obj, &s_symbol);
     return (x);
 }
 
 static void value_bang(t_value *x)
 {
-    outlet_float(x->x_obj.ob_outlet, *x->x_floatstar);
+    switch(x->x_atomstar->a_type)
+    {
+        case A_SYMBOL:
+            outlet_symbol(x->x_obj.ob_outlet, x->x_atomstar->a_w.w_symbol);
+            break;
+        case A_FLOAT:
+            outlet_float(x->x_obj.ob_outlet, x->x_atomstar->a_w.w_float);
+            break;
+        default:
+            bug("value_bang");
+            break;
+    }
 }
 
 static void value_float(t_value *x, t_float f)
 {
-    *x->x_floatstar = f;
+    SETFLOAT(x->x_atomstar, f);
+}
+
+static void value_symbol(t_value *x, t_symbol *s)
+{
+    SETSYMBOL(x->x_atomstar, s);
 }
 
 /* set method */
@@ -1626,35 +1688,49 @@ static void value_symbol2(t_value *x, t_symbol *s)
 {
     value_release(x->x_sym);
     x->x_sym = s;
-    x->x_floatstar = value_get(s);
+    x->x_atomstar = value_getatom(s);
 }
 
 static void value_send(t_value *x, t_symbol *s)
 {
     if (s->s_thing)
-        pd_float(s->s_thing, *x->x_floatstar);
+    {
+        switch(x->x_atomstar->a_type)
+        {
+            case A_FLOAT:
+                pd_float(s->s_thing, x->x_atomstar->a_w.w_float);
+                break;
+            case A_SYMBOL:
+                pd_symbol(s->s_thing, x->x_atomstar->a_w.w_symbol);
+                break;
+            default:
+                break;
+        }
+    }
     else pd_error(x, "%s: no such object", s->s_name);
 }
 
-static void value_ff(t_value *x)
+static void value_free(t_value *x)
 {
     value_release(x->x_sym);
 }
 
 static void value_setup(void)
 {
-    value_class = class_new(gensym("value"), (t_newmethod)value_new,
-        (t_method)value_ff,
-        sizeof(t_value), 0, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)value_new, gensym("v"), A_DEFSYM, 0);
+    value_class = class_new(gensym("value"),
+        (t_newmethod)value_new, (t_method)value_free,
+        sizeof(t_value), 0, A_DEFSYMBOL, 0);
+    class_addcreator((t_newmethod)value_new, gensym("v"), A_DEFSYMBOL, 0);
     class_addbang(value_class, value_bang);
     class_addfloat(value_class, value_float);
+    class_addsymbol(value_class, value_symbol);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
     class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
     class_addfloat(vcommon_class, vcommon_float);
+    class_addsymbol(vcommon_class, vcommon_symbol);
 }
 
 /* -------------- overall setup routine for this file ----------------- */

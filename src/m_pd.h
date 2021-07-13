@@ -689,10 +689,13 @@ EXTERN t_glist *garray_getglist(t_garray *x);
 EXTERN t_array *garray_getarray(t_garray *x);
 EXTERN t_class *scalar_class;
 
-EXTERN t_float *value_get(t_symbol *s);
+EXTERN t_float *value_get(t_symbol *s); /* original: get float only */
+EXTERN t_atom *value_getatom(t_symbol *s); /* updated: float or symbol */
 EXTERN void value_release(t_symbol *s);
 EXTERN int value_getfloat(t_symbol *s, t_float *f);
 EXTERN int value_setfloat(t_symbol *s, t_float f);
+EXTERN int value_getsymbol(t_symbol *s, t_symbol **s2);
+EXTERN int value_setsymbol(t_symbol *s, t_symbol **s2);
 
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
