@@ -21,6 +21,9 @@
 #define MAX_CLIENTS 100
 #define MAX_JACK_PORTS 128  /* higher values seem to give bad xrun problems */
 #define BUF_JACK 4096
+/* taken from the PipeWire libjack implementation: the larger of the
+ * `JACK_CLIENT_NAME_SIZE` definitions I could find in the wild. */
+#define CLIENT_NAME_SIZE_FALLBACK 128
 
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
@@ -198,6 +201,8 @@ static int jack_xrun(void* arg) {
 static char** jack_get_clients(void)
 {
     const char **jack_ports;
+    int tmp_client_name_size = jack_client_name_size ? jack_client_name_size() : CLIENT_NAME_SIZE_FALLBACK;
+    char* tmp_client_name = (char*)getbytes(tmp_client_name_size);
     int i,j;
     int num_clients = 0;
     regex_t port_regex;
@@ -211,7 +216,6 @@ static char** jack_get_clients(void)
     {
         int client_seen;
         regmatch_t match_info;
-        char tmp_client_name[100];
 
         if(num_clients>=MAX_CLIENTS)break;
 
@@ -259,6 +263,7 @@ static char** jack_get_clients(void)
 
     /*    for (i=0;i<num_clients;i++) post("client: %s",jack_client_names[i]); */
 
+    freebytes( tmp_client_name, tmp_client_name_size );
     free( jack_ports );
     return jack_client_names;
 }
@@ -577,15 +582,15 @@ void jack_autoconnect(int v)
     jack_should_autoconnect = v;
 }
 
-void jack_client_name(char *name)
+void jack_client_name(const char *name)
 {
     if (desired_client_name) {
-      free(desired_client_name);
-      desired_client_name = NULL;
+        free(desired_client_name);
+        desired_client_name = NULL;
     }
     if (name) {
-      desired_client_name = (char*)getbytes(strlen(name) + 1);
-      strcpy(desired_client_name, name);
+        desired_client_name = (char*)getbytes(strlen(name) + 1);
+        strcpy(desired_client_name, name);
     }
 }
 

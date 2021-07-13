@@ -48,8 +48,7 @@ release notes:
     nedit-client  ../doc/1.manual/x5.htm
 git commit -a
 .... (go back and rebuild as above) ...
-git tag | tail (to see existing tags)
-git tag 0.43-3test1 (e.g.)
+git tag $VERSION && git tag |tail
 git push origin
 git push origin --tags
     ... (I don't use 'mirror' here because afraid of deleting PR branches)

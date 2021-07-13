@@ -488,8 +488,8 @@ static int socketreceiver_doread(t_socketreceiver *x)
             binbuf_text(INTER->i_inbinbuf, messbuf, bp - messbuf);
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
-                write(2,  messbuf, bp - messbuf);
-                write(2, "\n", 1);
+                size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
+                fprintf(stderr, "<< %.*s\n", bufsize, messbuf);
             }
             x->sr_inhead = inhead;
             x->sr_intail = intail;
@@ -788,7 +788,7 @@ void sys_vgui(const char *fmt, ...)
             msglen  = INTER->i_guisize - INTER->i_guihead;
     }
     if (sys_debuglevel & DEBUG_MESSUP)
-        fprintf(stderr, "%s", INTER->i_guibuf + INTER->i_guihead);
+        fprintf(stderr, ">> %s", INTER->i_guibuf + INTER->i_guihead);
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }

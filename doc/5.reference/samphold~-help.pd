@@ -21,7 +21,7 @@ for example.) Both inputs are audio signals., f 66;
 #X text 161 253 reset previous value;
 #X text 150 303 to force the next sample;
 #X obj 83 414 loadbang;
-#X text 318 462 updated for version 0.39;
+#X text 318 462 updated for Pd version 0.39;
 #X text 161 267 for control inlet;
 #X text 149 289 reset to default 1e+20;
 #X text 38 100 The "set" message sets the output value (which continues

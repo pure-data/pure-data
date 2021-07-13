@@ -368,15 +368,15 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
             float posSource, posSink;
             int nio;
             int _x; /* dummy variable */
-	    int posSourceY, posSinkY;
-	    int boxHeight;  /* height of inserted box */
+            int posSourceY, posSinkY;
+            int boxHeight;  /* height of inserted box */
             int posLeft, posRight;
 
                 /* get real x-position of the outlet */
             gobj_getrect(src, x, &posLeft, &_x, &posRight, &posSourceY);
             posLeft /= x->gl_zoom;
             posRight /= x->gl_zoom;
-	    posSourceY /= x->gl_zoom;
+            posSourceY /= x->gl_zoom;
             nio = obj_noutlets(obj1);
             posSource = posLeft + (posRight - posLeft - IOWIDTH) * src_out / ((nio==1)?1.:(nio-1.));
 
@@ -389,7 +389,7 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
             posSink = posLeft + (posRight - posLeft - IOWIDTH) * dst_in / ((nio==1)?1.:(nio-1.));
 
 		/* get height of the box that will be inserted */
-	    boxHeight = glist_fontheight(x) / x->gl_zoom + 4; /* ATOM_BMARGIN = 4 */
+            boxHeight = glist_fontheight(x) / x->gl_zoom + 4; /* ATOM_BMARGIN = 4 */
 
             posx = (posSource + posSink) * 0.5;
             posy = (posSourceY + posSinkY - boxHeight) >> 1;

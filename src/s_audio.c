@@ -86,7 +86,7 @@ static int audio_isfixedsr(void)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own samplerate */
-    return (sys_audioapi == API_JACK);
+    return (sys_audioapiopened == API_JACK);
 #endif
     return 0;
 }
@@ -95,7 +95,7 @@ static int audio_isfixedblocksize(void)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own blocksize */
-    return (sys_audioapi == API_JACK);
+    return (sys_audioapiopened == API_JACK);
 #endif
     return 0;
 }
@@ -108,7 +108,7 @@ static int audio_getfixedblocksize(void)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own blocksize */
-    return (sys_audioapi == API_JACK ? jack_get_blocksize() : 0);
+    return (sys_audioapiopened == API_JACK ? jack_get_blocksize() : 0);
 #endif
     return 0;
 }
