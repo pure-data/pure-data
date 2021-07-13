@@ -35,7 +35,7 @@ void audiounit_getdevs(char *indevlist, int *nindevs,
     post("device getting not implemented for AudioUnit yet\n");
 }
 
-void audiounit_listdevs( void)
+void audiounit_listdevs(void)
 {
     post("device listing not implemented for AudioUnit yet\n");
 }

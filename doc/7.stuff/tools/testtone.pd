@@ -1,12 +1,12 @@
 #N canvas 273 107 607 373 12;
-#X floatatom 72 273 3 0 0 0 - - -, f 3;
+#X floatatom 86 273 3 0 0 0 - - -;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
-#X floatatom 27 272 3 0 0 0 - - -, f 3;
+#X floatatom 27 272 3 0 0 0 - - -;
 #X text 219 234 MIDI OUT;
 #X text 27 197 MIDI IN;
-#X floatatom 150 272 3 0 0 0 - - -, f 3;
-#X floatatom 120 271 3 0 0 0 - - -, f 3;
+#X floatatom 150 272 3 0 0 0 - - -;
+#X floatatom 120 271 3 0 0 0 - - -;
 #X obj 120 246 ctlin;
 #N canvas 0 50 484 446 midi 0;
 #X obj 96 65 inlet;
@@ -49,72 +49,72 @@
 #X connect 13 0 9 0;
 #X connect 14 0 10 0;
 #X connect 20 0 19 0;
-#X restore 219 284 pd midi;
-#X floatatom 178 85 3 0 0 0 - \$0-tone-vu1 -, f 3;
-#X floatatom 205 85 3 0 0 0 - \$0-tone-vu2 -, f 3;
-#X obj 177 132 tgl 20 0 \$0-tone-ch1 \$0-tone-ch1 1 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 202 132 tgl 20 0 \$0-tone-ch2 \$0-tone-ch2 2 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 219 258 tgl 20 0 empty empty empty 20 8 0 8 -262144 -1 -1 0
+#X restore 217 285 pd midi;
+#X floatatom 178 85 3 0 0 0 - #0-tone-vu1 -;
+#X floatatom 205 85 3 0 0 0 - #0-tone-vu2 -;
+#X obj 177 132 tgl 20 0 \$0-tone-ch1 \$0-tone-ch1 1 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 202 132 tgl 20 0 \$0-tone-ch2 \$0-tone-ch2 2 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 218 258 tgl 20 0 empty empty empty 20 8 0 8 -262144 -1 -1 0
 1;
 #X text 40 120 OFF;
-#X obj 443 86 tgl 15 0 \$0-tone-hipass \$0-tone-hipass-set input-hipass 23
-8 0 12 -262144 -1 -1 1 1;
-#X obj 243 132 tgl 20 0 \$0-tone-ch3 \$0-tone-ch3 3 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 268 132 tgl 20 0 \$0-tone-ch4 \$0-tone-ch4 4 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 309 132 tgl 20 0 \$0-tone-ch5 \$0-tone-ch5 5 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 334 132 tgl 20 0 \$0-tone-ch6 \$0-tone-ch6 6 5 -8 0 12 -262144 -1 -1
-0 1;
+#X obj 443 86 tgl 15 0 \$0-tone-hipass \$0-tone-hipass-set input-hipass
+23 8 0 12 -262144 -1 -1 1 1;
+#X obj 243 132 tgl 20 0 \$0-tone-ch3 \$0-tone-ch3 3 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 268 132 tgl 20 0 \$0-tone-ch4 \$0-tone-ch4 4 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 309 132 tgl 20 0 \$0-tone-ch5 \$0-tone-ch5 5 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 334 132 tgl 20 0 \$0-tone-ch6 \$0-tone-ch6 6 5 -8 0 12 -262144
+-1 -1 1 1;
 #X obj 428 125 bng 15 250 50 0 \$0-tone-all empty ALL 20 8 0 12 -262144
 -1 -1;
 #X obj 428 146 bng 15 250 50 0 \$0-tone-none empty NONE 20 8 0 12 -262144
 -1 -1;
-#X floatatom 244 85 3 0 0 0 - \$0-tone-vu3 -, f 3;
-#X floatatom 272 85 3 0 0 0 - \$0-tone-vu4 -, f 3;
-#X floatatom 310 85 3 0 0 0 - \$0-tone-vu5 -, f 3;
-#X floatatom 338 85 3 0 0 0 - \$0-tone-vu6 -, f 3;
+#X floatatom 244 85 3 0 0 0 - #0-tone-vu3 -;
+#X floatatom 272 85 3 0 0 0 - #0-tone-vu4 -;
+#X floatatom 310 85 3 0 0 0 - #0-tone-vu5 -;
+#X floatatom 338 85 3 0 0 0 - #0-tone-vu6 -;
 #X text 237 65 AUDIO INPUT (RMS dB);
 #X text 101 88 noise;
 #X text 100 105 tone;
-#X obj 84 90 vradio 15 1 0 2 \$0-tone-type \$0-tone-type-set empty 0 -6 0 8
--262144 -1 -1 1;
-#X obj 22 91 vradio 15 1 0 3 \$0-tone-radio \$0-tone-radio-set empty 0 -6 0
-8 -262144 -1 -1 2;
-#X floatatom 376 85 3 0 0 0 - \$0-tone-vu7 -, f 3;
-#X floatatom 404 85 3 0 0 0 - \$0-tone-vu8 -, f 3;
-#X obj 375 132 tgl 20 0 \$0-tone-ch7 \$0-tone-ch7 7 5 -8 0 12 -262144 -1 -1
-0 1;
-#X obj 400 132 tgl 20 0 \$0-tone-ch8 \$0-tone-ch8 8 5 -8 0 12 -262144 -1 -1
-0 1;
-#N canvas 319 285 306 386 audio 0;
+#X obj 84 90 vradio 15 1 0 2 \$0-tone-type \$0-tone-type-set empty
+0 -6 0 8 -262144 -1 -1 1;
+#X obj 22 91 vradio 15 1 0 3 \$0-tone-radio \$0-tone-radio-set empty
+0 -6 0 8 -262144 -1 -1 2;
+#X floatatom 376 85 3 0 0 0 - #0-tone-vu7 -;
+#X floatatom 404 85 3 0 0 0 - #0-tone-vu8 -;
+#X obj 375 132 tgl 20 0 \$0-tone-ch7 \$0-tone-ch7 7 5 -8 0 12 -262144
+-1 -1 1 1;
+#X obj 400 132 tgl 20 0 \$0-tone-ch8 \$0-tone-ch8 8 5 -8 0 12 -262144
+-1 -1 1 1;
+#N canvas 495 283 306 386 audio 0;
 #X obj 37 342 s~ \$0-tone-mon;
 #X obj 37 316 line~;
 #X obj 37 288 pack 0 50;
 #X obj 34 175 * 5;
 #X obj 34 200 s \$0-tone-hip;
 #X obj 34 144 r \$0-tone-hipass;
-#N canvas 860 185 459 296 glue+loadbang 0;
-#X obj 8 10 loadbang;
-#X obj 204 19 r \$0-tone-all;
-#X obj 314 17 r \$0-tone-none;
-#X obj 8 68 list prepend \$0;
-#X msg 8 92 \; pd dsp 1 \; \$1-tone-pitch 69 \; \$1-tone-radio 2 \;
-\$1-tone-radio-set set 2 \; \$1-tone-type 1 \; \$1-tone-type-set 1
-\; \$1-tone-all 1 \; \$1-tone-hipass 1 \; \$1-tone-hipass-set set 1
-\;;
-#X msg 8 45 bang;
-#X obj 204 68 list prepend \$0;
-#X msg 204 45 bang;
-#X obj 314 68 list prepend \$0;
-#X msg 314 45 bang;
-#X msg 204 107 \; \$1-tone-ch1 1 \; \$1-tone-ch2 1 \; \$1-tone-ch3
+#N canvas 860 185 520 327 glue+loadbang 0;
+#X obj 25 17 loadbang;
+#X obj 221 26 r \$0-tone-all;
+#X obj 346 24 r \$0-tone-none;
+#X obj 25 84 list prepend \$0;
+#X msg 25 119 \; pd dsp 1 \; \$1-tone-pitch 69 \; \$1-tone-radio 2
+\; \$1-tone-radio-set set 2 \; \$1-tone-type 1 \; \$1-tone-type-set
+1 \; \$1-tone-all 1 \; \$1-tone-hipass 1 \; \$1-tone-hipass-set set
+1 \;;
+#X msg 25 52 bang;
+#X obj 221 84 list prepend \$0;
+#X msg 221 52 bang;
+#X obj 346 84 list prepend \$0;
+#X msg 346 52 bang;
+#X msg 221 134 \; \$1-tone-ch1 1 \; \$1-tone-ch2 1 \; \$1-tone-ch3
 1 \; \$1-tone-ch4 1 \; \$1-tone-ch5 1 \; \$1-tone-ch6 1 \; \$1-tone-ch7
 1 \; \$1-tone-ch8 1;
-#X msg 314 108 \; \$1-tone-ch1 0 \; \$1-tone-ch2 0 \; \$1-tone-ch3
+#X msg 346 135 \; \$1-tone-ch1 0 \; \$1-tone-ch2 0 \; \$1-tone-ch3
 0 \; \$1-tone-ch4 0 \; \$1-tone-ch5 0 \; \$1-tone-ch6 0 \; \$1-tone-ch7
 0 \; \$1-tone-ch8 0;
 #X connect 0 0 5 0;
@@ -126,8 +126,8 @@
 #X connect 7 0 6 0;
 #X connect 8 0 11 0;
 #X connect 9 0 8 0;
-#X restore 25 97 pd glue+loadbang;
-#N canvas 207 133 468 559 tone-generator 0;
+#X restore 52 76 pd glue+loadbang;
+#N canvas 396 142 502 570 tone-generator 0;
 #X obj 22 187 osc~;
 #X obj 22 81 mtof;
 #X floatatom 22 58 0 0 0 0 - - -;
@@ -223,8 +223,8 @@
 #X connect 41 0 44 0;
 #X connect 42 0 43 0;
 #X connect 44 0 2 0;
-#X restore 26 44 pd tone-generator;
-#N canvas 947 133 819 380 channel-select 0;
+#X restore 52 50 pd tone-generator;
+#N canvas 651 232 819 380 channel-select 0;
 #X obj 39 55 sel 0 1 2 3 4 5 6 7;
 #X obj 52 302 s \$0-inchlist;
 #X obj 39 30 r \$0-inch-sel;
@@ -281,8 +281,8 @@
 #X connect 18 0 21 0;
 #X connect 19 0 21 0;
 #X connect 20 0 11 0;
-#X restore 26 71 pd channel-select;
-#N canvas 675 374 967 515 adcs-and-dacs 0;
+#X restore 52 103 pd channel-select;
+#N canvas 527 330 986 513 adcs-and-dacs 0;
 #X obj 13 100 hip~ 5;
 #X obj 21 151 int;
 #X obj 21 125 env~ 8192;
@@ -505,9 +505,9 @@
 #X connect 104 7 83 0;
 #X connect 106 0 105 0;
 #X connect 107 0 104 0;
-#X restore 25 19 pd adcs-and-dacs;
-#X obj 36 235 r \$0-input-monitor-gain;
-#X obj 36 260 dbtorms;
+#X restore 52 24 pd adcs-and-dacs;
+#X obj 37 235 r \$0-input-monitor-gain;
+#X obj 37 260 dbtorms;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X connect 3 0 4 0;
@@ -515,29 +515,29 @@
 #X connect 10 0 11 0;
 #X connect 11 0 2 0;
 #X restore 373 252 pd audio;
-#X floatatom 22 144 3 0 100 1 - \$0-tone-level-set \$0-tone-level, f 3;
-#X floatatom 84 123 5 0 136 1 pitch \$0-tone-pitch-set \$0-tone-pitch, f 5
+#X floatatom 22 144 3 0 100 1 - #0-tone-level-set #0-tone-level;
+#X floatatom 84 123 5 0 136 1 pitch #0-tone-pitch-set #0-tone-pitch
 ;
-#X floatatom 84 145 6 0 20000 1 HZ \$0-tone-hz-set \$0-tone-hz, f 6;
+#X floatatom 84 145 6 0 20000 1 HZ #0-tone-hz-set #0-tone-hz;
 #X text 48 145 dB;
 #X text 34 67 TEST TONES;
 #X text 233 156 AUDIO OUTPUT ON/OFF;
 #X text 18 5 Welcome to Pd ("Pure Data"). You can use this window to
 test audio and MIDI connections. To see Pd's DOCUMENTATION \, select
 "getting started" in the Help menu.;
-#X text 18 323 Pd is Free software under the BSD license. See LICENSE.txt
+#X text 18 329 Pd is Free software under the BSD license. See LICENSE.txt
 in the distribution for details.;
-#X obj 27 292 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 27 298 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 120 293 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 120 299 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X text 39 105 60;
 #X text 39 88 80;
 #X text 16 163 (100 max);
 #X obj 499 168 vradio 15 1 0 8 \$0-inch-sel empty empty 0 -8 0 10 -262144
 -1 -1 0;
-#X obj 520 168 vradio 15 1 0 8 \$0-outch-sel empty empty 0 -8 0 10 -262144
--1 -1 0;
+#X obj 520 168 vradio 15 1 0 8 \$0-outch-sel empty empty 0 -8 0 10
+-262144 -1 -1 0;
 #X text 541 165 1-8;
 #X text 542 180 3-10;
 #X text 542 195 5-12;
@@ -545,8 +545,8 @@ in the distribution for details.;
 #X text 542 227 9-16;
 #X text 543 242 11-18;
 #X text 543 257 17-24;
-#X floatatom 340 188 5 0 120 0 input-monitor-gain \$0-input-monitor-gain-set
-\$0-input-monitor-gain, f 5;
+#X floatatom 340 188 5 0 120 0 input-monitor-gain #0-input-monitor-gain-set
+#0-input-monitor-gain;
 #X text 507 122 channel assign:, f 7;
 #X text 496 289 in;
 #X text 519 290 out;
@@ -574,7 +574,7 @@ in the distribution for details.;
 #X text 323 136 optionally multiply by 1000;
 #X obj 53 264 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X floatatom 53 309 5 0 0 0 - - -, f 5;
+#X floatatom 53 309 5 0 0 0 - - -;
 #X obj 53 284 samplerate~;
 #X text 163 287 get current sample rate;
 #X connect 1 0 2 0;

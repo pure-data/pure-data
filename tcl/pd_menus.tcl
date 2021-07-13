@@ -82,8 +82,9 @@ proc ::pd_menus::configure_for_pdwindow {} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
@@ -113,8 +114,9 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     }
     update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
@@ -157,8 +159,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         catch {$menubar.put entryconfigure $i -state disabled }
     }
     # Help menu
-    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
-    $menubar.help entryconfigure [_ "List of objects..."] -state normal
+    if {$::windowingsystem eq "aqua"} {
+        ::pd_menus::reenable_help_items_aqua $menubar
+    }
 }
 
 
@@ -225,7 +228,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
 proc ::pd_menus::build_put_menu {mymenu} {
     variable accelerator
     # The trailing 0 in menu_send_float basically means leave the object box
-    # sticking to the mouse cursor. The iemguis alway do that when created
+    # sticking to the mouse cursor. The iemguis always do that when created
     # from the menu, as defined in canvas_iemguis()
     $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
         -command {menu_send_float $::focused_window obj 0}
@@ -549,9 +552,18 @@ proc ::pd_menus::loadpreferences {} {
 }
 
 proc ::pd_menus::forgetpreferences {} {
-    pdtk_check .pdwindow \
-        [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
-        {pd forget-preferences} yes
+    if {[pdtk_yesnodialog .pdwindow \
+             [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
+             yes]} {
+        pdsend "pd forget-preferences"
+        if {[::pd_guiprefs::delete_config]} {
+            ::pdwindow::post [_ "removed GUI settings" ]
+        } {
+            ::pdwindow::post [_ "no Pd-GUI settings to clear" ]
+        }
+        ::pdwindow::post "\n"
+
+    }
 }
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
@@ -621,7 +633,17 @@ proc ::pd_menus::build_media_menu_aqua {mymenu} {
 proc ::pd_menus::build_window_menu_aqua {mymenu} {
 }
 
-# the "Help" does not have cross-platform differences
+# FIXME: remove this when it is no longer necessary
+# there is a Tk Cocoa bug where Help menu items after separators may be
+# disabled after windows are cycled, as of Nov 2020 this is fixed via a fresh
+# upstream patch in our Tk 8.6.10 build distributed with Pd but we keep this in
+# case other versions of Tk are used such as those installed to the system
+proc ::pd_menus::reenable_help_items_aqua {mymenu} {
+    #if {$::tcl_version < 8.6} {
+        $mymenu.help entryconfigure [_ "List of objects..."] -state normal
+        $mymenu.help entryconfigure [_ "Report a bug"] -state normal
+    #}
+}
 
 # ------------------------------------------------------------------------------
 # menu building functions for UNIX/X11

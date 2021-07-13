@@ -41,11 +41,23 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
                       -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
+        # set $fontfind & $fontsub if font name needs to be fixed
         if {$::font_family eq "DejaVu Sans Mono"} {
+            # capitalize V
+            set fontfind "DejavuSansMono"
+            set fontsub "DejaVuSansMono"
+        } elseif {$::font_family eq "Menlo"} {
+            # add -Regular suffix, -Bold is added automatically
+            if {$::font_weight eq "normal"} {
+                set fontfind "Menlo"
+                set fontsub "Menlo-Regular"
+            }
+        }
+        if {[info exists fontfind]} {
             # FIXME hack to fix incorrect PS font naming,
             # this could be removed in the future
             set ps [$tkcanvas postscript]
-            regsub -all "DejavuSansMono" $ps "DejaVuSansMono" ps
+            regsub -all $fontfind $ps $fontsub ps
             set f [open $filename w]
             puts $f $ps
             close $f
@@ -87,7 +99,10 @@ proc ::pd_menucommands::menu_toggle_editmode {} {
 
 # send a message to a pd canvas receiver
 proc ::pd_menucommands::menu_send {window message} {
-    set mytoplevel [winfo toplevel $window]
+    if { [catch {set mytoplevel [winfo toplevel $window]} ] } {
+        ::pdwindow::logpost {} 4 "menu_send: skipping unknown window '$window'\n"
+        return
+    }
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel $message"
     } elseif {$mytoplevel eq ".pdwindow"} {

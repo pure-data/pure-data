@@ -1,19 +1,19 @@
-#N canvas 349 65 568 328 12;
-#X msg 118 51 walk the dog;
-#X msg 29 51 bang;
-#X msg 76 50 234;
-#X obj 29 96 print x1;
-#X obj 21 10 print;
-#X text 29 130 Print prints out the messages it receives on the "terminal
+#N canvas 576 195 539 336 12;
+#X msg 146 56 walk the dog;
+#X msg 57 56 bang;
+#X msg 104 55 234;
+#X obj 104 101 print x1;
+#X obj 24 12 print;
+#X text 39 139 Print prints out the messages it receives on the "terminal
 window" that Pd is run from.;
-#X text 73 10 -- print messages to terminal window;
-#X text 27 167 Long symbol arguments are truncated to 78 characters
+#X text 76 12 -- print messages to terminal window;
+#X text 37 176 Long symbol arguments are truncated to 78 characters
 and marked with "*" (but message selectors are printed in full.);
-#X obj 100 273 print -n;
-#X text 27 202 With the special "-n" argument the "print:" prefix is
+#X obj 146 276 print -n;
+#X text 37 211 With the special "-n" argument the "print:" prefix is
 suppressed:;
-#X text 333 282 updated for Pd version 0.42;
-#X floatatom 100 250 5 0 0 0 - - -, f 5;
+#X text 299 280 updated for Pd version 0.42;
+#X floatatom 146 251 5 0 0 0 - - -;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;

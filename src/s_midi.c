@@ -89,7 +89,7 @@ int sys_midiapi =
     /* this is our current estimate for at what "system" real time the
     current logical time's output should occur. */
 static double sys_dactimeminusrealtime;
-    /* same for input, should be schduler advance earlier. */
+    /* same for input, should be scheduler advance earlier. */
 static double sys_adctimeminusrealtime;
 
 static double sys_newdactimeminusrealtime = -1e20;
@@ -351,7 +351,7 @@ static void sys_dispatchnextmidiin(void)
         else if (parserp->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            error("dropping unexpected midi byte %02X", byte);
+            error("dropping unexpected MIDI byte %02X", byte);
         }
         else
         {
@@ -511,8 +511,8 @@ void sys_pollmidiqueue(void)
 
 /******************** dialog window and device listing ********************/
 
-#define MAXNDEV 20
-#define DEVDESCSIZE 80
+#define MAXNDEV 128
+#define DEVDESCSIZE 1024
 
 #define DEVONSET 1  /* To agree with command line flags, normally start at 1 */
 
@@ -634,7 +634,7 @@ void sys_listmididevs(void)
         MAXNDEV, DEVDESCSIZE);
 
     if (!nindevs)
-        post("no midi input devices found");
+        post("no MIDI input devices found");
     else
     {
         post("MIDI input devices:");
@@ -642,7 +642,7 @@ void sys_listmididevs(void)
             post("%d. %s", i+1, indevlist + i * DEVDESCSIZE);
     }
     if (!noutdevs)
-        post("no midi output devices found");
+        post("no MIDI output devices found");
     else
     {
         post("MIDI output devices:");
@@ -662,7 +662,7 @@ void sys_set_midi_api(int which)
 #endif
     default:
         if (sys_verbose)
-            post("Ignoring unknown MIDI-API %d", which);
+            post("ignoring unknown MIDI API %d", which);
         return;
     }
 

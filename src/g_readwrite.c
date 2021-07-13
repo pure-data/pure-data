@@ -16,6 +16,7 @@ file format as in the dialog window for data.
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
+#include <errno.h>
 
 /* object to assist in saving state by abstractions */
 static t_class *savestate_class;
@@ -663,14 +664,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     t_gobj *y;
     t_linetraverser t;
     t_outconnect *oc;
-    int zoomwas = x->gl_zoom;
 
-    if (zoomwas > 1)
-    {
-        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
-        if (zoommethod)
-            (*zoommethod)(&x->gl_pd, (t_floatarg)1);
-    }
         /* subpatch */
     if (x->gl_owner && !x->gl_env)
     {
@@ -732,12 +726,6 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
                 (t_float)x->gl_isgraph);
     }
-    if (zoomwas > 1)
-    {
-        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
-        if (zoommethod)
-            (*zoommethod)(&x->gl_pd, (t_floatarg)zoomwas);
-    }
 }
 
     /* call this recursively to collect all the template names for
@@ -797,6 +785,7 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
         }
         binbuf_addsemi(b);
     }
+    freebytes(templatevec, ntemplates * sizeof(*templatevec));
 }
 
 void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except);
@@ -809,7 +798,10 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     t_binbuf *b = binbuf_new();
     canvas_savetemplatesto(x, b, 1);
     canvas_saveto(x, b);
-    if (binbuf_write(b, filename->s_name, dir->s_name, 0)) sys_ouch();
+    errno = 0;
+    if (binbuf_write(b, filename->s_name, dir->s_name, 0))
+        post("%s/%s: %s", dir->s_name, filename->s_name,
+            (errno ? strerror(errno) : "write failed"));
     else
     {
             /* if not an abstraction, reset title bar and directory */
@@ -828,14 +820,14 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     binbuf_free(b);
 }
 
-static void canvas_menusaveas(t_canvas *x, float fdestroy)
+static void canvas_menusaveas(t_canvas *x, t_float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
     sys_vgui("pdtk_canvas_saveas .x%lx {%s} {%s} %d\n", x2,
         x2->gl_name->s_name, canvas_getdir(x2)->s_name, (fdestroy != 0));
 }
 
-static void canvas_menusave(t_canvas *x, float fdestroy)
+static void canvas_menusave(t_canvas *x, t_float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
     const char *name = x2->gl_name->s_name;

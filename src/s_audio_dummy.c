@@ -13,11 +13,11 @@ int dummy_open_audio(int nin, int nout, int sr) {
   return 0;
 }
 
-int dummy_close_audio( void) {
+int dummy_close_audio(void) {
   return 0;
 }
 
-int dummy_send_dacs( void) {
+int dummy_send_dacs(void) {
   return 0;
 }
 
@@ -29,7 +29,7 @@ void dummy_getdevs(char *indevlist, int *nindevs, char *outdevlist,
   *canmulti = 0;
 }
 
-void dummy_listdevs( void) {
+void dummy_listdevs(void) {
   // do nothing
 }
 

@@ -1,22 +1,27 @@
-#N canvas 39 28 663 385 12;
-#X floatatom 180 207 0 0 0;
-#X floatatom 110 176 0 0 0;
-#X msg 48 127 60;
-#X obj 41 262 print x1;
-#X obj 180 262 print x2;
-#X floatatom 41 104 0 0 0;
-#X obj 29 14 makenote;
-#X text 113 14 - send note-on messages and schedule note-off for later;
-#X text 19 41 Makenote makes MIDI-style note-on/note-off pairs \, which you can use for MIDI output or to drive note-like processes within Pd.;
-#X msg 48 153 60.5;
-#X text 80 105 numbers at left are "pitches" which may be integers or not.;
-#X text 146 178 "velocity";
-#X text 215 210 duration in milliseconds;
-#X obj 41 235 makenote 3.2 500;
-#X text 193 235 creation arguments initialize velocity and duration;
-#X text 38 316 see also;
-#X obj 117 316 stripnote;
-#X text 389 325 updated for Pd version 0.33;
+#N canvas 532 119 598 365 12;
+#X floatatom 179 204 0 0 0 0 - - -;
+#X floatatom 124 174 0 0 0 0 - - -;
+#X msg 70 124 60;
+#X obj 70 267 print x1;
+#X obj 179 267 print x2;
+#X floatatom 55 101 0 0 0 0 - - -;
+#X obj 32 15 makenote;
+#X text 116 15 - send note-on messages and schedule note-off for later
+;
+#X text 38 48 Makenote makes MIDI-style note-on/note-off pairs \, which
+you can use for MIDI output or to drive note-like processes within
+Pd., f 63;
+#X msg 80 150 60.5;
+#X text 93 102 numbers at left are "pitches" which may be integers
+or not.;
+#X text 154 176 "velocity";
+#X text 214 207 duration in milliseconds;
+#X obj 70 234 makenote 3.2 500;
+#X text 196 234 creation arguments initialize velocity and duration
+;
+#X obj 146 313 stripnote;
+#X text 323 311 updated for Pd version 0.33;
+#X text 67 313 see also:;
 #X connect 0 0 13 2;
 #X connect 1 0 13 1;
 #X connect 2 0 13 0;

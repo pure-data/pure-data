@@ -270,9 +270,7 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
 }
 
 static t_symbol* color2symbol(int col) {
-    const int  compat = (pd_compatibilitylevel < 48)?1:
-        /* FIXXME: for Pd>=0.48, the default compatibility mode should be OFF */
-        1;
+    const int  compat = (pd_compatibilitylevel < 48) ? 1 : 0;
 
     char colname[MAXPDSTRING];
     colname[0] = colname[MAXPDSTRING-1] = 0;
@@ -305,7 +303,10 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
         if ('#' == s->s_name[0])
-            return (int)strtol(s->s_name+1, 0, 16);
+        {
+            int col = (int)strtol(s->s_name+1, 0, 16);
+            return col & 0xFFFFFF;
+        }
     }
     return 0;
 }
@@ -393,7 +394,8 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_snd = snd = canvas_realizedollar(iemgui->x_glist, snd);
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
-    (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    if(glist_isvisible(iemgui->x_glist))
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -427,7 +429,8 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     }
     iemgui->x_fsf.x_rcv_able = rcvable;
     iemgui_verify_snd_ne_rcv(iemgui);
-    (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    if(glist_isvisible(iemgui->x_glist))
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -496,8 +499,8 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -508,8 +511,8 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -539,8 +542,11 @@ void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 
     x->x_obj.te_xpix += dx;
     x->x_obj.te_ypix += dy;
-    (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(glist, (t_text *)z);
+    if(glist_isvisible(x->x_glist))
+    {
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_MOVE);
+        canvas_fixlinesfor(glist, (t_text *)z);
+    }
 }
 
 void iemgui_select(t_gobj *z, t_glist *glist, int selected)
@@ -548,7 +554,8 @@ void iemgui_select(t_gobj *z, t_glist *glist, int selected)
     t_iemgui *x = (t_iemgui *)z;
 
     x->x_fsf.x_selected = selected;
-    (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT);
+    if(glist_isvisible(x->x_glist))
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT);
 }
 
 void iemgui_delete(t_gobj *z, t_glist *glist)
@@ -694,6 +701,34 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     canvas_dirty(iemgui->x_glist, 1);
     return(oldsndrcvable);
 }
+
+int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
+{
+#define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
+    t_float zoom = iemgui->x_glist->gl_zoom;
+    t_symbol *srl[3];
+    int i;
+    for(i=0; i<argc; i++)
+        SETFLOAT(argv+i, -1); /* initialize */
+
+    iemgui_properties(iemgui, srl);
+
+    if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
+    if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
+    if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
+    if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
+    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
+    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
+    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
+    if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
+    if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
+    if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
+    if(argc>13) SETFLOAT (argv+13, iemgui->x_fontsize);
+    if(argc>14) SETCOLOR (argv+14, iemgui->x_bcol);
+    if(argc>15) SETCOLOR (argv+15, iemgui->x_fcol);
+    if(argc>16) SETCOLOR (argv+16, iemgui->x_lcol);
+}
+
 
 /* pre-0.46 the flags were 1 for 'loadinit' and 1<<20 for 'scale'.
 Starting in 0.46, take either 1<<20 or 1<<1 for 'scale' and save to both

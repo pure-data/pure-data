@@ -9,7 +9,7 @@
 extern int ugen_getsortno(void);
 
 #define DEFDELVS 64             /* LATER get this from canvas at DSP time */
-static const int delread_zero = 0;    /* four bytes of zero for delread~, vd~*/
+static const int delread_zero = 0;    /* four bytes of zero for delread~, vd~/delread4~*/
 
 /* ----------------------------- delwrite~ ----------------------------- */
 static t_class *sigdelwrite_class;
@@ -123,7 +123,7 @@ static t_int *sigdelwrite_perform(t_int *w)
 
 static void sigdelwrite_dsp(t_sigdelwrite *x, t_signal **sp)
 {
-    dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, sp[0]->s_n);
+    dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, (t_int)sp[0]->s_n);
     x->x_sortno = ugen_getsortno();
     sigdelwrite_checkvecsize(x, sp[0]->s_n);
     sigdelwrite_updatesr(x, sp[0]->s_sr);
@@ -224,7 +224,7 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
             0 : delwriter->x_vecsize);
         sigdelread_float(x, x->x_deltime);
         dsp_add(sigdelread_perform, 4,
-            sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, sp[0]->s_n);
+            sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, (t_int)sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
             pd_error(x, "delread~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
@@ -244,7 +244,7 @@ static void sigdelread_setup(void)
 }
 
 
-/* ----------------------------- vd~ ----------------------------- */
+/* ----------------------------- vd~ / delread4~ ----------------------------- */
 static t_class *sigvd_class;
 
 typedef struct _sigvd
@@ -327,13 +327,13 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
             0 : delwriter->x_vecsize);
         dsp_add(sigvd_perform, 5,
             sp[0]->s_vec, sp[1]->s_vec,
-                &delwriter->x_cspace, x, sp[0]->s_n);
+                &delwriter->x_cspace, x, (t_int)sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
-            pd_error(x, "vd~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
+            pd_error(x, "delread4~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
     }
     else if (*x->x_sym->s_name)
-        pd_error(x, "vd~: %s: no such delwrite~",x->x_sym->s_name);
+        pd_error(x, "delread4~: %s: no such delwrite~",x->x_sym->s_name);
 }
 
 static void sigvd_setup(void)

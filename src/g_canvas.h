@@ -270,10 +270,10 @@ struct _instancecanvas
     t_float i_graph_lastxpix, i_graph_lastypix;
 };
 
-void g_editor_newpdinstance( void);
-void g_template_newpdinstance( void);
-void g_editor_freepdinstance( void);
-void g_template_freepdinstance( void);
+void g_editor_newpdinstance(void);
+void g_template_newpdinstance(void);
+void g_editor_freepdinstance(void);
+void g_template_freepdinstance(void);
 
 #define THISGUI (pd_this->pd_gui)
 #define EDITOR (pd_this->pd_gui->i_editor)
@@ -434,18 +434,18 @@ EXTERN t_binbuf *glist_writetobinbuf(t_glist *x, int wholething);
 EXTERN int glist_isgraph(t_glist *x);
 EXTERN void glist_redraw(t_glist *x);
 EXTERN void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
-    char *tag, int x1, int y1, int x2, int y2);
-EXTERN void glist_eraseiofor(t_glist *glist, t_object *ob, char *tag);
+    const char *tag, int x1, int y1, int x2, int y2);
+EXTERN void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag);
 EXTERN void canvas_create_editor(t_glist *x);
 EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
 
 /* -------------------- functions on texts ------------------------- */
-EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);
-EXTERN void text_drawborder(t_text *x, t_glist *glist, char *tag,
+EXTERN void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize);
+EXTERN void text_drawborder(t_text *x, t_glist *glist, const char *tag,
     int width, int height, int firsttime);
-EXTERN void text_eraseborder(t_text *x, t_glist *glist, char *tag);
+EXTERN void text_eraseborder(t_text *x, t_glist *glist, const char *tag);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
 extern const t_widgetbehavior text_widgetbehavior;
@@ -469,7 +469,7 @@ EXTERN void rtext_key(t_rtext *x, int n, t_symbol *s);
 EXTERN void rtext_mouse(t_rtext *x, int xval, int yval, int flag);
 EXTERN void rtext_retext(t_rtext *x);
 EXTERN int rtext_width(t_rtext *x);
-EXTERN char *rtext_gettag(t_rtext *x);
+EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
 
@@ -502,7 +502,7 @@ typedef int (*t_canvasapply)(t_canvas *x, t_int x1, t_int x2, t_int x3);
 EXTERN void canvas_resortinlets(t_canvas *x);
 EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
-EXTERN void canvas_updatewindowlist( void);
+EXTERN void canvas_updatewindowlist(void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
 EXTERN int canvas_isabstraction(const t_canvas *x);
 EXTERN int canvas_istable(const t_canvas *x);

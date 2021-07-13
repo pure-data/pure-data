@@ -1,35 +1,33 @@
-#N canvas 111 30 606 531 12;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 539 44 606 633 12;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-sum 882 float 0;
 #X coords 0 0.5 881 -0.5 200 130 1;
-#X restore 382 119 graph;
-#X text 381 257 ---- 0.02 seconds ----;
-#X text 350 505 updated for Pd version 0.39;
-#X obj 46 242 output~;
-#X obj 140 276 tabwrite~ \$0-sum;
-#X obj 130 107 / 100;
-#X floatatom 130 86 4 0 100 0 - - -;
-#X obj 206 108 / 100;
-#X floatatom 206 87 4 0 100 0 - - -;
-#X obj 151 228 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+#X restore 336 128 graph;
+#X text 357 266 ---- 0.02 seconds ----;
+#X text 356 575 updated for Pd version 0.39;
+#X obj 121 331 output~;
+#X obj 215 351 tabwrite~ \$0-sum;
+#X obj 172 137 / 100;
+#X floatatom 172 112 4 0 100 0 - - -;
+#X obj 222 137 / 100;
+#X floatatom 222 112 4 0 100 0 - - -;
+#X obj 227 294 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 151 250 metro 193;
-#X obj 19 95 phasor~;
-#X floatatom 19 74 5 0 0 0 - - -;
-#X text 11 51 frequency;
-#X text 126 50 SLOPES (percent);
-#X obj 108 137 *~;
-#X obj 19 129 *~ -1;
-#X obj 19 154 +~ 1;
-#X obj 184 156 *~;
-#X obj 108 189 min~;
-#X text 341 118 0.5;
-#X text 338 237 -0.5;
-#X text 30 4 Making waveforms with corners by specifying line segment
-slopes;
-#X text 136 67 up;
-#X text 209 68 down;
-#X text 29 317 Occasionally a second method for making corners is more
+#X obj 227 316 metro 193;
+#X obj 95 125 phasor~;
+#X floatatom 95 104 5 0 0 0 - - -;
+#X text 66 79 frequency;
+#X text 159 71 SLOPES (percent);
+#X obj 154 167 *~;
+#X obj 95 169 *~ -1;
+#X obj 95 194 +~ 1;
+#X obj 204 242 *~;
+#X obj 179 269 min~;
+#X text 295 127 0.5;
+#X text 296 246 -0.5;
+#X text 175 92 up;
+#X text 222 92 down;
+#X text 51 411 Occasionally a second method for making corners is more
 convenient. Here we specify the slopes of the rising and falling segments
 (as always \, in units per cycle). We then make a triangle wave with
 a corner at (0 \, 0) and another one \, placed somewhere within the
@@ -38,7 +36,9 @@ will have an x value of t/(s+t) (if we let s denote the rising slope
 and t the falling one \, both as positive numbers). The y value is
 st/(s+t). If we wish instead to specify the corner location (x \, y)
 (with x in cycles \, 0<x<1) we set s = y/x and t = y/(1-x). The DC
-value is y/2.;
+value is y/2., f 68;
+#X text 37 24 MAKING WAVEFORMS WITH CORNERS BY SPECIFYING LINE SEGMENT
+SLOPES, f 63;
 #X connect 5 0 15 1;
 #X connect 6 0 5 0;
 #X connect 7 0 18 1;
@@ -54,3 +54,4 @@ value is y/2.;
 #X connect 18 0 19 1;
 #X connect 19 0 3 0;
 #X connect 19 0 4 0;
+#X connect 19 0 3 1;

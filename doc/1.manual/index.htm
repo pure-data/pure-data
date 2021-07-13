@@ -2,6 +2,9 @@
 
 <HTML>
   <HEAD>
+  <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	 <TITLE>Pd Documentation</TITLE>
     <meta http-equiv="Content-Type" content="text/html">
 	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
@@ -100,8 +103,47 @@ can be found at:
     <LI> <a href="x3.htm#s4"> preferences and startup options </A>
     <LI> <a href="x3.htm#s5"> how Pd searches for files </A>
 </OL>
-<LI> <a href="x4.htm" id=s4> writing Pd objects in C </A>
 
+
+
+
+<li> <a href="x4.htm" id=s4> externals </a>
+
+		<ol>
+		<li><a href="x4.htm#s1"> external objects & libraries</a> 
+			<ol>
+			<li> <a href="x4.htm#s1.1">what are: vanilla objects, internals & externals? </a>
+			<li> <a href="x4.htm#s1.2">what are the types of external objects? </a>
+				<ol>
+				<li> <a href="x4.htm#s1.2.1">compiled objects:</a>
+				<li> <a href="x4.htm#s1.2.2">abstractions:</a>
+				</ol>
+			<li> <a href="x4.htm#s1.3">what are external libraries?</a>
+			<li> <a href="x4.htm#s1.4">what are the types of external libraries?</a>
+			</ol>
+
+		<li> <a href="x4.htm#s2">installing external objects and libraries</a> 
+			<ol>
+			<li> <a href="x4.htm#s2.1">where to include the externals? </a>
+			<li> <a href="x4.htm#s2.2">how to download externals from Pd vanilla?</a>
+			</ol>
+
+		<li> <a href="x4.htm#s3">loading externals</a>
+			<ol>
+			<li> <a href="x4.htm#s3.1">load using the [declare] object</a> 
+				<ol>
+				<li> <a href="x4.htm#s3.1.1">[declare -path] </a>
+				<li> <a href="x4.htm#s3.1.2">[declare -lib] </a>
+				</ol>
+			<li> <a href="x4.htm#s3.2">load via path and startup</a> 
+				<ol>
+				<li> <a href="x4.htm#s3.2.1">user added path</a>
+				<li> <a href="x4.htm#s3.2.2">startup </a>
+				</ol>
+			<li> <a href="x4.htm#s3.3">load using slash declarations</a> 
+				</ol>
+		<li> <a href="x4.htm#s4">how externs are loaded </a>
+</OL>	
 <LI> <a href="x5.htm" id=s5> current status </A>
 <OL>
     <LI> <a href="x5.htm#s1"> release notes </A>
@@ -109,7 +151,31 @@ can be found at:
     <LI> <a href="x5.htm#s3"> differences from Max/MSP </A>
 </OL>
 
+<LI> <a href="x6.htm" id=s6> installing from source </A>
+<OL>
+    <LI> <a href="x6.htm#s6.1"> requirements </A>
+    <LI> <a href="x6.htm#s6.2"> autotools build (recommended) </A>
+    <LI> <a href="x6.htm#s6.3"> Linux & BSD</A>
+	<LI> <a href="x6.htm#s6.4"> macOS </A>
+		<ol>
+		<li><a href="x6-a.htm"> macOS resources </a></li>
+		</ol>
+    <LI> <a href="x6.htm#s6.5"> Windows </A>
+		<ol>
+		<li><a href="x6-b.htm"> Windows resources </a></li>
+		<li><a href="x6-b.htm#s6.5.2">  Windows ASIO support </a></li>
+		</ol>
+    <LI> <a href="x6.htm#s6.6"> double precision</A>
+	<LI> <a href="x6.htm#s6.7"> other flags</A>
+	<LI> <a href="x6.htm#s6.8"> cross-compilation for Windows on Linux </A>
+    <LI> <a href="x6.htm#s6.9"> makefile build </A>
+    <LI> <a href="x6.htm#s6.10"> reporting bugs </A>
 </OL>
+
+</OL>
+
+</br>
+</br>
 
 <!--
     intro: what Pd is

@@ -1,13 +1,13 @@
-#N canvas 248 104 751 339 12;
-#X obj 29 10 namecanvas;
-#X obj 29 98 namecanvas bonzo;
-#X text 521 311 updated for Pd version 0.44;
-#X text 121 10 - attach this canvas to a name;
-#X text 24 140 This is sometimes the only way to send a message to
+#N canvas 402 55 524 371 12;
+#X obj 39 20 namecanvas;
+#X obj 39 108 namecanvas bonzo;
+#X text 291 309 updated for Pd version 0.44;
+#X text 131 20 - attach this canvas to a name;
+#X text 34 150 This is sometimes the only way to send a message to
 a canvas when making graph-on-parent abstractions \, but its use in
 making self-editing patches is dangerous since if you use it to edit
 the namecanvas itself away you can cause Pd to crash. Instead \, you
 can just say:;
-#X msg 28 55 \; bonzo msg 280 50 hi there;
-#X msg 28 227 \; pd-namecanvas-help.pd msg 280 80 this is safer but
+#X msg 38 65 \; bonzo msg 280 50 hi there;
+#X msg 38 237 \; pd-namecanvas-help.pd msg 280 80 this is safer but
 only possible if you know the name of the canvas in advance.;

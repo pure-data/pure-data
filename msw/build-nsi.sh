@@ -70,24 +70,26 @@ Helper script to build a proper Windows installer out of a
 Pd build tree.
 
 Usage:
-$0 <path_to_pd_build> <version> [<arch>]
+$0 <path_to_pd_build> <version> <wish-exec-name> [<arch>]
 
    <path_to_pd_build>   input directory (containing 'bin/pd.exe')
    <version>            Pd-version to create installer for (e.g. '0.32-8')
+   <wishname>           name of wish executable (e.g., wish85.exe)
    <arch>               architecture of Pd ('32' or '64')
 EOF
   cleanup 1
 }
 
 # show usage when invoked without args
-if [ "$#" -lt "2" ]
+if [ "$#" -lt "3" ]
 then
     usage
 fi
 
 PDWINDIR=$(realpath "$1")
 PDVERSION=$2
-PDARCH=$3
+WISHNAME=$3
+PDARCH=$4
 
 
 
@@ -153,6 +155,7 @@ echo "!insertmacro MUI_PAGE_LICENSE \"$PDWINDIR/LICENSE.txt\"" \
 # stick version number in pd.nsi script
 cat "${SCRIPTDIR}/pd.nsi" | sed \
 	-e "s/PDVERSION/${PDVERSION}/" \
+	-e "s/WISHNAME/${WISHNAME}/" \
 	-e "s|include \"/tmp/|include \"${OUTDIR}/|" \
 	> "${NSIFILE}"
 
@@ -168,7 +171,7 @@ case $nsis_exit in
   2) error "NSIS is not found.  install, e.g., mingw32-nsis."
      cleanup 1
      ;;
-  *) error "Unkown error"
+  *) error "Unknown error"
      cleanup 1
      ;;
 esac
@@ -178,7 +181,7 @@ if makensis -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
-  error "Some error occured during compilation of ${NSIFILE}"
+  error "Some error occurred during compilation of ${NSIFILE}"
   exit 1
 fi
 cleanup 0

@@ -1,17 +1,16 @@
-#N canvas 224 60 657 571 12;
-#X obj 23 269 output~;
-#X obj 45 74 / 100;
-#X floatatom 45 54 5 0 100 0 - - -;
-#X obj 23 144 *~;
-#X text 403 539 updated for Pd version 0.37;
-#X obj 22 29 osc~ 220;
-#X obj 45 97 pack 0 50;
-#X obj 45 121 line~;
-#X text 97 54 <-- index in;
-#X text 117 68 hundredths;
-#X obj 23 169 *~ 128;
-#X obj 23 217 tabread4~ E05-tab;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 476 149 657 596 12;
+#X obj 34 315 output~;
+#X obj 52 99 / 100;
+#X floatatom 52 77 5 0 100 0 - - -;
+#X obj 34 171 *~;
+#X text 436 564 updated for Pd version 0.37;
+#X obj 33 50 osc~ 220;
+#X obj 52 122 pack 0 50;
+#X obj 52 146 line~;
+#X text 119 91 hundredths;
+#X obj 34 198 *~ 128;
+#X obj 34 251 tabread4~ E05-tab;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array E05-tab 259 float 1;
 #A 0 -1.20148 -1 -0.810724 -0.63326 -0.467216 -0.31221 -0.167866 -0.0338144
 0.0903053 0.204849 0.310166 0.406597 0.494477 0.574137 0.645895 0.71007
@@ -49,83 +48,82 @@
 -0.204849 -0.0903053 0.0338144 0.167866 0.31221 0.467216 0.63326 0.810724
 1 1.20148;
 #X coords 0 1 258 -1 200 140 1;
-#X restore 262 46 graph;
-#X text 497 28 subpatch to;
-#N canvas 113 0 849 700 make-table 0;
-#X obj 141 304 t b b;
-#X obj 213 329 f;
-#X obj 251 329 + 1;
-#X msg 235 306 0;
-#X obj 141 327 until;
-#X obj 213 359 t f f;
-#X obj 114 436 tabwrite E05-tab;
-#X obj 140 355 sel 258;
-#X text 203 172 normalize from -1 to 1;
-#X obj 141 285 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 230 82 graph;
+#N canvas 352 23 835 732 make-table 0;
+#X obj 157 304 t b b;
+#X obj 229 329 f;
+#X obj 267 329 + 1;
+#X msg 247 305 0;
+#X obj 157 327 until;
+#X obj 229 359 t f f;
+#X obj 152 436 tabwrite E05-tab;
+#X obj 156 355 sel 258;
+#X text 209 172 normalize from -1 to 1;
+#X obj 157 285 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 88 386 expr ($f1-129)/128;
-#X obj 141 262 inlet;
-#X obj 171 534 t b b;
-#X obj 243 559 f;
-#X obj 281 559 + 1;
-#X msg 265 536 0;
-#X obj 171 557 until;
-#X obj 243 589 t f f;
-#X obj 144 666 tabwrite E05-tab;
-#X obj 170 585 sel 258;
-#X obj 171 515 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 115 386 expr ($f1-129)/128;
+#X obj 157 262 inlet;
+#X obj 197 534 t b b;
+#X obj 269 559 f;
+#X obj 307 559 + 1;
+#X msg 287 535 0;
+#X obj 197 557 until;
+#X obj 269 589 t f f;
+#X obj 192 666 tabwrite E05-tab;
+#X obj 196 585 sel 258;
+#X obj 197 515 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 118 616 expr ($f1-129)/128;
-#X obj 171 492 inlet;
-#X obj 444 228 t b b;
-#X obj 516 253 f;
-#X obj 554 253 + 1;
-#X msg 538 230 0;
-#X obj 444 251 until;
-#X obj 516 283 t f f;
-#X obj 417 360 tabwrite E05-tab;
-#X obj 443 279 sel 258;
-#X obj 391 334 expr 16*$f1*$f1*$f1*$f1*$f1-20*$f1*$f1*$f1+5*$f1;
-#X obj 444 209 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 170 616 expr ($f1-129)/128;
+#X obj 197 492 inlet;
+#X obj 460 228 t b b;
+#X obj 536 253 f;
+#X obj 574 253 + 1;
+#X msg 554 229 0;
+#X obj 460 251 until;
+#X obj 536 283 t f f;
+#X obj 458 364 tabwrite E05-tab;
+#X obj 459 279 sel 258;
+#X obj 407 334 expr 16*$f1*$f1*$f1*$f1*$f1-20*$f1*$f1*$f1+5*$f1;
+#X obj 460 209 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 391 310 expr ($f1-129)/128;
-#X obj 444 186 inlet;
-#X obj 504 476 t b b;
-#X obj 576 501 f;
-#X obj 614 501 + 1;
-#X msg 598 478 0;
-#X obj 504 499 until;
-#X obj 576 531 t f f;
-#X obj 477 624 tabwrite E05-tab;
-#X obj 503 527 sel 258;
-#X obj 504 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 407 310 expr ($f1-129)/128;
+#X obj 460 186 inlet;
+#X obj 520 476 t b b;
+#X obj 592 501 f;
+#X obj 630 501 + 1;
+#X msg 610 477 0;
+#X obj 520 499 until;
+#X obj 592 531 t f f;
+#X obj 515 624 tabwrite E05-tab;
+#X obj 519 527 sel 258;
+#X obj 520 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 448 558 expr ($f1-129)/128;
-#X obj 504 434 inlet;
-#X obj 88 410 expr 4*$f1*$f1*$f1-3*$f1;
-#X obj 118 640 expr 8*$f1*$f1*$f1*$f1-8*$f1*$f1+1;
-#X obj 448 582 expr 32*$f1*$f1*$f1*$f1*$f1*$f1 -48*$f1*$f1*$f1*$f1+18*$f1*$f1-1
+#X obj 465 558 expr ($f1-129)/128;
+#X obj 520 434 inlet;
+#X obj 115 410 expr 4*$f1*$f1*$f1-3*$f1;
+#X obj 170 640 expr 8*$f1*$f1*$f1*$f1-8*$f1*$f1+1;
+#X obj 465 582 expr 32*$f1*$f1*$f1*$f1*$f1*$f1 -48*$f1*$f1*$f1*$f1+18*$f1*$f1-1
 ;
-#X text 641 622 6th C.P. and basta.;
-#X obj 83 92 t b b;
-#X obj 155 117 f;
-#X obj 193 117 + 1;
-#X msg 177 94 0;
-#X obj 83 115 until;
-#X obj 155 147 t f f;
-#X obj 56 224 tabwrite E05-tab;
-#X obj 82 143 sel 258;
-#X obj 83 73 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X text 641 623 6th C.P. and basta.;
+#X obj 77 86 t b b;
+#X obj 149 114 f;
+#X obj 187 114 + 1;
+#X msg 167 88 0;
+#X obj 77 112 until;
+#X obj 149 144 t f f;
+#X obj 72 224 tabwrite E05-tab;
+#X obj 76 140 sel 258;
+#X obj 77 65 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 30 174 expr ($f1-129)/128;
-#X obj 83 50 inlet;
-#X obj 30 198 expr 2*$f1*$f1-1;
-#X text 203 198 2nd C.P.;
-#X text 309 410 3rd C.P.;
-#X text 331 660 4th C.P.;
-#X text 613 357 5th C.P.;
-#X text 259 51 This patch computes Chebychev polynomials and stores
-them in a wavetable for use later.;
+#X obj 46 174 expr ($f1-129)/128;
+#X obj 77 39 inlet;
+#X obj 46 198 expr 2*$f1*$f1-1;
+#X text 209 198 2nd C.P.;
+#X text 295 410 3rd C.P.;
+#X text 349 664 4th C.P.;
+#X text 591 368 5th C.P.;
+#X text 270 55 This patch computes Chebychev polynomials and stores
+them in a wavetable for use later., f 30;
 #X connect 0 0 4 0;
 #X connect 0 1 3 0;
 #X connect 1 0 2 0;
@@ -201,57 +199,57 @@ them in a wavetable for use later.;
 #X connect 59 0 61 0;
 #X connect 60 0 58 0;
 #X connect 61 0 56 0;
-#X restore 489 146 pd make-table;
-#X obj 489 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 470 166 pd make-table;
+#X f 17;
+#X obj 470 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 517 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 499 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 545 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 528 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 573 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 557 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 600 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 586 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 497 45 calculate;
-#X text 495 64 Chebychev;
-#X text 496 83 polynomials;
-#X text 490 107 2;
-#X text 517 107 3;
-#X text 546 107 4;
-#X text 572 108 5;
-#X text 601 107 6;
-#X text 134 2 waveshaping with Chebychev polynomials;
-#X obj 23 193 +~ 129;
-#X obj 23 242 hip~ 5;
-#X text 107 256 This patch demonstrates using Chebychev polynomials
+#X text 471 127 2;
+#X text 499 127 3;
+#X text 529 127 4;
+#X text 556 128 5;
+#X text 587 127 6;
+#X obj 34 224 +~ 129;
+#X obj 34 278 hip~ 5;
+#X text 148 291 This patch demonstrates using Chebychev polynomials
 (of the first kind) to generate pure harmonics using waveshaping. The
 pure harmonic only comes out when the index is one (top of the scale).
 Smaller indices will give various mixes of harmonics. The table initially
 holds the fifth Chebychev polynomial \, so you can get the fifth harmonic.
-;
-#X text 106 355 There is an audible "rolling" sound as the index changes
+, f 62;
+#X text 148 382 There is an audible "rolling" sound as the index changes
 for the higher degree polynomials \, because the amplitudes of the
 lower partials can rise and fall several times apiece as the index
-rises from zero to one.;
-#X text 105 422 Indices greater than one will try to read values outside
+rises from zero to one., f 62;
+#X text 148 445 Indices greater than one will try to read values outside
 the table (which would be clipped appropriately). Anyway \, the polynomials
 increase rapidly in value outside the interval from -1 to 1 that we
-are using here.;
-#X text 106 491 When you get tired of Chebychev polynomials you can
-draw your own functions by hand and/or try other formulas.;
+are using here., f 62;
+#X text 148 508 When you get tired of Chebychev polynomials you can
+draw your own functions by hand and/or try other formulas., f 62;
+#X text 99 77 <= index in;
+#X text 42 5 WAVESHAPING WITH CHEBYCHEV POLYNOMIALS;
+#X text 458 86 subpatch to calculate Chebychev polynomials, f 21;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;
-#X connect 3 0 10 0;
+#X connect 3 0 9 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 7 0 3 1;
-#X connect 10 0 29 0;
-#X connect 11 0 30 0;
-#X connect 15 0 14 0;
-#X connect 16 0 14 1;
-#X connect 17 0 14 2;
-#X connect 18 0 14 3;
-#X connect 19 0 14 4;
-#X connect 29 0 11 0;
-#X connect 30 0 0 0;
-#X connect 30 0 0 1;
+#X connect 9 0 23 0;
+#X connect 10 0 24 0;
+#X connect 13 0 12 0;
+#X connect 14 0 12 1;
+#X connect 15 0 12 2;
+#X connect 16 0 12 3;
+#X connect 17 0 12 4;
+#X connect 23 0 10 0;
+#X connect 24 0 0 0;
+#X connect 24 0 0 1;
