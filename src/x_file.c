@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-2013 Miller Puckette and others.
+/* Copyright (c) 2021 IOhannes m zmölnig.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
