@@ -61,11 +61,18 @@ static void dopost(const char *s)
     if (sys_printhook)
         (*sys_printhook)(s);
     else if (sys_printtostderr || !sys_havegui())
+    {
 #ifdef _WIN32
+    #ifdef _MSC_VER
         fwprintf(stderr, L"%S", s);
+    #else
+        fwprintf(stderr, L"%s", s);
+    #endif
+        fflush(stderr);
 #else
         fprintf(stderr, "%s", s);
 #endif
+    }
     else
     {
         char upbuf[MAXPDSTRING];
@@ -85,7 +92,18 @@ static void doerror(const void *object, const char *s)
         (*sys_printhook)(upbuf);
     }
     else if (sys_printtostderr)
+    {
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L"error: %S", s);
+    #else
+        fwprintf(stderr, L"error: %s", s);
+    #endif
+        fflush(stderr);
+#else
         fprintf(stderr, "error: %s", s);
+#endif
+    }
     else
     {
         char obuf[MAXPDSTRING];
@@ -108,7 +126,16 @@ static void dologpost(const void *object, const int level, const char *s)
     }
     else if (sys_printtostderr)
     {
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L"verbose(%d): %S", level, s);
+    #else
+        fwprintf(stderr, L"verbose(%d): %s", level, s);
+    #endif
+        fflush(stderr);
+#else
         fprintf(stderr, "verbose(%d): %s", level, s);
+#endif
     }
     else
     {
