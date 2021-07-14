@@ -84,6 +84,7 @@ static int sys_listplease;
 int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
 static int sys_batch;
+static int sys_taskqueue_threads = DEFNUMWORKERTHREADS;
 int sys_extraflags;
 char sys_extraflagsstring[MAXPDSTRING];
 int sys_run_scheduler(const char *externalschedlibname,
@@ -378,6 +379,8 @@ int sys_main(int argc, const char **argv)
         return (1);
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
+    if (sys_taskqueue_threads > 0 && !sys_batch)
+        sys_taskqueue_start(sys_taskqueue_threads); /* start task queue */
     if (sys_externalschedlib)
         return (sys_run_scheduler(sys_externalschedlibname,
             sys_extraflagsstring));
@@ -511,6 +514,7 @@ static char *(usagemessage[]) = {
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",
+"-workerthreads <n> -- number of worker threads (1 by default); 0 = no threads\n",
 "-autopatch       -- enable auto-patching to new objects (true by default)\n",
 "-noautopatch     -- defeat auto-patching\n",
 "-compatibility <f> -- set back-compatibility to version <f>\n",
@@ -1286,6 +1290,19 @@ int sys_argparse(int argc, const char **argv)
         {
             sys_batch = 0;
             argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-workerthreads") && argc > 1 &&
+            sscanf(argv[1], "%d", &sys_taskqueue_threads) >= 1)
+        {
+            if (sys_taskqueue_threads < 0)
+            {
+                fprintf(stderr, "warning: bad argument '%d' for '-workerthreads'; using default.",
+                    sys_taskqueue_threads);
+                fflush(stderr);
+                sys_taskqueue_threads = DEFNUMWORKERTHREADS;
+            }
+            argc -= 2;
+            argv += 2;
         }
         else if (!strcmp(*argv, "-autopatch"))
         {
