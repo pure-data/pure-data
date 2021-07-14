@@ -12,10 +12,8 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
+    set untitled_name $::pdtk_canvas::untitled_name
     if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
-    # to localize "Untitled" there will need to be changes in g_canvas.c and
-    # g_readwrite.c, where it tests for the string "Untitled"
-    set untitled_name "Untitled"
     pdsend "pd menunew $untitled_name-$untitled_number [enquote_path $::filenewdir]"
     incr untitled_number
 }

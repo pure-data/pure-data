@@ -536,6 +536,7 @@ proc ::pd_menus::update_window_menu {} {
 # ------------------------------------------------------------------------------
 # submenu for Preferences, now used on all platforms
 proc ::pd_menus::savepreferences {} {
+    # TODO localize "Untitled" & make sure translations do not contain spaces
     set filename [tk_getSaveFile \
                   -initialdir $::fileopendir \
                   -defaultextension .pdsettings \
