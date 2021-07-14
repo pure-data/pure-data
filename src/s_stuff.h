@@ -405,6 +405,20 @@ EXTERN void inmidi_polyaftertouch(int portno,
 /* } jsarlo */
 EXTERN int sys_zoom_open;
 
+/* task API; for documentation see s_task.c */
+#define TASKSYSTEM_DEFAULT 0
+#define TASKSYSTEM_EXTERNAL -1
+
+EXTERN void sys_tasksystem_start(int threads);
+EXTERN void sys_tasksystem_stop(void);
+EXTERN int sys_tasksystem_perform(struct _pdinstance *pd, int nonblocking);
+EXTERN int sys_tasksystem_running(void);
+
+EXTERN_STRUCT _tasksystem;
+#define t_tasksystem struct _tasksystem
+
+#define DEFNUMWORKERTHREADS 1
+
 struct _instancestuff
 {
     t_namelist *st_externlist;
@@ -422,6 +436,7 @@ struct _instancestuff
     double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
     t_printhook st_printhook;   /* set this to override per-instance printing */
     void *st_impdata; /* optional implementation-specific data for libpd, etc */
+    t_tasksystem *st_tasksystem;
 };
 
 #define STUFF (pd_this->pd_stuff)

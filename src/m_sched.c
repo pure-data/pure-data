@@ -360,8 +360,10 @@ int sched_get_using_audio(void)
 }
 
 void messqueue_dispatch();
+void tasksystem_poll(void);
 
-    /* take the scheduler forward one DSP tick, also handling clock timeouts */
+    /* take the scheduler forward one DSP tick, also handling clock timeouts
+    messages and tasks. */
 void sched_tick(void)
 {
     double next_sys_time = pd_this->pd_systime + SYSTIMEPERTICK;
@@ -385,6 +387,7 @@ void sched_tick(void)
     }
     pd_this->pd_systime = next_sys_time;
     messqueue_dispatch();
+    tasksystem_poll();
     dsp_tick();
     sched_counter++;
 }
