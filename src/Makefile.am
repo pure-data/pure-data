@@ -10,6 +10,11 @@ noinst_SCRIPTS =
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
 pd_LDADD =
+libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY
+libpd_la_LIBADD =
+libpd_la_LDFLAGS =
+libpdincludedir = $(includedir)/libpd
+libpdinclude_HEADERS =
 
 # there are pd_* and pd_*_core variables as we need different flags on Windows
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
@@ -17,10 +22,13 @@ pd_LDADD =
 # are library or binary variables since we only need them as placeholders
 pd_LDFLAGS_core =
 pd_LDADD_core =
+pd_LDFLAGS_standalone =
+pd_LDADD_standalone =
 
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
 pd_watchdog_CFLAGS =
+
 LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
@@ -31,9 +39,55 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
+if LIBPD
+lib_LTLIBRARIES = libpd.la
+endif
+
 pdsend_SOURCES = u_pdsend.c s_net.c
 pdreceive_SOURCES = u_pdreceive.c s_net.c
 pd_watchdog_SOURCES = s_watchdog.c
+libpd_la_SOURCES = \
+    z_libpd.c \
+    z_hooks.c \
+    x_libpdreceive.c \
+    s_audio_dummy.c \
+    s_libpdmidi.c \
+    $(empty)
+
+if LIBPD_UTILS
+libpd_la_SOURCES += \
+    z_print_util.c \
+    z_queued.c \
+    z_ringbuffer.c \
+    $(empty)
+endif
+
+if LIBPD_NO_SETLOCALE
+    libpd_la_CPPFLAGS += -DLIBPD_NO_NUMERIC=1
+endif
+
+if LIBPD_MULTIINSTANCE
+    libpd_la_CPPFLAGS += -DPDINSTANCE=1 -DPDTHREADS=1
+endif
+
+if LIBPD_EXTRA
+    libpd_la_CPPFLAGS += -DLIBPD_EXTRA=1
+libpd_la_SOURCES += \
+    $(top_srcdir)/extra/bob~/bob~.c \
+    $(top_srcdir)/extra/bonk~/bonk~.c \
+    $(top_srcdir)/extra/choice/choice.c \
+    $(top_srcdir)/extra/fiddle~/fiddle~.c \
+    $(top_srcdir)/extra/loop~/loop~.c \
+    $(top_srcdir)/extra/lrshift~/lrshift~.c \
+    $(top_srcdir)/extra/pique/pique.c \
+    $(top_srcdir)/extra/pd~/pdsched.c \
+    $(top_srcdir)/extra/pd~/pd~.c \
+    $(top_srcdir)/extra/sigmund~/sigmund~.c \
+    $(top_srcdir)/extra/stdout/stdout.c \
+    $(empty)
+endif
+
+
 
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
 # (where all the logic resides), that's why we have to split the sources
@@ -93,11 +147,9 @@ pd_SOURCES_core = \
     m_pd.c \
     m_sched.c \
     s_audio.c \
-    s_file.c \
     s_inter.c \
     s_loader.c \
     s_main.c \
-    s_midi.c \
     s_net.c \
     s_path.c \
     s_print.c \
@@ -118,7 +170,13 @@ pd_SOURCES_core = \
     x_time.c \
     x_vexp.c \
     x_vexp_fun.c \
-    x_vexp_if.c
+    x_vexp_if.c \
+    $(empty)
+
+pd_SOURCES_standalone = \
+    s_file.c \
+    s_midi.c \
+    $(empty)
 
 # pd-watchdog and "local" pd symlink location for tcl scripts
 libpdbindir = $(pkglibdir)/bin
@@ -130,6 +188,14 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
+
+if LIBPD
+libpdinclude_HEADERS += m_pd.h z_libpd.h
+if LIBPD_UTILS
+libpdinclude_HEADERS += z_print_util.h z_queued.h
+endif
+endif
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
@@ -147,8 +213,8 @@ pd_CFLAGS += $(WISHDEFINE)
 ##### Advanced Linux Sound Architecture #####
 if ALSA
 pd_CFLAGS += -DUSEAPI_ALSA
-pd_LDADD_core += @ALSA_LIBS@
-pd_SOURCES_core += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+pd_LDADD_standalone += @ALSA_LIBS@
+pd_SOURCES_standalone += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
 ##### OSX CoreAudio #####
@@ -162,14 +228,14 @@ endif
 # TODO support Jack xrun
 if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
-pd_SOURCES_core += s_audio_jack.c
+pd_SOURCES_standalone += s_audio_jack.c
 
 if JACK_FRAMEWORK
 # link to Jackmp.framework on macOS
-pd_LDFLAGS_core += -weak_framework Jackmp
+pd_LDFLAGS_standalone += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
-pd_LDADD_core += @JACK_LIBS@
+pd_LDADD_standalone += @JACK_LIBS@
 endif
 
 endif
@@ -177,27 +243,27 @@ endif
 ##### GNU/Linux Open Sound System #####
 if OSS
 pd_CFLAGS += -DUSEAPI_OSS
-pd_SOURCES_core += s_audio_oss.c s_midi_oss.c
+pd_SOURCES_standalone += s_audio_oss.c s_midi_oss.c
 endif
 
 ##### Windows MultiMedia (File) I/O #####
 if MMIO
 pd_CFLAGS += -DUSEAPI_MMIO
-pd_SOURCES_core += s_audio_mmio.c
+pd_SOURCES_standalone += s_audio_mmio.c
 endif
 
 ##### PortAudio #####
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_SOURCES_core += s_audio_pa.c s_audio_paring.c
+pd_SOURCES_standalone += s_audio_pa.c s_audio_paring.c
 
 if LOCAL_PORTAUDIO
 # link the included portaudio which is built as a static lib
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/include
-pd_LDADD_core += $(top_builddir)/portaudio/libportaudio.a
+pd_LDADD_standalone += $(top_builddir)/portaudio/libportaudio.a
 else
 # link the system's portaudio
-pd_LDADD_core += -lportaudio
+pd_LDADD_standalone += -lportaudio
 endif
 
 # need Carbon framework for PA on Mac
@@ -211,22 +277,22 @@ endif
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
 # always Windows
-pd_LDADD_core += $(top_builddir)/asio/libasio.a
+pd_LDADD_standalone += $(top_builddir)/asio/libasio.a
 endif
 
 ##### PortMidi #####
 if PORTMIDI
-pd_SOURCES_core += s_midi_pm.c
+pd_SOURCES_standalone += s_midi_pm.c
 
 if LOCAL_PORTMIDI
 # link the included portmidi which is built as a static lib
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portmidi/portmidi/pm_common \
     -I$(top_srcdir)/portmidi/portmidi/porttime
-pd_LDADD_core += $(top_builddir)/portmidi/libportmidi.a
+pd_LDADD_standalone += $(top_builddir)/portmidi/libportmidi.a
 else
 # link the system's portmidi
-pd_LDADD_core += -lportmidi
+pd_LDADD_standalone += -lportmidi
 endif
 
 # need Carbon framework for PM on Mac
@@ -241,11 +307,11 @@ endif
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
 if AUDIO_DUMMY
 pd_CFLAGS += -DUSEAPI_DUMMY
-pd_SOURCES_core += s_audio_dummy.c
+pd_SOURCES_standalone += s_audio_dummy.c
 endif
 if MIDI_DUMMY
 pd_CFLAGS += -DUSEAPI_MIDIDUMMY
-pd_SOURCES_core += s_midi_dummy.c
+pd_SOURCES_standalone += s_midi_dummy.c
 endif
 
 ##### FFTW fft library #####
@@ -270,12 +336,15 @@ pd_LDFLAGS_core += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
 
 # force linking to pthread, which should really be done with some autotools way
 pd_LDFLAGS_core += -lpthread
+libpd_la_LIBADD += -lpthread
 
 # force linking to dl, which should really be done with some autotools way
 pd_LDFLAGS_core += -ldl
+libpd_la_LIBADD += -ldl
 
 endif
 
@@ -291,6 +360,7 @@ pd_LDFLAGS_core += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
 
 endif
 
@@ -306,6 +376,7 @@ pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
 LIBS += -ldl -lm -lpthread
+libpd_la_LIBADD += -ldl -lm -lpthread
 
 endif
 
@@ -326,10 +397,14 @@ pd_LDFLAGS += -mwindows
 # link with resources and pd.dll import library
 pd_LDADD += pd.res pd.lib
 
+libpd_la_LDFLAGS += -Wl,--export-all-symbols -static-libgcc
+libpd_la_LIBADD += -lws2_32 -lkernel32
+
 pd_OBJECTS_core = $(pd_SOURCES_core:.c=.o)
+pd_OBJECTS_standalone = $(pd_SOURCES_standalone:.c=.o)
 
 # the variables are taken from the automake Makefile
-$(pd_OBJECTS_core) : %.o : %.c
+$(pd_OBJECTS_core) $(pd_OBJECTS_standalone) : %.o : %.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(pd_CFLAGS) $(CFLAGS) -c -o $@ $<
 
@@ -345,9 +420,13 @@ libpd.a: pd.lib
 
 pd.def: pd.dll
 
-pd.dll: $(pd_OBJECTS_core)
-	$(CXX) -shared $(pd_LDFLAGS_core) -o pd.dll \
-	$(pd_OBJECTS_core) $(pd_LDADD_core) $(LIBS) \
+pd.dll: $(pd_OBJECTS_core) $(pd_OBJECTS_standalone)
+	$(CXX) -shared \
+	$(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone) \
+	-o pd.dll \
+	$(pd_OBJECTS_core) $(pd_OBJECTS_standalone) \
+	$(pd_LDADD_core) $(pd_LDADD_standalone) \
+	$(LIBS) \
 	-Wl,--export-all-symbols -Wl,--out-implib=pd.lib -Wl,--output-def=pd.def
 
 # same as pd.exe but without -mwindows and resources
@@ -358,10 +437,12 @@ pd.com: pd-s_entry.o pd.lib
 
 else
 # for other OS, join pd_* with pd_*_core
-pd_SOURCES += $(pd_SOURCES_core)
-pd_LDADD += $(pd_LDADD_core)
-pd_LDFLAGS += $(pd_LDFLAGS_core)
+pd_SOURCES += $(pd_SOURCES_core) $(pd_SOURCES_standalone)
+pd_LDADD += $(pd_LDADD_core) $(pd_LDADD_standalone)
+pd_LDFLAGS += $(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone)
 endif
+
+libpd_la_SOURCES += $(pd_SOURCES_core)
 
 ##### Windows MinGW #####
 if MINGW
