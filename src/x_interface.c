@@ -46,24 +46,30 @@ static void *print_new(t_symbol *sel, int argc, t_atom *argv)
 
 static void print_bang(t_print *x)
 {
-    post("%s%sbang", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    logpost(x, 2, "%s%sbang", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
 }
 
 static void print_pointer(t_print *x, t_gpointer *gp)
 {
-    post("%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    logpost(x, 2, "%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
 }
 
 static void print_float(t_print *x, t_float f)
 {
-    post("%s%s%g", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""), f);
+    logpost(x, 2, "%s%s%g", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""), f);
 }
 
 static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
-    startpost("%s%s%s", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""),
+    int i;
+    startlogpost(x, 2, "%s%s%s", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""),
         s->s_name);
-    postatom(argc, argv);
+    for (i = 0; i < argc; i++)
+    {
+        char buf[MAXPDSTRING];
+        atom_string(argv+i, buf, MAXPDSTRING);
+        startlogpost(x, 2, " %s", buf);
+    }
     endpost();
 }
 
@@ -91,15 +97,21 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
     }
     else if (argv->a_type == A_FLOAT)
     {
+        int i;
         if (*x->x_sym->s_name)
-            startpost("%s: ", x->x_sym->s_name);
+            startlogpost(x, 2, "%s: ", x->x_sym->s_name);
         else
         {
             /* print first (numeric) atom, to avoid a trailing space */
-            startpost("%g", atom_getfloat(argv));
+            startlogpost(x, 2, "%g", atom_getfloat(argv));
             argc--; argv++;
         }
-        postatom(argc, argv);
+        for (i = 0; i < argc; i++)
+        {
+            char buf[MAXPDSTRING];
+            atom_string(argv+i, buf, MAXPDSTRING);
+            startlogpost(x, 2, " %s", buf);
+        }
         endpost();
     }
     else

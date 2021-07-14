@@ -133,6 +133,20 @@ void logpost(const void *object, const int level, const char *fmt, ...)
     dologpost(object, level, buf);
 }
 
+void startlogpost(const void *object, const int level, const char *fmt, ...)
+{
+    char buf[MAXPDSTRING];
+    va_list ap;
+    t_int arg[8];
+    int i;
+    va_start(ap, fmt);
+    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    va_end(ap);
+
+    dologpost(object, level, buf);
+}
+
+
 void post(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
