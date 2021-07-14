@@ -243,7 +243,7 @@ static void vslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_val, x->x_steady);
+                x->x_gui.x_isa.x_loadinit?x->x_val:0, x->x_steady);
     binbuf_addv(b, ";");
 }
 
