@@ -1,47 +1,35 @@
 current:
-	@echo make pd_linux, pd_nt, or pd_darwin
+	@echo make pd_linux, pd_mingw, or pd_darwin
 
 clean:
 	rm -f *.o
+	rm -f *.dll
 	rm -f *.pd_linux
 	rm -f *.pd_darwin
 
-# ----------------------- Windows-----------------------
-# note: you will certainly have to edit the definition of VC to agree with
-# whatever you've got installed on your machine
+# ----------------------- Windows (MinGW) -----------------------
 
-VC="D:\Program Files\Microsoft Visual Studio\Vc98"
+pd_mingw: obj1.dll obj2.dll obj3.dll obj4.dll obj5.dll taskobj.dll dspobj~.dll
 
-pd_nt: obj1.dll obj2.dll obj3.dll obj4.dll obj5.dll dspobj~.dll
+.SUFFIXES: .o .dll
 
-.SUFFIXES: .obj .dll
+MINGWFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -mms-bitfields \
+    -Wall -W -Wshadow -Wstrict-prototypes -Wno-unused -Wno-parentheses -Wno-switch
 
-PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
-
-PDNTINCLUDE = /I. /I\tcl\include /I..\..\src /I$(VC)\include
-
-PDNTLDIR = $(VC)\lib
-PDNTLIB = $(PDNTLDIR)\libc.lib \
-	$(PDNTLDIR)\oldnames.lib \
-	$(PDNTLDIR)\kernel32.lib \
-	..\..\bin\pd.lib 
+MINGWINCLUDE =  -I../../src
 
 .c.dll:
-	cl $(PDNTCFLAGS) $(PDNTINCLUDE) $(CFLAGS) /c $*.c
-	link /dll /export:$*_setup $*.obj $(PDNTLIB)
-
-# override explicitly for tilde objects like this:
-dspobj~.dll: dspobj~.c; 
-	cl $(PDNTCFLAGS) $(PDNTINCLUDE) $(CFLAGS) /c $*.c
-	link /dll /export:dspobj_tilde_setup $*.obj $(PDNTLIB)
+	$(CC) $(MINGWFLAGS) $(MINGWINCLUDE) $(CFLAGS) -o $*.o -c $*.c
+	$(CC) -shared -Wl,--enable-auto-import -o $*.dll $*.o -L../../src -lpd
+	rm $*.o
 
 # ----------------------- LINUX i386 -----------------------
 
 pd_linux: obj1.pd_linux obj2.pd_linux obj3.pd_linux obj4.pd_linux \
-    obj5.pd_linux dspobj~.pd_linux
+    obj5.pd_linux dspobj~.pd_linux taskobj.pd_linux
 
 pd_linux32: obj1.l_i386 obj2.l_i386 obj3.l_i386 obj4.l_i386 \
-    obj5.l_i386 dspobj~.l_i386
+    obj5.l_i386 taskobj.l_i386 dspobj~.l_i386
 
 .SUFFIXES: .l_i386 .pd_linux
 
@@ -62,8 +50,8 @@ LINUXINCLUDE =  -I../../src
 # non-native or multi-arch builds, pass the archs via CFLAGS:
 #     make pd_darwin CFLAGS="-arch arm64 -arch x86_64"
 
-pd_darwin: obj1.pd_darwin obj2.pd_darwin \
-     obj3.pd_darwin obj4.pd_darwin obj5.pd_darwin dspobj~.pd_darwin
+pd_darwin: obj1.pd_darwin obj2.pd_darwin obj3.pd_darwin \
+	obj4.pd_darwin obj5.pd_darwin taskobj.pd_darwin dspobj~.pd_darwin
 
 .SUFFIXES: .pd_darwin
 
