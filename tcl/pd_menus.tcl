@@ -588,6 +588,21 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {::pd_menus::loadpreferences}
     $mymenu add command -label [_ "Forget All..."] \
         -command {::pd_menus::forgetpreferences}
+		
+		
+    switch -- $::windowingsystem {
+        "win32" {
+            package require registry
+            if { [registry get HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command ""] != [::pd_menus::mswindows_file_associationcmd] } {
+                set regstate normal
+            } {
+                set regstate disabled
+            }
+            $mymenu add command -label [_ "Always open .pd files with this Pd"] \
+                -state $regstate \
+                -command { ::pd_menus::mswindows_file_association }
+        }
+    }
 }
 
 # ------------------------------------------------------------------------------
@@ -714,6 +729,38 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
+}
+
+proc ::pd_menus::mswindows_file_associationcmd {} {
+    set wish [regsub -all "/" [file normalize [info nameofexecutable]] "\\"]
+    set script [regsub -all "/" ${::pdgui::scriptname} "\\"]
+    return "${wish} \"${script}\" %1"
+}
+
+proc ::pd_menus::mswindows_file_association {} {
+    # file with icons: either ${::pdgui::pd_exec}.exe or ${script}/../pd.ico
+    set icon ""
+    foreach f [list ${::pdgui::pd_exec}.exe [file join [file dirname ${::pdgui::scriptname}] pd.ico ] ] {
+        if {[file exists $f]} {
+            set icon  [regsub -all "/" $f "\\"]
+            break
+        }
+    }
+    package require registry
+    if {[catch {registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"}  errmsg ]  } {
+        ::pdwindow::error "${errmsg}\n"
+        ::pdwindow::post "\"Administrator Permissions\" are required to set the file associations.\nSave your work and close Pd.\nThen right-click on Pd's icon and select \"Run as Administrator\".\nFinally try again \"Always open .pd files with this Pd.\".\n"
+    } else {
+        registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"
+        registry set HKEY_CLASSES_ROOT\\PureData "" ""
+        if {"${icon}" != ""} {
+            registry set HKEY_CLASSES_ROOT\\PureData\\DefaultIcon "" "${icon}"
+        }
+        registry set HKEY_CLASSES_ROOT\\PureData\\shell "" ""
+        registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open "" ""
+        registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command "" [::pd_menus::mswindows_file_associationcmd]
+        ::pdwindow::post "Registry updated successfully to open .pd files with \"${::pdgui::pd_exec}\"\n"
+    }
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences

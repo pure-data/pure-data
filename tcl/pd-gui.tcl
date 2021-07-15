@@ -235,6 +235,7 @@ set redo_action no
 
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
+    variable pd_exec [ file normalize [file join [file dirname $scriptname] ../bin/pd] ]
 }
 
 #------------------------------------------------------------------------------#
@@ -840,8 +841,7 @@ proc main {argc argv} {
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
         set ::port [::pd_connect::create_socket]
-        set pd_exec [file join [file dirname [info script]] ../bin/pd]
-        exec -- $pd_exec -guiport $::port &
+        exec -- ${::pdgui::pd_exec} -guiport $::port &
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)
