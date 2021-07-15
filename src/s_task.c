@@ -6,6 +6,8 @@
  * without blocking the audio thread. This is intended for CPU intensive or
  * otherwise non-real-time safe operations, such as reading data from a file.
  *
+ * See taskobj.c in doc/6.externs for a complete code example.
+ *
  * ================================================================================
  * Documentation:
  * ================================================================================
@@ -30,7 +32,8 @@
  *    to shared state. Instead, treat the data object as a message that is exchanged
  *    between your Pd object and the task system.
  *    NOTE: In the rare case where you do need to access shared state, make sure
- *    to call task_stop() with sync=1!
+ *    to call task_stop() with sync=1! For an example, see the "progress" method
+ *    in "doc/6.externs/taskobj.c".
  *
  * 3) (task_workfn) workfn: a function to be called in the background.
  *    You would typically read from 'data', perform some operations and store
