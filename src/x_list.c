@@ -274,40 +274,6 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
-#if 0
-static void list_append_append(t_list_append *x, t_symbol *s,
-    int argc, t_atom *argv)
-{
-    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-        (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
-    {
-        x->x_alist.l_n = 0;
-        error("list: out of memory");
-        return;
-    }
-    alist_copyin(&x->x_alist, s, argc, argv, x->x_alist.l_n);
-    x->x_alist.l_n += argc;
-}
-
-static void list_append_prepend(t_list_append *x, t_symbol *s,
-    int argc, t_atom *argv)
-{
-    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-        (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
-    {
-        x->x_alist.l_n = 0;
-        error("list: out of memory");
-        return;
-    }
-    memmove(x->x_alist.l_vec + argc, x->x_alist.l_vec,
-        x->x_alist.l_n * sizeof(*x->x_alist.l_vec));
-    alist_copyin(&x->x_alist, s, argc, argv, 0);
-    x->x_alist.l_n += argc;
-}
-#endif
-
 static void list_append_free(t_list_append *x)
 {
     alist_clear(&x->x_alist);
@@ -448,30 +414,6 @@ static void list_store_send(t_list_store *x, t_symbol *s)
         pd_list(s->s_thing, gensym("list"), n, vec);
     }
     ATOMS_FREEA(vec, n);
-}
-
-static void list_store_sendatom(t_list_store *x, int which)
-{
-    t_listelem *elem = &x->x_alist.l_vec[which];
-    switch (elem->l_a.a_type)
-    {
-        case A_FLOAT:
-            outlet_float(x->x_out1, elem->l_a.a_w.w_float);
-            break;
-        case A_SYMBOL:
-            outlet_symbol(x->x_out1, elem->l_a.a_w.w_symbol);
-            break;
-        case A_POINTER:
-        {
-            t_gpointer gp;
-            gpointer_copy(elem->l_a.a_w.w_gpointer, &gp);
-            outlet_pointer(x->x_out1, &gp);
-            gpointer_unset(&gp);
-            break;
-        }
-        default:
-            break;
-    }
 }
 
 static void list_store_list(t_list_store *x, t_symbol *s,
