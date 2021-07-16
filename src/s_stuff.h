@@ -181,6 +181,7 @@ EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     t_socketfromaddrfn fromaddrfn);
 EXTERN void sys_sockerror(const char *s);
 EXTERN void sys_closesocket(int fd);
+EXTERN unsigned char *sys_getrecvbuf(unsigned int *size);
 
 typedef void (*t_fdpollfn)(void *ptr, int fd);
 EXTERN void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr);

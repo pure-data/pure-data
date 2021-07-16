@@ -393,8 +393,10 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-unsigned char *sys_getrecvbuf(void)
+unsigned char *sys_getrecvbuf(unsigned int *size)
 {
+    if (size)
+        *size = NET_MAXPACKETSIZE;
     return INTER->i_recvbuf;
 }
 
@@ -518,7 +520,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
 
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
-    char *buf = sys_getrecvbuf();
+    char *buf = sys_getrecvbuf(0);
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     int ret, readbytes = 0;
     while (1)

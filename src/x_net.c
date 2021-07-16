@@ -114,11 +114,9 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-unsigned char *sys_getrecvbuf(void);
-
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char *inbuf = sys_getrecvbuf();
+    unsigned char *inbuf = sys_getrecvbuf(0);
     int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
