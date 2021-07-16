@@ -106,9 +106,9 @@ static void textbuf_open(t_textbuf *x)
 
 static void textbuf_close(t_textbuf *x)
 {
-    sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
     if (x->b_guiconnect)
     {
+        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
