@@ -702,7 +702,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     return(oldsndrcvable);
 }
 
-int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
+void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
 {
 #define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
     t_float zoom = iemgui->x_glist->gl_zoom;
