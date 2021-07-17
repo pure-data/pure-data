@@ -110,11 +110,12 @@ struct _garray
     t_glist *x_glist;       /* containing glist */
     t_symbol *x_name;       /* unexpanded name (possibly with leading '$') */
     t_symbol *x_realname;   /* expanded name (symbol we're bound to) */
-    char x_usedindsp;       /* true if some DSP routine is using this */
-    char x_saveit;          /* true if we should save this with parent */
-    char x_listviewing;     /* true if list view window is open */
-    char x_hidename;        /* don't print name above graph */
-    char x_edit;            /* true if we can edit the array */
+    unsigned int  x_usedindsp:1;    /* 1 if some DSP routine is using this */
+    unsigned int  x_saveit:1;       /* we should save this with parent */
+    unsigned int  x_savesize:1;     /* save size too */
+    unsigned int  x_listviewing:1;  /* list view window is open */
+    unsigned int  x_hidename:1;     /* don't print name above graph */
+    unsigned int  x_edit:1;         /* we can edit the array */
 };
 
 static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
@@ -158,7 +159,7 @@ always called by graph_array() below; but when we make a more general way
 to save and create arrays this might get called more directly. */
 
 static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
-    int saveit)
+    int saveit, int savesize)
 {
     t_garray *x;
     if (!template_findbyname(templatesym))
@@ -169,7 +170,9 @@ static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
     x->x_realname = canvas_realizedollar(gl, s);
     pd_bind(&x->x_gobj.g_pd, x->x_realname);
     x->x_usedindsp = 0;
+        /* when invoked this way, saving implies saving size too */
     x->x_saveit = saveit;
+    x->x_savesize = savesize;
     x->x_listviewing = 0;
     x->x_edit = 1;
     glist_add(gl, &x->x_gobj);
@@ -275,13 +278,13 @@ by a more coherent (and general) invocation. */
 t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     t_floatarg fsize, t_floatarg fflags)
 {
-    int n = fsize, zonset, ztype, saveit;
+    int n = fsize, zonset, ztype, saveit, savesize;
     t_symbol *zarraytype, *asym = gensym("#A");
     t_garray *x;
     t_template *template, *ztemplate;
     t_symbol *templatesym;
     int flags = fflags;
-    int filestyle = ((flags & 6) >> 1);
+    int filestyle = ((flags & GRAPH_ARRAY_PLOTSTYLE) >> 1);
     int style = (filestyle == 0 ? PLOTSTYLE_POLY :
         (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
     if (templateargsym != &s_float)
@@ -313,8 +316,9 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         error("array: no template of type %s", zarraytype->s_name);
         return (0);
     }
-    saveit = ((flags & 1) != 0);
-    x = graph_scalar(gl, s, templatesym, saveit);
+    saveit = ((flags & GRAPH_ARRAY_SAVE) != 0);
+    savesize = ((flags & GRAPH_ARRAY_SAVESIZE) != 0);
+    x = graph_scalar(gl, s, templatesym, saveit, savesize);
     x->x_hidename = ((flags & 8) >> 3);
 
     if (n <= 0)
@@ -709,9 +713,11 @@ static int garray_click(t_gobj *z, t_glist *glist,
 
 void garray_savecontentsto(t_garray *x, t_binbuf *b)
 {
+    t_array *array = garray_getarray(x);
+    if (x->x_savesize)
+        binbuf_addv(b, "ssi;", gensym("#A"), gensym("resize"), array->a_n);
     if (x->x_saveit)
     {
-        t_array *array = garray_getarray(x);
         int n = array->a_n, n2 = 0;
         if (n > 200000)
             post("warning: I'm saving an array with %d points!\n", n);
