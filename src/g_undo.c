@@ -94,7 +94,7 @@ int canvas_undo_objectstate(t_canvas *cnv, void *z, int action) {
         t_freebytes(buf, sizeof(*buf));
         break;
     case UNDO_REDO:
-        bbuf = buf->u_redo;
+        bbuf = buf->u_redo;     /* falls through */
     case UNDO_UNDO:
         if(x)
             pd_typedmess(x, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
