@@ -7,7 +7,7 @@
 #X obj 222 486 list;
 #X text 48 486 see also:;
 #X text 442 161 (click for details:), f 11;
-#N canvas 623 34 745 746 define 0;
+#N canvas 623 34 752 765 define 0;
 #X text 360 547 creation arguments:;
 #X text 390 618 optional name;
 #X text 251 174 read from a file;
@@ -42,8 +42,8 @@ it as shown in these examples:;
 #X obj 78 633 array define -pix 800 400 array-help-4 16;
 #X text 389 582 optional "-yrange low high" to set the yrange;
 #X text 389 600 optional "-pix x y" to set the plot size;
-#X obj 89 310 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 89 310 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X text 112 307 bang to output a pointer to the scalar containing the
 array;
 #X obj 66 670 getsize float-array z;
@@ -53,6 +53,10 @@ array;
 defaults to 'array define', f 43;
 #X obj 195 92 array;
 #X obj 375 439 trigger bang pointer;
+#X text 308 664 note: if "-k" is given but no size is specified \,
+the size is restored to whatever it may have been changed to using
+"resize" messages \, but if there is a size argument given the restored
+array has the originally specified size.;
 #X connect 6 0 10 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
@@ -103,8 +107,8 @@ defaults to 'array define', f 43;
 #X text 26 215 We have one datum... right-click to see contents.;
 #X restore 239 150 pd array-help-data;
 #X msg 212 200 traverse pd-array-help-data \, next, f 19;
-#X obj 82 141 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 82 141 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 82 286 array sum -s array-help-struct z, f 19;
 #X floatatom 82 327 5 0 0 0 - - -;
 #X text 59 14 The array objects can also reference arrays within structures
@@ -114,8 +118,8 @@ the array should be a simple floating point array (use the template
 "float" for the array elements) but you can override that using "-f"
 as shown further down., f 67;
 #X obj 310 583 pointer;
-#X obj 96 503 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 96 503 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X floatatom 96 651 5 0 0 0 - - -;
 #N canvas 850 364 447 373 array-help-struct2 0;
 #X obj 237 232 pointer;
@@ -175,8 +179,8 @@ of a name., f 35;
 #X text 258 30 "array size" outputs the size (if sent a bang) or sets
 the size (if sent a number)., f 43;
 #X obj 42 188 array size array-help-2;
-#X obj 44 69 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 44 69 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X text 251 199 creations arguments: either array name or "-s" and
 optional "-f" flags to refer to an array in a data structure, f 41
 ;
@@ -207,8 +211,8 @@ to get or change its size \, set or read its elements \, and so on.
 #X obj 59 322 array quantile;
 #N canvas 560 199 665 358 sum 0;
 #X floatatom 75 106 5 0 10 0 - - -;
-#X obj 66 81 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 66 81 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X floatatom 66 239 5 0 0 0 - - -;
 #X floatatom 106 133 5 -1 10 0 - - -;
 #X text 82 24 "array sum" outputs the sum of all or a selected range
@@ -236,8 +240,8 @@ array;
 #X obj 59 274 array get;
 #N canvas 614 233 640 338 get 0;
 #X floatatom 75 90 5 0 10 0 - - -;
-#X obj 60 65 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 60 65 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X floatatom 101 122 5 -1 10 0 - - -;
 #X obj 61 181 array get array-help-2, f 12;
 #X obj 61 222 print;
@@ -311,8 +315,8 @@ of the array are dropped., f 67;
 #X floatatom 42 299 5 0 100 0 - - -;
 #X floatatom 305 599 5 0 100 0 - - -;
 #X obj 305 555 array random array-help-5, f 13;
-#X obj 305 427 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 305 427 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X floatatom 318 476 5 0 0 0 - - -;
 #X floatatom 349 502 5 0 0 0 - - -;
 #X text 278 350 "array random" makes a pseudo-random number from 0
@@ -379,8 +383,8 @@ the range 0-1 output the x values at the two extremes of the array
 #X coords 0 1 99 0 200 140 1 0 0;
 #X restore 317 380 graph;
 #X floatatom 69 283 7 0 100 0 - - -;
-#X obj 69 124 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 69 124 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X floatatom 82 147 5 0 0 0 - - -;
 #X floatatom 113 180 5 0 0 0 - - -;
 #X text 211 272 - optional number to initialize onset - default 0;
@@ -401,8 +405,8 @@ and the second is the index (the x location where the value was found).
 The search may be restricted to a sub-domain of the array by specifying
 the "onset" and "number of points"., f 65;
 #X floatatom 75 499 7 0 100 0 - - -;
-#X obj 75 360 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 75 360 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X floatatom 88 383 5 0 0 0 - - -;
 #X floatatom 119 416 5 0 0 0 - - -;
 #X text 133 380 onset;
@@ -427,4 +431,4 @@ the "onset" and "number of points"., f 65;
 #X obj 59 392 array min;
 #X text 163 393 - min - find lowest value;
 #X text 162 374 - max - find highest value;
-#X text 375 476 updated for Pd version 0.49;
+#X text 375 476 updated for Pd version 0.52;
