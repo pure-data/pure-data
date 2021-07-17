@@ -161,7 +161,7 @@ proc pdtk_canvas_raise {mytoplevel} {
     focus $mycanvas
 }
 
-proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
+proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     if { ! [file isdirectory $initialdir]} {set initialdir $::filenewdir}
     set filename [tk_getSaveFile -initialdir $initialdir \
                       -initialfile [::pdtk_canvas::cleanname "$initialfile"] \
@@ -183,8 +183,8 @@ proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
     }
     set dirname [file dirname $filename]
     set basename [file tail $filename]
-    pdsend "$name savetofile [enquote_path $basename] [enquote_path $dirname] \
- $destroyflag"
+    pdsend "$toplevel savetofile [enquote_path $basename] [enquote_path \
+         $dirname] $destroyflag"
     set ::filenewdir $dirname
     # add to recentfiles
     ::pd_guiprefs::update_recentfiles $filename
