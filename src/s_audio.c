@@ -222,8 +222,7 @@ void sys_setchsr(int chin, int chout, int sr)
     STUFF->st_soundout = (t_sample *)getbytes(outbytes);
     memset(STUFF->st_soundout, 0, outbytes);
 
-    if (sys_verbose)
-        post("input channels = %d, output channels = %d",
+    verbose(PD_VERBOSE, "input channels = %d, output channels = %d",
             STUFF->st_inchannels, STUFF->st_outchannels);
     canvas_resume_dsp(canvas_suspend_dsp());
 }
@@ -1022,7 +1021,7 @@ void sys_set_audio_api(int which)
     }
     sys_audioapi = which;
     if (sys_verbose && ok)
-        post("sys_audioapi set to %d", sys_audioapi);
+        verbose(PD_VERBOSE, "sys_audioapi set to %d", sys_audioapi);
 }
 
 void glob_audio_setapi(void *dummy, t_floatarg f)

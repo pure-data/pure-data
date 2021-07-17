@@ -86,9 +86,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         {
             sys_setalarm(1000000);
             fd = open(oss_devnames[devno], O_RDWR | O_MIDIFLAG);
-            if (sys_verbose)
-                post("tried to open %s read/write; got %d\n",
-                    oss_devnames[devno], fd);
+            verbose(PD_VERBOSE, "tried to open %s read/write; got %d\n",
+                oss_devnames[devno], fd);
             if (outdevindex >= 0 && fd >= 0)
                 oss_midioutfd[outdevindex] = fd;
         }
@@ -97,9 +96,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         {
             sys_setalarm(1000000);
             fd = open(oss_devnames[devno], O_RDONLY | O_MIDIFLAG);
-            if (sys_verbose)
-                post("tried to open %s read-only; got %d\n",
-                    oss_devnames[devno], fd);
+            verbose(PD_VERBOSE, "tried to open %s read-only; got %d\n",
+                oss_devnames[devno], fd);
         }
         if (fd >= 0)
             oss_midiinfd[oss_nmidiin++] = fd;
@@ -116,9 +114,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         {
             sys_setalarm(1000000);
             fd = open(oss_devnames[devno], O_WRONLY | O_MIDIFLAG);
-            if (sys_verbose)
-                post("tried to open %s write-only; got %d\n",
-                    oss_devnames[devno], fd);
+            verbose(PD_VERBOSE, "tried to open %s write-only; got %d\n",
+                oss_devnames[devno], fd);
         }
         if (fd >= 0)
             oss_midioutfd[oss_nmidiout++] = fd;

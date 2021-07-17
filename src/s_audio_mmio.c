@@ -123,8 +123,7 @@ int mmio_do_open_audio(void)
     UINT mmresult;
     int nad, nda;
     static int naudioprepped = 0, nindevsprepped = 0, noutdevsprepped = 0;
-    if (sys_verbose)
-        post("%d devices in, %d devices out",
+    verbose(PD_VERBOSE, "%d devices in, %d devices out",
             nt_nwavein, nt_nwaveout);
 
     form.wf.wFormatTag = WAVE_FORMAT_PCM;
@@ -170,7 +169,7 @@ int mmio_do_open_audio(void)
                 (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
 
         if (sys_verbose)
-            printf("opened adc device %d with return %d\n",
+            fprintf(stderr, "opened adc device %d with return %d\n",
                 nt_whichadc+nad,mmresult);
 
         if (mmresult != MMSYSERR_NOERROR)
@@ -222,8 +221,7 @@ void mmio_close_audio(void)
 {
     int errcode;
     int nda, nad;
-    if (sys_verbose)
-        post("closing audio...");
+    verbose(PD_VERBOSE, "closing audio...");
 
     for (nda=0; nda < nt_nwaveout; nda++) /*if (nt_nwaveout) wini */
     {

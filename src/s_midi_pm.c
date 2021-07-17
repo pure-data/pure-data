@@ -72,9 +72,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     {
                         /* disable default active sense filtering */
                         Pm_SetFilter(mac_midiindevlist[mac_nmidiindev], 0);
-                        if (sys_verbose)
-                            post("MIDI input (%s) opened.",
-                                info->name);
+                        verbose(PD_VERBOSE, "MIDI input (%s) opened.",
+                            info->name);
                         mac_nmidiindev++;
                     }
                 }
@@ -101,9 +100,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                             j, info->name, Pm_GetErrorText(err));
                     else
                     {
-                        if (sys_verbose)
-                            post("MIDI output (%s) opened.",
-                                info->name);
+                        verbose(PD_VERBOSE, "MIDI output (%s) opened.",
+                            info->name);
                         mac_nmidioutdev++;
                     }
                 }
