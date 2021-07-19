@@ -41,6 +41,7 @@ void glob_loadpreferences(t_pd *dummy, t_symbol *s);
 void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);
 void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
+void glob_stackdepth(void *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_fastforward(t_pd *ignore, t_floatarg f);
 
 static void glob_helpintro(t_pd *dummy)
@@ -203,6 +204,8 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
 #endif
+    class_addmethod(glob_pdobject, (t_method)glob_stackdepth,
+        gensym("stackdepth"), A_GIMME, 0);
     class_addanything(glob_pdobject, max_default);
     pd_bind(&glob_pdobject, gensym("pd"));
 }

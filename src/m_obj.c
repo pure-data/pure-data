@@ -325,9 +325,22 @@ void obj_init(void)
 /* --------------------------- outlets ------------------------------ */
 
 static PERTHREAD int stackcount = 0; /* iteration counter */
-#define STACKITER 1000 /* maximum iterations allowed */
+static PERTHREAD int stackdepth = 1000; /* maximum iterations allowed */
 
 static PERTHREAD int outlet_eventno;
+
+    /* the "stackdepth" message to sets the max allowed stack iterations */
+
+void glob_stackdepth(void *dummy, t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc)
+    {
+        int depth = atom_getfloatarg(0, argc, argv);
+        if(depth > 0) stackdepth = depth;
+        else post("warning: stackdepth must be greater than 0");
+    }
+    else post("stackdepth %d", stackdepth);
+}
 
     /* set a stack limit (on each incoming event that can set off messages)
     for the outlet functions to check to prevent stack overflow from message
@@ -382,7 +395,7 @@ static void outlet_stackerror(t_outlet *x)
 void outlet_bang(t_outlet *x)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
@@ -394,7 +407,7 @@ void outlet_pointer(t_outlet *x, t_gpointer *gp)
 {
     t_outconnect *oc;
     t_gpointer gpointer;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     {
@@ -408,7 +421,7 @@ void outlet_pointer(t_outlet *x, t_gpointer *gp)
 void outlet_float(t_outlet *x, t_float f)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
@@ -419,7 +432,7 @@ void outlet_float(t_outlet *x, t_float f)
 void outlet_symbol(t_outlet *x, t_symbol *s)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
@@ -430,7 +443,7 @@ void outlet_symbol(t_outlet *x, t_symbol *s)
 void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
@@ -441,7 +454,7 @@ void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_outconnect *oc;
-    if(++stackcount >= STACKITER)
+    if(++stackcount >= stackdepth)
         outlet_stackerror(x);
     else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
