@@ -353,78 +353,75 @@ static int file_handle_checkopen(t_file_handle*x, const char*cmd) {
     }
     return 1;
 }
+static void file_handle_do_read(t_file_handle*x, t_float f) {
+    t_atom*outv;
+    unsigned char*buf;
+    ssize_t n, len, outc=f;
+    if(outc<1) {
+        pd_error(x, "cannot read %d bytes", (int)outc);
+        return;
+    }
+    ALLOCA(unsigned char, buf, outc, 100);
+    ALLOCA(t_atom, outv, outc, 100);
+    if(buf && outv) {
+        len = read(x->x_fd, buf, outc);
+        for(n=0; n<len; n++) {
+            SETFLOAT(outv+n, (t_float)buf[n]);
+        }
+        if(len>0) {
+            outlet_list(x->x_dataout, gensym("list"), len, outv);
+        } else if (!len) {
+            file_handle_close(x);
+            outlet_bang(x->x_infoout);
+        } else {
+            if(x->x_verbose)
+                pd_error(x, "read failed: %s", strerror(errno));
+            file_handle_close(x);
+            outlet_bang(x->x_infoout);
+        }
+    } else {
+        pd_error(x, "couldn't allocate buffer for %d bytes", (int)outc);
+    }
+    FREEA(unsigned char, buf, outc, 100);
+    FREEA(t_atom, outv, outc, 100);
+}
+static void file_handle_do_write(t_file_handle*x, int argc, t_atom*argv) {
+    unsigned char*buf;
+    size_t len = (argc>0)?argc:0;
+    ALLOCA(unsigned char, buf, argc, 100);
+    if(buf) {
+        ssize_t n;
+        for(n=0; n<argc; n++) {
+            buf[n] = atom_getfloat(argv+n);
+        }
+        n = write(x->x_fd, buf, len);
+        if(n >= 0 && (size_t)n < len) {
+            n = write(x->x_fd, buf+n, len-n);
+        }
+        if (n<0) {
+            pd_error(x, "write failed: %s", strerror(errno));
+            file_handle_close(x);
+            outlet_bang(x->x_infoout);
+        }
+    } else {
+        pd_error(x, "could not allocate %d bytes for writing", argc);
+    }
+    FREEA(unsigned char, buf, argc, 100);
+}
 static void file_handle_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
     (void)s;
-    if(x->x_mode) {
-            /* write_mode */
-        unsigned char*buf;
-        size_t len = (argc>0)?argc:0;
-        if(!file_handle_checkopen(x, 0))
-            return;
-        ALLOCA(unsigned char, buf, argc, 100);
-        if(buf) {
-            ssize_t n;
-            for(n=0; n<argc; n++) {
-                buf[n] = atom_getfloat(argv+n);
-            }
-            n = write(x->x_fd, buf, len);
-            if(n >= 0 && (size_t)n < len) {
-                n = write(x->x_fd, buf+n, len-n);
-            }
-            if (n<0) {
-                pd_error(x, "write failed: %s", strerror(errno));
-                file_handle_close(x);
-                outlet_bang(x->x_infoout);
-            }
-        } else {
-            pd_error(x, "could not allocate %d bytes for writing", argc);
-        }
-        FREEA(unsigned char, buf, argc, 100);
-    } else {
-            /* read mode */
-        pd_error(x, "no way to handle 'list' messages while reading file");
-    }
-}
-static void file_handle_float(t_file_handle*x, t_float f) {
     if(!file_handle_checkopen(x, 0))
         return;
     if(x->x_mode) {
-            /* write_mode: write the byte */
-        t_atom ap[1];
-        SETFLOAT(ap+0, f);
-        file_handle_list(x, &s_list, 1, ap);
-    } else {
-            /* read mode */
-        t_atom*outv;
-        unsigned char*buf;
-        ssize_t n, len, outc = f;
-        if(outc<1) {
-            pd_error(x, "cannot read %d bytes", (int)outc);
-            return;
-        }
-        ALLOCA(unsigned char, buf, outc, 100);
-        ALLOCA(t_atom, outv, outc, 100);
-        if(buf && outv) {
-            len = read(x->x_fd, buf, outc);
-            for(n=0; n<len; n++) {
-                SETFLOAT(outv+n, (t_float)buf[n]);
-            }
-            if(len>0) {
-                outlet_list(x->x_dataout, gensym("list"), len, outv);
-            } else if (!len) {
-                file_handle_close(x);
-                outlet_bang(x->x_infoout);
-            } else {
-                if(x->x_verbose)
-                    pd_error(x, "read failed: %s", strerror(errno));
-                file_handle_close(x);
-                outlet_bang(x->x_infoout);
-            }
+            /* write_mode */
+        file_handle_do_write(x, argc, argv);
         } else {
-            pd_error(x, "couldn't allocate buffer for %d bytes", (int)outc);
+            /* read mode */
+        if(1==argc && A_FLOAT==argv->a_type) {
+            file_handle_do_read(x, atom_getfloat(argv));
+        } else {
+            pd_error(x, "no way to handle 'list' messages while reading file");
         }
-        FREEA(unsigned char, buf, outc, 100);
-        FREEA(t_atom, outv, outc, 100);
     }
 }
 static void file_handle_seek(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
@@ -1411,7 +1408,6 @@ void x_file_setup(void)
         gensym("close"), 0);
     class_addmethod(file_handle_class, (t_method)file_handle_seek,
         gensym("seek"), A_GIMME, 0);
-    class_addfloat(file_handle_class, file_handle_float);
     class_addlist(file_handle_class, file_handle_list);
 
         /* [file which] */
