@@ -1054,7 +1054,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_ANYTHING)
             outlet_anything(u->u_outlet, s, argc, argv);
-        else pd_error(x, "trigger: can only convert 's' to 'b' or 'a'");
+        else pd_error(x, "trigger: generic messages can only be converted to 'b' or 'a'");
     }
 }
 
