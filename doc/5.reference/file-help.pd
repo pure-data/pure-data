@@ -1052,7 +1052,7 @@ no checks are performed verifying the validity/existence of any path-component.
 #X connect 24 0 12 0;
 #X restore 460 526 pd base+ext;
 #X text 405 642 updated for Pd version 0.52;
-#X obj 28 116 file define;
+#X obj 28 116 file define \$0.f;
 #X text 166 115 - shared file handles;
 #N canvas 508 70 615 679 define 0;
 #X text 146 24 Define - share file handles;
