@@ -31,6 +31,7 @@ void m_pd_setup(void);
 void x_acoustics_setup(void);
 void x_interface_setup(void);
 void x_connective_setup(void);
+void x_bytestruct_setup(void);
 void x_time_setup(void);
 void x_arithmetic_setup(void);
 void x_array_setup(void);
@@ -81,6 +82,7 @@ void conf_init(void)
     clone_setup();
     m_pd_setup();
     x_acoustics_setup();
+    x_bytestruct_setup();
     x_interface_setup();
     x_connective_setup();
     x_time_setup();

@@ -157,6 +157,7 @@ pd_SOURCES_core = \
     x_acoustics.c \
     x_arithmetic.c \
     x_array.c \
+    x_bytestruct.c \
     x_connective.c \
     x_file.c \
     x_gui.c \
