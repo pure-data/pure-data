@@ -27,6 +27,9 @@
 /* _MSVC lacks BYTE_ORDER and LITTLE_ENDIAN */
 # define LITTLE_ENDIAN 0x0001
 # define BYTE_ORDER LITTLE_ENDIAN
+/* and ssize_t */
+# include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #endif
 
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
