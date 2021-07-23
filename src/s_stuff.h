@@ -20,6 +20,21 @@ t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 void namelist_free(t_namelist *listwas);
 const char *namelist_get(const t_namelist *namelist, int n);
+
+        /* append a new name to the named list;
+         * if 'name' is non-NULL it is added to the list (modulo allowdup)
+         *+ and any non-existing list is created
+         * reserved names that map to lists in STUFF:
+         * - 'searchpath.temp'   -> STUFF->st_temppath
+         * - 'searchpath.main'   -> STUFF->st_searchpath
+         * - 'searchpath.static' -> STUFF->st_staticpath
+         * - 'helppath.main'     -> STUFF->st_helppath
+         */
+void namedlist_append(const char*listname, const char*name, int allowdup);
+EXTERN void namedlist_append_files(const char*listname, const char *s);
+void namedlist_free(const char*listname);
+EXTERN t_namelist *namedlist_getlist(const char*listname);
+
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
@@ -413,6 +428,7 @@ struct _instancestuff
     t_sample *st_soundout;
     t_sample *st_soundin;
     double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
+    void *st_private; /* anonymous pointer to more data */
 };
 
 #define STUFF (pd_this->pd_stuff)

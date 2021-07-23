@@ -655,8 +655,17 @@ void sys_loadpreferences(const char *filename, int startingup)
         sprintf(keybuf, "path%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
             break;
-        STUFF->st_searchpath =
-            namelist_append_files(STUFF->st_searchpath, prefbuf);
+        namedlist_append_files("searchpath.main", prefbuf);
+    }
+    if (sys_getpreference("nhelppath", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &maxi);
+    else maxi = 0x7fffffff;
+    for (i = 0; i<maxi; i++)
+    {
+        sprintf(keybuf, "helppath%d", i+1);
+        if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
+            break;
+        namedlist_append_files("helppath.main", prefbuf);
     }
     if (sys_getpreference("standardpath", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_usestdpath);
@@ -784,7 +793,6 @@ void sys_savepreferences(const char *filename)
         sys_putpreference(buf1, buf2);
     }
         /* file search path */
-
     for (i = 0; 1; i++)
     {
         const char *pathelem = namelist_get(STUFF->st_searchpath, i);
@@ -795,6 +803,19 @@ void sys_savepreferences(const char *filename)
     }
     sprintf(buf1, "%d", i);
     sys_putpreference("npath", buf1);
+
+        /* help search path */
+    for (i = 0; 1; i++)
+    {
+        const char *pathelem = namelist_get(STUFF->st_helppath, i);
+        if (!pathelem)
+            break;
+        sprintf(buf1, "helppath%d", i+1);
+        sys_putpreference(buf1, pathelem);
+    }
+    sprintf(buf1, "%d", i);
+    sys_putpreference("nhelppath", buf1);
+
     sprintf(buf1, "%d", sys_usestdpath);
     sys_putpreference("standardpath", buf1);
     sprintf(buf1, "%d", sys_verbose);

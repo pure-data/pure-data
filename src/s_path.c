@@ -51,6 +51,20 @@
 # define snprintf _snprintf
 #endif
 
+
+typedef struct _namedlist {
+    t_symbol   *name;
+    t_namelist *list;
+    struct _namedlist *next;
+} t_namedlist;
+#define MAXPDLOCALESTRING 10
+typedef struct _pathstuff {
+    t_namedlist *ps_namedlists;
+    char ps_lang[MAXPDLOCALESTRING];
+    char ps_lang_region[MAXPDLOCALESTRING];
+} t_pathstuff;
+#define PATHSTUFF ((t_pathstuff*)(pd_this->pd_stuff->st_private))
+
     /* change '/' characters to the system's native file separator */
 void sys_bashfilename(const char *from, char *to)
 {
@@ -233,6 +247,109 @@ const char *namelist_get(const t_namelist *namelist, int n)
         ;
     return (nl ? nl->nl_string : 0);
 }
+
+
+static
+t_namelist **default_namedlist(const char*listname) {
+#define DEFAULT_NAMEDLIST(name, member) \
+    if(!strncmp(listname, name, MAXPDSTRING))  \
+        return &(STUFF->member)
+    DEFAULT_NAMEDLIST("searchpath.temp", st_temppath);
+    DEFAULT_NAMEDLIST("searchpath.main", st_searchpath);
+    DEFAULT_NAMEDLIST("searchpath.static", st_staticpath);
+    DEFAULT_NAMEDLIST("helppath.main", st_helppath);
+    return 0;
+}
+static
+t_namelist **namedlist_do_getlist(const char*listname) {
+    t_namedlist*namedlists=PATHSTUFF->ps_namedlists, *nl=0;
+    t_namelist**defaultlist=default_namedlist(listname);
+    t_symbol*listname_sym=0;
+    if(defaultlist)
+        return defaultlist;
+    if(!listname)
+        return 0;
+    listname_sym = gensym(listname);
+    for(nl=namedlists; nl; nl=nl->next) {
+        if(nl->name == listname_sym)
+            return &nl->list;
+    }
+    return 0;
+}
+t_namelist *namedlist_getlist(const char*listname) {
+    t_namelist**nl=namedlist_do_getlist(listname);
+    if(nl)
+        return *nl;
+    return 0;
+}
+        /* append a new name to the named list;
+         * if 'name' is non-NULL it is added to the list (modulo allowdup)
+         *+ and any non-existing list is created
+         */
+void namedlist_append(const char*listname, const char*name, int allowdup) {
+        /* FIXXME: implement namedlist_append */
+    t_namelist**namelistp=namedlist_do_getlist(listname);
+    t_namelist*namelist=namelistp?*namelistp:0;
+    if(!name)
+        return;
+    if(!listname)
+        return;
+    if(!namelistp) {
+            /* list does not exist: create it */
+        t_namedlist*nl = (t_namedlist *)(getbytes(sizeof(*nl)));
+        if(!nl)
+            return;
+        nl->name = gensym(listname);
+        nl->next = PATHSTUFF->ps_namedlists;
+        PATHSTUFF->ps_namedlists = nl;
+        namelist = nl->list;
+        namelistp = &nl->list;
+    }
+
+        /* append the name to the namelist, possibly creating it */
+    namelist = namelist_append(namelist, name, allowdup);
+        /* and store the new list-address for later use */
+    *namelistp = namelist;
+    return;
+}
+void namedlist_append_files(const char *listname, const char *s) {
+    const char *npos;
+    char temp[MAXPDSTRING];
+
+    npos = s;
+    do {
+        npos = strtokcpy(temp, sizeof(temp), npos, SEPARATOR);
+        if (! *temp) continue;
+        namedlist_append(listname, temp, 0);
+    } while (npos);
+    return namedlist_append(listname, 0, 0);
+}
+
+void namedlist_free(const char*listname) {
+    t_namelist**defaultlist=default_namedlist(listname);
+    t_namelist*namelist=defaultlist?*defaultlist:0;
+    t_namedlist*namedlists=PATHSTUFF->ps_namedlists, *nl=0;
+    if(!listname)
+        return;
+    if(!namelist) {
+            /* not a default list: find the list of the given name (and create one if it doesn't exist) */
+        t_symbol*listname_sym = gensym(listname);
+        for(nl=namedlists; nl; nl=nl->next) {
+            if(nl->name == listname_sym)
+                break;
+        }
+            /* not freeing non-existant list */
+        if(!nl) return;
+
+        namelist = nl->list;
+    }
+    namelist_free(namelist);
+    if(defaultlist)
+        *defaultlist = 0;
+    if(nl)
+        nl->list = 0;
+}
+
 
 int sys_usestdpath = 1;
 
@@ -495,32 +612,106 @@ int sys_fclose(FILE *stream)
     return fclose(stream);
 }
 
+static int do_open_via_helppath(const char *dir, const char *name,
+    const char *ext, char *dirresult, char **nameresult, unsigned int size)
+{
+    int bin=0;
+    int fd=-1;
+    t_namelist*nl;
+
+        /* first check if "name" is absolute (and if so, try to open) */
+    if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
+        return (fd);
+        /* otherwise "name" is relative; try the directory "dir" first. */
+    if ((fd = sys_trytoopenone(dir, name, ext,
+        dirresult, nameresult, size, bin)) >= 0)
+            return (fd);
+
+        /* next look in temp help paths from the commandline */
+    for (nl = namedlist_getlist("helppath.temp"); nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in temp search paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in preference help paths */
+    for (nl = STUFF->st_helppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in preference search paths */
+    for (nl = STUFF->st_searchpath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
+
+        /* next look in built-in help paths like "doc/5.reference" */
+    if (sys_usestdpath)
+        for (nl = namedlist_getlist("helppath.static"); nl; nl = nl->nl_next)
+            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin)) >= 0)
+                    return (fd);
+
+        /* next look in built-in search paths like "extra" */
+    if (sys_usestdpath)
+        for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
+            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin)) >= 0)
+                    return (fd);
+
+        /* give up */
+    *dirresult = 0;
+    *nameresult = dirresult;
+    return (-1);
+}
+
     /* Open a help file using the help search path.  We expect the ".pd"
     suffix here, even though we have to tear it back off for one of the
     search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
+    char localext[MAXPDLOCALESTRING+10]; /* lang + -help..pd */
     char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
         /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
     int fd;
+
 
         /* 1. "objectname-help.pd" */
     strncpy(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
-    strcat(realname, "-help.pd");
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+
+    if(PATHSTUFF->ps_lang_region[0]) {
+        snprintf(localext, sizeof(localext), "-help.%s.pd", PATHSTUFF->ps_lang_region);
+        if ((fd = do_open_via_helppath(usedir, realname, localext,
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
+            goto gotone;
+    }
+    if(PATHSTUFF->ps_lang[0]) {
+        snprintf(localext, sizeof(localext), "-help.%s.pd", PATHSTUFF->ps_lang);
+        if ((fd = do_open_via_helppath(usedir, realname, localext,
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
+            goto gotone;
+    }
+
+    if ((fd = do_open_via_helppath(usedir, realname, "-help.pd",
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
             goto gotone;
 
         /* 2. "help-objectname.pd" */
     strcpy(realname, "help-");
     strncat(realname, name, MAXPDSTRING-10);
     realname[MAXPDSTRING-1] = 0;
-    if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
-        MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
+    if ((fd = do_open_via_helppath(usedir, realname, "",
+                                   dirbuf, &basename, MAXPDSTRING)) >= 0)
             goto gotone;
 
     post("sorry, couldn't find help patch for \"%s\"", name);
@@ -569,7 +760,7 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
+        return s;
     else sp++;
     for (i = 0; i < MAXPDSTRING-1; i++, sp++)
     {
@@ -596,66 +787,63 @@ t_symbol *sys_decodedialog(t_symbol *s)
 }
 
     /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
+static void do_gui_setnamelist(const char*listname, t_namelist*nl)
 {
     int i;
-    t_namelist *nl;
-
     sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
+    for (i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
+    sys_vgui("set %s %s\n", listname, "$::tmp_path");
 }
-
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
+void sys_set_searchpaths(void)
 {
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
+        /* set the search paths from the prefs */
+    do_gui_setnamelist("::sys_searchpath", STUFF->st_searchpath);
+        /* send the temp paths from the commandline to pd-gui */
+    do_gui_setnamelist("::sys_temppath", STUFF->st_temppath);
+        /* send the hard-coded search path to pd-gui */
+    do_gui_setnamelist("::sys_staticpath", STUFF->st_staticpath);
+        /* set the help paths from the prefs */
+    do_gui_setnamelist("::sys_helppath", namedlist_getlist("helppath.main"));
 }
 
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-     char buf[MAXPDSTRING];
+    char buf[MAXPDSTRING];
 
-    sys_set_searchpath();
+    do_gui_setnamelist("::sys_searchpath", STUFF->st_searchpath);
+    do_gui_setnamelist("::sys_helppath", namedlist_getlist("helppath.main"));
     snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
+}
+
+
+static void do_set_path(const char*listname, int argc, t_atom *argv) {
+    namedlist_free(listname);
+    while(argc--) {
+        t_symbol *s = sys_decodedialog(atom_getsymbolarg(0, 1, argv++));
+        if (*s->s_name)
+            namedlist_append_files(listname, s->s_name);
+    }
+}
+
+void glob_set_pathlist(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
+    s = atom_getsymbolarg(0, argc, argv);
+    if(argc<1) {
+        bug("set-pathlist");
+        return;
+    }
+    do_set_path(s->s_name, argc-1, argv+1);
 }
 
     /* new values from dialog window */
 void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    namelist_free(STUFF->st_searchpath);
-    STUFF->st_searchpath = 0;
     sys_usestdpath = atom_getfloatarg(0, argc, argv);
     sys_verbose = atom_getfloatarg(1, argc, argv);
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, s->s_name);
-    }
+    do_set_path("searchpath.main", argc, argv);
 }
 
     /* add one item to search path (intended for use by Deken plugin).
@@ -673,6 +861,20 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
         else
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, s->s_name);
+        if (saveit > 0)
+            sys_savepreferences(0);
+    }
+}
+void glob_addtohelppath(t_pd *dummy, t_symbol *path, t_float saveit)
+{
+    int saveflag = (int)saveit;
+    t_symbol *s = sys_decodedialog(path);
+    if (*s->s_name)
+    {
+        if (saveflag < 0)
+            namedlist_append_files("helppath.temp", s->s_name);
+        else
+            namedlist_append_files("helppath.main", s->s_name);
         if (saveit > 0)
             sys_savepreferences(0);
     }
@@ -842,4 +1044,108 @@ int string2args(const char * cmd, int * retArgc, const char *** retArgv)
  ouch:
     free(argTable);
     return -errCode;
+}
+
+void s_path_newpdinstance(void)
+{
+        /* we claim st_private for now.
+         * if others need to put some private data into STUFF as well,
+         * we need to add another layer of indirection;
+         * but for now we are the only one, so let's keep it simple
+         */
+    const char *language = getenv("LANG");
+    if(language && !*language)
+        language=0;
+
+    STUFF->st_private = getbytes(sizeof(t_pathstuff));
+    memset(PATHSTUFF->ps_lang, 0, sizeof(PATHSTUFF->ps_lang));
+    memset(PATHSTUFF->ps_lang_region, 0, sizeof(PATHSTUFF->ps_lang_region));
+
+#ifdef _WIN32
+        /* on Windows, the LANG envvar is typically unused.
+         * instead we need to query the registry.
+         * of course, there are multiple keys, depending on the OS version...
+         */
+    if (!language)
+    {
+        LSTATUS err;
+        HKEY hkey;
+        if (ERROR_SUCCESS == RegOpenKeyEx(HKEY_CURRENT_USER,
+                                          "Control Panel\\International",
+                                          0,
+                                          KEY_QUERY_VALUE, &hkey))
+        {
+            char szBuffer[MAXPDSTRING];
+            DWORD dwBufferSize = sizeof(szBuffer);
+            t_symbol*s=0;
+
+                /* on >=Vista there's a LocalName key which holds a proper language specifier */
+            if(!s && ERROR_SUCCESS == RegQueryValueEx(hkey, "LocaleName", 0, NULL, (LPBYTE)szBuffer, &dwBufferSize)) {
+                s = gensym(szBuffer);
+            }
+
+                /* on older systems, the sLanguage holds a 3-char specifier of redmonds own invention
+                 * luckily the first two characters are mostly compatible with iso639-1
+                 */
+            if(!s && ERROR_SUCCESS == RegQueryValueEx(hkey, "sLanguage", 0, NULL, (LPBYTE)szBuffer, &dwBufferSize)) {
+                szBuffer[2] = 0;
+                s = gensym(szBuffer);
+            }
+
+                /* hopefully, by now we have a valid language specifier */
+            if(s)
+                language=s->s_name;
+            RegCloseKey(hkey);
+        }
+
+    }
+#endif /* _WIN32 */
+
+    if(language) {
+        char lang[MAXPDLOCALESTRING];
+        int idx, region=0;
+        strncpy(lang, language, sizeof(lang));
+        lang[sizeof(lang)-1] = 0;
+            /* normalize the language string: lowercase; '-' -> '_'; now '.'-suffix */
+        for(idx=0; idx<sizeof(lang); idx++) {
+            char c = tolower(lang[idx]);
+            switch(c) {
+            case '-': c='_'; break;
+            case '.': c=0; break;
+            default: break;
+            }
+            lang[idx] = c;
+            if(!c)
+                break;
+            if ('_' == c)region=idx;
+        }
+            /* now i18n for 'C' and 'POSIX' locale */
+        if(strcmp("c", lang) && strcmp("posix", lang)) {
+            if(region>0) {
+                strncpy(PATHSTUFF->ps_lang_region, lang, sizeof(PATHSTUFF->ps_lang_region)-1);
+                lang[region] = 0;
+            }
+            strncpy(PATHSTUFF->ps_lang, lang, sizeof(PATHSTUFF->ps_lang)-1);
+        }
+    }
+#if 0
+    fprintf(stderr, "==========================\n");
+    fprintf(stderr, "LANG       : %s\n", language);
+    fprintf(stderr, "lang       : %s\n", PATHSTUFF->ps_lang);
+    fprintf(stderr, "lang_region: %s\n", PATHSTUFF->ps_lang_region);
+    fprintf(stderr, "==========================\n");
+#endif
+}
+
+void s_path_freepdinstance(void)
+{
+    t_namedlist *namedlist = PATHSTUFF->ps_namedlists;
+    while(namedlist) {
+        t_namedlist*nl = namedlist;
+        namedlist = namedlist->next;
+        namelist_free(nl->list);
+        freebytes(nl, sizeof(*nl));
+    }
+
+    freebytes(PATHSTUFF, sizeof(t_pathstuff));
 }
