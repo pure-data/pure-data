@@ -3,7 +3,7 @@
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* The "file" object. */
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 600
 
 #include "m_pd.h"
 #include "g_canvas.h"
