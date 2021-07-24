@@ -599,9 +599,12 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    if(x->x_val != f)
+    t_float ftocompare = f;
+        /* bitwise comparison, suggested by Dan Borstein - to make this work
+        ftocompare must be t_float type like x_val. */
+    if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
-        x->x_val = f;
+        x->x_val = ftocompare;
         my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }

@@ -593,9 +593,10 @@ static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
     if (x->a_atom.a_type == A_FLOAT)
     {
         x->a_atom.a_w.w_float = atom_getfloat(argv);
-        changed = ((x->a_atom.a_w.w_float != oldatom.a_w.w_float));
-        if (isnan(x->a_atom.a_w.w_float) != isnan(oldatom.a_w.w_float))
-            changed = 1;
+            /* github PR 791 by Dan Bornstein: treat "-0" as different from
+            "0" and deal with NaNfoo all in one swipe by comparing bitwise: */
+        changed = memcmp(&x->a_atom.a_w.w_float, &oldatom.a_w.w_float,
+            sizeof(t_float));
     }
     else if (x->a_atom.a_type == A_SYMBOL)
         x->a_atom.a_w.w_symbol = atom_getsymbol(argv),

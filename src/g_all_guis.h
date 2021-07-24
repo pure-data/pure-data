@@ -247,7 +247,7 @@ typedef struct _my_numbox
     t_iemgui x_gui;
     t_clock  *x_clock_reset;
     t_clock  *x_clock_wait;
-    double   x_val;
+    t_float  x_val;
     double   x_min;
     double   x_max;
     double   x_k;
