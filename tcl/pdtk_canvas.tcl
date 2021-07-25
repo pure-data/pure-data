@@ -183,7 +183,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     }
     set dirname [file dirname $filename]
     set basename [file tail $filename]
-    pdsend "$toplevel savetofile [enquote_path $basename] [enquote_path \
+    pdsend "$mytoplevel savetofile [enquote_path $basename] [enquote_path \
          $dirname] $destroyflag"
     set ::filenewdir $dirname
     # add to recentfiles
