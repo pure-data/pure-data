@@ -1018,7 +1018,10 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             if (x == &pd_objectmaker)
                 pd_this->pd_newest =
                     (*((t_newgimme)(m->me_fun)))(s, argc, argv);
-            else (*((t_messgimme)(m->me_fun)))(x, s, argc, argv);
+            else if (((t_messgimmer)(m->me_fun)) == ((t_messgimmer)(canvas_new)))
+                (*((t_messgimmer)(m->me_fun)))(x, s, argc, argv);
+            else
+                (*((t_messgimme)(m->me_fun)))(x, s, argc, argv);
             return;
         }
         if (argc > MAXPDARG) argc = MAXPDARG;
