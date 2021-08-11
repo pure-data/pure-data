@@ -1453,7 +1453,7 @@ static void samplerate_tilde_bang(t_samplerate *x)
     outlet_float(x->x_obj.ob_outlet, canvas_getsr(x->x_canvas));
 }
 
-static void *samplerate_tilde_new(t_symbol *s)
+static void *samplerate_tilde_new(void)
 {
     t_samplerate *x = (t_samplerate *)pd_new(samplerate_tilde_class);
     outlet_new(&x->x_obj, &s_float);
