@@ -204,7 +204,7 @@ static void *bang_new(t_pd *dummy)
     return (x);
 }
 
-static void *bang_new2(t_bang f)
+static void *bang_new2(void)
 {
     return (bang_new(0));
 }
