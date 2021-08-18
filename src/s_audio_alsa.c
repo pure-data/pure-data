@@ -57,7 +57,7 @@ t_alsa_dev alsa_outdev[ALSA_MAXDEV];
 int alsa_nindev;
 int alsa_noutdev;
 
-/* #define DEBUG_ALSA_XFER */
+/* #define DEBUG_ALSA_XFER  */
 #ifdef DEBUG_ALSA_XFER
 static int xferno = 0;
 static int callno = 0;
@@ -276,7 +276,6 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     snd_output_t* out;
     int frag_size = (blocksize ? blocksize : ALSA_DEFFRAGSIZE);
     int nfrags, i, iodev, dev2;
-    int wantinchans, wantoutchans, device;
 
     nfrags = sys_schedadvance * (float)rate / (1e6 * frag_size);
         /* save our belief as to ALSA's buffer size for later */
@@ -284,8 +283,8 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     alsa_nindev = alsa_noutdev = 0;
     alsa_jittermax = ALSA_DEFJITTERMAX;
 
-    verbose(PD_VERBOSE, "audio buffer set to %d",
-        (int)(0.001 * sys_schedadvance));
+    verbose(PD_VERBOSE, "alsa: %d blocks of %d samples, total advance %d",
+        nfrags, frag_size, (int)(0.001 * sys_schedadvance));
 
     for (iodev = 0; iodev < naudioindev; iodev++)
     {
@@ -431,10 +430,9 @@ int alsa_send_dacs(void)
     static double timenow;
     double timelast;
     t_sample *fp, *fp1, *fp2;
-    int i, j, k, err, iodev, result, ch, goterror = 0;
+    int i, j, k, err, iodev, result, ch, goterror = 0, busy = 0;
     int chansintogo, chansouttogo;
     unsigned int transfersize;
-
     if (alsa_usemmap)
         return (alsamm_send_dacs());
 
@@ -452,7 +450,7 @@ int alsa_send_dacs(void)
     if (timenow - timelast > 0.050)
         post("long wait between calls: %d",
             (int)(1000 * (timenow - timelast))), fflush(stderr);
-    callno++;
+    callno = (callno + 1)% 1000;
 #endif
 
 
@@ -467,8 +465,14 @@ int alsa_send_dacs(void)
                 fprintf(stderr, "alsa xrun recovery apparently failed\n");
         }
         snd_pcm_status(alsa_indev[iodev].a_handle, alsa_status);
+#ifdef DEBUG_ALSA_XFER
+        if (!callno)
+            post("in avail %d, fill %d",
+                snd_pcm_status_get_avail(alsa_status),
+                snd_pcm_status_get_delay(alsa_status));
+#endif
         if (snd_pcm_status_get_avail(alsa_status) < transfersize)
-            return (SENDDACS_NO);
+            busy = 1;
     }
     for (iodev = 0; iodev < alsa_noutdev; iodev++)
     {
@@ -481,12 +485,22 @@ int alsa_send_dacs(void)
                 fprintf(stderr, "alsa xrun recovery apparently failed\n");
         }
         snd_pcm_status(alsa_outdev[iodev].a_handle, alsa_status);
+#ifdef DEBUG_ALSA_XFER
+        if (!callno)
+            post("out avail %d, fill %d sum %d",
+                snd_pcm_status_get_avail(alsa_status),
+                snd_pcm_status_get_delay(alsa_status),
+                    snd_pcm_status_get_avail(alsa_status) +
+                    snd_pcm_status_get_delay(alsa_status));
+#endif
         if (snd_pcm_status_get_avail(alsa_status) < transfersize)
             return (SENDDACS_NO);
     }
-
+    if (busy)
+        return (SENDDACS_NO);
 #ifdef DEBUG_ALSA_XFER
-    post("xfer %d", transfersize);
+    if (!callno)
+        post("xfer %d", transfersize);
 #endif
     /* do output */
     for (iodev = 0, fp1 = STUFF->st_soundout, ch = 0;
@@ -694,9 +708,9 @@ void alsa_printstate(void)
 {
     int i, result, iodev = 0;
     snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
-    if (sys_audioapi != API_ALSA)
+    if (!alsa_nindev && !alsa_noutdev)
     {
-        error("restart-audio: implemented for ALSA only.");
+        post("alsa_printstate: alsa not open");
         return;
     }
     if (STUFF->st_inchannels)

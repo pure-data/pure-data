@@ -60,6 +60,7 @@ void s_stuff_newpdinstance(void)
     STUFF->st_externlist = STUFF->st_searchpath =
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
+    STUFF->st_dacsr = DEFDACSAMPLERATE;
 }
 
 void s_stuff_freepdinstance(void)

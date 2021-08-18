@@ -50,7 +50,7 @@
 #endif
 
 /* define this to enable thread signaling instead of polling */
-/* #define THREADSIGNAL */
+#define THREADSIGNAL
 
     /* LATER try to figure out how to handle default devices in portaudio;
     the way s_audio.c handles them isn't going to work here. */
@@ -75,6 +75,7 @@ static PA_VOLATILE char *pa_inbuf;
 static PA_VOLATILE sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
+#include <errno.h>
 #ifdef _WIN32
 #include <sys/timeb.h>
 #else

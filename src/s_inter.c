@@ -1363,7 +1363,6 @@ static int sys_do_startgui(const char *libdir)
              apibuf, apibuf2,
              pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
              sys_fontweight);
-    sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();

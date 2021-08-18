@@ -105,7 +105,7 @@ void sys_initmidiqueue(void)
     /* this is called from the OS dependent code from time to time when we
     think we know the delay (outbuftime) in seconds, at which the last-output
     audio sample will go out the door. */
-void sys_setmiditimediff(double inbuftime, double outbuftime)
+static void sys_setmiditimediff(double inbuftime, double outbuftime)
 {
     double dactimeminusrealtime =
         .001 * clock_gettimesince(sys_midiinittime)
@@ -492,13 +492,7 @@ void sys_midibytein(int portno, int byte)
 
 void sys_pollmidiqueue(void)
 {
-#if 0
-    static double lasttime;
-    double newtime = sys_getrealtime();
-    if (newtime - lasttime > 0.007)
-        post("delay %d", (int)(1000 * (newtime - lasttime)));
-    lasttime = newtime;
-#endif
+    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
         sys_alsa_poll_midi();

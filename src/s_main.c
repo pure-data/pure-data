@@ -93,29 +93,15 @@ int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring);
 int sys_noautopatch;    /* temporary hack to defeat new 0.42 editing */
 
-    /* here the "-1" counts signify that the corresponding vector hasn't been
-    specified in command line arguments; sys_set_audio_settings will detect it
-    and fill things in. */
-static int sys_nsoundin = -1;
-static int sys_nsoundout = -1;
-static int sys_soundindevlist[MAXAUDIOINDEV];
-static int sys_soundoutdevlist[MAXAUDIOOUTDEV];
-
-static int sys_nchin = -1;
-static int sys_nchout = -1;
-static int sys_chinlist[MAXAUDIOINDEV];
-static int sys_choutlist[MAXAUDIOOUTDEV];
-
-t_sample* get_sys_soundout() { return STUFF->st_soundout; }
-t_sample* get_sys_soundin() { return STUFF->st_soundin; }
-int* get_sys_main_advance() { return &sys_main_advance; }
-double* get_sys_time_per_dsp_tick() { return &STUFF->st_time_per_dsp_tick; }
-int* get_sys_schedblocksize() { return &STUFF->st_schedblocksize; }
-double* get_sys_time() { return &pd_this->pd_systime; }
-t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }
-int* get_sys_sleepgrain() { return &sys_sleepgrain; }
-int* get_sys_schedadvance() { return &sys_schedadvance; }
+t_sample *get_sys_soundout() { return STUFF->st_soundout; }
+t_sample *get_sys_soundin() { return STUFF->st_soundin; }
+double *get_sys_time_per_dsp_tick() { return &STUFF->st_time_per_dsp_tick; }
+int *get_sys_schedblocksize() { return &STUFF->st_schedblocksize; }
+double *get_sys_time() { return &pd_this->pd_systime; }
+t_float *get_sys_dacsr() { return &STUFF->st_dacsr; }
+int *get_sys_schedadvance() { return &sys_schedadvance; }
 t_namelist *sys_searchpath;  /* so old versions of GEM might compile */
+
 typedef struct _fontinfo
 {
     int fi_pointsize;
@@ -375,7 +361,6 @@ int sys_main(int argc, char **argv)
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
-    sys_afterargparse();                    /* post-argparse settings */
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
         pd_version, pd_compiletime, pd_compiledate);
     if (sys_verbose)
@@ -388,6 +373,7 @@ int sys_main(int argc, char **argv)
             clock_new(0, (t_method)sys_fakefromgui)), 0);
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
+    sys_afterargparse();                    /* post-argparse settings */
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
@@ -535,12 +521,13 @@ static void sys_printusage(void)
         fprintf(stderr, "%s", usagemessage[i]);
 }
 
-static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
+    /* parse a comma-separated numeric list, returning the number found */
+static int sys_parsedevlist(int *np, int *vecp, int max, char *str)
 {
     int n = 0;
     while (n < max)
     {
-        if (!*str) break;
+        if (! *str) break;
         else
         {
             char *endp;
@@ -548,12 +535,12 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
             if (endp == str)
                 break;
             n++;
-            if ('\0' == *endp)
+            if (! *endp)
                 break;
             str = endp + 1;
         }
     }
-    *np = n;
+    return (*np = n);
 }
 
 static int sys_getmultidevchannels(int n, int *devlist)
@@ -657,8 +644,15 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
+    t_audiosettings as;
+            /* get the current audio parameters.  These are set
+            by the preferences mechanism (sys_loadpreferences()) or
+            else are the default.  Overwrite them with any results
+            of argument parsing, and store them again. */
+    sys_get_audio_settings(&as);
     while ((argc > 0) && **argv == '-')
     {
+                /* audio flags */
         if (!strcmp(*argv, "-r") && argc > 1 &&
             sscanf(argv[1], "%d", &sys_main_srate) >= 1)
         {
@@ -667,43 +661,28 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-inchannels"))
         {
-            if (argc < 2)
-                goto usage;
-
-            sys_parsedevlist(&sys_nchin,
-                sys_chinlist, MAXAUDIOINDEV, argv[1]);
-
-          if (!sys_nchin)
-              goto usage;
-
-          argc -= 2; argv += 2;
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_nchindev,
+                    as.a_chindevvec, MAXAUDIOINDEV, argv[1]))
+                        goto usage;
+            argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-outchannels"))
         {
-            if (argc < 2)
-                goto usage;
-
-            sys_parsedevlist(&sys_nchout, sys_choutlist,
-                MAXAUDIOOUTDEV, argv[1]);
-
-          if (!sys_nchout)
-            goto usage;
-
-          argc -= 2; argv += 2;
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_nchoutdev,
+                    as.a_choutdevvec, MAXAUDIOINDEV, argv[1]))
+                        goto usage;
+            argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-channels"))
         {
-            if (argc < 2)
-                goto usage;
-
-            sys_parsedevlist(&sys_nchin, sys_chinlist,MAXAUDIOINDEV,
-                argv[1]);
-            sys_parsedevlist(&sys_nchout, sys_choutlist,MAXAUDIOOUTDEV,
-                argv[1]);
-
-            if (!sys_nchout)
-              goto usage;
-
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_nchindev,
+                    as.a_chindevvec, MAXAUDIOINDEV, argv[1]) ||
+                !sys_parsedevlist(&as.a_nchoutdev,
+                    as.a_choutdevvec, MAXAUDIOINDEV, argv[1]))
+                        goto usage;
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-soundbuf") || (!strcmp(*argv, "-audiobuf")))
@@ -711,54 +690,50 @@ int sys_argparse(int argc, char **argv)
             if (argc < 2)
                 goto usage;
 
-            sys_main_advance = atoi(argv[1]);
+            as.a_advance = atoi(argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-callback"))
         {
-            sys_main_callback = 1;
+            as.a_callback = 1;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-nocallback"))
         {
-            sys_main_callback = 0;
+            as.a_callback = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-blocksize"))
         {
-            sys_main_blocksize = atoi(argv[1]);
+            as.a_blocksize = atoi(argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-sleepgrain"))
         {
             if (argc < 2)
                 goto usage;
-
             sys_sleepgrain = 1000 * atof(argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nodac"))
         {
-            sys_nsoundout=0;
-            sys_nchout = 0;
+            as.a_noutdev = as.a_nchoutdev = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-noadc"))
         {
-            sys_nsoundin=0;
-            sys_nchin = 0;
+            as.a_nindev = as.a_nchindev = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-nosound") || !strcmp(*argv, "-noaudio"))
         {
-            sys_nsoundin=sys_nsoundout = 0;
-            sys_nchin = sys_nchout = 0;
+            as.a_noutdev = as.a_nchoutdev =  as.a_nindev = as.a_nchindev = 0;
             argc--; argv++;
         }
 #ifdef USEAPI_OSS
         else if (!strcmp(*argv, "-oss"))
         {
-            sys_set_audio_api(API_OSS);
+            as.a_api = API_OSS;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-ossmidi"))
@@ -766,24 +741,18 @@ int sys_argparse(int argc, char **argv)
             sys_set_midi_api(API_OSS);
             argc--; argv++;
         }
-#else
-        else if (!strcmp(*argv, "-oss") || !strcmp(*argv, "-ossmidi"))
-        {
-            fprintf(stderr, "Pd compiled without OSS-support, ignoring '%s' flag\n", *argv);
-            argc--; argv++;
-        }
 #endif
 #ifdef USEAPI_ALSA
         else if (!strcmp(*argv, "-alsa"))
         {
-            sys_set_audio_api(API_ALSA);
+            as.a_api = API_ALSA;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-alsaadd"))
         {
             if (argc < 2)
                 goto usage;
-
+            as.a_api = API_ALSA;
             alsa_adddev(argv[1]);
             argc -= 2; argv +=2;
         }
@@ -792,33 +761,22 @@ int sys_argparse(int argc, char **argv)
             sys_set_midi_api(API_ALSA);
             argc--; argv++;
         }
-#else
-        else if (!strcmp(*argv, "-alsa") || !strcmp(*argv, "-alsamidi"))
-        {
-            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
-            argc--; argv++;
-        }
-        else if (!strcmp(*argv, "-alsaadd"))
-        {
-            if (argc < 2)
-                goto usage;
-            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
-            argc -= 2; argv +=2;
-        }
 #endif
 #ifdef USEAPI_JACK
         else if (!strcmp(*argv, "-jack"))
         {
-            sys_set_audio_api(API_JACK);
+            as.a_api = API_JACK;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-nojackconnect"))
         {
+            as.a_api = API_JACK;
             jack_autoconnect(0);
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-jackconnect"))
         {
+            as.a_api = API_JACK;
             jack_autoconnect(1);
             argc--; argv++;
         }
@@ -826,72 +784,140 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-
-            sys_set_audio_api(API_JACK), jack_client_name(argv[1]);
-            argc -= 2; argv +=2;
-
-        }
-#else
-        else if (!strcmp(*argv, "-jack") || !strcmp(*argv, "-nojackconnect")
-            || !strcmp(*argv, "-jackconnect"))
-        {
-            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
-            argc--; argv++;
-        }
-        else if (!strcmp(*argv, "-jackname"))
-        {
-            if (argc < 2)
-                goto usage;
-            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            as.a_api = API_JACK;
+            jack_client_name(argv[1]);
             argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
-            || !strcmp(*argv, "-asio")
-            )
+            || !strcmp(*argv, "-asio"))
         {
-            sys_set_audio_api(API_PORTAUDIO);
+            as.a_api = API_PORTAUDIO;
             sys_mmio = 0;
-            argc--; argv++;
-        }
-#else
-        else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
-            || !strcmp(*argv, "-asio")
-            )
-        {
-            fprintf(stderr, "Pd compiled without PortAudio-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
 #ifdef USEAPI_MMIO
         else if (!strcmp(*argv, "-mmio"))
         {
-            sys_set_audio_api(API_MMIO);
+            as.a_api = API_MMIO;
             sys_mmio = 1;
-            argc--; argv++;
-        }
-#else
-        else if (!strcmp(*argv, "-mmio"))
-        {
-            fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
 #ifdef USEAPI_AUDIOUNIT
         else if (!strcmp(*argv, "-audiounit"))
         {
-            sys_set_audio_api(API_AUDIOUNIT);
+            as.a_api = API_AUDIOUNIT;
             argc--; argv++;
         }
 #endif
 #ifdef USEAPI_ESD
         else if (!strcmp(*argv, "-esd"))
         {
-            sys_set_audio_api(API_ESD);
+            as.a_api = API_ESD;
             argc--; argv++;
         }
 #endif
+        else if (!strcmp(*argv, "-listdev"))
+        {
+            sys_listplease = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-soundindev") ||
+            !strcmp(*argv, "-audioindev"))
+        {
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_nindev, as.a_indevvec,
+                    MAXAUDIOINDEV, argv[1]))
+                        goto usage;
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-soundoutdev") ||
+            !strcmp(*argv, "-audiooutdev"))
+        {
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_noutdev, as.a_outdevvec,
+                    MAXAUDIOOUTDEV, argv[1]))
+                        goto usage;
+            argc -= 2; argv += 2;
+        }
+        else if ((!strcmp(*argv, "-sounddev") || !strcmp(*argv, "-audiodev")))
+        {
+            if (argc < 2 ||
+                !sys_parsedevlist(&as.a_nindev, as.a_indevvec,
+                    MAXAUDIOINDEV, argv[1]) ||
+                !sys_parsedevlist(&as.a_noutdev, as.a_outdevvec,
+                    MAXAUDIOOUTDEV, argv[1]))
+                        goto usage;
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-audioaddindev"))
+        {
+            if (argc < 2)
+                goto usage;
+
+            if (as.a_nindev < 0)
+                as.a_nindev = 0;
+            if (as.a_nindev < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
+                        argv[1]);
+                else as.a_indevvec[as.a_nindev++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d\n",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-audioaddoutdev"))
+        {
+            if (argc < 2)
+                goto usage;
+
+            if (as.a_noutdev < 0)
+                as.a_noutdev = 0;
+            if (as.a_noutdev < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
+                        argv[1]);
+                else as.a_outdevvec[as.a_noutdev++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d\n",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-audioadddev"))
+        {
+            if (argc < 2)
+                goto usage;
+
+            if (as.a_nindev < 0)
+                as.a_nindev = 0;
+            if (as.a_noutdev < 0)
+                as.a_noutdev = 0;
+            if (as.a_nindev < MAXAUDIOINDEV && as.a_noutdev < MAXAUDIOINDEV)
+            {
+                int devn = sys_audiodevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
+                        argv[1]);
+                else as.a_indevvec[as.a_nindev++] = devn + 1;
+                devn = sys_audiodevnametonumber(1, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
+                        argv[1]);
+                else as.a_outdevvec[as.a_noutdev++] = devn + 1;
+            }
+            else fprintf(stderr, "number of audio devices limited to %d",
+                MAXAUDIOINDEV);
+            argc -= 2; argv += 2;
+        }
+                /* MIDI flags */
         else if (!strcmp(*argv, "-nomidiin"))
         {
             sys_nmidiin = 0;
@@ -1006,6 +1032,7 @@ int sys_argparse(int argc, char **argv)
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
+                /* other flags */
         else if (!strcmp(*argv, "-path"))
         {
             if (argc < 2)
@@ -1151,11 +1178,6 @@ int sys_argparse(int argc, char **argv)
             sys_messagelist = namelist_append(sys_messagelist, argv[1], 1);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-listdev"))
-        {
-            sys_listplease = 1;
-            argc--; argv++;
-        }
         else if (!strcmp(*argv, "-schedlib"))
         {
             if (argc < 2)
@@ -1165,13 +1187,13 @@ int sys_argparse(int argc, char **argv)
             strncpy(sys_externalschedlibname, argv[1],
                 sizeof(sys_externalschedlibname) - 1);
 #ifndef  __APPLE__
-                /* no real audio please, unless overwritten by later args.
+                /* no audio I/O please, unless overwritten by later args.
                 This is to circumvent a problem running pd~ subprocesses
                 with -nogui; they would open an audio device before pdsched.c
-                could set the API ito nothing.  For some reason though, on
+                could set the API to nothing.  For some reason though, on
                 MACOSX this causes Pd to switch to JACK so we just give up
                 and suppress the workaround there. */
-            sys_set_audio_api(0);
+            as.a_api = 0;
 #endif
             argv += 2;
             argc -= 2;
@@ -1249,104 +1271,6 @@ int sys_argparse(int argc, char **argv)
             sys_nosleep = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-soundindev") ||
-            !strcmp(*argv, "-audioindev"))
-        {
-            sys_parsedevlist(&sys_nsoundin, sys_soundindevlist,
-                MAXAUDIOINDEV, argv[1]);
-            if (!sys_nsoundin)
-                goto usage;
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(*argv, "-soundoutdev") ||
-            !strcmp(*argv, "-audiooutdev"))
-        {
-            if (argc < 2)
-                goto usage;
-
-            sys_parsedevlist(&sys_nsoundout, sys_soundoutdevlist,
-                MAXAUDIOOUTDEV, argv[1]);
-            if (!sys_nsoundout)
-                goto usage;
-            argc -= 2; argv += 2;
-        }
-        else if ((!strcmp(*argv, "-sounddev") || !strcmp(*argv, "-audiodev")))
-        {
-            if (argc < 2)
-                goto usage;
-
-            sys_parsedevlist(&sys_nsoundin, sys_soundindevlist,
-                MAXAUDIOINDEV, argv[1]);
-            sys_parsedevlist(&sys_nsoundout, sys_soundoutdevlist,
-                MAXAUDIOOUTDEV, argv[1]);
-            if (!sys_nsoundout)
-                goto usage;
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(*argv, "-audioaddindev"))
-        {
-            if (argc < 2)
-                goto usage;
-
-            if (sys_nsoundin < 0)
-                sys_nsoundin = 0;
-            if (sys_nsoundin < MAXAUDIOINDEV)
-            {
-                int devn = sys_audiodevnametonumber(0, argv[1]);
-                if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio input device: %s\n",
-                        argv[1]);
-                else sys_soundindevlist[sys_nsoundin++] = devn + 1;
-            }
-            else fprintf(stderr, "number of audio devices limited to %d\n",
-                MAXAUDIOINDEV);
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(*argv, "-audioaddoutdev"))
-        {
-            if (argc < 2)
-                goto usage;
-
-            if (sys_nsoundout < 0)
-                sys_nsoundout = 0;
-            if (sys_nsoundout < MAXAUDIOINDEV)
-            {
-                int devn = sys_audiodevnametonumber(1, argv[1]);
-                if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio output device: %s\n",
-                        argv[1]);
-                else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
-            }
-            else fprintf(stderr, "number of audio devices limited to %d\n",
-                MAXAUDIOINDEV);
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(*argv, "-audioadddev"))
-        {
-            if (argc < 2)
-                goto usage;
-
-            if (sys_nsoundin < 0)
-                sys_nsoundin = 0;
-            if (sys_nsoundout < 0)
-                sys_nsoundout = 0;
-            if (sys_nsoundin < MAXAUDIOINDEV && sys_nsoundout < MAXAUDIOINDEV)
-            {
-                int devn = sys_audiodevnametonumber(0, argv[1]);
-                if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio input device: %s\n",
-                        argv[1]);
-                else sys_soundindevlist[sys_nsoundin++] = devn + 1;
-                devn = sys_audiodevnametonumber(1, argv[1]);
-                if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio output device: %s\n",
-                        argv[1]);
-                else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
-            }
-            else fprintf(stderr, "number of audio devices limited to %d",
-                MAXAUDIOINDEV);
-            argc -= 2; argv += 2;
-        }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
             argc--, argv++;
         else if (!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
@@ -1372,7 +1296,7 @@ int sys_argparse(int argc, char **argv)
     for (; argc > 0; argc--, argv++)
         sys_openlist = namelist_append_files(sys_openlist, *argv);
 
-
+    sys_set_audio_settings(&as);
     return (0);
 }
 
@@ -1388,9 +1312,7 @@ static void sys_afterargparse(void)
 {
     char sbuf[MAXPDSTRING];
     int i;
-    int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
-    int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int nchindev, nchoutdev, rate, advance, callback, blocksize;
+    t_audiosettings as;
     int nmidiindev = 0, midiindev[MAXMIDIINDEV];
     int nmidioutdev = 0, midioutdev[MAXMIDIOUTDEV];
             /* add "extra" library to path */
@@ -1403,58 +1325,29 @@ static void sys_afterargparse(void)
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
     STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
+
+    sys_get_audio_settings(&as);
+
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were
         set up, so we leave it that way for compatibility. */
     if (!sys_mmio)
     {
-        for (i = 0; i < sys_nsoundin; i++)
-            sys_soundindevlist[i]--;
-        for (i = 0; i < sys_nsoundout; i++)
-            sys_soundoutdevlist[i]--;
+        for (i = 0; i < as.a_nindev; i++)
+            as.a_indevvec[i]--;
+        for (i = 0; i < as.a_noutdev; i++)
+            as.a_outdevvec[i]--;
     }
     for (i = 0; i < sys_nmidiin; i++)
         sys_midiindevlist[i]--;
     for (i = 0; i < sys_nmidiout; i++)
         sys_midioutdevlist[i]--;
+    sys_set_audio_settings(&as);
+
     if (sys_listplease)
         sys_listdevs();
 
-            /* get the current audio parameters.  These are set
-            by the preferences mechanism (sys_loadpreferences()) or
-            else are the default.  Overwrite them with any results
-            of argument parsing, and store them again. */
-    sys_get_audio_params(&naudioindev, audioindev, chindev,
-        &naudiooutdev, audiooutdev, choutdev, &rate, &advance,
-            &callback, &blocksize);
-    if (sys_nchin >= 0)
-    {
-        nchindev = sys_nchin;
-        for (i = 0; i < nchindev; i++)
-            chindev[i] = sys_chinlist[i];
-    }
-    else nchindev = naudioindev;
-    if (sys_nsoundin >= 0)
-    {
-        naudioindev = sys_nsoundin;
-        for (i = 0; i < naudioindev; i++)
-            audioindev[i] = sys_soundindevlist[i];
-    }
-
-    if (sys_nchout >= 0)
-    {
-        nchoutdev = sys_nchout;
-        for (i = 0; i < nchoutdev; i++)
-            choutdev[i] = sys_choutlist[i];
-    }
-    else nchoutdev = naudiooutdev;
-    if (sys_nsoundout >= 0)
-    {
-        naudiooutdev = sys_nsoundout;
-        for (i = 0; i < naudiooutdev; i++)
-            audiooutdev[i] = sys_soundoutdevlist[i];
-    }
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     if (sys_nmidiin >= 0)
     {
@@ -1468,17 +1361,6 @@ static void sys_afterargparse(void)
         for (i = 0; i < nmidioutdev; i++)
             midioutdev[i] = sys_midioutdevlist[i];
     }
-    if (sys_main_advance)
-        advance = sys_main_advance;
-    if (sys_main_srate)
-        rate = sys_main_srate;
-    if (sys_main_callback)
-        callback = sys_main_callback;
-    if (sys_main_blocksize)
-        blocksize = sys_main_blocksize;
-    sys_set_audio_settings(naudioindev, audioindev, nchindev, chindev,
-        naudiooutdev, audiooutdev, nchoutdev, choutdev, rate, advance,
-        callback, blocksize);
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 }
 

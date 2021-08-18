@@ -20,11 +20,11 @@
 
 #define MAXNDEV 10
 static int oss_nmididevs;
-static char oss_devnames[MAXNDEV][20];
+static char oss_midinames[MAXNDEV][20];
 static int oss_nmidiin;
-static int oss_midiinfd[MAXMIDIINDEV];
+static int oss_midiinfd[MAXMIDIINDEV+1]; /* +1 to suppress buggy GCC warning */
 static int oss_nmidiout;
-static int oss_midioutfd[MAXMIDIOUTDEV];
+static int oss_midioutfd[MAXMIDIOUTDEV+1];
 
 static void close_one_midi_fd(int fd)
 {
@@ -77,17 +77,17 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
             continue;
         for (j = 0; j < nmidiout; j++)
             if (midioutvec[j] >= 0 && midioutvec[j] <= oss_nmididevs
-                && !strcmp(oss_devnames[midioutvec[j]],
-                oss_devnames[devno]))
+                && !strcmp(oss_midinames[midioutvec[j]],
+                oss_midinames[devno]))
                     outdevindex = j;
 
             /* try to open the device for read/write. */
         if (outdevindex >= 0)
         {
             sys_setalarm(1000000);
-            fd = open(oss_devnames[devno], O_RDWR | O_MIDIFLAG);
+            fd = open(oss_midinames[devno], O_RDWR | O_MIDIFLAG);
             verbose(PD_VERBOSE, "tried to open %s read/write; got %d\n",
-                oss_devnames[devno], fd);
+                oss_midinames[devno], fd);
             if (outdevindex >= 0 && fd >= 0)
                 oss_midioutfd[outdevindex] = fd;
         }
@@ -95,14 +95,14 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         if (fd < 0)
         {
             sys_setalarm(1000000);
-            fd = open(oss_devnames[devno], O_RDONLY | O_MIDIFLAG);
+            fd = open(oss_midinames[devno], O_RDONLY | O_MIDIFLAG);
             verbose(PD_VERBOSE, "tried to open %s read-only; got %d\n",
-                oss_devnames[devno], fd);
+                oss_midinames[devno], fd);
         }
         if (fd >= 0)
             oss_midiinfd[oss_nmidiin++] = fd;
         else post("couldn't open MIDI input device %s",
-            oss_devnames[devno]);
+            oss_midinames[devno]);
     }
     for (i = 0, oss_nmidiout = 0; i < nmidiout; i++)
     {
@@ -113,14 +113,14 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         if (fd < 0)
         {
             sys_setalarm(1000000);
-            fd = open(oss_devnames[devno], O_WRONLY | O_MIDIFLAG);
+            fd = open(oss_midinames[devno], O_WRONLY | O_MIDIFLAG);
             verbose(PD_VERBOSE, "tried to open %s write-only; got %d\n",
-                oss_devnames[devno], fd);
+                oss_midinames[devno], fd);
         }
         if (fd >= 0)
             oss_midioutfd[oss_nmidiout++] = fd;
         else post("couldn't open MIDI output device %s",
-            oss_devnames[devno]);
+            oss_midinames[devno]);
     }
 
     if (oss_nmidiin < nmidiin || oss_nmidiout < nmidiout || sys_verbose)
@@ -211,15 +211,15 @@ void midi_oss_init(void)
 
     oss_nmididevs = 0;
     if (oss_nmididevs < MAXNDEV && !stat("/dev/midi", &statbuf))
-        strcpy(oss_devnames[oss_nmididevs++], "/dev/midi");
+        strcpy(oss_midinames[oss_nmididevs++], "/dev/midi");
     for (devno = 0; devno < MAXNDEV; devno++)
     {
         sprintf(namebuf, "/dev/midi%d", devno);
         if (oss_nmididevs < MAXNDEV && !stat(namebuf, &statbuf))
-            strcpy(oss_devnames[oss_nmididevs++], namebuf);
+            strcpy(oss_midinames[oss_nmididevs++], namebuf);
         sprintf(namebuf, "/dev/midi%2.2d", devno);
         if (oss_nmididevs < MAXNDEV && !stat(namebuf, &statbuf))
-            strcpy(oss_devnames[oss_nmididevs++], namebuf);
+            strcpy(oss_midinames[oss_nmididevs++], namebuf);
     }
 }
 
@@ -232,13 +232,13 @@ void midi_getdevs(char *indevlist, int *nindevs,
     if ((ndev = oss_nmididevs) > maxndev)
         ndev = maxndev;
     for (i = 0; i < ndev; i++)
-        strcpy(indevlist + i * devdescsize, oss_devnames[i]);
+        strcpy(indevlist + i * devdescsize, oss_midinames[i]);
     *nindevs = ndev;
 
     if ((ndev = oss_nmididevs) > maxndev)
         ndev = maxndev;
     for (i = 0; i < ndev; i++)
         sprintf(outdevlist + i * devdescsize,
-            "/dev/midi%s", oss_devnames[i]);
+            "/dev/midi%s", oss_midinames[i]);
     *noutdevs = ndev;
 }

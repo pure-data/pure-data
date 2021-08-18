@@ -515,13 +515,14 @@ static void sys_donesavepreferences(void)
 
 void sys_loadpreferences(const char *filename, int startingup)
 {
-    int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
-    int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
+    t_audiosettings as;
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, rate = 0, advance = -1, callback = 0, blocksize = 0,
-        api, midiapi, nolib, maxi;
+    int i, midiapi, nolib, maxi;
     char prefbuf[MAXPDSTRING], keybuf[80];
+    as.a_srate = DEFDACSAMPLERATE;
+    as.a_advance = -1;
+    as.a_callback = as.a_blocksize = 0;
 
     if (*filename)
         sys_initloadpreferences_file(filename);
@@ -529,15 +530,15 @@ void sys_loadpreferences(const char *filename, int startingup)
         /* load audio preferences */
     if (!sys_externalschedlib
         && sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
-        && sscanf(prefbuf, "%d", &api) > 0)
-            sys_set_audio_api(api);
+        && sscanf(prefbuf, "%d", &as.a_api) < 1)
+            as.a_api = -1;
             /* JMZ/MB: brackets for initializing */
     if (sys_getpreference("noaudioin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
-            naudioindev = 0;
+            as.a_nindev = 0;
     else
     {
-        for (i = 0, naudioindev = 0; i < MAXAUDIOINDEV; i++)
+        for (i = 0, as.a_nindev = 0; i < MAXAUDIOINDEV; i++)
         {
                 /* first try to find a name - if that matches an existing
                 device use it.  Otherwise fall back to device number. */
@@ -546,54 +547,54 @@ void sys_loadpreferences(const char *filename, int startingup)
             sprintf(keybuf, "audioindev%d", i+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
-            if (sscanf(prefbuf, "%d %d", &audioindev[i], &chindev[i]) < 2)
+            if (sscanf(prefbuf, "%d %d",
+                &as.a_indevvec[i], &as.a_chindevvec[i]) < 2)
                 break;
                 /* possibly override device number if the device name was
                 also saved and if it matches one we have now */
             sprintf(keybuf, "audioindevname%d", i+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
                 && (devn = sys_audiodevnametonumber(0, prefbuf)) >= 0)
-                    audioindev[i] = devn;
-            naudioindev++;
+                    as.a_indevvec[i] = devn;
+            as.a_nindev++;
         }
             /* if no preferences at all, set -1 for default behavior */
-        if (naudioindev == 0)
-            naudioindev = -1;
+        if (as.a_nindev == 0)
+            as.a_nindev = -1;
     }
         /* JMZ/MB: brackets for initializing */
     if (sys_getpreference("noaudioout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
-            naudiooutdev = 0;
+            as.a_noutdev = 0;
     else
     {
-        for (i = 0, naudiooutdev = 0; i < MAXAUDIOOUTDEV; i++)
+        for (i = 0, as.a_noutdev = 0; i < MAXAUDIOOUTDEV; i++)
         {
             int devn;
             sprintf(keybuf, "audiooutdev%d", i+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
-            if (sscanf(prefbuf, "%d %d", &audiooutdev[i], &choutdev[i]) < 2)
-                break;
+            if (sscanf(prefbuf, "%d %d",
+                &as.a_outdevvec[i], &as.a_choutdevvec[i]) < 2)
+                    break;
             sprintf(keybuf, "audiooutdevname%d", i+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
                 && (devn = sys_audiodevnametonumber(1, prefbuf)) >= 0)
-                    audiooutdev[i] = devn;
-            naudiooutdev++;
+                    as.a_outdevvec[i] = devn;
+            as.a_noutdev++;
         }
-        if (naudiooutdev == 0)
-            naudiooutdev = -1;
+        if (as.a_noutdev == 0)
+            as.a_noutdev = -1;
     }
     if (sys_getpreference("rate", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &rate);
+        sscanf(prefbuf, "%d", &as.a_srate);
     if (sys_getpreference("audiobuf", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &advance);
+        sscanf(prefbuf, "%d", &as.a_advance);
     if (sys_getpreference("callback", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &callback);
+        sscanf(prefbuf, "%d", &as.a_callback);
     if (sys_getpreference("blocksize", prefbuf, MAXPDSTRING))
-        sscanf(prefbuf, "%d", &blocksize);
-    sys_set_audio_settings(naudioindev, audioindev, naudioindev, chindev,
-        naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance,
-        callback, blocksize);
+        sscanf(prefbuf, "%d", &as.a_blocksize);
+    sys_set_audio_settings(&as);
 
         /* load MIDI preferences */
     if (sys_getpreference("midiapi", prefbuf, MAXPDSTRING)
@@ -698,9 +699,8 @@ void sys_loadpreferences(const char *filename, int startingup)
 
 void sys_savepreferences(const char *filename)
 {
-    int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
-    int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int i, rate, advance, callback, blocksize;
+    t_audiosettings as;
+    int i;
     char buf1[MAXPDSTRING], buf2[MAXPDSTRING];
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
@@ -709,48 +709,45 @@ void sys_savepreferences(const char *filename)
         sys_initsavepreferences_file(filename);
     else sys_initsavepreferences();
         /* audio settings */
-    sprintf(buf1, "%d", sys_audioapi);
+    sys_get_audio_settings(&as);
+
+    sprintf(buf1, "%d", as.a_api);
     sys_putpreference("audioapi", buf1);
-
-    sys_get_audio_params(&naudioindev, audioindev, chindev,
-        &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
-            &blocksize);
-
-    sys_putpreference("noaudioin", (naudioindev <= 0 ? "True" : "False"));
-    for (i = 0; i < naudioindev; i++)
+    sys_putpreference("noaudioin", (as.a_nindev <= 0 ? "True":"False"));
+    for (i = 0; i < as.a_nindev; i++)
     {
         sprintf(buf1, "audioindev%d", i+1);
-        sprintf(buf2, "%d %d", audioindev[i], chindev[i]);
+        sprintf(buf2, "%d %d", as.a_indevvec[i], as.a_chindevvec[i]);
         sys_putpreference(buf1, buf2);
         sprintf(buf1, "audioindevname%d", i+1);
-        sys_audiodevnumbertoname(0, audioindev[i], buf2, MAXPDSTRING);
+        sys_audiodevnumbertoname(0, as.a_indevvec[i], buf2, MAXPDSTRING);
         if (! *buf2)
             strcat(buf2, "?");
         sys_putpreference(buf1, buf2);
     }
-    sys_putpreference("noaudioout", (naudiooutdev <= 0 ? "True" : "False"));
-    for (i = 0; i < naudiooutdev; i++)
+    sys_putpreference("noaudioout", (as.a_noutdev <= 0 ? "True":"False"));
+    for (i = 0; i < as.a_noutdev; i++)
     {
         sprintf(buf1, "audiooutdev%d", i+1);
-        sprintf(buf2, "%d %d", audiooutdev[i], choutdev[i]);
+        sprintf(buf2, "%d %d", as.a_outdevvec[i], as.a_choutdevvec[i]);
         sys_putpreference(buf1, buf2);
         sprintf(buf1, "audiooutdevname%d", i+1);
-        sys_audiodevnumbertoname(1, audiooutdev[i], buf2, MAXPDSTRING);
+        sys_audiodevnumbertoname(1, as.a_outdevvec[i], buf2, MAXPDSTRING);
         if (! *buf2)
             strcat(buf2, "?");
         sys_putpreference(buf1, buf2);
    }
 
-    sprintf(buf1, "%d", advance);
+    sprintf(buf1, "%d", as.a_advance);
     sys_putpreference("audiobuf", buf1);
 
-    sprintf(buf1, "%d", rate);
+    sprintf(buf1, "%d", as.a_srate);
     sys_putpreference("rate", buf1);
 
-    sprintf(buf1, "%d", callback);
+    sprintf(buf1, "%d", as.a_callback);
     sys_putpreference("callback", buf1);
 
-    sprintf(buf1, "%d", blocksize);
+    sprintf(buf1, "%d", as.a_blocksize);
     sys_putpreference("blocksize", buf1);
 
         /* MIDI settings */

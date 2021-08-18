@@ -244,9 +244,9 @@ int alsamm_open_audio(int rate, int blocksize)
     alsamm_buffersize = blocksize;
 
   if(sys_verbose)
-    post("syschedadvance=%d us(%d samples) so buffertime max should be this=%d"
+    post("syschedadvance=%d microseconds so buffertime max should be this=%d"
          "or sys_blocksize=%d (samples) to use buffersize=%d",
-         sys_schedadvance,sys_advance_samples,alsamm_buffertime,
+         sys_schedadvance, alsamm_buffertime,
          blocksize,alsamm_buffersize);
 
   alsamm_periods = 0; /* no one wants periods setting from command line ;-) */

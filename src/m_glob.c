@@ -18,7 +18,6 @@ over.  Some others are prototyped in m_imp.h as well. */
 void glob_menunew(void *dummy, t_symbol *name, t_symbol *dir);
 void glob_verifyquit(void *dummy, t_floatarg f);
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv);
-void glob_meters(void *dummy, t_floatarg f);
 void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av);
 void glob_audiostatus(void *dummy);
 void glob_finderror(t_pd *dummy);
@@ -147,8 +146,6 @@ void glob_init(void)
         gensym("verifyquit"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_foo, gensym("foo"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_dsp, gensym("dsp"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_meters, gensym("meters"),
-        A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_key, gensym("key"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_audiostatus,
         gensym("audiostatus"), 0);

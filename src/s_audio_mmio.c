@@ -695,7 +695,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     int nbuf;
 
     nt_realdacblksize = (blocksize ? blocksize : DEFREALDACBLKSIZE);
-    nbuf = sys_advance_samples/nt_realdacblksize;
+    nbuf = (sys_schedadvance * rate )/ (nt_realdacblksize * 1000000.);
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
