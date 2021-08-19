@@ -153,15 +153,15 @@ int libpd_blocksize(void) {
 }
 
 int libpd_init_audio(int inChannels, int outChannels, int sampleRate) {
-  t_audiosettings *as;
-  as.a_indev[0] = as.a_outdev[0] = DEFAULTAUDIODEV;
-  as.a_nindev = as.a_onoutdev = 1;
-  as.a_inch[0] = inChannels;
-  as.a_outch[0] = outChannels;
+  t_audiosettings as;
+  as.a_indevvec[0] = as.a_outdevvec[0] = DEFAULTAUDIODEV;
+  as.a_nindev = as.a_noutdev = as.a_nchindev = as.a_nchoutdev = 1;
+  as.a_chindevvec[0] = inChannels;
+  as.a_choutdevvec[0] = outChannels;
   as.a_srate = sampleRate;
   as.a_blocksize = DEFDACBLKSIZE;
-  as_a_callback = 0;
-  as_a_advance = -1;
+  as.a_callback = 0;
+  as.a_advance = -1;
   as.a_api = API_DUMMY;
   sys_lock();
   sys_set_audio_settings(&as);

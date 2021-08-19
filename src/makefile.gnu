@@ -75,7 +75,7 @@ MORELDFLAGS =
 # libraries and system-dependent sources.
 # These  get added onto if JACK, etc., are defined below
 LIB = -ldl -lm -lpthread
-SYSSRC = s_midi_oss.c
+SYSSRC = s_midi_oss.c s_file.c
 
 # conditionally add code and flags for various audio APIs
 ifeq ($(ALSA), true)
@@ -112,13 +112,11 @@ CFLAGS = $(CPPFLAGS) $(CODECFLAGS) $(MORECFLAGS)
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
     g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
-    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c \
-    g_editor_extras.c \
+    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c  g_editor_extras.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
-    s_main.c s_inter.c s_file.c s_print.c \
-    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
-    s_audio_paring.c \
+    s_main.c s_inter.c s_print.c  s_loader.c s_path.c s_entry.c s_audio.c \
+    s_midi.c s_net.c s_utf8.c s_audio_paring.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
     d_delay.c d_resample.c d_soundfile.c d_soundfile_aiff.c d_soundfile_caf.c \
