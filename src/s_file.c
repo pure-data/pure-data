@@ -518,11 +518,9 @@ void sys_loadpreferences(const char *filename, int startingup)
     t_audiosettings as;
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, midiapi, nolib, maxi;
+    int midiapi, nolib, maxi, i;
     char prefbuf[MAXPDSTRING], keybuf[80];
-    as.a_srate = DEFDACSAMPLERATE;
-    as.a_advance = -1;
-    as.a_callback = as.a_blocksize = 0;
+    sys_get_audio_settings(&as);
 
     if (*filename)
         sys_initloadpreferences_file(filename);
@@ -538,24 +536,24 @@ void sys_loadpreferences(const char *filename, int startingup)
             as.a_nindev = 0;
     else
     {
-        for (i = 0, as.a_nindev = 0; i < MAXAUDIOINDEV; i++)
+        for (as.a_nindev = 0; as.a_nindev < MAXAUDIOINDEV; as.a_nindev++)
         {
                 /* first try to find a name - if that matches an existing
                 device use it.  Otherwise fall back to device number. */
             int devn;
                 /* read in device number and channel count */
-            sprintf(keybuf, "audioindev%d", i+1);
+            sprintf(keybuf, "audioindev%d", as.a_nindev+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
             if (sscanf(prefbuf, "%d %d",
-                &as.a_indevvec[i], &as.a_chindevvec[i]) < 2)
-                break;
+                &as.a_indevvec[as.a_nindev], &as.a_chindevvec[as.a_nindev]) < 2)
+                    break;
                 /* possibly override device number if the device name was
                 also saved and if it matches one we have now */
-            sprintf(keybuf, "audioindevname%d", i+1);
+            sprintf(keybuf, "audioindevname%d", as.a_nindev+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
                 && (devn = sys_audiodevnametonumber(0, prefbuf)) >= 0)
-                    as.a_indevvec[i] = devn;
+                    as.a_indevvec[as.a_nindev] = devn;
             as.a_nindev++;
         }
             /* if no preferences at all, set -1 for default behavior */
@@ -568,19 +566,20 @@ void sys_loadpreferences(const char *filename, int startingup)
             as.a_noutdev = 0;
     else
     {
-        for (i = 0, as.a_noutdev = 0; i < MAXAUDIOOUTDEV; i++)
+        for (as.a_noutdev = 0; as.a_noutdev < MAXAUDIOOUTDEV; as.a_noutdev++)
         {
             int devn;
-            sprintf(keybuf, "audiooutdev%d", i+1);
+            sprintf(keybuf, "audiooutdev%d", as.a_noutdev+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
             if (sscanf(prefbuf, "%d %d",
-                &as.a_outdevvec[i], &as.a_choutdevvec[i]) < 2)
-                    break;
-            sprintf(keybuf, "audiooutdevname%d", i+1);
+                &as.a_outdevvec[as.a_noutdev],
+                    &as.a_choutdevvec[as.a_noutdev]) < 2)
+                        break;
+            sprintf(keybuf, "audiooutdevname%d", as.a_noutdev+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
                 && (devn = sys_audiodevnametonumber(1, prefbuf)) >= 0)
-                    as.a_outdevvec[i] = devn;
+                    as.a_outdevvec[as.a_noutdev] = devn;
             as.a_noutdev++;
         }
         if (as.a_noutdev == 0)
@@ -604,21 +603,21 @@ void sys_loadpreferences(const char *filename, int startingup)
     if (sys_getpreference("nomidiin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
             nmidiindev = 0;
-    else for (i = 0, nmidiindev = 0; i < MAXMIDIINDEV; i++)
+    else for (nmidiindev = 0; nmidiindev < MAXMIDIINDEV; nmidiindev++)
     {
             /* first try to find a name - if that matches an existing device
             use it.  Otherwise fall back to device number. */
         int devn;
-        sprintf(keybuf, "midiindevname%d", i+1);
+        sprintf(keybuf, "midiindevname%d", nmidiindev+1);
         if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
             && (devn = sys_mididevnametonumber(0, prefbuf)) >= 0)
-                midiindev[i] = devn;
+                midiindev[nmidiindev] = devn;
         else
         {
-            sprintf(keybuf, "midiindev%d", i+1);
+            sprintf(keybuf, "midiindev%d", nmidiindev+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
-            if (sscanf(prefbuf, "%d", &midiindev[i]) < 1)
+            if (sscanf(prefbuf, "%d", &midiindev[nmidiindev]) < 1)
                 break;
         }
         nmidiindev++;
@@ -627,19 +626,19 @@ void sys_loadpreferences(const char *filename, int startingup)
     if (sys_getpreference("nomidiout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
             nmidioutdev = 0;
-    else for (i = 0, nmidioutdev = 0; i < MAXMIDIOUTDEV; i++)
+    else for (nmidioutdev = 0; nmidioutdev < MAXMIDIOUTDEV; nmidioutdev++)
     {
         int devn;
-        sprintf(keybuf, "midioutdevname%d", i+1);
+        sprintf(keybuf, "midioutdevname%d", nmidioutdev+1);
         if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
             && (devn = sys_mididevnametonumber(1, prefbuf)) >= 0)
-                midioutdev[i] = devn;
+                midioutdev[nmidioutdev] = devn;
         else
         {
-            sprintf(keybuf, "midioutdev%d", i+1);
+            sprintf(keybuf, "midioutdev%d", nmidioutdev+1);
             if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
                 break;
-            if (sscanf(prefbuf, "%d", &midioutdev[i]) < 1)
+            if (sscanf(prefbuf, "%d", &midioutdev[nmidioutdev]) < 1)
                 break;
         }
         nmidioutdev++;
@@ -650,7 +649,7 @@ void sys_loadpreferences(const char *filename, int startingup)
     if (sys_getpreference("npath", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &maxi);
     else maxi = 0x7fffffff;
-    for (i = 0; i<maxi; i++)
+    for (i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "path%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))

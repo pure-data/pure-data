@@ -1328,17 +1328,6 @@ static void sys_afterargparse(void)
 
     sys_get_audio_settings(&as);
 
-        /* correct to make audio and MIDI device lists zero based.  On
-        MMIO, however, "1" really means the second device (the first one
-        is "mapper" which is was not included when the command args were
-        set up, so we leave it that way for compatibility. */
-    if (!sys_mmio)
-    {
-        for (i = 0; i < as.a_nindev; i++)
-            as.a_indevvec[i]--;
-        for (i = 0; i < as.a_noutdev; i++)
-            as.a_outdevvec[i]--;
-    }
     for (i = 0; i < sys_nmidiin; i++)
         sys_midiindevlist[i]--;
     for (i = 0; i < sys_nmidiout; i++)
