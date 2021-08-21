@@ -195,18 +195,18 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
-/* sleep (but cancel the sleeping if pollem is set and any file descriptors are
+/* sleep (but cancel the sleeping if any file descriptors are
 ready - in that case, dispatch any resulting Pd messages and return.  Called
 with sys_lock() set.  We will temporarily release the lock if we actually
 sleep. */
-static int sys_domicrosleep(int microsec, int pollem)
+static int sys_domicrosleep(int microsec)
 {
     struct timeval timeout;
     int i, didsomething = 0;
     t_fdpoll *fp;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
-    if (pollem && INTER->i_nfdpoll)
+    if (INTER->i_nfdpoll)
     {
         fd_set readset, writeset, exceptset;
         FD_ZERO(&writeset);
@@ -245,11 +245,11 @@ static int sys_domicrosleep(int microsec, int pollem)
 }
 
     /* sleep (but if any incoming or to-gui sending to do, do that instead.)
-    Call with the PD unstance lock UNSET - we set it here. */
-void sys_microsleep(int microsec)
+    Call with the PD instance lock UNSET - we set it here. */
+void sys_microsleep( void)
 {
     sys_lock();
-    sys_domicrosleep(microsec, 1);
+    sys_domicrosleep(sched_get_sleepgrain());
     sys_unlock();
 }
 
@@ -950,7 +950,7 @@ int sys_pollgui(void)
 {
     static double lasttime = 0;
     double now = 0;
-    int didsomething = sys_domicrosleep(0, 1);
+    int didsomething = sys_domicrosleep(0);
     if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
     {
         didsomething |= sys_poll_togui();

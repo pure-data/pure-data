@@ -695,12 +695,10 @@ int alsa_send_dacs(void)
                 alsa_checkiosync();   /*  check I/O are in sync */
         }
     }
-        /* if there were errors we can't use this as a timing source.
-        LATER get it together to close A/D/A when this happens and
-        switch to software clock.  Choosing 5000 msec here so it will be
-        clear to user that we're not timing right. */
+        /* if there were errors we can't use this as a timing source, so
+        warn the scheduler to switch to the system clock */
     if (goterror)
-        sys_microsleep(5000);
+        sched_set_using_audio(SCHED_AUDIO_NONE);
     return (SENDDACS_YES);
 }
 

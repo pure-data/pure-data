@@ -545,7 +545,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-            sys_microsleep(sys_sleepgrain);
+            sys_microsleep();
             if (!pa_stream)     /* sys_microsleep() may have closed device */
                 return SENDDACS_NO;
 #endif /* THREADSIGNAL */
@@ -587,7 +587,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-            sys_microsleep(sys_sleepgrain);
+            sys_microsleep();
             if (!pa_stream)     /* sys_microsleep() may have closed device */
                 return SENDDACS_NO;
 #endif /* THREADSIGNAL */

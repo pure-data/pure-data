@@ -650,14 +650,14 @@ int oss_send_dacs(void)
             /* sometimes---rarely---when the ADC available-byte-count is
             zero, it's genuine, but usually it's because we're so
             late that the ADC has overrun its entire kernel buffer.  We
-            distinguish between the two by waiting 2 msec and asking again.
+            distinguish between the two by micro-sleeping and asking again.
             There should be an error flag we could check instead; look for this
             someday... */
         for (dev = 0;dev < linux_nindevs; dev++)
             if (linux_adcs[dev].d_space == 0)
         {
             audio_buf_info ainfo;
-            sys_microsleep(2000);
+            sys_microsleep();
             oss_calcspace();
             if (linux_adcs[dev].d_space != 0) continue;
 
