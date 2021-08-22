@@ -261,7 +261,7 @@ void sched_tick(void)
     sched_counter++;
 }
 
-EXTERN int sched_get_sleepgrain( void)
+int sched_get_sleepgrain( void)
 {
     return (sys_sleepgrain > 0 ? sys_sleepgrain :
         (sys_schedadvance/4 > 5000 ? 5000 : (sys_schedadvance/4 < 100 ? 100 :

@@ -312,7 +312,7 @@ EXTERN void sys_log_error(int type);
 #define SCHED_AUDIO_CALLBACK 2
 void sched_set_using_audio(int flag);
 extern int sys_sleepgrain;      /* override value set in command line */
-extern int sched_get_sleepgrain( void);     /* returns actual value */
+EXTERN int sched_get_sleepgrain( void);     /* returns actual value */
 
 /* s_inter.c */
 
