@@ -597,7 +597,11 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                 if (x == INTER->i_socketreceiver)
                 {
                     if (pd_this == &pd_maininstance)
+                    {
+                        fprintf(stderr, "read from GUI socket: %s; stopping\n",
+                            strerror(errno));
                         sys_bail(1);
+                    }
                     else
                     {
                         sys_rmpollfn(fd);

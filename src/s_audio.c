@@ -212,13 +212,18 @@ void sys_get_audio_settings(t_audiosettings *a)
         audio_nextsettings.a_chindevvec[0] =
             audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
         audio_nextsettings.a_advance = DEFAULTADVANCE;
+#ifdef _WIN32
+        audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
+#else
+        audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
+#endif
         initted = 1;
     }
-    *a = audio_nextsettings;
     if (audio_isfixedsr())
         a->a_srate = STUFF->st_dacsr;
     if (audio_isfixedblocksize())
         a->a_blocksize = audio_getfixedblocksize();
+    *a = audio_nextsettings;
 }
 
     /* Since the channel vector might be longer than the
