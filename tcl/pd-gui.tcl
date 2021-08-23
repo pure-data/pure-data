@@ -121,6 +121,9 @@ set windowingsystem ""
 set loglevel 2
 set stderr 0
 
+#args to pass to pd if we're starting it up
+set pd_startup_args ""
+
 # connection between 'pd' and 'pd-gui'
 set host ""
 set port 0
@@ -630,6 +633,7 @@ proc parse_args {argc argv} {
     opt_parser::init {
         {-stderr    set {::stderr}}
         {-open      lappend {- ::filestoopen_list}}
+        {-pdarg     lappend {- ::pd_startup_args}}
     }
     set unflagged_files [opt_parser::get_options $argv]
     # if we have a single arg that is not a file, its a port or host:port combo
@@ -841,7 +845,10 @@ proc main {argc argv} {
         # the GUI is starting first, so create socket and exec 'pd'
         set ::port [::pd_connect::create_socket]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
-        exec -- $pd_exec -guiport $::port &
+        set ::pd_startup_args \
+        [string map {\{ "" \} ""} $::pd_startup_args]
+        puts stderr [concat "args =" [concat $::pd_startup_args]]
+        exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)
