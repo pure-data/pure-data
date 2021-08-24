@@ -477,6 +477,9 @@ equal:
  */
 #if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #define STUPID_SORT
+#endif
+
+#ifdef STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2)
 {
