@@ -158,6 +158,7 @@ static void namecanvas_setup(void)
 }
 
 /* -------------------------- cputime ------------------------------ */
+#ifdef CLOCKHZ
 
 static t_class *cputime_class;
 
@@ -240,6 +241,7 @@ static void cputime_setup(void)
     class_addbang(cputime_class, cputime_bang);
     class_addmethod(cputime_class, (t_method)cputime_bang2, gensym("bang2"), 0);
 }
+#endif /* CLOCKHZ */
 
 /* -------------------------- realtime ------------------------------ */
 
@@ -859,7 +861,9 @@ void x_misc_setup(void)
     random_setup();
     loadbang_setup();
     namecanvas_setup();
+#ifdef CLOCKHZ
     cputime_setup();
+#endif /* CLOCKHZ */
     realtime_setup();
     oscparse_setup();
     oscformat_setup();
