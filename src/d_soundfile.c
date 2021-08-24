@@ -145,7 +145,7 @@ int soundfile_addtype(const t_soundfile_type *type)
     int i;
     if (sf_numtypes == SFMAXTYPES)
     {
-        error("soundfile: max number of type implementations reached");
+        pd_error(0, "soundfile: max number of type implementations reached");
         return 0;
     }
     sf_types[sf_numtypes] = (t_soundfile_type *)type;
@@ -2163,7 +2163,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     return;
 usage:
     pd_error(x, "usage: open [flags] filename [onset] [headersize]...");
-    error("[nchannels] [bytespersample] [endian (b or l)]");
+    pd_error(0, "[nchannels] [bytespersample] [endian (b or l)]");
     post("flags: %s", sf_typeargs);
 }
 

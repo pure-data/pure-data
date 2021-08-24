@@ -600,7 +600,7 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
         period = npoints / MAXOVERLAP + 1;
     if (!(buf = getbytes(sizeof(t_sample) * (npoints + INITVSTAKEN))))
     {
-        error("env: couldn't allocate buffer");
+        pd_error(0, "env: couldn't allocate buffer");
         return (0);
     }
     x = (t_sigenv *)pd_new(env_tilde_class);
@@ -669,7 +669,7 @@ static void env_tilde_dsp(t_sigenv *x, t_signal **sp)
             (x->x_npoints + sp[0]->s_n) * sizeof(t_sample));
         if (!xx)
         {
-            error("env~: out of memory");
+            pd_error(0, "env~: out of memory");
             return;
         }
         x->x_buf = (t_sample *)xx;

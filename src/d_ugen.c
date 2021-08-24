@@ -698,7 +698,7 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
     if (!u1 || !u2 || siginno < 0 || !u2->u_nin)
     {
         if (!u1)
-            error("object with signal outlets but no DSP method?");
+            pd_error(0, "object with signal outlets but no DSP method?");
                 /* check if it's a "text" (i.e., object wasn't created) -
                 if so fail silently */
         else if (!(x2 && (pd_class(&x2->ob_pd) == text_class)))

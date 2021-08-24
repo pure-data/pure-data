@@ -210,7 +210,10 @@ void endpost(void)
     else post("");
 }
 
-void error(const char *fmt, ...)
+  /* keep this in the Pd app for binary extern compatibility but don't
+  include in libpd because it conflicts with the posix pd_error(0, ) function. */
+#ifdef PD_INTERNAL
+void pd_error(0, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
@@ -224,6 +227,7 @@ void error(const char *fmt, ...)
 
     doerror(NULL, buf);
 }
+#endif
 
 void verbose(int level, const char *fmt, ...)
 {
@@ -313,7 +317,7 @@ void bug(const char *fmt, ...)
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
 
-    error("consistency check failed: %s", buf);
+    pd_error(0, "consistency check failed: %s", buf);
 }
 
     /* don't use these.  They're included for binary compatibility with

@@ -2705,7 +2705,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 !obj_issignalinlet(ob2, closest2))
             {
                 if (doit)
-                    error("can't connect signal outlet to control inlet");
+                    pd_error(0, "can't connect signal outlet to control inlet");
                 canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
                 return;
             }
@@ -3563,7 +3563,7 @@ void canvas_finderror(const void *error_object)
         if (glist_dofinderror(x, error_object))
             return;
     }
-    error("... sorry, I couldn't find the source of that error.");
+    pd_error(0, "... sorry, I couldn't find the source of that error.");
 }
 
 void canvas_stowconnections(t_canvas *x)

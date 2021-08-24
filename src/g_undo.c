@@ -247,7 +247,7 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
     case UNDO_INIT:         if (UNDO_FREE == action) return 1;/* FALLS THROUGH */  //init
     default:
-        error("%s: unsupported undo command %d", funname, udo->type);
+        pd_error(0, "%s: unsupported undo command %d", funname, udo->type);
     }
     return 0;
 }

@@ -398,7 +398,7 @@ void sys_sockerror(const char *s)
     char buf[MAXPDSTRING];
     int err = socket_errno();
     socket_strerror(err, buf, sizeof(buf));
-    error("%s: %s (%d)", s, buf, err);
+    pd_error(0, "%s: %s (%d)", s, buf, err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -540,7 +540,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             if (buf[ret-1] != '\n')
             {
     #if 0
-                error("dropped bad buffer %s\n", buf);
+                pd_error(0, "dropped bad buffer %s\n", buf);
     #endif
             }
             else

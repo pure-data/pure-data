@@ -51,7 +51,7 @@ static void sigsend_dsp(t_sigsend *x, t_signal **sp)
 {
     if (x->x_n == sp[0]->s_n)
         dsp_add(sigsend_perform, 3, sp[0]->s_vec, x->x_vec, (t_int)sp[0]->s_n);
-    else error("sigsend %s: unexpected vector size", x->x_sym->s_name);
+    else pd_error(0, "sigsend %s: unexpected vector size", x->x_sym->s_name);
 }
 
 static void sigsend_free(t_sigsend *x)
@@ -245,7 +245,7 @@ static void sigcatch_dsp(t_sigcatch *x, t_signal **sp)
         else
             dsp_add(sigcatch_perf8, 3, x->x_vec, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
-    else error("sigcatch %s: unexpected vector size", x->x_sym->s_name);
+    else pd_error(0, "sigcatch %s: unexpected vector size", x->x_sym->s_name);
 }
 
 static void sigcatch_free(t_sigcatch *x)

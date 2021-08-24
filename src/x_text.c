@@ -1661,7 +1661,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                 SETSYMBOL(outvec+i, s);
             else
             {
-                error("$%s: not enough arguments supplied",
+                pd_error(0, "$%s: not enough arguments supplied",
                     ap->a_w.w_symbol->s_name);
                 SETSYMBOL(outvec+i, &s_symbol);
             }
@@ -1855,7 +1855,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = text_sequence_new(s, argc-1, argv+1);
         else
         {
-            error("list %s: unknown function", str);
+            pd_error(0, "list %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

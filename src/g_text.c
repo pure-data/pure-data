@@ -110,7 +110,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
         else if (!(x = pd_checkobject(pd_this->pd_newest)))
         {
             binbuf_print(b);
-            error("... didn't return a patchable object");
+            pd_error(0, "... didn't return a patchable object");
         }
     }
     else x = 0;

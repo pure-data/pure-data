@@ -63,7 +63,7 @@ static void sys_initloadpreferences_file(const char *filename)
     lseek(fd, 0, 0);
     if (!(sys_prefbuf = malloc(length + 2)))
     {
-        error("couldn't allocate memory for preferences buffer");
+        pd_error(0, "couldn't allocate memory for preferences buffer");
         close(fd);
         return;
     }
@@ -197,7 +197,7 @@ static void sys_initloadpreferences(void)
         kCFPropertyListImmutable, NULL, &err);
     if (!plist) {
         CFStringRef errString = CFErrorCopyDescription(err);
-        error("couldn't read preferences plist: %s",
+        pd_error(0, "couldn't read preferences plist: %s",
             CFStringGetCStringPtr(errString, kCFStringEncodingUTF8));
         CFRelease(errString);
         goto cleanup;
@@ -259,7 +259,7 @@ static void sys_donesavepreferences(void)
     if (!data)
     {
         CFStringRef errString = CFErrorCopyDescription(err);
-        error("couldn't write preferences plist: %s",
+        pd_error(0, "couldn't write preferences plist: %s",
             CFStringGetCStringPtr(errString, kCFStringEncodingUTF8));
         CFRelease(errString);
         goto cleanup;
@@ -277,7 +277,7 @@ static void sys_donesavepreferences(void)
     // write plist
     if (CFWriteStreamWrite(stream, CFDataGetBytePtr(data),
                                    CFDataGetLength(data)) < 0) {
-        error("couldn't write preferences plist");
+        pd_error(0, "couldn't write preferences plist");
         goto cleanup;
     }
 
@@ -443,12 +443,12 @@ static void sys_putpreference(const char *key, const char *value)
             NULL, &hkey, NULL);
         if (err != ERROR_SUCCESS)
         {
-            error("unable to create registry entry: %s\n", key);
+            pd_error(0, "unable to create registry entry: %s\n", key);
             return;
         }
         err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, value, strlen(value)+1);
         if (err != ERROR_SUCCESS)
-            error("unable to set registry entry: %s\n", key);
+            pd_error(0, "unable to set registry entry: %s\n", key);
         RegCloseKey(hkey);
     }
 }

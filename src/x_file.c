@@ -1367,7 +1367,7 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom*argv)
         ELIF_FILE_PD_NEW(splitext, 0, 0);
         ELIF_FILE_PD_NEW(splitname, 0, 0);
         else {
-            error("file %s: unknown function", verb);
+            pd_error(0, "file %s: unknown function", verb);
         }
     }
     return (t_pd*)x;

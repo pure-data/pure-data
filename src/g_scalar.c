@@ -92,7 +92,7 @@ static int template_cancreate(t_template *template)
             (!(elemtemplate = template_findbyname(datatypes->ds_arraytemplate))
                 || !template_cancreate(elemtemplate)))
     {
-        error("%s: no such template", datatypes->ds_arraytemplate->s_name);
+        pd_error(0, "%s: no such template", datatypes->ds_arraytemplate->s_name);
         return (0);
     }
     return (1);
@@ -113,7 +113,7 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
     template = template_findbyname(templatesym);
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return (0);
     }
     if (!template_cancreate(template))
@@ -251,7 +251,7 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     int xonset, yonset, xtype, ytype, gotx, goty;
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return;
     }
     gotx = template_find_field(template, gensym("x"), &xonset, &xtype, &zz);
@@ -431,7 +431,7 @@ static void scalar_free(t_scalar *x)
     sys_unqueuegui(x);
     if (!template)
     {
-        error("scalar: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "scalar: couldn't find template %s", templatesym->s_name);
         return;
     }
     word_free(x->sc_vec, template);

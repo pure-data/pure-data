@@ -186,7 +186,7 @@ static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
     t_sample *out2 = sp[2]->s_vec;
     if (n < 4)
     {
-        error("fft: minimum 4 points");
+        pd_error(0, "fft: minimum 4 points");
         return;
     }
     if (in1 != out1)
@@ -246,7 +246,7 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
     t_sample *out1 = sp[2]->s_vec;
     if (n < 4)
     {
-        error("fft: minimum 4 points");
+        pd_error(0, "fft: minimum 4 points");
         return;
     }
     if (in2 == out1)
@@ -345,7 +345,7 @@ static void sigframp_dsp(t_sigframp *x, t_signal **sp)
     int n = sp[0]->s_n, n2 = (n>>1);
     if (n < 4)
     {
-        error("framp: minimum 4 points");
+        pd_error(0, "framp: minimum 4 points");
         return;
     }
     dsp_add(sigframp_perform, 5, sp[0]->s_vec, sp[1]->s_vec,

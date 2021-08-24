@@ -544,17 +544,17 @@ void sys_doflags(void)
     len = (int)strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
-        error("flags: %s: too long", sys_flags->s_name);
+        pd_error(0, "flags: %s: too long", sys_flags->s_name);
         return;
     }
     rcode = string2args(sys_flags->s_name, &rcargc, &rcargv);
     if(rcode < 0) {
-        error("error#%d while parsing flags", rcode);
+        pd_error(0, "error#%d while parsing flags", rcode);
         return;
     }
 
     if (sys_argparse(rcargc, rcargv))
-        error("error parsing startup arguments");
+        pd_error(0, "error parsing startup arguments");
 
     for(len=0; len<rcargc; len++)
         free((void*)rcargv[len]);

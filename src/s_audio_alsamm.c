@@ -179,7 +179,7 @@ snd_output_t* alsa_stdout;
 static void check_error(int err, const char *why)
 {
     if (err < 0)
-        error("%s: %s\n", why, snd_strerror(err));
+        pd_error(0, "%s: %s\n", why, snd_strerror(err));
 }
 
 int alsamm_open_audio(int rate, int blocksize)

@@ -149,7 +149,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            error("array define: unknown flag ...");
+            pd_error(0, "array define: unknown flag ...");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -857,7 +857,7 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = array_min_new(s, argc-1, argv+1);
         else
         {
-            error("array %s: unknown function", str);
+            pd_error(0, "array %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

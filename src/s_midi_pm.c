@@ -325,7 +325,7 @@ void sys_poll_midi(void)
             }
             else
             {
-                error("%s", Pm_GetErrorText(nmess));
+                pd_error(0, "%s", Pm_GetErrorText(nmess));
                 if (nmess != pmBufferOverflow)
                     break;
             }

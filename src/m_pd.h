@@ -547,7 +547,6 @@ EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);

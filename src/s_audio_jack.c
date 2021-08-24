@@ -176,7 +176,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f);
 static void
 jack_shutdown (void *arg)
 {
-  error("JACK: server shut down");
+  pd_error(0, "JACK: server shut down");
 
   jack_deactivate (jack_client);
   jack_client = NULL;
@@ -283,7 +283,7 @@ static int jack_connect_ports(char* client)
         for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
             if (jack_connect (jack_client, jack_ports[i],
                jack_port_name (input_port[i])))
-                  error ("JACK: cannot connect input ports %s -> %s",
+                  pd_error(0, "JACK: cannot connect input ports %s -> %s",
                       jack_ports[i],jack_port_name (input_port[i]));
         free(jack_ports);
     }
@@ -294,7 +294,7 @@ static int jack_connect_ports(char* client)
         for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
           if (jack_connect (jack_client, jack_port_name (output_port[i]),
             jack_ports[i]))
-              error( "JACK: cannot connect output ports %s -> %s",
+              pd_error(0,  "JACK: cannot connect output ports %s -> %s",
                 jack_port_name (output_port[i]),jack_ports[i]);
 
         free(jack_ports);
@@ -304,7 +304,7 @@ static int jack_connect_ports(char* client)
 
 
 static void pd_jack_error_callback(const char *desc) {
-  error("JACKerror: %s", desc);
+  pd_error(0, "JACKerror: %s", desc);
   return;
 }
 
@@ -319,7 +319,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     if (!jack_client_open)
     {
-        error("Can't open Jack (it seems not to be installed)");
+        pd_error(0, "Can't open Jack (it seems not to be installed)");
         return 1;
     }
     if (jack_client)
@@ -330,13 +330,13 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     if ((inchans == 0) && (outchans == 0)) return 0;
 
     if (outchans > MAX_JACK_PORTS) {
-        error("JACK: %d output ports not supported, setting to %d",
+        pd_error(0, "JACK: %d output ports not supported, setting to %d",
             outchans, MAX_JACK_PORTS);
         outchans = MAX_JACK_PORTS;
     }
 
     if (inchans > MAX_JACK_PORTS) {
-        error("JACK: %d input ports not supported, setting to %d",
+        pd_error(0, "JACK: %d input ports not supported, setting to %d",
             inchans, MAX_JACK_PORTS);
         inchans = MAX_JACK_PORTS;
     }
@@ -350,7 +350,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     jack_client = jack_client_open (desired_client_name, JackNoStartServer,
       &status, NULL);
     if (status & JackFailure) {
-        error("JACK: couldn't connect to server, is JACK running?");
+        pd_error(0, "JACK: couldn't connect to server, is JACK running?");
         verbose(PD_VERBOSE, "JACK: returned status is: %d", status);
         jack_client=NULL;
         /* jack spits out enough messages already, do not warn */
@@ -423,7 +423,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
         if (!input_port[j])
         {
-          error("JACK: can only register %d input ports (of %d requested)",
+          pd_error(0, "JACK: can only register %d input ports (of %d requested)",
             j, inchans);
           STUFF->st_inchannels = inchans = j;
           break;
@@ -437,7 +437,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])
         {
-          error("JACK: can only register %d output ports (of %d requested)",
+          pd_error(0, "JACK: can only register %d output ports (of %d requested)",
             j, outchans);
           STUFF->st_outchannels = outchans = j;
           break;
@@ -468,7 +468,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     if (jack_activate (jack_client))
     {
-        error("cannot activate client");
+        pd_error(0, "cannot activate client");
         STUFF->st_inchannels = STUFF->st_outchannels = 0;
         return 1;
     }

@@ -257,7 +257,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         argv[1].a_type != A_FLOAT ||
         ((argc > 2) && argv[2].a_type != A_FLOAT))
     {
-        error("netsend: bad connect arguments");
+        pd_error(0, "netsend: bad connect arguments");
         return;
     }
     hostname = argv[0].a_w.w_symbol->s_name;
@@ -265,7 +265,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     sportno = (argc > 2 ? (int)argv[2].a_w.w_float : 0);
     if (x->x_sockfd >= 0)
     {
-        error("netsend: already connected");
+        pd_error(0, "netsend: already connected");
         return;
     }
 
