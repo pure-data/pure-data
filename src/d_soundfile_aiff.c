@@ -453,10 +453,10 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
         swap2(sf->sf_nchannels, swap),          /* channels         */
-        0,                                      /* sample frames    */
+        {0},                                      /* sample frames    */
         swap2(sf->sf_bytespersample / 8, swap), /* bits per sample  */
-        0,                                      /* sample rate      */
-        0, 0                                    /* comp info        */
+        {0},                                      /* sample rate      */
+        {0}, {0}                                    /* comp info        */
     };
     t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 

@@ -779,7 +779,7 @@ static void soundfile_finishwrite(void *obj, const char *filename,
     if (frameswritten >= nframes) return;
     if (nframes < SFMAXFRAMES)
         pd_error(obj, "soundfiler write: %ld out of %ld frames written",
-            frameswritten, nframes);
+            (long)frameswritten, (long)nframes);
     if (sf->sf_type->t_updateheaderfn(sf, frameswritten))
         return;
     object_sferror(obj, "soundfiler write", filename, errno, sf);
@@ -1053,7 +1053,7 @@ static int soundfiler_readascii(t_soundfiler *x, const char *filename,
         if (framesinfile > a->aa_maxsize)
         {
             pd_error(x, "soundfiler read: truncated to %ld elements",
-                a->aa_maxsize);
+                (long)a->aa_maxsize);
             framesinfile = a->aa_maxsize;
         }
         nframes = framesinfile - a->aa_onsetframe;
@@ -1273,7 +1273,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             /* figure out what to resize to using header info */
         if (framesinfile > maxsize)
         {
-            pd_error(x, "soundfiler read: truncated to %ld elements", maxsize);
+            pd_error(x, "soundfiler read: truncated to %ld elements",
+                (long)maxsize);
             framesinfile = maxsize;
         }
         finalsize = framesinfile;
@@ -1429,7 +1430,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     if (wa.wa_nframes <= 0)
     {
         pd_error(obj, "soundfiler write: no samples at onset %ld",
-            wa.wa_onsetframes);
+            (long)wa.wa_onsetframes);
         goto fail;
     }
 
@@ -2532,7 +2533,8 @@ static t_int *writesf_perform(t_int *w)
         {
             fprintf(stderr, "writesf waiting for disk write..\n");
             fprintf(stderr, "(head %d, tail %d, room %d, want %ld)\n",
-                x->x_fifohead, x->x_fifotail, roominfifo, wantbytes);
+                (int)x->x_fifohead, (int)x->x_fifotail,
+                (int)roominfifo, (long)wantbytes);
             sfread_cond_signal(&x->x_requestcondition);
             sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
             fprintf(stderr, "... done waiting.\n");

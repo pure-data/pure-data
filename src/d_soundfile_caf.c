@@ -326,8 +326,8 @@ static int caf_writeheader(t_soundfile *sf, size_t nframes)
     uint32_t uinttmp = 0;
     char buf[SFHDRBUFSIZE] = {0};
     t_head head = {"caff", swap2(1, swap), 0};
-    t_descchunk desc = {"desc", 0, 0};
-    t_datachunk data = {"data", 0, 0};
+    t_descchunk desc = {"desc", {0}, {0}};
+    t_datachunk data = {"data", {0}, 0};
 
         /* file header */
     memcpy(buf + headersize, &head, CAFHEADSIZE);
