@@ -79,7 +79,7 @@ void critical_exit(int z);
 #include "m_pd.h"
 #include "s_stuff.h"
 static t_class *pd_tilde_class;
-#define PDERROR pd_error(x, 
+#define PDERROR pd_error(x,
 #endif
 
 #if defined(__x86_64__) || defined(_M_X64)
@@ -218,7 +218,7 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 
     if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_addmessage: out of space");
+        PDERROR "binbuf_addmessage: out of space");
         return;
     }
     for (ap = x->b_vec + previoussize, i = argc; i--; ap++)

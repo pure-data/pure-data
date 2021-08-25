@@ -156,7 +156,7 @@ int pd_extern_sched(char *flags)
         {
             t_pd *whom = ap[0].a_w.w_symbol->s_thing;
             if (!whom)
-                error("%s: no such object", ap[0].a_w.w_symbol->s_name);
+                pd_error(0, "%s: no such object", ap[0].a_w.w_symbol->s_name);
             else if (ap[1].a_type == A_SYMBOL)
                 typedmess(whom, ap[1].a_w.w_symbol, n-2, ap+2);
             else pd_list(whom, 0, n-1, ap+1);
