@@ -213,7 +213,7 @@ void endpost(void)
   /* keep this in the Pd app for binary extern compatibility but don't
   include in libpd because it conflicts with the posix pd_error(0, ) function. */
 #ifdef PD_INTERNAL
-void pd_error(0, const char *fmt, ...)
+void error(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
