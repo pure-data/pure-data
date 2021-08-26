@@ -40,7 +40,7 @@ extern int sys_debuglevel;
 extern int sys_verbose;
 extern int sys_noloadbang;
 EXTERN int sys_havegui(void);
-extern char *sys_guicmd;
+extern const char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
 

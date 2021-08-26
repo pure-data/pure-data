@@ -1131,7 +1131,8 @@ static int sys_do_startgui(const char *libdir)
         char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
         int spawnret;
 #else
-        char cmdbuf[4*MAXPDSTRING], *guicmd;
+        char cmdbuf[4*MAXPDSTRING];
+        const char *guicmd;
 #endif
         /* get addrinfo list using hostname (get random port from OS) */
         status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);

@@ -48,14 +48,6 @@ static t_int *sig_tilde_perf8(t_int *w)
     return (w+4);
 }
 
-void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
-{
-    if (n&7)
-        dsp_add(sig_tilde_perform, 3, in, out, (t_int)n);
-    else
-        dsp_add(sig_tilde_perf8, 3, in, out, (t_int)n);
-}
-
 static void sig_tilde_float(t_sig *x, t_float f)
 {
     x->x_f = f;

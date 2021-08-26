@@ -905,7 +905,7 @@ static void alsa_checkiosync(void)
 static int alsa_nnames = 0;
 static const char **alsa_names = 0;
 
-void alsa_adddev(char *name)
+void alsa_adddev(const char *name)
 {
     if (alsa_nnames)
         alsa_names = (const char **)t_resizebytes(alsa_names,
