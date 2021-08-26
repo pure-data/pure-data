@@ -66,8 +66,107 @@ static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
-/* --------- functions to handle the canvas environment ----------- */
+/* ---------------- generic widget behavior ------------------------- */
 
+void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1,
+    int *x2, int *y2)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
+        (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
+    else *x1 = *y1 = 0, *x2 = *y2 = 10;
+}
+
+void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_displacefn)
+        (*x->g_pd->c_wb->w_displacefn)(x, glist, dx, dy);
+}
+
+    /* here we add an extra check whether we're mapped, because some
+       editing moves are carried out on invisible windows (notably, re-creating
+       abstractions when one is saved).  Should any other widget finctions also
+       be doing this?  */
+void gobj_select(t_gobj *x, t_glist *glist, int state)
+{
+    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
+        (*x->g_pd->c_wb->w_selectfn)(x, glist, state);
+}
+
+void gobj_activate(t_gobj *x, t_glist *glist, int state)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_activatefn)
+        (*x->g_pd->c_wb->w_activatefn)(x, glist, state);
+}
+
+void gobj_delete(t_gobj *x, t_glist *glist)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_deletefn)
+        (*x->g_pd->c_wb->w_deletefn)(x, glist);
+}
+
+int gobj_shouldvis(t_gobj *x, struct _glist *glist)
+{
+    t_object *ob;
+    int has_parent = !glist->gl_havewindow && glist->gl_isgraph
+        && glist->gl_owner && !glist->gl_isclone;
+        /* if our parent is a graph, and if that graph itself isn't
+           visible, then we aren't either. */
+    if (has_parent && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
+            return (0);
+        /* if we're graphing-on-parent and the object falls outside the
+           graph rectangle, don't draw it. */
+    if (has_parent && glist->gl_goprect)
+    {
+        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
+            /* for some reason the bounds check on arrays and scalars
+               don't seem to apply here.  Perhaps this was in order to allow
+               arrays to reach outside their containers?  I no longer understand
+               this. */
+        if (pd_class(&x->g_pd) == scalar_class
+            || pd_class(&x->g_pd) == garray_class)
+                return (1);
+        gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
+        if (x1 > x2)
+            m = x1, x1 = x2, x2 = m;
+        if (y1 > y2)
+            m = y1, y1 = y2, y2 = m;
+        gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
+#if 0
+        post("graph %d %d %d %d, %s %d %d %d %d",
+             x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2);
+#endif
+        if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
+            gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
+                return (0);
+    }
+    if ((ob = pd_checkobject(&x->g_pd)))
+    {
+            /* return true if the text box should be drawn.  We don't show text
+               boxes inside graphs---except comments, if we're doing the new
+               (goprect) style. */
+        return (glist->gl_havewindow ||
+            (ob->te_pd != canvas_class &&
+                ob->te_pd->c_wb != &text_widgetbehavior) ||
+            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
+            (glist->gl_goprect && (ob->te_type == T_TEXT)));
+    }
+    else return (1);
+}
+
+void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
+        (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
+}
+
+int gobj_click(t_gobj *x, struct _glist *glist,
+    int xpix, int ypix, int shift, int alt, int dbl, int doit)
+{
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
+        return ((*x->g_pd->c_wb->w_clickfn)(x,
+            glist, xpix, ypix, shift, alt, dbl, doit));
+    else return (0);
+}
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist(void)
@@ -97,6 +196,7 @@ static void canvas_takeofflist(t_canvas *x)
     }
 }
 
+/* --------- functions to handle the canvas environment ----------- */
 
 void canvas_setargs(int argc, const t_atom *argv)
 {
