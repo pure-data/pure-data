@@ -736,6 +736,11 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_outdevvec[0] = DEFAULTAUDIODEV;
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
+#ifdef __WIN32
+            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
+#else
+            audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
+#endif
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);
@@ -761,49 +766,61 @@ void sys_set_audio_state(int onoff)
     }
 }
 
-void sys_get_audio_apis(char *buf)
+#define MAXAPIENTRY 10
+typedef struct _apientry
 {
-    int n = 0;
-    strcpy(buf, "{ ");
+    char a_name[30];
+    int a_id;
+} t_apientry;
+
+static t_apientry audio_apilist[] = {
 #ifdef USEAPI_OSS
-    sprintf(buf + strlen(buf), "{OSS %d} ", API_OSS); n++;
+    {"OSS", API_OSS},
 #endif
 #ifdef USEAPI_MMIO
-    sprintf(buf + strlen(buf), "{\"standard (MMIO)\" %d} ", API_MMIO); n++;
+    {"\"standard (MMIO)\"", API_MMIO},
 #endif
 #ifdef USEAPI_ALSA
-    sprintf(buf + strlen(buf), "{ALSA %d} ", API_ALSA); n++;
+    {"ALSA", API_ALSA},
 #endif
 #ifdef USEAPI_PORTAUDIO
 #ifdef _WIN32
-    sprintf(buf + strlen(buf),
-        "{\"ASIO (via portaudio)\" %d} ", API_PORTAUDIO);
+    {"\"ASIO (portaudio)\"", API_PORTAUDIO},
 #else
 #ifdef __APPLE__
-    sprintf(buf + strlen(buf),
-        "{\"standard (portaudio)\" %d} ", API_PORTAUDIO);
+    {"\"standard (portaudio)\"", API_PORTAUDIO},
 #else
-    sprintf(buf + strlen(buf), "{portaudio %d} ", API_PORTAUDIO);
+    {"portaudio", API_PORTAUDIO},
 #endif
 #endif
-     n++;
-#endif
+#endif  /* USEAPI_PORTAUDIO */
 #ifdef USEAPI_JACK
-    sprintf(buf + strlen(buf), "{jack %d} ", API_JACK); n++;
+    {"jack", API_JACK},
 #endif
 #ifdef USEAPI_AUDIOUNIT
-    sprintf(buf + strlen(buf), "{AudioUnit %d} ", API_AUDIOUNIT); n++;
+    {"Audiounit", API_AUDIOUNIT},
 #endif
 #ifdef USEAPI_ESD
-    sprintf(buf + strlen(buf), "{ESD %d} ", API_ESD); n++;
+    {"ESD",  API_ESD},
 #endif
 #ifdef USEAPI_DUMMY
-    sprintf(buf + strlen(buf), "{dummy %d} ", API_DUMMY); n++;
+    {"dummy", API_DUMMY},
 #endif
-    strcat(buf, "}");
-        /* then again, if only one API (or none) we don't offer any choice. */
-    if (n < 2)
+};
+
+void sys_get_audio_apis(char *buf)
+{
+    unsigned int n;
+    if (sizeof(audio_apilist)/sizeof(t_apientry) < 2)
         strcpy(buf, "{}");
+    else
+    {
+        strcpy(buf, "{ ");
+        for (n = 0; n < sizeof(audio_apilist)/sizeof(t_apientry); n++)
+            sprintf(buf + strlen(buf), "{%s %d} ",
+                audio_apilist[n].a_name, audio_apilist[n].a_id);
+        strcat(buf, "}");
+    }
 }
 
 /* convert a device name to a (1-based) device number.  (Output device if

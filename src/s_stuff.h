@@ -136,7 +136,7 @@ typedef struct _audiosettings
 #define DEFAULTSRATE 48000
 #ifdef _WIN32
 #define DEFAULTADVANCE 80
-#define MMIODEFBLOCKSIZE 256
+#define MMIODEFBLOCKSIZE 512
 #else
 #ifdef __APPLE__
 #define DEFAULTADVANCE 5    /* this is in addition to their own delay */

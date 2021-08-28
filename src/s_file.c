@@ -591,8 +591,12 @@ void sys_loadpreferences(const char *filename, int startingup)
         sscanf(prefbuf, "%d", &as.a_advance);
     if (sys_getpreference("callback", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &as.a_callback);
-    if (sys_getpreference("blocksize", prefbuf, MAXPDSTRING))
+    if (sys_getpreference("audioblocksize", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &as.a_blocksize);
+#ifndef _WIN32
+    else if (sys_getpreference("blocksize", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &as.a_blocksize);
+#endif
     sys_set_audio_settings(&as);
 
         /* load MIDI preferences */
@@ -747,7 +751,7 @@ void sys_savepreferences(const char *filename)
     sys_putpreference("callback", buf1);
 
     sprintf(buf1, "%d", as.a_blocksize);
-    sys_putpreference("blocksize", buf1);
+    sys_putpreference("audioblocksize", buf1);
 
         /* MIDI settings */
     sprintf(buf1, "%d", sys_midiapi);
