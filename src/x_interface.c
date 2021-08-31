@@ -13,10 +13,10 @@ static t_class *print_class;
 
   /* avoid prefixing with "verbose(2): "
   when printing to stderr or via printhook. */
-#define print_startlogpost(object, level, fmt, args...) do{ \
+#define print_startlogpost(object, level, fmt, ...) do{ \
     if (sys_printhook || sys_printtostderr) \
-        startpost(fmt, args); \
-    else startlogpost(object, level, fmt, args); \
+        startpost(fmt, __VA_ARGS__); \
+    else startlogpost(object, level, fmt, __VA_ARGS__); \
 } while(0)
 
 typedef struct _print
