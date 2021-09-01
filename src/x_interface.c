@@ -13,6 +13,10 @@ static t_class *print_class;
 
 #define PRINT_LOGLEVEL 2
 
+  /* imported from s_print.c: */
+extern void startlogpost(const void *object, const int level, const char *fmt, ...)
+    ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
   /* avoid prefixing with "verbose(PRINT_LOGLEVEL): "
   when printing to stderr or via printhook. */
 #define print_startlogpost(object, fmt, ...) do{ \
