@@ -368,12 +368,12 @@ int sys_main(int argc, const char **argv)
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
     sys_setsignalhandlers();
+    sys_afterargparse();                    /* post-argparse settings */
     if (sys_dontstartgui)
         clock_set((sys_fakefromguiclk =
             clock_new(0, (t_method)sys_fakefromgui)), 0);
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
-    sys_afterargparse();                    /* post-argparse settings */
     if (sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
