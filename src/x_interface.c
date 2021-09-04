@@ -129,7 +129,58 @@ static void print_setup(void)
     class_addanything(print_class, print_anything);
 }
 
+/* ------------------- trace - see message passing traces ------------- */
+int backtracer_settracing(void *x, int tracing);
+extern int backtracer_cantrace;
+
+static t_class *trace_class;
+
+typedef struct _trace
+{
+    t_object x_obj;
+    t_symbol *x_sym;
+    t_float x_f;
+} t_trace;
+
+static void *trace_new(t_symbol *s)
+{
+    t_trace *x = (t_trace *)pd_new(trace_class);
+    x->x_sym = s;
+    x->x_f = 0;
+    floatinlet_new(&x->x_obj, &x->x_f);
+    outlet_new(&x->x_obj, &s_anything);
+    return (x);
+}
+
+static void trace_anything(t_trace *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int nturns = x->x_f;
+    if (nturns > 0)
+    {
+        if (!backtracer_cantrace)
+        {
+            pd_error(x, "trace requested but tracing is not enabled");
+            x->x_f = 0;
+        }
+        else if (backtracer_settracing(x, 1))
+        {
+            outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+            x->x_f = nturns-1;
+            (void)backtracer_settracing(x, 0);
+        }
+    }
+    else outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+}
+
+static void trace_setup(void)
+{
+    trace_class = class_new(gensym("trace"), (t_newmethod)trace_new, 0,
+        sizeof(t_trace), 0, A_DEFSYM, 0);
+    class_addanything(trace_class, trace_anything);
+}
+
 void x_interface_setup(void)
 {
     print_setup();
+    trace_setup();
 }

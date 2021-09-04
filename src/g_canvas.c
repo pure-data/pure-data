@@ -196,6 +196,29 @@ static void canvas_takeofflist(t_canvas *x)
     }
 }
 
+    /* turn message tracing on and off globally */
+
+void obj_dosettracing(t_object *ob, int onoff);
+static void canvas_dosettracing(t_canvas *x, int onoff)
+{
+    t_gobj *y;
+    for (y = x->gl_list; y; y = y->g_next)
+    {
+        t_object *ob;
+        if (pd_class(&y->g_pd) == canvas_class)
+            canvas_dosettracing((t_canvas *)y, onoff);
+        if ((ob = pd_checkobject(&y->g_pd)))
+            obj_dosettracing(ob, onoff);
+    }
+}
+
+void canvas_settracing(int onoff)
+{
+    t_glist *gl;
+    for (gl = pd_this->pd_canvaslist; gl; gl = gl->gl_next)
+        canvas_dosettracing(gl, onoff);
+}
+
 /* --------- functions to handle the canvas environment ----------- */
 
 void canvas_setargs(int argc, const t_atom *argv)
