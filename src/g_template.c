@@ -1276,11 +1276,13 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
     t_curve *x = (t_curve *)z;
     t_fielddesc *f = x->x_vec + TEMPLATE->curve_motion_field;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->curve_motion_gpointer, 0))
     {
         post("curve_motion: scalar disappeared");
@@ -1374,7 +1376,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
                 TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar);
         else gpointer_setarray(&TEMPLATE->curve_motion_gpointer,
                 TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_wp);
-        glist_grab(glist, z, curve_motion, 0, xpix, ypix);
+        glist_grab(glist, z, curve_motionfn, 0, xpix, ypix);
     }
     return (1);
 }
@@ -2042,8 +2044,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
+    if (up != 0)
+        return;
     TEMPLATE->array_motion_xcumulative += dx * TEMPLATE->array_motion_xperpix;
     TEMPLATE->array_motion_ycumulative += dy * TEMPLATE->array_motion_yperpix;
     if (TEMPLATE->array_motion_xfield)
@@ -2223,7 +2227,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
-                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                 if (TEMPLATE->array_motion_scalar)
                     scalar_redraw(TEMPLATE->array_motion_scalar,
                         TEMPLATE->array_motion_glist);
@@ -2391,7 +2395,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             TEMPLATE->array_motion_yfield = 0;
                             TEMPLATE->array_motion_ycumulative = 0;
                         }
-                        glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                        glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                     }
                     if (alt)
                     {
@@ -2667,10 +2671,13 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         glist_getcanvas(glist), data);
 }
 
-static void drawnumber_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->drawnumber_motion_gpointer, 0))
     {
         post("drawnumber_motion: scalar disappeared");
@@ -2803,7 +2810,7 @@ static int drawnumber_click(t_gobj *z, t_glist *glist,
             else gpointer_setarray(&TEMPLATE->drawnumber_motion_gpointer,
                     TEMPLATE->drawnumber_motion_array,
                         TEMPLATE->drawnumber_motion_wp);
-            glist_grab(glist, z, drawnumber_motion, drawnumber_key,
+            glist_grab(glist, z, drawnumber_motionfn, drawnumber_key,
                 xpix, ypix);
         }
         return (1);

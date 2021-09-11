@@ -61,7 +61,8 @@ typedef struct _updateheader
 } t_updateheader;
 
     /* types to support glists grabbing mouse motion or keys from parent */
-typedef void (*t_glistmotionfn)(void *z, t_floatarg dx, t_floatarg dy);
+typedef void (*t_glistmotionfn)(void *z, t_floatarg dx, t_floatarg dy,
+    t_floatarg up);
 typedef void (*t_glistkeyfn)(void *z, t_floatarg key);
 
 EXTERN_STRUCT _rtext;
@@ -472,6 +473,7 @@ EXTERN int rtext_width(t_rtext *x);
 EXTERN const char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
+EXTERN t_text *rtext_getowner(t_rtext *x);
 
 /* -------------------- functions on canvases ------------------------ */
 EXTERN t_class *canvas_class;

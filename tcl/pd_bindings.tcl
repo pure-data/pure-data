@@ -70,7 +70,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-1>        {menu_send_float %W obj 0}
     bind all <$::modifier-Key-2>        {menu_send_float %W msg 0}
     bind all <$::modifier-Key-3>        {menu_send_float %W floatatom 0}
-    bind all <$::modifier-Key-4>        {menu_send_float %W symbolatom 0}
+    bind all <$::modifier-Key-4>        {menu_send_float %W listbox 0}
     bind all <$::modifier-Key-5>        {menu_send_float %W text 0}
     bind all <$::modifier-Key-slash>    {pdsend "pd dsp 1"}
     bind all <$::modifier-Key-period>   {pdsend "pd dsp 0"}

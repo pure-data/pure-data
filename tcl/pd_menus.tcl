@@ -236,7 +236,9 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send_float $::focused_window msg 0}
     $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
         -command {menu_send_float $::focused_window floatatom 0}
-    $mymenu add command -label [_ "Symbol"]   -accelerator "$accelerator+4" \
+    $mymenu add command -label [_ "List"]   -accelerator "$accelerator+4" \
+        -command {menu_send_float $::focused_window listbox 0}
+    $mymenu add command -label [_ "Symbol"]  \
         -command {menu_send_float $::focused_window symbolatom 0}
     $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
         -command {menu_send_float $::focused_window text 0}

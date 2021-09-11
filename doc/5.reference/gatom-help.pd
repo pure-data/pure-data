@@ -1,22 +1,17 @@
-#N canvas 419 84 930 482 12;
-#X msg 70 362 set 45;
-#X floatatom 130 405 5 0 0 0 - - -;
-#X symbolatom 112 23 10 0 0 0 - - -;
-#X floatatom 58 23 5 0 0 0 - - -;
-#X text 756 262 more details:;
-#X symbolatom 561 291 15 0 0 0 - - -;
-#X msg 577 257 set hi;
-#X msg 561 229 symbol hello\ world;
-#X obj 561 324 print symbol_box;
-#X obj 130 438 print number_box;
-#X msg 130 362 bang;
-#X msg 516 257 bang;
-#X msg 179 362 12;
-#X text 704 447 updated for Pd version 0.51;
-#X text 469 76 A symbol sent to its inlet is displayed and sent to
-the outlet (a list is truncated to the first item). The "set" message
-sets the symbol box's value but doesn't send it to the outlet. A bang
-outputs the box's symbol value., f 61;
+#N canvas 422 127 1026 842 12;
+#X msg 79 419 set 45;
+#X floatatom 139 462 5 0 0 0 - - -;
+#X symbolatom 69 17 10 0 0 0 - - -;
+#X floatatom 25 17 5 0 0 0 - - -;
+#X text 301 693 more details:;
+#X symbolatom 112 686 15 0 0 0 - - -;
+#X msg 128 626 set hi;
+#X msg 112 598 symbol hello\ world;
+#X obj 112 719 print symbol_box;
+#X obj 139 495 print number_box;
+#X msg 139 419 bang;
+#X msg 127 654 bang;
+#X msg 188 419 12;
 #N canvas 306 243 427 393 properties 0;
 #N canvas 804 125 490 506 width 0;
 #X floatatom 281 445 1 0 0 0 - - -;
@@ -131,7 +126,7 @@ parameters are: width \, lower/upper limits \, label and send/receive
 symbols., f 49;
 #X restore 149 333 pd loading-args;
 #X text 61 303 Loading arguments in properties:;
-#X restore 291 408 pd properties;
+#X restore 293 447 pd properties;
 #N canvas 635 260 459 406 properties 0;
 #N canvas 934 145 509 520 width 0;
 #X symbolatom 162 162 10 0 0 0 - - -;
@@ -204,42 +199,68 @@ dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
 parameters are: width \, label and send/receive symbols., f 49;
 #X restore 196 357 pd loading-args;
 #X text 108 327 Loading arguments in properties:;
-#X restore 756 285 pd properties;
-#X text 291 382 more details:;
-#X obj 589 375 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
--262144 -1 -1 0 256;
-#X text 469 17 Symbol boxes are created via the Put menu (named as
-"Symbol") or its shortcut. It allows you to display or to enter symbols
-using the keyboard. Click on the object \, type a symbol and then 'enter'
-to finish and output it., f 61;
-#X text 31 101 Number boxes are created via the Put menu (named as
-"Number") or its shortcut. It allows you to display or to enter numbers
-using the mouse and keyboard. Click on the object \, type a number
-value and then 'enter' to finish and output it. You can also click
-on it and drag upward or downward to change the value continuously
-(use shift-click & drag to change values by hundredths instead of units).
-, f 58;
-#X text 31 201 A float sent to its inlet is displayed and sent to the
-outlet (a list is truncated to the first item). The "set" message sets
-the number box's value but doesn't send it to the outlet. A bang outputs
-the box's value.;
-#X text 663 376 <= number box from "iemguis";
-#X text 511 387 See also:;
-#X text 46 49 These are GUI (Graphical User Interface) objects that
-display and send atoms (numbers or symbols).;
-#X text 31 261 If you click on the number box while pressing "control"
+#X restore 301 716 pd properties;
+#X text 293 421 more details:;
+#X obj 658 708 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
+#fcfcfc #000000 #000000 0 256;
+#X text 732 709 <= number box from "iemguis";
+#X text 580 720 See also:;
+#X obj 658 732 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 682 733 <= toggle from "iemguis";
+#X listbox 149 16 20 0 0 0 - - -;
+#X text 297 14 - objects to display and edit numbers \, symbols \,
+or lists.;
+#X text 37 552 Symbol boxes are like number boxes but hold a symbol
+instead of a number:, f 61;
+#X text 263 596 set and output a symbol;
+#X text 185 630 set only - don't output;
+#X text 165 652 output only - don't change value;
+#X text 28 47 These are GUI (Graphical User Interface) objects that
+display and send atoms (numbers or symbols) or lists. They may be created
+by selecting "number" (etc.) from the "put" menu. The contents can
+be changed while the patch in in "run" mode (as opposed to "edit")
+\, so these are useful as controls and displays in a finished patch.
+;
+#X text 27 145 Double-clicking activates a text editor \, so that you
+can select portions of the contents and/or cut/copy/paste values. You
+may also simply single-click and enter the new contents from scratch.
+If you start retyping with a single click you can cancel the action
+by clicking outside the box \, or adopt the change using the "enter"
+key.;
+#X text 26 246 You can also change a numeric value upward or downward
+by clicking and dragging. Shift-click changes the value in hundredths
+instead of units.;
+#X text 31 755 Symbols with special characters (space \, comma \, semicolon
+\, backslash \, dollar signs) are displayed with a preceding backslash
+( \ ) \, the same way you would type a symbol into a message or object
+box.;
+#X text 497 74 List boxes may hold arbitrary combinations of numbers
+and symbols:;
+#X msg 533 124 1 2 3 foo 5;
+#X listbox 533 316 20 0 0 0 - - -;
+#X obj 550 348 print list_box;
+#X msg 547 156 list wombat weasel wallaby;
+#X text 629 113 messages beginning with a number are implicitly understood
+as lists, f 35;
+#X text 748 147 lists starting with a symbol must be preceeded by the
+word "list" to disambiguate them, f 32;
+#X msg 556 204 set 4 dog 5 6 donkey;
+#X text 725 193 "set" message changes contents but doesn't output them
+, f 30;
+#X msg 562 273 bang;
+#X text 21 307 If you click on a number box while pressing "control"
 (in Linux/Windows) or "command" (Mac) \, the object toggles between
 0 and a non zero value. The non zero value is the last non zero value
 that the box holds (by default \, this value is "1")., f 58;
-#X text 469 136 Note that when you type symbols with special characters
-(space \, comma \, semicolon \, backslash \, dollar signs) \, the object
-automatically adds the backslash escape symbol ( \ ). Also note that
-typing a float will generate a symbol (for instance \, "symbol 4").
-, f 61;
-#X obj 589 399 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X text 613 400 <= toggle from "iemguis";
-#X text 196 22 - atom (number/symbol) box;
+#X text 613 243 "bang" is equivalent to an empty list in Pd \, but
+as a special case banging a list box outputs the current list. If you
+really want to display an empty list \, you can use a "set" message.
+;
+#X msg 563 242 set;
+#X text 773 780 updated for Pd version 0.52;
+#X text 685 309 you can drag the numbers up and down individually \,
+and/or double click to edit, f 41;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
 #X connect 5 0 8 0;
@@ -248,3 +269,9 @@ typing a float will generate a symbol (for instance \, "symbol 4").
 #X connect 10 0 1 0;
 #X connect 11 0 5 0;
 #X connect 12 0 1 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 0;
+#X connect 35 0 33 0;
+#X connect 38 0 33 0;
+#X connect 40 0 33 0;
+#X connect 43 0 33 0;

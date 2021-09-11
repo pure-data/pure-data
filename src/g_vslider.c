@@ -379,9 +379,12 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
-static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
+static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     int old = x->x_val;
+    if (up != 0)
+        return;
 
     if(x->x_gui.x_fsf.x_finemoved)
         x->x_pos -= (int)dy;
@@ -650,7 +653,7 @@ void g_vslider_setup(void)
     class_addmethod(vslider_class, (t_method)vslider_click,
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_motion,
-        gensym("motion"), A_FLOAT, A_FLOAT, 0);
+        gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(vslider_class, (t_method)vslider_loadbang,
