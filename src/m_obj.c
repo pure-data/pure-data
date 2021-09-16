@@ -15,6 +15,10 @@ behavior for "gobjs" appears at the end of this file.  */
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 union inletunion
 {
     t_symbol *iu_symto;
