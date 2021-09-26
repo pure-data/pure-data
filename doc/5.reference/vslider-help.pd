@@ -538,8 +538,8 @@ jumps to the position you clicked on the slider and drags from there.
 #X text 191 166 logarithmic;
 #X text 50 27 The slider's behavior can be linear (default) or logarithmic
 and you can set this with the 'lin' or 'log' messages \, respectively.
-Check below the difference. In the logarithmic mode \, the minimum
-range can never be 0 or negative., f 48;
+Check below the difference. In the logarithmic mode \, the range may
+never touch or cross 0 (both positive or both negative are OK)., f 48;
 #X obj 144 203 vsl 18 128 1 1000 0 0 empty empty empty 0 -9 0 10 -262144
 -1 -1 0 1;
 #X floatatom 144 354 8 0 0 0 - - -;
