@@ -833,6 +833,8 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
                 startfield, nfield);
+        else if (nfield < 0)
+            pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
             ATOMS_ALLOCA(outv, nfield);
