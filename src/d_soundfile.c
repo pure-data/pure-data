@@ -1614,7 +1614,7 @@ typedef struct _readsf
     t_float x_insamplerate;           /**< input signal sample rate, if known */
         /* parameters to communicate with subthread */
     t_soundfile_request x_requestcode; /**< pending request to I/O thread */
-    const char *x_filename;   /**< file to open (string permanently alloced) */
+    const char *x_filename;   /**< file to open (string permanently allocated) */
     int x_fileerror;          /**< slot for "errno" return */
     t_soundfile x_sf;         /**< soundfile fd, type, and format info */
     size_t x_onsetframes;     /**< number of sample frames to skip */
