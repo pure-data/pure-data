@@ -78,7 +78,7 @@ typedef struct _head
     char h_formtype[4];              /**< format: "AIFF" or "AIFC"     */
 } t_head;
 
-    /** commmon chunk, 26 (AIFF) or 30+ (AIFC) bytes
+    /** common chunk, 26 (AIFF) or 30+ (AIFC) bytes
         note: sample frames is split to avoid struct alignment padding */
 typedef struct _commchunk
 {

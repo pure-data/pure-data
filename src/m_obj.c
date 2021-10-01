@@ -19,6 +19,10 @@ behavior for "gobjs" appears at the end of this file.  */
 #define snprintf _snprintf
 #endif
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 union inletunion
 {
     t_symbol *iu_symto;

@@ -414,7 +414,7 @@ static void my_numbox_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_val, x->x_log_height);
+                x->x_gui.x_isa.x_loadinit?x->x_val:0., x->x_log_height);
     binbuf_addv(b, ";");
 }
 

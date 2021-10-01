@@ -386,7 +386,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                             slashed = 1;
                         else
                         {
-                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                            if (*sp2 == '$' && sp2[1] >= '0' && sp2[1] <= '9')
                                 dollar = 1;
                             *sp1++ = *sp2;
                             slashed = 0;
