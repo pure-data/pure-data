@@ -574,7 +574,7 @@ static void gatom_redraw(t_gobj *client, t_glist *glist)
 
 static void gatom_senditup(t_gatom *x)
 {
-    if (glist_isvisible(x->a_glist)
+    if (x->a_glist->gl_editor
         && gobj_shouldvis(&x->a_text.te_g, x->a_glist))
             sys_queuegui(x, x->a_glist, gatom_redraw);
 }

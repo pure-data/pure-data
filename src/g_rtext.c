@@ -306,6 +306,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *outchars_b_p = 1;
     done: ;
         *indexp = findx;
+        *widthp = x->x_text->te_width * fontwidth;
     }
     else
     {
@@ -338,6 +339,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                 tempbuf[prev_b] = '>';
             }
         }
+        *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
         tempbuf[*outchars_b_p] = 0;
     }
     if (*indexp >= *outchars_b_p)
@@ -346,6 +348,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
+    *widthp += (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist);
+    *heightp = fontheight + (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist);
 }
 
     /* the following routine computes line breaks and carries out
