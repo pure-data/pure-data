@@ -423,7 +423,7 @@ static const t_soundfile_type caf = {
     caf_endianness
 };
 
-void soundfile_caf_setup()
+void soundfile_caf_setup( void)
 {
     soundfile_addtype(&caf);
 }

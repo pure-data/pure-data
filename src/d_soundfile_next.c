@@ -291,7 +291,7 @@ t_soundfile_type next = {
     next_endianness
 };
 
-void soundfile_next_setup()
+void soundfile_next_setup( void)
 {
     soundfile_addtype(&next);
 }

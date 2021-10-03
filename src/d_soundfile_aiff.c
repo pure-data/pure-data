@@ -615,7 +615,7 @@ static const t_soundfile_type aiff = {
     aiff_endianness
 };
 
-void soundfile_aiff_setup()
+void soundfile_aiff_setup( void)
 {
     soundfile_addtype(&aiff);
 }
