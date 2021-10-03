@@ -624,7 +624,6 @@ void sys_loadpreferences(const char *filename, int startingup)
             if (sscanf(prefbuf, "%d", &midiindev[nmidiindev]) < 1)
                 break;
         }
-        nmidiindev++;
     }
         /* JMZ/MB: brackets for initializing */
     if (sys_getpreference("nomidiout", prefbuf, MAXPDSTRING) &&
@@ -645,7 +644,6 @@ void sys_loadpreferences(const char *filename, int startingup)
             if (sscanf(prefbuf, "%d", &midioutdev[nmidioutdev]) < 1)
                 break;
         }
-        nmidioutdev++;
     }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 
