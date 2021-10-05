@@ -863,7 +863,7 @@ msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use el comodín '*' para coincidir cualquier numero de caracteres."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "e.g. '*-plugin' coincide con 'deken-plugin' (and more)."
+msgstr "e.g. '*-plugin' coincide con 'deken-plugin' (y otros mas)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr "Puede restringir la búsqueda a solo-librerías o solo-objetos."
