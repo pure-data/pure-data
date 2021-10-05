@@ -163,7 +163,7 @@ msgstr ""
 "inicio"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "(click en Guardar Preferencias para reestablecerlas)"
+msgstr "(click en Guardar Preferencias para re-establecerlas)"
 
 msgid "File"
 msgstr "Archivo"
@@ -578,13 +578,13 @@ msgid "Disable"
 msgstr "Desactivar"
 
 msgid "Externals Install Directory"
-msgstr "Directorio de instalacion de externos"
+msgstr "Directorio de instalación de externos"
 
 msgid "Clear"
 msgstr "Borrar"
 
 msgid "Choose Pd documents directory:"
-msgstr "Elejir directorio de documentos de Pd:"
+msgstr "Elegir directorio de documentos de Pd:"
 
 msgid "Install externals to directory:"
 msgstr "Instalar externos en el directorio:"
@@ -621,15 +621,15 @@ msgstr "(Tcl) ERROR SIN TRATAR: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
-msgstr "[deken]version instalada [%1$s] > %2$s...salteando!"
+msgstr "[deken] versión instalada [%1$s] > %2$s...salteando!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
-msgstr "[deken] version instalada [%1$s] < %2$s...sobreescribiendo!"
+msgstr "[deken] versión instalada [%1$s] < %2$s...sobre-escribiendo!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] == %2$s...skipping!"
-msgstr "[deken] version instalada [%1$s] == %2$s...salteando!"
+msgstr "[deken] versión instalada [%1$s] == %2$s...salteando!"
 
 #, tcl-format
 msgid "installing deken package '%s'"
@@ -658,7 +658,7 @@ msgid "1. Unzip %s."
 msgstr "1. extraer %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr "Puede que necesite cambiar la extencion de .dek a .zip"
+msgstr "Puede que necesite cambiar la extensión de .dek a .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
@@ -678,11 +678,11 @@ msgstr "Des-instalando %1$s desde %2$s fallo!"
 
 #, tcl-format
 msgid "skipping SHA256 verification of %s."
-msgstr "salteando verificacion SHA256 de %s."
+msgstr "salteando verificación SHA256 de %s."
 
 #, tcl-format
 msgid "SHA256 verification of %s"
-msgstr "Veificacion SHA256 de %s"
+msgstr "Verificación SHA256 de %s"
 
 #, tcl-format
 msgid "unable to fetch reference SHA256 for %s."
@@ -690,7 +690,7 @@ msgstr "no de pudo conseguir referencia SHA256 para %s."
 
 #, tcl-format
 msgid "unable to perform SHA256 verification for %s."
-msgstr "no se puede hacer la verificacion SHA256 para %s."
+msgstr "no se puede hacer la verificación SHA256 para %s."
 
 #, tcl-format
 msgid "[deken] Unable to download from %1$s [%2$s]"
@@ -753,7 +753,7 @@ msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
-"Mostrar solo la nueva version de la libreria\n"
+"Mostrar solo la nueva versión de la libreria\n"
 "(trata las otras versiones como arquitecturas ajenas)"
 
 #, tcl-format
@@ -782,10 +782,10 @@ msgstr "El checksum no coincide para '%s'"
 
 #, tcl-format
 msgid "SHA256 verification of %s failed!"
-msgstr "La verificacion SHA256 de %s fallo!"
+msgstr "La verificación SHA256 de %s fallo!"
 
 msgid "SHA256 verification failed"
-msgstr "Verificacion SHA256 fallo"
+msgstr "Verificación SHA256 fallo"
 
 #, tcl-format
 msgid "Removing %s"
@@ -800,21 +800,21 @@ msgid "Installing package %s"
 msgstr "Instalar paquete %s"
 
 msgid "Installation completed!"
-msgstr "Instalacion completa!"
+msgstr "Instalación completa!"
 
 #, tcl-format
 msgid "Successfully installed %s!"
-msgstr "Instalacion exitosa de %s!"
+msgstr "Instalación exitosa de %s!"
 
 msgid "Installation failed!"
-msgstr "La instalacion fallo!"
+msgstr "La instalación fallo!"
 
 #, tcl-format
 msgid "Failed to install %s!"
-msgstr "Fallo la instalacion de %s!"
+msgstr "Fallo la instalación de %s!"
 
 msgid "Package installation failed"
-msgstr "La instalacion del paquete fallo"
+msgstr "La instalación del paquete fallo"
 
 #, tcl-format
 msgid ""
@@ -841,7 +841,7 @@ msgstr "No hay paquetes seleccionados para instalar."
 
 #, tcl-format
 msgid "Processed %d packages selected for installation."
-msgstr "Procesando %d paquetes selecionados para instalacion."
+msgstr "Procesando %d paquetes seleccionados para instalación."
 
 msgid "Show all"
 msgstr "Mostrar todos"
@@ -851,22 +851,22 @@ msgstr "Buscar"
 
 #, tcl-format
 msgid "%s%% of download completed"
-msgstr "%s%% de la decarga completada"
+msgstr "%s%% de la descarga completada"
 
 msgid "Enter an exact library or object name."
-msgstr "Ingrese un nombre exacto de libreria u objeto."
+msgstr "Ingrese un nombre exacto de librería u objeto."
 
 msgid "e.g. 'freeverb~'"
 msgstr "e.g. 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr "Use el comodin '*\" para coincidir cualquier numero de caracteres."
+msgstr "Use el comodín '*' para coincidir cualquier numero de caracteres."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "e.g. '*-plugin' coincide con 'deken-plugin' (and more)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
-msgstr "Puede restringir la busqueda a solo-librerias o solo-objetos."
+msgstr "Puede restringir la búsqueda a solo-librerías o solo-objetos."
 
 msgid "To get a list of all available externals, try an empty search."
 msgstr ""
@@ -883,7 +883,7 @@ msgid "Search for: "
 msgstr "Buscar:"
 
 msgid "libraries"
-msgstr "librerias"
+msgstr "librerías"
 
 msgid "objects"
 msgstr "objetos"
@@ -908,7 +908,7 @@ msgstr "Mas..."
 
 #, tcl-format
 msgid "[deken] Start searching for externals... %s"
-msgstr "[deken] Comenzo busqueda de externos … %s"
+msgstr "[deken] Comenzó búsqueda de externos … %s"
 
 #, tcl-format
 msgid "[deken] online? %s"
@@ -937,10 +937,10 @@ msgstr "¿Instalar %1$s en %2$s?"
 #, tcl-format
 msgid "Cancelling download of %s: No installation directory given."
 msgstr ""
-"Cancelando la descarga de %s: No fue dado el directorio de instalacion ."
+"Cancelando la descarga de %s: No fue dado el directorio de instalación ."
 
 msgid "Installing to non-existant directory failed"
-msgstr "Falla al instalar en un directorio que no exciste."
+msgstr "Falla al instalar en un directorio que no existe."
 
 #, tcl-format
 msgid ""
@@ -967,7 +967,7 @@ msgid "Download failed!"
 msgstr "Fallo la descarga!"
 
 msgid "Download completed! Verifying..."
-msgstr "Descarga completea! Verificando ..."
+msgstr "Descarga completa! Verificando ..."
 
 #, tcl-format
 msgid "searching for '%s'"
@@ -987,7 +987,7 @@ msgid "Searching for '%s' failed!"
 msgstr "Falla al buscar '%s'!"
 
 msgid "Search failed"
-msgstr "Fallo la busqueda"
+msgstr "Fallo la búsqueda"
 
 msgid "[deken] Unable to perform search."
 msgstr "[deken] La búsqueda no pudo ser realizada."
@@ -1000,7 +1000,7 @@ msgid "Deselect package"
 msgstr "Des-seleccionar paquete"
 
 msgid "Select package for installation"
-msgstr "Seleccione paquete para la instalacion"
+msgstr "Seleccione paquete para la instalación"
 
 msgid "Install selected packages"
 msgstr "Instalar paquetes seleccionados"
@@ -1034,7 +1034,7 @@ msgstr ""
 "\n"
 "Ubicacion: %s\n"
 "\n"
-"Puede cambiar o desactivar esta funcion luego desde las configuraciones de "
+"Puede cambiar o desactivar esta función luego desde las configuraciones de "
 "Ruta."
 
 #, tcl-format
@@ -1050,7 +1050,7 @@ msgstr ""
 "\n"
 "Ubicacion: %s\n"
 "\n"
-"Puede cambiar o desactivar esta funcion luego desde las configuraciones de "
+"Puede cambiar o desactivar esta función luego desde las configuraciones de "
 "Ruta."
 
 #, tcl-format
@@ -1110,7 +1110,7 @@ msgid "Tidy Up"
 msgstr "Ordenar"
 
 msgid "(Dis)Connect Selection"
-msgstr "(Des)Conectar Seleccion"
+msgstr "(Des)Conectar Selección"
 
 msgid "Triggerize"
 msgstr ""
@@ -1221,7 +1221,7 @@ msgid "Report a bug"
 msgstr "Reportar un error"
 
 msgid "Clear Menu"
-msgstr "Borrar Menu"
+msgstr "Borrar Menú"
 
 msgid ""
 "Delete all preferences?\n"
