@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2021-10-04 22:50+0200\n"
+"PO-Revision-Date: 2021-10-05 16:48+0200\n"
 "Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
@@ -30,7 +30,7 @@ msgstr "----------Rahmengröße(pix):-----------"
 
 # iemgui
 msgid "--------flash-time(ms)(ms):---------"
-msgstr "----------Blinkzeit(ms)(ms:-----------"
+msgstr "----------Blinkzeit(ms)(ms):-----------"
 
 # iemgui
 msgid "-----------output-range:-----------"
@@ -651,7 +651,7 @@ msgstr "Installiere deken Paket '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
-msgstr "Ignoriere '%s': dies scheint kein deken Paket to sein"
+msgstr "Ignoriere '%s': dies scheint kein deken Paket zu sein"
 
 #, tcl-format
 msgid "Installing %s"
@@ -766,8 +766,8 @@ msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
-"Nur die neueste Version einer Bibliothek anzeigen (ältere Versionen werden "
-"wie inkompatible Externals behandelt)"
+"Nur die neueste Version einer Bibliothek anzeigen\n"
+"(ältere Versionen werden wie inkompatible Externals behandelt)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
