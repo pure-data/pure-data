@@ -785,6 +785,11 @@ void gatom_key(void *z, t_floatarg f)
             rtext_key(t, '.', &s_);
             rtext_key(t, 0, gensym("Home"));
         }
+            /* automatically escape special characters in symbols */
+        if (x->a_flavor == A_SYMBOL && (c == ' ' || c == ',' || c == ';' ||
+            c == '$' | c == '\\'))
+                rtext_key(t, '\\', &s_);
+            /* and at last, insert the character */
         rtext_key(t, c, &s_);
     }
 }
@@ -1074,7 +1079,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         x->a_wherelabel = (((int)atom_getfloatarg(5, argc, argv)) & 3);
         x->a_label = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
         x->a_symfrom = gatom_unescapit(atom_getsymbolarg(7, argc, argv));
-         if (*x->a_symfrom->s_name)
+        if (*x->a_symfrom->s_name)
             pd_bind(&x->a_text.te_pd,
                 canvas_realizedollar(x->a_glist, x->a_symfrom));
 
