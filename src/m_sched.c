@@ -203,7 +203,7 @@ static float sched_fastforward;
 
 void glob_fastforward(void *dummy, t_floatarg f)
 {
-    sched_fastforward = f;
+    sched_fastforward = TIMEUNITPERMSEC * f;
 }
 
 void dsp_tick(void);
@@ -345,6 +345,8 @@ static void m_pollingscheduler(void)
         if (sched_fastforward > 0)
         {
             sched_fastforward -= SYSTIMEPERTICK;
+            sched_referencerealtime = sys_getrealtime();
+            sched_referencelogicaltime = pd_this->pd_systime;
             continue;
         }
         sys_pollmidiqueue();
