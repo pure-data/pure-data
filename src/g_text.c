@@ -1446,8 +1446,6 @@ void text_drawborder(t_text *x, t_glist *glist,
     text_getrect(&x->te_g, glist, &x1, &y1, &x2, &y2);
     width = x2 - x1;
     height = y2 - y1;
-    if (firsttime)
-        post("height %d", height);
     if (x->te_type == T_OBJECT)
     {
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
