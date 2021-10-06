@@ -2246,7 +2246,6 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             {
                 char *buf;
                 int bufsize;
-                post("zzz");
                 rtext_gettext(x->gl_editor->e_textedfor, &buf, &bufsize);
                 text_setto(hitobj, x, buf, bufsize);
                 rtext_activate(x->gl_editor->e_textedfor, 0);

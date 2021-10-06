@@ -334,12 +334,12 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                  && (x->x_buf[*(outchars_b_p)] != ' ' ||
                     x->x_bufsize > *(outchars_b_p)+1))
             {
-                post("putchars %d, prev %d, byte %d",
-                    *(outchars_b_p), prev_b, x->x_buf[*(outchars_b_p)]);
                 tempbuf[prev_b] = '>';
             }
         }
-        *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
+        if (x->x_text->te_width > 0)
+            *widthp = x->x_text->te_width * fontwidth;
+        else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
         tempbuf[*outchars_b_p] = 0;
     }
     if (*indexp >= *outchars_b_p)
@@ -349,7 +349,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
     *widthp += (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist);
-    *heightp = fontheight + (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist);
+    *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
 }
 
     /* the following routine computes line breaks and carries out
@@ -368,31 +368,22 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         a limit of 1950 characters, imposed by sys_vgui(). */
 #define UPBUFSIZE 4000
 
+void text_getfont(t_text *x, t_glist *thisglist,
+    int *fheightp, int *fwidthp, int *guifsize);
+
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
 {
     char smallbuf[200], *tempbuf;
-    int outchars_b = 0, font, fontwidth, fontheight;
+    int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     char smallescbuf[400], *escbuf = 0;
     size_t escchars = 0;
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
         /* if we're a GOP (the new, "goprect" style) borrow the font size
         from the inside to preserve the spacing */
-    if (pd_class(&x->x_text->te_pd) == canvas_class &&
-        ((t_glist *)(x->x_text))->gl_isgraph &&
-        ((t_glist *)(x->x_text))->gl_goprect)
-    {
-        font =  glist_getfont((t_glist *)(x->x_text));
-        fontwidth =  glist_fontwidth((t_glist *)(x->x_text));
-        fontheight =  glist_fontheight((t_glist *)(x->x_text));
-    }
-    else
-    {
-        font = glist_getfont(x->x_glist);
-        fontwidth = glist_fontwidth(x->x_glist);
-        fontheight = glist_fontheight(x->x_glist);
-    }
+
+    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
     if (x->x_bufsize >= 100)
          tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
     else tempbuf = smallbuf;
@@ -444,7 +435,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             text_xpix(x->x_text, x->x_glist) + lmargin,
                 text_ypix(x->x_text, x->x_glist) + tmargin,
             escbuf,
-            sys_hostfontsize(font, glist_getzoom(x->x_glist)),
+            guifontsize,
             (glist_isselected(x->x_glist,
                 &x->x_text->te_g)? "blue" : "black"));
     }

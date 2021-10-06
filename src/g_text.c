@@ -533,6 +533,7 @@ typedef struct _gatom
     t_symbol *a_symto;      /* "send" name -- send to this on output */
     t_binbuf *a_revertbuf;  /* binbuf to revert to if typing canceled */
     int a_dragindex;        /* index of atom being dragged */
+    int a_fontsize;
     unsigned int a_shift:1;         /* was shift key down when drag started? */
     unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
     unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
@@ -914,8 +915,9 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_float wherelabel = atom_getfloatarg(4, argc, argv);
     t_symbol *symfrom = gatom_unescapit(atom_getsymbolarg(5, argc, argv));
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
+    int newfont = atom_getfloatarg(7, argc, argv);
+    t_atom undo[8];
 
-    t_atom undo[7];
     SETFLOAT (undo+0, x->a_text.te_width);
     SETFLOAT (undo+1, x->a_draglo);
     SETFLOAT (undo+2, x->a_draghi);
@@ -923,8 +925,9 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     SETFLOAT (undo+4, x->a_wherelabel);
     SETSYMBOL(undo+5, gatom_escapit(x->a_symfrom));
     SETSYMBOL(undo+6, gatom_escapit(x->a_symto));
+    SETFLOAT (undo+7, x->a_fontsize);
     pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
-                            7, undo,
+                            8, undo,
                             argc, argv);
 
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
@@ -955,6 +958,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_text.te_width = width;
     x->a_wherelabel = ((int)wherelabel & 3);
     x->a_label = label;
+    x->a_fontsize = newfont;
     if (*x->a_symfrom->s_name)
         pd_unbind(&x->a_text.te_pd,
             canvas_realizedollar(x->a_glist, x->a_symfrom));
@@ -1052,10 +1056,11 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_symto = x->a_expanded_to = &s_;
     x->a_grabbed = 0;
     x->a_revertbuf = 0;
+    x->a_fontsize = 0;
     (void)gatom_getatom(x);  /* this forces initialization of binbuf */
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
-            label, receive-name, send-name */
+            label, receive-name, send-name, fontsize */
     {
         x->a_text.te_xpix = atom_getfloatarg(0, argc, argv);
         x->a_text.te_ypix = atom_getfloatarg(1, argc, argv);
@@ -1069,7 +1074,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         x->a_wherelabel = (((int)atom_getfloatarg(5, argc, argv)) & 3);
         x->a_label = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
         x->a_symfrom = gatom_unescapit(atom_getsymbolarg(7, argc, argv));
-        if (*x->a_symfrom->s_name)
+         if (*x->a_symfrom->s_name)
             pd_bind(&x->a_text.te_pd,
                 canvas_realizedollar(x->a_glist, x->a_symfrom));
 
@@ -1080,6 +1085,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
                 x->a_flavor == A_FLOAT ? &s_float: &s_symbol);
         if (x->a_symfrom == &s_)
             inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
+        x->a_fontsize = atom_getfloatarg(9, argc, argv);
         glist_add(gl, &x->a_text.te_g);
     }
     else    /* from menu - use default settings */
@@ -1131,11 +1137,12 @@ static void gatom_properties(t_gobj *z, t_glist *owner)
 {
     t_gatom *x = (t_gatom *)z;
     char buf[200];
-    sprintf(buf, "pdtk_gatom_dialog %%s %d %g %g %d {%s} {%s} {%s}\n",
+    sprintf(buf, "pdtk_gatom_dialog %%s %d %g %g %d {%s} {%s} {%s} %d\n",
         x->a_text.te_width, x->a_draglo, x->a_draghi,
             x->a_wherelabel, gatom_escapit(x->a_label)->s_name,
                 gatom_escapit(x->a_symfrom)->s_name,
-                    gatom_escapit(x->a_symto)->s_name);
+                    gatom_escapit(x->a_symto)->s_name,
+                        x->a_fontsize);
     gfxstub_new(&x->a_text.te_pd, x, buf);
 }
 
@@ -1149,10 +1156,16 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     int width, height, iscomment = (x->te_type == T_TEXT);
     t_float x1, y1, x2, y2;
 
+    if (glist->gl_editor && glist->gl_editor->e_rtext)
+    {
+        t_rtext *y = glist_findrtext(glist, x);
+        width = rtext_width(y);
+        height = rtext_height(y) - (iscomment << 1);
+    }
         /* for number boxes, we know width and height a priori, and should
         report them here so that graphs can get swelled to fit. */
 
-    if (x->te_type == T_ATOM && x->te_width > 0)
+    else if (x->te_type == T_ATOM && x->te_width > 0)
     {
         width = (x->te_width > 0 ? x->te_width : 6) * glist_fontwidth(glist);
         height = glist_fontheight(glist);
@@ -1176,12 +1189,6 @@ static void text_getrect(t_gobj *z, t_glist *glist,
         that yet.  So we check directly whether the "rtext" list has been
         built.  LATER reconsider when "vis" flag should be on and off? */
 
-    else if (glist->gl_editor && glist->gl_editor->e_rtext)
-    {
-        t_rtext *y = glist_findrtext(glist, x);
-        width = rtext_width(y);
-        height = rtext_height(y) - (iscomment << 1);
-    }
     else width = height = 10;
     x1 = text_xpix(x, glist);
     y1 = text_ypix(x, glist);
@@ -1338,12 +1345,12 @@ void text_save(t_gobj *z, t_binbuf *b)
         t_symbol *label = gatom_escapit(((t_gatom *)x)->a_label);
         t_symbol *symfrom = gatom_escapit(((t_gatom *)x)->a_symfrom);
         t_symbol *symto = gatom_escapit(((t_gatom *)x)->a_symto);
-        binbuf_addv(b, "ssiiifffsss;", gensym("#X"), sel,
+        binbuf_addv(b, "ssiiifffsssf;", gensym("#X"), sel,
             (int)x->te_xpix, (int)x->te_ypix, (int)x->te_width,
             (double)((t_gatom *)x)->a_draglo,
             (double)((t_gatom *)x)->a_draghi,
             (double)((t_gatom *)x)->a_wherelabel,
-            label, symfrom, symto);
+            label, symfrom, symto, (double)((t_gatom *)x)->a_fontsize);
     }
     else
     {
@@ -1434,6 +1441,8 @@ void text_drawborder(t_text *x, t_glist *glist,
     text_getrect(&x->te_g, glist, &x1, &y1, &x2, &y2);
     width = x2 - x1;
     height = y2 - y1;
+    if (firsttime)
+        post("height %d", height);
     if (x->te_type == T_OBJECT)
     {
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
@@ -1633,6 +1642,33 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
 static void text_anything(t_text *x, t_symbol *s, int argc, t_atom *argv)
 {
 }
+
+void text_getfont(t_text *x, t_glist *thisglist,
+    int *fwidthp, int *fheightp, int *guifsize)
+{
+    int font, zoom;
+    t_glist *gl;
+    if (pd_class(&x->te_pd) == canvas_class &&
+        ((t_glist *)(x))->gl_isgraph &&
+        ((t_glist *)(x))->gl_goprect)
+            gl = (t_glist *)(x);
+    else gl = thisglist;
+    font =  glist_getfont(gl);
+    zoom = glist_getzoom(gl);
+        /* override if atom box has its own specified font size */
+    if (x->te_type == T_ATOM && ((t_gatom *)x)->a_fontsize > 0)
+        font = ((t_gatom *)x)->a_fontsize;
+    *fwidthp = sys_zoomfontwidth(font, zoom, 0);
+    *fheightp = sys_zoomfontheight(font, zoom, 0);
+    *guifsize = sys_hostfontsize(font, zoom);
+}
+
+
+/*
+        *fontwidthp =  glist_fontwidth((t_glist *)(x->x_text));
+        fontheightp =  glist_fontheight((t_glist *)(x->x_text));
+  *guifontsizep = sys_hostfontsize(font, glist_getzoom(x->x_glist));
+*/
 
 void g_text_setup(void)
 {
