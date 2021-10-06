@@ -596,7 +596,7 @@ static t_atom *gatom_getatom(t_gatom *x)
     else if (x->a_flavor == A_SYMBOL && (ac != 1 || av[0].a_type != A_SYMBOL))
     {
         binbuf_clear(x->a_text.te_binbuf);
-        binbuf_addv(x->a_text.te_binbuf, "s", gensym("symbol"));
+        binbuf_addv(x->a_text.te_binbuf, "s", &s_);
     }
     return (binbuf_getvec(x->a_text.te_binbuf));
 }
