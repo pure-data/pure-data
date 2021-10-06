@@ -14,6 +14,7 @@ proc open_file {filename} {
         ::pd_guiprefs::update_recentfiles $filename true
         return
     }
+    set ::fileopendir $directory
     if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
