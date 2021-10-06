@@ -958,8 +958,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_draghi = draghi;
     if (width < 0)
         width = 4;
-    else if (width > 80)
-        width = 80;
+    else if (width > 1000)
+        width = 1000;
     x->a_text.te_width = width;
     x->a_wherelabel = ((int)wherelabel & 3);
     x->a_label = label;
