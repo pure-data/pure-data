@@ -139,7 +139,12 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
         -width [::msgcat::mcmax "Font Size"] -labelanchor n
     pack $mytoplevel.fontsize -side right -padx 5
     foreach size $::dialog_gatom::sizes {
-        radiobutton $mytoplevel.fontsize.radio$size -value $size -text $size \
+        if {$size eq 0} {
+            set sizetext "auto"
+        } else {
+            set sizetext $size
+        }
+        radiobutton $mytoplevel.fontsize.radio$size -value $size -text $sizetext \
             -variable ::dialog_gatom::fontsize
         pack $mytoplevel.fontsize.radio$size -side top -anchor w
     }
