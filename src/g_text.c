@@ -570,7 +570,8 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 static void gatom_redraw(t_gobj *client, t_glist *glist)
 {
     t_gatom *x = (t_gatom *)client;
-    glist_retext(x->a_glist, &x->a_text);
+    if (glist_isvisible(glist))
+        glist_retext(x->a_glist, &x->a_text);
 }
 
 static void gatom_senditup(t_gatom *x)
@@ -1048,8 +1049,6 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         }
         else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
     }
-    if (!vis)
-        sys_unqueuegui(x);
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
