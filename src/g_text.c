@@ -20,7 +20,7 @@
 #include "g_undo.h"
 
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */
-#define ATOM_RMARGIN 2
+#define ATOM_RMARGIN 2 /* 2 pixels smaller than object LMARGIN + RMARGIN */
 #define ATOM_BMARGIN 4 /* 1 pixel smaller than object TMARGIN+BMARGIN */
 
 #define MESSAGE_CLICK_WIDTH 5
@@ -684,7 +684,16 @@ static void gatom_bang(t_gatom *x)
     {
         int argc = binbuf_getnatom(x->a_text.te_binbuf);
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
-        outlet_list(x->a_text.te_outlet, &s_list, argc, argv);
+        if (x->a_text.te_outlet)
+            outlet_list(x->a_text.te_outlet, &s_list, argc, argv);
+        if (*x->a_expanded_to->s_name && x->a_expanded_to->s_thing)
+        {
+            if (x->a_symto == x->a_symfrom)
+                pd_error(x,
+                    "%s: atom with same send/receive name (infinite loop)",
+                        x->a_symto->s_name);
+            else pd_list(x->a_expanded_to->s_thing, &s_list, argc, argv);
+        }
     }
 }
 

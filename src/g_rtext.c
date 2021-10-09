@@ -348,7 +348,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
     *selend_b_p = x->x_selend;
-    *widthp += (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist);
+    *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
     *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
 }
 
