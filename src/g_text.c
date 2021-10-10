@@ -753,7 +753,7 @@ void gatom_key(void *z, t_floatarg f)
     char *buf;
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
-    if (c == 0 && x->a_flavor == A_FLOAT)
+    if (c == 0)
     {
         /* we're being notified that no more keys will come for this grab */
         if (t == x->a_glist->gl_editor->e_textedfor)
@@ -763,7 +763,7 @@ void gatom_key(void *z, t_floatarg f)
         gatom_senditup(x);
         gatom_redraw(&x->a_text.te_g, x->a_glist);
     }
-    else if (c == 0 || c == '\n')
+    else if (c == '\n')
     {
         if (t == x->a_glist->gl_editor->e_textedfor)
         {
