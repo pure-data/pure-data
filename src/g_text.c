@@ -537,6 +537,7 @@ typedef struct _gatom
     unsigned int a_shift:1;         /* was shift key down when drag started? */
     unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
     unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
+    unsigned int a_doubleclicked:1; /* 1 if dragging from a double click */
     t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
 } t_gatom;
 
@@ -775,7 +776,6 @@ void gatom_key(void *z, t_floatarg f)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
             text_setto(&x->a_text, x->a_glist, buf, bufsize);
-            rtext_activate(t, 0);
         }
         gatom_bang(x);
         if (c == 0)
@@ -808,15 +808,18 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
     t_gatom *x = (t_gatom *)z;
-    if (x->a_dragindex <0)
-        return;
     if (up != 0)
     {
-        rtext_retext(glist_findrtext(x->a_glist, &x->a_text));
+        t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
+        rtext_retext(t);
+        if (x->a_doubleclicked)    /* double click - activate text on release */
+            rtext_activate(t, 1);
     }
     else
     {
         t_atom *ap;
+        if (x->a_dragindex <0)
+            return;
         if (dy == 0 || x->a_dragindex < 0 ||
             x->a_dragindex >= binbuf_getnatom(x->a_text.te_binbuf)
             || binbuf_getvec(x->a_text.te_binbuf)[x->a_dragindex].a_type != A_FLOAT)
@@ -865,11 +868,6 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
         x->a_glist->gl_editor->e_ywas = ypos;
         return (1);
     }
-    if (dbl)    /* double click - activate text */
-    {
-        rtext_activate(t, 1);
-        return (1);
-    }
     if (x->a_flavor == A_FLOAT)
     {
         if (x->a_text.te_width == 1)
@@ -906,6 +904,7 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
         else x->a_dragindex = -1;
     }
     x->a_grabbed = 1;
+    x->a_doubleclicked = dbl;
     gatom_reborder(x);
     glist_grab(x->a_glist, &x->a_text.te_g, gatom_motion, gatom_key,
         xpos, ypos);
