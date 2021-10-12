@@ -425,7 +425,6 @@ static int aiff_readheader(t_soundfile *sf)
     if (bytelimit == AIFFMAXBYTES)
     {
         bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
-        if (bytelimit > AIFFMAXBYTES || bytelimit < 0)
             bytelimit = AIFFMAXBYTES;
     }
 

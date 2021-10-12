@@ -571,7 +571,7 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 static void gatom_redraw(t_gobj *client, t_glist *glist)
 {
     t_gatom *x = (t_gatom *)client;
-    if (glist_isvisible(glist))
+    if (glist->gl_editor)
         glist_retext(x->a_glist, &x->a_text);
 }
 
