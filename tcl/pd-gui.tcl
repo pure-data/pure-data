@@ -438,30 +438,37 @@ proc init_for_platform {} {
 # official GNU gettext msgcat shortcut
 proc _ {s} {return [::msgcat::mc $s]}
 
-proc load_locale {} {
-    # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
-    # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
-    # the Terminal, and Windows doesn't have LANG, etc unless you manually set
-    # it up yourself.  Windows apps don't use the locale env vars usually.
-    if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
-        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
-        if {![catch "exec defaults read com.apple.dock loc" lang]} {
-            ::msgcat::mclocale $lang
-        } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
-            ::msgcat::mclocale $lang
+proc load_locale {{lang ""}} {
+    set podir [file join [file dirname [info script]] .. po]
+    if { $lang == "" } {
+        # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
+        # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
+        # the Terminal, and Windows doesn't have LANG, etc unless you manually set
+        # it up yourself.  Windows apps don't use the locale env vars usually.
+        if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
+            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
+            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
+            if {![catch "exec defaults read com.apple.dock loc" lang]} {
+                ::msgcat::mclocale $lang
+            } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
+                ::msgcat::mclocale $lang
+            }
+        } elseif {$::tcl_platform(platform) eq "windows"} {
+            # using LANG on Windows is useful for easy debugging
+            if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
+                ::msgcat::mclocale $::env(LANG)
+            } elseif {![catch {package require registry}]} {
+                ::msgcat::mclocale [string tolower \
+                                        [string range \
+                                             [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
+            }
         }
-    } elseif {$::tcl_platform(platform) eq "windows"} {
-        # using LANG on Windows is useful for easy debugging
-        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-            ::msgcat::mclocale $::env(LANG)
-        } elseif {![catch {package require registry}]} {
-            ::msgcat::mclocale [string tolower \
-                                    [string range \
-                                         [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-        }
+    } {
+        ::msgcat::mclocale $lang
     }
-    ::msgcat::mcload [file join [file dirname [info script]] .. po]
+
+    ::msgcat::mcload $podir
+
 
     ##--moo: force default system and stdio encoding to UTF-8
     encoding system utf-8
