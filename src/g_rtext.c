@@ -300,10 +300,10 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         *outchars_b_p = x->x_text->te_width;
         goto done;
     giveup:
-            /* give up and bash it to "+" or "-" */
-        strcpy(tempbuf, (binbuf_getvec(x->x_text->te_binbuf)->a_w.w_float < 0 ?
-            "-" : "+"));
-        *outchars_b_p = 1;
+            /* give up and bash last char to '>' */
+        tempbuf[x->x_text->te_width-1] = '>';
+        tempbuf[x->x_text->te_width] = 0;
+        *outchars_b_p = x->x_text->te_width;
     done: ;
         *indexp = findx;
         *widthp = x->x_text->te_width * fontwidth;
@@ -329,7 +329,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                 break;
             }
             memcpy(tempbuf + prev_b, x->x_buf + prev_b, *outchars_b_p - prev_b);
-                /* if box is full and there's more, bash last char to '+' */
+                /* if box is full and there's more, bash last char to '>' */
             if (outchars_c == widthlimit_c-1 && x->x_bufsize > *(outchars_b_p)
                  && (x->x_buf[*(outchars_b_p)] != ' ' ||
                     x->x_bufsize > *(outchars_b_p)+1))
