@@ -2705,7 +2705,7 @@ static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
             TEMPLATE->drawnumber_motion_glist);
 }
 
-static void drawnumber_key(void *z, t_floatarg fkey)
+static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     int key = fkey;

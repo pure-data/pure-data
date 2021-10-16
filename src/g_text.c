@@ -744,7 +744,7 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
-void gatom_key(void *z, t_floatarg f)
+void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
     int c = f, bufsize, i;
@@ -799,7 +799,7 @@ void gatom_key(void *z, t_floatarg f)
             c == '$' | c == '\\'))
                 rtext_key(t, '\\', &s_);
             /* and at last, insert the character */
-        rtext_key(t, c, &s_);
+        rtext_key(t, c, keysym);
     }
 }
 
