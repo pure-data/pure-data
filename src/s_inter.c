@@ -39,6 +39,7 @@ that didn't really belong anywhere. */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <glob.h>
+#include <TargetConditionals.h>
 #else
 #include <stdlib.h>
 #endif
@@ -1045,6 +1046,8 @@ static void sys_init_deken(void)
 
 static int sys_do_startgui(const char *libdir)
 {
+#if TARGET_OS_WATCH /* fork() and execl() are marked __WATCHOS_PROHIBITED so they are unavailable in watchOS. */
+#else
     char quotebuf[MAXPDSTRING];
     char apibuf[256], apibuf2[256];
     struct addrinfo *ailist = NULL, *ai;
@@ -1371,6 +1374,7 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
+#endif /* !TARGET_OS_WATCH */
     return (0);
 }
 
