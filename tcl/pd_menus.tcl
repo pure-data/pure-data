@@ -4,6 +4,7 @@
 package provide pd_menus 0.1
 
 package require pd_menucommands
+package require pd_connect
 
 # TODO figure out Undo/Redo/Cut/Copy/Paste state changes for menus
 
@@ -668,7 +669,7 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {pdsend "pd verifyquit"}
+        -command {::pd_connect::menu_quit}
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences
@@ -715,7 +716,7 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
-        -command {pdsend "pd verifyquit"}
+        -command {::pd_connect::menu_quit}
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences

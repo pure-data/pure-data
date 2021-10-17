@@ -53,7 +53,7 @@ typedef SSIZE_T ssize_t;
 typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
-    struct _soundfile_type *sf_type; /**< type implementation                   */
+    struct _soundfile_type *sf_type; /**< type implementation             */
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */

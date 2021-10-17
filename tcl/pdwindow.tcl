@@ -1,6 +1,8 @@
 
 package provide pdwindow 0.1
 
+package require pd_connect
+
 namespace eval ::pdwindow:: {
     variable maxlogbuffer 21000 ;# if the logbuffer grows beyond this number, cut it
     variable keeplogbuffer 1000 ;# if the logbuffer gets automatically cut, keep this many elements
@@ -284,7 +286,7 @@ proc ::pdwindow::pdwindow_bindings {} {
     } else {
         # TODO should it possible to close the Pd window and keep Pd open?
         bind .pdwindow <$::modifier-Key-w>   "wm iconify .pdwindow"
-        wm protocol .pdwindow WM_DELETE_WINDOW "pdsend \"pd verifyquit\""
+        wm protocol .pdwindow WM_DELETE_WINDOW "::pd_connect::menu_quit"
     }
 }
 

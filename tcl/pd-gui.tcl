@@ -847,8 +847,8 @@ proc main {argc argv} {
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
         [string map {\{ "" \} ""} $::pd_startup_args]
-        puts stderr [concat "args =" [concat $::pd_startup_args]]
-        exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &
+        ::pd_connect::set_pid \
+            [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)

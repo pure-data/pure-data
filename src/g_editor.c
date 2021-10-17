@@ -2202,7 +2202,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         /* if keyboard was grabbed, notify grabber and cancel the grab */
     if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
     {
-        (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, 0);
+        (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, &s_, 0);
         glist_grab(x, 0, 0, 0, 0, 0);
     }
 
@@ -2246,7 +2246,6 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             {
                 char *buf;
                 int bufsize;
-                post("zzz");
                 rtext_gettext(x->gl_editor->e_textedfor, &buf, &bufsize);
                 text_setto(hitobj, x, buf, bufsize);
                 rtext_activate(x->gl_editor->e_textedfor, 0);
@@ -3025,7 +3024,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         if (x->gl_editor->e_grab
             && x->gl_editor->e_keyfn && keynum)
                 (* x->gl_editor->e_keyfn)
-                    (x->gl_editor->e_grab, (t_float)keynum);
+                    (x->gl_editor->e_grab, gotkeysym, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
                it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum

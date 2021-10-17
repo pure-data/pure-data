@@ -25,7 +25,7 @@
 
 /*------------------ global functions -------------------------*/
 
-static void my_numbox_key(void *z, t_floatarg fkey);
+static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey);
 static void my_numbox_draw_update(t_gobj *client, t_glist *glist);
 
 /* ------------ nbx gui-my number box ----------------------- */
@@ -726,7 +726,7 @@ static void my_numbox_loadbang(t_my_numbox *x, t_floatarg action)
     }
 }
 
-static void my_numbox_key(void *z, t_floatarg fkey)
+static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
     t_my_numbox *x = z;
     char c = fkey;

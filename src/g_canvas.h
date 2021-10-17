@@ -63,7 +63,7 @@ typedef struct _updateheader
     /* types to support glists grabbing mouse motion or keys from parent */
 typedef void (*t_glistmotionfn)(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up);
-typedef void (*t_glistkeyfn)(void *z, t_floatarg key);
+typedef void (*t_glistkeyfn)(void *z, t_symbol *keysym, t_floatarg key);
 
 EXTERN_STRUCT _rtext;
 #define t_rtext struct _rtext
