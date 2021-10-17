@@ -22,8 +22,6 @@
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */
 
-#define INBUFSIZE 4096
-
 /* ----------------------------- helpers ------------------------- */
 
 void socketreceiver_free(t_socketreceiver *x);
@@ -118,7 +116,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char inbuf[INBUFSIZE];
+    unsigned char *inbuf = sys_getrecvbuf(0);
     int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
@@ -130,10 +128,10 @@ static void netsend_readbin(t_netsend *x, int fd)
     while (1)
     {
         if (x->x_protocol == SOCK_DGRAM)
-            ret = (int)recvfrom(fd, inbuf, INBUFSIZE, 0,
+            ret = (int)recvfrom(fd, inbuf, NET_MAXPACKETSIZE, 0,
                 (struct sockaddr *)&fromaddr, &fromaddrlen);
         else
-            ret = (int)recv(fd, inbuf, INBUFSIZE, 0);
+            ret = (int)recv(fd, inbuf, NET_MAXPACKETSIZE, 0);
         if (ret <= 0)
         {
             if (ret < 0)
@@ -163,11 +161,11 @@ static void netsend_readbin(t_netsend *x, int fd)
             if (x->x_fromout)
                 outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
                 /* handle too large UDP packets */
-            if (ret > INBUFSIZE)
+            if (ret > NET_MAXPACKETSIZE)
             {
                 post("warning: incoming UDP packet truncated from %d to %d bytes.",
-                    ret, INBUFSIZE);
-                ret = INBUFSIZE;
+                    ret, NET_MAXPACKETSIZE);
+                ret = NET_MAXPACKETSIZE;
             }
             ap = (t_atom *)alloca(ret * sizeof(t_atom));
             for (i = 0; i < ret; i++)
@@ -175,7 +173,7 @@ static void netsend_readbin(t_netsend *x, int fd)
             outlet_list(x->x_msgout, 0, ret, ap);
             readbytes += ret;
             /* throttle */
-            if (readbytes >= INBUFSIZE)
+            if (readbytes >= NET_MAXPACKETSIZE)
                 return;
             /* check for pending UDP packets */
             if (socket_bytes_available(fd) <= 0)
