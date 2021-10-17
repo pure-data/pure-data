@@ -2,6 +2,7 @@ package provide pd_bindings 0.1
 
 package require pd_menucommands
 package require dialog_find
+package require pd_connect
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -111,7 +112,7 @@ proc ::pd_bindings::global_bindings {} {
     if {$::windowingsystem eq "aqua"} {
          # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+            bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
             bind_capslock all $::modifier-Key m       {menu_minimize %W}
             bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
@@ -126,7 +127,7 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
-        bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+        bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
         bind_capslock all $::modifier-Key m       {menu_minimize %W}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
