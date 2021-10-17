@@ -37,7 +37,6 @@ PLIST_BUDDY=/usr/libexec/PlistBuddy
 #----------------------------------------------------------
 help() {
 cat <<EOF
-
 Usage: osx-app.sh [OPTIONS] [VERSION]
 
   Creates a Pd .app bundle for macOS using a Tk Wish.app wrapper

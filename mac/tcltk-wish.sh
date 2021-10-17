@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 # Downloads and builds a Wish.app with with a
 # chosen Tcl/TK framework version.
@@ -37,7 +37,7 @@ CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
 # Help message
 #----------------------------------------------------------
 help() {
-echo -e "
+cat <<EOF
 Usage: tcltk-wish.sh [OPTIONS] VERSION
 
   Downloads and builds a Wish-VERSION.app for macOS
@@ -49,7 +49,7 @@ Options:
 
   --arch ARCH         choose a specific arch ie. i386, x86_64
   
-  --universal         \"universal\" multi-arch build:
+  --universal         "universal" multi-arch build:
                       i386 & x86_64 (& ppc if 10.6 SDK found)
 
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
@@ -94,7 +94,8 @@ Examples:
     # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
     # note: --leave ensures the source trees are not deleted after building
     tcltk-wish.sh --build --leave 8.5.19
-"
+
+EOF
 }
 
 # Parse command line arguments
@@ -106,7 +107,7 @@ while [ "$1" != "" ] ; do
             exit 0
             ;;
         --arch)
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "--arch option requires an ARCH argument"
                 exit 1
             fi
@@ -140,7 +141,7 @@ while [ "$1" != "" ] ; do
 done
 
 # check for required version argument
-if [ "$1" == "" ] ; then
+if [ "$1" = "" ] ; then
     echo "Usage: tcltk-wish.sh [OPTIONS] VERSION"
     exit 1
 fi
@@ -163,10 +164,10 @@ fi
 tcldir=tcl${TCLTK}
 tkdir=tk${TCLTK}
 
-if [[ $DOWNLOAD == true ]] ; then
+if [ $DOWNLOAD = true ] ; then
     echo "==== Downloading Tcl/Tk $TCLTK"
 
-    if [[ $GIT == true ]] ; then
+    if [ $GIT = true ] ; then
 
         # shallow clone sources, pass remaining args to git
         git clone --depth 1 https://github.com/tcltk/tcl.git tcl${TCLTK} $@
@@ -195,19 +196,19 @@ else
     fi
 fi
 
-if [[ $BUILD == false ]] ; then
+if [ $BUILD = false ] ; then
     echo  "==== Downloaded sources to $tcldir $tkdir"
     exit 0
 fi
 
 # apply patches, note: this probably can't handle filenames with spaces
 # temp disable exit on error since the exit value of patch --dry-run is used
-if [[ $PATCHES == true ]] ; then
+if [ $PATCHES = true ] ; then
     set +e
     for p in $(find ./patches -type f -name "tcl${TCLTK}*.patch") ; do
         cd tcl${TCLTK}
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
-        if [[ $? == 0 ]] ; then
+        if [ $? = 0 ] ; then
             echo "==== Applying $p"
             patch -p1 < "../${p}"
         fi
@@ -216,7 +217,7 @@ if [[ $PATCHES == true ]] ; then
     for p in $(find ./patches -type f -name "tk${TCLTK}*.patch") ; do
         cd tk${TCLTK}
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
-        if [[ $? == 0  ]] ; then
+        if [ $? = 0 ] ; then
             echo "==== Applying $p"
             patch -p1 < "../${p}"
         fi
@@ -233,7 +234,7 @@ if [ "$ARCH" != "" ] ; then
 fi
 
 # try a universal build
-if [ $UNIVERSAL == true ] ; then
+if [ $UNIVERSAL = true ] ; then
     CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
     # check if the 10.6 SDK is available, if so we can build for ppc
     if [ xcodebuild -version -sdk macosx10.6 Path >/dev/null 2>&1 ] ; then
@@ -255,7 +256,7 @@ make -C ${tkdir}/macosx  install-embedded INSTALL_ROOT=`pwd`/embedded
 mv embedded/Applications/Utilities/Wish.app $WISH
 
 # finish up
-if [[ $LEAVE == false ]] ; then
+if [ $LEAVE = false ] ; then
     rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
     rm -rf build embedded
 fi
