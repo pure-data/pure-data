@@ -1868,11 +1868,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
             canvas_create_editor(x);
-            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
-                (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                x->gl_edit);
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
+            {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d {} %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    x->gl_edit);
+            } else {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    (int)(x->gl_screenx1), (int)(x->gl_screeny1),
+                    x->gl_edit);
+            }
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
             while (c->gl_owner && !c->gl_isclone) {
@@ -2355,6 +2363,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_onmotion = MA_CONNECT;
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
+
+                        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
                             ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
                             x, xpos, ypos, xpos, ypos,
@@ -2594,7 +2604,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
-    if (doit) sys_vgui(".x%lx.c delete x\n", x);
+    if (doit) {
+        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 1\n", x);
+        sys_vgui(".x%lx.c delete x\n", x);
+    }
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
                   x, x->gl_editor->e_xwas,
                   x->gl_editor->e_ywas, xpos, ypos);
@@ -4281,14 +4294,30 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (EDITOR->paste_canvas == x) whoout += EDITOR->paste_onset,
         whoin += EDITOR->paste_onset;
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) goto bad; /* bug fix thanks to Hannes */
+        if (!src->g_next) {
+            src = NULL;
+            logpost(sink, 3, "cannot connect non-existing object");
+            goto bad; /* bug fix thanks to Hannes */
+        }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) goto bad;
+        if (!sink->g_next) {
+            sink = NULL;
+            logpost(src, 3, "cannot connect to non-existing object");
+            goto bad;
+        }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
-        !(objsink = pd_checkobject(&sink->g_pd)))
-            goto bad;
+        !(objsink = pd_checkobject(&sink->g_pd))) {
+        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        goto bad;
+    }
+
+        /* check if objects are already connected */
+    if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
+        logpost(src, 3, "io pair already connected");
+        goto bad;
+    }
 
         /* if object creation failed, make dummy inlets or outlets
            as needed */
@@ -4742,11 +4771,10 @@ static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
             gobj_displace(y, x, nx1-x1, ny1-y1);
         }
     }
-    if (glist_isvisible(x))
-        glist_redraw(x);
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_checkglist(&y->g_pd)  && !canvas_isabstraction((t_canvas *)y))
             canvas_dofont((t_canvas *)y, font, xresize, yresize);
+    if(x->gl_havewindow) canvas_redraw(x);
 }
 
     /* canvas_menufont calls up a TK dialog which calls this back */
@@ -4766,6 +4794,8 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
+    if ((realresx != 1 || realresx != 1) || (oldfont != (int)font))
+        canvas_dirty(x2, 1);
     canvas_undo_add(x2, UNDO_FONT, "font",
         canvas_undo_set_font(x2, oldfont, realresize, whichresize));
 

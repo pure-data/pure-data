@@ -56,8 +56,8 @@ static void *table_donew(t_symbol *s, int size, int save, int savesize,
     }
     if (size < 1)
         size = 100;
-    SETFLOAT(a, 0);
-    SETFLOAT(a+1, 50);
+    SETFLOAT(a, GLIST_DEFCANVASXLOC);
+    SETFLOAT(a+1, GLIST_DEFCANVASYLOC);
     SETFLOAT(a+2, xpix + 100);
     SETFLOAT(a+3, ypix + 100);
     SETSYMBOL(a+4, s);

@@ -365,9 +365,11 @@ proc ::pd_menus::build_help_menu {mymenu} {
         -command {menu_objectlist}
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
-        -command {menu_openfile {http://puredata.info}}
+        -command {menu_openfile {https://puredata.info}}
+    $mymenu add command -label [_ "Check for updates"] -command {menu_openfile \
+        {https://pdlatest.puredata.info}}
     $mymenu add command -label [_ "Report a bug"] -command {menu_openfile \
-        {http://bugs.puredata.info}}
+        {https://bugs.puredata.info}}
 }
 
 #------------------------------------------------------------------------------#

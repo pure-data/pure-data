@@ -229,15 +229,36 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     t_binbuf *b = binbuf_new();
     int xpix, ypix;
 
+    // enable autoconnect
+    int connectme, indx, nobj;
+    canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
+    // align vsl and hsl like others objects
+    if (guiobjname== gensym("hsl"))
+    {
+        xpix+=3;
+    }
+    else if (guiobjname== gensym("vsl"))
+    {
+        ypix+=3;
+    }
+
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
-    glist_noselect(gl);
+
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
-    glist_getnextxy(gl, &xpix, &ypix);
-    canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
-    canvas_startmotion(glist_getcanvas(gl));
-    canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
-        (void *)canvas_undo_set_create(glist_getcanvas(gl)));
+    canvas_objtext(gl,  xpix, ypix, 0, 1, b);
+
+    if (connectme)
+    {
+        canvas_connect(gl, indx, 0, nobj, 0);
+    }
+    else
+    {
+        canvas_startmotion(glist_getcanvas(gl));
+    }
+    if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
+	canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
+           (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
 
 void canvas_bng(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
@@ -555,7 +576,7 @@ static t_symbol *gatom_escapit(t_symbol *s)
         shmo[99] = 0;
         return (gensym(shmo));
     }
-    else return (iemgui_dollar2raute(s));
+    else return s;
 }
 
     /* undo previous operation: strip leading "-" if found. */
@@ -563,7 +584,7 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if (*s->s_name == '-')
         return (gensym(s->s_name+1));
-    else return (iemgui_raute2dollar(s));
+    else return s;
 }
 
 static void gatom_redraw(t_gobj *client, t_glist *glist)

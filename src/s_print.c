@@ -25,7 +25,7 @@ char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     while(1)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}') {
+        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']') {
             dst[ptout++] = '\\';
             if (dstlen && ptout >= dstlen){
                 dst[ptout-1] = 0;
