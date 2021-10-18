@@ -581,7 +581,6 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     set ::font_measured [fit_font_into_metrics $::font_family $::font_weight $::font_metrics]
     set ::font_zoom2_measured [fit_font_into_metrics $::font_family $::font_weight $::font_zoom2_metrics]
-    ::pd_guiprefs::init
     pdsend "pd init [enquote_path [pwd]] $oldtclversion \
         $::font_measured $::font_zoom2_measured"
     ::pd_bindings::class_bindings
@@ -831,13 +830,15 @@ proc load_startup_plugins {} {
 # ------------------------------------------------------------------------------
 # main
 proc main {argc argv} {
+    tk appname pd-gui
+
     set ::windowingsystem [tk windowingsystem]
     set ::platform $::tcl_platform(os)
     if { $::tcl_platform(platform) eq "windows"} {
        set ::platform W32
     }
 
-    tk appname pd-gui
+    ::pd_guiprefs::init
     load_locale
     parse_args $argc $argv
     check_for_running_instances
