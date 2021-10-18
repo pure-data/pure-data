@@ -41,6 +41,7 @@ dist_libpdtcl_DATA = \
     pd_guiprefs.tcl \
     pd_menucommands.tcl \
     pd_menus.tcl \
+    pdtcl_compat.tcl \
     pdtk_canvas.tcl \
     pdtk_text.tcl \
     pdtk_textwindow.tcl \
