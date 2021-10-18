@@ -54,6 +54,7 @@ package require pdtk_canvas
 package require pdtk_text
 package require pdtk_textwindow
 package require pd_guiprefs
+package require pd_i18n
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
@@ -93,6 +94,7 @@ namespace import ::dialog_midi::pdtk_midi_dialog
 namespace import ::dialog_midi::pdtk_alsa_midi_dialog
 namespace import ::dialog_path::pdtk_path_dialog
 namespace import ::dialog_startup::pdtk_startup_dialog
+namespace import ::pd_i18n::_
 
 # hack - these should be better handled in the C code
 namespace import ::dialog_array::pdtk_array_listview_new
@@ -435,41 +437,8 @@ proc init_for_platform {} {
 # ------------------------------------------------------------------------------
 # locale handling
 
-# official GNU gettext msgcat shortcut
-proc _ {s} {return [::msgcat::mc $s]}
-
-proc load_locale {{lang ""}} {
-    set podir [file join [file dirname [info script]] .. po]
-    if { $lang == "" } {
-        # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
-        # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
-        # the Terminal, and Windows doesn't have LANG, etc unless you manually set
-        # it up yourself.  Windows apps don't use the locale env vars usually.
-        if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
-            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
-            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
-            if {![catch "exec defaults read com.apple.dock loc" lang]} {
-                ::msgcat::mclocale $lang
-            } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
-                ::msgcat::mclocale $lang
-            }
-        } elseif {$::tcl_platform(platform) eq "windows"} {
-            # using LANG on Windows is useful for easy debugging
-            if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-                ::msgcat::mclocale $::env(LANG)
-            } elseif {![catch {package require registry}]} {
-                ::msgcat::mclocale [string tolower \
-                                        [string range \
-                                             [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-            }
-        }
-    } {
-        ::msgcat::mclocale $lang
-    }
-
-    ::msgcat::mcload $podir
-
-
+proc load_locale {} {
+    ::pd_i18n::load_locale
     ##--moo: force default system and stdio encoding to UTF-8
     encoding system utf-8
     fconfigure stderr -encoding utf-8
@@ -839,7 +808,8 @@ proc main {argc argv} {
     }
 
     ::pd_guiprefs::init
-    load_locale
+    ::pd_i18n::init
+
     parse_args $argc $argv
     check_for_running_instances
     set_pd_paths

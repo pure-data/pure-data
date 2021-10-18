@@ -39,6 +39,7 @@ dist_libpdtcl_DATA = \
     pd_deken.tcl \
     pd_docsdir.tcl \
     pd_guiprefs.tcl \
+    pd_i18n.tcl \
     pd_menucommands.tcl \
     pd_menus.tcl \
     pdtcl_compat.tcl \
