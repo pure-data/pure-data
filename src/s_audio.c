@@ -219,11 +219,11 @@ void sys_get_audio_settings(t_audiosettings *a)
 #endif
         initted = 1;
     }
+    *a = audio_nextsettings;
     if (audio_isfixedsr())
         a->a_srate = STUFF->st_dacsr;
     if (audio_isfixedblocksize())
         a->a_blocksize = audio_getfixedblocksize();
-    *a = audio_nextsettings;
 }
 
     /* Since the channel vector might be longer than the
@@ -242,7 +242,6 @@ void sys_set_audio_settings(t_audiosettings *a)
     int i;
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
-
     sys_get_audio_devs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, a->a_api);
 
