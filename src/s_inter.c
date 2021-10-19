@@ -1371,6 +1371,12 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
+
+    do {
+        t_audiosettings as;
+        sys_get_audio_settings(&as);
+        sys_vgui("set pd_whichapi %d\n", as.a_api);
+    } while(0);
     return (0);
 }
 
