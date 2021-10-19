@@ -1,783 +1,771 @@
-commit 5fd011f36911207193036cfd267475003f9c8dec
-Author: Miller Puckette <msp@ucsd.edu>
-Date:   Tue Jul 13 12:31:54 2021 -0700
+<html>
+<head>
 
-    add expr.html to 8.topics
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<title>Expr Family Objects by Shahrokh Yadegari</title>
+<style>
 
-diff --git a/doc/8.topics/expr.html b/doc/8.topics/expr.html
-new file mode 100755
-index 00000000..7db5a8f9
---- /dev/null
-+++ b/doc/8.topics/expr.html
-@@ -0,0 +1,771 @@
-+<html>
-+<head>
-+
-+<meta name="viewport" content="width=device-width, initial-scale=1.0">
-+<meta content="text/html; charset=utf-8" http-equiv="content-type">
-+<title>Expr Family Objects by Shahrokh Yadegari</title>
-+<style>
-+
-+HTML {
-+	background:  #ffffff;
-+	color: 	     #000000;
-+	font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
-+	line-height: 1.6;
-+}
-+BODY {
-+	width: 	    6.5in;
-+	margin-left: 0.8in;
-+	font-family: Helvetica, Arial, sans-serif;
-+	/*font-family: Times, Times New Roman, serif;*/
-+	}
-+H1 {
-+	font-size:   32.7pt;
-+	text-align:  center;
-+}
-+H2 {
-+	font-size:   22.7pt;
-+	text-align:  left;
-+}
-+H3 {
-+	font-size:   14.7pt;
-+	text-align:  left;
-+}
-+H4 {
-+	font-size:   12.7pt;
-+	text-align:  left;
-+}
-+H5 {
-+	font-size:   10.7pt;
-+	text-align:  left;
-+}
-+H6 {
-+	font-size:   10.7pt;
-+	text-align:  left;
-+}
-+PRE {
-+   font-size: 80%;
-+   background-color:rgb(240, 240, 240);
-+   text-align:  left;
-+   border-radius: 8px;
-+   padding: 8px;
-+}
-+
-+ol{
-+	font-size:   14.5pt;
-+	text-align:  left;
-+	line-height: 1.6;
-+	}
-+
-+
-+p{
-+	font-size:   12pt;
-+	text-align:  left;
-+	line-height: 1.6;
-+}
-+
-+
-+/* standard link */
-+
-+a:link {
-+    text-decoration: none;
-+	color: #333399;
-+}
-+
-+a:visited {
-+    text-decoration: none;
-+	color: #333399;
-+}
-+
-+a:hover {
-+    text-decoration: underline;
-+	/*color: grey;*/
-+	color: black;
-+	background-color:rgb(238, 238, 228);
-+}
-+
-+a:active {
-+    text-decoration: none;
-+	color: #333399;
-+}
-+
-+
-+/* green link (like a button) */
-+
-+a.green:link {
-+	font-family:sans-serif;
-+	background-color: #4CAF50; /* Green */
-+    border-radius: 4px;
-+    color: white;
-+    padding: 0px 8px ;
-+    text-align: center;
-+    text-decoration: none;
-+    display: inline-block;
-+    font-size: 80%;
-+
-+}
-+
-+a.green:hover {
-+    text-decoration: none;
-+	background-color: #4CAF50;
-+}
-+
-+a.green:visited {
-+	color: white;
-+}
-+
-+/* standard images */
-+
-+IMG {
-+
-+    display: block;
-+    margin: 0 auto;
-+	width: auto;
-+
-+
-+}
-+
-+mark {
-+background-color: rgb(255, 240, 179);
-+}
-+
-+p.fig {
-+text-align: center;
-+}
-+
-+
-+
-+
-+
-+
-+/* responsive css for small "devices" */
-+
-+@media screen and (max-device-width: 700px) {
-+    body {
-+    padding: 10px;
-+	width: 	    auto;
-+	margin-left: 6px;
-+    }
-+}
-+
-+/* responsive css for small "browser window" */
-+
-+@media screen and (max-width: 701px) {
-+    body {
-+    padding: 10px;
-+	width: 	    auto;
-+	margin-left: 6px;
-+    }
-+}
-+</style>
-+
-+</head>
-+<body>
-+
-+<h2>
-+<br>
-+<font face="Helvetica, Arial, sans-serif">Expr family objects by</font>
-+<font face="Helvetica, Arial, sans-serif"><a href="http://yadegari.org/"> Shahrokh  Yadegari</a>	</font></h2>
-+
-+<p>To see a directory listing of downloadable files, which also inlcudes older releases, <a href="http://yadegari.org/download"> click here</a>.<br>
-+<br> Back to the <a href="http://yadegari.org/software">Software Page</a>
-+ <br>
-+
-+<hr width="100%" size="2" align="left">
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+<h2 id="Expr..Expr...Fexpr.">Expr, Expr~, Fexpr~</h2>
-+
-+<p>Based on original sources from IRCAM&rsquo;s jMax
-+Released under BSD License.</p>
-+
-+<p>The <strong>expr</strong> family is a set of C-like expression evaluation objects for the graphical music language Pure Data. It used to come as an &lsquo;extra&rsquo; external, but it is now a built-in native object.</p>
-+
-+<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators . Multiple expressions separated by semicolon can be defined in a single expr object which result in multiple outlets. Expressoin are evaluated from right to left  (which means that the bottom expression defined will be the first executed.) Access to inlets in expr take a few different forms:</p>
-+
-+<ul>
-+<li>$i1 - $i9
-+the first nine inlets taken as integers</li>
-+<li>$f1 - $f9
-+the first nine inlets taken as floats</li>
-+<li>$s1 - $s9
-+the first nine inlets taken as symbols (currently symbols are used for table lookups)</li>
-+</ul>
-+
-+
-+<p>Tables and variables can be accessed the same way one dimensional arrays are accessed in C; for example, &ldquo;valx + 10&rdquo; will be evaluated to the value of variable &lsquo;valx&rsquo; + 10 (variables have to be defined using the &lsquo;value&rsquo; object) and &ldquo;tabname[5]&rdquo; will be evaluated to be the 5th element of table &ldquo;tabname&rdquo;. The name of the table can be a variable as well; for example &ldquo;$s2[5]&rdquo; will be evaluated to be the 5 element of the array whose symbol has been passed in inlet 2.</p>
-+
-+<p>Type conversion is done either automatically or explicitly by the use functions. See below for the list of functions.</p>
-+
-+<p><strong>expr~</strong> is designed to efficiently combine signal and control stream processing by vector operations on the basis of the audio buffer size of the environment. The operations, functions, and syntax for <strong>expr~</strong> is just like expr with the addition the <strong>$v</strong> variable for signal input. The accepted inlets for expr~ are as follows:</p>
-+
-+<ul>
-+<li>$i1 - $i9 the first nine inlets taken as integers</li>
-+<li>$f1 - $f9 the first nine inlets taken as floats</li>
-+<li>$s1 - $s9
-+the first nine inlets taken as symbols (currently symbols are used for table lookups)</li>
-+<li>$v1 - $v9
-+the first nine inlets taken as signals (vectors)</li>
-+</ul>
-+
-+
-+<p>The result of <strong>expr~</strong> is a vector. The left inlet has to be a vector and type conversions are done either automatically or by the use of functions.</p>
-+
-+<p>Note for MSP users : Currently in the MSP version all signal inputs should come first followed by other types of inlet. (There seems to be no way of mixing signal and other types of inlets in their order in Max/MSP, if you know otherwise , please let me know.) This means that signal inlets cannot be mixed with other types of inlets. For example, &ldquo;expr~ $v1<em>$f2</em>$v3 &rdquo; is not legal. The second and third inlet should be switched and &ldquo;expr~ $v1<em>$v2</em>$f3&rdquo; should be used.</p>
-+
-+<p><strong>fexpr~</strong> object provides a flexible mechanism for building FIR and IIR filters by evaluating expressions on a sample by sample basis and providing access to prior samples of the input and output audio streams. When fractional offset is used, fexpr~ uses linear interpolation to determine the value of the indexed sample. <strong>fexpr~</strong> evaluates the expression for every single sample and at every evaluation previous samples (limited by the audio vector size) can be accessed. $x is used to denote a singnal input whose samples we would like to access. The syntax is $x followed by the inlet number and indexed by brackets, for example $x1[-1] specifies the previous sample of the first inlet. Therefore, if we are to build a simple filter which replaces every sample by the average of that sample and its previous one, we would use <strong>&ldquo;fexpr~ ($x1[0]+$x1[-1])/2 &rdquo;</strong>. For ease of when the brackets are omitted, the current sample is implied, so we can right the previous filter expression as follows:  <strong>&ldquo; fexpr~ ($x1+$x1[-1])/2&rdquo;</strong>. To build IIR filters $y is used to access the previous samples of the output stream.</p>
-+
-+<ul>
-+<li>$i1 - $i9
-+the first nine inlets taken as integers</li>
-+<li>$f1 - $f9
-+the first nine inlets taken as floats</li>
-+<li>$s1 - $s9
-+the first nine inlets taken as symbols (currently symbols are used for table lookups</li>
-+<li>$x1[n] -$x9[n]
-+accessing samples of the first nine signal inlets (vectors) , where 0 &lt;= n &lt; -{vector size }</li>
-+<li>$y[n]
-+accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
-+</ul>
-+
-+
-+<p>The operators (listed from highest precedence to lowest) are as follows:</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th>  </th>
-+<th>  </th>
-+<th>  </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td>~ </td>
-+<td> One&rsquo;s complement</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>*</td>
-+<td> Multiply</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>/ </td>
-+<td>Divide</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>%</td>
-+<td> Modulo</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>+ </td>
-+<td>Add</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>- </td>
-+<td>Substract</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>&lt;&lt;</td>
-+<td> Shift Left</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td> >></td>
-+<td> Shift Right</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>&lt; </td>
-+<td>Less than (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>&lt;=</td>
-+<td> Less than or equal (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>> </td>
-+<td>Greater than (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td> >= </td>
-+<td>Greater than or equal (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td> == </td>
-+<td>Equal (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>!= </td>
-+<td>Not equal (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>&amp; </td>
-+<td>Bitwise And</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>^</td>
-+<td> Exclusive Or</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>| </td>
-+<td>Bitwise Or</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td> &amp;&amp;</td>
-+<td> Logical And (boolean)</td>
-+<td> </td>
-+</tr>
-+<tr>
-+<td>|| </td>
-+<td>Logical Or (boolean)</td>
-+<td> </td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<p>All expr family objects support a variety of functions as follows:</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th> Functions </th>
-+<th> # of Args </th>
-+<th> Description </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td> if () </td>
-+<td> 3 </td>
-+<td> conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4 </td>
-+</tr>
-+<tr>
-+<td> int () </td>
-+<td> 1 </td>
-+<td> convert to integer </td>
-+</tr>
-+<tr>
-+<td> rint ()</td>
-+<td> 1 </td>
-+<td> round a float to a nearby integer </td>
-+</tr>
-+<tr>
-+<td>float ()</td>
-+<td> 1 </td>
-+<td>convert to float </td>
-+</tr>
-+<tr>
-+<td>min ()</td>
-+<td>2</td>
-+<td>minumum</td>
-+</tr>
-+<tr>
-+<td>max ()</td>
-+<td>2</td>
-+<td>maximum</td>
-+</tr>
-+<tr>
-+<td>abs()</td>
-+<td>1</td>
-+<td>absolute value (added in version 0.3)</td>
-+</tr>
-+<tr>
-+<td>if()</td>
-+<td>3</td>
-+<td>conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>isinf()</td>
-+<td>1</td>
-+<td>is the value infinite (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>finite()</td>
-+<td>1</td>
-+<td>is the value finite (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>isnan</td>
-+<td>1</td>
-+<td>is the value non a number (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>copysign()</td>
-+<td>1</td>
-+<td>copy sign of a number(added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>imodf</td>
-+<td>1</td>
-+<td>   get signed intergar value from floating point number(added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>modf</td>
-+<td>1</td>
-+<td>get signed fractional value from floating-point number(added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>drem</td>
-+<td>2</td>
-+<td>floating-point remainder function (added in versio n 0.4)</td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<p>power functions</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th> Functions </th>
-+<th> # of Args </th>
-+<th> Description </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td>pow ()</td>
-+<td>2</td>
-+<td>raise to the power of {e.g., pow(x,y) is x to the power of y}</td>
-+</tr>
-+<tr>
-+<td>sqrt ()</td>
-+<td>1</td>
-+<td>square root</td>
-+</tr>
-+<tr>
-+<td>exp()</td>
-+<td>1</td>
-+<td>e raised to the power of the argument {e.g., exp(5.2) is e raised to the power of 5.2}</td>
-+</tr>
-+<tr>
-+<td>ln() and log()</td>
-+<td>1</td>
-+<td>natural log</td>
-+</tr>
-+<tr>
-+<td>log10()</td>
-+<td>1</td>
-+<td>log base 10</td>
-+</tr>
-+<tr>
-+<td>fact()</td>
-+<td>1</td>
-+<td>factorial</td>
-+</tr>
-+<tr>
-+<td>erf()</td>
-+<td>1</td>
-+<td>error function (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>erfc()</td>
-+<td>1</td>
-+<td>complementary error function (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>cbrt()</td>
-+<td>1</td>
-+<td>cube root (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>expm1()</td>
-+<td>1</td>
-+<td>exponential minus 1 (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>log1p()</td>
-+<td>1</td>
-+<td>logarithm of 1 plus (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>ldexp()</td>
-+<td>1</td>
-+<td>multiply floating-point number by integral power of 2 (added in version 0.4)</td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<p>Trigonometric</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th> Functions </th>
-+<th> # of Args </th>
-+<th> Description </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td>sin()</td>
-+<td>1</td>
-+<td>sine</td>
-+</tr>
-+<tr>
-+<td>cos()</td>
-+<td>1</td>
-+<td>cosine</td>
-+</tr>
-+<tr>
-+<td>tan()</td>
-+<td>1</td>
-+<td>tangent</td>
-+</tr>
-+<tr>
-+<td>asin()</td>
-+<td>1</td>
-+<td>arc sine</td>
-+</tr>
-+<tr>
-+<td>acos()</td>
-+<td>1</td>
-+<td>arc cosine</td>
-+</tr>
-+<tr>
-+<td>atan()</td>
-+<td>1</td>
-+<td>arc tangent</td>
-+</tr>
-+<tr>
-+<td>atan2()</td>
-+<td>2</td>
-+<td>arc tangent of 2 variables</td>
-+</tr>
-+<tr>
-+<td>sinh()</td>
-+<td>1</td>
-+<td>hyperbolic sine</td>
-+</tr>
-+<tr>
-+<td>cosh()</td>
-+<td>1</td>
-+<td>hyperbolic cosine</td>
-+</tr>
-+<tr>
-+<td>tanh()</td>
-+<td>1</td>
-+<td>hyperbolic tangent</td>
-+</tr>
-+<tr>
-+<td>asinh()</td>
-+<td>1</td>
-+<td>inverse hyperbolic sine</td>
-+</tr>
-+<tr>
-+<td>acosh()</td>
-+<td>1</td>
-+<td>inverse hyperbolic cosine</td>
-+</tr>
-+<tr>
-+<td>atan()</td>
-+<td>1</td>
-+<td>inverse hyperbolic tangent</td>
-+</tr>
-+<tr>
-+<td>floor()</td>
-+<td>1</td>
-+<td>largest integral value not greater than argument (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>ceil()</td>
-+<td>1</td>
-+<td>smallest integral value not less than argument (added in version 0.4)</td>
-+</tr>
-+<tr>
-+<td>fmod()</td>
-+<td>1</td>
-+<td> floating-point remainder function (added in version 0.4)</td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<p>Table Functions</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th> Functions </th>
-+<th> # of Args </th>
-+<th style="text-align:left;"> Description </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td>size()</td>
-+<td>1</td>
-+<td style="text-align:left;">size of a table</td>
-+</tr>
-+<tr>
-+<td>sum()</td>
-+<td>1</td>
-+<td style="text-align:left;">sum of all elements of a table</td>
-+</tr>
-+<tr>
-+<td>Sum()</td>
-+<td>3</td>
-+<td style="text-align:left;">sum of elements of a specified boundary of a table</td>
-+</tr>
-+<tr>
-+<td>avg()</td>
-+<td>1</td>
-+<td style="text-align:left;">averages all elements of a table</td>
-+</tr>
-+<tr>
-+<td>Avg()</td>
-+<td>3</td>
-+<td style="text-align:left;">averages elements of a specified boundary of a table</td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<p>Acoustics</p>
-+
-+<table>
-+<thead>
-+<tr>
-+<th> Functions </th>
-+<th> # of Args </th>
-+<th style="text-align:left;"> Description                              </th>
-+</tr>
-+</thead>
-+<tbody>
-+<tr>
-+<td> mtof()    </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert MIDI pitch to frequency in hertz </td>
-+</tr>
-+<tr>
-+<td> ftom()    </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert frequency in hertz to MIDI pitch </td>
-+</tr>
-+<tr>
-+<td> dbtorms() </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert db to rms                        </td>
-+</tr>
-+<tr>
-+<td> rmstodb() </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert rms to db                        </td>
-+</tr>
-+<tr>
-+<td> powtodb() </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert power to db                      </td>
-+</tr>
-+<tr>
-+<td> dbtopow() </td>
-+<td> 1         </td>
-+<td style="text-align:left;"> convert db to power                      </td>
-+</tr>
-+</tbody>
-+</table>
-+
-+
-+<h3 id="CHANGELOG:">CHANGELOG:</h3>
-+
-+<h3 id="New.Additions.in.version.0.57">New Additions in version 0.57</h3>
-+
-+<ul>
-+<li>fixed a bug in fact().</li>
-+<li>fact() (factorial) now calculates and returns its value in double</li>
-+<li>fixed the bad lvalue bug - &ldquo;4 + 5 = 3&rdquo; was not caught before</li>
-+<li>Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()</li>
-+</ul>
-+
-+
-+<h3 id="New.Additions.in.version.0.56">New Additions in version 0.56</h3>
-+
-+<ul>
-+<li>Fexpr~ now accepts a float in its first input.</li>
-+<li>Added avg() and Avg() back to the list of functions</li>
-+</ul>
-+
-+
-+<h3 id="New.Additions.in.version.0.55">New Additions in version 0.55</h3>
-+
-+<ul>
-+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
-+<li>The arrays now redraw after a store into one of their members</li>
-+<li>ex_if() (the &ldquo;if()&rdquo; function is reworked to only evaluate either the left or the right args depending on the truth  value of the condition. However, if the condition is an audio vector, both the left and the right are evaluated regardless.</li>
-+<li>priority of &lsquo;,&rsquo; and &lsquo;=&rsquo; was switched to fix the bug of using store &ldquo;=&rdquo; in functions with multiple arguments, which caused  an error during execution.</li>
-+<li>The number of inlet and outlets (MAX_VARS) is now set at 100</li>
-+</ul>
-+
-+
-+<h3 id="New.Additions.in.version.0.5">New Additions in version 0.5</h3>
-+
-+<ul>
-+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
-+<li>minor fixes/improvements.</li>
-+</ul>
-+
-+
-+<h3 id="New.Additions.in.version.0.4">New Additions in version 0.4</h3>
-+
-+<ul>
-+<li>Expr, expr~, and fexpr~ now support multiple expressions separated by semicolons which results in multiple outlets.</li>
-+<li>Variables are supported now in the same way they are supported in C.  - Variables have to be defined with the &ldquo;value&rdquo; object prior to execution.</li>
-+<li>A new if function  if (condition-expression, IfTure-expression, IfFalse-expression) has been added.</li>
-+<li>New math functions added.</li>
-+<li>New shorthand notations for fexpr~ have been added.
-+
-+<ul>
-+<li>$x ->$x1[0]     $x# -> $x#[0]</li>
-+<li>$y = $y1[-1] and $y# = $y#[-1]</li>
-+</ul>
-+</li>
-+<li>New &lsquo;set&rsquo; and &lsquo;clear&rsquo; methods were added for fexpr~
-+
-+<ul>
-+<li>clear - clears all the past input and output buffers</li>
-+<li>clear x# - clears all the past values of the #th input</li>
-+<li>clear y# - clears all the past values of the #th output</li>
-+<li>set x# val-1 val-2 &hellip; - sets as many supplied value of the         #th input;
-+e.g., &ldquo;set x2 3.4 0.4&rdquo;  - sets x2[-1]=3.4 and x2[-2]=0.4</li>
-+<li>set y# val-1 val-2 &hellip; - sets as many supplied values of the #th output;
-+e.g, &ldquo;set y3 1.1 3.3 4.5&rdquo; -  sets y3[-1]=1.1 y3[-2]=3.3 and y3[-3]=4.5;</li>
-+<li>set val val &hellip; - sets the first past values of each output; e.g.,
-+e.g., &ldquo;set 0.1 2.2 0.4&rdquo;  - sets y1[-1]=0.1, y2[-1]=2.2, y3[-1]=0.4</li>
-+</ul>
-+</li>
-+</ul>
-+
-+</body>
-+</html>
+HTML {
+	background:  #ffffff;
+	color: 	     #000000;
+	font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
+	line-height: 1.6;
+}
+BODY {
+	width: 	    6.5in;
+	margin-left: 0.8in;
+	font-family: Helvetica, Arial, sans-serif;
+	/*font-family: Times, Times New Roman, serif;*/
+	}
+H1 {
+	font-size:   32.7pt;
+	text-align:  center;
+}
+H2 {
+	font-size:   22.7pt;
+	text-align:  left;
+}
+H3 {
+	font-size:   14.7pt;
+	text-align:  left;
+}
+H4 {
+	font-size:   12.7pt;
+	text-align:  left;
+}
+H5 {
+	font-size:   10.7pt;
+	text-align:  left;
+}
+H6 {
+	font-size:   10.7pt;
+	text-align:  left;
+}
+PRE {
+   font-size: 80%;
+   background-color:rgb(240, 240, 240);
+   text-align:  left;
+   border-radius: 8px;
+   padding: 8px;
+}
+
+ol{
+	font-size:   14.5pt;
+	text-align:  left;
+	line-height: 1.6;
+	}
+
+
+p{
+	font-size:   12pt;
+	text-align:  left;
+	line-height: 1.6;
+}
+
+
+/* standard link */
+
+a:link {
+    text-decoration: none;
+	color: #333399;
+}
+
+a:visited {
+    text-decoration: none;
+	color: #333399;
+}
+
+a:hover {
+    text-decoration: underline;
+	/*color: grey;*/
+	color: black;
+	background-color:rgb(238, 238, 228);
+}
+
+a:active {
+    text-decoration: none;
+	color: #333399;
+}
+
+
+/* green link (like a button) */
+
+a.green:link {
+	font-family:sans-serif;
+	background-color: #4CAF50; /* Green */
+    border-radius: 4px;
+    color: white;
+    padding: 0px 8px ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 80%;
+
+}
+
+a.green:hover {
+    text-decoration: none;
+	background-color: #4CAF50;
+}
+
+a.green:visited {
+	color: white;
+}
+
+/* standard images */
+
+IMG {
+
+    display: block;
+    margin: 0 auto;
+	width: auto;
+
+
+}
+
+mark {
+background-color: rgb(255, 240, 179);
+}
+
+p.fig {
+text-align: center;
+}
+
+
+
+
+
+
+/* responsive css for small "devices" */
+
+@media screen and (max-device-width: 700px) {
+    body {
+    padding: 10px;
+	width: 	    auto;
+	margin-left: 6px;
+    }
+}
+
+/* responsive css for small "browser window" */
+
+@media screen and (max-width: 701px) {
+    body {
+    padding: 10px;
+	width: 	    auto;
+	margin-left: 6px;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<h2>
+<br>
+<font face="Helvetica, Arial, sans-serif">Expr family objects by</font>
+<font face="Helvetica, Arial, sans-serif"><a href="http://yadegari.org/"> Shahrokh  Yadegari</a>	</font></h2>
+
+<p>To see a directory listing of downloadable files, which also inlcudes older releases, <a href="http://yadegari.org/download"> click here</a>.<br>
+<br> Back to the <a href="http://yadegari.org/software">Software Page</a>
+ <br>
+
+<hr width="100%" size="2" align="left">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Expr..Expr...Fexpr.">Expr, Expr~, Fexpr~</h2>
+
+<p>Based on original sources from IRCAM&rsquo;s jMax
+Released under BSD License.</p>
+
+<p>The <strong>expr</strong> family is a set of C-like expression evaluation objects for the graphical music language Pure Data. It used to come as an &lsquo;extra&rsquo; external, but it is now a built-in native object.</p>
+
+<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators . Multiple expressions separated by semicolon can be defined in a single expr object which result in multiple outlets. Expressoin are evaluated from right to left  (which means that the bottom expression defined will be the first executed.) Access to inlets in expr take a few different forms:</p>
+
+<ul>
+<li>$i1 - $i9
+the first nine inlets taken as integers</li>
+<li>$f1 - $f9
+the first nine inlets taken as floats</li>
+<li>$s1 - $s9
+the first nine inlets taken as symbols (currently symbols are used for table lookups)</li>
+</ul>
+
+
+<p>Tables and variables can be accessed the same way one dimensional arrays are accessed in C; for example, &ldquo;valx + 10&rdquo; will be evaluated to the value of variable &lsquo;valx&rsquo; + 10 (variables have to be defined using the &lsquo;value&rsquo; object) and &ldquo;tabname[5]&rdquo; will be evaluated to be the 5th element of table &ldquo;tabname&rdquo;. The name of the table can be a variable as well; for example &ldquo;$s2[5]&rdquo; will be evaluated to be the 5 element of the array whose symbol has been passed in inlet 2.</p>
+
+<p>Type conversion is done either automatically or explicitly by the use functions. See below for the list of functions.</p>
+
+<p><strong>expr~</strong> is designed to efficiently combine signal and control stream processing by vector operations on the basis of the audio buffer size of the environment. The operations, functions, and syntax for <strong>expr~</strong> is just like expr with the addition the <strong>$v</strong> variable for signal input. The accepted inlets for expr~ are as follows:</p>
+
+<ul>
+<li>$i1 - $i9 the first nine inlets taken as integers</li>
+<li>$f1 - $f9 the first nine inlets taken as floats</li>
+<li>$s1 - $s9
+the first nine inlets taken as symbols (currently symbols are used for table lookups)</li>
+<li>$v1 - $v9
+the first nine inlets taken as signals (vectors)</li>
+</ul>
+
+
+<p>The result of <strong>expr~</strong> is a vector. The left inlet has to be a vector and type conversions are done either automatically or by the use of functions.</p>
+
+<p>Note for MSP users : Currently in the MSP version all signal inputs should come first followed by other types of inlet. (There seems to be no way of mixing signal and other types of inlets in their order in Max/MSP, if you know otherwise , please let me know.) This means that signal inlets cannot be mixed with other types of inlets. For example, &ldquo;expr~ $v1<em>$f2</em>$v3 &rdquo; is not legal. The second and third inlet should be switched and &ldquo;expr~ $v1<em>$v2</em>$f3&rdquo; should be used.</p>
+
+<p><strong>fexpr~</strong> object provides a flexible mechanism for building FIR and IIR filters by evaluating expressions on a sample by sample basis and providing access to prior samples of the input and output audio streams. When fractional offset is used, fexpr~ uses linear interpolation to determine the value of the indexed sample. <strong>fexpr~</strong> evaluates the expression for every single sample and at every evaluation previous samples (limited by the audio vector size) can be accessed. $x is used to denote a singnal input whose samples we would like to access. The syntax is $x followed by the inlet number and indexed by brackets, for example $x1[-1] specifies the previous sample of the first inlet. Therefore, if we are to build a simple filter which replaces every sample by the average of that sample and its previous one, we would use <strong>&ldquo;fexpr~ ($x1[0]+$x1[-1])/2 &rdquo;</strong>. For ease of when the brackets are omitted, the current sample is implied, so we can right the previous filter expression as follows:  <strong>&ldquo; fexpr~ ($x1+$x1[-1])/2&rdquo;</strong>. To build IIR filters $y is used to access the previous samples of the output stream.</p>
+
+<ul>
+<li>$i1 - $i9
+the first nine inlets taken as integers</li>
+<li>$f1 - $f9
+the first nine inlets taken as floats</li>
+<li>$s1 - $s9
+the first nine inlets taken as symbols (currently symbols are used for table lookups</li>
+<li>$x1[n] -$x9[n]
+accessing samples of the first nine signal inlets (vectors) , where 0 &lt;= n &lt; -{vector size }</li>
+<li>$y[n]
+accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
+</ul>
+
+
+<p>The operators (listed from highest precedence to lowest) are as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th>  </th>
+<th>  </th>
+<th>  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~ </td>
+<td> One&rsquo;s complement</td>
+<td> </td>
+</tr>
+<tr>
+<td>*</td>
+<td> Multiply</td>
+<td> </td>
+</tr>
+<tr>
+<td>/ </td>
+<td>Divide</td>
+<td> </td>
+</tr>
+<tr>
+<td>%</td>
+<td> Modulo</td>
+<td> </td>
+</tr>
+<tr>
+<td>+ </td>
+<td>Add</td>
+<td> </td>
+</tr>
+<tr>
+<td>- </td>
+<td>Substract</td>
+<td> </td>
+</tr>
+<tr>
+<td>&lt;&lt;</td>
+<td> Shift Left</td>
+<td> </td>
+</tr>
+<tr>
+<td> >></td>
+<td> Shift Right</td>
+<td> </td>
+</tr>
+<tr>
+<td>&lt; </td>
+<td>Less than (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td> Less than or equal (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td>> </td>
+<td>Greater than (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td> >= </td>
+<td>Greater than or equal (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td> == </td>
+<td>Equal (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td>!= </td>
+<td>Not equal (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td>&amp; </td>
+<td>Bitwise And</td>
+<td> </td>
+</tr>
+<tr>
+<td>^</td>
+<td> Exclusive Or</td>
+<td> </td>
+</tr>
+<tr>
+<td>| </td>
+<td>Bitwise Or</td>
+<td> </td>
+</tr>
+<tr>
+<td> &amp;&amp;</td>
+<td> Logical And (boolean)</td>
+<td> </td>
+</tr>
+<tr>
+<td>|| </td>
+<td>Logical Or (boolean)</td>
+<td> </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>All expr family objects support a variety of functions as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th> Functions </th>
+<th> # of Args </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> if () </td>
+<td> 3 </td>
+<td> conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4 </td>
+</tr>
+<tr>
+<td> int () </td>
+<td> 1 </td>
+<td> convert to integer </td>
+</tr>
+<tr>
+<td> rint ()</td>
+<td> 1 </td>
+<td> round a float to a nearby integer </td>
+</tr>
+<tr>
+<td>float ()</td>
+<td> 1 </td>
+<td>convert to float </td>
+</tr>
+<tr>
+<td>min ()</td>
+<td>2</td>
+<td>minumum</td>
+</tr>
+<tr>
+<td>max ()</td>
+<td>2</td>
+<td>maximum</td>
+</tr>
+<tr>
+<td>abs()</td>
+<td>1</td>
+<td>absolute value (added in version 0.3)</td>
+</tr>
+<tr>
+<td>if()</td>
+<td>3</td>
+<td>conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)</td>
+</tr>
+<tr>
+<td>isinf()</td>
+<td>1</td>
+<td>is the value infinite (added in version 0.4)</td>
+</tr>
+<tr>
+<td>finite()</td>
+<td>1</td>
+<td>is the value finite (added in version 0.4)</td>
+</tr>
+<tr>
+<td>isnan</td>
+<td>1</td>
+<td>is the value non a number (added in version 0.4)</td>
+</tr>
+<tr>
+<td>copysign()</td>
+<td>1</td>
+<td>copy sign of a number(added in version 0.4)</td>
+</tr>
+<tr>
+<td>imodf</td>
+<td>1</td>
+<td>   get signed intergar value from floating point number(added in version 0.4)</td>
+</tr>
+<tr>
+<td>modf</td>
+<td>1</td>
+<td>get signed fractional value from floating-point number(added in version 0.4)</td>
+</tr>
+<tr>
+<td>drem</td>
+<td>2</td>
+<td>floating-point remainder function (added in versio n 0.4)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>power functions</p>
+
+<table>
+<thead>
+<tr>
+<th> Functions </th>
+<th> # of Args </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pow ()</td>
+<td>2</td>
+<td>raise to the power of {e.g., pow(x,y) is x to the power of y}</td>
+</tr>
+<tr>
+<td>sqrt ()</td>
+<td>1</td>
+<td>square root</td>
+</tr>
+<tr>
+<td>exp()</td>
+<td>1</td>
+<td>e raised to the power of the argument {e.g., exp(5.2) is e raised to the power of 5.2}</td>
+</tr>
+<tr>
+<td>ln() and log()</td>
+<td>1</td>
+<td>natural log</td>
+</tr>
+<tr>
+<td>log10()</td>
+<td>1</td>
+<td>log base 10</td>
+</tr>
+<tr>
+<td>fact()</td>
+<td>1</td>
+<td>factorial</td>
+</tr>
+<tr>
+<td>erf()</td>
+<td>1</td>
+<td>error function (added in version 0.4)</td>
+</tr>
+<tr>
+<td>erfc()</td>
+<td>1</td>
+<td>complementary error function (added in version 0.4)</td>
+</tr>
+<tr>
+<td>cbrt()</td>
+<td>1</td>
+<td>cube root (added in version 0.4)</td>
+</tr>
+<tr>
+<td>expm1()</td>
+<td>1</td>
+<td>exponential minus 1 (added in version 0.4)</td>
+</tr>
+<tr>
+<td>log1p()</td>
+<td>1</td>
+<td>logarithm of 1 plus (added in version 0.4)</td>
+</tr>
+<tr>
+<td>ldexp()</td>
+<td>1</td>
+<td>multiply floating-point number by integral power of 2 (added in version 0.4)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Trigonometric</p>
+
+<table>
+<thead>
+<tr>
+<th> Functions </th>
+<th> # of Args </th>
+<th> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sin()</td>
+<td>1</td>
+<td>sine</td>
+</tr>
+<tr>
+<td>cos()</td>
+<td>1</td>
+<td>cosine</td>
+</tr>
+<tr>
+<td>tan()</td>
+<td>1</td>
+<td>tangent</td>
+</tr>
+<tr>
+<td>asin()</td>
+<td>1</td>
+<td>arc sine</td>
+</tr>
+<tr>
+<td>acos()</td>
+<td>1</td>
+<td>arc cosine</td>
+</tr>
+<tr>
+<td>atan()</td>
+<td>1</td>
+<td>arc tangent</td>
+</tr>
+<tr>
+<td>atan2()</td>
+<td>2</td>
+<td>arc tangent of 2 variables</td>
+</tr>
+<tr>
+<td>sinh()</td>
+<td>1</td>
+<td>hyperbolic sine</td>
+</tr>
+<tr>
+<td>cosh()</td>
+<td>1</td>
+<td>hyperbolic cosine</td>
+</tr>
+<tr>
+<td>tanh()</td>
+<td>1</td>
+<td>hyperbolic tangent</td>
+</tr>
+<tr>
+<td>asinh()</td>
+<td>1</td>
+<td>inverse hyperbolic sine</td>
+</tr>
+<tr>
+<td>acosh()</td>
+<td>1</td>
+<td>inverse hyperbolic cosine</td>
+</tr>
+<tr>
+<td>atan()</td>
+<td>1</td>
+<td>inverse hyperbolic tangent</td>
+</tr>
+<tr>
+<td>floor()</td>
+<td>1</td>
+<td>largest integral value not greater than argument (added in version 0.4)</td>
+</tr>
+<tr>
+<td>ceil()</td>
+<td>1</td>
+<td>smallest integral value not less than argument (added in version 0.4)</td>
+</tr>
+<tr>
+<td>fmod()</td>
+<td>1</td>
+<td> floating-point remainder function (added in version 0.4)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Table Functions</p>
+
+<table>
+<thead>
+<tr>
+<th> Functions </th>
+<th> # of Args </th>
+<th style="text-align:left;"> Description </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>size()</td>
+<td>1</td>
+<td style="text-align:left;">size of a table</td>
+</tr>
+<tr>
+<td>sum()</td>
+<td>1</td>
+<td style="text-align:left;">sum of all elements of a table</td>
+</tr>
+<tr>
+<td>Sum()</td>
+<td>3</td>
+<td style="text-align:left;">sum of elements of a specified boundary of a table</td>
+</tr>
+<tr>
+<td>avg()</td>
+<td>1</td>
+<td style="text-align:left;">averages all elements of a table</td>
+</tr>
+<tr>
+<td>Avg()</td>
+<td>3</td>
+<td style="text-align:left;">averages elements of a specified boundary of a table</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Acoustics</p>
+
+<table>
+<thead>
+<tr>
+<th> Functions </th>
+<th> # of Args </th>
+<th style="text-align:left;"> Description                              </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> mtof()    </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert MIDI pitch to frequency in hertz </td>
+</tr>
+<tr>
+<td> ftom()    </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert frequency in hertz to MIDI pitch </td>
+</tr>
+<tr>
+<td> dbtorms() </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert db to rms                        </td>
+</tr>
+<tr>
+<td> rmstodb() </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert rms to db                        </td>
+</tr>
+<tr>
+<td> powtodb() </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert power to db                      </td>
+</tr>
+<tr>
+<td> dbtopow() </td>
+<td> 1         </td>
+<td style="text-align:left;"> convert db to power                      </td>
+</tr>
+</tbody>
+</table>
+
+
+<h3 id="CHANGELOG:">CHANGELOG:</h3>
+
+<h3 id="New.Additions.in.version.0.57">New Additions in version 0.57</h3>
+
+<ul>
+<li>fixed a bug in fact().</li>
+<li>fact() (factorial) now calculates and returns its value in double</li>
+<li>fixed the bad lvalue bug - &ldquo;4 + 5 = 3&rdquo; was not caught before</li>
+<li>Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()</li>
+</ul>
+
+
+<h3 id="New.Additions.in.version.0.56">New Additions in version 0.56</h3>
+
+<ul>
+<li>Fexpr~ now accepts a float in its first input.</li>
+<li>Added avg() and Avg() back to the list of functions</li>
+</ul>
+
+
+<h3 id="New.Additions.in.version.0.55">New Additions in version 0.55</h3>
+
+<ul>
+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
+<li>The arrays now redraw after a store into one of their members</li>
+<li>ex_if() (the &ldquo;if()&rdquo; function is reworked to only evaluate either the left or the right args depending on the truth  value of the condition. However, if the condition is an audio vector, both the left and the right are evaluated regardless.</li>
+<li>priority of &lsquo;,&rsquo; and &lsquo;=&rsquo; was switched to fix the bug of using store &ldquo;=&rdquo; in functions with multiple arguments, which caused  an error during execution.</li>
+<li>The number of inlet and outlets (MAX_VARS) is now set at 100</li>
+</ul>
+
+
+<h3 id="New.Additions.in.version.0.5">New Additions in version 0.5</h3>
+
+<ul>
+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
+<li>minor fixes/improvements.</li>
+</ul>
+
+
+<h3 id="New.Additions.in.version.0.4">New Additions in version 0.4</h3>
+
+<ul>
+<li>Expr, expr~, and fexpr~ now support multiple expressions separated by semicolons which results in multiple outlets.</li>
+<li>Variables are supported now in the same way they are supported in C.  - Variables have to be defined with the &ldquo;value&rdquo; object prior to execution.</li>
+<li>A new if function  if (condition-expression, IfTure-expression, IfFalse-expression) has been added.</li>
+<li>New math functions added.</li>
+<li>New shorthand notations for fexpr~ have been added.
+
+<ul>
+<li>$x ->$x1[0]     $x# -> $x#[0]</li>
+<li>$y = $y1[-1] and $y# = $y#[-1]</li>
+</ul>
+</li>
+<li>New &lsquo;set&rsquo; and &lsquo;clear&rsquo; methods were added for fexpr~
+
+<ul>
+<li>clear - clears all the past input and output buffers</li>
+<li>clear x# - clears all the past values of the #th input</li>
+<li>clear y# - clears all the past values of the #th output</li>
+<li>set x# val-1 val-2 &hellip; - sets as many supplied value of the         #th input;
+e.g., &ldquo;set x2 3.4 0.4&rdquo;  - sets x2[-1]=3.4 and x2[-2]=0.4</li>
+<li>set y# val-1 val-2 &hellip; - sets as many supplied values of the #th output;
+e.g, &ldquo;set y3 1.1 3.3 4.5&rdquo; -  sets y3[-1]=1.1 y3[-2]=3.3 and y3[-3]=4.5;</li>
+<li>set val val &hellip; - sets the first past values of each output; e.g.,
+e.g., &ldquo;set 0.1 2.2 0.4&rdquo;  - sets y1[-1]=0.1, y2[-1]=2.2, y3[-1]=0.4</li>
+</ul>
+</li>
+</ul>
+
+</body>
+</html>

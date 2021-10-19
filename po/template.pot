@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.51.3\n"
+"Project-Id-Version: Pure Data 0.51.4\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -549,7 +549,7 @@ msgstr ""
 msgid "Out Ports:"
 msgstr ""
 
-msgid "Pd search path for objects, help, fonts, and other files"
+msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
@@ -613,71 +613,101 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] > %2$s...skipping!"
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] < %2$s...overwriting!"
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] == %2$s...skipping!"
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "successfully unzipped %1$s into %2$s"
-msgstr ""
-
-msgid "unable to extract package automatically"
-msgstr ""
-
-msgid "please perform the following steps manually:"
+msgid "installing deken package '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "1. unzip %s"
+msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
 #, tcl-format
-msgid "2. copy the contents into %s"
+msgid "Installing %s"
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling '%s'"
+msgid "[deken] Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "[deken] Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling %1$s from %2$s failed!"
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
-msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
+msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
-msgid "platform detected: %s"
+msgid "3. Remove %s. (optional)"
 msgstr ""
 
 #, tcl-format
-msgid "platform re-detected: %s"
+msgid "[deken] uninstalling '%s'"
 msgstr ""
 
-msgid "Show all"
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
 msgstr ""
 
-msgid "Search"
+#, tcl-format
+msgid "skipping SHA256 verification of %s."
 msgstr ""
 
-msgid "To get a list of all available externals, try an empty search."
+#, tcl-format
+msgid "SHA256 verification of %s"
 msgstr ""
 
-msgid "Find externals"
+#, tcl-format
+msgid "unable to fetch reference SHA256 for %s."
 msgstr ""
 
-msgid "Only install externals uploaded by people you trust."
+#, tcl-format
+msgid "unable to perform SHA256 verification for %s."
 msgstr ""
 
-msgid "Preferences"
+#, tcl-format
+msgid "[deken] Unable to download from %1$s [%2$s]"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Unable to remove stray file %s"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Unable to rename downloaded file to %s"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
 msgstr ""
 
 msgid "Installation options:"
@@ -711,40 +741,128 @@ msgstr ""
 msgid "Hide foreign architectures"
 msgstr ""
 
-#, tcl-format
-msgid "Only show the newest version of a library\n(treats other versions like foreign architectures)"
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
 msgstr ""
 
 #, tcl-format
 msgid "Deken %s Preferences"
 msgstr ""
 
-msgid "start searching for externals..."
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
+msgid "ZIP Files"
+msgstr ""
+
+msgid "TAR Files"
+msgstr ""
+
+msgid "All Files"
 msgstr ""
 
 #, tcl-format
-msgid "online? %s"
+msgid "Checksum mismatch for '%s'"
 msgstr ""
 
-msgid "Are you online?"
+#, tcl-format
+msgid "SHA256 verification of %s failed!"
 msgstr ""
 
-msgid "Unable to perform search."
+msgid "SHA256 verification failed"
 msgstr ""
 
-msgid "no matching externals found"
+#, tcl-format
+msgid "Removing %s"
 msgstr ""
 
-msgid "try using the full name e.g. 'freeverb'"
+#, tcl-format
+msgid "[deken] temporarily moving %1$s into %2$s failed."
 msgstr ""
 
-msgid "No matching externals found."
+#, tcl-format
+msgid "Installing package %s"
 msgstr ""
 
-msgid "Create"
+msgid "Installation completed!"
 msgstr ""
 
-msgid "Check"
+#, tcl-format
+msgid "Successfully installed %s!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install %s!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "Find externals"
 msgstr ""
 
 msgid "Search for: "
@@ -762,12 +880,36 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
-msgid "More..."
+msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
 msgid "Preferences..."
 msgstr ""
+
 msgid "Install DEK file..."
+msgstr ""
+
+msgid "More..."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Start searching for externals... %s"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] online? %s"
+msgstr ""
+
+msgid "Unable to perform search. Are you online?"
+msgstr ""
+
+msgid "[deken] No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "No matching externals found."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
@@ -778,57 +920,84 @@ msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
+msgid "Cancelling download of %s: No installation directory given."
+msgstr ""
+
+msgid "Installing to non-existant directory failed"
+msgstr ""
+
+#, tcl-format
 msgid ""
-"commencing downloading of:\n"
+"Commencing downloading of:\n"
 "%1$s\n"
-"into %2$s..."
-msgstr ""
-
-msgid "... aborting"
+"Into %2$s..."
 msgstr ""
 
 #, tcl-format
-msgid "unable to add %s to search paths"
+msgid "Downloading '%s'"
+msgstr ""
+
+msgid "aborting."
 msgstr ""
 
 #, tcl-format
-msgid "Add %s to the Pd search paths?"
+msgid "Downloading '%s' failed"
 msgstr ""
 
-#, tcl-format
-msgid "added %s to search paths"
+msgid "Download failed!"
 msgstr ""
 
-#, tcl-format
-msgid "unable to download from %1$s [%2$s]"
-msgstr ""
-
-#, tcl-format
-msgid "unable to remove stray file %s"
-msgstr ""
-
-#, tcl-format
-msgid "unable to rename downloaded file to %s"
+msgid "Download completed! Verifying..."
 msgstr ""
 
 #, tcl-format
 msgid "searching for '%s'"
 msgstr ""
 
-msgid "unable to perform search"
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr ""
+
+msgid "Search failed"
+msgstr ""
+
+msgid "[deken] Unable to perform search."
 msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
+msgid "Deselect package"
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Install selected packages"
+msgstr ""
+
 msgid "Install package"
 msgstr ""
 
-msgid "Open webpage"
+msgid "Open package webpage"
 msgstr ""
 
-msgid "_"
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
 msgstr ""
 
 #, tcl-format
@@ -915,9 +1084,6 @@ msgid "Undo"
 msgstr ""
 
 msgid "Redo"
-msgstr ""
-
-msgid "List of objects..."
 msgstr ""
 
 msgid "New"
@@ -1007,6 +1173,9 @@ msgstr ""
 msgid "Browser..."
 msgstr ""
 
+msgid "List of objects..."
+msgstr ""
+
 msgid "puredata.info"
 msgstr ""
 
@@ -1054,6 +1223,9 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
+msgid "Preferences"
+msgstr ""
+
 msgid "Open Recent"
 msgstr ""
 
@@ -1061,6 +1233,14 @@ msgid "Quit"
 msgstr ""
 
 msgid "Properties"
+msgstr ""
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
 msgstr ""
 
 msgid "Audio on"

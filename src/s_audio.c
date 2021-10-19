@@ -49,20 +49,20 @@ int audio_isopen(void)
     return (sys_audioapiopened > 0);
 }
 
-static int audio_isfixedsr(void)
+static int audio_isfixedsr(int api)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own samplerate */
-    return (sys_audioapiopened == API_JACK);
+    return (api == API_JACK);
 #endif
     return 0;
 }
 
-static int audio_isfixedblocksize(void)
+static int audio_isfixedblocksize(int api)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own blocksize */
-    return (sys_audioapiopened == API_JACK);
+    return (api == API_JACK);
 #endif
     return 0;
 }
@@ -71,11 +71,11 @@ static int audio_isfixedblocksize(void)
 int jack_get_blocksize(void);
 #endif
 
-static int audio_getfixedblocksize(void)
+static int audio_getfixedblocksize(int api)
 {
 #ifdef USEAPI_JACK
     /* JACK server sets it's own blocksize */
-    return (sys_audioapiopened == API_JACK ? jack_get_blocksize() : 0);
+    return (api == API_JACK ? jack_get_blocksize() : 0);
 #endif
     return 0;
 }
@@ -101,7 +101,7 @@ void sys_setchsr(int chin, int chout, int sr)
                 (DEFDACBLKSIZE*sizeof(t_sample)));
     STUFF->st_inchannels = chin;
     STUFF->st_outchannels = chout;
-    if (!audio_isfixedsr())
+    if (!audio_isfixedsr(sys_audioapiopened))
         STUFF->st_dacsr = sr;
 
     STUFF->st_soundin = (t_sample *)getbytes(inbytes);
@@ -219,11 +219,11 @@ void sys_get_audio_settings(t_audiosettings *a)
 #endif
         initted = 1;
     }
-    if (audio_isfixedsr())
-        a->a_srate = STUFF->st_dacsr;
-    if (audio_isfixedblocksize())
-        a->a_blocksize = audio_getfixedblocksize();
     *a = audio_nextsettings;
+    if (audio_isfixedsr(a->a_api))
+        a->a_srate = STUFF->st_dacsr;
+    if (audio_isfixedblocksize(a->a_api))
+        a->a_blocksize = audio_getfixedblocksize(a->a_api);
 }
 
     /* Since the channel vector might be longer than the
@@ -242,7 +242,6 @@ void sys_set_audio_settings(t_audiosettings *a)
     int i;
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
-
     sys_get_audio_devs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, a->a_api);
 
@@ -620,9 +619,9 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
             as.a_outdevvec[2], as.a_outdevvec[3],
         as.a_choutdevvec[0], as.a_choutdevvec[1],
             as.a_choutdevvec[2], as.a_choutdevvec[3],
-        audio_isfixedsr()?"!":"", as.a_srate, as.a_advance, canmulti,
+        audio_isfixedsr(as.a_api)?"!":"", as.a_srate, as.a_advance, canmulti,
         cancallback?"":"!", as.a_callback,
-        (flongform != 0), audio_isfixedblocksize()?"!":"", as.a_blocksize);
+        (flongform != 0), audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
     gfxstub_deleteforkey(0);
     gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
 }
