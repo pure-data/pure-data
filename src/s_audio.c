@@ -343,7 +343,7 @@ void sys_reopen_audio(void)
     if (as.a_api == API_PORTAUDIO)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
-        int nbufs = sys_schedadvance * as.a_srate / (blksize *1000000.);
+        int nbufs = ((sys_schedadvance / 1000) * (as.a_srate / 1000)) / blksize;
         if (nbufs < 1) nbufs = 1;
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
         (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
