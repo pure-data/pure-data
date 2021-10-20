@@ -212,11 +212,14 @@ void sys_get_audio_settings(t_audiosettings *a)
         audio_nextsettings.a_chindevvec[0] =
             audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
         audio_nextsettings.a_advance = DEFAULTADVANCE;
-#ifdef _WIN32
-        audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
-        audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
+        if (audio_nextsettings.a_api == API_MMIO)
+        {
+            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
+        }
+        else
+        {
+            audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
+        }
         initted = 1;
     }
     *a = audio_nextsettings;
@@ -735,11 +738,14 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_outdevvec[0] = DEFAULTAUDIODEV;
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
-#ifdef __WIN32
-            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
-            audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
+            if (audio_nextsettings.a_api == API_MMIO)
+            {
+                audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
+            }
+            else
+            {
+                audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
+            }
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);
