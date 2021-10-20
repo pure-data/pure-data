@@ -32,6 +32,10 @@
 #define DEVDESCSIZE 128
 #define MAXBLOCKSIZE 2048
 
+#ifndef MMIODEFBLOCKSIZE
+#define MMIODEFBLOCKSIZE DEFDACBLKSIZE /* defaults when not in _WIN32 */
+#endif
+
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
 
