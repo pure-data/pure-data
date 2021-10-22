@@ -77,7 +77,7 @@ static void sys_initloadpreferences_file(const char *filename)
     }
     sys_prefbuf[length+1] = 0;
     close(fd);
-    verbose(PD_VERBOSE, "success reading preferences from: %s", filename);
+    logpost(NULL, PD_VERBOSE, "success reading preferences from: %s", filename);
 }
 
 static int sys_getpreference_file(const char *key, char *value, int size)
