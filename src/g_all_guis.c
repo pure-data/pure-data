@@ -467,6 +467,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *old;
+    char lab_escaped[MAXPDSTRING];
 
         /* tb: fix for empty label { */
         if (s == gensym(""))
@@ -477,7 +478,6 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_lab_unexpanded = s;
     iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
-    char lab_escaped[MAXPDSTRING];
     lab_escaped[MAXPDSTRING-1] = 0;
     pdgui_strnescape( lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
 
@@ -646,10 +646,11 @@ void iemgui_newzoom(t_iemgui *iemgui)
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
+    char label[MAXPDSTRING];
+
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
 
-    char label[MAXPDSTRING];
     strcpy(label, iemgui->x_lab->s_name);
     pdgui_strnescape(label, MAXPDSTRING,
                     iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name));
