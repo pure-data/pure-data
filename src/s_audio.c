@@ -110,7 +110,7 @@ void sys_setchsr(int chin, int chout, int sr)
     STUFF->st_soundout = (t_sample *)getbytes(outbytes);
     memset(STUFF->st_soundout, 0, outbytes);
 
-    verbose(PD_VERBOSE, "input channels = %d, output channels = %d",
+    logpost(NULL, PD_VERBOSE, "input channels = %d, output channels = %d",
             STUFF->st_inchannels, STUFF->st_outchannels);
     canvas_resume_dsp(canvas_suspend_dsp());
 }

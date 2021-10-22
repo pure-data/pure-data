@@ -146,7 +146,7 @@ static void dologpost(const void *object, const int level, const char *s)
     }
 }
 
-void logpost(const void *object, const int level, const char *fmt, ...)
+void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
@@ -256,6 +256,7 @@ void error(const char *fmt, ...)
 }
 #endif
 
+/* deprecated in favor of logpost() */
 void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];

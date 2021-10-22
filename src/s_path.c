@@ -298,7 +298,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
             !S_ISDIR(statbuf.st_mode));
         if (!ok)
         {
-            verbose(PD_VERBOSE, "tried %s; stat failed or directory",
+            logpost(NULL, PD_VERBOSE, "tried %s; stat failed or directory",
                 dirresult);
             close (fd);
             fd = -1;
@@ -307,7 +307,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
 #endif
         {
             char *slash;
-            verbose(PD_VERBOSE, "tried %s and succeeded", dirresult);
+            logpost(NULL, PD_VERBOSE, "tried %s and succeeded", dirresult);
             sys_unbashfilename(dirresult, dirresult);
             slash = strrchr(dirresult, '/');
             if (slash)
@@ -322,7 +322,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     }
     else
     {
-        verbose(PD_VERBOSE, "tried %s and failed", dirresult);
+        logpost(NULL, PD_VERBOSE, "tried %s and failed", dirresult);
     }
     return (-1);
 }
