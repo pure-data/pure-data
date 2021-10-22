@@ -32,10 +32,6 @@
 #define DEVDESCSIZE 128
 #define MAXBLOCKSIZE 2048
 
-#ifndef MMIODEFBLOCKSIZE
-#define MMIODEFBLOCKSIZE DEFDACBLKSIZE /* defaults when not in _WIN32 */
-#endif
-
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
 
@@ -216,14 +212,7 @@ void sys_get_audio_settings(t_audiosettings *a)
         audio_nextsettings.a_chindevvec[0] =
             audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
         audio_nextsettings.a_advance = DEFAULTADVANCE;
-        if (audio_nextsettings.a_api == API_MMIO)
-        {
-            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-        }
-        else
-        {
-            audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-        }
+        audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
         initted = 1;
     }
     *a = audio_nextsettings;
@@ -742,14 +731,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_outdevvec[0] = DEFAULTAUDIODEV;
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
-            if (audio_nextsettings.a_api == API_MMIO)
-            {
-                audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-            }
-            else
-            {
-                audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-            }
+            audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);

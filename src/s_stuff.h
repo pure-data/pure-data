@@ -134,16 +134,12 @@ typedef struct _audiosettings
 #define DEFMIDIDEV 0
 
 #define DEFAULTSRATE 48000
-#ifdef _WIN32
-#define DEFAULTADVANCE 80
-#define MMIODEFBLOCKSIZE 512
-#else
 #ifdef __APPLE__
 #define DEFAULTADVANCE 5    /* this is in addition to their own delay */
 #else
 #define DEFAULTADVANCE 25
 #endif
-#endif
+
 
 typedef void (*t_audiocallback)(void);
 
