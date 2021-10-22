@@ -702,7 +702,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
 
     verbose(PD_VERBOSE, "opening audio...");
     nt_blocksize = (blocksize ? blocksize : DEFREALDACBLKSIZE);
-    nbuf = (sys_schedadvance * rate )/ (nt_blocksize * 1000000.);
+    nbuf = ((sys_schedadvance / 1000.) * (rate / 1000.) ) / nt_blocksize;
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
