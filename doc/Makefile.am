@@ -439,6 +439,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/throw~-help.pd \
      ./5.reference/timer-help.pd \
      ./5.reference/toggle-help.pd \
+     ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
