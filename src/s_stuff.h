@@ -144,7 +144,6 @@ typedef struct _audiosettings
 #endif
 #endif
 
-
 typedef void (*t_audiocallback)(void);
 
 extern int sys_schedadvance;
