@@ -35,7 +35,9 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
     }
 }
 
-proc ::dialog_path::create_dialog {mytoplevel} {
+
+proc ::dialog_path::fill_frame {mytoplevel {with_verbose 0}} {
+    # 'mytoplevel' is a frame, rather than a toplevel window
     set readonly_color [lindex [$mytoplevel configure -background] end]
 
     if {[namespace exists ::deken]} {set ::dialog_path::installpath $::deken::installpath}
@@ -50,10 +52,12 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     pack $mytoplevel.extraframe -side top -anchor s -fill x
     checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
         -variable ::sys_use_stdpath -anchor w
-    checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
-        -variable ::sys_verbose -anchor w
     pack $mytoplevel.extraframe.extra -side left -expand 1
-    pack $mytoplevel.extraframe.verbose -side right -expand 1
+    if { ${with_verbose} ne 0 } {
+        checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
+            -variable ::sys_verbose -anchor w
+        pack $mytoplevel.extraframe.verbose -side right -expand 1
+    }
 
     # add docsdir path widgets if pd_docsdir is loaded
     if {[namespace exists ::pd_docsdir]} {
@@ -114,14 +118,29 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
-
         # unbind ok button when in listbox
         bind $mytoplevel.listbox.box <FocusIn> "::dialog_path::unbind_return $mytoplevel"
         bind $mytoplevel.listbox.box <FocusOut> "::dialog_path::rebind_return $mytoplevel"
-
-
-
     }
+
+    return
+}
+
+proc ::dialog_path::create_dialog {mytoplevel} {
+    ::preferencewindow::create ${mytoplevel} [_ "Pd search path for objects, help, audio, text and other files"] {450 300}
+    wm withdraw $mytoplevel
+
+    set my [::preferencewindow::add_frame ${mytoplevel}  [_ "path preferences"]]
+
+    # add widgets
+    fill_frame $my 1
+    pack $my -side top -fill x -expand 1
+
+    # add actions
+    ::preferencewindow::add_cancel ${mytoplevel} "::scrollboxwindow::cancel ${mytoplevel}"
+    ::preferencewindow::add_apply ${mytoplevel} "::scrollboxwindow::apply ${my} ::dialog_path::commit"
+
+    ::pd_bindings::dialog_bindings $mytoplevel "path"
 
     # re-adjust height based on optional sections
     update
