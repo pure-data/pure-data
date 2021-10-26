@@ -688,7 +688,7 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
         as.a_choutdevvec[i] = (as.a_outdevvec[i] >= 0) ? atom_getfloatarg(i+12, argc, argv) : 0;
     }
         /* compact out any zeros and count nonzero entries */
-    for (i = 0, as.a_nindev = 0; i < 4; i++)
+    for (i = 0, as.a_nindev = 0; i < MAXAUDIOINDEV; i++)
     {
         if (as.a_chindevvec[i])
         {
@@ -697,7 +697,7 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             as.a_nindev++;
         }
     }
-    for (i = 0, as.a_noutdev = 0; i < 4; i++)
+    for (i = 0, as.a_noutdev = 0; i < MAXAUDIOOUTDEV; i++)
     {
         if (as.a_choutdevvec[i])
         {
