@@ -135,10 +135,6 @@ struct _instanceinter
 
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
-void sys_set_searchpath(void);
-void sys_set_temppath(void);
-void sys_set_extrapath(void);
-void sys_set_startup(void);
 void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
@@ -1023,6 +1019,23 @@ void sys_init_fdpoll(void)
     INTER->i_inbinbuf = binbuf_new();
 }
 
+void sys_gui_preferences(void)
+{
+    char obuf[MAXPDSTRING];
+        /* send the user-specified search path to pd-gui */
+    sys_gui_namelist("::sys_searchpath", STUFF->st_searchpath);
+        /* send the temp paths from the commandline to pd-gui */
+    sys_gui_namelist("::sys_temppath", STUFF->st_temppath);
+        /* send the hard-coded search path to pd-gui */
+    sys_gui_namelist("::sys_staticpath", STUFF->st_staticpath);
+        /* send the list of loaded libraries ... */
+    sys_gui_namelist("::startup_libraries", STUFF->st_externlist);
+
+}
+
+
+
+
 /* --------------------- starting up the GUI connection ------------- */
 
 static int sys_watchfd;
@@ -1406,11 +1419,10 @@ static int sys_do_startgui(const char *libdir)
 #endif
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
-    sys_set_searchpath();     /* tell GUI about path and startup flags */
-    sys_set_temppath();
-    sys_set_extrapath();
-    sys_set_startup();
-                       /* ... and about font, medio APIS, etc */
+
+    sys_gui_preferences();     /* tell GUI about path and startup flags */
+
+                       /* ... and about font, media APIS, etc */
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
