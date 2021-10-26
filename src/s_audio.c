@@ -683,9 +683,9 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < 4; i++)
     {
         as.a_indevvec[i] = atom_getfloatarg(i, argc, argv);
-        as.a_chindevvec[i] = atom_getfloatarg(i+4, argc, argv);
+        as.a_chindevvec[i] = (as.a_indevvec[i] >= 0) ? atom_getfloatarg(i+4, argc, argv) : 0;
         as.a_outdevvec[i] = atom_getfloatarg(i+8, argc, argv);
-        as.a_choutdevvec[i] = atom_getfloatarg(i+12, argc, argv);
+        as.a_choutdevvec[i] = (as.a_outdevvec[i] >= 0) ? atom_getfloatarg(i+12, argc, argv) : 0;
     }
         /* compact out any zeros and count nonzero entries */
     for (i = 0, as.a_nindev = 0; i < 4; i++)
