@@ -578,6 +578,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
 
 
 void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size);
+void sys_gui_intarray(const char*varname, const int*intarray, unsigned int size);
 
 void sys_gui_audiopreferences(void) {
     t_audiosettings as;
@@ -594,6 +595,7 @@ void sys_gui_audiopreferences(void) {
 
 
         /* and send them over to the GUI */
+    sys_vgui("set ::pd_whichapi %d\n", as.a_api);
 
           /* notify GUI of input devices:
              available, used, number of channels */
@@ -601,6 +603,10 @@ void sys_gui_audiopreferences(void) {
         strarray[i] = indevlist + i*DEVDESCSIZE;
     }
     sys_gui_strarray("::audio_indevlist", strarray, nindevs);
+    sys_gui_intarray("::audio_indevices", as.a_indevvec,
+        sizeof(as.a_indevvec)/sizeof(*as.a_indevvec));
+    sys_gui_intarray("::audio_indevicechannels", as.a_chindevvec,
+        sizeof(as.a_chindevvec)/sizeof(*as.a_chindevvec));
 
           /* notify GUI of output devices:
              available, used, number of channels */
@@ -608,6 +614,20 @@ void sys_gui_audiopreferences(void) {
         strarray[i] = outdevlist + i*DEVDESCSIZE;
     }
     sys_gui_strarray("::audio_outdevlist", strarray, noutdevs);
+    sys_gui_intarray("::audio_outdevices", as.a_outdevvec,
+        sizeof(as.a_outdevvec)/sizeof(*as.a_outdevvec));
+    sys_gui_intarray("::audio_outdevicechannels", as.a_choutdevvec,
+        sizeof(as.a_choutdevvec)/sizeof(*as.a_choutdevvec));
+
+        /* misc audio settings */
+    sys_vgui("set ::audio_samplerate %s%d\n", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
+    sys_vgui("set ::audio_advance %d\n", as.a_advance);
+    sys_vgui("set ::audio_blocksize %s%d\n", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
+    sys_vgui("set ::audio_use_callback %s%d\n", cancallback?"":"!", as.a_callback);
+    sys_vgui("set ::audio_can_multidevice %d\n", canmulti);
+        //sys_vgui("set ::audio_dialog_longform %d\n", (flongform != 0));
+}
+
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
@@ -620,6 +640,8 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     sys_gui_audiopreferences();
 
     sys_get_audio_settings(&as);
+    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
+         &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
 
     if (as.a_nindev > 1 || as.a_noutdev > 1)
         flongform = 1;
