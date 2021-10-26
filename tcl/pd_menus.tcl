@@ -573,17 +573,8 @@ proc ::pd_menus::forgetpreferences {} {
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
-    $mymenu add command -label [_ "Path..."] \
-        -command {pdsend "pd start-path-dialog"}
-    $mymenu add command -label [_ "Startup..."] \
-        -command {pdsend "pd start-startup-dialog"}
-    $mymenu add command -label [_ "Audio..."] \
-        -command {pdsend "pd audio-properties"}
-    $mymenu add command -label [_ "MIDI..."] \
-        -command {pdsend "pd midi-properties"}
-    $mymenu add check -label [_ "Zoom New Windows"] \
-        -variable ::zoom_open \
-        -command {pdsend "pd zoom-open $zoom_open"}
+    $mymenu add command -label [_ "Edit Preferences..."] \
+        -command {menu_preference_dialog}
     $mymenu add  separator
     $mymenu add command -label [_ "Save All Preferences"] \
         -command {pdsend "pd save-preferences"}

@@ -40,6 +40,7 @@ int sys_argparse(int argc, const char **argv);
 void sys_findprogdir(const char *progname);
 void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
+void sys_gui_namelist(const char*varname, t_namelist *nl);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
 int m_batchmain(void);
@@ -1423,48 +1424,25 @@ t_symbol *sys_decodedialog(t_symbol *s)
     return (gensym(buf));
 }
 
-    /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
-{
-    int i;
-    t_namelist *nl;
 
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
+/* start the generic preference window */
+void sys_gui_preferences(void);
+void sys_gui_audiopreferences(void);
+void sys_gui_midipreferences(void);
+void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
+{
+    sys_gui_preferences();
+    sys_gui_audiopreferences();
+    sys_gui_midipreferences();
+    sys_gui("::dialog_preferences::create\n");
 }
 
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
-}
 
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-     char buf[MAXPDSTRING];
-
-    sys_set_searchpath();
+    char buf[MAXPDSTRING];
+    sys_gui_preferences();
     snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
@@ -1506,26 +1484,12 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     }
 }
 
-    /* set the global list vars for startup libraries and flags */
-void sys_set_startup(void)
-{
-    int i;
-    t_namelist *nl;
-    char obuf[MAXPDSTRING];
-
-    sys_vgui("set ::startup_flags [subst -nocommands {%s}]\n",
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    sys_gui("set ::startup_libraries {}\n");
-    for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
-}
-
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
     char buf[MAXPDSTRING];
     char obuf[MAXPDSTRING];
-    sys_set_startup();
+    sys_gui_preferences();
     snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
         (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);

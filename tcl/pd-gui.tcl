@@ -47,6 +47,7 @@ package require dialog_message
 package require dialog_midi
 package require dialog_path
 package require dialog_startup
+package require dialog_preferences
 package require helpbrowser
 package require pd_menucommands
 package require opt_parser
