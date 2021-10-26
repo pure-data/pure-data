@@ -39,10 +39,8 @@ int glist_getindex(t_glist *x, t_gobj *y);
 
 /* ----------------- the "text" object.  ------------------ */
 
-    /* add a "text" object (comment) to a glist.  While this one goes for any
-    glist, the other 3 below are for canvases only.  (why?)  This is called
-    without args if invoked from the GUI; otherwise at least x and y
-    are provided.  */
+    /* add a "text" object (comment) to a glist.  Called without args
+    if invoked from the GUI; otherwise at least x and y are provided.  */
 
 void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 {
@@ -746,7 +744,7 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
-void gatom_key(void *z, t_floatarg f)
+void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
     int c = f, bufsize, i;
@@ -776,6 +774,7 @@ void gatom_key(void *z, t_floatarg f)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
             text_setto(&x->a_text, x->a_glist, buf, bufsize);
+            rtext_activate(t, 0);
         }
         gatom_bang(x);
         if (c == 0)
@@ -800,7 +799,7 @@ void gatom_key(void *z, t_floatarg f)
             c == '$' | c == '\\'))
                 rtext_key(t, '\\', &s_);
             /* and at last, insert the character */
-        rtext_key(t, c, &s_);
+        rtext_key(t, c, keysym);
     }
 }
 
@@ -988,17 +987,22 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     /* glist_retext(x->a_glist, &x->a_text); */
 }
 
+static int gatom_fontsize(t_gatom *x)
+{
+    return (x->a_fontsize ? x->a_fontsize : glist_getfont(x->a_glist));
+}
+
     /* ---------------- gatom-specific widget functions --------------- */
 static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
 {
     int x1, y1, x2, y2;
-    int zoom = glist_getzoom(glist);
+    int zoom = glist_getzoom(glist), fontsize = gatom_fontsize(x);
     text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
     if (x->a_wherelabel == ATOM_LABELLEFT)
     {
         *xp = x1 - 3 * zoom - (
             (int)strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
-            glist_fontwidth(glist));
+                sys_zoomfontwidth(fontsize, zoom, 0));
         *yp = y1 + 2 * zoom;
     }
     else if (x->a_wherelabel == ATOM_LABELRIGHT)
@@ -1009,7 +1013,7 @@ static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
     else if (x->a_wherelabel == ATOM_LABELUP)
     {
         *xp = x1 - 1 * zoom;
-        *yp = y1 - 1 * zoom - glist_fontheight(glist);
+        *yp = y1 - 1 * zoom - sys_zoomfontheight(fontsize, zoom, 0);
     }
     else
     {
@@ -1043,8 +1047,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 glist_getcanvas(glist), x,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                "black");
+                gatom_fontsize(x), "black");
         }
         else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
     }

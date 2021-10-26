@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 51
-#define PD_BUGFIX_VERSION 4
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 52
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "test1"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -533,27 +533,31 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 /* ------------   printing --------------------------------- */
 
-typedef enum {
-    PD_CRITICAL = -3,
-    PD_ERROR,
-    PD_NORMAL,
-    PD_DEBUG,
-    PD_VERBOSE
-} t_loglevel;
-
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
+
+/* for logpost(); does *not* work with verbose()! */
+typedef enum {
+    PD_CRITICAL = 0,
+    PD_ERROR,
+    PD_NORMAL,
+    PD_DEBUG,
+    PD_VERBOSE
+} t_loglevel;
+
+EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
-EXTERN void startlogpost(const void *object, const int level, const char *fmt, ...)
-    ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
+/* deprecated, use logpost() instead. */
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isabsolutepath(const char *dir);

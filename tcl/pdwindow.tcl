@@ -1,6 +1,8 @@
 
 package provide pdwindow 0.1
 
+package require pd_connect
+
 namespace eval ::pdwindow:: {
     variable maxlogbuffer 21000 ;# if the logbuffer grows beyond this number, cut it
     variable keeplogbuffer 1000 ;# if the logbuffer gets automatically cut, keep this many elements
@@ -284,7 +286,7 @@ proc ::pdwindow::pdwindow_bindings {} {
     } else {
         # TODO should it possible to close the Pd window and keep Pd open?
         bind .pdwindow <$::modifier-Key-w>   "wm iconify .pdwindow"
-        wm protocol .pdwindow WM_DELETE_WINDOW "pdsend \"pd verifyquit\""
+        wm protocol .pdwindow WM_DELETE_WINDOW "::pd_connect::menu_quit"
     }
 }
 
@@ -390,7 +392,7 @@ proc ::pdwindow::create_window {} {
     } else {
         wm minsize .pdwindow 400 51
     }
-    wm geometry .pdwindow =500x400+20+50
+    wm geometry .pdwindow =500x400
 
     frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
     pack .pdwindow.header -side top -fill x -ipady 5
@@ -496,30 +498,6 @@ proc ::pdwindow::create_window_finalize {} {
         ::dialog_font::apply .pdwindow $fontsize
     }
 }
-
-proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
-    # on X11 measure the size of the window decoration, so we can open windows at the correct position
-    if {$::windowingsystem eq "x11"} {
-        if {[winfo viewable $winid]} {
-            # wait for possible race-conditions at startup...
-            if {[winfo viewable .pdwindow] && ![winfo viewable .pdwindow.header.pad1]} {
-                tkwait visibility .pdwindow.header.pad1
-            }
-
-            regexp -- {([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)} [wm geometry $winid] -> \
-                _ _ _left _top
-            set ::windowframex [expr {[winfo rootx $winid] - $_left}]
-            set ::windowframey [expr {[winfo rooty $winid] - $_top}]
-
-            #puts "======================="
-            #puts "[wm geometry $winid]"
-            #puts "winfo [winfo rootx $winid] [winfo rooty $winid]"
-            #puts "windowframe: $winid $::windowframex $::windowframey"
-            #puts "======================="
-        }
-    }
-}
-
 
 # this needs to happen *after* the main menu is created, otherwise the default Wish
 # menu is not replaced by the custom Apple menu on OSX

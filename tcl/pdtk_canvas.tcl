@@ -56,7 +56,7 @@ if {$::tcl_version < 8.5 || \
         }
         if {$h > $height} {
             # 30 for window framing
-            set h [expr $height - $::menubarsize - $::windowframey]
+            set h [expr $height - $::menubarsize]
             set y $::menubarsize
         }
 
@@ -77,17 +77,15 @@ if {$::tcl_version < 8.5 || \
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
-    ::pdwindow::configure_window_offset
-
     # read back the current geometry +posx+posy into variables
-    scan $geometry {%[+]%d%[+]%d} - x - y
-    set xywh [pdtk_canvas_wrap_window \
-        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
-    set x [lindex $xywh 0]
-    set y [lindex $xywh 1]
-    set w [lindex $xywh 2]
-    set h [lindex $xywh 3]
-    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
+    set w $width
+    set h $height
+    if { "" != ${geometry} } {
+        scan $geometry {%[+]%d%[+]%d} - x - y
+        foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
+        set geometry +${x}+${y}
+    }
+    return [list ${w} ${h} ${geometry}]
 }
 
 
@@ -95,10 +93,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
-    set l [pdtk_canvas_place_window $width $height $geometry]
-    set width [lindex $l 0]
-    set height [lindex $l 1]
-    set geometry [lindex $l 2]
+    foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
 
@@ -116,7 +111,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # started_loading_file proc.  Perhaps this doesn't make sense tho
     event generate $mytoplevel <<Loading>>
 
-    wm geometry $mytoplevel $geometry
+    if { "" != ${geometry} } {
+        wm geometry $mytoplevel $geometry
+    }
     wm minsize $mytoplevel $::canvas_minwidth $::canvas_minheight
 
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -450,4 +447,17 @@ proc ::pdtk_canvas::cleanname {name} {
         return [string replace "$name" 0 [expr $untitled_len - 1] "Untitled"]
     }
     return $name
+}
+
+proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
+    set col black
+    if { $state == 0 } {
+        set col lightgrey
+    }
+    foreach id [$mytoplevel find withtag {cord && !selected}] {
+        # don't apply backgrouding on selected (blue) lines
+        if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+            $mytoplevel itemconfigure $id -fill $col
+        }
+    }
 }

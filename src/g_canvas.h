@@ -51,6 +51,13 @@ extern "C" {
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
 
+#define GLIST_DEFCANVASXLOC 0
+#ifdef __APPLE__
+#define GLIST_DEFCANVASYLOC 22
+#else
+#define GLIST_DEFCANVASYLOC 50
+#endif
+
 /* ----------------------- data ------------------------------- */
 
 typedef struct _updateheader
@@ -63,7 +70,7 @@ typedef struct _updateheader
     /* types to support glists grabbing mouse motion or keys from parent */
 typedef void (*t_glistmotionfn)(void *z, t_floatarg dx, t_floatarg dy,
     t_floatarg up);
-typedef void (*t_glistkeyfn)(void *z, t_floatarg key);
+typedef void (*t_glistkeyfn)(void *z, t_symbol *keysym, t_floatarg key);
 
 EXTERN_STRUCT _rtext;
 #define t_rtext struct _rtext
@@ -639,6 +646,7 @@ EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
 /* ------------- IEMGUI routines used in other g_ files ---------------- */
 EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
+EXTERN t_symbol *iemgui_put_in_braces(t_symbol *s);
 
 /*-------------  g_clone.c ------------- */
 extern t_class *clone_class;

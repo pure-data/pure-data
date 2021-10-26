@@ -354,7 +354,7 @@ static PERTHREAD int outlet_eventno;
 void outlet_setstacklim(void)
 {
     t_msgstack *m;
-    while (m = backtracer_stack)
+    while ((m = backtracer_stack))
         backtracer_stack = m->m_next; t_freebytes(m, sizeof (*m));
     stackcount = 0;
     outlet_eventno++;

@@ -215,11 +215,17 @@ static const char*do_errmsg(char*buffer, size_t bufsize) {
 }
 #endif /* !_WIN32 */
 
-
+typedef struct _file_handler {
+    int fh_fd;
+    int fh_mode; /* 0..read, 1..write */
+} t_file_handler;
+#define x_fd x_fhptr->fh_fd
+#define x_mode x_fhptr->fh_mode
 typedef struct _file_handle {
     t_object x_obj;
-    int x_fd;
-    int x_mode; /* 0..read, 1..write */
+    t_file_handler x_fh;
+    t_file_handler*x_fhptr;
+    t_symbol*x_fcname; /* multiple [file handle] object can refer to the same [file define] */
 
     mode_t x_creationmode; /* default: 0666, 0777 */
     int x_verbose; /* default: 0 */
@@ -264,6 +270,7 @@ static void do_parse_args(t_file_handle*x, int argc, t_atom*argv) {
     t_symbol*flag_m = gensym("-m");
     t_symbol*flag_q = gensym("-q");
     t_symbol*flag_v = gensym("-v");
+    x->x_fcname = 0;
     while(argc--) {
         const t_symbol*flag = atom_getsymbol(argv);
         if (0);
@@ -289,7 +296,12 @@ static void do_parse_args(t_file_handle*x, int argc, t_atom*argv) {
                 x->x_creationmode = mode;
             }
         } else {
-            pd_error(x, "unknown flag %s", flag->s_name);
+            int filearg = (!argc);
+            if(filearg) {
+                x->x_fcname = (t_symbol*)flag;
+            } else {
+                pd_error(x, "unknown flag %s", flag->s_name);
+            }
             break;
         }
         argv++;
@@ -300,6 +312,7 @@ static void do_parse_args(t_file_handle*x, int argc, t_atom*argv) {
 static t_file_handle* do_file_handle_new(t_class*cls, t_symbol*s, int argc, t_atom*argv, int verbose, mode_t creationmode) {
     t_file_handle*x = (t_file_handle*)pd_new(cls);
     (void)s;
+    x->x_fhptr = &x->x_fh;
     x->x_fd = -1;
     x->x_canvas = canvas_getcurrent();
     x->x_creationmode = creationmode;
@@ -339,6 +352,20 @@ static void file_set_creationmode(t_file_handle*x, t_symbol*s, int argc, t_atom*
 }
 
     /* ================ [file handle] ====================== */
+t_class *file_define_class;
+static int file_handle_getdefine(t_file_handle*x) {
+    if(x->x_fcname) {
+        t_file_handle *y = (t_file_handle *)pd_findbyclass(x->x_fcname,
+                                                           file_define_class);
+        if(y) {
+            x->x_fhptr=&y->x_fh;
+            return 1;
+        }
+        return 0;
+    }
+    x->x_fhptr = &x->x_fh;
+    return 1;
+}
 
 static void file_handle_close(t_file_handle*x) {
     if (x->x_fd>=0)
@@ -346,6 +373,12 @@ static void file_handle_close(t_file_handle*x) {
     x->x_fd = -1;
 }
 static int file_handle_checkopen(t_file_handle*x, const char*cmd) {
+    if(x->x_fcname) {
+        if(!file_handle_getdefine(x)) {
+            pd_error(x, "file handle: couldn't find file-define '%s'", x->x_fcname->s_name);
+            return 0;
+        }
+    }
     if(x->x_fd<0) {
         if(!cmd)cmd=(x->x_mode)?"write":"read";
         pd_error(x, "'%s' without prior 'open'", cmd);
@@ -424,9 +457,22 @@ static void file_handle_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv)
         }
     }
 }
+static void file_handle_set(t_file_handle*x, t_symbol*s) {
+    if (gensym("") == s)
+        s=0;
+    if (s && x->x_fhptr == &x->x_fh && x->x_fh.fh_fd >= 0) {
+            /* trying to set a name, even though we have an fd open... */
+        pd_error(x, "file handle: shadowing local file descriptor with '%s'", s->s_name);
+    } else if (!s && x->x_fhptr != &x->x_fh && x->x_fh.fh_fd >= 0) {
+        logpost(x, 3, "file handle: unshadowing local file descriptor");
+    }
+    x->x_fcname = s;
+    file_handle_getdefine(x);
+}
 static void file_handle_seek(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
     off_t offset=0;
     int whence = SEEK_SET;
+    t_atom a[1];
     switch(argc) {
     case 0:
             /* just output the current position */
@@ -462,7 +508,8 @@ static void file_handle_seek(t_file_handle*x, t_symbol*s, int argc, t_atom*argv)
     if(!file_handle_checkopen(x, "seek"))
         return;
     offset = lseek(x->x_fd, offset, whence);
-    outlet_float(x->x_infoout, offset);
+    SETFLOAT(a, offset);
+    outlet_anything(x->x_infoout, gensym("seek"), 1, a);
     return;
  usage:
     pd_error(x, "usage: seek [<int:offset> [<symbol:mode>]]");
@@ -471,6 +518,10 @@ static void file_handle_open(t_file_handle*x, t_symbol*file, t_symbol*smode) {
     int mode = O_RDONLY;
     if (x->x_fd>=0) {
         pd_error(x, "'open' without prior 'close'");
+        return;
+    }
+    if(!file_handle_getdefine(x)) {
+        pd_error(x, "file handle: couldn't find file-define '%s'", x->x_fcname->s_name);
         return;
     }
     if(smode && smode!=&s_) {
@@ -514,6 +565,8 @@ static void file_handle_open(t_file_handle*x, t_symbol*file, t_symbol*smode) {
 }
 
 static void file_handle_free(t_file_handle*x) {
+        /* close our own file handle (if any) */
+    x->x_fhptr = &x->x_fh;
     file_handle_close(x);
 }
 
@@ -566,7 +619,7 @@ static void do_dataout_time(t_file_handle*x, const char*selector, time_t t) {
     t_atom ap[7];
     struct tm *ts = localtime(&t);
     if(!ts) {
-        pd_error(x, "unable to convert timetamp %ld", (long int)t);
+        pd_error(x, "unable to convert timestamp %ld", (long int)t);
     }
     SETFLOAT(ap+0, ts->tm_year + 1900);
     SETFLOAT(ap+1, ts->tm_mon + 1);
@@ -703,7 +756,7 @@ static void file_isdirectory_symbol(t_file_handle*x, t_symbol*filename) {
 
     /* ================ [file glob] ====================== */
 #ifdef _WIN32
-/* idiosyncracies:
+/* idiosyncrasies:
  * - cases are ignored ('a*' matches 'A.txt' and 'a.txt'), even with wine on ext4
  * - only the filename component is returned (must prefix path separately)
  * - non-ASCII needs special handling
@@ -1216,7 +1269,7 @@ static void file_split_symbol(t_file_handle*x, t_symbol*path) {
 }
 
 static void file_join_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
-        /* luckily for us, the path-separator in Pd is aways '/' */
+        /* luckily for us, the path-separator in Pd is always '/' */
     size_t bufsize = 0;
     char*buffer = getbytes(bufsize);
     (void)s;
@@ -1305,7 +1358,38 @@ t_class *file_split_class,*file_join_class,*file_splitext_class, *file_splitname
         return do_file_handle_new(file_##verb##_class, s, argc, argv, verbose, creationmode); \
     }
 
-FILE_PD_NEW(handle, 1, 0666);
+static void file_define_ignore(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
+        /* this is a noop (so the object does not bail out if somebody 'send's something to its label) */
+    (void)s;
+    (void)argc;
+    (void)argv;
+}
+static t_file_handle*file_define_new(t_symbol*s, int argc, t_atom*argv) {
+   t_file_handle*x = (t_file_handle*)pd_new(file_define_class);
+   x->x_fhptr = &x->x_fh;
+   x->x_fh.fh_fd = -1;
+   x->x_canvas = canvas_getcurrent();
+   x->x_creationmode = 0666;
+   x->x_verbose = 0;
+   if(1 == argc && A_SYMBOL == argv->a_type) {
+       x->x_fcname = atom_getsymbol(argv);
+       pd_bind(&x->x_obj.ob_pd, x->x_fcname);
+   } else {
+       pd_error(x, "%s requires an argument: handle name", s->s_name);
+   }
+   return x;
+}
+static void file_define_free(t_file_handle*x) {
+    file_handle_close(x);
+    if(x->x_fcname)
+        pd_unbind(&x->x_obj.ob_pd, x->x_fcname);
+}
+
+static t_file_handle*file_handle_new(t_symbol*s, int argc, t_atom*argv) {
+    t_file_handle*x=do_file_handle_new(file_handle_class, s, argc, argv, 1, 0666);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("set"));
+    return x;
+}
 
 FILE_PD_NEW(which, 0, 0);
 FILE_PD_NEW(glob, 0, 0);
@@ -1347,7 +1431,10 @@ static t_pd *fileobj_new(t_symbol *s, int argc, t_atom*argv)
             if (!strcmp(verb, #name))                                   \
                 x = do_file_handle_new(file_##name##_class, gensym("file "#name), argc, argv, verbose, creationmode)
 
-        if(0);
+        if (!strcmp(verb, "define"))
+            x = file_define_new(gensym("file define"), argc, argv);
+        else if (!strcmp(verb, "handle"))
+            x = file_handle_new(gensym("file handle"), argc, argv);
         ELIF_FILE_PD_NEW(handle, 1, 0666);
         ELIF_FILE_PD_NEW(which, 0, 0);
         ELIF_FILE_PD_NEW(glob, 0, 0);
@@ -1400,6 +1487,13 @@ void x_file_setup(void)
 {
     class_addcreator((t_newmethod)fileobj_new, gensym("file"), A_GIMME, 0);
 
+        /* [file define] */
+    file_define_class = class_new(gensym("file define"),
+                                  (t_newmethod)file_define_new, (t_method)file_define_free,
+                                  sizeof(t_file_handle), CLASS_NOINLET, A_GIMME, 0);
+    class_addanything(file_define_class, file_define_ignore);
+    class_sethelpsymbol(file_define_class, gensym("file"));
+
         /* [file handle] */
     file_handle_class = file_class_new("file handle", file_handle_new, file_handle_free, 0, MODE|VERBOSE);
     class_addmethod(file_handle_class, (t_method)file_handle_open,
@@ -1408,6 +1502,8 @@ void x_file_setup(void)
         gensym("close"), 0);
     class_addmethod(file_handle_class, (t_method)file_handle_seek,
         gensym("seek"), A_GIMME, 0);
+    class_addmethod(file_handle_class, (t_method)file_handle_set,
+        gensym("set"), A_DEFSYMBOL, 0);
     class_addlist(file_handle_class, file_handle_list);
 
         /* [file which] */

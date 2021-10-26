@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 5</TITLE>
-    <meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Documentation 5</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
   
 <BODY>
+
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
 
 <H2>Pd Documentation chapter 5. current status</H2>
 
@@ -22,6 +29,46 @@
 <P>This section tracks changes in Pd's current implementation.</P>
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
+
+<P> ------------------ 0.52-0 ------------------------------
+
+<P> The Macintosh compiled version is now compiled at IEM (as part of the
+continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
+This should make Pd appear to be "safely" signed.
+
+<P> New "list" box, like number and symbol but allows lists in addition to
+single atoms.  You can scroll up and down on any of the numbers in a list as
+if it were a number box.  You can also double-click on (number, symbol, list)
+to activate a "real" editor you can copy/paste from/to.
+
+<P> A new "trace" object allows you to get backward and forward traces of
+message passing.
+
+<P> New "file" object by Iohannes with contributions from Jean-Michael
+Celerier - general file operations.
+
+<A> Support for CAVS soundfile support (by Dan Wilcox) - and the soundfile
+code reorganized to make it more modular.
+
+<P> Improvements to the audio implementation - the most noticeable improvement
+is better control of latency under jack.
+
+<P> Pd's GUI checks that Pd actually exits when asked to and if not, kills it
+to prevent rogue invisible pd instances from collecting behind the scenes.
+
+<P> bugfix in bob~ to output "correct" signal (old behavior still available
+by setting pd compatibility < 52).
+
+<P> libpd included as part of the Pd distribution.  A test libpd project is included
+in ../pd/libpdtest.
+
+<P> raised the limit on the size of incoming UDP packets in netreceive.
+
+<P> some improvements to label handling in IEMguis.
+
+<P> improved window positioning.
+
+<P> as usual, numerous bug fixes and documentation updates.
 
 <P> ------------------ 0.51-4 ------------------------------
 
@@ -2266,6 +2313,15 @@ make a patch that copies a "table" into a "buffer~".
 
 <P> The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches,
 in Pd; however, Pd's version is quite different from Max's.
+
+<P>
+<BR><BR>
+<A href="x6.htm"> next chapter </A><BR>
+<A href="index.htm#s5"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
 
 </BODY>
 </HTML>

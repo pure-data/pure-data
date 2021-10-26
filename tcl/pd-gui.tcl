@@ -312,11 +312,6 @@ proc init_for_platform {} {
                     ]
             # some platforms have a menubar on the top, so place below them
             set ::menubarsize 0
-            # Tk handles the window placement differently on each
-            # platform. With X11, the x,y placement refers to the window
-            # frame's upper left corner. http://wiki.tcl.tk/11502
-            set ::windowframex 3
-            set ::windowframey 53
             # trying loading icon in the GUI directory
             if {$::tcl_version >= 8.5} {
                 set icon [file join $::sys_guidir pd.gif]
@@ -366,11 +361,6 @@ proc init_for_platform {} {
                 ]
             # some platforms have a menubar on the top, so place below them
             set ::menubarsize 22
-            # Tk handles the window placement differently on each platform, on
-            # Mac OS X, the x,y placement refers to the content window's upper
-            # left corner (not of the window frame) http://wiki.tcl.tk/11502
-            set ::windowframex 0
-            set ::windowframey 0
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "arrow"
             set ::cursor_runmode_clickme "center_ptr"
@@ -401,19 +391,13 @@ proc init_for_platform {} {
                     ]
             # some platforms have a menubar on the top, so place below them
             set ::menubarsize 0
-            # Tk handles the window placement differently on each platform, on
-            # Mac OS X, the x,y placement refers to the content window's upper
-            # left corner. http://wiki.tcl.tk/11502
-            # TODO this probably needs a script layer: http://wiki.tcl.tk/11291
-            set ::windowframex 0
-            set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
             # add local fonts to Tk's font list using pdfontloader
             if {[file exists [file join "$::sys_libdir" "font"]]} {
                 catch {
                     load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
-                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf" "DejaVuSansMono-Oblique.ttf" "DejaVuSansMono-BoldOblique.ttf"}
                     foreach font $localfonts {
                         set path [file join "$::sys_libdir" "font/$font"]
                         pdfontloader::load $path
@@ -825,7 +809,8 @@ proc main {argc argv} {
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
         [string map {\{ "" \} ""} $::pd_startup_args]
-        exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &
+        ::pd_connect::set_pid \
+            [exec -- $pd_exec -guiport $::port {*}$::pd_startup_args &]
         # if 'pd-gui' first, then initial dir is home
         set ::filenewdir $::env(HOME)
         set ::fileopendir $::env(HOME)

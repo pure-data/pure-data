@@ -2,6 +2,7 @@ package provide pd_bindings 0.1
 
 package require pd_menucommands
 package require dialog_find
+package require pd_connect
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -111,7 +112,7 @@ proc ::pd_bindings::global_bindings {} {
     if {$::windowingsystem eq "aqua"} {
          # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+            bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
             bind_capslock all $::modifier-Key m       {menu_minimize %W}
             bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
@@ -126,7 +127,7 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
-        bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+        bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
         bind_capslock all $::modifier-Key m       {menu_minimize %W}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
@@ -347,9 +348,11 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     if {$width == 1 || $height == 1} {
         # make sure the window is fully created
         update idletasks
-        set width [winfo width $mytoplevel]
-        set height [winfo height $mytoplevel]
     }
+    # the geometry we receive from the callback is really for the frame
+    # however, we need position including the border decoration
+    # as this is how we restore the position
+    scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:
     #    left top right bottom
