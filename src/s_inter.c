@@ -821,6 +821,36 @@ void sys_gui(const char *s)
     sys_vgui("%s", s);
 }
 
+void sys_gui_namelist(const char*varname, t_namelist *nl)
+{
+    char obuf[MAXPDSTRING];
+
+    sys_vgui("set_escaped %s ", varname);
+    for (; nl; nl = nl->nl_next)
+        sys_vgui("{%s} ", pdgui_strnescape(obuf, MAXPDSTRING, nl->nl_string, 0));
+    sys_gui("\n");
+}
+void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size)
+{
+    char obuf[MAXPDSTRING];
+    unsigned int i;
+
+    sys_vgui("set_escaped %s ", varname);
+    for (i=0; i<size; i++)
+        sys_vgui("{%s} ", pdgui_strnescape(obuf, MAXPDSTRING, strarray[i], 0));
+    sys_gui("\n");
+}
+void sys_gui_intarray(const char*varname, const int*intarray, unsigned int size)
+{
+    char obuf[MAXPDSTRING];
+    unsigned int i;
+
+    sys_vgui("set_escaped %s", varname);
+    for (i=0; i<size; i++)
+        sys_vgui(" %d", intarray[i]);
+    sys_gui("\n");
+}
+
 static int sys_flushtogui(void)
 {
     int writesize = INTER->i_guihead - INTER->i_guitail,
