@@ -131,8 +131,12 @@ proc ::scrollbox::release { mytoplevel x y } {
 # listdata - array of data to populate the scrollbox
 # add_method - method to be called when we add a new item
 # edit_method - method to be called when we edit an existing item
-proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
-    frame $mytoplevel.listbox
+proc ::scrollbox::make { mytoplevel listdata add_method edit_method {title ""}} {
+    if { ${title} eq "" } {
+        frame $mytoplevel.listbox
+    } else {
+        labelframe $mytoplevel.listbox -text ${title} -padx 5 -pady 5
+    }
     listbox $mytoplevel.listbox.box -relief raised -highlightthickness 0 \
         -selectmode browse -activestyle dotbox \
         -yscrollcommand [list "$mytoplevel.listbox.scrollbar" set]
