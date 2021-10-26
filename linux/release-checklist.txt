@@ -33,7 +33,7 @@ rm -rf /tmp/pd-*
 scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
 ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
     scp -p $MAC:work/build/pd-$VERSION-macosx7.mac.tar.gz ~/pd/dist/
-ssh $MAC 'cd work/b32/; ./build-386 ' $VERSION && \
+ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
     scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
 
 --------- build osx10.14 version  --- OLD -- replaced with CI below:
@@ -45,8 +45,8 @@ scp -P 2200 -p localhost:work/build/pd-$VERSION.mac.tar.gz ~/pd/dist/
 
 ---------- grab CI version -----------
 git push origin and wait 1/2 hr.
-grab "pure-data_master_Darwin.zip" from https://git.iem.at/pd/pure-data/pipelines
-rename as ~/pd/dist/pd-$VERSION.mac.tar.gz
+grab pure-data_X_macOS.zip from https://git.iem.at/pd/pure-data/pipelines
+rename as ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
