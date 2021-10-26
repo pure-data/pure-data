@@ -27,6 +27,7 @@ dist_libpdtcl_DATA = \
     dialog_find.tcl \
     dialog_font.tcl \
     dialog_gatom.tcl \
+    dialog_preferences.tcl \
     dialog_iemgui.tcl \
     dialog_message.tcl \
     dialog_midi.tcl \
