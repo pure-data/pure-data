@@ -1031,6 +1031,12 @@ void sys_gui_preferences(void)
         /* send the list of loaded libraries ... */
     sys_gui_namelist("::startup_libraries", STUFF->st_externlist);
 
+    sys_vgui("set_escaped ::sys_verbose %d\n", sys_verbose);
+    sys_vgui("set_escaped ::sys_use_stdpath %d\n", sys_usestdpath);
+    sys_vgui("set_escaped ::sys_defeatrt %d\n", sys_defeatrt);
+    sys_vgui("set_escaped ::sys_zoom_open %d\n", (sys_zoom_open == 2));
+    sys_vgui("set_escaped ::sys_flags {%s}\n",
+             (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
 }
 
 
