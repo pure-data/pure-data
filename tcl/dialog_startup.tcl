@@ -59,14 +59,14 @@ proc ::dialog_startup::edit { current_library } {
 }
 
 proc ::dialog_startup::commit { new_startup } {
-    variable defeatrt_button
+    ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::dialog_startup::defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
-    variable defeatrt_button $defeatrt
+    set ::dialog_startup::defeatrt_button $defeatrt
     if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
@@ -78,29 +78,65 @@ proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     }
 }
 
-proc ::dialog_startup::create_dialog {mytoplevel} {
-    ::scrollboxwindow::make $mytoplevel $::startup_libraries \
-        dialog_startup::add dialog_startup::edit dialog_startup::commit \
-        [_ "Pd libraries to load on startup"] \
-        450 300 0
-    wm withdraw $mytoplevel
-    ::pd_bindings::dialog_bindings $mytoplevel "startup"
+proc ::dialog_startup::fill_frame {mytoplevel} {
+    # 'mytoplevel' is a frame, rather than a toplevel window
 
-    frame $mytoplevel.flags
-    pack $mytoplevel.flags -side top -anchor s -fill x -padx 2m
-    label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags
-    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
-    pack $mytoplevel.flags.entryname -side right
+    label $mytoplevel.restart_required -text [_ "Settings below require a restart of Pd!" ]
+    pack $mytoplevel.restart_required -side top -fill x
+
+    # scrollbox
+    ::scrollbox::make ${mytoplevel} $::startup_libraries \
+        ::dialog_startup::add dialog_startup::edit \
+        [_ "Pd libraries to load on startup"]
+
+    labelframe $mytoplevel.optionframe -text [_ "Startup options" ]
+    pack $mytoplevel.optionframe -side top -anchor s -fill x -padx 2m -pady 5
+
+    checkbutton $mytoplevel.optionframe.verbose  -anchor w \
+        -text [_ "Verbose"] \
+        -variable verbose_button
+    pack $mytoplevel.optionframe.verbose -side top -anchor w -expand 1
 
     if {$::windowingsystem ne "win32"} {
-        frame $mytoplevel.defeatrtframe
-        pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
-        checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
+        checkbutton $mytoplevel.optionframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt
+        pack $mytoplevel.optionframe.defeatrt -side top -anchor w -expand 1
     }
+
+    # language selection
+    frame $mytoplevel.optionframe.langframe
+    set w $mytoplevel.optionframe.langframe.language
+    menubutton $w -indicatoron 1 -menu $w.menu \
+        -text [_ "language" ] \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush
+    menu $w.menu -tearoff 0
+    foreach lang [::pd_i18n::get_available_languages] {
+        foreach {langname langcode} $lang {
+            $w.menu add radiobutton \
+                -label ${langname} -command "$w configure -text \"${langname}\"" \
+                -value ${langcode} -variable ::pd_i18n::language
+            if { ${langcode} == ${::pd_i18n::language} } {
+                $w configure -text "${langname}"
+            }
+        }
+    }
+    pack $w -side left
+
+    set w $mytoplevel.optionframe.langframe.langlabel
+    label $w -text [_ "Menu language" ]
+    pack $w -side right
+    pack $mytoplevel.optionframe.langframe -side top -anchor w -expand 1
+
+
+
+    labelframe $mytoplevel.flags -text [_ "Startup flags:" ]
+    pack $mytoplevel.flags -side top -anchor s -fill x -padx 2m
+    entry $mytoplevel.flags.entry -textvariable ::startup_flags
+    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
+
+
 
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
@@ -114,10 +150,26 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
 
         # unbind Return from ok button when an entry takes focus
         $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
-
-
-
     }
+
+}
+
+proc ::dialog_startup::create_dialog {mytoplevel} {
+    ::preferencewindow::create ${mytoplevel} [_ "Pd libraries to load on startup"] {450 300}
+    wm withdraw $mytoplevel
+    wm resizable $mytoplevel 0 0
+
+    set my [::preferencewindow::add_frame ${mytoplevel} [_ "startup preferences" ]]
+
+    # add widgets
+    fill_frame $my
+    pack $my -side top -fill x -expand 1
+
+    # add actions
+    ::preferencewindow::add_cancel ${mytoplevel} "::scrollboxwindow::cancel ${mytoplevel}"
+    ::preferencewindow::add_apply ${mytoplevel} "::scrollboxwindow::apply ${my} ::dialog_startup::commit"
+
+    ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     # set min size based on widget sizing
     update
