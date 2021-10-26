@@ -49,6 +49,7 @@ dist_libpdtcl_DATA = \
     pdwindow.tcl \
     pkgIndex.tcl \
     pkg_mkIndex.tcl \
+    preferencewindow.tcl \
     scrollbox.tcl \
     scrollboxwindow.tcl \
     wheredoesthisgo.tcl \
