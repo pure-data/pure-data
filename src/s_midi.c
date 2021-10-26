@@ -688,6 +688,46 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
 
 extern t_class *glob_pdobject;
 
+
+void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size);
+void sys_gui_intarray(const char*varname, const int*intarray, unsigned int size);
+
+void sys_gui_midipreferences(void) {
+        /* these are all the devices on your system: */
+    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    int nindevs = 0, noutdevs = 0, i;
+
+        /* these are the devices you're using: */
+    int nindev, midiindev[MAXMIDIINDEV];
+    int noutdev, midioutdev[MAXMIDIOUTDEV];
+
+    const char *strarray[MAXNDEV];
+
+        /* query the current MIDI settings */
+    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+        MAXNDEV, DEVDESCSIZE);
+    sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
+
+        /* and send them over to the GUI */
+    sys_vgui("set ::pd_whichmidiapi %d\n", sys_midiapi);
+
+        /* notify GUI of available input devices */
+    for (i = 0; i < nindevs; i++) {
+        strarray[i] = indevlist + i*DEVDESCSIZE;
+    }
+    sys_gui_strarray("::midi_indevlist", strarray, nindevs);
+
+        /* notify GUI of available output devices */
+    for (i = 0; i < noutdevs; i++) {
+        strarray[i] = outdevlist + i*DEVDESCSIZE;
+    }
+    sys_gui_strarray("::midi_outdevlist", strarray, noutdevs);
+
+        /* notify GUI of used input/output devices */
+    sys_gui_intarray("::midi_indevices", midiindev, nindev);
+    sys_gui_intarray("::midi_outdevices", midioutdev, noutdev);
+}
+
     /* start an midi settings dialog window */
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
@@ -695,60 +735,36 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9;
+    int i;
 
-        /* these are all the devices on your system: */
-    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i;
-
-    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
-
-    sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
-    for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend midi_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
-
-    sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
-    for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend midi_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+    sys_gui_midipreferences();
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 
     if (nindev > 1 || noutdev > 1)
         flongform = 1;
 
-    midiindev1 = (nindev > 0 &&  midiindev[0]>= 0 ? midiindev[0]+1 : 0);
-    midiindev2 = (nindev > 1 &&  midiindev[1]>= 0 ? midiindev[1]+1 : 0);
-    midiindev3 = (nindev > 2 &&  midiindev[2]>= 0 ? midiindev[2]+1 : 0);
-    midiindev4 = (nindev > 3 &&  midiindev[3]>= 0 ? midiindev[3]+1 : 0);
-    midiindev5 = (nindev > 4 &&  midiindev[4]>= 0 ? midiindev[4]+1 : 0);
-    midiindev6 = (nindev > 5 &&  midiindev[5]>= 0 ? midiindev[5]+1 : 0);
-    midiindev7 = (nindev > 6 &&  midiindev[6]>= 0 ? midiindev[6]+1 : 0);
-    midiindev8 = (nindev > 7 &&  midiindev[7]>= 0 ? midiindev[7]+1 : 0);
-    midiindev9 = (nindev > 8 &&  midiindev[8]>= 0 ? midiindev[8]+1 : 0);
-    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0);
-    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0);
-    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0);
-    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0);
-    midioutdev5 = (noutdev > 4 && midioutdev[4]>= 0 ? midioutdev[4]+1 : 0);
-    midioutdev6 = (noutdev > 5 && midioutdev[5]>= 0 ? midioutdev[5]+1 : 0);
-    midioutdev7 = (noutdev > 6 && midioutdev[6]>= 0 ? midioutdev[6]+1 : 0);
-    midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
-    midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
 
+    for (i=0; i<MAXMIDIINDEV; i++) {
+        if (nindev > i &&  midiindev[i] >= 0)
+            midiindev[i] += 1;
+        else
+            midiindev[i] = 0;
+    }
+    for (i=0; i<MAXMIDIOUTDEV; i++) {
+        if (noutdev > i &&  midioutdev[i] >= 0)
+            midioutdev[i] += 1;
+        else
+            midioutdev[i] = 0;
+    }
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
     sprintf(buf,
 "pdtk_alsa_midi_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d 1\n",
-        midiindev1, midiindev2, midiindev3, midiindev4,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4,
+        midiindev[0], midiindev[1], midiindev[2], midiindev[3],
+        midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
         (flongform != 0));
       else
 #endif
@@ -757,10 +773,10 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 %d %d %d %d %d %d %d %d %d \
 %d %d %d %d %d %d %d %d %d \
 %d\n",
-        midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9,
+        midiindev[0], midiindev[1], midiindev[2], midiindev[3],
+        midiindev[4], midiindev[5], midiindev[6], midiindev[7], midiindev[8],
+        midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
+        midioutdev[4], midioutdev[5], midioutdev[6], midioutdev[7], midioutdev[8],
         (flongform != 0));
 
     gfxstub_deleteforkey(0);
