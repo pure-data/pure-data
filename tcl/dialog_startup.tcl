@@ -115,17 +115,8 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         # unbind Return from ok button when an entry takes focus
         $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
 
-        # remove cancel button from focus list since it's not activated on Return
-        $mytoplevel.nb.buttonframe.cancel config -takefocus 0
 
-        # show active focus on the ok button as it *is* activated on Return
-        $mytoplevel.nb.buttonframe.ok config -default normal
-        bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
-        bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
 
-        # since we show the active focus, disable the highlight outline
-        $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
-        $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
 
     # set min size based on widget sizing
