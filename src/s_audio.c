@@ -576,6 +576,38 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     }
 }
 
+
+void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size);
+
+void sys_gui_audiopreferences(void) {
+    t_audiosettings as;
+        /* these are all the devices on your system: */
+    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0;
+    const char *strarray[MAXNDEV];
+    int i;
+
+        /* query the current AUDIO settings */
+    sys_get_audio_settings(&as);
+    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
+        &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
+
+
+        /* and send them over to the GUI */
+
+          /* notify GUI of input devices:
+             available, used, number of channels */
+    for (i = 0; i < nindevs; i++) {
+        strarray[i] = indevlist + i*DEVDESCSIZE;
+    }
+    sys_gui_strarray("::audio_indevlist", strarray, nindevs);
+
+          /* notify GUI of output devices:
+             available, used, number of channels */
+    for (i = 0; i < noutdevs; i++) {
+        strarray[i] = outdevlist + i*DEVDESCSIZE;
+    }
+    sys_gui_strarray("::audio_outdevlist", strarray, noutdevs);
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
@@ -585,18 +617,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
 
-    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
-         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
-
-    sys_gui("global audio_indevlist; set audio_indevlist {}\n");
-    for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend audio_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
-
-    sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
-    for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend audio_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+    sys_gui_audiopreferences();
 
     sys_get_audio_settings(&as);
 
