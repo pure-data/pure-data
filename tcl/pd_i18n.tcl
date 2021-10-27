@@ -6,7 +6,9 @@
 
 package provide pd_i18n 0.1
 package require msgcat
+package require pdtcl_compat
 
+catch {namespace import ::pdtcl_compat::dict}
 
 namespace eval ::pd_i18n:: {
     variable podir
