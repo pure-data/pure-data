@@ -187,7 +187,11 @@ proc ::dialog_midi::init_devicevars {} {
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             # output vars
             upvar ::dialog_midi::${direction}dev${i} dev
-            set dev [lindex $devices ${i}-1]
+            if { [llength $devices] > 0 } {
+                set dev [lindex $devices ${i}-1]
+            } else {
+                set dev -1
+            }
         }
 
         set alsa 0

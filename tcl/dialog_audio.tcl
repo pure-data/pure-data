@@ -286,8 +286,12 @@ proc ::dialog_audio::init_devicevars {} {
             upvar ::dialog_audio::${direction}chan${i} chan
             upvar ::dialog_audio::${direction}enable${i} enabled
 
+            if { [llength $devices] > 0 } {
+                set dev [lindex $devices ${i}-1]
+            } else {
+                set dev -1
+            }
             set c [lindex $channels ${i}-1]
-            set dev [lindex $devices ${i}-1]
             set chan [expr ( $c > 0 ? $c : -$c ) ]
             set enabled [expr $c > 0 ]
         }
