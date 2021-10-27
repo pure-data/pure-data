@@ -1598,18 +1598,19 @@ void text_drawborder(t_text *x, t_glist *glist,
         corner = ((y2-y1)/4);
         if (firsttime)
             sys_vgui(
-            ".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d %d %d "
-                "-width %d -capstyle projecting -tags [list %sR atom]\n",
-                glist_getcanvas(glist),
-                x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
+            ".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d %d %d %d %d "
+                "-outline [::pdtk_canvas::get_color atom_box_outline .x%lx] "
+                "-fill [::pdtk_canvas::get_color atom_box_fill .x%lx] "
+                "-width %d -tags [list %sR atom]\n",
+                c, x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
                 x2, y2-corner, x2-corner, y2,
-                x1p, y2,  x1p, y1p,
-                    glist->gl_zoom+grabbed, tag);
+                x1p, y2,  x1p, y1p, c, c,
+                glist->gl_zoom+grabbed, tag);
         else
         {
             sys_vgui(
             ".x%lx.c coords %sR %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
-                glist_getcanvas(glist), tag,
+                c, tag,
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
                     x2, y2-corner, x2-corner, y2,
                     x1p, y2,  x1p, y1p);

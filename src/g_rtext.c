@@ -453,10 +453,10 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 		}
 		sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } "
 			"%d [::pdtk_canvas::get_color %s .x%lx]\n",
-			canvas, x->x_tag, rtext_gettype(x)->s_name,
+			(long)canvas, x->x_tag, rtext_gettype(x)->s_name,
 			text_xpix(x->x_text, x->x_glist) + lmargin,
 			text_ypix(x->x_text, x->x_glist) + tmargin,
-			escbuf, guifontsize, txtcolor, canvas);
+			escbuf, guifontsize, txtcolor, (long)canvas);
     }
     else if (action == SEND_UPDATE)
     {
