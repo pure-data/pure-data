@@ -4,8 +4,6 @@ package provide dialog_startup 0.1
 package require scrollboxwindow
 
 namespace eval dialog_startup {
-    variable defeatrt_flag 0
-
     namespace export pdtk_startup_dialog
 }
 
@@ -61,12 +59,12 @@ proc ::dialog_startup::edit { current_library } {
 proc ::dialog_startup::commit { new_startup } {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $::dialog_startup::defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
-    set ::dialog_startup::defeatrt_button $defeatrt
+    set ::sys_defeatrt $defeatrt
     if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
@@ -100,7 +98,7 @@ proc ::dialog_startup::fill_frame {mytoplevel} {
     if {$::windowingsystem ne "win32"} {
         checkbutton $mytoplevel.optionframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
-            -variable ::dialog_startup::defeatrt_button
+            -variable ::sys_defeatrt
         pack $mytoplevel.optionframe.defeatrt -side top -anchor w -expand 1
     }
 
