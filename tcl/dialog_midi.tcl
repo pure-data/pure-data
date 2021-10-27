@@ -89,7 +89,7 @@ proc ::dialog_midi::fill_frame_device {frame direction index} {
         foreach dev $devlist {
             $frame.x1.menu add radiobutton \
                 -label "${dev}" \
-                -value ${idx} -variable midi_${direction}dev${index} \
+                -value ${idx} -variable ::dialog_midi::${direction}dev${index} \
                 -command "$frame.x1 configure -text \"${dev}\""
             incr idx
         }
