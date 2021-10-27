@@ -72,7 +72,7 @@ FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
         $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
 # these are the supported languages
-ALL_LINGUAS = af az be bg de el en_ca es eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
+ALL_LINGUAS = af az be bg de el en en_ca es eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
