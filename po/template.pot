@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.51.4\n"
+"Project-Id-Version: Pure Data 0.52.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -245,7 +245,22 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-msgid "Audio Settings"
+msgid "no device"
+msgstr ""
+
+msgid "(same as input device)..."
+msgstr ""
+
+msgid "Channels:"
+msgstr ""
+
+msgid "Input Devices"
+msgstr ""
+
+msgid "Output Devices"
+msgstr ""
+
+msgid "Use Multiple Devices"
 msgstr ""
 
 msgid "Settings"
@@ -272,19 +287,7 @@ msgstr ""
 msgid "Use callbacks"
 msgstr ""
 
-msgid "Input Devices"
-msgstr ""
-
-msgid "Channels:"
-msgstr ""
-
-msgid "Output Devices"
-msgstr ""
-
-msgid "(same as input device)..."
-msgstr ""
-
-msgid "Use Multiple Devices"
+msgid "Audio Settings"
 msgstr ""
 
 msgid "Save All Settings"
@@ -386,6 +389,15 @@ msgstr ""
 msgid "Atom Box Properties"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
+msgid "Send symbol:"
+msgstr ""
+
+msgid "Receive symbol:"
+msgstr ""
+
 msgid "Width:"
 msgstr ""
 
@@ -411,15 +423,6 @@ msgid "Top"
 msgstr ""
 
 msgid "Bottom"
-msgstr ""
-
-msgid "Messages"
-msgstr ""
-
-msgid "Send symbol:"
-msgstr ""
-
-msgid "Receive symbol:"
 msgstr ""
 
 msgid "Background color"
@@ -537,16 +540,19 @@ msgstr ""
 msgid "(use arrow keys for history)"
 msgstr ""
 
-msgid "MIDI Settings"
-msgstr ""
-
-msgid "ALSA MIDI Settings"
+msgid "no input devices"
 msgstr ""
 
 msgid "In Ports:"
 msgstr ""
 
 msgid "Out Ports:"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr ""
+
+msgid "ALSA MIDI Settings"
 msgstr ""
 
 msgid "Pd search path for objects, help, audio, text and other files"
@@ -576,6 +582,9 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+msgid "path preferences"
+msgstr ""
+
 msgid "Choose Pd documents directory:"
 msgstr ""
 
@@ -585,22 +594,105 @@ msgstr ""
 msgid "Add a new path"
 msgstr ""
 
+msgid "Patch windows"
+msgstr ""
+
+msgid "Zoom New Windows"
+msgstr ""
+
+msgid "startup preferences"
+msgstr ""
+
+msgid "audio preferences"
+msgstr ""
+
+msgid "MIDI preferences"
+msgstr ""
+
+msgid "deken preferences"
+msgstr ""
+
+msgid "misc preferences"
+msgstr ""
+
 msgid "Add new library"
 msgstr ""
 
 msgid "Edit library"
 msgstr ""
 
+msgid "Settings below require a restart of Pd!"
+msgstr ""
+
 msgid "Pd libraries to load on startup"
 msgstr ""
 
-msgid "Startup flags:"
+msgid "Startup options"
 msgstr ""
 
 msgid "Defeat real-time scheduling"
 msgstr ""
 
+msgid "language"
+msgstr ""
+
+msgid "Menu language"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr ""
+
 msgid "Help Browser"
+msgstr ""
+
+msgid "Associated Files"
+msgstr ""
+
+msgid "Pd Files"
+msgstr ""
+
+msgid "Max Patch Files"
+msgstr ""
+
+msgid "Max Text Files"
+msgstr ""
+
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
@@ -1044,6 +1136,90 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+msgid "Afrikaans"
+msgstr ""
+
+msgid "Azerbaijani"
+msgstr ""
+
+msgid "Belarusian"
+msgstr ""
+
+msgid "Bulgarian"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "German (Austria)"
+msgstr ""
+
+msgid "Greek"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "English (Canada)"
+msgstr ""
+
+msgid "English (UK)"
+msgstr ""
+
+msgid "English (USA)"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "Basque"
+msgstr ""
+
+msgid "French"
+msgstr ""
+
+msgid "Gujarati"
+msgstr ""
+
+msgid "Hebrew"
+msgstr ""
+
+msgid "Hindi"
+msgstr ""
+
+msgid "Hungarian"
+msgstr ""
+
+msgid "Italian"
+msgstr ""
+
+msgid "Panjabi"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+msgid "Albanian"
+msgstr ""
+
+msgid "Swedish"
+msgstr ""
+
+msgid "Vietnamese"
+msgstr ""
+
+msgid "(default language)"
+msgstr ""
+
+msgid "(no translation)"
+msgstr ""
+
 msgid "About Pd"
 msgstr ""
 
@@ -1113,6 +1289,9 @@ msgstr ""
 msgid "Number"
 msgstr ""
 
+msgid "List"
+msgstr ""
+
 msgid "Symbol"
 msgstr ""
 
@@ -1179,6 +1358,9 @@ msgstr ""
 msgid "puredata.info"
 msgstr ""
 
+msgid "Check for updates"
+msgstr ""
+
 msgid "Report a bug"
 msgstr ""
 
@@ -1196,19 +1378,7 @@ msgstr ""
 msgid "no Pd-GUI settings to clear"
 msgstr ""
 
-msgid "Path..."
-msgstr ""
-
-msgid "Startup..."
-msgstr ""
-
-msgid "Audio..."
-msgstr ""
-
-msgid "MIDI..."
-msgstr ""
-
-msgid "Zoom New Windows"
+msgid "Edit Preferences..."
 msgstr ""
 
 msgid "Save All Preferences"
