@@ -114,8 +114,8 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
         }
     }
     set havelanguages [lsort -index 0 $havelanguages]
-    lappend havelanguages [list [format "(%s)" [_ "default language" ] ] "default" ]
-    lappend havelanguages [list [format "(%s)" [_ "no language" ] ] "." ]
+    lappend havelanguages [list [_ "(default language)" ] {} ]
+    lappend havelanguages [list [_ "(no translation)" ] "." ]
 }
 
 proc ::pd_i18n::init {} {
