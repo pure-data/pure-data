@@ -6,7 +6,6 @@
 #X text 150 133 set and output the value;
 #X obj 43 244 symbol foo;
 #X obj 69 12 symbol;
-#X text 35 37 The symbol object stores a symbol \, Pd's data type for
 #X text 35 40 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
 in pd).;
