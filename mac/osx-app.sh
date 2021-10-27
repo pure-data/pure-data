@@ -21,6 +21,8 @@ TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
+
+# ad hoc by default
 SIGNATURE_ID="-"
 
 # source dir, relative to this script
@@ -61,7 +63,8 @@ Options:
                       frameworks, downloads and builds using tcltk-wish.sh
 
   --universal         "universal" multi-arch build when using -t,--tk:
-                      i386 & x86_64 (& ppc if 10.6 SDK found)
+                      a combination of ppc, i386, x86_64, and/or arm64
+                      depending on detected macOS SDK
 
   --builddir          set pd build directory path
 

@@ -47,10 +47,13 @@ Usage: tcltk-wish.sh [OPTIONS] VERSION
 Options:
   -h,--help           display this help message
 
-  --arch ARCH         choose a specific arch ie. i386, x86_64
+  --arch ARCH         choose a specific arch ie. ppc, i386, x86_64, arm64
   
-  --universal         "universal" multi-arch build:
-                      i386 & x86_64 (& ppc if 10.6 SDK found)
+  --universal         "universal" multi-arch build based on detected macOS SDK
+                      10.6:          ppc i386 x86_64
+                      10.7  - 10.13: i386 x86_64
+                      10.14 - 10.15: x86_64
+                      11.0+:         arm64 x86_64
 
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
                       any arguments after VERSION are passed to git
@@ -78,7 +81,7 @@ Examples:
     tcltk-wish.sh --arch i386 8.6.6
 
     # build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
-    # and universal archs
+    # and universal archs (detected from Xcode macOS SDK)
     tcltk-wish.sh --universal 8.6.6
 
     # build Wish-master-git.app with the latest master branch from git
@@ -235,10 +238,31 @@ fi
 
 # try a universal build
 if [ $UNIVERSAL = true ] ; then
-    CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
-    # check if the 10.6 SDK is available, if so we can build for ppc
-    if [ xcodebuild -version -sdk macosx10.6 Path >/dev/null 2>&1 ] ; then
-        CFLAGS="-arch ppc $CFLAGS"
+
+    # detect macOS SDK from Xcode toolchain version & deduce archs
+    XCODE_VER=$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | \
+                grep "version" | sed "s/[^0-9]*\([0-9]*\).*/\1/")
+    if [ "$XCODE_VER" = "" ] ; then
+        # no CLTools, try xcodebuild
+        XCODE_VER=$(xcodebuild -version | grep "Xcode" | \
+                    sed "s/[^0-9]*\([0-9]*\).*/\1/")
+    fi
+    if [ $XCODE_VER -gt 11 ] ; then
+        # Xcode 12+: 11.0+
+        CFLAGS="-arch x86_64 -arch arm64 $CFLAGS"
+    elif [ $XCODE_VER -gt 9 ] ; then
+        # Xcode 10 - 11: 10.14 - 10.15
+        echo "warning: Xcode version $XCODE_VER only builds x86_64"
+        CFLAGS="-arch x86_64 $CFLAGS"
+    elif [ $XCODE_VER -gt 3 ] ; then
+        # Xcode 4 - 9: 10.7 - 10.13
+        CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
+    elif [ "$XCODE_VER" = "3" ] ; then
+        # Xcode 3: 10.6
+        CFLAGS="-arch ppc -arch i386 -arch x86_64 $CFLAGS"
+    else
+        echo "warning: unknown or unsupported Xcode version, trying i386 x86_64"
+        CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
     fi
 fi
 
