@@ -73,6 +73,9 @@ proc ::helpbrowser::make_frame {mytoplevel} {
     canvas $mytoplevel.c -xscrollcommand [list $mytoplevel.sx set] \
         -highlightthickness 0
     frame $mytoplevel.c.f
+    bind $mytoplevel <Shift-MouseWheel> {
+        .helpbrowser.c xview scroll [expr {- (%D)}] units
+    }
     bind .helpbrowser <Map> {
         # for some reason state gets hidden when minimized?
         if {"%W" eq ".helpbrowser"} {
