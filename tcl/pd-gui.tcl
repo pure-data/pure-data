@@ -278,8 +278,9 @@ pdwindow_error_text "#D00"
 pdwindow_post_text "#000"
 pdwindow_debug_text "#484848"
 helpbrowser_fill "#FFFFFF"
-helpbrowser_text "#000"
+helpbrowser_text ""
 helpbrowser_highlight ""
+helpbrowser_hl_text ""
 }
 
 namespace eval ::pdgui:: {

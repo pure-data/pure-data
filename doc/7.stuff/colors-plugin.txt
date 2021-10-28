@@ -40,6 +40,7 @@
 # helpbrowser_fill
 # helpbrowser_text
 # helpbrowser_highlight - like txt_highlight but for help browser
+# helpbrowser_hl_text - text highlight color (defaults to helpbrowser_text)
 
 # this is an example of a color plugin for pure data (saved as a .tcl file)
 array set ::pd_colors {
@@ -81,6 +82,7 @@ pdwindow_debug_text "green"
 helpbrowser_fill "#000"
 helpbrowser_text "deep sky blue"
 helpbrowser_highlight "red"
+helpbrowser_hl_text "white"
 canvas_text_cursor "deep sky blue"
 }
 set ::pd_colors(txt_highlight_front) $::pd_colors(selected)
