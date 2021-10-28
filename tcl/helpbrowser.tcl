@@ -16,7 +16,7 @@ namespace eval ::helpbrowser:: {
 ################## help browser and support functions #########################
 
 proc ::helpbrowser::open_helpbrowser {} {
-    if {[winfo exists .helpbrowser.frame]} {
+    if {[winfo exists .helpbrowser.c.f]} {
         wm deiconify .helpbrowser
         raise .helpbrowser
     } else {
@@ -29,18 +29,19 @@ proc ::helpbrowser::open_helpbrowser {} {
         if {$::windowingsystem eq "aqua"} {
             .helpbrowser configure -menu $::dialog_menubar
         }
+        
+       
+        
+        # set the maximum number of parent columns to create
+        set ::helpbrowser::maxcols 4
 
-        # set the maximum number of child columns to create
-        set ::helpbrowser::maxcols 5
-
-        # TODO wrap frame in a canvas with a horz scrollbar,
-        # currently we simply add cols to the left until we reach max cols
+        # only make x-axis scrollable
         wm resizable .helpbrowser 0 1
         ::helpbrowser::make_frame .helpbrowser
 
         # hit up, down, or Tab after browser opens to focus on first listbox
-        bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
-        bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.frame.root0"
+        bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.c.f.root0"
+        bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.c.f.root0"
 
         position_over_window .helpbrowser .pdwindow
     }
@@ -50,7 +51,7 @@ proc ::helpbrowser::open_helpbrowser {} {
 proc ::helpbrowser::check_destroy {level} {
     set winlist list
     set winlevel 0
-    foreach child [winfo children .helpbrowser.frame] {
+    foreach child [winfo children .helpbrowser.c.f] {
         regexp \\d+ $child winlevel
         if {$winlevel >= $level} {
             lappend winlist $child
@@ -59,7 +60,7 @@ proc ::helpbrowser::check_destroy {level} {
     }
     # check for [file readable]?
     # requires Tcl 8.5 but probably deals with special chars better:
-    #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
+    #        destroy {*}[lrange [winfo children .helpbrowser.c.f] [expr {2 * $count}] end]
     if {[catch { eval destroy $winlist } errorMessage]} {
         ::pdwindow::error "helpbrowser: error destroying listbox\n"
     }
@@ -67,10 +68,45 @@ proc ::helpbrowser::check_destroy {level} {
 
 # create the base frame and root listbox, build path references
 proc ::helpbrowser::make_frame {mytoplevel} {
-    frame $mytoplevel.frame
-    pack $mytoplevel.frame -side top -fill both -expand 1
+    scrollbar $mytoplevel.sx -command [list $mytoplevel.c xview] \
+        -orient horizontal
+    canvas $mytoplevel.c -xscrollcommand [list $mytoplevel.sx set] \
+        -highlightthickness 0
+    frame $mytoplevel.c.f
+    bind .helpbrowser <Map> {
+        # for some reason state gets hidden when minimized?
+        if {"%W" eq ".helpbrowser"} {
+            .helpbrowser.c itemconfigure "canvaswindow" -state normal
+        }
+    }
+    bind $mytoplevel.c.f <Configure> {
+        if {"%W" eq ".helpbrowser.c.f"} {
+            .helpbrowser.c configure -scrollregion [list 0 0 \
+                [winfo reqwidth .helpbrowser.c.f] \
+                [winfo height .helpbrowser.c]] \
+                -height [winfo reqheight .helpbrowser.c.f]
+        }
+        
+    }
+    bind $mytoplevel <Configure> {
+        if {"%W" eq ".helpbrowser"} {
+            # the canvas will resize from the grid getting resized, but
+            # the item will not
+            .helpbrowser.c itemconfigure "canvaswindow" -height \
+                [winfo height .helpbrowser.c]
+        }
+    }
+    $mytoplevel.c create window  0 0 -window $mytoplevel.c.f -anchor nw \
+        -tags "canvaswindow"
+    grid $mytoplevel.c -sticky ns -column 0 -row 0
+    grid $mytoplevel.sx -sticky ew -column 0 -row 1
+    grid rowconfigure $mytoplevel 0 -weight 1
+    grid columnconfigure $mytoplevel 0 -weight 1
     build_references
     make_rootlistbox
+    update
+    $mytoplevel.c configure -width [winfo width .helpbrowser.c.f] -height \
+        [winfo height .helpbrowser.c.f.root0]
 }
 
 # make the root listbox of the help browser using the pre-built lists
@@ -80,12 +116,17 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable helplist
 
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
-    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
-        -side left -fill both -expand 1
+    set current_listbox [listbox "[set b .helpbrowser.c.f.root0]" \
+        -yscrollcommand "$b-scroll set" \
+        -highlightbackground white -highlightthickness 5 \
+        -highlightcolor white -selectborderwidth 0 \
+        -height 20 -width 24 -exportselection 0 -bd 0]
+    
+    grid $current_listbox -column 0 -row 0 -sticky ns
+    grid [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+        -sticky ns -row 0 -column 1
+    grid rowconfigure .helpbrowser.c.f 0 -weight 1
+    
     # first show the directories (for easier navigation)
     foreach item [lsort  $libdirlist] {
         $current_listbox insert end $item
@@ -118,7 +159,7 @@ proc ::helpbrowser::refresh {} {
     variable refresh
     if {[winfo exists .helpbrowser]} {
         # refresh in place
-        destroy .helpbrowser.frame
+        destroy .helpbrowser.c .helpbrowser.sx
         ::helpbrowser::make_frame .helpbrowser
         if {[winfo viewable .helpbrowser]} {
             focus .helpbrowser
@@ -131,6 +172,10 @@ proc ::helpbrowser::refresh {} {
 proc ::helpbrowser::scroll_destroy {window level} {
     $window xview 0
     check_destroy $level
+    if {$level <= $::helpbrowser::maxcols} {
+        update idletasks
+        .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
+    }
 }
 
 # try to open a file or dir
@@ -213,12 +258,14 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
 
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
-                             -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 24 -exportselection 0 -bd 0]
-    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
-        -side left -fill both -expand 1
+    set current_listbox [listbox "[set b .helpbrowser.c.f.root1]" \
+        -yscrollcommand "$b-scroll set" \
+        -highlightbackground white -highlightthickness 5 \
+        -highlightcolor white -selectborderwidth 0 \
+        -height 20 -width 24 -exportselection 0 -bd 0]
+    grid $current_listbox -row 0 -column 2 -sticky ns
+    grid [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+        -sticky ns -row 0 -column 3
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         if {[glob -directory $item -nocomplain -types {f} -- $doctypes] ne "" ||
             [glob -directory $item -nocomplain -types {d} -- *] ne ""} {
@@ -258,6 +305,7 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
         dir_navigate_key "$dir" 2 $current_listbox false
     }
 
+    .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
     return $current_listbox
 }
 
@@ -267,13 +315,16 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
 
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
-    set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
+    set current_listbox [listbox "[set b .helpbrowser.c.f.root$count]" \
                              -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor white -selectborderwidth 0 \
                              -height 20 -width 24 -exportselection 0 -bd 0]
-    pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
-        -side left -fill both -expand 1
+    set column [expr {$count * 2}]
+    grid $current_listbox -row 0 -column $column -sticky ns
+    incr column
+    grid [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+        -sticky ns -row 0 -column $column
 
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         $current_listbox insert end "[file tail $item]/"
@@ -283,7 +334,6 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
         $current_listbox insert end [file tail $item]
     }
     incr count
-
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -300,20 +350,25 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
         "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
-
     # select first entry & update next col
     if {$select && [$current_listbox size] != "0"} {
         $current_listbox selection set 0
         dir_navigate_key "$dir" $count $current_listbox false
     }
 
+    update idletasks
+    if {$count <= $::helpbrowser::maxcols} {
+        .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
+    } else {
+        .helpbrowser.c xview moveto 1.0
+    }
     return $current_listbox
 }
 
 # clear current selection & navigate one column to the left
 proc ::helpbrowser::dir_left {count window} {
     $window selection clear 0 end
-    focus .helpbrowser.frame.root$count
+    focus .helpbrowser.c.f.root$count
 }
 
 # navigate from one column to the right or update the second columns content
@@ -323,7 +378,6 @@ proc ::helpbrowser::dir_navigate_key {dir count window {move true}} {
     if {[set newdir [$window get active]] eq {}} {
         return
     }
-    if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
         set lbox [make_doclistbox $dir_to_open $count $move]
@@ -333,18 +387,11 @@ proc ::helpbrowser::dir_navigate_key {dir count window {move true}} {
 
 # open current file, open directories too if we're on the last col
 proc ::helpbrowser::dir_return {dir count window} {
-    variable maxcols
     if {[set newdir [$window get active]] eq {}} {
         return
     }
     set dir_to_open [file join $dir $newdir]
-    if {$count <= $maxcols} {
-        if {[file isfile $dir_to_open]} {
-            open_path $dir $newdir
-        }
-    } else {
-        open_path $dir $newdir
-    }
+    open_path $dir $newdir
 }
 
 # navigate into an actual directory
@@ -353,7 +400,6 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     if {[set newdir [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
-    if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
         make_doclistbox $dir_to_open $count false
