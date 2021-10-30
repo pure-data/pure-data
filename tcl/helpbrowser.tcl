@@ -107,9 +107,11 @@ proc ::helpbrowser::make_frame {mytoplevel} {
     grid columnconfigure $mytoplevel 0 -weight 1
     build_references
     make_rootlistbox
-    update
+    update idletasks
     $mytoplevel.c configure -width [winfo width .helpbrowser.c.f] -height \
         [winfo height .helpbrowser.c.f.root0]
+    # for some reason a final "update" is sometimes necessary
+    update
 }
 
 # make the root listbox of the help browser using the pre-built lists
