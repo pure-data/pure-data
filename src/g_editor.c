@@ -3112,6 +3112,17 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
+    /* defined in g_text.c: */
+extern void text_getfont(t_text *x, t_glist *thisglist,
+    int *fwidthp, int *fheightp, int *guifsize);
+
+static int text_getfontwidth(t_text *x, t_glist *gl)
+{
+    int fwidth, fheight, guifsize;
+    text_getfont(x, gl, &fwidth, &fheight, &guifsize);
+    return fwidth;
+}
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
@@ -3173,7 +3184,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
             {
-                wantwidth = wantwidth / glist_fontwidth(x);
+                wantwidth = wantwidth / text_getfontwidth(ob, x);
                 if (wantwidth < 1)
                     wantwidth = 1;
                 ob->te_width = wantwidth;
