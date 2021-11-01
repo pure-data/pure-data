@@ -144,6 +144,8 @@ proc ::dialog_startup::fill_frame {frame} {
     entry $frame.flags.entry -textvariable ::startup_flags
     pack $frame.flags.entry -side right -expand 1 -fill x
 
+    ::preferencewindow::entryfocus $frame.flags.entry
+    ::preferencewindow::simplefocus $frame.listbox.box
 }
 
 proc ::dialog_startup::create_dialog {mytoplevel} {
@@ -155,6 +157,9 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
 
     # add widgets
     fill_frame $my
+    ::preferencewindow::entryfocus $my.flags.entry $mytoplevel.nb.buttonframe.ok "::dialog_startup::ok $mytoplevel" "::dialog_startup::cancel $mytoplevel"
+    ::preferencewindow::simplefocus $my.listbox.box $mytoplevel.nb.buttonframe.ok "::dialog_path::ok $mytoplevel" "::dialog_path::cancel $mytoplevel"
+
     pack $my -side top -fill x -expand 1
 
     # add actions

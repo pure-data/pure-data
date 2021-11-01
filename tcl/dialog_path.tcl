@@ -115,6 +115,7 @@ proc ::dialog_path::fill_frame {frame {with_verbose 0}} {
         # scroll to right for long paths
         $frame.installpath.path.entry xview moveto 1
     }
+    ::preferencewindow::simplefocus $frame.listbox.box
     return
 }
 
@@ -126,6 +127,14 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # add widgets
     fill_frame $my 1
+    # focus handling on OSX
+    ::preferencewindow::simplefocus $my.listbox.box $mytoplevel.nb.buttonframe.ok "::dialog_path::ok $mytoplevel" "::dialog_path::cancel $mytoplevel"
+    if {$::windowingsystem eq "aqua"} {
+        # unbind ok button when in listbox
+        bind $my.listbox.box <FocusIn> "::dialog_path::unbind_return $mytoplevel"
+        bind $my.listbox.box <FocusOut> "::dialog_path::rebind_return $mytoplevel"
+    }
+
     pack $my -side top -fill x -expand 1
 
     # add actions

@@ -143,10 +143,6 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
 
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
-        ## unbind ok button when in listbox
-        #bind $winid.listbox.box <FocusIn> "::preferencewindow::unbind_return $winid"
-        #bind $winid.listbox.box <FocusOut> "::preferencewindow::rebind_return $winid"
-
         # remove cancel button from focus list since it's not activated on Return
         $winid.nb.buttonframe.cancel config -takefocus 0
 
@@ -187,4 +183,90 @@ proc ::preferencewindow::add_cancel {winid cancel_proc} {
     if { {} ne ${cancel_proc} } {
         dict lappend ::preferencewindow::cancel_procs $winid ${cancel_proc}
     }
+}
+
+
+# ############## helpers ###############
+
+if {[tk windowingsystem] eq "aqua"} {
+    proc ::preferencewindow::simplefocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+        set mytoplevel [winfo toplevel $id]
+        if { "$okbutton" eq "" } {
+            set okbutton $mytoplevel.nb.buttonframe.ok
+        }
+        if { "$okaction" eq "" } {
+            set okaction "::preferencewindow::ok ${mytoplevel}"
+        }
+        if { "$cancelaction" eq "" } {
+            set cancelaction "::preferencewindow::cancel ${mytoplevel}"
+        }
+
+        bind $id <FocusIn> "::preferencewindow::unbind_return $mytoplevel"
+        bind $id <FocusOut> "::preferencewindow::rebind_return $mytoplevel $okbutton \"$okaction\" \"$cancelaction\""
+    }
+    proc ::preferencewindow::buttonfocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+        bind $id <KeyPress-Return> "$id invoke"
+        ::preferencewindow::simplefocus $id $okbutton $okaction $cancelaction
+        set cmd "$id config -default active"
+        bind $id <FocusIn> +$cmd
+        set cmd "$id config -default normal"
+        bind $id <FocusOut> +$cmd
+        $id config -highlightthickness 0
+    }
+    proc ::preferencewindow::entryfocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+        set mytoplevel [winfo toplevel $id]
+        if { "$okbutton" eq "" } {
+            set okbutton $mytoplevel.nb.buttonframe.ok
+        }
+        if { "$okaction" eq "" } {
+            set okaction "::preferencewindow::ok ${mytoplevel}"
+        }
+        if { "$cancelaction" eq "" } {
+            set cancelaction "::preferencewindow::cancel ${mytoplevel}"
+        }
+
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind $id <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel $okbutton \"$okaction\" \"cancelaction\""
+        # unbind Return from ok button when an entry takes focus
+        $id config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
+    }
+
+    # for focus handling on OSX
+    proc ::preferencewindow::rebind_return {mytoplevel {okbutton {}} {okaction {}} {cancelaction {}}} {
+        if { "$okbutton" eq "" } {
+            set okbutton $mytoplevel.nb.buttonframe.ok
+        }
+        if { "$okaction" eq "" } {
+            set okaction "::preferencewindow::ok ${mytoplevel}"
+        }
+        if { "$cancelaction" eq "" } {
+            set cancelaction "::preferencewindow::cancel ${mytoplevel}"
+        }
+
+        bind $mytoplevel <KeyPress-Return> $okaction
+        bind $mytoplevel <KeyPress-Escape> $cancelaction
+        if {[winfo exists $okbutton]} {
+            focus $okbutton
+        }
+        return 0
+    }
+
+    # for focus handling on OSX
+    proc ::preferencewindow::unbind_return {mytoplevel} {
+        bind $mytoplevel <KeyPress-Return> break
+        bind $mytoplevel <KeyPress-Escape> break
+        return 1
+    }
+} else {
+    proc ::preferencewindow::simplefocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+    }
+    proc ::preferencewindow::buttonfocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+    }
+    proc ::preferencewindow::entryfocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
+    }
+    proc ::preferencewindow::rebind_return {mytoplevel {okbutton {}} {okaction {}} {cancelaction {}}} {
+    }
+    proc ::preferencewindow::unbind_return {mytoplevel} {
+    }
+
 }

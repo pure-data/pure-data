@@ -133,6 +133,16 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
     }
     label $frame.l2 -text [_ "Channels:"]
     entry $frame.x2 -textvariable ::dialog_audio::${direction}chan${index} -width 3
+
+    set mytoplevel [winfo toplevel $frame]
+    if {[winfo exists $mytoplevel.buttonframe.ok]} {
+        # this is being called from the standalone audio dialog
+        ::preferencewindow::entryfocus $frame.x2 $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+    } else {
+        # this is being called from the tabbed preferences
+        ::preferencewindow::entryfocus $frame.x2
+    }
+
     pack $frame.x0 -side left
     pack $frame.x1 -side left -fill x -expand 1
     pack $frame.x2 $frame.l2 -side right
@@ -183,10 +193,19 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
     # If not the "long form" but if "multi" is 2, make a button to
     # restart with longform set.
     if {$longform == 0 && $maxdevs > 1} {
+        set mytoplevel [winfo toplevel $frame]
+
         frame $frame.longbutton
         pack $frame.longbutton -side right -fill x
         button $frame.longbutton.b -text [_ "Use Multiple Devices"] \
             -command  "::dialog_audio::fill_frame_iodevices $frame $maxdevs 1"
+        if {[winfo exists $mytoplevel.buttonframe.ok]} {
+            # this is being called from the standalone audio dialog
+            ::preferencewindow::buttonfocus $frame.longbutton.b $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+        } else {
+            # this is being called from the tabbed preferences
+            ::preferencewindow::buttonfocus $frame.longbutton.b
+        }
         pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 }
@@ -208,8 +227,10 @@ proc ::dialog_audio::fill_frame {frame} {
     pack $frame.settings.srd -side top -fill x
     label $frame.settings.srd.sr_label -text [_ "Sample rate:"]
     entry $frame.settings.srd.sr_entry -textvariable ::dialog_audio::samplerate -width 8
+    ::preferencewindow::entryfocus $frame.settings.srd.sr_entry
     label $frame.settings.srd.d_label -text [_ "Delay (msec):"]
     entry $frame.settings.srd.d_entry -textvariable ::dialog_audio::advance -width 4
+    ::preferencewindow::entryfocus $frame.settings.srd.d_entry
 
     pack $frame.settings.srd.sr_label $frame.settings.srd.sr_entry -side left
     pack $frame.settings.srd.d_entry $frame.settings.srd.d_label -side right
@@ -369,33 +390,14 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         -command "::dialog_audio::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
+
+    ::preferencewindow::entryfocus $mytoplevel.settings.srd.sr_entry $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+    ::preferencewindow::entryfocus $mytoplevel.settings.srd.d_entry $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
-
-        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
-        bind $mytoplevel.settings.srd.sr_entry <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel"
-        bind $mytoplevel.settings.srd.d_entry <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel"
-        bind $mytoplevel.outputs.out1f.x2 <KeyPress-Return> "::dialog_audio::rebind_return $mytoplevel"
-
-        # unbind Return from ok button when an entry takes focus
-        $mytoplevel.settings.srd.sr_entry config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
-        $mytoplevel.settings.srd.d_entry config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
-        $mytoplevel.outputs.out1f.x2 config -validate focusin -vcmd "::dialog_audio::unbind_return $mytoplevel"
-
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttonframe.cancel config -takefocus 0
-
-        # show active focus on multiple device button
-        if {[winfo exists $mytoplevel.longbutton.b]} {
-            bind $mytoplevel.longbutton.b <KeyPress-Return> "$mytoplevel.longbutton.b invoke"
-            bind $mytoplevel.longbutton.b <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.longbutton.b config -default active"
-            bind $mytoplevel.longbutton.b <FocusOut> "::dialog_audio::rebind_return $mytoplevel; $mytoplevel.longbutton.b config -default normal"
-        }
-
-        # show active focus on save settings button
-        bind $mytoplevel.saveall <KeyPress-Return> "$mytoplevel.saveall invoke"
-        bind $mytoplevel.saveall <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.saveall config -default active"
-        bind $mytoplevel.saveall <FocusOut> "::dialog_audio::rebind_return $mytoplevel; $mytoplevel.saveall config -default normal"
 
         # show active focus on the ok button as it *is* activated on Return
         $mytoplevel.buttonframe.ok config -default normal
@@ -403,13 +405,18 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
 
         # since we show the active focus, disable the highlight outline
-        if {[winfo exists $mytoplevel.longbutton.b]} {
-            $mytoplevel.longbutton.b config -highlightthickness 0
-        }
-        $mytoplevel.saveall config -highlightthickness 0
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
+
+    # show active focus on multiple device button
+    if {[winfo exists $mytoplevel.longbutton.b]} {
+        ::preferencewindow::buttonfocus $mytoplevel.longbutton.b $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+    }
+
+    # show active focus on save settings button
+    ::preferencewindow::buttonfocus $mytoplevel.saveall $mytoplevel.buttonframe.ok "::dialog_audio::ok $mytoplevel"
+
 
     # set min size based on widget sizing & pos over pdwindow
     wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
