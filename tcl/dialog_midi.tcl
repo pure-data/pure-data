@@ -248,7 +248,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
 
     # save all settings button
     button $id.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_midi::apply $id; pdsend \"pd save-preferences\""
+        -command "::dialog_midi::apply $id 1; pdsend \"pd save-preferences\""
     pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
@@ -259,7 +259,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
     if {$::windowingsystem ne "aqua"} {
         button $id.buttonframe.apply -text [_ "Apply"] \
-            -command "::dialog_midi::apply $id"
+            -command "::dialog_midi::apply $id 1"
         pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     }
     button $id.buttonframe.ok -text [_ "OK"] \
