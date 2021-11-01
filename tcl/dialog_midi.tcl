@@ -50,8 +50,8 @@ proc ::dialog_midi::config2string { } {
         [expr $::dialog_midi::outdev7 + 0] \
         [expr $::dialog_midi::outdev8 + 0] \
         [expr $::dialog_midi::outdev9 + 0] \
-        [expr $::dialog_midi::alsain + 0] \
-        [expr $::dialog_midi::alsaout + 0] \
+        [expr $::dialog_midi::portsin + 0] \
+        [expr $::dialog_midi::portsout + 0] \
         "]
 }
 
@@ -170,8 +170,12 @@ proc ::dialog_midi::fill_frame {frame} {
     set longform 0
     init_devicevars
 
+    if { $::dialog_midi::portsin > 0 || $::dialog_midi::portsout > 0 } {
+        set longform 1
+    }
+
     switch -- $::pd_whichmidiapi {
-        1       {::dialog_midi::make_frame_ports $frame.contentf ::dialog_midi::alsain ::dialog_midi::alsaout }
+        1       {::dialog_midi::make_frame_ports $frame.contentf ::dialog_midi::portsin ::dialog_midi::portsout }
         default {::dialog_midi::make_frame_iodevices $frame.contentf $::dialog_midi::max_devices $longform}
     }
 }
@@ -182,7 +186,7 @@ proc ::dialog_midi::init_devicevars {} {
         # input vars
         upvar ::midi_${direction}devices devices
         # output vars
-        upvar ::dialog_midi::alsa${direction} alsa
+        upvar ::dialog_midi::ports${direction} ports
 
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             # output vars
@@ -194,11 +198,11 @@ proc ::dialog_midi::init_devicevars {} {
             }
         }
 
-        set alsa 0
+        set ports 0
         set i 0
         foreach x $devices {
             if { $x >= 0 } {
-                set alsa [incr i]
+                set ports [incr i]
             }
         }
     }
