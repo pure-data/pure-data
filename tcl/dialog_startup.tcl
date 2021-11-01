@@ -7,6 +7,8 @@ namespace eval dialog_startup {
     namespace export pdtk_startup_dialog
 }
 
+set ::dialog_startup::language ""
+
 ########## pdtk_startup_dialog -- dialog window for startup options #########
 # Create a simple modal window with an entry widget
 # for editing/adding a startup command
@@ -57,7 +59,11 @@ proc ::dialog_startup::edit { current_library } {
 }
 
 proc ::dialog_startup::commit { new_startup } {
-    ::pd_guiprefs::write "gui_language" $::pd_i18n::language
+    if {$::dialog_startup::language eq "default" } {
+        set ::dialog_startup::language ""
+    }
+    set ::pd_i18n::language $::dialog_startup::language
+    ::pd_guiprefs::write "gui_language" $::dialog_startup::language
     set ::startup_libraries $new_startup
     pdsend "pd startup-dialog $::sys_defeatrt [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
