@@ -100,6 +100,7 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
         # put the preference-widgets on the .content.frames frame
     if { [catch {
         ttk::notebook ${winid}.content.frames
+        catch {ttk::notebook::enableTraversal ${winid}.content.frames}
         pack $winid.content.frames -side top -fill both -pady 2m
     } ] } {
         canvas ${winid}.content.cnv \
@@ -184,6 +185,18 @@ proc ::preferencewindow::add_cancel {winid cancel_proc} {
         dict lappend ::preferencewindow::cancel_procs $winid ${cancel_proc}
     }
 }
+
+proc ::preferencewindow::select {winid id} {
+    catch { ${winid}.content.frames select $id }
+    return {}
+}
+proc ::preferencewindow::selected {winid} {
+    if { [ catch { set id [ ${winid}.content.frames index current ] } ] } {
+        set id ""
+    }
+    return $id
+}
+
 
 
 # ############## helpers ###############

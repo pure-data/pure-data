@@ -22,6 +22,11 @@ proc ::dialog_preferences::ok {mytoplevel} {
     ::preferencewindow::ok $mytoplevel
 }
 
+proc ::dialog_preferences::tab_changed {mytoplevel} {
+    set tab [::preferencewindow::selected $mytoplevel]
+    ::pd_guiprefs::write preferences_tab $tab
+}
+
 proc ::dialog_preferences::fill_frame {prefs} {
     # patch-window settings
     labelframe $prefs.extraframe -text [_ "Patch windows" ] -padx 5 -pady 5 -borderwidth 1
@@ -85,6 +90,8 @@ proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
 
 
     pack $mytoplevel.content
+    ::preferencewindow::select $mytoplevel [::pd_guiprefs::read preferences_tab]
+    catch { bind ${mytoplevel}.content.frames <<NotebookTabChanged>> "::dialog_preferences::tab_changed $mytoplevel" }
 
     # re-adjust height based on optional sections
     update
