@@ -95,7 +95,7 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
 
     # holds either the tabbed notebook, or a scrollable canvas
     frame ${winid}.content
-    pack $winid.content -side top -fill both
+    pack $winid.content -side top -fill both -expand 1
 
         # put the preference-widgets on the .content.frames frame
     if { [catch {
