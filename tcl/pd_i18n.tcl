@@ -8,11 +8,11 @@ package provide pd_i18n 0.1
 package require msgcat
 package require pdtcl_compat
 
-catch {namespace import ::pdtcl_compat::dict}
-
 namespace eval ::pd_i18n:: {
     variable podir
     variable language
+    catch {namespace import ::pdtcl_compat::dict}
+
     namespace export _
 }
 set ::pd_i18n::language ""
@@ -29,33 +29,42 @@ set ::pd_i18n::podir  [file join [file dirname [info script]] .. po]
 # > puts [_ "Quit" ]
 proc ::pd_i18n::_ {s} {return [::msgcat::mc $s]}
 
+proc ::pd_i18n::get_system_language {} {
+    # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
+    # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
+    # the Terminal, and Windows doesn't have LANG, etc unless you manually set
+    # it up yourself.  Windows apps don't use the locale env vars usually.
+    if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
+        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
+        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
+        if {![catch "exec defaults read com.apple.dock loc" lang]} {
+            # ...
+        } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
+            # ...
+        }
+    } elseif {$::tcl_platform(platform) eq "windows"} {
+        # using LANG on Windows is useful for easy debugging
+        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
+            set lang $::env(LANG)
+        } elseif {![catch {package require registry}]} {
+            set lang [string tolower \
+                          [string range \
+                               [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
+        }
+    } else {
+        if {[info exists ::env(LANG)]} {
+            set lang [file rootname [string tolower $::env(LANG)]]
+        }
+    }
+    return $lang
+}
+
 proc ::pd_i18n::load_locale {{lang ""}} {
     if { $lang == "default" } {
         set lang ""
     }
     if { $lang == "" } {
-        # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
-        # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
-        # the Terminal, and Windows doesn't have LANG, etc unless you manually set
-        # it up yourself.  Windows apps don't use the locale env vars usually.
-        if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
-            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
-            # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
-            if {![catch "exec defaults read com.apple.dock loc" lang]} {
-                # ...
-            } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
-                # ...
-            }
-        } elseif {$::tcl_platform(platform) eq "windows"} {
-            # using LANG on Windows is useful for easy debugging
-            if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
-                set lang $::env(LANG)
-            } elseif {![catch {package require registry}]} {
-                set lang [string tolower \
-                              [string range \
-                                   [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-            }
-        }
+        set lang [ ::pd_i18n::get_system_language ]
     }
 
     if { $::pd_i18n::language == "" || $lang == $::pd_i18n::language } {
@@ -74,7 +83,7 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     }
     set ::pd_i18n::podir $podir
     # translate language-codes
-    set polanguages [list \
+    set polanguagelist [list \
         af [_ "Afrikaans" ] \
         az [_ "Azerbaijani" ] \
         be [_ "Belarusian" ] \
@@ -103,19 +112,28 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
         vi [_ "Vietnamese" ] \
     ]
 
-    dict create polanguages $polanguages
+    set polanguages [dict create]
+    foreach {k v} $polanguagelist {
+        dict set polanguages $k $v
+    }
     set havelanguages {}
     foreach pofile [glob -directory $podir -nocomplain -types {f} -- *.msg] {
         set polang [ file rootname [file tail $pofile] ]
-        if [ dict exist $polanguages $polang ] {
+        if [ dict exists $polanguages $polang ] {
             lappend havelanguages [ list [ dict get $polanguages $polang ] $polang ]
         } {
             lappend havelanguages [ list [_ "$polang" ] $polang ]
         }
     }
     set havelanguages [lsort -index 0 $havelanguages]
-    lappend havelanguages [list [_ "(default language)" ] {} ]
+
+    set lang [ ::pd_i18n::get_system_language ]
+    if [ dict exists $polanguages $lang ] {
+        set lang [ dict get $polanguages $lang ]
+    }
+    lappend havelanguages [list [format [_ "(default language: %s)" ] $lang] "default" ]
     lappend havelanguages [list [_ "(no translation)" ] "." ]
+    return $havelanguages
 }
 
 proc ::pd_i18n::init {} {
