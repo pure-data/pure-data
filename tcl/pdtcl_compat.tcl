@@ -20,11 +20,12 @@ namespace eval ::pdtcl_compat {
     namespace export dict
 
     proc dict {command args} {
-        puts "<dict>"
+        #puts "<dict:${command}> $args"
         switch -- "${command}" {
             create {
                 return {}
             }
+            exist -
             exists {
                 set dictionary [lindex ${args} 0]
                 set key [lindex ${args} 1]
@@ -44,6 +45,24 @@ namespace eval ::pdtcl_compat {
                 upvar [lindex ${args} 0] dictionary
                 set key [lindex ${args} 1]
                 set value [lrange ${args} 2 end]
+                set index 0
+                foreach {k v} ${dictionary} {
+                    if { $k eq ${key} } {
+                        incr index
+                        set dictionary \
+                            [lreplace ${dictionary} ${index} ${index} \
+                                 [concat $v ${value}]]
+                        return ${dictionary}
+
+                    }
+                    incr index 2
+                }
+                return [lappend dictionary ${key} ${value}]
+            }
+            set {
+                upvar [lindex ${args} 0] dictionary
+                set key [lindex ${args} 1]
+                set value [lindex ${args} 2]
                 set index 0
                 foreach {k v} ${dictionary} {
                     if { $k eq ${key} } {
