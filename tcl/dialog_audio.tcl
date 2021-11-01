@@ -157,43 +157,43 @@ proc ::dialog_audio::fill_frame_devices {frame direction maxdevs} {
     }
 }
 
-proc ::dialog_audio::fill_frame_iodevices {mytoplevel maxdevs longform} {
+proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
     # side effects: none
 
-    if {[winfo exists $mytoplevel]} {
-        destroy $mytoplevel
+    if {[winfo exists $frame]} {
+        destroy $frame
     }
-    frame $mytoplevel
-    pack  $mytoplevel -side top -fill x -anchor n -expand 1
+    frame $frame
+    pack  $frame -side top -fill x -anchor n -expand 1
 
     set showdevs $maxdevs
     if {$longform == 0} {
         set showdevs 1
     }
     # input devices
-    labelframe $mytoplevel.inputs -text [_ "Input Devices"] -padx 5 -pady 5 -borderwidth 1
-    pack $mytoplevel.inputs -side top -fill x -pady 5
-    ::dialog_audio::fill_frame_devices $mytoplevel.inputs in ${showdevs}
+    labelframe $frame.inputs -text [_ "Input Devices"] -padx 5 -pady 5 -borderwidth 1
+    pack $frame.inputs -side top -fill x -pady 5
+    ::dialog_audio::fill_frame_devices $frame.inputs in ${showdevs}
 
     # output devices
-    labelframe $mytoplevel.outputs -text [_ "Output Devices"] -padx 5 -pady 5 -borderwidth 1
-    pack $mytoplevel.outputs -side top -fill x -pady 5
-    ::dialog_audio::fill_frame_devices $mytoplevel.outputs out ${showdevs}
+    labelframe $frame.outputs -text [_ "Output Devices"] -padx 5 -pady 5 -borderwidth 1
+    pack $frame.outputs -side top -fill x -pady 5
+    ::dialog_audio::fill_frame_devices $frame.outputs out ${showdevs}
 
     # If not the "long form" but if "multi" is 2, make a button to
     # restart with longform set.
     if {$longform == 0 && $maxdevs > 1} {
-        frame $mytoplevel.longbutton
-        pack $mytoplevel.longbutton -side right -fill x
-        button $mytoplevel.longbutton.b -text [_ "Use Multiple Devices"] \
-            -command  "::dialog_audio::fill_frame_iodevices $mytoplevel $maxdevs 1"
-        pack $mytoplevel.longbutton.b -expand 1 -ipadx 10 -pady 5
+        frame $frame.longbutton
+        pack $frame.longbutton -side right -fill x
+        button $frame.longbutton.b -text [_ "Use Multiple Devices"] \
+            -command  "::dialog_audio::fill_frame_iodevices $frame $maxdevs 1"
+        pack $frame.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 }
 
 
 
-proc ::dialog_audio::fill_frame {mytoplevel} {
+proc ::dialog_audio::fill_frame {frame} {
     # side-effects:
     # rW: ::dialog_audio::samplerate
     # rW: ::dialog_audio::advance
@@ -201,62 +201,63 @@ proc ::dialog_audio::fill_frame {mytoplevel} {
     ::dialog_audio::init_devicevars
 
     # settings
-    labelframe $mytoplevel.settings -text [_ "Settings"] -padx 5 -pady 5 -borderwidth 1
-    pack $mytoplevel.settings -side top -fill x -pady 5
+    labelframe $frame.settings -text [_ "Settings"] -padx 5 -pady 5 -borderwidth 1
+    pack $frame.settings -side top -fill x -pady 5
 
-    frame $mytoplevel.settings.srd
-    pack $mytoplevel.settings.srd -side top -fill x
-    label $mytoplevel.settings.srd.sr_label -text [_ "Sample rate:"]
-    entry $mytoplevel.settings.srd.sr_entry -textvariable ::dialog_audio::samplerate -width 8
-    label $mytoplevel.settings.srd.d_label -text [_ "Delay (msec):"]
-    entry $mytoplevel.settings.srd.d_entry -textvariable ::dialog_audio::advance -width 4
-    pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
-    pack $mytoplevel.settings.srd.d_entry $mytoplevel.settings.srd.d_label -side right
-    frame $mytoplevel.settings.bsc
-    pack $mytoplevel.settings.bsc -side top -fill x
-    button $mytoplevel.settings.bsc.rate1 -text [_ "48k"] \
+    frame $frame.settings.srd
+    pack $frame.settings.srd -side top -fill x
+    label $frame.settings.srd.sr_label -text [_ "Sample rate:"]
+    entry $frame.settings.srd.sr_entry -textvariable ::dialog_audio::samplerate -width 8
+    label $frame.settings.srd.d_label -text [_ "Delay (msec):"]
+    entry $frame.settings.srd.d_entry -textvariable ::dialog_audio::advance -width 4
+
+    pack $frame.settings.srd.sr_label $frame.settings.srd.sr_entry -side left
+    pack $frame.settings.srd.d_entry $frame.settings.srd.d_label -side right
+    frame $frame.settings.bsc
+    pack $frame.settings.bsc -side top -fill x
+    button $frame.settings.bsc.rate1 -text [_ "48k"] \
         -command "set ::dialog_audio::samplerate 48000"
-    button $mytoplevel.settings.bsc.rate2 -text [_ "44.1k"] \
+    button $frame.settings.bsc.rate2 -text [_ "44.1k"] \
         -command "set ::dialog_audio::samplerate 44100"
-    button $mytoplevel.settings.bsc.rate3 -text [_ "96k"] \
+    button $frame.settings.bsc.rate3 -text [_ "96k"] \
         -command "set ::dialog_audio::samplerate 96000"
-    pack $mytoplevel.settings.bsc.rate1 \
-        $mytoplevel.settings.bsc.rate2 \
-        $mytoplevel.settings.bsc.rate3 \
+    pack $frame.settings.bsc.rate1 \
+        $frame.settings.bsc.rate2 \
+        $frame.settings.bsc.rate3 \
          -side left
 
-    label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
+    label $frame.settings.bsc.bs_label -text [_ "Block size:"]
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
-        [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup ::dialog_audio::blocksize $blocksizes]
-    pack $mytoplevel.settings.bsc.bs_popup -side right
-    pack $mytoplevel.settings.bsc.bs_label -side right -padx {0 10}
+        [eval tk_optionMenu $frame.settings.bsc.bs_popup ::dialog_audio::blocksize $blocksizes]
+    pack $frame.settings.bsc.bs_popup -side right
+    pack $frame.settings.bsc.bs_label -side right -padx {0 10}
 
 
-    frame $mytoplevel.settings.callback
-    pack $mytoplevel.settings.callback -side bottom -fill x
-    checkbutton $mytoplevel.settings.callback.c_button -variable ::dialog_audio::use_callback \
+    frame $frame.settings.callback
+    pack $frame.settings.callback -side bottom -fill x
+    checkbutton $frame.settings.callback.c_button -variable ::dialog_audio::use_callback \
         -text [_ "Use callbacks"]
-    pack $mytoplevel.settings.callback.c_button
+    pack $frame.settings.callback.c_button
 
 
     if {$::dialog_audio::isfixed_samplerate} {
-        $mytoplevel.settings.srd.sr_entry config -state "disabled"
-        $mytoplevel.settings.bsc.rate1 config -state "disabled"
-        $mytoplevel.settings.bsc.rate2 config -state "disabled"
-        $mytoplevel.settings.bsc.rate3 config -state "disabled"
+        $frame.settings.srd.sr_entry config -state "disabled"
+        $frame.settings.bsc.rate1 config -state "disabled"
+        $frame.settings.bsc.rate2 config -state "disabled"
+        $frame.settings.bsc.rate3 config -state "disabled"
     }
 
     if {$::dialog_audio::isfixed_advance} {
-        $mytoplevel.settings.srd.d_entry config -state "disabled"
+        $frame.settings.srd.d_entry config -state "disabled"
     }
 
     if {$::dialog_audio::isfixed_blocksize} {
-        $mytoplevel.settings.bsc.bs_popup config -state "disabled"
+        $frame.settings.bsc.bs_popup config -state "disabled"
     }
 
     if {$::dialog_audio::isfixed_use_callback} {
-        $mytoplevel.settings.callback.c_button config -state "disabled"
+        $frame.settings.callback.c_button config -state "disabled"
     }
 
 
@@ -269,9 +270,9 @@ proc ::dialog_audio::fill_frame {mytoplevel} {
     # FIXXME: use longform by default if...
     set longform 0
 
-    frame $mytoplevel.iodevf
-    pack  $mytoplevel.iodevf -side top -anchor n -fill x -expand 1
-    ::dialog_audio::fill_frame_iodevices $mytoplevel.iodevf.contentf $maxdevs $longform
+    frame $frame.iodevf
+    pack  $frame.iodevf -side top -anchor n -fill x -expand 1
+    ::dialog_audio::fill_frame_iodevices $frame.iodevf.contentf $maxdevs $longform
 }
 
 

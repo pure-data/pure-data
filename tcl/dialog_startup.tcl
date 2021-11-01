@@ -76,79 +76,67 @@ proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     }
 }
 
-proc ::dialog_startup::fill_frame {mytoplevel} {
-    # 'mytoplevel' is a frame, rather than a toplevel window
+proc ::dialog_startup::fill_frame {frame} {
+    # 'frame' is a frame, rather than a toplevel window
 
-    label $mytoplevel.restart_required -text [_ "Settings below require a restart of Pd!" ]
-    pack $mytoplevel.restart_required -side top -fill x
+    label $frame.restart_required -text [_ "Settings below require a restart of Pd!" ]
+    pack $frame.restart_required -side top -fill x
 
     # scrollbox
-    ::scrollbox::make ${mytoplevel} $::startup_libraries \
+    ::scrollbox::make ${frame} $::startup_libraries \
         ::dialog_startup::add dialog_startup::edit \
         [_ "Pd libraries to load on startup"]
 
-    labelframe $mytoplevel.optionframe -text [_ "Startup options" ]
-    pack $mytoplevel.optionframe -side top -anchor s -fill x -padx 2m -pady 5
+    labelframe $frame.optionframe -text [_ "Startup options" ]
+    pack $frame.optionframe -side top -anchor s -fill x -padx 2m -pady 5
 
-    checkbutton $mytoplevel.optionframe.verbose  -anchor w \
+    checkbutton $frame.optionframe.verbose  -anchor w \
         -text [_ "Verbose"] \
         -variable verbose_button
-    pack $mytoplevel.optionframe.verbose -side top -anchor w -expand 1
+    pack $frame.optionframe.verbose -side top -anchor w -expand 1
 
     if {$::windowingsystem ne "win32"} {
-        checkbutton $mytoplevel.optionframe.defeatrt -anchor w \
+        checkbutton $frame.optionframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::sys_defeatrt
-        pack $mytoplevel.optionframe.defeatrt -side top -anchor w -expand 1
+        pack $frame.optionframe.defeatrt -side top -anchor w -expand 1
     }
 
     # language selection
-    frame $mytoplevel.optionframe.langframe
-    set w $mytoplevel.optionframe.langframe.language
+    frame $frame.optionframe.langframe
+    set w $frame.optionframe.langframe.language
     menubutton $w -indicatoron 1 -menu $w.menu \
         -text [_ "language" ] \
             -relief raised -highlightthickness 1 -anchor c \
             -direction flush
     menu $w.menu -tearoff 0
+    set ::dialog_startup::language [::pd_guiprefs::read "gui_language" ]
+    if { $::dialog_startup::language eq "" } {
+        set ::dialog_startup::language default
+    }
     foreach lang [::pd_i18n::get_available_languages] {
         foreach {langname langcode} $lang {
             $w.menu add radiobutton \
                 -label ${langname} -command "$w configure -text \"${langname}\"" \
-                -value ${langcode} -variable ::pd_i18n::language
-            if { ${langcode} == ${::pd_i18n::language} } {
+                -value ${langcode} -variable ::dialog_startup::language
+            if { ${langcode} == $::dialog_startup::language } {
                 $w configure -text "${langname}"
             }
         }
     }
     pack $w -side left
 
-    set w $mytoplevel.optionframe.langframe.langlabel
+    set w $frame.optionframe.langframe.langlabel
     label $w -text [_ "Menu language" ]
     pack $w -side right
-    pack $mytoplevel.optionframe.langframe -side top -anchor w -expand 1
+    pack $frame.optionframe.langframe -side top -anchor w -expand 1
 
 
 
-    labelframe $mytoplevel.flags -text [_ "Startup flags:" ]
-    pack $mytoplevel.flags -side top -anchor s -fill x -padx 2m
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags
-    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
-
-
-
-    # focus handling on OSX
-    if {$::windowingsystem eq "aqua"} {
-
-        # unbind ok button when in listbox
-        bind $mytoplevel.listbox.box <FocusIn> "::dialog_startup::unbind_return $mytoplevel"
-        bind $mytoplevel.listbox.box <FocusOut> "::dialog_startup::rebind_return $mytoplevel"
-
-        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
-        bind $mytoplevel.flags.entry <KeyPress-Return> "::dialog_startup::rebind_return $mytoplevel"
-
-        # unbind Return from ok button when an entry takes focus
-        $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
-    }
+    labelframe $frame.flags -text [_ "Startup flags:" ]
+    pack $frame.flags -side top -anchor s -fill x -padx 2m
+    entry $frame.flags.entry -textvariable ::startup_flags
+    pack $frame.flags.entry -side right -expand 1 -fill x
 
 }
 

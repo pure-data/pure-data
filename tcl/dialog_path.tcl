@@ -36,93 +36,85 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
 }
 
 
-proc ::dialog_path::fill_frame {mytoplevel {with_verbose 0}} {
-    # 'mytoplevel' is a frame, rather than a toplevel window
-    set readonly_color [lindex [$mytoplevel configure -background] end]
+proc ::dialog_path::fill_frame {frame {with_verbose 0}} {
+    # 'frame' is a frame, rather than a toplevel window
+    set readonly_color [lindex [$frame configure -background] end]
 
     if {[namespace exists ::deken]} {set ::dialog_path::installpath $::deken::installpath}
 
     # scrollbox
-    ::scrollbox::make ${mytoplevel} $::sys_searchpath \
+    ::scrollbox::make ${frame} $::sys_searchpath \
         ::dialog_path::add dialog_path::edit \
         [_ "Pd search path for objects, help, audio, text and other files"]
 
     # path options
-    frame $mytoplevel.extraframe
-    pack $mytoplevel.extraframe -side top -anchor s -fill x
-    checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
+    frame $frame.extraframe
+    pack $frame.extraframe -side top -anchor s -fill x
+    checkbutton $frame.extraframe.extra -text [_ "Use standard paths"] \
         -variable ::sys_use_stdpath -anchor w
-    pack $mytoplevel.extraframe.extra -side left -expand 1
+    pack $frame.extraframe.extra -side left -expand 1
     if { ${with_verbose} ne 0 } {
-        checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
+        checkbutton $frame.extraframe.verbose -text [_ "Verbose"] \
             -variable ::sys_verbose -anchor w
-        pack $mytoplevel.extraframe.verbose -side right -expand 1
+        pack $frame.extraframe.verbose -side right -expand 1
     }
 
     # add docsdir path widgets if pd_docsdir is loaded
     if {[namespace exists ::pd_docsdir]} {
         set ::dialog_path::docspath $::pd_docsdir::docspath
-        labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
+        labelframe $frame.docspath -text [_ "Pd Documents Directory"] \
             -borderwidth 1 -padx 5 -pady 5
-        pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
+        pack $frame.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
 
-        frame $mytoplevel.docspath.path
-        pack $mytoplevel.docspath.path -fill x
-        entry $mytoplevel.docspath.path.entry -textvariable ::dialog_path::docspath \
+        frame $frame.docspath.path
+        pack $frame.docspath.path -fill x
+        entry $frame.docspath.path.entry -textvariable ::dialog_path::docspath \
             -takefocus 0 -state readonly -readonlybackground $readonly_color
-        button $mytoplevel.docspath.path.browse -text [_ "Browse"] \
-            -command "::dialog_path::browse_docspath $mytoplevel"
-        pack $mytoplevel.docspath.path.browse -side right -fill x -ipadx 8
-        pack $mytoplevel.docspath.path.entry -side right -expand 1 -fill x
+        button $frame.docspath.path.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_docspath $frame"
+        pack $frame.docspath.path.browse -side right -fill x -ipadx 8
+        pack $frame.docspath.path.entry -side right -expand 1 -fill x
 
-        frame $mytoplevel.docspath.buttons
-        pack $mytoplevel.docspath.buttons -fill x
-        button $mytoplevel.docspath.buttons.reset -text [_ "Reset"] \
-            -command "::dialog_path::reset_docspath $mytoplevel"
-        button $mytoplevel.docspath.buttons.disable -text [_ "Disable"] \
-            -command "::dialog_path::disable_docspath $mytoplevel"
-        pack $mytoplevel.docspath.buttons.reset -side left -ipadx 8
-        pack $mytoplevel.docspath.buttons.disable -side left -ipadx 8
+        frame $frame.docspath.buttons
+        pack $frame.docspath.buttons -fill x
+        button $frame.docspath.buttons.reset -text [_ "Reset"] \
+            -command "::dialog_path::reset_docspath $frame"
+        button $frame.docspath.buttons.disable -text [_ "Disable"] \
+            -command "::dialog_path::disable_docspath $frame"
+        pack $frame.docspath.buttons.reset -side left -ipadx 8
+        pack $frame.docspath.buttons.disable -side left -ipadx 8
 
         # scroll to right for long paths
-        $mytoplevel.docspath.path.entry xview moveto 1
+        $frame.docspath.path.entry xview moveto 1
     }
 
     # add deken path widgets if deken is loaded
     if {[namespace exists ::deken]} {
-        labelframe $mytoplevel.installpath -text [_ "Externals Install Directory"] \
+        labelframe $frame.installpath -text [_ "Externals Install Directory"] \
             -borderwidth 1 -padx 5 -pady 5
-        pack $mytoplevel.installpath -fill x -anchor s -padx {2m 4m} -pady 2m
+        pack $frame.installpath -fill x -anchor s -padx {2m 4m} -pady 2m
 
-        frame $mytoplevel.installpath.path
-        pack $mytoplevel.installpath.path -fill x
-        entry $mytoplevel.installpath.path.entry -textvariable ::dialog_path::installpath \
+        frame $frame.installpath.path
+        pack $frame.installpath.path -fill x
+        entry $frame.installpath.path.entry -textvariable ::dialog_path::installpath \
             -takefocus 0 -state readonly -readonlybackground $readonly_color
-        button $mytoplevel.installpath.path.browse -text [_ "Browse"] \
-            -command "::dialog_path::browse_installpath $mytoplevel"
-        pack $mytoplevel.installpath.path.browse -side right -fill x -ipadx 8
-        pack $mytoplevel.installpath.path.entry -side right -expand 1 -fill x
+        button $frame.installpath.path.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_installpath $frame"
+        pack $frame.installpath.path.browse -side right -fill x -ipadx 8
+        pack $frame.installpath.path.entry -side right -expand 1 -fill x
 
-        frame $mytoplevel.installpath.buttons
-        pack $mytoplevel.installpath.buttons -fill x
-        button $mytoplevel.installpath.buttons.reset -text [_ "Reset"] \
-            -command "::dialog_path::reset_installpath $mytoplevel"
-        button $mytoplevel.installpath.buttons.clear -text [_ "Clear"] \
-            -command "::dialog_path::clear_installpath $mytoplevel"
-        pack $mytoplevel.installpath.buttons.reset -side left -ipadx 8
-        pack $mytoplevel.installpath.buttons.clear -side left -ipadx 8
+        frame $frame.installpath.buttons
+        pack $frame.installpath.buttons -fill x
+        button $frame.installpath.buttons.reset -text [_ "Reset"] \
+            -command "::dialog_path::reset_installpath $frame"
+        button $frame.installpath.buttons.clear -text [_ "Clear"] \
+            -command "::dialog_path::clear_installpath $frame"
+        pack $frame.installpath.buttons.reset -side left -ipadx 8
+        pack $frame.installpath.buttons.clear -side left -ipadx 8
 
         # scroll to right for long paths
-        $mytoplevel.installpath.path.entry xview moveto 1
+        $frame.installpath.path.entry xview moveto 1
     }
-
-    # focus handling on OSX
-    if {$::windowingsystem eq "aqua"} {
-        # unbind ok button when in listbox
-        bind $mytoplevel.listbox.box <FocusIn> "::dialog_path::unbind_return $mytoplevel"
-        bind $mytoplevel.listbox.box <FocusOut> "::dialog_path::rebind_return $mytoplevel"
-    }
-
     return
 }
 
