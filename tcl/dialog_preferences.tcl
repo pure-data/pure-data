@@ -35,7 +35,7 @@ proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
     if { [winfo exists $mytoplevel] } {
         destroy $mytoplevel
     }
-    ::preferencewindow::create $mytoplevel "Preferences"
+    ::preferencewindow::create $mytoplevel [_ "Preferences" ]
 
     #wm title $mytoplevel "GUI preferences"
     #wm group $mytoplevel .
