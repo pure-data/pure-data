@@ -19,9 +19,9 @@ set ::dialog_midi::max_devices 9
 # the length of the 'currently used' lists is $max_devices
 
 set ::midi_indevlist {}
-set ::midi_indevices {0 0 0 0 0 0 0 0 0}
+set ::midi_indevices {-1 -1 -1 -1 -1 -1 -1 -1 -1}
 set ::midi_outdevlist {}
-set ::midi_outdevices {0 0 0 0 0 0 0 0 0}
+set ::midi_outdevices {-1 -1 -1 -1 -1 -1 -1 -1 -1}
 
 
 # TODO this panel really needs some reworking, it works but the code is
@@ -32,24 +32,24 @@ set ::midi_outdevices {0 0 0 0 0 0 0 0 0}
 
 proc ::dialog_midi::config2string { } {
     return [string trim "\
-        [expr $::dialog_midi::indev1 + 0] \
-        [expr $::dialog_midi::indev2 + 0] \
-        [expr $::dialog_midi::indev3 + 0] \
-        [expr $::dialog_midi::indev4 + 0] \
-        [expr $::dialog_midi::indev5 + 0] \
-        [expr $::dialog_midi::indev6 + 0] \
-        [expr $::dialog_midi::indev7 + 0] \
-        [expr $::dialog_midi::indev8 + 0] \
-        [expr $::dialog_midi::indev9 + 0] \
-        [expr $::dialog_midi::outdev1 + 0] \
-        [expr $::dialog_midi::outdev2 + 0] \
-        [expr $::dialog_midi::outdev3 + 0] \
-        [expr $::dialog_midi::outdev4 + 0] \
-        [expr $::dialog_midi::outdev5 + 0] \
-        [expr $::dialog_midi::outdev6 + 0] \
-        [expr $::dialog_midi::outdev7 + 0] \
-        [expr $::dialog_midi::outdev8 + 0] \
-        [expr $::dialog_midi::outdev9 + 0] \
+        [expr $::dialog_midi::indev1 + 1] \
+        [expr $::dialog_midi::indev2 + 1] \
+        [expr $::dialog_midi::indev3 + 1] \
+        [expr $::dialog_midi::indev4 + 1] \
+        [expr $::dialog_midi::indev5 + 1] \
+        [expr $::dialog_midi::indev6 + 1] \
+        [expr $::dialog_midi::indev7 + 1] \
+        [expr $::dialog_midi::indev8 + 1] \
+        [expr $::dialog_midi::indev9 + 1] \
+        [expr $::dialog_midi::outdev1 + 1] \
+        [expr $::dialog_midi::outdev2 + 1] \
+        [expr $::dialog_midi::outdev3 + 1] \
+        [expr $::dialog_midi::outdev4 + 1] \
+        [expr $::dialog_midi::outdev5 + 1] \
+        [expr $::dialog_midi::outdev6 + 1] \
+        [expr $::dialog_midi::outdev7 + 1] \
+        [expr $::dialog_midi::outdev8 + 1] \
+        [expr $::dialog_midi::outdev9 + 1] \
         [expr $::dialog_midi::portsin + 0] \
         [expr $::dialog_midi::portsout + 0] \
         "]
@@ -93,6 +93,11 @@ proc ::dialog_midi::fill_frame_device {frame direction index} {
                 -command "$frame.x1 configure -text \"${dev}\""
             incr idx
         }
+    set dev [_ "(no device)" ]
+    $frame.x1.menu add radiobutton \
+        -label "$dev" \
+        -value -1 -variable ::dialog_midi::${direction}dev${index} \
+        -command "$frame.x1 configure -text \"${dev}\""
     pack $frame.l1 -side left
     pack $frame.x1 -side left -fill x -expand 1
 }
