@@ -498,7 +498,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
     c->c_classfreefn = 0;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     c->c_methods = (t_methodentry **)t_getbytes(
         pd_ninstances * sizeof(*c->c_methods));
     for (i = 0; i < pd_ninstances; i++)
@@ -517,7 +517,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 void class_free(t_class *c)
 {
     int i;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     t_class *prev;
     if (class_list == c)
         class_list = c->c_next;
@@ -531,7 +531,7 @@ void class_free(t_class *c)
 #endif
     if (c->c_classfreefn)
         c->c_classfreefn(c);
-#if PDINSTANCE
+#ifdef PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
     {
         if(c->c_methods[i])
@@ -550,7 +550,7 @@ void class_setfreefn(t_class *c, t_classfreefn fn)
     c->c_classfreefn = fn;
 }
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 t_class *class_getfirst(void)
 {
     return class_list;
