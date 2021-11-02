@@ -138,9 +138,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     m = (*methodlist) + nmethod;
     m->me_name = sel;
     m->me_fun = (t_gotfn)fn;
-    i = 0;
-    while ((m->me_arg[i] = args[i]))
-        i++;
+    memcpy(m->me_arg, args, MAXPDARG+1);
 }
 
 #ifdef PDINSTANCE
