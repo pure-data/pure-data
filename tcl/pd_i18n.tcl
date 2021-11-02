@@ -51,12 +51,12 @@ proc ::pd_i18n::get_system_language {} {
                           [string range \
                                [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
         }
+    } elseif {[info exists ::env(LANG)]} {
+        set lang $::env(LANG)
     } else {
-        if {[info exists ::env(LANG)]} {
-            set lang [file rootname [string tolower $::env(LANG)]]
-        }
+        set lang ""
     }
-    return $lang
+    return [file rootname [string tolower $lang]]
 }
 
 proc ::pd_i18n::load_locale {{lang ""}} {
