@@ -54,6 +54,7 @@ empty=
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
+     ./1.manual/favicon.ico \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.jpg \
      ./1.manual/fig1.3.jpg \
@@ -493,6 +494,7 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
+     ./8.topics/expr.html \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \
