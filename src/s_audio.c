@@ -631,9 +631,8 @@ void sys_gui_audiopreferences(void) {
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[MAXPDSTRING];
     t_audiosettings as;
-        /* these are all the devices on your system: */
+        /* these are all the devices on the system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
 
@@ -649,11 +648,10 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         /* values that are fixed and must not be changed by the GUI are
         prefixed with '!';  * the GUI will then display these values but
         disable their widgets */
-    snprintf(buf, MAXPDSTRING,
-"pdtk_audio_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d \
-%s%d %d %d %s%d %d %s%d\n",
+    sys_vgui("pdtk_audio_dialog .audio_preferences "
+        "%d %d %d %d %d %d %d %d "
+        "%d %d %d %d %d %d %d %d "
+        "%s%d %d %d %s%d %d %s%d\n",
         as.a_indevvec[0], as.a_indevvec[1],
             as.a_indevvec[2], as.a_indevvec[3],
         as.a_chindevvec[0], as.a_chindevvec[1],
@@ -665,8 +663,6 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         audio_isfixedsr(as.a_api)?"!":"", as.a_srate, as.a_advance, canmulti,
         cancallback?"":"!", as.a_callback,
         (flongform != 0), audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
 }
 
     /* new values from dialog window */

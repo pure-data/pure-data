@@ -64,7 +64,7 @@ proc ::dialog_midi::apply {mytoplevel {force ""}} {
 }
 
 proc ::dialog_midi::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    destroy $mytoplevel
 }
 
 proc ::dialog_midi::ok {mytoplevel} {
@@ -236,6 +236,10 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     set ::midi_indevices [decr2list $indev1 $indev2 $indev3 $indev4 $indev5 $indev6 $indev7 $indev8 $indev9]
     set ::midi_outdevices [decr2list $outdev1 $outdev2 $outdev3 $outdev4 $outdev5 $outdev6 $outdev7 $outdev8 $outdev9]
 
+    # destroy leftover dialogs
+    destroy $id
+
+    # create a dialog window
     toplevel $id -class DialogWindow
     wm withdraw $id
     wm title $id [_ "MIDI Settings"]

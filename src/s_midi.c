@@ -731,8 +731,7 @@ void sys_gui_midipreferences(void) {
     /* start an midi settings dialog window */
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
-        /* these are the devices you're using: */
+        /* these are the devices we're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
     int i;
@@ -743,7 +742,6 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 
     if (nindev > 1 || noutdev > 1)
         flongform = 1;
-
 
     for (i=0; i<MAXMIDIINDEV; i++) {
         if (nindev > i &&  midiindev[i] >= 0)
@@ -757,30 +755,28 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         else
             midioutdev[i] = 0;
     }
-#ifdef USEAPI_ALSA
-      if (sys_midiapi == API_ALSA)
-    sprintf(buf,
-"pdtk_alsa_midi_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d 1\n",
-        midiindev[0], midiindev[1], midiindev[2], midiindev[3],
-        midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
-        (flongform != 0));
-      else
-#endif
-    sprintf(buf,
-"pdtk_midi_dialog %%s \
-%d %d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d %d \
-%d\n",
-        midiindev[0], midiindev[1], midiindev[2], midiindev[3],
-        midiindev[4], midiindev[5], midiindev[6], midiindev[7], midiindev[8],
-        midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
-        midioutdev[4], midioutdev[5], midioutdev[6], midioutdev[7], midioutdev[8],
-        (flongform != 0));
 
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_midi_properties, buf);
+    if(0) {
+#ifdef USEAPI_ALSA
+    } else if (sys_midiapi == API_ALSA) {
+        sys_vgui("pdtk_alsa_midi_dialog .midi_preferences "
+            "%d %d %d %d %d %d %d %d "
+            "%d 1\n",
+            midiindev[0], midiindev[1], midiindev[2], midiindev[3],
+            midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
+            (flongform != 0));
+#endif
+    } else {
+        sys_vgui("pdtk_midi_dialog .midi_preferences "
+            "%d %d %d %d %d %d %d %d %d "
+            "%d %d %d %d %d %d %d %d %d "
+            "%d\n",
+            midiindev[0], midiindev[1], midiindev[2], midiindev[3],
+            midiindev[4], midiindev[5], midiindev[6], midiindev[7], midiindev[8],
+            midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
+            midioutdev[4], midioutdev[5], midioutdev[6], midioutdev[7], midioutdev[8],
+            (flongform != 0));
+    }
 }
 
     /* new values from dialog window */

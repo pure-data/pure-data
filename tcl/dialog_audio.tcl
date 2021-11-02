@@ -64,7 +64,7 @@ proc ::dialog_audio::apply {mytoplevel {force ""}} {
 }
 
 proc ::dialog_audio::cancel {mytoplevel} {
-    pdsend "$mytoplevel cancel"
+    destroy $mytoplevel
 }
 
 proc ::dialog_audio::ok {mytoplevel} {
@@ -357,6 +357,8 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set ::audio_use_callback $callback
     set ::audio_can_multidevice $multi
 
+    # destroy leftover dialogs
+    destroy $mytoplevel
     # create a dialog window
     toplevel $mytoplevel -class DialogWindow
     wm withdraw $mytoplevel

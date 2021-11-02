@@ -1441,10 +1441,8 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-    char buf[MAXPDSTRING];
     sys_gui_preferences();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
-    gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
+    sys_vgui("pdtk_path_dialog .path_dialog %d %d\n", sys_usestdpath, sys_verbose);
 }
 
     /* new values from dialog window */
@@ -1487,12 +1485,10 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
-    char buf[MAXPDSTRING];
     char obuf[MAXPDSTRING];
     sys_gui_preferences();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
+    sys_vgui("pdtk_startup_dialog .startup_dialog %d {%s}\n", sys_defeatrt,
         (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
 
     /* new values from dialog window */
