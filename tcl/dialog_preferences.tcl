@@ -7,12 +7,15 @@ package require preferencewindow
 namespace eval ::dialog_preferences:: {
 }
 
+set ::dialog_preferences::use_ttknotebook ""
+
 
 proc ::dialog_preferences::cancel {mytoplevel} {
     destroy $mytoplevel
 }
 proc ::dialog_preferences::do_apply {mytoplevel} {
     ::pd_guiprefs::write "gui_language" $::pd_i18n::language
+    ::pd_guiprefs::write "use_ttknotebook" $::dialog_preferences::use_ttknotebook
     pdsend "pd zoom-open $::sys_zoom_open"
 }
 proc ::dialog_preferences::apply {mytoplevel} {
@@ -34,7 +37,14 @@ proc ::dialog_preferences::fill_frame {prefs} {
         -variable ::sys_zoom_open -anchor w
     pack $prefs.extraframe.zoom -side left -expand 1
     pack $prefs.extraframe -side top -anchor n -fill x
-}
+
+    set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
+    labelframe $prefs.guiframe -text [_ "GUI settings" ] -padx 5 -pady 5 -borderwidth 1
+    checkbutton $prefs.guiframe.notebook -text [_ "Use tabbed preferences" ] \
+        -variable ::dialog_preferences::use_ttknotebook -anchor w
+    pack $prefs.guiframe.notebook -side left -expand 1
+    pack $prefs.guiframe -side top -anchor n -fill x
+    }
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
     if { [winfo exists $mytoplevel] } {

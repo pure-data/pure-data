@@ -65,6 +65,10 @@ proc ::preferencewindow::mapped {winid} {
     }
 }
 
+proc ::preferencewindow::fail {args} {
+    return -code error ${args}
+}
+
 # "Constructor" function for building the window
 # winid -- the window id to use
 # title -- top-level title for the dialog
@@ -99,7 +103,12 @@ proc ::preferencewindow::create {winid title {dimen {0 0}}} {
 
         # put the preference-widgets on the .content.frames frame
     if { [catch {
+        set cantabs [::pd_guiprefs::read use_ttknotebook]
+        if { ${cantabs} == 0 } { fail "prefs request to not use ttk::notebook" }
+        ::pd_guiprefs::write use_ttknotebook 0
         ttk::notebook ${winid}.content.frames
+        ::pd_guiprefs::write use_ttknotebook $cantabs
+
         catch {ttk::notebook::enableTraversal ${winid}.content.frames}
         pack $winid.content.frames -side top -fill both -pady 2m
     } ] } {
