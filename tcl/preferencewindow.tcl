@@ -210,6 +210,15 @@ proc ::preferencewindow::selected {winid} {
 
 # ############## helpers ###############
 
+proc ::preferencewindow::removechildren {id} {
+    if {[winfo exists ${id}]} {
+        set children [winfo children ${id}]
+        foreach c ${children} {
+            destroy $c
+        }
+    }
+}
+
 if {[tk windowingsystem] eq "aqua"} {
     proc ::preferencewindow::simplefocus {id {okbutton {}} {okaction {}} {cancelaction {}}} {
         set mytoplevel [winfo toplevel $id]

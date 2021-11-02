@@ -236,6 +236,14 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     set ::midi_indevices [decr2list $indev1 $indev2 $indev3 $indev4 $indev5 $indev6 $indev7 $indev8 $indev9]
     set ::midi_outdevices [decr2list $outdev1 $outdev2 $outdev3 $outdev4 $outdev5 $outdev6 $outdev7 $outdev8 $outdev9]
 
+    # check if there's already an open gui-preference
+    # where we can splat the new midi preferences into
+    if {[winfo exists ${::dialog_preferences::midi_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::midi_frame}
+        ::dialog_midi::fill_frame ${::dialog_preferences::midi_frame}
+        return {}
+    }
+
     # destroy leftover dialogs
     destroy $id
 
@@ -327,7 +335,9 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id \
         $indev1 $indev2 $indev3 $indev4 0 0 0 0 0 \
         $outdev1 $outdev2 $outdev3 $outdev4 0 0 0 0 0 \
         $longform
-    wm title $id [_ "ALSA MIDI Settings"]
+    if {[winfo exists $id]} {
+        wm title $id [_ "ALSA MIDI Settings"]
+    }
 }
 
 # for focus handling on OSX

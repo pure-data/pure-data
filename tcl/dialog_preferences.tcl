@@ -8,9 +8,14 @@ namespace eval ::dialog_preferences:: {
 }
 
 set ::dialog_preferences::use_ttknotebook ""
+# allow updating the audio resp MIDI frame if the backend changes
+set ::dialog_preferences::audio_frame {}
+set ::dialog_preferences::midi_frame {}
 
 
 proc ::dialog_preferences::cancel {mytoplevel} {
+    set ::dialog_preferences::audio_frame {}
+    set ::dialog_preferences::midi_frame {}
     destroy $mytoplevel
 }
 proc ::dialog_preferences::do_apply {mytoplevel} {
@@ -47,9 +52,10 @@ proc ::dialog_preferences::fill_frame {prefs} {
     }
 
 proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
-    if { [winfo exists $mytoplevel] } {
-        destroy $mytoplevel
-    }
+    destroy $mytoplevel
+    destroy .audio_preferences
+    destroy .midi_preferences
+
     ::preferencewindow::create $mytoplevel [_ "Preferences" ]
 
     #wm title $mytoplevel "GUI preferences"
@@ -73,12 +79,14 @@ proc ::dialog_preferences::create_dialog {{mytoplevel .gui_preferences}} {
     # audio options
     set prefs [::preferencewindow::add_frame $mytoplevel  [_ "audio preferences"]]
     ::dialog_audio::fill_frame $prefs
+    set ::dialog_preferences::audio_frame $prefs
     ::preferencewindow::add_apply ${mytoplevel} "::dialog_audio::apply ${prefs}"
 
 
     # midi options
     set prefs [::preferencewindow::add_frame $mytoplevel [_ "MIDI preferences"]]
     ::dialog_midi::fill_frame $prefs
+    set ::dialog_preferences::midi_frame $prefs
     ::preferencewindow::add_apply ${mytoplevel} "::dialog_midi::apply ${prefs}"
 
     # deken options

@@ -357,6 +357,15 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set ::audio_use_callback $callback
     set ::audio_can_multidevice $multi
 
+    # check if there's already an open gui-preference
+    # where we can splat the new audio preferences into
+    if {[winfo exists ${::dialog_preferences::audio_frame}]} {
+        ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
+        ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
+        return {}
+    }
+
+
     # destroy leftover dialogs
     destroy $mytoplevel
     # create a dialog window
