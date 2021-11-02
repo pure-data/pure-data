@@ -114,7 +114,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
 }
 
 static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
-    int nmethod, t_gotfn fn, t_symbol *sel, t_atomtype *args,
+    int nmethod, t_gotfn fn, t_symbol *sel, unsigned char *args,
         t_pdinstance *pdinstance)
 {
     int i;
@@ -138,9 +138,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     m = (*methodlist) + nmethod;
     m->me_name = sel;
     m->me_fun = (t_gotfn)fn;
-    i = 0;
-    while ((m->me_arg[i] = args[i]))
-        i++;
+    memcpy(m->me_arg, args, MAXPDARG+1);
 }
 
 #ifdef PDINSTANCE
@@ -639,7 +637,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     }
     else
     {
-        t_atomtype argvec[MAXPDARG+1];
+        unsigned char argvec[MAXPDARG+1];
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {
