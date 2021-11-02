@@ -91,8 +91,8 @@ int pd_extern_sched(char *flags)
     as.a_api = API_DUMMY;
     sys_set_audio_settings(&as);
 
-    chin = (as.a_nindev < 1 ? 0 : as.a_indevvec[0]);
-    chout = (as.a_noutdev < 1 ? 0 : as.a_outdevvec[0]);
+    chin = (as.a_nindev < 1 ? 0 : as.a_chindevvec[0]);
+    chout = (as.a_noutdev < 1 ? 0 : as.a_choutdevvec[0]);
     if (!flags || flags[0] != 'a')
     {
             /* signal to stdout object to do binary by attaching an object
