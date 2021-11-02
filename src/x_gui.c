@@ -240,6 +240,7 @@ static t_class *openpanel_class;
 typedef struct _openpanel
 {
     t_object x_obj;
+    t_canvas *x_canvas;
     t_symbol *x_s;
     int x_mode; /* 0: file, 1: folder, 2: multiple files */
 } t_openpanel;
@@ -252,6 +253,7 @@ static void *openpanel_new(t_floatarg mode)
     x->x_mode = (mode < 0 || mode > 2) ? 0 : mode;
     sprintf(buf, "d%lx", (t_int)x);
     x->x_s = gensym(buf);
+    x->x_canvas = canvas_getcurrent();
     pd_bind(&x->x_obj.ob_pd, x->x_s);
     outlet_new(&x->x_obj, &s_symbol);
     return (x);
@@ -260,8 +262,8 @@ static void *openpanel_new(t_floatarg mode)
 static void openpanel_symbol(t_openpanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    pdgui_vmess("pdtk_openpanel", "ssi",
-        x->x_s->s_name, path, x->x_mode);
+    pdgui_vmess("pdtk_openpanel", "ssic",
+        x->x_s->s_name, path, x->x_mode, glist_getcanvas(x->x_canvas));
 }
 
 static void openpanel_bang(t_openpanel *x)
@@ -324,8 +326,8 @@ static void *savepanel_new(void)
 static void savepanel_symbol(t_savepanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    pdgui_vmess("pdtk_savepanel", "ss",
-        x->x_s->s_name, path);
+    pdgui_vmess("pdtk_savepanel", "ssc",
+        x->x_s->s_name, path, glist_getcanvas(x->x_canvas));
 }
 
 static void savepanel_bang(t_savepanel *x)
