@@ -212,12 +212,36 @@ proc ::dialog_audio::fill_frame_iodevices {frame maxdevs longform} {
 
 
 
-proc ::dialog_audio::fill_frame {frame} {
+proc ::dialog_audio::fill_frame {frame {include_backends 1}} {
     # side-effects:
     # rW: ::dialog_audio::samplerate
     # rW: ::dialog_audio::advance
     # rW: ::dialog_audio::use_callback
     ::dialog_audio::init_devicevars
+
+    if { $include_backends != 0 && [llength $::audio_apilist] > 1} {
+        labelframe $frame.backend -text [_ "audio system"] -padx 5 -pady 5 -borderwidth 1
+        pack $frame.backend -side top -fill x -pady 5
+
+        menubutton $frame.backend.api -indicatoron 1 -menu $frame.backend.api.menu \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush \
+            -text [_ "audio system" ]
+        menu $frame.backend.api.menu -tearoff 0
+
+        foreach api $::audio_apilist {
+            foreach {api_name api_id} $api {
+                $frame.backend.api.menu add radiobutton \
+                    -label "${api_name}" \
+                    -value ${api_id} -variable ::pd_whichapi \
+                    -command {pdsend "pd audio-setapi $::pd_whichapi"}
+                if { ${api_id} == ${::pd_whichapi} } {
+                    $frame.backend.api configure -text "${api_name}"
+                }
+            }
+        }
+        pack $frame.backend.api -side left -fill x -expand 1
+    }
 
     # settings
     labelframe $frame.settings -text [_ "Settings"] -padx 5 -pady 5 -borderwidth 1
@@ -381,7 +405,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
 
     # add the preference widgets to the dialog
-    ::dialog_audio::fill_frame $mytoplevel
+    ::dialog_audio::fill_frame $mytoplevel 0
 
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \

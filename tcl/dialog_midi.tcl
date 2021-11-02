@@ -171,9 +171,34 @@ proc ::dialog_midi::make_frame_ports {frame inportsvar outportsvar} {
 }
 
 
-proc ::dialog_midi::fill_frame {frame} {
+proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
     set longform 0
     init_devicevars
+
+    if { $include_backends != 0 && [llength $::midi_apilist] > 1} {
+        labelframe $frame.backend -text [_ "MIDI system"] -padx 5 -pady 5 -borderwidth 1
+        pack $frame.backend -side top -fill x -pady 5
+
+        menubutton $frame.backend.api -indicatoron 1 -menu $frame.backend.api.menu \
+            -relief raised -highlightthickness 1 -anchor c \
+            -direction flush \
+            -text [_ "MIDI system" ]
+        menu $frame.backend.api.menu -tearoff 0
+
+        foreach api $::midi_apilist {
+            foreach {api_name api_id} $api {
+                $frame.backend.api.menu add radiobutton \
+                    -label "${api_name}" \
+                    -value ${api_id} -variable ::pd_whichmidiapi \
+                    -command {pdsend "pd midi-setapi $::pd_whichmidiapi"}
+                if { ${api_id} == ${::pd_whichmidiapi} } {
+                    $frame.backend.api configure -text "${api_name}"
+                }
+            }
+        }
+        pack $frame.backend.api -side left -fill x -expand 1
+    }
+
 
     if { $::dialog_midi::portsin > 0 || $::dialog_midi::portsout > 0 } {
         set longform 1
@@ -261,7 +286,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
 
     frame $id.midi
     pack $id.midi -side top -anchor n -fill x -expand 1
-    ::dialog_midi::fill_frame $id.midi
+    ::dialog_midi::fill_frame $id.midi 0
 
     # save all settings button
     button $id.saveall -text [_ "Save All Settings"] \
