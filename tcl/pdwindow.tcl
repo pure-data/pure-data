@@ -208,7 +208,7 @@ proc ::pdwindow::clear_console {} {
 # save the contents of the pdwindow::logbuffer to a file
 proc ::pdwindow::save_logbuffer_to_file {} {
     variable logbuffer
-    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt]
+    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt -parent .pdwindow]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
