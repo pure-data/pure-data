@@ -9,6 +9,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -338,19 +339,23 @@ void midi_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
 {
     int i, nindev = 0, noutdev = 0;
+    char utf8device[MAXPDSTRING];
+    utf8device[0] = 0;
     for (i = 0; i < Pm_CountDevices(); i++)
     {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
         /* post("%d: %s, %s (%d,%d)", i, info->interf, info->name,
             info->input, info->output); */
+        if(!u8_nativetoutf8(utf8device, MAXPDSTRING, info->name, -1))
+            continue;
         if (info->input && nindev < maxndev)
         {
-            strcpy(indevlist + nindev * devdescsize, info->name);
+            strcpy(indevlist + nindev * devdescsize, utf8device);
             nindev++;
         }
         if (info->output && noutdev < maxndev)
         {
-            strcpy(outdevlist + noutdev * devdescsize, info->name);
+            strcpy(outdevlist + noutdev * devdescsize, utf8device);
             noutdev++;
         }
     }
