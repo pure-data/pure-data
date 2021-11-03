@@ -653,9 +653,10 @@ void glist_redraw(t_glist *x)
                 /* redraw all the lines */
             linetraverser_start(&t, x);
             while ((oc = linetraverser_next(&t)))
-                sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
-                    glist_getcanvas(x), oc,
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+                sys_vgui("::pdtk_canvas::pdtk_coords %d %d %d %d "
+                    "l%lx .x%lx.c\n",
+                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2, oc,
+                    glist_getcanvas(x));
             canvas_drawredrect(x, 0);
             if (x->gl_goprect)
             {
