@@ -114,7 +114,7 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
         -text "${index}:" -anchor e \
         -command "::dialog_audio::state2widgets \$::dialog_audio::${direction}enable${index}  $frame.x1 $frame.x2"
 
-    if { $::audio_can_multidevice <= 1 && $direction eq "out" } {
+    if { $::audio_can_multidevice < 1 && $direction eq "out" } {
         label $frame.x1 -text [_ "(same as input device)..."]
     } else {
         menubutton $frame.x1 -indicatoron 1 -menu $frame.x1.menu \
