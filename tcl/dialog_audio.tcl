@@ -149,9 +149,6 @@ proc ::dialog_audio::fill_frame_device {frame direction index} {
 
 
     ::dialog_audio::state2widgets $enabled $frame.x1  $frame.x2
-    if { [llength $devlist] < 2 } {
-        $frame.x1 configure -state disabled
-    }
 }
 proc ::dialog_audio::fill_frame_devices {frame direction maxdevs} {
     # side effects:
