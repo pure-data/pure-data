@@ -579,6 +579,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     t_audiosettings as;
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    char device[MAXPDSTRING];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
@@ -587,12 +588,12 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for (i = 0; i < nindevs; i++)
         sys_vgui("lappend audio_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
 
     sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
     for (i = 0; i < noutdevs; i++)
         sys_vgui("lappend audio_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
 
     sys_get_audio_settings(&as);
 
