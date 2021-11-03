@@ -302,12 +302,12 @@ int u8_nativetoutf8(char *dest, int sz, const char *src, int srcsz)
     } else {
         len = (srcsz < sz)?srcsz:sz;
     }
-    wbuf = getbytes(len);
+    wbuf = getbytes(len * sizeof(*wbuf));
     res = MultiByteToWideChar(CP_OEMCP, 0, src, srcsz, wbuf, len);
     if(res) {
         res = WideCharToMultiByte(CP_UTF8, 0, wbuf, len, dest, sz, 0, 0);
     }
-    freebytes(wbuf, len);
+    freebytes(wbuf, len * sizeof(*wbuf));
     return (res)?len:0;
 #endif
         /* on other systems, we use UTF-8 for everything, so this is a no-op */
