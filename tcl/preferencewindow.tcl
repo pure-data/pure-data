@@ -60,7 +60,8 @@ proc ::preferencewindow::mapped {winid} {
     catch {
         set bbox [$cnv bbox all]
         if { "$bbox" != "" } {
-            $cnv configure -scrollregion $bbox
+            foreach {_ _ w _} $bbox {break}
+            $cnv configure -scrollregion $bbox -width $w
         }
     }
 }
