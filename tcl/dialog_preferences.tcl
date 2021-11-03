@@ -45,9 +45,23 @@ proc ::dialog_preferences::fill_frame {prefs} {
 
     set ::dialog_preferences::use_ttknotebook [::pd_guiprefs::read use_ttknotebook]
     labelframe $prefs.guiframe -text [_ "GUI settings" ] -padx 5 -pady 5 -borderwidth 1
-    checkbutton $prefs.guiframe.notebook -text [_ "Use tabbed preferences" ] \
-        -variable ::dialog_preferences::use_ttknotebook -anchor w
-    pack $prefs.guiframe.notebook -side left -expand 1
+
+    set m  $prefs.guiframe.notebook
+    menubutton $m  -menu $m.menu -indicatoron 1 \
+        -text [_ "Preference navigation" ] \
+        -relief raised -highlightthickness 1 -anchor c \
+        -direction flush
+    menu $m.menu -tearoff 0
+
+    $m.menu add radiobutton -label [_ "Tabs" ] \
+        -value 1 -variable ::dialog_preferences::use_ttknotebook
+
+    $m.menu add radiobutton -label [_ "Scroll" ] \
+        -value 0 -variable ::dialog_preferences::use_ttknotebook
+
+    #checkbutton $prefs.guiframe.notebook -text [_ "Use tabbed preferences" ] \
+    #    -variable ::dialog_preferences::use_ttknotebook -anchor w
+    pack $prefs.guiframe.notebook -side left -anchor w -expand 1
     pack $prefs.guiframe -side top -anchor n -fill x
     }
 
