@@ -7,52 +7,49 @@ namespace eval ::dialog_midi:: {
     variable referenceconfig ""
 }
 
+# reference configuration string (to detect whether the config has changed)
 set ::dialog_midi::referenceconfig ""
+
 # the length of the 'currently used' lists is currently hardcoded to 9
 # (to match Pd's "midi-dialog")
 set ::dialog_midi::max_devices 9
+
+# selected devices
+# a value of '0' indicates no-device; a value of '1' is the first valid MIDI device,...
+#::dialog_midi::indev1 -- ::dialog_midi::indev${max_devices}
+#::dialog_midi::outdev1 -- ::dialog_midi::outdev${max_devices}
 
 ## midi devices (available and used)
 # ::midi_*devlist: a list of available input devices (type:string)
 # ::midi_*devices: currently used input devices (type:index)
 # ::midi_*devcechannels: currently used channels per input device (type:int)
 # the length of the 'currently used' lists is $max_devices
-
+# '-1' indicates no-device; '0' is the first valid MIDI device...
+# (WARNING: this is different from ::dialog_midi::iodevN!!!)
 set ::midi_indevlist {}
 set ::midi_indevices {-1 -1 -1 -1 -1 -1 -1 -1 -1}
 set ::midi_outdevlist {}
 set ::midi_outdevices {-1 -1 -1 -1 -1 -1 -1 -1 -1}
 
 
-# TODO this panel really needs some reworking, it works but the code is
-# very unreadable
-
-
 ####################### midi dialog ##################
 
 proc ::dialog_midi::config2string { } {
-    return [string trim "\
-        [expr $::dialog_midi::indev1 + 1] \
-        [expr $::dialog_midi::indev2 + 1] \
-        [expr $::dialog_midi::indev3 + 1] \
-        [expr $::dialog_midi::indev4 + 1] \
-        [expr $::dialog_midi::indev5 + 1] \
-        [expr $::dialog_midi::indev6 + 1] \
-        [expr $::dialog_midi::indev7 + 1] \
-        [expr $::dialog_midi::indev8 + 1] \
-        [expr $::dialog_midi::indev9 + 1] \
-        [expr $::dialog_midi::outdev1 + 1] \
-        [expr $::dialog_midi::outdev2 + 1] \
-        [expr $::dialog_midi::outdev3 + 1] \
-        [expr $::dialog_midi::outdev4 + 1] \
-        [expr $::dialog_midi::outdev5 + 1] \
-        [expr $::dialog_midi::outdev6 + 1] \
-        [expr $::dialog_midi::outdev7 + 1] \
-        [expr $::dialog_midi::outdev8 + 1] \
-        [expr $::dialog_midi::outdev9 + 1] \
-        [expr $::dialog_midi::portsin + 0] \
-        [expr $::dialog_midi::portsout + 0] \
-        "]
+    set result {}
+    foreach dir {in out} {
+        upvar ::midi_${dir}devlist devlist
+        upvar ::dialog_midi::ports${dir} ports
+        for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
+            upvar ::dialog_midi::${dir}dev${i} dev
+            if { $dev < 0 || $dev > [llength $devlist] } {
+                set dev 0
+            }
+            lappend result $dev
+        }
+        set ports [expr $ports + 0]
+    }
+    lappend result $::dialog_midi::portsin $::dialog_midi::portsout
+    return $result
 }
 
 proc ::dialog_midi::apply {mytoplevel {force ""}} {
@@ -73,11 +70,14 @@ proc ::dialog_midi::ok {mytoplevel} {
 }
 
 proc ::dialog_midi::fill_frame_device {frame direction index} {
-    upvar ::dialog_midi::${direction}dev${index} x
+    upvar ::dialog_midi::${direction}dev${index} selected
     upvar ::midi_${direction}devlist devlist
 
+    set x [expr $selected - 1]
     set device [lindex $devlist $x]
-    if { "$x" eq "" || "${device}" eq "" } {set device [format "(%s)" [_ "no device" ]] }
+    if { "$x" < 0 || $x >= [llength $devlist ] || "${device}" eq "" } {
+        set device [format "(%s)" [_ "no device" ]]
+    }
 
     label $frame.l1 -text "${index}:"
     menubutton $frame.x1 -indicatoron 1 -menu $frame.x1.menu \
@@ -85,18 +85,18 @@ proc ::dialog_midi::fill_frame_device {frame direction index} {
         -direction flush \
         -text ${device}
     menu $frame.x1.menu
-    set idx 0
-        foreach dev $devlist {
-            $frame.x1.menu add radiobutton \
-                -label "${dev}" \
-                -value ${idx} -variable ::dialog_midi::${direction}dev${index} \
-                -command "$frame.x1 configure -text \"${dev}\""
-            incr idx
-        }
+    set idx 1
+    foreach dev $devlist {
+        $frame.x1.menu add radiobutton \
+            -label "${dev}" \
+            -value ${idx} -variable ::dialog_midi::${direction}dev${index} \
+            -command "$frame.x1 configure -text \"${dev}\""
+        incr idx
+    }
     set dev [_ "(no device)" ]
     $frame.x1.menu add radiobutton \
         -label "$dev" \
-        -value -1 -variable ::dialog_midi::${direction}dev${index} \
+        -value 0 -variable ::dialog_midi::${direction}dev${index} \
         -command "$frame.x1 configure -text \"${dev}\""
     pack $frame.l1 -side left
     pack $frame.x1 -side left -fill x -expand 1
@@ -200,7 +200,7 @@ proc ::dialog_midi::fill_frame {frame {include_backends 1}} {
     }
 
 
-    if { $::dialog_midi::portsin > 0 || $::dialog_midi::portsout > 0 } {
+    if { $::dialog_midi::portsin > 1 || $::dialog_midi::portsout > 1 } {
         set longform 1
     }
 
@@ -221,11 +221,16 @@ proc ::dialog_midi::init_devicevars {} {
         for {set i 1} {$i <= $::dialog_midi::max_devices} {incr i} {
             # output vars
             upvar ::dialog_midi::${direction}dev${i} dev
+            set d ""
             if { [llength $devices] > 0 } {
-                set dev [lindex $devices ${i}-1]
-            } else {
-                set dev -1
+                set d [lindex $devices ${i}-1]
             }
+            if { "${d}" eq "" } {
+                set dev 0
+            } else {
+                set dev [expr $d + 1]
+            }
+
         }
 
         set ports 0
@@ -243,7 +248,10 @@ proc ::dialog_midi::init_devicevars {} {
 proc ::dialog_midi::decr2list {args} {
     set result {}
     foreach x $args {
-        lappend result [expr $x - 1]
+        set x [expr $x - 1]
+        if { $x >= 0 } {
+            lappend result $x
+        }
     }
     return $result
 }
