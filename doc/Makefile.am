@@ -427,7 +427,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabsend~-help.pd \
+     ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \
