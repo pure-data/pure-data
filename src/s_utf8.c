@@ -312,7 +312,7 @@ int u8_nativetoutf8(char *dest, int sz, const char *src, int srcsz)
 #endif
         /* on other systems, we use UTF-8 for everything, so this is a no-op */
     if(srcsz < 0)
-        srcsz = strnlen(src, sz*2);
+        srcsz = strlen(src) + 1;
     len = (srcsz < sz)?srcsz:sz;
     strncpy(dest, src, len);
     return len;
