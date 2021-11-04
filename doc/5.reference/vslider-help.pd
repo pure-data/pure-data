@@ -548,18 +548,19 @@ jumps to the position you clicked on the slider and drags from there.
 #X msg 157 166 log;
 #X text 175 137 linear;
 #X text 191 166 logarithmic;
-#X text 50 27 The slider's behavior can be linear (default) or logarithmic
-and you can set this with the 'lin' or 'log' messages \, respectively.
-Check below the difference. In the logarithmic mode \, the minimum
-range can never be 0 or negative., f 48;
 #X obj 144 203 vsl 18 128 1 1000 0 0 empty empty empty 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
 #X floatatom 144 354 8 0 0 0 - - - 0;
 #X text 125 322 1;
 #X text 106 197 1000;
-#X connect 0 0 5 0;
-#X connect 1 0 5 0;
-#X connect 5 0 6 0;
+#X text 45 19 The slider's behavior can be linear (default) or logarithmic
+and you can set this with the 'lin' or 'log' messages \, respectively.
+Check below the difference. In the logarithmic mode \, the range can
+never never touch or cross 0 (both minimum and maximum can be positive
+or negative)., f 48;
+#X connect 0 0 4 0;
+#X connect 1 0 4 0;
+#X connect 4 0 5 0;
 #X restore 131 143 pd linear/log;
 #N canvas 872 95 413 477 range 0;
 #X floatatom 172 106 4 -127 0 0 - - - 0;

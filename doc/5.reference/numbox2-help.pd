@@ -6,7 +6,7 @@
 #X obj 183 361 print nbx;
 #X floatatom 183 231 5 0 0 0 - - - 0;
 #X floatatom 233 220 5 0 0 0 - - - 0;
-#X obj 183 289 nbx 5 18 -100 100 0 0 empty empty Number\ box 80 10
+#X obj 183 289 nbx 5 18 -100 100 0 0 empty empty Number\\\ box 80 10
 0 14 #dcdcdc #000000 #740000 0 256;
 #X obj 60 22 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
 #fcfcfc #000000 #000000 0 256;
@@ -451,10 +451,10 @@ f 50;
 set via messages as well. See examples in the subpatches below:, f
 39;
 #N canvas 972 139 469 406 linear/log 0;
-#X msg 142 125 lin;
-#X msg 168 152 log;
-#X text 172 125 linear;
-#X text 198 152 logarithmic;
+#X msg 142 130 lin;
+#X msg 168 157 log;
+#X text 172 130 linear;
+#X text 198 157 logarithmic;
 #X obj 168 253 nbx 5 22 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 14
 #fcfcfc #000000 #000000 0 256;
 #X msg 199 217 log_height \$1;
@@ -463,10 +463,11 @@ set via messages as well. See examples in the subpatches below:, f
 \, in pixels \, that corresponds to the number box's range for when
 you're scrolling through the values while in logarithmic mode., f
 50;
-#X text 54 26 The number box's behavior can be linear (default) or
+#X text 54 16 The number box's behavior can be linear (default) or
 logarithmic and you can set this with the 'lin' or 'log' messages \,
 respectively. Check below the difference. In the logarithmic mode \,
-the minimum range can never be 0 or negative., f 50;
+the range can never never touch or cross 0 (both minimum and maximum
+can be positive or negative)., f 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
 #X connect 5 0 4 0;
