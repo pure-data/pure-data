@@ -240,6 +240,9 @@ else
     WISH=$(cd "$(dirname "$WISH")"; pwd)/$(basename "$WISH")
     cd - > /dev/null # quiet
     if [ ! -e $WISH ] ; then
+        [ ! -e "${WISH}.app" ] || WISH="${WISH}.app"
+    fi
+    if [ ! -e $WISH ] ; then
         echo "$WISH not found"
         exit 1
     fi
