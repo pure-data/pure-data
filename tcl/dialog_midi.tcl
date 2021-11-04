@@ -77,7 +77,7 @@ proc ::dialog_midi::fill_frame_device {frame direction index} {
     upvar ::midi_${direction}devlist devlist
 
     set device [lindex $devlist $x]
-    if { "${device}" eq "" } {set device [format "(%s)" [_ "no device" ]] }
+    if { "$x" eq "" || "${device}" eq "" } {set device [format "(%s)" [_ "no device" ]] }
 
     label $frame.l1 -text "${index}:"
     menubutton $frame.x1 -indicatoron 1 -menu $frame.x1.menu \
