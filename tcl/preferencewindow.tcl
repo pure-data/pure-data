@@ -39,8 +39,8 @@ proc ::preferencewindow::cancel {winid} {
             eval ${cancel}
         }
     }
-    dict unset ::preferencewindow::cancel_procs  ${winid}
-    dict unset ::preferencewindow::apply_procs  ${winid}
+    dict unset ::preferencewindow::cancel_procs ${winid}
+    dict unset ::preferencewindow::apply_procs ${winid}
     destroy ${winid}
 }
 
@@ -66,6 +66,7 @@ proc ::preferencewindow::mapped {winid} {
     }
 }
 
+# simple helper to raise an error that can then be 'catch'ed
 proc ::preferencewindow::fail {args} {
     return -code error ${args}
 }
