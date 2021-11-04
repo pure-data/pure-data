@@ -179,7 +179,7 @@ proc ::preferencewindow::add_frame {winid subtitle} {
     if { [catch {
         ${winid}.content.frames add ${frame} -text "${subtitle}"
     } ] } {
-        ${frame} configure -text "${subtitle}" -borderwidth 1
+        ${frame} configure -text "${subtitle}" -borderwidth 1 -relief solid
         pack ${frame} -side top -fill x -padx 2m -pady 2m
     }
 
