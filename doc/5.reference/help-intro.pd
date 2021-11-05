@@ -1,4 +1,4 @@
-#N canvas 683 76 624 833 12;
+#N canvas 683 76 639 833 12;
 #X declare;
 #X obj 29 135 bang;
 #X text 129 135 - output a bang message;
@@ -185,7 +185,6 @@
 #X obj 31 2947 writesf~;
 #X text 131 2947 - record sound to disk;
 #X obj 28 3009 phasor~;
-#X text 128 3009 - sawtooth oscillator;
 #X obj 28 3033 cos~;
 #X text 128 3033 - cosine;
 #X obj 28 3057 osc~;
@@ -435,3 +434,4 @@ as "switch" \, also switch subpatches on and off;
 objects in Pd, f 34;
 #X text 24 655 -------------------------- GUIs -------------------------
 ;
+#X text 128 3009 - phase ramp generator;
