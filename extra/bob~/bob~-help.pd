@@ -13,7 +13,7 @@
 #X obj 292 246 pack 0 50;
 #X obj 292 271 line~;
 #X msg 886 227 clear;
-#X obj 280 349 output~;
+#X obj 279 349 output~;
 #X floatatom 291 224 7 0 0 0 - - - 0;
 #X floatatom 611 177 5 0 999 0 - - - 0;
 #X msg 611 223 saturation \$1;
@@ -105,13 +105,12 @@ You can combat this by raising the oversampling factor.;
 #X connect 25 0 26 0;
 #X coords 0 -1 1 1 95 100 2 100 100;
 #X restore 101 96 pd test;
-#X text 228 410 output monitor;
+#X text 227 410 output monitor;
 #X text 35 321 input monitor;
 #X obj 291 130 loadbang;
 #X msg 291 155 69;
 #X text 47 65 ----- test input ----;
-#X text 356 366 <--- adjust output "dB" to hear filter output.;
-#X text 24 548 The design is based on papers by Tim Stilson \, Timothy
+#X text 24 538 The design is based on papers by Tim Stilson \, Timothy
 E. Stinchcombe \, and Antti Huovilainen. See README.txt for pointers.
 ;
 #X text 23 459 The three audio inputs are the signal to filter \, the
@@ -121,13 +120,19 @@ limit of stability -- above that \, the filter oscillates.;
 #X text 522 565 The saturation parameter determines at what signal
 level the "transistors" in the model saturate. The maximum output amplitude
 is about 2/3 of that value.;
-#X text 20 606 Compatibility note: there was a bug in this module \,
+#X text 20 586 Compatibility note: there was a bug in this module \,
 fixed for Pd version 0.52. YOu can get the (incorrect) pre-0.52 behavior
 by setting pd's compatibility level to 0.51.;
 #X text 876 676 updated for Pd 0.52;
 #X obj 38 11 bob~;
 #X text 78 12 - Runge-Kutte numerical simulation of the Moog analog
 resonant filter, f 69;
+#X text 355 366 <= adjust output "dB" to hear filter output.;
+#X text 51 663 see also:;
+#X obj 132 663 lop~;
+#X obj 173 663 hip~;
+#X obj 215 663 bp~;
+#X obj 256 663 vcf~;
 #X connect 0 0 1 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;
