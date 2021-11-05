@@ -1,4 +1,4 @@
-#N canvas 707 47 527 577 12;
+#N canvas 766 40 529 629 12;
 #X obj 313 181 bng 18 250 50 0 empty empty empty -8 -12 0 12 #fcfcfc
 #000000 #0400fc;
 #X obj 313 214 tgl 18 1.04858e+06 empty empty empty -6 -11 0 12 #fcfcfc
@@ -35,13 +35,17 @@
 #X array array 100 float 2;
 #X coords 0 1 100 -1 200 140 1 0 0;
 #X restore 290 414 graph;
-#X text 20 397 See also:;
 #X text 10 370 ----------------------------------------------------------------------
 , f 70;
 #X text 93 19 All IEM GUIs (objects from the "iemguis" library \, natively
 included in Pd version 0.34):, f 49;
 #X listbox 36 528 20 0 0 0 - - - 0;
-#X text 23 424 The boxes below are other GUIs not part of "IEM GUIs".
-See also the array to the right as another GUI element., f 35;
 #X text 159 498 atom boxes;
 #X text 185 528 list box;
+#X text 20 397 Original GUIs:;
+#X text 19 424 The boxes below are 'proper Vanilla' GUIs not part of
+"IEM GUIs". See also the array to the right as another GUI element.
+, f 36;
+#X msg 403 577 message;
+#X text 45 572 The message box is also considered a GUI object since
+you can click on it and interact with it., f 47;
