@@ -404,7 +404,7 @@ sends its holding value from when the patch was last saved., f 46
 #X connect 1 0 0 0;
 #X connect 5 0 4 0;
 #X restore 173 156 pd init;
-#N canvas 996 102 803 456 send-receive 0;
+#N canvas 996 102 817 453 send-receive 0;
 #X msg 211 197 receive empty;
 #X msg 242 261 send empty;
 #X floatatom 72 182 5 0 0 0 - - - 0;
@@ -428,24 +428,24 @@ set it directly via the properties window., f 53;
 #X text 429 26 Note how you need to escape dollar signs with backslashes
 to set something like "\$0-x". But the backslash is not needed if you
 set it directly via the properties window., f 50;
-#X text 429 100 Feedback protection: iemguis can have the same name
-for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedbacck protection. See example below.,
-f 50;
 #X floatatom 543 353 5 0 0 0 - - - 0;
 #X floatatom 536 191 5 0 0 0 - - - 0;
 #X obj 549 267 nbx 5 18 -1e+37 1e+37 0 0 \$0-nbx \$0-nbx empty 0 -8
 0 12 #fcfcfc #000000 #000000 0 256;
 #X obj 543 329 r \$0-nbx;
 #X obj 536 217 s \$0-nbx;
+#X text 429 100 Feedback protection: iemguis can have the same name
+for both the send and receive symbols. This works without 'stack overflow'
+erros because they have feedback protection. See example below., f
+50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
 #X connect 2 0 7 0;
 #X connect 5 0 4 0;
 #X connect 6 0 4 0;
 #X connect 8 0 3 0;
-#X connect 15 0 18 0;
-#X connect 17 0 14 0;
+#X connect 14 0 17 0;
+#X connect 16 0 13 0;
 #X restore 117 182 pd send-receive;
 #X text 37 17 All the parameters from the properties window can be
 set via messages as well. See examples in the subpatches below:, f

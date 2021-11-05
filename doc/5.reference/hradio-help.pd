@@ -477,7 +477,7 @@ sends its holding value from when the patch was last saved., f 46
 #X connect 1 0 0 0;
 #X connect 5 0 4 0;
 #X restore 174 115 pd init;
-#N canvas 869 39 829 470 send-receive 0;
+#N canvas 869 39 833 484 send-receive 0;
 #X floatatom 53 182 5 0 8 0 - - - 0;
 #X floatatom 53 310 5 0 0 0 - - - 0;
 #X text 42 102 The 'send' and 'receive' messages take a symbol to set
@@ -501,24 +501,24 @@ set it directly via the properties window., f 50;
 #X text 439 36 Note how you need to escape dollar signs with backslashes
 to set something like "\$0-x". But the backslash is not needed if you
 set it directly via the properties window., f 50;
-#X text 439 110 Feedback protection: iemguis can have the same name
-for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedbacck protection. See example below.,
-f 50;
 #X floatatom 550 400 5 0 0 0 - - - 0;
 #X floatatom 544 212 5 0 8 0 - - - 0;
 #X obj 544 238 s \$0-radio;
 #X obj 550 376 r \$0-radio;
 #X obj 512 302 hradio 18 1 0 8 \$0-radio \$0-radio empty 0 -8 0 10
 #fcfcfc #000000 #000000 0;
+#X text 439 110 Feedback protection: iemguis can have the same name
+for both the send and receive symbols. This works without 'stack overflow'
+erros because they have feedback protection. See example below., f
+50;
 #X connect 0 0 6 0;
 #X connect 5 0 1 0;
 #X connect 7 0 11 0;
 #X connect 8 0 11 0;
 #X connect 9 0 11 0;
 #X connect 10 0 11 0;
-#X connect 15 0 16 0;
-#X connect 17 0 14 0;
+#X connect 14 0 15 0;
+#X connect 16 0 13 0;
 #X restore 118 171 pd send-receive;
 #N canvas 896 162 466 340 loading-args 0;
 #X text 60 123 For instance \, below \, we have \$0 used in the label
