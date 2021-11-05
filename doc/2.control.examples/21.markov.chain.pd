@@ -1,55 +1,55 @@
-#N canvas 296 90 634 474 12;
-#X obj 94 223 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 94 308 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 173 307 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 226 309 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
+#N canvas 601 88 634 474 12;
+#X obj 94 223 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 94 308 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 165 307 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 218 309 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
 #X msg 94 330 1;
-#X msg 173 332 2;
-#X msg 226 333 3;
-#X obj 173 368 s state;
-#X obj 94 134 bng 20 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 124 135 r state;
-#X obj 266 225 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 266 310 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 336 312 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 389 315 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X msg 266 333 1;
-#X msg 336 338 2;
-#X msg 389 339 3;
-#X obj 336 368 s state;
-#X obj 430 226 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 430 311 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 503 310 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X obj 556 313 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
--1;
-#X msg 430 334 1;
-#X msg 503 335 2;
-#X msg 556 336 3;
-#X obj 503 370 s state;
+#X msg 165 332 2;
+#X msg 218 333 3;
+#X obj 165 368 s state;
+#X obj 94 134 bng 20 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 128 135 r state;
+#X obj 263 225 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 263 310 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 333 312 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 386 315 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X msg 263 333 1;
+#X msg 333 338 2;
+#X msg 386 339 3;
+#X obj 333 368 s state;
+#X obj 432 226 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 432 311 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 505 310 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X obj 558 313 bng 15 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#000000;
+#X msg 432 334 1;
+#X msg 505 335 2;
+#X msg 558 336 3;
+#X obj 505 370 s state;
 #X msg 305 135 \; state 1;
 #X obj 94 171 f 1;
 #X obj 94 251 random 100;
 #X obj 94 280 moses 30;
-#X obj 173 281 moses 60;
-#X obj 266 252 random 100;
-#X obj 266 282 moses 10;
-#X obj 336 283 moses 60;
-#X obj 430 253 random 100;
-#X obj 430 282 moses 70;
-#X obj 503 282 moses 80;
-#X floatatom 154 159 3 0 0 0 - - -;
+#X obj 165 281 moses 60;
+#X obj 263 252 random 100;
+#X obj 263 282 moses 10;
+#X obj 333 283 moses 60;
+#X obj 432 253 random 100;
+#X obj 432 282 moses 70;
+#X obj 505 282 moses 80;
+#X floatatom 128 170 3 0 0 0 - - - 0;
 #X text 259 142 reset;
 #X text 57 135 STEP;
 #X text 45 16 Here is how to construct a simple \, three-valued Markov
@@ -59,7 +59,7 @@ having a different probability distribution for the next value of "state."
 For instance if the state was 3 \, the next state will be 1 70% of
 the time \, state 2 10% \, and state 3 20%., f 70;
 #X text 88 426 updated for Pd version 0.35;
-#X obj 94 197 select 1 2 3, f 37;
+#X obj 94 197 select 1 2 3, f 73;
 #X connect 0 0 28 0;
 #X connect 1 0 4 0;
 #X connect 2 0 5 0;
