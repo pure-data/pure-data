@@ -1,7 +1,7 @@
 #N canvas 698 43 531 566 12;
 #X obj 87 247 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
-#X obj 114 310 tgl 55 0 empty empty Big\ Toggle 63 26 2 16 #dcdcdc
+#X obj 114 310 tgl 55 0 empty empty Big\\\ Toggle 63 26 2 16 #dcdcdc
 #b40000 #000084 0 1;
 #N canvas 568 187 676 290 old-behavior 0;
 #X floatatom 38 57 5 0 0 0 - - - 0;
@@ -458,7 +458,7 @@ sends its holding value from when the patch was last saved., f 45
 #X connect 1 0 0 0;
 #X connect 3 0 4 0;
 #X restore 172 156 pd init;
-#N canvas 849 183 828 410 send-receive 0;
+#N canvas 849 183 841 420 send-receive 0;
 #X msg 222 191 receive empty;
 #X msg 253 255 send empty;
 #X text 53 96 The 'send' and 'receive' messages take a symbol to set
@@ -480,10 +480,6 @@ objects., f 50;
 #X text 437 22 Note how you need to escape dollar signs with backslashes
 to set something like "\$0-x". But the backslash is not needed if you
 set it directly via the properties window., f 50;
-#X text 437 96 Feedback protection: iemguis can have the same name
-for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedbacck protection. See example below.,
-f 50;
 #X floatatom 553 375 5 0 0 0 - - - 0;
 #X obj 557 276 tgl 50 0 \$0-tgl \$0-tgl empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
@@ -491,6 +487,10 @@ f 50;
 #X obj 554 351 r \$0-tgl;
 #X msg 561 202 0;
 #X msg 550 175 1;
+#X text 437 96 Feedback protection: iemguis can have the same name
+for both the send and receive symbols. This works without 'stack overflow'
+erros because they have feedback protection. See example below., f
+50;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;
 #X connect 4 0 6 0;
@@ -498,9 +498,9 @@ f 50;
 #X connect 7 0 8 0;
 #X connect 10 0 9 0;
 #X connect 11 0 9 0;
-#X connect 17 0 14 0;
-#X connect 18 0 16 0;
-#X connect 19 0 16 0;
+#X connect 16 0 13 0;
+#X connect 17 0 15 0;
+#X connect 18 0 15 0;
 #X restore 116 184 pd send-receive;
 #N canvas 882 246 447 314 loading-args 0;
 #X text 59 115 For instance \, below \, we have \$0 used in the label
