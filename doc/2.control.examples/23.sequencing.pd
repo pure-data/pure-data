@@ -1,4 +1,4 @@
-#N canvas 333 68 529 561 12;
+#N canvas 782 74 529 561 12;
 #X text 276 512 updated for Pd version 0.26;
 #X text 40 28 You can use "qlist" or "textfile" objects for sequencing.
 Qlist is simpler to use than the (more versatile) textfile.;
@@ -7,8 +7,8 @@ Qlist is simpler to use than the (more versatile) textfile.;
 #X msg 46 91 clear \, add receive1 1 \, add 1000 receive1 0 \, add
 receive2 2 \, add 1000 receive2 0 \, add receive1 3 \, bang;
 #X obj 46 132 qlist;
-#X floatatom 186 173 0 0 0 0 - - -;
-#X floatatom 282 174 0 0 0 0 - - -;
+#X floatatom 186 173 0 0 0 0 - - - 0;
+#X floatatom 282 174 0 0 0 0 - - - 0;
 #X text 52 221 The "add" messages add lines to the qlist \, so that
 it contains:;
 #X text 159 257 receive1 1;
