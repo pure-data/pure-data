@@ -1,13 +1,8 @@
-#N canvas 754 120 628 624 12;
+#N canvas 754 81 717 690 12;
 #X floatatom 81 309 4 0 0 0 - - - 0;
 #X obj 81 339 sig~ 100;
-#X obj 364 278 table table1;
-#X obj 463 278 table table2;
-#X text 364 573 Updated for Pd version 0.33;
+#X text 483 540 Updated for Pd version 0.33;
 #X obj 70 21 tabosc4~;
-#X msg 101 384 set table1;
-#X obj 81 476 tabosc4~ table1;
-#X msg 111 410 set table2;
 #X text 186 391 message to switch tables;
 #X text 43 60 tabosc4~ is a traditional computer music style wavetable
 lookup oscillator using 4-point polynomial interpolation. The table
@@ -18,16 +13,14 @@ and "cosinesum" methods for arrays do this automatically for you if
 you just want to specify partial strengths., f 77;
 #X text 140 22 - 4-point interpolating oscillator;
 #X obj 285 278 loadbang;
-#X msg 285 311 \; table1 sinesum 512 1 1 1 1 \, normalize \; table2
-cosinesum 512 0 1;
 #X obj 81 523 output~;
-#X text 303 524 see also:;
-#X obj 386 524 osc~;
-#X msg 146 444 0;
-#X msg 183 444 0.5;
-#X text 216 446 <= resets phase;
-#X obj 430 524 phasor~;
-#X obj 496 524 tabread4~;
+#X text 195 544 see also:;
+#X obj 278 544 osc~;
+#X msg 139 444 0;
+#X msg 176 444 0.5;
+#X text 209 446 <= resets phase;
+#X obj 322 544 phasor~;
+#X obj 388 544 tabread4~;
 #X text 43 152 For good results use 512 points for up to about 15 partials
 \, or 32*npartials (rounded up to a power of 2) for more than 15 partials.
 Don't send new "sinesum" messages to tables while you're running -
@@ -37,12 +30,23 @@ The right inlet resets the phase with values from 0 to 1 (where '1'
 is the same as '0' and '0.5' is half the cycle)., f 77;
 #X text 200 476 creation argument initializes the table name;
 #X text 120 309 frequency (Hz.);
+#X obj 364 278 table wave1;
+#X obj 463 278 table wave2;
+#X msg 285 311 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
+512 0 1;
+#X obj 81 476 tabosc4~ wave1;
+#X msg 101 384 set wave1;
+#X msg 111 410 set wave2;
+#X obj 416 611 ../2.control.examples/15.array;
+#X obj 416 634 ../2.control.examples/16.more.arrays;
+#X text 37 615 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files to the right ====>, f 52;
 #X connect 0 0 1 0;
-#X connect 1 0 7 0;
-#X connect 6 0 7 0;
-#X connect 7 0 14 0;
-#X connect 7 0 14 1;
-#X connect 8 0 7 0;
-#X connect 12 0 13 0;
-#X connect 17 0 7 1;
-#X connect 18 0 7 1;
+#X connect 1 0 23 0;
+#X connect 7 0 22 0;
+#X connect 11 0 23 1;
+#X connect 12 0 23 1;
+#X connect 23 0 8 0;
+#X connect 23 0 8 1;
+#X connect 24 0 23 0;
+#X connect 25 0 23 0;

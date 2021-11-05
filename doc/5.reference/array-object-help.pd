@@ -3,9 +3,8 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 721 62 610 544 12;
-#X obj 222 486 list;
-#X text 48 486 see also:;
+#N canvas 721 62 609 607 12;
+#X obj 474 503 list;
 #X text 442 161 (click for details:), f 11;
 #N canvas 623 34 752 765 define 0;
 #X text 360 547 creation arguments:;
@@ -72,7 +71,7 @@ array has the originally specified size.;
 #X connect 35 0 19 0;
 #X connect 35 1 19 1;
 #X restore 443 202 pd define;
-#X obj 126 486 text;
+#X obj 378 503 text;
 #X obj 59 226 array size;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -206,7 +205,7 @@ maybe later arbitrary data structures) or access an array defined elsewhere
 to get or change its size \, set or read its elements \, and so on.
 , f 72;
 #X text 62 173 The first argument sets its function:;
-#X obj 167 486 scalar;
+#X obj 419 503 scalar;
 #X obj 59 250 array sum;
 #X obj 59 322 array quantile;
 #N canvas 560 199 665 358 sum 0;
@@ -432,4 +431,8 @@ the "onset" and "number of points"., f 65;
 #X obj 59 392 array min;
 #X text 163 393 - min - find lowest value;
 #X text 162 374 - max - find highest value;
-#X text 375 476 updated for Pd version 0.52;
+#X text 359 551 updated for Pd version 0.52;
+#X obj 50 535 ../2.control.examples/15.array;
+#X obj 50 558 ../2.control.examples/16.more.arrays;
+#X text 44 493 see also the "array" examples from section 2 (click
+below to open them) and these objects:, f 45;
