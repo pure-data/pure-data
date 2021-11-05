@@ -1,4 +1,4 @@
-#N canvas 650 39 541 556 12;
+#N canvas 650 39 547 639 12;
 #X floatatom 183 329 7 0 0 0 - - - 0;
 #X msg 233 243 set \$1;
 #X obj 152 231 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
@@ -11,11 +11,11 @@
 #X obj 60 22 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
 #fcfcfc #000000 #000000 0 256;
 #X text 133 23 - [my_numbox]/[nbx]- Number box;
-#X text 301 399 (c) musil@iem.kug.ac.at;
-#X text 337 415 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 321 399 (c) musil@iem.kug.ac.at;
+#X text 357 415 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 34 474 see also:;
 #X obj 108 474 x_all_guis;
-#X text 85 400 This object is part of the "iemguis" library \, natively
+#X text 66 400 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 58 289 click & drag ==> (shift-click for fine tuning). Right
 click for properties., f 16;
@@ -564,7 +564,7 @@ parameters are: width \, height \, lower and upper range \, log height
 #X restore 390 283 pd properties;
 #X floatatom 108 503 5 0 0 0 - - - 0;
 #X text 150 503 <= atom number box;
-#N canvas 869 193 408 425 example-discrete 0;
+#N canvas 922 193 408 425 example-discrete 0;
 #X floatatom 86 177 8 0 0 0 - - - 0;
 #X obj 86 331 print fixed-steps;
 #N canvas 463 235 655 287 discrete 0;
@@ -608,7 +608,12 @@ box in a discrete way., f 34;
 #X connect 4 0 7 0;
 #X connect 7 0 3 0;
 #X restore 350 337 pd example-discrete;
-#X text 315 503 updated for Pd version 0.51;
+#X text 315 503 updated for Pd version 0.52;
+#X text 37 546 ATTENTION: As of Pd 0.52 \, the plan is to stop supporting
+this object in favor of the atom number box \, which now also offers
+different sizes. More similar functionalities will be implemented in
+the atom number box and eventually [nbx] will be deprecated and removed
+from the Put Menu (but kept around)., f 68;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;
