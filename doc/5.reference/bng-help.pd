@@ -1,32 +1,27 @@
-#N canvas 626 42 541 469 12;
+#N canvas 754 116 541 469 12;
 #X msg 190 149 bang;
 #X floatatom 142 150 5 0 0 0 - - - 0;
 #X symbolatom 245 190 7 0 0 0 - - - 0;
-#N canvas 796 272 364 357 example-once 0;
+#N canvas 846 101 364 357 example-once 0;
 #X obj 123 84 bng 50 250 50 0 empty empty Once 58 24 0 13 #dcdcdc #c4fcfc
 #980000;
-#X msg 123 183 1;
-#X obj 123 157 t b b;
-#X obj 168 271 bng 18 250 50 0 empty empty empty 22 10 0 12 #fcfcfc
-#000000 #000000;
-#X obj 155 308 print Once;
-#X obj 155 237 sel 0;
-#X obj 155 213 f 0;
-#X msg 173 181 0;
-#X text 205 181 reset;
+#X obj 123 298 print Once;
+#X text 208 171 reset;
 #X text 35 22 Here's an example on how to make a patch that only sends
 a bang once until it is reset again., f 41;
-#X connect 0 0 2 0;
-#X connect 1 0 6 1;
-#X connect 2 0 1 0;
-#X connect 2 1 6 0;
-#X connect 5 0 3 0;
-#X connect 5 0 4 0;
-#X connect 6 0 5 0;
-#X connect 7 0 6 1;
+#X obj 123 203 spigot 1;
+#X msg 176 171 1;
+#X obj 123 227 t b b;
+#X msg 202 214 0;
+#X connect 0 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 1;
+#X connect 6 0 1 0;
+#X connect 6 1 7 0;
+#X connect 7 0 4 1;
 #X restore 371 273 pd example-once;
-#X text 295 345 (c) musil@iem.kug.ac.at;
-#X text 331 361 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 305 345 (c) musil@iem.kug.ac.at;
+#X text 341 361 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X msg 205 190 foo;
 #X text 234 142 received messages activate the bang, f 17;
 #X text 71 250 Click to bang => Right click for properties., f 16
@@ -577,7 +572,7 @@ shortcut. Alternatively \, create it by typing "bng" into an object
 box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 67;
 #X text 81 18 - [bng]: Bang button;
-#X text 85 346 This object is part of the "iemguis" library \, natively
+#X text 65 346 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 324 429 updated for Pd version 0.51;
 #X obj 190 307 print Big-Bang;
