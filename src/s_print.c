@@ -137,7 +137,7 @@ static void dologpost(const void *object, const int level, const char *s)
         fprintf(stderr, "verbose(%d): %s", level, s);
 #endif
     }
-    else
+    else if (level < PD_VERBOSE || sys_verbose)
     {
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
