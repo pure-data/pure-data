@@ -351,7 +351,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
       &status, NULL);
     if (status & JackFailure) {
         pd_error(0, "JACK: couldn't connect to server, is JACK running?");
-        verbose(PD_VERBOSE, "JACK: returned status is: %d", status);
+        logpost(NULL, PD_VERBOSE, "JACK: returned status is: %d", status);
         jack_client=NULL;
         /* jack spits out enough messages already, do not warn */
         STUFF->st_inchannels = STUFF->st_outchannels = 0;
@@ -359,7 +359,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     }
     if (status & JackNameNotUnique)
         jack_client_name(jack_get_client_name(jack_client));
-    verbose(PD_VERBOSE, "JACK: registered as '%s'", desired_client_name);
+    logpost(NULL, PD_VERBOSE, "JACK: registered as '%s'", desired_client_name);
 
     STUFF->st_inchannels = inchans;
     STUFF->st_outchannels = outchans;

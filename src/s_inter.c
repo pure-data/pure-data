@@ -83,8 +83,6 @@ typedef struct _fdpoll
     void *fdp_ptr;
 } t_fdpoll;
 
-#define INBUFSIZE 4096
-
 struct _socketreceiver
 {
     char *sr_inbuf;
@@ -131,6 +129,8 @@ struct _instanceinter
 #if PDTHREADS
     pthread_mutex_t i_mutex;
 #endif
+
+    unsigned char i_recvbuf[NET_MAXPACKETSIZE];
 };
 
 extern int sys_guisetportnumber;
@@ -368,8 +368,8 @@ void sys_set_priority(int mode)
     else
     {
         if (mode == MODE_RT)
-            verbose(PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
-        else verbose(PD_VERBOSE, "running at normal (non-real-time) priority.\n");
+            logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
+        else logpost(NULL, PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
 #endif
 
@@ -392,6 +392,13 @@ void sys_set_priority(int mode)
 #endif /* __linux__ */
 
 /* ------------------ receiving incoming messages over sockets ------------- */
+
+unsigned char *sys_getrecvbuf(unsigned int *size)
+{
+    if (size)
+        *size = NET_MAXPACKETSIZE;
+    return INTER->i_recvbuf;
+}
 
 void sys_sockerror(const char *s)
 {
@@ -444,6 +451,11 @@ void sys_rmpollfn(int fd)
     post("warning: %d removed from poll list but not found", fd);
 }
 
+    /* Size of the buffer used for parsing FUDI messages
+    received over TCP. Must be a power of two!
+    LATER make this settable per socketreceiver instance */
+#define INBUFSIZE 4096
+
 t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     t_socketreceivefn socketreceivefn, int udp)
 {
@@ -455,13 +467,20 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_udp = udp;
     x->sr_fromaddr = NULL;
     x->sr_fromaddrfn = NULL;
-    if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
+    if (!udp)
+    {
+        if (!(x->sr_inbuf = malloc(INBUFSIZE)))
+            bug("t_socketreceiver");
+    }
+    else
+        x->sr_inbuf = NULL;
     return (x);
 }
 
 void socketreceiver_free(t_socketreceiver *x)
 {
-    free(x->sr_inbuf);
+    if (x->sr_inbuf)
+        free(x->sr_inbuf);
     if (x->sr_fromaddr) free(x->sr_fromaddr);
     freebytes(x, sizeof(*x));
 }
@@ -479,7 +498,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
         first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
     {
             /* if we hit a semi that isn't preceded by a \, it's a message
-            boundary.  LATER we should deal with the possibility that the
+            boundary. LATER we should deal with the possibility that the
             preceding \ might itself be escaped! */
         char c = *bp++ = inbuf[indx];
         if (c == ';' && (!indx || inbuf[indx-1] != '\\'))
@@ -501,12 +520,12 @@ static int socketreceiver_doread(t_socketreceiver *x)
 
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
-    char buf[INBUFSIZE+1];
+    char *buf = (char *)sys_getrecvbuf(0);
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     int ret, readbytes = 0;
     while (1)
     {
-        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
+        ret = (int)recvfrom(fd, buf, NET_MAXPACKETSIZE-1, 0,
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
@@ -527,11 +546,11 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         else if (ret > 0)
         {
                 /* handle too large UDP packets */
-            if (ret > INBUFSIZE)
+            if (ret > NET_MAXPACKETSIZE-1)
             {
                 post("warning: incoming UDP packet truncated from %d to %d bytes.",
-                    ret, INBUFSIZE);
-                ret = INBUFSIZE;
+                    ret, NET_MAXPACKETSIZE-1);
+                ret = NET_MAXPACKETSIZE-1;
             }
             buf[ret] = 0;
     #if 0
@@ -559,7 +578,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             }
             readbytes += ret;
             /* throttle */
-            if (readbytes >= INBUFSIZE)
+            if (readbytes >= NET_MAXPACKETSIZE)
                 return;
             /* check for pending UDP packets */
             if (socket_bytes_available(fd) <= 0)
@@ -579,7 +598,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
             (x->sr_inhead >= x->sr_intail ? INBUFSIZE : x->sr_intail-1);
         int ret;
 
-            /* the input buffer might be full.  If so, drop the whole thing */
+            /* the input buffer might be full. If so, drop the whole thing */
         if (readto == x->sr_inhead)
         {
             fprintf(stderr, "pd: dropped message from gui\n");
@@ -1371,6 +1390,12 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
+
+    do {
+        t_audiosettings as;
+        sys_get_audio_settings(&as);
+        sys_vgui("set pd_whichapi %d\n", as.a_api);
+    } while(0);
     return (0);
 }
 
@@ -1458,7 +1483,7 @@ void sys_setrealtime(const char *libdir)
                 this is done later when the socket is open. */
         }
     }
-    else verbose(PD_VERBOSE, "not setting real-time priority");
+    else logpost(NULL, PD_VERBOSE, "not setting real-time priority");
 #endif /* __linux__ */
 
 #ifdef _WIN32

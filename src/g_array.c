@@ -376,8 +376,8 @@ void garray_properties(t_garray *x)
         /* create dialog window.  LATER fix this to escape '$'
         properly; right now we just detect a leading '$' and escape
         it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, "pdtk_array_dialog %%s %s %d %d 0\n",
-            iemgui_dollar2raute(x->x_name)->s_name, a->a_n, x->x_saveit +
+    sprintf(cmdbuf, "pdtk_array_dialog %%s {%s} %d %d 0\n",
+            x->x_name->s_name, a->a_n, x->x_saveit +
             2 * filestyle);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
 }
@@ -395,7 +395,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
         gl = glist_addglist(parent, &s_, 0, 1,
             size, -1, 0, 0, 0, 0);
-    a = graph_array(gl, iemgui_raute2dollar(name), &s_float, size, flags);
+    a = graph_array(gl, name, &s_float, size, flags);
     canvas_dirty(parent, 1);
 }
 
@@ -421,7 +421,6 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     else
     {
         long size;
-        t_symbol *argname = iemgui_raute2dollar(name);
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
         if (!a)
@@ -435,7 +434,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
                 x->x_scalar->sc_template->s_name);
             return;
         }
-        if (argname != x->x_name)
+        if (name != x->x_name)
         {
             /* jsarlo { */
             if (x->x_listviewing)
@@ -443,9 +442,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
               garray_arrayviewlist_close(x);
             }
             /* } jsarlo */
-            x->x_name = argname;
+            x->x_name = name;
             pd_unbind(&x->x_gobj.g_pd, x->x_realname);
-            x->x_realname = canvas_realizedollar(x->x_glist, argname);
+            x->x_realname = canvas_realizedollar(x->x_glist, name);
             pd_bind(&x->x_gobj.g_pd, x->x_realname);
                 /* redraw the whole glist, just so the name change shows up */
             if (x->x_glist->gl_havewindow)

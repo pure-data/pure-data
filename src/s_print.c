@@ -25,7 +25,7 @@ char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     while(1)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}') {
+        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']') {
             dst[ptout++] = '\\';
             if (dstlen && ptout >= dstlen){
                 dst[ptout-1] = 0;
@@ -137,7 +137,7 @@ static void dologpost(const void *object, const int level, const char *s)
         fprintf(stderr, "verbose(%d): %s", level, s);
 #endif
     }
-    else
+    else if (level < PD_VERBOSE || sys_verbose)
     {
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
@@ -146,7 +146,7 @@ static void dologpost(const void *object, const int level, const char *s)
     }
 }
 
-void logpost(const void *object, const int level, const char *fmt, ...)
+void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
@@ -256,6 +256,7 @@ void error(const char *fmt, ...)
 }
 #endif
 
+/* deprecated in favor of logpost() */
 void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];

@@ -11,7 +11,7 @@ if test -f ../build/pd-$1.src.tar.gz
 then
    /bin/echo -n
 else
-   echo can not find file ../build/pd-$1.src.tar.gz
+   echo cant find file ../build/pd-$1.src.tar.gz
    exit 1
 fi
 
@@ -21,6 +21,13 @@ tar xzf ../build/pd-$1.src.tar.gz
 cd pd-$1
 ./autogen.sh
 ./configure --enable-universal=i386 --enable-jack
+
+#workaround for libpd build wierdness
+for i in \
+  bob~ bonk~ choice fiddle~ loop~ lrshift~ \pd~ pd~ pique sigmund~ stdout; do
+cp /dev/null extra/$i/.deps/libpd_la-$i.Plo
+done
+cp /dev/null extra/pd~/.deps/libpd_la-pdsched.Plo
 
 if make
 then

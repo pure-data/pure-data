@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.51.2\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-06-16 22:43+0000\n"
+"PO-Revision-Date: 2021-10-05 08:44-0300\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "-------dimensiones(dígitos)(pix):-------"
@@ -163,7 +163,7 @@ msgstr ""
 "inicio"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "(click en Guardar Preferencias para reestablecerlas)"
+msgstr "(click en Guardar Preferencias para re-establecerlas)"
 
 msgid "File"
 msgstr "Archivo"
@@ -556,7 +556,7 @@ msgstr "Puertos de Entrada:"
 msgid "Out Ports:"
 msgstr "Puertos de Salida:"
 
-msgid "Pd search path for objects, help, fonts, and other files"
+msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Ruta de búsqueda de Pd para objetos, ayuda, fuentes, y otros archivos"
 
 msgid "Use standard paths"
@@ -578,13 +578,13 @@ msgid "Disable"
 msgstr "Desactivar"
 
 msgid "Externals Install Directory"
-msgstr "Directorio de instalacion de externos"
+msgstr "Directorio de instalación de externos"
 
 msgid "Clear"
 msgstr "Borrar"
 
 msgid "Choose Pd documents directory:"
-msgstr "Elejir directorio de documentos de Pd:"
+msgstr "Elegir directorio de documentos de Pd:"
 
 msgid "Install externals to directory:"
 msgstr "Instalar externos en el directorio:"
@@ -620,74 +620,102 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr "(Tcl) ERROR SIN TRATAR: "
 
 #, tcl-format
-msgid "installed version [%1$s] > %2$s...skipping!"
-msgstr "version instalada [%1$s] > %2$s...salteando!"
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr "[deken] versión instalada [%1$s] > %2$s...salteando!"
 
 #, tcl-format
-msgid "installed version [%1$s] < %2$s...overwriting!"
-msgstr "version instalada [%1$s] < %2$s...sobreescribiendo!"
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken] versión instalada [%1$s] < %2$s...sobre-escribiendo!"
 
 #, tcl-format
-msgid "installed version [%1$s] == %2$s...skipping!"
-msgstr "version instalada [%1$s] == %2$s...salteando!"
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr "[deken] versión instalada [%1$s] == %2$s...salteando!"
 
 #, tcl-format
-msgid "successfully unzipped %1$s into %2$s"
-msgstr "se ha extraído con éxito %1$s en %2$s"
-
-msgid "unable to extract package automatically"
-msgstr "no se ha podido extraer el paquete automáticamente"
-
-msgid "please perform the following steps manually:"
-msgstr "por favor, siga estos pasos manualmente:"
+msgid "installing deken package '%s'"
+msgstr "instalando paquete de deken '%s'"
 
 #, tcl-format
-msgid "1. unzip %s"
-msgstr "1. extraer %s"
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr "ignorando '%s': no parece ser un paquete de deken"
 
 #, tcl-format
-msgid "2. copy the contents into %s"
-msgstr "2. copiar los contenidos en %s"
+msgid "Installing %s"
+msgstr "Instalando '%s'"
 
 #, tcl-format
-msgid "uninstalling '%s'"
-msgstr "des-instalando '%s'"
+msgid "[deken] Successfully unzipped %1$s into %2$s."
+msgstr "[deken] se ha extraído con éxito %1$s en %2$s."
+
+msgid "[deken] Unable to extract package automatically."
+msgstr "[deken] no se ha podido extraer el paquete automáticamente."
+
+msgid "Please perform the following steps manually:"
+msgstr "Por favor, siga estos pasos manualmente:"
 
 #, tcl-format
-msgid "uninstalling %1$s from %2$s failed!"
-msgstr "des-instalando %1$s desde %2$s fallo!"
+msgid "1. Unzip %s."
+msgstr "1. extraer %s."
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr "Puede que necesite cambiar la extensión de .dek a .zip"
 
 #, tcl-format
-msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
-msgstr "deken-plugin.tcl (búsqueda de externals para Pd) cargado de %s"
+msgid "2. Copy the contents into %s."
+msgstr "2. copiar los contenidos en %s."
 
 #, tcl-format
-msgid "platform detected: %s"
-msgstr "plataforma detectada: %s"
+msgid "3. Remove %s. (optional)"
+msgstr "3. Borrar %s (opcional)"
 
 #, tcl-format
-msgid "platform re-detected: %s"
-msgstr "plataforma re-detectada: %s"
+msgid "[deken] uninstalling '%s'"
+msgstr "[deken] des-instalando '%s'"
 
-msgid "Show all"
-msgstr "Mostrar todos"
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "Des-instalando %1$s desde %2$s fallo!"
 
-msgid "Search"
-msgstr "Buscar"
+#, tcl-format
+msgid "skipping SHA256 verification of %s."
+msgstr "salteando verificación SHA256 de %s."
 
-msgid "To get a list of all available externals, try an empty search."
-msgstr ""
-"Para ver una lista de todos los externos disponibles, prueba una búsqueda "
-"vacía."
+#, tcl-format
+msgid "SHA256 verification of %s"
+msgstr "Verificación SHA256 de %s"
 
-msgid "Find externals"
-msgstr "Buscar Externos"
+#, tcl-format
+msgid "unable to fetch reference SHA256 for %s."
+msgstr "no de pudo conseguir referencia SHA256 para %s."
 
-msgid "Only install externals uploaded by people you trust."
-msgstr "Solo instalar externos subidos por gente de confianza."
+#, tcl-format
+msgid "unable to perform SHA256 verification for %s."
+msgstr "no se puede hacer la verificación SHA256 para %s."
 
-msgid "Preferences"
-msgstr "Preferencias"
+#, tcl-format
+msgid "[deken] Unable to download from %1$s [%2$s]"
+msgstr "[deken] no se ha podido descargar de %1$s [%2$s]"
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr "No se puede descargar desde '%s'!"
+
+msgid "Download failed"
+msgstr "Fallo la descarga"
+
+#, tcl-format
+msgid "[deken] Unable to remove stray file %s"
+msgstr "[deken] no se ha podido remover el archivo suelto %s"
+
+#, tcl-format
+msgid "[deken] Unable to rename downloaded file to %s"
+msgstr "[deken] no se ha podido renombrar el archivo descargado a %s"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Check"
+msgstr "Probar"
 
 msgid "Installation options:"
 msgstr "Opciones de instalación:"
@@ -721,52 +749,141 @@ msgstr "Plataforma definida por el usuario:"
 msgid "Hide foreign architectures"
 msgstr "Ocultar arquitecturas ajenas"
 
-#, tcl-format
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
-"Mostrar solo la nueva version de la libreria\n"
+"Mostrar solo la nueva versión de la libreria\n"
 "(trata las otras versiones como arquitecturas ajenas)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Deken %s Preferencias"
 
-#, fuzzy
-msgid "start searching for externals..."
-msgstr "buscando externos..."
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr "Plataforma re-detectada: %s"
+
+msgid "Deken Packages"
+msgstr "Paquetes Deken"
+
+msgid "ZIP Files"
+msgstr "Archivos ZIP"
+
+msgid "TAR Files"
+msgstr "Archivos TAR"
+
+msgid "All Files"
+msgstr "Todos los archivos"
 
 #, tcl-format
-msgid "online? %s"
-msgstr "¿Está usted online? %s"
+msgid "Checksum mismatch for '%s'"
+msgstr "El checksum no coincide para '%s'"
 
-msgid "Are you online?"
-msgstr "¿Está usted online?"
+#, tcl-format
+msgid "SHA256 verification of %s failed!"
+msgstr "La verificación SHA256 de %s fallo!"
 
-msgid "Unable to perform search."
-msgstr "La búsqueda no pudo ser realizada."
+msgid "SHA256 verification failed"
+msgstr "Verificación SHA256 fallo"
 
-msgid "no matching externals found"
-msgstr "no se han encontrado externos con ese nombre"
+#, tcl-format
+msgid "Removing %s"
+msgstr "Borrando %s"
 
-msgid "try using the full name e.g. 'freeverb'"
-msgstr "pruebe usando el nombre completo, por ejemplo: 'freeverb'"
+#, tcl-format
+msgid "[deken] temporarily moving %1$s into %2$s failed."
+msgstr "[deken] falla al mover temporalmente %1$s hacia %2$s."
 
-msgid "No matching externals found."
-msgstr "No se han encontrado externos con ese nombre."
+#, tcl-format
+msgid "Installing package %s"
+msgstr "Instalar paquete %s"
 
-msgid "Create"
-msgstr "Crear"
+msgid "Installation completed!"
+msgstr "Instalación completa!"
 
-msgid "Check"
-msgstr "Probar"
+#, tcl-format
+msgid "Successfully installed %s!"
+msgstr "Instalación exitosa de %s!"
+
+msgid "Installation failed!"
+msgstr "La instalación fallo!"
+
+#, tcl-format
+msgid "Failed to install %s!"
+msgstr "Fallo la instalación de %s!"
+
+msgid "Package installation failed"
+msgstr "La instalación del paquete fallo"
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+"Falla al remover %1$s.\n"
+"Por favor remueva manualmente el directorio %2$s luego de salir de Pd."
+
+#, tcl-format
+msgid "[deken] Unable to add %s to search paths"
+msgstr "[deken] no se ha podido agregar %s a las rutas de búsqueda"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "¿Agregar %s a las rutas de búsqueda de Pd?"
+
+#, tcl-format
+msgid "[deken] Added %s to search paths"
+msgstr "[deken] se ha agregado %s a las rutas de búsqueda"
+
+msgid "No packages selected for installation."
+msgstr "No hay paquetes seleccionados para instalar."
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr "Procesando %d paquetes seleccionados para instalación."
+
+msgid "Show all"
+msgstr "Mostrar todos"
+
+msgid "Search"
+msgstr "Buscar"
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr "%s%% de la descarga completada"
+
+msgid "Enter an exact library or object name."
+msgstr "Ingrese un nombre exacto de librería u objeto."
+
+msgid "e.g. 'freeverb~'"
+msgstr "e.g. 'freeverb~'"
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr "Use el comodín '*' para coincidir cualquier numero de caracteres."
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr "e.g. '*-plugin' coincide con 'deken-plugin' (y otros mas)."
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr "Puede restringir la búsqueda a solo-librerías o solo-objetos."
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+"Para ver una lista de todos los externos disponibles, prueba una búsqueda "
+"vacía."
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr "Click-derecho en un resultado muestra mas opciones..."
+
+msgid "Find externals"
+msgstr "Buscar Externos"
 
 msgid "Search for: "
 msgstr "Buscar:"
 
 msgid "libraries"
-msgstr "librerias"
+msgstr "librerías"
 
 msgid "objects"
 msgstr "objetos"
@@ -777,14 +894,37 @@ msgstr "ambos"
 msgid "translations"
 msgstr "traducciones"
 
-msgid "More..."
-msgstr "Mas..."
+msgid "Only install externals uploaded by people you trust."
+msgstr "Solo instalar externos subidos por gente de confianza."
 
 msgid "Preferences..."
 msgstr "Preferencias."
 
 msgid "Install DEK file..."
 msgstr "Instalar archivo DEK..."
+
+msgid "More..."
+msgstr "Mas..."
+
+#, tcl-format
+msgid "[deken] Start searching for externals... %s"
+msgstr "[deken] Comenzó búsqueda de externos … %s"
+
+#, tcl-format
+msgid "[deken] online? %s"
+msgstr "[deken] ¿Está usted online? %s"
+
+msgid "Unable to perform search. Are you online?"
+msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
+
+msgid "[deken] No matching externals found."
+msgstr "[deken] No se han encontrado externos con ese nombre."
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "Pruebe usando el nombre completo, por ejemplo: 'freeverb'."
+
+msgid "No matching externals found."
+msgstr "No se han encontrado externos con ese nombre."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
@@ -795,61 +935,90 @@ msgid "Install %1$s to %2$s?"
 msgstr "¿Instalar %1$s en %2$s?"
 
 #, tcl-format
-msgid ""
-"commencing downloading of:\n"
-"%1$s\n"
-"into %2$s..."
+msgid "Cancelling download of %s: No installation directory given."
 msgstr ""
-"comenzando descarga de:\n"
+"Cancelando la descarga de %s: No fue dado el directorio de instalación ."
+
+msgid "Installing to non-existant directory failed"
+msgstr "Falla al instalar en un directorio que no existe."
+
+#, tcl-format
+msgid ""
+"Commencing downloading of:\n"
+"%1$s\n"
+"Into %2$s..."
+msgstr ""
+"Comenzando descarga de:\n"
 "%1$s\n"
 "en %2$s..."
 
-msgid "... aborting"
-msgstr "... abortando"
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr "Descargando '%s'"
+
+msgid "aborting."
+msgstr "abortando."
 
 #, tcl-format
-msgid "unable to add %s to search paths"
-msgstr "no se ha podido agregar %s a las rutas de búsqueda"
+msgid "Downloading '%s' failed"
+msgstr "Fallo la descarga de '%s'"
 
-#, tcl-format
-msgid "Add %s to the Pd search paths?"
-msgstr "¿Agregar %s a las rutas de búsqueda de Pd?"
+msgid "Download failed!"
+msgstr "Fallo la descarga!"
 
-#, tcl-format
-msgid "added %s to search paths"
-msgstr "se ha agregado %s a las rutas de búsqueda"
-
-#, fuzzy, tcl-format
-msgid "unable to download from %1$s [%2$s]"
-msgstr "no se ha podido descargar de %1$s [%2$s]"
-
-#, fuzzy, tcl-format
-msgid "unable to remove stray file %s"
-msgstr "no se ha podido remover el archivo suelto %s"
-
-#, tcl-format
-msgid "unable to rename downloaded file to %s"
-msgstr "no se ha podido renombrar el archivo descargado a %s"
+msgid "Download completed! Verifying..."
+msgstr "Descarga completa! Verificando ..."
 
 #, tcl-format
 msgid "searching for '%s'"
 msgstr "buscando '%s'"
 
-msgid "unable to perform search"
-msgstr "la búsqueda no pudo ser realizada"
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr ""
+"[deken] deken-plugin.tcl (búsqueda de externals para Pd) cargado de %s."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] plataforma detectada: %s"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "Falla al buscar '%s'!"
+
+msgid "Search failed"
+msgstr "Fallo la búsqueda"
+
+msgid "[deken] Unable to perform search."
+msgstr "[deken] La búsqueda no pudo ser realizada."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Subido por %1$s @ %2$s"
 
+msgid "Deselect package"
+msgstr "Des-seleccionar paquete"
+
+msgid "Select package for installation"
+msgstr "Seleccione paquete para la instalación"
+
+msgid "Install selected packages"
+msgstr "Instalar paquetes seleccionados"
+
 msgid "Install package"
 msgstr "Instalar paquete"
 
-msgid "Open webpage"
-msgstr "Abrir pagina web"
+msgid "Open package webpage"
+msgstr "Abrir pagina web del paquete"
 
-msgid "_"
-msgstr ""
+msgid "Copy package URL"
+msgstr "Copiar URL del paquete"
+
+msgid "Copy SHA256 checksum URL"
+msgstr "Copiar SHA256 checksum del URL"
+
+msgid "Copy OpenGPG signature URL"
+msgstr "Copiar firma OpenGPG del URL"
 
 #, tcl-format
 msgid ""
@@ -865,7 +1034,7 @@ msgstr ""
 "\n"
 "Ubicacion: %s\n"
 "\n"
-"Puede cambiar o desactivar esta funcion luego desde las configuraciones de "
+"Puede cambiar o desactivar esta función luego desde las configuraciones de "
 "Ruta."
 
 #, tcl-format
@@ -881,7 +1050,7 @@ msgstr ""
 "\n"
 "Ubicacion: %s\n"
 "\n"
-"Puede cambiar o desactivar esta funcion luego desde las configuraciones de "
+"Puede cambiar o desactivar esta función luego desde las configuraciones de "
 "Ruta."
 
 #, tcl-format
@@ -941,7 +1110,7 @@ msgid "Tidy Up"
 msgstr "Ordenar"
 
 msgid "(Dis)Connect Selection"
-msgstr "(Des)Conectar Seleccion"
+msgstr "(Des)Conectar Selección"
 
 msgid "Triggerize"
 msgstr ""
@@ -954,9 +1123,6 @@ msgstr "Deshacer"
 
 msgid "Redo"
 msgstr "Rehacer"
-
-msgid "List of objects..."
-msgstr "Lista de objetos..."
 
 msgid "New"
 msgstr "Nuevo"
@@ -1045,6 +1211,9 @@ msgstr "Manual HTML..."
 msgid "Browser..."
 msgstr "Navegador..."
 
+msgid "List of objects..."
+msgstr "Lista de objetos..."
+
 msgid "puredata.info"
 msgstr ""
 
@@ -1052,7 +1221,7 @@ msgid "Report a bug"
 msgstr "Reportar un error"
 
 msgid "Clear Menu"
-msgstr "Borrar Menu"
+msgstr "Borrar Menú"
 
 msgid ""
 "Delete all preferences?\n"
@@ -1094,6 +1263,9 @@ msgstr "Cargar..."
 msgid "Forget All..."
 msgstr "Olvidar..."
 
+msgid "Preferences"
+msgstr "Preferencias"
+
 msgid "Open Recent"
 msgstr "Abrir Recientes"
 
@@ -1102,6 +1274,14 @@ msgstr "Salir"
 
 msgid "Properties"
 msgstr "Propiedades"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr "descartando %d lineas de la Ventana de Pd"
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr "la ventana de Pd filtro %d lineas"
 
 msgid "Audio on"
 msgstr "Audio Encendido"
@@ -1159,5 +1339,8 @@ msgstr "ignorando '%s': archivo no existente"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un fichero de Pd"
 
-#~ msgid "Unable to perform search. Are you online?"
-#~ msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
+#~ msgid "Are you online?"
+#~ msgstr "¿Está usted online?"
+
+#~ msgid "no matching externals found"
+#~ msgstr "no se han encontrado externos con ese nombre"

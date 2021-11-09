@@ -402,10 +402,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     if (outchans > 0 && pa_outdev == -1)
         outchans = 0;
 
-    verbose(PD_VERBOSE, "input device %d, channels %d", pa_indev, inchans);
-    verbose(PD_VERBOSE, "output device %d, channels %d", pa_outdev, outchans);
-    verbose(PD_VERBOSE, "framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
-    verbose(PD_VERBOSE, "rate %d", rate);
+    logpost(NULL, PD_VERBOSE, "input device %d, channels %d", pa_indev, inchans);
+    logpost(NULL, PD_VERBOSE, "output device %d, channels %d", pa_outdev, outchans);
+    logpost(NULL, PD_VERBOSE, "framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
+    logpost(NULL, PD_VERBOSE, "rate %d", rate);
 
     pa_inchans = STUFF->st_inchannels = inchans;
     pa_outchans = STUFF->st_outchannels = outchans;
@@ -463,7 +463,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         /* Pa_Terminate(); */
         return (1);
     }
-    else verbose(PD_VERBOSE, "... opened OK.");
+    else logpost(NULL, PD_VERBOSE, "... opened OK.");
     return (0);
 }
 

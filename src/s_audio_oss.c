@@ -171,7 +171,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
         if (fragbytes != (1 << logfragsize))
             post("warning: OSS takes only power of 2 blocksize; using %d",
                 (1 << logfragsize)/(dev->d_bytespersamp * nchannels));
-        verbose(PD_VERBOSE, "setting nfrags = %d, fragsize %d\n",
+        logpost(NULL, PD_VERBOSE, "setting nfrags = %d, fragsize %d\n",
             nfragment, fragbytes);
 
         param = orig = (nfragment<<16) + logfragsize;
@@ -184,7 +184,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
             post("warning: actual fragments %d, blocksize %d",
                 nfragment, (1 << logfragsize));
         }
-        verbose(PD_VERBOSE, "audiobuffer set to %d msec",
+        logpost(NULL, PD_VERBOSE, "audiobuffer set to %d msec",
             (int)(0.001 * sys_schedadvance));
     }
 
@@ -221,7 +221,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
 static int oss_setchannels(int fd, int wantchannels, char *devname)
 {
     int param;
-    verbose(PD_VERBOSE, "setchan %d", wantchannels);
+    logpost(NULL, PD_VERBOSE, "setchan %d", wantchannels);
     if (ioctl(fd, SNDCTL_DSP_CHANNELS, &param) == -1)
     {
         if (sys_verbose)
@@ -229,10 +229,10 @@ static int oss_setchannels(int fd, int wantchannels, char *devname)
     }
     else
     {
-        verbose(PD_VERBOSE, "channels originally %d for %s", param, devname);
+        logpost(NULL, PD_VERBOSE, "channels originally %d for %s", param, devname);
         if (param == wantchannels)
         {
-            verbose(PD_VERBOSE, "number of channels doesn't need setting\n");
+            logpost(NULL, PD_VERBOSE, "number of channels doesn't need setting\n");
             return (wantchannels);
         }
     }
@@ -309,7 +309,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                     post("couldn't get audio device flags");
                 else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                     post("couldn't set audio device flags");
-                verbose(PD_VERBOSE,
+                logpost(NULL, PD_VERBOSE,
                     "opened %s for reading and writing\n",
                         oss_devnames[thisdevice]);
                 linux_adcs[inindex].d_fd = fd;
@@ -331,7 +331,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't get audio device flags");
             else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
-            verbose(PD_VERBOSE, "opened %s for writing only\n",
+            logpost(NULL, PD_VERBOSE, "opened %s for writing only\n",
                 oss_devnames[thisdevice]);
         }
         if (ioctl(fd, SNDCTL_DSP_GETCAPS, &capabilities) == -1)
@@ -341,7 +341,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
             (wantchannels>OSS_MAXCHPERDEV)?OSS_MAXCHPERDEV:wantchannels,
                 oss_devnames[thisdevice]);
 
-        verbose(PD_VERBOSE, "opened audio output on %s; got %d channels",
+        logpost(NULL, PD_VERBOSE, "opened audio output on %s; got %d channels",
             oss_devnames[thisdevice], gotchans);
 
         if (gotchans < 2)
@@ -387,7 +387,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         {
             fd = linux_adcs[n].d_fd;
             alreadyopened = 1;
-            verbose(PD_VERBOSE, "already opened it");
+            logpost(NULL, PD_VERBOSE, "already opened it");
         }
         else
         {
@@ -404,7 +404,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't get audio device flags");
             else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
-            verbose(PD_VERBOSE, "opened %s for reading only\n",
+            logpost(NULL, PD_VERBOSE, "opened %s for reading only\n",
                 oss_devnames[thisdevice]);
         }
         linux_adcs[linux_nindevs].d_fd = fd;
@@ -412,7 +412,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         gotchans = oss_setchannels(fd,
             (wantchannels>OSS_MAXCHPERDEV)?OSS_MAXCHPERDEV:wantchannels,
                 oss_devnames[thisdevice]);
-        verbose(PD_VERBOSE, "opened audio input device %s; got %d channels",
+        logpost(NULL, PD_VERBOSE, "opened audio input device %s; got %d channels",
             oss_devnames[thisdevice], gotchans);
 
         if (gotchans < 1)
