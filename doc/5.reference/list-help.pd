@@ -513,4 +513,4 @@ list;
 #X connect 36 0 21 0;
 #X restore 460 136 pd store;
 #X text 372 541 updated for Pd version 0.52;
-#X text 136 544 list itrator;
+#X text 130 544 list iterator;
