@@ -90,7 +90,7 @@ proc ::dialog_startup::fill_frame {frame} {
 
     # scrollbox
     ::scrollbox::make ${frame} $::startup_libraries \
-        ::dialog_startup::add dialog_startup::edit \
+        {} {} \
         [_ "Pd libraries to load on startup"]
 
     labelframe $frame.optionframe -text [_ "Startup options" ]

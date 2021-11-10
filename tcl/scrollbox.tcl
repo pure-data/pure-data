@@ -9,6 +9,8 @@ namespace eval scrollbox {
     variable lastIdx 0
 }
 
+array set ::scrollbox::entrytext {}
+
 proc ::scrollbox::get_curidx { mytoplevel } {
     set idx [$mytoplevel.listbox.box index active]
     if {$idx < 0 || \
@@ -16,6 +18,67 @@ proc ::scrollbox::get_curidx { mytoplevel } {
         return [expr {[$mytoplevel.listbox.box index end] + 1}]
     }
     return [expr $idx]
+}
+
+proc ::scrollbox::my_edit { mytoplevel {initialvalue {}} } {
+    set lb $mytoplevel.listbox.box
+    set popup $lb.popup
+
+    if { ! [winfo exists $lb ] } {
+        return $initialvalue
+    }
+    destroy $popup
+
+    set ::scrollbox::entrytext($mytoplevel) $initialvalue
+    set selected {}
+
+    # calculate the position of the popup
+    # if there's an original entry (edit), place it over that
+    # if there's none (add), shift it slightly left+down
+    foreach {x y w h} {0 0 0 0} {break}
+    foreach selected [$lb curselection] {break}
+    if { $selected == "" } {
+        foreach {x y w h} [$lb bbox end] {break}
+        set y [expr $y + $h ]
+    } else {
+        foreach {x y _ _} [$lb bbox $selected] {break}
+        if { $initialvalue == "" } {
+            # adding a new entry: shift entry widget slightly down
+            set y1 $y
+            foreach {_ y1 _ _} [$lb bbox [expr $selected + 1]] {break}
+            if { $y == $y1 } {
+                set x [expr $x + 10]
+                set y [expr $y + 10]
+            } else {
+                set x [expr $x + ($y1 - $y) / 2]
+                set y [expr ($y + $y1) / 2 ]
+            }
+        }
+    }
+
+    # create a new popup entry
+    entry $popup -textvariable ::scrollbox::entrytext($mytoplevel)
+    $popup selection from 0
+    $popup selection adjust end
+    place $popup -x $x -y $y
+    focus $popup
+
+    # override the Return/ESC bindings
+    # note the 'break' at the end that prevents uplevel widgets from receiving the events
+    bind $popup <KeyPress-Return> "destroy $popup; break"
+    bind $popup <KeyPress-Escape> "destroy $popup; set ::scrollbox::entrytext($mytoplevel) $initialvalue; break"
+
+    # wait until the user hits <Return> or <Escape>
+    tkwait window $popup
+
+    # and return the new value
+    if {[catch {set value $::scrollbox::entrytext($mytoplevel)}]} {
+        ## if the user double-clicked while editing, this proc is called multiple times in parallel
+        ## if this happened, the latecomers are skipped
+        return ""
+    }
+    array unset ::scrollbox::entrytext $mytoplevel
+    return $value
 }
 
 proc ::scrollbox::insert_item { mytoplevel idx name } {
@@ -31,7 +94,11 @@ proc ::scrollbox::insert_item { mytoplevel idx name } {
 }
 
 proc ::scrollbox::add_item { mytoplevel add_method } {
-    set dir [$add_method]
+    if { $add_method == "" } {
+        set dir [::scrollbox::my_edit $mytoplevel ]
+    } else {
+        set dir [$add_method]
+    }
     insert_item $mytoplevel [expr {[get_curidx $mytoplevel] + 1}] $dir
 }
 
@@ -39,7 +106,11 @@ proc ::scrollbox::edit_item { mytoplevel edit_method } {
     set idx [expr {[get_curidx $mytoplevel]}]
     set initialValue [$mytoplevel.listbox.box get $idx]
     if {$initialValue != ""} {
-        set dir [$edit_method $initialValue]
+        if { $edit_method == "" } {
+            set dir [::scrollbox::my_edit $mytoplevel $initialValue ]
+        } else {
+            set dir [$edit_method $initialValue]
+        }
 
         if {$dir != ""} {
             $mytoplevel.listbox.box delete $idx
@@ -67,12 +138,11 @@ proc ::scrollbox::dbl_click { mytoplevel edit_method add_method x y } {
         return
     }
 
-    set curBB [$mytoplevel.listbox.box bbox @$x,$y]
-
+    foreach {left top width height} {"" "" "" ""} {break}
     # listbox bbox returns an array of 4 items in the order:
     # left, top, width, height
-    set height [lindex $curBB 3]
-    set top [lindex $curBB 1]
+    foreach {left top width height} [$mytoplevel.listbox.box bbox @$x,$y] {break}
+
     if { $height == "" || $top == "" } {
         # If for some reason we didn't get valid bbox info,
         # we want to default to adding a new item
@@ -157,9 +227,9 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method {title ""}} 
     if { $::windowingsystem eq "aqua" } { event add <<Delete>> <BackSpace> }
 
     bind $mytoplevel.listbox.box <ButtonPress> "::scrollbox::click $mytoplevel %x %y"
-    bind $mytoplevel.listbox.box <Double-1> "::scrollbox::dbl_click $mytoplevel $edit_method $add_method %x %y"
+    bind $mytoplevel.listbox.box <Double-1> "::scrollbox::dbl_click $mytoplevel {$edit_method} {$add_method} %x %y"
     bind $mytoplevel.listbox.box <ButtonRelease> "::scrollbox::release $mytoplevel %x %y"
-    bind $mytoplevel.listbox.box <Return> "::scrollbox::edit_item $mytoplevel $edit_method"
+    bind $mytoplevel.listbox.box <Return> "::scrollbox::edit_item $mytoplevel {$edit_method}; break"
     bind $mytoplevel.listbox.box <<Delete>> "::scrollbox::delete_item $mytoplevel"
 
     # <Configure> is called when the user modifies the window
@@ -180,9 +250,9 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method {title ""}} 
     frame $mytoplevel.actions
     pack $mytoplevel.actions -side top -padx 2m -fill x
     button $mytoplevel.actions.add_path -text [_ "New..." ] \
-        -command "::scrollbox::add_item $mytoplevel $add_method"
+        -command "::scrollbox::add_item $mytoplevel {$add_method}"
     button $mytoplevel.actions.edit_path -text [_ "Edit..." ] \
-        -command "::scrollbox::edit_item $mytoplevel $edit_method"
+        -command "::scrollbox::edit_item $mytoplevel {$edit_method}"
     button $mytoplevel.actions.delete_path -text [_ "Delete" ] \
         -command "::scrollbox::delete_item $mytoplevel"
 
