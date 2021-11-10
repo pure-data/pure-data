@@ -1,0 +1,86 @@
+#N canvas 641 91 958 624 12;
+#X obj 175 15 send;
+#X obj 31 129 send help-send1;
+#X obj 187 130 send help-send1;
+#X obj 346 130 send help-send2;
+#X obj 31 159 receive help-send1;
+#X obj 187 159 receive help-send2;
+#X obj 346 159 receive help-send2;
+#X floatatom 31 104 5 0 0 0 - - - 0;
+#X floatatom 187 107 5 0 0 0 - - - 0;
+#X floatatom 346 106 5 0 0 0 - - - 0;
+#X floatatom 31 183 5 0 0 0 - - - 0;
+#X floatatom 187 185 5 0 0 0 - - - 0;
+#X floatatom 346 183 5 0 0 0 - - - 0;
+#X obj 182 41 s;
+#X text 31 234 "Send" sends messages to "receive" objects. Sends and
+receives are named to tell them whom to connect to. They work across
+windows too. Also \, you can use message boxes as shown:;
+#X msg 163 305 \; help-send1 34 \; help-send2 67;
+#X obj 124 507 send;
+#X msg 178 452 symbol help-send1;
+#X msg 191 481 symbol help-send2;
+#X floatatom 124 474 3 0 0 0 - - - 0;
+#X symbolatom 178 510 10 0 0 0 - - - 0;
+#X text 31 386 If invoked without an argument \, "send" creates an
+inlet to let you set the target via "symbol" messages:;
+#X obj 624 217 value y;
+#X obj 550 238 send y;
+#X floatatom 550 210 5 0 0 0 - - - 0;
+#X obj 624 190 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 624 250 5 0 0 0 - - - 0;
+#X text 47 581 see also:;
+#X text 214 14 - send messages without patch cords;
+#X text 214 40 - abbreviation;
+#X obj 123 580 send~;
+#X obj 567 397 list store 1 2 3;
+#X obj 710 398 float 1.5;
+#X obj 808 398 int 10;
+#X msg 567 369 send x;
+#X obj 684 440 receive x;
+#X listbox 684 474 10 0 0 0 - - - 0;
+#X msg 710 368 send x;
+#X msg 808 367 send x;
+#X obj 517 41 r;
+#X obj 489 15 receive;
+#X text 547 14 - receive messages without patch cords;
+#X text 549 40 - abbreviation;
+#X obj 173 580 receive~;
+#X text 533 77 Interaction with other objects:;
+#X text 535 302 The receive objetc can get messages from the objects
+below with the send method., f 52;
+#X floatatom 635 563 5 0 0 0 - x - 0;
+#X obj 708 564 hsl 128 15 0 127 0 0 x empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array 7 float 3;
+#A 0 -1 0 1 0 -1 0 1;
+#X coords 0 1 7 -1 100 50 1 0 0;
+#X restore 742 229 graph;
+#X obj 730 190 send array;
+#X msg 730 165 0 -1 0 1 0 -1 0 1;
+#X text 533 100 The [value] object receives float from send objects
+with the same name as their variable name. Send can also send messages
+to arrays with the same name., f 51;
+#X text 527 512 Note that GUIs have built in send and receive names
+you can set via properties (right click and check it)., f 55;
+#X text 256 580 updated for Pd version 0.52;
+#X connect 4 0 10 0;
+#X connect 5 0 11 0;
+#X connect 6 0 12 0;
+#X connect 7 0 1 0;
+#X connect 8 0 2 0;
+#X connect 9 0 3 0;
+#X connect 17 0 20 0;
+#X connect 18 0 20 0;
+#X connect 19 0 16 0;
+#X connect 20 0 16 1;
+#X connect 22 0 26 0;
+#X connect 24 0 23 0;
+#X connect 25 0 22 0;
+#X connect 34 0 31 0;
+#X connect 35 0 36 0;
+#X connect 37 0 32 0;
+#X connect 38 0 33 0;
+#X connect 50 0 49 0;

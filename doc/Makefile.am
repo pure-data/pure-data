@@ -389,7 +389,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
-     ./5.reference/receive-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
@@ -402,7 +401,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send-help.pd \
+     ./5.reference/send-receive-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
      ./5.reference/setctl.pd \

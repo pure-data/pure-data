@@ -281,6 +281,7 @@ static void send_setup(void)
     class_addpointer(send_class, send_pointer);
     class_addlist(send_class, send_list);
     class_addanything(send_class, send_anything);
+    class_sethelpsymbol(send_class, gensym("send-receive"));
 }
 /* -------------------- receive ------------------------------ */
 
@@ -347,6 +348,7 @@ static void receive_setup(void)
     class_addpointer(receive_class, receive_pointer);
     class_addlist(receive_class, receive_list);
     class_addanything(receive_class, receive_anything);
+    class_sethelpsymbol(receive_class, gensym("send-receive"));
 }
 
 /* -------------------------- select ------------------------------ */
