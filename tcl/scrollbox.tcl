@@ -19,6 +19,10 @@ proc ::scrollbox::get_curidx { mytoplevel } {
     }
     return [expr $idx]
 }
+proc ::scrollbox::my_edit_cancel { mytoplevel popup initialvalue } {
+    set ::scrollbox::entrytext($mytoplevel) $initialvalue
+    destroy $popup
+}
 
 proc ::scrollbox::my_edit { mytoplevel {initialvalue {}} } {
     set lb $mytoplevel.listbox.box
@@ -66,7 +70,8 @@ proc ::scrollbox::my_edit { mytoplevel {initialvalue {}} } {
     # override the Return/ESC bindings
     # note the 'break' at the end that prevents uplevel widgets from receiving the events
     bind $popup <KeyPress-Return> "destroy $popup; break"
-    bind $popup <KeyPress-Escape> "destroy $popup; set ::scrollbox::entrytext($mytoplevel) $initialvalue; break"
+    bind $popup <KeyPress-Escape> "::scrollbox::my_edit_cancel {$mytoplevel} {$popup} {$initialvalue}; break"
+    bind $popup <FocusOut> "::scrollbox::my_edit_cancel {$mytoplevel} {$popup} {$initialvalue}; break"
 
     # wait until the user hits <Return> or <Escape>
     tkwait window $popup
