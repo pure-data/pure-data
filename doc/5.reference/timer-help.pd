@@ -1,6 +1,6 @@
-#N canvas 669 149 616 603 12;
+#N canvas 693 127 616 603 12;
 #X msg 93 371 bang;
-#X msg 61 271 bang;
+#X msg 33 269 bang;
 #X obj 61 401 timer;
 #X obj 89 13 timer;
 #X text 134 14 - measure logical time;
@@ -20,8 +20,6 @@
 #X text 365 553 updated for Pd version 0.47;
 #X obj 197 552 realtime;
 #X obj 265 552 cputime;
-#X text 103 271 reset elapsed time to zero;
-#X text 131 372 output elapsed time;
 #X obj 361 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 36 51 The timer object measures elapsed logical time. Logical
@@ -37,9 +35,9 @@ min (hence \, the same as 'BPM')., f 78;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
 #X text 120 418 Elapsed time in the specified time units, f 20;
-#X text 177 308 set tempo units, f 15;
-#X msg 79 304 tempo 1 sec;
-#X msg 89 329 tempo 1 msec;
+#X text 159 309 set tempo units;
+#X msg 61 305 tempo 1 sec;
+#X msg 71 330 tempo 1 msec;
 #X text 48 482 Note you need to reset the elapsed time to zero when
 you change the tempo message when the object is runnng \, otherwise
 you get funny results because the change is only applied to the remaining
@@ -47,16 +45,19 @@ part of the elapsed time., f 75;
 #X text 388 264 Here \, the metronome outputs at intervals of one beat
 at 90 beats per minute as the timer also set to that tempo measures.
 , f 29;
+#X text 74 262 reset (set elapsed time to zero), f 18;
+#X text 136 360 output elapsed time. You can click multiple times since
+it was last reset., f 25;
 #X connect 0 0 2 1;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X connect 7 0 12 0;
 #X connect 8 0 15 1;
-#X connect 10 0 21 0;
+#X connect 10 0 19 0;
 #X connect 12 0 14 0;
 #X connect 12 1 10 0;
 #X connect 14 0 8 0;
 #X connect 15 0 11 0;
-#X connect 21 0 15 0;
-#X connect 27 0 2 0;
-#X connect 28 0 2 0;
+#X connect 19 0 15 0;
+#X connect 25 0 2 0;
+#X connect 26 0 2 0;

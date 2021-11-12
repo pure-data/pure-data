@@ -1,19 +1,20 @@
-#N canvas 533 153 574 328 12;
-#X msg 107 140 bang;
-#X msg 54 109 bang;
-#X floatatom 54 200 0 0 0 0 - - -;
-#X text 95 108 Click here to reset;
-#X text 51 226 Output is in milliseconds;
-#X text 148 141 Click here to get elapsed CPU time;
-#X obj 66 15 realtime;
-#X text 41 52 The realtime object measures elapsed real time \, as
-measured by your operating system.;
-#X obj 54 170 realtime;
-#X text 134 15 - ask OS for elapsed real time;
-#X text 302 243 updated for Pd version 0.33;
-#X text 44 268 see also:;
-#X obj 120 268 cputime;
-#X obj 188 268 timer;
-#X connect 0 0 8 1;
-#X connect 1 0 8 0;
-#X connect 8 0 2 0;
+#N canvas 838 164 401 379 12;
+#X msg 119 174 bang;
+#X msg 66 123 bang;
+#X floatatom 66 254 8 0 0 0 - - - 0;
+#X text 131 253 Output is in milliseconds;
+#X obj 39 25 realtime;
+#X text 15 62 The realtime object measures elapsed real time \, as
+measured by your operating system., f 51;
+#X obj 66 224 realtime;
+#X text 107 25 - ask OS for elapsed real time;
+#X text 184 329 updated for Pd version 0.33;
+#X text 39 303 see also:;
+#X obj 41 329 cputime;
+#X obj 109 329 timer;
+#X text 160 159 output elapsed time. You can click multiple times since
+it was last reset., f 25;
+#X text 107 122 reset (set elapsed time to zero);
+#X connect 0 0 6 1;
+#X connect 1 0 6 0;
+#X connect 6 0 2 0;
