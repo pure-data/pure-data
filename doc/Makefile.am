@@ -417,7 +417,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
-     ./5.reference/switch~-help.pd \
      ./5.reference/symbol-help.pd \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
