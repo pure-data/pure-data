@@ -1,6 +1,6 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 466 31 698 790 12;
+#N canvas 681 23 698 790 12;
 #X text 20 737 see also:;
 #X obj 21 10 pointer;
 #N canvas 379 131 422 137 help-pointer-template1 0;
@@ -17,7 +17,7 @@
 #X obj 215 737 getsize;
 #X obj 274 737 setsize;
 #X obj 334 737 element;
-#N canvas 108 191 312 185 help-pointer-data 0;
+#N canvas 309 206 312 185 help-pointer-data 1;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
@@ -65,8 +65,8 @@ object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense).;
 #X obj 60 667 pointer template1 template2, f 54;
 #X msg 99 463 send-window vis \$1;
-#X obj 99 441 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 99 441 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 230 463 send a message to the canvas containing the scalar
 ;
 #X msg 79 364 delete;
@@ -87,10 +87,10 @@ send a "bang" to bangout if it was the last one in the list);
 #X text 32 105 2) compare different pointers with source, f 20;
 #X obj 180 327 print equal;
 #X obj 304 327 print not-equal;
-#X text 48 21 The "equal" message allows one to compare an incoming pointer
-with the stored pointer. On success \, the pointer is sent to its corresponding
-outlet. On fail \, a bang is sent through the right-most outlet.,
-f 69;
+#X text 48 21 The "equal" message allows one to compare an incoming
+pointer with the stored pointer. On success \, the pointer is sent
+to its corresponding outlet. On fail \, a bang is sent through the
+right-most outlet., f 69;
 #X text 321 277 you can also use template symbols, f 17;
 #X obj 304 115 loadbang;
 #X connect 0 0 7 1;

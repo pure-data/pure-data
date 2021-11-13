@@ -1,28 +1,28 @@
-#N canvas 544 30 647 538 12;
+#N canvas 655 30 621 579 12;
 #X msg 95 219 1 2 3;
 #X obj 79 371 fudiparse;
 #X obj 99 332 print packet;
-#X msg 251 395 disconnect;
-#X obj 231 423 netsend -u -b;
-#X msg 240 367 connect localhost 5000;
-#X obj 231 317 list prepend send;
-#X obj 231 342 list trim;
-#X obj 79 396 print reassembled;
-#X text 329 394 don't send;
-#X text 406 366 send as UDP;
-#X text 79 482 see also:;
-#X obj 152 483 fudiparse;
+#X msg 261 395 disconnect;
+#X obj 241 423 netsend -u -b;
+#X msg 250 367 connect localhost 5000;
+#X obj 241 317 list prepend send;
+#X obj 241 342 list trim;
+#X obj 89 407 print reassembled;
+#X text 339 394 don't send;
+#X text 416 366 send as UDP;
+#X text 69 532 see also:;
+#X obj 142 533 fudiparse;
 #X obj 79 272 fudiformat;
 #X msg 79 180 foo 4 5 weasel 6 7 rat;
 #X text 85 137 FUDI messages with numbers and symbols., f 20;
 #X obj 424 268 fudiformat -u;
-#X obj 225 483 oscformat;
+#X obj 215 533 oscformat;
 #X text 281 162 The '-u' creation argument switches to "UDP" mode \,
 omitting the packet separator. This saves some two bytes \, but only
 works when sending single FUDI messages over UDP. It doesn't work with
 TCP/IP (however \, you can use the default format even with UDP transport).
 , f 42;
-#X text 393 472 updated for Pd version 0.48.0;
+#X text 356 532 updated for Pd version 0.48.0;
 #X text 53 53 FUDI stands for "Fast Universal Digital Interface" and
 is a networking protocol used by Pd. The fudiformat object makes FUDI
 messages suitable for sending over the network via netsend (in UDP
@@ -30,8 +30,11 @@ mode). Incoming messages are output as FUDI messages \, byte by byte.
 , f 74;
 #X obj 64 19 fudiformat;
 #X text 149 18 - convert lists to FUDI packets;
+#X obj 79 448 list;
+#X listbox 79 477 25 0 0 0 - - - 0;
 #X connect 0 0 13 0;
 #X connect 1 0 8 0;
+#X connect 1 0 23 0;
 #X connect 3 0 4 0;
 #X connect 5 0 4 0;
 #X connect 6 0 7 0;
@@ -40,3 +43,4 @@ mode). Incoming messages are output as FUDI messages \, byte by byte.
 #X connect 13 0 2 0;
 #X connect 13 0 1 0;
 #X connect 14 0 13 0;
+#X connect 23 0 24 0;
