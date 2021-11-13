@@ -321,6 +321,18 @@ void sys_close_audio(void)
     sys_vgui("set pd_whichapi 0\n");
 }
 
+void sys_init_audio(void)
+{
+    t_audiosettings as;
+    int totalinchans, totaloutchans;
+    sys_get_audio_settings(&as);
+    audio_compact_and_count_channels(&as.a_nindev, as.a_indevvec,
+        as.a_chindevvec, &totalinchans, MAXAUDIOINDEV);
+    audio_compact_and_count_channels(&as.a_noutdev, as.a_outdevvec,
+        as.a_choutdevvec, &totaloutchans, MAXAUDIOOUTDEV);
+    sys_setchsr(totalinchans, totaloutchans, as.a_srate);
+}
+
     /* open audio using currently requested parameters */
 void sys_reopen_audio(void)
 {

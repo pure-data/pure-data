@@ -1305,6 +1305,8 @@ int sys_getblksize(void)
     return (DEFDACBLKSIZE);
 }
 
+void sys_init_audio(void);
+
     /* stuff to do, once, after calling sys_argparse() -- which may itself
     be called more than once (first from "settings, second from .pdrc, then
     from command-line arguments */
@@ -1326,13 +1328,10 @@ static void sys_afterargparse(void)
     strcat(sbuf, "/doc/5.reference");
     STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
 
-    sys_get_audio_settings(&as);
-
     for (i = 0; i < sys_nmidiin; i++)
         sys_midiindevlist[i]--;
     for (i = 0; i < sys_nmidiout; i++)
         sys_midioutdevlist[i]--;
-    sys_set_audio_settings(&as);
 
     if (sys_listplease)
         sys_listdevs();
@@ -1351,6 +1350,8 @@ static void sys_afterargparse(void)
             midioutdev[i] = sys_midioutdevlist[i];
     }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
+
+    sys_init_audio();
 }
 
 static void sys_addreferencepath(void)
