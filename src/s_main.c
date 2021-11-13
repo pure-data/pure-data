@@ -78,10 +78,7 @@ char sys_fontweight[10] = "normal";
 char sys_font[100] = "DejaVu Sans Mono";
 char sys_fontweight[10] = "bold";
 #endif
-static int sys_main_srate;
-static int sys_main_advance;
-static int sys_main_callback;
-static int sys_main_blocksize;
+
 static int sys_listplease;
 
 int sys_externalschedlib;
@@ -654,7 +651,7 @@ int sys_argparse(int argc, const char **argv)
     {
                 /* audio flags */
         if (!strcmp(*argv, "-r") && argc > 1 &&
-            sscanf(argv[1], "%d", &sys_main_srate) >= 1)
+            sscanf(argv[1], "%d", &as.a_srate) >= 1)
         {
             argc -= 2;
             argv += 2;
