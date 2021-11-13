@@ -1,5 +1,5 @@
 #N canvas 653 114 610 525 12;
-#X floatatom 281 226 5 0 0 0 - - -;
+#X floatatom 281 226 5 0 0 0 - - - 0;
 #X obj 194 471 pack;
 #X obj 126 24 unpack;
 #X text 189 23 - split a message to atoms;
@@ -10,26 +10,26 @@
 #X text 362 184 <= creation arguments specify the types of atoms expected
 , f 29;
 #X obj 89 185 unpack float float symbol float float;
-#X symbolatom 217 227 7 0 0 0 - - -;
+#X symbolatom 217 227 7 0 0 0 - - - 0;
 #X text 114 470 See also:;
 #X obj 128 359 unpack s f;
 #X msg 128 289 list octave 3;
 #X msg 162 313 pitch 69;
-#X symbolatom 128 393 6 0 0 0 - - -;
+#X symbolatom 128 393 7 0 0 0 - - - 0;
 #X text 233 294 unpack accepts lists or 'anythings'., f 20;
 #X msg 309 357 100 200;
 #X obj 309 383 unpack;
-#X floatatom 309 410 4 0 0 0 - - -;
-#X floatatom 348 411 4 0 0 0 - - -;
+#X floatatom 309 410 4 0 0 0 - - - 0;
+#X floatatom 348 411 4 0 0 0 - - - 0;
 #X text 378 370 By default \, unpack splits two floats., f 18;
 #X text 64 61 unpack takes lists of atoms and distributes them to its
 outlets. The creation arguments specify the number of outlets and their
 type: float (any number or the symbol 'float'/'f') \, pointer (symbol
 'pointer'/'p') or symbol (symbol 'symbol'/'s')., f 65;
-#X floatatom 345 226 5 0 0 0 - - -;
-#X floatatom 153 226 5 0 0 0 - - -;
-#X floatatom 89 226 5 0 0 0 - - -;
-#X floatatom 195 392 5 0 0 0 - - -;
+#X floatatom 345 226 5 0 0 0 - - - 0;
+#X floatatom 153 226 5 0 0 0 - - - 0;
+#X floatatom 89 226 5 0 0 0 - - - 0;
+#X floatatom 195 392 5 0 0 0 - - - 0;
 #X text 35 347 abbreviated arguments =>, f 12;
 #X connect 4 0 9 0;
 #X connect 5 0 9 0;

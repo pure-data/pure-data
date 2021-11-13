@@ -6,8 +6,7 @@
 and control block size;
 #N canvas 356 136 505 325 switched 0;
 #X obj 265 148 switch~;
-#X floatatom 265 121 1 0 0 0 - - -;
-#X floatatom 75 168 4 0 0 0 - - -;
+#X floatatom 75 168 4 0 0 0 - - - 0;
 #X obj 75 104 noise~;
 #X obj 75 136 env~ 512;
 #X text 25 26 DSP in this subwindow is turned on and off by the switch~
@@ -19,9 +18,11 @@ If you supply arguments to switch \, the patch will be switched AND
 reblocked.;
 #X text 31 258 Only one switch~ or block~ may appear in any window.
 ;
-#X connect 1 0 0 0;
-#X connect 3 0 4 0;
-#X connect 4 0 2 0;
+#X obj 265 121 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X connect 2 0 3 0;
+#X connect 3 0 1 0;
+#X connect 7 0 0 0;
 #X restore 139 124 pd switched;
 #N canvas 526 323 464 195 blocked 0;
 #X obj 184 35 block~ 1024 4;

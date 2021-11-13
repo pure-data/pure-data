@@ -34,7 +34,8 @@ those above - xticks \, etc \, and also lists to set values.;
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
 #X obj 77 571 array define -k array-help-2 10;
-#A 0 -0.320006 0 0 0 0.973333 0 0 0 0 0;
+#A 0 -0.320006 -0.0133338 -0.340006 0 0.973333 0 -0.300005 0 0.966667
+0;
 #X msg 95 340 send array-help-send;
 #X text 388 565 optional -k flag to keep contents;
 #X obj 78 602 array define -yrange -4 4 array-help-3 10;
@@ -237,33 +238,36 @@ array;
 #X connect 13 0 5 2;
 #X restore 443 250 pd sum;
 #X obj 59 274 array get;
-#N canvas 614 233 640 338 get 0;
+#N canvas 614 233 680 390 get 0;
 #X floatatom 75 90 5 0 10 0 - - - 0;
 #X obj 60 65 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X floatatom 101 122 5 -1 10 0 - - - 0;
-#X obj 61 181 array get array-help-2, f 12;
-#X obj 61 222 print;
+#X obj 61 201 array get array-help-2, f 12;
 #X text 69 10 "array get" outputs all or a selected range of elements
 of the array as a list., f 55;
-#X text 181 225 - optional number to initialize onset - default 0;
-#X text 180 244 - optional number to initialize number of points -
+#X text 162 218 - optional number to initialize onset - default 0,
+f 61;
+#X text 162 235 - optional number to initialize number of points -
 default -1, f 61;
-#X text 185 188 creation arguments: either array name or "-s" and optional
-"-f" flags to refer to an array in a data structure;
+#X text 162 187 creation arguments: either array name or "-s" and optional
+"-f" flags to refer to an array in a data structure, f 61;
 #X text 143 122 number of points or -1 for end of array;
 #X text 82 65 bang for output;
-#X text 50 291 (array-help-2 is defined in the "define" subwindow).
+#X text 237 307 (array-help-2 is defined in the "define" subwindow).
 ;
 #X msg 142 151 symbol array-help-2;
 #X text 287 150 set name or pointer;
 #X text 121 89 onset (first index to output) \, zero for start of array
 ;
+#X listbox 61 272 70 0 0 0 - - - 0;
+#X obj 61 309 print array-get;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 1;
-#X connect 3 0 4 0;
-#X connect 12 0 3 2;
+#X connect 3 0 14 0;
+#X connect 11 0 3 2;
+#X connect 14 0 15 0;
 #X restore 443 274 pd get;
 #X obj 59 298 array set;
 #N canvas 590 258 631 349 set 0;

@@ -1,39 +1,44 @@
-#N canvas 505 68 662 387 12;
-#X obj 214 285 fudiparse;
-#X text 384 293 see also:;
-#X obj 214 311 print parse-output;
-#X obj 353 229 netreceive -u -b;
-#X msg 353 174 listen 5000;
-#X msg 365 202 listen 0;
-#X text 432 201 stop listening;
-#X msg 70 198 1 2 3 foo 5;
-#X text 69 158 numbers and symbols, f 11;
-#X obj 70 300 print packet;
-#X text 350 150 packets from network;
-#X text 479 224 UDP packets \, binary output, f 13;
-#X obj 70 223 fudiformat;
-#X obj 214 226 fudiformat -u;
-#X text 214 161 without packet separator, f 14;
-#X msg 214 198 flab -1 1.1;
-#X obj 457 293 fudiformat;
-#X obj 541 293 oscparse;
-#X text 440 174 listen on port 5000;
-#X text 397 341 updated for Pd version 0.48.0;
-#X text 53 57 FUDI stands for "Fast Universal Digital Interface" and
+#N canvas 681 73 605 469 12;
+#X obj 136 333 fudiparse;
+#X text 330 377 see also:;
+#X obj 156 363 print parse-output;
+#X obj 272 217 netreceive -u -b;
+#X msg 272 162 listen 5000;
+#X msg 284 190 listen 0;
+#X text 351 189 stop listening;
+#X msg 36 190 1 2 3 foo 5;
+#X text 35 150 numbers and symbols, f 11;
+#X obj 155 302 print packet;
+#X text 269 138 packets from network;
+#X text 398 212 UDP packets \, binary output, f 13;
+#X obj 36 215 fudiformat;
+#X obj 137 215 fudiformat -u;
+#X text 137 153 without packet separator, f 14;
+#X msg 137 190 flab -1 1.1;
+#X obj 403 378 fudiformat;
+#X obj 487 378 oscparse;
+#X text 359 162 listen on port 5000;
+#X text 336 411 updated for Pd version 0.48.0;
+#X text 27 55 FUDI stands for "Fast Universal Digital Interface" and
 is a networking protocol used by Pd. The fudiparse object takes incoming
 lists of numbers \, interpreting them as the bytes in a FUDI message
 (as received when sending Pd-messages via [netreceive -b]). The '-u'
 creation argument switches to "UDP" mode \, omitting the packet separator.
 , f 79;
-#X obj 59 18 fudiparse;
-#X text 135 18 - parse FUDI packets into Pd messages, f 49;
+#X obj 53 16 fudiparse;
+#X text 129 16 - parse FUDI packets into Pd messages, f 49;
+#X obj 136 393 list;
+#X listbox 136 417 20 0 0 0 - - - 0;
+#X listbox 136 276 61 0 0 0 - - - 0;
 #X connect 0 0 2 0;
-#X connect 3 0 0 0;
+#X connect 0 0 23 0;
+#X connect 3 0 25 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
 #X connect 7 0 12 0;
-#X connect 12 0 9 0;
-#X connect 12 0 0 0;
-#X connect 13 0 9 0;
-#X connect 13 0 0 0;
+#X connect 12 0 25 0;
+#X connect 13 0 25 0;
 #X connect 15 0 13 0;
+#X connect 23 0 24 0;
+#X connect 25 0 0 0;
+#X connect 25 0 9 0;
