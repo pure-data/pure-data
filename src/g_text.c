@@ -1048,7 +1048,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 glist_getcanvas(glist), x,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x), "black");
+                gatom_fontsize(x) * glist_getzoom(glist), "black");
         }
         else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
     }
