@@ -1,27 +1,44 @@
-#N canvas 566 107 512 412 12;
-#X msg 44 104 bang;
-#X text 128 240 creation argument initializes the value;
-#X text 271 375 updated for Pd version 0.45;
-#X text 84 102 output the value;
-#X text 150 133 set and output the value;
-#X obj 43 244 symbol foo;
+#N canvas 626 85 797 402 12;
+#X msg 69 120 bang;
+#X text 109 118 output the value;
+#X text 175 149 set and output the value;
+#X obj 68 260 symbol foo;
 #X obj 69 12 symbol;
-#X text 35 37 The symbol object stores a symbol \, Pd's data type for
-#X text 35 40 The symbol object stores a symbol \, Pd's data type for
-handling fixed strings (often filenames or the names of other objects
-in pd).;
-#X msg 58 134 symbol bar;
-#X symbolatom 44 272 10 0 0 0 - - -;
-#X text 186 209 set the value;
-#X symbolatom 110 211 10 0 0 0 - - -;
-#X msg 64 164 zorglub;
-#X text 127 164 any other message is 'converted';
+#X msg 83 150 symbol bar;
+#X symbolatom 68 290 10 0 0 0 - - - 0;
+#X text 211 225 set the value;
+#X symbolatom 135 227 10 0 0 0 - - - 0;
+#X msg 89 180 zorglub;
+#X text 152 180 any other message is 'converted';
 #X text 125 14 - store a symbol (i.e. \, string);
-#X text 56 306 note: unlike "float" \, etc. \, there's no "send" message
+#X text 36 334 note: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
-#X connect 0 0 5 0;
-#X connect 5 0 9 0;
-#X connect 8 0 5 0;
-#X connect 11 0 5 1;
-#X connect 12 0 5 0;
+#X text 30 44 The symbol object stores a symbol \, Pd's data type for
+handling fixed strings (often filenames \, array names \, send/receive
+names or the names of other objects in pd)., f 50;
+#X obj 492 117 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X msg 524 117 symbol cis\ boom\ bah;
+#X symbolatom 524 246 16 0 0 0 - - - 0;
+#X symbolatom 647 179 12 0 0 0 - - - 0;
+#X text 450 26 Note you can have a symbol with spaces if you escape
+them with "". See example below. Other special characters like " \,
+" can also be escaped., f 44;
+#X text 572 303 see also:;
+#X obj 650 303 float;
+#X obj 524 210 symbol hey\\\,\\\ stop;
+#X msg 544 147 hey\\\,\\\ stop;
+#X text 538 356 updated for Pd version 0.52;
+#X text 153 255 creation argument initializes the symbol value, f
+29;
+#X connect 0 0 3 0;
+#X connect 3 0 6 0;
+#X connect 5 0 3 0;
+#X connect 8 0 3 1;
+#X connect 9 0 3 0;
+#X connect 14 0 21 0;
+#X connect 15 0 21 0;
+#X connect 17 0 21 1;
+#X connect 21 0 16 0;
+#X connect 22 0 21 0;
