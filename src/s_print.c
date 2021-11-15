@@ -117,7 +117,10 @@ static void dologpost(const void *object, const int level, const char *s)
 {
     char upbuf[MAXPDSTRING];
     upbuf[MAXPDSTRING-1]=0;
-
+        /* if it's a verbose message and we aren't set to 'verbose' just do
+            nothing */
+    if (level >= PD_VERBOSE && !sys_verbose)
+        return;
     // what about sys_printhook_verbose ?
     if (sys_printhook)
     {
@@ -137,7 +140,7 @@ static void dologpost(const void *object, const int level, const char *s)
         fprintf(stderr, "verbose(%d): %s", level, s);
 #endif
     }
-    else if (level < PD_VERBOSE || sys_verbose)
+    else
     {
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
