@@ -751,7 +751,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     char *buf;
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
-    if (c == 0)
+    if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
         if (t == x->a_glist->gl_editor->e_textedfor)
@@ -788,6 +788,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     {
         if (t != x->a_glist->gl_editor->e_textedfor)
         {
+            x->a_doubleclicked = 0;
             rtext_activate(t, 1);
             rtext_key(t, '.', &s_);
             rtext_key(t, '.', &s_);
