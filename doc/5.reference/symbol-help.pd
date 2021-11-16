@@ -1,26 +1,47 @@
-#N canvas 566 107 512 412 12;
+#N canvas 700 85 865 391 12;
 #X msg 44 104 bang;
-#X text 128 240 creation argument initializes the value;
-#X text 271 375 updated for Pd version 0.45;
+#X text 128 238 creation argument initializes the value, f 21;
 #X text 84 102 output the value;
 #X text 150 133 set and output the value;
-#X obj 43 244 symbol foo;
+#X obj 43 246 symbol foo;
 #X obj 69 12 symbol;
-#X text 35 40 The symbol object stores a symbol \, Pd's data type for
-handling fixed strings (often filenames or the names of other objects
-in pd).;
 #X msg 58 134 symbol bar;
-#X symbolatom 44 272 10 0 0 0 - - -;
+#X symbolatom 43 284 10 0 0 0 - - - 0;
 #X text 186 209 set the value;
-#X symbolatom 110 211 10 0 0 0 - - -;
+#X symbolatom 110 211 10 0 0 0 - - - 0;
 #X msg 64 164 zorglub;
 #X text 127 164 any other message is 'converted';
 #X text 125 14 - store a symbol (i.e. \, string);
-#X text 56 306 note: unlike "float" \, etc. \, there's no "send" message
+#X text 141 313 note: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols.;
-#X connect 0 0 5 0;
-#X connect 5 0 9 0;
-#X connect 8 0 5 0;
-#X connect 11 0 5 1;
-#X connect 12 0 5 0;
+#X text 35 40 The symbol object stores a symbol \, Pd's data type for
+handling fixed strings (often filenames \, array names \, send/receive
+names or the names of other objects in pd).;
+#X text 480 25 Note you can also use backslashes to escape spaces and
+other special characters (' \, ' \, ' \; ' \, '\\\, '$') \, see example
+below., f 50;
+#X symbolatom 532 230 16 0 0 0 - - - 0;
+#X symbolatom 676 161 16 0 0 0 - - - 0;
+#X obj 532 192 symbol cis\ boom\ bah;
+#X msg 532 97 symbol hey\\\,\\\ stop;
+#X obj 507 137 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 43 327 print;
+#X obj 532 261 print;
+#X text 705 273 see also:;
+#X obj 720 295 float;
+#X text 622 338 updated for Pd version 0.52;
+#X msg 548 136 hi\ there;
+#X connect 0 0 4 0;
+#X connect 4 0 7 0;
+#X connect 6 0 4 0;
+#X connect 7 0 21 0;
+#X connect 9 0 4 1;
+#X connect 10 0 4 0;
+#X connect 16 0 22 0;
+#X connect 17 0 18 1;
+#X connect 18 0 16 0;
+#X connect 19 0 18 0;
+#X connect 20 0 18 0;
+#X connect 26 0 18 0;
