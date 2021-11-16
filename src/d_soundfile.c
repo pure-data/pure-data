@@ -169,7 +169,7 @@ static t_soundfile_type **soundfile_nexttype(t_soundfile_type **t)
     return (t == &sf_types[sf_numtypes-1] ? NULL : ++t);
 }
 
-    /** fond type by name, returns NULL if not found */
+    /** find type by name, returns NULL if not found */
 static t_soundfile_type *soundfile_findtype(const char *name)
 {
     t_soundfile_type **t = soundfile_firsttype();
@@ -1218,7 +1218,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     argc--; argv++;
 
         /* check for implicit ascii */
-    if (!sf.sf_type && sf.sf_headersize < 0)
+    if (!ascii && !sf.sf_type && sf.sf_headersize < 0)
         ascii = ascii_hasextension(filename, MAXPDSTRING);
 
     for (i = 0; i < argc; i++)

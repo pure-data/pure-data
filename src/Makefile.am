@@ -268,7 +268,7 @@ endif
 
 # need Carbon framework for PA on Mac
 if MACOSX
-LIBS += -framework Carbon -framework CoreFoundation
+LIBS += -framework Carbon
 endif
 
 endif
@@ -297,7 +297,7 @@ endif
 
 # need Carbon framework for PM on Mac
 if MACOSX
-LIBS += -framework CoreFoundation -framework Carbon
+LIBS += -framework Carbon
 endif
 
 endif
@@ -385,8 +385,9 @@ libpdbin_PROGRAMS = pd-watchdog
 pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
-LIBS += -ldl -lm -lpthread
+LIBS += -ldl -lm -lpthread -framework CoreFoundation
 libpd_la_LIBADD += -ldl -lm -lpthread
+libpd_la_LDFLAGS += -framework CoreFoundation
 
 endif
 

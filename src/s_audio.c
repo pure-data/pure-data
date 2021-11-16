@@ -212,11 +212,7 @@ void sys_get_audio_settings(t_audiosettings *a)
         audio_nextsettings.a_chindevvec[0] =
             audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
         audio_nextsettings.a_advance = DEFAULTADVANCE;
-#ifdef _WIN32
-        audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
         audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
         initted = 1;
     }
     *a = audio_nextsettings;
@@ -343,7 +339,7 @@ void sys_reopen_audio(void)
     if (as.a_api == API_PORTAUDIO)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
-        int nbufs = sys_schedadvance * as.a_srate / (blksize *1000000.);
+        int nbufs = (double)sys_schedadvance / 1000000. * as.a_srate / blksize;
         if (nbufs < 1) nbufs = 1;
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
         (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
@@ -583,6 +579,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     t_audiosettings as;
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    char device[MAXPDSTRING];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
@@ -591,12 +588,12 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for (i = 0; i < nindevs; i++)
         sys_vgui("lappend audio_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
 
     sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
     for (i = 0; i < noutdevs; i++)
         sys_vgui("lappend audio_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
 
     sys_get_audio_settings(&as);
 
@@ -735,11 +732,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_outdevvec[0] = DEFAULTAUDIODEV;
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
-#ifdef __WIN32
-            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
             audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);
