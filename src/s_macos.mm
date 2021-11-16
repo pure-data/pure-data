@@ -3,7 +3,7 @@
 static volatile int sys_eventloop_running;
 
     /* Setup the event loop. Must be called on the main thread! */
-extern "C" void sys_eventloop_setup(void)
+extern "C" int sys_eventloop_setup(void)
 {
     /* create the Cocoa application singleton: */
     [NSApplication sharedApplication];
@@ -12,13 +12,14 @@ extern "C" void sys_eventloop_setup(void)
      * because we don't want to always show an icon in the docker.
      * ProcessSerialNumber psn = { 0, kCurrentProcess };
      * TransformProcessType(&psn, kProcessTransformToForegroundApplication); */
+    return 1;
 }
 
     /* NOTE: Because of a limitation of Cocoa, the event loop must run on the
      * main thread, otherwise we can't receive any input events!
      * This function blocks until the event loop receives a quit notification,
      * see sys_eventloop_quit(). */
-extern "C" void sys_eventloop_run(void)
+extern "C" int sys_eventloop_run(void)
 {
     /* this doesn't work...
      * [NSApp run];
@@ -43,10 +44,11 @@ extern "C" void sys_eventloop_run(void)
         }
     }
     [pool release];
+    return 1;
 }
 
     /* Tell sys_eventloop_run() to quit. Can be called from any thread! */
-extern "C" void sys_eventloop_quit(void)
+extern "C" int sys_eventloop_quit(void)
 {
     /* break from event loop instead of [NSApp terminate:nil] */
     sys_eventloop_running = 0;

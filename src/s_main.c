@@ -378,7 +378,24 @@ static void *sys_runthread(void *x)
     sys_eventloop_quit();
     return 0;
 }
+
+
+#else
+/* dummy implementation */
+int sys_eventloop_setup(void)
+{
+    return 0;
+}
+
+void sys_eventloop_run(void) {}
+
+void sys_eventloop_quit(void) {}
 #endif
+
+int sys_haveeventloop(void)
+{
+    return sys_eventloop;
+}
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
