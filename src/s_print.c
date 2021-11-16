@@ -153,8 +153,7 @@ void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
+    if (level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
@@ -167,8 +166,7 @@ void startlogpost(const void *object, const int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
+    if (level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
@@ -264,18 +262,17 @@ void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
-    int loglevel=level+3;
 
-    if(level>sys_verbose)return;
+    if (level > sys_verbose) return;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
-    dologpost(NULL, loglevel, buf);
+        /* log levels for verbose() traditionally start at -3,
+        so we have to adjust it before passing it on to dologpost() */
+    dologpost(NULL, level + 3, buf);
 }
 
     /* here's the good way to log errors -- keep a pointer to the

@@ -703,6 +703,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
+    char device[MAXPDSTRING];
 
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
@@ -710,12 +711,12 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for (i = 0; i < nindevs; i++)
         sys_vgui("lappend midi_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
 
     sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
     for (i = 0; i < noutdevs; i++)
         sys_vgui("lappend midi_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 

@@ -78,10 +78,7 @@ char sys_fontweight[10] = "normal";
 char sys_font[100] = "DejaVu Sans Mono";
 char sys_fontweight[10] = "bold";
 #endif
-static int sys_main_srate;
-static int sys_main_advance;
-static int sys_main_callback;
-static int sys_main_blocksize;
+
 static int sys_listplease;
 
 int sys_externalschedlib;
@@ -654,7 +651,7 @@ int sys_argparse(int argc, const char **argv)
     {
                 /* audio flags */
         if (!strcmp(*argv, "-r") && argc > 1 &&
-            sscanf(argv[1], "%d", &sys_main_srate) >= 1)
+            sscanf(argv[1], "%d", &as.a_srate) >= 1)
         {
             argc -= 2;
             argv += 2;
@@ -741,6 +738,12 @@ int sys_argparse(int argc, const char **argv)
             sys_set_midi_api(API_OSS);
             argc--; argv++;
         }
+#else
+        else if ((!strcmp(*argv, "-oss")) || (!strcmp(*argv, "-ossmidi")))
+        {
+            fprintf(stderr, "Pd compiled without OSS-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
 #endif
 #ifdef USEAPI_ALSA
         else if (!strcmp(*argv, "-alsa"))
@@ -760,6 +763,19 @@ int sys_argparse(int argc, const char **argv)
         {
             sys_set_midi_api(API_ALSA);
             argc--; argv++;
+        }
+#else
+        else if ((!strcmp(*argv, "-alsa")) || (!strcmp(*argv, "-alsamidi")))
+        {
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-alsaadd"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_JACK
@@ -788,6 +804,21 @@ int sys_argparse(int argc, const char **argv)
             jack_client_name(argv[1]);
             argc -= 2; argv +=2;
         }
+#else
+        else if ((!strcmp(*argv, "-jack"))
+            || (!strcmp(*argv, "-jackconnect"))
+            || (!strcmp(*argv, "-nojackconnect")))
+        {
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-jackname"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
+        }
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
@@ -797,12 +828,29 @@ int sys_argparse(int argc, const char **argv)
             sys_mmio = 0;
             argc--; argv++;
         }
+#else
+        else if ((!strcmp(*argv, "-pa")) || (!strcmp(*argv, "-portaudio")))
+        {
+            fprintf(stderr, "Pd compiled without PortAudio-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-asio"))
+        {
+            fprintf(stderr, "Pd compiled without ASIO-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
+        }
 #endif
 #ifdef USEAPI_MMIO
         else if (!strcmp(*argv, "-mmio"))
         {
             as.a_api = API_MMIO;
             sys_mmio = 1;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-mmio"))
+        {
+            fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -812,11 +860,23 @@ int sys_argparse(int argc, const char **argv)
             as.a_api = API_AUDIOUNIT;
             argc--; argv++;
         }
+#else
+        else if (!strcmp(*argv, "-audiounit"))
+        {
+            fprintf(stderr, "Pd compiled without AudioUnit-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
 #endif
 #ifdef USEAPI_ESD
         else if (!strcmp(*argv, "-esd"))
         {
             as.a_api = API_ESD;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-esd"))
+        {
+            fprintf(stderr, "Pd compiled without ESD-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif

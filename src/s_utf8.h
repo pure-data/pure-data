@@ -82,4 +82,7 @@ void u8_dec_ptr(char **sp);
 /* returns length of next utf-8 sequence */
 int u8_seqlen(const char *s);
 
+/* convert a string in the current encoding to UTF-8 */
+int u8_nativetoutf8(char* dest, int sz, const char* src, int srcsz);
+
 #endif /* S_UTF8_H */

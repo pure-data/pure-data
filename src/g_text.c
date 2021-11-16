@@ -984,6 +984,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
     gobj_vis(&x->a_text.te_g, x->a_glist, 1);
     canvas_dirty(x->a_glist, 1);
+    canvas_fixlinesfor(x->a_glist, (t_text*)x);
 
     /* glist_retext(x->a_glist, &x->a_text); */
 }
@@ -1048,7 +1049,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 glist_getcanvas(glist), x,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x), "black");
+                gatom_fontsize(x) * glist_getzoom(glist), "black");
         }
         else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
     }
