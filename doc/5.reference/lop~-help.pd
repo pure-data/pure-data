@@ -1,0 +1,26 @@
+#N canvas 644 147 555 376 12;
+#X floatatom 208 165 5 0 0 0 - - - 0;
+#X obj 46 14 lop~;
+#X text 86 15 - one-pole low pass filter;
+#X msg 155 137 clear;
+#X text 34 327 see also:;
+#X obj 113 326 hip~;
+#X obj 158 326 bp~;
+#X obj 195 326 vcf~;
+#X text 309 325 updated for Pd version-0.38;
+#X text 199 136 <= reinitialize internal state;
+#X text 251 166 <= set cutoff frequency;
+#X obj 238 326 bob~;
+#X obj 82 116 noise~;
+#X text 25 51 lop~ is a one-pole low pass filter with a specified rolloff
+frequency. The left inlet is the incoming audio signal. The right inlet
+is the cutoff frequency in Hz., f 70;
+#X obj 155 232 output~;
+#X obj 155 192 lop~ 100;
+#X text 226 189 The filter is initialized to cut off frequencies above
+100 Hz., f 32;
+#X connect 0 0 15 1;
+#X connect 3 0 15 0;
+#X connect 12 0 15 0;
+#X connect 15 0 14 0;
+#X connect 15 0 14 1;

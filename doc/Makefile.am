@@ -390,7 +390,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
-     ./5.reference/receive-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
@@ -403,7 +402,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send-help.pd \
+     ./5.reference/send-receive-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
      ./5.reference/setctl.pd \
@@ -419,7 +418,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
-     ./5.reference/switch~-help.pd \
      ./5.reference/symbol-help.pd \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
@@ -428,7 +426,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabsend~-help.pd \
+     ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \

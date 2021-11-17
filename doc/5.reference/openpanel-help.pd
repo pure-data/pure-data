@@ -1,29 +1,29 @@
-#N canvas 487 93 571 589 12;
-#X obj 112 230 openpanel;
-#X msg 112 142 bang;
-#X obj 112 264 print;
+#N canvas 693 85 571 589 12;
+#X obj 82 230 openpanel;
+#X msg 82 142 bang;
+#X obj 82 286 print;
 #X text 56 519 see also:;
 #X obj 134 520 savepanel;
-#X msg 128 170 symbol /tmp;
-#X msg 140 199 symbol C:/;
-#X obj 235 456 print;
-#X obj 235 429 openpanel 1;
-#X obj 357 456 print;
-#X obj 357 429 openpanel 2;
-#X msg 235 401 bang;
-#X msg 357 401 bang;
-#X text 233 380 directory;
-#X text 356 380 multiple files;
-#X obj 110 456 print;
-#X msg 110 401 bang;
-#X obj 110 429 openpanel 0;
+#X msg 98 170 symbol /tmp;
+#X msg 110 199 symbol C:/;
+#X obj 240 459 print;
+#X obj 240 432 openpanel 1;
+#X obj 362 459 print;
+#X obj 362 432 openpanel 2;
+#X msg 240 404 bang;
+#X msg 362 404 bang;
+#X text 238 383 directory;
+#X text 361 383 multiple files;
+#X obj 115 459 print;
+#X msg 115 404 bang;
+#X obj 115 432 openpanel 0;
 #X obj 74 25 openpanel;
 #X text 303 528 updated for Pd version 0.51.;
 #X text 147 25 - query for files or directories;
 #X text 47 69 When openpanel gets a "bang" \, a file browser appears
 on the screen. By default \, if you select a file \, its name appears
 on the outlet.;
-#X text 51 320 A mode argument allow you to select a directory or multiple
+#X text 56 323 A mode argument allow you to select a directory or multiple
 files. See below;
 #N canvas 710 182 389 296 current-directory 0;
 #X obj 155 149 pdcontrol;
@@ -36,12 +36,13 @@ can make openpanel open the current directory for querying for files.
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
-#X restore 273 250 pd current-directory;
-#X text 88 378 file (default);
-#X text 223 173 Start in a specified directory given as a symbol,
+#X restore 245 224 pd current-directory;
+#X text 93 381 file (default);
+#X text 193 173 Start in a specified directory given as a symbol,
 f 31;
-#X text 157 141 Starts in default directory;
-#X connect 0 0 2 0;
+#X text 127 141 Starts in default directory;
+#X symbolatom 82 259 60 0 0 0 - - - 0;
+#X connect 0 0 27 0;
 #X connect 1 0 0 0;
 #X connect 5 0 0 0;
 #X connect 6 0 0 0;
@@ -51,3 +52,4 @@ f 31;
 #X connect 12 0 10 0;
 #X connect 16 0 17 0;
 #X connect 17 0 15 0;
+#X connect 27 0 2 0;

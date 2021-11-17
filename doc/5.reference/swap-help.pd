@@ -1,25 +1,23 @@
-#N canvas 553 45 536 593 12;
+#N canvas 797 75 512 558 12;
 #X msg 78 168 bang;
-#X floatatom 78 293 0 0 0 0 - - -;
-#X floatatom 90 201 0 0 0 0 - - -;
-#X floatatom 145 238 0 0 0 0 - - -;
+#X floatatom 78 300 6 0 0 0 - - - 0;
+#X floatatom 100 201 0 0 0 0 - - - 0;
+#X floatatom 145 238 0 0 0 0 - - - 0;
 #X obj 39 16 swap;
 #X text 123 167 outputs 2 stored values;
-#X obj 78 267 swap 6.5;
-#X text 121 201 sets second value and outputs both;
+#X obj 78 267 swap 6.5, f 10;
+#X text 131 201 sets second value and outputs both;
 #X text 177 239 sets first value;
 #X text 163 267 creation argument initializes first value;
-#X floatatom 145 292 0 0 0 0 - - -;
-#X obj 145 332 print right;
-#X obj 78 368 print left;
-#X text 57 409 A common use of swap is to reverse the operands in arithmetic
+#X floatatom 145 299 6 0 0 0 - - - 0;
+#X text 59 377 A common use of swap is to reverse the operands in arithmetic
 objects like this:;
-#X obj 147 486 swap;
-#X obj 147 514 -;
-#X floatatom 147 536 5 0 0 0 - - -;
-#X floatatom 178 464 3 0 0 0 - - -;
-#X floatatom 147 464 3 0 0 0 - - -;
-#X text 273 513 updated for Pd version 0.41;
+#X obj 149 454 swap, f 6;
+#X obj 157 484 -;
+#X floatatom 157 511 5 0 0 0 - - - 0;
+#X floatatom 187 428 4 0 0 0 - - - 0;
+#X floatatom 149 428 4 0 0 0 - - - 0;
+#X text 246 492 updated for Pd version 0.41;
 #X text 38 53 The swap object swaps the positions of two incoming numbers.
 The number coming in through the right inlet will be sent to the left
 outlet and the number coming in left will come out right. Only the
@@ -27,15 +25,17 @@ left inlet is hot and triggers output on both outlets. Output order
 is right to left as in [trigger].;
 #X text 78 17 - swap two numbers \, respecting right-to-left order
 ;
+#X obj 78 333 print L;
+#X obj 145 332 print R;
 #X connect 0 0 6 0;
-#X connect 1 0 12 0;
+#X connect 1 0 20 0;
 #X connect 2 0 6 0;
 #X connect 3 0 6 1;
 #X connect 6 0 1 0;
 #X connect 6 1 10 0;
-#X connect 10 0 11 0;
-#X connect 14 0 15 0;
-#X connect 14 1 15 1;
-#X connect 15 0 16 0;
-#X connect 17 0 14 1;
-#X connect 18 0 14 0;
+#X connect 10 0 21 0;
+#X connect 12 0 13 0;
+#X connect 12 1 13 1;
+#X connect 13 0 14 0;
+#X connect 15 0 12 1;
+#X connect 16 0 12 0;

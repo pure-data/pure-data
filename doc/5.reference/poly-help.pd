@@ -1,34 +1,51 @@
-#N canvas 473 88 573 394 12;
-#X text 329 318 updated for Pd version 0.25;
-#X text 51 323 see also:;
+#N canvas 659 66 551 450 12;
+#X text 321 400 updated for Pd version 0.25;
+#X text 43 400 see also:;
 #X obj 69 16 poly;
 #X text 33 49 The poly object takes a stream of pitch/velocity pairs
 and outputs triples containing voice number \, pitch and velocity.
 You can pack the output and use the route object to route messages
 among a bank of voices depending on the first outlet. Poly can be configured
 to do voice stealing or not (the default.);
-#X obj 129 324 route;
-#X obj 183 324 makenote;
-#X obj 124 214 poly 4 1;
-#X text 222 214 <-- first argument \, number of voices \; second argument
-selects voice stealing;
-#X msg 73 158 60 64;
-#X msg 124 158 60 0;
-#X msg 168 158 62 64;
-#X msg 219 158 62 0;
-#X obj 124 240 pack 0 0 0;
-#X obj 124 266 print;
-#X text 169 265 Output is in the printout window.;
-#X msg 279 167 stop;
-#X msg 323 167 clear;
+#X obj 121 401 route;
+#X obj 175 401 makenote;
+#X obj 140 257 poly 4 1;
+#X obj 126 353 print;
+#X text 171 352 Output is in the printout window.;
+#X msg 209 225 stop;
+#X msg 198 199 clear;
 #X text 108 15 - MIDI-style polyphonic voice allocator;
-#X connect 6 0 12 0;
-#X connect 6 1 12 1;
-#X connect 6 2 12 2;
-#X connect 8 0 6 0;
+#X listbox 126 318 20 0 0 0 - - - 0;
+#X obj 126 287 pack f f f;
+#X text 210 257 <= first argument \, number of voices \; second argument
+selects voice stealing;
+#X text 231 170 <= emulating note on/off messages;
+#X msg 46 171 60 \$1;
+#X msg 93 171 62 \$1;
+#X msg 140 171 65 \$1;
+#X msg 188 171 69 \$1;
+#X obj 188 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 64;
+#X obj 93 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 64;
+#X obj 140 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 64;
+#X obj 46 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 64;
+#X text 243 200 clear memory;
+#X text 248 225 flush hanging note on messages;
+#X connect 6 0 13 0;
+#X connect 6 1 13 1;
+#X connect 6 2 13 2;
 #X connect 9 0 6 0;
 #X connect 10 0 6 0;
-#X connect 11 0 6 0;
-#X connect 12 0 13 0;
-#X connect 15 0 6 0;
+#X connect 12 0 7 0;
+#X connect 13 0 12 0;
 #X connect 16 0 6 0;
+#X connect 17 0 6 0;
+#X connect 18 0 6 0;
+#X connect 19 0 6 0;
+#X connect 20 0 19 0;
+#X connect 21 0 17 0;
+#X connect 22 0 18 0;
+#X connect 23 0 16 0;

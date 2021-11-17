@@ -3,8 +3,8 @@
 #X obj 96 149 loadbang;
 #X obj 96 173 metro 100;
 #X obj 96 207 snapshot~;
-#X floatatom 45 96 5 0 0 0 - - -;
-#X floatatom 96 232 7 0 0 0 - - -;
+#X floatatom 45 96 5 0 0 0 - - - 0;
+#X floatatom 96 232 7 0 0 0 - - - 0;
 #X obj 63 29 exp~;
 #X text 102 29 - exponential function;
 #X text 114 82 raises the Euler number 'e' (about 2.718) \, to the
@@ -14,6 +14,7 @@ power of the input signal., f 27;
 #X obj 45 151 exp~;
 #X text 159 339 updated for Pd version 0.47.;
 #X obj 159 291 exp;
+#X msg 207 179 \; pd dsp 1;
 #X connect 0 0 11 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

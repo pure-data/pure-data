@@ -1,20 +1,21 @@
-#N canvas 641 126 400 360 12;
-#X msg 83 156 bang;
+#N canvas 784 149 400 360 12;
+#X msg 83 164 bang;
 #X msg 37 125 bang;
-#X floatatom 37 216 0 0 0 0 - - -;
-#X text 79 125 Click here to reset;
-#X text 97 216 Output is in milliseconds;
-#X obj 37 185 cputime;
-#X text 123 156 Click here to get elapsed CPU time;
+#X floatatom 37 246 7 0 0 0 - - - 0;
+#X text 98 246 Output is in milliseconds;
+#X obj 37 215 cputime;
 #X text 24 53 The cputime object measures elapsed CPU time \, as measured
 by your operating system. This appears to work on NT \, IRIX \, and
 Linux \, but not on W98., f 48;
 #X obj 64 18 cputime;
 #X text 125 19 - measure CPU usage;
-#X text 149 308 updated for Pd version 0.33;
-#X text 35 268 see also:;
-#X obj 114 268 realtime;
-#X obj 186 268 timer;
-#X connect 0 0 5 1;
-#X connect 1 0 5 0;
-#X connect 5 0 2 0;
+#X text 178 313 updated for Pd version 0.33;
+#X text 32 291 see also:;
+#X obj 37 316 realtime;
+#X obj 109 316 timer;
+#X text 130 155 output elapsed time. You can click multiple times since
+it was last reset., f 25;
+#X text 77 123 reset (set elapsed time to zero);
+#X connect 0 0 4 1;
+#X connect 1 0 4 0;
+#X connect 4 0 2 0;

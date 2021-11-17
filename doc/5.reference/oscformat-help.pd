@@ -1,47 +1,47 @@
-#N canvas 428 23 682 777 12;
-#X msg 66 549 format b;
-#X msg 80 146 1 2 3;
-#X obj 80 267 oscformat cat horse pig;
-#X msg 102 202 set dog ferret;
-#X msg 100 229 set mouse banana;
-#X obj 101 316 oscparse;
-#X obj 80 378 print packet;
-#X msg 88 173 4 5 weasel 6 7 rat;
-#X obj 148 654 oscparse;
-#X obj 148 679 print parse-output;
-#X obj 50 666 print packet;
-#X msg 50 496 -1 1 2 mule 4 5;
-#X msg 78 596 format ifisf;
-#X obj 50 624 oscformat -f b wombat;
-#X msg 38 468 5 6 7 squirrel;
-#X msg 73 573 format fiiib;
-#X text 257 266 creation arguments are OSC address;
-#X text 136 136 OSC messages with numbers and symbols. Except as shown
+#N canvas 692 23 682 845 12;
+#X msg 66 589 format b;
+#X msg 51 143 1 2 3;
+#X obj 51 267 oscformat cat horse pig;
+#X msg 73 202 set dog ferret;
+#X msg 81 229 set mouse banana;
+#X obj 72 356 oscparse;
+#X obj 51 418 print packet;
+#X msg 59 173 4 5 weasel 6 7 rat;
+#X obj 148 727 oscparse;
+#X obj 148 752 print parse-output;
+#X obj 50 736 print packet;
+#X msg 50 536 -1 1 2 mule 4 5;
+#X msg 78 636 format ifisf;
+#X obj 50 664 oscformat -f b wombat;
+#X msg 38 508 5 6 7 squirrel;
+#X msg 73 613 format fiiib;
+#X text 228 266 creation arguments are OSC address;
+#X text 107 136 OSC messages with numbers and symbols. Except as shown
 below the message will contain 'float' and 'string' data.;
-#X msg 254 379 disconnect;
-#X obj 235 405 netsend -u -b;
-#X msg 244 354 connect localhost 5000;
-#X obj 236 304 list prepend send;
-#X obj 236 329 list trim;
-#X obj 101 341 print reassembled;
-#X text 53 725 see also:;
-#X obj 262 725 list;
-#X obj 131 725 oscparse;
-#X obj 202 725 netsend;
-#X text 43 52 oscformat makes OSC packets suitable for sending over
+#X msg 225 419 disconnect;
+#X obj 206 445 netsend -u -b;
+#X msg 215 394 connect localhost 5000;
+#X obj 207 344 list prepend send;
+#X obj 207 369 list trim;
+#X obj 72 381 print reassembled;
+#X text 53 795 see also:;
+#X obj 262 795 list;
+#X obj 131 795 oscparse;
+#X obj 202 795 netsend;
+#X text 39 50 oscformat makes OSC packets suitable for sending over
 the network via netsend (in UDP binary mode). The OSC address (the
 strings between the slashes) are given by the creation arguments or
 by "set" messages. Incoming lists are output as OSC messages \, byte
-by byte., f 70;
-#X text 338 379 don't send;
-#X text 219 209 set message to change OSC address;
-#X text 213 624 the '-f' creation argument initializes the format;
-#X msg 58 524 format;
-#X text 113 524 no format;
-#X text 138 548 a 'blob';
-#X text 174 584 mixtures;
-#X text 417 353 send as UDP;
-#X text 262 447 The format \, if any (initialized or set by a 'format'
+by byte., f 84;
+#X text 309 419 don't send;
+#X text 190 209 set message to change OSC address;
+#X text 213 664 the '-f' creation argument initializes the format;
+#X msg 58 564 format;
+#X text 113 564 no format;
+#X text 138 588 a 'blob';
+#X text 174 624 mixtures;
+#X text 388 393 send as UDP;
+#X text 262 487 The format \, if any (initialized or set by a 'format'
 message) instructs oscformat to interpret incoming data as integer
 \, float \, string \, or 'blob'. Blobs are given as an atom count followed
 by that number of elements. (If an elements is a symbol \, its first
@@ -50,20 +50,20 @@ is included in the blob (but the OSC parser will report the actual
 number of elements). If the elements aren't exhausted at the end of
 the format string \, the default (float and symbol) conversions are
 made for the rest., f 55;
-#X text 318 652 Note: there's no way using oscparse to distinguish
+#X text 317 732 Note: there's no way using oscparse to distinguish
 between floats and integers \, nor to see blobs unambiguously., f
 40;
-#X obj 38 19 oscformat;
-#X text 424 724 updated for Pd version 0.51.;
-#X text 110 18 - convert lists to Open Sound Control (OSC) packets
+#X obj 69 15 oscformat;
+#X text 424 794 updated for Pd version 0.51.;
+#X text 141 14 - convert lists to Open Sound Control (OSC) packets
 ;
-#X text 370 294 ("send" is optional for lists as of Pd 0.51), f 23
+#X text 341 334 ("send" is optional for lists as of Pd 0.51), f 23
 ;
+#X listbox 51 298 85 0 0 0 - - - 0;
+#X listbox 50 695 85 0 0 0 - - - 0;
 #X connect 0 0 13 0;
 #X connect 1 0 2 0;
-#X connect 2 0 6 0;
-#X connect 2 0 21 0;
-#X connect 2 0 5 0;
+#X connect 2 0 43 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 23 0;
@@ -71,8 +71,7 @@ between floats and integers \, nor to see blobs unambiguously., f
 #X connect 8 0 9 0;
 #X connect 11 0 13 0;
 #X connect 12 0 13 0;
-#X connect 13 0 10 0;
-#X connect 13 0 8 0;
+#X connect 13 0 44 0;
 #X connect 14 0 13 0;
 #X connect 15 0 13 0;
 #X connect 18 0 19 0;
@@ -80,3 +79,8 @@ between floats and integers \, nor to see blobs unambiguously., f
 #X connect 21 0 22 0;
 #X connect 22 0 19 0;
 #X connect 32 0 13 0;
+#X connect 43 0 6 0;
+#X connect 43 0 5 0;
+#X connect 43 0 21 0;
+#X connect 44 0 10 0;
+#X connect 44 0 8 0;
