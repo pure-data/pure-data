@@ -46,6 +46,9 @@ t_rtext *rtext_new(t_glist *glist, t_text *who)
     x->x_selstart = x->x_selend = x->x_active =
         x->x_drawnwidth = x->x_drawnheight = 0;
     binbuf_gettext(who->te_binbuf, &x->x_buf, &x->x_bufsize);
+        /* allocate extra space for hidden null terminator */
+    x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
+    x->x_buf[x->x_bufsize] = 0;
     glist->gl_editor->e_rtext = x;
     sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
@@ -68,7 +71,7 @@ void rtext_free(t_rtext *x)
             break;
         }
     }
-    freebytes(x->x_buf, x->x_bufsize);
+    freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     freebytes(x, sizeof *x);
 }
 
@@ -479,8 +482,11 @@ void rtext_retext(t_rtext *x)
 {
     int w = 0, h = 0, indx;
     t_text *text = x->x_text;
-    t_freebytes(x->x_buf, x->x_bufsize);
+    t_freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     binbuf_gettext(text->te_binbuf, &x->x_buf, &x->x_bufsize);
+        /* allocate extra space for hidden null terminator */
+    x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
+    x->x_buf[x->x_bufsize] = 0;
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
 
@@ -619,7 +625,9 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         for (i = x->x_selend; i < x->x_bufsize; i++)
             x->x_buf[i- ndel] = x->x_buf[i];
         newsize = x->x_bufsize - ndel;
-        x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+            /* allocate extra space for hidden null terminator */
+        x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
+        x->x_buf[newsize] = 0;
         x->x_bufsize = newsize;
 
 /* at Guenter's suggestion, use 'n>31' to test whether a character might
@@ -634,10 +642,12 @@ be printable in whatever 8-bit character set we find ourselves. */
         if (n == '\n' || (n > 31 && n < 127))
         {
             newsize = x->x_bufsize+1;
-            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+                /* allocate extra space for hidden null terminator */
+            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
             for (i = x->x_bufsize; i > x->x_selstart; i--)
                 x->x_buf[i] = x->x_buf[i-1];
             x->x_buf[x->x_selstart] = n;
+            x->x_buf[newsize] = 0;
             x->x_bufsize = newsize;
             x->x_selstart = x->x_selstart + 1;
         }
@@ -646,9 +656,12 @@ be printable in whatever 8-bit character set we find ourselves. */
         {
             int ch_nbytes = u8_wc_nbytes(n);
             newsize = x->x_bufsize + ch_nbytes;
-            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+                /* allocate extra space for hidden null terminator */
+            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
+
             for (i = newsize-1; i > x->x_selstart; i--)
                 x->x_buf[i] = x->x_buf[i-ch_nbytes];
+            x->x_buf[newsize] = 0;
             x->x_bufsize = newsize;
             /*-- moo: assume canvas_key() has encoded keysym as UTF-8 */
             strncpy(x->x_buf+x->x_selstart, keysym->s_name, ch_nbytes);
