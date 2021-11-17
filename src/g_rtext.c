@@ -434,7 +434,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
         sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } %d %s\n",
-            (long)canvas, x->x_tag, rtext_gettype(x)->s_name,
+            canvas, x->x_tag, rtext_gettype(x)->s_name,
             text_xpix(x->x_text, x->x_glist) + lmargin,
                 text_ypix(x->x_text, x->x_glist) + tmargin,
             escbuf,
