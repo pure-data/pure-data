@@ -747,7 +747,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             i -= glist_fontheight(x);
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
                 "-font {{%s} -%d %s} -tags [list %s label graph]\n",
-                (long)glist_getcanvas(x),  x1, i,
+                glist_getcanvas(x),  x1, i,
                 arrayname->s_name, sys_font,
                 fs, sys_fontweight, tag);
         }
