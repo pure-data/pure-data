@@ -34,7 +34,8 @@
 
 <P> The Macintosh compiled version is now compiled at IEM (as part of the
 continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
-This should make Pd appear to be "safely" signed.
+This should make Pd appear to be "safely" signed.  Added compilation for
+arm64 target (but not sure if the released binary will include that or not).
 
 <P> New "list" box, like number and symbol but allows lists in addition to
 single atoms.  You can scroll up and down on any of the numbers in a list as
@@ -69,6 +70,13 @@ in ../pd/libpdtest.
 <P> some improvements to label handling in IEMguis.
 
 <P> improved window positioning.
+
+<p> garrays now available in color, etc. (documented in
+2.control.examples/16.more.arrays.pd), and more flags available in the "plot"
+object (for arrays in data structures).
+
+<p> "set", "send", "delete", "insert" methods added to "list store" object, and
+new features added to "get" method.
 
 <P> as usual, numerous bug fixes and documentation updates.
 
