@@ -52,7 +52,7 @@ inlet to let you set the target via "symbol" messages:, f 54;
 #000000 #000000 0 1;
 #X obj 671 234 send array;
 #X msg 671 188 0 -1 0 1 0 -1 0 1, f 9;
-#X text 500 465 Note that GUIs have built in send and receive names
+#X text 504 464 Note that GUIs have built in send and receive names
 you can set via properties (right click and check it)., f 40;
 #X text 248 569 updated for Pd version 0.52;
 #N canvas 0 22 450 278 (subpatch) 0;
@@ -62,27 +62,28 @@ you can set via properties (right click and check it)., f 40;
 #X text 514 110 The value object receives floats from send objects
 with the same name as their variable name. Send can also send messages
 to arrays with the same name., f 51;
-#X text 514 276 The receive object can get messages from the objects
-below with the send method. Note that value can also get these values
-but not from 'list store' because it doesn't deal with lists., f 52
-;
 #X msg 654 393 send y;
 #X msg 741 393 send y;
-#X floatatom 841 480 5 0 0 0 - - - 0;
-#X obj 841 452 value y;
-#X obj 841 428 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X floatatom 824 480 5 0 0 0 - - - 0;
+#X obj 824 452 value y;
+#X obj 824 421 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 505 564 "receive x";
 #X text 691 527 "send x";
 #X text 640 570 send in GUIs can also send to value objects., f 22
 ;
 #X text 511 582 "send z";
-#X floatatom 841 580 5 0 0 0 - - - 0;
-#X obj 841 527 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X floatatom 839 580 5 0 0 0 - - - 0;
+#X obj 839 527 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 841 551 value z;
+#X obj 839 551 value z;
 #X text 514 87 Interaction with other objects (check their help files):
 ;
+#X msg 851 420 send x;
+#X text 494 272 The receive object can also get messages from value
+and the other objects below via a send method. Note that value can
+also get these values from these objects except 'list store' because
+it doesn't deal with lists.;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;
@@ -101,9 +102,10 @@ but not from 'list store' because it doesn't deal with lists., f 52
 #X connect 37 0 32 0;
 #X connect 38 0 33 0;
 #X connect 47 0 46 0;
-#X connect 53 0 32 0;
-#X connect 54 0 33 0;
+#X connect 52 0 32 0;
+#X connect 53 0 33 0;
+#X connect 55 0 54 0;
 #X connect 56 0 55 0;
-#X connect 57 0 56 0;
-#X connect 63 0 64 0;
-#X connect 64 0 62 0;
+#X connect 62 0 63 0;
+#X connect 63 0 61 0;
+#X connect 65 0 55 0;
