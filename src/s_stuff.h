@@ -133,7 +133,7 @@ typedef struct _audiosettings
 
 #define DEFMIDIDEV 0
 
-#define DEFAULTSRATE 48000
+#define DEFAULTSRATE 44100
 #if defined(_WIN32)
 #define DEFAULTADVANCE 80
 #elif defined(__APPLE__)
