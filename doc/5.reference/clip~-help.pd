@@ -13,8 +13,8 @@
 #X obj 42 19 clip~;
 #X text 88 18 - restrict a signal to lie between two limits;
 #X text 195 181 inlets to reset clip range;
-#X floatatom 110 181 4 0 0 0 - - -;
-#X floatatom 158 182 4 0 0 0 - - -;
+#X floatatom 110 181 4 0 0 0 - - - 0;
+#X floatatom 158 182 4 0 0 0 - - - 0;
 #X text 175 211 creation arguments initialize clip range;
 #X text 23 54 The clip~ object passes its signal input to its output
 \, clipping it to lie between two limits., f 70;
@@ -29,7 +29,6 @@
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 3 0 5 0;
-#X connect 4 0 3 0;
 #X connect 4 0 3 0;
 #X connect 11 0 0 1;
 #X connect 12 0 0 2;

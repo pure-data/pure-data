@@ -1,25 +1,29 @@
-#N canvas 615 107 531 398 12;
+#N canvas 715 128 504 475 12;
 #X obj 87 146 sig~;
 #X obj 103 225 loadbang;
 #X obj 103 249 metro 100;
 #X obj 87 281 snapshot~;
-#X floatatom 87 122 5 0 0 0 - - -;
-#X floatatom 87 306 7 0 0 0 - - -;
+#X floatatom 87 122 5 0 0 0 - - - 0;
+#X floatatom 87 306 7 0 0 0 - - - 0;
 #X obj 46 17 log~;
 #X text 46 48 computes the logarithm of the left inlet \, to the base
 'e' (about 2.718) \, or to another base specified by the inlet or a
 creation argument.;
 #X obj 139 148 sig~;
-#X floatatom 139 124 5 0 0 0 - - -;
+#X floatatom 139 124 5 0 0 0 - - - 0;
 #X obj 87 175 log~;
-#X text 251 316 updated for Pd version 0.47.;
+#X text 279 439 updated for Pd version 0.47.;
 #X text 126 175 <= optional creation argument initializes right inlet
 (the base of the logarithm)., f 42;
-#X text 56 350 see also:;
-#X obj 136 351 pow~;
-#X obj 183 351 log;
-#X msg 210 236 \; pd dsop 1;
+#X text 52 354 see also:;
+#X obj 54 377 pow~;
+#X obj 57 432 log;
 #X text 85 17 - logarithms for signals;
+#X obj 96 377 exp~;
+#X obj 56 405 +~;
+#X text 88 404 (etc.) - signal binary operators;
+#X text 91 433 - control version;
+#X msg 218 238 \; pd dsp 1;
 #X connect 0 0 10 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
