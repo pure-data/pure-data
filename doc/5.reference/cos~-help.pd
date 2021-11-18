@@ -12,9 +12,9 @@
 #X msg 296 164 \; pd dsp 1 \; metro 1;
 #X text 127 147 Divide by 100;
 #X text 108 175 convert to audio;
-#X text 35 368 see also:;
-#X obj 113 368 osc~;
-#X obj 157 368 tabread4~;
+#X text 47 344 see also:;
+#X obj 50 370 osc~;
+#X obj 94 370 tabread4~;
 #X text 50 58 The cos~ object outputs the cosine of two pi times its
 signal input. So -1 \, 0 \, 1 and 2 give 1 out \, 0.5 gives -1 \, and
 so on., f 61;
@@ -24,7 +24,8 @@ so on., f 61;
 #X text 376 218 <= click to stop, f 8;
 #X text 103 121 <= Scroll to set input value;
 #X text 131 297 <= output of the cos~ object;
-#X obj 237 368 cos;
+#X obj 171 370 cos;
+#X obj 204 370 expr~;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
 #X connect 3 0 1 0;

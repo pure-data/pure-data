@@ -780,7 +780,7 @@ void x_arithmetic_setup(void)
         sizeof(t_binop), 0, A_DEFFLOAT, 0);
     class_addbang(binop1_pow_class, binop1_pow_bang);
     class_addfloat(binop1_pow_class, (t_method)binop1_pow_float);
-    class_sethelpsymbol(binop1_pow_class, binop1_sym);
+    class_sethelpsymbol(binop1_pow_class, math_sym);
 
     binop1_max_class = class_new(gensym("max"),
         (t_newmethod)binop1_max_new, 0,

@@ -9,13 +9,15 @@
 #X text 102 29 - exponential function;
 #X text 114 82 raises the Euler number 'e' (about 2.718) \, to the
 power of the input signal., f 27;
-#X text 45 291 See also:;
-#X obj 119 291 pow~;
+#X text 40 291 See also:;
+#X obj 198 291 pow~;
 #X obj 45 151 exp~;
 #X text 159 339 updated for Pd version 0.47.;
-#X obj 203 291 exp;
+#X obj 118 291 exp;
 #X msg 207 179 \; pd dsp 1;
-#X obj 161 291 log~;
+#X obj 240 291 log~;
+#X obj 152 291 sqrt~;
+#X obj 282 290 expr~;
 #X connect 0 0 11 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

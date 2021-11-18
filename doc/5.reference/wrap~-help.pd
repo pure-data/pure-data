@@ -1,4 +1,4 @@
-#N canvas 645 53 641 367 12;
+#N canvas 645 53 663 451 12;
 #X obj 71 229 metro 500;
 #X obj 71 204 r metro;
 #X msg 500 115 \; metro 0;
@@ -13,16 +13,18 @@
 largest integer not exceeding it (for positive numbers this is the
 fractional part).;
 #X obj 55 180 wrap~;
-#X text 383 326 updated for Pd version 0.48;
+#X text 424 365 updated for Pd version 0.48;
 #X msg 404 262 \; pd compatibility 0.47;
 #X text 188 191 COMPATIBILITY NOTE: in Pd versions before 0.48 \, wrap~
 with an input of 0 output 1 (but now correctly outputs 0). To get the
 old behavior \, set "compatibility" to 0.47 or below in Pd's command
 line or by a message:, f 54;
 #X text 103 130 <= shift-drag here to get non-integers to try;
-#X text 68 330 see also:;
-#X obj 142 330 wrap;
+#X text 49 354 see also:;
+#X obj 124 354 wrap;
 #X text 112 25 - remainder modulo 1 for signals;
+#X obj 52 383 expr~;
+#X text 100 383 - evaluate expressions on audio signals;
 #X connect 0 0 7 0;
 #X connect 1 0 0 0;
 #X connect 4 0 8 0;
