@@ -1,4 +1,4 @@
-#N canvas 782 23 521 705 12;
+#N canvas 782 23 541 722 12;
 #X text 39 114 The block~ and switch~ objects set the block size \,
 overlap \, and up/down-sampling ratio for the window. (The overlap
 and resampling ratio are relative to the super-patch.), f 62;
@@ -7,10 +7,8 @@ window., f 62;
 #X text 39 242 A switch~ with no arguments does not reblock audio computation
 -- in other words \, block size and sample rate are as in the parent
 patch., f 62;
-#X text 58 613 see also:;
-#X obj 130 613 fft~;
-#X text 174 613 ... and the control.blocksize and oversampling audio
-example patches., f 35;
+#X text 44 617 see also:;
+#X obj 121 657 fft~;
 #X text 39 164 Switch~ \, in addition \, allows you to switch DSP on
 and off for the window. All subwindows are also switched. (If a subwindow
 of a switched window is also switched \, both switches must be on for
@@ -26,7 +24,7 @@ any other block size. This is intended for later use in video processing.
 #X text 39 421 Switch~ takes a "bang" message that causes one block
 of DSP to be computed. This might be useful for pre-computing waveforms
 or window functions \, or also for video processing., f 62;
-#X text 279 670 updated for Pd version 0.43;
+#X text 296 672 updated for Pd version 0.43;
 #N canvas 253 216 518 298 block-interactions 0;
 #X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
 if a parent window is reblocked \, even if the window containing the
@@ -102,8 +100,8 @@ to be synced to the sample clock: loading a window function in a table
 #X obj 33 154 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array zzzz 256 float 2;
-#X coords 0 1 256 -1 256 140 1;
+#X array zzzz 256 float 0;
+#X coords 0 1 255 -1 256 140 1;
 #X restore 300 116 graph;
 #X obj 33 228 switch~ 256;
 #X text 25 111 turn DSP on and click to;
@@ -119,3 +117,5 @@ DSP;
 #X obj 57 62 block~ 64 1 1;
 #X text 160 62 block~ with default values;
 #X text 162 82 args: block size \, overlap \, up-downsampling;
+#X obj 121 605 ../3.audio.examples/G04.control.blocksize;
+#X obj 121 631 ../3.audio.examples/J07.oversampling;

@@ -1,10 +1,10 @@
 #N canvas 596 74 550 460 12;
-#X floatatom 35 335 8 0 0 0 - - -;
+#X floatatom 35 335 8 0 0 0 - - - 0;
 #X obj 74 14 env~;
 #X text 120 16 - envelope follower;
 #X obj 35 212 osc~ 400;
 #X obj 35 239 *~;
-#X floatatom 123 214 3 -99 300 0 - - -;
+#X floatatom 123 214 3 -99 300 0 - - - 0;
 #X obj 123 238 dbtorms;
 #X text 33 49 The env~ object takes a signal and outputs its RMS amplitude
 in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
@@ -30,5 +30,4 @@ is about 3 dB below peak-to-peak amplitude., f 53;
 #X connect 4 0 9 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
-#X connect 9 0 0 0;
 #X connect 9 0 0 0;
