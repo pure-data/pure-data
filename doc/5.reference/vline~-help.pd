@@ -1,13 +1,13 @@
-#N canvas 718 55 546 842 12;
-#X obj 57 760 snapshot~;
-#X floatatom 57 786 5 0 0 0 - - - 0;
-#X obj 72 727 metro 100;
+#N canvas 718 55 546 780 12;
+#X obj 57 690 snapshot~;
+#X floatatom 57 716 5 0 0 0 - - - 0;
+#X obj 72 657 metro 100;
 #X msg 37 359 1 1000;
 #X msg 86 492 stop;
 #X msg 75 409 0;
-#X text 141 785 see also:;
-#X obj 217 786 line;
-#X obj 263 786 line~;
+#X text 141 715 see also:;
+#X obj 217 716 line;
+#X obj 263 716 line~;
 #X obj 41 16 vline~;
 #X text 105 16 - high-precision audio ramp generator;
 #X obj 57 585 vline~;
@@ -25,8 +25,8 @@ all planned segments at any future time., f 61;
 #X msg 80 457 1 1000 \, 0 0 2000 \, 1 1000 3000;
 #X text 298 450 note: times (2000 \, 3000) are cumulative \, not incremental.
 , f 29;
-#X text 314 784 updated for Pd version 0.47;
-#X text 195 616 !!! BUG: vline~ objects inside reblocked subpatches
+#X text 314 714 updated for Pd version 0.47;
+#X text 172 624 !!! BUG: vline~ objects inside reblocked subpatches
 can have slightly incorrect timing !!!, f 41;
 #X floatatom 96 558 5 0 0 0 - - - 0;
 #X floatatom 95 524 5 0 0 0 - - - 0;
@@ -47,11 +47,11 @@ specifying a ramp time and delay and sent \, it jumps immediately to
 the target value. On the other hand \, a list of two values will not
 have a delay time if no delay time was priorly set in the right inlet.
 , f 61;
-#X msg 90 678 \; pd dsp \$1;
-#X obj 72 649 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 261 378 \; pd dsp \$1;
+#X obj 261 355 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X obj 72 622 loadbang;
-#X text 166 688 DSP on/off;
+#X text 279 356 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 3 0 11 0;
@@ -62,6 +62,5 @@ have a delay time if no delay time was priorly set in the right inlet.
 #X connect 19 0 11 0;
 #X connect 23 0 11 2;
 #X connect 24 0 11 1;
-#X connect 30 0 2 0;
 #X connect 30 0 29 0;
-#X connect 31 0 30 0;
+#X connect 31 0 2 0;

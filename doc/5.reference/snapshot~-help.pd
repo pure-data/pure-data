@@ -8,7 +8,6 @@
 #X text 24 51 The snapshot~ object takes a signal and converts it to
 a control value whenever it receives a bang in its left outlet. This
 object is particularly useful for monitoring outputs.;
-#X obj 369 245 loadbang;
 #X obj 55 254 osc~ 0.1;
 #X text 55 231 0.1 Hz cosine;
 #X text 264 402 updated for Pd version 0.37;
@@ -28,9 +27,8 @@ read snapshot's value before any ensuing signal computation.;
 #X obj 369 271 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 391 273 DSP on/off;
-#X connect 0 0 13 0;
+#X connect 0 0 12 0;
 #X connect 2 0 0 0;
-#X connect 6 0 18 0;
-#X connect 7 0 0 0;
-#X connect 14 0 0 0;
-#X connect 18 0 17 0;
+#X connect 6 0 0 0;
+#X connect 13 0 0 0;
+#X connect 17 0 16 0;

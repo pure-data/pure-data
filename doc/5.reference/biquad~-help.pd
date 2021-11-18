@@ -24,7 +24,6 @@ with the value of the filtered signal on the right.;
 #X text 216 310 this biquad~ is a notch filter for;
 #X text 212 327 fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k);
 #X msg 394 180 \; pd dsp \$1;
-#X obj 394 128 loadbang;
 #X obj 394 155 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 417 154 DSP on/off;
@@ -37,5 +36,4 @@ with the value of the filtered signal on the right.;
 #X connect 15 0 7 0;
 #X connect 16 0 4 0;
 #X connect 16 0 7 0;
-#X connect 24 0 25 0;
-#X connect 25 0 23 0;
+#X connect 24 0 23 0;

@@ -24,11 +24,10 @@ before triggering again.;
 #X text 271 219 zero or nonzero in inlet to set the state to "high"
 or "low". There is no debounce period after this.;
 #X text 161 11 - trigger from audio signal;
-#X msg 520 142 \; pd dsp \$1;
-#X obj 520 111 tgl 16 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 516 124 \; pd dsp \$1;
+#X obj 516 93 tgl 16 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 520 82 loadbang;
-#X text 542 110 DSP on/off;
+#X text 538 92 DSP on/off;
 #X connect 1 0 2 0;
 #X connect 2 0 6 0;
 #X connect 2 1 7 0;
@@ -38,4 +37,3 @@ or "low". There is no debounce period after this.;
 #X connect 15 0 2 0;
 #X connect 16 0 2 0;
 #X connect 21 0 20 0;
-#X connect 22 0 21 0;

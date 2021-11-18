@@ -10,9 +10,8 @@
 #X msg 201 361 bang;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array array2 150000 float 0;
-#X coords 0 1 150000 -1 200 150 1;
+#X coords 0 1 149999 -1 200 150 1;
 #X restore 395 361 graph;
-#X msg 393 522 \; array2 resize 150000;
 #X obj 387 255 soundfiler;
 #X obj 69 474 tabread4~ array2;
 #X obj 69 411 *~;
@@ -29,12 +28,12 @@ is up an octave \, etc), f 37;
 #X text 117 292 right signal input is window size in samples;
 #X text 142 316 here's how to handle onsets;
 #X text 205 340 print outputs;
-#X text 41 56 loop~ takes input signals to set a window size and transposition
+#X text 41 54 loop~ takes input signals to set a window size and transposition
 \, and outputs a phase and a sampled window size. The window size only
 changes at phase zero crossings and the phase output is adjusted so
 that changing window size doesn't change the transposition., f 79
 ;
-#X text 41 123 You can send "bang" or "set" message to force the phase
+#X text 41 116 You can send "bang" or "set" message to force the phase
 to zero--you should mute the output before doing so. This may be desirable
 if you've set a large window size but then want to decrease it without
 waiting for the next phase crossing., f 79;
@@ -42,24 +41,27 @@ waiting for the next phase crossing., f 79;
 #X obj 76 17 loop~;
 #X text 120 16 - phase generator for looping samplers;
 #X obj 69 509 output~;
-#X obj 469 19 declare -stdpath ./;
+#X obj 471 16 declare -stdpath ./;
+#X obj 387 176 loadbang;
+#X msg 395 523 \; array2 resize 150000;
 #X connect 0 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
-#X connect 3 0 12 0;
-#X connect 3 0 13 1;
+#X connect 3 0 11 0;
+#X connect 3 0 12 1;
 #X connect 3 1 1 0;
-#X connect 3 1 12 1;
+#X connect 3 1 11 1;
 #X connect 4 0 3 1;
 #X connect 5 0 3 0;
 #X connect 7 0 6 0;
-#X connect 11 0 30 0;
-#X connect 11 0 30 1;
-#X connect 12 0 14 0;
-#X connect 13 0 14 1;
-#X connect 14 0 11 0;
-#X connect 15 0 16 0;
-#X connect 16 0 13 0;
-#X connect 17 0 10 0;
-#X connect 18 0 3 0;
-#X connect 27 0 10 0;
+#X connect 10 0 29 0;
+#X connect 10 0 29 1;
+#X connect 11 0 13 0;
+#X connect 12 0 13 1;
+#X connect 13 0 10 0;
+#X connect 14 0 15 0;
+#X connect 15 0 12 0;
+#X connect 16 0 9 0;
+#X connect 17 0 3 0;
+#X connect 26 0 9 0;
+#X connect 31 0 16 0;

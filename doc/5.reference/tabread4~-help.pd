@@ -50,11 +50,11 @@ table2-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table2-ex ylabel -0.3
 #X restore 712 316 pd init-table;
 #X obj 36 316 tabread4~ table2-ex;
 #X msg 63 213 set table2-ex;
-#X msg 132 395 \; pd dsp \$1;
-#X obj 132 372 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 55 378 loadbang;
+#X text 167 361 DSP on/off;
+#X msg 150 384 \; pd dsp \$1;
+#X obj 150 361 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 132 348 loadbang;
-#X text 203 402 DSP on/off;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
 #X connect 3 0 30 0;
@@ -62,6 +62,5 @@ table2-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table2-ex ylabel -0.3
 #X connect 17 0 30 1;
 #X connect 30 0 1 0;
 #X connect 31 0 30 0;
-#X connect 33 0 32 0;
-#X connect 33 0 2 0;
-#X connect 34 0 33 0;
+#X connect 32 0 2 0;
+#X connect 35 0 34 0;

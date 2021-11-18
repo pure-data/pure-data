@@ -1,5 +1,4 @@
-#N canvas 624 61 638 654 12;
-#X msg 419 158 \; pd dsp 1;
+#N canvas 754 203 638 654 12;
 #X msg 174 179 print;
 #X msg 53 78 bang;
 #X msg 155 125 start;
@@ -7,11 +6,11 @@
 #X obj 53 119 del 1000;
 #X text 199 127 start streaming audio;
 #X text 201 153 stop streaming audio;
-#X obj 147 243 writesf~ 2;
+#X obj 147 246 writesf~ 2, f 15;
 #X msg 115 46 open /tmp/foo.wav;
 #X obj 177 604 soundfiler;
 #X text 102 603 see also:;
-#X obj 184 213 osc~ 440;
+#X obj 180 212 osc~ 440;
 #X text 61 291 writesf~ creates a subthread whose task is to write
 audio streams to disk. You need not provide any disk access time between
 "open" and "start" \, but between "stop" and the next "open" you must
@@ -33,19 +32,26 @@ follows:;
 #X text 63 550 (Setting the sample rate will affect the soundfile header
 but the file will _not_ be resampled.), f 65;
 #X text 400 601 updated for Pd version 0.51;
-#X text 229 240 The creation argument is the number of channels (1
+#X text 265 240 The creation argument is the number of channels (1
 to 64)., f 29;
 #X text 60 368 The soundfile is uncompressed 2- or 3-byte integer ("pcm")
 or 4-byte floating point. The soundfile format is determined by the
 file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 , f 68;
-#X connect 1 0 8 0;
-#X connect 2 0 3 0;
-#X connect 2 0 5 0;
-#X connect 3 0 8 0;
-#X connect 4 0 8 0;
-#X connect 5 0 4 0;
-#X connect 9 0 8 0;
-#X connect 12 0 8 0;
-#X connect 14 0 8 0;
-#X connect 15 0 8 0;
+#X obj 249 212 noise~;
+#X msg 406 163 \; pd dsp \$1;
+#X obj 406 140 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 424 139 DSP on/off;
+#X connect 0 0 7 0;
+#X connect 1 0 2 0;
+#X connect 1 0 4 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 8 0 7 0;
+#X connect 11 0 7 0;
+#X connect 13 0 7 0;
+#X connect 14 0 7 0;
+#X connect 30 0 7 1;
+#X connect 32 0 31 0;

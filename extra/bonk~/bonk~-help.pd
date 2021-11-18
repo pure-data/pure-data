@@ -185,10 +185,9 @@ as shown in the subpatch below:, f 47;
 #X text 577 380 Print out filterbank settings.;
 #X text 619 413 More messages for managing templates.;
 #X msg 63 572 \; pd dsp \$1;
-#X obj 63 524 loadbang;
 #X obj 63 548 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 143 583 DSP on/off;
+#X text 90 547 DSP on/off;
 #X connect 0 0 19 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
@@ -211,5 +210,4 @@ as shown in the subpatch below:, f 47;
 #X connect 32 0 2 0;
 #X connect 33 0 2 0;
 #X connect 34 0 2 0;
-#X connect 47 0 48 0;
-#X connect 48 0 46 0;
+#X connect 47 0 46 0;
