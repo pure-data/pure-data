@@ -813,15 +813,15 @@ next section) they are
 taken from the abstractions' creation arguments.
 
 <P>  Constructions such as "$1-x" are expanded by string concatenation.  This
-is the mechanism for making local variables.  In particular, $0 in an abstraction
-is a counter which is guaranteed to be unique to that abstraction, so sends and
-receives with names like "$0-bear" can be used as local send/receive pairs.
+is the mechanism for making local variables. In particular, $0 is a counter,
+where every patch gets its own value. In an abstraction this guarantees a unique
+ID number to that abstraction, so sends and receives with names like "$0-bear"
+can be used as local send/receive pairs. This is also useful for things like
+array names, value names and text names (as defined in the text object).
 
-<P>  Note that the expansion of variables such as $0 and $1 only works at the
-beginning of the symbol; so, for instance, "rats-$1" will not be expanded.
-Occasionally you may want to have double or triple substitutions; this can
+<P> Occasionally you may want to have double or triple substitutions; this can
 be done one stage at a time by nesting abstractions (with each subpatch
-adding its own $-variable to the beginning of a symbol and passing that on
+adding its own $-variable to a symbol and passing that on
 as argument to a further abstraction.)
 
 <P> For example, if you want to get dog-food, dog-ears, and cat-food, for
