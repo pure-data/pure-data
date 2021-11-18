@@ -1,4 +1,5 @@
 #N canvas 644 147 555 376 12;
+#X declare -stdpath ./;
 #X floatatom 208 165 5 0 0 0 - - - 0;
 #X obj 46 14 lop~;
 #X text 86 15 - one-pole low pass filter;
@@ -19,6 +20,7 @@ is the cutoff frequency in Hz., f 70;
 #X obj 155 192 lop~ 100;
 #X text 226 189 The filter is initialized to cut off frequencies above
 100 Hz., f 32;
+#X obj 401 12 declare -stdpath ./;
 #X connect 0 0 15 1;
 #X connect 3 0 15 0;
 #X connect 12 0 15 0;

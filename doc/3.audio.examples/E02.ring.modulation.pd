@@ -1,4 +1,5 @@
 #N canvas 456 29 747 766 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E02-signal 882 float 0;
 #X coords 0 5 882 -5 200 130 1;
@@ -9,8 +10,8 @@
 #X coords 0 4300 127 -40 257 130 1;
 #X restore 403 280 graph;
 #X text 500 215 ---- 0.02 seconds ----;
-#X obj 189 348 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 189 348 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 115 401 output~;
 #X text 506 721 updated for Pd version 0.37;
 #X text 434 413 1;
@@ -25,29 +26,29 @@
 #X text 684 138 0;
 #X obj 117 54 r fundamental;
 #X obj 30 112 osc~;
-#X obj 48 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 48 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 30 162 *~;
 #X obj 74 112 osc~;
-#X obj 92 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
-;
+#X obj 92 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 74 162 *~;
 #X obj 117 112 osc~;
-#X obj 135 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 135 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 117 162 *~;
 #X obj 117 89 * 2;
 #X obj 160 112 osc~;
-#X obj 178 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 178 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 160 162 *~;
 #X obj 203 112 osc~;
-#X obj 221 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 221 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 203 162 *~;
 #X obj 246 112 osc~;
-#X obj 264 137 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 264 137 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 246 162 *~;
 #X obj 30 89 * 0;
 #X obj 74 89 * 1;
@@ -64,15 +65,15 @@
 #X obj 116 239 *~;
 #X text 298 120 partials;
 #X obj 234 270 osc~;
-#X floatatom 234 210 3 0 200 0 - - -;
+#X floatatom 234 210 3 0 200 0 - - - 0;
 #X obj 234 239 *;
 #X obj 267 239 r freq-step;
 #X text 293 177 modulation;
 #X text 289 192 frequency in;
 #X text 42 14 RING MODULATION: multiplying a complex tone by a sinusoid
 ;
-#X obj 189 303 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 189 303 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 189 325 metro 500;
 #X text 71 487 Now we ring modulate the signal by multiplying it by
 another sinusoid. The modulation frequency is controlled in steps of
@@ -111,19 +112,19 @@ until much later.;
 #X text 235 202 delay two samples;
 #X text 234 218 for better graphing;
 #X obj 91 466 samplerate~;
-#X obj 91 443 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 91 523 5 0 0 0 - - -;
+#X obj 91 443 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X floatatom 91 523 5 0 0 0 - - - 0;
 #X obj 91 499 / 256;
 #X obj 91 419 loadbang;
-#X floatatom 91 592 5 0 0 0 - - -;
+#X floatatom 91 592 5 0 0 0 - - - 0;
 #X obj 99 545 s fundamental;
 #X obj 91 568 ftom;
 #X text 70 353 At load time \, calculate a good choice of fundamental
 frequency for showing spectra: the 16th bin in a 4096-point spectrum
 \, so SR*16/4096 or SR/256., f 62;
 #X text 212 245 "bang" into this inlet to graph it;
-#X floatatom 230 531 5 0 0 0 - - -;
+#X floatatom 230 531 5 0 0 0 - - - 0;
 #X obj 230 507 / 4096;
 #X text 226 476 One bin is SR/4096:;
 #X obj 230 553 s freq-step;
@@ -154,6 +155,7 @@ pitch;
 #X connect 25 0 28 0;
 #X connect 26 0 25 0;
 #X restore 128 337 pd fft;
+#X obj 569 17 declare -stdpath ./;
 #X connect 1 0 5 0;
 #X connect 1 0 5 1;
 #X connect 4 0 66 1;

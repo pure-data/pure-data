@@ -1,6 +1,7 @@
 #N canvas 448 97 564 552 12;
-#X floatatom 269 370 0 0 1000 0 - - -;
-#X floatatom 94 359 0 0 100 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 269 370 0 0 1000 0 - - - 0;
+#X floatatom 94 359 0 0 100 0 - - - 0;
 #N canvas 98 0 648 669 fft-analysis 0;
 #X obj 35 589 *~;
 #X obj 143 305 *~;
@@ -33,19 +34,19 @@
 #X obj 294 200 + 1;
 #X obj 240 144 bang~;
 #X obj 240 169 spigot;
-#X floatatom 411 218 0 0 0 0 - - -;
+#X floatatom 411 218 0 0 0 0 - - - 0;
 #X obj 315 408 -~;
 #X obj 371 258 sel 0;
 #X obj 327 443 *~;
 #X obj 293 443 +~;
-#X floatatom 351 313 0 0 0 0 - - -;
+#X floatatom 351 313 0 0 0 0 - - - 0;
 #X obj 240 219 t f f;
 #X obj 370 113 r make-mask;
 #X obj 371 141 t b f;
 #X obj 411 165 /;
 #X text 483 212 number of;
 #X text 491 227 frames;
-#X floatatom 481 166 0 0 0 0 - - -;
+#X floatatom 481 166 0 0 0 0 - - - 0;
 #X obj 480 113 r window-msec;
 #X obj 481 136 / 4;
 #X text 521 133 hop size (analysis;
@@ -194,8 +195,8 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X text 184 335 noise;
 #N canvas 324 211 733 427 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 0;
-#X coords 0 1 155943 -1 400 150 1;
+#X array \$0-sample 62079 float 0;
+#X coords 0 1 62078 -1 400 150 1;
 #X restore 282 77 graph;
 #X obj 65 65 r read-sample;
 #X obj 65 126 unpack s f;
@@ -227,7 +228,7 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 15 0 3 0;
 #X restore 354 445 pd insample;
 #X obj 269 395 s mask-level;
-#X floatatom 189 359 0 0 100 0 - - -;
+#X floatatom 189 359 0 0 100 0 - - - 0;
 #X text 270 319 on;
 #X text 315 320 off;
 #X text 270 303 masking;
@@ -254,8 +255,8 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X obj 89 114 loadbang;
 #X obj 89 160 metro 1000;
 #X obj 246 367 bp~ 10000 3;
-#X obj 89 139 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
-;
+#X obj 89 139 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X text 232 235 sample duration \, msec;
 #X text 95 71 looped sample playback;
 #X obj 89 344 tabread4~ \$0-sample;
@@ -321,6 +322,7 @@ patch can clean the noise out of the signal. Open the "fft-analysis"
 window to see the algorithm \, or the "insample" window to change samples
 \, or "mask-table" to see the current mask (the average signal power
 of the noise to clean out of the signal)., f 65;
+#X obj 396 13 declare -stdpath ./;
 #X connect 0 0 6 0;
 #X connect 1 0 13 0;
 #X connect 2 0 16 0;

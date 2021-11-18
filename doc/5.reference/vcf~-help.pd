@@ -1,9 +1,10 @@
 #N canvas 701 77 519 534 12;
+#X declare -stdpath ./;
 #X obj 200 265 sig~;
 #X text 176 207 center frequency;
 #X floatatom 200 234 5 0 0 0 - - - 0;
 #X floatatom 234 295 5 0 0 0 - - - 0;
-#X obj 97 21 vcf~;
+#X obj 36 22 vcf~;
 #X text 24 494 see also:;
 #X obj 102 494 bp~;
 #X obj 167 327 vcf~ 1, f 10;
@@ -16,7 +17,7 @@ and lowpass filter outputs \, or combined to allow other possibilities.
 #X text 231 450 (lowpass);
 #X text 101 431 real output;
 #X text 220 431 imaginary output;
-#X text 139 21 - voltage-controlled bandpass filter;
+#X text 78 22 - voltage-controlled bandpass filter;
 #X obj 136 494 bob~;
 #X obj 106 261 noise~;
 #X text 89 236 test input;
@@ -31,6 +32,7 @@ the bp~ bandpass filter., f 63;
 #X obj 234 371 output~;
 #X obj 177 494 lop~;
 #X obj 217 494 hip~;
+#X obj 365 20 declare -stdpath ./;
 #X connect 0 0 7 1;
 #X connect 2 0 0 0;
 #X connect 3 0 7 2;

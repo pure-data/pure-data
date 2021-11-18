@@ -1,11 +1,12 @@
 #N canvas 476 27 927 940 12;
+#X declare -stdpath ./;
 #X obj 505 561 metro 100;
 #X obj 238 488 phasor~;
 #X obj 505 591 snapshot~;
 #X text 665 883 updated for Pd version 0.42;
 #X obj 18 576 output~;
 #X obj 38 477 phasor~;
-#X floatatom 38 345 5 -100 1000 0 - - -;
+#X floatatom 38 345 5 -100 1000 0 - - - 0;
 #X obj 37 534 tabread4~ \$0-tab;
 #X msg 368 345 0.5;
 #X msg 404 345 0.01;
@@ -16,18 +17,18 @@
 #X obj 476 681 f;
 #X obj 386 658 t f f;
 #X obj 219 786 output~;
-#X floatatom 487 715 8 0 0 0 - - -;
+#X floatatom 487 715 8 0 0 0 - - - 0;
 #X obj 418 716 t f b;
 #X obj 450 745 f;
 #X obj 418 745 -;
-#X floatatom 568 650 8 0 0 0 - - -;
+#X floatatom 568 650 8 0 0 0 - - - 0;
 #X obj 400 772 -;
-#X obj 505 536 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#X obj 505 536 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 238 514 -~ 0.5;
 #X obj 400 861 + 0.5;
 #X obj 37 506 *~ 1e+06;
-#X floatatom 400 802 8 0 0 0 - - -;
+#X floatatom 400 802 8 0 0 0 - - - 0;
 #X obj 618 570 samplerate~;
 #X obj 586 569 /;
 #X obj 586 544 t f b;
@@ -40,8 +41,8 @@
 #X obj 615 111 loadbang;
 #X obj 615 248 tabwrite~ \$0-tab;
 #X obj 626 221 osc~;
-#X obj 615 152 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 615 152 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X msg 639 134 \; pd dsp 1;
 #X obj 614 286 table \$0-tab 1e+06;
 #X text 532 70 and will take about 20 seconds to fill.;
@@ -96,6 +97,7 @@ that the phasor~ never has time to wrap., f 64;
 #X text 124 574 convert phase to range +/- 5000, f 16;
 #X text 634 535 extrapolate snapshot of phase by one sample to sync
 with next block, f 34;
+#X obj 737 17 declare -stdpath ./;
 #X connect 0 0 2 0;
 #X connect 1 0 24 0;
 #X connect 2 0 31 0;

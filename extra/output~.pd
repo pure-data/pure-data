@@ -34,9 +34,9 @@
 #X text 153 492 if true convert to bang =>;
 #X text 181 469 test if less than 1 =>;
 #X text 182 439 value of master-lvl =>;
-#X text 60 9 Level control abstraction \, used in many of the Pd example
-and help patches. The "level" and "mute" controls show up on the parent
-\, calling patch., f 61;
+#X text 60 9 Level control abstraction \, part of 'extra' used in many
+of the Pd example and help patches. The "level" and "mute" controls
+show up on the parent \, calling patch., f 61;
 #X connect 0 0 2 0;
 #X connect 1 0 4 0;
 #X connect 2 0 20 0;

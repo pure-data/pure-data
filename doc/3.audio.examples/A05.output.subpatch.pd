@@ -1,4 +1,5 @@
-#N canvas 300 159 574 541 12;
+#N canvas 705 285 574 541 12;
+#X declare -stdpath ./;
 #X text 237 44 CONTROLLING OUTPUT AMPLITUDE;
 #X obj 84 28 osc~ 440;
 #X obj 102 59 osc~ 550;
@@ -22,6 +23,7 @@ essentially no level limit.;
 #X text 171 116 <= Here we make an A major triad as a test signal.
 ;
 #X text 137 183 <= this is a subwindow - right click on it;
+#X obj 62 484 declare -stdpath ./;
 #X connect 1 0 4 0;
 #X connect 2 0 4 1;
 #X connect 3 0 5 1;

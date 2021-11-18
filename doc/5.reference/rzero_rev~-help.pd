@@ -1,4 +1,5 @@
 #N canvas 702 77 585 555 12;
+#X declare -stdpath ./;
 #X floatatom 132 197 0 0 0 0 - - - 0;
 #X obj 51 113 osc~ 100;
 #X msg 67 145 clear;
@@ -19,19 +20,20 @@
 #X text 62 420 summary of raw filters:;
 #X msg 79 171 set 1;
 #N canvas 1015 291 317 298 test 0;
-#X obj 111 77 osc~;
-#X floatatom 111 54 5 0 0 0 - - - 0;
-#X obj 140 225 env~ 16384;
-#X floatatom 140 249 5 0 0 0 - - - 0;
-#X obj 149 106 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 92 77 osc~;
+#X floatatom 92 54 5 0 0 0 - - - 0;
+#X obj 121 225 env~ 16384;
+#X floatatom 121 249 5 0 0 0 - - - 0;
+#X obj 130 106 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000 0 1;
-#X obj 111 104 *~;
-#X msg 127 134 set 1;
-#X floatatom 178 108 4 -100 100 0 - - - 0;
-#X obj 178 133 / 100;
+#X obj 92 104 *~;
+#X msg 108 134 set 1;
+#X floatatom 159 108 4 -100 100 0 - - - 0;
+#X obj 159 133 / 100;
 #X text 115 17 Stuff to test it:;
-#X obj 111 167 rzero_rev~;
-#X obj 54 221 output~;
+#X obj 92 167 rzero_rev~;
+#X obj 35 221 output~;
+#X obj 151 64 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;

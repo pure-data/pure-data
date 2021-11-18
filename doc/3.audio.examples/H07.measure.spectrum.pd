@@ -1,11 +1,12 @@
 #N canvas 412 23 626 748 12;
-#X floatatom 145 686 5 0 0 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 145 686 5 0 0 0 - - - 0;
 #X obj 117 576 bp~;
 #X obj 94 537 bp~;
 #X obj 126 448 mtof;
-#X floatatom 126 475 7 0 0 0 - - -;
-#X floatatom 135 501 3 0 999 0 - #0-q -;
-#X floatatom 126 426 7 0 150 0 - #0-pitch -;
+#X floatatom 126 475 7 0 0 0 - - - 0;
+#X floatatom 135 501 3 0 999 0 - #0-q - 0;
+#X floatatom 126 426 7 0 150 0 - #0-pitch - 0;
 #X obj 145 618 env~ 4096;
 #X obj 95 349 *~ 0;
 #X obj 94 374 +~ 1;
@@ -34,8 +35,8 @@ upward listening for modes., f 70;
 #X obj 189 210 r readfile;
 #X obj 189 263 soundfiler;
 #X obj 123 21 loadbang;
-#X obj 123 47 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 123 47 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 123 68 f \$0;
 #X obj 95 278 /;
 #X msg 60 248 44100;
@@ -68,6 +69,7 @@ upward listening for modes., f 70;
 #X text 183 425 <= center pitch;
 #X text 182 476 <= center frequency;
 #X text 165 501 <= Q (filter selectivity);
+#X obj 452 20 declare -stdpath ./;
 #X connect 1 0 7 0;
 #X connect 1 0 15 0;
 #X connect 1 0 15 1;

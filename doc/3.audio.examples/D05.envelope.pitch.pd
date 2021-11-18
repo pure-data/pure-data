@@ -1,4 +1,5 @@
 #N canvas 475 73 651 705 12;
+#X declare -stdpath ./;
 #X obj 63 166 r trigger;
 #X obj 63 214 tabread4~ dbtorms;
 #X obj 63 268 *~;
@@ -10,8 +11,8 @@
 #X msg 148 70 0;
 #X obj 67 97 until;
 #X obj 176 156 t f f;
-#X floatatom 335 132 0 0 0 0 - - -;
-#X floatatom 335 196 0 0 0 0 - - -;
+#X floatatom 335 132 0 0 0 0 - - - 0;
+#X floatatom 335 196 0 0 0 0 - - - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array dbtorms 123 float 1;
 #A 0 0 0 1.25893e-05 1.41254e-05 1.58489e-05 1.77828e-05 1.99526e-05
@@ -57,7 +58,7 @@
 #X coords 0 12000 130 0 200 100 1;
 #X restore 482 97 graph;
 #X obj 259 167 mtof;
-#X floatatom 259 196 0 0 0 0 - - -;
+#X floatatom 259 196 0 0 0 0 - - - 0;
 #X text 486 204 ------ 130 samples ------;
 #X text 691 190 0;
 #X text 693 90 12000;
@@ -143,6 +144,7 @@ like instead of straight pitch., f 61;
 #X text 152 437 <= attack;
 #X text 322 417 <= attack;
 #X text 510 430 <= release;
+#X obj 460 22 declare -stdpath ./;
 #X connect 0 0 17 0;
 #X connect 1 0 2 0;
 #X connect 2 0 20 0;

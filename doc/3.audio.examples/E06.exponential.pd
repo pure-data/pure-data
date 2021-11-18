@@ -1,4 +1,5 @@
 #N canvas 468 23 872 731 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
@@ -27,18 +28,18 @@ until much later.;
 #X text 221 180 delay two samples;
 #X text 219 198 for better graphing;
 #X obj 66 473 samplerate~;
-#X obj 66 450 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 66 540 5 0 0 0 - - -;
+#X obj 66 450 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X floatatom 66 540 5 0 0 0 - - - 0;
 #X obj 66 516 / 256;
 #X obj 66 426 loadbang;
-#X floatatom 66 609 5 0 0 0 - - -;
+#X floatatom 66 609 5 0 0 0 - - - 0;
 #X obj 74 562 s fundamental;
 #X obj 66 585 ftom;
 #X text 64 367 At load time \, calculate a good choice of fundamental
 frequency for showing spectra: the 16th bin in a 4096-point spectrum
 \, so SR*16/4096 or SR/256.;
-#X floatatom 241 548 5 0 0 0 - - -;
+#X floatatom 241 548 5 0 0 0 - - - 0;
 #X obj 241 524 / 4096;
 #X text 237 500 One bin is SR/4096:;
 #X obj 241 570 s freq-step;
@@ -76,8 +77,8 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 31 0 30 0;
 #X restore 189 286 pd fft;
 #X text 562 375 ---- 0.02 seconds ----;
-#X obj 208 258 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 208 258 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 125 326 output~;
 #X text 584 645 updated for Pd version 0.37;
 #X text 552 567 1;
@@ -97,8 +98,8 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 781 550 0;
 #X text 779 429 1;
 #X text 780 488 0.5;
-#X obj 243 287 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 243 287 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-tab 1003 float 1;
 #A 0 1.01005 1 0.99005 0.980199 0.970446 0.960789 0.951229 0.941765
@@ -257,8 +258,8 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X msg 232 99 0;
 #X obj 142 121 until;
 #X obj 214 153 t f f;
-#X obj 142 79 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 142 79 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 84 183 expr exp(-($f1-1)/100);
 #X obj 141 149 sel 999;
 #X text 48 18 This patch computes a decaying exponential function \,
@@ -278,13 +279,13 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 7 0 10 0;
 #X connect 8 0 4 1;
 #X restore 327 175 pd make-table;
-#X text 536 42 waveshaping function;
+#X text 383 105 waveshaping function;
 #X text 722 167 0;
 #X text 721 71 1;
 #X obj 124 200 +~ 1;
 #X obj 124 174 *~ 100;
 #X obj 124 113 +~ 1;
-#X floatatom 194 91 5 0 200 0 - - -;
+#X floatatom 194 91 5 0 200 0 - - - 0;
 #X obj 194 135 pack 0 50;
 #X obj 194 159 line~;
 #X text 259 107 tenths;
@@ -317,6 +318,7 @@ gets progressively fatter., f 61;
 #X text 264 286 <= repeatedly;
 #X text 237 91 <= index in;
 #X text 48 10 WAVESHAPING USING AN EXPONENTIAL FUNCTION;
+#X obj 686 21 declare -stdpath ./;
 #X connect 1 0 6 0;
 #X connect 1 0 6 1;
 #X connect 5 0 3 1;

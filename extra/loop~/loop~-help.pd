@@ -1,4 +1,5 @@
 #N canvas 748 47 676 603 12;
+#X declare -stdpath ./;
 #X floatatom 51 206 3 0 0 0 - - - 0;
 #X obj 272 396 print~;
 #X msg 272 361 bang;
@@ -41,6 +42,7 @@ waiting for the next phase crossing., f 79;
 #X obj 76 17 loop~;
 #X text 120 16 - phase generator for looping samplers;
 #X obj 69 509 output~;
+#X obj 469 19 declare -stdpath ./;
 #X connect 0 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;

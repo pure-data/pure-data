@@ -3,6 +3,7 @@ template-pitch array amp template-amp;
 #N struct template-pitch float x float y float w;
 #N struct template-amp float x float y float w;
 #N canvas 279 49 556 659 12;
+#X declare -stdpath ./;
 #N canvas 565 104 469 174 template-toplevel 0;
 #X obj 30 97 plot pitch voiceno 3 10 0;
 #X obj 30 124 plot amp 0 3 10 0;
@@ -82,7 +83,7 @@ array pitch template-pitch array amp template-amp;
 #X connect 27 0 28 0;
 #X connect 28 0 14 0;
 #X restore 199 535 pd synthesis;
-#X floatatom 385 464 0 0 0 0 - - -;
+#X floatatom 385 464 0 0 0 0 - - - 0;
 #X msg 148 498 start;
 #X msg 199 498 stop;
 #N canvas 869 73 415 496 data 1;
@@ -139,6 +140,7 @@ the "natural" y unit for most drawing programs. In the data window
 \, each pixel is 0.25 units \, meaning that adding one to a 'y' value
 moves it up four pixels., f 61;
 #X text 418 464 <-= tempo;
+#X obj 372 555 declare -stdpath ./;
 #X connect 3 0 14 0;
 #X connect 3 0 14 1;
 #X connect 4 0 11 0;
