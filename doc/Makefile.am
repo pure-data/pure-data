@@ -405,7 +405,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/send-receive-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
-     ./5.reference/setctl.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sigbinops-help.pd \
