@@ -30,12 +30,12 @@
 #X obj 88 20 <;
 #X obj 145 20 ==;
 #X obj 173 20 !=;
-#X floatatom 384 692 0 0 0 0 - - - 0;
-#X floatatom 384 745 0 0 0 0 - - - 0;
-#X obj 384 718 == 0;
-#X floatatom 437 692 0 0 0 0 - - - 0;
-#X floatatom 437 745 0 0 0 0 - - - 0;
-#X obj 437 718 < 5;
+#X floatatom 422 676 0 0 0 0 - - - 0;
+#X floatatom 422 729 0 0 0 0 - - - 0;
+#X obj 422 702 == 0;
+#X floatatom 475 676 0 0 0 0 - - - 0;
+#X floatatom 475 729 0 0 0 0 - - - 0;
+#X obj 475 702 < 5;
 #X obj 201 20 div;
 #X obj 399 20 mod;
 #X floatatom 98 289 4 0 0 0 - - - 0;
@@ -60,11 +60,9 @@ for negative inputs (and might act variously depending on CPU design).
 #X obj 342 20 <<;
 #X obj 371 20 >>;
 #X floatatom 56 195 4 0 0 0 - - - 0;
-#X text 71 706 All of these objects can have a creation argument to
-initialize the right inlet:, f 40;
-#X floatatom 482 692 0 0 0 0 - - - 0;
-#X floatatom 482 745 0 0 0 0 - - - 0;
-#X obj 482 718 div 3;
+#X floatatom 520 676 0 0 0 0 - - - 0;
+#X floatatom 520 729 0 0 0 0 - - - 0;
+#X obj 520 702 div 3;
 #X obj 56 850 expr;
 #X text 97 851 - evaluation expressions, f 25;
 #X obj 57 820 sin;
@@ -96,9 +94,12 @@ is true or false. Unlike the others \, these can deal with float input.
 , f 84;
 #X text 218 134 note these expect integer input \, so 0.5 or -0.5 are
 truncated to '0' and not considered 'nonzero'.;
+#X text 51 685 All of these objects can have a creation argument to
+initialize the right inlet. They also all take a bang message to evaluate
+the operation with the previously set values., f 49;
 #X connect 5 0 0 0;
-#X connect 8 0 70 0;
-#X connect 9 0 71 0;
+#X connect 8 0 69 0;
+#X connect 9 0 70 0;
 #X connect 10 0 7 0;
 #X connect 11 0 6 0;
 #X connect 12 0 2 0;
@@ -152,12 +153,12 @@ truncated to '0' and not considered 'nonzero'.;
 #X connect 49 0 24 0;
 #X connect 56 0 42 0;
 #X connect 56 0 44 0;
-#X connect 58 0 60 0;
-#X connect 60 0 59 0;
+#X connect 57 0 59 0;
+#X connect 59 0 58 0;
+#X connect 66 0 8 0;
+#X connect 66 0 9 0;
 #X connect 67 0 8 0;
 #X connect 67 0 9 0;
-#X connect 68 0 8 0;
-#X connect 68 0 9 0;
-#X connect 68 1 9 1;
-#X connect 68 1 8 1;
-#X connect 69 0 68 0;
+#X connect 67 1 9 1;
+#X connect 67 1 8 1;
+#X connect 68 0 67 0;

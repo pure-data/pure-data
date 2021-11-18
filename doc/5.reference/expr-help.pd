@@ -4,23 +4,20 @@
 #X obj 78 101 fexpr~;
 #N canvas 644 54 810 635 Arrays 0;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array array1 10 float 0;
+#X array array100 10 float 0;
 #X coords 0 10 9 0 220 130 1 0 0;
 #X restore 537 143 graph;
 #X floatatom 183 354 0 0 9 0 - - - 0;
 #X floatatom 183 411 0 0 0 0 - - - 0;
 #X obj 183 383 expr $s2[$f1];
-#X msg 271 355 symbol array1;
 #X obj 549 41 loadbang;
-#X floatatom 119 102 5 0 9 0 - - - 0;
-#X floatatom 119 178 5 0 0 0 - - - 0;
-#X msg 549 73 \; array1 0 1 4 2 8 5 6 1 4 2 8;
+#X floatatom 99 102 5 0 9 0 - - - 0;
+#X floatatom 99 178 5 0 0 0 - - - 0;
 #X text 29 65 For instance:;
 #X obj 271 326 loadbang;
 #X floatatom 550 433 0 0 100 0 - - - 0;
 #X obj 550 314 vsl 20 100 0 10 0 0 empty empty empty 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
-#X obj 550 464 expr array1[1] = $f1;
 #X text 245 132 input is the index to read from the array, f 21;
 #X text 27 23 [expr] \, [expr~] and [fexpr~] can read values from array
 (without interpolation). The syntax is arrayname[index].;
@@ -28,24 +25,27 @@
 number) - is used to receive the array names.;
 #X text 255 450 [expr] can set values to an array index with "=" (a.k.a.
 "store function") as in:, f 41;
-#X obj 119 139 expr array1[$i1];
 #X text 27 214 Note that variables '$f#' are also possible as the array
 index \, but it won't make sense since there's no interpolation and
 float inputs are just truncated to integers., f 64;
 #X text 90 531 Even though you can also use arrays in [expr~] and [fexpr~].
 They cannot write values to arrays and the index values cannot be audio
 variables (just either '$i3' or '$f#').;
-#X obj 550 532 expr~ $v1 + array1[1];
-#X obj 550 559 fexpr~ $x1 + array1[1];
+#X msg 549 73 \; array100 0 1 4 2 8 5 6 1 4 2 8;
+#X msg 271 355 symbol array100;
+#X obj 99 139 expr array100[$i1];
+#X obj 550 464 expr array100[1] = $f1;
+#X obj 550 532 expr~ $v1 + array100[1];
+#X obj 550 559 fexpr~ $x1 + array100[1];
 #X connect 1 0 3 0;
 #X connect 3 0 2 0;
-#X connect 4 0 3 1;
-#X connect 5 0 8 0;
-#X connect 6 0 18 0;
-#X connect 10 0 4 0;
-#X connect 11 0 13 0;
-#X connect 12 0 11 0;
-#X connect 18 0 7 0;
+#X connect 4 0 17 0;
+#X connect 5 0 19 0;
+#X connect 8 0 18 0;
+#X connect 9 0 20 0;
+#X connect 10 0 9 0;
+#X connect 18 0 3 1;
+#X connect 19 0 6 0;
 #X restore 445 510 pd Arrays;
 #X text 58 512 Basic examples:;
 #X text 369 533 Further details:, f 8;
@@ -1173,7 +1173,7 @@ means you need to update a variable and call it in the below expression
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
 #X restore 520 510 pd [value];
-#X text 519 690 updated for Pd 0.51-3;
+#X text 507 653 updated for Pd 0.51-3;
 #X obj 473 62 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
 #000000;
 #N canvas 798 148 456 264 reference 0;
@@ -1237,6 +1237,7 @@ size;
 #X obj 437 698 sqrt~;
 #X obj 323 698 exp~;
 #X obj 399 698 log~;
+#X obj 483 698 pow~;
 #X connect 21 0 22 0;
 #X connect 32 0 31 2;
 #X connect 33 0 31 1;
