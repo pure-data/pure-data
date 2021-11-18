@@ -21,7 +21,7 @@ windows too. Also \, you can use message boxes as shown:, f 56;
 #X msg 196 458 symbol help-send1;
 #X msg 209 487 symbol help-send2;
 #X floatatom 135 488 5 0 0 0 - - - 0;
-#X symbolatom 196 516 10 0 0 0 - - - 0;
+#X symbolatom 196 516 12 0 0 0 - - - 0;
 #X text 37 388 If invoked without an argument \, "send" creates an
 inlet to let you set the target via "symbol" messages:, f 54;
 #X obj 594 203 value y;
