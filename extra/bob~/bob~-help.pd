@@ -1,4 +1,5 @@
 #N canvas 531 56 1062 722 12;
+#X declare -stdpath ./;
 #X obj 231 347 env~ 8192, f 4;
 #X floatatom 230 387 5 0 0 0 - - - 0;
 #X floatatom 408 193 5 0 200 0 - - - 0;
@@ -133,6 +134,7 @@ resonant filter, f 69;
 #X obj 173 663 hip~;
 #X obj 215 663 bp~;
 #X obj 256 663 vcf~;
+#X obj 825 15 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;

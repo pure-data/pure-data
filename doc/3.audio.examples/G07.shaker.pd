@@ -1,4 +1,5 @@
-#N canvas 296 114 793 540 12;
+#N canvas 496 106 793 540 12;
+#X declare -stdpath ./;
 #X obj 54 415 output~;
 #X obj 54 375 +~;
 #X obj 63 184 delwrite~ G07-del 30;
@@ -16,9 +17,9 @@
 #X obj 284 91 f;
 #X obj 328 154 random 1000;
 #X obj 284 129 t f b;
-#X obj 284 31 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
-#X floatatom 372 28 5 10 1000 0 - - -;
+#X obj 284 31 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
+#X floatatom 372 28 5 10 1000 0 - - - 0;
 #X obj 284 236 route 0 1 2 3;
 #X obj 72 249 delread~ G07-del 30;
 #X obj 53 153 phasor~ 80;
@@ -26,7 +27,7 @@
 #X obj 196 362 delread~ G07-del 11;
 #X obj 372 63 * 4;
 #X obj 328 181 expr 2 * $f1/1000 - 0.7;
-#X floatatom 53 130 5 30 1000 0 - - -;
+#X floatatom 53 130 5 30 1000 0 - - - 0;
 #X obj 284 52 metro 50;
 #X obj 284 209 pack 0 0 200, f 13;
 #X text 53 106 frequency;
@@ -44,6 +45,7 @@ of 200.), f 45;
 of the signal (including the original) defines some sort of irregular
 comb filter. The peaks and valleys of the comb filter shift constantly
 as the gains change to new \, random values., f 45;
+#X obj 609 40 declare -stdpath ./;
 #X connect 1 0 0 0;
 #X connect 1 0 0 1;
 #X connect 3 0 4 1;

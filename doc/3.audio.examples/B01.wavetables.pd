@@ -1,5 +1,6 @@
 #N canvas 443 44 720 667 12;
-#X floatatom 177 53 0 0 0 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 177 53 0 0 0 0 - - - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table10 259 float 1;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -19,7 +20,7 @@
 #X text 46 18 WAVETABLE OSCILLATORS;
 #X text 78 116 wavetable;
 #X obj 177 80 mtof;
-#X floatatom 177 107 0 0 0 0 - - -;
+#X floatatom 177 107 0 0 0 0 - - - 0;
 #X obj 177 133 tabosc4~ table10;
 #X text 63 326 Note that I selected "save contents" in the properties
 dialog for table10 (right click on the table to see.) If this isn't
@@ -43,6 +44,7 @@ waveform. You can draw in the waveform with the mouse., f 59;
 #X obj 177 167 output~;
 #X text 72 133 oscillator =>;
 #X text 107 52 pitch =>;
+#X obj 497 24 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;

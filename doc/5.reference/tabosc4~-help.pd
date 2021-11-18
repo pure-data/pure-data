@@ -1,4 +1,5 @@
 #N canvas 754 81 717 690 12;
+#X declare -stdpath ./;
 #X floatatom 81 309 4 0 0 0 - - - 0;
 #X obj 81 339 sig~ 100;
 #X text 483 540 Updated for Pd version 0.33;
@@ -41,6 +42,7 @@ is the same as '0' and '0.5' is half the cycle)., f 77;
 #X obj 416 634 ../2.control.examples/16.more.arrays;
 #X text 37 615 Check also the "array" examples from the Pd tutorial
 by clicking and opening the files to the right ====>, f 52;
+#X obj 524 17 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 23 0;
 #X connect 7 0 22 0;

@@ -1,10 +1,11 @@
 #N canvas 507 97 858 573 12;
+#X declare -stdpath ./;
 #X obj 147 335 *~;
 #X obj 165 311 line~;
 #X obj 129 407 cos~;
 #X obj 129 377 +~;
 #X obj 165 288 pack 0 50;
-#X floatatom 165 239 0 0 300 0 - - -;
+#X floatatom 165 239 0 0 300 0 - - - 0;
 #X obj 165 264 / 100;
 #X obj 71 208 phasor~;
 #X obj 129 493 output~;
@@ -29,9 +30,9 @@ until much later.;
 #X text 258 184 delay two samples;
 #X text 256 202 for better graphing;
 #X obj 106 464 samplerate~;
-#X obj 106 441 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 106 511 5 0 0 0 - - -;
+#X obj 106 441 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X floatatom 106 511 5 0 0 0 - - - 0;
 #X obj 106 487 / 256;
 #X obj 106 417 loadbang;
 #X obj 162 561 s fundamental;
@@ -71,10 +72,10 @@ fundamental, f 38;
 #X connect 26 0 30 0;
 #X connect 26 1 20 0;
 #X restore 176 454 pd fft;
-#X obj 195 398 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 216 427 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 195 398 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 216 427 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E10-spectrum 259 float 0;
 #X coords 0 2100 258 -20 259 130 1;
@@ -93,24 +94,24 @@ fundamental, f 38;
 #X text 610 247 10;
 #X text 642 247 12;
 #X text 674 247 14;
-#X floatatom 71 93 3 0 15 0 - - -;
+#X floatatom 71 93 3 0 15 0 - - - 0;
 #X obj 71 180 *;
 #X obj 71 68 r cm;
 #X text 55 18 SPECTRUM OF COMPLEX PHASE MODULATION;
 #X text 74 114 carrier;
 #X obj 147 182 *;
-#X floatatom 147 95 3 0 15 0 - - -;
+#X floatatom 147 95 3 0 15 0 - - - 0;
 #X text 151 115 mod 1;
 #X obj 147 70 r m1;
 #X text 194 241 index1;
 #X obj 250 337 *~;
 #X obj 268 313 line~;
 #X obj 268 290 pack 0 50;
-#X floatatom 268 241 0 0 300 0 - - -;
+#X floatatom 268 241 0 0 300 0 - - - 0;
 #X obj 268 266 / 100;
 #X obj 250 209 osc~;
 #X obj 250 184 *;
-#X floatatom 250 97 3 0 15 0 - - -;
+#X floatatom 250 97 3 0 15 0 - - - 0;
 #X text 254 117 mod 2;
 #X text 302 241 index2;
 #X obj 250 72 r m2;
@@ -123,6 +124,7 @@ upward from 0 introduces sidebands around each of the sidebands.,
 f 63;
 #X text 217 398 <= graph once;
 #X text 237 426 <= repeatedly;
+#X obj 623 21 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 0 1;
 #X connect 2 0 9 0;

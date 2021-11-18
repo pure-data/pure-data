@@ -1,13 +1,14 @@
 #N canvas 406 70 698 565 12;
+#X declare -stdpath ./;
 #X obj 186 394 cos~;
-#X floatatom 176 182 4 0 200 0 - - -;
+#X floatatom 176 182 4 0 200 0 - - - 0;
 #X obj 176 205 / 10;
-#X floatatom 120 224 4 0 0 0 - - -;
+#X floatatom 120 224 4 0 0 0 - - - 0;
 #X text 72 186 fundamental;
 #X text 65 201 (= mod freq);
 #X text 252 192 index;
 #X text 252 212 (percent);
-#X floatatom 252 233 4 0 500 0 - - -;
+#X floatatom 252 233 4 0 500 0 - - - 0;
 #X obj 252 302 line~;
 #X obj 204 336 *~;
 #X obj 252 256 / 100;
@@ -17,10 +18,10 @@
 #X text 240 343 oscillator;
 #X obj 186 482 output~;
 #X obj 186 441 hip~;
-#X obj 259 388 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 279 415 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 259 388 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 279 415 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X text 457 505 updated for Pd version 0.37;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F11-spectrum 259 float 0;
@@ -100,6 +101,7 @@ until much later.;
 #X connect 26 0 2 0;
 #X connect 28 0 24 1;
 #X restore 240 441 pd fft;
+#X obj 522 22 declare -stdpath ./;
 #X connect 0 0 17 0;
 #X connect 0 0 36 0;
 #X connect 1 0 2 0;

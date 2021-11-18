@@ -1,11 +1,12 @@
-#N canvas 226 38 830 700 12;
+#N canvas 535 38 830 700 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table19 44103 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
 #X restore 513 25 graph;
 #X obj 87 367 hip~ 5;
-#X floatatom 147 66 0 0 0 0 - - -;
-#X floatatom 172 121 0 0 100 0 - - -;
+#X floatatom 147 66 0 0 0 0 - - - 0;
+#X floatatom 172 121 0 0 100 0 - - - 0;
 #X obj 172 150 * 441;
 #X obj 147 173 *~ 0;
 #X obj 147 201 +~ 1;
@@ -20,7 +21,7 @@
 #X obj 87 341 *~;
 #X obj 200 256 line~;
 #X obj 200 208 * 441;
-#X floatatom 200 185 0 0 0 0 - - -;
+#X floatatom 200 185 0 0 0 0 - - - 0;
 #X obj 200 232 pack 0 100;
 #X obj 147 290 +~;
 #X text 71 495 In this patch we can loop in any "window" of the input
@@ -55,6 +56,7 @@ to.;
 #X text 208 121 <= chunk size (100ths of a second);
 #X text 192 65 <= frequency (Hz.);
 #X text 414 409 <= record;
+#X obj 623 578 declare -stdpath ./;
 #X connect 1 0 32 0;
 #X connect 1 0 32 1;
 #X connect 2 0 29 0;

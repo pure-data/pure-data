@@ -1,4 +1,5 @@
 #N canvas 493 23 690 811 12;
+#X declare -stdpath ./;
 #X obj 45 501 cos~;
 #X obj 45 448 *~;
 #X obj 88 511 cos~;
@@ -9,16 +10,16 @@
 #X obj 123 585 *~;
 #X obj 105 615 +~;
 #X obj 105 423 samphold~;
-#X floatatom 143 286 4 0 500 0 - - -;
+#X floatatom 143 286 4 0 500 0 - - - 0;
 #X obj 143 309 / 10;
 #X obj 143 357 line~;
 #X obj 143 334 pack 0 50;
 #X obj 45 354 phasor~;
-#X floatatom 45 333 4 0 0 0 - - -;
+#X floatatom 45 333 4 0 0 0 - - - 0;
 #X text 28 311 fundamental;
 #X text 264 386 index;
 #X text 264 403 (percent);
-#X floatatom 267 426 4 0 500 0 - - -;
+#X floatatom 267 426 4 0 500 0 - - - 0;
 #X obj 267 472 line~;
 #X obj 201 472 *~;
 #X obj 267 449 pack 0 50;
@@ -100,10 +101,10 @@
 #X text 616 433 2700;
 #X obj 82 735 output~;
 #X obj 105 698 hip~;
-#X obj 182 638 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 202 663 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 182 638 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 202 663 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X text 34 42 Instead of using the two cosines as FM carrier oscillators
 \, we can use them as ring modulators for a natural or synthetic tone.
 Here we use waveshaping - to wit \, a sinusoid looking up a Gaussian
@@ -183,6 +184,7 @@ until much later.;
 #X connect 26 0 2 0;
 #X connect 28 0 24 1;
 #X restore 163 689 pd fft;
+#X obj 509 13 declare -stdpath ./;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;

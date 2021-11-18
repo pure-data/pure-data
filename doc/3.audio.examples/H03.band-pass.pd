@@ -1,24 +1,25 @@
 #N canvas 581 101 599 579 12;
+#X declare -stdpath ./;
 #X obj 76 303 mtof;
-#X floatatom 76 280 5 0 150 0 - #0-pit -;
+#X floatatom 76 280 5 0 150 0 - #0-pit - 0;
 #X obj 47 458 output~;
 #X obj 67 250 noise~;
-#X floatatom 76 328 5 0 0 0 - - -;
+#X floatatom 76 328 5 0 0 0 - - - 0;
 #X text 341 503 updated for Pd version 0.39;
 #X obj 156 439 metro 250;
-#X obj 156 419 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 156 419 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X text 174 416 graphing on/off;
 #X text 391 446 --- 0.02 sec ---;
 #X text 133 249 white noise \, test signal;
 #X obj 67 386 bp~;
 #X text 108 388 band-pass filter;
 #X obj 156 464 tabwrite~ H03-graph;
-#X floatatom 85 358 5 0 1000 0 - #0-q -;
+#X floatatom 85 358 5 0 1000 0 - #0-q - 0;
 #N canvas 550 179 352 240 loadbang 0;
 #X obj 126 30 loadbang;
-#X obj 126 54 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 126 54 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 126 73 f \$0;
 #X msg 126 97 \; \$1-pit 72 \; \$1-q 1;
 #X text 77 170 This subpatch loads initial values in number boxes.
@@ -45,6 +46,7 @@ patch uses a white noise source to demonstrate bp~.;
 #X coords 0 1 881 -1 200 140 1;
 #X restore 354 303 graph;
 #X text 131 358 <= Q (selectivity);
+#X obj 434 13 declare -stdpath ./;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 3 0 11 0;

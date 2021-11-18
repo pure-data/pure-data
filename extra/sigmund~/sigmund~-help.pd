@@ -2,7 +2,7 @@
 #N canvas 582 131 541 606 using-with-tables 0;
 #X obj 40 376 print peak;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array insignal 1024 float 2;
+#X array insignal 1024 float 0;
 #X coords 0 1 1023 -1 200 140 1;
 #X restore 94 434 graph;
 #X obj 362 507 phasor~;

@@ -1,7 +1,8 @@
 #N canvas 680 39 545 783 12;
-#X floatatom 310 344 0 0 100 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 310 344 0 0 100 0 - - - 0;
 #X obj 88 523 +~;
-#X text 94 16 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/VD~;
+#X text 26 22 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/VD~;
 #X text 55 58 If you're writing to and reading from a delay line \,
 you have to get the write sorted before the read or else you'll never
 get less than a block's delay. This patch compares a "wrong" flanger
@@ -29,8 +30,8 @@ with a "right" one:;
 #X obj 88 649 +~;
 #X obj 310 371 / 44.1;
 #X obj 88 693 output~;
-#X obj 141 622 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 141 622 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X text 249 712 updated for Pd version 0.37-1;
 #X obj 310 397 pack 0 30;
 #N canvas 0 0 450 300 pulse 0;
@@ -59,6 +60,7 @@ DSP sorting in Pd follows the hierarchy of subpatches.;
 #X text 350 344 <= delay in samples;
 #X text 165 620 <= off to hear left-hand side \; on to hear right hand
 side.;
+#X obj 390 22 declare -stdpath ./;
 #X connect 0 0 9 0;
 #X connect 1 0 5 1;
 #X connect 1 0 8 0;

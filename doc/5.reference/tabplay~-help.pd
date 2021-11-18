@@ -1,4 +1,5 @@
 #N canvas 564 81 902 635 12;
+#X declare -stdpath ./;
 #X msg 728 167 \; pd dsp 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array sample 155944 float 0;
@@ -48,6 +49,7 @@ and there are none of tabread4~'s interpolation artifacts.;
 by clicking and opening the files to the right ====>, f 52;
 #X text 51 539 see also:, f 10;
 #X obj 81 336 output~;
+#X obj 680 24 declare -stdpath ./;
 #X connect 11 0 12 0;
 #X connect 13 0 2 0;
 #X connect 16 0 33 0;

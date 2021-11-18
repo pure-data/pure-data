@@ -1,4 +1,5 @@
 #N canvas 454 23 631 797 12;
+#X declare -stdpath ./;
 #X obj 114 537 cos~;
 #X obj 114 458 *~;
 #X obj 172 537 cos~;
@@ -9,14 +10,14 @@
 #X obj 211 609 *~;
 #X obj 193 637 +~;
 #X obj 193 436 samphold~;
-#X floatatom 193 233 4 0 127 0 - - -;
+#X floatatom 193 233 4 0 127 0 - - - 0;
 #X text 235 225 center;
 #X obj 193 303 line~;
 #X obj 193 280 pack 0 50;
 #X obj 114 379 phasor~;
-#X floatatom 114 275 4 0 127 0 - - -;
+#X floatatom 114 275 4 0 127 0 - - - 0;
 #X text 75 236 fundamental;
-#X floatatom 379 297 4 0 127 0 - - -;
+#X floatatom 379 297 4 0 127 0 - - - 0;
 #X obj 379 368 line~;
 #X obj 302 508 *~;
 #X obj 379 345 pack 0 50;
@@ -120,6 +121,7 @@ to avoid this. Note however that there's a "paf~" extern available
 which solves this problem better and \, moreover \, runs much faster.
 , f 81;
 #X obj 292 426 *~ 0.5;
+#X obj 466 12 declare -stdpath ./;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;

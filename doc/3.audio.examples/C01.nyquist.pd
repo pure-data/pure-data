@@ -1,4 +1,5 @@
 #N canvas 604 54 543 688 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table24 259 float 1;
 #A 0 -0.294693 0 0.294693 0.4 0.28948 0.10749 0.022875 0.0789655 0.181673
@@ -42,13 +43,13 @@
 #X restore 192 399 graph;
 #X obj 77 311 line~;
 #X msg 77 260 500 \, 1423 4000;
-#X floatatom 85 285 5 0 0 0 - - -;
+#X floatatom 85 285 5 0 0 0 - - - 0;
 #X text 50 553 Synthesis techniques vary in their tendency to make
 foldover. For higher pitched sounds you'll want to try out relatively
 foldover-resistant ones.;
 #X obj 60 378 output~;
-#X obj 291 271 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 291 271 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #N canvas 739 154 597 347 make-tab 0;
 #X obj 40 29 inlet;
 #X obj 126 29 inlet;
@@ -67,12 +68,12 @@ foldover-resistant ones.;
 #X connect 2 0 6 0;
 #X connect 3 0 7 0;
 #X restore 291 355 pd make-tab;
-#X obj 315 290 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 340 310 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 365 332 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 315 290 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 340 310 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 365 332 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 309 266 sine;
 #X text 335 287 complex;
 #X text 361 307 rectangle;
@@ -91,6 +92,7 @@ effect especially strong if you're running at a sample rate of 44100
 (the usual one.);
 #X text 294 632 updated for Pd version 0.37;
 #X text 289 237 waveforms:;
+#X obj 390 44 declare -stdpath ./;
 #X connect 1 0 15 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;

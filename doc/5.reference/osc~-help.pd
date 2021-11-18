@@ -1,4 +1,5 @@
 #N canvas 624 118 622 510 12;
+#X declare -stdpath ./;
 #X floatatom 161 138 0 0 0 0 - - - 0;
 #X text 357 378 see also:;
 #X obj 429 405 cos~;
@@ -32,6 +33,7 @@ is half the cycle)., f 72;
 #X text 426 238 <= signal controlling;
 #X text 449 255 the frequency;
 #X obj 355 251 osc~;
+#X obj 452 15 declare -stdpath ./;
 #X connect 0 0 15 0;
 #X connect 6 0 11 0;
 #X connect 7 0 14 0;

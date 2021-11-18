@@ -1,5 +1,6 @@
-#N canvas 430 33 681 665 12;
-#X floatatom 131 71 0 0 0 0 - - -;
+#N canvas 683 91 681 665 12;
+#X declare -stdpath ./;
+#X floatatom 131 71 0 0 0 0 - - - 0;
 #X obj 131 97 mtof;
 #X obj 32 332 output~;
 #X msg 131 45 60;
@@ -13,8 +14,8 @@
 #X obj 195 188 *~ 0.2;
 #X obj 90 298 +~;
 #X obj 131 268 *~;
-#X obj 166 269 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 166 269 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 131 219 +~;
 #X obj 131 243 +~;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -50,6 +51,7 @@ four., f 76;
 #X text 166 74 <= choose a pitch;
 #X text 167 45 <= reset to middle C;
 #X text 105 9 ADDING SINUSOIDS TO MAKE A COMPLEX TONE;
+#X obj 489 26 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 4 0;
 #X connect 1 0 5 0;

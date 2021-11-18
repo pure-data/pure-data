@@ -1,4 +1,5 @@
 #N canvas 579 34 572 679 12;
+#X declare -stdpath ./;
 #X obj 47 130 osc~ 100;
 #X msg 65 157 clear;
 #X obj 107 620 lop~;
@@ -47,6 +48,7 @@
 #X obj 99 161 *~;
 #X text 151 14 Stuff to test it:;
 #X obj 229 278 output~;
+#X obj 26 223 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 2 0 12 0;
 #X connect 3 0 13 0;

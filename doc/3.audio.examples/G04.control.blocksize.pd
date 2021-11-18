@@ -1,4 +1,5 @@
 #N canvas 650 64 602 577 12;
+#X declare -stdpath ./;
 #N canvas 564 152 562 441 delay-writer 0;
 #X obj 91 254 inlet~;
 #X obj 91 370 outlet~;
@@ -61,6 +62,7 @@ older than their paper.;
 #X text 42 358 rectangular, f 12;
 #X text 42 344 this makes a;
 #X msg 136 342 1 \, 0 0 1;
+#X obj 423 16 declare -stdpath ./;
 #X connect 0 0 9 0;
 #X connect 0 0 9 1;
 #X connect 1 0 0 1;

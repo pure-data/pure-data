@@ -1,4 +1,5 @@
 #N canvas 430 110 554 683 12;
+#X declare -stdpath ./;
 #X text 269 284 attack;
 #X text 340 285 release;
 #X obj 271 421 line~;
@@ -20,10 +21,10 @@ msec \, the second message sends the line~ back down to 1 over another
 #X text 295 637 updated for Pd version 0.37;
 #X obj 186 498 +~ 0.5;
 #X obj 186 552 hip~ 5;
-#X obj 270 304 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 341 305 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 270 304 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 341 305 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X msg 280 332 stop;
 #X text 48 143 You can hit the "attack" and/or "release" while something
 is still going on from a previous attack or release \, and the envelope
@@ -32,6 +33,7 @@ sends a "stop" to the "del" object \, in case it is still scheduled
 to go off from a previous attack.;
 #X text 50 227 The synthesis method is a form of waveshaping \, which
 is the subject of a later chapter.;
+#X obj 393 14 declare -stdpath ./;
 #X connect 2 0 6 1;
 #X connect 3 0 2 0;
 #X connect 5 0 9 0;

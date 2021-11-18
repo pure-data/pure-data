@@ -1,4 +1,5 @@
-#N canvas 849 57 517 510 12;
+#N canvas 849 57 512 511 12;
+#X declare -stdpath ./;
 #X obj 58 13 bp~;
 #X floatatom 147 179 0 0 0 0 - - - 0;
 #X msg 114 151 clear;
@@ -29,6 +30,7 @@ the center frequency., f 48;
 #X obj 138 459 bob~;
 #X obj 178 459 lop~;
 #X obj 218 459 hip~;
+#X obj 344 10 declare -stdpath ./;
 #X connect 1 0 4 1;
 #X connect 2 0 4 0;
 #X connect 4 0 16 0;

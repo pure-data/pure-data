@@ -1,31 +1,33 @@
 #N canvas 716 83 617 568 12;
-#X floatatom 221 200 5 0 0 0 - - - 0;
-#X msg 161 173 clear;
+#X declare -stdpath ./;
+#X floatatom 225 193 5 0 0 0 - - - 0;
+#X msg 165 166 clear;
 #X obj 74 13 hip~;
 #X text 119 12 - one-pole high pass filter;
-#X text 329 521 updated for Pd version 0.44;
-#X msg 302 463 \; pd compatibility 0.43;
-#X text 236 227 Creation argument initializes cutoff frequency.;
-#X text 45 365 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
+#X text 333 514 updated for Pd version 0.44;
+#X msg 306 456 \; pd compatibility 0.43;
+#X text 240 220 Creation argument initializes cutoff frequency.;
+#X text 49 358 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
 high-frequency output gain was incorrectly greater than one (usually
 only slightly so \, but noticeably if the cutoff frequency was more
 than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY
 in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
 To get the old (0.43 and earlier) behavior \, set "compatibility" to
 0.43 in Pd's command line or by a message:, f 67;
-#X text 210 173 <= reinitialize internal state;
-#X text 84 495 see also:;
-#X obj 85 521 lop~;
-#X obj 124 521 bp~;
-#X obj 198 521 bob~;
-#X obj 158 521 vcf~;
-#X obj 94 149 noise~;
-#X obj 161 283 output~;
-#X text 268 199 <= set cutoff frequency;
-#X text 44 77 hip~ is a one-pole high pass filter with a specified
+#X text 214 166 <= reinitialize internal state;
+#X text 88 488 see also:;
+#X obj 89 514 lop~;
+#X obj 128 514 bp~;
+#X obj 202 514 bob~;
+#X obj 162 514 vcf~;
+#X obj 98 142 noise~;
+#X obj 165 276 output~;
+#X text 272 192 <= set cutoff frequency;
+#X text 48 70 hip~ is a one-pole high pass filter with a specified
 cutoff frequency. Left (audio) inlet is the incoming audio signal.
 Right (control) inlet sets cutoff frequency., f 71;
-#X obj 161 225 hip~ 2000;
+#X obj 165 218 hip~ 2000;
+#X obj 439 12 declare -stdpath ./;
 #X connect 0 0 18 1;
 #X connect 1 0 18 0;
 #X connect 14 0 18 0;
