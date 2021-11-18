@@ -2655,7 +2655,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 !obj_issignalinlet(ob2, closest2))
             {
                 if (doit)
-                    pd_error(0, "can't connect signal outlet to control inlet");
+                    pd_error(0, "can't connect audio signal outlet to nonsignal inlet");
                 canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
                 return;
             }

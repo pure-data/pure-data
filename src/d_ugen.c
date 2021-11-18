@@ -703,7 +703,7 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
                 if so fail silently */
         else if (!(x2 && (pd_class(&x2->ob_pd) == text_class)))
             pd_error(u1->u_obj,
-                "signal outlet connect to nonsignal inlet (ignored)");
+                "audio signal outlet connected to nonsignal inlet (ignored)");
         return;
     }
     if (sigoutno < 0 || sigoutno >= u1->u_nout || siginno >= u2->u_nin)
