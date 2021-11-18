@@ -1,45 +1,85 @@
-#N canvas 554 66 579 522 12;
-#X msg 51 178 bang;
-#X floatatom 73 424 0 0 0 0 - - -;
-#X floatatom 66 204 0 0 0 0 - - -;
-#X floatatom 105 364 0 0 0 0 - - -;
-#X text 140 366 sets the value;
-#X text 118 395 creation argument initializes the value;
-#X floatatom 455 305 5 0 0 0 - - -;
-#X text 96 179 output the value;
-#X text 96 203 set and output the value;
-#X floatatom 458 378 5 0 0 0 - - -;
-#X obj 458 333 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X text 49 468 see also:;
-#X obj 167 468 value;
-#X obj 214 468 send;
-#X obj 107 18 int;
-#X obj 73 394 int 6;
-#X msg 93 288 send int-help;
-#X obj 455 281 r int-help;
-#X obj 119 468 float;
-#X msg 76 233 9.6;
-#X msg 86 255 -9.6;
-#X text 126 243 <= non-integers get truncated toward zero;
-#X text 331 467 updated for Pd version 0.48;
-#X obj 458 354 value int-help;
-#X text 200 287 send to a named object such as a;
-#X text 320 303 receive or value:;
-#X text 75 82 The int object stores a number \, initialized by its
+#N canvas 680 75 605 522 12;
+#X msg 39 152 bang;
+#X floatatom 61 398 0 0 0 0 - - - 0;
+#X floatatom 54 178 0 0 0 0 - - - 0;
+#X floatatom 93 338 0 0 0 0 - - - 0;
+#X text 128 340 sets the value;
+#X text 106 369 creation argument initializes the value;
+#X text 84 153 output the value;
+#X text 84 177 set and output the value;
+#X text 47 480 see also:;
+#X obj 165 480 value;
+#X obj 212 480 send;
+#X obj 101 27 int;
+#X obj 61 368 int 6;
+#X msg 81 262 send int-help;
+#X obj 117 480 float;
+#X msg 64 207 9.6;
+#X msg 74 229 -9.6;
+#X text 114 217 <= non-integers get truncated toward zero;
+#X text 329 479 updated for Pd version 0.48;
+#X text 40 65 The int object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
 by sending it the "bang" message. Sending a number sets a new value
-and outputs it. The output is truncated to an integer a la Max.;
-#X text 149 18 - store an integer;
-#X obj 108 45 i;
-#X text 151 45 - abreviation;
-#X connect 0 0 15 0;
-#X connect 2 0 15 0;
-#X connect 3 0 15 1;
-#X connect 10 0 23 0;
-#X connect 15 0 1 0;
-#X connect 16 0 15 0;
-#X connect 17 0 6 0;
-#X connect 19 0 15 0;
-#X connect 20 0 15 0;
-#X connect 23 0 9 0;
+and outputs it. The output is truncated to an integer a la Max., f
+70;
+#X text 143 26 - store an integer;
+#X obj 303 27 i;
+#X text 346 26 - abreviation;
+#X floatatom 443 228 5 0 0 0 - - - 0;
+#X floatatom 444 301 5 0 0 0 - - - 0;
+#X obj 444 257 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 444 333 5 0 0 0 - int-help - 0;
+#X text 490 333 <= right click for properties, f 10;
+#X text 192 255 send to a named object such as a GUI \, a receive or
+value objects =>, f 34;
+#X obj 443 204 r int-help;
+#X obj 444 277 v int-help;
+#N canvas 995 162 565 399 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send and receive names \, speacially in abstractions
+so each copy has local connections instead of global., f 67;
+#X floatatom 341 339 5 0 0 0 - - - 0;
+#X msg 149 257 send \$1-x;
+#X obj 149 225 f \$0;
+#X obj 149 198 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 288 221 value \$0-x;
+#X obj 288 192 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 288 256 5 0 0 0 - - - 0;
+#X floatatom 390 221 5 0 0 0 - #0-x - 0;
+#X msg 44 254 send \$1;
+#X obj 44 200 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 44 225 symbol \$0-y;
+#X obj 341 298 receive \$0-y;
+#X text 435 220 <= right click for properties, f 10;
+#X obj 149 295 int 15;
+#X text 33 99 Since "\$0" only works inside objects \, if you need
+to set a send name with it \, you need to use something like a symbol
+or a float object. Note that "\$0" is also used in send/receive names
+in GUIs as well as variable names in value objects., f 68;
+#X connect 2 0 14 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 5 0 7 0;
+#X connect 6 0 5 0;
+#X connect 9 0 14 0;
+#X connect 10 0 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 1 0;
+#X restore 334 425 pd Dealing_with_"\$0";
+#X text 147 412 open subpatch to see how to deal with '\$0' ======>
+, f 25;
+#X connect 0 0 12 0;
+#X connect 2 0 12 0;
+#X connect 3 0 12 1;
+#X connect 12 0 1 0;
+#X connect 13 0 12 0;
+#X connect 15 0 12 0;
+#X connect 16 0 12 0;
+#X connect 25 0 30 0;
+#X connect 29 0 23 0;
+#X connect 30 0 24 0;

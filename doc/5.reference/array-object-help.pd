@@ -3,8 +3,8 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 721 62 609 607 12;
-#X obj 474 503 list;
+#N canvas 721 62 627 681 12;
+#X obj 477 559 list;
 #X text 442 161 (click for details:), f 11;
 #N canvas 623 34 752 765 define 0;
 #X text 360 547 creation arguments:;
@@ -72,7 +72,7 @@ array has the originally specified size.;
 #X connect 35 0 19 0;
 #X connect 35 1 19 1;
 #X restore 443 202 pd define;
-#X obj 378 503 text;
+#X obj 381 559 text;
 #X obj 59 226 array size;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -206,7 +206,7 @@ maybe later arbitrary data structures) or access an array defined elsewhere
 to get or change its size \, set or read its elements \, and so on.
 , f 72;
 #X text 62 173 The first argument sets its function:;
-#X obj 419 503 scalar;
+#X obj 422 559 scalar;
 #X obj 59 250 array sum;
 #X obj 59 322 array quantile;
 #N canvas 560 199 665 358 sum 0;
@@ -370,7 +370,7 @@ here)., f 90;
 #X obj 59 369 array max;
 #N canvas 578 146 666 568 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array array-help-6 100 float 3;
+#X array array-help-6 100 float 1;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711
 0.55714 0.585711 0.599997 0.614282 0.63571 0.649996 0.664282 0.671424
 0.699995 0.699995 0.714281 0.721424 0.707138 0.699995 0.692853 0.68571
@@ -435,8 +435,33 @@ the "onset" and "number of points"., f 65;
 #X obj 59 392 array min;
 #X text 163 393 - min - find lowest value;
 #X text 162 374 - max - find highest value;
-#X text 359 551 updated for Pd version 0.52;
-#X obj 50 535 ../2.control.examples/15.array;
-#X obj 50 558 ../2.control.examples/16.more.arrays;
-#X text 44 493 see also the "array" examples from section 2 (click
+#X text 362 607 updated for Pd version 0.52;
+#X obj 53 591 ../2.control.examples/15.array;
+#X obj 53 614 ../2.control.examples/16.more.arrays;
+#X text 47 549 see also the "array" examples from section 2 (click
 below to open them) and these objects:, f 45;
+#N canvas 847 151 562 340 Dealing_with_"\$0" 0;
+#X obj 109 156 array define \$0-x;
+#X obj 211 263 array size;
+#X obj 278 232 symbol \$0-x;
+#X floatatom 211 290 5 0 0 0 - - - 0;
+#X obj 211 229 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 278 206 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 299 203 <= click here first;
+#X text 125 227 get size =>;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 240 155 <= array with local name;
+#X text 36 86 You can use "\$0" in an array name in [array define]
+and if you need to set the array name you can load it in a symbol object
+\, since "\$0" doesn't work in messages., f 70;
+#X connect 1 0 3 0;
+#X connect 2 0 1 1;
+#X connect 4 0 1 0;
+#X connect 5 0 2 0;
+#X restore 404 495 pd Dealing_with_"\$0";
+#X text 73 495 open subpatch to see how to deal with '\$0' =>;
