@@ -13,8 +13,8 @@
 #X restore 335 200 graph;
 #X msg 61 230 set table-1;
 #X obj 38 292 tabsend~ table-1;
-#X msg 161 172 \; pd dsp \$1;
-#X obj 161 150 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 180 188 \; pd dsp \$1;
+#X obj 180 166 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X msg 69 255 set table-2;
 #X text 161 232 use 'set' message to change table's name, f 20;
@@ -43,7 +43,7 @@ the block size with the block~ object., f 62;
 #X restore 143 457 pd block;
 #X obj 403 500 block~;
 #X obj 355 500 send~;
-#X text 38 96 By default a block is 64 samples but this can be changed
+#X text 38 91 By default a block is 64 samples but this can be changed
 with the block~ object., f 36;
 #X obj 355 524 array;
 #X text 119 26 - write a block of a signal to an array continuously
@@ -59,13 +59,14 @@ with the block~ object., f 36;
 #X obj 49 434 print~;
 #X obj 21 401 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 184 147 <= dsp on/off;
 #X obj 403 524 tabwrite~;
 #X text 212 457 <= example with a different block size;
 #X obj 24 547 ../2.control.examples/15.array;
 #X obj 24 570 ../2.control.examples/16.more.arrays;
 #X text 18 505 see also the "array" examples from section 2 (click
 below to open them) and these objects:, f 45;
+#X text 203 164 DSP on/off;
+#X obj 180 140 loadbang;
 #X connect 4 0 7 0;
 #X connect 6 0 7 0;
 #X connect 9 0 8 0;
@@ -74,3 +75,4 @@ below to open them) and these objects:, f 45;
 #X connect 23 0 22 0;
 #X connect 24 0 22 0;
 #X connect 26 0 25 0;
+#X connect 33 0 9 0;

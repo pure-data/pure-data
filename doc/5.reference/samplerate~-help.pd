@@ -1,18 +1,18 @@
-#N canvas 281 76 527 392 12;
+#N canvas 627 134 526 374 12;
 #X obj 60 13 samplerate~;
 #X text 160 12 - get audio sample rate;
-#X text 277 294 updated for Pd version 0.47;
+#X text 291 314 updated for Pd version 0.47;
 #X obj 94 295 samplerate~;
 #X obj 94 268 r pd-dsp-started;
-#X floatatom 94 322 7 0 0 0 - - -;
+#X floatatom 94 322 7 0 0 0 - - - 0;
 #X text 51 69 When sent a 'bang' message \, samplerate~ outputs the
 current audio sample rate. If called within a subwindow that is up-
 or down-sampled \, the sample rate of signals within that subwindow
-are reported.;
+are reported., f 56;
 #X text 50 149 In this example we use the "pd-dsp-started" message
 (automatically sent when DSP is started in Pd) to receive an update
 whenever sample rate may have changed. This is useful when designing
 filters whose coefficients usually have to be updated when the sample
-rate changes.;
+rate changes., f 58;
 #X connect 3 0 5 0;
 #X connect 4 0 3 0;

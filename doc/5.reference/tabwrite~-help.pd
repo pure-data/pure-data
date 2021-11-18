@@ -1,23 +1,23 @@
 #N canvas 665 108 690 509 12;
 #X obj 75 17 tabwrite~;
-#X msg 53 212 bang;
+#X msg 53 232 bang;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array buffer 1000 float 0;
 #X coords 0 1 999 -1 200 100 1 0 0;
-#X restore 368 210 graph;
-#X text 167 343 creation argument initializes array name;
-#X obj 97 451 tabread;
-#X obj 157 451 tabwrite;
-#X obj 225 451 tabsend~;
-#X obj 292 451 tabreceive~;
-#X obj 23 451 tabread4~;
-#X msg 71 281 stop;
-#X text 109 282 stop recording;
-#X msg 62 249 start 500;
-#X text 471 451 updated for Pd version 0.40.;
+#X restore 405 228 graph;
+#X text 167 363 creation argument initializes array name;
+#X obj 97 471 tabread;
+#X obj 157 471 tabwrite;
+#X obj 225 471 tabsend~;
+#X obj 292 471 tabreceive~;
+#X obj 23 471 tabread4~;
+#X msg 71 301 stop;
+#X text 109 302 stop recording;
+#X msg 62 269 start 500;
+#X text 471 471 updated for Pd version 0.40.;
 #X text 155 17 - write a signal in an array;
-#X text 92 213 start recording;
-#X text 159 310 set destination array;
+#X text 92 233 start recording;
+#X text 159 330 set destination array;
 #X text 44 49 Tabwrite~ records an audio signal sequentially into an
 array. Sending it "bang" writes from beginning to end of the array.
 To avoid writing all the way to the end \, you can send a "stop" message
@@ -25,23 +25,25 @@ at an appropriate later time. The "start" message allows setting the
 array location at which the first sample is written. (Starting and
 stopping occur on block boundaries \, typically multiples of 64 samples
 \, in the input signal.), f 75;
-#X obj 43 343 tabwrite~ buffer;
-#X msg 80 310 set buffer;
-#X obj 43 182 osc~ 200;
-#X obj 380 376 ../2.control.examples/15.array;
-#X obj 380 399 ../2.control.examples/16.more.arrays;
-#X text 55 380 see also the "array" examples from section 2 (click
+#X obj 43 363 tabwrite~ buffer;
+#X msg 80 330 set buffer;
+#X obj 43 202 osc~ 200;
+#X obj 380 396 ../2.control.examples/15.array;
+#X obj 380 419 ../2.control.examples/16.more.arrays;
+#X text 55 400 see also the "array" examples from section 2 (click
 to the right to open them) =========> and these objects below:, f
 45;
-#X obj 379 451 soundfiler;
-#X msg 234 183 \; pd dsp \$1;
-#X obj 234 160 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 379 471 soundfiler;
+#X msg 241 213 \; pd dsp \$1;
+#X obj 241 190 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 256 157 turn dsp on/off;
-#X text 135 245 start at index 500 (middle of this table), f 22;
+#X text 135 265 start at index 500 (middle of this table), f 22;
+#X obj 241 164 loadbang;
+#X text 263 189 DSP on/off;
 #X connect 1 0 17 0;
 #X connect 9 0 17 0;
 #X connect 11 0 17 0;
 #X connect 18 0 17 0;
 #X connect 19 0 17 0;
 #X connect 25 0 24 0;
+#X connect 27 0 25 0;

@@ -4,12 +4,11 @@
 #A 0 1 4 2 8 5 6 1 4 2 8;
 #X coords 0 10 10 0 250 150 1 0 0;
 #X restore 557 340 graph;
-#X obj 36 404 snapshot~;
-#X obj 55 378 metro 200;
+#X obj 36 434 snapshot~;
+#X obj 55 402 metro 200;
 #X obj 36 151 sig~;
 #X floatatom 36 125 6 0 10 0 - - - 0;
-#X obj 55 352 r readout;
-#X floatatom 36 430 0 0 0 0 - - - 0;
+#X floatatom 36 460 6 0 0 0 - - - 0;
 #X text 89 116 incoming signal is index. Indices should range from
 1 to (size-2) so that the 4-point interpolation is meaningful. You
 can shift-drag the number box to see the effect of interpolation.,
@@ -18,7 +17,6 @@ f 67;
 ;
 #X text 192 316 creation argument initializes array name;
 #X obj 113 24 tabread4~;
-#X text 621 143 click here to test;
 #X obj 26 537 tabwrite~;
 #X obj 161 537 tabread;
 #X obj 220 537 tabwrite;
@@ -29,13 +27,13 @@ f 67;
 #X floatatom 166 250 3 0 10 0 - - - 0;
 #X text 43 176 signal input;
 #X text 193 24 - 4-point-interpolating table lookup;
-#X obj 219 408 ../2.control.examples/15.array;
+#X obj 267 486 ../2.control.examples/15.array;
 #X obj 532 275 ../3.audio.examples/B15.tabread4~-onset;
 #X text 195 242 right inlet sets onset into table. You can use this
 to improve the accuracy of indexing into the array. Click and open
 this example for mre details =>, f 51;
-#X obj 219 431 ../2.control.examples/16.more.arrays;
-#X text 160 365 Check also the "array" examples from the Pd tutorial
+#X obj 267 507 ../2.control.examples/16.more.arrays;
+#X text 211 450 Check also the "array" examples from the Pd tutorial
 by clicking and opening the files below., f 44;
 #X text 27 506 see also these objects:;
 #X text 74 62 Tabread4~ is used to build samplers and other table lookup
@@ -52,12 +50,18 @@ table2-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table2-ex ylabel -0.3
 #X restore 712 316 pd init-table;
 #X obj 36 316 tabread4~ table2-ex;
 #X msg 63 213 set table2-ex;
-#X msg 649 169 \; readout 1 \; pd dsp 1;
-#X connect 1 0 6 0;
+#X msg 132 395 \; pd dsp \$1;
+#X obj 132 372 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 132 348 loadbang;
+#X text 203 402 DSP on/off;
+#X connect 1 0 5 0;
 #X connect 2 0 1 0;
-#X connect 3 0 32 0;
+#X connect 3 0 30 0;
 #X connect 4 0 3 0;
-#X connect 5 0 2 0;
-#X connect 19 0 32 1;
-#X connect 32 0 1 0;
+#X connect 17 0 30 1;
+#X connect 30 0 1 0;
+#X connect 31 0 30 0;
 #X connect 33 0 32 0;
+#X connect 33 0 2 0;
+#X connect 34 0 33 0;
