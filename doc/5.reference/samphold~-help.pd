@@ -30,11 +30,11 @@ control input. Use this \, for example \, if you reset the incoming
 phasor but don't want the jump reflected in the output. Plain "reset"
 is equivalent to "reset infinity" which forces the next input to be
 sampled., f 66;
-#X obj 172 413 loadbang;
-#X obj 172 437 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 93 440 loadbang;
+#X obj 192 431 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 172 462 \; pd dsp \$1;
-#X text 250 469 DSP on/off;
+#X msg 192 456 \; pd dsp \$1;
+#X text 211 430 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 5 0 0 0;
@@ -45,6 +45,5 @@ sampled., f 66;
 #X connect 11 0 5 0;
 #X connect 12 0 5 0;
 #X connect 16 0 5 0;
-#X connect 23 0 24 0;
+#X connect 23 0 2 0;
 #X connect 24 0 25 0;
-#X connect 24 0 2 0;

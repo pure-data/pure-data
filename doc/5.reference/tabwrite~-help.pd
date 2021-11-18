@@ -34,16 +34,14 @@ stopping occur on block boundaries \, typically multiples of 64 samples
 to the right to open them) =========> and these objects below:, f
 45;
 #X obj 379 471 soundfiler;
-#X msg 241 213 \; pd dsp \$1;
-#X obj 241 190 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 241 197 \; pd dsp \$1;
+#X obj 241 174 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 135 265 start at index 500 (middle of this table), f 22;
-#X obj 241 164 loadbang;
-#X text 263 189 DSP on/off;
+#X text 263 173 DSP on/off;
 #X connect 1 0 17 0;
 #X connect 9 0 17 0;
 #X connect 11 0 17 0;
 #X connect 18 0 17 0;
 #X connect 19 0 17 0;
 #X connect 25 0 24 0;
-#X connect 27 0 25 0;

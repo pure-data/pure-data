@@ -1,8 +1,7 @@
 #N canvas 645 53 668 427 12;
-#X obj 71 229 metro 500;
 #X floatatom 55 130 6 0 0 0 - - - 0;
 #X floatatom 55 294 7 0 0 0 - - - 0;
-#X obj 150 173 loadbang;
+#X obj 71 207 loadbang;
 #X obj 55 261 snapshot~;
 #X obj 55 156 sig~;
 #X obj 93 22 wrap~;
@@ -22,15 +21,15 @@ line or by a message:, f 47;
 #X text 147 22 - remainder modulo 1 for signals;
 #X obj 52 383 expr~;
 #X text 100 383 - evaluate expressions on audio signals;
-#X msg 150 224 \; pd dsp \$1;
-#X obj 150 199 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 157 219 \; pd dsp \$1;
+#X obj 157 194 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 173 198 On/off;
+#X text 180 193 On/off;
+#X obj 71 231 metro 200;
 #X connect 0 0 4 0;
-#X connect 1 0 5 0;
-#X connect 3 0 19 0;
-#X connect 4 0 2 0;
-#X connect 5 0 8 0;
-#X connect 8 0 4 0;
-#X connect 19 0 18 0;
-#X connect 19 0 0 0;
+#X connect 2 0 20 0;
+#X connect 3 0 1 0;
+#X connect 4 0 7 0;
+#X connect 7 0 3 0;
+#X connect 18 0 17 0;
+#X connect 20 0 3 0;

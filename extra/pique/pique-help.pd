@@ -12,8 +12,8 @@
 #X restore 516 236 graph;
 #X obj 143 269 tabwrite~ fft-real;
 #X obj 225 239 tabwrite~ fft-imag;
-#X obj 225 188 metro 1000;
-#X obj 308 128 loadbang;
+#X obj 225 203 metro 1000;
+#X obj 225 176 loadbang;
 #X obj 125 399 pique;
 #X msg 125 372 64 fft-real fft-imag 10;
 #X obj 125 426 print;
@@ -26,18 +26,17 @@ number \, frequency \, amplitude \, and phase (as a cosine/sine pair.)
 part \, fft imaginary part \, maximum number of peaks to report.;
 #X text 557 398 updated for Pd 0.31.;
 #X text 97 12 - find peaks in an FFT spectrum;
-#X msg 308 181 \; pd dsp \$1;
-#X obj 308 154 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 334 151 \; pd dsp \$1;
+#X obj 334 124 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 386 190 DSP on/off;
+#X text 354 125 DSP on/off;
 #X connect 1 0 5 0;
 #X connect 1 1 6 0;
 #X connect 2 0 1 0;
 #X connect 7 0 5 0;
 #X connect 7 0 6 0;
-#X connect 8 0 18 0;
+#X connect 8 0 7 0;
 #X connect 9 0 11 0;
 #X connect 10 0 9 0;
 #X connect 12 0 1 0;
 #X connect 18 0 17 0;
-#X connect 18 0 7 0;

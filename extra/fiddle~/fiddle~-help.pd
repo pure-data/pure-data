@@ -116,10 +116,9 @@ ones in determining the pitch. This specifies the number of the partial
 is below the low threshold \, no pitches or peaks are output. The high
 threshold is a minimum at which "cooked" outputs may appear.;
 #X msg 125 599 \; pd dsp \$1;
-#X obj 125 551 loadbang;
 #X obj 125 575 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 205 610 DSP on/off;
+#X text 148 575 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 0 1 3 0;
 #X connect 2 0 28 0;
@@ -147,5 +146,4 @@ threshold is a minimum at which "cooked" outputs may appear.;
 #X connect 54 1 4 0;
 #X connect 54 2 7 0;
 #X connect 55 0 28 0;
-#X connect 58 0 59 0;
-#X connect 59 0 57 0;
+#X connect 58 0 57 0;

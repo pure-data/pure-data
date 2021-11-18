@@ -36,7 +36,7 @@ outputs are meaningful.;
 #X connect 18 0 4 0;
 #X restore 304 616 pd using-with-tables;
 #X obj 48 626 phasor~;
-#X obj 99 513 loadbang;
+#X obj 48 522 loadbang;
 #X floatatom 48 576 4 0 120 0 - - - 0;
 #X floatatom 48 678 5 0 0 0 - - - 0;
 #X floatatom 241 680 5 0 0 0 - - - 0;
@@ -187,14 +187,13 @@ outputs.);
 #X msg 48 551 69;
 #X obj 38 9 sigmund~;
 #X text 99 8 - sinusoidal analysis and pitch tracking;
-#X obj 99 540 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 143 546 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 99 564 \; pd dsp \$1;
-#X text 175 573 DSP on/off;
+#X msg 143 570 \; pd dsp \$1;
+#X text 163 546 DSP on/off;
 #X text 335 708 updated for Pd 0.46;
 #X connect 1 0 21 0;
 #X connect 2 0 30 0;
-#X connect 2 0 33 0;
 #X connect 3 0 6 0;
 #X connect 6 0 1 0;
 #X connect 21 0 4 0;

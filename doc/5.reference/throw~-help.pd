@@ -9,7 +9,6 @@
 #X obj 54 20 throw~;
 #X obj 116 20 catch~;
 #X text 176 20 - summing signal bus and non-local connection;
-#X msg 352 276 \; pd dsp 1;
 #X obj 342 318 metro 200;
 #X text 60 62 Any number of throw~ objects can add into one catch~
 object (but two catch~ objects cannot share the same name.);
@@ -23,21 +22,21 @@ object (but two catch~ objects cannot share the same name.);
 #X obj 116 425 send~;
 #X obj 166 425 receive~;
 #X text 40 426 see also:;
-#X obj 342 250 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X floatatom 225 384 5 0 0 0 - - - 0;
-#X obj 342 226 loadbang;
-#X text 419 282 DSP on/off;
+#X obj 342 290 loadbang;
+#X msg 234 237 \; pd dsp 1;
+#X obj 234 211 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 253 211 DSP on/off;
 #X connect 2 0 4 0;
 #X connect 3 0 1 0;
 #X connect 5 0 0 0;
 #X connect 6 0 3 0;
-#X connect 11 0 3 0;
-#X connect 11 0 13 0;
-#X connect 13 0 23 0;
-#X connect 14 0 13 0;
+#X connect 10 0 3 0;
+#X connect 10 0 12 0;
+#X connect 12 0 21 0;
+#X connect 13 0 12 0;
+#X connect 14 0 0 0;
 #X connect 15 0 0 0;
-#X connect 16 0 0 0;
 #X connect 22 0 10 0;
-#X connect 22 0 11 0;
-#X connect 24 0 22 0;
+#X connect 24 0 23 0;

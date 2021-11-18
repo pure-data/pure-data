@@ -36,7 +36,7 @@ by clicking and opening the files to the right ====>, f 52;
 #X restore 460 172 graph;
 #X msg 82 233 set tabread-ex;
 #X obj 61 284 tabread~ tabread-ex;
-#X obj 155 349 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 179 342 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #N canvas 515 381 401 220 init-table 0;
 #X obj 35 42 loadbang;
@@ -45,15 +45,14 @@ by clicking and opening the files to the right ====>, f 52;
 -0.3 0 1 2 3 4 5 6 7 8 9 10 \; tabread-ex 0 1 4 2 8 5 6 1 4 2 8;
 #X connect 0 0 1 0;
 #X restore 610 145 pd init-table;
-#X msg 155 375 \; pd dsp \$1;
-#X obj 155 324 loadbang;
-#X text 231 385 DSP on/off;
+#X msg 179 368 \; pd dsp \$1;
+#X obj 80 351 loadbang;
+#X text 198 341 DSP on/off;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 2 0 27 0;
 #X connect 3 0 2 0;
 #X connect 26 0 27 0;
 #X connect 27 0 0 0;
-#X connect 28 0 1 0;
 #X connect 28 0 30 0;
-#X connect 31 0 28 0;
+#X connect 31 0 1 0;

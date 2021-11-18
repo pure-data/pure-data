@@ -14,7 +14,6 @@
 #X obj 221 432 *~;
 #X obj 256 433 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 422 570 loadbang;
 #X obj 46 595 print x;
 #X msg 29 233 pd~ start pd~-subprocess.pd;
 #X obj 46 474 pd~ -ninsig 2 -noutsig 2 -fifo 20;
@@ -57,25 +56,24 @@ GUI from appearing. You don't have to specify the number of channels
 in and out \, since that's set by creation arguments below. Audio config
 arguments arguments (-audiobuf \, -audiodev \, etc.) are ignored.,
 f 73;
-#X obj 422 596 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 397 576 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 422 621 \; pd dsp \$1;
-#X text 444 596 DSP on/off;
-#X connect 0 0 16 0;
+#X msg 397 601 \; pd dsp \$1;
+#X text 419 576 DSP on/off;
+#X connect 0 0 15 0;
 #X connect 1 0 9 0;
 #X connect 1 0 11 0;
 #X connect 2 0 5 0;
-#X connect 4 0 16 0;
+#X connect 4 0 15 0;
 #X connect 5 0 3 0;
 #X connect 6 0 8 0;
 #X connect 8 0 7 0;
-#X connect 9 0 16 0;
+#X connect 9 0 15 0;
 #X connect 10 0 9 1;
-#X connect 11 0 16 1;
+#X connect 11 0 15 1;
 #X connect 12 0 11 1;
-#X connect 13 0 36 0;
-#X connect 15 0 16 0;
-#X connect 16 0 14 0;
-#X connect 16 1 2 0;
-#X connect 16 2 6 0;
-#X connect 36 0 37 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X connect 15 1 2 0;
+#X connect 15 2 6 0;
+#X connect 35 0 36 0;
