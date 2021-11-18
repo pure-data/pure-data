@@ -3,7 +3,6 @@
 #X obj 85 437 print foo;
 #X obj 227 450 stdout;
 #X msg 211 367 a b c;
-#X msg 396 418 \; pd dsp 1;
 #X obj 109 203 env~ 8192;
 #X floatatom 109 252 5 0 0 0 - - - 0;
 #X obj 109 228 i;
@@ -16,7 +15,7 @@
 #X obj 393 223 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X msg 237 419 bang;
-#X obj 396 394 loadbang;
+#X obj 366 370 loadbang;
 #X obj 183 203 env~ 8192;
 #X floatatom 183 252 5 0 0 0 - - - 0;
 #X obj 183 228 i;
@@ -41,20 +40,25 @@ super-process. The super-process can send messages to any "receive"
 object in this sub-process., f 71;
 #X obj 333 256 dac~;
 #X obj 151 172 adc~, f 5;
+#X msg 366 421 \; pd dsp \$1;
+#X obj 366 397 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 388 397 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 3 0 2 0;
-#X connect 5 0 7 0;
-#X connect 7 0 6 0;
-#X connect 8 0 9 0;
-#X connect 9 0 25 0;
-#X connect 10 0 9 1;
-#X connect 11 0 12 0;
-#X connect 12 0 25 1;
-#X connect 13 0 12 1;
-#X connect 14 0 2 0;
-#X connect 15 0 4 0;
-#X connect 16 0 18 0;
-#X connect 18 0 17 0;
-#X connect 19 0 2 0;
-#X connect 26 0 5 0;
-#X connect 26 1 16 0;
+#X connect 4 0 6 0;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 8 0 24 0;
+#X connect 9 0 8 1;
+#X connect 10 0 11 0;
+#X connect 11 0 24 1;
+#X connect 12 0 11 1;
+#X connect 13 0 2 0;
+#X connect 14 0 27 0;
+#X connect 15 0 17 0;
+#X connect 17 0 16 0;
+#X connect 18 0 2 0;
+#X connect 25 0 4 0;
+#X connect 25 1 15 0;
+#X connect 27 0 26 0;

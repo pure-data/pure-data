@@ -1,5 +1,5 @@
 #N canvas 605 73 547 527 12;
-#X floatatom 419 310 0 0 0 0 - - -;
+#X floatatom 419 310 0 0 0 0 - - - 0;
 #X obj 282 242 receive~ signal1;
 #X obj 39 248 send~ signal1;
 #X obj 39 225 sig~ 50;
@@ -7,10 +7,8 @@
 #X obj 62 23 send~;
 #X obj 112 24 receive~;
 #X text 180 24 - one-to-many nonlocal signal connections;
-#X obj 419 187 loadbang;
-#X obj 419 250 metro 200;
-#X msg 429 211 \; pd dsp 1;
-#X floatatom 39 201 4 0 0 0 - - -;
+#X obj 419 253 metro 200;
+#X floatatom 39 201 4 0 0 0 - - - 0;
 #X text 60 88 A send~ object copies its input to a local buffer which
 all receive~ objects of the same name read from. They may be in different
 windows or even different patches. Any number of receives may be associated
@@ -34,13 +32,19 @@ with one send~ but it is an error to have two send~s of the same name.
 #X obj 120 448 throw~;
 #X obj 176 448 catch~;
 #X text 180 48 - abbreviation;
+#X obj 419 167 loadbang;
+#X obj 419 191 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 429 214 \; pd dsp \$1;
+#X text 442 191 on/off;
 #X connect 1 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 0 0;
-#X connect 8 0 9 0;
-#X connect 8 0 10 0;
-#X connect 9 0 4 0;
-#X connect 11 0 3 0;
-#X connect 14 0 15 0;
-#X connect 16 0 1 0;
-#X connect 17 0 1 0;
+#X connect 8 0 4 0;
+#X connect 9 0 3 0;
+#X connect 12 0 13 0;
+#X connect 14 0 1 0;
+#X connect 15 0 1 0;
+#X connect 27 0 28 0;
+#X connect 28 0 29 0;
+#X connect 28 0 8 0;

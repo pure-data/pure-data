@@ -1,15 +1,15 @@
-#N canvas 596 74 550 460 12;
+#N canvas 596 74 550 518 12;
 #X floatatom 35 335 8 0 0 0 - - - 0;
 #X obj 74 14 env~;
 #X text 120 16 - envelope follower;
 #X obj 35 212 osc~ 400;
 #X obj 35 239 *~;
-#X floatatom 123 214 3 -99 300 0 - - - 0;
+#X floatatom 123 214 5 0 100 0 - - - 0;
 #X obj 123 238 dbtorms;
 #X text 33 49 The env~ object takes a signal and outputs its RMS amplitude
 in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
 ;
-#X text 316 411 updated for Pd version 0.40.;
+#X text 290 456 updated for Pd version 0.40.;
 #X obj 35 279 env~ 16384 8192;
 #X text 164 262 creation arguments:;
 #X text 162 278 1 window size in samples (1024 default);
@@ -21,13 +21,18 @@ in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
 size in samples \, and the period (the number of samples between analyses).
 The latter should normally be a multiple of the DSP block size \, although
 this isn't enforced.;
-#X text 159 212 <= set peak-to-peak amplitude here in dB.;
+#X text 167 212 <= set peak-to-peak amplitude here in dB.;
 #X text 102 335 <= the output is RMS amplitude which (for a sinusoid)
 is about 3 dB below peak-to-peak amplitude., f 53;
-#X msg 122 394 \; pd dsp 0;
-#X msg 42 394 \; pd dsp 1;
+#X msg 70 444 \; pd dsp \$1;
+#X obj 70 395 loadbang;
+#X obj 70 421 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 104 419 <= turn DS on/off;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
 #X connect 9 0 0 0;
+#X connect 18 0 19 0;
+#X connect 19 0 17 0;

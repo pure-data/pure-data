@@ -1,14 +1,12 @@
-#N canvas 511 96 819 571 12;
-#X obj 61 387 snapshot~;
-#X obj 80 361 metro 200;
+#N canvas 511 96 819 562 12;
+#X obj 61 407 snapshot~;
+#X obj 80 379 metro 200;
 #X obj 61 159 sig~;
 #X floatatom 61 133 6 0 10 0 - - - 0;
-#X obj 80 317 r readout;
-#X floatatom 61 413 0 0 0 0 - - - 0;
+#X floatatom 60 432 6 0 0 0 - - - 0;
 #X text 194 228 "set" message permits you to switch between arrays
 , f 25;
 #X text 202 284 creation argument initializes array name, f 24;
-#X text 563 32 click here to test;
 #X obj 99 512 tabwrite~;
 #X obj 234 512 tabread;
 #X obj 357 512 tabwrite;
@@ -16,16 +14,16 @@
 #X obj 487 512 tabreceive~;
 #X obj 170 512 tabplay~;
 #X text 71 192 signal input;
-#X obj 47 21 tabread~;
-#X text 30 56 Tabread~ looks up values out of the named array. Incoming
+#X obj 97 24 tabread~;
+#X text 80 59 Tabread~ looks up values out of the named array. Incoming
 values are truncated to the next lower integer \, and values out of
-bounds get the nearest (first or last) point., f 65;
+bounds get the nearest (first or last) point., f 85;
 #X text 118 133 incoming signal is index. Indices should range from
 0 to (size-1)., f 34;
 #X obj 27 512 tabread4~;
 #X obj 292 512 tabread4;
 #X text 602 511 updated for Pd version 0.43;
-#X text 127 21 - non-interpolating table lookup;
+#X text 177 24 - non-interpolating table lookup;
 #X obj 513 443 ../2.control.examples/15.array;
 #X obj 513 466 ../2.control.examples/16.more.arrays;
 #X text 134 447 Check also the "array" examples from the Pd tutorial
@@ -38,8 +36,7 @@ by clicking and opening the files to the right ====>, f 52;
 #X restore 460 172 graph;
 #X msg 82 233 set tabread-ex;
 #X obj 61 284 tabread~ tabread-ex;
-#X msg 582 56 \; readout 1 \; pd dsp 1;
-#X obj 80 341 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 155 349 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #N canvas 515 381 401 220 init-table 0;
 #X obj 35 42 loadbang;
@@ -48,11 +45,15 @@ by clicking and opening the files to the right ====>, f 52;
 -0.3 0 1 2 3 4 5 6 7 8 9 10 \; tabread-ex 0 1 4 2 8 5 6 1 4 2 8;
 #X connect 0 0 1 0;
 #X restore 610 145 pd init-table;
-#X connect 0 0 5 0;
+#X msg 155 375 \; pd dsp \$1;
+#X obj 155 324 loadbang;
+#X text 231 385 DSP on/off;
+#X connect 0 0 4 0;
 #X connect 1 0 0 0;
-#X connect 2 0 29 0;
+#X connect 2 0 27 0;
 #X connect 3 0 2 0;
-#X connect 4 0 31 0;
-#X connect 28 0 29 0;
-#X connect 29 0 0 0;
-#X connect 31 0 1 0;
+#X connect 26 0 27 0;
+#X connect 27 0 0 0;
+#X connect 28 0 1 0;
+#X connect 28 0 30 0;
+#X connect 31 0 28 0;
