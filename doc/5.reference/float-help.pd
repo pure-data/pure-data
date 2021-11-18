@@ -35,7 +35,7 @@ and outputs it., f 71;
 #X obj 356 15 f;
 #X text 388 15 - abbreviation;
 #X obj 141 483 symbol;
-#N canvas 995 162 565 399 Dealing_with_"\$0" 1;
+#N canvas 995 162 565 399 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send and receive names \, speacially in abstractions
 so each copy has local connections instead of global., f 67;
