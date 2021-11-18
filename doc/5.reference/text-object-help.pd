@@ -1,14 +1,14 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 929 100 562 579 12;
-#X obj 123 531 list;
+#N canvas 817 68 583 653 12;
+#X obj 123 591 list;
 #X obj 68 12 text;
-#X text 46 530 see also:;
+#X text 46 590 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
-#X restore 163 531 array;
+#X restore 163 591 array;
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
@@ -236,7 +236,7 @@ via pointers., f 38;
 #X text 100 458 here's how to access texts inside data structures:
 , f 27;
 #X text 113 12 - manage a list of messages;
-#X obj 211 531 scalar;
+#X obj 211 591 scalar;
 #X obj 279 318 text size;
 #N canvas 847 155 566 324 size 0;
 #X obj 74 68 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -729,4 +729,29 @@ line 4 \\\;;
 #X connect 10 0 15 0;
 #X connect 11 0 15 0;
 #X restore 392 267 pd insert;
-#X text 323 527 updated for Pd version 0.49;
+#X text 323 587 updated for Pd version 0.49;
+#N canvas 847 151 562 340 Dealing_with_"\$0" 0;
+#X obj 271 232 symbol \$0-x;
+#X floatatom 211 290 5 0 0 0 - - - 0;
+#X obj 211 229 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 271 206 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 292 203 <= click here first;
+#X text 125 227 get size =>;
+#X text 262 155 <= array with local name;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - can be used to set a text name. This is specially useful in abstractions
+so each copy has local names instead of global., f 70;
+#X text 36 86 You can use "\$0" in an text name in [text define] and
+if you need to set the text name you can load it in a symbol object
+\, since "\$0" doesn't work in messages., f 70;
+#X obj 109 156 text define -k \$0-x;
+#A set hi \, I'm a text with a local name \;;
+#X obj 211 263 text size;
+#X connect 0 0 10 1;
+#X connect 2 0 10 0;
+#X connect 3 0 0 0;
+#X connect 10 0 1 0;
+#X restore 387 533 pd Dealing_with_"\$0";
+#X text 56 533 open subpatch to see how to deal with '\$0' =>;

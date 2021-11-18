@@ -1,4 +1,4 @@
-#N canvas 609 54 945 632 12;
+#N canvas 609 54 951 698 12;
 #X obj 165 15 send;
 #X obj 41 130 send help-send1;
 #X obj 197 131 send help-send1;
@@ -17,11 +17,11 @@
 receives are named to tell them whom to connect to. They work across
 windows too. Also \, you can use message boxes as shown:, f 56;
 #X msg 190 309 \; help-send1 34 \; help-send2 67;
-#X obj 114 508 send;
-#X msg 168 453 symbol help-send1;
-#X msg 181 482 symbol help-send2;
-#X floatatom 114 475 3 0 0 0 - - - 0;
-#X symbolatom 168 511 10 0 0 0 - - - 0;
+#X obj 170 543 send;
+#X msg 196 458 symbol help-send1;
+#X msg 209 487 symbol help-send2;
+#X floatatom 135 488 5 0 0 0 - - - 0;
+#X symbolatom 196 516 10 0 0 0 - - - 0;
 #X text 37 388 If invoked without an argument \, "send" creates an
 inlet to let you set the target via "symbol" messages:, f 54;
 #X obj 594 203 value y;
@@ -30,10 +30,10 @@ inlet to let you set the target via "symbol" messages:, f 54;
 #X obj 594 176 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X floatatom 594 236 5 0 0 0 - - - 0;
-#X text 39 570 see also:;
+#X text 55 604 see also:;
 #X text 204 14 - send messages without patch cords;
 #X text 204 40 - abbreviation;
-#X obj 115 569 send~;
+#X obj 131 603 send~;
 #X obj 497 405 list store 1 2 3;
 #X obj 643 423 float 1.5;
 #X obj 731 423 int 10;
@@ -46,7 +46,7 @@ inlet to let you set the target via "symbol" messages:, f 54;
 #X obj 479 15 receive;
 #X text 537 14 - receive messages without patch cords;
 #X text 539 40 - abbreviation;
-#X obj 165 569 receive~;
+#X obj 181 603 receive~;
 #X floatatom 593 576 5 0 0 0 - x z 0;
 #X obj 554 528 hsl 128 15 0 127 0 0 x empty empty -2 -8 0 10 #fcfcfc
 #000000 #000000 0 1;
@@ -54,7 +54,7 @@ inlet to let you set the target via "symbol" messages:, f 54;
 #X msg 671 188 0 -1 0 1 0 -1 0 1, f 9;
 #X text 504 464 Note that GUIs have built in send and receive names
 you can set via properties (right click and check it)., f 40;
-#X text 248 569 updated for Pd version 0.52;
+#X text 62 641 updated for Pd version 0.52;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array 7 float 2;
 #X coords 0 1.1 7 -1.1 100 50 1 0 0;
@@ -84,6 +84,70 @@ to arrays with the same name., f 51;
 and the other objects below via a send method. Note that value can
 also get these values from these objects except 'list store' because
 it doesn't deal with lists.;
+#N canvas 847 151 914 439 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send and receive names \, speacially in abstractions
+so each copy has local connections instead of global., f 67;
+#X obj 171 164 send \$0-x;
+#X obj 294 120 receive \$0-x;
+#X floatatom 294 161 5 0 0 0 - - - 0;
+#X floatatom 171 122 5 0 0 0 - - - 0;
+#X obj 126 381 send;
+#X symbolatom 171 368 10 0 0 0 - - - 0;
+#X obj 151 301 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 83 330 5 0 0 0 - - - 0;
+#X obj 281 297 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 151 331 symbol \$0-y;
+#X msg 281 370 \; \$1-y 80;
+#X floatatom 387 365 5 0 0 0 - - - 0;
+#X obj 387 324 receive \$0-y;
+#X obj 281 320 float \$0;
+#X text 61 216 Since "\$0" only works inside objects \, if you need
+to set a send name with it \, you need to use something like a symbol
+object. It's also common to pass "\$0" from a float object to a message
+that works as a send. Click on the bangs below.;
+#X floatatom 291 345 5 0 0 0 - - - 0;
+#X obj 590 237 float 1.5;
+#X msg 590 199 send \$1-x;
+#X obj 590 167 f \$0;
+#X obj 590 140 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 718 183 value \$0-x;
+#X obj 718 154 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 718 218 5 0 0 0 - - - 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array \$0-array 515 float 0;
+#X coords 0 1 514 -1 150 100 1 0 0;
+#X restore 710 297 graph;
+#X obj 587 351 send \$0-array;
+#X msg 587 319 sinesum 512 1;
+#X floatatom 820 183 5 0 0 0 - #0-x - 0;
+#X text 559 24 Note that "\$0" is also used in send/receive names in
+GUIs \, array names and as well as variable names in value objects.
+In order to use the 'send' method from [float] \, [int] and [list store]
+objects \, you also need to pass the "\$0" value to the message.,
+f 45;
+#X connect 2 0 3 0;
+#X connect 4 0 1 0;
+#X connect 7 0 10 0;
+#X connect 8 0 5 0;
+#X connect 9 0 14 0;
+#X connect 10 0 6 0;
+#X connect 10 0 5 1;
+#X connect 13 0 12 0;
+#X connect 14 0 16 0;
+#X connect 14 0 11 0;
+#X connect 18 0 17 0;
+#X connect 19 0 18 0;
+#X connect 20 0 19 0;
+#X connect 21 0 23 0;
+#X connect 22 0 21 0;
+#X connect 26 0 25 0;
+#X restore 720 640 pd Dealing_with_"\$0";
+#X text 389 640 open subpatch to see how to deal with '\$0' =>;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;

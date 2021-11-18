@@ -1,4 +1,4 @@
-#N canvas 547 49 697 739 12;
+#N canvas 609 48 697 739 12;
 #X obj 91 38 expr;
 #X obj 84 63 expr~;
 #X obj 78 101 fexpr~;
@@ -89,15 +89,6 @@ variables (just either '$i3' or '$f#').;
 #X text 514 245 A simpler practice that will always work for both table
 names and variables is to just have '\$0' after a symbol character
 \, such as:;
-#X text 21 16 '\$0' - the patch ID number used to force locality in
-Pd - may be used in the definition of array names in [expr] \, [expr~]
-or [fexpr~]. You can also use it to set variable names for [expr] and
-[fexpr~] (but not [expr~])., f 61;
-#X text 21 81 But it is important to note the restrictions of adopting
-the C-style expression syntax \, where symbols cannot start with a
-number \, so '\$0x' or '\$0_x' are illegal as Pd turns '\$0' into a
-number and thus it starts with a number and the object won't load giving
-a syntax error!, f 61;
 #X text 33 200 On the other hand \, the '-' character is used for the
 subtraction operator. Thus \, '\$0-x' is interpreted as "ID number"
 minus 'x' in the [expr] object below and not as the array name to the
@@ -113,6 +104,16 @@ as they can't be loaded as symbols!;
 #X text 100 362 <= try;
 #X text 57 458 error;
 #X text 670 184 (works);
+#X text 21 6 '\$0' - the patch ID number used to force locality in
+Pd - may be used in the definition local array names in [expr] \, [expr~]
+or [fexpr~]. You can also use it to set local variable names in value
+objects that are retrieved in [expr] \, [expr~] and [fexpr~]. This
+is specially useful in abstractions., f 62;
+#X text 21 89 But it is important to note the restrictions of adopting
+the C-style expression syntax \, where symbols cannot start with a
+number \, so '\$0x' or '\$0_x' are illegal as Pd turns '\$0' into a
+number and thus the object won't load giving a syntax error!, f 62
+;
 #X connect 0 0 3 0;
 #X connect 1 0 0 1;
 #X connect 2 0 0 0;
@@ -1105,10 +1106,10 @@ you need to click 'start' to get it running., f 70;
 #000000;
 #X floatatom 91 371 0 0 0 0 - - - 0;
 #X obj 596 103 trigger float bang;
-#X obj 697 302 expr i * 2 \; i = i + 1;
-#X floatatom 697 348 5 0 0 0 - - - 0;
-#X floatatom 771 349 5 0 0 0 - - - 0;
-#X obj 697 267 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 697 288 expr i * 2 \; i = i + 1;
+#X floatatom 697 334 5 0 0 0 - - - 0;
+#X floatatom 771 335 5 0 0 0 - - - 0;
+#X obj 697 253 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 33 233 All you have to do is just use the variable name into
 the expression:, f 27;
@@ -1123,33 +1124,29 @@ the expression:, f 27;
 #X obj 63 502 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X obj 91 502 fexpr~ (a + b) / c;
-#X text 325 305 Expressions are output from right to left order in
+#X text 325 291 Expressions are output from right to left order in
 [expr] \, since they're evaluated from bottom to top. This means you
 need to update a variable and call it in the above expression \, check
 it =============>, f 51;
-#X obj 729 493 v last;
-#X obj 603 524 fexpr~ last = $x1[-1] \; $x1[0] - last;
-#X obj 754 579 print~;
-#X obj 788 544 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 576 504 v last;
+#X obj 450 535 fexpr~ last = $x1[-1] \; $x1[0] - last;
+#X obj 601 590 print~;
+#X obj 635 555 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 603 493 phasor~ 1000;
+#X obj 450 504 phasor~ 1000;
 #X text 100 98 loading values into [value] objects =======>, f 16
 ;
-#X text 325 401 You cannot assign variables values in [expr~] because
-it deals with signal vectors (a whole block of samples) and not single
-values. On the other hand \, [fexpr~] can assign values to variables
-\, but they're evaluated in from top to bottom instead. This means
-you need to update a variable and call it in the below expression \,
-check it:, f 68;
-#X obj 388 519 expr~ (a + b) / c;
-#X obj 388 552 print~;
-#X obj 362 519 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X text 22 15 [expr] \, [expr~] and [fexpr~] can access variables set
 into [value] objects.;
 #X text 471 14 It is also possible to assign values to variables inside
 the expr family of objects with "=" (a.k.a the "store function").,
 f 51;
+#X text 294 395 You can also assign variables values in [expr~] and
+[fexpr~]. But it is not pertinent to do this in [expr~] because it
+deals with whole signal vectors and not single values. As for [fexpr~]
+\, note that they're evaluated in from top to bottom instead. This
+means you need to update a variable and call it in the below expression
+\, check the following example:, f 75;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 2 0 3 0;
@@ -1175,8 +1172,6 @@ f 51;
 #X connect 31 1 32 0;
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
-#X connect 37 0 38 0;
-#X connect 39 0 38 0;
 #X restore 520 510 pd [value];
 #X text 519 690 updated for Pd 0.51-3;
 #X obj 473 62 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
