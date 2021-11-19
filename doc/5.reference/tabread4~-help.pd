@@ -1,15 +1,15 @@
-#N canvas 596 31 851 575 12;
+#N canvas 720 236 851 575 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array table2-ex 10 float 3;
-#A 0 1 4 2 8 5 6 1 4 2 8;
+#A 0 1 4 2 8 5 6 1 1 4 2;
 #X coords 0 10 10 0 250 150 1 0 0;
 #X restore 557 340 graph;
 #X obj 36 434 snapshot~;
 #X obj 55 402 metro 200;
-#X obj 36 151 sig~;
-#X floatatom 36 125 6 0 10 0 - - - 0;
+#X obj 36 165 sig~;
+#X floatatom 36 139 6 1 8 0 - - - 0;
 #X floatatom 36 460 6 0 0 0 - - - 0;
-#X text 89 116 incoming signal is index. Indices should range from
+#X text 104 142 incoming signal is index. Indices should range from
 1 to (size-2) so that the 4-point interpolation is meaningful. You
 can shift-drag the number box to see the effect of interpolation.,
 f 67;
@@ -25,8 +25,6 @@ f 67;
 #X obj 97 537 tabplay~;
 #X text 630 532 updated for Pd version 0.42;
 #X floatatom 166 250 3 0 10 0 - - - 0;
-#X text 43 176 signal input;
-#X text 193 24 - 4-point-interpolating table lookup;
 #X obj 267 486 ../2.control.examples/15.array;
 #X obj 532 275 ../3.audio.examples/B15.tabread4~-onset;
 #X text 195 242 right inlet sets onset into table. You can use this
@@ -45,7 +43,7 @@ in delread4~ and tabosc4~., f 77;
 #X obj 35 42 loadbang;
 #X msg 35 74 \; table2-ex resize 10 \; table2-ex bounds 0 10 10 0 \;
 table2-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table2-ex ylabel -0.3
-0 1 2 3 4 5 6 7 8 9 10 \; table2-ex 0 1 4 2 8 5 6 1 4 2 8;
+0 1 2 3 4 5 6 7 8 9 10 \; table2-ex 0 1 4 2 8 5 6 1 1 4 2;
 #X connect 0 0 1 0;
 #X restore 712 316 pd init-table;
 #X obj 36 316 tabread4~ table2-ex;
@@ -55,12 +53,56 @@ table2-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table2-ex ylabel -0.3
 #X msg 150 384 \; pd dsp \$1;
 #X obj 150 361 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
+#X text 193 24 - 4-point-interpolating table lookup for signals;
+#N canvas 831 536 593 441 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 462 275 <= array with local name, f 13;
+#X obj 221 291 f \$0;
+#X msg 121 210 set \$1;
+#X obj 121 184 symbol \$0-x;
+#X obj 121 161 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 227 197 You can also load '\$0' in a float object and send
+it to a message that works like a send to send messages to an array.
+, f 40;
+#X text 140 158 click to set name;
+#X floatatom 67 188 6 1 8 0 - - - 0;
+#X obj 311 276 array define \$0-x 10;
+#X msg 221 320 \; \$1-x 0 1 0 -1 0 1 0 -1 1 0 -1;
+#X obj 221 264 loadbang;
+#X obj 67 251 tabread4~;
+#X obj 67 345 snapshot~;
+#X obj 86 313 metro 200;
+#X floatatom 67 371 6 0 0 0 - - - 0;
+#X obj 86 289 loadbang;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 2 0 10 0;
+#X connect 3 0 12 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 8 0 12 0;
+#X connect 11 0 2 0;
+#X connect 12 0 13 0;
+#X connect 13 0 15 0;
+#X connect 14 0 13 0;
+#X connect 16 0 14 0;
+#X restore 289 398 pd Dealing_with_"\$0";
+#X text 291 360 open subpatch to see how to deal with '\$0', f 21
+;
+#X obj 39 117 hsl 128 15 1 8 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
-#X connect 3 0 30 0;
+#X connect 3 0 28 0;
 #X connect 4 0 3 0;
-#X connect 17 0 30 1;
-#X connect 30 0 1 0;
-#X connect 31 0 30 0;
-#X connect 32 0 2 0;
-#X connect 35 0 34 0;
+#X connect 17 0 28 1;
+#X connect 28 0 1 0;
+#X connect 29 0 28 0;
+#X connect 30 0 2 0;
+#X connect 33 0 32 0;
+#X connect 37 0 4 0;

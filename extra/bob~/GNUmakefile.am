@@ -5,7 +5,7 @@ NAME=bob~
 
 external_LTLIBRARIES = bob~.la
 SOURCES = bob~.c
-PATCHES = bob~-help.pd output~.pd
+PATCHES = bob~-help.pd
 OTHERDATA =
 
 EXTRA_DIST = makefile
