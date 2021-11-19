@@ -849,11 +849,11 @@ individually.
 
 <P> The objects, "inlet,", "inlet~," "outlet," and "outlet~,", when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions.  The inlet~ and
-outlet~ versions create inlets and outlets for audio signals.  You can't mix
-messages and audio in a subpatch inlet or outlet; they must be one or the other
-exclusively.  Inlets and outlets appear on the invoking box in the same left-to-right
-order as they appear in the subpatch.
+This works equally for one-off subpatches and abstractions and only accept control 
+data messages. The inlet~ and outlet~ versions create inlets and outlets for audio 
+signals. Note you can also mix control messages in an inlet~ with the 'fwd' argument
+but a signal outlet only takes signals. Inlets and outlets appear on the invoking box 
+in the same left-to-right order as they appear in the subpatch.
 
 <H3> <A id="s7.1"> 2.7.1. abstractions </A> </H3>
 
