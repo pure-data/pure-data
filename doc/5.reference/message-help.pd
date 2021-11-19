@@ -1,4 +1,4 @@
-#N canvas 609 57 1024 591 12;
+#N canvas 548 57 1024 591 12;
 #X msg 63 14 message boxes;
 #X obj 181 527 print;
 #X msg 181 450 60 64;
@@ -14,7 +14,7 @@ the printout window:, f 65;
 #X floatatom 586 237 6 0 0 0 - - - 0;
 #X floatatom 781 237 6 0 0 0 - - - 0;
 #X obj 781 205 receive another-receiver;
-#X text 632 314 You can send messages to message boxes to change their
+#X text 632 311 You can send messages to message boxes to change their
 content - open the subpatch below for details:, f 41;
 #N canvas 614 207 611 440 changing-messages 0;
 #X msg 49 373 dog bird monkey \; bird;
@@ -47,7 +47,7 @@ semicolon, f 36;
 #X connect 12 0 0 0;
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
-#X restore 777 355 pd changing-messages;
+#X restore 777 352 pd changing-messages;
 #X text 243 187 <= object (different border);
 #X text 288 157 <= message;
 #X text 45 48 Message boxes hold one or more messages. Anytime the
@@ -65,11 +65,8 @@ are all sent to their destinations., f 65;
 #X obj 307 548 print;
 #N canvas 866 231 502 402 more-on-selectors 0;
 #X msg 121 269 4;
-#X msg 110 309 1 oi 3 5;
 #X msg 121 206 bang;
 #X text 77 207 bang;
-#X msg 121 242 symbol oi;
-#X msg 111 335 list um 2;
 #X text 71 242 Symbol;
 #X text 175 309 (implicit);
 #X text 68 322 List;
@@ -90,6 +87,9 @@ defined by the user. If a message contains only one symbol \, like
 , f 57;
 #X text 281 208 Messages with other selectors:, f 16;
 #X text 319 314 just a selector;
+#X msg 121 242 symbol hi;
+#X msg 110 309 1 hi 3 5;
+#X msg 111 335 list one 2;
 #X restore 389 542 pd more-on-selectors;
 #X text 105 245 You can separate multiple messages by commas., f 25
 ;
@@ -107,7 +107,7 @@ a message element., f 18;
 #X text 565 32 If you separate messages by a semicolon instead of a
 comma \, the following message(s) are re-routed to named objects such
 as "receives":;
-#X text 781 542 updated for Pd version 0.52;
+#X text 779 555 updated for Pd version 0.52;
 #X obj 586 268 print my-receiver-name;
 #X obj 781 268 print another-receiver;
 #X obj 574 158 print message;
@@ -180,10 +180,37 @@ sintax) and the backlash character itself. See examples below., f
 #X connect 26 0 22 0;
 #X connect 27 0 28 0;
 #X connect 29 0 30 0;
-#X restore 750 484 pd escaping-characters;
-#X text 635 419 Finally \, you can escape special characters with backslashes
+#X restore 767 447 pd escaping-characters;
+#X text 635 391 Finally \, you can escape special characters with backslashes
 (""). click and open the subpatch below for more information., f 42
 ;
+#N canvas 959 386 445 331 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 49;
+#X text 35 115 If you are using a message as a 'send' \, you need to
+load the '\$0' in an object \, since "\$0" doesn't work in messages.
+, f 49;
+#X msg 203 246 \; \$1-x 15;
+#X obj 203 214 f \$0;
+#X obj 303 208 r \$0-x;
+#X floatatom 303 237 5 0 0 0 - - - 0;
+#X obj 203 188 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 73 213 symbol \$0-x;
+#X msg 73 242 \; \$1 20;
+#X obj 73 189 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 102 186 <= click =>;
+#X connect 3 0 2 0;
+#X connect 4 0 5 0;
+#X connect 6 0 3 0;
+#X connect 7 0 8 0;
+#X connect 9 0 7 0;
+#X restore 791 516 pd Dealing_with_"\$0";
+#X text 639 494 open subpatch to see how to deal with '\$0' =>, f
+24;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
 #X connect 4 0 39 0;
