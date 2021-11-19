@@ -1,0 +1,63 @@
+#N canvas 555 56 1022 533 12;
+#X declare -stdpath ./;
+#X floatatom 651 166 5 0 1000 0 - - - 0;
+#X text 705 221 signal input (delay time in ms);
+#X text 789 247 creation argument: name of delay line, f 18;
+#X obj 56 65 delread4~;
+#X obj 98 88 vd~;
+#X obj 651 254 delread4~ \$0-delay;
+#X obj 75 277 delwrite~ \$0-delay 1000;
+#X obj 651 222 line~;
+#X obj 75 212 osc~ 440;
+#X obj 651 301 output~;
+#X obj 651 194 pack f 1000;
+#X obj 430 21 declare -stdpath ./;
+#X msg 106 244 clear;
+#X text 151 244 set all samples of delay line to zero.;
+#X text 36 124 Delread~ and delread4~ objects read from delay allocated
+in a delwrite~ object with the same name. You can use more than one
+delread~ and/or ddelread4~ objects for the same delwrite~ object. If
+the specified delay time in delread~/delread4~ is longer than the size
+of the delay line or less than zero it is clipped to the length of
+the delay line., f 72;
+#X text 251 274 1st argument: name of delay line;
+#X text 251 293 2nd argument: length of delay line in msec (= max.
+delay time), f 32;
+#X obj 56 15 delwrite~;
+#X text 128 15 - writes a signal in a delay line;
+#X obj 63 40 delread~;
+#X text 128 40 - read a signal from a delay line;
+#X text 132 64 - read from a delay line with 4-point interpolation
+;
+#X text 132 89 - old name of delread4~ (variable delay time);
+#X text 248 388 1st argument: name of delay line, f 33;
+#X text 248 408 2nd argument: (initial) delay time in ms;
+#X obj 83 444 output~;
+#X text 626 100 The delay time is always at least one sample and at
+most the length of the delay line (specified by a corresponding delwrite~).
+, f 46;
+#X obj 697 477 ../3.audio.examples/G05.execution.order;
+#X text 587 391 In case the delwrite~ runs later in the DSP loop than
+the delread~ or delread4~ objects \, the delay is constrained below
+by one vector length (usually 64 samples.) Open the file below as an
+example on how to control this to obtain very short delays.;
+#X text 626 22 delread4~ implements a 4-point interpolating delay tap
+The delay in milliseconds of the tap is specified by an incoming signal.
+With this interpolating signal input you can implement variable delay
+times., f 46;
+#X text 138 357 input (delay time in ms);
+#X msg 83 339 500;
+#X msg 97 367 10;
+#X obj 83 398 delread~ \$0-delay 100;
+#X text 267 480 updated for Pd version 0.52;
+#X connect 0 0 10 0;
+#X connect 5 0 9 0;
+#X connect 5 0 9 1;
+#X connect 7 0 5 0;
+#X connect 8 0 6 0;
+#X connect 10 0 7 0;
+#X connect 12 0 6 0;
+#X connect 31 0 33 0;
+#X connect 32 0 33 0;
+#X connect 33 0 25 0;
+#X connect 33 0 25 1;
