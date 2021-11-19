@@ -582,7 +582,7 @@ int rtext_findatomfor(t_rtext *x, int xpos, int ypos)
     return (natom-1);
 }
 
-void gatom_key(void *z, t_floatarg f);
+void gatom_key(void *z, t_symbol *keysym, t_floatarg f);
 
 void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 {
@@ -591,7 +591,7 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         /* CR to atom boxes sends message and resets */
     if (keynum == '\n' && x->x_text->te_type == T_ATOM)
     {
-        gatom_key(x->x_text, keynum);
+        gatom_key(x->x_text, keysym, keynum);
         return;
     }
     if (keynum)
