@@ -261,7 +261,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/filter-graph1.pd \
      ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/osc-voice.pd \
-     ./3.audio.examples/output~.pd \
      ./3.audio.examples/partial.pd \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
@@ -293,7 +292,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/data-start.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
-     ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
      ./5.reference/abs~-help.pd \

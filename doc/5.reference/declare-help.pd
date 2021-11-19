@@ -1,4 +1,4 @@
-#N canvas 598 57 549 677 12;
+#N canvas 761 56 549 677 12;
 #X declare;
 #X obj 53 14 declare;
 #X text 120 15 - set environment for loading patch;
@@ -41,5 +41,5 @@ Or \, if you have files installed in the directory extra/stillmore
 ;
 #X text 30 357 Note that by default the 'extra' folder is the last
 in the search priority. This means that user added paths are searched
-before. You can use [declare -stdpath .] to ensure that 'extra' is
+before. You can use [declare -stdpath ./] to ensure that 'extra' is
 searched before other search paths., f 68;
