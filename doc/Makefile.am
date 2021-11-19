@@ -321,9 +321,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/czero~-help.pd \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
-     ./5.reference/delread4~-help.pd \
-     ./5.reference/delread~-help.pd \
-     ./5.reference/delwrite~-help.pd \
+     ./5.reference/delay-tilde-objects-help.pd \
      ./5.reference/drawpolygon-help.pd \
      ./5.reference/drawtext-help.pd \
      ./5.reference/element-help.pd \
