@@ -12,10 +12,7 @@ Reference documentation for Pd lives in:
 or online:
     http://msp.ucsd.edu/Pd_documentation/
 
-More extensive documentation is available on:
-    https://puredata.info/docs/BooksAboutPd/
-
-Information of all sorts (guides, development, meetings, etc):
+Information of all sorts (guides, development, meetings, s, etc):
     http://puredata.info
 
 The Pd mailing list archive lives in:
