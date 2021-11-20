@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 817 68 583 653 12;
+#N canvas 695 47 583 653 12;
 #X obj 123 591 list;
 #X obj 68 12 text;
 #X text 46 590 see also:;
@@ -12,7 +12,7 @@
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
-#N canvas 675 19 679 672 define 1;
+#N canvas 675 23 679 672 define 1;
 #X msg 90 74 clear;
 #X msg 108 100 read text-object-help.txt;
 #X msg 121 129 write text-object-help.txt;
@@ -34,7 +34,7 @@ so that other objects can find it (and later should have some alternative
 #X obj 88 612 print;
 #X obj 88 587 list trim;
 #X obj 88 449 text define -k text-help-1;
-#A set line 0 \; line 1 \; line 2 \;;
+#A set this is a message \; this is another 1 ... \;;
 #X msg 136 204 write -c /tmp/test-cr.txt;
 #X obj 267 479 print notify-outlet;
 #X text 173 593 First outlet is pointer to a "text" scalar containing
@@ -57,15 +57,16 @@ carriage returns as separators \; this should allow reading some text
 file formats - like this:), f 64;
 #X msg 166 343 sort;
 #X text 213 341 sort the contents. details here:;
-#N canvas 602 124 647 361 sorting-text 0;
-#X obj 45 126 text define text-help-sorting;
-#X msg 76 89 sort;
-#X msg 44 54 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 1 \\\; 2 \;;
-#X text 63 168 Numbers come before symbols \, which are sorted alphabetically
+#N canvas 602 124 527 289 sorting-text 0;
+#X obj 110 115 text define text-help-sorting;
+#X msg 141 78 sort;
+#X msg 109 43 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 1 \\\; 2 \;;
+#X text 54 160 Numbers come before symbols \, which are sorted alphabetically
 (details such as case sensitivity (does 'b' come before 'A'?) may depend
 on operating system). Shorter lines come before longer ones that match
 the entire shorter lines. As a special case empty lines come before
 anything else.;
+#X text 326 115 <= click to open;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X restore 456 342 pd sorting-text;
@@ -354,7 +355,7 @@ backslashes).;
 #X connect 12 0 3 0;
 #X restore 392 342 pd tolist;
 #X obj 279 366 text fromlist;
-#N canvas 836 231 604 318 fromlist 0;
+#N canvas 1003 356 604 318 fromlist 0;
 #X obj 81 202 text fromlist text-help-fromlist;
 #X obj 114 263 text define text-help-fromlist;
 #X text 46 21 "text fromlist" converts a list such as "text tolist"
