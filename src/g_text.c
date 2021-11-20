@@ -783,6 +783,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             gatom_reborder(x);
         }
         gatom_senditup(x);
+		x->a_doubleclicked = 0;
     }
     else
     {
