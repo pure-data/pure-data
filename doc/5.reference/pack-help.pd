@@ -34,7 +34,7 @@ to force an output on secondary inlets., f 34;
 #X text 28 459 abbreviated arguments =>, f 13;
 #X text 27 53 The pack object takes a series of inputs and outputs
 a concatenated list. The number of creation arguments determines the
-number of inletsand their type: float ('float'/'f') \, pointer ('pointer'/'p')
+number of inlets and their type: float ('float'/'f') \, pointer ('pointer'/'p')
 or symbol ('symbol'/'s'). A number sets a numeric inlet and initializes
 the value., f 76;
 #X text 461 399 <= trigger;
