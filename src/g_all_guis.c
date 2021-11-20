@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "s_stuff.h"
 
 #include "g_all_guis.h"
 #include <math.h>
@@ -183,6 +184,31 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
     return(gensym(buf));
 }
 
+t_symbol *iemgui_put_in_braces(t_symbol *s)
+{
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
+    int i = 0;
+    if (strlen(s->s_name) >= MAXPDSTRING)
+        return (s);
+    for (s1 = s->s_name, s2 = buf; ; s1++, s2++, i++)
+    {
+        if (i == 0)
+        {
+            *s2 = '{';
+            s2++;
+        }
+        if (!(*s2 = *s1))
+        {
+            *s2 = '}';
+            s2++;
+            *s2 = '\0';
+            break;
+        }
+    }
+    return(gensym(buf));
+}
+
 void iemgui_verify_snd_ne_rcv(t_iemgui *iemgui)
 {
     iemgui->x_fsf.x_put_in2out = 1;
@@ -270,9 +296,7 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
 }
 
 static t_symbol* color2symbol(int col) {
-    const int  compat = (pd_compatibilitylevel < 48)?1:
-        /* FIXXME: for Pd>=0.48, the default compatibility mode should be OFF */
-        1;
+    const int  compat = (pd_compatibilitylevel < 48) ? 1 : 0;
 
     char colname[MAXPDSTRING];
     colname[0] = colname[MAXPDSTRING-1] = 0;
@@ -305,7 +329,10 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
         if ('#' == s->s_name[0])
-            return (int)strtol(s->s_name+1, 0, 16);
+        {
+            int col = (int)strtol(s->s_name+1, 0, 16);
+            return col & 0xFFFFFF;
+        }
     }
     return 0;
 }
@@ -377,9 +404,15 @@ void iemgui_all_raute2dollar(t_symbol **srlsym)
     srlsym[2] = iemgui_raute2dollar(srlsym[2]);
 }
 
+void iemgui_all_put_in_braces(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_put_in_braces(srlsym[0]);
+    srlsym[1] = iemgui_put_in_braces(srlsym[1]);
+    srlsym[2] = iemgui_put_in_braces(srlsym[2]);
+}
+
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
-    t_symbol *snd;
     int sndable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
@@ -388,9 +421,8 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
         oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) sndable = 0;
-    snd = iemgui_raute2dollar(s);
-    iemgui->x_snd_unexpanded = snd;
-    iemgui->x_snd = snd = canvas_realizedollar(iemgui->x_glist, snd);
+    iemgui->x_snd_unexpanded = s;
+    iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
@@ -408,7 +440,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) rcvable = 0;
-    rcv = iemgui_raute2dollar(s);
+    rcv = s;
     iemgui->x_rcv_unexpanded = rcv;
     rcv = canvas_realizedollar(iemgui->x_glist, rcv);
     if(rcvable)
@@ -435,6 +467,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *old;
+    char lab_escaped[MAXPDSTRING];
 
         /* tb: fix for empty label { */
         if (s == gensym(""))
@@ -442,13 +475,16 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
         /* tb } */
 
     old = iemgui->x_lab;
-    iemgui->x_lab_unexpanded = iemgui_raute2dollar(s);
+    iemgui->x_lab_unexpanded = s;
     iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
+    lab_escaped[MAXPDSTRING-1] = 0;
+    pdgui_strnescape( lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
+
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} \n",
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape \"%s \"] \n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 strcmp(s->s_name, "empty")?iemgui->x_lab->s_name:"");
+                 strcmp(s->s_name, "empty")?lab_escaped:"");
 }
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -610,11 +646,19 @@ void iemgui_newzoom(t_iemgui *iemgui)
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
+    char label[MAXPDSTRING];
+
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
-    srl[2] = iemgui->x_lab;
-    iemgui_all_sym2dollararg(iemgui, srl);
+
+    strcpy(label, iemgui->x_lab->s_name);
+    pdgui_strnescape(label, MAXPDSTRING,
+                    iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name));
+    srl[2] = gensym(label);
+
     iemgui_all_dollar2raute(srl);
+    iemgui_all_sym2dollararg(iemgui, srl);
+    iemgui_all_put_in_braces(srl);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
@@ -659,7 +703,6 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     iemgui->x_isa.x_loadinit = init;
     if(!strcmp(srl[0]->s_name, "empty")) sndable = 0;
     if(!strcmp(srl[1]->s_name, "empty")) rcvable = 0;
-    iemgui_all_raute2dollar(srl);
     iemgui_all_dollararg2sym(iemgui, srl);
     if(rcvable)
     {
@@ -700,6 +743,34 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     canvas_dirty(iemgui->x_glist, 1);
     return(oldsndrcvable);
 }
+
+void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
+{
+#define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
+    t_float zoom = iemgui->x_glist->gl_zoom;
+    t_symbol *srl[3];
+    int i;
+    for(i=0; i<argc; i++)
+        SETFLOAT(argv+i, -1); /* initialize */
+
+    iemgui_properties(iemgui, srl);
+
+    if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
+    if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
+    if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
+    if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
+    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
+    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
+    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
+    if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
+    if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
+    if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
+    if(argc>13) SETFLOAT (argv+13, iemgui->x_fontsize);
+    if(argc>14) SETCOLOR (argv+14, iemgui->x_bcol);
+    if(argc>15) SETCOLOR (argv+15, iemgui->x_fcol);
+    if(argc>16) SETCOLOR (argv+16, iemgui->x_lcol);
+}
+
 
 /* pre-0.46 the flags were 1 for 'loadinit' and 1<<20 for 'scale'.
 Starting in 0.46, take either 1<<20 or 1<<1 for 'scale' and save to both

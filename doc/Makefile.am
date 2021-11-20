@@ -54,6 +54,7 @@ empty=
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
+     ./1.manual/favicon.ico \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.jpg \
      ./1.manual/fig1.3.jpg \
@@ -102,6 +103,9 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x3.htm \
      ./1.manual/x4.htm \
      ./1.manual/x5.htm \
+     ./1.manual/x6.htm \
+     ./1.manual/x6-a.htm \
+     ./1.manual/x6-b.htm \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
@@ -292,7 +296,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
-     ./5.reference/0_all_guis-INTRO.txt \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
@@ -330,6 +333,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/expr-help.pd \
      ./5.reference/exp~-help.pd \
      ./5.reference/fft~-help.pd \
+     ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
      ./5.reference/framp~-help.pd \
      ./5.reference/fudiformat-help.pd \
@@ -371,7 +375,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/osc~-help.pd \
      ./5.reference/otherbinops-help.pd \
      ./5.reference/pack-help.pd \
-     ./5.reference/pd-help.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
@@ -387,7 +390,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
-     ./5.reference/receive-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
@@ -400,7 +402,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send-help.pd \
+     ./5.reference/send-receive-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
      ./5.reference/setctl.pd \
@@ -416,7 +418,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
-     ./5.reference/switch~-help.pd \
      ./5.reference/symbol-help.pd \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
@@ -425,8 +426,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabreceive~-help.pd \
-     ./5.reference/tabsend~-help.pd \
+     ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \
@@ -438,6 +438,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/throw~-help.pd \
      ./5.reference/timer-help.pd \
      ./5.reference/toggle-help.pd \
+     ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
@@ -491,6 +492,7 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
+     ./8.topics/expr.html \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \

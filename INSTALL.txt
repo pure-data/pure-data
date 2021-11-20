@@ -217,9 +217,10 @@ compiler:
 
 * macOS 10.6: i386, x86_64, ppc
 * macOS 10.7+: i386, x86_64
+* macOS 10.15: x86_64
 
 Note: a "fat" Pd may not work on all systems and/or be able to load both 32 or
-64 bit externals. Additonally, you can specify multiple architectures directly:
+64 bit externals. Additionally, you can specify multiple architectures directly:
 
     # build a "fat" Pd for both 32 and 64 bit
     # may not work on all systems
@@ -235,7 +236,7 @@ the system. Optionally, Pd can also be built with Jack installed via Homebrew or
 Macports, however the runtime framework support must be disabled:
 
     brew install jack
-    ./configure --disable-jack-framework
+    ./configure --disable-jack-framework --enable-jack
 
 You should now be ready to build Pd by following the general autotools build
 steps. Once built, there are two options for installation:
@@ -269,7 +270,7 @@ included with the system (as of macOS 10.14) is buggy and should *not* be used.
 It is recommended to install a newer version, either via Homebrew or from the
 ActiveState Tcl/Tk downloads.
 
-To see which version the Pd GUI is using: set the log level to 3 & look for the
+To see which version the Pd GUI is using: set the log level to 4 & look for the
 Tk version log line in the Pd window.
 
 Another option is to set the Tk Wish command Pd uses to launch the GUI. At
@@ -404,7 +405,7 @@ For example, to build a 32 bit Pd:
 
     ./configure --host=i686-w64-mingw32
 
-Similarily, to build a 64 bit Pd without ASIO support:
+Similarly, to build a 64 bit Pd without ASIO support:
 
     ./configure --disable-asio --host=x86_64-w64-mingw32
 

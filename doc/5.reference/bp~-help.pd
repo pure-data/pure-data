@@ -1,45 +1,37 @@
-#N canvas 473 71 504 559 12;
-#X obj 38 13 bp~;
-#X floatatom 149 344 5 0 0 0 - - -;
-#X floatatom 182 215 0 0 0 0 - - -;
-#X floatatom 53 305 5 0 0 0 - - -;
-#X floatatom 52 151 0 0 0 0 - - -;
-#X msg 359 134 \; pd dsp 0;
-#X obj 52 194 osc~ 100;
-#X msg 149 187 clear;
-#X msg 283 134 \; pd dsp 1;
+#N canvas 849 57 517 510 12;
+#X obj 58 13 bp~;
+#X floatatom 147 179 0 0 0 0 - - - 0;
+#X msg 114 151 clear;
 #X text 34 80 The left inlet is the incoming audio signal \, the middle
 control input sets center frequency and the right input sets "Q".,
-f 56;
-#X obj 149 274 bp~ 100 10;
-#X text 30 376 Compare the amplitude of the original signal on the
-left with the amplitude of the filtered signal on the right.;
-#X floatatom 216 240 0 0 0 0 - - -;
+f 58;
+#X obj 114 238 bp~ 100 10;
+#X floatatom 181 204 0 1 50 0 - - - 0;
 #X text 33 42 bp~ passes a sinusoid at the center frequency at unit
-gain (approximately). Other frequencies are attenuated., f 56;
-#X text 58 501 see also:;
-#X obj 130 501 vcf~;
-#X obj 52 279 env~ 8192;
-#X obj 149 309 env~ 8192;
-#X text 261 503 updated for Pd version 0.46;
-#X text 29 420 NOTE: the maximum center frequency is sample rate divided
+gain (approximately). Other frequencies are attenuated.;
+#X text 24 458 see also:;
+#X obj 96 459 vcf~;
+#X text 280 457 updated for Pd version 0.46;
+#X text 35 381 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X text 73 13 - bandpass filter;
-#X text 248 241 <= Q;
-#X text 214 216 <= center frequency;
-#X text 196 186 <= reinitialize internal state;
-#X text 90 148 <= scroll to change input frequency, f 19;
-#X text 237 266 Arguments initialize center frequency and Q, f 22
+#X text 93 13 - bandpass filter;
+#X text 213 205 <= Q;
+#X text 179 180 <= center frequency;
+#X text 161 150 <= reinitialize internal state;
+#X text 202 230 Arguments initialize center frequency and Q, f 22
 ;
-#X text 223 304 env~ gives the amplitude of the signal envelop in dB
-, f 27;
-#X connect 2 0 10 1;
-#X connect 4 0 6 0;
-#X connect 6 0 10 0;
-#X connect 6 0 16 0;
-#X connect 7 0 10 0;
-#X connect 10 0 17 0;
-#X connect 12 0 10 2;
-#X connect 16 0 3 0;
-#X connect 17 0 1 0;
+#X obj 56 294 output~;
+#X obj 46 166 noise~;
+#X text 132 300 listen to how the white noise input is filtered. The
+higher the Q \, the more attenuation we have for frequencies besides
+the center frequency., f 48;
+#X obj 138 459 bob~;
+#X obj 178 459 lop~;
+#X obj 218 459 hip~;
+#X connect 1 0 4 1;
+#X connect 2 0 4 0;
+#X connect 4 0 16 0;
+#X connect 4 0 16 1;
+#X connect 5 0 4 2;
+#X connect 17 0 4 0;

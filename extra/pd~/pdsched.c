@@ -83,18 +83,16 @@ static int readbinmessage(t_binbuf *b)
 
 int pd_extern_sched(char *flags)
 {
-    int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
-    int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int i, j, rate, advance, callback, chin, chout, fill = 0, c, blocksize,
-        useascii = 0;
+    int i, j, chin, chout, fill = 0, c, useascii = 0;
     t_binbuf *b = binbuf_new();
+    t_audiosettings as;
 
-    sys_get_audio_params(&naudioindev, audioindev, chindev,
-        &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback,
-            &blocksize);
+    sys_get_audio_settings(&as);
+    as.a_api = API_DUMMY;
+    sys_set_audio_settings(&as);
 
-    chin = (naudioindev < 1 ? 0 : chindev[0]);
-    chout = (naudiooutdev < 1 ? 0 : choutdev[0]);
+    chin = (as.a_nindev < 1 ? 0 : as.a_chindevvec[0]);
+    chout = (as.a_noutdev < 1 ? 0 : as.a_choutdevvec[0]);
     if (!flags || flags[0] != 'a')
     {
             /* signal to stdout object to do binary by attaching an object
@@ -116,8 +114,7 @@ int pd_extern_sched(char *flags)
     }
     /* fprintf(stderr, "Pd plug-in scheduler called, chans %d %d, sr %d\n",
         chin, chout, (int)rate); */
-    sys_setchsr(chin, chout, rate);
-    sys_audioapi = API_NONE;
+    sys_setchsr(chin, chout, as.a_srate);
     while (useascii ? readasciimessage(b) : readbinmessage(b) )
     {
         t_atom *ap = binbuf_getvec(b);
@@ -159,7 +156,7 @@ int pd_extern_sched(char *flags)
         {
             t_pd *whom = ap[0].a_w.w_symbol->s_thing;
             if (!whom)
-                error("%s: no such object", ap[0].a_w.w_symbol->s_name);
+                pd_error(0, "%s: no such object", ap[0].a_w.w_symbol->s_name);
             else if (ap[1].a_type == A_SYMBOL)
                 typedmess(whom, ap[1].a_w.w_symbol, n-2, ap+2);
             else pd_list(whom, 0, n-1, ap+1);

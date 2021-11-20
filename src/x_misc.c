@@ -27,14 +27,15 @@
 #if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
-#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__)
+#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
+    || defined(_WIN32)
 #include <time.h>
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -158,6 +159,7 @@ static void namecanvas_setup(void)
 }
 
 /* -------------------------- cputime ------------------------------ */
+#ifdef CLOCKHZ
 
 static t_class *cputime_class;
 
@@ -240,6 +242,7 @@ static void cputime_setup(void)
     class_addbang(cputime_class, cputime_bang);
     class_addmethod(cputime_class, (t_method)cputime_bang2, gensym("bang2"), 0);
 }
+#endif /* CLOCKHZ */
 
 /* -------------------------- realtime ------------------------------ */
 
@@ -859,7 +862,9 @@ void x_misc_setup(void)
     random_setup();
     loadbang_setup();
     namecanvas_setup();
+#ifdef CLOCKHZ
     cputime_setup();
+#endif /* CLOCKHZ */
     realtime_setup();
     oscparse_setup();
     oscformat_setup();

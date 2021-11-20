@@ -1,7 +1,7 @@
-#N canvas 424 23 524 741 12;
+#N canvas 746 41 524 741 12;
 #X obj 184 319 until;
 #X obj 210 285 max 0;
-#X floatatom 210 264 5 0 0 1 times - -;
+#X floatatom 210 264 5 0 0 1 times - - 0;
 #X text 218 235 times;
 #X obj 184 343 print repetition;
 #X msg 184 235 5;

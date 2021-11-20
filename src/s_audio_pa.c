@@ -10,9 +10,9 @@
     is requested, either we call portaudio in non-blocking mode, or else we
     call portaudio in callback mode and manage our own FIFO se we can offer
     Pd "blocking" I/O calls.  To do the latter we define FAKEBLOCKING; this
-    works better in MAXOSX (gets 40 msec lower latency!) and might also in
+    works better in MACOSX (gets 40 msec lower latency!) and might also in
     Windows.  If FAKEBLOCKING is defined we can choose between two methods
-    for waiting on the (presumebly other-thread) I/O to complete, either
+    for waiting on the (presumably other-thread) I/O to complete, either
     correct thread synchronization (by defining THREADSIGNAL) or just sleeping
     and polling; the latter seems to work better so far.
 */
@@ -23,6 +23,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,7 +40,7 @@
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -50,7 +51,7 @@
 #endif
 
 /* define this to enable thread signaling instead of polling */
-/* #define THREADSIGNAL */
+#define THREADSIGNAL
 
     /* LATER try to figure out how to handle default devices in portaudio;
     the way s_audio.c handles them isn't going to work here. */
@@ -75,6 +76,7 @@ static PA_VOLATILE char *pa_inbuf;
 static PA_VOLATILE sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
+#include <errno.h>
 #ifdef _WIN32
 #include <sys/timeb.h>
 #else
@@ -177,7 +179,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
 }
 
 #ifdef FAKEBLOCKING
-    /* callback for "non-callback" case in which we actualy open portaudio
+    /* callback for "non-callback" case in which we actually open portaudio
     in callback mode but fake "blocking mode". We communicate with the
     main thread via FIFO.  First read the audio output FIFO (which
     we sync on, not waiting for it but supplying zeros to the audio output if
@@ -401,13 +403,11 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     if (outchans > 0 && pa_outdev == -1)
         outchans = 0;
 
-    if (sys_verbose)
-    {
-        post("input device %d, channels %d", pa_indev, inchans);
-        post("output device %d, channels %d", pa_outdev, outchans);
-        post("framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
-        post("rate %d", rate);
-    }
+    logpost(NULL, PD_VERBOSE, "input device %d, channels %d", pa_indev, inchans);
+    logpost(NULL, PD_VERBOSE, "output device %d, channels %d", pa_outdev, outchans);
+    logpost(NULL, PD_VERBOSE, "framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
+    logpost(NULL, PD_VERBOSE, "rate %d", rate);
+
     pa_inchans = STUFF->st_inchannels = inchans;
     pa_outchans = STUFF->st_outchannels = outchans;
     pa_soundin = soundin;
@@ -460,12 +460,11 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_nbuffers = nbuffers;
     if ( err != paNoError )
     {
-        error("error opening audio: %s", Pa_GetErrorText(err));
+        pd_error(0, "error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
         return (1);
     }
-    else if (sys_verbose)
-        post("... opened OK.");
+    else logpost(NULL, PD_VERBOSE, "... opened OK.");
     return (0);
 }
 
@@ -547,7 +546,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-            sys_microsleep(sys_sleepgrain);
+            sys_microsleep();
             if (!pa_stream)     /* sys_microsleep() may have closed device */
                 return SENDDACS_NO;
 #endif /* THREADSIGNAL */
@@ -589,7 +588,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-            sys_microsleep(sys_sleepgrain);
+            sys_microsleep();
             if (!pa_stream)     /* sys_microsleep() may have closed device */
                 return SENDDACS_NO;
 #endif /* THREADSIGNAL */
@@ -653,28 +652,48 @@ int pa_send_dacs(void)
     if (locked)
     {
         PaError err = Pa_IsStreamActive(&pa_stream);
-        error("error %d: %s", err, Pa_GetErrorText(err));
+        pd_error(0, "error %d: %s", err, Pa_GetErrorText(err));
         sys_close_audio();
         #ifdef __APPLE__
             /* TODO: the portaudio coreaudio implementation doesn't handle
                re-connection, so suggest restarting */
-            error("audio device not responding - closing audio");
-            error("you may need to save and restart pd");
+            pd_error(0, "audio device not responding - closing audio");
+            pd_error(0, "you may need to save and restart pd");
         #else
             /* portaudio seems to handle this better on windows and linux */
-            error("trying to reopen audio device");
+            pd_error(0, "trying to reopen audio device");
             sys_reopen_audio(); /* try to reopen it */
             if (audio_isopen())
-                error("successfully reopened audio device");
+                pd_error(0, "successfully reopened audio device");
             else
             {
-                error("audio device not responding - closing audio");
-                error("reconnect and reselect it in the settings (or toggle DSP)");
+                pd_error(0, "audio device not responding - closing audio");
+                pd_error(0, "reconnect and reselect it in the settings (or toggle DSP)");
             }
         #endif
         return SENDDACS_NO;
     }
     else return (rtnval);
+}
+
+static char*pdi2devname(const PaDeviceInfo*pdi, char*buf, size_t bufsize) {
+    const PaHostApiInfo *api = 0;
+    char utf8device[MAXPDSTRING];
+    utf8device[0] = 0;
+
+    if(!pdi)
+        return 0;
+
+    api = Pa_GetHostApiInfo(pdi->hostApi);
+    if(api)
+        snprintf(utf8device, MAXPDSTRING, "%s: %s",
+            api->name, pdi->name);
+    else
+        snprintf(utf8device, MAXPDSTRING, "%s",
+            pdi->name);
+
+    u8_nativetoutf8(buf, bufsize, utf8device, MAXPDSTRING);
+    return buf;
 }
 
     /* scanning for devices */
@@ -689,36 +708,20 @@ void pa_getdevs(char *indevlist, int *nindevs,
     ndev = Pa_GetDeviceCount();
     for (i = 0; i < ndev; i++)
     {
+        char utf8device[MAXPDSTRING];
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);
+        char*devname = pdi2devname(pdi, utf8device, MAXPDSTRING);
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */
             snprintf(indevlist + nin * devdescsize, devdescsize,
-#ifdef _WIN32
-     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
-#else
-#ifdef __APPLE__
-             "%s",
-#else
-            "(%d) %s", pdi->hostApi,
-#endif
-#endif
-                pdi->name);
+                "%s", devname);
             nin++;
         }
         if (pdi->maxOutputChannels > 0 && nout < maxndev)
         {
             snprintf(outdevlist + nout * devdescsize, devdescsize,
-#ifdef _WIN32
-     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
-#else
-#ifdef __APPLE__
-             "%s",
-#else
-            "(%d) %s", pdi->hostApi,
-#endif
-#endif
-                pdi->name);
+                "%s", devname);
             nout++;
         }
     }

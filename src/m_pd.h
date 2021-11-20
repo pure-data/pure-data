@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 51
-#define PD_BUGFIX_VERSION 1
-#define PD_TEST_VERSION "test1"
+#define PD_MINOR_VERSION 52
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "test2"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -29,6 +29,7 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #endif /* _MSC_VER */
 
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
+#ifndef EXTERN
 #ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
@@ -38,6 +39,7 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #else
 #define EXTERN extern
 #endif /* _WIN32 */
+#endif /* EXTERN */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
     structure whose elements are defined elsewhere.  On MSVC, when compiling
@@ -61,8 +63,10 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
-#ifdef _MSC_VER
+/* Microsoft Visual Studio is not C99, but since VS2015 has included most C99 headers:
+   https://docs.microsoft.com/en-us/previous-versions/hh409293(v=vs.140)#c-runtime-library
+   These definitions recreate stdint.h types, but only in pre-2015 Visual Studio: */
+#if defined(_MSC_VER) && _MSC_VER < 1900
 typedef signed __int8     int8_t;
 typedef signed __int16    int16_t;
 typedef signed __int32    int32_t;
@@ -528,18 +532,32 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 #endif
 
 /* ------------   printing --------------------------------- */
+
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
+
+/* for logpost(); does *not* work with verbose()! */
+typedef enum {
+    PD_CRITICAL = 0,
+    PD_ERROR,
+    PD_NORMAL,
+    PD_DEBUG,
+    PD_VERBOSE
+} t_loglevel;
+
+EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
+/* deprecated, use logpost() instead. */
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isabsolutepath(const char *dir);
@@ -900,6 +918,17 @@ EXTERN int pd_getdspstate(void);
 /* x_text.c */
 EXTERN t_binbuf *text_getbufbyname(t_symbol *s); /* get binbuf from text obj */
 EXTERN void text_notifybyname(t_symbol *s);      /* notify it was modified */
+
+/* g_undo.c */
+/* store two message-sets to be sent to the object's <s> method for 'undo'ing
+ * resp. 'redo'ing the current state of an object.
+ * this creates an internal copy of the atom-lists (so the caller is responsible
+ * for freeing any dynamically allocated data)
+ * this is a no-op if called during 'undo' (resp. 'redo').
+ */
+EXTERN void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
+                                    int undo_argc, t_atom*undo_argv,
+                                    int redo_argc, t_atom*redo_argv);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

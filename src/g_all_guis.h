@@ -3,6 +3,8 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 /* g_7_guis.h written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
+#ifndef __g_all_guis_h_
+
 #define IEM_GUI_COLNR_WHITE          0
 #define IEM_GUI_COLNR_ML_GREY        1
 #define IEM_GUI_COLNR_D_GREY         2
@@ -243,7 +245,7 @@ typedef struct _my_numbox
     t_iemgui x_gui;
     t_clock  *x_clock_reset;
     t_clock  *x_clock_wait;
-    double   x_val;
+    t_float  x_val;
     double   x_min;
     double   x_max;
     double   x_k;
@@ -302,6 +304,7 @@ EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
 EXTERN void iemgui_newzoom(t_iemgui *iemgui);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
+EXTERN void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv);
 
 EXTERN int canvas_getdollarzero(void);
 
@@ -309,3 +312,6 @@ EXTERN void iem_inttosymargs(t_iem_init_symargs *symargp, int n);
 EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
 EXTERN void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n);
 EXTERN int iem_fstyletoint(t_iem_fstyle_flags *fstylep);
+
+#define __g_all_guis_h_
+#endif /* __g_all_guis_h_ */

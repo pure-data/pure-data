@@ -135,7 +135,7 @@ object to pass arguments to initialize signal inlets in abstractions.
 #X restore 80 259 pd subpatch-with-inlets-and-outlets;
 #N canvas 0 0 600 400 (subpatch) 0;
 #X restore 172 524 pd;
-#X text 70 97 Inlets/outlets are used to receive and get informatin
+#X text 70 97 Inlets/outlets are used to receive and get information
 on a patch window. This can be an abstraction or a subpatch. To create
 a subpatch \, type "pd" into an object box \, then you can put inlets
 and outlets by making "inlet" objects \, etc \, in the subpatch (open

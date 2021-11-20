@@ -225,13 +225,20 @@ gotone:
         if (s && *s)
           *s = '\0';
         if (!SetDllDirectory(dirname))
-           error("could not set '%s' as DllDirectory(), '%s' might not load.",
+           pd_error(0, "could not set '%s' as DllDirectory(), '%s' might not load.",
                  dirname, basename);
         /* now load the DLL for the external */
         ntdll = LoadLibrary(filename);
         if (!ntdll)
         {
-            error("%s: couldn't load", filename);
+            wchar_t wbuf[MAXPDSTRING];
+            char buf[MAXPDSTRING];
+            DWORD count, err = GetLastError();
+            count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, MAXPDSTRING, NULL);
+            if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, MAXPDSTRING, 0, 0))
+                *buf = '\0';
+            pd_error(0, "%s: %s (%d)", filename, buf, err);
             class_set_extern_dir(&s_);
             return (0);
         }
@@ -244,7 +251,7 @@ gotone:
     dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
     if (!dlobj)
     {
-        error("%s: %s", filename, dlerror());
+        pd_error(0, "%s: %s", filename, dlerror());
         class_set_extern_dir(&s_);
         return (0);
     }
@@ -253,12 +260,12 @@ gotone:
         makeout = (t_xxx)dlsym(dlobj,  "setup");
 #else
 #warning "No dynamic loading mechanism specified, \
-    libdl or WIN32 required for loading externals!"
+libdl or WIN32 required for loading externals!"
 #endif
 
     if (!makeout)
     {
-        error("load_object: Symbol \"%s\" not found", symname);
+        pd_error(0, "load_object: Symbol \"%s\" not found", symname);
         class_set_extern_dir(&s_);
         return 0;
     }
@@ -388,7 +395,7 @@ int sys_run_scheduler(const char *externalschedlibname,
         if (!ntdll)
         {
             fprintf(stderr, "%s: couldn't load external scheduler\n", filename);
-            error("%s: couldn't load external scheduler", filename);
+            pd_error(0, "%s: couldn't load external scheduler", filename);
             return (1);
         }
         externalmainfunc =
@@ -403,7 +410,7 @@ int sys_run_scheduler(const char *externalschedlibname,
         dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
         if (!dlobj)
         {
-            error("%s: %s", filename, dlerror());
+            pd_error(0, "%s: %s", filename, dlerror());
             fprintf(stderr, "dlopen failed for %s: %s\n", filename, dlerror());
             return (1);
         }
@@ -464,7 +471,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         }
             /* otherwise we couldn't do it; just return 0 */
     }
-    else error("%s: can't load abstraction within itself\n", s->s_name);
+    else pd_error(0, "%s: can't load abstraction within itself\n", s->s_name);
     pd_this->pd_newest = 0;
     return (0);
 }

@@ -1,11 +1,8 @@
-#N canvas 591 44 596 578 12;
+#N canvas 775 138 568 637 12;
 #X floatatom 147 186 0 0 0 0 - - -;
 #X obj 80 99 osc~ 100;
 #X msg 96 131 clear;
-#X obj 124 531 lop~;
-#X text 38 531 see also:;
 #X obj 60 10 rpole~;
-#X text 122 10 real one-pole (recursive) filter \, raw;
 #X text 26 42 Rpole~ filters an audio signal (left inlet) via a one-pole
 real filter \, whose coefficient is controlled by a creation argument
 or by an audio signal (right inlet).;
@@ -60,20 +57,27 @@ the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 #X connect 12 0 10 1;
 #X connect 13 0 12 1;
 #X restore 405 454 pd test;
-#X text 164 531 etc.: user-friendly filters;
 #X text 41 350 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.), f 68;
 #X text 100 266 y[n] = x[n] + a[n] * y[n-1];
-#X text 394 516 updated for Pd version 0.42;
+#X text 326 585 updated for Pd version 0.42;
 #X text 152 100 <= signal to filter;
 #X text 148 131 <= clear internal state to zero;
 #X text 152 156 <= set internal state;
 #X text 179 187 <= filter coefficient (may be a signal);
 #X text 168 213 <= creation argument initializes filter coefficient
 ;
-#X connect 0 0 23 1;
-#X connect 1 0 23 0;
-#X connect 2 0 23 0;
-#X connect 20 0 23 0;
+#X text 122 10 - real one-pole (recursive) filter \, raw;
+#X obj 127 537 lop~;
+#X text 48 538 see also:;
+#X obj 168 537 hip~;
+#X obj 210 537 bp~;
+#X obj 247 537 vcf~;
+#X text 332 537 - user-friendly filters;
+#X obj 292 537 bob~;
+#X connect 0 0 20 1;
+#X connect 1 0 20 0;
+#X connect 2 0 20 0;
+#X connect 17 0 20 0;

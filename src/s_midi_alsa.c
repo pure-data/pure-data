@@ -237,7 +237,7 @@ void sys_alsa_poll_midi(void)
                for(i = 0; i < length; i++)
                    sys_midibytein(alsa_source, (buf[i] & 0xff));
            } else if (rslt == -ENOSPC) {
-               error("MIDI input queue overflow!");
+               pd_error(0, "MIDI input queue overflow!");
            }
        }
    }

@@ -18,17 +18,17 @@
 #X text 76 517 summary of raw filters:;
 #N canvas 471 254 499 378 test 0;
 #X obj 127 283 env~ 16384;
-#X floatatom 127 307 5 0 0 0 - - -;
-#X floatatom 414 112 4 -1000 1000 0 - - -;
+#X floatatom 127 307 5 0 0 0 - - - 0;
+#X floatatom 414 112 4 -1000 1000 0 - - - 0;
 #X obj 230 308 dac~;
 #X obj 230 272 *~;
 #X obj 294 112 cos~;
-#X floatatom 229 57 5 0 0 0 - - -;
-#X obj 269 119 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X floatatom 229 57 5 0 0 0 - - - 0;
+#X obj 269 119 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 229 117 *~;
 #X obj 229 80 phasor~;
-#X floatatom 338 53 5 0 0 0 - - -;
+#X floatatom 338 53 5 0 0 0 - - - 0;
 #X obj 338 76 / 1000;
 #X obj 338 113 -~ 0.25;
 #X obj 338 135 cos~;
@@ -36,14 +36,14 @@
 #X obj 293 178 *~;
 #X obj 338 178 *~;
 #X obj 325 282 env~ 16384;
-#X floatatom 325 306 5 0 0 0 - - -;
+#X floatatom 325 306 5 0 0 0 - - - 0;
 #X obj 261 268 dbtorms;
-#X floatatom 261 243 5 0 0 0 - - -;
+#X floatatom 261 243 5 0 0 0 - - - 0;
 #X obj 230 207 czero~, f 14;
-#X floatatom 165 106 4 -1000 1000 0 - - -;
+#X floatatom 165 106 4 -1000 1000 0 - - - 0;
 #X obj 56 108 cos~;
 #X obj 55 69 phasor~;
-#X floatatom 55 44 5 0 0 0 - - -;
+#X floatatom 55 44 5 0 0 0 - - - 0;
 #X obj 99 109 -~ 0.25;
 #X obj 99 133 cos~;
 #X obj 165 135 / 1000;

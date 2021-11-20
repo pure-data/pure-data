@@ -18,10 +18,14 @@ typedef int socklen_t;
 #include <netdb.h>
 #endif
 
+#ifndef NET_MAXPACKETSIZE
+#define NET_MAXPACKETSIZE 65536
+#endif
+
 /* ----- socket address ----- */
 
     /** getaddrinfo() convenience wrapper which generates a list of IPv4 & IPv6
-        addresses from a given address/hostname string, port, and protcol
+        addresses from a given address/hostname string, port, and protocol
         (SOCK_STREAM or SOCK_DGRAM), set hostname to NULL for "any" address
 
         returns 0 on success or < 0 on error
@@ -66,6 +70,7 @@ typedef int socklen_t;
             return;
         }
     */
+
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 

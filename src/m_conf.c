@@ -37,6 +37,7 @@ void x_array_setup(void);
 void x_midi_setup(void);
 void x_misc_setup(void);
 void x_net_setup(void);
+void x_file_setup(void);
 void x_qlist_setup(void);
 void x_gui_setup(void);
 void x_list_setup(void);
@@ -88,6 +89,7 @@ void conf_init(void)
     x_midi_setup();
     x_misc_setup();
     x_net_setup();
+    x_file_setup();
     x_qlist_setup();
     x_gui_setup();
     x_list_setup();
