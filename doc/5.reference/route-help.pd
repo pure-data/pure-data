@@ -82,7 +82,7 @@ a symbol message., f 71;
 are implicit selectors and they stick to the message even if you can't
 see it and [route] cannot trim them!, f 50;
 #X text 27 296 On the other hand \, a "list a b c" message gets its
-list selector trimmed - as the usual behaviour of the object. The execption
+list selector trimmed - as the usual behaviour of the object. The exception
 and inconsistency is with 'symbol' messages \, where the symbol selector
 is kept. This is a known bug that's been here forever and just won't
 be fixed anymore., f 50;
