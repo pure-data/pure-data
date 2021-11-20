@@ -15,7 +15,7 @@ unchanged.;
 #X text 299 166 see also:;
 #X floatatom 65 192 5 0 0 0 - - - 0;
 #X floatatom 139 192 5 0 0 0 - - - 0;
-#X text 121 139 - note of ignored;
+#X text 121 139 - note off ignored;
 #X connect 0 0 3 0;
 #X connect 3 0 11 0;
 #X connect 3 1 12 0;
