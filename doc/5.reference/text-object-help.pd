@@ -12,7 +12,7 @@
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
-#N canvas 675 23 679 672 define 1;
+#N canvas 675 23 679 672 define 0;
 #X msg 90 74 clear;
 #X msg 108 100 read text-object-help.txt;
 #X msg 121 129 write text-object-help.txt;
