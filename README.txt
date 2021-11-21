@@ -16,7 +16,7 @@ Installation instructions are in INSTALL.txt and the Pd Manual at:
 
     http://msp.ucsd.edu/Pd_documentation/index.htm
 
-If you download and unpack Pd, you will also find the Manial locally
+If you download and unpack Pd, you will also find the Manual locally
 in the file "doc/1.manual/index.htm".
 
 Linux (or FreeBSD): In some Linux installations you can download Pd via "apt-get
