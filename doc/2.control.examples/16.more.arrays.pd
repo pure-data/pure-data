@@ -49,7 +49,7 @@ dialog. Note that information about size and ranges is saved \, but
 ticks and labels are lost between Pd sessions. The contents of the
 array may be saved as part of the patch or discarded. This is set in
 the 'properties" dialog as well., f 62;
-#X text 488 328 For last \, there are methods to cchange the visual
+#X text 488 328 For last \, there are methods to change the visual
 appearance of arrays:, f 51;
 #X text 506 392 show/hide arrays:, f 9;
 #X text 526 467 set line width;
@@ -97,7 +97,7 @@ used as a send. This is because "\$0" doesn't get expanded in messages.
 #X text 716 572 allow editing with mouse, f 13;
 #X text 722 608 prevent mouse interaction, f 14;
 #X text 456 634 0- point \; 1- polygon \; 2- bezier, f 11;
-#X text 515 589 set dislpay style;
+#X text 515 589 set display style;
 #X msg 683 645 \; array97 edit \$1 \; array98 edit \$1;
 #X connect 5 0 6 0;
 #X connect 7 0 39 0;
