@@ -174,7 +174,7 @@ Released under BSD License.</p>
 
 <p>The <strong>expr</strong> family is a set of C-like expression evaluation objects for the graphical music language Pure Data. It used to come as an &lsquo;extra&rsquo; external, but it is now a built-in native object.</p>
 
-<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators. Multiple expressions separated by semicolons can be defined in a single expr object and this results in multiple outlets (each for each expression). Expressions are evaluated from right to left (which means that the bottom expression will be the first executed.) The number of inlets in expr are defined by variables that take a few different forms: <strong>$i#</strong>, <strong>$i#</strong> and <strong>$s#</strong> for 'integers', 'floats' and 'symbols' ('#' is an inlet number from 1 up to 100, ordered from left to right). As an example, we can have 3 inlets defined as "$i1", "$f2" and "$s3", where:</p>
+<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators. Multiple expressions separated by semicolons can be defined in a single expr object and this results in multiple outlets (up to 100, each for each expression). Expressions are evaluated from right to left (which means that the bottom expression will be the first executed.) The number of inlets in expr are defined by variables that take a few different forms: <strong>$i#</strong>, <strong>$i#</strong> and <strong>$s#</strong> for 'integers', 'floats' and 'symbols' ('#' is an inlet number from 1 up to 100, ordered from left to right). As an example, we can have 3 inlets defined as "$i1", "$f2" and "$s3", where:</p>
 
 <ul>
 <li><strong>$i1</strong> is the input from the first (left) inlet and is treated as an integer</li>
@@ -197,7 +197,7 @@ Released under BSD License.</p>
 </ul>
 
 
-<p>The result of an expression from <strong>expr~</strong> is also an audio signal and multiple expressions can also be defined via semicolons.</p>
+<p>The result of an expression from <strong>expr~</strong> is also an audio signal and multiple expressions up to 1000 can also be defined via semicolons.</p>
 
 <p>Note for MSP users: Currently in the MSP version all signal inputs should come first followed by other types of inlet. (There seems to be no way of mixing signal and other types of inlets in their order in Max/MSP, if you know otherwise, please let me know.) This means that signal inlets cannot be mixed with other types of inlets. For example, &ldquo;expr~ $v1<em>$f2</em>$v3 &rdquo; is not legal. The second and third inlet should be switched and &ldquo;expr~ $v1<em>$v2</em>$f3&rdquo; should be used. In Pd you can mix them in any way you want.</p>
 
@@ -218,7 +218,7 @@ Released under BSD License.</p>
 
 <hr width="100%" size="2" align="left">
 
-<h3 id="operators">The operators (listed from highest precedence to lowest) are as follows:</h3>
+<h3 id="operators">The operators expr, expr~ and fexpr~ support (listed from highest precedence to lowest) are as follows:</h3>
 
 <table>
 <thead>
@@ -327,7 +327,7 @@ Released under BSD License.</p>
 </tbody>
 </table>
 
-<h3 id="functions">All expr family objects support a variety of functions as follows::</h3>
+<h3 id="functions">The supported functions for expr, expr~ and fexpr~ are:</h3>
 
 <table>
 <thead>
