@@ -38,7 +38,7 @@ example on how to control this to obtain very short delays., f 50
 #X text 21 108 Delread~ and delread4~ objects read from delay allocated
 in a delwrite~ object with the same name. Note that in this help file
 we're using delay names with "\$0" (the patch ID number used to force
-locality in Pd). You can use more than one delread~ and/or ddelread4~
+locality in Pd). You can use more than one delread~ and/or delread4~
 objects for the same delwrite~ object. If the specified delay time
 in delread~/delread4~ is longer than the size of the delay line or
 less than zero it is clipped to the length of the delay line., f 75
