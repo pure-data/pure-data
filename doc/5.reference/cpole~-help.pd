@@ -1,4 +1,4 @@
-#N canvas 751 57 554 682 12;
+#N canvas 751 57 554 672 12;
 #X declare -stdpath ./;
 #X obj 68 128 osc~ 100;
 #X msg 77 155 clear;
@@ -63,7 +63,7 @@
 #X connect 22 0 10 2;
 #X connect 23 0 10 3;
 #X connect 24 0 25 0;
-#X restore 415 524 pd test;
+#X restore 367 564 pd test;
 #X text 25 429 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
@@ -111,9 +111,22 @@ arguments or by another complex audio signal (remaining two inlets).
 #X text 316 602 - user-friendly filters;
 #X obj 276 602 bob~;
 #X text 121 10 - complex one-pole (recursive) filter \, raw;
+#X obj 365 484 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
+#000000 #000000;
+#X text 276 320 Chapter 8 of Miller's;
+#X text 385 482 <= Chapter 8 of Miller's Book;
+#N canvas 798 148 456 264 readMore 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 365 518 pd readMore;
 #X connect 0 0 13 0;
 #X connect 1 0 13 0;
 #X connect 9 0 13 1;
 #X connect 10 0 13 2;
 #X connect 12 0 13 3;
 #X connect 20 0 13 0;
+#X connect 44 0 47 0;
