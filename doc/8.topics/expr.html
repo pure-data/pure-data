@@ -195,7 +195,7 @@ Released under BSD License.</p>
 
 <p>The <strong>expr</strong> family is a set of C-like expression evaluation objects for the graphical music language Pure Data. It used to come as an &lsquo;extra&rsquo; external, but it is now a built-in native object.</p>
 
-<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators . Multiple expressions separated by semicolon can be defined in a single expr object which result in multiple outlets. Expressoin are evaluated from right to left  (which means that the bottom expression defined will be the first executed.) Access to inlets in expr take a few different forms:</p>
+<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators . Multiple expressions separated by semicolon can be defined in a single expr object which result in multiple outlets. Expressions are evaluated from right to left  (which means that the bottom expression defined will be the first executed.) Access to inlets in expr take a few different forms:</p>
 
 <ul>
 <li>$i1 - $i9
@@ -281,7 +281,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 </tr>
 <tr>
 <td>- </td>
-<td>Substract</td>
+<td>Subtract</td>
 <td> </td>
 </tr>
 <tr>
@@ -367,7 +367,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <tr>
 <td> if () </td>
 <td> 3 </td>
-<td> conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4 </td>
+<td> conditional  - if (condition, IfTrue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4) </td>
 </tr>
 <tr>
 <td> int () </td>
@@ -387,7 +387,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <tr>
 <td>min ()</td>
 <td>2</td>
-<td>minumum</td>
+<td>minimum</td>
 </tr>
 <tr>
 <td>max ()</td>
@@ -402,7 +402,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <tr>
 <td>if()</td>
 <td>3</td>
-<td>conditional  - if (condition, IfT rue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)</td>
+<td>conditional  - if (condition, IfTrue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)</td>
 </tr>
 <tr>
 <td>isinf()</td>
@@ -427,7 +427,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <tr>
 <td>imodf</td>
 <td>1</td>
-<td>   get signed intergar value from floating point number(added in version 0.4)</td>
+<td>   get signed integer value from floating point number(added in version 0.4)</td>
 </tr>
 <tr>
 <td>modf</td>
@@ -437,7 +437,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <tr>
 <td>drem</td>
 <td>2</td>
-<td>floating-point remainder function (added in versio n 0.4)</td>
+<td>floating-point remainder function (added in version 0.4)</td>
 </tr>
 </tbody>
 </table>
@@ -742,7 +742,7 @@ accessing the output samples where  0 &lt; n &lt; -{vector size}</li>
 <ul>
 <li>Expr, expr~, and fexpr~ now support multiple expressions separated by semicolons which results in multiple outlets.</li>
 <li>Variables are supported now in the same way they are supported in C.  - Variables have to be defined with the &ldquo;value&rdquo; object prior to execution.</li>
-<li>A new if function  if (condition-expression, IfTure-expression, IfFalse-expression) has been added.</li>
+<li>A new if function  if (condition-expression, IfTrue-expression, IfFalse-expression) has been added.</li>
 <li>New math functions added.</li>
 <li>New shorthand notations for fexpr~ have been added.
 
