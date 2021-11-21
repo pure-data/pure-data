@@ -720,14 +720,14 @@ Other hacks lke that are possible \, see below:, f 61;
 #X text 496 180 NOTE About integers and integer variable types:;
 #X text 30 31 Here are some basic examples of the [expr] object. This
 object only takes the variables: "$f#" \, "$i#" and "$s#" (examples
-of this type ar presented in [pd Arrays] in the parent patch)., f
+of this type are presented in [pd Arrays] in the parent patch)., f
 63;
 #X obj 157 316 t b f;
 #X floatatom 52 289 0 0 0 0 - - - 0;
 #X floatatom 157 289 0 0 0 0 - - - 0;
 #X text 28 202 '$f1' is a float from the 1st inlet \, '$i2' is an integer
 from the second inlet (so float input values are truncated to integers).
-Note that a bang;
+;
 #X obj 308 486 expr $f1 + 1 \; $f1 - 1 \; $f1 * 2 + 1;
 #X text 222 341 See how '()' is used to force an operation priority
 for the sum. Otherwise '*' and '/' have priority., f 33;
@@ -817,7 +817,7 @@ or [switch~] objects \, and is 64 samples by default., f 43;
 #X text 589 90 see also:;
 #X obj 177 239 expr~ $v1 + $v2;
 #X text 22 105 Besides '$f#' \, '$i#' and '$s#' \, [expr~] takes '$v#'
-variables. Nothe that the first inlet of [expr~] needs to be of type
+variables. Note that the first inlet of [expr~] needs to be of type
 '$v1'. You can still send floats to this left inlet as floats sent
 to audio inlets are promoted to signals., f 54;
 #X msg 290 55 \; pd dsp \$1;
