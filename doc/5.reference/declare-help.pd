@@ -70,7 +70,7 @@ to adopt slash declarations as in [library/objeectname]. Note also
 that while '-path' will only add search paths for the patch that owns
 the [declare] object \, once a library is loaded \, it stays with Pd
 and will be able to be loaded in other patches without [declare]. For
-more detaiils on this and how external loading works in Pd \, please
+more details on this and how external loading works in Pd \, please
 refer to the chapter 4 of Pd's manual., f 74;
 #N canvas 798 148 456 264 open-manual 0;
 #X obj 101 59 inlet;
