@@ -187,7 +187,7 @@ Released under BSD License.</p>
 
 <p>Type conversion from a float input to an integer is done automatically if the inlet is defined as an integer. Conversely, you can convert it explicitly by using functions (see below for the list of functions).</p>
 
-<p><strong>expr~</strong> is designed to efficiently combine signal and control stream processing by vector operations on the basis of the audio block size. The operations, functions, and syntax for <strong>expr~</strong> is just like expr with the addition of the <strong>$v#</strong> variable for signal vector input (also numbere up to 100). The '$v' is needed at least for the first and main input, so:</p>
+<p><strong>expr~</strong> is designed to efficiently combine signal and control stream processing by vector operations on the basis of the audio block size. The operations, functions, and syntax for <strong>expr~</strong> is just like expr with the addition of the <strong>$v#</strong> variable for signal vector input (also numbered up to 100). The '$v' is needed at least for the first and main input, so:</p>
 
 <ul>
 <li><strong>$v1</strong> - means the first inlet is a signal input</li>
@@ -204,9 +204,9 @@ Released under BSD License.</p>
 <p>The <strong>fexpr~</strong> object provides a flexible mechanism for building FIR and IIR filters by evaluating expressions on a sample by sample basis and providing access to prior samples of the input and output audio streams. When fractional offset is used, fexpr~ uses linear interpolation to determine the value of the indexed sample. The operations, functions, and syntax for expr~ is just like expr with the addition of <strong>$x#</strong> and <strong>$y#</strong> variables. <strong>fexpr~</strong> can access previous input and output samples up to the block size (64 by default).<p>
 
 
-<p><strong>$x#</strong> is used to denote a singnal input whose samples we would like to access. The syntax is $x followed by '#' (the inlet number up to 100) and the samples indexed by brackets, for example $x1[-1] specifies the previous sample of the first inlet. Therefore, if we are to build a simple filter which replaces every sample by the average of that sample and its previous one, we would use <strong>&ldquo;fexpr~ ($x1[0]+$x1[-1])/2 &rdquo;</strong>. For ease of when the brackets are omitted, the current sample is implied, so we can write the previous filter expression as follows: <strong>&ldquo; fexpr~ ($x1+$x1[-1])/2&rdquo;</strong>. To build IIR filters <strong>$y#</strong> is used to access the previous output samples indexed from -1 inside brackets. Note now that '#' here is used to define the outlet number.</p>
+<p><strong>$x#</strong> is used to denote a signal input whose samples we would like to access. The syntax is $x followed by '#' (the inlet number up to 100) and the samples indexed by brackets, for example $x1[-1] specifies the previous sample of the first inlet. Therefore, if we are to build a simple filter which replaces every sample by the average of that sample and its previous one, we would use <strong>&ldquo;fexpr~ ($x1[0]+$x1[-1])/2 &rdquo;</strong>. For ease of when the brackets are omitted, the current sample is implied, so we can write the previous filter expression as follows: <strong>&ldquo; fexpr~ ($x1+$x1[-1])/2&rdquo;</strong>. To build IIR filters <strong>$y#</strong> is used to access the previous output samples indexed from -1 inside brackets. Note now that '#' here is used to define the outlet number.</p>
 
-<p>The first inlet also needs to be a signal input ($x1), the output of fexpr~ is a signal ouput and multiple expressions can also be defined via semicolons and each will correspond to an outlet that can be accessed by '$y#'. Note that '$v#' is not allowed in fexpr~, so:</p>
+<p>The first inlet also needs to be a signal input ($x1), the output of fexpr~ is a signal output and multiple expressions can also be defined via semicolons and each will correspond to an outlet that can be accessed by '$y#'. Note that '$v#' is not allowed in fexpr~, so:</p>
 
 <ul>
 <li><strong>$x1[n]</strong> - means the first inlet is a signal input and 'n' is an index from 0 to -block size</li>
