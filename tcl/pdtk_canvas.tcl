@@ -83,7 +83,7 @@ proc pdtk_canvas_place_window {width height geometry} {
     if { "" != ${geometry} } {
         scan $geometry {%[+]%d%[+]%d} - x - y
         foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
-        set geometry +${x}+${y}
+        set geometry ${w}x${h}+${x}+${y}
     }
     return [list ${w} ${h} ${geometry}]
 }
