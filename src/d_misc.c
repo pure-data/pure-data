@@ -117,7 +117,7 @@ static void *bang_tilde_new(t_symbol *s)
 static void bang_tilde_setup(void)
 {
     bang_tilde_class = class_new(gensym("bang~"), (t_newmethod)bang_tilde_new,
-        (t_method)bang_tilde_free, sizeof(t_bang), 0, 0);
+        (t_method)bang_tilde_free, sizeof(t_bang), CLASS_NOINLET, 0);
     class_addmethod(bang_tilde_class, (t_method)bang_tilde_dsp,
         gensym("dsp"), 0);
 }
