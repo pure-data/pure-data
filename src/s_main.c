@@ -363,7 +363,10 @@ int sys_main(int argc, const char **argv)
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
+    {
+        fflush(stderr);
         return (0);
+    }
     sys_setsignalhandlers();
     sys_afterargparse();                    /* post-argparse settings */
     if (sys_dontstartgui)
@@ -515,7 +518,10 @@ static void sys_printusage(void)
 {
     unsigned int i;
     for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
+    {
         fprintf(stderr, "%s", usagemessage[i]);
+        fflush(stderr);
+    }
 }
 
     /* parse a comma-separated numeric list, returning the number found */
