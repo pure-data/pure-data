@@ -319,7 +319,9 @@ int sys_main(int argc, const char **argv)
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
     {
+#ifndef _fmode
         extern int _fmode;
+#endif
         _fmode = _O_BINARY;
     }
 # endif /* _MSC_VER */
