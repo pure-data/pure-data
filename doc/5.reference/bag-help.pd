@@ -1,32 +1,35 @@
-#N canvas 592 186 512 377 12;
-#X text 47 336 see also:;
-#X obj 160 336 makenote;
-#X msg 49 160 60 64;
-#X msg 100 160 60 0;
-#X msg 144 160 62 64;
-#X msg 197 160 62 0;
-#X obj 144 277 print;
-#X text 189 278 Output is in the printout window.;
-#X msg 206 207 clear;
-#X obj 77 18 bag;
-#X text 112 17 - COLLECTION OF NUMBERS;
-#X text 35 47 The bag object takes (value \, flag) pairs. If the flag
-is true (nonzero) \, the value is added to the collection \; if false
-\, it's removed. The collection may have many copies of the same value.
+#N canvas 770 110 527 451 12;
+#X text 46 410 see also:;
+#X obj 159 410 makenote;
+#X msg 68 234 60 64;
+#X msg 117 234 60 0;
+#X msg 161 234 62 64;
+#X msg 209 234 62 0;
+#X text 236 352 Output is in the printout window.;
+#X msg 224 284 clear;
+#X obj 56 21 bag;
+#X msg 217 259 flush;
+#X obj 115 410 poly;
+#X obj 161 321 bag;
+#X text 288 407 updated for Pd version 0.33;
+#X text 269 284 <= start over;
+#X text 261 259 <= output them;
+#X text 247 234 <= add or delete elements;
+#X text 89 20 - Collection of numbers;
+#X text 35 75 The bag object takes (value \, flag). Value at left inlet
+and flag at right inlet. If the flag is true (nonzero) \, the value
+is added to the collection and removed otherwise. The example here
+takes a list input \, which gets spread at inlets (as is common in
+Pd)., f 63;
+#X text 35 153 The collection may have many copies of the same value.
 You can output the collection (and empty it) with a "flush" message
 \, or just empty it with "clear." You can use this to mimic a sustain
-pedal \, for example.;
-#X msg 201 183 flush;
-#X obj 116 336 poly;
-#X obj 144 247 bag;
-#X text 289 333 updated for Pd version 0.33;
-#X text 251 206 <= start over;
-#X text 245 183 <= output them;
-#X text 235 160 <= add or delete elements;
-#X connect 2 0 14 0;
-#X connect 3 0 14 0;
-#X connect 4 0 14 0;
-#X connect 5 0 14 0;
-#X connect 8 0 14 0;
-#X connect 12 0 14 0;
-#X connect 14 0 6 0;
+pedal \, for example., f 63;
+#X obj 161 351 print bag;
+#X connect 2 0 11 0;
+#X connect 3 0 11 0;
+#X connect 4 0 11 0;
+#X connect 5 0 11 0;
+#X connect 7 0 11 0;
+#X connect 9 0 11 0;
+#X connect 11 0 19 0;

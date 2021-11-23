@@ -1,7 +1,7 @@
-#N canvas 754 116 541 469 12;
-#X msg 190 149 bang;
-#X floatatom 142 150 5 0 0 0 - - - 0;
-#X symbolatom 245 190 7 0 0 0 - - - 0;
+#N canvas 754 116 530 506 12;
+#X msg 187 149 bang;
+#X floatatom 139 150 5 0 0 0 - - - 0;
+#X symbolatom 242 190 7 0 0 0 - - - 0;
 #N canvas 846 101 364 357 example-once 0;
 #X obj 123 84 bng 50 250 50 0 empty empty Once 58 24 0 13 #dcdcdc #c4fcfc
 #980000;
@@ -19,15 +19,15 @@ a bang once until it is reset again., f 41;
 #X connect 6 0 1 0;
 #X connect 6 1 7 0;
 #X connect 7 0 4 1;
-#X restore 371 273 pd example-once;
-#X text 305 345 (c) musil@iem.kug.ac.at;
-#X text 341 361 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X msg 205 190 foo;
-#X text 234 142 received messages activate the bang, f 17;
-#X text 71 250 Click to bang => Right click for properties., f 16
+#X restore 384 249 pd example-once;
+#X text 311 374 (c) musil@iem.kug.ac.at;
+#X text 347 390 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X msg 202 190 foo;
+#X text 231 142 received messages activate the bang, f 17;
+#X text 68 250 Click to bang => Right click for properties., f 16
 ;
-#X text 93 423 see also:;
-#X obj 167 423 x_all_guis;
+#X text 10 462 see also:;
+#X obj 85 461 x_all_guis;
 #N canvas 564 216 614 464 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
@@ -69,7 +69,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 18 0;
 #X connect 17 0 18 0;
 #X connect 19 0 3 0;
-#X restore 399 245 pd position;
+#X restore 412 221 pd position;
 #N canvas 453 113 357 405 properties 0;
 #N canvas 795 55 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - - 0;
@@ -407,7 +407,7 @@ the width in pixels for each side of the square., f 35;
 #X text 375 183 x;
 #X text 479 182 y;
 #X text 388 160 label offset:;
-#X obj 240 365 bng 30 250 50 0 empty empty label 35 15 0 15 #fcfcfc
+#X obj 240 365 bng 30 250 50 0 empty empty empty 37 15 0 15 #fcfcfc
 #000000 #000000;
 #X msg 72 189 symbol label;
 #X msg 92 218 symbol my\ label;
@@ -499,7 +499,7 @@ froze \, but the bang messages keep coming out at the correct rate.
 #X connect 11 0 9 1;
 #X connect 13 0 11 0;
 #X restore 130 128 pd flash-time;
-#N canvas 784 57 832 427 send-receive 0;
+#N canvas 784 57 832 442 send-receive 0;
 #X obj 78 202 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X msg 222 191 receive empty;
@@ -516,7 +516,7 @@ cases the inlet/outlet are visually hidden (but still functional in
 the patch). This way \, the object can communicate to [send] and [receive]
 objects., f 50;
 #X msg 206 166 receive \\\$0-bng_rcv;
-#X msg 244 231 send \\\$0-bng_snd;
+#X msg 244 230 send \\\$0-bng_snd;
 #X obj 78 232 s \$0-bng_rcv;
 #X obj 80 283 r \$0-bng_snd;
 #X text 446 23 Note how you need to escape dollar signs with backslashes
@@ -560,24 +560,29 @@ f 49;
 #X text 46 23 All the parameters from the properties window can be
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
-#X restore 385 217 pd properties;
-#X obj 190 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
+#X restore 398 193 pd properties;
+#X obj 187 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
 #fc0400 #0400fc;
-#X obj 55 18 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 42 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 37 49 The bang button is a GUI (Graphical User Interface) object
+#X text 30 53 The bang button is a GUI (Graphical User Interface) object
 that sends a bang message when activated via clicks or messages sent
 to its inlet. Insert it from the Put menu (named as "Bang") or its
 shortcut. Alternatively \, create it by typing "bng" into an object
 box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 67;
-#X text 81 18 - [bng]: Bang button;
-#X text 65 346 This object is part of the "iemguis" library \, natively
+#X text 68 12 - [bng]: Bang button;
+#X text 71 375 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 324 429 updated for Pd version 0.51;
-#X obj 190 307 print Big-Bang;
+#X text 305 460 updated for Pd version 0.51;
+#X obj 187 337 print Big-Bang;
+#X obj 167 461 bang;
+#X obj 207 461 trigger;
+#X msg 214 303 bang;
+#X text 254 303 <= similar to a bang message;
 #X connect 0 0 13 0;
 #X connect 1 0 13 0;
 #X connect 2 0 13 0;
 #X connect 6 0 13 0;
 #X connect 13 0 19 0;
+#X connect 22 0 19 0;
