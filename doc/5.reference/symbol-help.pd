@@ -1,47 +1,47 @@
-#N canvas 700 85 865 391 12;
-#X msg 44 104 bang;
-#X text 128 238 creation argument initializes the value, f 21;
-#X text 84 102 output the value;
-#X text 150 133 set and output the value;
-#X obj 43 246 symbol foo;
-#X obj 69 12 symbol;
-#X msg 58 134 symbol bar;
-#X symbolatom 43 284 10 0 0 0 - - - 0;
-#X text 186 209 set the value;
-#X symbolatom 110 211 10 0 0 0 - - - 0;
-#X msg 64 164 zorglub;
-#X text 127 164 any other message is 'converted';
-#X text 125 14 - store a symbol (i.e. \, string);
-#X text 141 313 note: unlike "float" \, etc. \, there's no "send" message
-to forward to another object -- that would conflict with the function
-of converting arbitrary messages to symbols.;
-#X text 35 40 The symbol object stores a symbol \, Pd's data type for
+#N canvas 706 50 837 439 12;
+#X msg 43 134 bang;
+#X text 128 268 creation argument initializes the value, f 21;
+#X text 83 132 output the value;
+#X text 150 163 set and output the value;
+#X obj 43 276 symbol foo;
+#X obj 69 14 symbol;
+#X msg 58 164 symbol bar;
+#X symbolatom 43 314 10 0 0 0 - - - 0;
+#X text 186 239 set the value;
+#X symbolatom 110 241 10 0 0 0 - - - 0;
+#X msg 64 194 zorglub;
+#X text 127 194 any other message is 'converted';
+#X text 125 13 - store a symbol (i.e. \, string);
+#X text 28 64 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames \, array names \, send/receive
 names or the names of other objects in pd).;
-#X text 480 25 Note you can also use backslashes to escape spaces and
-other special characters (' \, ' \, ' \; ' \, '\\\, '$') \, see example
-below., f 50;
-#X symbolatom 532 230 16 0 0 0 - - - 0;
-#X symbolatom 676 161 16 0 0 0 - - - 0;
-#X obj 532 192 symbol cis\ boom\ bah;
-#X msg 532 97 symbol hey\\\,\\\ stop;
-#X obj 507 137 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X symbolatom 523 258 16 0 0 0 - - - 0;
+#X symbolatom 667 189 16 0 0 0 - - - 0;
+#X obj 523 220 symbol cis\ boom\ bah;
+#X msg 523 125 symbol hey\\\,\\\ stop;
+#X obj 498 165 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 43 327 print;
-#X obj 532 261 print;
-#X text 705 273 see also:;
-#X obj 720 295 float;
-#X text 622 338 updated for Pd version 0.52;
-#X msg 548 136 hi\ there;
+#X obj 43 347 print;
+#X obj 523 289 print;
+#X text 50 404 see also:;
+#X obj 125 405 float;
+#X text 574 404 updated for Pd version 0.52;
+#X msg 539 164 hi\ there;
+#X text 450 55 Note you can also use backslashes to escape spaces and
+other special characters (comma \, semicolons \, dollar signs and backslash).
+, f 50;
+#X text 163 328 NOTE: unlike "float" \, etc. \, there's no "send" message
+to forward to another object -- that would conflict with the function
+of converting arbitrary messages to symbols., f 86;
 #X connect 0 0 4 0;
 #X connect 4 0 7 0;
 #X connect 6 0 4 0;
-#X connect 7 0 21 0;
+#X connect 7 0 19 0;
 #X connect 9 0 4 1;
 #X connect 10 0 4 0;
-#X connect 16 0 22 0;
-#X connect 17 0 18 1;
+#X connect 14 0 20 0;
+#X connect 15 0 16 1;
+#X connect 16 0 14 0;
+#X connect 17 0 16 0;
 #X connect 18 0 16 0;
-#X connect 19 0 18 0;
-#X connect 20 0 18 0;
-#X connect 26 0 18 0;
+#X connect 24 0 16 0;

@@ -1,4 +1,4 @@
-#N canvas 609 48 711 757 12;
+#N canvas 609 48 691 747 12;
 #X declare -stdpath ./;
 #X obj 100 43 expr;
 #X obj 93 68 expr~;
@@ -129,7 +129,7 @@ number and thus the object won't load giving a syntax error!, f 62
 #X connect 14 0 13 0;
 #X connect 15 0 11 0;
 #X restore 454 542 pd Dealing_with_"\$0";
-#X text 47 623 see also:;
+#X text 47 624 see also:;
 #X obj 46 703 block~;
 #X obj 100 703 value;
 #N canvas 834 236 489 525 All_functions 0;
@@ -1169,26 +1169,9 @@ means you need to update a variable and call it in the below expression
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
 #X restore 529 515 pd [value];
-#X text 516 658 updated for Pd 0.51-3;
-#X obj 482 67 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
-#000000;
-#N canvas 798 148 456 264 reference 0;
-#X obj 101 59 inlet;
-#X obj 101 190 pdcontrol;
-#X obj 101 130 pdcontrol;
-#X msg 101 105 dir;
-#X msg 101 159 browse \$1/../8.topics/expr.html;
-#X text 205 94 this window opens the html reference link via the [pdcontrol]
-object., f 25;
-#X connect 0 0 3 0;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
-#X connect 4 0 1 0;
-#X restore 482 101 pd reference;
+#X text 493 652 updated for Pd 0.51-3;
 #X text 71 15 Expression evaluation family of objects By Shahrokh Yadegari
 - Version 0.57, f 75;
-#X text 521 58 open html reference, f 9;
-#X text 502 65 <=;
 #X text 137 106 - evaluation of audio signal expressions;
 #X text 137 68 - evaluation of audio signal expressions;
 #X text 137 43 - evaluation of control data expressions;
@@ -1228,15 +1211,32 @@ size;
 #X obj 332 703 exp~;
 #X obj 408 703 log~;
 #X obj 492 703 pow~;
-#X text 44 155 These objects have several built in operators and functions
+#X text 30 155 These objects have several built in operators and functions
 and the syntax is quite similar to how expressions are written in C.
 They receive input variables via the inlets and understand the variable
 types: '$f#' (floats) \, '$i#' (integers) and '$s#' (symbols \, used
 to represent array names) - '#' is the inlet number (up to 100) as
 below:, f 88;
-#X connect 21 0 22 0;
-#X connect 32 0 31 2;
-#X connect 33 0 31 1;
-#X connect 34 0 31 0;
-#X connect 35 0 42 0;
-#X connect 43 0 42 1;
+#X obj 481 64 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
+#000000;
+#N canvas 798 148 456 264 reference 0;
+#X obj 101 59 inlet;
+#X obj 101 190 pdcontrol;
+#X obj 101 130 pdcontrol;
+#X msg 101 105 dir;
+#X msg 101 159 browse \$1/../8.topics/expr.html;
+#X text 205 94 this window opens the html reference link via the [pdcontrol]
+object., f 25;
+#X connect 0 0 3 0;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X restore 481 98 pd reference;
+#X text 501 62 <=;
+#X text 520 55 Open HTTML reference, f 10;
+#X connect 28 0 27 2;
+#X connect 29 0 27 1;
+#X connect 30 0 27 0;
+#X connect 31 0 38 0;
+#X connect 39 0 38 1;
+#X connect 55 0 56 0;
