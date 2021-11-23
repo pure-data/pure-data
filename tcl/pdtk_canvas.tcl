@@ -80,12 +80,13 @@ proc pdtk_canvas_place_window {width height geometry} {
     # read back the current geometry +posx+posy into variables
     set w $width
     set h $height
+    set xypos ""
     if { "" != ${geometry} } {
         scan $geometry {%[+]%d%[+]%d} - x - y
         foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
-        set geometry ${w}x${h}+${x}+${y}
+        set xypos +${x}+${y}
     }
-    return [list ${w} ${h} ${geometry}]
+    return [list ${w} ${h} ${w}x${h}${xypos}]
 }
 
 
