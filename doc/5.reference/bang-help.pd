@@ -4,7 +4,7 @@
 #X msg 86 181 walk the cat;
 #X msg 74 149 45;
 #X obj 74 222 bang;
-#X text 187 336 updated for Pd version 0.27;
+#X text 220 339 updated for Pd version 0.27;
 #X text 81 10 - send "bang" message;
 #X obj 36 40 b;
 #X text 80 41 - abreviation;
@@ -17,9 +17,10 @@ message it receives., f 47;
 #000000 #000000;
 #X text 230 165 this is more efficient than using a message box and
 the bang GUI below:, f 22;
-#X text 39 338 see also:;
-#X obj 114 340 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X text 29 339 see also:;
+#X obj 104 339 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
+#X obj 130 339 loadbang;
 #X connect 2 0 4 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;

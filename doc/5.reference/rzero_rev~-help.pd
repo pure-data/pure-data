@@ -1,23 +1,8 @@
-#N canvas 702 77 585 555 12;
+#N canvas 702 77 548 607 12;
 #X declare -stdpath ./;
 #X floatatom 132 197 0 0 0 0 - - - 0;
 #X obj 51 113 osc~ 100;
 #X msg 67 145 clear;
-#X obj 92 509 lop~;
-#X text 13 509 see also:;
-#X text 371 495 updated for Pd version-0.38;
-#X obj 99 456 rzero~;
-#X obj 40 480 cpole~;
-#X obj 40 456 rpole~;
-#X obj 158 456 rzero_rev~;
-#X obj 99 480 czero~;
-#X obj 158 480 czero_rev~;
-#X text 246 456 real;
-#X text 245 481 complex;
-#X text 37 437 1-pole;
-#X text 96 437 1-zero;
-#X text 156 437 1-zero \, reversed;
-#X text 62 420 summary of raw filters:;
 #X msg 79 171 set 1;
 #N canvas 1015 291 317 298 test 0;
 #X obj 92 77 osc~;
@@ -45,8 +30,7 @@
 #X connect 10 0 2 0;
 #X connect 10 0 11 0;
 #X connect 10 0 11 1;
-#X restore 470 436 pd test;
-#X text 136 509 etc.: user-friendly filters;
+#X restore 405 468 pd test;
 #X text 37 291 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient. The filter is always stable., f 56;
 #X obj 53 11 rzero_rev~;
@@ -59,10 +43,6 @@ argument or by an audio signal (right inlet). The impulse response
 is that of "rzero" reversed in time., f 68;
 #X text 100 272 y[n] = -a[n] * x[n] + x[n-1];
 #X text 35 323 The transfer function is H(Z) = -a + Z^-1.;
-#X text 32 348 (Pd also provides a suite of user-friendly filters.
-This and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
-for an introduction to the necessary theory.), f 70;
 #X text 155 225 <= creation argument initializes filter coefficient
 ;
 #X text 164 197 <= filter coefficient (may be a signal);
@@ -70,19 +50,46 @@ for an introduction to the necessary theory.), f 70;
 #X text 111 144 <= clear internal state to zero;
 #X text 122 113 <= signal to filter;
 #X text 43 251 The action of rzero_rev~ is:;
-#X obj 314 401 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
+#X text 365 553 updated for Pd 0.38;
+#X obj 105 523 lop~;
+#X text 26 524 see also:;
+#X obj 178 456 rzero~;
+#X obj 118 479 cpole~;
+#X obj 118 456 rpole~;
+#X obj 238 456 rzero_rev~;
+#X obj 178 479 czero~;
+#X obj 238 479 czero_rev~;
+#X text 317 456 real;
+#X text 316 478 complex;
+#X text 115 437 1-pole;
+#X text 175 437 1-zero;
+#X text 242 421 1-zero \, reversed, f 8;
+#X text 24 461 summary of raw filters:, f 12;
+#X obj 146 523 hip~;
+#X obj 187 523 bp~;
+#X obj 222 523 vcf~;
+#X text 303 523 - user-friendly filters;
+#X obj 263 523 bob~;
+#X obj 380 396 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
 #000000 #000000;
-#X text 334 399 <= Chapter 8 of Miller's Book, f 16;
-#N canvas 798 148 456 264 readMore 0;
+#X text 23 349 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
 #X obj 11 59 inlet;
 #X obj 11 190 pdcontrol;
 #X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
 ;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X restore 314 435 pd readMore;
-#X connect 0 0 24 1;
-#X connect 1 0 24 0;
-#X connect 2 0 24 0;
-#X connect 18 0 24 0;
-#X connect 35 0 37 0;
+#X restore 380 429 pd Read-More;
+#X obj 29 553 biquad~;
+#X text 204 553 - not so friendly;
+#X obj 90 552 fexpr~;
+#X obj 145 552 slop~, f 7;
+#X connect 0 0 8 1;
+#X connect 1 0 8 0;
+#X connect 2 0 8 0;
+#X connect 3 0 8 0;
+#X connect 38 0 40 0;
