@@ -1067,9 +1067,16 @@ static void trigger_bang(t_trigger *x)
 
 static void trigger_pointer(t_trigger *x, t_gpointer *gp)
 {
-    t_atom at;
-    SETPOINTER(&at, gp);
-    trigger_list(x, &s_pointer, 1, &at);
+    t_triggerout *u;
+    int i;
+    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
+    {
+        if (u->u_type == TR_BANG)
+            outlet_bang(u->u_outlet);
+        else if (u->u_type == TR_POINTER  || u->u_type == TR_ANYTHING)
+            outlet_pointer(u->u_outlet, gp);
+        else pd_error(x, "trigger: can only convert 'pointer' to 'bang'");
+    }
 }
 
 static void trigger_float(t_trigger *x, t_float f)
