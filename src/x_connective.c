@@ -1056,7 +1056,22 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_ANYTHING)
             outlet_anything(u->u_outlet, s, argc, argv);
-        else pd_error(x, "trigger: generic messages can only be converted to 'b' or 'a'");
+        else if (u->u_type == TR_FLOAT)
+            outlet_float(u->u_outlet, 0);
+        else if (u->u_type == TR_SYMBOL)
+            outlet_symbol(u->u_outlet, s);
+        else if (u->u_type == TR_POINTER)
+            pd_error(x, "trigger: bad pointer");
+        else // list
+        {
+            t_atom *av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
+            SETSYMBOL(av2, s);
+            for (int j = 0; j < argc; j++)
+                av2[j + 1] = argv[j];
+            SETSYMBOL(av2, s);
+            outlet_list(u->u_outlet, &s_list, argc+1, av2);
+            freebytes(av2, (argc + 1) * sizeof(t_atom));
+        }
     }
 }
 
