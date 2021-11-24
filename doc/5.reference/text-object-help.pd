@@ -513,7 +513,7 @@ symbol are waiting points, f 43;
 are used as a waiting point, f 43;
 #X text 226 461 creation arguments:;
 #X text 248 482 name of the text object or "-s struct-name";
-#X obj 182 701 text define -k text-help-seq;
+#X obj 375 696 text define -k text-help-seq;
 #A set 1 2 3 \; 4 5 symbol 7 \; 8 \$1 \$2 \; 9 \$3 \$1-\$2-\$3 \; walk
 the dog \;;
 #X f 29;
@@ -591,23 +591,24 @@ simply sequence a list of numbers:, f 71;
 #000000 #000000;
 #X floatatom 783 679 5 0 0 0 - - - 0;
 #X listbox 669 678 14 0 0 0 - - - 0;
-#X text 188 676 click to see the sequence:;
+#X text 381 671 click to see the sequence:;
 #X listbox 939 242 13 0 0 0 - - - 0;
 #X obj 939 218 list;
 #X listbox 1043 239 8 0 0 0 - - - 0;
-#N canvas 639 430 676 280 tempo 0;
-#X text 80 158 These symbols can also be preceeded by "per" (as in
+#N canvas 639 430 639 291 tempo 0;
+#X text 84 178 These symbols can also be preceeded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
-min (hence \, the same as 'BPM')., f 78;
-#X text 78 82 - millisecond (msec for short) \; - seconds (sec) \;
+min (hence \, the same as 'BPM')., f 72;
+#X text 100 89 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
-#X text 74 31 Wait times are in units of 1 millisecond by default \,
-but you can change this with the "tempo" message \, which takes a different
-tempo number and a time unit symbol. Possible symbols are:, f 71;
-#X text 76 210 Changing the tempo while the sequencer is running in
+#X text 84 216 Changing the tempo while the sequencer is running in
 auto mode changes the time for the remaining portion of the last wait
-time., f 78;
+time., f 72;
+#X text 54 31 Wait times are in units of 1 millisecond by default \,
+but you can change this with the '-t' flag or the "tempo" message (as
+in [timer] \, [metro] and [delay]) \, by setting a different tempo
+number and a time unit symbol. Possible symbols are:, f 79;
 #X restore 464 296 pd tempo;
 #X text 22 19 "text sequence" outputs lines from a text buffer \, either
 to an outlet or as messages to named destinations. The text is interpreted
@@ -624,6 +625,10 @@ lines are output), f 50;
 times (see example to the right)., f 42;
 #X text 206 274 set tempo unit for delay times. See also at right and
 possible messages here:, f 40;
+#X text 63 700 see also:;
+#X obj 192 699 delay;
+#X obj 242 699 timer;
+#X obj 140 699 metro;
 #X connect 0 0 67 1;
 #X connect 2 0 67 0;
 #X connect 4 0 67 0;

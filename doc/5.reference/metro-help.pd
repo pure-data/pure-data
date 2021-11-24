@@ -1,67 +1,68 @@
-#N canvas 790 42 647 814 12;
-#X obj 76 17 metro;
-#X floatatom 162 449 4 0 0 0 - - - 0;
-#X msg 23 252 1;
-#X text 91 253 nonzero number or "bang" to start;
-#X msg 64 285 0;
-#X msg 55 252 bang;
-#X msg 97 285 stop;
-#X text 127 16 - metronome;
-#X obj 53 512 bng 25 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 790 42 646 825 12;
+#X obj 89 17 metro;
+#X floatatom 179 469 4 0 0 0 - - - 0;
+#X msg 40 272 1;
+#X text 108 273 nonzero number or "bang" to start;
+#X msg 81 305 0;
+#X msg 72 272 bang;
+#X msg 114 305 stop;
+#X text 140 16 - metronome;
+#X obj 70 532 bng 25 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 181 505 - delay time (float);
-#X text 182 523 - tempo (float) and time unit (symbol) as in "tempo"
+#X text 198 525 - delay time (float);
+#X text 199 543 - tempo (float) and time unit (symbol) as in "tempo"
 message;
-#X text 35 764 see also:;
-#X obj 154 763 timer;
-#X obj 285 681 metro 1 120 permin, f 19;
-#X obj 243 631 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 51 785 see also:;
+#X obj 171 785 timer;
+#X obj 302 701 metro 1 120 permin, f 19;
+#X obj 260 651 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 285 713 bng 25 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 302 733 bng 25 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 107 763 delay;
-#X text 367 765 Updated for Pd version 0.48;
-#X text 135 284 zero or "stop" to stop;
-#X obj 415 634 /;
-#X msg 415 609 1 \$1;
-#X msg 415 577 0.5;
-#X msg 451 577 1;
-#X msg 380 577 4;
-#X text 482 575 beat length;
-#X msg 285 631 tempo \$1 permin;
-#X floatatom 285 595 5 0 0 0 - - - 0;
-#X text 177 486 <= optional creation arguments:;
-#X text 25 196 These symbols can also be preceeded by "per" (as in
+#X obj 124 785 delay;
+#X text 387 785 Updated for Pd version 0.48;
+#X text 152 304 zero or "stop" to stop;
+#X obj 432 654 /;
+#X msg 432 629 1 \$1;
+#X msg 432 597 0.5;
+#X msg 468 597 1;
+#X msg 397 597 4;
+#X text 499 595 beat length;
+#X msg 302 651 tempo \$1 permin;
+#X floatatom 302 615 5 0 0 0 - - - 0;
+#X text 194 506 <= optional creation arguments:;
+#X text 42 216 These symbols can also be preceeded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
 min (hence \, the same as 'BPM')., f 78;
-#X text 44 129 - millisecond (msec for short) \; - seconds (sec) \;
+#X text 61 149 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
-#X msg 112 322 tempo 0.5 msec;
-#X text 222 315 set units to 1/2 millisecond so that '1000' gives a
+#X msg 129 342 tempo 0.5 msec;
+#X text 239 335 set units to 1/2 millisecond so that '1000' gives a
 time interval of 500 msec (1/2 second)., f 47;
-#X msg 121 350 tempo 2 permillisecond;
-#X text 267 376 same as 1 msec \, so '1000' is a second.;
-#X text 284 350 this is the same as above.;
-#X text 138 402 Note that if the tempo is changed while the metro is
+#X msg 138 370 tempo 2 permillisecond;
+#X text 284 396 same as 1 msec \, so '1000' is a second.;
+#X text 301 370 this is the same as above.;
+#X text 155 422 Note that if the tempo is changed while the metro is
 running \, the change is applied right away to the remaining fraction
 of the beat., f 67;
-#X text 201 443 right inlet sets the time (if the metro is running
+#X text 218 463 right inlet sets the time (if the metro is running
 \, it only takes affect in the next beat)., f 52;
-#X obj 53 486 metro 500 1 msec;
-#X text 44 677 A metronome at intervals of one beat at 120 beats per
+#X obj 70 506 metro 500 1 msec;
+#X text 61 697 A metronome at intervals of one beat at 120 beats per
 minute:, f 31;
-#X floatatom 415 657 5 0 0 0 - - - 0;
-#X text 190 634 on/off;
-#X text 189 594 change tempo;
-#X msg 132 377 tempo 0.001 second;
-#X text 16 51 The metro object sends a series of bangs at regular time
+#X floatatom 432 677 5 0 0 0 - - - 0;
+#X text 207 654 on/off;
+#X text 206 614 change tempo;
+#X msg 149 397 tempo 0.001 second;
+#X obj 219 785 text sequence;
+#X text 29 48 The metro object sends a series of bangs at regular time
 intervals. The left inlet takes a nonzero number or "bang" to start
 and 0 or 'stop' to stop it. The time is set via the right inlet or
 first argument. The default time unit is 1 millisecond but you can
-change this via the 2nd and 3rd argument or the 'tempo' message \,
-which takes a different tempo number and a time unit symbol. Possible
-symbols are:, f 83;
+change this via the 2nd and 3rd argument or the "tempo" message (as
+in [timer] \, [metro] and [text sequence]) \, by setting a different
+tempo number and a time unit symbol. Possible symbols are:, f 83;
 #X connect 1 0 37 1;
 #X connect 2 0 37 0;
 #X connect 4 0 37 0;
