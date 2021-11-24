@@ -1,0 +1,159 @@
+#N canvas 505 106 1013 606 12;
+#X obj 604 204 s pd;
+#X msg 604 175 dsp \$1;
+#X msg 781 181 \; pd dsp 0;
+#X obj 604 150 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 74 27 Messages you can send to Pd;
+#X text 629 148 turn DSP engine on/off;
+#X msg 707 181 \; pd dsp 1;
+#X obj 283 315 s pd;
+#X msg 74 298 \; pd compatibility 0.52;
+#X msg 283 288 compatibility 0.49;
+#X text 47 136 The 'compatibility' message takes a version number and
+sets the behaviour of some objects back to that particular version.
+This can be useful in some cases if you want to guarantee that your
+patch will work in the same way as in the version you created it. This
+is beccause sometimes a new version of Pd may promote a change in the
+behaviour of the object (usually to fix a bug) that can also break
+or change the result of a patch., f 62;
+#X text 53 365 Objects that change their behaviour according to the
+set compatibilty have that information in their help file.;
+#X text 63 277 set compatibilty to Pd 0.52;
+#X text 291 266 set to Pd 0.49;
+#X text 125 411 For example \, check the help file of:, f 18;
+#X obj 276 420 wrap~;
+#X text 47 55 We can use both the [send] object (here abbreviated as
+only [s]) or message boxes to send messages to Pd. Here are some messages
+that makes sense for you to send to Pd from within a patch. Conversely
+\, you can also send Pd these messages via Pd's command line., f 62
+;
+#X obj 277 542 trace;
+#X msg 72 534 \; pd set-tracing \$1;
+#X obj 72 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 105 489 the set-tracing message is useful for debugging with
+the [trace] object. Check its help file., f 47;
+#N canvas 731 117 720 669 fast-forward 0;
+#X msg 176 499 stop;
+#X obj 176 466 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 176 392 trigger float float bang, f 25;
+#X msg 262 473 fast-forward \$1;
+#X obj 262 506 send pd;
+#X obj 176 430 delay;
+#X msg 92 263 \; pd dsp 1;
+#X floatatom 176 361 5 0 1000 0 - - - 0;
+#X text 376 472 <=;
+#X text 152 431 =>;
+#X text 82 23 We've seen in the last example the "dsp" message to Pd
+to turn DSP on and off. Here we use this message with loadbang so the
+dsp is turned on when the patch is loaded., f 74;
+#X text 219 360 <= set other lengths;
+#X text 83 361 miliseconds:;
+#X text 65 430 sends a bang after the time amount, f 12;
+#X text 86 499 stops the => recording, f 12;
+#X text 397 465 tells pd to 'fast-forward' and render a given amount
+of time in ms, f 35;
+#X text 82 155 This is very useful if you want to process a pre recorded
+audio in a Pd patch or to generate an audio file with a generative
+(or automated) patch. You can also use [soundfiler] to export to a
+sound file or direcctly use [writsf~] instead. The 'fast-forward' message
+takes a time in milisecond to fast forward to. Check the example,
+f 74;
+#X text 175 608 records to the array =>;
+#X msg 348 423 start 88200;
+#X text 439 423 start recording 2 seconds in;
+#X obj 348 607 tabwrite~ fast-forward;
+#X text 82 72 Pd is mostly used to generate and process things in realtime
+\, nonetheless \, the "fast-forward" message allows you to 'render'
+an amount of audio faster than realtime (and as fast as your process
+can handle) - this is also called 'batch processing'. In this example
+we use it to record 6 seconds of white noise into an array., f 74
+;
+#X msg 176 318 6000;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array fast-forward 441000 float 2;
+#X coords 0 1 441000 -1 250 120 1 0 0;
+#X restore 391 259 graph;
+#X obj 371 513 noise~;
+#X text 423 513 <= white noise generator;
+#X obj 371 572 *~;
+#X obj 389 543 osc~ 0.2;
+#X text 406 572 amplitude modulation;
+#X text 216 316 <= time amount to render (6 seconds), f 19;
+#X text 164 264 <= First make sure DSP is on, f 15;
+#X text 458 385 --- 10 sec ---;
+#X connect 0 0 20 0;
+#X connect 1 0 0 0;
+#X connect 2 0 5 0;
+#X connect 2 1 3 0;
+#X connect 2 2 18 0;
+#X connect 3 0 4 0;
+#X connect 5 0 1 0;
+#X connect 7 0 2 0;
+#X connect 18 0 20 0;
+#X connect 22 0 7 0;
+#X connect 24 0 26 0;
+#X connect 26 0 20 0;
+#X connect 27 0 26 1;
+#X restore 690 348 pd fast-forward;
+#N canvas 608 91 947 589 other-messages 0;
+#X text 650 344 WARNING: This will quit and close Pd!!!, f 20;
+#X text 671 393 UNSAVED PATCHES WILL BE LOST!!!, f 16;
+#X msg 651 465 \; pd quit;
+#X obj 167 231 pdcontrol;
+#X msg 167 203 dir;
+#X obj 602 486 s pd;
+#X msg 602 459 quit;
+#X msg 585 110 \; pd audio-properties;
+#X msg 582 270 \; pd verifyquit;
+#X text 693 271 Quits Pd but verifies if there are unsaved changes
+, f 25;
+#X text 731 463 <= You've been warned. Do it at your own risk!, f
+23;
+#X msg 585 197 \; pd start-startup-dialog;
+#X text 49 130 The "open" message opens a Pd file and takes two symbols
+\, the first is the Pd filename and the second is the directory where
+it lives. You can use this to open desired patches from within a patch.
+, f 64;
+#X msg 167 261 \; pd open help-intro.pd \$1;
+#X text 243 230 <= get currently directory;
+#X obj 167 450 pdcontrol;
+#X msg 167 422 dir;
+#X text 243 449 <= get currently directory;
+#X msg 167 480 \; pd menunew new-patch \$1;
+#X text 45 336 The "menunew" message generates a new empty Pd file
+(but doesn't save it to disk unless you save the file.) It takes two
+symbols \, the first is the Pd filename and the second is the directory
+where it lives. You can use this for dynamic patching., f 64;
+#X text 581 78 Open audio settings;
+#X text 589 173 Open startup;
+#X text 51 35 Here are some more messages Pd receives when using the
+software's menus besides the "dsp" message. There are much more messages
+that Pd can internally receive and you can search the source code for
+if you're clever enough. But most of them aren't that useful. Here
+are some potentially interesting messages though., f 65;
+#X text 561 35 And here are some more:;
+#X connect 3 0 13 0;
+#X connect 4 0 3 0;
+#X connect 6 0 5 0;
+#X connect 15 0 18 0;
+#X connect 16 0 15 0;
+#X restore 661 469 pd other-messages;
+#X text 775 543 updated for Pd 0.52;
+#X text 525 34 Pd gets also receives messages when you browse through
+the Menus and click on something. We can also send such messages from
+within the patch. The most widely used one is the "DSP" message that
+we send to Pd when we go to the "media menu" and click on "DSP On"
+or "DSP Off" \, which sends \, respectively \, the messages: "dsp 1"
+and "dsp 0"., f 64;
+#X text 543 252 Fast-forward:;
+#X text 547 284 The "fast-forward" message to Pd allows batch processing.
+Open the subpatch for an example.;
+#X text 551 411 Here are some other maybe interesting (maybe not) messages
+you can send to Pd.;
+#X connect 1 0 0 0;
+#X connect 3 0 1 0;
+#X connect 9 0 7 0;
+#X connect 19 0 18 0;
