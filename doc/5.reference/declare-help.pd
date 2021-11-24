@@ -6,13 +6,13 @@
 #X text 30 300 -stdlib;
 #X text 30 247 -path;
 #X text 30 264 -stdpath;
-#X text 569 466 BUG: The name "-stdpath" is confusing \, as it has
+#X text 574 495 BUG: The name "-stdpath" is confusing \, as it has
 a quite different effect from "-stdpath" on the pd command line.,
-f 68;
-#X text 569 400 WARNING: as of version 0.47 \, "declare -path" and
+f 66;
+#X text 559 394 WARNING: as of version 0.47 \, "declare -path" and
 "declare -stdpath" inside abstractions take effect only within those
 abstractions. If Pd's compatibility version is set to 0.46 or earlier
-the old (buggy) behavior takes effect., f 68;
+the old (buggy) behavior takes effect., f 47;
 #X text 128 247 add to search path \, relative to the patch or user
 paths;
 #X text 128 283 load a library \, relative to the patch or user paths
@@ -27,15 +27,15 @@ Or \, if you have files installed in the directory extra/stillmore
 ;
 #X text 128 300 load a library \, relative to Pd (the 'extra' folder)
 ;
-#X text 838 530 updated for Pd version 0.52;
+#X text 863 542 updated for Pd version 0.52;
 #X text 546 97 It is a current best practice to just use [declare]
 instead of permanently adding paths to the user search paths or libs
 to startup. With [declare] you can better manage and avoid conflicts
 with externals from different libraries that have the same name by
 using it to call the right library you want., f 74;
-#X obj 700 313 bng 18 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#X obj 700 311 bng 18 250 50 0 empty empty empty 17 7 0 10 #ffffff
 #000000 #000000;
-#X text 730 311 <= click to open Pd's manual \, chapter 4, f 21;
+#X text 730 309 <= click to open Pd's manual \, chapter 4, f 21;
 #X text 27 170 A declare object adds one or more directories to the
 search path \, and/or pre-loads one or more libraries ("externals")
 to Pd in preparation for opening the patch from a file. Usage is "declare
@@ -84,5 +84,12 @@ object., f 25;
 #X connect 2 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 1 0;
-#X restore 700 356 pd open-manual;
+#X restore 700 353 pd open-manual;
+#X msg 907 442 \; pd compatibility \$1;
+#X msg 907 381 0.46;
+#X text 947 383 earlier (buggy);
+#X msg 917 410 0.47;
+#X text 955 411 new (correct);
 #X connect 15 0 23 0;
+#X connect 25 0 24 0;
+#X connect 27 0 24 0;
