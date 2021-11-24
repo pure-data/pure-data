@@ -1,24 +1,18 @@
-#N canvas 653 76 592 614 12;
-#X floatatom 51 144 0 0 0 0 - - - 0;
-#X msg 72 173 bang;
-#X floatatom 115 245 0 0 0 0 - - - 0;
-#X floatatom 202 272 0 0 0 0 - - - 0;
-#X obj 72 354 print;
-#X msg 158 246 symbol cat;
+#N canvas 814 89 592 614 12;
+#X floatatom 72 160 6 0 0 0 - - - 0;
+#X msg 39 126 bang;
+#X floatatom 127 245 5 0 0 0 - - - 0;
+#X floatatom 237 272 5 0 0 0 - - - 0;
+#X obj 72 356 print;
+#X msg 182 245 symbol cat;
 #X obj 108 16 pack;
-#X obj 136 577 unpack;
-#X msg 88 201 1 2 dog;
+#X obj 116 577 unpack;
+#X msg 85 192 1 2 dog;
 #X text 147 16 - combine several atoms into one message;
-#X text 326 576 updated for Pd version 0.34;
-#X text 57 576 See also:;
-#X text 113 172 <= bang generates output without resetting first value
-;
-#X text 85 143 <= number in first inlet generates output;
-#X text 155 198 <= you can also send a list as Pd distributes its elements
+#X text 356 576 updated for Pd version 0.34;
+#X text 37 576 See also:;
+#X text 152 189 <= you can also send a list as Pd distributes its elements
 to the corresponding inlets., f 45;
-#X obj 72 298 pack 100 0 symbol 0;
-#X text 245 246 <= numbers and symbols in the right inlets change the
-values without causing output, f 43;
 #X obj 418 434 pack;
 #X obj 418 400 t b f;
 #X floatatom 418 374 6 0 0 0 - - - 0;
@@ -32,30 +26,37 @@ values without causing output, f 43;
 #X text 319 308 By default \, pack takes two floats. You can use trigger
 to force an output on secondary inlets., f 34;
 #X text 28 459 abbreviated arguments =>, f 13;
-#X text 27 53 The pack object takes a series of inputs and outputs
-a concatenated list. The number of creation arguments determines the
-number of inlets and their type: float ('float'/'f') \, pointer ('pointer'/'p')
-or symbol ('symbol'/'s'). A number sets a numeric inlet and initializes
-the value., f 76;
 #X text 461 399 <= trigger;
 #X listbox 72 327 20 0 0 0 - - - 0;
 #X listbox 121 504 20 0 0 0 - - - 0;
 #X listbox 418 460 17 0 0 0 - - - 0;
-#X connect 0 0 15 0;
-#X connect 1 0 15 0;
-#X connect 2 0 15 1;
-#X connect 3 0 15 3;
-#X connect 5 0 15 2;
-#X connect 8 0 15 0;
-#X connect 15 0 31 0;
-#X connect 17 0 33 0;
-#X connect 18 0 17 0;
-#X connect 18 1 17 1;
-#X connect 19 0 18 0;
-#X connect 20 0 17 0;
-#X connect 23 0 24 0;
-#X connect 24 0 32 0;
-#X connect 25 0 24 1;
-#X connect 31 0 4 0;
-#X connect 32 0 22 0;
-#X connect 33 0 21 0;
+#X obj 237 577 pointer;
+#X obj 72 298 pack 10 100 symbol float;
+#X text 286 242 <= numbers and symbols in the right inlets change the
+values without causing output., f 30;
+#X text 80 126 <= outputs the packed elements;
+#X text 120 159 <= first inlet generates output;
+#X obj 171 577 trigger;
+#X text 21 48 The pack object outputs a concatenated list from a series
+of inputs. CCreation arguments set the number of inlets and their type
+\, possible values are: float (or 'f') \, symbol (or 's') and pointer
+(or 'p') - see [pointer] object. A number sets a numeric inlet and
+initializes the value ('float'/'f' initializes to 0)., f 79;
+#X connect 0 0 30 0;
+#X connect 1 0 30 0;
+#X connect 2 0 30 1;
+#X connect 3 0 30 3;
+#X connect 5 0 30 2;
+#X connect 8 0 30 0;
+#X connect 13 0 28 0;
+#X connect 14 0 13 0;
+#X connect 14 1 13 1;
+#X connect 15 0 14 0;
+#X connect 16 0 13 0;
+#X connect 19 0 20 0;
+#X connect 20 0 27 0;
+#X connect 21 0 20 1;
+#X connect 26 0 4 0;
+#X connect 27 0 18 0;
+#X connect 28 0 17 0;
+#X connect 30 0 26 0;
