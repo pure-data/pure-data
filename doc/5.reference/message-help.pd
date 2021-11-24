@@ -1,4 +1,4 @@
-#N canvas 548 57 1024 591 12;
+#N canvas 548 57 1020 634 12;
 #X msg 63 14 message boxes;
 #X obj 181 527 print;
 #X msg 181 450 60 64;
@@ -107,7 +107,7 @@ a message element., f 18;
 #X text 565 32 If you separate messages by a semicolon instead of a
 comma \, the following message(s) are re-routed to named objects such
 as "receives":;
-#X text 779 555 updated for Pd version 0.52;
+#X text 779 571 updated for Pd version 0.52;
 #X obj 586 268 print my-receiver-name;
 #X obj 781 268 print another-receiver;
 #X obj 574 158 print message;
@@ -211,6 +211,8 @@ load the '\$0' in an object \, since "\$0" doesn't work in messages.
 #X restore 791 516 pd Dealing_with_"\$0";
 #X text 639 494 open subpatch to see how to deal with '\$0' =>, f
 24;
+#X text 591 571 see also:;
+#X obj 665 570 messages-to-Pd;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
 #X connect 4 0 39 0;
