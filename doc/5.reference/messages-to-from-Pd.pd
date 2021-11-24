@@ -1,12 +1,11 @@
-#N canvas 505 106 1013 606 12;
-#X obj 604 204 s pd;
-#X msg 604 175 dsp \$1;
-#X msg 781 181 \; pd dsp 0;
-#X obj 604 150 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 505 106 1023 606 12;
+#X obj 624 189 s pd;
+#X msg 624 160 dsp \$1;
+#X msg 801 166 \; pd dsp 0;
+#X obj 624 135 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 74 27 Messages you can send to Pd;
-#X text 629 148 turn DSP engine on/off;
-#X msg 707 181 \; pd dsp 1;
+#X text 649 133 turn DSP engine on/off;
+#X msg 727 166 \; pd dsp 1;
 #X obj 283 315 s pd;
 #X msg 74 298 \; pd compatibility 0.52;
 #X msg 283 288 compatibility 0.49;
@@ -97,7 +96,7 @@ we use it to record 6 seconds of white noise into an array., f 74
 #X connect 24 0 26 0;
 #X connect 26 0 20 0;
 #X connect 27 0 26 1;
-#X restore 690 348 pd fast-forward;
+#X restore 821 390 pd fast-forward;
 #N canvas 608 91 947 589 other-messages 0;
 #X text 650 344 WARNING: This will quit and close Pd!!!, f 20;
 #X text 671 393 UNSAVED PATCHES WILL BE LOST!!!, f 16;
@@ -140,20 +139,36 @@ are some potentially interesting messages though., f 65;
 #X connect 6 0 5 0;
 #X connect 15 0 18 0;
 #X connect 16 0 15 0;
-#X restore 661 469 pd other-messages;
-#X text 775 543 updated for Pd 0.52;
-#X text 525 34 Pd gets also receives messages when you browse through
+#X restore 850 481 pd other-messages;
+#X text 816 552 updated for Pd 0.52;
+#X text 531 26 Pd gets also receives messages when you browse through
 the Menus and click on something. We can also send such messages from
 within the patch. The most widely used one is the "DSP" message that
 we send to Pd when we go to the "media menu" and click on "DSP On"
 or "DSP Off" \, which sends \, respectively \, the messages: "dsp 1"
 and "dsp 0"., f 64;
-#X text 543 252 Fast-forward:;
-#X text 547 284 The "fast-forward" message to Pd allows batch processing.
-Open the subpatch for an example.;
-#X text 551 411 Here are some other maybe interesting (maybe not) messages
-you can send to Pd.;
+#X text 570 380 The "fast-forward" message to Pd allows batch processing.
+Open the subpatch for an example., f 32;
+#X text 550 471 Here are some other maybe interesting (maybe not) messages
+you can send to Pd., f 41;
+#X text 565 554 see also:;
+#X obj 682 553 samplerate~;
+#X obj 640 553 send;
+#X obj 567 321 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 567 288 receive pd-dsp-started;
+#X obj 781 288 receive pd-dsp-stopped;
+#X obj 781 321 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 587 320 when DSP is turned on;
+#X text 804 320 when DSP is turned off;
+#X text 536 237 Note you can get a bang message Pd sends when DSP starts
+or stops in Pd if you receive from 'pd-dsp-started' and 'pd-dsp-stopped'.
+, f 65;
+#X text 61 21 Messages you can send to Pd:;
 #X connect 1 0 0 0;
 #X connect 3 0 1 0;
-#X connect 9 0 7 0;
-#X connect 19 0 18 0;
+#X connect 8 0 6 0;
+#X connect 18 0 17 0;
+#X connect 30 0 29 0;
+#X connect 31 0 32 0;
