@@ -43,6 +43,11 @@ proc ::helpbrowser::open_helpbrowser {} {
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.c.f.root0"
         bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.c.f.root0"
 
+        # ignore undo bindings?
+        # on macOS, this posts a ".helpbrowser: no such object" error
+        bind .helpbrowser <Mod1-z> "break"
+        bind .helpbrowser <Mod1-Z> "break"
+
         position_over_window .helpbrowser .pdwindow
     }
 }
@@ -311,6 +316,9 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     }
 
     .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
+    # force display update
+    update idletasks
+
     return $current_listbox
 }
 
@@ -360,8 +368,9 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
         $current_listbox selection set 0
         dir_navigate_key "$dir" $count $current_listbox false
     }
-
+    # force display update
     update idletasks
+    
     if {$count <= $::helpbrowser::maxcols} {
         .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
     } else {
