@@ -1,13 +1,79 @@
-#N canvas 402 55 524 371 12;
-#X obj 39 20 namecanvas;
-#X obj 39 108 namecanvas bonzo;
-#X text 291 309 updated for Pd version 0.44;
-#X text 131 20 - attach this canvas to a name;
-#X text 34 150 This is sometimes the only way to send a message to
-a canvas when making graph-on-parent abstractions \, but its use in
-making self-editing patches is dangerous since if you use it to edit
-the namecanvas itself away you can cause Pd to crash. Instead \, you
-can just say:;
-#X msg 38 65 \; bonzo msg 280 50 hi there;
-#X msg 38 237 \; pd-namecanvas-help.pd msg 280 80 this is safer but
-only possible if you know the name of the canvas in advance.;
+#N struct template1 float x float y float z float q;
+#N canvas 585 36 884 508 12;
+#X obj 50 19 namecanvas;
+#X obj 248 156 namecanvas bonzo;
+#X text 132 19 - attach this canvas to a name;
+#N canvas 802 23 559 186 subpatch 0;
+#X obj 70 57 namecanvas banzai;
+#X text 229 46 This subpatch has its own name. It can receive messages
+sent to it from anywhere., f 34;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 200 200 hi there;
+#X msg 100 100 hi there;
+#X msg 100 100 hi there;
+#X msg 100 150 how are ya?;
+#X msg 100 150 how are ya?;
+#X restore 503 90 pd subpatch;
+#X text 144 420 <= but you need to know the name of the canvas (file)
+in advance., f 32;
+#X text 18 47 You can use namecanvas to attach a receive name to a
+canvas (patch window). This way you can send messages to the canvas
+and set its properties or tell it to create and connect objects. This
+is useful for 'dynamic patching'. Below \, we use it to name this canvas
+'bonzo' and send it a message that makes it create a message box.,
+f 55;
+#X msg 33 364 \; pd-namecanvas-help.pd msg 40 420 this is safer;
+#X msg 40 420 this is safer;
+#X text 32 466 Note this doesn't make it possible to use "\$0".;
+#X text 442 91 open =>;
+#X text 801 89 click;
+#X msg 600 81 \; banzai msg 100 100 hi there;
+#X text 19 231 This is sometimes the only way to send a message to
+a canvas when initializing graph-on-parent abstractions with local
+parameters (using "\$0" to give it a local name). But its use in making
+self-editing patches is dangerous since if you use it to edit the namecanvas
+itself away you can cause Pd to crash. Instead \, you can use the file
+name (preceded by "pd-") to access its main window \, see:, f 53;
+#X msg 433 215 \; pd-subpatch msg 100 150 how are ya?;
+#X obj 709 236 s pd-subpatch;
+#X msg 709 213 vis \$1;
+#X obj 709 193 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 441 13 You can use namecanvas to name subwindoes (subpatches).
+But then you can also send messages to the subpatch using the subpatch's
+name (also preceded by 'pd-')., f 55;
+#X text 442 132 You can give the same name with [namecanvas] to different
+windows to communicate to them with a single message. Similarly \,
+any other patch or subpatch with the same name will receive the same
+messages.;
+#X text 728 190 show/hide window;
+#X obj 458 346 namecanvas \$0-local-name;
+#N canvas 488 451 446 165 \$0-local-subpatch 0;
+#X text 75 83 A local subpatch \, useful in abstractions.;
+#X restore 460 428 pd \$0-local-subpatch;
+#X obj 680 418 s pd-\$0-local-subpatch;
+#X obj 459 400 s \$0-local-name;
+#X msg 20 171 \; bonzo msg 240 190 hey there;
+#X msg 459 373 msg 320 190 wassup?;
+#X msg 240 190 hey there;
+#X msg 320 190 wassup?;
+#X msg 680 355 vis 1;
+#X msg 690 386 vis 0;
+#X text 456 471 see also:;
+#X obj 533 471 pd-messages;
+#X text 705 469 updated for Pd 0.52;
+#X text 433 265 You can also give multiple names to a single canvas
+with [namecanvas] \, below we give it a local name with "\$0". You
+can also use "\$0" in the name of subpatches. You then need to use
+[send] as "\$0" doesn't work in messages.;
+#X connect 15 0 14 0;
+#X connect 16 0 15 0;
+#X connect 25 0 23 0;
+#X connect 28 0 22 0;
+#X connect 29 0 22 0;

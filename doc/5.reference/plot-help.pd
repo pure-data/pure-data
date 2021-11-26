@@ -4,7 +4,7 @@ array array2 help-plot-array2-template array array3 help-plot-array3-template
 #N struct help-plot-array1-template float y;
 #N struct help-plot-array2-template float x float y;
 #N struct help-plot-array3-template float y float w;
-#N canvas 568 102 513 268 12;
+#N canvas 568 102 488 256 12;
 #N canvas 593 51 523 756 help-plot-template 0;
 #X text 30 44 creation arguments:;
 #X text 50 269 - RGB color (0=black \, 999=white \, 900=red \, 90=green
@@ -46,7 +46,7 @@ variable \, plot ignores x spacing requests and takes x from the data
 itself., f 59;
 #X text 47 144 - optional "-e [const or variable]" to enable/disable
 editing, f 62;
-#X restore 243 78 pd help-plot-template;
+#X restore 242 79 pd help-plot-template;
 #N canvas 754 260 353 124 help-plot-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-plot-array1-template float y;
@@ -54,7 +54,7 @@ editing, f 62;
 #N canvas 665 269 402 83 help-plot-array2-template 0;
 #X obj 32 26 struct help-plot-array2-template float x float y;
 #X restore 243 123 pd help-plot-array2-template;
-#N canvas 138 129 411 207 help-plot-data 1;
+#N canvas 138 129 411 207 help-plot-data 0;
 #X scalar help-plot-template 39 73 \; 0 \; 20 \; 0 \; 28 \; 0 \; \;
 -9 -4 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 60 0 \; \; 0 0 \;
 10 10 \; 0 8 \; 0 1 \; 20 1 \; 20 10 \; 20 1 \; \;;
@@ -62,11 +62,11 @@ editing, f 62;
 #X text 51 133 see also:;
 #X obj 57 181 drawnumber;
 #X obj 45 22 plot;
-#X text 87 22 -- draw array elements of scalars;
 #X obj 57 206 drawpolygon;
 #N canvas 599 270 419 104 help-plot-array3-template 0;
 #X obj 43 32 struct help-plot-array3-template float y float w;
 #X restore 242 144 pd help-plot-array3-template;
 #X obj 57 157 struct;
-#X text 34 90 explanation is in here ==>;
-#X text 241 210 updated for Pd version 0.52;
+#X text 56 79 explanation is in here ==>;
+#X text 223 202 updated for Pd version 0.52;
+#X text 87 22 - draw array elements of scalars;
