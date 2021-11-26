@@ -412,39 +412,47 @@ also indexes from 0 \, by the way., f 67;
 #X text 552 142 loadbang handling:;
 #X text 535 227 Creating an array is also possible \, see example:
 , f 25;
-#N canvas 992 149 809 381 save 0;
+#N canvas 824 138 854 447 save 0;
 #X msg 326 71 menusave;
 #X msg 367 121 menusaveas;
 #X msg 386 171 menuclose;
-#X obj 70 138 pdcontrol;
-#X msg 70 110 dir;
-#X text 49 52 first let's send a message to Pd to create a new patch/cavas.
+#X obj 76 156 pdcontrol;
+#X msg 76 128 dir;
+#X text 55 70 first let's send a message to Pd to create a new patch/cavas.
 , f 32;
-#X text 104 109 <= go;
-#X msg 70 168 \; pd menunew new-example \$1;
-#X obj 367 283 s pd-new-example;
+#X text 110 127 <= go;
+#X msg 76 186 \; pd menunew new-example \$1;
+#X obj 367 387 s pd-new-example;
 #X text 398 58 this will save and create the patch in the directory
 you created. It'll also rewrite if it's already saved., f 39;
 #X text 453 113 opens a dialog for you to choose where to save., f
 24;
-#X obj 114 285 s pd-new-example;
-#X msg 114 256 text 100 100 very nice;
-#X text 466 164 closes the patch without saving if the changes were
-made with dynamic patching., f 40;
-#X msg 411 245 vis \$1;
-#X obj 411 215 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 96 329 s pd-new-example;
+#X msg 96 300 text 100 100 very nice;
+#X msg 411 349 vis \$1;
+#X obj 411 319 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 480 212 note 'vis 0' doesn't close the patch \, just hides
+#X text 480 316 note 'vis 0' doesn't close the patch \, just hides
 it (and shows it too if it's opened)., f 31;
-#X text 131 232 add something;
+#X text 113 276 add something;
+#X obj 405 223 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 405 253 dirty \$1;
+#X text 466 164 Depending if changes were made with some dynamic patching
+messages \, it closes without saving., f 48;
+#X text 478 217 Note that Pd won't ask you to save changes in the same
+case as above. To make sure it asks \, you can use 'dirty 1'. Conversely
+\, 'dirty 0' makes Pd ignore changes you made., f 46;
 #X connect 0 0 8 0;
 #X connect 1 0 8 0;
 #X connect 2 0 8 0;
 #X connect 3 0 7 0;
 #X connect 4 0 3 0;
 #X connect 12 0 11 0;
-#X connect 14 0 8 0;
-#X connect 15 0 14 0;
+#X connect 13 0 8 0;
+#X connect 14 0 13 0;
+#X connect 17 0 18 0;
+#X connect 18 0 8 0;
 #X restore 641 333 pd save;
 #X text 503 324 Other messages (saving a patch):, f 17;
 #X text 68 302 clear \, vis \, read \, write and scalar (Data Structures)
