@@ -1,0 +1,17 @@
+#N canvas 694 229 450 300 10;
+#X obj 97 131 print;
+#X obj 186 106 dac~;
+#X obj 97 107 f 0;
+#X obj 128 107 + 1;
+#X obj 263 72 print \$0-frequency;
+#X obj 97 64 bang~;
+#X obj 185 41 r frequency;
+#X obj 188 73 phasor~;
+#X connect 2 0 0 0;
+#X connect 2 0 3 0;
+#X connect 3 0 2 1;
+#X connect 5 0 2 0;
+#X connect 6 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 1 0;
+#X connect 7 0 1 1;

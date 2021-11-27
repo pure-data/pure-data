@@ -1,8 +1,10 @@
-# This is a makefle to build libpd.so from vanilla Pd sources.  You can run
-# this in a separate directory:
-# mkdir ../foo
-# cd ../foo
-# make -f ../src/makefie.libpd
+# This is a makefle to build libpd.so from vanilla Pd sources.  It assumes
+# that the Pd source directory "../src" is parallel to this directory in order
+# to find the Pd sources.
+# this directory also contains a test program "pdtest_multi" with its own
+# separate makefile (which probably only works under linux).
+# run under linux:
+# built using a different makefile, "makefile.example".
 
 VPATH = ../src:\
 ../extra/bob~:../extra/bonk~:../extra/choice:../extra/fiddle~:../extra/loop~:\
