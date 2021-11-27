@@ -954,7 +954,7 @@ static void sigmund_hop(t_sigmund *x, t_floatarg f)
     int hop = f;
     if (hop < 0)
     {
-        error("sigmund~: ignoring negative hopsize %d", hop);
+        pd_error(0, "sigmund~: ignoring negative hopsize %d", hop);
         return;
     }
     x->x_hop = hop;
@@ -1073,8 +1073,17 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
         if (x->x_hop % sp[0]->s_n)
             post("sigmund: adjusting hop size to %d",
                 (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+        if (x->x_infill % sp[0]->s_n) {
+            if (x->x_inbuf) {
+                int i;
+                t_sample*inbuf = x->x_inbuf;
+                for(i=0; i<x->x_npts; i++)
+                    *inbuf++ = 0.;
+            }
+            x->x_infill = 0;
+        }
         x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
 }
 
@@ -1344,17 +1353,17 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (npts < 64 || npts != (1 << ilog2(npts))) 
     {
-        error("sigmund: bad npoints");
+        pd_error(0, "sigmund: bad npoints");
         return;
     }
     if (onset < 0)
     {
-        error("sigmund: negative onset");
+        pd_error(0, "sigmund: negative onset");
         return;
     }
     if (srate <= 0)
     {
-        error("sigmund: bad samplerate");
+        pd_error(0, "sigmund: bad samplerate");
         return;
     }
     bufsize = sizeof(t_float)*npts;
@@ -1363,12 +1372,12 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
     {
-        error("%s: array missing or too small", syminput->s_name);
+        pd_error(0, "%s: array missing or too small", syminput->s_name);
         goto cleanup;
     }
     if (arraysize < npts)
     {
-        error("sigmund~: too few points in array");
+        pd_error(0, "sigmund~: too few points in array");
         goto cleanup;
     }
     for (i = 0; i < npts; i++)

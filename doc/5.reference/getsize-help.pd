@@ -27,7 +27,6 @@ help-getsize-array1-template;
 #X obj 37 317 getsize help-getsize-template array1;
 #X text 46 296 inlet for pointer;
 #X obj 40 19 getsize;
-#X text 103 20 -- get number of elements of an array;
 #X text 34 51 When sent a pointer \, "element" looks up a field \,
 which should be an array \, and outputs the number of elements of the
 array. The template and field name are specified as creation arguments.
@@ -41,7 +40,8 @@ array. The template and field name are specified as creation arguments.
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity.;
 #X msg 47 266 set help-getsize-template array1;
+#X text 103 20 - get number of elements of an array;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
 #X connect 11 0 8 0;
-#X connect 22 0 11 0;
+#X connect 21 0 11 0;

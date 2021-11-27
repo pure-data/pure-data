@@ -1,12 +1,12 @@
-#N canvas 217 94 1015 528 12;
+#N canvas 300 93 1015 528 12;
 #X msg 435 30 rewind;
 #X obj 507 414 print done;
 #X text 635 190 read a file;
 #X text 687 218 write one;
-#X text 174 429 see also:;
+#X text 52 419 see also:;
 #X obj 454 383 textfile;
 #X msg 506 191 read textfile.txt;
-#X obj 253 430 qlist;
+#X obj 131 420 qlist;
 #X obj 65 34 textfile;
 #X text 59 95 The textfile object reads and writes text files to and
 from memory. You can read a file and output sequential lines as lists
@@ -42,8 +42,11 @@ finishing with a semicolon in case you want to make variable-length
 messages., f 38;
 #X msg 515 347 print;
 #X text 557 347 debugging printout;
-#X text 770 458 updated for Pd version 0.33;
-#X text 146 34 -- read and write text files;
+#X text 784 467 updated for Pd version 0.33;
+#X text 146 34 - read and write text files;
+#X obj 133 448 text;
+#X text 178 439 (newer and better replacement for textfile), f 25
+;
 #X connect 0 0 5 0;
 #X connect 5 0 16 0;
 #X connect 5 1 1 0;

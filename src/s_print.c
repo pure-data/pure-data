@@ -25,7 +25,7 @@ char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     while(1)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}') {
+        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']') {
             dst[ptout++] = '\\';
             if (dstlen && ptout >= dstlen){
                 dst[ptout-1] = 0;
@@ -61,11 +61,18 @@ static void dopost(const char *s)
     if (sys_printhook)
         (*sys_printhook)(s);
     else if (sys_printtostderr || !sys_havegui())
+    {
 #ifdef _WIN32
+    #ifdef _MSC_VER
         fwprintf(stderr, L"%S", s);
+    #else
+        fwprintf(stderr, L"%s", s);
+    #endif
+        fflush(stderr);
 #else
         fprintf(stderr, "%s", s);
 #endif
+    }
     else
     {
         char upbuf[MAXPDSTRING];
@@ -85,7 +92,18 @@ static void doerror(const void *object, const char *s)
         (*sys_printhook)(upbuf);
     }
     else if (sys_printtostderr)
+    {
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L"error: %S", s);
+    #else
+        fwprintf(stderr, L"error: %s", s);
+    #endif
+        fflush(stderr);
+#else
         fprintf(stderr, "error: %s", s);
+#endif
+    }
     else
     {
         char obuf[MAXPDSTRING];
@@ -99,7 +117,10 @@ static void dologpost(const void *object, const int level, const char *s)
 {
     char upbuf[MAXPDSTRING];
     upbuf[MAXPDSTRING-1]=0;
-
+        /* if it's a verbose message and we aren't set to 'verbose' just do
+            nothing */
+    if (level >= PD_VERBOSE && !sys_verbose)
+        return;
     // what about sys_printhook_verbose ?
     if (sys_printhook)
     {
@@ -108,7 +129,16 @@ static void dologpost(const void *object, const int level, const char *s)
     }
     else if (sys_printtostderr)
     {
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L"verbose(%d): %S", level, s);
+    #else
+        fwprintf(stderr, L"verbose(%d): %s", level, s);
+    #endif
+        fflush(stderr);
+#else
         fprintf(stderr, "verbose(%d): %s", level, s);
+#endif
     }
     else
     {
@@ -119,12 +149,11 @@ static void dologpost(const void *object, const int level, const char *s)
     }
 }
 
-void logpost(const void *object, const int level, const char *fmt, ...)
+void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
+    if (level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
@@ -132,6 +161,19 @@ void logpost(const void *object, const int level, const char *fmt, ...)
 
     dologpost(object, level, buf);
 }
+
+void startlogpost(const void *object, const int level, const char *fmt, ...)
+{
+    char buf[MAXPDSTRING];
+    va_list ap;
+    if (level > PD_DEBUG && !sys_verbose) return;
+    va_start(ap, fmt);
+    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    va_end(ap);
+
+    dologpost(object, level, buf);
+}
+
 
 void post(const char *fmt, ...)
 {
@@ -196,6 +238,9 @@ void endpost(void)
     else post("");
 }
 
+  /* keep this in the Pd app for binary extern compatibility but don't
+  include in libpd because it conflicts with the posix pd_error(0, ) function. */
+#ifdef PD_INTERNAL
 void error(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
@@ -210,23 +255,24 @@ void error(const char *fmt, ...)
 
     doerror(NULL, buf);
 }
+#endif
 
+/* deprecated in favor of logpost() */
 void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
-    int loglevel=level+3;
 
-    if(level>sys_verbose)return;
+    if (level > sys_verbose) return;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
-    dologpost(NULL, loglevel, buf);
+        /* log levels for verbose() traditionally start at -3,
+        so we have to adjust it before passing it on to dologpost() */
+    dologpost(NULL, level + 3, buf);
 }
 
     /* here's the good way to log errors -- keep a pointer to the
@@ -299,7 +345,7 @@ void bug(const char *fmt, ...)
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
 
-    error("consistency check failed: %s", buf);
+    pd_error(0, "consistency check failed: %s", buf);
 }
 
     /* don't use these.  They're included for binary compatibility with

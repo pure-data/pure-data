@@ -46,7 +46,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     global installpath
     ::scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
-        [_ "Pd search path for objects, help, fonts, and other files"] \
+        [_ "Pd search path for objects, help, audio, text and other files"] \
         450 300 1
     wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "path"
@@ -64,6 +64,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # add docsdir path widgets if pd_docsdir is loaded
     if {[namespace exists ::pd_docsdir]} {
+        set docspath $::pd_docsdir::docspath
         labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
             -borderwidth 1 -padx 5 -pady 5
         pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m

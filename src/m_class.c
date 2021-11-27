@@ -60,6 +60,7 @@ void s_stuff_newpdinstance(void)
     STUFF->st_externlist = STUFF->st_searchpath =
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
+    STUFF->st_dacsr = DEFDACSAMPLERATE;
 }
 
 void s_stuff_freepdinstance(void)
@@ -113,22 +114,22 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
 }
 
 static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
-    int nmethod, t_gotfn fn, t_symbol *sel, t_atomtype *args,
+    int nmethod, t_gotfn fn, t_symbol *sel, unsigned char *args,
         t_pdinstance *pdinstance)
 {
     int i;
     t_methodentry *m;
     for (i = 0; i < nmethod; i++)
-        if ((*methodlist)[i].me_name == sel)
+        if (sel && (*methodlist)[i].me_name == sel)
     {
         char nbuf[80];
         snprintf(nbuf, 80, "%s_aliased", sel->s_name);
         nbuf[79] = 0;
         (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
         if (c == pd_objectmaker)
-            verbose(1, "warning: class '%s' overwritten; old one renamed '%s'",
+            logpost(NULL, PD_VERBOSE, "warning: class '%s' overwritten; old one renamed '%s'",
                 sel->s_name, nbuf);
-        else verbose(1, "warning: old method '%s' for class '%s' renamed '%s'",
+        else logpost(NULL, PD_VERBOSE, "warning: old method '%s' for class '%s' renamed '%s'",
             sel->s_name, c->c_name->s_name, nbuf);
     }
     (*methodlist) = t_resizebytes((*methodlist),
@@ -137,9 +138,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     m = (*methodlist) + nmethod;
     m->me_name = sel;
     m->me_fun = (t_gotfn)fn;
-    i = 0;
-    while ((m->me_arg[i] = args[i]))
-        i++;
+    memcpy(m->me_arg, args, MAXPDARG+1);
 }
 
 #ifdef PDINSTANCE
@@ -198,13 +197,15 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
-    int i, instanceno = x->pd_instanceno;
+    int i, instanceno;
     t_class *c;
-    t_instanceinter *inter = x->pd_inter;
+    t_instanceinter *inter;
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-
+    
+    instanceno = x->pd_instanceno;
+    inter = x->pd_inter;
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
@@ -212,8 +213,10 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
-        freebytes(c->c_methods[instanceno],
-            c->c_nmethod * sizeof(**c->c_methods));
+        if(c->c_methods[instanceno])
+            freebytes(c->c_methods[instanceno],
+                      c->c_nmethod * sizeof(**c->c_methods));
+        c->c_methods[instanceno] = NULL;
         for (i = instanceno; i < pd_ninstances-1; i++)
             c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
@@ -238,7 +241,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
                s != &x->pd_s_y &&
                s != &x->pd_s_)
             {
-                freebytes(s->s_name, strlen(s->s_name)+1);
+                freebytes((void *)s->s_name, strlen(s->s_name)+1);
                 freebytes(s, sizeof(*s));
             }
         }
@@ -440,8 +443,12 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d args typechecked; use A_GIMME",
-                s->s_name, MAXPDARG);
+            if (s)
+                pd_error(0, "class %s: sorry: only %d args typechecked; use A_GIMME",
+                      s->s_name, MAXPDARG);
+            else
+                pd_error(0, "unnamed class: sorry: only %d args typechecked; use A_GIMME",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -455,7 +462,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-        if (class_loadsym)
+        if (s && class_loadsym && !zgetfn(&pd_objectmaker, class_loadsym))
         {
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
@@ -489,7 +496,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
     c->c_classfreefn = 0;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     c->c_methods = (t_methodentry **)t_getbytes(
         pd_ninstances * sizeof(*c->c_methods));
     for (i = 0; i < pd_ninstances; i++)
@@ -508,7 +515,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 void class_free(t_class *c)
 {
     int i;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     t_class *prev;
     if (class_list == c)
         class_list = c->c_next;
@@ -522,9 +529,13 @@ void class_free(t_class *c)
 #endif
     if (c->c_classfreefn)
         c->c_classfreefn(c);
-#if PDINSTANCE
+#ifdef PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
-        freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+    {
+        if(c->c_methods[i])
+            freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+        c->c_methods[i] = NULL;
+    }
     freebytes(c->c_methods, pd_ninstances * sizeof(*c->c_methods));
 #else
     freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
@@ -537,7 +548,7 @@ void class_setfreefn(t_class *c, t_classfreefn fn)
     c->c_classfreefn = fn;
 }
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 t_class *class_getfirst(void)
 {
     return class_list;
@@ -562,8 +573,12 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d creation args allowed",
-                s->s_name, MAXPDARG);
+            if(s)
+                pd_error(0, "class %s: sorry: only %d creation args allowed",
+                      s->s_name, MAXPDARG);
+            else
+                pd_error(0, "unnamed class: sorry: only %d creation args allowed",
+                      MAXPDARG);
             break;
         }
         vp++;
@@ -622,7 +637,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     }
     else
     {
-        t_atomtype argvec[MAXPDARG+1];
+        unsigned char argvec[MAXPDARG+1];
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {
@@ -630,14 +645,14 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             argtype = va_arg(ap, t_atomtype);
         }
         if (argtype != A_NULL)
-            error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
-                c->c_name->s_name, sel->s_name);
+            pd_error(0, "%s_%s: only 5 arguments are typecheckable; use A_GIMME",
+                (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
         for (i = 0; i < pd_ninstances; i++)
         {
             class_addmethodtolist(c, &c->c_methods[i], c->c_nmethod,
-                (t_gotfn)fn, dogensym(sel->s_name, 0, pd_instances[i]),
+                (t_gotfn)fn, sel?dogensym(sel->s_name, 0, pd_instances[i]):0,
                     argvec, pd_instances[i]);
         }
 #else
@@ -649,7 +664,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     goto done;
 phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
-        c->c_name->s_name, sel->s_name);
+        (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
 done:
     va_end(ap);
     return;
@@ -887,11 +902,11 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int fd;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
     if (tryingalready>MAXOBJDEPTH){
-      error("maximum object loading depth %d reached", MAXOBJDEPTH);
+      pd_error(0, "maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
     if (s == &s_anything){
-      error("object name \"%s\" not allowed", s->s_name);
+      pd_error(0, "object name \"%s\" not allowed", s->s_name);
       return;
     }
     pd_this->pd_newest = 0;
@@ -940,7 +955,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_method *f;
     t_class *c = *x;
     t_methodentry *m, *mlist;
-    t_atomtype *wp, wanttype;
+    unsigned char *wp, wanttype;
     int i;
     t_int ai[MAXPDARG+1], *ap = ai;
     t_floatarg ad[MAXPDARG+1], *dp = ad;
@@ -948,8 +963,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_pd *bonzo;
 
         /* check for messages that are handled by fixed slots in the class
-        structure.  We don't catch "pointer" though so that sending "pointer"
-        to pd_objectmaker doesn't require that we supply a pointer value. */
+        structure. */
     if (s == &s_float)
     {
         if (!argc) (*c->c_floatmethod)(x, 0.);
@@ -974,6 +988,15 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
         else
             (*c->c_symbolmethod)(x, &s_);
+        return;
+    }
+        /* pd_objectmaker doesn't require
+        an actual pointer value */
+    if (s == &s_pointer && x != &pd_objectmaker)
+    {
+        if (argc && argv->a_type == A_POINTER)
+            (*c->c_pointermethod)(x, argv->a_w.w_gpointer);
+        else goto badarg;
         return;
     }
 #ifdef PDINSTANCE
@@ -1087,12 +1110,12 @@ badarg:
     /* convenience routine giving a stdarg interface to typedmess().  Only
     ten args supported; it seems unlikely anyone will need more since
     longer messages are likely to be programmatically generated anyway. */
-void pd_vmess(t_pd *x, t_symbol *sel, char *fmt, ...)
+void pd_vmess(t_pd *x, t_symbol *sel, const char *fmt, ...)
 {
     va_list ap;
     t_atom arg[10], *at = arg;
     int nargs = 0;
-    char *fp = fmt;
+    const char *fp = fmt;
 
     va_start(ap, fmt);
     while (1)
@@ -1208,8 +1231,11 @@ t_class *
 #endif
         ;
     static int loglevel = 0;
-    logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
-    loglevel=3;
+    if(s) {
+        logpost(0, loglevel, "refusing to load %dbit-float object '%s' into %dbit-float Pd", ext_floatsize, s->s_name, PD_FLOATSIZE);
+        loglevel=3;
+    } else
+        logpost(0, 3, "refusing to load unnamed %dbit-float object into %dbit-float Pd", ext_floatsize, PD_FLOATSIZE);
 
     return 0;
 }

@@ -1,7 +1,7 @@
-#N canvas 424 23 524 741 12;
+#N canvas 746 41 524 741 12;
 #X obj 184 319 until;
 #X obj 210 285 max 0;
-#X floatatom 210 264 5 0 0 1 times - -;
+#X floatatom 210 264 5 0 0 1 times - - 0;
 #X text 218 235 times;
 #X obj 184 343 print repetition;
 #X msg 184 235 5;
@@ -18,7 +18,7 @@
 #X text 338 684 updated for Pd 0.41;
 #X text 39 17 Looping with the "until" object;
 #X text 41 48 It is sometimes desirable to make a loop without an embedded
-delay (as in 06.more.counters.pd") but rather to make the entire loop
+delay (as in "06.more.counters.pd") but rather to make the entire loop
 take place in the context of a single incoming message. The "until"
 object is provided to make this possible.;
 #X text 262 286 make nonnegative;

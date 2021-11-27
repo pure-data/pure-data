@@ -7,7 +7,7 @@
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -196,13 +196,13 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     typedmess(&pd_objectmaker, s, argc, argv);
     if (pd_this->pd_newest == 0)
     {
-        error("clone: can't create subpatch '%s'",
+        pd_error(0, "clone: can't create subpatch '%s'",
             s->s_name);
         return (0);
     }
     if (*pd_this->pd_newest != canvas_class)
     {
-        error("clone: can't clone '%s' because it's not an abstraction",
+        pd_error(0, "clone: can't clone '%s' because it's not an abstraction",
             s->s_name);
         pd_free(pd_this->pd_newest);
         pd_this->pd_newest = 0;
@@ -210,7 +210,6 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     }
     retval = (t_canvas *)pd_this->pd_newest;
     pd_this->pd_newest = 0;
-    retval->gl_owner = 0;
     retval->gl_isclone = 1;
     return (retval);
 }
@@ -443,7 +442,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         canvas_vis(x->x_vec[voicetovis].c_gl, 1);
     return (x);
 usage:
-    error("usage: clone [-s starting-number] <number> <name> [arguments]");
+    pd_error(0, "usage: clone [-s starting-number] <number> <name> [arguments]");
 fail:
     freebytes(x, sizeof(t_clone));
     canvas_resume_dsp(dspstate);
@@ -481,3 +480,27 @@ void clone_setup(void)
         sizeof(t_in), CLASS_PD, 0);
     class_addanything(clone_out_class, (t_method)clone_out_anything);
 }
+
+    /* for the needs of g_editor::glist_dofinderror(): */
+
+int clone_get_n(t_gobj *x)
+{
+    if (pd_class(&x->g_pd) != clone_class) return 0;
+    else return ((t_clone *)x)->x_n;
+}
+
+t_glist *clone_get_instance(t_gobj *x, int n)
+{
+    t_clone *c;
+    
+    if (pd_class(&x->g_pd) != clone_class) return NULL;
+
+    c = (t_clone *)x;
+    n -= c->x_startvoice;
+    if (n < 0)
+        n = 0;
+    else if (n >= c->x_n)
+        n = c->x_n - 1;
+    return  c->x_vec[n].c_gl;
+}
+

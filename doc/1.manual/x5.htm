@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 5</TITLE>
-    <meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Documentation 5</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
   
 <BODY>
+
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
 
 <H2>Pd Documentation chapter 5. current status</H2>
 
@@ -21,7 +28,117 @@
 
 <P>This section tracks changes in Pd's current implementation.</P>
 
-<H3> <A id="s2"> 5.1. release notes </A> </H3>
+<H3> <A id="s1"> 5.1. release notes </A> </H3>
+
+<P> ------------------ 0.52-0 ------------------------------
+
+<P> The Macintosh compiled version is now compiled at IEM (as part of the
+continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
+This should make Pd appear to be "safely" signed.  Added compilation for
+arm64 target (but not sure if the released binary will include that or not).
+
+<P> New "list" box, like number and symbol but allows lists in addition to
+single atoms.  You can scroll up and down on any of the numbers in a list as
+if it were a number box.  You can also double-click on (number, symbol, list)
+to activate a "real" editor you can copy/paste from/to.
+
+<P> A new "trace" object allows you to get backward and forward traces of
+message passing.
+
+<P> New "file" object by Iohannes with contributions from Jean-Michael
+Celerier - general file operations.
+
+<P> Support for CAF soundfiles (by Dan Wilcox) - and the soundfile
+code reorganized to make it more modular.
+
+<P> New methods for "list store" and added features to "array" (by Christof Ressi).
+
+<P> Improvements to the audio implementation - the most noticeable improvement
+is better control of latency under jack.
+
+<P> Pd's GUI checks that Pd actually exits when asked to and if not, kills it
+to prevent rogue invisible pd instances from collecting behind the scenes.
+
+<P> bugfix in bob~ to output "correct" signal (old behavior still available
+by setting pd compatibility < 52).
+
+<P> libpd included as part of the Pd distribution.  A test libpd project is included
+in ../pd/libpdtest.
+
+<P> raised the limit on the size of incoming UDP packets in netreceive.
+
+<P> some improvements to label handling in IEMguis.
+
+<P> improved window positioning.
+
+<p> garrays now available in color, etc. (documented in
+2.control.examples/16.more.arrays.pd), and more flags available in the "plot"
+object (for arrays in data structures).
+
+<p> "set", "send", "delete", "insert" methods added to "list store" object, and
+new features added to "get" method.
+
+<P> as usual, numerous bug fixes and documentation updates.
+
+<P> ------------------ 0.51-4 ------------------------------
+
+<P> Bug fixes: infinite loop on Windows if  writesf~ encountered a write error;
+another hack at TCL/TK window size confusion; and better libpd and build support
+
+<P> ------------------ 0.51-3 ------------------------------
+
+<P> New functions for expr: mtof, ftom, rmstodb, dbtorms, powtodb, dbtopow, and two
+bug fixes.
+
+<P> The "use callbacks" switch in the audio dialog only appears if it's already on
+(via the command line or app default settings).  It was crashing and hanging Pd in
+several situations.  It might still be useful for reducing audio latency by a block
+or so, but won't buy you much in any case.  I'll try to fix it later.
+
+<P> More white-space fixes (primarily affecting pd~ on Windows).
+
+<P> Much work dealing with upgrade issues in MACOS 10.15 (thanks Dan Wilcox)
+
+<P> ------------------ 0.51-2 ------------------------------
+
+<P> Better support for white space in file path to pd, especially for pd~ object.
+Also fixed an annoyamce in which pd~ started up a command prompt window on PCs.
+The pd~ source is also now updated to work (again) in Max/MSP, on Mac or PC.
+
+<P> ------------------ 0.51-1 ------------------------------
+
+<P> Bug fixes, mostly from the git updates branch
+
+<P> (long overdue) Buttons in the audio dialog to set some standard sample
+rates.  You can still run Pd at 3.14159 Hz if you want to but you'll have to
+type that one in.
+
+<P> On Macintosh tcl/tk is updgraded to 8.6.10 (should work on MacOS from
+10.6 to 11.0 aka "Bug Sur").
+
+<P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full
+speed, without waiting for A/D/A or the real-time clock.  Useful for running
+batch-style jobs interactively.  You can advance a variable amount of time by
+specifying a large value and then later sending "pd fast-forward 0" - but note
+that outside input is ignored while in fast forward.
+
+<P> ------------------ 0.51-0 ------------------------------
+
+<P> Many bug fixes and some enhancements to network objects.  Many thanks
+to Dan Wilcox, Christof Ressi, and Iohannes Zmoelnig who did almost all the
+work.
+
+<P> (Also Dan) some fix I don't understand about code signing for MacOS 10.15,
+without which externals refused to load.
+
+<P> The "inlet~" object can now also optionally forward messages via an extra
+outlet.
+
+<P> New "mode" argument to openpanel object to allow selecting directories or multiple files
+
+<P> New "equal" message to pointer object to test if two pointers are equal.
+
+<P> Pd should now function OK if recompiled with float size set to 64 bits.
 
 <P> ------------------ 0.50-2 ------------------------------
 
@@ -29,7 +146,7 @@
 
 <P> ------------------ 0.50-1 ------------------------------
 
-<P> improved handling of tilde chartacters for Portugues and Spanish keyboard
+<P> improved handling of tilde chartacters for Portuguese and Spanish keyboard
 maps
 
 <P> handling spaces in path to HTML file open message to pdcontrol object
@@ -46,7 +163,7 @@ followers and dynamics processors.
 <P> attempted to fix limitations on incoming MIDI and network packets.
 Things seem to be improved but the improvements aren't exhaustively tested yet.
 
-<P> improved HTML style in documentation and more info on writing externs.
+<P> improved HTML style in documentation and more info on managing externs.
 
 <P> updates to Iohannes's smart patching features
 
@@ -371,7 +488,7 @@ although not yet perfect.
 
 <P> Objects/messages/comments have settable box widths.  By default they're
 auto, but you can change that by dragging on the right-hand-side border.  You can
-set it back to the default just by dragging ot to whatever width the default
+set it back to the default just by dragging or to whatever width the default
 would have been.  If a box's width isn't "auto" and you open the patch back in
 Pd version 0.44 you'll see a warning; if you open it in earlier versions you'll
 get pages of error messages but no real harm.  You can open and save a patch in
@@ -1708,7 +1825,7 @@ behavior for non-root users who start pd.
 hole in your system.)
 
 <P>
-The Pd commend line can take multiple "open" arguments.
+The Pd command line can take multiple "open" arguments.
 
 <P>
 The file search path feature was fixed and generalized.
@@ -2129,8 +2246,8 @@ The following max-like objects are included:
 <H3> <A id="s2"> 5.2. known bugs </A> </H3>
 
 <P> These are now tracked on the
-<A href=https://sourceforge.net/projects/pure-data/>
-Pd Sourceforge project page</A>.
+<A href=https://github.com/pure-data/pure-data/issues target="_blank">
+Pd GitHub project page</A>.
 
 <H3> <A id="s3"> 5.3. differences from Max/MSP </A> </H3>
 
@@ -2206,6 +2323,15 @@ make a patch that copies a "table" into a "buffer~".
 
 <P> The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches,
 in Pd; however, Pd's version is quite different from Max's.
+
+<P>
+<BR><BR>
+<A href="x6.htm"> next chapter </A><BR>
+<A href="index.htm#s5"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
 
 </BODY>
 </HTML>

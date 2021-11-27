@@ -48,14 +48,6 @@ static t_int *sig_tilde_perf8(t_int *w)
     return (w+4);
 }
 
-void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
-{
-    if (n&7)
-        dsp_add(sig_tilde_perform, 3, in, out, n);
-    else
-        dsp_add(sig_tilde_perf8, 3, in, out, n);
-}
-
 static void sig_tilde_float(t_sig *x, t_float f)
 {
     x->x_f = f;
@@ -63,7 +55,7 @@ static void sig_tilde_float(t_sig *x, t_float f)
 
 static void sig_tilde_dsp(t_sig *x, t_signal **sp)
 {
-    dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, sp[0]->s_n);
+    dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void *sig_tilde_new(t_floatarg f)
@@ -198,9 +190,9 @@ static void line_tilde_stop(t_line *x)
 static void line_tilde_dsp(t_line *x, t_signal **sp)
 {
     if(sp[0]->s_n&7)
-        dsp_add(line_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        dsp_add(line_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     else
-        dsp_add(line_tilde_perf8, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        dsp_add(line_tilde_perf8, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     x->x_1overn = 1./sp[0]->s_n;
     x->x_dspticktomsec = sp[0]->s_sr / (1000 * sp[0]->s_n);
 }
@@ -388,7 +380,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
 
 static void vline_tilde_dsp(t_vline *x, t_signal **sp)
 {
-    dsp_add(vline_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+    dsp_add(vline_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     x->x_samppermsec = ((double)(sp[0]->s_sr)) / 1000;
     x->x_msecpersamp = ((double)1000) / sp[0]->s_sr;
 }
@@ -600,7 +592,7 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
         period = npoints / MAXOVERLAP + 1;
     if (!(buf = getbytes(sizeof(t_sample) * (npoints + INITVSTAKEN))))
     {
-        error("env: couldn't allocate buffer");
+        pd_error(0, "env: couldn't allocate buffer");
         return (0);
     }
     x = (t_sigenv *)pd_new(env_tilde_class);
@@ -669,13 +661,13 @@ static void env_tilde_dsp(t_sigenv *x, t_signal **sp)
             (x->x_npoints + sp[0]->s_n) * sizeof(t_sample));
         if (!xx)
         {
-            error("env~: out of memory");
+            pd_error(0, "env~: out of memory");
             return;
         }
         x->x_buf = (t_sample *)xx;
         x->x_allocforvs = sp[0]->s_n;
     }
-    dsp_add(env_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+    dsp_add(env_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void env_tilde_tick(t_sigenv *x) /* callback function for the clock */
@@ -811,7 +803,7 @@ done:
 void threshold_tilde_dsp(t_threshold_tilde *x, t_signal **sp)
 {
     x->x_msecpertick = 1000. * sp[0]->s_n / sp[0]->s_sr;
-    dsp_add(threshold_tilde_perform, 3, sp[0]->s_vec, x, sp[0]->s_n);
+    dsp_add(threshold_tilde_perform, 3, sp[0]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 static void threshold_tilde_ff(t_threshold_tilde *x)

@@ -34,9 +34,6 @@ namespace eval ::pd_docsdir:: {
 # if set to "DISABLED", the docs dir functionality is disabled
 set ::pd_docsdir::docspath ""
 
-# self-init after loading
-after 1000 {::pd_docsdir::init}
-
 # check the Pd documents directory path & prompt user to create if it's empty,
 # otherwise ignore all of this if the user cancelled it
 # set reset to true to force the welcome prompt
@@ -67,7 +64,11 @@ proc ::pd_docsdir::init {{reset false}} {
         }
         set docspath_default [file join $docspath_default "Pd"]
         # prompt
-        set msg [_ "Do you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        if {[file isdir ${docspath_default}]} {
+            set msg [_ "Do you want Pd to use the existing documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        } {
+            set msg [_ "Do you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        }
         set _args "-message \"[format $msg $docspath_default]\" -type yesnocancel -default yes -icon question -parent .pdwindow"
         switch -- [eval tk_messageBox ${_args}] {
             yes {
@@ -264,3 +265,7 @@ proc ::pd_docsdir::is_externals_path_deken_installpath {} {
     }
     return 0
 }
+
+
+# self-init after loading
+::pd_docsdir::init

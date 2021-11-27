@@ -45,7 +45,7 @@ them. Try varying the parameters and/or substituting other filters.
 #X obj 266 329 bp~;
 #X text 37 311 index;
 #X text 36 127 "filter-graph1" takes as arguments the number of points
-to graph and the frequency range. "filter-graph2 takes as arguments
+to graph and the frequency range. "filter-graph2" takes as arguments
 the name of a table to hold the (frequency dependent) gain \, and another
 \, if specified \, for the phase., f 64;
 #X text 36 193 You can edit this patch to replace "bp" with any other

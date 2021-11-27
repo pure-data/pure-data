@@ -1,32 +1,415 @@
-#N canvas 358 68 562 543 12;
-#X floatatom 54 15 0 0 0 0 - - -;
-#X text 102 16 atoms (number boxes);
-#X floatatom 45 108 0 0 0 0 - - -;
-#X floatatom 45 148 0 0 0 0 - - -;
-#X msg 345 249 set 45;
-#X floatatom 345 277 0 0 0 0 - - -;
-#X floatatom 345 306 0 0 0 0 - - -;
-#X text 114 55 Number boxes allow you to display numbers or to enter
-numbers using the mouse and keyboard. When a number arrives at the
-number box's inlet \, it is displayed and sent to the outlet. You can
-click on a number box and drag upward or downward to change the value
-continuously., f 60;
-#X text 114 137 You can shift-click and drag to change the number by
-hundredths instead of units. Alt clicking toggles the value between
-0 and the last nonzero value., f 53;
-#X text 113 190 You can also type in values by clicking and typing
-a number followed by "enter.", f 55;
-#X text 91 263 the "set" message sets the number box's value but does
-not send it to the outlet., f 33;
-#X text 332 480 updated for Pd version 0.34;
-#X floatatom 211 479 1 0 0 0 - - -;
-#X text 38 459 A width of one gives a clickable toggle switch à la
-Max:, f 33;
-#X text 59 348 You can set the width of the box by right-clicking and
-choosing "properties." By default the width is 5 characters. If you
-select a width of 0 \, the number box will grow as needed to hold the
-number - BUT BEWARE \, THIS IS EXPENSIVE IN CPU TIME. In a production
-patch \, you'll want to set a specific width., f 64;
-#X connect 2 0 3 0;
-#X connect 4 0 5 0;
-#X connect 5 0 6 0;
+#N canvas 441 127 1040 688 12;
+#X msg 79 419 set 45;
+#X floatatom 139 462 5 0 0 0 - - - 0;
+#X symbolatom 69 17 10 0 0 0 - - - 0;
+#X floatatom 25 17 5 0 0 0 - - - 0;
+#X text 809 179 more details:;
+#X symbolatom 620 172 15 0 0 0 - - - 0;
+#X msg 636 112 set hi;
+#X msg 620 84 symbol hello\ world;
+#X obj 620 205 print symbol_box;
+#X obj 139 495 print number_box;
+#X msg 139 419 bang;
+#X msg 635 140 bang;
+#X msg 188 419 12;
+#N canvas 450 199 417 455 properties 0;
+#N canvas 804 125 490 506 width 0;
+#X floatatom 281 445 1 0 0 0 - - - 0;
+#X floatatom 173 183 5 0 0 0 - - - 0;
+#X text 219 184 <= default (5 characters);
+#X floatatom 215 384 0 0 0 0 - - - 0;
+#X msg 158 347 1;
+#X msg 215 347 -1.2345e+12;
+#X msg 187 152 100;
+#X msg 173 126 -100000;
+#X msg 161 102 100000;
+#X floatatom 173 213 7 0 0 0 - - - 0;
+#X text 232 214 <= width of 7;
+#X text 99 438 A width of one gives a clickable toggle switch, f 23
+;
+#X text 299 446 <= click;
+#X text 115 385 width of 0 =>;
+#X text 42 22 The width is 5 characters by default. The number box
+fails to display numbers with more characters and only gives you its
+sign instead. Hence \, you need to increase the width to display it
+properly.;
+#X text 42 249 Note that if you select a width of 0 \, the number box
+will actually have a minimum width of 3 digits and grow as needed to
+hold the typed or received number. A specific width is more CPU efficient
+though., f 58;
+#X connect 1 0 9 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 6 0 1 0;
+#X connect 7 0 1 0;
+#X connect 8 0 1 0;
+#X restore 190 171 pd width;
+#X floatatom 73 79 5 0 0 0 - - - 0;
+#X text 116 78 <= right click for properties;
+#N canvas 795 289 419 235 label 0;
+#X floatatom 180 118 5 -10 10 0 left-label - - 0;
+#X floatatom 237 118 5 -10 10 2 top-label: - - 0;
+#X floatatom 237 152 5 -10 10 3 bottom-label: - - 0;
+#X floatatom 108 152 5 -10 10 1 right-label - - 0;
+#X text 86 40 You can give it a label and place it in 4 different preset
+positions:, f 36;
+#X restore 190 234 pd label;
+#N canvas 789 217 438 400 send/receive 0;
+#X floatatom 130 310 5 0 0 0 - #0-number - 0;
+#X floatatom 126 133 5 0 0 0 - - - 0;
+#X obj 130 348 print;
+#X floatatom 130 199 5 0 0 0 - - #0-number 0;
+#X text 181 197 <= send symbol \$0-number;
+#X text 181 311 <= receive symbol \$0-number;
+#X text 51 25 The properties also allows you to set a send and receive
+symbol \, in which cases the inlet/outlet are removed (so no connections
+are possible anymore). This way \, the object can communicate to [send]
+and [receive] objects., f 49;
+#X obj 129 235 receive \$0-number;
+#X obj 126 164 send \$0-number;
+#X floatatom 129 273 5 0 0 0 - - - 0;
+#X connect 0 0 2 0;
+#X connect 1 0 8 0;
+#X connect 7 0 9 0;
+#X restore 142 305 pd send/receive;
+#X text 41 22 You can right click on the object and ask for the properties
+window to change its parameters., f 47;
+#X text 54 124 The subpatches below offer details on each parameter
+from the properties window., f 43;
+#N canvas 779 178 525 491 limits 0;
+#X floatatom 197 158 5 -10 10 0 - - - 0;
+#X msg 197 119 100;
+#X text 71 158 click and drag =>;
+#X text 244 158 (range from -10 to 10);
+#X text 44 27 By default \, the number box has no range limits \, but
+you can define a range with a lower and upper limit values. Note that
+this limit is only for clicking and dragging. Numbers outside this
+range are accepted if you type it in or receive it via the inlet.;
+#X msg 235 119 set -100;
+#X text 71 174 and also type a value outside the range, f 15;
+#X obj 197 201 print number-range;
+#X floatatom 86 427 0 0 0 0 - - - 0;
+#X floatatom 216 427 0 0 0 0 - - - 0;
+#X msg 86 350 bang;
+#X text 70 254 Setting the lower and upper range to the same value
+(like "0" \, "0" - the default) removes the limit. Note that a ridiculously
+large number becomes infinity (negative infinity is also possible).
+The number box will display these and also 'NaN' (Not a Number).,
+f 55;
+#X obj 86 385 expr pow(2 \, 1e+10) \; -pow(2 \, 1e+10);
+#X floatatom 307 427 0 0 0 0 - - - 0;
+#X msg 307 350 bang;
+#X obj 307 388 expr log(-1);
+#X text 125 351 infinity;
+#X text 345 350 nan;
+#X connect 0 0 7 0;
+#X connect 1 0 0 0;
+#X connect 5 0 0 0;
+#X connect 10 0 12 0;
+#X connect 12 0 8 0;
+#X connect 12 1 9 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
+#X restore 183 202 pd limits;
+#N canvas 721 346 450 298 loading-args 0;
+#X floatatom 224 229 5 0 0 0 #0-label - - 0;
+#X text 63 114 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X text 63 25 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, lower/upper limits \, label and send/receive
+symbols., f 49;
+#X restore 149 373 pd loading-args;
+#X text 61 343 Loading arguments in properties:;
+#N canvas 795 289 512 333 size 0;
+#X floatatom 247 217 5 0 0 0 label - - 36;
+#X text 70 43 By default \, when you create a box \, it'll use the
+font size that your patch is using. In this case it is "12". You can
+change the size settings in the properties. The 'auto' setting (the
+default) also automatically changes the font size of the atom box if
+you change your patch's font. In other cases \, it uses a specific
+font and keeps it no matter if you change the patch's font or not.
+Below \, we have a size of "36". The font setting also affects the
+label., f 56;
+#X restore 196 267 pd size;
+#X restore 293 447 pd properties;
+#N canvas 635 260 459 438 properties 0;
+#N canvas 934 145 510 501 width 0;
+#X symbolatom 162 162 10 0 0 0 - - - 0;
+#X text 238 163 <= default (10 characters);
+#X symbolatom 162 192 15 0 0 0 - - - 0;
+#X text 275 193 <= width of 15;
+#X msg 120 101 symbol a\ long\ symbol;
+#X msg 162 130 symbol short;
+#X msg 180 364 symbol a\ long\ symbol;
+#X symbolatom 243 427 0 0 0 0 - - - 0;
+#X msg 243 393 symbol a;
+#X text 54 22 By default the width is 10 characters. If the symbol
+box tries to display a larger symbol \, it gets truncated and the last
+displayed character is ">".;
+#X text 58 247 Note that if you select a width of 0 \, the symbol box
+will actually have a minimum width of 3 characters and grow as needed
+to hold the typed or received symbol - A specific width is more CPU
+efficient though.;
+#X connect 0 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 7 0;
+#X connect 8 0 7 0;
+#X restore 233 216 pd width;
+#X text 171 77 <= right click for properties;
+#N canvas 903 345 354 184 label 0;
+#X symbolatom 126 81 10 0 0 0 left-label - - 0;
+#X symbolatom 57 113 10 0 0 1 right-label - - 0;
+#X symbolatom 224 81 10 0 0 2 top-label - - 0;
+#X symbolatom 224 113 10 0 0 3 bottom-label - - 0;
+#X text 57 19 You can give it a label and place it in 4 different preset
+positions:, f 35;
+#X restore 233 248 pd label;
+#N canvas 979 272 457 442 send/receive 0;
+#X obj 105 374 print;
+#X symbolatom 101 131 10 0 0 0 - - - 0;
+#X symbolatom 100 221 10 0 0 0 - - #0-symbol 0;
+#X text 179 220 <= send symbol: \$0-symbol;
+#X text 184 335 <= receive symbol: \$0-symbol;
+#X symbolatom 105 336 10 0 0 0 - #0-symbol - 0;
+#X text 55 28 The properties also allows you to set a send and receive
+symbol \, in which cases the inlet/outlet are removed (so no connections
+are possible anymore). This way \, the object can communicate to [send]
+and [receive] objects., f 49;
+#X obj 101 168 send \$0-symbol;
+#X obj 101 259 receive \$0-symbol;
+#X symbolatom 101 293 10 0 0 0 - - - 0;
+#X connect 1 0 7 0;
+#X connect 5 0 0 0;
+#X connect 8 0 9 0;
+#X restore 185 309 pd send/receive;
+#X symbolatom 86 77 10 0 0 0 - - - 0;
+#X text 69 22 You can right click on the object and ask for the properties
+window to change its parameters., f 47;
+#X text 43 122 The subpatches below offer details on each parameter
+from the properties window. The properties window is the same as the
+number box's and the behaviour is basically the same. One main difference
+is that the "limits" are not valid for the symbol box., f 53;
+#N canvas 912 421 450 289 loading-args 0;
+#X text 61 114 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X symbolatom 220 228 10 0 0 0 #0-label - - 0;
+#X text 61 25 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, label and send/receive symbols., f 49;
+#X restore 196 387 pd loading-args;
+#X text 108 357 Loading arguments in properties:;
+#N canvas 795 289 688 310 size 0;
+#X text 90 44 By default \, when you create a box \, it'll use the
+font size that your patch is using. In this case it is "12". You can
+change the size settings in the properties. The 'auto' setting (the
+default) also automatically changes the font size of the atom box if
+you change your patch's font. In other cases \, it uses a specific
+font and keeps it no matter if you change the patch's font or not.
+Below \, we have a size of "36". The font setting also affects the
+label., f 74;
+#X symbolatom 185 186 20 0 0 0 label - - 36;
+#X restore 240 277 pd size;
+#X restore 809 202 pd properties;
+#X text 293 421 more details:;
+#X obj 131 547 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
+#fcfcfc #000000 #000000 0 256;
+#X text 205 548 <= number box from "iemguis";
+#X text 53 559 See also:;
+#X obj 131 571 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 155 572 <= toggle from "iemguis";
+#X listbox 149 16 20 0 0 0 - - - 0;
+#X text 299 16 - objects to display and edit numbers \, symbols \,
+or lists.;
+#X text 499 46 Symbol boxes are like number boxes but hold a symbol
+instead of a number:, f 61;
+#X text 771 82 set and output a symbol;
+#X text 693 116 set only - don't output;
+#X text 673 138 output only - don't change value;
+#X text 28 54 These are GUI (Graphical User Interface) objects that
+display and send atoms (numbers or symbols) or lists. They may be created
+by selecting "number" (etc.) from the "put" menu. The contents can
+be changed while the patch in in "run" mode (as opposed to "edit")
+\, so these are useful as controls and displays in a finished patch.
+;
+#X text 27 152 Double-clicking activates a text editor \, so that you
+can select portions of the contents and/or cut/copy/paste values. You
+may also simply single-click and enter the new contents from scratch.
+If you start retyping with a single click you can cancel the action
+by clicking outside the box \, or adopt the change using the "enter"
+key.;
+#X text 26 253 You can also change a numeric value upward or downward
+by clicking and dragging. Shift-click changes the value in hundredths
+instead of units.;
+#X text 491 248 Symbols with special characters (space \, comma \,
+semicolon \, backslash \, dollar signs) are displayed with a preceding
+backslash ( \ ) \, the same way you would type a symbol into a message
+or object box., f 70;
+#X text 490 313 List boxes may hold arbitrary combinations of numbers
+and symbols:, f 66;
+#X msg 512 367 1 2 3 foo 5;
+#X listbox 512 566 20 0 0 0 - - - 0;
+#X obj 512 600 print list_box;
+#X msg 526 406 list wombat weasel wallaby;
+#X text 607 360 messages beginning with a number are implicitly understood
+as lists, f 35;
+#X text 727 395 lists starting with a symbol must be preceeded by the
+word "list" to disambiguate them, f 32;
+#X msg 535 453 set 4 dog 5 6 donkey;
+#X text 688 448 "set" message changes contents but doesn't output them
+, f 30;
+#X msg 551 522 bang;
+#X text 21 314 If you click on a number box while pressing "control"
+(in Linux/Windows) or "command" (Mac) \, the object toggles between
+0 and a non zero value. The non zero value is the last non zero value
+that the box holds (by default \, this value is "1")., f 58;
+#X text 601 493 "bang" is equivalent to an empty list in Pd \, but
+as a special case banging a list box outputs the current list. If you
+really want to display an empty list \, you can use a "set" message.
+, f 53;
+#X msg 542 492 set;
+#X text 75 638 updated for Pd version 0.52;
+#X text 664 559 you can drag the numbers up and down individually \,
+and/or double click to edit, f 41;
+#X text 683 627 more details:;
+#N canvas 681 258 459 477 properties 0;
+#N canvas 934 145 512 490 width 0;
+#X msg 132 130 symbol short;
+#X listbox 201 411 0 0 0 0 - - - 0;
+#X listbox 132 192 10 0 0 0 - - - 0;
+#X listbox 132 162 20 0 0 0 - - - 0;
+#X text 212 193 <= width of 20;
+#X text 284 161 <= default (20 characters);
+#X msg 90 101 list 1 2 3 4 5 6 7 8 9 10 11 12;
+#X msg 201 377 1;
+#X text 58 247 Note that if you select a width of 0 \, the list box
+will actually have a minimum width of 3 characters and grow as needed
+to hold the typed or received symbol. A specific width is more CPU
+efficient though.;
+#X msg 138 348 list 1st\ item 2nd/ item;
+#X text 54 23 By default the width is 20 characters. If the list box
+tries to display a larger symbol \, it gets truncated and the last
+displayed character is ">".;
+#X connect 0 0 3 0;
+#X connect 3 0 2 0;
+#X connect 6 0 3 0;
+#X connect 7 0 1 0;
+#X connect 9 0 1 0;
+#X restore 233 216 pd width;
+#X text 206 76 <= right click for properties;
+#N canvas 903 345 444 319 label 0;
+#X text 87 23 You can give it a label and place it in 4 different preset
+positions:, f 35;
+#X listbox 131 97 20 0 0 0 left-label - - 0;
+#X listbox 133 150 20 0 0 2 top-label - - 0;
+#X listbox 134 190 20 0 0 1 right-label - - 0;
+#X listbox 135 229 20 0 0 3 bottom-label - - 0;
+#X restore 233 279 pd label;
+#N canvas 979 272 531 449 send/receive 0;
+#X obj 108 371 print;
+#X text 55 28 The properties also allows you to set a send and receive
+symbol \, in which cases the inlet/outlet are removed (so no connections
+are possible anymore). This way \, the object can communicate to [send]
+and [receive] objects., f 58;
+#X listbox 104 128 20 0 0 0 - - - 0;
+#X listbox 103 218 20 0 0 0 - - #0-list 0;
+#X listbox 108 333 20 0 0 0 - #0-list - 0;
+#X listbox 104 290 20 0 0 0 - - - 0;
+#X obj 104 165 send \$0-list;
+#X obj 104 256 receive \$0-list;
+#X text 254 217 <= send symbol: \$0-list;
+#X text 259 333 <= receive symbol: \$0-list;
+#X connect 2 0 6 0;
+#X connect 4 0 0 0;
+#X connect 7 0 5 0;
+#X restore 185 340 pd send/receive;
+#X text 69 22 You can right click on the object and ask for the properties
+window to change its parameters., f 47;
+#X text 43 122 The subpatches below offer details on each parameter
+from the properties window. The properties window is the same as the
+number box's and the behaviour is basically the same. One main difference
+is that the "limits" are not valid for the symbol box., f 53;
+#N canvas 912 421 450 289 loading-args 0;
+#X text 61 114 For instance \, below \, we have \$0 used in the label
+field \, which gets expanded to the patch ID number. Using something
+like "\$1" is useful if you're using the object in an abstraction \,
+then you can load a value passed as an argument into a parameter.,
+f 49;
+#X text 61 25 Note that all the parameters that you can set by inserting
+a number or symbol into a field in the properties window can also load
+dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
+parameters are: width \, label and send/receive symbols., f 49;
+#X listbox 203 236 20 0 0 0 #0-label - - 0;
+#X restore 196 418 pd loading-args;
+#X text 108 388 Loading arguments in properties:;
+#N canvas 795 289 688 310 size 0;
+#X text 90 44 By default \, when you create a box \, it'll use the
+font size that your patch is using. In this case it is "12". You can
+change the size settings in the properties. The 'auto' setting (the
+default) also automatically changes the font size of the atom box if
+you change your patch's font. In other cases \, it uses a specific
+font and keeps it no matter if you change the patch's font or not.
+Below \, we have a size of "36". The font setting also affects the
+label., f 74;
+#X listbox 179 184 20 0 0 0 label - - 36;
+#X restore 240 308 pd size;
+#X listbox 56 76 20 0 0 0 - - - 0;
+#N canvas 779 178 532 590 limits 0;
+#X text 71 178 click and drag =>;
+#X text 279 173 (range from -10 to 10), f 12;
+#X text 71 194 and also type a value outside the range, f 15;
+#X obj 197 221 print number-range;
+#X msg 154 383 bang;
+#X text 293 422 infinity;
+#X text 32 22 By default \, the list box has no range limits \, but
+you can define a range with a lower and upper limit values. Ths is
+just like the number box and affects numbers only. Note that this limit
+is only for clicking and dragging. Numbers outside this range are accepted
+if you type it in or receive it via the inlet., f 64;
+#X listbox 197 178 10 -10 10 0 - - - 0;
+#X msg 212 147 set -100 100;
+#X msg 197 119 -100 100;
+#X text 70 277 Setting the lower and upper range to the same value
+(like "0" \, "0" - the default) removes the limit. Note that a ridiculously
+large number becomes infinity (negative infinity is also possible).
+The list box will display these and also 'NaN' (Not a Number)., f
+55;
+#X obj 154 418 expr pow(2 \, 1e+10) \; -pow(2 \, 1e+10) \; log(-1)
+;
+#X listbox 186 523 20 -10 10 0 - - - 0;
+#X obj 186 482 pack f f f;
+#X text 295 442 nan;
+#X connect 4 0 11 0;
+#X connect 7 0 3 0;
+#X connect 8 0 7 0;
+#X connect 9 0 7 0;
+#X connect 11 0 13 0;
+#X connect 11 1 13 1;
+#X connect 11 2 13 2;
+#X connect 13 0 12 0;
+#X restore 227 248 pd limits;
+#X restore 789 626 pd properties;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
+#X connect 5 0 8 0;
+#X connect 6 0 5 0;
+#X connect 7 0 5 0;
+#X connect 10 0 1 0;
+#X connect 11 0 5 0;
+#X connect 12 0 1 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 0;
+#X connect 35 0 33 0;
+#X connect 38 0 33 0;
+#X connect 40 0 33 0;
+#X connect 43 0 33 0;

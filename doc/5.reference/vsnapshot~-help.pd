@@ -1,4 +1,4 @@
-#N canvas 179 129 576 258 12;
+#N canvas 527 109 576 258 12;
 #X text 306 197 updated for Pd version 0.47;
 #X obj 53 23 vsnapshot~;
 #X text 132 24 - mal-designed snapshot~ extension - best not to use
