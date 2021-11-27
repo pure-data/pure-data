@@ -449,15 +449,20 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
+set enable_cords_to_foreground false
+
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
-    set col black
-    if { $state == 0 } {
-        set col lightgrey
-    }
-    foreach id [$mytoplevel find withtag {cord && !selected}] {
-        # don't apply backgrouding on selected (blue) lines
-        if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
-            $mytoplevel itemconfigure $id -fill $col
+    global enable_cords_to_foreground
+    if {$enable_cords_to_foreground eq "true"} {
+        set col black
+        if { $state == 0 } {
+            set col lightgrey
+        }
+        foreach id [$mytoplevel find withtag {cord && !selected}] {
+            # don't apply backgrouding on selected (blue) lines
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+                $mytoplevel itemconfigure $id -fill $col
+            }
         }
     }
 }
