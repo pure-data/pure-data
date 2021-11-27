@@ -2319,7 +2319,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         else
         {
             int noutlet;
-                /* resize?  only for "true" text boxes or canvases*/
+                /* resize? only for "true" text boxes or canvases */
             if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
                     hitobj->te_type == T_ATOM ||
@@ -2859,12 +2859,12 @@ void canvas_mouseup(t_canvas *x,
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
     else if ((x->gl_editor->e_onmotion == MA_MOVE ||
-        x->gl_editor->e_onmotion == MA_RESIZE) && !x->gl_editor->e_lastmoved)
+              x->gl_editor->e_onmotion == MA_RESIZE) && !x->gl_editor->e_lastmoved)
     {
             /* if there's only one text item selected *and* the mouse hasn't moved,
-               activate the text -- i.e., standard click/drag behavior:
-	       - Single click, no motion: enter object for editing.
-	       - Click-drag with motion: move object, keep it selected */
+               activate the text, i.e. standard click/drag behavior:
+               - single click, no motion: enter object for editing.
+               - click-drag with motion: move object, keep it selected */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
