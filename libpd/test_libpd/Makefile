@@ -27,13 +27,14 @@ SRC_FILES = test_libpd.c
 TARGET = test_libpd
 
 CFLAGS = -I$(PD_DIR)/src -O3
+LDFLAGS = $(LIBPD)
 
 .PHONY: libs clean-libs clean clobber
 
 ##### all
 
 $(TARGET): ${SRC_FILES:.c=.o} libs
-	$(CC) -o $@ ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
+	$(CC) -o $@ ${SRC_FILES:.c=.o} $(LDFLAGS)
 
 ##### libs
 
