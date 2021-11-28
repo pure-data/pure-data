@@ -1,4 +1,4 @@
-# detect platform, move libpd dylib to local folder on mac
+# detect platform
 UNAME = $(shell uname)
 SOLIB_PREFIX = lib
 
@@ -15,8 +15,8 @@ else
   endif
 endif
 
-PD_DIR = ..
-LIBPD_DIR = .
+PD_DIR = ../..
+LIBPD_DIR = ..
 LIBPD = $(LIBPD_DIR)/libpd.$(SOLIB_EXT)
 
 SRC_FILES = test_libpd.c
@@ -26,14 +26,10 @@ CFLAGS = -I$(PD_DIR)/src -O3
 
 .PHONY: clean clobber
 
+# move libpd dylib to local folder on mac
 $(TARGET): ${SRC_FILES:.c=.o} $(LIBPD)
-	gcc -o $(TARGET) ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
-	if [ $(PLATFORM) == "mac" ]; then mkdir -p ./libs && cp $(LIBPD) ./libs; fi
+	$(CC) -o $(TARGET) ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
+	if [ $(PLATFORM) == "mac" ]; then cp $(LIBPD) ./; fi
 
 clean:
-	rm -f $(TARGET) *.o libpd.so
-
-clobber: clean
-	rm -f $(TARGET)
-	if [ $(PLATFORM) == "mac" ]; then rm -rf ./libs; fi
-	cd $(LIBPD_DIR) && make clobber
+	rm -f $(TARGET) *.o libpd.$(SOLIB_EXT)

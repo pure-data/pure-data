@@ -1,12 +1,16 @@
-This directory contains files for building and testing libpd.so from vanilla
+This directory contains files for building and testing libpd from vanilla
 Pd sources.  It assumes that the Pd source directory "../src" is parallel to
 this directory in order to find the Pd sources.
 
-To build libpd, in this directory, type "make".  This is tested in linux but
-not in macOS or in Windows.
+To build libpd, in this directory, type "make".  This is tested in Linux and
+macOS and *probably* on Windows using Msys2/Mingw.
 
-This directory also contains a test program "pdtest_multi" with its own
-separate makefile.  To build and run the test program:
-$ make -f makefile.example
-$ ./test_libpd
+    cd libpd
+    make
 
+This directory also contains a test program "test_libpd" with its own separate
+makefile.  To build and run the test program:
+
+    cd test_libpd
+    make
+    ./test_libpd
