@@ -48,7 +48,7 @@ PTHREAD_DIR = ${MINGW_PREFIX}/bin
 PTHREAD = libwinpthread-1.dll
 
 $(PTHREAD):
-	cp $(PTHREAD_DIR))/$(PTHREAD) .
+	cp $(PTHREAD_DIR)/$(PTHREAD) .
 
 libs: $(LIBPD) $(PTHREAD)
 
