@@ -682,8 +682,14 @@ static void gatom_bang(t_gatom *x)
     }
     else    /* list */
     {
-        int argc = binbuf_getnatom(x->a_text.te_binbuf);
+        int argc = binbuf_getnatom(x->a_text.te_binbuf), i;
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
+        for (i = 0; i < argc; i++)
+            if (argv[i].a_type != A_FLOAT && argv[i].a_type != A_SYMBOL)
+        {
+            pd_error(x, "list: only sends literal numbers and symbols");
+            return;
+        }
         if (x->a_text.te_outlet)
             outlet_list(x->a_text.te_outlet, &s_list, argc, argv);
         if (*x->a_expanded_to->s_name && x->a_expanded_to->s_thing)
