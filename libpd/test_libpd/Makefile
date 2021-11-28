@@ -1,5 +1,5 @@
 # This is a makefile to build "test_libpd".  It assumes that libpd is in the 
-# source directory "../" and that libpd is already built before. 
+# source directory "../" and that libpd is already built.
 
 # detect platform
 UNAME = $(shell uname)
@@ -39,23 +39,23 @@ $(TARGET): ${SRC_FILES:.c=.o} libs
 ##### libs
 
 $(LIBPD):
-	cp $(LIBPD_DIR)/$(LIBPD) ./
+	cp $(LIBPD_DIR)/$(LIBPD) .
 
+# on windowes, copy libpd and MinGW winpthread dll to here
 ifeq ($(PLATFORM), windows)
-
-# copy MinGW winpthread dll to ./
 
 $(PDTHREAD_DIR) = ${MINGW_PREFIX}/bin
 $(PTHREAD) = libwinpthread-1.dll
 
 $(PTHREAD):
-	cp $(PTHREAD_DIR))/$(PTHREAD) ./
+	cp $(PTHREAD_DIR))/$(PTHREAD) .
 
 libs: $(LIBPD) $(PTHREAD)
 
 clean-libs:
 	rm -f $(LIBPD) $(PTHREAD)
 
+# mac & linux, copy libpd to here
 else
 
 libs: $(LIBPD)
