@@ -100,12 +100,7 @@ SRC = $(PDSRC) \
 
 OBJ = $(SRC:.c=.o)
 
-# externals on windows expect "pd.dll"
-ifeq ($(OS), Windows_NT)
-    LIBPD = pd.$(SOLIB_EXT)
-else
-    LIBPD = libpd.$(SOLIB_EXT)
-endif
+LIBPD = $(SOLIB_PREFIX)pd.$(SOLIB_EXT)
 LIBPD_STATIC = libpd.$(STATICLIB_EXT)
 
 .PHONY: libpd clean
