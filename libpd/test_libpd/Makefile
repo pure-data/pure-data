@@ -44,7 +44,7 @@ $(LIBPD):
 # on windowes, copy libpd and MinGW winpthread dll to here
 ifeq ($(PLATFORM), windows)
 
-PDTHREAD_DIR = ${MINGW_PREFIX}/bin
+PTHREAD_DIR = ${MINGW_PREFIX}/bin
 PTHREAD = libwinpthread-1.dll
 
 $(PTHREAD):
