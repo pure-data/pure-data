@@ -72,7 +72,7 @@ MORECFLAGS =
 MORELDFLAGS =
 
 CFLAGS = $(CPPFLAGS) $(PLATFORM_CFLAGS) $(CODECFLAGS) $(MORECFLAGS)
-LDFLAGS = $(PLATFORM_LDFLAGS)
+LDFLAGS = $(PLATFORM_LDFLAGS) $(MORELDFLAGS)
 
 PDSRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
@@ -113,7 +113,7 @@ LIBPD_STATIC = libpd.$(STATICLIB_EXT)
 libpd: $(LIBPD) $(LIBPD_STATIC)
 
 $(LIBPD): $(OBJ)
-	$(CC) -o $(LIBPD) $(OBJ) -shared -lm -lpthread
+	$(CC) -o $(LIBPD) $(OBJ) -shared -lm -lpthread $(LDFLAGS)
 
 $(LIBPD_STATIC): $(OBJ)
 	ar rcs $(LIBPD_STATIC) $^
