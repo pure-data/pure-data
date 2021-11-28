@@ -43,9 +43,7 @@ $(LIBPD):
 
 ifeq ($(PLATFORM), windows)
 
-# on windows, copy libpd and MinGW pthread.dll from the following to ./
-# * windows:             $MINGW_PREFIX/bin
-# * linux cross-compile: $MINGW_PREFIX/lib
+# copy MinGW winpthread dll to ./
 
 $(PDTHREAD_DIR) = ${MINGW_PREFIX}/bin
 $(PTHREAD) = libwinpthread-1.dll
