@@ -10,6 +10,7 @@ ifeq ($(UNAME), Darwin) # Mac
   PLATFORM = mac
 else
   ifeq ($(OS), Windows_NT) # Windows, use Mingw
+    SOLIB_PREFIX =
     SOLIB_EXT = dll
     PLATFORM = windows
   else # assume Linux
@@ -20,7 +21,7 @@ endif
 
 PD_DIR = ../..
 LIBPD_DIR = ..
-LIBPD = $(LIBPD_DIR)/libpd.$(SOLIB_EXT)
+LIBPD = $(SOLIB_PREFIX)pd.$(SOLIB_EXT)
 
 SRC_FILES = test_libpd.c
 TARGET = test_libpd
@@ -30,9 +31,9 @@ CFLAGS = -I$(PD_DIR)/src -O3
 .PHONY: clean clobber
 
 # move libpd dylib to local folder on mac
-$(TARGET): ${SRC_FILES:.c=.o} $(LIBPD)
-	$(CC) -o $(TARGET) ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
-	if [ $(PLATFORM) == "mac" ]; then cp $(LIBPD) ./; fi
+$(TARGET): ${SRC_FILES:.c=.o} $(LIBPD_DIR)/$(LIBPD)
+	$(CC) -o $@ $^ $(LDFLAGS)
+	if [ $(PLATFORM) = "mac" ]; then cp $(LIBPD_DIR)/$(LIBPD) ./; fi
 
 clean:
-	rm -f $(TARGET) *.o libpd.$(SOLIB_EXT)
+	rm -f $(TARGET) *.o $(LIBPD)

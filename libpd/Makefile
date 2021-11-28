@@ -113,10 +113,10 @@ LIBPD_STATIC = libpd.$(STATICLIB_EXT)
 libpd: $(LIBPD) $(LIBPD_STATIC)
 
 $(LIBPD): $(OBJ)
-	$(CC) -o $(LIBPD) $(OBJ) -shared -lm -lpthread $(LDFLAGS)
+	$(CC) -o $@ $^ -shared -lm -lpthread $(LDFLAGS)
 
 $(LIBPD_STATIC): $(OBJ)
-	ar rcs $(LIBPD_STATIC) $^
+	ar rcs $@ $^
 
 clean:
 	-rm -f *.o $(LIBPD) $(LIBPD_STATIC) $(LIBPD_IMPLIB) $(LIBPD_DEF)
