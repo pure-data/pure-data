@@ -1,3 +1,6 @@
+# This is a makefile to build "test_libpd".  It assumes that libpd is in the 
+# source directory "../" and that libpd is already built before. 
+
 # detect platform
 UNAME = $(shell uname)
 SOLIB_PREFIX = lib
