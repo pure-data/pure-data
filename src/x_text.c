@@ -98,7 +98,7 @@ static void textbuf_open(t_textbuf *x)
             x, 600, 340, x->b_sym->s_name,
                  sys_hostfontsize(glist_getfont(x->b_canvas),
                     glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", (unsigned long)x);
+        sprintf(buf, ".x%lx", x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
