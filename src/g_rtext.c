@@ -90,7 +90,7 @@ void rtext_getseltext(t_rtext *x, char **buf, int *bufsize)
 
 t_text *rtext_getowner(t_rtext *x)
 {
-    return (x->x_text);;
+    return (x->x_text);
 }
 
 /* convert t_text te_type symbol for use as a Tk tag */
@@ -342,8 +342,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
         tempbuf[*outchars_b_p] = 0;
     }
-    if (*indexp >= *outchars_b_p)
-        *indexp = *outchars_b_p - 1;
+    if (*indexp > *outchars_b_p)
+        *indexp = *outchars_b_p;
     if (*indexp < 0)
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
@@ -534,6 +534,8 @@ void rtext_select(t_rtext *x, int state)
         x->x_tag, (state? "blue" : "black"));
 }
 
+void gatom_undarken(t_text *x);
+
 void rtext_activate(t_rtext *x, int state)
 {
     int w = 0, h = 0, indx;
@@ -554,6 +556,8 @@ void rtext_activate(t_rtext *x, int state)
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
+        if (x->x_text->te_type == T_ATOM)
+            gatom_undarken(x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
