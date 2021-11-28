@@ -28,12 +28,45 @@ TARGET = test_libpd
 
 CFLAGS = -I$(PD_DIR)/src -O3
 
-.PHONY: clean clobber
+.PHONY: libs clean-libs clean clobber
 
-# move libpd dylib to local folder on mac
-$(TARGET): ${SRC_FILES:.c=.o} $(LIBPD_DIR)/$(LIBPD)
-	$(CC) -o $@ $^ $(LDFLAGS)
-	if [ $(PLATFORM) = "mac" ]; then cp $(LIBPD_DIR)/$(LIBPD) ./; fi
+##### all
 
-clean:
-	rm -f $(TARGET) *.o $(LIBPD)
+$(TARGET): ${SRC_FILES:.c=.o} libs
+	$(CC) -o $@ ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
+
+##### libs
+
+$(LIBPD):
+	cp $(LIBPD_DIR)/$(LIBPD) ./
+
+ifeq ($(PLATFORM), windows)
+
+# on windows, copy libpd and MinGW pthread.dll from the following to ./
+# * windows:             $MINGW_PREFIX/bin
+# * linux cross-compile: $MINGW_PREFIX/lib
+
+$(PDTHREAD_DIR) = ${MINGW_PREFIX}/bin
+$(PTHREAD) = libwinpthread-1.dll
+
+$(PTHREAD):
+	cp $(PTHREAD_DIR))/$(PTHREAD) ./
+
+libs: $(LIBPD) $(PTHREAD)
+
+clean-libs:
+	rm -f $(LIBPD) $(PTHREAD)
+
+else
+
+libs: $(LIBPD)
+
+clean-libs:
+	rm -f $(LIBPD)
+
+endif
+
+##### clean
+
+clean: clean-libs
+	rm -f $(TARGET) *.o
