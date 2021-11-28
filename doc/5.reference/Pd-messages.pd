@@ -157,9 +157,9 @@ you can send to Pd., f 41;
 #X msg 334 636 message;
 #X obj 68 18 cnv 15 242 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Pd:
 10 12 0 14 #e0e0e0 #404040 0;
-#X obj 584 524 cnv 15 420 27 empty empty Messages\ you\ can\ send\ to\ Patch\ windows\ (canvases)
+#X obj 584 524 cnv 15 420 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Patch\\\ windows\\\ (canvases)
 10 12 0 14 #e0e0e0 #404040 0;
-#X obj 584 551 cnv 15 420 27 empty empty (aka\ Dynamic\ patching):
+#X obj 584 551 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
 117 12 0 14 #e0e0e0 #404040 0;
 #N canvas 855 181 786 394 Dynamic-Patching 0;
 #X text 108 127 For reference \, please check the help file of =>,
@@ -208,8 +208,8 @@ r-sym s-sym 16, f 26;
 #X connect 7 0 0 0;
 #X connect 8 0 0 0;
 #X restore 177 253 pd creating-boxes;
-#N canvas 713 136 1113 627 creating-arrays 0;
-#X obj 154 461 s pd-mygraph;
+#N canvas 638 196 1113 627 creating-arrays 0;
+#X obj 171 456 s pd-mygraph;
 #N canvas 319 193 394 307 make-array 0;
 #X restore 330 251 pd make-array;
 #X obj 169 259 s pd-make-array;
@@ -218,20 +218,16 @@ r-sym s-sym 16, f 26;
 expects a graph name \, which is the name of the subpatch you can then
 send messages to., f 65;
 #X text 276 198 <= create graph;
-#X msg 176 432 clear;
+#X msg 193 427 clear;
 #X msg 99 195 vis \$1;
 #X obj 99 166 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 119 164 <= open;
 #X msg 191 228 clear;
-#X text 59 311 Now we use the 'array' message to add an array named
-'array1' \, with 100 points. The data type is a float and the display
-format is '2' (points), f 64;
-#X text 221 430 clears array from 'mygraph';
+#X text 238 425 clears array from 'mygraph';
 #X obj 168 576 s array1;
 #X text 380 531 and now you can send messages to array to set it up
 as well., f 21;
-#X msg 155 396 array array1 10 float;
 #X msg 168 541 style 0 \, color 900 \, width 3;
 #X obj 655 534 ../2.control.examples/15.array;
 #X obj 654 562 ../2.control.examples/16.more.arrays;
@@ -248,7 +244,6 @@ as well., f 21;
 #X msg 627 134 obj 100 100 pd another-graph;
 #X msg 591 344 coords 0 1 10 -1 200 100 2 0 0, f 17;
 #X msg 640 461 clear;
-#X msg 619 428 array array1 10 float;
 #X obj 618 490 s pd-another-graph;
 #X text 685 459 clears array from 'pd-another-graph';
 #X text 589 239 We can now set the window's properties with the 'coords'
@@ -257,7 +252,7 @@ message \, which is also useful for general 'Graph on Parent' configuration.
 #X text 736 335 Arguments are \; - bounds: xmin \, ymax \, xmax \,
 ymin \; - size: xsize \, ysize \; - gop flag (0: no gop \, 1: gop \,
 2: gop+hide) \; - margin: xmargin \, ymargin.;
-#X text 781 428 finally create the array.;
+#X text 791 428 finally create the array.;
 #X text 562 19 We can also restart from scratch and start by creating
 a subpatch with the 'pd' object. This gives us the option to place
 the subpatch/graph wherever we want. Note that when we create a subpatch
@@ -273,19 +268,24 @@ on 'parent' selection., f 65;
 #X text 649 285 Beware: 'coords' is not a public API message \, there's
 risk its behaviour may change in future Pd versions., f 53;
 #X msg 657 167 clear;
+#X msg 619 428 array array1 10 float 1;
+#X msg 172 389 array array1 10 float;
+#X text 60 330 Now we use the 'array' message to add an array named
+'array1' \, with 10 points. We also need to specify the data (always
+a float)., f 66;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
 #X connect 7 0 2 0;
 #X connect 8 0 7 0;
 #X connect 10 0 2 0;
-#X connect 15 0 0 0;
-#X connect 16 0 13 0;
-#X connect 25 0 22 0;
-#X connect 29 0 22 0;
-#X connect 30 0 23 0;
-#X connect 31 0 33 0;
-#X connect 32 0 33 0;
-#X connect 42 0 22 0;
+#X connect 14 0 12 0;
+#X connect 23 0 20 0;
+#X connect 27 0 20 0;
+#X connect 28 0 21 0;
+#X connect 29 0 30 0;
+#X connect 39 0 20 0;
+#X connect 40 0 30 0;
+#X connect 41 0 0 0;
 #X restore 551 275 pd creating-arrays;
 #X text 526 27 You can create objects and also connect them to create
 patches. See subpatch below:, f 28;
