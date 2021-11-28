@@ -33,8 +33,8 @@ else
     CC ?= gcc
     SOLIB_EXT = dll
     SOLIB_PREFIX =
-    LIBPD_IMPLIB = libs/libpd.lib
-    LIBPD_DEF = libs/libpd.def
+    LIBPD_IMPLIB = libpd.lib
+    LIBPD_DEF = libpd.def
     PLATFORM_CFLAGS = -DWINVER=0x502 -DWIN32 -D_WIN32 -DPD_INTERNAL
     MINGW_LDFLAGS = -shared -Wl,--export-all-symbols -lws2_32 -lkernel32 \
                     -static-libgcc
@@ -119,4 +119,4 @@ $(LIBPD_STATIC): $(OBJ)
 	ar rcs $(LIBPD_STATIC) $^
 
 clean:
-	-rm -f *.o $(LIBPD) $(LIBPD_STATIC)
+	-rm -f *.o $(LIBPD) $(LIBPD_STATIC) $(LIBPD_IMPLIB) $(LIBPD_DEF)
