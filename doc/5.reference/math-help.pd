@@ -1,11 +1,11 @@
 #N canvas 746 47 599 729 12;
-#X floatatom 204 194 4 0 0 0 - - - 0;
-#X floatatom 167 285 8 0 0 0 - - - 0;
-#X floatatom 167 194 4 0 0 0 - - - 0;
+#X floatatom 184 194 4 0 0 0 - - - 0;
+#X floatatom 147 285 8 0 0 0 - - - 0;
+#X floatatom 147 194 4 0 0 0 - - - 0;
 #X floatatom 128 472 6 0 0 0 - - - 0;
 #X floatatom 339 540 7 0 0 0 - - - 0;
-#X floatatom 88 285 8 0 0 0 - - - 0;
-#X floatatom 88 194 4 0 0 0 - - - 0;
+#X floatatom 68 285 8 0 0 0 - - - 0;
+#X floatatom 68 194 4 0 0 0 - - - 0;
 #X floatatom 420 186 8 0 0 0 - - - 0;
 #X floatatom 351 186 8 0 0 0 - - - 0;
 #X obj 282 158 sin;
@@ -16,13 +16,10 @@
 #X obj 351 158 cos;
 #X obj 420 158 tan;
 #X obj 199 503 sqrt;
-#X obj 88 241 atan;
+#X obj 68 241 atan;
 #X obj 265 503 exp;
 #X obj 128 503 abs;
-#X obj 204 222 t b f;
-#X text 266 240 The arc tangent takes two forms. The atan2 version
-takes an (x \, y) pair and gives you an output between -pi and pi.
-, f 33;
+#X obj 184 222 t b f;
 #X floatatom 64 472 6 0 0 0 - - - 0;
 #X obj 64 503 wrap;
 #X text 38 576 see also:;
@@ -44,7 +41,7 @@ takes an (x \, y) pair and gives you an output between -pi and pi.
 #X obj 338 23 exp;
 #X obj 271 23 abs;
 #X obj 235 23 wrap;
-#X obj 167 251 atan2;
+#X obj 147 251 atan2;
 #X floatatom 339 459 5 0 0 0 - - - 0;
 #X floatatom 380 459 5 0 0 0 - - - 0;
 #X obj 380 483 t b f;
@@ -57,7 +54,6 @@ functions take inputs in radians., f 34;
 #X text 81 680 - evaluation expressions, f 25;
 #X text 315 599 - signal versions;
 #X obj 40 627 +;
-#X obj 167 219 f;
 #X text 134 654 (etc) - other binary operators;
 #X text 71 626 (etc) - binary arithmetic operators;
 #X obj 104 654 div;
@@ -81,10 +77,13 @@ signal versions. The "wrap" object wraps the input to a value between
 an argument or the right inlet \, but it defaults to "e". Pow raises
 a number on the left inlet to a numeric power (given by the right inlet
 or argument) - like the signal version \, pow has protection agains
-NaNs (they become 0). Log and pow also take a bang message to evaluate
-the operation with the previously set values., f 77;
+NaNs (they become 0)., f 77;
+#X text 253 222 The arc tangent takes two forms. The atan2 version
+takes an (x \, y) pair and gives you an output between -pi and pi \,
+it also takes a bang message in the left inlet to evaluate the operation
+with the previously set values., f 40;
 #X connect 0 0 20 0;
-#X connect 2 0 55 0;
+#X connect 2 0 42 0;
 #X connect 3 0 19 0;
 #X connect 6 0 17 0;
 #X connect 9 0 11 0;
@@ -95,25 +94,24 @@ the operation with the previously set values., f 77;
 #X connect 13 0 12 0;
 #X connect 14 0 8 0;
 #X connect 15 0 7 0;
-#X connect 16 0 70 0;
+#X connect 16 0 68 0;
 #X connect 17 0 5 0;
-#X connect 18 0 69 0;
-#X connect 19 0 67 0;
-#X connect 20 0 55 0;
-#X connect 20 1 43 1;
-#X connect 22 0 23 0;
-#X connect 23 0 68 0;
-#X connect 43 0 1 0;
-#X connect 44 0 47 0;
+#X connect 18 0 67 0;
+#X connect 19 0 65 0;
+#X connect 20 0 42 0;
+#X connect 20 1 42 1;
+#X connect 21 0 22 0;
+#X connect 22 0 66 0;
+#X connect 42 0 1 0;
+#X connect 43 0 46 0;
+#X connect 44 0 45 0;
 #X connect 45 0 46 0;
-#X connect 46 0 47 0;
-#X connect 46 1 47 1;
-#X connect 47 0 4 0;
-#X connect 55 0 43 0;
-#X connect 60 0 63 0;
-#X connect 61 0 62 0;
-#X connect 62 0 63 0;
-#X connect 62 1 63 1;
-#X connect 63 0 59 0;
-#X connect 65 0 18 0;
-#X connect 66 0 16 0;
+#X connect 45 1 46 1;
+#X connect 46 0 4 0;
+#X connect 58 0 61 0;
+#X connect 59 0 60 0;
+#X connect 60 0 61 0;
+#X connect 60 1 61 1;
+#X connect 61 0 57 0;
+#X connect 63 0 18 0;
+#X connect 64 0 16 0;
