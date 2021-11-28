@@ -1,36 +1,38 @@
-#N canvas 554 66 579 499 12;
-#X msg 51 148 bang;
-#X floatatom 73 394 0 0 0 0 - - -;
-#X floatatom 66 174 0 0 0 0 - - -;
-#X floatatom 105 334 0 0 0 0 - - -;
-#X text 140 336 sets the value;
-#X text 118 365 creation argument initializes the value;
-#X floatatom 455 275 5 0 0 0 - - -;
-#X text 96 149 output the value;
-#X text 96 173 set and output the value;
-#X floatatom 458 348 5 0 0 0 - - -;
-#X obj 458 303 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#N canvas 554 66 579 522 12;
+#X msg 51 178 bang;
+#X floatatom 73 424 0 0 0 0 - - -;
+#X floatatom 66 204 0 0 0 0 - - -;
+#X floatatom 105 364 0 0 0 0 - - -;
+#X text 140 366 sets the value;
+#X text 118 395 creation argument initializes the value;
+#X floatatom 455 305 5 0 0 0 - - -;
+#X text 96 179 output the value;
+#X text 96 203 set and output the value;
+#X floatatom 458 378 5 0 0 0 - - -;
+#X obj 458 333 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 49 438 see also:;
-#X obj 167 438 value;
-#X obj 214 438 send;
+#X text 49 468 see also:;
+#X obj 167 468 value;
+#X obj 214 468 send;
 #X obj 107 18 int;
-#X obj 73 364 int 6;
-#X msg 93 258 send int-help;
-#X obj 455 251 r int-help;
-#X obj 119 438 float;
-#X msg 76 203 9.6;
-#X msg 86 225 -9.6;
-#X text 126 213 <= non-integers get truncated toward zero;
-#X text 331 437 updated for Pd version 0.48;
-#X obj 458 324 value int-help;
-#X text 200 257 send to a named object such as a;
-#X text 320 273 receive or value:;
-#X text 75 52 The int object stores a number \, initialized by its
+#X obj 73 394 int 6;
+#X msg 93 288 send int-help;
+#X obj 455 281 r int-help;
+#X obj 119 468 float;
+#X msg 76 233 9.6;
+#X msg 86 255 -9.6;
+#X text 126 243 <= non-integers get truncated toward zero;
+#X text 331 467 updated for Pd version 0.48;
+#X obj 458 354 value int-help;
+#X text 200 287 send to a named object such as a;
+#X text 320 303 receive or value:;
+#X text 75 82 The int object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
 by sending it the "bang" message. Sending a number sets a new value
 and outputs it. The output is truncated to an integer a la Max.;
 #X text 149 18 - store an integer;
+#X obj 108 45 i;
+#X text 151 45 - abreviation;
 #X connect 0 0 15 0;
 #X connect 2 0 15 0;
 #X connect 3 0 15 1;

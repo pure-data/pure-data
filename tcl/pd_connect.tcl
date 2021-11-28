@@ -99,6 +99,8 @@ proc ::pd_connect::pd_readsocket {} {
      variable pd_socket
      variable cmdbuf
 
+     after cancel ::pd_connect::nuke_pd
+
      if {[eof $pd_socket]} {
          # if we lose the socket connection, that means pd quit, so we quit
          close $pd_socket
@@ -126,4 +128,35 @@ proc ::pd_connect::pd_readsocket {} {
              }
          }
      }
+}
+
+# wiring to support killing Pd if (1) we started it from this GUI and
+# (2) it appears to be hung (no response to "verifyquit" after 2 seconds).
+# This should prevent the GUI from hanging on "quit" in cases where the
+# pd subprocess is hung.  This may need to be refined if Pd might take more
+# than 2 seconds to service closebangs, and if patches are provided a way to
+# insist that they be closed before PD can quit.  But at the moment Pd just
+# bails with all patches left open so this isn't a problem.
+
+set connect_pid ""
+
+proc ::pd_connect::set_pid {pid} {
+    set ::connect_pid $pid
+}
+
+# this is called if Pd doesn't respond to a request to quit.
+proc ::pd_connect::nuke_pd {} {
+    if {$::connect_pid ne ""} {
+        if {$::windowingsystem eq "win32"} {
+            exec taskkill /pid $::connect_pid
+        } else {
+            exec kill $::connect_pid
+        }
+    }
+}
+
+proc ::pd_connect::menu_quit {} {
+    pdsend "pd verifyquit"
+    # schedule nuke_pd - but it gets cancelled if Pd responds to verifyquit.
+    after 2000 ::pd_connect::nuke_pd
 }

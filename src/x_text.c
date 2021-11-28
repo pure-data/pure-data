@@ -21,7 +21,7 @@ static t_class *text_define_class;
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -106,9 +106,9 @@ static void textbuf_open(t_textbuf *x)
 
 static void textbuf_close(t_textbuf *x)
 {
-    sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
     if (x->b_guiconnect)
     {
+        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -477,6 +477,9 @@ equal:
  */
 #if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #define STUPID_SORT
+#endif
+
+#ifdef STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2)
 {
@@ -833,6 +836,8 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
                 startfield, nfield);
+        else if (nfield < 0)
+            pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
             ATOMS_ALLOCA(outv, nfield);
@@ -1661,7 +1666,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                 SETSYMBOL(outvec+i, s);
             else
             {
-                error("$%s: not enough arguments supplied",
+                pd_error(0, "$%s: not enough arguments supplied",
                     ap->a_w.w_symbol->s_name);
                 SETSYMBOL(outvec+i, &s_symbol);
             }
@@ -1855,7 +1860,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = text_sequence_new(s, argc-1, argv+1);
         else
         {
-            error("list %s: unknown function", str);
+            pd_error(0, "list %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

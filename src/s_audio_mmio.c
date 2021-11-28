@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 
 #include <windows.h>
@@ -23,10 +24,8 @@ static void postflags(void);
 #define NAPORTS 16   /* wini hack for multiple ADDA devices  */
 #define CHANNELS_PER_DEVICE 2
 #define DEFAULTCHANS 2
-#define DEFAULTSRATE 44100
 #define SAMPSIZE 2
 
-int nt_realdacblksize;
 #define DEFREALDACBLKSIZE (4 * DEFDACBLKSIZE) /* larger underlying bufsize */
 
 #define MAXBUFFER 100   /* number of buffers in use at maximum advance */
@@ -38,6 +37,7 @@ static int nt_meters;        /* true if we're metering */
 static t_sample nt_inmax;       /* max input amplitude */
 static t_sample nt_outmax;      /* max output amplitude */
 static int nt_nwavein, nt_nwaveout;     /* number of WAVE devices in and out */
+int nt_blocksize;
 
 typedef struct _sbuf
 {
@@ -69,49 +69,76 @@ static void nt_waveouterror(char *s, int err)
     fprintf(stderr, s, t);
 }
 
-static void wave_prep(t_sbuf *bp, int setdone)
+static void mmio_allocbufs(t_sbuf bp[][MAXBUFFER],
+    int ndevs, int nbufs, int blocksize, int setdone)
 {
-    WAVEHDR *wh;
     short *sp;
-    int i;
-    /*
-     * Allocate and lock memory for the waveform data. The memory
-     * for waveform data must be globally allocated with
-     * GMEM_MOVEABLE and GMEM_SHARE flags.
-     */
+    int i, devno, bufno;
+    for (devno = 0; devno < ndevs; devno++)
+        for (bufno = 0; bufno < nbufs; bufno++)
+    {
+        WAVEHDR *wh;
 
-    if (!(bp->hData =
-        GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
-            (DWORD) (CHANNELS_PER_DEVICE * SAMPSIZE * nt_realdacblksize))))
-                printf("alloc 1 failed\n");
+        /*
+         * Allocate and lock memory for the waveform data. The memory
+         * for waveform data must be globally allocated with
+         * GMEM_MOVEABLE and GMEM_SHARE flags.
+         */
 
-    if (!(bp->lpData =
-        (HPSTR) GlobalLock(bp->hData)))
-            printf("lock 1 failed\n");
+        if (!(bp[devno][bufno].hData =
+            GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
+                (DWORD) (CHANNELS_PER_DEVICE * SAMPSIZE * blocksize))))
+                    fprintf(stderr, "alloc 1 failed\n");
 
-    /*  Allocate and lock memory for the header.  */
+        if (!(bp[devno][bufno].lpData =
+            (HPSTR) GlobalLock(bp[devno][bufno].hData)))
+                printf("lock 1 failed\n");
 
-    if (!(bp->hWaveHdr =
-        GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD) sizeof(WAVEHDR))))
-            printf("alloc 2 failed\n");
+        /*  Allocate and lock memory for the header.  */
 
-    if (!(wh = bp->lpWaveHdr =
-        (WAVEHDR *) GlobalLock(bp->hWaveHdr)))
-            printf("lock 2 failed\n");
+        if (!(bp[devno][bufno].hWaveHdr =
+            GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD) sizeof(WAVEHDR))))
+                printf("alloc 2 failed\n");
 
-    for (i = CHANNELS_PER_DEVICE * nt_realdacblksize,
-        sp = (short *)bp->lpData; i--; )
-            *sp++ = 0;
+        if (!(wh = bp[devno][bufno].lpWaveHdr =
+            (WAVEHDR *) GlobalLock(bp[devno][bufno].hWaveHdr)))
+                printf("lock 2 failed\n");
 
-    wh->lpData = bp->lpData;
-    wh->dwBufferLength = (CHANNELS_PER_DEVICE * SAMPSIZE * nt_realdacblksize);
-    wh->dwFlags = 0;
-    wh->dwLoops = 0L;
-    wh->lpNext = 0;
-    wh->reserved = 0;
-        /* optionally (for writing) set DONE flag as if we had queued them */
-    if (setdone)
-        wh->dwFlags = WHDR_DONE;
+        for (i = CHANNELS_PER_DEVICE * blocksize,
+            sp = (short *)bp[devno][bufno].lpData; i--; )
+                *sp++ = 0;
+
+        wh->lpData = bp[devno][bufno].lpData;
+        wh->dwBufferLength =
+            (CHANNELS_PER_DEVICE * SAMPSIZE * blocksize);
+        wh->dwFlags = 0;
+        wh->dwLoops = 0L;
+        wh->lpNext = 0;
+        wh->reserved = 0;
+            /* optionally (for writing) set DONE flag as if we had queued them */
+        if (setdone)
+            wh->dwFlags = WHDR_DONE;
+    }
+}
+
+static void mmio_freebufs(t_sbuf bp[][MAXBUFFER],
+    int ndevs, int nbufs)
+{
+    short *sp;
+    int i, devno, bufno;
+    for (devno = 0; devno < ndevs; devno++)
+        for (bufno = 0; bufno < nbufs; bufno++)
+    {
+        /* unlock and free memory for the waveform data.  */
+
+        GlobalUnlock(bp[devno][bufno].lpData);
+        GlobalFree(bp[devno][bufno].hData);
+
+        /*  unlock and free memory for the header.  */
+
+        GlobalUnlock(bp[devno][bufno].lpWaveHdr);
+        GlobalFree(bp[devno][bufno].hWaveHdr);
+    }
 }
 
 static UINT nt_whichdac = WAVE_MAPPER, nt_whichadc = WAVE_MAPPER;
@@ -122,9 +149,7 @@ int mmio_do_open_audio(void)
     int i, j;
     UINT mmresult;
     int nad, nda;
-    static int naudioprepped = 0, nindevsprepped = 0, noutdevsprepped = 0;
-    if (sys_verbose)
-        post("%d devices in, %d devices out",
+    logpost(NULL, PD_VERBOSE, "%d devices in, %d devices out",
             nt_nwavein, nt_nwaveout);
 
     form.wf.wFormatTag = WAVE_FORMAT_PCM;
@@ -137,32 +162,10 @@ int mmio_do_open_audio(void)
     if (nt_nwavein <= 1 && nt_nwaveout <= 1)
         nt_noresync();
 
-    if (nindevsprepped < nt_nwavein)
-    {
-        for (i = nindevsprepped; i < nt_nwavein; i++)
-            for (j = 0; j < naudioprepped; j++)
-                wave_prep(&ntsnd_invec[i][j], 0);
-        nindevsprepped = nt_nwavein;
-    }
-    if (noutdevsprepped < nt_nwaveout)
-    {
-        for (i = noutdevsprepped; i < nt_nwaveout; i++)
-            for (j = 0; j < naudioprepped; j++)
-                wave_prep(&ntsnd_outvec[i][j], 1);
-        noutdevsprepped = nt_nwaveout;
-    }
-    if (naudioprepped < nt_naudiobuffer)
-    {
-        for (j = naudioprepped; j < nt_naudiobuffer; j++)
-        {
-            for (i = 0; i < nt_nwavein; i++)
-                wave_prep(&ntsnd_invec[i][j], 0);
-            for (i = 0; i < nt_nwaveout; i++)
-                wave_prep(&ntsnd_outvec[i][j], 1);
-        }
-        naudioprepped = nt_naudiobuffer;
-    }
-    for (nad=0; nad < nt_nwavein; nad++)
+    mmio_allocbufs(ntsnd_invec, nt_nwavein, nt_naudiobuffer, nt_blocksize, 0);
+    mmio_allocbufs(ntsnd_outvec, nt_nwaveout, nt_naudiobuffer, nt_blocksize, 1);
+
+    for (nad = 0; nad < nt_nwavein; nad++)
     {
         /* Open waveform device(s), successively numbered, for input */
 
@@ -170,7 +173,7 @@ int mmio_do_open_audio(void)
                 (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
 
         if (sys_verbose)
-            printf("opened adc device %d with return %d\n",
+            fprintf(stderr, "opened adc device %d with return %d\n",
                 nt_whichadc+nad,mmresult);
 
         if (mmresult != MMSYSERR_NOERROR)
@@ -199,7 +202,8 @@ int mmio_do_open_audio(void)
 
     for (nda = 0; nda < nt_nwaveout; nda++)
     {
-            /* Open a waveform device for output in successive device numbering*/
+        /* Open waveform device(s), successively numbered, for output */
+
         mmresult = waveOutOpen(&ntsnd_outdev[nda], nt_whichdac + nda,
             (WAVEFORMATEX *)(&form), 0L, 0L, CALLBACK_NULL);
 
@@ -222,8 +226,7 @@ void mmio_close_audio(void)
 {
     int errcode;
     int nda, nad;
-    if (sys_verbose)
-        post("closing audio...");
+    logpost(NULL, PD_VERBOSE, "closing audio...");
 
     for (nda=0; nda < nt_nwaveout; nda++) /*if (nt_nwaveout) wini */
     {
@@ -234,7 +237,6 @@ void mmio_close_audio(void)
        if (errcode != MMSYSERR_NOERROR)
            printf("error closing output %d: %d\n",nda , errcode);
     }
-    nt_nwaveout = 0;
 
     for(nad=0; nad < nt_nwavein;nad++) /* if (nt_nwavein) wini */
     {
@@ -245,7 +247,10 @@ void mmio_close_audio(void)
         if (errcode != MMSYSERR_NOERROR)
             printf("error closing input: %d\n", errcode);
     }
-    nt_nwavein = 0;
+    mmio_freebufs(ntsnd_invec, nt_nwavein, nt_naudiobuffer);
+    mmio_freebufs(ntsnd_outvec, nt_nwaveout, nt_naudiobuffer);
+    nt_nwavein = nt_nwaveout = 0;
+    logpost(NULL, PD_VERBOSE, "done closing audio...");
 }
 
 
@@ -280,7 +285,7 @@ static void nt_midisync(void)
     if (initsystime == -1) nt_resetmidisync();
     jittersec = (nt_dacjitterbufsallowed > nt_adcjitterbufsallowed ?
         nt_dacjitterbufsallowed : nt_adcjitterbufsallowed)
-            * nt_realdacblksize / STUFF->st_getsr();
+            * nt_blocksize / STUFF->st_getsr();
     diff = sys_getrealtime() - 0.001 * clock_gettimesince(initsystime);
     if (diff > nt_hibuftime) nt_hibuftime = diff;
     if (diff < nt_hibuftime - jittersec)
@@ -443,7 +448,7 @@ static void nt_resyncaudio(void)
                     outwavehdr, sizeof(WAVEHDR));
             outwavehdr->dwFlags = 0L;
             memset((char *)(ntsnd_outvec[nda][phase].lpData),
-                0, (CHANNELS_PER_DEVICE * SAMPSIZE * nt_realdacblksize));
+                0, (CHANNELS_PER_DEVICE * SAMPSIZE * nt_blocksize));
             waveOutPrepareHeader(ntsnd_outdev[nda], outwavehdr,
                 sizeof(WAVEHDR));
             mmresult = waveOutWrite(ntsnd_outdev[nda], outwavehdr,
@@ -602,7 +607,7 @@ int mmio_send_dacs(void)
     }
 
     nt_fill = nt_fill + DEFDACBLKSIZE;
-    if (nt_fill == nt_realdacblksize)
+    if (nt_fill == nt_blocksize)
     {
         nt_fill = 0;
 
@@ -696,12 +701,13 @@ int mmio_open_audio(int naudioindev, int *audioindev,
 {
     int nbuf;
 
-    nt_realdacblksize = (blocksize ? blocksize : DEFREALDACBLKSIZE);
-    nbuf = sys_advance_samples/nt_realdacblksize;
+    logpost(NULL, PD_VERBOSE, "opening audio...");
+    nt_blocksize = (blocksize ? blocksize : DEFREALDACBLKSIZE);
+    nbuf = (double)sys_schedadvance / 1000000. * rate / nt_blocksize;
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
-            (int)(MAXBUFFER * ((nt_realdacblksize * 1000.)/44100.)));
+            (int)(MAXBUFFER * ((nt_blocksize * 1000.)/44100.)));
         nbuf = MAXBUFFER;
     }
     else if (nbuf < 4) nbuf = 4;
@@ -721,6 +727,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     if (naudiooutdev > 1 || naudioindev > 1)
  post("separate audio device choice not supported; using sequential devices.");
     return (mmio_do_open_audio());
+    logpost(NULL, PD_VERBOSE, "done opening audio...");
 }
 
 
@@ -764,6 +771,7 @@ void mmio_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize)
 {
     int  wRtn, ndev, i;
+    char utf8device[MAXPDSTRING];
 
     *canmulti = 2;  /* supports multiple devices */
     ndev = waveInGetNumDevs();
@@ -774,9 +782,11 @@ void mmio_getdevs(char *indevlist, int *nindevs,
     {
         WAVEINCAPS wicap;
         wRtn = waveInGetDevCaps(i, (LPWAVEINCAPS) &wicap, sizeof(wicap));
+        if (!wRtn)
+            u8_nativetoutf8(utf8device, MAXPDSTRING, wicap.szPname, -1);
         _snprintf(indevlist + i * devdescsize, devdescsize, "%s",
-            (wRtn ? "???" : wicap.szPname));
-        outdevlist[(i+1) * devdescsize - 1] = 0;
+            (wRtn ? "???" : utf8device));
+        indevlist[(i+1) * devdescsize - 1] = 0;
     }
 
     ndev = waveOutGetNumDevs();
@@ -787,8 +797,10 @@ void mmio_getdevs(char *indevlist, int *nindevs,
     {
         WAVEOUTCAPS wocap;
         wRtn = waveOutGetDevCaps(i, (LPWAVEOUTCAPS) &wocap, sizeof(wocap));
+        if (!wRtn)
+            u8_nativetoutf8(utf8device, MAXPDSTRING, wocap.szPname, -1);
         _snprintf(outdevlist + i * devdescsize,  devdescsize, "%s",
-            (wRtn ? "???" : wocap.szPname));
+            (wRtn ? "???" : utf8device));
         outdevlist[(i+1) * devdescsize - 1] = 0;
     }
 }

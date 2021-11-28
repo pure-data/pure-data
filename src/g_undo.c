@@ -94,7 +94,7 @@ int canvas_undo_objectstate(t_canvas *cnv, void *z, int action) {
         t_freebytes(buf, sizeof(*buf));
         break;
     case UNDO_REDO:
-        bbuf = buf->u_redo;
+        bbuf = buf->u_redo;     /* falls through */
     case UNDO_UNDO:
         if(x)
             pd_typedmess(x, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
@@ -247,7 +247,7 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
     case UNDO_INIT:         if (UNDO_FREE == action) return 1;/* FALLS THROUGH */  //init
     default:
-        error("%s: unsupported undo command %d", funname, udo->type);
+        pd_error(0, "%s: unsupported undo command %d", funname, udo->type);
     }
     return 0;
 }

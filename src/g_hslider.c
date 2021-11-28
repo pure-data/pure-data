@@ -240,7 +240,7 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_val, x->x_steady);
+                x->x_gui.x_isa.x_loadinit?x->x_val:0, x->x_steady);
     binbuf_addv(b, ";");
 }
 
@@ -404,9 +404,12 @@ static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
-static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
+static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     int old = x->x_val;
+    if (up != 0)
+        return;
 
     if(x->x_gui.x_fsf.x_finemoved)
         x->x_pos += (int)dx;
@@ -434,10 +437,11 @@ static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
 }
 
 static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
-                          t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
+    t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
-        x->x_val = (int)(100.0 * (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)));
+        x->x_val = (int)(100.0 * (xpos -
+            text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)));
     if(x->x_val > (100*x->x_gui.x_w - 100))
         x->x_val = 100*x->x_gui.x_w - 100;
     if(x->x_val < 0)
@@ -446,12 +450,12 @@ static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
     x->x_pos = x->x_val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     hslider_bang(x);
-    glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g, (t_glistmotionfn)hslider_motion,
-               0, xpos, ypos);
+    glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
+        (t_glistmotionfn)hslider_motion, 0, xpos, ypos);
 }
 
 static int hslider_newclick(t_gobj *z, struct _glist *glist,
-                            int xpix, int ypix, int shift, int alt, int dbl, int doit)
+    int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_hslider* x = (t_hslider *)z;
 
@@ -649,7 +653,7 @@ void g_hslider_setup(void)
     class_addmethod(hslider_class, (t_method)hslider_click,
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(hslider_class, (t_method)hslider_motion,
-        gensym("motion"), A_FLOAT, A_FLOAT, 0);
+        gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(hslider_class, (t_method)hslider_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(hslider_class, (t_method)hslider_loadbang,

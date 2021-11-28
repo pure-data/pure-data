@@ -243,7 +243,7 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 
     if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_addmessage: out of space");
+        pd_error(0, "binbuf_addmessage: out of space");
         return;
     }
 #if 0
@@ -268,7 +268,7 @@ void binbuf_addv(t_binbuf *x, const char *fmt, ...)
     {
         if (nargs >= MAXADDMESSV)
         {
-            error("binbuf_addmessv: only %d allowed", MAXADDMESSV);
+            pd_error(0, "binbuf_addmessv: only %d allowed", MAXADDMESSV);
             break;
         }
         switch(*fp++)
@@ -357,7 +357,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 
     if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_restore: out of space");
+        pd_error(0, "binbuf_restore: out of space");
         return;
     }
 
@@ -386,7 +386,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                             slashed = 1;
                         else
                         {
-                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                            if (*sp2 == '$' && sp2[1] >= '0' && sp2[1] <= '9')
                                 dollar = 1;
                             *sp1++ = *sp2;
                             slashed = 0;
@@ -596,7 +596,7 @@ done:
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -877,7 +877,7 @@ int binbuf_read_via_canvas(t_binbuf *b, const char *filename,
     if ((filedesc = canvas_open(canvas, filename, "",
         buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
-        error("%s: can't open", filename);
+        pd_error(0, "%s: can't open", filename);
         return (1);
     }
     else close (filedesc);
@@ -895,7 +895,7 @@ int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     if ((filedesc = open_via_path(
         dirname, filename, "", buf, &bufptr, MAXPDSTRING, 0)) < 0)
     {
-        error("%s: can't open", filename);
+        pd_error(0, "%s: can't open", filename);
         return (1);
     }
     else close (filedesc);
@@ -1053,7 +1053,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                 {
                     if (stackdepth >= MAXSTACK)
                     {
-                        error("stack depth exceeded: too many embedded patches");
+                        pd_error(0, "stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1263,7 +1263,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                     t_float x, y;
                     if (stackdepth >= MAXSTACK)
                     {
-                        error("stack depth exceeded: too many embedded patches");
+                        pd_error(0, "stack depth exceeded: too many embedded patches");
                         return (newb);
                     }
                     stack[stackdepth] = nobj;
@@ -1479,7 +1479,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
         /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
     if (binbuf_read(b, name->s_name, dir->s_name, 0))
-        error("%s: read failed; %s", name->s_name, strerror(errno));
+        pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
     else
     {
             /* save bindings of symbols #N, #A (and restore afterward) */

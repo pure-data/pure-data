@@ -1,97 +1,52 @@
-#N canvas 571 120 694 592 12;
-#X floatatom 122 503 0 0 0 0 - - -;
-#N canvas 159 26 495 270 output 0;
-#X obj 414 196 t b;
-#X obj 414 134 f;
-#X obj 414 73 inlet;
-#X text 421 36 mute;
-#X obj 414 227 f;
-#X msg 521 218 0;
-#X msg 414 104 bang;
-#X obj 414 166 moses 1;
-#X obj 521 187 t b f;
-#X obj 486 143 moses 1;
-#X obj 102 181 dbtorms;
-#X obj 486 113 r master-lvl;
-#X obj 102 52 r master-lvl;
-#X obj 414 257 s master-lvl;
-#X obj 26 222 inlet~;
-#X obj 244 50 inlet;
-#X text 244 22 level;
-#X obj 244 122 s master-lvl;
-#X msg 118 80 set \$1;
-#X obj 118 109 outlet;
-#X msg 262 78 \; pd dsp 1;
-#X obj 102 238 line~;
-#X obj 26 259 *~;
-#X obj 26 295 dac~;
-#X obj 102 210 pack 0 50;
-#X text 24 195 audio;
-#X text 114 135 show level;
-#X connect 0 0 4 0;
-#X connect 1 0 7 0;
-#X connect 2 0 6 0;
-#X connect 4 0 13 0;
-#X connect 5 0 13 0;
-#X connect 6 0 1 0;
-#X connect 7 0 0 0;
-#X connect 7 1 8 0;
-#X connect 8 0 5 0;
-#X connect 9 1 4 1;
-#X connect 10 0 24 0;
-#X connect 11 0 1 1;
-#X connect 11 0 9 0;
-#X connect 12 0 10 0;
-#X connect 12 0 18 0;
-#X connect 14 0 22 0;
-#X connect 15 0 17 0;
-#X connect 15 0 20 0;
-#X connect 18 0 19 0;
-#X connect 21 0 22 1;
-#X connect 22 0 23 0;
-#X connect 22 0 23 1;
-#X connect 24 0 21 0;
-#X restore 92 529 pd output;
-#X msg 152 503 MUTE;
-#X floatatom 92 309 4 0 0 0 - - -;
-#X obj 92 339 sig~ 100;
-#X obj 394 271 table table1;
-#X obj 493 272 table table2;
-#X msg 335 311 \; table1 sinesum 512 0.5 0.5 0.5 0.5 \; table2 cosinesum
-512 0 1;
-#X text 425 529 Updated for Pd version 0.33;
-#X obj 58 17 tabosc4~;
-#X msg 112 390 set table1;
-#X obj 92 466 tabosc4~ table1, f 18;
-#X msg 122 416 set table2;
-#X text 51 169 For good results use 512 points for up to about 15 partials
-\, or 32*npartials (rounded up to a power of 2) for more than 15,
-f 61;
-#X floatatom 215 435 4 0 0 0 - - -;
-#X text 133 301 signal input for frequency (Hz.), f 17;
-#X text 197 391 message to switch tables;
-#X text 255 435 inlet to reset phase;
-#X text 226 467 creation argument initializes table;
-#X text 51 54 tabosc4~ is a traditional computer music style wavetable
+#N canvas 754 81 717 690 12;
+#X floatatom 81 309 4 0 0 0 - - - 0;
+#X obj 81 339 sig~ 100;
+#X text 483 540 Updated for Pd version 0.33;
+#X obj 70 21 tabosc4~;
+#X text 186 391 message to switch tables;
+#X text 43 60 tabosc4~ is a traditional computer music style wavetable
 lookup oscillator using 4-point polynomial interpolation. The table
 should have a power of two points plus three "guard points" \, one
 at the beginning and two at the end \, which should be wraparound copies
 of the last point and the first two points \, respectively. The "sinesum"
 and "cosinesum" methods for arrays do this automatically for you if
-you just want to specify partial strengths., f 68;
-#X text 128 18 - 4-point interpolating oscillator;
-#X text 191 502 <= volume in dB;
-#X text 414 381 click above \, start DSP \, and turn output volume
-up to hear this, f 33;
-#X text 52 210 Don't send new "sinesum" messages to tables while you're
-running - instead \, use "set" messages to switch between tables.,
-f 64;
-#X connect 0 0 1 1;
-#X connect 1 0 0 0;
-#X connect 2 0 1 2;
-#X connect 3 0 4 0;
-#X connect 4 0 11 0;
-#X connect 10 0 11 0;
-#X connect 11 0 1 0;
-#X connect 12 0 11 0;
-#X connect 14 0 11 1;
+you just want to specify partial strengths., f 77;
+#X text 140 22 - 4-point interpolating oscillator;
+#X obj 285 278 loadbang;
+#X obj 81 523 output~;
+#X text 195 544 see also:;
+#X obj 278 544 osc~;
+#X msg 139 444 0;
+#X msg 176 444 0.5;
+#X text 209 446 <= resets phase;
+#X obj 322 544 phasor~;
+#X obj 388 544 tabread4~;
+#X text 43 152 For good results use 512 points for up to about 15 partials
+\, or 32*npartials (rounded up to a power of 2) for more than 15 partials.
+Don't send new "sinesum" messages to tables while you're running -
+instead \, use "set" messages to switch between tables., f 77;
+#X text 43 214 The frequency input can be either a float or a signal.
+The right inlet resets the phase with values from 0 to 1 (where '1'
+is the same as '0' and '0.5' is half the cycle)., f 77;
+#X text 200 476 creation argument initializes the table name;
+#X text 120 309 frequency (Hz.);
+#X obj 364 278 table wave1;
+#X obj 463 278 table wave2;
+#X msg 285 311 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
+512 0 1;
+#X obj 81 476 tabosc4~ wave1;
+#X msg 101 384 set wave1;
+#X msg 111 410 set wave2;
+#X obj 416 611 ../2.control.examples/15.array;
+#X obj 416 634 ../2.control.examples/16.more.arrays;
+#X text 37 615 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files to the right ====>, f 52;
+#X connect 0 0 1 0;
+#X connect 1 0 23 0;
+#X connect 7 0 22 0;
+#X connect 11 0 23 1;
+#X connect 12 0 23 1;
+#X connect 23 0 8 0;
+#X connect 23 0 8 1;
+#X connect 24 0 23 0;
+#X connect 25 0 23 0;

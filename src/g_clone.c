@@ -7,7 +7,7 @@
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -196,13 +196,13 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     typedmess(&pd_objectmaker, s, argc, argv);
     if (pd_this->pd_newest == 0)
     {
-        error("clone: can't create subpatch '%s'",
+        pd_error(0, "clone: can't create subpatch '%s'",
             s->s_name);
         return (0);
     }
     if (*pd_this->pd_newest != canvas_class)
     {
-        error("clone: can't clone '%s' because it's not an abstraction",
+        pd_error(0, "clone: can't clone '%s' because it's not an abstraction",
             s->s_name);
         pd_free(pd_this->pd_newest);
         pd_this->pd_newest = 0;
@@ -442,7 +442,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         canvas_vis(x->x_vec[voicetovis].c_gl, 1);
     return (x);
 usage:
-    error("usage: clone [-s starting-number] <number> <name> [arguments]");
+    pd_error(0, "usage: clone [-s starting-number] <number> <name> [arguments]");
 fail:
     freebytes(x, sizeof(t_clone));
     canvas_resume_dsp(dspstate);

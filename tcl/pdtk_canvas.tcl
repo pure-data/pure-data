@@ -4,6 +4,12 @@ package provide pdtk_canvas 0.1
 package require pd_bindings
 
 namespace eval ::pdtk_canvas:: {
+
+    # the untitled name prefix pd checks for using a macro in g_canvas.h,
+    # a saveas panel is shown when saving a file with this name
+    variable untitled_name "PDUNTITLED"
+    variable untitled_len 10
+
     namespace export pdtk_canvas_popup
     namespace export pdtk_canvas_editmode
     namespace export pdtk_canvas_getscroll
@@ -50,7 +56,7 @@ if {$::tcl_version < 8.5 || \
         }
         if {$h > $height} {
             # 30 for window framing
-            set h [expr $height - $::menubarsize - $::windowframey]
+            set h [expr $height - $::menubarsize]
             set y $::menubarsize
         }
 
@@ -71,17 +77,15 @@ if {$::tcl_version < 8.5 || \
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
-    ::pdwindow::configure_window_offset
-
     # read back the current geometry +posx+posy into variables
-    scan $geometry {%[+]%d%[+]%d} - x - y
-    set xywh [pdtk_canvas_wrap_window \
-        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
-    set x [lindex $xywh 0]
-    set y [lindex $xywh 1]
-    set w [lindex $xywh 2]
-    set h [lindex $xywh 3]
-    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
+    set w $width
+    set h $height
+    if { "" != ${geometry} } {
+        scan $geometry {%[+]%d%[+]%d} - x - y
+        foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
+        set geometry +${x}+${y}
+    }
+    return [list ${w} ${h} ${geometry}]
 }
 
 
@@ -89,10 +93,7 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
-    set l [pdtk_canvas_place_window $width $height $geometry]
-    set width [lindex $l 0]
-    set height [lindex $l 1]
-    set geometry [lindex $l 2]
+    foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
 
@@ -110,7 +111,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # started_loading_file proc.  Perhaps this doesn't make sense tho
     event generate $mytoplevel <<Loading>>
 
-    wm geometry $mytoplevel $geometry
+    if { "" != ${geometry} } {
+        wm geometry $mytoplevel $geometry
+    }
     wm minsize $mytoplevel $::canvas_minwidth $::canvas_minheight
 
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -155,9 +158,10 @@ proc pdtk_canvas_raise {mytoplevel} {
     focus $mycanvas
 }
 
-proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
+proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     if { ! [file isdirectory $initialdir]} {set initialdir $::filenewdir}
     set filename [tk_getSaveFile -initialdir $initialdir \
+                      -initialfile [::pdtk_canvas::cleanname "$initialfile"] \
                       -defaultextension .pd -filetypes $::filetypes]
     if {$filename eq ""} return; # they clicked cancel
 
@@ -176,8 +180,8 @@ proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
     }
     set dirname [file dirname $filename]
     set basename [file tail $filename]
-    pdsend "$name savetofile [enquote_path $basename] [enquote_path $dirname] \
- $destroyflag"
+    pdsend "$mytoplevel savetofile [enquote_path $basename] [enquote_path \
+         $dirname] $destroyflag"
     set ::filenewdir $dirname
     # add to recentfiles
     ::pd_guiprefs::update_recentfiles $filename
@@ -409,9 +413,10 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
     }
 }
 
-# receive information for setting the info the the title bar of the window
+# receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
+    set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
     if {$::windowingsystem eq "aqua"} {
@@ -426,5 +431,38 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
     } else {
         if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
         wm title $mytoplevel "$name$dirtychar$arguments - $path"
+    }
+}
+
+#------------------------------------------------------------------------------#
+# utils
+
+# provide a clean filename to avoid saving files with the untitled name prefix
+proc ::pdtk_canvas::cleanname {name} {
+    variable untitled_name
+    variable untitled_len
+    if {[string compare -length $untitled_len "$name" "$untitled_name"] == 0} {
+        # replace untitled prefix with a display name
+        # TODO localize "Untitled" & make sure translations do not contain spaces
+        return [string replace "$name" 0 [expr $untitled_len - 1] "Untitled"]
+    }
+    return $name
+}
+
+set enable_cords_to_foreground false
+
+proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
+    global enable_cords_to_foreground
+    if {$enable_cords_to_foreground eq "true"} {
+        set col black
+        if { $state == 0 } {
+            set col lightgrey
+        }
+        foreach id [$mytoplevel find withtag {cord && !selected}] {
+            # don't apply backgrouding on selected (blue) lines
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+                $mytoplevel itemconfigure $id -fill $col
+            }
+        }
     }
 }

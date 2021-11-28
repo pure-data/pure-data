@@ -25,7 +25,7 @@
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -298,7 +298,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
             !S_ISDIR(statbuf.st_mode));
         if (!ok)
         {
-            if (sys_verbose) post("tried %s; stat failed or directory",
+            logpost(NULL, PD_VERBOSE, "tried %s; stat failed or directory",
                 dirresult);
             close (fd);
             fd = -1;
@@ -307,7 +307,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
 #endif
         {
             char *slash;
-            if (sys_verbose) post("tried %s and succeeded", dirresult);
+            logpost(NULL, PD_VERBOSE, "tried %s and succeeded", dirresult);
             sys_unbashfilename(dirresult, dirresult);
             slash = strrchr(dirresult, '/');
             if (slash)
@@ -322,7 +322,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     }
     else
     {
-        if (sys_verbose) post("tried %s and failed", dirresult);
+        logpost(NULL, PD_VERBOSE, "tried %s and failed", dirresult);
     }
     return (-1);
 }
@@ -530,316 +530,3 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-int sys_argparse(int argc, const char **argv);
-static int string2args(const char * cmd, int * retArgc, const char *** retArgv);
-
-void sys_doflags(void)
-{
-    int rcargc=0;
-    const char**rcargv = NULL;
-    int len;
-    int rcode = 0;
-    if (!sys_flags)
-        sys_flags = &s_;
-    len = (int)strlen(sys_flags->s_name);
-    if (len > MAXPDSTRING)
-    {
-        error("flags: %s: too long", sys_flags->s_name);
-        return;
-    }
-    rcode = string2args(sys_flags->s_name, &rcargc, &rcargv);
-    if(rcode < 0) {
-        error("error#%d while parsing flags", rcode);
-        return;
-    }
-
-    if (sys_argparse(rcargc, rcargv))
-        error("error parsing startup arguments");
-
-    for(len=0; len<rcargc; len++)
-        free((void*)rcargv[len]);
-    free(rcargv);
-}
-
-/* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
-    dollars, and semis down here. */
-t_symbol *sys_decodedialog(t_symbol *s)
-{
-    char buf[MAXPDSTRING];
-    const char *sp = s->s_name;
-    int i;
-    if (*sp != '+')
-        bug("sys_decodedialog: %s", sp);
-    else sp++;
-    for (i = 0; i < MAXPDSTRING-1; i++, sp++)
-    {
-        if (!sp[0])
-            break;
-        if (sp[0] == '+')
-        {
-            if (sp[1] == '_')
-                buf[i] = ' ', sp++;
-            else if (sp[1] == '+')
-                buf[i] = '+', sp++;
-            else if (sp[1] == 'c')
-                buf[i] = ',', sp++;
-            else if (sp[1] == 's')
-                buf[i] = ';', sp++;
-            else if (sp[1] == 'd')
-                buf[i] = '$', sp++;
-            else buf[i] = sp[0];
-        }
-        else buf[i] = sp[0];
-    }
-    buf[i] = 0;
-    return (gensym(buf));
-}
-
-    /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
-}
-
-    /* send the temp paths from the commandline to pd-gui */
-void sys_set_temppath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
-}
-
-    /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath(void)
-{
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
-}
-
-    /* start a search path dialog window */
-void glob_start_path_dialog(t_pd *dummy)
-{
-     char buf[MAXPDSTRING];
-
-    sys_set_searchpath();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
-    gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
-}
-
-    /* new values from dialog window */
-void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
-{
-    int i;
-    namelist_free(STUFF->st_searchpath);
-    STUFF->st_searchpath = 0;
-    sys_usestdpath = atom_getfloatarg(0, argc, argv);
-    sys_verbose = atom_getfloatarg(1, argc, argv);
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, s->s_name);
-    }
-}
-
-    /* add one item to search path (intended for use by Deken plugin).
-    if "saveit" is > 0, this also saves all settings,
-    if "saveit" is < 0, the path is only added temporarily */
-void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
-{
-    int saveflag = (int)saveit;
-    t_symbol *s = sys_decodedialog(path);
-    if (*s->s_name)
-    {
-        if (saveflag < 0)
-            STUFF->st_temppath =
-                namelist_append_files(STUFF->st_temppath, s->s_name);
-        else
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, s->s_name);
-        if (saveit > 0)
-            sys_savepreferences(0);
-    }
-}
-
-    /* set the global list vars for startup libraries and flags */
-void sys_set_startup(void)
-{
-    int i;
-    t_namelist *nl;
-    char obuf[MAXPDSTRING];
-
-    sys_vgui("set ::startup_flags [subst -nocommands {%s}]\n",
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    sys_gui("set ::startup_libraries {}\n");
-    for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
-}
-
-    /* start a startup dialog window */
-void glob_start_startup_dialog(t_pd *dummy)
-{
-    char buf[MAXPDSTRING];
-    char obuf[MAXPDSTRING];
-    sys_set_startup();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
-}
-
-    /* new values from dialog window */
-void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
-{
-    int i;
-    namelist_free(STUFF->st_externlist);
-    STUFF->st_externlist = 0;
-    sys_defeatrt = atom_getfloatarg(0, argc, argv);
-    sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for (i = 0; i < argc-2; i++)
-    {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
-        if (*s->s_name)
-            STUFF->st_externlist =
-                namelist_append_files(STUFF->st_externlist, s->s_name);
-    }
-}
-
-
-/*
- * the following string2args function is based on from sash-3.8 (the StandAlone SHell)
- * Copyright (c) 2014 by David I. Bell
- * Permission is granted to use, distribute, or modify this source,
- * provided that this copyright notice remains intact.
- */
-#define	isBlank(ch)	(((ch) == ' ') || ((ch) == '\t'))
-int string2args(const char * cmd, int * retArgc, const char *** retArgv)
-{
-    int errCode = 1;
-    int len = strlen(cmd), argCount = 0;
-    char strings[MAXPDSTRING], *cp;
-    const char **argTable = 0, **newArgTable;
-
-    if(retArgc) *retArgc = 0;
-    if(retArgv) *retArgv = NULL;
-
-        /*
-         * Copy the command string into a buffer that we can modify,
-         * reallocating it if necessary.
-         */
-    if(len >= MAXPDSTRING) {
-        errCode = 1; goto ouch;
-    }
-    memset(strings, 0, MAXPDSTRING);
-    memcpy(strings, cmd, len);
-    cp = strings;
-
-        /* Keep parsing the command string as long as there are any arguments left. */
-    while (*cp) {
-        const char *cpIn = cp;
-        char *cpOut = cp, *argument;
-        int quote = '\0';
-
-            /*
-             * Loop over the string collecting the next argument while
-             * looking for quoted strings or quoted characters.
-             */
-        while (*cp) {
-            int ch = *cp++;
-
-                /* If we are not in a quote and we see a blank then this argument is done. */
-            if (isBlank(ch) && (quote == '\0'))
-                break;
-
-                /* If we see a backslash then accept the next character no matter what it is. */
-            if (ch == '\\') {
-                ch = *cp++;
-                if (ch == '\0') { /* but only if there is a next char */
-                    errCode = 10; goto ouch;
-                }
-                *cpOut++ = ch;
-                continue;
-            }
-
-                /* If we were in a quote and we saw the same quote character again then the quote is done. */
-            if (ch == quote) {
-                quote = '\0';
-                continue;
-            }
-
-                /* If we weren't in a quote and we see either type of quote character,
-                 * then remember that we are now inside of a quote. */
-            if ((quote == '\0') && ((ch == '\'') || (ch == '"')))  {
-                quote = ch;
-                continue;
-            }
-
-                /* Store the character. */
-            *cpOut++ = ch;
-        }
-
-        if (quote) { /* Unmatched quote character */
-            errCode = 11; goto ouch;
-        }
-
-            /*
-             * Null terminate the argument if it had shrunk, and then
-             * skip over all blanks to the next argument, nulling them
-             * out too.
-             */
-        if (cp != cpOut)
-            *cpOut = '\0';
-        while (isBlank(*cp))
-            *cp++ = '\0';
-
-        if (!(argument = calloc(1+cpOut-cpIn, 1))) {
-            errCode = 22; goto ouch;
-        }
-        memcpy(argument, cpIn, cpOut-cpIn);
-
-            /* Now reallocate the argument table to hold the argument, add add it. */
-        if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
-            free(argument);
-            errCode= 23; goto ouch;
-        } else argTable = newArgTable;
-
-        argTable[argCount] = argument;
-
-        argCount++;
-    }
-
-        /*
-         * Null terminate the argument list and return it.
-         */
-    if (!(newArgTable = (const char **) realloc(argTable, (sizeof(const char *) * (argCount + 1))))) {
-        errCode = 23; goto ouch;
-    } else argTable = newArgTable;
-
-    argTable[argCount] = NULL;
-
-    if(retArgc) *retArgc = argCount;
-    if(retArgv)
-        *retArgv = argTable;
-    else
-        free(argTable);
-    return argCount;
-
- ouch:
-    free(argTable);
-    return -errCode;
-}

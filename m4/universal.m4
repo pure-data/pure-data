@@ -21,7 +21,7 @@ AC_ARG_ENABLE(universal,
                           ARCHS is a comma-delimited list of architectures for
                           which to build; if ARCHS is omitted, then the package
                           will be built for all architectures supported by the
-                          platform ("ppc,i386,x86_64" for Mac OSX and Darwin); 
+                          platform ("ppc,i386,x86_64,arm64" for macOS & Darwin);
                           if this option is disabled or omitted entirely, then
                           the package will be built only for the target 
                           platform],
@@ -39,7 +39,7 @@ if test "$universal_binary" != no; then
       # Choose a default set of architectures based upon platform.
       case $host in
         *darwin*)
-          TARGET_ARCHS="ppc i386 x86_64"
+          TARGET_ARCHS="ppc i386 x86_64 arm64"
           ;;
         *linux*|*kfreebsd*gnu*)
           TARGET_ARCHS="i386 x86_64"

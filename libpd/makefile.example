@@ -1,0 +1,39 @@
+# detect platform, move libpd dylib to local folder on mac
+UNAME = $(shell uname)
+SOLIB_PREFIX = lib
+
+ifeq ($(UNAME), Darwin) # Mac
+  SOLIB_EXT = dylib
+  PLATFORM = mac
+else
+  ifeq ($(OS), Windows_NT) # Windows, use Mingw
+    SOLIB_EXT = dll
+    PLATFORM = windows
+  else # assume Linux
+    SOLIB_EXT = so
+    PLATFORM = linux
+  endif
+endif
+
+PD_DIR = ..
+LIBPD_DIR = .
+LIBPD = $(LIBPD_DIR)/libpd.$(SOLIB_EXT)
+
+SRC_FILES = test_libpd.c
+TARGET = test_libpd
+
+CFLAGS = -I$(PD_DIR)/src -O3
+
+.PHONY: clean clobber
+
+$(TARGET): ${SRC_FILES:.c=.o} $(LIBPD)
+	gcc -o $(TARGET) ${SRC_FILES:.c=.o} $(LIBPD) $(LDFLAGS)
+	if [ $(PLATFORM) == "mac" ]; then mkdir -p ./libs && cp $(LIBPD) ./libs; fi
+
+clean:
+	rm -f $(TARGET) *.o libpd.so
+
+clobber: clean
+	rm -f $(TARGET)
+	if [ $(PLATFORM) == "mac" ]; then rm -rf ./libs; fi
+	cd $(LIBPD_DIR) && make clobber

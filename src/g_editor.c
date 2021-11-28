@@ -57,108 +57,6 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
-/* ---------------- generic widget behavior ------------------------- */
-
-void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1,
-    int *x2, int *y2)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
-        (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
-    else *x1 = *y1 = 0, *x2 = *y2 = 10;
-}
-
-void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_displacefn)
-        (*x->g_pd->c_wb->w_displacefn)(x, glist, dx, dy);
-}
-
-    /* here we add an extra check whether we're mapped, because some
-       editing moves are carried out on invisible windows (notably, re-creating
-       abstractions when one is saved).  Should any other widget finctions also
-       be doing this?  */
-void gobj_select(t_gobj *x, t_glist *glist, int state)
-{
-    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
-        (*x->g_pd->c_wb->w_selectfn)(x, glist, state);
-}
-
-void gobj_activate(t_gobj *x, t_glist *glist, int state)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_activatefn)
-        (*x->g_pd->c_wb->w_activatefn)(x, glist, state);
-}
-
-void gobj_delete(t_gobj *x, t_glist *glist)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_deletefn)
-        (*x->g_pd->c_wb->w_deletefn)(x, glist);
-}
-
-int gobj_shouldvis(t_gobj *x, struct _glist *glist)
-{
-    t_object *ob;
-    int has_parent = !glist->gl_havewindow && glist->gl_isgraph
-        && glist->gl_owner && !glist->gl_isclone;
-        /* if our parent is a graph, and if that graph itself isn't
-           visible, then we aren't either. */
-    if (has_parent && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
-            return (0);
-        /* if we're graphing-on-parent and the object falls outside the
-           graph rectangle, don't draw it. */
-    if (has_parent && glist->gl_goprect)
-    {
-        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
-            /* for some reason the bounds check on arrays and scalars
-               don't seem to apply here.  Perhaps this was in order to allow
-               arrays to reach outside their containers?  I no longer understand
-               this. */
-        if (pd_class(&x->g_pd) == scalar_class
-            || pd_class(&x->g_pd) == garray_class)
-                return (1);
-        gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
-        if (x1 > x2)
-            m = x1, x1 = x2, x2 = m;
-        if (y1 > y2)
-            m = y1, y1 = y2, y2 = m;
-        gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
-#if 0
-        post("graph %d %d %d %d, %s %d %d %d %d",
-             x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2);
-#endif
-        if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
-            gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
-                return (0);
-    }
-    if ((ob = pd_checkobject(&x->g_pd)))
-    {
-            /* return true if the text box should be drawn.  We don't show text
-               boxes inside graphs---except comments, if we're doing the new
-               (goprect) style. */
-        return (glist->gl_havewindow ||
-            (ob->te_pd != canvas_class &&
-                ob->te_pd->c_wb != &text_widgetbehavior) ||
-            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
-            (glist->gl_goprect && (ob->te_type == T_TEXT)));
-    }
-    else return (1);
-}
-
-void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
-        (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
-}
-
-int gobj_click(t_gobj *x, struct _glist *glist,
-    int xpix, int ypix, int shift, int alt, int dbl, int doit)
-{
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
-        return ((*x->g_pd->c_wb->w_clickfn)(x,
-            glist, xpix, ypix, shift, alt, dbl, doit));
-    else return (0);
-}
-
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
@@ -1934,6 +1832,9 @@ void canvas_destroy_editor(t_glist *x)
     if (x->gl_editor)
     {
         t_rtext *rtext;
+            /* this happens if we had activated an atom box in run mode: */
+        if (x->gl_editor->e_textedfor)
+            rtext_activate(x->gl_editor->e_textedfor, 0);
         while ((rtext = x->gl_editor->e_rtext))
             rtext_free(rtext);
         editor_free(x->gl_editor, x);
@@ -1967,11 +1868,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
             canvas_create_editor(x);
-            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
-                (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                x->gl_edit);
+            if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
+            {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d {} %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    x->gl_edit);
+            } else {
+                sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
+                    (int)(x->gl_screenx2 - x->gl_screenx1),
+                    (int)(x->gl_screeny2 - x->gl_screeny1),
+                    (int)(x->gl_screenx1), (int)(x->gl_screeny1),
+                    x->gl_edit);
+            }
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
             while (c->gl_owner && !c->gl_isclone) {
@@ -2280,9 +2189,10 @@ static void canvas_done_popup(t_canvas *x, t_float which,
 static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     int mod, int doit)
 {
-    t_gobj *y;
+    t_gobj *hitbox;
     int shiftmod, runmode, altmod, doublemod = 0, rightclick;
     int x1=0, y1=0, x2=0, y2=0, clickreturned = 0;
+    t_text *hitobj;
 
     if (!x->gl_editor)
     {
@@ -2300,11 +2210,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         /* if keyboard was grabbed, notify grabber and cancel the grab */
     if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
     {
-        (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, 0);
+        (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, &s_, 0);
         glist_grab(x, 0, 0, 0, 0, 0);
     }
 
-    if (doit && !runmode && xpos == EDITOR->canvas_upx &&
+    if (doit && xpos == EDITOR->canvas_upx &&
         ypos == EDITOR->canvas_upy &&
         sys_getrealtime() - EDITOR->canvas_upclicktime < DCLICKINTERVAL)
             doublemod = 1;
@@ -2326,38 +2236,72 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
 
     if (runmode && !rightclick)
     {
-        for (y = x->gl_list; y; y = y->g_next)
+            /* is a text activated ? */
+        if (x->gl_editor->e_textedfor  && doit)
+        {
+            hitobj = rtext_getowner(x->gl_editor->e_textedfor);
+            if (canvas_hitbox(x, &hitobj->te_g,
+                xpos, ypos, &x1, &y1, &x2, &y2))
+            {
+                rtext_mouse(x->gl_editor->e_textedfor, xpos - x1, ypos - y1,
+                    (shiftmod? RTEXT_SHIFT :
+                        (doublemod ? RTEXT_DBL : RTEXT_DOWN)));
+                    x->gl_editor->e_onmotion = MA_DRAGTEXT;
+                    x->gl_editor->e_xwas = x1;
+                    x->gl_editor->e_ywas = y1;
+            }
+            else
+            {
+                char *buf;
+                int bufsize;
+                rtext_gettext(x->gl_editor->e_textedfor, &buf, &bufsize);
+                text_setto(hitobj, x, buf, bufsize);
+                rtext_activate(x->gl_editor->e_textedfor, 0);
+                pd_bang(&hitobj->te_pd);
+            }
+            return;
+        }
+        for (hitbox = x->gl_list; hitbox; hitbox = hitbox->g_next)
         {
                 /* check if the object wants to be clicked */
-            if (canvas_hitbox(x, y, xpos, ypos, &x1, &y1, &x2, &y2)
-                && (clickreturned = gobj_click(y, x, xpos, ypos,
+            if (canvas_hitbox(x, hitbox, xpos, ypos, &x1, &y1, &x2, &y2)
+                && (clickreturned = gobj_click(hitbox, x, xpos, ypos,
                     shiftmod, ((mod & CTRLMOD) && (!x->gl_edit)) || altmod,
-                        0, doit)))
+                        doublemod, doit)))
                             break;
         }
         if (!doit)
         {
-            if (y)
+            if (hitbox)
                 canvas_setcursor(x, clickreturned);
             else canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
         }
         return;
     }
         /* if not a runmode left click, fall here. */
-    if ((y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2)))
+    hitbox = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2);
+    hitobj = (hitbox ? pd_checkobject(&hitbox->g_pd) : 0);
+        /* if text is activated while we're in locked state, this must
+        be a number box - so if we clicked outside the box, deactivate it.
+        This is a different situation from the "deselect" action below
+        when we're unlocked.  */
+    /* if (doit) post("%d %x %x %x", x->gl_edit, x->gl_editor->e_textedfor,
+        hitobj, (hitobj ? glist_findrtext(x, hitobj) : 0));
+    if (doit && (!x->gl_edit) && x->gl_editor->e_textedfor &&
+        (!hitobj || (glist_findrtext(x, hitobj) != x->gl_editor->e_textedfor)))
+            rtext_activate(x->gl_editor->e_textedfor, 0);   */
+    if (hitbox)
     {
-        t_object *ob;
-            /* check you're in the rectangle */
-        ob = pd_checkobject(&y->g_pd);
+            /* we're in a rectangle */
         if (rightclick)
-            canvas_rightclick(x, xpos, ypos, y);
+            canvas_rightclick(x, xpos, ypos, hitbox);
         else if (shiftmod)
         {
             if (doit)
             {
                 t_rtext *rt;
-                if (ob && (rt = x->gl_editor->e_textedfor) &&
-                    rt == glist_findrtext(x, ob))
+                if (hitobj && (rt = x->gl_editor->e_textedfor) &&
+                    rt == glist_findrtext(x, hitobj))
                 {
                     rtext_mouse(rt, xpos - x1, ypos - y1, RTEXT_SHIFT);
                     x->gl_editor->e_onmotion = MA_DRAGTEXT;
@@ -2366,27 +2310,27 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 }
                 else
                 {
-                    if (glist_isselected(x, y))
-                        glist_deselect(x, y);
-                    else glist_select(x, y);
+                    if (glist_isselected(x, hitbox))
+                        glist_deselect(x, hitbox);
+                    else glist_select(x, hitbox);
                 }
             }
         }
         else
         {
             int noutlet;
-                /* resize?  only for "true" text boxes or canvases*/
-            if (ob && !x->gl_editor->e_selection &&
-                (ob->te_pd->c_wb == &text_widgetbehavior ||
-                    pd_checkglist(&ob->te_pd)) &&
-                        xpos >= x2-4 && ypos < y2-4)
+                /* resize? only for "true" text boxes or canvases */
+            if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
+                    (hitobj->te_pd->c_wb == &text_widgetbehavior ||
+                    hitobj->te_type == T_ATOM ||
+                    pd_checkglist(&hitobj->te_pd)))
             {
                 if (doit)
                 {
-                    if (!glist_isselected(x, y))
+                    if (!glist_isselected(x, hitbox))
                     {
                         glist_noselect(x);
-                        glist_select(x, y);
+                        glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_RESIZE;
                     x->gl_editor->e_xwas = x1;
@@ -2394,12 +2338,12 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     x->gl_editor->e_xnew = xpos;
                     x->gl_editor->e_ynew = ypos;
                     canvas_undo_add(x, UNDO_APPLY, "resize",
-                        canvas_undo_set_apply(x, glist_getindex(x, y)));
+                        canvas_undo_set_apply(x, glist_getindex(x, hitbox)));
                 }
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
             }
                 /* look for an outlet */
-            else if (ob && (noutlet = obj_noutlets(ob)) &&
+            else if (hitobj && (noutlet = obj_noutlets(hitobj)) &&
                 ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
@@ -2414,10 +2358,12 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 {
                     if (doit)
                     {
-                        int issignal = obj_issignaloutlet(ob, closest);
+                        int issignal = obj_issignaloutlet(hitobj, closest);
                         x->gl_editor->e_onmotion = MA_CONNECT;
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
+
+                        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
                             ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
                             x, xpos, ypos, xpos, ypos,
@@ -2435,8 +2381,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 t_rtext *rt;
                     /* check if the box is being text edited */
             nooutletafterall:
-                if (ob && (rt = x->gl_editor->e_textedfor) &&
-                    rt == glist_findrtext(x, ob))
+                if (hitobj && (rt = x->gl_editor->e_textedfor) &&
+                    rt == glist_findrtext(x, hitobj))
                 {
                     rtext_mouse(rt, xpos - x1, ypos - y1,
                         (doublemod ? RTEXT_DBL : RTEXT_DOWN));
@@ -2447,10 +2393,10 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 else
                 {
                         /* otherwise select and drag to displace */
-                    if (!glist_isselected(x, y))
+                    if (!glist_isselected(x, hitbox))
                     {
                         glist_noselect(x);
-                        glist_select(x, y);
+                        glist_select(x, hitbox);
                     }
                     x->gl_editor->e_onmotion = MA_MOVE;
                 }
@@ -2657,7 +2603,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
-    if (doit) sys_vgui(".x%lx.c delete x\n", x);
+    if (doit) {
+        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 1\n", x);
+        sys_vgui(".x%lx.c delete x\n", x);
+    }
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
                   x, x->gl_editor->e_xwas,
                   x->gl_editor->e_ywas, xpos, ypos);
@@ -2705,7 +2654,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 !obj_issignalinlet(ob2, closest2))
             {
                 if (doit)
-                    error("can't connect signal outlet to control inlet");
+                    pd_error(0, "can't connect signal outlet to control inlet");
                 canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
                 return;
             }
@@ -2909,11 +2858,13 @@ void canvas_mouseup(t_canvas *x,
         canvas_doconnect(x, xpos, ypos, mod, 1);
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
-    else if (x->gl_editor->e_onmotion == MA_MOVE ||
-        x->gl_editor->e_onmotion == MA_RESIZE)
+    else if ((x->gl_editor->e_onmotion == MA_MOVE ||
+              x->gl_editor->e_onmotion == MA_RESIZE) && !x->gl_editor->e_lastmoved)
     {
-            /* after motion or resizing, if there's only one text item
-               selected, activate the text */
+            /* if there's only one text item selected *and* the mouse hasn't moved,
+               activate the text, i.e. standard click/drag behavior:
+               - single click, no motion: enter object for editing.
+               - click-drag with motion: move object, keep it selected */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
@@ -2937,7 +2888,13 @@ void canvas_mouseup(t_canvas *x,
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
-
+    else if (x->gl_editor->e_onmotion == MA_PASSOUT)
+    {
+        if (!x->gl_editor->e_motionfn)
+            bug("e_motionfn");
+        (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd,
+            xpos - x->gl_editor->e_xwas, ypos - x->gl_editor->e_ywas, 1);
+    }
     x->gl_editor->e_onmotion = MA_NONE;
 }
 
@@ -3081,7 +3038,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         if (x->gl_editor->e_grab
             && x->gl_editor->e_keyfn && keynum)
                 (* x->gl_editor->e_keyfn)
-                    (x->gl_editor->e_grab, (t_float)keynum);
+                    (x->gl_editor->e_grab, gotkeysym, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
                it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum
@@ -3156,6 +3113,10 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
+    /* defined in g_text.c: */
+extern void text_getfont(t_text *x, t_glist *thisglist,
+    int *fwidthp, int *fheightp, int *guifsize);
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
@@ -3191,8 +3152,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         if (!x->gl_editor->e_motionfn)
             bug("e_motionfn");
         (*x->gl_editor->e_motionfn)(&x->gl_editor->e_grab->g_pd,
-            xpos - x->gl_editor->e_xwas,
-            ypos - x->gl_editor->e_ywas);
+            xpos - x->gl_editor->e_xwas, ypos - x->gl_editor->e_ywas, 0);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
     }
@@ -3214,10 +3174,13 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             int wantwidth = xpos - x11;
             t_object *ob = pd_checkobject(&y1->g_pd);
             if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
+                ob->te_type == T_ATOM ||
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
             {
-                wantwidth = wantwidth / glist_fontwidth(x);
+                int fwidth, fheight, guifsize;
+                text_getfont(ob, x, &fwidth, &fheight, &guifsize);
+                wantwidth = wantwidth / fwidth;
                 if (wantwidth < 1)
                     wantwidth = 1;
                 ob->te_width = wantwidth;
@@ -3563,7 +3526,7 @@ void canvas_finderror(const void *error_object)
         if (glist_dofinderror(x, error_object))
             return;
     }
-    error("... sorry, I couldn't find the source of that error.");
+    pd_error(0, "... sorry, I couldn't find the source of that error.");
 }
 
 void canvas_stowconnections(t_canvas *x)
@@ -3659,10 +3622,13 @@ static t_binbuf *canvas_docopy(t_canvas *x)
 
 static void canvas_copy(t_canvas *x)
 {
-    if (!x->gl_editor || !x->gl_editor->e_selection)
+    if (!x->gl_editor)
         return;
-    binbuf_free(EDITOR->copy_binbuf);
-    EDITOR->copy_binbuf = canvas_docopy(x);
+    if (x->gl_editor->e_selection)
+    {
+        binbuf_free(EDITOR->copy_binbuf);
+        EDITOR->copy_binbuf = canvas_docopy(x);
+    }
     if (x->gl_editor->e_textedfor)
     {
         char *buf;
@@ -3859,6 +3825,7 @@ static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
        || gensym("msg") == s
        || gensym("text") == s
        || gensym("floatatom") == s
+       || gensym("listbox") == s
        || gensym("symbolatom") == s)
     {
         if(x0)*x0=atom_getfloat(argv+2);
@@ -4334,14 +4301,30 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (EDITOR->paste_canvas == x) whoout += EDITOR->paste_onset,
         whoin += EDITOR->paste_onset;
     for (src = x->gl_list; whoout; src = src->g_next, whoout--)
-        if (!src->g_next) goto bad; /* bug fix thanks to Hannes */
+        if (!src->g_next) {
+            src = NULL;
+            logpost(sink, 3, "cannot connect non-existing object");
+            goto bad; /* bug fix thanks to Hannes */
+        }
     for (sink = x->gl_list; whoin; sink = sink->g_next, whoin--)
-        if (!sink->g_next) goto bad;
+        if (!sink->g_next) {
+            sink = NULL;
+            logpost(src, 3, "cannot connect to non-existing object");
+            goto bad;
+        }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&src->g_pd)) ||
-        !(objsink = pd_checkobject(&sink->g_pd)))
-            goto bad;
+        !(objsink = pd_checkobject(&sink->g_pd))) {
+        logpost(src?src:sink, 3, "cannot connect unpatchable object");
+        goto bad;
+    }
+
+        /* check if objects are already connected */
+    if (canvas_isconnected(x, objsrc, outno, objsink, inno)) {
+        logpost(src, 3, "io pair already connected");
+        goto bad;
+    }
 
         /* if object creation failed, make dummy inlets or outlets
            as needed */
@@ -4795,11 +4778,10 @@ static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
             gobj_displace(y, x, nx1-x1, ny1-y1);
         }
     }
-    if (glist_isvisible(x))
-        glist_redraw(x);
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_checkglist(&y->g_pd)  && !canvas_isabstraction((t_canvas *)y))
             canvas_dofont((t_canvas *)y, font, xresize, yresize);
+    if(x->gl_havewindow) canvas_redraw(x);
 }
 
     /* canvas_menufont calls up a TK dialog which calls this back */
@@ -4819,6 +4801,8 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
+    if ((realresx != 1 || realresx != 1) || (oldfont != (int)font))
+        canvas_dirty(x2, 1);
     canvas_undo_add(x2, UNDO_FONT, "font",
         canvas_undo_set_font(x2, oldfont, realresize, whichresize));
 
@@ -4910,11 +4894,6 @@ void g_editor_setup(void)
         gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_triggerize,
         gensym("triggerize"), 0);
-
-/* -------------- connect method used in reading files ------------------ */
-    class_addmethod(canvas_class, (t_method)canvas_connect,
-        gensym("connect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 }

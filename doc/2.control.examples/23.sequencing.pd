@@ -1,5 +1,4 @@
-#N canvas 333 68 529 561 12;
-#X text 276 512 updated for Pd version 0.26;
+#N canvas 534 99 924 525 12;
 #X text 40 28 You can use "qlist" or "textfile" objects for sequencing.
 Qlist is simpler to use than the (more versatile) textfile.;
 #X obj 186 147 r receive1;
@@ -7,8 +6,8 @@ Qlist is simpler to use than the (more versatile) textfile.;
 #X msg 46 91 clear \, add receive1 1 \, add 1000 receive1 0 \, add
 receive2 2 \, add 1000 receive2 0 \, add receive1 3 \, bang;
 #X obj 46 132 qlist;
-#X floatatom 186 173 0 0 0 0 - - -;
-#X floatatom 282 174 0 0 0 0 - - -;
+#X floatatom 186 173 0 0 0 0 - - - 0;
+#X floatatom 282 174 0 0 0 0 - - - 0;
 #X text 52 221 The "add" messages add lines to the qlist \, so that
 it contains:;
 #X text 159 257 receive1 1;
@@ -23,6 +22,24 @@ for details.;
 #X text 57 378 and the "bang" instructs qlist to play the sequence
 by sending messages to "receive" objects. Messages starting with numbers
 request that amount of delay.;
+#X text 708 170 <= click to open;
+#X msg 580 294 line 0 \, auto;
+#X text 673 294 <=;
+#X text 690 295 rewind and start automatically, f 16;
+#X obj 569 170 text define -k seq;
+#A set receive1 1 \; 1000 receive1 0 \; receive2 2 \; 1000 receive2
+0 \; receive1 3 \;;
+#X obj 580 348 text sequence seq -g, f 21;
+#X text 522 28 A more recent and powerful addition is the "text" object
+that can perform many text operations and substitute both "qlist" and
+"textfile"., f 49;
+#X text 523 86 You can use 'text sequence' in a way similar to 'qlist'.
+Click on 'text define' to see the text messages to be sequenced. Note
+that it is the same as added to 'qlist'., f 49;
+#X text 524 227 Now click on the message below to run the sequencer.
+;
+#X text 633 449 updated for Pd version 0.52;
+#X connect 1 0 5 0;
 #X connect 2 0 6 0;
-#X connect 3 0 7 0;
-#X connect 4 0 5 0;
+#X connect 3 0 4 0;
+#X connect 16 0 20 0;

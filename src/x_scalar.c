@@ -32,7 +32,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
             keep = 1;
         else
         {
-            error("scalar define: unknown flag ...");
+            pd_error(0, "scalar define: unknown flag ...");
             postatom(argc, argv);
         }
         argc--; argv++;
@@ -49,10 +49,10 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
     }
 
         /* make a canvas... */
-    SETFLOAT(a, 0);
-    SETFLOAT(a+1, 50);
-    SETFLOAT(a+2, 600);
-    SETFLOAT(a+3, 400);
+    SETFLOAT(a+0, GLIST_DEFCANVASXLOC); /* xpos */
+    SETFLOAT(a+1, GLIST_DEFCANVASYLOC); /* ypos */
+    SETFLOAT(a+2, 600); /* width */
+    SETFLOAT(a+3, 400); /* height */
     SETSYMBOL(a+4, s);
     SETFLOAT(a+5, 0);
     x = canvas_new(0, 0, 6, a);
@@ -174,7 +174,7 @@ static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = scalar_define_new(s, argc-1, argv+1);
         else
         {
-            error("scalar %s: unknown function", str);
+            pd_error(0, "scalar %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

@@ -277,7 +277,8 @@ static void hradio_save(t_gobj *z, t_binbuf *b)
                 srl[0], srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
-                bflcol[0], bflcol[1], bflcol[2], x->x_fval);
+                bflcol[0], bflcol[1], bflcol[2],
+                x->x_gui.x_isa.x_loadinit?x->x_fval:0.);
     binbuf_addv(b, ";");
 }
 

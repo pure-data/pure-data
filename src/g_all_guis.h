@@ -247,7 +247,7 @@ typedef struct _my_numbox
     t_iemgui x_gui;
     t_clock  *x_clock_reset;
     t_clock  *x_clock_wait;
-    double   x_val;
+    t_float  x_val;
     double   x_min;
     double   x_max;
     double   x_k;
@@ -306,7 +306,7 @@ EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
 EXTERN void iemgui_newzoom(t_iemgui *iemgui);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
-EXTERN int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv);
+EXTERN void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv);
 
 EXTERN int canvas_getdollarzero(void);
 

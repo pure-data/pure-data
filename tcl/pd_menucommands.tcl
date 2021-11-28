@@ -12,10 +12,8 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
+    set untitled_name $::pdtk_canvas::untitled_name
     if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
-    # to localize "Untitled" there will need to be changes in g_canvas.c and
-    # g_readwrite.c, where it tests for the string "Untitled"
-    set untitled_name "Untitled"
     pdsend "pd menunew $untitled_name-$untitled_number [enquote_path $::filenewdir]"
     incr untitled_number
 }
@@ -318,3 +316,17 @@ proc ::pd_menucommands::menu_bringalltofront {} {
     }
     wm deiconify .
 }
+
+# this is needed because on macOS the Menu-Accelerators are actually used
+# (rather than just displayed)
+# so this proc simply gobbles the commands to suppress duplicates:
+# only the first $script until the next idle-period is run (the rest is discarded)
+# see https://stackoverflow.com/a/69900053/1169096
+proc ::pd_menucommands::scheduleAction {args} {
+    if {$::pd_menucommands::currentAction eq ""} {
+        # Prepend a command to clear the variable
+        set act "set ::pd_menucommands::currentAction {};$args"
+        set ::pd_menucommands::currentAction [after idle $act]
+    }
+}
+set ::pd_menucommands::currentAction {}

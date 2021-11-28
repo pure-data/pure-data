@@ -105,7 +105,7 @@ void sys_initmidiqueue(void)
     /* this is called from the OS dependent code from time to time when we
     think we know the delay (outbuftime) in seconds, at which the last-output
     audio sample will go out the door. */
-void sys_setmiditimediff(double inbuftime, double outbuftime)
+static void sys_setmiditimediff(double inbuftime, double outbuftime)
 {
     double dactimeminusrealtime =
         .001 * clock_gettimesince(sys_midiinittime)
@@ -351,7 +351,7 @@ static void sys_dispatchnextmidiin(void)
         else if (parserp->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            error("dropping unexpected MIDI byte %02X", byte);
+            pd_error(0, "dropping unexpected MIDI byte %02X", byte);
         }
         else
         {
@@ -492,13 +492,7 @@ void sys_midibytein(int portno, int byte)
 
 void sys_pollmidiqueue(void)
 {
-#if 0
-    static double lasttime;
-    double newtime = sys_getrealtime();
-    if (newtime - lasttime > 0.007)
-        post("delay %d", (int)(1000 * (newtime - lasttime)));
-    lasttime = newtime;
-#endif
+    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
         sys_alsa_poll_midi();
@@ -661,14 +655,12 @@ void sys_set_midi_api(int which)
     case(API_DEFAULTMIDI): break;
 #endif
     default:
-        if (sys_verbose)
-            post("ignoring unknown MIDI API %d", which);
+        logpost(NULL, PD_VERBOSE, "ignoring unknown MIDI API %d", which);
         return;
     }
 
     sys_midiapi = which;
-    if (sys_verbose)
-        post("sys_midiapi %d", sys_midiapi);
+    logpost(NULL, PD_VERBOSE, "sys_midiapi %d", sys_midiapi);
 }
 
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
@@ -711,6 +703,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
+    char device[MAXPDSTRING];
 
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
@@ -718,12 +711,12 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for (i = 0; i < nindevs; i++)
         sys_vgui("lappend midi_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
 
     sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
     for (i = 0; i < noutdevs; i++)
         sys_vgui("lappend midi_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 

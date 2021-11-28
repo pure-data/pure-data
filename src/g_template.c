@@ -213,10 +213,10 @@ t_float template_getfloat(t_template *x, t_symbol *fieldname, t_word *wp,
     {
         if (type == DT_FLOAT)
             val = *(t_float *)(((char *)wp) + onset);
-        else if (loud) error("%s.%s: not a number",
+        else if (loud) pd_error(0, "%s.%s: not a number",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
     return (val);
 }
@@ -230,10 +230,10 @@ void template_setfloat(t_template *x, t_symbol *fieldname, t_word *wp,
      {
         if (type == DT_FLOAT)
             *(t_float *)(((char *)wp) + onset) = f;
-        else if (loud) error("%s.%s: not a number",
+        else if (loud) pd_error(0, "%s.%s: not a number",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
 }
 
@@ -247,10 +247,10 @@ t_symbol *template_getsymbol(t_template *x, t_symbol *fieldname, t_word *wp,
     {
         if (type == DT_SYMBOL)
             val = *(t_symbol **)(((char *)wp) + onset);
-        else if (loud) error("%s.%s: not a symbol",
+        else if (loud) pd_error(0, "%s.%s: not a symbol",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
     return (val);
 }
@@ -264,10 +264,10 @@ void template_setsymbol(t_template *x, t_symbol *fieldname, t_word *wp,
      {
         if (type == DT_SYMBOL)
             *(t_symbol **)(((char *)wp) + onset) = s;
-        else if (loud) error("%s.%s: not a symbol",
+        else if (loud) pd_error(0, "%s.%s: not a symbol",
             x->t_sym->s_name, fieldname->s_name);
     }
-    else if (loud) error("%s.%s: no such field",
+    else if (loud) pd_error(0, "%s.%s: no such field",
         x->t_sym->s_name, fieldname->s_name);
 }
 
@@ -572,7 +572,7 @@ static void *template_usetemplate(void *dummy, t_symbol *s,
             if (x->t_list)
             {
                     /* don't know what to do here! */
-                error("%s: template mismatch",
+                pd_error(0, "%s: template mismatch",
                     templatesym->s_name);
             }
             else
@@ -906,7 +906,7 @@ static t_float fielddesc_getfloat(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("symbolic data field used as number");
+            pd_error(0, "symbolic data field used as number");
         return (0);
     }
 }
@@ -947,7 +947,7 @@ t_float fielddesc_getcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("symbolic data field used as number");
+            pd_error(0, "symbolic data field used as number");
         return (0);
     }
 }
@@ -964,7 +964,7 @@ static t_symbol *fielddesc_getsymbol(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("numeric data field used as symbol");
+            pd_error(0, "numeric data field used as symbol");
         return (&s_);
     }
 }
@@ -1004,7 +1004,7 @@ void fielddesc_setcoord(t_fielddesc *f, t_template *template,
     else
     {
         if (loud)
-            error("attempt to set constant or symbolic data field to a number");
+            pd_error(0, "attempt to set constant or symbolic data field to a number");
     }
 }
 
@@ -1276,11 +1276,13 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
     t_curve *x = (t_curve *)z;
     t_fielddesc *f = x->x_vec + TEMPLATE->curve_motion_field;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->curve_motion_gpointer, 0))
     {
         post("curve_motion: scalar disappeared");
@@ -1374,7 +1376,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
                 TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar);
         else gpointer_setarray(&TEMPLATE->curve_motion_gpointer,
                 TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_wp);
-        glist_grab(glist, z, curve_motion, 0, xpix, ypix);
+        glist_grab(glist, z, curve_motionfn, 0, xpix, ypix);
     }
     return (1);
 }
@@ -1545,18 +1547,18 @@ static int plot_readownertemplate(t_plot *x,
         /* find the data and verify it's an array */
     if (x->x_data.fd_type != A_ARRAY || !x->x_data.fd_var)
     {
-        error("plot: needs an array field");
+        pd_error(0, "plot: needs an array field");
         return (-1);
     }
     if (!template_find_field(ownertemplate, x->x_data.fd_un.fd_varsym,
         &arrayonset, &type, &elemtemplatesym))
     {
-        error("plot: %s: no such field", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: no such field", x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     if (type != DT_ARRAY)
     {
-        error("plot: %s: not an array", x->x_data.fd_un.fd_varsym->s_name);
+        pd_error(0, "plot: %s: not an array", x->x_data.fd_un.fd_varsym->s_name);
         return (-1);
     }
     array = *(t_array **)(((char *)data) + arrayonset);
@@ -1595,13 +1597,13 @@ int array_getfields(t_symbol *elemtemplatesym,
 
     if (!(elemtemplate =  template_findbyname(elemtemplatesym)))
     {
-        error("plot: %s: no such template", elemtemplatesym->s_name);
+        pd_error(0, "plot: %s: no such template", elemtemplatesym->s_name);
         return (-1);
     }
     if (!((elemtemplatesym == &s_float) ||
         (elemtemplatecanvas = template_findcanvas(elemtemplate))))
     {
-        error("plot: %s: no canvas for this template", elemtemplatesym->s_name);
+        pd_error(0, "plot: %s: no canvas for this template", elemtemplatesym->s_name);
         return (-1);
     }
     elemsize = elemtemplate->t_n * sizeof(t_word);
@@ -2042,8 +2044,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     /* LATER protect against the template changing or the scalar disappearing
     probably by attaching a gpointer here ... */
 
-static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
 {
+    if (up != 0)
+        return;
     TEMPLATE->array_motion_xcumulative += dx * TEMPLATE->array_motion_xperpix;
     TEMPLATE->array_motion_ycumulative += dy * TEMPLATE->array_motion_yperpix;
     if (TEMPLATE->array_motion_xfield)
@@ -2223,7 +2227,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
-                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                 if (TEMPLATE->array_motion_scalar)
                     scalar_redraw(TEMPLATE->array_motion_scalar,
                         TEMPLATE->array_motion_glist);
@@ -2391,7 +2395,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             TEMPLATE->array_motion_yfield = 0;
                             TEMPLATE->array_motion_ycumulative = 0;
                         }
-                        glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                        glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                     }
                     if (alt)
                     {
@@ -2667,10 +2671,13 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         glist_getcanvas(glist), data);
 }
 
-static void drawnumber_motion(void *z, t_floatarg dx, t_floatarg dy)
+static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     t_atom at;
+    if (up != 0)
+        return;
     if (!gpointer_check(&TEMPLATE->drawnumber_motion_gpointer, 0))
     {
         post("drawnumber_motion: scalar disappeared");
@@ -2698,7 +2705,7 @@ static void drawnumber_motion(void *z, t_floatarg dx, t_floatarg dy)
             TEMPLATE->drawnumber_motion_glist);
 }
 
-static void drawnumber_key(void *z, t_floatarg fkey)
+static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
     t_drawnumber *x = (t_drawnumber *)z;
     int key = fkey;
@@ -2803,7 +2810,7 @@ static int drawnumber_click(t_gobj *z, t_glist *glist,
             else gpointer_setarray(&TEMPLATE->drawnumber_motion_gpointer,
                     TEMPLATE->drawnumber_motion_array,
                         TEMPLATE->drawnumber_motion_wp);
-            glist_grab(glist, z, drawnumber_motion, drawnumber_key,
+            glist_grab(glist, z, drawnumber_motionfn, drawnumber_key,
                 xpix, ypix);
         }
         return (1);

@@ -46,8 +46,6 @@ typedef SSIZE_T ssize_t;
 
 /* ----- soundfile ----- */
 
-typedef struct _soundfile_type t_soundfile_type;
-
     /** soundfile file descriptor, backend type, and format info
         note: headersize and bytelimit are signed as they are used for < 0
               comparisons, hopefully ssize_t is large enough
@@ -55,7 +53,7 @@ typedef struct _soundfile_type t_soundfile_type;
 typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
-    t_soundfile_type *sf_type; /**< type implementation                   */
+    struct _soundfile_type *sf_type; /**< type implementation             */
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */

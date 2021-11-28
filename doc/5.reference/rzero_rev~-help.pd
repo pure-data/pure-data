@@ -1,10 +1,10 @@
 #N canvas 511 124 585 555 12;
-#X floatatom 132 197 0 0 0 0 - - -;
+#X floatatom 132 197 0 0 0 0 - - - 0;
 #X obj 51 113 osc~ 100;
 #X msg 67 145 clear;
 #X obj 92 509 lop~;
 #X text 13 509 see also:;
-#X text 371 495 updated for Pd version 0.38;
+#X text 371 495 updated for Pd version-0.38;
 #X obj 99 456 rzero~;
 #X obj 40 480 cpole~;
 #X obj 40 456 rpole~;
@@ -20,18 +20,18 @@
 #X msg 79 171 set 1;
 #N canvas 393 91 317 298 test 0;
 #X obj 78 79 osc~;
-#X floatatom 78 56 5 0 0 0 - - -;
+#X floatatom 78 56 5 0 0 0 - - - 0;
 #X obj 78 220 env~ 16384;
-#X floatatom 78 244 5 0 0 0 - - -;
-#X obj 116 108 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X floatatom 78 244 5 0 0 0 - - - 0;
+#X obj 116 108 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 78 106 *~;
-#X msg 99 138 set 1;
-#X floatatom 152 110 4 -100 100 0 - - -;
-#X obj 152 135 / 100;
+#X msg 94 136 set 1;
+#X floatatom 145 110 4 -100 100 0 - - - 0;
+#X obj 145 135 / 100;
 #X obj 186 252 dac~;
-#X obj 204 169 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 204 169 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 186 216 *~;
 #X obj 204 191 / 10;
 #X text 82 19 Stuff to test it:;

@@ -25,7 +25,7 @@
 
 /*------------------ global functions -------------------------*/
 
-static void my_numbox_key(void *z, t_floatarg fkey);
+static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey);
 static void my_numbox_draw_update(t_gobj *client, t_glist *glist);
 
 /* ------------ nbx gui-my number box ----------------------- */
@@ -414,7 +414,7 @@ static void my_numbox_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_val, x->x_log_height);
+                x->x_gui.x_isa.x_loadinit?x->x_val:0., x->x_log_height);
     binbuf_addv(b, ";");
 }
 
@@ -542,9 +542,12 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
-static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy)
+static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,
+    t_floatarg up)
 {
     double k2 = 1.0;
+    if (up != 0)
+        return;
 
     if(x->x_gui.x_fsf.x_finemoved)
         k2 = 0.01;
@@ -599,9 +602,12 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    if(x->x_val != f)
+    t_float ftocompare = f;
+        /* bitwise comparison, suggested by Dan Borstein - to make this work
+        ftocompare must be t_float type like x_val. */
+    if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
-        x->x_val = f;
+        x->x_val = ftocompare;
         my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
@@ -720,7 +726,7 @@ static void my_numbox_loadbang(t_my_numbox *x, t_floatarg action)
     }
 }
 
-static void my_numbox_key(void *z, t_floatarg fkey)
+static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey)
 {
     t_my_numbox *x = z;
     char c = fkey;
@@ -885,7 +891,7 @@ void g_numbox_setup(void)
     class_addmethod(my_numbox_class, (t_method)my_numbox_click,
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_motion,
-        gensym("motion"), A_FLOAT, A_FLOAT, 0);
+        gensym("motion"), A_FLOAT, A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,

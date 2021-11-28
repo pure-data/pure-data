@@ -1,9 +1,8 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 466 31 698 790 12;
+#N canvas 681 23 698 790 12;
 #X text 20 737 see also:;
 #X obj 21 10 pointer;
-#X text 90 10 -- remember the location of a scalar in a list;
 #N canvas 379 131 422 137 help-pointer-template1 0;
 #X obj 74 76 filledpolygon z 0 1 0 0 20 0 20 30 0 30;
 #X obj 60 23 struct template1 float x float y float z;
@@ -18,7 +17,7 @@
 #X obj 215 737 getsize;
 #X obj 274 737 setsize;
 #X obj 334 737 element;
-#N canvas 108 191 312 185 help-pointer-data 0;
+#N canvas 309 206 312 185 help-pointer-data 1;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
@@ -66,8 +65,8 @@ object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense).;
 #X obj 60 667 pointer template1 template2, f 54;
 #X msg 99 463 send-window vis \$1;
-#X obj 99 441 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 99 441 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 230 463 send a message to the canvas containing the scalar
 ;
 #X msg 79 364 delete;
@@ -88,10 +87,10 @@ send a "bang" to bangout if it was the last one in the list);
 #X text 32 105 2) compare different pointers with source, f 20;
 #X obj 180 327 print equal;
 #X obj 304 327 print not-equal;
-#X text 48 21 The "equal" message allows one to compare an incoming pointer
-with the stored pointer. On success \, the pointer is sent to its corresponding
-outlet. On fail \, a bang is sent through the right-most outlet.,
-f 69;
+#X text 48 21 The "equal" message allows one to compare an incoming
+pointer with the stored pointer. On success \, the pointer is sent
+to its corresponding outlet. On fail \, a bang is sent through the
+right-most outlet., f 69;
 #X text 321 277 you can also use template symbols, f 17;
 #X obj 304 115 loadbang;
 #X connect 0 0 7 1;
@@ -108,20 +107,21 @@ f 69;
 #X connect 14 0 1 0;
 #X restore 436 507 pd equal_message;
 #X text 469 738 updated for Pd version 0.51;
-#X connect 12 0 16 0;
-#X connect 12 1 17 0;
-#X connect 13 0 12 0;
-#X connect 14 0 12 0;
-#X connect 15 0 12 0;
-#X connect 19 0 40 0;
-#X connect 20 0 40 0;
-#X connect 33 0 12 0;
-#X connect 34 0 12 0;
-#X connect 37 0 38 0;
-#X connect 40 0 21 0;
-#X connect 40 1 22 0;
-#X connect 40 2 23 0;
-#X connect 40 3 24 0;
-#X connect 41 0 12 0;
-#X connect 42 0 41 0;
-#X connect 44 0 12 0;
+#X text 90 10 - remember the location of a scalar in a list;
+#X connect 11 0 15 0;
+#X connect 11 1 16 0;
+#X connect 12 0 11 0;
+#X connect 13 0 11 0;
+#X connect 14 0 11 0;
+#X connect 18 0 39 0;
+#X connect 19 0 39 0;
+#X connect 32 0 11 0;
+#X connect 33 0 11 0;
+#X connect 36 0 37 0;
+#X connect 39 0 20 0;
+#X connect 39 1 21 0;
+#X connect 39 2 22 0;
+#X connect 39 3 23 0;
+#X connect 40 0 11 0;
+#X connect 41 0 40 0;
+#X connect 43 0 11 0;

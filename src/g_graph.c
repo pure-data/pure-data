@@ -83,7 +83,13 @@ void glist_delete(t_glist *x, t_gobj *y)
     wasdeleting = canvas_setdeleting(canvas, 1);
     if (x->gl_editor)
     {
-        if (x->gl_editor->e_grab == y) x->gl_editor->e_grab = 0;
+            /* if we've grabbed events from canvas release them */
+        if (canvas->gl_editor && canvas->gl_editor->e_grab == y)
+            canvas->gl_editor->e_grab = 0;
+                /* perhaps we grabbed our own glist instead? don't know if
+                this ever happens: */
+        if (x->gl_editor->e_grab == y)
+            x->gl_editor->e_grab = 0;
         if (glist_isselected(x, y)) glist_deselect(x, y);
 
             /* HACK -- we had phantom outlets not getting erased on the
@@ -447,7 +453,7 @@ static void graph_bounds(t_glist *x, t_floatarg x1, t_floatarg y1,
     if (x->gl_x2 == x->gl_x1 ||
         x->gl_y2 == x->gl_y1)
     {
-        error("graph: empty bounds rectangle");
+        pd_error(0, "graph: empty bounds rectangle");
         x1 = y1 = 0;
         x2 = y2 = 1;
     }
@@ -475,7 +481,7 @@ static void graph_yticks(t_glist *x,
 static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    if (argc < 1) error("graph_xlabel: no y value given");
+    if (argc < 1) pd_error(0, "graph_xlabel: no y value given");
     else
     {
         x->gl_xlabely = atom_getfloat(argv);
@@ -491,7 +497,7 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    if (argc < 1) error("graph_ylabel: no x value given");
+    if (argc < 1) pd_error(0, "graph_ylabel: no x value given");
     else
     {
         x->gl_ylabelx = atom_getfloat(argv);

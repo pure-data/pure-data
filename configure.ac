@@ -2,12 +2,24 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.51.4])
+AC_INIT([pd], [0.52.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CANONICAL_HOST
+
+
+########################################
+#### ohoh. automake<<1.16 do not like $(top_srcdir) in _SOURCES.
+AS_IF([test "x${am__api_version}" = "x1.15" ], [
+  enable_dependency_tracking=no
+  AC_MSG_WARN([legacy automake detected: disabled dependency-tracking!
+	       to get rid of this warning and enable dependency-tracking,
+	       please install at least automake-1.16 and rerun './autogen.sh'
+	       ])
+])
+
 
 #########################################
 ##### Default values #####
@@ -259,9 +271,6 @@ AC_SUBST([JACK_LIBS])
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
-#########################################
-##### Configure Options #####
-
 ##### Build with debug flags? #####
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
@@ -271,6 +280,25 @@ AS_IF([test x$debug = xyes],[
 ],[
     CFLAGS="$CFLAGS $RELEASE_CFLAGS"
 ])
+
+#########################################
+##### Configure Options #####
+AC_ARG_ENABLE([libpd],
+    [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
+AC_ARG_ENABLE([libpd-utils],
+    [AS_HELP_STRING([--enable-libpd-utils], [enable utilities if building libpd])])
+AC_ARG_ENABLE([libpd-instance],
+    [AS_HELP_STRING([--enable-libpd-instance], [enable multi-instance support for libpd])])
+AC_ARG_ENABLE([libpd-extra],
+    [AS_HELP_STRING([--enable-libpd-extra], [include extra objects (sigmund~,pd~,...) in libpd])])
+AC_ARG_ENABLE([libpd-setlocale],
+    [AS_HELP_STRING([--disable-libpd-setlocale], [prevent libpd from calling setlocale() - if you need to control LC_NUMERIC manually ])])
+
+AM_CONDITIONAL(LIBPD, test x$enable_libpd = xyes)
+AM_CONDITIONAL(LIBPD_UTILS, test x$enable_libpd_utils = xyes)
+AM_CONDITIONAL(LIBPD_EXTRA, test x$enable_libpd_extra = xyes)
+AM_CONDITIONAL(LIBPD_MULTIINSTANCE, test x$enable_libpd_instance = xyes)
+AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
 
 ##### Universal/multi architecture build on macOS #####
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
@@ -508,6 +536,19 @@ AS_IF([test ! "x${WISH}" = "x"],[
     ])
 ])
 
+##### libpd #####
+AS_IF([test "x${enable_libpd}" = "xyes"],[
+        libpd="yes"
+        libpd_=""
+        AS_IF([test "x${enable_libpd_instance}" = "xyes"],[ libpd_="${libpd_}+multi "])
+        AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
+        AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
+        AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
+        AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd} ( ${libpd_})"])
+],[
+        libpd="no"
+])
+
 #########################################
 ##### Output files #####
 
@@ -569,8 +610,8 @@ AC_MSG_NOTICE([
     wish(tcl/tk):         $wish
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
+    libpd:                $libpd
 ])
-
 
 AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
  AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))

@@ -1,29 +1,29 @@
-#N canvas 565 40 543 552 12;
-#X floatatom 156 335 7 0 0 0 - - -;
+#N canvas 715 39 543 552 12;
+#X floatatom 156 335 7 0 0 0 - - - 0;
 #X msg 206 231 set \$1;
-#X obj 125 219 bng 18 250 50 0 empty empty empty 8 -8 0 10 -262144
--1 -1;
+#X obj 125 219 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
+#000000 #000000;
 #N canvas 837 70 559 433 old-behavior 0;
-#X floatatom 134 318 5 0 0 0 - - -;
-#X floatatom 112 387 5 0 0 0 - - -;
+#X floatatom 134 318 5 0 0 0 - - - 0;
+#X floatatom 112 387 5 0 0 0 - - - 0;
 #X msg 88 193 \; pd compatibility 0.45;
 #X msg 282 193 \; pd compatibility 0.46;
 #X text 99 156 Old "compatible" behavior, f 16;
-#X obj 115 343 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+#X obj 115 343 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X text 278 163 New "correct" behavior;
-#X floatatom 275 263 5 0 0 0 - - -;
+#X floatatom 275 263 5 0 0 0 - - - 0;
 #X msg 321 262 100;
 #X msg 366 262 -100;
-#X floatatom 321 377 5 0 0 0 - - -;
-#X obj 324 333 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+#X floatatom 321 377 5 0 0 0 - - - 0;
+#X obj 324 333 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X obj 321 300 clip 0 127;
 #X text 407 293 forcing clip before input, f 13;
 #X msg 134 289 100;
 #X msg 175 289 -100;
-#X obj 74 255 bng 18 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 74 255 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X msg 112 255 set -13.7;
 #X text 48 19 Prior to Pd version 0.46 \, values sent to IEM GUIs were
 restricted to the control's own values before passing them through
@@ -46,12 +46,12 @@ the range of numbers. Note this also affects the 'set' message., f
 #X connect 17 0 5 0;
 #X restore 371 383 pd old-behavior;
 #X obj 156 374 print hsl;
-#X floatatom 156 219 5 0 0 0 - - -;
-#X floatatom 206 208 5 0 0 0 - - -;
+#X floatatom 156 219 5 0 0 0 - - - 0;
+#X floatatom 206 208 5 0 0 0 - - - 0;
 #X obj 159 286 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14
--228856 -1 -4160 0 1;
-#X obj 53 24 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+#dcdcdc #000000 #0400fc 0 1;
+#X obj 53 24 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X text 285 429 (c) musil@iem.kug.ac.at;
 #X text 321 445 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 61 506 see also:;
@@ -69,9 +69,9 @@ click for properties., f 16;
 #X text 271 333 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
 Check details and how to get it back:, f 33;
 #N canvas 665 62 613 486 position 0;
-#X floatatom 142 146 4 0 1000 0 - - -;
+#X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
-#X floatatom 191 146 5 0 500 0 - - -;
+#X floatatom 191 146 5 0 500 0 - - - 0;
 #X msg 142 243 pos \$1 \$2;
 #X text 63 146 x-position;
 #X text 235 145 y-position;
@@ -95,8 +95,8 @@ by a difference amount. It takes a list of x/y delta in pixels., f
 pixels and sets the objects's position., f 33;
 #X text 159 19 You can also set and change the position of the object
 in the patch. Check below:, f 41;
-#X obj 265 350 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+#X obj 265 350 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X connect 0 0 18 0;
 #X connect 1 0 18 0;
 #X connect 1 1 18 1;
@@ -112,9 +112,9 @@ in the patch. Check below:, f 41;
 #X restore 412 255 pd position;
 #N canvas 487 137 358 407 properties 0;
 #N canvas 841 92 656 573 colors 0;
-#X floatatom 72 244 3 0 29 0 - - -;
-#X floatatom 108 244 3 0 29 0 - - -;
-#X floatatom 177 249 3 0 29 0 - - -;
+#X floatatom 72 244 3 0 29 0 - - - 0;
+#X floatatom 108 244 3 0 29 0 - - - 0;
+#X floatatom 177 249 3 0 29 0 - - - 0;
 #X text 104 224 front;
 #X text 170 224 label;
 #X obj 108 273 t b f;
@@ -122,9 +122,9 @@ in the patch. Check below:, f 41;
 #X msg 72 343 color \$1 \$2 \$3;
 #X obj 72 306 pack 0 22 22, f 20;
 #X text 181 343 presets;
-#X symbolatom 507 340 9 0 0 0 - - -;
-#X symbolatom 421 339 9 0 0 0 - - -;
-#X symbolatom 335 339 9 0 0 0 - - -;
+#X symbolatom 507 340 9 0 0 0 - - - 0;
+#X symbolatom 421 339 9 0 0 0 - - - 0;
+#X symbolatom 335 339 9 0 0 0 - - - 0;
 #X obj 475 370 t b s;
 #X obj 389 370 t b s;
 #X obj 258 224 loadbang;
@@ -144,17 +144,17 @@ followed by "#"., f 77;
 #X text 346 133 Set RGB values in the sliders;
 #X text 61 157 Open subpatches for the conversion from RGB to hexadecimal
 ============>, f 38;
-#X obj 338 509 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 -262144
--1 -1 0 1;
+#X obj 338 509 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 #ffffff
+#000000 #000000 0 1;
 #N canvas 1044 268 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -182,14 +182,14 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 507 158 pd label;
 #N canvas 965 279 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 74 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 146 257 makefilename %02x;
 #X obj 112 284 makefilename %02x;
@@ -217,13 +217,13 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 421 158 pd label;
 #N canvas 894 296 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 221 257 makefilename %02x;
 #X obj 141 284 makefilename %02x;
@@ -257,15 +257,15 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 335 158 pd label;
 #N canvas 642 125 486 521 old_way 0;
-#X obj 240 448 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 -262144
--1 -1 0 1;
+#X obj 240 448 hsl 128 18 0 127 0 0 empty empty Label 33 -13 0 20 #ffffff
+#000000 #000000 0 1;
 #N canvas 1136 244 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X text 66 56 label;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
@@ -283,12 +283,12 @@ followed by "#"., f 77;
 #X restore 349 144 pd label;
 #X text 188 119 Set RGB values in the sliders;
 #N canvas 955 131 392 476 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 313 269 t b f;
 #X obj 171 269 t b f;
@@ -314,12 +314,12 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 177 144 pd label;
 #N canvas 1096 192 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
 #X obj 169 319 t b f;
@@ -403,11 +403,11 @@ values., f 20;
 #X coords 0 0 1 1 85 60 0;
 #X restore 159 284 pd colors;
 #N canvas 834 188 471 396 size 0;
-#X obj 101 257 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
-#X floatatom 98 119 4 50 300 0 - - -;
+#X obj 101 257 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X floatatom 98 119 4 50 300 0 - - - 0;
 #X obj 140 146 t b f;
-#X floatatom 140 119 5 10 100 0 - - -;
+#X floatatom 140 119 5 10 100 0 - - - 0;
 #X msg 98 216 size \$1 \$2;
 #X text 50 118 width;
 #X text 184 118 height;
@@ -423,28 +423,28 @@ and height values in pixels., f 29;
 #X restore 173 88 pd size;
 #N canvas 851 171 551 450 label 0;
 #X msg 79 283 label \$1;
-#X floatatom 226 165 4 0 3 0 - - -;
+#X floatatom 226 165 4 0 3 0 - - - 0;
 #X obj 268 192 t b f;
-#X floatatom 268 165 5 5 50 0 - - -;
+#X floatatom 268 165 5 5 50 0 - - - 0;
 #X msg 226 262 label_font \$1 \$2;
 #X text 188 164 type;
 #X text 312 163 size;
-#X obj 226 102 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
--1 -1 0;
+#X obj 226 102 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
+#000000 #000000 0;
 #X text 247 101 DejaVu Sans Mono;
 #X text 247 117 Helvetica;
 #X text 247 132 Times;
 #X msg 91 251 symbol empty;
-#X floatatom 380 181 4 -150 200 0 - - -;
+#X floatatom 380 181 4 -150 200 0 - - - 0;
 #X obj 422 208 t b f;
-#X floatatom 422 181 5 -150 150 0 - - -;
+#X floatatom 422 181 5 -150 150 0 - - - 0;
 #X msg 380 278 label_pos \$1 \$2;
 #X text 362 180 x;
 #X text 466 179 y;
 #X text 375 157 label offset:;
 #X msg 59 186 symbol label;
-#X obj 229 372 hsl 128 18 0 127 0 1 empty empty label 135 10 0 20 -262144
--1 -1 1700 1;
+#X obj 229 372 hsl 128 18 0 127 0 1 empty empty label 135 10 0 20 #fcfcfc
+#000000 #000000 1700 1;
 #X msg 79 214 symbol my\ label;
 #X text 86 25 The 'label' message sets the label symbol \, setting
 it to "empty" clears it. The 'label_font' message sets font type and
@@ -471,10 +471,10 @@ size and 'label_pos' sets the x/y coordinates., f 54;
 #X restore 166 256 pd label;
 #N canvas 906 195 433 307 init 0;
 #X msg 144 164 init \$1;
-#X obj 144 132 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X obj 147 203 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 -262144
--1 -1 1700 1;
+#X obj 144 132 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 147 203 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 1700 1;
 #X text 167 132 init on/off;
 #X obj 144 244 print hsl-init;
 #X text 46 23 The 'init' message takes a float and sets to 'init mode'
@@ -487,13 +487,13 @@ sends its holding value from when the patch was last saved., f 46
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
 #X restore 173 172 pd init;
-#N canvas 883 96 459 451 send-receive 0;
+#N canvas 883 96 817 380 send-receive 0;
 #X msg 210 202 receive empty;
 #X msg 241 266 send empty;
-#X floatatom 61 179 5 0 0 0 - - -;
-#X floatatom 61 299 5 0 0 0 - - -;
-#X obj 213 314 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 -262144
--1 -1 1700 1;
+#X floatatom 61 179 5 0 0 0 - - - 0;
+#X floatatom 61 299 5 0 0 0 - - - 0;
+#X obj 213 314 hsl 128 18 0 127 0 1 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 1700 1;
 #X text 39 96 The 'send' and 'receive' messages take a symbol to set
 \, respectively \, the send and receive symbol. If you set these to
 "empty" \, the symbols are cleared., f 50;
@@ -501,24 +501,36 @@ sends its holding value from when the patch was last saved., f 46
 cases the inlet/outlet are visually hidden (but still functional in
 the patch). This way \, the object can communicate to [send] and [receive]
 objects., f 50;
-#X text 54 365 Note how you need to escape dollar signs with backslashes
-to set something like "\$0-x". But the backslash is not needed if you
-set it directly via the properties window., f 50;
 #X msg 194 177 receive \\\$0-hsl_rcv;
 #X msg 232 242 send \\\$0-hsl_snd;
 #X obj 61 213 s \$0-hsl_rcv;
 #X obj 61 268 r \$0-hsl_snd;
+#X text 439 36 Note how you need to escape dollar signs with backslashes
+to set something like "\$0-x". But the backslash is not needed if you
+set it directly via the properties window., f 50;
+#X obj 541 308 r \$0-slider;
+#X floatatom 541 332 5 0 0 0 - - - 0;
+#X floatatom 544 196 5 0 127 0 - - - 0;
+#X obj 544 222 s \$0-slider;
+#X obj 521 261 hsl 128 18 0 127 0 1 \$0-slider \$0-slider empty 0 -9
+0 10 #fcfcfc #000000 #000000 0 1;
+#X text 439 110 Feedback protection: iemguis can have the same name
+for both the send and receive symbols. This works without 'stack overflow'
+erros because they have feedback protection. See example below., f
+50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
-#X connect 2 0 10 0;
+#X connect 2 0 9 0;
+#X connect 7 0 4 0;
 #X connect 8 0 4 0;
-#X connect 9 0 4 0;
-#X connect 11 0 3 0;
+#X connect 10 0 3 0;
+#X connect 12 0 13 0;
+#X connect 14 0 15 0;
 #X restore 117 228 pd send-receive;
 #N canvas 872 191 424 359 steady-on-click 0;
 #X msg 113 204 steady \$1;
-#X obj 113 173 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 113 173 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 31 105 The 'steady' message takes a non zero value to set it
 to "steady on click" mode. A zero value sets it to "jump on click"
 mode., f 52;
@@ -526,8 +538,8 @@ mode., f 52;
 #X msg 141 266 steady 0;
 #X text 210 266 jump on click;
 #X text 199 240 steady on click (default);
-#X obj 116 303 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+#X obj 116 303 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X text 31 16 By default \, the slider is in "steady on click" mode
 \, where you click and drag from its current position (regardless where
 you click on). Alternatively \, in "jump on click" mode \, the value
@@ -539,35 +551,36 @@ jumps to the position you clicked on the slider and drags from there.
 #X connect 4 0 7 0;
 #X restore 96 200 pd steady-on-click;
 #N canvas 914 225 471 325 linear/log 0;
-#X obj 154 208 hsl 128 18 1 1000 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+#X obj 154 208 hsl 128 18 1 1000 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X msg 151 137 lin;
 #X msg 164 168 log;
 #X text 182 139 linear;
 #X text 198 168 logarithmic;
-#X floatatom 151 245 8 0 0 0 - - -;
+#X floatatom 151 245 8 0 0 0 - - - 0;
 #X text 133 208 1;
 #X text 288 208 1000;
-#X text 57 29 The slider's behavior can be linear (default) or logarithmic
+#X text 56 22 The slider's behavior can be linear (default) or logarithmic
 and you can set this with the 'lin' or 'log' messages \, respectively.
-Check below the difference. In the logarithmic mode \, the minimum
-range can never be 0 or negative., f 48;
+Check below the difference. In the logarithmic mode \, the range can
+never never touch or cross 0 (both minimum and maximum can be positive
+or negative)., f 48;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X restore 131 144 pd linear/log;
 #N canvas 893 185 398 379 range 0;
-#X floatatom 169 106 4 -100 0 0 - - -;
+#X floatatom 169 106 4 -100 0 0 - - - 0;
 #X obj 211 133 t b f;
-#X floatatom 211 106 5 0 100 0 - - -;
-#X obj 172 260 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 0 1;
+#X floatatom 211 106 5 0 100 0 - - - 0;
+#X obj 172 260 hsl 128 18 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X msg 169 204 range \$1 \$2;
 #X obj 169 162 pack 0 127, f 11;
 #X text 110 105 minimum;
 #X text 255 104 maximum;
-#X floatatom 169 301 5 0 0 0 - - -;
-#X floatatom 97 206 5 0 0 0 - - -;
+#X floatatom 169 301 5 0 0 0 - - - 0;
+#X floatatom 97 206 5 0 0 0 - - - 0;
 #X text 39 21 The 'range' message sets the object's range. Note that
 values sent to the GUI can be outside this range and the values are
 passed through., f 44;
@@ -587,7 +600,7 @@ like "\$1" is useful if you're using the object in an abstraction \,
 then you can load a value passed as an argument into a parameter.,
 f 49;
 #X obj 148 256 hsl 128 18 0 127 0 0 empty empty \$0-Label 43 -11 0
-14 -228856 -1 -4160 0 1;
+14 #dcdcdc #000000 #0400fc 0 1;
 #X text 59 26 Note that all the parameters that you can set by inserting
 a number or symbol into a field in the properties window can also load
 dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
@@ -606,9 +619,9 @@ set the slider's value and are passed through (even if outside the
 slider's range). The 'set' message only sets the slider value without
 output. A bang message sends the slider's value., f 69;
 #N canvas 781 223 444 403 example-discrete 0;
-#X floatatom 81 206 8 0 0 0 - - -;
+#X floatatom 81 206 8 0 0 0 - - - 0;
 #X obj 81 351 print fixed-steps;
-#X floatatom 81 318 6 0 0 0 - - -;
+#X floatatom 81 318 6 0 0 0 - - - 0;
 #N canvas 463 235 650 334 discrete 0;
 #X obj 100 283 outlet;
 #X obj 210 45 inlet;
@@ -621,10 +634,10 @@ one in the background., f 29;
 #X obj 100 251 change;
 #X obj 100 214 expr int($f1 * $f2) / $f2;
 #X obj 272 179 int;
-#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
-#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -228856
--1 -1 0 1;
+#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X obj 213 110 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 #dcdcdc
+#000000 #000000 0 1;
 #X msg 49 140 set \$1;
 #X connect 1 0 9 0;
 #X connect 2 0 8 0;
@@ -636,7 +649,7 @@ one in the background., f 29;
 #X connect 11 0 10 0;
 #X coords 0 -1 1 1 155 38 2 200 100;
 #X restore 81 250 pd discrete;
-#X floatatom 229 222 5 1 10 1 - - -;
+#X floatatom 229 222 5 1 10 1 - - - 0;
 #X obj 229 169 loadbang;
 #X text 278 193 number of steps, f 8;
 #X text 79 18 Here's an example (or a 'hack') on how to use the slider
@@ -648,8 +661,8 @@ it if needed., f 34;
 #X text 270 283 Right click and open for more details., f 20;
 #X msg 229 197 8;
 #X text 274 221 (besides 0);
-#X obj 84 172 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 0 1;
+#X obj 84 172 hsl 128 18 0 1 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
 #X connect 0 0 3 0;
 #X connect 2 0 1 0;
 #X connect 3 0 2 0;

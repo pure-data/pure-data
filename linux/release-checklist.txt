@@ -2,12 +2,14 @@ release checklist
 
 test compilation on linux/msw/mac:
 
-VERSION=0.51-4test4
+VERSION=0.52-0test0
 MAC=x64
 
 ------------- remake po: ----------------
+VERSION=tmp
 rm -rf /tmp/pd* /tmp/Pd*
 cd ~/pd/linux
+./make-release $VERSION
 cd /tmp/
 tar xzf ~/pd/dist/pd-$VERSION.src.tar.gz
 cd /tmp/pd-$VERSION
@@ -19,20 +21,6 @@ rsync -avl ~/bis/work/pd-versions/po/ $MAC:work/build/po/
 cd ~/pd/linux
 ./make-release $VERSION
 
----- build on macosx 10.7 machine:
-scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
-ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
-    scp -p $MAC:work/build/pd-$VERSION-macosx7.mac.tar.gz ~/pd/dist/
-ssh $MAC 'cd work/b32/; ./build-386 ' $VERSION && \
-    scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
-
---------- build osx10.14 version:
-rsync -avl --delete $MAC:work/build/pd-$VERSION/ /tmp/pd-$VERSION/
-rsync -e "ssh -p 2200" -avzl /tmp/pd-$VERSION/ \
-    localhost:work/build/pd-$VERSION/
-ssh -p 2200 localhost 'cd work/build; ./build-maxosx14 '$VERSION
-scp -P 2200 -p localhost:work/build/pd-$VERSION.mac.tar.gz ~/pd/dist/
-
 ---------- build for windows:
 cd ~/pd/msw
 rm -rf /tmp/pd-*
@@ -40,6 +28,25 @@ rm -rf /tmp/pd-*
 ./build-wxp-32.sh $VERSION
 mv /tmp/pd-$VERSION*.{zip,exe} ~/pd/dist
 rm -rf /tmp/pd-*
+
+---- build on macosx 10.7 machine:
+scp -p ~/pd/dist/pd-$VERSION.src.tar.gz $MAC:work/build/
+ssh $MAC 'cd work/build; ./build-autotools '$VERSION && \
+    scp -p $MAC:work/build/pd-$VERSION-macosx7.mac.tar.gz ~/pd/dist/
+ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
+    scp -p $MAC:work/b32/pd-$VERSION-i386.mac.tar.gz ~/pd/dist/
+
+--------- build osx10.14 version  --- OLD -- replaced with CI below:
+rsync -avl --delete $MAC:work/build/pd-$VERSION/ /tmp/pd-$VERSION/
+rsync -e "ssh -p 2200" -avzl /tmp/pd-$VERSION/ \
+    localhost:work/build/pd-$VERSION/
+ssh -p 2200 localhost 'cd work/build; ./build-maxosx14 '$VERSION
+scp -P 2200 -p localhost:work/build/pd-$VERSION.mac.tar.gz ~/pd/dist/
+
+---------- grab CI version -----------
+git push origin and wait 1/2 hr.
+grab pure-data_X_macOS.zip from https://git.iem.at/pd/pure-data/pipelines
+rename as ~/pd/dist/pd-$VERSION.macos.zip
 
 --------- once the above checks out with a tmp version, proceed:
 update version string in ../src/m_pd.h ../configure.ac ../src/pd.rc

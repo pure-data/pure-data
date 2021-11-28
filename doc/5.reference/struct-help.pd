@@ -1,5 +1,4 @@
-#N canvas 343 45 514 281 12;
-#X text 102 17 -- declare the fields in a data structure.;
+#N canvas 473 40 514 281 12;
 #N canvas 345 476 491 176 help-template1 0;
 #X obj 60 21 struct struct-1 float x float y symbol dog array weasel
 struct-2, f 42;
@@ -24,3 +23,4 @@ a symbol and "weasel" is an array of objects of structure "struct-2".
 you are using as a data structure template. The arguments specify the
 types and names of the fields \; and for array fields \, a third argument
 specifies the template that the array elements should belong to.;
+#X text 93 18 - declare the fields in a data structure.;

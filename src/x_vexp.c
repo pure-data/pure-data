@@ -1828,7 +1828,7 @@ retry:
                 case 'x':
                         if (IS_FEXPR_TILDE(expr)) {
                                 eptr->ex_type = ET_XI;
-                                if (isdigit(*expr->exp_str))
+                                if (isdigit((int)(*expr->exp_str)))
                                         break;
                                 /* for $x[] is a shorhand for $x1[] */
                                 /* eptr->ex_int = 0; */
@@ -1844,7 +1844,7 @@ retry:
                         if (IS_FEXPR_TILDE(expr)) {
                                 eptr->ex_type = ET_YO;
                                 /*$y takes no number */
-                                if (isdigit(*expr->exp_str))
+                                if (isdigit((int)(*expr->exp_str)))
                                         break;
                                 /* for $y[] is a shorhand for $y1[] */
                                 /* eptr->ex_int = 0; */

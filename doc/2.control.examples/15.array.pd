@@ -1,12 +1,12 @@
-#N canvas 229 36 1067 713 12;
+#N canvas 438 41 1067 713 12;
 #X text 209 19 ARRAYS;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array array99 100 float 0;
 #X coords 0 1 99 -1 400 300 1;
 #X restore 36 251 graph;
 #X msg 639 120 \; array99 resize \$1;
-#X floatatom 639 87 0 0 0 0 - - -;
-#X floatatom 501 55 0 0 0 0 - - -;
+#X floatatom 639 87 0 0 0 0 - - - 0;
+#X floatatom 501 55 0 0 0 0 - - - 0;
 #X obj 501 89 / 100;
 #X msg 501 119 \; array99 const \$1;
 #X text 486 22 You can send messages to an array object:;
@@ -14,33 +14,33 @@
 #X text 681 86 resize;
 #X text 574 469 write a text file;
 #X text 791 463 write a WAV format soundfile;
-#X obj 194 635 tabread;
-#X obj 193 609 tabwrite;
-#X obj 300 635 tabread4~;
-#X obj 300 661 tabwrite~;
-#X obj 393 635 tabreceive~;
-#X text 291 581 ...and audio signals:;
-#X obj 393 609 tabsend~;
+#X obj 154 635 tabread;
+#X obj 153 609 tabwrite;
+#X obj 345 609 tabread4~;
+#X obj 244 634 tabwrite~;
+#X obj 324 661 tabreceive~;
+#X text 245 581 ...and audio signals:;
+#X obj 258 661 tabsend~;
 #X msg 792 208 \; array99 normalize;
 #X msg 793 250 \; array99 normalize 0.5;
 #X text 786 186 normalize to 1 or otherwise;
-#X obj 393 661 tabosc4~;
+#X obj 317 634 tabosc4~;
 #X msg 499 208 \; array99 sinesum 64 0.2 0.2 0.2 0.2;
 #X msg 499 250 \; array99 cosinesum 64 0.2 0.2 0.2 0.2;
 #X text 503 184 Fourier synthesis (resizes table);
-#X obj 193 661 tabread4;
-#X obj 300 609 tabread~;
+#X obj 153 661 tabread4;
+#X obj 274 609 tabread~;
 #X text 37 56 Arrays in Pd provide a unified way to deal with lists
 of numbers \, treating them as either audio samples or control messages.
 To make an array \, select "Array" on the "Put" menu. Dialogs appear
 to help you choose the name \, number of elements \, and various flags.
 ;
-#X obj 554 472 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 554 472 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 554 491 savepanel;
 #X msg 554 514 \; array99 write \$1;
-#X obj 768 467 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 768 467 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 768 486 savepanel;
 #X obj 768 532 soundfiler;
 #X msg 768 509 write \$1 array99;
@@ -50,12 +50,12 @@ message shown below. Arrays live in graphs and graphs may hold more
 than one array. However \, graphs containing more than one array won't
 know how to readjust themselves automatically when the arrays are resized.
 ;
-#X text 812 645 updated for Pd version 0.51;
+#X text 832 655 updated for Pd version 0.51;
 #X text 919 48 print info;
 #X obj 818 114 array size array99;
-#X obj 818 92 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X floatatom 818 139 5 0 0 0 - - -;
+#X obj 818 92 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X floatatom 818 139 5 0 0 0 - - - 0;
 #X obj 499 404 soundfiler;
 #X text 493 327 read a soundfile or text file;
 #X msg 499 351 read -resize ../sound/voice2.wav array99;
@@ -63,15 +63,16 @@ know how to readjust themselves automatically when the arrays are resized.
 #X msg 830 383 \; array99 read 15.file.txt;
 #X text 829 326 simpler way to read a text file (but no resizing available)
 , f 21;
-#X obj 535 619 soundfiler;
-#X text 506 594 see also:;
-#X obj 570 654 array;
-#X text 611 619 reading/writing;
-#X text 88 603 Objects are provided for reading and writing ==>, f
+#X obj 575 619 soundfiler;
+#X text 576 594 see also:;
+#X obj 610 654 array;
+#X text 651 619 reading/writing;
+#X text 48 603 Objects are provided for reading and writing ==>, f
 13;
-#X text 195 582 control:;
+#X text 155 582 control:;
 #X text 847 88 get size, f 14;
-#X text 619 645 many other operations!, f 16;
+#X text 659 645 many other operations!, f 16;
+#X obj 385 634 tabplay~;
 #X connect 3 0 2 0;
 #X connect 4 0 5 0;
 #X connect 5 0 6 0;

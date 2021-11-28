@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 2</TITLE>
-	<meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Documentation 2</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
   
 
 <BODY>
+
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
 
 <H2>Pd Documentation chapter 2: theory of operation</H2>
 
@@ -24,7 +31,7 @@
 
 <P> The purpose of this chapter is to describe Pd's design and how it is
 supposed to work.  Practical details about how to obtain, install, and run Pd 
-are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive guidaes (and to
+are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive guides (and to
 more theoretical information about computer music) can be found in the
 <A href=x1.htm>previous chapter</A>.
 
@@ -197,9 +204,8 @@ control by clicking and dragging up and down, or by typing values in it.
 (There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
 getting help </A> to find out how to look this up).
 
-<P> You can also create a "symbol" box which is like a number box but deals
-in symbols like "cat."  You can type your own strings in (followed by "enter")
-or use it to display strings which arrive as messages to its inlet.
+<P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
+or arbitrary lists of atoms.
 
 <H3> <A id="s1.4"> 2.1.4. patches and files </A> </H3>
 
@@ -335,8 +341,8 @@ Pd messages are sporadic, like MIDI messages or music N "Note cards."
 any number of arguments.  The selector is a symbol, which appears in the patch
 as a non-numeric string with no white space, semicolons, or commas.  The
 arguments may be symbols or numbers.  Numbers in Pd are kept in 32-bit floating
-point, so that they can represent integers exactly between -8388608 and
-8388608.  (In Max, there are separate data types for integers and floating
+point, so that they can represent integers exactly between −16777216 and
+16777216.  (In Max, there are separate data types for integers and floating
 point numbers; Pd uses only float.)
 
 <P> When a message is passed to something (which is often an inlet of a box 
@@ -1275,6 +1281,16 @@ and "set" objects.
 recently been implemented in its current form, and as (hopefully) the user base
 grows there will surely be occasions for many further extensions of the data
 handling primitives and the graphical presentation and editing functions.
+
+
+<P>
+<BR><BR>
+<A href="x3.htm"> next chapter </A><BR>
+<A href="index.htm#s2"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
 
 </BODY>
 </HTML>

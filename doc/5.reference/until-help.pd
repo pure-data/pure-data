@@ -1,7 +1,6 @@
-#N canvas 330 70 495 378 12;
+#N canvas 675 95 495 378 12;
 #X msg 74 179 bang;
 #X obj 66 15 until;
-#X text 114 16 - LOOP;
 #X text 28 50 The until object's left inlet starts a loop in which
 it outputs "bang" until its right inlet gets a bang which stops it.
 If you start "until" with a number \, it iterates at most that number
@@ -18,12 +17,13 @@ stopping mechanism \, Pd goes into an infinite loop!;
 #X obj 74 319 print;
 #X obj 112 291 mod 10;
 #X text 234 310 updated for Pd version 0.28;
-#X connect 0 0 5 0;
-#X connect 5 0 9 0;
-#X connect 7 0 5 0;
-#X connect 9 0 10 0;
+#X text 115 16 - loop;
+#X connect 0 0 4 0;
+#X connect 4 0 8 0;
+#X connect 6 0 4 0;
+#X connect 8 0 9 0;
+#X connect 8 0 11 0;
 #X connect 9 0 12 0;
-#X connect 10 0 13 0;
-#X connect 11 0 5 1;
-#X connect 13 0 9 1;
-#X connect 13 0 11 0;
+#X connect 10 0 4 1;
+#X connect 12 0 8 1;
+#X connect 12 0 10 0;
