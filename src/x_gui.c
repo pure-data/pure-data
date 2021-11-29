@@ -488,13 +488,14 @@ static void pdcontrol_editmode(t_pdcontrol *x, t_floatarg f)
 
 static void pdcontrol_version(t_pdcontrol *x)
 {
-    t_atom at[3];
+    t_atom at[4];
     int major = 0, minor = 0, bugfix = 0;
     sys_getversion(&major, &minor, &bugfix);
-    SETFLOAT(at, major);
-    SETFLOAT(at+1, minor);
-    SETFLOAT(at+2, bugfix);
-    outlet_list(x->x_outlet, &s_list, 3, at);
+    SETSYMBOL(at, gensym("Vanilla"));
+    SETFLOAT(at+1, major);
+    SETFLOAT(at+2, minor);
+    SETFLOAT(at+3, bugfix);
+    outlet_list(x->x_outlet, &s_list, 4, at);
 }
 
 static void pdcontrol_realizedollar(t_pdcontrol *x, t_symbol *s, t_floatarg f)
