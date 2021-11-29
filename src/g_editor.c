@@ -2252,12 +2252,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
             else
             {
-                char *buf;
-                int bufsize;
-                rtext_gettext(x->gl_editor->e_textedfor, &buf, &bufsize);
-                text_setto(hitobj, x, buf, bufsize);
+                rtext_retext(x->gl_editor->e_textedfor);
                 rtext_activate(x->gl_editor->e_textedfor, 0);
-                pd_bang(&hitobj->te_pd);
             }
             return;
         }
