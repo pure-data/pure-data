@@ -728,9 +728,12 @@ state. It can be useful for slew limiting \, dynamics processing (companders/lim
 gates) \, and soft saturation. Examples below are explained in the
 HTML reference (linked above)., f 55;
 #X text 517 27 <= Open HTML reference;
-#X text 56 599 see also:;
-#X obj 136 600 lop~;
-#X obj 186 600 fexpr~;
+#X text 46 589 see also:;
+#X obj 126 590 lop~;
+#X obj 176 590 fexpr~;
+#X obj 302 486 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
+;
+#X text 241 589 [vu] =>;
 #X connect 0 0 12 0;
 #X connect 2 0 0 0;
 #X connect 4 0 3 0;

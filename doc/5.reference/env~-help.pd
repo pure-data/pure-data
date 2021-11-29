@@ -1,4 +1,4 @@
-#N canvas 596 74 563 478 12;
+#N canvas 761 28 613 623 12;
 #X floatatom 57 388 8 0 0 0 - - - 0;
 #X obj 74 14 env~;
 #X text 120 16 - envelope follower;
@@ -9,7 +9,7 @@
 #X text 33 49 The env~ object takes a signal and outputs its RMS amplitude
 in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
 ;
-#X text 306 441 updated for Pd version 0.40.;
+#X text 373 553 updated for Pd version 0.40.;
 #X obj 57 332 env~ 16384 8192;
 #X text 186 315 creation arguments:;
 #X text 184 331 1 window size in samples (1024 default);
@@ -28,9 +28,17 @@ is about 3 dB below peak-to-peak amplitude., f 53;
 #X obj 368 229 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 395 227 DSP on/off;
+#X obj 58 474 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
+;
+#X obj 57 441 - 100;
+#X text 115 486 <= see also [vu];
+#X text 122 558 and also see also:;
+#X obj 257 558 slop~, f 8;
+#X connect 0 0 21 0;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
 #X connect 9 0 0 0;
 #X connect 18 0 17 0;
+#X connect 21 0 20 0;
