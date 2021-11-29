@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include "z_libpd.h"
-#include "m_imp.h"
 
 void pdprint(const char *s) {
   printf("%s", s);
@@ -20,7 +19,7 @@ int main(int argc, char **argv) {
     t_pdinstance *pd1, *pd2;
     int srate = 48000;
         /* one input channel, two output channels,
-        block size 64, one tick per buffer: */
+           block size 64, one tick per buffer: */
     float inbuf[64], outbuf[128];
     char *filename = "test_libpd.pd", *dirname = ".";
 
@@ -64,6 +63,7 @@ int main(int argc, char **argv) {
     libpd_add_float(-480.0f);
     libpd_finish_message("frequency", "float");
 
+    /* now run pd for 3 ticks */
     int i, j;
     for (i = 0; i < 3; i++)
     {
