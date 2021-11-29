@@ -21,7 +21,12 @@ int main(int argc, char **argv) {
         /* one input channel, two output channels,
            block size 64, one tick per buffer: */
     float inbuf[64], outbuf[128];
-    char *filename = "test_libpd.pd", *dirname = ".";
+    char *filename = "test2.pd", *dirname = ".";
+
+    /* accept overrides from the commandline:
+       $ pdtest_multi file.pd ../dir */
+    if (argc > 1) filename = argv[1];
+    if (argc > 2) dirname = argv[2];
 
         /* maybe these two calls should be available per-instance somehow: */
     libpd_set_printhook(pdprint);
@@ -69,7 +74,6 @@ int main(int argc, char **argv) {
     {
         libpd_set_instance(pd1);
         libpd_process_float(1, inbuf, outbuf);
-
         printf("instance 1, tick %d:\n", i);
         for (j = 0; j < 8; j++)
             printf("%f ", outbuf[j]);
