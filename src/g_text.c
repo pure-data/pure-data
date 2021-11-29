@@ -682,8 +682,14 @@ static void gatom_bang(t_gatom *x)
     }
     else    /* list */
     {
-        int argc = binbuf_getnatom(x->a_text.te_binbuf);
+        int argc = binbuf_getnatom(x->a_text.te_binbuf), i;
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
+        for (i = 0; i < argc; i++)
+            if (argv[i].a_type != A_FLOAT && argv[i].a_type != A_SYMBOL)
+        {
+            pd_error(x, "list: only sends literal numbers and symbols");
+            return;
+        }
         if (x->a_text.te_outlet)
             outlet_list(x->a_text.te_outlet, &s_list, argc, argv);
         if (*x->a_expanded_to->s_name && x->a_expanded_to->s_thing)
@@ -744,6 +750,18 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
+void gatom_undarken(t_text *x)
+{
+    post("undarken");
+    if (x->te_type == T_ATOM)
+    {
+        ((t_gatom *)x)->a_doubleclicked =
+            ((t_gatom *)x)->a_grabbed = 0;
+        gatom_reborder((t_gatom *)x);
+    }
+    else bug("gatom_undarken");
+}
+
 void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
@@ -777,18 +795,12 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_activate(t, 0);
         }
         gatom_bang(x);
-        if (c == 0)
-        {
-            x->a_grabbed = 0;
-            gatom_reborder(x);
-        }
         gatom_senditup(x);
     }
     else
     {
         if (t != x->a_glist->gl_editor->e_textedfor)
         {
-            x->a_doubleclicked = 0;
             rtext_activate(t, 1);
             rtext_key(t, '.', &s_);
             rtext_key(t, '.', &s_);
@@ -818,6 +830,7 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     else
     {
         t_atom *ap;
+        x->a_doubleclicked = 0;
         if (x->a_dragindex <0)
             return;
         if (dy == 0 || x->a_dragindex < 0 ||
