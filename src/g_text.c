@@ -540,9 +540,7 @@ typedef struct _gatom
 } t_gatom;
 
     /* prepend "-" as necessary to avoid empty strings, so we can
-    use them in Pd messages.  A more complete solution would be
-    to introduce some quoting mechanism; but then we'd be much more
-    complicated. */
+    use them in Pd messages. */
 static t_symbol *gatom_escapit(t_symbol *s)
 {
     if (!*s->s_name)
@@ -555,10 +553,16 @@ static t_symbol *gatom_escapit(t_symbol *s)
         shmo[99] = 0;
         return (gensym(shmo));
     }
-    else return (iemgui_dollar2raute(s));
+    else return (s);
 }
 
-    /* undo previous operation: strip leading "-" if found. */
+    /* undo previous operation: strip leading "-" if found.  This is used
+    both to restore send, etc, names when loading from a file, and to
+    set them from the properties dialog.  In the former case, since before
+    version 0.52 '$" was aliases to "#", we also bash any "#" characters
+    to "$".  This is unnecessary when reading files saved from 0.52 or later,
+    and really we should test for that and only bash when necessary, just
+    in case someone wants to have a "#" in a name. */
 static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if (*s->s_name == '-')
