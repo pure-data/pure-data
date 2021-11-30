@@ -555,7 +555,7 @@ static t_symbol *gatom_escapit(t_symbol *s)
         shmo[99] = 0;
         return (gensym(shmo));
     }
-    else return (s);
+    else return (iemgui_dollar2raute(s));
 }
 
     /* undo previous operation: strip leading "-" if found. */
@@ -563,7 +563,7 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if (*s->s_name == '-')
         return (gensym(s->s_name+1));
-    else return (s);
+    else return (iemgui_raute2dollar(s));
 }
 
 static void gatom_redraw(t_gobj *client, t_glist *glist)
