@@ -1,32 +1,32 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 695 47 583 653 12;
-#X obj 123 591 list;
+#N canvas 721 71 562 579 12;
+#X obj 123 531 list;
 #X obj 68 12 text;
-#X text 46 590 see also:;
+#X text 46 530 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
-#X restore 163 591 array;
+#X restore 163 531 array;
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
-#N canvas 675 23 679 672 define 0;
+#N canvas 766 102 679 680 define 0;
 #X msg 90 74 clear;
 #X msg 108 100 read text-object-help.txt;
 #X msg 121 129 write text-object-help.txt;
 #X text 107 25 "text define" maintains a text object and can name it
 so that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 166 417 click to open and edit text:, f 16;
+#X text 146 417 click to open and edit text:, f 16;
 #X text 395 432 creation arguments:;
 #X text 423 450 optional -k flag to keep contents;
 #X text 425 467 optional name;
 #X text 295 98 read from a file;
 #X text 317 129 write to a file;
 #X text 139 73 clear;
-#X obj 160 265 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 150 245 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X obj 88 510 t b p;
 #X obj 88 562 text get -s text t;
@@ -40,38 +40,35 @@ so that other objects can find it (and later should have some alternative
 #X text 173 593 First outlet is pointer to a "text" scalar containing
 the text \, which is output when the object is sent a "bang". For example
 \, here's machinery for printing out first line of text., f 46;
-#X text 181 259 bang to output a pointer to a scalar (struct) containing
+#X text 171 239 bang to output a pointer to a scalar (struct) containing
 the text - see first outlet below, f 45;
 #X text 265 504 Second outlet notifies you when text changes. As of
 Pd 0.48 this only outputs the message "updated" when text changes \,
 but this might be extended to offer more information in the future.
 , f 42;
-#X msg 174 372 click;
-#X msg 222 372 close;
-#X text 270 372 open and close text window;
-#X msg 166 307 send text-help-send;
-#X text 311 307 send pointer to a named receive object;
+#X msg 164 352 click;
+#X msg 212 352 close;
+#X text 260 352 open and close text window;
+#X msg 156 287 send text-help-send;
+#X text 301 287 send pointer to a named receive object;
 #X obj 101 481 r text-help-send;
 #X text 132 152 (optionally you can read or write to/from a file interpreting
 carriage returns as separators \; this should allow reading some text
 file formats - like this:), f 64;
-#X msg 166 343 sort;
-#X text 213 341 sort the contents. details here:;
-#N canvas 602 124 527 289 sorting-text 0;
-#X obj 110 115 text define text-help-sorting;
-#X msg 141 78 sort;
-#X msg 109 43 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 1 \\\; 2 \;;
-#X text 54 160 Numbers come before symbols \, which are sorted alphabetically
+#X msg 156 323 sort;
+#X text 203 321 sort the contents. details here:;
+#N canvas 1070 128 647 361 sorting-text 0;
+#X obj 45 126 text define text-help-sorting;
+#X msg 76 89 sort;
+#X msg 44 54 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 1 \\\; 2 \;;
+#X text 63 168 Numbers come before symbols \, which are sorted alphabetically
 (details such as case sensitivity (does 'b' come before 'A'?) may depend
 on operating system). Shorter lines come before longer ones that match
 the entire shorter lines. As a special case empty lines come before
 anything else.;
-#X text 326 115 <= click to open;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
-#X restore 456 342 pd sorting-text;
-#X msg 148 232 set line 0 \\\; line 1 \\\; line 2 \\\;;
-#X text 393 232 overrides text contents with a list;
+#X restore 446 322 pd sorting-text;
 #X connect 0 0 17 0;
 #X connect 1 0 17 0;
 #X connect 2 0 17 0;
@@ -89,10 +86,9 @@ anything else.;
 #X connect 26 0 17 0;
 #X connect 28 0 12 0;
 #X connect 30 0 17 0;
-#X connect 33 0 17 0;
 #X restore 392 196 pd define;
 #X obj 280 219 text get;
-#N canvas 485 91 858 587 get 0;
+#N canvas 567 169 858 587 get 0;
 #X floatatom 113 123 5 0 5 0 - - - 0;
 #X msg 37 92 0;
 #X msg 113 92 2;
@@ -171,7 +167,7 @@ inlet -- none to specify whole line), f 46;
 #X connect 40 0 23 0;
 #X connect 41 0 15 0;
 #X restore 392 219 pd get;
-#N canvas 533 146 720 496 text-and-data-structures 0;
+#N canvas 532 178 720 496 text-and-data-structures 0;
 #X floatatom 88 217 5 0 0 0 - - - 0;
 #X msg 53 186 0;
 #X msg 128 186 2;
@@ -180,67 +176,71 @@ inlet -- none to specify whole line), f 46;
 #X obj 211 364 print type;
 #X obj 211 266 pointer;
 #X obj 88 298 text get -s text-help-struct z, f 18;
-#N canvas 807 416 450 300 text-help-struct 0;
-#X scalar text-help-struct 20 20 \; a b c d \;;
-#X obj 232 209 pointer;
-#X msg 232 151 traverse pd-text-help-struct \, bang, f 21;
-#X obj 46 238 append text-help-struct x y;
-#X msg 46 173 20 20;
-#X obj 13 56 struct text-help-struct float x float y text z;
-#X obj 13 83 filledpolygon 0 0 0 0 0 0 10 10 10 10 0 0 0;
-#X obj 14 115 drawtext z 16 -3 0;
-#X connect 1 0 3 2;
-#X connect 2 0 1 0;
-#X connect 4 0 3 0;
+#N canvas 807 416 480 302 text-help-struct 0;
+#X obj 76 67 struct text-help-struct float x float y text z;
+#X text 95 196 This just draws a frame around the text;
+#X obj 67 133 drawtext z 15 0 900;
+#X text 213 128 draws text z at coordinates (15 \, 0) with color 900
+(red), f 28;
+#X text 77 29 fields 'x/y' for coordinates and 'z' for text;
+#X obj 68 224 drawpolygon 0 4 0 -10 0 55 140 55 140 -10 0 -10;
 #X restore 205 116 pd text-help-struct;
 #X obj 88 239 t f b;
-#X text 73 32 a simple example showing how to access text in data structures
-via pointers., f 38;
-#N canvas 851 144 430 177 text-help-data 0;
-#X scalar text-help-struct 20 20 \; 1 2 3 \\\; a b c d \\\; \;;
-#X text 13 86 We have one datum (above) whose "z" field is text.;
+#N canvas 1281 190 226 165 text-help-data 0;
+#X scalar text-help-struct 20 20 \; 1 2 3 \\\; a b c d \\\; 100 202
+300 \\\; \;;
+#X text 13 86 We have one datum (above) whose "z" field is text.,
+f 25;
 #X restore 206 88 pd text-help-data;
 #X msg 210 209 traverse pd-text-help-data \, next, f 18;
 #X text 200 450 bug - saving multi-line texts inside structures;
-#X obj 524 325 pointer;
-#X msg 524 268 traverse pd-text-help-data \, next, f 18;
-#X obj 401 351 text set -s text-help-struct z, f 18;
-#X floatatom 442 323 5 0 0 0 - - - 0;
-#X msg 408 293 0;
-#X msg 477 293 2;
-#X msg 442 293 1;
-#X msg 401 164 1 2 3;
-#X msg 410 200 list a b c d;
-#X obj 401 242 trigger list bang;
+#X obj 524 335 pointer;
+#X msg 524 278 traverse pd-text-help-data \, next, f 18;
+#X obj 401 361 text set -s text-help-struct z, f 18;
+#X floatatom 442 333 5 0 0 0 - - - 0;
+#X msg 408 303 0;
+#X msg 477 303 2;
+#X msg 442 303 1;
+#X obj 401 252 trigger list bang;
 #X listbox 88 338 12 0 0 0 - - - 0;
 #X floatatom 211 337 5 0 0 0 - - - 0;
+#X text 60 159 get text line;
+#X text 425 277 set line;
+#X text 336 89 <= open to see text;
+#X text 160 28 A simple example showing how to access text in data
+structures via pointers., f 38;
+#X listbox 401 222 14 0 0 0 - - - 0;
+#X msg 410 190 list a b c d;
+#X text 508 222 set text;
+#X msg 401 160 100 200 300;
 #X connect 0 0 9 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
 #X connect 6 0 7 3;
-#X connect 7 0 24 0;
-#X connect 7 1 25 0;
+#X connect 7 0 21 0;
+#X connect 7 1 22 0;
 #X connect 9 0 7 0;
-#X connect 9 1 12 0;
-#X connect 12 0 6 0;
-#X connect 14 0 16 3;
-#X connect 15 0 14 0;
-#X connect 17 0 16 1;
-#X connect 18 0 17 0;
-#X connect 19 0 17 0;
-#X connect 20 0 17 0;
-#X connect 21 0 23 0;
-#X connect 22 0 23 0;
-#X connect 23 0 16 0;
-#X connect 23 1 15 0;
-#X connect 24 0 4 0;
-#X connect 25 0 5 0;
+#X connect 9 1 11 0;
+#X connect 11 0 6 0;
+#X connect 13 0 15 3;
+#X connect 14 0 13 0;
+#X connect 16 0 15 1;
+#X connect 17 0 16 0;
+#X connect 18 0 16 0;
+#X connect 19 0 16 0;
+#X connect 20 0 15 0;
+#X connect 20 1 14 0;
+#X connect 21 0 4 0;
+#X connect 22 0 5 0;
+#X connect 27 0 20 0;
+#X connect 28 0 27 0;
+#X connect 30 0 27 0;
 #X restore 273 480 pd text-and-data-structures;
 #X text 100 458 here's how to access texts inside data structures:
 , f 27;
 #X text 113 12 - manage a list of messages;
-#X obj 211 591 scalar;
+#X obj 211 531 scalar;
 #X obj 279 318 text size;
 #N canvas 847 155 566 324 size 0;
 #X obj 74 68 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -265,7 +265,7 @@ of range), f 35;
 #X connect 9 0 2 1;
 #X restore 392 318 pd size;
 #X obj 280 243 text set;
-#N canvas 655 115 688 563 set 0;
+#N canvas 710 310 688 563 set 0;
 #X floatatom 127 206 5 0 0 0 - - - 0;
 #X msg 95 172 0;
 #X msg 160 172 2;
@@ -355,7 +355,7 @@ backslashes).;
 #X connect 12 0 3 0;
 #X restore 392 342 pd tolist;
 #X obj 279 366 text fromlist;
-#N canvas 1003 356 604 318 fromlist 0;
+#N canvas 836 231 604 318 fromlist 0;
 #X obj 81 202 text fromlist text-help-fromlist;
 #X obj 114 263 text define text-help-fromlist;
 #X text 46 21 "text fromlist" converts a list such as "text tolist"
@@ -513,7 +513,7 @@ symbol are waiting points, f 43;
 are used as a waiting point, f 43;
 #X text 226 461 creation arguments:;
 #X text 248 482 name of the text object or "-s struct-name";
-#X obj 375 696 text define -k text-help-seq;
+#X obj 182 701 text define -k text-help-seq;
 #A set 1 2 3 \; 4 5 symbol 7 \; 8 \$1 \$2 \; 9 \$3 \$1-\$2-\$3 \; walk
 the dog \;;
 #X f 29;
@@ -591,24 +591,23 @@ simply sequence a list of numbers:, f 71;
 #000000 #000000;
 #X floatatom 783 679 5 0 0 0 - - - 0;
 #X listbox 669 678 14 0 0 0 - - - 0;
-#X text 381 671 click to see the sequence:;
+#X text 188 676 click to see the sequence:;
 #X listbox 939 242 13 0 0 0 - - - 0;
 #X obj 939 218 list;
 #X listbox 1043 239 8 0 0 0 - - - 0;
-#N canvas 639 430 639 291 tempo 0;
-#X text 84 178 These symbols can also be preceeded by "per" (as in
+#N canvas 639 430 676 280 tempo 0;
+#X text 80 158 These symbols can also be preceeded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
-min (hence \, the same as 'BPM')., f 72;
-#X text 100 89 - millisecond (msec for short) \; - seconds (sec) \;
+min (hence \, the same as 'BPM')., f 78;
+#X text 78 82 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
-#X text 84 216 Changing the tempo while the sequencer is running in
+#X text 74 31 Wait times are in units of 1 millisecond by default \,
+but you can change this with the "tempo" message \, which takes a different
+tempo number and a time unit symbol. Possible symbols are:, f 71;
+#X text 76 210 Changing the tempo while the sequencer is running in
 auto mode changes the time for the remaining portion of the last wait
-time., f 72;
-#X text 54 31 Wait times are in units of 1 millisecond by default \,
-but you can change this with the '-t' flag or the "tempo" message (as
-in [timer] \, [metro] and [delay]) \, by setting a different tempo
-number and a time unit symbol. Possible symbols are:, f 79;
+time., f 78;
 #X restore 464 296 pd tempo;
 #X text 22 19 "text sequence" outputs lines from a text buffer \, either
 to an outlet or as messages to named destinations. The text is interpreted
@@ -625,10 +624,6 @@ lines are output), f 50;
 times (see example to the right)., f 42;
 #X text 206 274 set tempo unit for delay times. See also at right and
 possible messages here:, f 40;
-#X text 63 700 see also:;
-#X obj 192 699 delay;
-#X obj 242 699 timer;
-#X obj 140 699 metro;
 #X connect 0 0 67 1;
 #X connect 2 0 67 0;
 #X connect 4 0 67 0;
@@ -738,29 +733,4 @@ line 4 \\\;;
 #X connect 10 0 15 0;
 #X connect 11 0 15 0;
 #X restore 392 267 pd insert;
-#X text 323 587 updated for Pd version 0.49;
-#N canvas 847 151 562 340 Dealing_with_"\$0" 0;
-#X obj 271 232 symbol \$0-x;
-#X floatatom 211 290 5 0 0 0 - - - 0;
-#X obj 211 229 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 271 206 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 292 203 <= click here first;
-#X text 125 227 get size =>;
-#X text 262 155 <= array with local name;
-#X text 36 33 '\$0' - the patch ID number used to force locality in
-Pd - can be used to set a text name. This is specially useful in abstractions
-so each copy has local names instead of global., f 70;
-#X text 36 86 You can use "\$0" in an text name in [text define] and
-if you need to set the text name you can load it in a symbol object
-\, since "\$0" doesn't work in messages., f 70;
-#X obj 109 156 text define -k \$0-x;
-#A set hi \, I'm a text with a local name \;;
-#X obj 211 263 text size;
-#X connect 0 0 10 1;
-#X connect 2 0 10 0;
-#X connect 3 0 0 0;
-#X connect 10 0 1 0;
-#X restore 387 533 pd Dealing_with_"\$0";
-#X text 56 533 open subpatch to see how to deal with '\$0' =>;
+#X text 323 527 updated for Pd version 0.49;
