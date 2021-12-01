@@ -205,85 +205,6 @@ empty) \; - send symbol (default empty) \; - font size (default: 0
 #X connect 7 0 0 0;
 #X connect 8 0 0 0;
 #X restore 181 294 pd creating-boxes;
-#N canvas 245 30 1113 627 creating-arrays 0;
-#X obj 171 456 s pd-mygraph;
-#N canvas 319 193 394 307 make-array 0;
-#X restore 330 251 pd make-array;
-#X obj 169 259 s pd-make-array;
-#X msg 169 197 graph mygraph;
-#X text 50 97 You can create graphs with the 'graph' message \, it
-expects a graph name \, which is the name of the subpatch you can then
-send messages to., f 65;
-#X text 276 198 <= create graph;
-#X msg 193 427 clear;
-#X msg 99 195 vis \$1;
-#X obj 99 166 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 119 164 <= open;
-#X msg 191 228 clear;
-#X text 238 425 clears array from 'mygraph';
-#X obj 168 576 s array1;
-#X text 380 531 and now you can send messages to array to set it up
-as well., f 21;
-#X msg 168 541 style 0 \, color 900 \, width 3;
-#X obj 655 534 ../2.control.examples/15.array;
-#X obj 654 562 ../2.control.examples/16.more.arrays;
-#X text 879 532 <= click;
-#X text 918 564 <= click;
-#X text 538 546 ===> see also:;
-#X obj 627 200 s pd-make-array;
-#X obj 591 387 s pd-another-graph;
-#X msg 766 181 \; pd-another-graph vis 0;
-#X msg 602 97 vis 1 \, clear;
-#X text 698 98 reinitialize;
-#X text 838 135 create subpatch;
-#X text 937 189 hide it;
-#X msg 627 134 obj 100 100 pd another-graph;
-#X msg 591 344 coords 0 1 10 -1 200 100 2 0 0, f 17;
-#X msg 640 461 clear;
-#X obj 618 490 s pd-another-graph;
-#X text 685 459 clears array from 'pd-another-graph';
-#X text 589 239 We can now set the window's properties with the 'coords'
-message \, which is also useful for general 'Graph on Parent' configuration.
-, f 65;
-#X text 736 335 Arguments are \; - bounds: xmin \, ymax \, xmax \,
-ymin \; - size: xsize \, ysize \; - gop flag (0: no gop \, 1: gop \,
-2: gop+hide) \; - margin: xmargin \, ymargin.;
-#X text 791 428 finally create the array.;
-#X text 562 19 We can also restart from scratch and start by creating
-a subpatch with the 'pd' object. This gives us the option to place
-the subpatch/graph wherever we want. Note that when we create a subpatch
-like that it shows its content \, so we send 'vis 0' to it so it closes.
-, f 70;
-#X text 50 11 The easiest way to create an arrray is by creating an
-[array] or [table] object \, but you can also create them as if you'd
-called them from the put menu. Graphical arrays live in subpatches.
-More specifically 'graphs' \, which are just subpatches with a 'graph
-on 'parent' selection., f 65;
-#X obj 630 281 cnv 15 400 40 empty empty empty 20 12 0 14 #ffc7c6 #404040
-0;
-#X text 649 285 Beware: 'coords' is not a public API message \, there's
-risk its behaviour may change in future Pd versions., f 53;
-#X msg 657 167 clear;
-#X msg 619 428 array array1 10 float 1;
-#X msg 172 389 array array1 10 float;
-#X text 60 330 Now we use the 'array' message to add an array named
-'array1' \, with 10 points. We also need to specify the data (always
-a float)., f 66;
-#X connect 3 0 2 0;
-#X connect 6 0 0 0;
-#X connect 7 0 2 0;
-#X connect 8 0 7 0;
-#X connect 10 0 2 0;
-#X connect 14 0 12 0;
-#X connect 23 0 20 0;
-#X connect 27 0 20 0;
-#X connect 28 0 21 0;
-#X connect 29 0 30 0;
-#X connect 39 0 20 0;
-#X connect 40 0 30 0;
-#X connect 41 0 0 0;
-#X restore 557 306 pd creating-arrays;
 #X text 532 30 You can create objects and also connect them to create
 patches. See subpatch below:, f 28;
 #N canvas 780 406 529 443 loadbang 0;
@@ -312,7 +233,7 @@ that are place in the named canvas and also in subwindows of that canvas
 #X connect 5 0 1 0;
 #X connect 8 0 1 0;
 #X connect 10 0 9 0;
-#X restore 620 207 pd loadbang;
+#X restore 589 290 pd loadbang;
 #X obj 285 181 namecanvas;
 #N canvas 438 311 592 528 Data-Structures 0;
 #X text 70 109 For more on Data Structures \, check section 4.data.structures
@@ -407,9 +328,7 @@ also indexes from 0 \, by the way., f 67;
 #X connect 9 0 0 0;
 #X connect 10 0 0 0;
 #X restore 545 93 pd (dis)connecting-boxes;
-#X text 543 199 loadbang handling:, f 9;
-#X text 541 258 Creating an array is also possible \, see example:
-, f 25;
+#X text 593 244 loadbang handling:, f 9;
 #N canvas 902 124 849 512 save 0;
 #X msg 326 121 menusave;
 #X msg 367 171 menusaveas;
@@ -493,11 +412,11 @@ as the next example on the parent patch shows., f 40;
 #X connect 2 0 1 0;
 #X connect 7 0 6 0;
 #X connect 8 0 7 0;
-#X restore 575 159 pd abstractions;
+#X restore 576 193 pd abstractions;
 #X text 31 217 Many of the menu entries in Pd end up making Pd send
 a message to a canvas name. For instance \, when you create an object
 or message box. See example below for creating 'boxes'., f 62;
-#X text 546 134 handling abstractions:, f 24;
+#X text 584 148 handling abstractions:, f 13;
 #X restore 800 640 pd Dynamic-Patching;
 #X text 105 489 The set-tracing message is useful for debugging with
 the [trace] object. Check its help file., f 47;
