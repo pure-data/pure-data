@@ -209,7 +209,7 @@ of an incoming message (number or symbol) \, so "\$1" is the 1st element
 #X msg 57 626 1 two 3;
 #X msg 57 658 1st: \$1 2nd: \$2 3rd: \$3;
 #X obj 57 692 print;
-#N canvas 498 109 857 521 dollar-variables 1;
+#N canvas 498 109 857 521 dollar-variables 0;
 #X symbolatom 250 178 8 0 0 0 - - - 0;
 #X msg 250 111 symbol nice;
 #X msg 250 144 symbol \$1!!!;
