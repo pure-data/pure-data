@@ -1,20 +1,13 @@
-#N canvas 548 57 1020 634 12;
-#X msg 63 14 message boxes;
-#X obj 181 527 print;
-#X msg 181 450 60 64;
-#X msg 181 480 pitch \$1 \, velocity \$2, f 11;
-#X msg 574 100 123 \; my-receiver-name 858 \; another-receiver -45
-;
-#X text 45 100 Clicking on a message also sends it \, so you can use
-message boxes for push buttons. For instance \, click here while watching
-the printout window:, f 65;
-#X msg 192 158 walk the dog;
-#X obj 192 187 print;
-#X obj 586 207 receive my-receiver-name;
-#X floatatom 586 237 6 0 0 0 - - - 0;
-#X floatatom 781 237 6 0 0 0 - - - 0;
-#X obj 781 205 receive another-receiver;
-#X text 632 311 You can send messages to message boxes to change their
+#N struct template1 float x float y float z float q;
+#N canvas 524 51 1132 746 12;
+#X msg 71 15 message boxes;
+#X msg 101 296 walk the dog;
+#X obj 78 343 print;
+#X obj 659 335 receive my-receiver-name;
+#X floatatom 659 365 6 0 0 0 - - - 0;
+#X floatatom 854 365 6 0 0 0 - - - 0;
+#X obj 854 333 receive another-receiver;
+#X text 682 439 You can send messages to message boxes to change their
 content - open the subpatch below for details:, f 41;
 #N canvas 614 207 611 440 changing-messages 0;
 #X msg 49 373 dog bird monkey \; bird;
@@ -47,72 +40,48 @@ semicolon, f 36;
 #X connect 12 0 0 0;
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
-#X restore 777 352 pd changing-messages;
-#X text 243 187 <= object (different border);
-#X text 288 157 <= message;
-#X text 45 48 Message boxes hold one or more messages. Anytime the
-message box receives any message at all \, the messages in the box
-are all sent to their destinations., f 65;
-#X floatatom 307 516 5 0 0 0 - - - 0;
-#X symbolatom 49 503 8 0 0 0 - - - 0;
-#X msg 49 436 symbol nice;
-#X msg 49 469 symbol \$1!!!;
-#X msg 307 482 \$2;
-#X msg 329 447 13 12 11;
-#X msg 280 388 list one 2 three;
-#X msg 307 417 Midi Note 69;
-#X obj 49 535 print;
-#X obj 307 548 print;
-#N canvas 866 231 502 402 more-on-selectors 0;
-#X msg 121 269 4;
-#X msg 121 206 bang;
-#X text 77 207 bang;
-#X text 71 242 Symbol;
-#X text 175 309 (implicit);
-#X text 68 322 List;
-#X text 151 268 (implicit);
-#X text 74 270 float;
-#X msg 280 252 turn on;
-#X msg 280 284 open file4.aif;
-#X text 52 168 Special selectors:;
-#X msg 280 314 stop;
-#X msg 346 252 turn off;
+#X restore 827 480 pd changing-messages;
+#X text 124 343 <= object (different border);
+#N canvas 866 231 495 492 more-on-selectors 0;
+#X msg 118 262 4;
+#X msg 118 196 bang;
+#X text 74 197 bang;
+#X text 68 232 Symbol;
+#X text 183 302 (implicit);
+#X text 76 315 List;
+#X text 148 261 (implicit);
+#X text 71 263 float;
+#X msg 181 380 turn on;
+#X msg 181 412 open file4.aif;
+#X text 60 158 Special selectors:;
+#X msg 181 442 stop;
+#X msg 247 380 turn off;
+#X text 45 383 Messages with other selectors:, f 16;
+#X msg 118 232 symbol hi;
+#X msg 118 302 1 hi 3 5;
+#X msg 118 328 list one 2;
+#X text 163 196 <= can't have arguments;
+#X text 194 230 <= can have only one argument;
+#X text 220 442 (just a selector);
+#X text 319 380 selector "turn";
+#X text 294 411 selector "open";
 #X text 40 19 A message selector is the first symbol in a message and
 defines its data type. The special types are: float \, symbol \, list
 \, bang and pointer (this one used for data structures only). The "float"
-selector doesn't need to be specified and neither does "list" if its
-first element is a float. Other message selectors can be anything else
-defined by the user. If a message contains only one symbol \, like
-"stop" \, it is considered a selector with no actual message attached.
-, f 57;
-#X text 281 208 Messages with other selectors:, f 16;
-#X text 319 314 just a selector;
-#X msg 121 242 symbol hi;
-#X msg 110 309 1 hi 3 5;
-#X msg 111 335 list one 2;
-#X restore 389 542 pd more-on-selectors;
-#X text 105 245 You can separate multiple messages by commas., f 25
+selector doesn't need to be specified for number and neither does "list"
+if its first element is a number. Other message selectors can be anything
+else. If a message contains only one symbol \, like "stop" \, it is
+considered a selector with no actual message attached.;
+#X restore 249 505 pd more-on-selectors;
+#X text 610 23 You can separate multiple messages by commas., f 46
 ;
-#X obj 309 269 print;
-#X msg 309 240 1 \, 2 \, 3 \, 4;
-#X text 44 395 Dollar signs can be part of a symbol., f 19;
-#X text 42 315 You can use "\$1" \, "\$2" \, etc. to make variable
-messages. The dollar sign numbers correspond to elements of an incoming
-message (number or symbol) \, so "\$1" is the 1st element \, \$2 the
-2nd and so on., f 66;
-#X text 412 403 <= Note that the message selector does not count as
-a message element., f 18;
-#X text 380 501 Open the subpatch below for more on selectors:, f
-23;
-#X text 565 32 If you separate messages by a semicolon instead of a
-comma \, the following message(s) are re-routed to named objects such
-as "receives":;
-#X text 799 571 updated for Pd version 0.52;
-#X obj 586 268 print my-receiver-name;
-#X obj 781 268 print another-receiver;
-#X obj 574 158 print message;
-#X obj 764 156 print message;
-#X msg 764 98 1 \, 2 \, 3 \; my-receiver-name 100 \, 200 \, 300 \;
+#X obj 773 94 print;
+#X msg 773 64 1 \, 2 \, 3 \, 4;
+#X text 849 689 updated for Pd version 0.52;
+#X obj 659 396 print my-receiver-name;
+#X obj 854 396 print another-receiver;
+#X obj 634 284 print message;
+#X msg 634 226 1 \, 2 \, 3 \; my-receiver-name 100 \, 200 \, 300 \;
 another-receiver -45 \, -12.5;
 #N canvas 549 120 1021 464 escaping-characters 0;
 #X symbolatom 71 181 20 0 0 0 - - - 0;
@@ -180,10 +149,7 @@ sintax) and the backlash character itself. See examples below., f
 #X connect 26 0 22 0;
 #X connect 27 0 28 0;
 #X connect 29 0 30 0;
-#X restore 767 447 pd escaping-characters;
-#X text 635 391 Finally \, you can escape special characters with backslashes
-(""). click and open the subpatch below for more information., f 42
-;
+#X restore 817 639 pd escaping-characters;
 #N canvas 959 386 445 331 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -208,26 +174,149 @@ load the '\$0' in an object \, since "\$0" doesn't work in messages.
 #X connect 6 0 3 0;
 #X connect 7 0 8 0;
 #X connect 9 0 7 0;
-#X restore 791 516 pd Dealing_with_"\$0";
-#X text 639 494 open subpatch to see how to deal with '\$0' =>, f
+#X restore 841 545 pd Dealing_with_"\$0";
+#X text 689 523 open subpatch to see how to deal with '\$0' =>, f
 24;
-#X text 571 571 see also:;
-#X obj 645 570 Pd-messages;
-#X connect 2 0 3 0;
-#X connect 3 0 1 0;
-#X connect 4 0 39 0;
-#X connect 6 0 7 0;
+#X text 637 693 see also:;
+#X obj 711 692 Pd-messages;
+#X msg 88 264 bang;
+#X msg 77 232 symbol hi;
+#X text 154 231 a symbol message;
+#X text 128 263 a bang message;
+#X obj 374 284 float;
+#X msg 374 221 3;
+#X floatatom 374 316 5 0 0 0 - - - 0;
+#X obj 374 345 print;
+#X text 407 222 a float message;
+#X msg 894 226 \; my-receiver-name 858 \; another-receiver -45;
+#X obj 894 284 print nothing;
+#X text 610 128 If you separate messages by a semicolon \, the following
+message(s) are sent to destinations specified by the selector. A [receive]
+object with the destination name gets the message. A message box can
+start with a semicolon and nothing comes out of it \, it all goes to
+destinations., f 65;
+#X text 685 583 Finally \, you can escape special characters with backslashes
+(). click and open the subpatch below for more information., f 42
+;
+#X msg 389 253 doesn't work;
+#X text 30 555 You can use "\$1" \, "\$2" \, etc. to make variable
+messages in message boxes. The dollar sign numbers correspond to elements
+of an incoming message (number or symbol) \, so "\$1" is the 1st element
+\, \$2 the 2nd and so on., f 72;
+#X floatatom 261 626 5 0 127 0 - - - 0;
+#X msg 261 658 pitch \$1;
+#X obj 261 692 print;
+#X msg 57 626 1 two 3;
+#X msg 57 658 1st: \$1 2nd: \$2 3rd: \$3;
+#X obj 57 692 print;
+#N canvas 498 109 857 521 dollar-variables 1;
+#X symbolatom 250 178 8 0 0 0 - - - 0;
+#X msg 250 111 symbol nice;
+#X msg 250 144 symbol \$1!!!;
+#X obj 250 210 print;
+#X text 354 118 Dollar signs can be part of a symbol., f 19;
+#X obj 260 471 print;
+#X listbox 629 368 13 0 0 0 - - - 0;
+#X msg 629 340 13 12 11;
+#X msg 629 397 \$3 \$2 \$1;
+#X listbox 629 428 13 0 0 0 - - - 0;
+#X listbox 585 217 10 0 0 0 - - - 0;
+#X floatatom 585 156 5 0 0 0 - - - 0;
+#X msg 585 186 \$1 \$1;
+#X msg 585 129 13;
+#X listbox 697 218 10 0 0 0 - - - 0;
+#X msg 697 187 \$2 \$2;
+#X msg 697 130 13 21;
+#X listbox 697 158 10 0 0 0 - - - 0;
+#X obj 697 251 print;
+#X obj 585 251 print;
+#X text 571 33 You can also repeat variables \, use them in any order
+\, etc., f 31;
+#X obj 629 460 print;
+#X text 551 104 repeat an item;
+#X text 671 104 repeat 2nd item;
+#X text 616 312 reverse list;
+#X msg 260 425 \$1;
+#X msg 196 340 stop;
+#X obj 196 380 symbol;
+#X msg 260 341 Note 69;
+#X obj 260 381 list;
+#X text 316 177 <= symbol box;
+#X obj 57 210 print;
+#X msg 57 111 list one two;
+#X listbox 57 178 10 0 0 0 - - - 0;
+#X text 134 177 <= list box;
+#X msg 57 144 list \$1 2;
+#X text 28 28 Note that a message selector doesn't count as a message
+element. So the first element in the "list one two" message is "one".
+And the only (and only) element in the "symbol nice" message is "nice".
+, f 67;
+#X text 74 260 If you want to access the message selector with \, you
+may need convert the message to a symbol or list message. This is possible
+with [symbol] and [list] objects.;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X connect 6 0 8 0;
+#X connect 7 0 6 0;
 #X connect 8 0 9 0;
-#X connect 9 0 37 0;
-#X connect 10 0 38 0;
-#X connect 11 0 10 0;
-#X connect 17 0 26 0;
-#X connect 18 0 25 0;
-#X connect 19 0 20 0;
-#X connect 20 0 18 0;
-#X connect 21 0 17 0;
-#X connect 22 0 21 0;
-#X connect 23 0 21 0;
-#X connect 24 0 21 0;
-#X connect 30 0 29 0;
-#X connect 41 0 40 0;
+#X connect 9 0 21 0;
+#X connect 10 0 19 0;
+#X connect 11 0 12 0;
+#X connect 12 0 10 0;
+#X connect 13 0 11 0;
+#X connect 14 0 18 0;
+#X connect 15 0 14 0;
+#X connect 16 0 17 0;
+#X connect 17 0 15 0;
+#X connect 25 0 5 0;
+#X connect 26 0 27 0;
+#X connect 27 0 25 0;
+#X connect 28 0 29 0;
+#X connect 29 0 25 0;
+#X connect 32 0 35 0;
+#X connect 33 0 31 0;
+#X connect 35 0 33 0;
+#X restore 385 684 pd dollar-variables;
+#X text 107 498 Open subpatch for more on selectors:, f 18;
+#X text 404 506 <= click;
+#X text 366 662 more on dollar variables:;
+#X text 307 627 <= click and drag;
+#X text 204 290 a message with 'walk' selector, f 15;
+#X text 35 46 Message boxes hold one or more messages \, which get
+sent to its outlet or to given destinations when activated. Messages
+in Pd consist of a selector (a symbol) and zero or more arguments.
+The selectors "float" \, "bang" \, "symbol" and "list" are common and
+special selectos in Pd. Numbers and lists that start with numbers are
+automatically given the 'float' and 'list' selector \, respectively.
+, f 70;
+#X text 418 316 (number box);
+#X text 35 142 Anytime the message box receives any message at all
+\, the message(s) in the box get sent. Clicking on a message box also
+activates it and sends its content \, so you can use them for push
+buttons. Click on the messages while watching the printout window:
+, f 70;
+#X text 50 392 When an object receives a message \, it checks for the
+selector. The [float] object receives a float message to store and
+output it. But it doesn't understand a message with the selector "doesn't"!
+A number box also understands a float message and passes it through.
+What comes out of control objects and number/symbol/list boxes are
+all just messages as well!, f 67;
+#X connect 1 0 2 0;
+#X connect 3 0 4 0;
+#X connect 4 0 15 0;
+#X connect 5 0 16 0;
+#X connect 6 0 5 0;
+#X connect 13 0 12 0;
+#X connect 18 0 17 0;
+#X connect 24 0 2 0;
+#X connect 25 0 2 0;
+#X connect 28 0 30 0;
+#X connect 29 0 28 0;
+#X connect 30 0 31 0;
+#X connect 33 0 34 0;
+#X connect 37 0 28 0;
+#X connect 39 0 40 0;
+#X connect 40 0 41 0;
+#X connect 42 0 43 0;
+#X connect 43 0 44 0;
