@@ -21,13 +21,13 @@ the shift. The rightmost (or leftmost) samples are set to zero., f
 #X coords 0 1 63 0 200 140 1 0 0;
 #X restore 390 147 graph;
 #X obj 145 208 tabreceive~ shiftin;
-#X text 429 323 Updated for Pd 0.31.;
 #X obj 78 11 lrshift~;
 #X text 146 11 - shift signal vector elements left or right;
 #X msg 164 150 \; pd dsp \$1;
 #X obj 164 127 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 186 125 DSP on/off;
+#X text 399 323 Updated for Pd versin 0.31.;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;
@@ -36,4 +36,4 @@ the shift. The rightmost (or leftmost) samples are set to zero., f
 #X connect 12 0 5 0;
 #X connect 12 0 8 0;
 #X connect 12 0 9 0;
-#X connect 17 0 16 0;
+#X connect 16 0 15 0;

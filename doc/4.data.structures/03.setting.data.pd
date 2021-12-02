@@ -1,30 +1,30 @@
 #N struct template3 float x float y float w float h float q;
 #N canvas 376 88 576 543 12;
-#X obj 246 282 pointer;
-#X msg 256 254 next;
-#X floatatom 246 362 4 0 0 0 - - - 0;
+#X obj 248 277 pointer;
+#X msg 258 249 next;
+#X floatatom 248 357 4 0 0 0 - - - 0;
 #N canvas 1008 77 381 425 data3 1;
-#X scalar template3 142 252 37 44 224 \;;
-#X scalar template3 239 94 52 20 648 \;;
-#X scalar template3 35 206 50 36 659 \;;
-#X scalar template3 192 252 43 43 288 \;;
-#X scalar template3 174 147 36 39 450 \;;
-#X scalar template3 179 236 41 75 162 \;;
-#X scalar template3 202 166 65 59 883 \;;
-#X scalar template3 223 313 28 7 853 \;;
-#X scalar template3 295 153 59 28 809 \;;
-#X scalar template3 83 154 18 74 78 \;;
-#X scalar template3 252 130 4 23 564 \;;
-#X scalar template3 191 71 28 54 739 \;;
-#X scalar template3 215 323 17 55 285 \;;
-#X scalar template3 74 267 2 40 624 \;;
-#X scalar template3 140 224 59 74 111 \;;
-#X scalar template3 131 51 48 19 240 \;;
-#X scalar template3 2 104 64 14 778 \;;
-#X scalar template3 288 175 70 72 292 \;;
-#X scalar template3 255 306 35 68 107 \;;
-#X scalar template3 206 33 18 9 299 \;;
-#X restore 267 451 pd data3;
+#X scalar template3 18 85 43 18 741 \;;
+#X scalar template3 111 169 75 25 72 \;;
+#X scalar template3 111 92 4 15 163 \;;
+#X scalar template3 59 61 13 34 563 \;;
+#X scalar template3 148 86 37 20 566 \;;
+#X scalar template3 173 281 76 48 763 \;;
+#X scalar template3 250 187 18 36 543 \;;
+#X scalar template3 124 270 78 21 107 \;;
+#X scalar template3 264 243 1 33 178 \;;
+#X scalar template3 26 88 56 60 132 \;;
+#X scalar template3 2 262 66 2 808 \;;
+#X scalar template3 270 106 74 51 881 \;;
+#X scalar template3 214 286 8 43 180 \;;
+#X scalar template3 57 205 51 58 939 \;;
+#X scalar template3 216 162 36 43 505 \;;
+#X scalar template3 166 146 68 9 614 \;;
+#X scalar template3 144 251 56 28 886 \;;
+#X scalar template3 228 62 62 1 758 \;;
+#X scalar template3 168 229 28 23 654 \;;
+#X scalar template3 223 308 73 50 727 \;;
+#X restore 269 446 pd data3;
 #N canvas 403 522 512 300 template3 0;
 #X obj 48 98 filledpolygon q 0 1 0 0 w 0 w h 0 h;
 #X text 44 53 five numeric ("float") fields;
@@ -37,7 +37,7 @@ q;
 #X text 49 228 Draw the value of q as an Arabic numeral \, at (0 \,
 0) \, in black., f 41;
 #X obj 49 207 drawnumber q 0 -15 0;
-#X restore 267 476 pd template3;
+#X restore 269 471 pd template3;
 #N canvas 395 94 513 527 stuff 0;
 #X obj 182 285 pointer;
 #X obj 175 456 append template3 x y w h q;
@@ -89,39 +89,39 @@ q;
 #X connect 20 1 16 0;
 #X connect 20 1 17 0;
 #X connect 20 2 1 5;
-#X restore 267 427 pd stuff;
-#X msg 267 402 remake;
-#X obj 246 328 get template3 x y w h q;
-#X obj 61 270 set template3 x;
-#X obj 61 321 set template3 y;
-#X obj 61 372 set template3 w;
-#X obj 61 423 set template3 h;
-#X obj 61 473 set template3 q;
-#X msg 246 228 traverse pd-data3;
-#X text 52 27 The "set" object allows you to change numeric values.
+#X restore 269 422 pd stuff;
+#X msg 269 397 remake;
+#X obj 248 323 get template3 x y w h q;
+#X obj 63 265 set template3 x;
+#X obj 63 316 set template3 y;
+#X obj 63 367 set template3 w;
+#X obj 63 418 set template3 h;
+#X obj 63 468 set template3 q;
+#X msg 248 223 traverse pd-data3;
+#X text 54 22 The "set" object allows you to change numeric values.
 In this example \, the template specifies five fields describing the
 (x \, y) location \, width \, height \, and color. A new feature is
 that the color is also getting printed out under the rectangles. This
 is done using the "drawnumber" object in the template., f 65;
-#X text 321 401 <= click to randomize;
-#X text 52 106 Getting parameter values is as in the previous patch.
+#X text 323 396 <= click to randomize;
+#X text 54 101 Getting parameter values is as in the previous patch.
 However \, as you traverse the list with "next" messages the new pointers
 are also sent to the five "set" objects. These have as arguments the
 template name and the name of the field they will set. You can drag
 on the five number boxes (after selecting an object with "traverse"
 and "next" messages) to change its location \, shape \, and color.
 , f 65;
-#X floatatom 364 362 4 0 0 0 - - - 0;
-#X floatatom 325 362 4 0 0 0 - - - 0;
-#X floatatom 285 362 4 0 0 0 - - - 0;
-#X floatatom 404 362 4 0 0 0 - - - 0;
-#X floatatom 61 246 4 0 0 0 - - - 0;
-#X floatatom 61 297 4 0 0 0 - - - 0;
-#X floatatom 61 348 4 0 0 0 - - - 0;
-#X floatatom 61 400 4 0 0 0 - - - 0;
-#X floatatom 61 450 4 0 0 0 - - - 0;
-#X text 379 227 <= click here first;
-#X text 295 254 <= go to next;
+#X floatatom 366 357 4 0 0 0 - - - 0;
+#X floatatom 327 357 4 0 0 0 - - - 0;
+#X floatatom 287 357 4 0 0 0 - - - 0;
+#X floatatom 406 357 4 0 0 0 - - - 0;
+#X floatatom 63 241 4 0 0 0 - - - 0;
+#X floatatom 63 292 4 0 0 0 - - - 0;
+#X floatatom 63 343 4 0 0 0 - - - 0;
+#X floatatom 63 395 4 0 0 0 - - - 0;
+#X floatatom 63 445 4 0 0 0 - - - 0;
+#X text 381 222 <= click here first;
+#X text 297 249 <= go to next;
 #X connect 0 0 7 0;
 #X connect 0 0 8 1;
 #X connect 0 0 9 1;

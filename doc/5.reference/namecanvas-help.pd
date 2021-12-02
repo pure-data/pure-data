@@ -1,3 +1,4 @@
+#N struct template1 float x float y float z float q;
 #N canvas 585 36 941 734 12;
 #X obj 50 19 namecanvas;
 #X obj 248 135 namecanvas bonzo;
@@ -22,7 +23,6 @@ in advance., f 32;
 #X obj 462 464 s \$0-local-name;
 #X text 478 681 see also:;
 #X obj 555 681 pd-messages;
-#X text 727 679 updated for Pd 0.52;
 #X text 18 47 You can use namecanvas to attach a receive name to a
 canvas (patch window) soo you can send it messages (useful for 'dynamic
 patching'). Below \, we use it to name this canvas 'bonzo' and send
@@ -73,10 +73,11 @@ is useful for abstractions., f 63;
 \, besides the 'pd-' prefix \, you also need to end with ".pd"! This
 is used to the right to open the "pd-messages" example \, loaded below
 \, which includes more information on 'dynamic patching'., f 40;
-#X connect 19 0 13 0;
-#X connect 26 0 29 0;
-#X connect 27 0 26 0;
+#X text 707 679 updated for Pd version 0.52;
+#X connect 18 0 13 0;
+#X connect 25 0 28 0;
+#X connect 26 0 25 0;
+#X connect 33 0 9 0;
 #X connect 34 0 9 0;
-#X connect 35 0 9 0;
-#X connect 38 0 12 0;
-#X connect 39 0 38 0;
+#X connect 37 0 12 0;
+#X connect 38 0 37 0;

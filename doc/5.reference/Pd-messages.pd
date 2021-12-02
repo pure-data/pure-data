@@ -1,4 +1,3 @@
-#N struct template1 float x float y float z float q;
 #N canvas 371 60 1039 684 12;
 #X msg 626 151 dsp \$1;
 #X msg 803 157 \; pd dsp 0;
@@ -136,7 +135,6 @@ on parent patch)., f 64;
 #X connect 12 0 15 0;
 #X connect 13 0 12 0;
 #X restore 841 459 pd other-messages;
-#X text 406 635 updated for Pd 0.52;
 #X text 570 371 The "fast-forward" message to Pd allows batch processing.
 Open the subpatch for an example., f 32;
 #X text 541 449 Here are some other maybe interesting (maybe not) messages
@@ -438,9 +436,10 @@ menu" and click on "DSP On" or "DSP Off". The message "dsp 1" turns
 DSP on and "dsp 0" turns it off., f 66;
 #X obj 626 180 send pd;
 #X msg 283 288 compatibility 0.49;
-#X connect 0 0 41 0;
+#X text 42 604 updated for Pd version 0.52;
+#X connect 0 0 40 0;
 #X connect 2 0 0 0;
 #X connect 14 0 13 0;
-#X connect 24 0 23 0;
-#X connect 25 0 26 0;
-#X connect 42 0 38 0;
+#X connect 23 0 22 0;
+#X connect 24 0 25 0;
+#X connect 41 0 37 0;

@@ -10,10 +10,10 @@ dealing with time:, f 69;
 #X text 154 118 The right inlet can be used to set the time value without
 scheduling any output., f 44;
 #X obj 388 195 delay 123.45;
-#X floatatom 356 245 0 0 0 0 - - -;
+#X floatatom 356 245 7 0 0 0 - - - 0;
 #X obj 68 381 pipe 2000;
-#X floatatom 68 354 0 0 0 0 - - -;
-#X floatatom 68 407 0 0 0 0 - - -;
+#X floatatom 68 354 5 0 0 0 - - - 0;
+#X floatatom 68 409 5 0 0 0 - - - 0;
 #X text 159 365 The pipe object allocates memory dynamically in order
 to schedule any number of delayed events. The events may hold any collection
 of data (as usual \, for more details you can consult the help window.)

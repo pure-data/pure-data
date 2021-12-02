@@ -1,10 +1,9 @@
 #N struct template10 float x float y float a float b float c float
 w;
 #N canvas 322 90 497 324 12;
-#X text 252 268 updated for Pd version 0.39;
-#N canvas 632 231 496 512 template10 0;
-#X obj 97 373 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#N canvas 451 140 496 512 template10 0;
+#X obj 97 373 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 97 395 t b b;
 #X obj 269 424 pointer;
 #X msg 269 394 traverse pd-data10 \, bang;
@@ -21,8 +20,8 @@ a(0:100)(0:-71) a(0:100)(0:100) 0;
 #X text 55 56 Template demonstrating turning a drawing instruction
 on and off., f 32;
 #X obj 85 278 loadbang;
-#X obj 85 303 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
-;
+#X obj 85 303 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X text 115 301 <= show/hide this drawing instruction;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
@@ -49,3 +48,4 @@ visible \, unless given the "-n" flag., f 60;
 #X text 34 167 Arrays have the additional possibility of turning on
 and off drawing instructions for their individual points as scalars.
 Use "-vs z" to make the variable z control this.;
+#X text 266 263 updated for Pd version 0.39;

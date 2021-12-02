@@ -88,8 +88,8 @@ arguments or by another complex audio signal (remaining two inlets).
 #X connect 23 0 10 3;
 #X connect 24 0 25 0;
 #X restore 410 558 pd test;
-#X obj 106 602 lop~;
-#X text 27 603 see also:;
+#X obj 96 603 lop~;
+#X text 17 604 see also:;
 #X obj 169 535 rzero~;
 #X obj 109 558 cpole~;
 #X obj 109 535 rpole~;
@@ -102,11 +102,11 @@ arguments or by another complex audio signal (remaining two inlets).
 #X text 166 516 1-zero;
 #X text 233 500 1-zero \, reversed, f 8;
 #X text 15 540 summary of raw filters:, f 12;
-#X obj 147 602 hip~;
-#X obj 188 602 bp~;
-#X obj 223 602 vcf~;
-#X text 304 602 - user-friendly filters;
-#X obj 264 602 bob~;
+#X obj 137 603 hip~;
+#X obj 178 603 bp~;
+#X obj 213 603 vcf~;
+#X text 294 603 - user-friendly filters;
+#X obj 254 603 bob~;
 #X obj 381 475 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
 #000000 #000000;
 #X text 25 429 Pd also provides a suite of user-friendly filters. This
@@ -121,11 +121,11 @@ for an introduction to the necessary theory (click) =>, f 69;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X restore 381 509 pd Read-More;
-#X text 363 639 updated for Pd 0.43;
-#X obj 29 636 biquad~;
-#X text 204 636 - not so friendly;
-#X obj 90 635 fexpr~;
-#X obj 145 635 slop~, f 7;
+#X obj 19 636 biquad~;
+#X text 194 636 - not so friendly;
+#X obj 80 635 fexpr~;
+#X obj 135 635 slop~, f 7;
+#X text 351 636 updated for Pd version 0.43;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 7 0 11 1;

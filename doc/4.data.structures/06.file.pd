@@ -77,5 +77,5 @@ q array bazoo template-element;
 #X restore 82 328 pd traversal;
 #X msg 71 197 \; pd-data write xx.txt;
 #X msg 71 149 \; pd-data read file.txt;
-#X text 47 15 You can save data contents to a txt file and later read
-from it (reading reinitialized and replaces data)., f 30;
+#X text 47 15 You can save data contents to a .txt file and later read
+from it (reading reinitializes and replaces data)., f 31;

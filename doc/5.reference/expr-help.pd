@@ -1169,7 +1169,6 @@ means you need to update a variable and call it in the below expression
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
 #X restore 529 515 pd [value];
-#X text 493 652 updated for Pd 0.51-3;
 #X text 71 15 Expression evaluation family of objects By Shahrokh Yadegari
 - Version 0.57, f 75;
 #X text 137 106 - evaluation of audio signal expressions;
@@ -1234,9 +1233,10 @@ object., f 25;
 #X restore 481 98 pd reference;
 #X text 501 62 <=;
 #X text 520 55 Open HTTML reference, f 10;
-#X connect 28 0 27 2;
-#X connect 29 0 27 1;
-#X connect 30 0 27 0;
-#X connect 31 0 38 0;
-#X connect 39 0 38 1;
-#X connect 55 0 56 0;
+#X text 447 656 updated for Pd version 0.51-3;
+#X connect 27 0 26 2;
+#X connect 28 0 26 1;
+#X connect 29 0 26 0;
+#X connect 30 0 37 0;
+#X connect 38 0 37 1;
+#X connect 54 0 55 0;

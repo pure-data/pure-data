@@ -124,7 +124,6 @@ is about 2/3 of that value.;
 #X text 178 598 Compatibility note: there was a bug in this module
 \, fixed for Pd version 0.52. YOu can get the (incorrect) pre-0.52
 behavior by setting pd's compatibility level to 0.51.;
-#X text 866 676 updated for Pd 0.52;
 #X obj 38 11 bob~;
 #X text 78 12 - Runge-Kutte numerical simulation of the Moog analog
 resonant filter, f 69;
@@ -140,6 +139,7 @@ resonant filter, f 69;
 #X text 766 584 new behaviour;
 #X msg 598 604 \; pd compatibility 51;
 #X msg 758 604 \; pd compatibility 52;
+#X text 806 676 updated for Pd version 0.52;
 #X connect 0 0 1 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;

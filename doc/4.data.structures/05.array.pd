@@ -99,7 +99,7 @@ template, f 20;
 #X floatatom 256 185 4 0 0 0 - - - 0;
 #X floatatom 69 202 4 0 0 0 - - - 0;
 #X floatatom 69 415 4 0 0 0 - - - 0;
-#X text 487 462 Updated for Pd 0.35;
+#X text 447 462 Updated for version Pd 0.35;
 #X connect 0 0 14 0;
 #X connect 1 0 0 0;
 #X connect 2 0 13 0;

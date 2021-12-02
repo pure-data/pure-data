@@ -1,7 +1,6 @@
-#N struct template-toplevel float x float y float voiceno array pitch
-template-pitch array amp template-amp;
-#N struct template-pitch float x float y float w;
-#N struct template-amp float x float y float w;
+#N struct template-toplevel float x float y float z float q array bazoo
+template-element;
+#N struct template-element float x float y float w;
 #N canvas 469 40 552 712 12;
 #X declare -stdpath ./;
 #N canvas 565 104 469 174 template-toplevel 0;
@@ -86,25 +85,14 @@ array pitch template-pitch array amp template-amp;
 #X floatatom 376 523 4 0 0 0 - - - 0;
 #X msg 105 540 start;
 #X msg 156 540 stop;
-#N canvas 1041 67 415 496 data 1;
-#X scalar template-toplevel 22 86 900 \; 0 0 12 \; 10 0 12 \; \; 0
-0 0 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 33 80 990 \; 0 0 12 \; 10 0 12 \; \; 0
-0 2.5 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 57 43.25 90 \; 0 65 12 \; 100 10 0 \; 100
-10 12 \; 230 50 0 \; 230 10 3 \; 240 60 0 \; 240 25 10 \; 250 60 0
-\; 250 37 10 \; 260 65 0.5 \; 285 65 0.5 \; \; 1 0 2 \; 103 0 1 \;
-195 0 2 \; 220 0 0.75 \; 225 0 1.25 \; 248 0 2.5 \; 251 0 2.25 \; 255
-0 0 \; 256 0 1.5 \; 260 0 0 \; 261 0 2 \; 265 0 0 \; 266 0 2.5 \; 270
-0 0 \; 271 0 3 \; 275 0 0 \; \;;
-#X scalar template-toplevel 83 80 900 \; 0 5 0.25 \; 60 5 0.25 \; \;
-0 0 0 \; 28 -0.25 3.5 \; 58 -0.25 0 \; \;;
-#X scalar template-toplevel 161 105 900 \; 0 0 12 \; 70 -20 12 \; \;
-0 0 0 \; 10 0 2.5 \; 20 0 0 \; 30 0 0 \; 40 0 2.5 \; 50 0 0 \; 60 0
-2.5 \; 70 0 0 \; \;;
-#X scalar template-toplevel 338 63.5 909 \; 0 0 12 \; 50 0 12 \; \;
-0 0 4 \; 10 0 2.5 \; 50 0 0 \; \;;
-#X coords 0 124 1 123.75 0 0 0;
+#N canvas 1041 67 445 511 data 1;
+#X scalar template-toplevel 22 86 0 0 \; 0 0 0 \; \;;
+#X scalar template-toplevel 33 80 0 0 \; 0 0 0 \; \;;
+#X scalar template-toplevel 57 43.25 0 0 \; 0 0 0 \; \;;
+#X scalar template-toplevel 83 80 0 0 \; 0 0 0 \; \;;
+#X scalar template-toplevel 161 105 0 0 \; 0 0 0 \; \;;
+#X scalar template-toplevel 338 63.5 0 0 \; 0 0 0 \; \;;
+#X coords 0 127.75 1 127.5 0 0 0;
 #X restore 181 399 pd data;
 #X obj 376 550 s tempo;
 #X text 49 54 This patch shows an example of how to use data collections
@@ -132,7 +120,7 @@ moves it up four pixels., f 61;
 #X msg 376 497 60;
 #X obj 376 473 loadbang;
 #X obj 331 16 declare -stdpath ./;
-#X text 283 636 Updated for Pd version 0.52;
+#X text 323 636 Updated for Pd version 0.52;
 #X connect 3 0 11 0;
 #X connect 3 0 11 1;
 #X connect 4 0 8 0;

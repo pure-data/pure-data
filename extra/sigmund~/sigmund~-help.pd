@@ -1,4 +1,4 @@
-#N canvas 749 35 498 749 12;
+#N canvas 749 35 512 783 12;
 #N canvas 582 131 541 606 using-with-tables 0;
 #X obj 40 376 print peak;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -191,7 +191,7 @@ outputs.);
 #000000 0 1;
 #X msg 143 570 \; pd dsp \$1;
 #X text 163 546 DSP on/off;
-#X text 335 708 updated for Pd 0.46;
+#X text 284 745 updated for Pd version0.46;
 #X connect 1 0 21 0;
 #X connect 2 0 30 0;
 #X connect 3 0 6 0;

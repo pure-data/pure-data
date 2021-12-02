@@ -1,41 +1,42 @@
 #N canvas 447 23 517 455 12;
-#X floatatom 228 110 0 0 0 0 - - -;
-#X floatatom 187 109 0 0 0 0 - - -;
-#X msg 187 56 5 6;
-#X floatatom 135 108 0 0 0 0 - - -;
-#X floatatom 67 105 0 0 0 0 - - -;
+#X floatatom 236 115 3 0 0 0 - - - 0;
+#X msg 197 55 5 6;
 #X text 33 21 Most Pd messages are just numbers or short lists of numbers:
 ;
 #X msg 67 55 5;
-#X obj 67 80 + 9;
-#X obj 135 83 +;
-#X obj 187 84 unpack;
+#X obj 67 86 + 9;
+#X obj 135 86 +;
+#X obj 197 86 unpack;
 #X msg 291 55 5;
-#X obj 291 107 print;
-#X obj 291 81 pack 34 78;
+#X obj 291 115 print;
+#X obj 291 86 pack 34 78;
 #X msg 135 55 5 6;
-#X floatatom 198 328 0 0 0 0 - - -;
-#X obj 198 303 +;
-#X msg 198 254 1.2 3.4;
-#X msg 208 277 5 6;
-#X text 39 206 Unlike Max \, in Pd all numbers are floating point.
+#X floatatom 198 338 4 0 0 0 - - - 0;
+#X obj 198 313 +;
+#X msg 198 264 1.2 3.4;
+#X msg 208 287 5 6;
+#X text 37 213 Unlike Max \, in Pd all numbers are floating point.
 Numbers whose values happen to be integers are displayed without decimal
-points.;
-#X text 34 363 For more on messages \, get help on any message box
+points., f 61;
+#X text 34 373 For more on messages \, get help on any message box
 by right-clicking.;
-#X text 297 411 updated for Pd release 0.33;
+#X text 296 421 updated for Pd version 0.33;
 #X text 37 149 If you send a list to an object with more than one inlet
 \, the items in the list are spread out over the inlets \, as seen
-in the 5+6 example above.;
-#X connect 2 0 9 0;
-#X connect 6 0 7 0;
-#X connect 7 0 4 0;
-#X connect 8 0 3 0;
-#X connect 9 0 1 0;
-#X connect 9 1 0 0;
-#X connect 10 0 12 0;
+in the 5+6 example above (unless the object has a special list input.
+, f 61;
+#X floatatom 197 115 3 0 0 0 - - - 0;
+#X floatatom 135 115 3 0 0 0 - - - 0;
+#X floatatom 67 115 3 0 0 0 - - - 0;
+#X connect 1 0 6 0;
+#X connect 3 0 4 0;
+#X connect 4 0 21 0;
+#X connect 5 0 20 0;
+#X connect 6 0 19 0;
+#X connect 6 1 0 0;
+#X connect 7 0 9 0;
+#X connect 9 0 8 0;
+#X connect 10 0 5 0;
 #X connect 12 0 11 0;
-#X connect 13 0 8 0;
-#X connect 15 0 14 0;
-#X connect 16 0 15 0;
-#X connect 17 0 15 0;
+#X connect 13 0 12 0;
+#X connect 14 0 12 0;

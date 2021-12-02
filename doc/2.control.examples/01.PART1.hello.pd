@@ -22,6 +22,6 @@ of functions depending on what's typed into them. The "print" object
 simply prints out every message it receives.;
 #X text 53 415 To get help on an object \, right-click it. You should
 see a "help window" for the object.;
-#X text 354 470 updated for release 0.33;
+#X text 354 470 updated for version 0.33;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;

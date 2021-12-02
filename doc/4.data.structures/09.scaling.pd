@@ -1,7 +1,6 @@
 #N struct template9b float x float y float w symbol s;
 #N struct template9a float x float y float a float b float c;
 #N canvas 376 70 492 330 12;
-#X text 250 265 updated for Pd version 0.39;
 #N canvas 894 66 363 341 data9 1;
 #X scalar template9b 222 157 26.3158 why? \;;
 #X scalar template9a 149 243 23 57.1429 32 \;;
@@ -72,3 +71,4 @@ For example \, the construction "a(0:100)(10:110)" just gives a+10.
 #X text 29 154 Each of the three arrows of template9a is controlled
 by a single parameter (a \, b \, or c) and the entire red octagon in
 template9b likewise., f 60;
+#X text 260 265 updated for Pd version 0.39;

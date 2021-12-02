@@ -13,9 +13,9 @@ in dB (from 0 to 100) and whenever you click on it to drag \, the DSP
 engine is turned on. The mute bang turns the volume off (sets to 0)
 but restores the last setting when you click back on it to unmute.
 ;
-#X text 303 401 updated for Pd 0.52;
 #X text 32 167 This is a very simple abstraction that is widely used
 in Pd's documentation and examples. It is included just for convenience.
 ;
+#X text 273 401 updated for Pd version 0.52;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;

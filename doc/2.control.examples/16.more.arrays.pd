@@ -32,7 +32,6 @@ in a graph \, then the graph automaticallly resets its bounds to match.
 #X text 25 342 Adding x and y labels: give a point to put a tick \,
 the interval between ticks \, and the number of ticks overall per large
 tick.;
-#X text 61 671 last updated for release 0.52.;
 #X msg 679 466 9;
 #X msg 712 466 90;
 #X msg 746 466 900;
@@ -96,17 +95,18 @@ used as a send. This is because "\$0" doesn't get expanded in messages.
 #X msg 683 578 1;
 #X text 716 572 allow editing with mouse, f 13;
 #X text 722 608 prevent mouse interaction, f 14;
-#X text 456 634 0- point \; 1- polygon \; 2- bezier, f 11;
+#X text 456 634 0- point \; 1- polygon \; 2- bezier;
 #X text 515 589 set display style;
 #X msg 683 645 \; array97 edit \$1 \; array98 edit \$1;
+#X text 61 671 last updated for version 0.52.;
 #X connect 5 0 6 0;
-#X connect 7 0 39 0;
-#X connect 9 0 29 0;
+#X connect 7 0 38 0;
+#X connect 9 0 28 0;
 #X connect 11 0 10 0;
 #X connect 12 0 13 0;
+#X connect 16 0 12 0;
 #X connect 17 0 12 0;
 #X connect 18 0 12 0;
-#X connect 19 0 12 0;
-#X connect 29 0 8 0;
-#X connect 42 0 48 0;
-#X connect 43 0 48 0;
+#X connect 28 0 8 0;
+#X connect 41 0 47 0;
+#X connect 42 0 47 0;
