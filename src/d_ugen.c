@@ -938,7 +938,7 @@ void ugen_done_graph(t_dspcontext *dc)
         if (pd_class(zz) == block_class)
         {
             if (blk)
-                pd_error(blk, "conflicting block~ objects in same page");
+                pd_error(blk, "conflicting block~ and/or switch~ objects in same window");
             else blk = (t_block *)zz;
         }
     }
