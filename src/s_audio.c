@@ -197,9 +197,10 @@ static void audio_compact_and_count_channels(int *ndev, int *devvec,
 
 /* ----------------------- public routines ----------------------- */
 
+static int initted = 0;
+
 void sys_get_audio_settings(t_audiosettings *a)
 {
-    static int initted;
     if (!initted)
     {
         audio_nextsettings.a_api = API_DEFAULT;
@@ -256,6 +257,7 @@ void sys_set_audio_settings(t_audiosettings *a)
 
     sys_schedadvance = a->a_advance * 1000;
     audio_nextsettings = *a;
+    initted = 1;
 
     sys_log_error(ERR_NOTHING);
     sys_vgui("set pd_whichapi %d\n", audio_nextsettings.a_api);
