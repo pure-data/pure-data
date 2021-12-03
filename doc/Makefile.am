@@ -472,7 +472,6 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/soundfile-tools/5.reverb.pd \
      ./7.stuff/soundfile-tools/6.vocoder.pd \
      ./7.stuff/soundfile-tools/README.txt \
-     ./7.stuff/soundfile-tools \
      ./7.stuff/synth/1.poly.synth.pd \
      ./7.stuff/synth/gadsr.pd \
      ./7.stuff/synth/numset.pd \
