@@ -1,6 +1,6 @@
 #N canvas 754 81 696 705 12;
 #X declare -stdpath ./;
-#X floatatom 81 309 4 0 0 0 - - - 0;
+#X floatatom 81 309 5 0 0 0 - - - 0;
 #X obj 81 339 sig~ 100;
 #X text 446 660 Updated for Pd version 0.33;
 #X obj 70 21 tabosc4~;
@@ -30,7 +30,7 @@ instead \, use "set" messages to switch between tables., f 77;
 The right inlet resets the phase with values from 0 to 1 (where '1'
 is the same as '0' and '0.5' is half the cycle)., f 77;
 #X text 200 476 creation argument initializes the table name;
-#X text 120 309 frequency (Hz.);
+#X text 122 309 frequency (Hz.);
 #X msg 308 311 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
 512 0 1;
 #X obj 81 476 tabosc4~ wave1;

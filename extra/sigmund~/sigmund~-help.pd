@@ -185,8 +185,8 @@ outputs.);
 ;
 #X text 80 391 growth - growth (dB) to report a repeated note (7);
 #X msg 48 551 69;
-#X obj 38 9 sigmund~;
-#X text 99 8 - sinusoidal analysis and pitch tracking;
+#X obj 51 15 sigmund~;
+#X text 112 14 - sinusoidal analysis and pitch tracking;
 #X obj 143 546 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X msg 143 570 \; pd dsp \$1;
