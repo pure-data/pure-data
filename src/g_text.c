@@ -756,7 +756,6 @@ static void gatom_reborder(t_gatom *x)
 
 void gatom_undarken(t_text *x)
 {
-    post("undarken");
     if (x->te_type == T_ATOM)
     {
         ((t_gatom *)x)->a_doubleclicked =
