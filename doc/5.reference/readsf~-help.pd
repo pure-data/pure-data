@@ -1,4 +1,5 @@
 #N canvas 713 27 779 510 12;
+#X declare -stdpath ./;
 #X msg 60 253 1;
 #X msg 67 277 0;
 #X obj 498 385 print didit;
@@ -42,6 +43,7 @@ and 4-byte floating point samples are accepted., f 75;
 #X text 516 326 - number of channels \; - per channel buffer size in
 bytes;
 #X msg 37 203 open ../sound/bell.aiff;
+#X obj 590 12 declare -stdpath ./;
 #X connect 0 0 8 0;
 #X connect 1 0 8 0;
 #X connect 3 0 4 0;

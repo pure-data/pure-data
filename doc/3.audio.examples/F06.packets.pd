@@ -1,12 +1,13 @@
 #N canvas 399 117 886 704 12;
+#X declare -stdpath ./;
 #X obj 410 394 line~;
 #X obj 142 443 cos~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array pulse-output 882 float 0;
 #X coords 0 1 882 -1 200 130 1;
-#X restore 609 405 graph;
+#X restore 609 425 graph;
 #X obj 410 371 pack 0 50;
-#X floatatom 410 325 0 0 0 0 - - -;
+#X floatatom 410 325 0 0 0 0 - - - 0;
 #X obj 202 342 -~ 0.5;
 #X obj 142 391 *~;
 #X obj 410 348 / 10;
@@ -16,9 +17,9 @@
 #X obj 142 466 +~ 1;
 #X obj 283 472 cos~;
 #X obj 142 528 *~;
-#X floatatom 301 313 4 0 0 0 - - -;
+#X floatatom 301 313 4 0 0 0 - - - 0;
 #X obj 301 337 / 10;
-#X text 609 538 --- 0.02 seconds ---;
+#X text 609 558 --- 0.02 seconds ---;
 #X obj 283 446 *~;
 #N canvas 462 254 698 213 graph 0;
 #X obj 68 57 inlet~;
@@ -42,12 +43,12 @@
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array carrier 882 float 0;
 #X coords 0 1 881 -1 200 140 1;
-#X restore 609 227 graph;
+#X restore 609 247 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array window 882 float 0;
 #X coords 0 1 881 -1 200 140 1;
-#X restore 610 54 graph;
-#X floatatom 202 291 4 0 0 0 - - -;
+#X restore 610 74 graph;
+#X floatatom 202 291 4 0 0 0 - - - 0;
 #X obj 202 317 phasor~ 100;
 #X text 62 15 WINDOWED PACKETS;
 #X text 90 480 window;
@@ -59,16 +60,16 @@ of the packet itself controls the center frequency of the formant.
 The length of the packet varies inversely with bandwidth., f 68;
 #X obj 142 606 output~;
 #X obj 142 562 hip~;
-#X obj 301 539 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 301 539 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 617 623 updated for Pd version 0.37;
 #X obj 142 489 *~ 0.5;
-#X text 813 180 -1;
-#X text 815 50 1;
-#X text 813 353 -1;
-#X text 817 223 1;
-#X text 814 524 -1;
-#X text 817 399 1;
+#X text 813 200 -1;
+#X text 815 70 1;
+#X text 813 373 -1;
+#X text 817 243 1;
+#X text 814 544 -1;
+#X text 817 419 1;
 #X text 74 135 In the patch below \, the "clip~" followed by "cos~"
 and "+~ 1" is the enveloping ("windowing") function \, which appears
 in the top graph. The carrier \, on the other hand \, is a broken sinusoid
@@ -83,6 +84,7 @@ occur when the enveloping signal is zero., f 68;
 #X text 344 486 desired center frequency but its phase is reset each
 fundamental period., f 24;
 #X text 289 263 center freq. (in tenths of fundamental), f 13;
+#X obj 699 16 declare -stdpath ./;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 3 0 0 0;

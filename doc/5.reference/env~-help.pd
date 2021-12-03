@@ -1,19 +1,19 @@
-#N canvas 596 74 550 460 12;
-#X floatatom 35 335 8 0 0 0 - - -;
+#N canvas 761 28 613 623 12;
+#X floatatom 57 388 8 0 0 0 - - - 0;
 #X obj 74 14 env~;
 #X text 120 16 - envelope follower;
-#X obj 35 212 osc~ 400;
-#X obj 35 239 *~;
-#X floatatom 123 214 3 -99 300 0 - - -;
-#X obj 123 238 dbtorms;
+#X obj 57 243 osc~ 400;
+#X obj 57 292 *~;
+#X floatatom 142 231 5 0 100 0 - - - 0;
+#X obj 142 269 dbtorms;
 #X text 33 49 The env~ object takes a signal and outputs its RMS amplitude
 in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
 ;
-#X text 316 411 updated for Pd version 0.40.;
-#X obj 35 279 env~ 16384 8192;
-#X text 164 262 creation arguments:;
-#X text 162 278 1 window size in samples (1024 default);
-#X text 162 296 2 period in samples per analysis (window/2 default)
+#X text 373 553 updated for Pd version 0.40.;
+#X obj 57 332 env~ 16384 8192;
+#X text 186 315 creation arguments:;
+#X text 184 331 1 window size in samples (1024 default);
+#X text 184 349 2 period in samples per analysis (window/2 default)
 ;
 #X text 33 105 The analysis is "Hanning" (raised cosine) windowed.
 ;
@@ -21,14 +21,24 @@ in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
 size in samples \, and the period (the number of samples between analyses).
 The latter should normally be a multiple of the DSP block size \, although
 this isn't enforced.;
-#X text 159 212 <= set peak-to-peak amplitude here in dB.;
-#X text 102 335 <= the output is RMS amplitude which (for a sinusoid)
+#X text 186 227 <= set peak-to-peak amplitude here in dB., f 21;
+#X text 124 388 <= the output is RMS amplitude which (for a sinusoid)
 is about 3 dB below peak-to-peak amplitude., f 53;
-#X msg 122 394 \; pd dsp 0;
-#X msg 42 394 \; pd dsp 1;
+#X msg 368 252 \; pd dsp \$1;
+#X obj 368 229 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 395 227 DSP on/off;
+#X obj 58 474 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
+;
+#X obj 57 441 - 100;
+#X text 115 486 <= see also [vu];
+#X text 122 558 and also see also:;
+#X obj 257 558 slop~, f 8;
+#X connect 0 0 21 0;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
 #X connect 9 0 0 0;
-#X connect 9 0 0 0;
+#X connect 18 0 17 0;
+#X connect 21 0 20 0;

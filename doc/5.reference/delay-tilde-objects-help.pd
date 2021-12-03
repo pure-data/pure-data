@@ -1,0 +1,68 @@
+#N canvas 623 54 954 520 12;
+#X declare -stdpath ./;
+#X floatatom 603 166 5 0 1000 0 - - - 0;
+#X text 741 247 creation argument: name of delay line, f 18;
+#X obj 42 65 delread4~;
+#X obj 699 307 vd~;
+#X obj 603 254 delread4~ \$0-delay;
+#X obj 71 295 delwrite~ \$0-delay 1000;
+#X obj 603 222 line~;
+#X obj 71 230 osc~ 440;
+#X obj 603 301 output~;
+#X obj 603 194 pack f 1000;
+#X obj 407 21 declare -stdpath ./;
+#X msg 102 262 clear;
+#X text 147 262 set all samples of delay line to zero.;
+#X text 245 293 1st argument: name of delay line, f 42;
+#X obj 41 15 delwrite~;
+#X text 113 15 - writes a signal in a delay line;
+#X obj 48 40 delread~;
+#X text 113 40 - read a signal from a delay line;
+#X text 245 390 1st argument: name of delay line, f 33;
+#X text 245 410 2nd argument: (initial) delay time in ms;
+#X obj 80 441 output~;
+#X text 588 100 The delay time is always at least one sample and at
+most the length of the delay line (specified by a corresponding delwrite~).
+, f 46;
+#X obj 630 477 ../3.audio.examples/G05.execution.order;
+#X text 575 387 In case the delwrite~ runs later in the DSP loop than
+the delread~ or delread4~ objects \, the delay is constrained below
+by one vector length (usually 64 samples.) Open the file below as an
+example on how to control this to obtain very short delays., f 50
+;
+#X text 135 359 input (delay time in ms);
+#X msg 80 341 500;
+#X msg 94 369 10;
+#X obj 80 400 delread~ \$0-delay 100;
+#X text 283 471 updated for Pd version 0.52;
+#X text 21 108 Delread~ and delread4~ objects read from delay allocated
+in a delwrite~ object with the same name. Note that in this help file
+we're using delay names with "\$0" (the patch ID number used to force
+locality in Pd). You can use more than one delread~ and/or delread4~
+objects for the same delwrite~ object. If the specified delay time
+in delread~/delread4~ is longer than the size of the delay line or
+less than zero it is clipped to the length of the delay line., f 75
+;
+#X text 245 310 2nd argument: length of delay line in msec (the maximum
+delay time in read objects), f 42;
+#X text 117 64 - read from a delay line with 4-point interpolation
+(for variable delay times), f 40;
+#X text 588 22 Delread4~ implements a 4-point interpolating delay tap.
+The delay in milliseconds of the tap is specified by an incoming signal
+for variable delay times., f 46;
+#X text 647 221 signal input (variable delay time in ms);
+#X text 732 306 - old name of delread4~ ('vd' for 'variable delay')
+, f 27;
+#X obj 485 71 vd~;
+#X text 408 71 => a.k.a.:;
+#X connect 0 0 9 0;
+#X connect 4 0 8 0;
+#X connect 4 0 8 1;
+#X connect 6 0 4 0;
+#X connect 7 0 5 0;
+#X connect 9 0 6 0;
+#X connect 11 0 5 0;
+#X connect 25 0 27 0;
+#X connect 26 0 27 0;
+#X connect 27 0 20 0;
+#X connect 27 0 20 1;

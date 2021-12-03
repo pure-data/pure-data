@@ -1,37 +1,54 @@
-#N canvas 578 67 508 446 12;
+#N canvas 780 75 518 503 12;
 #X obj 50 21 pow~;
-#X obj 67 164 sig~;
-#X obj 150 196 loadbang;
-#X obj 150 222 metro 100;
-#X obj 150 248 snapshot~;
-#X floatatom 67 128 5 0 0 0 - - -;
-#X obj 118 164 sig~;
-#X floatatom 118 128 5 0 0 0 - - -;
-#X floatatom 150 273 7 0 0 0 - - -;
-#X obj 351 246 pow~ 2;
-#X text 253 208 An optional creation argument initializes right inlet:
-, f 20;
-#X text 277 410 updated for Pd version 0.42.;
-#X text 39 313 WARNING: it's easy to generate "infinity" by accident
+#X obj 148 188 loadbang;
+#X obj 148 221 metro 100;
+#X obj 148 259 snapshot~;
+#X floatatom 42 127 5 0 0 0 - - - 0;
+#X floatatom 103 127 5 0 0 0 - - - 0;
+#X floatatom 148 288 7 0 0 0 - - - 0;
+#X text 284 423 updated for Pd version 0.42.;
+#X obj 78 199 pow~;
+#X text 92 19 - power function for signals, f 52;
+#X text 39 404 see also:;
+#X obj 154 429 log~;
+#X obj 39 429 pow;
+#X obj 116 429 exp~;
+#X obj 72 429 sqrt~;
+#X floatatom 291 203 5 0 0 0 - - - 0;
+#X text 317 228 An optional creation argument initializes right inlet
+for when you don't have a signal input., f 23;
+#X obj 238 190 sig~ 2;
+#X obj 238 258 snapshot~;
+#X floatatom 238 287 7 0 0 0 - - - 0;
+#X obj 238 230 pow~ 1.5;
+#X obj 42 158 sig~ 2;
+#X obj 103 158 sig~ 2;
+#X text 26 318 WARNING: it's easy to generate "infinity" by accident
 \, and if you do \, the DSP chain may dramatically slow down if you're
 using an i386 or ia64 processor. Out-of-range floating point values
-are thousands of times slower to compute with than in-range ones.,
-f 62;
-#X obj 93 200 pow~;
-#X msg 273 140 \; pd dsp 1;
+are thousands of times slower to compute with than in-range ones. There'
+a protection agains NaNs (they become 0)., f 65;
 #X text 44 56 pow~ raises a signal to a numeric power (given by another
-signal). The left inlet must be a positive number. The right inlet
-my be positive \, zero \, or negative.;
-#X text 92 19 - power function for signals, f 52;
-#X text 47 414 see also:;
-#X obj 126 413 log~;
-#X obj 210 413 pow;
-#X obj 168 413 exp~;
-#X connect 1 0 13 0;
+signal or argument/float). The inputs may be positive \, zero \, or
+negative.;
+#X obj 39 455 +~;
+#X text 70 457 (etc.) - signal binary operators;
+#X obj 192 429 expr~;
+#X msg 273 131 \; pd dsp \$1;
+#X obj 273 110 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 292 108 DSP on/off;
+#X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 4 0 8 0;
-#X connect 5 0 1 0;
-#X connect 6 0 13 1;
-#X connect 7 0 6 0;
-#X connect 13 0 4 0;
+#X connect 2 0 18 0;
+#X connect 3 0 6 0;
+#X connect 4 0 21 0;
+#X connect 5 0 22 0;
+#X connect 8 0 3 0;
+#X connect 15 0 20 1;
+#X connect 17 0 20 0;
+#X connect 18 0 19 0;
+#X connect 20 0 18 0;
+#X connect 21 0 8 0;
+#X connect 22 0 8 1;
+#X connect 29 0 28 0;

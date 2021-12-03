@@ -1,68 +1,70 @@
-#N canvas 423 40 549 871 12;
-#X obj 109 542 mtof;
-#X obj 109 491 stripnote;
-#X obj 260 547 select;
-#X obj 251 441 float;
-#X obj 260 409 t b f;
-#X obj 260 515 float;
-#X text 310 400 f - store pitch below;
-#X text 300 443 velocity stored here;
-#X text 224 487 off;
-#X text 304 515 recall pitch;
+#N canvas 832 52 549 871 12;
+#X declare -stdpath ./;
+#X obj 109 552 mtof;
+#X obj 109 501 stripnote;
+#X obj 260 557 select;
+#X obj 251 451 float;
+#X obj 260 419 t b f;
+#X obj 260 525 float;
+#X text 310 410 f - store pitch below;
+#X text 300 453 velocity stored here;
+#X text 224 497 off;
+#X text 304 525 recall pitch;
 #X text 156 7 MONOPHONIC MIDI SYNTH;
-#X obj 130 376 unpack;
-#X obj 86 295 notein;
-#X obj 86 322 pack;
-#X obj 190 603 line~;
-#X msg 190 572 \$1 100;
-#X msg 260 573 0 1000;
-#X text 39 90 First \, at top \, incoming MIDI notes are parsed and
+#X obj 130 386 unpack;
+#X obj 86 305 notein;
+#X obj 86 332 pack;
+#X obj 190 613 line~;
+#X msg 190 582 \$1 100;
+#X msg 260 583 0 1000;
+#X text 39 100 First \, at top \, incoming MIDI notes are parsed and
 used to set pitch and trigger an ADSR envelope. Second \, the envelope
 generator itself has been extended to offer controls over the time
 and target values via number boxes.;
-#X text 41 36 This patch shows how to make a monophonic synthesizer
+#X text 41 46 This patch shows how to make a monophonic synthesizer
 that could be controlled from a MIDI or voltage-control keyboard--in
 this example we assume MIDI.;
-#X msg 232 325 55 64;
-#X msg 325 325 55 0;
-#X msg 184 325 48 64;
-#X msg 282 325 48 0;
-#X text 38 157 The note-off testing is complicated by the fact that
+#X msg 232 335 55 64;
+#X msg 325 335 55 0;
+#X msg 184 335 48 64;
+#X msg 282 335 48 0;
+#X text 38 167 The note-off testing is complicated by the fact that
 we have to test both that the velocity is zero \, and further that
 the note-off pitch matches the pitch that is now playing (the most
 recent note-on pitch.);
-#X text 311 417 b - bang to recall velocity;
-#X obj 251 470 sel 0;
-#X text 273 491 on;
-#X obj 81 783 output~;
-#X obj 99 747 hip~ 5;
-#X obj 99 686 *~;
-#X obj 109 569 phasor~;
-#X obj 109 593 -~ 0.5;
-#X obj 99 634 cos~;
-#X obj 172 659 *~;
-#X obj 99 658 +~ 1;
+#X text 311 427 b - bang to recall velocity;
+#X obj 251 480 sel 0;
+#X text 273 501 on;
+#X obj 81 793 output~;
+#X obj 99 757 hip~ 5;
+#X obj 99 696 *~;
+#X obj 109 579 phasor~;
+#X obj 109 603 -~ 0.5;
+#X obj 99 644 cos~;
+#X obj 172 669 *~;
+#X obj 99 668 +~ 1;
 #X text 304 804 updated for Pd version 0.37;
-#X obj 172 707 cos~;
-#X msg 130 325 48 128;
-#X text 114 519 pitch;
-#X text 303 471 test for note on or off;
-#X text 313 548 test against latest;
-#X text 355 563 note-on pitch;
-#X obj 99 719 *~;
-#X obj 190 545 / 127;
-#X text 38 223 The synthesis technique is the same as in the previous
+#X obj 172 717 cos~;
+#X msg 130 335 48 128;
+#X text 114 529 pitch;
+#X text 303 481 test for note on or off;
+#X text 313 558 test against latest;
+#X text 355 573 note-on pitch;
+#X obj 99 729 *~;
+#X obj 190 555 / 127;
+#X text 38 233 The synthesis technique is the same as in the previous
 patch \, done in a simpler (but less general) way with a cos~ object
 replacing the wavetable lookup.;
-#X obj 172 683 *~ 2;
-#X obj 190 632 +~ 0.5;
-#X text 218 703 The +~ 0.5 and *~ 2 are fudge factors.;
-#X text 218 664 This replaces the tabread4~;
-#X text 216 684 in the previous patch.;
-#X text 144 300 These buttons simulate MIDI input.;
-#X text 49 466 filter note-on messages, f 8;
-#X text 240 596 envelope generator now controls amplitude as well as
+#X obj 172 693 *~ 2;
+#X obj 190 642 +~ 0.5;
+#X text 218 713 The +~ 0.5 and *~ 2 are fudge factors.;
+#X text 218 674 This replaces the tabread4~;
+#X text 216 694 in the previous patch.;
+#X text 144 310 These buttons simulate MIDI input.;
+#X text 49 476 filter note-on messages, f 8;
+#X text 240 606 envelope generator now controls amplitude as well as
 grain size, f 31;
+#X obj 390 7 declare -stdpath ./;
 #X connect 0 0 30 0;
 #X connect 1 0 2 1;
 #X connect 1 0 0 0;

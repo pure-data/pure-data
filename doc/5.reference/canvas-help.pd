@@ -4,14 +4,14 @@
 #N canvas 1 51 450 300 (subpatch) 0;
 #X restore 112 28 pd;
 #X text 142 27 - subpatch;
-#X obj 683 573 array;
+#X obj 747 610 array;
 #N canvas 307 173 430 250 foo 0;
 #X obj 175 41 inlet;
 #X obj 178 171 outlet;
 #X text 95 89 this is the subpatch window. Use "inlet" and "outlet"
 objects to create inlets/outlets on the parent., f 34;
 #X restore 162 325 pd foo;
-#X text 731 567 (newer and better replacement for "table")., f 29
+#X text 793 602 (newer and better replacement for "table")., f 26
 ;
 #X text 671 530 <= optional creation args: name \, size;
 #N canvas 0 22 450 278 (subpatch) 0;
@@ -68,9 +68,11 @@ arrays. Below we have a graph displaying GUI objects., f 54;
 0;
 #X coords 0 1 100 -1 200 140 1;
 #X restore 484 339 graph;
-#X text 576 574 please check:;
 #X text 700 346 For details on how to work with arrays \, click and
 open the files below from the '2.control' examples., f 39;
 #X text 928 417 <= click;
 #X text 967 449 <= click;
 #X text 83 471 right click to open =>;
+#X text 544 609 see also:;
+#X obj 618 610 inlet;
+#X obj 664 610 namecanvas;

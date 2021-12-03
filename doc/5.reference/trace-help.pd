@@ -25,7 +25,7 @@ that depends on trace output will be printed in the Pd window (and
 you can control-click on the printout to select the object that caused
 it). Once the trace message returns \, it also prints a backtrace of
 messages leading up to the one that has set it off.;
-#X text 619 383 updated for Pd 0.52;
+#X text 579 383 updated for Pd version 0.52;
 #X connect 0 0 5 0;
 #X connect 1 0 0 1;
 #X connect 3 0 4 0;

@@ -1,12 +1,10 @@
 #N canvas 619 183 687 414 12;
-#X msg 524 101 \; pd dsp 0;
-#X msg 524 55 \; pd dsp 1;
 #X obj 70 12 threshold~;
 #X obj 52 178 sig~;
 #X obj 52 273 threshold~ 10 100 0 100;
 #X text 241 272 Arguments:;
 #X text 322 272 1 trigger threshold;
-#X floatatom 52 151 5 0 0 0 - - -;
+#X floatatom 52 151 5 0 0 0 - - - 0;
 #X obj 52 304 print trigger;
 #X obj 210 302 print rest;
 #X text 323 288 2 trigger debounce time;
@@ -26,11 +24,16 @@ before triggering again.;
 #X text 271 219 zero or nonzero in inlet to set the state to "high"
 or "low". There is no debounce period after this.;
 #X text 161 11 - trigger from audio signal;
-#X connect 3 0 4 0;
-#X connect 4 0 8 0;
-#X connect 4 1 9 0;
-#X connect 7 0 3 0;
-#X connect 14 0 4 1;
-#X connect 15 0 4 1;
-#X connect 17 0 4 0;
-#X connect 18 0 4 0;
+#X msg 516 124 \; pd dsp \$1;
+#X obj 516 93 tgl 16 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 538 92 DSP on/off;
+#X connect 1 0 2 0;
+#X connect 2 0 6 0;
+#X connect 2 1 7 0;
+#X connect 5 0 1 0;
+#X connect 12 0 2 1;
+#X connect 13 0 2 1;
+#X connect 15 0 2 0;
+#X connect 16 0 2 0;
+#X connect 21 0 20 0;

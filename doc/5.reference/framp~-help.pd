@@ -1,12 +1,11 @@
-#N canvas 375 121 750 388 12;
-#X text 87 172 frequency;
-#X floatatom 30 180 0 0 0 0 - - -;
-#X floatatom 30 72 0 0 63 0 - - -;
-#X text 87 189 in Hz.;
+#N canvas 710 127 750 388 12;
+#X text 70 163 frequency;
+#X floatatom 30 180 4 0 0 0 - - - 0;
+#X floatatom 30 72 4 0 63 0 - - - 0;
+#X text 70 180 in Hz.;
 #X obj 30 243 rfft~;
 #X obj 30 155 / 64;
-#X obj 571 17 loadbang;
-#X msg 571 43 \; pd dsp 1;
+#X msg 170 185 \; pd dsp 1;
 #X obj 49 21 framp~;
 #X text 112 20 - estimate frequency and amplitude of FFT components
 ;
@@ -14,7 +13,7 @@
 #X obj 103 336 print~ frequency;
 #X obj 118 311 print~ amplitude;
 #X obj 30 211 osc~;
-#X text 291 108 Framp~ takes as input a rectangular-windowed FFT and
+#X text 304 104 Framp~ takes as input a rectangular-windowed FFT and
 outputs \, for each FFT channel \, the estimated amplitude and frequency
 of any component feeding that channel. A sinusoidal component should
 appear in four components (or three in the special case of a sinusoid
@@ -25,25 +24,28 @@ of SR/N.;
 #X obj 62 128 samplerate~;
 #X obj 30 127 *;
 #X text 491 330 updated for Pd version 0.47;
-#X text 291 220 The estimation is done according to the hop-1 trick
+#X text 304 216 The estimation is done according to the hop-1 trick
 described in Puckette&Brown \, Accuracy of Frequency Estimates Using
 the Phase Vocoder \, using a Hann window. A more sophisticated version
 of this technique is used in the sigmund~ object.;
-#X obj 103 263 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 103 263 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X text 129 264 <= print analysis;
-#X connect 1 0 13 0;
-#X connect 2 0 16 0;
-#X connect 4 0 10 0;
-#X connect 4 1 10 1;
+#X obj 170 161 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 193 160 DSP on/off;
+#X connect 1 0 12 0;
+#X connect 2 0 15 0;
+#X connect 4 0 9 0;
+#X connect 4 1 9 1;
 #X connect 5 0 1 0;
-#X connect 6 0 7 0;
-#X connect 10 0 11 0;
-#X connect 10 1 12 0;
-#X connect 13 0 4 0;
-#X connect 16 0 18 0;
-#X connect 16 1 17 0;
-#X connect 17 0 18 1;
-#X connect 18 0 5 0;
-#X connect 21 0 11 0;
-#X connect 21 0 12 0;
+#X connect 9 0 10 0;
+#X connect 9 1 11 0;
+#X connect 12 0 4 0;
+#X connect 15 0 17 0;
+#X connect 15 1 16 0;
+#X connect 16 0 17 1;
+#X connect 17 0 5 0;
+#X connect 20 0 10 0;
+#X connect 20 0 11 0;
+#X connect 22 0 6 0;

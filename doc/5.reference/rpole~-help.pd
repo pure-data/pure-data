@@ -1,68 +1,46 @@
-#N canvas 775 138 568 637 12;
-#X floatatom 147 186 0 0 0 0 - - -;
+#N canvas 861 42 544 609 12;
+#X declare -stdpath ./;
+#X floatatom 147 186 0 0 0 0 - - - 0;
 #X obj 80 99 osc~ 100;
 #X msg 96 131 clear;
 #X obj 60 10 rpole~;
 #X text 26 42 Rpole~ filters an audio signal (left inlet) via a one-pole
 real filter \, whose coefficient is controlled by a creation argument
 or by an audio signal (right inlet).;
-#X obj 128 464 rzero~;
-#X obj 68 490 cpole~;
-#X obj 68 464 rpole~;
-#X obj 187 464 rzero_rev~;
-#X obj 128 490 czero~;
-#X obj 187 490 czero_rev~;
-#X text 276 464 real;
-#X text 275 491 complex;
-#X text 65 444 1-pole;
-#X text 125 444 1-zero;
-#X text 175 444 1-zero \, reversed;
-#X text 90 424 summary of raw filters:;
 #X msg 104 157 set 1;
 #X text 43 329 The transfer function is H(Z) = 1/(1 - aZ^-1).;
 #X text 44 291 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 #X obj 80 213 rpole~ 0.9;
 #X text 41 244 The action of rpole~ is:;
-#N canvas 393 91 322 311 test 0;
+#N canvas 1193 233 313 353 test 0;
 #X obj 76 78 osc~;
-#X floatatom 76 55 5 0 0 0 - - -;
-#X obj 76 222 env~ 16384;
-#X floatatom 76 246 5 0 0 0 - - -;
+#X floatatom 76 55 5 0 0 0 - - - 0;
+#X obj 76 282 env~ 16384;
+#X floatatom 76 306 5 0 0 0 - - - 0;
 #X obj 76 168 rpole~;
-#X obj 104 107 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 104 107 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 76 105 *~;
 #X msg 97 137 set 1;
-#X floatatom 151 118 4 -100 100 0 - - -;
+#X floatatom 151 118 4 -100 100 0 - - - 0;
 #X obj 151 143 / 100;
-#X obj 188 255 dac~;
-#X obj 206 172 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X obj 188 219 *~;
-#X obj 206 194 / 10;
-#X text 80 18 Stuff to test it:;
+#X text 50 20 Stuff to test it:;
+#X obj 93 210 output~;
+#X obj 151 72 declare -stdpath ./;
 #X connect 0 0 6 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
-#X connect 4 0 12 0;
+#X connect 4 0 11 0;
+#X connect 4 0 11 1;
 #X connect 5 0 6 1;
 #X connect 6 0 4 0;
 #X connect 7 0 4 0;
 #X connect 8 0 9 0;
 #X connect 9 0 4 1;
-#X connect 11 0 13 0;
-#X connect 12 0 10 0;
-#X connect 12 0 10 1;
-#X connect 13 0 12 1;
-#X restore 405 454 pd test;
-#X text 41 350 (Pd also provides a suite of user-friendly filters.
-This and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
-for an introduction to the necessary theory.), f 68;
+#X restore 421 486 pd test;
 #X text 100 266 y[n] = x[n] + a[n] * y[n-1];
-#X text 326 585 updated for Pd version 0.42;
 #X text 152 100 <= signal to filter;
 #X text 148 131 <= clear internal state to zero;
 #X text 152 156 <= set internal state;
@@ -70,14 +48,46 @@ for an introduction to the necessary theory.), f 68;
 #X text 168 213 <= creation argument initializes filter coefficient
 ;
 #X text 122 10 - real one-pole (recursive) filter \, raw;
-#X obj 127 537 lop~;
-#X text 48 538 see also:;
-#X obj 168 537 hip~;
-#X obj 210 537 bp~;
-#X obj 247 537 vcf~;
-#X text 332 537 - user-friendly filters;
-#X obj 292 537 bob~;
-#X connect 0 0 20 1;
-#X connect 1 0 20 0;
-#X connect 2 0 20 0;
-#X connect 17 0 20 0;
+#X obj 93 534 lop~;
+#X text 14 535 see also:;
+#X obj 179 467 rzero~;
+#X obj 119 490 cpole~;
+#X obj 119 467 rpole~;
+#X obj 239 467 rzero_rev~;
+#X obj 179 490 czero~;
+#X obj 239 490 czero_rev~;
+#X text 318 467 real;
+#X text 317 489 complex;
+#X text 116 448 1-pole;
+#X text 176 448 1-zero;
+#X text 243 432 1-zero \, reversed, f 8;
+#X text 25 472 summary of raw filters:, f 12;
+#X obj 134 534 hip~;
+#X obj 175 534 bp~;
+#X obj 210 534 vcf~;
+#X text 291 534 - user-friendly filters;
+#X obj 251 534 bob~;
+#X obj 381 407 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
+#000000 #000000;
+#X text 24 360 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 381 440 pd Read-More;
+#X obj 16 567 biquad~;
+#X text 191 567 - not so friendly;
+#X obj 77 566 fexpr~;
+#X obj 132 566 slop~, f 7;
+#X text 342 564 updated for Pd version 0.42;
+#X connect 0 0 8 1;
+#X connect 1 0 8 0;
+#X connect 2 0 8 0;
+#X connect 5 0 8 0;
+#X connect 37 0 39 0;

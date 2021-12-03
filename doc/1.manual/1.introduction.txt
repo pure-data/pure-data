@@ -7,15 +7,12 @@ Pd is copyrighted, but is free for you to use for any reasonable purpose.
 See the file:
      PD_BASEDIR/LICENSE.txt
 
-Reference documentation for Pd lives in:
+Reference manual for Pd lives in:
     PD_BASEDIR/doc/1.manual/index.htm
 or online:
     http://msp.ucsd.edu/Pd_documentation/
 
-More extensive documentation is available on:
-    https://puredata.info/docs/BooksAboutPd/
-
-Information of all sorts (guides, development, meetings, etc):
+Information of all sorts (guides, development, meetings, more documentation, etc):
     http://puredata.info
 
 The Pd mailing list archive lives in:

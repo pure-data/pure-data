@@ -1,38 +1,38 @@
-#N canvas 680 39 545 783 12;
-#X floatatom 310 344 0 0 100 0 - - -;
-#X obj 88 523 +~;
-#X text 94 16 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/VD~;
-#X text 55 58 If you're writing to and reading from a delay line \,
+#N canvas 680 39 575 871 12;
+#X declare -stdpath ./;
+#X floatatom 310 374 0 0 100 0 - - - 0;
+#X obj 88 553 +~;
+#X text 55 88 If you're writing to and reading from a delay line \,
 you have to get the write sorted before the read or else you'll never
 get less than a block's delay. This patch compares a "wrong" flanger
 with a "right" one:;
-#X obj 123 649 *~;
-#X obj 123 585 -~;
+#X obj 123 679 *~;
+#X obj 123 615 -~;
 #N canvas 352 175 330 235 delay-writer 0;
 #X obj 96 85 inlet~;
 #X obj 96 158 outlet~;
 #X obj 116 122 delwrite~ G05-d2 1000;
 #X connect 0 0 1 0;
 #X connect 0 0 2 0;
-#X restore 123 421 pd delay-writer;
+#X restore 123 451 pd delay-writer;
 #N canvas 392 176 280 330 delay-reader 0;
 #X obj 97 77 inlet~;
 #X obj 97 227 outlet~;
 #X obj 115 123 inlet~;
 #X obj 97 197 +~;
-#X obj 115 158 vd~ G05-d2;
+#X obj 115 158 delread4~ G05-d2;
 #X connect 0 0 3 0;
 #X connect 2 0 4 0;
 #X connect 3 0 1 0;
 #X connect 4 0 3 1;
-#X restore 123 454 pd delay-reader;
-#X obj 88 649 +~;
-#X obj 310 371 / 44.1;
-#X obj 88 693 output~;
-#X obj 141 622 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X text 249 712 updated for Pd version 0.37-1;
-#X obj 310 397 pack 0 30;
+#X restore 123 484 pd delay-reader;
+#X obj 88 679 +~;
+#X obj 310 401 / 44.1;
+#X obj 88 723 output~;
+#X obj 141 652 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X text 249 742 updated for Pd version 0.37-1;
+#X obj 310 427 pack 0 30;
 #N canvas 0 0 450 300 pulse 0;
 #X obj 64 197 outlet~;
 #X obj 63 93 phasor~ 50;
@@ -43,37 +43,40 @@ with a "right" one:;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;
-#X restore 87 336 pd pulse;
-#X obj 128 386 delwrite~ G05-d1 1000;
-#X obj 310 470 vd~ G05-d1;
-#X obj 310 423 line~;
-#X text 57 125 To get them to go off in the correct order \, put the
+#X restore 87 366 pd pulse;
+#X obj 128 416 delwrite~ G05-d1 1000;
+#X obj 310 500 vd~ G05-d1;
+#X obj 310 453 line~;
+#X text 57 155 To get them to go off in the correct order \, put the
 delread~ and vd~ objects in subpatches. The audio connections between
 the subpatches force the "reader" to be sorted after the "writer".
 DSP sorting in Pd follows the hierarchy of subpatches.;
-#X text 56 204 To hear the difference scroll the delay time between
+#X text 56 234 To hear the difference scroll the delay time between
 0 and 100 samples. The patch at left doesn't let you get below 64 samples
 \, but the patch at right can go all the way down to one sample.;
-#X text 58 270 You can use the same strategy to avoid picking up unwanted
+#X text 58 300 You can use the same strategy to avoid picking up unwanted
 64-sample delays in send~/receive~ and throw~/catch~ pairs.;
-#X text 350 344 <= delay in samples;
-#X text 165 620 <= off to hear left-hand side \; on to hear right hand
+#X text 350 374 <= delay in samples;
+#X text 165 650 <= off to hear left-hand side \; on to hear right hand
 side.;
-#X connect 0 0 9 0;
-#X connect 1 0 5 1;
-#X connect 1 0 8 0;
-#X connect 4 0 8 1;
-#X connect 5 0 4 0;
-#X connect 6 0 7 0;
-#X connect 7 0 5 0;
-#X connect 8 0 10 0;
-#X connect 8 0 10 1;
-#X connect 9 0 13 0;
-#X connect 11 0 4 1;
-#X connect 13 0 17 0;
-#X connect 14 0 1 0;
-#X connect 14 0 6 0;
-#X connect 14 0 15 0;
-#X connect 16 0 1 1;
-#X connect 17 0 7 1;
-#X connect 17 0 16 0;
+#X obj 386 18 declare -stdpath ./;
+#X text 64 56 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~
+;
+#X connect 0 0 8 0;
+#X connect 1 0 4 1;
+#X connect 1 0 7 0;
+#X connect 3 0 7 1;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 9 0;
+#X connect 7 0 9 1;
+#X connect 8 0 12 0;
+#X connect 10 0 3 1;
+#X connect 12 0 16 0;
+#X connect 13 0 1 0;
+#X connect 13 0 5 0;
+#X connect 13 0 14 0;
+#X connect 15 0 1 1;
+#X connect 16 0 6 1;
+#X connect 16 0 15 0;

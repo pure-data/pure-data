@@ -1,6 +1,7 @@
 #N canvas 608 61 726 656 12;
+#X declare -stdpath ./;
 #X obj 114 329 cos~;
-#X floatatom 161 118 4 0 100 0 - - -;
+#X floatatom 161 118 4 0 100 0 - - - 0;
 #X obj 161 142 / 10;
 #X text 477 507 --- 0.02 seconds ---;
 #X obj 114 299 *~;
@@ -10,7 +11,7 @@
 #X array F08-carrier 882 float 0;
 #X coords 0 2 881 -2 200 140 1;
 #X restore 455 356 graph;
-#X floatatom 64 221 4 0 0 0 - - -;
+#X floatatom 64 221 4 0 0 0 - - - 0;
 #X text 43 173 fundamental;
 #X text 43 192 frequency;
 #X obj 156 329 cos~;
@@ -31,8 +32,8 @@ a center frequency of 5.3 (in units of the fundamental.) We just take
 partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f
 52;
 #X obj 246 511 tabwrite~ F08-carrier;
-#X obj 246 486 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 246 486 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 64 245 phasor~ 100;
 #X text 100 71 center frequency (in;
 #X text 99 91 tenths of fundamental);
@@ -44,6 +45,7 @@ partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f
 #X text 217 422 q * (c2 - c1);
 #X text 196 459 q * c2 + (1-q) * c1;
 #X text 269 485 <= graph;
+#X obj 524 27 declare -stdpath ./;
 #X connect 0 0 15 1;
 #X connect 0 0 17 0;
 #X connect 1 0 2 0;

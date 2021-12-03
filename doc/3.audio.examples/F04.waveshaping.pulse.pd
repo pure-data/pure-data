@@ -1,7 +1,8 @@
 #N canvas 477 81 788 630 12;
+#X declare -stdpath ./;
 #X obj 266 179 line~;
 #X obj 266 155 pack 0 50;
-#X floatatom 220 54 0 0 0 0 - - -;
+#X floatatom 220 54 0 0 0 0 - - - 0;
 #X obj 142 116 *~;
 #X obj 220 80 / 10;
 #X obj 220 104 moses 0;
@@ -18,21 +19,21 @@
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F04-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
-#X restore 536 335 graph;
+#X restore 536 360 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F04-spectrum 259 float 0;
 #X coords 0 1.01 258 -0.008 256 200 1;
-#X restore 479 52 graph;
-#X text 555 472 ---- 0.02 seconds ----;
-#X text 506 251 2;
-#X text 537 251 4;
-#X text 476 251 0;
-#X text 546 276 -- partial number --;
-#X text 569 251 6;
-#X text 602 251 8;
-#X text 630 251 10;
-#X text 662 251 12;
-#X text 694 251 14;
+#X restore 479 77 graph;
+#X text 555 497 ---- 0.02 seconds ----;
+#X text 506 276 2;
+#X text 537 276 4;
+#X text 476 276 0;
+#X text 546 301 -- partial number --;
+#X text 569 276 6;
+#X text 602 276 8;
+#X text 630 276 10;
+#X text 662 276 12;
+#X text 694 276 14;
 #X obj 88 294 output~;
 #X obj 88 255 hip~;
 #N canvas 490 195 571 609 fft 0;
@@ -87,10 +88,10 @@ until much later.;
 #X connect 21 0 15 0;
 #X connect 22 0 25 0;
 #X restore 145 257 pd fft;
-#X obj 164 232 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 205 257 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 164 232 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 205 257 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 141 89 osc~;
 #X text 556 541 updated for Pd version 0.37;
 #X text 44 546 NOTE: The PAF algorithm is protected by patents belonging
@@ -105,11 +106,12 @@ we'll use a wavetable to do the waveshaping but for simplicity \, it's
 done algebraically here. The oscillator runs at half the fundamental
 frequency. The symmetry of the waveshaping doubles the frequency of
 the output.;
-#X text 741 236 0;
-#X text 738 49 1;
+#X text 741 261 0;
+#X text 738 74 1;
 #X obj 141 64 r freq/2;
 #X text 186 232 <= graph once;
 #X text 226 256 <= repeatedly;
+#X obj 593 22 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;

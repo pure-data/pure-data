@@ -1,4 +1,4 @@
-#N canvas 597 85 570 450 12;
+#N canvas 777 96 515 444 12;
 #X obj 55 337 snapshot~;
 #X obj 65 19 snapshot~;
 #X msg 66 279 bang;
@@ -8,13 +8,10 @@
 #X text 24 51 The snapshot~ object takes a signal and converts it to
 a control value whenever it receives a bang in its left outlet. This
 object is particularly useful for monitoring outputs.;
-#X msg 476 84 \; pd dsp 1;
-#X obj 476 61 loadbang;
 #X obj 55 254 osc~ 0.1;
 #X text 55 231 0.1 Hz cosine;
-#X text 347 405 updated for Pd version 0.37;
+#X text 264 402 updated for Pd version 0.37;
 #X text 124 254 signal in to take snapshots of;
-#X msg 476 126 \; pd dsp 0;
 #X text 26 114 In the example below \, a snapshot~ object prints out
 the values of a low frequency cosine wave every time it is sent a bang
 message.;
@@ -24,9 +21,14 @@ read snapshot's value before any ensuing signal computation.;
 #X floatatom 55 364 7 0 0 0 - - - 0;
 #X msg 78 307 set 5 \, bang;
 #X text 109 278 - take one snapshot;
-#X text 167 307 - set value (which is reset next DSP block.);
-#X connect 0 0 15 0;
+#X text 167 307 - set value (which is reset next DSP block.), f 22
+;
+#X msg 369 298 \; pd dsp \$1;
+#X obj 369 271 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 391 273 DSP on/off;
+#X connect 0 0 12 0;
 #X connect 2 0 0 0;
-#X connect 7 0 6 0;
-#X connect 8 0 0 0;
-#X connect 16 0 0 0;
+#X connect 6 0 0 0;
+#X connect 13 0 0 0;
+#X connect 17 0 16 0;

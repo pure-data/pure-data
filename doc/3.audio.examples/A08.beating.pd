@@ -1,4 +1,5 @@
-#N canvas 455 28 538 623 12;
+#N canvas 746 73 538 623 12;
+#X declare -stdpath ./;
 #X obj 61 227 output~;
 #X obj 61 191 +~;
 #X text 279 579 updated for Pd version 0.40.;
@@ -27,6 +28,7 @@ them.;
 #X text 40 499 In contrast to the previous example \, the oscillators
 are not tuned to the overtone series (ratios 1:2:3:4...) and so the
 frequencies 330 \, 440 \, and 587 are heard separately.;
+#X obj 57 569 declare -stdpath ./;
 #X connect 1 0 0 0;
 #X connect 1 0 0 1;
 #X connect 3 0 12 0;

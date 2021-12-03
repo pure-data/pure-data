@@ -1,0 +1,445 @@
+#N canvas 371 60 1039 684 12;
+#X msg 626 151 dsp \$1;
+#X msg 803 157 \; pd dsp 0;
+#X obj 626 126 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 651 124 turn DSP engine on/off;
+#X msg 729 157 \; pd dsp 1;
+#X msg 74 298 \; pd compatibility 0.52;
+#X text 47 136 The 'compatibility' message takes a version number and
+sets the behaviour of some objects back to that particular version.
+This can be useful in some cases if you want to guarantee that your
+patch will work in the same way as in the version you created it. This
+is beccause sometimes a new version of Pd may promote a change in the
+behaviour of the object (usually to fix a bug) that can also break
+or change the result of a patch., f 62;
+#X text 53 365 Objects that change their behaviour according to the
+set compatibilty have that information in their help file.;
+#X text 63 277 set compatibilty to Pd 0.52;
+#X text 291 266 set to Pd 0.49;
+#X text 125 411 For example \, check the help file of:, f 18;
+#X obj 276 420 wrap~;
+#X obj 277 542 trace;
+#X msg 72 534 \; pd set-tracing \$1;
+#X obj 72 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#N canvas 731 117 720 669 fast-forward 0;
+#X msg 176 499 stop;
+#X obj 176 466 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 176 392 trigger float float bang, f 25;
+#X msg 262 473 fast-forward \$1;
+#X obj 262 506 send pd;
+#X obj 176 430 delay;
+#X msg 92 263 \; pd dsp 1;
+#X floatatom 176 361 5 0 8000 0 - - - 0;
+#X text 376 472 <=;
+#X text 152 431 =>;
+#X text 82 23 We've seen in the last example the "dsp" message to Pd
+to turn DSP on and off. Here we use this message with loadbang so the
+dsp is turned on when the patch is loaded., f 74;
+#X text 219 360 <= set other lengths;
+#X text 83 361 miliseconds:;
+#X text 65 430 sends a bang after the time amount, f 12;
+#X text 86 499 stops the => recording, f 12;
+#X text 397 465 tells pd to 'fast-forward' and render a given amount
+of time in ms, f 35;
+#X text 82 155 This is very useful if you want to process a pre recorded
+audio in a Pd patch or to generate an audio file with a generative
+(or automated) patch. You can also use [soundfiler] to export to a
+sound file or direcctly use [writsf~] instead. The 'fast-forward' message
+takes a time in milisecond to fast forward to. Check the example,
+f 74;
+#X text 175 608 records to the array =>;
+#X msg 348 423 start 88200;
+#X text 439 423 start recording 2 seconds in;
+#X obj 348 607 tabwrite~ fast-forward;
+#X text 82 72 Pd is mostly used to generate and process things in realtime
+\, nonetheless \, the "fast-forward" message allows you to 'render'
+an amount of audio faster than realtime (and as fast as your process
+can handle) - this is also called 'batch processing'. In this example
+we use it to record 6 seconds of white noise into an array., f 74
+;
+#X msg 176 318 6000;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array fast-forward 441000 float 2;
+#X coords 0 1 441000 -1 250 120 1 0 0;
+#X restore 391 259 graph;
+#X obj 371 513 noise~;
+#X text 423 513 <= white noise generator;
+#X obj 371 572 *~;
+#X obj 389 543 osc~ 0.2;
+#X text 406 572 amplitude modulation;
+#X text 216 316 <= time amount to render (6 seconds), f 19;
+#X text 164 264 <= First make sure DSP is on, f 15;
+#X text 458 385 --- 10 sec ---;
+#X connect 0 0 20 0;
+#X connect 1 0 0 0;
+#X connect 2 0 5 0;
+#X connect 2 1 3 0;
+#X connect 2 2 18 0;
+#X connect 3 0 4 0;
+#X connect 5 0 1 0;
+#X connect 7 0 2 0;
+#X connect 18 0 20 0;
+#X connect 22 0 7 0;
+#X connect 24 0 26 0;
+#X connect 26 0 20 0;
+#X connect 27 0 26 1;
+#X restore 821 381 pd fast-forward;
+#N canvas 608 91 960 556 other-messages 0;
+#X msg 651 465 \; pd quit;
+#X obj 167 231 pdcontrol;
+#X msg 167 203 dir;
+#X obj 602 486 s pd;
+#X msg 602 459 quit;
+#X msg 585 100 \; pd audio-properties;
+#X msg 585 264 \; pd verifyquit;
+#X text 696 265 Quits Pd but verifies if there are unsaved changes
+, f 25;
+#X msg 585 197 \; pd start-startup-dialog;
+#X text 49 130 The "open" message opens a Pd file and takes two symbols
+\, the first is the Pd filename and the second is the directory where
+it lives. You can use this to open desired patches from within a patch.
+, f 64;
+#X msg 167 261 \; pd open help-intro.pd \$1;
+#X text 243 230 <= get currently directory;
+#X obj 156 466 pdcontrol;
+#X msg 156 438 dir;
+#X text 232 465 <= get currently directory;
+#X msg 156 496 \; pd menunew new-patch \$1;
+#X text 590 78 Open audio settings;
+#X text 589 173 Open startup;
+#X text 51 35 Here are some more messages Pd receives when using the
+software's menus besides the "dsp" message. There are much more messages
+that Pd can internally receive and you can search the source code for
+if you're clever enough. But most of them aren't that useful. Here
+are some potentially interesting messages though., f 65;
+#X text 570 34 And here are some more:;
+#X text 59 332 The "menunew" message generates a new empty Pd file
+(but doesn't save it to disk unless you save the file.) It takes two
+symbols \, the first is the Pd filename and the second is the directory
+where it lives. You can use this for dynamic patching (see next section
+on parent patch)., f 64;
+#X obj 639 333 cnv 15 170 100 empty empty empty 20 12 0 14 #f88c7c
+#404040 0;
+#X text 649 346 WARNING: This will quit and close Pd!!!, f 20;
+#X text 667 389 UNSAVED PATCHES WILL BE LOST!!!, f 16;
+#X obj 723 459 cnv 15 178 45 empty empty empty 20 12 0 14 #f88c7c #404040
+0;
+#X text 731 463 <= You've been warned. Do it at your own risk!, f
+23;
+#X connect 1 0 10 0;
+#X connect 2 0 1 0;
+#X connect 4 0 3 0;
+#X connect 12 0 15 0;
+#X connect 13 0 12 0;
+#X restore 841 459 pd other-messages;
+#X text 570 371 The "fast-forward" message to Pd allows batch processing.
+Open the subpatch for an example., f 32;
+#X text 541 449 Here are some other maybe interesting (maybe not) messages
+you can send to Pd., f 41;
+#X text 40 635 see also:;
+#X obj 157 636 samplerate~;
+#X obj 115 636 send;
+#X obj 567 312 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 567 279 receive pd-dsp-started;
+#X obj 781 279 receive pd-dsp-stopped;
+#X obj 781 312 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 587 311 when DSP is turned on;
+#X text 804 311 when DSP is turned off;
+#X obj 246 636 namecanvas;
+#X msg 334 636 message;
+#X obj 68 18 cnv 15 242 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Pd:
+10 12 0 14 #e0e0e0 #404040 0;
+#X obj 584 524 cnv 15 420 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Patch\\\ windows\\\ (canvases)
+10 12 0 14 #e0e0e0 #404040 0;
+#X obj 584 551 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
+117 12 0 14 #e0e0e0 #404040 0;
+#N canvas 794 182 779 412 Dynamic-Patching 0;
+#X text 99 166 For reference \, please check the help file of =>,
+f 25;
+#N canvas 311 74 659 663 creating-boxes 0;
+#X obj 91 523 send pd-creating-boxes;
+#X text 19 22 The 'obj' message creates objects boxes. It needs to
+be followed by a pair of x/y coordinates and then the object name followed
+by creation arguments (if necessary)., f 60;
+#X msg 51 337 obj 470 35 float 5;
+#X msg 69 365 msg 470 80 a message box;
+#X msg 90 394 floatatom 470 120 \, symbolatom 470 140 \, listbox 470
+160, f 19;
+#X text 20 187 The 'text' message creates a comment. after a pair of
+x/y coordinates you can specify the comment's content., f 60;
+#X text 19 74 The 'msg' message creates message boxes. after a pair
+of x/y coordinates you can specify the message's content.;
+#X msg 107 453 text 470 190 a comment;
+#X msg 120 486 obj 470 225 bng;
+#X text 20 223 IEMGuis can be created as objects (such as [bng] for
+bang as the example below). An argument list is not documented yet
+\, you can check the source code but it also makes sense to connect
+a receive object to it and set its parameters with the documented methods
+(it's surely more readable).;
+#X text 317 329 The arguments for the float/number/list boxes are the
+same. Just note that the limit values are invalid for the symbol box.
+, f 39;
+#X text 20 126 The 'floatatom' \, 'symbolatom' andd 'listbox' message
+create \, respectively \, number \, symbol and list boxes. After a
+pair of x/y coordinates you can specify arguments \, see below.;
+#X msg 387 386 \; pd-creating-boxes floatatom 100 570 7 -40 40 3 label
+r-sym s-sym 16, f 26;
+#X text 318 407 click =>;
+#X text 66 311 click these:;
+#X text 332 479 Arguments are \; - width (default 0 if created like
+this) \; - lower limit (default 0) \; - higher limit (default 0) \;
+- label position (0 <default>: left \, 1: right \, 2: top \, 3: bottom)
+\; - label symbol (default empty symbol) \; - receive symbol (default
+empty) \; - send symbol (default empty) \; - font size (default: 0
+<auto> \;, f 42;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;
+#X restore 181 294 pd creating-boxes;
+#X text 532 30 You can create objects and also connect them to create
+patches. See subpatch below:, f 28;
+#N canvas 780 406 529 443 loadbang 0;
+#X text 63 32 A 'loadbang' message will make [loadbang] objects output
+a bang. This is useful because when you create abstractions that contain
+a loadbang object \, they don't get fired \, so you have to force fire
+after you created your abstraction(s)., f 58;
+#X obj 94 331 s pd-loadbang-example;
+#N canvas 376 356 304 192 loadbang-example 0;
+#X restore 307 196 pd loadbang-example;
+#X text 63 112 Creating a [loadbang] object itself via dynamic patching
+also doesn't make it fire. So you may also need to send a 'loadbang'
+message afterwards., f 58;
+#X msg 114 263 loadbang;
+#X msg 94 197 clear \, obj 100 100 bng \, obj 100 75 loadbang \, connect
+1 0 0 0 \, vis 1, f 23;
+#X text 55 372 The 'loadbang' message will fire [loadbang] objects
+that are place in the named canvas and also in subwindows of that canvas
+\, but not other loadbang objects elsewhere.;
+#X text 184 264 fire loadbang;
+#X msg 133 300 clear \, vis 0;
+#X obj 341 327 s pd-loadbang;
+#X msg 341 298 loadbang;
+#X text 331 257 also work for subpatches., f 13;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 8 0 1 0;
+#X connect 10 0 9 0;
+#X restore 589 290 pd loadbang;
+#X obj 285 181 namecanvas;
+#N canvas 438 311 592 528 Data-Structures 0;
+#X text 70 109 For more on Data Structures \, check section 4.data.structures
+in Pd's tutorial examples. See 1st example of the series below.;
+#X obj 160 154 ../4.data.structures/01.scalars;
+#X msg 141 439 clear;
+#X msg 41 307 vis \$1;
+#X obj 41 280 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#N canvas 523 391 191 85 ds2 0;
+#N canvas 50 470 557 157 template-toplevel 0;
+#X obj 21 94 plot bazoo 700 3 10 20 20;
+#X obj 21 68 drawpolygon q 4 0 0 20 z z -5 10 20;
+#X obj 21 30 struct template-toplevel float x float y float z float
+q array bazoo template-element;
+#X restore 11 11 pd template-toplevel;
+#N canvas 199 231 600 239 template-element 0;
+#X obj 58 83 drawpolygon 10 2 5 0 0 -5 -5 0 0 5 5 0;
+#X obj 59 48 struct template-element float x float y float w;
+#X restore 11 34 pd template-element;
+#X restore 363 385 pd ds2;
+#X text 62 278 show/hide;
+#N canvas 361 282 477 239 ds 0;
+#X obj 52 45 filledcurve 990 0 1 0 0 50 0 50 50 0 50;
+#X obj 52 72 drawcurve 0 1 15 15 20 15 20 20 15 20 15 15;
+#X obj 52 99 drawcurve 0 1 30 15 35 15 35 20 30 20 30 15;
+#X obj 52 126 filledcurve 999 0 1 10 25 25 45 40 25 25 35 10 25;
+#X obj 54 17 struct ds float x float y symbol sym;
+#X obj 52 153 drawsymbol sym 55 25 0;
+#X restore 474 344 pd ds;
+#X msg 100 309 scalar ds 225 225 -hi_there!!;
+#X text 317 305 add data structure scalar 'ds' (see [pd ds]) and 3
+fields., f 30;
+#X msg 117 356 read ds-text.txt;
+#X text 250 361 read/write from/to text;
+#X text 332 385 see;
+#X text 187 440 clean it up;
+#X msg 127 381 write ds-text-2.txt;
+#X obj 141 414 loadbang;
+#N canvas 291 367 514 421 \$0-DS-example 0;
+#X restore 374 460 pd \$0-DS-example;
+#X obj 102 474 s pd-\$0-DS-example;
+#X text 66 202 Note you can also use "\$0" to give local names to subpatches.
+This is useful for abstractions in general. In this case we need to
+use [send] as "\$0" doesn't work in messages., f 61;
+#X text 70 14 A 'vis 1' message shows the window while 'vis 0' hides
+it. The 'read' and 'write' messages can be used to import and export
+contents of a window (used for Data Structures). The 'clear' message
+clears the contentes of a window whatever they are (objects \, Data
+Sructures \, arrays \, anything). A 'scalar' message adds a Data Structure
+scalar to the window., f 62;
+#X connect 2 0 17 0;
+#X connect 3 0 17 0;
+#X connect 4 0 3 0;
+#X connect 8 0 17 0;
+#X connect 10 0 17 0;
+#X connect 14 0 17 0;
+#X connect 15 0 2 0;
+#X restore 288 367 pd Data-Structures;
+#N canvas 691 48 597 554 (dis)connecting-boxes 0;
+#X obj 79 482 send pd-connect-boxes;
+#N canvas 545 273 259 224 connect-boxes 0;
+#X restore 357 477 pd connect-boxes;
+#X msg 79 263 clear \, obj 70 40 bng \, obj 70 80 float 5 \, floatatom
+70 120 \, vis 1, f 40;
+#X text 85 237 clear \, create objects and show window:;
+#X msg 109 326 connect 0 0 1 0;
+#X text 229 318 connect object's 0 (bang) first outlet to object's
+1 (float) first inlet., f 38;
+#X text 240 362 connect object's 0 (bang) first outlet to object's
+1 (float) first inlet., f 38;
+#X msg 119 369 connect 1 0 2 0;
+#X text 71 160 Being aware of the object number can be hard and tricky.
+The best way to control this is start a patch or subpatch from scratch
+in a subpatch. This way \, you the number of the object by the order
+they were created., f 67;
+#X msg 145 445 clear \, vis 0;
+#X msg 131 411 disconnect 0 0 1 0 \, disconnect 1 0 2 0;
+#X text 416 411 same syntax.;
+#X text 71 29 You can connect a pair of objects by using two pairs
+of numbers. The first pair identifies the object number and the outlet
+number. The second pair identifies the object number and inlet number
+to connect to. The 'disconnect' message has the same syntax., f 67
+;
+#X text 71 94 The object's number are defined by their order of creation
+(indexed from 0). Every element in the patch counts (number boxes \,
+message boxes \, arrays and even comments). Inlets and outlets are
+also indexes from 0 \, by the way., f 67;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X restore 545 93 pd (dis)connecting-boxes;
+#X text 593 244 loadbang handling:, f 9;
+#N canvas 902 124 849 512 save 0;
+#X msg 326 121 menusave;
+#X msg 367 171 menusaveas;
+#X msg 386 221 menuclose;
+#X obj 76 206 pdcontrol;
+#X msg 76 178 dir;
+#X text 110 177 <= go;
+#X msg 76 236 \; pd menunew new-example \$1;
+#X obj 367 437 s pd-new-example;
+#X text 398 108 this will save and create the patch in the directory
+you created. It'll also rewrite if it's already saved., f 39;
+#X text 453 163 opens a dialog for you to choose where to save., f
+24;
+#X obj 96 379 s pd-new-example;
+#X msg 96 350 text 100 100 very nice;
+#X msg 411 399 vis \$1;
+#X obj 411 369 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 480 366 note 'vis 0' doesn't close the patch \, just hides
+it (and shows it too if it's opened)., f 31;
+#X text 113 326 add something;
+#X obj 405 273 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 405 303 dirty \$1;
+#X text 466 214 Depending if changes were made with some dynamic patching
+messages \, it closes without saving., f 48;
+#X text 55 120 So first let's send a message to Pd to create a new
+patch/cavas., f 32;
+#X text 151 37 In this example we are sending messages to the main
+window of a different patch that we first create.;
+#X text 478 267 Note that Pd won't ask you either to save changes in
+the same case as above. To make sure it asks \, you can use 'dirty
+1'. Conversely \, 'dirty 0' makes Pd ignore changes you made and doesn't
+ask you to save when you close., f 47;
+#X connect 0 0 7 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 11 0 10 0;
+#X connect 12 0 7 0;
+#X connect 13 0 12 0;
+#X connect 16 0 17 0;
+#X connect 17 0 7 0;
+#X restore 659 359 pd save;
+#X text 527 350 Other messages (saving a patch):, f 17;
+#X text 92 347 clear \, vis \, read \, write \, scalar (Data Structures)
+and "\$0":, f 34;
+#X text 31 21 You can communicate with a Pd window by sending messages
+to the name of the file (which communicates to the main window of a
+patch or abstraction). You can also communicate with a subpatch's window
+by sending messages to the subpatch's name. In both cases you need
+to preceed the send name with 'pd-'. In the case of abstractions \,
+you also need to end with ".pd". Alternatively you can name a main
+window or a subpatch with [namecanvas]. For reference \, please refer
+to the help file of [namecanvas] \, which carries complementary information!
+, f 65;
+#N canvas 588 291 801 383 abstractions 0;
+#X text 46 29 You can create abstractions just like you would create
+any other object in Pd! All you need to do is have the name of the
+abstraction as the object name., f 48;
+#X obj 102 162 send pd-abstractions;
+#X msg 102 122 obj 150 220 help-intro;
+#X obj 150 220 help-intro;
+#X text 269 121 <= click;
+#X text 55 265 In this example we loaded another Pd file as an abstraction
+that resides on the same folder. In this case it's not an actual object
+(and used as such) \, but another patch used in Pd's documentation.
+, f 48;
+#X obj 512 214 send pd-help-intro.pd;
+#X msg 512 182 vis \$1;
+#X obj 512 154 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 427 41 You probably just want to use [namecanvas] to name an
+abstraction's window and send messages to it (please \, again \, refer
+to its help file). But you can also use the abstraction's file name
+to send it messages. In this case you need to end with ".pd" \, see
+below:, f 46;
+#X text 458 266 This can be particularly important for handling "loadbangs"
+as the next example on the parent patch shows., f 40;
+#X connect 2 0 1 0;
+#X connect 7 0 6 0;
+#X connect 8 0 7 0;
+#X restore 576 193 pd abstractions;
+#X text 31 217 Many of the menu entries in Pd end up making Pd send
+a message to a canvas name. For instance \, when you create an object
+or message box. See example below for creating 'boxes'., f 62;
+#X text 584 148 handling abstractions:, f 13;
+#X restore 800 640 pd Dynamic-Patching;
+#X text 105 489 The set-tracing message is useful for debugging with
+the [trace] object. Check its help file., f 47;
+#X text 536 221 Note you can get a bang message sent by Pd when DSP
+starts or stops if you receive from 'pd-dsp-started' and 'pd-dsp-stopped'.
+, f 65;
+#X text 690 593 Open subpatch for documentation on how to send messages
+to to a patch window:, f 35;
+#X obj 283 315 send pd;
+#X text 47 63 We can use both the [send] object or message boxes to
+send messages to Pd. Here are some messages that makes sense for you
+to send to Pd from within a patch. Conversely \, you can also send
+Pd these messages via Pd's command line., f 62;
+#X text 531 17 Pd gets also receives messages when you set things via
+Menus or shortcuts and we can also send such messages from within the
+patch. The most widely used one is the "DSP" message that we send to
+Pd when we click on the DSP toggle on the Pd window or go to the "media
+menu" and click on "DSP On" or "DSP Off". The message "dsp 1" turns
+DSP on and "dsp 0" turns it off., f 66;
+#X obj 626 180 send pd;
+#X msg 283 288 compatibility 0.49;
+#X text 42 604 updated for Pd version 0.52;
+#X connect 0 0 40 0;
+#X connect 2 0 0 0;
+#X connect 14 0 13 0;
+#X connect 23 0 22 0;
+#X connect 24 0 25 0;
+#X connect 41 0 37 0;

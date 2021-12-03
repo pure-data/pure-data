@@ -1,26 +1,24 @@
 #N canvas 605 73 547 527 12;
-#X floatatom 419 310 0 0 0 0 - - -;
-#X obj 282 242 receive~ signal1;
-#X obj 39 248 send~ signal1;
-#X obj 39 225 sig~ 50;
-#X obj 419 285 snapshot~;
+#X floatatom 246 322 0 0 0 0 - - - 0;
+#X obj 246 256 receive~ signal1;
+#X obj 121 240 send~ signal1;
+#X obj 121 217 sig~ 50;
+#X obj 246 297 snapshot~;
 #X obj 62 23 send~;
 #X obj 112 24 receive~;
 #X text 180 24 - one-to-many nonlocal signal connections;
-#X obj 419 187 loadbang;
-#X obj 419 250 metro 200;
-#X msg 429 211 \; pd dsp 1;
-#X floatatom 39 201 4 0 0 0 - - -;
+#X obj 376 268 metro 200;
+#X floatatom 121 193 4 0 0 0 - - - 0;
 #X text 60 88 A send~ object copies its input to a local buffer which
 all receive~ objects of the same name read from. They may be in different
 windows or even different patches. Any number of receives may be associated
 with one send~ but it is an error to have two send~s of the same name.
 ;
 #X text 304 476 updated for Pd version 0.33.;
-#X obj 152 220 sig~ 25;
-#X obj 152 248 send~ signal2;
-#X msg 282 189 set signal2;
-#X msg 294 214 set signal1;
+#X obj 122 275 sig~ 25;
+#X obj 122 303 send~ signal2;
+#X msg 246 203 set signal2;
+#X msg 258 228 set signal1;
 #X text 48 385 Send~/Receive~ only work for the default block size
 (64) \; for FFT applications see also:;
 #X text 49 363 Receive~ takes "set" messages to switch between send~s.
@@ -34,13 +32,18 @@ with one send~ but it is an error to have two send~s of the same name.
 #X obj 120 448 throw~;
 #X obj 176 448 catch~;
 #X text 180 48 - abbreviation;
+#X obj 376 236 loadbang;
+#X obj 377 166 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 377 189 \; pd dsp \$1;
+#X text 400 166 on/off;
 #X connect 1 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 0 0;
-#X connect 8 0 9 0;
-#X connect 8 0 10 0;
-#X connect 9 0 4 0;
-#X connect 11 0 3 0;
-#X connect 14 0 15 0;
-#X connect 16 0 1 0;
-#X connect 17 0 1 0;
+#X connect 8 0 4 0;
+#X connect 9 0 3 0;
+#X connect 12 0 13 0;
+#X connect 14 0 1 0;
+#X connect 15 0 1 0;
+#X connect 27 0 8 0;
+#X connect 28 0 29 0;

@@ -1,64 +1,66 @@
-#N canvas 349 76 771 458 12;
-#X text 88 154 frequency;
-#X floatatom 33 179 0 0 0 0 - - -;
+#N canvas 906 23 771 458 12;
+#X floatatom 33 179 0 0 0 0 - - - 0;
 #X obj 33 126 * 44100;
-#X floatatom 33 100 0 0 0 0 - - -;
-#X text 105 98 frequency;
-#X text 108 117 in bins;
-#X text 88 171 in Hz.;
+#X floatatom 33 96 4 0 0 0 - - - 0;
 #X obj 33 239 osc~;
-#X obj 36 22 fft~;
-#X obj 86 23 ifft~;
-#X text 146 21 - forward and inverse complex FFT;
-#X obj 36 48 rfft~;
-#X obj 86 49 rifft~;
-#X text 146 47 - forward and inverse real FFT;
+#X obj 75 16 fft~;
+#X obj 125 17 ifft~;
+#X text 185 15 - forward and inverse complex FFT;
+#X obj 75 42 rfft~;
+#X obj 125 43 rifft~;
+#X text 185 41 - forward and inverse real FFT;
 #X obj 33 264 rfft~;
-#X obj 33 154 / 64;
-#X obj 455 28 loadbang;
-#X msg 455 54 \; pd dsp 1;
-#X text 538 405 updated for Pd version 0.33;
+#X text 513 412 updated for Pd version 0.33;
 #X obj 30 312 rifft~;
 #X obj 112 320 print~ real;
 #X obj 125 295 print~ imaginary;
-#X obj 30 345 /~ 64;
 #X obj 30 406 print~ resynthesized;
 #X msg 44 373 bang;
 #X msg 112 258 bang;
 #X msg 58 210 0.25;
 #X msg 110 210 0;
-#X text 315 312 There is no normalization \, so that an FFT followed
-by an IFFT has a gain of N.;
-#X text 314 361 See the FFT examples to see how to use these in practice.
-;
-#X text 315 223 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
+#X text 326 320 There is no normalization \, so that an FFT followed
+by an IFFT has a gain of N., f 54;
+#X text 326 231 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
 parts. The other outputs are zero. At DC and at the Nyquist there is
 no imaginary part \, but the second through Nth output is as a real
 and imaginary pair \, which can be thought of as the cosine and sin
-component strengths.;
-#X text 314 130 The FFT objects do Fourier analyses and resyntheses
-of incoming real or complex signals. Complex signals are handled as
-pairs of signals (real and imaginary part.) The analysis size is one
-block (you can use the block~ or switch~ objects to control block size).
-;
+component strengths., f 54;
 #X text 143 211 <= bash phase;
 #X text 83 373 <= print resynthesis;
 #X text 80 345 <= renormalize;
 #X text 154 259 <= print analysis;
-#X connect 1 0 7 0;
-#X connect 2 0 15 0;
-#X connect 3 0 2 0;
-#X connect 7 0 14 0;
-#X connect 14 0 20 0;
-#X connect 14 0 19 0;
-#X connect 14 1 21 0;
-#X connect 14 1 19 1;
-#X connect 15 0 1 0;
-#X connect 16 0 17 0;
-#X connect 19 0 22 0;
-#X connect 22 0 23 0;
-#X connect 24 0 23 0;
-#X connect 25 0 20 0;
-#X connect 25 0 21 0;
-#X connect 26 0 7 1;
-#X connect 27 0 7 1;
+#X obj 460 195 block~ 128;
+#X obj 33 154 / 128;
+#X obj 30 345 /~ 128;
+#X text 326 98 The FFT objects do Fourier analyses and resyntheses
+of incoming real or complex signals. Complex signals are handled as
+pairs of signals (real and imaginary part.) The analysis size is one
+block. You can use the block~ or switch~ objects to control block size
+(128 in this example)., f 54;
+#X text 326 356 See the FFT examples (section "I" of audio examples)
+to see how to use these in practice., f 54;
+#X text 385 194 see also:;
+#X text 75 88 frequency in bins, f 9;
+#X text 83 161 frequency in Hz, f 9;
+#X msg 188 146 \; pd dsp \$1;
+#X obj 188 124 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 209 124 DSP on/off;
+#X connect 0 0 3 0;
+#X connect 1 0 27 0;
+#X connect 2 0 1 0;
+#X connect 3 0 10 0;
+#X connect 10 0 13 0;
+#X connect 10 0 12 0;
+#X connect 10 1 14 0;
+#X connect 10 1 12 1;
+#X connect 12 0 28 0;
+#X connect 16 0 15 0;
+#X connect 17 0 13 0;
+#X connect 17 0 14 0;
+#X connect 18 0 3 1;
+#X connect 19 0 3 1;
+#X connect 27 0 0 0;
+#X connect 28 0 15 0;
+#X connect 35 0 34 0;

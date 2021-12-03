@@ -1,12 +1,13 @@
-#N canvas 344 91 544 580 12;
+#N canvas 625 107 544 580 12;
+#X declare -stdpath ./;
 #X text 47 16 CONVERTING CONTROL TO SIGNALS;
 #X obj 244 379 output~;
 #X obj 332 381 output~;
 #N canvas 799 288 303 263 metro 0;
 #X obj 88 38 loadbang;
 #X msg 88 65 1;
-#X obj 88 131 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
-;
+#X obj 88 131 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 88 153 sel 0 1;
 #X obj 88 190 outlet;
 #X obj 152 192 outlet;
@@ -26,7 +27,6 @@ The subpatch is still sending alternating bangs as in the last patch
 #X text 47 195 The effect of line~ rounding breakpoints to the nearest
 block (on the order of a millisecond) is that each 4-millisecond-long
 cycle has a different shape. Using vline~ resolves the problem.;
-#X text 337 523 Updated for Pd 0.37;
 #X text 66 472 Sometimes you will want to use vline~ in place of sig~
 for the same reason.;
 #X text 46 49 For controlling amplitudes \, line~ \, with its block-aligned
@@ -36,13 +36,15 @@ somewhat more expensive than line~ \, can handle breakpoints to sub-sample
 accuracy., f 60;
 #X msg 244 297 1 2.1;
 #X msg 332 299 0 2.1;
-#X connect 3 0 11 0;
-#X connect 3 1 12 0;
+#X obj 379 19 declare -stdpath ./;
+#X text 307 523 Updated for Pd version 0.37;
+#X connect 3 0 10 0;
+#X connect 3 1 11 0;
 #X connect 4 0 1 0;
 #X connect 4 0 1 1;
 #X connect 5 0 2 0;
 #X connect 5 0 2 1;
+#X connect 10 0 4 0;
+#X connect 10 0 5 0;
 #X connect 11 0 4 0;
 #X connect 11 0 5 0;
-#X connect 12 0 4 0;
-#X connect 12 0 5 0;

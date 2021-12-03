@@ -84,27 +84,19 @@ array has the originally specified size.;
 #X text 163 251 - sum all or a range of elements;
 #N canvas 649 59 579 701 array-and-data-structures 0;
 #X obj 212 257 pointer;
-#N canvas 715 383 483 307 array-help-struct 0;
-#X scalar array-help-struct 43 25 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
-\; -5 \; -2 \; 8 \; 12 \; 12 \; 12 \; 10 \; 8 \; 6 \; 1 \; \;;
-#X obj 247 209 pointer;
-#X msg 54 191 20 20;
-#X obj 54 236 append array-help-struct x y;
-#X msg 247 152 traverse pd-array-help-struct \, bang, f 21;
+#N canvas 715 383 468 210 array-help-struct 0;
 #X obj 36 88 filledpolygon 0 0 0 0 0 0 10 20 10 20 0 0 0;
 #X obj 36 61 struct array-help-struct float x float y array z float
 ;
 #X obj 40 119 plot z 500 2 25 5 5;
-#X connect 1 0 3 2;
-#X connect 2 0 3 0;
-#X connect 4 0 1 0;
 #X restore 239 128 pd array-help-struct;
-#N canvas 865 238 450 300 array-help-data 0;
+#N canvas 1298 175 450 300 array-help-data 0;
 #X scalar array-help-struct 84 93 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
 \; -5 \; -2 \; 5 \; -7 \; -41 \; -47 \; -45 \; -34 \; -17 \; 8 \; 5
 \; 2 \; -2 \; -11 \; -16 \; -26 \; -43 \; 16 \; 24 \; 26 \; 21 \; 20
 \; 19 \; 17 \; 16 \; 16 \; 16 \; 16 \; 12 \; \;;
-#X text 26 215 We have one datum... right-click to see contents.;
+#X text 63 211 We have one datum... right-click for properties to see
+contents., f 32;
 #X restore 239 150 pd array-help-data;
 #X msg 212 200 traverse pd-array-help-data \, next, f 19;
 #X obj 82 141 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -134,9 +126,9 @@ as shown further down., f 67;
 #X connect 1 0 5 0;
 #X connect 4 0 0 0;
 #X restore 171 437 pd array-help-struct2;
-#N canvas 793 206 477 318 array-help-data2 0;
+#N canvas 1258 396 477 318 array-help-data2 0;
 #X scalar array-help-struct2 80 30 \; -54 200 10 \; 138 -10 3 \; -32
-26 0 \; 109 141 8 \; 272 19 0 \; \;;
+26 0 \; 109 141 8 \; 267 26 3 \; \;;
 #X text 31 267 A structure whose array has (x \, y \, w) triples -
 right-click to see contents., f 40;
 #X restore 171 483 pd array-help-data2;
