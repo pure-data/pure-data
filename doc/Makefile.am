@@ -322,7 +322,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
      ./5.reference/delay-tilde-objects-help.pd \
-     ./5.reference/drawpolygon-help.pd \
+     ./5.reference/draw-shapes-help.pd \
      ./5.reference/drawtext-help.pd \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
