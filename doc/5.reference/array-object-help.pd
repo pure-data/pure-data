@@ -3,8 +3,9 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
+#N struct template1 float x float y float z float q;
 #N canvas 721 62 609 607 12;
-#X obj 474 503 list;
+#X obj 417 506 list;
 #X text 442 161 (click for details:), f 11;
 #N canvas 623 34 752 765 define 0;
 #X text 360 547 creation arguments:;
@@ -72,7 +73,7 @@ array has the originally specified size.;
 #X connect 35 0 19 0;
 #X connect 35 1 19 1;
 #X restore 443 202 pd define;
-#X obj 378 503 text;
+#X obj 378 506 text;
 #X obj 59 226 array size;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
@@ -82,14 +83,14 @@ array has the originally specified size.;
 #X text 162 200 - create \, store \, and/or edit one;
 #X text 162 227 - get or change size;
 #X text 163 251 - sum all or a range of elements;
-#N canvas 649 59 579 701 array-and-data-structures 0;
+#N canvas 652 121 567 804 array-and-data-structures 0;
 #X obj 212 257 pointer;
 #N canvas 715 383 468 210 array-help-struct 0;
 #X obj 36 88 filledpolygon 0 0 0 0 0 0 10 20 10 20 0 0 0;
 #X obj 36 61 struct array-help-struct float x float y array z float
 ;
 #X obj 40 119 plot z 500 2 25 5 5;
-#X restore 239 128 pd array-help-struct;
+#X restore 239 148 pd array-help-struct;
 #N canvas 1298 175 450 300 array-help-data 0;
 #X scalar array-help-struct 84 93 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
 \; -5 \; -2 \; 5 \; -7 \; -41 \; -47 \; -45 \; -34 \; -17 \; 8 \; 5
@@ -97,7 +98,7 @@ array has the originally specified size.;
 \; 19 \; 17 \; 16 \; 16 \; 16 \; 16 \; 12 \; \;;
 #X text 63 211 We have one datum... right-click for properties to see
 contents., f 32;
-#X restore 239 150 pd array-help-data;
+#X restore 239 124 pd array-help-data;
 #X msg 212 200 traverse pd-array-help-data \, next, f 19;
 #X obj 82 141 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
@@ -125,45 +126,51 @@ as shown further down., f 67;
 #X connect 0 0 5 2;
 #X connect 1 0 5 0;
 #X connect 4 0 0 0;
-#X restore 171 437 pd array-help-struct2;
+#X restore 205 461 pd array-help-struct2;
 #N canvas 1258 396 477 318 array-help-data2 0;
 #X scalar array-help-struct2 80 30 \; -54 200 10 \; 138 -10 3 \; -32
 26 0 \; 109 141 8 \; 267 26 3 \; \;;
 #X text 31 267 A structure whose array has (x \, y \, w) triples -
 right-click to see contents., f 40;
-#X restore 171 483 pd array-help-data2;
+#X restore 205 439 pd array-help-data2;
 #X msg 310 526 traverse pd-array-help-data2 \, next, f 20;
 #N canvas 830 245 407 149 element-struct2 0;
 #X obj 39 58 struct element-struct2 float x float y float w;
-#X restore 171 460 pd element-struct2;
+#X restore 205 484 pd element-struct2;
 #X obj 96 610 array sum -s array-help-struct2 z -f element-struct2
 w, f 31;
-#X text 45 359 Using an additional '-f' flag we can specify which field
-in the array we're referring to. In this example the array has (x \,
-y \, w) triples (struct element-struct2) and we're asking for the "w"
-field using the "-f" flag and its two arguments., f 69;
 #X text 145 651 sum of all the 'w' values in the array;
 #X text 229 289 when "-s" is given this inlet takes a pointer in place
 of a name., f 35;
-#X text 388 128 <= the structure;
-#X text 374 150 <= the array;
+#X text 388 148 <= the structure;
 #X obj 82 169 trigger bang bang;
-#X text 327 437 <= main structure;
-#X text 305 460 <= element structure;
-#X text 311 483 <= the array;
+#X text 361 461 <= main structure;
+#X text 339 484 <= element structure;
 #X obj 96 535 trigger bang bang;
+#X text 374 124 <= click for the array;
+#X text 345 439 <= click for the array;
+#X text 36 360 Using an additional '-f' flag we can specify which field
+in the array we're referring to. In this example the array has (x \,
+y \, w) triples (in [struct element-struct2]) and we're asking for
+the "w" field using the "-f" flag and its two arguments (struct name
+and field name)., f 71;
+#X obj 153 757 ../4.data.structures/01.scalars;
+#X text 53 698 To know more about Data Structures \, how to handle
+pointers and see examples \, please refer to the 4.Data.Structure section
+of the Pd's tutorials. Starting with the first example below., f 66
+;
 #X connect 0 0 5 2;
 #X connect 3 0 0 0;
-#X connect 4 0 21 0;
+#X connect 4 0 19 0;
 #X connect 5 0 6 0;
 #X connect 8 0 15 2;
-#X connect 9 0 25 0;
+#X connect 9 0 22 0;
 #X connect 13 0 8 0;
 #X connect 15 0 10 0;
-#X connect 21 0 5 0;
-#X connect 21 1 3 0;
-#X connect 25 0 15 0;
-#X connect 25 1 13 0;
+#X connect 19 0 5 0;
+#X connect 19 1 3 0;
+#X connect 22 0 15 0;
+#X connect 22 1 13 0;
 #X restore 56 446 pd array-and-data-structures;
 #N canvas 574 174 602 302 size 0;
 #X floatatom 59 94 5 1 100 0 - - - 0;
@@ -198,7 +205,6 @@ maybe later arbitrary data structures) or access an array defined elsewhere
 to get or change its size \, set or read its elements \, and so on.
 , f 72;
 #X text 62 173 The first argument sets its function:;
-#X obj 419 503 scalar;
 #X obj 59 250 array sum;
 #X obj 59 322 array quantile;
 #N canvas 560 199 665 358 sum 0;
