@@ -500,7 +500,7 @@ nobase_dist_libpd_DATA = \
      ./8.topics/slop-slew-limiting-patch.png \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
-     ./8.topics \
+     ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice.wav \
      ./sound/voice2.wav \
