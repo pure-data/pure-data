@@ -201,7 +201,7 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
         {
             if (x && !warned)
             {
-                post("warning: %s: multiply defined", s->s_name);
+                pd_error(x, "warning: %s: multiply defined", s->s_name);
                 warned = 1;
             }
             x = e->e_who;
