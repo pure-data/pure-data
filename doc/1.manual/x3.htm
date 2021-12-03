@@ -452,7 +452,7 @@ as needed.
 MIDI interface installed.  I've seen this done with Midisport devices and
 I think you just download the macOS driver and follow directions.
 
-<H3> <A id=s4> 3.6. Preferences and startup options </A> </H3>
+<H3> <A id=s4> 3.5. Preferences and startup options </A> </H3>
 
 <P> Pd's behavior may be customized to instruct it where to find files, which
 audio devices to open, what font size to use, and so on.  Most of
@@ -667,7 +667,7 @@ no less than 0.1 and no more than 5.  On most OSes, ingoing and outgoing MIDI
 is quantized to this value, so if you care about MIDI timing, reduce this to 1
 or less. 
 
-<H3> <A id="s5"> 3.7. How Pd searches for files </A> </H3>
+<H3> <A id="s5"> 3.6. How Pd searches for files </A> </H3>
 
 <P>Pd has a search path feature; you specify the path on the command line
 using the "-path" option.  Paths may contain any number of files.  If you
@@ -687,10 +687,8 @@ construct the patch.  When Pd searches for an abstraction or an
 "extern" it uses the path to try to find the necessary file.  The "read"
 messages to qlists and arrays (aka tables) do this too.
 
-<P> If "use standard extensions" is enabled, the usual "extras" directory
-is also searched.  This contains standard external objects like "expr" and
-"fiddle", and perhaps much more depending on the distribution of Pd
-you're using.
+<P> If "use standard extensions" is enabled, the usual "extra" directory
+is also searched.  This contains standard external objects like "sigmund~" (as well as it's predecessor "fiddle~") and "bonk~", and perhaps much more depending on the distribution of Pd you're using.
 
 <P> You may save the current settings for future Pd sessions with the
 "save all settings" button; this saves not only the path but all other
