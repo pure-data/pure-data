@@ -61,12 +61,6 @@ left is the usual output order in Pd objects., f 89;
 #X text 681 313 You can use the 'anything' specifier to bypass any
 kind of message: a float \, a symbol \, a pointer \, a bang \, a list
 and also any generic message., f 67;
-#X text 30 139 The creation arguments specify the number of outlets
-and message type to output. Most of the time you want to match the
-input message type to the argument \, but a mix is possible and can
-be convenient. For instance \, it's very usefull to insert a 'bang'
-message into a sequence \, so you'll always have a bang output with
-the 'bang' speccifier no matter what the input is., f 89;
 #X obj 536 447 t b f;
 #X listbox 515 513 6 0 0 0 - - - 0;
 #X floatatom 536 422 4 0 0 0 - - - 0;
@@ -96,6 +90,12 @@ section of the Pd's tutorials. Starting with the first example below.
 , f 70;
 #X restore 96 325 pd pointer;
 #X text 176 325 <= about pointers, f 8;
+#X text 30 139 The creation arguments specify the number of outlets
+and message type to output. Most of the time you want to match the
+input message type to the argument \, but a mix is possible and can
+be convenient. For instance \, it's very usefull to insert a 'bang'
+message into a sequence \, so you'll always have a bang output with
+the 'bang' specifier no matter what the input is., f 89;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;
 #X connect 5 1 6 0;
@@ -108,11 +108,11 @@ section of the Pd's tutorials. Starting with the first example below.
 #X connect 11 1 13 0;
 #X connect 11 2 12 0;
 #X connect 19 0 20 0;
-#X connect 20 0 62 0;
+#X connect 20 0 61 0;
 #X connect 20 1 21 0;
 #X connect 22 0 23 0;
-#X connect 23 0 63 0;
-#X connect 23 1 64 0;
+#X connect 23 0 62 0;
+#X connect 23 1 63 0;
 #X connect 25 0 7 1;
 #X connect 26 0 8 0;
 #X connect 29 0 41 0;
@@ -132,8 +132,8 @@ section of the Pd's tutorials. Starting with the first example below.
 #X connect 42 0 45 0;
 #X connect 43 0 44 0;
 #X connect 43 1 44 0;
-#X connect 54 0 58 0;
-#X connect 54 1 58 1;
-#X connect 56 0 54 0;
-#X connect 57 0 58 0;
-#X connect 58 0 55 0;
+#X connect 53 0 57 0;
+#X connect 53 1 57 1;
+#X connect 55 0 53 0;
+#X connect 56 0 57 0;
+#X connect 57 0 54 0;
