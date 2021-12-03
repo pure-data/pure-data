@@ -265,7 +265,7 @@
 #X obj 30 4264 append;
 #X text 130 4264 - add an element to a list;
 #X obj 30 4288 scalar;
-#X text 151 4639 (use tabwrite~ now);
+#X text 151 4704 (use tabwrite~ now);
 #X obj 144 3576 czero_rev~;
 #X obj 31 2691 threshold~;
 #X text 131 2691 - detect signal thresholds;
@@ -283,7 +283,7 @@
 #X obj 123 997 <;
 #X obj 154 997 >=;
 #X obj 185 997 <=;
-#X text 27 4583 ------------------------ OBSOLETE --------------------------
+#X text 27 4648 ------------------------ OBSOLETE --------------------------
 ;
 #X obj 59 974 -;
 #X obj 92 974 *;
@@ -320,9 +320,9 @@
 #X text 129 1653 - general array creation and manipulation;
 #X text 22 1506 ----------------- ARRAYS/TABLES -------------------
 ;
-#X msg 35 4637 scope~;
-#X msg 35 4669 template;
-#X text 150 4669 (use struct now);
+#X msg 35 4702 scope~;
+#X msg 35 4731 template;
+#X text 150 4731 (use struct now);
 #X obj 25 1882 textfile;
 #X obj 25 1906 text;
 #X obj 185 1020 <<;
@@ -392,8 +392,8 @@ as "switch" \, also switch subpatches on and off;
 #X text 129 478 - message tracing for debugging;
 #X obj 26 1936 file;
 #X text 125 1935 - low-level file operations;
-#X obj 36 4608 fiddle~;
-#X obj 97 4608 pique;
+#X obj 36 4673 fiddle~;
+#X obj 97 4673 pique;
 #X text 29 86 --------------------- GENERAL --------------------------
 ;
 #X obj 41 678 x_all_guis;
@@ -427,4 +427,7 @@ objects in Pd, f 34;
 #X text 22 2983 ------------ AUDIO GENERATORS AND TABLES -------------
 ;
 #X text 31 2540 ------------- GENERAL AUDIO TOOLS --------------;
-#X text 152 4606 (from 'extra': use sigmund~ now);
+#X text 152 4671 (from 'extra': use sigmund~ now);
+#X obj 33 4587 output~;
+#X text 128 4595 - simple stereo output (used in the documentation)
+;
