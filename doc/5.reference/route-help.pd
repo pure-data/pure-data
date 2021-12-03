@@ -34,12 +34,6 @@
 #X obj 918 272 print s2;
 #X text 88 14 - trim first element and route messages according to
 it;
-#X text 591 21 If no argument is given \, [route] loads a float argument
-of 0 and creates a second inlet so you can change the argument value
-(to another float). A single float argument also adds an inlet so it
-can be changed to another float. In the same way \, a single symbol
-argument adds an inlet that expects a symbol message to change the
-argument., f 64;
 #N canvas 475 41 977 682 special-selectors/message-types 0;
 #X msg 415 111 bang;
 #X msg 518 166 5;
@@ -179,7 +173,7 @@ mesages (as with 'pure' below)., f 75;
 #X connect 60 0 56 0;
 #X connect 61 0 57 0;
 #X connect 63 0 62 0;
-#X restore 743 487 pd special-selectors/message-types;
+#X restore 731 467 pd special-selectors/message-types;
 #X text 635 543 see also:;
 #X obj 713 544 select;
 #X text 578 308 In the case of messages that start with a symbol \,
@@ -218,49 +212,54 @@ and more details, f 68;
 #X obj 932 222 list;
 #X listbox 932 246 10 0 0 0 - - - 0;
 #X msg 918 114 symbol hi;
-#X connect 3 0 41 0;
-#X connect 3 1 42 0;
-#X connect 3 2 43 0;
+#X text 594 32 If no argument is given \, [route] loads a float argument
+of 0 and creates a second inlet so you can change the argument value
+(to another float). In the same way \, a single symbol argument adds
+an inlet that expects a symbol message to change the argument., f
+64;
+#X connect 3 0 40 0;
+#X connect 3 1 41 0;
+#X connect 3 2 42 0;
 #X connect 3 2 2 0;
 #X connect 3 3 24 0;
-#X connect 3 3 45 0;
+#X connect 3 3 44 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
 #X connect 6 0 3 0;
 #X connect 7 0 3 0;
 #X connect 8 0 9 0;
 #X connect 9 0 16 0;
-#X connect 9 0 47 0;
+#X connect 9 0 46 0;
 #X connect 9 1 17 0;
-#X connect 9 1 49 0;
+#X connect 9 1 48 0;
 #X connect 9 2 25 0;
-#X connect 9 2 51 0;
+#X connect 9 2 50 0;
 #X connect 10 0 9 0;
 #X connect 11 0 9 0;
 #X connect 12 0 9 0;
 #X connect 13 0 3 0;
-#X connect 20 0 55 0;
-#X connect 20 1 56 0;
+#X connect 20 0 54 0;
+#X connect 20 1 55 0;
 #X connect 21 0 20 0;
 #X connect 22 0 20 1;
 #X connect 23 0 20 0;
 #X connect 26 0 31 0;
-#X connect 26 0 57 0;
+#X connect 26 0 56 0;
 #X connect 26 1 32 0;
-#X connect 26 1 59 0;
+#X connect 26 1 58 0;
 #X connect 27 0 26 0;
 #X connect 28 0 26 0;
 #X connect 29 0 26 1;
 #X connect 30 0 29 0;
-#X connect 41 0 0 0;
-#X connect 42 0 1 0;
-#X connect 43 0 44 0;
-#X connect 45 0 46 0;
-#X connect 47 0 48 0;
-#X connect 49 0 50 0;
-#X connect 51 0 52 0;
+#X connect 40 0 0 0;
+#X connect 41 0 1 0;
+#X connect 42 0 43 0;
+#X connect 44 0 45 0;
+#X connect 46 0 47 0;
+#X connect 48 0 49 0;
+#X connect 50 0 51 0;
+#X connect 54 0 52 0;
 #X connect 55 0 53 0;
-#X connect 56 0 54 0;
-#X connect 57 0 58 0;
-#X connect 59 0 60 0;
-#X connect 61 0 29 0;
+#X connect 56 0 57 0;
+#X connect 58 0 59 0;
+#X connect 60 0 29 0;

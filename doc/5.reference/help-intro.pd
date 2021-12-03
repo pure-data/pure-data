@@ -39,9 +39,7 @@
 #X obj 29 579 value;
 #X text 129 579 - shared numeric value;
 #X obj 27 748 delay;
-#X text 127 748 - send a message after a time delay;
 #X obj 27 772 metro;
-#X text 127 772 - send a message periodically;
 #X obj 27 796 line;
 #X text 127 796 - send a series of linearly stepped numbers;
 #X obj 27 820 timer;
@@ -430,4 +428,7 @@ objects in Pd, f 34;
 #X text 152 4671 (from 'extra': use sigmund~ now);
 #X obj 33 4587 output~;
 #X text 128 4595 - simple stereo output (used in the documentation)
+;
+#X text 127 748 - send a bang message after a time delay;
+#X text 127 772 - send a bang message periodically (a la metronome)
 ;

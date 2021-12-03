@@ -73,10 +73,10 @@ if its first element is a number. Other message selectors can be anything
 else. If a message contains only one symbol \, like "stop" \, it is
 considered a selector with no actual message attached.;
 #X restore 249 505 pd more-on-selectors;
-#X text 610 23 You can separate multiple messages by commas., f 46
+#X text 610 13 You can separate multiple messages by commas., f 46
 ;
-#X obj 773 94 print;
-#X msg 773 64 1 \, 2 \, 3 \, 4;
+#X obj 773 82 print;
+#X msg 773 52 1 \, 2 \, 3 \, 4;
 #X text 849 689 updated for Pd version 0.52;
 #X obj 659 396 print my-receiver-name;
 #X obj 854 396 print another-receiver;
@@ -128,13 +128,13 @@ Pd.;
 #X obj 160 402 send \$0-y;
 #X msg 141 222 \\\\-x;
 #X obj 141 257 print;
+#X text 183 221 <= click;
+#X text 189 258 see result in printout window;
 #X text 29 18 The backlash character is used in Pd to escape special
 characters that are handled differently in Pd. Such characters are:
 spaces \, commas \, semicolons \, dollar signs (as in the locality
-sintax) and the backlash character itself. See examples below., f
+sintax) and the backslash character itself. See examples below., f
 66;
-#X text 183 221 <= click;
-#X text 189 258 see hoe "\\\\-x" becomes "-x";
 #X connect 3 0 1 0;
 #X connect 5 0 0 0;
 #X connect 6 0 0 0;
@@ -190,14 +190,6 @@ load the '\$0' in an object \, since "\$0" doesn't work in messages.
 #X text 407 222 a float message;
 #X msg 894 226 \; my-receiver-name 858 \; another-receiver -45;
 #X obj 894 284 print nothing;
-#X text 610 128 If you separate messages by a semicolon \, the following
-message(s) are sent to destinations specified by the selector. A [receive]
-object with the destination name gets the message. A message box can
-start with a semicolon and nothing comes out of it \, it all goes to
-destinations., f 65;
-#X text 685 583 Finally \, you can escape special characters with backslashes
-(). click and open the subpatch below for more information., f 42
-;
 #X msg 389 253 doesn't work;
 #X text 30 555 You can use "\$1" \, "\$2" \, etc. to make variable
 messages in message boxes. The dollar sign numbers correspond to elements
@@ -249,11 +241,11 @@ of an incoming message (number or symbol) \, so "\$1" is the 1st element
 #X msg 57 144 list \$1 2;
 #X text 28 28 Note that a message selector doesn't count as a message
 element. So the first element in the "list one two" message is "one".
-And the only (and only) element in the "symbol nice" message is "nice".
+And the first (and only) element in the "symbol nice" message is "nice".
 , f 67;
-#X text 74 260 If you want to access the message selector with \, you
-may need convert the message to a symbol or list message. This is possible
-with [symbol] and [list] objects.;
+#X text 74 260 If you want to access the message selector with dollar
+signs \, you have to convert the message to a symbol or list message.
+This is possible with [symbol] and [list] objects., f 61;
 #X connect 0 0 3 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
@@ -283,13 +275,6 @@ with [symbol] and [list] objects.;
 #X text 366 662 more on dollar variables:;
 #X text 307 627 <= click and drag;
 #X text 204 290 a message with 'walk' selector, f 15;
-#X text 35 46 Message boxes hold one or more messages \, which get
-sent to its outlet or to given destinations when activated. Messages
-in Pd consist of a selector (a symbol) and zero or more arguments.
-The selectors "float" \, "bang" \, "symbol" and "list" are common and
-special selectos in Pd. Numbers and lists that start with numbers are
-automatically given the 'float' and 'list' selector \, respectively.
-, f 70;
 #X text 418 316 (number box);
 #X text 35 142 Anytime the message box receives any message at all
 \, the message(s) in the box get sent. Clicking on a message box also
@@ -302,6 +287,22 @@ output it. But it doesn't understand a message with the selector "doesn't"!
 A number box also understands a float message and passes it through.
 What comes out of control objects and number/symbol/list boxes are
 all just messages as well!, f 67;
+#X text 35 46 Message boxes hold one or more messages \, which get
+sent to its outlet or to given destinations when the box is activated.
+Messages in Pd consist of a selector (a symbol) and zero or more arguments.
+The selectors "float" \, "bang" \, "symbol" and "list" are common and
+special selectos in Pd. Numbers and lists that start with numbers are
+automatically given the 'float' and 'list' selector \, respectively.
+, f 70;
+#X text 610 118 If you separate messages by a semicolon \, the following
+message(s) are sent to destinations specified by the selector. A [receive]
+object with the corresponding destination name gets the message. A
+message box can start with a semicolon and nothing comes out of it
+\, it all goes to destinations. The order messages are sent are from
+left to right and top to bottom.e, f 65;
+#X text 685 583 Finally \, you can escape special characters with backslashes
+" \ ". click and open the subpatch below for more information., f
+42;
 #X connect 1 0 2 0;
 #X connect 3 0 4 0;
 #X connect 4 0 15 0;
@@ -315,8 +316,8 @@ all just messages as well!, f 67;
 #X connect 29 0 28 0;
 #X connect 30 0 31 0;
 #X connect 33 0 34 0;
-#X connect 37 0 28 0;
-#X connect 39 0 40 0;
+#X connect 35 0 28 0;
+#X connect 37 0 38 0;
+#X connect 38 0 39 0;
 #X connect 40 0 41 0;
-#X connect 42 0 43 0;
-#X connect 43 0 44 0;
+#X connect 41 0 42 0;

@@ -15,16 +15,16 @@
 #X obj 250 336 log~;
 #X obj 162 336 sqrt~;
 #X obj 292 335 expr~;
-#X text 52 74 Expr~ raises the Euler number 'e' (about 2.718) \, to
-the power of the input signal., f 43;
 #X obj 232 195 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X msg 232 223 \; pd dsp \$1;
 #X text 255 194 DSP on/off;
+#X text 52 74 Exp~ raises the Euler number 'e' (about 2.718) \, to
+the power of the input signal., f 43;
 #X connect 0 0 10 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 5 0;
 #X connect 4 0 0 0;
 #X connect 10 0 3 0;
-#X connect 17 0 18 0;
+#X connect 16 0 17 0;

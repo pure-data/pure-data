@@ -1,14 +1,14 @@
-#N canvas 418 70 501 308 12;
+#N canvas 736 67 501 308 12;
 #X obj 29 15 key;
 #X obj 62 14 keyup;
 #X obj 113 14 keyname;
 #X obj 38 67 key;
-#X floatatom 38 95 3 0 0 0 - - -;
-#X floatatom 77 93 3 0 0 0 - - -;
+#X floatatom 38 95 3 0 0 0 - - - 0;
+#X floatatom 77 93 3 0 0 0 - - - 0;
 #X obj 77 67 keyup;
-#X floatatom 128 93 3 0 0 0 - - -;
+#X floatatom 128 93 3 0 0 0 - - - 0;
 #X obj 128 67 keyname;
-#X symbolatom 174 94 10 0 0 0 - - -;
+#X symbolatom 174 94 10 0 0 0 - - - 0;
 #X text 261 267 updated for Pd version 0.32.;
 #X text 26 133 Key and keyup report the (system dependent) numbers
 of "printing" keys of the keyboard. Keyname gives the symbolic name

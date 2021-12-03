@@ -8,9 +8,7 @@ weasel text boom;
 #X obj 50 156 struct;
 #X obj 46 45 drawsymbol;
 #X obj 46 73 drawtext;
-#N canvas 833 137 533 657 help-draw-template 0;
-#X text 28 15 drawnumber/drawsymbol/drawtext takes arguments specifying:
-;
+#N canvas 872 42 533 657 help-draw-template 0;
 #X obj 42 489 drawsymbol weasel 0 -30 0 weasel=;
 #X obj 298 489 drawtext boom 0 -45 0 boom=;
 #X obj 95 530 struct help-draw-data float x float y float cat float
@@ -27,25 +25,27 @@ on the numbers to change their values. Keyboard entry is also supported
 #X text 31 42 - Optional flags: "-n" to make invisible initially or
 "-v [field name]" to assign a variable to make this visible/invisible.
 , f 54;
-#X text 116 194 <= inlet sets visibility (1: visible \, 0: invisible)
+#X text 114 194 <= inlet sets visibility (1: visible \, 0: invisible)
 ;
 #X msg 48 194 1;
 #X msg 81 194 0;
-#X text 137 214 (if no -v [field name] flag was given);
+#X text 135 214 (if no -v [field name] flag was given);
 #X text 22 375 In edit mode you can move \, cut \, copy and paste the
 objects.;
 #X text 22 284 Instead of float arguments to set color and position
 you can specify field names., f 68;
-#X text 23 397 Here we use [drawsymbol] and [drawtext] to draw \, respecctively
+#X text 59 578 This [sruct] object defines the fields for this template.
+You can see them by right-clicking on the object in the "data" window
+and selecting "properties.", f 58;
+#X text 28 15 drawnumber/drawsymbol/drawtext takes these arguments:
+, f 54;
+#X text 24 397 Here we use [drawsymbol] and [drawtext] to draw \, respectively
 \, a symbol whose field name is 'weasel' and a text whose field name
 is 'boom'. You can't directly edit symbols/text though - they can be
 changed through "set" and "text" objects \, respectively \, or via
 properties., f 69;
-#X text 93 580 This [sruct] object defines the fields for this template.
-You can see them by right-clicking on the object in the "data" window
-and selecting "properties.", f 49;
-#X connect 10 0 5 0;
-#X connect 11 0 5 0;
+#X connect 9 0 4 0;
+#X connect 10 0 4 0;
 #X restore 329 89 pd help-draw-template;
 #N canvas 179 120 455 265 help-draw-data 1;
 #X scalar help-draw-data 63 134 628 651 hello \; a 1 b 2 c 3 \\\; \;

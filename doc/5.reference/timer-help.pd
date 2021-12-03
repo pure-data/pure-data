@@ -1,25 +1,25 @@
-#N canvas 745 73 616 614 12;
+#N canvas 745 73 616 626 12;
 #X msg 93 371 bang;
 #X msg 33 269 bang;
 #X obj 61 401 timer;
 #X obj 89 13 timer;
 #X text 134 14 - measure logical time;
 #X floatatom 61 427 7 0 0 0 - - - 0;
-#X text 33 556 see also:;
+#X text 33 576 see also:;
 #X obj 329 277 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X obj 463 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 113 568 delay;
+#X obj 113 588 delay;
 #X obj 361 367 sel 1;
 #X floatatom 361 447 5 0 0 0 - - - 0;
 #X obj 329 316 t f f;
-#X obj 158 568 metro;
+#X obj 158 588 metro;
 #X obj 463 367 metro 1 90 permin;
 #X obj 361 422 timer 90 permin;
-#X text 365 557 updated for Pd version 0.47;
-#X obj 112 544 realtime;
-#X obj 180 544 cputime;
+#X text 365 577 updated for Pd version 0.47;
+#X obj 112 564 realtime;
+#X obj 180 564 cputime;
 #X obj 361 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 39 197 These symbols can also be preceeded by "per" (as in
@@ -31,17 +31,13 @@ patch is running, f 67;
 #X text 159 309 set tempo units;
 #X msg 61 305 tempo 1 sec;
 #X msg 71 330 tempo 1 msec;
-#X text 48 482 Note you need to reset the elapsed time to zero when
-you change the tempo message when the object is runnng \, otherwise
-you get funny results because the change is only applied to the remaining
-part of the elapsed time., f 75;
 #X text 388 264 Here \, the metronome outputs at intervals of one beat
 at 90 beats per minute as the timer also set to that tempo measures.
 , f 29;
 #X text 74 262 reset (set elapsed time to zero), f 18;
 #X text 136 360 output elapsed time. You can click multiple times since
 it was last reset., f 25;
-#X obj 203 569 text sequence;
+#X obj 203 589 text sequence;
 #X text 22 47 The timer object measures elapsed logical time. Logical
 time moves forward as if all computation were instantaneous and as
 if all "delay" and "metro" objects were exact. By default \, the time
@@ -49,6 +45,10 @@ unit is 1 millisecond \, but you can change this with the 'tempo' message
 (as in [delay] \, [metro] and [text sequence]) \, which takes a different
 tempo number and a time unit symbol. Possible symbols are:, f 82;
 #X text 120 418 elapsed time in the specified time units, f 20;
+#X text 48 482 Note you need to reset the elapsed time to zero when
+you change the tempo message when the object is runnng \, otherwise
+you get funny results because the change takes effect immediately and
+gets applied to the remaining part of the elapsed time., f 75;
 #X connect 0 0 2 1;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;

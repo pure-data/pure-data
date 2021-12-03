@@ -1,3 +1,4 @@
+#N struct template1 float x float y float z float q;
 #N canvas 571 23 935 661 12;
 #X obj 80 15 send;
 #X obj 41 120 send help-send1;
@@ -124,7 +125,7 @@ that works as a send. Click on the bangs below.;
 #X restore 710 297 graph;
 #X obj 587 351 send \$0-array;
 #X msg 587 319 sinesum 512 1;
-#X floatatom 820 183 5 0 0 0 - #0-x - 0;
+#X floatatom 820 183 5 0 0 0 - \$0-x - 0;
 #X text 559 24 Note that "\$0" is also used in send/receive names in
 GUIs \, array names and as well as variable names in value objects.
 In order to use the 'send' method from [float] \, [int] and [list store]
@@ -147,10 +148,10 @@ f 45;
 #X connect 22 0 21 0;
 #X connect 26 0 25 0;
 #X restore 350 570 pd Dealing_with_"\$0";
-#X text 19 570 open subpatch to see how to deal with '\$0' =>;
 #X msg 238 619 message;
 #X obj 389 619 samplerate~;
 #X obj 300 619 Pd-messages;
+#X text 19 570 Open subpatch to see how to deal with '\$0' =>;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;

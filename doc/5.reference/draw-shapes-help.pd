@@ -31,7 +31,6 @@ as a whole., f 58;
 #X msg 558 31 1;
 #X msg 591 31 0;
 #X text 622 32 <= visibilty;
-#X text 142 324 (if no -v [field name] flag was given);
 #X text 39 383 The example above has a line color of black (0) \, 5
 pixels thick and 3 pair or coordinates draw an open triangle whith
 the heigh set by "weasel" (this also makes height settable via click
@@ -49,14 +48,15 @@ both "-xr" and "-xe" \, disabling all mouse actions \;, f 65;
 \, 9=blue \, 555=grey \, etc.) \; - line width \; - (x \, y) pairs
 giving coordinates of each vertice in the shape (at least two pairs
 to draw a line).;
-#X obj 86 350 drawpolygon -x 0 5 0 0 25 weasel 50 0;
-#X obj 591 60 filledpolygon -x 900 dog 3 15 0 25 cat 35 0;
-#X text 548 95 [filledpolygon] and [filledcurve] take the same input.
-As for the arguments \, they takes an extra first argument to specify
-interior color. Here we have \; - an interior color of red (900) \;
-- the outline color controlled by the "dog" field \; - an outline width
-of 3 \; - the three pair of coordinates that now describe a closed
-and filled triangle of altitude "cat".;
+#X text 142 324 (if no "-v [field name]" flag was given);
+#X obj 86 350 drawpolygon 0 5 0 0 25 weasel 50 0;
+#X obj 591 60 filledpolygon 900 dog 3 15 0 25 cat 35 0;
+#X text 548 95 [filledpolygon] and [filledcurve] take the same inlet
+input. As for the arguments \, they take an extra first argument to
+specify interior color. Here we have \; - an interior color of red
+(900) \; - the outline color controlled by the "dog" field \; - an
+outline width of 3 \; - the three pair of coordinates that now describe
+a closed and filled triangle of altitude "cat".;
 #X connect 7 0 17 0;
 #X connect 8 0 17 0;
 #X connect 9 0 18 0;

@@ -1,4 +1,4 @@
-#N canvas 48 77 1042 471 12;
+#N canvas 192 103 1042 471 12;
 #X obj 82 73 savestate-example;
 #A saved 110 660;
 #X text 223 71 open the abstraction at left (right- or CTRL- click

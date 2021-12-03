@@ -1,4 +1,4 @@
-#N canvas 701 77 519 534 12;
+#N canvas 701 77 525 570 12;
 #X declare -stdpath ./;
 #X obj 200 265 sig~;
 #X text 176 207 center frequency;
@@ -33,6 +33,11 @@ the bp~ bandpass filter., f 63;
 #X obj 177 494 lop~;
 #X obj 217 494 hip~;
 #X obj 365 20 declare -stdpath ./;
+#X obj 37 530 biquad~;
+#X obj 96 529 slop~, f 7;
+#X obj 155 529 cpole~, f 7;
+#X obj 217 529 fexpr~;
+#X text 273 529 - unfriendly filters;
 #X connect 0 0 7 1;
 #X connect 2 0 0 0;
 #X connect 3 0 7 2;
