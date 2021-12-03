@@ -484,7 +484,6 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/synth/README.txt \
      ./7.stuff/synth/synthvoice.pd \
      ./7.stuff/synth/test-gadsr.pd \
-     ./7.stuff/synth \
      ./7.stuff/tools/latency.pd \
      ./7.stuff/tools/load-meter.pd \
      ./7.stuff/tools/miditester.pd \
