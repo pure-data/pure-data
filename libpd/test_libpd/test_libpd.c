@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include "z_libpd.h"
-#include "m_imp.h"
 
 void pdprint(const char *s) {
   printf("%s", s);
@@ -20,9 +19,14 @@ int main(int argc, char **argv) {
     t_pdinstance *pd1, *pd2;
     int srate = 48000;
         /* one input channel, two output channels,
-        block size 64, one tick per buffer: */
+           block size 64, one tick per buffer: */
     float inbuf[64], outbuf[128];
-    char *filename = "test_libpd.pd", *dirname = ".";
+    char *filename = "test2.pd", *dirname = ".";
+
+    /* accept overrides from the commandline:
+       $ pdtest_multi file.pd ../dir */
+    if (argc > 1) filename = argv[1];
+    if (argc > 2) dirname = argv[2];
 
         /* maybe these two calls should be available per-instance somehow: */
     libpd_set_printhook(pdprint);
@@ -64,12 +68,12 @@ int main(int argc, char **argv) {
     libpd_add_float(-480.0f);
     libpd_finish_message("frequency", "float");
 
+    /* now run pd for 3 ticks */
     int i, j;
     for (i = 0; i < 3; i++)
     {
         libpd_set_instance(pd1);
         libpd_process_float(1, inbuf, outbuf);
-
         printf("instance 1, tick %d:\n", i);
         for (j = 0; j < 8; j++)
             printf("%f ", outbuf[j]);

@@ -49,6 +49,9 @@ src/*.lib
 src/*.res
 src/*.a
 
+# mac build artifacts
+*.dylib
+
 # distribution tarballs
 pd-0.*
 msw/0.*
@@ -78,3 +81,8 @@ portaudio/portaudio/portaudio-2.0.pc
 
 # script build artifacts
 mac/build
+
+# libpd
+!libpd/Makefile
+!libpd/test_libpd/Makefile
+libpd/test_libpd/test_libpd
