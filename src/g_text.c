@@ -785,6 +785,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
     else if (c == '\n')
     {
+        x->a_doubleclicked = 0;
         if (t == x->a_glist->gl_editor->e_textedfor)
         {
             rtext_gettext(t, &buf, &bufsize);

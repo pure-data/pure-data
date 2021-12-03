@@ -508,7 +508,16 @@ static int socketreceiver_doread(t_socketreceiver *x)
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
                 size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
+        #ifdef _WIN32
+            #ifdef _MSC_VER
+                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, messbuf);
+            #else
+                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, messbuf);
+            #endif
+                fflush(stderr);
+        #else
                 fprintf(stderr, "<< %.*s\n", (int)bufsize, messbuf);
+        #endif
             }
             x->sr_inhead = inhead;
             x->sr_intail = intail;
@@ -811,7 +820,19 @@ void sys_vgui(const char *fmt, ...)
             msglen  = INTER->i_guisize - INTER->i_guihead;
     }
     if (sys_debuglevel & DEBUG_MESSUP)
-        fprintf(stderr, ">> %s", INTER->i_guibuf + INTER->i_guihead);
+    {
+        const char *mess = INTER->i_guibuf + INTER->i_guihead;
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L">> %S", mess);
+    #else
+        fwprintf(stderr, L">> %s", mess);
+    #endif
+        fflush(stderr);
+#else
+        fprintf(stderr, ">> %s", mess);
+#endif
+    }
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }

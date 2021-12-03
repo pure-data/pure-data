@@ -1881,15 +1881,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                     (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                     x->gl_edit);
             }
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
-                (unsigned long)c);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx", c);
             while (c->gl_owner && !c->gl_isclone) {
                 int cbuflen;
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                     MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                    " .x%lx", (unsigned long)c);
+                    " .x%lx", c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
