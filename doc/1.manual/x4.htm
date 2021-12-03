@@ -569,7 +569,7 @@ single binary, you can force Pd to find it with slash declarations. Otherwise, i
 it's a binary pack, you can load as any other library and if it has objects with the
 same name as vanilla's internals, they get overriden! But Pd still keeps a copy of
 the old one and renames it by appending "_aliased", so you can still load the old
-"phasor~", for instance, as <b>[phasor~_aliased]<b>. You probably don't want to mess overriding
+"phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably don't want to mess overriding
 internals, but it makes sense if you provide new versions with more features but fully
 backwards compatible.
 
@@ -580,19 +580,19 @@ now well wrap it up after all the information has been presented.
 
 <p>So, whenever you tell Pd to create an object in its box, this is what happens.
 
-<p><b>First<b> it searches in its object list. This includes all of Pd's internals and
+<p><b>First</b> it searches in its object list. This includes all of Pd's internals and
 other externals that may have been previously loaded.
 
-<p><b>Second<b>, it moves on to possible paths. And if you have [declare -path] in your patch,
+<p><b>Second</b>, it moves on to possible paths. And if you have [declare -path] in your patch,
 the defined path(s) has/have priority respecting the order they are listed from left to
 right.
 
-<p><b>Third<b> is time to search the path relative to the patch.
+<p><b>Third</b> is time to search the path relative to the patch.
 
-<p><b>Fourth<b> it goes to the user added paths, defined at "Preferences => Path". An order
+<p><b>Fourth</b> it goes to the user added paths, defined at "Preferences => Path". An order
 is also respeccted, from top to bottom.
 
-<p><b>Fifth<b> and last, it searches the "standard paths", which includes the 'extra' library
+<p><b>Fifth</b> and last, it searches the "standard paths", which includes the 'extra' library
 provided by the Pd Vanilla disribution. Note you can use [declare -stdpath ./] to force
 priority to search this folder!
 
