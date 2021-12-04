@@ -210,13 +210,7 @@ t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv)
 {
     if (IS_A_SYMBOL(argv, indx))
         return (atom_getsymbolarg(indx, 100000, argv));
-    else if (IS_A_FLOAT(argv, indx))
-    {
-        char str[80];
-        sprintf(str, "%d", (int)atom_getfloatarg(indx, 100000, argv));
-        return (gensym(str));
-    }
-    else return (gensym("empty"));
+    return (gensym("empty"));
 }
 
 void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
@@ -651,15 +645,13 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
         srl[0] = atom_getsymbolarg(7, argc, argv);
     else if(IS_A_FLOAT(argv,7))
     {
-        sprintf(str, "%d", (int)atom_getfloatarg(7, argc, argv));
-        srl[0] = gensym(str);
+        srl[0] = gensym("empty");
     }
     if(IS_A_SYMBOL(argv,8))
         srl[1] = atom_getsymbolarg(8, argc, argv);
     else if(IS_A_FLOAT(argv,8))
     {
-        sprintf(str, "%d", (int)atom_getfloatarg(8, argc, argv));
-        srl[1] = gensym(str);
+        srl[1] = gensym("empty");
     }
     if(IS_A_SYMBOL(argv,9))
         srl[2] = atom_getsymbolarg(9, argc, argv);
