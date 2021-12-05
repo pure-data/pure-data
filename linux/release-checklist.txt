@@ -2,17 +2,18 @@ release checklist
 
 test compilation on linux/msw/mac:
 
-VERSION=0.52-0test0
+VERSION=0.52-0test3
 MAC=x64
 
 ------------- remake po: ----------------
 VERSION=tmp
-rm -rf /tmp/pd* /tmp/Pd*
 cd ~/pd/linux
 ./make-release $VERSION
-cd /tmp/
+rm -rf /tmp/mkpo
+mkdir /tmp/mkpo
+cd /tmp/mkpo
 tar xzf ~/pd/dist/pd-$VERSION.src.tar.gz
-cd /tmp/pd-$VERSION
+cd /tmp/mkpo/pd-$VERSION
 ./autogen.sh && ./configure && make && rsync -avl --delete \
     po/ ~/bis/work/pd-versions/po/
 rsync -avl ~/bis/work/pd-versions/po/ $MAC:work/build/po/
