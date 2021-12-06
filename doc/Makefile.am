@@ -294,6 +294,7 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
+     ./5.reference/Pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
@@ -322,8 +323,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
      ./5.reference/delay-tilde-objects-help.pd \
-     ./5.reference/drawpolygon-help.pd \
+     ./5.reference/draw-shapes-help.pd \
      ./5.reference/drawtext-help.pd \
+     ./5.reference/ds-text.txt \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
      ./5.reference/expr-help.pd \
