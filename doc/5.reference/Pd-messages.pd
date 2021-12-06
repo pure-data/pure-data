@@ -379,7 +379,6 @@ any other object in Pd! All you need to do is have the name of the
 abstraction as the object name., f 48;
 #X obj 102 162 send pd-abstractions;
 #X msg 102 122 obj 150 220 help-intro;
-#X obj 150 220 help-intro;
 #X text 269 121 <= click;
 #X text 55 265 In this example we loaded another Pd file as an abstraction
 that resides on the same folder. In this case it's not an actual object
@@ -397,8 +396,8 @@ below:, f 46;
 #X text 458 266 This can be particularly important for handling "loadbangs"
 as the next example on the parent patch shows., f 40;
 #X connect 2 0 1 0;
+#X connect 6 0 5 0;
 #X connect 7 0 6 0;
-#X connect 8 0 7 0;
 #X restore 576 193 pd abstractions;
 #X text 31 217 Many of the menu entries in Pd end up making Pd send
 a message to a canvas name. For instance \, when you create an object
