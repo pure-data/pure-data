@@ -1,13 +1,83 @@
-#N canvas 402 55 524 371 12;
-#X obj 39 20 namecanvas;
-#X obj 39 108 namecanvas bonzo;
-#X text 291 309 updated for Pd version 0.44;
-#X text 131 20 - attach this canvas to a name;
-#X text 34 150 This is sometimes the only way to send a message to
-a canvas when making graph-on-parent abstractions \, but its use in
-making self-editing patches is dangerous since if you use it to edit
-the namecanvas itself away you can cause Pd to crash. Instead \, you
-can just say:;
-#X msg 38 65 \; bonzo msg 280 50 hi there;
-#X msg 38 237 \; pd-namecanvas-help.pd msg 280 80 this is safer but
-only possible if you know the name of the canvas in advance.;
+#N struct template1 float x float y float z float q;
+#N canvas 585 36 941 734 12;
+#X obj 50 19 namecanvas;
+#X obj 248 135 namecanvas bonzo;
+#X text 132 19 - attach this canvas to a name;
+#N canvas 140 127 541 242 subpatch 0;
+#X obj 70 57 namecanvas banzai;
+#X text 229 46 This subpatch has its own name. It can receive messages
+sent to it from anywhere., f 34;
+#X restore 134 550 pd subpatch;
+#X text 144 420 <= but you need to know the name of the canvas (file)
+in advance., f 32;
+#X msg 33 354 \; pd-namecanvas-help.pd msg 40 420 this is safer;
+#X text 40 469 Note this doesn't make it possible to use "\$0".;
+#X text 73 551 open =>;
+#X msg 443 96 \; pd-subpatch msg 100 150 how are ya?;
+#X obj 720 134 s pd-subpatch;
+#X obj 458 381 namecanvas \$0-local-name;
+#N canvas 256 451 446 165 \$0-local-subpatch 0;
+#X text 75 83 A local subpatch \, useful in abstractions.;
+#X restore 717 471 pd \$0-local-subpatch;
+#X obj 717 423 s pd-\$0-local-subpatch;
+#X obj 462 464 s \$0-local-name;
+#X text 478 681 see also:;
+#X obj 555 681 pd-messages;
+#X text 18 47 You can use namecanvas to attach a receive name to a
+canvas (patch window) soo you can send it messages (useful for 'dynamic
+patching'). Below \, we use it to name this canvas 'bonzo' and send
+it a message that makes it create a message box., f 55;
+#X msg 25 161 \; bonzo msg 240 170 hey there;
+#X msg 462 437 msg 320 170 wassup?;
+#X text 19 217 This is needed to send messages to an abstraction's
+main canvas locally (using "\$0" to give it a local name). But its
+use in making self-editing patches is dangerous since if you use it
+to edit the namecanvas itself away you can cause Pd to crash. Instead
+\, you can use the file name (preceded by "pd-") to access its main
+window \, see:, f 53;
+#X text 447 170 You can give the same name with [namecanvas] to different
+windows to communicate to them all with a single message. Similarly
+\, any other patch or subpatch with the same name will receive the
+same messages., f 63;
+#X text 606 437 <= click;
+#X msg 78 591 \; banzai msg 100 100 hello;
+#X text 258 599 <= click;
+#X text 30 139 click:;
+#X msg 742 564 vis \$1;
+#X obj 742 544 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 761 541 show/hide window;
+#X obj 742 590 s pd-pd-messages.pd;
+#X text 28 508 You can use namecanvas to name subpatches s well.;
+#X text 19 649 But this is not necessary as you can also send messages
+to the subpatch using the subpatch's name (preceded by 'pd-'). Check
+example above to the right., f 53;
+#X text 447 24 Instead of using [namecanvas] \, we're sending messages
+directly to the subpatch. The 'vis' message can be used to show/hide
+it., f 63;
+#X text 447 242 You can also give multiple names to a single canvas
+with [namecanvas] \, below we now give this window a second local name
+with "\$0". You can also use "\$0" in the name of subpatches by the
+way and we also have this example below. Note that in this case you
+need to use [send] as "\$0" doesn't work in messages. Again \, this
+is useful for abstractions., f 63;
+#X msg 720 73 vis 1;
+#X msg 731 103 vis 0;
+#X text 771 71 show window;
+#X text 776 103 hide window;
+#X msg 717 390 vis \$1;
+#X obj 717 367 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 736 364 show/hide window;
+#X text 434 534 Note that when you have a patch loaded as an abstraction
+\, besides the 'pd-' prefix \, you also need to end with ".pd"! This
+is used to the right to open the "pd-messages" example \, loaded below
+\, which includes more information on 'dynamic patching'., f 40;
+#X text 707 679 updated for Pd version 0.52;
+#X connect 18 0 13 0;
+#X connect 25 0 28 0;
+#X connect 26 0 25 0;
+#X connect 33 0 9 0;
+#X connect 34 0 9 0;
+#X connect 37 0 12 0;
+#X connect 38 0 37 0;

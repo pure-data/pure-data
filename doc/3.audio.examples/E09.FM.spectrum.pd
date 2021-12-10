@@ -1,10 +1,11 @@
 #N canvas 387 124 697 536 12;
+#X declare -stdpath ./;
 #X obj 146 209 *~;
 #X obj 189 209 line~;
 #X obj 71 210 cos~;
 #X obj 71 185 +~;
 #X obj 189 186 pack 0 50;
-#X floatatom 189 138 0 0 0 0 - - -;
+#X floatatom 189 138 0 0 0 0 - - - 0;
 #X obj 189 162 / 100;
 #X obj 71 160 phasor~;
 #X obj 71 315 output~;
@@ -29,9 +30,9 @@ until much later.;
 #X text 271 209 delay two samples;
 #X text 269 227 for better graphing;
 #X obj 133 532 samplerate~;
-#X obj 133 509 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 133 581 5 0 0 0 - - -;
+#X obj 133 509 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X floatatom 133 581 5 0 0 0 - - - 0;
 #X obj 133 555 / 256;
 #X obj 133 485 loadbang;
 #X obj 184 631 s fundamental;
@@ -75,24 +76,24 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 28 1 20 0;
 #X connect 31 0 27 0;
 #X restore 115 264 pd fft;
-#X obj 135 240 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 175 264 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 135 240 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 175 264 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E09-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 80 1;
-#X restore 395 46 graph;
+#X restore 411 59 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E09-spectrum 259 float 0;
 #X coords 0 0.51 258 -0.008 259 130 1;
 #X restore 354 196 graph;
-#X text 404 132 ---- 0.02 seconds ----;
+#X text 420 145 ---- 0.02 seconds ----;
 #X text 384 327 2;
 #X text 415 327 4;
 #X text 354 316 0;
 #X text 392 342 -- partial number --;
-#X text 494 20 WAVEFORM;
+#X text 332 88 WAVEFORM;
 #X text 448 178 SPECTRUM;
 #X text 614 312 0;
 #X text 615 194 0.5;
@@ -105,7 +106,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 540 327 12;
 #X text 572 327 14;
 #X text 45 17 SPECTRUM OF TWO-OPERATOR PHASE MODULATION;
-#X floatatom 71 79 3 0 15 0 - - -;
+#X floatatom 71 79 3 0 15 0 - - - 0;
 #X obj 71 136 *;
 #X obj 71 54 r cm;
 #X text 105 78 carrier harmonic #;
@@ -118,6 +119,7 @@ sidebands begin to reflect about the left edge of the spectrum \, causing
 complicated interference effects., f 71;
 #X text 157 240 <= graph once;
 #X text 196 263 <= repeatedly;
+#X obj 529 17 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 0 1;
 #X connect 2 0 9 0;

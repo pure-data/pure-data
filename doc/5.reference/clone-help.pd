@@ -1,78 +1,82 @@
-#N canvas 567 111 763 809 12;
-#X floatatom 218 329 5 36 144 0 - - -;
-#X obj 218 350 t b f;
-#X obj 218 374 f;
-#X obj 218 398 + 1;
-#X obj 218 422 mod 16;
-#X obj 218 446 pack;
-#X msg 327 420 next \$1;
-#X floatatom 327 398 5 36 144 0 - - -;
-#X floatatom 327 449 5 36 144 0 - - -;
-#X msg 327 471 this \$1;
-#X floatatom 326 498 5 36 144 0 - - -;
-#X msg 326 520 set \$1;
-#X msg 80 397 vis 5 1;
-#X msg 79 425 vis 5 0;
-#X floatatom 325 547 5 36 144 0 - - -;
-#X msg 325 569 all \$1;
-#X text 525 748 updated for Pd version 0.47;
-#X text 391 596 creation arguments:;
-#X text 45 610 click to open ->;
-#X text 33 632 (first copy only);
-#X text 67 351 open or close copy number 5:, f 14;
-#X text 276 326 A list beginning with a number dispatches the rest
-of the list as a message, f 23;
-#X text 400 390 "next" forwards a message to the next instance (incrementing
+#N canvas 678 110 763 809 12;
+#X declare -stdpath ./;
+#X floatatom 189 308 5 36 144 0 - - - 0;
+#X obj 189 330 t b f;
+#X obj 189 354 f;
+#X obj 189 378 + 1;
+#X obj 189 402 mod 16;
+#X msg 287 393 next \$1;
+#X floatatom 287 371 5 36 144 0 - - - 0;
+#X floatatom 297 428 5 36 144 0 - - - 0;
+#X msg 297 450 this \$1;
+#X floatatom 306 477 5 36 144 0 - - - 0;
+#X msg 306 499 set \$1;
+#X msg 110 377 vis 5 1;
+#X msg 47 376 vis 5 0;
+#X floatatom 315 526 5 36 144 0 - - - 0;
+#X msg 315 548 all \$1;
+#X text 535 728 updated for Pd version 0.47;
+#X text 384 585 creation arguments:;
+#X text 55 590 click to open ->;
+#X text 43 612 (first copy only);
+#X text 57 333 open or close copy number 5:, f 14;
+#X text 239 312 A list beginning with a number dispatches the rest
+of the list as a message, f 41;
+#X text 352 372 "next" forwards a message to the next instance (incrementing
 and repeating circularly)., f 31;
-#X text 407 445 "this" forwards a message to the previous instance
+#X text 363 424 "this" forwards a message to the previous instance
 sent to by "this" or "next", f 30;
-#X text 391 502 "set" sets the "next"/"this" counter, f 29;
-#X text 382 551 "all" broadcasts a message to all instances, f 26
+#X text 366 481 "set" sets the "next"/"this" counter, f 29;
+#X text 372 530 "all" broadcasts a message to all instances, f 26
 ;
-#X text 88 174 clone's inlets and outlets correspond to those of the
+#X text 88 164 clone's inlets and outlets correspond to those of the
 contained patch \, and may be signal and/or control inlets and outlets.
 (In this example there's one control inlet and one signal outlet).
 You can click on the clone~ object to see the first of the created
-instances., f 72;
-#X text 88 241 Signal inlets are copied to all the instances. Control
+instances., f 83;
+#X text 88 233 Signal inlets are copied to all the instances. Control
 inlets forward messages as shown below. Signal outlets output the sum
 of all instances' outputs \, and control outlets forward messages with
-the number of the instance prepended to them., f 72;
-#X text 390 621 optional "-s #" to set starting voice number \; optional
+the number of the instance prepended to them., f 83;
+#X text 387 609 optional "-s #" to set starting voice number \; optional
 -x to avoid setting \$1 to voice number \; filename \; number of copies
 \; optional arguments to copies;
-#X text 88 47 clone creates any number of copies of a desired abstraction
+#X text 88 57 clone creates any number of copies of a desired abstraction
 (a patch loaded as an object in another patch). Within each copy \,
 "\$1" is set to the instance number. (These count from 0 unless overridden
 by the "-s" option in the creation arguments. You can avoid this behavior
-using the "-x" option.), f 72;
-#X text 88 133 You can pass additional arguments to the copies that
+using the "-x" option.), f 83;
+#X text 88 123 You can pass additional arguments to the copies that
 appear as \$2 and onward (or \$1 and onward with "-x" option)., f
-72;
-#X obj 179 609 clone clone-abstraction 16;
-#X text 46 733 note: for backward compatibility \, you can also invoke
+83;
+#X obj 189 589 clone clone-abstraction 16;
+#X text 56 713 note: for backward compatibility \, you can also invoke
 this as "clone 16 clone-abstraction" (for instance) \, swapping the
 abstraction name and the number of voices., f 58;
-#X obj 179 652 output~;
-#X obj 134 10 clone;
-#X text 182 9 - make multiple copies of a patch;
+#X obj 189 632 output~;
+#X obj 141 19 clone;
+#X text 189 18 - make multiple copies of a patch;
+#X obj 189 426 pack f f;
+#X listbox 189 458 7 0 0 0 - - - 0;
+#X obj 548 17 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 1 1 5 1;
+#X connect 1 1 35 1;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 4 0 2 1;
-#X connect 4 0 5 0;
-#X connect 5 0 31 0;
-#X connect 6 0 31 0;
-#X connect 7 0 6 0;
-#X connect 8 0 9 0;
-#X connect 9 0 31 0;
-#X connect 10 0 11 0;
-#X connect 11 0 31 0;
-#X connect 12 0 31 0;
-#X connect 13 0 31 0;
-#X connect 14 0 15 0;
-#X connect 15 0 31 0;
-#X connect 31 0 33 0;
-#X connect 31 0 33 1;
+#X connect 4 0 35 0;
+#X connect 5 0 30 0;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 8 0 30 0;
+#X connect 9 0 10 0;
+#X connect 10 0 30 0;
+#X connect 11 0 30 0;
+#X connect 12 0 30 0;
+#X connect 13 0 14 0;
+#X connect 14 0 30 0;
+#X connect 30 0 32 0;
+#X connect 30 0 32 1;
+#X connect 35 0 36 0;
+#X connect 36 0 30 0;

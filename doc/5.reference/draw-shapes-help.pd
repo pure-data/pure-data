@@ -1,0 +1,76 @@
+#N struct help-drawpolygon-template float x float y float cat float
+dog float weasel;
+#N canvas 720 91 537 188 12;
+#X text 20 123 see also:;
+#X obj 145 145 plot;
+#X obj 21 10 drawpolygon;
+#X obj 21 33 drawcurve;
+#X obj 126 11 filledpolygon;
+#X obj 127 33 filledcurve;
+#N canvas 689 205 995 511 help-drawpolygon-template 0;
+#X obj 589 303 struct help-drawpolygon-template float x float y float
+cat float dog float weasel, f 48;
+#X text 37 32 Optional flags:;
+#X text 34 7 [drawpolygon] and [drawcurve] take these creation arguments:
+, f 61;
+#X text 39 446 You can change the name of the object to [drawcurve]
+and see how it now draws over the 3 points using a bezier curve.,
+f 63;
+#X text 541 228 You can change the name of the object to [filledcurve]
+and see how it now draws a closed shape over the given points using
+a bezier curve., f 59;
+#X text 550 355 This [struct] object defines the fields for this template.
+We have 2 of them in the "data" window and you can see their fields'
+values by right-clicking on the object and selecting "properties".
+The fields x and y automatically govern the placement of the object
+as a whole., f 58;
+#X text 121 304 <= inlet sets visibility (1: visible \, 0: invisible)
+;
+#X msg 53 304 1;
+#X msg 86 304 0;
+#X msg 558 31 1;
+#X msg 591 31 0;
+#X text 622 32 <= visibilty;
+#X text 142 324 (if no -v [field name] flag was given);
+#X text 39 383 The example above has a line color of black (0) \, 5
+pixels thick and 3 pair or coordinates draw an open triangle whith
+the heigh set by "weasel" (this also makes height settable via click
+and dragging \, unless flags disable this)., f 63;
+#X text 40 178 Arguments (numbers or field names like "weasel" below).
+;
+#X text 41 51 - "-n" to make invisible initially or "-v [field name]"
+to assign a field to make this visible/invisible (instead of inlet)
+\; - "-xr" to disable mouse actions when in "run" mode \; - "-xe" to
+disable mouse actions when in "edit" mode (so don't stretch the bounding
+rectangle to include this item) \; - "-xv" to disable dragging vertices
+when in "run" mode (but keep reporting mouse clicks) \; - "-x" to set
+both "-xr" and "-xe" \, disabling all mouse actions \;, f 65;
+#X text 62 203 - color (0=black \, 999=white \, 900=red \, 90=green
+\, 9=blue \, 555=grey \, etc.) \; - line width \; - (x \, y) pairs
+giving coordinates of each vertice in the shape (at least two pairs
+to draw a line).;
+#X obj 86 350 drawpolygon -x 0 5 0 0 25 weasel 50 0;
+#X obj 591 60 filledpolygon -x 900 dog 3 15 0 25 cat 35 0;
+#X text 548 95 [filledpolygon] and [filledcurve] take the same input.
+As for the arguments \, they takes an extra first argument to specify
+interior color. Here we have \; - an interior color of red (900) \;
+- the outline color controlled by the "dog" field \; - an outline width
+of 3 \; - the three pair of coordinates that now describe a closed
+and filled triangle of altitude "cat".;
+#X connect 7 0 17 0;
+#X connect 8 0 17 0;
+#X connect 9 0 18 0;
+#X connect 10 0 18 0;
+#X restore 273 77 pd help-drawpolygon-template;
+#N canvas 349 149 282 207 help-drawpolygon-data 1;
+#X scalar help-drawpolygon-template 52 28 30 9 70 \;;
+#X scalar help-drawpolygon-template 155 102 -30 90 50 \;;
+#X coords 0 207 1 206 0 0 0;
+#X restore 273 103 pd help-drawpolygon-data;
+#X obj 21 145 struct;
+#X text 316 145 updated for Pd version 0.51.;
+#X text 230 22 - draw shapes for data structures;
+#X text 212 77 open =>;
+#X obj 185 145 set;
+#X obj 222 145 text;
+#X obj 76 145 drawtext;

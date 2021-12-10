@@ -1,24 +1,25 @@
 #N canvas 544 38 842 658 12;
+#X declare -stdpath ./;
 #X obj 250 166 wrap~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-phasor 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
-#X restore 575 50 graph;
+#X restore 575 90 graph;
 #X obj 231 96 -~ 0.5;
 #X obj 250 194 -~ 0.5;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-sum 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
-#X restore 575 207 graph;
+#X restore 575 247 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-difference 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
-#X restore 575 371 graph;
-#X text 591 511 ---- 0.02 seconds ----;
+#X restore 575 411 graph;
+#X text 591 551 ---- 0.02 seconds ----;
 #X text 592 585 updated for Pd version 0.39;
 #X obj 155 395 output~;
-#X obj 345 158 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 345 158 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 174 310 output~;
 #X obj 231 68 phasor~ 100;
 #X text 285 97 remove DC bias;
@@ -47,6 +48,7 @@ in terms of that of a sawtooth \, or vice versa., f 66;
 , f 13;
 #X text 32 22 SPLITTING A SAWTOOTH WAVE INTO EVEN AND ODD HARMONICS
 ;
+#X obj 664 35 declare -stdpath ./;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 2 0 14 0;

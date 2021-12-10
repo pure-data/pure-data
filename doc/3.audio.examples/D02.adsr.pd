@@ -1,4 +1,5 @@
 #N canvas 521 50 540 694 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array adsr-output 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
@@ -30,6 +31,7 @@ you wish without having to wait for attacks or releases to finish;
 #X text 292 97 <= attack and delayed release;
 #X text 349 217 <= attack only;
 #X text 352 292 <= release only;
+#X obj 387 10 declare -stdpath ./;
 #X connect 2 0 15 0;
 #X connect 4 0 3 0;
 #X connect 5 0 7 0;

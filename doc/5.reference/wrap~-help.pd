@@ -1,33 +1,35 @@
-#N canvas 645 53 641 367 12;
-#X obj 71 229 metro 500;
-#X obj 71 204 r metro;
-#X msg 500 115 \; metro 0;
-#X msg 499 57 \; pd dsp 1 \; metro 1;
-#X floatatom 55 130 0 0 0 0 - - -;
-#X floatatom 55 286 0 0 0 0 - - -;
-#X obj 499 30 loadbang;
-#X obj 55 253 snapshot~;
+#N canvas 645 53 668 427 12;
+#X floatatom 55 130 6 0 0 0 - - - 0;
+#X floatatom 55 294 7 0 0 0 - - - 0;
+#X obj 71 207 loadbang;
+#X obj 55 261 snapshot~;
 #X obj 55 156 sig~;
-#X obj 58 25 wrap~;
-#X text 31 54 wrap~ gives the difference between the input and the
+#X obj 93 22 wrap~;
+#X text 46 66 wrap~ gives the difference between the input and the
 largest integer not exceeding it (for positive numbers this is the
-fractional part).;
+fractional part)., f 69;
 #X obj 55 180 wrap~;
-#X text 383 326 updated for Pd version 0.48;
-#X msg 404 262 \; pd compatibility 0.47;
-#X text 188 191 COMPATIBILITY NOTE: in Pd versions before 0.48 \, wrap~
+#X text 427 371 updated for Pd version 0.48;
+#X msg 471 292 \; pd compatibility 0.47;
+#X text 261 227 COMPATIBILITY NOTE: in Pd versions before 0.48 \, wrap~
 with an input of 0 output 1 (but now correctly outputs 0). To get the
 old behavior \, set "compatibility" to 0.47 or below in Pd's command
-line or by a message:, f 54;
-#X text 89 128 <= shift-drag here to get non-integers to try;
-#X text 68 330 see also:;
-#X obj 142 330 wrap;
-#X text 112 25 - remainder modulo 1 for signals;
-#X connect 0 0 7 0;
-#X connect 1 0 0 0;
-#X connect 1 0 0 0;
-#X connect 4 0 8 0;
-#X connect 6 0 3 0;
-#X connect 7 0 5 0;
-#X connect 8 0 11 0;
-#X connect 11 0 7 0;
+line or by a message:, f 47;
+#X text 103 130 <= shift-drag here to get non-integers to try;
+#X text 49 354 see also:;
+#X obj 124 354 wrap;
+#X text 147 22 - remainder modulo 1 for signals;
+#X obj 52 383 expr~;
+#X text 100 383 - evaluate expressions on audio signals;
+#X msg 157 219 \; pd dsp \$1;
+#X obj 157 194 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 180 193 On/off;
+#X obj 71 231 metro 200;
+#X connect 0 0 4 0;
+#X connect 2 0 20 0;
+#X connect 3 0 1 0;
+#X connect 4 0 7 0;
+#X connect 7 0 3 0;
+#X connect 18 0 17 0;
+#X connect 20 0 3 0;

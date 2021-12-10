@@ -5,8 +5,6 @@
 #X restore 85 432 graph;
 #X floatatom 75 220 0 -100 100 0 - - - 0;
 #X obj 69 16 phasor~;
-#X obj 95 305 r metro;
-#X msg 342 221 \; pd dsp 1 \; metro 1;
 #X text 369 435 see also:;
 #X obj 368 462 osc~;
 #X obj 411 462 cos~;
@@ -15,7 +13,6 @@
 #X text 201 375 <= graph the output;
 #X text 176 242 <= right inlet resets phase, f 14;
 #X text 104 218 <= specify frequency;
-#X text 424 231 <= Click to start, f 9;
 #X text 137 17 - phase ramp generator;
 #X msg 142 247 0;
 #X obj 95 347 metro 100;
@@ -30,21 +27,24 @@ values generate downwards ramps., f 69;
 #X text 42 149 The right inlet resets the phase with values from 0
 to 1 (where '1' is the same as '0' and '0.5' is half the cycle).,
 f 69;
-#X obj 95 328 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X text 61 524 -1;
 #X text 68 479 0;
 #X text 69 425 1;
 #X obj 75 373 tabwrite~ phasor;
 #X obj 264 331 phasor~;
 #X obj 264 302 sig~ 440;
-#X text 335 318 <= signal controlling, f 21;
+#X text 335 318 <= signal controlling;
 #X text 358 335 the frequency;
-#X connect 1 0 17 0;
-#X connect 3 0 21 0;
-#X connect 15 0 17 1;
-#X connect 16 0 25 0;
-#X connect 17 0 25 0;
-#X connect 19 0 17 1;
-#X connect 21 0 16 0;
-#X connect 27 0 26 0;
+#X obj 95 316 loadbang;
+#X msg 324 237 \; pd dsp \$1;
+#X obj 324 212 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 344 211 DSP on/off;
+#X connect 1 0 14 0;
+#X connect 12 0 14 1;
+#X connect 13 0 21 0;
+#X connect 14 0 21 0;
+#X connect 16 0 14 1;
+#X connect 23 0 22 0;
+#X connect 26 0 13 0;
+#X connect 28 0 27 0;

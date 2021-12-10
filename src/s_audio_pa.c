@@ -51,7 +51,7 @@
 #endif
 
 /* define this to enable thread signaling instead of polling */
-#define THREADSIGNAL
+// #define THREADSIGNAL
 
     /* LATER try to figure out how to handle default devices in portaudio;
     the way s_audio.c handles them isn't going to work here. */

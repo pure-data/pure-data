@@ -10,16 +10,16 @@
 #X connect 1 0 3 0;
 #X connect 3 0 2 0;
 #X restore 126 172 pd metro;
-#X text 293 299 Updated for Pd 0.37;
 #X obj 126 241 snapshot~;
 #X obj 151 211 phasor~ 1;
-#X floatatom 126 272 5 0 0 0 - - -;
+#X floatatom 126 272 5 0 0 0 - - - 0;
 #X text 25 18 CONVERTING SIGNALS TO CONTROLS;
 #X text 31 51 The snapshot~ object allows you to convert from signals
 back to control streams (float messages) -- an opposite of signal~.
 The value output is always the end of the most recently computed audio
 block \, so that even if you bang it metronomically (as here) it need
 not give you samples that are exactly evenly spaced.;
-#X connect 0 0 2 0;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
+#X text 263 299 Updated for Pd version 0.37;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;

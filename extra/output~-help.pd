@@ -1,0 +1,21 @@
+#N canvas 757 123 504 445 12;
+#X obj 193 313 output~;
+#X obj 193 225 osc~ 440;
+#X obj 251 258 osc~ 880;
+#X text 77 31 output~ - simple stereo output GUI abstraction.;
+#X text 66 401 see also:;
+#X obj 147 402 dac~;
+#X text 261 285 right signal input;
+#X text 61 282 left signal input;
+#X text 32 72 Output~ takes a stereo signal and has GUI controls to
+set the volume game and mute it. The number box sets the output gain
+in dB (from 0 to 100) and whenever you click on it to drag \, the DSP
+engine is turned on. The mute bang turns the volume off (sets to 0)
+but restores the last setting when you click back on it to unmute.
+;
+#X text 32 167 This is a very simple abstraction that is widely used
+in Pd's documentation and examples. It is included just for convenience.
+;
+#X text 273 401 updated for Pd version 0.52;
+#X connect 1 0 0 0;
+#X connect 2 0 0 1;

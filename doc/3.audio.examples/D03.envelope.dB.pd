@@ -1,4 +1,5 @@
 #N canvas 542 119 549 715 12;
+#X declare -stdpath ./;
 #X obj 72 115 r trigger;
 #X text 110 14 USING ADSR'S OUTPUT AS dB;
 #X obj 72 166 tabread4~ dbtorms;
@@ -36,10 +37,10 @@
 #X obj 147 264 dbtorms;
 #X obj 178 180 t f f;
 #X obj 101 296 tabwrite dbtorms;
-#X floatatom 389 140 0 0 0 0 - - -;
-#X floatatom 389 210 0 0 0 0 - - -;
+#X floatatom 389 140 0 0 0 0 - - - 0;
+#X floatatom 389 210 0 0 0 0 - - - 0;
 #X obj 389 181 tabread4 dbtorms;
-#X floatatom 315 210 0 0 0 0 - - -;
+#X floatatom 315 210 0 0 0 0 - - - 0;
 #X obj 315 181 dbtorms;
 #X text 103 33 bang to recalculate the table;
 #X obj 133 150 sel 123;
@@ -93,6 +94,7 @@ using a lookup table:;
 #X text 309 665 updated for Pd version 0.37;
 #X text 147 341 <= attack;
 #X text 146 396 <= release;
+#X obj 387 13 declare -stdpath ./;
 #X connect 0 0 13 0;
 #X connect 2 0 11 0;
 #X connect 6 0 11 1;

@@ -1,4 +1,5 @@
 #N canvas 499 127 545 468 12;
+#X declare -stdpath ./;
 #N canvas 394 108 652 570 fft-analysis 0;
 #X obj 101 425 *~;
 #X obj 62 425 *~;
@@ -63,7 +64,7 @@ set 10;
 #X connect 19 0 12 0;
 #X connect 20 0 5 1;
 #X restore 105 293 pd fft-analysis;
-#X floatatom 94 171 0 0 500 0 - squelch-set -;
+#X floatatom 94 171 0 0 500 0 - squelch-set - 0;
 #X obj 94 195 s squelch;
 #N canvas 240 72 458 613 test-signal 0;
 #X obj 134 457 line~;
@@ -118,8 +119,8 @@ set 10;
 #X obj 105 326 output~;
 #N canvas 444 61 689 350 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 0;
-#X coords 0 1 155943 -1 400 150 1;
+#X array \$0-sample 62079 float 0;
+#X coords 0 1 62078 -1 400 150 1;
 #X restore 262 48 graph;
 #X obj 27 24 r read-sample;
 #X obj 27 80 unpack s f;
@@ -166,9 +167,9 @@ will be flattened but the quieter ones will only be boosted by the
 squelch value.;
 #X text 74 12 DYNAMIC RANGE COMPRESSION BY FOURIER ANALYSIS CHANNEL
 ;
-#X floatatom 299 367 5 0 0 0 - #0-samp-msec -;
-#X obj 105 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X floatatom 299 367 5 0 0 0 - #0-samp-msec - 0;
+#X obj 105 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 352 366 sample length \, msec;
 #X msg 293 189 ../sound/bell.aiff;
 #X msg 299 212 ../sound/voice.wav;
@@ -228,6 +229,7 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 19 1 18 0;
 #X restore 299 336 pd hann-window;
 #X text 124 238 <= record;
+#X obj 61 408 declare -stdpath ./;
 #X connect 0 0 4 0;
 #X connect 0 0 4 1;
 #X connect 1 0 2 0;

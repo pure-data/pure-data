@@ -1,4 +1,4 @@
-#N canvas 234 102 1042 671 12;
+#N canvas 432 106 1042 671 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 77971 float 0;
 #X coords 0 1 77970 -1 300 100 1;
@@ -14,7 +14,7 @@
 ;
 #X text 557 65 Flags for reading:;
 #X text 575 101 -skip <sample frames to skip in file>;
-#X floatatom 49 422 0 0 0 0 - - -;
+#X floatatom 49 422 0 0 0 0 - - - 0;
 #X msg 50 185 read -resize ../sound/bell.aiff array2;
 #X text 303 286 write a file;
 #X text 425 342 write stereo;
@@ -28,14 +28,14 @@
 #X text 661 421 -nframes <maximum number to write>;
 #X text 661 465 -normalize;
 #X text 661 443 -bytes <2 \, 3 \, or 4>;
-#X obj 790 568 tabwrite~;
-#X obj 790 592 tabread4~;
-#X obj 895 546 tabplay~;
-#X obj 895 593 writesf~;
-#X obj 895 570 readsf~;
+#X obj 800 574 tabwrite~;
+#X obj 800 598 tabread4~;
+#X obj 905 552 tabplay~;
+#X obj 905 599 writesf~;
+#X obj 905 576 readsf~;
 #X text 661 485 -rate <sample rate>;
 #X obj 116 423 print;
-#X text 790 544 See also:;
+#X text 716 575 See also:;
 #X text 262 157 read a file to zero or more arrays;
 #X obj 30 15 soundfiler;
 #X text 108 14 - read and write soundfiles to arrays;
@@ -48,7 +48,7 @@
 #X text 575 237 -ascii - read a file containing ascii numbers;
 #X text 661 377 -big \, -little (sample endianness);
 #X text 660 358 -wave \, -aiff \, -caf \, -next \, -ascii;
-#X text 44 456 Left outlet outputs the number of samples. Right outlet
+#X text 64 467 Left outlet outputs the number of samples. Right outlet
 outputs info as a list: samplerate \, headersize \, num channels \,
 bytes per sample \, & endianness ("b" or "l"). If no array name is
 given \, no samples are read but the info is provided anyway., f 77
@@ -78,6 +78,29 @@ all header and type information using the "-raw" flag., f 66;
 #X text 304 368 ... write to an ascii file;
 #X msg 108 368 write /tmp/foo1.txt array2;
 #X text 331 390 "-ascii" set via file ext;
+#N canvas 978 194 575 345 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 390 175 <= array with local name, f 13;
+#X obj 258 174 array define \$0-x;
+#X obj 153 202 f \$0;
+#X obj 153 263 soundfiler;
+#X floatatom 153 289 0 0 0 0 - - - 0;
+#X msg 153 231 read -resize ../sound/bell.aiff \$1-x;
+#X obj 153 176 loadbang;
+#X text 36 86 You can use "\$0" in an array name in [array define]
+and if you need to set the array name in a message you can load '\$0'
+in a float object and send it to it., f 70;
+#X connect 3 0 6 0;
+#X connect 4 0 5 0;
+#X connect 6 0 4 0;
+#X connect 7 0 3 0;
+#X restore 398 425 pd Dealing_with_"\$0";
+#X text 236 416 open subpatch to see how to deal with '\$0', f 21
+;
+#X obj 800 549 array;
 #X connect 2 0 8 0;
 #X connect 2 1 26 0;
 #X connect 3 0 2 0;

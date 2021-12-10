@@ -1,4 +1,5 @@
 #N canvas 612 23 684 794 12;
+#X declare -stdpath ./;
 #X obj 136 177 wrap~;
 #X obj 136 204 -~ 0.5;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -11,35 +12,35 @@
 #X obj 334 490 tabwrite~ \$0-sum;
 #X obj 136 151 -~;
 #X obj 154 107 / 100;
-#X floatatom 154 86 4 -100 100 0 - - -;
+#X floatatom 154 86 4 -100 100 0 - - - 0;
 #X obj 154 338 / 100;
-#X floatatom 154 311 4 -100 100 0 - - -;
+#X floatatom 154 311 4 -100 100 0 - - - 0;
 #X obj 136 367 *~;
 #X obj 223 177 wrap~;
 #X obj 223 204 -~ 0.5;
 #X obj 223 152 -~;
 #X obj 241 108 / 100;
-#X floatatom 241 87 4 -100 100 0 - - -;
+#X floatatom 241 87 4 -100 100 0 - - - 0;
 #X obj 241 338 / 100;
-#X floatatom 241 311 4 -100 100 0 - - -;
+#X floatatom 241 311 4 -100 100 0 - - - 0;
 #X obj 223 367 *~;
 #X obj 311 177 wrap~;
 #X obj 311 204 -~ 0.5;
 #X obj 311 153 -~;
 #X obj 329 109 / 100;
-#X floatatom 329 88 4 -100 100 0 - - -;
+#X floatatom 329 88 4 -100 100 0 - - - 0;
 #X obj 329 338 / 100;
-#X floatatom 329 311 4 -100 100 0 - - -;
+#X floatatom 329 311 4 -100 100 0 - - - 0;
 #X obj 311 367 *~;
 #X text 149 64 -- PHASES (percent) --;
 #X text 364 310 AMPLITUDES (percent);
 #X obj 136 396 +~;
 #X obj 293 444 +~;
-#X obj 334 436 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 334 436 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 334 458 metro 193;
 #X obj 81 109 phasor~;
-#X floatatom 81 88 5 0 0 0 - - -;
+#X floatatom 81 88 5 0 0 0 - - - 0;
 #X text 61 65 frequency;
 #X obj 136 229 *~;
 #X obj 223 229 *~;
@@ -64,6 +65,7 @@ will be linear., f 65;
 #X text 96 703 Note the reduced scale of the graph (from -0.25 to 0.25)
 compared to the previous examples., f 65;
 #X text 50 22 MAKING WAVEFORMS WITH CORNERS USING PARABOLIC WAVES;
+#X obj 491 25 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 38 0;
 #X connect 1 0 38 1;

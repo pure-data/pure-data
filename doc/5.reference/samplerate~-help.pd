@@ -1,18 +1,43 @@
-#N canvas 281 76 527 392 12;
-#X obj 60 13 samplerate~;
-#X text 160 12 - get audio sample rate;
-#X text 277 294 updated for Pd version 0.47;
-#X obj 94 295 samplerate~;
-#X obj 94 268 r pd-dsp-started;
-#X floatatom 94 322 7 0 0 0 - - -;
-#X text 51 69 When sent a 'bang' message \, samplerate~ outputs the
+#N canvas 830 122 537 475 12;
+#X obj 108 22 samplerate~;
+#X text 316 419 updated for Pd version 0.47;
+#X obj 230 329 samplerate~;
+#X floatatom 230 356 7 0 0 0 - - - 0;
+#X obj 230 303 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 230 276 receive pd-dsp-started;
+#N canvas 1053 210 443 248 resampling 0;
+#X obj 90 140 block~ 64 1 0.5;
+#X obj 231 130 samplerate~;
+#X obj 231 98 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X floatatom 231 165 6 0 0 0 - - - 0;
+#X text 53 30 This window is downsampled by a factor of 2 \, so the
+samplerate must be half of the parent patch., f 44;
+#X text 255 96 <= click;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 377 333 pd resampling;
+#X text 40 396 see also:;
+#X obj 98 421 receive;
+#X msg 84 313 \; pd dsp \$1;
+#X obj 84 288 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 42 421 block~;
+#X text 208 21 - get sample rate;
+#X text 65 65 When sent a 'bang' message \, samplerate~ outputs the
 current audio sample rate. If called within a subwindow that is up-
 or down-sampled \, the sample rate of signals within that subwindow
-are reported.;
-#X text 50 149 In this example we use the "pd-dsp-started" message
-(automatically sent when DSP is started in Pd) to receive an update
-whenever sample rate may have changed. This is useful when designing
-filters whose coefficients usually have to be updated when the sample
-rate changes.;
-#X connect 3 0 5 0;
-#X connect 4 0 3 0;
+are reported (see [pd resampling] subpatch below)., f 57;
+#X text 65 160 Here we litsen to "pd-dsp-started" to receive a bang
+(automatically sent when DSP is started in Pd) to get the sample rate
+when DSP starts. This also works whenever the sample rate may change
+when the audio is running. This is useful when designing filters whose
+coefficients usually have to be updated when the sample rate changes.
+;
+#X obj 160 420 messages-to-from-Pd;
+#X text 109 286 DSP On/Off;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 4 0;
+#X connect 10 0 9 0;

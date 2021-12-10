@@ -1,20 +1,29 @@
-#N canvas 582 142 421 382 12;
-#X obj 114 189 bang~;
-#X obj 114 220 print;
-#X msg 284 178 \; pd dsp 1;
-#X msg 270 299 \; pd dsp 0;
-#X msg 271 144 bang;
-#X obj 39 20 bang~;
-#X obj 279 269 loadbang;
-#X obj 270 228 delay 100;
-#X text 170 143 click to test;
-#X text 91 21 - output bang after each DSP cycle;
-#X text 34 59 Bang~ outputs a bang after each DSP cycle (at the same
-logical time as the DSP cycle.) This is primarily useful for sampling
-the outputs of analysis algorithms., f 46;
-#X text 38 306 updated for Pd version 0.33;
+#N canvas 662 142 552 393 12;
+#X obj 152 251 bang~;
+#X obj 152 284 print;
+#X obj 32 18 bang~;
+#X obj 424 183 loadbang;
+#X obj 410 155 delay 100;
+#X text 78 17 - output bang after each DSP cycle;
+#X text 243 341 updated for Pd version 0.33;
+#X msg 393 240 \; pd dsp \$1;
+#X msg 410 210 0;
+#X msg 391 116 1;
+#X text 42 63 Bang~ outputs a bang after each DSP block cycle (at the
+same logical time as the DSP cycle.) This is primarily useful for sampling
+the outputs of analysis algorithms., f 61;
+#X text 73 340 see also:;
+#X obj 149 341 block~;
+#X text 422 114 <= click to test, f 8;
+#X text 43 118 By default \, a block size is 64 samples \, at a 44100
+sample rate \, this about 1.45 ms. You can cchange the sample rate
+in audio settings and the block size with the block~ or switch~ object.
+Note that the minimum block size bang~ can handle is 64!, f 46;
+#X text 253 237 Bang~ only outputs when DSP is on., f 18;
+#X text 78 224 inlet is innactive, f 9;
 #X connect 0 0 1 0;
-#X connect 4 0 2 0;
-#X connect 4 0 7 0;
-#X connect 6 0 3 0;
-#X connect 7 0 3 0;
+#X connect 3 0 8 0;
+#X connect 4 0 8 0;
+#X connect 8 0 7 0;
+#X connect 9 0 4 0;
+#X connect 9 0 7 0;

@@ -1,22 +1,27 @@
-#N canvas 771 173 420 379 12;
-#X obj 72 283 print;
-#X obj 75 22 bang;
-#X msg 84 182 walk the cat;
-#X msg 72 150 45;
-#X obj 72 223 bang;
-#X text 185 337 updated for Pd version 0.27;
-#X text 121 21 - send "bang" message;
-#X obj 76 51 b;
-#X text 120 52 - abreviation;
-#X obj 85 254 bng 18 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X text 32 91 The [bang] object outputs a "bang" message for whatever
-message it receives., f 47;
-#X msg 260 243 bang;
-#X obj 322 244 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X text 228 166 this is more efficient than using a message box and
+#N canvas 771 173 466 381 12;
+#X obj 85 276 print;
+#X obj 63 11 bang;
+#X msg 97 175 walk the cat;
+#X msg 85 143 45;
+#X obj 85 216 bang;
+#X text 253 332 updated for Pd version 0.27;
+#X text 109 10 - send "bang" message;
+#X obj 64 40 b;
+#X text 108 41 - abreviation;
+#X obj 98 247 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 34 85 The [bang] object outputs a "bang" message for whatever
+message it receives., f 56;
+#X msg 273 236 bang;
+#X obj 335 237 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 241 159 this is more efficient than using a message box and
 the bang GUI below:, f 22;
+#X text 19 333 see also:;
+#X obj 86 333 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 110 333 loadbang;
+#X obj 176 333 trigger;
 #X connect 2 0 4 0;
 #X connect 3 0 4 0;
 #X connect 4 0 0 0;

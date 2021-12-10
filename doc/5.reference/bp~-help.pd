@@ -1,37 +1,43 @@
-#N canvas 849 57 517 510 12;
-#X obj 58 13 bp~;
-#X floatatom 147 179 0 0 0 0 - - - 0;
-#X msg 114 151 clear;
-#X text 34 80 The left inlet is the incoming audio signal \, the middle
+#N canvas 849 57 504 570 12;
+#X declare -stdpath ./;
+#X obj 38 14 bp~;
+#X floatatom 147 228 7 0 0 0 - - - 0;
+#X msg 114 201 clear;
+#X text 44 101 The left inlet is the incoming audio signal \, the middle
 control input sets center frequency and the right input sets "Q".,
 f 58;
-#X obj 114 238 bp~ 100 10;
-#X floatatom 181 204 0 1 50 0 - - - 0;
-#X text 33 42 bp~ passes a sinusoid at the center frequency at unit
+#X floatatom 181 255 5 1 50 0 - - - 0;
+#X text 43 63 bp~ passes a sinusoid at the center frequency at unit
 gain (approximately). Other frequencies are attenuated.;
-#X text 24 458 see also:;
-#X obj 96 459 vcf~;
-#X text 280 457 updated for Pd version 0.46;
-#X text 35 381 NOTE: the maximum center frequency is sample rate divided
+#X obj 96 504 vcf~;
+#X text 275 502 updated for Pd version 0.46;
+#X text 35 413 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X text 93 13 - bandpass filter;
-#X text 213 205 <= Q;
-#X text 179 180 <= center frequency;
-#X text 161 150 <= reinitialize internal state;
-#X text 202 230 Arguments initialize center frequency and Q, f 22
+#X text 204 228 <= center frequency;
+#X text 161 200 <= reinitialize internal state;
+#X text 202 280 Arguments initialize center frequency and Q, f 22
 ;
-#X obj 56 294 output~;
-#X obj 46 166 noise~;
-#X text 132 300 listen to how the white noise input is filtered. The
+#X obj 56 334 output~;
+#X obj 46 216 noise~;
+#X obj 138 504 bob~;
+#X obj 178 504 lop~;
+#X obj 218 504 hip~;
+#X obj 308 157 declare -stdpath ./;
+#X text 71 14 - 2-pole bandpass filter;
+#X obj 38 533 biquad~;
+#X obj 97 532 slop~, f 7;
+#X obj 156 532 cpole~, f 7;
+#X obj 218 532 fexpr~;
+#X text 228 255 <= Q (controls bandwidth);
+#X obj 114 288 bp~ 500 10;
+#X text 132 332 listen to how the white noise input is filtered. The
 higher the Q \, the more attenuation we have for frequencies besides
-the center frequency., f 48;
-#X obj 138 459 bob~;
-#X obj 178 459 lop~;
-#X obj 218 459 hip~;
-#X connect 1 0 4 1;
-#X connect 2 0 4 0;
-#X connect 4 0 16 0;
-#X connect 4 0 16 1;
-#X connect 5 0 4 2;
-#X connect 17 0 4 0;
+the center frequency \, so the less width is the frequency band.,
+f 48;
+#X connect 1 0 24 1;
+#X connect 2 0 24 0;
+#X connect 4 0 24 2;
+#X connect 13 0 24 0;
+#X connect 24 0 12 0;
+#X connect 24 0 12 1;

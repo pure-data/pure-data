@@ -1,11 +1,12 @@
 #N canvas 504 51 545 610 12;
+#X declare -stdpath ./;
 #X obj 247 401 cos~;
 #X obj 290 383 +~ -0.25;
 #X obj 290 406 cos~;
 #X obj 172 457 *~;
 #X obj 225 457 *~;
 #X obj 172 483 -~;
-#X floatatom 247 330 5 0 0 0 - - -;
+#X floatatom 247 330 5 0 0 0 - - - 0;
 #X text 57 285 sample loop for;
 #X text 85 299 test signal;
 #X text 54 367 pair of allpass;
@@ -13,8 +14,8 @@
 #X text 54 399 90 degree phase;
 #X text 47 414 shifted versions;
 #X text 359 366 cosine and sine waves;
-#X text 40 17 SINGLE SIDEBAND MODULATION;
-#X text 247 17 (AKA FREQUENCY SHIFTING);
+#X text 14 19 SINGLE SIDEBAND MODULATION;
+#X text 206 19 (AKA FREQUENCY SHIFTING);
 #N canvas 555 154 457 369 bell-loop 0;
 #X obj 51 150 /;
 #X obj 51 262 +~ 1;
@@ -45,8 +46,8 @@
 #X obj 60 327 r readfile;
 #X obj 60 380 soundfiler;
 #X obj 55 25 loadbang;
-#X obj 55 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 55 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 55 72 f \$0;
 #X obj 95 238 /;
 #X msg 67 212 44100;
@@ -88,6 +89,7 @@ to modulate upward or downward in frequency.;
 #X text 291 330 <= shift frequency;
 #X text 49 228 The "hilbert~" object is an abstraction in pd/extra.
 ;
+#X obj 396 19 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 2 0;
 #X connect 2 0 4 1;

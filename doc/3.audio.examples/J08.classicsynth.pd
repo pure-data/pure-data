@@ -1,4 +1,5 @@
 #N canvas 564 61 567 648 12;
+#X declare -stdpath ./;
 #N canvas 456 42 579 692 16x 0;
 #X obj 84 387 *~ 0.064;
 #X obj 84 412 rpole~ 0.93538;
@@ -78,20 +79,20 @@
 #X obj 68 121 makenote 1;
 #X obj 379 233 + 20;
 #X obj 379 182 metro 300;
-#X obj 379 160 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 379 160 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 379 291 s \$0-note;
 #X obj 379 205 random 70;
 #X obj 108 256 vcf~ 3;
-#X floatatom 265 176 3 0 0 0 - - -;
-#X floatatom 265 221 7 0 0 0 - - -;
+#X floatatom 265 176 3 0 0 0 - - - 0;
+#X floatatom 265 221 7 0 0 0 - - - 0;
 #X obj 265 197 mtof;
 #X obj 175 260 adsr 2 30 200 50 500;
 #X obj 188 141 adsr 1 10 200 50 500;
 #X obj 379 265 pack 0 200;
 #X obj 82 151 poly 1 1;
-#X floatatom 439 158 3 0 0 0 - - -;
-#X floatatom 446 241 3 0 0 0 - - -;
+#X floatatom 439 158 3 0 0 0 - - - 0;
+#X floatatom 446 241 3 0 0 0 - - - 0;
 #X text 54 404 Now that we can make reasonably high-quality classic
 waveforms using upsampling \, we combine an upsampled oscillator with
 a "vcf" filter and ADSR generators to control the filter resonant frequency
@@ -103,6 +104,7 @@ the vcf~ "Q" parameter. The oscillators' waveforms and tuning relationship
 is controlled by other parameters set within the "pd 16x" window.,
 f 64;
 #X obj 68 92 unpack f f;
+#X obj 386 27 declare -stdpath ./;
 #X connect 0 0 17 0;
 #X connect 4 0 6 0;
 #X connect 5 0 4 0;

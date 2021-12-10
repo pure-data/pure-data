@@ -48,14 +48,6 @@ char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     return dst;
 }
 
-static char* strnpointerid(char *dest, const void *pointer, size_t len)
-{
-    *dest=0;
-    if (pointer)
-        snprintf(dest, len, ".x%lx", (unsigned long)pointer);
-    return dest;
-}
-
 static void dopost(const char *s)
 {
     if (STUFF->st_printhook)
@@ -105,12 +97,8 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
-    {
-        char obuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::logpost {%s} 1 {%s}\n",
-                 strnpointerid(obuf, object, MAXPDSTRING),
-                 pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
-    }
+        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n",
+            object, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -141,12 +129,8 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
-    {
-        char obuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
-                 strnpointerid(obuf, object, MAXPDSTRING),
-                 level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
-    }
+        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n",
+            object, level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)

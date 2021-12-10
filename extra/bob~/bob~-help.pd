@@ -1,4 +1,5 @@
-#N canvas 531 56 1062 722 12;
+#N canvas 558 96 1062 722 12;
+#X declare -stdpath ./;
 #X obj 231 347 env~ 8192, f 4;
 #X floatatom 230 387 5 0 0 0 - - - 0;
 #X floatatom 408 193 5 0 200 0 - - - 0;
@@ -39,9 +40,9 @@
 #X msg 611 152 300;
 #X obj 408 142 loadbang;
 #X msg 408 167 10;
-#X text 521 625 "Clear" momentarily shorts out the capacitors in case
+#X text 561 523 "Clear" momentarily shorts out the capacitors in case
 the filter has gone unstable and stopped working.;
-#X text 523 410 By default bob~ does one step of 4th-order Runge-Kutte
+#X text 563 308 By default bob~ does one step of 4th-order Runge-Kutte
 integration per audio sample. This works OK for resonant/cutoff frequencies
 up to about 1/2 Nyquist. To improve accuracy and/or to extend the range
 of the filter to higher cutoff frequencies you can oversample by any
@@ -117,22 +118,28 @@ E. Stinchcombe \, and Antti Huovilainen. See README.txt for pointers.
 cutoff/resonant frequency in cycles per second \, and "resonance" (the
 sharpness of the filter). Nominally \, a resonance of 4 should be the
 limit of stability -- above that \, the filter oscillates.;
-#X text 522 565 The saturation parameter determines at what signal
+#X text 562 463 The saturation parameter determines at what signal
 level the "transistors" in the model saturate. The maximum output amplitude
 is about 2/3 of that value.;
-#X text 20 586 Compatibility note: there was a bug in this module \,
-fixed for Pd version 0.52. YOu can get the (incorrect) pre-0.52 behavior
-by setting pd's compatibility level to 0.51.;
-#X text 876 676 updated for Pd 0.52;
+#X text 178 598 Compatibility note: there was a bug in this module
+\, fixed for Pd version 0.52. YOu can get the (incorrect) pre-0.52
+behavior by setting pd's compatibility level to 0.51.;
 #X obj 38 11 bob~;
 #X text 78 12 - Runge-Kutte numerical simulation of the Moog analog
 resonant filter, f 69;
-#X text 355 366 <= adjust output "dB" to hear filter output.;
-#X text 51 663 see also:;
-#X obj 132 663 lop~;
-#X obj 173 663 hip~;
-#X obj 215 663 bp~;
-#X obj 256 663 vcf~;
+#X text 355 366 <= adjust output "dB" to hear filter output., f 22
+;
+#X text 51 680 see also:;
+#X obj 132 679 lop~;
+#X obj 173 679 hip~;
+#X obj 215 679 bp~;
+#X obj 253 679 vcf~;
+#X obj 825 15 declare -stdpath ./;
+#X text 606 585 old behaviour;
+#X text 766 584 new behaviour;
+#X msg 598 604 \; pd compatibility 51;
+#X msg 758 604 \; pd compatibility 52;
+#X text 806 676 updated for Pd version 0.52;
 #X connect 0 0 1 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;

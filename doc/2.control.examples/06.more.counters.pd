@@ -1,5 +1,5 @@
 #N canvas 459 40 668 496 12;
-#X floatatom 214 196 0 0 0 0 - - -;
+#X floatatom 214 196 4 0 0 0 - - - 0;
 #X obj 214 170 + 1;
 #X msg 214 66 bang;
 #X obj 214 118 metro 500;
@@ -11,14 +11,12 @@
 #X text 363 118 first set value to zero, f 13;
 #X text 344 92 initialization is in two steps;
 #X text 337 152 (before starting the metronome);
-#X floatatom 180 297 0 0 0 0 - - -;
-#X obj 180 323 >= 0;
-#X obj 180 349 select 0 1;
-#X obj 180 401 float;
-#X floatatom 234 428 0 0 0 0 - - -;
-#X msg 213 375 bang;
-#X obj 234 402 + 1;
-#X msg 180 375 -1;
+#X obj 190 323 >= 0;
+#X obj 190 349 select 0 1;
+#X obj 223 404 float;
+#X msg 223 375 bang;
+#X obj 277 405 + 1;
+#X msg 190 375 -1;
 #X text 52 23 Here's a counter that counts from 1 to 10:;
 #X text 410 435 updated for Pd version 0.34;
 #X text 54 241 We're using one new object \, "select \, " which outputs
@@ -27,12 +25,14 @@ conditional computations \, such as this one which counts while its
 input is 0 or positive but clears when negative:, f 73;
 #X text 251 65 <= click here to start;
 #X text 51 77 conditionally stop the metronome, f 13;
-#X text 219 323 <= are we nonnegative? (1 if true \, 0 if false);
-#X text 251 375 <= as a result either clear or increment the counter
+#X text 229 323 <= are we nonnegative? (1 if true \, 0 if false);
+#X text 261 375 <= as a result either clear or increment the counter
 ;
-#X text 258 348 <= selectively bang the first or second outlet;
+#X text 268 348 <= selectively bang the first or second outlet;
 #X text 293 194 select can be abbreviated as:;
 #X obj 509 193 sel;
+#X floatatom 190 297 4 0 0 0 - - - 0;
+#X floatatom 277 431 4 0 0 0 - - - 0;
 #X connect 1 0 0 0;
 #X connect 1 0 5 1;
 #X connect 1 0 8 0;
@@ -45,11 +45,11 @@ input is 0 or positive but clears when negative:, f 73;
 #X connect 7 0 5 1;
 #X connect 8 0 4 0;
 #X connect 12 0 13 0;
-#X connect 13 0 14 0;
-#X connect 14 0 19 0;
-#X connect 14 1 17 0;
-#X connect 15 0 18 0;
-#X connect 17 0 15 0;
-#X connect 18 0 15 1;
-#X connect 18 0 16 0;
-#X connect 19 0 15 0;
+#X connect 13 0 17 0;
+#X connect 13 1 15 0;
+#X connect 14 0 16 0;
+#X connect 15 0 14 0;
+#X connect 16 0 14 1;
+#X connect 16 0 29 0;
+#X connect 17 0 14 0;
+#X connect 28 0 12 0;

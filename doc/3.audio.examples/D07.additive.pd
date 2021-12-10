@@ -1,11 +1,12 @@
 #N canvas 650 36 605 577 12;
+#X declare -stdpath ./;
 #X obj 75 454 catch~ sum;
 #X obj 304 307 s frequency;
 #X obj 402 317 s duration;
-#X floatatom 402 267 0 0 0 0 - - -;
+#X floatatom 402 267 0 0 0 0 - - - 0;
 #X obj 402 292 * 100;
 #X obj 304 282 mtof;
-#X floatatom 304 257 0 0 0 0 - - -;
+#X floatatom 304 257 0 0 0 0 - - - 0;
 #X text 90 12 ADDITIVE SYNTHESIS;
 #X text 440 257 duration in tenths;
 #X text 442 273 of a second;
@@ -23,8 +24,8 @@ Risset.;
 #X obj 304 197 loadbang;
 #X msg 304 231 72;
 #X msg 402 237 40;
-#X obj 315 355 bng 25 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 315 355 bng 25 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 315 391 s trigger;
 #X obj 44 194 partial 0.67 0.9 0.56 1;
 #X obj 44 219 partial 1 0.65 0.92 0;
@@ -37,6 +38,7 @@ Risset.;
 #X obj 44 394 partial 1 0.1 3.76 0;
 #X obj 44 419 partial 1.33 0.075 4.07 0;
 #X text 348 357 <= click to play a note;
+#X obj 437 11 declare -stdpath ./;
 #X connect 0 0 12 0;
 #X connect 0 0 12 1;
 #X connect 3 0 4 0;

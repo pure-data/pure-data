@@ -16,8 +16,10 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 #include "g_undo.h"
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <io.h>
+#endif
+#ifdef _MSC_VER
 #define snprintf _snprintf
 #endif
 

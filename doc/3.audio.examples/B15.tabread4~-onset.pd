@@ -1,4 +1,5 @@
 #N canvas 433 61 580 690 12;
+#X declare -stdpath ./;
 #X text 354 646 updated for Pd version 0.42;
 #X text 39 45 Pd is usually compiled to work on 32-bit audio samples.
 These do not \, in general \, have enough precision for use as indices
@@ -25,12 +26,12 @@ and the "main" (signal) inlet in 64-bit precision. So if \, for example
 #X obj 385 537 osc~;
 #X obj 171 548 tabread4~ \$0-tab;
 #X obj 171 582 output~;
-#X obj 374 461 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 374 461 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X msg 398 443 \; pd dsp 1;
 #X obj 40 465 *~ 10000;
 #X obj 40 518 +~;
-#X floatatom 280 467 6 0 0 0 - - -;
+#X floatatom 280 467 6 0 0 0 - - - 0;
 #X msg 280 437 1;
 #X obj 373 592 table \$0-tab 200000;
 #X obj 40 436 phasor~ 0.02;
@@ -45,6 +46,7 @@ truncation error drops by about 30 dB., f 64;
 #X text 188 639 GOOD;
 #X text 226 416 ONSET INTO TABLE;
 #X text 374 396 This loads the table:;
+#X obj 423 12 declare -stdpath ./;
 #X connect 5 0 6 0;
 #X connect 6 0 10 0;
 #X connect 7 0 13 0;

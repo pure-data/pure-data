@@ -1,35 +1,49 @@
-#N canvas 370 81 567 462 12;
-#X obj 208 46 inlet;
-#X obj 208 73 s \$1-a;
-#X obj 303 73 s \$1-b;
-#X text 302 396 updated for Pd version 0.34;
-#X text 64 9 This is an abstraction used in example 12 \, "locality".
+#N canvas 653 218 613 599 12;
+#X obj 200 54 inlet;
+#X obj 200 81 s \$1-a;
+#X obj 335 81 s \$1-b;
+#X obj 335 54 inlet;
+#X obj 84 319 s \$1-c;
+#X obj 84 349 r \$1-c;
+#X floatatom 84 288 5 0 0 0 - - - 0;
+#X floatatom 84 377 5 0 0 0 - - - 0;
+#X obj 186 319 s here's-what-happens-if-you-dont;
+#X obj 185 349 r here's-what-happens-if-you-dont;
+#X floatatom 185 377 5 0 0 0 - - - 0;
+#X floatatom 186 288 5 0 0 0 - - - 0;
+#X floatatom 459 288 5 0 0 0 - - - 0;
+#X floatatom 460 377 5 0 0 0 - - - 0;
+#X obj 459 319 s \$0-d;
+#X obj 460 349 r \$0-d;
+#X text 96 17 This is an abstraction used in example 13 \, "locality".
 ;
-#X obj 303 46 inlet;
-#X obj 63 281 s \$1-c;
-#X obj 63 311 r \$1-c;
-#X floatatom 63 250 5 0 0 0 - - -;
-#X floatatom 63 339 5 0 0 0 - - -;
-#X obj 165 281 s here's-what-happens-if-you-dont;
-#X obj 164 311 r here's-what-happens-if-you-dont;
-#X floatatom 164 339 5 0 0 0 - - -;
-#X floatatom 165 250 5 0 0 0 - - -;
-#X floatatom 438 250 5 0 0 0 - - -;
-#X floatatom 439 339 5 0 0 0 - - -;
-#X obj 438 281 s \$0-d;
-#X obj 439 311 r \$0-d;
-#X text 48 111 The sends above get named "one-a" and "one-b" \, for
-instance. The window title bar tells you the creation arguments for
-this particular instance. You can use this to make internal local connections
-as shown below. The "\$1-c" boxes act locally whereas the middle boxes
-get crosstalk between the windows. The boxes at right also get unique
-names but in this case you don't have to specify "\$0" \, just something
-unique.;
+#X text 343 556 updated for Pd version 0.52;
+#X text 42 119 The sends above get named "one-a" and "one-b" \, for
+instance depending on the argument. The window title bar tells you
+the creation arguments in parenthesis for this particular instance.
+, f 75;
+#X text 42 168 You can use this to make an abstraction send values
+to a specific receive in the parent patch. Alternatively \, you can
+make internal local connections as shown below with "\$1-c" \, whereas
+the middle boxes get crosstalk between the windows. "\$0" is a counter
+\, where every patch gets its own value (a unique ID number). Therefore
+\, boxes at right with "\$0" also get unique names., f 75;
+#X obj 77 454 float \$0;
+#X msg 77 485 \; \$1-d 10;
+#X obj 77 425 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 191 452 If you're using a message as a send \, as in the initialization
+of an abstraction \, you need to get the value of "\$0" from an object
+like float \, because it doesn't get expanded to an unique ID number
+in messages, f 48;
+#X text 98 422 <= click;
 #X connect 0 0 1 0;
-#X connect 5 0 2 0;
-#X connect 7 0 9 0;
-#X connect 8 0 6 0;
-#X connect 11 0 12 0;
-#X connect 13 0 10 0;
-#X connect 14 0 16 0;
-#X connect 17 0 15 0;
+#X connect 3 0 2 0;
+#X connect 5 0 7 0;
+#X connect 6 0 4 0;
+#X connect 9 0 10 0;
+#X connect 11 0 8 0;
+#X connect 12 0 14 0;
+#X connect 15 0 13 0;
+#X connect 20 0 21 0;
+#X connect 22 0 20 0;

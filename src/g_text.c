@@ -540,9 +540,7 @@ typedef struct _gatom
 } t_gatom;
 
     /* prepend "-" as necessary to avoid empty strings, so we can
-    use them in Pd messages.  A more complete solution would be
-    to introduce some quoting mechanism; but then we'd be much more
-    complicated. */
+    use them in Pd messages. */
 static t_symbol *gatom_escapit(t_symbol *s)
 {
     if (!*s->s_name)
@@ -558,12 +556,18 @@ static t_symbol *gatom_escapit(t_symbol *s)
     else return (s);
 }
 
-    /* undo previous operation: strip leading "-" if found. */
+    /* undo previous operation: strip leading "-" if found.  This is used
+    both to restore send, etc, names when loading from a file, and to
+    set them from the properties dialog.  In the former case, since before
+    version 0.52 '$" was aliases to "#", we also bash any "#" characters
+    to "$".  This is unnecessary when reading files saved from 0.52 or later,
+    and really we should test for that and only bash when necessary, just
+    in case someone wants to have a "#" in a name. */
 static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if (*s->s_name == '-')
         return (gensym(s->s_name+1));
-    else return (s);
+    else return (iemgui_raute2dollar(s));
 }
 
 static void gatom_redraw(t_gobj *client, t_glist *glist)
@@ -752,7 +756,6 @@ static void gatom_reborder(t_gatom *x)
 
 void gatom_undarken(t_text *x)
 {
-    post("undarken");
     if (x->te_type == T_ATOM)
     {
         ((t_gatom *)x)->a_doubleclicked =
@@ -781,6 +784,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
     else if (c == '\n')
     {
+        x->a_doubleclicked = 0;
         if (t == x->a_glist->gl_editor->e_textedfor)
         {
             rtext_gettext(t, &buf, &bufsize);
@@ -1128,7 +1132,8 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
-        x->a_text.te_width = (x->a_flavor == A_FLOAT ? 5 : 20);
+        x->a_text.te_width = (x->a_flavor == A_FLOAT ? 5 :
+            (x->a_flavor == A_SYMBOL ? 10 : 20));
         glist_add(gl, &x->a_text.te_g);
         glist_noselect(gl);
         glist_select(gl, &x->a_text.te_g);

@@ -1,8 +1,8 @@
-#N canvas 749 35 498 749 12;
+#N canvas 749 35 512 783 12;
 #N canvas 582 131 541 606 using-with-tables 0;
 #X obj 40 376 print peak;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array insignal 1024 float 2;
+#X array insignal 1024 float 0;
 #X coords 0 1 1023 -1 200 140 1;
 #X restore 94 434 graph;
 #X obj 362 507 phasor~;
@@ -34,15 +34,15 @@ outputs are meaningful.;
 #X connect 11 0 0 0;
 #X connect 12 0 11 0;
 #X connect 18 0 4 0;
-#X restore 279 581 pd using-with-tables;
-#X obj 68 608 phasor~;
-#X obj 68 509 loadbang;
-#X floatatom 68 558 5 0 120 0 - - - 0;
-#X floatatom 68 660 5 0 0 0 - - - 0;
-#X floatatom 261 662 5 0 0 0 - - - 0;
-#X obj 68 583 mtof;
-#X text 67 678 pitch;
-#X text 251 681 envelope;
+#X restore 304 616 pd using-with-tables;
+#X obj 48 626 phasor~;
+#X obj 48 522 loadbang;
+#X floatatom 48 576 4 0 120 0 - - - 0;
+#X floatatom 48 678 5 0 0 0 - - - 0;
+#X floatatom 241 680 5 0 0 0 - - - 0;
+#X obj 48 601 mtof;
+#X text 47 696 pitch;
+#X text 231 699 envelope;
 #X text 31 45 Sigmund~ analyzes an incoming sound into sinusoidal components
 \, which may be reported individually or combined to form a pitch estimate.
 Possible outputs are specified as creation arguments:;
@@ -87,7 +87,7 @@ to be crosstalk and ignored.;
 #X connect 0 0 3 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X restore 279 559 pd setting-parameters;
+#X restore 304 594 pd setting-parameters;
 #N canvas 961 117 544 802 sinusoid-tracking 0;
 #X obj 80 240 sigmund~ -npeak 10 peaks;
 #X obj 80 210 phasor~;
@@ -154,11 +154,11 @@ for an empty track.;
 #X connect 32 1 29 0;
 #X connect 32 2 30 0;
 #X connect 32 3 31 0;
-#X restore 279 536 pd sinusoid-tracking;
+#X restore 304 571 pd sinusoid-tracking;
 #X text 70 176 tracks - output sinusoidal peaks organized into tracks
 ;
 #X text 74 122 notes - output pitch at the beginning of notes;
-#X text 288 513 more details:;
+#X text 313 548 more details:;
 #X text 28 204 Parameters you may set (in creation arguments or messages):
 ;
 #X text 78 224 npts - number of points in each analysis window (1024)
@@ -167,7 +167,7 @@ for an empty track.;
 #X text 78 259 npeak - number of sinusoidal peaks (20);
 #X text 79 335 vibrato - depth of vibrato to expect in 1/2-tones (1)
 ;
-#X obj 68 634 sigmund~ -hop 4096 pitch env;
+#X obj 48 652 sigmund~ -hop 4096 pitch env;
 #X text 72 158 peaks - output all sinusoidal peaks in order of amplitude
 ;
 #X text 35 426 The npts and hop parameters are in samples \, and are
@@ -184,14 +184,19 @@ outputs.);
 #X text 80 372 minpower - minimum power (dB) to report a note (50)
 ;
 #X text 80 391 growth - growth (dB) to report a repeated note (7);
-#X text 319 715 updated for Pd v0.46;
-#X msg 68 533 69;
+#X msg 48 551 69;
 #X obj 38 9 sigmund~;
 #X text 99 8 - sinusoidal analysis and pitch tracking;
+#X obj 143 546 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 143 570 \; pd dsp \$1;
+#X text 163 546 DSP on/off;
+#X text 284 745 updated for Pd version0.46;
 #X connect 1 0 21 0;
-#X connect 2 0 31 0;
+#X connect 2 0 30 0;
 #X connect 3 0 6 0;
 #X connect 6 0 1 0;
 #X connect 21 0 4 0;
 #X connect 21 1 5 0;
-#X connect 31 0 3 0;
+#X connect 30 0 3 0;
+#X connect 33 0 34 0;

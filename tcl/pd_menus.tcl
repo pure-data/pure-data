@@ -483,7 +483,7 @@ proc ::pd_menus::insert_into_menu {mymenu entry parent} {
     for {set i 0} {$i <= [$mymenu index end]} {incr i} {
         if {[$mymenu type $i] ne "command"} {continue}
         set currentcommand [$mymenu entrycget $i -command]
-        if {$currentcommand eq "raise $entry"} {return} ;# it exists already
+        if {$currentcommand eq "::pd_menucommands::scheduleAction raise $entry"} {return} ;# it exists already
         if {$currentcommand eq "raise $parent"} {
             set insertat $i
         }
