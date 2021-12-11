@@ -813,7 +813,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
         }
             /* automatically escape special characters in symbols */
         if (x->a_flavor == A_SYMBOL && (c == ' ' || c == ',' || c == ';' ||
-            c == '$' | c == '\\'))
+            c == '$' || c == '\\'))
                 rtext_key(t, '\\', &s_);
             /* and at last, insert the character */
         rtext_key(t, c, keysym);
