@@ -33,7 +33,7 @@ static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
 static t_class *class_list = 0;
-PERTHREAD t_pdinstance *pd_this;
+PERTHREAD t_pdinstance *pd_this = NULL;
 t_pdinstance **pd_instances;
 int pd_ninstances;
 #else
@@ -59,9 +59,10 @@ void s_stuff_newpdinstance(void)
     STUFF = getbytes(sizeof(*STUFF));
     STUFF->st_externlist = STUFF->st_searchpath =
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
-    STUFF->st_printhook = sys_printhook;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
     STUFF->st_dacsr = DEFDACSAMPLERATE;
+    STUFF->st_printhook = sys_printhook;
+    STUFF->st_impdata = NULL;
 }
 
 void s_stuff_freepdinstance(void)
