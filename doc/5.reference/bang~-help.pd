@@ -15,12 +15,12 @@ the outputs of analysis algorithms., f 61;
 #X text 73 340 see also:;
 #X obj 149 341 block~;
 #X text 422 114 <= click to test, f 8;
-#X text 43 118 By default \, a block size is 64 samples \, at a 44100
-sample rate \, this about 1.45 ms. You can cchange the sample rate
-in audio settings and the block size with the block~ or switch~ object.
-Note that the minimum block size bang~ can handle is 64!, f 46;
 #X text 253 237 Bang~ only outputs when DSP is on., f 18;
-#X text 78 224 inlet is innactive, f 9;
+#X text 43 118 By default \, a block size is 64 samples \, at a 44100
+sample rate \, this about 1.45 ms. You can change the sample rate in
+audio settings and the block size with the block~ or switch~ object.
+Note that the minimum block size bang~ can handle is 64!, f 46;
+#X text 81 224 inlet is inactive, f 8;
 #X connect 0 0 1 0;
 #X connect 3 0 8 0;
 #X connect 4 0 8 0;

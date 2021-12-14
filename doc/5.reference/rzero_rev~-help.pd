@@ -1,6 +1,6 @@
-#N canvas 702 77 548 607 12;
+#N canvas 702 77 548 597 12;
 #X declare -stdpath ./;
-#X floatatom 132 197 0 0 0 0 - - - 0;
+#X floatatom 132 197 4 0 0 0 - - - 0;
 #X obj 51 113 osc~ 100;
 #X msg 67 145 clear;
 #X msg 79 171 set 1;

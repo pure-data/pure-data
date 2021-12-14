@@ -1,4 +1,5 @@
 #N struct text-help-struct float x float y text z;
+#N struct template1 float x float y float z float q;
 #N canvas 721 71 562 579 12;
 #X obj 123 531 list;
 #X obj 68 12 text;
@@ -167,76 +168,6 @@ inlet -- none to specify whole line), f 46;
 #X connect 40 0 23 0;
 #X connect 41 0 15 0;
 #X restore 392 219 pd get;
-#N canvas 532 178 720 496 text-and-data-structures 0;
-#X floatatom 88 217 5 0 0 0 - - - 0;
-#X msg 53 186 0;
-#X msg 128 186 2;
-#X msg 88 186 1;
-#X obj 88 364 print;
-#X obj 211 364 print type;
-#X obj 211 266 pointer;
-#X obj 88 298 text get -s text-help-struct z, f 18;
-#N canvas 807 416 480 302 text-help-struct 0;
-#X obj 76 67 struct text-help-struct float x float y text z;
-#X text 95 196 This just draws a frame around the text;
-#X obj 67 133 drawtext z 15 0 900;
-#X text 213 128 draws text z at coordinates (15 \, 0) with color 900
-(red), f 28;
-#X text 77 29 fields 'x/y' for coordinates and 'z' for text;
-#X obj 68 224 drawpolygon 0 4 0 -10 0 55 140 55 140 -10 0 -10;
-#X restore 205 116 pd text-help-struct;
-#X obj 88 239 t f b;
-#N canvas 1281 190 226 165 text-help-data 0;
-#X scalar text-help-struct 20 20 \; 1 2 3 \\\; a b c d \\\; 100 202
-300 \\\; \;;
-#X text 13 86 We have one datum (above) whose "z" field is text.,
-f 25;
-#X restore 206 88 pd text-help-data;
-#X msg 210 209 traverse pd-text-help-data \, next, f 18;
-#X text 200 450 bug - saving multi-line texts inside structures;
-#X obj 524 335 pointer;
-#X msg 524 278 traverse pd-text-help-data \, next, f 18;
-#X obj 401 361 text set -s text-help-struct z, f 18;
-#X floatatom 442 333 5 0 0 0 - - - 0;
-#X msg 408 303 0;
-#X msg 477 303 2;
-#X msg 442 303 1;
-#X obj 401 252 trigger list bang;
-#X listbox 88 338 12 0 0 0 - - - 0;
-#X floatatom 211 337 5 0 0 0 - - - 0;
-#X text 60 159 get text line;
-#X text 425 277 set line;
-#X text 336 89 <= open to see text;
-#X text 160 28 A simple example showing how to access text in data
-structures via pointers., f 38;
-#X listbox 401 222 14 0 0 0 - - - 0;
-#X msg 410 190 list a b c d;
-#X text 508 222 set text;
-#X msg 401 160 100 200 300;
-#X connect 0 0 9 0;
-#X connect 1 0 0 0;
-#X connect 2 0 0 0;
-#X connect 3 0 0 0;
-#X connect 6 0 7 3;
-#X connect 7 0 21 0;
-#X connect 7 1 22 0;
-#X connect 9 0 7 0;
-#X connect 9 1 11 0;
-#X connect 11 0 6 0;
-#X connect 13 0 15 3;
-#X connect 14 0 13 0;
-#X connect 16 0 15 1;
-#X connect 17 0 16 0;
-#X connect 18 0 16 0;
-#X connect 19 0 16 0;
-#X connect 20 0 15 0;
-#X connect 20 1 14 0;
-#X connect 21 0 4 0;
-#X connect 22 0 5 0;
-#X connect 27 0 20 0;
-#X connect 28 0 27 0;
-#X connect 30 0 27 0;
-#X restore 273 480 pd text-and-data-structures;
 #X text 100 458 here's how to access texts inside data structures:
 , f 27;
 #X text 113 12 - manage a list of messages;
@@ -477,13 +408,13 @@ at 0 to be 'near' the following arguments., f 33;
 #X restore 392 389 pd search;
 #X text 89 412 sequencer/message-sender;
 #X obj 279 413 text sequence;
-#N canvas 546 47 1157 752 sequence 0;
-#X msg 204 426 symbol text-help-search;
-#X text 377 418 specify another text by name or pointer, f 20;
-#X msg 76 207 bang;
-#X obj 116 612 print out1;
-#X msg 149 381 args 1 2 fuzz;
-#X msg 32 142 line 0;
+#N canvas 546 47 1149 739 sequence 0;
+#X msg 204 443 symbol text-help-search;
+#X text 377 435 specify another text by name or pointer, f 20;
+#X msg 89 263 bang;
+#X obj 116 628 print out1;
+#X msg 19 165 args 1 2 fuzz;
+#X msg 44 197 line 0;
 #X obj 710 206 text sequence text-help-seq2 -g, f 17;
 #X obj 575 248 text define -k text-help-seq2;
 #A set test1 1 2 3 \; 1000 test2 6 7 8 \; test1 9 10 \, 21 22 23 \,
@@ -496,29 +427,29 @@ walk the dog \; 500 1500 test1 \; test2 13 14 \;;
 #X obj 1043 189 r test2;
 #X obj 1043 269 print test2;
 #X obj 826 271 print done;
-#X obj 149 357 loadbang;
-#X text 251 380 set values for \$1 \, \$2 \, etc;
-#X msg 56 173 step;
-#X text 100 173 output next line;
-#X text 92 135 set current line number (counting from 0), f 23;
+#X obj 19 141 loadbang;
+#X text 121 164 set values for \$1 \, \$2 \, etc;
+#X msg 68 228 step;
+#X text 112 228 output next line;
+#X text 104 190 set current line number (counting from 0), f 23;
 #X msg 594 171 auto;
 #X msg 632 171 stop;
-#X msg 94 247 auto;
-#X text 68 613 lists;
-#X text 246 501 -g to specify global mode (each line begins with a
+#X msg 117 344 auto;
+#X text 68 629 lists;
+#X text 246 518 -g to specify global mode (each line begins with a
 symbolic destination), f 43;
-#X text 246 533 -w <symbol> specifies that lines beginning with the
+#X text 246 550 -w <symbol> specifies that lines beginning with the
 symbol are waiting points, f 43;
-#X text 246 566 -w <number> specifies that every line's leading n atoms
+#X text 246 583 -w <number> specifies that every line's leading n atoms
 are used as a waiting point, f 43;
-#X text 226 461 creation arguments:;
-#X text 248 482 name of the text object or "-s struct-name";
-#X obj 182 701 text define -k text-help-seq;
+#X text 226 478 creation arguments:;
+#X text 248 499 name of the text object or "-s struct-name";
+#X obj 182 696 text define -k text-help-seq;
 #A set 1 2 3 \; 4 5 symbol 7 \; 8 \$1 \$2 \; 9 \$3 \$1-\$2-\$3 \; walk
 the dog \;;
 #X f 29;
 #X obj 710 272 print wait;
-#X msg 128 321 stop;
+#X msg 148 410 stop;
 #X text 709 152 rewind;
 #X text 576 212 click to see the sequence:, f 13;
 #X msg 671 171 step;
@@ -553,8 +484,8 @@ lines) \, waits \, and a bang at end of sequence:, f 76;
 #X obj 897 704 print done;
 #X obj 783 704 print wait;
 #X obj 669 704 print out1;
-#X msg 111 282 tempo 1 msec;
-#X text 246 600 -t <tempo> <units> initializes tempo as with the "tempo"
+#X msg 134 379 tempo 1 msec;
+#X text 246 617 -t <tempo> <units> initializes tempo as with the "tempo"
 message above., f 43;
 #X msg 765 171 tempo 2 permsec;
 #X text 786 152 set 2x tempo;
@@ -575,11 +506,11 @@ will be taken as a wait. Waits specified this way can only have numeric
 elements (while waits specified with a symbol tag as above could have
 symbols too if desired.) Here we use "-w 1" so the "auto" feature can
 simply sequence a list of numbers:, f 71;
-#X listbox 116 582 16 0 0 0 - - - 0;
-#X obj 204 515 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X listbox 116 598 16 0 0 0 - - - 0;
+#X obj 204 531 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 145 537 print done;
-#X obj 116 461 text sequence text-help-seq, f 13;
+#X obj 145 553 print done;
+#X obj 116 477 text sequence text-help-seq, f 13;
 #X obj 826 247 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X listbox 710 246 10 0 0 0 - - - 0;
@@ -591,39 +522,43 @@ simply sequence a list of numbers:, f 71;
 #000000 #000000;
 #X floatatom 783 679 5 0 0 0 - - - 0;
 #X listbox 669 678 14 0 0 0 - - - 0;
-#X text 188 676 click to see the sequence:;
+#X text 188 671 click to see the sequence:;
 #X listbox 939 242 13 0 0 0 - - - 0;
 #X obj 939 218 list;
 #X listbox 1043 239 8 0 0 0 - - - 0;
-#N canvas 639 430 676 280 tempo 0;
-#X text 80 158 These symbols can also be preceeded by "per" (as in
+#N canvas 686 419 664 288 tempo 0;
+#X text 60 167 These symbols can also be preceeded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
 min (hence \, the same as 'BPM')., f 78;
-#X text 78 82 - millisecond (msec for short) \; - seconds (sec) \;
+#X text 58 91 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
-#X text 74 31 Wait times are in units of 1 millisecond by default \,
-but you can change this with the "tempo" message \, which takes a different
-tempo number and a time unit symbol. Possible symbols are:, f 71;
-#X text 76 210 Changing the tempo while the sequencer is running in
-auto mode changes the time for the remaining portion of the last wait
-time., f 78;
-#X restore 464 296 pd tempo;
-#X text 22 19 "text sequence" outputs lines from a text buffer \, either
+#X text 54 26 Wait times are in units of 1 millisecond by default \,
+but you can change this with the "-t" flag or "tempo" message (as in
+[timer] \, [delay] and [metro]) \, which take a different tempo number
+and a time unit symbol. Possible symbols are:, f 77;
+#X text 56 219 Changing the tempo while the sequencer is running in
+auto mode takes effect right away and changes the tempo for the remaining
+portion of the current wait time., f 75;
+#X restore 485 393 pd tempo;
+#X text 22 16 "text sequence" outputs lines from a text buffer \, either
 to an outlet or as messages to named destinations. The text is interpreted
 as a sequence of lists \, and possibly some interspersed waiting instructions
 (called "waits" here). You can ask for one line at a time ("step" message)
 \, or to proceed without delay to the next wait ("bang") \, or to automatically
 sequence through a series of waits (with each wait specifying a delay
 in milliseconds), f 73;
-#X text 166 321 stop the sequence (when in auto mode);
-#X text 116 194 output all lines starting from current one to next
-waiting point (but note there aren't any waits in this example so all
-lines are output), f 50;
-#X text 135 240 automatically sequence \, interpreting waits as delay
+#X text 186 410 stop the sequence (when in auto mode);
+#X text 158 337 automatically sequence \, interpreting waits as delay
 times (see example to the right)., f 42;
-#X text 206 274 set tempo unit for delay times. See also at right and
+#X text 229 371 set tempo unit for delay times. See also at right and
 possible messages here:, f 40;
+#X text 129 250 This is a zero lenght list. It output all lines starting
+from current one to next waiting point (but note there aren't any waits
+in this example so all lines are output);
+#X msg 104 306 10 20 foo;
+#X text 179 301 floats \, symbols and lists do the same as 'bang' but
+temporarily override 'args' with list's elements, f 52;
 #X connect 0 0 67 1;
 #X connect 2 0 67 0;
 #X connect 4 0 67 0;
@@ -674,6 +609,7 @@ possible messages here:, f 40;
 #X connect 75 0 57 0;
 #X connect 78 0 77 0;
 #X connect 79 0 13 0;
+#X connect 86 0 67 0;
 #X restore 392 413 pd sequence;
 #X text 103 291 delete a line or clear;
 #X obj 279 292 text delete;
@@ -734,3 +670,73 @@ line 4 \\\;;
 #X connect 11 0 15 0;
 #X restore 392 267 pd insert;
 #X text 323 527 updated for Pd version 0.49;
+#N canvas 532 178 767 464 text-and-data-structures 0;
+#X floatatom 82 179 5 0 0 0 - - - 0;
+#X msg 47 148 0;
+#X msg 122 148 2;
+#X msg 82 148 1;
+#X obj 82 286 print;
+#X obj 205 286 print type;
+#X obj 516 250 pointer;
+#X obj 82 220 text get -s text-help-struct z, f 18;
+#N canvas 866 408 480 302 text-help-struct 0;
+#X obj 76 67 struct text-help-struct float x float y text z;
+#X text 95 196 This just draws a frame around the text;
+#X obj 67 133 drawtext z 15 0 900;
+#X text 213 128 draws text z at coordinates (15 \, 0) with color 900
+(red), f 28;
+#X text 77 29 fields 'x/y' for coordinates and 'z' for text;
+#X obj 68 224 drawpolygon 0 4 0 -10 0 55 140 55 140 -10 0 -10;
+#X restore 463 58 pd text-help-struct;
+#N canvas 1301 189 226 165 text-help-data 0;
+#X scalar text-help-struct 20 20 \; 100 200 300 \\\; a b c d \\\; 100
+200 292 \\\; \;;
+#X text 13 86 We have one datum (above) whose "z" field is text.,
+f 25;
+#X restore 462 30 pd text-help-data;
+#X msg 516 203 traverse pd-text-help-data \, next, f 27;
+#X text 541 112 bug - saving multi-line texts inside structures, f
+24;
+#X obj 309 286 text set -s text-help-struct z;
+#X floatatom 377 200 5 0 0 0 - - - 0;
+#X msg 377 151 0;
+#X msg 444 151 2;
+#X msg 409 151 1;
+#X listbox 82 260 12 0 0 0 - - - 0;
+#X floatatom 205 259 5 0 0 0 - - - 0;
+#X text 54 121 get text line;
+#X text 392 125 set line;
+#X text 592 31 <= open to see text;
+#X listbox 289 200 10 0 0 0 - - - 0;
+#X text 299 118 set text;
+#X obj 516 175 loadbang;
+#X text 102 24 A simple example showing how to access text in data
+structures via pointers. In this case you need the "-s" flag followed
+by the struct name and text field., f 46;
+#X obj 254 397 ../4.data.structures/01.scalars;
+#X text 154 338 To know more about Data Structures \, how to handle
+pointers and see examples \, please refer to the 4.Data.Structure section
+of the Pd's tutorials. Starting with the first example below., f 66
+;
+#X msg 289 143 list a b c;
+#X msg 298 171 10 20 300;
+#X connect 0 0 7 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 6 0 7 3;
+#X connect 6 0 12 3;
+#X connect 7 0 17 0;
+#X connect 7 1 18 0;
+#X connect 10 0 6 0;
+#X connect 13 0 12 1;
+#X connect 14 0 13 0;
+#X connect 15 0 13 0;
+#X connect 16 0 13 0;
+#X connect 17 0 4 0;
+#X connect 18 0 5 0;
+#X connect 22 0 12 0;
+#X connect 24 0 10 0;
+#X connect 28 0 22 0;
+#X connect 29 0 22 0;
+#X restore 273 480 pd text-and-data-structures;

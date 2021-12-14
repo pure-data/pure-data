@@ -1,4 +1,4 @@
-#N canvas 669 111 580 600 12;
+#N canvas 669 111 580 580 12;
 #X obj 125 23 inlet;
 #X text 183 22 - control inlet;
 #X obj 315 22 inlet~;
@@ -179,12 +179,11 @@ message to such an inlet~ has no effect.);
 #X msg 106 416 1 2 3;
 #X msg 153 416 poodle 50;
 #X text 255 450 <= catching messages to inlet~ objects;
-#X obj 434 190 loadbang;
-#X msg 434 238 \; dpd dsp 1;
-#X obj 434 214 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 458 215 DSP on/off;
 #X text 332 288 (DSP needs to be on);
+#X obj 431 214 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 455 215 DSP on/off;
+#X msg 431 238 \; pd dsp \$1;
 #X connect 9 0 18 1;
 #X connect 10 0 18 0;
 #X connect 16 0 8 0;
@@ -194,5 +193,4 @@ message to such an inlet~ has no effect.);
 #X connect 27 0 25 0;
 #X connect 28 0 25 0;
 #X connect 29 0 25 0;
-#X connect 31 0 33 0;
-#X connect 33 0 32 0;
+#X connect 32 0 34 0;

@@ -1,8 +1,8 @@
 #N canvas 797 75 512 558 12;
 #X msg 78 168 bang;
 #X floatatom 78 300 6 0 0 0 - - - 0;
-#X floatatom 100 201 0 0 0 0 - - - 0;
-#X floatatom 145 238 0 0 0 0 - - - 0;
+#X floatatom 100 201 4 0 0 0 - - - 0;
+#X floatatom 145 238 4 0 0 0 - - - 0;
 #X obj 39 16 swap;
 #X text 123 167 outputs 2 stored values;
 #X obj 78 267 swap 6.5, f 10;
@@ -15,7 +15,7 @@ objects like this:;
 #X obj 149 454 swap, f 6;
 #X obj 157 484 -;
 #X floatatom 157 511 5 0 0 0 - - - 0;
-#X floatatom 187 428 4 0 0 0 - - - 0;
+#X floatatom 188 428 4 0 0 0 - - - 0;
 #X floatatom 149 428 4 0 0 0 - - - 0;
 #X text 246 492 updated for Pd version 0.41;
 #X text 38 53 The swap object swaps the positions of two incoming numbers.

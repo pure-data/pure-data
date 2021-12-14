@@ -1,4 +1,4 @@
-#N canvas 790 42 646 825 12;
+#N canvas 710 41 646 825 12;
 #X obj 89 17 metro;
 #X floatatom 179 469 4 0 0 0 - - - 0;
 #X msg 40 272 1;
@@ -6,7 +6,6 @@
 #X msg 81 305 0;
 #X msg 72 272 bang;
 #X msg 114 305 stop;
-#X text 140 16 - metronome;
 #X obj 70 532 bng 25 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X text 198 525 - delay time (float);
@@ -22,12 +21,12 @@ message;
 #X obj 124 785 delay;
 #X text 387 785 Updated for Pd version 0.48;
 #X text 152 304 zero or "stop" to stop;
-#X obj 432 654 /;
-#X msg 432 629 1 \$1;
-#X msg 432 597 0.5;
-#X msg 468 597 1;
-#X msg 397 597 4;
-#X text 499 595 beat length;
+#X obj 432 653 /;
+#X msg 432 628 1 \$1;
+#X msg 432 596 0.5;
+#X msg 468 596 1;
+#X msg 397 596 4;
+#X text 499 594 beat length;
 #X msg 302 651 tempo \$1 permin;
 #X floatatom 302 615 5 0 0 0 - - - 0;
 #X text 194 506 <= optional creation arguments:;
@@ -43,9 +42,6 @@ time interval of 500 msec (1/2 second)., f 47;
 #X msg 138 370 tempo 2 permillisecond;
 #X text 284 396 same as 1 msec \, so '1000' is a second.;
 #X text 301 370 this is the same as above.;
-#X text 155 422 Note that if the tempo is changed while the metro is
-running \, the change is applied right away to the remaining fraction
-of the beat., f 67;
 #X text 218 463 right inlet sets the time (if the metro is running
 \, it only takes affect in the next beat)., f 52;
 #X obj 70 506 metro 500 1 msec;
@@ -61,24 +57,29 @@ intervals. The left inlet takes a nonzero number or "bang" to start
 and 0 or 'stop' to stop it. The time is set via the right inlet or
 first argument. The default time unit is 1 millisecond but you can
 change this via the 2nd and 3rd argument or the "tempo" message (as
-in [timer] \, [metro] and [text sequence]) \, by setting a different
+in [timer] \, [delay] and [text sequence]) \, which set a different
 tempo number and a time unit symbol. Possible symbols are:, f 83;
-#X connect 1 0 37 1;
-#X connect 2 0 37 0;
-#X connect 4 0 37 0;
-#X connect 5 0 37 0;
-#X connect 6 0 37 0;
-#X connect 13 0 15 0;
-#X connect 14 0 13 0;
-#X connect 19 0 39 0;
+#X text 140 16 - send a bang message periodically (a la metronome)
+;
+#X text 155 422 Note that if the tempo is changed while the metro is
+running \, the change takes effect to the remaining fraction of the
+beat., f 62;
+#X connect 1 0 35 1;
+#X connect 2 0 35 0;
+#X connect 4 0 35 0;
+#X connect 5 0 35 0;
+#X connect 6 0 35 0;
+#X connect 12 0 14 0;
+#X connect 13 0 12 0;
+#X connect 18 0 37 0;
+#X connect 19 0 18 0;
 #X connect 20 0 19 0;
-#X connect 21 0 20 0;
-#X connect 22 0 20 0;
-#X connect 23 0 20 0;
-#X connect 25 0 13 0;
-#X connect 26 0 25 0;
-#X connect 30 0 37 0;
-#X connect 32 0 37 0;
-#X connect 37 0 8 0;
-#X connect 39 0 13 1;
-#X connect 42 0 37 0;
+#X connect 21 0 19 0;
+#X connect 22 0 19 0;
+#X connect 24 0 12 0;
+#X connect 25 0 24 0;
+#X connect 29 0 35 0;
+#X connect 31 0 35 0;
+#X connect 35 0 7 0;
+#X connect 37 0 12 1;
+#X connect 40 0 35 0;

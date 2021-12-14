@@ -1,4 +1,4 @@
-#N canvas 692 23 682 845 12;
+#N canvas 692 23 682 838 12;
 #X msg 66 589 format b;
 #X msg 51 143 1 2 3;
 #X obj 51 267 oscformat cat horse pig;

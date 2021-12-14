@@ -1,4 +1,4 @@
-#N canvas 623 54 954 520 12;
+#N canvas 578 67 954 520 12;
 #X declare -stdpath ./;
 #X floatatom 603 166 5 0 1000 0 - - - 0;
 #X text 741 247 creation argument: name of delay line, f 18;
@@ -34,7 +34,7 @@ example on how to control this to obtain very short delays., f 50
 #X msg 80 341 500;
 #X msg 94 369 10;
 #X obj 80 400 delread~ \$0-delay 100;
-#X text 283 471 updated for Pd version 0.52;
+#X text 355 482 updated for Pd version 0.52;
 #X text 21 108 Delread~ and delread4~ objects read from delay allocated
 in a delwrite~ object with the same name. Note that in this help file
 we're using delay names with "\$0" (the patch ID number used to force
@@ -55,6 +55,8 @@ for variable delay times., f 46;
 , f 27;
 #X obj 485 71 vd~;
 #X text 408 71 => a.k.a.:;
+#X obj 289 482 fexpr~;
+#X text 215 482 see also:;
 #X connect 0 0 9 0;
 #X connect 4 0 8 0;
 #X connect 4 0 8 1;

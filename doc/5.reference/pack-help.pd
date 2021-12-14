@@ -48,7 +48,7 @@ section of the Pd's tutorials. Starting with the first example below.
 #X restore 354 124 pd pointer;
 #X text 435 124 <= about pointers;
 #X text 21 48 The pack object outputs a concatenated list from a series
-of inputs. CCreation arguments set the number of inlets and their type
+of inputs. Creation arguments set the number of inlets and their type
 \, possible values are: float (or 'f') \, symbol (or 's') and pointer
 (or 'p') - see [pd pointer]. A number sets a numeric inlet and initializes
 the value ('float'/'f' initializes to 0)., f 79;

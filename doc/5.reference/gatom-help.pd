@@ -1,4 +1,4 @@
-#N canvas 478 124 1040 688 12;
+#N canvas 485 57 1040 688 12;
 #X msg 79 455 set 45;
 #X floatatom 139 498 5 0 0 0 - - - 0;
 #X symbolatom 69 17 10 0 0 0 - - - 0;
@@ -55,10 +55,10 @@ though., f 58;
 positions:, f 36;
 #X restore 190 234 pd label;
 #N canvas 789 217 438 400 send/receive 0;
-#X floatatom 130 310 5 0 0 0 - #0-number - 0;
+#X floatatom 130 310 5 0 0 0 - \$0-number - 0;
 #X floatatom 126 133 5 0 0 0 - - - 0;
 #X obj 130 348 print;
-#X floatatom 130 199 5 0 0 0 - - #0-number 0;
+#X floatatom 130 199 5 0 0 0 - - \$0-number 0;
 #X text 181 197 <= send symbol \$0-number;
 #X text 181 311 <= receive symbol \$0-number;
 #X text 51 25 The properties also allows you to set a send and receive
@@ -112,7 +112,7 @@ f 55;
 #X connect 15 0 13 0;
 #X restore 183 202 pd limits;
 #N canvas 721 346 450 298 loading-args 0;
-#X floatatom 224 229 5 0 0 0 #0-label - - 0;
+#X floatatom 224 229 5 0 0 0 \$0-label - - 0;
 #X text 63 114 For instance \, below \, we have \$0 used in the label
 field \, which gets expanded to the patch ID number. Using something
 like "\$1" is useful if you're using the object in an abstraction \,
@@ -173,10 +173,10 @@ positions:, f 35;
 #N canvas 979 272 457 442 send/receive 0;
 #X obj 105 374 print;
 #X symbolatom 101 131 10 0 0 0 - - - 0;
-#X symbolatom 100 221 10 0 0 0 - - #0-symbol 0;
+#X symbolatom 100 221 10 0 0 0 - - \$0-symbol 0;
 #X text 179 220 <= send symbol: \$0-symbol;
 #X text 184 335 <= receive symbol: \$0-symbol;
-#X symbolatom 105 336 10 0 0 0 - #0-symbol - 0;
+#X symbolatom 105 336 10 0 0 0 - \$0-symbol - 0;
 #X text 55 28 The properties also allows you to set a send and receive
 symbol \, in which cases the inlet/outlet are removed (so no connections
 are possible anymore). This way \, the object can communicate to [send]
@@ -201,7 +201,7 @@ field \, which gets expanded to the patch ID number. Using something
 like "\$1" is useful if you're using the object in an abstraction \,
 then you can load a value passed as an argument into a parameter.,
 f 49;
-#X symbolatom 220 228 10 0 0 0 #0-label - - 0;
+#X symbolatom 220 228 10 0 0 0 \$0-label - - 0;
 #X text 61 25 Note that all the parameters that you can set by inserting
 a number or symbol into a field in the properties window can also load
 dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
@@ -273,7 +273,6 @@ really want to display an empty list \, you can use a "set" message.
 #X listbox 201 411 0 0 0 0 - - - 0;
 #X listbox 132 192 10 0 0 0 - - - 0;
 #X listbox 132 162 20 0 0 0 - - - 0;
-#X text 212 193 <= width of 20;
 #X text 284 161 <= default (20 characters);
 #X msg 90 101 list 1 2 3 4 5 6 7 8 9 10 11 12;
 #X msg 201 377 1;
@@ -285,11 +284,12 @@ efficient though.;
 #X text 54 23 By default the width is 20 characters. If the list box
 tries to display a larger symbol \, it gets truncated and the last
 displayed character is ">".;
+#X text 212 193 <= width of 10;
 #X connect 0 0 3 0;
 #X connect 3 0 2 0;
-#X connect 6 0 3 0;
-#X connect 7 0 1 0;
-#X connect 9 0 1 0;
+#X connect 5 0 3 0;
+#X connect 6 0 1 0;
+#X connect 8 0 1 0;
 #X restore 233 216 pd width;
 #X text 206 76 <= right click for properties;
 #N canvas 903 345 444 319 label 0;
@@ -307,8 +307,8 @@ symbol \, in which cases the inlet/outlet are removed (so no connections
 are possible anymore). This way \, the object can communicate to [send]
 and [receive] objects., f 58;
 #X listbox 104 128 20 0 0 0 - - - 0;
-#X listbox 103 218 20 0 0 0 - - #0-list 0;
-#X listbox 108 333 20 0 0 0 - #0-list - 0;
+#X listbox 103 218 20 0 0 0 - - \$0-list 0;
+#X listbox 108 333 20 0 0 0 - \$0-list - 0;
 #X listbox 104 290 20 0 0 0 - - - 0;
 #X obj 104 165 send \$0-list;
 #X obj 104 256 receive \$0-list;
@@ -334,7 +334,7 @@ f 49;
 a number or symbol into a field in the properties window can also load
 dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
 parameters are: width \, label and send/receive symbols., f 49;
-#X listbox 203 236 20 0 0 0 #0-label - - 0;
+#X listbox 203 236 20 0 0 0 \$0-label - - 0;
 #X restore 196 418 pd loading-args;
 #X text 108 388 Loading arguments in properties:;
 #N canvas 795 289 688 310 size 0;

@@ -1,6 +1,6 @@
 #N canvas 673 119 540 605 12;
 #X declare -stdpath ./;
-#X floatatom 114 183 0 0 0 0 - - - 0;
+#X floatatom 114 183 4 0 0 0 - - - 0;
 #X obj 61 98 osc~ 100;
 #X msg 77 130 clear;
 #X msg 85 156 set 1;
@@ -80,7 +80,7 @@ for an introduction to the necessary theory (click) =>, f 69;
 ;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X restore 380 436 pd Read-More;
+#X restore 381 436 pd Read-More;
 #X obj 19 562 biquad~;
 #X text 194 562 - not so friendly;
 #X obj 80 561 fexpr~;

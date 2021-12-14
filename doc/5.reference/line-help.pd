@@ -1,5 +1,5 @@
-#N canvas 429 35 617 744 12;
-#X floatatom 35 527 8 0 0 0 - - -;
+#N canvas 760 36 617 744 12;
+#X floatatom 35 527 8 0 0 0 - - - 0;
 #X msg 71 365 39;
 #X obj 71 18 line;
 #X text 111 17 - ramp generator;
@@ -12,8 +12,8 @@
 #X text 279 499 1 initial value;
 #X msg 61 332 set 5;
 #X obj 156 703 vline~;
-#X floatatom 102 464 0 1 100 0 - - -;
-#X floatatom 98 437 0 0 0 0 - - -;
+#X floatatom 102 464 0 1 100 0 - - - 0;
+#X floatatom 98 437 0 0 0 0 - - - 0;
 #X text 278 515 2 time grain in milliseconds (20 by default);
 #X msg 206 636 \; pd compatibility 0.47;
 #X text 34 568 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
@@ -28,8 +28,8 @@ starts!);
 inlet);
 #X text 108 332 "set" to set initial ramp value (without output);
 #X msg 36 262 \$1 1000;
-#X obj 36 241 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 36 241 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 80 400 0 \, 1 1000 100;
 #X text 99 261 a pair sets target and ramp time;
 #X text 182 400 float jumps to value \, list sets target \, time and

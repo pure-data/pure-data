@@ -1,4 +1,4 @@
-#N canvas 214 45 1040 601 12;
+#N canvas 387 44 1040 601 12;
 #X obj 489 341 qlist;
 #X msg 509 109 rewind;
 #X msg 515 134 next;
@@ -66,7 +66,7 @@ in this directory., f 36;
 #X obj 840 512 r that;
 #X obj 840 547 print that;
 #X obj 747 547 print this;
-#X text 546 337 <-- you can also click on qlist to see its contents
+#X text 546 337 <= you can also click on qlist to see its contents
 and edit it \, just like a "text define" object, f 52;
 #X connect 0 0 3 0;
 #X connect 0 1 37 0;

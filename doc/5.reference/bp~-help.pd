@@ -9,8 +9,8 @@ f 58;
 #X floatatom 181 255 5 1 50 0 - - - 0;
 #X text 43 63 bp~ passes a sinusoid at the center frequency at unit
 gain (approximately). Other frequencies are attenuated.;
-#X obj 96 504 vcf~;
-#X text 275 502 updated for Pd version 0.46;
+#X obj 99 505 vcf~;
+#X text 278 503 updated for Pd version 0.46;
 #X text 35 413 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
@@ -20,21 +20,23 @@ and stable (but slightly more CPU-expensive) filter \, try vcf~.;
 ;
 #X obj 56 334 output~;
 #X obj 46 216 noise~;
-#X obj 138 504 bob~;
-#X obj 178 504 lop~;
-#X obj 218 504 hip~;
+#X obj 141 505 bob~;
+#X obj 181 505 lop~;
+#X obj 221 505 hip~;
 #X obj 308 157 declare -stdpath ./;
 #X text 71 14 - 2-pole bandpass filter;
-#X obj 38 533 biquad~;
-#X obj 97 532 slop~, f 7;
-#X obj 156 532 cpole~, f 7;
-#X obj 218 532 fexpr~;
+#X obj 41 534 biquad~;
+#X obj 100 533 slop~, f 7;
+#X obj 159 533 cpole~, f 7;
+#X obj 221 533 fexpr~;
 #X text 228 255 <= Q (controls bandwidth);
 #X obj 114 288 bp~ 500 10;
-#X text 132 332 listen to how the white noise input is filtered. The
+#X text 132 332 Listen to how the white noise input is filtered. The
 higher the Q \, the more attenuation we have for frequencies besides
-the center frequency \, so the less width is the frequency band.,
-f 48;
+the center frequency \, so the less wide the frequency band is., f
+48;
+#X text 27 504 see also:;
+#X text 277 533 - unfriendly filters;
 #X connect 1 0 24 1;
 #X connect 2 0 24 0;
 #X connect 4 0 24 2;

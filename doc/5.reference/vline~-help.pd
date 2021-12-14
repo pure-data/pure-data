@@ -29,8 +29,8 @@ all planned segments at any future time., f 61;
 #X text 172 624 !!! BUG: vline~ objects inside reblocked subpatches
 can have slightly incorrect timing !!!, f 41;
 #X floatatom 96 558 5 0 0 0 - - - 0;
-#X floatatom 95 524 5 0 0 0 - - - 0;
-#X text 138 516 middle inlet sets next ramp time (cleared when ramp
+#X floatatom 92 524 5 0 0 0 - - - 0;
+#X text 135 516 middle inlet sets next ramp time (cleared when ramp
 starts!), f 32;
 #X text 138 554 right inlet sets next delay time (cleared when ramp
 starts!), f 32;

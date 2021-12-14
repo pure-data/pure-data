@@ -2,21 +2,16 @@
 #X text 321 400 updated for Pd version 0.25;
 #X text 43 400 see also:;
 #X obj 69 16 poly;
-#X text 33 49 The poly object takes a stream of pitch/velocity pairs
-and outputs triples containing voice number \, pitch and velocity.
-You can pack the output and use the route object to route messages
-among a bank of voices depending on the first outlet. Poly can be configured
-to do voice stealing or not (the default.);
 #X obj 121 401 route;
 #X obj 175 401 makenote;
 #X obj 140 257 poly 4 1;
-#X obj 126 353 print;
-#X text 171 352 Output is in the printout window.;
+#X obj 133 353 print;
+#X text 178 352 Output is in the printout window.;
 #X msg 209 225 stop;
 #X msg 198 199 clear;
 #X text 108 15 - MIDI-style polyphonic voice allocator;
-#X listbox 126 318 20 0 0 0 - - - 0;
-#X obj 126 287 pack f f f;
+#X listbox 133 318 20 0 0 0 - - - 0;
+#X obj 133 287 pack f f f;
 #X text 210 257 <= first argument \, number of voices \; second argument
 selects voice stealing;
 #X text 231 170 <= emulating note on/off messages;
@@ -34,18 +29,25 @@ selects voice stealing;
 #000000 0 64;
 #X text 243 200 clear memory;
 #X text 248 225 flush hanging note on messages;
-#X connect 6 0 13 0;
-#X connect 6 1 13 1;
-#X connect 6 2 13 2;
-#X connect 9 0 6 0;
-#X connect 10 0 6 0;
-#X connect 12 0 7 0;
-#X connect 13 0 12 0;
-#X connect 16 0 6 0;
-#X connect 17 0 6 0;
-#X connect 18 0 6 0;
-#X connect 19 0 6 0;
-#X connect 20 0 19 0;
+#X text 33 47 The poly object takes a stream of pitch/velocity pairs
+and outputs triples containing voice number \, pitch and velocity.
+You can pack the output and use the route object to route messages
+among a bank of voices depending on the first outlet. Another option
+is to connect it [clone] so you can route to different copies. Poly
+can be configured to do voice stealing or not (the default.), f 66
+;
+#X connect 5 0 12 0;
+#X connect 5 1 12 1;
+#X connect 5 2 12 2;
+#X connect 8 0 5 0;
+#X connect 9 0 5 0;
+#X connect 11 0 6 0;
+#X connect 12 0 11 0;
+#X connect 15 0 5 0;
+#X connect 16 0 5 0;
+#X connect 17 0 5 0;
+#X connect 18 0 5 0;
+#X connect 19 0 18 0;
+#X connect 20 0 16 0;
 #X connect 21 0 17 0;
-#X connect 22 0 18 0;
-#X connect 23 0 16 0;
+#X connect 22 0 15 0;

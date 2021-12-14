@@ -1,6 +1,6 @@
 #N canvas 861 42 544 609 12;
 #X declare -stdpath ./;
-#X floatatom 147 186 0 0 0 0 - - - 0;
+#X floatatom 147 186 4 0 0 0 - - - 0;
 #X obj 80 99 osc~ 100;
 #X msg 96 131 clear;
 #X obj 60 10 rpole~;
@@ -44,7 +44,7 @@ the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 #X text 152 100 <= signal to filter;
 #X text 148 131 <= clear internal state to zero;
 #X text 152 156 <= set internal state;
-#X text 179 187 <= filter coefficient (may be a signal);
+#X text 182 185 <= filter coefficient (may be a signal);
 #X text 168 213 <= creation argument initializes filter coefficient
 ;
 #X text 122 10 - real one-pole (recursive) filter \, raw;
