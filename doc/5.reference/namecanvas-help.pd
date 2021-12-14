@@ -72,8 +72,8 @@ local name with "\$0". You can also use "\$0" in the name of subpatches
 by the way and we also have this example below. Note that in this case
 you need to use [send] as "\$0" doesn't work in messages. Again \,
 this is useful for abstractions., f 63;
-#X obj 555 681 Pd-messages;
-#X obj 742 590 s pd-Pd-messages.pd;
+#X obj 555 681 pd-messages;
+#X obj 742 590 s pd-pd-messages.pd;
 #X connect 16 0 13 0;
 #X connect 22 0 41 0;
 #X connect 23 0 22 0;
