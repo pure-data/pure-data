@@ -294,7 +294,7 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
-     ./5.reference/Pd-messages.pd \
+     ./5.reference/pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
