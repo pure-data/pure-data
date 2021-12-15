@@ -795,7 +795,13 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             while (i--)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
-            text_setto(&x->a_text, x->a_glist, buf, bufsize);
+            t_atom *ap = gatom_getatom(x);
+            if (x->a_flavor == A_FLOAT)
+                ap->a_w.w_float = atof(buf);
+            else if (x->a_flavor == A_SYMBOL)
+                ap->a_w.w_symbol = gensym(buf);
+            else
+                text_setto(&x->a_text, x->a_glist, buf, bufsize);
             rtext_activate(t, 0);
         }
         gatom_bang(x);
