@@ -249,7 +249,7 @@ or object box., f 70;
 #X text 490 313 List boxes may hold arbitrary combinations of numbers
 and symbols:, f 66;
 #X msg 496 367 1 2 3 foo 5;
-#X listbox 496 566 20 0 0 0 - - - 0;
+#X listbox 496 566 22 0 0 0 - - - 0;
 #X obj 496 600 print list_box;
 #X msg 510 406 list wombat weasel wallaby;
 #X text 591 360 messages beginning with a number are implicitly understood
@@ -260,7 +260,7 @@ word "list" to disambiguate them, f 32;
 #X text 672 448 "set" message changes contents but doesn't output them
 , f 30;
 #X msg 535 522 bang;
-#X text 585 493 "bang" is equivalent to an empty list in Pd \, but
+#X text 583 491 "bang" is equivalent to an empty list in Pd \, but
 as a special case banging a list box outputs the current list. If you
 really want to display an empty list \, you can use a "set" message.
 , f 53;
@@ -403,7 +403,7 @@ in a list box., f 62;
 box) \, they get displayed and pass through. A "set" message updates
 but doesn't output. A bang outputs its holding value., f 62;
 #X text 184 499 or shift+click and drag;
-#X text 648 559 you can drag the numbers up and down individually \,
+#X text 656 558 you can drag the numbers up and down individually \,
 and/or double click to edit just one element., f 50;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
