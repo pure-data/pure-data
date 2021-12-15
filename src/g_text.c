@@ -817,7 +817,11 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_key(t, '.', &s_);
             rtext_key(t, 0, gensym("Home"));
         }
-        rtext_key(t, c, keysym);
+        if (x->a_flavor == A_SYMBOL || x->a_flavor == A_LIST)
+            rtext_key(t, c, keysym);  /* insert the character */
+        else if (x->a_flavor == A_FLOAT && ((c >= '0' && c <= '9') || c == '.' ||
+            c == '-' || c == '+' || c == 'e' || c == 'E' || c == '\b'))
+                rtext_key(t, c, keysym);  /* insert the accepted characters */
     }
 }
 
