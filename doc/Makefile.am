@@ -346,7 +346,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/hslider-help.pd \
      ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
-     ./5.reference/key-help.pd \
+     ./5.reference/key-input-help.pd \
      ./5.reference/line-help.pd \
      ./5.reference/line~-help.pd \
      ./5.reference/list-help.pd \

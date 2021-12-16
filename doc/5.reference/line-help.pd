@@ -12,8 +12,8 @@
 #X text 279 499 1 initial value;
 #X msg 61 332 set 5;
 #X obj 156 703 vline~;
-#X floatatom 102 464 0 1 100 0 - - - 0;
-#X floatatom 98 437 0 0 0 0 - - - 0;
+#X floatatom 102 464 5 1 100 0 - - - 0;
+#X floatatom 91 437 5 0 0 0 - - - 0;
 #X text 278 515 2 time grain in milliseconds (20 by default);
 #X msg 206 636 \; pd compatibility 0.47;
 #X text 34 568 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
@@ -22,9 +22,9 @@ from the previous start. It now ramps from wherever in the previous
 segment the object was stopped at. To get the old behavior \, set "compatibility"
 to 0.47 or below in Pd's command line or by a message:, f 74;
 #X text 389 701 updated for Pd version 0.48;
-#X text 130 437 middle inlet sets next ramp time (cleared when ramp
+#X text 135 437 middle inlet sets next ramp time (cleared when ramp
 starts!);
-#X text 138 465 right inlet sets grain (not cleared \, acts as normal
+#X text 144 464 right inlet sets grain (not cleared \, acts as normal
 inlet);
 #X text 108 332 "set" to set initial ramp value (without output);
 #X msg 36 262 \$1 1000;
