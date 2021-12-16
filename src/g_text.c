@@ -770,6 +770,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     t_gatom *x = (t_gatom *)z;
     int c = f, bufsize, i;
     char *buf;
+    t_atom *ap = gatom_getatom(x);
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
     if (c == 0 && !x->a_doubleclicked)
@@ -795,7 +796,6 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             while (i--)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
-            t_atom *ap = gatom_getatom(x);
             if (x->a_flavor == A_FLOAT)
                 ap->a_w.w_float = atof(buf);
             else if (x->a_flavor == A_SYMBOL)
