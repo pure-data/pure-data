@@ -1,23 +1,26 @@
-#N canvas 623 98 1069 664 12;
-#X obj 572 194 table;
-#X obj 529 530 table help-tab1 25;
+#N struct template1 float x float y float z float q;
+#N canvas 391 53 1057 709 12;
+#X obj 571 187 table;
+#X obj 537 579 table help-tab1 25;
 #N canvas 1 51 450 300 (subpatch) 0;
-#X restore 112 28 pd;
-#X text 142 27 - subpatch;
-#X obj 747 610 array;
+#X restore 72 30 pd;
+#X text 102 29 - subpatch;
+#X obj 747 654 array;
 #N canvas 307 173 430 250 foo 0;
-#X obj 175 41 inlet;
-#X obj 178 171 outlet;
-#X text 95 89 this is the subpatch window. Use "inlet" and "outlet"
-objects to create inlets/outlets on the parent., f 34;
-#X restore 162 325 pd foo;
-#X text 793 602 (newer and better replacement for "table")., f 26
+#X obj 141 41 inlet;
+#X obj 144 171 outlet;
+#X obj 221 41 inlet~;
+#X obj 224 171 outlet~;
+#X text 57 88 this is the subpatch window. Use "inlet" and "outlet"
+objects to create inlets/outlets on the parent window., f 44;
+#X restore 185 352 pd foo;
+#X text 793 648 (newer and better replacement for "table")., f 26
 ;
-#X text 671 530 <= optional creation args: name \, size;
+#X text 679 579 <= optional creation args: name \, size;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X coords 0 1 100 -1 200 140 1;
-#X restore 110 59 graph;
-#X text 320 64 - graph (subpatch with graph on parent), f 21;
+#X restore 72 66 graph;
+#X text 282 71 - graph (subpatch with graph on parent), f 21;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array1 100 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -25,26 +28,18 @@ objects to create inlets/outlets on the parent., f 34;
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0;
 #X coords 0 1 100 -1 200 140 1;
-#X restore 570 37 graph;
-#X text 477 266 The put menu allows you to create an array \, which
+#X restore 569 30 graph;
+#X text 514 252 The put menu allows you to create an array \, which
 needs a graph to be displayed. At creation \, you can specify if you
 want the array to be included in a new graph or in a graph previously
-created., f 69;
-#X text 782 46 - graphical array of numbers (a graph with an array)
-, f 21;
-#X text 618 195 - subpatch with graphical array;
-#X text 37 271 By typing "pd" into an object box \, you create a subpatch.
-An optional argument sets the subpatch name, f 53;
-#X text 219 326 <= click to open;
-#X text 47 617 updated for Pd version 0.52;
-#X text 83 523 "Table" builds a subpatch with a graphical array inside.
-The creation arguments specify the name and an optional size in points.
-In this case \, the data (and other properties) of the array aren't
-saved with the patch.;
-#X obj 704 419 ../2.control.examples/15.array;
-#X obj 703 447 ../2.control.examples/16.more.arrays;
-#X text 34 230 -------------------------------------------------------------------------------------------------------------------------------------------
-, f 139;
+created., f 63;
+#X text 781 39 - graphical array of numbers (a graph with an array)
+, f 28;
+#X text 617 188 - subpatch with graphical array;
+#X text 242 353 <= click to open;
+#X text 407 653 updated for Pd version 0.52;
+#X obj 707 427 ../2.control.examples/15.array;
+#X obj 706 455 ../2.control.examples/16.more.arrays;
 #N canvas 681 242 263 185 (subpatch) 0;
 #X obj 137 59 bng 30 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
@@ -55,11 +50,7 @@ saved with the patch.;
 #X connect 1 0 2 0;
 #X connect 3 0 1 0;
 #X coords 0 1 100 -1 130 50 1 50 50;
-#X restore 255 452 graph;
-#X text 35 377 With the put menu \, you can create a 'graph' \, which
-is a subpatch set to "graph on parent". A graph in Pd is a rectangular
-subregion of the window in which you can display GUIs and store numeric
-arrays. Below we have a graph displaying GUI objects., f 54;
+#X restore 241 487 graph;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array2 100 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -67,12 +58,33 @@ arrays. Below we have a graph displaying GUI objects., f 54;
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0;
 #X coords 0 1 100 -1 200 140 1;
-#X restore 484 339 graph;
-#X text 700 346 For details on how to work with arrays \, click and
-open the files below from the '2.control' examples., f 39;
-#X text 928 417 <= click;
-#X text 967 449 <= click;
-#X text 83 471 right click to open =>;
-#X text 544 609 see also:;
-#X obj 618 610 inlet;
-#X obj 664 610 namecanvas;
+#X restore 487 355 graph;
+#X text 728 346 For details on how to work with arrays \, click and
+open the files below from the '2.control' examples., f 32;
+#X text 931 425 <= click;
+#X text 970 457 <= click;
+#X text 69 506 right click to open =>;
+#X text 33 653 see also:;
+#X obj 107 653 inlet;
+#X obj 153 653 namecanvas;
+#X text 517 525 "Table" builds a subpatch with an array inside. Not
+that the array contents (and other properties) aren't saved with the
+patch., f 66;
+#X text 38 561 You can send messages to the canvas of a subpatch by
+sending them to the subpatch's name \, which is useful for Dynamic
+Patching. Alernatively \, you can also use the namecanvas object.,
+f 52;
+#X text 41 250 A 'canvas' is a patch window. This help file concerns
+subwindows or subpatches and their canvases. By typing "pd" into an
+object box \, you create a subpatch. An optional argument sets the
+subpatch name. Click to open and right click on it to access its canvas
+properties., f 54;
+#X text 36 392 With the put menu \, you can create a 'graph' \, which
+is a subpatch with the canvas properties set to "graph on parent".
+This creates a rectangular subregion of the canvas's window in which
+you can display GUIs and store numeric arrays. Below we have a graph
+displaying GUI objects.;
+#X text 671 653 see also:;
+#X text 14 223 --------------------------------------------------------------------------------------------------------------------------------------------------
+, f 146;
+#X obj 234 653 pd-messages;
