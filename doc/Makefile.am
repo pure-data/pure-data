@@ -319,6 +319,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/clip~-help.pd \
      ./5.reference/clone-abstraction.pd \
      ./5.reference/clone-help.pd \
+     ./5.reference/cnv-help.pd \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
@@ -364,7 +365,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/metro-help.pd \
      ./5.reference/midi-help.pd \
      ./5.reference/moses-help.pd \
-     ./5.reference/my_canvas-help.pd \
      ./5.reference/namecanvas-help.pd \
      ./5.reference/nbx-help.pd \
      ./5.reference/netreceive-help.pd \
