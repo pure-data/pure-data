@@ -1,6 +1,6 @@
-#N canvas 485 57 1040 688 12;
-#X msg 79 455 set 45;
-#X floatatom 139 498 5 0 0 0 - - - 0;
+#N canvas 485 57 1045 692 12;
+#X msg 117 455 set 45;
+#X floatatom 177 498 5 0 0 0 - - - 0;
 #X symbolatom 69 17 10 0 0 0 - - - 0;
 #X floatatom 25 17 5 0 0 0 - - - 0;
 #X text 809 179 more details:;
@@ -8,12 +8,12 @@
 #X msg 636 112 set hi;
 #X msg 620 84 symbol hello\ world;
 #X obj 620 205 print symbol_box;
-#X obj 139 533 print number_box;
-#X msg 139 455 bang;
+#X obj 177 533 print number_box;
+#X msg 177 455 bang;
 #X msg 650 142 bang;
-#X msg 188 455 12;
+#X msg 226 455 12;
 #N canvas 450 199 417 455 properties 0;
-#N canvas 804 125 490 506 width 0;
+#N canvas 804 125 488 541 width 0;
 #X floatatom 281 445 1 0 0 0 - - - 0;
 #X floatatom 173 183 5 0 0 0 - - - 0;
 #X text 219 184 <= default (5 characters);
@@ -37,6 +37,10 @@ properly.;
 will actually have a minimum width of 3 digits and grow as needed to
 hold the typed or received number. A specific width is more CPU efficient
 though., f 58;
+#X text 149 497 see also:;
+#X obj 230 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 256 496 (toggle from iemguis);
 #X connect 1 0 9 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
@@ -136,7 +140,7 @@ font and keeps it no matter if you change the patch's font or not.
 Below \, we have a size of "36". The font setting also affects the
 label., f 56;
 #X restore 196 267 pd size;
-#X restore 303 464 pd properties;
+#X restore 217 585 pd properties;
 #N canvas 635 260 459 438 properties 0;
 #N canvas 934 145 510 501 width 0;
 #X symbolatom 162 162 10 0 0 0 - - - 0;
@@ -220,14 +224,7 @@ label., f 74;
 #X symbolatom 185 186 20 0 0 0 label - - 36;
 #X restore 240 277 pd size;
 #X restore 809 202 pd properties;
-#X text 303 438 more details:;
-#X obj 131 576 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
-#fcfcfc #000000 #000000 0 256;
-#X text 205 577 <= number box from "iemguis";
-#X text 53 588 See also:;
-#X obj 131 600 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 155 601 <= toggle from "iemguis";
+#X text 113 586 more details:;
 #X listbox 149 16 20 0 0 0 - - - 0;
 #X text 299 16 - objects to display and edit numbers \, symbols \,
 or lists.;
@@ -265,8 +262,8 @@ as a special case banging a list box outputs the current list. If you
 really want to display an empty list \, you can use a "set" message.
 , f 53;
 #X msg 526 492 set;
-#X text 75 638 updated for Pd version 0.52;
-#X text 713 617 more details:;
+#X text 259 652 updated for Pd version 0.52;
+#X text 701 622 more details:;
 #N canvas 681 258 459 477 properties 0;
 #N canvas 934 145 512 490 width 0;
 #X msg 132 130 symbol short;
@@ -383,7 +380,7 @@ The list box will display these and also 'NaN' (Not a Number)., f
 #X connect 11 2 13 2;
 #X connect 13 0 12 0;
 #X restore 227 248 pd limits;
-#X restore 819 616 pd properties;
+#X restore 807 621 pd properties;
 #X text 19 151 Double-clicking activates a text editor \, so that you
 can select portions of the contents and/or cut/copy/paste values and
 hit enter when done. You may also simply single-click and enter the
@@ -398,13 +395,15 @@ that the box holds (by default \, this value is "1")., f 62;
 by clicking and dragging. Shift-click changes the value in hundredths
 instead of units. This works for both number boxes and individual numbers
 in a list box., f 62;
-#X text 20 499 click and drag;
+#X text 58 499 click and drag;
 #X text 19 376 If they receive a proper message (like float for number
 box) \, they get displayed and pass through. A "set" message updates
 but doesn't output. A bang outputs its holding value., f 62;
-#X text 184 499 or shift+click and drag;
+#X text 222 499 or shift+click and drag;
 #X text 656 558 you can drag the numbers up and down individually \,
 and/or double click to edit just one element., f 50;
+#X text 95 650 see also:;
+#X obj 171 651 all_guis;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
 #X connect 5 0 8 0;
@@ -413,9 +412,9 @@ and/or double click to edit just one element., f 50;
 #X connect 10 0 1 0;
 #X connect 11 0 5 0;
 #X connect 12 0 1 0;
-#X connect 30 0 31 0;
-#X connect 31 0 32 0;
-#X connect 33 0 31 0;
-#X connect 36 0 31 0;
-#X connect 38 0 31 0;
-#X connect 40 0 31 0;
+#X connect 25 0 26 0;
+#X connect 26 0 27 0;
+#X connect 28 0 26 0;
+#X connect 31 0 26 0;
+#X connect 33 0 26 0;
+#X connect 35 0 26 0;

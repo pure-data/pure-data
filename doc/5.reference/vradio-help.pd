@@ -59,7 +59,6 @@ the range of numbers. Note this also affects the "set" message.;
 #X text 284 499 (c) musil@iem.kug.ac.at;
 #X text 320 515 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 64 573 see also:;
-#X obj 138 574 x_all_guis;
 #X text 74 500 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 261 573 updated for Pd version 0.51;
@@ -589,6 +588,7 @@ turns the previous toggle off before turning the new one on., f 29
 #X connect 7 0 1 0;
 #X restore 328 319 pd switch-example;
 #X text 68 17 - [vradio]: Vertical Radio Button;
+#X obj 138 574 all_guis;
 #X connect 0 0 5 0;
 #X connect 1 0 8 0;
 #X connect 2 0 5 0;

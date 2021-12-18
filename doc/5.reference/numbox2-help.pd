@@ -14,7 +14,6 @@
 #X text 321 399 (c) musil@iem.kug.ac.at;
 #X text 357 415 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 34 474 see also:;
-#X obj 108 474 x_all_guis;
 #X text 66 400 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 58 289 click & drag ==> (shift-click for fine tuning). Right
@@ -614,6 +613,7 @@ this object in favor of the atom number box \, which now also offers
 different sizes. More similar functionalities will be implemented in
 the atom number box and eventually [nbx] will be deprecated and removed
 from the Put Menu (but kept around)., f 68;
+#X obj 108 474 all_guis;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;

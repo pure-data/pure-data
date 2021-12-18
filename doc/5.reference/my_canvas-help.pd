@@ -438,13 +438,12 @@ in the subpatches below:, f 39;
 #X text 293 347 (c) musil@iem.kug.ac.at;
 #X text 329 363 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 65 419 see also:;
-#X obj 139 420 x_all_guis;
 #X text 73 348 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 296 419 updated for Pd version 0.51;
 #N canvas 360 93 481 370 example-room 0;
 #X obj 335 217 tgl 15 1 empty empty empty 20 8 0 10 #fcfcfc #000000
-#000000 1 1;
+#000000 0 1;
 #X msg 335 267 \; to_K get_pos;
 #X obj 335 192 loadbang;
 #N canvas 899 89 382 383 room 0;
@@ -648,3 +647,4 @@ shortcut. Alternatively \, create it by typing "my_canvas" or "cnv"
 into an object box. This object has no inlet or outlet \, so it can
 only communicate via send and receive symbols set via the properties
 window., f 71;
+#X obj 139 420 all_guis;

@@ -547,7 +547,6 @@ toggle \, which is the value it outputs when it's on., f 27;
 #X text 274 444 (c) musil@iem.kug.ac.at;
 #X text 310 460 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 69 514 see also:;
-#X obj 143 515 x_all_guis;
 #X text 64 445 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 280 514 updated for Pd version 0.51;
@@ -606,11 +605,12 @@ through a toggle no longer resets the "nonzero" value. See how to get
 the old behavior back:, f 26;
 #X msg 114 206 1;
 #X msg 146 208 0;
+#X obj 143 515 all_guis;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
-#X connect 3 0 16 0;
+#X connect 3 0 15 0;
+#X connect 17 0 1 0;
 #X connect 18 0 1 0;
 #X connect 19 0 1 0;
-#X connect 20 0 1 0;
-#X connect 24 0 18 0;
-#X connect 25 0 18 0;
+#X connect 23 0 17 0;
+#X connect 24 0 17 0;

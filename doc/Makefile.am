@@ -299,6 +299,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
      ./5.reference/adc~_dac~-help.pd \
+     ./5.reference/all_guis.pd \
      ./5.reference/append-help.pd \
      ./5.reference/array-object-help.pd \
      ./5.reference/array-object-help.txt \
@@ -449,7 +450,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/vu-help.pd \
      ./5.reference/wrap~-help.pd \
      ./5.reference/writesf~-help.pd \
-     ./5.reference/x_all_guis.pd \
      ./6.externs/0.README.txt \
      ./6.externs/dspobj~.c \
      ./6.externs/makefile \
