@@ -1,7 +1,6 @@
-#N canvas 433 61 580 690 12;
+#N canvas 433 61 664 634 12;
 #X declare -stdpath ./;
-#X text 354 646 updated for Pd version 0.42;
-#X text 39 45 Pd is usually compiled to work on 32-bit audio samples.
+#X text 34 51 Pd is usually compiled to work on 32-bit audio samples.
 These do not \, in general \, have enough precision for use as indices
 into an array of more than about 32K samples. This is because the mantissa
 of a 32-bit floating point number has only 24 bits \, out of which
@@ -9,60 +8,59 @@ you would be using 16 bits or more to address a sample more than 32K
 into the array \, so there would remain 8 or fewer bits to supply the
 fraction. In the most extreme situation possible \, the sample could
 contain a Nyquist frequency sinusoid and the output would then have
-only about 8 bits of accuracy!, f 64;
-#X text 39 184 You can use the "onset" inlet to tabread4~ to get good
+only about 8 bits of accuracy!, f 85;
+#X text 34 161 You can use the "onset" inlet to tabread4~ to get good
 accuracy reading longer arrays. The tabread4~ object adds the index
 and the "main" (signal) inlet in 64-bit precision. So if \, for example
 \, the onset inlet could specify an integer exactly up to about 8 million
 (190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement.
-, f 64;
+, f 85;
 #X text 56 11 USING ONSETS INTO TABREAD4~ TO IMPROVE ACCURACY;
-#X obj 40 582 output~;
-#X obj 385 489 samplerate~;
-#X obj 385 513 / 2;
-#X obj 374 417 loadbang;
-#X obj 374 564 tabwrite~ \$0-tab;
-#X obj 40 548 tabread4~ \$0-tab;
-#X obj 385 537 osc~;
-#X obj 171 548 tabread4~ \$0-tab;
-#X obj 171 582 output~;
-#X obj 374 461 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 40 512 output~;
+#X obj 387 428 samplerate~;
+#X obj 387 452 / 2;
+#X obj 374 505 tabwrite~ \$0-tab;
+#X obj 40 478 tabread4~ \$0-tab;
+#X obj 387 476 osc~;
+#X obj 171 478 tabread4~ \$0-tab;
+#X obj 171 512 output~;
+#X obj 374 341 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X msg 398 443 \; pd dsp 1;
-#X obj 40 465 *~ 10000;
-#X obj 40 518 +~;
-#X floatatom 280 467 6 0 0 0 - - - 0;
-#X msg 280 437 1;
-#X obj 373 592 table \$0-tab 200000;
-#X obj 40 436 phasor~ 0.02;
-#X msg 225 437 150001;
-#X text 39 280 At left below an onset (1 or 150000 samples) is added
+#X obj 40 395 *~ 10000;
+#X obj 40 448 +~;
+#X floatatom 280 397 6 0 0 0 - - - 0;
+#X msg 280 367 1;
+#X obj 375 545 table \$0-tab 200000;
+#X obj 40 366 phasor~ 0.02;
+#X msg 225 367 150001;
+#X text 34 240 At left below an onset (1 or 150000 samples) is added
 to the index of a table lookup. If you select the onset of 150001 \,
 you should hear the truncation error. (The table contains a Nyquist
 signal and the "correct" output should be a 100 Hz. tone.) At right
 \, the onset is presented in the separate onset inlet. The worst-case
-truncation error drops by about 30 dB., f 64;
-#X text 56 642 BAD;
-#X text 188 639 GOOD;
-#X text 226 416 ONSET INTO TABLE;
-#X text 374 396 This loads the table:;
+truncation error drops by about 30 dB., f 85;
+#X text 56 572 BAD;
+#X text 188 569 GOOD;
+#X text 226 346 ONSET INTO TABLE;
 #X obj 423 12 declare -stdpath ./;
-#X connect 5 0 6 0;
-#X connect 6 0 10 0;
-#X connect 7 0 13 0;
-#X connect 7 0 14 0;
-#X connect 9 0 4 0;
-#X connect 9 0 4 1;
-#X connect 10 0 8 0;
-#X connect 11 0 12 0;
-#X connect 11 0 12 1;
-#X connect 13 0 5 0;
-#X connect 13 0 8 0;
-#X connect 15 0 16 0;
-#X connect 15 0 11 0;
-#X connect 16 0 9 0;
-#X connect 17 0 11 1;
-#X connect 17 0 16 1;
-#X connect 18 0 17 0;
-#X connect 20 0 15 0;
-#X connect 21 0 17 0;
+#X text 402 341 First \, generate the table:;
+#X msg 398 379 \; pd dsp 1 \, fast-forward 4500;
+#X text 404 597 updated for Pd version 0.52;
+#X connect 4 0 5 0;
+#X connect 5 0 8 0;
+#X connect 7 0 3 0;
+#X connect 7 0 3 1;
+#X connect 8 0 6 0;
+#X connect 9 0 10 0;
+#X connect 9 0 10 1;
+#X connect 11 0 4 0;
+#X connect 11 0 6 0;
+#X connect 11 0 25 0;
+#X connect 12 0 13 0;
+#X connect 12 0 9 0;
+#X connect 13 0 7 0;
+#X connect 14 0 9 1;
+#X connect 14 0 13 1;
+#X connect 15 0 14 0;
+#X connect 17 0 12 0;
+#X connect 18 0 14 0;
