@@ -363,10 +363,10 @@ nobase_dist_libpd_DATA = \
      ./5.reference/moses-help.pd \
      ./5.reference/my_canvas-help.pd \
      ./5.reference/namecanvas-help.pd \
+     ./5.reference/nbx-help.pd \
      ./5.reference/netreceive-help.pd \
      ./5.reference/netsend-help.pd \
      ./5.reference/noise~-help.pd \
-     ./5.reference/numbox2-help.pd \
      ./5.reference/openpanel-help.pd \
      ./5.reference/operators-help.pd \
      ./5.reference/oscformat-help.pd \

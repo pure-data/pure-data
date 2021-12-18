@@ -10,7 +10,6 @@
 0 14 #dcdcdc #000000 #740000 0 256;
 #X obj 60 22 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
 #fcfcfc #000000 #000000 0 256;
-#X text 133 23 - [my_numbox]/[nbx]- Number box;
 #X text 321 399 (c) musil@iem.kug.ac.at;
 #X text 357 415 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 34 474 see also:;
@@ -614,6 +613,7 @@ different sizes. More similar functionalities will be implemented in
 the atom number box and eventually [nbx] will be deprecated and removed
 from the Put Menu (but kept around)., f 68;
 #X obj 108 474 all_guis;
+#X text 133 23 - [my_numbox]/[nbx] - Number box;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;
