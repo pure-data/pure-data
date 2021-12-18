@@ -1,21 +1,29 @@
-#N canvas 757 123 504 445 12;
-#X obj 193 313 output~;
-#X obj 193 225 osc~ 440;
-#X obj 251 258 osc~ 880;
-#X text 77 31 output~ - simple stereo output GUI abstraction.;
-#X text 66 401 see also:;
-#X obj 147 402 dac~;
-#X text 261 285 right signal input;
-#X text 61 282 left signal input;
-#X text 273 401 updated for Pd version 0.52;
-#X text 32 167 This is a very simple abstraction that is widely used
-in Pd's documentation and examples. It is included here just for convenience.
-;
-#X text 32 72 Output~ takes a stereo signal and has GUI controls to
+#N canvas 757 123 515 484 12;
+#X obj 195 349 output~;
+#X obj 195 261 osc~ 440;
+#X obj 253 294 osc~ 880;
+#X text 77 21 output~ - simple stereo output GUI abstraction.;
+#X text 66 441 see also:;
+#X obj 147 442 dac~;
+#X text 319 296 right signal input;
+#X text 260 262 left signal input;
+#X text 273 441 updated for Pd version 0.52;
+#X text 32 108 Output~ takes a stereo signal and has GUI controls to
 set the volume gain and mute it. The number box sets the output gain
 in dB (from 0 to 100) and whenever you click on it to drag it \, the
 DSP engine is turned on. The mute bang turns the volume off (sets to
 0) but restores to the last setting when you click back on it to unmute.
-, f 57;
+, f 65;
+#X msg 207 310 bang;
+#X msg 119 311 level \$1;
+#X floatatom 119 288 5 0 100 0 - - - 0;
+#X text 32 57 This is a very simple abstraction that is widely used
+in Pd's documentation (help files and examples). It is included here
+just for convenience., f 65;
+#X text 32 203 The left inlet also takes a bang message to mute/unmute
+and a 'level' message to control the level output in dB., f 65;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;
+#X connect 10 0 0 0;
+#X connect 11 0 0 0;
+#X connect 12 0 11 0;

@@ -1,4 +1,4 @@
-#N canvas 678 110 763 809 12;
+#N canvas 506 61 763 809 12;
 #X declare -stdpath ./;
 #X floatatom 189 308 5 36 144 0 - - - 0;
 #X obj 189 330 t b f;
@@ -11,7 +11,7 @@
 #X msg 297 450 this \$1;
 #X floatatom 306 477 5 36 144 0 - - - 0;
 #X msg 306 499 set \$1;
-#X msg 110 377 vis 5 1;
+#X msg 110 376 vis 5 1;
 #X msg 47 376 vis 5 0;
 #X floatatom 315 526 5 36 144 0 - - - 0;
 #X msg 315 548 all \$1;
