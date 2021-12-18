@@ -341,9 +341,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/framp~-help.pd \
      ./5.reference/fudiformat-help.pd \
      ./5.reference/fudiparse-help.pd \
-     ./5.reference/gatom-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
+     ./5.reference/gui-boxes-help.pd \
      ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \

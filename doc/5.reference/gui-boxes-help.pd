@@ -1,17 +1,17 @@
-#N canvas 485 57 1045 692 12;
-#X msg 117 455 set 45;
-#X floatatom 177 498 5 0 0 0 - - - 0;
-#X symbolatom 69 17 10 0 0 0 - - - 0;
-#X floatatom 25 17 5 0 0 0 - - - 0;
-#X text 809 179 more details:;
-#X symbolatom 620 172 15 0 0 0 - - - 0;
-#X msg 636 112 set hi;
-#X msg 620 84 symbol hello\ world;
-#X obj 620 205 print symbol_box;
-#X obj 177 533 print number_box;
-#X msg 177 455 bang;
-#X msg 650 142 bang;
-#X msg 226 455 12;
+#N canvas 436 49 1079 741 12;
+#X msg 127 495 set 45;
+#X floatatom 187 538 5 0 0 0 - - - 0;
+#X symbolatom 257 52 10 0 0 0 - - - 0;
+#X floatatom 56 52 5 0 0 0 - - - 0;
+#X text 627 297 more details:;
+#X symbolatom 620 222 15 0 0 0 - - - 0;
+#X msg 636 162 set hi;
+#X msg 620 134 symbol hello\ world;
+#X obj 620 255 print symbol_box;
+#X obj 187 573 print number_box;
+#X msg 187 495 bang;
+#X msg 650 192 bang;
+#X msg 236 495 12;
 #N canvas 450 199 417 455 properties 0;
 #N canvas 804 125 488 541 width 0;
 #X floatatom 281 445 1 0 0 0 - - - 0;
@@ -140,7 +140,7 @@ font and keeps it no matter if you change the patch's font or not.
 Below \, we have a size of "36". The font setting also affects the
 label., f 56;
 #X restore 196 267 pd size;
-#X restore 217 585 pd properties;
+#X restore 217 625 pd properties;
 #N canvas 635 260 459 438 properties 0;
 #N canvas 934 145 510 501 width 0;
 #X symbolatom 162 162 10 0 0 0 - - - 0;
@@ -223,47 +223,41 @@ Below \, we have a size of "36". The font setting also affects the
 label., f 74;
 #X symbolatom 185 186 20 0 0 0 label - - 36;
 #X restore 240 277 pd size;
-#X restore 809 202 pd properties;
-#X text 113 586 more details:;
-#X listbox 149 16 20 0 0 0 - - - 0;
-#X text 299 16 - objects to display and edit numbers \, symbols \,
-or lists.;
-#X text 499 46 Symbol boxes are like number boxes but hold a symbol
+#X restore 727 296 pd properties;
+#X text 113 626 more details:;
+#X listbox 490 52 20 0 0 0 - - - 0;
+#X text 499 96 Symbol boxes are like number boxes but hold a symbol
 instead of a number:, f 61;
-#X text 771 82 set and output a symbol;
-#X text 693 116 set only - don't output;
-#X text 688 140 output only - don't change value;
-#X text 19 59 These are GUI (Graphical User Interface) objects that
+#X text 771 132 set and output a symbol;
+#X text 693 166 set only - don't output;
+#X text 688 190 output only - don't change value;
+#X text 19 99 These are GUI (Graphical User Interface) objects that
 display and send atoms (numbers or symbols) or lists. They may be created
 by selecting "number" (etc.) from the "put" menu. The contents can
 be changed while the patch in in "run" mode (as opposed to "edit")
 \, so these are useful as controls and displays in a finished patch.
 , f 62;
-#X text 491 248 Symbols with special characters (space \, comma \,
-semicolon \, backslash \, dollar signs) are displayed with a preceding
-backslash ( \ ) \, the same way you would type a symbol into a message
-or object box., f 70;
-#X text 490 313 List boxes may hold arbitrary combinations of numbers
+#X text 503 339 List boxes may hold arbitrary combinations of numbers
 and symbols:, f 66;
-#X msg 496 367 1 2 3 foo 5;
-#X listbox 496 566 22 0 0 0 - - - 0;
-#X obj 496 600 print list_box;
-#X msg 510 406 list wombat weasel wallaby;
-#X text 591 360 messages beginning with a number are implicitly understood
+#X msg 527 377 1 2 3 foo 5;
+#X listbox 527 576 22 0 0 0 - - - 0;
+#X obj 527 610 print list_box;
+#X msg 541 416 list wombat weasel wallaby;
+#X text 622 370 messages beginning with a number are implicitly understood
 as lists, f 35;
-#X text 711 395 lists starting with a symbol must be preceeded by the
+#X text 742 405 lists starting with a symbol must be preceeded by the
 word "list" to disambiguate them, f 32;
-#X msg 519 453 set 4 dog 5 6 donkey;
-#X text 672 448 "set" message changes contents but doesn't output them
+#X msg 550 463 set 4 dog 5 6 donkey;
+#X text 703 458 "set" message changes contents but doesn't output them
 , f 30;
-#X msg 535 522 bang;
-#X text 583 491 "bang" is equivalent to an empty list in Pd \, but
+#X msg 566 532 bang;
+#X text 614 501 "bang" is equivalent to an empty list in Pd \, but
 as a special case banging a list box outputs the current list. If you
 really want to display an empty list \, you can use a "set" message.
 , f 53;
-#X msg 526 492 set;
-#X text 259 652 updated for Pd version 0.52;
-#X text 701 622 more details:;
+#X msg 557 502 set;
+#X text 491 703 updated for Pd version 0.52;
+#X text 620 645 more details:;
 #N canvas 681 258 459 477 properties 0;
 #N canvas 934 145 512 490 width 0;
 #X msg 132 130 symbol short;
@@ -380,30 +374,36 @@ The list box will display these and also 'NaN' (Not a Number)., f
 #X connect 11 2 13 2;
 #X connect 13 0 12 0;
 #X restore 227 248 pd limits;
-#X restore 807 621 pd properties;
-#X text 19 151 Double-clicking activates a text editor \, so that you
+#X restore 726 644 pd properties;
+#X text 19 191 Double-clicking activates a text editor \, so that you
 can select portions of the contents and/or cut/copy/paste values and
 hit enter when done. You may also simply single-click and enter the
 new contents from scratch. If you start retyping with a single click
 you can cancel the action by clicking outside the box \, or adopt the
 change using the "enter" key., f 62;
-#X text 19 310 If you click on a number box while pressing "control"
+#X text 19 350 If you click on a number box while pressing "control"
 (in Linux/Windows) or "command" (Mac) \, the object toggles between
 0 and a non zero value. The non zero value is the last non zero value
 that the box holds (by default \, this value is "1")., f 62;
-#X text 19 242 You can also change a numeric value upward or downward
+#X text 19 282 You can also change a numeric value upward or downward
 by clicking and dragging. Shift-click changes the value in hundredths
 instead of units. This works for both number boxes and individual numbers
 in a list box., f 62;
-#X text 58 499 click and drag;
-#X text 19 376 If they receive a proper message (like float for number
-box) \, they get displayed and pass through. A "set" message updates
-but doesn't output. A bang outputs its holding value., f 62;
-#X text 222 499 or shift+click and drag;
-#X text 656 558 you can drag the numbers up and down individually \,
+#X text 68 539 click and drag;
+#X text 232 539 or shift+click and drag;
+#X text 687 568 you can drag the numbers up and down individually \,
 and/or double click to edit just one element., f 50;
-#X text 95 650 see also:;
-#X obj 171 651 all_guis;
+#X text 327 701 see also:;
+#X obj 403 702 all_guis;
+#X text 640 51 - list box;
+#X text 103 51 - number atom box;
+#X text 336 51 - symbol atom box;
+#X text 19 416 If they receive a proper message (like a float message
+for the number box below) \, they get displayed and pass through. A
+"set" message updates but doesn't output. A bang outputs its holding
+value., f 62;
+#X text 55 16 GUI object boxes to display and edit numbers \, symbols
+\, or lists., f 66;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
 #X connect 5 0 8 0;
@@ -412,9 +412,9 @@ and/or double click to edit just one element., f 50;
 #X connect 10 0 1 0;
 #X connect 11 0 5 0;
 #X connect 12 0 1 0;
-#X connect 25 0 26 0;
-#X connect 26 0 27 0;
-#X connect 28 0 26 0;
-#X connect 31 0 26 0;
-#X connect 33 0 26 0;
-#X connect 35 0 26 0;
+#X connect 23 0 24 0;
+#X connect 24 0 25 0;
+#X connect 26 0 24 0;
+#X connect 29 0 24 0;
+#X connect 31 0 24 0;
+#X connect 33 0 24 0;
