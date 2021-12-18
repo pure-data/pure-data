@@ -306,6 +306,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/bag-help.pd \
      ./5.reference/bang-help.pd \
      ./5.reference/bang~-help.pd \
+     ./5.reference/binops-help.pd \
+     ./5.reference/binops-other-help.pd \
+     ./5.reference/binops-tilde-help.pd \
      ./5.reference/biquad~-help.pd \
      ./5.reference/block~-help.pd \
      ./5.reference/bng-help.pd \
@@ -368,11 +371,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/netsend-help.pd \
      ./5.reference/noise~-help.pd \
      ./5.reference/openpanel-help.pd \
-     ./5.reference/operators-help.pd \
      ./5.reference/oscformat-help.pd \
      ./5.reference/oscparse-help.pd \
      ./5.reference/osc~-help.pd \
-     ./5.reference/otherbinops-help.pd \
      ./5.reference/pack-help.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
@@ -406,7 +407,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/set-help.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
-     ./5.reference/sigbinops-help.pd \
      ./5.reference/sig~-help.pd \
      ./5.reference/slop~-help.pd \
      ./5.reference/snapshot~-help.pd \
