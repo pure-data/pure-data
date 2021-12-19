@@ -3,7 +3,7 @@
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
 #X floatatom 27 272 3 0 0 0 - - - 0;
-#X text 219 234 MIDI OUT;
+#X text 251 232 MIDI OUT;
 #X text 27 197 MIDI IN;
 #X floatatom 170 272 3 0 0 0 - - - 0;
 #X floatatom 140 271 3 0 0 0 - - - 0;
@@ -47,14 +47,14 @@
 #X connect 18 0 14 2;
 #X connect 19 0 13 0;
 #X connect 20 0 12 0;
-#X restore 217 285 pd midi;
+#X restore 249 283 pd midi;
 #X floatatom 178 85 3 0 0 0 - \$0-tone-vu1 - 0;
 #X floatatom 205 85 3 0 0 0 - \$0-tone-vu2 - 0;
 #X obj 177 132 tgl 20 0 \$0-tone-ch1 \$0-tone-ch1 1 5 -8 0 12 #fcfcfc
 #000000 #000000 0 1;
 #X obj 202 132 tgl 20 0 \$0-tone-ch2 \$0-tone-ch2 2 5 -8 0 12 #fcfcfc
 #000000 #000000 0 1;
-#X obj 217 258 tgl 20 0 empty empty empty 20 8 0 8 #fcfcfc #000000
+#X obj 249 256 tgl 20 0 empty empty empty 20 8 0 8 #fcfcfc #000000
 #000000 0 1;
 #X text 40 120 OFF;
 #X obj 443 86 tgl 15 0 \$0-tone-hipass \$0-tone-hipass-set input-hipass
@@ -493,7 +493,7 @@
 #X connect 5 0 3 0;
 #X connect 10 0 11 0;
 #X connect 11 0 2 0;
-#X restore 373 252 pd audio;
+#X restore 384 252 pd audio;
 #X floatatom 22 144 3 0 100 1 - \$0-tone-level-set \$0-tone-level 0
 ;
 #X floatatom 84 123 5 0 136 1 pitch \$0-tone-pitch-set \$0-tone-pitch
@@ -572,9 +572,11 @@ in the distribution for details.;
 #X connect 20 0 11 1;
 #X connect 21 0 19 0;
 #X connect 21 1 20 0;
-#X restore 373 275 pd tests;
+#X restore 384 275 pd tests;
 #X text 543 274 25-32;
-#X floatatom 263 258 4 0 0 0 - - - 0;
+#X floatatom 295 256 4 0 0 0 - - - 0;
+#X text 328 256 ctl;
+#X text 214 257 note;
 #X connect 1 0 2 0;
 #X connect 1 1 2 1;
 #X connect 2 0 3 0;
