@@ -1,4 +1,5 @@
-#N canvas 438 149 831 436 12;
+#N canvas 595 160 822 441 12;
+#X declare -stdpath ./;
 #N canvas 162 150 1098 501 guts 0;
 #X obj 501 296 +~;
 #N canvas 393 122 417 410 audio-transformation 0;
@@ -83,40 +84,41 @@
 #X connect 24 0 23 0;
 #X connect 25 0 24 0;
 #X connect 26 0 5 0;
-#X restore 212 303 pd guts;
-#X floatatom 544 39 6 0 100 0 - - - 0;
-#X obj 544 70 s revtime;
-#X obj 544 138 s revgain;
-#X text 593 113 <-- reverb gain;
-#X text 601 232 <-- dry gain;
-#X obj 545 257 s drygain;
-#X obj 545 179 loadbang;
-#X msg 545 205 100;
-#X text 596 38 <- reverb time 0-100;
-#X text 132 55 Reverberator. Read in a sample first.;
-#X obj 211 351 output~;
-#X text 71 102 Click below to:;
-#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
+#X restore 170 285 pd guts;
+#X floatatom 572 37 6 0 100 0 - - - 0;
+#X obj 572 68 s revtime;
+#X obj 572 136 s revgain;
+#X text 621 111 <-- reverb gain;
+#X text 629 230 <-- dry gain;
+#X obj 573 255 s drygain;
+#X obj 573 177 loadbang;
+#X msg 573 203 100;
+#X text 624 36 <- reverb time 0-100;
+#X text 107 42 Reverberator. Read in a sample first.;
+#X obj 142 330 output~;
+#X text 95 87 Click below to:;
+#X obj 185 122 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
 #000000 #202020;
-#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
+#X obj 185 146 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 161 187 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
+#X obj 185 172 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 161 211 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
+#X obj 185 196 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 161 236 bng 18 250 50 0 \$0-save-normalized dummy Normalized
+#X obj 185 221 bng 18 250 50 0 \$0-save-normalized dummy Normalized
 -87 9 0 13 #dfdfdf #000000 #000000;
-#X text 190 136 (read an input file);
-#X text 190 160 (run the transformation);
-#X text 190 186 (hear the output sample);
-#X text 190 210 (save the output sample);
-#X text 190 235 (save the output sample normalized to 1);
-#X text 525 324 input sample;
-#X text 526 347 output sample;
-#X obj 411 348 table \$0-output;
-#X obj 411 324 table \$0-input;
-#X floatatom 544 111 6 0 100 0 - - - 0;
-#X floatatom 545 231 6 0 100 0 - - - 0;
+#X text 214 121 (read an input file);
+#X text 214 145 (run the transformation);
+#X text 214 171 (hear the output sample);
+#X text 214 195 (save the output sample);
+#X text 214 220 (save the output sample normalized to 1);
+#X text 407 322 input sample;
+#X text 408 345 output sample;
+#X obj 293 346 table \$0-output;
+#X obj 293 322 table \$0-input;
+#X floatatom 572 109 6 0 100 0 - - - 0;
+#X floatatom 573 229 6 0 100 0 - - - 0;
+#X obj 645 360 declare -stdpath ./;
 #X connect 0 0 11 0;
 #X connect 0 0 11 1;
 #X connect 1 0 2 0;

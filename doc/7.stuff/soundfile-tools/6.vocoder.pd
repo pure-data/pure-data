@@ -1,5 +1,6 @@
-#N canvas 598 66 705 457 12;
-#X floatatom 515 221 0 1 100 0 - - - 0;
+#N canvas 598 66 696 473 12;
+#X declare -stdpath ./;
+#X floatatom 515 251 0 1 100 0 - - - 0;
 #N canvas 263 241 966 450 guts 0;
 #X obj 604 251 +~;
 #X obj 280 250 loadbang;
@@ -177,42 +178,43 @@
 #X connect 32 0 4 0;
 #X connect 32 0 33 0;
 #X connect 34 0 0 1;
-#X restore 143 309 pd guts;
-#X text 228 9 (old-fashioned) VOCODER;
-#X text 63 31 This takes in two soundfiles and uses the first to "vocode"
+#X restore 143 339 pd guts;
+#X text 81 22 (old-fashioned) VOCODER;
+#X text 76 60 This takes in two soundfiles and uses the first to "vocode"
 the second. The resulting sound is as long as the shorter of the two
-inputs., f 73;
-#X obj 515 246 s squelch;
-#X text 560 215 1-100 or so;
-#X obj 143 357 output~;
-#X text 105 88 click below to:;
-#X obj 133 117 bng 18 250 50 0 \$0-read dummy Input -45 9 0 13 #dfdfdf
+inputs., f 71;
+#X obj 515 276 s squelch;
+#X text 560 245 1-100 or so;
+#X obj 143 387 output~;
+#X text 85 118 click below to:;
+#X obj 113 147 bng 18 250 50 0 \$0-read dummy Input -45 9 0 13 #dfdfdf
 #000000 #202020;
-#X obj 133 168 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
+#X obj 113 198 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 133 196 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
+#X obj 113 226 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 133 220 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
+#X obj 113 250 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
 #000000 #000000;
-#X obj 133 245 bng 18 250 50 0 \$0-save-normalized dummy Normalized
+#X obj 113 275 bng 18 250 50 0 \$0-save-normalized dummy Normalized
 -87 9 0 13 #dfdfdf #000000 #000000;
-#X text 162 167 (run the transformation);
-#X text 162 195 (hear the output sample);
-#X text 162 219 (save the output sample);
-#X text 162 244 (save the output sample normalized to 1);
-#X obj 133 135 bng 18 250 50 0 \$0-read-2 dummy Anal -38 9 0 13 #dfdfdf
+#X text 142 197 (run the transformation);
+#X text 142 225 (hear the output sample);
+#X text 142 249 (save the output sample);
+#X text 142 274 (save the output sample normalized to 1);
+#X obj 113 165 bng 18 250 50 0 \$0-read-2 dummy Anal -38 9 0 13 #dfdfdf
 #000000 #202020;
-#X obj 297 318 table \$0-input;
-#X obj 290 374 table \$0-output;
-#X text 407 319 input sample;
-#X text 406 373 output sample;
-#X obj 304 337 table \$0-anal;
-#X text 407 338 analysis sample;
-#X msg 515 196 70;
-#X obj 515 171 loadbang;
-#X text 162 115 (load sound file to be processed \, like a speech)
+#X obj 297 348 table \$0-input;
+#X obj 290 404 table \$0-output;
+#X text 407 349 input sample;
+#X text 406 403 output sample;
+#X obj 304 367 table \$0-anal;
+#X text 407 368 analysis sample;
+#X msg 515 226 70;
+#X obj 515 201 loadbang;
+#X text 142 145 (load sound file to be processed \, like a speech)
 ;
-#X text 162 135 (load analysis sound file \, like a tonal);
+#X text 142 165 (load analysis sound file \, like a tonal);
+#X obj 508 19 declare -stdpath ./;
 #X connect 0 0 4 0;
 #X connect 1 0 6 0;
 #X connect 1 0 6 1;
