@@ -20,7 +20,7 @@ extern void startlogpost(const void *object, const int level, const char *fmt, .
   /* avoid prefixing with "verbose(PRINT_LOGLEVEL): "
   when printing to stderr or via printhook. */
 #define print_startlogpost(object, fmt, ...) do{ \
-    if (sys_printhook || sys_printtostderr) \
+    if (STUFF->st_printhook || sys_printtostderr) \
         startpost(fmt, __VA_ARGS__); \
     else startlogpost(object, PRINT_LOGLEVEL, fmt, __VA_ARGS__); \
 } while(0)

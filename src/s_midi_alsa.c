@@ -132,9 +132,9 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
     if (portno >= 0 && portno < alsa_nmidiout)
     {
         snd_seq_event_t ev;
-        snd_seq_ev_clear(&ev);
         int status = a & 0xf0;
         int channel = a & 0x0f;
+        snd_seq_ev_clear(&ev);
         status = (status >= MIDI_SYSEX) ? status : (status & 0xf0);
         switch (status)
         {

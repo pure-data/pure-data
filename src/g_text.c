@@ -770,6 +770,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     t_gatom *x = (t_gatom *)z;
     int c = f, bufsize, i;
     char *buf;
+    t_atom *ap = gatom_getatom(x);
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
     if (c == 0 && !x->a_doubleclicked)
@@ -795,7 +796,12 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             while (i--)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
-            text_setto(&x->a_text, x->a_glist, buf, bufsize);
+            if (x->a_flavor == A_FLOAT)
+                ap->a_w.w_float = atof(buf);
+            else if (x->a_flavor == A_SYMBOL)
+                ap->a_w.w_symbol = gensym(buf);
+            else
+                text_setto(&x->a_text, x->a_glist, buf, bufsize);
             rtext_activate(t, 0);
         }
         gatom_bang(x);
@@ -811,12 +817,11 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_key(t, '.', &s_);
             rtext_key(t, 0, gensym("Home"));
         }
-            /* automatically escape special characters in symbols */
-        if (x->a_flavor == A_SYMBOL && (c == ' ' || c == ',' || c == ';' ||
-            c == '$' || c == '\\'))
-                rtext_key(t, '\\', &s_);
-            /* and at last, insert the character */
-        rtext_key(t, c, keysym);
+        if (x->a_flavor == A_SYMBOL || x->a_flavor == A_LIST)
+            rtext_key(t, c, keysym);  /* insert the character */
+        else if (x->a_flavor == A_FLOAT && ((c >= '0' && c <= '9') || c == '.' ||
+            c == '-' || c == '+' || c == 'e' || c == 'E' || c == '\b'))
+                rtext_key(t, c, keysym);  /* insert the accepted characters */
     }
 }
 
