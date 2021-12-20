@@ -21,16 +21,10 @@ and outputs it., f 71;
 ;
 #X symbolatom 106 337 10 0 0 0 - - - 0;
 #X text 183 337 <= type a number on a symbol box;
-#X text 346 524 updated for Pd version 0.48;
-#X text 36 526 see also:;
-#X obj 193 527 value;
-#X obj 239 527 send;
 #X floatatom 464 289 5 0 0 0 - - - 0;
 #X obj 464 265 v float-help;
 #X obj 464 245 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 110 527 int;
-#X obj 141 527 symbol;
 #N canvas 995 162 565 399 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send and receive names \, speacially in abstractions
@@ -45,7 +39,7 @@ so each copy has local connections instead of global., f 67;
 #X obj 288 192 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X floatatom 288 256 5 0 0 0 - - - 0;
-#X floatatom 390 221 5 0 0 0 - #0-x - 0;
+#X floatatom 390 221 5 0 0 0 - \$0-x - 0;
 #X msg 44 254 send \$1;
 #X obj 44 200 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
@@ -72,16 +66,58 @@ in GUIs as well as variable names in value objects., f 68;
 value objects =>, f 34;
 #X text 196 453 open subpatch to see how to deal with '\$0' ======>
 , f 25;
+#X msg 85 223 10.5 12.9 A;
+#X obj 72 468 print float;
+#X text 171 223 list gets truncated to the first item;
+#X obj 11 82 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X obj 64 17 float;
 #X text 106 16 - store a (floating point) number;
 #X obj 64 45 f;
 #X text 96 46 - abbreviation;
-#X msg 85 223 10.5 12.9 A;
-#X obj 72 468 print float;
-#X text 171 223 list gets truncated to the first item;
+#N canvas 785 220 579 390 reference 0;
+#X text 34 202 send <symbol> -;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 284 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 321 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 358 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 34 18 float;
+#X obj 7 245 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 143 332 float - initially stored value (default 0)., f 49
+;
+#X text 143 294 float - the stored value., f 49;
+#X text 143 255 float - store the value (no output)., f 49;
+#X text 147 202 send the stored value to a [receive] or [value] object
+that has the same name as the symbol (no output)., f 55;
+#X text 91 111 float - store and output the value., f 63;
+#X text 98 92 bang - output the stored value., f 62;
+#X text 76 17 - store a (floating point) number.;
+#X text 84 171 symbol -;
+#X text 98 131 list -;
+#X text 147 131 considers the first element if it's a float \, stores
+and outputs it.;
+#X text 147 170 symbols that look like a float are converted \, stored
+and output., f 55;
+#X restore 399 37 pd reference;
+#X text 493 37 <= click;
+#X text 346 524 updated for Pd version 0.48;
+#X text 36 526 see also:;
+#X obj 193 527 value;
+#X obj 239 527 send;
+#X obj 110 527 int;
+#X obj 141 527 symbol;
+#X obj 4 508 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 2 0 37 0;
+#X connect 2 0 27 0;
 #X connect 3 0 1 0;
 #X connect 4 0 1 1;
 #X connect 11 0 8 0;
@@ -89,6 +125,6 @@ value objects =>, f 34;
 #X connect 13 0 16 0;
 #X connect 14 0 13 0;
 #X connect 16 0 1 0;
-#X connect 23 0 22 0;
-#X connect 24 0 23 0;
-#X connect 36 0 1 0;
+#X connect 19 0 18 0;
+#X connect 20 0 19 0;
+#X connect 26 0 1 0;

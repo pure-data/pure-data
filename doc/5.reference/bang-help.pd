@@ -1,28 +1,47 @@
 #N canvas 771 173 466 381 12;
-#X obj 85 276 print;
-#X obj 63 11 bang;
-#X msg 97 175 walk the cat;
-#X msg 85 143 45;
-#X obj 85 216 bang;
-#X text 253 332 updated for Pd version 0.27;
-#X text 109 10 - send "bang" message;
-#X obj 64 40 b;
-#X text 108 41 - abreviation;
-#X obj 98 247 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 85 281 print;
+#X msg 97 180 walk the cat;
+#X msg 85 148 45;
+#X obj 85 221 bang;
+#X obj 98 252 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 34 85 The [bang] object outputs a "bang" message for whatever
+#X text 34 90 The [bang] object outputs a "bang" message for whatever
 message it receives., f 56;
-#X msg 273 236 bang;
-#X obj 335 237 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X msg 273 241 bang;
+#X obj 335 242 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 241 159 this is more efficient than using a message box and
+#X text 241 164 this is more efficient than using a message box and
 the bang GUI below:, f 22;
-#X text 19 333 see also:;
-#X obj 86 333 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 110 333 loadbang;
-#X obj 176 333 trigger;
-#X connect 2 0 4 0;
+#X obj 35 11 bang;
+#X text 187 336 updated for Pd version 0.27;
+#X text 81 10 - send "bang" message;
+#X obj 36 40 b;
+#X text 80 41 - abreviation;
+#X obj 13 75 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 13 324 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 340 38 <= click;
+#N canvas 868 335 574 207 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 100 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 176 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 44 18 bang;
+#X text 118 18 - send "bang" message;
+#X obj 84 18 b;
+#X text 146 110 bang - a bang message, f 49;
+#X text 117 68 anything - any message outputs a bang, f 53;
+#X obj 8 137 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X text 147 148 NONE, f 52;
+#X restore 246 38 pd reference;
+#X text 39 338 see also:;
+#X obj 114 340 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X connect 1 0 3 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 0;
 #X connect 3 0 4 0;
-#X connect 4 0 0 0;
-#X connect 4 0 9 0;

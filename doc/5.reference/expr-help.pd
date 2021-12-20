@@ -1,8 +1,5 @@
-#N canvas 609 48 691 747 12;
+#N canvas 540 33 691 747 12;
 #X declare -stdpath ./;
-#X obj 100 43 expr;
-#X obj 93 68 expr~;
-#X obj 87 106 fexpr~;
 #N canvas 644 54 810 635 Arrays 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array array100 10 float 0;
@@ -1169,13 +1166,6 @@ means you need to update a variable and call it in the below expression
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
 #X restore 529 515 pd [value];
-#X text 71 15 Expression evaluation family of objects By Shahrokh Yadegari
-- Version 0.57, f 75;
-#X text 137 106 - evaluation of audio signal expressions;
-#X text 137 68 - evaluation of audio signal expressions;
-#X text 137 43 - evaluation of control data expressions;
-#X text 151 86 on a vector by vector basis, f 38;
-#X text 151 123 on a sample by sample basis, f 38;
 #X obj 84 266 expr $f1 + $s3[$i2];
 #X symbolatom 214 240 7 0 0 0 - - - 0;
 #X floatatom 149 239 3 0 0 0 - - - 0;
@@ -1216,7 +1206,20 @@ They receive input variables via the inlets and understand the variable
 types: '$f#' (floats) \, '$i#' (integers) and '$s#' (symbols \, used
 to represent array names) - '#' is the inlet number (up to 100) as
 below:, f 88;
-#X obj 481 64 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
+#X text 447 656 updated for Pd version 0.51-3;
+#X obj 99 41 expr;
+#X obj 92 66 expr~;
+#X obj 86 104 fexpr~;
+#X text 70 13 Expression evaluation family of objects By Shahrokh Yadegari
+- Version 0.57, f 75;
+#X text 136 104 - evaluation of audio signal expressions;
+#X text 136 66 - evaluation of audio signal expressions;
+#X text 136 41 - evaluation of control data expressions;
+#X text 150 84 on a vector by vector basis, f 38;
+#X text 150 121 on a sample by sample basis, f 38;
+#X obj 26 145 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 480 62 bng 15 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
 #000000;
 #N canvas 798 148 456 264 reference 0;
 #X obj 101 59 inlet;
@@ -1230,13 +1233,14 @@ object., f 25;
 #X connect 2 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 1 0;
-#X restore 481 98 pd reference;
-#X text 501 62 <=;
-#X text 520 55 Open HTTML reference, f 10;
-#X text 447 656 updated for Pd version 0.51-3;
-#X connect 27 0 26 2;
-#X connect 28 0 26 1;
-#X connect 29 0 26 0;
-#X connect 30 0 37 0;
-#X connect 38 0 37 1;
-#X connect 54 0 55 0;
+#X restore 480 96 pd reference;
+#X text 500 60 <=;
+#X text 519 53 Open HTTML reference, f 10;
+#X obj 27 613 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 18 0 17 2;
+#X connect 19 0 17 1;
+#X connect 20 0 17 0;
+#X connect 21 0 28 0;
+#X connect 29 0 28 1;
+#X connect 56 0 57 0;

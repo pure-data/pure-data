@@ -1,55 +1,90 @@
-#N canvas 774 126 595 480 12;
-#X obj 63 19 +;
-#X text 46 321 see also:;
-#X obj 50 346 +~;
-#X text 363 162 You can supply a creation argument to initialize the
+#N canvas 621 88 621 489 12;
+#X obj 43 9 +;
+#X text 13 407 see also:;
+#X obj 91 368 +~;
+#X text 363 192 You can supply a creation argument to initialize the
 right inlet:, f 25;
-#X obj 439 250 min 20;
-#X obj 98 19 -;
-#X obj 132 19 *;
-#X obj 167 19 /;
-#X obj 199 19 max;
-#X obj 234 19 min;
-#X text 273 18 - binary arithmetic operators;
-#X text 328 428 last updated for Pd version 0.47;
-#X obj 50 377 div;
-#X obj 84 377 >;
-#X obj 119 377 &&;
-#X floatatom 147 271 5 0 0 0 - - - 0;
-#X floatatom 190 271 8 0 0 0 - - - 0;
-#X floatatom 307 271 5 0 0 0 - - - 0;
-#X floatatom 262 151 5 0 0 0 - - - 0;
-#X obj 262 178 t b f;
-#X text 73 122 set left and right inputs here;
-#X floatatom 263 271 5 0 0 0 - - - 0;
-#X obj 63 241 +;
-#X obj 105 241 -;
-#X obj 147 241 *;
-#X obj 190 241 /;
-#X obj 263 241 max;
-#X obj 307 241 min;
-#X floatatom 62 151 5 0 0 0 - - - 0;
-#X text 150 377 (etc) - other binary operators;
-#X obj 50 433 expr;
-#X text 91 433 - evaluation expressions, f 25;
-#X obj 50 404 sin;
-#X text 116 405 (etc) - math functions;
-#X obj 84 404 log;
-#X obj 385 250 + 3;
-#X obj 505 250 * 3;
-#X floatatom 105 271 5 0 0 0 - - - 0;
-#X floatatom 63 271 5 0 0 0 - - - 0;
-#X floatatom 439 275 5 0 0 0 - - - 0;
-#X floatatom 385 275 5 0 0 0 - - - 0;
-#X floatatom 505 275 5 0 0 0 - - - 0;
-#X floatatom 439 225 5 0 0 0 - - - 0;
-#X floatatom 505 225 5 0 0 0 - - - 0;
-#X floatatom 385 225 5 0 0 0 - - - 0;
-#X text 56 52 The arithmetic binary operators perform the 4 arithmetic
+#X obj 439 280 min 20;
+#X obj 78 9 -;
+#X obj 112 9 *;
+#X obj 112 33 /;
+#X obj 43 33 max;
+#X obj 78 33 min;
+#X text 147 19 - binary arithmetic operators;
+#X text 354 435 last updated for Pd version 0.47;
+#X obj 91 394 div;
+#X obj 125 394 >;
+#X obj 160 394 &&;
+#X floatatom 147 301 5 0 0 0 - - - 0;
+#X floatatom 190 301 8 0 0 0 - - - 0;
+#X floatatom 307 301 5 0 0 0 - - - 0;
+#X floatatom 262 181 5 0 0 0 - - - 0;
+#X obj 262 208 t b f;
+#X text 73 152 set left and right inputs here;
+#X floatatom 263 301 5 0 0 0 - - - 0;
+#X obj 63 271 +;
+#X obj 105 271 -;
+#X obj 147 271 *;
+#X obj 190 271 /;
+#X obj 263 271 max;
+#X obj 307 271 min;
+#X floatatom 62 181 5 0 0 0 - - - 0;
+#X text 191 394 (etc) - other binary operators;
+#X obj 91 443 expr;
+#X text 132 443 - evaluation expressions, f 25;
+#X obj 91 418 sin;
+#X text 157 419 (etc) - math functions;
+#X obj 125 418 log;
+#X obj 385 280 + 3;
+#X obj 505 280 * 3;
+#X floatatom 105 301 5 0 0 0 - - - 0;
+#X floatatom 63 301 5 0 0 0 - - - 0;
+#X floatatom 439 305 5 0 0 0 - - - 0;
+#X floatatom 385 305 5 0 0 0 - - - 0;
+#X floatatom 505 305 5 0 0 0 - - - 0;
+#X floatatom 439 255 5 0 0 0 - - - 0;
+#X floatatom 505 255 5 0 0 0 - - - 0;
+#X floatatom 385 255 5 0 0 0 - - - 0;
+#X text 56 82 The arithmetic binary operators perform the 4 arithmetic
 functions (+ \, etc) or output the minimum or maximum of two numbers
 (min \, max). All of these objects take a bang message to evaluate
 the operation with the previously set values., f 68;
-#X text 86 346 (etc) - binary signal operators;
+#X text 127 368 (etc) - binary signal operators;
+#N canvas 716 166 571 294 reference 0;
+#X obj 42 18 +;
+#X obj 77 18 -;
+#X obj 111 18 *;
+#X obj 146 18 /;
+#X obj 180 18 max;
+#X obj 213 18 min;
+#X text 253 17 - binary arithmetic operators;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 87 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 183 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 224 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 263 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 142 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 118 94 bang - output the operation on the previously set values.
+;
+#X text 111 113 float - value to the left side of operation and output.
+, f 58;
+#X text 112 152 float - value to the right side of operation., f 58
+;
+#X text 113 235 float - initialize value of right inlet (default 0).
+, f 58;
+#X text 113 193 float - the result of the operation., f 58;
+#X restore 491 26 pd reference;
+#X text 424 26 click =>;
+#X obj 15 62 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 15 344 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 4 0 39 0;
 #X connect 18 0 19 0;
 #X connect 19 0 22 0;

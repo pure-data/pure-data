@@ -1,5 +1,4 @@
-#N canvas 759 122 578 569 12;
-#X obj 33 18 biquad~;
+#N canvas 624 116 578 569 12;
 #X obj 161 334 env~;
 #X floatatom 161 365 6 0 0 0 - - - 0;
 #X floatatom 62 203 5 0 0 0 - - - 0;
@@ -19,10 +18,44 @@ with the value of the filtered signal on the right.;
 #X obj 450 156 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 473 155 DSP on/off;
-#X text 95 17 - a 2nd order (2-pole / 2-zero) filter;
 #X text 46 65 Biquad~ calculates the following difference equation:
 ;
+#X text 45 132 The filter's coefficients syntax (set via arguments
+or list input) is: fb1 fb2 ff1 ff2 ff3, f 54;
+#X text 268 227 set internal state (previous input samples), f 24
+;
+#X msg 180 235 set 0.5 0.4;
+#X text 243 266 or clear memory (same as 'set 0 0').;
+#X text 158 178 list sets filter's parameters;
+#X obj 33 18 biquad~;
+#X text 95 17 - a 2nd order (2-pole / 2-zero) filter;
 #X text 349 495 updated for Pd version 0.30.;
+#X obj 14 52 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 926 147 586 264 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 152 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 189 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 233 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 61 17 biquad~;
+#X text 123 16 - a 2nd order (2-pole / 2-zero) filter;
+#X text 121 64 signal - input signal to be filtered., f 59;
+#X text 135 83 list - input signal to be filtered (fb1 fb2 ff1 ff2
+ff3).;
+#X text 123 202 list - initializes the 5 coefficients (fb1 fb2 ff1
+ff2 ff3).;
+#X text 129 121 clear - clear filter's memory buffer., f 58;
+#X text 123 162 signal - the filtered signal output.;
+#X text 38 102 set <float \, float> - set last two input samples.,
+f 71;
+#X restore 393 17 pd reference;
+#X text 491 17 <= click;
+#X obj 15 445 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X text 57 462 see also:;
 #X obj 188 487 rzero~;
 #X obj 131 510 cpole~;
@@ -39,20 +72,13 @@ with the value of the filtered signal on the right.;
 #X text 337 537 <= user-friendly filters;
 #X obj 131 462 fexpr~;
 #X obj 186 462 slop~, f 7;
-#X text 45 132 The filter's coefficients syntax (set via arguments
-or list input) is: fb1 fb2 ff1 ff2 ff3, f 54;
-#X text 268 227 set internal state (previous input samples), f 24
-;
-#X msg 180 235 set 0.5 0.4;
-#X text 243 266 or clear memory (same as 'set 0 0').;
-#X text 158 178 list sets filter's parameters;
-#X connect 1 0 2 0;
-#X connect 3 0 12 0;
-#X connect 4 0 5 0;
-#X connect 7 0 1 0;
-#X connect 8 0 7 0;
-#X connect 11 0 7 0;
-#X connect 12 0 4 0;
-#X connect 12 0 7 0;
-#X connect 16 0 15 0;
-#X connect 39 0 7 0;
+#X connect 0 0 1 0;
+#X connect 2 0 11 0;
+#X connect 3 0 4 0;
+#X connect 6 0 0 0;
+#X connect 7 0 6 0;
+#X connect 10 0 6 0;
+#X connect 11 0 3 0;
+#X connect 11 0 6 0;
+#X connect 15 0 14 0;
+#X connect 20 0 6 0;

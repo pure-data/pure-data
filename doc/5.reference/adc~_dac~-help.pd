@@ -1,6 +1,4 @@
 #N canvas 683 111 503 510 12;
-#X obj 34 6 adc~;
-#X obj 35 29 dac~;
 #X obj 71 155 adc~ 5;
 #X text 121 155 (input from channel 5 only);
 #X obj 69 179 dac~ 1 2 5 23;
@@ -10,11 +8,8 @@
 channel or channels. This requires Pd to restart DSP and so should
 only be done at setup time \, not while audio is being computed.,
 f 45;
-#X text 287 474 updated for Pd version 0.47;
 #X msg 83 308 set 5;
 #X obj 29 344 adc~ 1;
-#X text 73 5 - Audio Input from sound card;
-#X text 76 30 - Audio Output to sound card;
 #X text 28 70 Adc~ and dac~ provide real-time audio input and output
 for Pd \, respectively \, whether analog or digital. By default they
 are stereo (with channel numbers 1 \, 2) but you can specify different
@@ -26,5 +21,54 @@ out of range will be dropped in dac~ or output zero in adc~.;
 #X text 55 391 If more than one dac~ outputs to the same channel \,
 the signals are added. <ore than one adc~ can output the same input
 channel.;
-#X connect 9 0 6 0;
-#X connect 9 0 10 0;
+#X obj 34 6 adc~;
+#X obj 35 29 dac~;
+#X text 287 474 updated for Pd version 0.47;
+#X text 412 18 <= click;
+#N canvas 910 105 580 571 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 103 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 193 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 230 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 122 67 set <list> - resets the channel(s);
+#X obj 8 133 cnv 1 550 1 empty empty 'n':\\\ (n\\\ outlets\\\ depending\\\ on\\\ creation\\\ arguments
+8 12 0 13 #9f9f9f #000000 0;
+#X text 119 203 1) list - set input channels (default: 1 2);
+#X obj 12 336 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 11 369 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 12 500 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 11 537 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 126 378 set <list> - resets the channel(s);
+#X obj 12 405 cnv 1 550 1 empty empty 'n':\\\ (n\\\ outlets\\\ depending\\\ on\\\ creation\\\ arguments
+8 12 0 13 #9f9f9f #000000 0;
+#X text 136 432 signal - signal output to sound card;
+#X text 123 510 1) list - set output channels (default: 1 2);
+#X text 132 160 signal - signal input from sound card;
+#X obj 11 460 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X text 126 470 NONE, f 6;
+#X obj 23 11 cnv 15 280 32 empty empty empty 20 12 0 14 #eceaed #404040
+0;
+#X obj 31 18 adc~;
+#X text 76 18 - Audio Input from sound card;
+#X obj 19 291 cnv 15 280 32 empty empty empty 20 12 0 14 #eceaed #404040
+0;
+#X obj 33 299 dac~;
+#X text 75 298 - Audio Output to sound card;
+#X restore 318 19 pd reference;
+#X obj 14 58 cnv 1 480 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 461 cnv 1 480 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 73 5 - Audio Input from sound card;
+#X text 76 30 - Audio Output to sound card;
+#X connect 6 0 4 0;
+#X connect 6 0 7 0;

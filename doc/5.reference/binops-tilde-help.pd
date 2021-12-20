@@ -1,69 +1,103 @@
-#N canvas 659 45 833 715 12;
-#X obj 30 184 +~;
-#X obj 167 184 -~;
-#X obj 294 184 *~;
-#X obj 429 184 /~;
-#X obj 116 22 +~;
-#X obj 151 22 -~;
-#X obj 184 21 *~;
-#X obj 218 21 /~;
+#N canvas 461 39 834 635 12;
+#X obj 30 174 +~;
+#X obj 167 174 -~;
+#X obj 294 174 *~;
+#X obj 429 174 /~;
+#X obj 36 22 +~;
+#X obj 71 22 -~;
+#X obj 104 22 *~;
+#X obj 138 22 /~;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array1 100 float 0;
-#X coords 0 2 100 -2 350 250 1 0 0;
-#X restore 58 319 graph;
-#X obj 429 256 tabwrite~ array1;
-#X obj 30 256 tabwrite~ array1;
-#X obj 167 256 tabwrite~ array1;
-#X obj 294 256 tabwrite~ array1;
-#X obj 167 78 osc~ 440;
-#X obj 251 20 max~;
-#X obj 293 20 min~;
-#X text 564 645 modified for Pd version 0.27;
-#X obj 688 256 tabwrite~ array1;
-#X obj 563 256 tabwrite~ array1;
-#X obj 563 184 max~;
-#X obj 688 184 min~;
-#X obj 627 461 +~ 5;
-#X text 54 590 see also:;
-#X obj 58 616 +;
-#X floatatom 652 435 5 0 0 0 - - - 0;
-#X text 489 335 These objects combine two signals as above \, or \,
+#X coords 0 2 100 -2 350 200 1 0 0;
+#X restore 58 299 graph;
+#X obj 429 246 tabwrite~ array1;
+#X obj 30 246 tabwrite~ array1;
+#X obj 167 246 tabwrite~ array1;
+#X obj 294 246 tabwrite~ array1;
+#X obj 294 78 osc~ 440;
+#X obj 171 22 max~;
+#X obj 213 22 min~;
+#X text 564 585 modified for Pd version 0.27;
+#X obj 688 246 tabwrite~ array1;
+#X obj 563 246 tabwrite~ array1;
+#X obj 563 174 max~;
+#X obj 688 174 min~;
+#X obj 636 441 +~ 5;
+#X text 19 567 see also:;
+#X obj 95 541 +;
+#X floatatom 661 415 5 0 0 0 - - - 0;
+#X text 498 315 These objects combine two signals as above \, or \,
 if you give a numeric argument \, the right inlet only takes floats
 (no signals) and the argument initializes the right inlet value:,
 f 36;
 #X obj 447 78 sig~ 2;
 #X obj 48 78 sig~ 1;
 #X obj 588 78 sig~ 0.5;
-#X obj 49 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 49 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X obj 189 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 189 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 315 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 315 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 445 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 445 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 585 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 585 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 705 224 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 705 214 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 41 313 2;
-#X text 34 557 -2;
-#X text 40 435 0;
-#X text 89 616 (etc.) - control arithmetic operators;
-#X obj 58 641 cos~;
-#X obj 96 641 wrap~;
-#X obj 139 641 abs~;
-#X obj 176 641 sqrt~;
-#X obj 221 641 exp~;
-#X obj 258 641 log~;
-#X obj 296 641 pow~;
-#X obj 58 669 expr~;
-#X text 106 669 - evaluate expressions on audio signals;
-#X text 334 641 - audio math objects;
-#X obj 474 469 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 41 293 2;
+#X text 34 487 -2;
+#X text 40 390 0;
+#X text 126 541 (etc.) - control arithmetic operators;
+#X obj 95 566 cos~;
+#X obj 133 566 wrap~;
+#X obj 176 566 abs~;
+#X obj 213 566 sqrt~;
+#X obj 258 566 exp~;
+#X obj 295 566 log~;
+#X obj 333 566 pow~;
+#X obj 95 594 expr~;
+#X text 143 594 - evaluate expressions on audio signals;
+#X text 371 566 - audio math objects;
+#X obj 474 419 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 474 499 \; pd dsp \$1;
-#X text 341 19 - binary operators on audio signals;
+#X msg 474 449 \; pd dsp \$1;
+#X text 261 21 - binary operators on audio signals;
+#N canvas 590 203 582 291 reference 0;
+#X obj 8 59 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 94 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 172 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 213 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 266 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 131 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 42 22 +~;
+#X obj 77 22 -~;
+#X obj 110 22 *~;
+#X obj 144 22 /~;
+#X obj 177 22 max~;
+#X obj 219 22 min~;
+#X text 267 21 - binary operators on audio signals;
+#X text 115 102 signal - value to the left side of operation and output.
+;
+#X text 73 141 float/signal - value to the right side of operation.
+, f 62;
+#X text 117 182 signal - the result of the operation., f 58;
+#X text 113 224 float -;
+#X text 172 224 initialize value of right inlet and makes it only take
+floats instead of signals (default 0)., f 49;
+#X restore 640 22 pd reference;
+#X text 573 23 click =>;
+#X obj 10 58 cnv 1 810 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 10 528 cnv 1 810 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 2 0 12 0;

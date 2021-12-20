@@ -1,37 +1,68 @@
-#N canvas 770 110 527 451 12;
-#X text 33 410 see also:;
-#X obj 142 410 makenote;
-#X msg 68 234 60 64;
-#X msg 117 234 60 0;
-#X msg 161 234 62 64;
-#X msg 209 234 62 0;
-#X text 236 352 Output is in the printout window.;
-#X msg 224 284 clear;
-#X obj 56 21 bag;
-#X msg 217 259 flush;
-#X obj 102 410 poly;
-#X text 298 407 updated for Pd version 0.33;
-#X text 269 284 <= start over;
-#X text 261 259 <= output them;
-#X text 247 234 <= add or delete elements;
-#X text 89 20 - Collection of numbers;
-#X text 35 153 The collection may have many copies of the same value.
+#N canvas 770 110 527 468 12;
+#X msg 68 242 60 64;
+#X msg 117 242 60 0;
+#X msg 161 242 62 64;
+#X msg 209 242 62 0;
+#X text 236 360 Output is in the printout window.;
+#X msg 224 292 clear;
+#X msg 217 267 flush;
+#X text 269 292 <= start over;
+#X text 261 267 <= output them;
+#X text 247 242 <= add or delete elements;
+#X text 35 161 The collection may have many copies of the same value.
 You can output the collection (and empty it) with a "flush" message
 \, or just empty it with "clear." You can use this to mimic a sustain
 pedal \, for example., f 63;
-#X obj 161 351 print bag;
-#X obj 161 321 bag;
-#X text 35 61 The bag object adds a value to or removes it from a collection
+#X obj 161 359 print bag;
+#X obj 161 329 bag;
+#X text 35 69 The bag object adds a value to or removes it from a collection
 of numbers depending on the flag. The left inlet takes the value and
 the right inlet takes the flag. If the flag is true (nonzero) \, the
 value is added to the collection and removed otherwise. The example
 here takes a list input \, which gets spread at inlets (as is common
 in Pd)., f 63;
-#X obj 209 410 stripnote;
-#X connect 2 0 18 0;
-#X connect 3 0 18 0;
-#X connect 4 0 18 0;
-#X connect 5 0 18 0;
-#X connect 7 0 18 0;
-#X connect 9 0 18 0;
-#X connect 18 0 17 0;
+#X text 46 421 see also:;
+#X obj 159 421 makenote;
+#X obj 56 14 bag;
+#X obj 115 421 poly;
+#X text 288 418 updated for Pd version 0.33;
+#N canvas 926 147 584 313 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 18 198 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 235 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 272 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 17 159 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 116 94 float -;
+#X obj 51 17 bag;
+#X text 83 16 - collection of numbers;
+#X text 116 114 flush -;
+#X text 116 133 clear -;
+#X text 118 170 float - flag: true (nonzero) or false (zero)., f 57
+;
+#X text 117 208 float - the stored values on flush message., f 49
+;
+#X text 126 246 NONE;
+#X text 173 133 clear stored values from the bag (no output).;
+#X text 173 114 output stored values and clear the bag.;
+#X text 173 94 value to store or delete depending on the flag.;
+#X restore 312 13 pd reference;
+#X text 410 14 <= click;
+#X obj 11 55 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 11 400 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 89 13 - Collection of numbers;
+#X connect 0 0 12 0;
+#X connect 1 0 12 0;
+#X connect 2 0 12 0;
+#X connect 3 0 12 0;
+#X connect 5 0 12 0;
+#X connect 6 0 12 0;
+#X connect 12 0 11 0;

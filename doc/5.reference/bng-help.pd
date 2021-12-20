@@ -562,15 +562,12 @@ in the subpatches below:, f 39;
 #X restore 398 193 pd properties;
 #X obj 187 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
 #fc0400 #0400fc;
-#X obj 42 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X text 30 53 The bang button is a GUI (Graphical User Interface) object
 that sends a bang message when activated via clicks or messages sent
 to its inlet. Insert it from the Put menu (named as "Bang") or its
 shortcut. Alternatively \, create it by typing "bng" into an object
 box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 67;
-#X text 68 12 - [bng]: Bang button;
 #X text 71 375 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 305 460 updated for Pd version 0.51;
@@ -580,9 +577,51 @@ included in Pd version 0.34., f 28;
 #X msg 214 303 bang;
 #X text 254 303 <= similar to a bang message;
 #X obj 97 461 all_guis;
+#X obj 42 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 68 12 - [bng]: Bang button;
+#X obj 12 42 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 1012 165 597 404 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 297 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 334 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 18 371 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 52 19 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 78 19 - [bng]: Bang button;
+#X text 120 303 bang -;
+#X text 172 303 when activated via clicks or when receiving messages.
+;
+#X text 122 342 NONE;
+#X text 88 63 size <float> - set size in pixels., f 56;
+#X text 60 82 flashtime <f \, f> - set minimum and maximum flash time
+in ms.;
+#X text 88 101 init <float> - non zero sets to init mode., f 56;
+#X text 73 157 label <symbol> - set label., f 67;
+#X text 60 138 receive <symbol> - set receive symbol name., f 60;
+#X text 81 120 send <symbol> - set send symbol name., f 57;
+#X text 52 176 label_font <f \, f> -;
+#X text 192 176 set label type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> andd font size., f 50;
+#X text 59 208 label_pos <f \, f> - set label's x/y position., f 69
+;
+#X text 87 228 color <list> -;
+#X text 192 228 set colors of background \, front and label. Symbols
+for hexadecimal values or floats for presets., f 50;
+#X text 73 268 other messages - float \, bang \, anything \, whatever
+\, activates the bang., f 69;
+#X restore 395 11 pd reference;
+#X obj 12 442 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 327 11 click =>;
 #X connect 0 0 12 0;
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
 #X connect 6 0 12 0;
-#X connect 12 0 18 0;
-#X connect 21 0 18 0;
+#X connect 12 0 16 0;
+#X connect 19 0 16 0;
