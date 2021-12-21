@@ -1,31 +1,31 @@
-#N canvas 314 457 824 443 12;
-#X obj 327 287 trace;
-#X msg 359 114 1;
+#N canvas 634 135 837 439 12;
+#X obj 327 297 trace;
+#X msg 359 124 1;
 #X obj 39 20 trace;
-#X msg 327 183 1;
-#X obj 327 208 + 2;
-#X obj 327 312 + 3;
+#X msg 327 193 1;
+#X obj 327 218 + 2;
+#X obj 327 322 + 3;
 #X msg 56 154 \; pd set-tracing \$1;
-#X obj 55 130 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 1 1;
-#X floatatom 327 337 5 0 0 0 - - -;
-#X obj 327 363 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 56 130 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 327 347 5 0 0 0 - - - 0;
+#X obj 327 373 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 91 21 - message tracing for debugging control flow in patches
 ;
 #X text 51 201 Note: this slows message passing down \, so don't turn
 it on unless you want to use it., f 32;
-#X text 53 89 first enable tracing with a message to Pd:, f 33;
-#X text 349 50 second \, send a number greater than zero to the right
+#X text 53 89 first enable tracing with a message to Pd:, f 21;
+#X text 349 60 second \, send a number greater than zero to the right
 inlet of a trace object to arm it. This number sets the number of following
 messages that will be traced (that is \, it's a counter.);
-#X text 375 157 Finally \, the next message "trace" gets on its left
+#X text 375 167 Finally \, the next message "trace" gets on its left
 inlet is forwarded to its output with tracing turned on: every message
 that depends on trace output will be printed in the Pd window (and
 you can control-click on the printout to select the object that caused
 it). Once the trace message returns \, it also prints a backtrace of
 messages leading up to the one that has set it off.;
-#X text 636 392 updated for Pd 0.52;
+#X text 579 383 updated for Pd version 0.52;
 #X connect 0 0 5 0;
 #X connect 1 0 0 1;
 #X connect 3 0 4 0;

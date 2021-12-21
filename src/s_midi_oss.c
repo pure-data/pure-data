@@ -238,7 +238,7 @@ void midi_getdevs(char *indevlist, int *nindevs,
     if ((ndev = oss_nmididevs) > maxndev)
         ndev = maxndev;
     for (i = 0; i < ndev; i++)
-        sprintf(outdevlist + i * devdescsize,
-            "/dev/midi%s", oss_midinames[i]);
+        strcpy(outdevlist + i * devdescsize,
+            oss_midinames[i]);
     *noutdevs = ndev;
 }

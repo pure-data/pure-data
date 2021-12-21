@@ -1,21 +1,28 @@
-#N canvas 601 137 496 340 12;
-#X floatatom 63 274 8 0 0 0 - - -;
-#X obj 63 167 noise~;
-#X obj 125 206 print~;
-#X msg 125 170 bang;
-#X obj 63 246 env~ 4096;
-#X text 126 274 RMS in dB;
-#X obj 46 15 noise~;
-#X text 110 15 - uniformly distributed white noise;
-#X msg 63 118 seed 123;
-#X text 183 202 the output range is -1 to 1, f 16;
-#X text 139 112 seed message to re-seed (so you can get exactly repeatable
+#N canvas 736 139 534 408 12;
+#X declare -stdpath ./;
+#X floatatom 75 306 8 0 0 0 - - - 0;
+#X obj 57 155 noise~;
+#X obj 58 362 print~;
+#X obj 75 278 env~ 4096;
+#X text 138 306 RMS in dB;
+#X obj 39 26 noise~;
+#X text 103 26 - uniformly distributed white noise;
+#X msg 57 116 seed 123;
+#X text 115 353 the output range is -1 to 1, f 16;
+#X text 133 110 seed message to re-seed (so you can get exactly repeatable
 samples), f 35;
-#X text 247 273 updated for Pd version 0.48-2;
-#X msg 74 59 \; pd dsp 1;
-#X msg 158 59 \; pd dsp 0;
+#X text 295 363 updated for Pd version 0.48-2;
+#X obj 86 202 output~;
+#X obj 75 335 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 46 66 Noise~ is a random number generator that outputs white
+noise., f 61;
+#X obj 379 26 declare -stdpath ./;
+#X text 165 221 <= click and drag to hear and turn DSP on, f 20;
 #X connect 1 0 2 0;
-#X connect 1 0 4 0;
-#X connect 3 0 2 0;
-#X connect 4 0 0 0;
-#X connect 8 0 1 0;
+#X connect 1 0 3 0;
+#X connect 1 0 11 0;
+#X connect 1 0 11 1;
+#X connect 3 0 0 0;
+#X connect 7 0 1 0;
+#X connect 12 0 2 0;

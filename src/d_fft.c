@@ -290,6 +290,8 @@ static void *sigframp_new(void)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
+        /* q8_rsqrt() triggers init_rsqrt() as a side-effect */
+    q8_rsqrt(-1.);
     x->x_f = 0;
     return (x);
 }

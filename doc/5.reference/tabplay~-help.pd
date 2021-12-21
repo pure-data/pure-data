@@ -1,41 +1,22 @@
-#N canvas 277 40 901 596 12;
-#X msg 728 167 \; pd dsp 0;
+#N canvas 564 81 875 580 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array array99 155944 float 0;
-#X coords 0 1 155943 -1 250 200 1;
-#X restore 551 250 graph;
-#X floatatom 63 437 0 0 0 0 - - -;
-#X msg 63 139 set array99;
+#X array sample 155944 float 0;
+#X coords 0 1 155943 -1 250 200 1 0 0;
+#X restore 572 262 graph;
+#X floatatom 63 437 0 0 0 0 - - - 0;
 #X text 148 139 "set" message permits you to switch between arrays
 ;
-#X text 180 291 creation argument initializes array name;
-#X text 70 488 see also the "array" tutorial in section 2 of the Pd
-documentation \, and these objects:, f 43;
-#X obj 54 538 tabwrite~;
-#X obj 197 538 tabread;
-#X obj 256 538 tabwrite;
-#X obj 322 538 tabsend~;
-#X obj 389 538 tabreceive~;
-#X obj 43 26 tabplay~;
-#X obj 63 291 tabplay~ array99;
-#X obj 541 141 soundfiler;
-#X msg 541 102 read -resize ../sound/bell.aiff array99 \; pd dsp 1
-\;;
-#X floatatom 541 167 0 0 0 0 - - -;
+#X text 174 291 creation argument initializes array name;
+#X obj 53 542 tabwrite~;
+#X obj 196 542 tabread;
+#X obj 255 542 tabwrite;
+#X obj 90 26 tabplay~;
+#X obj 552 161 soundfiler;
+#X floatatom 552 187 0 0 0 0 - - - 0;
 #X obj 63 411 env~ 16384;
-#X obj 477 538 soundfiler;
-#X obj 125 538 tabread4~;
-#X obj 155 395 *~;
-#X obj 196 397 line~;
-#X msg 196 345 0.1 100;
-#X msg 212 370 0 100;
-#X text 250 345 on;
-#X text 251 369 off;
-#X text 239 392 envelope;
-#X text 239 403 generator;
-#X text 291 356 amplitude controls:;
-#X text 198 454 audio output;
-#X obj 155 425 hip~ 5;
+#X obj 322 542 soundfiler;
+#X obj 124 542 tabread4~;
 #X msg 90 214 0 44100;
 #X msg 84 189 44100;
 #X msg 77 165 bang;
@@ -47,31 +28,77 @@ and there are none of tabread4~'s interpolation artifacts.;
 #X text 148 212 play starting at beginning for 44100 samples;
 #X msg 95 239 44100 1000;
 #X text 173 238 play from 44100 through 45099 (1000 samples);
-#X text 648 519 updated for Pd version 0.43;
+#X text 647 540 updated for Pd version 0.43;
 #X msg 102 264 stop;
 #X text 138 265 stop playing (outputs zeros when stopped);
-#X obj 172 318 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X text 190 317 <= bang when finished playing the table;
-#X text 536 76 click here to load table and turn dsp on;
-#X text 733 149 dsp off;
-#X obj 155 454 dac~;
-#X text 110 27 - play a table as a sample (non-transposing);
-#X connect 3 0 13 0;
-#X connect 13 0 17 0;
-#X connect 13 0 20 0;
-#X connect 13 1 43 0;
-#X connect 14 0 16 0;
+#X obj 165 338 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 183 337 <= bang when finished playing the table;
+#X text 157 27 - play a table as a sample (non-transposing);
+#X obj 63 291 tabplay~ sample;
+#X msg 63 139 set sample;
+#X obj 258 480 ../2.control.examples/15.array;
+#X obj 258 503 ../2.control.examples/16.more.arrays;
+#X text 56 514 see also:, f 10;
+#X obj 81 336 output~;
+#X obj 680 24 declare -stdpath ./;
+#X msg 552 129 read -resize ../sound/bell.aiff sample;
+#X text 619 99 load table;
+#X obj 552 99 loadbang;
+#X text 192 434 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files below, f 43;
+#N canvas 978 194 593 443 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 438 284 <= array with local name, f 13;
+#X obj 306 283 array define \$0-x;
+#X obj 227 300 f \$0;
+#X obj 62 290 output~;
+#X msg 100 205 set \$1;
+#X obj 100 179 symbol \$0-x;
+#X obj 100 156 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 227 197 You can also load '\$0' in a float object and send
+it to a message that works like a send to send messages to an array.
+, f 40;
+#X text 119 153 click to set name;
+#X obj 227 361 soundfiler;
+#X floatatom 227 387 0 0 0 0 - - - 0;
+#X msg 227 329 read -resize ../sound/bell.aiff \$1-x;
+#X obj 227 274 loadbang;
+#X obj 62 240 tabplay~;
+#X obj 62 189 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 3 0 12 0;
+#X connect 5 0 14 0;
+#X connect 6 0 5 0;
+#X connect 7 0 6 0;
+#X connect 10 0 11 0;
+#X connect 12 0 10 0;
+#X connect 13 0 3 0;
+#X connect 14 0 4 0;
+#X connect 14 0 4 1;
 #X connect 15 0 14 0;
-#X connect 17 0 2 0;
-#X connect 20 0 30 0;
-#X connect 21 0 20 1;
-#X connect 22 0 21 0;
-#X connect 23 0 21 0;
-#X connect 30 0 47 0;
-#X connect 30 0 47 1;
-#X connect 31 0 13 0;
-#X connect 32 0 13 0;
-#X connect 33 0 13 0;
-#X connect 38 0 13 0;
-#X connect 41 0 13 0;
+#X restore 359 383 pd Dealing_with_"\$0";
+#X text 197 374 open subpatch to see how to deal with '\$0', f 21
+;
+#X obj 407 542 array;
+#X connect 8 0 9 0;
+#X connect 10 0 1 0;
+#X connect 13 0 28 0;
+#X connect 14 0 28 0;
+#X connect 15 0 28 0;
+#X connect 20 0 28 0;
+#X connect 23 0 28 0;
+#X connect 28 0 10 0;
+#X connect 28 0 33 0;
+#X connect 28 0 33 1;
+#X connect 28 1 25 0;
+#X connect 29 0 28 0;
+#X connect 35 0 8 0;
+#X connect 37 0 35 0;

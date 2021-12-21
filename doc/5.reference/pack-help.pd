@@ -1,55 +1,72 @@
-#N canvas 594 88 592 596 12;
-#X floatatom 68 156 0 0 0 0 - - -;
-#X msg 89 185 bang;
-#X floatatom 132 262 0 0 0 0 - - -;
-#X floatatom 219 289 0 0 0 0 - - -;
-#X obj 89 349 print;
-#X msg 175 263 symbol cat;
-#X obj 108 26 pack;
-#X obj 136 561 unpack;
-#X msg 105 213 1 2 dog;
-#X text 147 26 - combine several atoms into one message;
-#X text 326 560 updated for Pd version 0.34;
-#X text 57 560 See also:;
-#X text 130 184 <= bang generates output without resetting first value
-;
-#X text 102 155 <= number in first inlet generates output;
-#X text 172 210 <= you can also send a list as Pd distributes its elements
+#N struct template1 float x float y float z float q;
+#N canvas 814 89 595 631 12;
+#X floatatom 72 160 6 0 0 0 - - - 0;
+#X msg 39 126 bang;
+#X floatatom 127 245 5 0 0 0 - - - 0;
+#X floatatom 237 272 5 0 0 0 - - - 0;
+#X obj 72 356 print;
+#X msg 182 245 symbol cat;
+#X obj 108 16 pack;
+#X obj 114 582 unpack;
+#X msg 85 192 1 2 dog;
+#X text 147 16 - combine several atoms into one message;
+#X text 352 582 updated for Pd version 0.34;
+#X text 37 582 See also:;
+#X text 152 189 <= you can also send a list as Pd distributes its elements
 to the corresponding inlets., f 45;
-#X obj 89 317 pack 100 0 symbol 0;
-#X text 262 263 <= numbers and symbols in the right inlets change the
-values without causing output, f 43;
-#X obj 399 443 pack;
-#X obj 429 412 t b f;
-#X floatatom 429 386 0 0 0 0 - - -;
-#X floatatom 399 386 0 0 0 0 - - -;
-#X obj 399 474 print;
-#X obj 121 508 print;
+#X obj 418 454 pack;
+#X obj 418 420 t b f;
+#X floatatom 418 394 6 0 0 0 - - - 0;
+#X floatatom 365 394 6 0 0 0 - - - 0;
+#X obj 418 507 print;
+#X obj 121 531 print;
 #X msg 121 400 a;
-#X obj 121 477 pack s f;
-#X floatatom 174 437 5 0 0 0 - - -;
+#X obj 121 473 pack s f;
+#X floatatom 174 437 5 0 0 0 - - - 0;
 #X text 156 395 pack accepts 'anythings' in the left inlet, f 24;
-#X text 314 321 By default \, pack takes two floats. You can use trigger
+#X text 319 328 By default \, pack takes two floats. You can use trigger
 to force an output on secondary inlets., f 34;
-#X text 28 463 abbreviated arguments =>, f 13;
-#X text 27 63 The pack object takes a series of inputs and outputs
-a concatenated list. The number of creation arguments determines the
-number of inletsand their type: float ('float'/'f') \, pointer ('pointer'/'p')
-or symbol ('symbol'/'s'). A number sets a numeric inlet and initializes
-the value., f 76;
-#X text 472 411 <= trigger;
-#X connect 0 0 15 0;
-#X connect 1 0 15 0;
-#X connect 2 0 15 1;
-#X connect 3 0 15 3;
-#X connect 5 0 15 2;
-#X connect 8 0 15 0;
-#X connect 15 0 4 0;
-#X connect 17 0 21 0;
-#X connect 18 0 17 0;
-#X connect 18 1 17 1;
-#X connect 19 0 18 0;
-#X connect 20 0 17 0;
-#X connect 23 0 24 0;
-#X connect 24 0 22 0;
-#X connect 25 0 24 1;
+#X text 28 459 abbreviated arguments =>, f 13;
+#X text 461 419 <= trigger;
+#X listbox 72 327 20 0 0 0 - - - 0;
+#X listbox 121 504 20 0 0 0 - - - 0;
+#X listbox 418 480 17 0 0 0 - - - 0;
+#X obj 72 298 pack 10 100 symbol float;
+#X text 286 242 <= numbers and symbols in the right inlets change the
+values without causing output., f 30;
+#X text 80 126 <= outputs the packed elements;
+#X text 120 159 <= first inlet generates output;
+#X obj 169 582 trigger;
+#N canvas 879 82 610 216 pointer 0;
+#X obj 189 146 ../4.data.structures/01.scalars;
+#X text 75 40 The [pack] object can pack a pointer into a list. A pointer
+can be the location of a Data Structure scalar somewhere or the head
+of a Data Structure list. To know more about Data Structures \, how
+to handle pointers and see examples \, please refer to the 4.Data.Structure
+section of the Pd's tutorials. Starting with the first example below.
+, f 70;
+#X restore 354 124 pd pointer;
+#X text 435 124 <= about pointers;
+#X text 21 48 The pack object outputs a concatenated list from a series
+of inputs. Creation arguments set the number of inlets and their type
+\, possible values are: float (or 'f') \, symbol (or 's') and pointer
+(or 'p') - see [pd pointer]. A number sets a numeric inlet and initializes
+the value ('float'/'f' initializes to 0)., f 79;
+#X connect 0 0 29 0;
+#X connect 1 0 29 0;
+#X connect 2 0 29 1;
+#X connect 3 0 29 3;
+#X connect 5 0 29 2;
+#X connect 8 0 29 0;
+#X connect 13 0 28 0;
+#X connect 14 0 13 0;
+#X connect 14 1 13 1;
+#X connect 15 0 14 0;
+#X connect 16 0 13 0;
+#X connect 19 0 20 0;
+#X connect 20 0 27 0;
+#X connect 21 0 20 1;
+#X connect 26 0 4 0;
+#X connect 27 0 18 0;
+#X connect 28 0 17 0;
+#X connect 29 0 26 0;

@@ -1,8 +1,8 @@
-#N canvas 541 194 512 324 12;
+#N canvas 794 23 512 324 12;
 #X obj 88 214 loadbang;
-#X floatatom 88 263 5 0 0 0 - - -;
-#X obj 30 19 loadbang;
-#X text 101 18 - send a "bang" message on load;
+#X floatatom 88 263 5 0 0 0 - - - 0;
+#X obj 79 21 loadbang;
+#X text 150 20 - send a "bang" message on load;
 #X msg 88 239 123;
 #X text 40 60 The loadbang object outputs a 'bang' message when the
 containing patch is opened as a document or included in another patch

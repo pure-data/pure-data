@@ -1264,7 +1264,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
             if (flags & BEZ) sys_vgui("-smooth 1\\\n");
             sys_vgui("-tags curve%lx\n", data);
         }
-        else post("warning: curves need at least two points to be graphed");
+        else post("warning: drawing shapes need at least two points to be graphed");
     }
     else
     {
@@ -1407,6 +1407,7 @@ static void curve_setup(void)
         A_GIMME, 0);
     class_addcreator((t_newmethod)curve_new, gensym("filledcurve"),
         A_GIMME, 0);
+    class_sethelpsymbol(curve_class, gensym("draw-shapes"));
     class_setparentwidget(curve_class, &curve_widgetbehavior);
     class_addfloat(curve_class, curve_float);
 }

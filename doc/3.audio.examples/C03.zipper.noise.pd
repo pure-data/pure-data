@@ -1,4 +1,5 @@
 #N canvas 597 130 486 508 12;
+#X declare -stdpath ./;
 #X obj 185 368 output~;
 #X text 238 461 updated for Pd version 0.37;
 #X text 55 16 ZIPPER NOISE;
@@ -11,8 +12,8 @@
 #X obj 86 35 loadbang;
 #X msg 86 65 1;
 #X obj 86 96 metro 500;
-#X obj 86 125 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
-;
+#X obj 86 125 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 86 190 outlet;
 #X obj 150 192 outlet;
 #X obj 86 154 select 0 1;
@@ -23,10 +24,10 @@
 #X connect 6 0 4 0;
 #X connect 6 1 5 0;
 #X restore 203 177 pd metro;
-#X obj 203 205 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 270 206 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 203 205 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 270 206 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X msg 203 226 1 300;
 #X msg 270 228 0 300;
 #X obj 216 297 osc~ 880;
@@ -37,6 +38,7 @@ of a sinusoid. In effect we're multiplying the sinusoid by a staircase
 signal (50 increments per second.) Using the signal version \, line~
 \, fixes the problem. Line~ outputs a ramp that is incremented every
 sample.;
+#X obj 309 12 declare -stdpath ./;
 #X connect 3 0 0 0;
 #X connect 3 0 0 1;
 #X connect 5 0 4 0;

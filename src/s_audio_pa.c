@@ -23,6 +23,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,7 +51,7 @@
 #endif
 
 /* define this to enable thread signaling instead of polling */
-#define THREADSIGNAL
+// #define THREADSIGNAL
 
     /* LATER try to figure out how to handle default devices in portaudio;
     the way s_audio.c handles them isn't going to work here. */
@@ -675,6 +676,26 @@ int pa_send_dacs(void)
     else return (rtnval);
 }
 
+static char*pdi2devname(const PaDeviceInfo*pdi, char*buf, size_t bufsize) {
+    const PaHostApiInfo *api = 0;
+    char utf8device[MAXPDSTRING];
+    utf8device[0] = 0;
+
+    if(!pdi)
+        return 0;
+
+    api = Pa_GetHostApiInfo(pdi->hostApi);
+    if(api)
+        snprintf(utf8device, MAXPDSTRING, "%s: %s",
+            api->name, pdi->name);
+    else
+        snprintf(utf8device, MAXPDSTRING, "%s",
+            pdi->name);
+
+    u8_nativetoutf8(buf, bufsize, utf8device, MAXPDSTRING);
+    return buf;
+}
+
     /* scanning for devices */
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -687,36 +708,20 @@ void pa_getdevs(char *indevlist, int *nindevs,
     ndev = Pa_GetDeviceCount();
     for (i = 0; i < ndev; i++)
     {
+        char utf8device[MAXPDSTRING];
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);
+        char*devname = pdi2devname(pdi, utf8device, MAXPDSTRING);
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */
             snprintf(indevlist + nin * devdescsize, devdescsize,
-#ifdef _WIN32
-     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
-#else
-#ifdef __APPLE__
-             "%s",
-#else
-            "(%d) %s", pdi->hostApi,
-#endif
-#endif
-                pdi->name);
+                "%s", devname);
             nin++;
         }
         if (pdi->maxOutputChannels > 0 && nout < maxndev)
         {
             snprintf(outdevlist + nout * devdescsize, devdescsize,
-#ifdef _WIN32
-     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
-#else
-#ifdef __APPLE__
-             "%s",
-#else
-            "(%d) %s", pdi->hostApi,
-#endif
-#endif
-                pdi->name);
+                "%s", devname);
             nout++;
         }
     }

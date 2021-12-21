@@ -1,58 +1,59 @@
 #N struct help-element-template float x float y array array1 help-element-array1-template
 ;
 #N struct help-element-array1-template float y;
-#N canvas 464 60 645 551 12;
-#X text 32 486 see also:;
-#N canvas 393 50 503 273 help-element-template 0;
-#X obj 27 76 plot array1 500 1 10 15 20;
-#X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
-#X obj 24 15 struct help-element-template float x float y array array1
-help-element-array1-template;
-#X restore 423 435 pd help-element-template;
-#N canvas 105 131 292 163 help-element-data 1;
-#X scalar help-element-template 35 24 \; 0 \; 10 \; 0 \; 10 \; 20 \;
-10 \; 20 \; 70 \; 10 \; \;;
-#X restore 459 414 pd help-element-data;
-#N canvas 196 292 373 142 help-element-array1-template 0;
+#N canvas 548 49 644 543 12;
+#X text 39 479 see also:;
+#N canvas 970 300 501 251 help-element-template 0;
+#X obj 50 110 plot array1 500 1 10 15 20;
+#X obj 50 154 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
+#X obj 50 52 struct help-element-template float x float y array array1
+help-element-array1-template, f 44;
+#X restore 417 412 pd help-element-template;
+#N canvas 209 156 292 163 help-element-data 1;
+#X scalar help-element-template 35 24 \; 20 \; 10 \; 26 \; 10 \; 32
+\; 10 \; 43 \; -2 \; 33 \; \;;
+#X restore 445 386 pd help-element-data;
+#N canvas 931 474 373 142 help-element-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-element-array1-template float y;
-#X restore 363 457 pd help-element-array1-template;
-#X obj 29 11 element;
-#X obj 101 509 pointer;
-#X obj 162 509 getsize;
-#X obj 221 509 setsize;
-#X text 39 46 "element" takes a pointer at right and a number at left.
-It looks up a field from the pointer \, which should be an array \,
-and outputs the element of the array specified by the number. There
-are no pointers to arrays themselves \, just to individual elements.
-The template and field name are specified as creation arguments.,
-f 63;
-#X obj 316 312 pointer;
-#X msg 316 288 traverse pd-help-element-data \, next;
-#X floatatom 46 282 5 0 0 0 - - -;
-#X obj 46 369 element help-element-template array1, f 39;
-#X obj 46 418 get help-element-array1-template y;
-#X floatatom 46 445 5 0 0 0 - - -;
-#X text 335 368 arguments: template \, field name;
-#X text 330 341 pointer inlet;
-#X text 44 261 index;
-#X text 51 392 outlet is pointer to single element;
-#X text 97 443 here we just get the value of y.;
-#X text 38 143 Indices range from 0 to the number of elements minus
+#X restore 368 436 pd help-element-array1-template;
+#X obj 86 16 element;
+#X obj 108 503 pointer;
+#X obj 169 503 getsize;
+#X obj 228 503 setsize;
+#X obj 316 292 pointer;
+#X msg 316 268 traverse pd-help-element-data \, next;
+#X floatatom 46 256 5 -5 15 0 - - - 0;
+#X obj 46 349 element help-element-template array1, f 39;
+#X obj 46 398 get help-element-array1-template y;
+#X floatatom 46 429 5 0 0 0 - - - 0;
+#X text 330 321 pointer inlet;
+#X text 87 255 index;
+#X text 89 430 here we just get the value of y.;
+#X text 48 139 Indices range from 0 to the number of elements minus
 one \; indices out of range are quietly replaced by the nearest endpoint.
-;
-#X text 315 266 click here first;
-#X obj 44 509 struct;
-#X text 415 504 updated for Pd version 0.47;
-#X msg 56 333 set help-element-template array1;
-#X text 79 311 set template and field name;
-#X text 38 198 If you don't know the template name you may specify
+, f 66;
+#X text 315 246 click here first;
+#X obj 51 503 struct;
+#X text 404 500 updated for Pd version 0.47;
+#X msg 56 313 set help-element-template array1;
+#X text 79 291 set template and field name;
+#X text 48 182 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiency and clarity., f 65;
-#X text 98 10 - get pointer to an element of an array;
-#X connect 9 0 12 1;
-#X connect 10 0 9 0;
+\, at some possible cost in efficiency and clarity., f 75;
+#X text 148 15 - get pointer to an element of an array;
+#X text 49 57 "element" takes a pointer at right and an index number
+at left. It looks up a field from the pointer \, which should be an
+array \, and outputs the element of the array specified by the index
+number. There are no pointers to arrays themselves \, just to individual
+elements. The template and field name are specified as creation arguments.
+, f 75;
+#X obj 292 503 plot;
+#X text 51 372 outlet is pointer to a single element;
+#X text 335 348 arguments: template name \, field name;
+#X connect 8 0 11 1;
+#X connect 9 0 8 0;
+#X connect 10 0 11 0;
 #X connect 11 0 12 0;
 #X connect 12 0 13 0;
-#X connect 13 0 14 0;
-#X connect 24 0 12 0;
+#X connect 21 0 11 0;

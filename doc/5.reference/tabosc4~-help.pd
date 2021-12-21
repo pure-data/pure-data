@@ -1,45 +1,91 @@
-#N canvas 571 120 691 648 12;
-#X floatatom 92 309 4 0 0 0 - - -;
-#X obj 92 339 sig~ 100;
-#X obj 394 271 table table1;
-#X obj 493 272 table table2;
-#X text 302 582 Updated for Pd version 0.33;
-#X obj 58 17 tabosc4~;
-#X msg 112 390 set table1;
-#X obj 92 466 tabosc4~ table1, f 18;
-#X msg 122 416 set table2;
-#X text 51 169 For good results use 512 points for up to about 15 partials
-\, or 32*npartials (rounded up to a power of 2) for more than 15,
-f 61;
-#X floatatom 215 435 4 0 0 0 - - -;
-#X text 133 301 signal input for frequency (Hz.), f 17;
-#X text 197 391 message to switch tables;
-#X text 255 435 inlet to reset phase;
-#X text 226 467 creation argument initializes table;
-#X text 51 54 tabosc4~ is a traditional computer music style wavetable
+#N canvas 754 81 696 705 12;
+#X declare -stdpath ./;
+#X floatatom 81 309 5 0 0 0 - - - 0;
+#X obj 81 339 sig~ 100;
+#X text 446 660 Updated for Pd version 0.33;
+#X obj 70 21 tabosc4~;
+#X text 186 391 message to switch tables;
+#X text 43 60 tabosc4~ is a traditional computer music style wavetable
 lookup oscillator using 4-point polynomial interpolation. The table
 should have a power of two points plus three "guard points" \, one
 at the beginning and two at the end \, which should be wraparound copies
 of the last point and the first two points \, respectively. The "sinesum"
 and "cosinesum" methods for arrays do this automatically for you if
-you just want to specify partial strengths., f 68;
-#X text 128 18 - 4-point interpolating oscillator;
-#X text 414 381 click above \, start DSP \, and turn output volume
-up to hear this, f 33;
-#X text 52 210 Don't send new "sinesum" messages to tables while you're
-running - instead \, use "set" messages to switch between tables.,
-f 64;
-#X obj 305 278 loadbang;
-#X msg 305 311 \; table1 sinesum 512 1 1 1 1 \, normalize \; table2
-cosinesum 512 0 1;
-#X obj 91 513 output~;
-#X text 370 543 see also:;
-#X obj 453 543 osc~;
-#X connect 0 0 1 0;
-#X connect 1 0 7 0;
-#X connect 6 0 7 0;
-#X connect 7 0 21 0;
-#X connect 7 0 21 1;
+you just want to specify partial strengths., f 77;
+#X text 140 22 - 4-point interpolating oscillator;
+#X obj 308 278 loadbang;
+#X obj 81 523 output~;
+#X text 16 654 see also:;
+#X obj 90 654 osc~;
+#X msg 139 444 0;
+#X msg 176 444 0.5;
+#X text 209 446 <= resets phase;
+#X obj 134 654 phasor~;
+#X obj 268 654 tabread4~;
+#X text 43 152 For good results use 512 points for up to about 15 partials
+\, or 32*npartials (rounded up to a power of 2) for more than 15 partials.
+Don't send new "sinesum" messages to tables while you're running -
+instead \, use "set" messages to switch between tables., f 77;
+#X text 43 214 The frequency input can be either a float or a signal.
+The right inlet resets the phase with values from 0 to 1 (where '1'
+is the same as '0' and '0.5' is half the cycle)., f 77;
+#X text 200 476 creation argument initializes the table name;
+#X text 122 309 frequency (Hz.);
+#X msg 308 311 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
+512 0 1;
+#X obj 81 476 tabosc4~ wave1;
+#X msg 101 384 set wave1;
+#X msg 111 410 set wave2;
+#X obj 412 596 ../2.control.examples/15.array;
+#X obj 412 619 ../2.control.examples/16.more.arrays;
+#X text 33 600 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files to the right ====>, f 52;
+#X obj 524 17 declare -stdpath ./;
+#N canvas 978 194 574 404 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 394 262 <= array with local name, f 13;
+#X obj 262 261 array define \$0-x;
+#X obj 178 279 f \$0;
+#X msg 178 306 \; \$1-x sinesum 512 1 1 1 1 \, normalize;
+#X obj 62 290 output~;
+#X msg 133 205 set \$1;
+#X obj 133 179 symbol \$0-x;
+#X obj 133 156 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 62 189 sig~ 440;
+#X obj 178 253 loadbang;
+#X obj 62 240 tabosc4~;
+#X text 240 185 You can also load '\$0' in a float object and send
+it to a message that works like a send to send messages to an array.
+, f 40;
+#X text 152 153 click to set name;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 3 0 4 0;
+#X connect 6 0 11 0;
+#X connect 7 0 6 0;
 #X connect 8 0 7 0;
-#X connect 10 0 7 1;
-#X connect 19 0 20 0;
+#X connect 9 0 11 0;
+#X connect 10 0 3 0;
+#X connect 11 0 5 0;
+#X connect 11 0 5 1;
+#X restore 389 536 pd Dealing_with_"\$0";
+#X obj 451 371 array define wave1;
+#X obj 451 395 array define wave2;
+#X obj 344 654 array;
+#X text 227 527 open subpatch to see how to deal with '\$0', f 21
+;
+#X obj 194 654 tabwrite~;
+#X connect 0 0 1 0;
+#X connect 1 0 21 0;
+#X connect 7 0 20 0;
+#X connect 11 0 21 1;
+#X connect 12 0 21 1;
+#X connect 21 0 8 0;
+#X connect 21 0 8 1;
+#X connect 22 0 21 0;
+#X connect 23 0 21 0;

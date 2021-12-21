@@ -4,69 +4,86 @@ array array2 help-plot-array2-template array array3 help-plot-array3-template
 #N struct help-plot-array1-template float y;
 #N struct help-plot-array2-template float x float y;
 #N struct help-plot-array3-template float y float w;
-#N canvas 568 102 513 268 12;
-#N canvas 593 51 523 734 help-plot-template 0;
-#X text 30 44 creation arguments:;
-#X text 50 269 - RGB color (0=black \, 999=white \, 900=red \, 90=green
-\, 9=blue \, 555=grey \, etc.);
-#X text 48 299 - line width;
-#X text 48 318 - relative x and y location;
-#X text 49 338 - x spacing;
-#X obj 41 430 plot curve array2 70 3 100 0;
-#X obj 32 521 plot curve array3 9 1 120 50 20;
-#X obj 45 14 plot array1 500 1 10 15 20;
-#X text 31 358 This first example plots the red trace (500) \, width
-1 \, at point (10 \, 15) \, with horizontal spacing 20 The black diamonds
-come from the template of the array1 element itself.;
-#X text 52 541 If a "w" variable is present in the template as for
-array3 \, it is added to the line width.;
-#X obj 25 705 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
-#X text 29 667 To see the data itself \, select "properties" for the
-scalar by right clicking on the purple square.;
-#X obj 26 600 struct help-plot-template float x float y array array1
+#N canvas 787 129 507 279 12;
+#N canvas 758 200 927 574 help-plot-template 0;
+#X obj 595 34 plot curve array2 70 3 100 0;
+#X obj 76 437 plot array1 500 1 10 15 20;
+#X obj 529 495 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10
+;
+#X text 555 436 To see the data itself \, select "properties" for the
+scalar by right clicking on the purple square., f 43;
+#X obj 539 341 struct help-plot-template float x float y array array1
 help-plot-array1-template array array2 help-plot-array2-template array
-array3 help-plot-array3-template;
-#X text 35 579 here's the "struct" for all this:;
-#X text 47 248 - field to plot (the array);
-#X text 49 61 - optional "-n" flag to make invisible initially;
-#X text 48 80 - alternatively \, an optional "-v [variable]" flag to
-assign a variable to make this visible/invisible.;
-#X text 52 111 - optional "-vs [constant or variable]" to set visibility
-of scalars along the path of the plot.;
-#X text 48 227 - optional word "curve" to specify Bézier curve;
-#X text 47 166 - optional "-x [variable]" flag to use different x variable
+array3 help-plot-array3-template, f 41;
+#X text 543 316 here's the "struct" for all this:;
+#X text 49 61 Optional flags:;
+#X text 48 84 - "-n" flag to make invisible initially or "-v [name]"
+to assign a field name variable to make this visible/invisible (inutilized
+inlet input for that) \; - optional "-vs [constant or name]" to set
+visibility of scalars along the path of the plot \; - "-e" [const or
+name]" to enable/disable editing \; - "-x [name]" to use different
+field name for x \; - "-y [name]" to use different field name for y
+\; - "-w [name]" to use different field name for w;
+#X text 44 227 Arguments:;
+#X text 45 28 Creation arguments:;
+#X obj 596 200 plot curve array3 9 1 120 50 20;
+#X msg 43 390 1;
+#X msg 76 390 0;
+#X text 131 410 (if no -v [field name] flag was given);
+#X text 59 468 This plots a red trace (500) of width 1 starting at
+point (10 \, 15). Horizontal spacing is 20 and the black diamonds come
+from the template of the array1 element itself. Check the template
+of arrray1 in the subpatch named "help-plot-array1-template"., f 54
 ;
-#X text 48 187 - optional "-y [variable]" flag to use different y variable
+#X text 521 67 This plots a curved green spiral with: color 70 \, line
+width 3 \, location (100 \, 0). Open the subpatch named "help-plot-array2-template"
+to check the template for "array2". Since the template contains an
+"x" variable \, [plot] ignores x spacing requests and takes x from
+the data itself., f 52;
+#X text 529 230 This draws the blue array. If a "w" variable is present
+in the template as for array3 (see the subpatch help-plot-array3-template)
+\, it is added to the line width., f 50;
+#X text 110 390 <= inlet sets visibility (1: visible \, 0: invisible)
 ;
-#X text 48 207 - optional "-w [variable]" flag to use different w variable
-;
-#X text 64 452 This is the green spiral (color 70 \, line width 3 \,
-location (100 \, 0). Since the template for array2 contains an "x"
-variable \, plot ignores x spacing requests and takes x from the data
-itself.;
-#X text 47 144 - optional "-e [const or variable]" to enable/disable
-editing, f 62;
-#X restore 243 78 pd help-plot-template;
-#N canvas 754 260 353 124 help-plot-array1-template 0;
-#X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
-#X obj 32 27 struct help-plot-array1-template float y;
-#X restore 242 101 pd help-plot-array1-template;
-#N canvas 665 269 402 83 help-plot-array2-template 0;
-#X obj 32 26 struct help-plot-array2-template float x float y;
-#X restore 243 123 pd help-plot-array2-template;
-#N canvas 138 129 411 207 help-plot-data 1;
-#X scalar help-plot-template 39 73 \; 0 \; 20 \; 0 \; 30 \; 0 \; \;
-0 0 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 60 0 \; \; 0 0 \;
-10 10 \; 0 10 \; 0 1 \; 20 1 \; 20 10 \; 20 1 \; \;;
-#X restore 242 57 pd help-plot-data;
-#X text 51 133 see also:;
-#X obj 57 181 drawnumber;
+#X text 50 255 - optional word "curve" to specify Bezier curve \; -
+field to plot the array \; - color (0=black \, 999=white \, 900=red
+\, 90=green \, 9=blue \, 555=grey \, etc.) \; - line width \; - relative
+x and y location \; - x spacing;
+#X connect 11 0 1 0;
+#X connect 12 0 1 0;
+#X restore 242 88 pd help-plot-template;
+#N canvas 565 310 478 238 help-plot-array1-template 0;
+#X obj 88 182 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
+#X obj 82 79 struct help-plot-array1-template float y;
+#X text 62 25 template for array1 \, contains only a "y' field for
+the value of "y" in the array., f 51;
+#X text 110 139 This adds a diamond shape to each element in the array
+, f 28;
+#X restore 242 111 pd help-plot-array1-template;
+#N canvas 575 374 436 219 help-plot-array2-template 0;
+#X obj 37 131 struct help-plot-array2-template float x float y;
+#X text 26 32 template for array2. This also contains a "x' field for
+the 'x' spacing of elements \, so you can drag/set them anywhere and
+the 'x' spacing argument is ignored in [plot]., f 53;
+#X restore 242 133 pd help-plot-array2-template;
+#X text 21 215 see also:;
+#X obj 97 207 drawnumber;
 #X obj 45 22 plot;
-#X text 87 22 -- draw array elements of scalars;
-#X obj 57 206 drawpolygon;
-#N canvas 599 270 419 104 help-plot-array3-template 0;
-#X obj 43 32 struct help-plot-array3-template float y float w;
-#X restore 242 144 pd help-plot-array3-template;
-#X obj 57 157 struct;
-#X text 34 90 explanation is in here ==>;
-#X text 241 210 updated for Pd version 0.51;
+#X obj 175 207 drawpolygon;
+#N canvas 558 450 511 187 help-plot-array3-template 0;
+#X obj 83 108 struct help-plot-array3-template float y float w;
+#X text 48 37 template for array3. This contains a "w' field for line
+width \, so you can drag/set it for each element in the array \, so
+the 'w' argument is ignored in [plot].;
+#X restore 242 155 pd help-plot-array3-template;
+#X obj 102 232 struct;
+#X text 53 88 explanation is in here ==>;
+#X text 292 223 updated for Pd version 0.52;
+#X obj 154 232 array;
+#N canvas 319 148 411 207 help-plot-data 1;
+#X scalar help-plot-template 39 73 \; -2 \; 48 \; 10 \; 78 \; 46 \;
+\; -9 -4 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 53 -19 \; \;
+0 0 \; 39 10 \; -35 -21 \; 24 1 \; 22 1 \; 20 10 \; 20 14 \; \;;
+#X restore 242 66 pd help-plot-data;
+#X obj 202 232 element;
+#X text 87 22 - draw array elements of scalars;

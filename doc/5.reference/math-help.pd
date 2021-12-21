@@ -1,44 +1,35 @@
-#N canvas 581 49 601 711 12;
-#X floatatom 204 198 0 0 0 0 - - -;
-#X floatatom 167 289 8 0 0 0 - - -;
-#X floatatom 167 198 0 0 0 0 - - -;
-#X floatatom 209 523 0 0 0 0 - - -;
-#X floatatom 209 462 0 0 0 0 - - -;
-#X floatatom 346 523 7 0 0 0 - - -;
-#X floatatom 346 462 0 0 0 0 - - -;
-#X floatatom 420 523 7 0 0 0 - - -;
-#X floatatom 88 289 8 0 0 0 - - -;
-#X floatatom 88 198 0 0 0 0 - - -;
-#X floatatom 270 523 7 0 0 0 - - -;
-#X floatatom 270 462 0 0 0 0 - - -;
-#X floatatom 420 186 8 0 0 0 - - -;
-#X floatatom 351 186 8 0 0 0 - - -;
+#N canvas 746 47 599 729 12;
+#X floatatom 184 194 4 0 0 0 - - - 0;
+#X floatatom 147 285 8 0 0 0 - - - 0;
+#X floatatom 147 194 4 0 0 0 - - - 0;
+#X floatatom 128 472 6 0 0 0 - - - 0;
+#X floatatom 339 540 7 0 0 0 - - - 0;
+#X floatatom 68 285 8 0 0 0 - - - 0;
+#X floatatom 68 194 4 0 0 0 - - - 0;
+#X floatatom 420 186 8 0 0 0 - - - 0;
+#X floatatom 351 186 8 0 0 0 - - - 0;
 #X obj 282 158 sin;
-#X floatatom 351 67 0 0 0 0 - - -;
-#X floatatom 282 186 8 0 0 0 - - -;
+#X floatatom 351 67 5 0 0 0 - - - 0;
+#X floatatom 282 186 8 0 0 0 - - - 0;
 #X obj 351 119 * 6.28319;
 #X obj 351 93 / 360;
 #X obj 351 158 cos;
 #X obj 420 158 tan;
-#X obj 270 493 sqrt;
-#X obj 88 245 atan;
-#X obj 346 493 exp;
-#X obj 209 493 abs;
-#X obj 204 226 t b f;
-#X text 266 240 The arc tangent takes two forms. The atan2 version
-takes an (x \, y) pair and gives you an output between -pi and pi.
-, f 33;
-#X floatatom 145 523 0 0 0 0 - - -;
-#X floatatom 145 462 0 0 0 0 - - -;
-#X obj 145 493 wrap;
-#X text 38 559 see also:;
-#X obj 40 583 cos~;
-#X obj 78 583 wrap~;
-#X obj 161 583 abs~;
-#X obj 237 583 sqrt~;
-#X obj 123 583 exp~;
-#X obj 199 583 log~;
-#X text 362 672 updated for Pd version 0.49;
+#X obj 199 503 sqrt;
+#X obj 68 241 atan;
+#X obj 265 503 exp;
+#X obj 128 503 abs;
+#X obj 184 222 t b f;
+#X floatatom 64 472 6 0 0 0 - - - 0;
+#X obj 64 503 wrap;
+#X text 38 576 see also:;
+#X obj 40 600 cos~;
+#X obj 78 600 wrap~;
+#X obj 121 600 abs~;
+#X obj 158 600 sqrt~;
+#X obj 203 600 exp~;
+#X obj 240 600 log~;
+#X text 362 687 updated for Pd version 0.49;
 #X obj 67 23 sin;
 #X obj 97 23 cos;
 #X obj 126 23 tan;
@@ -50,57 +41,77 @@ takes an (x \, y) pair and gives you an output between -pi and pi.
 #X obj 338 23 exp;
 #X obj 271 23 abs;
 #X obj 235 23 wrap;
-#X obj 167 255 atan2;
-#X floatatom 420 442 0 0 0 0 - - -;
-#X floatatom 456 442 0 0 0 0 - - -;
-#X obj 456 466 t b f;
-#X obj 420 493 log 2;
+#X obj 147 251 atan2;
+#X floatatom 339 459 5 0 0 0 - - - 0;
+#X floatatom 380 459 5 0 0 0 - - - 0;
+#X obj 380 483 t b f;
+#X obj 339 510 log 2;
 #X text 83 82 Unlike the signal version cos~ \, control-rate trigonometric
 functions take inputs in radians., f 34;
-#X obj 40 637 >;
-#X obj 71 637 &&;
-#X obj 42 663 expr;
-#X text 83 663 - evaluation expressions, f 25;
-#X text 282 582 - signal versions;
-#X obj 40 610 +;
-#X text 71 609 (etc) - arithmetic operators;
-#X obj 167 223 f;
-#X text 27 335 We also have wrap \, absolute value \, square root \,
-exponential and logarithms \, all of which have corresponding signal
-versions. The "wrap" object wraps the input to a value between 0 and
-1 \, including negative numbers (for instance \, -0.2 maps to 0.8.).
-As in the signal version log~ \, log takes a base value via an argument
-or the right inlet \, but it defaults to "e". Log also takes a bang
-message to evaluate the operation with the previously set values.,
-f 77;
-#X text 138 637 (etc) - other binary operators;
-#X obj 108 637 |;
-#X connect 0 0 25 0;
-#X connect 2 0 62 0;
-#X connect 4 0 24 0;
-#X connect 6 0 23 0;
-#X connect 9 0 22 0;
-#X connect 11 0 21 0;
-#X connect 14 0 16 0;
-#X connect 15 0 18 0;
-#X connect 17 0 14 0;
-#X connect 17 0 19 0;
-#X connect 17 0 20 0;
-#X connect 18 0 17 0;
-#X connect 19 0 13 0;
-#X connect 20 0 12 0;
-#X connect 21 0 10 0;
-#X connect 22 0 8 0;
-#X connect 23 0 5 0;
-#X connect 24 0 3 0;
-#X connect 25 0 62 0;
-#X connect 25 1 49 1;
-#X connect 28 0 29 0;
-#X connect 29 0 27 0;
-#X connect 49 0 1 0;
-#X connect 50 0 53 0;
-#X connect 51 0 52 0;
-#X connect 52 0 53 0;
-#X connect 52 1 53 1;
-#X connect 53 0 7 0;
-#X connect 62 0 49 0;
+#X obj 40 654 >;
+#X obj 71 654 &&;
+#X obj 40 680 expr;
+#X text 81 680 - evaluation expressions, f 25;
+#X text 315 599 - signal versions;
+#X obj 40 627 +;
+#X text 134 654 (etc) - other binary operators;
+#X text 71 626 (etc) - binary arithmetic operators;
+#X obj 104 654 div;
+#X floatatom 443 540 7 0 0 0 - - - 0;
+#X floatatom 443 459 5 0 0 0 - - - 0;
+#X floatatom 486 459 5 0 0 0 - - - 0;
+#X obj 486 483 t b f;
+#X obj 443 510 pow 2;
+#X obj 278 600 pow~;
+#X floatatom 265 472 6 0 0 0 - - - 0;
+#X floatatom 199 472 6 0 0 0 - - - 0;
+#X floatatom 128 533 6 0 0 0 - - - 0;
+#X floatatom 64 533 6 0 0 0 - - - 0;
+#X floatatom 265 533 6 0 0 0 - - - 0;
+#X floatatom 199 533 6 0 0 0 - - - 0;
+#X text 26 320 We also have wrap \, absolute value \, square root \,
+exponential \, logarithms and power \, all of which have corresponding
+signal versions. The "wrap" object wraps the input to a value between
+0 and 1 \, including negative numbers (for instance \, -0.2 maps to
+0.8.). As in the signal version log~ \, log takes a base value via
+an argument or the right inlet \, but it defaults to "e". Pow raises
+a number on the left inlet to a numeric power (given by the right inlet
+or argument) - like the signal version \, pow has protection agains
+NaNs (they become 0)., f 77;
+#X text 253 222 The arc tangent takes two forms. The atan2 version
+takes an (x \, y) pair and gives you an output between -pi and pi \,
+it also takes a bang message in the left inlet to evaluate the operation
+with the previously set values., f 40;
+#X connect 0 0 20 0;
+#X connect 2 0 42 0;
+#X connect 3 0 19 0;
+#X connect 6 0 17 0;
+#X connect 9 0 11 0;
+#X connect 10 0 13 0;
+#X connect 12 0 9 0;
+#X connect 12 0 14 0;
+#X connect 12 0 15 0;
+#X connect 13 0 12 0;
+#X connect 14 0 8 0;
+#X connect 15 0 7 0;
+#X connect 16 0 68 0;
+#X connect 17 0 5 0;
+#X connect 18 0 67 0;
+#X connect 19 0 65 0;
+#X connect 20 0 42 0;
+#X connect 20 1 42 1;
+#X connect 21 0 22 0;
+#X connect 22 0 66 0;
+#X connect 42 0 1 0;
+#X connect 43 0 46 0;
+#X connect 44 0 45 0;
+#X connect 45 0 46 0;
+#X connect 45 1 46 1;
+#X connect 46 0 4 0;
+#X connect 58 0 61 0;
+#X connect 59 0 60 0;
+#X connect 60 0 61 0;
+#X connect 60 1 61 1;
+#X connect 61 0 57 0;
+#X connect 63 0 18 0;
+#X connect 64 0 16 0;

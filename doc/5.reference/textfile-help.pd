@@ -1,12 +1,12 @@
 #N canvas 300 93 1015 528 12;
 #X msg 435 30 rewind;
-#X obj 507 414 print done;
+#X obj 507 434 print done;
 #X text 635 190 read a file;
 #X text 687 218 write one;
-#X text 174 429 see also:;
+#X text 52 419 see also:;
 #X obj 454 383 textfile;
 #X msg 506 191 read textfile.txt;
-#X obj 253 430 qlist;
+#X obj 131 420 qlist;
 #X obj 65 34 textfile;
 #X text 59 95 The textfile object reads and writes text files to and
 from memory. You can read a file and output sequential lines as lists
@@ -20,15 +20,15 @@ generate "models" for Gem \, for instance., f 38;
 #X text 536 267 write a file \, terminating lines only with carriage
 return (omitting semicolons.) You can read files this way too \, in
 which case carriage returns are mapped to semicolons.;
-#X obj 454 459 print list;
+#X obj 454 479 print list;
 #X msg 509 321 read textfile.txt cr;
 #X msg 455 83 clear;
 #X text 499 82 empty the object;
 #X text 586 112 add a message;
-#X text 535 452 this outlet gets the lines in sequence., f 20;
+#X text 535 472 this outlet gets the lines in sequence., f 20;
 #X text 56 335 You can also use this object simply for storing heterogeneous
 sequences of lists., f 37;
-#X text 590 406 This outlet gets a bang when you hit the end of the
+#X text 590 426 This outlet gets a bang when you hit the end of the
 sequence., f 33;
 #X msg 495 165 set 2 4 6 8;
 #X text 580 165 clear and then add one message;
@@ -42,9 +42,13 @@ finishing with a semicolon in case you want to make variable-length
 messages., f 38;
 #X msg 515 347 print;
 #X text 557 347 debugging printout;
-#X text 770 458 updated for Pd version 0.33;
+#X text 784 487 updated for Pd version 0.33;
 #X text 146 34 - read and write text files;
-#X obj 253 460 text;
+#X obj 133 448 text;
+#X text 178 439 (newer and better replacement for textfile), f 25
+;
+#X text 525 383 <-- you can also click on the object to edit its contents
+\, just like text define;
 #X connect 0 0 5 0;
 #X connect 5 0 16 0;
 #X connect 5 1 1 0;

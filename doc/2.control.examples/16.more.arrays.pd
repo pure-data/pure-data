@@ -1,75 +1,112 @@
-#N canvas 288 82 874 689 12;
+#N canvas 593 88 880 716 12;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array array99 5 float 1;
-#A 0 0.32 0.499999 -0.406667 -0.753333 0.00666714;
+#X array array97 5 float 1;
+#A 0 0.486666 0.126666 0.566675 0.0333376 0.5;
 #X array array98 7 float 1;
-#A 0 -0.0933342 0.306665 0.0266657 0.239999 0.573332 -0.200001 0.533332
-;
-#X coords 0 1 5 -1 200 150 1;
-#X restore 466 54 graph;
-#X text 155 15 MORE ON ARRAYS;
-#X msg 17 229 \; array99 rename george;
-#X msg 221 229 \; george rename array99;
-#X msg 317 166 \; array99 3 -0.5 0.5;
-#X text 17 207 renaming an array:;
-#X text 16 276 setting the bounds rectangle:;
-#X msg 18 296 \; array99 bounds 0 -2 10 2;
-#X msg 245 294 \; array99 bounds 0 -1 5 1;
-#X msg 19 395 \; array99 xticks 0 1 1;
-#X msg 212 394 \; array99 yticks 0 0.1 5;
-#X msg 15 472 \; array99 xlabel -1.1 0 1 2 3 4 5;
-#X text 12 436 adding labels. Give a y value and a bunch of x values
-or vice versa:;
-#X msg 17 166 \; array98 0 -1 1 -1 1 -1 1 -1 1 -1;
-#X msg 256 472 \; array99 ylabel 5.15 -1 0 1;
-#X text 10 39 Arrays have methods to set their values explicitly \;
-to set their "bounds" rectangles \, to rename them (but if you have
-two with the same name this won't necessarily do what you want) and
-to add markings. To set values by message \, send a list whose first
-element gives the index to start at. The second example sets two values
-starting at index three. Indices count up from zero.;
-#X obj 482 403 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X msg 482 427 \; array98 vis \$1;
-#X obj 602 401 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X msg 602 426 \; array99 vis \$1;
-#X msg 483 632 \; array98 style \$1;
-#X obj 483 611 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
--1 -1 0;
-#X msg 633 547 \; array98 width \$1;
-#X floatatom 632 524 5 0 0 0 - - -;
-#X text 482 588 point \, line \, bezier;
-#X text 629 501 line width;
-#X floatatom 483 521 5 0 0 0 - - -;
-#X text 480 498 color;
-#X msg 527 521 9;
-#X text 480 361 You can selectively show/hide arrays with the "vis"
-message:, f 37;
-#X text 479 474 Change the visual appearance:;
-#X msg 558 521 90;
-#X msg 591 520 900;
-#X msg 483 547 \; array98 color \$1;
-#X text 14 522 You can also change x and y range and size in the "properties"
-dialog. Note that information about size and ranges is saved \, but
-ticks and labels are lost between Pd sessions. The contents of the
-array may be saved as part of the patch or discarded. This is set in
-the 'properties" dialog.;
-#X text 480 211 You can put more than one array in a single "graph"
+#A 0 -1 1 -1 -7.98702e-06 -1 -0.0666752 -1;
+#X coords 0 1 6 -1 250 150 1 0 0;
+#X restore 555 45 graph;
+#X text 105 13 MORE ON ARRAYS;
+#X text 27 207 renaming an array:;
+#X text 26 276 setting the bounds rectangle:;
+#X text 30 441 adding labels. Give a y value and a bunch of x values
+or vice versa:, f 37;
+#X obj 585 379 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 585 403 \; array98 vis \$1;
+#X obj 707 377 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 538 658 \; array98 style \$1;
+#X obj 538 613 hradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
+#000000 #000000 0;
+#X msg 538 521 \; array98 width \$1;
+#X floatatom 538 493 5 1 10 0 - - - 0;
+#X floatatom 712 496 5 0 0 0 - - - 0;
+#X msg 712 522 \; array98 color \$1;
+#X text 487 214 You can put more than one array in a single "graph"
 (which is Pd's name for the bounding rectangle \, and is a synonym
 for "canvas".) Arrays' sizes need not match the bounds of the containing
 graph. But if you resize an array \, and if it is the only array contained
 in a graph \, then the graph automaticallly resets its bounds to match.
-, f 36;
-#X text 15 342 Adding x and y labels: give a point to put a tick \,
+, f 51;
+#X text 25 342 Adding x and y labels: give a point to put a tick \,
 the interval between ticks \, and the number of ticks overall per large
 tick.;
-#X text 617 640 last updated for release 0.52.;
-#X connect 16 0 17 0;
-#X connect 18 0 19 0;
-#X connect 21 0 20 0;
-#X connect 23 0 22 0;
-#X connect 26 0 33 0;
-#X connect 28 0 33 0;
-#X connect 31 0 33 0;
-#X connect 32 0 33 0;
+#X msg 679 466 9;
+#X msg 712 466 90;
+#X msg 746 466 900;
+#X text 36 138 set array values from index 0;
+#X text 309 129 sets two values from index 3, f 17;
+#X text 30 39 Arrays have methods to set their values explicitly. Below
+you can set their "bounds" rectangles \, rename them (but if you have
+two with the same name this won't necessarily do what you want) and
+add markings. To set values by message \, send a list whose first element
+gives the index to start at. Indices count up from zero., f 66;
+#X msg 28 166 \; array98 0 -1 1 -1 1 -1 1 -1;
+#X text 25 526 You can also change x and y range and size in the "properties"
+dialog. Note that information about size and ranges is saved \, but
+ticks and labels are lost between Pd sessions. The contents of the
+array may be saved as part of the patch or discarded. This is set in
+the 'properties" dialog as well., f 62;
+#X text 488 328 For last \, there are methods to change the visual
+appearance of arrays:, f 51;
+#X text 506 392 show/hide arrays:, f 9;
+#X text 526 467 set line width;
+#X text 755 494 set color;
+#X floatatom 538 634 5 0 0 0 - - - 0;
+#X msg 302 166 \; array97 3 -0.5 0.5;
+#X msg 27 229 \; array97 rename george;
+#X msg 231 229 \; george rename array97;
+#X msg 28 296 \; array97 bounds 0 2 10 -2;
+#X msg 255 294 \; array97 bounds 0 1 6 -1;
+#X msg 29 395 \; array97 xticks 0 1 1;
+#X msg 222 394 \; array97 yticks 0 0.1 5;
+#X msg 30 478 \; array97 xlabel -1.1 0 1 2 3 4 5 6;
+#X msg 281 478 \; array97 ylabel -0.1 -1 0 1;
+#X msg 707 402 \; array97 vis \$1;
+#N canvas 715 70 617 394 locality 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array \$0-array 10 float 3;
+#A 0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5;
+#X coords 0 1 10 -1 200 140 1;
+#X restore 97 126 graph;
+#X text 60 32 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X obj 430 184 send \$0-array;
+#X obj 348 129 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X msg 430 154 const 0.5;
+#X msg 348 216 \; \$1-array const -0.5;
+#X obj 348 168 float \$0;
+#X text 371 126 <= click;
+#X text 67 306 You can use "\$0" in an array name wherever you want
+as above. If you need to send a message to the array \, use the send
+object or load the "\$0" in a float object and pass it to a message
+used as a send. This is because "\$0" doesn't get expanded in messages.
+, f 69;
+#X connect 3 0 6 0;
+#X connect 4 0 2 0;
+#X connect 6 0 5 0;
+#X restore 342 617 pd locality;
+#X text 63 617 open subpatch for local array names =>;
+#X msg 693 615 0;
+#X msg 683 578 1;
+#X text 716 572 allow editing with mouse, f 13;
+#X text 722 608 prevent mouse interaction, f 14;
+#X text 456 634 0- point \; 1- polygon \; 2- bezier;
+#X text 515 589 set display style;
+#X msg 683 645 \; array97 edit \$1 \; array98 edit \$1;
+#X text 61 671 last updated for version 0.52.;
+#X connect 5 0 6 0;
+#X connect 7 0 38 0;
+#X connect 9 0 28 0;
+#X connect 11 0 10 0;
+#X connect 12 0 13 0;
+#X connect 16 0 12 0;
+#X connect 17 0 12 0;
+#X connect 18 0 12 0;
+#X connect 28 0 8 0;
+#X connect 41 0 47 0;
+#X connect 42 0 47 0;

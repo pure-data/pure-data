@@ -1,9 +1,10 @@
 #N canvas 633 85 595 573 12;
+#X declare -stdpath ./;
 #X obj 47 480 output~;
 #X text 326 515 updated for Pd version 0.39;
 #X obj 151 454 metro 250;
-#X obj 151 434 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 151 434 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X text 169 431 graphing on/off;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array H02-graph 882 float 0;
@@ -24,7 +25,7 @@ one in the "hip~" object., f 65;
 #X obj 71 263 +~ 1;
 #X obj 71 400 hip~ 5;
 #X text 134 400 high-pass filter;
-#X floatatom 110 364 5 0 0 0 - - -;
+#X floatatom 110 364 5 0 0 0 - - - 0;
 #X msg 110 289 0;
 #X text 155 238 sinusoidal test signal;
 #X text 117 263 add "DC";
@@ -38,6 +39,7 @@ one in the "hip~" object., f 65;
 #X msg 128 337 220;
 #X text 102 9 ONE-POLE \, ONE-ZERO HIGH-PASS FILTER;
 #X obj 133 480 tabwrite~ H02-graph;
+#X obj 425 8 declare -stdpath ./;
 #X connect 2 0 25 0;
 #X connect 3 0 2 0;
 #X connect 9 0 10 0;

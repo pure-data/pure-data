@@ -17,10 +17,14 @@ a symbol and "weasel" is an array of objects of structure "struct-2".
 #X text 56 149 see also:;
 #X obj 151 169 drawnumber;
 #X obj 236 170 plot;
-#X text 59 234 updated for Pd version 0.35;
+#X text 299 236 updated for Pd version 0.35;
 #X obj 35 16 struct;
 #X text 30 55 There should be one "struct" object in each Pd window
 you are using as a data structure template. The arguments specify the
 types and names of the fields \; and for array fields \, a third argument
 specifies the template that the array elements should belong to.;
 #X text 93 18 - declare the fields in a data structure.;
+#X text 43 222 see also:;
+#X obj 47 249 drawpolygon;
+#X obj 138 249 drawtext;
+#X obj 208 249 plot;

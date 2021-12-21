@@ -7,6 +7,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 
 #include <windows.h>
@@ -702,7 +703,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
 
     logpost(NULL, PD_VERBOSE, "opening audio...");
     nt_blocksize = (blocksize ? blocksize : DEFREALDACBLKSIZE);
-    nbuf = (sys_schedadvance * rate )/ (nt_blocksize * 1000000.);
+    nbuf = (double)sys_schedadvance / 1000000. * rate / nt_blocksize;
     if (nbuf >= MAXBUFFER)
     {
         fprintf(stderr, "pd: audio buffering maxed out to %d\n",
@@ -770,6 +771,7 @@ void mmio_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize)
 {
     int  wRtn, ndev, i;
+    char utf8device[MAXPDSTRING];
 
     *canmulti = 2;  /* supports multiple devices */
     ndev = waveInGetNumDevs();
@@ -780,9 +782,11 @@ void mmio_getdevs(char *indevlist, int *nindevs,
     {
         WAVEINCAPS wicap;
         wRtn = waveInGetDevCaps(i, (LPWAVEINCAPS) &wicap, sizeof(wicap));
+        if (!wRtn)
+            u8_nativetoutf8(utf8device, MAXPDSTRING, wicap.szPname, -1);
         _snprintf(indevlist + i * devdescsize, devdescsize, "%s",
-            (wRtn ? "???" : wicap.szPname));
-        outdevlist[(i+1) * devdescsize - 1] = 0;
+            (wRtn ? "???" : utf8device));
+        indevlist[(i+1) * devdescsize - 1] = 0;
     }
 
     ndev = waveOutGetNumDevs();
@@ -793,8 +797,10 @@ void mmio_getdevs(char *indevlist, int *nindevs,
     {
         WAVEOUTCAPS wocap;
         wRtn = waveOutGetDevCaps(i, (LPWAVEOUTCAPS) &wocap, sizeof(wocap));
+        if (!wRtn)
+            u8_nativetoutf8(utf8device, MAXPDSTRING, wocap.szPname, -1);
         _snprintf(outdevlist + i * devdescsize,  devdescsize, "%s",
-            (wRtn ? "???" : wocap.szPname));
+            (wRtn ? "???" : utf8device));
         outdevlist[(i+1) * devdescsize - 1] = 0;
     }
 }

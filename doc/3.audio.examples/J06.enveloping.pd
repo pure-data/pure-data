@@ -1,9 +1,10 @@
 #N canvas 462 26 825 773 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-waveform 882 float 0;
 #X coords 0 1.02 881 -1.02 200 130 1;
 #X restore 552 357 graph;
-#X floatatom 65 58 0 0 0 0 - - -;
+#X floatatom 65 58 0 0 0 0 - - - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-env 22050 float 0;
 #X coords 0 1.02 22049 -1.02 200 130 1;
@@ -15,22 +16,22 @@
 #X obj 96 128 *~;
 #X obj 65 207 -~;
 #X obj 65 244 *~;
-#X floatatom 135 90 3 0 100 0 - - -;
+#X floatatom 135 90 3 0 100 0 - - - 0;
 #X obj 71 282 min~;
-#X floatatom 130 146 3 0 100 0 - - -;
+#X floatatom 130 146 3 0 100 0 - - - 0;
 #X obj 130 169 / 100;
-#X floatatom 123 202 3 0 100 0 - - -;
+#X floatatom 123 202 3 0 100 0 - - - 0;
 #X obj 114 446 *~ 2;
 #X obj 114 474 min~;
 #X obj 165 446 -~ 1;
 #X obj 114 418 phasor~ 200;
 #X obj 72 542 *~;
 #X obj 113 389 tabwrite~ \$0-env;
-#X obj 113 361 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 113 361 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 123 225 * -1;
-#X obj 128 527 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 128 527 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 114 550 tabwrite~ \$0-waveform;
 #X obj 165 474 *~ -3;
 #X obj 114 500 -~ 0.5;
@@ -69,6 +70,7 @@ phase to make the segment., f 39;
 #X text 152 201 <= slope of decay segment.;
 #X text 213 469 used here so we'll have something to listen to., f
 42;
+#X obj 604 35 declare -stdpath ./;
 #X connect 1 0 3 0;
 #X connect 3 0 7 0;
 #X connect 3 0 8 0;

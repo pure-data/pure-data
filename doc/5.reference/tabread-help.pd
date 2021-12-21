@@ -1,38 +1,77 @@
-#N canvas 397 60 785 541 12;
-#X text 97 166 index;
-#X obj 54 14 tabread;
-#X obj 60 239 tabread array99;
-#X floatatom 60 167 0 0 0 0 - - -;
-#X floatatom 60 273 0 0 0 0 - - -;
+#N canvas 664 140 708 526 12;
+#X text 100 151 index;
+#X obj 106 24 tabread;
+#X floatatom 67 152 4 0 9 0 - - - 0;
+#X floatatom 67 268 5 0 0 0 - - - 0;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array array99 10 float 3;
-#A 0 9 0 8 1 7 2 6 3 5 4;
+#X array table-ex 10 float 3;
+#A 0 1 4 2 8 5 6 1 4 2 8;
 #X coords 0 10 10 0 250 200 1 0 0;
-#X restore 455 183 graph;
-#X text 98 274 output = array99[index];
-#X text 204 231 creation argument;
-#X text 206 247 gives array name;
-#X msg 70 199 set array99;
-#X text 182 199 change array name;
-#X text 127 14 - read numbers from a table;
-#X msg 31 342 \; array99 xlabel -0.5 0 1 2 3 4 5 6 7 8 9 10 \; array99
-ylabel -1 0 1 2 3 4 5 6 7 8 9 10;
-#X text 548 474 updated for Pd version 0.43;
-#X obj 31 315 loadbang;
-#X text 36 421 see also the "array" tutorial in section 2 of the Pd
-documentation \, and these objects:;
-#X obj 36 475 tabwrite~;
-#X obj 270 475 tabwrite;
-#X obj 345 475 tabsend~;
-#X obj 421 475 tabreceive~;
-#X obj 117 475 tabplay~;
-#X obj 195 475 tabread4;
-#X text 82 57 The tabread object reads values from an array ("table")
+#X restore 391 151 graph;
+#X text 191 216 creation argument;
+#X text 193 232 gives array name;
+#X text 176 184 change array name;
+#X text 467 471 updated for Pd version 0.43;
+#X obj 158 472 tabwrite~;
+#X obj 92 472 tabwrite;
+#X obj 300 472 tabsend~;
+#X obj 366 472 tabreceive~;
+#X obj 232 472 tabplay~;
+#X obj 27 472 tabread4;
+#X text 51 61 The tabread object reads values from an array ("table")
 according to an index. The index is rounded down to the next lower
 integer. Values in the table correspond to indices starting at 0 Indices
 outside of the range are replaced by the nearest index in range (from
-0 to 9 in this example)., f 69;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
-#X connect 9 0 2 0;
-#X connect 14 0 12 0;
+0 to 9 in this example)., f 84;
+#X obj 415 392 ../2.control.examples/15.array;
+#X obj 415 415 ../2.control.examples/16.more.arrays;
+#X text 36 396 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files to the right ====>, f 52;
+#X text 26 442 see also these objects:;
+#X obj 67 224 tabread table-ex;
+#X msg 77 184 set table-ex;
+#X text 110 269 output = table-ex[index];
+#N canvas 746 749 401 220 init-table 0;
+#X obj 35 42 loadbang;
+#X msg 35 74 \; table-ex resize 10 \; table-ex bounds 0 10 10 0 \;
+table-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; table-ex ylabel -0.3 0
+1 2 3 4 5 6 7 8 9 10 \; table-ex 0 1 4 2 8 5 6 1 4 2 8;
+#X connect 0 0 1 0;
+#X restore 545 127 pd init-table;
+#N canvas 978 194 593 412 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 435 291 <= array with local name, f 13;
+#X obj 221 291 f \$0;
+#X msg 120 210 set \$1;
+#X obj 120 184 symbol \$0-x;
+#X obj 120 161 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 227 197 You can also load '\$0' in a float object and send
+it to a message that works like a send to send messages to an array.
+, f 40;
+#X text 139 158 click to set name;
+#X floatatom 69 179 4 0 9 0 - - - 0;
+#X floatatom 69 295 5 0 0 0 - - - 0;
+#X obj 284 292 array define \$0-x 10;
+#X msg 221 320 \; \$1-x 0 1 0 -1 0 1 0 -1 0 1 0;
+#X obj 221 265 loadbang;
+#X obj 69 251 tabread;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 2 0 11 0;
+#X connect 3 0 13 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 8 0 13 0;
+#X connect 12 0 2 0;
+#X connect 13 0 9 0;
+#X restore 200 332 pd Dealing_with_"\$0";
+#X text 38 323 open subpatch to see how to deal with '\$0', f 21;
+#X text 169 24 - non-interpolating table lookup;
+#X connect 2 0 20 0;
+#X connect 20 0 3 0;
+#X connect 21 0 20 0;

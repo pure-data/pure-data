@@ -54,6 +54,7 @@ empty=
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
+     ./1.manual/favicon.ico \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.jpg \
      ./1.manual/fig1.3.jpg \
@@ -260,7 +261,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/filter-graph1.pd \
      ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/osc-voice.pd \
-     ./3.audio.examples/output~.pd \
      ./3.audio.examples/partial.pd \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
@@ -292,9 +292,9 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/data-start.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
-     ./4.data.structures/output~.pd \
      ./4.data.structures/voice.pd \
      ./4.data.structures/z.txt \
+     ./5.reference/pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
      ./5.reference/acoustics~-help.pd \
@@ -322,11 +322,10 @@ nobase_dist_libpd_DATA = \
      ./5.reference/czero~-help.pd \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
-     ./5.reference/delread4~-help.pd \
-     ./5.reference/delread~-help.pd \
-     ./5.reference/delwrite~-help.pd \
-     ./5.reference/drawpolygon-help.pd \
+     ./5.reference/delay-tilde-objects-help.pd \
+     ./5.reference/draw-shapes-help.pd \
      ./5.reference/drawtext-help.pd \
+     ./5.reference/ds-text.txt \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
      ./5.reference/expr-help.pd \
@@ -389,7 +388,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
-     ./5.reference/receive-help.pd \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
@@ -402,10 +400,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send-help.pd \
+     ./5.reference/send-receive-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
-     ./5.reference/setctl.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sigbinops-help.pd \
@@ -418,7 +415,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/stripnote-help.pd \
      ./5.reference/struct-help.pd \
      ./5.reference/swap-help.pd \
-     ./5.reference/switch~-help.pd \
      ./5.reference/symbol-help.pd \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
@@ -427,7 +423,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
      ./5.reference/tabread~-help.pd \
-     ./5.reference/tabsend~-help.pd \
+     ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \
@@ -439,6 +435,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/throw~-help.pd \
      ./5.reference/timer-help.pd \
      ./5.reference/toggle-help.pd \
+     ./5.reference/trace-help.pd \
      ./5.reference/trigger-help.pd \
      ./5.reference/unpack-help.pd \
      ./5.reference/until-help.pd \
@@ -492,6 +489,7 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
+     ./8.topics/expr.html \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \

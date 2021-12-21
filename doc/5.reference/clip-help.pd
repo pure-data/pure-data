@@ -1,23 +1,24 @@
 #N canvas 709 131 498 351 12;
-#X floatatom 117 141 4 0 0 0 - - -;
-#X floatatom 151 168 4 0 0 0 - - -;
+#X floatatom 117 141 4 0 0 0 - - - 0;
+#X floatatom 151 168 4 0 0 0 - - - 0;
 #X obj 42 19 clip;
 #X text 88 18 - bound a number between two limits;
-#X floatatom 84 229 4 0 0 0 - - -;
+#X floatatom 84 229 4 0 0 0 - - - 0;
 #X obj 84 199 clip 20 50;
 #X text 151 140 lower limit;
 #X text 190 168 upper limit;
 #X text 182 196 optional creation arguments initialize lower and upper
 limits, f 34;
-#X floatatom 84 115 4 0 0 0 - - -;
+#X floatatom 84 115 4 0 0 0 - - - 0;
 #X text 119 114 incoming number to clip;
 #X text 257 288 updated for Pd version 0.47;
-#X text 24 288 see also:;
-#X obj 102 288 min;
-#X obj 137 288 max;
+#X text 27 301 see also:;
+#X obj 105 288 min;
+#X obj 140 288 max;
 #X obj 175 288 clip~;
 #X text 31 53 The clip object passes its signal input to its output
 \, clipping it to lie between two limits.;
+#X obj 106 314 expr;
 #X connect 0 0 5 1;
 #X connect 1 0 5 2;
 #X connect 5 0 4 0;

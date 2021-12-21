@@ -1,19 +1,32 @@
-#N canvas 576 114 537 303 12;
-#X msg 65 127 23 0;
-#X obj 65 202 print x1;
-#X obj 139 202 print x2;
-#X obj 65 166 stripnote, f 11;
-#X msg 105 127 34.5 67.8;
-#X obj 137 245 makenote;
-#X text 105 11 - send note-on messages and schedule note-off for later
-;
-#X text 254 215 updated for Pd version 0.28;
-#X obj 26 11 stripnote;
-#X text 33 52 Stripnote takes note-off (zero-velocity) messages out
-of a stream of MIDI-style note message and passes the others through
-unchanged.;
-#X text 58 245 see also:;
-#X connect 0 0 3 0;
-#X connect 3 0 1 0;
-#X connect 3 1 2 0;
-#X connect 4 0 3 0;
+#N canvas 751 75 508 481 12;
+#X obj 120 382 print x1;
+#X obj 194 382 print x2;
+#X obj 120 333 stripnote, f 11;
+#X msg 120 280 34.5 67.8;
+#X obj 130 428 makenote;
+#X text 271 428 updated for Pd version 0.28;
+#X obj 56 11 stripnote;
+#X text 51 428 see also:;
+#X floatatom 120 359 5 0 0 0 - - - 0;
+#X floatatom 194 359 5 0 0 0 - - - 0;
+#X text 176 306 - note off ignored;
+#X text 33 133 The left inlet takes the note number and the right inlet
+takes velocity values. Alternatively \, you can send it a list that
+spreads the values through the inlets., f 63;
+#X text 33 52 Stripnote ignores note-off (zero-velocity) messages from
+a stream of MIDI-style note message and passes the others through unchanged.
+It can deal with any numbers (negative \, floats \, whatever) even
+though MIDI values need to be integers from 0 to 127!, f 63;
+#X msg 97 253 70 127;
+#X msg 138 305 70 0;
+#X text 135 11 - strip "note off" messages;
+#X text 33 186 This is very useful if you want a Note-On message to
+trigger something in Pd but you don't want a Note-Off to trigger anything
+when you release the note., f 63;
+#X connect 2 0 8 0;
+#X connect 2 1 9 0;
+#X connect 3 0 2 0;
+#X connect 8 0 0 0;
+#X connect 9 0 1 0;
+#X connect 13 0 2 0;
+#X connect 14 0 2 0;

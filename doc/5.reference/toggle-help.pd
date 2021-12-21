@@ -1,18 +1,18 @@
-#N canvas 567 34 531 566 12;
-#X obj 87 247 bng 18 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
--1;
-#X obj 114 310 tgl 55 0 empty empty Big-Toggle 63 26 2 16 -228856 -184321
--34 0 1;
+#N canvas 698 43 531 566 12;
+#X obj 87 247 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000;
+#X obj 114 310 tgl 55 0 empty empty Big\\\ Toggle 63 26 2 16 #dcdcdc
+#b40000 #000084 0 1;
 #N canvas 568 187 676 290 old-behavior 0;
-#X floatatom 38 57 5 0 0 0 - - -;
-#X floatatom 89 217 5 0 0 0 - - -;
+#X floatatom 38 57 5 0 0 0 - - - 0;
+#X floatatom 89 217 5 0 0 0 - - - 0;
 #X msg 257 190 \; pd compatibility 0.45;
 #X msg 436 191 \; pd compatibility 0.46;
 #X text 274 228 Old "compatible" behavior, f 16;
 #X text 443 228 Mew "correct" behavior;
-#X obj 89 166 tgl 30 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1.23;
-#X floatatom 89 45 5 0 0 0 - - -;
+#X obj 89 166 tgl 30 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1.23;
+#X floatatom 89 45 5 0 0 0 - - - 0;
 #X msg 89 69 nonzero \$1;
 #X msg 112 100 set 1.23;
 #X msg 118 130 set 0;
@@ -32,13 +32,13 @@ to change the nonzero value.;
 #X connect 9 0 6 0;
 #X connect 10 0 6 0;
 #X restore 341 406 pd old-behavior;
-#X floatatom 114 379 4 0 0 0 - - -;
-#X obj 48 17 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
-;
+#X floatatom 114 379 4 0 0 0 - - - 0;
+#X obj 48 17 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
 #N canvas 564 216 614 464 position 0;
-#X floatatom 142 146 4 0 1000 0 - - -;
+#X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
-#X floatatom 191 146 5 0 500 0 - - -;
+#X floatatom 191 146 5 0 500 0 - - - 0;
 #X msg 142 243 pos \$1 \$2;
 #X text 63 146 x-position;
 #X text 235 145 y-position;
@@ -62,8 +62,8 @@ by a difference amount. It takes a list of x/y delta in pixels., f
 pixels and sets the objects's position., f 33;
 #X text 159 19 You can also set and change the position of the object
 in the patch. Check below:, f 41;
-#X obj 265 350 tgl 30 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 265 350 tgl 30 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X connect 0 0 18 0;
 #X connect 1 0 18 0;
 #X connect 1 1 18 1;
@@ -79,9 +79,9 @@ in the patch. Check below:, f 41;
 #X restore 378 240 pd position;
 #N canvas 445 197 357 405 properties 0;
 #N canvas 805 54 631 565 colors 0;
-#X floatatom 71 244 3 0 29 0 - - -;
-#X floatatom 107 244 3 0 29 0 - - -;
-#X floatatom 176 249 3 0 29 0 - - -;
+#X floatatom 71 244 3 0 29 0 - - - 0;
+#X floatatom 107 244 3 0 29 0 - - - 0;
+#X floatatom 176 249 3 0 29 0 - - - 0;
 #X text 103 224 front;
 #X text 169 224 label;
 #X obj 107 273 t b f;
@@ -89,16 +89,16 @@ in the patch. Check below:, f 41;
 #X msg 71 343 color \$1 \$2 \$3;
 #X obj 71 306 pack 0 22 22, f 20;
 #X text 180 343 presets;
-#X symbolatom 506 340 9 0 0 0 - - -;
+#X symbolatom 506 340 9 0 0 0 - - - 0;
 #N canvas 1111 221 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -125,16 +125,16 @@ in the patch. Check below:, f 41;
 #X connect 13 0 7 0;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 506 158 pd label;
-#X symbolatom 420 339 9 0 0 0 - - -;
+#X symbolatom 420 339 9 0 0 0 - - - 0;
 #N canvas 939 210 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 74 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 146 257 makefilename %02x;
 #X obj 112 284 makefilename %02x;
@@ -161,15 +161,15 @@ in the patch. Check below:, f 41;
 #X connect 13 0 7 0;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 420 158 pd label;
-#X symbolatom 334 339 9 0 0 0 - - -;
+#X symbolatom 334 339 9 0 0 0 - - - 0;
 #N canvas 879 154 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 221 257 makefilename %02x;
 #X obj 141 284 makefilename %02x;
@@ -209,8 +209,8 @@ in the patch. Check below:, f 41;
 #X msg 334 437 color \$1 \$2 \$3;
 #X msg 256 263 list #ffffff #000000 #000000, f 7;
 #X obj 243 408 metro 500;
-#X obj 243 376 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#X obj 243 376 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 20 224 background;
 #X text 443 438 RGB in hexadecimal;
 #X text 47 17 The 'color' message takes a list of three values to set
@@ -222,12 +222,12 @@ background \, front and label colors \, respectively. Integers from
 ============>, f 38;
 #N canvas 869 206 530 504 old_way 0;
 #N canvas 1056 348 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X text 66 56 label;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
@@ -245,16 +245,16 @@ background \, front and label colors \, respectively. Integers from
 #X restore 355 133 pd label;
 #X obj 67 251 loadbang;
 #X obj 67 314 metro 500;
-#X obj 67 285 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#X obj 67 285 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 194 108 Set RGB values in the sliders;
 #N canvas 803 214 392 476 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 313 269 t b f;
 #X obj 171 269 t b f;
@@ -280,12 +280,12 @@ background \, front and label colors \, respectively. Integers from
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 183 133 pd label;
 #N canvas 976 360 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
 #X obj 169 319 t b f;
@@ -330,8 +330,8 @@ background \, front and label colors \, respectively. Integers from
 #X connect 9 1 10 0;
 #X restore 243 334 pd pack;
 #X f 8;
-#X obj 243 415 tgl 50 0 empty empty Label 55 24 0 25 -262144 -1 -1
-1 1;
+#X obj 243 415 tgl 50 0 empty empty Label 55 24 0 25 #ffffff #000000
+#000000 0 1;
 #X text 108 14 The RGB color scheme can also be encoded \, for backwards
 compatibility \, as negative inetegers. For "R" (red) \, "G" (green)
 & "B" (blue) values from 0 to 255 \, the conversion formula is \; float
@@ -352,8 +352,8 @@ that still works for backwards compatibility). But since Pd 0.47-0
 \, you can set colors with hexadecimal RGB symbol values \, which are
 followed by "#" \, check it below., f 77;
 #X text 35 432 See also:;
-#X obj 243 489 tgl 50 0 empty empty Label 55 24 0 25 -262144 -1 -1
-1 1;
+#X obj 243 489 tgl 50 0 empty empty Label 55 24 0 25 #ffffff #000000
+#000000 0 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;
 #X connect 2 0 6 0;
@@ -383,33 +383,33 @@ followed by "#" \, check it below., f 77;
 #X coords 0 0 1 1 85 60 0;
 #X restore 158 240 pd colors;
 #N canvas 828 151 361 325 size 0;
-#X floatatom 130 108 3 8 100 0 - - -;
+#X floatatom 130 108 3 8 100 0 - - - 0;
 #X text 157 108 size;
 #X msg 130 145 size \$1;
 #X text 48 22 The size message sets the object's size. The value represents
 the width in pixels for each side of the square., f 35;
-#X obj 130 193 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 130 193 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X connect 0 0 2 0;
 #X connect 2 0 4 0;
 #X restore 172 100 pd size;
 #N canvas 826 132 598 452 label 0;
 #X msg 92 286 label \$1;
-#X floatatom 239 168 4 0 3 0 - - -;
+#X floatatom 239 168 4 0 3 0 - - - 0;
 #X obj 281 195 t b f;
-#X floatatom 281 168 5 5 50 0 - - -;
+#X floatatom 281 168 5 5 50 0 - - - 0;
 #X msg 239 265 label_font \$1 \$2;
 #X text 201 167 type;
 #X text 325 166 size;
-#X obj 239 105 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
--1 -1 0;
+#X obj 239 105 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
+#000000 #000000 0;
 #X text 260 104 DejaVu Sans Mono;
 #X text 260 120 Helvetica;
 #X text 260 135 Times;
 #X msg 104 254 symbol empty;
-#X floatatom 393 184 4 -200 100 0 - - -;
+#X floatatom 393 184 4 -200 100 0 - - - 0;
 #X obj 435 211 t b f;
-#X floatatom 435 184 5 -150 150 0 - - -;
+#X floatatom 435 184 5 -150 150 0 - - - 0;
 #X msg 393 281 label_pos \$1 \$2;
 #X obj 393 239 pack 17 7, f 11;
 #X text 375 183 x;
@@ -420,8 +420,8 @@ the width in pixels for each side of the square., f 35;
 #X text 99 28 The 'label' message sets the label symbol \, setting
 it to "empty" clears it. The 'label_font' message sets font type and
 font size \, while 'label_pos' sets the x/y coordinates.;
-#X obj 240 365 tgl 40 0 empty empty label 45 20 0 20 -262144 -1 -1
-0 1;
+#X obj 240 365 tgl 40 0 empty empty label 45 20 0 20 #fcfcfc #000000
+#000000 0 1;
 #X obj 239 224 pack 0 20, f 11;
 #X connect 0 0 23 0;
 #X connect 1 0 24 0;
@@ -443,13 +443,13 @@ font size \, while 'label_pos' sets the x/y coordinates.;
 #X restore 165 212 pd label;
 #N canvas 855 201 424 388 init 0;
 #X msg 174 188 init \$1;
-#X obj 174 156 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 174 156 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 52 27 The 'init' message takes a float and sets to 'init mode'
 (if different than zero) or 'no init' (if equal to zero - the default
 value)., f 45;
-#X obj 174 231 tgl 50 1 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#X obj 174 231 tgl 50 1 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 1 1;
 #X obj 174 305 print tgl-init;
 #X text 52 78 If in 'init mode' \, when loading the patch \, the objects
 sends its holding value from when the patch was last saved., f 45
@@ -458,7 +458,7 @@ sends its holding value from when the patch was last saved., f 45
 #X connect 1 0 0 0;
 #X connect 3 0 4 0;
 #X restore 172 156 pd init;
-#N canvas 849 183 473 487 send-receive 0;
+#N canvas 849 183 841 420 send-receive 0;
 #X msg 222 191 receive empty;
 #X msg 253 255 send empty;
 #X text 53 96 The 'send' and 'receive' messages take a symbol to set
@@ -468,25 +468,39 @@ sends its holding value from when the patch was last saved., f 45
 cases the inlet/outlet are visually hidden (but still functional in
 the patch). This way \, the object can communicate to [send] and [receive]
 objects., f 50;
-#X text 51 388 Note how you need to escape dollar signs with backslashes
-to set something like "\$0-x". But the backslash is not needed if you
-set it directly via the properties window., f 53;
 #X msg 89 201 0;
 #X msg 78 174 1;
 #X obj 78 232 s \$0-tgl_rcv;
 #X obj 80 283 r \$0-tgl_snd;
-#X floatatom 80 320 5 0 0 0 - - -;
-#X obj 221 313 tgl 50 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X floatatom 80 320 5 0 0 0 - - - 0;
+#X obj 221 313 tgl 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X msg 206 166 receive \\\$0-tgl_rcv;
 #X msg 244 231 send \\\$0-tgl_snd;
-#X connect 0 0 10 0;
-#X connect 1 0 10 0;
-#X connect 5 0 7 0;
-#X connect 6 0 7 0;
-#X connect 8 0 9 0;
-#X connect 11 0 10 0;
-#X connect 12 0 10 0;
+#X text 437 22 Note how you need to escape dollar signs with backslashes
+to set something like "\$0-x". But the backslash is not needed if you
+set it directly via the properties window., f 50;
+#X floatatom 553 375 5 0 0 0 - - - 0;
+#X obj 557 276 tgl 50 0 \$0-tgl \$0-tgl empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 550 233 s \$0-tgl;
+#X obj 554 351 r \$0-tgl;
+#X msg 561 202 0;
+#X msg 550 175 1;
+#X text 437 96 Feedback protection: iemguis can have the same name
+for both the send and receive symbols. This works without 'stack overflow'
+erros because they have feedback protection. See example below., f
+50;
+#X connect 0 0 9 0;
+#X connect 1 0 9 0;
+#X connect 4 0 6 0;
+#X connect 5 0 6 0;
+#X connect 7 0 8 0;
+#X connect 10 0 9 0;
+#X connect 11 0 9 0;
+#X connect 16 0 13 0;
+#X connect 17 0 15 0;
+#X connect 18 0 15 0;
 #X restore 116 184 pd send-receive;
 #N canvas 882 246 447 314 loading-args 0;
 #X text 59 115 For instance \, below \, we have \$0 used in the label
@@ -494,8 +508,8 @@ field \, which gets expanded to the patch ID number. Using something
 like "\$1" is useful if you're using the object in an abstraction \,
 then you can load a value passed as an argument into a parameter.,
 f 49;
-#X obj 158 220 tgl 50 0 empty empty \$0-Label 57 23 0 14 -228856 -1
--1 0 1;
+#X obj 158 220 tgl 50 0 empty empty \$0-Label 57 23 0 14 #dcdcdc #000000
+#000000 0 1;
 #X text 59 26 Note that all the parameters that you can set by inserting
 a number or symbol into a field in the properties window can also load
 dollar sign arguments (\$0 \, \$1 \, \$2 \, and so on). Namely \, these
@@ -507,13 +521,13 @@ parameters are: size \, nonzero value \, send/receive symbols \, label
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
 #N canvas 884 142 379 377 nonzero 0;
-#X floatatom 182 182 4 -100 100 0 - - -;
-#X obj 83 184 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
-#X obj 182 262 tgl 40 0 empty empty empty 17 7 0 10 -262144 -1 -1 28
-28;
+#X floatatom 182 182 4 -100 100 0 - - - 0;
+#X obj 83 184 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 182 262 tgl 40 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 28;
 #X msg 182 215 nonzero \$1;
-#X floatatom 182 322 7 0 0 0 - - -;
+#X floatatom 182 322 7 0 0 0 - - - 0;
 #X text 97 25 The 'nonzero' message sets the non zero value of the
 toggle \, which is the value it outputs when it's on., f 27;
 #X text 97 89 Note that negative values are also possible., f 27;
@@ -542,31 +556,31 @@ included in Pd version 0.34., f 28;
 shortcut. Alternatively \, create it by typing "toggle" or "tgl" into
 an object box. Right click for properties (to set size \, colors \,
 labels \, etc)., f 67;
-#X floatatom 114 247 4 0 0 0 - - -;
+#X floatatom 114 247 4 0 0 0 - - - 0;
 #X msg 157 245 set 1;
 #X msg 161 268 set 0;
 #N canvas 667 86 415 450 examples 0;
-#X obj 82 67 tgl 30 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
-;
+#X obj 82 67 tgl 30 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
 #X obj 82 120 select 0 1;
-#X obj 115 158 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X obj 82 158 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
-#X obj 82 20 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 115 158 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 82 158 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 82 20 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X text 183 58 Using toggle to alternate between two bangs., f 17
 ;
-#X obj 88 296 tgl 20 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 88 296 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 88 335 metro 500;
-#X obj 88 378 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 88 378 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X obj 207 335 spigot;
-#X obj 246 296 tgl 20 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
-#X floatatom 196 296 5 0 0 0 - - -;
-#X floatatom 207 378 5 0 0 0 - - -;
+#X obj 246 296 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 196 296 5 0 0 0 - - - 0;
+#X floatatom 207 378 5 0 0 0 - - - 0;
 #X text 56 210 Many objects take a non zero value to turn something
 on \, and then zero value to turn it off. For instance \, "metro" and
 "spigot"., f 35;

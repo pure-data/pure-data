@@ -1,42 +1,50 @@
-#N canvas 307 77 683 573 12;
+#N canvas 787 60 588 575 12;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array array99 100 float 0;
-#X coords 0 1 100 -1 200 100 1;
-#X restore 92 432 graph;
-#X obj 98 349 metro 500;
-#X obj 82 294 phasor~;
-#X floatatom 82 244 0 0 0 0 - - -;
-#X obj 61 12 phasor~;
-#X obj 98 324 r metro;
-#X obj 82 268 sig~ 890;
-#X msg 400 347 \; metro 0;
-#X msg 396 290 \; pd dsp 1 \; metro 1;
-#X text 133 14 - sawtooth generator;
-#X obj 81 191 phasor~ 440;
-#X floatatom 81 167 0 0 0 0 - - -;
-#X text 74 59 The phasor~ object outputs a sawtooth signal \, traditionally
-used for table lookup via cos~ or tabread4~. If no argument is supplied
-\, the input is taken to be an audio signal \; with a floating-point
-argument \, phasor~ takes floating-point messages to change frequency.
-, f 63;
-#X text 187 183 Invoked above with argument for non-signal input. Incoming
-messages override the initial value., f 49;
-#X text 347 455 see also:;
-#X obj 432 455 osc~;
-#X obj 475 455 cos~;
-#X obj 517 455 tabread4~;
-#X text 394 501 updated for Pd version 0.33;
-#X obj 82 373 tabwrite~ array99;
-#X text 213 375 <= graph the output;
-#X text 140 295 <= right inlet resets phase;
-#X text 151 267 <= convert it to audio signal;
-#X text 126 243 <= specify frequency;
-#X text 485 304 <= Click to start;
-#X text 470 351 <= Click to stop;
-#X connect 1 0 19 0;
-#X connect 2 0 19 0;
-#X connect 3 0 6 0;
-#X connect 5 0 1 0;
-#X connect 5 0 1 0;
-#X connect 6 0 2 0;
-#X connect 11 0 10 0;
+#X array phasor 4410 float 0;
+#X coords 0 1 4409 -1 200 100 1 0 0;
+#X restore 85 432 graph;
+#X floatatom 75 220 0 -100 100 0 - - - 0;
+#X obj 69 16 phasor~;
+#X text 369 435 see also:;
+#X obj 368 462 osc~;
+#X obj 411 462 cos~;
+#X obj 453 462 tabread4~;
+#X text 351 509 updated for Pd version 0.33;
+#X text 201 375 <= graph the output;
+#X text 176 242 <= right inlet resets phase, f 14;
+#X text 104 218 <= specify frequency;
+#X text 137 17 - phase ramp generator;
+#X msg 142 247 0;
+#X obj 95 347 metro 100;
+#X obj 75 274 phasor~ 10;
+#X text 41 56 The phasor~ object outputs phase ramps whose values are
+from 0 to 1 and it repeats this cycle depending on the frequency input.
+It looks like a sawtooth signal but it's traditionally used for table
+lookup via cos~ or tabread4~. The frequency input can be either a float
+or a signal. Positive frequency values generate upwards ramps and negative
+values generate downwards ramps., f 69;
+#X msg 108 247 0.5;
+#X text 42 149 The right inlet resets the phase with values from 0
+to 1 (where '1' is the same as '0' and '0.5' is half the cycle).,
+f 69;
+#X text 61 524 -1;
+#X text 68 479 0;
+#X text 69 425 1;
+#X obj 75 373 tabwrite~ phasor;
+#X obj 264 331 phasor~;
+#X obj 264 302 sig~ 440;
+#X text 335 318 <= signal controlling;
+#X text 358 335 the frequency;
+#X obj 95 316 loadbang;
+#X msg 324 237 \; pd dsp \$1;
+#X obj 324 212 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 344 211 DSP on/off;
+#X connect 1 0 14 0;
+#X connect 12 0 14 1;
+#X connect 13 0 21 0;
+#X connect 14 0 21 0;
+#X connect 16 0 14 1;
+#X connect 23 0 22 0;
+#X connect 26 0 13 0;
+#X connect 28 0 27 0;

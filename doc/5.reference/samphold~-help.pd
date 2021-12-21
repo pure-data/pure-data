@@ -1,27 +1,26 @@
-#N canvas 430 114 535 529 12;
-#X obj 74 472 snapshot~;
-#X floatatom 74 497 5 0 0 0 - - -;
-#X obj 83 446 metro 100;
+#N canvas 863 134 546 573 12;
+#X obj 74 492 snapshot~;
+#X floatatom 74 523 6 0 0 0 - - - 0;
+#X obj 93 465 metro 100;
 #X obj 43 14 samphold~;
 #X text 120 13 - sample and hold unit;
-#X obj 74 387 samphold~;
+#X obj 74 385 samphold~;
 #X text 37 47 The samphold~ object samples its left input whenever
 its right input decreases in value (as a phasor~ does each period \,
 for example.) Both inputs are audio signals., f 66;
 #X obj 109 351 sig~;
-#X obj 163 383 sig~;
-#X floatatom 109 326 3 0 0 0 - - -;
-#X floatatom 163 362 3 0 0 0 - - -;
+#X obj 165 375 sig~;
+#X floatatom 109 326 6 0 0 0 - - - 0;
+#X floatatom 165 353 4 0 0 0 - - - 0;
 #X msg 74 223 set 34;
 #X msg 93 292 reset;
 #X text 139 221 set output to a number;
-#X text 147 326 sample signal;
-#X text 206 360 control signal;
+#X text 159 326 sample signal;
+#X text 199 353 control signal;
 #X msg 82 255 reset 10;
 #X text 161 253 reset previous value;
 #X text 150 303 to force the next sample;
-#X obj 83 414 loadbang;
-#X text 318 462 updated for Pd version 0.39;
+#X text 292 522 updated for Pd version 0.39;
 #X text 161 267 for control inlet;
 #X text 149 289 reset to default 1e+20;
 #X text 38 100 The "set" message sets the output value (which continues
@@ -31,7 +30,11 @@ control input. Use this \, for example \, if you reset the incoming
 phasor but don't want the jump reflected in the output. Plain "reset"
 is equivalent to "reset infinity" which forces the next input to be
 sampled., f 66;
-#X msg 172 443 \; pd dsp 1;
+#X obj 93 440 loadbang;
+#X obj 192 431 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 192 456 \; pd dsp \$1;
+#X text 211 430 DSP on/off;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 5 0 0 0;
@@ -42,5 +45,5 @@ sampled., f 66;
 #X connect 11 0 5 0;
 #X connect 12 0 5 0;
 #X connect 16 0 5 0;
-#X connect 19 0 2 0;
-#X connect 19 0 24 0;
+#X connect 23 0 2 0;
+#X connect 24 0 25 0;

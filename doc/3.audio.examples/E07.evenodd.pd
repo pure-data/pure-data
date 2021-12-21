@@ -1,4 +1,5 @@
 #N canvas 514 51 894 710 12;
+#X declare -stdpath ./;
 #X obj 288 216 f;
 #X obj 322 192 + 1;
 #X obj 322 216 mod 11;
@@ -6,17 +7,17 @@
 #X array E07 11 float 2;
 #X coords 0 96 11 36 200 160 1 0 0;
 #X restore 514 87 graph;
-#X floatatom 348 101 0 10 999 0 - - -;
+#X floatatom 348 101 0 10 999 0 - - - 0;
 #X obj 288 288 mtof;
 #X msg 85 208 1;
 #X obj 155 410 *~;
 #X obj 155 470 cos~;
 #X obj 155 495 hip~ 5;
 #X obj 155 447 +~ 0.1;
-#X floatatom 117 249 0 0 0 0 - - -;
-#X floatatom 216 250 0 0 200 0 - - -;
-#X floatatom 150 249 0 0 999 0 - - -;
-#X floatatom 183 249 0 0 999 0 - - -;
+#X floatatom 117 249 0 0 0 0 - - - 0;
+#X floatatom 216 250 0 0 200 0 - - - 0;
+#X floatatom 150 249 0 0 999 0 - - - 0;
+#X floatatom 183 249 0 0 999 0 - - - 0;
 #X msg 276 397 0;
 #X msg 276 375 0.1;
 #X msg 276 419 0.25;
@@ -24,15 +25,15 @@
 #X text 160 230 A;
 #X text 193 230 D;
 #X text 226 230 S;
-#X floatatom 340 164 0 1 11 0 - - -;
+#X floatatom 340 164 0 1 11 0 - - - 0;
 #X obj 84 308 *~ 0.01;
-#X obj 288 104 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 288 104 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 155 524 output~;
 #X text 634 653 updated for Pd version 0.37;
 #X obj 84 275 adsr 70 10 90 50 500, f 24;
 #X obj 288 265 +;
-#X floatatom 323 265 0 -48 120 0 - - -;
+#X floatatom 323 265 0 -48 120 0 - - - 0;
 #N canvas 274 153 531 210 make-table 0;
 #X obj 92 81 loadbang;
 #X text 70 21 This patch loads a sequence of pitches into E07. The
@@ -75,6 +76,7 @@ Between the two we get mixtures of even and odd., f 61;
 #X text 371 165 <= increment;
 #X text 380 101 <= msec;
 #X text 203 101 ON/OFF =>;
+#X obj 657 22 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 0 0 40 0;
 #X connect 1 0 2 0;

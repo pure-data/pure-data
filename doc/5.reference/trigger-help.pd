@@ -1,40 +1,139 @@
-#N canvas 501 103 685 355 12;
-#X msg 37 168 2.5;
-#X msg 135 170 bang;
-#X msg 77 169 23 64;
-#X obj 49 18 trigger;
-#X text 114 19 - sequence messages in right-to-left order;
-#X text 449 313 updated for Pd version 0.33;
-#X text 98 305 the above can be abbreviated as:;
-#X msg 181 171 symbol dog;
-#X text 35 81 The trigger object outputs its input from right to left
-\, converting to the types indicated by its creation arguments. There
-is also a "pointer" argument type (see the pointer object.), f 67
-;
-#X obj 333 306 t f b s l a;
-#X msg 430 197 dog my cats;
-#X obj 430 229 trigger bang anything;
-#X obj 430 270 print y1;
-#X obj 574 268 print y2;
-#X obj 77 221 trigger float bang symbol list anything;
-#X text 428 152 "anythings" can only;
-#X text 425 172 be converted to bang:;
-#X obj 77 261 print f;
-#X obj 144 261 print b;
-#X obj 212 259 print s;
-#X obj 279 259 print l;
-#X obj 347 261 print a;
-#X obj 77 43 t;
-#X text 115 43 - abbreviation;
-#X connect 0 0 14 0;
-#X connect 1 0 14 0;
-#X connect 2 0 14 0;
-#X connect 7 0 14 0;
+#N struct template1 float x float y float z float q;
+#N canvas 519 81 1202 599 12;
+#X obj 87 18 trigger;
+#X text 152 19 - sequence messages in right-to-left order;
+#X obj 115 43 t;
+#X text 153 43 - abbreviation;
+#X floatatom 279 331 5 0 0 0 - - - 0;
+#X obj 279 371 trigger float bang float;
+#X msg 361 411 10;
+#X obj 361 445 -;
+#X obj 343 473 *;
+#X floatatom 343 503 5 0 0 0 - - - 0;
+#X obj 57 383 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 57 431 trigger bang bang bang;
+#X obj 208 486 print 1st;
+#X obj 132 486 print 2nd;
+#X obj 57 486 print 3rd;
+#X text 79 381 create a bang sequence;
+#X obj 504 280 t f b s l a p;
+#X obj 93 280 trigger float bang symbol list anything pointer;
+#X text 438 281 same as:;
+#X msg 694 141 1 2 3;
+#X obj 714 172 t l f;
+#X listbox 746 200 7 0 0 0 - - - 0;
+#X msg 804 141 list a b c;
+#X obj 804 172 t l s;
+#X text 326 324 mix floats and bang output, f 14;
+#X floatatom 444 401 5 0 0 0 - - - 0;
+#X floatatom 279 409 5 0 0 0 - - - 0;
+#X obj 175 553 unpack;
+#X text 59 553 see also:;
+#X floatatom 938 112 5 0 0 0 - - - 0;
+#X listbox 938 227 10 0 0 0 - - - 0;
+#X msg 983 112 symbol a;
+#X msg 1013 169 1 2 3;
+#X msg 998 141 list a b c;
+#X obj 911 112 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 917 368 5 0 0 0 - - - 0;
+#X msg 961 368 symbol a;
+#X msg 984 423 1 2 3;
+#X msg 974 396 list a b c;
+#X obj 889 368 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X msg 794 368 dog my cats;
+#X obj 938 198 trigger list bang;
+#X obj 1054 225 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 917 454 trigger anything bang;
+#X obj 917 514 print [t a b];
+#X obj 1054 268 print [t l b];
+#X text 964 560 updated for Pd version 0.52;
+#X obj 662 473 t;
+#X text 702 473 =;
+#X text 30 95 The trigger object outputs its input from right to left.
+Because of the hot/cold inlet paradigm of Pd \, output from right to
+left is the usual output order in Pd objects., f 89;
+#X text 668 432 the default is [t b b]:, f 12;
+#X obj 725 473 t b b;
+#X text 681 313 You can use the 'anything' specifier to bypass any
+kind of message: a float \, a symbol \, a pointer \, a bang \, a list
+and also any generic message., f 67;
+#X obj 536 447 t b f;
+#X listbox 515 513 6 0 0 0 - - - 0;
+#X floatatom 536 422 4 0 0 0 - - - 0;
+#X floatatom 514 392 4 0 0 0 - - - 0;
+#X obj 515 478 pack f f;
+#X text 494 349 always force an output, f 12;
+#X text 705 14 The 'float' \, 'symbol' and 'pointer' specifiers can
+truncate to the first element of an input list. Conversely \, besides
+actual lists \, the 'list' specifier receives 1-element lists like
+a float \, symbol or pointer input and passes them unaltered. Note
+that a bang is a 0-element list and is also bypassed., f 61;
+#X obj 134 553 bang;
+#X listbox 714 229 7 0 0 0 - - - 0;
+#X listbox 804 229 7 0 0 0 - - - 0;
+#X listbox 836 200 7 0 0 0 - - - 0;
+#X text 73 220 The message types/arguments are: 'float' \, 'bang' \,
+'symbol' \, 'list' \, 'anything' and 'pointer' (see [pd pointer]) -
+all of which can be abbreviated to its first letter like the object
+itself \, see below:, f 78;
+#N canvas 879 82 610 216 pointer 0;
+#X obj 189 146 ../4.data.structures/01.scalars;
+#X text 75 40 The [trigger] object can receive a pointer and sequence
+it. A pointer can be the location of a Data Structure scalar somewhere
+or the head of a Data Structure list. To know more about Data Structures
+\, how to handle pointers and see examples \, please refer to the 4.Data.Structure
+section of the Pd's tutorials. Starting with the first example below.
+, f 70;
+#X restore 96 325 pd pointer;
+#X text 176 325 <= about pointers, f 8;
+#X text 30 139 The creation arguments specify the number of outlets
+and message type to output. Most of the time you want to match the
+input message type to the argument \, but a mix is possible and can
+be convenient. For instance \, it's very usefull to insert a 'bang'
+message into a sequence \, so you'll always have a bang output with
+the 'bang' specifier no matter what the input is., f 89;
+#X connect 4 0 5 0;
+#X connect 5 0 26 0;
+#X connect 5 1 6 0;
+#X connect 5 2 25 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 1;
+#X connect 8 0 9 0;
 #X connect 10 0 11 0;
-#X connect 11 0 12 0;
+#X connect 11 0 14 0;
 #X connect 11 1 13 0;
-#X connect 14 0 17 0;
-#X connect 14 1 18 0;
-#X connect 14 2 19 0;
-#X connect 14 3 20 0;
-#X connect 14 4 21 0;
+#X connect 11 2 12 0;
+#X connect 19 0 20 0;
+#X connect 20 0 61 0;
+#X connect 20 1 21 0;
+#X connect 22 0 23 0;
+#X connect 23 0 62 0;
+#X connect 23 1 63 0;
+#X connect 25 0 7 1;
+#X connect 26 0 8 0;
+#X connect 29 0 41 0;
+#X connect 30 0 45 0;
+#X connect 31 0 41 0;
+#X connect 32 0 41 0;
+#X connect 33 0 41 0;
+#X connect 34 0 41 0;
+#X connect 35 0 43 0;
+#X connect 36 0 43 0;
+#X connect 37 0 43 0;
+#X connect 38 0 43 0;
+#X connect 39 0 43 0;
+#X connect 40 0 43 0;
+#X connect 41 0 30 0;
+#X connect 41 1 42 0;
+#X connect 42 0 45 0;
+#X connect 43 0 44 0;
+#X connect 43 1 44 0;
+#X connect 53 0 57 0;
+#X connect 53 1 57 1;
+#X connect 55 0 53 0;
+#X connect 56 0 57 0;
+#X connect 57 0 54 0;

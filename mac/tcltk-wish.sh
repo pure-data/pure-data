@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 # Downloads and builds a Wish.app with with a
 # chosen Tcl/TK framework version.
@@ -37,7 +37,7 @@ CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
 # Help message
 #----------------------------------------------------------
 help() {
-echo -e "
+cat <<EOF
 Usage: tcltk-wish.sh [OPTIONS] VERSION
 
   Downloads and builds a Wish-VERSION.app for macOS
@@ -47,10 +47,13 @@ Usage: tcltk-wish.sh [OPTIONS] VERSION
 Options:
   -h,--help           display this help message
 
-  --arch ARCH         choose a specific arch ie. i386, x86_64
+  --arch ARCH         choose a specific arch ie. ppc, i386, x86_64, arm64
   
-  --universal         \"universal\" multi-arch build:
-                      i386 & x86_64 (& ppc if 10.6 SDK found)
+  --universal         "universal" multi-arch build based on detected macOS SDK
+                      10.6:          ppc i386 x86_64
+                      10.7  - 10.13: i386 x86_64
+                      10.14 - 10.15: x86_64
+                      11.0+:         arm64 x86_64
 
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
                       any arguments after VERSION are passed to git
@@ -78,7 +81,7 @@ Examples:
     tcltk-wish.sh --arch i386 8.6.6
 
     # build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
-    # and universal archs
+    # and universal archs (detected from Xcode macOS SDK)
     tcltk-wish.sh --universal 8.6.6
 
     # build Wish-master-git.app with the latest master branch from git
@@ -94,7 +97,8 @@ Examples:
     # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
     # note: --leave ensures the source trees are not deleted after building
     tcltk-wish.sh --build --leave 8.5.19
-"
+
+EOF
 }
 
 # Parse command line arguments
@@ -106,7 +110,7 @@ while [ "$1" != "" ] ; do
             exit 0
             ;;
         --arch)
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "--arch option requires an ARCH argument"
                 exit 1
             fi
@@ -140,7 +144,7 @@ while [ "$1" != "" ] ; do
 done
 
 # check for required version argument
-if [ "$1" == "" ] ; then
+if [ "$1" = "" ] ; then
     echo "Usage: tcltk-wish.sh [OPTIONS] VERSION"
     exit 1
 fi
@@ -163,10 +167,10 @@ fi
 tcldir=tcl${TCLTK}
 tkdir=tk${TCLTK}
 
-if [[ $DOWNLOAD == true ]] ; then
+if [ $DOWNLOAD = true ] ; then
     echo "==== Downloading Tcl/Tk $TCLTK"
 
-    if [[ $GIT == true ]] ; then
+    if [ $GIT = true ] ; then
 
         # shallow clone sources, pass remaining args to git
         git clone --depth 1 https://github.com/tcltk/tcl.git tcl${TCLTK} $@
@@ -195,19 +199,19 @@ else
     fi
 fi
 
-if [[ $BUILD == false ]] ; then
+if [ $BUILD = false ] ; then
     echo  "==== Downloaded sources to $tcldir $tkdir"
     exit 0
 fi
 
 # apply patches, note: this probably can't handle filenames with spaces
 # temp disable exit on error since the exit value of patch --dry-run is used
-if [[ $PATCHES == true ]] ; then
+if [ $PATCHES = true ] ; then
     set +e
     for p in $(find ./patches -type f -name "tcl${TCLTK}*.patch") ; do
         cd tcl${TCLTK}
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
-        if [[ $? == 0 ]] ; then
+        if [ $? = 0 ] ; then
             echo "==== Applying $p"
             patch -p1 < "../${p}"
         fi
@@ -216,7 +220,7 @@ if [[ $PATCHES == true ]] ; then
     for p in $(find ./patches -type f -name "tk${TCLTK}*.patch") ; do
         cd tk${TCLTK}
         (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
-        if [[ $? == 0  ]] ; then
+        if [ $? = 0 ] ; then
             echo "==== Applying $p"
             patch -p1 < "../${p}"
         fi
@@ -233,11 +237,32 @@ if [ "$ARCH" != "" ] ; then
 fi
 
 # try a universal build
-if [ $UNIVERSAL == true ] ; then
-    CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
-    # check if the 10.6 SDK is available, if so we can build for ppc
-    if [ xcodebuild -version -sdk macosx10.6 Path >/dev/null 2>&1 ] ; then
-        CFLAGS="-arch ppc $CFLAGS"
+if [ $UNIVERSAL = true ] ; then
+
+    # detect macOS SDK from Xcode toolchain version & deduce archs
+    XCODE_VER=$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | \
+                grep "version" | sed "s/[^0-9]*\([0-9]*\).*/\1/")
+    if [ "$XCODE_VER" = "" ] ; then
+        # no CLTools, try xcodebuild
+        XCODE_VER=$(xcodebuild -version | grep "Xcode" | \
+                    sed "s/[^0-9]*\([0-9]*\).*/\1/")
+    fi
+    if [ $XCODE_VER -gt 11 ] ; then
+        # Xcode 12+: 11.0+
+        CFLAGS="-arch x86_64 -arch arm64 $CFLAGS"
+    elif [ $XCODE_VER -gt 9 ] ; then
+        # Xcode 10 - 11: 10.14 - 10.15
+        echo "warning: Xcode version $XCODE_VER only builds x86_64"
+        CFLAGS="-arch x86_64 $CFLAGS"
+    elif [ $XCODE_VER -gt 3 ] ; then
+        # Xcode 4 - 9: 10.7 - 10.13
+        CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
+    elif [ "$XCODE_VER" = "3" ] ; then
+        # Xcode 3: 10.6
+        CFLAGS="-arch ppc -arch i386 -arch x86_64 $CFLAGS"
+    else
+        echo "warning: unknown or unsupported Xcode version, trying i386 x86_64"
+        CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
     fi
 fi
 
@@ -255,7 +280,7 @@ make -C ${tkdir}/macosx  install-embedded INSTALL_ROOT=`pwd`/embedded
 mv embedded/Applications/Utilities/Wish.app $WISH
 
 # finish up
-if [[ $LEAVE == false ]] ; then
+if [ $LEAVE = false ] ; then
     rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
     rm -rf build embedded
 fi

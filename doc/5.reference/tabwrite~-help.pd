@@ -1,40 +1,74 @@
-#N canvas 448 109 668 439 12;
-#X obj 27 17 tabwrite~;
-#X msg 53 216 bang;
-#X obj 43 323 tabwrite~ array99;
+#N canvas 665 108 707 569 12;
+#X obj 75 17 tabwrite~;
+#X msg 53 212 bang;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array array99 1000 float 0;
-#X coords 0 1 999 -1 200 100 1;
-#X restore 367 193 graph;
-#X text 178 323 creation argument initializes array name;
-#X msg 73 293 set array99;
-#X msg 482 79 \; pd dsp 1;
-#X msg 482 117 \; pd dsp 0;
-#X text 38 358 see also the "array" tutorial in section 2 of the Pd
-documentation \, and these objects:, f 43;
-#X obj 127 397 tabread;
-#X obj 194 397 tabwrite;
-#X obj 270 397 tabsend~;
-#X obj 347 397 tabreceive~;
-#X obj 42 397 tabread4~;
-#X msg 70 265 stop;
-#X text 108 266 stop recording;
-#X msg 62 241 start 500;
-#X text 135 242 start in middle of table;
-#X text 448 372 updated for Pd version 0.40.;
-#X text 107 17 - write a signal in an array;
-#X obj 42 192 phasor~ 200;
-#X text 92 217 start recording;
-#X text 161 292 set destination array;
-#X text 31 49 Tabwrite~ records an audio signal sequentially into an
+#X array buffer 1000 float 0;
+#X coords 0 1 999 -1 200 100 1 0 0;
+#X restore 405 208 graph;
+#X text 167 343 creation argument initializes array name;
+#X obj 106 516 tabread;
+#X obj 166 516 tabwrite;
+#X obj 234 516 tabsend~;
+#X obj 301 516 tabreceive~;
+#X obj 32 516 tabread4~;
+#X msg 71 281 stop;
+#X text 109 282 stop recording;
+#X msg 62 249 start 500;
+#X text 480 516 updated for Pd version 0.40.;
+#X text 155 17 - write a signal in an array;
+#X text 92 213 start recording;
+#X text 159 310 set destination array;
+#X text 44 49 Tabwrite~ records an audio signal sequentially into an
 array. Sending it "bang" writes from beginning to end of the array.
 To avoid writing all the way to the end \, you can send a "stop" message
 at an appropriate later time. The "start" message allows setting the
 array location at which the first sample is written. (Starting and
 stopping occur on block boundaries \, typically multiples of 64 samples
-\, in the input signal.);
-#X connect 1 0 2 0;
-#X connect 5 0 2 0;
-#X connect 14 0 2 0;
-#X connect 16 0 2 0;
-#X connect 20 0 2 0;
+\, in the input signal.), f 75;
+#X obj 43 343 tabwrite~ buffer;
+#X msg 80 310 set buffer;
+#X obj 43 182 osc~ 200;
+#X obj 389 441 ../2.control.examples/15.array;
+#X obj 389 464 ../2.control.examples/16.more.arrays;
+#X text 64 445 see also the "array" examples from section 2 (click
+to the right to open them) =========> and these objects below:, f
+45;
+#X obj 388 516 soundfiler;
+#X msg 241 177 \; pd dsp \$1;
+#X obj 241 154 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 135 245 start at index 500 (middle of this table), f 22;
+#X text 263 153 DSP on/off;
+#N canvas 792 534 593 356 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 431 244 <= array with local name, f 13;
+#X msg 153 216 set \$1;
+#X obj 153 190 symbol \$0-x;
+#X obj 153 167 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 172 164 click to set name;
+#X obj 280 245 array define \$0-x 10;
+#X obj 92 284 tabwrite~;
+#X obj 91 197 noise~;
+#X obj 160 251 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 2 0 7 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 8 0 7 0;
+#X connect 9 0 7 0;
+#X restore 323 389 pd Dealing_with_"\$0";
+#X text 161 380 open subpatch to see how to deal with '\$0', f 21
+;
+#X connect 1 0 17 0;
+#X connect 9 0 17 0;
+#X connect 11 0 17 0;
+#X connect 18 0 17 0;
+#X connect 19 0 17 0;
+#X connect 25 0 24 0;

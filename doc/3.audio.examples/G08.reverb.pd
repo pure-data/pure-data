@@ -1,10 +1,11 @@
 #N canvas 599 142 502 439 12;
+#X declare -stdpath ./;
 #N canvas 647 153 533 471 test-input 0;
 #X obj 240 392 outlet~;
 #X obj 156 305 -~;
 #X obj 65 251 *~ 3;
 #X obj 174 225 *~ 2;
-#X floatatom 174 93 0 0 0 0 - - -;
+#X floatatom 174 93 0 0 0 0 - - - 0;
 #X obj 65 217 clip~ 0 0.667;
 #X obj 174 147 mtof;
 #X msg 258 154 1;
@@ -134,8 +135,8 @@
 #X connect 12 0 4 0;
 #X restore 69 160 pd test-input;
 #X text 98 17 REVERBERATOR;
-#X floatatom 69 133 0 10 130 0 - - -;
-#X floatatom 195 175 0 0 100 0 - - -;
+#X floatatom 69 133 0 10 130 0 - - - 0;
+#X floatatom 195 175 0 0 100 0 - - - 0;
 #X obj 136 248 output~;
 #X text 240 390 updated for Pd version 0.37-1;
 #X text 69 329 Many improvements are possible. Much better reverberators
@@ -245,6 +246,7 @@ time., f 30;
 #X connect 34 0 2 0;
 #X connect 34 1 3 0;
 #X restore 135 204 pd reverb;
+#X obj 329 17 declare -stdpath ./;
 #X connect 0 0 11 0;
 #X connect 0 0 4 0;
 #X connect 2 0 0 0;

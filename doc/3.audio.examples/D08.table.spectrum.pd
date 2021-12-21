@@ -1,4 +1,5 @@
 #N canvas 462 91 714 472 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array spectrum-tab 127 float 1;
 #A 0 48.5713 48.5713 48.5713 48.2142 48.2142 48.2142 48.2142 48.2142
@@ -60,9 +61,9 @@ abstraction.;
 #X restore 33 264 pd oscbank;
 #X obj 35 334 catch~ sum-bus;
 #X obj 32 166 s pitch;
-#X floatatom 32 138 4 0 0 0 - - -;
+#X floatatom 32 138 4 0 0 0 - - - 0;
 #X text 50 23 DRAWABLE SPECTRA;
-#X floatatom 30 196 4 0 0 0 - - -;
+#X floatatom 30 196 4 0 0 0 - - - 0;
 #X obj 30 224 s whammybar;
 #N canvas 455 101 482 150 table-setup 0;
 #X obj 41 37 loadbang;
@@ -70,12 +71,12 @@ abstraction.;
 120;
 #X connect 0 0 1 0;
 #X restore 33 296 pd table-setup;
-#X msg 512 71 \; spectrum-tab const 0;
+#X msg 512 75 \; spectrum-tab const 0;
 #X text 33 47 In this array \, you can draw a spectral envelope that
 will be synthesized by an oscillator bank. Each oscillator in the bank
 computes its own frequency and uses it to look up amplitude from the
 array., f 52;
-#X text 578 50 CLEAR;
+#X text 578 54 CLEAR;
 #X obj 35 371 output~;
 #X text 469 389 Updated for Pd version 0.37;
 #X text 115 264 <= the oscillator bank;
@@ -84,6 +85,7 @@ array., f 52;
 which are computed in "oscbank"., f 29;
 #X text 68 196 <= left or right shift (normally 0);
 #X text 75 137 <= pitch;
+#X obj 518 14 declare -stdpath ./;
 #X connect 2 0 12 0;
 #X connect 2 0 12 1;
 #X connect 4 0 3 0;

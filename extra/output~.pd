@@ -13,9 +13,9 @@
 #X obj 64 292 dac~;
 #X obj 29 131 pack 0 50;
 #X text 101 164 audio in;
-#X floatatom 323 219 3 0 100 0 dB - -;
-#X obj 350 240 bng 15 250 50 0 empty empty mute -38 7 0 12 -262144
--1 -1;
+#X floatatom 323 219 3 0 100 0 dB - - 0;
+#X obj 350 240 bng 15 250 50 0 empty empty mute -38 7 0 12 #fcfcfc
+#000000 #000000;
 #X obj 143 190 inlet~;
 #X obj 124 261 *~;
 #X text 408 383 MUTE logic:;
@@ -24,9 +24,6 @@
 #X obj 323 279 s \$0-master-out;
 #X obj 29 75 r \$0-master-out;
 #X obj 400 408 r \$0-master-out;
-#X text 60 9 Level control abstraction \, used in many of the Pd example
-patches. The "level" and "mute" controls show up on the parent \, calling
-patch.;
 #X obj 82 212 hip~ 3;
 #X obj 142 212 hip~ 3;
 #X text 89 100 <= convert from dB to linear units;
@@ -37,6 +34,9 @@ patch.;
 #X text 153 492 if true convert to bang =>;
 #X text 181 469 test if less than 1 =>;
 #X text 182 439 value of master-lvl =>;
+#X text 60 9 Level control abstraction \, part of 'extra' used in many
+of the Pd example and help patches. The "level" and "mute" controls
+show up on the parent \, calling patch., f 61;
 #X connect 0 0 2 0;
 #X connect 1 0 4 0;
 #X connect 2 0 20 0;
@@ -45,7 +45,7 @@ patch.;
 #X connect 4 1 3 0;
 #X connect 5 1 2 1;
 #X connect 6 0 12 0;
-#X connect 7 0 25 0;
+#X connect 7 0 24 0;
 #X connect 9 0 17 0;
 #X connect 9 0 10 0;
 #X connect 10 0 11 0;
@@ -53,12 +53,12 @@ patch.;
 #X connect 14 0 8 0;
 #X connect 14 0 21 0;
 #X connect 15 0 1 0;
-#X connect 16 0 26 0;
+#X connect 16 0 25 0;
 #X connect 17 0 11 1;
 #X connect 19 0 14 0;
 #X connect 22 0 6 0;
 #X connect 23 0 1 1;
 #X connect 23 0 5 0;
-#X connect 25 0 10 1;
-#X connect 26 0 17 1;
+#X connect 24 0 10 1;
+#X connect 25 0 17 1;
 #X coords 0 0 1 1 65 55 1 300 200;

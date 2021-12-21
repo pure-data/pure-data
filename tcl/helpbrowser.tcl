@@ -48,6 +48,11 @@ proc ::helpbrowser::open_helpbrowser {} {
         bind .helpbrowser <Mod1-z> "break"
         bind .helpbrowser <Mod1-Z> "break"
 
+        # ignore undo bindings?
+        # on macOS, this posts a ".helpbrowser: no such object" error
+        bind .helpbrowser <Mod1-z> "break"
+        bind .helpbrowser <Mod1-Z> "break"
+
         position_over_window .helpbrowser .pdwindow
     }
 }
@@ -316,6 +321,7 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     }
 
     .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
+
     # force display update
     update idletasks
 

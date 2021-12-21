@@ -1,7 +1,6 @@
 #N canvas 620 23 692 730 12;
 #X obj 61 359 netreceive 3000;
-#X floatatom 163 455 0 0 0 0 - - -;
-#X text 197 456 <--- number of open connections;
+#X floatatom 163 455 4 0 0 0 - - - 0;
 #X text 97 692 see also:;
 #X obj 183 693 netsend;
 #X obj 61 455 print tcp;
@@ -26,8 +25,8 @@ the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this for OSC messages \, for example.), f 83;
 #X msg 82 330 send foo \$1;
-#X floatatom 82 307 0 0 0 0 - - -;
-#X floatatom 219 502 0 0 0 0 - - -;
+#X floatatom 82 307 0 0 0 0 - - - 0;
+#X floatatom 219 502 0 0 0 0 - - - 0;
 #X text 119 307 "send" (for TCP connections only) sends back to connected
 netreceive objects, f 76;
 #X text 35 623 An old (pre-0.45) calling convention is provided for
@@ -99,15 +98,16 @@ can't specify a remote host - that is the job of a firewall., f 61
 #X text 36 660 As of 0.51 \, Pd supports IPv6 addresses.;
 #X obj 41 9 netreceive;
 #X text 129 10 - listen for incoming messages from network;
-#X connect 0 0 5 0;
+#X text 197 456 <= number of open connections;
+#X connect 0 0 4 0;
 #X connect 0 1 1 0;
-#X connect 8 0 6 0;
-#X connect 13 0 14 0;
-#X connect 16 0 0 0;
-#X connect 19 0 0 0;
-#X connect 21 0 0 0;
-#X connect 22 0 21 0;
-#X connect 23 0 33 0;
-#X connect 28 0 15 0;
-#X connect 28 1 29 0;
-#X connect 33 0 13 0;
+#X connect 7 0 5 0;
+#X connect 12 0 13 0;
+#X connect 15 0 0 0;
+#X connect 18 0 0 0;
+#X connect 20 0 0 0;
+#X connect 21 0 20 0;
+#X connect 22 0 32 0;
+#X connect 27 0 14 0;
+#X connect 27 1 28 0;
+#X connect 32 0 12 0;

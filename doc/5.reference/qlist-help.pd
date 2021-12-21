@@ -1,14 +1,10 @@
-#N canvas 278 34 1057 555 12;
-#X obj 489 331 qlist;
+#N canvas 387 44 1040 601 12;
+#X obj 489 341 qlist;
 #X msg 509 109 rewind;
 #X msg 515 134 next;
-#X floatatom 489 385 0 0 0 0 - - -;
+#X floatatom 489 425 0 0 0 0 - - - 0;
 #X msg 489 57 bang;
-#X obj 577 468 r this;
-#X obj 680 468 r that;
-#X obj 577 497 print this;
-#X obj 680 497 print that;
-#X obj 521 359 print done;
+#X obj 521 400 print done;
 #X msg 500 83 tempo 1;
 #X text 21 54 The qlist object reads text files containing time-tagged
 Pd messages. You can have them sequenced automatically (by sending
@@ -33,12 +29,12 @@ around this.;
 #X text 551 133 single-step forward;
 #X text 648 260 read a file;
 #X text 699 283 write one;
-#X text 488 407 This outlet gets a list of leading numbers for the
+#X text 488 447 This outlet gets a list of leading numbers for the
 next message \, for you to use in designing your own sequencer.;
 #X msg 541 260 read qlist.txt;
 #X msg 547 283 write /tmp/qlist.txt;
-#X text 64 482 see also:;
-#X obj 142 473 textfile;
+#X text 38 461 see also:;
+#X obj 41 485 textfile;
 #X text 25 365 You can also record textual messages and save them to
 a file. Send "clear" to empty the qlist and "add" to add messages (terminated
 with semicolons.) The message \, "add2" adds a list of atoms without
@@ -50,31 +46,41 @@ messages.;
 #X text 573 186 empty the qlist;
 #X text 758 214 add a message to a qlist;
 #X text 610 236 add a message to a qlist but don't terminate it;
-#X text 614 344 This outlet gets a bang when you hit the end of the
+#X text 602 385 This outlet gets a bang when you hit the end of the
 sequence. In the file "qlist.txt" the end is delayed 1000 milliseconds
 after the last message.;
-#X text 315 475 These receives are invoked in the file "qlist.txt"
-in this directory., f 35;
+#X text 472 523 These receives are invoked in the file "qlist.txt"
+in this directory., f 36;
 #X obj 54 16 qlist;
-#X text 115 18 - text-based sequencer;
+#X text 107 17 - text-based sequencer;
 #X text 574 159 single-step forward SUPPRESSING MESSAGE-SENDING;
 #X msg 521 160 next 1;
-#X text 821 481 updated for Pd version 0.35;
+#X text 48 541 updated for Pd version 0.35;
 #X msg 479 32 print;
 #X text 525 31 print contents to Pd window;
-#X obj 142 500 text;
+#X obj 521 377 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 112 486 text sequence;
+#X text 214 486 <= newer and better replacement for qlist, f 22;
+#X obj 747 512 r this;
+#X obj 840 512 r that;
+#X obj 840 547 print that;
+#X obj 747 547 print this;
+#X text 546 337 <= you can also click on qlist to see its contents
+and edit it \, just like a "text define" object, f 52;
 #X connect 0 0 3 0;
-#X connect 0 1 9 0;
+#X connect 0 1 37 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 4 0 0 0;
-#X connect 5 0 7 0;
-#X connect 6 0 8 0;
-#X connect 10 0 0 0;
-#X connect 21 0 0 0;
+#X connect 6 0 0 0;
+#X connect 17 0 0 0;
+#X connect 18 0 0 0;
 #X connect 22 0 0 0;
-#X connect 26 0 0 0;
-#X connect 27 0 0 0;
-#X connect 28 0 0 0;
-#X connect 37 0 0 0;
-#X connect 39 0 0 0;
+#X connect 23 0 0 0;
+#X connect 24 0 0 0;
+#X connect 33 0 0 0;
+#X connect 35 0 0 0;
+#X connect 37 0 5 0;
+#X connect 40 0 43 0;
+#X connect 41 0 42 0;

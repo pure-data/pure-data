@@ -1,27 +1,47 @@
-#N canvas 566 107 512 412 12;
-#X msg 44 104 bang;
-#X text 128 240 creation argument initializes the value;
-#X text 271 375 updated for Pd version 0.45;
-#X text 84 102 output the value;
-#X text 150 133 set and output the value;
-#X obj 43 244 symbol foo;
-#X obj 69 12 symbol;
-#X text 35 37 The symbol object stores a symbol \, Pd's data type for
-#X text 35 40 The symbol object stores a symbol \, Pd's data type for
-handling fixed strings (often filenames or the names of other objects
-in pd).;
-#X msg 58 134 symbol bar;
-#X symbolatom 44 272 10 0 0 0 - - -;
-#X text 186 209 set the value;
-#X symbolatom 110 211 10 0 0 0 - - -;
-#X msg 64 164 zorglub;
-#X text 127 164 any other message is 'converted';
-#X text 125 14 - store a symbol (i.e. \, string);
-#X text 56 306 note: unlike "float" \, etc. \, there's no "send" message
+#N canvas 706 50 837 439 12;
+#X msg 43 130 bang;
+#X text 128 264 creation argument initializes the value, f 21;
+#X text 83 128 output the value;
+#X text 150 159 set and output the value;
+#X obj 43 272 symbol foo;
+#X obj 69 14 symbol;
+#X msg 58 160 symbol bar;
+#X symbolatom 43 310 10 0 0 0 - - - 0;
+#X text 186 235 set the value;
+#X symbolatom 110 237 10 0 0 0 - - - 0;
+#X msg 64 190 zorglub;
+#X text 127 190 any other message is 'converted';
+#X text 125 13 - store a symbol (i.e. \, string);
+#X text 28 60 The symbol object stores a symbol \, Pd's data type for
+handling fixed strings (often filenames \, array names \, send/receive
+names or the names of other objects in pd).;
+#X symbolatom 523 254 16 0 0 0 - - - 0;
+#X symbolatom 667 185 16 0 0 0 - - - 0;
+#X obj 523 216 symbol cis\ boom\ bah;
+#X msg 523 121 symbol hey\\\,\\\ stop;
+#X obj 498 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 43 343 print;
+#X obj 523 285 print;
+#X text 50 400 see also:;
+#X obj 125 401 float;
+#X text 574 400 updated for Pd version 0.52;
+#X msg 539 160 hi\ there;
+#X text 450 51 Note you can also use backslashes to escape spaces and
+other special characters (comma \, semicolons \, dollar signs and backslash).
+, f 50;
+#X text 163 324 NOTE: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
-of converting arbitrary messages to symbols.;
-#X connect 0 0 5 0;
-#X connect 5 0 9 0;
-#X connect 8 0 5 0;
-#X connect 11 0 5 1;
-#X connect 12 0 5 0;
+of converting arbitrary messages to symbols., f 86;
+#X connect 0 0 4 0;
+#X connect 4 0 7 0;
+#X connect 6 0 4 0;
+#X connect 7 0 19 0;
+#X connect 9 0 4 1;
+#X connect 10 0 4 0;
+#X connect 14 0 20 0;
+#X connect 15 0 16 1;
+#X connect 16 0 14 0;
+#X connect 17 0 16 0;
+#X connect 18 0 16 0;
+#X connect 24 0 16 0;

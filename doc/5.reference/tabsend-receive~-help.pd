@@ -1,0 +1,106 @@
+#N canvas 826 76 531 651 12;
+#X obj 31 27 tabsend~;
+#X text 322 602 updated for Pd version 0.43;
+#X text 159 293 creation argument: initializes table name;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array table-1 64 float 0;
+#X coords 0 1 63 -1 150 75 1 0 0;
+#X restore 336 103 graph;
+#X obj 38 193 osc~ 440;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array table-2 64 float 0;
+#X coords 0 1 63 -1 150 75 1 0 0;
+#X restore 335 200 graph;
+#X msg 61 230 set table-1;
+#X obj 38 292 tabsend~ table-1;
+#X msg 162 175 \; pd dsp \$1;
+#X obj 162 153 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 69 255 set table-2;
+#X text 161 232 use 'set' message to change table's name, f 20;
+#N canvas 839 185 528 353 block 0;
+#X obj 135 107 block~ 1024;
+#X obj 67 153 noise~;
+#X text 250 177 arrays can also be defined with the array object.,
+f 27;
+#X text 445 223 <= click;
+#X text 232 107 <=;
+#X text 253 107 this subpatch runs with a block size of 1024 samples.
+, f 27;
+#X text 40 17 Unlike send~ and receive~ you can use tabsend~ and tabreceive~
+to work with with block sizes different than 64 samples. This is useful
+for working with FFT \, for instance. For that \, you need to change
+the block size with the block~ object., f 62;
+#X obj 67 287 print~;
+#X obj 87 259 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 245 222 array define \$0-buffer 1024;
+#X obj 67 189 tabsend~ \$0-buffer;
+#X obj 67 229 tabreceive~ \$0-buffer;
+#X connect 1 0 10 0;
+#X connect 8 0 7 0;
+#X connect 11 0 7 0;
+#X restore 80 491 pd block;
+#X obj 403 530 block~;
+#X obj 355 530 send~;
+#X text 38 91 By default a block is 64 samples but this can be changed
+with the block~ object., f 36;
+#X obj 355 554 array;
+#X text 119 26 - write a block of a signal to an array continuously
+;
+#X obj 31 50 tabreceive~;
+#X text 119 50 - read a block of a signal from an array continuously
+;
+#X text 196 401 creation argument: initializes table name;
+#X text 159 344 'set' message to change table name, f 17;
+#X obj 49 401 tabreceive~ table-1;
+#X msg 68 367 set table-1;
+#X msg 49 341 set table-2;
+#X obj 49 434 print~;
+#X obj 21 401 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X obj 403 554 tabwrite~;
+#X text 149 491 <= example with a different block size;
+#X obj 24 577 ../2.control.examples/15.array;
+#X obj 24 600 ../2.control.examples/16.more.arrays;
+#X text 18 535 see also the "array" examples from section 2 (click
+below to open them) and these objects:, f 45;
+#X text 185 151 DSP on/off;
+#N canvas 1178 377 569 384 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X msg 167 209 set \$1;
+#X obj 167 183 symbol \$0-x;
+#X obj 167 160 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 186 157 click to set name;
+#X obj 309 221 array define \$0-x 64;
+#X obj 94 250 tabsend~;
+#X obj 94 202 noise~;
+#X obj 167 276 tabreceive~;
+#X obj 167 336 print~;
+#X obj 189 305 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 1 0 6 0;
+#X connect 1 0 8 0;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 7 0 6 0;
+#X connect 8 0 9 0;
+#X connect 10 0 9 0;
+#X restore 307 445 pd Dealing_with_"\$0";
+#X text 145 436 open subpatch to see how to deal with '\$0', f 21
+;
+#X connect 4 0 7 0;
+#X connect 6 0 7 0;
+#X connect 9 0 8 0;
+#X connect 10 0 7 0;
+#X connect 22 0 25 0;
+#X connect 23 0 22 0;
+#X connect 24 0 22 0;
+#X connect 26 0 25 0;

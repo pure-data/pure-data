@@ -1,25 +1,64 @@
-#N canvas 768 78 672 449 12;
-#X obj 42 25 tabwrite;
-#X floatatom 44 201 0 0 0 0 - - -;
-#X obj 44 360 tabwrite array99, f 20;
+#N canvas 856 69 673 530 12;
+#X obj 46 22 tabwrite;
+#X floatatom 48 136 4 0 10 0 - - - 0;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array array99 10 float 2;
-#X coords 0 0 10 10 250 200 1 0 0;
-#X restore 394 212 graph;
-#X floatatom 181 326 0 0 0 0 - - -;
-#X text 196 349 creation argument;
-#X text 198 367 is array name;
-#X text 80 199 set y value;
-#X msg 65 235 set array99;
-#X text 154 236 change array name;
-#X text 40 408 updated for Pd version 0.33;
-#X text 114 25 - write numbers to a table;
-#X msg 76 68 \; readout 1 \; array99 resize 10 \; array99 bounds 0
-0 10 10 \; array99 xlabel 11 0 1 2 3 4 5 6 7 8 9 10 \; array99 ylabel
--0.3 0 1 2 3 4 5 6 7 8 9 10 \; array99 0 1 4 2 8 5 6 1 4 2 8;
-#X text 84 272 right inlet selects x value (indexed from 0). Note that
+#X array tabwrite-ex 10 float 2;
+#X coords 0 10 10 0 250 200 1 0 0;
+#X restore 393 137 graph;
+#X floatatom 185 261 4 0 9 0 - - - 0;
+#X text 200 284 creation argument;
+#X text 202 302 is array name;
+#X text 84 134 set y value;
+#X text 184 170 change array name;
+#X text 426 482 updated for Pd version 0.33;
+#X text 118 22 - write numbers to a table;
+#X text 86 204 right inlet selects x value (indexed from 0). Note that
 input values are clipped to the range from 0 to size-1, f 37;
-#X text 389 109 click here to initialize;
-#X connect 1 0 2 0;
-#X connect 4 0 2 1;
-#X connect 8 0 2 0;
+#X obj 75 463 ../2.control.examples/15.array;
+#X obj 75 486 ../2.control.examples/16.more.arrays;
+#X text 59 419 see also the "array" examples from section 2 (click
+below to open them) and these objects:, f 45;
+#X obj 461 433 tabread;
+#X obj 524 433 tabread4;
+#X obj 592 432 array;
+#N canvas 515 381 401 220 init-table 0;
+#X obj 35 42 loadbang;
+#X msg 35 74 \; tabwrite-ex resize 10 \; tabwrite-ex bounds 0 10 10
+0 \; tabwrite-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; tabwrite-ex ylabel
+-0.3 0 1 2 3 4 5 6 7 8 9 10 \; tabwrite-ex 0 1 4 2 8 5 6 1 4 2 8;
+#X connect 0 0 1 0;
+#X restore 541 112 pd init-table;
+#X obj 48 295 tabwrite tabwrite-ex;
+#X msg 69 170 set tabwrite-ex;
+#X text 42 66 Tabwrite writes floats into an array \, input values
+are set in the left inlet \, while the index is set on the right inlet.
+, f 62;
+#N canvas 792 534 593 356 Dealing_with_"\$0" 0;
+#X text 36 33 '\$0' - the patch ID number used to force locality in
+Pd - is widely used in send/receive names as well as array names. This
+is specially useful in abstractions so each copy has local names instead
+of global., f 70;
+#X text 431 244 <= array with local name, f 13;
+#X msg 151 216 set \$1;
+#X obj 151 190 symbol \$0-x;
+#X obj 151 167 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 170 164 click to set name;
+#X floatatom 90 199 6 1 8 0 - - - 0;
+#X obj 280 245 array define \$0-x 10;
+#X obj 92 284 tabwrite;
+#X floatatom 146 256 5 0 0 0 - - - 0;
+#X text 36 86 You can use "\$0" in an array name and if you need to
+set the array name you can load it in a symbol object \, since "\$0"
+doesn't work in messages., f 70;
+#X connect 2 0 8 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 6 0 8 0;
+#X connect 9 0 8 1;
+#X restore 207 361 pd Dealing_with_"\$0";
+#X text 45 352 open subpatch to see how to deal with '\$0', f 21;
+#X obj 385 433 tabwrite~;
+#X connect 1 0 18 0;
+#X connect 3 0 18 1;
+#X connect 19 0 18 0;

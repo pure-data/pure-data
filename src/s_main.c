@@ -78,10 +78,7 @@ char sys_fontweight[10] = "normal";
 char sys_font[100] = "DejaVu Sans Mono";
 char sys_fontweight[10] = "bold";
 #endif
-static int sys_main_srate;
-static int sys_main_advance;
-static int sys_main_callback;
-static int sys_main_blocksize;
+
 static int sys_listplease;
 
 int sys_externalschedlib;
@@ -322,7 +319,9 @@ int sys_main(int argc, const char **argv)
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
     {
+#ifndef _fmode
         extern int _fmode;
+#endif
         _fmode = _O_BINARY;
     }
 # endif /* _MSC_VER */
@@ -366,7 +365,10 @@ int sys_main(int argc, const char **argv)
     if (sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float)*8);
     if (sys_version)    /* if we were just asked our version, exit here. */
+    {
+        fflush(stderr);
         return (0);
+    }
     sys_setsignalhandlers();
     sys_afterargparse();                    /* post-argparse settings */
     if (sys_dontstartgui)
@@ -518,7 +520,10 @@ static void sys_printusage(void)
 {
     unsigned int i;
     for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
+    {
         fprintf(stderr, "%s", usagemessage[i]);
+        fflush(stderr);
+    }
 }
 
     /* parse a comma-separated numeric list, returning the number found */
@@ -654,7 +659,7 @@ int sys_argparse(int argc, const char **argv)
     {
                 /* audio flags */
         if (!strcmp(*argv, "-r") && argc > 1 &&
-            sscanf(argv[1], "%d", &sys_main_srate) >= 1)
+            sscanf(argv[1], "%d", &as.a_srate) >= 1)
         {
             argc -= 2;
             argv += 2;
@@ -741,6 +746,12 @@ int sys_argparse(int argc, const char **argv)
             sys_set_midi_api(API_OSS);
             argc--; argv++;
         }
+#else
+        else if ((!strcmp(*argv, "-oss")) || (!strcmp(*argv, "-ossmidi")))
+        {
+            fprintf(stderr, "Pd compiled without OSS-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
 #endif
 #ifdef USEAPI_ALSA
         else if (!strcmp(*argv, "-alsa"))
@@ -760,6 +771,19 @@ int sys_argparse(int argc, const char **argv)
         {
             sys_set_midi_api(API_ALSA);
             argc--; argv++;
+        }
+#else
+        else if ((!strcmp(*argv, "-alsa")) || (!strcmp(*argv, "-alsamidi")))
+        {
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-alsaadd"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_JACK
@@ -788,6 +812,21 @@ int sys_argparse(int argc, const char **argv)
             jack_client_name(argv[1]);
             argc -= 2; argv +=2;
         }
+#else
+        else if ((!strcmp(*argv, "-jack"))
+            || (!strcmp(*argv, "-jackconnect"))
+            || (!strcmp(*argv, "-nojackconnect")))
+        {
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-jackname"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
+        }
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
@@ -797,12 +836,29 @@ int sys_argparse(int argc, const char **argv)
             sys_mmio = 0;
             argc--; argv++;
         }
+#else
+        else if ((!strcmp(*argv, "-pa")) || (!strcmp(*argv, "-portaudio")))
+        {
+            fprintf(stderr, "Pd compiled without PortAudio-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-asio"))
+        {
+            fprintf(stderr, "Pd compiled without ASIO-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
+        }
 #endif
 #ifdef USEAPI_MMIO
         else if (!strcmp(*argv, "-mmio"))
         {
             as.a_api = API_MMIO;
             sys_mmio = 1;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-mmio"))
+        {
+            fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -812,11 +868,23 @@ int sys_argparse(int argc, const char **argv)
             as.a_api = API_AUDIOUNIT;
             argc--; argv++;
         }
+#else
+        else if (!strcmp(*argv, "-audiounit"))
+        {
+            fprintf(stderr, "Pd compiled without AudioUnit-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
 #endif
 #ifdef USEAPI_ESD
         else if (!strcmp(*argv, "-esd"))
         {
             as.a_api = API_ESD;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-esd"))
+        {
+            fprintf(stderr, "Pd compiled without ESD-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -1305,6 +1373,8 @@ int sys_getblksize(void)
     return (DEFDACBLKSIZE);
 }
 
+void sys_init_audio(void);
+
     /* stuff to do, once, after calling sys_argparse() -- which may itself
     be called more than once (first from "settings, second from .pdrc, then
     from command-line arguments */
@@ -1326,13 +1396,10 @@ static void sys_afterargparse(void)
     strcat(sbuf, "/doc/5.reference");
     STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
 
-    sys_get_audio_settings(&as);
-
     for (i = 0; i < sys_nmidiin; i++)
         sys_midiindevlist[i]--;
     for (i = 0; i < sys_nmidiout; i++)
         sys_midioutdevlist[i]--;
-    sys_set_audio_settings(&as);
 
     if (sys_listplease)
         sys_listdevs();
@@ -1351,6 +1418,8 @@ static void sys_afterargparse(void)
             midioutdev[i] = sys_midioutdevlist[i];
     }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
+
+    sys_init_audio();
 }
 
 static void sys_addreferencepath(void)

@@ -1,18 +1,33 @@
-#N canvas 156 234 600 488 12;
+#N canvas 688 134 621 453 12;
 #X obj 67 124 hilbert~;
-#X obj 66 85 osc~ 440;
-#X graph graph1 0 -1 882 1 279 209 579 39;
-#X array out-left 882 float;
-#X array out-right 882 float;
-#X pop;
-#X obj 67 274 tabwrite~ out-left;
-#X obj 118 248 tabwrite~ out-right;
-#X msg 137 188 bang \; pd dsp 1;
-#X floatatom 66 57;
-#X text 71 319 The Hilbert transform (the name is abused here according to computer music tradition) puts out a phase quadrature version of the input signal suitable for signal sideband modulation via complex-mod~.;
-#X connect 0 0 3 0;
-#X connect 0 1 4 0;
-#X connect 1 0 0 0;
-#X connect 5 0 3 0;
-#X connect 5 0 4 0;
-#X connect 6 0 1 0;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array out-left 882 float 0;
+#X array out-right 882 float 0;
+#X coords 0 1 881 -1 300 170 1;
+#X restore 299 84 graph;
+#X obj 67 257 tabwrite~ out-left;
+#X obj 120 228 tabwrite~ out-right;
+#X floatatom 67 65 4 0 0 0 - - - 0;
+#X text 82 322 The Hilbert transform (the name is abused here according
+to computer music tradition) puts out a phase quadrature version of
+the input signal suitable for signal sideband modulation via complex-mod~.
+, f 68;
+#X text 120 392 see also:;
+#X obj 197 392 complex-mod~;
+#X obj 54 15 hilbert~;
+#X text 125 16 - Hilbert transform;
+#X obj 134 148 loadbang;
+#X obj 67 93 osc~ 110;
+#X obj 134 177 metro 200;
+#X obj 167 63 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 167 89 \; pd dsp \$1;
+#X text 185 59 DSP on/off;
+#X connect 0 0 2 0;
+#X connect 0 1 3 0;
+#X connect 4 0 11 0;
+#X connect 10 0 12 0;
+#X connect 11 0 0 0;
+#X connect 12 0 3 0;
+#X connect 12 0 2 0;
+#X connect 13 0 14 0;

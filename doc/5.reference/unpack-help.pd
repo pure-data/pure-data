@@ -1,46 +1,58 @@
-#N canvas 653 114 610 525 12;
-#X floatatom 281 226 5 0 0 0 - - -;
-#X obj 194 471 pack;
-#X obj 126 24 unpack;
-#X text 189 23 - split a message to atoms;
+#N struct template1 float x float y float z float q;
+#N canvas 669 106 614 519 12;
+#X floatatom 281 226 5 0 0 0 - - - 0;
+#X obj 64 473 pack;
+#X obj 107 14 unpack;
+#X text 170 13 - split a message to atoms;
 #X msg 50 148 1 2;
 #X msg 89 148 3 4 shut;
 #X msg 168 148 5 6 pick 7 8;
-#X text 316 470 updated for Pd version 0.33;
+#X text 369 473 updated for Pd version 0.33;
 #X text 362 184 <= creation arguments specify the types of atoms expected
 , f 29;
 #X obj 89 185 unpack float float symbol float float;
-#X symbolatom 217 227 7 0 0 0 - - -;
-#X text 114 470 See also:;
-#X obj 128 359 unpack s f;
-#X msg 128 289 list octave 3;
-#X msg 162 313 pitch 69;
-#X symbolatom 128 393 6 0 0 0 - - -;
-#X text 233 294 unpack accepts lists or 'anythings'., f 20;
-#X msg 309 357 100 200;
-#X obj 309 383 unpack;
-#X floatatom 309 410 4 0 0 0 - - -;
-#X floatatom 348 411 4 0 0 0 - - -;
-#X text 378 370 By default \, unpack splits two floats., f 18;
-#X text 64 61 unpack takes lists of atoms and distributes them to its
-outlets. The creation arguments specify the number of outlets and their
-type: float (any number or the symbol 'float'/'f') \, pointer (symbol
-'pointer'/'p') or symbol (symbol 'symbol'/'s')., f 65;
-#X floatatom 345 226 5 0 0 0 - - -;
-#X floatatom 153 226 5 0 0 0 - - -;
-#X floatatom 89 226 5 0 0 0 - - -;
-#X floatatom 195 392 5 0 0 0 - - -;
-#X text 35 347 abbreviated arguments =>, f 12;
+#X symbolatom 217 227 7 0 0 0 - - - 0;
+#X text 67 449 See also:;
+#X obj 152 359 unpack s f;
+#X msg 152 289 list octave 3;
+#X msg 186 313 pitch 69;
+#X symbolatom 152 393 7 0 0 0 - - - 0;
+#X text 257 294 unpack accepts lists or 'anythings'., f 20;
+#X msg 348 355 100 200;
+#X obj 348 381 unpack;
+#X floatatom 348 409 4 0 0 0 - - - 0;
+#X floatatom 387 409 4 0 0 0 - - - 0;
+#X text 417 368 By default \, unpack splits two floats., f 18;
+#X floatatom 345 226 5 0 0 0 - - - 0;
+#X floatatom 153 226 5 0 0 0 - - - 0;
+#X floatatom 89 226 5 0 0 0 - - - 0;
+#X floatatom 219 392 5 0 0 0 - - - 0;
+#X text 59 347 abbreviated arguments =>, f 12;
+#X obj 110 473 trigger;
+#N canvas 879 82 610 216 pointer 0;
+#X obj 189 146 ../4.data.structures/01.scalars;
+#X text 75 40 The [unpack] object unpack a pointer from a list. A pointer
+can be the location of a Data Structure scalar somewhere or the head
+of a Data Structure list. To know more about Data Structures \, how
+to handle pointers and see examples \, please refer to the 4.Data.Structure
+section of the Pd's tutorials. Starting with the first example below.
+, f 70;
+#X restore 363 117 pd pointer;
+#X text 444 117 <= about pointers;
+#X text 76 56 unpack takes lists of atoms and distributes them to its
+outlets. The creation arguments specify the number of outlets and the
+atom type \, possible values are: float (or 'f') \, symbol (or 's')
+and pointer (or 'p') - see [pd pointer]., f 64;
 #X connect 4 0 9 0;
 #X connect 5 0 9 0;
 #X connect 6 0 9 0;
-#X connect 9 0 25 0;
-#X connect 9 1 24 0;
+#X connect 9 0 24 0;
+#X connect 9 1 23 0;
 #X connect 9 2 10 0;
 #X connect 9 3 0 0;
-#X connect 9 4 23 0;
+#X connect 9 4 22 0;
 #X connect 12 0 15 0;
-#X connect 12 1 26 0;
+#X connect 12 1 25 0;
 #X connect 13 0 12 0;
 #X connect 14 0 12 0;
 #X connect 17 0 18 0;

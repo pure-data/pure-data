@@ -1,4 +1,5 @@
 #N canvas 595 23 750 676 12;
+#X declare -stdpath ./;
 #X obj 400 345 loadbang;
 #X obj 496 251 adc~ 1;
 #X obj 400 400 soundfiler;
@@ -10,8 +11,8 @@
 #X obj 130 170 moses 1;
 #X obj 203 148 mtof;
 #N canvas 0 23 446 202 (subpatch) 0;
-#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 100 20 inlet~;
 #X obj 99 87 *~;
 #X obj 98 159 outlet~;
@@ -22,8 +23,8 @@
 #X coords 0 0 100 100 40 18 1;
 #X restore 95 405 pd;
 #N canvas 0 23 446 202 (subpatch) 0;
-#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 100 20 inlet~;
 #X obj 99 87 *~;
 #X obj 98 159 outlet~;
@@ -52,8 +53,8 @@ with an adc~ if you want to go live.;
 #X connect 5 0 6 0;
 #X restore 49 59 pd looper;
 #X text 484 351 re-read original sample;
-#X obj 507 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 507 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 170 390 on/off for original;
 #X text 63 16 OCTAVE DOUBLING VIA VARIABLE COMB FILTER;
 #X obj 77 443 +~;
@@ -85,6 +86,7 @@ the timbre as a speed-up would., f 67;
 #X text 292 256 as one window (in msec);
 #X text 526 276 <= record a sample;
 #X text 141 406 <= and processed sounds;
+#X obj 506 32 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 1 0 4 0;
 #X connect 5 0 2 0;

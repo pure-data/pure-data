@@ -1,51 +1,48 @@
-#N canvas 628 79 614 539 12;
-#X obj 278 276 sig~;
-#X text 55 275 test signal;
-#X text 125 415 amp in (db);
-#X text 124 218 test frequency;
-#X text 254 218 center frequency;
-#X text 356 305 q;
-#X floatatom 147 242 5 0 0 0 - - -;
-#X floatatom 278 245 5 0 0 0 - - -;
-#X obj 147 276 osc~;
-#X floatatom 312 306 5 0 0 0 - - -;
-#X obj 147 365 env~ 8192;
-#X obj 245 385 env~ 8192;
-#X floatatom 146 392 5 0 0 0 - - -;
-#X floatatom 245 414 5 0 0 0 - - -;
-#X obj 97 21 vcf~;
-#X text 76 484 see also:;
-#X obj 154 483 bp~;
-#X obj 245 338 vcf~ 1, f 10;
-#X text 327 338 optional argument to initialize q;
-#X obj 340 388 env~ 8192;
-#X floatatom 340 415 5 0 0 0 - - -;
-#X text 42 54 vcf~ is a resonant band-pass and low-pass filter that
-takes an audio signal to set center frequency \, which may thus change
-continuously in time. The "Q" or filter sharpness is still only set
-by messages. More expensive but more powerful than the bp~ bandpass
-filter., f 63;
-#X msg 437 255 \; pd dsp 0;
-#X msg 437 216 \; pd dsp 1;
-#X text 349 504 updated for Pd version 0.46;
+#N canvas 701 77 525 570 12;
+#X declare -stdpath ./;
+#X obj 200 265 sig~;
+#X text 176 207 center frequency;
+#X floatatom 200 234 5 0 0 0 - - - 0;
+#X floatatom 234 295 5 0 0 0 - - - 0;
+#X obj 36 22 vcf~;
+#X text 24 494 see also:;
+#X obj 102 494 bp~;
+#X obj 167 327 vcf~ 1, f 10;
+#X text 284 493 updated for Pd version 0.46;
 #X text 42 138 vcf~ is implemented as a one-pole complex filter with
 outlets for the real and imaginary value. These may be used as bandpass
 and lowpass filter outputs \, or combined to allow other possibilities.
 , f 63;
-#X text 242 453 (bandpass);
-#X text 349 458 (lowpass);
-#X text 242 436 real output;
-#X text 338 439 imaginary output;
-#X text 139 21 - voltage-controlled bandpass filter;
-#X obj 188 483 bob~;
-#X connect 0 0 17 1;
-#X connect 6 0 8 0;
-#X connect 7 0 0 0;
-#X connect 8 0 10 0;
-#X connect 8 0 17 0;
-#X connect 9 0 17 2;
-#X connect 10 0 12 0;
-#X connect 11 0 13 0;
-#X connect 17 0 11 0;
-#X connect 17 1 19 0;
-#X connect 19 0 20 0;
+#X text 101 448 (bandpass);
+#X text 231 450 (lowpass);
+#X text 101 431 real output;
+#X text 220 431 imaginary output;
+#X text 78 22 - voltage-controlled bandpass filter;
+#X obj 136 494 bob~;
+#X obj 106 261 noise~;
+#X text 89 236 test input;
+#X text 278 294 Q;
+#X text 249 327 optional argument initializes Q;
+#X text 42 54 Vcf~ is a resonant band-pass and low-pass filter that
+takes either a control or an audio signal to set center frequency \,
+which may thus change continuously in time. The "Q" or filter sharpness
+is still only set by messages. More expensive but more powerful than
+the bp~ bandpass filter., f 63;
+#X obj 109 371 output~;
+#X obj 234 371 output~;
+#X obj 177 494 lop~;
+#X obj 217 494 hip~;
+#X obj 365 20 declare -stdpath ./;
+#X obj 37 530 biquad~;
+#X obj 96 529 slop~, f 7;
+#X obj 155 529 cpole~, f 7;
+#X obj 217 529 fexpr~;
+#X text 273 529 - unfriendly filters;
+#X connect 0 0 7 1;
+#X connect 2 0 0 0;
+#X connect 3 0 7 2;
+#X connect 7 0 21 1;
+#X connect 7 0 21 0;
+#X connect 7 1 22 0;
+#X connect 7 1 22 1;
+#X connect 16 0 7 0;

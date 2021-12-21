@@ -1,33 +1,39 @@
-#N canvas 143 22 712 368 12;
-#X msg 294 284 bang;
-#X obj 270 310 print~;
-#X msg 189 285 bang;
-#X obj 165 311 print~;
-#X text 53 121 click here first;
-#X msg 76 273 bang;
-#X obj 52 299 print~;
-#X text 166 229 shift left;
-#X text 272 231 shift right;
-#X obj 165 259 lrshift~ 1;
-#X obj 270 258 lrshift~ -1;
-#X text 39 37 Acting at whatever vector size the window is running
+#N canvas 695 83 620 378 12;
+#X msg 304 300 bang;
+#X obj 280 325 print~;
+#X msg 169 301 bang;
+#X obj 145 325 print~;
+#X msg 32 261 bang;
+#X obj 32 325 print~;
+#X text 99 273 shift left, f 5;
+#X text 231 274 shift right, f 6;
+#X obj 145 275 lrshift~ 1;
+#X obj 280 274 lrshift~ -1;
+#X text 47 50 Acting at whatever vector size the window is running
 at \, lrshift~ shifts samples to the left (toward the beginning sample)
 or to the right. The argument gives the direction and the amount of
-the shift. The rightmost (or leftmost) samples are set to zero.;
+the shift. The rightmost (or leftmost) samples are set to zero., f
+68;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array shiftin 64 float 0;
-#X coords 0 1 63 0 200 140 1;
-#X restore 449 139 graph;
-#X text 115 11 -- shift signal vector elements left or right;
-#X msg 54 142 \; pd dsp 1 \; shiftin 1 1;
-#X obj 52 211 tabreceive~ shiftin;
-#X text 525 308 Updated for Pd 0.31.;
-#X obj 47 11 lrshift~;
+#X array shiftin 64 float 1;
+#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 63 0 200 140 1 0 0;
+#X restore 390 147 graph;
+#X obj 145 208 tabreceive~ shiftin;
+#X obj 78 11 lrshift~;
+#X text 146 11 - shift signal vector elements left or right;
+#X msg 164 150 \; pd dsp \$1;
+#X obj 164 127 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 186 125 DSP on/off;
+#X text 399 323 Updated for Pd versin 0.31.;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
-#X connect 5 0 6 0;
-#X connect 9 0 3 0;
-#X connect 10 0 1 0;
-#X connect 15 0 6 0;
-#X connect 15 0 9 0;
-#X connect 15 0 10 0;
+#X connect 4 0 5 0;
+#X connect 8 0 3 0;
+#X connect 9 0 1 0;
+#X connect 12 0 5 0;
+#X connect 12 0 8 0;
+#X connect 12 0 9 0;
+#X connect 16 0 15 0;

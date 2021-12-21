@@ -1,12 +1,13 @@
 #N canvas 553 23 507 587 12;
-#X floatatom 113 163 5 0 150 0 - #0-pitch -;
+#X declare -stdpath ./;
+#X floatatom 113 163 5 0 150 0 - #0-pitch - 0;
 #X text 114 17 SWEEPING FILTERS;
 #X obj 113 210 phasor~;
 #X obj 125 368 +~;
-#X floatatom 143 343 5 0 100 0 - #0-offset -;
-#X floatatom 126 239 5 0 0 0 - #0-speed -;
-#X floatatom 144 290 5 0 100 0 - #0-depth -;
-#X floatatom 138 423 5 0 1000 0 - #0-q -;
+#X floatatom 143 343 5 0 100 0 - #0-offset - 0;
+#X floatatom 126 239 5 0 0 0 - #0-speed - 0;
+#X floatatom 144 290 5 0 100 0 - #0-depth - 0;
+#X floatatom 138 423 5 0 1000 0 - #0-q - 0;
 #X obj 113 448 vcf~;
 #X obj 125 397 tabread4~ mtof;
 #X text 184 199 sawtooth;
@@ -21,8 +22,8 @@
 #X text 297 545 updated for Pd version 0.39;
 #N canvas 706 247 304 285 startup 0;
 #X obj 85 33 loadbang;
-#X obj 85 57 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 85 57 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 85 76 f \$0;
 #X msg 85 100 \; \$1-pitch 48 \; \$1-speed -2 \; \$1-depth 27 \; \$1-offset
 56 \; \$1-q 2;
@@ -67,6 +68,7 @@ sweep speeds.;
 "vcf~" instead of "bp~". The vcf~ module takes an audio signal to set
 center frequency. (Q is still set by messages though.) Vcf~ is computationally
 somewhat more expensive than bp~.;
+#X obj 338 17 declare -stdpath ./;
 #X connect 0 0 16 0;
 #X connect 2 0 8 0;
 #X connect 3 0 9 0;

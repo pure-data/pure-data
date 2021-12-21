@@ -80,12 +80,13 @@ proc pdtk_canvas_place_window {width height geometry} {
     # read back the current geometry +posx+posy into variables
     set w $width
     set h $height
+    set xypos ""
     if { "" != ${geometry} } {
         scan $geometry {%[+]%d%[+]%d} - x - y
         foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
-        set geometry +${x}+${y}
+        set xypos +${x}+${y}
     }
-    return [list ${w} ${h} ${geometry}]
+    return [list ${w} ${h} ${w}x${h}${xypos}]
 }
 
 
@@ -449,15 +450,20 @@ proc ::pdtk_canvas::cleanname {name} {
     return $name
 }
 
+set enable_cords_to_foreground false
+
 proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
-    set col black
-    if { $state == 0 } {
-        set col lightgrey
-    }
-    foreach id [$mytoplevel find withtag {cord && !selected}] {
-        # don't apply backgrouding on selected (blue) lines
-        if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
-            $mytoplevel itemconfigure $id -fill $col
+    global enable_cords_to_foreground
+    if {$enable_cords_to_foreground eq "true"} {
+        set col black
+        if { $state == 0 } {
+            set col lightgrey
+        }
+        foreach id [$mytoplevel find withtag {cord && !selected}] {
+            # don't apply backgrouding on selected (blue) lines
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+                $mytoplevel itemconfigure $id -fill $col
+            }
         }
     }
 }

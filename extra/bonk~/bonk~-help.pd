@@ -1,42 +1,40 @@
-#N canvas 118 87 1124 603 12;
-#X obj 402 492 spigot;
-#X msg 504 293 bang;
-#X obj 503 454 bonk~;
-#X msg 503 357 print;
-#X obj 455 428 adc~;
-#X msg 657 506 \; pd dsp 1;
-#X obj 320 492 spigot;
-#N canvas 366 126 604 404 synth 0;
-#X obj 112 24 r bonk-cooked;
-#X obj 112 49 unpack;
-#X obj 112 99 * 12;
-#X obj 112 124 div 7;
-#X obj 112 74 + 1;
-#X obj 112 174 mtof;
-#X obj 112 224 osc~;
-#X obj 112 249 cos~;
-#X obj 112 149 + 47;
-#X obj 209 247 line~;
-#X obj 209 272 *~;
-#X obj 209 297 lop~ 500;
-#X obj 112 274 *~;
-#X obj 103 361 dac~;
-#X obj 253 165 dbtorms;
-#X obj 253 115 * 0.5;
-#X obj 253 140 + 50;
-#X obj 211 189 f;
-#X msg 173 159 bang;
-#X obj 258 83 inlet;
-#X obj 111 307 hip~ 5;
-#X msg 34 24 0 60;
-#X obj 112 199 sig~;
-#X msg 209 222 \$1 \, 0 200;
+#N canvas 588 81 967 645 12;
+#X obj 487 579 spigot;
+#X msg 484 284 bang;
+#X obj 455 494 bonk~;
+#X msg 507 352 print;
+#X obj 393 398 adc~;
+#X obj 404 579 spigot;
+#N canvas 1028 240 305 506 synth 0;
+#X obj 72 77 r bonk-cooked;
+#X obj 72 109 unpack;
+#X obj 72 159 * 12;
+#X obj 72 184 div 7;
+#X obj 72 134 + 1;
+#X obj 72 234 mtof;
+#X obj 72 299 osc~;
+#X obj 72 324 cos~;
+#X obj 72 209 + 47;
+#X obj 156 339 line~;
+#X obj 156 364 *~;
+#X obj 156 389 lop~ 500;
+#X obj 72 349 *~;
+#X obj 72 441 dac~;
+#X obj 174 261 dbtorms;
+#X obj 174 211 * 0.5;
+#X obj 174 236 + 50;
+#X obj 156 287 f;
+#X obj 174 27 inlet;
+#X obj 72 392 hip~ 5;
+#X obj 72 274 sig~;
+#X msg 156 314 \$1 \, 0 200;
+#X obj 141 263 b;
 #X connect 0 0 1 0;
 #X connect 1 0 4 0;
 #X connect 2 0 3 0;
 #X connect 3 0 8 0;
 #X connect 4 0 2 0;
-#X connect 5 0 18 0;
+#X connect 5 0 20 0;
 #X connect 5 0 22 0;
 #X connect 6 0 7 0;
 #X connect 7 0 12 0;
@@ -45,68 +43,64 @@
 #X connect 9 0 10 1;
 #X connect 10 0 11 0;
 #X connect 11 0 12 1;
-#X connect 12 0 20 0;
+#X connect 12 0 19 0;
 #X connect 14 0 17 1;
 #X connect 15 0 16 0;
 #X connect 16 0 14 0;
-#X connect 17 0 23 0;
-#X connect 18 0 17 0;
-#X connect 19 0 15 0;
-#X connect 20 0 13 1;
-#X connect 20 0 13 0;
-#X connect 21 0 1 0;
-#X connect 22 0 6 0;
-#X connect 23 0 9 0;
-#X restore 889 523 pd synth;
-#X floatatom 889 500 0 0 0 0 - - -;
-#X msg 889 470 0;
-#X msg 920 470 90;
-#X text 645 472 click here;
-#X text 646 485 to start DSP;
-#X text 5 291 In this patch \, after starting DSP \, you can print
+#X connect 17 0 21 0;
+#X connect 18 0 15 0;
+#X connect 19 0 13 1;
+#X connect 19 0 13 0;
+#X connect 20 0 6 0;
+#X connect 21 0 9 0;
+#X connect 22 0 17 0;
+#X restore 640 524 pd synth;
+#X floatatom 640 498 4 0 0 0 - - - 0;
+#X msg 606 466 0;
+#X msg 640 466 90;
+#X text 24 352 In this patch \, after starting DSP \, you can print
 out the raw or cooked output using the two "spigots" or listen to a
-synthesizer output by raising its volume.;
-#X text 772 470 output volume;
-#X text 786 488 (0-100);
-#X msg 503 138 mask 4 0.7;
-#X text 600 120 Describes how energy in each frequency band masks later
+synthesizer output by raising its volume., f 47;
+#X text 675 469 output volume;
+#X text 689 487 (0-100);
+#X msg 421 127 mask 4 0.7;
+#X text 507 113 Describes how energy in each frequency band masks later
 energy in the band. Here the masking is total for 4 analysis periods
 and then drops by 0.7 each period.;
-#X text 548 286 Poll the current spectrum via "raw" outlet \, You can
+#X text 526 277 Poll the current spectrum via "raw" outlet \, You can
 set a very high threshold if you don't want attacks mixed in.;
-#X msg 503 331 debug 0;
-#X text 581 331 turn debugging on or off.;
-#X obj 369 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X obj 451 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X obj 402 522 print cooked;
-#X obj 320 522 print raw;
-#X text 182 491 enable printout:;
-#X text 580 202 Minimum "velocity" to output (quieter notes are ignored.)
+#X msg 496 321 debug 0;
+#X obj 443 556 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 526 556 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 487 609 print cooked;
+#X obj 404 609 print raw;
+#X text 276 579 enable printout:;
+#X text 519 202 Minimum "velocity" to output (quieter notes are ignored.)
 ;
-#X obj 505 481 s bonk-cooked;
-#X text 8 145 Bonk's two outputs are the raw spectrum of the attack
+#X obj 503 525 s bonk-cooked;
+#X text 24 192 Bonk's two outputs are the raw spectrum of the attack
 (provided as a list of 11 numbers giving the signal "loudness" in the
 11 frequency bands used) \, and the "cooked" output which gives only
 an instrument number (counting up from zero) and a "velocity". This
 "velocity" is the sum of the square roots of the amplitudes of the
 bands \, normalized so that 100 is an attack of amplitude of about
 1 The instrument number is significant only if Bonk has a "template
-set" in memory.;
-#X text 612 35 Set low and high thresholds. Signal growth must exceed
+set" in memory., f 47;
+#X text 501 33 Set low and high thresholds. Signal growth must exceed
 the high one and then fall to the low one to make an attack. The unit
 is the sum of the proportional growth in the 11 filter bands. Proportional
 growth is essentially the logarithmic time derivative.;
-#X msg 503 384 print 1;
-#X text 571 386 print out filterbank settings;
-#X text 9 33 The Bonk object takes an audio signal input and looks
+#X msg 516 380 print 1;
+#X text 24 53 The Bonk object takes an audio signal input and looks
 for "attacks" defined as sharp changes in the spectral envelope of
 the incoming sound. Optionally \, and less reliably \, you can have
 Bonk check the attack against a collection of stored templates to try
 to guess which of two or more instruments was hit. Bonk is described
-theoretically in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu.;
-#N canvas 2 52 699 717 creation-arguments 0;
+theoretically in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu.
+, f 47;
+#N canvas 544 116 707 637 creation-arguments 0;
 #X text 228 14 creation arguments for bonk~;
 #X text 70 272 -npts 256;
 #X text 44 244 default value:;
@@ -141,68 +135,77 @@ by "halftones" is smaller than this \, this value is used. This must
 be at least 1.5.;
 #X text 212 567 center frequency \, in bins \, of the lowest filter.
 The others are computed from this.;
-#X restore 147 414 pd creation-arguments;
-#N canvas 411 161 680 476 templates 0;
-#X msg 58 197 learn 0;
-#X msg 58 227 forget;
-#X msg 58 257 write templates.txt;
-#X msg 58 287 read templates.txt;
-#X msg 58 107 debounce 0;
-#X msg 58 137 learn 10;
-#X obj 31 402 outlet;
-#X text 155 134 Forget all templates and start learning new ones. The
+#X restore 198 506 pd creation-arguments;
+#N canvas 654 163 692 327 templates 0;
+#X msg 79 97 learn 0;
+#X msg 90 137 forget;
+#X msg 101 174 write templates.txt;
+#X msg 117 204 read templates.txt;
+#X msg 52 38 debounce 0;
+#X msg 66 66 learn 10;
+#X obj 69 273 outlet;
+#X text 171 65 Forget all templates and start learning new ones. The
 argument gives the number of times you will hit each instrument (10
 recommended.) Turn on the output volume above for audible feedback
-as you train Bonk. "Learn 0" exits learn mode.;
-#X text 155 217 Forget the last template. In Learn mode \, use "forget"
+as you train Bonk. "Learn 0" exits learn mode., f 69;
+#X text 144 131 Forget the last template. In Learn mode \, use "forget"
 to erase and record over a template.;
-#X text 220 253 Write templates to a file in text-editable format.
+#X text 245 174 Write templates to a file in text-editable format.
 ;
-#X text 221 283 Read templates from a file.;
-#X text 157 104 Minimum time (msec) between attacks in learn mode;
+#X text 253 204 Read templates from a file.;
+#X text 134 39 Minimum time (msec) between attacks in learn mode;
+#X text 130 65 <====;
 #X connect 0 0 6 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;
 #X connect 3 0 6 0;
 #X connect 4 0 6 0;
 #X connect 5 0 6 0;
-#X restore 520 421 pd templates;
-#X msg 503 68 thresh 2.5 5;
-#X msg 503 173 attack-frames 1;
-#X text 628 174 number of frames over which to measure growth;
-#X text 625 422 more messages for managing templates;
-#X msg 503 201 minvel 7;
-#X msg 503 228 spew 0;
-#X text 570 230 Turn spew mode on/off;
-#X msg 503 255 useloudness 0;
-#X text 617 254 experimental: use alternative loudness units;
-#X text 212 9 BONK~ - attack detection and spectral envelope measurement
-;
-#X text 754 552 Updated for Pd version 0.42;
-#X text 5 344 By default bonk's analysis is carried out on a 256-point
+#X restore 524 412 pd templates;
+#X msg 399 56 thresh 2.5 5;
+#X msg 437 176 attack-frames 1;
+#X msg 449 201 minvel 7;
+#X msg 456 228 spew 0;
+#X msg 467 254 useloudness 0;
+#X text 664 588 Updated for Pd version 0.42;
+#X text 24 416 By default bonk's analysis is carried out on a 256-point
 window (6 msec at 44.1 kHz) and the analysis period is 128 samples.
 These and other parameters may be overridden using creation arguments
-as shown in the subpatch below:;
-#X text 572 356 Print out settings and templates.;
-#X connect 0 0 23 0;
+as shown in the subpatch below:, f 47;
+#X obj 55 14 bonk~;
+#X text 107 13 - attack detection and spectral envelope measurement
+;
+#X text 508 229 Turn spew mode on/off.;
+#X text 557 176 Number of frames over which to measure growth.;
+#X text 571 253 experimental: use alternative loudness units.;
+#X text 557 321 Turn debugging on or off.;
+#X text 553 351 Print out settings and templates.;
+#X text 577 380 Print out filterbank settings.;
+#X text 619 413 More messages for managing templates.;
+#X msg 63 572 \; pd dsp \$1;
+#X obj 63 548 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 90 547 DSP on/off;
+#X connect 0 0 19 0;
 #X connect 1 0 2 0;
-#X connect 2 0 6 0;
+#X connect 2 0 5 0;
 #X connect 2 1 0 0;
-#X connect 2 1 27 0;
+#X connect 2 1 23 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
-#X connect 6 0 24 0;
+#X connect 5 0 20 0;
+#X connect 7 0 6 0;
 #X connect 8 0 7 0;
-#X connect 9 0 8 0;
-#X connect 10 0 8 0;
+#X connect 9 0 7 0;
+#X connect 13 0 2 0;
 #X connect 16 0 2 0;
-#X connect 19 0 2 0;
-#X connect 21 0 6 1;
-#X connect 22 0 0 1;
+#X connect 17 0 5 1;
+#X connect 18 0 0 1;
+#X connect 26 0 2 0;
+#X connect 29 0 2 0;
 #X connect 30 0 2 0;
+#X connect 31 0 2 0;
+#X connect 32 0 2 0;
+#X connect 33 0 2 0;
 #X connect 34 0 2 0;
-#X connect 35 0 2 0;
-#X connect 36 0 2 0;
-#X connect 39 0 2 0;
-#X connect 40 0 2 0;
-#X connect 42 0 2 0;
+#X connect 47 0 46 0;
