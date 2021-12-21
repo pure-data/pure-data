@@ -1,5 +1,5 @@
 #N struct template1 float x float y float z float q;
-#N canvas 519 81 1202 599 12;
+#N canvas 478 81 1202 599 12;
 #X obj 87 18 trigger;
 #X text 152 19 - sequence messages in right-to-left order;
 #X obj 115 43 t;
@@ -62,9 +62,9 @@ left is the usual output order in Pd objects., f 89;
 kind of message: a float \, a symbol \, a pointer \, a bang \, a list
 and also any generic message., f 67;
 #X obj 536 447 t b f;
-#X listbox 515 513 6 0 0 0 - - - 0;
-#X floatatom 536 422 4 0 0 0 - - - 0;
-#X floatatom 514 392 4 0 0 0 - - - 0;
+#X listbox 515 513 11 0 0 0 - - - 0;
+#X floatatom 536 422 7 0 0 0 - - - 0;
+#X floatatom 514 392 7 0 0 0 - - - 0;
 #X obj 515 478 pack f f;
 #X text 494 349 always force an output, f 12;
 #X text 705 14 The 'float' \, 'symbol' and 'pointer' specifiers can

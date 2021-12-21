@@ -31,7 +31,61 @@ abstraction name and the number of voices., f 90;
 #X obj 189 354 pack f f;
 #X listbox 189 382 8 0 0 0 - - - 0;
 #X obj 582 269 declare -stdpath ./;
+#X obj 14 47 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 692 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X obj 218 306 + 1;
+#N canvas 782 118 569 527 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 88 cnv 1 550 1 empty empty 'n': 8 12 0 13 #000000 #000000
+0;
+#X obj 8 261 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 503 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 41 16 clone;
+#X obj 8 350 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 379 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 104 96 list -;
+#X text 55 148 next <list> -;
+#X text 55 182 this <list> -;
+#X text 62 215 set <list> - sets the "next"/"this" counter., f 67
+;
+#X text 88 266 (depends on the abstraction);
+#X text 40 404 "-s <float>" - sets starting voice number (default 0).
+, f 70;
+#X text 96 387 "-x" - avoids including a first argument setting voice
+number., f 62;
+#X text 113 440 1) symbol - abstraction name., f 50;
+#X text 120 459 2) float - number of copies., f 49;
+#X obj 7 433 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 127 478 3) list - optional arguments to the abstraction.;
+#X text 153 97 first number sets the copy number and the rest of the
+list is sent to that instance's inlet., f 54;
+#X text 153 148 forwards a message to the next instance's inlet (incrementing
+and repeating circularly)., f 54;
+#X text 153 182 forwards a message to the previous instance's inlet
+sent to by "this" or "next"., f 54;
+#X text 62 235 all <list> - sends a message to all instances' inlet.
+, f 67;
+#X text 79 61 (number and type depends on the abstraction);
+#X obj 7 296 cnv 1 550 1 empty empty 'n': 8 12 0 13 #000000 #000000
+0;
+#X text 71 320 signal outlets - output the sum of all instances' outputs.
+;
+#X text 90 128 signal -;
+#X text 153 129 for signal inlets \, audio is sent to all copies.,
+f 54;
+#X text 64 302 control outlets - output the message with a prepended
+copy number., f 67;
+#X text 88 16 - make multiple copies of an abstraction.;
+#X restore 543 14 pd reference;
+#X text 636 14 <= click;
 #X text 265 256 A list beginning with a number dispatches the rest
 of the list as a message to a copy of the abstraction defined by the
 first number., f 41;
@@ -64,19 +118,19 @@ with the number of the instance prepended to them., f 95;
 #X connect 1 1 21 1;
 #X connect 2 0 3 0;
 #X connect 3 0 21 0;
-#X connect 3 0 24 0;
-#X connect 4 0 34 0;
-#X connect 5 0 34 0;
-#X connect 6 0 34 0;
-#X connect 7 0 34 0;
-#X connect 8 0 34 0;
-#X connect 9 0 34 0;
+#X connect 3 0 26 0;
+#X connect 4 0 38 0;
+#X connect 5 0 38 0;
+#X connect 6 0 38 0;
+#X connect 7 0 38 0;
+#X connect 8 0 38 0;
+#X connect 9 0 38 0;
 #X connect 21 0 22 0;
-#X connect 22 0 34 0;
-#X connect 24 0 2 1;
-#X connect 26 0 4 0;
-#X connect 27 0 5 0;
-#X connect 28 0 6 0;
-#X connect 29 0 9 0;
-#X connect 34 0 19 0;
-#X connect 34 0 19 1;
+#X connect 22 0 38 0;
+#X connect 26 0 2 1;
+#X connect 30 0 4 0;
+#X connect 31 0 5 0;
+#X connect 32 0 6 0;
+#X connect 33 0 9 0;
+#X connect 38 0 19 0;
+#X connect 38 0 19 1;

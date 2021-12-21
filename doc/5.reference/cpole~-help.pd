@@ -1,9 +1,9 @@
-#N canvas 751 57 554 672 12;
+#N canvas 541 59 562 667 12;
 #X declare -stdpath ./;
 #X obj 68 127 osc~ 100;
 #X msg 77 154 clear;
 #X text 27 407 The transfer function is H(Z) = 1/(1 - aZ^-1).;
-#X obj 59 10 cpole~;
+#X obj 49 10 cpole~;
 #X obj 99 210 sig~;
 #X obj 131 233 sig~;
 #X obj 163 257 sig~;
@@ -13,13 +13,8 @@
 #X text 26 358 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient (all complex numbers). The filter is unstable
 if/when |a[n]|>1.;
-#X text 33 47 Cpole~ filters a complex audio signal (first two inlets)
-via a one-pole filter \, whose coefficients are controlled by creation
-arguments or by another complex audio signal (remaining two inlets).
-, f 63;
 #X msg 89 181 set 0.6 0.8;
 #X text 58 338 y[n] = x[n] + a[n] * y[n-1];
-#X text 121 10 - complex one-pole (recursive) filter \, raw;
 #N canvas 796 231 441 392 test 0;
 #X obj 90 85 osc~;
 #X floatatom 90 52 5 0 0 0 - - - 0;
@@ -117,18 +112,69 @@ for an introduction to the necessary theory (click) =>, f 69;
 #X text 194 636 - not so friendly;
 #X obj 80 635 fexpr~;
 #X obj 135 635 slop~, f 7;
-#X text 351 636 updated for Pd version 0.43;
+#X text 342 635 updated for Pd version 0.43;
 #X text 136 128 <= signal to filter (real part);
 #X text 126 153 <= clear internal state to zero;
-#X text 178 181 <= set internal state (real&imaginary parts);
 #X text 145 211 <= signal to filter (imaginary part);
 #X text 177 235 <= filter coefficient (real part);
 #X text 208 259 <= filter coefficient (imaginary part);
 #X text 193 283 <= creation arguments initialize filter;
+#X text 101 10 - complex one-pole filter;
+#X text 33 47 Cpole~ filters a complex audio signal (first two inlets)
+via a raw one-pole (recursive) filter \, whose coefficients are controlled
+by creation arguments or by another complex audio signal (remaining
+two inlets)., f 67;
+#X text 178 181 <= set internal state (real & imaginary parts);
+#X obj 14 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 592 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 782 118 568 467 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 81 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 277 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 432 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 376 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 310 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X text 117 89 signal -;
+#X obj 49 10 cpole~;
+#X text 101 10 - complex one-pole filter;
+#X obj 7 151 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 191 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 231 cnv 1 550 1 empty empty 4th: 8 12 0 13 #000000 #000000
+0;
+#X text 180 89 signal to filter (real part)., f 49;
+#X text 117 159 signal -;
+#X text 180 159 signal to filter (imaginary part)., f 49;
+#X text 117 201 signal -;
+#X text 117 241 signal -;
+#X text 180 241 filter coefficient (imaginary part)., f 49;
+#X text 180 201 filter coefficient (real part)., f 49;
+#X text 124 127 clear -;
+#X text 180 107 set internal state (real and imaginary part)., f 49
+;
+#X text 180 127 clear internal state to zero (same as "set 0 0").;
+#X text 71 403 1) list - real and imaginary part of coefficient (default
+0 0)., f 64;
+#X obj 7 343 cnv 1 550 1 empty empty 2nt: 8 12 0 13 #000000 #000000
+0;
+#X text 117 350 signal - filtered signal \, imaginary part.;
+#X text 117 317 signal - filtered signal \, real part.;
+#X text 33 107 set <float \, float> -;
+#X restore 355 9 pd reference;
+#X text 449 9 <= click;
 #X connect 0 0 7 0;
 #X connect 1 0 7 0;
 #X connect 4 0 7 1;
 #X connect 5 0 7 2;
 #X connect 6 0 7 3;
-#X connect 12 0 7 0;
-#X connect 35 0 37 0;
+#X connect 11 0 7 0;
+#X connect 33 0 35 0;
