@@ -68,6 +68,7 @@ static void sigsend_setup(void)
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);
     class_addmethod(sigsend_class, (t_method)sigsend_dsp,
         gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(sigsend_class, gensym("send-receive-tilde"));
 }
 
 /* ----------------------------- receive~ ----------------------------- */
@@ -184,7 +185,7 @@ static void sigreceive_setup(void)
         A_SYMBOL, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(sigreceive_class, gensym("send~"));
+    class_sethelpsymbol(sigreceive_class, gensym("send-receive-tilde"));
 }
 
 /* ----------------------------- catch~ ----------------------------- */
