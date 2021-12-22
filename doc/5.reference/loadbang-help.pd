@@ -1,16 +1,44 @@
-#N canvas 794 23 512 324 12;
-#X obj 88 214 loadbang;
-#X floatatom 88 263 5 0 0 0 - - - 0;
-#X obj 79 21 loadbang;
-#X text 150 20 - send a "bang" message on load;
-#X msg 88 239 123;
+#N struct template1 float x float y float z float q;
+#N canvas 641 48 552 327 12;
+#X obj 142 179 loadbang;
+#X floatatom 142 232 5 0 0 0 - - - 0;
+#X obj 29 21 loadbang;
+#X text 100 20 - send a "bang" message on load;
+#X msg 142 206 123;
 #X text 40 60 The loadbang object outputs a 'bang' message when the
 containing patch is opened as a document or included in another patch
-as an abstraction.;
-#X text 38 122 Loadbangs within abstractions send their "bang" messages
+as an abstraction., f 69;
+#X text 40 111 Loadbangs within abstractions send their "bang" messages
 before those of loadbangs in the calling patch. Otherwise \, the order
 in which the "bangs" are sent from two loadbang objects is undefined.
-;
-#X text 255 256 updated for Pd version 0.47;
+, f 69;
+#X text 342 289 updated for Pd version 0.47;
+#N canvas 775 143 444 186 reference 0;
+#X obj 9 50 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 86 cnv 2 410 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 122 cnv 2 410 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 157 cnv 5 410 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 127 131 NONE, f 26;
+#X obj 34 16 loadbang;
+#X text 105 15 - send a "bang" message on load;
+#X text 117 95 bang - when loadding the patch.;
+#X text 124 60 NONE;
+#X restore 374 18 pd reference;
+#X text 471 18 <= click;
+#X obj 9 51 cnv 1 530 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 271 cnv 1 530 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 21 290 see also:;
+#X obj 99 289 pd-messages;
+#X obj 193 287 bang;
+#X obj 235 288 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 266 183 You can force loaddbangs to fire if you send a 'loadbang'
+message to the patch (see 'pd-messages')., f 33;
 #X connect 0 0 4 0;
 #X connect 4 0 1 0;
