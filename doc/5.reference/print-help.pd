@@ -1,21 +1,24 @@
-#N canvas 616 127 506 391 12;
-#X msg 185 56 walk the dog;
-#X msg 96 56 bang;
-#X msg 143 55 234;
-#X obj 143 101 print x1;
-#X obj 54 12 print;
-#X obj 197 279 print -n;
-#X floatatom 197 254 5 0 0 0 - - - 0;
-#X text 106 12 - print messages to terminal window;
-#X text 50 329 see also:;
-#X obj 130 329 print~;
-#X text 264 328 updated for Pd version 0.52;
-#X text 39 139 Print prints out the messages it receives on the "terminal
+#N canvas 616 127 505 460 12;
+#X msg 185 69 walk the dog;
+#X msg 96 69 bang;
+#X msg 143 68 234;
+#X obj 143 114 print x1;
+#X obj 39 12 print;
+#X obj 197 362 print -n;
+#X floatatom 197 337 5 0 0 0 - - - 0;
+#X text 91 12 - print messages to terminal window;
+#X text 50 409 see also:;
+#X obj 130 409 print~;
+#X text 263 410 updated for Pd version 0.52;
+#X text 39 152 Print prints out the messages it receives on the "terminal
 window" that Pd is run from. If no argument is given \, the message
 has a "print:" prefix. Any message as an argument is used as the prefix
 instead (so you can differentiate between different printouts).;
-#X text 38 219 With the special "-n" flag the default "print:" prefix
+#X text 39 302 With the special "-n" flag the default "print:" prefix
 is suppressed:;
+#X text 39 242 You can also do command/control + click on the terminal
+window and the corresponding [print] object will be selected in your
+patch.;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
