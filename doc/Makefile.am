@@ -370,8 +370,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/netsend-help.pd \
      ./5.reference/noise~-help.pd \
      ./5.reference/openpanel-help.pd \
-     ./5.reference/oscformat-help.pd \
-     ./5.reference/oscparse-help.pd \
+     ./5.reference/osc-format-parse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/pack-help.pd \
      ./5.reference/pdcontrol-abs.pd \
