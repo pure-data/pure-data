@@ -339,8 +339,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
      ./5.reference/framp~-help.pd \
-     ./5.reference/fudiformat-help.pd \
-     ./5.reference/fudiparse-help.pd \
+     ./5.reference/fudi-format-parse-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
      ./5.reference/gui-boxes-help.pd \

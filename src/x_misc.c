@@ -780,6 +780,7 @@ void fudiparse_setup(void) {
                               sizeof(t_fudiparse), CLASS_DEFAULT,
                               0);
   class_addlist(fudiparse_class, fudiparse_list);
+  class_sethelpsymbol(fudiparse_class, gensym("fudi-format-parse"));
 }
 /* --------- oscformat - format Pd (FUDI) messages to bytelists ------------ */
 
@@ -853,6 +854,7 @@ static void fudiformat_setup(void) {
                                sizeof(t_fudiformat), CLASS_DEFAULT,
                                A_DEFSYMBOL, 0);
   class_addanything(fudiformat_class, fudiformat_any);
+  class_sethelpsymbol(fudiformat_class, gensym("fudi-format-parse"));
 }
 
 
