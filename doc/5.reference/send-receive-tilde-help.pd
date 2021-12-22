@@ -1,0 +1,53 @@
+#N canvas 605 73 547 551 12;
+#X floatatom 288 353 5 0 0 0 - - - 0;
+#X obj 157 267 receive~ signal1;
+#X obj 55 312 send~ signal1;
+#X obj 55 289 sig~ 50;
+#X obj 288 318 snapshot~;
+#X text 180 24 - one-to-many nonlocal signal connections;
+#X obj 287 269 metro 200;
+#X text 304 507 updated for Pd version 0.33.;
+#X obj 56 347 sig~ 25;
+#X obj 56 375 send~ signal2;
+#X msg 157 214 set signal2;
+#X msg 169 239 set signal1;
+#X text 48 442 Send~/Receive~ only work for the default block size
+(64) \; for FFT applications see also:;
+#X obj 278 467 tabsend~;
+#X obj 116 49 s~;
+#X obj 147 49 r~;
+#X text 41 490 see also:;
+#X obj 122 517 send;
+#X obj 162 517 receive;
+#X obj 120 488 throw~;
+#X obj 176 488 catch~;
+#X text 180 48 - abbreviation;
+#X obj 287 237 loadbang;
+#X obj 392 192 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 392 215 \; pd dsp \$1;
+#X text 415 192 on/off;
+#X floatatom 55 265 5 0 0 0 - - - 0;
+#X floatatom 380 353 5 0 0 0 - - - 0;
+#X obj 380 318 snapshot~;
+#X obj 380 285 r~ signal1;
+#X text 28 91 A send~ object copies its input to a local buffer which
+all receive~ objects of the same name read from. They may be in different
+windows or even different patches. Any number of receives may be associated
+with one send~ but it is an error to have two send~s of the same name.
+Receive~ takes "set" messages to switch between send~s., f 68;
+#X obj 36 23 send~ x;
+#X obj 96 24 receive~ x;
+#X connect 1 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 6 0 4 0;
+#X connect 6 0 28 0;
+#X connect 8 0 9 0;
+#X connect 10 0 1 0;
+#X connect 11 0 1 0;
+#X connect 22 0 6 0;
+#X connect 23 0 24 0;
+#X connect 26 0 3 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 0;
