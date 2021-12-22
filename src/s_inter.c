@@ -1647,6 +1647,9 @@ void s_inter_free(t_instanceinter *inter)
         inter->i_fdpoll = 0;
         inter->i_nfdpoll = 0;
     }
+#if PDTHREADS
+    pthread_mutex_destroy(&INTER->i_mutex);
+#endif
     freebytes(inter, sizeof(*inter));
 }
 
