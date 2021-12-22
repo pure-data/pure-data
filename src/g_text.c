@@ -754,13 +754,24 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
-void gatom_undarken(t_text *x)
+/* set border back to normal */
+static void gatom_ungrab(t_gatom *x) {
+    t_glist *glist = x->a_glist;
+    t_rtext *y = glist_findrtext(glist, &x->a_text);
+    x->a_grabbed = 0;
+    sys_vgui(".x%lx.c itemconfigure %sR -width %d -outline "
+        "[::pdtk_canvas::get_color atom_box_outline .x%lx]\n",
+        glist_getcanvas(glist), rtext_gettag(y),
+        glist->gl_zoom, glist_getcanvas(glist));
+}
+
+void gatom_undarken(t_text *z)
 {
-    if (x->te_type == T_ATOM)
+    if (z->te_type == T_ATOM)
     {
-        ((t_gatom *)x)->a_doubleclicked =
-            ((t_gatom *)x)->a_grabbed = 0;
-        gatom_reborder((t_gatom *)x);
+        t_gatom *x = (t_gatom *)z;
+        x->a_doubleclicked = 0;
+        gatom_ungrab(x);
     }
     else bug("gatom_undarken");
 }
@@ -778,8 +789,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
         /* we're being notified that no more keys will come for this grab */
         if (t == x->a_glist->gl_editor->e_textedfor)
             rtext_activate(t, 0);
-        x->a_grabbed = 0;
-        gatom_reborder(x);
+        gatom_ungrab(x);
         gatom_senditup(x);
         gatom_redraw(&x->a_text.te_g, x->a_glist);
     }
@@ -871,6 +881,17 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
 
 int rtext_findatomfor(t_rtext *x, int xpos, int ypos);
 
+/* change to focused border */
+static void gatom_clickborder(t_gatom *x) {
+    t_glist *glist = x->a_glist;
+    t_rtext *y = glist_findrtext(glist, &x->a_text);
+    sys_vgui(".x%lx.c itemconfigure %sR -width %d -outline "
+        "[::pdtk_canvas::get_color atom_box_focus_outline .x%lx]\n",
+        glist_getcanvas(glist), rtext_gettag(y),
+        glist->gl_zoom+glist->gl_zoom,
+        glist_getcanvas(glist));
+}
+
     /* this is called when gatom is clicked on with patch in run mode. */
 static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     int shift, int alt, int dbl, int doit)
@@ -927,7 +948,7 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     }
     x->a_grabbed = 1;
     x->a_doubleclicked = dbl;
-    gatom_reborder(x);
+    gatom_clickborder(x);
     glist_grab(x->a_glist, &x->a_text.te_g, gatom_motion, gatom_key,
         xpos, ypos);
     return (1);
@@ -1575,11 +1596,12 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (firsttime)
            sys_vgui(".x%lx.c create polygon "
             	"%d %d %d %d %d %d %d %d %d %d %d %d "
-                "-outline [::pdtk_canvas::get_color atom_box_outline .x%lx] "
+                "-outline [::pdtk_canvas::get_color atom_box%s_outline .x%lx] "
                 "-fill [::pdtk_canvas::get_color atom_box_fill .x%lx] "
                 "-width %d -tags [list %sR atom]\n",
                 c, x1p, y1p, x2-corner, y1p, x2, y1p+corner,
                 x2, y2, x1p, y2, x1p, y1p,
+                ((t_gatom *)x)->a_grabbed ? "_focus" : "",
                 c, c, glist->gl_zoom+grabbed, tag);
        else
         {
@@ -1599,13 +1621,13 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (firsttime)
             sys_vgui(
             ".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d %d %d %d %d "
-                "-outline [::pdtk_canvas::get_color atom_box_outline .x%lx] "
+                "-outline [::pdtk_canvas::get_color atom_box%s_outline .x%lx] "
                 "-fill [::pdtk_canvas::get_color atom_box_fill .x%lx] "
                 "-width %d -tags [list %sR atom]\n",
                 c, x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,
                 x2, y2-corner, x2-corner, y2,
-                x1p, y2,  x1p, y1p, c, c,
-                glist->gl_zoom+grabbed, tag);
+                x1p, y2,  x1p, y1p, ((t_gatom *)x)->a_grabbed ? "_focus" : "",
+                c, c, glist->gl_zoom+grabbed, tag);
         else
         {
             sys_vgui(

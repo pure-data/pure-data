@@ -27,6 +27,7 @@
 # atom_box_text - text of gatoms
 # atom_box_label - label of gatoms
 # atom_box_outline - outline of gatoms
+# atom_box_focus_outline - outline of gatoms with keyboard focus
 # text_window_fill - [text] window background
 # text_window_text - [text] window text
 # text_window_highlight - like txt_highlight but for [text] window
@@ -88,6 +89,7 @@ canvas_text_cursor "deep sky blue"
 set ::pd_colors(txt_highlight_front) $::pd_colors(selected)
 set ::pd_colors(msg_iolet_border) $::pd_colors(msg_cord)
 set ::pd_colors(signal_iolet_border) $::pd_colors(signal_cord)
+set ::pd_colors(atom_box_focus_outline) $::pd_colors(atom_box_outline)
 
 # how to set individual colors
 #set ::pd_colors(msg_box_fill) "white"
