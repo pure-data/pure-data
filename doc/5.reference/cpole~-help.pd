@@ -164,11 +164,11 @@ two inlets)., f 67;
 #X text 180 127 clear internal state to zero (same as "set 0 0").;
 #X text 71 403 1) list - real and imaginary part of coefficient (default
 0 0)., f 64;
-#X obj 7 343 cnv 1 550 1 empty empty 2nt: 8 12 0 13 #000000 #000000
-0;
 #X text 117 350 signal - filtered signal \, imaginary part.;
 #X text 117 317 signal - filtered signal \, real part.;
 #X text 33 107 set <float \, float> -;
+#X obj 7 343 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
 #X restore 355 9 pd reference;
 #X text 449 9 <= click;
 #X connect 0 0 7 0;

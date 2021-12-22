@@ -1,25 +1,25 @@
-#N canvas 906 23 771 458 12;
+#N canvas 575 38 724 494 12;
 #X floatatom 33 179 7 0 0 0 - - - 0;
 #X obj 33 126 * 44100;
 #X floatatom 33 96 4 0 0 0 - - - 0;
 #X obj 33 244 osc~;
-#X obj 75 16 fft~;
-#X obj 125 17 ifft~;
-#X text 185 15 - forward and inverse complex FFT;
-#X obj 75 42 rfft~;
-#X obj 125 43 rifft~;
-#X text 185 41 - forward and inverse real FFT;
+#X obj 45 36 fft~;
+#X obj 95 37 ifft~;
+#X text 155 35 - forward and inverse complex FFT;
+#X obj 45 12 rfft~;
+#X obj 95 13 rifft~;
+#X text 155 11 - forward and inverse real FFT;
 #X obj 33 269 rfft~;
-#X text 513 412 updated for Pd version 0.33;
+#X text 493 460 updated for Pd version 0.33;
 #X obj 30 317 rifft~;
 #X obj 112 325 print~ real;
 #X obj 125 300 print~ imaginary;
 #X obj 30 411 print~ resynthesized;
 #X msg 44 378 bang;
 #X msg 112 263 bang;
-#X text 326 320 There is no normalization \, so that an FFT followed
+#X text 306 327 There is no normalization \, so that an FFT followed
 by an IFFT has a gain of N., f 54;
-#X text 326 231 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
+#X text 306 238 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
 parts. The other outputs are zero. At DC and at the Nyquist there is
 no imaginary part \, but the second through Nth output is as a real
 and imaginary pair \, which can be thought of as the cosine and sin
@@ -28,17 +28,17 @@ component strengths., f 54;
 #X text 83 378 <= print resynthesis;
 #X text 80 350 <= renormalize;
 #X text 154 264 <= print analysis;
-#X obj 460 195 block~ 128;
+#X obj 440 202 block~ 128;
 #X obj 33 154 / 128;
 #X obj 30 350 /~ 128;
-#X text 326 98 The FFT objects do Fourier analyses and resyntheses
+#X text 306 105 The FFT objects do Fourier analyses and resyntheses
 of incoming real or complex signals. Complex signals are handled as
 pairs of signals (real and imaginary part.) The analysis size is one
 block. You can use the block~ or switch~ objects to control block size
 (128 in this example)., f 54;
-#X text 326 356 See the FFT examples (section "I" of audio examples)
+#X text 306 363 See the FFT examples (section "I" of audio examples)
 to see how to use these in practice., f 54;
-#X text 385 194 see also:;
+#X text 365 201 see also:;
 #X text 75 88 frequency in bins, f 9;
 #X text 90 168 frequency in Hz, f 9;
 #X msg 188 146 \; pd dsp \$1;
@@ -47,6 +47,75 @@ to see how to use these in practice., f 54;
 #X text 209 122 DSP on/off;
 #X msg 91 210 0.25;
 #X msg 58 210 0;
+#X obj 11 67 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 514 84 929 486 reference 1;
+#X obj 9 41 cnv 5 430 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 79 cnv 2 430 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 163 cnv 2 430 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 40 12 rfft~;
+#X text 89 11 - forward real FFT;
+#X text 179 171 NONE;
+#X obj 7 102 cnv 1 430 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 133 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 9 363 cnv 2 430 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X text 179 415 NONE;
+#X obj 42 237 rifft~;
+#X text 98 236 - inverse real FFT;
+#X text 76 53 signal - time domain real signal to transform.;
+#X text 76 379 signal - time domain real signal to transform.;
+#X obj 492 80 fft~;
+#X obj 542 81 ifft~;
+#X text 592 79 - forward and inverse complex FFT;
+#X text 638 311 NONE;
+#X text 528 148 signal - real part of signal to transform.;
+#X text 528 178 signal - imaginary part of signal to transform.;
+#X text 528 243 signal - real part of transformed signal.;
+#X text 528 273 signal - imaginary part of transformed signal.;
+#X text 58 302 signal - real part of frequency domain signal.;
+#X text 58 332 signal - imaginary part of frequency domain signal.
+;
+#X obj 8 195 cnv 5 430 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 266 cnv 5 430 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 439 cnv 5 430 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 468 112 cnv 5 430 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 467 335 cnv 5 430 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 469 211 cnv 2 430 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 466 142 cnv 1 430 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 467 234 cnv 1 430 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 296 cnv 1 430 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 466 173 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 467 265 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 327 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 9 407 cnv 2 430 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 468 303 cnv 2 430 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X text 61 108 signal - real part of frequency domain signal.;
+#X text 61 138 signal - imaginary part of frequency domain signal.
+;
+#X restore 490 29 pd reference;
+#X text 588 30 <= click;
+#X obj 11 447 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 3 0;
 #X connect 1 0 25 0;
 #X connect 2 0 1 0;

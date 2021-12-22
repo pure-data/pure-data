@@ -1,6 +1,6 @@
 #N struct help-draw-data float x float y float cat float dog symbol
 weasel text boom;
-#N canvas 626 105 594 266 12;
+#N canvas 655 119 594 266 12;
 #X text 32 222 see also:;
 #X obj 37 12 drawnumber;
 #X obj 241 221 plot;

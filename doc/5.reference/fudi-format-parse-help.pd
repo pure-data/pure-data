@@ -1,4 +1,4 @@
-#N canvas 474 126 935 512 12;
+#N canvas 507 87 935 512 12;
 #X msg 69 367 disconnect;
 #X obj 49 395 netsend -u -b;
 #X msg 58 339 connect localhost 5000;
@@ -46,6 +46,36 @@ single FUDI messages over UDP. It doesn't work with TCP/IP (however
 #X text 545 321 The fudiparse object takes incoming lists of numbers
 \, interpreting them as the bytes in a FUDI message (as received when
 sending Pd-messages via [netreceive -b])., f 43;
+#N canvas 796 143 527 384 reference 0;
+#X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 100 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 137 cnv 2 500 2 empty empty FLAG: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 173 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 28 19 fudiformat;
+#X text 113 18 - convert messages to FUDI packets;
+#X text 83 66 anything - any message to convert to a FUDI packet.;
+#X text 118 110 list - converted FUDI packet., f 42;
+#X text 131 148 '-u': switches to "UDP" mode, f 31;
+#X obj 7 262 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 310 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 353 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 28 231 fudiparse;
+#X text 113 231 - parse FUDI packets into Pd messages;
+#X text 128 276 list - FUDI packet to convert to Pd messages.;
+#X text 100 320 anything - Pd messages., f 42;
+#X restore 695 19 pd reference;
+#X text 789 19 <= click;
+#X obj 6 455 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 65 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 3 0 4 0;

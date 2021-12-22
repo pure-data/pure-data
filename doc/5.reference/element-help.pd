@@ -1,59 +1,88 @@
 #N struct help-element-template float x float y array array1 help-element-array1-template
 ;
 #N struct help-element-array1-template float y;
-#N canvas 548 49 644 543 12;
-#X text 39 479 see also:;
+#N canvas 622 48 645 559 12;
+#X text 22 506 see also:;
 #N canvas 970 300 501 251 help-element-template 0;
 #X obj 50 110 plot array1 500 1 10 15 20;
 #X obj 50 154 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 50 52 struct help-element-template float x float y array array1
 help-element-array1-template, f 44;
-#X restore 417 412 pd help-element-template;
-#N canvas 209 156 292 163 help-element-data 1;
+#X restore 426 428 pd help-element-template;
+#N canvas 267 157 292 163 help-element-data 1;
 #X scalar help-element-template 35 24 \; 20 \; 10 \; 26 \; 10 \; 32
 \; 10 \; 43 \; -2 \; 33 \; \;;
-#X restore 445 386 pd help-element-data;
+#X restore 454 402 pd help-element-data;
 #N canvas 931 474 373 142 help-element-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-element-array1-template float y;
-#X restore 368 436 pd help-element-array1-template;
-#X obj 86 16 element;
-#X obj 108 503 pointer;
-#X obj 169 503 getsize;
-#X obj 228 503 setsize;
-#X obj 316 292 pointer;
-#X msg 316 268 traverse pd-help-element-data \, next;
-#X floatatom 46 256 5 -5 15 0 - - - 0;
-#X obj 46 349 element help-element-template array1, f 39;
-#X obj 46 398 get help-element-array1-template y;
-#X floatatom 46 429 5 0 0 0 - - - 0;
-#X text 330 321 pointer inlet;
-#X text 87 255 index;
-#X text 89 430 here we just get the value of y.;
-#X text 48 139 Indices range from 0 to the number of elements minus
+#X restore 377 452 pd help-element-array1-template;
+#X obj 42 19 element;
+#X obj 149 506 pointer;
+#X obj 208 506 getsize;
+#X obj 267 506 setsize;
+#X obj 325 308 pointer;
+#X msg 325 284 traverse pd-help-element-data \, next;
+#X floatatom 55 278 5 -5 15 0 - - - 0;
+#X obj 55 414 get help-element-array1-template y;
+#X floatatom 55 445 5 0 0 0 - - - 0;
+#X text 339 337 pointer inlet;
+#X text 96 277 index;
+#X text 98 446 here we just get the value of y.;
+#X text 57 157 Indices range from 0 to the number of elements minus
 one \; indices out of range are quietly replaced by the nearest endpoint.
 , f 66;
-#X text 315 246 click here first;
-#X obj 51 503 struct;
-#X text 404 500 updated for Pd version 0.47;
-#X msg 56 313 set help-element-template array1;
-#X text 79 291 set template and field name;
-#X text 48 182 If you don't know the template name you may specify
+#X text 324 262 click here first;
+#X obj 96 506 struct;
+#X text 427 508 updated for Pd version 0.47;
+#X msg 65 329 set help-element-template array1;
+#X text 88 307 set template and field name;
+#X text 57 200 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity., f 75;
-#X text 148 15 - get pointer to an element of an array;
-#X text 49 57 "element" takes a pointer at right and an index number
+#X text 104 18 - get pointer to an element of an array, f 40;
+#X text 58 75 "element" takes a pointer at right and an index number
 at left. It looks up a field from the pointer \, which should be an
 array \, and outputs the element of the array specified by the index
 number. There are no pointers to arrays themselves \, just to individual
 elements. The template and field name are specified as creation arguments.
 , f 75;
-#X obj 292 503 plot;
-#X text 51 372 outlet is pointer to a single element;
-#X text 335 348 arguments: template name \, field name;
-#X connect 8 0 11 1;
+#X obj 327 506 plot;
+#X text 60 388 outlet is pointer to a single element;
+#X text 344 364 arguments: template name \, field name;
+#X obj 9 57 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 804 197 576 299 reference 0;
+#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 173 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 213 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 269 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 150 86 float -;
+#X obj 42 11 element;
+#X text 104 10 - get pointer to an element of an array, f 40;
+#X text 179 223 1) symbol - template name.;
+#X text 179 242 2) symbol - field name., f 26;
+#X text 45 106 set <symbol \, symbol> - set template and field name.
+, f 69;
+#X text 206 86 set element index and output pointer., f 46;
+#X text 120 184 pointer - pointer to element in an array.;
+#X obj 7 76 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 7 137 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X text 136 144 pointer - pointer to an array.;
+#X restore 453 19 pd reference;
+#X text 551 20 <= click;
+#X obj 9 492 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 55 365 element help-element-template array1, f 39;
+#X connect 8 0 32 1;
 #X connect 9 0 8 0;
-#X connect 10 0 11 0;
+#X connect 10 0 32 0;
 #X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 21 0 11 0;
+#X connect 20 0 32 0;
+#X connect 32 0 11 0;
