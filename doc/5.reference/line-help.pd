@@ -1,8 +1,8 @@
-#N canvas 760 36 617 744 12;
+#N canvas 700 35 617 737 12;
 #X floatatom 35 527 8 0 0 0 - - - 0;
 #X msg 71 365 39;
-#X obj 71 18 line;
-#X text 111 17 - ramp generator;
+#X obj 71 13 line;
+#X text 111 12 - ramp generator;
 #X text 29 703 see also:;
 #X obj 110 703 line~;
 #X msg 48 298 stop;
@@ -49,6 +49,38 @@ a grain value persists. A grain value of 0 ir less becomes 20 (the
 default value). If the line object receives a message specifying some
 new target before reaching the previous one \, it takes off from its
 current value., f 75;
+#X obj 8 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 497 13 <= click;
+#N canvas 886 162 583 338 reference 0;
+#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 220 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 254 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 313 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 30 12 line;
+#X text 70 11 - ramp generator;
+#X text 150 229 float - ramp values.;
+#X text 150 285 float - time grain in ms (default 20 ms).;
+#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X text 157 80 float - set target value and start ramp.;
+#X text 165 99 stop - stop the ramp.;
+#X text 116 118 set <float> - set initial ramp value.;
+#X text 150 264 float - initial ramp value (default 0).;
+#X obj 9 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 183 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000
+0;
+#X text 157 154 float - set next ramp time (cleared when ramp starts).
+;
+#X text 157 190 float - sets time grain in ms.;
+#X restore 403 13 pd reference;
+#X obj 8 688 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 1 0 8 0;
 #X connect 6 0 8 0;
 #X connect 8 0 0 0;
