@@ -46,16 +46,16 @@ is half the cycle)., f 72;
 #X text 82 18 - cosine wave oscillator;
 #X text 126 163 signal - cosine waveform (in the range of -1 to 1).
 , f 54;
-#X text 144 199 float - initial frequenct value (default 0)., f 45
-;
 #X text 119 91 signal -;
-#X text 183 91 frequency value., f 46;
 #X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 126 124 float -;
 #X text 183 124 phase cycle reset (from 0 to 1)., f 46;
+#X text 183 91 frequency value in Hz., f 46;
+#X text 144 199 float - initial frequenct value in Hz (default 0).
+;
 #X restore 369 17 pd reference;
 #X text 467 18 <= click;
 #X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000

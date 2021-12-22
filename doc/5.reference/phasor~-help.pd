@@ -1,15 +1,15 @@
-#N canvas 787 60 588 575 12;
+#N canvas 694 37 580 620 12;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array phasor 4410 float 0;
 #X coords 0 1 4409 -1 200 100 1 0 0;
-#X restore 75 440 graph;
+#X restore 78 433 graph;
 #X floatatom 106 211 5 -100 100 0 - - - 0;
 #X obj 69 16 phasor~;
-#X text 369 444 see also:;
-#X obj 368 471 osc~;
-#X obj 411 471 cos~;
-#X obj 453 471 tabread4~;
-#X text 351 509 updated for Pd version 0.33;
+#X text 24 580 see also:;
+#X obj 98 579 osc~;
+#X obj 141 579 cos~;
+#X obj 183 579 tabread4~;
+#X text 340 579 updated for Pd version 0.33;
 #X text 232 375 <= graph the output;
 #X text 205 243 <= right inlet resets phase, f 14;
 #X text 149 211 <= specify frequency;
@@ -27,9 +27,9 @@ values generate downwards ramps., f 69;
 #X text 42 149 The right inlet resets the phase with values from 0
 to 1 (where '1' is the same as '0' and '0.5' is half the cycle).,
 f 69;
-#X text 51 532 -1;
-#X text 58 487 0;
-#X text 59 433 1;
+#X text 54 523 -1;
+#X text 61 477 0;
+#X text 62 426 1;
 #X obj 106 373 tabwrite~ phasor;
 #X obj 295 331 phasor~;
 #X obj 295 302 sig~ 440;
@@ -40,6 +40,35 @@ f 69;
 #X obj 355 212 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 375 211 DSP on/off;
+#N canvas 731 147 586 252 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 119 91 signal -;
+#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 126 124 float -;
+#X text 183 124 phase cycle reset (from 0 to 1)., f 46;
+#X obj 54 16 phasor~;
+#X text 122 17 - phase ramp generator.;
+#X text 183 91 frequency value in Hz., f 46;
+#X text 126 163 signal - phase ramp (in the range of 0 to 1)., f 54
+;
+#X text 144 199 float - initial frequenct value in Hz (default 0).
+;
+#X restore 369 17 pd reference;
+#X text 467 18 <= click;
+#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 565 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 1 0 14 0;
 #X connect 12 0 14 1;
 #X connect 13 0 21 0;
