@@ -1,32 +1,67 @@
-#N canvas 650 115 524 406 12;
-#X floatatom 198 215 5 0 0 0 - - - 0;
-#X floatatom 143 182 5 0 0 0 - - - 0;
-#X msg 89 138 60;
-#X floatatom 45 138 5 0 0 0 - - - 0;
+#N canvas 566 54 513 420 12;
+#X floatatom 198 230 5 0 0 0 - - - 0;
+#X floatatom 143 197 5 0 0 0 - - - 0;
+#X msg 89 153 60;
+#X floatatom 45 153 5 0 0 0 - - - 0;
 #X obj 32 15 makenote;
-#X text 106 15 - send note-on messages and schedule note-off for later
-;
-#X msg 125 138 60.5;
-#X text 171 132 numbers at left are "pitches" which may be integers
+#X text 106 7 - send note-on messages and schedule note-off for later
+, f 27;
+#X msg 125 153 60.5;
+#X text 171 147 numbers at left are "pitches" which may be integers
 or not., f 30;
-#X text 239 215 duration in milliseconds;
-#X text 214 243 creation arguments initialize velocity and duration
+#X text 239 230 duration in milliseconds;
+#X text 214 258 creation arguments initialize velocity and duration
 , f 29;
-#X obj 97 364 stripnote;
-#X text 301 363 updated for Pd version 0.33;
-#X text 23 364 see also:;
-#X floatatom 89 283 5 0 0 0 - - - 0;
-#X floatatom 198 283 5 0 0 0 - - - 0;
-#X obj 89 314 print pitch;
-#X obj 198 314 print velocity;
-#X text 184 182 "velocity" (also may be integer or not);
-#X obj 89 248 makenote 100 500;
-#X text 37 48 Makenote makes MIDI-style note-on/note-off pairs \, which
+#X obj 97 384 stripnote;
+#X text 281 384 updated for Pd version 0.33;
+#X text 23 384 see also:;
+#X floatatom 89 298 5 0 0 0 - - - 0;
+#X floatatom 198 298 5 0 0 0 - - - 0;
+#X obj 89 329 print pitch;
+#X obj 198 329 print velocity;
+#X text 184 197 "velocity" (also may be integer or not);
+#X obj 89 263 makenote 100 500;
+#X text 37 69 Makenote makes MIDI-style note-on/note-off pairs \, which
 you can use for MIDI output or to drive note-like processes within
 Pd. It can deal with any numbers (negative \, floats \, whatever) even
 though MIDI values need to be integers from 0 to 127!, f 63;
-#X obj 170 364 makenote;
-#X obj 239 364 bag;
+#X obj 170 384 makenote;
+#X obj 239 384 bag;
+#N canvas 683 85 599 382 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 180 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 277 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 336 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 32 15 makenote;
+#X text 101 15 - send note-on messages and schedule note-off for later.
+, f 58;
+#X obj 17 241 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 211 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 113 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 144 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 166 90 float - MIDI pitch.;
+#X text 166 121 float - MIDI velocity.;
+#X text 166 150 float - MIDI note duratin in ms.;
+#X text 166 217 float - MIDI pitch., f 33;
+#X text 136 288 1) float - initial velocity value (default 0).;
+#X text 136 309 2) float - initial duration value (default 0).;
+#X text 166 250 float - MIDI velocity., f 33;
+#X restore 331 14 pd reference;
+#X text 429 15 <= click;
+#X obj 8 51 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 370 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 18 2;
 #X connect 1 0 18 1;
 #X connect 2 0 18 0;

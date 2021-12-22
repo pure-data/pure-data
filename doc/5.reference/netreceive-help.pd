@@ -2,7 +2,7 @@
 #X obj 61 359 netreceive 3000;
 #X floatatom 163 455 4 0 0 0 - - - 0;
 #X text 97 692 see also:;
-#X obj 183 693 netsend;
+#X obj 180 693 netsend;
 #X obj 61 455 print tcp;
 #X obj 36 579 print udp;
 #X text 33 156 There are some possibilities for intercommunication
@@ -94,7 +94,7 @@ can't specify a remote host - that is the job of a firewall., f 61
 #X text 263 435 optional UDP hostname or multicast address (0.51+)
 ;
 #X text 289 526 lists work like "send" (Pd 0.51+);
-#X text 453 692 updated for Pd version 0.51.;
+#X text 453 693 updated for Pd version 0.51.;
 #X text 36 660 As of 0.51 \, Pd supports IPv6 addresses.;
 #X obj 41 9 netreceive;
 #X text 129 10 - listen for incoming messages from network;

@@ -1,4 +1,3 @@
-#N struct template1 float x float y float z float q;
 #N canvas 404 40 1057 709 12;
 #X obj 571 182 table;
 #X obj 537 572 table help-tab1 25;
@@ -166,17 +165,21 @@ remaining are the values to label., f 84;
 #X restore 806 103 pd reference;
 #X text 617 181 - subpatch with array;
 #X text 902 181 <= click;
-#N canvas 786 245 624 170 reference 0;
-#X obj 8 75 cnv 2 590 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 54 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 137 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#N canvas 786 245 492 230 reference 0;
 #X obj 36 18 table;
 #X text 93 18 - subpatch with array;
-#X text 168 86 1) symbol -;
-#X text 176 106 2) float -;
-#X text 254 106 sets the array size., f 34;
-#X text 254 86 sets the array name., f 34;
+#X obj 8 135 cnv 2 460 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 54 cnv 5 460 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 197 cnv 5 460 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 116 146 1) symbol -;
+#X obj 7 92 cnv 2 460 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X text 153 66 NONE;
+#X text 153 106 NONE;
+#X text 123 166 2) float -;
+#X text 202 146 sets array name (default internal).;
+#X text 202 166 sets array size (default 100).;
 #X restore 808 182 pd reference;

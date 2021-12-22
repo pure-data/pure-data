@@ -1,4 +1,4 @@
-#N canvas 693 85 564 571 12;
+#N canvas 693 85 542 556 12;
 #X obj 82 230 openpanel;
 #X msg 82 142 bang;
 #X obj 82 286 print;
@@ -17,9 +17,9 @@
 #X obj 115 459 print;
 #X msg 115 404 bang;
 #X obj 115 432 openpanel 0;
-#X obj 74 25 openpanel;
+#X obj 23 15 openpanel;
 #X text 303 519 updated for Pd version 0.51.;
-#X text 147 25 - query for files or directories;
+#X text 96 15 - query for files or directories;
 #X text 47 69 When openpanel gets a "bang" \, a file browser appears
 on the screen. By default \, if you select a file \, its name appears
 on the outlet.;
@@ -42,6 +42,30 @@ can make openpanel open the current directory for querying for files.
 f 31;
 #X text 127 141 Starts in default directory;
 #X symbolatom 82 259 60 0 0 0 - - - 0;
+#N canvas 946 83 594 249 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 133 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 170 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 224 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 123 66 bang -;
+#X obj 40 18 openpanel;
+#X text 113 18 - query for files or directories;
+#X text 173 66 open dialog window to choose file(s) or directory.;
+#X text 109 85 symbol -;
+#X text 173 85 set starting directory., f 50;
+#X text 139 143 symbol - directory or file(s)' names., f 54;
+#X text 72 197 float - mode: 0 (file \, default) \, 1 (directory) \,
+2 (multiple files)., f 68;
+#X restore 356 16 pd reference;
+#X text 454 17 <= click;
+#X obj 8 49 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 504 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 27 0;
 #X connect 1 0 0 0;
 #X connect 5 0 0 0;

@@ -1,4 +1,4 @@
-#N canvas 692 23 663 769 12;
+#N canvas 610 51 663 769 12;
 #X msg 66 501 format b;
 #X msg 43 207 1 2 3;
 #X msg 64 257 set dog ferret;
@@ -79,6 +79,49 @@ use the OSC objects from mrpeach which have more features than these.
 #X restore 491 693 pd more-on-OSC;
 #X obj 42 39 oscparse;
 #X text 114 40 - parse OSC packets into Pd messages;
+#N canvas 790 174 528 518 reference 0;
+#X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 151 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 188 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 284 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 368 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 420 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 493 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 28 19 oscformat;
+#X obj 28 337 oscparse;
+#X text 116 66 list - list to format into a OSC packet.;
+#X text 74 86 set <list> - set one or more adresses.;
+#X text 138 253 1) list - list of one or more addresses;
+#X text 95 382 list - OSC packet to convert to Pd list messages.;
+#X text 117 429 list - Pd list messages from OSC packets., f 42;
+#X text 39 109 format <symbol> -;
+#X text 164 109 characters set format types: 'b' (blob) \, 'i' (interger)
+\, 'f' (float) or 's' (sring)., f 43;
+#X text 99 218 -f <symbol>: sets format as in the 'format' message
+;
+#X obj 9 212 cnv 1 500 1 empty empty flag: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 243 cnv 1 500 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 459 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 116 161 list - converted OSC packet from lists.;
+#X text 103 18 - convert lsts to OSC packets.;
+#X text 93 337 - parse OSC packets into Pd list messages.;
+#X text 139 470 NONE;
+#X restore 466 27 pd reference;
+#X text 560 27 <= click;
+#X obj 7 65 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 725 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 9 0;
 #X connect 1 0 31 0;
 #X connect 2 0 31 0;
