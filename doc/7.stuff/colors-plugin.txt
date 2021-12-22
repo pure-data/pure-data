@@ -31,6 +31,7 @@
 # text_window_fill - [text] window background
 # text_window_text - [text] window text
 # text_window_highlight - like txt_highlight but for [text] window
+# text_window_hl_text - color of highlighted text in [text] window
 # text_window_cursor - [text] window cursor
 # pdwindow_fill - background of post window
 # pdwindow_fatal_text - text for fatal errors
@@ -72,6 +73,7 @@ atom_box_label "black"
 atom_box_outline "cyan"
 text_window_fill "black"
 text_window_text "white"
+text_window_hl_text "white"
 text_window_highlight "green"
 text_window_cursor "green"
 pdwindow_fill "#000"
