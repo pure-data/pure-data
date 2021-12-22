@@ -90,20 +90,20 @@ displaying GUI objects.;
 #X obj 17 631 cnv 1 1020 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 391 150 <= click;
-#N canvas 307 178 618 254 reference 1;
-#X obj 8 125 cnv 2 590 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#N canvas 371 218 612 194 reference 0;
+#X obj 8 105 cnv 2 590 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X text 108 136 symbol -;
-#X obj 7 54 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X text 108 116 symbol -;
+#X obj 7 54 cnv 5 590 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020
+#000000 0;
 #N canvas 131 166 450 300 (subpatch) 0;
 #X restore 26 18 pd;
 #X text 73 18 - subpatch / graph;
-#X text 172 136 sets the subpatch name that you can use to send messages
+#X text 172 116 sets the subpatch name that you can use to send messages
 to (see 'dynamic patching' in 'pd-messages' file., f 56;
-#X obj 7 180 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 160 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 75 84 comment;
+#X text 168 71 - depends on inlet/outlet objects;
 #X restore 297 150 pd reference;
 #X text 900 103 <= click;
 #N canvas 730 72 735 539 reference 0;

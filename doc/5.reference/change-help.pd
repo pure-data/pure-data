@@ -1,4 +1,4 @@
-#N canvas 621 135 510 386 12;
+#N canvas 641 53 510 386 12;
 #X msg 68 107 bang;
 #X floatatom 68 279 5 0 0 0 - - - 0;
 #X text 282 355 updated for Pd version 0.27;
@@ -14,7 +14,7 @@ You can "set" the current value \, or bang to force output.;
 #X obj 68 306 print;
 #X floatatom 100 197 5 0 0 0 - - - 0;
 #X floatatom 80 167 5 0 0 0 - - - 0;
-#N canvas 914 228 576 236 reference 0;
+#N canvas 731 147 576 236 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 133 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -26,13 +26,13 @@ You can "set" the current value \, or bang to force output.;
 #X text 126 67 float -;
 #X obj 51 17 change;
 #X text 105 16 - filter repeated numbers;
-#X text 183 67 inpute value (repeated numbers are filtered).;
 #X text 133 86 bang -;
 #X text 183 86 output current value., f 46;
 #X text 84 105 set <float> -;
 #X text 183 105 set the value., f 46;
 #X text 126 143 float - unrepeated value., f 54;
 #X text 126 181 float - initial value (default 0)., f 54;
+#X text 183 67 input value (repeated numbers are filtered).;
 #X restore 319 17 pd reference;
 #X text 417 18 <= click;
 #X obj 8 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000

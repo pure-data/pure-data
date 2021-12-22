@@ -1,80 +1,116 @@
-#N canvas 703 23 672 864 12;
-#X obj 76 19 delay;
-#X obj 536 19 del;
-#X text 428 18 Also known as:;
-#X floatatom 197 545 5 0 0 0 - - - 0;
-#X msg 56 346 stop;
-#X text 38 823 see also:;
-#X obj 162 823 timer;
-#X obj 114 823 metro;
-#X obj 81 614 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 639 23 663 754 12;
+#X obj 44 16 delay;
+#X obj 45 41 del;
+#X floatatom 204 500 5 0 0 0 - - - 0;
+#X msg 63 309 stop;
+#X text 35 716 see also:;
+#X obj 159 716 timer;
+#X obj 111 716 metro;
+#X obj 88 558 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X obj 32 322 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 39 285 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 431 822 updated for Pd version 0.45;
-#X obj 81 585 delay 1000 1 msec;
-#X text 214 604 - delay time (float);
-#X text 215 622 - tempo (float) and time unit (symbol) as in "tempo"
+#X text 432 715 updated for Pd version 0.45;
+#X obj 88 529 delay 1000 1 msec;
+#X text 222 546 - tempo (float) and time unit (symbol) as in "tempo"
 message;
-#X obj 110 746 delay 1 60 permin;
-#X obj 332 724 delay 1 1 sec;
-#X obj 502 724 delay 1 44100 samp;
-#X obj 502 748 delay 44100 1 samp;
-#X text 211 585 <= optional creation arguments:;
-#X msg 126 400 tempo 0.5 msec;
-#X floatatom 81 400 5 0 0 0 - - - 0;
-#X msg 81 373 1000;
-#X text 237 392 set unit to 1/2 millisecond so that '1000' gives a
+#X obj 185 632 delay 1 60 permin;
+#X obj 337 610 delay 1 1 sec;
+#X obj 507 610 delay 1 44100 samp;
+#X obj 507 634 delay 44100 1 samp;
+#X msg 133 363 tempo 0.5 msec;
+#X floatatom 88 363 5 0 0 0 - - - 0;
+#X msg 88 336 1000;
+#X text 244 355 set unit to 1/2 millisecond so that '1000' gives a
 delay of 500 msec (1/2 second)., f 42;
-#X msg 139 434 tempo 2 permillisecond;
-#X text 290 464 same as 1 msec \, so '1000' is a second.;
-#X text 304 433 this is the same as above.;
-#X text 36 269 These symbols can also be preceeded by "per" (as in
+#X msg 146 397 tempo 2 permillisecond;
+#X text 297 427 same as 1 msec \, so '1000' is a second.;
+#X text 311 396 this is the same as above.;
+#X text 264 271 These symbols can also be preceeded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
-min (hence \, the same as 'BPM')., f 78;
-#X obj 110 718 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+min (hence \, the same as 'BPM')., f 50;
+#X obj 185 607 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 110 777 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 185 660 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 27 662 A more traditionally musical way to specify a one-second
-delay would be "delay 1" with "tempo 60 permin" as below., f 35;
-#X text 55 202 - millisecond (msec for short) \; - seconds (sec) \;
+#X text 149 210 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
-patch is running, f 67;
-#X obj 332 748 delay 2 2 persec;
-#X text 30 56 The delay object sends a bang to its outlet after a delay
+patch is running, f 69;
+#X obj 337 634 delay 2 2 persec;
+#X text 37 79 The delay object sends a bang to its outlet after a delay
 time specified by the right inlet or its first creation argument. You
 can send a bang to start and schedule the delay or you can also send
 it a float that specifies the time delay and starts it. If the delay
 is running and scheduled to output \, sending a bang or a float cancels
 the previous setting and reschedules the output., f 85;
-#X obj 332 771 delay 0.0166667 1 min;
-#X text 55 321 start;
-#X text 96 345 cancel the delay;
-#X text 120 373 set delay time and start;
-#X msg 152 464 tempo 0.001 second;
-#X text 238 543 <= set delay time but don't start (doesn't affect;
-#X text 259 559 if the delay is in progress)., f 46;
-#X obj 209 823 text sequence;
-#X text 121 18 - send a bang message after a time delay;
-#X text 30 135 Delay times are in units of 1 millisecond by default
-\, but you can change this with the second and third argument or with
-a "tempo" message (as in [timer] \, [metro] and [text sequence]) \,
-which set a different tempo number and a time unit symbol. Possible
-symbols are:, f 85;
-#X text 170 494 Note that if the tempo is changed while the delay is
+#X obj 337 657 delay 0.0166667 1 min;
+#X text 62 284 start;
+#X text 103 308 cancel the delay;
+#X text 127 335 set delay time and start;
+#X msg 159 427 tempo 0.001 second;
+#X obj 206 716 text sequence;
+#X text 89 15 - send a bang message after a time delay;
+#X text 177 452 Note that if the tempo is changed while the delay is
 in progress \, the change takes effect to the remaining fraction of
 the delay., f 65;
-#X text 344 664 other possible ways to get a one second delay (but
-the rightmost ones are sample-rate dependent):, f 32;
-#X connect 3 0 11 1;
-#X connect 4 0 11 0;
-#X connect 9 0 11 0;
-#X connect 11 0 8 0;
-#X connect 14 0 28 0;
-#X connect 19 0 11 0;
-#X connect 20 0 11 0;
-#X connect 21 0 20 0;
-#X connect 23 0 11 0;
-#X connect 27 0 14 0;
-#X connect 37 0 11 0;
+#X obj 8 71 cnv 1 645 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 823 178 569 360 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 220 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 257 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 334 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 140 91 float -;
+#X text 147 110 bang -;
+#X obj 25 16 delay;
+#X text 70 15 - send a bang message after a time delay;
+#X text 147 129 stop -;
+#X text 197 129 stop the delay., f 46;
+#X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 178 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X text 140 189 float -;
+#X text 197 91 set delay time and start the delay., f 46;
+#X text 197 110 start the delay., f 46;
+#X text 28 147 tempo <float \, symbol> -;
+#X text 197 147 set tempo value (float) and time unit symbol., f 46
+;
+#X text 146 230 bang - bang at a delayed time., f 54;
+#X text 197 189 set delay time for the next tempo., f 46;
+#X text 140 268 float - initial delay time (default 0)., f 54;
+#X text 140 287 float - tempo value (default 1)., f 54;
+#X text 133 307 symbol - time unit (default 'msec')., f 55;
+#X restore 461 27 pd reference;
+#X text 559 28 <= click;
+#X obj 8 701 cnv 1 645 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 24 604 A more traditionally musical way to set a one-second
+delay is "delay 1" with "tempo 60 permin"., f 21;
+#X text 342 582 other ways to get a one second delay;
+#X text 526 656 (sample-rate dependent), f 12;
+#X text 218 529 <= creation arguments: - delay time (float);
+#X text 247 498 set delay time (only takes effect at the next tempo).
+;
+#X text 79 41 <== also known as;
+#X text 37 158 Delay times are in units of 1 millisecond by default
+\, but you can change this with the second and third argument or with
+a "tempo" message (as in [timer] \, [metro] and [text sequence]) \,
+which set a tempo value and a time unit symbol. Possible symbols are:
+, f 85;
+#X obj 311 716 pipe;
+#X connect 2 0 10 1;
+#X connect 3 0 10 0;
+#X connect 8 0 10 0;
+#X connect 10 0 7 0;
+#X connect 12 0 25 0;
+#X connect 16 0 10 0;
+#X connect 17 0 10 0;
+#X connect 18 0 17 0;
+#X connect 20 0 10 0;
+#X connect 24 0 12 0;
+#X connect 33 0 10 0;
