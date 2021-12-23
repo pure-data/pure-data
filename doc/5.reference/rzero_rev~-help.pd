@@ -1,9 +1,9 @@
 #N canvas 702 77 548 597 12;
 #X declare -stdpath ./;
-#X floatatom 132 197 4 0 0 0 - - - 0;
-#X obj 51 113 osc~ 100;
-#X msg 67 145 clear;
-#X msg 79 171 set 1;
+#X floatatom 133 199 4 0 0 0 - - - 0;
+#X obj 52 115 osc~ 100;
+#X msg 68 147 clear;
+#X msg 80 173 set 1;
 #N canvas 1015 291 317 298 test 0;
 #X obj 92 77 osc~;
 #X floatatom 92 54 5 0 0 0 - - - 0;
@@ -31,25 +31,19 @@
 #X connect 10 0 11 0;
 #X connect 10 0 11 1;
 #X restore 405 468 pd test;
-#X text 37 291 where y[n] is the output \, x[n] the input \, and a[n]
+#X text 37 294 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient. The filter is always stable., f 56;
-#X obj 53 11 rzero_rev~;
-#X text 142 11 real one-zero (non-recursive) "reverse" filter \, raw
+#X obj 35 10 rzero_rev~;
+#X obj 52 225 rzero_rev~ 1;
+#X text 100 275 y[n] = -a[n] * x[n] + x[n-1];
+#X text 35 326 The transfer function is H(Z) = -a + Z^-1.;
+#X text 156 227 <= creation argument initializes filter coefficient
 ;
-#X obj 51 223 rzero_rev~ 1;
-#X text 18 40 Rzero_rev~ filters an audio signal (left inlet) via a
-one-zero real filter \, whose coefficient is controlled by a creation
-argument or by an audio signal (right inlet). The impulse response
-is that of "rzero" reversed in time., f 68;
-#X text 100 272 y[n] = -a[n] * x[n] + x[n-1];
-#X text 35 323 The transfer function is H(Z) = -a + Z^-1.;
-#X text 155 225 <= creation argument initializes filter coefficient
-;
-#X text 164 197 <= filter coefficient (may be a signal);
-#X text 125 171 <= set internal state;
-#X text 111 144 <= clear internal state to zero;
-#X text 122 113 <= signal to filter;
-#X text 43 251 The action of rzero_rev~ is:;
+#X text 165 199 <= filter coefficient (may be a signal);
+#X text 126 173 <= set internal state;
+#X text 112 146 <= clear internal state to zero;
+#X text 123 115 <= signal to filter;
+#X text 43 254 The action of rzero_rev~ is:;
 #X obj 95 523 lop~;
 #X text 16 524 see also:;
 #X obj 178 456 rzero~;
@@ -88,8 +82,45 @@ for an introduction to the necessary theory (click) =>, f 69;
 #X obj 80 552 fexpr~;
 #X obj 135 552 slop~, f 7;
 #X text 345 553 updated for Pd vrsion 0.38;
-#X connect 0 0 8 1;
-#X connect 1 0 8 0;
-#X connect 2 0 8 0;
-#X connect 3 0 8 0;
-#X connect 37 0 39 0;
+#X text 124 10 real one-zero "reverse" filter;
+#X text 18 45 Rzero_rev~ filters an audio signal (left inlet) via a
+raw one-zero (non-recursive) real filter \, whose coefficient is controlled
+by a creation argument or by an audio signal (right inlet). The impulse
+response is that of "rzero" reversed in time., f 68;
+#N canvas 877 190 571 306 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 81 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+0;
+#X obj 8 191 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 271 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 233 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X text 117 89 signal -;
+#X obj 7 151 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+0;
+#X text 117 159 signal -;
+#X text 124 127 clear -;
+#X obj 25 12 rzero_rev~;
+#X text 105 11 - real one-zero "reverse" filter.;
+#X text 180 89 real signal to filter., f 49;
+#X text 82 107 set <float> -;
+#X text 180 107 set internal state., f 49;
+#X text 180 127 clear internal state to zero (same as "set 0")., f
+49;
+#X text 180 159 filter coefficient., f 49;
+#X text 117 204 signal - filtered signal.;
+#X text 119 243 1) float - filter coefficient (default 0)., f 43;
+#X restore 358 9 pd reference;
+#X text 452 9 <= click;
+#X obj 9 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 509 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 7 1;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 35 0 37 0;
