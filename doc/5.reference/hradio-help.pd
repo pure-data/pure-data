@@ -1,4 +1,4 @@
-#N canvas 643 40 610 523 12;
+#N canvas 573 23 610 523 12;
 #X obj 77 224 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
 #X floatatom 112 334 4 0 0 0 - - - 0;
@@ -591,38 +591,38 @@ turns the previous toggle off before turning the new one on., f 29
 #X obj 132 492 all_guis;
 #X obj 7 477 cnv 1 593 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 647 101 661 425 reference 0;
+#N canvas 647 101 665 419 reference 0;
 #X obj 8 52 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X text 118 150 label <symbol> - sets label symbol., f 72;
-#X text 42 170 label_font <float \, float> -;
-#X text 49 202 label_pos <float \, float> -;
-#X text 237 201 sets label position., f 55;
 #X obj 7 395 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 125 251 send <symbol> - sets send symbol., f 71;
-#X text 97 270 recceive <symbol> - sets receive symbol., f 75;
-#X text 133 220 color <list> -;
-#X text 237 219 first element sets background color and third sets
-font color (either floats or symbols in hexadecimal format).;
-#X text 237 169 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> and font size., f 50;
-#X text 90 289 pos <float \, float> - sets position in the patch canvas.
-, f 76;
-#X text 77 308 delta <float \, float> -;
-#X text 237 307 changes the position by a x/y delta in pixels., f
-55;
 #X obj 50 20 hradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
 #000000 0;
 #X text 200 20 - [hradio]: Horizontal Radio Button;
-#X text 181 63 float - set and output number., f 63;
-#X text 132 82 size <float> - sets the cell size in pixels., f 70
-;
-#X text 118 101 number <float> - sets number of cells., f 72;
-#X text 132 120 init <float> - non zero sets to init mode., f 70;
 #X obj 7 346 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
 0;
-#X text 181 362 float - cell number., f 63;
+#X text 131 149 label <symbol> - sets label symbol., f 72;
+#X text 55 169 label_font <float \, float> -;
+#X text 62 201 label_pos <float \, float> -;
+#X text 250 200 sets label position., f 55;
+#X text 138 250 send <symbol> - sets send symbol., f 71;
+#X text 110 269 recceive <symbol> - sets receive symbol., f 75;
+#X text 146 219 color <list> -;
+#X text 250 218 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 250 168 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 103 288 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 90 307 delta <float \, float> -;
+#X text 250 306 changes the position by a x/y delta in pixels., f
+55;
+#X text 194 72 float - set and output number., f 63;
+#X text 145 91 size <float> - sets the cell size in pixels., f 70
+;
+#X text 131 110 number <float> - sets number of cells., f 72;
+#X text 145 129 init <float> - non zero sets to init mode., f 70;
+#X text 181 362 float - cell number (indexed from 0)., f 63;
 #X restore 435 22 pd reference;
 #X text 526 22 <= click;
 #X obj 7 57 cnv 1 593 1 empty empty empty 8 12 0 13 #000000 #000000
