@@ -1,0 +1,58 @@
+#N canvas 611 87 540 482 12;
+#X floatatom 64 388 5 0 0 0 - - - 0;
+#X obj 384 186 sig~ 50;
+#X obj 64 358 snapshot~;
+#X obj 384 221 throw~ signal1;
+#X obj 32 201 sig~ 25;
+#X obj 64 302 catch~ signal1;
+#X obj 44 15 throw~;
+#X obj 44 39 catch~;
+#X obj 315 322 metro 200;
+#X text 38 92 Any number of throw~ objects can add into one catch~
+object (but two catch~ objects cannot share the same name.);
+#X obj 198 358 snapshot~;
+#X obj 198 301 catch~ signal2;
+#X text 200 198 You can redirect throw~ via a "set" message., f 16
+;
+#X text 302 446 updated for Pd version 0.33;
+#X obj 113 447 send~;
+#X text 37 446 see also:;
+#X floatatom 198 388 5 0 0 0 - - - 0;
+#X obj 315 294 loadbang;
+#X msg 419 309 \; pd dsp 1;
+#X obj 419 283 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 438 283 DSP on/off;
+#X floatatom 32 175 5 0 0 0 - - - 0;
+#X floatatom 384 157 5 0 0 0 - - - 0;
+#X text 97 17 - summing signal bus and;
+#X text 111 34 non-local connection, f 22;
+#X obj 92 251 throw~ \$0-signal;
+#X msg 104 225 set signal;
+#X msg 92 201 set \$1-signal;
+#X obj 92 171 f \$0;
+#X obj 92 146 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 130 147 <= \$0 needs to be expanded from objects., f 23;
+#N canvas 525 216 510 156 execution-order 0;
+#X obj 115 95 ../3.audio.examples/G05.execution.order;
+#X text 46 30 You have to get the throw~ sorted before the catch~ or
+else you'll never get less than a block's delay. You can use the strategy
+given in the example below to control this.;
+#X restore 349 374 pd execution-order;
+#X connect 1 0 3 0;
+#X connect 2 0 0 0;
+#X connect 4 0 25 0;
+#X connect 5 0 2 0;
+#X connect 8 0 2 0;
+#X connect 8 0 10 0;
+#X connect 10 0 16 0;
+#X connect 11 0 10 0;
+#X connect 17 0 8 0;
+#X connect 19 0 18 0;
+#X connect 21 0 4 0;
+#X connect 22 0 1 0;
+#X connect 26 0 25 0;
+#X connect 27 0 25 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 0;

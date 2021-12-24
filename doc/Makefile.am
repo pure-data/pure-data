@@ -431,7 +431,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/textfile-help.pd \
      ./5.reference/textfile.txt \
      ./5.reference/threshold~-help.pd \
-     ./5.reference/throw~-help.pd \
+     ./5.reference/throw~-catch~-help.pd \
      ./5.reference/timer-help.pd \
      ./5.reference/toggle-help.pd \
      ./5.reference/trace-help.pd \
