@@ -1,8 +1,8 @@
 #N struct help-getsize-template float x float y array array1 help-getsize-array1-template
 ;
 #N struct help-getsize-array1-template float y;
-#N canvas 729 106 578 419 12;
-#X text 18 383 see also:;
+#N canvas 641 105 578 419 12;
+#X text 3 381 see also:;
 #N canvas 527 124 468 206 help-getsize-template 0;
 #X obj 30 78 plot array1 500 1 10 15 20;
 #X obj 60 137 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
@@ -17,28 +17,27 @@ help-getsize-array1-template;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-getsize-array1-template float y;
 #X restore 333 245 pd help-getsize-array1-template;
-#X obj 141 383 pointer;
-#X obj 259 383 setsize;
+#X obj 119 381 pointer;
+#X obj 233 381 setsize;
 #X obj 41 209 pointer;
 #X msg 41 185 traverse pd-help-getsize-data \, next;
 #X floatatom 41 327 5 0 0 0 - - - 0;
-#X text 306 297 arguments: template \, field name;
+#X text 306 297 arguments: template \, field name, f 32;
 #X text 92 328 here we just get the value of y.;
 #X obj 41 298 getsize help-getsize-template array1;
 #X text 50 277 inlet for pointer;
 #X obj 27 19 getsize;
-#X obj 201 383 element;
-#X obj 88 383 struct;
+#X obj 176 381 element;
+#X obj 69 381 struct;
 #X text 108 228 set template and field name;
-#X text 337 382 updated for Pd version 0.47;
+#X text 371 382 updated for Pd version 0.47;
 #X text 34 121 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity., f 68;
 #X msg 51 247 set help-getsize-template array1;
-#X text 86 20 - get number of elements of an array;
 #X obj 7 50 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 951 207 482 234 reference 1;
+#N canvas 951 207 482 234 reference 0;
 #X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 113 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -52,9 +51,9 @@ help-getsize-array1-template;
 #X text 45 75 set <symbol \, symbol> - set template and field name.
 , f 52;
 #X text 136 56 pointer - pointer to an array.;
-#X obj 34 9 getsize;
-#X text 93 10 - get number of elements of an array;
 #X text 150 125 float - array's size.;
+#X obj 27 12 getsize;
+#X text 87 13 - get of a Data Structures array.;
 #X restore 385 20 pd reference;
 #X text 483 21 <= click;
 #X obj 7 364 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -63,6 +62,8 @@ help-getsize-array1-template;
 which should be an array \, and outputs the number of elements of the
 array. The template and field name are specified as creation arguments.
 The smallest possible size is one., f 68;
+#X obj 291 381 array get;
+#X text 86 20 - get of a Data Structures array;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
 #X connect 11 0 8 0;

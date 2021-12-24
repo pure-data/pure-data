@@ -11,7 +11,7 @@
 #X text 228 146 <= reinitialize internal state;
 #X text 280 176 <= set cutoff frequency;
 #X obj 258 346 bob~;
-#X obj 111 126 noise~;
+#X obj 118 127 noise~;
 #X text 34 61 lop~ is a one-pole low pass filter with a specified rolloff
 frequency. The left inlet is the incoming audio signal. The right inlet
 is the cutoff frequency in Hz., f 70;
@@ -28,36 +28,32 @@ is the cutoff frequency in Hz., f 70;
 #X text 332 345 updated for Pd version 0.38;
 #X obj 7 50 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 947 97 473 264 reference 0;
-#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 947 97 475 266 reference 0;
+#X obj 9 45 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 157 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 193 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 9 197 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 233 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 237 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 46 14 lop~;
-#X text 106 76 signal - audio signal to be filtered.;
-#X text 113 95 clear - clear filter's memory., f 36;
-#X text 106 163 signal - filtered signal.;
-#X obj 11 71 cnv 1 450 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X text 106 80 signal - audio signal to be filtered.;
+#X text 113 99 clear - clear filter's memory., f 36;
+#X text 106 167 signal - filtered signal.;
+#X obj 11 123 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 11 119 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 113 126 float - rolloff frequency., f 36;
-#X text 104 203 1) float - rolloff frequency in Hz (default 0).;
+#X text 113 130 float - rolloff frequency., f 36;
+#X text 104 207 1) float - rolloff frequency in Hz (default 0).;
 #X text 86 15 - one-pole low pass filter.;
+#X obj 11 75 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
 #X restore 385 17 pd reference;
 #X text 483 18 <= click;
 #X obj 7 324 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 97 246 env~;
-#X floatatom 97 270 5 0 0 0 - - - 0;
 #X connect 0 0 14 1;
 #X connect 3 0 14 0;
 #X connect 11 0 14 0;
 #X connect 14 0 13 0;
 #X connect 14 0 13 1;
-#X connect 14 0 27 0;
-#X connect 27 0 28 0;

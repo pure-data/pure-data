@@ -1,4 +1,4 @@
-#N canvas 765 108 617 572 12;
+#N canvas 628 104 617 572 12;
 #X msg 50 168 bang;
 #X obj 72 408 float 6.5;
 #X floatatom 72 438 6 0 0 0 - - - 0;
@@ -75,7 +75,7 @@ value objects =>, f 34;
 #X text 106 16 - store a (floating point) number;
 #X obj 64 45 f;
 #X text 96 46 - abbreviation;
-#N canvas 785 220 579 390 reference 0;
+#N canvas 781 214 579 390 reference 0;
 #X text 34 202 send <symbol> -;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
