@@ -1,53 +1,65 @@
-#N canvas 605 73 547 551 12;
-#X floatatom 288 353 5 0 0 0 - - - 0;
-#X obj 157 267 receive~ signal1;
-#X obj 55 312 send~ signal1;
-#X obj 55 289 sig~ 50;
-#X obj 288 318 snapshot~;
-#X text 180 24 - one-to-many nonlocal signal connections;
-#X obj 287 269 metro 200;
-#X text 304 507 updated for Pd version 0.33.;
-#X obj 56 347 sig~ 25;
-#X obj 56 375 send~ signal2;
-#X msg 157 214 set signal2;
-#X msg 169 239 set signal1;
-#X text 48 442 Send~/Receive~ only work for the default block size
+#N canvas 543 64 535 516 12;
+#X floatatom 318 363 5 0 0 0 - - - 0;
+#X obj 34 204 sig~ 50;
+#X obj 318 333 snapshot~;
+#X text 179 21 - one-to-many nonlocal signal connections;
+#X obj 318 284 metro 200;
+#X text 297 477 updated for Pd version 0.33.;
+#X obj 34 282 sig~ 25;
+#X text 48 417 Send~/Receive~ only work for the default block size
 (64) \; for FFT applications see also:;
-#X obj 278 467 tabsend~;
-#X obj 116 49 s~;
-#X obj 147 49 r~;
-#X text 41 490 see also:;
-#X obj 122 517 send;
-#X obj 162 517 receive;
-#X obj 120 488 throw~;
-#X obj 176 488 catch~;
-#X text 180 48 - abbreviation;
-#X obj 287 237 loadbang;
-#X obj 392 192 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 278 442 tabsend~;
+#X obj 115 46 s~;
+#X obj 146 46 r~;
+#X text 41 477 see also:;
+#X obj 173 478 send;
+#X obj 117 478 throw~;
+#X text 179 45 - abbreviation;
+#X obj 318 252 loadbang;
+#X obj 420 204 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 392 215 \; pd dsp \$1;
-#X text 415 192 on/off;
-#X floatatom 55 265 5 0 0 0 - - - 0;
-#X floatatom 380 353 5 0 0 0 - - - 0;
-#X obj 380 318 snapshot~;
-#X obj 380 285 r~ signal1;
-#X text 28 91 A send~ object copies its input to a local buffer which
+#X msg 420 227 \; pd dsp \$1;
+#X text 443 204 on/off;
+#X floatatom 34 180 5 0 0 0 - - - 0;
+#X floatatom 410 363 5 0 0 0 - - - 0;
+#X obj 410 333 snapshot~;
+#X obj 410 300 r~ signal1;
+#X text 24 97 A send~ object copies its input to a local buffer which
 all receive~ objects of the same name read from. They may be in different
 windows or even different patches. Any number of receives may be associated
 with one send~ but it is an error to have two send~s of the same name.
 Receive~ takes "set" messages to switch between send~s., f 68;
-#X obj 36 23 send~ x;
-#X obj 96 24 receive~ x;
-#X connect 1 0 4 0;
-#X connect 3 0 2 0;
-#X connect 4 0 0 0;
-#X connect 6 0 4 0;
-#X connect 6 0 28 0;
-#X connect 8 0 9 0;
-#X connect 10 0 1 0;
-#X connect 11 0 1 0;
-#X connect 22 0 6 0;
-#X connect 23 0 24 0;
-#X connect 26 0 3 0;
-#X connect 28 0 27 0;
-#X connect 29 0 28 0;
+#X obj 35 20 send~ x;
+#X obj 95 21 receive~ x;
+#X obj 34 227 send~ \$0-signal;
+#X obj 34 308 send~ signal;
+#X msg 178 264 set signal;
+#X msg 166 237 set \$1-signal;
+#X obj 166 213 f \$0;
+#X obj 166 190 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 205 192 <= \$0 needs to be expanded from objects., f 23;
+#X floatatom 34 257 5 0 0 0 - - - 0;
+#N canvas 525 216 510 156 execution-order 0;
+#X obj 115 95 ../3.audio.examples/G05.execution.order;
+#X text 46 30 You have to get the send~ sorted before the receive~
+or else you'll never get less than a block's delay. You can use the
+strategy given in the example below to control this.;
+#X restore 73 355 pd execution-order;
+#X obj 166 292 receive~ \$0-signal;
+#X connect 1 0 26 0;
+#X connect 2 0 0 0;
+#X connect 4 0 2 0;
+#X connect 4 0 21 0;
+#X connect 6 0 27 0;
+#X connect 15 0 4 0;
+#X connect 16 0 17 0;
+#X connect 19 0 1 0;
+#X connect 21 0 20 0;
+#X connect 22 0 21 0;
+#X connect 28 0 35 0;
+#X connect 29 0 35 0;
+#X connect 30 0 29 0;
+#X connect 31 0 30 0;
+#X connect 33 0 6 0;
+#X connect 35 0 2 0;

@@ -261,7 +261,7 @@ static void sigcatch_setup(void)
         (t_method)sigcatch_free, sizeof(t_sigcatch), CLASS_NOINLET, A_DEFSYM, 0);
     class_addmethod(sigcatch_class, (t_method)sigcatch_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(sigcatch_class, gensym("throw~"));
+    class_sethelpsymbol(sigcatch_class, gensym("throw~-catch~"));
 }
 
 /* ----------------------------- throw~ ----------------------------- */
@@ -344,6 +344,7 @@ static void sigthrow_setup(void)
     CLASS_MAINSIGNALIN(sigthrow_class, t_sigthrow, x_f);
     class_addmethod(sigthrow_class, (t_method)sigthrow_dsp,
         gensym("dsp"), A_CANT, 0);
+    class_sethelpsymbol(sigthrow_class, gensym("throw~-catch~"));
 }
 
 /* ----------------------- global setup routine ---------------- */
