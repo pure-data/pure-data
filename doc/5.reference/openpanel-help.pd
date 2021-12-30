@@ -2,8 +2,8 @@
 #X obj 82 230 openpanel;
 #X msg 82 142 bang;
 #X obj 82 286 print;
-#X text 56 519 see also:;
-#X obj 134 520 savepanel;
+#X text 36 519 see also:;
+#X obj 114 520 savepanel;
 #X msg 98 170 symbol /tmp;
 #X msg 110 199 symbol C:/;
 #X obj 240 459 print;
@@ -42,30 +42,32 @@ can make openpanel open the current directory for querying for files.
 f 31;
 #X text 127 141 Starts in default directory;
 #X symbolatom 82 259 60 0 0 0 - - - 0;
-#N canvas 946 83 594 249 reference 0;
+#N canvas 772 83 588 242 reference 1;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 133 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 123 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 170 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 18 160 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 17 224 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 17 214 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 123 66 bang -;
 #X obj 40 18 openpanel;
-#X text 113 18 - query for files or directories;
 #X text 173 66 open dialog window to choose file(s) or directory.;
 #X text 109 85 symbol -;
-#X text 173 85 set starting directory., f 50;
-#X text 139 143 symbol - directory or file(s)' names., f 54;
-#X text 72 197 float - mode: 0 (file \, default) \, 1 (directory) \,
+#X text 139 133 symbol - directory or file(s)' names., f 54;
+#X text 72 187 float - mode: 0 (file \, default) \, 1 (directory) \,
 2 (multiple files)., f 68;
+#X text 113 18 - query for files or directories.;
+#X text 173 85 set starting directory and open dialog window., f 50
+;
 #X restore 356 16 pd reference;
 #X text 454 17 <= click;
 #X obj 8 49 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 8 504 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 191 520 pdcontrol;
 #X connect 0 0 27 0;
 #X connect 1 0 0 0;
 #X connect 5 0 0 0;

@@ -1,72 +1,60 @@
-#N canvas 610 51 663 769 12;
-#X msg 66 501 format b;
-#X msg 43 207 1 2 3;
-#X msg 64 257 set dog ferret;
-#X msg 50 234 set mouse banana;
-#X obj 369 356 oscparse;
-#X msg 30 181 4 5 weasel 6 7 rat;
-#X obj 50 665 oscparse;
-#X msg 50 448 -1 1 2 mule 4 5;
-#X msg 78 548 format ifisf;
-#X obj 50 576 oscformat -f b wombat;
-#X msg 38 420 5 6 7 squirrel;
-#X msg 73 525 format fiiib;
-#X text 202 282 creation arguments are OSC address, f 18;
-#X text 170 175 OSC messages with numbers and symbols. Except as shown
-below the message will contain 'float' and 'string' data., f 61;
-#X msg 67 348 disconnect;
-#X obj 31 378 netsend -u -b;
-#X msg 48 323 connect localhost 5000;
-#X text 33 737 see also:;
-#X obj 254 737 list;
-#X obj 194 737 netsend;
-#X text 151 348 don't send;
-#X text 179 242 set message to change OSC address, f 18;
-#X msg 58 476 format;
-#X text 113 476 no format;
-#X text 138 500 a 'blob';
-#X text 174 536 mixtures;
-#X text 214 322 send as UDP;
+#N canvas 430 23 896 709 12;
+#X msg 66 361 format b;
+#X msg 274 208 1 2 3;
+#X msg 295 257 set dog ferret;
+#X msg 281 234 set mouse banana;
+#X obj 583 329 oscparse;
+#X msg 261 181 4 5 weasel 6 7 rat;
+#X obj 50 525 oscparse;
+#X msg 50 308 -1 1 2 mule 4 5;
+#X msg 78 408 format ifisf;
+#X obj 50 436 oscformat -f b wombat;
+#X msg 38 280 5 6 7 squirrel;
+#X msg 73 385 format fiiib;
+#X text 432 282 creation arguments are OSC address, f 18;
+#X msg 297 348 disconnect;
+#X obj 261 378 netsend -u -b;
+#X msg 278 323 connect localhost 5000;
+#X text 33 677 see also:;
+#X obj 254 677 list;
+#X obj 194 677 netsend;
+#X text 381 348 don't send;
+#X text 410 242 set message to change OSC address, f 18;
+#X msg 58 336 format;
+#X text 113 336 no format;
+#X text 138 360 a 'blob';
+#X text 174 396 mixtures;
+#X text 444 322 send as UDP;
 #X obj 42 14 oscformat;
-#X text 421 736 updated for Pd version 0.51.;
+#X text 661 676 updated for Pd version 0.51.;
 #X text 114 13 - convert lists to OSC packets;
-#X listbox 369 385 34 0 0 0 - - - 0;
-#X obj 31 291 oscformat cat horse pig;
-#X obj 369 297 netreceive -u -b;
-#X msg 369 242 listen 5000;
-#X msg 381 270 listen 0;
-#X text 448 269 stop listening;
-#X text 366 218 packets from network;
-#X text 454 242 listen on port 5000;
-#X text 491 291 UDP packets \, binary output, f 13;
-#X listbox 50 694 37 0 0 0 - - - 0;
-#X obj 385 327 print OSC-packet;
-#X obj 67 621 print OSC-packet;
-#X text 25 76 Oscformat makes OSC (Open Sound Control) packets (byte
+#X listbox 583 358 34 0 0 0 - - - 0;
+#X obj 261 291 oscformat cat horse pig;
+#X obj 583 270 netreceive -u -b;
+#X msg 583 215 listen 5000;
+#X msg 595 243 listen 0;
+#X text 662 242 stop listening;
+#X text 580 191 packets from network;
+#X text 668 215 listen on port 5000;
+#X text 705 264 UDP packets \, binary output, f 13;
+#X listbox 50 554 37 0 0 0 - - - 0;
+#X obj 599 300 print OSC-packet;
+#X obj 67 484 print OSC-packet;
+#X text 27 82 Oscformat makes OSC (Open Sound Control) packets (byte
 by byte) suitable for sending over the network via netsend (in UDP
 binary mode). The OSC address (the strings between the slashes) are
 given by the creation arguments or by "set" messages. Oscparse takes
 lists of numbers interpreting them as the bytes in an OSC message and
 outputs a list containing \, first \, the symbols making up the address
 of the OSC packet \, and following that \, numbers and symbols as present
-in the OSC message., f 87;
-#X text 256 424 If a format is given (via a flag or 'format' message)
-oscformat interprets incoming data as integer \, float \, string \,
-or 'blob'. Blobs are given as an atom count followed by that number
-of elements. (If an elements is a symbol \, its first byte is sent).
-If the count is negative \, the entire remaining message is included
-in the blob (but the OSC parser will report the actual number of elements).
-If the elements aren't exhausted at the end of the format string \,
-the default (float and symbol) conversions are made for the rest.,
-f 55;
-#X text 209 576 the '-f' flag initializes the format.;
-#X text 215 603 Note: there's no way using oscparse to distinguish
-between floats and integers \, nor to see blobs unambiguously. OSC
-messages may be combined in "bundles". If oscparse receives a bundle
-it simply parses all the messages in the bundle in the order they appear
-\, and ignores the bundle's time tag.;
-#X obj 111 737 fudiformat;
-#N canvas 783 344 606 217 more-on-OSC 0;
+in the OSC message., f 113;
+#X text 93 589 Note: there's no way using oscparse to distinguish between
+floats and integers \, nor to see blobs unambiguously. OSC messages
+may be combined in "bundles". If oscparse receives a bundle it simply
+parses all the messages in the bundle in the order they appear \, and
+ignores the bundle's time tag., f 99;
+#X obj 111 677 fudiformat;
+#N canvas 751 299 606 217 more-on-OSC 0;
 #X text 37 41 OSC is a complicated networking protocol (FUDI \, as
 used in netsend/netreceive is simpler and better but less widely used).
 oscparse and oscformat make no attempt to deal with timetags or aggregates
@@ -76,9 +64,9 @@ data \, nor between blobs and lists of numbers - it is assumed that
 you know what types the message should contain. You can alternatively
 use the OSC objects from mrpeach which have more features than these.
 , f 77;
-#X restore 491 693 pd more-on-OSC;
-#X obj 42 39 oscparse;
-#X text 114 40 - parse OSC packets into Pd messages;
+#X restore 505 548 pd more-on-OSC;
+#X obj 42 38 oscparse;
+#X text 114 39 - parse OSC packets into Pd messages;
 #N canvas 790 174 528 518 reference 0;
 #X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -116,30 +104,42 @@ use the OSC objects from mrpeach which have more features than these.
 #X text 103 18 - convert lsts to OSC packets.;
 #X text 93 337 - parse OSC packets into Pd list messages.;
 #X text 139 470 NONE;
-#X restore 466 27 pd reference;
-#X text 560 27 <= click;
-#X obj 7 65 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 616 27 pd reference;
+#X text 710 27 <= click;
+#X obj 7 67 cnv 1 880 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 6 725 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 20 180 OSC messages with numbers and => symbols. Except as
+shown below the message will contain 'float' and 'string' data., f
+32;
+#X text 218 428 If a format is given (via the '-f' flag or 'format'
+message) oscformat interprets incoming data as integer \, float \,
+string \, or 'blob'. Blobs are given as an atom count followed by that
+number of elements. (If an elements is a symbol \, its first byte is
+sent). If the count is negative \, the entire remaining message is
+included in the blob (but the OSC parser will report the actual number
+of elements). If the elements aren't exhausted at the end of the format
+string \, the default (float and symbol) conversions are made for the
+rest., f 87;
+#X obj 6 665 cnv 1 880 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 9 0;
-#X connect 1 0 31 0;
-#X connect 2 0 31 0;
-#X connect 3 0 31 0;
-#X connect 4 0 30 0;
-#X connect 5 0 31 0;
-#X connect 6 0 39 0;
+#X connect 1 0 30 0;
+#X connect 2 0 30 0;
+#X connect 3 0 30 0;
+#X connect 4 0 29 0;
+#X connect 5 0 30 0;
+#X connect 6 0 38 0;
 #X connect 7 0 9 0;
 #X connect 8 0 9 0;
 #X connect 9 0 6 0;
-#X connect 9 0 41 0;
+#X connect 9 0 40 0;
 #X connect 10 0 9 0;
 #X connect 11 0 9 0;
-#X connect 14 0 15 0;
-#X connect 16 0 15 0;
-#X connect 22 0 9 0;
-#X connect 31 0 15 0;
-#X connect 32 0 4 0;
-#X connect 32 0 40 0;
-#X connect 33 0 32 0;
-#X connect 34 0 32 0;
+#X connect 13 0 14 0;
+#X connect 15 0 14 0;
+#X connect 21 0 9 0;
+#X connect 30 0 14 0;
+#X connect 31 0 4 0;
+#X connect 31 0 39 0;
+#X connect 32 0 31 0;
+#X connect 33 0 31 0;
