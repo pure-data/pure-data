@@ -1,4 +1,4 @@
-#N canvas 699 85 601 710 12;
+#N canvas 624 23 601 710 12;
 #X floatatom 184 218 4 0 0 0 - - - 0;
 #X floatatom 147 309 8 0 0 0 - - - 0;
 #X floatatom 147 218 4 0 0 0 - - - 0;
@@ -123,7 +123,7 @@ with the previously set values., f 40;
 #X text 91 323 float - value to the left side of the function and output.
 ;
 #X text 113 413 float - the result of the function., f 58;
-#X text 92 362 float -, f 7;
+#X text 92 362 float -;
 #X obj 7 297 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 151 362 value to the right side of function (2nd coordinate

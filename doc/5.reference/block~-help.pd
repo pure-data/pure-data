@@ -1,16 +1,16 @@
-#N canvas 811 24 548 741 12;
-#X text 39 270 You may have at most one block~/switch~ object in any
+#N canvas 741 23 540 715 12;
+#X text 39 267 You may have at most one block~/switch~ object in any
 window., f 67;
-#X text 20 640 see also:;
-#X obj 140 692 fft~;
-#X text 39 389 Pd's default block size is 64 samples. The inlet~ and
+#X text 20 632 see also:;
+#X obj 140 684 fft~;
+#X text 39 386 Pd's default block size is 64 samples. The inlet~ and
 outlet~ objects reblock signals to adjust for differences between parent
 and subpatch \, but only power-of-two adjustments are possible. So
 for "normal" audio computations \, all blocks should also be power-of-two
 in size. HOWEVER \, if you have no inlet~ or outlet~ you may specify
 any other block size. This is intended for later use in video processing.
 , f 67;
-#X text 323 692 updated for Pd version 0.43;
+#X text 323 684 updated for Pd version 0.43;
 #N canvas 253 216 518 298 block-interactions 0;
 #X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
 if a parent window is reblocked \, even if the window containing the
@@ -25,8 +25,8 @@ than they are \, there might be weirdness.;
 may be switched with impunity \, but not catch~.;
 #X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
 IN PD;
-#X restore 154 572 pd block-interactions;
-#X text 313 572 <= BUG! block~/switch~ and dac~/adc~ are incompatible
+#X restore 154 564 pd block-interactions;
+#X text 313 564 <= BUG! block~/switch~ and dac~/adc~ are incompatible
 , f 27;
 #N canvas 741 59 566 565 switch-example 0;
 #X obj 114 417 bang~;
@@ -72,7 +72,7 @@ reblocked.;
 #X connect 7 0 20 0;
 #X connect 8 0 20 0;
 #X connect 9 0 20 0;
-#X restore 155 521 pd switch-example;
+#X restore 155 513 pd switch-example;
 #N canvas 551 180 581 315 switch-bang 0;
 #X text 32 11 You can use the switch~ object to single-step dsp in
 a subpatch. This might be useful for block operations that don't want
@@ -92,38 +92,38 @@ to be synced to the sample clock: loading a window function in a table
 #X connect 1 0 7 0;
 #X connect 2 0 4 0;
 #X connect 2 0 7 0;
-#X restore 154 546 pd switch-bang;
-#X text 282 521 <= click and open example;
-#X obj 90 90 block~ 64 1 1;
-#X text 90 117 args: block size \, overlap \, up-downsampling;
-#X obj 94 640 ../3.audio.examples/G04.control.blocksize;
-#X obj 94 662 ../3.audio.examples/J07.oversampling;
-#X obj 51 521 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 154 538 pd switch-bang;
+#X text 282 513 <= click and open example;
+#X obj 90 87 block~ 64 1 1;
+#X text 90 114 args: block size \, overlap \, up-downsampling;
+#X obj 94 632 ../3.audio.examples/G04.control.blocksize;
+#X obj 94 654 ../3.audio.examples/J07.oversampling;
+#X obj 51 513 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 51 554 \; pd dsp \$1;
-#X text 72 518 <= DSP on/off, f 6;
-#X obj 183 692 bang~;
-#X text 19 692 and the objects:;
-#X text 264 546 <= 'bang' lets you single-step DSP;
-#X text 39 144 The block~ and switch~ objects set the block size \,
+#X msg 51 546 \; pd dsp \$1;
+#X text 72 510 <= DSP on/off, f 6;
+#X obj 183 684 bang~;
+#X text 19 684 and the objects:;
+#X text 264 538 <= 'bang' lets you single-step DSP;
+#X text 39 141 The block~ and switch~ objects set the block size \,
 overlap \, and up/down-sampling ratio for the patch window. (The overlap
 and resampling ratio are relative to the super-patch.), f 67;
-#X text 39 193 Switch~ \, in addition \, allows you to switch DSP on
+#X text 39 190 Switch~ \, in addition \, allows you to switch DSP on
 and off for the DSP on the patch window. All subwindows are also switched.
 (If a subwindow of a switched window is also switched \, both switches
 must be on for the subwindow's audio DSP to run. Pd's global DSP must
 also be on.), f 67;
-#X text 39 338 Switch~ also takes a "bang" message that causes one
+#X text 39 335 Switch~ also takes a "bang" message that causes one
 block of DSP to be computed if it's switched off. This is useful for
 pre-computing waveforms \, window functions or also for video processing.
 , f 67;
-#X text 193 90 block~ with window's default values;
-#X text 39 290 A switch~ or block~ object without arguments does not
+#X text 193 87 block~ with window's default values;
+#X text 39 287 A switch~ or block~ object without arguments does not
 reblock audio computation - in other words \, block size and sample
 rate are as in the parent patch., f 67;
-#X obj 10 72 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 10 69 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 926 147 589 318 reference 0;
+#N canvas 777 147 589 318 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 172 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -151,6 +151,6 @@ up/downsampling)., f 66;
 #X text 26 27 [block~] and [switch~] -;
 #X text 209 20 set block size and on/off control for DSP, f 23;
 #X text 421 11 click;
-#X obj 10 621 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 10 613 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 14 0 15 0;

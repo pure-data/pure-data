@@ -77,7 +77,7 @@ in the patch. Check below:, f 41;
 #X connect 17 0 22 0;
 #X connect 18 0 3 0;
 #X restore 376 243 pd position;
-#N canvas 444 196 357 405 properties 1;
+#N canvas 444 196 357 405 properties 0;
 #N canvas 805 54 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - - 0;
 #X floatatom 107 244 3 0 29 0 - - - 0;

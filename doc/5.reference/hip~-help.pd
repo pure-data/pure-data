@@ -35,7 +35,7 @@ Right (control) inlet sets cutoff frequency., f 71;
 #X text 339 540 - unfriendly filters;
 #X obj 17 43 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 947 97 473 264 reference 1;
+#N canvas 893 97 473 264 reference 0;
 #X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 153 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000

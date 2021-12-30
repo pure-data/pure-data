@@ -1,4 +1,4 @@
-#N canvas 743 82 540 605 12;
+#N canvas 448 50 540 605 12;
 #X declare -stdpath ./;
 #X floatatom 122 185 4 0 0 0 - - - 0;
 #X obj 69 102 osc~ 100;
@@ -82,16 +82,16 @@ for an introduction to the necessary theory (click) =>, f 69;
 #X obj 135 561 slop~, f 7;
 #X text 335 562 updated for Pd version 0.38;
 #X text 16 524 see also:;
-#N canvas 877 190 571 306 reference 0;
+#N canvas 795 190 571 306 reference 0;
 #X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 81 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 8 191 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 191 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 271 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 267 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 233 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 229 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
 #X text 117 89 signal -;
 #X obj 7 151 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
@@ -104,8 +104,8 @@ for an introduction to the necessary theory (click) =>, f 69;
 #X text 180 127 clear internal state to zero (same as "set 0")., f
 49;
 #X text 180 159 filter coefficient., f 49;
-#X text 117 204 signal - filtered signal.;
-#X text 119 243 1) float - filter coefficient (default 0)., f 43;
+#X text 117 200 signal - filtered signal.;
+#X text 119 239 1) float - filter coefficient (default 0)., f 43;
 #X obj 30 10 rzero~;
 #X text 92 10 - real one-zero filter;
 #X restore 348 9 pd reference;

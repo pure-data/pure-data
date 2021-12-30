@@ -1,9 +1,9 @@
-#N canvas 566 34 591 677 12;
+#N canvas 710 38 591 677 12;
 #N canvas 595 399 475 139 help-append-template1 0;
 #X obj 101 72 filledpolygon z z 0 0 0 20 0 20 30 0 30;
 #X obj 67 24 struct help-append-template1 float x float y float z;
 #X restore 352 537 pd help-append-template1;
-#N canvas 1152 156 300 206 help-append-data 1;
+#N canvas 393 216 300 206 help-append-data 1;
 #X restore 352 515 pd help-append-data;
 #X obj 286 271 pointer;
 #X msg 286 247 traverse pd-help-append-data \, bang;

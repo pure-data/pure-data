@@ -1,20 +1,40 @@
-#N canvas 838 164 401 379 12;
-#X msg 119 174 bang;
-#X msg 66 123 bang;
-#X floatatom 66 254 8 0 0 0 - - - 0;
-#X text 131 253 Output is in milliseconds;
-#X obj 39 25 realtime;
-#X text 15 62 The realtime object measures elapsed real time \, as
-measured by your operating system., f 51;
-#X obj 66 224 realtime;
-#X text 107 25 - ask OS for elapsed real time;
-#X text 184 329 updated for Pd version 0.33;
-#X text 39 303 see also:;
-#X obj 41 329 cputime;
-#X obj 109 329 timer;
-#X text 160 159 output elapsed time. You can click multiple times since
+#N canvas 642 118 483 359 12;
+#X msg 166 177 bang;
+#X msg 113 126 bang;
+#X floatatom 113 257 8 0 0 0 - - - 0;
+#X text 178 256 Output is in milliseconds;
+#X obj 20 18 realtime;
+#X text 51 73 The realtime object measures elapsed real time \, as
+measured by your operating system., f 47;
+#X obj 113 227 realtime;
+#X text 91 16 - ask OS for elapsed real time, f 18;
+#X text 245 316 updated for Pd version 0.33;
+#X obj 101 316 cputime;
+#X obj 169 316 timer;
+#X text 207 162 output elapsed time. You can click multiple times since
 it was last reset., f 25;
-#X text 107 122 reset (set elapsed time to zero);
+#X text 154 125 reset (set elapsed time to zero);
+#X text 30 317 see also:;
+#X obj 9 59 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 794 222 494 222 reference 0;
+#X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 104 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 154 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X text 156 164 NONE;
+#X text 117 70 bang - reset (set elapsed time to zero)., f 43;
+#X text 117 119 bang - output elapsed time., f 43;
+#X obj 18 191 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 39 18 realtime;
+#X text 110 16 - ask OS for elapsed real time, f 31;
+#X restore 329 22 pd reference;
+#X text 262 23 click =>;
+#X obj 17 299 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 6 1;
 #X connect 1 0 6 0;
 #X connect 6 0 2 0;

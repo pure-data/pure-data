@@ -1,4 +1,4 @@
-#N canvas 576 49 546 611 12;
+#N canvas 576 49 543 611 12;
 #X floatatom 180 333 7 0 0 0 - - - 0;
 #X msg 230 247 set \$1;
 #X obj 149 235 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc

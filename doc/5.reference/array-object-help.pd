@@ -6,58 +6,58 @@
 #N struct template1 float x float y float z float q;
 #N canvas 710 98 609 607 12;
 #X text 442 161 (click for details:), f 11;
-#N canvas 623 34 795 797 define 0;
-#X text 361 582 creation arguments:;
-#X text 391 653 optional name;
-#X text 252 209 read from a file;
-#X text 272 234 write to a file;
-#X text 57 65 "array define" maintains an array and can name it so
+#N canvas 561 26 758 720 define 0;
+#X text 340 532 creation arguments:;
+#X text 370 603 optional name;
+#X text 231 159 read from a file;
+#X text 251 184 write to a file;
+#X text 55 68 "array define" maintains an array and can name it so
 that other objects can find it (and later should have some alternative
-\, anonymous way to be found)., f 71;
-#X text 390 670 optional size (100 by default);
-#X msg 54 178 const 0;
-#X text 112 178 set to a constant (0 \, for instance);
-#X msg 62 209 read array-object-help.txt;
-#X msg 74 234 write array-object-help.txt;
-#X obj 67 574 array define array-help-1;
-#X msg 81 265 resize 100;
-#X text 100 295 ... other messages are also forwarded to the array
-like those above - xticks \, etc \, and also lists to set values.;
-#X obj 166 455 r array-help-send;
-#X floatatom 166 503 5 0 0 0 - - - 0;
-#X obj 376 450 r array-help-send;
-#X floatatom 376 524 5 0 0 0 - - - 0;
-#X text 82 548 click to open or edit array:;
-#X obj 166 479 getsize float-array z;
-#X obj 376 499 array size -s float-array z;
-#X text 161 404 The pointer will be to a structure float-array and
+\, anonymous way to be found)., f 80;
+#X text 369 620 optional size (100 by default);
+#X msg 33 128 const 0;
+#X text 91 128 set to a constant (0 \, for instance);
+#X msg 41 159 read array-object-help.txt;
+#X msg 53 184 write array-object-help.txt;
+#X obj 46 524 array define array-help-1;
+#X msg 60 215 resize 100;
+#X text 79 245 ... other messages are also forwarded to the array like
+those above - xticks \, etc \, and also lists to set values.;
+#X obj 145 405 r array-help-send;
+#X floatatom 145 453 5 0 0 0 - - - 0;
+#X obj 355 400 r array-help-send;
+#X floatatom 355 474 5 0 0 0 - - - 0;
+#X text 61 498 click to open or edit array:;
+#X obj 145 429 getsize float-array z;
+#X obj 355 449 array size -s float-array z;
+#X text 140 354 The pointer will be to a structure float-array and
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
-#X obj 78 606 array define -k array-help-2 10;
+#X obj 57 556 array define -k array-help-2 10;
 #A 0 -0.320006 -0.0133338 -0.340006 0 0.973333 0 -0.300005 0 0.966667
 0;
-#X msg 96 375 send array-help-send;
-#X text 389 600 optional -k flag to keep contents;
-#X obj 79 637 array define -yrange -4 4 array-help-3 10;
-#X obj 79 668 array define -pix 800 400 array-help-4 16;
-#X text 390 617 optional "-yrange low high" to set the yrange;
-#X text 390 635 optional "-pix x y" to set the plot size;
-#X obj 90 345 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 75 325 send array-help-send;
+#X text 368 550 optional -k flag to keep contents;
+#X obj 58 587 array define -yrange -4 4 array-help-3 10;
+#X obj 58 618 array define -pix 800 400 array-help-4 16;
+#X text 369 567 optional "-yrange low high" to set the yrange;
+#X text 369 585 optional "-pix x y" to set the plot size;
+#X obj 69 295 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 113 342 bang to output a pointer to the scalar containing the
+#X text 92 292 bang to output a pointer to the scalar containing the
 array;
-#X obj 67 705 getsize float-array z;
-#X floatatom 67 729 5 0 0 0 - - - 0;
-#X text 252 375 send pointer to a named receive object;
-#X text 247 119 If created without any arguments \, the array object
-defaults to 'array define', f 43;
-#X obj 196 127 array;
-#X obj 376 474 trigger bang pointer;
-#X text 309 699 note: if "-k" is given but no size is specified \,
+#X obj 46 655 getsize float-array z;
+#X floatatom 46 679 5 0 0 0 - - - 0;
+#X text 231 325 send pointer to a named receive object;
+#X text 488 155 If created without any arguments \, the array object
+defaults to 'array define', f 28;
+#X obj 437 163 array;
+#X obj 355 424 trigger bang pointer;
+#X text 288 649 note: if "-k" is given but no size is specified \,
 the size is restored to whatever it may have been changed to using
 "resize" messages \, but if there is a size argument given the restored
 array has the originally specified size.;
-#X text 214 17 <= click;
+#X text 193 17 <= click;
 #N canvas 800 172 588 403 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -90,8 +90,8 @@ range.;
 #X text 25 137 other messages - [array define] send other messages
 that arrays understand like: 'const' \, 'resize' \, etc. For reference
 \, see 2.control.examples "15.array" and "16.more.arrays"., f 74;
-#X restore 111 18 pd reference;
-#X obj 35 51 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 90 18 pd reference;
+#X obj 14 51 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 6 0 10 0;
 #X connect 8 0 10 0;
@@ -413,7 +413,7 @@ of array)., f 61;
 #X connect 14 0 15 0;
 #X restore 443 274 pd get;
 #X obj 59 298 array set;
-#N canvas 738 259 650 398 set 0;
+#N canvas 716 259 650 398 set 0;
 #X obj 74 255 array set array-help-2, f 12;
 #X msg 74 159 0.1 0.2 0.3 0.4 0.3 0.2 0.1;
 #X text 49 73 "array set" sets values of an array from an incoming
@@ -475,9 +475,9 @@ none).;
 #X text 163 299 - set contents from a list;
 #X text 181 323 - get a quantile;
 #X obj 59 346 array random;
-#N canvas 566 90 737 720 quantile+random 0;
-#X floatatom 74 252 5 0 100 0 - - - 0;
-#X obj 43 329 array quantile array-help-5, f 14;
+#N canvas 566 26 721 706 quantile+random 0;
+#X floatatom 74 237 5 0 100 0 - - - 0;
+#X obj 43 314 array quantile array-help-5, f 14;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-5 100 float 1;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0.00715053 0.00715053 0.0285789 0.0500072
@@ -490,42 +490,42 @@ none).;
 0.349997 0.335712 0.321426 0.278569 0.192856 0.149999 0.135714 0.114285
 0.0999998 0.0714298 0.0642871 0.0571443 0.0285732 0 0 0 0 0;
 #X coords 0 1 99 0 200 140 1 0 0;
-#X restore 41 450 graph;
-#X floatatom 106 276 5 -1 100 0 - - - 0;
-#X msg 58 608 \; array-help-5 const 0;
-#X floatatom 43 201 5 -1 100 0 - - - 0;
-#X obj 43 222 / 100;
-#X floatatom 43 373 5 0 100 0 - - - 0;
-#X floatatom 306 673 5 0 100 0 - - - 0;
-#X obj 306 629 array random array-help-5, f 13;
-#X obj 306 501 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X restore 41 435 graph;
+#X floatatom 106 261 5 -1 100 0 - - - 0;
+#X msg 58 593 \; array-help-5 const 0;
+#X floatatom 43 186 5 -1 100 0 - - - 0;
+#X obj 43 207 / 100;
+#X floatatom 43 358 5 0 100 0 - - - 0;
+#X floatatom 306 658 5 0 100 0 - - - 0;
+#X obj 306 614 array random array-help-5, f 13;
+#X obj 306 486 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X floatatom 319 550 5 0 0 0 - - - 0;
-#X floatatom 350 576 5 0 0 0 - - - 0;
-#X text 279 424 "array random" makes a pseudo-random number from 0
+#X floatatom 319 535 5 0 0 0 - - - 0;
+#X floatatom 350 561 5 0 0 0 - - - 0;
+#X text 279 409 "array random" makes a pseudo-random number from 0
 to 1 and outputs its quantile (which will therefore have probabilities
 proportional to the table's values.);
-#X text 330 496 bang to generate a random value;
-#X msg 313 522 seed 56;
-#X text 381 522 set random seed;
-#X text 159 368 - optional number to initialize onset - default 0,
+#X text 330 481 bang to generate a random value;
+#X msg 313 507 seed 56;
+#X text 381 507 set random seed;
+#X text 159 353 - optional number to initialize onset - default 0,
 f 61;
-#X text 158 387 - optional number to initialize number of points -
+#X text 158 372 - optional number to initialize number of points -
 default -1, f 61;
-#X text 424 643 same creation arguments;
-#X text 166 335 creation arguments: either array name or "-s" and optional
+#X text 424 628 same creation arguments;
+#X text 166 320 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure, f 60;
-#X text 118 251 onset (first index to sum from) \, zero for start of
+#X text 118 236 onset (first index to sum from) \, zero for start of
 array;
-#X text 148 277 number of points or -1 for end of array;
-#X text 364 547 onset;
-#X text 392 575 number of points;
-#X text 88 200 quantile (between 0 and 1);
-#X msg 138 304 symbol array-help-2;
-#X text 283 303 set name or pointer;
-#X msg 394 603 symbol array-help-2;
-#X text 536 602 set name or pointer;
-#X text 47 90 "array quantile" outputs the specified quantile by interpreting
+#X text 148 262 number of points or -1 for end of array;
+#X text 364 532 onset;
+#X text 392 560 number of points;
+#X text 88 185 quantile (between 0 and 1);
+#X msg 138 289 symbol array-help-2;
+#X text 283 288 set name or pointer;
+#X msg 394 588 symbol array-help-2;
+#X text 536 587 set name or pointer;
+#X text 47 75 "array quantile" outputs the specified quantile by interpreting
 the array as a histogram. The output will always be in the range 0
 to array size - 1 The 0.5 quantile is also known as the median. This
 generalizes the "array random" function allowing you to use the same
@@ -533,7 +533,7 @@ source of randomness on several arrays \, for example. Negative numbers
 in the array are silently replaced by zero. Quantiles outside the range
 0-1 output the x values at the two extremes of the array (0 and 99
 here)., f 90;
-#X text 201 29 <= click;
+#X text 201 21 <= click;
 #N canvas 800 173 589 526 reference 0;
 #X obj 9 55 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -572,8 +572,8 @@ of array)., f 61;
 #X text 127 197 float - number or points (-1 is the end of array).
 , f 51;
 #X text 144 313 float - random index value from the array.;
-#X restore 107 29 pd reference;
-#X obj 22 66 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 107 21 pd reference;
+#X obj 22 58 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 1 1;
 #X connect 1 0 7 0;
@@ -590,7 +590,7 @@ of array)., f 61;
 #X restore 443 322 pd quantile+random;
 #X text 164 346 - random - array as probabilities;
 #X obj 59 369 array max;
-#N canvas 578 146 665 615 min+max 0;
+#N canvas 579 106 661 597 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-6 100 float 1;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711

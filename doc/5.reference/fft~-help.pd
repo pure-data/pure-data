@@ -49,7 +49,7 @@ to see how to use these in practice., f 54;
 #X msg 58 210 0;
 #X obj 11 67 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 514 84 929 486 reference 1;
+#N canvas 437 84 929 486 reference 0;
 #X obj 9 41 cnv 5 430 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 79 cnv 2 430 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000

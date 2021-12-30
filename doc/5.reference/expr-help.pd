@@ -1,4 +1,4 @@
-#N canvas 540 33 691 747 12;
+#N canvas 541 29 747 703 12;
 #X declare -stdpath ./;
 #N canvas 644 54 810 635 Arrays 0;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -44,9 +44,9 @@ variables (just either '$i3' or '$f#').;
 #X connect 10 0 9 0;
 #X connect 18 0 3 1;
 #X connect 19 0 6 0;
-#X restore 454 515 pd Arrays;
-#X text 67 517 Basic examples:;
-#X text 378 538 Further details:, f 8;
+#X restore 476 501 pd Arrays;
+#X text 89 503 Basic examples:;
+#X text 400 524 Further details:, f 8;
 #N canvas 441 139 950 501 Dealing_with_"\$0" 0;
 #X obj 624 154 expr $s2[$f1];
 #X obj 712 123 symbol \$0-x;
@@ -125,10 +125,10 @@ number and thus the object won't load giving a syntax error!, f 62
 #X connect 14 0 12 0;
 #X connect 14 0 13 0;
 #X connect 15 0 11 0;
-#X restore 454 542 pd Dealing_with_"\$0";
-#X text 47 624 see also:;
-#X obj 46 703 block~;
-#X obj 100 703 value;
+#X restore 476 528 pd Dealing_with_"\$0";
+#X text 15 619 see also:;
+#X obj 89 670 block~;
+#X obj 143 670 value;
 #N canvas 834 236 489 525 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
@@ -660,7 +660,7 @@ subpatches below to check each group:, f 52;
 #X connect 20 0 9 0;
 #X connect 21 0 10 0;
 #X restore 164 430 pd Acousticts;
-#X restore 454 568 pd All_functions \; and operators;
+#X restore 476 553 pd All_functions \; and operators;
 #N canvas 472 62 968 659 [expr] 0;
 #X obj 206 123 expr 1;
 #X floatatom 206 153 4 0 0 0 - - - 0;
@@ -759,7 +759,7 @@ f 30;
 #X connect 43 0 17 0;
 #X connect 43 1 18 0;
 #X connect 43 2 19 0;
-#X restore 205 518 pd [expr] Examples;
+#X restore 227 504 pd [expr] Examples;
 #N canvas 574 54 875 695 [expr~] 0;
 #X floatatom 80 361 0 0 0 0 - - - 0;
 #X obj 80 468 dac~;
@@ -842,7 +842,7 @@ to audio inlets are promoted to signals., f 54;
 #X connect 32 0 14 0;
 #X connect 35 0 23 0;
 #X connect 38 0 37 0;
-#X restore 198 546 pd [expr~] Examples;
+#X restore 220 532 pd [expr~] Examples;
 #N canvas 355 23 1149 786 [fexpr~] 0;
 #X text 69 444 - $x1: same as $x1[0] \, $x2: same as $x2[0] (and so
 on)., f 60;
@@ -1076,12 +1076,12 @@ floats sent to audio inlets are promoted to signals. The '$x#' and
 #X connect 44 0 29 0;
 #X connect 45 0 27 0;
 #X connect 55 0 54 0;
-#X restore 191 574 pd [fexpr~] Examples;
-#X obj 46 650 +;
-#X obj 268 675 +~;
-#X obj 46 675 >;
-#X text 81 541 (click on the subpatches to open them), f 13;
-#X obj 148 703 random;
+#X restore 213 559 pd [fexpr~] Examples;
+#X obj 89 618 +;
+#X obj 301 643 +~;
+#X obj 89 643 >;
+#X text 103 526 (click on the subpatches to open them), f 13;
+#X obj 191 670 random;
 #N canvas 601 203 872 635 [value] 0;
 #X floatatom 596 202 5 0 0 0 - - - 0;
 #X obj 596 137 until;
@@ -1165,61 +1165,61 @@ means you need to update a variable and call it in the below expression
 #X connect 31 1 32 0;
 #X connect 33 0 32 0;
 #X connect 34 0 31 0;
-#X restore 529 515 pd [value];
-#X obj 84 266 expr $f1 + $s3[$i2];
-#X symbolatom 214 240 7 0 0 0 - - - 0;
-#X floatatom 149 239 3 0 0 0 - - - 0;
-#X floatatom 84 240 4 0 0 0 - - - 0;
-#X obj 257 339 sig~ 1;
-#X text 317 338 <= 1st inlet is an audio signal vector/block;
-#X obj 53 462 fexpr~ $x1[0] + $y1[-1];
-#X text 41 305 [expr~] has an exclusive input variable defined as '$v#'
+#X restore 551 501 pd [value];
+#X obj 106 262 expr $f1 + $s3[$i2];
+#X symbolatom 236 236 7 0 0 0 - - - 0;
+#X floatatom 171 235 3 0 0 0 - - - 0;
+#X floatatom 106 236 4 0 0 0 - - - 0;
+#X obj 279 335 sig~ 1;
+#X text 339 334 <= 1st inlet is an audio signal vector/block;
+#X obj 75 455 fexpr~ $x1[0] + $y1[-1];
+#X text 63 301 [expr~] has an exclusive input variable defined as '$v#'
 - which stands for an audio signal 'vector' (or block)., f 85;
-#X text 28 403 [fexpr~] has exclusive variable types defined as: '$x#[n]'
+#X text 50 399 [fexpr~] has exclusive variable types defined as: '$x#[n]'
 (an input audio sample from inlet # indexed by 'n') and '$y#[n]' (an
 output audio sample from outlet # indexed by 'n')., f 91;
-#X text 286 232 First inlet is a float input that adds to an array
+#X text 308 228 First inlet is a float input that adds to an array
 value whose index is defined by an integer input from the second inlet
 and the third inlet takes a symbol for the array name., f 50;
-#X obj 202 703 array;
-#X obj 257 365 expr~ $v1 + $f2;
-#X floatatom 380 365 5 0 0 0 - - - 0;
-#X text 235 454 for '$x#' \, 'n' has to satisfy: 0 => n > -vector size
+#X obj 245 670 array;
+#X obj 279 361 expr~ $v1 + $f2;
+#X floatatom 402 361 5 0 0 0 - - - 0;
+#X text 257 447 for '$x#' \, 'n' has to satisfy: 0 => n > -vector size
 ;
-#X text 235 471 for '$y#' \, 'n' has to satisfy: -1 => n > -vector
+#X text 257 464 for '$y#' \, 'n' has to satisfy: -1 => n > -vector
 size;
-#X obj 268 650 sin;
-#X text 77 649 - arithmetic operators;
-#X text 77 674 - other binary operators;
-#X text 297 649 - math functions;
-#X text 297 674 - audio operators;
-#X obj 249 703 cos~;
-#X obj 287 703 wrap~;
-#X obj 370 703 abs~;
-#X obj 446 703 sqrt~;
-#X obj 332 703 exp~;
-#X obj 408 703 log~;
-#X obj 492 703 pow~;
-#X text 30 155 These objects have several built in operators and functions
+#X obj 301 618 sin;
+#X text 120 617 - arithmetic operators;
+#X text 120 642 - other binary operators;
+#X text 330 617 - math functions;
+#X text 330 642 - audio operators;
+#X obj 292 670 cos~;
+#X obj 330 670 wrap~;
+#X obj 413 670 abs~;
+#X obj 489 670 sqrt~;
+#X obj 375 670 exp~;
+#X obj 451 670 log~;
+#X obj 535 670 pow~;
+#X text 52 151 These objects have several built in operators and functions
 and the syntax is quite similar to how expressions are written in C.
 They receive input variables via the inlets and understand the variable
 types: '$f#' (floats) \, '$i#' (integers) and '$s#' (symbols \, used
 to represent array names) - '#' is the inlet number (up to 100) as
 below:, f 88;
-#X text 447 656 updated for Pd version 0.51-3;
-#X obj 99 41 expr;
-#X obj 92 66 expr~;
-#X obj 86 104 fexpr~;
-#X text 70 13 Expression evaluation family of objects By Shahrokh Yadegari
+#X text 510 626 updated for Pd version 0.51-3;
+#X obj 81 37 expr;
+#X obj 74 62 expr~;
+#X obj 68 100 fexpr~;
+#X text 52 9 Expression evaluation family of objects By Shahrokh Yadegari
 - Version 0.57, f 75;
-#X text 136 104 - evaluation of audio signal expressions;
-#X text 136 66 - evaluation of audio signal expressions;
-#X text 136 41 - evaluation of control data expressions;
-#X text 150 84 on a vector by vector basis, f 38;
-#X text 150 121 on a sample by sample basis, f 38;
-#X obj 26 145 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 118 100 - evaluation of audio signal expressions;
+#X text 118 62 - evaluation of audio signal expressions;
+#X text 118 37 - evaluation of control data expressions;
+#X text 132 80 on a vector by vector basis, f 38;
+#X text 132 117 on a sample by sample basis, f 38;
+#X obj 8 141 cnv 1 730 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 480 62 bng 15 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
+#X obj 462 58 bng 15 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
 #000000;
 #N canvas 798 148 456 264 reference 0;
 #X obj 101 59 inlet;
@@ -1233,10 +1233,9 @@ object., f 25;
 #X connect 2 0 4 0;
 #X connect 3 0 2 0;
 #X connect 4 0 1 0;
-#X restore 480 96 pd reference;
-#X text 500 60 <=;
-#X text 519 53 Open HTTML reference, f 10;
-#X obj 27 613 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 462 92 pd reference;
+#X text 482 56 <= Open HTTML reference;
+#X obj 9 601 cnv 1 730 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 18 0 17 2;
 #X connect 19 0 17 1;

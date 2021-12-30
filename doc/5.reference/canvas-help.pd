@@ -1,4 +1,5 @@
-#N canvas 404 40 1057 709 12;
+#N struct template1 float x float y float z float q;
+#N canvas 299 40 1049 696 12;
 #X obj 571 182 table;
 #X obj 537 572 table help-tab1 25;
 #N canvas 1 51 450 300 (subpatch) 0;

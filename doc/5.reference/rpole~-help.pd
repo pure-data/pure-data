@@ -1,4 +1,4 @@
-#N canvas 861 42 544 609 12;
+#N canvas 504 36 544 609 12;
 #X declare -stdpath ./;
 #X floatatom 147 186 4 0 0 0 - - - 0;
 #X obj 80 99 osc~ 100;
@@ -87,16 +87,16 @@ for an introduction to the necessary theory (click) =>, f 69;
 one-pole (recursive) real filter \, whose coefficient is controlled
 by a creation argument or by an audio signal (right inlet)., f 63
 ;
-#N canvas 877 190 571 306 reference 0;
+#N canvas 795 190 571 306 reference 0;
 #X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 81 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 8 191 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 191 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 271 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 267 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 233 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 229 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
 #X text 117 89 signal -;
 #X obj 7 151 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
@@ -109,8 +109,8 @@ by a creation argument or by an audio signal (right inlet)., f 63
 #X text 180 127 clear internal state to zero (same as "set 0")., f
 49;
 #X text 180 159 filter coefficient., f 49;
-#X text 117 204 signal - filtered signal.;
-#X text 119 243 1) float - filter coefficient (default 0)., f 43;
+#X text 117 200 signal - filtered signal.;
+#X text 119 239 1) float - filter coefficient (default 0)., f 43;
 #X obj 39 10 rpole~;
 #X text 91 10 - real one-pole filter.;
 #X restore 348 9 pd reference;

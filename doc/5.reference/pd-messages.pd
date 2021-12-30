@@ -1,5 +1,4 @@
-#N struct template1 float x float y float z float q;
-#N canvas 371 60 1039 684 12;
+#N canvas 247 23 1039 684 12;
 #X msg 716 131 dsp \$1;
 #X msg 604 144 \; pd dsp 0;
 #X obj 716 106 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -149,7 +148,7 @@ you can send to Pd., f 41;
 10 12 0 14 #e0e0e0 #404040 0;
 #X obj 584 551 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
 117 12 0 14 #e0e0e0 #404040 0;
-#N canvas 794 182 779 412 Dynamic-Patching 0;
+#N canvas 587 182 779 412 Dynamic-Patching 0;
 #X text 99 166 For reference \, please check the help file of =>,
 f 25;
 #N canvas 311 74 659 663 creating-boxes 0;
@@ -222,7 +221,7 @@ after they get created ., f 58;
 #X connect 9 0 8 0;
 #X restore 589 290 pd loadbang;
 #X obj 285 181 namecanvas;
-#N canvas 438 311 592 531 Data-Structures 0;
+#N canvas 466 188 592 531 Data-Structures 0;
 #X text 70 109 For more on Data Structures \, check section 4.data.structures
 in Pd's tutorial examples. See 1st example of the series below.;
 #X obj 160 154 ../4.data.structures/01.scalars;
@@ -258,7 +257,7 @@ fields., f 30;
 #X text 187 452 clean it up;
 #X msg 127 392 write ds-text-2.txt;
 #X obj 141 426 loadbang;
-#N canvas 291 367 514 421 \$0-DS-example 0;
+#N canvas 164 235 514 421 \$0-DS-example 0;
 #X restore 337 272 pd \$0-DS-example;
 #X obj 102 486 s pd-\$0-DS-example;
 #X text 66 202 Note you can also use "\$0" to give local names to subpatches.
@@ -316,7 +315,7 @@ order they were created., f 67;
 #X connect 9 0 0 0;
 #X restore 545 93 pd (dis)connecting-boxes;
 #X text 593 244 loadbang handling:, f 9;
-#N canvas 902 124 849 512 save 0;
+#N canvas 509 124 849 512 save 0;
 #X msg 326 121 menusave;
 #X msg 367 171 menusaveas;
 #X msg 386 221 menuclose;
@@ -373,7 +372,7 @@ you also need to end with ".pd". Alternatively you can name a main
 window or a subpatch with [namecanvas]. For reference \, please refer
 to the help file of [namecanvas] \, which carries complementary information!
 , f 65;
-#N canvas 644 327 801 383 abstractions 0;
+#N canvas 565 327 801 383 abstractions 0;
 #X text 46 29 You can create abstractions just like you would create
 any other object in Pd! All you need to do is have the name of the
 abstraction as the object name., f 48;

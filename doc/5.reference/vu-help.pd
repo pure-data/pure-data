@@ -339,7 +339,7 @@ Check details and how to get it back:, f 23;
 #X connect 25 0 4 0;
 #X coords 0 0 1 1 85 60 0;
 #X restore 161 185 pd colors;
-#N canvas 845 44 433 567 size 1;
+#N canvas 845 44 433 567 size 0;
 #X floatatom 129 191 4 20 100 0 - - - 0;
 #X obj 171 218 t b f;
 #X floatatom 171 191 4 80 240 0 - - - 0;
@@ -460,7 +460,7 @@ usual with other Pd objects., f 50;
 #X connect 7 1 6 1;
 #X connect 8 0 7 0;
 #X restore 154 132 pd receive;
-#N canvas 847 149 498 291 scale 1;
+#N canvas 847 149 498 291 scale 0;
 #X obj 57 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0
 ;
 #X msg 56 55 scale \$1;

@@ -30,7 +30,7 @@ it was last reset., f 25;
 #X text 156 164 NONE;
 #X text 117 70 bang - reset (set elapsed time to zero)., f 43;
 #X text 117 119 bang - output elapsed time., f 43;
-#X obj 18 191 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X obj 18 191 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X restore 350 21 pd reference;
 #X text 282 20 click =>;

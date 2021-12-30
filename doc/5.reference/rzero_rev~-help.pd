@@ -1,4 +1,4 @@
-#N canvas 702 77 548 597 12;
+#N canvas 507 60 548 597 12;
 #X declare -stdpath ./;
 #X floatatom 133 199 4 0 0 0 - - - 0;
 #X obj 52 115 osc~ 100;
@@ -87,12 +87,12 @@ for an introduction to the necessary theory (click) =>, f 69;
 raw one-zero (non-recursive) real filter \, whose coefficient is controlled
 by a creation argument or by an audio signal (right inlet). The impulse
 response is that of "rzero" reversed in time., f 68;
-#N canvas 877 190 571 306 reference 0;
+#N canvas 795 190 571 306 reference 0;
 #X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 81 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 8 191 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 191 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
 #X obj 7 271 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;

@@ -1,5 +1,5 @@
 #N struct template1 float x float y float z float q;
-#N canvas 494 121 595 622 12;
+#N canvas 423 39 595 622 12;
 #X floatatom 69 168 6 0 0 0 - - - 0;
 #X msg 36 134 bang;
 #X floatatom 124 253 5 0 0 0 - - - 0;
