@@ -279,6 +279,7 @@ AS_IF([test x$debug = xyes],[
     CFLAGS="$CFLAGS $DEBUG_CFLAGS"
 ],[
     CFLAGS="$CFLAGS $RELEASE_CFLAGS"
+    CPPFLAGS="$CPPFLAGS -DNDEBUG"
 ])
 
 #########################################
