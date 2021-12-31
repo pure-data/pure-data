@@ -37,33 +37,33 @@ help-getsize-array1-template;
 #X msg 51 247 set help-getsize-template array1;
 #X obj 7 50 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 951 207 482 234 reference 0;
-#X obj 9 42 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 791 206 522 241 reference 0;
+#X obj 9 49 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 113 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 115 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 153 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 9 155 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 209 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 211 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 152 163 1) symbol - template name.;
-#X text 152 182 2) symbol - field name., f 26;
-#X text 45 75 set <symbol \, symbol> - set template and field name.
-, f 52;
-#X text 136 56 pointer - pointer to an array.;
-#X text 150 125 float - array's size.;
-#X obj 27 12 getsize;
-#X text 87 13 - get of a Data Structures array.;
+#X text 152 165 1) symbol - template name.;
+#X text 152 184 2) symbol - field name., f 26;
+#X text 29 82 set <symbol \, symbol> - set template and field name.
+, f 63;
+#X text 134 125 float - array's size.;
+#X obj 30 13 getsize;
+#X text 90 14 - get of a Data Structures array.;
+#X text 120 63 pointer - pointer to a scalar with an array field.;
 #X restore 385 20 pd reference;
 #X text 483 21 <= click;
 #X obj 7 364 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 34 57 When sent a pointer \, "getsize" looks up a field \,
-which should be an array \, and outputs the number of elements of the
-array. The template and field name are specified as creation arguments.
-The smallest possible size is one., f 68;
 #X obj 291 381 array get;
 #X text 86 20 - get of a Data Structures array;
+#X text 34 57 When sent a pointer of a scalar \, "getsize" looks up
+a field \, which should be an array \, and outputs the number of elements
+of the array. The template and field name are specified as creation
+arguments. The smallest possible size is one., f 68;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
 #X connect 11 0 8 0;
