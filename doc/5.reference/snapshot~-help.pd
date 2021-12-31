@@ -25,7 +25,7 @@ read snapshot's value before any ensuing signal computation., f 81
 #000000 0 1;
 #X text 452 217 DSP on/off;
 #X text 78 238 0.1 Hz cosine wave;
-#N canvas 784 140 582 226 reference 1;
+#N canvas 784 140 582 226 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 126 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
