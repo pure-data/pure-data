@@ -1,10 +1,17 @@
-#N canvas 527 109 576 258 12;
-#X text 306 197 updated for Pd version 0.47;
+#N canvas 527 109 576 289 12;
+#X text 353 237 updated for Pd version 0.47;
 #X obj 53 23 vsnapshot~;
 #X text 132 24 - mal-designed snapshot~ extension - best not to use
 this;
-#X text 60 68 This is an attempt at making a version of snapshot~ that
-trades off delay for time jitter control. Unfortunately it isn't fully
-correct and will be replaced by a more correct one in the future. Since
-this change will probably be incompatible with this object \, it is
-probably best to avoid using it until it is working correctly.;
+#X text 34 215 see also:;
+#X obj 35 236 snapshot~;
+#X text 32 69 This is an attempt at making a version of snapshot~ that
+trades off delay for time jitter control. The behaviour is the same
+as snapshot~ (it takes a bang and converts a signal to a float. The
+idea is that you can convert from an audio signal and get a specific
+value within an audio block depending on the exact time it receives
+a bang. Unfortunately it isn't fully correct and will be replaced by
+a more correct one in the future. Since this change will probably be
+incompatible with this object \, it is probably best to avoid using
+it until it is working correctly., f 73;
+#X text 106 236 (best to just use this instead);
