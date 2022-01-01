@@ -1,63 +1,95 @@
 #N struct help-set-template1 float x float y symbol s;
-#N canvas 525 23 540 746 12;
-#X text 75 652 see also:;
-#X obj 181 675 append;
-#X obj 239 675 getsize;
-#X obj 82 700 setsize;
-#X obj 207 699 element;
-#X msg 230 174 next;
-#X floatatom 36 195 5 0 0 0 - - - 0;
-#X floatatom 125 195 5 0 0 0 - - - 0;
-#X obj 215 200 pointer;
-#X text 231 128 output first scalar in list;
-#X text 276 174 output next item;
-#X text 232 239 Remaining args are names of fields.;
-#X obj 80 674 pointer;
-#X msg 215 147 traverse pd-help-set-data \, next;
-#N canvas 149 161 276 122 help-set-data 1;
+#N canvas 601 23 594 723 12;
+#X text 33 673 see also:;
+#X obj 210 673 append;
+#X obj 268 673 getsize;
+#X obj 114 698 setsize;
+#X obj 236 697 element;
+#X msg 270 174 next;
+#X floatatom 76 195 5 0 0 0 - - - 0;
+#X floatatom 165 195 5 0 0 0 - - - 0;
+#X obj 255 200 pointer;
+#X text 271 128 output first scalar in list;
+#X text 316 174 output next item;
+#X text 272 239 Remaining args are names of fields.;
+#X obj 112 672 pointer;
+#X msg 255 147 traverse pd-help-set-data \, next;
+#N canvas 286 108 276 122 help-set-data 1;
 #X scalar help-set-template1 39 23 dog \;;
 #X scalar help-set-template1 99 73 cat \;;
-#X restore 355 642 pd help-set-data;
+#X restore 398 602 pd help-set-data;
 #N canvas 541 405 409 179 help-set-template1 0;
 #X obj 44 81 filledpolygon 9 0 1 0 0 20 0 20 30 0 30;
 #X obj 42 28 struct help-set-template1 float x float y symbol s;
 #X obj 49 127 drawsymbol s 0 -15 0 s=;
-#X restore 355 664 pd help-set-template1;
-#X text 68 13 -- set values in a scalar;
-#X obj 36 226 set help-set-template1 x y;
-#X text 32 173 x value;
-#X text 121 173 y value;
-#X obj 148 674 get;
-#X obj 148 699 struct;
-#X obj 37 13 set;
-#X msg 291 365 next;
-#X obj 277 390 pointer;
-#X msg 277 341 traverse pd-help-set-data \, next;
-#X obj 56 422 set -symbol help-set-template1 s;
-#X symbolatom 56 396 10 0 0 0 - - - 0;
-#X msg 56 343 symbol monkey;
-#X msg 64 369 symbol fish;
-#X text 47 277 To set fields whose values are symbols \, give the set
+#X restore 398 624 pd help-set-template1;
+#X text 88 13 -- set values in a scalar;
+#X obj 76 226 set help-set-template1 x y;
+#X text 72 173 x value;
+#X text 161 173 y value;
+#X obj 177 672 get;
+#X obj 177 697 struct;
+#X obj 57 13 set;
+#X msg 332 363 next;
+#X obj 318 388 pointer;
+#X msg 318 339 traverse pd-help-set-data \, next;
+#X obj 97 420 set -symbol help-set-template1 s;
+#X symbolatom 97 394 10 0 0 0 - - - 0;
+#X msg 97 341 symbol monkey;
+#X msg 105 367 symbol fish;
+#X text 38 273 To set fields whose values are symbols \, give the set
 object the "-symbol" argument. (Unfortunately \, you can't mix symbols
-and numbers in the same "set" object.), f 61;
-#X text 30 37 "Set" takes a pointer to a scalar in its rightmost inlet
-\; the remaining inlets set numeric fields. Symbols are handled specially
-\, as shown below. Arrays are accessed using the "element" object \,
-and lists using "text" objects. Only the leftmost inlet is "hot".;
-#X text 331 695 updated for Pd version 0.47;
-#X text 55 451 You can use the template "-" as a wild card (this may
+and numbers in the same "set" object.), f 73;
+#X text 367 688 updated for Pd version 0.47;
+#X text 38 455 You can use the template "-" as a wild card (this may
 be slower than if you use a specific template name). Also \, if there
 are zero or one fields specified \, you can send a "set" message to
-set a new template name and field name:;
-#X obj 101 581 set - x;
-#X obj 233 629 set;
-#X floatatom 101 554 5 0 0 0 - - - 0;
-#X msg 158 529 traverse pd-help-set-data \, next;
-#X obj 158 553 pointer;
-#X floatatom 233 570 5 0 0 0 - - - 0;
-#X msg 297 566 set help-set-template1 x;
-#X msg 296 593 set - x;
-#X text 231 224 First argument sets template.;
+set a new template name and field name:, f 73;
+#X obj 104 580 set - x;
+#X obj 236 628 set;
+#X floatatom 104 553 5 0 0 0 - - - 0;
+#X msg 161 528 traverse pd-help-set-data \, next;
+#X obj 161 552 pointer;
+#X floatatom 236 569 5 0 0 0 - - - 0;
+#X msg 300 565 set help-set-template1 x;
+#X msg 299 592 set - x;
+#X text 271 224 First argument sets template.;
+#X obj 6 43 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 798 178 568 301 reference 0;
+#X obj 9 47 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 125 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 197 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 279 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 84 223 1) symbol -;
+#X text 124 61 pointer -;
+#X text 200 61 pointer to a Data Structure scalar., f 46;
+#X text 33 81 set <symbol \, symbol> -;
+#X text 193 81 set template and field name (if none or just one argument
+is given)., f 47;
+#X text 100 131 depends on number of argumentd;
+#X obj 9 157 cnv 1 550 1 empty empty 'n': 8 12 0 13 #000000 #000000
+0;
+#X text 102 168 float/symbol - field value.;
+#X text 170 223 template name., f 28;
+#X text 98 244 2) list -;
+#X text 170 244 one or more field names (defines number of outlets).
+;
+#X obj 46 13 set;
+#X text 77 13 -- set values in a scalar.;
+#X restore 373 11 pd reference;
+#X text 471 12 <= click;
+#X text 32 56 "Set" takes a pointer to a scalar in its rightmost inlet
+and the remaining first inlets set numeric fields. Symbols are handled
+specially \, as shown below. Arrays are accessed using the "element"
+object \, and lists using "text" objects. Only the leftmost inlet is
+"hot"., f 74;
+#X obj 6 662 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 5 0 8 0;
 #X connect 6 0 17 0;
 #X connect 7 0 17 1;
@@ -69,10 +101,10 @@ set a new template name and field name:;
 #X connect 27 0 26 0;
 #X connect 28 0 27 0;
 #X connect 29 0 27 0;
-#X connect 36 0 34 0;
-#X connect 37 0 38 0;
-#X connect 38 0 35 1;
-#X connect 38 0 34 1;
-#X connect 39 0 35 0;
-#X connect 40 0 35 0;
-#X connect 41 0 35 0;
+#X connect 35 0 33 0;
+#X connect 36 0 37 0;
+#X connect 37 0 34 1;
+#X connect 37 0 33 1;
+#X connect 38 0 34 0;
+#X connect 39 0 34 0;
+#X connect 40 0 34 0;
