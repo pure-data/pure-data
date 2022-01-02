@@ -1,22 +1,20 @@
-#N canvas 564 81 875 580 12;
+#N canvas 404 23 875 580 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array sample 155944 float 0;
 #X coords 0 1 155943 -1 250 200 1 0 0;
-#X restore 572 262 graph;
-#X floatatom 63 437 0 0 0 0 - - - 0;
+#X restore 568 212 graph;
 #X text 148 139 "set" message permits you to switch between arrays
 ;
 #X text 174 291 creation argument initializes array name;
-#X obj 53 542 tabwrite~;
-#X obj 196 542 tabread;
-#X obj 255 542 tabwrite;
-#X obj 90 26 tabplay~;
-#X obj 552 161 soundfiler;
-#X floatatom 552 187 0 0 0 0 - - - 0;
-#X obj 63 411 env~ 16384;
-#X obj 322 542 soundfiler;
-#X obj 124 542 tabread4~;
+#X obj 123 528 tabwrite~;
+#X obj 266 528 tabread;
+#X obj 325 528 tabwrite;
+#X obj 55 18 tabplay~;
+#X obj 550 137 soundfiler;
+#X floatatom 550 163 0 0 0 0 - - - 0;
+#X obj 392 528 soundfiler;
+#X obj 194 528 tabread4~;
 #X msg 90 214 0 44100;
 #X msg 84 189 44100;
 #X msg 77 165 bang;
@@ -28,25 +26,23 @@ and there are none of tabread4~'s interpolation artifacts.;
 #X text 148 212 play starting at beginning for 44100 samples;
 #X msg 95 239 44100 1000;
 #X text 173 238 play from 44100 through 45099 (1000 samples);
-#X text 647 540 updated for Pd version 0.43;
+#X text 647 526 updated for Pd version 0.43;
 #X msg 102 264 stop;
 #X text 138 265 stop playing (outputs zeros when stopped);
-#X obj 165 338 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 165 328 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 183 337 <= bang when finished playing the table;
-#X text 157 27 - play a table as a sample (non-transposing);
+#X text 185 327 <= bang when finished playing the table;
+#X text 122 17 - play a table as a sample (non-transposing);
 #X obj 63 291 tabplay~ sample;
 #X msg 63 139 set sample;
-#X obj 258 480 ../2.control.examples/15.array;
-#X obj 258 503 ../2.control.examples/16.more.arrays;
-#X text 56 514 see also:, f 10;
-#X obj 81 336 output~;
-#X obj 680 24 declare -stdpath ./;
-#X msg 552 129 read -resize ../sound/bell.aiff sample;
-#X text 619 99 load table;
-#X obj 552 99 loadbang;
-#X text 192 434 Check also the "array" examples from the Pd tutorial
-by clicking and opening the files below, f 43;
+#X obj 496 469 ../2.control.examples/15.array;
+#X obj 496 492 ../2.control.examples/16.more.arrays;
+#X text 44 528 see also:;
+#X obj 63 336 output~;
+#X obj 42 412 declare -stdpath ./;
+#X msg 550 105 read -resize ../sound/bell.aiff sample;
+#X text 617 75 load table;
+#X obj 550 75 loadbang;
 #N canvas 978 194 593 443 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -87,18 +83,54 @@ doesn't work in messages., f 70;
 #X restore 359 383 pd Dealing_with_"\$0";
 #X text 197 374 open subpatch to see how to deal with '\$0', f 21
 ;
-#X obj 407 542 array;
-#X connect 8 0 9 0;
-#X connect 10 0 1 0;
-#X connect 13 0 28 0;
-#X connect 14 0 28 0;
-#X connect 15 0 28 0;
-#X connect 20 0 28 0;
-#X connect 23 0 28 0;
-#X connect 28 0 10 0;
-#X connect 28 0 33 0;
-#X connect 28 0 33 1;
-#X connect 28 1 25 0;
-#X connect 29 0 28 0;
-#X connect 35 0 8 0;
-#X connect 37 0 35 0;
+#X obj 477 528 array;
+#X text 121 471 Check also the "array" examples from the Pd tutorial
+by clicking and opening the files to the right, f 52;
+#N canvas 750 87 580 357 reference 0;
+#X obj 13 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 13 186 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 13 293 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 12 330 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 12 248 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 12 209 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 58 160 set <symbol> -;
+#X text 114 85 bang -;
+#X text 163 85 plays the whole sample (same as '0')., f 46;
+#X text 107 66 float -;
+#X text 115 19 - play a table as a sample (non-transposing).;
+#X text 163 66 sets starting sample and plays the sample., f 46;
+#X text 114 103 list -;
+#X text 163 103 1st element sets starting sample and 2nd element sets
+duration in samples.;
+#X text 114 139 stop -;
+#X text 163 139 stop playing (outputs zeros when stopped)., f 46;
+#X text 163 160 set the table with the sample., f 53;
+#X text 121 216 signal - sample output., f 54;
+#X text 135 255 bang - bang when finished playing the table., f 54
+;
+#X text 121 302 symbol - sets table name with the sample.;
+#X obj 45 18 tabplay~;
+#X restore 659 18 pd reference;
+#X text 757 17 <= click;
+#X obj 8 52 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 452 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 7 0 8 0;
+#X connect 11 0 26 0;
+#X connect 12 0 26 0;
+#X connect 13 0 26 0;
+#X connect 18 0 26 0;
+#X connect 21 0 26 0;
+#X connect 26 0 31 0;
+#X connect 26 0 31 1;
+#X connect 26 1 23 0;
+#X connect 27 0 26 0;
+#X connect 33 0 7 0;
+#X connect 35 0 33 0;

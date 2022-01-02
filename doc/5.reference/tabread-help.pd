@@ -1,6 +1,6 @@
-#N canvas 664 140 708 526 12;
+#N canvas 556 34 723 526 12;
 #X text 100 151 index;
-#X obj 106 24 tabread;
+#X obj 66 18 tabread;
 #X floatatom 67 152 4 0 9 0 - - - 0;
 #X floatatom 67 268 5 0 0 0 - - - 0;
 #N canvas 0 22 450 300 (subpatch) 0;
@@ -11,23 +11,23 @@
 #X text 191 216 creation argument;
 #X text 193 232 gives array name;
 #X text 176 184 change array name;
-#X text 467 471 updated for Pd version 0.43;
-#X obj 158 472 tabwrite~;
-#X obj 92 472 tabwrite;
-#X obj 300 472 tabsend~;
-#X obj 366 472 tabreceive~;
-#X obj 232 472 tabplay~;
-#X obj 27 472 tabread4;
+#X text 472 484 updated for Pd version 0.43;
+#X obj 163 485 tabwrite~;
+#X obj 97 485 tabwrite;
+#X obj 305 485 tabsend~;
+#X obj 371 485 tabreceive~;
+#X obj 237 485 tabplay~;
+#X obj 32 485 tabread4;
 #X text 51 61 The tabread object reads values from an array ("table")
 according to an index. The index is rounded down to the next lower
 integer. Values in the table correspond to indices starting at 0 Indices
 outside of the range are replaced by the nearest index in range (from
 0 to 9 in this example)., f 84;
-#X obj 415 392 ../2.control.examples/15.array;
-#X obj 415 415 ../2.control.examples/16.more.arrays;
-#X text 36 396 Check also the "array" examples from the Pd tutorial
+#X obj 420 405 ../2.control.examples/15.array;
+#X obj 420 428 ../2.control.examples/16.more.arrays;
+#X text 41 409 Check also the "array" examples from the Pd tutorial
 by clicking and opening the files to the right ====>, f 52;
-#X text 26 442 see also these objects:;
+#X text 31 455 see also these objects:;
 #X obj 67 224 tabread table-ex;
 #X msg 77 184 set table-ex;
 #X text 110 269 output = table-ex[index];
@@ -71,7 +71,31 @@ doesn't work in messages., f 70;
 #X connect 13 0 9 0;
 #X restore 200 332 pd Dealing_with_"\$0";
 #X text 38 323 open subpatch to see how to deal with '\$0', f 21;
-#X text 169 24 - non-interpolating table lookup;
+#X text 129 18 - non-interpolating table lookup;
+#N canvas 750 87 581 232 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 118 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 163 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 200 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 113 86 set <symbol> -;
+#X text 162 66 float -;
+#X text 126 172 symbol - sets table name with the sample.;
+#X obj 66 18 tabread;
+#X text 129 18 - non-interpolating table lookup.;
+#X text 218 66 sets table index and output its value.;
+#X text 218 86 set the table name., f 39;
+#X text 162 131 float -;
+#X text 218 131 value of index input.;
+#X restore 511 18 pd reference;
+#X text 609 17 <= click;
+#X obj 8 52 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 392 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 2 0 20 0;
 #X connect 20 0 3 0;
 #X connect 21 0 20 0;
