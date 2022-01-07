@@ -23,6 +23,7 @@
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_RESTART 2
 static int sys_quit;
+extern int sys_nosleep;
 
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
@@ -372,7 +373,7 @@ static void m_pollingscheduler(void)
             else timeforward = sys_send_dacs();
             sys_addhist(3);
                 /* test for idle; if so, do graphics updates. */
-            if (timeforward != SENDDACS_YES && !sched_idletask())
+            if (timeforward != SENDDACS_YES && !sched_idletask() && !sys_nosleep)
             {
                 /* if even that had nothing to do, sleep. */
                 sys_addhist(4);

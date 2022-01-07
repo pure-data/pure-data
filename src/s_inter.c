@@ -193,8 +193,6 @@ double sys_getrealtime(void)
 #endif
 }
 
-extern int sys_nosleep;
-
 /* sleep (but cancel the sleeping if any file descriptors are
 ready - in that case, dispatch any resulting Pd messages and return.  Called
 with sys_lock() set.  We will temporarily release the lock if we actually
