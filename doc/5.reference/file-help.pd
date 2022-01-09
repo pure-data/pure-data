@@ -1024,7 +1024,7 @@ no checks are performed verifying the validity/existence of any path-component.
 #X connect 16 0 11 0;
 #X connect 17 0 0 0;
 #X restore 216 146 pd path;
-#X symbolatom 216 171 0 0 0 0 - - \$0-name-split+join-in 0;
+#X symbolatom 216 171 0 0 0 0 - - \$0-name-base+ext-in 0;
 #X msg 216 68 file;
 #X msg 226 95 directory;
 #X text 89 171 or type your own:;
