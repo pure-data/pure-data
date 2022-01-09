@@ -946,7 +946,7 @@ the file component of the path \, and outputs a list with both on the
 #X text 338 322 if no directory component can be found \, the path
 is sent to the 2nd outlet;
 #X text 339 357 a trailing slash is removed;
-#X text 333 436 'splitname' separates the directory+file component
+#X text 333 436 'splittext' separates the directory+file component
 from the extension of the given path \, and outputs a list with both
 on the 1st outlet.;
 #X text 335 485 if no extension is found \, the path is sent to the
