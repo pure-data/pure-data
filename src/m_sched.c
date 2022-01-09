@@ -248,6 +248,7 @@ void dsp_tick(void);
     can be safely called from within the audio callback. */
 void sys_exit(int status)
 {
+    sys_stopiothread(pd_this);
     pthread_mutex_lock(&sched_mutex);
     if (SYS_QUIT_QUIT != sys_quit) {
         sys_exitcode = status;
@@ -613,7 +614,9 @@ static void m_callbackscheduler(void)
 
 int m_mainloop(void)
 {
-        /* open audio and MIDI */
+    if(sys_hasthreadedio())
+        sys_startiothread(pd_this);
+    /* open audio and MIDI */
     sys_reopen_midi();
     if (audio_shouldkeepopen() && !audio_isopen())
     {
