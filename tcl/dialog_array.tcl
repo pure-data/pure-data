@@ -126,8 +126,6 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     frame $windowName.buttons
     pack $windowName.buttons -fill "x" -side bottom
 
-    # FIXME
-    set font 12
     set lb $windowName.data.lb
     set sb $windowName.data.sb
     if { [ catch {
@@ -145,7 +143,6 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         listbox $lb -height 20 -width 25 \
             -selectmode extended \
             -relief solid -background white -borderwidth 1 \
-            -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
             -yscrollcommand "$sb set"
     }
     scrollbar $sb \
@@ -153,7 +150,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     pack $lb -expand 1 -fill both -side left
     pack $sb -fill y -side right
     bind $lb <Double-ButtonPress-1> \
-        "::dialog_array::listview_edit \{$arrayName\} $page $font"
+        "::dialog_array::listview_edit \{$arrayName\} $page"
     # handle copy/paste
     catch {
         # this probably only works on X11
@@ -279,7 +276,7 @@ proc ::dialog_array::listview_paste {arrayName} {
 
 }
 
-proc ::dialog_array::listview_edit {arrayName page font} {
+proc ::dialog_array::listview_edit {arrayName page {font {}}} {
     set lb [listview_lbname ${arrayName}]
     set entry ${lb}.entry
     if {[winfo exists $entry]} {
@@ -299,8 +296,7 @@ proc ::dialog_array::listview_edit {arrayName page font} {
 
         set bbox [$lb bbox $itemNum]
         set y [expr [lindex $bbox 1] - 4]
-        entry $entry \
-            -font [format {{%s} %d %s} $::font_family $font $::font_weight]
+        entry $entry
         place configure $entry -relx 0 -y $y -relwidth 1
     }
     set ::dialog_array::listview_entry($arrayName) $itemNum

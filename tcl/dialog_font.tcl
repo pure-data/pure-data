@@ -31,6 +31,9 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         if {[winfo exists ${mytoplevel}.text]} {
             ${mytoplevel}.text.internal configure -font "-size $myfontsize"
         }
+        catch {
+            ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
+        }
 
         # repeat a "pack" command so the font dialog can resize itself
         if {[winfo exists .font]} {
