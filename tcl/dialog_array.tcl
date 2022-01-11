@@ -56,7 +56,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     toplevel $windowName -class DialogWindow
     wm group $windowName .
     wm protocol $windowName WM_DELETE_WINDOW \
-        "::dialog_array::listview_close $id $arrayName"
+        "::dialog_array::listview_close $id \{$arrayName\}"
     wm title $windowName [concat $arrayName "(list view)"]
     # FIXME
     set font 12
@@ -70,18 +70,18 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     place configure $windowName.lb.sb -relheight 1 -relx 0.9 -relwidth 0.1
     pack $windowName.lb -expand 1 -fill both
     bind $windowName.lb <Double-ButtonPress-1> \
-        "::dialog_array::listview_edit $arrayName $page $font"
+        "::dialog_array::listview_edit \{$arrayName\} $page $font"
     # handle copy/paste
     switch -- $::windowingsystem {
         "x11" {selection handle $windowName.lb \
-                   "::dialog_array::listview_lbselection $arrayName"}
+                   "::dialog_array::listview_lbselection \{$arrayName\}"}
         "win32" {bind $windowName.lb <ButtonPress-3> \
-                     "::dialog_array::listview_popup $arrayName"}
+                     "::dialog_array::listview_popup \{$arrayName\}"}
     }
     set $windowName.prevBtn [button $windowName.prevBtn -text "<-" \
-                                 -command "::dialog_array::listview_changepage $arrayName -1"]
+                                 -command "::dialog_array::listview_changepage \{$arrayName\} -1"]
     set $windowName.nextBtn [button $windowName.nextBtn -text "->" \
-                                 -command "::dialog_array::listview_changepage $arrayName 1"]
+                                 -command "::dialog_array::listview_changepage \{$arrayName\} 1"]
     pack $windowName.prevBtn -side left -ipadx 20 -pady 10 -anchor s
     pack $windowName.nextBtn -side right -ipadx 20 -pady 10 -anchor s
     focus $windowName
@@ -111,10 +111,10 @@ proc ::dialog_array::listview_popup {arrayName} {
     if [winfo exists $windowName.popup] then [destroy $windowName.popup]
     menu $windowName.popup -tearoff false
     $windowName.popup add command -label [_ "Copy"] \
-        -command "::dialog_array::listview_copy $arrayName; \
+        -command "::dialog_array::listview_copy \{$arrayName\}; \
                   destroy $windowName.popup"
     $windowName.popup add command -label [_ "Paste"] \
-        -command "::dialog_array::listview_paste $arrayName; \
+        -command "::dialog_array::listview_paste \{$arrayName\}; \
                   destroy $windowName.popup"
     tk_popup $windowName.popup [winfo pointerx $windowName] \
         [winfo pointery $windowName] 0
@@ -177,7 +177,7 @@ proc ::dialog_array::listview_edit {arrayName page font} {
     lower $lbName.entry
     focus $lbName.entry
     bind $lbName.entry <Return> \
-        "::dialog_array::listview_update_entry $arrayName $itemNum;"
+        "::dialog_array::listview_update_entry \{$arrayName\} $itemNum;"
 }
 
 proc ::dialog_array::listview_update_entry {arrayName itemNum} {

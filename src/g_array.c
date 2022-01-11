@@ -490,7 +490,7 @@ void garray_arrayviewlist_new(t_garray *x)
     }
     x->x_listviewing = 1;
     sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s %s %d\n",
+            "pdtk_array_listview_new %%s {%s} %d\n",
             x->x_realname->s_name,
             0);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
@@ -557,7 +557,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
 void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow %s\n",
+    sys_vgui("pdtk_array_listview_closeWindow {%s}\n",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -803,7 +803,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage %s\n",
+        sys_vgui("pdtk_array_listview_fillpage {%s}\n",
                  x->x_realname->s_name);
     }
     /* } jsarlo */
