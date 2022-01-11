@@ -112,9 +112,9 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         "win32" {bind $lb <ButtonPress-3> \
                      "::dialog_array::listview_popup \{$arrayName\}"}
     }
-    button $windowName.buttons.prev -text "<-" \
+    button $windowName.buttons.prev -text "←" \
         -command "::dialog_array::listview_changepage \{$arrayName\} -1"
-    button $windowName.buttons.next -text "->" \
+    button $windowName.buttons.next -text "→" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
     pack $windowName.buttons.prev -side left -ipadx 20 -pady 10 -anchor s
     pack $windowName.buttons.next -side right -ipadx 20 -pady 10 -anchor s
