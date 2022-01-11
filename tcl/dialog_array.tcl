@@ -112,20 +112,12 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 
 proc ::dialog_array::listview_lbselection {arrayName off size} {
     set lb [listview_windowname ${arrayName}].lb
-    set itemNums [$lb curselection]
-    set cbString ""
-    for {set i 0} {$i < [expr [llength $itemNums] - 1]} {incr i} {
-        set listItem [$lb get [lindex $itemNums $i]]
-        append cbString [string range $listItem \
-                             [expr [string first ") " $listItem] + 2] \
-                             end]
-        append cbString "\n"
+    set items {}
+    foreach idx [$lb curselection] {
+        set v [$lb get $idx]
+        lappend items [string range $v [string first ") " $v]+2 end]
     }
-    set listItem [$lb get [lindex $itemNums $i]]
-    append cbString [string range $listItem \
-                         [expr [string first ") " $listItem] + 2] \
-                         end]
-    set last $cbString
+    return [join $items "\n"]
 }
 
 # parses 'data' into numbers, and sends them to the Pd-core so it
