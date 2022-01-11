@@ -26,11 +26,16 @@ proc ::dialog_array::listview_windowname {arrayName} {
     set id $::dialog_array::listview_id($arrayName)
     return "${id}_listview"
 }
+proc ::dialog_array::listview_lbname {arrayName} {
+    set id $::dialog_array::listview_id($arrayName)
+    return "${id}_listview.lb"
+}
+
 proc ::dialog_array::listview_setpage {arrayName page} {
     set ::dialog_array::listview_page($arrayName) $page
 }
 proc ::dialog_array::listview_setdata {arrayName startIndex args} {
-    set lb [::dialog_array::listview_windowname $arrayName].lb
+    set lb [listview_lbname $arrayName]
     ${lb} delete 0 end
     set idx 0
     foreach x $args {
@@ -39,7 +44,7 @@ proc ::dialog_array::listview_setdata {arrayName startIndex args} {
     }
 }
 proc ::dialog_array::listview_focus {arrayName item} {
-    set lb [::dialog_array::listview_windowname $arrayName].lb
+    set lb [listview_lbname $arrayName]
     ${lb} yview $item
 }
 
@@ -54,7 +59,7 @@ proc ::dialog_array::listview_changepage {arrayName np} {
 }
 
 proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
-    set lb [listview_windowname ${arrayName}].lb
+    set lb [listview_lbname ${arrayName}]
     if {[winfo exists $lb]} {
         set topItem [expr [lindex [$lb yview] 0] * \
                          [$lb size]]
@@ -111,7 +116,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 }
 
 proc ::dialog_array::listview_lbselection {arrayName off size} {
-    set lb [listview_windowname ${arrayName}].lb
+    set lb [listview_lbname ${arrayName}]
     set items {}
     foreach idx [$lb curselection] {
         set v [$lb get $idx]
@@ -162,13 +167,13 @@ proc ::dialog_array::listview_copy {arrayName} {
 
 proc ::dialog_array::listview_paste {arrayName} {
     set sel [selection get -selection CLIPBOARD]
-    set lb [listview_windowname ${arrayName}].lb
+    set lb [listview_lbname ${arrayName}]
     set itemNum [lindex [$lb curselection] 0]
     ::dialog_array::listview_edit+paste $arrayName $itemNum $sel
 }
 
 proc ::dialog_array::listview_edit {arrayName page font} {
-    set lb [listview_windowname ${arrayName}].lb
+    set lb [listview_lbname ${arrayName}]
     set entry ${lb}.entry
     if {[winfo exists $entry]} {
         ::dialog_array::listview_update_entry \
@@ -190,7 +195,7 @@ proc ::dialog_array::listview_edit {arrayName page font} {
 }
 
 proc ::dialog_array::listview_update_entry {arrayName itemNum} {
-    set entry [::dialog_array::listview_windowname $arrayName].lb.entry
+    set entry [listview_lbname $arrayName].entry
     ::dialog_array::listview_edit+paste $arrayName $itemNum [$entry get]
     destroy $entry
 }
