@@ -128,6 +128,24 @@ proc ::dialog_array::listview_lbselection {arrayName off size} {
     set last $cbString
 }
 
+# parses 'data' into numbers, and sends them to the Pd-core so it
+# can set the values in 'arrayName' starting from 'startIndex'
+proc ::dialog_array::listview_edit+paste {arrayName startIndex data} {
+    set values {}
+    set offset [expr $startIndex \
+                    + $::dialog_array::listview_pagesize \
+                    * $::dialog_array::listview_page($arrayName)]
+    foreach value [split $data ", \n"] {
+        if {$value eq {}} {continue}
+        if {! [string is double $value]} {continue}
+        lappend values $value
+    }
+    if { $values ne {} } {
+        pdsend "$::dialog_array::listview_id($arrayName) $offset $values"
+        pdtk_array_listview_fillpage $arrayName
+    }
+}
+
 # Win32 uses a popup menu for copy/paste
 proc ::dialog_array::listview_popup {arrayName} {
     set windowName [listview_windowname ${arrayName}]
@@ -164,23 +182,10 @@ proc ::dialog_array::listview_copy {arrayName} {
 }
 
 proc ::dialog_array::listview_paste {arrayName} {
-    set cbString [selection get -selection CLIPBOARD]
+    set sel [selection get -selection CLIPBOARD]
     set lb [listview_windowname ${arrayName}].lb
     set itemNum [lindex [$lb curselection] 0]
-    set splitChars ", \n"
-    set itemString [split $cbString $splitChars]
-    set flag 1
-    for {set i 0; set counter 0} {$i < [llength $itemString]} {incr i} {
-        if {[lindex $itemString $i] ne {}} {
-            pdsend "$arrayName [expr $itemNum + \
-                                       [expr $counter + \
-                                            [expr $::dialog_array::listview_pagesize \
-                                                 * $::dialog_array::listview_page($arrayName)]]] \
-                    [lindex $itemString $i]"
-            incr counter
-            set flag 0
-        }
-    }
+    ::dialog_array::listview_edit+paste $arrayName $itemNum $sel
 }
 
 proc ::dialog_array::listview_edit {arrayName page font} {
@@ -206,23 +211,9 @@ proc ::dialog_array::listview_edit {arrayName page font} {
 }
 
 proc ::dialog_array::listview_update_entry {arrayName itemNum} {
-    set lb [listview_windowname ${arrayName}].lb
-    set splitChars ", \n"
-    set itemString [split [$lb.entry get] $splitChars]
-    set flag 1
-    for {set i 0; set counter 0} {$i < [llength $itemString]} {incr i} {
-        if {[lindex $itemString $i] ne {}} {
-            pdsend "$arrayName [expr $itemNum + \
-                                       [expr $counter + \
-                                            [expr $::dialog_array::listview_pagesize \
-                                                 * $::dialog_array::listview_page($arrayName)]]] \
-                    [lindex $itemString $i]"
-            incr counter
-            set flag 0
-        }
-    }
-    pdtk_array_listview_fillpage $arrayName
-    destroy $lb.entry
+    set entry [::dialog_array::listview_windowname $arrayName].lb.entry
+    ::dialog_array::listview_edit+paste $arrayName $itemNum [$entry get]
+    destroy $entry
 }
 
 proc ::dialog_array::pdtk_array_listview_closeWindow {arrayName} {
