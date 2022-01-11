@@ -106,12 +106,19 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     bind $lb <Double-ButtonPress-1> \
         "::dialog_array::listview_edit \{$arrayName\} $page $font"
     # handle copy/paste
-    switch -- $::windowingsystem {
-        "x11" {selection handle $lb \
-                   "::dialog_array::listview_lbselection \{$arrayName\}"}
-        "win32" {bind $lb <ButtonPress-3> \
-                     "::dialog_array::listview_popup \{$arrayName\}"}
+    catch {
+        # this probably only works on X11
+        selection handle $lb \
+            "::dialog_array::listview_lbselection \{$arrayName\}"
     }
+    # a Copy/Paste popup menu
+    bind $lb <ButtonPress-3> \
+        "::dialog_array::listview_popup \{$arrayName\}"
+    bind $lb <<Paste>> \
+        "::dialog_array::listview_paste \{$arrayName\}; break"
+    bind $lb <<Copy>> \
+        "::dialog_array::listview_copy \{$arrayName\}; break"
+
     button $windowName.buttons.prev -text "←" \
         -command "::dialog_array::listview_changepage \{$arrayName\} -1"
     button $windowName.buttons.next -text "→" \
@@ -149,11 +156,24 @@ proc ::dialog_array::listview_edit+paste {arrayName startIndex data} {
     }
 }
 
-# Win32 uses a popup menu for copy/paste
+# a popup menu for copy/paste
 proc ::dialog_array::listview_popup {arrayName} {
     set windowName [listview_windowname ${arrayName}]
-    set popup ${windowName}.popup
+    set lb [listview_lbname ${arrayName}]
+    set popup ${lb}.popup
     destroy $popup
+
+    # check if there's no selection, disable the popup
+    set cur {}
+    if { [catch {
+        set cur [$lb selection]
+    } ] } {
+        set cur [$lb curselection]
+    }
+    if { $cur eq {} } {
+        return
+    }
+
     menu $popup -tearoff false
     $popup add command -label [_ "Copy"] \
         -command "::dialog_array::listview_copy \{$arrayName\}; \
@@ -165,17 +185,35 @@ proc ::dialog_array::listview_popup {arrayName} {
         [winfo pointery $windowName] 0
 }
 
+# copy current selection to clipboard (called from the copy/paste popup)
 proc ::dialog_array::listview_copy {arrayName} {
     set sel [listview_lbselection $arrayName {} {}]
     clipboard clear
     clipboard append $sel
 }
 
+# when data is pasted (called from the copy/paste popup), update the values
 proc ::dialog_array::listview_paste {arrayName} {
-    set sel [selection get -selection CLIPBOARD]
-    set lb [listview_lbname ${arrayName}]
+    set sel {}
+    set itemNum {}
+    # get data from CLIPBOARD
+    if { $sel eq {} } {catch { set sel [selection get -selection CLIPBOARD] }}
+    # if that failed, get it from the PRIMARY copy buffer
+    if { $sel eq {} } {catch { set sel [selection get -selection PRIMARY] }}
+
+    if { $sel eq {} } {
+        # giving up
+        return
+    }
+
+    # get the selection start, so we know where to paste to
+    set lb [::dialog_array::listview_lbname $arrayName]
     set itemNum [lindex [$lb curselection] 0]
-    ::dialog_array::listview_edit+paste $arrayName $itemNum $sel
+
+    if { $itemNum ne {} } {
+        ::dialog_array::listview_edit+paste $arrayName $itemNum $sel
+    }
+
 }
 
 proc ::dialog_array::listview_edit {arrayName page font} {
