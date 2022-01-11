@@ -23,7 +23,8 @@ array set ::dialog_array::otherflag_button {}
 
 ############ pdtk_array_dialog -- dialog window for arrays #########
 proc ::dialog_array::listview_windowname {arrayName} {
-    return [format ".%sArrayWindow" $arrayName]
+    set id $::dialog_array::listview_id($arrayName)
+    return "${id}_listview"
 }
 proc ::dialog_array::listview_setpage {arrayName page} {
     set ::dialog_array::listview_page($arrayName) $page
