@@ -36,11 +36,22 @@ proc ::dialog_array::listview_setpage {arrayName page} {
 }
 proc ::dialog_array::listview_setdata {arrayName startIndex args} {
     set lb [listview_lbname $arrayName]
-    ${lb} delete 0 end
-    set idx 0
-    foreach x $args {
-        ${lb} insert $idx "[expr $startIndex + $idx]) $x"
-        incr idx
+    if { [catch {
+        # treeview
+        ${lb} delete [${lb} children {}]
+        set idx $startIndex
+        foreach x $args {
+            ${lb} insert {} end -values [list $idx $x]
+            incr idx
+        }
+    } ] } {
+        # listbox
+        ${lb} delete 0 end
+        set idx 0
+        foreach x $args {
+            ${lb} insert $idx "[expr $startIndex + $idx]) $x"
+            incr idx
+        }
     }
 }
 proc ::dialog_array::listview_focus {arrayName item} {
@@ -60,10 +71,34 @@ proc ::dialog_array::listview_changepage {arrayName np} {
 
 proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
     set lb [listview_lbname ${arrayName}]
-    if {[winfo exists $lb]} {
-        set topItem [expr [lindex [$lb yview] 0] * \
-                         [$lb size]]
 
+    # get the index of the topmost visible element
+    # (so the scroll does not change after updating the elements)
+    if {[winfo exists $lb]} {
+        if { [catch {
+            # treeview
+
+            # this is index of the 'selected' element
+            # (not what we want, but a good fallback...)
+            set topItem [$lb index [$lb focus]]
+
+            # search for the first visible cell
+            set xy 0
+            for { set xy 0 } { $xy < 500 } { incr xy } {
+                if { [$lb identify region $xy $xy ] eq "cell" } {
+                    # usually the first cell we find is still hidden
+                    # increment by one more pixel to get a valid one
+                    incr xy
+
+                    set item [$lb identify item $xy $xy]
+                    set topItem [$lb index $item]
+                    break
+                }
+            }
+        } ] } {
+            # listbox (much simpler)
+            set topItem [expr [lindex [$lb yview] 0] * [$lb size]]
+        }
         set cmd "$::dialog_array::listview_id($arrayName) \
                arrayviewlistfillpage \
                $::dialog_array::listview_page($arrayName) \
@@ -85,6 +120,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         "::dialog_array::listview_close $id \{$arrayName\}"
     wm title $windowName [concat $arrayName "(list view)"]
 
+
     frame $windowName.data
     pack $windowName.data -fill "both" -side top
     frame $windowName.buttons
@@ -94,11 +130,24 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     set font 12
     set lb $windowName.data.lb
     set sb $windowName.data.sb
-    listbox $lb -height 20 -width 25 \
-        -selectmode extended \
-        -relief solid -background white -borderwidth 1 \
-        -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
-        -yscrollcommand "$sb set"
+    if { [ catch {
+        # treeview
+        ttk::treeview $lb \
+            -columns {index value} -show headings \
+            -height 20 \
+            -selectmode extended \
+            -yscrollcommand "$sb set"
+        $lb heading index -text "#" -anchor center
+        $lb heading value -text [_ "Value" ] -anchor center
+        $lb column index -width 50 -anchor e
+    } stderr ] } {
+        # listview
+        listbox $lb -height 20 -width 25 \
+            -selectmode extended \
+            -relief solid -background white -borderwidth 1 \
+            -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
+            -yscrollcommand "$sb set"
+    }
     scrollbar $sb \
         -command "$lb yview" -orient vertical
     pack $lb -expand 1 -fill both -side left
@@ -131,10 +180,17 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 proc ::dialog_array::listview_lbselection {arrayName off size} {
     set lb [listview_lbname ${arrayName}]
     set items {}
-    foreach idx [$lb curselection] {
-        set v [$lb get $idx]
-        lappend items [string range $v [string first ") " $v]+2 end]
+    if { [catch {
+        foreach idx [$lb selection] {
+            lappend items [lindex [$lb item $idx -values] 1]
+        }
+    } ] } {
+        foreach idx [$lb curselection] {
+            set v [$lb get $idx]
+            lappend items [string range $v [string first ") " $v]+2 end]
+        }
     }
+
     return [join $items "\n"]
 }
 
@@ -208,7 +264,14 @@ proc ::dialog_array::listview_paste {arrayName} {
 
     # get the selection start, so we know where to paste to
     set lb [::dialog_array::listview_lbname $arrayName]
-    set itemNum [lindex [$lb curselection] 0]
+    if { [catch {
+        set itemId [lindex [$lb selection] 0]
+        if { $itemId ne {} } {
+            set itemNum [$lb index ${itemId} ]
+        }
+    } ] } {
+        set itemNum [lindex [$lb curselection] 0]
+    }
 
     if { $itemNum ne {} } {
         ::dialog_array::listview_edit+paste $arrayName $itemNum $sel
@@ -224,14 +287,25 @@ proc ::dialog_array::listview_edit {arrayName page font} {
             $arrayName $::dialog_array::listview_entry($arrayName)
         unset ::dialog_array::listview_entry($arrayName)
     }
-    set itemNum [$lb index active]
+    destroy $entry
+    if { [catch {
+        set focus [$lb focus]
+        foreach {x y w h} [$lb bbox $focus 1] {break}
+        entry $entry
+        place configure ${lb}.entry -x ${x} -y ${y} -width ${w} -height ${h}
+        set itemNum [$lb index $focus]
+    } stderr ] } {
+        set itemNum [$lb index active]
+
+        set bbox [$lb bbox $itemNum]
+        set y [expr [lindex $bbox 1] - 4]
+        entry $entry \
+            -font [format {{%s} %d %s} $::font_family $font $::font_weight]
+        place configure $entry -relx 0 -y $y -relwidth 1
+    }
     set ::dialog_array::listview_entry($arrayName) $itemNum
-    set bbox [$lb bbox $itemNum]
-    set y [expr [lindex $bbox 1] - 4]
-    entry $entry \
-        -font [format {{%s} %d %s} $::font_family $font $::font_weight]
+
     $entry insert 0 []
-    place configure $entry -relx 0 -y $y -relwidth 1
     lower $entry
     focus $entry
     bind $entry <Return> \
