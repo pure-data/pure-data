@@ -12,7 +12,7 @@ namespace eval ::dialog_array:: {
 array set ::dialog_array::listview_entry {}
 array set ::dialog_array::listview_id {}
 array set ::dialog_array::listview_page {}
-set ::dialog_array::listview_pagesize 0
+set ::dialog_array::listview_pagesize 1000
 # this stores the state of the "save me" check button
 array set ::dialog_array::saveme_button {}
 # this stores the state of the "draw as" radio buttons
