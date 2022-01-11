@@ -235,7 +235,9 @@ proc ::dialog_array::listview_edit {arrayName page font} {
     lower $entry
     focus $entry
     bind $entry <Return> \
-        "::dialog_array::listview_update_entry \{$arrayName\} $itemNum;"
+        "::dialog_array::listview_update_entry \{$arrayName\} $itemNum; break"
+    bind $entry <Escape> \
+        "destroy $entry; break"
 }
 
 proc ::dialog_array::listview_update_entry {arrayName itemNum} {
