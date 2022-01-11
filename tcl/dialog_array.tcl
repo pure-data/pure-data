@@ -9,27 +9,27 @@ namespace eval ::dialog_array:: {
 }
 
 # global variables for the listview
-array set pd_array_listview_entry {}
-array set pd_array_listview_id {}
-array set pd_array_listview_page {}
-set pd_array_listview_pagesize 0
+array set ::dialog_array::listview_entry {}
+array set ::dialog_array::listview_id {}
+array set ::dialog_array::listview_page {}
+set ::dialog_array::listview_pagesize 0
 # this stores the state of the "save me" check button
-array set saveme_button {}
+array set ::dialog_array::saveme_button {}
 # this stores the state of the "draw as" radio buttons
-array set drawas_button {}
+array set ::dialog_array::drawas_button {}
 # this stores the state of the "in new graph"/"in last graph" radio buttons
 # and the "delete array" checkbutton
-array set otherflag_button {}
+array set ::dialog_array::otherflag_button {}
 
 ############ pdtk_array_dialog -- dialog window for arrays #########
 
 proc ::dialog_array::pdtk_array_listview_setpage {arrayName page} {
-    set ::pd_array_listview_page($arrayName) $page
+    set ::dialog_array::listview_page($arrayName) $page
 }
 
 proc ::dialog_array::listview_changepage {arrayName np} {
     pdtk_array_listview_setpage \
-        $arrayName [expr $::pd_array_listview_page($arrayName) + $np]
+        $arrayName [expr $::dialog_array::listview_page($arrayName) + $np]
     pdtk_array_listview_fillpage $arrayName
 }
 
@@ -39,9 +39,9 @@ proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
                      [$windowName.lb size]]
 
     if {[winfo exists $windowName]} {
-        set cmd "$::pd_array_listview_id($arrayName) \
+        set cmd "$::dialog_array::listview_id($arrayName) \
                arrayviewlistfillpage \
-               $::pd_array_listview_page($arrayName) \
+               $::dialog_array::listview_page($arrayName) \
                $topItem"
 
         pdsend $cmd
@@ -49,8 +49,8 @@ proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
 }
 
 proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
-    set ::pd_array_listview_page($arrayName) $page
-    set ::pd_array_listview_id($arrayName) $id
+    set ::dialog_array::listview_page($arrayName) $page
+    set ::dialog_array::listview_id($arrayName) $id
     set windowName [format ".%sArrayWindow" $arrayName]
     if [winfo exists $windowName] then [destroy $windowName]
     toplevel $windowName -class DialogWindow
@@ -150,8 +150,8 @@ proc ::dialog_array::listview_paste {arrayName} {
         if {[lindex $itemString $i] ne {}} {
             pdsend "$arrayName [expr $itemNum + \
                                        [expr $counter + \
-                                            [expr $::pd_array_listview_pagesize \
-                                                 * $::pd_array_listview_page($arrayName)]]] \
+                                            [expr $::dialog_array::listview_pagesize \
+                                                 * $::dialog_array::listview_page($arrayName)]]] \
                     [lindex $itemString $i]"
             incr counter
             set flag 0
@@ -163,11 +163,11 @@ proc ::dialog_array::listview_edit {arrayName page font} {
     set lbName [format ".%sArrayWindow.lb" $arrayName]
     if {[winfo exists $lbName.entry]} {
         ::dialog_array::listview_update_entry \
-            $arrayName $::pd_array_listview_entry($arrayName)
-        unset ::pd_array_listview_entry($arrayName)
+            $arrayName $::dialog_array::listview_entry($arrayName)
+        unset ::dialog_array::listview_entry($arrayName)
     }
     set itemNum [$lbName index active]
-    set ::pd_array_listview_entry($arrayName) $itemNum
+    set ::dialog_array::listview_entry($arrayName) $itemNum
     set bbox [$lbName bbox $itemNum]
     set y [expr [lindex $bbox 1] - 4]
     set $lbName.entry [entry $lbName.entry \
@@ -189,8 +189,8 @@ proc ::dialog_array::listview_update_entry {arrayName itemNum} {
         if {[lindex $itemString $i] ne {}} {
             pdsend "$arrayName [expr $itemNum + \
                                        [expr $counter + \
-                                            [expr $::pd_array_listview_pagesize \
-                                                 * $::pd_array_listview_page($arrayName)]]] \
+                                            [expr $::dialog_array::listview_pagesize \
+                                                 * $::dialog_array::listview_page($arrayName)]]] \
                     [lindex $itemString $i]"
             incr counter
             set flag 0
@@ -214,8 +214,8 @@ proc ::dialog_array::apply {mytoplevel} {
     pdsend "$mytoplevel arraydialog \
             [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
             [$mytoplevel.array.size.entry get] \
-            [expr $::saveme_button($mytoplevel) + (2 * $::drawas_button($mytoplevel))] \
-            $::otherflag_button($mytoplevel)"
+            [expr $::dialog_array::saveme_button($mytoplevel) + (2 * $::dialog_array::drawas_button($mytoplevel))] \
+            $::dialog_array::otherflag_button($mytoplevel)"
 }
 
 proc ::dialog_array::openlistview {mytoplevel} {
@@ -242,9 +242,9 @@ proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
 
     $mytoplevel.array.name.entry insert 0 [::dialog_gatom::unescape $name]
     $mytoplevel.array.size.entry insert 0 $size
-    set ::saveme_button($mytoplevel) [expr $flags & 1]
-    set ::drawas_button($mytoplevel) [expr ( $flags & 6 ) >> 1]
-    set ::otherflag_button($mytoplevel) 0
+    set ::dialog_array::saveme_button($mytoplevel) [expr $flags & 1]
+    set ::dialog_array::drawas_button($mytoplevel) [expr ( $flags & 6 ) >> 1]
+    set ::dialog_array::otherflag_button($mytoplevel) 0
 # pd -> tcl
 #  2 * (int)(template_getfloat(template_findbyname(sc->sc_template), gensym("style"), x->x_scalar->sc_vec, 1)));
 
@@ -278,18 +278,18 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     pack $mytoplevel.array.size.entry $mytoplevel.array.size.label -side right
 
     checkbutton $mytoplevel.array.saveme -text [_ "Save contents"] \
-        -variable ::saveme_button($mytoplevel) -anchor w
+        -variable ::dialog_array::saveme_button($mytoplevel) -anchor w
     pack $mytoplevel.array.saveme -side top
 
     # draw as
     labelframe $mytoplevel.drawas -text [_ "Draw as:"] -padx 20 -borderwidth 1
     pack $mytoplevel.drawas -side top -fill x
     radiobutton $mytoplevel.drawas.points -value 0 \
-        -variable ::drawas_button($mytoplevel) -text [_ "Polygon"]
+        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Polygon"]
     radiobutton $mytoplevel.drawas.polygon -value 1 \
-        -variable ::drawas_button($mytoplevel) -text [_ "Points"]
+        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Points"]
     radiobutton $mytoplevel.drawas.bezier -value 2 \
-        -variable ::drawas_button($mytoplevel) -text [_ "Bezier curve"]
+        -variable ::dialog_array::drawas_button($mytoplevel) -text [_ "Bezier curve"]
     pack $mytoplevel.drawas.points -side top -anchor w
     pack $mytoplevel.drawas.polygon -side top -anchor w
     pack $mytoplevel.drawas.bezier -side top -anchor w
@@ -299,9 +299,9 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         labelframe $mytoplevel.options -text [_ "Put array into:"] -padx 20 -borderwidth 1
         pack $mytoplevel.options -side top -fill x
         radiobutton $mytoplevel.options.radio0 -value 0 \
-            -variable ::otherflag_button($mytoplevel) -text [_ "New graph"]
+            -variable ::dialog_array::otherflag_button($mytoplevel) -text [_ "New graph"]
         radiobutton $mytoplevel.options.radio1 -value 1 \
-            -variable ::otherflag_button($mytoplevel) -text [_ "Last graph"]
+            -variable ::dialog_array::otherflag_button($mytoplevel) -text [_ "Last graph"]
         pack $mytoplevel.options.radio0 -side top -anchor w
         pack $mytoplevel.options.radio1 -side top -anchor w
     } else {
@@ -311,7 +311,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
             -command "::dialog_array::openlistview $mytoplevel [$mytoplevel.array.name.entry get]"
         pack $mytoplevel.options.listview -side top
         checkbutton $mytoplevel.options.deletearray -text [_ "Delete array"] \
-            -variable ::otherflag_button($mytoplevel) -anchor w
+            -variable ::dialog_array::otherflag_button($mytoplevel) -anchor w
         pack $mytoplevel.options.deletearray -side top
     }
 
@@ -364,7 +364,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 
-    position_over_window "$mytoplevel" "$::focused_window"
+    position_over_window ${mytoplevel} ${::focused_window}
 }
 
 # for live widget updates on OSX
