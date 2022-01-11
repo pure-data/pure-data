@@ -477,7 +477,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 /* jsarlo { */
 void garray_arrayviewlist_new(t_garray *x)
 {
-    int i, yonset=0, elemsize=0;
+    int i, yonset=0, elemsize=0, page=0;
     t_float yval;
     char cmdbuf[200];
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -494,16 +494,23 @@ void garray_arrayviewlist_new(t_garray *x)
             x->x_realname->s_name,
             0);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
-    for (i = 0; i < ARRAYPAGESIZE && i < a->a_n; i++)
+
+    sys_vgui("::dialog_array::listview_setpage {%s} %d\n",
+        x->x_realname->s_name,
+        (int)page);
+
+    sys_vgui("::dialog_array::listview_setdata {%s} %ld",
+        x->x_realname->s_name,
+        (long long)(page * ARRAYPAGESIZE));
+    for (i = page * ARRAYPAGESIZE;
+         (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
+         i++)
     {
-        yval = *(t_float *)(a->a_vec +
+        yval = *(t_float *)(a->a_vec + \
                elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i,
-                 i,
-                 yval);
+        sys_vgui(" %g", yval);
     }
+    sys_vgui("\n");
 }
 
 void garray_arrayviewlist_fillpage(t_garray *x,
@@ -522,34 +529,30 @@ void garray_arrayviewlist_fillpage(t_garray *x,
         return;
     }
 
+        /* make sure that page is within range */
     if (page < 0) {
-      page = 0;
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
+        page = 0;
     }
     else if ((page * ARRAYPAGESIZE) >= a->a_n) {
-      page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
+        page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
     }
-    sys_vgui(".%sArrayWindow.lb delete 0 %d\n",
-             x->x_realname->s_name,
-             ARRAYPAGESIZE - 1);
+    sys_vgui("::dialog_array::listview_setpage {%s} %d\n",
+        x->x_realname->s_name,
+        (int)page);
+
+    sys_vgui("::dialog_array::listview_setdata {%s} %ld",
+        x->x_realname->s_name,
+        (long long)(page * ARRAYPAGESIZE));
     for (i = page * ARRAYPAGESIZE;
          (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
          i++)
     {
         yval = *(t_float *)(a->a_vec + \
                elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i % ARRAYPAGESIZE,
-                 i,
-                 yval);
+        sys_vgui(" %g", yval);
     }
-    sys_vgui(".%sArrayWindow.lb yview %d\n",
+    sys_vgui("\n");
+    sys_vgui("::dialog_array::listview_focus {%s} %d\n",
              x->x_realname->s_name,
              topItem);
 }
