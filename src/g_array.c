@@ -484,8 +484,9 @@ void garray_arrayviewlist_new(t_garray *x)
 
     if (!a)
     {
-        /* FIXME */
+            /* FIXME */
         pd_error(0, "error in garray_arrayviewlist_new()");
+        return;
     }
     x->x_listviewing = 1;
     sprintf(cmdbuf,
@@ -516,8 +517,9 @@ void garray_arrayviewlist_fillpage(t_garray *x,
     topItem = (int)fTopItem;
     if (!a)
     {
-        /* FIXME */
+            /* FIXME */
         pd_error(0, "error in garray_arrayviewlist_new()");
+        return;
     }
 
     if (page < 0) {
