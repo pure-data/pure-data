@@ -25,8 +25,25 @@ array set ::dialog_array::otherflag_button {}
 proc ::dialog_array::listview_windowname {arrayName} {
     return [format ".%sArrayWindow" $arrayName]
 }
-proc ::dialog_array::pdtk_array_listview_setpage {arrayName page} {
+proc ::dialog_array::listview_setpage {arrayName page} {
     set ::dialog_array::listview_page($arrayName) $page
+}
+proc ::dialog_array::listview_setdata {arrayName startIndex args} {
+    set lb [::dialog_array::listview_windowname $arrayName].lb
+    ${lb} delete 0 end
+    set idx 0
+    foreach x $args {
+        ${lb} insert $idx "[expr $startIndex + $idx]) $x"
+        incr idx
+    }
+}
+proc ::dialog_array::listview_focus {arrayName item} {
+    set lb [::dialog_array::listview_windowname $arrayName].lb
+    ${lb} yview $item
+}
+
+proc ::dialog_array::pdtk_array_listview_setpage {arrayName page} {
+    listview_setpage $arrayName $page
 }
 
 proc ::dialog_array::listview_changepage {arrayName np} {
