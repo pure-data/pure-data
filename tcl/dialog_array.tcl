@@ -60,13 +60,13 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     wm title $windowName [concat $arrayName "(list view)"]
     # FIXME
     set font 12
-    set $windowName.lb [listbox $windowName.lb -height 20 -width 25\
-                            -selectmode extended \
-                            -relief solid -background white -borderwidth 1 \
-                            -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
-                            -yscrollcommand "$windowName.lb.sb set"]
-    set $windowName.lb.sb [scrollbar $windowName.lb.sb \
-                               -command "$windowName.lb yview" -orient vertical]
+    listbox $windowName.lb -height 20 -width 25 \
+        -selectmode extended \
+        -relief solid -background white -borderwidth 1 \
+        -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
+        -yscrollcommand "$windowName.lb.sb set"
+    scrollbar $windowName.lb.sb \
+        -command "$windowName.lb yview" -orient vertical
     place configure $windowName.lb.sb -relheight 1 -relx 0.9 -relwidth 0.1
     pack $windowName.lb -expand 1 -fill both
     bind $windowName.lb <Double-ButtonPress-1> \
@@ -78,10 +78,10 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         "win32" {bind $windowName.lb <ButtonPress-3> \
                      "::dialog_array::listview_popup \{$arrayName\}"}
     }
-    set $windowName.prevBtn [button $windowName.prevBtn -text "<-" \
-                                 -command "::dialog_array::listview_changepage \{$arrayName\} -1"]
-    set $windowName.nextBtn [button $windowName.nextBtn -text "->" \
-                                 -command "::dialog_array::listview_changepage \{$arrayName\} 1"]
+    button $windowName.prevBtn -text "<-" \
+        -command "::dialog_array::listview_changepage \{$arrayName\} -1"
+    button $windowName.nextBtn -text "->" \
+        -command "::dialog_array::listview_changepage \{$arrayName\} 1"
     pack $windowName.prevBtn -side left -ipadx 20 -pady 10 -anchor s
     pack $windowName.nextBtn -side right -ipadx 20 -pady 10 -anchor s
     focus $windowName
@@ -170,8 +170,8 @@ proc ::dialog_array::listview_edit {arrayName page font} {
     set ::dialog_array::listview_entry($arrayName) $itemNum
     set bbox [$lbName bbox $itemNum]
     set y [expr [lindex $bbox 1] - 4]
-    set $lbName.entry [entry $lbName.entry \
-                           -font [format {{%s} %d %s} $::font_family $font $::font_weight]]
+    entry $lbName.entry \
+        -font [format {{%s} %d %s} $::font_family $font $::font_weight]
     $lbName.entry insert 0 []
     place configure $lbName.entry -relx 0 -y $y -relwidth 1
     lower $lbName.entry
