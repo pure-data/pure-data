@@ -34,11 +34,11 @@ proc ::dialog_array::listview_changepage {arrayName np} {
 }
 
 proc ::dialog_array::pdtk_array_listview_fillpage {arrayName} {
-    set windowName [format ".%sArrayWindow" $arrayName]
-    set topItem [expr [lindex [$windowName.lb yview] 0] * \
-                     [$windowName.lb size]]
+    set lb [format ".%sArrayWindow.lb" $arrayName]
+    if {[winfo exists $lb]} {
+        set topItem [expr [lindex [$lb yview] 0] * \
+                         [$lb size]]
 
-    if {[winfo exists $windowName]} {
         set cmd "$::dialog_array::listview_id($arrayName) \
                arrayviewlistfillpage \
                $::dialog_array::listview_page($arrayName) \
@@ -60,22 +60,24 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     wm title $windowName [concat $arrayName "(list view)"]
     # FIXME
     set font 12
-    listbox $windowName.lb -height 20 -width 25 \
+    set lb $windowName.lb
+    set sb ${lb}.sb
+    listbox $lb -height 20 -width 25 \
         -selectmode extended \
         -relief solid -background white -borderwidth 1 \
         -font [format {{%s} %d %s} $::font_family $font $::font_weight]\
-        -yscrollcommand "$windowName.lb.sb set"
-    scrollbar $windowName.lb.sb \
-        -command "$windowName.lb yview" -orient vertical
-    place configure $windowName.lb.sb -relheight 1 -relx 0.9 -relwidth 0.1
-    pack $windowName.lb -expand 1 -fill both
-    bind $windowName.lb <Double-ButtonPress-1> \
+        -yscrollcommand "$sb set"
+    scrollbar $sb \
+        -command "$lb yview" -orient vertical
+    place configure $sb -relheight 1 -relx 0.9 -relwidth 0.1
+    pack $lb -expand 1 -fill both
+    bind $lb <Double-ButtonPress-1> \
         "::dialog_array::listview_edit \{$arrayName\} $page $font"
     # handle copy/paste
     switch -- $::windowingsystem {
-        "x11" {selection handle $windowName.lb \
+        "x11" {selection handle $lb \
                    "::dialog_array::listview_lbselection \{$arrayName\}"}
-        "win32" {bind $windowName.lb <ButtonPress-3> \
+        "win32" {bind $lb <ButtonPress-3> \
                      "::dialog_array::listview_popup \{$arrayName\}"}
     }
     button $windowName.prevBtn -text "<-" \
@@ -88,17 +90,17 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
 }
 
 proc ::dialog_array::listview_lbselection {arrayName off size} {
-    set windowName [format ".%sArrayWindow" $arrayName]
-    set itemNums [$windowName.lb curselection]
+    set lb [format ".%sArrayWindow.lb" $arrayName]
+    set itemNums [$lb curselection]
     set cbString ""
     for {set i 0} {$i < [expr [llength $itemNums] - 1]} {incr i} {
-        set listItem [$windowName.lb get [lindex $itemNums $i]]
+        set listItem [$lb get [lindex $itemNums $i]]
         append cbString [string range $listItem \
                              [expr [string first ") " $listItem] + 2] \
                              end]
         append cbString "\n"
     }
-    set listItem [$windowName.lb get [lindex $itemNums $i]]
+    set listItem [$lb get [lindex $itemNums $i]]
     append cbString [string range $listItem \
                          [expr [string first ") " $listItem] + 2] \
                          end]
@@ -108,30 +110,31 @@ proc ::dialog_array::listview_lbselection {arrayName off size} {
 # Win32 uses a popup menu for copy/paste
 proc ::dialog_array::listview_popup {arrayName} {
     set windowName [format ".%sArrayWindow" $arrayName]
-    if [winfo exists $windowName.popup] then [destroy $windowName.popup]
-    menu $windowName.popup -tearoff false
-    $windowName.popup add command -label [_ "Copy"] \
+    set popup ${windowName}.popup
+    destroy $popup
+    menu $popup -tearoff false
+    $popup add command -label [_ "Copy"] \
         -command "::dialog_array::listview_copy \{$arrayName\}; \
-                  destroy $windowName.popup"
-    $windowName.popup add command -label [_ "Paste"] \
+                  destroy $popup"
+    $popup add command -label [_ "Paste"] \
         -command "::dialog_array::listview_paste \{$arrayName\}; \
-                  destroy $windowName.popup"
-    tk_popup $windowName.popup [winfo pointerx $windowName] \
+                  destroy $popup"
+    tk_popup $popup [winfo pointerx $windowName] \
         [winfo pointery $windowName] 0
 }
 
 proc ::dialog_array::listview_copy {arrayName} {
-    set windowName [format ".%sArrayWindow" $arrayName]
-    set itemNums [$windowName.lb curselection]
+    set lb [format ".%sArrayWindow.lb" $arrayName]
+    set itemNums [$lb curselection]
     set cbString ""
     for {set i 0} {$i < [expr [llength $itemNums] - 1]} {incr i} {
-        set listItem [$windowName.lb get [lindex $itemNums $i]]
+        set listItem [$lb get [lindex $itemNums $i]]
         append cbString [string range $listItem \
                              [expr [string first ") " $listItem] + 2] \
                              end]
         append cbString "\n"
     }
-    set listItem [$windowName.lb get [lindex $itemNums $i]]
+    set listItem [$lb get [lindex $itemNums $i]]
     append cbString [string range $listItem \
                          [expr [string first ") " $listItem] + 2] \
                          end]
@@ -141,8 +144,8 @@ proc ::dialog_array::listview_copy {arrayName} {
 
 proc ::dialog_array::listview_paste {arrayName} {
     set cbString [selection get -selection CLIPBOARD]
-    set lbName [format ".%sArrayWindow.lb" $arrayName]
-    set itemNum [lindex [$lbName curselection] 0]
+    set lb [format ".%sArrayWindow.lb" $arrayName]
+    set itemNum [lindex [$lb curselection] 0]
     set splitChars ", \n"
     set itemString [split $cbString $splitChars]
     set flag 1
@@ -160,30 +163,31 @@ proc ::dialog_array::listview_paste {arrayName} {
 }
 
 proc ::dialog_array::listview_edit {arrayName page font} {
-    set lbName [format ".%sArrayWindow.lb" $arrayName]
-    if {[winfo exists $lbName.entry]} {
+    set lb [format ".%sArrayWindow.lb" $arrayName]
+    set entry ${lb}.entry
+    if {[winfo exists $entry]} {
         ::dialog_array::listview_update_entry \
             $arrayName $::dialog_array::listview_entry($arrayName)
         unset ::dialog_array::listview_entry($arrayName)
     }
-    set itemNum [$lbName index active]
+    set itemNum [$lb index active]
     set ::dialog_array::listview_entry($arrayName) $itemNum
-    set bbox [$lbName bbox $itemNum]
+    set bbox [$lb bbox $itemNum]
     set y [expr [lindex $bbox 1] - 4]
-    entry $lbName.entry \
+    entry $entry \
         -font [format {{%s} %d %s} $::font_family $font $::font_weight]
-    $lbName.entry insert 0 []
-    place configure $lbName.entry -relx 0 -y $y -relwidth 1
-    lower $lbName.entry
-    focus $lbName.entry
-    bind $lbName.entry <Return> \
+    $entry insert 0 []
+    place configure $entry -relx 0 -y $y -relwidth 1
+    lower $entry
+    focus $entry
+    bind $entry <Return> \
         "::dialog_array::listview_update_entry \{$arrayName\} $itemNum;"
 }
 
 proc ::dialog_array::listview_update_entry {arrayName itemNum} {
-    set lbName [format ".%sArrayWindow.lb" $arrayName]
+    set lb [format ".%sArrayWindow.lb" $arrayName]
     set splitChars ", \n"
-    set itemString [split [$lbName.entry get] $splitChars]
+    set itemString [split [$lb.entry get] $splitChars]
     set flag 1
     for {set i 0; set counter 0} {$i < [llength $itemString]} {incr i} {
         if {[lindex $itemString $i] ne {}} {
@@ -197,12 +201,11 @@ proc ::dialog_array::listview_update_entry {arrayName itemNum} {
         }
     }
     pdtk_array_listview_fillpage $arrayName
-    destroy $lbName.entry
+    destroy $lb.entry
 }
 
 proc ::dialog_array::pdtk_array_listview_closeWindow {arrayName} {
-    set mytoplevel [format ".%sArrayWindow" $arrayName]
-    destroy $mytoplevel
+    destroy [format ".%sArrayWindow" $arrayName]
 }
 
 proc ::dialog_array::listview_close {mytoplevel arrayName} {
