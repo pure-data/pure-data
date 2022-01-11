@@ -52,7 +52,8 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     set ::dialog_array::listview_page($arrayName) $page
     set ::dialog_array::listview_id($arrayName) $id
     set windowName [format ".%sArrayWindow" $arrayName]
-    if [winfo exists $windowName] then [destroy $windowName]
+    destroy $windowName
+
     toplevel $windowName -class DialogWindow
     wm group $windowName .
     wm protocol $windowName WM_DELETE_WINDOW \
