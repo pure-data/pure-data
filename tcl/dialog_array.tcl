@@ -28,7 +28,7 @@ proc ::dialog_array::listview_windowname {arrayName} {
 }
 proc ::dialog_array::listview_lbname {arrayName} {
     set id $::dialog_array::listview_id($arrayName)
-    return "${id}_listview.lb"
+    return "${id}_listview.data.lb"
 }
 
 proc ::dialog_array::listview_setpage {arrayName page} {
@@ -84,10 +84,16 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     wm protocol $windowName WM_DELETE_WINDOW \
         "::dialog_array::listview_close $id \{$arrayName\}"
     wm title $windowName [concat $arrayName "(list view)"]
+
+    frame $windowName.data
+    pack $windowName.data -fill "both" -side top
+    frame $windowName.buttons
+    pack $windowName.buttons -fill "x" -side bottom
+
     # FIXME
     set font 12
-    set lb $windowName.lb
-    set sb ${lb}.sb
+    set lb $windowName.data.lb
+    set sb $windowName.data.sb
     listbox $lb -height 20 -width 25 \
         -selectmode extended \
         -relief solid -background white -borderwidth 1 \
@@ -95,8 +101,8 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         -yscrollcommand "$sb set"
     scrollbar $sb \
         -command "$lb yview" -orient vertical
-    place configure $sb -relheight 1 -relx 0.9 -relwidth 0.1
-    pack $lb -expand 1 -fill both
+    pack $lb -expand 1 -fill both -side left
+    pack $sb -fill y -side right
     bind $lb <Double-ButtonPress-1> \
         "::dialog_array::listview_edit \{$arrayName\} $page $font"
     # handle copy/paste
@@ -106,12 +112,12 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         "win32" {bind $lb <ButtonPress-3> \
                      "::dialog_array::listview_popup \{$arrayName\}"}
     }
-    button $windowName.prevBtn -text "<-" \
+    button $windowName.buttons.prev -text "<-" \
         -command "::dialog_array::listview_changepage \{$arrayName\} -1"
-    button $windowName.nextBtn -text "->" \
+    button $windowName.buttons.next -text "->" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
-    pack $windowName.prevBtn -side left -ipadx 20 -pady 10 -anchor s
-    pack $windowName.nextBtn -side right -ipadx 20 -pady 10 -anchor s
+    pack $windowName.buttons.prev -side left -ipadx 20 -pady 10 -anchor s
+    pack $windowName.buttons.next -side right -ipadx 20 -pady 10 -anchor s
     focus $windowName
 }
 
