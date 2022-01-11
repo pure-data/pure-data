@@ -169,7 +169,15 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
         -command "::dialog_array::listview_changepage \{$arrayName\} -1"
     button $windowName.buttons.next -text "→" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
+
+    entry $windowName.buttons.page -textvariable ::dialog_array::listview_page($arrayName) \
+        -validate key -validatecommand "string is double %P" \
+        -justify "right" -width 5
+    bind $windowName.buttons.page <Return> \
+        "::dialog_array::listview_changepage \{$arrayName\} 0"
+
     pack $windowName.buttons.prev -side left -ipadx 20 -pady 10 -anchor s
+    pack $windowName.buttons.page -side left -padx 20 -pady 10 -anchor s
     pack $windowName.buttons.next -side right -ipadx 20 -pady 10 -anchor s
     focus $windowName
 }
