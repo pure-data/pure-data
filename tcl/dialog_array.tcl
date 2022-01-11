@@ -155,22 +155,9 @@ proc ::dialog_array::listview_popup {arrayName} {
 }
 
 proc ::dialog_array::listview_copy {arrayName} {
-    set lb [listview_windowname ${arrayName}].lb
-    set itemNums [$lb curselection]
-    set cbString ""
-    for {set i 0} {$i < [expr [llength $itemNums] - 1]} {incr i} {
-        set listItem [$lb get [lindex $itemNums $i]]
-        append cbString [string range $listItem \
-                             [expr [string first ") " $listItem] + 2] \
-                             end]
-        append cbString "\n"
-    }
-    set listItem [$lb get [lindex $itemNums $i]]
-    append cbString [string range $listItem \
-                         [expr [string first ") " $listItem] + 2] \
-                         end]
+    set sel [listview_lbselection $arrayName {} {}]
     clipboard clear
-    clipboard append $cbString
+    clipboard append $sel
 }
 
 proc ::dialog_array::listview_paste {arrayName} {
