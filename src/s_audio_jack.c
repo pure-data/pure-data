@@ -160,7 +160,10 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 static int
 jack_srate (jack_nframes_t srate, void *arg)
 {
+    const t_float oldrate = STUFF->st_dacsr;
     STUFF->st_dacsr = srate;
+    if (oldrate != STUFF->st_dacsr)
+        canvas_update_dsp();
     return 0;
 }
 
