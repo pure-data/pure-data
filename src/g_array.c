@@ -475,6 +475,20 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 }
 
 /* jsarlo { */
+static int garray_arrayviewlist_setpage(t_symbol*arrayname, t_array*a, int page, int pagesize) {
+
+        /* make szre the requested page is within range */
+    int maxpage = (a->a_n - 1) / pagesize;
+    if(page < 0)
+        page = 0;
+    if(page > maxpage)
+        page = maxpage;
+
+    sys_vgui("::dialog_array::listview_setpage {%s} %d %d %d\n",
+        arrayname->s_name,
+        page, maxpage+1, pagesize);
+    return page;
+}
 void garray_arrayviewlist_new(t_garray *x)
 {
     int i, yonset=0, elemsize=0, page=0;
@@ -495,9 +509,7 @@ void garray_arrayviewlist_new(t_garray *x)
             0);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
 
-    sys_vgui("::dialog_array::listview_setpage {%s} %d\n",
-        x->x_realname->s_name,
-        (int)page);
+    page = garray_arrayviewlist_setpage(x->x_realname, a, page, ARRAYPAGESIZE);
 
     sys_vgui("::dialog_array::listview_setdata {%s} %ld",
         x->x_realname->s_name,
@@ -529,16 +541,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
         return;
     }
 
-        /* make sure that page is within range */
-    if (page < 0) {
-        page = 0;
-    }
-    else if ((page * ARRAYPAGESIZE) >= a->a_n) {
-        page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
-    }
-    sys_vgui("::dialog_array::listview_setpage {%s} %d\n",
-        x->x_realname->s_name,
-        (int)page);
+    page = garray_arrayviewlist_setpage(x->x_realname, a, page, ARRAYPAGESIZE);
 
     sys_vgui("::dialog_array::listview_setdata {%s} %ld",
         x->x_realname->s_name,

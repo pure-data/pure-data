@@ -31,8 +31,11 @@ proc ::dialog_array::listview_lbname {arrayName} {
     return "${id}_listview.data.lb"
 }
 
-proc ::dialog_array::listview_setpage {arrayName page} {
+proc ::dialog_array::listview_setpage {arrayName page {numpages {}} {pagesize {}}} {
     set ::dialog_array::listview_page($arrayName) $page
+    if {$pagesize ne {} && [string is double $pagesize]} {
+        set ::dialog_array::listview_pagesize $pagesize
+    }
 }
 proc ::dialog_array::listview_setdata {arrayName startIndex args} {
     set lb [listview_lbname $arrayName]
@@ -137,7 +140,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
             -yscrollcommand "$sb set"
         $lb heading index -text "#" -anchor center
         $lb heading value -text $arrayName -anchor center
-        $lb column index -width 50 -anchor e
+        $lb column index -width 75 -anchor e
     } stderr ] } {
         # listview
         listbox $lb -height 20 -width 25 \
