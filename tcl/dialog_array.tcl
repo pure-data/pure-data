@@ -136,7 +136,7 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
             -selectmode extended \
             -yscrollcommand "$sb set"
         $lb heading index -text "#" -anchor center
-        $lb heading value -text [_ "Value" ] -anchor center
+        $lb heading value -text $arrayName -anchor center
         $lb column index -width 50 -anchor e
     } stderr ] } {
         # listview
