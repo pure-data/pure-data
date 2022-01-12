@@ -168,9 +168,9 @@ proc ::dialog_array::pdtk_array_listview_new {id arrayName page} {
     bind $lb <<Copy>> \
         "::dialog_array::listview_copy \{$arrayName\}; break"
 
-    button $windowName.buttons.prev -text "←" \
+    button $windowName.buttons.prev -text "\u2190" \
         -command "::dialog_array::listview_changepage \{$arrayName\} -1"
-    button $windowName.buttons.next -text "→" \
+    button $windowName.buttons.next -text "\u2192" \
         -command "::dialog_array::listview_changepage \{$arrayName\} 1"
 
     entry $windowName.buttons.page -textvariable ::dialog_array::listview_page($arrayName) \
