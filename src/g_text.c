@@ -91,6 +91,20 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 
 void canvas_getargs(int *argcp, t_atom **argvp);
 
+static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
+{
+    char *buf=0;
+    int bufsize=0;
+    if (!binbuf_getnatom(b))
+        return;
+    binbuf_gettext(b, &buf, &bufsize);
+    buf = resizebytes(buf, bufsize, bufsize+1);
+    buf[bufsize] = 0;
+    logpost(x, PD_CRITICAL, "%s", buf);
+    logpost(x, PD_ERROR, "%s", errmsg);
+    freebytes(buf, bufsize);
+}
+
 static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     int selected, t_binbuf *b)
 {
@@ -107,19 +121,14 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
             x = 0;
         else if (!(x = pd_checkobject(pd_this->pd_newest)))
         {
-            binbuf_print(b);
-            pd_error(0, "... didn't return a patchable object");
+            canvas_error_couldntcreate(0, b, "... didn't return a patchable object");
         }
     }
     else x = 0;
     if (!x)
     {
         x = (t_text *)pd_new(text_class);
-        if (binbuf_getnatom(b))
-        {
-            binbuf_print(b);
-            pd_error(x, "... couldn't create");
-        }
+        canvas_error_couldntcreate(x, b, "... couldn't create");
     }
     x->te_binbuf = b;
     x->te_xpix = xpix;
