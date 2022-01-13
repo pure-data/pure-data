@@ -39,7 +39,7 @@ t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_close(t_garray *x);
+static void garray_arrayviewlist_close(t_garray *x);
 /* } jsarlo */
 
 void array_resize(t_array *x, int n)
@@ -475,7 +475,8 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 }
 
 /* jsarlo { */
-static int garray_arrayviewlist_setpage(t_symbol*arrayname, t_array*a, int page, int pagesize) {
+static int garray_arrayviewlist_setpage(t_symbol*arrayname, t_array*a, int page, int pagesize)
+{
 
         /* make szre the requested page is within range */
     int maxpage = (a->a_n - 1) / pagesize;
@@ -489,7 +490,7 @@ static int garray_arrayviewlist_setpage(t_symbol*arrayname, t_array*a, int page,
         page, maxpage+1, pagesize);
     return page;
 }
-void garray_arrayviewlist_new(t_garray *x)
+static void garray_arrayviewlist_new(t_garray *x)
 {
     int i, yonset=0, elemsize=0, page=0;
     t_float yval;
@@ -524,8 +525,8 @@ void garray_arrayviewlist_new(t_garray *x)
     }
     sys_vgui("\n");
 }
+static void garray_arrayviewlist_fillpage(t_garray *x,
 
-void garray_arrayviewlist_fillpage(t_garray *x,
                                    t_float page,
                                    t_float fTopItem)
 {
@@ -560,7 +561,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
              topItem);
 }
 
-void garray_arrayviewlist_close(t_garray *x)
+static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
     sys_vgui("pdtk_array_listview_closeWindow {%s}\n",
