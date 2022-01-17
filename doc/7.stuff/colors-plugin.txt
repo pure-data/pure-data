@@ -40,6 +40,7 @@
 # pdwindow_error_text - text for errors
 # pdwindow_post_text - text for posting
 # pdwindow_debug_text - text for verbose logs
+# pdwindow_hl_text - color of pdwindow text highlight
 # helpbrowser_fill
 # helpbrowser_text
 # helpbrowser_highlight - like txt_highlight but for help browser
@@ -83,6 +84,7 @@ pdwindow_fatal_highlight "#FFE0E8"
 pdwindow_error_text "#D00"
 pdwindow_post_text "deep sky blue"
 pdwindow_debug_text "green"
+pdwindow_hl_text "blue"
 helpbrowser_fill "#000"
 helpbrowser_text "deep sky blue"
 helpbrowser_highlight "red"

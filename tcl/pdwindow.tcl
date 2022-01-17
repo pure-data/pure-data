@@ -29,6 +29,10 @@ namespace eval ::pdwindow:: {
 
 proc ::pdwindow::set_layout {} {
     variable maxloglevel
+    set tmpcol [::pdtk_canvas::get_color pdwindow_hl_text .pdwindow]
+    if {$tmpcol ne ""} {
+        .pdwindow.text.internal configure -selectbackground $tmpcol
+    }
     .pdwindow.text.internal tag configure log0 -foreground \
     	[::pdtk_canvas::get_color pdwindow_fatal_text .pdwindow] -background \
     	[::pdtk_canvas::get_color pdwindow_fatal_highlight .pdwindow]
