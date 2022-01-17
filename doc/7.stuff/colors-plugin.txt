@@ -20,7 +20,8 @@
 # graph_outline - outline of arrays and GOP patches in the parent patch
 # graph_text - color of the names of GOP patches in the parent patch
 # selection_rectangle - selection rectangle color in edit mode
-# txt_highlight - color text is highlighted (in the "background") when selected
+# txt_highlight - color text on the canvas is highlighted (in the "background") # when selected
+# txt_highlight_front - color text on the canvas is highlighted when selected
 # array_name - garray names
 # array_values - array elements
 # atom_box_fill - fill of gatoms (number box, symbol box)
