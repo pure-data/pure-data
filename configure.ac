@@ -11,7 +11,7 @@ AC_CANONICAL_HOST
 
 
 ########################################
-#### ohoh. automake<<1.16 do not like $(top_srcdir) in _SOURCES.
+#### ohoh. automake<<1.16 does not like $(top_srcdir) in _SOURCES.
 AS_IF([test "x${am__api_version}" = "x1.15" ], [
   enable_dependency_tracking=no
   AC_MSG_WARN([legacy automake detected: disabled dependency-tracking!
@@ -69,8 +69,8 @@ AS_CASE([$host],
         # a set of search paths are used on macOS in s_inter.c
         wish="default search paths"
 
-        # required for dlopen & weak linking for older OSX version support
-        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
+        # required for dlopen & weak linking for older macOS version support
+        macos_version_min=10.6
     ],[
         platform=iOS
         locales=no
@@ -284,6 +284,8 @@ AS_IF([test x$debug = xyes],[
 
 #########################################
 ##### Configure Options #####
+
+##### libpd #####
 AC_ARG_ENABLE([libpd],
     [AS_HELP_STRING([--enable-libpd], [additionally build libpd])])
 AC_ARG_ENABLE([libpd-utils],
@@ -539,15 +541,26 @@ AS_IF([test ! "x${WISH}" = "x"],[
 
 ##### libpd #####
 AS_IF([test "x${enable_libpd}" = "xyes"],[
-        libpd="yes"
-        libpd_=""
-        AS_IF([test "x${enable_libpd_instance}" = "xyes"],[ libpd_="${libpd_}+multi "])
-        AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
-        AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
-        AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
-        AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd} ( ${libpd_})"])
+    libpd="yes"
+    libpd_=""
+    AS_IF([test "x${enable_libpd_instance}" = "xyes"],[
+        libpd_="${libpd_}+multi "
+        AS_IF([test "x$MACOSX" = "xyes"],[
+            macos_version_min=10.9
+            AC_MSG_NOTICE([Setting macOS version min 10.9 for libpd instance])
+        ])
+    ])
+    AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
+    AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
+    AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
+    AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd} ( ${libpd_})"])
 ],[
-        libpd="no"
+    libpd="no"
+])
+
+##### macOS version min #####
+AS_IF([test "x$macos_version_min" != "x"],[
+    CFLAGS="-mmacosx-version-min=$macos_version_min $CFLAGS"
 ])
 
 #########################################
