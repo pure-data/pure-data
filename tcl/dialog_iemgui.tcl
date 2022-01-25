@@ -18,11 +18,11 @@ array set ::dialog_iemgui::var_height {} ;# var_iemgui_hgt
 array set ::dialog_iemgui::var_minwidth {} ;# var_iemgui_min_wdt
 array set ::dialog_iemgui::var_minheight {} ;# var_iemgui_min_hgt
 
-array set ::dialog_iemgui::var_max_rng {} ;# var_iemgui_max_rng
-array set ::dialog_iemgui::var_min_rng {} ;# var_iemgui_min_rng
-array set ::dialog_iemgui::var_rng_sch {} ;# var_iemgui_rng_sch
+array set ::dialog_iemgui::var_range_max {} ;# var_iemgui_max_rng
+array set ::dialog_iemgui::var_range_min {} ;# var_iemgui_min_rng
+array set ::dialog_iemgui::var_range_checkmode {} ;# var_iemgui_rng_sch
 
-array set ::dialog_iemgui::var_lin0_log1 {} ;# var_iemgui_lin0_log1
+array set ::dialog_iemgui::var_mode {} ;# var_iemgui_lin0_log1
 array set ::dialog_iemgui::var_lilo0 {} ;# var_iemgui_lilo0
 array set ::dialog_iemgui::var_lilo1 {} ;# var_iemgui_lilo1
 
@@ -34,10 +34,10 @@ array set ::dialog_iemgui::var_snd {} ;# var_send
 array set ::dialog_iemgui::var_rcv {} ;# var_receive
 array set ::dialog_iemgui::var_label {} ;# var_iemgui_gui_nam
 
-array set ::dialog_iemgui::var_gn_dx {} ;# var_iemgui_gn_dx
-array set ::dialog_iemgui::var_gn_dy {} ;# var_iemgui_gn_dy
-array set ::dialog_iemgui::var_gn_f {} ;# var_iemgui_gn_f
-array set ::dialog_iemgui::var_gn_fs {} ;# var_iemgui_gn_fs
+array set ::dialog_iemgui::var_label_dx {} ;# var_iemgui_gn_dx
+array set ::dialog_iemgui::var_label_dy {} ;# var_iemgui_gn_dy
+array set ::dialog_iemgui::var_label_font {} ;# var_iemgui_gn_f
+array set ::dialog_iemgui::var_label_fontsize {} ;# var_iemgui_gn_fs
 
 array set ::dialog_iemgui::var_color_background {} ;# var_iemgui_bcol
 array set ::dialog_iemgui::var_color_foreground {} ;# var_iemgui_fcol
@@ -77,27 +77,19 @@ proc ::dialog_iemgui::clip_num {mytoplevel} {
 proc ::dialog_iemgui::sched_rng {mytoplevel} {
     # TODO: rename this to 'range_check'
     set vid [string trimleft $mytoplevel .]
-    switch -- $::dialog_iemgui::var_rng_sch($vid) {
+    switch -- $::dialog_iemgui::var_range_checkmode($vid) {
         2 {
-            # 'range-check'' is in 'flash' mode:
+            # 'range-check' is in 'flash' mode
             # make sure that min/max are sorted properly and are not smaller than the resp. min values
-            if {[expr $::dialog_iemgui::var_max_rng($vid)] < $::dialog_iemgui::var_min_rng($vid)} {
-                set hhh $::dialog_iemgui::var_min_rng($vid)
-                set ::dialog_iemgui::var_min_rng($vid) $::dialog_iemgui::var_max_rng($vid)
-                set ::dialog_iemgui::var_max_rng($vid) $hhh
-            }
-            if {[expr $::dialog_iemgui::var_max_rng($vid)] < $::dialog_iemgui::min_flashhold} {
-                set ::dialog_iemgui::var_max_rng($vid) $::dialog_iemgui::min_flashhold
-            }
-            if {[expr $::dialog_iemgui::var_min_rng($vid)] < $::dialog_iemgui::min_flashbreak} {
-                set ::dialog_iemgui::var_min_rng($vid) $::dialog_iemgui::min_flashbreak
-            }
+            foreach {flashbreak flashhold} [lsort -real [list [tonumber $::dialog_iemgui::var_range_min($vid)] [tonumber $::dialog_iemgui::var_range_max($vid)]]] {break;}
+            set ::dialog_iemgui::var_range_min($vid) [clip $flashbreak $::dialog_iemgui::min_flashbreak]
+            set ::dialog_iemgui::var_range_max($vid) [clip $flashhold $::dialog_iemgui::min_flashhold]
         }
         1 {
             # 'range-check' is in 'toggle' mode
-            #  thre's little use toggling between 0 and 0, so force it to 1...
-            if {[expr $::dialog_iemgui::var_min_rng($vid)] == 0.0} {
-                set ::dialog_iemgui::var_min_rng($vid) 1
+            if {[tonumber $::dialog_iemgui::var_range_min($vid)] == 0} {
+                #  there's little use toggling between 0 and 0, so force it to 1...
+                set ::dialog_iemgui::var_range_min($vid) 1
             }
         }
     }
@@ -106,17 +98,17 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
 proc ::dialog_iemgui::verify_rng {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    if {$::dialog_iemgui::var_lin0_log1($vid) == 1} {
-        if {$::dialog_iemgui::var_max_rng($vid) == 0.0 && $::dialog_iemgui::var_min_rng($vid) == 0.0} {
-            set ::dialog_iemgui::var_max_rng($vid) 1.0
+    if {$::dialog_iemgui::var_mode($vid) == 1} {
+        if {$::dialog_iemgui::var_range_max($vid) == 0.0 && $::dialog_iemgui::var_range_min($vid) == 0.0} {
+            set ::dialog_iemgui::var_range_max($vid) 1.0
         }
-        if {$::dialog_iemgui::var_max_rng($vid) > 0} {
-            if {$::dialog_iemgui::var_min_rng($vid) <= 0} {
-                set ::dialog_iemgui::var_min_rng($vid) [expr $::dialog_iemgui::var_max_rng($vid) * 0.01]
+        if {$::dialog_iemgui::var_range_max($vid) > 0} {
+            if {$::dialog_iemgui::var_range_min($vid) <= 0} {
+                set ::dialog_iemgui::var_range_min($vid) [expr $::dialog_iemgui::var_range_max($vid) * 0.01]
             }
         } else {
-            if {$::dialog_iemgui::var_min_rng($vid) > 0} {
-                set ::dialog_iemgui::var_max_rng($vid) [expr $::dialog_iemgui::var_min_rng($vid) * 0.01]
+            if {$::dialog_iemgui::var_range_min($vid) > 0} {
+                set ::dialog_iemgui::var_range_max($vid) [expr $::dialog_iemgui::var_range_min($vid) * 0.01]
             }
         }
     }
@@ -125,32 +117,26 @@ proc ::dialog_iemgui::verify_rng {mytoplevel} {
 proc ::dialog_iemgui::clip_fontsize {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    if {$::dialog_iemgui::var_gn_fs($vid) < $::dialog_iemgui::min_fontsize} {
-        set ::dialog_iemgui::var_gn_fs($vid) $::dialog_iemgui::min_fontsize
-    }
+    set ::dialog_iemgui::var_label_fontsize($vid) [clip $::dialog_iemgui::var_label_fontsize($vid) $::dialog_iemgui::min_fontsize]
 }
 
 proc ::dialog_iemgui::set_col_example {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
+    set fgcol $::dialog_iemgui::var_color_label($vid)
     $mytoplevel.colors.sections.exp.lb_bk configure \
         -background $::dialog_iemgui::var_color_background($vid) \
         -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
-        -foreground $::dialog_iemgui::var_color_label($vid) \
-        -activeforeground $::dialog_iemgui::var_color_label($vid)
+        -foreground $fgcol -activeforeground $fgcol
 
-    if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
-        $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background($vid) $::dialog_iemgui::var_color_background($vid) \
-            -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
-            -foreground $::dialog_iemgui::var_color_foreground($vid) \
-            -activeforeground $::dialog_iemgui::var_color_foreground($vid)
-    } else {
-        $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background($vid) $::dialog_iemgui::var_color_background($vid) \
-            -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
-            -foreground $::dialog_iemgui::var_color_background($vid) \
-            -activeforeground $::dialog_iemgui::var_color_background($vid)}
+    set fgcol $::dialog_iemgui::var_color_foreground($vid)
+    if { $fgcol eq "none" } {
+        set fgcol $::dialog_iemgui::var_color_background($vid)
+    }
+    $mytoplevel.colors.sections.exp.fr_bk configure \
+        -background $::dialog_iemgui::var_color_background($vid) \
+        -activebackground $::dialog_iemgui::var_color_background($vid) \
+        -foreground $fgcol -activeforeground $fgcol
 
     # for OSX live updates
     if {$::windowingsystem eq "aqua"} {
@@ -200,9 +186,9 @@ proc ::dialog_iemgui::lilo {mytoplevel} {
 
     ::dialog_iemgui::sched_rng $mytoplevel
 
-    set ::dialog_iemgui::var_lin0_log1($vid) [expr ! $::dialog_iemgui::var_lin0_log1($vid)]
+    set ::dialog_iemgui::var_mode($vid) [expr ! $::dialog_iemgui::var_mode($vid)]
 
-    if {$::dialog_iemgui::var_lin0_log1($vid) == 0} {
+    if {$::dialog_iemgui::var_mode($vid) == 0} {
         $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo0($vid)
     } else {
         $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo1($vid)
@@ -222,7 +208,7 @@ proc ::dialog_iemgui::font_popup {mytoplevel} {
 
 proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     set vid [string trimleft $mytoplevel .]
-    set ::dialog_iemgui::var_gn_f($vid) $gn_f
+    set ::dialog_iemgui::var_label_font($vid) $gn_f
 
     switch -- $gn_f {
         0 { set current_font $::font_family}
@@ -288,24 +274,24 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_label($vid) ne ""} {set labelname $::dialog_iemgui::var_label($vid)}
 
     # make sure the offset boxes have a value
-    if {$::dialog_iemgui::var_gn_dx($vid) eq ""} {set ::dialog_iemgui::var_gn_dx($vid) 0}
-    if {$::dialog_iemgui::var_gn_dy($vid) eq ""} {set ::dialog_iemgui::var_gn_dy($vid) 0}
+    if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
+    if {$::dialog_iemgui::var_label_dy($vid) eq ""} {set ::dialog_iemgui::var_label_dy($vid) 0}
 
     pdsend [concat $mytoplevel dialog \
                 $::dialog_iemgui::var_width($vid) \
                 $::dialog_iemgui::var_height($vid) \
-                $::dialog_iemgui::var_min_rng($vid) \
-                $::dialog_iemgui::var_max_rng($vid) \
-                $::dialog_iemgui::var_lin0_log1($vid) \
+                $::dialog_iemgui::var_range_min($vid) \
+                $::dialog_iemgui::var_range_max($vid) \
+                $::dialog_iemgui::var_mode($vid) \
                 $::dialog_iemgui::var_loadbang($vid) \
                 $::dialog_iemgui::var_number($vid) \
                 [string map {"$" {\$}} [unspace_text $sendname]] \
                 [string map {"$" {\$}} [unspace_text $receivename]] \
                 [string map {"$" {\$}} [unspace_text $labelname]] \
-                $::dialog_iemgui::var_gn_dx($vid) \
-                $::dialog_iemgui::var_gn_dy($vid) \
-                $::dialog_iemgui::var_gn_f($vid) \
-                $::dialog_iemgui::var_gn_fs($vid) \
+                $::dialog_iemgui::var_label_dx($vid) \
+                $::dialog_iemgui::var_label_dy($vid) \
+                $::dialog_iemgui::var_label_font($vid) \
+                $::dialog_iemgui::var_label_fontsize($vid) \
                 [string tolower $::dialog_iemgui::var_color_background($vid)] \
                 [string tolower $::dialog_iemgui::var_color_foreground($vid)] \
                 [string tolower $::dialog_iemgui::var_color_label($vid)] \
@@ -352,11 +338,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_minwidth($vid) $min_wdt
     set ::dialog_iemgui::var_minheight($vid) $min_hgt
 
-    set ::dialog_iemgui::var_max_rng($vid) $max_rng
-    set ::dialog_iemgui::var_min_rng($vid) $min_rng
-    set ::dialog_iemgui::var_rng_sch($vid) $rng_sched
+    set ::dialog_iemgui::var_range_max($vid) $max_rng
+    set ::dialog_iemgui::var_range_min($vid) $min_rng
+    set ::dialog_iemgui::var_range_checkmode($vid) $rng_sched
 
-    set ::dialog_iemgui::var_lin0_log1($vid) $lin0_log1
+    set ::dialog_iemgui::var_mode($vid) $lin0_log1
     set ::dialog_iemgui::var_lilo0($vid) $lilo0_label
     set ::dialog_iemgui::var_lilo1($vid) $lilo1_label
 
@@ -368,10 +354,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_rcv($vid) $rcv
     set ::dialog_iemgui::var_label($vid) $gui_name
 
-    set ::dialog_iemgui::var_gn_dx($vid) $gn_dx
-    set ::dialog_iemgui::var_gn_dy($vid) $gn_dy
-    set ::dialog_iemgui::var_gn_f($vid) $gn_f
-    set ::dialog_iemgui::var_gn_fs($vid) $gn_fs
+    set ::dialog_iemgui::var_label_dx($vid) $gn_dx
+    set ::dialog_iemgui::var_label_dy($vid) $gn_dy
+    set ::dialog_iemgui::var_label_font($vid) $gn_f
+    set ::dialog_iemgui::var_label_fontsize($vid) $gn_fs
 
     set ::dialog_iemgui::var_color_background($vid) $bcol
     set ::dialog_iemgui::var_color_foreground($vid) $fcol
@@ -463,10 +449,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     pack $mytoplevel.rng -side top -fill x
     frame $mytoplevel.rng.min
     label $mytoplevel.rng.min.lab -text $label_range_min
-    entry $mytoplevel.rng.min.ent -textvariable ::dialog_iemgui::var_min_rng($vid) -width 7
+    entry $mytoplevel.rng.min.ent -textvariable ::dialog_iemgui::var_range_min($vid) -width 7
     label $mytoplevel.rng.dummy1 -text "" -width 1
     label $mytoplevel.rng.max_lab -text [_ $label_range_max]
-    entry $mytoplevel.rng.max_ent -textvariable ::dialog_iemgui::var_max_rng($vid) -width 7
+    entry $mytoplevel.rng.max_ent -textvariable ::dialog_iemgui::var_range_max($vid) -width 7
     if { $label_range ne "" } {
         $mytoplevel.rng config -borderwidth 1 -pady 4 -text [_ $label_range]
         if { $label_range_min ne "" } {
@@ -481,10 +467,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
-    if {$::dialog_iemgui::var_lin0_log1($vid) == 0} {
+    if {$::dialog_iemgui::var_mode($vid) == 0} {
         button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo0($vid)] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
-    if {$::dialog_iemgui::var_lin0_log1($vid) == 1} {
+    if {$::dialog_iemgui::var_mode($vid) == 1} {
         button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo1($vid)] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {$::dialog_iemgui::var_loadbang($vid) == 0} {
@@ -498,16 +484,13 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     entry $mytoplevel.para.num.ent -textvariable ::dialog_iemgui::var_number($vid) -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
-
-    button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel"
-
     if {$::dialog_iemgui::var_steady($vid) == 0} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [_ "Jump on click"] }
     if {$::dialog_iemgui::var_steady($vid) == 1} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [_ "Steady on click"] }
-    if {$::dialog_iemgui::var_lin0_log1($vid) >= 0} {
+    if {$::dialog_iemgui::var_mode($vid) >= 0} {
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
     if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
         pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10}
@@ -539,9 +522,9 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
     # get the current font name from the int given from C-space (gn_f)
     set current_font $::font_family
-    if {$::dialog_iemgui::var_gn_f($vid) == 1} \
+    if {$::dialog_iemgui::var_label_font($vid) == 1} \
         { set current_font "Helvetica" }
-    if {$::dialog_iemgui::var_gn_f($vid) == 2} \
+    if {$::dialog_iemgui::var_label_font($vid) == 2} \
         { set current_font "Times" }
 
     # label
@@ -554,10 +537,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.label.xy -padx 20 -pady 1
     pack $mytoplevel.label.xy -side top
     label $mytoplevel.label.xy.x_lab -text [_ "X offset:"]
-    entry $mytoplevel.label.xy.x_entry -textvariable ::dialog_iemgui::var_gn_dx($vid) -width 5
+    entry $mytoplevel.label.xy.x_entry -textvariable ::dialog_iemgui::var_label_dx($vid) -width 5
     label $mytoplevel.label.xy.dummy1 -text " " -width 1
     label $mytoplevel.label.xy.y_lab -text [_ "Y offset:"]
-    entry $mytoplevel.label.xy.y_entry -textvariable ::dialog_iemgui::var_gn_dy($vid) -width 5
+    entry $mytoplevel.label.xy.y_entry -textvariable ::dialog_iemgui::var_label_dy($vid) -width 5
     pack $mytoplevel.label.xy.x_lab $mytoplevel.label.xy.x_entry $mytoplevel.label.xy.dummy1 \
         $mytoplevel.label.xy.y_lab $mytoplevel.label.xy.y_entry -side left
 
@@ -569,7 +552,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.label.fontsize
     pack $mytoplevel.label.fontsize -side right -padx 5 -pady 5
     label $mytoplevel.label.fontsize.label -text [_ "Size:"]
-    entry $mytoplevel.label.fontsize.entry -textvariable ::dialog_iemgui::var_gn_fs($vid) -width 4
+    entry $mytoplevel.label.fontsize.entry -textvariable ::dialog_iemgui::var_label_fontsize($vid) -width 4
     pack $mytoplevel.label.fontsize.entry $mytoplevel.label.fontsize.label \
         -side right -anchor e
     menu $mytoplevel.popup
