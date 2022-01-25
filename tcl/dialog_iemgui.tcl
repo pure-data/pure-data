@@ -402,13 +402,13 @@ proc ::dialog_iemgui::ok {mytoplevel} {
     ::dialog_iemgui::cancel $mytoplevel
 }
 
-proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
-                                       wdt min_wdt wdt_label \
-                                       hgt min_hgt hgt_label \
-                                       rng_header min_rng min_rng_label max_rng \
-                                       max_rng_label rng_sched \
+proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSED \
+                                       wdt min_wdt label_width \
+                                       hgt min_hgt label_height \
+                                       label_range min_rng label_range_min max_rng \
+                                       label_range_max rng_sched \
                                        lin0_log1 lilo0_label lilo1_label \
-                                       loadbang steady num_label num \
+                                       loadbang steady label_number num \
                                        snd rcv \
                                        gui_name \
                                        gn_dx gn_dy gn_f gn_fs \
@@ -502,61 +502,61 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
 
     # Override incoming values for known iem guis.
     set iemgui_type [_ $mainheader]
-    set iemgui_range_header [_ $rng_header]
+
     switch -- $mainheader {
         "|bang|" {
             set iemgui_type [_ "Bang"]
-            set wdt_label "Size:"
-            set iemgui_range_header [_ "Flash Time (msec)"]
-            set min_rng_label [_ "Intrrpt:"]
-            set max_rng_label [_ "Hold:"] }
+            set label_width "Size:"
+            set label_range [_ "Flash Time (msec)"]
+            set label_range_min [_ "Intrrpt:"]
+            set label_range_max [_ "Hold:"] }
         "|tgl|" {
             set iemgui_type [_ "Toggle"]
-            set wdt_label [_ "Size:"]
-            set iemgui_range_header [_ "Non Zero Value"]
-            set min_rng_label [_ "Value:"] }
+            set label_width [_ "Size:"]
+            set label_range [_ "Non Zero Value"]
+            set label_range_min [_ "Value:"] }
         "|nbx|" {
             set iemgui_type [_ "Number2"]
-            set wdt_label [_ "Width (digits):"]
-            set hgt_label [_ "Height:"]
-            set iemgui_range_header [_ "Output Range"]
-            set min_rng_label [_ "Lower:"]
-            set max_rng_label [_ "Upper:"]
-            set num_label [_ "Log height:"] }
+            set label_width [_ "Width (digits):"]
+            set label_height [_ "Height:"]
+            set label_range [_ "Output Range"]
+            set label_range_min [_ "Lower:"]
+            set label_range_max [_ "Upper:"]
+            set label_number [_ "Log height:"] }
         "|vsl|" {
             set iemgui_type [_ "Vslider"]
-            set wdt_label [_ "Width:"]
-            set hgt_label [_ "Height:"]
-            set iemgui_range_header [_ "Output Range"]
-            set min_rng_label [_ "Lower:"]
-            set max_rng_label [_ "Upper:"] }
+            set label_width [_ "Width:"]
+            set label_height [_ "Height:"]
+            set label_range [_ "Output Range"]
+            set label_range_min [_ "Lower:"]
+            set label_range_max [_ "Upper:"] }
         "|hsl|" {
             set iemgui_type [_ "Hslider"]
-            set wdt_label [_ "Width:"]
-            set hgt_label [_ "Height:"]
-            set iemgui_range_header [_ "Output Range"]
-            set min_rng_label [_ "Lower:"]
-            set max_rng_label [_ "Upper:"] }
+            set label_width [_ "Width:"]
+            set label_height [_ "Height:"]
+            set label_range [_ "Output Range"]
+            set label_range_min [_ "Lower:"]
+            set label_range_max [_ "Upper:"] }
         "|vradio|" {
             set iemgui_type [_ "Vradio"]
-            set wdt_label [_ "Size:"]
-            set num_label [_ "Num cells:"] }
+            set label_width [_ "Size:"]
+            set label_number [_ "Num cells:"] }
         "|hradio|" {
             set iemgui_type [_ "Hradio"]
-            set wdt_label [_ "Size:"]
-            set num_label [_ "Num cells:"] }
+            set label_width [_ "Size:"]
+            set label_number [_ "Num cells:"] }
         "|vu|" {
             set ::dialog_iemgui::var_color_foreground($vid) none
             set iemgui_type [_ "VU Meter"]
-            set wdt_label [_ "Width:"]
-            set hgt_label [_ "Height:"] }
+            set label_width [_ "Width:"]
+            set label_height [_ "Height:"] }
         "|cnv|" {
             set ::dialog_iemgui::var_color_foreground($vid) none
             set iemgui_type [_ "Canvas"]
-            set wdt_label [_ "Size:"]
-            set iemgui_range_header [_ "Visible Rectangle (pix)"]
-            set min_rng_label [_ "Width:"]
-            set max_rng_label [_ "Height:"] }
+            set label_width [_ "Size:"]
+            set label_range [_ "Visible Rectangle (pix)"]
+            set label_range_min [_ "Width:"]
+            set label_range_max [_ "Height:"] }
     }
 
     toplevel $mytoplevel -class DialogWindow
@@ -571,30 +571,30 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     # dimensions
     frame $mytoplevel.dim -height 7
     pack $mytoplevel.dim -side top
-    label $mytoplevel.dim.w_lab -text [_ $wdt_label]
+    label $mytoplevel.dim.w_lab -text [_ $label_width]
     entry $mytoplevel.dim.w_ent -textvariable $var_iemgui_wdt -width 4
     label $mytoplevel.dim.dummy1 -text "" -width 1
-    label $mytoplevel.dim.h_lab -text [_ $hgt_label]
+    label $mytoplevel.dim.h_lab -text [_ $label_height]
     entry $mytoplevel.dim.h_ent -textvariable $var_iemgui_hgt -width 4
     pack $mytoplevel.dim.w_lab $mytoplevel.dim.w_ent -side left
-    if { $hgt_label ne "empty" } {
+    if { $label_height ne "" } {
         pack $mytoplevel.dim.dummy1 $mytoplevel.dim.h_lab $mytoplevel.dim.h_ent -side left }
 
     # range
     labelframe $mytoplevel.rng
     pack $mytoplevel.rng -side top -fill x
     frame $mytoplevel.rng.min
-    label $mytoplevel.rng.min.lab -text [_ $min_rng_label]
+    label $mytoplevel.rng.min.lab -text $label_range_min
     entry $mytoplevel.rng.min.ent -textvariable $var_iemgui_min_rng -width 7
     label $mytoplevel.rng.dummy1 -text "" -width 1
-    label $mytoplevel.rng.max_lab -text [_ $max_rng_label]
+    label $mytoplevel.rng.max_lab -text [_ $label_range_max]
     entry $mytoplevel.rng.max_ent -textvariable $var_iemgui_max_rng -width 7
-    if { $rng_header ne "empty" } {
-        $mytoplevel.rng config -borderwidth 1 -pady 4 -text [_ $iemgui_range_header]
-        if { $min_rng_label ne "empty" } {
+    if { $label_range ne "" } {
+        $mytoplevel.rng config -borderwidth 1 -pady 4 -text [_ $label_range]
+        if { $label_range_min ne "" } {
             pack $mytoplevel.rng.min
             pack $mytoplevel.rng.min.lab $mytoplevel.rng.min.ent -side left }
-        if { $max_rng_label ne "empty" } {
+        if { $label_range_max ne "" } {
             $mytoplevel.rng config -padx 26
             pack configure $mytoplevel.rng.min -side left
             pack $mytoplevel.rng.dummy1 $mytoplevel.rng.max_lab $mytoplevel.rng.max_ent -side left}
@@ -616,7 +616,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         button $mytoplevel.para.lb -text [_ "Init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
     frame $mytoplevel.para.num
-    label $mytoplevel.para.num.lab -text [_ $num_label]
+    label $mytoplevel.para.num.lab -text [_ $label_number]
     entry $mytoplevel.para.num.ent -textvariable $var_iemgui_num -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
