@@ -46,26 +46,32 @@ array set ::dialog_iemgui::var_colortype {} ;# var_iemgui_l2_f1_b0
 
 # TODO convert Init/No Init and Steady on click/Jump on click to checkbuttons
 
+proc ::dialog_iemgui::tonumber val {
+    set x 0
+    catch {
+        set x [expr $val]
+    }
+    return $x
+}
+
+proc ::dialog_iemgui::clip {val min {max {}}} {
+    set val [tonumber $val]
+    if {$min ne {} && $val < $min} {return $min}
+    if {$max ne {} && $val > $max} {return $max}
+    return $val
+}
+
 proc ::dialog_iemgui::clip_dim {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    if {$::dialog_iemgui::var_width($vid) < $::dialog_iemgui::var_minwidth($vid)} {
-        set ::dialog_iemgui::var_width($vid) $::dialog_iemgui::var_minwidth($vid)
-    }
-    if {$::dialog_iemgui::var_height($vid) < $::dialog_iemgui::var_minheight($vid)} {
-        set ::dialog_iemgui::var_height($vid) $::dialog_iemgui::var_minheight($vid)
-    }
+    set ::dialog_iemgui::var_width($vid) [clip $::dialog_iemgui::var_width($vid) $::dialog_iemgui::var_minwidth($vid)]
+    set ::dialog_iemgui::var_height($vid) [clip $::dialog_iemgui::var_height($vid) $::dialog_iemgui::var_minheight($vid)]
 }
 
 proc ::dialog_iemgui::clip_num {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    if {$::dialog_iemgui::var_number($vid) > 2000} {
-        set ::dialog_iemgui::var_number($vid) 2000
-    }
-    if {$::dialog_iemgui::var_number($vid) < 1} {
-        set ::dialog_iemgui::var_number($vid) 1
-    }
+    set ::dialog_iemgui::var_number($vid) [clip $::dialog_iemgui::var_number($vid) 1 2000]
 }
 
 proc ::dialog_iemgui::sched_rng {mytoplevel} {
