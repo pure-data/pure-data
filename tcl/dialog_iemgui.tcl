@@ -5,86 +5,94 @@
 package provide dialog_iemgui 0.1
 
 namespace eval ::dialog_iemgui:: {
-    variable define_min_flashhold 50
-    variable define_min_flashbreak 10
-    variable define_min_fontsize 4
-
     namespace export pdtk_iemgui_dialog
 }
+# some constants
+set ::dialog_iemgui::min_flashhold 50
+set ::dialog_iemgui::min_flashbreak 10
+set ::dialog_iemgui::min_fontsize 4
+
+# arrays to store per-dialog values
+array set ::dialog_iemgui::var_width {} ;# var_iemgui_wdt
+array set ::dialog_iemgui::var_height {} ;# var_iemgui_hgt
+array set ::dialog_iemgui::var_minwidth {} ;# var_iemgui_min_wdt
+array set ::dialog_iemgui::var_minheight {} ;# var_iemgui_min_hgt
+
+array set ::dialog_iemgui::var_max_rng {} ;# var_iemgui_max_rng
+array set ::dialog_iemgui::var_min_rng {} ;# var_iemgui_min_rng
+array set ::dialog_iemgui::var_rng_sch {} ;# var_iemgui_rng_sch
+
+array set ::dialog_iemgui::var_lin0_log1 {} ;# var_iemgui_lin0_log1
+array set ::dialog_iemgui::var_lilo0 {} ;# var_iemgui_lilo0
+array set ::dialog_iemgui::var_lilo1 {} ;# var_iemgui_lilo1
+
+array set ::dialog_iemgui::var_loadbang {} ;# var_iemgui_loadbang
+array set ::dialog_iemgui::var_steady {} ;# var_iemgui_steady
+array set ::dialog_iemgui::var_number {} ;# var_iemgui_num
+
+array set ::dialog_iemgui::var_snd {} ;# var_send
+array set ::dialog_iemgui::var_rcv {} ;# var_receive
+array set ::dialog_iemgui::var_label {} ;# var_iemgui_gui_nam
+
+array set ::dialog_iemgui::var_gn_dx {} ;# var_iemgui_gn_dx
+array set ::dialog_iemgui::var_gn_dy {} ;# var_iemgui_gn_dy
+array set ::dialog_iemgui::var_gn_f {} ;# var_iemgui_gn_f
+array set ::dialog_iemgui::var_gn_fs {} ;# var_iemgui_gn_fs
+
+array set ::dialog_iemgui::var_color_background {} ;# var_iemgui_bcol
+array set ::dialog_iemgui::var_color_foreground {} ;# var_iemgui_fcol
+array set ::dialog_iemgui::var_color_label {} ;# var_iemgui_lcol
+array set ::dialog_iemgui::var_colortype {} ;# var_iemgui_l2_f1_b0
 
 # TODO convert Init/No Init and Steady on click/Jump on click to checkbuttons
 
 proc ::dialog_iemgui::clip_dim {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_wdt [concat iemgui_wdt_$vid]
-    global $var_iemgui_wdt
-    set var_iemgui_min_wdt [concat iemgui_min_wdt_$vid]
-    global $var_iemgui_min_wdt
-    set var_iemgui_hgt [concat iemgui_hgt_$vid]
-    global $var_iemgui_hgt
-    set var_iemgui_min_hgt [concat iemgui_min_hgt_$vid]
-    global $var_iemgui_min_hgt
-
-    if {[eval concat $$var_iemgui_wdt] < [eval concat $$var_iemgui_min_wdt]} {
-        set $var_iemgui_wdt [eval concat $$var_iemgui_min_wdt]
-        $mytoplevel.dim.w_ent configure -textvariable $var_iemgui_wdt
+    if {$::dialog_iemgui::var_width($vid) < $::dialog_iemgui::var_minwidth($vid)} {
+        set ::dialog_iemgui::var_width($vid) $::dialog_iemgui::var_minwidth($vid)
     }
-    if {[eval concat $$var_iemgui_hgt] < [eval concat $$var_iemgui_min_hgt]} {
-        set $var_iemgui_hgt [eval concat $$var_iemgui_min_hgt]
-        $mytoplevel.dim.h_ent configure -textvariable $var_iemgui_hgt
+    if {$::dialog_iemgui::var_height($vid) < $::dialog_iemgui::var_minheight($vid)} {
+        set ::dialog_iemgui::var_height($vid) $::dialog_iemgui::var_minheight($vid)
     }
 }
 
 proc ::dialog_iemgui::clip_num {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_num [concat iemgui_num_$vid]
-    global $var_iemgui_num
-
-    if {[eval concat $$var_iemgui_num] > 2000} {
-        set $var_iemgui_num 2000
-        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
+    if {$::dialog_iemgui::var_number($vid) > 2000} {
+        set ::dialog_iemgui::var_number($vid) 2000
     }
-    if {[eval concat $$var_iemgui_num] < 1} {
-        set $var_iemgui_num 1
-        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
+    if {$::dialog_iemgui::var_number($vid) < 1} {
+        set ::dialog_iemgui::var_number($vid) 1
     }
 }
 
 proc ::dialog_iemgui::sched_rng {mytoplevel} {
+    # TODO: rename this to 'range_check'
     set vid [string trimleft $mytoplevel .]
-
-    set var_iemgui_min_rng [concat iemgui_min_rng_$vid]
-    global $var_iemgui_min_rng
-    set var_iemgui_max_rng [concat iemgui_max_rng_$vid]
-    global $var_iemgui_max_rng
-    set var_iemgui_rng_sch [concat iemgui_rng_sch_$vid]
-    global $var_iemgui_rng_sch
-
-    variable define_min_flashhold
-    variable define_min_flashbreak
-
-    if {[eval concat $$var_iemgui_rng_sch] == 2} {
-        if {[eval concat $$var_iemgui_max_rng] < [eval concat $$var_iemgui_min_rng]} {
-            set hhh [eval concat $$var_iemgui_min_rng]
-            set $var_iemgui_min_rng [eval concat $$var_iemgui_max_rng]
-            set $var_iemgui_max_rng $hhh
-            $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
-            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng }
-        if {[eval concat $$var_iemgui_max_rng] < $define_min_flashhold} {
-            set $var_iemgui_max_rng $define_min_flashhold
-            $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
+    switch -- $::dialog_iemgui::var_rng_sch($vid) {
+        2 {
+            # 'range-check'' is in 'flash' mode:
+            # make sure that min/max are sorted properly and are not smaller than the resp. min values
+            if {[expr $::dialog_iemgui::var_max_rng($vid)] < $::dialog_iemgui::var_min_rng($vid)} {
+                set hhh $::dialog_iemgui::var_min_rng($vid)
+                set ::dialog_iemgui::var_min_rng($vid) $::dialog_iemgui::var_max_rng($vid)
+                set ::dialog_iemgui::var_max_rng($vid) $hhh
+            }
+            if {[expr $::dialog_iemgui::var_max_rng($vid)] < $::dialog_iemgui::min_flashhold} {
+                set ::dialog_iemgui::var_max_rng($vid) $::dialog_iemgui::min_flashhold
+            }
+            if {[expr $::dialog_iemgui::var_min_rng($vid)] < $::dialog_iemgui::min_flashbreak} {
+                set ::dialog_iemgui::var_min_rng($vid) $::dialog_iemgui::min_flashbreak
+            }
         }
-        if {[eval concat $$var_iemgui_min_rng] < $define_min_flashbreak} {
-            set $var_iemgui_min_rng $define_min_flashbreak
-            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
-        }
-    }
-    if {[eval concat $$var_iemgui_rng_sch] == 1} {
-        if {[eval concat $$var_iemgui_min_rng] == 0.0} {
-            set $var_iemgui_min_rng 1.0
-            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
+        1 {
+            # 'range-check' is in 'toggle' mode
+            #  thre's little use toggling between 0 and 0, so force it to 1...
+            if {[expr $::dialog_iemgui::var_min_rng($vid)] == 0.0} {
+                set ::dialog_iemgui::var_min_rng($vid) 1
+            }
         }
     }
 }
@@ -92,27 +100,17 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
 proc ::dialog_iemgui::verify_rng {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_min_rng [concat iemgui_min_rng_$vid]
-    global $var_iemgui_min_rng
-    set var_iemgui_max_rng [concat iemgui_max_rng_$vid]
-    global $var_iemgui_max_rng
-    set var_iemgui_lin0_log1 [concat iemgui_lin0_log1_$vid]
-    global $var_iemgui_lin0_log1
-
-    if {[eval concat $$var_iemgui_lin0_log1] == 1} {
-        if {[eval concat $$var_iemgui_max_rng] == 0.0 && [eval concat $$var_iemgui_min_rng] == 0.0} {
-            set $var_iemgui_max_rng 1.0
-            $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
+    if {$::dialog_iemgui::var_lin0_log1($vid) == 1} {
+        if {$::dialog_iemgui::var_max_rng($vid) == 0.0 && $::dialog_iemgui::var_min_rng($vid) == 0.0} {
+            set ::dialog_iemgui::var_max_rng($vid) 1.0
         }
-        if {[eval concat $$var_iemgui_max_rng] > 0} {
-            if {[eval concat $$var_iemgui_min_rng] <= 0} {
-                set $var_iemgui_min_rng [expr [eval concat $$var_iemgui_max_rng] * 0.01]
-                $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
+        if {$::dialog_iemgui::var_max_rng($vid) > 0} {
+            if {$::dialog_iemgui::var_min_rng($vid) <= 0} {
+                set ::dialog_iemgui::var_min_rng($vid) [expr $::dialog_iemgui::var_max_rng($vid) * 0.01]
             }
         } else {
-            if {[eval concat $$var_iemgui_min_rng] > 0} {
-                set $var_iemgui_max_rng [expr [eval concat $$var_iemgui_min_rng] * 0.01]
-                $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
+            if {$::dialog_iemgui::var_min_rng($vid) > 0} {
+                set ::dialog_iemgui::var_max_rng($vid) [expr $::dialog_iemgui::var_min_rng($vid) * 0.01]
             }
         }
     }
@@ -121,45 +119,32 @@ proc ::dialog_iemgui::verify_rng {mytoplevel} {
 proc ::dialog_iemgui::clip_fontsize {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_gn_fs [concat iemgui_gn_fs_$vid]
-    global $var_iemgui_gn_fs
-
-    variable define_min_fontsize
-
-    if {[eval concat $$var_iemgui_gn_fs] < $define_min_fontsize} {
-        set $var_iemgui_gn_fs $define_min_fontsize
-        $mytoplevel.label.fs_ent configure -textvariable $var_iemgui_gn_fs
+    if {$::dialog_iemgui::var_gn_fs($vid) < $::dialog_iemgui::min_fontsize} {
+        set ::dialog_iemgui::var_gn_fs($vid) $::dialog_iemgui::min_fontsize
     }
 }
 
 proc ::dialog_iemgui::set_col_example {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_bcol [concat iemgui_bcol_$vid]
-    global $var_iemgui_bcol
-    set var_iemgui_fcol [concat iemgui_fcol_$vid]
-    global $var_iemgui_fcol
-    set var_iemgui_lcol [concat iemgui_lcol_$vid]
-    global $var_iemgui_lcol
-
     $mytoplevel.colors.sections.exp.lb_bk configure \
-        -background [eval concat $$var_iemgui_bcol] \
-        -activebackground [eval concat $$var_iemgui_bcol] \
-        -foreground [eval concat $$var_iemgui_lcol] \
-        -activeforeground [eval concat $$var_iemgui_lcol]
+        -background $::dialog_iemgui::var_color_background($vid) \
+        -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
+        -foreground $::dialog_iemgui::var_color_label($vid) \
+        -activeforeground $::dialog_iemgui::var_color_label($vid)
 
-    if { [eval concat $$var_iemgui_fcol] ne "none" } {
+    if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
         $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background [eval concat $$var_iemgui_bcol] \
-            -activebackground [eval concat $$var_iemgui_bcol] \
-            -foreground [eval concat $$var_iemgui_fcol] \
-            -activeforeground [eval concat $$var_iemgui_fcol]
+            -background($vid) $::dialog_iemgui::var_color_background($vid) \
+            -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
+            -foreground $::dialog_iemgui::var_color_foreground($vid) \
+            -activeforeground $::dialog_iemgui::var_color_foreground($vid)
     } else {
         $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background [eval concat $$var_iemgui_bcol] \
-            -activebackground [eval concat $$var_iemgui_bcol] \
-            -foreground [eval concat $$var_iemgui_bcol] \
-            -activeforeground [eval concat $$var_iemgui_bcol]}
+            -background($vid) $::dialog_iemgui::var_color_background($vid) \
+            -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
+            -foreground $::dialog_iemgui::var_color_background($vid) \
+            -activeforeground $::dialog_iemgui::var_color_background($vid)}
 
     # for OSX live updates
     if {$::windowingsystem eq "aqua"} {
@@ -170,73 +155,53 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
 proc ::dialog_iemgui::preset_col {mytoplevel presetcol} {
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
-    global $var_iemgui_l2_f1_b0
-    set var_iemgui_bcol [concat iemgui_bcol_$vid]
-    global $var_iemgui_bcol
-    set var_iemgui_fcol [concat iemgui_fcol_$vid]
-    global $var_iemgui_fcol
-    set var_iemgui_lcol [concat iemgui_lcol_$vid]
-    global $var_iemgui_lcol
+    switch -- $::dialog_iemgui::var_colortype($vid) {
+        0 { set ::dialog_iemgui::var_color_background($vid) $presetcol }
+        1 { set ::dialog_iemgui::var_color_foreground($vid) $presetcol }
+        2 { set ::dialog_iemgui::var_color_label($vid) $presetcol }
+    }
 
-    if { [eval concat $$var_iemgui_l2_f1_b0] == 0 } { set $var_iemgui_bcol $presetcol }
-    if { [eval concat $$var_iemgui_l2_f1_b0] == 1 } { set $var_iemgui_fcol $presetcol }
-    if { [eval concat $$var_iemgui_l2_f1_b0] == 2 } { set $var_iemgui_lcol $presetcol }
     ::dialog_iemgui::set_col_example $mytoplevel
 }
 
 proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
+    # TODO rename this
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
-    global $var_iemgui_l2_f1_b0
-    set var_iemgui_bcol [concat iemgui_bcol_$vid]
-    global $var_iemgui_bcol
-    set var_iemgui_fcol [concat iemgui_fcol_$vid]
-    global $var_iemgui_fcol
-    set var_iemgui_lcol [concat iemgui_lcol_$vid]
-    global $var_iemgui_lcol
-
-    if {[eval concat $$var_iemgui_l2_f1_b0] == 0} {
-        set $var_iemgui_bcol [eval concat $$var_iemgui_bcol]
-        set helpstring [tk_chooseColor -title [_ "Background color"] -initialcolor [eval concat $$var_iemgui_bcol]]
-        if { $helpstring ne "" } {
-            set $var_iemgui_bcol $helpstring }
+    switch -- $::dialog_iemgui::var_colortype($vid) {
+        0 {
+            set title [_ "Background color" ]
+            set color $::dialog_iemgui::var_color_background($vid)
+        }
+        1 {
+            set title [_ "Foreground color" ]
+            set color $::dialog_iemgui::var_color_foreground($vid)
+        }
+        2 {
+            set title [_ "Label color" ]
+            set color $::dialog_iemgui::var_color_label($vid)
+        }
     }
-    if {[eval concat $$var_iemgui_l2_f1_b0] == 1} {
-        set $var_iemgui_fcol [eval concat $$var_iemgui_fcol]
-        set helpstring [tk_chooseColor -title [_ "Foreground color"] -initialcolor [eval concat $$var_iemgui_fcol]]
-        if { $helpstring ne "" } {
-            set $var_iemgui_fcol $helpstring }
+    set color [tk_chooseColor -title $title -initialcolor $color]
+    if { $color ne "" } {
+        ::dialog_iemgui::preset_col $color
     }
-    if {[eval concat $$var_iemgui_l2_f1_b0] == 2} {
-        set helpstring [tk_chooseColor -title [_ "Label color"] -initialcolor [eval concat $$var_iemgui_lcol]]
-        if { $helpstring ne "" } {
-            set $var_iemgui_lcol $helpstring }
-    }
-    ::dialog_iemgui::set_col_example $mytoplevel
 }
 
 proc ::dialog_iemgui::lilo {mytoplevel} {
+    # TODO rename this
     set vid [string trimleft $mytoplevel .]
-
-    set var_iemgui_lin0_log1 [concat iemgui_lin0_log1_$vid]
-    global $var_iemgui_lin0_log1
-    set var_iemgui_lilo0 [concat iemgui_lilo0_$vid]
-    global $var_iemgui_lilo0
-    set var_iemgui_lilo1 [concat iemgui_lilo1_$vid]
-    global $var_iemgui_lilo1
 
     ::dialog_iemgui::sched_rng $mytoplevel
 
-    if {[eval concat $$var_iemgui_lin0_log1] == 0} {
-        set $var_iemgui_lin0_log1 1
-        $mytoplevel.para.lilo configure -text [eval concat $$var_iemgui_lilo1]
+    set ::dialog_iemgui::var_lin0_log1($vid) [expr ! $::dialog_iemgui::var_lin0_log1($vid)]
+
+    if {$::dialog_iemgui::var_lin0_log1($vid) == 0} {
+        $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo0($vid)
+    } else {
+        $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo1($vid)
         ::dialog_iemgui::verify_rng $mytoplevel
         ::dialog_iemgui::sched_rng $mytoplevel
-    } else {
-        set $var_iemgui_lin0_log1 0
-        $mytoplevel.para.lilo configure -text [eval concat $$var_iemgui_lilo0]
     }
 }
 
@@ -251,11 +216,7 @@ proc ::dialog_iemgui::font_popup {mytoplevel} {
 
 proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     set vid [string trimleft $mytoplevel .]
-
-    set var_iemgui_gn_f [concat iemgui_gn_f_$vid]
-    global $var_iemgui_gn_f
-
-    set $var_iemgui_gn_f $gn_f
+    set ::dialog_iemgui::var_gn_f($vid) $gn_f
 
     switch -- $gn_f {
         0 { set current_font $::font_family}
@@ -271,83 +232,37 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     $mytoplevel.colors.sections.exp.lb_bk configure -font $current_font_spec
 }
 
-proc ::dialog_iemgui::lb {mytoplevel} {
+proc ::dialog_iemgui::lb {mytoplevel {newstate {}}} {
+    # TODO rename this to 'toggle_loadbang'
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_loadbang [concat iemgui_loadbang_$vid]
-    global $var_iemgui_loadbang
-
-    if {[eval concat $$var_iemgui_loadbang] == 0} {
-        set $var_iemgui_loadbang 1
-        $mytoplevel.para.lb configure -text [_ "Init"]
-    } else {
-        set $var_iemgui_loadbang 0
-        $mytoplevel.para.lb configure -text [_ "No init"]
+    if { $newstate eq {} } {
+        set newstate [expr ! $::dialog_iemgui::var_loadbang($vid)]
     }
+    set ::dialog_iemgui::var_loadbang($vid) $newstate
+    if {$::dialog_iemgui::var_loadbang($vid) == 0} {
+        $mytoplevel.para.lb configure -text [_ "No init"]
+    } else {
+        $mytoplevel.para.lb configure -text [_ "Init"]
+    }
+    return newstate
 }
 
 proc ::dialog_iemgui::stdy_jmp {mytoplevel} {
+    # TODO rename this to 'toggle_steady_jump'
     set vid [string trimleft $mytoplevel .]
 
-    set var_iemgui_steady [concat iemgui_steady_$vid]
-    global $var_iemgui_steady
-
-    if {[eval concat $$var_iemgui_steady]} {
-        set $var_iemgui_steady 0
+    set ::dialog_iemgui::var_steady($vid) [expr ! $::dialog_iemgui::var_steady($vid)]
+    if {$::dialog_iemgui::var_steady($vid) == 0} {
         $mytoplevel.para.stdy_jmp configure -text [_ "Jump on click"]
     } else {
-        set $var_iemgui_steady 1
         $mytoplevel.para.stdy_jmp configure -text [_ "Steady on click"]
     }
+
 }
 
 proc ::dialog_iemgui::apply {mytoplevel} {
     set vid [string trimleft $mytoplevel .]
-
-    set var_iemgui_wdt [concat iemgui_wdt_$vid]
-    global $var_iemgui_wdt
-    set var_iemgui_min_wdt [concat iemgui_min_wdt_$vid]
-    global $var_iemgui_min_wdt
-    set var_iemgui_hgt [concat iemgui_hgt_$vid]
-    global $var_iemgui_hgt
-    set var_iemgui_min_hgt [concat iemgui_min_hgt_$vid]
-    global $var_iemgui_min_hgt
-    set var_iemgui_min_rng [concat iemgui_min_rng_$vid]
-    global $var_iemgui_min_rng
-    set var_iemgui_max_rng [concat iemgui_max_rng_$vid]
-    global $var_iemgui_max_rng
-    set var_iemgui_lin0_log1 [concat iemgui_lin0_log1_$vid]
-    global $var_iemgui_lin0_log1
-    set var_iemgui_lilo0 [concat iemgui_lilo0_$vid]
-    global $var_iemgui_lilo0
-    set var_iemgui_lilo1 [concat iemgui_lilo1_$vid]
-    global $var_iemgui_lilo1
-    set var_iemgui_loadbang [concat iemgui_loadbang_$vid]
-    global $var_iemgui_loadbang
-    set var_iemgui_num [concat iemgui_num_$vid]
-    global $var_iemgui_num
-    set var_iemgui_steady [concat iemgui_steady_$vid]
-    global $var_iemgui_steady
-    set var_iemgui_snd [concat iemgui_snd_$vid]
-    global $var_iemgui_snd
-    set var_iemgui_rcv [concat iemgui_rcv_$vid]
-    global $var_iemgui_rcv
-    set var_iemgui_gui_nam [concat iemgui_gui_nam_$vid]
-    global $var_iemgui_gui_nam
-    set var_iemgui_gn_dx [concat iemgui_gn_dx_$vid]
-    global $var_iemgui_gn_dx
-    set var_iemgui_gn_dy [concat iemgui_gn_dy_$vid]
-    global $var_iemgui_gn_dy
-    set var_iemgui_gn_f [concat iemgui_gn_f_$vid]
-    global $var_iemgui_gn_f
-    set var_iemgui_gn_fs [concat iemgui_gn_fs_$vid]
-    global $var_iemgui_gn_fs
-    set var_iemgui_bcol [concat iemgui_bcol_$vid]
-    global $var_iemgui_bcol
-    set var_iemgui_fcol [concat iemgui_fcol_$vid]
-    global $var_iemgui_fcol
-    set var_iemgui_lcol [concat iemgui_lcol_$vid]
-    global $var_iemgui_lcol
 
     ::dialog_iemgui::clip_dim $mytoplevel
     ::dialog_iemgui::clip_num $mytoplevel
@@ -356,40 +271,40 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     ::dialog_iemgui::sched_rng $mytoplevel
     ::dialog_iemgui::clip_fontsize $mytoplevel
 
-    if {[eval concat $$var_iemgui_snd] == ""} {set hhhsnd "empty"} else {set hhhsnd [eval concat $$var_iemgui_snd]}
-    if {[eval concat $$var_iemgui_rcv] == ""} {set hhhrcv "empty"} else {set hhhrcv [eval concat $$var_iemgui_rcv]}
-    if {[eval concat $$var_iemgui_gui_nam] == ""} {set hhhgui_nam "empty"
-    } else {
-        set hhhgui_nam [eval concat $$var_iemgui_gui_nam]}
 
+    # TODO wrap the name-mangling ('empty', unspace_text, map) into a helper-proc
+    set sendname empty
+    set receivename empty
+    set labelname empty
 
-    set hhhsnd [string map {"$" {\$}} [unspace_text $hhhsnd]]
-    set hhhrcv [string map {"$" {\$}} [unspace_text $hhhrcv]]
-    set hhhgui_nam [string map {"$" {\$}} [unspace_text $hhhgui_nam]]
+    if {$::dialog_iemgui::var_snd($vid) ne ""} {set sendname $::dialog_iemgui::var_snd($vid)}
+    if {$::dialog_iemgui::var_rcv($vid) ne ""} {set receivename $::dialog_iemgui::var_rcv($vid)}
+    if {$::dialog_iemgui::var_label($vid) ne ""} {set labelname $::dialog_iemgui::var_label($vid)}
 
     # make sure the offset boxes have a value
-    if {[eval concat $$var_iemgui_gn_dx] eq ""} {set $var_iemgui_gn_dx 0}
-    if {[eval concat $$var_iemgui_gn_dy] eq ""} {set $var_iemgui_gn_dy 0}
+    if {$::dialog_iemgui::var_gn_dx($vid) eq ""} {set ::dialog_iemgui::var_gn_dx($vid) 0}
+    if {$::dialog_iemgui::var_gn_dy($vid) eq ""} {set ::dialog_iemgui::var_gn_dy($vid) 0}
 
     pdsend [concat $mytoplevel dialog \
-            [eval concat $$var_iemgui_wdt] \
-            [eval concat $$var_iemgui_hgt] \
-            [eval concat $$var_iemgui_min_rng] \
-            [eval concat $$var_iemgui_max_rng] \
-            [eval concat $$var_iemgui_lin0_log1] \
-            [eval concat $$var_iemgui_loadbang] \
-            [eval concat $$var_iemgui_num] \
-            $hhhsnd \
-            $hhhrcv \
-            $hhhgui_nam \
-            [eval concat $$var_iemgui_gn_dx] \
-            [eval concat $$var_iemgui_gn_dy] \
-            [eval concat $$var_iemgui_gn_f] \
-            [eval concat $$var_iemgui_gn_fs] \
-            [string tolower [eval concat $$var_iemgui_bcol]] \
-            [string tolower [eval concat $$var_iemgui_fcol]] \
-            [string tolower [eval concat $$var_iemgui_lcol]] \
-            [eval concat $$var_iemgui_steady]]
+                $::dialog_iemgui::var_width($vid) \
+                $::dialog_iemgui::var_height($vid) \
+                $::dialog_iemgui::var_min_rng($vid) \
+                $::dialog_iemgui::var_max_rng($vid) \
+                $::dialog_iemgui::var_lin0_log1($vid) \
+                $::dialog_iemgui::var_loadbang($vid) \
+                $::dialog_iemgui::var_number($vid) \
+                [string map {"$" {\$}} [unspace_text $sendname]] \
+                [string map {"$" {\$}} [unspace_text $receivename]] \
+                [string map {"$" {\$}} [unspace_text $labelname]] \
+                $::dialog_iemgui::var_gn_dx($vid) \
+                $::dialog_iemgui::var_gn_dy($vid) \
+                $::dialog_iemgui::var_gn_f($vid) \
+                $::dialog_iemgui::var_gn_fs($vid) \
+                [string tolower $::dialog_iemgui::var_color_background($vid)] \
+                [string tolower $::dialog_iemgui::var_color_foreground($vid)] \
+                [string tolower $::dialog_iemgui::var_color_label($vid)] \
+                $::dialog_iemgui::var_steady($vid) \
+               ]
 }
 
 
@@ -419,86 +334,43 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set rcv [::pdtk_text::unescape $rcv]
     set gui_name [::pdtk_text::unescape $gui_name]
 
+    # TODO: is this necessary?
+    if {$snd == "empty"} {set snd [format ""]} else {set snd [respace_text [format "%s" $snd]]}
+    if {$rcv == "empty"} {set rcv [format ""]} else {set rcv [respace_text [format "%s" $rcv]]}
+    if {$gui_name == "empty"} {set gui_name [format ""]} else {set gui_name [respace_text [format "%s" $gui_name]]}
 
-    set var_iemgui_wdt [concat iemgui_wdt_$vid]
-    global $var_iemgui_wdt
-    set var_iemgui_min_wdt [concat iemgui_min_wdt_$vid]
-    global $var_iemgui_min_wdt
-    set var_iemgui_hgt [concat iemgui_hgt_$vid]
-    global $var_iemgui_hgt
-    set var_iemgui_min_hgt [concat iemgui_min_hgt_$vid]
-    global $var_iemgui_min_hgt
-    set var_iemgui_min_rng [concat iemgui_min_rng_$vid]
-    global $var_iemgui_min_rng
-    set var_iemgui_max_rng [concat iemgui_max_rng_$vid]
-    global $var_iemgui_max_rng
-    set var_iemgui_rng_sch [concat iemgui_rng_sch_$vid]
-    global $var_iemgui_rng_sch
-    set var_iemgui_lin0_log1 [concat iemgui_lin0_log1_$vid]
-    global $var_iemgui_lin0_log1
-    set var_iemgui_lilo0 [concat iemgui_lilo0_$vid]
-    global $var_iemgui_lilo0
-    set var_iemgui_lilo1 [concat iemgui_lilo1_$vid]
-    global $var_iemgui_lilo1
-    set var_iemgui_loadbang [concat iemgui_loadbang_$vid]
-    global $var_iemgui_loadbang
-    set var_iemgui_num [concat iemgui_num_$vid]
-    global $var_iemgui_num
-    set var_iemgui_steady [concat iemgui_steady_$vid]
-    global $var_iemgui_steady
-    set var_iemgui_snd [concat iemgui_snd_$vid]
-    global $var_iemgui_snd
-    set var_iemgui_rcv [concat iemgui_rcv_$vid]
-    global $var_iemgui_rcv
-    set var_iemgui_gui_nam [concat iemgui_gui_nam_$vid]
-    global $var_iemgui_gui_nam
-    set var_iemgui_gn_dx [concat iemgui_gn_dx_$vid]
-    global $var_iemgui_gn_dx
-    set var_iemgui_gn_dy [concat iemgui_gn_dy_$vid]
-    global $var_iemgui_gn_dy
-    set var_iemgui_gn_f [concat iemgui_gn_f_$vid]
-    global $var_iemgui_gn_f
-    set var_iemgui_gn_fs [concat iemgui_gn_fs_$vid]
-    global $var_iemgui_gn_fs
-    set var_iemgui_l2_f1_b0 [concat iemgui_l2_f1_b0_$vid]
-    global $var_iemgui_l2_f1_b0
-    set var_iemgui_bcol [concat iemgui_bcol_$vid]
-    global $var_iemgui_bcol
-    set var_iemgui_fcol [concat iemgui_fcol_$vid]
-    global $var_iemgui_fcol
-    set var_iemgui_lcol [concat iemgui_lcol_$vid]
-    global $var_iemgui_lcol
 
-    set $var_iemgui_wdt $wdt
-    set $var_iemgui_min_wdt $min_wdt
-    set $var_iemgui_hgt $hgt
-    set $var_iemgui_min_hgt $min_hgt
-    set $var_iemgui_min_rng $min_rng
-    set $var_iemgui_max_rng $max_rng
-    set $var_iemgui_rng_sch $rng_sched
-    set $var_iemgui_lin0_log1 $lin0_log1
-    set $var_iemgui_lilo0 $lilo0_label
-    set $var_iemgui_lilo1 $lilo1_label
-    set $var_iemgui_loadbang $loadbang
-    set $var_iemgui_num $num
-    set $var_iemgui_steady $steady
-    if {$snd == "empty"} {set $var_iemgui_snd [format ""]
-    } else {set $var_iemgui_snd [respace_text [format "%s" $snd]]}
-    if {$rcv == "empty"} {set $var_iemgui_rcv [format ""]
-    } else {set $var_iemgui_rcv [respace_text [format "%s" $rcv]]}
-    if {$gui_name == "empty"} {set $var_iemgui_gui_nam [format ""]
-    } else {set $var_iemgui_gui_nam [respace_text [format "%s" $gui_name]]}
+    # initialize the array
+    set ::dialog_iemgui::var_width($vid) $wdt
+    set ::dialog_iemgui::var_height($vid) $hgt
+    set ::dialog_iemgui::var_minwidth($vid) $min_wdt
+    set ::dialog_iemgui::var_minheight($vid) $min_hgt
 
-    set $var_iemgui_gn_dx $gn_dx
-    set $var_iemgui_gn_dy $gn_dy
-    set $var_iemgui_gn_f $gn_f
-    set $var_iemgui_gn_fs $gn_fs
+    set ::dialog_iemgui::var_max_rng($vid) $max_rng
+    set ::dialog_iemgui::var_min_rng($vid) $min_rng
+    set ::dialog_iemgui::var_rng_sch($vid) $rng_sched
 
-    set $var_iemgui_bcol $bcol
-    set $var_iemgui_fcol $fcol
-    set $var_iemgui_lcol $lcol
+    set ::dialog_iemgui::var_lin0_log1($vid) $lin0_log1
+    set ::dialog_iemgui::var_lilo0($vid) $lilo0_label
+    set ::dialog_iemgui::var_lilo1($vid) $lilo1_label
 
-    set $var_iemgui_l2_f1_b0 0
+    set ::dialog_iemgui::var_loadbang($vid) $loadbang
+    set ::dialog_iemgui::var_steady($vid) $steady
+    set ::dialog_iemgui::var_number($vid) $num
+
+    set ::dialog_iemgui::var_snd($vid) $snd
+    set ::dialog_iemgui::var_rcv($vid) $rcv
+    set ::dialog_iemgui::var_label($vid) $gui_name
+
+    set ::dialog_iemgui::var_gn_dx($vid) $gn_dx
+    set ::dialog_iemgui::var_gn_dy($vid) $gn_dy
+    set ::dialog_iemgui::var_gn_f($vid) $gn_f
+    set ::dialog_iemgui::var_gn_fs($vid) $gn_fs
+
+    set ::dialog_iemgui::var_color_background($vid) $bcol
+    set ::dialog_iemgui::var_color_foreground($vid) $fcol
+    set ::dialog_iemgui::var_color_label($vid) $lcol
+    set ::dialog_iemgui::var_colortype($vid) 0
 
     # Override incoming values for known iem guis.
     set iemgui_type [_ $mainheader]
@@ -572,10 +444,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.dim -height 7
     pack $mytoplevel.dim -side top
     label $mytoplevel.dim.w_lab -text [_ $label_width]
-    entry $mytoplevel.dim.w_ent -textvariable $var_iemgui_wdt -width 4
+    entry $mytoplevel.dim.w_ent -textvariable ::dialog_iemgui::var_width($vid) -width 4
     label $mytoplevel.dim.dummy1 -text "" -width 1
     label $mytoplevel.dim.h_lab -text [_ $label_height]
-    entry $mytoplevel.dim.h_ent -textvariable $var_iemgui_hgt -width 4
+    entry $mytoplevel.dim.h_ent -textvariable ::dialog_iemgui::var_height($vid) -width 4
     pack $mytoplevel.dim.w_lab $mytoplevel.dim.w_ent -side left
     if { $label_height ne "" } {
         pack $mytoplevel.dim.dummy1 $mytoplevel.dim.h_lab $mytoplevel.dim.h_ent -side left }
@@ -585,10 +457,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     pack $mytoplevel.rng -side top -fill x
     frame $mytoplevel.rng.min
     label $mytoplevel.rng.min.lab -text $label_range_min
-    entry $mytoplevel.rng.min.ent -textvariable $var_iemgui_min_rng -width 7
+    entry $mytoplevel.rng.min.ent -textvariable ::dialog_iemgui::var_min_rng($vid) -width 7
     label $mytoplevel.rng.dummy1 -text "" -width 1
     label $mytoplevel.rng.max_lab -text [_ $label_range_max]
-    entry $mytoplevel.rng.max_ent -textvariable $var_iemgui_max_rng -width 7
+    entry $mytoplevel.rng.max_ent -textvariable ::dialog_iemgui::var_max_rng($vid) -width 7
     if { $label_range ne "" } {
         $mytoplevel.rng config -borderwidth 1 -pady 4 -text [_ $label_range]
         if { $label_range_min ne "" } {
@@ -603,36 +475,39 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
-    if {[eval concat $$var_iemgui_lin0_log1] == 0} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] \
+    if {$::dialog_iemgui::var_lin0_log1($vid) == 0} {
+        button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo0($vid)] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
-    if {[eval concat $$var_iemgui_lin0_log1] == 1} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] \
+    if {$::dialog_iemgui::var_lin0_log1($vid) == 1} {
+        button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo1($vid)] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
-    if {[eval concat $$var_iemgui_loadbang] == 0} {
+    if {$::dialog_iemgui::var_loadbang($vid) == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
-    if {[eval concat $$var_iemgui_loadbang] == 1} {
+    if {$::dialog_iemgui::var_loadbang($vid) == 1} {
         button $mytoplevel.para.lb -text [_ "Init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $label_number]
-    entry $mytoplevel.para.num.ent -textvariable $var_iemgui_num -width 4
+    entry $mytoplevel.para.num.ent -textvariable ::dialog_iemgui::var_number($vid) -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
-    if {[eval concat $$var_iemgui_steady] == 0} {
+
+    button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel"
+
+    if {$::dialog_iemgui::var_steady($vid) == 0} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [_ "Jump on click"] }
-    if {[eval concat $$var_iemgui_steady] == 1} {
+    if {$::dialog_iemgui::var_steady($vid) == 1} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [_ "Steady on click"] }
-    if {[eval concat $$var_iemgui_lin0_log1] >= 0} {
+    if {$::dialog_iemgui::var_lin0_log1($vid) >= 0} {
         pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
-    if {[eval concat $$var_iemgui_loadbang] >= 0} {
+    if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
         pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10}
-    if {[eval concat $$var_iemgui_num] > 0} {
+    if {$::dialog_iemgui::var_number($vid) > 0} {
         pack $mytoplevel.para.num -side left -expand 1 -ipadx 10}
-    if {[eval concat $$var_iemgui_steady] >= 0} {
+    if {$::dialog_iemgui::var_steady($vid) >= 0} {
         pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10}
 
     # messages
@@ -641,7 +516,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.s_r.send
     pack $mytoplevel.s_r.send -side top -anchor e -padx 5
     label $mytoplevel.s_r.send.lab -text [_ "Send symbol:"]
-    entry $mytoplevel.s_r.send.ent -textvariable $var_iemgui_snd -width 21
+    entry $mytoplevel.s_r.send.ent -textvariable ::dialog_iemgui::var_snd($vid) -width 21
     if { $snd ne "nosndno" } {
         pack $mytoplevel.s_r.send.lab $mytoplevel.s_r.send.ent -side left \
             -fill x -expand 1
@@ -650,7 +525,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.s_r.receive
     pack $mytoplevel.s_r.receive -side top -anchor e -padx 5
     label $mytoplevel.s_r.receive.lab -text [_ "Receive symbol:"]
-    entry $mytoplevel.s_r.receive.ent -textvariable $var_iemgui_rcv -width 21
+    entry $mytoplevel.s_r.receive.ent -textvariable ::dialog_iemgui::var_rcv($vid) -width 21
     if { $rcv ne "norcvno" } {
         pack $mytoplevel.s_r.receive.lab $mytoplevel.s_r.receive.ent -side left \
             -fill x -expand 1
@@ -658,25 +533,25 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
     # get the current font name from the int given from C-space (gn_f)
     set current_font $::font_family
-    if {[eval concat $$var_iemgui_gn_f] == 1} \
+    if {$::dialog_iemgui::var_gn_f($vid) == 1} \
         { set current_font "Helvetica" }
-    if {[eval concat $$var_iemgui_gn_f] == 2} \
+    if {$::dialog_iemgui::var_gn_f($vid) == 2} \
         { set current_font "Times" }
 
     # label
     labelframe $mytoplevel.label -borderwidth 1 -text [_ "Label"] -padx 5 -pady 5
     pack $mytoplevel.label -side top -fill x -pady 5
-    entry $mytoplevel.label.name_entry -textvariable $var_iemgui_gui_nam \
+    entry $mytoplevel.label.name_entry -textvariable ::dialog_iemgui::var_label($vid) \
         -width 30 -font [list $current_font 14 $::font_weight]
     pack $mytoplevel.label.name_entry -side top -fill both -padx 5
 
     frame $mytoplevel.label.xy -padx 20 -pady 1
     pack $mytoplevel.label.xy -side top
     label $mytoplevel.label.xy.x_lab -text [_ "X offset:"]
-    entry $mytoplevel.label.xy.x_entry -textvariable $var_iemgui_gn_dx -width 5
+    entry $mytoplevel.label.xy.x_entry -textvariable ::dialog_iemgui::var_gn_dx($vid) -width 5
     label $mytoplevel.label.xy.dummy1 -text " " -width 1
     label $mytoplevel.label.xy.y_lab -text [_ "Y offset:"]
-    entry $mytoplevel.label.xy.y_entry -textvariable $var_iemgui_gn_dy -width 5
+    entry $mytoplevel.label.xy.y_entry -textvariable ::dialog_iemgui::var_gn_dy($vid) -width 5
     pack $mytoplevel.label.xy.x_lab $mytoplevel.label.xy.x_entry $mytoplevel.label.xy.dummy1 \
         $mytoplevel.label.xy.y_lab $mytoplevel.label.xy.y_entry -side left
 
@@ -688,7 +563,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     frame $mytoplevel.label.fontsize
     pack $mytoplevel.label.fontsize -side right -padx 5 -pady 5
     label $mytoplevel.label.fontsize.label -text [_ "Size:"]
-    entry $mytoplevel.label.fontsize.entry -textvariable $var_iemgui_gn_fs -width 4
+    entry $mytoplevel.label.fontsize.entry -textvariable ::dialog_iemgui::var_gn_fs($vid) -width 4
     pack $mytoplevel.label.fontsize.entry $mytoplevel.label.fontsize.label \
         -side right -anchor e
     menu $mytoplevel.popup
@@ -711,13 +586,16 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
 
     frame $mytoplevel.colors.select
     pack $mytoplevel.colors.select -side top
-    radiobutton $mytoplevel.colors.select.radio0 -value 0 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Background"] -justify left
-    radiobutton $mytoplevel.colors.select.radio1 -value 1 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Front"] -justify left
-    radiobutton $mytoplevel.colors.select.radio2 -value 2 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Label"] -justify left
-    if { [eval concat $$var_iemgui_fcol] ne "none" } {
+    radiobutton $mytoplevel.colors.select.radio0 \
+        -value 0 -variable ::dialog_iemgui::var_colortype($vid) \
+        -text [_ "Background"] -justify left
+    radiobutton $mytoplevel.colors.select.radio1 \
+        -value 1 -variable ::dialog_iemgui::var_colortype($vid) \
+        -text [_ "Front"] -justify left
+    radiobutton $mytoplevel.colors.select.radio2 \
+        -value 2 -variable ::dialog_iemgui::var_colortype($vid) \
+        -text [_ "Label"] -justify left
+    if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
         pack $mytoplevel.colors.select.radio0 $mytoplevel.colors.select.radio1 \
             $mytoplevel.colors.select.radio2 -side left
     } else {
@@ -732,26 +610,26 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
         -expand yes -fill x
     frame $mytoplevel.colors.sections.exp
     pack $mytoplevel.colors.sections.exp -side right -padx 5
-    if { [eval concat $$var_iemgui_fcol] ne "none" } {
+    if { $::dialog_iemgui::var_color_foreground($vid) ne "none" } {
         label $mytoplevel.colors.sections.exp.fr_bk -text "o=||=o" -width 6 \
-            -background [eval concat $$var_iemgui_bcol] \
-            -activebackground [eval concat $$var_iemgui_bcol] \
-            -foreground [eval concat $$var_iemgui_fcol] \
-            -activeforeground [eval concat $$var_iemgui_fcol] \
+            -background $::dialog_iemgui::var_color_background($vid) \
+            -activebackground $::dialog_iemgui::var_color_background($vid) \
+            -foreground $::dialog_iemgui::var_color_foreground($vid) \
+            -activeforeground $::dialog_iemgui::var_color_foreground($vid) \
             -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     } else {
         label $mytoplevel.colors.sections.exp.fr_bk -text "o=||=o" -width 6 \
-            -background [eval concat $$var_iemgui_bcol] \
-            -activebackground [eval concat $$var_iemgui_bcol] \
-            -foreground [eval concat $$var_iemgui_bcol] \
-            -activeforeground [eval concat $$var_iemgui_bcol] \
+            -background $::dialog_iemgui::var_color_background($vid) \
+            -activebackground $::dialog_iemgui::var_color_background($vid) \
+            -foreground $::dialog_iemgui::var_color_background($vid) \
+            -activeforeground $::dialog_iemgui::var_color_background($vid) \
             -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     }
     label $mytoplevel.colors.sections.exp.lb_bk -text [_ "Test label"] \
-        -background [eval concat $$var_iemgui_bcol] \
-        -activebackground [eval concat $$var_iemgui_bcol] \
-        -foreground [eval concat $$var_iemgui_lcol] \
-        -activeforeground [eval concat $$var_iemgui_lcol] \
+        -background $::dialog_iemgui::var_color_background($vid) \
+        -activebackground $::dialog_iemgui::var_color_background($vid) \
+        -foreground $::dialog_iemgui::var_color_label($vid) \
+        -activeforeground $::dialog_iemgui::var_color_label($vid) \
         -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     pack $mytoplevel.colors.sections.exp.lb_bk $mytoplevel.colors.sections.exp.fr_bk \
         -side right -anchor e -expand yes -fill both -pady 7
