@@ -273,6 +273,8 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {$::dialog_iemgui::var_rcv($vid) ne ""} {set receivename $::dialog_iemgui::var_rcv($vid)}
     if {$::dialog_iemgui::var_label($vid) ne ""} {set labelname $::dialog_iemgui::var_label($vid)}
 
+    set labelname [string map { "\\" {\\} {$} {\$} { } {\ } {,} {\,} {;} {\;}  "{" "\{" "}" "\}" } $labelname]
+
     # make sure the offset boxes have a value
     if {$::dialog_iemgui::var_label_dx($vid) eq ""} {set ::dialog_iemgui::var_label_dx($vid) 0}
     if {$::dialog_iemgui::var_label_dy($vid) eq ""} {set ::dialog_iemgui::var_label_dy($vid) 0}
@@ -287,7 +289,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
                 $::dialog_iemgui::var_number($vid) \
                 [string map {"$" {\$}} [unspace_text $sendname]] \
                 [string map {"$" {\$}} [unspace_text $receivename]] \
-                [string map {"$" {\$}} [unspace_text $labelname]] \
+                $labelname \
                 $::dialog_iemgui::var_label_dx($vid) \
                 $::dialog_iemgui::var_label_dy($vid) \
                 $::dialog_iemgui::var_label_font($vid) \
@@ -325,12 +327,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set snd [::pdtk_text::unescape $snd]
     set rcv [::pdtk_text::unescape $rcv]
     set gui_name [::pdtk_text::unescape $gui_name]
-
-    # TODO: is this necessary?
-    if {$snd == "empty"} {set snd [format ""]} else {set snd [respace_text [format "%s" $snd]]}
-    if {$rcv == "empty"} {set rcv [format ""]} else {set rcv [respace_text [format "%s" $rcv]]}
-    if {$gui_name == "empty"} {set gui_name [format ""]} else {set gui_name [respace_text [format "%s" $gui_name]]}
-
 
     # initialize the array
     set ::dialog_iemgui::var_width($vid) $wdt
