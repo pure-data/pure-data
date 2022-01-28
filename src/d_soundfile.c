@@ -1518,7 +1518,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
         soundfile_xferout_words(sf, vectors, (unsigned char *)sampbuf,
             thiswrite, wa.wa_onsetframes, normfactor);
         byteswritten = write(sf->sf_fd, sampbuf, datasize);
-        if (byteswritten < (ssize_t)datasize)
+        if (byteswritten < 0 || (size_t)byteswritten < datasize)
         {
             object_sferror(obj, "soundfiler write",
                 wa.wa_filesym->s_name, errno, sf);
@@ -1804,7 +1804,7 @@ static void *readsf_child_main(void *zz)
                         wantbytes = fifosize - x->x_fifohead;
                         if (wantbytes > READSIZE)
                             wantbytes = READSIZE;
-                        if ((ssize_t)wantbytes > sf.sf_bytelimit)
+                        if (sf.sf_bytelimit >= 0 && wantbytes > (size_t)sf.sf_bytelimit)
                             wantbytes = sf.sf_bytelimit;
 #ifdef DEBUG_SOUNDFILE_THREADS
                         fprintf(stderr, "readsf~: head %d, tail %d, size %ld\n",
@@ -1845,7 +1845,7 @@ static void *readsf_child_main(void *zz)
                         continue;
                     }
                     else wantbytes = READSIZE;
-                    if ((ssize_t)wantbytes > sf.sf_bytelimit)
+                    if (sf.sf_bytelimit >= 0 && wantbytes > (size_t)sf.sf_bytelimit)
                         wantbytes = sf.sf_bytelimit;
                 }
 #ifdef DEBUG_SOUNDFILE_THREADS
@@ -2402,7 +2402,7 @@ static void *writesf_child_main(void *zz)
                 if (x->x_requestcode != REQUEST_BUSY &&
                     x->x_requestcode != REQUEST_CLOSE)
                         break;
-                if (byteswritten < (ssize_t)writebytes)
+                if (byteswritten < 0 || (size_t)byteswritten < writebytes)
                 {
 #ifdef DEBUG_SOUNDFILE_THREADS
                     fprintf(stderr, "writesf~: fileerror %d\n", errno);
