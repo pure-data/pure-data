@@ -1101,7 +1101,7 @@ done:
 
     /* soundfiler_read ...
 
-       usage: read [flags] filename table ...
+       usage: read [flags] filename [tablename] ...
        flags:
            -skip <frames> ... frames to skip in file
            -raw <headersize channels bytespersample endian>
@@ -1118,7 +1118,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile sf = {0};
-    int fd = -1, resize = 0, ascii = 0, i;
+    int fd = -1, resize = 0, ascii = 0, raw = 0, i;
     size_t skipframes = 0, finalsize = 0, maxsize = SFMAXFRAMES,
            framesread = 0, bufframes, j;
     ssize_t nframes, framesinfile;
@@ -1176,6 +1176,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 sf.sf_bigendian = sys_isbigendian();
             sf.sf_samplerate = sys_getsr();
             sf.sf_bytesperframe = sf.sf_nchannels * sf.sf_bytespersample;
+            raw = 1;
             argc -= 5; argv += 5;
         }
         else if (!strcmp(flag, "resize"))
@@ -1300,19 +1301,25 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     }
 
     if (!finalsize) finalsize = SFMAXFRAMES;
-    if ((ssize_t)finalsize > framesinfile)
+    if (framesinfile > 0 && finalsize > (size_t)framesinfile)
         finalsize = framesinfile;
 
         /* no tablenames, try to use header info instead of reading */
     if (argc == 0 &&
-        !(sf.sf_headersize >= 0 ||   /* read if raw */
+        !(raw ||                     /* read if raw */
           finalsize == SFMAXFRAMES)) /* read if unknown size */
     {
         framesread = finalsize;
+#ifdef DEBUG_SOUNDFILE
+    post("skipped reading frames");
+#endif
         goto done;
     }
 
         /* read */
+#ifdef DEBUG_SOUNDFILE
+    post("reading frames");
+#endif
     bufframes = SAMPBUFSIZE / sf.sf_bytesperframe;
     for (framesread = 0; framesread < finalsize;)
     {
