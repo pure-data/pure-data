@@ -1301,7 +1301,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     }
 
     if (!finalsize) finalsize = SFMAXFRAMES;
-    if (framesinfile > 0 && finalsize > (size_t)framesinfile)
+    if (framesinfile >= 0 && finalsize > (size_t)framesinfile)
         finalsize = framesinfile;
 
         /* no tablenames, try to use header info instead of reading */
