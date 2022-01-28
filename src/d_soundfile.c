@@ -126,13 +126,13 @@ static size_t sf_minheadersize = 0;
 static char sf_typeargs[MAXPDSTRING] = {0};
 
     /* built-in type implementations */
-void soundfile_wave_setup( void);
-void soundfile_aiff_setup( void);
-void soundfile_caf_setup( void);
-void soundfile_next_setup( void);
+void soundfile_wave_setup(void);
+void soundfile_aiff_setup(void);
+void soundfile_caf_setup(void);
+void soundfile_next_setup(void);
 
     /** set up built-in types */
-void soundfile_type_setup( void)
+void soundfile_type_setup(void)
 {
     soundfile_wave_setup(); /* default first */
     soundfile_aiff_setup();
@@ -158,7 +158,7 @@ int soundfile_addtype(const t_soundfile_type *type)
 }
 
     /** return type list head pointer */
-static t_soundfile_type **soundfile_firsttype( void)
+static t_soundfile_type **soundfile_firsttype(void)
 {
     return &sf_types[0];
 }
