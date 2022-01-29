@@ -1,33 +1,77 @@
-#N canvas 688 134 621 453 12;
-#X obj 67 124 hilbert~;
+#N canvas 608 46 607 415 12;
+#X obj 47 214 hilbert~;
 #N canvas 0 22 450 278 (subpatch) 0;
-#X array out-left 882 float 0;
-#X array out-right 882 float 0;
-#X coords 0 1 881 -1 300 170 1;
-#X restore 299 84 graph;
-#X obj 67 257 tabwrite~ out-left;
-#X obj 120 228 tabwrite~ out-right;
-#X floatatom 67 65 4 0 0 0 - - - 0;
-#X text 82 322 The Hilbert transform (the name is abused here according
+#X array real 882 float 0;
+#X array imaginary 882 float 0;
+#X coords 0 1 881 -1 300 170 1 0 0;
+#X restore 272 151 graph;
+#X floatatom 47 125 4 0 0 0 - - - 0;
+#X text 47 59 The Hilbert transform (the name is abused here according
 to computer music tradition) puts out a phase quadrature version of
 the input signal suitable for signal sideband modulation via complex-mod~.
 , f 68;
-#X text 120 392 see also:;
-#X obj 197 392 complex-mod~;
-#X obj 54 15 hilbert~;
-#X text 125 16 - Hilbert transform;
-#X obj 134 148 loadbang;
-#X obj 67 93 osc~ 110;
-#X obj 134 177 metro 200;
-#X obj 167 63 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 23 379 see also:;
+#X obj 100 379 complex-mod~;
+#X obj 24 15 hilbert~;
+#X text 95 16 - Hilbert transform;
+#X obj 124 218 loadbang;
+#X obj 47 153 osc~ 110;
+#X obj 124 247 metro 200;
+#X obj 143 133 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 167 89 \; pd dsp \$1;
-#X text 185 59 DSP on/off;
-#X connect 0 0 2 0;
-#X connect 0 1 3 0;
-#X connect 4 0 11 0;
-#X connect 10 0 12 0;
-#X connect 11 0 0 0;
-#X connect 12 0 3 0;
-#X connect 12 0 2 0;
-#X connect 13 0 14 0;
+#X msg 143 159 \; pd dsp \$1;
+#X text 161 129 DSP on/off;
+#X text 510 10 <= click;
+#N canvas 767 120 577 295 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 138 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 221 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 258 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 122 85 signal - signal input., f 53;
+#X text 146 232 NONE, f 52;
+#X obj 24 15 hilbert~;
+#X text 95 16 - Hilbert transform;
+#X obj 8 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 136 112 bang - clear filter's state., f 53;
+#X obj 8 185 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 160 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 138 163 signal - real part of transformed signal., f 53;
+#X text 138 193 signal - imaginary part of transformed signal., f
+53;
+#X restore 416 11 pd reference;
+#X obj 5 45 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 100 188 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 58 187 clear;
+#X text 24 125 hz;
+#X obj 5 365 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 47 327 tabwrite~ real;
+#X obj 100 298 tabwrite~ imaginary;
+#X text 314 328 real = red / imaginary = green;
+#N canvas 1105 147 263 139 init 0;
+#X obj 31 22 loadbang;
+#X msg 31 48 \; real width 2 \, color 900 \; imaginary width 2 \, color
+90;
+#X connect 0 0 1 0;
+#X restore 520 124 pd init;
+#X text 380 379 updated for Pd version 0.52;
+#X connect 0 0 21 0;
+#X connect 0 1 22 0;
+#X connect 2 0 9 0;
+#X connect 8 0 10 0;
+#X connect 9 0 0 0;
+#X connect 10 0 21 0;
+#X connect 10 0 22 0;
+#X connect 11 0 12 0;
+#X connect 17 0 0 1;
