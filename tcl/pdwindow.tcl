@@ -448,7 +448,7 @@ proc ::pdwindow::create_window {} {
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
     # TODO this should use the pd_font_$size created in pd-gui.tcl
-    text .pdwindow.text -relief raised -bd 2 -font {$::font_family 10} \
+    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family 10] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0

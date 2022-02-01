@@ -28,7 +28,11 @@ proc ::dialog_font::radio_apply {mytoplevel myfontsize {stretchval 0} {whichstre
             font configure $font -size $myfontsize
         }
         if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
+            set font [lindex [${mytoplevel}.text.internal cget -font] 0]
+            if { ${font} eq {} } {
+                set font $::font_family
+            }
+            ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
         }
 
         # repeat a "pack" command so the font dialog can resize itself
