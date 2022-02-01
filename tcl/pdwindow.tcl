@@ -413,15 +413,13 @@ proc ::pdwindow::create_window {} {
     label .pdwindow.header.ioframe.iostate \
         -text [_ "Audio off"] -borderwidth 1 \
         -background lightgray -foreground black \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
         -text [_ "Audio I/O error"] -borderwidth 1 \
         -background lightgray -foreground lightgray \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
     pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
         -side top
