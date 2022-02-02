@@ -30,12 +30,6 @@ samplerate must be half of the parent patch., f 44;
 current audio sample rate. If called within a subwindow that is up-
 or down-sampled \, the sample rate of signals within that subwindow
 are reported (see [pd resampling] subpatch below).;
-#X text 44 139 Here we litsen to "pd-dsp-started" to receive a bang
-(automatically sent when DSP is started in Pd) to get the sample rate
-when DSP starts. This also works whenever the sample rate may change
-when the audio is running. This is useful when designing filters whose
-coefficients usually have to be updated when the sample rate changes.
-, f 60;
 #X text 87 283 DSP On/Off;
 #X obj 211 409 pd-messages;
 #N canvas 731 147 576 199 reference 0;
@@ -59,6 +53,12 @@ coefficients usually have to be updated when the sample rate changes.
 0;
 #X obj 18 392 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 44 139 Here we listen to "pd-dsp-started" to receive a bang
+(automatically sent when DSP is started in Pd) to get the sample rate
+when DSP starts. This also works whenever the sample rate may change
+when the audio is running. This is useful when designing filters whose
+coefficients usually have to be updated when the sample rate changes.
+, f 60;
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
 #X connect 5 0 4 0;
