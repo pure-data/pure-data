@@ -283,9 +283,9 @@ the UI thread must be the main thread, otherwise it won't receive any input even
 to a secondary thread and runs a Cocoa event loop on the main thread.
 
 Unfortunately, some externals like 'Gem' or 'ophelia' already run their own (polling)
-event loop and expect the scheduler to run on the main thread. To maintain backwards
-compatibility we can't enable the event loop by default, instead users must request
-it explicitly with the "-eventloop" flag.
+event loop and expect the scheduler to run on the main thread. If you want to use
+these externals, you have to disable the event loop, either by unchecking
+"Enable event loop" in the "Startup" dialog or by starting Pd with "-noeventloop".
 
 For now, the event loop is only implemented for macOS, because there it is essential.
 Win32 and X11, on the other hand, don't have any notion of a "main thread", so externals

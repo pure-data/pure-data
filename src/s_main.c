@@ -362,6 +362,11 @@ int sys_main(int argc, const char **argv)
     const char *prefsfile = "";
 
     sys_externalschedlib = 0;
+#ifdef __APPLE__
+    /* on macOS we enable the event loop by default,
+     * but only for the Pd app (not for libpd). */
+    sys_eventloop = 1;
+#endif
 #ifdef PD_DEBUG
     fprintf(stderr, "Pd: COMPILED FOR DEBUGGING\n");
 #endif
