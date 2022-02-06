@@ -2,17 +2,23 @@
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
-CLEANFILES=
+CLEANFILES =
 
 bin_SCRIPTS =
 noinst_SCRIPTS =
 
-pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
-pd_LDFLAGS =
+AM_CPPFLAGS = @PD_CPPFLAGS@
+AM_CFLAGS = @PD_CFLAGS@
+AM_LDFLAGS = @PD_LDFLAGS@
+
+pd_CFLAGS = -DPD -DPD_INTERNAL -DINSTALL_PREFIX=\"$(prefix)\" @PD_CFLAGS@
+pd_LDFLAGS = @PD_LDFLAGS@
 pd_LDADD =
-libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY
+
+libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY @PD_CPPFLAGS@
+libpd_la_CFLAGS = @PD_CFLAGS@
 libpd_la_LIBADD =
-libpd_la_LDFLAGS =
+libpd_la_LDFLAGS = @PD_LDFLAGS@
 libpdincludedir = $(includedir)/libpd
 libpdinclude_HEADERS =
 
@@ -20,14 +26,14 @@ libpdinclude_HEADERS =
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
 # also, the "_core" suffix is used as this keeps automake from thinking these
 # are library or binary variables since we only need them as placeholders
-pd_LDFLAGS_core =
+pd_LDFLAGS_core = @PD_LDFLAGS@
 pd_LDADD_core =
-pd_LDFLAGS_standalone =
+pd_LDFLAGS_standalone = @PD_LDFLAGS@
 pd_LDADD_standalone =
 
-pdsend_CFLAGS =
-pdreceive_CFLAGS =
-pd_watchdog_CFLAGS =
+pdsend_CFLAGS = @PD_CFLAGS@
+pdreceive_CFLAGS = @PD_CFLAGS@
+pd_watchdog_CFLAGS = @PD_CFLAGS@
 
 LIBS = @LIBS@
 
@@ -86,8 +92,6 @@ libpd_la_SOURCES += \
     $(top_srcdir)/extra/stdout/stdout.c \
     $(empty)
 endif
-
-
 
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
 # (where all the logic resides), that's why we have to split the sources
@@ -199,7 +203,7 @@ endif
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
-    makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
+    makefile.gnu makefile.mac makefile.mingw makefile.msvc \
     d_soundfile.h s_audio_audiounit.c s_audio_esd.c
 
 # add WISH define if it's set
@@ -302,7 +306,7 @@ endif
 
 endif
 
-
+##### Jack Audio Connection Kit #####
 if JACK
 pd_SOURCES_standalone += s_audio_paring.c
 else !JACK
@@ -310,7 +314,6 @@ if PORTAUDIO
 pd_SOURCES_standalone += s_audio_paring.c
 endif PORTAUDIO
 endif !JACK
-
 
 ##### NO API? #####
 # if no audio or midi api was detected/specified, fall back to dummy apis
@@ -388,6 +391,11 @@ pd_CFLAGS += -DMACOSX
 LIBS += -ldl -lm -lpthread -framework CoreFoundation
 libpd_la_LIBADD += -ldl -lm -lpthread
 libpd_la_LDFLAGS += -framework CoreFoundation
+
+# PERTHREAD requires macOS 10.9+ SDK
+if LIBPD_MULTIINSTANCE
+libpd_la_CFLAGS += -mmacosx-version-min=10.9
+endif
 
 endif
 

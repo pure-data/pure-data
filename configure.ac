@@ -47,6 +47,11 @@ midi_backends=""
 DEBUG_CFLAGS="-O0"
 RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer -O3"
 
+# common flags applied to all pd binaries
+PD_CPPFLAGS=""
+PD_CFLAGS=""
+PD_LDFLAGS=""
+
 #########################################
 ##### OS Detection #####
 
@@ -80,19 +85,19 @@ AS_CASE([$host],
     # homebrew paths
     AS_IF([test -e /usr/local],[
         AM_CPPFLAGS="-I/usr/local/include $INCLUDES"
-        LDFLAGS="-L/usr/local/lib $LDFLAGS"
+        PD_LDFLAGS="-L/usr/local/lib $PD_LDFLAGS"
     ])
 
     # fink paths
     AS_IF([test -e /sw],[
         AM_CPPFLAGS="-I/sw/include $INCLUDES"
-        LDFLAGS="-L/sw/lib $LDFLAGS"
+        PD_LDFLAGS="-L/sw/lib $PD_LDFLAGS"
     ])
 
     # macports paths
     AS_IF([test -e /opt/local],[
         AM_CPPFLAGS="-I/opt/local/include $INCLUDES"
-        LDFLAGS="-L/opt/local/lib $LDFLAGS"
+        PD_LDFLAGS="-L/opt/local/lib $PD_LDFLAGS"
     ])
 
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
@@ -276,10 +281,15 @@ AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
     [debug=$enableval], [debug=no])
 AS_IF([test x$debug = xyes],[
-    CFLAGS="$CFLAGS $DEBUG_CFLAGS"
+    PD_CFLAGS="$DEBUG_CFLAGS $PD_CFLAGS"
 ],[
-    CFLAGS="$CFLAGS $RELEASE_CFLAGS"
-    CPPFLAGS="$CPPFLAGS -DNDEBUG"
+    PD_CFLAGS="$RELEASE_CFLAGS $PD_CFLAGS"
+    PD_CPPFLAGS="-DNDEBUG $PD_CPPFLAGS"
+])
+
+##### macOS version min #####
+AS_IF([test "x$macos_version_min" != "x"],[
+    PD_CFLAGS="-mmacosx-version-min=$macos_version_min $PD_CFLAGS"
 ])
 
 #########################################
@@ -307,8 +317,8 @@ AM_CONDITIONAL(LIBPD_NO_SETLOCALE, test x$enable_libpd_setlocale = xno)
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 AS_IF([test x$universal = xyes],[
-    CFLAGS="$ARCH_CFLAGS $CFLAGS"
-    LDFLAGS="$ARCH_LDFLAGS $LDFLAGS"
+    PD_CFLAGS="$ARCH_CFLAGS $PD_CFLAGS"
+    PD_LDFLAGS="$ARCH_LDFLAGS $PD_LDFLAGS"
 ])
 
 ##### Gettext #####
@@ -543,13 +553,7 @@ AS_IF([test ! "x${WISH}" = "x"],[
 AS_IF([test "x${enable_libpd}" = "xyes"],[
     libpd="yes"
     libpd_=""
-    AS_IF([test "x${enable_libpd_instance}" = "xyes"],[
-        libpd_="${libpd_}+multi "
-        AS_IF([test "x$MACOSX" = "xyes"],[
-            macos_version_min=10.9
-            AC_MSG_NOTICE([Setting macOS version min 10.9 for libpd instance])
-        ])
-    ])
+    AS_IF([test "x${enable_libpd_instance}" = "xyes"],[ libpd_="${libpd_}+multi "])
     AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils "])
     AS_IF([test "x${enable_libpd_extra}" = "xyes"],[ libpd_="${libpd_}+extra "])
     AS_IF([test "x${enable_libpd_setlocale}" = "xno"],[ libpd_="${libpd_}-setlocale "])
@@ -558,10 +562,10 @@ AS_IF([test "x${enable_libpd}" = "xyes"],[
     libpd="no"
 ])
 
-##### macOS version min #####
-AS_IF([test "x$macos_version_min" != "x"],[
-    CFLAGS="-mmacosx-version-min=$macos_version_min $CFLAGS"
-])
+# pass common flags via @PD_*@ AM variables for use in Makefiles
+AC_SUBST(PD_CPPFLAGS)
+AC_SUBST(PD_CFLAGS)
+AC_SUBST(PD_LDFLAGS)
 
 #########################################
 ##### Output files #####
@@ -610,9 +614,9 @@ AC_MSG_NOTICE([
     Installation prefix:  $prefix
 
     Compiler:             $CC
-    CPPFLAGS:             $CPPFLAGS
-    CFLAGS:               $CFLAGS
-    LDFLAGS:              $LDFLAGS
+    CPPFLAGS:             $PD_CPPFLAGS $CPPFLAGS
+    CFLAGS:               $PD_CFLAGS $CFLAGS
+    LDFLAGS:              $PD_LDFLAGS $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS
     LIBS:                 $LIBS
 
