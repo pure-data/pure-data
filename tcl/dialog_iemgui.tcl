@@ -179,19 +179,43 @@ proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
     }
 }
 
-proc ::dialog_iemgui::lilo {mytoplevel} {
-    # TODO rename this
-    set vid [string trimleft $mytoplevel .]
+proc ::dialog_iemgui::togglebutton {button statevar labels {newstate {}}} {
+    upvar 1 $statevar state
+    if { $newstate eq {} } {
+        set newstate [expr ! $state]
+    }
+    set state $newstate
+    set label [lindex $labels $newstate]
+    $button configure -text $label
+    return $newstate
+}
 
+proc ::dialog_iemgui::toggle_mode {mytoplevel {val {}}} {
+    set vid [string trimleft $mytoplevel .]
     ::dialog_iemgui::sched_rng $mytoplevel
 
-    set ::dialog_iemgui::var_mode($vid) [expr ! $::dialog_iemgui::var_mode($vid)]
+    set val [::dialog_iemgui::togglebutton \
+                 $mytoplevel.para.lilo ::dialog_iemgui::var_mode($vid) \
+                 $::dialog_iemgui::var_mode_labels($vid) $val ]
 
-    $mytoplevel.para.lilo configure -text [lindex $::dialog_iemgui::var_mode_labels($vid) $::dialog_iemgui::var_mode($vid)]
-    if {$::dialog_iemgui::var_mode($vid) != 0} {
+    if {$val != 0} {
         ::dialog_iemgui::verify_rng $mytoplevel
         ::dialog_iemgui::sched_rng $mytoplevel
     }
+}
+
+proc ::dialog_iemgui::toggle_loadbang {mytoplevel {newstate {}}} {
+    set vid [string trimleft $mytoplevel .]
+    ::dialog_iemgui::togglebutton \
+        $mytoplevel.para.lb ::dialog_iemgui::var_loadbang($vid) \
+        [list [_ "No init"] [_ "Init"] ] $newstate
+}
+
+proc ::dialog_iemgui::toggle_steady {mytoplevel {newstate {}}} {
+    set vid [string trimleft $mytoplevel .]
+    ::dialog_iemgui::togglebutton \
+        $mytoplevel.para.stdy_jmp ::dialog_iemgui::var_steady($vid) \
+        [list [_ "Jump on click"] [_ "Steady on click"] ] $newstate
 }
 
 # open popup over source button
@@ -219,35 +243,6 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     $mytoplevel.label.name_entry configure -font $current_font_spec
     $mytoplevel.colors.sections.exp.fr_bk configure -font $current_font_spec
     $mytoplevel.colors.sections.exp.lb_bk configure -font $current_font_spec
-}
-
-proc ::dialog_iemgui::lb {mytoplevel {newstate {}}} {
-    # TODO rename this to 'toggle_loadbang'
-    set vid [string trimleft $mytoplevel .]
-
-    if { $newstate eq {} } {
-        set newstate [expr ! $::dialog_iemgui::var_loadbang($vid)]
-    }
-    set ::dialog_iemgui::var_loadbang($vid) $newstate
-    if {$::dialog_iemgui::var_loadbang($vid) == 0} {
-        $mytoplevel.para.lb configure -text [_ "No init"]
-    } else {
-        $mytoplevel.para.lb configure -text [_ "Init"]
-    }
-    return newstate
-}
-
-proc ::dialog_iemgui::stdy_jmp {mytoplevel} {
-    # TODO rename this to 'toggle_steady_jump'
-    set vid [string trimleft $mytoplevel .]
-
-    set ::dialog_iemgui::var_steady($vid) [expr ! $::dialog_iemgui::var_steady($vid)]
-    if {$::dialog_iemgui::var_steady($vid) == 0} {
-        $mytoplevel.para.stdy_jmp configure -text [_ "Jump on click"]
-    } else {
-        $mytoplevel.para.stdy_jmp configure -text [_ "Steady on click"]
-    }
-
 }
 
 proc ::dialog_iemgui::apply {mytoplevel} {
@@ -459,35 +454,31 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
-    button $mytoplevel.para.lilo \
-        -text [_ [lindex $::dialog_iemgui::var_mode_labels($vid) $::dialog_iemgui::var_mode($vid)] ] \
-        -command "::dialog_iemgui::lilo $mytoplevel"
 
-    if {$::dialog_iemgui::var_loadbang($vid) == 0} {
-        button $mytoplevel.para.lb -text [_ "No init"] \
-            -command "::dialog_iemgui::lb $mytoplevel"  }
-    if {$::dialog_iemgui::var_loadbang($vid) == 1} {
-        button $mytoplevel.para.lb -text [_ "Init"] \
-            -command "::dialog_iemgui::lb $mytoplevel"  }
+    button $mytoplevel.para.lilo -command "::dialog_iemgui::toggle_mode $mytoplevel"
+    button $mytoplevel.para.lb -command "::dialog_iemgui::toggle_loadbang $mytoplevel"
+    button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::toggle_steady $mytoplevel"
+
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $label_number]
     entry $mytoplevel.para.num.ent -textvariable ::dialog_iemgui::var_number($vid) -width 4
     pack $mytoplevel.para.num.ent $mytoplevel.para.num.lab -side right -anchor e
 
-    if {$::dialog_iemgui::var_steady($vid) == 0} {
-        button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Jump on click"] }
-    if {$::dialog_iemgui::var_steady($vid) == 1} {
-        button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Steady on click"] }
     if {$::dialog_iemgui::var_mode($vid) >= 0} {
-        pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
+        ::dialog_iemgui::toggle_mode $mytoplevel $::dialog_iemgui::var_mode($vid)
+        pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10
+    }
     if {$::dialog_iemgui::var_loadbang($vid) >= 0} {
-        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10}
+        ::dialog_iemgui::toggle_loadbang $mytoplevel $::dialog_iemgui::var_loadbang($vid)
+        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10
+    }
     if {$::dialog_iemgui::var_number($vid) > 0} {
-        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10}
+        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10
+    }
     if {$::dialog_iemgui::var_steady($vid) >= 0} {
-        pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10}
+        ::dialog_iemgui::toggle_steady $mytoplevel $::dialog_iemgui::var_steady($vid)
+        pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10
+    }
 
     # messages
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
