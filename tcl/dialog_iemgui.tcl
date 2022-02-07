@@ -23,8 +23,7 @@ array set ::dialog_iemgui::var_range_min {} ;# var_iemgui_min_rng
 array set ::dialog_iemgui::var_range_checkmode {} ;# var_iemgui_rng_sch
 
 array set ::dialog_iemgui::var_mode {} ;# var_iemgui_lin0_log1
-array set ::dialog_iemgui::var_lilo0 {} ;# var_iemgui_lilo0
-array set ::dialog_iemgui::var_lilo1 {} ;# var_iemgui_lilo1
+array set ::dialog_iemgui::var_mode_labels {} ;# var_iemgui_lilo0 var_iemgui_lilo1
 
 array set ::dialog_iemgui::var_loadbang {} ;# var_iemgui_loadbang
 array set ::dialog_iemgui::var_steady {} ;# var_iemgui_steady
@@ -188,10 +187,8 @@ proc ::dialog_iemgui::lilo {mytoplevel} {
 
     set ::dialog_iemgui::var_mode($vid) [expr ! $::dialog_iemgui::var_mode($vid)]
 
-    if {$::dialog_iemgui::var_mode($vid) == 0} {
-        $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo0($vid)
-    } else {
-        $mytoplevel.para.lilo configure -text $::dialog_iemgui::var_lilo1($vid)
+    $mytoplevel.para.lilo configure -text [lindex $::dialog_iemgui::var_mode_labels($vid) $::dialog_iemgui::var_mode($vid)]
+    if {$::dialog_iemgui::var_mode($vid) != 0} {
         ::dialog_iemgui::verify_rng $mytoplevel
         ::dialog_iemgui::sched_rng $mytoplevel
     }
@@ -339,8 +336,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     set ::dialog_iemgui::var_range_checkmode($vid) $rng_sched
 
     set ::dialog_iemgui::var_mode($vid) $lin0_log1
-    set ::dialog_iemgui::var_lilo0($vid) $lilo0_label
-    set ::dialog_iemgui::var_lilo1($vid) $lilo1_label
+    set ::dialog_iemgui::var_mode_labels($vid) [list $lilo0_label $lilo1_label]
 
     set ::dialog_iemgui::var_loadbang($vid) $loadbang
     set ::dialog_iemgui::var_steady($vid) $steady
@@ -463,12 +459,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
-    if {$::dialog_iemgui::var_mode($vid) == 0} {
-        button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo0($vid)] \
-            -command "::dialog_iemgui::lilo $mytoplevel" }
-    if {$::dialog_iemgui::var_mode($vid) == 1} {
-        button $mytoplevel.para.lilo -text [_ $::dialog_iemgui::var_lilo1($vid)] \
-            -command "::dialog_iemgui::lilo $mytoplevel" }
+    button $mytoplevel.para.lilo \
+        -text [_ [lindex $::dialog_iemgui::var_mode_labels($vid) $::dialog_iemgui::var_mode($vid)] ] \
+        -command "::dialog_iemgui::lilo $mytoplevel"
+
     if {$::dialog_iemgui::var_loadbang($vid) == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
             -command "::dialog_iemgui::lb $mytoplevel"  }
