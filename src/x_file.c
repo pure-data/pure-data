@@ -171,8 +171,6 @@ static char*do_pathnormalize(const char *from, char *to) {
             rp--;
         }
     }
-
-    *wp++=0;
     return to;
 }
 
@@ -1270,7 +1268,7 @@ static void file_split_symbol(t_file_handle*x, t_symbol*path) {
 
 static void file_join_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
         /* luckily for us, the path-separator in Pd is always '/' */
-    size_t bufsize = 0;
+    size_t bufsize = 1;
     char*buffer = getbytes(bufsize);
     (void)s;
     while(argc--) {
@@ -1280,16 +1278,18 @@ static void file_join_list(t_file_handle*x, t_symbol*s, int argc, t_atom*argv) {
         size_t alen;
         atom_string(argv++, abuf, MAXPDSTRING);
         alen = strlen(abuf);
-        if(!alen || '/' == abuf[alen-1])
+        if(!alen) continue;
+        if('/' == abuf[alen-1])
             needsep = 0;
         newsize = bufsize + alen + needsep;
         if (!(newbuffer = resizebytes(buffer, bufsize, newsize))) break;
         buffer = newbuffer;
-        strcpy(buffer+bufsize, abuf);
+        strcpy(buffer+bufsize-1, abuf);
         if(needsep)
-            buffer[newsize-1]='/';
+            buffer[newsize-2]='/';
         bufsize = newsize;
     }
+    buffer[bufsize-1] = 0;
     outlet_symbol(x->x_dataout, gensym(do_pathnormalize(buffer, buffer)));
     freebytes(buffer, bufsize);
 }
