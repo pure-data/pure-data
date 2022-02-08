@@ -421,9 +421,9 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     int sndable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
-        oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
-        oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) sndable = 0;
     iemgui->x_snd_unexpanded = s;
@@ -440,9 +440,9 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     int rcvable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
-        oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
-        oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
     if(!strcmp(s->s_name, "empty")) rcvable = 0;
     rcv = s;
@@ -684,9 +684,9 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int sndable=1, rcvable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
-        oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
-        oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
+        oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
     if(IS_A_SYMBOL(argv,7))
         srl[0] = atom_getsymbolarg(7, argc, argv);
     else if(IS_A_FLOAT(argv,7))
