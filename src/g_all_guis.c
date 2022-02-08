@@ -225,9 +225,19 @@ void iemgui_verify_snd_ne_rcv(t_iemgui *iemgui)
 
 t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv)
 {
-    if (IS_A_SYMBOL(argv, indx))
-        return (atom_getsymbolarg(indx, 100000, argv));
-    else return (gensym("empty"));
+    if (IS_A_SYMBOL(argv, indx)) {
+        t_symbol*name=atom_getsymbolarg(indx, 100000, argv);
+        if(gensym("empty") == name)
+            return 0;
+        return name;
+    }
+    else if (IS_A_FLOAT(argv, indx))
+    {
+        char str[80];
+        sprintf(str, "%d", (int)atom_getfloatarg(indx, 100000, argv));
+        return (gensym(str));
+    }
+    else return 0;
 }
 
 void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
@@ -245,28 +255,33 @@ void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
             iemgui->x_lab = iemgui_new_dogetname(iemgui, indx+2, argv);
         }
     }
-    else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = gensym("empty");
+    else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = 0;
     iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded =
         iemgui->x_lab_unexpanded = 0;
     iemgui->x_binbufindex = indx;
     iemgui->x_labelbindex = indx + 3;
 }
 
+static t_symbol*do_all_dollarg2sym(t_iemgui*iemgui, t_symbol**s, size_t index)
+{
+    t_symbol*org = s[index];
+    if(org) {
+        s[index] = canvas_realizedollar(iemgui->x_glist, org);
+    }
+    return org;
+}
     /* convert symbols in "$" form to the expanded symbols */
 void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
 {
         /* save unexpanded ones for later */
-    iemgui->x_snd_unexpanded = srlsym[0];
-    iemgui->x_rcv_unexpanded = srlsym[1];
-    iemgui->x_lab_unexpanded = srlsym[2];
-    srlsym[0] = canvas_realizedollar(iemgui->x_glist, srlsym[0]);
-    srlsym[1] = canvas_realizedollar(iemgui->x_glist, srlsym[1]);
-    srlsym[2] = canvas_realizedollar(iemgui->x_glist, srlsym[2]);
+    iemgui->x_snd_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 0);
+    iemgui->x_rcv_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 1);
+    iemgui->x_lab_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 2);
 }
 
     /* initialize a single symbol in unexpanded form.  We reach into the
     binbuf to grab them; if there's nothing there, set it to the
-    fallback; if still nothing, set to "empty". */
+    fallback; if still nothing, set to NULL. */
 static void iemgui_init_sym2dollararg(t_iemgui *iemgui, t_symbol **symp,
     int indx, t_symbol *fallback)
 {
@@ -276,13 +291,13 @@ static void iemgui_init_sym2dollararg(t_iemgui *iemgui, t_symbol **symp,
         if (binbuf_getnatom(b) > indx)
         {
             char buf[80];
-            atom_string(binbuf_getvec(b) + indx, buf, 80);
-            *symp = gensym(buf);
+            atom_string(binbuf_getvec(b) + indx, buf, sizeof(buf));
+            if(strcmp(buf, "empty"))
+                *symp = gensym(buf);
         }
-        else if (fallback)
-            *symp = fallback;
-        else *symp = gensym("empty");
     }
+    if (!*symp)
+        *symp = fallback;
 }
 
     /* get the unexpanded versions of the symbols; initialize them if
@@ -425,9 +440,13 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
-    if(!strcmp(s->s_name, "empty")) sndable = 0;
-    iemgui->x_snd_unexpanded = s;
-    iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
+    if(s) {
+        iemgui->x_snd_unexpanded = s;
+        iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
+    } else {
+        iemgui->x_snd_unexpanded = iemgui->x_snd = 0;
+        sndable = 0;
+    }
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist) && gobj_shouldvis((t_gobj *)x, iemgui->x_glist))
@@ -436,34 +455,35 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 {
-    t_symbol *rcv;
-    int rcvable=1, oldsndrcvable=0;
+    int oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
         oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
-    if(!strcmp(s->s_name, "empty")) rcvable = 0;
-    rcv = s;
-    iemgui->x_rcv_unexpanded = rcv;
-    rcv = canvas_realizedollar(iemgui->x_glist, rcv);
-    if(rcvable)
+    if(s) {
+        iemgui->x_rcv_unexpanded = s;
+        s = canvas_realizedollar(iemgui->x_glist, s);
+    } else {
+        iemgui->x_rcv_unexpanded = 0;
+    }
+    if(s)
     {
-        if(strcmp(rcv->s_name, iemgui->x_rcv->s_name))
+        if(strcmp(s->s_name, iemgui->x_rcv->s_name))
         {
             if(iemgui->x_fsf.x_rcv_able)
                 pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-            iemgui->x_rcv = rcv;
+            iemgui->x_rcv = s;
             pd_bind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
         }
     }
-    else if(!rcvable && iemgui->x_fsf.x_rcv_able)
+    else if(iemgui->x_fsf.x_rcv_able)
     {
         pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-        iemgui->x_rcv = rcv;
+        iemgui->x_rcv = s;
     }
-    iemgui->x_fsf.x_rcv_able = rcvable;
+    iemgui->x_fsf.x_rcv_able = (s!=0);
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist) && gobj_shouldvis((t_gobj *)x, iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
@@ -473,16 +493,14 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 {
     t_symbol *old;
     char lab_escaped[MAXPDSTRING];
-    t_symbol*empty = gensym("empty");
-    if (s == gensym(""))
-        s = empty;
-
     old = iemgui->x_lab;
-    iemgui->x_lab_unexpanded = s;
-    iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
+    iemgui->x_lab = iemgui->x_lab_unexpanded = s;
+    if(s) {
+        iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
-    lab_escaped[MAXPDSTRING-1] = 0;
-    pdgui_strnescape(lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
+        lab_escaped[MAXPDSTRING-1] = 0;
+        pdgui_strnescape(lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
+    }
 
     if(senditup < 0) {
         senditup = (glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old);
@@ -491,7 +509,7 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
     if(senditup)
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape {%s }] \n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 (s != empty)?lab_escaped:"");
+                 (s)?lab_escaped:"");
 }
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
@@ -629,10 +647,13 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
 
 void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
 {
+    int i;
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
     srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
+    for(i=0; i<3; i++)
+        if(!srl[i])srl[i]=gensym("empty");
     iemgui_all_col2save(iemgui, bflcol);
 }
 
@@ -671,7 +692,8 @@ void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
     iemgui_all_sym2dollararg(iemgui, srl);
 
     for(i=0; i<3; i++) {
-        srl[i] = gensym(pdgui_strnescape(label, sizeof(label), srl[i]->s_name, strlen(srl[i]->s_name)));
+        if(srl[i])
+            srl[i] = gensym(pdgui_strnescape(label, sizeof(label), srl[i]->s_name, strlen(srl[i]->s_name)));
     }
 }
 
@@ -709,7 +731,7 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
             mode, label_mode0, label_mode1,
             canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
             number,
-            srl[0]->s_name, srl[1]->s_name, srl[2]->s_name,
+            srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
             iemgui->x_ldx, iemgui->x_ldy,
             iemgui->x_fsf.x_font_style, iemgui->x_fontsize,
             0xffffff & iemgui->x_bcol, 0xffffff & iemgui->x_fcol, 0xffffff & iemgui->x_lcol
@@ -755,18 +777,19 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     }
     if(init != 0) init = 1;
     iemgui->x_isa.x_loadinit = init;
-    if(!strcmp(srl[0]->s_name, "empty")) sndable = 0;
-    if(!strcmp(srl[1]->s_name, "empty")) rcvable = 0;
+    if(!strcmp(srl[0]->s_name, "empty")) srl[0] = 0;
+    if(!strcmp(srl[1]->s_name, "empty")) srl[1] = 0;
+    if(!strcmp(srl[2]->s_name, "empty")) srl[2] = 0;
+    if(!srl[0]) sndable = 0;
+    if(!srl[1]) rcvable = 0;
+
     iemgui_all_dollararg2sym(iemgui, srl);
-    if(rcvable)
+    if(rcvable && (!iemgui->x_rcv || strcmp(srl[1]->s_name, iemgui->x_rcv->s_name)))
     {
-        if(strcmp(srl[1]->s_name, iemgui->x_rcv->s_name))
-        {
-            if(iemgui->x_fsf.x_rcv_able)
-                pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-            iemgui->x_rcv = srl[1];
-            pd_bind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-        }
+        if(iemgui->x_rcv && iemgui->x_fsf.x_rcv_able)
+            pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
+        iemgui->x_rcv = srl[1];
+        pd_bind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
     }
     else if(!rcvable && iemgui->x_fsf.x_rcv_able)
     {

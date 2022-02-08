@@ -307,12 +307,8 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     if((argc == 14)&&IS_A_FLOAT(argv,13))
         nonzero = (t_float)atom_getfloatarg(13, argc, argv);
 
-    x->x_gui.x_fsf.x_snd_able = 1;
-    x->x_gui.x_fsf.x_rcv_able = 1;
-    if (!strcmp(x->x_gui.x_snd->s_name, "empty"))
-        x->x_gui.x_fsf.x_snd_able = 0;
-    if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
-        x->x_gui.x_fsf.x_rcv_able = 0;
+    x->x_gui.x_fsf.x_snd_able = (0 != x->x_gui.x_snd);
+    x->x_gui.x_fsf.x_rcv_able = (0 != x->x_gui.x_rcv);
     if(x->x_gui.x_fsf.x_font_style == 1) strcpy(x->x_gui.x_font, "helvetica");
     else if(x->x_gui.x_fsf.x_font_style == 2) strcpy(x->x_gui.x_font, "times");
     else { x->x_gui.x_fsf.x_font_style = 0;

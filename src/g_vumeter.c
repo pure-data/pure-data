@@ -463,9 +463,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(11, argc, argv));
 
     x->x_gui.x_fsf.x_snd_able = 0;
-    x->x_gui.x_fsf.x_rcv_able = 1;
-    if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
-        x->x_gui.x_fsf.x_rcv_able = 0;
+    x->x_gui.x_fsf.x_rcv_able = (0 != x->x_gui.x_rcv);
     if (x->x_gui.x_fsf.x_font_style == 1)
         strcpy(x->x_gui.x_font, "helvetica");
     else if(x->x_gui.x_fsf.x_font_style == 2)
