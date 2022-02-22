@@ -822,12 +822,18 @@ proc main {argc argv} {
     init_for_platform
 
     # ::host and ::port are parsed from argv by parse_args
-    if { $::port > 0 && $::host ne "" } {
-        # 'pd' started first and launched us, so get the port to connect to
-        ::pd_connect::to_pd $::port $::host
+    if { $::port > 0 } {
+        if { $::host ne "" } {
+            # 'pd' started a server and launched us, so connect to it as client
+            ::pd_connect::to_pd $::port $::host
+        } else {
+            # wait for a client 'pd' to connect to us; we're the server
+            # to do this, invoke as "pd-gui.tcl :1234" and start pd separately.
+            ::pd_connect::create_socket $::port
+        }
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
-        set ::port [::pd_connect::create_socket]
+        set ::port [::pd_connect::create_socket 0]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
         [string map {\{ "" \} ""} $::pd_startup_args]
