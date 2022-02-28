@@ -1516,13 +1516,49 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
     int global = 0;
-    text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
     x->x_waitsym = 0;
     x->x_waitargc = 0;
     x->x_eaten = 0;
     x->x_loop = 0;
     x->x_lastto = 0;
     x->x_clock = clock_new(x, (t_method)text_sequence_tick);
+    
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-w") && argc >= 2)
+        {
+            if (argv[1].a_type == A_SYMBOL)
+            {
+                x->x_waitsym = argv[1].a_w.w_symbol;
+                x->x_waitargc = 0;
+            }
+            else
+            {
+                x->x_waitsym = 0;
+                if ((x->x_waitargc = argv[1].a_w.w_float) < 0)
+                    x->x_waitargc = 0;
+            }
+            argc -= 1; argv += 1;
+        }
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-g"))
+            global = 1;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-t") && argc >= 3)
+        {
+            text_sequence_tempo(x, atom_getsymbolarg(2, argc, argv),
+                atom_getfloatarg(1, argc, argv));
+             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-s"))
+        {
+            goto argparse;
+        }
+        argc--; argv++;
+    }
+                 
+    argparse:
+    text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
+    
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
