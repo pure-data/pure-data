@@ -1522,7 +1522,6 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_loop = 0;
     x->x_lastto = 0;
     x->x_clock = clock_new(x, (t_method)text_sequence_tick);
-    
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
