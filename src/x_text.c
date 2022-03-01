@@ -1555,10 +1555,8 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
         }
         argc--; argv++;
     }
-                 
     argparse:
     text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
-    
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
