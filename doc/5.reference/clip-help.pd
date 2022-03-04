@@ -1,4 +1,4 @@
-#N canvas 709 131 514 352 12;
+#N canvas 644 102 514 352 12;
 #X floatatom 172 139 4 0 0 0 - - - 0;
 #X floatatom 206 166 4 0 0 0 - - - 0;
 #X obj 21 16 clip;
@@ -18,32 +18,32 @@ limits, f 34;
 #X text 48 62 The clip object passes its signal input to its output
 \, clipping it to lie between two limits.;
 #X obj 211 309 expr;
-#N canvas 804 232 572 344 reference 0;
+#N canvas 655 200 573 318 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 8 84 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 8 216 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 196 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 253 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 233 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 311 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 291 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 135 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 8 130 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 21 16 clip;
 #X text 58 16 - bound a number between two limits.;
-#X text 113 226 float - the clipped value., f 49;
-#X text 113 145 float - set lower limit., f 49;
-#X text 113 185 float - set upper limit., f 49;
-#X text 111 92 float - number to clip., f 61;
-#X text 118 110 bang - re clip last incomming number between the two
+#X text 113 206 float - the clipped value., f 49;
+#X text 111 135 float - set lower limit., f 49;
+#X text 111 167 float - set upper limit., f 49;
+#X text 111 89 float - number to clip., f 61;
+#X text 118 107 bang - re clip last incomming number between the two
 limits.;
-#X text 113 264 1) float - initial lower limit (default 0)., f 49
+#X text 113 244 1) float - initial lower limit (default 0)., f 49
 ;
-#X text 113 283 2) float - initial upper limit (default 0)., f 49
+#X text 113 263 2) float - initial upper limit (default 0)., f 49
 ;
-#X obj 7 175 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+#X obj 8 159 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
 #X restore 337 15 pd reference;
 #X text 428 15 <= click;

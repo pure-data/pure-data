@@ -1,11 +1,11 @@
 #N struct help-draw-data float x float y float cat float dog symbol
 weasel text boom;
-#N canvas 655 119 594 266 12;
-#X text 32 222 see also:;
+#N canvas 655 119 585 256 12;
+#X text 19 217 see also:;
 #X obj 37 12 drawnumber;
-#X obj 241 221 plot;
-#X obj 155 221 drawpolygon;
-#X obj 104 221 struct;
+#X obj 228 216 plot;
+#X obj 142 216 drawpolygon;
+#X obj 91 216 struct;
 #X obj 37 36 drawsymbol;
 #X obj 37 59 drawtext;
 #N canvas 872 42 533 657 help-draw-template 0;
@@ -53,43 +53,43 @@ properties., f 69;
 #X scalar help-draw-data 255 95 612 34 wolrd \; 1 a 2 b 3 c \\\; \;
 ;
 #X restore 399 152 pd help-draw-data;
-#X text 352 221 updated for Pd version 0.50.;
-#X obj 279 221 set;
+#X text 353 218 updated for Pd version 0.50.;
+#X obj 266 216 set;
 #X text 291 125 explanation =>;
 #X obj 8 91 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 395 121 575 392 reference 0;
-#X obj 9 68 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 395 121 571 346 reference 0;
+#X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 114 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 6 103 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 151 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 6 137 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 363 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 5 321 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 120 85 float -;
-#X obj 32 10 drawpolygon;
-#X obj 32 33 drawcurve;
-#X obj 137 11 filledpolygon;
-#X obj 138 33 filledcurve;
-#X text 243 13 - draw shapes for data structures, f 17;
-#X text 146 124 NONE, f 54;
-#X text 177 85 sets visibility (1: visible \, 0: invisible)., f 46
+#X text 112 75 float -;
+#X obj 23 9 drawpolygon;
+#X obj 23 32 drawcurve;
+#X obj 118 10 filledpolygon;
+#X obj 118 32 filledcurve;
+#X text 220 20 - draw shapes for data structures;
+#X text 143 113 NONE, f 54;
+#X text 169 75 sets visibility (1: visible \, 0: invisible)., f 46
 ;
-#X obj 9 185 cnv 1 550 1 empty empty flags: 8 12 0 13 #000000 #000000
+#X obj 6 165 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 9 245 cnv 1 550 1 empty empty args: 8 12 0 13 #000000 #000000
+#X obj 6 213 cnv 1 550 1 empty empty args: 8 12 0 13 #9f9f9f #000000
 0;
-#X text 100 211 "-v" <symbol>: assigns a field to make it visible/invisible.
+#X text 97 189 "-v" <symbol>: assigns a field to make it visible/invisible.
 , f 63;
-#X text 100 191 "-n": makes it invisible initially., f 63;
-#X text 95 253 1) symbol -;
-#X text 179 252 field name to draw., f 47;
-#X text 95 308 4) symbol - optional label., f 59;
-#X text 109 270 2) list* - (x \, y) coordinates pair (default 0 0).
-, f 57;
-#X text 102 289 3) float* - color (default 0)., f 58;
-#X text 115 331 * position and color ccan also be field names.;
+#X text 97 171 "-n": makes it invisible initially., f 63;
+#X text 102 219 1) symbol -;
+#X text 185 218 field name to draw., f 46;
+#X text 101 272 4) symbol - optional label., f 58;
+#X text 101 236 2) list* - (x \, y) coordinates pair (default 0 0).
+, f 58;
+#X text 101 254 3) float* - color (default 0)., f 58;
+#X text 131 294 * position and color can also be field names.;
 #X restore 397 33 pd reference;
 #X text 495 34 <= click;
 #X text 125 23 - draw numbers \, symbols or texts for Data Structures.

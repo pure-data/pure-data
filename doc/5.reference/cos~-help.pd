@@ -1,53 +1,53 @@
-#N canvas 614 59 564 424 12;
-#X obj 62 19 cos~;
-#X obj 215 293 snapshot~;
-#X obj 138 174 sig~;
-#X floatatom 215 319 10 0 0 0 - - - 0;
-#X obj 138 143 * 0.01;
-#X floatatom 138 116 5 0 0 0 - - - 0;
-#X text 192 143 Divide by 100;
-#X text 174 174 convert to audio;
-#X text 29 384 see also:;
-#X obj 102 385 osc~;
-#X obj 141 385 tabread4~;
-#X text 50 58 The cos~ object outputs the cosine of two pi times its
+#N canvas 614 59 515 406 12;
+#X obj 23 12 cos~;
+#X obj 200 284 snapshot~;
+#X obj 123 165 sig~;
+#X floatatom 200 310 10 0 0 0 - - - 0;
+#X obj 123 134 * 0.01;
+#X floatatom 123 107 5 0 0 0 - - - 0;
+#X text 177 134 Divide by 100;
+#X text 159 165 convert to audio;
+#X text 14 368 see also:;
+#X obj 87 369 osc~;
+#X obj 126 369 tabread4~;
+#X text 35 49 The cos~ object outputs the cosine of two pi times its
 signal input. So -1 \, 0 \, 1 and 2 give 1 out \, 0.5 gives -1 \, and
 so on., f 61;
-#X text 309 384 updated for Pd version 0.41;
-#X text 109 18 - cosine waveshaper;
-#X text 183 117 <= Scroll to set input value;
-#X text 294 320 <= output of the cos~ object;
-#X obj 215 385 cos;
-#X obj 246 385 expr~;
-#X obj 215 258 metro 500;
-#X msg 305 250 \; pd dsp \$1;
-#X obj 215 212 loadbang;
-#X text 323 224 DSP on/off;
-#X obj 305 225 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 303 366 updated for Pd version 0.41;
+#X text 64 11 - cosine waveshaper;
+#X text 168 108 <= Scroll to set input value;
+#X text 279 311 <= output of the cos~ object;
+#X obj 200 369 cos;
+#X obj 231 369 expr~;
+#X obj 200 249 metro 500;
+#X msg 303 233 \; pd dsp \$1;
+#X obj 200 209 loadbang;
+#X text 328 207 DSP on/off;
+#X obj 303 208 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 22 52 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 7 43 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 683 179 583 220 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 683 179 572 208 reference 0;
+#X obj 10 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 104 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 10 96 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 154 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 18 191 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 10 146 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 62 19 cos~;
-#X text 109 18 - cosine waveshaper;
-#X text 96 72 signal - input from 0-1 (wraps into 0-1 if outside this
+#X obj 10 183 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 28 15 cos~;
+#X text 75 14 - cosine waveshaper;
+#X text 88 64 signal - input from 0-1 (wraps into 0-1 if outside this
 range)., f 63;
-#X text 96 121 signal - input from 0-1 (wraps into 0-1 if outside this
+#X text 88 113 signal - input from 0-1 (wraps into 0-1 if outside this
 range)., f 63;
-#X text 126 164 1) float - sets input value;
-#X restore 387 19 pd reference;
-#X obj 22 362 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 118 156 1) float - sets input value;
+#X restore 396 12 pd reference;
+#X obj 7 353 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 319 18 click =>;
-#X obj 138 218 cos~;
+#X text 328 11 click =>;
+#X obj 123 209 cos~;
 #X connect 1 0 3 0;
 #X connect 2 0 27 0;
 #X connect 4 0 2 0;

@@ -1,4 +1,4 @@
-#N canvas 455 51 953 560 12;
+#N canvas 348 50 951 558 12;
 #X declare -stdpath ./;
 #X text 750 224 creation argument: name of delay line, f 18;
 #X obj 44 65 delread4~;
@@ -31,7 +31,7 @@ example on how to control this to obtain very short delays., f 50
 ;
 #X text 123 376 input (delay time in ms);
 #X msg 49 376 500;
-#X text 604 527 updated for Pd version 0.52;
+#X text 732 527 updated for Pd version 0.52;
 #X text 243 321 2nd argument: length of delay line in msec (the maximum
 delay time in read objects), f 42;
 #X text 119 64 - read from a delay line with 4-point interpolation
@@ -42,10 +42,9 @@ for variable delay times., f 46;
 #X text 656 198 signal input (variable delay time in ms);
 #X text 736 283 - old name of delread4~ ('vd' for 'variable delay')
 , f 27;
-#X obj 487 71 vd~;
-#X text 410 71 => a.k.a.:;
-#X obj 130 528 fexpr~;
-#X text 56 528 see also:;
+#X obj 491 70 vd~;
+#X obj 96 528 fexpr~;
+#X text 22 528 see also:;
 #X text 598 471 See also other examples in the "G" section to learn
 how to implement dealys with feedback., f 46;
 #X obj 9 514 cnv 1 935 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -53,56 +52,48 @@ how to implement dealys with feedback., f 46;
 #X obj 7 102 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 488 21 <= click;
-#N canvas 733 91 573 555 reference 0;
-#X obj 181 18 delread4~;
-#X obj 40 18 delwrite~;
-#X obj 114 18 delread~;
-#X text 256 18 - delay tilde objects.;
-#X obj 8 97 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 733 91 574 497 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 156 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 190 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 145 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 256 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 211 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 161 165 NONE, f 45;
-#X text 117 198 symbol -;
-#X obj 43 67 delwrite~;
-#X text 106 111 signal -;
-#X text 173 111 signal input into the delay time., f 44;
-#X text 113 129 clear -;
-#X text 173 129 clear the delay time., f 44;
-#X text 185 198 delay line name., f 47;
-#X text 124 216 float -;
-#X text 185 216 length of delay line in msec (the maximum delay time
+#X text 161 120 NONE, f 45;
+#X text 117 153 symbol -;
+#X obj 43 22 delwrite~;
+#X text 106 66 signal -;
+#X text 173 66 signal input into the delay time., f 44;
+#X text 113 84 clear -;
+#X text 173 84 clear the delay time., f 44;
+#X text 185 153 delay line name., f 47;
+#X text 124 171 float -;
+#X text 185 171 length of delay line in msec (the maximum delay time
 in read objects)., f 47;
-#X obj 7 53 cnv 2 550 2 empty empty empty 8 12 0 13 #202020 #000000
+#X obj 8 307 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 367 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X obj 8 375 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 435 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 414 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 474 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 7 471 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 531 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 107 484 symbol -;
-#X text 175 484 delay line name., f 29;
-#X text 114 503 float -;
-#X obj 43 335 delread~;
-#X text 113 382 float -;
-#X obj 113 335 delread4~;
-#X text 117 67 - write in a delay line.;
-#X text 192 335 - read from a delay line.;
-#X text 107 444 signal -;
-#X obj 7 322 cnv 2 550 2 empty empty empty 8 12 0 13 #202020 #000000
-0;
-#X text 173 382 delay time in ms (for [delread~])., f 44;
-#X text 106 402 signal -;
-#X text 173 402 delay time in ms (for [delread4~])., f 44;
-#X text 173 444 delayed signal., f 44;
-#X text 175 503 initial delay time in ms for [delread~] (default 0).
+#X text 107 424 symbol -;
+#X text 175 424 delay line name., f 29;
+#X text 114 443 float -;
+#X obj 43 275 delread~;
+#X text 113 322 float -;
+#X obj 113 275 delread4~;
+#X text 117 22 - write in a delay line.;
+#X text 192 275 - read from a delay line.;
+#X text 107 384 signal -;
+#X text 173 322 delay time in ms (for [delread~])., f 44;
+#X text 106 342 signal -;
+#X text 173 342 delay time in ms (for [delread4~])., f 44;
+#X text 173 384 delayed signal., f 44;
+#X text 175 443 initial delay time in ms for [delread~] (default 0).
 ;
 #X restore 394 21 pd reference;
 #X floatatom 69 218 5 0 0 0 - - - 0;
@@ -118,16 +109,19 @@ f 78;
 #X msg 85 376 1000;
 #X msg 612 144 500;
 #X msg 648 144 1000;
+#X obj 576 3 cnv 1 1 100 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 406 70 --> a.k.a.:;
 #X connect 3 0 7 0;
 #X connect 3 0 7 1;
 #X connect 5 0 3 0;
 #X connect 6 0 4 0;
 #X connect 8 0 5 0;
 #X connect 10 0 4 0;
-#X connect 24 0 42 0;
-#X connect 40 0 6 0;
-#X connect 42 0 19 0;
-#X connect 42 0 19 1;
-#X connect 43 0 42 0;
+#X connect 24 0 41 0;
+#X connect 39 0 6 0;
+#X connect 41 0 19 0;
+#X connect 41 0 19 1;
+#X connect 42 0 41 0;
+#X connect 43 0 8 0;
 #X connect 44 0 8 0;
-#X connect 45 0 8 0;

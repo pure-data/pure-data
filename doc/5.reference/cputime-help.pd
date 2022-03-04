@@ -1,40 +1,40 @@
-#N canvas 634 117 494 372 12;
-#X msg 163 182 bang;
-#X msg 117 143 bang;
-#X floatatom 117 254 7 0 0 0 - - - 0;
-#X text 178 254 Output is in milliseconds;
-#X obj 117 223 cputime;
-#X text 32 74 The cputime object measures elapsed CPU time \, as measured
+#N canvas 569 85 460 315 12;
+#X msg 151 165 bang;
+#X msg 105 126 bang;
+#X floatatom 105 237 7 0 0 0 - - - 0;
+#X text 166 237 Output is in milliseconds;
+#X obj 105 206 cputime;
+#X text 20 57 The cputime object measures elapsed CPU time \, as measured
 by your operating system. This appears to work on NT \, IRIX \, and
 Linux \, but not on W98., f 59;
-#X obj 47 21 cputime;
-#X text 108 22 - measure CPU usage;
-#X text 238 321 updated for Pd version 0.33;
-#X text 28 323 see also:;
-#X obj 104 322 realtime;
-#X obj 176 322 timer;
-#X text 210 173 output elapsed time. You can click multiple times since
+#X obj 19 12 cputime;
+#X text 80 13 - measure CPU usage;
+#X text 252 284 updated for Pd version 0.33;
+#X text 16 285 see also:;
+#X obj 92 284 realtime;
+#X obj 164 284 timer;
+#X text 198 156 output elapsed time. You can click multiple times since
 it was last reset., f 25;
-#X text 157 141 reset (set elapsed time to zero);
-#X obj 17 59 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 145 124 reset (set elapsed time to zero);
+#X obj 5 42 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 794 222 494 222 reference 0;
-#X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 758 181 482 188 reference 0;
+#X obj 12 46 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 104 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 12 89 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 154 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 12 128 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X obj 57 20 cputime;
-#X text 118 21 - measure CPU usage;
-#X text 156 164 NONE;
-#X text 117 70 bang - reset (set elapsed time to zero)., f 43;
-#X text 117 119 bang - output elapsed time., f 43;
-#X obj 18 191 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 41 14 cputime;
+#X text 102 15 - measure CPU usage;
+#X text 151 137 NONE;
+#X text 111 60 bang - reset (set elapsed time to zero)., f 43;
+#X text 111 100 bang - output elapsed time., f 43;
+#X obj 12 162 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X restore 350 21 pd reference;
-#X text 282 20 click =>;
-#X obj 25 299 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 345 13 pd reference;
+#X text 277 12 click =>;
+#X obj 5 269 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 4 1;
 #X connect 1 0 4 0;

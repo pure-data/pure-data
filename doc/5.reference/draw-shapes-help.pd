@@ -1,12 +1,12 @@
 #N struct help-drawpolygon-template float x float y float cat float
 dog float weasel;
-#N canvas 683 90 589 257 12;
-#X text 19 204 see also:;
-#X obj 218 202 plot;
+#N canvas 625 77 589 227 12;
+#X text 20 186 see also:;
+#X obj 218 187 plot;
 #X obj 21 10 drawpolygon;
-#X obj 21 33 drawcurve;
+#X obj 21 34 drawcurve;
 #X obj 126 11 filledpolygon;
-#X obj 127 33 filledcurve;
+#X obj 127 34 filledcurve;
 #N canvas 501 88 995 511 help-drawpolygon-template 0;
 #X obj 574 312 struct help-drawpolygon-template float x float y float
 cat float dog float weasel, f 48;
@@ -61,63 +61,64 @@ a closed and filled triangle of altitude "cat".;
 #X connect 8 0 17 0;
 #X connect 9 0 18 0;
 #X connect 10 0 18 0;
-#X restore 321 98 pd help-drawpolygon-template;
-#N canvas 357 90 282 207 help-drawpolygon-data 1;
+#X restore 321 94 pd help-drawpolygon-template;
+#N canvas 342 90 282 207 help-drawpolygon-data 1;
 #X scalar help-drawpolygon-template 52 28 30 9 70 \;;
 #X scalar help-drawpolygon-template 155 102 -30 90 50 \;;
 #X coords 0 207 1 206 0 0 0;
-#X restore 321 124 pd help-drawpolygon-data;
-#X obj 94 202 struct;
-#X text 365 203 updated for Pd version 0.51.;
+#X restore 321 120 pd help-drawpolygon-data;
+#X obj 95 187 struct;
+#X text 370 188 updated for Pd version 0.51.;
 #X text 232 13 - draw shapes for data structures, f 17;
-#X text 260 98 open =>;
-#X obj 258 202 set;
-#X obj 295 202 text;
-#X obj 149 202 drawtext;
-#X obj 8 71 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 260 94 open =>;
+#X obj 258 187 set;
+#X obj 293 187 text;
+#X obj 150 187 drawtext;
+#X obj 8 67 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 832 74 575 463 reference 0;
-#X obj 9 68 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 714 72 569 433 reference 0;
+#X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 114 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 6 106 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 151 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 6 144 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 439 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 5 410 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 120 85 float -;
-#X obj 32 10 drawpolygon;
-#X obj 32 33 drawcurve;
-#X obj 137 11 filledpolygon;
-#X obj 138 33 filledcurve;
-#X text 243 13 - draw shapes for data structures, f 17;
-#X text 146 124 NONE, f 54;
-#X text 177 85 sets visibility (1: visible \, 0: invisible)., f 46
+#X text 117 77 float -;
+#X obj 22 10 drawpolygon;
+#X obj 22 33 drawcurve;
+#X obj 111 10 filledpolygon;
+#X obj 111 33 filledcurve;
+#X text 216 20 - draw shapes for data structures;
+#X text 143 116 NONE, f 51;
+#X text 174 77 sets visibility (1: visible \, 0: invisible)., f 46
 ;
-#X obj 9 185 cnv 1 550 1 empty empty flags: 8 12 0 13 #000000 #000000
+#X obj 6 168 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 9 327 cnv 1 550 1 empty empty args: 8 12 0 13 #000000 #000000
+#X obj 6 299 cnv 1 550 1 empty empty args: 8 12 0 13 #9f9f9f #000000
 0;
-#X text 100 211 "-v" <symbol>: assigns a field to make it visible/invisible.
+#X text 80 192 "-v" <symbol>: assigns a field to make it visible/invisible.
 , f 63;
-#X text 100 229 "-xr": disable mouse actions when in "run" mode.,
+#X text 80 210 "-xr": disable mouse actions when in "run" mode., f
+63;
+#X text 80 174 "-n": makes it invisible initially., f 63;
+#X text 80 228 "-xe": disable mouse actions when in "edit" mode.,
 f 63;
-#X text 100 191 "-n": makes it invisible initially., f 63;
-#X text 100 247 "-xe": disable mouse actions when in "edit" mode.,
-f 63;
-#X text 100 284 "-xv": disable dragging vertices when in "run" mode
-(keeps reporting mouse clicks)., f 63;
-#X text 100 265 "-x": set both "-xr" and "-xe" \, disabling all mouse
+#X text 80 246 "-x": set both "-xr" and "-xe" \, disabling all mouse
 actions., f 63;
-#X text 175 335 line color \, filled shapes have an extra first interior
+#X text 182 310 line color \, filled shapes have an extra first interior
 color. (default 0 \, 0)., f 48;
-#X text 90 336 1) float* -;
-#X text 91 367 2) float* - line width (default 1)., f 59;
-#X text 138 408 * all of the above can also be field names.;
-#X text 105 386 3 list* - (x \, y) pairs giving coordinates of each
+#X text 97 311 1) float* -;
+#X text 98 342 2) float* - line width (default 1)., f 60;
+#X text 145 383 * all of the above can also be field names.;
+#X text 112 361 3 list* - (x \, y) pairs giving coordinates of each
 vertice.;
-#X restore 403 22 pd reference;
-#X text 501 23 <= click;
-#X obj 8 180 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 80 264 "-xv":;
+#X text 128 264 disable dragging vertices when in "run" mode (keeps
+reporting mouse clicks)., f 56;
+#X restore 407 22 pd reference;
+#X text 505 23 <= click;
+#X obj 8 173 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 40 99 Use these to draw polygon and curved shapes., f 26;
+#X text 40 95 Use these to draw polygon and curved shapes., f 26;

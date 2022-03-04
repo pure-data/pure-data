@@ -3,9 +3,10 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 533 23 588 574 12;
-#X text 420 156 (click for details:), f 11;
-#N canvas 561 26 758 720 define 0;
+#N struct template1 float x float y float z float q;
+#N canvas 463 23 588 574 12;
+#X text 420 153 (click for details:), f 11;
+#N canvas 561 26 758 712 define 0;
 #X text 340 522 creation arguments:;
 #X text 370 593 optional name;
 #X text 231 149 read from a file;
@@ -33,8 +34,7 @@ those above - xticks \, etc \, and also lists to set values.;
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
 #X obj 57 546 array define -k array-help-2 10;
-#A 0 -0.320006 -0.0133338 -0.340006 0 0.973333 0 -0.300005 0 0.966667
-0;
+#A 0 -0.320006 0 0 0 0 0 0 0 0 0;
 #X msg 75 315 send array-help-send;
 #X text 368 540 optional -k flag to keep contents;
 #X obj 58 577 array define -yrange -4 4 array-help-3 10;
@@ -57,38 +57,38 @@ the size is restored to whatever it may have been changed to using
 "resize" messages \, but if there is a size argument given the restored
 array has the originally specified size.;
 #X text 643 17 <= click;
-#N canvas 778 172 588 403 reference 0;
-#X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#N canvas 778 172 578 386 reference 0;
+#X obj 9 49 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 9 161 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 200 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 201 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 317 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 358 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 376 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 35 18 array define;
-#X text 132 17 - create an array.;
-#X text 94 92 bang - output a pointer to the scalar containing the
+#X obj 35 15 array define;
+#X text 132 14 - create an array.;
+#X text 94 60 bang - output a pointer to the scalar containing the
 array., f 64;
-#X text 31 113 send <symbol> - send pointer to a named receive object
+#X text 31 81 send <symbol> - send pointer to a named receive object
 , f 73;
-#X text 124 210 pointer - a pointer to the scalar containing the array.
+#X text 122 169 pointer - a pointer to the scalar containing the array.
 ;
-#X obj 9 245 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 87 252 -k: saves/keeps the contents of the arrray with the
+#X text 87 234 -k: saves/keeps the contents of the arrray with the
 patch.;
-#X text 87 270 -yrange <float \, float>: set minimum and maximum plot
+#X text 87 252 -yrange <float \, float>: set minimum and maximum plot
 range.;
-#X text 87 289 -pix <float \, float>: set x and y graph size.;
-#X text 123 326 symbol - array name (default: internal numbered 'table#').
-;
-#X text 130 348 float - size and also xrange (default: 100).;
-#X text 25 137 other messages - [array define] send other messages
+#X text 87 271 -pix <float \, float>: set x and y graph size.;
+#X text 25 105 other messages - [array define] send other messages
 that arrays understand like: 'const' \, 'resize' \, etc. For reference
 \, see 2.control.examples "15.array" and "16.more.arrays"., f 74;
+#X obj 9 227 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 298 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 103 308 1) symbol - array name (default: internal numbered
+'table#')., f 62;
+#X text 110 330 2) float - size and also xrange (default: 100).;
 #X restore 540 18 pd reference;
 #X obj 14 51 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -108,11 +108,11 @@ that arrays understand like: 'const' \, 'resize' \, etc. For reference
 #X connect 30 0 31 0;
 #X connect 35 0 19 0;
 #X connect 35 1 19 1;
-#X restore 421 197 pd define;
-#X obj 37 221 array size;
-#X text 151 197 - create \, store \, and/or edit one;
-#X text 151 221 - get or change size;
-#X text 151 245 - sum all or a range of elements;
+#X restore 421 194 pd define;
+#X obj 37 218 array size;
+#X text 151 194 - create \, store \, and/or edit one;
+#X text 151 218 - get or change size;
+#X text 151 242 - sum all or a range of elements;
 #N canvas 561 23 627 699 array-and-data-structures 0;
 #X obj 220 212 pointer;
 #N canvas 814 134 468 210 array-help-struct 0;
@@ -202,36 +202,33 @@ of the Pd's tutorials. Starting with the first example below., f 77
 #X connect 20 1 13 0;
 #X connect 25 0 5 0;
 #X connect 25 1 3 0;
-#X restore 330 426 pd array-and-data-structures;
-#N canvas 640 168 611 344 size 0;
-#X floatatom 63 152 5 1 100 0 - - - 0;
-#X obj 46 275 print;
-#X text 262 88 "array size" outputs the size (if sent a bang) or sets
-the size (if sent a number)., f 43;
-#X obj 46 246 array size array-help-2;
-#X obj 48 127 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 341 423 pd array-and-data-structures;
+#N canvas 640 168 530 337 size 0;
+#X floatatom 53 146 5 1 100 0 - - - 0;
+#X obj 36 267 print;
+#X text 31 64 "array size" outputs the size (if sent a bang) or sets
+the size (if sent a number)., f 64;
+#X obj 38 116 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 255 257 creations arguments: either array name or "-s" and
-optional "-f" flags to refer to an array in a data structure, f 41
+#X text 221 213 creations arguments: either array name or "-s" and
+optional "-f" flags to refer to an array in a data structure, f 40
 ;
-#X msg 215 215 symbol array-help-2;
-#X text 362 194 inlet to set name or pointer;
-#X text 108 151 number to set size;
-#X text 72 126 bang outputs size;
-#X msg 204 186 symbol array-help-1;
-#X obj 15 61 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+#X msg 205 179 symbol array-help-2;
+#X text 344 143 inlet to set name or pointer, f 15;
+#X text 98 145 number to set size, f 9;
+#X text 62 115 bang outputs size;
+#X msg 194 150 symbol array-help-1;
+#X obj 5 49 cnv 1 515 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 480 23 <= click;
-#N canvas 800 173 583 375 reference 0;
+#X text 440 16 <= click;
+#N canvas 539 49 574 396 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
 #X obj 9 204 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 311 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 350 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 370 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 38 17 array size;
 #X text 125 16 - output or set array size;
@@ -240,254 +237,269 @@ optional "-f" flags to refer to an array in a data structure, f 41
 0;
 #X text 118 117 float - set the array size., f 46;
 #X text 112 153 symbol - set array name., f 46;
-#X text 124 213 float - array size.;
-#X obj 9 241 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
+#X text 124 211 float - array size.;
 #X text 106 173 pointer - pointer to the array if -s flag is used.
 ;
-#X text 60 261 -s <symbol \, symbol>: struct name and field name of
-main structure., f 67;
-#X text 60 279 -f <symbol \, symbol>: struct name and field name of
+#X text 70 287 -s <symbol \, symbol>: struct name and field name of
+main structure., f 69;
+#X text 70 305 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X text 107 320 symbol - array name if no flags are given (default:
-none).;
-#X restore 386 23 pd reference;
-#X obj 37 27 array size;
-#X text 124 27 - get or change size;
-#X connect 0 0 3 0;
-#X connect 3 0 1 0;
-#X connect 4 0 3 0;
-#X connect 6 0 3 1;
-#X connect 10 0 3 1;
-#X restore 421 221 pd size;
-#X obj 37 197 array define;
-#X text 36 426 accessing arrays inside data structures:;
-#X text 34 59 In Pd an array may be part of a "garray" (a graphical
+#X obj 9 250 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 276 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 328 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 107 337 1) symbol - array name if no flags are given (default:
+none)., f 61;
+#X restore 346 17 pd reference;
+#X obj 27 17 array size;
+#X text 114 16 - get or change size;
+#X floatatom 36 238 5 1 100 0 - - - 0;
+#X obj 36 210 array size array-help-2;
+#X text 117 284 (array-help-2 is defined in the "define" subwindow).
+;
+#X connect 0 0 16 0;
+#X connect 3 0 16 0;
+#X connect 5 0 16 1;
+#X connect 9 0 16 1;
+#X connect 15 0 1 0;
+#X connect 16 0 15 0;
+#X restore 421 218 pd size;
+#X obj 37 194 array define;
+#X text 50 423 accessing arrays inside data structures:;
+#X text 34 56 In Pd an array may be part of a "garray" (a graphical
 array of numbers) or appear as a slot in a data structure (in which
 case the elements may be arbitrary data \, not necessarily just numbers).
 The "array" object can define an array (so far just of numbers but
 maybe later arbitrary data structures) or access an array defined elsewhere
 to get or change its size \, set or read its elements \, and so on.
 , f 72;
-#X text 40 168 The first argument sets its function:;
-#X obj 37 245 array sum;
-#X obj 37 317 array quantile;
-#N canvas 560 199 665 420 sum 0;
-#X floatatom 75 166 5 0 10 0 - - - 0;
-#X obj 66 141 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 40 165 The first argument sets its function:;
+#X obj 37 242 array sum;
+#X obj 37 314 array quantile;
+#N canvas 560 199 646 397 sum 0;
+#X floatatom 81 153 5 0 10 0 - - - 0;
+#X obj 63 123 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 66 299 5 0 0 0 - - - 0;
-#X floatatom 106 193 5 -1 10 0 - - - 0;
-#X text 82 84 "array sum" outputs the sum of all or a selected range
-of elements of the array.;
-#X obj 66 254 array sum array-help-2, f 12;
-#X text 184 293 - optional number to initialize onset - default 0;
-#X text 184 312 - optional number to initialize number of points -
+#X floatatom 63 301 5 0 0 0 - - - 0;
+#X floatatom 103 185 5 -1 10 0 - - - 0;
+#X text 38 69 "array sum" outputs the sum of all or a selected range
+of elements of the array., f 66;
+#X obj 63 256 array sum array-help-2, f 12;
+#X text 181 295 - optional number to initialize onset - default 0;
+#X text 181 314 - optional number to initialize number of points -
 default -1, f 61;
-#X text 92 139 bang to output sum;
-#X text 185 257 creation arguments: either array name or "-s" and optional
+#X text 89 123 bang to output sum;
+#X text 182 259 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 125 162 onset (first index to sum from) \, zero for start of
+#X text 123 154 onset (first index to sum from) \, zero for start of
 array;
-#X text 154 188 number of points or -1 for end of array;
-#X text 66 359 (array-help-2 is defined in the "define" subwindow).
+#X text 145 185 number of points or -1 for end of array;
+#X text 104 359 (array-help-2 is defined in the "define" subwindow).
 ;
-#X msg 147 220 symbol array-help-2;
-#X text 291 219 set name or pointer;
-#X text 545 26 <= click;
-#N canvas 800 173 581 481 reference 0;
+#X msg 144 222 symbol array-help-2;
+#X text 288 221 set name or pointer;
+#X text 558 17 <= click;
+#N canvas 733 117 575 458 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 9 266 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 226 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 373 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 429 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 452 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 171 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 206 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 112 215 symbol - set array name., f 46;
-#X text 124 275 float - array size.;
-#X obj 9 303 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 106 235 pointer - pointer to the array if -s flag is used.
+#X text 112 176 symbol - set array name., f 46;
+#X text 124 235 float - array size.;
+#X text 106 196 pointer - pointer to the array if -s flag is used.
 ;
-#X text 60 323 -s <symbol \, symbol>: struct name and field name of
+#X text 68 307 -s <symbol \, symbol>: struct name and field name of
 main structure., f 67;
-#X text 60 341 -f <symbol \, symbol>: struct name and field name of
+#X text 68 325 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
 #X obj 38 17 array sum;
 #X text 125 16 - output the sum of the arrray or a range selecion.
 ;
-#X text 124 92 bang - output sum., f 49;
-#X text 118 117 float - onset (index to sum from \, 0 is the start).
+#X text 124 90 bang - output sum., f 49;
+#X text 117 110 float - onset (index to sum from \, 0 is the start).
 ;
-#X obj 7 152 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 133 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 65 168 float - number or points to sum from onset (-1 is the
+#X text 65 144 float - number or points to sum from onset (-1 is the
 end of array)., f 68;
-#X text 114 401 float - initial onset (default: 0).;
-#X text 107 381 symbol - array name if no flags are given (default:
-none).;
-#X text 114 421 float - initial number of points (default: -1 \, end
-of array)., f 61;
-#X restore 451 26 pd reference;
-#X obj 17 61 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 9 272 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X text 111 26 - sum all or a range of elements;
-#X obj 37 25 array sum;
+#X obj 9 300 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 352 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 77 361 1) symbol - array name if no flags are given (default:
+none)., f 61;
+#X text 84 381 2) float - initial onset (default: 0).;
+#X text 84 401 3) float - initial number of points (default: -1 \,
+end of array)., f 64;
+#X restore 464 17 pd reference;
+#X obj 11 53 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 105 18 - sum all or a range of elements;
+#X obj 31 17 array sum;
 #X connect 0 0 5 0;
 #X connect 1 0 5 0;
 #X connect 3 0 5 1;
 #X connect 5 0 2 0;
 #X connect 13 0 5 2;
-#X restore 421 245 pd sum;
-#X obj 37 269 array get;
-#N canvas 614 233 677 453 get 0;
-#X floatatom 75 166 5 0 10 0 - - - 0;
-#X obj 60 141 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 421 242 pd sum;
+#X obj 37 266 array get;
+#N canvas 614 191 645 403 get 0;
+#X floatatom 67 141 5 0 10 0 - - - 0;
+#X obj 48 106 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 101 198 5 -1 10 0 - - - 0;
-#X obj 61 277 array get array-help-2, f 12;
-#X text 69 86 "array get" outputs all or a selected range of elements
-of the array as a list., f 55;
-#X text 162 294 - optional number to initialize onset - default 0,
+#X floatatom 89 174 5 -1 10 0 - - - 0;
+#X obj 49 253 array get array-help-2, f 12;
+#X text 74 57 "array get" outputs all or a selected range of elements
+of the array as a list., f 63;
+#X text 150 270 - optional number to initialize onset - default 0,
 f 61;
-#X text 162 311 - optional number to initialize number of points -
+#X text 150 287 - optional number to initialize number of points -
 default -1, f 61;
-#X text 162 263 creation arguments: either array name or "-s" and optional
+#X text 150 239 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure, f 61;
-#X text 143 198 number of points or -1 for end of array;
-#X text 82 141 bang for output;
-#X text 237 383 (array-help-2 is defined in the "define" subwindow).
+#X text 131 174 number of points or -1 for end of array;
+#X text 70 106 bang for output;
+#X text 184 359 (array-help-2 is defined in the "define" subwindow).
 ;
-#X msg 142 227 symbol array-help-2;
-#X text 287 226 set name or pointer;
-#X text 121 165 onset (first index to output) \, zero for start of
+#X msg 130 203 symbol array-help-2;
+#X text 275 202 set name or pointer;
+#X text 109 141 onset (first index to output) \, zero for start of
 array;
-#X listbox 61 348 70 0 0 0 - - - 0;
-#X obj 61 385 print array-get;
-#X text 542 29 <= click;
-#N canvas 800 173 589 486 reference 0;
-#X obj 9 55 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#X listbox 49 324 70 0 0 0 - - - 0;
+#X obj 49 361 print array-get;
+#X text 551 14 <= click;
+#N canvas 722 105 568 482 reference 0;
+#X obj 9 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 8 78 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 9 266 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 256 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 373 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 455 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 452 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 196 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 206 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 112 215 symbol - set array name., f 46;
-#X obj 9 303 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 106 235 pointer - pointer to the array if -s flag is used.
+#X text 112 205 symbol - set array name., f 46;
+#X text 106 225 pointer - pointer to the array if -s flag is used.
 ;
-#X text 60 323 -s <symbol \, symbol>: struct name and field name of
+#X text 69 332 -s <symbol \, symbol>: struct name and field name of
 main structure., f 67;
-#X text 60 341 -f <symbol \, symbol>: struct name and field name of
+#X text 69 350 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X obj 7 155 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 116 401 float - initial onset (default: 0).;
-#X text 109 381 symbol - array name if no flags are given (default:
-none).;
-#X obj 38 20 array get;
-#X text 116 19 - output all items of the arrray or a range selecion.
+#X obj 38 13 array get;
+#X text 116 12 - output all items of the arrray or a range selecion.
 ;
-#X text 124 95 bang - output the elements of the array., f 49;
-#X text 118 120 float - onset (index to output from \, 0 is the start).
+#X text 124 85 bang - output the elements of the array., f 49;
+#X text 118 110 float - onset (index to output from \, 0 is the start).
 ;
-#X text 50 174 float - number or points to output from onset (-1 is
+#X text 50 164 float - number or points to output from onset (-1 is
 the end of array)., f 71;
-#X text 124 275 list - array elements.;
-#X text 116 421 float - initial number of points (default: -1 \, end
-of array)., f 61;
-#X restore 448 29 pd reference;
-#X obj 21 67 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 9 299 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 44 30 array get;
-#X text 148 31 - get contents as a list;
+#X obj 9 327 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 379 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 86 390 1) symbol - array name if no flags are given (default:
+none)., f 61;
+#X text 93 410 2) float - initial onset (default: 0).;
+#X text 93 430 3) float - initial number of points (default: -1 \,
+end of array)., f 64;
+#X text 124 265 list - array's elements.;
+#X restore 457 15 pd reference;
+#X obj 9 43 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 32 13 array get;
+#X text 106 13 - get contents as a list;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 1;
 #X connect 3 0 14 0;
 #X connect 11 0 3 2;
 #X connect 14 0 15 0;
-#X restore 421 269 pd get;
-#X obj 37 293 array set;
-#N canvas 716 259 608 399 set 0;
-#X obj 56 255 array set array-help-2, f 12;
-#X msg 56 159 0.1 0.2 0.3 0.4 0.3 0.2 0.1;
-#X text 31 73 "array set" sets values of an array from an incoming
-list \, starting from a specified onset (0 by default). The size of
-the array is not changed -- values that would be written past the end
-of the array are dropped., f 67;
-#X floatatom 96 195 5 0 0 0 - - - 0;
-#X text 136 193 onset (first index to write to);
-#X text 166 297 - optional number to initialize onset - default 0;
-#X text 170 260 creation arguments: either array name or "-s" and optional
+#X restore 421 266 pd get;
+#X obj 37 290 array set;
+#N canvas 582 234 597 354 set 0;
+#X obj 46 225 array set array-help-2, f 12;
+#X msg 46 129 0.1 0.2 0.3 0.4 0.3 0.2 0.1;
+#X floatatom 86 163 5 0 0 0 - - - 0;
+#X text 129 163 onset (first index to write to);
+#X text 156 267 - optional number to initialize onset - default 0;
+#X text 160 230 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 255 160 list of values to write to array;
-#X text 50 352 (array-help-2 is defined in the "define" subwindow).
+#X text 245 130 list of values to write to array;
+#X text 110 309 (array-help-2 is defined in the "define" subwindow).
 ;
-#X msg 137 222 symbol array-help-2;
-#X text 283 221 set name or pointer;
-#X text 502 20 <= click;
-#N canvas 800 173 585 432 reference 0;
+#X msg 127 192 symbol array-help-2;
+#X text 273 191 set name or pointer;
+#X text 504 16 <= click;
+#N canvas 701 101 579 437 reference 0;
 #X obj 9 55 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
 0;
-#X obj 9 237 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 229 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 344 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 408 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 403 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 170 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 177 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 112 186 symbol - set array name., f 46;
-#X obj 9 274 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 106 206 pointer - pointer to the array if -s flag is used.
+#X text 112 178 symbol - set array name., f 46;
+#X text 106 198 pointer - pointer to the array if -s flag is used.
 ;
-#X text 60 294 -s <symbol \, symbol>: struct name and field name of
+#X text 69 305 -s <symbol \, symbol>: struct name and field name of
 main structure., f 67;
-#X text 60 312 -f <symbol \, symbol>: struct name and field name of
+#X text 69 323 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X obj 7 135 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 130 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 116 372 float - initial onset (default: 0).;
-#X text 109 352 symbol - array name if no flags are given (default:
-none).;
-#X text 124 246 list - array elements.;
+#X text 124 238 list - array elements.;
 #X obj 38 20 array set;
 #X text 116 19 - set all items of the arrray or a range selecion.;
-#X text 118 100 list - list of values to write to array;
-#X text 117 145 float - onset (index to set from \, 0 is the start).
+#X text 118 99 list - list of values to write to array;
+#X text 117 140 float - onset (index to set from \, 0 is the start).
 , f 51;
-#X restore 408 20 pd reference;
-#X obj 17 58 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 9 271 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 35 24 array set;
-#X text 113 25 - set contents from a list;
+#X obj 9 299 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 349 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 94 361 1) symbol - array name if no flags are given (default:
+none)., f 61;
+#X text 101 381 2) float - initial onset (default: 0).;
+#X restore 410 17 pd reference;
+#X obj 7 47 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 25 17 array set;
+#X text 103 16 - set contents from a list;
+#X text 21 62 "array set" sets values of an array from an incoming
+list \, starting from a specified onset (0 by default). The size of
+the array is not changed - values that would be written past the end
+of the array are dropped., f 77;
 #X connect 1 0 0 0;
-#X connect 3 0 0 1;
-#X connect 9 0 0 2;
-#X restore 421 293 pd set;
-#X text 150 269 - get contents as a list;
-#X text 150 293 - set contents from a list;
-#X text 150 317 - get a quantile;
-#X obj 37 341 array random;
-#N canvas 391 47 721 692 quantile+random 0;
-#X floatatom 74 247 5 0 100 0 - - - 0;
-#X obj 43 324 array quantile array-help-5, f 14;
+#X connect 2 0 0 1;
+#X connect 8 0 0 2;
+#X restore 421 290 pd set;
+#X text 150 266 - get contents as a list;
+#X text 150 290 - set contents from a list;
+#X text 150 314 - get a quantile;
+#X obj 37 338 array random;
+#N canvas 539 30 699 671 quantile+random 0;
+#X floatatom 64 243 5 0 100 0 - - - 0;
+#X obj 33 340 array quantile array-help-5, f 14;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-5 100 float 1;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0.00715053 0.00715053 0.0285789 0.0500072
@@ -500,131 +512,135 @@ none).;
 0.349997 0.335712 0.321426 0.278569 0.192856 0.149999 0.135714 0.114285
 0.0999998 0.0714298 0.0642871 0.0571443 0.0285732 0 0 0 0 0;
 #X coords 0 1 99 0 200 140 1 0 0;
-#X restore 41 465 graph;
-#X floatatom 106 271 5 -1 100 0 - - - 0;
-#X floatatom 43 196 5 -1 100 0 - - - 0;
-#X obj 43 221 / 100;
-#X floatatom 43 368 5 0 100 0 - - - 0;
-#X floatatom 307 652 5 0 100 0 - - - 0;
-#X obj 307 608 array random array-help-5, f 13;
-#X obj 307 470 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X floatatom 330 529 5 0 0 0 - - - 0;
-#X floatatom 351 555 5 0 0 0 - - - 0;
-#X text 280 413 "array random" makes a pseudo-random number from 0
-to 1 and outputs its quantile (which will therefore have probabilities
-proportional to the table's values.);
-#X text 331 467 bang to generate a random value;
-#X msg 314 501 seed 56;
-#X text 382 501 set random seed;
-#X text 159 363 - optional number to initialize onset - default 0,
+#X restore 444 183 graph;
+#X floatatom 96 278 5 -1 100 0 - - - 0;
+#X floatatom 33 192 5 -1 100 0 - - - 0;
+#X obj 33 217 / 100;
+#X floatatom 33 384 5 0 100 0 - - - 0;
+#X floatatom 80 635 5 0 100 0 - - - 0;
+#X obj 80 591 array random array-help-5, f 13;
+#X obj 80 443 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X floatatom 115 501 5 0 0 0 - - - 0;
+#X floatatom 124 534 5 0 0 0 - - - 0;
+#X text 103 443 bang to generate a random value;
+#X msg 97 474 seed 56;
+#X text 165 474 set random seed;
+#X text 149 379 - optional number to initialize onset - default 0,
 f 61;
-#X text 158 382 - optional number to initialize number of points -
+#X text 148 398 - optional number to initialize number of points -
 default -1, f 61;
-#X text 425 622 same creation arguments;
-#X text 166 330 creation arguments: either array name or "-s" and optional
+#X text 198 605 same creation arguments;
+#X text 156 346 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure, f 60;
-#X text 118 246 onset (first index to sum from) \, zero for start of
-array;
-#X text 148 272 number of points or -1 for end of array;
-#X text 375 526 onset;
-#X text 393 554 number of points;
-#X text 88 195 quantile (between 0 and 1);
-#X msg 138 299 symbol array-help-2;
-#X text 283 298 set name or pointer;
-#X msg 395 582 symbol array-help-2;
-#X text 537 581 set name or pointer;
-#X text 47 84 "array quantile" outputs the specified quantile by interpreting
-the array as a histogram. The output will always be in the range 0
-to array size - 1 The 0.5 quantile is also known as the median. This
-generalizes the "array random" function allowing you to use the same
-source of randomness on several arrays \, for example. Negative numbers
-in the array are silently replaced by zero. Quantiles outside the range
-0-1 output the x values at the two extremes of the array (0 and 99
-here)., f 90;
-#X text 602 20 <= click;
-#N canvas 707 23 578 716 reference 0;
-#X obj 10 34 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#X text 106 236 onset (first index to sum from) \, zero for start of
+array, f 32;
+#X text 138 279 number of points or -1 for end of array;
+#X text 159 501 onset;
+#X text 166 533 number of points;
+#X text 78 191 quantile (between 0 and 1);
+#X msg 128 315 symbol array-help-2;
+#X text 273 313 set name or pointer;
+#X msg 168 565 symbol array-help-2;
+#X text 310 564 set name or pointer;
+#X text 599 33 <= click;
+#N canvas 188 138 1156 393 reference 0;
+#X obj 10 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 10 184 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 10 192 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 10 261 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 9 325 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 9 358 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 141 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000
+#X obj 8 149 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 126 144 symbol - set array name., f 49;
-#X obj 10 213 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 119 162 pointer - pointer to the array if -s flag is used.
+#X text 126 152 symbol - set array name., f 49;
+#X text 119 170 pointer - pointer to the array if -s flag is used.
 ;
-#X text 69 220 -s <symbol \, symbol>: struct name and field name of
+#X text 69 260 -s <symbol \, symbol>: struct name and field name of
 main structure., f 69;
-#X text 69 238 -f <symbol \, symbol>: struct name and field name of
+#X text 69 278 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X obj 8 114 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+#X obj 8 122 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 113 285 float - initial onset (default: 0)., f 61;
-#X text 106 267 symbol - array name if no flags are given (default:
-none)., f 62;
-#X text 113 303 float - initial number of points (default: -1 \, end
-of array)., f 61;
-#X obj 26 8 array quantile;
-#X text 144 7 - outputs the specified quantile.;
-#X text 133 65 float - quantile (betwee 0 and 1).;
-#X obj 9 88 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 26 16 array quantile;
+#X text 144 15 - outputs the specified quantile.;
+#X text 133 73 float - quantile (betwee 0 and 1).;
+#X obj 9 96 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 133 91 float - array onset (o is the end of array).;
-#X text 133 119 float - number or points (-1 is the end of array).
+#X text 133 99 float - array onset (o is the end of array).;
+#X text 133 127 float - number or points (-1 is the end of array).
 , f 51;
-#X text 133 190 float - random index value from the array.;
-#X obj 9 62 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X text 133 198 float - random index value from the array.;
+#X obj 9 70 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 10 385 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#X obj 588 37 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 10 551 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 588 203 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 10 628 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 9 692 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 587 366 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 126 508 symbol - set array name., f 49;
-#X obj 10 580 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 119 526 pointer - pointer to the array if -s flag is used.
+#X text 704 160 symbol - set array name., f 49;
+#X text 697 178 pointer - pointer to the array if -s flag is used.
 ;
-#X text 69 587 -s <symbol \, symbol>: struct name and field name of
+#X text 647 270 -s <symbol \, symbol>: struct name and field name of
 main structure., f 69;
-#X text 69 605 -f <symbol \, symbol>: struct name and field name of
+#X text 647 288 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X obj 8 505 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+#X obj 586 157 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 113 652 float - initial onset (default: 0)., f 61;
-#X text 106 634 symbol - array name if no flags are given (default:
-none)., f 62;
-#X text 113 670 float - initial number of points (default: -1 \, end
-of array)., f 61;
-#X text 123 358 - outputs the specified quantile.;
-#X obj 9 479 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X text 701 10 - outputs the specified quantile.;
+#X obj 587 131 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 133 557 float - random index value from the array.;
-#X obj 9 413 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X text 711 209 float - random index value from the array.;
+#X obj 587 65 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 26 359 array random;
-#X text 133 456 float - sets onset.;
-#X text 84 438 seed <float> - sets random seed.;
-#X text 140 420 bang - bang to generate a random value.;
-#X text 133 482 float - set number of points (-1 is the end of the
+#X obj 604 11 array random;
+#X text 711 108 float - sets onset.;
+#X text 662 90 seed <float> - sets random seed.;
+#X text 718 72 bang - bang to generate a random value.;
+#X text 711 134 float - set number of points (-1 is the end of the
 array).;
-#X restore 508 20 pd reference;
-#X obj 22 68 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 9 232 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 46 17 array quantile;
-#X text 158 17 - get a quantile;
-#X obj 46 42 array random;
-#X text 158 42 - array as probabilities;
-#X text 349 653 index;
+#X obj 9 255 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 299 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 588 242 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 588 267 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 588 309 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 86 303 1) symbol - array name if no flags are given (default:
+none)., f 62;
+#X text 93 320 2) float - initial onset (default: 0)., f 61;
+#X text 93 337 3) float - initial number of points (default: -1 \,
+end of array)., f 64;
+#X text 644 312 1) symbol - array name if no flags are given (default:
+none)., f 62;
+#X text 651 329 2) float - initial onset (default: 0)., f 61;
+#X text 651 346 3) float - initial number of points (default: -1 \,
+end of array)., f 64;
+#X restore 505 33 pd reference;
+#X obj 12 64 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 36 13 array quantile;
+#X text 148 13 - get a quantile;
+#X obj 36 38 array random;
+#X text 148 38 - array as probabilities;
+#X text 122 636 index;
+#X text 37 80 "array quantile" outputs the specified quantile by interpreting
+the array as a histogram. The output will always be in the range from
+0 to "array size - 1". The 0.5 quantile is also known as the median.
+This generalizes the "array random" function allowing you to use the
+same source of randomness on several arrays \, for example. Negative
+numbers in the array are silently replaced by zero. Quantiles outside
+the range 0-1 output the x values at the two extremes of the array
+(0 and 99 here)., f 89;
+#X text 360 460 "array random" makes a pseudo-random number from 0
+to 1 and outputs its quantile (which will therefore have probabilities
+proportional to the table's values.), f 36;
 #X connect 0 0 1 1;
 #X connect 1 0 6 0;
 #X connect 3 0 1 2;
@@ -634,12 +650,12 @@ array).;
 #X connect 9 0 8 0;
 #X connect 10 0 8 0;
 #X connect 11 0 8 1;
-#X connect 14 0 8 0;
-#X connect 25 0 1 3;
-#X connect 27 0 8 2;
-#X restore 421 330 pd quantile+random;
-#X obj 37 364 array max;
-#N canvas 579 106 661 597 min+max 0;
+#X connect 13 0 8 0;
+#X connect 24 0 1 3;
+#X connect 26 0 8 2;
+#X restore 421 327 pd quantile+random;
+#X obj 37 361 array max;
+#N canvas 579 106 640 567 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-6 100 float 1;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711
@@ -656,92 +672,94 @@ array).;
 0.442855 0.457141 0.460712 0.464284 0.471426 0.478569 0.485712 0.499998
 0.50714 0.514283 0.521426 0.528569;
 #X coords 0 1 99 0 200 140 1 0 0;
-#X restore 356 438 graph;
-#X floatatom 68 348 7 0 100 0 - - - 0;
-#X obj 68 189 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 351 402 graph;
+#X floatatom 54 322 7 0 100 0 - - - 0;
+#X obj 54 153 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 81 212 5 0 0 0 - - - 0;
-#X floatatom 112 245 5 0 0 0 - - - 0;
-#X text 210 337 - optional number to initialize onset - default 0;
-#X text 209 356 - optional number to initialize number of points -
+#X floatatom 73 184 5 0 0 0 - - - 0;
+#X floatatom 98 219 5 0 0 0 - - - 0;
+#X text 192 311 - optional number to initialize onset - default 0;
+#X text 191 330 - optional number to initialize number of points -
 default -1, f 61;
-#X text 204 302 creation arguments: either array name or "-s" and optional
+#X text 186 276 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 121 211 onset;
-#X text 154 244 number of points;
-#X msg 156 275 symbol array-help-2;
-#X text 304 276 set name or pointer;
-#X obj 68 303 array max array-help-6, f 13;
-#X floatatom 156 348 5 0 100 0 - - - 0;
-#X text 90 186 bang to find maximum;
-#X text 80 83 "array max" and "array min" find the maximum and minimum
+#X text 113 183 onset;
+#X text 140 218 number of points;
+#X msg 142 249 symbol array-help-2;
+#X text 284 249 set name or pointer;
+#X obj 54 277 array max array-help-6, f 13;
+#X floatatom 142 322 5 0 100 0 - - - 0;
+#X text 76 152 bang to find maximum;
+#X text 41 77 "array max" and "array min" find the maximum and minimum
 values in the array \, respectively. The first outlet is the value
 and the second is the index (the x location where the value was found).
 The search may be restricted to a sub-domain of the array by specifying
-the "onset" and "number of points"., f 65;
-#X floatatom 114 557 7 0 100 0 - - - 0;
-#X obj 114 418 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+the "onset" and "number of points"., f 77;
+#X floatatom 110 531 7 0 100 0 - - - 0;
+#X obj 110 392 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X floatatom 127 441 5 0 0 0 - - - 0;
-#X floatatom 158 474 5 0 0 0 - - - 0;
-#X text 172 438 onset;
-#X floatatom 202 557 5 0 100 0 - - - 0;
-#X text 136 415 bang to find minimum;
-#X text 207 472 number of points;
-#X obj 114 512 array min array-help-6, f 13;
-#X text 67 371 value;
-#X text 151 372 index;
-#X text 544 30 <= click;
-#N canvas 773 126 593 565 reference 0;
-#X obj 9 55 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#X floatatom 123 415 5 0 0 0 - - - 0;
+#X floatatom 154 448 5 0 0 0 - - - 0;
+#X text 168 412 onset;
+#X floatatom 198 531 5 0 100 0 - - - 0;
+#X text 132 389 bang to find minimum;
+#X text 203 446 number of points;
+#X obj 110 486 array min array-help-6, f 13;
+#X text 53 345 value;
+#X text 137 346 index;
+#X text 533 27 <= click;
+#N canvas 637 123 579 454 reference 0;
+#X obj 9 43 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 8 71 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 9 266 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 9 205 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 453 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 426 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 532 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 153 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 206 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 112 215 symbol - set array name., f 46;
-#X obj 9 383 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
-0;
-#X text 106 235 pointer - pointer to the array if -s flag is used.
+#X text 112 159 symbol - set array name., f 46;
+#X text 106 179 pointer - pointer to the array if -s flag is used.
 ;
-#X text 60 403 -s <symbol \, symbol>: struct name and field name of
+#X text 68 318 -s <symbol \, symbol>: struct name and field name of
 main structure., f 67;
-#X text 60 421 -f <symbol \, symbol>: struct name and field name of
+#X text 68 336 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
-#X obj 7 155 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 119 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 116 481 float - initial onset (default: 0).;
-#X text 109 461 symbol - array name if no flags are given (default:
-none).;
-#X text 118 120 float - onset (index to output from \, 0 is the start).
+#X text 117 95 float - onset (index to output from \, 0 is the start).
 ;
-#X text 50 174 float - number or points to output from onset (-1 is
+#X text 50 128 float - number or points to output from onset (-1 is
 the end of array)., f 71;
-#X text 116 501 float - initial number of points (default: -1 \, end
-of array)., f 61;
-#X obj 28 20 array min;
-#X text 186 19 - output minmum and maximum values of an array;
-#X obj 108 20 array max;
-#X obj 8 300 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 28 13 array min;
+#X text 186 12 - output minmum and maximum values of an array;
+#X obj 108 13 array max;
+#X obj 8 228 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 7 337 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 253 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 122 309 float - minimum or maximum value;
-#X text 124 95 bang - to find min or maximum., f 49;
-#X text 120 345 float - index of found value;
-#X restore 450 30 pd reference;
-#X obj 18 68 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 122 231 float - minimum or maximum value;
+#X text 124 77 bang - to find min or maximum., f 52;
+#X text 122 256 float - index of found value;
+#X obj 9 291 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 47 15 array max;
-#X obj 47 38 array min;
-#X text 124 39 - min - find lowest value;
-#X text 123 15 - max - find highest value;
+#X obj 9 314 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 361 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 79 366 1) symbol - array name if no flags are given (default:
+none)., f 62;
+#X text 86 384 2) float - initial onset (default: 0)., f 61;
+#X text 86 402 3) float - initial number of points (default: -1 \,
+end of array)., f 64;
+#X restore 439 27 pd reference;
+#X obj 7 62 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 36 12 array max;
+#X obj 36 35 array min;
+#X text 113 36 - min - find lowest value;
+#X text 112 12 - max - find highest value;
 #X connect 2 0 12 0;
 #X connect 3 0 12 0;
 #X connect 4 0 12 1;
@@ -753,20 +771,20 @@ of array)., f 61;
 #X connect 19 0 24 1;
 #X connect 24 0 16 0;
 #X connect 24 1 21 0;
-#X restore 421 375 pd min+max;
-#X obj 37 387 array min;
-#X obj 455 483 list;
-#X obj 359 483 text;
-#X obj 400 483 scalar;
-#X text 366 532 updated for Pd version 0.52;
-#X obj 31 515 ../2.control.examples/15.array;
-#X obj 31 538 ../2.control.examples/16.more.arrays;
-#X text 25 473 see also the "array" examples from section 2 (click
+#X restore 421 372 pd min+max;
+#X obj 37 384 array min;
+#X obj 455 480 list;
+#X obj 359 480 text;
+#X obj 400 480 scalar;
+#X text 366 529 updated for Pd version 0.52;
+#X obj 31 512 ../2.control.examples/15.array;
+#X obj 31 535 ../2.control.examples/16.more.arrays;
+#X text 25 470 see also the "array" examples from section 2 (click
 below to open them) and these objects:, f 45;
-#X obj 4 44 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 4 41 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 70 13 - define \, acccess and manipulate arrays;
-#X text 497 12 <= click;
+#X text 74 12 - define \, acccess and manipulate arrays;
+#X text 501 12 <= click;
 #N canvas 787 173 579 214 reference 0;
 #X obj 7 143 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
@@ -782,10 +800,10 @@ The default value is 'define'., f 54;
 #X obj 26 18 array;
 #X text 119 162 Open specific references in each subpatch detailing
 each function on parent patch., f 41;
-#X restore 403 12 pd reference;
-#X obj 25 13 array;
-#X obj 4 459 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 407 11 pd reference;
+#X obj 29 11 array;
+#X obj 4 456 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 150 341 - array as probabilities;
-#X text 150 364 - find highest value;
-#X text 150 387 - find lowest value;
+#X text 150 338 - array as probabilities;
+#X text 150 361 - find highest value;
+#X text 150 384 - find lowest value;
