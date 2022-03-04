@@ -1,17 +1,17 @@
-#N canvas 560 45 541 538 12;
-#X obj 34 23 inlet;
-#X obj 79 23 inlet~;
-#X obj 34 51 outlet;
-#X obj 84 51 outlet~;
-#X obj 273 303 print~;
-#X obj 273 223 sig~ 12;
-#X floatatom 31 227 5 0 0 0 - - - 0;
-#X floatatom 31 279 5 0 0 0 - - - 0;
-#X text 27 206 messages in and out;
-#X text 243 200 audio in and out;
-#X text 39 506 see also:;
-#X obj 113 507 block~;
-#X obj 285 281 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#N canvas 560 45 541 519 12;
+#X obj 25 10 inlet;
+#X obj 70 10 inlet~;
+#X obj 25 38 outlet;
+#X obj 75 38 outlet~;
+#X obj 273 288 print~;
+#X obj 273 208 sig~ 12;
+#X floatatom 31 212 5 0 0 0 - - - 0;
+#X floatatom 31 264 5 0 0 0 - - - 0;
+#X text 27 191 messages in and out;
+#X text 243 185 audio in and out;
+#X text 19 485 see also:;
+#X obj 93 486 block~;
+#X obj 285 266 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #N canvas 486 122 538 582 up/downsampling 0;
 #X obj 37 395 print~;
@@ -101,7 +101,7 @@ command line or by a message:;
 #X connect 13 0 0 0;
 #X connect 13 1 2 0;
 #X connect 13 2 4 0;
-#X restore 95 340 pd up/downsampling;
+#X restore 95 325 pd up/downsampling;
 #N canvas 309 180 813 339 subpatch-with-inlets-and-outlets 0;
 #X obj 97 94 inlet;
 #X text 49 64 control inlet for receiving messages;
@@ -129,17 +129,17 @@ object to pass arguments to initialize signal inlets in abstractions.
 #X connect 8 0 7 0;
 #X connect 10 0 9 0;
 #X connect 11 0 6 0;
-#X restore 31 253 pd subpatch-with-inlets-and-outlets;
+#X restore 31 238 pd subpatch-with-inlets-and-outlets;
 #N canvas 0 23 600 400 (subpatch) 0;
-#X restore 166 507 pd;
-#X text 51 98 Inlets/outlets are used to receive and get information
+#X restore 146 486 pd;
+#X text 51 83 Inlets/outlets are used to receive and get information
 on a patch window. This can be an abstraction or a subpatch. To create
 a subpatch \, type "pd" into an object box \, then you can put inlets
 and outlets by making "inlet" objects \, etc \, in the subpatch (open
 the patch below to see them.);
-#X text 230 340 <= details on up/downsampling;
-#X text 251 356 for inlet~ and outlet~, f 26;
-#X text 315 506 updated for Pd version 0.51;
+#X text 230 325 <= details on up/downsampling;
+#X text 251 341 for inlet~ and outlet~, f 26;
+#X text 325 485 updated for Pd version 0.51;
 #N canvas 582 179 543 415 inlet~-forwarding 0;
 #X obj 173 182 inlet~ fwd;
 #X floatatom 131 145 5 0 0 0 - - - 0;
@@ -167,21 +167,21 @@ message to such an inlet~ has no effect.);
 #X connect 3 0 0 0;
 #X connect 5 0 4 0;
 #X connect 10 0 0 0;
-#X restore 96 443 pd inlet~-forwarding;
-#X obj 74 408 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 96 422 pd inlet~-forwarding;
+#X obj 74 387 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 39 406 4 0 0 0 - - - 0;
-#X msg 96 408 1 2 3;
-#X msg 143 408 poodle 50;
-#X text 245 442 <= catching messages to inlet~ objects;
-#X text 302 280 (DSP needs to be on);
-#X obj 401 206 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X floatatom 39 385 4 0 0 0 - - - 0;
+#X msg 96 387 1 2 3;
+#X msg 143 387 poodle 50;
+#X text 245 421 <= catching messages to inlet~ objects;
+#X text 302 265 (DSP needs to be on);
+#X obj 401 191 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 425 207 DSP on/off;
-#X msg 401 230 \; pd dsp \$1;
-#X text 144 23 - control/audio inlet;
-#X text 145 51 - control/audio outlet;
-#N canvas 350 110 1137 574 reference 0;
+#X text 425 192 DSP on/off;
+#X msg 401 215 \; pd dsp \$1;
+#X text 135 10 - control/audio inlet;
+#X text 136 38 - control/audio outlet;
+#N canvas 229 90 1137 574 reference 0;
 #X obj 8 52 cnv 5 530 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
@@ -192,7 +192,7 @@ message to such an inlet~ has no effect.);
 #X text 80 19 - control inlet;
 #X obj 7 132 cnv 5 530 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000
 0;
-#X text 173 104 anything - any message from parent patch., f 42;
+#X text 153 104 anything - any message from parent patch., f 42;
 #X obj 8 272 cnv 5 530 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 522 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000
@@ -203,8 +203,8 @@ message to such an inlet~ has no effect.);
 0;
 #X obj 30 239 inlet~;
 #X text 84 239 - audio inlet;
-#X text 181 144 NONE;
-#X text 176 64 NONE;
+#X text 161 144 NONE;
+#X text 156 64 NONE;
 #X text 134 285 float - set default value for no singal connected.
 ;
 #X text 111 351 signal - signal from parent patch., f 42;
@@ -249,11 +249,11 @@ message to such an inlet~ has no effect.);
 #X text 749 366 downsampling method: 'hold' for sample/hold (default)
 \, 'pad' for zero-padded and 'lin' for linear interpolation)., f 46
 ;
-#X restore 367 36 pd reference;
-#X text 458 36 <= click;
-#X obj 7 85 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 368 33 pd reference;
+#X text 459 33 <= click;
+#X obj 7 70 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 7 492 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 7 471 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 5 0 14 1;
 #X connect 6 0 14 0;

@@ -1,38 +1,38 @@
-#N canvas 507 87 935 512 12;
-#X msg 69 367 disconnect;
-#X obj 49 395 netsend -u -b;
-#X msg 58 339 connect localhost 5000;
-#X obj 49 281 list prepend send;
-#X obj 49 306 list trim;
-#X text 147 366 don't send;
-#X text 221 339 send as UDP;
-#X text 37 470 see also:;
-#X msg 49 211 foo 4 5 weasel 6 7 rat;
-#X text 55 168 FUDI messages with numbers and symbols., f 20;
-#X obj 113 471 oscformat;
-#X text 693 472 updated for Pd version 0.48.0;
+#N canvas 316 34 935 503 12;
+#X msg 69 365 disconnect;
+#X obj 49 393 netsend -u -b;
+#X msg 58 337 connect localhost 5000;
+#X obj 49 279 list prepend send;
+#X obj 49 304 list trim;
+#X text 147 364 don't send;
+#X text 221 337 send as UDP;
+#X text 37 468 see also:;
+#X msg 49 209 foo 4 5 weasel 6 7 rat;
+#X text 55 166 FUDI messages with numbers and symbols., f 20;
+#X obj 113 469 oscformat;
+#X text 693 470 updated for Pd version 0.48.0;
 #X obj 31 10 fudiformat;
 #X text 116 9 - convert messages to FUDI packets;
-#X obj 49 243 fudiformat -u;
-#X obj 376 368 print parse-output;
-#X obj 492 222 netreceive -u -b;
-#X msg 492 167 listen 5000;
-#X msg 504 195 listen 0;
-#X text 571 194 stop listening;
-#X msg 256 195 1 2 3 foo 5;
-#X text 489 143 packets from network;
-#X text 618 217 UDP packets \, binary output, f 13;
-#X obj 256 220 fudiformat;
-#X obj 356 220 fudiformat -u;
-#X text 356 158 without packet separator, f 14;
-#X text 579 167 listen on port 5000;
-#X obj 356 398 list;
-#X listbox 356 422 24 0 0 0 - - - 0;
-#X listbox 356 281 76 0 0 0 - - - 0;
-#X obj 356 338 fudiparse -u;
-#X obj 375 307 print packet;
-#X msg 356 195 1 2 3 foo 5;
-#X text 20 75 FUDI stands for "Fast Universal Digital Interface" and
+#X obj 49 241 fudiformat -u;
+#X obj 376 366 print parse-output;
+#X obj 492 220 netreceive -u -b;
+#X msg 492 165 listen 5000;
+#X msg 504 193 listen 0;
+#X text 571 192 stop listening;
+#X msg 256 193 1 2 3 foo 5;
+#X text 489 141 packets from network;
+#X text 618 215 UDP packets \, binary output, f 13;
+#X obj 256 218 fudiformat;
+#X obj 356 218 fudiformat -u;
+#X text 356 156 without packet separator, f 14;
+#X text 579 165 listen on port 5000;
+#X obj 356 396 list;
+#X listbox 356 420 24 0 0 0 - - - 0;
+#X listbox 356 279 76 0 0 0 - - - 0;
+#X obj 356 336 fudiparse -u;
+#X obj 375 305 print packet;
+#X msg 356 193 1 2 3 foo 5;
+#X text 20 73 FUDI stands for "Fast Universal Digital Interface" and
 is a networking protocol used by Pd. The fudiformat object makes FUDI
 messages suitable for sending over the network via netsend (in UDP
 mode). Incoming messages are output as FUDI messages \, byte by byte.
@@ -43,41 +43,43 @@ single FUDI messages over UDP. It doesn't work with TCP/IP (however
 ;
 #X obj 31 34 fudiparse;
 #X text 116 34 - parse FUDI packets into Pd messages;
-#X text 545 321 The fudiparse object takes incoming lists of numbers
+#X text 545 319 The fudiparse object takes incoming lists of numbers
 \, interpreting them as the bytes in a FUDI message (as received when
 sending Pd-messages via [netreceive -b])., f 43;
-#N canvas 796 143 526 422 reference 0;
+#N canvas 796 143 531 433 reference 0;
 #X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 100 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 137 cnv 2 500 2 empty empty FLAG: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 173 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 195 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 28 19 fudiformat;
 #X text 113 18 - convert messages to FUDI packets;
 #X text 83 66 anything - any message to convert to a FUDI packet.;
 #X text 118 110 list - converted FUDI packet., f 42;
-#X text 131 148 '-u': switches to "UDP" mode, f 31;
-#X obj 7 262 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X text 131 170 '-u': switches to "UDP" mode, f 31;
+#X obj 7 292 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 7 310 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 7 335 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 6 393 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 6 404 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 28 231 fudiparse;
-#X text 113 231 - parse FUDI packets into Pd messages;
-#X text 128 276 list - FUDI packet to convert to Pd messages.;
-#X text 100 320 anything - Pd messages., f 42;
-#X obj 8 353 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 28 261 fudiparse;
+#X text 113 261 - parse FUDI packets into Pd messages;
+#X text 128 306 list - FUDI packet to convert to Pd messages.;
+#X text 100 345 anything - Pd messages., f 42;
+#X obj 8 372 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X text 160 366 NONE;
-#X restore 695 19 pd reference;
-#X text 789 19 <= click;
-#X obj 6 455 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 160 381 NONE;
+#X obj 7 163 cnv 1 500 1 empty empty flag: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 7 65 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 7 137 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X restore 734 25 pd reference;
+#X text 828 25 <= click;
+#X obj 6 453 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 63 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;

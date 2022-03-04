@@ -1,39 +1,39 @@
-#N canvas 715 128 508 459 12;
-#X obj 33 17 log~;
-#X text 40 68 computes the logarithm of the left inlet \, to the base
+#N canvas 552 33 508 450 12;
+#X obj 33 12 log~;
+#X text 40 61 computes the logarithm of the left inlet \, to the base
 'e' (about 2.718) \, or to another base specified by the inlet or a
 creation argument., f 57;
-#X text 290 382 updated for Pd version 0.47.;
-#X text 14 398 see also:;
-#X obj 90 397 pow~;
-#X obj 90 373 log;
-#X text 72 17 - logarithms for signals;
-#X obj 132 397 exp~;
-#X obj 92 425 +~;
-#X text 124 424 (etc.) - signal binary operators;
-#X text 127 373 - control version;
-#X obj 173 397 sqrt~;
-#X obj 222 397 expr~;
-#X obj 142 213 loadbang;
-#X obj 142 239 metro 100;
-#X obj 142 293 snapshot~;
-#X floatatom 33 145 5 0 0 0 - - - 0;
-#X floatatom 94 145 5 0 0 0 - - - 0;
-#X floatatom 142 322 7 0 0 0 - - - 0;
-#X floatatom 291 229 5 0 0 0 - - - 0;
-#X text 317 254 An optional creation argument initializes right inlet
+#X text 290 374 updated for Pd version 0.47.;
+#X text 14 390 see also:;
+#X obj 90 389 pow~;
+#X obj 90 365 log;
+#X text 72 12 - logarithms for signals;
+#X obj 132 389 exp~;
+#X obj 92 417 +~;
+#X text 124 416 (etc.) - signal binary operators;
+#X text 127 365 - control version;
+#X obj 173 389 sqrt~;
+#X obj 222 389 expr~;
+#X obj 142 205 loadbang;
+#X obj 142 231 metro 100;
+#X obj 142 285 snapshot~;
+#X floatatom 33 137 5 0 0 0 - - - 0;
+#X floatatom 94 137 5 0 0 0 - - - 0;
+#X floatatom 142 314 7 0 0 0 - - - 0;
+#X floatatom 291 221 5 0 0 0 - - - 0;
+#X text 317 246 An optional creation argument initializes right inlet
 for when you don't have a signal input., f 23;
-#X obj 238 216 sig~ 2;
-#X obj 238 284 snapshot~;
-#X floatatom 238 313 7 0 0 0 - - - 0;
-#X obj 94 181 sig~ 2;
-#X obj 69 217 log~;
-#X obj 33 181 sig~ 8;
-#X obj 238 256 log~ 1.5;
-#X msg 242 149 \; pd dsp \$1;
-#X obj 242 125 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 238 208 sig~ 2;
+#X obj 238 276 snapshot~;
+#X floatatom 238 305 7 0 0 0 - - - 0;
+#X obj 94 173 sig~ 2;
+#X obj 69 209 log~;
+#X obj 33 173 sig~ 8;
+#X obj 238 248 log~ 1.5;
+#X msg 242 141 \; pd dsp \$1;
+#X obj 242 118 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 261 124 DSP on/off;
+#X text 261 117 DSP on/off;
 #N canvas 867 162 441 249 reference 0;
 #X obj 13 50 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -48,16 +48,16 @@ for when you don't have a signal input., f 23;
 #X text 88 85 signal - input value to log function.;
 #X text 121 154 signal - output of log function.;
 #X text 130 191 1) float - initial base value., f 31;
-#X obj 13 82 cnv 1 410 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 13 82 cnv 1 410 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 13 111 cnv 1 410 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+#X obj 13 111 cnv 1 410 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
 0;
 #X text 88 118 signal - set base value of the log function.;
-#X restore 311 17 pd reference;
-#X text 408 17 <= click;
-#X obj 3 54 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 321 12 pd reference;
+#X text 418 12 <= click;
+#X obj 3 47 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 3 357 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 3 349 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 13 0 14 0;
 #X connect 14 0 15 0;

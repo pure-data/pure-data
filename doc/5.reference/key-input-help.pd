@@ -1,4 +1,4 @@
-#N canvas 667 72 523 358 12;
+#N canvas 544 41 523 358 12;
 #X obj 22 15 key;
 #X obj 51 15 keyup;
 #X obj 94 15 keyname;
@@ -6,7 +6,7 @@
 #X floatatom 125 95 4 0 0 0 - - - 0;
 #X obj 275 66 keyname;
 #X symbolatom 321 95 10 0 0 0 - - - 0;
-#X text 265 332 updated for Pd version 0.32.;
+#X text 289 332 updated for Pd version 0.32.;
 #X text 30 261 Caveat -- this only works if Pd actually gets the key
 events which can depend on the stacking order of windows and/or the
 pointer location \, depending on the system., f 65;
@@ -24,7 +24,7 @@ works with non-printing keys like shift or "F1"., f 65;
 #X text 158 14 - grab keyboard input;
 #X obj 8 50 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 762 105 572 451 reference 0;
+#N canvas 753 101 572 451 reference 0;
 #X obj 9 97 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 135 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000

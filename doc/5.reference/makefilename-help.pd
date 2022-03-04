@@ -1,18 +1,18 @@
 #N canvas 521 43 626 475 12;
-#X floatatom 43 186 0 0 0 0 - - - 0;
-#X msg 392 186 symbol meat;
-#X msg 405 213 symbol hair;
-#X obj 33 21 makefilename;
-#X text 131 21 - format a "name" with a variable field;
-#X msg 66 236 set %d-zebra;
-#X text 76 185 <= numbers replace "%d" in string;
-#X text 174 212 <= "set" message replaces format, f 16;
-#X text 499 212 <= symbols replace "%s", f 13;
-#X symbolatom 43 305 14 0 0 0 - - - 0;
-#X obj 43 342 print Integer;
-#X symbolatom 392 284 14 0 0 0 - - - 0;
-#X obj 392 317 print Symbol;
-#X text 221 264 <= argument is format string, f 14;
+#X floatatom 43 182 0 0 0 0 - - - 0;
+#X msg 392 182 symbol meat;
+#X msg 405 209 symbol hair;
+#X obj 23 17 makefilename;
+#X text 121 17 - format a "name" with a variable field;
+#X msg 66 232 set %d-zebra;
+#X text 76 181 <= numbers replace "%d" in string;
+#X text 174 208 <= "set" message replaces format, f 16;
+#X text 499 208 <= symbols replace "%s", f 13;
+#X symbolatom 43 301 14 0 0 0 - - - 0;
+#X obj 43 338 print Integer;
+#X symbolatom 392 280 14 0 0 0 - - - 0;
+#X obj 392 313 print Symbol;
+#X text 221 260 <= argument is format string, f 14;
 #N canvas 703 91 509 425 multiple_substitutions 0;
 #X msg 50 111 symbol aif;
 #X msg 63 138 symbol wav;
@@ -41,7 +41,7 @@ of another makefilename object., f 64;
 #X connect 5 0 2 0;
 #X connect 7 0 8 0;
 #X connect 11 0 5 0;
-#X restore 392 365 pd multiple_substitutions;
+#X restore 392 361 pd multiple_substitutions;
 #N canvas 696 335 479 517 possible_types_&_syntax 0;
 #N canvas 640 222 489 460 %c 0;
 #X obj 147 214 list fromsymbol;
@@ -626,22 +626,22 @@ subpatches below for the examples., f 51;
 #X text 127 236 - string;
 #X text 33 366 The types can be preceded by optional fields \, which
 can be combined and included in the order below:;
-#X restore 392 395 pd possible_types_&_syntax;
-#X text 29 443 updated for Pd version 0.51;
-#X msg 58 213 set cat\ %d.wav;
-#X obj 43 265 makefilename dog\ %d.aif;
-#X obj 392 250 makefilename dog\ %s.aif;
-#X text 283 394 More details =>;
-#X text 388 158 SUBSTITUTING A SYMBOL:;
-#X text 39 158 SUBSTITUTING AN INTEGER NUMBER:;
-#X text 21 69 The Makefilename object generates name symbols according
+#X restore 392 391 pd possible_types_&_syntax;
+#X text 412 443 updated for Pd version 0.51;
+#X msg 58 209 set cat\ %d.wav;
+#X obj 43 261 makefilename dog\ %d.aif;
+#X obj 392 246 makefilename dog\ %s.aif;
+#X text 283 390 More details =>;
+#X text 388 154 SUBSTITUTING A SYMBOL:;
+#X text 39 154 SUBSTITUTING AN INTEGER NUMBER:;
+#X text 21 65 The Makefilename object generates name symbols according
 to a format string \, for use as a series of filenames \, table names
 \, or whatnot. You can plug in a variable number or symbol by using
 different types in the string ("such as %s" \, "%c" \, "%d" \, "%X
 and others - see subpatch below with possible types). Each object can
 have only one variable pattern \, but you can cascade objects for multiple
 substitutions., f 82;
-#X text 163 301 (Note you can use backlashes to escape and insert a
+#X text 163 297 (Note you can use backlashes to escape and insert a
 space character in the symbol), f 29;
 #N canvas 684 79 565 234 reference 0;
 #X obj 8 52 cnv 5 540 5 empty empty INLET: 8 18 0 13 #202020 #000000
@@ -655,17 +655,17 @@ space character in the symbol), f 29;
 #X text 81 63 float/symbol - to replace format specifiers., f 54;
 #X text 88 82 set <float> - sets the cell size in pixels., f 52;
 #X text 121 128 symbol - formatted symbol., f 47;
-#X obj 7 159 cnv 5 540 5 empty empty ARGUMENTS: 8 18 0 13 #202020 #000000
+#X obj 7 159 cnv 5 540 5 empty empty ARGUMENT: 8 18 0 13 #202020 #000000
 0;
-#X text 121 173 symbol -, f 8;
-#X text 190 173 format strring with specifiers ('%c' \, '%d' \, '%i
+#X text 188 172 format strring with specifiers ('%c' \, '%d' \, '%i
 \, %e \, %E \, %f \, %g \, %G \, %o \, %s \, %u \, %x \, %X and %p).
 , f 48;
-#X restore 436 21 pd reference;
-#X text 528 21 <= click;
-#X obj 7 57 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 104 172 1) symbol -;
+#X restore 446 17 pd reference;
+#X text 538 17 <= click;
+#X obj 7 53 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 6 433 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 428 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 18 0;
 #X connect 1 0 19 0;

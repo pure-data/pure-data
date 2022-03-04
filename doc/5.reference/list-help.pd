@@ -1,4 +1,4 @@
-#N canvas 467 37 602 610 12;
+#N canvas 467 37 602 601 12;
 #X obj 24 12 list;
 #X text 64 12 - building and using variable-length messages;
 #N canvas 640 85 526 653 about-lists 0;
@@ -718,9 +718,9 @@ list;
 0;
 #X obj 8 446 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 319 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 9 319 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 9 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 66 323 anything -;
 #X text 127 378 list - the prepended list.;
@@ -729,7 +729,7 @@ list;
 ;
 #X text 110 417 1) list - initialize the stored list (default empty).
 ;
-#X text 82 91 list -, f 6;
+#X text 82 91 list -;
 #X text 131 91 concatenate incoming list with stored list and output
 (a bang is a zero element list and outputs stored list)., f 59;
 #X text 12 123 prepend <list> - prepend a list to the stored list.
@@ -738,7 +738,7 @@ list;
 f 75;
 #X text 143 324 set stored list (a bang is a zero element list and
 clears it)., f 50;
-#X text 40 159 get <list> -, f 12;
+#X text 40 159 get <list> -;
 #X text 131 159 output an item (if only one float is given) or sublist
 \, where first element sets staring index and the second sets ending
 index (-1 is end of the list)., f 59;
@@ -789,7 +789,7 @@ list;
 #X connect 24 0 11 0;
 #X connect 25 0 12 0;
 #X restore 480 140 pd store;
-#X text 378 578 updated for Pd version 0.52;
+#X text 378 571 updated for Pd version 0.52;
 #X text 324 524 list iterator;
 #X obj 7 44 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -811,9 +811,9 @@ each function on parent patch., f 41;
 The default value is 'append'., f 54;
 #X restore 433 13 pd reference;
 #X text 435 58 click for details:;
-#X obj 6 562 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 557 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 157 245 -;
 #X text 171 245 convert symbols to/from numeric characters, f 23;
-#X text 18 577 see also:;
-#X obj 96 577 array;
+#X text 18 570 see also:;
+#X obj 96 570 array;
