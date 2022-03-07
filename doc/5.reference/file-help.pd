@@ -1,7 +1,7 @@
 #N canvas 563 23 564 676 12;
 #X text 439 70 details:;
 #X text 437 53 click for;
-#N canvas 215 30 1052 653 handle 1;
+#N canvas 215 30 1052 653 handle 0;
 #X obj 113 481 file handle;
 #X msg 108 160 open /tmp/test.c r;
 #X msg 182 441 close;
@@ -96,7 +96,7 @@ the umask into account. this might be ignored by the underlying filesystem.
 27;
 #X obj 38 21 file handle;
 #X text 931 20 <= click;
-#N canvas 692 43 571 468 reference 1;
+#N canvas 692 43 571 468 reference 0;
 #X obj 7 44 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 7 231 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -1083,18 +1083,15 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 139 643 array;
 #X obj 188 643 list;
 #X text 157 308 - get information on existing files;
-#N canvas 458 35 796 641 split+join 0;
-#N canvas 819 377 547 369 path 0;
+#N canvas 432 47 791 637 split+join 0;
+#N canvas 690 186 547 369 path 0;
 #X obj 103 233 symbol;
 #X symbolatom 148 165 10 0 0 0 - - - 0;
 #X obj 260 292 print PATH;
 #X obj 103 291 outlet;
 #X obj 56 115 openpanel;
 #X obj 139 115 openpanel 1;
-#X obj 139 88 t b;
 #X msg 139 141 symbol \$1/;
-#X obj 56 87 t b;
-#X obj 270 178 t b;
 #X obj 56 58 route file directory dir random;
 #N canvas 853 241 513 304 random 0;
 #X obj 71 39 inlet;
@@ -1118,73 +1115,55 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 237 259 t s s b;
 #X obj 360 292 print -n;
 #X msg 360 266 -------------------;
-#X obj 237 234 r \$0-name-split+join-in;
-#X obj 237 323 s \$0-name-split+join;
 #X obj 56 25 inlet;
+#X obj 237 234 r \$0-split+join-in;
+#X obj 237 323 s \$0-split+join;
+#X obj 56 87 b;
+#X obj 139 88 b;
+#X obj 270 178 b;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
-#X connect 5 0 7 0;
-#X connect 6 0 5 0;
-#X connect 7 0 0 0;
-#X connect 8 0 4 0;
-#X connect 9 0 0 0;
-#X connect 10 0 8 0;
-#X connect 10 1 6 0;
-#X connect 10 2 6 0;
-#X connect 10 3 11 0;
-#X connect 10 4 9 0;
-#X connect 11 0 0 0;
-#X connect 12 0 16 0;
-#X connect 12 1 2 0;
-#X connect 12 2 14 0;
-#X connect 14 0 13 0;
-#X connect 15 0 12 0;
-#X connect 17 0 10 0;
-#X restore 192 143 pd path;
-#X text 365 369 if the input ends with a / \, a '/' will be sent to
+#X connect 5 0 6 0;
+#X connect 6 0 0 0;
+#X connect 7 0 15 0;
+#X connect 7 1 16 0;
+#X connect 7 2 16 0;
+#X connect 7 3 8 0;
+#X connect 7 4 17 0;
+#X connect 8 0 0 0;
+#X connect 9 0 14 0;
+#X connect 9 1 2 0;
+#X connect 9 2 11 0;
+#X connect 11 0 10 0;
+#X connect 12 0 7 0;
+#X connect 13 0 9 0;
+#X connect 15 0 4 0;
+#X connect 16 0 5 0;
+#X connect 17 0 0 0;
+#X restore 173 143 pd path;
+#X text 346 293 if the input ends with a / \, a '/' will be sent to
 the 2nd outlet. otherwise \, the 2nd outlet will fire a bang.;
-#X obj 56 449 cnv 15 84 30 empty empty empty 20 12 0 14 #e0e0e0 #404040
-0;
-#X obj 57 290 cnv 15 84 30 empty empty empty 20 12 0 14 #e0e0e0 #404040
-0;
-#X obj 60 295 file split;
-#X obj 95 381 print split:components;
-#X obj 159 354 print split:trailingslash;
-#X obj 60 454 file join;
-#X obj 127 325 t a a;
-#X obj 60 338 t a a;
-#X obj 60 408 list append;
-#X obj 60 522 print join;
-#X symbolatom 192 168 0 0 0 0 - - \$0-name-split+join-in 0;
-#X msg 192 65 file;
-#X msg 202 92 directory;
-#X text 65 168 or type your own:;
-#X text 122 67 select a;
-#X symbolatom 60 497 0 0 0 0 - - - 0;
-#X text 146 297 'split' path into components;
-#X msg 212 117 random string;
-#X text 161 448 'join' a list of path components to a full path \,
-using '/' as the path separator.;
-#X text 145 523 duplicate path separator will be removed.;
-#X text 364 292 a list of path components (symbols) is sent to the
-1st outlet. if the input started with a / \, the first path component
-will be a symbol '/'. otherwise no slashes will appear in the path
-components.;
-#X text 364 354 duplicate path separator will be removed.;
-#X text 79 212 these objects perform common string operations on filenames.
-no checks are performed verifying the validity/existence of any path-component.
-, f 71;
-#X text 71 609 conversely \, the 'file join' object accepts both symbols
-and numbers, f 91;
-#X text 71 557 NOTE: 'file split' will always output (lists of) symbols
+#X obj 126 262 file split;
+#X obj 168 419 file join;
+#X obj 168 513 print join;
+#X symbolatom 173 168 0 0 0 0 - - \$0-split+join-in 0;
+#X msg 173 65 file;
+#X msg 183 92 directory;
+#X text 46 168 or type your own:;
+#X symbolatom 168 461 0 0 0 0 - - - 0;
+#X msg 193 117 random string;
+#X text 271 415 'join' a list of path components to a full path \,
+using '/' as the path separator., f 42;
+#X text 184 488 duplicate path separator will be removed.;
+#X text 345 278 duplicate path separator will be removed.;
+#X text 89 547 NOTE: 'file split' will always output (lists of) symbols
 \, even if the component looks like a number. on one hand this makes
 it harder to [route] \, but on the other hand this will keep zero-padded
 numbers intact (think "2020/01/01/0042.wav")., f 91;
-#X obj 60 267 r \$0-name-split+join;
-#X obj 11 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 687 14 <= click;
+#X text 684 14 <= click;
 #N canvas 599 129 571 484 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -1224,61 +1203,55 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X text 116 398 undocumented.;
 #X text 162 184 NONE;
 #X text 162 434 NONE;
-#X restore 584 15 pd reference;
-#X text 192 15 - filename operations;
-#X obj 36 15 file split;
-#X obj 119 15 file join;
-#X connect 0 0 12 0;
-#X connect 4 0 9 0;
-#X connect 4 1 8 0;
-#X connect 7 0 17 0;
-#X connect 8 0 10 1;
-#X connect 8 1 6 0;
-#X connect 9 0 10 0;
-#X connect 9 1 5 0;
-#X connect 10 0 7 0;
-#X connect 13 0 0 0;
-#X connect 14 0 0 0;
-#X connect 17 0 11 0;
-#X connect 19 0 0 0;
-#X connect 27 0 4 0;
+#X restore 581 15 pd reference;
+#X text 189 15 - filename operations;
+#X obj 33 15 file split;
+#X obj 116 15 file join;
+#X symbolatom 193 310 4 0 0 0 - - - 0;
+#X symbolatom 126 349 0 0 0 0 - - - 0;
+#X text 67 307 trailing slash ->;
+#X text 27 348 components ->;
+#X obj 168 379 list;
+#X text 210 260 <-- 'split' path into components, f 16;
+#X text 96 65 select a:;
+#X text 242 419 <--;
+#X text 89 595 Conversely \, the 'file join' object accepts both symbols
+and numbers., f 91;
+#X obj 154 145 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 126 230 r \$0-split+join;
+#X text 345 216 A list of path components (symbols) is sent to the
+1st outlet. if the input started with a / \, the first path component
+will be a symbol '/'. otherwise no slashes will appear in the path
+components.;
+#X text 344 96 These objects perform common string operations on filenames.
+no checks are performed verifying the validity/existence of any path-component.
+, f 47;
+#X floatatom 107 392 5 0 0 0 - - - 0;
+#X connect 0 0 5 0;
+#X connect 2 0 22 0;
+#X connect 2 1 21 0;
+#X connect 3 0 9 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 4 0;
+#X connect 10 0 0 0;
+#X connect 21 0 25 1;
+#X connect 22 0 25 0;
+#X connect 25 0 3 0;
+#X connect 30 0 5 0;
+#X connect 31 0 2 0;
+#X connect 34 0 3 0;
 #X restore 440 507 pd split+join;
-#N canvas 422 84 806 631 base+ext 0;
-#X obj 67 449 cnv 15 120 30 empty empty empty 20 12 0 14 #e0e0e0 #404040
-0;
-#X obj 70 453 file splitext;
-#X obj 70 514 print splitext:root+ext;
-#X obj 158 484 print splitext:no!ext;
-#X obj 67 304 cnv 15 120 30 empty empty empty 20 12 0 14 #e0e0e0 #404040
-0;
-#X obj 70 309 file splitname;
-#X obj 165 341 print splitname:file;
-#X obj 70 370 print splitname:dir+file;
-#X text 336 273 'splitname' separates the directory component from
+#N canvas 395 48 794 632 base+ext 0;
+#X text 400 198 'splitname' separates the directory component from
 the file component of the path \, and outputs a list with both on the
-1st outlet.;
-#X text 338 322 if no directory component can be found \, the path
-is sent to the 2nd outlet;
-#X text 339 357 a trailing slash is removed;
-#X text 333 436 'splitname' separates the directory+file component
-from the extension of the given path \, and outputs a list with both
-on the 1st outlet.;
-#X text 335 485 if no extension is found \, the path is sent to the
-2nd outlet;
-#X text 337 510 an extension is a non-empty string after the last '.'
-in the filename-component of the path;
-#X text 338 375 the filename is the non-empty string after the last
-path-separator;
-#X text 82 567 NOTE: the 'file split*' objects will always output (lists
+1st outlet., f 45;
+#X text 79 564 NOTE: the 'file split*' objects will always output (lists
 of) symbols \, even if the component looks like a number. on one hand
 this makes it harder to [route] \, but on the other hand this will
 keep zero-padded numbers intact (think "2020/01/01/0042.wav")., f
 92;
-#X obj 70 422 r \$0-name-base+ext;
-#X obj 70 278 r \$0-name-base+ext;
-#X text 56 212 these objects perform common string operations on filenames.
-no checks are performed verifying the validity/existence of any path-component.
-, f 73;
 #N canvas 375 327 547 369 path 0;
 #X obj 103 233 symbol;
 #X symbolatom 148 165 10 0 0 0 - - - 0;
@@ -1286,16 +1259,12 @@ no checks are performed verifying the validity/existence of any path-component.
 #X obj 103 291 outlet;
 #X obj 56 115 openpanel;
 #X obj 139 115 openpanel 1;
-#X obj 139 88 t b;
 #X msg 139 141 symbol \$1/;
-#X obj 56 87 t b;
-#X obj 270 178 t b;
 #X obj 56 58 route file directory dir random;
 #X obj 237 259 t s s b;
 #X obj 360 292 print -n;
 #X msg 360 266 -------------------;
 #X obj 56 25 inlet;
-#X obj 237 323 s \$0-name-base+ext;
 #N canvas 667 322 513 304 random 0;
 #X obj 71 39 inlet;
 #X obj 71 225 outlet;
@@ -1315,37 +1284,41 @@ no checks are performed verifying the validity/existence of any path-component.
 #X connect 6 0 4 0;
 #X connect 7 0 1 0;
 #X restore 254 155 pd random;
-#X obj 237 234 r \$0-name-base+ext-in;
+#X obj 237 323 s \$0-base+ext;
+#X obj 237 234 r \$0-base+ext-in;
+#X obj 56 87 b;
+#X obj 139 88 b;
+#X obj 270 178 b;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
-#X connect 5 0 7 0;
-#X connect 6 0 5 0;
-#X connect 7 0 0 0;
-#X connect 8 0 4 0;
-#X connect 9 0 0 0;
-#X connect 10 0 8 0;
-#X connect 10 1 6 0;
-#X connect 10 2 6 0;
-#X connect 10 3 16 0;
-#X connect 10 4 9 0;
-#X connect 11 0 15 0;
-#X connect 11 1 2 0;
-#X connect 11 2 13 0;
-#X connect 13 0 12 0;
-#X connect 14 0 10 0;
-#X connect 16 0 0 0;
-#X connect 17 0 11 0;
-#X restore 216 146 pd path;
-#X symbolatom 216 171 0 0 0 0 - - \$0-name-base+ext 0;
-#X msg 216 68 file;
-#X msg 226 95 directory;
-#X text 89 171 or type your own:;
-#X text 146 70 select a;
-#X msg 236 120 random string;
-#X obj 11 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
+#X connect 5 0 6 0;
+#X connect 6 0 0 0;
+#X connect 7 0 15 0;
+#X connect 7 1 16 0;
+#X connect 7 2 16 0;
+#X connect 7 3 12 0;
+#X connect 7 4 17 0;
+#X connect 8 0 13 0;
+#X connect 8 1 2 0;
+#X connect 8 2 10 0;
+#X connect 10 0 9 0;
+#X connect 11 0 7 0;
+#X connect 12 0 0 0;
+#X connect 14 0 8 0;
+#X connect 15 0 4 0;
+#X connect 16 0 5 0;
+#X connect 17 0 0 0;
+#X restore 167 148 pd path;
+#X symbolatom 167 173 0 0 0 0 - - \$0-base+ext-in 0;
+#X msg 167 70 file;
+#X msg 177 97 directory;
+#X text 40 173 or type your own:;
+#X text 97 72 select a;
+#X msg 187 122 random string;
+#X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 687 14 <= click;
+#X text 684 14 <= click;
 #N canvas 724 152 573 467 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -1386,20 +1359,51 @@ found.;
 #X text 108 384 symbol - path if no extension is found.;
 #X text 162 185 NONE;
 #X text 162 415 NONE;
-#X restore 584 15 pd reference;
-#X text 262 15 - more filename operations.;
-#X obj 36 15 file splitname;
-#X obj 149 15 file splitext;
-#X connect 1 0 2 0;
-#X connect 1 1 3 0;
-#X connect 5 0 7 0;
-#X connect 5 1 6 0;
-#X connect 16 0 1 0;
-#X connect 17 0 5 0;
-#X connect 19 0 20 0;
-#X connect 21 0 19 0;
-#X connect 22 0 19 0;
-#X connect 25 0 19 0;
+#X restore 581 15 pd reference;
+#X text 259 15 - more filename operations.;
+#X obj 33 15 file splitname;
+#X obj 146 15 file splitext;
+#X text 407 384 'splitext' separates the directory+file component from
+the extension of the given path \, and outputs a list with both on
+the 1st outlet., f 45;
+#X text 326 91 These objects perform common string operations on filenames.
+no checks are performed verifying the validity/existence of any path-component.
+, f 49;
+#X text 400 247 If no directory component can be found \, the path
+is sent to the 2nd outlet., f 45;
+#X text 400 281 A trailing slash is removed., f 45;
+#X text 400 302 The filename is the non-empty string after the last
+path-separator, f 45;
+#X text 407 448 If no extension is found \, the path is sent to the
+2nd outlet., f 45;
+#X text 407 487 An extension is a non-empty string after the last '.'
+in the filename-component of the path., f 45;
+#X obj 67 440 file splitext;
+#X listbox 179 424 0 0 0 0 - - - 0;
+#X listbox 67 494 0 0 0 0 - - - 0;
+#X obj 179 453 print splitext no extension;
+#X obj 67 521 print splitext root+ext;
+#X obj 67 409 r \$0-base+ext;
+#X obj 63 256 file splitname;
+#X obj 63 225 r \$0-base+ext;
+#X listbox 179 246 0 0 0 0 - - - 0;
+#X listbox 63 309 0 0 0 0 - - - 0;
+#X obj 63 337 print splitname dir+file;
+#X obj 179 271 print splitname file;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 2 0;
+#X connect 8 0 2 0;
+#X connect 22 0 24 0;
+#X connect 22 1 23 0;
+#X connect 23 0 25 0;
+#X connect 24 0 26 0;
+#X connect 27 0 22 0;
+#X connect 28 0 31 0;
+#X connect 28 1 30 0;
+#X connect 29 0 28 0;
+#X connect 30 0 33 0;
+#X connect 31 0 32 0;
 #X restore 440 537 pd base+ext;
 #X text 349 643 updated for Pd version 0.52;
 #X obj 27 127 file define \$0.f;

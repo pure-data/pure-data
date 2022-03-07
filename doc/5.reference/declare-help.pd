@@ -94,7 +94,7 @@ refer to the chapter 4 of Pd's manual., f 74;
 #X obj 4 39 cnv 1 1055 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 676 214 618 221 reference 0;
-#X obj 8 42 cnv 5 600 5 empty empty INLETS./OUTLETS: 8 18 0 13 #202020
+#X obj 8 42 cnv 5 600 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020
 #000000 0;
 #X obj 7 195 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
