@@ -1,5 +1,5 @@
 #N struct help-set-template1 float x float y symbol s;
-#N canvas 664 23 567 703 12;
+#N canvas 609 23 567 703 12;
 #X text 25 647 see also:;
 #X obj 201 649 append;
 #X obj 259 649 getsize;
@@ -61,14 +61,14 @@ f 73;
 #X obj 146 182 t b f;
 #X text 64 12 - set values in a scalar;
 #X text 476 10 <= click;
-#N canvas 782 100 568 426 reference 0;
+#N canvas 743 102 568 426 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 230 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
 #X obj 8 267 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 401 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 386 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 7 136 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
@@ -76,8 +76,8 @@ f 73;
 inlets for them., f 70;
 #X obj 7 190 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 111 353 symbol - structure name., f 49;
-#X text 125 373 list - symbols for field names (each creates an inlet).
+#X text 111 338 symbol - structure name., f 49;
+#X text 125 358 list - symbols for field names (each creates an inlet).
 ;
 #X obj 28 18 set;
 #X text 59 18 - set values in a scalar;
@@ -89,11 +89,11 @@ inlets for them., f 70;
 #X text 56 92 set <symbol \, symbol> -;
 #X text 217 92 if none or just one field is given \, you can use 'set'
 to set struct name and field., f 47;
-#X obj 7 299 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
+#X obj 7 292 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 343 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+#X obj 7 331 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 111 309 "-symbol" - so you can set symbol values.;
+#X text 111 302 "-symbol" - so you can set symbol values.;
 #X restore 382 10 pd reference;
 #X obj 9 41 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

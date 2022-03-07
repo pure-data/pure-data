@@ -1,4 +1,4 @@
-#N canvas 574 23 632 630 12;
+#N canvas 421 23 632 630 12;
 #X msg 95 367 bang;
 #X msg 35 265 bang;
 #X obj 63 397 timer;
@@ -49,24 +49,24 @@ tempo number and a time unit symbol. Possible symbols are:, f 82;
 you change the tempo message when the object is runnng \, otherwise
 you get funny results because the change takes effect immediately and
 gets applied to the remaining part of the elapsed time., f 75;
-#N canvas 754 73 486 272 reference 0;
+#N canvas 700 98 489 268 reference 0;
 #X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 144 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 139 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 181 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 176 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
 #X text 143 62 bang - reset (set elapsed time to zero).;
-#X text 144 153 bang - output elapsed time., f 43;
-#X obj 18 245 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X text 144 148 bang - output elapsed time., f 43;
+#X obj 18 240 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 46 17 timer;
 #X text 91 16 - measure logical time;
 #X text 25 89 tempo <float \, symbol> -;
 #X text 194 89 set tempo value (float) and time unit symbol., f 24
 ;
-#X text 130 195 float - tempo value (default 1)., f 42;
-#X text 123 215 symbol - time unit (default 'msec')., f 43;
+#X text 130 190 1) float - tempo value (default 1)., f 42;
+#X text 123 210 2) symbol - time unit (default 'msec')., f 43;
 #X restore 465 14 pd reference;
 #X text 397 13 click =>;
 #X obj 17 46 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000

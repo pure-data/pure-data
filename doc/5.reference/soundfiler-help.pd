@@ -1,4 +1,4 @@
-#N canvas 368 69 863 579 12;
+#N canvas 322 46 863 579 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 13 float 0;
 #X coords 0 1 12 -1 300 100 1;
@@ -74,7 +74,7 @@ in a float object and send it to it., f 70;
 #X obj 8 46 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 774 11 <= click;
-#N canvas 555 23 632 371 reference 0;
+#N canvas 556 60 632 371 reference 0;
 #X obj 8 52 cnv 5 610 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 182 cnv 2 610 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -87,7 +87,6 @@ in a float object and send it to it., f 70;
 0;
 #X obj 7 210 cnv 1 610 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 164 309 NONE.;
 #X text 109 254 list -;
 #X text 102 219 float - number of samples (when reading a file).,
 f 58;
@@ -104,6 +103,7 @@ specify channels. Optional flags: -wave \, -aiff \, -caf \, -next \,
 \, -rate <float>.., f 60;
 #X obj 30 15 soundfiler;
 #X text 108 14 - read and write soundfiles to arrays;
+#X text 164 309 NONE;
 #X restore 680 12 pd reference;
 #X obj 8 524 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

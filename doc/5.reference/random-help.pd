@@ -1,4 +1,4 @@
-#N canvas 634 23 479 478 12;
+#N canvas 545 23 479 478 12;
 #X msg 86 237 bang;
 #X floatatom 139 299 5 0 0 0 - - - 0;
 #X floatatom 86 354 0 0 0 0 - - - 0;
@@ -7,7 +7,7 @@
 #X text 177 270 message to set the seed;
 #X text 182 300 inlet to reset the range;
 #X text 155 326 argument to initialize the range;
-#X text 243 437 updated for Pd version 0.33;
+#X text 248 437 updated for Pd version 0.33;
 #X text 24 58 Random outputs pseudo random integers from 0 to N-1 where
 N is the creation argument (5 in the example below.) You can specify
 a seed if you wish. Seeds are kept locally so that if two Randoms are
@@ -20,11 +20,11 @@ one!;
 #X obj 27 13 random;
 #X text 81 12 - pseudo random integers;
 #X obj 86 382 print;
-#X text 41 440 see also:;
-#X obj 116 438 expr;
+#X text 23 440 see also:;
+#X obj 98 438 expr;
 #X obj 10 42 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 808 146 574 286 reference 0;
+#N canvas 722 116 574 286 reference 1;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 184 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -33,19 +33,20 @@ one!;
 0;
 #X obj 7 258 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 8 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 40 16 random;
 #X text 94 15 - pseudo random integers.;
 #X text 98 92 bang - generate a random integer number., f 62;
-#X text 34 113 seed <floatl> -;
 #X text 147 113 set a seed value for repeatable random numbers., f
 55;
 #X text 143 155 float - set the range., f 49;
 #X text 143 194 float - the generated random number., f 49;
-#X text 143 232 float - initial range value (default 1)., f 49;
+#X text 143 232 1) float - initial range value (default 1)., f 49
+;
+#X text 42 113 seed <float> -;
 #X restore 290 12 pd reference;
 #X text 384 12 <= click;
 #X obj 10 422 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000

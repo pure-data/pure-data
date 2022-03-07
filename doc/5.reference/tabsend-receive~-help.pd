@@ -1,4 +1,4 @@
-#N canvas 568 23 714 604 12;
+#N canvas 391 23 714 604 12;
 #X obj 27 23 tabsend~;
 #X text 419 569 updated for Pd version 0.43;
 #X text 169 292 creation argument: initializes table name, f 22;
@@ -100,7 +100,7 @@ doesn't work in messages., f 70;
 0;
 #X obj 7 490 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 756 105 576 461 reference 0;
+#N canvas 701 87 576 461 reference 0;
 #X obj 8 53 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 117 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -116,12 +116,9 @@ doesn't work in messages., f 70;
 #X obj 7 433 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 126 127 NONE;
-#X text 126 406 symbol -;
 #X obj 8 311 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X text 189 406 receive name symbol (default: empty symbol).;
-#X text 124 162 symbol - send symbol name (default: empty symbol).
-;
 #X obj 24 20 tabsend~;
 #X text 112 19 - write a block of a signal to an array continuously
 ;
@@ -134,6 +131,9 @@ doesn't work in messages., f 70;
 #X text 92 87 set <name> - set table name.;
 #X text 119 67 signal - signal to send to matching tabreceive~ object(s).
 ;
+#X text 124 162 1) symbol - send symbol name (default: empty symbol).
+;
+#X text 106 406 1) symbol -;
 #X restore 535 27 pd reference;
 #X text 632 28 <= click;
 #X connect 4 0 7 0;

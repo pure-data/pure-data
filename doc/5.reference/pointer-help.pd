@@ -1,6 +1,6 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 628 23 703 712 12;
+#N canvas 587 23 703 712 12;
 #X text 20 666 see also:;
 #X obj 53 10 pointer;
 #N canvas 379 131 422 137 help-pointer-template1 0;
@@ -17,7 +17,7 @@
 #X obj 215 652 getsize;
 #X obj 96 676 setsize;
 #X obj 156 676 element;
-#N canvas 309 206 312 185 help-pointer-data 1;
+#N canvas 229 196 312 185 help-pointer-data 1;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
@@ -108,49 +108,49 @@ the end \, a "bang" goes to out2.;
 #X obj 11 43 cnv 1 685 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 570 8 <= click;
-#N canvas 975 128 575 570 reference 0;
+#N canvas 784 100 575 570 reference 0;
 #X obj 23 20 pointer;
 #X text 85 20 - store the location of a scalar in a list.;
-#X text 41 222 send <symbol> -;
+#X text 44 222 send <symbol> -;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 335 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 467 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 464 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 540 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 537 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 7 286 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 104 90 bang - output the current value., f 62;
-#X text 104 125 next -;
-#X text 153 126 move and output next pointer or "bang" to right outlet
+#X text 107 90 bang - output the current value., f 62;
+#X text 107 125 next -;
+#X text 156 126 move and output next pointer or "bang" to right outlet
 if we reach the end of the list., f 55;
-#X text 13 108 traverse <symbol> - sets to the "head" of the list.
+#X text 16 108 traverse <symbol> - sets to the "head" of the list.
 , f 75;
-#X text 41 159 vnext <float> -;
-#X text 153 158 outputs the next object (if 0) or the next selected
+#X text 44 159 vnext <float> -;
+#X text 156 158 outputs the next object (if 0) or the next selected
 object (if 1)., f 55;
-#X text 90 191 delete -;
-#X text 153 190 delete the current object and output the next (or send
+#X text 93 191 delete -;
+#X text 156 190 delete the current object and output the next (or send
 a "bang" to the right outlet if it was the last one)., f 55;
-#X text 153 222 send pointer to a receive named given by the symbol.
+#X text 156 222 send pointer to a receive named given by the symbol.
 , f 55;
-#X text 13 241 send-window <any> -;
-#X text 153 240 send any message to the canvas containing the scalar.
+#X text 16 241 send-window <any> -;
+#X text 156 240 send any message to the canvas containing the scalar.
 , f 55;
-#X text 27 260 equal <pointer> -;
-#X text 153 259 compare an incoming pointer with the stored pointer.
+#X text 30 260 equal <pointer> -;
+#X text 156 259 compare an incoming pointer with the stored pointer.
 , f 55;
 #X text 83 296 pointer - store the pointer value (no output)., f 49
 ;
 #X text 94 339 'n' number of outlets depend on creation arguments;
 #X obj 7 362 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
-#X text 98 475 1) list -, f 9;
-#X text 169 475 template names. The number of templates creates 'n'
+#X text 104 472 1) list -;
+#X text 172 472 template names. The number of templates creates 'n'
 corresponding outlets \, plus an extra outlet for non matching templates.
 If no argument is given \, only one outlet is created., f 51;
 #X obj 7 392 cnv 1 550 1 empty empty 'n'+1: 8 12 0 13 #7c7c7c #000000

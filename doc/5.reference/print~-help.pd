@@ -1,4 +1,4 @@
-#N canvas 665 73 548 342 12;
+#N canvas 516 27 548 342 12;
 #X msg 116 210 2;
 #X msg 93 175 bang;
 #X obj 56 146 phasor~ 1000;
@@ -13,13 +13,13 @@
 #X obj 349 152 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 368 150 DSP on/off;
-#N canvas 928 215 573 246 reference 0;
+#N canvas 657 103 573 246 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 141 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 178 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
+#X obj 18 178 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
 #X obj 17 215 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 146 151 NONE, f 5;

@@ -75,8 +75,8 @@ if/when |a[n]|>1.;
 #X connect 23 0 10 3;
 #X connect 24 0 25 0;
 #X restore 410 555 pd test;
-#X obj 88 603 lop~;
-#X text 9 604 see also:;
+#X obj 81 603 lop~;
+#X text 8 602 see also:;
 #X obj 179 535 rzero~;
 #X obj 119 558 cpole~;
 #X obj 119 535 rpole~;
@@ -89,12 +89,12 @@ if/when |a[n]|>1.;
 #X text 176 516 1-zero;
 #X text 243 500 1-zero \, reversed, f 8;
 #X text 25 540 summary of raw filters:, f 12;
-#X obj 129 603 hip~;
-#X obj 170 603 bp~;
-#X obj 205 603 vcf~;
-#X text 286 603 - user-friendly filters;
-#X obj 246 603 bob~;
-#X obj 371 475 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
+#X obj 122 603 hip~;
+#X obj 163 603 bp~;
+#X obj 198 603 vcf~;
+#X text 279 603 - user-friendly filters;
+#X obj 239 603 bob~;
+#X obj 371 475 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
 #000000 #000000;
 #X text 15 429 Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly

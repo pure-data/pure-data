@@ -1,4 +1,4 @@
-#N canvas 699 87 484 296 12;
+#N canvas 549 73 484 296 12;
 #X obj 107 162 moses 10;
 #X floatatom 160 205 5 0 0 0 - - - 0;
 #X obj 28 17 moses;
@@ -7,32 +7,31 @@
 #X floatatom 107 205 5 0 0 0 - - - 0;
 #X floatatom 107 130 5 0 0 0 - - - 0;
 #X floatatom 160 132 5 0 0 0 - - - 0;
-#N canvas 953 120 571 324 reference 0;
-#X obj 41 17 moses;
-#X text 91 16 - part a stream of numbers;
+#N canvas 695 144 575 310 reference 0;
+#X obj 33 19 moses;
+#X text 80 18 - part a stream of numbers;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 154 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 148 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 261 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 242 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 298 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 118 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 110 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 84 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 7 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 222 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 201 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 185 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 7 172 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 107 91 float - number to be parted., f 48;
-#X text 107 127 float - set control value., f 48;
-#X text 107 196 float - input number if less than control value.;
-#X text 107 232 float - input number if equal or higher than control
+#X text 107 88 float - number to be parted., f 48;
+#X text 107 115 float - set control value., f 48;
+#X text 107 179 float - input number if less than control value.;
+#X text 107 207 float - input number if equal or higher than control
 value.;
-#X text 107 272 float - set initial control value (default 0)., f
-48;
+#X text 116 251 1) float - set initial control value (default 0).;
 #X restore 301 17 pd reference;
 #X text 397 18 <= click;
 #X obj 8 49 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000

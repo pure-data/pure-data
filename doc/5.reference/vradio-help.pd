@@ -1,4 +1,4 @@
-#N canvas 733 29 510 616 12;
+#N canvas 527 27 510 616 12;
 #X obj 72 254 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
 #X floatatom 107 434 4 0 0 0 - - - 0;
@@ -589,7 +589,7 @@ turns the previous toggle off before turning the new one on., f 29
 #X restore 328 319 pd switch-example;
 #X text 68 17 - [vradio]: Vertical Radio Button;
 #X obj 138 577 all_guis;
-#N canvas 775 67 682 540 reference 0;
+#N canvas 664 65 682 540 reference 0;
 #X obj 21 182 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X text 131 270 label <symbol> - sets label symbol., f 72;

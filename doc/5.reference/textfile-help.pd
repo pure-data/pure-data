@@ -43,7 +43,7 @@ messages., f 33;
 #X text 197 512 (newer and better replacement for textfile);
 #X obj 9 45 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 750 127 575 388 reference 0;
+#N canvas 677 95 575 388 reference 0;
 #X obj 8 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 230 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -56,7 +56,6 @@ messages., f 33;
 0;
 #X obj 7 255 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 150 337 NONE.;
 #X text 123 70 rewind - go to beginning (and stop)., f 59;
 #X text 130 162 print - print contents to Pd window., f 58;
 #X text 117 294 bang - when reaching the end of sequence.;
@@ -75,6 +74,7 @@ it., f 68;
 argument)., f 70;
 #X text 39 200 write <symbol \, cr> - write to a file (with optional
 'cr' argument)., f 71;
+#X text 150 337 NONE;
 #X restore 737 14 pd reference;
 #X text 831 14 <= click;
 #X obj 364 463 print line;
@@ -84,7 +84,7 @@ argument)., f 70;
 #X text 435 383 <--;
 #X text 464 382 you can click on the object to edit its contents (like
 [text define]), f 36;
-#X obj 417 410 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 417 410 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X obj 9 496 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

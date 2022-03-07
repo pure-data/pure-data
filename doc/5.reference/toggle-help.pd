@@ -1,4 +1,4 @@
-#N canvas 593 75 529 560 12;
+#N canvas 450 71 529 560 12;
 #X obj 85 250 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
 #X obj 112 313 tgl 55 0 empty empty Big\\\ Toggle 63 26 2 16 #dcdcdc
@@ -607,36 +607,36 @@ the old behavior back:, f 26;
 #X obj 143 522 all_guis;
 #X obj 12 41 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 881 137 590 385 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 691 139 590 385 reference 0;
+#X obj 18 43 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 326 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 317 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 364 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 18 355 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 75 122 size <float> - set size in pixels., f 65;
-#X text 76 160 init <float> - non zero sets to init mode., f 56;
-#X text 61 216 label <symbol> - set label., f 67;
-#X text 48 197 receive <symbol> - set receive symbol name., f 60;
-#X text 69 179 send <symbol> - set send symbol name., f 57;
-#X text 40 235 label_font <f \, f> -;
-#X text 180 235 set label type <0: DejaVu Sans Mono \, 1: Helvetica
+#X text 75 113 size <float> - set size in pixels., f 65;
+#X text 76 151 init <float> - non zero sets to init mode., f 56;
+#X text 61 207 label <symbol> - set label., f 67;
+#X text 48 188 receive <symbol> - set receive symbol name., f 60;
+#X text 69 170 send <symbol> - set send symbol name., f 57;
+#X text 40 226 label_font <f \, f> -;
+#X text 180 226 set label type <0: DejaVu Sans Mono \, 1: Helvetica
 \, 2: Times> andd font size., f 50;
-#X text 47 267 label_pos <f \, f> - set label's x/y position., f 69
+#X text 47 258 label_pos <f \, f> - set label's x/y position., f 69
 ;
-#X text 75 287 color <list> -;
-#X text 180 287 set colors of background \, front and label. Symbols
+#X text 75 278 color <list> -;
+#X text 180 278 set colors of background \, front and label. Symbols
 for hexadecimal values or floats for presets., f 50;
-#X obj 42 19 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+#X obj 42 10 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
 0 1;
-#X text 69 18 - [toggle]/[tgl]: Toggle Button.;
-#X text 124 83 float - values pass through (non zero activates toggle).
+#X text 69 9 - [toggle]/[tgl]: Toggle Button.;
+#X text 124 74 float - values pass through (non zero activates toggle).
 , f 58;
-#X text 131 63 bang - changes toggle's state., f 57;
-#X text 122 333 float -;
-#X text 178 333 zero and non-zero value depending on state.;
-#X text 54 141 nonzero <float> - set non-zero value (default 1).;
-#X text 82 103 set <float> - zero sets to off \, non-zero sets to on
+#X text 131 54 bang - changes toggle's state., f 57;
+#X text 122 326 float -;
+#X text 178 326 zero and non-zero value depending on state.;
+#X text 54 132 nonzero <float> - set non-zero value (default 1).;
+#X text 82 94 set <float> - zero sets to off \, non-zero sets to on
 (no output)., f 64;
 #X restore 395 11 pd reference;
 #X text 327 11 click =>;

@@ -117,8 +117,6 @@ stable., f 64;
 #X obj 204 622 vcf~;
 #X text 285 622 - user-friendly filters;
 #X obj 245 622 bob~;
-#X obj 372 495 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
-#000000 #000000;
 #X text 15 448 Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
@@ -190,10 +188,12 @@ are controlled by creation arguments or by another complex audio signal
 in time., f 64;
 #X text 123 154 <= clear internal state (last samples) to zero;
 #X text 176 182 <= set internal state (real &i maginary parts);
+#X obj 372 495 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;
 #X connect 3 0 9 1;
 #X connect 4 0 9 2;
 #X connect 5 0 9 3;
 #X connect 7 0 9 0;
-#X connect 38 0 42 0;
+#X connect 53 0 41 0;

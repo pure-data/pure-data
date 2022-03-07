@@ -95,9 +95,9 @@ by clicking and opening the files to the right, f 52;
 0;
 #X obj 12 330 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 12 248 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 13 248 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 12 209 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 13 209 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 58 160 set <symbol> -;
 #X text 114 85 bang -;
@@ -114,8 +114,8 @@ duration in samples.;
 #X text 121 216 signal - sample output., f 54;
 #X text 135 255 bang - bang when finished playing the table., f 54
 ;
-#X text 121 302 symbol - sets table name with the sample.;
 #X obj 45 18 tabplay~;
+#X text 121 302 1) symbol - sets table name with the sample.;
 #X restore 659 18 pd reference;
 #X text 757 17 <= click;
 #X obj 8 52 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000

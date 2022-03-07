@@ -51,8 +51,8 @@ sequence. In the file "qlist.txt" the end is delayed 1000 milliseconds
 after the last message., f 49;
 #X text 713 64 These receives are invoked in the file "qlist.txt" in
 this directory., f 35;
-#X obj 54 14 qlist;
-#X text 107 13 - text-based sequencer;
+#X obj 44 14 qlist;
+#X text 97 13 - text-based sequencer;
 #X text 541 190 single-step forward SUPPRESSING MESSAGE-SENDING;
 #X msg 488 191 next 1;
 #X msg 446 63 print;
@@ -67,7 +67,7 @@ this directory., f 35;
 #X obj 754 139 print this;
 #X obj 9 45 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 750 127 568 419 reference 0;
+#N canvas 751 121 568 419 reference 0;
 #X obj 8 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 260 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -82,23 +82,23 @@ this directory., f 35;
 0;
 #X obj 26 9 qlist;
 #X text 79 8 - text-based sequencer;
-#X text 140 367 NONE.;
-#X text 107 52 bang - start sequence automatically., f 61;
-#X text 44 71 tempo <float> - set relative tempo., f 70;
-#X text 93 90 rewind - go to beginning (and stop)., f 63;
-#X text 43 108 next <float> -;
-#X text 156 108 single-step forward \, optional floar supresses message
+#X text 112 52 bang - start sequence automatically., f 61;
+#X text 49 71 tempo <float> - set relative tempo., f 70;
+#X text 98 90 rewind - go to beginning (and stop)., f 63;
+#X text 48 108 next <float> -;
+#X text 161 108 single-step forward \, optional floar supresses message
 sending., f 54;
-#X text 100 140 print - print contents to Pd window., f 62;
-#X text 100 158 clear - empty the qlist., f 62;
-#X text 37 176 add <anything> - add a message to a qlist., f 71;
-#X text 30 195 add2 <anything> - add a message to a qlist but don't
+#X text 105 140 print - print contents to Pd window., f 62;
+#X text 105 158 clear - empty the qlist., f 62;
+#X text 42 176 add <anything> - add a message to a qlist., f 71;
+#X text 35 195 add2 <anything> - add a message to a qlist but don't
 terminate it., f 72;
-#X text 44 214 read <symbol> - read a file into qlist., f 70;
-#X text 37 233 write <symbol> - write contents to a file., f 71;
+#X text 49 214 read <symbol> - read a file into qlist., f 70;
+#X text 42 233 write <symbol> - write contents to a file., f 71;
 #X text 107 291 list - list of leading numbers for the next message.
 ;
 #X text 107 324 bang - when reaching the end of sequence.;
+#X text 140 366 NONE;
 #X restore 807 14 pd reference;
 #X text 901 14 <= click;
 #X obj 9 501 cnv 1 975 1 empty empty empty 8 12 0 13 #000000 #000000

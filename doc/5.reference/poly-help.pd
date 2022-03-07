@@ -1,4 +1,4 @@
-#N canvas 659 66 570 450 12;
+#N canvas 549 25 570 450 12;
 #X text 341 415 updated for Pd version 0.25;
 #X text 43 413 see also:;
 #X obj 29 16 poly;
@@ -37,38 +37,38 @@ can be configured to do voice stealing or not (the default.), f 74
 ;
 #X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 930 157 484 382 reference 0;
+#N canvas 800 147 484 391 reference 0;
 #X obj 8 52 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 186 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 299 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 313 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 356 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 370 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 7 155 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 7 85 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 29 16 poly;
-#X text 68 16 - MIDI-style polyphonic voice allocator.;
+#X obj 27 18 poly;
+#X text 66 18 - MIDI-style polyphonic voice allocator.;
 #X text 131 93 float - MIDI pitch value., f 40;
 #X text 131 111 clear -;
 #X text 187 111 clear memory., f 32;
 #X text 138 129 stop -;
 #X text 187 129 flush hanging note on messages., f 32;
 #X text 132 162 float - set velocity value., f 40;
-#X obj 7 240 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 246 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 210 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 7 216 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 132 218 float - the voice number., f 40;
-#X text 131 248 float - MIDI pitch., f 40;
-#X obj 7 270 cnv 1 450 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+#X text 132 224 float - the voice number., f 40;
+#X obj 7 276 cnv 1 450 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 131 278 float - velocitty., f 40;
-#X text 111 309 1) float - number of voices (default 1)., f 43;
-#X text 111 327 2) float - non-zero sets to voice stealing.;
+#X text 111 323 1) float - number of voices (default 1)., f 43;
+#X text 111 341 2) float - non-zero sets to voice stealing.;
+#X text 131 284 float - note velocitty., f 40;
+#X text 131 254 float - note pitch., f 40;
 #X restore 383 17 pd reference;
 #X text 477 17 <= click;
 #X obj 9 400 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000

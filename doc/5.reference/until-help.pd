@@ -1,4 +1,4 @@
-#N canvas 623 76 425 418 12;
+#N canvas 462 63 425 418 12;
 #X msg 85 198 bang;
 #X obj 35 21 until;
 #X text 32 66 The until object's left inlet starts a loop in which
@@ -22,14 +22,14 @@ stopping mechanism \, Pd goes into an infinite loop!;
 #X obj 12 371 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 334 21 <= click;
-#N canvas 643 140 573 271 reference 0;
+#N canvas 598 111 573 271 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 170 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
 #X obj 7 246 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 207 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 207 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
 #X text 147 218 NONE, f 52;
 #X obj 38 18 until;

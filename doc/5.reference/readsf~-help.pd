@@ -30,7 +30,7 @@ automatically \, although only uncompressed 2- or 3-byte integer ("pcm")
 and 4-byte floating point samples are accepted., f 91;
 #X obj 54 372 output~;
 #X obj 185 477 writesf~;
-#X obj 471 371 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 471 371 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 502 326 - number of channels \; - per channel buffer size in
 bytes, f 22;
@@ -62,7 +62,6 @@ to skip \, number of channels \, bytes per sample \, and endianness.
 #X text 177 118 nonzero starts playback \, zero stops., f 50;
 #X text 121 139 print - prints information on Pd's terminal window.
 , f 58;
-#X text 92 174 'n' number of outlets specified by argument.;
 #X text 122 206 signal -;
 #X text 187 206 channel output of a given file., f 46;
 #X text 137 242 bang - when finishing playing file., f 54;
@@ -70,6 +69,7 @@ to skip \, number of channels \, bytes per sample \, and endianness.
 1 \, max 64)., f 62;
 #X text 107 297 2) float - per channel buffer size in bytes., f 62
 ;
+#X text 82 174 ('n' number of outlets specified by argument);
 #X restore 519 15 pd reference;
 #X floatatom 218 396 6 0 0 0 - - - 0;
 #X floatatom 298 396 6 0 0 0 - - - 0;

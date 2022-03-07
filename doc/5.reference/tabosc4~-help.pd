@@ -1,4 +1,4 @@
-#N canvas 607 23 669 686 12;
+#N canvas 551 23 669 686 12;
 #X declare -stdpath ./;
 #X floatatom 81 308 5 0 0 0 - - - 0;
 #X obj 81 338 sig~ 100;
@@ -85,8 +85,8 @@ doesn't work in messages., f 70;
 0;
 #X obj 18 174 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 211 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
+#X obj 18 211 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
 #X obj 17 248 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 119 91 signal -;
@@ -97,13 +97,13 @@ doesn't work in messages., f 70;
 #X text 126 145 float -;
 #X text 183 145 phase cycle reset (from 0 to 1)., f 46;
 #X text 183 91 frequency value in Hz., f 46;
-#X text 144 220 float - initial frequenct value in Hz (default 0).
-;
 #X obj 50 18 tabosc4~;
 #X text 120 19 - 4-point interpolating oscillator.;
 #X text 77 110 set <symbol> -;
 #X text 126 184 signal - wavetable oscillator output., f 54;
 #X text 183 110 set table name with the waveform., f 46;
+#X text 124 220 1) float - initial frequenct value in Hz (default 0).
+;
 #X restore 423 18 pd reference;
 #X text 521 19 <= click;
 #X obj 8 49 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000

@@ -122,9 +122,11 @@ of outlets and message type depends on the arguments., f 52;
 'bang' \, 'symbol' \, 'list' \, 'anything' and 'pointer' \, all of
 which can be abreviatted (default: f f)., f 52;
 #X obj 99 15 t;
-#X restore 481 41 pd reference;
-#X text 579 41 <= click;
+#X restore 491 41 pd reference;
+#X text 589 41 <= click;
 #X obj 6 548 cnv 1 1100 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 666 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;

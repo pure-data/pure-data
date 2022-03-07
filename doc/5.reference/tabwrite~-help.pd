@@ -1,4 +1,4 @@
-#N canvas 493 71 669 567 12;
+#N canvas 366 43 669 567 12;
 #X obj 55 17 tabwrite~;
 #X msg 53 232 bang;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -66,7 +66,7 @@ doesn't work in messages., f 70;
 #X restore 323 409 pd Dealing_with_"\$0";
 #X text 161 400 open subpatch to see how to deal with '\$0', f 21
 ;
-#N canvas 750 87 583 293 reference 0;
+#N canvas 651 119 583 293 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 178 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -76,7 +76,6 @@ doesn't work in messages., f 70;
 #X obj 17 257 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 81 152 set <symbol> -;
-#X text 126 229 symbol - sets table name with the sample.;
 #X text 188 152 set the table name., f 39;
 #X text 187 189 NONE;
 #X obj 55 17 tabwrite~;
@@ -90,6 +89,7 @@ doesn't work in messages., f 70;
 #X text 188 92 starts recording at given sample (default 0).;
 #X text 188 114 starts recording into the array (same as 'start 0').
 ;
+#X text 126 229 1) symbol - sets table name with the sample.;
 #X restore 461 18 pd reference;
 #X text 559 17 <= click;
 #X obj 8 52 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000

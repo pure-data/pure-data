@@ -1,4 +1,4 @@
-#N canvas 207 60 1076 639 12;
+#N canvas 193 39 1076 639 12;
 #X obj 30 384 netsend;
 #X msg 30 198 connect localhost 3000;
 #X msg 57 353 send foo \$1;
@@ -108,7 +108,7 @@ for backwards compatibility., f 70;
 #X obj 10 41 cnv 1 1060 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 985 10 <= click;
-#N canvas 477 146 740 379 reference 0;
+#N canvas 570 116 740 379 reference 0;
 #X obj 8 42 cnv 5 720 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 176 cnv 2 720 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000

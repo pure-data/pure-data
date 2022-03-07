@@ -1,4 +1,4 @@
-#N canvas 651 23 631 467 12;
+#N canvas 532 29 631 467 12;
 #X obj 78 344 snapshot~;
 #X obj 32 19 snapshot~;
 #X msg 89 286 bang;
@@ -25,23 +25,23 @@ read snapshot's value before any ensuing signal computation., f 81
 #000000 0 1;
 #X text 452 217 DSP on/off;
 #X text 78 238 0.1 Hz cosine wave;
-#N canvas 784 140 582 226 reference 0;
+#N canvas 702 112 582 226 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 126 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 122 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 163 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 159 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X obj 17 200 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 17 196 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 131 66 bang -;
-#X text 166 174 NONE, f 9;
+#X text 166 170 NONE, f 9;
 #X obj 39 20 snapshot~;
 #X text 119 20 - convert a signal to a number on demand;
 #X text 183 66 convert a signal to a float., f 46;
 #X text 82 86 set <float> -;
 #X text 183 86 set a float value for the next DSP block., f 46;
-#X text 126 136 float - the converted signal at every bang., f 54
+#X text 126 132 float - the converted signal at every bang., f 54
 ;
 #X restore 435 19 pd reference;
 #X text 533 19 <= click;

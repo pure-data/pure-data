@@ -1,4 +1,4 @@
-#N canvas 690 24 509 610 12;
+#N canvas 523 23 509 610 12;
 #X msg 156 259 set \$1;
 #X obj 75 257 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
@@ -671,7 +671,7 @@ dynamically., f 34;
 #X restore 315 308 pd example-discrete;
 #X text 55 15 - [vslider]/[vsl]: Vertical Slider;
 #X obj 119 577 all_guis;
-#N canvas 759 53 660 548 reference 0;
+#N canvas 653 53 660 548 reference 0;
 #X obj 8 162 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X text 118 294 label <symbol> - sets label symbol., f 72;

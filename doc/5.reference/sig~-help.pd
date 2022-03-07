@@ -1,31 +1,31 @@
-#N canvas 791 132 496 403 12;
-#X obj 74 280 snapshot~;
-#X floatatom 74 314 6 0 0 0 - - - 0;
-#X obj 31 13 sig~;
-#X obj 74 151 sig~;
-#X floatatom 74 119 6 0 0 0 - - - 0;
-#X text 48 57 In this example \, the sig~ object converts numbers to
+#N canvas 477 23 490 403 12;
+#X obj 70 280 snapshot~;
+#X floatatom 70 314 6 0 0 0 - - - 0;
+#X obj 27 13 sig~;
+#X obj 70 151 sig~;
+#X floatatom 70 119 6 0 0 0 - - - 0;
+#X text 44 57 In this example \, the sig~ object converts numbers to
 an audio signal \, which the snapshot~ converts back again.;
-#X obj 96 226 metro 200;
-#X text 260 366 updated for Pd version 0.33;
-#X text 124 119 <= Scroll to set value, f 12;
-#X obj 96 195 loadbang;
-#X text 342 129 DSP on/off;
-#X obj 190 240 sig~ 10;
-#X obj 190 280 snapshot~;
-#X floatatom 190 206 6 0 0 0 - - - 0;
-#X floatatom 190 314 6 0 0 0 - - - 0;
-#X text 255 228 An argument initializes the signal value., f 15;
-#X obj 323 130 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 92 226 metro 200;
+#X text 266 366 updated for Pd version 0.33;
+#X text 120 119 <= Scroll to set value, f 12;
+#X obj 92 195 loadbang;
+#X text 338 129 DSP on/off;
+#X obj 186 240 sig~ 10;
+#X obj 186 280 snapshot~;
+#X floatatom 186 206 6 0 0 0 - - - 0;
+#X floatatom 186 314 6 0 0 0 - - - 0;
+#X text 251 228 An argument initializes the signal value., f 15;
+#X obj 319 130 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 323 157 \; pd dsp \$1;
-#X text 32 366 see also:;
-#X obj 108 365 snapshot~;
-#X obj 11 43 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
+#X msg 319 157 \; pd dsp \$1;
+#X text 14 366 see also:;
+#X obj 90 365 snapshot~;
+#X obj 7 43 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 10 351 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 351 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 855 226 424 185 reference 0;
+#N canvas 667 102 424 185 reference 0;
 #X obj 8 45 cnv 5 400 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 87 cnv 2 400 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -39,9 +39,9 @@ an audio signal \, which the snapshot~ converts back again.;
 #X text 109 58 float - number to convert to signal.;
 #X text 102 93 signal - converted signal.;
 #X text 104 123 1) float - initially convertedd value.;
-#X restore 319 14 pd reference;
-#X text 413 14 <= click;
-#X text 67 13 - convert numbers to signals;
+#X restore 315 14 pd reference;
+#X text 409 14 <= click;
+#X text 63 13 - convert numbers to signals;
 #X connect 0 0 1 0;
 #X connect 3 0 0 0;
 #X connect 4 0 3 0;

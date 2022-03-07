@@ -1,4 +1,4 @@
-#N canvas 640 46 472 524 12;
+#N canvas 527 34 472 527 12;
 #X declare -stdpath ./;
 #X obj 26 14 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X obj 154 248 vu 16 120 foo7_rcv VU-Meter 60 0 0 10 #000000 #900000
@@ -582,7 +582,7 @@ to see how this is done., f 55;
 #X obj 124 491 slop~, f 7;
 #X text 86 14 - [vu]: VU meter;
 #X obj 103 460 all_guis;
-#N canvas 771 82 585 585 reference 0;
+#N canvas 663 82 585 585 reference 0;
 #X obj 17 199 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 17 471 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000

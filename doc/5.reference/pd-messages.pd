@@ -1,3 +1,4 @@
+#N struct template1 float x float y float z float q;
 #N canvas 247 23 1039 684 12;
 #X msg 716 131 dsp \$1;
 #X msg 604 144 \; pd dsp 0;
@@ -21,7 +22,7 @@ set compatibilty have that information in their help file.;
 #X obj 276 420 wrap~;
 #X obj 277 542 trace;
 #X msg 72 534 \; pd set-tracing \$1;
-#X obj 72 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 72 495 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #N canvas 731 117 712 610 fast-forward 0;
 #X msg 176 449 stop;

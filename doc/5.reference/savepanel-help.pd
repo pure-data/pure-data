@@ -1,20 +1,20 @@
-#N canvas 617 47 659 359 12;
-#X msg 66 131 bang;
-#X obj 66 274 print;
-#X text 31 322 see also:;
-#X text 53 63 When savepanel gets a "bang" a "Save As" file browser
+#N canvas 491 50 639 364 12;
+#X msg 63 131 bang;
+#X obj 63 274 print;
+#X text 23 326 see also:;
+#X text 50 63 When savepanel gets a "bang" a "Save As" file browser
 appears on the screen \, If you choose a filename \, it appears on
 the outlet., f 70;
-#X obj 66 219 savepanel;
-#X obj 105 321 openpanel;
-#X obj 26 11 savepanel;
-#X text 101 10 - query you for the name of a file to create;
-#X text 115 130 Starts panel in current directory;
-#X text 177 161 Starts in specified directory, f 10;
-#X msg 83 159 symbol /tmp;
-#X msg 92 189 symbol ../;
-#X text 411 325 updated for Pd version 0.48;
-#X symbolatom 66 246 75 0 0 0 - - - 0;
+#X obj 63 219 savepanel;
+#X obj 97 325 openpanel;
+#X obj 23 11 savepanel;
+#X text 98 10 - query you for the name of a file to create;
+#X text 112 130 Starts panel in current directory;
+#X text 174 161 Starts in specified directory, f 10;
+#X msg 80 159 symbol /tmp;
+#X msg 89 189 symbol ../;
+#X text 415 325 updated for Pd version 0.48;
+#X symbolatom 63 246 75 0 0 0 - - - 0;
 #N canvas 708 227 389 296 current-directory 0;
 #X obj 155 149 pdcontrol;
 #X msg 155 119 dir;
@@ -26,9 +26,9 @@ can make savepanel open the current directory for querying for files.
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 4 0 2 0;
-#X restore 351 179 pd current-directory;
-#X obj 183 321 pdcontrol;
-#N canvas 730 89 583 215 reference 0;
+#X restore 348 179 pd current-directory;
+#X obj 175 325 pdcontrol;
+#N canvas 719 102 583 215 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 115 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -47,11 +47,11 @@ can make savepanel open the current directory for querying for files.
 #X text 129 125 symbol - file name., f 54;
 #X text 163 85 set starting directory and open dialog window., f 50
 ;
-#X restore 455 11 pd reference;
-#X text 553 12 <= click;
-#X obj 8 45 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 452 11 pd reference;
+#X text 550 12 <= click;
+#X obj 5 45 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 8 309 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 5 309 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 4 0;
 #X connect 4 0 13 0;

@@ -1,10 +1,10 @@
-#N canvas 694 37 580 620 12;
+#N canvas 564 37 572 616 12;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array phasor 4410 float 0;
 #X coords 0 1 4409 -1 200 100 1 0 0;
 #X restore 78 433 graph;
 #X floatatom 106 211 5 -100 100 0 - - - 0;
-#X obj 69 16 phasor~;
+#X obj 29 16 phasor~;
 #X text 24 580 see also:;
 #X obj 98 579 osc~;
 #X obj 141 579 cos~;
@@ -13,7 +13,7 @@
 #X text 232 375 <= graph the output;
 #X text 205 243 <= right inlet resets phase, f 14;
 #X text 149 211 <= specify frequency;
-#X text 137 17 - phase ramp generator;
+#X text 97 17 - phase ramp generator;
 #X msg 173 243 0;
 #X obj 126 347 metro 100;
 #X obj 106 274 phasor~ 10;
@@ -45,8 +45,8 @@ f 69;
 0;
 #X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 190 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
 #X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 119 91 signal -;
@@ -61,10 +61,10 @@ f 69;
 #X text 183 91 frequency value in Hz., f 46;
 #X text 126 163 signal - phase ramp (in the range of 0 to 1)., f 54
 ;
-#X text 144 199 float - initial frequenct value in Hz (default 0).
+#X text 124 199 1) float - initial frequenct value in Hz (default 0).
 ;
-#X restore 369 17 pd reference;
-#X text 467 18 <= click;
+#X restore 379 17 pd reference;
+#X text 477 18 <= click;
 #X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 7 565 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000

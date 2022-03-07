@@ -1,4 +1,4 @@
-#N canvas 586 65 513 507 12;
+#N canvas 560 55 513 507 12;
 #X msg 78 168 bang;
 #X floatatom 78 300 6 0 0 0 - - - 0;
 #X floatatom 100 201 4 0 0 0 - - - 0;
@@ -26,7 +26,7 @@ is right to left as in [trigger].;
 , f 30;
 #X obj 78 333 print L;
 #X obj 145 332 print R;
-#N canvas 895 200 587 339 reference 0;
+#N canvas 732 156 587 339 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 171 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000

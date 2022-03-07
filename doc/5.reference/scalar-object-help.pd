@@ -1,4 +1,4 @@
-#N canvas 546 46 606 325 12;
+#N canvas 546 46 606 312 12;
 #X text 26 277 see also:;
 #X text 463 130 (click for details:), f 11;
 #N canvas 487 65 716 509 define 0;
@@ -38,31 +38,33 @@
 #X text 122 208 bang to output a pointer to the scalar;
 #X obj 48 431 get scalar-help-template1 x y;
 #X floatatom 48 465 5 0 0 0 - - - 0;
-#X floatatom 246 465 5 0 0 0 - - - 0;
+#X floatatom 248 465 5 0 0 0 - - - 0;
 #X obj 27 22 scalar define;
 #X text 129 22 - defines and maintains a scalar.;
 #X obj 7 54 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 614 20 <= click;
-#N canvas 741 169 581 272 reference 0;
-#X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#N canvas 696 118 577 280 reference 0;
+#X obj 9 49 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 116 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 110 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 200 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 250 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 237 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 91 89 send <symbol> - send pointer to a named receive object
+#X text 91 83 send <symbol> - send pointer to a named receive object
 , f 61;
-#X obj 9 161 cnv 2 550 2 empty empty FLAGS: 8 12 0 13 #202020 #000000
+#X obj 32 16 scalar define;
+#X text 136 16 - defines and maintains a scalar.;
+#X text 154 62 bang - output a pointer to the scalar., f 52;
+#X text 127 185 -k: saves/keeps the contents with the patch.;
+#X text 134 120 pointer - a pointer to the scalar.;
+#X obj 9 151 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 35 18 scalar define;
-#X text 139 19 - defines and maintains a scalar.;
-#X text 154 68 bang - output a pointer to the scalar., f 52;
-#X text 127 168 -k: saves/keeps the contents with the patch.;
-#X text 134 126 pointer - a pointer to the scalar.;
-#X text 133 209 symbol - template name.;
+#X obj 9 177 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 212 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 163 220 1) symbol - template name.;
 #X restore 511 21 pd reference;
 #X text 236 133 read/write a file (TBW);
 #X connect 2 0 15 0;

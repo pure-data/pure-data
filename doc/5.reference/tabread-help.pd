@@ -73,23 +73,23 @@ doesn't work in messages., f 70;
 #X text 38 323 open subpatch to see how to deal with '\$0', f 21;
 #X text 129 18 - non-interpolating table lookup;
 #N canvas 750 87 581 232 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X obj 15 51 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 118 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 15 117 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 163 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 15 162 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 17 200 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 14 199 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 113 86 set <symbol> -;
-#X text 162 66 float -;
-#X text 126 172 symbol - sets table name with the sample.;
-#X obj 66 18 tabread;
-#X text 129 18 - non-interpolating table lookup.;
-#X text 218 66 sets table index and output its value.;
-#X text 218 86 set the table name., f 39;
-#X text 162 131 float -;
-#X text 218 131 value of index input.;
+#X text 120 85 set <symbol> -;
+#X text 169 65 float -;
+#X obj 43 17 tabread;
+#X text 106 17 - non-interpolating table lookup.;
+#X text 225 65 sets table index and output its value.;
+#X text 225 85 set the table name., f 38;
+#X text 169 130 float -;
+#X text 225 130 value of index input.;
+#X text 133 171 1) symbol - sets table name with the sample.;
 #X restore 511 18 pd reference;
 #X text 609 17 <= click;
 #X obj 8 52 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000

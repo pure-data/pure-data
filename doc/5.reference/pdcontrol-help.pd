@@ -55,15 +55,15 @@ state., f 76;
 #X symbolatom 42 285 80 0 0 0 - - - 0;
 #X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 590 19 <= click;
-#N canvas 784 177 718 300 reference 0;
+#X text 610 19 <= click;
+#N canvas 648 157 718 300 reference 0;
 #X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 200 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
 #X obj 7 276 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 237 cnv 2 690 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 8 237 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
 #X text 165 248 NONE, f 52;
 #X obj 28 20 pdcontrol;
@@ -73,7 +73,7 @@ state., f 76;
 #X text 49 85 dir <float \, symbol> -;
 #X text 120 133 isvisible - outputs float to specify if patch is visible
 (1) or not (0)., f 80;
-#X text 99 155 args <float> -, f 14;
+#X text 99 155 args <float> -;
 #X text 204 84 output owning patch's directory. Optional float sets
 level (0 \, this patch \, 1 \, its owner \, and so on). Optional symbol
 sets a folder relative to the directory., f 68;
@@ -81,7 +81,7 @@ sets a folder relative to the directory., f 68;
 (0 \, this patch \, 1 \, its owner \, and so on)., f 68;
 #X text 155 210 list - list of args \, dir symbol of visibility float.
 ;
-#X restore 496 19 pd reference;
+#X restore 516 19 pd reference;
 #X obj 13 463 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 329 384 1 if this patch is visible \, 0 if not., f 39;

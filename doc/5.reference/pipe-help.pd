@@ -1,17 +1,17 @@
-#N canvas 519 25 798 707 12;
+#N canvas 519 25 797 702 12;
 #X obj 603 526 t f f f;
 #X obj 626 557 + 1;
 #X obj 660 556 + 2;
-#X text 50 670 see also:;
+#X text 40 670 see also:;
 #X obj 63 312 pipe 2000;
 #X text 105 152 numbers to store and output later;
 #X msg 74 179 flush;
 #X msg 84 207 clear;
 #X text 108 347 delayed output;
-#X obj 125 671 delay;
-#X obj 176 671 timer;
+#X obj 115 671 delay;
+#X obj 166 671 timer;
 #X text 169 280 set delay time;
-#X text 498 670 updated for Pd version 0.33;
+#X text 561 670 updated for Pd version 0.33;
 #X obj 45 16 pipe;
 #X text 84 15 - message "delay line";
 #X obj 63 380 print pipe;
@@ -67,7 +67,7 @@ distribute its elements to the inlets., f 42;
 #X floatatom 603 500 5 0 0 0 - - - 0;
 #X obj 11 49 cnv 1 780 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 778 180 578 440 reference 0;
+#N canvas 785 120 578 440 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 249 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000

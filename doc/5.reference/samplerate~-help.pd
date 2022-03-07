@@ -1,12 +1,12 @@
 #N struct template1 float x float y float z float q;
-#N canvas 652 46 523 449 12;
-#X obj 47 16 samplerate~;
-#X text 306 407 updated for Pd version 0.47;
-#X obj 204 320 samplerate~;
-#X floatatom 204 347 7 0 0 0 - - - 0;
-#X obj 204 294 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#N canvas 534 53 518 442 12;
+#X obj 27 16 samplerate~;
+#X text 306 401 updated for Pd version 0.47;
+#X obj 204 307 samplerate~;
+#X floatatom 204 334 7 0 0 0 - - - 0;
+#X obj 204 281 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 204 267 receive pd-dsp-started;
+#X obj 204 254 receive pd-dsp-started;
 #N canvas 1053 210 443 248 resampling 0;
 #X obj 90 140 block~ 64 1 0.5;
 #X obj 231 130 samplerate~;
@@ -18,40 +18,40 @@ samplerate must be half of the parent patch., f 44;
 #X text 255 96 <= click;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
-#X restore 356 329 pd resampling;
-#X text 18 410 see also:;
-#X obj 149 410 receive;
-#X msg 62 310 \; pd dsp \$1;
-#X obj 62 285 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 356 316 pd resampling;
+#X text 18 404 see also:;
+#X obj 149 404 receive;
+#X msg 62 297 \; pd dsp \$1;
+#X obj 62 272 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 93 410 block~;
-#X text 138 15 - get sample rate;
+#X obj 93 404 block~;
+#X text 118 15 - get sample rate;
 #X text 44 73 When sent a 'bang' message \, samplerate~ outputs the
 current audio sample rate. If called within a subwindow that is up-
 or down-sampled \, the sample rate of signals within that subwindow
 are reported (see [pd resampling] subpatch below).;
-#X text 87 283 DSP On/Off;
-#X obj 211 409 pd-messages;
-#N canvas 731 147 576 199 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X text 87 270 DSP On/Off;
+#X obj 211 403 pd-messages;
+#N canvas 695 169 585 201 reference 0;
+#X obj 18 49 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 96 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 93 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 133 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 130 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X obj 17 170 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 17 167 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 133 66 bang -;
-#X obj 47 16 samplerate~;
-#X text 138 15 - get sample rate;
-#X text 183 66 output current sample rate., f 46;
-#X text 126 106 float - sample rate value in Hz., f 54;
-#X text 166 144 NONE, f 9;
+#X text 133 63 bang -;
+#X obj 39 16 samplerate~;
+#X text 130 15 - get sample rate;
+#X text 183 63 output current sample rate., f 46;
+#X text 126 103 float - sample rate value in Hz., f 54;
+#X text 166 141 NONE, f 9;
 #X restore 321 17 pd reference;
 #X text 419 17 <= click;
 #X obj 10 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 18 392 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 18 379 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 44 139 Here we listen to "pd-dsp-started" to receive a bang
 (automatically sent when DSP is started in Pd) to get the sample rate

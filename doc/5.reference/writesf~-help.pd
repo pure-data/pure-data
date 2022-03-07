@@ -1,4 +1,4 @@
-#N canvas 527 52 639 585 12;
+#N canvas 407 38 639 585 12;
 #X msg 147 374 print;
 #X msg 26 273 bang;
 #X msg 128 320 start;
@@ -45,24 +45,23 @@ file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 #N canvas 687 149 575 357 reference 0;
 #X obj 8 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 254 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 8 241 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 289 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 276 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 327 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 314 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 44 106 open <list> -;
 #X text 86 179 print - prints information on Pd's terminal window.
 , f 64;
 #X obj 33 14 writesf~;
 #X text 99 13 - write audio signals to a soundfile;
-#X text 147 265 NONE.;
-#X text 120 298 1) float - sets number of channels (default 1 \, max
+#X text 120 285 1) float - sets number of channels (default 1 \, max
 64).;
 #X text 142 106 takes a filename and optional flags: -wave \, -aiff
 \, -caf \, -next \, - big \, -little \, -bytes <float> \, -rate <float>
 ;
-#X obj 7 222 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
+#X obj 7 209 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
 ;
 #X obj 7 80 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
@@ -72,7 +71,8 @@ file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 #X text 142 159 stop streaming audio, f 56;
 #X text 92 55 'n' number of inlets specified by argument.;
 #X text 79 87 signal - signal to write to a channel., f 65;
-#X text 79 228 signal - signal to write to a channel., f 65;
+#X text 79 215 signal - signal to write to a channel., f 65;
+#X text 147 247 NONE;
 #X restore 439 12 pd reference;
 #X text 101 139 -wave \, -aiff \, -caf \, -next (file extension);
 #X text 237 194 (affects the soundfile header but the file will _not_

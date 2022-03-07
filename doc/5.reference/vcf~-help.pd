@@ -1,4 +1,4 @@
-#N canvas 633 109 608 558 12;
+#N canvas 480 56 608 558 12;
 #X declare -stdpath ./;
 #X obj 225 247 sig~;
 #X floatatom 225 216 5 0 0 0 - - - 0;
@@ -29,7 +29,7 @@
 #X text 301 519 - unfriendly filters;
 #X obj 7 43 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 1008 167 517 345 reference 0;
+#N canvas 667 114 517 345 reference 0;
 #X obj 9 42 cnv 5 490 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 187 cnv 2 490 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000

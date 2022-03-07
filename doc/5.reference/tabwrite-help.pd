@@ -1,4 +1,4 @@
-#N canvas 557 75 671 523 12;
+#N canvas 369 29 671 523 12;
 #X obj 26 22 tabwrite;
 #X floatatom 28 136 4 0 10 0 - - - 0;
 #N canvas 0 22 450 278 (subpatch) 0;
@@ -59,7 +59,7 @@ doesn't work in messages., f 70;
 #X restore 187 361 pd Dealing_with_"\$0";
 #X text 25 352 open subpatch to see how to deal with '\$0', f 21;
 #X obj 365 433 tabwrite~;
-#N canvas 750 87 583 306 reference 0;
+#N canvas 653 102 583 306 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 188 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -70,7 +70,6 @@ doesn't work in messages., f 70;
 0;
 #X text 113 114 set <symbol> -;
 #X text 162 94 float -;
-#X text 126 242 symbol - sets table name with the sample.;
 #X text 218 114 set the table name., f 39;
 #X obj 46 22 tabwrite;
 #X text 118 22 - write numbers to a table.;
@@ -82,6 +81,7 @@ doesn't work in messages., f 70;
 0;
 #X text 162 154 float -;
 #X text 218 155 sets index to write to., f 39;
+#X text 126 242 1) symbol - sets table name with the sample.;
 #X restore 461 18 pd reference;
 #X text 559 17 <= click;
 #X obj 8 52 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000

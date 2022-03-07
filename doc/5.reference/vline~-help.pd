@@ -1,4 +1,4 @@
-#N canvas 587 23 619 719 12;
+#N canvas 504 23 619 719 12;
 #X obj 68 620 snapshot~;
 #X floatatom 68 646 5 0 0 0 - - - 0;
 #X obj 83 587 metro 100;
@@ -47,7 +47,7 @@ delay (also in ms). Ramps may start and stop between audio samples
 #X obj 11 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 522 15 <= click;
-#N canvas 749 162 583 306 reference 0;
+#N canvas 708 145 583 306 reference 0;
 #X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 205 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -56,10 +56,10 @@ delay (also in ms). Ramps may start and stop between audio samples
 0;
 #X obj 8 276 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
 #X text 133 80 float - set target value and start ramp.;
-#X obj 9 127 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #000000 #000000
+#X obj 9 127 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
 0;
 #X text 133 136 float - set next ramp time (cleared when ramp starts).
 ;
@@ -67,7 +67,7 @@ delay (also in ms). Ramps may start and stop between audio samples
 #X text 189 249 NONE;
 #X obj 27 15 vline~;
 #X text 91 15 - high-precision audio ramp generator;
-#X obj 9 164 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #000000 #000000
+#X obj 9 164 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
 0;
 #X text 141 99 stop - stops the ramp.;
 #X text 133 173 float - sets delay time.;

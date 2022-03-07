@@ -54,34 +54,34 @@ of inputs. Creation arguments set the number of inlets and their type
 the value ('float'/'f' initializes to 0)., f 79;
 #X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 785 220 571 361 reference 0;
+#N canvas 660 81 569 367 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 214 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 205 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 252 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 243 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 336 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 339 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 48 16 pack;
 #X text 87 16 - combine several atoms into one message.;
-#X text 143 224 list - the packed list., f 49;
+#X text 143 215 list - the packed list., f 49;
 #X text 77 61 (number depends on number of arguments);
 #X obj 7 122 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
 ;
-#X text 55 130 anything -, f 10;
+#X text 55 130 anything -;
 #X text 132 130 each inlet takes a message type acccording to its corresponding
 creation argument. These can be float \, symbol and pointer. The 1st
 inlet causes an output and can also match an 'anything' to a symbol.
 , f 53;
 #X text 81 94 bang - output the packed list., f 62;
-#X text 108 262 list -, f 6;
-#X text 158 263 list of types (defining the number of inlets). These
+#X text 109 269 list of types (defining the number of inlets). These
 can be 'float/'f' \, 'symbol/'s' and 'pointer/'p'. A number sets a
 numeric inlet and initializes the value \, 'float/f' initialized to
-0 (default 0 0)., f 52;
+0 (default 0 0)., f 58;
+#X text 41 268 1) list -;
 #X restore 407 15 pd reference;
 #X text 501 15 <= click;
 #X obj 8 566 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000

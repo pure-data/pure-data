@@ -1,8 +1,8 @@
 #N struct help-setsize-template float x float y array array1 help-setsize-array1-template
 ;
 #N struct help-setsize-array1-template float y;
-#N canvas 618 72 618 488 12;
-#X text 19 444 see also:;
+#N canvas 479 51 617 481 12;
+#X text 16 444 see also:;
 #N canvas 393 50 495 182 help-setsize-template 0;
 #X obj 27 109 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 27 76 plot array1 500 1 10 15 10;
@@ -17,14 +17,14 @@ help-setsize-array1-template;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-setsize-array1-template float y;
 #X restore 36 388 pd help-setsize-array1-template;
-#X obj 137 444 pointer;
+#X obj 134 444 pointer;
 #X obj 314 251 pointer;
 #X msg 314 227 traverse pd-help-setsize-data \, next;
 #X floatatom 37 234 5 1 20 0 - - - 0;
 #X text 332 307 arguments: template \, field name;
 #X obj 37 308 setsize help-setsize-template array1, f 40;
 #X obj 37 11 setsize;
-#X obj 195 444 element;
+#X obj 192 444 element;
 #X msg 493 356 bang;
 #X text 316 208 click here first;
 #N canvas 458 61 386 156 readit 0;
@@ -32,30 +32,30 @@ help-setsize-array1-template;
 #X obj 67 29 inlet;
 #X connect 1 0 0 0;
 #X restore 493 382 pd readit;
-#X obj 86 444 struct;
-#X text 396 444 updated for Pd version 0.47;
+#X obj 83 444 struct;
+#X text 406 444 updated for Pd version 0.47;
 #X text 84 246 set template and field name;
 #X text 27 143 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity., f 80;
 #X msg 50 268 set help-setsize-template array1;
 #X text 287 355 click to reload from file =>;
-#X obj 311 444 array set;
+#X obj 308 444 array set;
 #X text 33 211 number sets size;
 #X text 100 11 - resize a Data Structure array;
 #X obj 7 45 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 869 136 474 285 reference 0;
-#X obj 9 43 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#X obj 9 43 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 163 cnv 2 450 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 9 164 cnv 2 450 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 203 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 9 200 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 259 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 256 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 152 213 1) symbol - template name.;
-#X text 152 232 2) symbol - field name., f 26;
+#X text 131 210 1) symbol - template name.;
+#X text 131 229 2) symbol - field name., f 26;
 #X text 47 99 set <symbol \, symbol> - set template and field name.
 , f 52;
 #X obj 28 12 setsize;
@@ -78,7 +78,7 @@ are initialized to zeros., f 80;
 Its creation arguments specify the template of the pointer and the
 name of an array field. Sending a number to the left inlet then sets
 the number of elements of the array., f 80;
-#X obj 252 444 getsize;
+#X obj 249 444 getsize;
 #X connect 5 0 9 1;
 #X connect 6 0 5 0;
 #X connect 7 0 9 0;

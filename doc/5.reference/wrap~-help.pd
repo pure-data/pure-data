@@ -1,4 +1,4 @@
-#N canvas 690 98 582 370 12;
+#N canvas 491 42 582 370 12;
 #X floatatom 59 120 6 0 0 0 - - - 0;
 #X floatatom 59 284 7 0 0 0 - - - 0;
 #X obj 75 197 loadbang;
@@ -26,7 +26,7 @@ line or by a message:, f 28;
 #000000 0 1;
 #X text 184 183 On/off;
 #X obj 75 221 metro 200;
-#N canvas 836 200 442 195 reference 0;
+#N canvas 817 164 442 195 reference 0;
 #X obj 9 49 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 94 cnv 2 410 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -40,8 +40,8 @@ line or by a message:, f 28;
 #X text 83 15 - remainder modulo 1 for signals;
 #X text 105 64 signal - input to 'modulo 1' function.;
 #X text 105 104 signal - output of 'modulo 1' function.;
-#X restore 362 16 pd reference;
-#X text 459 16 <= click;
+#X restore 378 16 pd reference;
+#X text 475 16 <= click;
 #X obj 10 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 10 319 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000

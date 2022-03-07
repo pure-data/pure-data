@@ -1,4 +1,4 @@
-#N canvas 429 33 851 616 12;
+#N canvas 355 33 851 616 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array table2-ex 10 float 3;
 #A 0 1 4 2 8 5 6 1 1 4 2;
@@ -99,7 +99,6 @@ doesn't work in messages., f 70;
 #X obj 10 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 106 131 set <symbol> -;
-#X text 129 250 symbol - sets table name with the sample.;
 #X text 211 131 set the table name., f 42;
 #X text 211 209 value of index input.;
 #X text 211 96 sets table index and output its value with interpoation.
@@ -108,12 +107,13 @@ doesn't work in messages., f 70;
 #X text 117 20 - 4-point-interpolating table lookup for signals.;
 #X text 149 209 signal -;
 #X text 148 96 signal -;
-#X obj 10 158 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 11 158 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 10 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 11 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 155 167 float -;
 #X text 211 167 sets table onset., f 42;
+#X text 129 250 1) symbol - sets table name with the sample.;
 #X restore 611 16 pd reference;
 #X text 709 15 <= click;
 #X obj 8 53 cnv 1 830 1 empty empty empty 8 12 0 13 #000000 #000000

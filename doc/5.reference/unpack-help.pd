@@ -1,5 +1,4 @@
-#N struct template1 float x float y float z float q;
-#N canvas 548 46 598 499 12;
+#N canvas 380 39 598 499 12;
 #X floatatom 281 226 5 0 0 0 - - - 0;
 #X obj 116 463 pack;
 #X obj 57 14 unpack;

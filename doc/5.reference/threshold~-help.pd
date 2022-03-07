@@ -1,4 +1,4 @@
-#N canvas 614 23 627 489 12;
+#N canvas 409 23 627 489 12;
 #X obj 40 12 threshold~;
 #X text 213 342 Arguments:;
 #X floatatom 32 193 5 0 0 0 - - - 0;
@@ -14,14 +14,14 @@
 #000000;
 #X obj 197 373 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#N canvas 772 74 571 416 reference 0;
+#N canvas 620 103 571 416 reference 0;
 #X obj 5 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 5 186 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
 #X obj 5 288 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 4 389 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 4 384 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 38 16 threshold~;
 #X text 84 93 signal -;

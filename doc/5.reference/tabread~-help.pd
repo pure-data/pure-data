@@ -87,7 +87,7 @@ doesn't work in messages., f 70;
 #X restore 339 398 pd Dealing_with_"\$0";
 #X text 177 389 open subpatch to see how to deal with '\$0', f 21
 ;
-#N canvas 750 87 581 232 reference 0;
+#N canvas 702 120 581 232 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 118 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -97,7 +97,6 @@ doesn't work in messages., f 70;
 #X obj 17 200 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 113 86 set <symbol> -;
-#X text 126 172 symbol - sets table name with the sample.;
 #X text 218 66 sets table index and output its value.;
 #X text 218 86 set the table name., f 39;
 #X text 218 131 value of index input.;
@@ -105,6 +104,7 @@ doesn't work in messages., f 70;
 #X text 146 16 - non-interpolating table lookup for signals.;
 #X text 155 66 signal -;
 #X text 155 131 signal -;
+#X text 126 172 1) symbol - sets table name with the sample.;
 #X restore 581 18 pd reference;
 #X text 679 17 <= click;
 #X obj 8 52 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000

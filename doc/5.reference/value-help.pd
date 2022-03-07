@@ -1,4 +1,4 @@
-#N canvas 691 23 565 709 12;
+#N canvas 393 23 565 709 12;
 #X floatatom 38 131 5 0 0 0 - - - 0;
 #X floatatom 38 206 5 0 0 0 - - - 0;
 #X msg 48 154 bang;
@@ -107,10 +107,10 @@ like a symbol or a float object. See examples below., f 67;
 0;
 #X obj 6 664 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 741 95 573 339 reference 0;
+#N canvas 611 94 573 339 reference 0;
 #X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 7 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #000000 #000000
+#X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
 #X obj 8 226 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
@@ -118,9 +118,8 @@ like a symbol or a float object. See examples below., f 67;
 0;
 #X obj 7 310 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 164 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 8 164 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 141 271 symbol -;
 #X obj 27 15 value;
 #X text 105 15 - nonlocal shared value (named variable);
 #X obj 74 15 v;
@@ -136,6 +135,7 @@ is created to set the name)., f 44;
 #X text 154 114 bang -;
 #X text 203 114 outputs the value., f 36;
 #X text 203 135 sends the value to a matching receive name.;
+#X text 120 271 1) symbol -;
 #X restore 387 34 pd reference;
 #X text 484 35 <= click;
 #X connect 0 0 4 0;

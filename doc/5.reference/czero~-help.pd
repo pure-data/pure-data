@@ -104,7 +104,7 @@ stable., f 63;
 #X obj 208 613 vcf~;
 #X text 289 613 - user-friendly filters;
 #X obj 249 613 bob~;
-#X obj 376 487 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
+#X obj 376 487 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
 #000000 #000000;
 #X text 19 440 Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly

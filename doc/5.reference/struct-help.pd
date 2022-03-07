@@ -40,7 +40,6 @@ f 71;
 0;
 #X text 98 17 - declare the fields in a data structure.;
 #X text 91 194 1) list -;
-#X text 145 65 NONE.;
 #X text 165 194 template name plus types and names of given fields
 (array fields also need the array's template name)., f 59;
 #X text 84 110 anything -;
@@ -48,5 +47,6 @@ f 71;
 objects of the structure ('select' \, 'deselect' \, 'click' \, 'displace'
 and 'change').;
 #X obj 29 16 struct x;
+#X text 145 65 NONE;
 #X restore 491 16 pd reference;
 #X text 426 16 click =>;

@@ -1,4 +1,4 @@
-#N canvas 398 48 848 453 12;
+#N canvas 385 48 848 453 12;
 #X text 203 229 open the abstraction at left (right- or CTRL- click
 and select "open" in popup menu) to see how the savestate object is
 used from within., f 29;
@@ -31,29 +31,29 @@ its state.;
 parts of a saved patch have been restored. You can use a "loadbang"
 object to send messages to objects elsewhere in the owning patch at
 load time once the entire patch is loaded., f 49;
-#N canvas 689 98 629 265 reference 0;
+#N canvas 689 98 622 256 reference 0;
 #X obj 18 52 cnv 5 580 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 95 cnv 2 580 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 202 cnv 2 580 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 191 cnv 2 580 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X obj 17 236 cnv 5 580 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 17 225 cnv 5 580 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 176 209 NONE, f 15;
+#X text 176 198 NONE, f 15;
 #X obj 41 16 savestate;
 #X text 115 16 - save and restore run-time state from within an abstraction.
 , f 61;
 #X text 123 66 list -;
 #X text 173 66 one or more list when the parent patch gets saved.;
-#X obj 17 162 cnv 1 580 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 17 149 cnv 1 580 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 17 125 cnv 1 580 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 17 117 cnv 1 580 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 123 136 list -;
-#X text 173 136 one or more list when the parent patch is opened.;
-#X text 123 170 bang -;
-#X text 173 170 when the parent patch is saved.;
+#X text 123 122 list -;
+#X text 173 122 one or more list when the parent patch is opened.;
+#X text 123 156 bang -;
+#X text 173 156 when the parent patch is saved.;
 #X restore 630 13 pd reference;
 #X text 728 14 <= click;
 #X obj 7 45 cnv 1 835 1 empty empty empty 8 12 0 13 #000000 #000000

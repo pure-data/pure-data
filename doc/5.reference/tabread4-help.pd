@@ -1,4 +1,4 @@
-#N canvas 609 29 723 557 12;
+#N canvas 509 36 723 557 12;
 #X text 118 198 index;
 #X floatatom 70 199 6 1 8 0 - - - 0;
 #X floatatom 70 304 6 0 0 0 - - - 0;
@@ -73,29 +73,29 @@ doesn't work in messages., f 70;
 #X connect 13 0 2 0;
 #X restore 202 374 pd Dealing_with_"\$0";
 #X text 40 365 open subpatch to see how to deal with '\$0', f 21;
-#X obj 75 16 tabread4;
-#X text 148 16 - 4-point-interpolating table lookup;
-#N canvas 750 87 581 272 reference 0;
+#X obj 45 16 tabread4;
+#X text 118 16 - 4-point-interpolating table lookup;
+#N canvas 750 87 581 254 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 158 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 18 131 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 18 203 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+#X obj 18 176 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
-#X obj 17 240 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 17 213 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 123 106 set <symbol> -;
+#X text 123 101 set <symbol> -;
 #X text 172 66 float -;
-#X text 136 212 symbol - sets table name with the sample.;
-#X text 228 106 set the table name., f 39;
-#X text 172 171 float -;
-#X text 228 171 value of index input.;
+#X text 228 101 set the table name., f 42;
+#X text 172 144 float -;
+#X text 228 144 value of index input.;
 #X obj 55 18 tabread4;
 #X text 128 18 - 4-point-interpolating table lookup.;
 #X text 228 66 sets table index and output its value with interpoation.
 , f 42;
-#X restore 511 16 pd reference;
-#X text 609 15 <= click;
+#X text 136 185 1) symbol - sets table name with the sample.;
+#X restore 521 16 pd reference;
+#X text 619 15 <= click;
 #X obj 8 50 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 8 415 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
