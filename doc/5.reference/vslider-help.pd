@@ -1,4 +1,4 @@
-#N canvas 523 23 509 610 12;
+#N canvas 523 23 504 605 12;
 #X msg 156 259 set \$1;
 #X obj 75 257 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
@@ -9,12 +9,6 @@
 #X floatatom 156 236 5 0 0 0 - - - 0;
 #X obj 28 12 vsl 18 128 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
-#X text 79 49 The vertical slider is a GUI (Graphical User Interface)
-that sends numbers. Click on it and drag to output values - use shift-click
-and drag for fine-tuning by a factor of a hundredth. Incoming floats
-set the slider's value and are passed through (even if outside the
-slider's range). The 'set' message only sets the slider value without
-output. A bang message sends the slider's value., f 57;
 #X text 16 180 Insert it from the Put menu (named as "Vslider") or
 its shortcut. Alternatively \, create it by typing "vslider" or "vsl"
 into an object box. Right click for properties (to set size \, colors
@@ -718,9 +712,16 @@ to jump on click., f 72;
 0;
 #X obj 64 43 cnv 1 1 110 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 85 49 The vertical slider GUI (Graphical User Interface) sends
+numbers via clicking and dragging. The values are evenly spread depending
+on the slider's range and size - use shift-click and drag for fine-tuning
+by a factor of a hundredth. Incoming floats set the slider's value
+and are passed through (even if outside the slider's range). The 'set'
+message only sets the slider value without output. A bang message sends
+the slider's value., f 56;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
-#X connect 3 0 19 0;
+#X connect 3 0 18 0;
 #X connect 4 0 3 0;
 #X connect 5 0 0 0;
-#X connect 19 0 2 0;
+#X connect 18 0 2 0;
