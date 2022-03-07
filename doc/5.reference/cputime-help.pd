@@ -1,4 +1,4 @@
-#N canvas 569 85 460 315 12;
+#N canvas 550 25 460 315 12;
 #X msg 151 165 bang;
 #X msg 105 126 bang;
 #X floatatom 105 237 7 0 0 0 - - - 0;
@@ -18,20 +18,25 @@ it was last reset., f 25;
 #X text 145 124 reset (set elapsed time to zero);
 #X obj 5 42 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 758 181 482 188 reference 0;
-#X obj 12 46 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+#N canvas 776 85 479 247 reference 0;
+#X obj 12 46 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 12 89 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 12 139 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 12 128 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 12 178 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
 #X obj 41 14 cputime;
 #X text 102 15 - measure CPU usage;
-#X text 151 137 NONE;
-#X text 111 60 bang - reset (set elapsed time to zero)., f 43;
-#X text 111 100 bang - output elapsed time., f 43;
-#X obj 12 162 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X text 151 187 NONE;
+#X text 111 80 bang - reset (set elapsed time to zero)., f 43;
+#X text 111 110 bang - output elapsed time., f 43;
+#X obj 12 212 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
+#X obj 12 104 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 12 77 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 127 148 1) float - elapsed time in msec.;
 #X restore 345 13 pd reference;
 #X text 277 12 click =>;
 #X obj 5 269 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000

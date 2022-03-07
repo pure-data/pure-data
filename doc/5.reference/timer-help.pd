@@ -49,24 +49,29 @@ tempo number and a time unit symbol. Possible symbols are:, f 82;
 you change the tempo message when the object is runnng \, otherwise
 you get funny results because the change takes effect immediately and
 gets applied to the remaining part of the elapsed time., f 75;
-#N canvas 700 98 489 268 reference 0;
+#N canvas 700 98 489 311 reference 0;
 #X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 139 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 176 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 229 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X text 143 62 bang - reset (set elapsed time to zero).;
-#X text 144 148 bang - output elapsed time., f 43;
-#X obj 18 240 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X text 153 92 bang - reset (set elapsed time to zero).;
+#X obj 18 285 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 46 17 timer;
 #X text 91 16 - measure logical time;
-#X text 25 89 tempo <float \, symbol> -;
-#X text 194 89 set tempo value (float) and time unit symbol., f 24
+#X text 35 116 tempo <float \, symbol> -;
+#X text 204 116 set tempo value (float) and time unit symbol., f 24
 ;
-#X text 130 190 1) float - tempo value (default 1)., f 42;
-#X text 123 210 2) symbol - time unit (default 'msec')., f 43;
+#X text 130 239 1) float - tempo value (default 1)., f 42;
+#X text 123 259 2) symbol - time unit (default 'msec')., f 43;
+#X obj 18 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X text 156 163 bang - output elapsed time., f 30;
+#X obj 18 157 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 18 84 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 133 201 1) float - elapsed time in msec.;
 #X restore 465 14 pd reference;
 #X text 397 13 click =>;
 #X obj 17 46 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000

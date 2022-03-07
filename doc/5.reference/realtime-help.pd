@@ -17,22 +17,27 @@ it was last reset., f 25;
 #X text 17 314 see also:;
 #X obj 5 56 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 798 196 494 222 reference 0;
+#N canvas 798 139 496 255 reference 0;
 #X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 18 104 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 154 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#X obj 18 184 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
 #000000 0;
-#X text 156 164 NONE;
-#X text 117 70 bang - reset (set elapsed time to zero)., f 43;
-#X text 117 119 bang - output elapsed time., f 43;
-#X obj 18 191 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+#X text 156 194 NONE;
+#X text 117 90 bang - reset (set elapsed time to zero)., f 43;
+#X obj 18 221 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 39 18 realtime;
 #X text 110 16 - ask OS for elapsed real time, f 31;
-#X restore 325 19 pd reference;
-#X text 258 20 click =>;
+#X obj 18 149 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X text 117 120 bang - output elapsed time., f 43;
+#X obj 18 114 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 18 87 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 133 158 1) float - elapsed time in msec.;
+#X restore 345 19 pd reference;
+#X text 278 20 click =>;
 #X obj 13 296 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X connect 0 0 6 1;
