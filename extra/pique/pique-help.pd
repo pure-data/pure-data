@@ -1,37 +1,64 @@
-#N canvas 667 74 758 469 12;
+#N canvas 421 58 724 502 12;
 #X obj 47 11 pique;
-#X obj 143 205 rfft~;
-#X obj 102 136 osc~ 2000;
+#X obj 116 194 rfft~;
+#X obj 39 151 osc~ 2000;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array fft-real 64 float 0;
 #X coords 0 64 63 -64 200 140 1;
-#X restore 516 67 graph;
+#X restore 496 96 graph;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array fft-imag 64 float 0;
 #X coords 0 64 63 -64 200 140 1;
-#X restore 516 236 graph;
-#X obj 143 289 tabwrite~ fft-real;
-#X obj 225 259 tabwrite~ fft-imag;
-#X obj 225 223 metro 1000;
-#X obj 225 196 loadbang;
-#X obj 125 399 pique;
-#X msg 125 372 64 fft-real fft-imag 10;
-#X obj 125 426 print;
-#X obj 143 162 osc~ 5000;
-#X text 25 64 pique takes unwindowed FFT analyses as input (they should
+#X restore 496 265 graph;
+#X obj 116 268 tabwrite~ fft-real;
+#X obj 198 238 tabwrite~ fft-imag;
+#X obj 198 202 metro 1000;
+#X obj 198 175 loadbang;
+#X obj 117 383 pique;
+#X msg 117 356 64 fft-real fft-imag 10;
+#X obj 117 410 print;
+#X obj 116 151 osc~ 5000;
+#X text 17 79 pique takes unwindowed FFT analyses as input (they should
 be stored in arrays) and outputs a list of peaks \, giving their peak
 number \, frequency \, amplitude \, and phase (as a cosine/sine pair.)
 , f 64;
-#X text 41 325 message arguments: number of FFT points \, fft real
+#X text 20 308 message arguments: number of FFT points \, fft real
 part \, fft imaginary part \, maximum number of peaks to report.;
-#X text 557 398 updated for Pd 0.31.;
+#X text 554 462 updated for Pd 0.31.;
 #X text 97 12 - find peaks in an FFT spectrum;
-#X msg 334 171 \; pd dsp \$1;
-#X obj 334 144 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 346 180 \; pd dsp \$1;
+#X obj 346 153 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 354 145 DSP on/off;
-#X obj 351 40 sigmund~;
-#X text 46 40 NOTE: fiddle~ is obsolete - consider using;
+#X text 366 154 DSP on/off;
+#X obj 343 55 sigmund~;
+#X text 38 55 NOTE: pique~ is obsolete - consider using;
+#X obj 5 43 cnv 1 710 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 639 12 <= click;
+#N canvas 735 153 528 215 reference 0;
+#X obj 6 37 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 6 99 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 150 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 5 188 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 154 158 NONE.;
+#X obj 25 7 pique;
+#X text 75 8 - find peaks in an FFT spectrum;
+#X text 79 48 list -;
+#X text 135 47 number of FFT points \, table name for real part \,
+table name forimaginary part and maximum number of peaks to report.
+, f 48;
+#X text 79 108 list -;
+#X text 135 107 partial index \, frequency in hz \, amplitude \, cosine
+and sine components., f 42;
+#X restore 545 13 pd reference;
+#X obj 5 444 cnv 1 710 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 40 458 see also:;
+#X obj 117 458 sigmund~;
 #X connect 1 0 5 0;
 #X connect 1 1 6 0;
 #X connect 2 0 1 0;

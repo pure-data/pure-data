@@ -1,28 +1,29 @@
-#N canvas 640 46 476 514 12;
-#X obj 26 23 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
+#N canvas 527 34 472 527 12;
+#X declare -stdpath ./;
+#X obj 26 14 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X obj 154 248 vu 16 120 foo7_rcv VU-Meter 60 0 0 10 #000000 #900000
 1 0;
-#X floatatom 164 215 5 -100 12 0 - - - 0;
-#X floatatom 119 215 5 0 0 0 - - - 0;
+#X floatatom 164 218 5 -100 12 0 - - - 0;
+#X floatatom 119 218 5 0 0 0 - - - 0;
 #X floatatom 164 380 5 0 0 0 - - - 0;
 #X floatatom 153 405 5 0 0 0 - - - 0;
 #X text 203 381 Peak;
-#X text 88 214 RMS;
-#X text 204 215 Peak;
+#X text 88 217 RMS;
+#X text 204 218 Peak;
 #X text 195 408 RMS;
-#X text 95 56 The VU meter object is a GUI (Graphical User Interface)
+#X text 98 58 The VU meter object is a GUI (Graphical User Interface)
 used to display RMS and peak levels in dBFS. The left inlet takes a
 float to set RMS and the right inlet takes a float to set peak level
 - these values are output to corresponding outlets., f 49;
-#X text 95 133 Insert it from the Put menu (named as "VU Meter") or
+#X text 98 135 Insert it from the Put menu (named as "VU Meter") or
 its shortcut. Alternatively \, create it by typing "vu" into an object
 box., f 49;
 #X text 271 386 (c) musil@iem.kug.ac.at;
 #X text 307 402 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 29 445 see also:;
+#X text 29 459 see also:;
 #X text 238 311 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 249 469 updated for Pd version 0.51;
+#X text 249 483 updated for Pd version 0.51;
 #N canvas 689 106 613 643 position 0;
 #X floatatom 142 132 4 0 1000 0 - - - 0;
 #X obj 191 159 t b f;
@@ -479,8 +480,8 @@ pair., f 32;
 #X restore 320 238 pd properties;
 #X text 24 273 Right click for properties (to set size \, colors \,
 labels \, etc) ===>, f 17;
-#N canvas 703 35 528 592 example 0;
-#X obj 268 317 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0
+#N canvas 703 35 482 533 example 0;
+#X obj 262 280 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0
 ;
 #N canvas 329 161 625 417 vu 0;
 #X obj 59 129 env~ 1024;
@@ -524,31 +525,25 @@ need to convert the output to dB with rmstodb and also subtract by
 #X connect 14 0 10 0;
 #X connect 18 0 6 0;
 #X connect 18 1 2 0;
-#X restore 245 274 pd vu;
-#X obj 144 179 tgl 18 0 empty empty empty 17 7 0 10 #dcdcdc #000000
+#X restore 239 237 pd vu;
+#X obj 138 162 tgl 18 0 empty empty empty 17 7 0 10 #dcdcdc #000000
 #000000 0 1;
-#X floatatom 277 500 8 0 0 0 - - - 0;
-#X floatatom 267 529 8 0 0 0 - - - 0;
-#X text 339 500 Peak;
-#X text 329 530 RMS;
-#X floatatom 277 220 6 0 1000 0 - decay - 0;
-#N canvas 391 189 453 455 noise-burst 0;
-#X obj 160 196 *~;
-#X obj 142 373 outlet~;
-#X obj 160 167 vline~;
-#X obj 160 47 inlet;
-#X obj 89 140 noise~;
-#X msg 160 137 1 \, 0 100;
-#X obj 142 224 *~;
-#X obj 160 105 metro 500;
-#X obj 250 203 pow 4;
-#X obj 250 254 line~;
-#X msg 250 228 \$1 10;
-#X obj 232 281 *~;
-#X obj 232 312 dac~;
-#X obj 250 47 inlet;
-#X obj 323 109 loadbang;
-#X msg 323 137 \; decay 500 \; pd dsp 1;
+#X floatatom 271 463 8 0 0 0 - - - 0;
+#X floatatom 261 492 8 0 0 0 - - - 0;
+#X text 333 463 Peak;
+#X text 323 493 RMS;
+#X floatatom 271 183 6 0 1000 0 - decay - 0;
+#N canvas 525 219 362 314 noise-burst 0;
+#X obj 139 166 *~;
+#X obj 121 263 outlet~;
+#X obj 139 137 vline~;
+#X obj 139 27 inlet;
+#X obj 68 110 noise~;
+#X msg 139 107 1 \, 0 100;
+#X obj 121 194 *~;
+#X obj 139 75 metro 500;
+#X obj 224 124 loadbang;
+#X msg 224 152 \; decay 500 \; pd dsp 1;
 #X connect 0 0 6 1;
 #X connect 2 0 0 0;
 #X connect 2 0 0 1;
@@ -556,30 +551,23 @@ need to convert the output to dB with rmstodb and also subtract by
 #X connect 4 0 6 0;
 #X connect 5 0 2 0;
 #X connect 6 0 1 0;
-#X connect 6 0 11 0;
 #X connect 7 0 5 0;
-#X connect 8 0 10 0;
-#X connect 9 0 11 1;
-#X connect 10 0 9 0;
-#X connect 11 0 12 0;
-#X connect 11 0 12 1;
-#X connect 13 0 8 0;
-#X connect 14 0 15 0;
-#X coords 0 455 1 454 150 60 0;
-#X restore 144 209 pd noise-burst;
-#X text 292 273 <== open for analysis;
-#X obj 242 183 hsl 128 15 0 1 0 0 empty empty Volume -2 -10 0 13 #dcdcdc
-#000000 #000000 0 1;
-#X text 55 178 turn on ==> test sound, f 12;
-#X text 325 220 <=;
-#X text 347 220 peak decay time in ms, f 10;
-#X text 66 21 In order to use vu to display RMS and peak levels \,
+#X connect 8 0 9 0;
+#X coords 0 314 1 313 150 60 0;
+#X restore 138 192 pd noise-burst;
+#X text 286 236 <== open for analysis;
+#X text 49 161 turn on ==> test sound, f 12;
+#X text 319 183 <=;
+#X text 341 183 peak decay time in ms, f 10;
+#X text 50 14 In order to use vu to display RMS and peak levels \,
 you need to analyze a sound source and send it values. This can be
 done in Pd with the env~ and slop~ objects., f 55;
-#X text 65 76 VU meters usually have a decay time for the peak level.
+#X text 49 69 VU meters usually have a decay time for the peak level.
 You can set this parameter in the number box below. The peak level
 and decay is obtained via the slop~ object. Open the subpatch [pd vu]
 to see how this is done., f 55;
+#X obj 138 302 output~;
+#X obj 68 393 declare -stdpath ./;
 #X connect 0 0 4 0;
 #X connect 0 1 3 0;
 #X connect 1 0 0 0;
@@ -587,12 +575,58 @@ to see how this is done., f 55;
 #X connect 2 0 8 0;
 #X connect 7 0 1 1;
 #X connect 8 0 1 0;
-#X connect 10 0 8 1;
+#X connect 8 0 15 0;
+#X connect 8 0 15 1;
 #X restore 341 209 pd example;
-#X obj 83 477 env~;
-#X obj 124 477 slop~, f 7;
-#X text 87 20 - [vu]: VU meter;
-#X obj 103 446 all_guis;
+#X obj 83 491 env~;
+#X obj 124 491 slop~, f 7;
+#X text 86 14 - [vu]: VU meter;
+#X obj 103 460 all_guis;
+#N canvas 663 82 585 585 reference 0;
+#X obj 17 199 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 17 471 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 557 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 83 322 label <symbol> - set label., f 67;
+#X text 69 303 receive <symbol> - set receive symbol name., f 69;
+#X text 62 341 label_font <f \, f> -;
+#X text 202 341 set label type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> andd font size., f 50;
+#X text 69 373 label_pos <f \, f> - set label's x/y position., f 69
+;
+#X text 97 393 color <list> -;
+#X text 202 392 set colors of background \, front and label. Symbols
+for hexadecimal values or floats for presets., f 50;
+#X obj 48 17 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
+#X text 109 31 - [vu]: VU meter;
+#X obj 17 233 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 434 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 145 238 float - set RMS value in dbFS., f 58;
+#X text 147 443 float - set peak value in dbFS., f 49;
+#X text 103 257 size <list> - sets width and height (must be a multiple
+of 40)., f 64;
+#X text 89 276 scale <float> - nonzero shows scale (defautl) \, zero
+hides it., f 66;
+#X obj 17 495 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 524 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 147 499 float - RMS value in dbFS., f 32;
+#X text 147 530 float - RMS value in dbFS., f 32;
+#X restore 348 15 pd reference;
+#X text 276 15 click =>;
+#X obj 12 449 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 88 47 cnv 1 370 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 196 cnv 1 80 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 88 47 cnv 1 1 148 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 1 0 5 0;
 #X connect 1 1 4 0;
 #X connect 2 0 1 1;

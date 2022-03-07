@@ -1,5 +1,5 @@
-#N canvas 560 38 941 640 12;
-#X obj 35 155 osc~;
+#N canvas 304 34 927 598 12;
+#X obj 35 122 osc~;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-graph 1000 float 1;
 #A 0 -0.239854 -0.245719 -0.251574 -0.25742 -0.263255 -0.269079 -0.274893
@@ -139,31 +139,29 @@
 -0.350384 -0.343095 -0.335797 -0.328498 -0.321199 -0.3139 -0.306601
 -0.299302;
 #X coords 0 1 999 -1 500 140 1 0 0;
-#X restore 404 417 graph;
-#X floatatom 35 129 5 0 0 0 - - - 0;
-#X obj 81 511 tabwrite~ \$0-graph;
-#X obj 107 480 metro 500;
-#X obj 107 434 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 404 384 graph;
+#X floatatom 35 96 5 0 0 0 - - - 0;
+#X obj 81 478 tabwrite~ \$0-graph;
+#X obj 107 447 metro 500;
+#X obj 107 401 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X floatatom 116 192 5 0 10000 0 - - - 0;
-#X floatatom 152 219 5 0 10000 0 - - - 0;
-#X floatatom 224 302 5 0 0 0 - - - 0;
-#X msg 83 166 set 0;
-#X obj 224 325 / 100;
-#X obj 152 242 / 100;
-#X obj 81 396 slop~ 1000 1e+09 0 1e+09 0;
-#X obj 71 47 slop~, f 7;
-#X text 132 48 - slew-limiting low-pass filter;
-#X text 158 192 cutoff frequency in linear region;
-#X floatatom 188 269 5 0 10000 0 - - - 0;
-#X text 198 219 maximum downward slew of linear region;
-#X text 231 259 asymptotic downward cutoff frequency (for downward
+#X floatatom 116 159 5 0 10000 0 - - - 0;
+#X floatatom 152 186 5 0 10000 0 - - - 0;
+#X floatatom 224 269 5 0 0 0 - - - 0;
+#X msg 83 133 set 0;
+#X obj 224 292 / 100;
+#X obj 152 209 / 100;
+#X obj 81 363 slop~ 1000 1e+09 0 1e+09 0;
+#X text 158 159 cutoff frequency in linear region;
+#X floatatom 188 236 5 0 10000 0 - - - 0;
+#X text 198 186 maximum downward slew of linear region;
+#X text 231 226 asymptotic downward cutoff frequency (for downward
 slews greater than maximum), f 41;
-#X text 273 300 maximum upward slew of linear region;
-#X text 305 349 asymptotic upward cutoff frequency (for upward slews
+#X text 273 267 maximum upward slew of linear region;
+#X text 305 316 asymptotic upward cutoff frequency (for upward slews
 greater than maximum), f 41;
-#X floatatom 260 356 5 0 10000 0 - - - 0;
-#X text 76 129 frequency of test oscillator;
+#X floatatom 260 323 5 0 10000 0 - - - 0;
+#X text 76 96 frequency of test oscillator;
 #N canvas 756 141 1015 691 compander-limiter 0;
 #N canvas 622 189 476 482 generate-test 0;
 #X obj 77 159 osc~ 440;
@@ -393,12 +391,12 @@ greater than maximum), f 41;
 #X connect 47 4 49 0;
 #X connect 47 5 48 0;
 #X restore 749 530 pd parameters;
-#X floatatom 658 370 3 0 100 0 limit #0-limit-set #0-limit 0;
-#X floatatom 658 391 3 0 20 0 knee #0-knee-set #0-knee 0;
-#X floatatom 658 412 3 0 50 0 boost #0-boost-set #0-boost 0;
-#X floatatom 658 433 3 0 200 0 ratio #0-ratio-set #0-ratio 0;
-#X floatatom 658 455 3 0 100 0 thresh #0-thresh-set #0-thresh 0;
-#X floatatom 658 476 3 0 200 0 speed #0-speed-set #0-speed 0;
+#X floatatom 658 370 3 0 100 0 limit \$0-limit-set \$0-limit 0;
+#X floatatom 658 391 3 0 20 0 knee \$0-knee-set \$0-knee 0;
+#X floatatom 658 412 3 0 50 0 boost \$0-boost-set \$0-boost 0;
+#X floatatom 658 433 3 0 200 0 ratio \$0-ratio-set \$0-ratio 0;
+#X floatatom 658 455 3 0 100 0 thresh \$0-thresh-set \$0-thresh 0;
+#X floatatom 658 476 3 0 200 0 speed \$0-speed-set \$0-speed 0;
 #N canvas 298 363 615 643 run-compander 0;
 #X obj 47 20 inlet~;
 #X obj 83 174 slop~ 0 0 0 0 1e+09;
@@ -505,7 +503,7 @@ patch) for details.;
 #X connect 28 0 10 0;
 #X connect 30 0 10 0;
 #X connect 34 0 21 0;
-#X restore 704 334 pd compander-limiter;
+#X restore 704 301 pd compander-limiter;
 #N canvas 559 148 852 482 slew-limiter 0;
 #X floatatom 106 123 5 0 1000 0 - - - 0;
 #X obj 106 147 t f b;
@@ -557,10 +555,10 @@ to the units needed by slop~., f 60;
 #X connect 12 0 13 4;
 #X connect 13 0 6 0;
 #X connect 14 0 13 0;
-#X restore 704 282 pd slew-limiter;
-#X text 642 595 updated for Pd version 0.50.;
+#X restore 704 249 pd slew-limiter;
+#X text 701 564 updated for Pd version 0.50.;
 #N canvas 535 70 763 564 peak-meter 0;
-#X floatatom 217 132 5 0 50 0 - #0-decay-speed-init - 0;
+#X floatatom 217 132 5 0 50 0 - \$0-decay-speed-init - 0;
 #N canvas 392 300 639 450 generate-test 0;
 #X obj 45 196 osc~ 440;
 #X msg 98 166 -0.25;
@@ -611,8 +609,8 @@ to the units needed by slop~., f 60;
 #X text 365 155 Envelope follower for use in peak metering;
 #X text 314 467 See the HTML documentation (link on main page of this
 patch) for more details., f 54;
-#X floatatom 101 63 5 1 100 2 pulse-length #0-pulse-length-init - 0
-;
+#X floatatom 101 63 5 1 100 2 pulse-length \$0-pulse-length-init -
+0;
 #X obj 47 214 env~ 1024;
 #X obj 139 183 abs~;
 #X obj 139 248 snapshot~;
@@ -647,6 +645,7 @@ envelope followers are converted to dBFS for the IEM VU meter., f
 54;
 #X obj 159 73 hsl 100 15 0 1 0 0 empty empty Volume 32 9 0 12 #dcdcdc
 #000000 #000000 0 1;
+#X text 35 421 see also =>;
 #X connect 0 0 17 0;
 #X connect 1 0 5 0;
 #X connect 1 0 6 0;
@@ -664,8 +663,8 @@ envelope followers are converted to dBFS for the IEM VU meter., f
 #X connect 17 0 21 0;
 #X connect 21 0 10 3;
 #X connect 24 0 1 2;
-#X restore 704 307 pd peak-meter;
-#X text 129 165 set state (previously stored output);
+#X restore 704 274 pd peak-meter;
+#X text 129 132 set state (previously stored output);
 #N canvas 467 45 850 454 jitter-remover 0;
 #X floatatom 132 194 5 0 100 0 - - - 0;
 #X obj 95 354 metro 500;
@@ -704,12 +703,27 @@ slew.;
 #X connect 10 0 5 0;
 #X connect 11 0 10 2;
 #X connect 11 0 10 4;
-#X restore 704 362 pd jitter-remover;
-#X text 133 432 <= start metronome to graph output, f 18;
-#X text 699 256 Examples:;
-#X obj 498 30 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc #000000
+#X restore 704 329 pd jitter-remover;
+#X text 133 399 <= start metronome to graph output, f 18;
+#X text 699 223 Examples:;
+#X text 518 106 The slop~ object is a low-pass filter whose frequency
+response (i.e. \, reaction speed) can vary according to the filter's
+state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise
+gates) \, and soft saturation. Examples below are explained in the
+HTML reference (linked above)., f 55;
+#X text 22 565 see also:;
+#X obj 101 564 lop~;
+#X obj 151 564 fexpr~;
+#X obj 24 44 slop~, f 7;
+#X text 84 43 - slew-limiting low-pass filter;
+#X obj 10 75 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 436 15 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
 #000000;
-#N canvas 798 148 488 282 reference 0;
+#X obj 10 551 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 459 14 <= Open HTML reference;
+#N canvas 798 148 488 282 html-reference 0;
 #X obj 101 59 inlet;
 #X obj 101 190 pdcontrol;
 #X obj 101 130 pdcontrol;
@@ -721,19 +735,51 @@ object., f 25;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
 #X connect 5 0 1 0;
-#X restore 498 56 pd reference;
-#X text 518 139 The slop~ object is a low-pass filter whose frequency
-response (i.e. \, reaction speed) can vary according to the filter's
-state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise
-gates) \, and soft saturation. Examples below are explained in the
-HTML reference (linked above)., f 55;
-#X text 517 27 <= Open HTML reference;
-#X text 46 589 see also:;
-#X obj 126 590 lop~;
-#X obj 176 590 fexpr~;
-#X obj 302 486 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
+#X restore 436 44 pd html-reference;
+#N canvas 734 107 574 398 reference 0;
+#X obj 11 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 11 242 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 11 275 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 10 371 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 11 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 117 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 24 15 slop~, f 7;
+#X text 84 14 - slew-limiting low-pass filter;
+#X obj 11 141 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 165 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 11 191 cnv 1 550 1 empty empty 5th: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 217 cnv 1 550 1 empty empty 6th: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 120 78 signal - input signal to be filtered., f 46;
+#X text 85 96 set <float> - set state (previously stored output).;
+#X text 120 120 signal - cutoff frequency in linear region., f 46
 ;
-#X text 241 589 [vu] =>;
+#X text 120 144 signal - maximum downward slew of linear region.;
+#X text 120 169 signal - asymptotic downward cutoff frequency.;
+#X text 120 195 signal - maximum upward slew of linear region.;
+#X text 120 250 signal - filtered signal.;
+#X text 120 220 signal - asymptotic upward cutoff frequency.;
+#X text 107 281 1) float - cutoff frequency in linear region (default
+0)., f 62;
+#X text 107 298 2) float - maximum downward slew of linear region (default
+0)., f 62;
+#X text 107 315 3) float - asymptotic downward cutoff frequency (default
+0)., f 62;
+#X text 107 332 4) float - maximum upward slew of linear region (default
+0)., f 62;
+#X text 107 349 5) float - asymptotic upward cutoff frequency (default
+0)., f 62;
+#X restore 739 44 pd reference;
+#X text 837 43 <= click;
 #X connect 0 0 12 0;
 #X connect 2 0 0 0;
 #X connect 4 0 3 0;
@@ -745,6 +791,6 @@ HTML reference (linked above)., f 55;
 #X connect 10 0 12 4;
 #X connect 11 0 12 2;
 #X connect 12 0 3 0;
-#X connect 16 0 12 3;
-#X connect 21 0 12 5;
-#X connect 31 0 32 0;
+#X connect 14 0 12 3;
+#X connect 19 0 12 5;
+#X connect 36 0 39 0;

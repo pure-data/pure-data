@@ -1,83 +1,52 @@
-#N canvas 432 106 1042 671 12;
+#N canvas 322 46 863 579 12;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array array1 77971 float 0;
-#X coords 0 1 77970 -1 300 100 1;
-#X restore 32 549 graph;
+#X array array1 13 float 0;
+#X coords 0 1 12 -1 300 100 1;
+#X restore 545 269 graph;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array array2 155944 float 0;
-#X coords 0 1 155943 -1 300 100 1;
-#X restore 341 549 graph;
-#X obj 49 398 soundfiler;
-#X msg 93 286 write -aiff /tmp/foo1 array2;
-#X msg 42 157 read ../sound/bell.aiff array2;
-#X msg 58 214 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
+#X array array2 78003 float 0;
+#X coords 0 1 78002 -1 300 100 1;
+#X restore 545 387 graph;
+#X obj 32 382 soundfiler;
+#X msg 76 270 write -aiff /tmp/foo1 array2;
+#X msg 25 141 read ../sound/bell.aiff array2;
+#X msg 41 198 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
 ;
-#X text 557 65 Flags for reading:;
-#X text 575 101 -skip <sample frames to skip in file>;
-#X floatatom 49 422 0 0 0 0 - - - 0;
-#X msg 50 185 read -resize ../sound/bell.aiff array2;
-#X text 303 286 write a file;
-#X text 425 342 write stereo;
-#X text 575 156 -raw <headersize> <channels> <bytespersample> <endianness>
-;
-#X text 575 119 -resize;
-#X text 575 137 -maxsize <maximum number of samples we can resize to>
-;
-#X text 645 337 Flags for writing:;
-#X text 661 399 -skip <number of sample frames to skip in array>;
-#X text 661 421 -nframes <maximum number to write>;
-#X text 661 465 -normalize;
-#X text 661 443 -bytes <2 \, 3 \, or 4>;
-#X obj 800 574 tabwrite~;
-#X obj 800 598 tabread4~;
-#X obj 905 552 tabplay~;
-#X obj 905 599 writesf~;
-#X obj 905 576 readsf~;
-#X text 661 485 -rate <sample rate>;
-#X obj 116 423 print;
-#X text 716 575 See also:;
-#X text 262 157 read a file to zero or more arrays;
+#X floatatom 32 411 8 0 0 0 - - - 0;
+#X msg 33 169 read -resize ../sound/bell.aiff array2;
+#X text 286 270 write a file;
+#X text 408 326 write stereo;
+#X obj 143 542 tabwrite~;
+#X obj 217 542 tabread4~;
+#X obj 290 542 tabplay~;
+#X obj 414 542 writesf~;
+#X obj 356 542 readsf~;
+#X text 18 541 See also:;
+#X text 245 141 read a file to zero or more arrays;
 #X obj 30 15 soundfiler;
 #X text 108 14 - read and write soundfiles to arrays;
-#X text 330 185 optionally resize;
-#X text 436 214 override header;
-#X text 331 240 ... read from an ascii file, f 28;
-#X text 787 635 updated for Pd version 0.51;
-#X msg 66 241 read -ascii -resize table.txt array1;
-#X msg 102 341 write -next -bytes 4 /tmp/foo3 array1 array2;
-#X text 575 237 -ascii - read a file containing ascii numbers;
-#X text 661 377 -big \, -little (sample endianness);
-#X text 660 358 -wave \, -aiff \, -caf \, -next \, -ascii;
-#X text 64 467 Left outlet outputs the number of samples. Right outlet
+#X text 313 169 optionally resize;
+#X text 419 198 override header;
+#X text 314 224 ... read from an ascii file, f 28;
+#X text 648 541 updated for Pd version 0.51;
+#X msg 49 225 read -ascii -resize table.txt array1;
+#X msg 85 325 write -next -bytes 4 /tmp/foo3 array1 array2;
+#X text 33 444 Left outlet outputs the number of samples. Right outlet
 outputs info as a list: samplerate \, headersize \, num channels \,
 bytes per sample \, & endianness ("b" or "l"). If no array name is
-given \, no samples are read but the info is provided anyway., f 77
+given \, no samples are read but the info is provided anyway., f 63
 ;
-#X text 661 513 The number of channels is limited to 64;
-#X text 31 46 The soundfiler object reads and writes floating point
+#X text 30 61 The soundfiler object reads and writes floating point
 arrays to binary soundfiles which may contain uncompressed 2- or 3-byte
 integer ("pcm") or 4-byte floating point samples in wave \, aiff \,
 caf \, next \, or ascii text formats. The number of channels of the
 soundfile need not match the number of arrays given (extras are dropped
-and unsupplied channels are zeroed out)., f 64;
-#X text 593 255 May be combined with -resize. Newlines in the file
-are ignored \, non-numeric fields are replaced by zero. If multiple
-arrays are specified \, the first elements of each array should come
-first in the file \, followed by all the second elements and so on
-(interleaved).;
-#X msg 98 314 write -nframes 10000 /tmp/foo2.wav array2;
-#X text 397 314 set type by file ext;
-#X text 575 83 -wave \, -aiff \, -caf \, -next;
-#X text 593 174 This causes all header and type information to be ignored.
-Endianness is "l" ("little") for Intel machines or "b" ("big") for
-older PPC Macintoshes. You can give "n" (natural) to take the byte
-order your machine prefers.;
-#X text 557 14 When reading you can leave soundfiler to figure out
-which of the known soundfile formats the file belongs to or override
-all header and type information using the "-raw" flag., f 66;
-#X text 304 368 ... write to an ascii file;
-#X msg 108 368 write /tmp/foo1.txt array2;
-#X text 331 390 "-ascii" set via file ext;
+and unsupplied channels are zeroed out)., f 114;
+#X msg 81 298 write -nframes 10000 /tmp/foo2.wav array2;
+#X text 380 298 set type by file ext;
+#X text 287 352 ... write to an ascii file;
+#X msg 91 352 write /tmp/foo1.txt array2;
+#X text 314 374 "-ascii" set via file ext;
 #N canvas 978 194 575 345 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -97,17 +66,89 @@ in a float object and send it to it., f 70;
 #X connect 4 0 5 0;
 #X connect 6 0 4 0;
 #X connect 7 0 3 0;
-#X restore 398 425 pd Dealing_with_"\$0";
-#X text 236 416 open subpatch to see how to deal with '\$0', f 21
+#X restore 381 409 pd Dealing_with_"\$0";
+#X text 219 400 open subpatch to see how to deal with '\$0', f 21
 ;
-#X obj 800 549 array;
-#X connect 2 0 8 0;
-#X connect 2 1 26 0;
+#X obj 95 542 array;
+#X listbox 99 411 14 0 0 0 - - - 0;
+#X obj 8 46 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 774 11 <= click;
+#N canvas 556 60 632 371 reference 0;
+#X obj 8 52 cnv 5 610 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 182 cnv 2 610 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 301 cnv 2 610 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 335 cnv 5 610 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 247 cnv 1 610 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 210 cnv 1 610 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 109 254 list -;
+#X text 102 219 float - number of samples (when reading a file).,
+f 58;
+#X text 157 254 sample rate \, header size \, number of channels \,
+bytes per sample & endianness (when reading a file)., f 51;
+#X text 75 66 read <list> -;
+#X text 174 66 sets a filename to open and optionally one or more arrays
+to load channels. Optional flags: -wave \, -aiff \, -caf \, -next \,
+-skip <float> \, -maxsize <float> \, -ascii \, -raw <list>.;
+#X text 68 117 write <list> -;
+#X text 174 116 sets a filename to write and one or more arrays to
+specify channels. Optional flags: -wave \, -aiff \, -caf \, -next \,
+-big \, -little \, -skip <float> \, -nframes <float> \, -ascii \, -normalize
+\, -rate <float>.., f 60;
+#X obj 30 15 soundfiler;
+#X text 108 14 - read and write soundfiles to arrays;
+#X text 164 309 NONE;
+#X restore 680 12 pd reference;
+#X obj 8 524 cnv 1 850 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 551 132 Use 'read' messages to load files into arrays and 'write'
+messages to write arrays to a sound file. Open the subpatch below for
+more information on flags for reading and writing., f 39;
+#N canvas 578 80 567 534 read-write-flags 0;
+#X text 49 53 -skip <sample frames to skip in file>;
+#X text 49 108 -raw <headersize> <channels> <bytespersample> <endianness>
+;
+#X text 49 89 -maxsize <maximum number of samples we can resize to>
+;
+#X text 55 381 -skip <number of sample frames to skip in array>;
+#X text 55 403 -nframes <maximum number to write>;
+#X text 55 447 -normalize;
+#X text 55 425 -bytes <2 \, 3 \, or 4>;
+#X text 55 467 -rate <sample rate>;
+#X text 49 219 -ascii - read a file containing ascii numbers;
+#X text 55 359 -big \, -little (sample endianness);
+#X text 54 340 -wave \, -aiff \, -caf \, -next \, -ascii;
+#X text 55 495 The number of channels is limited to 64;
+#X text 67 237 May be combined with -resize. Newlines in the file are
+ignored \, non-numeric fields are replaced by zero. If multiple arrays
+are specified \, the first elements of each array should come first
+in the file \, followed by all the second elements and so on (interleaved).
+, f 67;
+#X text 49 35 -wave \, -aiff \, -caf \, -next;
+#X text 49 71 -resize (resizes arrays to the size of the sound file)
+;
+#X text 9 17 Flags for 'read' messages:;
+#X text 20 319 Flags for 'write' messages:;
+#X text 67 126 you can leave soundfiler to figure out which of the
+known soundfile formats the file belongs to or override all header
+and type information using the "-raw" flag \, which causes all header
+and type information to be ignored. Endianness is "l" ("little") for
+Intel machines or "b" ("big") for older PPC Macintoshes. You can give
+"n" (natural) to take the byte order your machine prefers., f 67;
+#X restore 674 216 pd read-write-flags;
+#X connect 2 0 6 0;
+#X connect 2 1 35 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
-#X connect 9 0 2 0;
-#X connect 35 0 2 0;
-#X connect 36 0 2 0;
-#X connect 44 0 2 0;
-#X connect 50 0 2 0;
+#X connect 7 0 2 0;
+#X connect 23 0 2 0;
+#X connect 24 0 2 0;
+#X connect 27 0 2 0;
+#X connect 30 0 2 0;

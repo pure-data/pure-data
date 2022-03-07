@@ -1,21 +1,46 @@
-#N canvas 784 149 400 360 12;
-#X msg 83 164 bang;
-#X msg 37 125 bang;
-#X floatatom 37 246 7 0 0 0 - - - 0;
-#X text 98 246 Output is in milliseconds;
-#X obj 37 215 cputime;
-#X text 24 53 The cputime object measures elapsed CPU time \, as measured
+#N canvas 550 25 460 315 12;
+#X msg 151 165 bang;
+#X msg 105 126 bang;
+#X floatatom 105 237 7 0 0 0 - - - 0;
+#X text 166 237 Output is in milliseconds;
+#X obj 105 206 cputime;
+#X text 20 57 The cputime object measures elapsed CPU time \, as measured
 by your operating system. This appears to work on NT \, IRIX \, and
-Linux \, but not on W98., f 48;
-#X obj 64 18 cputime;
-#X text 125 19 - measure CPU usage;
-#X text 178 313 updated for Pd version 0.33;
-#X text 32 291 see also:;
-#X obj 37 316 realtime;
-#X obj 109 316 timer;
-#X text 130 155 output elapsed time. You can click multiple times since
+Linux \, but not on W98., f 59;
+#X obj 19 12 cputime;
+#X text 80 13 - measure CPU usage;
+#X text 252 284 updated for Pd version 0.33;
+#X text 16 285 see also:;
+#X obj 92 284 realtime;
+#X obj 164 284 timer;
+#X text 198 156 output elapsed time. You can click multiple times since
 it was last reset., f 25;
-#X text 77 123 reset (set elapsed time to zero);
+#X text 145 124 reset (set elapsed time to zero);
+#X obj 5 42 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 776 85 479 247 reference 0;
+#X obj 12 46 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 12 139 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 12 178 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 41 14 cputime;
+#X text 102 15 - measure CPU usage;
+#X text 151 187 NONE;
+#X text 111 80 bang - reset (set elapsed time to zero)., f 43;
+#X text 111 110 bang - output elapsed time., f 43;
+#X obj 12 212 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 12 104 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 12 77 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 127 148 1) float - elapsed time in msec.;
+#X restore 345 13 pd reference;
+#X text 277 12 click =>;
+#X obj 5 269 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 4 1;
 #X connect 1 0 4 0;
 #X connect 4 0 2 0;

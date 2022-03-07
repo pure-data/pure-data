@@ -1,23 +1,52 @@
-#N canvas 688 116 481 344 12;
-#X msg 64 117 bang;
-#X floatatom 64 259 5 0 0 0 - - - 0;
-#X text 235 285 updated for Pd version 0.27;
-#X text 152 233 creation argument initializes first value;
-#X obj 57 15 change;
-#X text 27 54 The change object outputs its input only when it changes.
+#N canvas 641 53 509 382 12;
+#X msg 68 107 bang;
+#X floatatom 68 279 5 0 0 0 - - - 0;
+#X text 284 351 updated for Pd version 0.27;
+#X text 154 253 creation argument initializes first value;
+#X obj 25 15 change;
+#X text 35 58 The change object outputs its input only when it changes.
 You can "set" the current value \, or bang to force output.;
-#X obj 64 233 change 6.5;
-#X msg 96 204 set \$1;
-#X text 138 177 set the value;
-#X text 109 116 output current value;
-#X text 117 147 if different from current value \, output and set;
-#X obj 64 286 print;
-#X text 114 16 - eliminate redundancy in a number stream;
-#X floatatom 96 177 5 0 0 0 - - - 0;
-#X floatatom 76 147 5 0 0 0 - - - 0;
+#X obj 68 253 change 6.5;
+#X msg 100 224 set \$1;
+#X text 142 197 set the value;
+#X text 113 106 output current value;
+#X text 121 167 if different from current value \, output and set;
+#X obj 68 306 print;
+#X floatatom 100 197 5 0 0 0 - - - 0;
+#X floatatom 80 167 5 0 0 0 - - - 0;
+#N canvas 689 147 577 227 reference 0;
+#X obj 10 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 10 121 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 10 158 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 195 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 148 55 float -;
+#X obj 30 12 change;
+#X text 84 13 - filter repeated numbers;
+#X text 155 74 bang -;
+#X text 205 74 output current value., f 46;
+#X text 106 93 set <float> -;
+#X text 205 93 set the value., f 46;
+#X text 148 131 float - unrepeated value., f 54;
+#X text 205 55 input value (repeated numbers are filtered).;
+#X text 128 169 1) float - initial value (default 0)., f 54;
+#X restore 322 16 pd reference;
+#X text 420 17 <= click;
+#X obj 8 49 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 80 139 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 102 138 <= resending the same number doesn't output;
+#X obj 8 340 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 82 16 - eliminate repeated numbers;
 #X connect 0 0 6 0;
 #X connect 1 0 11 0;
 #X connect 6 0 1 0;
 #X connect 7 0 6 0;
-#X connect 13 0 7 0;
-#X connect 14 0 6 0;
+#X connect 12 0 7 0;
+#X connect 13 0 6 0;
+#X connect 17 0 13 0;

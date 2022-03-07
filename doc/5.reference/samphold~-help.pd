@@ -1,9 +1,9 @@
-#N canvas 501 72 544 612 12;
+#N canvas 493 34 542 605 12;
 #X obj 37 503 snapshot~;
 #X floatatom 37 534 6 0 0 0 - - - 0;
 #X obj 56 476 metro 100;
-#X obj 43 14 samphold~;
-#X text 120 13 - sample and hold unit;
+#X obj 27 14 samphold~;
+#X text 104 13 - sample and hold unit;
 #X obj 37 396 samphold~;
 #X text 27 58 The samphold~ object samples its left input whenever
 its right input decreases in value (as a phasor~ does each period \,
@@ -16,7 +16,7 @@ for example.) Both inputs are audio signals., f 69;
 #X msg 59 293 reset;
 #X text 89 233 set output to a number;
 #X msg 47 263 reset 10;
-#X text 321 573 updated for Pd version 0.39;
+#X text 321 574 updated for Pd version 0.39;
 #X obj 56 451 loadbang;
 #X obj 203 441 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
@@ -31,7 +31,7 @@ for example.) Both inputs are audio signals., f 69;
 #X obj 415 408 loadbang;
 #X msg 455 324 0;
 #X msg 357 342 reset 0;
-#X obj 455 297 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 455 297 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 27 111 The "set" message sets the output value (which gets
 updated normally afterward.) The "reset" message causes samphold~ to
@@ -50,6 +50,41 @@ which forces the next input to be sampled., f 69;
 #X text 105 287 reset to default 1e+20 to force the next sample, f
 24;
 #X text 115 255 reset previous value for control inlet, f 20;
+#N canvas 523 143 610 306 reference 0;
+#X obj 8 45 cnv 5 590 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 73 cnv 1 590 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 197 cnv 2 590 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 276 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 239 cnv 2 590 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 100 79 signal -;
+#X obj 8 156 cnv 1 590 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 100 165 signal -;
+#X text 65 97 set <float> -;
+#X obj 35 11 samphold~;
+#X text 112 10 - sample and hold unit;
+#X text 163 79 input to be sampled., f 49;
+#X text 51 116 reset <float> -;
+#X text 163 97 set output value., f 49;
+#X text 163 116 set last value of right inlet., f 49;
+#X text 107 134 reset -;
+#X text 160 249 NONE, f 5;
+#X text 98 210 signal - sampled and held signal.;
+#X text 163 165 control signal (triggers when smaller than previous)
+;
+#X text 163 134 set last value of right inlet to infinity (forces output).
+;
+#X restore 348 13 pd reference;
+#X text 442 13 <= click;
+#X obj 9 44 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 567 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 5 0 0 0;

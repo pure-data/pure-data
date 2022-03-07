@@ -1,58 +1,95 @@
-#N canvas 661 42 591 677 12;
-#X text 46 600 see also:;
+#N canvas 675 33 565 593 12;
 #N canvas 595 399 475 139 help-append-template1 0;
 #X obj 101 72 filledpolygon z z 0 0 0 20 0 20 30 0 30;
 #X obj 67 24 struct help-append-template1 float x float y float z;
-#X restore 352 537 pd help-append-template1;
-#X obj 68 627 get;
-#X obj 100 627 set;
-#X obj 197 601 getsize;
-#X obj 264 601 setsize;
-#X obj 264 627 element;
-#X obj 133 627 scalar;
-#N canvas 1325 127 300 206 help-append-data 1;
-#X restore 352 515 pd help-append-data;
-#X obj 286 271 pointer;
-#X obj 52 22 append;
-#X msg 286 247 traverse pd-help-append-data \, bang;
-#X obj 51 311 append help-append-template1 x y z;
-#X floatatom 55 253 5 0 0 0 - - - 0;
-#X msg 351 322 \; pd-help-append-data clear;
-#X text 66 68 "append" maintains a pointer to a scalar \, or else an
+#X restore 366 421 pd help-append-template1;
+#N canvas 347 216 300 206 help-append-data 1;
+#X restore 401 444 pd help-append-data;
+#X obj 262 257 pointer;
+#X msg 262 233 traverse pd-help-append-data \, bang;
+#X obj 27 297 append help-append-template1 x y z;
+#X floatatom 27 239 5 0 0 0 - - - 0;
+#X msg 341 298 \; pd-help-append-data clear;
+#X text 34 54 "append" maintains a pointer to a scalar \, or else an
 empty pointer to the head of a list. You may set the pointer using
 the leftmost inlet. The creation arguments specify the template of
 a new scalar to append \, and the names of the fields (there should
 be at least one) you will wish to initialize. To append an object \,
 send a number to the leftmost inlet. "Append"'s pointer is updated
 to point to the new scalar \, and the new pointer is also output.,
-f 66;
-#X obj 133 601 pointer;
-#X text 285 226 go to (and output) "head" of the list;
-#X obj 197 627 struct;
-#X text 346 617 updated for Pd version 0.47;
-#X obj 176 499 pointer;
-#X msg 176 475 traverse pd-help-append-data \, bang;
-#X floatatom 98 445 5 0 0 0 - - - 0;
-#X msg 175 450 set help-append-template1 x;
-#X text 67 178 To insert to the beginning of a list \, you can append
-to the "head" of the list., f 66;
-#X obj 98 502 append;
-#X text 170 429 click on these messages first:;
-#X text 146 247 click this first =>;
-#X text 426 299 click to clear:;
-#X obj 351 298 loadbang;
-#X text 106 21 - add an item to a Data Structure list;
-#X obj 55 280 trigger f f;
-#X text 76 379 If there is no more than one field \, you can use a
-"set" message to set the template and field:;
-#X connect 9 0 12 3;
-#X connect 11 0 9 0;
-#X connect 13 0 31 0;
-#X connect 20 0 25 1;
-#X connect 21 0 20 0;
-#X connect 22 0 25 0;
-#X connect 23 0 25 0;
-#X connect 29 0 14 0;
-#X connect 31 0 12 0;
-#X connect 31 1 12 1;
-#X connect 31 1 12 2;
+f 70;
+#X text 261 212 go to (and output) "head" of the list;
+#X obj 124 475 pointer;
+#X msg 124 451 traverse pd-help-append-data \, bang;
+#X floatatom 46 421 5 0 0 0 - - - 0;
+#X msg 123 426 set help-append-template1 x;
+#X text 34 161 To insert to the beginning of a list \, you can append
+to the "head" of the list., f 70;
+#X obj 46 478 append;
+#X text 118 405 click on these messages first:;
+#X text 122 233 click this first =>;
+#X text 416 275 click to clear:;
+#X obj 341 274 loadbang;
+#X obj 27 266 trigger f f;
+#X text 21 530 see also:;
+#X obj 31 557 get;
+#X obj 63 557 set;
+#X obj 160 531 getsize;
+#X obj 223 531 setsize;
+#X obj 223 557 element;
+#X obj 96 557 scalar;
+#X obj 44 11 append;
+#X obj 96 531 pointer;
+#X obj 160 557 struct;
+#X text 349 544 updated for Pd version 0.47;
+#X text 475 10 <= click;
+#N canvas 722 149 572 323 reference 0;
+#X obj 8 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 191 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 227 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 297 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 124 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 34 16 append;
+#X text 89 15 - add an item to a Data Structure list.;
+#X text 56 86 set <symbol \, symbol> -;
+#X text 217 86 if none or just one field is given \, you can use 'set'
+to set struct name and field., f 43;
+#X obj 7 155 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 127 130 float - set field value and append new Data Structure.
+;
+#X text 121 256 2) list -;
+#X text 81 55 (arguments set 'n' fields and creates an inlet for each)
+;
+#X text 113 163 pointer - a pointer to the Data Structure to add.;
+#X text 113 199 pointer - a pointer to added Data Structure.;
+#X text 108 236 1) symbol - set template name., f 62;
+#X text 192 256 set field names and create an inlet for each (one inlet
+is created by default)., f 45;
+#X restore 381 10 pd reference;
+#X obj 7 42 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 10 519 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 98 10 - add an item to a Data Structure list;
+#X text 51 354 If there are no fields or just one specified as as argument
+\, you can use a "set" message to set both the template and field.
+, f 64;
+#X connect 2 0 4 3;
+#X connect 3 0 2 0;
+#X connect 5 0 19 0;
+#X connect 9 0 14 1;
+#X connect 10 0 9 0;
+#X connect 11 0 14 0;
+#X connect 12 0 14 0;
+#X connect 18 0 6 0;
+#X connect 19 0 4 0;
+#X connect 19 1 4 1;
+#X connect 19 1 4 2;

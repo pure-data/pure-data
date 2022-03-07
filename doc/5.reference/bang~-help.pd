@@ -1,29 +1,50 @@
-#N canvas 662 142 552 393 12;
-#X obj 152 251 bang~;
-#X obj 152 284 print;
-#X obj 32 18 bang~;
-#X obj 424 183 loadbang;
-#X obj 410 155 delay 100;
-#X text 78 17 - output bang after each DSP cycle;
-#X text 243 341 updated for Pd version 0.33;
-#X msg 393 240 \; pd dsp \$1;
-#X msg 410 210 0;
-#X msg 391 116 1;
-#X text 42 63 Bang~ outputs a bang after each DSP block cycle (at the
+#N canvas 527 82 535 373 12;
+#X obj 145 249 bang~;
+#X obj 145 282 print;
+#X obj 417 181 loadbang;
+#X obj 403 153 delay 100;
+#X msg 386 238 \; pd dsp \$1;
+#X msg 403 208 0;
+#X msg 384 114 1;
+#X text 35 61 Bang~ outputs a bang after each DSP block cycle (at the
 same logical time as the DSP cycle.) This is primarily useful for sampling
 the outputs of analysis algorithms., f 61;
-#X text 73 340 see also:;
-#X obj 149 341 block~;
-#X text 422 114 <= click to test, f 8;
-#X text 253 237 Bang~ only outputs when DSP is on., f 18;
-#X text 43 118 By default \, a block size is 64 samples \, at a 44100
+#X text 415 112 <= click to test, f 8;
+#X text 246 235 Bang~ only outputs when DSP is on., f 18;
+#X text 36 116 By default \, a block size is 64 samples \, at a 44100
 sample rate \, this about 1.45 ms. You can change the sample rate in
 audio settings and the block size with the block~ or switch~ object.
 Note that the minimum block size bang~ can handle is 64!, f 46;
-#X text 81 224 inlet is inactive, f 8;
+#X text 74 222 inlet is inactive, f 8;
+#X obj 25 14 bang~;
+#X text 71 13 - output bang after each DSP cycle;
+#X text 320 336 updated for Pd version 0.33;
+#X obj 8 45 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 17 335 see also:;
+#X obj 93 336 block~;
+#N canvas 716 204 583 194 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 88 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 125 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 162 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 141 135 NONE;
+#X text 137 98 bang - at every DSP block cycle when DSP is on., f
+49;
+#X obj 51 17 bang~;
+#X text 100 16 - output bang after each DSP cycle;
+#X text 139 64 NONE (there's one actually \, but it's inactive);
+#X restore 355 14 pd reference;
+#X text 453 14 <= click;
+#X obj 8 322 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
-#X connect 3 0 8 0;
-#X connect 4 0 8 0;
-#X connect 8 0 7 0;
-#X connect 9 0 4 0;
-#X connect 9 0 7 0;
+#X connect 2 0 5 0;
+#X connect 3 0 5 0;
+#X connect 5 0 4 0;
+#X connect 6 0 3 0;
+#X connect 6 0 4 0;

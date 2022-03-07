@@ -1,10 +1,10 @@
-#N canvas 754 81 696 705 12;
+#N canvas 551 23 669 686 12;
 #X declare -stdpath ./;
-#X floatatom 81 309 5 0 0 0 - - - 0;
-#X obj 81 339 sig~ 100;
-#X text 446 660 Updated for Pd version 0.33;
-#X obj 70 21 tabosc4~;
-#X text 186 391 message to switch tables;
+#X floatatom 81 308 5 0 0 0 - - - 0;
+#X obj 81 338 sig~ 100;
+#X text 431 650 Updated for Pd version 0.33;
+#X obj 50 18 tabosc4~;
+#X text 186 380 message to switch tables;
 #X text 43 60 tabosc4~ is a traditional computer music style wavetable
 lookup oscillator using 4-point polynomial interpolation. The table
 should have a power of two points plus three "guard points" \, one
@@ -12,16 +12,16 @@ at the beginning and two at the end \, which should be wraparound copies
 of the last point and the first two points \, respectively. The "sinesum"
 and "cosinesum" methods for arrays do this automatically for you if
 you just want to specify partial strengths., f 77;
-#X text 140 22 - 4-point interpolating oscillator;
-#X obj 308 278 loadbang;
-#X obj 81 523 output~;
-#X text 16 654 see also:;
-#X obj 90 654 osc~;
-#X msg 139 444 0;
-#X msg 176 444 0.5;
-#X text 209 446 <= resets phase;
-#X obj 134 654 phasor~;
-#X obj 268 654 tabread4~;
+#X text 120 19 - 4-point interpolating oscillator;
+#X obj 308 270 loadbang;
+#X obj 81 512 output~;
+#X text 18 647 see also:;
+#X obj 92 648 osc~;
+#X msg 139 433 0;
+#X msg 176 433 0.5;
+#X text 209 435 <= resets phase;
+#X obj 136 648 phasor~;
+#X obj 270 648 tabread4~;
 #X text 43 152 For good results use 512 points for up to about 15 partials
 \, or 32*npartials (rounded up to a power of 2) for more than 15 partials.
 Don't send new "sinesum" messages to tables while you're running -
@@ -29,18 +29,18 @@ instead \, use "set" messages to switch between tables., f 77;
 #X text 43 214 The frequency input can be either a float or a signal.
 The right inlet resets the phase with values from 0 to 1 (where '1'
 is the same as '0' and '0.5' is half the cycle)., f 77;
-#X text 200 476 creation argument initializes the table name;
-#X text 122 309 frequency (Hz.);
-#X msg 308 311 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
+#X text 200 465 creation argument initializes the table name;
+#X text 122 308 frequency (Hz.);
+#X msg 308 300 \; wave1 sinesum 512 1 1 1 1 \, normalize \; wave2 cosinesum
 512 0 1;
-#X obj 81 476 tabosc4~ wave1;
-#X msg 101 384 set wave1;
-#X msg 111 410 set wave2;
-#X obj 412 596 ../2.control.examples/15.array;
-#X obj 412 619 ../2.control.examples/16.more.arrays;
-#X text 33 600 Check also the "array" examples from the Pd tutorial
+#X obj 81 465 tabosc4~ wave1;
+#X msg 101 373 set wave1;
+#X msg 111 399 set wave2;
+#X obj 396 595 ../2.control.examples/15.array;
+#X obj 396 618 ../2.control.examples/16.more.arrays;
+#X text 17 596 Check also the "array" examples from the Pd tutorial
 by clicking and opening the files to the right ====>, f 52;
-#X obj 524 17 declare -stdpath ./;
+#X obj 189 524 declare -stdpath ./;
 #N canvas 978 194 574 404 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -73,13 +73,43 @@ doesn't work in messages., f 70;
 #X connect 10 0 3 0;
 #X connect 11 0 5 0;
 #X connect 11 0 5 1;
-#X restore 389 536 pd Dealing_with_"\$0";
-#X obj 451 371 array define wave1;
-#X obj 451 395 array define wave2;
-#X obj 344 654 array;
-#X text 227 527 open subpatch to see how to deal with '\$0', f 21
+#X restore 435 536 pd Dealing_with_"\$0";
+#X obj 451 360 array define wave1;
+#X obj 451 384 array define wave2;
+#X obj 346 648 array;
+#X text 427 497 open subpatch to see how to deal with '\$0', f 21
 ;
-#X obj 194 654 tabwrite~;
+#X obj 196 648 tabwrite~;
+#N canvas 731 147 584 276 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 174 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 211 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 248 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 119 91 signal -;
+#X obj 17 136 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 126 145 float -;
+#X text 183 145 phase cycle reset (from 0 to 1)., f 46;
+#X text 183 91 frequency value in Hz., f 46;
+#X obj 50 18 tabosc4~;
+#X text 120 19 - 4-point interpolating oscillator.;
+#X text 77 110 set <symbol> -;
+#X text 126 184 signal - wavetable oscillator output., f 54;
+#X text 183 110 set table name with the waveform., f 46;
+#X text 124 220 1) float - initial frequenct value in Hz (default 0).
+;
+#X restore 423 18 pd reference;
+#X text 521 19 <= click;
+#X obj 8 49 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 580 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
 #X connect 1 0 21 0;
 #X connect 7 0 20 0;

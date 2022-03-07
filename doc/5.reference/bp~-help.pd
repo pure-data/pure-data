@@ -1,45 +1,75 @@
-#N canvas 849 57 504 570 12;
+#N canvas 588 53 480 548 12;
 #X declare -stdpath ./;
-#X obj 38 14 bp~;
-#X floatatom 147 228 7 0 0 0 - - - 0;
-#X msg 114 201 clear;
-#X text 44 101 The left inlet is the incoming audio signal \, the middle
+#X floatatom 139 208 7 0 0 0 - - - 0;
+#X msg 106 181 clear;
+#X text 35 91 The left inlet is the incoming audio signal \, the middle
 control input sets center frequency and the right input sets "Q".,
 f 58;
-#X floatatom 181 255 5 1 50 0 - - - 0;
-#X text 43 63 bp~ passes a sinusoid at the center frequency at unit
+#X floatatom 173 235 5 1 50 0 - - - 0;
+#X text 35 53 bp~ passes a sinusoid at the center frequency at unit
 gain (approximately). Other frequencies are attenuated.;
-#X obj 99 505 vcf~;
-#X text 278 503 updated for Pd version 0.46;
-#X text 35 413 NOTE: the maximum center frequency is sample rate divided
+#X text 25 393 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X text 204 228 <= center frequency;
-#X text 161 200 <= reinitialize internal state;
-#X text 202 280 Arguments initialize center frequency and Q, f 22
+#X text 196 208 <= center frequency;
+#X text 153 180 <= reinitialize internal state;
+#X text 194 260 Arguments initialize center frequency and Q, f 22
 ;
-#X obj 56 334 output~;
-#X obj 46 216 noise~;
-#X obj 141 505 bob~;
-#X obj 181 505 lop~;
-#X obj 221 505 hip~;
-#X obj 308 157 declare -stdpath ./;
-#X text 71 14 - 2-pole bandpass filter;
-#X obj 41 534 biquad~;
-#X obj 100 533 slop~, f 7;
-#X obj 159 533 cpole~, f 7;
-#X obj 221 533 fexpr~;
-#X text 228 255 <= Q (controls bandwidth);
-#X obj 114 288 bp~ 500 10;
-#X text 132 332 Listen to how the white noise input is filtered. The
+#X obj 48 314 output~;
+#X obj 38 196 noise~;
+#X obj 284 141 declare -stdpath ./;
+#X text 220 235 <= Q (controls bandwidth);
+#X obj 106 268 bp~ 500 10;
+#X text 124 312 Listen to how the white noise input is filtered. The
 higher the Q \, the more attenuation we have for frequencies besides
 the center frequency \, so the less wide the frequency band is., f
 48;
-#X text 27 504 see also:;
-#X text 277 533 - unfriendly filters;
-#X connect 1 0 24 1;
-#X connect 2 0 24 0;
-#X connect 4 0 24 2;
-#X connect 13 0 24 0;
-#X connect 24 0 12 0;
-#X connect 24 0 12 1;
+#X obj 20 9 bp~;
+#X text 16 483 see also:;
+#X obj 88 484 vcf~;
+#X text 270 488 updated for Pd version 0.46;
+#X obj 130 484 bob~;
+#X obj 170 484 lop~;
+#X obj 210 484 hip~;
+#X obj 5 42 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 694 141 574 303 reference 0;
+#X obj 29 16 bp~;
+#X text 61 15 - 2-pole bandpass filter;
+#X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 185 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 222 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 122 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 118 83 signal - input signal to be filtered., f 56;
+#X text 125 100 clear - clear filter's memory., f 55;
+#X text 119 195 signal - the filtered signal output., f 49;
+#X obj 8 151 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 126 127 float - center frequency in Hz., f 49;
+#X text 126 156 float - Q (controls bandwidth)., f 49;
+#X text 126 232 1) float - initial center frequency in Hz (default
+0).;
+#X text 126 250 2) float - initial Q (default 0).;
+#X restore 294 9 pd reference;
+#X text 392 9 <= click;
+#X text 53 9 - 2-pole bandpass filter;
+#X obj 30 513 biquad~;
+#X obj 89 512 slop~, f 7;
+#X obj 148 512 cpole~, f 7;
+#X obj 210 512 fexpr~;
+#X obj 2 471 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 13 1;
+#X connect 1 0 13 0;
+#X connect 3 0 13 2;
+#X connect 10 0 13 0;
+#X connect 13 0 9 0;
+#X connect 13 0 9 1;

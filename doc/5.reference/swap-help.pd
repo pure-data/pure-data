@@ -1,41 +1,73 @@
-#N canvas 797 75 512 558 12;
+#N canvas 560 55 513 507 12;
 #X msg 78 168 bang;
 #X floatatom 78 300 6 0 0 0 - - - 0;
 #X floatatom 100 201 4 0 0 0 - - - 0;
 #X floatatom 145 238 4 0 0 0 - - - 0;
-#X obj 39 16 swap;
-#X text 123 167 outputs 2 stored values;
+#X obj 29 16 swap;
 #X obj 78 267 swap 6.5, f 10;
-#X text 131 201 sets second value and outputs both;
-#X text 177 239 sets first value;
+#X text 134 201 sets second value and outputs both;
+#X text 179 238 sets first value;
 #X text 163 267 creation argument initializes first value;
 #X floatatom 145 299 6 0 0 0 - - - 0;
-#X text 59 377 A common use of swap is to reverse the operands in arithmetic
-objects like this:;
-#X obj 149 454 swap, f 6;
-#X obj 157 484 -;
-#X floatatom 157 511 5 0 0 0 - - - 0;
-#X floatatom 188 428 4 0 0 0 - - - 0;
-#X floatatom 149 428 4 0 0 0 - - - 0;
-#X text 246 492 updated for Pd version 0.41;
-#X text 38 53 The swap object swaps the positions of two incoming numbers.
+#X text 97 372 A common use of swap is to reverse the operands in arithmetic
+objects like this:, f 29;
+#X obj 317 369 swap, f 6;
+#X obj 325 399 -;
+#X floatatom 325 426 5 0 0 0 - - - 0;
+#X floatatom 356 343 4 0 0 0 - - - 0;
+#X floatatom 317 343 4 0 0 0 - - - 0;
+#X text 286 472 updated for Pd version 0.41;
+#X text 38 73 The swap object swaps the positions of two incoming numbers.
 The number coming in through the right inlet will be sent to the left
 outlet and the number coming in left will come out right. Only the
 left inlet is hot and triggers output on both outlets. Output order
 is right to left as in [trigger].;
-#X text 78 17 - swap two numbers \, respecting right-to-left order
-;
+#X text 69 13 - swap two numbers \, respecting right-to-left order
+, f 30;
 #X obj 78 333 print L;
 #X obj 145 332 print R;
-#X connect 0 0 6 0;
-#X connect 1 0 20 0;
-#X connect 2 0 6 0;
-#X connect 3 0 6 1;
-#X connect 6 0 1 0;
-#X connect 6 1 10 0;
-#X connect 10 0 21 0;
+#N canvas 732 156 587 339 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 171 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 265 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 307 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 17 229 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 200 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 134 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 42 14 swap;
+#X text 82 15 - swap two numbers \, respecting right-to-left order.
+, f 53;
+#X text 155 108 float - set left value \, swap and output., f 42;
+#X text 156 141 float - set left value \, swap and output.;
+#X text 162 89 bang - outputs the stored values swapped.;
+#X text 156 206 float - value from right/2nd inlet.;
+#X text 156 238 float - value from left/1st inlet.;
+#X text 146 276 1) float - initial right inlet value (default 0).;
+#X restore 331 21 pd reference;
+#X text 425 20 <= click;
+#X obj 8 61 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 460 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 123 167 outputs the stored values swapped;
+#X connect 0 0 5 0;
+#X connect 1 0 19 0;
+#X connect 2 0 5 0;
+#X connect 3 0 5 1;
+#X connect 5 0 1 0;
+#X connect 5 1 9 0;
+#X connect 9 0 20 0;
+#X connect 11 0 12 0;
+#X connect 11 1 12 1;
 #X connect 12 0 13 0;
-#X connect 12 1 13 1;
-#X connect 13 0 14 0;
-#X connect 15 0 12 1;
-#X connect 16 0 12 0;
+#X connect 14 0 11 1;
+#X connect 15 0 11 0;

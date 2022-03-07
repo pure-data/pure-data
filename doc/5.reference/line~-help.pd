@@ -1,39 +1,69 @@
-#N canvas 641 24 534 618 12;
-#X obj 71 489 snapshot~;
-#X obj 41 28 line~;
-#X obj 71 367 line~;
-#X floatatom 71 516 0 0 0 0 - - - 0;
-#X msg 59 193 1 1000;
-#X msg 96 299 2;
-#X msg 82 246 stop;
-#X text 119 247 "stop" message freezes line~ at its current value;
-#X msg 91 276 0;
-#X text 46 555 see also:;
-#X obj 124 556 line;
-#X text 95 27 - audio ramp generator;
-#X text 291 563 updated for Pd version 0.33;
-#X obj 170 556 vline~;
-#X floatatom 103 336 5 0 0 0 - - - 0;
-#X text 130 281 a single number jumps to value immediately if no value
+#N canvas 641 24 519 603 12;
+#X obj 78 481 snapshot~;
+#X obj 31 15 line~;
+#X obj 78 419 line~;
+#X floatatom 78 514 8 0 0 0 - - - 0;
+#X msg 50 185 1 1000;
+#X msg 91 291 2;
+#X msg 77 238 stop;
+#X text 114 239 "stop" message freezes line~ at its current value;
+#X msg 86 268 0;
+#X text 16 568 see also:;
+#X obj 94 569 line;
+#X text 85 14 - audio ramp generator;
+#X text 294 567 updated for Pd version 0.33;
+#X obj 140 569 vline~;
+#X floatatom 110 378 5 0 0 0 - - - 0;
+#X text 125 273 a single number jumps to value immediately if no value
 is priorly sent to the right outlet, f 45;
-#X text 145 329 right inlet sets next ramp time (cleared when ramp
+#X text 152 371 right inlet sets next ramp time (cleared when ramp
 starts!), f 31;
-#X text 126 193 a pair of numbers starts a ramp (first value: destination
+#X text 117 185 a pair of numbers starts a ramp (first value: destination
 \, second: ramp time), f 38;
-#X msg 71 216 0 5000;
-#X text 21 65 The line~ object generates linear ramps whose levels
+#X msg 62 208 0 5000;
+#X text 28 57 The line~ object generates linear ramps whose levels
 and timing are determined by messages you send it. A list of two floats
 distributes the value over the inlets \, as usual in Pd. Note that
 the right inlet (that sets the ramp time in milliseconds) does not
 remember old values (unlike every other inlet in Pd). Thus \, if you
 don't priorly specify a time in the right inlet and sent line~ a float
 \, it jumps immediately to the target value., f 64;
-#X obj 94 449 metro 100;
-#X obj 94 422 loadbang;
-#X obj 194 414 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 145 450 metro 100;
+#X obj 145 423 loadbang;
+#X obj 274 432 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 194 440 \; pd dsp \$1;
-#X text 211 412 DSP on/off;
+#X msg 274 458 \; pd dsp \$1;
+#X text 297 430 DSP on/off;
+#X obj 8 46 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 427 13 <= click;
+#N canvas 742 179 579 267 reference 0;
+#X obj 9 41 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 169 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 203 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 237 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 133 79 float - set target value and start ramp.;
+#X text 141 98 stop - stop the ramp.;
+#X obj 9 126 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 133 135 float - set next ramp time (cleared when ramp starts).
+;
+#X obj 26 12 line~;
+#X text 80 11 - audio ramp generator;
+#X text 126 178 signal - ramp values.;
+#X text 141 212 NONE;
+#X restore 333 13 pd reference;
+#X obj 8 554 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X msg 106 329 0 \, 1 1000;
+#X text 185 322 setting start \, target and duration with two messages.
+, f 28;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 2 0;
@@ -45,3 +75,4 @@ don't priorly specify a time in the right inlet and sent line~ a float
 #X connect 20 0 0 0;
 #X connect 21 0 20 0;
 #X connect 22 0 23 0;
+#X connect 29 0 2 0;

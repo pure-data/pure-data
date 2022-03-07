@@ -1,48 +1,85 @@
-#N canvas 701 77 525 570 12;
+#N canvas 480 56 608 558 12;
 #X declare -stdpath ./;
-#X obj 200 265 sig~;
-#X text 176 207 center frequency;
-#X floatatom 200 234 5 0 0 0 - - - 0;
-#X floatatom 234 295 5 0 0 0 - - - 0;
-#X obj 36 22 vcf~;
-#X text 24 494 see also:;
-#X obj 102 494 bp~;
-#X obj 167 327 vcf~ 1, f 10;
-#X text 284 493 updated for Pd version 0.46;
-#X text 42 138 vcf~ is implemented as a one-pole complex filter with
+#X obj 225 247 sig~;
+#X floatatom 225 216 5 0 0 0 - - - 0;
+#X floatatom 259 277 5 0 0 0 - - - 0;
+#X obj 34 14 vcf~;
+#X text 52 484 see also:;
+#X obj 130 484 bp~;
+#X obj 192 309 vcf~ 1, f 10;
+#X text 384 484 updated for Pd version 0.46;
+#X text 126 430 (bandpass);
+#X text 258 431 (lowpass);
+#X text 126 413 real output;
+#X text 245 413 imaginary output;
+#X obj 164 484 bob~;
+#X obj 131 243 noise~;
+#X text 114 218 test input;
+#X text 303 276 Q;
+#X text 274 309 optional argument initializes Q;
+#X obj 134 353 output~;
+#X obj 259 353 output~;
+#X obj 205 484 lop~;
+#X obj 245 484 hip~;
+#X obj 373 371 declare -stdpath ./;
+#X obj 65 520 biquad~;
+#X obj 124 519 slop~, f 7;
+#X obj 183 519 cpole~, f 7;
+#X obj 245 519 fexpr~;
+#X text 301 519 - unfriendly filters;
+#X obj 7 43 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 667 114 517 345 reference 0;
+#X obj 9 42 cnv 5 490 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 187 cnv 2 490 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 277 cnv 2 490 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 317 cnv 5 490 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 86 76 signal - audio signal to be filtered.;
+#X text 93 95 clear - clear filter's memory., f 36;
+#X obj 11 119 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 28 14 vcf~;
+#X text 70 14 - voltage-controlled band/low-pass filter;
+#X text 87 126 signal - resonant frequency in Hz.;
+#X obj 11 153 cnv 1 490 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 11 71 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 94 160 float - set Q.;
+#X text 134 287 1) float - initial Q (default 0).;
+#X obj 11 242 cnv 1 490 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 11 211 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 86 217 signal - real output (bandpasse filtered signal).;
+#X text 86 250 signal - imaginary output (bandpasse filtered signal).
+;
+#X restore 414 14 pd reference;
+#X text 512 14 <= click;
+#X text 25 53 Vcf~ is a resonant band-pass and low-pass filter that
+takes either a control or an audio signal to set center frequency \,
+which may thus change continuously in time as in an analog voltage
+controlled filter (and unlike 'bp~' and 'lop~' that only take control
+values). The "Q" or filter sharpness is still only set by control messages.
+It is more expensive but more powerful than the bp~ bandpass filter.
+, f 78;
+#X text 24 146 Vcf~ is implemented as a one-pole complex filter with
 outlets for the real and imaginary value. These may be used as bandpass
 and lowpass filter outputs \, or combined to allow other possibilities.
-, f 63;
-#X text 101 448 (bandpass);
-#X text 231 450 (lowpass);
-#X text 101 431 real output;
-#X text 220 431 imaginary output;
-#X text 78 22 - voltage-controlled bandpass filter;
-#X obj 136 494 bob~;
-#X obj 106 261 noise~;
-#X text 89 236 test input;
-#X text 278 294 Q;
-#X text 249 327 optional argument initializes Q;
-#X text 42 54 Vcf~ is a resonant band-pass and low-pass filter that
-takes either a control or an audio signal to set center frequency \,
-which may thus change continuously in time. The "Q" or filter sharpness
-is still only set by messages. More expensive but more powerful than
-the bp~ bandpass filter., f 63;
-#X obj 109 371 output~;
-#X obj 234 371 output~;
-#X obj 177 494 lop~;
-#X obj 217 494 hip~;
-#X obj 365 20 declare -stdpath ./;
-#X obj 37 530 biquad~;
-#X obj 96 529 slop~, f 7;
-#X obj 155 529 cpole~, f 7;
-#X obj 217 529 fexpr~;
-#X text 273 529 - unfriendly filters;
-#X connect 0 0 7 1;
-#X connect 2 0 0 0;
-#X connect 3 0 7 2;
-#X connect 7 0 21 1;
-#X connect 7 0 21 0;
-#X connect 7 1 22 0;
-#X connect 7 1 22 1;
-#X connect 16 0 7 0;
+, f 78;
+#X obj 7 465 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 76 14 - voltage-controlled band/low-pass filter;
+#X text 270 216 resonant frequency in Hz;
+#X connect 0 0 6 1;
+#X connect 1 0 0 0;
+#X connect 2 0 6 2;
+#X connect 6 0 17 1;
+#X connect 6 0 17 0;
+#X connect 6 1 18 0;
+#X connect 6 1 18 1;
+#X connect 13 0 6 0;
