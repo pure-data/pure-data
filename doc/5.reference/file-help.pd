@@ -445,12 +445,12 @@ and returns the resolved path., f 69;
 #X obj 32 391 file mkdir;
 #X symbolatom 32 468 64 0 0 0 - - - 0;
 #X obj 32 502 print mkdir;
-#X obj 99 436 print ERR:mkdir;
+#X obj 99 439 print ERR:mkdir;
 #X msg 32 151 bang;
 #X msg 52 211 bang;
 #X msg 52 261 symbol \$1/subdir/another/sub/directory;
 #X msg 73 303 symbol .;
-#X obj 99 416 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 99 416 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
 #X text 23 81 parent directories are created as needed.;
 #X text 23 101 it is not an error \, if the requested directory already
@@ -458,7 +458,7 @@ exists (and is a directory).;
 #X text 138 153 create a new directory;
 #X text 147 215 create a deep directory;
 #X text 154 305 (re)create an existing directory;
-#X text 124 413 on error \, a bang is sent to the 2nd outlet;
+#X text 121 415 on error \, a bang is sent to the 2nd outlet;
 #X text 126 497 on success \, the name of the created directory is
 sent to the 1st outlet, f 36;
 #N canvas 596 129 736 450 arguments 0;
@@ -1083,10 +1083,9 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 139 643 array;
 #X obj 188 643 list;
 #X text 157 308 - get information on existing files;
-#N canvas 432 47 791 637 split+join 0;
-#N canvas 690 186 547 369 path 0;
+#N canvas 451 65 791 637 split+join 0;
+#N canvas 140 311 547 369 path 0;
 #X obj 103 233 symbol;
-#X symbolatom 148 165 10 0 0 0 - - - 0;
 #X obj 260 292 print PATH;
 #X obj 103 291 outlet;
 #X obj 56 115 openpanel;
@@ -1121,33 +1120,32 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 56 87 b;
 #X obj 139 88 b;
 #X obj 270 178 b;
-#X connect 0 0 3 0;
-#X connect 1 0 0 0;
-#X connect 4 0 0 0;
-#X connect 5 0 6 0;
-#X connect 6 0 0 0;
-#X connect 7 0 15 0;
-#X connect 7 1 16 0;
-#X connect 7 2 16 0;
-#X connect 7 3 8 0;
-#X connect 7 4 17 0;
-#X connect 8 0 0 0;
-#X connect 9 0 14 0;
-#X connect 9 1 2 0;
-#X connect 9 2 11 0;
-#X connect 11 0 10 0;
-#X connect 12 0 7 0;
-#X connect 13 0 9 0;
+#X connect 0 0 2 0;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 0;
+#X connect 6 0 14 0;
+#X connect 6 1 15 0;
+#X connect 6 2 15 0;
+#X connect 6 3 7 0;
+#X connect 6 4 16 0;
+#X connect 7 0 0 0;
+#X connect 8 0 13 0;
+#X connect 8 1 1 0;
+#X connect 8 2 10 0;
+#X connect 10 0 9 0;
+#X connect 11 0 6 0;
+#X connect 12 0 8 0;
+#X connect 14 0 3 0;
 #X connect 15 0 4 0;
-#X connect 16 0 5 0;
-#X connect 17 0 0 0;
+#X connect 16 0 0 0;
 #X restore 173 143 pd path;
 #X text 346 293 if the input ends with a / \, a '/' will be sent to
 the 2nd outlet. otherwise \, the 2nd outlet will fire a bang.;
 #X obj 126 262 file split;
 #X obj 168 419 file join;
 #X obj 168 513 print join;
-#X symbolatom 173 168 0 0 0 0 - - \$0-split+join-in 0;
+#X symbolatom 173 170 0 0 0 0 - - \$0-split+join-in 0;
 #X msg 173 65 file;
 #X msg 183 92 directory;
 #X text 46 168 or type your own:;
@@ -1164,7 +1162,7 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 684 14 <= click;
-#N canvas 599 129 571 484 reference 0;
+#N canvas 771 124 571 484 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 85 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -1200,15 +1198,13 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 ;
 #X text 117 308 list - list of components to join.;
 #X text 104 366 symbol - joined path or file.;
-#X text 116 398 undocumented.;
 #X text 162 184 NONE;
 #X text 162 434 NONE;
+#X text 120 398 dead/inactive;
 #X restore 581 15 pd reference;
 #X text 189 15 - filename operations;
 #X obj 33 15 file split;
 #X obj 116 15 file join;
-#X symbolatom 193 310 4 0 0 0 - - - 0;
-#X symbolatom 126 349 0 0 0 0 - - - 0;
 #X text 67 307 trailing slash ->;
 #X text 27 348 components ->;
 #X obj 168 379 list;
@@ -1217,8 +1213,6 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X text 242 419 <--;
 #X text 89 595 Conversely \, the 'file join' object accepts both symbols
 and numbers., f 91;
-#X obj 154 145 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 126 230 r \$0-split+join;
 #X text 345 216 A list of path components (symbols) is sent to the
 1st outlet. if the input started with a / \, the first path component
@@ -1227,21 +1221,20 @@ components.;
 #X text 344 96 These objects perform common string operations on filenames.
 no checks are performed verifying the validity/existence of any path-component.
 , f 47;
-#X floatatom 107 392 5 0 0 0 - - - 0;
+#X listbox 193 310 4 0 0 0 - - - 0;
+#X listbox 126 349 0 0 0 0 - - - 0;
 #X connect 0 0 5 0;
-#X connect 2 0 22 0;
-#X connect 2 1 21 0;
+#X connect 2 0 32 0;
+#X connect 2 1 31 0;
 #X connect 3 0 9 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
 #X connect 9 0 4 0;
 #X connect 10 0 0 0;
-#X connect 21 0 25 1;
-#X connect 22 0 25 0;
-#X connect 25 0 3 0;
-#X connect 30 0 5 0;
-#X connect 31 0 2 0;
-#X connect 34 0 3 0;
+#X connect 23 0 3 0;
+#X connect 28 0 2 0;
+#X connect 31 0 23 1;
+#X connect 32 0 23 0;
 #X restore 440 507 pd split+join;
 #N canvas 395 48 794 632 base+ext 0;
 #X text 400 198 'splitname' separates the directory component from
