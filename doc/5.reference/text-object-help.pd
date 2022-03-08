@@ -1,6 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N struct template1 float x float y float z float q;
-#N canvas 533 24 540 573 12;
+#N canvas 595 24 540 573 12;
 #X obj 91 539 list;
 #X obj 28 12 text;
 #X text 14 539 see also:;
@@ -1088,7 +1087,7 @@ none)., f 61;
 #X connect 10 0 15 0;
 #X connect 11 0 15 0;
 #X restore 353 277 pd insert;
-#N canvas 532 178 767 464 text-and-data-structures 0;
+#N canvas 532 178 766 438 text-and-data-structures 0;
 #X floatatom 82 179 5 0 0 0 - - - 0;
 #X msg 47 148 0;
 #X msg 122 148 2;
@@ -1131,13 +1130,24 @@ f 25;
 #X text 102 24 A simple example showing how to access text in data
 structures via pointers. In this case you need the "-s" flag followed
 by the struct name and text field., f 46;
-#X obj 254 397 ../4.data.structures/01.scalars;
-#X text 154 338 To know more about Data Structures \, how to handle
-pointers and see examples \, please refer to the 4.Data.Structure section
-of the Pd's tutorials. Starting with the first example below., f 66
-;
 #X msg 289 143 list a b c;
 #X msg 298 171 10 20 300;
+#X text 81 352 To know more about Data Structures \, how to handle
+pointers and see examples \, please refer to the 4.Data.Structure section
+of the Pd's tutorials., f 50;
+#X obj 454 352 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 454 382 pd open;
+#X text 512 350 open first examle of the 4.Data.Structure section.
+, f 20;
 #X connect 0 0 7 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -1155,8 +1165,9 @@ of the Pd's tutorials. Starting with the first example below., f 66
 #X connect 18 0 5 0;
 #X connect 22 0 12 0;
 #X connect 24 0 10 0;
-#X connect 28 0 22 0;
-#X connect 29 0 22 0;
+#X connect 26 0 22 0;
+#X connect 27 0 22 0;
+#X connect 29 0 30 0;
 #X restore 260 488 pd text-and-data-structures;
 #X obj 4 44 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

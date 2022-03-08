@@ -3,7 +3,6 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N struct template1 float x float y float z float q;
 #N canvas 463 23 588 574 12;
 #X text 420 153 (click for details:), f 11;
 #N canvas 561 26 758 712 define 0;
@@ -113,7 +112,7 @@ that arrays understand like: 'const' \, 'resize' \, etc. For reference
 #X text 151 194 - create \, store \, and/or edit one;
 #X text 151 218 - get or change size;
 #X text 151 242 - sum all or a range of elements;
-#N canvas 561 23 627 699 array-and-data-structures 0;
+#N canvas 561 23 672 696 array-and-data-structures 0;
 #X obj 220 212 pointer;
 #N canvas 814 134 468 210 array-help-struct 0;
 #X obj 36 88 filledpolygon 0 0 0 0 0 0 10 20 10 20 0 0 0;
@@ -181,18 +180,30 @@ in the array we're referring to. In this example the array has (x \,
 y \, w) triples (in [struct element-struct2]) and we're asking for
 the "w" field using the "-f" flag and its two arguments (struct name
 and field name)., f 85;
-#X obj 284 663 ../4.data.structures/01.scalars;
-#X text 41 621 To know more about Data Structures \, how to handle
-pointers and see examples \, please refer to the 4.Data.Structure section
-of the Pd's tutorials. Starting with the first example below., f 77
-;
 #X obj 90 194 t b b;
 #X text 267 100 click for the array =>;
 #X text 309 124 the structure =>;
 #X text 135 282 sum of all the 'z' values in the array;
+#X text 37 627 To know more about Data Structures \, how to handle
+pointers and see examples \, please refer to the 4.Data.Structure section
+of the Pd's tutorials., f 50;
+#X obj 410 627 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 410 657 pd open;
+#X text 468 625 open first examle of the 4.Data.Structure section.
+, f 20;
+#X text 432 626 <---;
 #X connect 0 0 5 2;
 #X connect 3 0 0 0;
-#X connect 4 0 25 0;
+#X connect 4 0 23 0;
 #X connect 5 0 6 0;
 #X connect 8 0 15 2;
 #X connect 9 0 20 0;
@@ -200,8 +211,9 @@ of the Pd's tutorials. Starting with the first example below., f 77
 #X connect 15 0 10 0;
 #X connect 20 0 15 0;
 #X connect 20 1 13 0;
-#X connect 25 0 5 0;
-#X connect 25 1 3 0;
+#X connect 23 0 5 0;
+#X connect 23 1 3 0;
+#X connect 28 0 29 0;
 #X restore 341 423 pd array-and-data-structures;
 #N canvas 640 168 530 337 size 0;
 #X floatatom 53 146 5 1 100 0 - - - 0;

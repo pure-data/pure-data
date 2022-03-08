@@ -82,16 +82,14 @@ itself \, see below:, f 78;
 #N canvas 446 68 561 233 pointer 0;
 #X obj 81 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#N canvas 491 316 326 277 open 0;
-#X obj 44 80 inlet;
-#X obj 44 136 pdcontrol;
-#X msg 44 109 dir;
-#X obj 44 165 makefilename %s/../4.data.structures;
-#X msg 44 193 \; pd open 01.scalars.pd \$1;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
 #X connect 0 0 2 0;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
-#X connect 3 0 4 0;
 #X restore 81 161 pd open;
 #X text 105 130 <-- open first examle of the 4.Data.Structure section
 ;
