@@ -1,4 +1,3 @@
-#N struct template1 float x float y float z float q;
 #N canvas 215 36 1117 604 12;
 #X obj 68 18 trigger;
 #X text 133 19 - sequence messages in right-to-left order;
@@ -80,14 +79,28 @@ that a bang is a 0-element list and is also bypassed.;
 'symbol' \, 'list' \, 'anything' and 'pointer' (see [pd pointer]) -
 all of which can be abbreviated to its first letter like the object
 itself \, see below:, f 78;
-#N canvas 879 82 610 216 pointer 0;
-#X obj 189 146 ../4.data.structures/01.scalars;
-#X text 75 40 The [trigger] object can receive a pointer and sequence
+#N canvas 446 68 561 233 pointer 0;
+#X obj 81 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 491 316 326 277 open 0;
+#X obj 44 80 inlet;
+#X obj 44 136 pdcontrol;
+#X msg 44 109 dir;
+#X obj 44 165 makefilename %s/../4.data.structures;
+#X msg 44 193 \; pd open 01.scalars.pd \$1;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X restore 81 161 pd open;
+#X text 105 130 <-- open first examle of the 4.Data.Structure section
+;
+#X text 37 34 The [trigger] object can receive a pointer and sequence
 it. A pointer can be the location of a Data Structure scalar somewhere
 or the head of a Data Structure list. To know more about Data Structures
 \, how to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials. Starting with the first example below.
-, f 70;
+section of the Pd's tutorials., f 70;
+#X connect 0 0 1 0;
 #X restore 80 325 pd pointer;
 #X text 160 325 <= about pointers, f 8;
 #X text 14 139 The creation arguments specify the number of outlets

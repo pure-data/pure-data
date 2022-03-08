@@ -1,4 +1,3 @@
-#N struct template1 float x float y float z float q;
 #N canvas 423 39 595 622 12;
 #X floatatom 69 168 6 0 0 0 - - - 0;
 #X msg 36 134 bang;
@@ -37,14 +36,28 @@ values without causing output., f 30;
 #X text 77 134 <= outputs the packed elements;
 #X text 117 167 <= first inlet generates output;
 #X obj 169 582 trigger;
-#N canvas 879 82 610 216 pointer 0;
-#X obj 189 146 ../4.data.structures/01.scalars;
-#X text 75 40 The [pack] object can pack a pointer into a list. A pointer
+#N canvas 545 128 559 219 pointer 0;
+#X obj 92 124 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 491 316 326 277 open 0;
+#X obj 44 80 inlet;
+#X obj 44 136 pdcontrol;
+#X msg 44 109 dir;
+#X obj 44 165 makefilename %s/../4.data.structures;
+#X msg 44 193 \; pd open 01.scalars.pd \$1;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X restore 92 154 pd open;
+#X text 116 123 <-- open first examle of the 4.Data.Structure section
+;
+#X text 55 22 The [pack] object can pack a pointer into a list. A pointer
 can be the location of a Data Structure scalar somewhere or the head
 of a Data Structure list. To know more about Data Structures \, how
 to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials. Starting with the first example below.
-, f 70;
+section of the Pd's tutorials., f 65;
+#X connect 0 0 1 0;
 #X restore 351 132 pd pointer;
 #X text 432 132 <= about pointers;
 #X text 18 56 The pack object outputs a concatenated list from a series
