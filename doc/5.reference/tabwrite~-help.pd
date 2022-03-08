@@ -1,4 +1,4 @@
-#N canvas 366 43 669 567 12;
+#N canvas 366 43 665 518 12;
 #X obj 55 17 tabwrite~;
 #X msg 53 232 bang;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -6,15 +6,15 @@
 #X coords 0 1 999 -1 200 100 1 0 0;
 #X restore 405 228 graph;
 #X text 167 363 creation argument initializes array name;
-#X obj 83 525 tabread;
-#X obj 143 525 tabwrite;
-#X obj 211 525 tabsend~;
-#X obj 278 525 tabreceive~;
-#X obj 9 525 tabread4~;
+#X obj 169 455 tabread;
+#X obj 229 455 tabwrite;
+#X obj 297 455 tabsend~;
+#X obj 95 482 tabreceive~;
+#X obj 95 455 tabread4~;
 #X msg 71 301 stop;
 #X text 109 302 stop recording;
 #X msg 62 269 start 500;
-#X text 452 525 updated for Pd version 0.40.;
+#X text 430 469 updated for Pd version 0.40.;
 #X text 135 17 - write a signal in an array;
 #X text 92 233 start recording;
 #X text 159 330 set destination array;
@@ -28,12 +28,7 @@ stopping occur on block boundaries \, typically multiples of 64 samples
 #X obj 43 363 tabwrite~ buffer;
 #X msg 80 330 set buffer;
 #X obj 43 202 osc~ 200;
-#X obj 359 461 ../2.control.examples/15.array;
-#X obj 359 484 ../2.control.examples/16.more.arrays;
-#X text 31 462 see also the "array" examples from section 2 (click
-to the right to open them) =========> and these objects below:, f
-45;
-#X obj 365 525 soundfiler;
+#X obj 182 482 soundfiler;
 #X msg 241 197 \; pd dsp \$1;
 #X obj 241 174 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
@@ -96,11 +91,34 @@ doesn't work in messages., f 70;
 0;
 #X obj 8 443 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X msg 151 209 start;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 263 482 pd array-examples;
+#X text 18 469 see also:;
 #X connect 1 0 17 0;
 #X connect 9 0 17 0;
 #X connect 11 0 17 0;
 #X connect 18 0 17 0;
 #X connect 19 0 17 0;
-#X connect 25 0 24 0;
-#X connect 34 0 17 0;
+#X connect 22 0 21 0;

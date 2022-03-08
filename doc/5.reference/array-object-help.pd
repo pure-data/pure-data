@@ -3,7 +3,7 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 463 23 588 574 12;
+#N canvas 463 23 586 516 12;
 #X text 420 153 (click for details:), f 11;
 #N canvas 561 26 758 712 define 0;
 #X text 340 522 creation arguments:;
@@ -785,14 +785,10 @@ end of array)., f 64;
 #X connect 24 1 21 0;
 #X restore 421 372 pd min+max;
 #X obj 37 384 array min;
-#X obj 455 480 list;
-#X obj 359 480 text;
-#X obj 400 480 scalar;
-#X text 366 529 updated for Pd version 0.52;
-#X obj 31 512 ../2.control.examples/15.array;
-#X obj 31 535 ../2.control.examples/16.more.arrays;
-#X text 25 470 see also the "array" examples from section 2 (click
-below to open them) and these objects:, f 45;
+#X obj 178 472 list;
+#X obj 84 472 text;
+#X obj 124 472 scalar;
+#X text 367 471 updated for Pd version 0.52;
 #X obj 4 41 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 74 12 - define \, acccess and manipulate arrays;
@@ -819,3 +815,28 @@ each function on parent patch., f 41;
 #X text 150 338 - array as probabilities;
 #X text 150 361 - find highest value;
 #X text 150 384 - find lowest value;
+#X text 11 471 see also:;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 225 472 pd array-examples;
