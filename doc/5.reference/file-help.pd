@@ -1162,7 +1162,7 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 684 14 <= click;
-#N canvas 771 124 571 484 reference 0;
+#N canvas 574 89 571 484 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 85 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -1196,11 +1196,11 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X obj 34 262 file join;
 #X text 110 263 - 'join' a list of components using '/' as the separator.
 ;
-#X text 117 308 list - list of components to join.;
-#X text 104 366 symbol - joined path or file.;
+#X text 143 308 list - list of components to join.;
+#X text 164 366 symbol - joined path or file.;
 #X text 162 184 NONE;
-#X text 162 434 NONE;
-#X text 120 398 dead/inactive;
+#X text 222 434 NONE;
+#X text 194 400 Inactive Outlet!;
 #X restore 581 15 pd reference;
 #X text 189 15 - filename operations;
 #X obj 33 15 file split;
