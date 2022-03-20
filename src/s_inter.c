@@ -1551,6 +1551,13 @@ extern void sys_exit(void);
 
 void glob_exit(void *dummy, t_float status)
 {
+    t_glist *c;
+    while ( (c = pd_getcanvaslist()) )
+    {
+        canvas_closebang(c);
+        pd_free((t_pd *)c);
+    }
+
         /* sys_exit() sets the sys_quit flag, so all loops end */
     sys_exit();
     sys_close_audio();
