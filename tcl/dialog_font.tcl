@@ -22,13 +22,17 @@ namespace eval ::dialog_font:: {
 
 # this could probably just be apply, but keep the old one for tcl plugins that
 # might use apply for "stretch"
-proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
+proc ::dialog_font::radio_apply {mytoplevel myfontsize {stretchval 0} {whichstretch 2}} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
             font configure $font -size $myfontsize
         }
         if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
+            set font [lindex [${mytoplevel}.text.internal cget -font] 0]
+            if { ${font} eq {} } {
+                set font $::font_family
+            }
+            ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
         }
 
         # repeat a "pack" command so the font dialog can resize itself
@@ -39,7 +43,7 @@ proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
 
     } else {
-        pdsend "$mytoplevel font $myfontsize 0 2"
+        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
     }
 }
 
@@ -56,26 +60,7 @@ proc ::dialog_font::stretch_apply {gfxstub} {
 }
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
-    if {$mytoplevel eq ".pdwindow"} {
-        foreach font [font names] {
-            font configure $font -size $myfontsize
-        }
-        if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
-        }
-
-        # repeat a "pack" command so the font dialog can resize itself
-        if {[winfo exists .font]} {
-            pack .font.buttonframe -side bottom -fill x -pady 2m
-        }
-
-        ::pd_guiprefs::write menu-fontsize "$myfontsize"
-
-    } else {
-        variable stretchval
-        variable whichstretch
-        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
-    }
+    ::dialog_font::radio_apply $mytoplevel $myfontsize $::dialog_font::stretchval $::dialog_font::whichstretch
 }
 
 proc ::dialog_font::cancel {gfxstub} {

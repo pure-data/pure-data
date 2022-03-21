@@ -70,7 +70,6 @@ typedef int socklen_t;
             return;
         }
     */
-
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 

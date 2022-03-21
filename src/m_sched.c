@@ -23,6 +23,7 @@
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_RESTART 2
 static int sys_quit;
+extern int sys_nosleep;
 
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
@@ -333,8 +334,6 @@ static void m_pollingscheduler(void)
     sys_initmidiqueue();
     while (!sys_quit)   /* outer loop runs once per tick */
     {
-        int timeforward;
-
         sys_addhist(0);
         sched_tick();
         sys_addhist(1);
@@ -349,12 +348,13 @@ static void m_pollingscheduler(void)
             sched_referencelogicaltime = pd_this->pd_systime;
             continue;
         }
+        sys_pollgui();
         sys_pollmidiqueue();
         sys_addhist(2);
         while (!sys_quit)   /* inner loop runs until it can transfer audio */
         {
-            int sentdacs;   /* YES if audio was transferred, NO if not,
-                                or SLEPT if yes but time elapsed during xfer */
+            int timeforward; /* SENDDACS_YES if audio was transferred, SENDDACS_NO if not,
+                                or SENDDACS_SLEPT if yes but time elapsed during xfer */
             sys_unlock();
             if (sched_useaudio == SCHED_AUDIO_NONE)
             {
@@ -372,7 +372,7 @@ static void m_pollingscheduler(void)
             else timeforward = sys_send_dacs();
             sys_addhist(3);
                 /* test for idle; if so, do graphics updates. */
-            if (timeforward != SENDDACS_YES && !sched_idletask())
+            if (timeforward != SENDDACS_YES && !sched_idletask() && !sys_nosleep)
             {
                 /* if even that had nothing to do, sleep. */
                 sys_addhist(4);

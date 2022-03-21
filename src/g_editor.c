@@ -3484,7 +3484,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     int n;
-    
+
     for (g = gl->gl_list; g; g = g->g_next)
     {
         if (((const void *)g == error_object) || (message_get_responder(g) == error_object))

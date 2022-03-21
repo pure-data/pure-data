@@ -464,6 +464,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 sys_vgui(".x%lx.c select clear\n", canvas);
                 sys_vgui(".x%lx.c icursor %s %d\n", canvas, x->x_tag,
                     u8_charnum(x->x_buf, selstart_b));
+                sys_vgui("focus .x%lx.c\n", canvas);
                 sys_vgui(".x%lx.c focus %s\n", canvas, x->x_tag);
             }
         }

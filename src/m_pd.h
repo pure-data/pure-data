@@ -42,11 +42,11 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #endif /* EXTERN */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
-    structure whose elements are defined elsewhere.  On MSVC, when compiling
-    C (but not C++) code, you have to say "extern struct foo;".  So we make
-    a stupid macro: */
+    structure whose elements are defined elsewhere.  On very old MSVC versions,
+    when compiling C (but not C++) code, you have to say "extern struct foo;".
+    So we make a stupid macro: */
 #if defined(_MSC_VER) && !defined(_LANGUAGE_C_PLUS_PLUS) \
-    && !defined(__cplusplus)
+    && !defined(__cplusplus) && (_MSC_VER < 1700)
 #define EXTERN_STRUCT extern struct
 #else
 #define EXTERN_STRUCT struct

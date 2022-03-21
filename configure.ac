@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.52.0])
+AC_INIT([pd], [0.52.1])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -279,6 +279,7 @@ AS_IF([test x$debug = xyes],[
     CFLAGS="$CFLAGS $DEBUG_CFLAGS"
 ],[
     CFLAGS="$CFLAGS $RELEASE_CFLAGS"
+    CPPFLAGS="$CPPFLAGS -DNDEBUG"
 ])
 
 #########################################
