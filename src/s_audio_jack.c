@@ -501,7 +501,7 @@ void jack_close_audio(void)
     jack_blocksize = 0;
 
         /* this should never be necessary since jack_close_audio() should
-        only be called form the main thread.  Still, it doens't hurt
+        only be called form the main thread.  Still, it doesn't hurt
         anything. */
     pthread_cond_broadcast(&jack_sem);
 

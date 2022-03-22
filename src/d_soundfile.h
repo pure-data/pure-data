@@ -70,7 +70,7 @@ void soundfile_clear(t_soundfile *sf);
     /** copy src soundfile info into dst */
 void soundfile_copy(t_soundfile *dst, const t_soundfile *src);
 
-    /** returns 1 if bytes need to be swapped due to endianess, otherwise 0 */
+    /** returns 1 if bytes need to be swapped due to endianness, otherwise 0 */
 int soundfile_needsbyteswap(const t_soundfile *sf);
 
     /** generic soundfile errors */
@@ -94,13 +94,13 @@ typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
 
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
-        note: set sf_bytelimit = sound data size, optionaly set errno
+        note: set sf_bytelimit = sound data size, optionally set errno
         this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
         returns header bytes written or < 0 on error
-        note: optionaly set errno
+        note: optionally set errno
         this may be called in a background thread */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
