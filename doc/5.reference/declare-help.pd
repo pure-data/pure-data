@@ -85,7 +85,7 @@ Pd in preparation for opening the patch from a file. The usage is "declare
 #X text 524 190 However \, note that when you load a library (with
 'declare -lib' or via startup) \, all of its objects get pre loaded
 and prevail \, so using 'declare -path' cannot enforce loading priority.
-Hence \, you may neeed to adopt slash declarations as in [library/objectname].
+Hence \, you may need to adopt slash declarations as in [library/objectname].
 Also Note that while '-path' will only add search paths for the patch
 that owns the [declare] object \, once a library is loaded \, it stays
 with Pd and will be able to be loaded in other patches without [declare].

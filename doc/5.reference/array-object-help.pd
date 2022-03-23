@@ -73,8 +73,8 @@ array., f 64;
 , f 73;
 #X text 122 169 pointer - a pointer to the scalar containing the array.
 ;
-#X text 87 234 -k: saves/keeps the contents of the array with the
-patch.;
+#X text 87 234 -k: saves/keeps the contents of the array with the patch.
+;
 #X text 87 252 -yrange <float \, float>: set minimum and maximum plot
 range.;
 #X text 87 271 -pix <float \, float>: set x and y graph size.;
@@ -333,8 +333,7 @@ main structure., f 67;
 #X text 68 325 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
 #X obj 38 17 array sum;
-#X text 125 16 - output the sum of the array or a range selecion.
-;
+#X text 125 16 - output the sum of the array or a range selecion.;
 #X text 124 90 bang - output sum., f 49;
 #X text 117 110 float - onset (index to sum from \, 0 is the start).
 ;
@@ -576,7 +575,6 @@ element structure., f 69;
 0;
 #X obj 26 16 array quantile;
 #X text 144 15 - outputs the specified quantile.;
-#X text 133 73 float - quantile (betwee 0 and 1).;
 #X obj 9 96 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 133 99 float - array onset (o is the end of array).;
@@ -634,6 +632,7 @@ none)., f 62;
 #X text 651 329 2) float - initial onset (default: 0)., f 61;
 #X text 651 346 3) float - initial number of points (default: -1 \,
 end of array)., f 64;
+#X text 133 73 float - quantile (between 0 and 1).;
 #X restore 505 33 pd reference;
 #X obj 12 64 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -745,7 +744,7 @@ element structure., f 69;
 #X text 50 128 float - number or points to output from onset (-1 is
 the end of array)., f 71;
 #X obj 28 13 array min;
-#X text 186 12 - output minmum and maximum values of an array;
+#X text 186 12 - output minimum and maximum values of an array;
 #X obj 108 13 array max;
 #X obj 8 228 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
 0;
@@ -791,12 +790,12 @@ end of array)., f 64;
 #X text 367 471 updated for Pd version 0.52;
 #X obj 4 41 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 74 12 - define \, acccess and manipulate arrays;
+#X text 74 12 - define \, access and manipulate arrays;
 #X text 501 12 <= click;
 #N canvas 787 173 579 214 reference 0;
 #X obj 7 143 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 73 18 - define \, acccess and manipulate arrays;
+#X text 73 18 - define \, access and manipulate arrays;
 #X obj 8 75 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
 0;
 #X text 96 85 symbol -;

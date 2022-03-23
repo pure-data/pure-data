@@ -23,7 +23,7 @@ set compatibility have that information in their help file.;
 #X msg 72 534 \; pd set-tracing \$1;
 #X obj 72 495 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#N canvas 731 117 712 610 fast-forward 0;
+#N canvas 654 117 712 610 fast-forward 0;
 #X msg 176 449 stop;
 #X obj 176 416 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
@@ -62,14 +62,14 @@ of time in ms, f 35;
 an amount of audio faster than realtime (and as fast as your process
 can handle) - this is also called 'batch processing'. In this example
 we use it to record 6 seconds of amplitude modulation white noise into
-an array., f 74;
+an array., f 76;
+#X text 439 367 start recording 2 seconds into the table, f 25;
 #X text 82 105 This is very useful if you want to process a pre recorded
 audio in a Pd patch or to generate an audio file with a generative
 (or automated) patch. You can also use [soundfiler] to export to a
 sound file or direcctly use [writesf~] instead. The 'fast-forward'
-message takes a time in milisecond to fast forward to. Check the example
-, f 74;
-#X text 439 367 start recording 2 seconds into the table, f 25;
+message takes a time in milliseconds to fast forward to. Check the
+example, f 76;
 #X connect 0 0 17 0;
 #X connect 1 0 0 0;
 #X connect 2 0 5 0;

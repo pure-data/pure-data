@@ -104,7 +104,7 @@ section of the Pd's tutorials., f 70;
 #X text 14 139 The creation arguments specify the number of outlets
 and message type to output. Most of the time you want to match the
 input message type to the argument \, but a mix is possible and can
-be convenient. For instance \, it's very usefull to insert a 'bang'
+be convenient. For instance \, it's very useful to insert a 'bang'
 message into a sequence \, so you'll always have a bang output with
 the 'bang' specifier no matter what the input is., f 89;
 #X obj 6 75 cnv 1 660 1 empty empty empty 8 12 0 13 #000000 #000000

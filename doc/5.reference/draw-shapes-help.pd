@@ -55,7 +55,7 @@ outline width of 3 \; - the three pair of coordinates that now describe
 a closed and filled triangle of altitude "cat".;
 #X text 39 383 The example above has the line color 0 (black) that
 is 5 pixels thick and 3 pairs of coordinates to draw an opened triangle
-whith the height set by "weasel" (this also makes the height settable
+with the height set by "weasel" (this also makes the height settable
 via click and dragging \, unless flags disable this)., f 63;
 #X connect 7 0 16 0;
 #X connect 8 0 16 0;
