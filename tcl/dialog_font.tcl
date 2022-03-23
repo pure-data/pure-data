@@ -47,6 +47,7 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
 
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
+        pdsend "$mytoplevel dirty 1"
     }
 }
 
@@ -63,6 +64,7 @@ proc ::dialog_font::stretch_apply {gfxstub} {
             set stretchval 100
         }
         pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
+        pdsend "$gfxstub dirty 1"
     }
 }
 
