@@ -22,7 +22,7 @@ namespace eval ::dialog_font:: {
 
 # this could probably just be apply, but keep the old one for tcl plugins that
 # might use apply for "stretch"
-proc ::dialog_font::radio_apply {mytoplevel myfontsize {stretchval 0} {whichstretch 2}} {
+proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
             font configure $font -size $myfontsize
@@ -33,6 +33,9 @@ proc ::dialog_font::radio_apply {mytoplevel myfontsize {stretchval 0} {whichstre
                 set font $::font_family
             }
             ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
+        }
+        catch {
+            ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
         }
 
         # repeat a "pack" command so the font dialog can resize itself
@@ -45,6 +48,10 @@ proc ::dialog_font::radio_apply {mytoplevel myfontsize {stretchval 0} {whichstre
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
     }
+}
+
+proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
+    ::dialog_font::do_apply $mytoplevel $myfontsize 0 2
 }
 
 proc ::dialog_font::stretch_apply {gfxstub} {
@@ -60,7 +67,9 @@ proc ::dialog_font::stretch_apply {gfxstub} {
 }
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
-    ::dialog_font::radio_apply $mytoplevel $myfontsize $::dialog_font::stretchval $::dialog_font::whichstretch
+    variable stretchval
+    variable whichstretch
+    ::dialog_font::do_apply $mytoplevel $myfontsize $stretchval $whichstretch
 }
 
 proc ::dialog_font::cancel {gfxstub} {
