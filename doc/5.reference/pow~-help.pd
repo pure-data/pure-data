@@ -27,7 +27,7 @@ for when you don't have a signal input., f 23;
 \, and if you do \, the DSP chain may dramatically slow down if you're
 using an i386 or ia64 processor. Out-of-range floating point values
 are thousands of times slower to compute with than in-range ones. There'
-a protection agains NaNs (they become 0)., f 65;
+a protection against NaNs (they become 0)., f 65;
 #X text 44 63 pow~ raises a signal to a numeric power (given by another
 signal or argument/float). The inputs may be positive \, zero \, or
 negative.;

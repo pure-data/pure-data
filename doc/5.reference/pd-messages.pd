@@ -10,12 +10,12 @@
 sets the behaviour of some objects back to that particular version.
 This can be useful in some cases if you want to guarantee that your
 patch will work in the same way as in the version you created it. This
-is beccause sometimes a new version of Pd may promote a change in the
+is because sometimes a new version of Pd may promote a change in the
 behaviour of the object (usually to fix a bug) that can also break
 or change the result of a patch., f 62;
 #X text 53 365 Objects that change their behaviour according to the
-set compatibilty have that information in their help file.;
-#X text 63 277 set compatibilty to Pd 0.52;
+set compatibility have that information in their help file.;
+#X text 63 277 set compatibility to Pd 0.52;
 #X text 291 266 set to Pd 0.49;
 #X text 125 411 For example \, check the help file of:, f 18;
 #X obj 276 420 wrap~;
@@ -36,7 +36,7 @@ set compatibilty have that information in their help file.;
 #X text 376 422 <=;
 #X text 152 381 =>;
 #X text 219 310 <= set other lengths;
-#X text 83 311 miliseconds:;
+#X text 83 311 milliseconds:;
 #X text 65 380 sends a bang after the time amount, f 12;
 #X text 86 449 stops the => recording, f 12;
 #X text 397 415 tells pd to 'fast-forward' and render a given amount
@@ -264,7 +264,7 @@ use [send] as "\$0" doesn't work in messages., f 61;
 it. The 'read' and 'write' messages can be used to import and export
 contents of a window (used for Data Structures). The 'clear' message
 clears the contentes of a window whatever they are (objects \, Data
-Sructures \, arrays \, anything). A 'scalar' message adds a Data Structure
+Structures \, arrays \, anything). A 'scalar' message adds a Data Structure
 scalar to the window., f 62;
 #X text 216 312 click to open =>;
 #X text 271 431 read/write from/to text (see [pd ds2]);
@@ -380,7 +380,7 @@ and "\$0":, f 34;
 to the name of the file (which communicates to the main window of a
 patch or abstraction). You can also communicate with a subpatch's window
 by sending messages to the subpatch's name. In both cases you need
-to preceed the send name with 'pd-'. In the case of abstractions \,
+to precede the send name with 'pd-'. In the case of abstractions \,
 you also need to end with ".pd". Alternatively you can name a main
 window or a subpatch with [namecanvas]. For reference \, please refer
 to the help file of [namecanvas] \, which carries complementary information!

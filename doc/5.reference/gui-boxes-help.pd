@@ -340,18 +340,13 @@ label., f 74;
 #X listbox 179 184 20 0 0 0 label - - 36;
 #X restore 240 308 pd size;
 #X listbox 56 76 20 0 0 0 - - - 0;
-#N canvas 779 178 532 590 limits 0;
+#N canvas 779 156 532 590 limits 0;
 #X text 71 178 click and drag =>;
 #X text 279 173 (range from -10 to 10), f 12;
 #X text 71 194 and also type a value outside the range, f 15;
 #X obj 197 221 print number-range;
 #X msg 154 383 bang;
 #X text 293 422 infinity;
-#X text 32 22 By default \, the list box has no range limits \, but
-you can define a range with a lower and upper limit values. Ths is
-just like the number box and affects numbers only. Note that this limit
-is only for clicking and dragging. Numbers outside this range are accepted
-if you type it in or receive it via the inlet., f 64;
 #X listbox 197 178 10 -10 10 0 - - - 0;
 #X msg 212 147 set -100 100;
 #X msg 197 119 -100 100;
@@ -365,14 +360,19 @@ The list box will display these and also 'NaN' (Not a Number)., f
 #X listbox 186 523 20 -10 10 0 - - - 0;
 #X obj 186 482 pack f f f;
 #X text 295 442 nan;
-#X connect 4 0 11 0;
-#X connect 7 0 3 0;
-#X connect 8 0 7 0;
-#X connect 9 0 7 0;
-#X connect 11 0 13 0;
-#X connect 11 1 13 1;
-#X connect 11 2 13 2;
-#X connect 13 0 12 0;
+#X text 32 22 By default \, the list box has no range limits \, but
+you can define a range with a lower and upper limit values. This is
+just like the number box and affects numbers only. Note that this limit
+is only for clicking and dragging. Numbers outside this range are accepted
+if you type it in or receive it via the inlet., f 64;
+#X connect 4 0 10 0;
+#X connect 6 0 3 0;
+#X connect 7 0 6 0;
+#X connect 8 0 6 0;
+#X connect 10 0 12 0;
+#X connect 10 1 12 1;
+#X connect 10 2 12 2;
+#X connect 12 0 11 0;
 #X restore 227 248 pd limits;
 #X restore 766 620 pd properties;
 #X text 27 180 Double-clicking activates a text editor \, so that you

@@ -85,13 +85,13 @@ use the OSC objects from mrpeach which have more features than these.
 #X obj 28 19 oscformat;
 #X obj 28 337 oscparse;
 #X text 116 66 list - list to format into a OSC packet.;
-#X text 74 86 set <list> - set one or more adresses.;
+#X text 74 86 set <list> - set one or more addresses.;
 #X text 138 253 1) list - list of one or more addresses;
 #X text 95 382 list - OSC packet to convert to Pd list messages.;
 #X text 117 429 list - Pd list messages from OSC packets., f 42;
 #X text 39 109 format <symbol> -;
-#X text 164 109 characters set format types: 'b' (blob) \, 'i' (interger)
-\, 'f' (float) or 's' (sring)., f 43;
+#X text 164 109 characters set format types: 'b' (blob) \, 'i' (integer)
+\, 'f' (float) or 's' (string)., f 43;
 #X text 99 218 -f <symbol>: sets format as in the 'format' message
 ;
 #X obj 9 212 cnv 1 500 1 empty empty flag: 8 12 0 13 #7c7c7c #000000

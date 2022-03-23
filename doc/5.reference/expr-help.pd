@@ -664,7 +664,7 @@ subpatches below to check each group:, f 52;
 #X obj 377 140 expr dbtopow($f1);
 #X obj 377 192 expr powtodb($f1);
 #X text 63 77 MTDI x Hertz;
-#X text 79 33 Accoustic conversions;
+#X text 79 33 Acoustic conversions;
 #X text 238 81 dB x RMS;
 #X text 396 82 dB x Power;
 #X connect 0 0 3 0;
@@ -723,12 +723,6 @@ variable \, but '$f#' works fine.;
 #X obj 707 521 expr float(8) / 3 \; (8.) / 3 \; 8./3;
 #X floatatom 830 583 0 0 0 0 - - - 0;
 #X text 542 551 also becomes a float =>;
-#X text 507 390 Pd turns "8.0" into "8" and [expr] will see it as an
-integer. One way to deal with this is with the "float" function to
-convert an integer to a float. A possible workaround is to have just
-a decimal point and the number inside parenthesis. Pd sees this as
-a symbol and doesn't remove the dot and [expr] will see it as a float.
-Other hacks lke that are possible \, see below:, f 61;
 #X obj 307 123 expr 2 + 3.2;
 #X text 496 180 NOTE About integers and integer variable types:;
 #X text 30 31 Here are some basic examples of the [expr] object. This
@@ -750,16 +744,22 @@ the previously set values., f 34;
 expressions (up to 100). If so \, an outlet is created for each expression
 and they're evaluated from right to left (or bottom to up) order:,
 f 30;
+#X text 507 390 Pd turns "8.0" into "8" and [expr] will see it as an
+integer. One way to deal with this is with the "float" function to
+convert an integer to a float. A possible workaround is to have just
+a decimal point and the number inside parenthesis. Pd sees this as
+a symbol and doesn't remove the dot and [expr] will see it as a float.
+Other hacks like that are possible \, see below:, f 61;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
-#X connect 3 0 36 0;
+#X connect 3 0 35 0;
 #X connect 6 0 14 0;
 #X connect 9 0 8 0;
 #X connect 11 0 9 0;
 #X connect 12 0 32 0;
 #X connect 14 0 7 0;
 #X connect 14 1 15 0;
-#X connect 16 0 43 0;
+#X connect 16 0 42 0;
 #X connect 17 0 20 0;
 #X connect 18 0 20 0;
 #X connect 19 0 20 0;
@@ -771,14 +771,14 @@ f 30;
 #X connect 32 0 10 0;
 #X connect 32 1 13 0;
 #X connect 32 2 33 0;
-#X connect 36 0 4 0;
+#X connect 35 0 4 0;
+#X connect 38 0 21 0;
+#X connect 38 1 21 1;
 #X connect 39 0 21 0;
-#X connect 39 1 21 1;
-#X connect 40 0 21 0;
-#X connect 41 0 39 0;
-#X connect 43 0 17 0;
-#X connect 43 1 18 0;
-#X connect 43 2 19 0;
+#X connect 40 0 38 0;
+#X connect 42 0 17 0;
+#X connect 42 1 18 0;
+#X connect 42 2 19 0;
 #X restore 226 500 pd [expr] Examples;
 #N canvas 491 51 875 695 [expr~] 0;
 #X floatatom 80 361 0 0 0 0 - - - 0;

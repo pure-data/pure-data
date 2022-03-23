@@ -62,7 +62,7 @@ in GUIs as well as variable names in value objects., f 68;
 #X text 38 80 The int object stores a number initialized by its creation
 argument \, which may be reset using its inlet and output by sending
 it the "bang" message. Sending a number sets a new value and outputs
-it. A non-integer intput is truncated to an integer (a la Max) so the
+it. A non-integer input is truncated to an integer (a la Max) so the
 object can also be used to truncate values and convert from float to
 integers., f 72;
 #X obj 69 481 print float;

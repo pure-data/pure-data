@@ -27,7 +27,6 @@ the shift. The rightmost (or leftmost) samples are set to zero., f
 #X obj 236 125 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 258 123 DSP on/off;
-#X text 428 375 Updated for Pd versin 0.31.;
 #X text 562 10 <= click;
 #N canvas 767 120 572 199 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
@@ -49,6 +48,7 @@ the shift. The rightmost (or leftmost) samples are set to zero., f
 0;
 #X obj 5 360 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 418 375 Updated for Pd version 0.31.;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;

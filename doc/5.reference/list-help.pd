@@ -743,10 +743,10 @@ clears it)., f 50;
 \, where first element sets staring index and the second sets ending
 index (-1 is end of the list)., f 59;
 #X text 40 205 set <list> -;
-#X text 131 205 set values starting at index from the fisrt element.
+#X text 131 205 set values starting at index from the first element.
 , f 59;
 #X text 19 224 insert <list> -;
-#X text 131 224 insert values before index from the fisrt element.
+#X text 131 224 insert values before index from the first element.
 , f 59;
 #X text 19 243 delete <list> -;
 #X text 131 243 delete a given item for just one float or a number

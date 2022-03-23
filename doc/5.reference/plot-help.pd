@@ -129,7 +129,7 @@ f 70;
 f 70;
 #X text 66 291 "-w <symbol>": sets a different field name for w.,
 f 70;
-#X text 31 235 "-e <float/symbol": constant of field name to enabel/disable
+#X text 31 235 "-e <float/symbol": constant of field name to enable/disable
 mouse actions., f 75;
 #X text 24 196 "-v <float/symbol>": constant of field name to make
 it visible/invisible., f 76;

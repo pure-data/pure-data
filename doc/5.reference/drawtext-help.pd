@@ -50,7 +50,7 @@ properties., f 69;
 #N canvas 179 120 455 265 help-draw-data 1;
 #X scalar help-draw-data 63 134 628 651 hello \; a 1 b 2 c 3 \\\; \;
 ;
-#X scalar help-draw-data 255 95 612 34 wolrd \; 1 a 2 b 3 c \\\; \;
+#X scalar help-draw-data 255 95 612 34 world \; 1 a 2 b 3 c \\\; \;
 ;
 #X restore 399 152 pd help-draw-data;
 #X text 353 218 updated for Pd version 0.50.;

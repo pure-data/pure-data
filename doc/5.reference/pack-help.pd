@@ -83,7 +83,7 @@ the value ('float'/'f' initializes to 0)., f 79;
 #X obj 7 122 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
 ;
 #X text 55 130 anything -;
-#X text 132 130 each inlet takes a message type acccording to its corresponding
+#X text 132 130 each inlet takes a message type according to its corresponding
 creation argument. These can be float \, symbol and pointer. The 1st
 inlet causes an output and can also match an 'anything' to a symbol.
 , f 53;

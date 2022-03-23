@@ -146,7 +146,7 @@ can be set for messages sent back from the receiver., f 64;
 0;
 #X obj 76 413 print backward;
 #X text 15 56 The netsend object sends TCP ("stream") or UDP ("datagram")
-messages over the network \, which can be recieved by netreceive objects
+messages over the network \, which can be received by netreceive objects
 in other patches (which may be running on another machine). An outlet
 reports whether the connection is open or not. A connection request
 should specify the name or IP address of the other host and the port

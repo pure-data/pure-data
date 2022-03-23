@@ -7,7 +7,7 @@ dog float weasel;
 #X obj 21 34 drawcurve;
 #X obj 126 11 filledpolygon;
 #X obj 127 34 filledcurve;
-#N canvas 501 88 995 511 help-drawpolygon-template 0;
+#N canvas 371 88 995 511 help-drawpolygon-template 0;
 #X obj 574 312 struct help-drawpolygon-template float x float y float
 cat float dog float weasel, f 48;
 #X text 37 32 Optional flags:;
@@ -30,11 +30,7 @@ as a whole., f 58;
 #X msg 86 304 0;
 #X msg 543 40 1;
 #X msg 576 40 0;
-#X text 607 41 <= visibilty;
-#X text 39 383 The example above has a line color of black (0) \, 5
-pixels thick and 3 pair or coordinates draw an open triangle whith
-the heigh set by "weasel" (this also makes height settable via click
-and dragging \, unless flags disable this)., f 63;
+#X text 607 41 <= visibility;
 #X text 40 178 Arguments (numbers or field names like "weasel" below).
 ;
 #X text 41 51 - "-n" to make invisible initially or "-v [field name]"
@@ -57,10 +53,14 @@ specify interior color. Here we have \; - an interior color of red
 (900) \; - the outline color controlled by the "dog" field \; - an
 outline width of 3 \; - the three pair of coordinates that now describe
 a closed and filled triangle of altitude "cat".;
-#X connect 7 0 17 0;
-#X connect 8 0 17 0;
-#X connect 9 0 18 0;
-#X connect 10 0 18 0;
+#X text 39 383 The example above has the line color 0 (black) that
+is 5 pixels thick and 3 pairs of coordinates to draw an opened triangle
+whith the height set by "weasel" (this also makes the height settable
+via click and dragging \, unless flags disable this)., f 63;
+#X connect 7 0 16 0;
+#X connect 8 0 16 0;
+#X connect 9 0 17 0;
+#X connect 10 0 17 0;
 #X restore 321 94 pd help-drawpolygon-template;
 #N canvas 342 90 282 207 help-drawpolygon-data 1;
 #X scalar help-drawpolygon-template 52 28 30 9 70 \;;

@@ -75,7 +75,7 @@ signal versions. The "wrap" object wraps the input to a value between
 0.8.). As in the signal version log~ \, log takes a base value via
 an argument or the right inlet \, but it defaults to "e". Pow raises
 a number on the left inlet to a numeric power (given by the right inlet
-or argument) - like the signal version \, pow has protection agains
+or argument) - like the signal version \, pow has protection against
 NaNs (they become 0)., f 77;
 #X text 253 235 The arc tangent takes two forms. The atan2 version
 takes an (x \, y) pair and gives you an output between -pi and pi \,

@@ -205,7 +205,7 @@ message to such an inlet~ has no effect.);
 #X text 84 239 - audio inlet;
 #X text 161 144 NONE;
 #X text 156 64 NONE;
-#X text 134 285 float - set default value for no singal connected.
+#X text 134 285 float - set default value for no signal connected.
 ;
 #X text 111 351 signal - signal from parent patch., f 42;
 #X obj 7 345 cnv 1 530 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000

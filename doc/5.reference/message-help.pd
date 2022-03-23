@@ -133,7 +133,7 @@ Pd.;
 #X text 29 18 The backlash character is used in Pd to escape special
 characters that are handled differently in Pd. Such characters are:
 spaces \, commas \, semicolons \, dollar signs (as in the locality
-sintax) and the backslash character itself. See examples below., f
+syntax) and the backslash character itself. See examples below., f
 66;
 #X connect 3 0 1 0;
 #X connect 5 0 0 0;
@@ -307,7 +307,7 @@ receiving messages., f 46;
 #X text 101 60 set <list> - set message., f 60;
 #X text 101 79 add <list> - add message terminating by a semicolon.
 , f 60;
-#X text 94 97 add2 <list> - add message wihtout the terminating semicolon.
+#X text 94 97 add2 <list> - add message without the terminating semicolon.
 , f 61;
 #X text 115 116 addcomma - add a comma., f 58;
 #X text 122 135 addsemi - add a semicolon., f 57;
