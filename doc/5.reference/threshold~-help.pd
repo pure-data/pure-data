@@ -77,7 +77,7 @@ again., f 74;
 #X text 102 142 "set" to change the parameters;
 #X text 231 250 Float sets internal state: nonzero sets to "high" (above
 trigger threshold) and zero to "low" (below rest threshold). This forces
-a bang output depending on the incomming signal immediately (because
+a bang output depending on the incoming signal immediately (because
 the debounce period is ignored when setting the state)., f 52;
 #X connect 2 0 20 0;
 #X connect 8 0 7 0;

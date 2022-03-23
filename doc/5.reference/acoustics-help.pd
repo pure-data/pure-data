@@ -57,7 +57,7 @@ infinity.), f 66;
 #X obj 176 19 rmstodb;
 #X obj 234 19 dbtopow;
 #X obj 295 19 powtodb;
-#X text 138 73 float - incomming value to be converted., f 52;
+#X text 138 73 float - incoming value to be converted., f 52;
 #X text 138 115 float - converted value, f 52;
 #X restore 418 40 pd reference;
 #X obj 10 71 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000

@@ -61,7 +61,7 @@ f 69;
 #X text 183 91 frequency value in Hz., f 46;
 #X text 126 163 signal - phase ramp (in the range of 0 to 1)., f 54
 ;
-#X text 124 199 1) float - initial frequenct value in Hz (default 0).
+#X text 124 199 1) float - initial frequency value in Hz (default 0).
 ;
 #X restore 379 17 pd reference;
 #X text 477 18 <= click;

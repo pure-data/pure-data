@@ -86,7 +86,7 @@ this directory., f 35;
 #X text 49 71 tempo <float> - set relative tempo., f 70;
 #X text 98 90 rewind - go to beginning (and stop)., f 63;
 #X text 48 108 next <float> -;
-#X text 161 108 single-step forward \, optional floar supresses message
+#X text 161 108 single-step forward \, optional floar suppresses message
 sending., f 54;
 #X text 105 140 print - print contents to Pd window., f 62;
 #X text 105 158 clear - empty the qlist., f 62;

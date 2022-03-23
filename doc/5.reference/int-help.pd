@@ -111,7 +111,7 @@ and outputs it.;
 #X restore 419 31 pd reference;
 #X text 517 32 <= click;
 #X text 85 12 - truncate floats and store an integer.;
-#X text 87 36 - abreviation.;
+#X text 87 36 - abbreviation.;
 #X obj 233 535 expr int($f1);
 #X obj 13 518 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

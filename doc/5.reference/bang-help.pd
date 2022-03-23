@@ -16,7 +16,7 @@ the bang GUI below:, f 22;
 #X text 188 310 updated for Pd version 0.27;
 #X text 62 9 - send "bang" message;
 #X obj 25 34 b;
-#X text 62 35 - abreviation;
+#X text 62 35 - abbreviation;
 #X obj 2 63 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 2 296 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000

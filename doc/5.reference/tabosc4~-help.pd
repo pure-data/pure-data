@@ -97,7 +97,7 @@ doesn't work in messages., f 70;
 #X text 77 110 set <symbol> -;
 #X text 126 184 signal - wavetable oscillator output., f 54;
 #X text 183 110 set table name with the waveform., f 46;
-#X text 124 220 1) float - initial frequenct value in Hz (default 0).
+#X text 124 220 1) float - initial frequency value in Hz (default 0).
 ;
 #X restore 423 18 pd reference;
 #X text 521 19 <= click;

@@ -73,7 +73,7 @@ array., f 64;
 , f 73;
 #X text 122 169 pointer - a pointer to the scalar containing the array.
 ;
-#X text 87 234 -k: saves/keeps the contents of the arrray with the
+#X text 87 234 -k: saves/keeps the contents of the array with the
 patch.;
 #X text 87 252 -yrange <float \, float>: set minimum and maximum plot
 range.;
@@ -333,7 +333,7 @@ main structure., f 67;
 #X text 68 325 -f <symbol \, symbol>: struct name and field name of
 element structure., f 69;
 #X obj 38 17 array sum;
-#X text 125 16 - output the sum of the arrray or a range selecion.
+#X text 125 16 - output the sum of the array or a range selecion.
 ;
 #X text 124 90 bang - output sum., f 49;
 #X text 117 110 float - onset (index to sum from \, 0 is the start).
@@ -411,7 +411,7 @@ element structure., f 69;
 #X obj 7 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 38 13 array get;
-#X text 116 12 - output all items of the arrray or a range selecion.
+#X text 116 12 - output all items of the array or a range selecion.
 ;
 #X text 124 85 bang - output the elements of the array., f 49;
 #X text 118 110 float - onset (index to output from \, 0 is the start).
@@ -479,7 +479,7 @@ element structure., f 69;
 0;
 #X text 124 238 list - array elements.;
 #X obj 38 20 array set;
-#X text 116 19 - set all items of the arrray or a range selecion.;
+#X text 116 19 - set all items of the array or a range selecion.;
 #X text 118 99 list - list of values to write to array;
 #X text 117 140 float - onset (index to set from \, 0 is the start).
 , f 51;

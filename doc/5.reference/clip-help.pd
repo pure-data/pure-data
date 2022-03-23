@@ -37,7 +37,7 @@ limits, f 34;
 #X text 111 135 float - set lower limit., f 49;
 #X text 111 167 float - set upper limit., f 49;
 #X text 111 89 float - number to clip., f 61;
-#X text 118 107 bang - re clip last incomming number between the two
+#X text 118 107 bang - re clip last incoming number between the two
 limits.;
 #X text 113 244 1) float - initial lower limit (default 0)., f 49
 ;

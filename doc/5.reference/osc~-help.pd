@@ -54,7 +54,7 @@ is half the cycle)., f 72;
 #X text 126 124 float -;
 #X text 183 124 phase cycle reset (from 0 to 1)., f 46;
 #X text 183 91 frequency value in Hz., f 46;
-#X text 134 199 1) float - initial frequenct value in Hz (default 0).
+#X text 134 199 1) float - initial frequency value in Hz (default 0).
 ;
 #X restore 379 17 pd reference;
 #X text 477 18 <= click;

@@ -35,12 +35,11 @@ right inlet gets zero \, incoming messages are "blocked" i.e. \, ignored.
 0;
 #X obj 31 17 spigot;
 #X text 88 16 - pass or block messages;
-#X text 122 155 anything - any input message if spigot is openned.
-;
 #X text 142 121 float - nonzero to pass messages \, zero to stop them.
 ;
 #X text 120 88 anything - any message to pass or not., f 55;
 #X text 123 192 1) float - initialize right inlet., f 52;
+#X text 122 155 anything - any input message if spigot is opened.;
 #X restore 296 16 pd reference;
 #X obj 12 349 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
 0;

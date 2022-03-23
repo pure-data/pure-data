@@ -183,7 +183,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 93 305 - MIDI note output;
 #X text 146 426 float - MIDI channel.;
 #X text 141 498 1) float - sets MIDI channel (default 0).;
-#X text 55 224 1) float - sets MIDI channel and supresses 3rd outlet
+#X text 55 224 1) float - sets MIDI channel and suppresses 3rd outlet
 (default OMNI)., f 69;
 #X restore 383 19 pd reference;
 #X obj 230 19 notein;
@@ -233,9 +233,9 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 139 519 1) float - sets control number (default 0)., f 46
 ;
 #X text 140 539 2) float - sets MIDI channel (default 0)., f 46;
-#X text 55 221 1) float - sets control number and supresses 2nd outlet
+#X text 55 221 1) float - sets control number and suppresses 2nd outlet
 (default ALL)., f 70;
-#X text 55 241 2) float - sets MIDI channel and supresses 3rd outlet
+#X text 55 241 2) float - sets MIDI channel and suppresses 3rd outlet
 (default OMNI)., f 70;
 #X text 165 448 float - MIDI channel.;
 #X restore 383 59 pd reference;
@@ -273,7 +273,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 155 392 float - control value., f 27;
 #X obj 39 16 bendin;
 #X text 92 15 - MIDI pitch bend input.;
-#X text 55 197 1) float - sets MIDI channel and supresses 2nd outlet
+#X text 55 197 1) float - sets MIDI channel and suppresses 2nd outlet
 (default OMNI)., f 69;
 #X text 146 112 float - pitch bend value., f 27;
 #X obj 29 326 bendout;
@@ -312,16 +312,16 @@ from -8192 to 8191) - this won't change., f 70;
 0;
 #X obj 17 387 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 55 197 1) float - sets MIDI channel and supresses 2nd outlet
-(default OMNI)., f 69;
+#X text 55 197 1) float - sets MIDI channel and suppresses 2nd outlet
+(default OMNI)., f 71;
 #X text 130 497 1) float - sets MIDI channel (default 0)., f 46;
 #X text 155 420 float - MIDI channel number.;
 #X obj 39 16 pgmin;
 #X obj 29 326 pgmout;
-#X text 92 15 - MIDI programm input.;
 #X text 93 325 - MIDI program output;
 #X text 146 112 float - program value., f 27;
 #X text 155 392 float - program value., f 27;
+#X text 92 15 - MIDI program input.;
 #X restore 383 131 pd reference;
 #X text 350 132 ==>;
 #X obj 242 131 pgmin;
@@ -354,7 +354,7 @@ from -8192 to 8191) - this won't change., f 70;
 0;
 #X obj 17 387 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 55 197 1) float - sets MIDI channel and supresses 2nd outlet
+#X text 55 197 1) float - sets MIDI channel and suppresses 2nd outlet
 (default OMNI)., f 69;
 #X text 130 497 1) float - sets MIDI channel (default 0)., f 46;
 #X text 155 420 float - MIDI channel number.;
@@ -402,7 +402,7 @@ from -8192 to 8191) - this won't change., f 70;
 0;
 #X text 146 426 float - MIDI channel.;
 #X text 141 498 1) float - sets MIDI channel (default 0).;
-#X text 55 221 1) float - sets MIDI channel and supresses 3rd outlet
+#X text 55 221 1) float - sets MIDI channel and suppresses 3rd outlet
 (default OMNI)., f 69;
 #X obj 39 16 polytouchin;
 #X text 133 16 - MIDI polyphonic aftertouch input.;

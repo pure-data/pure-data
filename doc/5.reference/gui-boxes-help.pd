@@ -245,7 +245,7 @@ and symbols:, f 66;
 #X msg 541 405 list wombat weasel wallaby;
 #X text 622 359 messages beginning with a number are implicitly understood
 as lists, f 35;
-#X text 742 394 lists starting with a symbol must be preceeded by the
+#X text 742 394 lists starting with a symbol must be preceded by the
 word "list" to disambiguate them, f 32;
 #X msg 550 452 set 4 dog 5 6 donkey;
 #X text 703 447 "set" message changes contents but doesn't output them

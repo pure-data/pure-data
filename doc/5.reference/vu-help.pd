@@ -609,14 +609,14 @@ for hexadecimal values or floats for presets., f 50;
 #X text 147 443 float - set peak value in dbFS., f 49;
 #X text 103 257 size <list> - sets width and height (must be a multiple
 of 40)., f 64;
-#X text 89 276 scale <float> - nonzero shows scale (defautl) \, zero
-hides it., f 66;
 #X obj 17 495 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 17 524 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 147 499 float - RMS value in dbFS., f 32;
 #X text 147 530 float - RMS value in dbFS., f 32;
+#X text 89 276 scale <float> - nonzero shows scale (default) \, zero
+hides it., f 66;
 #X restore 348 15 pd reference;
 #X text 276 15 click =>;
 #X obj 12 449 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000

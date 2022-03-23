@@ -122,7 +122,7 @@ for [route] and it matches to a bang input. Below we route messages
 according to its type. Note that we have a [list] object to give the
 'list' selector back in the case of list messages that start with a
 symbol. Note also that you can still use other symbols to route other
-mesages (as with 'pure' below)., f 75;
+messages (as with 'pure' below)., f 75;
 #X connect 0 0 29 0;
 #X connect 1 0 29 0;
 #X connect 2 0 29 0;

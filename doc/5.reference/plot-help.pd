@@ -25,7 +25,7 @@ array3 help-plot-array3-template, f 41;
 #X text 66 460 This plots a red trace (500) of width 1 starting at
 point (10 \, 15). Horizontal spacing is 20 and the black diamonds come
 from the template of the array1 element itself. Check the template
-of arrray1 in the subpatch named "help-plot-array1-template"., f 54
+of array1 in the subpatch named "help-plot-array1-template"., f 54
 ;
 #X text 498 72 This plots a curved green spiral with: color 70 \, line
 width 3 \, location (100 \, 0). Open the subpatch named "help-plot-array2-template"

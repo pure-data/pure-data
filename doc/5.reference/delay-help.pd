@@ -26,7 +26,7 @@ delay of 500 msec (1/2 second)., f 42;
 #X msg 175 359 tempo 2 permillisecond;
 #X text 326 389 same as 1 msec \, so '1000' is a second.;
 #X text 340 358 this is the same as above.;
-#X text 261 203 These symbols can also be preceeded by "per" (as in
+#X text 261 203 These symbols can also be preceded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
 min (hence \, the same as 'BPM')., f 50;
 #X obj 346 593 delay 2 2 persec;

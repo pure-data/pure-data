@@ -80,7 +80,7 @@ library., f 64;
 #X obj 176 19 rmstodb;
 #X obj 234 19 dbtopow;
 #X obj 295 19 powtodb;
-#X text 158 73 signl - incomming value to be converted., f 52;
+#X text 158 73 signl - incoming value to be converted., f 52;
 #X text 158 115 signal - converted value, f 52;
 #X restore 569 43 pd reference;
 #X obj 6 74 cnv 1 670 1 empty empty empty 8 12 0 13 #000000 #000000

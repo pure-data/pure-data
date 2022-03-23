@@ -22,7 +22,7 @@
 #X obj 180 573 cputime;
 #X obj 363 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 41 204 These symbols can also be preceeded by "per" (as in
+#X text 41 204 These symbols can also be preceded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
 min (hence \, the same as 'BPM')., f 78;
 #X text 49 136 - millisecond (msec for short) \; - seconds (sec) \;
