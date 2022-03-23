@@ -515,7 +515,7 @@ set it directly via the properties window., f 50;
 0 10 #fcfcfc #000000 #000000 0 1;
 #X text 439 110 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
