@@ -491,7 +491,7 @@ and find it! Here’s an example:
 
 
 <p>Now, what’s the need or advantage of this over using [declare] or adding the folder to the
-user added paths? This can be an option that some people may preferr for the simple fact that
+user added paths? This can be an option that some people may prefer for the simple fact that
 it's just clearer from which library folder we're loading the external. But there are some rare
 cases where this is the only way to guarantee you have loaded the correct external, which is a
 problem when you have too many libraries in your system and using more than one that has an external
@@ -550,14 +550,14 @@ You can also even delete the binary as Pd now carried it for good. Hence, if you
 on the development of an object's binary and decide to change it, you have to exit and re-enter
 Pd to get the change to take.
 
-<p>Let us just make the distiction that external abstractions work quite differently! As they
+<p>Let us just make the distinction that external abstractions work quite differently! As they
 get updated any time they’re updated and reloaded!
 
 
 <H3> <A id=s3.3>4.4.1. Overriding objects (externals and native):</A> </H3>
 
-<p>We've seen that Pd loads and sticks to an external. But this can get overriden.
-We've actually seen that already. For instace, you create [xfade~] from ELSE, then
+<p>We've seen that Pd loads and sticks to an external. But this can get overridden.
+We've actually seen that already. For instance, you create [xfade~] from ELSE, then
 you load ceammc's binary that also has an [xfade~] object. Now Pd only knows about
 [xfade~] from ceammc! It's been also noted how cyclone and zexy have objects with
 the same name. If you first load cyclone's binary and zexy's later, zexy's objects
@@ -567,7 +567,7 @@ with the same name (such as [>~]) will override and prevail.
 objects with externals! Say you have an external called [phasor~]. It it's a
 single binary, you can force Pd to find it with slash declarations. Otherwise, if
 it's a binary pack, you can load as any other library and if it has objects with the
-same name as vanilla's internals, they get overriden! But Pd still keeps a copy of
+same name as vanilla's internals, they get overridden! But Pd still keeps a copy of
 the old one and renames it by appending "_aliased", so you can still load the old
 "phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably don't want to mess overriding
 internals, but it makes sense if you provide new versions with more features but fully
@@ -593,7 +593,7 @@ right.
 is also respeccted, from top to bottom.
 
 <p><b>Fifth</b> and last, it searches the "standard paths", which includes the 'extra' library
-provided by the Pd Vanilla disribution. Note you can use [declare -stdpath ./] to force
+provided by the Pd Vanilla distribution. Note you can use [declare -stdpath ./] to force
 priority to search this folder!
 
 <P>
