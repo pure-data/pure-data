@@ -1,4 +1,4 @@
-#N canvas 393 23 565 709 12;
+#N canvas 539 23 565 709 12;
 #X floatatom 38 131 5 0 0 0 - - - 0;
 #X floatatom 38 206 5 0 0 0 - - - 0;
 #X msg 48 154 bang;
@@ -107,7 +107,7 @@ like a symbol or a float object. See examples below., f 67;
 0;
 #X obj 6 664 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 611 94 573 339 reference 0;
+#N canvas 643 94 573 339 reference 0;
 #X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
@@ -128,7 +128,6 @@ like a symbol or a float object. See examples below., f 67;
 #X text 203 271 sets value name (if no name is given \, a right inlet
 is created to set the name)., f 44;
 #X text 147 236 float -;
-#X text 203 236 sets variable value., f 21;
 #X text 46 168 (if created without argument);
 #X text 140 195 symbol - sets the value name.;
 #X text 91 135 send <symbol> -;
@@ -136,6 +135,7 @@ is created to set the name)., f 44;
 #X text 203 114 outputs the value., f 36;
 #X text 203 135 sends the value to a matching receive name.;
 #X text 120 271 1) symbol -;
+#X text 203 236 outputs variable value when receiving a bang.;
 #X restore 387 34 pd reference;
 #X text 484 35 <= click;
 #X connect 0 0 4 0;

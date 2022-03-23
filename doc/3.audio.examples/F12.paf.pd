@@ -1,28 +1,28 @@
-#N canvas 493 23 690 811 12;
+#N canvas 493 23 690 723 12;
 #X declare -stdpath ./;
-#X obj 45 501 cos~;
-#X obj 45 448 *~;
-#X obj 88 511 cos~;
-#X obj 141 450 wrap~;
-#X obj 105 453 -~;
-#X obj 88 488 +~;
-#X obj 88 549 -~;
-#X obj 123 585 *~;
-#X obj 105 615 +~;
-#X obj 105 423 samphold~;
-#X floatatom 143 286 4 0 500 0 - - - 0;
-#X obj 143 309 / 10;
-#X obj 143 357 line~;
-#X obj 143 334 pack 0 50;
-#X obj 45 354 phasor~;
-#X floatatom 45 333 4 0 0 0 - - - 0;
-#X text 28 311 fundamental;
-#X text 264 386 index;
-#X text 264 403 (percent);
-#X floatatom 267 426 4 0 500 0 - - - 0;
-#X obj 267 472 line~;
-#X obj 201 472 *~;
-#X obj 267 449 pack 0 50;
+#X obj 45 484 cos~;
+#X obj 45 431 *~;
+#X obj 88 494 cos~;
+#X obj 141 433 wrap~;
+#X obj 105 436 -~;
+#X obj 88 471 +~;
+#X obj 88 532 -~;
+#X obj 123 568 *~;
+#X obj 105 598 +~;
+#X obj 105 406 samphold~;
+#X floatatom 143 270 4 0 500 0 - - - 0;
+#X obj 143 293 / 10;
+#X obj 143 340 line~;
+#X obj 143 317 pack 0 50;
+#X obj 45 337 phasor~;
+#X floatatom 45 314 4 0 0 0 - - - 0;
+#X text 28 292 fundamental;
+#X text 264 369 index;
+#X text 264 386 (percent);
+#X floatatom 267 409 4 0 500 0 - - - 0;
+#X obj 267 455 line~;
+#X obj 201 455 *~;
+#X obj 267 432 pack 0 50;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array bell-curve 200 float 1;
 #A 0 1.12535e-07 1.54727e-07 2.12059e-07 2.89706e-07 3.94519e-07 5.35535e-07
@@ -83,12 +83,12 @@
 #X connect 9 0 5 1;
 #X connect 10 0 8 0;
 #X restore 490 481 pd make-table;
-#X obj 201 449 cos~;
-#X obj 201 426 -~ 0.25;
-#X obj 201 495 +~ 100;
-#X obj 201 518 tabread4~ bell-curve;
-#X obj 105 654 *~;
-#X text 233 543 waveshaper;
+#X obj 201 432 cos~;
+#X obj 201 409 -~ 0.25;
+#X obj 201 478 +~ 100;
+#X obj 201 501 tabread4~ bell-curve;
+#X obj 105 637 *~;
+#X text 233 526 waveshaper;
 #X text 448 749 updated for Pd version 0.37;
 #X text 421 688 0;
 #X text 612 687 200;
@@ -99,34 +99,31 @@
 #X text 390 432 0;
 #X text 447 436 -- frequency --;
 #X text 616 433 2700;
-#X obj 82 735 output~;
-#X obj 105 698 hip~;
-#X obj 182 638 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 82 718 output~;
+#X obj 105 681 hip~;
+#X obj 182 621 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000;
-#X obj 202 663 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 202 646 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000 0 1;
 #X text 34 42 Instead of using the two cosines as FM carrier oscillators
 \, we can use them as ring modulators for a natural or synthetic tone.
 Here we use waveshaping - to wit \, a sinusoid looking up a Gaussian
 bell curve. This has the nice properties that the partials are always
 positive cosines in phase \, and the spectrum spreads out smoothly
-as the index changes., f 78;
+as the index changes., f 85;
 #X text 63 12 PAF: TWO-COSINE RING MODULATOR FOR WAVESHAPER;
-#X text 34 214 Then with ~* we do the ring modulation and we're done.
-This is the PAF (phase-aligned formant) synthesis algorithm (patented
-1993 by IRCAM)., f 70;
-#X obj 201 400 *~ 0.5;
+#X obj 201 383 *~ 0.5;
 #X text 34 120 For phase coherency \, the waveshaper and the cosine
 pair are driven from the same phasor~ object. Since the waveshaping
 is done using a symmetric curve \, its output is at double the frequency
 of the input. So for each cycle of the phasor we compute a half-cycle
 of the sine function (by multiplying by 0.5 and subtracting 0.25 before
 the cosine lookup). We center the cosine output for lookup in a 200-point
-table containing a bell curve., f 78;
-#X text 181 287 center frequency (tenths of fundamental), f 23;
-#X text 46 639 ring mod step =>, f 10;
-#X text 203 637 <= graph once;
-#X text 223 664 <= repeatedly;
+table containing a bell curve., f 85;
+#X text 181 271 center frequency (tenths of fundamental), f 23;
+#X text 46 622 ring mod step =>, f 10;
+#X text 203 620 <= graph once;
+#X text 223 647 <= repeatedly;
 #N canvas 828 136 534 605 fft 0;
 #X obj 95 134 inlet~;
 #X obj 209 404 inlet;
@@ -183,8 +180,11 @@ until much later.;
 #X connect 25 0 26 1;
 #X connect 26 0 2 0;
 #X connect 28 0 24 1;
-#X restore 163 689 pd fft;
-#X obj 509 13 declare -stdpath ./;
+#X restore 163 672 pd fft;
+#X obj 506 261 declare -stdpath ./;
+#X text 34 214 Then with *~ we do the ring modulation and we're done.
+This is the PAF (phase-aligned formant) synthesis algorithm (patented
+1993 by IRCAM)., f 85;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;
@@ -206,7 +206,7 @@ until much later.;
 #X connect 14 0 9 1;
 #X connect 14 0 5 1;
 #X connect 14 0 1 0;
-#X connect 14 0 45 0;
+#X connect 14 0 44 0;
 #X connect 15 0 14 0;
 #X connect 19 0 22 0;
 #X connect 20 0 21 1;
@@ -217,9 +217,9 @@ until much later.;
 #X connect 27 0 28 0;
 #X connect 28 0 29 1;
 #X connect 29 0 39 0;
-#X connect 29 0 51 0;
+#X connect 29 0 50 0;
 #X connect 39 0 38 0;
 #X connect 39 0 38 1;
-#X connect 40 0 51 1;
-#X connect 41 0 51 2;
-#X connect 45 0 26 0;
+#X connect 40 0 50 1;
+#X connect 41 0 50 2;
+#X connect 44 0 26 0;
