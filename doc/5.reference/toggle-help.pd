@@ -621,7 +621,7 @@ the old behavior back:, f 26;
 #X text 69 170 send <symbol> - set send symbol name., f 57;
 #X text 40 226 label_font <f \, f> -;
 #X text 180 226 set label type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> andd font size., f 50;
+\, 2: Times> and font size., f 50;
 #X text 47 258 label_pos <f \, f> - set label's x/y position., f 69
 ;
 #X text 75 278 color <list> -;

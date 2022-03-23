@@ -72,7 +72,7 @@ f 73;
 0;
 #X obj 7 136 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
-#X text 54 139 number of arguments set 'n' fields andd we create 'n'
+#X text 54 139 number of arguments set 'n' fields and we create 'n'
 inlets for them., f 70;
 #X obj 7 190 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
 0;

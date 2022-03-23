@@ -593,7 +593,7 @@ to see how this is done., f 55;
 #X text 69 303 receive <symbol> - set receive symbol name., f 69;
 #X text 62 341 label_font <f \, f> -;
 #X text 202 341 set label type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> andd font size., f 50;
+\, 2: Times> and font size., f 50;
 #X text 69 373 label_pos <f \, f> - set label's x/y position., f 69
 ;
 #X text 97 393 color <list> -;

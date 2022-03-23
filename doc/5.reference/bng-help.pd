@@ -607,7 +607,7 @@ in ms.;
 #X text 80 112 send <symbol> - set send symbol name., f 57;
 #X text 51 168 label_font <f \, f> -;
 #X text 191 168 set label type <0: DejaVu Sans Mono \, 1: Helvetica
-\, 2: Times> andd font size., f 50;
+\, 2: Times> and font size., f 50;
 #X text 58 200 label_pos <f \, f> - set label's x/y position., f 71
 ;
 #X text 86 220 color <list> -;
