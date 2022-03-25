@@ -1,4 +1,4 @@
-#N canvas 563 23 564 676 12;
+#N canvas 388 100 564 765 12;
 #X text 439 70 details:;
 #X text 437 53 click for;
 #N canvas 215 30 1052 653 handle 0;
@@ -353,16 +353,16 @@ with a dot), f 39;
 #X connect 11 0 0 0;
 #X connect 12 0 0 0;
 #X connect 16 0 0 0;
-#X restore 440 227 pd glob;
-#X obj 38 594 file;
-#X text 75 595 - short for "file handle";
+#X restore 440 273 pd glob;
+#X obj 38 684 file;
+#X text 75 685 - short for "file handle";
 #X obj 27 97 file handle;
-#X obj 27 267 file stat;
+#X obj 27 297 file stat;
 #X text 156 96 - read/write binary files;
-#X text 156 198 - find a file in Pd's search-path;
-#X text 156 228 - list files in directories;
-#X obj 27 227 file glob;
-#X obj 27 197 file which;
+#X text 156 248 - find a file in Pd's search-path;
+#X text 156 274 - list files in directories;
+#X obj 27 273 file glob;
+#X obj 27 247 file which;
 #N canvas 660 134 623 461 which 0;
 #X obj 35 187 file which;
 #X symbolatom 35 301 79 0 0 0 - - - 0;
@@ -435,7 +435,7 @@ and returns the resolved path., f 69;
 #X connect 12 0 3 0;
 #X connect 13 0 1 0;
 #X connect 13 1 14 0;
-#X restore 440 197 pd which;
+#X restore 440 247 pd which;
 #X obj 27 157 file mkdir;
 #X text 157 158 - create a directory;
 #N canvas 531 60 514 592 mkdir 0;
@@ -537,8 +537,8 @@ in octal., f 63;
 #X connect 18 0 6 0;
 #X connect 19 0 0 0;
 #X restore 440 157 pd mkdir;
-#X obj 27 437 file delete;
-#X text 157 438 - delete files and directories;
+#X obj 27 467 file delete;
+#X text 157 468 - delete files and directories;
 #N canvas 521 23 666 648 delete 0;
 #X obj 85 216 file delete;
 #X obj 159 243 print ERR:delete;
@@ -614,7 +614,7 @@ tree with all the files and subdirectories \, you can also remove it
 #X connect 7 0 10 0;
 #X connect 7 1 9 0;
 #X connect 8 0 7 0;
-#X restore 440 437 pd delete;
+#X restore 440 467 pd delete;
 #N canvas 495 139 674 330 copy 0;
 #X msg 48 115 list source destination;
 #X text 233 114 copies the file 'source' to the new file 'destination'
@@ -678,22 +678,22 @@ tree with all the files and subdirectories \, you can also remove it
 #X connect 12 0 2 0;
 #X connect 12 1 3 0;
 #X connect 13 0 12 0;
-#X restore 440 377 pd copy;
-#X obj 27 377 file copy;
-#X text 157 378 - copy files;
-#X obj 27 407 file move;
-#X text 157 408 - move files;
-#X obj 27 477 file split;
-#X obj 27 502 file join;
-#X obj 27 527 file splitext;
-#X obj 27 552 file splitname;
-#X text 157 508 - filename operations;
+#X restore 440 407 pd copy;
+#X obj 27 407 file copy;
+#X text 157 408 - copy files;
+#X obj 27 437 file move;
+#X text 157 438 - move files;
+#X obj 27 507 file split;
+#X obj 27 532 file join;
+#X obj 27 557 file splitext;
+#X obj 27 582 file splitname;
+#X text 157 568 - filename operations;
 #X obj 31 12 file;
 #X text 78 11 - low-level file operations;
 #X text 28 68 The file object's first argument sets its function:;
-#X obj 27 292 file isfile;
-#X obj 27 317 file isdirectory;
-#X obj 27 342 file size;
+#X obj 27 322 file isfile;
+#X obj 27 347 file isdirectory;
+#X obj 27 372 file size;
 #N canvas 478 65 815 507 info 0;
 #X obj 36 300 file isfile, f 15;
 #X floatatom 36 325 5 0 0 0 - - - 0;
@@ -826,7 +826,7 @@ the filesystem. for directories \, this will return '0'.;
 #X connect 31 0 4 0;
 #X connect 33 0 35 0;
 #X connect 34 0 33 0;
-#X restore 440 320 pd info;
+#X restore 440 350 pd info;
 #N canvas 499 34 827 708 stat 0;
 #X msg 80 64 bang;
 #X text 27 59 select a file, f 6;
@@ -1006,7 +1006,7 @@ by the user (might be '-1' if undeterminable), f 54;
 #X connect 55 0 51 0;
 #X connect 57 0 23 0;
 #X connect 57 1 24 0;
-#X restore 440 291 pd stat;
+#X restore 440 321 pd stat;
 #N canvas 549 160 676 359 move 0;
 #X msg 53 110 list source destination;
 #N canvas 305 121 542 353 arguments 0;
@@ -1068,12 +1068,12 @@ by the user (might be '-1' if undeterminable), f 54;
 #X connect 1 0 7 0;
 #X connect 7 0 8 0;
 #X connect 7 1 9 0;
-#X restore 440 407 pd move;
-#X text 22 644 see also:;
-#X obj 97 643 text;
-#X obj 139 643 array;
-#X obj 188 643 list;
-#X text 157 308 - get information on existing files;
+#X restore 440 437 pd move;
+#X text 22 734 see also:;
+#X obj 97 733 text;
+#X obj 139 733 array;
+#X obj 188 733 list;
+#X text 157 338 - get information on existing files;
 #N canvas 451 65 791 637 split+join 0;
 #N canvas 140 311 547 369 path 0;
 #X obj 103 233 symbol;
@@ -1225,7 +1225,7 @@ no checks are performed verifying the validity/existence of any path-component.
 #X connect 27 0 2 0;
 #X connect 30 0 22 1;
 #X connect 31 0 22 0;
-#X restore 440 507 pd split+join;
+#X restore 440 537 pd split+join;
 #N canvas 395 48 794 632 base+ext 0;
 #X text 400 198 'splitname' separates the directory component from
 the file component of the path \, and outputs a list with both on the
@@ -1386,8 +1386,8 @@ in the filename-component of the path., f 45;
 #X connect 28 0 27 0;
 #X connect 29 0 32 0;
 #X connect 30 0 31 0;
-#X restore 440 537 pd base+ext;
-#X text 349 643 updated for Pd version 0.52;
+#X restore 440 567 pd base+ext;
+#X text 349 733 updated for Pd version 0.52;
 #X obj 27 127 file define \$0.f;
 #X text 156 126 - shared file handles;
 #N canvas 565 43 617 557 define 0;
@@ -1456,5 +1456,329 @@ each function on parent patch., f 41;
 \, size \, copy \, move \, delete \, split \, join \, splitext and
 splitname. The default value is 'define'., f 54;
 #X restore 429 12 pd reference;
-#X obj 9 632 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 9 722 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 27 636 file isabsolute;
+#N canvas 219 241 723 641 isabsolute 0;
+#X msg 175 407 bang;
+#X text 83 64 [file isabsolute] reports whether a given path is absolute
+or relative.;
+#X floatatom 97 575 5 0 0 0 - - - 0;
+#X obj 175 432 openpanel;
+#X msg 97 207 symbol .;
+#X text 144 179 relative directories;
+#X msg 121 238 symbol ../foo/./bar;
+#X msg 135 270 symbol foo/gen;
+#X text 192 318 absolute directories;
+#X msg 142 349 symbol /foo;
+#X msg 150 377 symbol ~;
+#X text 236 377 (the HOME-directory is expanded to an absolute path)
+;
+#X text 257 433 [openpanel] always returns an absolute path;
+#X msg 180 513 symbol C:/Windows/;
+#X text 326 510 this is an absolute path on Windows \, but on un*x-like
+systems (like Linux or macOS) it is relative..., f 54;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 712 322 573 295 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 91 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 266 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 148 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 118 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 222 -q: set quiet verbosity., f 49;
+#X text 155 240 -v: set loud verbosity., f 49;
+#X obj 7 188 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 214 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 141 154 (unused);
+#X text 133 122 float - whether the input path is absolute or not;
+#X text 133 65 symbol - filename to test if is absolute;
+#X text 152 16 - check whether a path is absolute;
+#X obj 36 15 file isabsolute;
+#X restore 571 15 pd reference;
+#X text 152 16 - check whether a path is absolute;
+#X obj 36 15 file isabsolute;
+#X obj 97 550 file isabsolute;
+#X text 208 483 system-dependent...;
+#X text 84 108 this only takes the value of the path into account.
+NO checks are performed verifying the validity/existence of any path-component.
+, f 65;
+#X connect 0 0 3 0;
+#X connect 3 0 19 0;
+#X connect 4 0 19 0;
+#X connect 6 0 19 0;
+#X connect 7 0 19 0;
+#X connect 9 0 19 0;
+#X connect 10 0 19 0;
+#X connect 13 0 19 0;
+#X connect 19 0 2 0;
+#X restore 440 636 pd isabsolute;
+#X obj 27 609 file normalize;
+#N canvas 75 49 768 908 normalize 0;
+#X text 83 54 [file normalize] removes unnecessary elements from a
+path \, like duplicate path separators or "./" (which just points to
+the same path).;
+#X text 83 103 this only takes the string value of the path into account.
+no checks are performed verifying the validity/existence of any path-component.
+;
+#X symbolatom 47 518 0 0 0 0 - - - 0;
+#X symbolatom 47 464 0 0 0 0 - - - 0;
+#X msg 47 168 symbol foo/./bar///pizza;
+#X obj 47 490 file normalize;
+#X msg 67 197 symbol path/to/pd;
+#X text 227 170 remove ./ and duplicate /;
+#X text 204 200 already normalized paths are passed through unchanged
+;
+#X msg 83 230 symbol foo/..;
+#X msg 84 284 symbol ../foo;
+#X text 202 232 entering a directory and then going "up" again \, is
+the same as not entering at all;
+#X text 192 282 however \, going up from the current directory and
+then entering "foo" \, you might end up somewhere else. so this is
+left unchanged.;
+#X msg 82 339 symbol /../foo;
+#X text 203 339 you cannot go up from the root directory (/) \, so
+the ".." component doesn't do anything. "foo" however does.;
+#X msg 130 433 symbol C:/../foo;
+#X text 268 446 However \, on un*x (Linux \, macOS \, ...) \, C: is
+just a relative path that is made redundant by the following "..";
+#N canvas 19 51 868 238 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file normalize -q;
+#X obj 146 175 file normalize -v;
+#X obj 563 174 file normalize;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 55 854 pd arguments;
+#X symbolatom 47 810 0 0 0 0 - - - 0;
+#X symbolatom 47 736 0 0 0 0 - - - 0;
+#X obj 47 762 file normalize;
+#X floatatom 142 790 5 0 0 0 - - - 0;
+#X msg 47 608 symbol foo/C:/bar;
+#X text 221 739 the 2nd outlet gives an error code \, indicating whether
+the path is valid(0) \, invalid(2) or invalid-on-other-systems(1).
+, f 63;
+#X text 223 780 in order to make your patches cross-platform compatible
+\, you should avoid paths that are allowed on your current system \,
+but illegal on other OSs.;
+#X msg 57 671 symbol this|that;
+#X msg 70 701 symbol mixer/AUX/fx~;
+#X text 45 575 [file normalize] can also be used to check whether a
+path is valid, f 68;
+#X text 186 608 ":" is a reserved character on MSW \, so you cannot
+use it in a path (only for the disk volume). On un*x this is allowed.
+;
+#X text 266 411 On Microsoft Windows (MSW) \, "C:/" this is an absolute
+path \, so going up from it is just discarded.;
+#X text 183 843 invalid paths will also print an error to the Pd-console
+\, which can be suppressed by reducing the verbosity.;
+#X text 189 665 other characters are just illegal on MSW.;
+#X text 227 700 sometimes even entire words are illegal on MSW.;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 710 322 575 295 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 286 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 168 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 138 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 242 -q: set quiet verbosity., f 49;
+#X text 155 260 -v: set loud verbosity., f 49;
+#X obj 7 208 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 234 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 131 174 float - error-code indicating if the path is valid
+;
+#X text 133 142 symbol - the normalized path;
+#X obj 36 15 file normalize;
+#X text 152 16 - remove redundant elements from a path.;
+#X text 133 65 symbol - path to normalize;
+#X text 68 85 verbose <float> - set verbosity;
+#X restore 571 15 pd reference;
+#X obj 36 15 file normalize;
+#X text 152 16 - remove redundant elements from a path.;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 2 0;
+#X connect 6 0 3 0;
+#X connect 9 0 3 0;
+#X connect 10 0 3 0;
+#X connect 13 0 3 0;
+#X connect 15 0 3 0;
+#X connect 19 0 20 0;
+#X connect 20 0 18 0;
+#X connect 20 1 21 0;
+#X connect 22 0 19 0;
+#X connect 25 0 19 0;
+#X connect 26 0 19 0;
+#X restore 440 609 pd normalize;
+#X obj 27 221 file patchpath;
+#N canvas 75 49 697 619 patchpath 0;
+#X symbolatom 47 548 0 0 0 0 - - - 0;
+#X obj 47 490 file patchpath;
+#X msg 47 168 bang;
+#X text 204 170 get the directory this patch is in;
+#X msg 83 330 symbol /absolute;
+#X msg 67 297 symbol rela/tive;
+#X text 232 332 absolute paths stay absolute;
+#X text 234 300 a filename relative to this patch;
+#X msg 84 384 list ../foo 1;
+#X floatatom 92 214 5 0 0 0 - - - 0;
+#X text 232 385 combining a filename and the ownership level;
+#X floatatom 142 520 5 0 0 0 - - - 0;
+#X text 192 520 effective ownership level;
+#X text 202 202 a numeric ownership level specifies this patch (0)
+\, owning patch (1) \, its own owner (2) \, and so on. (Ownership level
+is reduced if owners don't exist \, so here anything greater than zero
+is ignored.);
+#X text 81 54 [file patchpath] gets the directory this patch (or its
+owner) is on.;
+#X text 80 91 This is especially useful for creating filenames for
+saving.;
+#X text 233 434 tip: use [file normalize] on the output of [file patchpath]
+to drop relative directory components (../);
+#X text 83 114 For reading files \, you might want to use [file which]
+instead (which uses Pd's search path to find existing files)., f 61
+;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 712 322 573 367 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 171 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 346 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 228 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 198 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 302 -q: set quiet verbosity., f 49;
+#X text 155 320 -v: set loud verbosity., f 49;
+#X text 70 146 verbose <float> - set verbosity on or off.;
+#X obj 7 268 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 294 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 133 85 symbol - filename to resolve relative to patch directory
+;
+#X text 147 65 bang - get the directory this patch is in;
+#X text 141 234 float - the effective ownership level;
+#X text 133 202 symbol - the patch directory;
+#X text 139 105 float - ownership level;
+#X text 146 125 list - filename + ownership level;
+#X obj 36 15 file patchpath;
+#X text 152 16 - resolve paths relative to the patch.;
+#X restore 571 15 pd reference;
+#X text 152 16 - resolve paths relative to the patch;
+#X obj 36 15 file patchpath;
+#X connect 1 0 0 0;
+#X connect 1 1 11 0;
+#X connect 2 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 8 0 1 0;
+#X connect 9 0 1 0;
+#X restore 440 221 pd patchpath;
+#X text 157 220 - get path relative to the patch;
+#X obj 27 195 file cwd;
+#X text 157 194 - get/set the current working directory;
+#N canvas 174 332 686 649 cwd 0;
+#N canvas 19 51 868 238 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file cwd -q;
+#X obj 146 175 file cwd -v;
+#X obj 563 174 file cwd;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 85 604 pd arguments;
+#X obj 211 542 bng 20 250 50 0 empty empty error -35 10 0 10 #fcfcfc
+#000000 #000000;
+#X obj 97 450 file cwd;
+#X msg 97 197 bang;
+#X text 190 197 get the Current Working Directory;
+#X obj 97 495 print CWD;
+#X msg 142 309 symbol ~;
+#X msg 121 268 symbol ..;
+#X text 203 265 change to the parent directory;
+#X text 220 309 change to the HOME-directory;
+#X msg 150 357 symbol /foo;
+#X text 256 356 change to some other (most likely nonexistent) directory
+;
+#X msg 185 397 bang;
+#X obj 185 422 openpanel 1;
+#X text 279 405 select a new working directory;
+#X text 83 54 [file cwd] allows you to query and set the Current Working
+Directory.;
+#X text 84 98 The Current Working Directory is typically the directory
+where you started Pd from (and is distinct from the directory your
+patch or abstraction lives in \, or where Pd is installed to);
+#X text 246 528 in case of an error \, the 2nd outlet sends out a bang.
+;
+#X text 251 550 an error occurs for example \, if you try to change
+the CWD to a path that is not a directory., f 53;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 473 540 574 351 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 131 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 306 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 187 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 157 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 262 -q: set quiet verbosity., f 49;
+#X text 155 280 -v: set loud verbosity., f 49;
+#X text 70 106 verbose <float> - set verbosity on or off.;
+#X text 132 194 bang - if an error occurs.;
+#X obj 7 227 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 253 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 147 65 bang - get the current working directory;
+#X text 133 85 symbol - new working directory;
+#X text 120 162 symbol - the current working directory;
+#X text 112 15 - the Current Working Directory;
+#X obj 36 15 file cwd;
+#X restore 571 15 pd reference;
+#X text 112 15 - the Current Working Directory;
+#X obj 36 15 file cwd;
+#X connect 2 0 5 0;
+#X connect 2 1 1 0;
+#X connect 3 0 2 0;
+#X connect 6 0 2 0;
+#X connect 7 0 2 0;
+#X connect 10 0 2 0;
+#X connect 12 0 13 0;
+#X connect 13 0 2 0;
+#X restore 440 195 pd cwd;
