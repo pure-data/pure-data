@@ -1,6 +1,6 @@
-#N canvas 664 140 708 526 12;
+#N canvas 556 34 719 478 12;
 #X text 100 151 index;
-#X obj 106 24 tabread;
+#X obj 66 18 tabread;
 #X floatatom 67 152 4 0 9 0 - - - 0;
 #X floatatom 67 268 5 0 0 0 - - - 0;
 #N canvas 0 22 450 300 (subpatch) 0;
@@ -11,23 +11,18 @@
 #X text 191 216 creation argument;
 #X text 193 232 gives array name;
 #X text 176 184 change array name;
-#X text 467 471 updated for Pd version 0.43;
-#X obj 158 472 tabwrite~;
-#X obj 92 472 tabwrite;
-#X obj 300 472 tabsend~;
-#X obj 366 472 tabreceive~;
-#X obj 232 472 tabplay~;
-#X obj 27 472 tabread4;
+#X text 473 424 updated for Pd version 0.43;
+#X obj 240 407 tabwrite~;
+#X obj 168 407 tabwrite;
+#X obj 97 435 tabsend~;
+#X obj 163 435 tabreceive~;
+#X obj 314 407 tabplay~;
+#X obj 97 407 tabread4;
 #X text 51 61 The tabread object reads values from an array ("table")
 according to an index. The index is rounded down to the next lower
 integer. Values in the table correspond to indices starting at 0 Indices
 outside of the range are replaced by the nearest index in range (from
 0 to 9 in this example)., f 84;
-#X obj 415 392 ../2.control.examples/15.array;
-#X obj 415 415 ../2.control.examples/16.more.arrays;
-#X text 36 396 Check also the "array" examples from the Pd tutorial
-by clicking and opening the files to the right ====>, f 52;
-#X text 26 442 see also these objects:;
 #X obj 67 224 tabread table-ex;
 #X msg 77 184 set table-ex;
 #X text 110 269 output = table-ex[index];
@@ -71,7 +66,56 @@ doesn't work in messages., f 70;
 #X connect 13 0 9 0;
 #X restore 200 332 pd Dealing_with_"\$0";
 #X text 38 323 open subpatch to see how to deal with '\$0', f 21;
-#X text 169 24 - non-interpolating table lookup;
-#X connect 2 0 20 0;
-#X connect 20 0 3 0;
-#X connect 21 0 20 0;
+#X text 129 18 - non-interpolating table lookup;
+#N canvas 750 87 581 232 reference 0;
+#X obj 15 51 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 15 117 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 15 162 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 14 199 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 120 85 set <symbol> -;
+#X text 169 65 float -;
+#X obj 43 17 tabread;
+#X text 106 17 - non-interpolating table lookup.;
+#X text 225 65 sets table index and output its value.;
+#X text 225 85 set the table name., f 38;
+#X text 169 130 float -;
+#X text 225 130 value of index input.;
+#X text 133 171 1) symbol - sets table name with the sample.;
+#X restore 511 18 pd reference;
+#X text 609 17 <= click;
+#X obj 8 52 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 392 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 252 435 pd array-examples;
+#X text 20 418 see also:;
+#X connect 2 0 16 0;
+#X connect 16 0 3 0;
+#X connect 17 0 16 0;

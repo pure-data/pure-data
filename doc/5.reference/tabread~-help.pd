@@ -1,4 +1,4 @@
-#N canvas 717 183 819 562 12;
+#N canvas 380 23 819 524 12;
 #X obj 61 367 snapshot~;
 #X obj 80 339 metro 200;
 #X obj 61 149 sig~;
@@ -7,26 +7,22 @@
 #X text 194 188 "set" message permits you to switch between arrays
 , f 25;
 #X text 202 244 creation argument initializes array name, f 24;
-#X obj 99 512 tabwrite~;
-#X obj 234 512 tabread;
-#X obj 357 512 tabwrite;
-#X obj 422 512 tabsend~;
-#X obj 487 512 tabreceive~;
-#X obj 170 512 tabplay~;
-#X obj 97 24 tabread~;
+#X obj 171 458 tabwrite~;
+#X obj 306 458 tabread;
+#X obj 100 486 tabwrite;
+#X obj 165 486 tabsend~;
+#X obj 230 486 tabreceive~;
+#X obj 242 458 tabplay~;
+#X obj 67 16 tabread~;
 #X text 80 59 Tabread~ looks up values out of the named array. Incoming
 values are truncated to the next lower integer \, and values out of
 bounds get the nearest (first or last) point., f 85;
 #X text 118 123 incoming signal is index. Indices should range from
 0 to (size-1)., f 34;
-#X obj 27 512 tabread4~;
-#X obj 292 512 tabread4;
-#X text 602 511 updated for Pd version 0.43;
-#X obj 509 451 ../2.control.examples/15.array;
-#X obj 509 474 ../2.control.examples/16.more.arrays;
-#X text 130 455 Check also the "array" examples from the Pd tutorial
-by clicking and opening the files to the right ====>, f 52;
-#X text 29 483 see also:;
+#X obj 99 458 tabread4~;
+#X obj 364 458 tabread4;
+#X text 591 475 updated for Pd version 0.43;
+#X text 24 473 see also:;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array tabread-ex 10 float 3;
 #A 0 1 4 2 8 5 6 1 4 2 8;
@@ -46,7 +42,7 @@ by clicking and opening the files to the right ====>, f 52;
 #X msg 200 328 \; pd dsp \$1;
 #X obj 80 311 loadbang;
 #X text 219 301 DSP on/off;
-#X text 176 24 - non-interpolating table lookup for signals;
+#X text 146 16 - non-interpolating table lookup for signals;
 #N canvas 978 194 593 412 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -87,11 +83,59 @@ doesn't work in messages., f 70;
 #X restore 339 398 pd Dealing_with_"\$0";
 #X text 177 389 open subpatch to see how to deal with '\$0', f 21
 ;
+#N canvas 702 120 581 232 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 118 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 163 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 200 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 113 86 set <symbol> -;
+#X text 218 66 sets table index and output its value.;
+#X text 218 86 set the table name., f 39;
+#X text 218 131 value of index input.;
+#X obj 67 16 tabread~;
+#X text 146 16 - non-interpolating table lookup for signals.;
+#X text 155 66 signal -;
+#X text 155 131 signal -;
+#X text 126 172 1) symbol - sets table name with the sample.;
+#X restore 581 18 pd reference;
+#X text 679 17 <= click;
+#X obj 8 52 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 442 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 317 486 pd array-examples;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
-#X connect 2 0 25 0;
+#X connect 2 0 22 0;
 #X connect 3 0 2 0;
-#X connect 24 0 25 0;
-#X connect 25 0 0 0;
-#X connect 26 0 28 0;
-#X connect 29 0 1 0;
+#X connect 21 0 22 0;
+#X connect 22 0 0 0;
+#X connect 23 0 25 0;
+#X connect 26 0 1 0;

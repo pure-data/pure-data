@@ -1,44 +1,39 @@
-#N canvas 665 108 707 569 12;
-#X obj 75 17 tabwrite~;
-#X msg 53 212 bang;
+#N canvas 366 43 665 518 12;
+#X obj 55 17 tabwrite~;
+#X msg 53 232 bang;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array buffer 1000 float 0;
 #X coords 0 1 999 -1 200 100 1 0 0;
-#X restore 405 208 graph;
-#X text 167 343 creation argument initializes array name;
-#X obj 106 516 tabread;
-#X obj 166 516 tabwrite;
-#X obj 234 516 tabsend~;
-#X obj 301 516 tabreceive~;
-#X obj 32 516 tabread4~;
-#X msg 71 281 stop;
-#X text 109 282 stop recording;
-#X msg 62 249 start 500;
-#X text 480 516 updated for Pd version 0.40.;
-#X text 155 17 - write a signal in an array;
-#X text 92 213 start recording;
-#X text 159 310 set destination array;
-#X text 44 49 Tabwrite~ records an audio signal sequentially into an
+#X restore 405 228 graph;
+#X text 167 363 creation argument initializes array name;
+#X obj 169 455 tabread;
+#X obj 229 455 tabwrite;
+#X obj 297 455 tabsend~;
+#X obj 95 482 tabreceive~;
+#X obj 95 455 tabread4~;
+#X msg 71 301 stop;
+#X text 109 302 stop recording;
+#X msg 62 269 start 500;
+#X text 430 469 updated for Pd version 0.40.;
+#X text 135 17 - write a signal in an array;
+#X text 92 233 start recording;
+#X text 159 330 set destination array;
+#X text 44 69 Tabwrite~ records an audio signal sequentially into an
 array. Sending it "bang" writes from beginning to end of the array.
 To avoid writing all the way to the end \, you can send a "stop" message
 at an appropriate later time. The "start" message allows setting the
 array location at which the first sample is written. (Starting and
 stopping occur on block boundaries \, typically multiples of 64 samples
-\, in the input signal.), f 75;
-#X obj 43 343 tabwrite~ buffer;
-#X msg 80 310 set buffer;
-#X obj 43 182 osc~ 200;
-#X obj 389 441 ../2.control.examples/15.array;
-#X obj 389 464 ../2.control.examples/16.more.arrays;
-#X text 64 445 see also the "array" examples from section 2 (click
-to the right to open them) =========> and these objects below:, f
-45;
-#X obj 388 516 soundfiler;
-#X msg 241 177 \; pd dsp \$1;
-#X obj 241 154 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+\, in the input signal.), f 80;
+#X obj 43 363 tabwrite~ buffer;
+#X msg 80 330 set buffer;
+#X obj 43 202 osc~ 200;
+#X obj 182 482 soundfiler;
+#X msg 241 197 \; pd dsp \$1;
+#X obj 241 174 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 135 245 start at index 500 (middle of this table), f 22;
-#X text 263 153 DSP on/off;
+#X text 135 265 start at index 500 (middle of this table), f 22;
+#X text 263 173 DSP on/off;
 #N canvas 792 534 593 356 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -63,12 +58,67 @@ doesn't work in messages., f 70;
 #X connect 4 0 3 0;
 #X connect 8 0 7 0;
 #X connect 9 0 7 0;
-#X restore 323 389 pd Dealing_with_"\$0";
-#X text 161 380 open subpatch to see how to deal with '\$0', f 21
+#X restore 323 409 pd Dealing_with_"\$0";
+#X text 161 400 open subpatch to see how to deal with '\$0', f 21
 ;
+#N canvas 651 119 583 293 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 178 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 220 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 257 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 81 152 set <symbol> -;
+#X text 188 152 set the table name., f 39;
+#X text 187 189 NONE;
+#X obj 55 17 tabwrite~;
+#X text 135 17 - write a signal in an array.;
+#X text 124 71 signal -;
+#X text 188 71 signal to write to an array., f 39;
+#X text 137 114 bang -;
+#X text 137 134 stop -;
+#X text 188 134 stops recording into the array., f 39;
+#X text 74 92 start <float> -;
+#X text 188 92 starts recording at given sample (default 0).;
+#X text 188 114 starts recording into the array (same as 'start 0').
+;
+#X text 126 229 1) symbol - sets table name with the sample.;
+#X restore 461 18 pd reference;
+#X text 559 17 <= click;
+#X obj 8 52 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 443 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 263 482 pd array-examples;
+#X text 18 469 see also:;
 #X connect 1 0 17 0;
 #X connect 9 0 17 0;
 #X connect 11 0 17 0;
 #X connect 18 0 17 0;
 #X connect 19 0 17 0;
-#X connect 25 0 24 0;
+#X connect 22 0 21 0;

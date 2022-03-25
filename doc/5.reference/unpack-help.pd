@@ -1,18 +1,15 @@
-#N struct template1 float x float y float z float q;
-#N canvas 669 106 614 519 12;
+#N canvas 380 39 598 499 12;
 #X floatatom 281 226 5 0 0 0 - - - 0;
-#X obj 64 473 pack;
-#X obj 107 14 unpack;
-#X text 170 13 - split a message to atoms;
+#X obj 116 463 pack;
+#X obj 57 14 unpack;
 #X msg 50 148 1 2;
 #X msg 89 148 3 4 shut;
 #X msg 168 148 5 6 pick 7 8;
-#X text 369 473 updated for Pd version 0.33;
+#X text 369 465 updated for Pd version 0.33;
 #X text 362 184 <= creation arguments specify the types of atoms expected
 , f 29;
 #X obj 89 185 unpack float float symbol float float;
 #X symbolatom 217 227 7 0 0 0 - - - 0;
-#X text 67 449 See also:;
 #X obj 152 359 unpack s f;
 #X msg 152 289 list octave 3;
 #X msg 186 313 pitch 69;
@@ -28,33 +25,75 @@
 #X floatatom 89 226 5 0 0 0 - - - 0;
 #X floatatom 219 392 5 0 0 0 - - - 0;
 #X text 59 347 abbreviated arguments =>, f 12;
-#X obj 110 473 trigger;
-#N canvas 879 82 610 216 pointer 0;
-#X obj 189 146 ../4.data.structures/01.scalars;
+#X obj 162 463 trigger;
+#N canvas 756 82 610 216 pointer 0;
+#X obj 128 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 128 161 pd open;
+#X text 152 130 <-- open first examle of the 4.Data.Structure section
+;
 #X text 75 40 The [unpack] object unpack a pointer from a list. A pointer
 can be the location of a Data Structure scalar somewhere or the head
 of a Data Structure list. To know more about Data Structures \, how
 to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials. Starting with the first example below.
-, f 70;
-#X restore 363 117 pd pointer;
-#X text 444 117 <= about pointers;
-#X text 76 56 unpack takes lists of atoms and distributes them to its
+section of the Pd's tutorials., f 70;
+#X connect 0 0 1 0;
+#X restore 363 111 pd pointer;
+#X text 444 111 <= about pointers;
+#X text 70 59 unpack takes lists of atoms and distributes them to its
 outlets. The creation arguments specify the number of outlets and the
 atom type \, possible values are: float (or 'f') \, symbol (or 's')
 and pointer (or 'p') - see [pd pointer]., f 64;
-#X connect 4 0 9 0;
-#X connect 5 0 9 0;
-#X connect 6 0 9 0;
-#X connect 9 0 24 0;
-#X connect 9 1 23 0;
-#X connect 9 2 10 0;
-#X connect 9 3 0 0;
-#X connect 9 4 22 0;
-#X connect 12 0 15 0;
-#X connect 12 1 25 0;
-#X connect 13 0 12 0;
-#X connect 14 0 12 0;
-#X connect 17 0 18 0;
-#X connect 18 0 19 0;
-#X connect 18 1 20 0;
+#X obj 16 45 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 579 124 634 263 reference 0;
+#X obj 11 46 cnv 5 600 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 11 97 cnv 2 600 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 11 183 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 10 238 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 11 128 cnv 1 600 1 empty empty n: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 92 101 (depends on the number of arguments);
+#X text 111 193 1) list -;
+#X obj 57 14 unpack;
+#X text 110 14 - split a list into atoms.;
+#X text 107 61 list - a list to be split into atoms.;
+#X text 77 137 float/symbol -;
+#X text 184 137 a float or a symbol \, depending on the argument.,
+f 52;
+#X text 180 193 symbols that define atoms's type: float' \, 'symbol'
+\, and 'pointer' \, all of which can be abreviatted (default: f f).
+;
+#X restore 398 13 pd reference;
+#X text 496 13 <= click;
+#X obj 16 450 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 37 462 see also:;
+#X text 111 14 - split a list into atoms;
+#X connect 3 0 8 0;
+#X connect 4 0 8 0;
+#X connect 5 0 8 0;
+#X connect 8 0 22 0;
+#X connect 8 1 21 0;
+#X connect 8 2 9 0;
+#X connect 8 3 0 0;
+#X connect 8 4 20 0;
+#X connect 10 0 13 0;
+#X connect 10 1 23 0;
+#X connect 11 0 10 0;
+#X connect 12 0 10 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 16 1 18 0;

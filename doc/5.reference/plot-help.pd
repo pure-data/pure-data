@@ -4,86 +4,138 @@ array array2 help-plot-array2-template array array3 help-plot-array3-template
 #N struct help-plot-array1-template float y;
 #N struct help-plot-array2-template float x float y;
 #N struct help-plot-array3-template float y float w;
-#N canvas 787 129 507 279 12;
-#N canvas 758 200 927 574 help-plot-template 0;
-#X obj 595 34 plot curve array2 70 3 100 0;
-#X obj 76 437 plot array1 500 1 10 15 20;
-#X obj 529 495 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10
+#N canvas 641 86 520 284 12;
+#N canvas 617 211 896 557 help-plot-template 0;
+#X obj 572 39 plot curve array2 70 3 100 0;
+#X obj 506 500 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10
 ;
-#X text 555 436 To see the data itself \, select "properties" for the
+#X text 532 441 To see the data itself \, select "properties" for the
 scalar by right clicking on the purple square., f 43;
-#X obj 539 341 struct help-plot-template float x float y array array1
+#X obj 516 346 struct help-plot-template float x float y array array1
 help-plot-array1-template array array2 help-plot-array2-template array
 array3 help-plot-array3-template, f 41;
-#X text 543 316 here's the "struct" for all this:;
-#X text 49 61 Optional flags:;
-#X text 48 84 - "-n" flag to make invisible initially or "-v [name]"
-to assign a field name variable to make this visible/invisible (inutilized
-inlet input for that) \; - optional "-vs [constant or name]" to set
-visibility of scalars along the path of the plot \; - "-e" [const or
-name]" to enable/disable editing \; - "-x [name]" to use different
-field name for x \; - "-y [name]" to use different field name for y
-\; - "-w [name]" to use different field name for w;
-#X text 44 227 Arguments:;
-#X text 45 28 Creation arguments:;
-#X obj 596 200 plot curve array3 9 1 120 50 20;
-#X msg 43 390 1;
-#X msg 76 390 0;
-#X text 131 410 (if no -v [field name] flag was given);
-#X text 59 468 This plots a red trace (500) of width 1 starting at
+#X text 520 321 here's the "struct" for all this:;
+#X text 36 36 Optional flags:;
+#X text 41 239 Arguments:;
+#X text 32 9 Creation arguments:;
+#X obj 573 205 plot curve array3 9 1 120 50 20;
+#X msg 50 382 1;
+#X msg 83 382 0;
+#X text 138 402 (if no -v [field name] flag was given);
+#X text 66 460 This plots a red trace (500) of width 1 starting at
 point (10 \, 15). Horizontal spacing is 20 and the black diamonds come
 from the template of the array1 element itself. Check the template
-of arrray1 in the subpatch named "help-plot-array1-template"., f 54
+of array1 in the subpatch named "help-plot-array1-template"., f 54
 ;
-#X text 521 67 This plots a curved green spiral with: color 70 \, line
+#X text 498 72 This plots a curved green spiral with: color 70 \, line
 width 3 \, location (100 \, 0). Open the subpatch named "help-plot-array2-template"
 to check the template for "array2". Since the template contains an
 "x" variable \, [plot] ignores x spacing requests and takes x from
 the data itself., f 52;
-#X text 529 230 This draws the blue array. If a "w" variable is present
+#X text 506 235 This draws the blue array. If a "w" variable is present
 in the template as for array3 (see the subpatch help-plot-array3-template)
 \, it is added to the line width., f 50;
-#X text 110 390 <= inlet sets visibility (1: visible \, 0: invisible)
+#X text 117 382 <= inlet sets visibility (1: visible \, 0: invisible)
 ;
-#X text 50 255 - optional word "curve" to specify Bezier curve \; -
+#X text 57 257 - optional word "curve" to specify Bezier curve \; -
 field to plot the array \; - color (0=black \, 999=white \, 900=red
 \, 90=green \, 9=blue \, 555=grey \, etc.) \; - line width \; - relative
 x and y location \; - x spacing;
-#X connect 11 0 1 0;
-#X connect 12 0 1 0;
-#X restore 242 88 pd help-plot-template;
-#N canvas 565 310 478 238 help-plot-array1-template 0;
+#X obj 83 429 plot array1 500 1 10 15 20;
+#X text 55 59 "-c": sets to Bezier curve plot \; - "-n" flag to make
+invisible initially or "-v [name]" to assign a field name variable
+to make this visible/invisible (inutilized inlet input for that) \;
+- optional "-v [constant or name]" to set visibility of array \; -
+optional "-vs [constant or name]" to set visibility of scalars along
+the path of the plot \; - "-e" [const or name]" to enable/disable editing
+\; - "-x [name]" to use different field name for x \; - "-y [name]"
+to use different field name for y \; - "-w [name]" to use different
+field name for w;
+#X connect 9 0 17 0;
+#X connect 10 0 17 0;
+#X restore 242 93 pd help-plot-template;
+#N canvas 565 310 476 286 help-plot-array1-template 0;
 #X obj 88 182 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 82 79 struct help-plot-array1-template float y;
 #X text 62 25 template for array1 \, contains only a "y' field for
 the value of "y" in the array., f 51;
 #X text 110 139 This adds a diamond shape to each element in the array
 , f 28;
-#X restore 242 111 pd help-plot-array1-template;
+#X restore 242 116 pd help-plot-array1-template;
 #N canvas 575 374 436 219 help-plot-array2-template 0;
 #X obj 37 131 struct help-plot-array2-template float x float y;
 #X text 26 32 template for array2. This also contains a "x' field for
 the 'x' spacing of elements \, so you can drag/set them anywhere and
 the 'x' spacing argument is ignored in [plot]., f 53;
-#X restore 242 133 pd help-plot-array2-template;
-#X text 21 215 see also:;
-#X obj 97 207 drawnumber;
-#X obj 45 22 plot;
-#X obj 175 207 drawpolygon;
+#X restore 242 138 pd help-plot-array2-template;
+#X text 21 225 see also:;
+#X obj 97 217 drawnumber;
+#X obj 25 20 plot;
+#X obj 175 217 drawpolygon;
 #N canvas 558 450 511 187 help-plot-array3-template 0;
 #X obj 83 108 struct help-plot-array3-template float y float w;
 #X text 48 37 template for array3. This contains a "w' field for line
 width \, so you can drag/set it for each element in the array \, so
 the 'w' argument is ignored in [plot].;
-#X restore 242 155 pd help-plot-array3-template;
-#X obj 102 232 struct;
-#X text 53 88 explanation is in here ==>;
-#X text 292 223 updated for Pd version 0.52;
-#X obj 154 232 array;
-#N canvas 319 148 411 207 help-plot-data 1;
-#X scalar help-plot-template 39 73 \; -2 \; 48 \; 10 \; 78 \; 46 \;
+#X restore 242 160 pd help-plot-array3-template;
+#X obj 102 242 struct;
+#X text 53 93 explanation is in here ==>;
+#X text 292 233 updated for Pd version 0.52;
+#X obj 154 242 array;
+#N canvas 205 108 411 207 help-plot-data 1;
+#X scalar help-plot-template 39 73 \; -2 \; 48 \; 20 \; 78 \; 46 \;
 \; -9 -4 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 53 -19 \; \;
 0 0 \; 39 10 \; -35 -21 \; 24 1 \; 22 1 \; 20 10 \; 20 14 \; \;;
-#X restore 242 66 pd help-plot-data;
-#X obj 202 232 element;
-#X text 87 22 - draw array elements of scalars;
+#X restore 242 71 pd help-plot-data;
+#X obj 202 242 element;
+#X text 67 20 - draw array elements of scalars;
+#X obj 8 51 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 724 148 597 493 reference 0;
+#X obj 9 45 cnv 5 575 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 91 cnv 2 575 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 125 cnv 2 575 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 464 cnv 5 575 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 120 62 float -;
+#X text 146 98 NONE, f 54;
+#X text 177 62 sets visibility (1: visible \, 0: invisible)., f 46
+;
+#X obj 9 149 cnv 1 575 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 9 319 cnv 1 575 1 empty empty args: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 73 327 1) symbol -;
+#X text 73 363 3) float* - color (default 0)., f 70;
+#X obj 27 16 plot;
+#X text 69 16 - draw array elements of scalars.;
+#X text 129 177 "-n": makes it invisible initially., f 61;
+#X text 157 326 (optional) 'curve' sets to Bezier curve (default polygon).
+;
+#X text 73 345 2) symbol -;
+#X text 157 344 field to plot the array., f 58;
+#X text 73 381 4) float* - line width (default 1)., f 70;
+#X text 80 399 5) list* - relative x and y location (default 0 0).
+, f 69;
+#X text 73 417 6) float* - x spacing., f 70;
+#X text 174 440 * can also be field names.;
+#X text 129 158 "-c": sets to Bezier curve plot., f 61;
+#X text 66 254 "-x <symbol>": sets a different field name for x.,
+f 70;
+#X text 66 272 "-y <symbol>": sets a different field name for y.,
+f 70;
+#X text 66 291 "-w <symbol>": sets a different field name for w.,
+f 70;
+#X text 31 235 "-e <float/symbol": constant of field name to enable/disable
+mouse actions., f 75;
+#X text 24 196 "-v <float/symbol>": constant of field name to make
+it visible/invisible., f 76;
+#X text 17 215 "-vs <float/symbol>": constant of field name to scalars
+visible/invisible., f 77;
+#X restore 333 21 pd reference;
+#X text 431 22 <= click;
+#X obj 8 201 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;

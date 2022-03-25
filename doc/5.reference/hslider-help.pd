@@ -1,7 +1,7 @@
-#N canvas 715 39 543 552 12;
-#X floatatom 156 335 7 0 0 0 - - - 0;
-#X msg 206 231 set \$1;
-#X obj 125 219 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
+#N canvas 493 39 543 549 12;
+#X floatatom 155 353 7 0 0 0 - - - 0;
+#X msg 205 249 set \$1;
+#X obj 124 237 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
 #000000 #000000;
 #N canvas 837 70 559 433 old-behavior 0;
 #X floatatom 134 318 5 0 0 0 - - - 0;
@@ -44,29 +44,28 @@ the range of numbers. Note this also affects the 'set' message., f
 #X connect 15 0 0 0;
 #X connect 16 0 5 0;
 #X connect 17 0 5 0;
-#X restore 371 383 pd old-behavior;
-#X obj 156 374 print hsl;
-#X floatatom 156 219 5 0 0 0 - - - 0;
-#X floatatom 206 208 5 0 0 0 - - - 0;
-#X obj 159 286 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14
+#X restore 370 401 pd old-behavior;
+#X obj 155 392 print hsl;
+#X floatatom 155 237 5 0 0 0 - - - 0;
+#X floatatom 205 226 5 0 0 0 - - - 0;
+#X obj 158 304 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14
 #dcdcdc #000000 #0400fc 0 1;
-#X obj 53 24 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#X obj 45 14 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
 #000000 #000000 0 1;
-#X text 285 429 (c) musil@iem.kug.ac.at;
-#X text 321 445 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 61 506 see also:;
-#X obj 135 506 x_all_guis;
-#X text 75 430 This object is part of the "iemguis" library \, natively
+#X text 283 439 (c) musil@iem.kug.ac.at;
+#X text 319 455 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 19 517 see also:;
+#X text 73 440 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 292 505 updated for Pd version 0.51;
-#X text 22 140 Insert it from the Put menu (named as "Hslider") or
+#X text 323 516 updated for Pd version 0.51;
+#X text 22 165 Insert it from the Put menu (named as "Hslider") or
 its shortcut. Alternatively \, create it by typing "hslider" or "hsl"
 into an object box. Right click for properties (to set size \, colors
-\, labels \, etc)., f 69;
-#X text 193 24 - [hslider]/[hsl]: Horizontal Slider;
-#X text 29 280 click & drag ==> (shift-click for fine tuning). Right
+\, labels \, etc)., f 70;
+#X text 185 8 - [hslider]/[hsl]: Horizontal Slider, f 18;
+#X text 28 298 click & drag ==> (shift-click for fine tuning). Right
 click for properties., f 16;
-#X text 271 333 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
+#X text 270 351 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
 Check details and how to get it back:, f 33;
 #N canvas 665 62 613 486 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
@@ -109,7 +108,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 22 0;
 #X connect 17 0 22 0;
 #X connect 18 0 3 0;
-#X restore 412 255 pd position;
+#X restore 411 273 pd position;
 #N canvas 487 137 358 407 properties 0;
 #N canvas 841 92 656 573 colors 0;
 #X floatatom 72 244 3 0 29 0 - - - 0;
@@ -487,7 +486,7 @@ sends its holding value from when the patch was last saved., f 46
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
 #X restore 173 172 pd init;
-#N canvas 883 96 817 380 send-receive 0;
+#N canvas 863 96 817 380 send-receive 0;
 #X msg 210 202 receive empty;
 #X msg 241 266 send empty;
 #X floatatom 61 179 5 0 0 0 - - - 0;
@@ -516,7 +515,7 @@ set it directly via the properties window., f 50;
 0 10 #fcfcfc #000000 #000000 0 1;
 #X text 439 110 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
@@ -611,13 +610,7 @@ symbols \, label \, label offset and font size., f 49;
 #X text 45 13 All the parameters from the properties window can be
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
-#X restore 398 227 pd properties;
-#X text 22 55 The horizontal slider is a GUI (Graphical User Interface)
-that sends numbers. Click on it and drag to output values - use shift-click
-and drag for fine-tuning by a factor of a hundredth. Incoming floats
-set the slider's value and are passed through (even if outside the
-slider's range). The 'set' message only sets the slider value without
-output. A bang message sends the slider's value., f 69;
+#X restore 397 245 pd properties;
 #N canvas 781 223 444 403 example-discrete 0;
 #X floatatom 81 206 8 0 0 0 - - - 0;
 #X obj 81 351 print fixed-steps;
@@ -670,7 +663,58 @@ it if needed., f 34;
 #X connect 5 0 11 0;
 #X connect 11 0 4 0;
 #X connect 13 0 0 0;
-#X restore 357 283 pd example-discrete;
+#X restore 356 301 pd example-discrete;
+#X obj 93 517 all_guis;
+#N canvas 653 117 660 435 reference 0;
+#X obj 8 52 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X text 118 184 label <symbol> - sets label symbol., f 72;
+#X text 42 203 label_font <float \, float> -;
+#X text 49 235 label_pos <float \, float> -;
+#X text 237 234 sets label position., f 55;
+#X obj 7 410 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 125 284 send <symbol> - sets send symbol., f 71;
+#X text 97 303 recceive <symbol> - sets receive symbol., f 75;
+#X text 133 253 color <list> -;
+#X text 237 252 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 237 202 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 90 322 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 77 341 delta <float \, float> -;
+#X text 237 340 changes the position by a x/y delta in pixels., f
+55;
+#X text 181 63 float - set and output number., f 63;
+#X text 132 80 size <float> - sets the cell size in pixels., f 70
+;
+#X text 132 149 init <float> - non zero sets to init mode., f 70;
+#X obj 7 369 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 45 18 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X text 185 17 - [hslider]/[hsl]: Horizontal Slider., f 44;
+#X text 76 97 range <float \, float> - sets minimum and maximum range.
+, f 78;
+#X text 195 114 lin - sets mode to linear., f 61;
+#X text 195 131 log - sets mode to logarthmic., f 61;
+#X text 118 166 steady <float> - non zero sets to steady \, zero sets
+to jump on click., f 72;
+#X text 181 382 float - slider value., f 63;
+#X restore 361 15 pd reference;
+#X text 452 15 <= click;
+#X obj 7 49 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 504 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 22 60 The horizontal slider GUI (Graphical User Interface)
+sends numbers via clicking and dragging. The values are evenly spread
+depending on the slider's range and size - use shift-click and drag
+for fine-tuning by a factor of a hundredth. Incoming floats set the
+slider's value and are passed through (even if outside the slider's
+range). The 'set' message only sets the slider value without output.
+A bang message sends the slider's value., f 70;
 #X connect 0 0 4 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;

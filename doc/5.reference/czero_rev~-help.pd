@@ -1,7 +1,7 @@
-#N canvas 702 61 559 690 12;
+#N canvas 621 32 532 680 12;
 #X declare -stdpath ./;
-#X obj 104 126 osc~ 100;
-#X msg 122 153 clear;
+#X obj 61 128 osc~ 100;
+#X msg 79 155 clear;
 #N canvas 534 144 522 578 test 0;
 #X obj 189 431 env~ 16384;
 #X floatatom 189 455 5 0 0 0 - - - 0;
@@ -79,61 +79,50 @@
 #X connect 29 0 3 0;
 #X connect 29 0 8 0;
 #X connect 30 0 29 0;
-#X restore 422 571 pd test;
-#X obj 153 208 sig~;
-#X obj 185 232 sig~;
-#X obj 217 255 sig~;
-#X text 262 294 coefficient (real and imaginary part);
-#X msg 133 179 set 0.6 0.8;
-#X text 66 374 where y[n] is the output \, x[n] the input \, and a[n]
+#X restore 413 571 pd test;
+#X obj 110 210 sig~;
+#X obj 142 234 sig~;
+#X obj 174 257 sig~;
+#X text 219 296 coefficient (real and imaginary part);
+#X msg 90 181 set 0.6 0.8;
+#X text 57 374 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient (all complex numbers). The filter is always
 stable., f 64;
-#X obj 122 280 czero~ 0.9 0.4;
-#X obj 33 14 czero_rev~;
-#X text 36 44 Czero_rev~ filters a complex audio signal (first two
-inlets) via a one-zero filter \, whose coefficients are controlled
-by creation arguments or by another complex audio signal (remaining
-two inlets). The impulse response is that of "rzero" reversed in time.
-, f 64;
-#X text 103 347 y[n] = - a[n] * x[n] + x[n-1];
-#X text 66 414 The transfer function is H(Z) = -a + Z^-1.;
-#X text 123 13 - complex one-zero (non-recursive) "reverse" filter
-\, raw;
-#X text 198 207 <= signal to filter (imaginary part);
-#X text 230 232 <= filter coefficient (real part);
-#X text 260 255 <= filter coefficient (imaginary part);
-#X text 240 280 <= creation arguments initialize filter;
-#X text 168 127 <= signal to filter (real part);
-#X text 166 152 <= clear internal state to zero;
-#X text 219 180 <= set internal state (real&imaginary parts);
-#X text 50 324 The action of czero_rev~ is:;
-#X obj 96 622 lop~;
-#X text 17 623 see also:;
-#X obj 179 555 rzero~;
-#X obj 119 578 cpole~;
-#X obj 119 555 rpole~;
-#X obj 239 555 rzero_rev~;
-#X obj 179 578 czero~;
-#X obj 239 578 czero_rev~;
-#X text 318 555 real;
-#X text 317 577 complex;
-#X text 116 536 1-pole;
-#X text 176 536 1-zero;
-#X text 243 520 1-zero \, reversed, f 8;
-#X text 25 560 summary of raw filters:, f 12;
-#X obj 137 622 hip~;
-#X obj 178 622 bp~;
-#X obj 213 622 vcf~;
-#X text 294 622 - user-friendly filters;
-#X obj 254 622 bob~;
-#X obj 381 495 bng 15 250 50 0 empty empty empty 17 7 0 10 #dcdcdc
-#000000 #000000;
-#X text 24 448 Pd also provides a suite of user-friendly filters. This
+#X obj 79 282 czero~ 0.9 0.4;
+#X obj 16 12 czero_rev~;
+#X text 94 347 y[n] = - a[n] * x[n] + x[n-1];
+#X text 57 414 The transfer function is H(Z) = -a + Z^-1.;
+#X text 155 209 <= signal to filter (imaginary part);
+#X text 187 234 <= filter coefficient (real part);
+#X text 217 257 <= filter coefficient (imaginary part);
+#X text 197 282 <= creation arguments initialize filter;
+#X text 125 129 <= signal to filter (real part);
+#X text 41 324 The action of czero_rev~ is:;
+#X obj 87 622 lop~;
+#X text 8 623 see also:;
+#X obj 170 555 rzero~;
+#X obj 110 578 cpole~;
+#X obj 110 555 rpole~;
+#X obj 230 555 rzero_rev~;
+#X obj 170 578 czero~;
+#X obj 230 578 czero_rev~;
+#X text 309 555 real;
+#X text 308 577 complex;
+#X text 107 536 1-pole;
+#X text 167 536 1-zero;
+#X text 234 520 1-zero \, reversed, f 8;
+#X text 16 560 summary of raw filters:, f 12;
+#X obj 128 622 hip~;
+#X obj 169 622 bp~;
+#X obj 204 622 vcf~;
+#X text 285 622 - user-friendly filters;
+#X obj 245 622 bob~;
+#X text 15 448 Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory (click) =>, f 69;
-#X obj 19 653 biquad~;
-#X text 194 653 - not so friendly;
+#X obj 10 653 biquad~;
+#X text 184 652 - not so friendly;
 #N canvas 798 148 456 264 Read-More 0;
 #X obj 11 59 inlet;
 #X obj 11 190 pdcontrol;
@@ -141,14 +130,70 @@ for an introduction to the necessary theory (click) =>, f 69;
 ;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X restore 381 528 pd Read-More;
-#X obj 80 652 fexpr~;
-#X obj 135 652 slop~, f 7;
-#X text 351 652 updated for Pd version 0.38;
+#X restore 372 528 pd Read-More;
+#X obj 71 652 fexpr~;
+#X obj 126 652 slop~, f 7;
+#X text 329 652 updated for Pd version 0.38;
+#X obj 5 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 612 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 782 118 569 409 reference 0;
+#X obj 25 12 czero_rev~;
+#X text 105 11 - complex one-zero "reverse" filter;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 245 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 382 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 326 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 117 81 signal -;
+#X text 180 81 signal to filter (real part)., f 49;
+#X text 117 149 signal -;
+#X text 180 149 signal to filter (imaginary part)., f 49;
+#X text 117 182 signal -;
+#X text 117 212 signal -;
+#X text 180 212 filter coefficient (imaginary part)., f 49;
+#X text 180 182 filter coefficient (real part)., f 49;
+#X text 124 119 clear -;
+#X text 180 99 set internal state (real and imaginary part)., f 49
+;
+#X text 180 119 clear internal state to zero (same as "set 0 0").;
+#X text 71 353 1) list - real and imaginary part of coefficient (default
+0 0)., f 64;
+#X text 117 301 signal - filtered signal \, imaginary part.;
+#X text 117 275 signal - filtered signal \, real part.;
+#X text 33 99 set <float \, float> -;
+#X obj 7 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 142 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 175 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 206 cnv 1 550 1 empty empty 4th: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 269 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 297 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 366 11 pd reference;
+#X text 460 11 <= click;
+#X text 96 11 - complex one-zero "reverse" filter;
+#X text 27 44 Czero_rev~ filters a complex audio signal (first two
+inlets) via a raw one-zero (non-reccursive) filter \, whose coefficients
+are controlled by creation arguments or by another complex audio signal
+(remaining two inlets). The impulse response is that of "rzero" reversed
+in time., f 64;
+#X text 123 154 <= clear internal state (last samples) to zero;
+#X text 176 182 <= set internal state (real &i maginary parts);
+#X obj 372 495 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;
 #X connect 3 0 9 1;
 #X connect 4 0 9 2;
 #X connect 5 0 9 3;
 #X connect 7 0 9 0;
-#X connect 42 0 46 0;
+#X connect 53 0 41 0;

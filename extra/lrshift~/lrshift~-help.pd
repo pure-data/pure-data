@@ -1,33 +1,54 @@
-#N canvas 695 83 620 378 12;
-#X msg 304 300 bang;
-#X obj 280 325 print~;
-#X msg 169 301 bang;
-#X obj 145 325 print~;
-#X msg 32 261 bang;
-#X obj 32 325 print~;
-#X text 99 273 shift left, f 5;
-#X text 231 274 shift right, f 6;
-#X obj 145 275 lrshift~ 1;
-#X obj 280 274 lrshift~ -1;
-#X text 47 50 Acting at whatever vector size the window is running
+#N canvas 620 66 653 405 12;
+#X msg 288 291 bang;
+#X obj 265 326 print~;
+#X msg 154 292 bang;
+#X obj 130 326 print~;
+#X msg 73 289 bang;
+#X obj 54 326 print~;
+#X text 84 244 shift left, f 5;
+#X text 216 245 shift right, f 6;
+#X obj 130 246 lrshift~ 1;
+#X obj 265 245 lrshift~ -1;
+#X text 41 58 Acting at whatever vector size the window is running
 at \, lrshift~ shifts samples to the left (toward the beginning sample)
 or to the right. The argument gives the direction and the amount of
 the shift. The rightmost (or leftmost) samples are set to zero., f
-68;
+81;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array shiftin 64 float 1;
 #A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
-#X coords 0 1 63 0 200 140 1 0 0;
-#X restore 390 147 graph;
-#X obj 145 208 tabreceive~ shiftin;
-#X obj 78 11 lrshift~;
-#X text 146 11 - shift signal vector elements left or right;
-#X msg 164 150 \; pd dsp \$1;
-#X obj 164 127 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X coords 0 1 63 0 250 140 1 0 0;
+#X restore 384 158 graph;
+#X obj 55 175 tabreceive~ shiftin;
+#X obj 38 11 lrshift~;
+#X text 106 11 - shift signal vector elements left or right;
+#X msg 236 148 \; pd dsp \$1;
+#X obj 236 125 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 186 125 DSP on/off;
-#X text 399 323 Updated for Pd versin 0.31.;
+#X text 258 123 DSP on/off;
+#X text 562 10 <= click;
+#N canvas 767 120 572 199 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 91 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 132 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 169 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 35 19 lrshift~;
+#X text 103 19 - shift signal vector elements left or right;
+#X text 138 63 signal - input signal vector to shift., f 53;
+#X text 116 143 1) float - shift amount \, positive or negative (default
+0).;
+#X text 138 102 signal - shifted signal vector., f 53;
+#X restore 468 11 pd reference;
+#X obj 5 42 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 360 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 418 375 Updated for Pd version 0.31.;
 #X connect 0 0 1 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;

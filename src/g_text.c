@@ -1761,4 +1761,5 @@ void g_text_setup(void)
         A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
+    class_sethelpsymbol(gatom_class, gensym("gui-boxes"));
 }

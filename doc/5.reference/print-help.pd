@@ -1,21 +1,48 @@
-#N canvas 616 127 506 391 12;
-#X msg 185 56 walk the dog;
-#X msg 96 56 bang;
-#X msg 143 55 234;
-#X obj 143 101 print x1;
-#X obj 54 12 print;
-#X obj 197 279 print -n;
-#X floatatom 197 254 5 0 0 0 - - - 0;
-#X text 106 12 - print messages to terminal window;
-#X text 50 329 see also:;
-#X obj 130 329 print~;
-#X text 264 328 updated for Pd version 0.52;
-#X text 39 139 Print prints out the messages it receives on the "terminal
+#N canvas 534 27 539 425 12;
+#X msg 185 79 walk the dog;
+#X msg 96 79 bang;
+#X msg 143 78 234;
+#X obj 143 124 print x1;
+#X obj 21 12 print;
+#X obj 326 314 print -n;
+#X floatatom 326 289 5 0 0 0 - - - 0;
+#X text 68 12 - print messages to terminal window;
+#X text 21 379 see also:;
+#X obj 101 379 print~;
+#X text 318 380 updated for Pd version 0.52;
+#X text 39 162 Print prints out the messages it receives on the "terminal
 window" that Pd is run from. If no argument is given \, the message
 has a "print:" prefix. Any message as an argument is used as the prefix
-instead (so you can differentiate between different printouts).;
-#X text 38 219 With the special "-n" flag the default "print:" prefix
-is suppressed:;
+instead (so you can differentiate between different printouts)., f
+66;
+#X text 40 294 With the special "-n" flag the default "print:" prefix
+is suppressed:, f 38;
+#X text 38 234 You can also do command/control + click on the terminal
+window and the corresponding [print] object will be selected in your
+patch., f 66;
+#N canvas 708 126 592 223 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 101 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 138 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 195 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 126 111 NONE, f 54;
+#X text 106 67 anything - any message to print into the terminal window.
+;
+#X obj 37 15 print;
+#X text 84 15 - print messages to terminal window;
+#X text 120 146 1) anything -, f 13;
+#X text 219 146 message to distinct one [print] from another (default
+'print:'). Optionally \, use '-n' for no messages., f 44;
+#X restore 354 12 pd reference;
+#X text 452 13 <= click;
+#X obj 8 49 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 366 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;

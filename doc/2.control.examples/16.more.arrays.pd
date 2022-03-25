@@ -1,4 +1,4 @@
-#N canvas 593 88 880 716 12;
+#N canvas 343 23 880 675 12;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array97 5 float 1;
 #A 0 0.486666 0.126666 0.566675 0.0333376 0.5;
@@ -23,12 +23,6 @@ or vice versa:, f 37;
 #X floatatom 538 493 5 1 10 0 - - - 0;
 #X floatatom 712 496 5 0 0 0 - - - 0;
 #X msg 712 522 \; array98 color \$1;
-#X text 487 214 You can put more than one array in a single "graph"
-(which is Pd's name for the bounding rectangle \, and is a synonym
-for "canvas".) Arrays' sizes need not match the bounds of the containing
-graph. But if you resize an array \, and if it is the only array contained
-in a graph \, then the graph automaticallly resets its bounds to match.
-, f 51;
 #X text 25 342 Adding x and y labels: give a point to put a tick \,
 the interval between ticks \, and the number of ticks overall per large
 tick.;
@@ -99,14 +93,20 @@ used as a send. This is because "\$0" doesn't get expanded in messages.
 #X text 515 589 set display style;
 #X msg 683 645 \; array97 edit \$1 \; array98 edit \$1;
 #X text 61 671 last updated for version 0.52.;
+#X text 487 214 You can put more than one array in a single "graph"
+(which is Pd's name for the bounding rectangle \, and is a synonym
+for "canvas".) Arrays' sizes need not match the bounds of the containing
+graph. But if you resize an array \, and if it is the only array contained
+in a graph \, then the graph automatically resets its bounds to match.
+, f 51;
 #X connect 5 0 6 0;
-#X connect 7 0 38 0;
-#X connect 9 0 28 0;
+#X connect 7 0 37 0;
+#X connect 9 0 27 0;
 #X connect 11 0 10 0;
 #X connect 12 0 13 0;
+#X connect 15 0 12 0;
 #X connect 16 0 12 0;
 #X connect 17 0 12 0;
-#X connect 18 0 12 0;
-#X connect 28 0 8 0;
-#X connect 41 0 47 0;
-#X connect 42 0 47 0;
+#X connect 27 0 8 0;
+#X connect 40 0 46 0;
+#X connect 41 0 46 0;

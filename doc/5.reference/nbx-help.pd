@@ -1,32 +1,30 @@
-#N canvas 650 39 547 639 12;
-#X floatatom 183 329 7 0 0 0 - - - 0;
-#X msg 233 243 set \$1;
-#X obj 152 231 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
+#N canvas 561 28 539 607 12;
+#X floatatom 179 332 7 0 0 0 - - - 0;
+#X msg 229 246 set \$1;
+#X obj 148 234 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
 #000000 #000000;
-#X obj 183 361 print nbx;
-#X floatatom 183 231 5 0 0 0 - - - 0;
-#X floatatom 233 220 5 0 0 0 - - - 0;
-#X obj 183 289 nbx 5 18 -100 100 0 0 empty empty Number\\\ box 80 10
+#X obj 179 364 print nbx;
+#X floatatom 179 234 5 0 0 0 - - - 0;
+#X floatatom 229 223 5 0 0 0 - - - 0;
+#X obj 179 292 nbx 5 18 -100 100 0 0 empty empty Number\\\ box 80 10
 0 14 #dcdcdc #000000 #740000 0 256;
-#X obj 60 22 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
+#X obj 29 15 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
 #fcfcfc #000000 #000000 0 256;
-#X text 133 23 - [my_numbox]/[nbx]- Number box;
-#X text 321 399 (c) musil@iem.kug.ac.at;
-#X text 357 415 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 34 474 see also:;
-#X obj 108 474 x_all_guis;
-#X text 66 400 This object is part of the "iemguis" library \, natively
+#X text 317 402 (c) musil@iem.kug.ac.at;
+#X text 353 418 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 13 571 see also:;
+#X text 62 403 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 58 289 click & drag ==> (shift-click for fine tuning). Right
+#X text 54 292 click & drag ==> (shift-click for fine tuning). Right
 click for properties., f 16;
-#X text 28 56 The number box is a GUI (Graphical User Interface) that
+#X text 24 59 The number box is a GUI (Graphical User Interface) that
 sends numbers. Click on it and drag to output values - use shift-click
 and drag for fine-tuning by a factor of a hundredth. You can also click
 on the object \, type a number value and then 'enter' to output it.
 Incoming floats set the number box's value and are passed through.
 The 'set' message only sets the value without output. A bang message
 sends the number box's value., f 70;
-#X text 28 156 Insert it from the Put menu (named as "Number2") or
+#X text 24 159 Insert it from the Put menu (named as "Number2") or
 its shortcut. Alternatively \, create it by typing "my_numbox" or "nbx"
 into an object box. Right click for properties (to set size \, colors
 \, labels \, etc)., f 70;
@@ -71,7 +69,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 21 0;
 #X connect 17 0 21 0;
 #X connect 22 0 3 0;
-#X restore 404 311 pd position;
+#X restore 400 314 pd position;
 #N canvas 521 172 367 380 properties 0;
 #N canvas 839 56 656 573 colors 0;
 #X floatatom 72 244 3 0 29 0 - - - 0;
@@ -436,7 +434,7 @@ set it directly via the properties window., f 50;
 #X obj 536 217 s \$0-nbx;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
@@ -561,9 +559,7 @@ parameters are: width \, height \, lower and upper range \, log height
 49;
 #X restore 162 316 pd loading-args;
 #X text 57 285 Loading arguments in properties:;
-#X restore 390 283 pd properties;
-#X floatatom 108 503 5 0 0 0 - - - 0;
-#X text 150 503 <= atom number box;
+#X restore 386 286 pd properties;
 #N canvas 922 193 408 425 example-discrete 0;
 #X floatatom 86 177 8 0 0 0 - - - 0;
 #X obj 86 331 print fixed-steps;
@@ -607,13 +603,58 @@ box in a discrete way., f 34;
 #X connect 3 0 2 1;
 #X connect 4 0 7 0;
 #X connect 7 0 3 0;
-#X restore 350 337 pd example-discrete;
-#X text 315 503 updated for Pd version 0.52;
-#X text 37 546 ATTENTION: As of Pd 0.52 \, the plan is to stop supporting
+#X restore 346 340 pd example-discrete;
+#X text 324 571 updated for Pd version 0.52;
+#X text 31 465 ATTENTION: As of Pd 0.52 \, the plan is to stop supporting
 this object in favor of the atom number box \, which now also offers
 different sizes. More similar functionalities will be implemented in
 the atom number box and eventually [nbx] will be deprecated and removed
 from the Put Menu (but kept around)., f 68;
+#X obj 137 572 all_guis;
+#X text 99 15 - [my_numbox]/[nbx] - Number box;
+#N canvas 671 90 663 436 reference 1;
+#X obj 8 52 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X text 118 184 label <symbol> - sets label symbol., f 72;
+#X text 42 203 label_font <float \, float> -;
+#X text 49 235 label_pos <float \, float> -;
+#X text 237 234 sets label position., f 55;
+#X obj 7 410 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 125 284 send <symbol> - sets send symbol., f 71;
+#X text 97 303 recceive <symbol> - sets receive symbol., f 75;
+#X text 133 253 color <list> -;
+#X text 237 252 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 237 202 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 90 322 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 77 341 delta <float \, float> -;
+#X text 237 340 changes the position by a x/y delta in pixels., f
+55;
+#X text 181 63 float - set and output number., f 63;
+#X text 132 149 init <float> - non zero sets to init mode., f 70;
+#X obj 7 369 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
+0;
+#X text 76 97 range <float \, float> - sets minimum and maximum range.
+, f 78;
+#X text 195 114 lin - sets mode to linear., f 61;
+#X text 195 131 log - sets mode to logarthmic., f 61;
+#X obj 43 18 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 12
+#fcfcfc #000000 #000000 0 256;
+#X text 116 19 - [my_numbox]/[nbx] - Number box;
+#X text 132 80 size <float> - sets the GUI size., f 70;
+#X text 90 166 log_height <float> - sets vertical range in pixels for
+the log mode., f 76;
+#X text 181 382 float - number box value., f 63;
+#X restore 356 16 pd reference;
+#X text 449 16 <= click;
+#X obj 6 48 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 557 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X floatatom 87 572 5 0 0 0 - - - 0;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;

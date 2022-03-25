@@ -1,7 +1,7 @@
-#N canvas 698 43 531 566 12;
-#X obj 87 247 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#N canvas 450 71 529 560 12;
+#X obj 85 250 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
-#X obj 114 310 tgl 55 0 empty empty Big\\\ Toggle 63 26 2 16 #dcdcdc
+#X obj 112 313 tgl 55 0 empty empty Big\\\ Toggle 63 26 2 16 #dcdcdc
 #b40000 #000084 0 1;
 #N canvas 568 187 676 290 old-behavior 0;
 #X floatatom 38 57 5 0 0 0 - - - 0;
@@ -31,9 +31,9 @@ to change the nonzero value.;
 #X connect 8 0 6 0;
 #X connect 9 0 6 0;
 #X connect 10 0 6 0;
-#X restore 341 406 pd old-behavior;
-#X floatatom 114 379 4 0 0 0 - - - 0;
-#X obj 48 17 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+#X restore 339 409 pd old-behavior;
+#X floatatom 112 382 4 0 0 0 - - - 0;
+#X obj 38 12 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
 0 1;
 #N canvas 564 216 614 464 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
@@ -76,8 +76,8 @@ in the patch. Check below:, f 41;
 #X connect 14 0 22 0;
 #X connect 17 0 22 0;
 #X connect 18 0 3 0;
-#X restore 378 240 pd position;
-#N canvas 445 197 357 405 properties 0;
+#X restore 376 243 pd position;
+#N canvas 444 196 357 405 properties 0;
 #N canvas 805 54 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - - 0;
 #X floatatom 107 244 3 0 29 0 - - - 0;
@@ -489,7 +489,7 @@ set it directly via the properties window., f 50;
 #X msg 550 175 1;
 #X text 437 96 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;
@@ -540,25 +540,23 @@ toggle \, which is the value it outputs when it's on., f 27;
 #X connect 7 0 1 0;
 #X connect 8 0 2 0;
 #X restore 151 128 pd nonzero;
-#X restore 364 212 pd properties;
-#X text 78 16 - [toggle]/[tgl]: Toggle Button;
-#X text 209 251 change state without output, f 14;
-#X text 37 240 change state, f 6;
-#X text 274 444 (c) musil@iem.kug.ac.at;
-#X text 310 460 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 69 514 see also:;
-#X obj 143 515 x_all_guis;
-#X text 64 445 This object is part of the "iemguis" library \, natively
+#X restore 362 215 pd properties;
+#X text 68 11 - [toggle]/[tgl]: Toggle Button;
+#X text 207 254 change state without output, f 14;
+#X text 35 243 change state, f 6;
+#X text 272 447 (c) musil@iem.kug.ac.at;
+#X text 308 461 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 69 521 see also:;
+#X text 62 446 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 280 514 updated for Pd version 0.51;
-#X obj 114 409 print tgl;
-#X text 26 137 Insert it from the Put menu (named as "Toggle") or its
+#X text 280 521 updated for Pd version 0.51;
+#X obj 112 412 print tgl;
+#X text 24 142 Insert it from the Put menu (named as "Toggle") or its
 shortcut. Alternatively \, create it by typing "toggle" or "tgl" into
 an object box. Right click for properties (to set size \, colors \,
 labels \, etc)., f 67;
-#X floatatom 114 247 4 0 0 0 - - - 0;
-#X msg 157 245 set 1;
-#X msg 161 268 set 0;
+#X floatatom 112 250 4 0 0 0 - - - 0;
+#X msg 159 271 set 0;
 #N canvas 667 86 415 450 examples 0;
 #X obj 82 67 tgl 30 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
 0 1;
@@ -593,24 +591,63 @@ on \, and then zero value to turn it off. For instance \, "metro" and
 #X connect 9 0 12 0;
 #X connect 10 0 9 1;
 #X connect 11 0 9 0;
-#X restore 378 270 pd examples;
-#X text 26 49 The toggle button is a GUI (Graphical User Interface)
+#X restore 376 273 pd examples;
+#X text 24 54 The toggle button is a GUI (Graphical User Interface)
 object that outputs number values alternating between 0 (when off)
 and a non zero value when on (default 1). It changes its state via
 clicks and also when receiving bang messages. Floats are passed through
 and the object changes its state when alternating between zero and
 nonzero values. A set message changes the state without output., f
 67;
-#X text 301 311 COMPATIBILITY NOTE: as of Pd 0.46 \, sending numbers
+#X text 299 314 COMPATIBILITY NOTE: as of Pd 0.46 \, sending numbers
 through a toggle no longer resets the "nonzero" value. See how to get
 the old behavior back:, f 26;
-#X msg 114 206 1;
-#X msg 146 208 0;
+#X msg 112 209 1;
+#X msg 144 211 0;
+#X obj 143 522 all_guis;
+#X obj 12 41 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 691 139 590 385 reference 0;
+#X obj 18 43 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 317 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 355 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 75 113 size <float> - set size in pixels., f 65;
+#X text 76 151 init <float> - non zero sets to init mode., f 56;
+#X text 61 207 label <symbol> - set label., f 67;
+#X text 48 188 receive <symbol> - set receive symbol name., f 60;
+#X text 69 170 send <symbol> - set send symbol name., f 57;
+#X text 40 226 label_font <f \, f> -;
+#X text 180 226 set label type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 47 258 label_pos <f \, f> - set label's x/y position., f 69
+;
+#X text 75 278 color <list> -;
+#X text 180 278 set colors of background \, front and label. Symbols
+for hexadecimal values or floats for presets., f 50;
+#X obj 42 10 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X text 69 9 - [toggle]/[tgl]: Toggle Button.;
+#X text 124 74 float - values pass through (non zero activates toggle).
+, f 58;
+#X text 131 54 bang - changes toggle's state., f 57;
+#X text 122 326 float -;
+#X text 178 326 zero and non-zero value depending on state.;
+#X text 54 132 nonzero <float> - set non-zero value (default 1).;
+#X text 82 94 set <float> - zero sets to off \, non-zero sets to on
+(no output)., f 64;
+#X restore 395 11 pd reference;
+#X text 327 11 click =>;
+#X obj 12 508 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X msg 155 248 set 14;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
-#X connect 3 0 16 0;
+#X connect 3 0 15 0;
+#X connect 17 0 1 0;
 #X connect 18 0 1 0;
-#X connect 19 0 1 0;
-#X connect 20 0 1 0;
-#X connect 24 0 18 0;
-#X connect 25 0 18 0;
+#X connect 22 0 17 0;
+#X connect 23 0 17 0;
+#X connect 29 0 1 0;

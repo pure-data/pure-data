@@ -1,30 +1,52 @@
-#N canvas 473 40 514 281 12;
-#N canvas 345 476 491 176 help-template1 0;
+#N canvas 527 75 606 283 12;
+#N canvas 273 255 491 176 help-template1 0;
 #X obj 60 21 struct struct-1 float x float y symbol dog array weasel
 struct-2, f 42;
 #X text 40 76 In this example \, the "struct-1" structure is defined
 in which "x" and "y" are "floats" \, i.e. \, numbers \, but "dog" is
 a symbol and "weasel" is an array of objects of structure "struct-2".
 , f 56;
-#X restore 338 162 pd help-template1;
-#N canvas 427 361 463 166 help-template2 0;
+#X restore 179 162 pd help-template1;
+#N canvas 742 271 463 166 help-template2 0;
 #X text 26 74 Here is one which specifies only the floating point "y"
 \; it's used for the elements of the array shown in the other template.
 , f 57;
 #X obj 87 23 struct struct-2 float y;
-#X restore 338 189 pd help-template2;
-#X obj 56 169 drawpolygon;
-#X text 56 149 see also:;
-#X obj 151 169 drawnumber;
-#X obj 236 170 plot;
-#X text 299 236 updated for Pd version 0.35;
-#X obj 35 16 struct;
-#X text 30 55 There should be one "struct" object in each Pd window
+#X restore 318 162 pd help-template2;
+#X text 381 246 updated for Pd version 0.35;
+#X obj 24 15 struct;
+#X text 83 16 - declare the fields in a data structure.;
+#X text 25 246 see also:;
+#X obj 99 247 drawpolygon;
+#X obj 190 247 drawtext;
+#X obj 260 247 plot;
+#X obj 6 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 48 64 There should be one "struct" object in each Pd window
 you are using as a data structure template. The arguments specify the
-types and names of the fields \; and for array fields \, a third argument
-specifies the template that the array elements should belong to.;
-#X text 93 18 - declare the fields in a data structure.;
-#X text 43 222 see also:;
-#X obj 47 249 drawpolygon;
-#X obj 138 249 drawtext;
-#X obj 208 249 plot;
+types and names of the fields. For array fields \, a third argument
+specifies the template that the array elements should belong to.,
+f 71;
+#X obj 6 227 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 549 137 633 263 reference 0;
+#X obj 8 52 cnv 5 600 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 97 cnv 2 600 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 170 cnv 2 600 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 237 cnv 5 600 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 98 17 - declare the fields in a data structure.;
+#X text 91 194 1) list -;
+#X text 165 194 template name plus types and names of given fields
+(array fields also need the array's template name)., f 59;
+#X text 84 110 anything -;
+#X text 167 109 messages notifying when there are interactions with
+objects of the structure ('select' \, 'deselect' \, 'click' \, 'displace'
+and 'change').;
+#X obj 29 16 struct x;
+#X text 145 65 NONE;
+#X restore 491 16 pd reference;
+#X text 426 16 click =>;

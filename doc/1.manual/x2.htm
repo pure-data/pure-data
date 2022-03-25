@@ -47,7 +47,7 @@ for defining and accessing data structures.
 <H3> <A id=s1.1> 2.1.1. the main window, canvases, and printout </A> </H3>
 
 <P>When Pd is running, you'll see a main "Pd" window, and possibly one or more
-"canvases" or "patches".   The main Pd window looks like this:
+"canvases" or "patches". The main Pd window looks like this:
 
 <CENTER><P>
     <IMG src="fig1.1.png" ALT="pd window">
@@ -1106,16 +1106,16 @@ color is given as 0, or black.  The second one plots "pitch" using the color
 <H3> <A id="s9.1"> 2.9.1. Traversal </A> </H3>
 
 <P> Pd objects are provided to traverse lists and arrays, and to address
-elements of data structures for getting and setting.  Here is a patch showing
+elements of data structures for getting and setting. Here is a patch showing
 how these facilities could be used, for example, to sequence the graphical
 score shown above:
 
 <CENTER><P>  <IMG src="fig9.3.jpg" ALT="traversal example patch">  </P></CENTER>
 
 <P> Pd has no built-in sequencer, nor even any notion that "x" values should be
-used as a time axis.  (However, a "sort" function is provided, which reorders
+used as a time axis. (However, a "sort" function is provided, which reorders
 a list from left to right, on the assumption that users might often want to use Pd
-data collections as x-ordered sequences.)  Recording sequences of events into
+data collections as x-ordered sequences.) Recording sequences of events into
 lists, and/or playing the lists back as sequences, are functionalities that the
 user is expected to supply on top of Pd's offerings, which, it is hoped, would
 allow those functionalities within a much larger range of possibilities, to
@@ -1123,13 +1123,12 @@ include random re-orderings of events, score following, self-modifying scores,
 reactive improvisation, and perhaps much more.
 
 <P> Traversal of data is made possible by adding a new type of atom, "pointer",
-to  the two previously defined types that make up messages, to wit, numbers and
-symbols.  Unlike numbers and symbols, pointers have no printed form and thus
-can't be uttered in message boxes.  Traversal objects such as "pointer" and
-"get" (among several others) can generate or use pointers.  The pointer data
+to the two previously defined types that make up messages (numbers and symbols).
+Unlike numbers and symbols, pointers have no printed form and thus can't be
+uttered in message boxes. Traversal objects such as "pointer" and "get"
+(among several others) can generate or use pointers. The pointer data
 type is also integrated into pipe-fitting objects such as "pack",
-"unpack",
-and "route".
+"unpack", and "route".
 
 <P>  In the patch shown above, the topmost "pointer" object holds a pointer to
 the next object to "play" (by sending it to one of the "voice"

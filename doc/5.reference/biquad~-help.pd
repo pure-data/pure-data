@@ -1,58 +1,85 @@
-#N canvas 759 122 578 569 12;
-#X obj 33 18 biquad~;
-#X obj 161 334 env~;
-#X floatatom 161 365 6 0 0 0 - - - 0;
-#X floatatom 62 203 5 0 0 0 - - - 0;
-#X obj 62 334 env~;
-#X floatatom 62 365 6 0 0 0 - - - 0;
-#X text 87 395 Compare the value of the straight signal on the left
+#N canvas 564 29 565 554 12;
+#X obj 152 327 env~;
+#X floatatom 152 358 6 0 0 0 - - - 0;
+#X floatatom 53 196 5 0 0 0 - - - 0;
+#X obj 53 327 env~;
+#X floatatom 53 358 6 0 0 0 - - - 0;
+#X text 78 388 Compare the value of the straight signal on the left
 with the value of the filtered signal on the right.;
-#X obj 161 304 biquad~ 1.41407 -0.9998 1 -1.41421 1;
-#X msg 161 200 1.41407 -0.9998 1 -1.41421 1;
-#X text 47 88 y(n) = ff1 * w(n) + ff2 * w(n-1) + ff3 * w(n-2);
-#X text 47 105 w(n) = x(n) + fb1 * w(n-1) + fb2 * w(n-2);
-#X msg 195 266 clear;
-#X obj 62 249 osc~ 5512.5;
-#X text 236 330 this biquad~ is a notch filter for;
-#X text 232 347 fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k);
-#X msg 450 181 \; pd dsp \$1;
-#X obj 450 156 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 152 297 biquad~ 1.41407 -0.9998 1 -1.41421 1;
+#X msg 152 193 1.41407 -0.9998 1 -1.41421 1;
+#X text 41 81 y(n) = ff1 * w(n) + ff2 * w(n-1) + ff3 * w(n-2);
+#X text 41 98 w(n) = x(n) + fb1 * w(n-1) + fb2 * w(n-2);
+#X msg 186 259 clear;
+#X obj 53 242 osc~ 5512.5;
+#X text 227 323 this biquad~ is a notch filter for;
+#X text 223 340 fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k);
+#X msg 429 160 \; pd dsp \$1;
+#X obj 429 135 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 473 155 DSP on/off;
-#X text 95 17 - a 2nd order (2-pole / 2-zero) filter;
-#X text 46 65 Biquad~ calculates the following difference equation:
+#X text 452 134 DSP on/off;
+#X text 40 58 Biquad~ calculates the following difference equation:
 ;
-#X text 349 495 updated for Pd version 0.30.;
-#X text 57 462 see also:;
-#X obj 188 487 rzero~;
-#X obj 131 510 cpole~;
-#X obj 131 487 rpole~;
-#X obj 245 487 rzero_rev~;
-#X obj 188 510 czero~;
-#X obj 245 510 czero_rev~;
-#X obj 131 537 lop~;
-#X obj 172 537 hip~;
-#X obj 214 537 bp~;
-#X obj 251 537 vcf~;
-#X obj 296 537 bob~;
-#X text 23 498 raw filters =>;
-#X text 337 537 <= user-friendly filters;
-#X obj 131 462 fexpr~;
-#X obj 186 462 slop~, f 7;
-#X text 45 132 The filter's coefficients syntax (set via arguments
-or list input) is: fb1 fb2 ff1 ff2 ff3, f 54;
-#X text 268 227 set internal state (previous input samples), f 24
+#X text 39 125 The filter's coefficients syntax (set via arguments
+or list input) is: fb1 fb2 ff1 ff2 ff3, f 51;
+#X text 259 220 set internal state (previous input samples), f 24
 ;
-#X msg 180 235 set 0.5 0.4;
-#X text 243 266 or clear memory (same as 'set 0 0').;
-#X text 158 178 list sets filter's parameters;
-#X connect 1 0 2 0;
-#X connect 3 0 12 0;
-#X connect 4 0 5 0;
-#X connect 7 0 1 0;
-#X connect 8 0 7 0;
-#X connect 11 0 7 0;
-#X connect 12 0 4 0;
-#X connect 12 0 7 0;
-#X connect 16 0 15 0;
-#X connect 39 0 7 0;
+#X msg 171 228 set 0.5 0.4;
+#X text 234 259 or clear memory (same as 'set 0 0').;
+#X text 149 171 list sets filter's parameters;
+#X obj 21 14 biquad~;
+#X text 83 13 - a 2nd order (2-pole / 2-zero) filter;
+#X text 348 521 updated for Pd version 0.30.;
+#X obj 5 45 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 732 181 586 254 reference 0;
+#X obj 18 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 148 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 185 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 229 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 39 16 biquad~;
+#X text 101 15 - a 2nd order (2-pole / 2-zero) filter;
+#X text 121 60 signal - input signal to be filtered., f 59;
+#X text 135 79 list - input signal to be filtered (fb1 fb2 ff1 ff2
+ff3).;
+#X text 129 117 clear - clear filter's memory buffer., f 58;
+#X text 123 158 signal - the filtered signal output.;
+#X text 38 98 set <float \, float> - set last two input samples.,
+f 71;
+#X text 112 198 1) list - initializes the 5 coefficients (fb1 fb2 ff1
+ff2 ff3)., f 63;
+#X restore 387 13 pd reference;
+#X text 485 13 <= click;
+#X obj 6 435 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 48 451 see also:;
+#X obj 179 500 rzero~;
+#X obj 122 523 cpole~;
+#X obj 122 500 rpole~;
+#X obj 236 500 rzero_rev~;
+#X obj 179 523 czero~;
+#X obj 236 523 czero_rev~;
+#X obj 122 450 lop~;
+#X obj 163 450 hip~;
+#X obj 205 450 bp~;
+#X obj 240 450 vcf~;
+#X obj 280 450 bob~;
+#X text 14 511 raw filters =>;
+#X text 321 450 <= user-friendly filters;
+#X obj 122 475 fexpr~;
+#X obj 177 475 slop~, f 7;
+#X text 236 475 <= not friendly;
+#X connect 0 0 1 0;
+#X connect 2 0 11 0;
+#X connect 3 0 4 0;
+#X connect 6 0 0 0;
+#X connect 7 0 6 0;
+#X connect 10 0 6 0;
+#X connect 11 0 3 0;
+#X connect 11 0 6 0;
+#X connect 15 0 14 0;
+#X connect 20 0 6 0;

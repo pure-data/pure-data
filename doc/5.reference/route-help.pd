@@ -1,40 +1,39 @@
-#N canvas 471 89 1088 599 12;
-#X obj 177 340 print x1;
-#X obj 255 340 print x2;
-#X obj 333 340 print x3;
-#X obj 177 257 route 23 54 1, f 34;
-#X msg 160 150 234 345 456;
-#X msg 177 175 23 34 45;
-#X msg 200 225 54 43;
-#X msg 188 200 1 foo bar;
-#X msg 192 395 impeach ringo starr;
-#X obj 192 471 route big apple, f 27;
-#X msg 214 427 apple pie;
-#X msg 135 395 1 2 3;
-#X msg 297 433 big apple pie;
-#X msg 61 151 walk the dog;
-#X text 41 257 numeric arguments:;
-#X text 46 471 symbolic arguments:;
-#X obj 192 551 print y1;
-#X obj 285 551 print y2;
-#X obj 34 13 route;
-#X text 830 544 updated for Pd version 0.43;
-#X obj 651 202 route 4, f 10;
-#X msg 651 144 1 2 3;
-#X floatatom 718 174 5 0 0 0 - - - 0;
-#X msg 660 171 4 5 6;
-#X obj 412 340 print rejected;
-#X obj 378 551 print rejected;
-#X obj 851 195 route hi, f 10;
-#X msg 819 139 hi there;
-#X msg 851 167 see ya;
-#X symbolatom 918 167 6 0 0 0 - - - 0;
-#X msg 926 140 symbol see;
-#X obj 851 272 print s1;
-#X obj 918 272 print s2;
-#X text 88 14 - trim first element and route messages according to
+#N canvas 219 37 1034 611 12;
+#X obj 166 328 print x1;
+#X obj 244 328 print x2;
+#X obj 322 328 print x3;
+#X obj 166 247 route 23 54 1, f 34;
+#X msg 149 154 234 345 456;
+#X msg 166 179 23 34 45;
+#X msg 181 205 54 43;
+#X msg 230 206 1 foo bar;
+#X msg 261 411 impeach ringo starr;
+#X obj 171 440 route big apple, f 27;
+#X msg 171 380 apple pie;
+#X msg 118 380 1 2 3;
+#X msg 254 380 big apple pie;
+#X msg 50 155 walk the dog;
+#X text 30 247 numeric arguments:;
+#X text 25 440 symbolic arguments:;
+#X obj 171 520 print y1;
+#X obj 264 520 print y2;
+#X obj 26 13 route;
+#X text 788 573 updated for Pd version 0.43;
+#X msg 591 175 1 2 3;
+#X floatatom 658 205 5 0 0 0 - - - 0;
+#X msg 600 202 4 5 6;
+#X obj 401 328 print rejected;
+#X obj 357 520 print rejected;
+#X obj 791 226 route hi, f 10;
+#X msg 759 170 hi there;
+#X msg 791 198 see ya;
+#X symbolatom 858 198 6 0 0 0 - - - 0;
+#X msg 866 171 symbol see;
+#X obj 791 303 print s1;
+#X obj 861 303 print s2;
+#X text 80 14 - trim first element and route messages according to
 it;
-#N canvas 475 41 977 682 special-selectors/message-types 0;
+#N canvas 368 41 975 670 special-selectors/message-types 0;
 #X msg 415 111 bang;
 #X msg 518 166 5;
 #X msg 558 166 symbol pie;
@@ -123,7 +122,7 @@ for [route] and it matches to a bang input. Below we route messages
 according to its type. Note that we have a [list] object to give the
 'list' selector back in the case of list messages that start with a
 symbol. Note also that you can still use other symbols to route other
-mesages (as with 'pure' below)., f 75;
+messages (as with 'pure' below)., f 75;
 #X connect 0 0 29 0;
 #X connect 1 0 29 0;
 #X connect 2 0 29 0;
@@ -173,93 +172,133 @@ mesages (as with 'pure' below)., f 75;
 #X connect 60 0 56 0;
 #X connect 61 0 57 0;
 #X connect 63 0 62 0;
-#X restore 731 467 pd special-selectors/message-types;
-#X text 635 543 see also:;
-#X obj 713 544 select;
-#X text 578 308 In the case of messages that start with a symbol \,
+#X restore 733 506 pd special-selectors/message-types;
+#X text 21 573 see also:;
+#X obj 99 574 select;
+#X text 558 339 In the case of messages that start with a symbol \,
 the first element is also known as the 'selector' of the message. Hence
 \, [route] trims the selector of the message when it matches one of
-its symbol arguments., f 68;
-#X text 28 52 Route checks the first element of a message against each
+its symbol arguments., f 62;
+#X text 17 56 Route checks the first element of a message against each
 of its arguments \, which may be numbers or symbols (but not a mixture
 of the two). If a match is found \, the rest of the message appears
 on the corresponding outlet. If there's no match \, the message is
 repeated to the last "rejection" outlet. The number of outlets is the
 number of arguments plus one., f 74;
-#X text 579 379 There are exeptions though when we're dealing with
+#X text 559 410 There are ecxeptions though when we're dealing with
 special selectors that Pd deals with \, namely: list \, float \, symbol
 and bang. One byproduct of [route] is that it can also be used to route
 messages according to these types. Open the subpatch below for an example
-and more details, f 68;
-#X listbox 177 287 8 0 0 0 - - - 0;
-#X floatatom 255 285 5 0 0 0 - - - 0;
-#X obj 343 285 list;
-#X listbox 343 309 8 0 0 0 - - - 0;
-#X obj 422 284 list;
-#X listbox 422 308 14 0 0 0 - - - 0;
-#X obj 206 497 list;
-#X listbox 206 521 10 0 0 0 - - - 0;
-#X obj 297 497 list;
-#X listbox 297 521 10 0 0 0 - - - 0;
-#X obj 390 498 list;
-#X listbox 390 522 20 0 0 0 - - - 0;
-#X obj 651 253 print f1;
-#X obj 718 253 print f2;
-#X listbox 651 228 7 0 0 0 - - - 0;
-#X listbox 718 228 7 0 0 0 - - - 0;
-#X obj 862 222 symbol;
-#X symbolatom 862 246 6 0 0 0 - - - 0;
-#X obj 932 222 list;
-#X listbox 932 246 10 0 0 0 - - - 0;
-#X msg 918 114 symbol hi;
-#X text 594 32 If no argument is given \, [route] loads a float argument
+and more details, f 62;
+#X listbox 166 277 8 0 0 0 - - - 0;
+#X floatatom 244 275 5 0 0 0 - - - 0;
+#X obj 332 275 list;
+#X listbox 332 299 8 0 0 0 - - - 0;
+#X obj 411 274 list;
+#X listbox 411 298 14 0 0 0 - - - 0;
+#X obj 185 466 list;
+#X listbox 185 490 10 0 0 0 - - - 0;
+#X obj 276 466 list;
+#X listbox 276 490 10 0 0 0 - - - 0;
+#X obj 369 467 list;
+#X listbox 369 491 20 0 0 0 - - - 0;
+#X obj 591 284 print f1;
+#X obj 658 284 print f2;
+#X listbox 591 259 7 0 0 0 - - - 0;
+#X listbox 658 259 7 0 0 0 - - - 0;
+#X obj 802 253 symbol;
+#X symbolatom 802 277 6 0 0 0 - - - 0;
+#X obj 875 253 list;
+#X listbox 875 277 10 0 0 0 - - - 0;
+#X msg 858 145 symbol hi;
+#X text 574 63 If no argument is given \, [route] loads a float argument
 of 0 and creates a second inlet so you can change the argument value
 (to another float). In the same way \, a single symbol argument adds
 an inlet that expects a symbol message to change the argument., f
-64;
-#X connect 3 0 40 0;
-#X connect 3 1 41 0;
-#X connect 3 2 42 0;
+59;
+#X obj 5 45 cnv 1 1020 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 558 cnv 1 1020 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 752 101 560 362 reference 0;
+#X obj 4 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 4 157 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 4 291 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 3 334 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 4 78 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 2 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 66 117 float/symbol -;
+#X text 174 117 if there's one argument \, an inlet is created to update
+it., f 47;
+#X obj 4 188 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
+;
+#X text 77 161 (depends on the number of arguments);
+#X obj 4 228 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 112 256 when input doesn't match the arguments \, it is passed
+here., f 59;
+#X obj 27 13 route;
+#X text 81 14 - trim first element and route messages according to
+it.;
+#X text 94 83 anything - any message to route according to the first
+element., f 63;
+#X text 94 199 anything - routed message with the first element trimmed.
+, f 63;
+#X text 34 256 anything -;
+#X text 101 304 1) list - of floats or symbols to route to to (default
+0).;
+#X restore 851 14 pd reference;
+#X text 949 14 <= click;
+#X obj 591 233 route, f 10;
+#X connect 3 0 39 0;
+#X connect 3 1 40 0;
+#X connect 3 2 41 0;
 #X connect 3 2 2 0;
-#X connect 3 3 24 0;
-#X connect 3 3 44 0;
+#X connect 3 3 23 0;
+#X connect 3 3 43 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
 #X connect 6 0 3 0;
 #X connect 7 0 3 0;
 #X connect 8 0 9 0;
 #X connect 9 0 16 0;
-#X connect 9 0 46 0;
+#X connect 9 0 45 0;
 #X connect 9 1 17 0;
-#X connect 9 1 48 0;
-#X connect 9 2 25 0;
-#X connect 9 2 50 0;
+#X connect 9 1 47 0;
+#X connect 9 2 24 0;
+#X connect 9 2 49 0;
 #X connect 10 0 9 0;
 #X connect 11 0 9 0;
 #X connect 12 0 9 0;
 #X connect 13 0 3 0;
-#X connect 20 0 54 0;
-#X connect 20 1 55 0;
-#X connect 21 0 20 0;
-#X connect 22 0 20 1;
-#X connect 23 0 20 0;
-#X connect 26 0 31 0;
-#X connect 26 0 56 0;
-#X connect 26 1 32 0;
-#X connect 26 1 58 0;
-#X connect 27 0 26 0;
-#X connect 28 0 26 0;
-#X connect 29 0 26 1;
-#X connect 30 0 29 0;
-#X connect 40 0 0 0;
-#X connect 41 0 1 0;
-#X connect 42 0 43 0;
-#X connect 44 0 45 0;
-#X connect 46 0 47 0;
-#X connect 48 0 49 0;
-#X connect 50 0 51 0;
+#X connect 20 0 65 0;
+#X connect 21 0 65 1;
+#X connect 22 0 65 0;
+#X connect 25 0 30 0;
+#X connect 25 0 55 0;
+#X connect 25 1 31 0;
+#X connect 25 1 57 0;
+#X connect 26 0 25 0;
+#X connect 27 0 25 0;
+#X connect 28 0 25 1;
+#X connect 29 0 28 0;
+#X connect 39 0 0 0;
+#X connect 40 0 1 0;
+#X connect 41 0 42 0;
+#X connect 43 0 44 0;
+#X connect 45 0 46 0;
+#X connect 47 0 48 0;
+#X connect 49 0 50 0;
+#X connect 53 0 51 0;
 #X connect 54 0 52 0;
-#X connect 55 0 53 0;
-#X connect 56 0 57 0;
-#X connect 58 0 59 0;
-#X connect 60 0 29 0;
+#X connect 55 0 56 0;
+#X connect 57 0 58 0;
+#X connect 59 0 28 0;
+#X connect 65 0 53 0;
+#X connect 65 1 54 0;

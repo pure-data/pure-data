@@ -1,53 +1,90 @@
-#N canvas 659 66 551 450 12;
-#X text 321 400 updated for Pd version 0.25;
-#X text 43 400 see also:;
-#X obj 69 16 poly;
-#X obj 121 401 route;
-#X obj 175 401 makenote;
-#X obj 140 257 poly 4 1;
-#X obj 133 353 print;
-#X text 178 352 Output is in the printout window.;
-#X msg 209 225 stop;
-#X msg 198 199 clear;
-#X text 108 15 - MIDI-style polyphonic voice allocator;
-#X listbox 133 318 20 0 0 0 - - - 0;
-#X obj 133 287 pack f f f;
-#X text 210 257 <= first argument \, number of voices \; second argument
+#N canvas 549 25 570 450 12;
+#X text 341 415 updated for Pd version 0.25;
+#X text 43 413 see also:;
+#X obj 29 16 poly;
+#X obj 121 414 route;
+#X obj 175 414 makenote;
+#X obj 158 268 poly 4 1;
+#X obj 151 364 print;
+#X msg 227 236 stop;
+#X msg 216 210 clear;
+#X text 68 16 - MIDI-style polyphonic voice allocator;
+#X listbox 151 329 20 0 0 0 - - - 0;
+#X obj 151 298 pack f f f;
+#X text 228 268 <= first argument \, number of voices \; second argument
 selects voice stealing;
-#X text 231 170 <= emulating note on/off messages;
-#X msg 46 171 60 \$1;
-#X msg 93 171 62 \$1;
-#X msg 140 171 65 \$1;
-#X msg 188 171 69 \$1;
-#X obj 188 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 249 181 <= emulating note on/off messages;
+#X msg 64 182 60 \$1;
+#X msg 111 182 62 \$1;
+#X msg 158 182 65 \$1;
+#X msg 206 182 69 \$1;
+#X obj 206 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 64;
-#X obj 93 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 111 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 64;
-#X obj 140 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 158 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 64;
-#X obj 46 151 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 64 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 64;
-#X text 243 200 clear memory;
-#X text 248 225 flush hanging note on messages;
-#X text 33 47 The poly object takes a stream of pitch/velocity pairs
+#X text 261 211 clear memory;
+#X text 266 236 flush hanging note on messages;
+#X text 21 58 The poly object takes a stream of pitch/velocity pairs
 and outputs triples containing voice number \, pitch and velocity.
 You can pack the output and use the route object to route messages
 among a bank of voices depending on the first outlet. Another option
 is to connect it [clone] so you can route to different copies. Poly
-can be configured to do voice stealing or not (the default.), f 66
+can be configured to do voice stealing or not (the default.), f 74
 ;
-#X connect 5 0 12 0;
-#X connect 5 1 12 1;
-#X connect 5 2 12 2;
+#X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 800 147 484 391 reference 0;
+#X obj 8 52 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 313 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 370 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 155 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 85 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 27 18 poly;
+#X text 66 18 - MIDI-style polyphonic voice allocator.;
+#X text 131 93 float - MIDI pitch value., f 40;
+#X text 131 111 clear -;
+#X text 187 111 clear memory., f 32;
+#X text 138 129 stop -;
+#X text 187 129 flush hanging note on messages., f 32;
+#X text 132 162 float - set velocity value., f 40;
+#X obj 7 246 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 216 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 132 224 float - the voice number., f 40;
+#X obj 7 276 cnv 1 450 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 111 323 1) float - number of voices (default 1)., f 43;
+#X text 111 341 2) float - non-zero sets to voice stealing.;
+#X text 131 284 float - note velocitty., f 40;
+#X text 131 254 float - note pitch., f 40;
+#X restore 383 17 pd reference;
+#X text 477 17 <= click;
+#X obj 9 400 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 5 0 11 0;
+#X connect 5 1 11 1;
+#X connect 5 2 11 2;
+#X connect 7 0 5 0;
 #X connect 8 0 5 0;
-#X connect 9 0 5 0;
-#X connect 11 0 6 0;
-#X connect 12 0 11 0;
+#X connect 10 0 6 0;
+#X connect 11 0 10 0;
+#X connect 14 0 5 0;
 #X connect 15 0 5 0;
 #X connect 16 0 5 0;
 #X connect 17 0 5 0;
-#X connect 18 0 5 0;
-#X connect 19 0 18 0;
+#X connect 18 0 17 0;
+#X connect 19 0 15 0;
 #X connect 20 0 16 0;
-#X connect 21 0 17 0;
-#X connect 22 0 15 0;
+#X connect 21 0 14 0;

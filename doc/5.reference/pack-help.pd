@@ -1,57 +1,102 @@
-#N struct template1 float x float y float z float q;
-#N canvas 814 89 595 631 12;
-#X floatatom 72 160 6 0 0 0 - - - 0;
-#X msg 39 126 bang;
-#X floatatom 127 245 5 0 0 0 - - - 0;
-#X floatatom 237 272 5 0 0 0 - - - 0;
-#X obj 72 356 print;
-#X msg 182 245 symbol cat;
-#X obj 108 16 pack;
+#N canvas 562 39 595 622 12;
+#X floatatom 69 168 6 0 0 0 - - - 0;
+#X msg 36 134 bang;
+#X floatatom 124 253 5 0 0 0 - - - 0;
+#X floatatom 234 280 5 0 0 0 - - - 0;
+#X obj 69 364 print;
+#X msg 179 253 symbol cat;
+#X obj 48 16 pack;
 #X obj 114 582 unpack;
-#X msg 85 192 1 2 dog;
-#X text 147 16 - combine several atoms into one message;
-#X text 352 582 updated for Pd version 0.34;
+#X msg 82 200 1 2 dog;
+#X text 87 16 - combine several atoms into one message;
+#X text 352 584 updated for Pd version 0.34;
 #X text 37 582 See also:;
-#X text 152 189 <= you can also send a list as Pd distributes its elements
+#X text 149 197 <= you can also send a list as Pd distributes its elements
 to the corresponding inlets., f 45;
-#X obj 418 454 pack;
-#X obj 418 420 t b f;
-#X floatatom 418 394 6 0 0 0 - - - 0;
-#X floatatom 365 394 6 0 0 0 - - - 0;
-#X obj 418 507 print;
-#X obj 121 531 print;
-#X msg 121 400 a;
-#X obj 121 473 pack s f;
-#X floatatom 174 437 5 0 0 0 - - - 0;
-#X text 156 395 pack accepts 'anythings' in the left inlet, f 24;
-#X text 319 328 By default \, pack takes two floats. You can use trigger
+#X obj 415 454 pack;
+#X obj 415 420 t b f;
+#X floatatom 415 394 6 0 0 0 - - - 0;
+#X floatatom 362 394 6 0 0 0 - - - 0;
+#X obj 415 507 print;
+#X obj 118 531 print;
+#X msg 118 400 a;
+#X obj 118 473 pack s f;
+#X floatatom 171 437 5 0 0 0 - - - 0;
+#X text 153 395 pack accepts 'anythings' in the left inlet, f 24;
+#X text 316 328 By default \, pack takes two floats. You can use trigger
 to force an output on secondary inlets., f 34;
-#X text 28 459 abbreviated arguments =>, f 13;
-#X text 461 419 <= trigger;
-#X listbox 72 327 20 0 0 0 - - - 0;
-#X listbox 121 504 20 0 0 0 - - - 0;
-#X listbox 418 480 17 0 0 0 - - - 0;
-#X obj 72 298 pack 10 100 symbol float;
-#X text 286 242 <= numbers and symbols in the right inlets change the
+#X text 25 459 abbreviated arguments =>, f 13;
+#X text 458 419 <= trigger;
+#X listbox 69 335 20 0 0 0 - - - 0;
+#X listbox 118 504 20 0 0 0 - - - 0;
+#X listbox 415 480 17 0 0 0 - - - 0;
+#X obj 69 306 pack 10 100 symbol float;
+#X text 283 250 <= numbers and symbols in the right inlets change the
 values without causing output., f 30;
-#X text 80 126 <= outputs the packed elements;
-#X text 120 159 <= first inlet generates output;
+#X text 77 134 <= outputs the packed elements;
+#X text 117 167 <= first inlet generates output;
 #X obj 169 582 trigger;
-#N canvas 879 82 610 216 pointer 0;
-#X obj 189 146 ../4.data.structures/01.scalars;
-#X text 75 40 The [pack] object can pack a pointer into a list. A pointer
+#N canvas 545 128 559 219 pointer 0;
+#X text 55 22 The [pack] object can pack a pointer into a list. A pointer
 can be the location of a Data Structure scalar somewhere or the head
 of a Data Structure list. To know more about Data Structures \, how
 to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials. Starting with the first example below.
-, f 70;
-#X restore 354 124 pd pointer;
-#X text 435 124 <= about pointers;
-#X text 21 48 The pack object outputs a concatenated list from a series
+section of the Pd's tutorials., f 65;
+#X obj 93 124 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 93 154 pd open;
+#X text 117 123 <-- open first examle of the 4.Data.Structure section
+;
+#X connect 1 0 2 0;
+#X restore 351 132 pd pointer;
+#X text 432 132 <= about pointers;
+#X text 18 56 The pack object outputs a concatenated list from a series
 of inputs. Creation arguments set the number of inlets and their type
 \, possible values are: float (or 'f') \, symbol (or 's') and pointer
 (or 'p') - see [pd pointer]. A number sets a numeric inlet and initializes
 the value ('float'/'f' initializes to 0)., f 79;
+#X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 660 81 569 367 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 205 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 243 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 339 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 48 16 pack;
+#X text 87 16 - combine several atoms into one message.;
+#X text 143 215 list - the packed list., f 49;
+#X text 77 61 (number depends on number of arguments);
+#X obj 7 122 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
+;
+#X text 55 130 anything -;
+#X text 132 130 each inlet takes a message type according to its corresponding
+creation argument. These can be float \, symbol and pointer. The 1st
+inlet causes an output and can also match an 'anything' to a symbol.
+, f 53;
+#X text 81 94 bang - output the packed list., f 62;
+#X text 109 269 list of types (defining the number of inlets). These
+can be 'float/'f' \, 'symbol/'s' and 'pointer/'p'. A number sets a
+numeric inlet and initializes the value \, 'float/f' initialized to
+0 (default 0 0)., f 58;
+#X text 41 268 1) list -;
+#X restore 407 15 pd reference;
+#X text 501 15 <= click;
+#X obj 8 566 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 29 0;
 #X connect 1 0 29 0;
 #X connect 2 0 29 1;

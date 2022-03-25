@@ -1,5 +1,4 @@
-#N struct template1 float x float y float z float q;
-#N canvas 371 60 1039 684 12;
+#N canvas 247 23 1039 684 12;
 #X msg 716 131 dsp \$1;
 #X msg 604 144 \; pd dsp 0;
 #X obj 716 106 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -11,20 +10,20 @@
 sets the behaviour of some objects back to that particular version.
 This can be useful in some cases if you want to guarantee that your
 patch will work in the same way as in the version you created it. This
-is beccause sometimes a new version of Pd may promote a change in the
+is because sometimes a new version of Pd may promote a change in the
 behaviour of the object (usually to fix a bug) that can also break
 or change the result of a patch., f 62;
 #X text 53 365 Objects that change their behaviour according to the
-set compatibilty have that information in their help file.;
-#X text 63 277 set compatibilty to Pd 0.52;
+set compatibility have that information in their help file.;
+#X text 63 277 set compatibility to Pd 0.52;
 #X text 291 266 set to Pd 0.49;
 #X text 125 411 For example \, check the help file of:, f 18;
 #X obj 276 420 wrap~;
 #X obj 277 542 trace;
 #X msg 72 534 \; pd set-tracing \$1;
-#X obj 72 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 72 495 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#N canvas 731 117 712 610 fast-forward 0;
+#N canvas 654 117 712 610 fast-forward 0;
 #X msg 176 449 stop;
 #X obj 176 416 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
@@ -37,7 +36,7 @@ set compatibilty have that information in their help file.;
 #X text 376 422 <=;
 #X text 152 381 =>;
 #X text 219 310 <= set other lengths;
-#X text 83 311 miliseconds:;
+#X text 83 311 milliseconds:;
 #X text 65 380 sends a bang after the time amount, f 12;
 #X text 86 449 stops the => recording, f 12;
 #X text 397 415 tells pd to 'fast-forward' and render a given amount
@@ -63,14 +62,14 @@ of time in ms, f 35;
 an amount of audio faster than realtime (and as fast as your process
 can handle) - this is also called 'batch processing'. In this example
 we use it to record 6 seconds of amplitude modulation white noise into
-an array., f 74;
+an array., f 76;
+#X text 439 367 start recording 2 seconds into the table, f 25;
 #X text 82 105 This is very useful if you want to process a pre recorded
 audio in a Pd patch or to generate an audio file with a generative
 (or automated) patch. You can also use [soundfiler] to export to a
 sound file or direcctly use [writesf~] instead. The 'fast-forward'
-message takes a time in milisecond to fast forward to. Check the example
-, f 74;
-#X text 439 367 start recording 2 seconds into the table, f 25;
+message takes a time in milliseconds to fast forward to. Check the
+example, f 76;
 #X connect 0 0 17 0;
 #X connect 1 0 0 0;
 #X connect 2 0 5 0;
@@ -149,7 +148,7 @@ you can send to Pd., f 41;
 10 12 0 14 #e0e0e0 #404040 0;
 #X obj 584 551 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
 117 12 0 14 #e0e0e0 #404040 0;
-#N canvas 794 182 779 412 Dynamic-Patching 0;
+#N canvas 587 182 779 412 Dynamic-Patching 0;
 #X text 99 166 For reference \, please check the help file of =>,
 f 25;
 #N canvas 311 74 659 663 creating-boxes 0;
@@ -222,13 +221,10 @@ after they get created ., f 58;
 #X connect 9 0 8 0;
 #X restore 589 290 pd loadbang;
 #X obj 285 181 namecanvas;
-#N canvas 438 311 592 531 Data-Structures 0;
-#X text 70 109 For more on Data Structures \, check section 4.data.structures
-in Pd's tutorial examples. See 1st example of the series below.;
-#X obj 160 154 ../4.data.structures/01.scalars;
-#X msg 141 451 clear;
-#X msg 41 324 vis \$1;
-#X obj 41 297 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 461 65 592 579 Data-Structures 0;
+#X msg 141 491 clear;
+#X msg 41 364 vis \$1;
+#X obj 41 337 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
 #N canvas 523 391 191 85 ds2 0;
 #N canvas 50 470 557 157 template-toplevel 0;
@@ -241,8 +237,8 @@ q array bazoo template-element;
 #X obj 58 83 drawpolygon 10 2 5 0 0 -5 -5 0 0 5 5 0;
 #X obj 59 48 struct template-element float x float y float w;
 #X restore 11 34 pd template-element;
-#X restore 407 416 pd ds2;
-#X text 62 295 show/hide;
+#X restore 407 456 pd ds2;
+#X text 62 335 show/hide;
 #N canvas 361 282 477 239 ds 0;
 #X obj 52 45 filledcurve 990 0 1 0 0 50 0 50 50 0 50;
 #X obj 52 72 drawcurve 0 1 15 15 20 15 20 20 15 20 15 15;
@@ -250,35 +246,51 @@ q array bazoo template-element;
 #X obj 52 126 filledcurve 999 0 1 10 25 25 45 40 25 25 35 10 25;
 #X obj 54 17 struct ds float x float y symbol sym;
 #X obj 52 153 drawsymbol sym 55 25 0;
-#X restore 456 361 pd ds;
-#X msg 100 326 scalar ds 225 225 -hi_there!!;
-#X text 317 322 add data structure scalar 'ds' (see [pd ds]) and 3
+#X restore 456 401 pd ds;
+#X msg 100 366 scalar ds 225 225 -hi_there!!;
+#X text 317 362 add data structure scalar 'ds' (see [pd ds]) and 3
 fields., f 30;
-#X msg 117 367 read ds-text.txt;
-#X text 187 452 clean it up;
-#X msg 127 392 write ds-text-2.txt;
-#X obj 141 426 loadbang;
-#N canvas 291 367 514 421 \$0-DS-example 0;
-#X restore 337 272 pd \$0-DS-example;
-#X obj 102 486 s pd-\$0-DS-example;
-#X text 66 202 Note you can also use "\$0" to give local names to subpatches.
+#X msg 117 407 read ds-text.txt;
+#X text 187 492 clean it up;
+#X msg 127 432 write ds-text-2.txt;
+#X obj 141 466 loadbang;
+#N canvas 164 235 514 421 \$0-DS-example 0;
+#X restore 337 312 pd \$0-DS-example;
+#X obj 102 526 s pd-\$0-DS-example;
+#X text 66 242 Note you can also use "\$0" to give local names to subpatches.
 This is useful for abstractions in general. In this case we need to
 use [send] as "\$0" doesn't work in messages., f 61;
 #X text 70 14 A 'vis 1' message shows the window while 'vis 0' hides
 it. The 'read' and 'write' messages can be used to import and export
 contents of a window (used for Data Structures). The 'clear' message
 clears the contentes of a window whatever they are (objects \, Data
-Sructures \, arrays \, anything). A 'scalar' message adds a Data Structure
+Structures \, arrays \, anything). A 'scalar' message adds a Data Structure
 scalar to the window., f 62;
-#X text 216 272 click to open =>;
-#X text 271 391 read/write from/to text (see [pd ds2]);
-#X connect 2 0 15 0;
-#X connect 3 0 15 0;
-#X connect 4 0 3 0;
-#X connect 8 0 15 0;
-#X connect 10 0 15 0;
-#X connect 12 0 15 0;
-#X connect 13 0 2 0;
+#X text 216 312 click to open =>;
+#X text 271 431 read/write from/to text (see [pd ds2]);
+#X text 70 109 For more on Data Structures \, check section 4.data.structures
+in Pd's tutorial examples.;
+#X obj 91 166 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 91 196 pd open;
+#X text 115 165 <-- open first examle of the 4.Data.Structure section
+;
+#X connect 0 0 13 0;
+#X connect 1 0 13 0;
+#X connect 2 0 1 0;
+#X connect 6 0 13 0;
+#X connect 8 0 13 0;
+#X connect 10 0 13 0;
+#X connect 11 0 0 0;
+#X connect 19 0 20 0;
 #X restore 288 367 pd Data-Structures;
 #N canvas 691 48 597 554 (dis)connecting-boxes 0;
 #X obj 79 482 send pd-connect-boxes;
@@ -316,7 +328,7 @@ order they were created., f 67;
 #X connect 9 0 0 0;
 #X restore 545 93 pd (dis)connecting-boxes;
 #X text 593 244 loadbang handling:, f 9;
-#N canvas 902 124 849 512 save 0;
+#N canvas 509 124 849 512 save 0;
 #X msg 326 121 menusave;
 #X msg 367 171 menusaveas;
 #X msg 386 221 menuclose;
@@ -368,12 +380,12 @@ and "\$0":, f 34;
 to the name of the file (which communicates to the main window of a
 patch or abstraction). You can also communicate with a subpatch's window
 by sending messages to the subpatch's name. In both cases you need
-to preceed the send name with 'pd-'. In the case of abstractions \,
+to precede the send name with 'pd-'. In the case of abstractions \,
 you also need to end with ".pd". Alternatively you can name a main
 window or a subpatch with [namecanvas]. For reference \, please refer
 to the help file of [namecanvas] \, which carries complementary information!
 , f 65;
-#N canvas 644 327 801 383 abstractions 0;
+#N canvas 565 327 801 383 abstractions 0;
 #X text 46 29 You can create abstractions just like you would create
 any other object in Pd! All you need to do is have the name of the
 abstraction as the object name., f 48;

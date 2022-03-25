@@ -1,17 +1,17 @@
-#N canvas 442 52 1097 717 12;
-#X obj 760 582 unpack;
-#X msg 580 414 print;
-#X obj 843 582 unpack;
-#X obj 927 582 unpack;
-#X obj 579 582 unpack;
-#X obj 461 602 print attack;
-#X obj 370 602 print pitch;
-#X text 50 113 The Fiddle object estimates the pitch and amplitude
+#N canvas 158 23 1062 700 12;
+#X obj 696 555 unpack;
+#X msg 515 416 print;
+#X obj 779 555 unpack;
+#X obj 862 555 unpack;
+#X obj 510 528 unpack;
+#X obj 404 548 print attack;
+#X obj 313 548 print pitch;
+#X text 19 117 The Fiddle object estimates the pitch and amplitude
 of an incoming sound \, both continuously and as a stream of discrete
 "note" events. Fiddle optionally outputs a list of detected sinusoidal
 peaks used to make the pitch determination. Fiddle is described theoretically
 in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu., f 51;
-#X text 51 230 Fiddle's creation arguments specify an analysis window
+#X text 19 234 Fiddle's creation arguments specify an analysis window
 size \, the maximum polyphony (i.e. \, the number of simultaneous "pitches"
 to try to find) \, the number of peaks in the spectrum to consider
 \, and the number of peaks \, if any \, to output "raw." The outlets
@@ -19,131 +19,180 @@ give discrete pitch (a number) \, detected attacks in the amplitude
 envelope (a bang) \, one or more voices of continuous pitch and amplitude
 \, overall amplitude \, and optionally a sequence of messages with
 the peaks., f 51;
-#X text 52 392 The analysis hop size is half the window size so in
+#X text 19 388 The analysis hop size is half the window size so in
 the example shown here \, one analysis is done every 512 samples (11.6
 msec at 44K1) \, and the analysis uses the most recent 1024 samples
 (23.2 msec at 44K1). The minimum frequency that Fiddle will report
 is 2-1/2 cycles per analysis windows \, or about 108 Hz. (just below
 MIDI 45.), f 51;
-#X text 770 473 number of pitch outlets (1-3 \, default 1), f 43;
-#X text 770 490 number of peaks to find (1-100 \, default 20);
-#X text 770 507 number of peaks to output (default 0.), f 43;
-#X msg 478 38 amp-range 40 50;
-#X msg 509 162 reattack 100 10;
-#X msg 522 225 npartial 7;
-#X msg 496 99 vibrato 50 0.5;
-#X text 611 94 A period in milliseconds (50) over which the raw pitch
+#X text 701 463 number of pitch outlets (1-3 \, default 1), f 43;
+#X text 701 480 number of peaks to find (1-100 \, default 20);
+#X msg 404 66 amp-range 40 50;
+#X msg 440 187 reattack 100 10;
+#X msg 453 246 npartial 7;
+#X msg 427 122 vibrato 50 0.5;
+#X text 542 110 A period in milliseconds (50) over which the raw pitch
 may not deviate more than an interval in half-tones (0.5) from the
 average pitch to report it as a note to the "cooked" pitch outlet.
-;
-#X text 629 158 A period in milliseconds (100) over which a re-attack
+, f 70;
+#X text 560 172 A period in milliseconds (100) over which a re-attack
 is reported if the amplitude rises more than (1) dB. The re-attack
 will result in a "bang" in the attack outlet and may give rise to repeated
-notes in the cooked pitch output.;
-#X obj 514 491 fiddle~ 1024 1 20 3;
-#X text 758 656 individual sinusoidal components;
-#X text 670 654 amplitude;
-#X text 680 669 (dB);
-#X text 568 651 raw pitch;
-#X text 555 666 and amplitude;
-#X text 542 683 (up to 3 outputs);
-#X text 467 622 bang on;
-#X text 467 637 attack;
-#X msg 535 284 auto 1;
-#X msg 542 306 auto 0;
-#X msg 574 384 bang;
-#X text 612 383 poll current values --- useful if not in auto mode
-\,;
-#X text 605 222 Higher partials are weighed less strongly than lower
+notes in the cooked pitch output., f 68;
+#X obj 445 482 fiddle~ 1024 1 20 3;
+#X text 694 627 individual sinusoidal components;
+#X text 607 600 amplitude;
+#X text 621 615 (dB), f 7;
+#X msg 466 285 auto 1;
+#X msg 473 307 auto 0;
+#X msg 487 336 bang;
+#X text 536 236 Higher partials are weighed less strongly than lower
 ones in determining the pitch. This specifies the number of the partial
-(7) which will be weighted half as strongly as the fundamental.;
-#X text 597 287 start and stop "auto" mode (on by default.) If off
-\, output only appears on "bang" (poll mode)., f 47;
-#X text 625 413 print out all settings;
-#X text 770 456 window size (128-2048 \, default 1024), f 43;
-#X msg 555 333 npoints 2048;
-#X text 662 337 number of points in analysis window (power of 2 \,
+(7) which will be weighted half as strongly as the fundamental., f
+72;
+#X text 528 288 start and stop "auto" mode (on by default.) If off
+\, output only appears on "bang" (poll mode)., f 51;
+#X text 560 415 print out all settings;
+#X text 701 446 window size (128-2048 \, default 1024), f 43;
+#X msg 498 364 npoints 2048;
+#X text 601 366 number of points in analysis window (power of 2 \,
 128-2048), f 29;
-#X msg 561 354 npoints 1024;
-#X obj 364 54 sigmund~;
-#X text 59 54 NOTE: fiddle~ is obsolete - consider using;
-#X obj 58 22 fiddle~;
-#X text 116 21 - pitch estimator and sinusoidal peak finder;
-#X text 657 490 ---- arguments:;
-#X text 379 626 cooked pitch output, f 6;
-#X obj 760 542 route 1 2 3;
-#N canvas 481 154 386 332 test-input 0;
-#X obj 152 192 phasor~;
-#X obj 152 170 sig~;
-#X floatatom 152 148 0 0 0 0 - - - 0;
-#X obj 152 126 mtof;
-#X floatatom 152 104 0 0 0 0 - - - 0;
-#X obj 224 221 *~;
-#X obj 211 52 loadbang;
-#X obj 242 190 sig~;
-#X floatatom 242 168 0 0 0 0 - - - 0;
-#X msg 211 146 1;
-#X msg 242 146 0;
-#X text 32 102 test input pitch;
-#X text 219 112 test input;
-#X text 219 125 amplitude;
-#X msg 152 82 57;
-#X obj 224 255 outlet~;
-#X connect 0 0 5 0;
+#X msg 504 385 npoints 1024;
+#X obj 184 78 sigmund~;
+#X obj 34 11 fiddle~;
+#X text 92 10 - pitch estimator and sinusoidal peak finder;
+#X text 588 481 ---- arguments:;
+#X text 308 570 cooked pitch output, f 12;
+#X obj 696 525 route 1 2 3, f 36;
+#N canvas 481 154 288 293 test-input 0;
+#X obj 85 166 phasor~;
+#X floatatom 85 144 4 0 0 0 - - - 0;
+#X obj 85 120 mtof;
+#X floatatom 85 98 4 0 0 0 - - - 0;
+#X obj 137 195 *~;
+#X obj 155 29 loadbang;
+#X text 37 76 test input pitch, f 5;
+#X msg 85 76 57;
+#X obj 137 229 outlet~;
+#X obj 155 163 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 175 154 test input amplitude, f 10;
+#X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X connect 3 0 2 0;
-#X connect 4 0 3 0;
-#X connect 5 0 15 0;
-#X connect 6 0 14 0;
-#X connect 6 0 9 0;
-#X connect 7 0 5 1;
-#X connect 8 0 7 0;
-#X connect 9 0 8 0;
-#X connect 10 0 8 0;
-#X connect 14 0 4 0;
-#X restore 589 449 pd test-input;
-#X text 601 33 A low and high amplitude threshold: if signal amplitude
+#X connect 4 0 8 0;
+#X connect 5 0 7 0;
+#X connect 5 0 9 0;
+#X connect 7 0 3 0;
+#X connect 9 0 4 1;
+#X restore 530 447 pd test-input;
+#X text 527 55 A low and high amplitude threshold: if signal amplitude
 is below the low threshold \, no pitches or peaks are output. The high
-threshold is a minimum at which "cooked" outputs may appear.;
-#X msg 125 599 \; pd dsp \$1;
-#X obj 125 575 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+threshold is a minimum at which "cooked" outputs may appear., f 68
+;
+#X msg 140 563 \; pd dsp \$1;
+#X obj 140 539 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 148 575 DSP on/off;
-#X floatatom 579 632 7 0 0 0 - - - 0;
-#X floatatom 760 632 7 0 0 0 - - - 0;
-#X floatatom 774 609 7 0 0 0 - - - 0;
-#X floatatom 843 632 7 0 0 0 - - - 0;
-#X floatatom 857 609 7 0 0 0 - - - 0;
-#X floatatom 927 632 7 0 0 0 - - - 0;
-#X floatatom 941 609 7 0 0 0 - - - 0;
-#X floatatom 687 633 7 0 0 0 - - - 0;
-#X floatatom 593 609 7 0 0 0 - - - 0;
-#X connect 0 0 52 0;
-#X connect 0 1 53 0;
-#X connect 1 0 19 0;
-#X connect 2 0 54 0;
-#X connect 2 1 55 0;
-#X connect 3 0 56 0;
-#X connect 3 1 57 0;
-#X connect 4 0 51 0;
-#X connect 4 1 59 0;
-#X connect 13 0 19 0;
-#X connect 14 0 19 0;
-#X connect 15 0 19 0;
-#X connect 16 0 19 0;
-#X connect 19 0 6 0;
-#X connect 19 1 5 0;
-#X connect 19 2 4 0;
-#X connect 19 3 58 0;
-#X connect 19 4 45 0;
-#X connect 28 0 19 0;
-#X connect 29 0 19 0;
-#X connect 30 0 19 0;
-#X connect 36 0 19 0;
-#X connect 38 0 19 0;
-#X connect 45 0 0 0;
-#X connect 45 1 2 0;
-#X connect 45 2 3 0;
-#X connect 46 0 19 0;
-#X connect 49 0 48 0;
+#X text 163 539 DSP on/off;
+#X floatatom 510 578 7 0 0 0 - - - 0;
+#X floatatom 696 605 7 0 0 0 - - - 0;
+#X floatatom 710 582 7 0 0 0 - - - 0;
+#X floatatom 779 605 7 0 0 0 - - - 0;
+#X floatatom 793 582 7 0 0 0 - - - 0;
+#X floatatom 862 605 7 0 0 0 - - - 0;
+#X floatatom 876 582 7 0 0 0 - - - 0;
+#X floatatom 618 578 7 0 0 0 - - - 0;
+#X floatatom 524 555 7 0 0 0 - - - 0;
+#X obj 4 42 cnv 1 1050 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 932 10 <= click;
+#N canvas 555 109 718 492 reference 0;
+#X obj 6 35 cnv 5 700 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 6 207 cnv 2 700 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 378 cnv 2 700 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 5 466 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 5 230 cnv 1 700 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 5 257 cnv 1 700 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 147 45 signal - signal input to be analyzed., f 74;
+#X obj 32 8 fiddle~;
+#X text 90 7 - pitch estimator and sinusoidal peak finder;
+#X obj 5 284 cnv 1 700 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 5 313 cnv 1 700 1 empty empty 4th: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 5 344 cnv 1 700 1 empty empty 5th: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 154 386 1) float - window size (128-2048 \, default 1024);
+#X text 154 403 2) float - number of pitch outlets (1-3 \, default
+1);
+#X text 154 420 3) float - number of peaks to find (1-100 \, default
+20);
+#X text 154 437 4) float - number of peaks to output (default 0);
+#X text 197 262 bang - a bang is sent on new attacks., f 57;
+#X text 197 289 list - continuous raw pitch and amplitude., f 57;
+#X text 190 233 float - cooked pitch output., f 58;
+#X text 21 62 amp-range <float \, float> - set low and high amplitude
+threshold, f 92;
+#X text 35 79 vibrato <float \, float> - set period in msec and pitch
+deviation for "cooked" pitch outlet., f 90;
+#X text 28 96 reattack <float \, float> - set period in msec and amplitude
+in dB to report re-attack., f 91;
+#X text 77 113 npartial <float> - set partial number to be weighted
+half as strongly as the fundamental., f 89;
+#X text 105 130 auto <float> - nonzero sets to auto mode (default)
+and zero sets it off., f 85;
+#X text 161 147 bang - poll current values (useful when auto mode is
+off)., f 73;
+#X text 84 164 npoints <float> - sets number of points in analysis
+window., f 84;
+#X text 98 181 print <float> - print out settings., f 82;
+#X text 190 318 float - amplitude in dB., f 58;
+#X text 197 350 list - peak number \, frequency and amplitude., f
+56;
+#X restore 838 11 pd reference;
+#X text 68 58 NOTE: fiddle~ is obsolete! consider using, f 27;
+#X text 484 596 raw pitch and amplitude (up to 3 outputs), f 13;
+#X text 415 568 bang on attack, f 7;
+#X obj 4 657 cnv 1 1050 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 701 497 number of peaks to output (default 0), f 43;
+#X text 525 335 poll current values (useful when not in auto mode)
+;
+#X text 30 668 see also:;
+#X obj 108 668 sigmund~;
+#X text 174 667 (newer and better replacement for fiddle~);
+#X connect 0 0 44 0;
+#X connect 0 1 45 0;
+#X connect 1 0 18 0;
+#X connect 2 0 46 0;
+#X connect 2 1 47 0;
+#X connect 3 0 48 0;
+#X connect 3 1 49 0;
+#X connect 4 0 43 0;
+#X connect 4 1 51 0;
+#X connect 12 0 18 0;
+#X connect 13 0 18 0;
+#X connect 14 0 18 0;
+#X connect 15 0 18 0;
+#X connect 18 0 6 0;
+#X connect 18 1 5 0;
+#X connect 18 2 4 0;
+#X connect 18 3 50 0;
+#X connect 18 4 37 0;
+#X connect 22 0 18 0;
+#X connect 23 0 18 0;
+#X connect 24 0 18 0;
+#X connect 29 0 18 0;
+#X connect 31 0 18 0;
+#X connect 37 0 0 0;
+#X connect 37 1 2 0;
+#X connect 37 2 3 0;
+#X connect 38 0 18 0;
+#X connect 41 0 40 0;

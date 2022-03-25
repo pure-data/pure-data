@@ -1,101 +1,144 @@
-#N struct template1 float x float y float z float q;
-#N canvas 519 81 1202 599 12;
-#X obj 87 18 trigger;
-#X text 152 19 - sequence messages in right-to-left order;
-#X obj 115 43 t;
-#X text 153 43 - abbreviation;
-#X floatatom 279 331 5 0 0 0 - - - 0;
-#X obj 279 371 trigger float bang float;
-#X msg 361 411 10;
-#X obj 361 445 -;
-#X obj 343 473 *;
-#X floatatom 343 503 5 0 0 0 - - - 0;
-#X obj 57 383 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 215 36 1117 604 12;
+#X obj 68 18 trigger;
+#X text 133 19 - sequence messages in right-to-left order;
+#X obj 96 43 t;
+#X text 134 43 - abbreviation;
+#X floatatom 263 331 5 0 0 0 - - - 0;
+#X obj 263 371 trigger float bang float;
+#X msg 345 411 10;
+#X obj 345 445 -;
+#X obj 327 473 *;
+#X floatatom 327 503 5 0 0 0 - - - 0;
+#X obj 41 383 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X obj 57 431 trigger bang bang bang;
-#X obj 208 486 print 1st;
-#X obj 132 486 print 2nd;
-#X obj 57 486 print 3rd;
-#X text 79 381 create a bang sequence;
-#X obj 504 280 t f b s l a p;
-#X obj 93 280 trigger float bang symbol list anything pointer;
-#X text 438 281 same as:;
-#X msg 694 141 1 2 3;
-#X obj 714 172 t l f;
-#X listbox 746 200 7 0 0 0 - - - 0;
-#X msg 804 141 list a b c;
-#X obj 804 172 t l s;
-#X text 326 324 mix floats and bang output, f 14;
-#X floatatom 444 401 5 0 0 0 - - - 0;
-#X floatatom 279 409 5 0 0 0 - - - 0;
-#X obj 175 553 unpack;
-#X text 59 553 see also:;
-#X floatatom 938 112 5 0 0 0 - - - 0;
-#X listbox 938 227 10 0 0 0 - - - 0;
-#X msg 983 112 symbol a;
-#X msg 1013 169 1 2 3;
-#X msg 998 141 list a b c;
-#X obj 911 112 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 41 431 trigger bang bang bang;
+#X obj 192 486 print 1st;
+#X obj 116 486 print 2nd;
+#X obj 41 486 print 3rd;
+#X text 63 381 create a bang sequence;
+#X obj 488 280 t f b s l a p;
+#X obj 77 280 trigger float bang symbol list anything pointer;
+#X text 422 281 same as:;
+#X msg 675 141 1 2 3;
+#X obj 695 172 t l f;
+#X listbox 727 200 7 0 0 0 - - - 0;
+#X msg 785 141 list a b c;
+#X obj 785 172 t l s;
+#X text 310 324 mix floats and bang output, f 14;
+#X floatatom 428 401 5 0 0 0 - - - 0;
+#X floatatom 263 409 5 0 0 0 - - - 0;
+#X obj 156 567 unpack;
+#X text 40 566 see also:;
+#X floatatom 919 112 5 0 0 0 - - - 0;
+#X listbox 919 227 10 0 0 0 - - - 0;
+#X msg 964 112 symbol a;
+#X msg 994 169 1 2 3;
+#X msg 979 141 list a b c;
+#X obj 892 112 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X floatatom 917 368 5 0 0 0 - - - 0;
-#X msg 961 368 symbol a;
-#X msg 984 423 1 2 3;
-#X msg 974 396 list a b c;
-#X obj 889 368 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X floatatom 898 368 5 0 0 0 - - - 0;
+#X msg 942 368 symbol a;
+#X msg 965 423 1 2 3;
+#X msg 955 396 list a b c;
+#X obj 870 368 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X msg 794 368 dog my cats;
-#X obj 938 198 trigger list bang;
-#X obj 1054 225 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X msg 775 368 dog my cats;
+#X obj 919 198 trigger list bang;
+#X obj 1035 225 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 917 454 trigger anything bang;
-#X obj 917 514 print [t a b];
-#X obj 1054 268 print [t l b];
-#X text 964 560 updated for Pd version 0.52;
-#X obj 662 473 t;
-#X text 702 473 =;
-#X text 30 95 The trigger object outputs its input from right to left.
+#X obj 898 454 trigger anything bang;
+#X obj 898 514 print [t a b];
+#X obj 919 268 print [t l b];
+#X text 888 565 updated for Pd version 0.52;
+#X obj 643 473 t;
+#X text 683 473 =;
+#X text 21 95 The trigger object outputs its input from right to left.
 Because of the hot/cold inlet paradigm of Pd \, output from right to
-left is the usual output order in Pd objects., f 89;
-#X text 668 432 the default is [t b b]:, f 12;
-#X obj 725 473 t b b;
-#X text 681 313 You can use the 'anything' specifier to bypass any
+left is the usual output order in Pd objects., f 88;
+#X text 649 432 the default is [t b b]:, f 12;
+#X obj 706 473 t b b;
+#X text 686 305 You can use the 'anything' specifier to bypass any
 kind of message: a float \, a symbol \, a pointer \, a bang \, a list
-and also any generic message., f 67;
-#X obj 536 447 t b f;
-#X listbox 515 513 6 0 0 0 - - - 0;
-#X floatatom 536 422 4 0 0 0 - - - 0;
-#X floatatom 514 392 4 0 0 0 - - - 0;
-#X obj 515 478 pack f f;
-#X text 494 349 always force an output, f 12;
-#X text 705 14 The 'float' \, 'symbol' and 'pointer' specifiers can
+and also any generic message., f 59;
+#X obj 520 447 t b f;
+#X listbox 499 513 11 0 0 0 - - - 0;
+#X floatatom 520 422 7 0 0 0 - - - 0;
+#X floatatom 498 392 7 0 0 0 - - - 0;
+#X obj 499 478 pack f f;
+#X text 478 349 always force an output, f 12;
+#X text 686 14 The 'float' \, 'symbol' and 'pointer' specifiers can
 truncate to the first element of an input list. Conversely \, besides
 actual lists \, the 'list' specifier receives 1-element lists like
 a float \, symbol or pointer input and passes them unaltered. Note
-that a bang is a 0-element list and is also bypassed., f 61;
-#X obj 134 553 bang;
-#X listbox 714 229 7 0 0 0 - - - 0;
-#X listbox 804 229 7 0 0 0 - - - 0;
-#X listbox 836 200 7 0 0 0 - - - 0;
-#X text 73 220 The message types/arguments are: 'float' \, 'bang' \,
+that a bang is a 0-element list and is also bypassed.;
+#X obj 115 567 bang;
+#X listbox 695 229 7 0 0 0 - - - 0;
+#X listbox 785 229 7 0 0 0 - - - 0;
+#X listbox 817 200 7 0 0 0 - - - 0;
+#X text 57 220 The message types/arguments are: 'float' \, 'bang' \,
 'symbol' \, 'list' \, 'anything' and 'pointer' (see [pd pointer]) -
 all of which can be abbreviated to its first letter like the object
 itself \, see below:, f 78;
-#N canvas 879 82 610 216 pointer 0;
-#X obj 189 146 ../4.data.structures/01.scalars;
-#X text 75 40 The [trigger] object can receive a pointer and sequence
+#N canvas 446 68 561 233 pointer 0;
+#X obj 81 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#N canvas 491 316 412 249 open 0;
+#X obj 58 49 inlet;
+#X obj 58 105 pdcontrol;
+#X msg 58 78 dir;
+#X msg 58 132 \; pd open 01.scalars.pd \$1/../4.data.structures;
+#X connect 0 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X restore 81 161 pd open;
+#X text 105 130 <-- open first examle of the 4.Data.Structure section
+;
+#X text 37 34 The [trigger] object can receive a pointer and sequence
 it. A pointer can be the location of a Data Structure scalar somewhere
 or the head of a Data Structure list. To know more about Data Structures
 \, how to handle pointers and see examples \, please refer to the 4.Data.Structure
-section of the Pd's tutorials. Starting with the first example below.
-, f 70;
-#X restore 96 325 pd pointer;
-#X text 176 325 <= about pointers, f 8;
-#X text 30 139 The creation arguments specify the number of outlets
+section of the Pd's tutorials., f 70;
+#X connect 0 0 1 0;
+#X restore 80 325 pd pointer;
+#X text 160 325 <= about pointers, f 8;
+#X text 14 139 The creation arguments specify the number of outlets
 and message type to output. Most of the time you want to match the
 input message type to the argument \, but a mix is possible and can
-be convenient. For instance \, it's very usefull to insert a 'bang'
+be convenient. For instance \, it's very useful to insert a 'bang'
 message into a sequence \, so you'll always have a bang output with
 the 'bang' specifier no matter what the input is., f 89;
+#X obj 6 75 cnv 1 660 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 579 124 599 277 reference 0;
+#X obj 11 46 cnv 5 575 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 11 97 cnv 2 575 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 11 183 cnv 2 575 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 10 250 cnv 5 575 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 11 128 cnv 1 575 1 empty empty n: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 92 101 (depends on the number of arguments);
+#X obj 37 15 trigger;
+#X text 129 16 - sequence messages in right-to-left order.;
+#X text 112 61 anything - any message to be sequenced over the outlets.
+;
+#X text 112 137 anything -;
+#X text 189 137 sequenced messages from right to left \, the number
+of outlets and message type depends on the arguments., f 52;
+#X text 119 193 1) list -;
+#X text 189 193 symbols that define outlet's message type: float' \,
+'bang' \, 'symbol' \, 'list' \, 'anything' and 'pointer' \, all of
+which can be abreviatted (default: f f)., f 52;
+#X obj 99 15 t;
+#X restore 491 41 pd reference;
+#X text 589 41 <= click;
+#X obj 6 548 cnv 1 1100 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 666 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;
 #X connect 5 1 6 0;

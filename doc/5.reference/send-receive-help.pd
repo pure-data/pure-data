@@ -1,5 +1,5 @@
 #N struct template1 float x float y float z float q;
-#N canvas 571 23 935 661 12;
+#N canvas 259 23 935 661 12;
 #X obj 80 15 send;
 #X obj 41 120 send help-send1;
 #X obj 197 121 send help-send1;
@@ -150,8 +150,57 @@ f 45;
 #X restore 350 570 pd Dealing_with_"\$0";
 #X msg 238 619 message;
 #X obj 389 619 samplerate~;
-#X obj 300 619 Pd-messages;
 #X text 19 570 Open subpatch to see how to deal with '\$0' =>;
+#X obj 300 619 pd-messages;
+#N canvas 725 70 573 568 reference 0;
+#X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 235 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 272 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 319 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 166 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 47 17 send;
+#X obj 13 17 s;
+#X text 86 16 - send messages without patch cords;
+#X obj 15 375 r;
+#X obj 49 375 receive;
+#X text 107 374 - receive messages without patch cords;
+#X obj 8 412 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 451 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 501 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 538 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 66 95 any message -;
+#X text 168 95 sends to the corresponding receive object \, or any
+named object which name corresponds to the stored symbol. e.g: array
+\, value \, iemguis \, directly to a named patch \, etc..., f 50;
+#X text 163 245 NONE, f 49;
+#X text 131 280 symbol -;
+#X text 163 424 NONE, f 49;
+#X text 82 466 any message -;
+#X text 121 204 symbol - sets the send name.;
+#X text 179 466 outputs the messages destined to its receive name.
+, f 51;
+#X text 46 170 (if created without arguments);
+#X text 106 511 1) symbol -;
+#X text 189 511 receive name symbol (default: empty symbol).;
+#X text 193 280 send symbol (if given \, 2nd inlet is suppressed \,
+default: empty symbol)., f 35;
+#X restore 738 31 pd reference;
+#X text 835 32 <= click;
+#X obj 23 77 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 23 607 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;

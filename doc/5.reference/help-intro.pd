@@ -1,4 +1,4 @@
-#N canvas 683 76 577 831 12;
+#N canvas 677 23 576 704 12;
 #X declare;
 #X obj 29 116 bang;
 #X text 129 116 - output a bang message;
@@ -394,9 +394,8 @@ as "switch" \, also switch subpatches on and off;
 #X obj 97 4673 pique;
 #X text 29 86 --------------------- GENERAL --------------------------
 ;
-#X obj 41 678 x_all_guis;
-#X text 120 678 <==;
-#X text 150 671 click and open for all Graphical User Interface (GUI)
+#X text 112 678 <==;
+#X text 142 671 click and open for all Graphical User Interface (GUI)
 objects in Pd, f 34;
 #X text 24 636 -------------------------- GUIs -------------------------
 ;
@@ -432,3 +431,4 @@ objects in Pd, f 34;
 #X text 127 748 - send a bang message after a time delay;
 #X text 127 772 - send a bang message periodically (a la metronome)
 ;
+#X obj 41 678 all_guis;

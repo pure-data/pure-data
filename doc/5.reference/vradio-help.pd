@@ -1,9 +1,9 @@
-#N canvas 844 39 510 616 12;
+#N canvas 527 27 510 616 12;
 #X obj 72 254 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
 #X floatatom 107 434 4 0 0 0 - - - 0;
-#X msg 151 262 set \$1;
-#X floatatom 151 240 4 0 9 0 - - - 0;
+#X msg 151 264 set \$1;
+#X floatatom 151 242 4 0 9 0 - - - 0;
 #X floatatom 107 255 4 -10 10 0 - - - 0;
 #X obj 107 300 vradio 20 1 0 6 empty empty Radio -57 15 0 15 #b8b8b8
 #0400fc #780000 0;
@@ -53,16 +53,15 @@ the range of numbers. Note this also affects the "set" message.;
 #X connect 18 0 0 0;
 #X connect 19 0 0 0;
 #X restore 327 439 pd old-behavior;
-#X obj 40 17 vradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#X obj 40 15 vradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
 #000000 0;
 #X obj 107 463 print vradio;
 #X text 284 499 (c) musil@iem.kug.ac.at;
 #X text 320 515 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 64 573 see also:;
-#X obj 138 574 x_all_guis;
+#X text 64 576 see also:;
 #X text 74 500 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 261 573 updated for Pd version 0.51;
+#X text 261 576 updated for Pd version 0.51;
 #X text 135 302 <= click on the cells.;
 #X text 160 320 Right click for properties., f 15;
 #N canvas 665 62 612 590 position 0;
@@ -509,7 +508,7 @@ set it directly via the properties window., f 50;
 #X obj 536 440 r \$0-radio;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 6 0;
 #X connect 5 0 1 0;
@@ -549,11 +548,11 @@ in the subpatches below:, f 39;
 #X connect 1 0 0 0;
 #X restore 159 143 pd number;
 #X restore 356 261 pd properties;
-#X text 23 173 Insert it from the Put menu (named as "Vradio") or its
+#X text 23 181 Insert it from the Put menu (named as "Vradio") or its
 shortcut. Alternatively \, create it by typing "vradio" into an object
 box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 64;
-#X text 99 55 The vertical radio button is a GUI (Graphical User Interface)
+#X text 99 58 The vertical radio button is a GUI (Graphical User Interface)
 that sends numbers. Click on its cells to output corresponding values.
 Incoming floats set the value and are passed through (even if outside
 the range). The 'set' message only sets the value without output. A
@@ -589,6 +588,49 @@ turns the previous toggle off before turning the new one on., f 29
 #X connect 7 0 1 0;
 #X restore 328 319 pd switch-example;
 #X text 68 17 - [vradio]: Vertical Radio Button;
+#X obj 138 577 all_guis;
+#N canvas 664 65 682 540 reference 0;
+#X obj 21 182 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X text 131 270 label <symbol> - sets label symbol., f 72;
+#X text 55 290 label_font <float \, float> -;
+#X text 62 322 label_pos <float \, float> -;
+#X text 250 321 sets label position., f 55;
+#X obj 20 508 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 138 371 send <symbol> - sets send symbol., f 71;
+#X text 110 390 recceive <symbol> - sets receive symbol., f 75;
+#X text 146 340 color <list> -;
+#X text 250 339 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 250 289 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 103 409 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 90 428 delta <float \, float> -;
+#X text 250 427 changes the position by a x/y delta in pixels., f
+55;
+#X text 84 26 - [hradio]: Horizontal Radio Button;
+#X text 194 193 float - set and output number., f 63;
+#X text 145 212 size <float> - sets the cell size in pixels., f 70
+;
+#X text 131 231 number <float> - sets number of cells., f 72;
+#X text 145 250 init <float> - non zero sets to init mode., f 70;
+#X obj 20 459 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 53 17 vradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
+#X text 194 475 float - cell number (indexed from 0)., f 63;
+#X restore 331 17 pd reference;
+#X text 422 17 <= click;
+#X obj 83 47 cnv 1 410 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 10 562 cnv 1 480 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 171 cnv 1 75 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 83 48 cnv 1 1 122 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 5 0;
 #X connect 1 0 8 0;
 #X connect 2 0 5 0;

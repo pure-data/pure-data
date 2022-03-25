@@ -1,30 +1,24 @@
-#N canvas 192 103 1042 471 12;
-#X obj 82 73 savestate-example;
-#A saved 110 660;
-#X text 223 71 open the abstraction at left (right- or CTRL- click
+#N canvas 385 48 848 453 12;
+#X text 203 229 open the abstraction at left (right- or CTRL- click
 and select "open" in popup menu) to see how the savestate object is
-used from within., f 46;
-#X obj 82 158 savestate-example;
+used from within., f 29;
+#X obj 62 316 savestate-example;
 #A saved 221 440;
-#X text 223 162 parameters for different copies of the abstraction
-are saved and restored independently., f 32;
-#X text 828 430 updated for Pd version 0.49.;
-#X text 84 281 The abstraction may itself be modified at will without
+#X text 203 320 parameters for different copies of the abstraction
+are saved and restored independently., f 25;
+#X text 617 418 updated for Pd version 0.49.;
+#X text 470 109 The abstraction may itself be modified at will without
 disturbing the saved states of its copies in any calling patches \,
 as long as the usage of the saved and restored lists is kept compatible.
+, f 49;
+#X text 469 330 Hint: 'text' objects can be saved/restored using 'text
+tolist' and 'text fromlist'., f 49;
+#X obj 39 13 savestate;
+#X text 112 12 - save and restore run-time state from within an abstraction
 ;
-#X text 610 272 Multiple savestate objects are not differentiated -
-they all receive all lists sent to any one of them.;
-#X text 610 322 Hint: 'text' objects can be saved/restored using 'text
-tolist' and 'text fromlist'.;
-#X text 86 250 Abstractions within 'clone' objects are not handled.
-;
-#X obj 75 27 savestate;
-#X text 148 26 - save and restore run-time state from within an abstraction
-;
-#X text 608 66 The savestate object is used inside abstractions to
-save their state as they are used in a calling (parent) patch. When
-the parent patch (such as this one \, which calls the "savestate-example"
+#X text 22 58 The savestate object is used inside abstractions to save
+their state as they are used in a calling (parent) patch. When the
+parent patch (such as this one \, which calls the "savestate-example"
 abstraction) is saved \, the included savestate object sends a 'bang'
 message out its right outlet \, with which the abstraction may respond
 by presenting one or more 'list' messages back to the 'savestate' object.
@@ -32,8 +26,44 @@ These lists are saved as part of the calling patch. If the calling
 patch is reopened later \, the lists are sent out the left outlet of
 the savestate object. The abstraction can then use them to restore
 its state.;
-#X text 83 355 The saved messages are output when the object is recreated
+#X text 469 175 The saved messages are output when the object is recreated
 \, before any outside connections are made and possibly before other
 parts of a saved patch have been restored. You can use a "loadbang"
 object to send messages to objects elsewhere in the owning patch at
-load time once the entire patch is loaded.;
+load time once the entire patch is loaded., f 49;
+#N canvas 689 98 622 256 reference 0;
+#X obj 18 52 cnv 5 580 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 95 cnv 2 580 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 191 cnv 2 580 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 225 cnv 5 580 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 176 198 NONE, f 15;
+#X obj 41 16 savestate;
+#X text 115 16 - save and restore run-time state from within an abstraction.
+, f 61;
+#X text 123 66 list -;
+#X text 173 66 one or more list when the parent patch gets saved.;
+#X obj 17 149 cnv 1 580 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 117 cnv 1 580 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 123 122 list -;
+#X text 173 122 one or more list when the parent patch is opened.;
+#X text 123 156 bang -;
+#X text 173 156 when the parent patch is saved.;
+#X restore 630 13 pd reference;
+#X text 728 14 <= click;
+#X obj 7 45 cnv 1 835 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 470 73 Note that abstractions within 'clone' objects are not
+handled!, f 49;
+#X obj 7 405 cnv 1 835 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 62 231 savestate-example;
+#A saved 110 660;
+#X text 469 281 Multiple savestate objects aren't differentiated \,
+so they all receive all lists sent to any one of them and output them.
+, f 49;

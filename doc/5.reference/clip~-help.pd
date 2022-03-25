@@ -1,36 +1,68 @@
-#N canvas 743 48 565 509 12;
-#X obj 63 192 clip~ -0.5 0.5;
-#X obj 63 122 osc~ 1000;
+#N canvas 581 52 518 396 12;
+#X obj 36 168 clip~ -0.5 0.5;
+#X obj 36 72 osc~ 1000;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array clip 100 float 0;
 #X coords 0 1 100 -1 200 100 1 0 0;
-#X restore 297 282 graph;
-#X obj 85 331 metro 500;
-#X obj 62 19 clip~;
-#X text 108 18 - restrict a signal to lie between two limits;
-#X text 195 161 inlets to reset clip range;
-#X floatatom 110 161 4 0 0 0 - - - 0;
-#X floatatom 158 162 4 0 0 0 - - - 0;
-#X text 175 191 creation arguments initialize clip range;
-#X text 85 57 The clip~ object passes its signal input to its output
-\, clipping it to lie between two limits., f 52;
-#X text 306 444 updated for Pd version 0.33;
-#X text 176 364 <= graph the output, f 10;
-#X text 51 444 see also:;
-#X obj 208 433 clip;
-#X obj 169 433 max~;
-#X obj 129 433 min~;
-#X obj 130 460 expr~;
-#X obj 63 368 tabwrite~ clip;
-#X msg 97 258 \; pd dsp \$1;
-#X obj 85 306 loadbang;
-#X obj 97 233 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X restore 289 224 graph;
+#X obj 58 257 metro 500;
+#X obj 12 16 clip~;
+#X text 171 137 inlets to reset clip range;
+#X floatatom 83 137 5 -1 1 0 - - - 0;
+#X text 148 167 creation arguments initialize clip range;
+#X text 133 61 The clip~ object passes its signal input to its output
+\, clipping it to lie between two limits., f 47;
+#X text 298 362 updated for Pd version 0.33;
+#X text 16 362 see also:;
+#X obj 168 363 clip;
+#X obj 129 363 max~;
+#X obj 89 363 min~;
+#X obj 207 363 expr~;
+#X msg 157 243 \; pd dsp \$1;
+#X obj 58 232 loadbang;
+#X obj 157 218 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 117 232 DSP on/off;
-#X connect 0 0 18 0;
+#X text 178 217 DSP on/off;
+#N canvas 650 153 568 290 reference 0;
+#X obj 8 48 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 166 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 203 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 108 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 137 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 133 112 float - set lower limit., f 49;
+#X text 133 140 float - set upper limit., f 49;
+#X obj 31 16 clip~;
+#X text 78 16 - restrict a signal between two limits.;
+#X text 125 84 signal - signal value to clip., f 50;
+#X text 125 176 signal - the clipped signal., f 49;
+#X obj 7 260 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 113 213 1) float - initial lower limit (default 0)., f 49
+;
+#X text 113 232 2) float - initial upper limit (default 0)., f 49
+;
+#X restore 350 14 pd reference;
+#X text 441 13 <= click;
+#X obj 4 47 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 56 15 - restrict a signal between two limits;
+#X obj 36 294 tabwrite~ clip;
+#X floatatom 131 138 5 -1 1 0 - - - 0;
+#X text 80 114 lower;
+#X text 130 114 upper;
+#X obj 4 350 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 23 0;
 #X connect 1 0 0 0;
-#X connect 3 0 18 0;
-#X connect 7 0 0 1;
-#X connect 8 0 0 2;
-#X connect 20 0 3 0;
-#X connect 21 0 19 0;
+#X connect 3 0 23 0;
+#X connect 6 0 0 1;
+#X connect 16 0 3 0;
+#X connect 17 0 15 0;
+#X connect 24 0 0 2;

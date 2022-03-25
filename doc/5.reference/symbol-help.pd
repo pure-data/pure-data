@@ -1,47 +1,78 @@
-#N canvas 706 50 837 439 12;
-#X msg 43 130 bang;
-#X text 128 264 creation argument initializes the value, f 21;
-#X text 83 128 output the value;
-#X text 150 159 set and output the value;
-#X obj 43 272 symbol foo;
-#X obj 69 14 symbol;
-#X msg 58 160 symbol bar;
-#X symbolatom 43 310 10 0 0 0 - - - 0;
-#X text 186 235 set the value;
-#X symbolatom 110 237 10 0 0 0 - - - 0;
-#X msg 64 190 zorglub;
-#X text 127 190 any other message is 'converted';
-#X text 125 13 - store a symbol (i.e. \, string);
-#X text 28 60 The symbol object stores a symbol \, Pd's data type for
+#N canvas 341 38 815 441 12;
+#X msg 29 130 bang;
+#X text 114 264 creation argument initializes the value, f 21;
+#X text 69 128 output the value;
+#X text 136 159 set and output the value;
+#X obj 29 272 symbol foo;
+#X msg 44 160 symbol bar;
+#X symbolatom 29 310 10 0 0 0 - - - 0;
+#X text 172 235 set the value;
+#X symbolatom 96 237 10 0 0 0 - - - 0;
+#X msg 50 190 zorglub;
+#X text 113 190 any other message is 'converted';
+#X text 14 66 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames \, array names \, send/receive
 names or the names of other objects in pd).;
-#X symbolatom 523 254 16 0 0 0 - - - 0;
-#X symbolatom 667 185 16 0 0 0 - - - 0;
-#X obj 523 216 symbol cis\ boom\ bah;
-#X msg 523 121 symbol hey\\\,\\\ stop;
-#X obj 498 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X symbolatom 509 254 16 0 0 0 - - - 0;
+#X symbolatom 653 185 16 0 0 0 - - - 0;
+#X obj 509 216 symbol cis\ boom\ bah;
+#X msg 509 121 symbol hey\\\,\\\ stop;
+#X obj 484 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 43 343 print;
-#X obj 523 285 print;
-#X text 50 400 see also:;
-#X obj 125 401 float;
-#X text 574 400 updated for Pd version 0.52;
-#X msg 539 160 hi\ there;
-#X text 450 51 Note you can also use backslashes to escape spaces and
+#X obj 29 343 print;
+#X obj 509 285 print;
+#X msg 525 160 hi\ there;
+#X text 436 61 Note you can also use backslashes to escape spaces and
 other special characters (comma \, semicolons \, dollar signs and backslash).
 , f 50;
-#X text 163 324 NOTE: unlike "float" \, etc. \, there's no "send" message
+#X text 149 324 NOTE: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
 of converting arbitrary messages to symbols., f 86;
+#X obj 34 14 symbol;
+#X text 90 13 - store a symbol (i.e. \, string);
+#X text 32 400 see also:;
+#X obj 107 401 float;
+#X text 599 398 updated for Pd version 0.52;
+#N canvas 685 120 581 310 reference 0;
+#X text 119 115 symbol -;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 204 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 241 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 165 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 44 18 symbol;
+#X text 105 134 anything -;
+#X text 96 17 - store a symbol (i.e. \, string).;
+#X text 133 94 bang - output the stored symbol., f 49;
+#X text 123 214 symbol - the stored symbol., f 49;
+#X text 123 176 symbol - stores the symbol (no output)., f 49;
+#X text 182 134 converts to symbol \, stores it and outputs it.;
+#X text 181 115 stores the symbol received and outputs it.;
+#X text 113 252 1) symbol - initially stored symbol (default: empty
+symbol).;
+#X restore 612 15 pd reference;
+#X obj 9 51 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 381 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 709 16 <= click;
+#X obj 157 400 int;
 #X connect 0 0 4 0;
-#X connect 4 0 7 0;
-#X connect 6 0 4 0;
-#X connect 7 0 19 0;
-#X connect 9 0 4 1;
-#X connect 10 0 4 0;
-#X connect 14 0 20 0;
-#X connect 15 0 16 1;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 6 0 17 0;
+#X connect 8 0 4 1;
+#X connect 9 0 4 0;
+#X connect 12 0 18 0;
+#X connect 13 0 14 1;
+#X connect 14 0 12 0;
+#X connect 15 0 14 0;
 #X connect 16 0 14 0;
-#X connect 17 0 16 0;
-#X connect 18 0 16 0;
-#X connect 24 0 16 0;
+#X connect 19 0 14 0;

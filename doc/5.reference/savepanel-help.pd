@@ -1,20 +1,58 @@
-#N canvas 716 131 545 333 12;
-#X msg 66 111 bang;
-#X obj 66 254 print;
-#X text 67 297 see also:;
-#X text 31 45 When savepanel gets a "bang" a "Save As" file browser
+#N canvas 491 50 639 364 12;
+#X msg 63 131 bang;
+#X obj 63 274 print;
+#X text 23 326 see also:;
+#X text 50 63 When savepanel gets a "bang" a "Save As" file browser
 appears on the screen \, If you choose a filename \, it appears on
-the outlet.;
-#X obj 66 199 savepanel;
-#X obj 141 296 openpanel;
-#X obj 19 7 savepanel;
-#X text 104 6 - query you for the name of a file to create;
-#X text 115 110 Starts panel in current directory;
-#X text 191 139 Starts in specified directory;
-#X msg 83 139 symbol /tmp;
-#X msg 92 169 symbol ../;
-#X text 293 295 updated for Pd version 0.48;
-#X symbolatom 66 226 60 0 0 0 - - - 0;
+the outlet., f 70;
+#X obj 63 219 savepanel;
+#X obj 97 325 openpanel;
+#X obj 23 11 savepanel;
+#X text 98 10 - query you for the name of a file to create;
+#X text 112 130 Starts panel in current directory;
+#X text 174 161 Starts in specified directory, f 10;
+#X msg 80 159 symbol /tmp;
+#X msg 89 189 symbol ../;
+#X text 415 325 updated for Pd version 0.48;
+#X symbolatom 63 246 75 0 0 0 - - - 0;
+#N canvas 708 227 389 296 current-directory 0;
+#X obj 155 149 pdcontrol;
+#X msg 155 119 dir;
+#X obj 155 219 print;
+#X text 47 34 With the 'dir' message to the [pdcontrol] object \, you
+can make savepanel open the current directory for querying for files.
+, f 41;
+#X obj 155 185 savepanel;
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 4 0 2 0;
+#X restore 348 179 pd current-directory;
+#X obj 175 325 pdcontrol;
+#N canvas 719 102 583 215 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 115 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 152 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 186 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 113 66 bang -;
+#X text 99 85 symbol -;
+#X obj 38 18 savepanel;
+#X text 113 17 - query you for the name of a file to create.;
+#X text 163 66 open dialog window to choose a file name to save to.
+;
+#X text 126 159 NONE, f 45;
+#X text 129 125 symbol - file name., f 54;
+#X text 163 85 set starting directory and open dialog window., f 50
+;
+#X restore 452 11 pd reference;
+#X text 550 12 <= click;
+#X obj 5 45 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 309 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 4 0;
 #X connect 4 0 13 0;
 #X connect 10 0 4 0;

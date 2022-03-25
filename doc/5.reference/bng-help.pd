@@ -1,7 +1,7 @@
-#N canvas 754 116 530 506 12;
-#X msg 187 149 bang;
-#X floatatom 139 150 5 0 0 0 - - - 0;
-#X symbolatom 242 190 7 0 0 0 - - - 0;
+#N canvas 561 38 519 496 12;
+#X msg 181 149 bang;
+#X floatatom 133 150 5 0 0 0 - - - 0;
+#X symbolatom 236 190 7 0 0 0 - - - 0;
 #N canvas 846 101 364 357 example-once 0;
 #X obj 123 84 bng 50 250 50 0 empty empty Once 58 24 0 13 #dcdcdc #c4fcfc
 #980000;
@@ -19,15 +19,14 @@ a bang once until it is reset again., f 41;
 #X connect 6 0 1 0;
 #X connect 6 1 7 0;
 #X connect 7 0 4 1;
-#X restore 384 249 pd example-once;
-#X text 311 374 (c) musil@iem.kug.ac.at;
-#X text 347 390 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X msg 202 190 foo;
-#X text 231 142 received messages activate the bang, f 17;
-#X text 68 250 Click to bang => Right click for properties., f 16
+#X restore 378 249 pd example-once;
+#X text 305 374 (c) musil@iem.kug.ac.at;
+#X text 341 390 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X msg 196 190 foo;
+#X text 225 142 received messages activate the bang, f 17;
+#X text 62 250 Click to bang => Right click for properties., f 16
 ;
-#X text 10 462 see also:;
-#X obj 85 461 x_all_guis;
+#X text 16 455 see also:;
 #N canvas 564 216 614 464 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
@@ -69,7 +68,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 18 0;
 #X connect 17 0 18 0;
 #X connect 19 0 3 0;
-#X restore 412 221 pd position;
+#X restore 406 221 pd position;
 #N canvas 453 113 357 405 properties 0;
 #N canvas 795 55 631 565 colors 0;
 #X floatatom 71 244 3 0 29 0 - - - 0;
@@ -532,7 +531,7 @@ set it directly via the properties window., f 50;
 #000000 #000000;
 #X text 446 97 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below.;
+errors because they have feedback protection. See example below.;
 #X connect 0 0 9 0;
 #X connect 1 0 4 0;
 #X connect 3 0 4 0;
@@ -560,29 +559,69 @@ f 49;
 #X text 46 23 All the parameters from the properties window can be
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
-#X restore 398 193 pd properties;
-#X obj 187 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
+#X restore 392 193 pd properties;
+#X obj 181 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc
 #fc0400 #0400fc;
-#X obj 42 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X text 30 53 The bang button is a GUI (Graphical User Interface) object
+#X text 24 53 The bang button is a GUI (Graphical User Interface) object
 that sends a bang message when activated via clicks or messages sent
 to its inlet. Insert it from the Put menu (named as "Bang") or its
 shortcut. Alternatively \, create it by typing "bng" into an object
 box. Right click for properties (to set size \, colors \, labels \,
 etc)., f 67;
-#X text 68 12 - [bng]: Bang button;
-#X text 71 375 This object is part of the "iemguis" library \, natively
+#X text 65 375 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 305 460 updated for Pd version 0.51;
-#X obj 187 337 print Big-Bang;
-#X obj 167 461 bang;
-#X obj 207 461 trigger;
-#X msg 214 303 bang;
-#X text 254 303 <= similar to a bang message;
-#X connect 0 0 13 0;
-#X connect 1 0 13 0;
-#X connect 2 0 13 0;
-#X connect 6 0 13 0;
-#X connect 13 0 19 0;
-#X connect 22 0 19 0;
+#X text 299 455 updated for Pd version 0.51;
+#X obj 181 337 print Big-Bang;
+#X obj 159 456 bang;
+#X obj 199 456 trigger;
+#X msg 208 303 bang;
+#X text 248 303 <= similar to a bang message;
+#X obj 91 456 all_guis;
+#X obj 36 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 62 12 - [bng]: Bang button;
+#X obj 6 42 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 769 165 584 381 reference 0;
+#X obj 17 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 17 285 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 322 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X obj 17 355 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 51 12 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 77 12 - [bng]: Bang button;
+#X text 119 291 bang -;
+#X text 171 291 when activated via clicks or when receiving messages.
+;
+#X text 124 329 NONE;
+#X text 87 55 size <float> - set size in pixels., f 56;
+#X text 59 74 flashtime <f \, f> - set minimum and maximum flash time
+in ms.;
+#X text 87 93 init <float> - non zero sets to init mode., f 56;
+#X text 72 149 label <symbol> - set label., f 67;
+#X text 59 130 receive <symbol> - set receive symbol name., f 60;
+#X text 80 112 send <symbol> - set send symbol name., f 57;
+#X text 51 168 label_font <f \, f> -;
+#X text 191 168 set label type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 58 200 label_pos <f \, f> - set label's x/y position., f 71
+;
+#X text 86 220 color <list> -;
+#X text 191 219 set colors of background \, front and label. Symbols
+for hexadecimal values or floats for presets., f 52;
+#X text 72 251 other messages - float \, bang \, anything \, whatever
+\, activates the bang., f 69;
+#X restore 389 11 pd reference;
+#X obj 6 442 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 321 11 click =>;
+#X connect 0 0 12 0;
+#X connect 1 0 12 0;
+#X connect 2 0 12 0;
+#X connect 6 0 12 0;
+#X connect 12 0 16 0;
+#X connect 19 0 16 0;

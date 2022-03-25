@@ -1,54 +1,83 @@
-#N canvas 745 73 616 626 12;
-#X msg 93 371 bang;
-#X msg 33 269 bang;
-#X obj 61 401 timer;
-#X obj 89 13 timer;
-#X text 134 14 - measure logical time;
-#X floatatom 61 427 7 0 0 0 - - - 0;
-#X text 33 576 see also:;
-#X obj 329 277 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 421 23 632 630 12;
+#X msg 95 367 bang;
+#X msg 35 265 bang;
+#X obj 63 397 timer;
+#X obj 71 14 timer;
+#X text 116 13 - measure logical time;
+#X floatatom 63 423 7 0 0 0 - - - 0;
+#X text 33 585 see also:;
+#X obj 331 273 tgl 20 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 463 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 465 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 113 588 delay;
-#X obj 361 367 sel 1;
-#X floatatom 361 447 5 0 0 0 - - - 0;
-#X obj 329 316 t f f;
-#X obj 158 588 metro;
-#X obj 463 367 metro 1 90 permin;
-#X obj 361 422 timer 90 permin;
-#X text 365 577 updated for Pd version 0.47;
-#X obj 112 564 realtime;
-#X obj 180 564 cputime;
-#X obj 361 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 113 597 delay;
+#X obj 363 363 sel 1;
+#X floatatom 363 443 5 0 0 0 - - - 0;
+#X obj 331 312 t f f;
+#X obj 158 597 metro;
+#X obj 465 363 metro 1 90 permin;
+#X obj 363 418 timer 90 permin;
+#X text 365 586 updated for Pd version 0.47;
+#X obj 112 573 realtime;
+#X obj 180 573 cputime;
+#X obj 363 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 39 197 These symbols can also be preceeded by "per" (as in
+#X text 41 204 These symbols can also be preceded by "per" (as in
 "permin" \, "permsec" \, etc.) In this case \, 60 permin means 1/60
 min (hence \, the same as 'BPM')., f 78;
-#X text 47 129 - millisecond (msec for short) \; - seconds (sec) \;
+#X text 49 136 - millisecond (msec for short) \; - seconds (sec) \;
 - minutes (min) \; - samples (samp) - depends on the sample rate the
 patch is running, f 67;
-#X text 159 309 set tempo units;
-#X msg 61 305 tempo 1 sec;
-#X msg 71 330 tempo 1 msec;
-#X text 388 264 Here \, the metronome outputs at intervals of one beat
+#X text 161 305 set tempo units;
+#X msg 63 301 tempo 1 sec;
+#X msg 73 326 tempo 1 msec;
+#X text 390 260 Here \, the metronome outputs at intervals of one beat
 at 90 beats per minute as the timer also set to that tempo measures.
 , f 29;
-#X text 74 262 reset (set elapsed time to zero), f 18;
-#X text 136 360 output elapsed time. You can click multiple times since
+#X text 76 258 reset (set elapsed time to zero), f 18;
+#X text 138 356 output elapsed time. You can click multiple times since
 it was last reset., f 25;
-#X obj 203 589 text sequence;
-#X text 22 47 The timer object measures elapsed logical time. Logical
+#X obj 203 598 text sequence;
+#X text 24 54 The timer object measures elapsed logical time. Logical
 time moves forward as if all computation were instantaneous and as
 if all "delay" and "metro" objects were exact. By default \, the time
 unit is 1 millisecond \, but you can change this with the 'tempo' message
 (as in [delay] \, [metro] and [text sequence]) \, which takes a different
 tempo number and a time unit symbol. Possible symbols are:, f 82;
-#X text 120 418 elapsed time in the specified time units, f 20;
-#X text 48 482 Note you need to reset the elapsed time to zero when
+#X text 122 414 elapsed time in the specified time units, f 20;
+#X text 50 478 Note you need to reset the elapsed time to zero when
 you change the tempo message when the object is runnng \, otherwise
 you get funny results because the change takes effect immediately and
 gets applied to the remaining part of the elapsed time., f 75;
+#N canvas 700 98 489 311 reference 0;
+#X obj 18 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 229 cnv 2 450 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X text 153 92 bang - reset (set elapsed time to zero).;
+#X obj 18 285 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 46 17 timer;
+#X text 91 16 - measure logical time;
+#X text 35 116 tempo <float \, symbol> -;
+#X text 204 116 set tempo value (float) and time unit symbol., f 24
+;
+#X text 130 239 1) float - tempo value (default 1)., f 42;
+#X text 123 259 2) symbol - time unit (default 'msec')., f 43;
+#X obj 18 192 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X text 156 163 bang - output elapsed time., f 30;
+#X obj 18 157 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 18 84 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 133 201 1) float - elapsed time in msec.;
+#X restore 465 14 pd reference;
+#X text 397 13 click =>;
+#X obj 17 46 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 17 555 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 2 1;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;

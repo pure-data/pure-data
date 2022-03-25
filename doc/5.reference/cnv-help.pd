@@ -1,9 +1,8 @@
-#N canvas 521 38 554 461 12;
-#X obj 151 217 cnv 40 150 102 empty empty Canvas 20 50 0 30 #a06888
+#N canvas 641 38 547 457 12;
+#X obj 142 227 cnv 40 150 102 empty empty Canvas 20 50 0 30 #a06888
 #fcfcfc 0;
-#X obj 28 10 cnv 15 100 60 empty empty empty 20 12 0 14 #e0e0e0 #404040
+#X obj 19 8 cnv 15 100 60 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
-#X text 135 14 - [my_canvas]/[cnv]: Canvas;
 #N canvas 424 168 359 352 properties 0;
 #N canvas 815 23 654 646 colors 0;
 #X floatatom 82 251 3 0 29 0 - - - 0;
@@ -331,7 +330,7 @@ right clicking on it when you want to interact with an object in front.
 #X text 78 29 The 'label' message sets the label symbol \, setting
 it to "empty" clears it. The 'label_font' message sets font type and
 size and 'label_pos' sets the x/y coordinates., f 64;
-#X obj 155 407 cnv 15 300 100 empty \$0-label label 17 20 0 25 #e0e0e0
+#X obj 155 407 cnv 15 300 100 empty \$0-label label 17 20 2 25 #e0e0e0
 #404040 0;
 #X obj 239 360 send \$0-label;
 #X obj 393 239 pack 17 20, f 11;
@@ -434,15 +433,14 @@ sizes in pixels., f 49;
 #X text 46 23 All the parameters from the properties window can be
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
-#X restore 401 217 pd properties;
-#X text 293 347 (c) musil@iem.kug.ac.at;
-#X text 329 363 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 65 419 see also:;
-#X obj 139 420 x_all_guis;
-#X text 73 348 This object is part of the "iemguis" library \, natively
+#X restore 392 227 pd properties;
+#X text 284 349 (c) musil@iem.kug.ac.at;
+#X text 320 365 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 10 425 see also:;
+#X text 64 350 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 296 419 updated for Pd version 0.51;
-#N canvas 360 93 481 370 example-room 0;
+#X text 337 425 updated for Pd version 0.51;
+#N canvas 360 93 481 370 example-room 1;
 #X obj 335 217 tgl 15 1 empty empty empty 20 8 0 10 #fcfcfc #000000
 #000000 1 1;
 #X msg 335 267 \; to_K get_pos;
@@ -452,7 +450,7 @@ included in Pd version 0.34., f 28;
 0;
 #X obj 2 2 cnv 378 1 1 empty empty empty 115 160 2 17 #fc0400 #14e814
 0;
-#X obj 12 16 cnv 25 25 25 from_K1 to_K K1 4 13 0 14 #e8b484 #900000
+#X obj 13 14 cnv 25 25 25 from_K1 to_K K1 4 13 0 14 #e8b484 #900000
 0;
 #X obj 330 333 cnv 25 25 25 from_K2 to_K K2 4 13 2 14 #94dcd4 #004450
 0;
@@ -464,7 +462,7 @@ included in Pd version 0.34., f 28;
 #X text 56 310 x;
 #X text 154 309 y;
 #X obj 70 278 unpack, f 8;
-#N canvas 317 55 451 443 from_K1 0;
+#N canvas 103 309 451 443 from_K1 0;
 #X obj 124 136 t f f;
 #X obj 110 201 ||;
 #X obj 64 137 t f f;
@@ -547,7 +545,7 @@ changed, f 23;
 #X connect 16 0 12 0;
 #X connect 16 1 13 0;
 #X connect 19 0 16 0;
-#X restore 387 273 pd example-room;
+#X restore 378 283 pd example-room;
 #N canvas 665 62 632 612 position 0;
 #X floatatom 200 146 4 0 1000 0 - - - 0;
 #X obj 249 173 t b f;
@@ -607,9 +605,9 @@ in the patch. Moreover \, you can get the object's position., f 36
 #X connect 28 0 24 0;
 #X connect 28 1 25 0;
 #X connect 33 0 3 0;
-#X restore 415 245 pd position;
-#X text 31 223 Right click ===> for properties., f 16;
-#X text 19 149 Right click for properties (to set size \, colors \,
+#X restore 406 255 pd position;
+#X text 22 233 Right click ===> for properties., f 16;
+#X text 10 159 Right click for properties (to set size \, colors \,
 labels \, etc). Note you need to right click on the selectable area
 (on the top left corner). When the object is selected \, this area
 is highlighted as light blue., f 71;
@@ -619,8 +617,8 @@ is highlighted as light blue., f 71;
 #X msg 120 230 label \$1;
 #X obj 79 307 nbx 15 30 1 100 0 0 \$0-file empty empty 0 -8 0 10 #fcfcfc
 #000000 #000000 0 256;
-#X obj 79 307 cnv 1 148 30 empty \$0-display file\\\ 050.wav 9 15 0
-16 #000000 #fc6460 0;
+#X obj 79 307 cnv 1 148 30 empty \$0-display file\ 050.wav 9 15 0 16
+#000000 #fc6460 0;
 #X text 236 316 <= also click and drag;
 #X text 166 164 <= click and drag;
 #X obj 120 201 makefilename file\ %03d.wav;
@@ -639,12 +637,61 @@ and you can click and drag on the number box to set the file name.
 #X connect 2 0 0 0;
 #X connect 7 0 2 0;
 #X connect 9 0 1 0;
-#X restore 366 301 pd display-example;
-#X text 159 40 The canvas object is a simple GUI (Graphical User Interface)
-used as a background and/or to dysplay a symbol. It can also send its
-position when queried., f 51;
-#X text 19 88 Insert it from the Put menu (named as "Canvas") or its
+#X restore 357 311 pd display-example;
+#X text 10 98 Insert it from the Put menu (named as "Canvas") or its
 shortcut. Alternatively \, create it by typing "my_canvas" or "cnv"
 into an object box. This object has no inlet or outlet \, so it can
 only communicate via send and receive symbols set via the properties
 window., f 71;
+#X obj 84 426 all_guis;
+#X obj 2 416 cnv 1 535 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 137 41 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 126 12 - [cnv]/[my_canvas]: GUI Canvas;
+#N canvas 578 113 658 414 reference 0;
+#X obj 8 52 cnv 5 640 5 empty empty INLETS/OUTLETS: 8 18 0 13 #202020
+#000000 0;
+#X obj 11 96 cnv 2 630 2 empty empty METHODS: 8 12 0 13 #202020 #000000
+0;
+#X text 136 107 size <float> - sets the size of selectable square.
+, f 70;
+#X text 59 126 vis_size <float \, float> - sets canvas' horizontal/vertical
+size., f 81;
+#X text 122 145 label <symbol> - sets label symbol., f 72;
+#X text 45 164 label_font <float \, float> -;
+#X text 52 196 label_pos <float \, float> -;
+#X text 241 196 sets label position., f 55;
+#X obj 8 385 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 129 246 send <symbol> - sets send symbol., f 71;
+#X text 101 265 recceive <symbol> - sets receive symbol., f 75;
+#X text 136 214 color <list> -;
+#X text 241 214 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 241 164 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 94 284 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X obj 37 16 cnv 15 100 20 empty empty empty 20 12 0 14 #e0e0e0 #404040
+0;
+#X text 80 302 delta <float \, float> -;
+#X text 241 302 changes the position by a x/y delta in pixels., f
+55;
+#X text 171 320 get_pos - gets objects' position (sent to a receive
+name)., f 65;
+#X text 159 66 NONE (input/output is via send/receive names).;
+#X text 148 17 - GUI Canvas.;
+#X obj 11 349 cnv 2 630 2 empty empty OUTPUT: 8 12 0 13 #202020 #000000
+0;
+#X text 192 358 list - <x \, y> position when receiving a 'get_pos'
+message.;
+#X restore 372 10 pd reference;
+#X text 463 10 <= click;
+#X obj 6 81 cnv 1 130 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 136 41 cnv 1 1 41 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 150 50 The canvas object is a simple GUI (Graphical User Interface)
+used as a background and/or to display a symbol. It can also send its
+position when queried., f 51;

@@ -1,34 +1,27 @@
-#N canvas 680 75 610 616 12;
-#X msg 39 182 bang;
-#X floatatom 71 458 5 0 0 0 - - - 0;
-#X floatatom 70 268 5 0 0 0 - - - 0;
-#X floatatom 103 398 5 0 0 0 - - - 0;
-#X text 143 398 sets the value;
-#X text 116 429 creation argument initializes the value;
-#X text 83 181 output the value;
-#X text 112 267 set and output the value;
-#X text 31 544 see also:;
-#X obj 150 544 value;
-#X obj 197 544 send;
-#X obj 52 22 int;
-#X obj 71 428 int 6;
-#X msg 97 334 send int-help;
-#X obj 102 544 float;
-#X msg 70 212 9.6;
-#X msg 80 235 -9.6;
-#X text 124 223 <= non-integers get truncated toward zero, f 21;
-#X text 370 543 updated for Pd version 0.48;
-#X obj 53 46 i;
-#X floatatom 454 288 5 0 0 0 - - - 0;
-#X floatatom 455 361 5 0 0 0 - - - 0;
-#X obj 455 317 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#N canvas 502 23 602 571 12;
+#X msg 37 173 bang;
+#X floatatom 69 449 5 0 0 0 - - - 0;
+#X floatatom 68 259 5 0 0 0 - - - 0;
+#X floatatom 101 389 5 0 0 0 - - - 0;
+#X text 141 389 sets the value;
+#X text 114 420 creation argument initializes the value;
+#X text 81 172 output the value;
+#X text 110 258 set and output the value;
+#X obj 69 419 int 6;
+#X msg 95 325 send int-help;
+#X msg 68 203 9.6;
+#X msg 78 226 -9.6;
+#X text 122 214 <= non-integers get truncated toward zero, f 21;
+#X floatatom 452 279 5 0 0 0 - - - 0;
+#X floatatom 453 352 5 0 0 0 - - - 0;
+#X obj 453 308 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X floatatom 455 393 5 0 0 0 - int-help - 0;
-#X text 501 393 <= right click for properties, f 10;
-#X text 205 327 send to a named object such as a GUI \, a receive or
+#X floatatom 453 384 5 0 0 0 - int-help - 0;
+#X text 499 384 <= right click for properties, f 10;
+#X text 203 318 send to a named object such as a GUI \, a receive or
 value objects =>, f 34;
-#X obj 453 264 r int-help;
-#X obj 455 337 v int-help;
+#X obj 451 255 r int-help;
+#X obj 453 328 v int-help;
 #N canvas 995 162 565 399 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send and receive names \, speacially in abstractions
@@ -42,7 +35,7 @@ so each copy has local connections instead of global., f 67;
 #X obj 288 192 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X floatatom 288 256 5 0 0 0 - - - 0;
-#X floatatom 390 221 5 0 0 0 - #0-x - 0;
+#X floatatom 390 221 5 0 0 0 - \$0-x - 0;
 #X msg 44 254 send \$1;
 #X obj 44 200 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
@@ -63,30 +56,74 @@ in GUIs as well as variable names in value objects., f 68;
 #X connect 10 0 11 0;
 #X connect 11 0 9 0;
 #X connect 12 0 1 0;
-#X restore 364 483 pd Dealing_with_"\$0";
-#X text 177 470 open subpatch to see how to deal with '\$0' ======>
+#X restore 362 474 pd Dealing_with_"\$0";
+#X text 175 461 open subpatch to see how to deal with '\$0' ======>
 , f 25;
-#X text 40 89 The int object stores a number initialized by its creation
+#X text 38 80 The int object stores a number initialized by its creation
 argument \, which may be reset using its inlet and output by sending
 it the "bang" message. Sending a number sets a new value and outputs
-it. A non-integer intput is truncated to an integer (a la Max) so the
+it. A non-integer input is truncated to an integer (a la Max) so the
 object can also be used to truncate values and convert from float to
 integers., f 72;
-#X text 87 21 - truncate floats and store an integer.;
-#X text 89 45 - abreviation.;
-#X obj 241 544 expr int($f1);
-#X obj 71 490 print float;
-#X msg 85 299 3 10 a;
-#X text 138 300 list get truncated to the first item;
-#X connect 0 0 12 0;
-#X connect 1 0 34 0;
-#X connect 2 0 12 0;
-#X connect 3 0 12 1;
-#X connect 12 0 1 0;
-#X connect 13 0 12 0;
-#X connect 15 0 2 0;
-#X connect 16 0 2 0;
-#X connect 22 0 27 0;
-#X connect 26 0 20 0;
-#X connect 27 0 21 0;
-#X connect 35 0 12 0;
+#X obj 69 481 print float;
+#X msg 83 290 3 10 a;
+#X text 136 291 list get truncated to the first item;
+#X text 23 535 see also:;
+#X obj 142 535 value;
+#X obj 189 535 send;
+#X obj 50 13 int;
+#X obj 94 535 float;
+#X text 386 534 updated for Pd version 0.48;
+#X obj 51 37 i;
+#X obj 11 69 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 729 137 575 340 reference 0;
+#X obj 10 51 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 10 234 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 10 271 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 308 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 199 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 32 16 int;
+#X text 85 107 float -;
+#X text 141 159 send the stored value to a [receive] or [value] object
+that has the same name as the symbol (no output)., f 55;
+#X text 29 159 send <symbol> -;
+#X obj 64 16 i;
+#X text 92 88 bang - output the stored value., f 62;
+#X text 109 244 float - the stored integer value., f 49;
+#X text 185 282 initially stored value (default 0)., f 38;
+#X text 141 106 store and output the value \, non-integers are truncated.
+;
+#X text 98 15 - truncate floats and store an integer.;
+#X text 90 125 list -;
+#X text 141 125 considers the first element if it's a float \, stores
+and outputs it.;
+#X text 107 282 1) float -;
+#X text 80 206 float - store the value \, non-integers are truncated
+(no output)., f 65;
+#X restore 419 31 pd reference;
+#X text 517 32 <= click;
+#X text 85 12 - truncate floats and store an integer.;
+#X text 87 36 - abbreviation.;
+#X obj 233 535 expr int($f1);
+#X obj 13 518 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 8 0;
+#X connect 1 0 24 0;
+#X connect 2 0 8 0;
+#X connect 3 0 8 1;
+#X connect 8 0 1 0;
+#X connect 9 0 8 0;
+#X connect 10 0 2 0;
+#X connect 11 0 2 0;
+#X connect 15 0 20 0;
+#X connect 19 0 13 0;
+#X connect 20 0 14 0;
+#X connect 25 0 8 0;

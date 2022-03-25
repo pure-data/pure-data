@@ -1,149 +1,126 @@
-#N canvas 588 81 967 645 12;
-#X obj 487 579 spigot;
-#X msg 484 284 bang;
-#X obj 455 494 bonk~;
-#X msg 507 352 print;
-#X obj 393 398 adc~;
-#X obj 404 579 spigot;
-#N canvas 1028 240 305 506 synth 0;
-#X obj 72 77 r bonk-cooked;
-#X obj 72 109 unpack;
+#N canvas 321 38 941 662 12;
+#X obj 464 555 spigot;
+#X msg 461 298 bang;
+#X obj 385 555 spigot;
+#N canvas 906 141 305 506 synth 0;
 #X obj 72 159 * 12;
 #X obj 72 184 div 7;
-#X obj 72 134 + 1;
 #X obj 72 234 mtof;
-#X obj 72 299 osc~;
-#X obj 72 324 cos~;
-#X obj 72 209 + 47;
-#X obj 156 339 line~;
-#X obj 156 364 *~;
-#X obj 156 389 lop~ 500;
-#X obj 72 349 *~;
-#X obj 72 441 dac~;
+#X obj 72 339 osc~;
+#X obj 72 364 cos~;
+#X obj 141 339 line~;
+#X obj 141 364 *~;
+#X obj 141 389 lop~ 500;
+#X obj 72 389 *~;
+#X obj 72 461 dac~;
 #X obj 174 261 dbtorms;
-#X obj 174 211 * 0.5;
-#X obj 174 236 + 50;
-#X obj 156 287 f;
-#X obj 174 27 inlet;
-#X obj 72 392 hip~ 5;
-#X obj 72 274 sig~;
-#X msg 156 314 \$1 \, 0 200;
+#X obj 141 287 f;
+#X obj 174 97 inlet;
+#X obj 72 412 hip~ 5;
+#X msg 141 314 \$1 \, 0 200;
 #X obj 141 263 b;
+#X obj 72 97 inlet;
+#X obj 72 129 t f;
+#X obj 72 209 + 48;
 #X connect 0 0 1 0;
-#X connect 1 0 4 0;
+#X connect 1 0 18 0;
+#X connect 2 0 15 0;
 #X connect 2 0 3 0;
-#X connect 3 0 8 0;
-#X connect 4 0 2 0;
-#X connect 5 0 20 0;
-#X connect 5 0 22 0;
+#X connect 3 0 4 0;
+#X connect 4 0 8 0;
+#X connect 5 0 6 0;
+#X connect 5 0 6 1;
 #X connect 6 0 7 0;
-#X connect 7 0 12 0;
-#X connect 8 0 5 0;
-#X connect 9 0 10 0;
-#X connect 9 0 10 1;
-#X connect 10 0 11 0;
-#X connect 11 0 12 1;
-#X connect 12 0 19 0;
-#X connect 14 0 17 1;
-#X connect 15 0 16 0;
-#X connect 16 0 14 0;
-#X connect 17 0 21 0;
-#X connect 18 0 15 0;
-#X connect 19 0 13 1;
-#X connect 19 0 13 0;
-#X connect 20 0 6 0;
-#X connect 21 0 9 0;
-#X connect 22 0 17 0;
-#X restore 640 524 pd synth;
-#X floatatom 640 498 4 0 0 0 - - - 0;
-#X msg 606 466 0;
-#X msg 640 466 90;
-#X text 24 352 In this patch \, after starting DSP \, you can print
+#X connect 7 0 8 1;
+#X connect 8 0 13 0;
+#X connect 10 0 11 1;
+#X connect 11 0 14 0;
+#X connect 12 0 10 0;
+#X connect 13 0 9 1;
+#X connect 13 0 9 0;
+#X connect 14 0 5 0;
+#X connect 15 0 11 0;
+#X connect 16 0 17 0;
+#X connect 17 0 0 0;
+#X connect 18 0 2 0;
+#X restore 546 522 pd synth;
+#X floatatom 599 497 4 0 0 0 - - - 0;
+#X msg 565 469 0;
+#X msg 599 469 90;
+#X text 15 382 In this patch \, after starting DSP \, you can print
 out the raw or cooked output using the two "spigots" or listen to a
-synthesizer output by raising its volume., f 47;
-#X text 675 469 output volume;
-#X text 689 487 (0-100);
-#X msg 421 127 mask 4 0.7;
-#X text 507 113 Describes how energy in each frequency band masks later
+synthesizer output by raising its volume., f 44;
+#X msg 398 146 mask 4 0.7;
+#X text 484 132 Describes how energy in each frequency band masks later
 energy in the band. Here the masking is total for 4 analysis periods
-and then drops by 0.7 each period.;
-#X text 526 277 Poll the current spectrum via "raw" outlet \, You can
+and then drops by 0.7 each period., f 62;
+#X text 503 291 Poll the current spectrum via "raw" outlet \, You can
 set a very high threshold if you don't want attacks mixed in.;
-#X msg 496 321 debug 0;
-#X obj 443 556 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X msg 471 334 debug 0;
+#X obj 424 532 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000 0 1;
-#X obj 526 556 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 503 532 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000 0 1;
-#X obj 487 609 print cooked;
-#X obj 404 609 print raw;
-#X text 276 579 enable printout:;
-#X text 519 202 Minimum "velocity" to output (quieter notes are ignored.)
-;
-#X obj 503 525 s bonk-cooked;
-#X text 24 192 Bonk's two outputs are the raw spectrum of the attack
-(provided as a list of 11 numbers giving the signal "loudness" in the
-11 frequency bands used) \, and the "cooked" output which gives only
-an instrument number (counting up from zero) and a "velocity". This
-"velocity" is the sum of the square roots of the amplitudes of the
-bands \, normalized so that 100 is an attack of amplitude of about
-1 The instrument number is significant only if Bonk has a "template
-set" in memory., f 47;
-#X text 501 33 Set low and high thresholds. Signal growth must exceed
+#X obj 464 585 print cooked;
+#X obj 385 585 print raw;
+#X text 267 555 enable printout:;
+#X text 496 216 Minimum "velocity" to output (quieter notes are ignored.)
+, f 59;
+#X text 470 53 Set low and high thresholds. Signal growth must exceed
 the high one and then fall to the low one to make an attack. The unit
 is the sum of the proportional growth in the 11 filter bands. Proportional
-growth is essentially the logarithmic time derivative.;
-#X msg 516 380 print 1;
-#X text 24 53 The Bonk object takes an audio signal input and looks
+growth is essentially the logarithmic time derivative., f 64;
+#X text 15 73 The Bonk object takes an audio signal input and looks
 for "attacks" defined as sharp changes in the spectral envelope of
 the incoming sound. Optionally \, and less reliably \, you can have
 Bonk check the attack against a collection of stored templates to try
 to guess which of two or more instruments was hit. Bonk is described
 theoretically in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu.
 , f 47;
-#N canvas 544 116 707 637 creation-arguments 0;
+#N canvas 488 108 694 491 creation-arguments 0;
 #X text 228 14 creation arguments for bonk~;
-#X text 70 272 -npts 256;
-#X text 44 244 default value:;
-#X text 70 308 -hop 128;
-#X text 70 342 -nfilters 11;
-#X text 68 380 -halftones 6;
-#X text 76 514 -overlap 1;
-#X text 79 567 -firstbin 1;
-#X text 71 454 -minbandwidth 1.5;
-#X text 122 147 All frequency parameters are specified in 'bins'. One
+#X text 33 114 All frequency parameters are specified in 'bins'. One
 bin is the sample rate divided by the window size. The minimum possible
 bandwidth is 1.5 bins. Higher bandwidths give numerically more robust
-outputs.;
-#X text 43 229 Arguments and;
-#X text 212 270 window size in points;
-#X text 210 306 analysis period ("hop size") in points;
-#X text 212 340 number of filters to use;
-#X text 212 379 desired bandwidth of filters in halftones \, effective
+outputs., f 88;
+#X text 204 200 window size in points, f 60;
+#X text 204 224 analysis period ("hop size") in points, f 60;
+#X text 204 247 number of filters to use, f 60;
+#X text 204 270 desired bandwidth of filters in halftones \, effective
 in the exponentially spaced region. (At lower center frequencies the
-bandwidth is supported by the "minbandwidth" parameter below).;
-#X text 212 511 overlap factor between filters. If 1 \, the filters
+bandwidth is supported by the "minbandwidth" parameter below)., f
+60;
+#X text 204 385 overlap factor between filters. If 1 \, the filters
 are spaced to line up at their half-power points. Other values specify
 more or fewer filters proportionally.;
-#X text 121 49 bonk~ uses a filterbank whose center frequencies are
+#X text 33 48 bonk~ uses a filterbank whose center frequencies are
 spaced equally at low frequencies and proportionally at high ones -
 i.e. \, they increase linearly \, then exponentially. They are determined
 by the filters' bandwidths and overlap. The bandwidths are specified
 proportionally to frequency but bounded below by a specified minimum.
-;
-#X text 210 455 minimum bandwidth in bins. If the bandwidth specified
+, f 88;
+#X text 204 334 minimum bandwidth in bins. If the bandwidth specified
 by "halftones" is smaller than this \, this value is used. This must
-be at least 1.5.;
-#X text 212 567 center frequency \, in bins \, of the lowest filter.
-The others are computed from this.;
-#X restore 198 506 pd creation-arguments;
-#N canvas 654 163 692 327 templates 0;
+be at least 1.5., f 60;
+#X text 204 434 center frequency \, in bins \, of the lowest filter.
+The others are computed from this., f 60;
+#X text 43 173 flags and default values:;
+#X text 101 202 -npts (256):;
+#X text 108 226 -hop (128):;
+#X text 80 249 -nfilters (11):;
+#X text 80 271 -halftones (6):;
+#X text 45 337 -minbandwidth (1.5):;
+#X text 94 388 -overlap (1):;
+#X text 87 436 -firstbin (1):;
+#X restore 82 539 pd creation-arguments;
+#N canvas 654 163 685 300 templates 0;
 #X msg 79 97 learn 0;
 #X msg 90 137 forget;
 #X msg 101 174 write templates.txt;
 #X msg 117 204 read templates.txt;
 #X msg 52 38 debounce 0;
 #X msg 66 66 learn 10;
-#X obj 69 273 outlet;
+#X obj 69 253 outlet;
 #X text 171 65 Forget all templates and start learning new ones. The
 argument gives the number of times you will hit each instrument (10
 recommended.) Turn on the output volume above for audible feedback
@@ -161,51 +138,135 @@ to erase and record over a template.;
 #X connect 3 0 6 0;
 #X connect 4 0 6 0;
 #X connect 5 0 6 0;
-#X restore 524 412 pd templates;
-#X msg 399 56 thresh 2.5 5;
-#X msg 437 176 attack-frames 1;
-#X msg 449 201 minvel 7;
-#X msg 456 228 spew 0;
-#X msg 467 254 useloudness 0;
-#X text 664 588 Updated for Pd version 0.42;
-#X text 24 416 By default bonk's analysis is carried out on a 256-point
+#X restore 501 428 pd templates;
+#X msg 371 76 thresh 2.5 5;
+#X msg 414 188 attack-frames 1;
+#X msg 426 215 minvel 7;
+#X msg 434 242 spew 0;
+#X msg 444 268 useloudness 0;
+#X text 15 446 By default bonk's analysis is carried out on a 256-point
 window (6 msec at 44.1 kHz) and the analysis period is 128 samples.
 These and other parameters may be overridden using creation arguments
-as shown in the subpatch below:, f 47;
-#X obj 55 14 bonk~;
-#X text 107 13 - attack detection and spectral envelope measurement
+as shown in the subpatch below:, f 44;
+#X obj 36 11 bonk~;
+#X text 82 10 - attack detection and spectral envelope measurement
 ;
-#X text 508 229 Turn spew mode on/off.;
-#X text 557 176 Number of frames over which to measure growth.;
-#X text 571 253 experimental: use alternative loudness units.;
-#X text 557 321 Turn debugging on or off.;
-#X text 553 351 Print out settings and templates.;
-#X text 577 380 Print out filterbank settings.;
-#X text 619 413 More messages for managing templates.;
-#X msg 63 572 \; pd dsp \$1;
-#X obj 63 548 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 486 243 Turn spew mode on/off.;
+#X text 534 188 Number of frames over which to measure growth., f
+54;
+#X text 548 267 experimental: use alternative loudness units.;
+#X text 532 334 Turn debugging on or off.;
+#X text 528 364 Print out settings and templates.;
+#X text 552 393 Print out filterbank settings.;
+#X msg 738 549 \; pd dsp \$1;
+#X obj 738 525 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 90 547 DSP on/off;
-#X connect 0 0 19 0;
-#X connect 1 0 2 0;
-#X connect 2 0 5 0;
-#X connect 2 1 0 0;
-#X connect 2 1 23 0;
-#X connect 3 0 2 0;
-#X connect 4 0 2 0;
-#X connect 5 0 20 0;
-#X connect 7 0 6 0;
-#X connect 8 0 7 0;
-#X connect 9 0 7 0;
-#X connect 13 0 2 0;
-#X connect 16 0 2 0;
-#X connect 17 0 5 1;
-#X connect 18 0 0 1;
-#X connect 26 0 2 0;
-#X connect 29 0 2 0;
-#X connect 30 0 2 0;
-#X connect 31 0 2 0;
-#X connect 32 0 2 0;
-#X connect 33 0 2 0;
-#X connect 34 0 2 0;
-#X connect 47 0 46 0;
+#X text 765 524 DSP on/off;
+#X obj 7 42 cnv 1 925 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 840 10 <= click;
+#N canvas 585 77 723 566 reference 0;
+#X obj 8 35 cnv 5 700 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 307 cnv 2 700 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 386 cnv 2 700 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 540 cnv 5 700 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 330 cnv 1 700 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 37 7 bonk~;
+#X text 83 6 - attack detection and spectral envelope measurement;
+#X obj 7 357 cnv 1 700 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 409 cnv 1 700 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 158 45 signal - signal input to be analyzed., f 75;
+#X text 53 62 thresh <float \, float> - set low and high thresholds.
+, f 90;
+#X text 152 413 '-npts': window size in points (default 256)., f 69
+;
+#X text 159 430 '-hop': analysis period ("hop size") in points (default
+128)., f 68;
+#X text 124 447 '-nfilters': number of filters to use (default 11).
+, f 73;
+#X text 117 464 '-halftones': filter bandwidth of filters in halftones
+(default 6)., f 74;
+#X text 96 481 '-minbandwidth': minimum bandwidth in bins (default
+1.5)., f 77;
+#X text 131 498 '-overlap': overlap factor between filters (default
+1), f 72;
+#X text 124 515 '-firstbin': center frequency \, in bins \, of the
+lowest filter (default 1)., f 73;
+#X text 53 96 attack-frames <float> - set number of frames over which
+to measure growth., f 90;
+#X text 88 113 minlevel <float> - set minimum "velocity" to output
+(ignore quieter notes)., f 85;
+#X text 67 147 useloudness <float> - nonzero sets to alternative loudness
+units (experimental)., f 88;
+#X text 172 164 bang - poll the current spectrum via "raw" outlet.
+, f 73;
+#X text 109 181 debug <float> - nonzero sets to debugging mode., f
+82;
+#X text 88 215 debounce <float> - set minimum time (in msec) between
+attacks in learn mode., f 85;
+#X text 109 232 learn <float> - forget and learn for a given number
+of times (10 recommended)., f 82;
+#X text 158 249 forget - forget the last template., f 75;
+#X text 109 283 read <symbol> - read templates from a file., f 82
+;
+#X text 102 266 write <symbol> - write templates to a file., f 83
+;
+#X text 109 198 print <float> - print out settings \, templates and
+filterbank settings for nonzero., f 82;
+#X text 67 79 mask <float \, float> - set energy mask profile: number
+of analysis and drop factor., f 88;
+#X text 116 130 spew <float> - nonzero turns spew mode on \, zero sets
+it off., f 81;
+#X text 82 333 list - raw: attack's spectrum (loudness values for the
+11 frequency bands used)., f 80;
+#X text 82 363 list - cooked: instrument number (if there's a template)
+\, velocity and temperature., f 83;
+#X restore 746 11 pd reference;
+#X obj 7 620 cnv 1 925 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 705 631 updated for Pd version 0.42;
+#X text 632 467 output volume (0-100);
+#X obj 432 483 bonk~;
+#X text 596 429 <= Messages for managing templates.;
+#X msg 482 365 print;
+#X msg 491 393 print 1;
+#X obj 367 419 adc~ 1;
+#X text 15 205 Bonk's two outputs are the raw spectrum of the attack
+(provided as a list of 11 numbers giving the signal "loudness" in the
+11 frequency bands used) \, and the "cooked" output which gives an
+instrument number (counting up from zero) \, "velocity" and "color
+temperature". The instrument number is significant only if bonk~ has
+a "template set" in memory. The "velocity" is the sum of the square
+roots of the amplitudes of the bands (normalized so that 100 is an
+attack of amplitude of about 1). The "temperature" is a sort of 'spectral
+centroid' that correlates with perceived brilliance., f 51;
+#X connect 0 0 14 0;
+#X connect 1 0 45 0;
+#X connect 2 0 15 0;
+#X connect 4 0 3 1;
+#X connect 5 0 4 0;
+#X connect 6 0 4 0;
+#X connect 8 0 45 0;
+#X connect 11 0 45 0;
+#X connect 12 0 2 1;
+#X connect 13 0 0 1;
+#X connect 21 0 45 0;
+#X connect 22 0 45 0;
+#X connect 23 0 45 0;
+#X connect 24 0 45 0;
+#X connect 25 0 45 0;
+#X connect 26 0 45 0;
+#X connect 37 0 36 0;
+#X connect 45 0 2 0;
+#X connect 45 1 0 0;
+#X connect 45 1 3 0;
+#X connect 47 0 45 0;
+#X connect 48 0 45 0;
+#X connect 49 0 45 0;

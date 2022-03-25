@@ -1,67 +1,104 @@
-#N canvas 748 47 676 603 12;
+#N canvas 643 40 620 646 12;
 #X declare -stdpath ./;
-#X floatatom 51 206 3 0 0 0 - - - 0;
-#X obj 272 396 print~;
-#X msg 272 361 bang;
-#X obj 59 352 loop~;
-#X floatatom 91 293 0 0 0 0 - - - 0;
-#X msg 73 266 bang;
-#X obj 201 396 print~;
-#X msg 201 361 bang;
+#X floatatom 21 186 6 0 0 0 - - - 0;
+#X obj 265 435 print~;
+#X msg 265 394 bang;
+#X floatatom 105 287 7 0 0 0 - - - 0;
+#X msg 93 247 bang;
+#X obj 214 435 print~;
+#X msg 214 392 bang;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array array2 150000 float 0;
-#X coords 0 1 149999 -1 200 150 1;
-#X restore 395 361 graph;
-#X obj 387 255 soundfiler;
-#X obj 69 474 tabread4~ array2;
-#X obj 69 411 *~;
-#X obj 114 416 samphold~;
-#X obj 69 444 +~;
-#X floatatom 114 317 0 0 0 0 - - - 0;
-#X obj 114 340 *~ 1000;
-#X msg 387 200 read ../doc/sound/bell.aiff array2;
-#X msg 62 241 set 0.5;
-#X text 78 202 left signal input is transposition (1 is normal \, 2
-is up an octave \, etc), f 37;
-#X text 122 242 set phase (0 to 1);
-#X text 110 266 reset phase to 0;
-#X text 117 292 right signal input is window size in samples;
-#X text 142 316 here's how to handle onsets;
-#X text 205 340 print outputs;
-#X text 41 54 loop~ takes input signals to set a window size and transposition
-\, and outputs a phase and a sampled window size. The window size only
-changes at phase zero crossings and the phase output is adjusted so
-that changing window size doesn't change the transposition., f 79
-;
-#X text 41 116 You can send "bang" or "set" message to force the phase
+#X array sample 155944 float 0;
+#X coords 0 1 155943 -1 250 150 1 0 0;
+#X restore 347 406 graph;
+#X obj 296 253 soundfiler;
+#X obj 87 422 *~;
+#X obj 128 449 samphold~;
+#X obj 87 453 +~;
+#X floatatom 128 337 5 0 0 0 - - - 0;
+#X obj 128 363 *~ 1000;
+#X msg 73 221 set 0.5;
+#X text 133 220 set phase (0 to 1);
+#X text 130 247 reset phase to 0;
+#X text 187 310 right signal input is window size in samples;
+#X text 169 337 here's how to handle onsets;
+#X text 212 368 print outputs;
+#X text 25 118 You can send "bang" or "set" message to force the phase
 to zero--you should mute the output before doing so. This may be desirable
 if you've set a large window size but then want to decrease it without
-waiting for the next phase crossing., f 79;
-#X msg 399 226 read ../doc/sound/voice.wav array2;
-#X obj 76 17 loop~;
-#X text 120 16 - phase generator for looping samplers;
-#X obj 69 509 output~;
-#X obj 471 16 declare -stdpath ./;
-#X obj 387 176 loadbang;
-#X msg 395 523 \; array2 resize 150000;
-#X connect 0 0 3 0;
+waiting for the next phase crossing., f 80;
+#X obj 43 16 loop~;
+#X text 87 15 - phase generator for looping samplers;
+#X obj 87 523 output~;
+#X obj 471 251 declare -stdpath ./;
+#X obj 296 174 loadbang;
+#X text 522 14 <= click;
+#N canvas 608 98 577 290 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 144 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 227 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 264 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 146 238 NONE, f 52;
+#X obj 8 107 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 82 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 191 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 166 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 33 16 loop~;
+#X text 77 15 - phase generator for looping samplers;
+#X text 109 85 float/signal - transposition value., f 53;
+#X text 109 113 float/signal - window size in samples., f 53;
+#X text 138 199 signal - sampled window size.;
+#X text 138 169 signal - phase output from 0 to 1, f 53;
+#X restore 428 15 pd reference;
+#X obj 5 47 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 590 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 72 179 transposition (1 is normal \, 2 is up an octave \, etc)
+, f 27;
+#X floatatom 296 280 7 0 0 0 - - - 0;
+#X obj 21 221 sig~ 1;
+#X msg 296 198 read -resize ../doc/sound/bell.aiff sample;
+#X msg 308 224 read -resize ../doc/sound/voice.wav sample;
+#X obj 87 485 tabread4~ sample;
+#X text 25 56 loop~ takes input signals to set transposition and window
+size \, and outputs a phase and a sampled window size. The window size
+only changes at phase zero crossings and the phase output is adjusted
+so that changing window size doesn't change the transposition., f
+80;
+#X text 41 605 see also:;
+#X obj 122 605 tabread4~;
+#X obj 105 310 sig~ 22050;
+#X obj 73 371 loop~;
+#X connect 0 0 32 0;
 #X connect 2 0 1 0;
-#X connect 3 0 6 0;
-#X connect 3 0 11 0;
-#X connect 3 0 12 1;
-#X connect 3 1 1 0;
-#X connect 3 1 11 1;
-#X connect 4 0 3 1;
-#X connect 5 0 3 0;
-#X connect 7 0 6 0;
-#X connect 10 0 29 0;
-#X connect 10 0 29 1;
-#X connect 11 0 13 0;
-#X connect 12 0 13 1;
+#X connect 3 0 39 0;
+#X connect 4 0 40 0;
+#X connect 6 0 5 0;
+#X connect 8 0 31 0;
+#X connect 9 0 11 0;
+#X connect 10 0 11 1;
+#X connect 11 0 35 0;
+#X connect 12 0 13 0;
 #X connect 13 0 10 0;
-#X connect 14 0 15 0;
-#X connect 15 0 12 0;
-#X connect 16 0 9 0;
-#X connect 17 0 3 0;
-#X connect 26 0 9 0;
-#X connect 31 0 16 0;
+#X connect 14 0 40 0;
+#X connect 25 0 33 0;
+#X connect 32 0 40 0;
+#X connect 33 0 8 0;
+#X connect 34 0 8 0;
+#X connect 35 0 23 0;
+#X connect 35 0 23 1;
+#X connect 39 0 40 1;
+#X connect 40 0 5 0;
+#X connect 40 0 9 0;
+#X connect 40 0 10 1;
+#X connect 40 1 1 0;
+#X connect 40 1 9 1;

@@ -1,25 +1,25 @@
-#N canvas 756 23 570 732 12;
-#X floatatom 25 81 5 0 0 0 - - - 0;
-#X floatatom 25 156 5 0 0 0 - - - 0;
-#X msg 35 104 bang;
-#X obj 37 16 value;
-#X obj 25 131 value help-value1;
-#X obj 51 40 v;
-#X floatatom 167 81 5 0 0 0 - - - 0;
-#X floatatom 167 156 5 0 0 0 - - - 0;
-#X msg 177 104 bang;
-#X obj 167 131 value help-value1;
-#X floatatom 317 81 5 0 0 0 - - - 0;
-#X floatatom 317 157 5 0 0 0 - - - 0;
-#X msg 327 104 bang;
-#X obj 317 132 value help-value2;
-#X text 31 195 "Value" stores a numeric value which is shared between
+#N canvas 539 23 565 709 12;
+#X floatatom 38 131 5 0 0 0 - - - 0;
+#X floatatom 38 206 5 0 0 0 - - - 0;
+#X msg 48 154 bang;
+#X obj 37 12 value;
+#X obj 38 181 value help-value1;
+#X obj 51 36 v;
+#X floatatom 180 131 5 0 0 0 - - - 0;
+#X floatatom 180 206 5 0 0 0 - - - 0;
+#X msg 190 154 bang;
+#X obj 180 181 value help-value1;
+#X floatatom 330 131 5 0 0 0 - - - 0;
+#X floatatom 330 207 5 0 0 0 - - - 0;
+#X msg 340 154 bang;
+#X obj 330 182 value help-value2;
+#X text 41 78 "Value" stores a numeric value which is shared between
 all values with the same name (which need not be in the same Pd window.)
-;
-#X text 371 80 numbers set the value;
-#X text 375 103 bang retrieves it;
-#X text 23 674 see also:;
-#X obj 99 674 expr;
+, f 66;
+#X text 384 130 numbers set the value;
+#X text 388 153 bang retrieves it;
+#X text 24 675 see also:;
+#X obj 99 675 expr;
 #X obj 313 288 value z;
 #X obj 392 277 expr z;
 #X floatatom 392 306 5 0 0 0 - - - 0;
@@ -33,8 +33,8 @@ all values with the same name (which need not be in the same Pd window.)
 #000000 #000000;
 #X floatatom 363 387 5 0 0 0 - - - 0;
 #X msg 441 352 \; y 5;
-#X obj 137 674 send;
-#X obj 176 674 float;
+#X obj 137 675 send;
+#X obj 176 675 float;
 #X text 32 257 The value may also be stored or recalled in expressions
 via the expr \, expr~ \, and fexpr~ objects., f 34;
 #X floatatom 276 575 5 0 0 0 - - - 0;
@@ -49,7 +49,7 @@ object adds a right inlet for setting the variable name with a "symbol"
 message:, f 30;
 #X obj 276 514 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X obj 221 674 int;
+#X obj 221 675 int;
 #X obj 276 474 v help-value1;
 #X msg 322 423 send x;
 #X msg 334 447 send y;
@@ -60,11 +60,11 @@ message:, f 30;
 #X obj 474 425 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X floatatom 276 423 5 0 0 0 - - - 0;
-#X text 312 677 updated for Pd version 0.51.;
-#X text 88 16 - nonlocal shared value (named variable);
+#X text 322 675 updated for Pd version 0.51.;
+#X text 85 12 - nonlocal shared value (named variable);
 #X text 31 429 You can also send the stored value to a named object
 such as a receive or another value:, f 30;
-#X text 85 41 - abbreviation;
+#X text 82 37 - abbreviation;
 #N canvas 988 197 570 343 Dealing_with_"\$0" 0;
 #X obj 118 218 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
@@ -74,7 +74,7 @@ such as a receive or another value:, f 30;
 #X obj 271 204 f \$0;
 #X obj 271 180 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X floatatom 382 187 5 0 0 0 - #0-y - 0;
+#X floatatom 382 187 5 0 0 0 - \$0-y - 0;
 #X obj 86 288 value;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send and receive names \, speacially in abstractions
@@ -103,6 +103,41 @@ like a symbol or a float object. See examples below., f 67;
 #X connect 14 0 13 0;
 #X restore 366 623 pd Dealing_with_"\$0";
 #X text 35 623 open subpatch to see how to deal with '\$0' =>;
+#X obj 6 67 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 664 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 643 94 573 339 reference 0;
+#X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 226 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 263 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 310 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 164 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 27 15 value;
+#X text 105 15 - nonlocal shared value (named variable);
+#X obj 74 15 v;
+#X text 147 95 float -;
+#X text 203 95 sets variable value., f 36;
+#X text 203 271 sets value name (if no name is given \, a right inlet
+is created to set the name)., f 44;
+#X text 147 236 float -;
+#X text 46 168 (if created without argument);
+#X text 140 195 symbol - sets the value name.;
+#X text 91 135 send <symbol> -;
+#X text 154 114 bang -;
+#X text 203 114 outputs the value., f 36;
+#X text 203 135 sends the value to a matching receive name.;
+#X text 120 271 1) symbol -;
+#X text 203 236 outputs variable value when receiving a bang.;
+#X restore 387 34 pd reference;
+#X text 484 35 <= click;
 #X connect 0 0 4 0;
 #X connect 2 0 4 0;
 #X connect 4 0 1 0;

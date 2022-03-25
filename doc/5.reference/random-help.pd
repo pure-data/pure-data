@@ -1,30 +1,59 @@
-#N canvas 490 69 497 442 12;
-#X msg 54 217 bang;
-#X obj 54 306 random 5;
-#X floatatom 107 279 5 0 0 0 - - - 0;
-#X floatatom 54 334 0 0 0 0 - - - 0;
-#X msg 73 249 seed 123;
-#X text 95 216 bang for output;
-#X text 145 250 message to set the seed;
-#X text 150 280 inlet to reset the range;
-#X text 123 306 argument to initialize the range;
-#X text 262 404 updated for Pd version 0.33;
-#X text 19 46 Random outputs pseudo random integers from 0 to N-1 where
+#N canvas 545 23 479 478 12;
+#X msg 86 237 bang;
+#X floatatom 139 299 5 0 0 0 - - - 0;
+#X floatatom 86 354 0 0 0 0 - - - 0;
+#X msg 105 269 seed 123;
+#X text 127 236 bang for output;
+#X text 177 270 message to set the seed;
+#X text 182 300 inlet to reset the range;
+#X text 155 326 argument to initialize the range;
+#X text 248 437 updated for Pd version 0.33;
+#X text 24 58 Random outputs pseudo random integers from 0 to N-1 where
 N is the creation argument (5 in the example below.) You can specify
 a seed if you wish. Seeds are kept locally so that if two Randoms are
 seeded the same they will have the same output (or indeed you can seed
-the same one twice to repeat the output.);
-#X text 22 139 On the other hand \, if you don't supply a seed each
+the same one twice to repeat the output.), f 60;
+#X text 24 155 On the other hand \, if you don't supply a seed each
 instance of random gets its own seed. WARNING: nothing is known about
 the quality of the pseudo random number generator. It isn't any standard
 one!;
-#X obj 64 12 random;
-#X text 128 12 - pseudo random integers;
-#X obj 54 362 print;
-#X text 53 404 see also:;
-#X obj 131 404 expr;
-#X connect 0 0 1 0;
-#X connect 1 0 3 0;
-#X connect 2 0 1 1;
-#X connect 3 0 14 0;
-#X connect 4 0 1 0;
+#X obj 27 13 random;
+#X text 81 12 - pseudo random integers;
+#X obj 86 382 print;
+#X text 23 440 see also:;
+#X obj 98 438 expr;
+#X obj 10 42 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 722 116 574 286 reference 1;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 184 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 221 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 258 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 145 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 40 16 random;
+#X text 94 15 - pseudo random integers.;
+#X text 98 92 bang - generate a random integer number., f 62;
+#X text 147 113 set a seed value for repeatable random numbers., f
+55;
+#X text 143 155 float - set the range., f 49;
+#X text 143 194 float - the generated random number., f 49;
+#X text 143 232 1) float - initial range value (default 1)., f 49
+;
+#X text 42 113 seed <float> -;
+#X restore 290 12 pd reference;
+#X text 384 12 <= click;
+#X obj 10 422 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 86 326 random 5;
+#X connect 0 0 20 0;
+#X connect 1 0 20 1;
+#X connect 2 0 13 0;
+#X connect 3 0 20 0;
+#X connect 20 0 2 0;

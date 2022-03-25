@@ -1,22 +1,48 @@
-#N canvas 437 86 551 343 12;
-#X obj 51 17 spigot;
-#X text 108 16 - pass or block messages;
-#X msg 53 143 0.5 1000;
-#X obj 70 286 print;
-#X msg 80 196 walk the cat;
-#X msg 70 168 bang;
-#X text 145 226 control: nonzero to pass messages \, zero to stop them
-;
-#X text 280 296 updated for Pd version 0.38;
-#X obj 109 230 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#N canvas 565 104 485 393 12;
+#X obj 31 17 spigot;
+#X text 88 16 - pass or block messages;
+#X msg 93 144 0.5 1000;
+#X obj 110 307 print;
+#X msg 120 197 walk the cat;
+#X msg 110 169 bang;
+#X text 173 227 control: nonzero to pass messages \, zero to stop them
+, f 28;
+#X text 260 362 updated for Pd version 0.38;
+#X obj 149 234 tgl 17 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
 #000000 0 1;
-#X text 146 253 optional arg sets the initial state (0 by default)
-;
-#X obj 70 253 spigot;
-#X text 44 57 Spigot passes messages from its left inlet to its outlet
+#X text 164 274 optional arg sets the initial state (0 by default)
+, f 29;
+#X obj 110 274 spigot;
+#X text 24 59 Spigot passes messages from its left inlet to its outlet
 \, as long as a nonzero number is sent to its right inlet. When its
 right inlet gets zero \, incoming messages are "blocked" i.e. \, ignored.
 ;
+#X obj 12 49 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 390 16 <= click;
+#N canvas 707 220 571 252 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 145 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 219 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 182 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 114 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 31 17 spigot;
+#X text 88 16 - pass or block messages;
+#X text 142 121 float - nonzero to pass messages \, zero to stop them.
+;
+#X text 120 88 anything - any message to pass or not., f 55;
+#X text 123 192 1) float - initialize right inlet., f 52;
+#X text 122 155 anything - any input message if spigot is opened.;
+#X restore 296 16 pd reference;
+#X obj 12 349 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 2 0 10 0;
 #X connect 4 0 10 0;
 #X connect 5 0 10 0;

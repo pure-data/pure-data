@@ -1,11 +1,11 @@
-#N canvas 643 40 508 561 12;
-#X obj 67 224 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#N canvas 573 23 609 519 12;
+#X obj 77 220 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 102 334 4 0 0 0 - - - 0;
-#X msg 146 232 set \$1;
-#X floatatom 146 210 4 0 9 0 - - - 0;
-#X floatatom 102 225 4 -10 10 0 - - - 0;
-#X obj 102 285 hradio 20 1 0 6 empty empty Radio -55 10 0 15 #b8b8b8
+#X floatatom 112 330 4 0 0 0 - - - 0;
+#X msg 156 228 set \$1;
+#X floatatom 156 206 4 0 9 0 - - - 0;
+#X floatatom 112 221 4 -10 10 0 - - - 0;
+#X obj 112 281 hradio 20 1 0 6 empty empty Radio -55 10 0 15 #b8b8b8
 #0400fc #780000 0;
 #N canvas 906 109 508 505 old-behavior 0;
 #X floatatom 114 432 5 0 0 0 - - - 0;
@@ -52,19 +52,18 @@ the range of numbers. Note this also affects the "set" message.;
 #X connect 17 0 15 0;
 #X connect 18 0 15 0;
 #X connect 19 0 5 0;
-#X restore 335 397 pd old-behavior;
-#X obj 45 24 hradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#X restore 467 383 pd old-behavior;
+#X obj 17 18 hradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
 #000000 0;
-#X obj 102 363 print hradio;
-#X text 269 440 (c) musil@iem.kug.ac.at;
-#X text 305 456 IEM KUG \, Graz \, Austria \, 2002, f 14;
-#X text 68 514 see also:;
-#X obj 142 515 x_all_guis;
-#X text 59 441 This object is part of the "iemguis" library \, natively
+#X obj 112 359 print hradio;
+#X text 259 406 (c) musil@iem.kug.ac.at;
+#X text 295 422 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 28 485 see also:;
+#X text 49 407 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
-#X text 265 514 updated for Pd version 0.51;
-#X text 228 285 <= click on the cells., f 11;
-#X text 324 285 Right click for properties., f 15;
+#X text 388 484 updated for Pd version 0.51;
+#X text 238 281 <= click on the cells., f 11;
+#X text 334 281 Right click for properties., f 15;
 #N canvas 789 65 625 556 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
@@ -106,7 +105,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 22 0;
 #X connect 17 0 22 0;
 #X connect 18 0 3 0;
-#X restore 359 225 pd position;
+#X restore 369 221 pd position;
 #N canvas 465 144 358 369 properties 0;
 #N canvas 828 23 640 573 colors 0;
 #X floatatom 72 243 3 0 29 0 - - - 0;
@@ -509,7 +508,7 @@ set it directly via the properties window., f 50;
 #fcfcfc #000000 #000000 0;
 #X text 439 110 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 6 0;
 #X connect 5 0 1 0;
@@ -548,18 +547,18 @@ in the subpatches below:, f 39;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X restore 159 143 pd number;
-#X restore 345 199 pd properties;
-#X text 27 137 Insert it from the Put menu (named as "hradio") or its
+#X restore 355 195 pd properties;
+#X text 31 139 Insert it from the Put menu (named as "hradio") or its
 shortcut. Alternatively \, create it by typing "hradio" into an object
 box. Right click for properties (to set size \, colors \, labels \,
-etc)., f 64;
-#X text 243 340 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
+etc)., f 79;
+#X text 319 336 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
 Check details and how to get it back:, f 33;
-#X text 27 59 The horizontal radio button is a GUI (Graphical User
+#X text 31 70 The horizontal radio button is a GUI (Graphical User
 Interface) that sends numbers. Click on its cells to output corresponding
 values. Incoming floats set the value and are passed through (even
 if outside the range). The 'set' message only sets the value without
-output. A bang message sends the internal value., f 64;
+output. A bang message sends the internal value., f 79;
 #N canvas 761 61 435 279 switch-example 0;
 #X obj 66 163 route 0 1 2 3;
 #X obj 66 195 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
@@ -587,8 +586,47 @@ turns the previous toggle off before turning the new one on., f 29
 #X connect 5 2 6 0;
 #X connect 6 0 0 0;
 #X connect 8 0 5 0;
-#X restore 317 251 pd switch-example;
-#X text 199 24 - [hradio]: Horizontal Radio Button;
+#X restore 327 247 pd switch-example;
+#X text 167 18 - [hradio]: Horizontal Radio Button;
+#X obj 102 486 all_guis;
+#X obj 7 473 cnv 1 593 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 647 101 665 419 reference 0;
+#X obj 8 52 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 380 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 39 20 hradio 18 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
+#X text 189 20 - [hradio]: Horizontal Radio Button;
+#X obj 7 339 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
+0;
+#X text 131 142 label <symbol> - sets label symbol., f 72;
+#X text 55 162 label_font <float \, float> -;
+#X text 62 194 label_pos <float \, float> -;
+#X text 250 193 sets label position., f 55;
+#X text 138 243 send <symbol> - sets send symbol., f 71;
+#X text 110 262 recceive <symbol> - sets receive symbol., f 75;
+#X text 146 212 color <list> -;
+#X text 250 211 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 250 161 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 103 281 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 90 300 delta <float \, float> -;
+#X text 250 299 changes the position by a x/y delta in pixels., f
+55;
+#X text 194 65 float - set and output number., f 63;
+#X text 145 84 size <float> - sets the cell size in pixels., f 70
+;
+#X text 131 103 number <float> - sets number of cells., f 72;
+#X text 145 122 init <float> - non zero sets to init mode., f 70;
+#X text 181 352 float - cell number (indexed from 0)., f 63;
+#X restore 435 18 pd reference;
+#X text 526 18 <= click;
+#X obj 7 53 cnv 1 593 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 5 0;
 #X connect 1 0 8 0;
 #X connect 2 0 5 0;

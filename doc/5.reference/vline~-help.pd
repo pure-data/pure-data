@@ -1,57 +1,86 @@
-#N canvas 718 55 546 780 12;
-#X obj 57 690 snapshot~;
-#X floatatom 57 716 5 0 0 0 - - - 0;
-#X obj 72 657 metro 100;
-#X msg 37 359 1 1000;
-#X msg 86 492 stop;
-#X msg 75 409 0;
-#X text 141 715 see also:;
-#X obj 217 716 line;
-#X obj 263 716 line~;
-#X obj 41 16 vline~;
-#X text 105 16 - high-precision audio ramp generator;
-#X obj 57 585 vline~;
-#X text 43 267 Any number of future ramps may be scheduled and vline~
+#N canvas 504 23 619 719 12;
+#X obj 68 620 snapshot~;
+#X floatatom 68 646 5 0 0 0 - - - 0;
+#X obj 83 587 metro 100;
+#X msg 48 289 1 1000;
+#X msg 97 422 stop;
+#X msg 86 339 0;
+#X text 20 690 see also:;
+#X obj 96 691 line;
+#X obj 142 691 line~;
+#X obj 27 15 vline~;
+#X text 91 15 - high-precision audio ramp generator;
+#X obj 68 515 vline~;
+#X text 29 214 Any number of future ramps may be scheduled and vline~
 will remember them and execute them in order. They must be specified
 in increasing order of initial delay however \, since a segment cancels
-all planned segments at any future time., f 61;
-#X text 92 356 ramp up;
-#X msg 57 383 0 1000;
-#X text 110 384 ramp down;
-#X text 86 431 ramp up \, jump down \, ramp up again;
-#X text 108 408 jump down;
-#X text 129 491 "stop" message freezes vline~ at its current value
+all planned segments at any future time., f 80;
+#X text 103 286 ramp up;
+#X msg 68 313 0 1000;
+#X text 121 314 ramp down;
+#X text 97 361 ramp up \, jump down \, ramp up again;
+#X text 119 338 jump down;
+#X text 140 421 "stop" message freezes vline~ at its current value
 ;
-#X msg 80 457 1 1000 \, 0 0 2000 \, 1 1000 3000;
-#X text 298 450 note: times (2000 \, 3000) are cumulative \, not incremental.
+#X msg 91 387 1 1000 \, 0 0 2000 \, 1 1000 3000;
+#X text 309 380 note: times (2000 \, 3000) are cumulative \, not incremental.
 , f 29;
-#X text 314 714 updated for Pd version 0.47;
-#X text 172 624 !!! BUG: vline~ objects inside reblocked subpatches
+#X text 403 689 updated for Pd version 0.47;
+#X text 259 583 !!! BUG: vline~ objects inside reblocked subpatches
 can have slightly incorrect timing !!!, f 41;
-#X floatatom 96 558 5 0 0 0 - - - 0;
-#X floatatom 92 524 5 0 0 0 - - - 0;
-#X text 135 516 middle inlet sets next ramp time (cleared when ramp
+#X floatatom 107 488 5 0 0 0 - - - 0;
+#X floatatom 103 454 5 0 0 0 - - - 0;
+#X text 146 446 middle inlet sets next ramp time (cleared when ramp
 starts!), f 32;
-#X text 138 554 right inlet sets next delay time (cleared when ramp
+#X text 149 484 right inlet sets next delay time (cleared when ramp
 starts!), f 32;
-#X text 43 53 The vline~ object \, like line~ \, generates linear ramps
+#X text 29 53 The vline~ object \, like line~ \, generates linear ramps
 whose levels and timing are determined by messages you send it. It
 takes a target value \, a time interval in milliseconds and an initial
 delay (also in ms). Ramps may start and stop between audio samples
-\, in which case the output is interpolated accordingly., f 61;
-#X text 43 142 A list up to three floats distributes the value over
-the inlets \, as usual in Pd. Note that the middle and right inlet
-(that sets the time and delay) do not remember old values (unlike every
-other inlet in Pd). Thus \, if you send vline~ a float without priorly
-specifying a ramp time and delay and sent \, it jumps immediately to
-the target value. On the other hand \, a list of two values will not
-have a delay time if no delay time was priorly set in the right inlet.
-, f 61;
-#X msg 261 378 \; pd dsp \$1;
-#X obj 261 355 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+\, in which case the output is interpolated accordingly., f 80;
+#X msg 272 308 \; pd dsp \$1;
+#X obj 272 285 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X obj 72 622 loadbang;
-#X text 279 356 DSP on/off;
+#X obj 83 552 loadbang;
+#X text 290 286 DSP on/off;
+#X obj 11 44 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 522 15 <= click;
+#N canvas 708 145 583 306 reference 0;
+#X obj 9 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 205 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 239 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 276 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 133 80 float - set target value and start ramp.;
+#X obj 9 127 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 133 136 float - set next ramp time (cleared when ramp starts).
+;
+#X text 126 214 signal - ramp values.;
+#X text 189 249 NONE;
+#X obj 27 15 vline~;
+#X text 91 15 - high-precision audio ramp generator;
+#X obj 9 164 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 141 99 stop - stops the ramp.;
+#X text 133 173 float - sets delay time.;
+#X restore 428 15 pd reference;
+#X obj 11 681 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 29 119 A list up to three floats distributes the values over
+the inlets \, as usual in Pd. Note that the middle and right inlet
+(that sets the time and delay) do not remember old values (unlike other
+inlets in Pd). Thus \, if you send vline~ a float without priorly specifying
+a ramp time and delay and sent \, it jumps immediately to the target
+value. In the same way \, a list of two values will not have a delay
+time if no delay time was priorly set in the right inlet., f 80;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 3 0 11 0;
@@ -62,5 +91,5 @@ have a delay time if no delay time was priorly set in the right inlet.
 #X connect 19 0 11 0;
 #X connect 23 0 11 2;
 #X connect 24 0 11 1;
-#X connect 30 0 29 0;
-#X connect 31 0 2 0;
+#X connect 29 0 28 0;
+#X connect 30 0 2 0;

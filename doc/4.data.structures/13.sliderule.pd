@@ -1,7 +1,7 @@
 #N struct label float x float y float n;
 #N struct line float x float y float w;
-#N canvas 414 144 474 307 12;
-#N canvas 969 60 508 854 data 1;
+#N canvas 357 144 474 307 12;
+#N canvas 851 32 508 723 data 1;
 #X scalar label 130 91.4064 36 \;;
 #X scalar label 30 123.999 43 \;;
 #X scalar label 150 129.826 44 \;;
@@ -170,7 +170,7 @@
 #X scalar line 170 642.254 30 \;;
 #X scalar line 170 679.255 30 \;;
 #X scalar line 50 718.456 150 \;;
-#X coords 0 854 1 853 0 0 0;
+#X coords 0 723 1 722 0 0 0;
 #X restore 72 191 pd data;
 #N canvas 232 164 317 120 line 0;
 #X obj 30 62 drawpolygon 0 1 0 0 w 0;

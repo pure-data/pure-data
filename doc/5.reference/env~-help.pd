@@ -1,44 +1,66 @@
-#N canvas 761 28 613 623 12;
-#X floatatom 57 388 8 0 0 0 - - - 0;
-#X obj 74 14 env~;
-#X text 120 16 - envelope follower;
-#X obj 57 243 osc~ 400;
-#X obj 57 292 *~;
-#X floatatom 142 231 5 0 100 0 - - - 0;
-#X obj 142 269 dbtorms;
-#X text 33 49 The env~ object takes a signal and outputs its RMS amplitude
+#N canvas 593 27 546 593 12;
+#X floatatom 47 347 8 0 0 0 - - - 0;
+#X obj 18 11 env~;
+#X text 58 12 - envelope follower;
+#X obj 47 211 osc~ 400;
+#X obj 47 268 *~;
+#X floatatom 132 199 5 0 100 0 - - - 0;
+#X obj 132 237 dbtorms;
+#X text 30 56 The env~ object takes a signal and outputs its RMS amplitude
 in dB (with 1 normalized to 100 dB.) Output is bounded below by zero.
-;
-#X text 373 553 updated for Pd version 0.40.;
-#X obj 57 332 env~ 16384 8192;
-#X text 186 315 creation arguments:;
-#X text 184 331 1 window size in samples (1024 default);
-#X text 184 349 2 period in samples per analysis (window/2 default)
-;
-#X text 33 105 The analysis is "Hanning" (raised cosine) windowed.
-;
-#X text 33 128 The optional creation arguments are the analysis window
+, f 67;
+#X text 318 563 updated for Pd version 0.40.;
+#X obj 47 303 env~ 16384 8192;
+#X text 164 279 creation arguments:;
+#X text 30 92 The analysis is "Hanning" (raised cosine) windowed.,
+f 67;
+#X text 30 114 The optional creation arguments are the analysis window
 size in samples \, and the period (the number of samples between analyses).
 The latter should normally be a multiple of the DSP block size \, although
-this isn't enforced.;
-#X text 186 227 <= set peak-to-peak amplitude here in dB., f 21;
-#X text 124 388 <= the output is RMS amplitude which (for a sinusoid)
+this isn't enforced., f 67;
+#X text 176 195 <= set peak-to-peak amplitude here in dB., f 21;
+#X text 114 347 <= the output is RMS amplitude which (for a sinusoid)
 is about 3 dB below peak-to-peak amplitude., f 53;
-#X msg 368 252 \; pd dsp \$1;
-#X obj 368 229 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X msg 369 208 \; pd dsp \$1;
+#X obj 369 185 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 395 227 DSP on/off;
-#X obj 58 474 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
+#X text 396 183 DSP on/off;
+#X obj 48 415 vu 15 120 empty empty -1 -8 0 10 #404040 #000000 1 0
 ;
-#X obj 57 441 - 100;
-#X text 115 486 <= see also [vu];
-#X text 122 558 and also see also:;
-#X obj 257 558 slop~, f 8;
-#X connect 0 0 21 0;
+#X obj 47 382 - 100;
+#X text 105 427 <= see also [vu];
+#X obj 5 42 cnv 1 535 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 782 192 516 228 reference 0;
+#X obj 11 47 cnv 5 480 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 11 93 cnv 2 480 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 10 200 cnv 5 480 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 11 131 cnv 2 480 2 empty empty ARGUMENTS: 8 12 0 13 #202020
+#000000 0;
+#X text 140 62 signal -;
+#X obj 28 16 env~;
+#X text 71 17 - envelope follower;
+#X text 203 62 signal to be analyzed., f 27;
+#X text 147 103 float - RMS envelope in dB., f 35;
+#X text 109 141 1) float - window size in samples (default 1024).;
+#X text 109 160 2) float -;
+#X text 186 159 period in samples per analysis (default halft the window
+size)., f 38;
+#X restore 369 11 pd reference;
+#X text 463 11 <= click;
+#X text 162 295 - window size in samples (1024 default);
+#X text 162 313 - period in samples per analysis (window/2 default)
+;
+#X obj 5 552 cnv 1 535 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 19 0;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
 #X connect 5 0 6 0;
 #X connect 6 0 4 1;
 #X connect 9 0 0 0;
-#X connect 18 0 17 0;
-#X connect 21 0 20 0;
+#X connect 16 0 15 0;
+#X connect 19 0 18 0;

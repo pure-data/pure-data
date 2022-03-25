@@ -1,40 +1,90 @@
-#N canvas 863 134 546 573 12;
-#X obj 74 492 snapshot~;
-#X floatatom 74 523 6 0 0 0 - - - 0;
-#X obj 93 465 metro 100;
-#X obj 43 14 samphold~;
-#X text 120 13 - sample and hold unit;
-#X obj 74 385 samphold~;
-#X text 37 47 The samphold~ object samples its left input whenever
+#N canvas 493 34 542 605 12;
+#X obj 37 503 snapshot~;
+#X floatatom 37 534 6 0 0 0 - - - 0;
+#X obj 56 476 metro 100;
+#X obj 27 14 samphold~;
+#X text 104 13 - sample and hold unit;
+#X obj 37 396 samphold~;
+#X text 27 58 The samphold~ object samples its left input whenever
 its right input decreases in value (as a phasor~ does each period \,
-for example.) Both inputs are audio signals., f 66;
-#X obj 109 351 sig~;
-#X obj 165 375 sig~;
-#X floatatom 109 326 6 0 0 0 - - - 0;
-#X floatatom 165 353 4 0 0 0 - - - 0;
-#X msg 74 223 set 34;
-#X msg 93 292 reset;
-#X text 139 221 set output to a number;
-#X text 159 326 sample signal;
-#X text 199 353 control signal;
-#X msg 82 255 reset 10;
-#X text 161 253 reset previous value;
-#X text 150 303 to force the next sample;
-#X text 292 522 updated for Pd version 0.39;
-#X text 161 267 for control inlet;
-#X text 149 289 reset to default 1e+20;
-#X text 38 100 The "set" message sets the output value (which continues
-to be updated as normal afterward.) The "reset" message causes samphold~
-to act as if the specified value were the most recent value of the
-control input. Use this \, for example \, if you reset the incoming
-phasor but don't want the jump reflected in the output. Plain "reset"
-is equivalent to "reset infinity" which forces the next input to be
-sampled., f 66;
-#X obj 93 440 loadbang;
-#X obj 192 431 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+for example.) Both inputs are audio signals., f 69;
+#X obj 70 353 sig~;
+#X obj 123 408 sig~;
+#X floatatom 70 328 5 0 0 0 - - - 0;
+#X floatatom 123 386 5 0 0 0 - - - 0;
+#X msg 37 234 set 34;
+#X msg 59 293 reset;
+#X text 89 233 set output to a number;
+#X msg 47 263 reset 10;
+#X text 321 574 updated for Pd version 0.39;
+#X obj 56 451 loadbang;
+#X obj 203 441 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 192 456 \; pd dsp \$1;
-#X text 211 430 DSP on/off;
+#X msg 203 466 \; pd dsp \$1;
+#X text 222 440 DSP on/off;
+#X obj 395 374 phasor~ 1;
+#X obj 335 300 noise~;
+#X obj 335 402 samphold~;
+#X obj 415 472 snapshot~;
+#X floatatom 415 503 10 0 0 0 - - - 0;
+#X obj 415 433 metro 100;
+#X obj 415 408 loadbang;
+#X msg 455 324 0;
+#X msg 357 342 reset 0;
+#X obj 455 297 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 27 111 The "set" message sets the output value (which gets
+updated normally afterward.) The "reset" message causes samphold~ to
+act as if the given value were the most recent value of the control
+(right) input. Use this \, for example \, if you reset the incoming
+phasor but don't want the jump reflected in the output as in the example
+below to the right. Plain "reset" is equivalent to "reset infinity"
+which forces the next input to be sampled., f 69;
+#X text 304 235 Sampling random values from noise at a frequency of
+1Hz., f 28;
+#X text 412 277 restart cycle, f 7;
+#X msg 123 358 1;
+#X msg 159 358 0;
+#X text 113 328 <-- sample signal;
+#X text 163 386 <-- control signal;
+#X text 105 287 reset to default 1e+20 to force the next sample, f
+24;
+#X text 115 255 reset previous value for control inlet, f 20;
+#N canvas 523 143 610 306 reference 0;
+#X obj 8 45 cnv 5 590 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 73 cnv 1 590 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 197 cnv 2 590 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 276 cnv 5 590 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 239 cnv 2 590 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 100 79 signal -;
+#X obj 8 156 cnv 1 590 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 100 165 signal -;
+#X text 65 97 set <float> -;
+#X obj 35 11 samphold~;
+#X text 112 10 - sample and hold unit;
+#X text 163 79 input to be sampled., f 49;
+#X text 51 116 reset <float> -;
+#X text 163 97 set output value., f 49;
+#X text 163 116 set last value of right inlet., f 49;
+#X text 107 134 reset -;
+#X text 160 249 NONE, f 5;
+#X text 98 210 signal - sampled and held signal.;
+#X text 163 165 control signal (triggers when smaller than previous)
+;
+#X text 163 134 set last value of right inlet to infinity (forces output).
+;
+#X restore 348 13 pd reference;
+#X text 442 13 <= click;
+#X obj 9 44 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 567 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 5 0 0 0;
@@ -44,6 +94,18 @@ sampled., f 66;
 #X connect 10 0 8 0;
 #X connect 11 0 5 0;
 #X connect 12 0 5 0;
-#X connect 16 0 5 0;
-#X connect 23 0 2 0;
-#X connect 24 0 25 0;
+#X connect 14 0 5 0;
+#X connect 16 0 2 0;
+#X connect 17 0 18 0;
+#X connect 20 0 22 1;
+#X connect 21 0 22 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;
+#X connect 25 0 23 0;
+#X connect 26 0 25 0;
+#X connect 27 0 20 1;
+#X connect 28 0 22 0;
+#X connect 29 0 27 0;
+#X connect 29 0 28 0;
+#X connect 33 0 10 0;
+#X connect 34 0 10 0;

@@ -1,21 +1,15 @@
-#N canvas 690 24 511 616 12;
-#X msg 156 249 set \$1;
-#X obj 75 247 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#N canvas 523 23 504 605 12;
+#X msg 156 259 set \$1;
+#X obj 75 257 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000;
-#X obj 106 459 print vsl;
-#X obj 106 286 vsl 18 128 0 127 0 0 empty empty Slider -58 30 0 15
+#X obj 106 469 print vsl;
+#X obj 106 296 vsl 18 128 0 127 0 0 empty empty Slider -58 30 0 15
 #dcdcdc #b40000 #0400b8 0 1;
-#X floatatom 106 247 5 0 0 0 - - - 0;
-#X floatatom 156 226 5 0 0 0 - - - 0;
-#X obj 37 15 vsl 18 128 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#X floatatom 106 257 5 0 0 0 - - - 0;
+#X floatatom 156 236 5 0 0 0 - - - 0;
+#X obj 28 12 vsl 18 128 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
-#X text 79 46 The vertical slider is a GUI (Graphical User Interface)
-that sends numbers. Click on it and drag to output values - use shift-click
-and drag for fine-tuning by a factor of a hundredth. Incoming floats
-set the slider's value and are passed through (even if outside the
-slider's range). The 'set' message only sets the slider value without
-output. A bang message sends the slider's value., f 56;
-#X text 16 164 Insert it from the Put menu (named as "Vslider") or
+#X text 16 180 Insert it from the Put menu (named as "Vslider") or
 its shortcut. Alternatively \, create it by typing "vslider" or "vsl"
 into an object box. Right click for properties (to set size \, colors
 \, labels \, etc)., f 65;
@@ -60,7 +54,7 @@ the range of numbers. Note this also affects the 'set' message., f
 #X connect 16 0 11 0;
 #X connect 17 0 11 0;
 #X connect 18 0 11 0;
-#X restore 326 430 pd old-behavior;
+#X restore 326 440 pd old-behavior;
 #N canvas 665 62 624 647 position 0;
 #X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
@@ -102,7 +96,7 @@ in the patch. Check below:, f 41;
 #X connect 14 0 22 0;
 #X connect 17 0 22 0;
 #X connect 18 0 3 0;
-#X restore 371 270 pd position;
+#X restore 371 280 pd position;
 #N canvas 433 136 358 407 properties 0;
 #N canvas 828 23 656 672 colors 0;
 #X floatatom 72 244 3 0 29 0 - - - 0;
@@ -509,7 +503,7 @@ set it directly via the properties window., f 50;
 #X obj 534 212 s \$0-slider;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-erros because they have feedback protection. See example below., f
+errors because they have feedback protection. See example below., f
 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
@@ -604,19 +598,18 @@ symbols \, label \, label offset and font size., f 49;
 #X text 45 13 All the parameters from the properties window can be
 set via messages as well. See examples and more details on each parameter
 in the subpatches below:, f 39;
-#X restore 357 242 pd properties;
-#X text 136 308 <= click & drag (shift click for fine tuning). Right
+#X restore 357 252 pd properties;
+#X text 136 318 <= click & drag (shift click for fine tuning). Right
 click for properties., f 16;
-#X text 296 359 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
+#X text 296 369 COMPATIBILITY NOTE: The behavior changed in Pd 0.46!
 Check details and how to get it back:, f 23;
 #X text 275 500 (c) musil@iem.kug.ac.at;
 #X text 311 516 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 45 576 see also:;
-#X obj 119 577 x_all_guis;
 #X text 65 501 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 272 576 updated for Pd version 0.51;
-#X floatatom 106 429 5 0 0 0 - - - 0;
+#X floatatom 106 439 5 0 0 0 - - - 0;
 #N canvas 869 193 415 483 example-discrete 0;
 #X obj 58 37 vsl 18 128 0 1 0 0 empty empty empty 0 -9 0 10 #fcfcfc
 #000000 #000000 0 1;
@@ -669,11 +662,66 @@ dynamically., f 34;
 #X connect 5 0 4 1;
 #X connect 6 0 12 0;
 #X connect 12 0 5 0;
-#X restore 315 298 pd example-discrete;
-#X text 64 15 - [vslider]/[vsl]: Vertical Slider;
+#X restore 315 308 pd example-discrete;
+#X text 55 15 - [vslider]/[vsl]: Vertical Slider;
+#X obj 119 577 all_guis;
+#N canvas 653 53 660 548 reference 0;
+#X obj 8 162 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X text 118 294 label <symbol> - sets label symbol., f 72;
+#X text 42 313 label_font <float \, float> -;
+#X text 49 345 label_pos <float \, float> -;
+#X text 237 344 sets label position., f 55;
+#X obj 7 520 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 125 394 send <symbol> - sets send symbol., f 71;
+#X text 97 413 recceive <symbol> - sets receive symbol., f 75;
+#X text 133 363 color <list> -;
+#X text 237 362 first element sets background color and third sets
+font color (either floats or symbols in hexadecimal format).;
+#X text 237 312 sets font type <0: DejaVu Sans Mono \, 1: Helvetica
+\, 2: Times> and font size., f 50;
+#X text 90 432 pos <float \, float> - sets position in the patch canvas.
+, f 76;
+#X text 77 451 delta <float \, float> -;
+#X text 237 450 changes the position by a x/y delta in pixels., f
+55;
+#X text 181 173 float - set and output number., f 63;
+#X text 132 190 size <float> - sets the cell size in pixels., f 70
+;
+#X text 132 259 init <float> - non zero sets to init mode., f 70;
+#X obj 7 479 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
+0;
+#X text 76 207 range <float \, float> - sets minimum and maximum range.
+, f 78;
+#X text 195 224 lin - sets mode to linear., f 61;
+#X text 195 241 log - sets mode to logarthmic., f 61;
+#X text 118 276 steady <float> - non zero sets to steady \, zero sets
+to jump on click., f 72;
+#X text 181 492 float - slider value., f 63;
+#X obj 36 16 vsl 18 128 0 127 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X text 63 19 - [vslider]/[vsl]: Vertical Slider;
+#X restore 320 14 pd reference;
+#X text 411 14 <= click;
+#X obj 7 564 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 5 152 cnv 1 60 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 64 42 cnv 1 425 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 64 43 cnv 1 1 110 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 85 49 The vertical slider GUI (Graphical User Interface) sends
+numbers via clicking and dragging. The values are evenly spread depending
+on the slider's range and size - use shift-click and drag for fine-tuning
+by a factor of a hundredth. Incoming floats set the slider's value
+and are passed through (even if outside the slider's range). The 'set'
+message only sets the slider value without output. A bang message sends
+the slider's value., f 56;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
-#X connect 3 0 20 0;
+#X connect 3 0 18 0;
 #X connect 4 0 3 0;
 #X connect 5 0 0 0;
-#X connect 20 0 2 0;
+#X connect 18 0 2 0;

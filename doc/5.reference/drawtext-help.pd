@@ -1,13 +1,13 @@
 #N struct help-draw-data float x float y float cat float dog symbol
 weasel text boom;
-#N canvas 667 149 561 209 12;
-#X text 43 126 see also:;
-#X obj 46 18 drawnumber;
-#X obj 196 156 plot;
-#X obj 105 156 drawpolygon;
-#X obj 50 156 struct;
-#X obj 46 45 drawsymbol;
-#X obj 46 73 drawtext;
+#N canvas 655 119 585 256 12;
+#X text 19 217 see also:;
+#X obj 37 12 drawnumber;
+#X obj 228 216 plot;
+#X obj 142 216 drawpolygon;
+#X obj 91 216 struct;
+#X obj 37 36 drawsymbol;
+#X obj 37 59 drawtext;
 #N canvas 872 42 533 657 help-draw-template 0;
 #X obj 42 489 drawsymbol weasel 0 -30 0 weasel=;
 #X obj 298 489 drawtext boom 0 -45 0 boom=;
@@ -46,15 +46,56 @@ changed through "set" and "text" objects \, respectively \, or via
 properties., f 69;
 #X connect 9 0 4 0;
 #X connect 10 0 4 0;
-#X restore 329 89 pd help-draw-template;
+#X restore 399 125 pd help-draw-template;
 #N canvas 179 120 455 265 help-draw-data 1;
 #X scalar help-draw-data 63 134 628 651 hello \; a 1 b 2 c 3 \\\; \;
 ;
-#X scalar help-draw-data 255 95 612 34 wolrd \; 1 a 2 b 3 c \\\; \;
+#X scalar help-draw-data 255 95 612 34 world \; 1 a 2 b 3 c \\\; \;
 ;
-#X restore 329 116 pd help-draw-data;
-#X text 313 155 updated for Pd version 0.50.;
-#X obj 239 156 set;
-#X text 134 28 <== all these objects are aliases of the same class
-\, used to draw either numbers \, symbols or texts fields., f 53;
-#X text 221 89 explanation =>;
+#X restore 399 152 pd help-draw-data;
+#X text 353 218 updated for Pd version 0.50.;
+#X obj 266 216 set;
+#X text 291 125 explanation =>;
+#X obj 8 91 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 395 121 571 346 reference 0;
+#X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 6 103 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 137 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 5 321 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 112 75 float -;
+#X obj 23 9 drawpolygon;
+#X obj 23 32 drawcurve;
+#X obj 118 10 filledpolygon;
+#X obj 118 32 filledcurve;
+#X text 220 20 - draw shapes for data structures;
+#X text 143 113 NONE, f 54;
+#X text 169 75 sets visibility (1: visible \, 0: invisible)., f 46
+;
+#X obj 6 165 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 6 213 cnv 1 550 1 empty empty args: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 97 189 "-v" <symbol>: assigns a field to make it visible/invisible.
+, f 63;
+#X text 97 171 "-n": makes it invisible initially., f 63;
+#X text 102 219 1) symbol -;
+#X text 185 218 field name to draw., f 46;
+#X text 101 272 4) symbol - optional label., f 58;
+#X text 101 236 2) list* - (x \, y) coordinates pair (default 0 0).
+, f 58;
+#X text 101 254 3) float* - color (default 0)., f 58;
+#X text 131 294 * position and color can also be field names.;
+#X restore 397 33 pd reference;
+#X text 495 34 <= click;
+#X text 125 23 - draw numbers \, symbols or texts for Data Structures.
+, f 26;
+#X text 25 106 All these objects are actually aliases of the same class.
+There's no difference in them. Use them to draw either numbers \, symbols
+or texts fields., f 34;
+#X obj 8 199 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
+0;

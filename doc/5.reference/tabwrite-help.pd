@@ -1,36 +1,32 @@
-#N canvas 856 69 673 530 12;
-#X obj 46 22 tabwrite;
-#X floatatom 48 136 4 0 10 0 - - - 0;
+#N canvas 369 29 666 457 12;
+#X obj 26 22 tabwrite;
+#X floatatom 28 136 4 0 10 0 - - - 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array tabwrite-ex 10 float 2;
 #X coords 0 10 10 0 250 200 1 0 0;
-#X restore 393 137 graph;
-#X floatatom 185 261 4 0 9 0 - - - 0;
-#X text 200 284 creation argument;
-#X text 202 302 is array name;
-#X text 84 134 set y value;
-#X text 184 170 change array name;
-#X text 426 482 updated for Pd version 0.33;
-#X text 118 22 - write numbers to a table;
-#X text 86 204 right inlet selects x value (indexed from 0). Note that
+#X restore 373 137 graph;
+#X floatatom 165 261 4 0 9 0 - - - 0;
+#X text 180 284 creation argument;
+#X text 182 302 is array name;
+#X text 64 134 set y value;
+#X text 164 170 change array name;
+#X text 457 420 updated for Pd version 0.33;
+#X text 98 22 - write numbers to a table;
+#X text 66 204 right inlet selects x value (indexed from 0). Note that
 input values are clipped to the range from 0 to size-1, f 37;
-#X obj 75 463 ../2.control.examples/15.array;
-#X obj 75 486 ../2.control.examples/16.more.arrays;
-#X text 59 419 see also the "array" examples from section 2 (click
-below to open them) and these objects:, f 45;
-#X obj 461 433 tabread;
-#X obj 524 433 tabread4;
-#X obj 592 432 array;
+#X obj 152 420 tabread;
+#X obj 209 420 tabread4;
+#X obj 274 420 array;
 #N canvas 515 381 401 220 init-table 0;
 #X obj 35 42 loadbang;
 #X msg 35 74 \; tabwrite-ex resize 10 \; tabwrite-ex bounds 0 10 10
 0 \; tabwrite-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; tabwrite-ex ylabel
 -0.3 0 1 2 3 4 5 6 7 8 9 10 \; tabwrite-ex 0 1 4 2 8 5 6 1 4 2 8;
 #X connect 0 0 1 0;
-#X restore 541 112 pd init-table;
-#X obj 48 295 tabwrite tabwrite-ex;
-#X msg 69 170 set tabwrite-ex;
-#X text 42 66 Tabwrite writes floats into an array \, input values
+#X restore 521 112 pd init-table;
+#X obj 28 295 tabwrite tabwrite-ex;
+#X msg 49 170 set tabwrite-ex;
+#X text 22 66 Tabwrite writes floats into an array \, input values
 are set in the left inlet \, while the index is set on the right inlet.
 , f 62;
 #N canvas 792 534 593 356 Dealing_with_"\$0" 0;
@@ -56,9 +52,63 @@ doesn't work in messages., f 70;
 #X connect 4 0 3 0;
 #X connect 6 0 8 0;
 #X connect 9 0 8 1;
-#X restore 207 361 pd Dealing_with_"\$0";
-#X text 45 352 open subpatch to see how to deal with '\$0', f 21;
-#X obj 385 433 tabwrite~;
-#X connect 1 0 18 0;
-#X connect 3 0 18 1;
-#X connect 19 0 18 0;
+#X restore 187 361 pd Dealing_with_"\$0";
+#X text 25 352 open subpatch to see how to deal with '\$0', f 21;
+#X obj 81 420 tabwrite~;
+#N canvas 653 102 583 306 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 188 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 233 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 270 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 113 114 set <symbol> -;
+#X text 162 94 float -;
+#X text 218 114 set the table name., f 39;
+#X obj 46 22 tabwrite;
+#X text 118 22 - write numbers to a table.;
+#X text 218 94 sets index value and write to a table., f 39;
+#X text 170 201 NONE;
+#X obj 17 144 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 162 154 float -;
+#X text 218 155 sets index to write to., f 39;
+#X text 126 242 1) symbol - sets table name with the sample.;
+#X restore 461 18 pd reference;
+#X text 559 17 <= click;
+#X obj 8 52 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 8 403 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 9 419 see also:;
+#N canvas 643 412 384 186 array-examples 0;
+#N canvas 491 316 457 285 open 0;
+#X obj 120 23 inlet;
+#X obj 173 121 pdcontrol;
+#X msg 173 94 dir;
+#X obj 120 181 pack s s;
+#X obj 173 64 loadbang;
+#X msg 120 212 \; pd open \$1 \$2;
+#X obj 173 151 makefilename %s/../2.control.examples;
+#X connect 0 0 3 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 52 131 pd open;
+#X msg 52 76 15.array.pd;
+#X msg 62 102 16.more.arrays.pd;
+#X text 144 77 <-- click to open examples.;
+#X text 47 22 See also and the "array" examples from the section 2
+of Pd's tutorial:, f 39;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X restore 317 420 pd array-examples;
+#X connect 1 0 15 0;
+#X connect 3 0 15 1;
+#X connect 16 0 15 0;
