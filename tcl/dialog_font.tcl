@@ -47,11 +47,16 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
 
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
+        pdsend "$mytoplevel dirty 1"
     }
 }
 
 proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
-    ::dialog_font::do_apply $mytoplevel $myfontsize 0 2
+    variable fontsize
+    if {$myfontsize != $fontsize} {
+        set fontsize $myfontsize
+        ::dialog_font::do_apply $mytoplevel $myfontsize 0 2
+    }
 }
 
 proc ::dialog_font::stretch_apply {gfxstub} {
@@ -62,7 +67,11 @@ proc ::dialog_font::stretch_apply {gfxstub} {
         if {$stretchval == ""} {
             set stretchval 100
         }
+        if {$stretchval == 100} {
+            return
+        }
         pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
+        pdsend "$gfxstub dirty 1"
     }
 }
 
@@ -117,6 +126,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     } else {
         create_dialog $gfxstub
     }
+    .font.fontsize.radio$fontsize select
 }
 
 proc ::dialog_font::create_dialog {gfxstub} {
@@ -150,7 +160,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
     # this is whacky Tcl at its finest, but I couldn't resist...
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
-            -variable ::dialog_font::fontsize \
             -command [format {::dialog_font::radio_apply \
                 $::dialog_font::canvaswindow %s} $size]
         pack .font.fontsize.radio$size -side top -anchor w

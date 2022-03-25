@@ -4798,8 +4798,6 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
-    if ((realresx != 1 || realresx != 1) || (oldfont != (int)font))
-        canvas_dirty(x2, 1);
     canvas_undo_add(x2, UNDO_FONT, "font",
         canvas_undo_set_font(x2, oldfont, realresize, whichresize));
 
