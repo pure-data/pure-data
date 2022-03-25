@@ -95,7 +95,6 @@ the umask into account. this might be ignored by the underlying filesystem.
 #X text 718 371 seek to the 10th byte from the current position, f
 27;
 #X obj 38 21 file handle;
-#X text 931 20 <= click;
 #N canvas 692 43 571 468 reference 0;
 #X obj 7 44 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -134,7 +133,7 @@ in octal., f 63;
 0;
 #X obj 7 376 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 828 21 pd reference;
+#X restore 878 21 pd reference;
 #X obj 11 51 cnv 1 1025 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 130 20 - operate on file handles.;
@@ -318,7 +317,6 @@ with a dot), f 39;
 0;
 #X text 118 16 - find pathnames matching a pattern;
 #X obj 40 17 file glob;
-#X text 533 16 <= click;
 #N canvas 599 129 578 333 reference 0;
 #X text 118 16 - find pathnames matching a pattern;
 #X obj 40 17 file glob;
@@ -344,7 +342,7 @@ with a dot), f 39;
 0;
 #X obj 7 252 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 430 17 pd reference;
+#X restore 480 17 pd reference;
 #X connect 0 0 1 0;
 #X connect 0 1 2 0;
 #X connect 3 0 0 0;
@@ -402,7 +400,6 @@ with a dot), f 39;
 #X text 29 65 [file which] tries to locate the file in using Pd's search-paths
 and returns the resolved path., f 69;
 #X obj 50 15 file which;
-#X text 521 14 <= click;
 #N canvas 778 127 581 317 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -428,7 +425,7 @@ and returns the resolved path., f 69;
 0;
 #X obj 7 234 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 418 15 pd reference;
+#X restore 468 15 pd reference;
 #X text 157 273 directory?;
 #X connect 0 0 13 0;
 #X connect 0 1 12 0;
@@ -499,7 +496,6 @@ created after the mode has been set.;
 it.;
 #X obj 6 47 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 427 14 <= click;
 #N canvas 778 127 575 333 reference 0;
 #X obj 9 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -528,7 +524,7 @@ in octal., f 63;
 0;
 #X obj 7 238 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 324 15 pd reference;
+#X restore 374 15 pd reference;
 #X connect 0 0 1 0;
 #X connect 0 1 8 0;
 #X connect 1 0 2 0;
@@ -586,7 +582,6 @@ tree with all the files and subdirectories \, you can also remove it
 *recursively* using the "recursive" message.;
 #X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 580 14 <= click;
 #N canvas 599 129 573 316 reference 0;
 #X obj 9 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -610,7 +605,7 @@ tree with all the files and subdirectories \, you can also remove it
 0;
 #X obj 7 229 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 477 15 pd reference;
+#X restore 527 15 pd reference;
 #X obj 36 15 file delete;
 #X text 132 15 - remove files and directories.;
 #X connect 0 0 2 0;
@@ -647,7 +642,6 @@ tree with all the files and subdirectories \, you can also remove it
 ;
 #X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 580 14 <= click;
 #N canvas 599 129 573 331 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -672,18 +666,18 @@ tree with all the files and subdirectories \, you can also remove it
 0;
 #X obj 7 233 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 477 15 pd reference;
+#X restore 527 15 pd reference;
 #X text 112 15 - copy a file around.;
 #X obj 36 15 file copy;
 #X obj 48 239 file copy, f 12;
 #X msg 63 153 list \$1 porra;
 #X text 64 68 [file copy] duplicates the content of a file to a destination.
 , f 64;
-#X connect 0 0 13 0;
-#X connect 4 0 13 0;
-#X connect 13 0 2 0;
-#X connect 13 1 3 0;
-#X connect 14 0 13 0;
+#X connect 0 0 12 0;
+#X connect 4 0 12 0;
+#X connect 12 0 2 0;
+#X connect 12 1 3 0;
+#X connect 13 0 12 0;
 #X restore 440 377 pd copy;
 #X obj 27 377 file copy;
 #X text 157 378 - copy files;
@@ -779,7 +773,6 @@ the filesystem. for directories \, this will return '0'.;
 #X obj 189 271 s \$0-info-path;
 #X obj 7 95 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 716 59 <= click;
 #N canvas 599 129 572 356 reference 0;
 #X obj 9 94 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -808,7 +801,7 @@ the filesystem. for directories \, this will return '0'.;
 0;
 #X obj 7 273 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 613 60 pd reference;
+#X restore 663 60 pd reference;
 #X text 167 63 - get size of a file;
 #X text 167 41 - check if path is an existing directory;
 #X text 167 18 - check if path is an existing regular file;
@@ -946,7 +939,6 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 36 15 file stat;
 #X obj 11 47 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 715 14 <= click;
 #N canvas 599 129 574 320 reference 0;
 #X text 106 15 - get metainformation about a file/directory;
 #X obj 30 15 file stat;
@@ -971,7 +963,7 @@ by the user (might be '-1' if undeterminable), f 54;
 #X obj 8 236 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
 #X text 118 63 symbol - file or directory name.;
-#X restore 612 15 pd reference;
+#X restore 662 15 pd reference;
 #X connect 0 0 50 0;
 #X connect 2 0 50 1;
 #X connect 4 0 50 2;
@@ -1045,7 +1037,6 @@ by the user (might be '-1' if undeterminable), f 54;
 #X text 55 313 NOTE: moving a file removes the original file.;
 #X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 580 14 <= click;
 #N canvas 599 129 573 331 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -1070,7 +1061,7 @@ by the user (might be '-1' if undeterminable), f 54;
 0;
 #X obj 7 233 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X restore 477 15 pd reference;
+#X restore 527 15 pd reference;
 #X obj 36 15 file move;
 #X text 112 15 - move a file to a new destination.;
 #X connect 0 0 7 0;
@@ -1161,7 +1152,6 @@ it harder to [route] \, but on the other hand this will keep zero-padded
 numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 684 14 <= click;
 #N canvas 574 89 571 484 reference 0;
 #X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -1201,7 +1191,7 @@ numbers intact (think "2020/01/01/0042.wav")., f 91;
 #X text 162 184 NONE;
 #X text 222 434 NONE;
 #X text 194 400 Inactive Outlet!;
-#X restore 581 15 pd reference;
+#X restore 631 15 pd reference;
 #X text 189 15 - filename operations;
 #X obj 33 15 file split;
 #X obj 116 15 file join;
@@ -1224,17 +1214,17 @@ no checks are performed verifying the validity/existence of any path-component.
 #X listbox 193 310 4 0 0 0 - - - 0;
 #X listbox 126 349 0 0 0 0 - - - 0;
 #X connect 0 0 5 0;
-#X connect 2 0 32 0;
-#X connect 2 1 31 0;
+#X connect 2 0 31 0;
+#X connect 2 1 30 0;
 #X connect 3 0 9 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
 #X connect 9 0 4 0;
 #X connect 10 0 0 0;
-#X connect 23 0 3 0;
-#X connect 28 0 2 0;
-#X connect 31 0 23 1;
-#X connect 32 0 23 0;
+#X connect 22 0 3 0;
+#X connect 27 0 2 0;
+#X connect 30 0 22 1;
+#X connect 31 0 22 0;
 #X restore 440 507 pd split+join;
 #N canvas 395 48 794 632 base+ext 0;
 #X text 400 198 'splitname' separates the directory component from
@@ -1311,7 +1301,6 @@ keep zero-padded numbers intact (think "2020/01/01/0042.wav")., f
 #X msg 187 122 random string;
 #X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 684 14 <= click;
 #N canvas 724 152 573 467 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -1352,7 +1341,7 @@ found.;
 #X text 108 384 symbol - path if no extension is found.;
 #X text 162 185 NONE;
 #X text 162 415 NONE;
-#X restore 581 15 pd reference;
+#X restore 631 15 pd reference;
 #X text 259 15 - more filename operations.;
 #X obj 33 15 file splitname;
 #X obj 146 15 file splitext;
@@ -1387,16 +1376,16 @@ in the filename-component of the path., f 45;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 8 0 2 0;
+#X connect 21 0 23 0;
+#X connect 21 1 22 0;
 #X connect 22 0 24 0;
-#X connect 22 1 23 0;
 #X connect 23 0 25 0;
-#X connect 24 0 26 0;
-#X connect 27 0 22 0;
-#X connect 28 0 31 0;
-#X connect 28 1 30 0;
-#X connect 29 0 28 0;
-#X connect 30 0 33 0;
-#X connect 31 0 32 0;
+#X connect 26 0 21 0;
+#X connect 27 0 30 0;
+#X connect 27 1 29 0;
+#X connect 28 0 27 0;
+#X connect 29 0 32 0;
+#X connect 30 0 31 0;
 #X restore 440 537 pd base+ext;
 #X text 349 643 updated for Pd version 0.52;
 #X obj 27 127 file define \$0.f;
@@ -1427,7 +1416,6 @@ handle' objects., f 77;
 #X text 134 19 - share file handles.;
 #X obj 7 52 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 526 17 <= click;
 #N canvas 599 129 578 200 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -1442,7 +1430,7 @@ handle' objects., f 77;
 #X text 164 103 NONE;
 #X text 164 65 NONE;
 #X text 143 140 1 symbol - declared file-handle name.;
-#X restore 423 18 pd reference;
+#X restore 473 18 pd reference;
 #X connect 2 0 3 0;
 #X connect 4 0 3 0;
 #X connect 5 0 10 0;
@@ -1451,7 +1439,6 @@ handle' objects., f 77;
 #X restore 440 127 pd define;
 #X obj 10 44 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 473 11 <= click;
 #N canvas 765 68 566 232 reference 0;
 #X obj 7 163 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
@@ -1468,6 +1455,6 @@ each function on parent patch., f 41;
 \, define \, mkdir \, which \, glob \, stat \, isfile \, isdirectory
 \, size \, copy \, move \, delete \, split \, join \, splitext and
 splitname. The default value is 'define'., f 54;
-#X restore 379 12 pd reference;
+#X restore 429 12 pd reference;
 #X obj 9 632 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
