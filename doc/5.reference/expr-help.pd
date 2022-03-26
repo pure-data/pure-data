@@ -126,9 +126,9 @@ number and thus the object won't load giving a syntax error!, f 62
 #X connect 14 0 13 0;
 #X connect 15 0 11 0;
 #X restore 475 524 pd Dealing_with_"\$0";
-#X text 18 609 see also:;
-#X obj 92 660 block~;
-#X obj 146 660 value;
+#X text 18 619 see also:;
+#X obj 22 660 block~;
+#X obj 76 660 value;
 #N canvas 421 110 489 525 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
@@ -640,7 +640,7 @@ subpatches below to check each group:, f 52;
 #X connect 64 1 42 0;
 #X connect 64 2 60 0;
 #X restore 164 462 pd Other-functions;
-#N canvas 802 216 564 371 Acousticts 0;
+#N canvas 802 216 564 371 Acoustics 0;
 #X floatatom 70 109 0 0 0 0 - - - 0;
 #X floatatom 70 164 0 0 0 0 - - - 0;
 #X floatatom 70 213 0 0 0 0 - - - 0;
@@ -679,7 +679,7 @@ subpatches below to check each group:, f 52;
 #X connect 12 0 7 0;
 #X connect 20 0 9 0;
 #X connect 21 0 10 0;
-#X restore 164 430 pd Acousticts;
+#X restore 164 430 pd Acoustics;
 #X restore 475 549 pd All_functions \; and operators;
 #N canvas 398 62 968 659 [expr] 0;
 #X obj 206 123 expr 1;
@@ -1097,10 +1097,10 @@ floats sent to audio inlets are promoted to signals. The '$x#' and
 #X connect 55 0 54 0;
 #X restore 212 555 pd [fexpr~] Examples;
 #X obj 92 608 +;
-#X obj 304 633 +~;
-#X obj 92 633 >;
+#X obj 92 633 +~;
+#X obj 304 608 >;
 #X text 102 522 (click on the subpatches to open them), f 13;
-#X obj 194 660 random;
+#X obj 124 660 random;
 #N canvas 411 74 872 635 [value] 0;
 #X floatatom 596 202 5 0 0 0 - - - 0;
 #X obj 596 137 until;
@@ -1200,32 +1200,32 @@ output audio sample from outlet # indexed by 'n')., f 91;
 #X text 307 224 First inlet is a float input that adds to an array
 value whose index is defined by an integer input from the second inlet
 and the third inlet takes a symbol for the array name., f 50;
-#X obj 248 660 array;
+#X obj 178 660 array;
 #X obj 278 355 expr~ $v1 + $f2;
 #X floatatom 401 355 5 0 0 0 - - - 0;
 #X text 256 443 for '$x#' \, 'n' has to satisfy: 0 => n > -vector size
 ;
 #X text 256 460 for '$y#' \, 'n' has to satisfy: -1 => n > -vector
 size;
-#X obj 304 608 sin;
+#X obj 304 633 sin;
 #X text 123 607 - arithmetic operators;
-#X text 123 632 - other binary operators;
-#X text 333 607 - math functions;
-#X text 333 632 - audio operators;
-#X obj 295 660 cos~;
-#X obj 333 660 wrap~;
-#X obj 416 660 abs~;
-#X obj 492 660 sqrt~;
-#X obj 378 660 exp~;
-#X obj 454 660 log~;
-#X obj 538 660 pow~;
+#X text 335 607 - other binary operators;
+#X text 333 632 - math functions;
+#X text 121 632 - audio operators;
+#X obj 225 660 cos~;
+#X obj 263 660 wrap~;
+#X obj 346 660 abs~;
+#X obj 422 660 sqrt~;
+#X obj 308 660 exp~;
+#X obj 384 660 log~;
+#X obj 468 660 pow~;
 #X text 51 147 These objects have several built in operators and functions
 and the syntax is quite similar to how expressions are written in C.
 They receive input variables via the inlets and understand the variable
 types: '$f#' (floats) \, '$i#' (integers) and '$s#' (symbols \, used
 to represent array names) - '#' is the inlet number (up to 100) as
 below:, f 88;
-#X text 513 616 updated for Pd version 0.51-3;
+#X text 520 659 updated for Pd version 0.51-3;
 #X obj 70 33 expr;
 #X obj 63 58 expr~;
 #X obj 57 96 fexpr~;
@@ -1257,56 +1257,60 @@ object., f 25;
 #X obj 8 595 cnv 1 730 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 655 90 <= click;
-#N canvas 705 69 575 516 reference 0;
-#X obj 8 40 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#N canvas 705 69 573 527 reference 0;
+#X obj 9 43 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 255 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+#X obj 9 258 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 344 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 9 347 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 493 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 498 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 7 175 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
+#X obj 8 178 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 21 7 expr;
-#X text 81 49 (arguments set 'n' number of inlets and type);
-#X text 99 180 float - if inlet type is '$f#' or '$i#'., f 43;
-#X text 92 198 symbol - if inlet type is '$s#' or '$i#'., f 44;
-#X obj 7 288 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
+#X obj 22 10 expr;
+#X text 82 52 (arguments set 'n' number of inlets and type);
+#X text 77 201 symbol - if inlet type is '$s#' or '$i#'., f 44;
+#X obj 8 291 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
 0;
-#X text 83 261 (number of expressions define 'n' numbers of outlets)
+#X text 83 263 (number of expressions define 'n' numbers of outlets)
 ;
-#X text 19 371 1) list -;
-#X obj 61 7 expr~;
-#X obj 109 7 fexpr~;
-#X text 99 295 float - (for [expr] only) expression result., f 58
+#X text 12 374 1) list -;
+#X obj 62 10 expr~;
+#X obj 110 10 fexpr~;
+#X text 100 298 float - (for [expr] only) expression result., f 58
 ;
-#X text 92 314 signal - (for [expr~] and [fexpr~] only) expression
+#X text 93 317 signal - (for [expr~] and [fexpr~] only) expression
 result.;
-#X text 163 8 - expression evaluation family of objects.;
-#X text 92 216 signal -;
-#X text 155 216 if inlet type is '$v#' ([expr~]) or '$x#' ([fexpr~])
+#X text 164 9 - expression evaluation family of objects.;
+#X text 77 219 signal -;
+#X text 140 219 if inlet type is '$v#' ([expr~]) or '$x#' ([fexpr~])
 \, leftmost inlet is always signal in [expr~]/[fexpr~].;
-#X obj 7 75 cnv 1 550 1 empty empty leftmost: 8 12 0 13 #7c7c7c #000000
+#X obj 8 78 cnv 1 550 1 empty empty leftmost: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 31 136 clear <symbol> -;
-#X text 101 80 bang - in [expr]: evaluate expression., f 64;
-#X text 59 98 set <list> - in [fexpr~]: set values for previous input/output
+#X text 32 139 clear <symbol> -;
+#X text 102 83 bang - in [expr]: evaluate expression., f 64;
+#X text 60 101 set <list> - in [fexpr~]: set values for previous input/output
 values., f 70;
-#X text 59 116 stop/start - in [fexpr~]: stop/start computation.,
+#X text 60 119 stop/start - in [fexpr~]: stop/start computation.,
 f 70;
-#X text 150 136 in [fexpr~]: clear input/output memory \, optional
+#X text 151 139 in [fexpr~]: clear input/output memory \, optional
 symbol specifies a specific input (such as x1) or output (y1)., f
 57;
-#X text 90 371 expression including operators \, functions \, inlet
-types \, float and symbols )for array names and variables). See html
-reference and examples for all operators and function. Smicolons create
-more expressions (and outlets). Inlet type is has the format '$t#'
-where 't' is type (f \, i \, s \, v and x) and # is the number \, the
-'x' type for fexpr~ also has a sample number in brackets and there's
-also a 'y' variable for output samples with previous samples in brackets
-as well (default: output zeros)., f 65;
+#X text 84 183 float - if inlet type is '$f#' or '$i#' ('#' is inlet
+number)., f 62;
+#X text 83 374 expression including operators \, functions \, inlet
+types \, float and symbols (for array names and variables). See html
+reference and examples for all operators and functions. Smicolons create
+more expressions (and outlets). Inlet type has the format '$t#' - where
+'t' is type (f \, i \, s \, v and x) and # is the inlet number \, fexpr~'s
+'x' type also has a sample number inside brackets and fexpr~ also has
+a 'y' variable for output samples with previous samples inside brackets
+as well (default: output zeros)., f 66;
 #X restore 561 91 pd reference;
+#X obj 531 609 mtof;
+#X obj 531 633 mtof~;
+#X text 573 618 - acoustic conversions;
 #X connect 18 0 17 2;
 #X connect 19 0 17 1;
 #X connect 20 0 17 0;

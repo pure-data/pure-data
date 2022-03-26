@@ -1,79 +1,91 @@
-#N canvas 652 59 539 575 12;
-#X obj 110 414 ftom;
-#X obj 110 346 mtof;
-#X floatatom 110 379 9 0 0 0 - - - 0;
-#X obj 225 346 dbtorms;
-#X obj 225 414 rmstodb;
-#X obj 349 346 dbtopow;
-#X obj 349 414 powtodb;
-#X text 38 260 Finally \, dbtopow and powtodb convert decibels to and
+#N canvas 536 24 539 600 12;
+#X obj 110 461 ftom;
+#X obj 110 393 mtof;
+#X floatatom 110 426 9 0 0 0 - - - 0;
+#X obj 225 393 dbtorms;
+#X obj 225 461 rmstodb;
+#X obj 349 393 dbtopow;
+#X obj 349 461 powtodb;
+#X text 15 311 Finally \, dbtopow and powtodb convert decibels to and
 from power units \, equal to the square of the "RMS" amplitude., f
-66;
-#X text 38 176 The dbtorms and rmstodb objects convert from decibels
-to linear ("RMS") amplitude \, so that 100 dB corresponds to an "RMS"
-of 1 Zero amplitude (strictly speaking \, minus infinity dB) is clipped
-to zero dB \, and zero dB \, which should correspond to 0.0001 in "RMS"
-\, is instead rounded down to zero., f 66;
-#X floatatom 225 379 9 0 0 0 - - - 0;
-#X floatatom 349 379 9 0 0 0 - - - 0;
-#X text 38 85 The mtof object transposes a midi value into a frequency
-in Hertz \, so that "69" goes to "440". You can specify microtonal
-pitches as in "69.5" \, which is a quarter tone (or 50 cents) higher
-than 69 (so 0.01 = 1 cent). Ftom does the reverse. A frequency of zero
-Hertz is given a MIDI value of -1500 (strictly speaking \, it is negative
-infinity.), f 66;
-#X floatatom 110 315 6 0 0 0 - - - 0;
-#X floatatom 225 315 6 0 0 0 - - - 0;
-#X floatatom 349 315 6 0 0 0 - - - 0;
-#X floatatom 110 448 6 0 0 0 - - - 0;
-#X floatatom 225 448 6 0 0 0 - - - 0;
-#X floatatom 349 448 6 0 0 0 - - - 0;
-#X obj 34 14 mtof;
-#X obj 75 14 ftom;
-#X obj 114 14 dbtorms;
-#X obj 33 40 rmstodb;
-#X obj 91 40 dbtopow;
-#X obj 152 40 powtodb;
-#X text 326 524 updated for Pd version 0.40.;
-#X text 178 14 - acoustic conversions;
-#X text 15 513 see also:;
-#X obj 92 500 mtof~;
-#X text 139 499 (etc.) - acoustic conversions for audio signals;
-#X obj 93 527 expr;
-#N canvas 789 179 577 210 reference 0;
-#X obj 8 57 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+72;
+#X floatatom 225 426 9 0 0 0 - - - 0;
+#X floatatom 349 426 9 0 0 0 - - - 0;
+#X floatatom 110 362 6 0 0 0 - - - 0;
+#X floatatom 225 362 6 0 0 0 - - - 0;
+#X floatatom 349 362 6 0 0 0 - - - 0;
+#X floatatom 110 495 6 0 0 0 - - - 0;
+#X floatatom 225 495 6 0 0 0 - - - 0;
+#X floatatom 349 495 6 0 0 0 - - - 0;
+#X obj 26 14 mtof;
+#X obj 67 14 ftom;
+#X obj 106 14 dbtorms;
+#X obj 25 40 rmstodb;
+#X obj 83 40 dbtopow;
+#X obj 144 40 powtodb;
+#X text 326 567 updated for Pd version 0.40.;
+#X text 170 14 - acoustic conversions;
+#X text 15 556 see also:;
+#X obj 92 543 mtof~;
+#X text 139 542 (etc.) - acoustic conversions for audio signals;
+#X obj 93 570 expr;
+#N canvas 676 54 572 362 reference 0;
+#X obj 8 207 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 105 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 255 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 142 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 292 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 179 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 329 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X text 148 153 NONE, f 52;
-#X text 353 18 - acoustic conversions;
-#X obj 36 19 mtof;
-#X obj 77 19 ftom;
-#X obj 116 19 dbtorms;
-#X obj 176 19 rmstodb;
-#X obj 234 19 dbtopow;
-#X obj 295 19 powtodb;
-#X text 138 73 float - incoming value to be converted., f 52;
-#X text 138 115 float - converted value, f 52;
+#X text 148 303 NONE, f 52;
+#X obj 58 48 mtof;
+#X obj 58 73 ftom;
+#X obj 37 97 dbtorms;
+#X obj 37 120 rmstodb;
+#X obj 37 144 dbtopow;
+#X obj 38 168 powtodb;
+#X text 138 223 float - incoming value to be converted., f 52;
+#X text 138 265 float - converted value, f 52;
+#X text 97 48 - MIDI pitch to Frequency in hertz.;
+#X text 97 74 - Frequency in hertz to MIDI pitch.;
+#X text 97 98 - dB to linear "RMS".;
+#X text 97 122 - linear "RMS" to dB.;
+#X text 97 146 - dB to power unit (square of "RMS").;
+#X text 97 169 - power unit (square of "RMS") to dB.;
+#X text 19 13 Acoustic conversions for control data:;
 #X restore 418 40 pd reference;
 #X obj 10 71 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 10 485 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 10 528 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 355 39 click =>;
-#X connect 0 0 15 0;
+#X text 355 40 click =>;
+#X text 15 85 The mtof object converts a MIDI pitch value to a frequency
+in Hertz (so that "69" converts to "440"). Microtonal pitches are possible
+\, where "69.5" is a quarter tone higher than 69 (or 50 cents higher
+\, so 0.01 = 1 cent). The ftom object does the reverse. A frequency
+of zero Hertz is given a MIDI value of -1500 (strictly speaking \,
+it's negative infinity.), f 72;
+#X text 15 165 The dbtorms object converts from decibels to linear
+("RMS") amplitude \, while rmstodb object does the opposite conversion.
+dB values in Pd are not dBFS and the scale for the typical range is
+arbitraitly set from 0 to 100 dB \, where 100 dB corresponds to an
+"RMS" of 1 and vice versa. Zero "RMS" amplitude (strictly speaking
+\, minus infinity dB) is clipped to zero dB. Negative dB values are
+clipped to zero "RMS" and zero dB \, which should correspond to 1e-05
+in "RMS" \, is instead rounded down to zero. a dBFS scale is possible
+if you simply add 100 to the dB input value or subtract 100 from the
+dB output value (in this case \, minus infinity dB is clipped to -100
+dBFS)., f 72;
+#X connect 0 0 13 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
-#X connect 3 0 9 0;
-#X connect 4 0 16 0;
-#X connect 5 0 10 0;
-#X connect 6 0 17 0;
-#X connect 9 0 4 0;
-#X connect 10 0 6 0;
-#X connect 12 0 1 0;
-#X connect 13 0 3 0;
-#X connect 14 0 5 0;
+#X connect 3 0 8 0;
+#X connect 4 0 14 0;
+#X connect 5 0 9 0;
+#X connect 6 0 15 0;
+#X connect 8 0 4 0;
+#X connect 9 0 6 0;
+#X connect 10 0 1 0;
+#X connect 11 0 3 0;
+#X connect 12 0 5 0;

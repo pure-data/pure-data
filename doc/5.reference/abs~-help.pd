@@ -17,7 +17,7 @@
 #X text 63 17 - absolute value for signals;
 #X obj 134 316 expr~;
 #X text 403 17 <= click;
-#N canvas 783 198 488 203 reference 0;
+#N canvas 786 158 488 203 reference 1;
 #X obj 8 52 cnv 5 450 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 103 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -28,9 +28,9 @@
 0;
 #X obj 28 20 abs~;
 #X text 70 19 - absolute value for signals;
-#X text 138 113 signal - signal with absolute values.;
 #X text 137 70 signal - signal input., f 37;
 #X text 146 151 NONE, f 36;
+#X text 138 113 signal - sabsolute value of signal input.;
 #X restore 309 18 pd reference;
 #X obj 8 52 cnv 1 480 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
