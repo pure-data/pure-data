@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -354,7 +355,16 @@ void sys_reopen_audio(void)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
         int nbufs = (double)sys_schedadvance / 1000000. * as.a_srate / blksize;
-        if (nbufs < 1) nbufs = 1;
+            /* make sure that the delay is not smaller than the hardware blocksize */
+        if (nbufs < 1)
+        {
+            int delay = ((double)sys_schedadvance / 1000.) + 0.5;
+            int limit = ceil(blksize * 1000. / (double)as.a_srate);
+            nbufs = 1;
+            post("warning: 'delay' setting (%d ms) too small for current blocksize "
+                 "(%d samples); falling back to minimum value (%d ms)",
+                 delay, blksize, limit);
+        }
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
         (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
             STUFF->st_soundin, STUFF->st_soundout, blksize, nbufs,

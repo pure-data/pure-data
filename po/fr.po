@@ -948,7 +948,7 @@ msgstr ""
 "Annulation du téléchargement de %s : aucun répertoire d'installation n'a "
 "été indiqué."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr "L'installation dans un répertoire inexistant a échoué"
 
 #, tcl-format
