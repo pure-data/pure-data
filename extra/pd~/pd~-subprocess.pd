@@ -1,4 +1,4 @@
-#N canvas 919 71 584 620 12;
+#N canvas 782 71 584 620 12;
 #X obj 85 409 r foo;
 #X obj 85 437 print foo;
 #X obj 227 450 stdout;
@@ -8,12 +8,8 @@
 #X obj 109 228 i;
 #X obj 284 187 osc~ 440;
 #X obj 284 221 *~;
-#X obj 319 222 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X obj 358 188 osc~ 440;
 #X obj 358 222 *~;
-#X obj 393 223 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
 #X msg 237 419 bang;
 #X obj 366 370 loadbang;
 #X obj 183 203 env~ 8192;
@@ -41,24 +37,28 @@ object in this sub-process., f 71;
 #X obj 333 256 dac~;
 #X obj 151 172 adc~, f 5;
 #X msg 366 421 \; pd dsp \$1;
-#X obj 366 397 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 366 397 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 388 397 DSP on/off;
+#X obj 393 223 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 319 222 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
 #X connect 0 0 1 0;
 #X connect 3 0 2 0;
 #X connect 4 0 6 0;
 #X connect 6 0 5 0;
 #X connect 7 0 8 0;
-#X connect 8 0 24 0;
-#X connect 9 0 8 1;
-#X connect 10 0 11 0;
-#X connect 11 0 24 1;
-#X connect 12 0 11 1;
-#X connect 13 0 2 0;
-#X connect 14 0 27 0;
-#X connect 15 0 17 0;
-#X connect 17 0 16 0;
-#X connect 18 0 2 0;
-#X connect 25 0 4 0;
-#X connect 25 1 15 0;
-#X connect 27 0 26 0;
+#X connect 8 0 22 0;
+#X connect 9 0 10 0;
+#X connect 10 0 22 1;
+#X connect 11 0 2 0;
+#X connect 12 0 25 0;
+#X connect 13 0 15 0;
+#X connect 15 0 14 0;
+#X connect 16 0 2 0;
+#X connect 23 0 4 0;
+#X connect 23 1 13 0;
+#X connect 25 0 24 0;
+#X connect 27 0 10 1;
+#X connect 28 0 8 1;
