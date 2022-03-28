@@ -20,22 +20,22 @@ patch;
 #X text 31 152 The outlet of "append" is a pointer to the newly created
 scalar. You can pass that on to other append objects if you want to
 build heterogeneous lists., f 77;
-#X text 32 96 The "append" object is given the argument "template4"
-to specify what kind of data structure to append. The other arguments
-are the names of variables we'll set., f 77;
 #X obj 160 249 trigger bang bang bang;
-#X text 33 11 The objects below put three items in the data window.
-First the window is cleared bu sending the 'clear' message to the subpatch
-name. Then a "pointer" object is instructed to point to the beginning
-of the data window ("traverse pd-data") \, and to output its value
-("bang") to the "append" object. This object is then given numeric
-values to create three items., f 77;
 #X msg 70 300 50 250 30 9 \, 200 20 80 90 \, 100 200 -50 0, f 13;
 #X text 367 384 Updated for Pd version 0.32;
+#X text 33 11 The objects below put three items in the data window.
+First the window is cleared by sending the 'clear' message to the subpatch
+name. Then a [pointer] object is instructed to point to the beginning
+of the data window ("traverse pd-data") \, and to output its value
+("bang") to the [append] object. This object is then given numeric
+values to create three items., f 77;
+#X text 32 96 The [append] object is given the argument "template4"
+to specify what kind of data structure to append. The other arguments
+are the names of variables we'll set., f 77;
 #X connect 0 0 3 4;
-#X connect 1 0 10 0;
+#X connect 1 0 9 0;
 #X connect 7 0 0 0;
-#X connect 10 0 12 0;
-#X connect 10 1 7 0;
-#X connect 10 2 4 0;
-#X connect 12 0 3 0;
+#X connect 9 0 10 0;
+#X connect 9 1 7 0;
+#X connect 9 2 4 0;
+#X connect 10 0 3 0;

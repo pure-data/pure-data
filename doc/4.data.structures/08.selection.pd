@@ -1,19 +1,19 @@
 #N struct template8 float x float y float w float h float q;
-#N canvas 349 131 520 488 12;
+#N canvas 380 47 520 488 12;
 #X floatatom 91 220 4 0 0 0 - - - 0;
 #X floatatom 253 304 4 0 0 0 - - - 0;
-#N canvas 926 152 388 446 data8 1;
+#N canvas 915 71 388 446 data8 1;
 #X scalar template8 29 182 0 16 917 \;;
 #X scalar template8 290 272 0 32 66 \;;
-#X scalar template8 186 29 46 71 78 \;;
-#X scalar template8 21 318 49 42 220 \;;
-#X scalar template8 112 201 28 72 634 \;;
+#X scalar template8 202 32 46 71 78 \;;
+#X scalar template8 62 320 49 46 220 \;;
+#X scalar template8 140 183 28 72 634 \;;
 #X scalar template8 250 125 46 11 48 \;;
 #X scalar template8 26 62 70 11 903 \;;
 #X scalar template8 260 36 10 4 169 \;;
 #X scalar template8 230 175 25 27 710 \;;
 #X scalar template8 282 266 50 25 612 \;;
-#X scalar template8 54 184 62 51 421 \;;
+#X scalar template8 34 224 59 34 421 \;;
 #X scalar template8 177 241 39 66 866 \;;
 #X scalar template8 145 96 27 27 125 \;;
 #X scalar template8 116 85 66 32 319 \;;
@@ -24,17 +24,20 @@
 #X scalar template8 214 312 50 78 652 \;;
 #X scalar template8 288 91 72 19 325 \;;
 #X restore 396 386 pd data8;
-#N canvas 280 471 467 248 template8 0;
-#X obj 75 160 filledpolygon q 0 1 0 0 w 0 w h 0 h;
-#X obj 76 187 drawnumber q 0 0 0;
-#X obj 32 19 struct template8 float x float y float w float h float
+#N canvas 465 52 609 322 template8 0;
+#X obj 242 200 filledpolygon q 0 1 0 0 w 0 w h 0 h;
+#X obj 243 227 drawnumber q 0 0 0;
+#X obj 70 117 struct template8 float x float y float w float h float
 q;
-#X obj 32 74 route select;
-#X obj 32 103 outlet;
-#X obj 40 46 print struct-template8;
-#X text 136 78 "struct" outputs messages notifying you when objects
-of this structure are selected or deselected. Here we only catch selection.
-, f 44;
+#X obj 70 192 route select;
+#X obj 70 261 outlet;
+#X obj 81 152 print struct-template8;
+#X text 43 30 [struct] outputs messages notifying you when objects
+of this structure are interacted with \, like when you click on them
+\, change field values or in edit mode if you select them \, deselect
+them or drag them around. Here we only catch selection in edit mode
+by using the [route] object., f 71;
+#X text 246 151 <-- print all messages.;
 #X connect 2 0 3 0;
 #X connect 2 0 5 0;
 #X connect 3 0 4 0;

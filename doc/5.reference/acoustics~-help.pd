@@ -1,11 +1,5 @@
 #N canvas 340 23 687 545 12;
-#X obj 545 371 loadbang;
-#X text 50 293 These objects convert MIDI pitch to frequency and back
-\, and dB to and from RMS and power. They take audio signals as input
-and output (and work sample by sample.) Since they call library math
-functions \, they may be much more expensive than other workaday tilde
-objects such as *~ and osc~ \, depending on your hardware and math
-library., f 65;
+#X obj 553 371 loadbang;
 #X obj 152 162 mtof~;
 #X obj 152 225 snapshot~;
 #X obj 60 225 snapshot~;
@@ -37,17 +31,17 @@ library., f 65;
 #X obj 261 198 r metro;
 #X obj 162 198 r metro;
 #X obj 71 198 r metro;
-#X obj 545 400 metro 100;
-#X obj 545 426 s metro;
-#X msg 543 326 \; pd dsp \$1;
-#X obj 543 300 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 553 400 metro 100;
+#X obj 553 426 s metro;
+#X msg 551 326 \; pd dsp \$1;
+#X obj 551 300 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X floatatom 152 99 6 0 0 0 - - - 0;
 #X floatatom 251 98 6 0 0 0 - - - 0;
 #X floatatom 353 97 6 0 0 0 - - - 0;
 #X floatatom 456 97 6 0 0 0 - - - 0;
 #X floatatom 555 97 6 0 0 0 - - - 0;
-#X text 561 299 DSP on/off;
+#X text 574 299 DSP on/off;
 #X text 15 497 see also:;
 #X obj 93 482 mtof;
 #X text 462 508 updated for Pd version 0.33;
@@ -60,7 +54,7 @@ library., f 65;
 #X obj 178 42 powtodb~;
 #X text 131 481 (etc.) - acoustic conversions for control data;
 #X obj 93 510 expr~;
-#N canvas 488 108 576 358 reference 1;
+#N canvas 488 108 576 358 reference 0;
 #X obj 8 207 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 255 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -71,7 +65,6 @@ library., f 65;
 0;
 #X text 168 303 NONE, f 50;
 #X text 158 223 signl - incoming value to be converted., f 52;
-#X text 158 265 signal - converted value, f 52;
 #X text 107 48 - MIDI pitch to Frequency in hertz.;
 #X text 107 74 - Frequency in hertz to MIDI pitch.;
 #X text 107 98 - dB to linear "RMS".;
@@ -85,47 +78,54 @@ library., f 65;
 #X obj 37 120 rmstodb~;
 #X obj 37 144 dbtopow~;
 #X obj 38 168 powtodb~;
+#X text 151 265 signal - the converted value., f 52;
 #X restore 569 43 pd reference;
 #X obj 6 74 cnv 1 670 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 506 43 click =>;
-#X obj 6 464 cnv 1 670 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 467 cnv 1 670 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 50 385 Boundary conditions are handled "reasonably". 100 db
-is assigned an RMS of 1 \, and dbtorms~ and dbtopow~ output true zero
-for 0 dB and less. See the help file for acoustic conversions of control
-data for more details on the conversions and boundary conditions.,
-f 65;
-#X connect 0 0 33 0;
-#X connect 2 0 3 0;
+#X text 30 385 Boundary conditions are handled "reasonably". 100 db
+is assigned an RMS of 1 \, and [dbtorms~] and [dbtopow~] output true
+zero for 0 dB and less. See the help file for acoustic conversions
+of control data for more details on the conversions and boundary conditions.
+, f 68;
+#X text 30 293 These objects convert MIDI pitch to frequency and back
+\, and dB to and from RMS and power. The input and output are audio
+signals (and the conversion works sample by sample.) Since they call
+library math functions \, they may be much more expensive than other
+workaday tilde objects such as [*~] and [osc~] \, depending on your
+hardware and math library., f 68;
+#X connect 0 0 32 0;
+#X connect 1 0 2 0;
+#X connect 2 0 22 0;
 #X connect 3 0 23 0;
-#X connect 4 0 24 0;
-#X connect 5 0 9 0;
-#X connect 6 0 4 0;
-#X connect 7 0 25 0;
-#X connect 8 0 7 0;
-#X connect 9 0 6 0;
-#X connect 10 0 2 0;
-#X connect 11 0 8 0;
+#X connect 4 0 8 0;
+#X connect 5 0 3 0;
+#X connect 6 0 24 0;
+#X connect 7 0 6 0;
+#X connect 8 0 5 0;
+#X connect 9 0 1 0;
+#X connect 10 0 7 0;
+#X connect 11 0 25 0;
 #X connect 12 0 26 0;
-#X connect 13 0 27 0;
-#X connect 14 0 15 0;
+#X connect 13 0 14 0;
+#X connect 15 0 18 0;
 #X connect 16 0 19 0;
 #X connect 17 0 20 0;
-#X connect 18 0 21 0;
-#X connect 19 0 13 0;
-#X connect 20 0 12 0;
-#X connect 21 0 14 0;
-#X connect 22 0 14 0;
+#X connect 18 0 12 0;
+#X connect 19 0 11 0;
+#X connect 20 0 13 0;
+#X connect 21 0 13 0;
+#X connect 27 0 11 0;
 #X connect 28 0 12 0;
-#X connect 29 0 13 0;
-#X connect 30 0 7 0;
+#X connect 29 0 6 0;
+#X connect 30 0 2 0;
 #X connect 31 0 3 0;
-#X connect 32 0 4 0;
-#X connect 33 0 34 0;
-#X connect 36 0 35 0;
+#X connect 32 0 33 0;
+#X connect 35 0 34 0;
+#X connect 36 0 9 0;
 #X connect 37 0 10 0;
-#X connect 38 0 11 0;
+#X connect 38 0 15 0;
 #X connect 39 0 16 0;
 #X connect 40 0 17 0;
-#X connect 41 0 18 0;

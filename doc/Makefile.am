@@ -289,7 +289,6 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
-     ./4.data.structures/data-start.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \

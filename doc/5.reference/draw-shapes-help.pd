@@ -1,15 +1,15 @@
-#N struct help-drawpolygon-template float x float y float cat float
-dog float weasel;
+#N struct drawshapes-template float x float y float cat float dog float
+weasel;
 #N canvas 625 77 589 227 12;
 #X text 20 186 see also:;
-#X obj 218 187 plot;
+#X obj 164 187 plot;
 #X obj 21 10 drawpolygon;
 #X obj 21 34 drawcurve;
 #X obj 126 11 filledpolygon;
 #X obj 127 34 filledcurve;
-#N canvas 371 88 995 511 help-drawpolygon-template 0;
-#X obj 574 312 struct help-drawpolygon-template float x float y float
-cat float dog float weasel, f 48;
+#N canvas 371 88 995 511 drawshapes-template 0;
+#X obj 574 312 struct drawshapes-template float x float y float cat
+float dog float weasel, f 48;
 #X text 37 32 Optional flags:;
 #X text 34 7 [drawpolygon] and [drawcurve] take these creation arguments:
 , f 61;
@@ -44,7 +44,6 @@ both "-xr" and "-xe" \, disabling all mouse actions \;, f 65;
 \, 9=blue \, 555=grey \, etc.) \; - line width \; - (x \, y) pairs
 giving coordinates of each vertice in the shape (at least two pairs
 to draw a line).;
-#X text 142 324 (if no "-v [field name]" flag was given);
 #X obj 86 350 drawpolygon 0 5 0 0 25 weasel 50 0;
 #X obj 576 69 filledpolygon 900 dog 3 15 0 25 cat 35 0;
 #X text 533 104 [filledpolygon] and [filledcurve] take the same inlet
@@ -57,23 +56,21 @@ a closed and filled triangle of altitude "cat".;
 is 5 pixels thick and 3 pairs of coordinates to draw an opened triangle
 with the height set by "weasel" (this also makes the height settable
 via click and dragging \, unless flags disable this)., f 63;
-#X connect 7 0 16 0;
-#X connect 8 0 16 0;
-#X connect 9 0 17 0;
-#X connect 10 0 17 0;
-#X restore 321 94 pd help-drawpolygon-template;
-#N canvas 342 90 282 207 help-drawpolygon-data 1;
-#X scalar help-drawpolygon-template 52 28 30 9 70 \;;
-#X scalar help-drawpolygon-template 155 102 -30 90 50 \;;
+#X text 142 324 (if no "-v <field-name>" flag was given);
+#X connect 7 0 15 0;
+#X connect 8 0 15 0;
+#X connect 9 0 16 0;
+#X connect 10 0 16 0;
+#X restore 305 112 pd drawshapes-template;
+#N canvas 328 89 282 207 drawshapes-data 1;
+#X scalar drawshapes-template 52 28 30 9 70 \;;
+#X scalar drawshapes-template 155 102 -30 90 50 \;;
 #X coords 0 207 1 206 0 0 0;
-#X restore 321 120 pd help-drawpolygon-data;
-#X obj 95 187 struct;
+#X restore 305 138 pd drawshapes-data;
 #X text 370 188 updated for Pd version 0.51.;
 #X text 232 13 - draw shapes for data structures, f 17;
-#X text 260 94 open =>;
-#X obj 258 187 set;
-#X obj 293 187 text;
-#X obj 150 187 drawtext;
+#X obj 204 187 set;
+#X obj 96 187 drawtext;
 #X obj 8 67 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 714 72 569 433 reference 0;
@@ -121,4 +118,6 @@ reporting mouse clicks)., f 56;
 #X text 505 23 <= click;
 #X obj 8 173 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 40 95 Use these to draw polygon and curved shapes., f 26;
+#X text 46 77 Use these to draw polygon and curved shapes., f 45;
+#X obj 238 187 get;
+#X text 134 111 explanation is here -->;

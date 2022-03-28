@@ -3,12 +3,12 @@
 #X msg 76 162 walk the cat;
 #X msg 64 130 45;
 #X obj 64 203 bang;
-#X obj 77 234 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 77 234 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 53 77 The [bang] object outputs a "bang" message for whatever
 message it receives., f 42;
 #X msg 240 222 bang;
-#X obj 302 223 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 302 223 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 208 145 this is more efficient than using a message box and
 the bang GUI below:, f 22;

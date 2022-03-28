@@ -41,11 +41,11 @@
 #X text 159 498 atom boxes;
 #X text 185 528 list box;
 #X msg 403 577 message;
-#X text 45 572 The message box is also considered a GUI object since
-you can click on it and interact with it., f 47;
-#X text 19 424 The boxes below are 'proper native' GUIs not part of
-"IEM GUIs". See also the array to the right as another GUI element.
-, f 36;
 #X text 93 19 All IEM GUIs (objects from the "iemguis" external library
 \, natively included in Pd version 0.34):, f 49;
-#X text 20 397 Original native GUIs:;
+#X text 20 397 Originally native GUIs:;
+#X text 19 424 The boxes below are 'proper native' GUIs (not part of
+"IEM GUIs"). See also the array to the right as another GUI element.
+, f 36;
+#X text 40 572 The message box is also considered a GUI object since
+you can interact with it by clicking on it., f 49;

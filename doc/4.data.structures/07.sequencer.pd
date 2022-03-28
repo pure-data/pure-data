@@ -1,15 +1,15 @@
-#N struct template-toplevel float x float y float voiceno array pitch
-template-pitch array amp template-amp;
+#N struct template-toplevel float x float y float voice# float color
+array pitch template-pitch array amp template-amp;
 #N struct template-pitch float x float y float w;
 #N struct template-amp float x float y float w;
-#N canvas 295 32 556 659 12;
+#N canvas 352 32 556 659 12;
 #X declare -stdpath ./;
 #N canvas 565 104 469 174 template-toplevel 0;
-#X obj 30 97 plot pitch voiceno 3 10 0;
+#X obj 30 97 plot pitch color 3 10 0;
 #X obj 30 124 plot amp 0 3 10 0;
-#X obj 29 32 struct template-toplevel float x float y float voiceno
-array pitch template-pitch array amp template-amp;
 #X obj 29 72 filledpolygon 9 9 0 0 -2 0 2 5 2 5 -2;
+#X obj 29 32 struct template-toplevel float x float y float voice#
+float color array pitch template-pitch array amp template-amp;
 #X restore 171 380 pd template-toplevel;
 #N canvas 164 144 383 111 template-amp 0;
 #X obj 15 41 struct template-amp float x float y float w;
@@ -17,101 +17,81 @@ array pitch template-pitch array amp template-amp;
 #N canvas 42 221 414 98 template-pitch 0;
 #X obj 21 29 struct template-pitch float x float y float w;
 #X restore 171 428 pd template-pitch;
-#N canvas 347 73 539 692 synthesis 0;
-#X msg 126 275 next;
-#X msg 109 217 traverse pd-data \, next;
-#X obj 109 305 pointer template-toplevel;
-#X obj 109 328 t p p;
-#X obj 109 351 get template-toplevel voiceno;
-#X obj 109 380 pack 0 p;
-#X obj 109 29 inlet;
-#X obj 109 58 route start stop;
-#X msg 162 79 \; reset bang;
-#X obj 299 55 r reset;
-#X obj 154 140 s reset;
-#X obj 126 249 r next-evt;
-#X obj 109 409 route 0 9 90 900 99 909 990;
-#X obj 56 447 voice;
-#X obj 56 621 outlet~;
-#X msg 299 83 \; reset-stop stop \; time-of-last-evt 0 \; pd-data sort
-;
-#X obj 373 386 s delay-multiplier;
-#X obj 376 311 t b f;
-#X msg 373 338 1000;
-#X obj 390 362 /;
-#X obj 376 285 r tempo;
-#X obj 109 115 t b b b;
-#X msg 132 171 \; pd-data sort;
-#X obj 56 470 voice;
-#X obj 56 493 voice;
-#X obj 56 516 voice;
-#X obj 56 540 voice;
-#X obj 56 563 voice;
-#X obj 56 586 voice;
+#N canvas 363 111 559 511 synthesis 0;
+#X msg 40 177 next;
+#X msg 131 211 traverse pd-data \, next;
+#X obj 131 244 pointer template-toplevel;
+#X obj 131 33 inlet;
+#X obj 131 82 route start stop;
+#X msg 195 119 \; reset bang;
+#X obj 332 101 r reset;
+#X obj 40 151 r next-evt;
+#X obj 166 439 outlet~;
+#X msg 332 129 \; reset-stop stop \; time-of-last-evt 0 \; pd-data
+sort;
+#X obj 387 331 s delay-multiplier;
+#X obj 359 242 t b f, f 7;
+#X msg 359 268 1000;
+#X obj 387 298 /;
+#X obj 359 216 r tempo;
+#X obj 131 119 t b b b;
+#X msg 154 165 \; pd-data sort;
+#X obj 166 362 pack float pointer;
+#X obj 131 274 trigger pointer pointer;
+#X obj 131 301 get template-toplevel voice#, f 21;
+#X obj 166 399 clone 4 voice;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
-#X connect 2 0 3 0;
+#X connect 2 0 18 0;
 #X connect 3 0 4 0;
-#X connect 3 1 5 1;
-#X connect 4 0 5 0;
-#X connect 5 0 12 0;
-#X connect 6 0 7 0;
-#X connect 7 0 21 0;
-#X connect 7 1 8 0;
-#X connect 9 0 15 0;
-#X connect 11 0 0 0;
-#X connect 12 0 13 1;
-#X connect 12 1 23 1;
-#X connect 12 2 24 1;
-#X connect 12 3 25 1;
-#X connect 12 4 26 1;
-#X connect 12 5 27 1;
-#X connect 12 6 28 1;
-#X connect 13 0 23 0;
-#X connect 17 0 18 0;
-#X connect 17 1 19 1;
+#X connect 4 0 15 0;
+#X connect 4 1 5 0;
+#X connect 6 0 9 0;
+#X connect 7 0 0 0;
+#X connect 11 0 12 0;
+#X connect 11 1 13 1;
+#X connect 12 0 13 0;
+#X connect 13 0 10 0;
+#X connect 14 0 11 0;
+#X connect 15 0 1 0;
+#X connect 15 1 16 0;
+#X connect 15 2 5 0;
+#X connect 17 0 20 0;
 #X connect 18 0 19 0;
-#X connect 19 0 16 0;
-#X connect 20 0 17 0;
-#X connect 21 0 1 0;
-#X connect 21 1 22 0;
-#X connect 21 2 10 0;
-#X connect 23 0 24 0;
-#X connect 24 0 25 0;
-#X connect 25 0 26 0;
-#X connect 26 0 27 0;
-#X connect 27 0 28 0;
-#X connect 28 0 14 0;
+#X connect 18 1 17 1;
+#X connect 19 0 17 0;
+#X connect 20 0 8 0;
 #X restore 199 535 pd synthesis;
 #X floatatom 385 464 0 0 0 0 - - - 0;
 #X msg 148 498 start;
 #X msg 199 498 stop;
-#N canvas 869 73 415 496 data 1;
-#X scalar template-toplevel 22 86 900 \; 0 0 12 \; 10 0 12 \; \; 0
-0 0 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 33 80 990 \; 0 0 12 \; 10 0 12 \; \; 0
-0 2.5 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 57 43.25 90 \; 0 65 12 \; 100 10 0 \; 100
-10 12 \; 230 50 0 \; 230 10 3 \; 240 60 0 \; 240 25 10 \; 250 60 0
-\; 250 37 10 \; 260 65 0.5 \; 285 65 0.5 \; \; 1 0 2 \; 103 0 1 \;
+#N canvas 914 100 438 421 data 1;
+#X scalar template-toplevel 22 69.25 0 900 \; 0 0 12 \; 10 0 12 \;
+\; 0 0 0 \; 10 0 2.5 \; 11 0 0 \; \;;
+#X scalar template-toplevel 33 63.25 1 990 \; 0 0 12 \; 10 0 12 \;
+\; 0 0 2.5 \; 10 0 2.5 \; 11 0 0 \; \;;
+#X scalar template-toplevel 57 26.5 2 90 \; 0 65 12 \; 100 10 0 \;
+100 10 12 \; 230 50 0 \; 230 10 3 \; 240 60 0 \; 240 25 10 \; 250 60
+0 \; 250 37 10 \; 260 65 0.5 \; 285 65 0.5 \; \; 1 0 2 \; 103 0 1 \;
 195 0 2 \; 220 0 0.75 \; 225 0 1.25 \; 248 0 2.5 \; 251 0 2.25 \; 255
 0 0 \; 256 0 1.5 \; 260 0 0 \; 261 0 2 \; 265 0 0 \; 266 0 2.5 \; 270
 0 0 \; 271 0 3 \; 275 0 0 \; \;;
-#X scalar template-toplevel 83 80 900 \; 0 5 0.25 \; 60 5 0.25 \; \;
-0 0 0 \; 28 -0.25 3.5 \; 58 -0.25 0 \; \;;
-#X scalar template-toplevel 161 105 900 \; 0 0 12 \; 70 -20 12 \; \;
-0 0 0 \; 10 0 2.5 \; 20 0 0 \; 30 0 0 \; 40 0 2.5 \; 50 0 0 \; 60 0
-2.5 \; 70 0 0 \; \;;
-#X scalar template-toplevel 338 63.5 909 \; 0 0 12 \; 50 0 12 \; \;
-0 0 4 \; 10 0 2.5 \; 50 0 0 \; \;;
-#X coords 0 124 1 123.75 0 0 0;
+#X scalar template-toplevel 93 60.75 0 900 \; 0 5 0.25 \; 60 5 0.25
+\; \; 0 0 0 \; 28 -0.25 3.5 \; 58 -0.25 0 \; \;;
+#X scalar template-toplevel 161 88.25 0 900 \; 0 0 12 \; 70 -20 12
+\; \; 0 0 0 \; 10 0 2.5 \; 20 0 0 \; 30 0 0 \; 40 0 2.5 \; 50 0 0 \;
+60 0 2.5 \; 70 0 0 \; \;;
+#X scalar template-toplevel 338 46.75 3 909 \; 0 0 12 \; 50 0 12 \;
+\; 0 0 4 \; 10 0 2.5 \; 50 0 0 \; \;;
+#X coords 0 105.25 1 105 0 0 0;
 #X restore 171 356 pd data;
-#N canvas 330 267 400 206 stuff 0;
-#X msg 31 53 \; pd-data read score.txt;
-#X obj 242 21 loadbang;
-#X msg 242 48 \; tempo 60;
-#X msg 232 115 \; pd-data sort;
-#X msg 31 111 \; pd-data write score.txt;
+#N canvas 330 267 433 240 stuff 0;
+#X msg 48 51 \; pd-data read score.txt;
+#X obj 248 50 loadbang;
+#X msg 248 77 \; tempo 60;
+#X msg 52 164 \; pd-data sort;
+#X msg 48 109 \; pd-data write score.txt;
+#X obj 246 135 declare -stdpath ./;
 #X connect 1 0 2 0;
 #X restore 171 451 pd stuff;
 #X obj 385 417 r tempo;
@@ -127,7 +107,6 @@ over the life of the event., f 61;
 can set the tempo lower if that helps you follow the "score" the first
 couple of times., f 61;
 #X obj 199 573 output~;
-#X text 330 608 Updated for Pd version 0.39;
 #X text 38 254 This confuses Tk's scroll bars \, by the way \, and
 when you resize the window the image still sticks to the top and not
 the bottom of the window as it should. When you resize a canvas with
@@ -139,8 +118,8 @@ per pixel - that is \, adding 1 to y moves down one pixel. This is
 the "natural" y unit for most drawing programs. In the data window
 \, each pixel is 0.25 units \, meaning that adding one to a 'y' value
 moves it up four pixels., f 61;
-#X obj 354 368 declare -stdpath ./;
 #X text 418 464 <-- tempo;
+#X text 330 608 Updated for Pd version 0.52;
 #X connect 3 0 14 0;
 #X connect 3 0 14 1;
 #X connect 4 0 11 0;

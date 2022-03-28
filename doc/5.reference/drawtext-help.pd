@@ -1,17 +1,16 @@
-#N struct help-draw-data float x float y float cat float dog symbol
+#N struct drawtext-data float x float y float cat float dog symbol
 weasel text boom;
 #N canvas 655 119 585 256 12;
 #X text 19 217 see also:;
 #X obj 37 12 drawnumber;
-#X obj 228 216 plot;
-#X obj 142 216 drawpolygon;
-#X obj 91 216 struct;
+#X obj 178 216 plot;
+#X obj 92 216 drawpolygon;
 #X obj 37 36 drawsymbol;
 #X obj 37 59 drawtext;
-#N canvas 872 42 533 657 help-draw-template 0;
+#N canvas 508 59 524 635 drawtext-template 0;
 #X obj 42 489 drawsymbol weasel 0 -30 0 weasel=;
 #X obj 298 489 drawtext boom 0 -45 0 boom=;
-#X obj 95 530 struct help-draw-data float x float y float cat float
+#X obj 95 530 struct drawtext-data float x float y float cat float
 dog symbol weasel text boom, f 47;
 #X text 32 92 - the field name to draw \; - an (x \, y) pair giving
 relative coordinates \; - RGB color (0=black \, 999=white \, 900=red
@@ -46,19 +45,19 @@ changed through "set" and "text" objects \, respectively \, or via
 properties., f 69;
 #X connect 9 0 4 0;
 #X connect 10 0 4 0;
-#X restore 399 125 pd help-draw-template;
-#N canvas 179 120 455 265 help-draw-data 1;
-#X scalar help-draw-data 63 134 628 651 hello \; a 1 b 2 c 3 \\\; \;
+#X restore 399 125 pd drawtext-template;
+#N canvas 179 120 455 265 drawtext-data 1;
+#X scalar drawtext-data 63 134 628 658 hello \; a 1 b 2 c 3 \\\; \;
 ;
-#X scalar help-draw-data 255 95 612 34 world \; 1 a 2 b 3 c \\\; \;
+#X scalar drawtext-data 255 95 612 34 world \; 1 a 2 b 3 c \\\; \;
 ;
-#X restore 399 152 pd help-draw-data;
+#X restore 399 152 pd drawtext-data;
 #X text 353 218 updated for Pd version 0.50.;
-#X obj 266 216 set;
+#X obj 216 216 set;
 #X text 291 125 explanation =>;
 #X obj 8 91 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 395 121 571 346 reference 0;
+#N canvas 36 265 573 351 reference 0;
 #X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 6 103 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -68,11 +67,6 @@ properties., f 69;
 #X obj 5 321 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 112 75 float -;
-#X obj 23 9 drawpolygon;
-#X obj 23 32 drawcurve;
-#X obj 118 10 filledpolygon;
-#X obj 118 32 filledcurve;
-#X text 220 20 - draw shapes for data structures;
 #X text 143 113 NONE, f 54;
 #X text 169 75 sets visibility (1: visible \, 0: invisible)., f 46
 ;
@@ -90,12 +84,16 @@ properties., f 69;
 , f 58;
 #X text 101 254 3) float* - color (default 0)., f 58;
 #X text 131 294 * position and color can also be field names.;
+#X obj 26 21 drawtext;
+#X text 94 20 - draw numbers \, symbols or texts fields in Scalars.
+;
 #X restore 397 33 pd reference;
 #X text 495 34 <= click;
-#X text 125 23 - draw numbers \, symbols or texts for Data Structures.
-, f 26;
 #X text 25 106 All these objects are actually aliases of the same class.
 There's no difference in them. Use them to draw either numbers \, symbols
 or texts fields., f 34;
 #X obj 8 199 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 125 23 - draw numbers \, symbols or texts fields in Scalars.
+, f 26;
+#X obj 250 216 get;
