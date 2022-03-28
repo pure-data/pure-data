@@ -499,7 +499,7 @@ proc set_base_font {family weight} {
     ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
 }
 
-# finds sizes of the chosen font that just fit into the requried metrics
+# finds sizes of the chosen font that just fit into the required metrics
 # e.g. if the metric requires the 'M' to be 15x10 pixels,
 # and the given font at size 12 is 15x7 and at size 16 it is 19x10,
 # then we would pick size 12.

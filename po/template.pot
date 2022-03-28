@@ -923,7 +923,7 @@ msgstr ""
 msgid "Cancelling download of %s: No installation directory given."
 msgstr ""
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 
 #, tcl-format

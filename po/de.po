@@ -954,7 +954,7 @@ msgstr "%1$s nach %2$s installieren?"
 msgid "Cancelling download of %s: No installation directory given."
 msgstr "Abbruch des Downloads von %s: Kein Installationsverzeichnis angegeben."
 
-msgid "Installing to non-existant directory failed"
+msgid "Installing to non-existent directory failed"
 msgstr ""
 "Die Installation in ein nicht-existierendes Verzeichnis ist fehlgeschlagen"
 

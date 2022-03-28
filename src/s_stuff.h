@@ -98,7 +98,7 @@ typedef struct _audiosettings
     likely to offer a working device takes precedence so that if you
     start up Pd for the first time there's a reasonable chance you'll have
     sound.  (You'd think portaudio would be best but it seems to default
-    to jack on linux, and and on Windows we only use it for ASIO).
+    to jack on linux, and on Windows we only use it for ASIO).
     If nobody shows up, define DUMMY and make it the default.*/
 #if defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
