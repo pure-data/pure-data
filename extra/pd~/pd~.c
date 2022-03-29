@@ -120,6 +120,18 @@ static const char *pd_tilde_dllextent[] = {
 #endif
     0};
 
+
+static const char*get_dllextent()
+{
+#if PD
+    const char**dllextent = sys_get_dllextensions();
+    if(dllextent && *dllextent)
+        return dllextent;
+#endif
+    return pd_tilde_dllextent;
+}
+
+
 #include "binarymsg.c"
 
 /* ------------------------ pd_tilde~ ----------------------------- */
@@ -558,7 +570,7 @@ static void pd_tilde_dostart(t_pd_tilde *x, const char *pddir,
         }
     }
         /* check that the scheduler dynamic linkable exists w either suffix */
-    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
+    for(dllextent=get_dllextent(); *dllextent; dllextent++)
     {
       snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
       sys_bashfilename(tmpbuf, schedbuf);
