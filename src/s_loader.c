@@ -57,6 +57,7 @@ a fat binary or an indication of the instruction set. */
 
 
 static const char*sys_dllextent[] = {
+    0, 0,
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 #if defined(__x86_64__) || defined(_M_X64)
@@ -77,8 +78,26 @@ static const char*sys_dllextent[] = {
 #endif
     0};
 
+const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize);
+
+    /* get an array of dll-extensions */
 const char**sys_get_dllextensions(void)
 {
+    static int firsttime = 1;
+    static char extension_dek[2][MAXPDSTRING];
+    if(firsttime) {
+        char extbuf[MAXPDSTRING];
+        const char *systemext = sys_dllextent[sizeof(sys_dllextent)/sizeof(*sys_dllextent)-2];
+        int i;
+        firsttime = 0;
+        for(i=0; i<2; i++)
+        {
+            snprintf(extension_dek[i], MAXPDSTRING-1, ".%s%s",
+                     sys_deken_specifier(extbuf, MAXPDSTRING, i), systemext);
+            extension_dek[i][MAXPDSTRING-1] = 0;
+            sys_dllextent[i] = extension_dek[i];
+        }
+    }
     return sys_dllextent;
 }
 
