@@ -34,6 +34,7 @@ that didn't really belong anywhere. */
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #ifdef __APPLE__
 #include <sys/types.h>
@@ -1027,9 +1028,7 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
-static void sys_init_deken(void)
-{
-    const char*os =
+static const char*deken_OS =
 #if defined __linux__
         "Linux"
 #elif defined __APPLE__
@@ -1049,7 +1048,7 @@ static void sys_init_deken(void)
         0
 #endif
         ;
-    const char*machine =
+static const char*deken_CPU =
 #if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
         "amd64"
 #elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
@@ -1073,10 +1072,34 @@ static void sys_init_deken(void)
 #endif
         ;
 
+/* get the (normalized) deken-specifier
+ * if 'float_agnostic' is non-0, the float-size is included.
+ * otherwise a floatsize-agnostic specifier is generated.
+ * returns 0, if the deken-specifier cannot be determined
+ * (e.g. on new architectures)
+ */
+const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic) {
+    unsigned int i;
+    if (!deken_OS)
+        return 0;
+    if (!deken_CPU)
+        return 0;
+
+    snprintf(buf, bufsize-1,
+             "%s-%s-%d", deken_OS, deken_CPU, (float_agnostic?0:8) * sizeof(t_float));
+
+    buf[bufsize-1] = 0;
+    for(i=0; i<bufsize && buf[i]; i++)
+        buf[i] = tolower(buf[i]);
+    return buf;
+}
+
+static void sys_init_deken(void)
+{
         /* only send the arch info, if we are sure about it... */
-    if (os && machine)
+    if (deken_OS && deken_CPU)
         sys_vgui("::deken::set_platform %s %s %d %d\n",
-                 os, machine,
+                 deken_OS, deken_CPU,
                  8 * sizeof(char*),
                  8 * sizeof(t_float));
 }
