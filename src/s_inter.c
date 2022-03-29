@@ -44,6 +44,10 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+#define snprintf _snprintf
+#endif
+
 #define stringify(s) str(s)
 #define str(s) #s
 
