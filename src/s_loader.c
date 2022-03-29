@@ -77,6 +77,11 @@ static const char*sys_dllextent[] = {
 #endif
     0};
 
+const char**sys_get_dllextensions(void)
+{
+    return sys_dllextent;
+}
+
     /* maintain list of loaded modules to avoid repeating loads */
 typedef struct _loadedlist
 {
@@ -164,7 +169,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     fprintf(stderr, "lib: %s\n", classname);
 #endif
         /* try looking in the path for (objectname).(sys_dllextent) ... */
-    for(dllextent=sys_dllextent; *dllextent; dllextent++)
+    for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         if ((fd = sys_trytoopenone(path, objectname, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
@@ -176,7 +181,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     strcat(filename, "/");
     strncat(filename, classname, MAXPDSTRING-strlen(filename));
     filename[MAXPDSTRING-1] = 0;
-    for(dllextent=sys_dllextent; *dllextent; dllextent++)
+    for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         if ((fd = sys_trytoopenone(path, filename, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
@@ -375,7 +380,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     t_externalschedlibmain externalmainfunc;
     char filename[MAXPDSTRING];
     const char**dllextent;
-    for(dllextent=sys_dllextent; *dllextent; dllextent++)
+    for(dllextent=sys_get_dllextensions(); *dllextent; dllextent++)
     {
         struct stat statbuf;
         snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
