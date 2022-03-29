@@ -52,6 +52,7 @@ EXTERN t_symbol *sys_libdir;    /* library directory for auxiliary files */
 typedef int (*loader_t)(t_canvas *canvas, const char *classname, const char*path); /* callback type */
 EXTERN int sys_load_lib(t_canvas *canvas, const char *classname);
 EXTERN void sys_register_loader(loader_t loader);
+EXTERN const char**sys_get_dllextensions(void);
 
                         /* s_audio.c */
 
