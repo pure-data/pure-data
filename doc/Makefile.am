@@ -268,7 +268,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
-     ./4.data.structures/00.intro.txt \
      ./4.data.structures/01.scalars.pd \
      ./4.data.structures/02.getting.data.pd \
      ./4.data.structures/03.setting.data.pd \
@@ -277,7 +276,7 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/06.array.pd \
      ./4.data.structures/07.file.pd \
      ./4.data.structures/08.sequencer.pd \
-     ./4.data.structures/09.interaction \
+     ./4.data.structures/09.interaction.pd \
      ./4.data.structures/10.scaling.pd \
      ./4.data.structures/11.onoff.pd \
      ./4.data.structures/12.array.controls.pd \
