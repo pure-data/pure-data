@@ -19,11 +19,11 @@
 #X obj 161 167 trigger bang bang pointer bang, f 42;
 #X obj 434 578 delay;
 #X msg 364 486 0;
-#X obj 131 309 element template-toplevel \$1, f 20;
+#X obj 131 309 element template-event \$1, f 17;
 #X obj 131 357 get template-\$1 y w x;
-#X obj 295 316 element template-toplevel \$1, f 20;
+#X obj 295 316 element template-event \$1, f 17;
 #X obj 295 357 get template-\$1 y w;
-#X obj 123 244 getsize template-toplevel \$1, f 20;
+#X obj 123 244 getsize template-event \$1, f 17;
 #X text 208 131 pointer input;
 #X text 213 631 new y value, f 5;
 #X text 289 631 new w value, f 5;

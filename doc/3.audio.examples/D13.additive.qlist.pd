@@ -1,13 +1,5 @@
 #N canvas 518 77 704 521 12;
 #X declare -stdpath ./;
-#X obj 63 185 osc-voice amp1 pit1;
-#X obj 63 209 osc-voice amp2 pit2;
-#X obj 63 233 osc-voice amp3 pit3;
-#X obj 63 257 osc-voice amp4 pit4;
-#X obj 63 281 osc-voice amp5 pit5;
-#X obj 63 305 osc-voice amp6 pit6;
-#X obj 63 329 osc-voice amp7 pit7;
-#X obj 63 353 osc-voice amp8 pit8;
 #X obj 407 379 qlist;
 #X msg 407 237 stop;
 #X msg 521 327 read qlist.txt;
@@ -22,28 +14,23 @@
 #X text 82 11 USING QLIST TO SEQUENCE AN OSCILLATOR BANK;
 #X text 478 216 single step;
 #X obj 512 427 r #;
-#X text 62 53 Here is an eight voice additive synthesis patch controlled
-by a qlist. Open a text editor on the file \, "qlist.txt" \, to see
-how the oscillators' amplitudes and frequencies are specified. The
-abstraction \, "osc-voice" \, shows an effective way to make patches
-react to qlists but also to mousing.;
 #X text 281 428 this is where qlist comments go:;
-#X obj 63 383 output~;
-#X text 414 475 updated for Pd version 0.39;
+#X obj 82 310 output~;
 #X obj 523 23 declare -stdpath ./;
-#X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 24 0;
-#X connect 7 0 24 1;
-#X connect 9 0 8 0;
-#X connect 10 0 8 0;
-#X connect 11 0 10 0;
-#X connect 15 0 8 0;
-#X connect 16 0 8 0;
-#X connect 17 0 8 0;
-#X connect 18 0 8 0;
+#X obj 82 261 clone -s 1 osc-voice 8;
+#X text 62 53 Here is an eight voice additive synthesis patch controlled
+by a [qlist]. Open a text editor on the file \, "qlist.txt" \, to see
+how the oscillators' amplitudes and frequencies are specified. The
+abstraction \, "osc-voice" is loaded 8 times inside [clone] and shows
+an effective way to make patches react to qlists but also to mousing.
+;
+#X text 442 474 updated for Pd version 0.52;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X connect 17 0 15 0;
+#X connect 17 0 15 1;

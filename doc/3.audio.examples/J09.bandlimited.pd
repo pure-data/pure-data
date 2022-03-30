@@ -1,4 +1,4 @@
-#N canvas 495 23 744 900 12;
+#N canvas 495 23 744 723 12;
 #X declare -stdpath ./;
 #X floatatom 229 186 0 0 0 0 - - - 0;
 #X obj 116 421 -~;
@@ -40,7 +40,7 @@
 #X connect 6 0 8 0;
 #X restore 139 475 pd fft;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-fft 256 float 3;
+#X array \$0-fft 256 float 1;
 #A 0 0 88.2226 82.204 78.6858 76.1919 74.2601 72.6841 71.3543 70.2048
 69.1937 68.2916 67.4783 66.7382 66.0601 65.4346 64.855 64.3151 63.8106
 63.3371 62.8919 62.4716 62.0744 61.6977 61.3402 60.9999 60.6759 60.3665
@@ -70,7 +70,7 @@
 29.5528 29.1274 28.683 28.2179 27.7295 27.2152 26.6717 26.0953 25.4811
 24.8235 24.1152 23.3476 22.5087 21.5837 20.5517 19.384 18.0382 16.4489
 14.5058 12.0034 8.4789 2.45678;
-#X coords 0 100 256 0 200 140 1;
+#X coords 0 100 255 0 200 140 1;
 #X restore 449 270 graph;
 #X floatatom 469 438 5 0 0 0 - - - 0;
 #X floatatom 469 484 5 0 0 0 - - - 0;
@@ -79,8 +79,6 @@
 #X obj 229 209 * 0.4;
 #X msg 229 114 136.766;
 #X obj 469 460 tabread \$0-fft;
-#X obj 206 435 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
 #X obj 206 467 tabwrite~ \$0-out;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-out 882 float 0;
@@ -88,15 +86,13 @@
 #X restore 452 103 graph;
 #X text 41 21 BAND-LIMITED SAWTOOTH GENERATOR USING A TRANSITION TABLE
 ;
-#X obj 134 112 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
 #X text 83 675 Now any time we wish to make a discontinuity in the
 output signal \, we make it look exactly like the bandlimited square
 wave looks. We do this by reading through the table we recorded \,
 carefully adding a "digital" \, non-band-limited \, sawtooth to "array1"
 so that the discontinuities in the two cancel out and what you have
 left is the transition in the table., f 78;
-#N canvas 507 23 839 879 transition-table 0;
+#N canvas 507 23 839 723 transition-table 0;
 #X obj 374 661 cos~;
 #X obj 261 661 cos~;
 #X obj 213 661 cos~;
@@ -114,7 +110,6 @@ left is the transition in the table., f 78;
 #X obj 228 299 cos~;
 #X obj 180 294 cos~;
 #X msg 124 363 bang;
-#X msg 52 253 \; pd dsp 1;
 #X msg 267 208 -0.0005;
 #X obj 228 273 *~ 3;
 #X obj 228 325 *~ 0.33333;
@@ -144,7 +139,7 @@ work everywhere., f 54;
 #X connect 0 0 9 0;
 #X connect 1 0 8 0;
 #X connect 2 0 10 0;
-#X connect 3 0 25 0;
+#X connect 3 0 24 0;
 #X connect 5 0 12 1;
 #X connect 6 0 1 0;
 #X connect 7 0 0 0;
@@ -156,21 +151,20 @@ work everywhere., f 54;
 #X connect 12 0 2 0;
 #X connect 12 0 6 0;
 #X connect 12 0 7 0;
-#X connect 13 0 25 0;
-#X connect 14 0 20 0;
-#X connect 15 0 21 0;
-#X connect 16 0 26 0;
-#X connect 18 0 23 1;
-#X connect 19 0 14 0;
-#X connect 20 0 24 0;
-#X connect 21 0 24 0;
+#X connect 13 0 24 0;
+#X connect 14 0 19 0;
+#X connect 15 0 20 0;
+#X connect 16 0 25 0;
+#X connect 17 0 22 1;
+#X connect 18 0 14 0;
+#X connect 19 0 23 0;
+#X connect 20 0 23 0;
+#X connect 21 0 17 0;
+#X connect 21 0 16 0;
+#X connect 22 0 15 0;
 #X connect 22 0 18 0;
-#X connect 22 0 17 0;
-#X connect 22 0 16 0;
-#X connect 23 0 15 0;
-#X connect 23 0 19 0;
-#X connect 24 0 26 0;
-#X connect 27 0 22 0;
+#X connect 23 0 25 0;
+#X connect 26 0 21 0;
 #X restore 207 510 pd transition-table;
 #X text 503 845 updated for Pd version 0.39;
 #X text 83 566 A more sophisticated way to control foldover in sawtooth
@@ -186,12 +180,16 @@ is read. If it is set to the Nyquist frequency the table is read at
 0.4 times the Nyquist \, or five samples a cycle. Lowering the band
 limit cuts off the partials of the generated sawtooth wave at frequencies
 below the Nyquist., f 78;
-#X obj 562 24 declare -stdpath ./;
+#X obj 535 23 declare -stdpath ./;
+#X obj 206 435 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 134 109 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
 #X connect 0 0 24 0;
 #X connect 1 0 18 0;
 #X connect 1 0 22 0;
 #X connect 1 0 22 1;
-#X connect 1 0 28 0;
+#X connect 1 0 27 0;
 #X connect 2 0 5 1;
 #X connect 3 0 2 1;
 #X connect 4 0 14 0;
@@ -202,7 +200,7 @@ below the Nyquist., f 78;
 #X connect 8 0 9 0;
 #X connect 9 0 0 0;
 #X connect 11 0 25 0;
-#X connect 11 0 31 0;
+#X connect 11 0 37 0;
 #X connect 12 0 13 0;
 #X connect 13 0 23 0;
 #X connect 14 0 5 0;
@@ -214,5 +212,5 @@ below the Nyquist., f 78;
 #X connect 24 0 2 0;
 #X connect 25 0 8 0;
 #X connect 26 0 21 0;
-#X connect 27 0 28 0;
-#X connect 31 0 16 0;
+#X connect 36 0 27 0;
+#X connect 37 0 16 0;

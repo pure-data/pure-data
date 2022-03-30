@@ -9,33 +9,34 @@
 #X scalar template4 50 250 30 9 \;;
 #X scalar template4 200 20 80 90 \;;
 #X scalar template4 100 200 -50 0 \;;
+#X coords 0 341 1 340 0 0 0;
 #X restore 459 302 pd data4;
 #N canvas 396 463 460 157 template4 0;
-#X obj 44 63 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X obj 44 38 struct template4 float x float y float z float q;
-#X text 30 98 The template for the three scalars \, as in the last
-patch;
+#X obj 49 62 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X obj 49 37 struct template4 float x float y float z float q;
+#X text 30 98 The template for the three scalars \, as in previous
+patches;
 #X restore 457 326 pd template4;
 #X msg 235 324 traverse pd-data4 \, bang;
-#X text 31 152 The outlet of "append" is a pointer to the newly created
-scalar. You can pass that on to other append objects if you want to
-build heterogeneous lists., f 77;
 #X obj 160 249 trigger bang bang bang;
 #X msg 70 300 50 250 30 9 \, 200 20 80 90 \, 100 200 -50 0, f 13;
 #X text 367 384 Updated for Pd version 0.32;
-#X text 33 11 The objects below put three items in the data window.
-First the window is cleared by sending the 'clear' message to the subpatch
-name. Then a [pointer] object is instructed to point to the beginning
-of the data window ("traverse pd-data") \, and to output its value
-("bang") to the [append] object. This object is then given numeric
-values to create three items., f 77;
-#X text 32 96 The [append] object is given the argument "template4"
+#X text 33 104 The [append] object is given the argument "template4"
 to specify what kind of data structure to append. The other arguments
 are the names of variables we'll set., f 77;
+#X text 33 11 The objects below put three items in the data window.
+First the window is cleared by sending the 'clear' message to the subpatch
+name. Then a [pointer] object is instructed to point to the head of
+the list at the beginning of the data window ("traverse pd-data") \,
+and to output this pointer value ("bang") to the [append] object. This
+object is then given numeric values to create three items., f 77;
+#X text 32 155 The outlet of [append] is a pointer to the newly created
+scalar. You can pass that on to other append objects if you want to
+build heterogeneous lists., f 77;
 #X connect 0 0 3 4;
-#X connect 1 0 9 0;
+#X connect 1 0 8 0;
 #X connect 7 0 0 0;
-#X connect 9 0 10 0;
-#X connect 9 1 7 0;
-#X connect 9 2 4 0;
-#X connect 10 0 3 0;
+#X connect 8 0 9 0;
+#X connect 8 1 7 0;
+#X connect 8 2 4 0;
+#X connect 9 0 3 0;

@@ -1,4 +1,4 @@
-#N canvas 480 60 884 678 12;
+#N canvas 417 36 884 678 12;
 #X declare -stdpath ./;
 #X obj 187 545 hip~ 5;
 #X floatatom 63 143 4 0 100 0 - - - 0;
@@ -117,8 +117,8 @@ of the original phasor~ above at right., f 46;
 #X connect 15 0 16 0;
 #X connect 16 0 17 0;
 #X connect 17 0 2 1;
-#X connect 20 0 7 0;
 #X connect 20 0 23 0;
+#X connect 20 0 7 0;
 #X connect 22 0 4 1;
 #X connect 23 0 24 0;
 #X connect 24 0 25 0;

@@ -1,0 +1,31 @@
+#N struct template7 float x float y float z float q array bazoo template7-element
+;
+#N struct template7-element float x float y float w;
+#N canvas 387 73 395 326 12;
+#N canvas 830 35 377 383 data 1;
+#X scalar template7 76 177 -66 85 \; 0 0 0 \; 30 0 0 \; 0 111 8 \;
+-47 22 0 \; 0 0 0 \; 0 70 0 \; 0 70 70 \; 70 70 0 \; 0 70 0 \; \;;
+#X scalar template7 196 109 77 802 \; -20 77 0 \; 0 0 4 \; 67 59 0
+\; 0 76 12 \; -45 -68 0 \; \;;
+#X scalar template7 150 250 20 80 \; 0 0 0 \; 40 0 4 \; 60 50 0 \;
+100 30 3 \; 200 0 0 \; \;;
+#X coords 0 383 1 382 0 0 0;
+#X restore 279 260 pd data;
+#N canvas 243 457 484 170 template7 0;
+#X obj 36 110 plot bazoo 700 3 10 20 20;
+#X obj 36 81 drawpolygon q 4 0 0 20 z z -5 10 20;
+#X obj 36 39 struct template7 float x float y float z float q array
+bazoo template7-element;
+#X restore 71 251 pd template7;
+#N canvas 199 231 424 139 template7-element 0;
+#X obj 51 80 drawpolygon 10 2 5 0 0 -5 -5 0 0 5 5 0;
+#X obj 52 45 struct template7-element float x float y float w;
+#X restore 71 277 pd template7-element;
+#X msg 46 81 \; pd-data clear;
+#X msg 45 126 \; pd-data read file.txt;
+#X text 28 15 You can save data contents to a .txt file and later read
+from it (reading reinitializes and replaces data)., f 46;
+#X msg 45 171 \; pd-data write z.txt;
+#X text 151 88 <== click to clear the window;
+#X text 205 134 <= restore from file;
+#X text 192 177 <= write to a file;

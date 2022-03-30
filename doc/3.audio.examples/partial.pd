@@ -14,8 +14,8 @@
 #X obj 90 229 r frequency;
 #X text 304 212 relative duration;
 #X obj 68 381 throw~ sum;
-#X obj 68 122 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 68 122 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
 #X msg 449 295 \$1 5;
 #X obj 238 188 del 5;
 #X obj 449 214 * 0.1;

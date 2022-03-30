@@ -1,26 +1,26 @@
-#N canvas 454 23 631 797 12;
+#N canvas 484 23 625 723 12;
 #X declare -stdpath ./;
-#X obj 114 537 cos~;
-#X obj 114 458 *~;
-#X obj 172 537 cos~;
-#X obj 229 468 wrap~;
-#X obj 193 468 -~;
-#X obj 172 514 +~;
-#X obj 171 579 -~;
-#X obj 211 609 *~;
-#X obj 193 637 +~;
-#X obj 193 436 samphold~;
-#X floatatom 193 233 4 0 127 0 - - - 0;
-#X text 235 225 center;
-#X obj 193 303 line~;
-#X obj 193 280 pack 0 50;
-#X obj 114 379 phasor~;
-#X floatatom 114 275 4 0 127 0 - - - 0;
-#X text 75 236 fundamental;
-#X floatatom 379 297 4 0 127 0 - - - 0;
-#X obj 379 368 line~;
-#X obj 302 508 *~;
-#X obj 379 345 pack 0 50;
+#X obj 116 507 cos~;
+#X obj 116 448 *~;
+#X obj 156 507 cos~;
+#X obj 229 458 wrap~;
+#X obj 193 458 -~;
+#X obj 156 484 +~;
+#X obj 156 549 -~;
+#X obj 186 580 *~;
+#X obj 150 585 +~;
+#X obj 193 426 samphold~;
+#X floatatom 193 223 4 0 127 0 - - - 0;
+#X text 235 215 center;
+#X obj 193 293 line~;
+#X obj 193 270 pack 0 50;
+#X obj 116 369 phasor~;
+#X floatatom 116 265 4 0 127 0 - - - 0;
+#X text 77 226 fundamental;
+#X floatatom 354 287 4 0 127 0 - - - 0;
+#X obj 354 358 line~;
+#X obj 336 494 *~;
+#X obj 354 335 pack 0 50;
 #N canvas 270 258 499 360 make-table 0;
 #X msg 74 33 bang;
 #X obj 74 62 t b b;
@@ -80,39 +80,39 @@
 #X connect 8 0 7 0;
 #X connect 9 0 5 1;
 #X connect 10 0 8 0;
-#X restore 445 639 pd make-table;
-#X obj 292 476 cos~;
-#X obj 292 451 -~ 0.25;
-#X obj 302 534 +~ 100;
-#X obj 302 557 tabread4~ bell-curve;
-#X obj 212 667 *~;
-#X text 311 584 waveshaper;
+#X restore 445 629 pd make-table;
+#X obj 291 463 cos~;
+#X obj 291 438 -~ 0.25;
+#X obj 336 520 +~ 100;
+#X obj 336 543 tabread4~ bell-curve;
+#X obj 181 618 *~;
+#X text 345 570 waveshaper;
 #X text 27 15 CHANGING PAF CONTROLS TO NATURAL UNITS;
-#X obj 114 299 mtof;
-#X obj 211 331 expr 1/$f1;
-#X obj 193 256 mtof;
-#X text 236 240 freq.;
-#X obj 193 355 *~;
-#X text 377 272 bandwidth;
-#X obj 379 319 mtof;
-#X obj 379 404 *~;
-#X obj 379 428 *~ 25;
-#X text 30 41 The more "natural" units for describing a formant might
+#X obj 116 289 mtof;
+#X obj 211 321 expr 1/$f1;
+#X obj 193 246 mtof;
+#X text 236 230 freq.;
+#X obj 193 345 *~;
+#X text 352 262 bandwidth;
+#X obj 354 309 mtof;
+#X obj 354 394 *~;
+#X obj 354 418 *~ 25;
+#X text 23 41 The more "natural" units for describing a formant might
 be center frequency and bandwidth \, so that you can change the fundamental
 without having the formant shift up and down in parallel. Here all
 three frequencies are expressed in MIDI units. The bandwidth and center
 frequency have to be divided by the fundamental (the expr 1/$f1 takes
 its reciprocal and two *~ objects finish the division.), f 81;
-#X text 419 403 divide by fundamental;
-#X text 437 427 range for table;
-#X text 357 532 offset to middle of table;
-#X text 200 374 C.F. relative;
-#X text 201 390 to fundamental;
-#X text 73 251 (MIDI units);
-#X text 248 665 ring mod;
-#X obj 189 707 output~;
-#X text 382 728 updated for Pd version 0.37;
-#X text 30 119 Here we take a somewhat lax approach to sampholding
+#X text 394 393 divide by fundamental;
+#X text 412 417 range for table;
+#X text 391 518 offset to middle of table;
+#X text 199 365 C.F. relative;
+#X text 200 381 to fundamental;
+#X text 75 241 (MIDI units);
+#X text 217 616 ring mod;
+#X obj 158 658 output~;
+#X text 392 687 updated for Pd version 0.37;
+#X text 23 119 Here we take a somewhat lax approach to sampholding
 the center frequency control. The frequency itself changes instantly
 \, but the center/fundamental frequency ratio waits for the next period.
 This gives a slight "chirp" if the fundamental is abruptly raised a
@@ -120,8 +120,8 @@ couple of octaves. There's no easy way using Pd's built-in primitives
 to avoid this. Note however that there's a "paf~" extern available
 which solves this problem better and \, moreover \, runs much faster.
 , f 81;
-#X obj 292 426 *~ 0.5;
-#X obj 466 12 declare -stdpath ./;
+#X obj 291 413 *~ 0.5;
+#X obj 457 239 declare -stdpath ./;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 5 0;

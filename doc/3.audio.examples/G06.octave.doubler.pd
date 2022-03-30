@@ -1,116 +1,97 @@
-#N canvas 595 23 750 676 12;
+#N canvas 595 23 724 618 12;
 #X declare -stdpath ./;
-#X obj 400 345 loadbang;
-#X obj 496 251 adc~ 1;
-#X obj 400 400 soundfiler;
-#X obj 60 495 output~;
-#X obj 496 301 tabwrite~ E03-table;
-#X msg 400 372 read ../sound/voice.wav E03-table;
-#X obj 76 119 fiddle~ 2048;
-#X obj 130 146 unpack;
-#X obj 130 170 moses 1;
-#X obj 203 148 mtof;
-#N canvas 0 23 446 202 (subpatch) 0;
-#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 100 20 inlet~;
-#X obj 99 87 *~;
-#X obj 98 159 outlet~;
-#X text 381 181 corner;
-#X connect 0 0 2 1;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X coords 0 0 100 100 40 18 1;
-#X restore 95 405 pd;
-#N canvas 0 23 446 202 (subpatch) 0;
-#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 100 20 inlet~;
-#X obj 99 87 *~;
-#X obj 98 159 outlet~;
-#X text 381 181 corner;
-#X connect 0 0 2 1;
-#X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X coords 0 0 100 100 40 18 1;
-#X restore 49 405 pd;
+#X obj 392 319 loadbang;
+#X obj 512 171 adc~ 1;
+#X obj 392 374 soundfiler;
+#X obj 63 491 output~;
+#X obj 512 225 tabwrite~ E03-table;
 #N canvas 436 225 524 306 looper 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array E03-table 44103 float 0;
-#X coords 0 1.02 44103 -1.02 200 130 1;
+#X array E03-table 62079 float 0;
+#X coords 0 1.02 62078 -1.02 200 130 1;
 #X restore 225 36 graph;
 #X text 223 175 ---- 44103 samples ----;
-#X obj 48 85 +~ 1;
-#X obj 48 33 phasor~ 1;
-#X obj 48 58 *~ 44100;
-#X obj 48 114 tabread4~ E03-table;
 #X obj 48 140 outlet~;
 #X text 59 226 one-second sample reader loop. You can replace this
 with an adc~ if you want to go live.;
-#X connect 2 0 5 0;
-#X connect 3 0 4 0;
-#X connect 4 0 2 0;
-#X connect 5 0 6 0;
-#X restore 49 59 pd looper;
-#X text 484 351 re-read original sample;
-#X obj 507 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 48 114 tabplay~ E03-table;
+#X obj 48 85 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 170 390 on/off for original;
-#X text 63 16 OCTAVE DOUBLING VIA VARIABLE COMB FILTER;
-#X obj 77 443 +~;
-#X obj 256 197 samplerate~;
-#X obj 203 196 t f b;
-#X obj 87 90 delwrite~ G06-del 100;
-#X obj 96 270 delread~ G06-del;
-#X obj 114 356 vd~ G06-del;
-#X obj 96 382 +~;
-#X obj 238 254 +;
-#X obj 203 171 expr 500/$f1;
-#X obj 238 308 line~;
-#X obj 238 283 pack 0 20;
-#X text 242 148 fundamental frequency;
-#X text 301 170 1/2 period \, in msec;
-#X text 290 241 estimate fiddle~ delay;
-#X text 469 630 updated for Pd version 0.37-1;
-#X text 187 454 We already saw how to use ring modulation to alias
+#X obj 51 54 loadbang;
+#X connect 4 0 2 0;
+#X connect 4 1 5 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X restore 51 55 pd looper;
+#X text 476 325 re-read original sample;
+#X obj 523 199 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X text 164 368 on/off for original;
+#X text 160 18 OCTAVE DOUBLING VIA VARIABLE COMB FILTER;
+#X obj 80 439 +~;
+#X obj 293 183 samplerate~;
+#X obj 240 182 t f b;
+#X obj 71 199 delwrite~ G06-del 100;
+#X obj 98 256 delread~ G06-del;
+#X obj 98 347 +~;
+#X obj 240 208 +;
+#X obj 240 157 expr 500/$f1;
+#X obj 240 273 line~;
+#X text 279 134 fundamental frequency;
+#X text 338 156 1/2 period \, in msec;
+#X obj 515 73 declare -stdpath ./;
+#X text 546 197 <-- record a sample;
+#X text 465 578 updated for Pd version 0.52;
+#X text 315 231 estimate sigmund~ delay;
+#X obj 240 248 pack f 20;
+#X obj 116 311 delread4~ G06-del;
+#X text 171 424 We already saw how to use ring modulation to alias
 a pitched sound down one octave. Here we do the reverse: filter out
 all odd harmonics using a variable-delay comb filter tuned one octave
 above the incoming sound. We use two taps into the delay line. The
-fixed one (delread~) adjusts for the delayed output of fiddle~. The
-variable one (vd~) adds to this an additional delay equal to 1/2 the
-measured period of the incoming sound. These two are added. Odd harmonics
-are 180 degrees out of phase at the two taps and cancel. Even harmonics
-get through - so the sound goes up an octave \, without denaturing
-the timbre as a speed-up would., f 67;
-#X obj 256 223 expr 2048000/$f1;
-#X text 292 256 as one window (in msec);
-#X text 526 276 <= record a sample;
-#X text 141 406 <= and processed sounds;
-#X obj 506 32 declare -stdpath ./;
-#X connect 0 0 5 0;
+fixed one ([delread~]) adjusts for the delayed output of [sigmund~].
+The variable one ([delread4~]) adds to this an additional delay equal
+to 1/2 the measured period of the incoming sound. These two are added.
+Odd harmonics are 180 degrees out of phase at the two taps and cancel.
+Even harmonics get through - so the sound goes up an octave \, without
+denaturing the timbre as a speed-up would., f 73;
+#X obj 293 209 expr 2048000/$f1;
+#X text 317 246 as one window (in msec);
+#X obj 98 402 *~;
+#X obj 116 376 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 51 401 *~;
+#X obj 69 376 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X text 164 382 and processed sounds;
+#X text 139 376 <--;
+#X msg 392 346 read -resize ../sound/voice.wav E03-table;
+#X obj 240 134 mtof;
+#X obj 240 105 sigmund~ -npts 2048 -hop 1024 pitch;
+#X connect 0 0 36 0;
 #X connect 1 0 4 0;
-#X connect 5 0 2 0;
-#X connect 6 2 7 0;
-#X connect 7 0 8 0;
-#X connect 8 1 9 0;
-#X connect 9 0 25 0;
-#X connect 10 0 17 1;
-#X connect 11 0 17 0;
-#X connect 12 0 6 0;
-#X connect 12 0 11 0;
-#X connect 12 0 20 0;
-#X connect 14 0 4 0;
-#X connect 17 0 3 0;
-#X connect 17 0 3 1;
-#X connect 18 0 33 0;
-#X connect 19 0 24 0;
-#X connect 19 1 18 0;
-#X connect 21 0 23 0;
-#X connect 22 0 23 1;
-#X connect 23 0 10 0;
-#X connect 24 0 27 0;
-#X connect 25 0 19 0;
-#X connect 26 0 22 0;
-#X connect 27 0 26 0;
-#X connect 33 0 24 1;
-#X connect 33 0 21 0;
+#X connect 5 0 13 0;
+#X connect 5 0 32 0;
+#X connect 5 0 38 0;
+#X connect 7 0 4 0;
+#X connect 10 0 3 0;
+#X connect 10 0 3 1;
+#X connect 11 0 28 0;
+#X connect 12 0 16 0;
+#X connect 12 1 11 0;
+#X connect 14 0 15 0;
+#X connect 15 0 30 0;
+#X connect 16 0 25 0;
+#X connect 17 0 12 0;
+#X connect 18 0 26 0;
+#X connect 25 0 18 0;
+#X connect 26 0 15 1;
+#X connect 28 0 16 1;
+#X connect 28 0 14 0;
+#X connect 30 0 10 1;
+#X connect 31 0 30 1;
+#X connect 32 0 10 0;
+#X connect 33 0 32 1;
+#X connect 36 0 2 0;
+#X connect 37 0 17 0;
+#X connect 38 0 37 0;

@@ -106,7 +106,6 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x6.htm \
      ./1.manual/x6-a.htm \
      ./1.manual/x6-b.htm \
-     ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
      ./2.control.examples/03.connections.pd \
@@ -136,7 +135,6 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/dollarsign2.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
-     ./3.audio.examples/A00.intro.txt \
      ./3.audio.examples/A01.sinewave.pd \
      ./3.audio.examples/A02.amplitude.pd \
      ./3.audio.examples/A03.line.pd \
@@ -269,30 +267,29 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
-     ./3.audio.examples/sinevoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
      ./4.data.structures/00.intro.txt \
      ./4.data.structures/01.scalars.pd \
      ./4.data.structures/02.getting.data.pd \
      ./4.data.structures/03.setting.data.pd \
      ./4.data.structures/04.append.pd \
-     ./4.data.structures/05.array.pd \
-     ./4.data.structures/06.file.pd \
-     ./4.data.structures/07.sequencer.pd \
-     ./4.data.structures/08.selection.pd \
-     ./4.data.structures/09.scaling.pd \
-     ./4.data.structures/10.onoff.pd \
-     ./4.data.structures/11.array.controls.pd \
-     ./4.data.structures/12.beat-patterns.pd \
-     ./4.data.structures/13.sliderule.pd \
-     ./4.data.structures/14.partialtracer.pd \
+     ./4.data.structures/05.symbol.text.pd \
+     ./4.data.structures/06.array.pd \
+     ./4.data.structures/07.file.pd \
+     ./4.data.structures/08.sequencer.pd \
+     ./4.data.structures/09.interaction \
+     ./4.data.structures/10.scaling.pd \
+     ./4.data.structures/11.onoff.pd \
+     ./4.data.structures/12.array.controls.pd \
+     ./4.data.structures/13.beat-patterns.pd \
+     ./4.data.structures/14.sliderule.pd \
+     ./4.data.structures/15.partialtracer.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
-     ./4.data.structures/z.txt \
      ./5.reference/pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \

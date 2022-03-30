@@ -48,7 +48,7 @@
 foldover. For higher pitched sounds you'll want to try out relatively
 foldover-resistant ones.;
 #X obj 60 378 output~;
-#X obj 291 271 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 291 271 bng 16 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
 #N canvas 739 154 597 347 make-tab 0;
 #X obj 40 29 inlet;
@@ -68,15 +68,9 @@ foldover-resistant ones.;
 #X connect 2 0 6 0;
 #X connect 3 0 7 0;
 #X restore 291 355 pd make-tab;
-#X obj 315 290 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 340 310 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 365 332 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X text 309 266 sine;
+#X text 310 268 sine;
 #X text 335 287 complex;
-#X text 361 307 rectangle;
+#X text 359 308 rectangle;
 #X text 383 330 clear;
 #X obj 77 338 tabosc4~ table24;
 #X text 101 17 THE NYQUIST THEOREM AND FOLDOVER;
@@ -93,12 +87,18 @@ effect especially strong if you're running at a sample rate of 44100
 #X text 294 632 updated for Pd version 0.37;
 #X text 289 237 waveforms:;
 #X obj 390 44 declare -stdpath ./;
-#X connect 1 0 15 0;
+#X obj 315 290 bng 16 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 340 310 bng 16 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 365 332 bng 16 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X connect 1 0 12 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
 #X connect 6 0 7 0;
-#X connect 8 0 7 1;
-#X connect 9 0 7 2;
-#X connect 10 0 7 3;
-#X connect 15 0 5 0;
-#X connect 15 0 5 1;
+#X connect 12 0 5 0;
+#X connect 12 0 5 1;
+#X connect 19 0 7 1;
+#X connect 20 0 7 2;
+#X connect 21 0 7 3;

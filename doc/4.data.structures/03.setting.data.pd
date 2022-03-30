@@ -3,27 +3,28 @@
 #X obj 328 255 pointer;
 #X msg 344 222 next;
 #X floatatom 328 345 4 0 0 0 - - - 0;
-#N canvas 941 57 381 425 data3 1;
-#X scalar template3 18 85 43 18 741 \;;
-#X scalar template3 111 169 75 25 72 \;;
-#X scalar template3 111 92 4 15 163 \;;
-#X scalar template3 59 61 13 34 563 \;;
-#X scalar template3 148 86 37 20 566 \;;
-#X scalar template3 173 281 76 48 763 \;;
-#X scalar template3 250 187 18 36 543 \;;
-#X scalar template3 124 270 78 21 107 \;;
-#X scalar template3 264 243 1 33 178 \;;
-#X scalar template3 26 88 56 60 132 \;;
-#X scalar template3 2 262 66 2 808 \;;
-#X scalar template3 270 106 74 51 881 \;;
-#X scalar template3 214 286 8 43 180 \;;
-#X scalar template3 57 205 51 58 939 \;;
-#X scalar template3 216 162 36 43 505 \;;
-#X scalar template3 166 146 68 9 614 \;;
-#X scalar template3 144 251 56 28 886 \;;
-#X scalar template3 228 62 62 1 758 \;;
-#X scalar template3 168 229 28 23 654 \;;
-#X scalar template3 130 331 73 50 750 \;;
+#N canvas 943 44 381 425 data3 1;
+#X scalar template3 15 291 76 30 873 \;;
+#X scalar template3 278 82 27 32 854 \;;
+#X scalar template3 6 269 69 75 577 \;;
+#X scalar template3 264 30 51 38 21 \;;
+#X scalar template3 230 179 11 43 599 \;;
+#X scalar template3 222 133 22 20 376 \;;
+#X scalar template3 295 51 71 0 248 \;;
+#X scalar template3 287 71 69 75 187 \;;
+#X scalar template3 171 121 30 27 200 \;;
+#X scalar template3 26 36 53 62 236 \;;
+#X scalar template3 2 232 45 2 822 \;;
+#X scalar template3 253 282 59 79 775 \;;
+#X scalar template3 42 180 63 52 887 \;;
+#X scalar template3 225 200 25 24 136 \;;
+#X scalar template3 260 247 13 36 233 \;;
+#X scalar template3 285 58 18 46 469 \;;
+#X scalar template3 53 285 4 23 659 \;;
+#X scalar template3 194 157 52 18 125 \;;
+#X scalar template3 38 185 14 35 921 \;;
+#X scalar template3 208 252 55 46 180 \;;
+#X coords 0 425 1 424 0 0 0;
 #X restore 428 265 pd data3;
 #N canvas 503 200 512 300 template3 0;
 #X obj 48 98 filledpolygon q 0 1 0 0 w 0 w h 0 h;
@@ -34,9 +35,11 @@ and one unit thick \, through the points (0 \, 0) \, (w \, 0) \, (w
 become hot spots for mouse dragging.;
 #X obj 46 33 struct template3 float x float y float w float h float
 q;
-#X obj 49 207 drawnumber q 0 -15 0;
+#X text 53 241 This also allows you to click on the drawn number and
+drag or type to change the color parameter.;
+#X obj 49 207 drawnumber q 0 -5 0;
 #X text 205 198 Draw the value of q as an Arabic numeral \, at (0 \,
--15) \, in black., f 32;
+-5) \, in black., f 32;
 #X restore 500 265 pd template3;
 #N canvas 395 94 513 527 stuff 0;
 #X obj 182 285 pointer;
@@ -115,19 +118,18 @@ q;
 #X text 233 222 q;
 #X msg 328 191 traverse pd-data3 \, next;
 #X text 108 189 get pointer to first scalar =>;
-#X text 30 15 The [set] object allows you to change numeric values.
-In this example \, the template specifies five fields describing the
-(x \, y) location \, width (w) \, height (h) \, and color (q). A new
-feature is that the color is also getting printed out above the rectangles.
-This is done using the [drawnumber] object in the template., f 84
-;
+#X text 410 393 Updated for Pd version 0.52;
 #X text 30 84 Getting parameter values is as in the previous patch.
 However \, as you traverse the list with "next" messages the new pointers
 are also sent to the [set] object \, whose arguments define the template
-name and the name of the fields. You can drag on the five number boxes
-(after selecting an object with "traverse" and "next" messages) to
-change its location \, shape \, and color., f 84;
-#X text 410 393 Updated for Pd version 0.52;
+name and the name of the fields to set. You can drag on the five number
+boxes (after selecting an object with "traverse" and "next" messages)
+to change its location \, shape \, and color., f 84;
+#X text 30 15 The [set] object allows you to change field values. In
+this example \, the template specifies five fields describing the (x
+\, y) location \, width (w) \, height (h) \, and color (q). A new feature
+is that the color is also drawn below the rectangles because we have
+a [drawnumber] object in the template., f 84;
 #X connect 0 0 7 0;
 #X connect 0 0 15 5;
 #X connect 1 0 0 0;

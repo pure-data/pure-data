@@ -1,4 +1,4 @@
-#N canvas 468 23 872 731 12;
+#N canvas 468 23 872 723 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-signal 882 float 0;
@@ -77,7 +77,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 31 0 30 0;
 #X restore 189 286 pd fft;
 #X text 562 375 ---- 0.02 seconds ----;
-#X obj 208 258 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 208 258 bng 18 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
 #X obj 125 326 output~;
 #X text 584 645 updated for Pd version 0.37;
@@ -98,7 +98,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 781 550 0;
 #X text 779 429 1;
 #X text 780 488 0.5;
-#X obj 243 287 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 243 287 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-tab 1003 float 1;
@@ -314,11 +314,11 @@ exp(-x) with x varying from 0 to 10 When the index is zero \, the output
 is the constant 1 and the spectrum holds only DC. As the index grows
 \, the output is a sequence of steadily narrower pulses \, whose spectrum
 gets progressively fatter., f 61;
-#X text 230 258 <= graph once;
-#X text 264 286 <= repeatedly;
 #X text 237 91 <= index in;
 #X text 48 10 WAVESHAPING USING AN EXPONENTIAL FUNCTION;
 #X obj 686 21 declare -stdpath ./;
+#X text 264 286 <-- repeatedly;
+#X text 230 258 <-- graph once;
 #X connect 1 0 6 0;
 #X connect 1 0 6 1;
 #X connect 5 0 3 1;
