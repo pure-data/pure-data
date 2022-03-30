@@ -1,31 +1,31 @@
 #N canvas 536 24 541 688 12;
-#X obj 110 541 ftom;
-#X obj 110 482 mtof;
-#X floatatom 110 511 9 0 0 0 - - - 0;
-#X obj 225 482 dbtorms;
-#X obj 225 541 rmstodb;
-#X obj 349 482 dbtopow;
-#X obj 349 541 powtodb;
-#X floatatom 225 511 9 0 0 0 - - - 0;
-#X floatatom 349 511 9 0 0 0 - - - 0;
-#X floatatom 110 453 6 0 0 0 - - - 0;
-#X floatatom 225 453 6 0 0 0 - - - 0;
-#X floatatom 349 453 6 0 0 0 - - - 0;
-#X floatatom 110 575 6 0 0 0 - - - 0;
-#X floatatom 225 575 6 0 0 0 - - - 0;
-#X floatatom 349 575 6 0 0 0 - - - 0;
+#X obj 110 551 ftom;
+#X obj 110 492 mtof;
+#X floatatom 110 521 9 0 0 0 - - - 0;
+#X obj 225 492 dbtorms;
+#X obj 225 551 rmstodb;
+#X obj 349 492 dbtopow;
+#X obj 349 551 powtodb;
+#X floatatom 225 521 9 0 0 0 - - - 0;
+#X floatatom 349 521 9 0 0 0 - - - 0;
+#X floatatom 110 463 6 0 0 0 - - - 0;
+#X floatatom 225 463 6 0 0 0 - - - 0;
+#X floatatom 349 463 6 0 0 0 - - - 0;
+#X floatatom 110 585 6 0 0 0 - - - 0;
+#X floatatom 225 585 6 0 0 0 - - - 0;
+#X floatatom 349 585 6 0 0 0 - - - 0;
 #X obj 26 14 mtof;
 #X obj 67 14 ftom;
 #X obj 106 14 dbtorms;
 #X obj 25 40 rmstodb;
 #X obj 83 40 dbtopow;
 #X obj 144 40 powtodb;
-#X text 315 650 updated for Pd version 0.40.;
+#X text 315 656 updated for Pd version 0.40.;
 #X text 170 14 - acoustic conversions;
-#X text 15 639 see also:;
-#X obj 92 626 mtof~;
-#X text 139 625 (etc.) - acoustic conversions for audio signals;
-#X obj 93 653 expr;
+#X text 15 645 see also:;
+#X obj 92 632 mtof~;
+#X text 139 631 (etc.) - acoustic conversions for audio signals;
+#X obj 93 659 expr;
 #N canvas 676 54 572 362 reference 0;
 #X obj 8 207 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -54,7 +54,7 @@
 #X restore 418 40 pd reference;
 #X obj 10 71 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 10 613 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 10 619 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 355 40 click =>;
 #X text 33 85 The [mtof] object converts a MIDI pitch value to a frequency
@@ -64,24 +64,24 @@ in Hertz (so that "69" converts to "440"). Microtonal pitches are possible
 #X text 33 147 The [ftom] object does the reverse. A frequency of zero
 Hertz is given a MIDI value of -1500 (strictly speaking \, it's negative
 infinity.), f 69;
-#X text 33 196 The [dbtorms] object converts from dB to linear ("RMS")
-amplitude. Decibels in Pd are not dBFS and the scale for the typical
-range is arbitrarily set from 0 to 100 dB (where 100 dB corresponds
-to an "RMS" of 1). When converted to linear amplitude \, negative dB
-values are clipped to zero "RMS" and zero dB \, which should correspond
-to 1e-05 in linear "RMS" \, is rounded down to zero instead., f 69
-;
-#X text 33 348 A dBFS scale is possible if you simply add 100 to the
+#X text 33 364 A dBFS scale is possible if you simply add 100 to the
 dB input value or subtract 100 from the dB output value (in this case
 \, minus infinity dB is clipped to -100 dBFS)., f 69;
-#X text 33 401 Finally \, [dbtopow] and [powtodb] convert decibels
+#X text 33 417 Finally \, [dbtopow] and [powtodb] convert decibels
 to and from power units \, equal to the square of the "RMS" amplitude.
 , f 69;
-#X text 33 285 The [rmstodb] object does the opposite conversion and
+#X text 33 301 The [rmstodb] object does the opposite conversion and
 Zero "RMS" amplitude (strictly speaking \, minus infinity dB) is clipped
 to zero dB. Note that "RMS" may be a bit misleading as you can also
 consider that the linear amplitude value refers to "peak" amplitude
 as well., f 69;
+#X text 33 196 The [dbtorms] object converts from dB to linear ("RMS")
+amplitude. Decibels in Pd are basically dBFS with an offset of 100!
+Hence \, the typical range is arbitrarily set from 0 to 100 dB (where
+100 dB corresponds to an "RMS" of 1). When converted to linear amplitude
+\, negative dB values are clipped to zero "RMS" and zero dB \, which
+should correspond to 1e-05 in linear "RMS" \, is rounded down to zero
+instead., f 69;
 #X connect 0 0 12 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
