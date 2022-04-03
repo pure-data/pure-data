@@ -1,82 +1,37 @@
 #N struct template1 float x float y float z float q;
-#N canvas 407 23 608 565 12;
+#N canvas 356 23 596 614 12;
 #N canvas 465 319 516 321 stuff 0;
 #X obj 234 174 pointer;
 #X msg 159 66 bang;
 #X obj 159 35 loadbang;
 #X text 193 66 click here to re-initialize;
-#X text 88 251 This subpatch sets up the "data" window with two objects.
-How this works will get explained later., f 49;
 #X msg 69 154 50 100 30 9 \, 150 100 -20 900, f 15;
 #X obj 159 107 trigger bang bang bang;
 #X obj 69 205 append template1 x y z q;
 #X msg 349 100 \; pd-data1 clear;
 #X msg 234 147 traverse pd-data1 \, bang;
-#X connect 0 0 7 4;
-#X connect 1 0 6 0;
+#X text 88 251 This subpatch sets up the "data1" window with two objects.
+How this works will get explained later., f 49;
+#X connect 0 0 6 4;
+#X connect 1 0 5 0;
 #X connect 2 0 1 0;
-#X connect 5 0 7 0;
-#X connect 6 0 5 0;
-#X connect 6 1 9 0;
-#X connect 6 2 8 0;
-#X connect 9 0 0 0;
-#X restore 208 406 pd stuff;
-#X text 120 395 subpatches:;
-#X text 350 519 updated for Pd version 0.52.;
-#X text 27 70 The position \, border color and altitude of each triangle
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 5 1 8 0;
+#X connect 5 2 7 0;
+#X connect 8 0 0 0;
+#X restore 236 463 pd stuff;
+#X text 148 452 subpatches:;
+#X text 351 571 updated for Pd version 0.52.;
+#X text 28 77 The position \, border color and altitude of each triangle
 are numeric values which can control \, or be controlled by \, other
 elements of the patch., f 77;
-#X text 27 109 When the data window is locked (not in edit mode) you
-can drag the apex of either triangle up or down to change the altitude
-(you should see the cursor change when dragging is possible.) In edit
-(unlocked) mode \, you can move the entire triangles around \, or cut
-\, copy \, and paste them., f 77;
-#X text 27 18 This patch shows a simple data window with two objects
-in it. This kind of object is called a "scalar" and its data structures
-and appearances are defined by the "template1" subpatch., f 77;
-#N canvas 437 166 563 430 template1 0;
-#X obj 160 192 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X obj 119 90 struct template1 float x float y float z float q;
-#X text 37 14 This subpatch acts as a template which describes a scalar
-object and its data structure. The [struct] object below specifies
-four floating point values named x \, y \, z and q. These are variables
-or 'fields' that you can set and change., f 68;
-#X text 31 125 The [filledpolygon] object is a drawing instruction.
-Here it instructs to draw a triangular shape. Template subpatches should
-have only one [struct] object \, but they may have any number of objects
-with drawing instructions., f 70;
-#X text 29 232 The [filledpolygon]'s arguments are interior color \,
-border color \, border width and pairs of coordinate points of the
-polygon (there should be at least two to draw a line). This shape draws
-a triangle so we have three pairs of coordinates for the points that
-define the vertices of the triangle. Arguments which are symbols ("q"
-and "z" in this case) mean to take the values from the data structure.
-Other values are constant., f 72;
-#X text 29 323 The position of the object is automatically controlled
-by fields named "x" and "y". The "q" field sets the border color and
-"z" sets the vertical coordinate of the point of the triangle's apex
-\, which makes it possible for you to click on the triangle's apex
-and drag up or down., f 72;
-#X restore 208 381 pd template1;
-#X text 27 174 Scalars are described by "templates" \, which are subwindows.
-The subwindows are found by their name \, in this case "template1."
-The template describes what form the data take and how it is shown.
-It's possible to mix data of many different templates in the same collection
-\, but each template needs its own distinct subpatch., f 77;
-#N canvas 1015 131 297 180 data1 1;
+#N canvas 962 109 257 213 data1 1;
 #X scalar template1 50 100 30 9 \;;
 #X scalar template1 150 100 -20 900 \;;
-#X coords 0 180 1 179 0 0 0;
-#X restore 340 393 pd data1;
-#X text 27 252 Important note: When you create a subpatch \, by deault
-the "Y units per pixel" is set to "-1". This inverts the visual display
-of vertical data of Data Structures \, so you need to change it to
-"1" in the properties. Check the properties for [pd data1] and see
-that it has been changed (right click on it and select "properties").
-This way \, (0 \, 0) x/y coordinates refer to the bottom left point
-of the canvas - otherwise it's the top left point and positive 'y'
-values move down in pixels., f 77;
-#X obj 339 453 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X coords 0 213 1 212 320 344 0;
+#X restore 359 443 pd data1;
+#X obj 340 505 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #N canvas 798 148 488 282 html-reference 0;
 #X obj 101 59 inlet;
@@ -90,9 +45,66 @@ object., f 25;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
 #X connect 5 0 1 0;
-#X restore 339 482 pd html-reference;
-#X text 362 452 <-- Open Pd's manual index;
-#X text 44 458 Besides checking this tutorial and the help files of
+#X restore 340 534 pd html-reference;
+#X text 363 504 <-- Open Pd's manual index;
+#X text 45 510 Besides checking this tutorial and the help files of
 the objects \, take a look at section 2.9 (theory of operation / Data
 Structures) for more information., f 39;
-#X connect 10 0 11 0;
+#X text 28 12 This patch shows a simple data window with two graphical
+objects in it. This kind of object is called a "scalar" and its data
+structures and appearances are defined by the "template1" subpatch.
+A single template is used to create the two objects \, which have a
+triangular shape., f 77;
+#N canvas 195 102 584 498 template1 0;
+#X obj 177 266 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X obj 119 105 struct template1 float x float y float z float q;
+#X text 37 18 This subpatch acts as a template which describes a scalar
+object and its data structure. The [struct] object below specifies
+four floating point values named x \, y \, z and q. These are variables
+or 'fields' that you can set and change., f 70;
+#X text 37 200 The [filledpolygon] object is a drawing instruction.
+Here it instructs to draw a triangular shape. Template subpatches should
+have only one [struct] object \, but they may have any number of objects
+with drawing instructions., f 70;
+#X text 29 312 The [filledpolygon]'s arguments are interior color \,
+border color \, border width and pairs of coordinate points of the
+polygon (there should be at least two to draw a line). This shape draws
+a triangle so we have three pairs of coordinates for the points that
+define the vertices of the triangle. Arguments which are symbols ("q"
+and "z" in this case) mean to take the values from the data structure.
+Other values are constant., f 72;
+#X text 29 403 The position of the object is automatically controlled
+by fields named "x" and "y". The "q" field sets the border color and
+"z" sets the vertical coordinate of the point of the triangle's apex
+\, which makes it possible for you to click on the triangle's apex
+and drag up or down., f 72;
+#X text 37 143 When you right click on a scalar for properties \, you
+can see the template namem the specified field names and then the scalar's
+data \, which is the template name followed byt the field values.,
+f 70;
+#X restore 236 438 pd template1;
+#X text 28 222 Scalars are described by "templates" \, which are defined
+in [struct] objects inside a given subwindow. In this case \, the subwindow
+is "template1" but it could hve any other name. The template in [struct]
+describes what form the data take and how it is shown. It's possible
+to mix data of many different templates in the same collection \, but
+each template needs its own distinct subwindow. The data is displayed
+in the [pd data1] subpatch., f 77;
+#X text 28 313 Important note: When you create a subpatch \, by deault
+the "Y units per pixel" is set to "-1". This sets the (0 \, 0) coordinates
+to the top left of the canvas \, but inverts the visual display of
+vertical data of Data Structures \, so if you increase the 'Y' position
+\, the objects move down in pixels. You can change change it to "1"
+in the properties \, so the origin coordinates is then at bottom left.
+Check the properties for [pd data1] and see that it has been changed
+to "1" as all examples in this tutorial (right click on it and select
+"properties")., f 77;
+#X text 28 116 When the data window is locked (not in edit mode) you
+can drag the apex of either triangle up or down to change the altitude
+(you should see the cursor change when dragging is possible and why
+this happens is explained in the "template1" suboatch.) You can also
+right click and ask for properties \, so you can see the Data Structures
+of the selected scalar \, you can also change values in the properties
+window. In edit (unlocked) mode \, you can move the entire triangles
+around \, or cut \, copy \, and paste them., f 77;
+#X connect 5 0 6 0;

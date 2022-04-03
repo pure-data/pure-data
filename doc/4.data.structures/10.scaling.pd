@@ -6,7 +6,7 @@
 #X scalar template10a 143 225 65 57.1429 32 \;;
 #X scalar template10a 78 102 45 34.2857 40 \;;
 #X coords 0 341 1 340 0 0 0;
-#X restore 93 284 pd data10;
+#X restore 92 284 pd data10;
 #N canvas 315 107 562 552 template10a 0;
 #X obj 60 18 struct template10a float x float y float a float b float
 c;
