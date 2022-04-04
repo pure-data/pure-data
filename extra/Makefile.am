@@ -12,14 +12,16 @@ PATCHES = \
     rev1~.pd \
     rev1-stage.pd \
     rev2~.pd \
-    rev3~.pd
+    rev3~.pd \
+    output~.pd
 
 HELPPATCHES = \
     complex-mod~-help.pd \
     hilbert~-help.pd \
     rev1~-help.pd \
     rev2~-help.pd \
-    rev3~-help.pd 
+    rev3~-help.pd \
+    output~-help.pd
 
 EXTRA_DIST = makefile.subdir README.txt
 

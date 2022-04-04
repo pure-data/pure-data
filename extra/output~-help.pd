@@ -1,0 +1,55 @@
+#N canvas 596 63 608 443 12;
+#X obj 222 320 output~;
+#X obj 222 232 osc~ 440;
+#X obj 280 265 osc~ 880;
+#X text 26 411 see also:;
+#X obj 107 412 dac~;
+#X text 346 267 right signal input;
+#X text 287 233 left signal input;
+#X text 383 411 updated for Pd version 0.52;
+#X text 22 98 Output~ takes a stereo signal and has GUI controls to
+set the volume gain and mute it. The number box sets the output gain
+in dB (from 0 to 100) and whenever you click on it to drag it \, the
+DSP engine is turned on. The mute bang turns the volume off (sets to
+0) but restores to the last setting when you click back on it to unmute.
+, f 80;
+#X msg 234 281 bang;
+#X msg 146 282 level \$1;
+#X floatatom 146 259 5 0 100 0 - - - 0;
+#X text 22 57 This is a very simple abstraction that is widely used
+in Pd's documentation (help files and examples). It is included here
+just for convenience., f 75;
+#X text 22 176 The left inlet also takes a bang message to mute/unmute
+and a 'level' message to control the level output in dB., f 80;
+#X text 23 13 [output~] - simple stereo output GUI abstraction.;
+#X text 514 12 <= click;
+#N canvas 760 120 479 279 reference 0;
+#X obj 8 48 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 181 cnv 2 450 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 222 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 259 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 156 233 NONE, f 36;
+#X obj 8 150 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 78 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 23 13 [output~] - simple stereo output GUI abstraction.;
+#X text 132 81 signal - left signal input., f 39;
+#X text 132 155 signal - right signal input., f 39;
+#X text 156 193 NONE, f 36;
+#X text 83 101 level <float> - sets output level., f 46;
+#X text 146 121 bang - mute/unmute., f 37;
+#X restore 420 13 pd reference;
+#X obj 10 45 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 10 395 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 1;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X connect 11 0 10 0;

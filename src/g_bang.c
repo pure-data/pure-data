@@ -21,6 +21,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef _MSC_VER
+# define snprintf _snprintf
+#endif
+
 /* --------------- bng     gui-bang ------------------------- */
 
 t_widgetbehavior bng_widgetbehavior;
@@ -338,8 +342,18 @@ static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
     int a = (int)atom_getfloatarg(0, argc, argv);
     int fthold = (int)atom_getfloatarg(2, argc, argv);
     int ftbreak = (int)atom_getfloatarg(3, argc, argv);
-    int sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
+    int sr_flags;
 
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT (undo+1, 0);
+    SETFLOAT (undo+2, x->x_flashtime_break);
+    SETFLOAT (undo+3, x->x_flashtime_hold);
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
+
+    sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
     bng_check_minmax(x, ftbreak, fthold);

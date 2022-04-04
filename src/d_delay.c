@@ -146,6 +146,7 @@ static void sigdelwrite_setup(void)
         gensym("dsp"), A_CANT, 0);
     class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_clear,
                     gensym("clear"), 0);
+    class_sethelpsymbol(sigdelwrite_class, gensym("delay-tilde-objects"));
 }
 
 /* ----------------------------- delread~ ----------------------------- */
@@ -241,6 +242,7 @@ static void sigdelread_setup(void)
     class_addmethod(sigdelread_class, (t_method)sigdelread_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addfloat(sigdelread_class, (t_method)sigdelread_float);
+    class_sethelpsymbol(sigdelread_class, gensym("delay-tilde-objects"));
 }
 
 
@@ -343,6 +345,7 @@ static void sigvd_setup(void)
     class_addcreator((t_newmethod)sigvd_new, gensym("vd~"), A_DEFSYM, 0);
     class_addmethod(sigvd_class, (t_method)sigvd_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(sigvd_class, t_sigvd, x_f);
+    class_sethelpsymbol(sigvd_class, gensym("delay-tilde-objects"));
 }
 
 /* ----------------------- global setup routine ---------------- */

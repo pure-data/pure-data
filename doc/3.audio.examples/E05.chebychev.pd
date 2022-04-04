@@ -1,7 +1,8 @@
 #N canvas 476 149 657 596 12;
+#X declare -stdpath ./;
 #X obj 34 315 output~;
 #X obj 52 99 / 100;
-#X floatatom 52 77 5 0 100 0 - - -;
+#X floatatom 52 77 5 0 100 0 - - - 0;
 #X obj 34 171 *~;
 #X text 436 564 updated for Pd version 0.37;
 #X obj 33 50 osc~ 220;
@@ -59,8 +60,8 @@
 #X obj 152 436 tabwrite E05-tab;
 #X obj 156 355 sel 258;
 #X text 209 172 normalize from -1 to 1;
-#X obj 157 285 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 157 285 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 115 386 expr ($f1-129)/128;
 #X obj 157 262 inlet;
 #X obj 197 534 t b b;
@@ -71,8 +72,8 @@
 #X obj 269 589 t f f;
 #X obj 192 666 tabwrite E05-tab;
 #X obj 196 585 sel 258;
-#X obj 197 515 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 197 515 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 170 616 expr ($f1-129)/128;
 #X obj 197 492 inlet;
 #X obj 460 228 t b b;
@@ -84,8 +85,8 @@
 #X obj 458 364 tabwrite E05-tab;
 #X obj 459 279 sel 258;
 #X obj 407 334 expr 16*$f1*$f1*$f1*$f1*$f1-20*$f1*$f1*$f1+5*$f1;
-#X obj 460 209 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 460 209 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 407 310 expr ($f1-129)/128;
 #X obj 460 186 inlet;
 #X obj 520 476 t b b;
@@ -96,8 +97,8 @@
 #X obj 592 531 t f f;
 #X obj 515 624 tabwrite E05-tab;
 #X obj 519 527 sel 258;
-#X obj 520 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 520 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 465 558 expr ($f1-129)/128;
 #X obj 520 434 inlet;
 #X obj 115 410 expr 4*$f1*$f1*$f1-3*$f1;
@@ -113,8 +114,8 @@
 #X obj 149 144 t f f;
 #X obj 72 224 tabwrite E05-tab;
 #X obj 76 140 sel 258;
-#X obj 77 65 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 77 65 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 46 174 expr ($f1-129)/128;
 #X obj 77 39 inlet;
 #X obj 46 198 expr 2*$f1*$f1-1;
@@ -201,16 +202,16 @@ them in a wavetable for use later., f 30;
 #X connect 61 0 56 0;
 #X restore 470 166 pd make-table;
 #X f 17;
-#X obj 470 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 499 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 528 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 557 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 586 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 470 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 499 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 528 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 557 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 586 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 471 127 2;
 #X text 499 127 3;
 #X text 529 127 4;
@@ -237,6 +238,7 @@ draw your own functions by hand and/or try other formulas., f 62;
 #X text 99 77 <= index in;
 #X text 42 5 WAVESHAPING WITH CHEBYCHEV POLYNOMIALS;
 #X text 458 86 subpatch to calculate Chebychev polynomials, f 21;
+#X obj 478 25 declare -stdpath ./;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;
 #X connect 3 0 9 0;

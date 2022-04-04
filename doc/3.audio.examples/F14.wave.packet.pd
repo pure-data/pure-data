@@ -1,11 +1,12 @@
 #N canvas 453 23 642 769 12;
-#X floatatom 301 205 4 0 127 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 301 205 4 0 127 0 - - - 0;
 #X text 244 201 center;
 #X obj 301 272 line~;
 #X obj 301 249 pack 0 50;
-#X floatatom 164 214 4 0 127 0 - - -;
+#X floatatom 164 214 4 0 127 0 - - - 0;
 #X text 71 208 fundamental;
-#X floatatom 400 216 4 0 127 0 - - -;
+#X floatatom 400 216 4 0 127 0 - - - 0;
 #X obj 400 287 line~;
 #X obj 106 552 *~;
 #X obj 400 264 pack 0 50;
@@ -58,6 +59,7 @@ out in 2011) and second \, it can be generalized to use samples instead
 of sinusoids to make complex spectral shapes., f 71;
 #X text 512 413 second phase signal out of phase from first one, f
 13;
+#X obj 463 11 declare -stdpath ./;
 #X connect 0 0 13 0;
 #X connect 2 0 15 0;
 #X connect 3 0 2 0;

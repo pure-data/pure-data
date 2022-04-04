@@ -193,8 +193,20 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     int a = atom_getfloatarg(0, argc, argv);
     int w = atom_getfloatarg(2, argc, argv);
     int h = atom_getfloatarg(3, argc, argv);
-    int sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
+    int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT (undo+1, 0);
+    SETFLOAT (undo+2, x->x_vis_w);
+    SETFLOAT (undo+3, x->x_vis_h);
+    SETFLOAT (undo+5, -1);
+    SETSYMBOL(undo+15, gensym("none"));
 
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
+
+    sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_isa.x_loadinit = 0;
     if(a < 1)
         a = 1;
@@ -399,7 +411,7 @@ void g_mycanvas_setup(void)
     my_canvas_widgetbehavior.w_visfn      = iemgui_vis;
     my_canvas_widgetbehavior.w_clickfn    = NULL;
     class_setwidget(my_canvas_class, &my_canvas_widgetbehavior);
-    class_sethelpsymbol(my_canvas_class, gensym("my_canvas"));
+    class_sethelpsymbol(my_canvas_class, gensym("cnv"));
     class_setsavefn(my_canvas_class, my_canvas_save);
     class_setpropertiesfn(my_canvas_class, my_canvas_properties);
 }

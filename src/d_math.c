@@ -68,26 +68,33 @@ static void clip_setup(void)
 #define DUMTAB1SIZE 256
 #define DUMTAB2SIZE 1024
 
-/* These are only written at setup time when there's a global lock in place. */
-static float rsqrt_exptab[DUMTAB1SIZE], rsqrt_mantissatab[DUMTAB2SIZE];
+/* There could be a thread race condition here but it will only cause extra]
+memory allocation. */
+static float *rsqrt_exptab, *rsqrt_mantissatab;
 
 static void init_rsqrt(void)
 {
     int i;
-    for (i = 0; i < DUMTAB1SIZE; i++)
+    if (!rsqrt_exptab)
     {
-        union {
-          float f;
-          long l;
-        } u;
-        int32_t l = (i ? (i == DUMTAB1SIZE-1 ? DUMTAB1SIZE-2 : i) : 1)<< 23;
-        u.l = l;
-        rsqrt_exptab[i] = 1./sqrt(u.f);
-    }
-    for (i = 0; i < DUMTAB2SIZE; i++)
-    {
-        float f = 1 + (1./DUMTAB2SIZE) * i;
-        rsqrt_mantissatab[i] = 1./sqrt(f);
+        rsqrt_exptab = (float *)getbytes(DUMTAB1SIZE*sizeof(float));
+        rsqrt_mantissatab = (float *)getbytes(DUMTAB2SIZE*sizeof(float));
+        for (i = 0; i < DUMTAB1SIZE; i++)
+        {
+            union {
+              float f;
+              long l;
+            } u;
+            int32_t l =
+                (i ? (i == DUMTAB1SIZE-1 ? DUMTAB1SIZE-2 : i) : 1)<< 23;
+            u.l = l;
+            rsqrt_exptab[i] = 1./sqrt(u.f);
+        }
+        for (i = 0; i < DUMTAB2SIZE; i++)
+        {
+            float f = 1 + (1./DUMTAB2SIZE) * i;
+            rsqrt_mantissatab[i] = 1./sqrt(f);
+        }
     }
 }
 
@@ -99,7 +106,8 @@ t_float q8_rsqrt(t_float f0)
       float f;
       long l;
     } u;
-    u.f=f0;
+    init_rsqrt();
+    u.f = f0;
     if (u.f < 0) return (0);
     else return (t_float)(rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
@@ -111,7 +119,8 @@ t_float q8_sqrt(t_float f0)
       float f;
       long l;
     } u;
-    u.f=f0;
+    init_rsqrt();
+    u.f = f0;
     if (u.f < 0) return (0);
     else return (t_float)(u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
             rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
@@ -131,6 +140,7 @@ static t_class *sigrsqrt_class;
 static void *sigrsqrt_new(void)
 {
     t_sigrsqrt *x = (t_sigrsqrt *)pd_new(sigrsqrt_class);
+    init_rsqrt();
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
     return (x);
@@ -166,7 +176,6 @@ static void sigrsqrt_dsp(t_sigrsqrt *x, t_signal **sp)
 
 void sigrsqrt_setup(void)
 {
-    init_rsqrt();
     sigrsqrt_class = class_new(gensym("rsqrt~"), (t_newmethod)sigrsqrt_new, 0,
         sizeof(t_sigrsqrt), 0, 0);
             /* an old name for it: */
@@ -190,6 +199,7 @@ static t_class *sigsqrt_class;
 static void *sigsqrt_new(void)
 {
     t_sigsqrt *x = (t_sigsqrt *)pd_new(sigsqrt_class);
+    init_rsqrt();
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
     return (x);

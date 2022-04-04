@@ -1,38 +1,39 @@
-#N canvas 143 23 1028 597 12;
+#N canvas 439 83 1028 597 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array tabread4-out 44100 float 0;
 #X coords 0 1.02 44100 -1.02 200 130 1;
-#X restore 466 49 graph;
+#X restore 508 69 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array table17 44103 float 0;
 #X coords 0 1.02 44103 -1.02 200 130 1;
-#X restore 683 46 graph;
+#X restore 725 66 graph;
 #X obj 628 380 loadbang;
 #X obj 84 304 tabwrite~ tabread4-out;
 #X obj 65 335 hip~ 5;
-#X floatatom 65 81 0 0 0 0 - - -;
+#X floatatom 65 81 0 0 0 0 - - - 0;
 #X text 191 242 read from the table;
 #X text 80 38 LOOPING SAMPLER;
-#X floatatom 90 134 0 0 0 0 - - -;
+#X floatatom 90 134 0 0 0 0 - - - 0;
 #X obj 90 160 * 441;
 #X obj 65 187 *~ 0;
 #X obj 65 214 +~ 1;
 #X obj 65 107 phasor~ 0;
 #X msg 96 272 bang;
-#X obj 515 237 adc~ 1;
-#X msg 528 264 bang;
+#X obj 607 261 adc~ 1;
+#X msg 620 288 bang;
 #X text 738 385 v-- re-read the original sample;
 #X text 161 491 In this patch you will frequently hear discontinuities
 at the looping point. If you're working in a studio \, you can sometimes
 find "good" loop points for samples. Another approach \, better for
 live situations \, is shown in the next patch., f 55;
 #X obj 628 433 soundfiler;
-#X text 699 185 ---- 44103 samples ----;
-#X text 477 185 ---- 1 second ------;
+#X text 741 205 ---- 44103 samples ----;
+#X text 519 205 ---- 1 second ------;
 #X obj 38 375 output~;
 #X text 717 527 updated for Pd version 0.37;
 #X obj 65 243 tabread4~ table17;
-#X obj 515 297 tabwrite~ table17;
+#X obj 607 321 tabwrite~ table17;
 #X msg 628 408 read ../sound/voice.wav table17;
 #X text 162 352 This is a looping sampler in which you specify the
 number of loops per second (the frequency) and the size of the chunk
@@ -46,7 +47,8 @@ on number boxes to make fine adjustments., f 55;
 #X text 111 186 <= readjust phase for range 0 - (chunk size);
 #X text 110 214 <= add one to avoid beginning of table;
 #X text 133 272 <= click to display output;
-#X text 568 265 <= click here to record your own sample;
+#X text 660 289 <= click here to record your own sample;
+#X obj 802 14 declare -stdpath ./;
 #X connect 2 0 25 0;
 #X connect 4 0 21 0;
 #X connect 4 0 21 1;

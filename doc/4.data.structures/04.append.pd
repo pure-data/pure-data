@@ -1,41 +1,41 @@
 #N struct template4 float x float y float z float q;
-#N canvas 308 71 667 544 12;
-#X obj 321 349 pointer;
-#X msg 190 217 bang;
-#X text 231 216 click here to re-initialize;
-#X msg 93 322 50 250 30 9 \, 200 200 -20 900 \, 100 200 -50 30, f
-29;
-#X text 47 21 The objects below put three items in the data window.
-First the window is cleared. Then a "pointer" object is instructed
-to point to the beginning of the data window ("traverse pd-data") \,
-and to output its value ("bang") to the "append" object. This object
-is then given numeric values to create three items., f 73;
-#X obj 93 380 append template4 x y z q;
-#X msg 341 283 \; pd-data4 clear;
+#N canvas 378 68 608 440 12;
+#X obj 235 354 pointer;
+#X msg 160 215 bang;
+#X text 201 214 click here to re-initialize;
+#X obj 70 385 append template4 x y z q;
+#X msg 311 279 \; pd-data4 clear;
 #N canvas 1012 89 315 341 data4 1;
 #X scalar template4 50 250 30 9 \;;
-#X scalar template4 200 200 -20 900 \;;
-#X scalar template4 100 200 -50 30 \;;
-#X restore 430 392 pd data4;
-#N canvas 396 463 458 185 template4 0;
+#X scalar template4 200 20 80 90 \;;
+#X scalar template4 100 200 -50 0 \;;
+#X restore 459 302 pd data4;
+#N canvas 396 463 460 157 template4 0;
 #X obj 44 63 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X text 40 98 The template for the two scalars \, as in the last patch
-;
 #X obj 44 38 struct template4 float x float y float z float q;
-#X restore 428 416 pd template4;
-#X msg 321 326 traverse pd-data4 \, bang;
-#X text 47 149 The outlet of "append" is a pointer to the newly created
+#X text 30 98 The template for the three scalars \, as in the last
+patch;
+#X restore 457 326 pd template4;
+#X msg 235 324 traverse pd-data4 \, bang;
+#X text 31 152 The outlet of "append" is a pointer to the newly created
 scalar. You can pass that on to other append objects if you want to
-build heterogeneous lists., f 73;
-#X text 82 430 Updated for Pd version 0.32;
-#X text 47 99 The "append" object is given the argument "template4"
+build heterogeneous lists., f 77;
+#X text 32 96 The "append" object is given the argument "template4"
 to specify what kind of data structure to append. The other arguments
-are the names of variables we'll set., f 73;
-#X obj 190 251 trigger bang bang bang;
-#X connect 0 0 5 4;
-#X connect 1 0 13 0;
-#X connect 3 0 5 0;
-#X connect 9 0 0 0;
-#X connect 13 0 3 0;
-#X connect 13 1 9 0;
-#X connect 13 2 6 0;
+are the names of variables we'll set., f 77;
+#X obj 160 249 trigger bang bang bang;
+#X text 33 11 The objects below put three items in the data window.
+First the window is cleared bu sending the 'clear' message to the subpatch
+name. Then a "pointer" object is instructed to point to the beginning
+of the data window ("traverse pd-data") \, and to output its value
+("bang") to the "append" object. This object is then given numeric
+values to create three items., f 77;
+#X msg 70 300 50 250 30 9 \, 200 20 80 90 \, 100 200 -50 0, f 13;
+#X text 367 384 Updated for Pd version 0.32;
+#X connect 0 0 3 4;
+#X connect 1 0 10 0;
+#X connect 7 0 0 0;
+#X connect 10 0 12 0;
+#X connect 10 1 7 0;
+#X connect 10 2 4 0;
+#X connect 12 0 3 0;

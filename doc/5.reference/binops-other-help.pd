@@ -1,0 +1,209 @@
+#N canvas 598 23 634 707 12;
+#X floatatom 121 517 4 0 0 0 - - - 0;
+#X obj 198 489 <;
+#X obj 166 130 &&;
+#X obj 207 129 ||;
+#X obj 366 489 &;
+#X obj 404 489 |;
+#X obj 121 489 >;
+#X obj 161 489 >=;
+#X obj 273 489 ==;
+#X obj 235 489 <=;
+#X floatatom 366 394 5 0 0 0 - - - 0;
+#X obj 366 424 t b f;
+#X floatatom 486 517 7 0 0 0 - - - 0;
+#X obj 486 489 <<;
+#X obj 444 489 >>;
+#X obj 312 489 !=;
+#X obj 22 10 >;
+#X obj 50 10 >=;
+#X obj 106 10 <=;
+#X obj 78 10 <;
+#X obj 135 10 ==;
+#X obj 163 10 !=;
+#X obj 416 575 == 0;
+#X obj 469 575 < 5;
+#X obj 191 10 div;
+#X obj 191 34 mod;
+#X floatatom 91 239 4 0 0 0 - - - 0;
+#X floatatom 49 238 4 0 0 0 - - - 0;
+#X floatatom 91 150 4 0 0 0 - - - 0;
+#X obj 49 210 div;
+#X obj 91 177 t b f;
+#X obj 91 211 mod;
+#X obj 95 648 +;
+#X text 18 659 see also:;
+#X floatatom 121 394 5 0 0 0 - - - 0;
+#X obj 22 34 &&;
+#X obj 50 34 ||;
+#X obj 78 34 &;
+#X obj 106 34 |;
+#X obj 134 34 <<;
+#X obj 163 34 >>;
+#X floatatom 49 150 4 0 0 0 - - - 0;
+#X obj 514 575 div 3;
+#X obj 95 675 expr;
+#X text 136 676 - evaluation expressions, f 25;
+#X obj 396 648 sin;
+#X text 432 649 (etc) - math functions;
+#X text 130 647 (etc) - binary arithmetic operators;
+#X obj 166 75 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 207 96 t b f;
+#X obj 207 75 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 166 155 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 207 155 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 260 110 || ('or) outputs 1 if either one is nonzero., f 47
+;
+#X text 241 137 note these expect integer input \, so 0.5 or -0.5 are
+truncated to '0' and not considered 'nonzero'.;
+#X text 45 558 All of these objects can have a creation argument to
+initialize the right inlet. They also all take a bang message to evaluate
+the operation with the previously set values., f 49;
+#X text 260 77 && ('and') outputs 1 if both inputs are nonzero and
+0 otherwise., f 47;
+#X text 141 184 div and mod do integer division \, where div outputs
+the integer quotient and mod outputs the remainder (modulus). In addition
+the "%" operator (provided for back compatibility) is like "mod" but
+acts differently for negative inputs (and might act variously depending
+on CPU design)., f 62;
+#X obj 401 248 %;
+#X text 431 249 - deprecated;
+#X text 31 278 The bitwise operators "&" and "|" perform "and" and
+"or" on each bit of the inputs considered as binary numbers. the ">>"
+and "<<" objects perform left and right signed bit shifts. These also
+expect integer input and truncate float values., f 82;
+#X text 31 328 Relational operators ('>' greater than \, '==' equals
+\, '!=' not equals etc.) output 1 or 0 depending on whether the relation
+is true or false. Unlike the previous ones \, these can deal with float
+input., f 82;
+#X floatatom 198 517 4 0 0 0 - - - 0;
+#X floatatom 161 517 4 0 0 0 - - - 0;
+#X floatatom 273 517 4 0 0 0 - - - 0;
+#X floatatom 235 517 4 0 0 0 - - - 0;
+#X floatatom 404 517 4 0 0 0 - - - 0;
+#X floatatom 366 517 4 0 0 0 - - - 0;
+#X floatatom 444 517 4 0 0 0 - - - 0;
+#X floatatom 312 517 4 0 0 0 - - - 0;
+#X floatatom 416 549 4 0 0 0 - - - 0;
+#X floatatom 469 549 4 0 0 0 - - - 0;
+#X floatatom 514 549 4 0 0 0 - - - 0;
+#X floatatom 416 602 4 0 0 0 - - - 0;
+#X floatatom 469 602 4 0 0 0 - - - 0;
+#X floatatom 514 602 4 0 0 0 - - - 0;
+#X text 220 22 - other binary operators;
+#N canvas 720 222 578 305 reference 0;
+#X obj 8 69 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 199 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 239 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 153 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 129 108 bang - output the operation on the previously set values.
+;
+#X text 122 127 float - value to the left side of operation and output.
+, f 58;
+#X text 123 162 float - value to the right side of operation., f 58
+;
+#X text 124 209 float - the result of the operation., f 58;
+#X obj 23 15 >;
+#X obj 51 15 >=;
+#X obj 107 15 <=;
+#X obj 79 15 <;
+#X obj 136 15 ==;
+#X obj 164 15 !=;
+#X obj 192 15 div;
+#X obj 192 39 mod;
+#X obj 23 39 &&;
+#X obj 51 39 ||;
+#X obj 79 39 &;
+#X obj 107 39 |;
+#X obj 135 39 <<;
+#X obj 164 39 >>;
+#X text 221 27 - other binary operators;
+#X obj 8 103 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 103 249 1) float - initialize value of right inlet (default
+0)., f 58;
+#X restore 510 31 pd reference;
+#X text 443 31 click =>;
+#X text 42 392 left input;
+#X text 407 392 right input;
+#X obj 6 63 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 634 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 14 73 Logical operators ->;
+#X text 411 673 updated for Pd version 0.47;
+#X connect 1 0 62 0;
+#X connect 2 0 51 0;
+#X connect 3 0 52 0;
+#X connect 4 0 67 0;
+#X connect 5 0 66 0;
+#X connect 6 0 0 0;
+#X connect 7 0 63 0;
+#X connect 8 0 64 0;
+#X connect 9 0 65 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X connect 11 0 15 0;
+#X connect 11 0 14 0;
+#X connect 11 0 13 0;
+#X connect 11 0 9 0;
+#X connect 11 0 8 0;
+#X connect 11 0 7 0;
+#X connect 11 0 5 0;
+#X connect 11 0 4 0;
+#X connect 11 0 1 0;
+#X connect 11 1 4 1;
+#X connect 11 1 5 1;
+#X connect 11 1 13 1;
+#X connect 11 1 14 1;
+#X connect 11 1 6 1;
+#X connect 11 1 7 1;
+#X connect 11 1 8 1;
+#X connect 11 1 15 1;
+#X connect 11 1 9 1;
+#X connect 11 1 1 1;
+#X connect 13 0 12 0;
+#X connect 14 0 68 0;
+#X connect 15 0 69 0;
+#X connect 22 0 73 0;
+#X connect 23 0 74 0;
+#X connect 28 0 30 0;
+#X connect 29 0 27 0;
+#X connect 30 0 31 0;
+#X connect 30 0 29 0;
+#X connect 30 1 31 1;
+#X connect 30 1 29 1;
+#X connect 31 0 26 0;
+#X connect 34 0 4 0;
+#X connect 34 0 5 0;
+#X connect 34 0 13 0;
+#X connect 34 0 14 0;
+#X connect 34 0 6 0;
+#X connect 34 0 7 0;
+#X connect 34 0 8 0;
+#X connect 34 0 9 0;
+#X connect 34 0 1 0;
+#X connect 34 0 15 0;
+#X connect 41 0 29 0;
+#X connect 41 0 31 0;
+#X connect 42 0 75 0;
+#X connect 48 0 2 0;
+#X connect 48 0 3 0;
+#X connect 49 0 2 0;
+#X connect 49 0 3 0;
+#X connect 49 1 3 1;
+#X connect 49 1 2 1;
+#X connect 50 0 49 0;
+#X connect 70 0 22 0;
+#X connect 71 0 23 0;
+#X connect 72 0 42 0;

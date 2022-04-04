@@ -14,6 +14,7 @@ abstractions:
 hilbert~ - Hilbert transform for SSB modulation
 complex-mod~ - ring modulation for complex (real+imaginary) audio signals
 rev1~, etc. - reverberators
+output~ - simple output abstraction for convenience
 
 externs aimed at particular tasks:
 pd~ - embed one Pd inside another one

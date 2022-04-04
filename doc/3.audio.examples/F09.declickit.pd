@@ -1,4 +1,5 @@
 #N canvas 545 23 588 744 12;
+#X declare -stdpath ./;
 #X obj 132 521 cos~;
 #X obj 132 461 *~;
 #X obj 174 521 cos~;
@@ -14,10 +15,10 @@
 #X obj 262 351 samphold~;
 #N canvas 620 86 502 538 switch 0;
 #X obj 240 431 outlet~;
-#X obj 203 219 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X obj 259 219 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
-1;
+#X obj 203 219 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 259 219 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 203 130 loadbang;
 #X obj 203 162 1;
 #X obj 137 241 sel 1;
@@ -53,7 +54,7 @@ crossings. At the phase crossings the two weighted cosines add to one
 \, so we can discontinuously change the frequencies and weights there.
 , f 65;
 #X obj 190 656 output~;
-#X floatatom 315 260 3 0 50 0 - - -;
+#X floatatom 315 260 3 0 50 0 - - - 0;
 #X text 333 672 updated for Pd version 0.37;
 #X obj 262 313 line~;
 #X msg 262 259 13.5;
@@ -63,6 +64,7 @@ crossings. At the phase crossings the two weighted cosines add to one
 #X text 347 259 <= gliss time;
 #X text 299 414 one is actually used;
 #X text 275 398 <= toggles to select which;
+#X obj 405 17 declare -stdpath ./;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 0 0;

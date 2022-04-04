@@ -1,0 +1,80 @@
+#N canvas 417 23 750 568 12;
+#X obj 439 397 trace;
+#X obj 49 17 trace;
+#X msg 427 316 1;
+#X obj 427 341 + 2;
+#X obj 439 429 + 3;
+#X msg 264 176 \; pd set-tracing \$1;
+#X obj 264 152 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 439 458 5 0 0 0 - - - 0;
+#X text 101 18 - message tracing for debugging control flow in patches
+;
+#X text 417 159 Note: this slows message passing down \, so don't turn
+it on unless you want to use it., f 32;
+#X text 510 531 updated for Pd version 0.52;
+#X obj 427 292 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 439 485 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 23 66 When 'set-tracing' is on and the object is armed \, trace
+prints in the Pd window the message it receives and also outputs the
+messages all the other objects further down in the chain send. You
+can control-click on the printout to select in the patch the object
+that caused the message. Once this is done \, trace also prints a backtrace
+of messages leading up to the one that has set it off., f 98;
+#X msg 471 332 1;
+#X msg 506 332 2;
+#X floatatom 471 369 3 0 0 0 - - - 0;
+#X floatatom 427 369 3 0 0 0 - - - 0;
+#X text 58 346 Now the next message (or messages) "trace" gets on its
+left inlet is forwarded to its output with tracing turned on., f 42
+;
+#X text 506 368 <= set number of messages to trace, f 17;
+#X text 96 149 First enable tracing with a message to Pd:, f 21;
+#X obj 11 51 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 11 519 cnv 1 725 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 730 162 575 273 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 165 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 202 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 239 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 126 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 8 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 39 17 trace;
+#X text 91 18 - message tracing for debugging control flow in patches.
+;
+#X text 98 92 anything - any message to be traced from this point on.
+, f 62;
+#X text 158 213 NONE, f 15;
+#X text 119 136 float - arms the object for the given number of messages.
+;
+#X text 99 174 anything - bypasses the input message further down the
+chain., f 62;
+#X restore 539 18 pd reference;
+#X text 633 18 <= click;
+#X text 25 228 Second \, send a number greater than zero to the right
+inlet of trace to arm it. This number sets the number of following
+messages that will be traced (that is \, it's a counter.) Once it receives
+that many messages \, the object is unarmed again., f 91;
+#X msg 383 340 5 \, 8;
+#X connect 0 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 17 0;
+#X connect 4 0 7 0;
+#X connect 6 0 5 0;
+#X connect 7 0 12 0;
+#X connect 11 0 2 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 1;
+#X connect 17 0 0 0;
+#X connect 26 0 17 0;

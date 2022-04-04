@@ -1,4 +1,5 @@
 #N canvas 518 77 704 521 12;
+#X declare -stdpath ./;
 #X obj 63 185 osc-voice amp1 pit1;
 #X obj 63 209 osc-voice amp2 pit2;
 #X obj 63 233 osc-voice amp3 pit3;
@@ -29,6 +30,7 @@ react to qlists but also to mousing.;
 #X text 281 428 this is where qlist comments go:;
 #X obj 63 383 output~;
 #X text 414 475 updated for Pd version 0.39;
+#X obj 523 23 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

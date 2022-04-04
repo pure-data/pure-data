@@ -1,0 +1,48 @@
+diff --git a/macosx/tkMacOSXKeyEvent.c b/macosx/tkMacOSXKeyEvent.c
+index 7ea085bea..b613a7789 100644
+--- a/macosx/tkMacOSXKeyEvent.c
++++ b/macosx/tkMacOSXKeyEvent.c
+@@ -85,13 +85,20 @@ static unsigned	isFunctionKey(unsigned int code);
+ 
+     switch (type) {
+     case NSKeyUp:
+-	/*Fix for bug #1ba71a86bb: key release firing on key press.*/
+-	setupXEvent(&xEvent, w, 0);
+-	xEvent.xany.type = KeyRelease;
+-	xEvent.xkey.keycode = releaseCode;
+-	xEvent.xany.serial = LastKnownRequestProcessed(Tk_Display(tkwin));
++    if (releaseCode) {
++        /*Fix for bug #1ba71a86bb: key release firing on key press.*/
++        setupXEvent(&xEvent, w, 0);
++        xEvent.xany.type = KeyRelease;
++        xEvent.xkey.keycode = releaseCode;
++        xEvent.xany.serial = LastKnownRequestProcessed(Tk_Display(tkwin));
++        releaseCode = 0;
++	}
+     case NSKeyDown:
+-	repeat = [theEvent isARepeat];
++    repeat = [theEvent isARepeat];
++    if (repeat && [NSEvent keyRepeatDelay] < 0) {
++        // ignore repeats if they are turned off in the system settings
++        return theEvent;
++    }
+ 	characters = [theEvent characters];
+ 	charactersIgnoringModifiers = [theEvent charactersIgnoringModifiers];
+         len = [charactersIgnoringModifiers length];
+@@ -176,7 +183,7 @@ static unsigned	isFunctionKey(unsigned int code);
+ 
+         int code = (len == 0) ? 0 :
+ 		[charactersIgnoringModifiers characterAtIndex: 0];
+-        if (type != NSKeyDown || isFunctionKey(code)
++        if (type != NSKeyDown || repeat || isFunctionKey(code)
+ 		|| (len > 0 && state & (ControlMask | Mod1Mask | Mod3Mask | Mod4Mask))) {
+             XEvent xEvent;
+ 
+@@ -353,6 +360,7 @@ static unsigned	isFunctionKey(unsigned int code);
+ 	    i++;
+ 	}
+     	xEvent.xany.type = KeyPress;
++    	releaseCode = (UInt16) [str characterAtIndex: 0];
+     	Tk_QueueWindowEvent(&xEvent, TCL_QUEUE_TAIL);
+     }
+     releaseCode = (UInt16) [str characterAtIndex: 0];

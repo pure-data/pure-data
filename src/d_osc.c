@@ -33,7 +33,7 @@
 #endif
 
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-#error No byte order defined
+#include <endian.h>
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -354,7 +354,6 @@ typedef struct sigvcf
 {
     t_object x_obj;
     t_vcfctl x_cspace;
-    t_vcfctl *x_ctl;
     t_float x_f;
 } t_sigvcf;
 
@@ -367,7 +366,6 @@ static void *sigvcf_new(t_floatarg q)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
-    x->x_ctl = &x->x_cspace;
     x->x_cspace.c_re = 0;
     x->x_cspace.c_im = 0;
     x->x_cspace.c_q = q;
@@ -380,7 +378,7 @@ static void sigvcf_ft1(t_sigvcf *x, t_float f)
 {
     if(f < 0.) f = 0.;
     if(f > BIGFLOAT) f = BIGFLOAT;
-    x->x_ctl->c_q = f;
+    x->x_cspace.c_q = f;
 }
 
 static t_int *sigvcf_perform(t_int *w)
@@ -448,10 +446,10 @@ static t_int *sigvcf_perform(t_int *w)
 
 static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
 {
-    x->x_ctl->c_isr = 6.28318f/sp[0]->s_sr;
+    x->x_cspace.c_isr = 6.28318f/sp[0]->s_sr;
     dsp_add(sigvcf_perform, 6,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-            x->x_ctl, (t_int)sp[0]->s_n);
+            &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
 static

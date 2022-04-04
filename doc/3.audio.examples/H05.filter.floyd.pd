@@ -1,4 +1,5 @@
 #N canvas 488 23 587 719 12;
+#X declare -stdpath ./;
 #N canvas 357 23 418 396 conversion-tables 0;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array dbtorms 123 float 1;
@@ -50,8 +51,8 @@
 #X restore 390 330 pd conversion-tables;
 #X obj 167 451 line~;
 #X obj 167 427 pack 0 100;
-#X floatatom 167 379 3 0 150 0 - #0-cf -;
-#X floatatom 179 505 3 0 999 0 - #0-q -;
+#X floatatom 167 379 3 0 150 0 - #0-cf - 0;
+#X floatatom 179 505 3 0 999 0 - #0-q - 0;
 #X obj 122 557 vcf~;
 #X obj 167 476 tabread4~ mtof;
 #X text 51 28 ANOTHER SWEEPING FILTER EXAMPLE;
@@ -73,12 +74,12 @@
 #X text 206 182 sequencer for;
 #X text 228 200 8 note loop;
 #X obj 124 636 output~;
-#X obj 139 130 tgl 15 0 empty \$0-metro empty 0 -6 0 8 -262144 -1 -1
-1 1;
+#X obj 139 130 tgl 15 0 empty \$0-metro empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #N canvas 876 177 379 259 startup 0;
 #X obj 35 27 loadbang;
-#X obj 35 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 35 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 35 70 f \$0;
 #X msg 35 94 \; \$1-cf 61 \; \$1-q 10 \; \$1-metro 1 \; \$1-array1
 0 45 48 50 48 55 53 55 57;
@@ -106,6 +107,7 @@ we had had both even and odd ones., f 66;
 #X text 199 606 to make the passband excessively narrow.;
 #X text 213 505 <= Q (selectivity);
 #X text 200 376 <= center frequency;
+#X obj 408 22 declare -stdpath ./;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;
 #X connect 3 0 30 0;

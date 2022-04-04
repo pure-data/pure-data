@@ -1,19 +1,20 @@
 #N canvas 433 119 793 595 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F05-signal 882 float 0;
 #X coords 0 1 882 -1 200 130 1;
-#X restore 502 271 graph;
+#X restore 507 300 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F05-spectrum 256 float 0;
 #X coords 0 0.51 255 -0.008 256 130 1;
-#X restore 444 48 graph;
-#X text 518 404 ---- 0.02 seconds ----;
+#X restore 449 77 graph;
+#X text 523 433 ---- 0.02 seconds ----;
 #X text 542 501 updated for Pd version 0.37;
-#X text 440 181 0;
-#X text 479 200 -- partial number --;
-#X text 706 168 0;
-#X text 703 45 0.5;
-#X floatatom 89 57 0 0 100 0 - - -;
+#X text 445 210 0;
+#X text 484 229 -- partial number --;
+#X text 711 197 0;
+#X text 708 74 0.5;
+#X floatatom 89 57 0 0 100 0 - - - 0;
 #N canvas 667 118 574 518 pulse-train 0;
 #X obj 229 289 line~;
 #X obj 99 368 cos~;
@@ -111,19 +112,19 @@ until much later.;
 #X connect 21 0 15 0;
 #X connect 23 0 22 0;
 #X restore 137 254 pd fft;
-#X obj 156 228 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 197 254 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X text 472 181 2;
-#X text 504 181 4;
-#X text 536 181 6;
-#X text 568 181 8;
-#X text 601 181 10;
-#X text 633 181 12;
-#X text 664 181 14;
-#X text 707 266 1;
-#X text 707 390 -1;
+#X obj 156 228 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 197 254 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X text 477 210 2;
+#X text 509 210 4;
+#X text 541 210 6;
+#X text 573 210 8;
+#X text 606 210 10;
+#X text 638 210 12;
+#X text 669 210 14;
+#X text 712 295 1;
+#X text 712 419 -1;
 #X text 156 196 modulating oscillator;
 #X text 64 16 RING MODULATED PULSE TRAINS;
 #X text 69 371 Now we take a pulse train and ring modulate it \, which
@@ -131,7 +132,7 @@ effectively aliases the spectrum so that it is centered at any desired
 partial number. The "bandwidth" control still affects the shape of
 the peak \, independently of where it is centered. This generates a
 formant centered at the given partial., f 55;
-#X floatatom 107 127 0 0 100 0 - - -;
+#X floatatom 107 127 0 0 100 0 - - - 0;
 #X obj 107 193 osc~;
 #X obj 107 165 *;
 #X obj 141 165 r freq;
@@ -146,6 +147,7 @@ losing harmonicity., f 55;
 #X text 124 57 <= bandwidth;
 #X text 202 81 <= pulse train;
 #X text 143 126 <= modulation frequency as;
+#X obj 593 25 declare -stdpath ./;
 #X connect 8 0 9 0;
 #X connect 9 0 10 0;
 #X connect 10 0 13 0;

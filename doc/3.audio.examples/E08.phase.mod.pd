@@ -1,13 +1,14 @@
 #N canvas 452 68 698 772 12;
+#X declare -stdpath ./;
 #X obj 224 164 *~;
-#X floatatom 224 107 0 0 0 0 - - -;
+#X floatatom 224 107 0 0 0 0 - - - 0;
 #X obj 312 144 line~;
-#X floatatom 128 121 0 0 0 0 - - -;
+#X floatatom 128 121 0 0 0 0 - - - 0;
 #X obj 128 235 cos~;
 #X obj 128 191 +~;
 #X obj 224 132 osc~ 0;
 #X obj 312 118 pack 0 50;
-#X floatatom 312 65 0 0 0 0 - - -;
+#X floatatom 312 65 0 0 0 0 - - - 0;
 #X obj 312 92 / 100;
 #X text 286 27 modulation index;
 #X text 286 42 in hundredths;
@@ -114,6 +115,7 @@ to be between 0 and 1... in this patch the index is in hundredths.
 #X text 25 192 modulation =>;
 #X text 38 236 waveform =>;
 #X text 245 208 <= graph them;
+#X obj 498 25 declare -stdpath ./;
 #X connect 0 0 5 1;
 #X connect 1 0 6 0;
 #X connect 2 0 0 1;

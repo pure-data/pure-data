@@ -1,0 +1,1473 @@
+#N canvas 563 23 564 676 12;
+#X text 439 70 details:;
+#X text 437 53 click for;
+#N canvas 215 30 1052 653 handle 0;
+#X obj 113 481 file handle;
+#X msg 108 160 open /tmp/test.c r;
+#X msg 182 441 close;
+#X msg 127 219 1024;
+#X text 163 221 read (up to) 1024 bytes;
+#X obj 113 534 print data, f 5;
+#X msg 138 253 seek 3;
+#X text 195 255 seek to the 3rd byte;
+#X text 277 376 seek to the next byte;
+#X msg 120 190 1;
+#X text 157 189 read the next byte;
+#X msg 34 186 open \$1;
+#X msg 34 136 bang;
+#X obj 34 161 openpanel;
+#X obj 535 481 file handle;
+#X msg 624 443 close;
+#X msg 571 286 seek 3;
+#X text 625 286 seek to the 3rd byte;
+#X msg 456 154 bang;
+#X obj 456 179 savepanel;
+#X msg 456 204 open \$1 w;
+#X msg 530 178 open /tmp/test.c a;
+#X msg 542 208 open /tmp/test.c c;
+#X msg 556 242 104 101 108 108 111 32 119 111 114 108 100 13 10, f
+26;
+#X text 246 162 explicit Read-mode;
+#X text 674 177 open file for writing (Append mode);
+#X text 683 201 open file for writing (Create (or trunCate) mode),
+f 27;
+#X text 747 249 write some bytes;
+#X obj 341 21 file;
+#X obj 219 554 print INFO;
+#X text 57 526 list of bytes read, f 7;
+#X text 691 496 if opening the file or writing to it fails \, the file
+is closed and a bang is sent to the 2nd outlet., f 44;
+#X text 320 592 when seeking \, the position from the start of the
+file (or -1 on error) is output here., f 44;
+#N canvas 453 93 754 409 arguments 0;
+#X obj 136 82 file handle -q;
+#X text 264 82 less verbose (quiet);
+#X obj 136 112 file handle -v;
+#X text 264 112 more verbose (loud);
+#X obj 96 233 file handle -m 0o600;
+#X text 296 228 file creation mode (user/group/other permissions) in
+octal.;
+#X msg 563 96 verbose \$1;
+#X obj 563 121 file;
+#X obj 563 74 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 138 31 error reporting on the Pd-console;
+#X text 43 98 via flags:;
+#X text 451 98 via a message:;
+#X text 67 167 restricted permissions of created files:;
+#X text 104 298 via a message:;
+#X obj 96 348 file;
+#X text 295 328 the creation mode only affects files that are created
+after the mode has been set.;
+#X msg 96 323 creationmode 0o600;
+#X text 294 266 the actual permissions of the created file also takes
+the umask into account. this might be ignored by the underlying filesystem.
+;
+#X text 99 199 via creation flags:;
+#X connect 6 0 7 0;
+#X connect 8 0 6 0;
+#X connect 16 0 14 0;
+#X restore 374 499 pd arguments;
+#X msg 610 409 creationmode 0o600;
+#X msg 147 286 seek 3 start;
+#X text 245 279 seek to the 3rd byte from the "start", f 21;
+#X msg 155 318 seek 0 end;
+#X msg 162 348 seek -1 end;
+#X msg 169 378 seek 1 current;
+#X msg 176 410 seek -1 relative;
+#X text 301 399 seek to the previous byte ("relative" is an alias for
+"current"), f 22;
+#X text 234 317 seek to the end-of-file;
+#X text 248 347 seek to the last byte;
+#X msg 591 344 seek 10 end;
+#X text 677 342 seek beyond the end of file;
+#X msg 581 316 seek 10 start;
+#X text 684 317 seek to the 10th byte;
+#X msg 599 375 seek 10 current;
+#X obj 609 505 print INFO;
+#X text 748 403 restrict permissions of the to-be-created file, f
+24;
+#X obj 187 527 t a a;
+#X obj 187 588 route bang seek;
+#X obj 187 613 bng 20 250 50 0 empty empty close -35 10 0 10 #fcfcfc
+#000000 #000000;
+#X floatatom 238 613 5 0 0 1 pos - - 0;
+#X text 718 371 seek to the 10th byte from the current position, f
+27;
+#X obj 38 21 file handle;
+#X text 931 20 <= click;
+#N canvas 692 43 571 468 reference 0;
+#X obj 7 44 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 231 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 440 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 24 13 file handle;
+#X text 116 12 - operate on file handles.;
+#X obj 7 198 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 94 78 open <symbol> - open a file., f 37;
+#X text 150 96 float - read number of bytes.;
+#X text 108 114 seek <list> - seek file., f 35;
+#X text 150 132 close - close file., f 29;
+#X text 144 203 symbol - change the associated file-handle.;
+#X text 80 150 verbose <float> - set verbosity on or off.;
+#X obj 7 286 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 257 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 158 262 list - data bytes.;
+#X text 108 289 bang -;
+#X text 158 289 if file can't be opened \, end of the file is reached
+or a read error occurred., f 51;
+#X text 53 323 seek <float> - seek output., f 66;
+#X text 45 170 creationmode <octal> - restrict permissions of the to-be-created
+file., f 70;
+#X text 83 378 -q: set quiet verbosity., f 63;
+#X text 83 396 -v: set loud verbosity., f 63;
+#X text 83 414 -m: file creation mode (user/group/other permissions)
+in octal., f 63;
+#X obj 7 350 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 376 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 828 21 pd reference;
+#X obj 11 51 cnv 1 1025 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 130 20 - operate on file handles.;
+#X text 304 548 if the file cannot be opened \, a bang is sent to the
+2nd outlet. when the end of the file is reached or a read error occurred
+\, the file is closed and a bang is sent too., f 85;
+#X text 228 435 close file, f 5;
+#X text 500 152 <-- open file in Write mode;
+#X text 672 438 close file, f 5;
+#X text 384 20 - short form for file handle.;
+#X text 48 64 The data you read from or write to a file are lists of
+bytes \, which appear in Pd as lists of numbers from 0 to 255 (using
+out-of-range numbers of symbols leads to undefined behaviour.) The
+2nd inlet of the 'file handle' object is documented in the 'file define'
+subpatch., f 136;
+#X text 110 118 reading files =============, f 13;
+#X text 466 118 writing files =============, f 13;
+#X connect 0 0 5 0;
+#X connect 0 1 51 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 6 0 0 0;
+#X connect 9 0 0 0;
+#X connect 11 0 0 0;
+#X connect 12 0 13 0;
+#X connect 13 0 11 0;
+#X connect 14 1 49 0;
+#X connect 15 0 14 0;
+#X connect 16 0 14 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 20 0 14 0;
+#X connect 21 0 14 0;
+#X connect 22 0 14 0;
+#X connect 23 0 14 0;
+#X connect 34 0 14 0;
+#X connect 35 0 0 0;
+#X connect 37 0 0 0;
+#X connect 38 0 0 0;
+#X connect 39 0 0 0;
+#X connect 40 0 0 0;
+#X connect 44 0 14 0;
+#X connect 46 0 14 0;
+#X connect 48 0 14 0;
+#X connect 51 0 52 0;
+#X connect 51 1 29 0;
+#X connect 52 0 53 0;
+#X connect 52 1 54 0;
+#X restore 440 97 pd handle;
+#N canvas 680 67 617 565 glob 0;
+#X obj 50 378 file glob;
+#X obj 50 443 print DATA;
+#X obj 110 405 print ERROR;
+#X msg 71 153 symbol ~/*.*;
+#X msg 134 331 symbol;
+#X msg 53 107 symbol .*;
+#X text 190 331 no match (files with an empty filename...);
+#X msg 101 219 symbol %WinDir%/*.exe;
+#X text 260 218 executable files in the Windows-directory;
+#X msg 28 66 symbol *;
+#X text 140 100 all files/directories starting with a dot (except for
+the special directories '.' and '..'), f 50;
+#X msg 125 297 symbol .;
+#X msg 84 189 symbol /tmp/*.pd;
+#X text 211 190 all Pd-files in /tmp/;
+#X text 195 297 the '.' directory (not very useful);
+#X text 172 154 all files/directories with a dot in your homedir;
+#X msg 118 259 symbol ../*/;
+#X text 218 259 all directories in the parent directory;
+#N canvas 576 264 790 450 recursive 0;
+#X obj 112 223 file glob;
+#X msg 112 91 bang;
+#X obj 112 116 openpanel 1;
+#X obj 112 171 t s;
+#X msg 122 147 symbol .;
+#X msg 112 248 \$2 \$1;
+#X obj 112 273 route 0 1;
+#X obj 112 358 print files;
+#X msg 112 196 symbol \$1/*;
+#X obj 142 301 symbol;
+#X text 61 19 you can use [file glob] to recursively walk a directory
+tree;
+#X obj 492 223 file glob;
+#X msg 492 91 bang;
+#X obj 492 116 openpanel 1;
+#X obj 492 171 t s;
+#X msg 502 147 symbol .;
+#X msg 492 248 \$2 \$1;
+#X obj 492 273 route 0 1;
+#X obj 522 301 symbol;
+#X text 421 61 get all .pd files from the directory (+subdirs);
+#X text 65 60 get all files from the directory (+subdirs);
+#X msg 492 196 symbol \$1/*.pd \, symbol \$1/*/;
+#X obj 492 358 print pd-files;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 8 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 6 1 9 0;
+#X connect 8 0 0 0;
+#X connect 9 0 8 0;
+#X connect 11 0 16 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 0;
+#X connect 14 0 21 0;
+#X connect 15 0 14 0;
+#X connect 16 0 17 0;
+#X connect 17 0 22 0;
+#X connect 17 1 18 0;
+#X connect 18 0 21 0;
+#X connect 21 0 11 0;
+#X restore 174 525 pd recursive globbing;
+#X text 202 400 if no files are found or an error is encountered \,
+a bang is sent to the 2nd outlet, f 49;
+#X text 149 450 matching files and directories are sent as lists of
+<path> (including the search directory) and a <type> identifier that
+indicates if the path is a file (0) or a directory (1).;
+#N canvas 480 231 738 232 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 563 174 file glob;
+#X obj 146 145 file glob -q;
+#X obj 146 175 file glob -v;
+#X connect 2 0 7 0;
+#X connect 3 0 2 0;
+#X restore 76 525 pd arguments;
+#N canvas 452 272 914 441 cross-platform 0;
+#X text 50 334 - files/dirs starting with a "." only match if the matching
+pattern explicitly contains the leading dot.;
+#X msg 496 343 symbol *;
+#X msg 596 343 symbol .*;
+#X text 569 342 vs;
+#X text 569 382 vs;
+#X msg 496 383 symbol .*;
+#X msg 596 383 symbol ..;
+#X text 50 377 - the special files/dirs "." and ".." only match if
+requested explicitly \, never with a wildcard pattern.;
+#X text 592 212 vs;
+#X msg 496 213 symbol /tmp/*;
+#X msg 616 213 symbol /*/foo;
+#X text 53 196 - the behaviour of patterns that contain wildcards in
+a path component other than the last one is *undefined* (and platform
+dependent). DO NOT USE THIS.;
+#X text 52 285 - patterns ending with anything else will match files
+AND directories;
+#X text 592 282 vs;
+#X text 612 152 vs;
+#X msg 496 153 symbol file.txt;
+#X msg 636 153 symbol *.txt;
+#X text 732 152 vs;
+#X msg 756 153 symbol fi?e.txt;
+#X text 52 265 - patterns ending with '/' will ONLY match directories
+;
+#X msg 616 283 symbol */;
+#X msg 496 283 symbol *;
+#X text 52 136 - the pattern may contain the wildcards '*' (for any
+number of characters) and '?' (for a single character) in the last
+path component. no other wildcards are supported.;
+#X text 58 52 [file glob] attempts to unify the behaviour of wildcard
+matching on different platforms. as such \, it does not support all
+features of a given pattern matching implementation (or only accidentally).
+, f 107;
+#X text 58 85 the following rules should help you to write patches
+that use platform independent globbing., f 107;
+#X text 32 29 cross-platform notes on globbing:;
+#X restore 335 525 pd cross-platform pattern matching;
+#X text 26 525 more:;
+#X text 99 60 all files/directories in this directory (that don't start
+with a dot), f 39;
+#X obj 11 47 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 118 16 - find pathnames matching a pattern;
+#X obj 40 17 file glob;
+#X text 533 16 <= click;
+#N canvas 599 129 578 333 reference 0;
+#X text 118 16 - find pathnames matching a pattern;
+#X obj 40 17 file glob;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 303 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 187 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 137 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 260 -q: set quiet verbosity., f 49;
+#X text 155 278 -v: set loud verbosity., f 49;
+#X text 54 86 verbose <float> - set verbosity on or off.;
+#X text 117 65 symbol - pattern to be found.;
+#X text 119 142 list -;
+#X text 167 143 found files/directories as a path symbol and type (file
+<0> or directory <1>)., f 49;
+#X text 132 194 bang - if nothing is found or an error occurs.;
+#X obj 7 226 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 252 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 430 17 pd reference;
+#X connect 0 0 1 0;
+#X connect 0 1 2 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 0 0;
+#X connect 11 0 0 0;
+#X connect 12 0 0 0;
+#X connect 16 0 0 0;
+#X restore 440 227 pd glob;
+#X obj 38 594 file;
+#X text 75 595 - short for "file handle";
+#X obj 27 97 file handle;
+#X obj 27 267 file stat;
+#X text 156 96 - read/write binary files;
+#X text 156 198 - find a file in Pd's search-path;
+#X text 156 228 - list files in directories;
+#X obj 27 227 file glob;
+#X obj 27 197 file which;
+#N canvas 660 134 623 461 which 0;
+#X obj 35 187 file which;
+#X symbolatom 35 301 79 0 0 0 - - - 0;
+#X obj 35 327 print found;
+#X obj 102 240 print not!found;
+#X msg 45 157 symbol nada;
+#X msg 35 121 symbol hilbert~.pd;
+#X text 67 363 notes:;
+#X text 126 364 - currently this only works for files \, not for directories!
+;
+#X text 126 385 - currently only the first match is returned;
+#X text 178 123 a file that ships with Pd;
+#X text 139 156 probably does not exist in Pd's search path;
+#N canvas 628 410 738 232 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file which -q;
+#X obj 146 175 file which -v;
+#X obj 563 174 file which;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 194 422 pd arguments;
+#X symbolatom 102 213 47 0 0 0 - - - 0;
+#X obj 35 273 unpack s f;
+#X floatatom 127 274 3 0 0 1 - - - 0;
+#X obj 11 47 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 137 14 - locate a file;
+#X text 29 65 [file which] tries to locate the file in using Pd's search-paths
+and returns the resolved path., f 69;
+#X obj 50 15 file which;
+#X text 521 14 <= click;
+#N canvas 778 127 581 317 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 286 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 167 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 137 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 240 -q: set quiet verbosity., f 49;
+#X text 155 258 -v: set loud verbosity., f 49;
+#X obj 31 22 file which;
+#X text 114 22 - locate a file;
+#X text 127 65 symbol - file to locate using Pd's search-paths.;
+#X text 132 174 float - when there's an error creating the directory.
+;
+#X text 64 86 verbose <float> - set verbosity on or off., f 57;
+#X text 125 142 list - symbol path of located file and directory flag.
+;
+#X obj 7 208 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 234 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 418 15 pd reference;
+#X text 157 273 directory?;
+#X connect 0 0 13 0;
+#X connect 0 1 12 0;
+#X connect 1 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 12 0 3 0;
+#X connect 13 0 1 0;
+#X connect 13 1 14 0;
+#X restore 440 197 pd which;
+#X obj 27 157 file mkdir;
+#X text 157 158 - create a directory;
+#N canvas 531 60 514 592 mkdir 0;
+#X obj 32 391 file mkdir;
+#X symbolatom 32 468 64 0 0 0 - - - 0;
+#X obj 32 502 print mkdir;
+#X obj 99 439 print ERR:mkdir;
+#X msg 32 151 bang;
+#X msg 52 211 bang;
+#X msg 52 261 symbol \$1/subdir/another/sub/directory;
+#X msg 73 303 symbol .;
+#X obj 99 416 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 23 81 parent directories are created as needed.;
+#X text 23 101 it is not an error \, if the requested directory already
+exists (and is a directory).;
+#X text 138 153 create a new directory;
+#X text 147 215 create a deep directory;
+#X text 154 305 (re)create an existing directory;
+#X text 121 415 on error \, a bang is sent to the 2nd outlet;
+#X text 126 497 on success \, the name of the created directory is
+sent to the 1st outlet, f 36;
+#N canvas 596 129 736 450 arguments 0;
+#X text 209 100 less verbose (quiet);
+#X text 209 130 more verbose (loud);
+#X msg 498 104 verbose \$1;
+#X obj 498 82 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 41 25 error reporting on the Pd-console;
+#X text 174 66 via flags:;
+#X text 459 55 via a message:;
+#X text 89 335 via a message:;
+#X text 84 236 via creation flags:;
+#X text 52 204 restricted permissions of created directories:;
+#X text 279 266 directory creation mode (user/group/other permissions)
+in octal.;
+#X msg 81 360 creationmode 0o700;
+#X text 277 304 the actual permissions of the created directory also
+takes the umask into account. this might be ignored by the underlying
+filesystem.;
+#X text 278 366 the creation mode only affects directories that are
+created after the mode has been set.;
+#X obj 81 385 file mkdir;
+#X obj 81 270 file mkdir -m 0o700;
+#X obj 81 130 file mkdir -v;
+#X obj 81 100 file mkdir -q;
+#X obj 498 129 file mkdir;
+#X connect 2 0 18 0;
+#X connect 3 0 2 0;
+#X connect 11 0 14 0;
+#X restore 185 551 pd arguments;
+#X msg 77 351 creationmode 0o700;
+#X obj 52 236 savepanel 1;
+#X obj 32 176 savepanel 1;
+#X obj 27 16 file mkdir;
+#X text 110 16 - create directories;
+#X text 24 63 This ensures that a given directory exists by creating
+it.;
+#X obj 6 47 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 427 14 <= click;
+#N canvas 778 127 575 333 reference 0;
+#X obj 9 44 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 118 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 303 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 28 15 file mkdir;
+#X text 111 15 - create directories;
+#X text 125 57 symbol - directory to be created., f 56;
+#X text 27 75 creationmode <octal> - restrict permissions of the created
+directory., f 70;
+#X obj 9 174 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 144 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 125 149 symbol - created directory on success., f 56;
+#X text 139 181 bang - when there's an error creating the directory.
+;
+#X text 85 244 -q: set quiet verbosity., f 63;
+#X text 85 261 -v: set loud verbosity., f 63;
+#X text 85 278 -m: file creation mode (user/group/other permissions)
+in octal., f 63;
+#X text 62 94 verbose <float> - set verbosity on or off., f 65;
+#X obj 7 212 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 238 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 324 15 pd reference;
+#X connect 0 0 1 0;
+#X connect 0 1 8 0;
+#X connect 1 0 2 0;
+#X connect 4 0 19 0;
+#X connect 5 0 18 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 8 0 3 0;
+#X connect 17 0 0 0;
+#X connect 18 0 6 0;
+#X connect 19 0 0 0;
+#X restore 440 157 pd mkdir;
+#X obj 27 437 file delete;
+#X text 157 438 - delete files and directories;
+#N canvas 521 23 666 648 delete 0;
+#X obj 85 216 file delete;
+#X obj 159 243 print ERR:delete;
+#X obj 85 273 print deleted;
+#X text 51 84 NOTE: deleting destroys data. there is no confirmation
+dialog or anything of that kind., f 74;
+#X msg 85 155 symbol nada;
+#X text 173 157 file or directory to be deleted;
+#X text 60 331 recursive deletion;
+#X obj 95 520 file delete;
+#X msg 95 439 recursive nada;
+#X obj 169 547 print ERR:recursive-delete;
+#X obj 95 605 print recursively-deleted;
+#X text 208 440 remove the nada/ directory with all its content.;
+#X text 283 239 on error \, a bang is sent to the 2nd outlet;
+#X text 197 275 on success \, the deleted path is sent to the 1st outlet
+;
+#X text 225 522 on error \, a bang is sent to the 2nd outlet;
+#X text 118 581 on success \, the deleted path is sent to the 1st outlet
+;
+#X text 212 464 if nada is a file (rather than a directory) \, it will
+be deleted just so.;
+#N canvas 956 363 738 232 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file delete -q;
+#X obj 146 175 file delete -v;
+#X obj 563 174 file delete;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 505 314 pd arguments;
+#X text 60 346 ------------------;
+#X text 82 365 if you are sure that you want to remove an entire directory
+tree with all the files and subdirectories \, you can also remove it
+*recursively* using the "recursive" message.;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 580 14 <= click;
+#N canvas 599 129 573 316 reference 0;
+#X obj 9 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 107 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 282 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 163 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 133 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 54 82 verbose <float> - set verbosity on or off.;
+#X text 132 170 bang - if an error occurs.;
+#X text 117 61 symbol - file or directory to be deleted.;
+#X text 120 138 symbol - the deleted path on success.;
+#X obj 28 16 file delete;
+#X text 124 16 - remove files and directories.;
+#X text 155 236 -q: set quiet verbosity., f 49;
+#X text 155 254 -v: set loud verbosity., f 49;
+#X obj 7 203 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 229 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 477 15 pd reference;
+#X obj 36 15 file delete;
+#X text 132 15 - remove files and directories.;
+#X connect 0 0 2 0;
+#X connect 0 1 1 0;
+#X connect 4 0 0 0;
+#X connect 7 0 10 0;
+#X connect 7 1 9 0;
+#X connect 8 0 7 0;
+#X restore 440 437 pd delete;
+#N canvas 495 139 674 330 copy 0;
+#X msg 48 115 list source destination;
+#X text 233 114 copies the file 'source' to the new file 'destination'
+;
+#X obj 48 284 print copy;
+#X obj 129 285 print ERR:copy;
+#N canvas 648 181 502 408 arguments 0;
+#X msg 136 143 verbose \$1;
+#X obj 136 122 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 136 168 outlet;
+#X text 61 82 error reporting;
+#X text 244 118 turn error-printout on/off;
+#X text 65 254 or via flags:;
+#X obj 90 292 file copy -v;
+#X text 206 294 more verbose;
+#X obj 90 322 file copy -q;
+#X text 206 324 less verbose (quiet);
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X restore 72 193 pd arguments;
+#X text 245 169 'destination' can be a file or a directory.;
+#X text 245 149 'source' must be a file.;
+#X text 247 202 the destination directory must exist and be writable.
+;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 580 14 <= click;
+#N canvas 599 129 573 331 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 286 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 167 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 137 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 242 -q: set quiet verbosity., f 49;
+#X text 155 260 -v: set loud verbosity., f 49;
+#X text 84 86 verbose <float> - set verbosity on or off.;
+#X text 132 174 bang - if an error occurs.;
+#X text 147 65 list - source and destination.;
+#X text 120 142 list -;
+#X text 167 143 source and destination on success., f 39;
+#X text 112 15 - copy a file around.;
+#X obj 36 15 file copy;
+#X obj 7 207 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 233 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 477 15 pd reference;
+#X text 112 15 - copy a file around.;
+#X obj 36 15 file copy;
+#X obj 48 239 file copy, f 12;
+#X msg 63 153 list \$1 porra;
+#X text 64 68 [file copy] duplicates the content of a file to a destination.
+, f 64;
+#X connect 0 0 13 0;
+#X connect 4 0 13 0;
+#X connect 13 0 2 0;
+#X connect 13 1 3 0;
+#X connect 14 0 13 0;
+#X restore 440 377 pd copy;
+#X obj 27 377 file copy;
+#X text 157 378 - copy files;
+#X obj 27 407 file move;
+#X text 157 408 - move files;
+#X obj 27 477 file split;
+#X obj 27 502 file join;
+#X obj 27 527 file splitext;
+#X obj 27 552 file splitname;
+#X text 157 508 - filename operations;
+#X obj 31 12 file;
+#X text 78 11 - low-level file operations;
+#X text 28 68 The file object's first argument sets its function:;
+#X obj 27 292 file isfile;
+#X obj 27 317 file isdirectory;
+#X obj 27 342 file size;
+#N canvas 478 65 815 507 info 0;
+#X obj 36 300 file isfile, f 15;
+#X floatatom 36 325 5 0 0 0 - - - 0;
+#X msg 189 116 bang;
+#X floatatom 538 328 5 0 0 0 - - - 0;
+#X obj 538 303 file isdirectory;
+#X text 230 115 select a file;
+#X msg 229 145 bang;
+#X text 280 144 select a directory;
+#X msg 298 173 symbol .;
+#X text 372 172 some directory;
+#X msg 298 203 symbol nada;
+#X obj 647 348 print ERR:isDir;
+#X obj 647 328 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 538 352 print isDir;
+#X obj 36 349 print isFile;
+#X text 265 342 sends a bang to the 2nd outlet \, if the path could
+not be read, f 32;
+#X text 388 205 probably not there;
+#X floatatom 48 443 5 0 0 0 - - - 0;
+#X obj 48 418 file size, f 13;
+#X obj 48 467 print size;
+#X text 216 436 on error \, a bang is sent to the 2nd outlet;
+#X obj 138 329 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 138 349 print ERR:isFile;
+#X obj 136 447 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 136 467 print ERR:size;
+#X text 214 403 gets the size of a file (in bytes) \, as reported by
+the filesystem. for directories \, this will return '0'.;
+#X obj 80 17 file isfile;
+#X obj 45 40 file isdirectory;
+#X obj 94 63 file size;
+#X obj 36 274 r \$0-info-path;
+#X obj 48 391 r \$0-info-path;
+#X obj 538 278 r \$0-info-path;
+#N canvas 143 98 738 232 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file size -q;
+#X obj 146 175 file isfile -v;
+#X obj 563 174 file isdirectory;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 544 142 pd arguments;
+#X symbolatom 189 234 0 0 0 0 - - - 0;
+#N canvas 578 479 645 307 info-path 0;
+#X obj 44 107 openpanel;
+#X obj 167 116 openpanel 1;
+#X obj 240 182 symbol .;
+#X obj 272 238 s \$0-info-path;
+#X obj 240 210 t s s;
+#X obj 240 265 outlet;
+#X obj 44 59 inlet;
+#X text 40 35 files;
+#X obj 167 58 inlet;
+#X text 168 34 directories;
+#X obj 341 58 inlet;
+#X text 335 35 fixes;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 1 3 0;
+#X connect 6 0 0 0;
+#X connect 8 0 1 0;
+#X connect 10 0 2 0;
+#X restore 189 199 pd info-path;
+#X obj 189 271 s \$0-info-path;
+#X obj 7 95 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 716 59 <= click;
+#N canvas 599 129 572 356 reference 0;
+#X obj 9 94 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 153 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 323 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 212 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 179 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 279 -q: set quiet verbosity., f 49;
+#X text 155 297 -v: set loud verbosity., f 49;
+#X text 54 128 verbose <float> - set verbosity on or off.;
+#X text 132 219 bang - if an error occurs.;
+#X obj 58 16 file isfile;
+#X obj 23 39 file isdirectory;
+#X obj 72 62 file size;
+#X text 145 62 - get size of a file;
+#X text 145 40 - check if path is an existing directory;
+#X text 145 17 - check if path is an existing regular file;
+#X text 117 107 symbol -file or directory name.;
+#X text 110 186 float -;
+#X text 167 185 true <1> of false <0>., f 39;
+#X obj 7 247 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 273 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 613 60 pd reference;
+#X text 167 63 - get size of a file;
+#X text 167 41 - check if path is an existing directory;
+#X text 167 18 - check if path is an existing regular file;
+#X connect 0 0 1 0;
+#X connect 0 1 21 0;
+#X connect 1 0 14 0;
+#X connect 2 0 34 0;
+#X connect 3 0 13 0;
+#X connect 4 0 3 0;
+#X connect 4 1 12 0;
+#X connect 6 0 34 1;
+#X connect 8 0 34 2;
+#X connect 10 0 34 2;
+#X connect 12 0 11 0;
+#X connect 17 0 19 0;
+#X connect 18 0 17 0;
+#X connect 18 1 23 0;
+#X connect 21 0 22 0;
+#X connect 23 0 24 0;
+#X connect 29 0 0 0;
+#X connect 30 0 18 0;
+#X connect 31 0 4 0;
+#X connect 33 0 35 0;
+#X connect 34 0 33 0;
+#X restore 440 320 pd info;
+#N canvas 499 34 827 708 stat 0;
+#X msg 80 64 bang;
+#X text 27 59 select a file, f 6;
+#X msg 120 65 bang;
+#X text 160 64 select a directory;
+#X msg 161 94 symbol .;
+#X text 233 93 some directory;
+#X msg 192 122 symbol nada;
+#X text 282 124 probably not there;
+#X obj 185 181 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 185 201 print ERR:stat;
+#X obj 80 209 t a a;
+#X obj 112 233 print stat;
+#X obj 130 347 tgl 15 0 empty empty r 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 199 347 tgl 15 0 empty empty w 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 268 347 tgl 15 0 empty empty x 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 156 433 route type;
+#X obj 156 458 symbol;
+#X obj 129 404 tgl 15 0 empty empty F 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 207 404 tgl 15 0 empty empty D 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 285 404 tgl 15 0 empty empty L 17 7 0 10 #fcfcfc #000000 #000000
+0 1;
+#X obj 129 377 route isfile isdirectory issymlink;
+#X symbolatom 156 484 10 0 0 0 - - - 0;
+#X obj 337 347 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X floatatom 152 590 5 0 0 0 - - - 0;
+#X floatatom 199 590 5 0 0 0 - - - 0;
+#X floatatom 339 516 5 0 0 0 - - - 0;
+#X obj 80 622 route mtime atime, f 62;
+#X msg 80 648 symbol \$1-\$2-\$3T\$4:\$5:\$6;
+#X symbolatom 80 673 19 0 0 0 modified - - 0;
+#X msg 295 648 symbol \$1-\$2-\$3T\$4:\$5:\$6;
+#X symbolatom 295 673 18 0 0 0 accessed - - 0;
+#X obj 80 320 t a a;
+#X obj 80 526 t a a;
+#X obj 80 377 t a a;
+#X obj 80 445 t a a;
+#X obj 80 566 t a a;
+#X floatatom 135 291 5 0 0 0 - - - 0;
+#X obj 80 266 t a a;
+#X text 296 187 on error \, a bang is sent to the 2nd outlet, f 22
+;
+#X obj 135 266 route size;
+#X obj 130 320 route readable writable executable owned;
+#X obj 339 493 route permissions;
+#X obj 339 540 makefilename %o;
+#X symbolatom 339 565 10 0 0 0 - - - 0;
+#X text 461 532 numeric permissions (the more common form is the octal
+representation), f 37;
+#X text 384 366 boolean values whether the path is a file/directory/symlink
+;
+#X text 243 592 numeric user-id & group-id of the file;
+#X text 528 617 last modification resp. access time, f 19;
+#X text 229 264 file size (for regular files/symlinks \, 0 for directories
+\, -1 otherwise), f 38;
+#X text 209 458 symbolic description of the path type (after resolving
+any symlinks), f 68;
+#N canvas 871 315 423 294 openpanel 0;
+#X obj 74 97 openpanel;
+#X obj 167 97 openpanel 1;
+#X obj 271 195 symbol .;
+#X obj 271 220 outlet;
+#X obj 271 58 inlet;
+#X text 270 34 fixes;
+#X obj 167 58 inlet;
+#X text 156 33 directories;
+#X obj 74 59 inlet;
+#X text 70 33 files;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 6 0 1 0;
+#X connect 8 0 0 0;
+#X restore 80 121 pd openpanel;
+#X obj 80 180 file stat;
+#N canvas 565 317 738 232 arguments 0;
+#X text 274 145 less verbose (quiet);
+#X text 274 175 more verbose (loud);
+#X msg 563 149 verbose \$1;
+#X obj 563 127 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 106 70 error reporting on the Pd-console;
+#X text 239 111 via flags:;
+#X text 524 100 via a message:;
+#X obj 146 145 file stat -q;
+#X obj 146 175 file stat -v;
+#X obj 563 174 file stat;
+#X connect 2 0 9 0;
+#X connect 3 0 2 0;
+#X restore 613 153 pd arguments;
+#X text 445 70 [file stat] queries the filesystem about the given path
+\, and outputs the collected data as a number of routable messages.
+, f 46;
+#X text 385 384 (the symlink flag is additional: e.g. \, if the path
+is a symlink to a directory \, both isdirectory and issymlink will
+be true);
+#X symbolatom 80 150 66 0 0 0 - - - 0;
+#X text 425 318 whether the file is readable/writable/executable/owned
+by the user (might be '-1' if undeterminable), f 54;
+#X obj 152 563 route uid gidd;
+#X text 112 15 - get metainformation about a file/directory;
+#X obj 36 15 file stat;
+#X obj 11 47 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 715 14 <= click;
+#N canvas 599 129 574 320 reference 0;
+#X text 106 15 - get metainformation about a file/directory;
+#X obj 30 15 file stat;
+#X obj 10 50 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 10 109 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 294 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 10 175 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 10 135 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 156 249 -q: set quiet verbosity., f 49;
+#X text 156 267 -v: set loud verbosity., f 49;
+#X text 55 84 verbose <float> - set verbosity on or off.;
+#X text 90 140 anything -;
+#X text 168 141 several messages for metainformation., f 39;
+#X text 133 182 bang - if an error occurs.;
+#X obj 8 210 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 236 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 118 63 symbol - file or directory name.;
+#X restore 612 15 pd reference;
+#X connect 0 0 50 0;
+#X connect 2 0 50 1;
+#X connect 4 0 50 2;
+#X connect 6 0 50 2;
+#X connect 8 0 9 0;
+#X connect 10 0 37 0;
+#X connect 10 1 11 0;
+#X connect 15 0 16 0;
+#X connect 16 0 21 0;
+#X connect 20 0 17 0;
+#X connect 20 1 18 0;
+#X connect 20 2 19 0;
+#X connect 25 0 42 0;
+#X connect 26 0 27 0;
+#X connect 26 1 29 0;
+#X connect 27 0 28 0;
+#X connect 29 0 30 0;
+#X connect 31 0 33 0;
+#X connect 31 1 40 0;
+#X connect 32 0 35 0;
+#X connect 32 1 41 0;
+#X connect 33 0 34 0;
+#X connect 33 1 20 0;
+#X connect 34 0 32 0;
+#X connect 34 1 15 0;
+#X connect 35 0 26 0;
+#X connect 35 1 57 0;
+#X connect 37 0 31 0;
+#X connect 37 1 39 0;
+#X connect 39 0 36 0;
+#X connect 40 0 12 0;
+#X connect 40 1 13 0;
+#X connect 40 2 14 0;
+#X connect 40 3 22 0;
+#X connect 41 0 25 0;
+#X connect 42 0 43 0;
+#X connect 50 0 55 0;
+#X connect 51 0 10 0;
+#X connect 51 1 8 0;
+#X connect 55 0 51 0;
+#X connect 57 0 23 0;
+#X connect 57 1 24 0;
+#X restore 440 291 pd stat;
+#N canvas 549 160 676 359 move 0;
+#X msg 53 110 list source destination;
+#N canvas 305 121 542 353 arguments 0;
+#X msg 136 143 verbose \$1;
+#X obj 136 122 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 136 168 outlet;
+#X text 61 82 error reporting;
+#X text 244 118 turn error-printout on/off;
+#X text 65 254 or via flags:;
+#X text 206 294 more verbose;
+#X text 206 324 less verbose (quiet);
+#X obj 90 292 file move -v;
+#X obj 90 322 file move -q;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X restore 77 190 pd arguments;
+#X text 270 164 'destination' can be a file or a directory.;
+#X text 270 144 'source' must be a file.;
+#X text 272 197 the destination directory must exist and be writable.
+;
+#X text 70 68 [file move] moves (renames) files;
+#X text 241 109 renames the file 'source' to the new file 'destination'
+;
+#X obj 53 234 file move, f 12;
+#X obj 53 259 print move;
+#X obj 134 260 print ERR:move;
+#X text 55 313 NOTE: moving a file removes the original file.;
+#X obj 11 47 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 580 14 <= click;
+#N canvas 599 129 573 331 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 111 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 286 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 167 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 137 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 155 240 -q: set quiet verbosity., f 49;
+#X text 155 258 -v: set loud verbosity., f 49;
+#X text 54 86 verbose <float> - set verbosity on or off.;
+#X text 132 174 bang - if an error occurs.;
+#X text 117 65 list - source and destination.;
+#X text 120 142 list -;
+#X text 167 143 source and destination on success., f 39;
+#X obj 36 15 file move;
+#X text 112 15 - move a file to a new destination.;
+#X obj 7 207 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 233 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 477 15 pd reference;
+#X obj 36 15 file move;
+#X text 112 15 - move a file to a new destination.;
+#X connect 0 0 7 0;
+#X connect 1 0 7 0;
+#X connect 7 0 8 0;
+#X connect 7 1 9 0;
+#X restore 440 407 pd move;
+#X text 22 644 see also:;
+#X obj 97 643 text;
+#X obj 139 643 array;
+#X obj 188 643 list;
+#X text 157 308 - get information on existing files;
+#N canvas 451 65 791 637 split+join 0;
+#N canvas 140 311 547 369 path 0;
+#X obj 103 233 symbol;
+#X obj 260 292 print PATH;
+#X obj 103 291 outlet;
+#X obj 56 115 openpanel;
+#X obj 139 115 openpanel 1;
+#X msg 139 141 symbol \$1/;
+#X obj 56 58 route file directory dir random;
+#N canvas 853 241 513 304 random 0;
+#X obj 71 39 inlet;
+#X obj 71 225 outlet;
+#X obj 71 77 t b;
+#X obj 71 161 random;
+#X obj 71 129 t b f;
+#X obj 71 188 text get \$0-name-split+join-strings;
+#X obj 71 102 text size \$0-name-split+join-strings;
+#X obj 143 149 text define -k \$0-name-split+join-strings;
+#A set ///foo/bar/pizza \; dir/subdir/ \; soundfile.wav \; /path/to/pd.exe
+\; ../file.txt;
+#X connect 0 0 2 0;
+#X connect 2 0 6 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 1;
+#X connect 5 0 1 0;
+#X connect 6 0 4 0;
+#X restore 254 155 pd random;
+#X obj 237 259 t s s b;
+#X obj 360 292 print -n;
+#X msg 360 266 -------------------;
+#X obj 56 25 inlet;
+#X obj 237 234 r \$0-split+join-in;
+#X obj 237 323 s \$0-split+join;
+#X obj 56 87 b;
+#X obj 139 88 b;
+#X obj 270 178 b;
+#X connect 0 0 2 0;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 0;
+#X connect 6 0 14 0;
+#X connect 6 1 15 0;
+#X connect 6 2 15 0;
+#X connect 6 3 7 0;
+#X connect 6 4 16 0;
+#X connect 7 0 0 0;
+#X connect 8 0 13 0;
+#X connect 8 1 1 0;
+#X connect 8 2 10 0;
+#X connect 10 0 9 0;
+#X connect 11 0 6 0;
+#X connect 12 0 8 0;
+#X connect 14 0 3 0;
+#X connect 15 0 4 0;
+#X connect 16 0 0 0;
+#X restore 173 143 pd path;
+#X text 346 293 if the input ends with a / \, a '/' will be sent to
+the 2nd outlet. otherwise \, the 2nd outlet will fire a bang.;
+#X obj 126 262 file split;
+#X obj 168 419 file join;
+#X obj 168 513 print join;
+#X symbolatom 173 170 0 0 0 0 - - \$0-split+join-in 0;
+#X msg 173 65 file;
+#X msg 183 92 directory;
+#X text 46 168 or type your own:;
+#X symbolatom 168 461 0 0 0 0 - - - 0;
+#X msg 193 117 random string;
+#X text 271 415 'join' a list of path components to a full path \,
+using '/' as the path separator., f 42;
+#X text 184 488 duplicate path separator will be removed.;
+#X text 345 278 duplicate path separator will be removed.;
+#X text 89 547 NOTE: 'file split' will always output (lists of) symbols
+\, even if the component looks like a number. on one hand this makes
+it harder to [route] \, but on the other hand this will keep zero-padded
+numbers intact (think "2020/01/01/0042.wav")., f 91;
+#X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 684 14 <= click;
+#N canvas 574 89 571 484 reference 0;
+#X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 85 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 210 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 141 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 111 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 176 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 34 12 file split;
+#X text 120 13 - 'split' path into components;
+#X text 117 58 symbol - file or directory name to split.;
+#X text 150 116 list - list of split components.;
+#X text 101 148 symbol/bang - '/' if inputs ends with '/' or bang otherwise.
+;
+#X obj 9 295 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 335 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 460 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 391 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 361 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 426 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 34 262 file join;
+#X text 110 263 - 'join' a list of components using '/' as the separator.
+;
+#X text 143 308 list - list of components to join.;
+#X text 164 366 symbol - joined path or file.;
+#X text 162 184 NONE;
+#X text 222 434 NONE;
+#X text 194 400 Inactive Outlet!;
+#X restore 581 15 pd reference;
+#X text 189 15 - filename operations;
+#X obj 33 15 file split;
+#X obj 116 15 file join;
+#X text 67 307 trailing slash ->;
+#X text 27 348 components ->;
+#X obj 168 379 list;
+#X text 210 260 <-- 'split' path into components, f 16;
+#X text 96 65 select a:;
+#X text 242 419 <--;
+#X text 89 595 Conversely \, the 'file join' object accepts both symbols
+and numbers., f 91;
+#X obj 126 230 r \$0-split+join;
+#X text 345 216 A list of path components (symbols) is sent to the
+1st outlet. if the input started with a / \, the first path component
+will be a symbol '/'. otherwise no slashes will appear in the path
+components.;
+#X text 344 96 These objects perform common string operations on filenames.
+no checks are performed verifying the validity/existence of any path-component.
+, f 47;
+#X listbox 193 310 4 0 0 0 - - - 0;
+#X listbox 126 349 0 0 0 0 - - - 0;
+#X connect 0 0 5 0;
+#X connect 2 0 32 0;
+#X connect 2 1 31 0;
+#X connect 3 0 9 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 9 0 4 0;
+#X connect 10 0 0 0;
+#X connect 23 0 3 0;
+#X connect 28 0 2 0;
+#X connect 31 0 23 1;
+#X connect 32 0 23 0;
+#X restore 440 507 pd split+join;
+#N canvas 395 48 794 632 base+ext 0;
+#X text 400 198 'splitname' separates the directory component from
+the file component of the path \, and outputs a list with both on the
+1st outlet., f 45;
+#X text 79 564 NOTE: the 'file split*' objects will always output (lists
+of) symbols \, even if the component looks like a number. on one hand
+this makes it harder to [route] \, but on the other hand this will
+keep zero-padded numbers intact (think "2020/01/01/0042.wav")., f
+92;
+#N canvas 375 327 547 369 path 0;
+#X obj 103 233 symbol;
+#X symbolatom 148 165 10 0 0 0 - - - 0;
+#X obj 260 292 print PATH;
+#X obj 103 291 outlet;
+#X obj 56 115 openpanel;
+#X obj 139 115 openpanel 1;
+#X msg 139 141 symbol \$1/;
+#X obj 56 58 route file directory dir random;
+#X obj 237 259 t s s b;
+#X obj 360 292 print -n;
+#X msg 360 266 -------------------;
+#X obj 56 25 inlet;
+#N canvas 667 322 513 304 random 0;
+#X obj 71 39 inlet;
+#X obj 71 225 outlet;
+#X obj 71 77 t b;
+#X obj 71 161 random;
+#X obj 71 129 t b f;
+#X obj 143 149 text define -k \$0-base+ext-strings;
+#A set ///foo/bar/pizza \; dir/subdir/ \; soundfile.wav \; /path/to/pd.exe
+\; ../file.txt;
+#X obj 71 102 text size \$0-base+ext-strings;
+#X obj 71 188 text get \$0-base+ext-strings;
+#X connect 0 0 2 0;
+#X connect 2 0 6 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 4 1 3 1;
+#X connect 6 0 4 0;
+#X connect 7 0 1 0;
+#X restore 254 155 pd random;
+#X obj 237 323 s \$0-base+ext;
+#X obj 237 234 r \$0-base+ext-in;
+#X obj 56 87 b;
+#X obj 139 88 b;
+#X obj 270 178 b;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 6 0;
+#X connect 6 0 0 0;
+#X connect 7 0 15 0;
+#X connect 7 1 16 0;
+#X connect 7 2 16 0;
+#X connect 7 3 12 0;
+#X connect 7 4 17 0;
+#X connect 8 0 13 0;
+#X connect 8 1 2 0;
+#X connect 8 2 10 0;
+#X connect 10 0 9 0;
+#X connect 11 0 7 0;
+#X connect 12 0 0 0;
+#X connect 14 0 8 0;
+#X connect 15 0 4 0;
+#X connect 16 0 5 0;
+#X connect 17 0 0 0;
+#X restore 167 148 pd path;
+#X symbolatom 167 173 0 0 0 0 - - \$0-base+ext-in 0;
+#X msg 167 70 file;
+#X msg 177 97 directory;
+#X text 40 173 or type your own:;
+#X text 97 72 select a;
+#X msg 187 122 random string;
+#X obj 8 47 cnv 1 775 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 684 14 <= click;
+#N canvas 724 152 573 467 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 91 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 211 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 147 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 117 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 177 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 20 19 file splitname;
+#X text 135 19 - separates directory an file components.;
+#X text 117 65 symbol - file name.;
+#X text 120 122 list - the separated directory and file components.
+;
+#X text 108 154 symbol - file component if no directory component is
+found.;
+#X obj 9 282 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 321 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 441 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 9 377 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 347 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 407 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 117 295 symbol - file name.;
+#X text 120 352 list - the separated directory and file components.
+;
+#X obj 19 252 file splitext;
+#X text 126 252 - separates directory+file and extension.;
+#X text 108 384 symbol - path if no extension is found.;
+#X text 162 185 NONE;
+#X text 162 415 NONE;
+#X restore 581 15 pd reference;
+#X text 259 15 - more filename operations.;
+#X obj 33 15 file splitname;
+#X obj 146 15 file splitext;
+#X text 407 384 'splitext' separates the directory+file component from
+the extension of the given path \, and outputs a list with both on
+the 1st outlet., f 45;
+#X text 326 91 These objects perform common string operations on filenames.
+no checks are performed verifying the validity/existence of any path-component.
+, f 49;
+#X text 400 247 If no directory component can be found \, the path
+is sent to the 2nd outlet., f 45;
+#X text 400 281 A trailing slash is removed., f 45;
+#X text 400 302 The filename is the non-empty string after the last
+path-separator, f 45;
+#X text 407 448 If no extension is found \, the path is sent to the
+2nd outlet., f 45;
+#X text 407 487 An extension is a non-empty string after the last '.'
+in the filename-component of the path., f 45;
+#X obj 67 440 file splitext;
+#X listbox 179 424 0 0 0 0 - - - 0;
+#X listbox 67 494 0 0 0 0 - - - 0;
+#X obj 179 453 print splitext no extension;
+#X obj 67 521 print splitext root+ext;
+#X obj 67 409 r \$0-base+ext;
+#X obj 63 256 file splitname;
+#X obj 63 225 r \$0-base+ext;
+#X listbox 179 246 0 0 0 0 - - - 0;
+#X listbox 63 309 0 0 0 0 - - - 0;
+#X obj 63 337 print splitname dir+file;
+#X obj 179 271 print splitname file;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 2 0;
+#X connect 8 0 2 0;
+#X connect 22 0 24 0;
+#X connect 22 1 23 0;
+#X connect 23 0 25 0;
+#X connect 24 0 26 0;
+#X connect 27 0 22 0;
+#X connect 28 0 31 0;
+#X connect 28 1 30 0;
+#X connect 29 0 28 0;
+#X connect 30 0 33 0;
+#X connect 31 0 32 0;
+#X restore 440 537 pd base+ext;
+#X text 349 643 updated for Pd version 0.52;
+#X obj 27 127 file define \$0.f;
+#X text 156 126 - shared file handles;
+#N canvas 565 43 617 557 define 0;
+#X obj 63 177 file define \$0.foo;
+#X text 213 177 declare a file-handle with a given name.;
+#X msg 80 263 open /tmp/test.txt;
+#X obj 80 325 file handle \$0.foo;
+#X msg 103 293 close;
+#X msg 102 404 8;
+#X text 134 403 read some bytes;
+#X msg 225 441 bang;
+#X text 42 228 here we open/close the file that is associated with
+'\$0.foo';
+#X text 81 377 here we read the file that is opened elsewhere.;
+#X obj 102 499 file handle \$0.foo;
+#X obj 225 467 symbol \$0.bar;
+#X text 269 440 you can change the associated file-handle;
+#X text 17 66 Sometimes it is easier to access the same file-handle
+from different parts of the patch (e.g. when reading and parsing a
+file) \, rather than going backwards and forwards with a single 'file
+handle' object., f 77;
+#X text 17 122 In this case \, you can use the 'file define' object
+to provide a file handle that can then be accessed by multiple 'file
+handle' objects., f 77;
+#X obj 28 19 file define x;
+#X text 134 19 - share file handles.;
+#X obj 7 52 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 526 17 <= click;
+#N canvas 599 129 578 200 reference 0;
+#X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 93 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 131 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 170 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 136 20 - share file handles.;
+#X obj 30 20 file define z;
+#X text 164 103 NONE;
+#X text 164 65 NONE;
+#X text 143 140 1 symbol - declared file-handle name.;
+#X restore 423 18 pd reference;
+#X connect 2 0 3 0;
+#X connect 4 0 3 0;
+#X connect 5 0 10 0;
+#X connect 7 0 11 0;
+#X connect 11 0 10 1;
+#X restore 440 127 pd define;
+#X obj 10 44 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 473 11 <= click;
+#N canvas 765 68 566 232 reference 0;
+#X obj 7 163 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 75 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X text 96 85 symbol -;
+#X obj 7 54 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 147 183 Open specific references in each subpatch detailing
+each function on parent patch., f 41;
+#X obj 26 18 file;
+#X text 73 18 - low-level file operations;
+#X text 160 86 sets the function of [file] \, possible values: handle
+\, define \, mkdir \, which \, glob \, stat \, isfile \, isdirectory
+\, size \, copy \, move \, delete \, split \, join \, splitext and
+splitname. The default value is 'define'., f 54;
+#X restore 379 12 pd reference;
+#X obj 9 632 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
