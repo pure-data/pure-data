@@ -6,7 +6,7 @@
 #X floatatom 93 313 4 0 100 0 - - - 0;
 #X msg 478 516 \; trigger 0;
 #X obj 55 288 unpack;
-#X floatatom 55 313 3 0 100 0 - - - 0;
+#X floatatom 55 313 4 0 100 0 - - - 0;
 #X obj 55 564 +~ 0.3;
 #X obj 55 590 cos~;
 #X obj 55 538 osc~;

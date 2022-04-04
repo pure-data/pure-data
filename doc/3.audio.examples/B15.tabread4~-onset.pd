@@ -16,35 +16,35 @@ and the "main" (signal) inlet in 64-bit precision. So if \, for example
 (190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement.
 , f 85;
 #X text 56 11 USING ONSETS INTO TABREAD4~ TO IMPROVE ACCURACY;
-#X obj 40 512 output~;
-#X obj 387 428 samplerate~;
-#X obj 387 452 / 2;
-#X obj 374 505 tabwrite~ \$0-tab;
-#X obj 40 478 tabread4~ \$0-tab;
-#X obj 387 476 osc~;
-#X obj 171 478 tabread4~ \$0-tab;
-#X obj 171 512 output~;
-#X obj 40 395 *~ 10000;
-#X obj 40 448 +~;
-#X floatatom 280 397 6 0 0 0 - - - 0;
-#X msg 280 367 1;
-#X obj 375 545 table \$0-tab 200000;
-#X obj 40 366 phasor~ 0.02;
-#X msg 225 367 150001;
+#X obj 60 512 output~;
+#X obj 407 428 samplerate~;
+#X obj 407 452 / 2;
+#X obj 394 505 tabwrite~ \$0-tab;
+#X obj 60 478 tabread4~ \$0-tab;
+#X obj 407 476 osc~;
+#X obj 191 478 tabread4~ \$0-tab;
+#X obj 191 512 output~;
+#X obj 60 395 *~ 10000;
+#X obj 60 448 +~;
+#X floatatom 300 397 6 0 0 0 - - - 0;
+#X msg 300 367 1;
+#X obj 394 545 table \$0-tab 200000;
+#X obj 60 366 phasor~ 0.02;
+#X msg 245 367 150001;
 #X text 34 240 At left below an onset (1 or 150000 samples) is added
 to the index of a table lookup. If you select the onset of 150001 \,
 you should hear the truncation error. (The table contains a Nyquist
 signal and the "correct" output should be a 100 Hz. tone.) At right
 \, the onset is presented in the separate onset inlet. The worst-case
 truncation error drops by about 30 dB., f 85;
-#X text 56 572 BAD;
-#X text 188 569 GOOD;
-#X text 226 346 ONSET INTO TABLE;
+#X text 76 572 BAD;
+#X text 208 569 GOOD;
+#X text 246 346 ONSET INTO TABLE;
 #X obj 423 12 declare -stdpath ./;
-#X text 402 341 First \, generate the table:;
-#X msg 398 379 \; pd dsp 1 \, fast-forward 4500;
+#X text 422 341 First \, generate the table:;
+#X msg 418 379 \; pd dsp 1 \, fast-forward 4500;
 #X text 404 597 updated for Pd version 0.52;
-#X obj 374 341 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 394 341 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X connect 4 0 5 0;
 #X connect 5 0 8 0;

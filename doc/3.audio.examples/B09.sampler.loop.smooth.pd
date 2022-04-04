@@ -45,14 +45,14 @@ of the envelope \, but this will be taken up later., f 59;
 #X text 549 400 <-- click here to record to table;
 #X text 600 481 v-- re-read the original sound;
 #X text 613 562 updated for Pd version 0.37;
-#X text 213 86 <= chunk size (100ths of a second);
-#X text 131 49 <= frequency (Hz.);
 #X obj 206 300 declare -stdpath ./;
 #X obj 204 220 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 225 220 <-- click to graph envelope;
 #X obj 527 402 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
+#X text 131 49 <-- frequency (Hz.);
+#X text 213 86 <-- chunk size (100ths of a second);
 #X connect 2 0 26 0;
 #X connect 3 0 18 0;
 #X connect 3 0 18 1;
@@ -71,5 +71,5 @@ of the envelope \, but this will be taken up later., f 59;
 #X connect 19 0 7 0;
 #X connect 24 0 12 1;
 #X connect 26 0 13 0;
-#X connect 33 0 21 0;
-#X connect 35 0 25 0;
+#X connect 31 0 21 0;
+#X connect 33 0 25 0;

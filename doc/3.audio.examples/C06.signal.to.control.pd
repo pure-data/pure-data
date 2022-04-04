@@ -1,11 +1,11 @@
 #N canvas 649 71 500 361 12;
-#X obj 137 267 snapshot~;
-#X obj 162 237 phasor~ 1;
-#X floatatom 137 298 5 0 0 0 - - - 0;
+#X obj 126 267 snapshot~;
+#X obj 151 237 phasor~ 1;
+#X floatatom 126 298 10 0 0 0 - - - 16;
 #X text 25 18 CONVERTING SIGNALS TO CONTROLS;
-#X text 263 299 Updated for Pd version 0.37;
-#X obj 137 201 metro 100;
-#X obj 137 168 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X text 276 299 Updated for Pd version 0.37;
+#X obj 126 201 metro 100;
+#X obj 126 168 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 31 51 The [snapshot~] object allows you to convert from signals
 to control streams (float messages) -- an opposite of [sig~]. The value

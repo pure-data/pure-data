@@ -1,7 +1,7 @@
-#N canvas 637 23 655 688 12;
+#N canvas 564 23 655 688 12;
 #X declare -stdpath ./;
 #X obj 218 172 *~;
-#X floatatom 218 87 4 0 0 0 - - - 0;
+#X floatatom 218 87 5 0 0 0 - - - 0;
 #X floatatom 148 132 5 0 0 0 - - - 0;
 #X obj 148 202 +~;
 #N canvas 0 0 450 300 (subpatch) 0;

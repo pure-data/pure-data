@@ -1,4 +1,4 @@
-#N canvas 458 23 794 723 12;
+#N canvas 402 23 794 723 12;
 #X declare -stdpath ./;
 #X obj 243 64 delay 5;
 #X text 419 290 end of note;
@@ -205,8 +205,7 @@ beginning \, and you can change the duration and rise and decay times.
 #X restore 70 203 graph;
 #X restore 635 223 pd samples;
 #X obj 603 16 declare -stdpath ./;
-#X obj 243 27 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000;
+#X obj 243 27 bang;
 #X connect 0 0 27 0;
 #X connect 2 0 61 0;
 #X connect 4 0 3 0;

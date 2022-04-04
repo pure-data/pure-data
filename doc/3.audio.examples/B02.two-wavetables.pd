@@ -1,4 +1,4 @@
-#N canvas 378 104 729 494 12;
+#N canvas 414 81 629 493 12;
 #X declare -stdpath ./;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array waveform11 259 float 1;
@@ -39,10 +39,10 @@
 -0.649386 -0.581625 -0.508772 -0.431366 -0.350025 -0.265443 -0.178375
 -0.0896226 -1.94061e-05 0.089584;
 #X coords 0 1.02 258 -1.02 258 130 1;
-#X restore 399 191 graph;
-#X text 466 449 updated for Pd version 0.34;
-#X text 59 41 WAVETABLE OSCILLATORS;
-#X text 87 144 wavetable;
+#X restore 323 194 graph;
+#X text 395 455 updated for Pd version 0.34;
+#X text 19 44 WAVETABLE OSCILLATORS;
+#X text 47 147 wavetable;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array pitch11 259 float 1;
 #A 0 757.143 757.143 735.714 700 671.429 650 621.429 600 571.429 550
@@ -74,21 +74,21 @@
 957.143 950 214.286 214.286 207.143 207.143 957.143 957.143 950 200
 207.143 207.143 942.857 942.857 942.857 950 950;
 #X coords 0 1000 258 0 259 140 1;
-#X restore 399 28 graph;
-#X obj 185 125 tabosc4~ pitch11;
-#X obj 185 161 tabosc4~ waveform11;
-#X obj 185 93 sig~ 0.5;
-#X text 71 347 Here's a tabosc4~ controlling the frequency of another
+#X restore 323 31 graph;
+#X obj 145 128 tabosc4~ pitch11;
+#X obj 145 164 tabosc4~ waveform11;
+#X obj 145 96 sig~ 0.5;
+#X text 41 164 oscillator =>;
+#X text 69 95 pitch =>;
+#X obj 145 215 output~;
+#X obj 144 291 declare -stdpath ./;
+#X text 63 349 Here's a [tabosc4~] controlling the frequency of another
 one. If you get properties on the two arrays \, you'll see that the
-top graph has a vertical scale from 0 to 1000 \; we're looping through
-that at a frequency of 0.5 Hz. and the output is used as the frequency
-input of the second tabosc4~. I've detected Klingons \, Captain Kirk...
-;
-#X text 81 161 oscillator =>;
-#X text 109 92 pitch =>;
-#X obj 185 212 output~;
-#X obj 184 288 declare -stdpath ./;
+top graph has a vertical scale from 0 to 1000, f 69;
+#X text 63 397 We're looping through that at a frequency of 0.5 Hz.
+and the output is used as the frequency input of the second [tabosc4~].
+I've detected Klingons \, Captain Kirk..., f 69;
 #X connect 5 0 6 0;
-#X connect 6 0 11 0;
-#X connect 6 0 11 1;
+#X connect 6 0 10 0;
+#X connect 6 0 10 1;
 #X connect 7 0 5 0;

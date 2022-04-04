@@ -1,4 +1,4 @@
-#N canvas 401 168 809 559 12;
+#N canvas 610 211 809 559 12;
 #X obj 422 321 sqrt;
 #X text 242 160 trigger;
 #X text 134 263 relative frequency, f 9;
@@ -40,19 +40,19 @@
 #X obj 220 294 v rdur_\$0;
 #X text 462 319 take fourth root (square root twice) because we'll
 raise [line~] output to fourth power, f 30;
-#X text 107 16 partial -- sinusoidal partial for additive synthesis
-used as an abstraction in the additive synthesis example \, D06.additive.pd
-, f 64;
 #X obj 422 267 v amp_\$0;
 #X obj 221 115 route bang;
 #X obj 610 83 inlet;
 #X obj 670 83 inlet;
-#X obj 610 116 mtof;
-#X obj 670 116 * 100;
+#X obj 610 136 mtof;
 #X obj 69 310 r \$0-frequency;
 #X obj 610 178 s \$0-frequency;
 #X obj 238 322 r \$0-duration;
 #X obj 670 145 s \$0-duration;
+#X obj 670 115 * 100;
+#X text 107 16 partial -- sinusoidal partial for additive synthesis
+used as an abstraction in the additive synthesis example \, D07.additive.pd
+, f 64;
 #X connect 0 0 8 0;
 #X connect 3 0 30 0;
 #X connect 4 0 5 0;
@@ -71,8 +71,8 @@ used as an abstraction in the additive synthesis example \, D06.additive.pd
 #X connect 20 0 32 0;
 #X connect 21 0 3 0;
 #X connect 26 0 12 0;
-#X connect 26 1 40 0;
-#X connect 28 0 41 0;
+#X connect 26 1 39 0;
+#X connect 28 0 40 0;
 #X connect 29 0 35 0;
 #X connect 29 1 33 0;
 #X connect 29 2 34 0;
@@ -80,12 +80,12 @@ used as an abstraction in the additive synthesis example \, D06.additive.pd
 #X connect 32 0 21 0;
 #X connect 36 0 20 0;
 #X connect 37 0 18 0;
-#X connect 40 0 13 0;
-#X connect 41 0 10 0;
-#X connect 41 1 29 0;
-#X connect 42 0 44 0;
+#X connect 39 0 13 0;
+#X connect 40 0 10 0;
+#X connect 40 1 29 0;
+#X connect 41 0 43 0;
+#X connect 42 0 48 0;
 #X connect 43 0 45 0;
-#X connect 44 0 47 0;
-#X connect 45 0 49 0;
-#X connect 46 0 20 1;
-#X connect 48 0 18 1;
+#X connect 44 0 20 1;
+#X connect 46 0 18 1;
+#X connect 48 0 47 0;

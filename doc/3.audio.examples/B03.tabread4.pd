@@ -25,20 +25,19 @@
 #X obj 156 106 phasor~;
 #X obj 156 195 tabread4~ waveform12;
 #X obj 156 168 +~ 1;
-#X floatatom 156 77 4 0 0 0 - - - 0;
-#X floatatom 250 70 4 0 1000 0 - - - 0;
-#X obj 250 91 pack 0 50;
+#X floatatom 156 77 6 0 0 0 - - - 0;
+#X floatatom 250 67 6 0 1000 0 - - - 0;
 #X obj 250 115 line~;
 #X obj 156 142 *~;
 #X text 51 92 phase;
 #X text 51 128 range;
-#X text 250 49 squeeze;
+#X text 250 46 squeeze;
 #X text 133 51 frequency;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array wave-out12 441 float 0;
 #X coords 0 1 440 -1 300 140 1;
 #X restore 391 200 graph;
-#X obj 197 263 tabwrite~ wave-out12;
+#X obj 197 267 tabwrite~ wave-out12;
 #X text 125 373 The tabread4~ module is available for situations requiring
 more control than tabosc4~ offers. The relationship between the two
 is the same as between cos~ and osc~ \, although the units are different
@@ -59,18 +58,19 @@ waveform is compressed in time., f 77;
 #X text 50 107 generation =>;
 #X obj 98 280 output~;
 #X obj 214 314 declare -stdpath ./;
-#X obj 207 232 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 197 231 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 230 231 <-- click to graph;
-#X connect 2 0 9 0;
-#X connect 3 0 15 0;
-#X connect 3 0 22 1;
-#X connect 3 0 22 0;
+#X text 220 230 <-- click to graph;
+#X obj 250 91 pack f 50;
+#X connect 2 0 8 0;
+#X connect 3 0 14 0;
+#X connect 3 0 21 1;
+#X connect 3 0 21 0;
 #X connect 4 0 3 0;
 #X connect 5 0 2 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 8 0 18 0;
-#X connect 9 0 4 0;
-#X connect 18 0 9 1;
-#X connect 24 0 15 0;
+#X connect 6 0 25 0;
+#X connect 7 0 17 0;
+#X connect 8 0 4 0;
+#X connect 17 0 8 1;
+#X connect 23 0 14 0;
+#X connect 25 0 7 0;

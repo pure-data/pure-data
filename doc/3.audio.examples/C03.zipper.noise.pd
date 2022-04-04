@@ -1,4 +1,4 @@
-#N canvas 597 130 486 508 12;
+#N canvas 521 48 486 508 12;
 #X declare -stdpath ./;
 #X obj 185 368 output~;
 #X text 238 461 updated for Pd version 0.37;
