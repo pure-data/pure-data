@@ -1,14 +1,8 @@
 #N struct template4 float x float y float z float q;
-#N canvas 379 39 613 543 12;
+#N canvas 229 23 616 556 12;
 #X obj 235 356 pointer;
 #X obj 70 387 append template4 x y z q;
 #X msg 311 281 \; pd-data4 clear;
-#N canvas 1012 89 307 331 data4 1;
-#X scalar template4 50 250 30 9 \;;
-#X scalar template4 200 50 80 90 \;;
-#X scalar template4 100 200 -50 0 \;;
-#X coords 0 331 1 330 0 0 0;
-#X restore 459 304 pd data4;
 #N canvas 396 463 460 157 template4 0;
 #X obj 49 62 filledpolygon 244 q 5 0 0 20 z 40 0;
 #X obj 49 37 struct template4 float x float y float z float q;
@@ -23,7 +17,6 @@ are the names of variables we'll set., f 78;
 #X text 26 161 The outlet of [append] is a pointer to the newly created
 scalar. You can pass that on to other append objects if you want to
 build heterogeneous lists., f 78;
-#X msg 70 302 50 250 30 9 \, 200 50 80 90 \, 100 200 -50 0, f 13;
 #X obj 160 217 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 185 217 <-- click to re-initialize;
@@ -39,10 +32,17 @@ values to create three items., f 78;
 #X text 99 431 You can also add scalars by sending a 'scalar' message
 to the suboatch. The arguments of this message is template name and
 its field values., f 62;
+#X msg 70 302 50 250 40 9 \, 200 50 80 90 \, 100 200 -50 0, f 13;
+#N canvas 861 111 365 362 data4 1;
+#X scalar template4 50 250 40 9 \;;
+#X scalar template4 200 50 80 90 \;;
+#X scalar template4 100 200 -50 0 \;;
+#X coords 0 362 1 361 300 300 0;
+#X restore 457 303 pd data4;
 #X connect 0 0 1 4;
-#X connect 5 0 0 0;
-#X connect 6 0 9 0;
-#X connect 6 1 5 0;
-#X connect 6 2 2 0;
-#X connect 9 0 1 0;
-#X connect 10 0 6 0;
+#X connect 4 0 0 0;
+#X connect 5 0 14 0;
+#X connect 5 1 4 0;
+#X connect 5 2 2 0;
+#X connect 8 0 5 0;
+#X connect 14 0 1 0;

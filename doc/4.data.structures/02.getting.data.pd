@@ -1,6 +1,6 @@
 #N struct template2 float x float y float z float q float zz;
 #N canvas 384 23 588 592 12;
-#N canvas 427 343 493 354 stuff 1;
+#N canvas 427 343 493 354 stuff 0;
 #X obj 241 225 pointer;
 #X msg 76 71 bang;
 #X obj 76 40 loadbang;
@@ -57,11 +57,6 @@ template agrees with what [get] is expecting \, i.e. \, "template2"
 right to left order., f 74;
 #X text 31 502 The pointer sent from [pointer] to [get] is an elementary
 Pd type on a level with "float" and "symbol"., f 74;
-#X text 31 18 The simplest thing you can do with a collection of scalars
-(a list) is to traverse it \, getting its field values back out. This
-is done using two objects \, [pointer] which does the traversal \,
-and [get] which \, given a pointer to a scalar \, extracts field values
-from it., f 74;
 #N canvas 442 234 453 133 template2 0;
 #X obj 40 54 filledpolygon 244 q 5 0 0 20 z 40 0;
 #X obj 39 29 struct template2 float x float y float z float q;
@@ -74,6 +69,11 @@ from it., f 74;
 #X text 101 295 <-- traverses and outputs pointers to scalars;
 #X text 111 322 <-- bang when we reach the end of the list;
 #X text 198 377 <-- this takes incoming pointers;
+#X text 31 18 The simplest thing you can do with a collection of scalars
+(a list) is to traverse it and retrieve its field values. This is done
+using two objects \, [pointer] which does the traversal \, and [get]
+which \, given a pointer to a scalar \, extracts field values from
+it., f 74;
 #X connect 2 0 5 0;
 #X connect 2 1 12 0;
 #X connect 3 0 2 0;

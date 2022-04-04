@@ -3,22 +3,19 @@ array boom template6-element2;
 #N struct template6-element1 float y;
 #N struct template6-element2 float x float y float w;
 #N canvas 202 26 707 677 12;
-#X obj 257 467 pointer;
-#X floatatom 42 440 4 0 0 0 - - - 0;
-#X obj 432 330 pointer;
+#X obj 250 468 pointer;
+#X floatatom 35 441 4 0 0 0 - - - 0;
+#X obj 425 331 pointer;
 #N canvas 923 71 435 233 data6 1;
 #X scalar template6 30 50 \; 0 \; 0 \; 0 \; 0 \; 50 \; 0 \; 0 \; 0
 \; 0 \; 0 \; 0 \; -9 \; 0 \; 0 \; 0 \; 3 \; 0 \; 0 \; 0 \; 30 \; 0
 \; 0 \; 0 \; -43 \; 0 \; \; 0 100 10 \; 10 50 2 \; 200 75 15 \; 225
-25 1 \; 40 98 5.5 \; \;;
+25 1 \; 40 100 5 \; \;;
 #X coords 0 233 1 232 0 0 0;
-#X restore 477 501 pd data6;
+#X restore 470 502 pd data6;
 #N canvas 354 47 532 386 template6 0;
 #X obj 23 186 plot bazoo 700 3 30 10 10;
 #X obj 52 296 plot boom 90 1 50 50 1;
-#X text 40 326 since the 'boom' array define x and w fields \, the
-arguments for line width and horizontal spacing is ignored in [plot].
-;
 #X obj 126 30 struct template6 float x float y array bazoo template6-element1
 array boom template6-element2, f 32;
 #X text 27 95 This [struct] now also declares arrays named "bazoo"
@@ -31,7 +28,10 @@ declared on a separate subpatch., f 65;
 \, other arguments are: color (700) \, line width (3) \, position coordinate
 (30 \, 40) and horizontal spacing for the elements (5)., f 64;
 #X text 219 297 draw instruction for the 'boom' array;
-#X restore 477 524 pd template6;
+#X text 40 326 since the 'boom' array define x and w fields \, the
+arguments for line width and horizontal spacing are ignored in [plot].
+;
+#X restore 470 525 pd template6;
 #N canvas 260 134 601 508 stuff 0;
 #X obj 112 170 pointer;
 #X text 64 43 click here to re-initialize;
@@ -97,33 +97,33 @@ declared on a separate subpatch., f 65;
 #X connect 25 0 12 0;
 #X connect 26 0 5 0;
 #X connect 27 0 26 0;
-#X restore 477 592 pd stuff;
-#X msg 432 305 traverse pd-data6 \, next;
-#X obj 274 396 setsize template6 bazoo;
-#X obj 87 396 element template6 bazoo;
-#X text 278 305 click to get pointer;
-#X text 478 385 get size;
-#X text 307 338 set size;
-#X text 42 504 work as before \, but on;
-#X text 42 521 array elements...;
-#X text 42 489 normal "set" and "get";
-#X floatatom 456 440 4 0 0 0 - - - 0;
-#X floatatom 274 340 4 0 25 0 - - - 0;
-#X floatatom 87 367 4 0 25 0 - - - 0;
-#X floatatom 257 518 7 0 0 1 y-value - - 0;
-#X obj 456 388 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X restore 470 593 pd stuff;
+#X msg 425 306 traverse pd-data6 \, next;
+#X obj 267 397 setsize template6 bazoo;
+#X obj 80 397 element template6 bazoo;
+#X text 271 306 click to get pointer;
+#X text 471 386 get size;
+#X text 300 339 set size;
+#X text 35 505 work as before \, but on;
+#X text 35 522 array elements...;
+#X text 35 490 normal "set" and "get";
+#X floatatom 449 441 4 0 0 0 - - - 0;
+#X floatatom 267 341 4 0 25 0 - - - 0;
+#X floatatom 80 368 4 0 25 0 - - - 0;
+#X floatatom 250 519 7 0 0 1 y-value - - 0;
+#X obj 449 389 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 572 525 top-level;
-#X obj 257 437 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X text 565 526 top-level;
+#X obj 250 438 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 83 326 select an element from an index number, f 21;
-#X text 35 563 When you press the control (or "command" in mac) before
+#X text 76 327 select an element from an index number, f 21;
+#X text 33 565 When you press the control (or "command" in mac) before
 passing the mouse over a point \, the cursor becomes an "X" so you
 can click and remove that point or it becomes "+" so you can click
 and add a new point to the array., f 56;
-#X text 470 629 Updated for version Pd 0.52;
-#X text 511 448 see also:;
-#X obj 589 448 array;
+#X text 463 630 Updated for version Pd 0.52;
+#X text 504 449 see also:;
+#X obj 582 449 array;
 #N canvas 196 208 538 281 template6-element1 0;
 #X obj 119 211 drawpolygon 0 2 -2 -2 2 -2 2 2 -2 2 -2 -2;
 #X text 34 124 We don't really need any drawing instructions for the
@@ -137,7 +137,7 @@ number named "y". The variable name "y" is automatically assumed to
 control the vertical position and it's needed to plot 'y-values'. It
 also allows you to click and drag to change the y-value of each element.
 , f 70;
-#X restore 477 547 pd template6-element1;
+#X restore 470 548 pd template6-element1;
 #N canvas 230 117 485 281 template6-element2 0;
 #X obj 66 21 struct template6-element2 float x float y float w;
 #X obj 81 176 drawnumber w 10 5;
@@ -149,10 +149,10 @@ y and w \, which set coordinates (x \, y) and line width (w)., f 55
 #X text 76 206 In this case you can also click on the drawn float and
 drag or type the width value of that element., f 50;
 #X text 81 108 draw a filled polygon on each element.;
-#X restore 477 569 pd template6-element2;
-#X obj 257 492 get template6-element1 y;
-#X obj 42 467 set template6-element1 y;
-#X obj 456 415 array size -s template6 boom;
+#X restore 470 570 pd template6-element2;
+#X obj 250 493 get template6-element1 y;
+#X obj 35 468 set template6-element1 y;
+#X obj 449 416 array size -s template6 boom;
 #X text 17 232 The [elemment] object takes an index number and outputs
 a pointer to the corresponding array element. The [setsize] object
 sets the array size and [getsize] gets it \, but note you can also

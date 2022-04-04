@@ -1,14 +1,14 @@
 #N struct template3 float x float y float w float h float q;
-#N canvas 348 68 641 566 12;
+#N canvas 264 23 641 566 12;
 #X obj 328 255 pointer;
 #X msg 344 222 next;
 #X floatatom 328 345 4 0 0 0 - - - 0;
 #N canvas 927 44 381 425 data3 1;
 #X scalar template3 18 85 43 18 741 \;;
-#X scalar template3 52 290 16 115.3 19.54 \;;
+#X scalar template3 111 169 75 25 72 \;;
 #X scalar template3 111 92 4 15 163 \;;
 #X scalar template3 59 61 13 34 563 \;;
-#X scalar template3 148 86 37 20 562 \;;
+#X scalar template3 148 86 37 20 566 \;;
 #X scalar template3 173 281 76 48 763 \;;
 #X scalar template3 250 187 18 36 543 \;;
 #X scalar template3 124 270 78 21 107 \;;
@@ -130,8 +130,6 @@ this example \, the template specifies five fields describing the (x
 is that the color is also drawn below the rectangles because we have
 a [drawnumber] object in the template., f 84;
 #X text 425 257 click to --> randomize, f 12;
-#X obj 298 220 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X text 24 408 Note that you can set values with decimal points for
 the field names and they can be retrieved by [get]. Nonetheless \,
 the x/y coordinates and width/height parameters for the scalars depend
@@ -163,4 +161,3 @@ integer values., f 84;
 #X connect 21 1 14 4;
 #X connect 22 0 21 0;
 #X connect 28 0 0 0;
-#X connect 34 0 0 0;

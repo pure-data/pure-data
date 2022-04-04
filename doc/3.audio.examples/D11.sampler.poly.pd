@@ -1,6 +1,6 @@
 #N canvas 258 30 1032 643 12;
 #X declare -stdpath ./;
-#N canvas 305 163 441 440 samples 0;
+#N canvas 305 163 433 432 samples 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array sample3 176403 float 0;
 #X coords 0 1.02 176403 -1.02 200 130 1;
@@ -32,12 +32,10 @@
 #X text 340 203 allocate sampler voice;
 #X text 366 228 drop note off again;
 #X obj 677 503 qlist;
-#X obj 843 507 r comment;
+#X obj 814 512 r comment;
 #X text 700 434 sailors to untie him..., f 39;
 #X text 700 393 Lashed to the mast of his boat \, Ulysses;
 #X text 700 414 hears beautiful singing. He begs his, f 39;
-#X msg 677 473 read qlist-sampler.txt \, rewind \, tempo 1 \, bang
-;
 #X obj 559 348 output~;
 #X text 263 175 supply delayed note-off message;
 #X text 301 111 increment mod 1e+06 to make tag (acts like a MIDI pitch
@@ -121,10 +119,13 @@ makenote to generate the note-off messages \, and run [poly] on the
 resulting stream. We then discard both pitch and velocity (using the
 velocity only to strip note-offs) and rebuild the original message
 adding the voice number we just scored.;
-#X text 776 566 updated for Pd version 0.52;
-#X connect 10 0 38 0;
+#X text 779 597 updated for Pd version 0.52;
+#X msg 677 473 read qlist-sampler.txt \, rewind \, tempo 1 \, bang
+;
+#X obj 814 536 print comment;
+#X connect 10 0 37 0;
 #X connect 11 0 12 0;
-#X connect 11 1 37 1;
+#X connect 11 1 36 1;
 #X connect 12 0 13 0;
 #X connect 12 0 15 0;
 #X connect 13 0 14 0;
@@ -133,21 +134,22 @@ adding the voice number we just scored.;
 #X connect 15 1 16 1;
 #X connect 16 0 17 0;
 #X connect 16 2 17 1;
-#X connect 17 0 37 0;
-#X connect 26 0 21 0;
-#X connect 31 0 30 0;
-#X connect 32 0 30 0;
-#X connect 33 0 30 0;
-#X connect 34 0 30 0;
-#X connect 35 0 30 0;
-#X connect 37 0 40 0;
-#X connect 38 0 11 0;
-#X connect 38 1 37 2;
-#X connect 38 2 15 2;
-#X connect 38 2 37 3;
-#X connect 38 3 37 4;
-#X connect 38 4 37 5;
-#X connect 38 5 37 6;
-#X connect 38 6 37 7;
-#X connect 40 0 27 1;
-#X connect 40 0 27 0;
+#X connect 17 0 36 0;
+#X connect 22 0 44 0;
+#X connect 30 0 29 0;
+#X connect 31 0 29 0;
+#X connect 32 0 29 0;
+#X connect 33 0 29 0;
+#X connect 34 0 29 0;
+#X connect 36 0 39 0;
+#X connect 37 0 11 0;
+#X connect 37 1 36 2;
+#X connect 37 2 15 2;
+#X connect 37 2 36 3;
+#X connect 37 3 36 4;
+#X connect 37 4 36 5;
+#X connect 37 5 36 6;
+#X connect 37 6 36 7;
+#X connect 39 0 26 1;
+#X connect 39 0 26 0;
+#X connect 43 0 21 0;
