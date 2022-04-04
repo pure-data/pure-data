@@ -274,15 +274,16 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/04.append.pd \
      ./4.data.structures/05.symbol.text.pd \
      ./4.data.structures/06.array.pd \
-     ./4.data.structures/07.file.pd \
-     ./4.data.structures/08.sequencer.pd \
-     ./4.data.structures/09.interaction.pd \
-     ./4.data.structures/10.scaling.pd \
-     ./4.data.structures/11.onoff.pd \
-     ./4.data.structures/12.array.controls.pd \
-     ./4.data.structures/13.beat-patterns.pd \
-     ./4.data.structures/14.sliderule.pd \
-     ./4.data.structures/15.partialtracer.pd \
+     ./4.data.structures/07.graph.on.parent.pd \
+     ./4.data.structures/08.file.pd \
+     ./4.data.structures/09.sequencer.pd \
+     ./4.data.structures/10.interaction.pd \
+     ./4.data.structures/11.scaling.pd \
+     ./4.data.structures/12.onoff.pd \
+     ./4.data.structures/13.array.controls.pd \
+     ./4.data.structures/14.beat-patterns.pd \
+     ./4.data.structures/15.sliderule.pd \
+     ./4.data.structures/16.partialtracer.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
