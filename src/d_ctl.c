@@ -55,7 +55,10 @@ static void sig_tilde_float(t_sig *x, t_float f)
 
 static void sig_tilde_dsp(t_sig *x, t_signal **sp)
 {
-    dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    if (sp[0]->s_n & 7)
+        dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    else
+        dsp_add(sig_tilde_perf8, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void *sig_tilde_new(t_floatarg f)
