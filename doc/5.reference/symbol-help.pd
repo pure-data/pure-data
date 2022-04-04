@@ -1,100 +1,78 @@
-#N canvas 748 102 600 566 12;
-#X msg 58 106 bang;
-#X text 103 105 output the value;
-#X obj 70 21 symbol;
-#X text 36 57 The symbol object stores a symbol \, Pd's data type for
-handling fixed strings (often filenames or the names of other objects
-in pd)., f 68;
-#X msg 72 138 symbol bar;
-#X symbolatom 57 417 10 0 0 0 - - -;
-#X symbolatom 131 342 10 0 0 0 - - -;
-#X msg 84 166 zorglub;
-#X floatatom 101 196 5 0 0 0 - - -;
-#X text 149 158 a string without the symbol selector is 'converted'
-, f 29;
-#X text 161 425 note: unlike "float" \, etc. \, there's no "send" message
+#N canvas 341 38 815 441 12;
+#X msg 29 130 bang;
+#X text 114 264 creation argument initializes the value, f 21;
+#X text 69 128 output the value;
+#X text 136 159 set and output the value;
+#X obj 29 272 symbol foo;
+#X msg 44 160 symbol bar;
+#X symbolatom 29 310 10 0 0 0 - - - 0;
+#X text 172 235 set the value;
+#X symbolatom 96 237 10 0 0 0 - - - 0;
+#X msg 50 190 zorglub;
+#X text 113 190 any other message is 'converted';
+#X text 14 66 The symbol object stores a symbol \, Pd's data type for
+handling fixed strings (often filenames \, array names \, send/receive
+names or the names of other objects in pd).;
+#X symbolatom 509 254 16 0 0 0 - - - 0;
+#X symbolatom 653 185 16 0 0 0 - - - 0;
+#X obj 509 216 symbol cis\ boom\ bah;
+#X msg 509 121 symbol hey\\\,\\\ stop;
+#X obj 484 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X obj 29 343 print;
+#X obj 509 285 print;
+#X msg 525 160 hi\ there;
+#X text 436 61 Note you can also use backslashes to escape spaces and
+other special characters (comma \, semicolons \, dollar signs and backslash).
+, f 50;
+#X text 149 324 NOTE: unlike "float" \, etc. \, there's no "send" message
 to forward to another object -- that would conflict with the function
-of converting arbitrary messages to symbols.;
-#X text 83 505 see also:;
-#X obj 159 505 makefilename;
-#X obj 57 445 print;
-#X msg 121 227 list a b c;
-#X msg 132 251 list 1 2 3;
-#X obj 57 378 symbol a\ b;
-#X text 153 372 creation argument initializes the value and needs to
-be a symbol atom (note \ can be used to escape spaces), f 54;
-#N canvas 859 223 463 455 convert-anything-to-symbol 0;
-#X obj 66 171 trigger bang list bang;
-#X obj 198 304 list prepend;
-#X obj 66 300 list;
-#X obj 279 272 list append 32;
-#X obj 66 338 list tosymbol;
-#X obj 141 264 list fromsymbol;
-#X obj 66 135 list;
-#N canvas 816 210 236 260 drip 0;
-#X obj 76 207 outlet;
-#X obj 97 32 inlet;
-#X obj 72 90 until;
-#X obj 76 177 list store;
-#X obj 97 61 t b b l;
-#X obj 72 119 f;
-#X obj 107 120 + 1;
-#X msg 120 94 0, f 2;
-#X msg 72 148 get \$1 1;
-#X connect 1 0 4 0;
-#X connect 2 0 5 0;
-#X connect 3 0 0 0;
-#X connect 3 1 2 1;
-#X connect 4 0 2 0;
-#X connect 4 1 7 0;
-#X connect 4 2 3 1;
-#X connect 5 0 6 0;
-#X connect 5 0 8 0;
-#X connect 6 0 5 1;
-#X connect 7 0 5 1;
-#X connect 8 0 3 0;
-#X restore 141 201 pd drip;
-#X symbolatom 66 378 10 0 0 0 - - -;
-#X obj 141 231 symbol;
-#X msg 96 98 1 2 3;
-#X text 185 99 If you need to convert full lists and anythings to a
-symbol. Here's an example on how you can do it., f 34;
-#X obj 66 413 print conversion;
-#X msg 66 37 pure data;
-#X msg 82 66 list a b c;
-#X connect 0 0 2 0;
-#X connect 0 1 7 0;
-#X connect 0 2 1 1;
-#X connect 1 0 2 1;
-#X connect 1 0 3 0;
-#X connect 2 0 4 0;
-#X connect 3 0 1 1;
-#X connect 4 0 8 0;
-#X connect 5 0 1 0;
-#X connect 6 0 0 0;
-#X connect 7 0 9 0;
-#X connect 8 0 12 0;
-#X connect 9 0 5 0;
-#X connect 10 0 6 0;
-#X connect 13 0 6 0;
-#X connect 14 0 6 0;
-#X restore 311 295 pd convert-anything-to-symbol;
-#X text 145 196 a float is also 'converted';
-#X text 159 137 left inlet sets and outputs the value;
-#X text 212 334 right inlet only sets the value (needs to be a symbol
-message), f 31;
-#X text 126 23 - store A symbol (i.e. \, string);
-#X text 220 232 you can also convert the first item of a list, f 25
-;
-#X text 160 283 to convert all items to a symbol \, check =>, f 21
-;
-#X text 362 505 updated for Pd version 0.52;
-#X connect 0 0 16 0;
-#X connect 4 0 16 0;
-#X connect 5 0 13 0;
-#X connect 6 0 16 1;
-#X connect 7 0 16 0;
-#X connect 8 0 16 0;
-#X connect 14 0 16 0;
-#X connect 15 0 16 0;
-#X connect 16 0 5 0;
+of converting arbitrary messages to symbols., f 86;
+#X obj 34 14 symbol;
+#X text 90 13 - store a symbol (i.e. \, string);
+#X text 32 400 see also:;
+#X obj 107 401 float;
+#X text 599 398 updated for Pd version 0.52;
+#N canvas 685 120 581 310 reference 0;
+#X text 119 115 symbol -;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 204 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 241 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 278 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 165 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 44 18 symbol;
+#X text 105 134 anything -;
+#X text 96 17 - store a symbol (i.e. \, string).;
+#X text 133 94 bang - output the stored symbol., f 49;
+#X text 123 214 symbol - the stored symbol., f 49;
+#X text 123 176 symbol - stores the symbol (no output)., f 49;
+#X text 182 134 converts to symbol \, stores it and outputs it.;
+#X text 181 115 stores the symbol received and outputs it.;
+#X text 113 252 1) symbol - initially stored symbol (default: empty
+symbol).;
+#X restore 612 15 pd reference;
+#X obj 9 51 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 381 cnv 1 800 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 709 16 <= click;
+#X obj 157 400 int;
+#X connect 0 0 4 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 6 0 17 0;
+#X connect 8 0 4 1;
+#X connect 9 0 4 0;
+#X connect 12 0 18 0;
+#X connect 13 0 14 1;
+#X connect 14 0 12 0;
+#X connect 15 0 14 0;
+#X connect 16 0 14 0;
+#X connect 19 0 14 0;
