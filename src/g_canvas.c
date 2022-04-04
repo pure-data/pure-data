@@ -76,7 +76,7 @@ void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
 
     /* here we add an extra check whether we're mapped, because some
        editing moves are carried out on invisible windows (notably, re-creating
-       abstractions when one is saved).  Should any other widget finctions also
+       abstractions when one is saved).  Should any other widget functions also
        be doing this?  */
 void gobj_select(t_gobj *x, t_glist *glist, int state)
 {
@@ -1418,9 +1418,9 @@ void canvas_update_dsp(void)
     if (THISGUI->i_dspstate) canvas_start_dsp();
 }
 
-/* the "dsp" message to pd starts and stops DSP somputation, and, if
+/* the "dsp" message to pd starts and stops DSP computation, and, if
 appropriate, also opens and closes the audio device.  On exclusive-access
-APIs such as ALSA, MMIO, and ASIO (I think) it\s appropriate to close the
+APIs such as ALSA, MMIO, and ASIO (I think) it's appropriate to close the
 audio devices when not using them; but jack behaves better if audio I/O
 simply keeps running.  This is wasteful of CPU cycles but we do it anyway
 and can perhaps regard this is a design flaw in jack that we're working around
