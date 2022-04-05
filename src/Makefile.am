@@ -215,6 +215,14 @@ WISH=@WISH@
 WISHDEFINE=$(if $(WISH),-DWISH='"$(WISH)"')
 pd_CFLAGS += $(WISHDEFINE)
 
+# deken specifiers (if set)
+DEKEN_OS=@DEKEN_OS@
+DEKEN_CPU=@DEKEN_CPU@
+DEKEN_DEFINE=
+DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS='"$(DEKEN_OS)"')
+DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU='"$(DEKEN_CPU)"')
+pd_CFLAGS += $(DEKEN_DEFINE)
+
 #########################################
 ##### Configurations Per Library #####
 

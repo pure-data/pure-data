@@ -516,6 +516,28 @@ AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
     WISH=""])
 AC_SUBST([WISH])
 
+##### Deken OS and CPU #####
+deken_id=""
+AC_ARG_WITH([deken-os],
+    [AS_HELP_STRING([--with-deken-os=<OS>],
+        [Operating System string to use for externals (e.g. Linux, Windows, Darwin,...)])],
+    [DEKEN_OS=$withval])
+AS_IF([test "x${DEKEN_OS}" = "xyes" -o "x${DEKEN_OS}" = "xno"],
+    [AC_MSG_NOTICE([--with-deken-os requires an Operating System, ignoring '${DEKEN_OS}'])
+    DEKEN_OS=""])
+AC_SUBST([DEKEN_OS])
+AS_IF([test "x${DEKEN_OS}" = "x"], [deken_id="???"], [deken_id="${DEKEN_OS}"])
+
+AC_ARG_WITH([deken-cpu],
+    [AS_HELP_STRING([--with-deken-cpu=<CPU>],
+        [CPU architecture string to use for externals (e.g. amd64, i386, arm64,...)])],
+    [DEKEN_CPU=$withval])
+AS_IF([test "x${DEKEN_CPU}" = "xyes" -o "x${DEKEN_CPU}" = "xno"],
+    [AC_MSG_NOTICE([--with-deken-cpu requires a CPU, ignoring '${DEKEN_CPU}'])
+    DEKEN_CPU=""])
+AC_SUBST([DEKEN_CPU])
+AS_IF([test "x${DEKEN_CPU}" = "x"], [deken_id="${deken_id}-???"], [deken_id="${deken_id}-${DEKEN_CPU}"])
+
 AC_ARG_WITH([external-extension],
     [AS_HELP_STRING([--with-external-extension=<EXT>],
         [Extension to use for externals in extra/ (e.g. pd_linux, dll, d_fat,...)])],
@@ -679,6 +701,7 @@ AC_MSG_NOTICE([
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
+    Deken identifier:     ${deken_id}
 
     fftw:                 $fftw
     wish(tcl/tk):         $wish

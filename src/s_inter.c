@@ -1030,16 +1030,12 @@ void glob_watchdog(t_pd *dummy)
 static void sys_init_deken(void)
 {
     const char*os =
-#if defined __linux__
+#if defined DEKEN_OS
+        stringify(DEKEN_OS)
+#elif defined __linux__
         "Linux"
 #elif defined __APPLE__
         "Darwin"
-#elif defined __FreeBSD__
-        "FreeBSD"
-#elif defined __NetBSD__
-        "NetBSD"
-#elif defined __OpenBSD__
-        "OpenBSD"
 #elif defined _WIN32
         "Windows"
 #else
@@ -1050,7 +1046,9 @@ static void sys_init_deken(void)
 #endif
         ;
     const char*machine =
-#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+#if defined DEKEN_CPU
+        stringify(DEKEN_CPU)
+#elif defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
         "amd64"
 #elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
         "i386"
