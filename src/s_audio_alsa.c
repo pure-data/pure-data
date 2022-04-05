@@ -25,7 +25,14 @@
 #include <sched.h>
 #include <sys/mman.h>
 #include "s_audio_alsa.h"
-#include <endian.h>
+
+
+
+#ifdef HAVE_MACHINE_ENDIAN_H
+# include <machine/endian.h>
+#elif defined HAVE_ENDIAN_H
+# include <endian.h>
+#endif
 
 /* Defines */
 #define DEBUG(x) x

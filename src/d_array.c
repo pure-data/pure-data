@@ -499,14 +499,10 @@ static void tabread4_tilde_setup(void)
 /* this is all copied from d_osc.c... what include file could this go in? */
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
-    || defined(__OpenBSD__)
-#include <machine/endian.h>
-#endif
-
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || \
-    defined(ANDROID)
-#include <endian.h>
+#ifdef HAVE_MACHINE_ENDIAN_H
+# include <machine/endian.h>
+#elif defined HAVE_ENDIAN_H
+# include <endian.h>
 #endif
 
 #ifdef __MINGW32__
@@ -520,7 +516,7 @@ static void tabread4_tilde_setup(void)
 #endif
 
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-#include <endian.h>
+# error unable to detect endianness
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN

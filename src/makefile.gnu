@@ -55,6 +55,7 @@ libpdtcldir = $(libpddir)/tcl
 # C preprocessor flags, and flags controlling errors and warnings
 CPPFLAGS = -DPD \
     -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
+    -DHAVE_ENDIAN_H=1 \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
