@@ -208,7 +208,6 @@ AC_CHECK_HEADERS([fcntl.h \
                   sys/ioctl.h \
                   sys/param.h \
                   sys/socket.h \
-                  sys/soundcard.h \
                   sys/time.h \
                   sys/timeb.h \
                   unistd.h
@@ -313,6 +312,7 @@ AC_SUBST(EXTERNTARGET)
 AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
+AC_SUBST([OSS_LIBS])
 AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
 
@@ -386,7 +386,9 @@ AC_ARG_ENABLE([oss],
     [AS_HELP_STRING([--disable-oss], [do not use OSS driver])],
     [oss=$enableval], [oss=yes])
 AS_IF([test x$oss = xyes],[
-    AC_CHECK_HEADER([sys/soundcard.h], [oss=yes], [oss=no])
+    oss=no
+    AC_CHECK_HEADERS([sys/soundcard.h soundcard.h], [oss=yes; break])
+    AC_CHECK_LIB([ossaudio], [_oss_ioctl], [OSS_LIBS="-lossaudio"])
 ])
 
 ##### ALSA #####

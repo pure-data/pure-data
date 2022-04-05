@@ -252,6 +252,7 @@ endif
 if OSS
 pd_CFLAGS += -DUSEAPI_OSS
 pd_SOURCES_standalone += s_audio_oss.c s_midi_oss.c
+pd_LDADD_standalone += @OSS_LIBS@
 endif
 
 ##### Windows MultiMedia (File) I/O #####
