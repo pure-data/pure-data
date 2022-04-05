@@ -107,6 +107,7 @@ AS_CASE([$host],
         LINUX=yes
         platform=Linux
         portaudio=yes
+        watchdog=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
         EXTERNAL_EXTENSION=pd_linux
@@ -116,6 +117,7 @@ AS_CASE([$host],
 ],[*-*-gnu*],[
     HURD=yes
     platform=Hurd
+    watchdog=yes
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
     EXTERNAL_EXTENSION=pd_linux
@@ -333,6 +335,14 @@ AS_IF([test "x$macos_version_min" != "x"],[
 
 #########################################
 ##### Configure Options #####
+
+
+##### realtime watchdog #####
+AC_ARG_ENABLE([watchdog],
+    [AS_HELP_STRING([--enable-watchdog], [additionally build watchdog])],,enable_watchdog="$watchdog")
+AS_IF([test "x$enable_watchdog" != "xyes"],[enable_watchdog=no])
+AM_CONDITIONAL(PD_WATCHDOG, test x$enable_watchdog = xyes)
+
 
 ##### libpd #####
 AC_ARG_ENABLE([libpd],
@@ -705,6 +715,7 @@ AC_MSG_NOTICE([
 
     fftw:                 $fftw
     wish(tcl/tk):         $wish
+    watchdog:             $enable_watchdog
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
     libpd:                $libpd

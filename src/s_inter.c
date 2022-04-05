@@ -332,15 +332,14 @@ void sys_setsignalhandlers(void)
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 }
 
+#define MODE_NRT 0
+#define MODE_RT 1
+#define MODE_WATCHDOG 2
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
 #include <sched.h>
 #endif
-
-#define MODE_NRT 0
-#define MODE_RT 1
-#define MODE_WATCHDOG 2
 
 void sys_set_priority(int mode)
 {
@@ -369,7 +368,7 @@ void sys_set_priority(int mode)
             logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
         else logpost(NULL, PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
-#endif
+#endif /* _POSIX_PRIORITY_SCHEDULING */
 
 #if !defined(USEAPI_JACK)
     if (mode != MODE_NRT)
@@ -384,10 +383,17 @@ void sys_set_priority(int mode)
             fprintf(stderr, "memory locking enabled.\n");
     }
     else munlockall();
-#endif
+#endif /* ! USEAPI_JACK */
 }
 
-#endif /* __linux__ */
+#else /* !__linux__ */
+void sys_set_priority(int mode)
+{
+        /* dummy */
+    (void)mode;
+}
+
+#endif /* !__linux__ */
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
@@ -1014,18 +1020,18 @@ void sys_init_fdpoll(void)
 
 /* --------------------- starting up the GUI connection ------------- */
 
-static int sys_watchfd;
+static int sys_watchfd = -1;
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 void glob_watchdog(t_pd *dummy)
 {
+    if (sys_watchfd < 0)
+        return;
     if (write(sys_watchfd, "\n", 1) < 1)
     {
         fprintf(stderr, "pd: watchdog process died\n");
         sys_bail(1);
     }
 }
-#endif
 
 static void sys_init_deken(void)
 {
@@ -1310,9 +1316,7 @@ static int sys_do_startgui(const char *libdir)
         else if (!childpid)                     /* we're the child */
         {
             sys_closesocket(sockfd);     /* child doesn't listen */
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             sys_set_priority(MODE_NRT);  /* child runs non-real-time */
-#endif
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
@@ -1387,7 +1391,7 @@ static int sys_do_startgui(const char *libdir)
             INTER->i_socketreceiver);
 
             /* here is where we start the pinging. */
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
     if (sys_hipriority)
         sys_gui("pdtk_watchdog\n");
 #endif
@@ -1419,7 +1423,7 @@ static int sys_do_startgui(const char *libdir)
 void sys_setrealtime(const char *libdir)
 {
     char cmdbuf[MAXPDSTRING];
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
+#if PD_WATCHDOG
         /*  promote this process's priority, if we can and want to.
         If sys_hipriority not specified (-1), we assume real-time was wanted.
         Starting in Linux 2.6 one can permit real-time operation of Pd by]

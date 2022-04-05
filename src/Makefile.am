@@ -22,6 +22,8 @@ libpd_la_LDFLAGS = @PD_LDFLAGS@
 libpdincludedir = $(includedir)/libpd
 libpdinclude_HEADERS =
 
+libpdbin_PROGRAMS =
+
 # there are pd_* and pd_*_core variables as we need different flags on Windows
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
 # also, the "_core" suffix is used as this keeps automake from thinking these
@@ -51,6 +53,12 @@ bin_PROGRAMS = pd pdsend pdreceive
 
 if LIBPD
 lib_LTLIBRARIES = libpd.la
+endif
+
+if PD_WATCHDOG
+# install watchdog to $(libdir)/pd/bin as it's not a user facing program
+libpdbin_PROGRAMS += pd-watchdog
+pd_CFLAGS += -DPD_WATCHDOG=1
 endif
 
 pdsend_SOURCES = u_pdsend.c s_net.c
@@ -350,20 +358,6 @@ endif
 #########################################
 ##### Configurations Per Platform #####
 
-##### GNU/Hurd #####
-if HURD
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
-
-endif
-##### GNU/Linux #####
-if LINUX
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
-endif
-
 if !WINDOWS
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
@@ -372,9 +366,6 @@ endif
 
 ##### Apple Mac OSX #####
 if MACOSX
-
-# install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbin_PROGRAMS = pd-watchdog
 
 # kludge, should use auto macro __APPLE__
 # but who knows what externals rely on this

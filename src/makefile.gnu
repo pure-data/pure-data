@@ -57,6 +57,7 @@ CPPFLAGS = -DPD \
     -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
     -DHAVE_ENDIAN_H=1 \
     -DHAVE_QSORT_R_ARG_LAST=1 \
+    -DPD_WATCHDOG=1 \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\

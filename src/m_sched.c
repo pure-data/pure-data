@@ -301,8 +301,6 @@ static int sched_idletask( void)
         rtn = 1;
     sys_unlock();
 
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__)\
-                || defined(__GNU__)
         /* if there's no GUI but we're running in "realtime", here is
         where we arrange to ping the watchdog every 2 seconds.  (If there's
         a GUI, it initiates the ping instead to be sure there's communication
@@ -313,7 +311,6 @@ static int sched_idletask( void)
             /* ping every 2 seconds */
         sched_nextpingtime = sched_counter + 2 * APPROXTICKSPERSEC;
     }
-#endif
 
         /* clear the "DIO error" warning 1 sec after it flashes */
     if (sched_counter > sched_nextmeterpolltime)
