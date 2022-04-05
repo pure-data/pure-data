@@ -25,8 +25,8 @@
 #include "s_stuff.h"
 #include <stdio.h>
 #include <sys/stat.h>
+#include "m_private_utils.h"
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf _snprintf
 #define stat _stat
 #endif
 

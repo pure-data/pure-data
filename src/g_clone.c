@@ -5,20 +5,8 @@
 
 /* ---------- clone - maintain copies of a patch ----------------- */
 
-#ifdef HAVE_ALLOCA_H
-# include <alloca.h> /* linux, mac, mingw, cygwin,... */
-#elif defined _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
+#include "m_private_utils.h"
 #define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-#define ATOMS_FREEA(x, n) ( \
-    ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
 
 t_class *clone_class;
 static t_class *clone_in_class, *clone_out_class;
@@ -153,13 +141,13 @@ static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
     int first =
         1 + (s != &s_list && s != &s_float && s != &s_symbol && s != &s_bang),
             outc = argc + first;
-    ATOMS_ALLOCA(outv, outc);
+    ALLOCA(t_atom, outv, outc, LIST_NGETBYTE);
     SETFLOAT(outv, x->o_n);
     if (first == 2)
         SETSYMBOL(outv + 1, s);
     memcpy(outv+first, argv, sizeof(t_atom) * argc);
     outlet_list(x->o_outlet, 0, outc, outv);
-    ATOMS_FREEA(outv, outc);
+    FREEA(t_atom, outv, outc, LIST_NGETBYTE);
 }
 
 static PERTHREAD int clone_voicetovis = -1;

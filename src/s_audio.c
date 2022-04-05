@@ -24,9 +24,7 @@
 #include <errno.h>
 #include <math.h>
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 #define SYS_DEFAULTCH 2
 #define MAXNDEV 128

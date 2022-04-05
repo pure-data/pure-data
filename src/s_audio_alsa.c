@@ -26,13 +26,7 @@
 #include <sys/mman.h>
 #include "s_audio_alsa.h"
 
-
-
-#ifdef HAVE_MACHINE_ENDIAN_H
-# include <machine/endian.h>
-#elif defined HAVE_ENDIAN_H
-# include <endian.h>
-#endif
+#include "m_private_utils.h"
 
 /* Defines */
 #define DEBUG(x) x

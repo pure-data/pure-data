@@ -1,13 +1,15 @@
 /* Copyright (c) 2021 IOhannes m zmölnig.
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
-
 /* The "file" object. */
 #define _XOPEN_SOURCE 600
+#define _DEFAULT_SOURCE
 
 #include "m_pd.h"
 #include "g_canvas.h"
 #include "s_utf8.h"
+
+#include "m_private_utils.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -35,34 +37,7 @@
 typedef unsigned int mode_t;
 typedef SSIZE_T ssize_t;
 # define wstat _wstat
-# define snprintf _snprintf
 #endif
-
-#ifdef HAVE_ALLOCA_H
-# include <alloca.h> /* linux, mac, mingw, cygwin,... */
-#elif defined _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
-
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#ifndef DONT_USE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else /* DONT_USE_ALLOCA */
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
-#endif /* DONT_USE_ALLOCA */
-
 
 #ifndef S_ISREG
   #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)

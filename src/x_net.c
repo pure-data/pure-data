@@ -13,13 +13,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#ifdef HAVE_ALLOCA_H
-# include <alloca.h> /* linux, mac, mingw, cygwin,... */
-#elif defined _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
 /* print addrinfo lists for debugging */
 /* #define PRINT_ADDRINFO */

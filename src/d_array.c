@@ -499,25 +499,7 @@ static void tabread4_tilde_setup(void)
 /* this is all copied from d_osc.c... what include file could this go in? */
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
-#ifdef HAVE_MACHINE_ENDIAN_H
-# include <machine/endian.h>
-#elif defined HAVE_ENDIAN_H
-# include <endian.h>
-#endif
-
-#ifdef __MINGW32__
-#include <sys/param.h>
-#endif
-
-#ifdef _MSC_VER
-/* _MSVC lacks BYTE_ORDER and LITTLE_ENDIAN */
-#define LITTLE_ENDIAN 0x0001
-#define BYTE_ORDER LITTLE_ENDIAN
-#endif
-
-#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-# error unable to detect endianness
-#endif
+#include "m_private_utils.h"
 
 #if BYTE_ORDER == LITTLE_ENDIAN
 # define HIOFFSET 1

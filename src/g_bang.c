@@ -21,9 +21,7 @@
 #include <unistd.h>
 #endif
 
-#ifdef _MSC_VER
-# define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
 /* --------------- bng     gui-bang ------------------------- */
 

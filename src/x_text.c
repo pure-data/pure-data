@@ -19,25 +19,9 @@ moment it also defines "text" but it may later be better to split this off. */
 #endif
 static t_class *text_define_class;
 
-#ifdef HAVE_ALLOCA_H
-# include <alloca.h> /* linux, mac, mingw, cygwin,... */
-#elif defined _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
-#else
-# include <stdlib.h> /* BSDs for example */
-#endif
+#include "m_private_utils.h"
 
 #define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
-#ifndef DONT_USE_ALLOCA
-# define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < TEXT_NGETBYTE ?  \
-        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
-# define ATOMS_FREEA(x, n) ( \
-    ((n) < TEXT_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else /* DONT_USE_ALLOCA */
-# define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-# define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif /* DONT_USE_ALLOCA */
-
 
 /* --- unified qsort_r --- */
 
@@ -832,11 +816,11 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         {
                 /* tell us what terminated the line (semi or comma) */
             outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
-            ATOMS_ALLOCA(outv, outc);
+            ALLOCA(t_atom, outv, outc, TEXT_NGETBYTE);
             for (k = 0; k < outc; k++)
                 outv[k] = vec[start+k];
             outlet_list(x->x_out1, 0, outc, outv);
-            ATOMS_FREEA(outv, outc);
+            FREEA(t_atom, outv, outc, TEXT_NGETBYTE);
         }
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
@@ -845,11 +829,11 @@ static void text_get_float(t_text_get *x, t_floatarg f)
             pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
-            ATOMS_ALLOCA(outv, nfield);
+            ALLOCA(t_atom, outv, nfield, TEXT_NGETBYTE);
             for (k = 0; k < nfield; k++)
                 outv[k] = vec[(start+startfield)+k];
             outlet_list(x->x_out1, 0, nfield, outv);
-            ATOMS_FREEA(outv, nfield);
+            FREEA(t_atom, outv, nfield, TEXT_NGETBYTE);
         }
     }
     else if (x->x_f1 < 0)   /* whole line but out of range: empty list and 2 */
@@ -1647,7 +1631,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
     x->x_onset = i;
         /* generate output list, realizing dolar sign atoms.  Allocate one
         extra atom in case we want to prepend a symbol later */
-    ATOMS_ALLOCA(outvec, nfield+1);
+    ALLOCA(t_atom, outvec, nfield+1, TEXT_NGETBYTE);
     for (i = 0, ap = vec+onset; i < nfield; i++, ap++)
     {
         int type = ap->a_type;
@@ -1734,7 +1718,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
             else pd_list(to, 0, nleft, vecleft);
         }
     }
-    ATOMS_FREEA(outvec, nfield+1);
+    FREEA(t_atom, outvec, nfield+1, TEXT_NGETBYTE);
 }
 
 static void text_sequence_list(t_text_sequence *x, t_symbol *s, int argc,

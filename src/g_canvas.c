@@ -19,9 +19,7 @@ to be different but are now unified except for some fossilized names.) */
 #ifdef _WIN32
 #include <io.h>
 #endif
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
+#include "m_private_utils.h"
 
     /* LATER consider adding font size to this struct (see glist_getfont()) */
 struct _canvasenvironment
