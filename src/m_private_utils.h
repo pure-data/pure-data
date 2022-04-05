@@ -99,13 +99,12 @@
 # endif
 #endif
 
-#if defined(__GNUC__) && defined(_XOPEN_SOURCE) && !defined(_DEFAULT_SOURCE)
-# warning _XOPEN_SOURCE might prevent endianess macros from being defined. Did you forget to also define _DEFAULT_SOURCE?
-#endif
-
-
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
-# error unable to detect endianness
+# if defined(__GNUC__) && defined(_XOPEN_SOURCE)
+#  warning unable to detect endianness (continuing anyhow)
+# else
+#  error unable to detect endianness
+# endif
 #endif
 
 
