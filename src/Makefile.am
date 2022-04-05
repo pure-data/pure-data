@@ -39,6 +39,10 @@ LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 
+
+pd_LDADD_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
+
 #########################################
 ##### Files, Binaries, & Libs #####
 
@@ -347,10 +351,6 @@ libpdbin_PROGRAMS = pd-watchdog
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
 pd_LDFLAGS_core += -export-dynamic
 
-# on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
-pd_LDFLAGS_core += $(LIBM)
-libpd_la_LIBADD += $(LIBM)
-
 # force linking to pthread, which should really be done with some autotools way
 pd_LDFLAGS_core += -lpthread
 libpd_la_LIBADD += -lpthread
@@ -370,11 +370,6 @@ libpdbin_PROGRAMS = pd-watchdog
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
 pd_LDFLAGS_core += -export-dynamic
-
-# on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
-pd_LDFLAGS_core += $(LIBM)
-libpd_la_LIBADD += $(LIBM)
-
 endif
 
 ##### Apple Mac OSX #####
@@ -388,8 +383,8 @@ libpdbin_PROGRAMS = pd-watchdog
 pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
-LIBS += -ldl -lm -lpthread -framework CoreFoundation
-libpd_la_LIBADD += -ldl -lm -lpthread
+LIBS += -ldl -lpthread -framework CoreFoundation
+libpd_la_LIBADD += -ldl -lpthread
 libpd_la_LDFLAGS += -framework CoreFoundation
 
 # PERTHREAD requires macOS 10.9+ SDK
