@@ -102,8 +102,7 @@ static t_class *pd_tilde_class;
 
 
 static const char *pd_tilde_dllextent[] = {
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || \
-    defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
     ".pd_linux",
     ".so",
@@ -112,7 +111,7 @@ static const char *pd_tilde_dllextent[] = {
     ARCHDLLEXT(".d_")
     ".pd_darwin",
     ".so",
-#elif defined(__OPENBSD__)
+#elif defined(__OpenBSD__)
     ARCHDLLEXT(".o_")
     ".pd_openbsd",
     ".so",

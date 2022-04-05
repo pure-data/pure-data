@@ -157,15 +157,12 @@ AS_CASE([$host],
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
-],[*openbsd*],[
-    OPENBSD=yes
-    platform=OpenBSD
-    portaudio=yes
-    EXTERNAL_CFLAGS="-D__OPENBSD__"
-    EXTERNAL_LDFLAGS="-liberty"
-    EXTERNAL_EXTENSION=pd_openbsd
+],[*bsd*],[
+    BSD=yes
+    EXTERNAL_EXTENSION=so
 ],[
     platform=Unknown
+    EXTERNAL_EXTENSION=so
 ])
 
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
@@ -176,7 +173,7 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-AM_CONDITIONAL(OPENBSD, test x$OPENBSD = xyes)
+AM_CONDITIONAL(BSD, test x$BSD = xyes)
 
 #########################################
 ##### Check for programs, libs, & headers #####

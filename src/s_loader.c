@@ -60,7 +60,7 @@ a fat binary or an indication of the instruction set. */
 
 
 static const char*sys_dllextent[] = {
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(__FreeBSD__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 #if defined(__x86_64__) || defined(_M_X64)
     ".l_ia64",      /* incorrect but probably in wide use */
@@ -72,7 +72,7 @@ static const char*sys_dllextent[] = {
     ARCHDLLEXT(".d_")
     ".pd_darwin",
     ".so",
-#elif defined(__OPENBSD__)
+#elif defined(__OpenBSD__)
     ARCHDLLEXT(".o_")
     ".pd_openbsd",
     ".so",
