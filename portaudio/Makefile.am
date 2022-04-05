@@ -28,20 +28,31 @@ libportaudio_a_SOURCES = \
     portaudio/src/common/pa_stream.c \
     portaudio/src/common/pa_trace.c
 
-if LINUX
+if WINDOWS
+AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/win
+libportaudio_a_SOURCES += \
+    portaudio/src/os/win/pa_win_coinitialize.c \
+    portaudio/src/os/win/pa_win_hostapis.c \
+    portaudio/src/os/win/pa_win_util.c \
+    portaudio/src/os/win/pa_win_waveformat.c \
+    $(empty)
+else !WINDOWS
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
 libportaudio_a_SOURCES += \
     portaudio/src/os/unix/pa_unix_hostapis.c \
     portaudio/src/os/unix/pa_unix_util.c \
+    $(empty)
+endif !WINDOWS
+
+
+if LINUX
+libportaudio_a_SOURCES += \
     portaudio/src/hostapi/alsa/pa_linux_alsa.c
 endif
 
 if MACOSX
 AM_CFLAGS += -DPA_USE_COREAUDIO
-AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
 libportaudio_a_SOURCES += \
-    portaudio/src/os/unix/pa_unix_hostapis.c \
-    portaudio/src/os/unix/pa_unix_util.c \
     portaudio/src/hostapi/coreaudio/pa_mac_core.c \
     portaudio/src/hostapi/coreaudio/pa_mac_core_blocking.c \
     portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.c
@@ -52,12 +63,7 @@ endif
 
 if WINDOWS
 AM_CFLAGS += -DPA_USE_WMME
-AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/win
 libportaudio_a_SOURCES += \
-    portaudio/src/os/win/pa_win_coinitialize.c \
-    portaudio/src/os/win/pa_win_hostapis.c \
-    portaudio/src/os/win/pa_win_util.c \
-    portaudio/src/os/win/pa_win_waveformat.c \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
