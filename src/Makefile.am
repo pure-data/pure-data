@@ -347,10 +347,6 @@ if HURD
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
 libpdbin_PROGRAMS = pd-watchdog
 
-# this flag has to have a single leading "-" for libtool, even though ld uses
-# --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
-pd_LDFLAGS_core += -export-dynamic
-
 # force linking to pthread, which should really be done with some autotools way
 pd_LDFLAGS_core += -lpthread
 libpd_la_LIBADD += -lpthread
@@ -358,7 +354,6 @@ libpd_la_LIBADD += -lpthread
 # force linking to dl, which should really be done with some autotools way
 pd_LDFLAGS_core += -ldl
 libpd_la_LIBADD += -ldl
-
 endif
 
 ##### GNU/Linux #####
@@ -366,7 +361,9 @@ if LINUX
 
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
 libpdbin_PROGRAMS = pd-watchdog
+endif
 
+if !WINDOWS
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
 pd_LDFLAGS_core += -export-dynamic
