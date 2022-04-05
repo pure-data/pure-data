@@ -347,9 +347,6 @@ if HURD
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
 libpdbin_PROGRAMS = pd-watchdog
 
-# force linking to dl, which should really be done with some autotools way
-pd_LDFLAGS_core += -ldl
-libpd_la_LIBADD += -ldl
 endif
 ##### GNU/Linux #####
 if LINUX
@@ -375,8 +372,7 @@ libpdbin_PROGRAMS = pd-watchdog
 pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
-LIBS += -ldl -framework CoreFoundation
-libpd_la_LIBADD += -ldl
+LIBS += -framework CoreFoundation
 libpd_la_LDFLAGS += -framework CoreFoundation
 
 # PERTHREAD requires macOS 10.9+ SDK

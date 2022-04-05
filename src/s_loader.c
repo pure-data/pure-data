@@ -1,9 +1,12 @@
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+#if !defined (HAVE_LIBDL) && HAVE_DLOPEN
+# define HAVE_LIBDL 1
+#endif
 
-#if defined(HAVE_LIBDL) || defined(__FreeBSD__)
-#include <dlfcn.h>
+#if HAVE_LIBDL
+# include <dlfcn.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <stdlib.h>
@@ -247,7 +250,7 @@ gotone:
              makeout = (t_xxx)GetProcAddress(ntdll, "setup");
         SetDllDirectory(NULL); /* reset DLL dir to nothing */
     }
-#elif defined(HAVE_LIBDL) || defined(__FreeBSD__)
+#elif HAVE_LIBDL
     dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
     if (!dlobj)
     {
@@ -404,7 +407,7 @@ int sys_run_scheduler(const char *externalschedlibname,
             externalmainfunc =
                 (t_externalschedlibmain)GetProcAddress(ntdll, "main");
     }
-#elif defined HAVE_LIBDL
+#elif HAVE_LIBDL
     {
         void *dlobj;
         dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);

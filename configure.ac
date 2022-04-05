@@ -251,7 +251,10 @@ AC_CHECK_FUNCS([dup2 \
                 ])
 
 # Checks for libraries.
-AC_CHECK_LIB([dl], [dlopen])
+have_dl=yes
+AC_SEARCH_LIBS([dlopen], [dl dld], [], [have_dl=no])
+AS_IF([test "x${have_dl}" = "xyes"], AC_DEFINE([HAVE_DLOPEN], 1))
+
 AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
 # src/Makefile.am under pd_LDFLAGS as well
