@@ -298,10 +298,6 @@ AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
 # src/Makefile.am under pd_LDFLAGS as well
 
-# Apple's CoreAudio
-# not used directly, implicitly needed when using PortAudio on OSX
-AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
-
 # Checking for `pthread_create' function in libpthread (MinGW uses unusual names)
 ## CHECK whether this can be replaced by AX_PTHREAD
 AC_SEARCH_LIBS([pthread_create], [pthread pthreadGC2 pthreadGC1 pthreadGC], [],
@@ -441,6 +437,10 @@ AS_IF([test x$asio = xyes],
     AS_IF([test x$asio = xno],
         AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
+
+##### Apple's CoreAudio #####
+# not used directly, implicitly needed when using PortAudio on OSX
+AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
 
 ##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
