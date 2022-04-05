@@ -38,13 +38,31 @@ typedef SSIZE_T ssize_t;
 # define snprintf _snprintf
 #endif
 
-#ifdef _WIN32
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
 #endif
+
+#ifdef ALLOCA
+# undef ALLOCA
+#endif
+#ifdef FREEA
+# undef FREEA
+#endif
+
+#ifndef DONT_USE_ALLOCA
+# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
+            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
+# define FREEA(t, x, n, max) (                                  \
+        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
+#else /* DONT_USE_ALLOCA */
+# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
+# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
+#endif /* DONT_USE_ALLOCA */
+
 
 #ifndef S_ISREG
   #define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
@@ -101,26 +119,6 @@ static int sys_mkdir(const char *pathname, mode_t mode) {
 static int sys_remove(const char *pathname) {
     return remove(pathname);
 }
-#endif
-
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-# define HAVE_ALLOCA 1
-#endif
-#ifdef ALLOCA
-# undef ALLOCA
-#endif
-#ifdef FREEA
-# undef FREEA
-#endif
-
-#if HAVE_ALLOCA
-# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
-            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
-# define FREEA(t, x, n, max) (                                  \
-        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
-#else
-# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
-# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
 #endif
 
     /* expand env vars and ~ at the beginning of a path and make a copy to return */

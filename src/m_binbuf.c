@@ -588,28 +588,25 @@ done:
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
-#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
-#define HAVE_ALLOCA 1
-#endif
-
-#ifdef HAVE_ALLOCA
-
-#ifdef _WIN32
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h> /* linux, mac, mingw, cygwin,... */
+#elif defined _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
 #endif
+
+#ifndef DONT_USE_ALLOCA
 
 #define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
         alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
 #define ATOMS_FREEA(x, n) ( \
     ((n) < HUGEMSG || (freebytes((x), (n) * sizeof(t_atom)), 0)))
-#else
-#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
-#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
-#endif
+
+#else /* ! DONT_USE_ALLOCA */
+# define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
+# define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
+#endif /* ! DONT_USE_ALLOCA */
 
 void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 {
