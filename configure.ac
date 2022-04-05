@@ -260,13 +260,10 @@ AC_CHECK_LIBM
 # not used directly, implicitly needed when using PortAudio on OSX
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
 
-# Checking for `pthread_create' function in -pthread (MinGW uses unusual names)
+# Checking for `pthread_create' function in libpthread (MinGW uses unusual names)
 ## CHECK whether this can be replaced by AX_PTHREAD
-AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
-    AC_CHECK_LIB([pthreadGC2], [pthread_create], LIBS="-lpthreadGC2 $LIBS",
-        AC_CHECK_LIB([pthreadGC1], [pthread_create], LIBS="-lpthreadGC1 $LIBS",
-            AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
-         AC_MSG_WARN([pthreads required])))))
+AC_SEARCH_LIBS([pthread_create], [pthread pthreadGC2 pthreadGC1 pthreadGC], [],
+               AC_MSG_WARN([pthreads required]))
 
 # Define variables for use in Makefiles
 AC_SUBST(EXTERNTARGET)
