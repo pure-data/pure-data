@@ -250,6 +250,46 @@ AC_CHECK_FUNCS([dup2 \
                 strtol
                 ])
 
+dnl qsort_r: do we have it, and if so, which variant?
+AC_CHECK_FUNCS_ONCE([qsort_r], [], [AC_DEFINE([STUPID_SORT], 1)])
+if test $ac_cv_func_qsort_r = yes; then
+  AC_CACHE_CHECK([for qsort_r signature], [ac_cv_libctf_qsort_r_signature],
+    [AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM([[#undef qsort_r
+                          #include <stdlib.h>
+                          void qsort_r (void *, size_t, size_t,
+                                        int (*) (void const *, void const *,
+                                                 void *),
+                                        void *);
+                          void (*p) (void *, size_t, size_t,
+                                     int (*) (void const *, void const *,
+                                              void *),
+                                     void *) = qsort_r;
+                        ]])],
+       [ac_cv_libctf_qsort_r_signature=GNU],
+       [AC_LINK_IFELSE(
+          [AC_LANG_PROGRAM([[#undef qsort_r
+	                     #include <stdlib.h>
+                             void qsort_r (void *, size_t, size_t, void *,
+                                           int (*) (void *,
+                                                    void const *,
+                                                    void const *));
+                             void (*p) (void *, size_t, size_t, void *,
+                                        int (*) (void *, void const *,
+                                                 void const *)) = qsort_r;
+                           ]])],
+          [ac_cv_libctf_qsort_r_signature=BSD],
+          [ac_cv_libctf_qsort_r_signature=unknown])])])
+fi
+
+case x$ac_cv_libctf_qsort_r_signature in
+  xGNU)     AC_DEFINE([HAVE_QSORT_R_ARG_LAST], 1,
+	     [Whether a qsort_r exists with a void *arg as its last arg.]);;
+  xBSD)     AC_DEFINE([HAVE_QSORT_R_COMPAR_LAST], 1,
+	     [Whether a qsort_r exists with the compar function as its last arg.]);;
+  *)        AC_DEFINE([STUPID_SORT], 1);;
+esac
+
 # Checks for libraries.
 have_dl=yes
 AC_SEARCH_LIBS([dlopen], [dl dld], [], [have_dl=no])
