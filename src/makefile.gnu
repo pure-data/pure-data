@@ -53,7 +53,8 @@ libpdtcldir = $(libpddir)/tcl
 # to allow easy overriding of CODECFLAGS and to allow adding MORECFLAGS:
 
 # C preprocessor flags, and flags controlling errors and warnings
-CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
+CPPFLAGS = -DPD \
+    -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
