@@ -516,6 +516,17 @@ AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
     WISH=""])
 AC_SUBST([WISH])
 
+AC_ARG_WITH([external-extension],
+    [AS_HELP_STRING([--with-external-extension=<EXT>],
+        [Extension to use for externals in extra/ (e.g. pd_linux, dll, d_fat,...)])],
+    [ext="${withval#.}"])
+AS_IF([test "x${ext}" = "xyes" -o "x${ext}" = "xno"],
+    [AC_MSG_NOTICE([--with-external-extension requires an extension, ignoring '${ext}'])
+    ext=""])
+AS_IF([test "x${ext}" != "x"], [EXTERNAL_EXTENSION="${ext}"])
+
+
+
 ##### Configure Build From Options #####
 ## configure the build based on what we have found above
 
