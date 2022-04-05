@@ -53,7 +53,7 @@ libpdtcldir = $(libpddir)/tcl
 # to allow easy overriding of CODECFLAGS and to allow adding MORECFLAGS:
 
 # C preprocessor flags, and flags controlling errors and warnings
-CPPFLAGS = -DPD \
+CPPFLAGS = -DPD -DPD_INTERNAL \
     -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 -DHAVE_ALLOCA_H=1 \
     -DHAVE_ENDIAN_H=1 \
     -DHAVE_QSORT_R_ARG_LAST=1 \

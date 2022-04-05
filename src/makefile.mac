@@ -31,7 +31,8 @@ libpdtcldir = $(libpddir)/tcl
 PADIR = ../portaudio/portaudio
 PMDIR = ../portmidi/portmidi
 
-CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
+CPPFLAGS = -DINSTALL_PREFIX=\"$(prefix)\" \
+    -DPD -DPD_INTERNAL \
     -DHAVE_LIBDL=1 -DHAVE_UNISTD_H=1 \
     -DHAVE_ALLOCA_H=1 \
     -DHAVE_QSORT_R_COMPAR_LAST=1 \
