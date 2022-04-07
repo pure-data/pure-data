@@ -1487,6 +1487,11 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
         else if (*firstarg->s_name == '-')
         {
             pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
@@ -2492,6 +2497,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
         }
         else break;
     }
