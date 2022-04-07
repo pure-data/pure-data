@@ -557,6 +557,7 @@ AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
                 font/Makefile
+                linux/Makefile
                 mac/Makefile
                 man/Makefile
                 msw/Makefile
