@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.puredata.pd-gui.desktop</id>
-  <name>Pure Data</name>
+  <id>org.puredata.pd-gui</id>
+  <name>Pure Data (Pd)</name>
   <summary>A real-time graphical programming environment for live interactive computer music</summary>
 
   <metadata_license>FSFAP</metadata_license>
@@ -18,6 +18,10 @@
       Pd&apos;s audio and MIDI functions are built-in as well as networking (e.g. using Open Sound Control), but there are a number of external libraries that allow you to do graphics, interface hardware and much more...
     </p>
   </description>
+  <provides>
+    <binary>pd-gui</binary>
+  </provides>
+  <url type="homepage">https://puredata.info/</url>
 
   <launchable type="desktop-id">org.puredata.pd-gui.desktop</launchable>
   <screenshots>

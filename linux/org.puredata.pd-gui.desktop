@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Pure Data
+Name=Pure Data (Pd)
 Exec=pd-gui %F
 Categories=Audio;AudioVideo;Development;Music;Graphics
 Keywords=Audio;Video;Programming;Synthesis;Analysis
