@@ -7,13 +7,6 @@
 #X text 346 267 right signal input;
 #X text 287 233 left signal input;
 #X text 383 411 updated for Pd version 0.52;
-#X text 22 98 Output~ takes a stereo signal and has GUI controls to
-set the volume gain and mute it. The number box sets the output gain
-in dB (from 0 to 100) and whenever you click on it to drag it \, the
-DSP engine is turned on. The mute bang turns the volume off (sets to
-0) but restores to the last setting when you click back on it to unmute.
-, f 80;
-#X msg 234 281 bang;
 #X msg 146 282 level \$1;
 #X floatatom 146 259 5 0 100 0 - - - 0;
 #X text 22 57 This is a very simple abstraction that is widely used
@@ -48,8 +41,17 @@ and a 'level' message to control the level output in dB., f 80;
 0;
 #X obj 10 395 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 239 285 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 22 98 [output~] takes a stereo signal and has GUI controls
+to set the volume gain and mute it. The number box sets the output
+gain in dB (from 0 to 100) and whenever you click on it to drag it
+\, the DSP engine is turned on. The mute bang turns the volume off
+(sets to 0) but restores to the last setting when you click back on
+it to unmute., f 80;
+#X text 234 265 mute;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;
-#X connect 9 0 0 0;
-#X connect 10 0 0 0;
-#X connect 11 0 10 0;
+#X connect 8 0 0 0;
+#X connect 9 0 8 0;
+#X connect 17 0 0 0;
