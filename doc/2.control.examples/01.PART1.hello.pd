@@ -1,27 +1,37 @@
-#N canvas 736 97 600 496 12;
-#X msg 204 32 hello world;
-#X obj 204 105 print;
-#X floatatom 321 32 0 0 0 0 - - - 0;
-#X text 215 48 message;
-#X text 319 49 atom;
-#X text 201 123 object;
-#X text 53 150 There are four types of text objects in Pd: message
-\, atom \, object \, and comment.;
-#X text 54 187 Messages respond to mouse clicks by sending their contents
+#N canvas 576 35 470 586 12;
+#X msg 151 27 hello world;
+#X obj 151 120 print;
+#X floatatom 174 58 5 0 0 0 - - - 0;
+#X text 254 26 message;
+#X text 201 120 object;
+#X text 24 214 Messages respond to mouse clicks by sending their contents
 to one or more destinations. The usual destination is the "outlet"
-at the lower left corner of the box.;
-#X text 55 239 Click the message box and watch the terminal window
+at the lower left corner of the box., f 60;
+#X text 24 269 Click the message box and watch the terminal window
 Pd was started in. You should see the "hello world" message appear.
 ;
-#X text 55 278 Atoms respond to "Dragging" up and down with the mouse
-\, by changing their contents and sending the result out their outlets.
-You can also type at an atom after clicking on it \; hit "enter" to
-output the number or click anywhere else to cancel.;
-#X text 52 359 Objects \, like "print" above \, may have all sorts
-of functions depending on what's typed into them. The "print" object
-simply prints out every message it receives.;
-#X text 53 415 To get help on an object \, right-click it. You should
-see a "help window" for the object.;
-#X text 354 470 updated for version 0.33;
+#X text 273 549 updated for version 0.52;
+#X text 220 58 GUI (number atom box);
+#X obj 189 89 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 214 88 bang GUI;
+#X text 24 309 The number atom box is a GUI (graphical user interface)
+and responds to "dragging" up and down with the mouse \, by changing
+their contents and sending the result out their outlets. You can also
+type at an atom after clicking on it \, hit "enter" to output the number
+or click anywhere else to cancel. You can right click on it for properties.
+A "bang" GUI sends "bang" messages when clicked on \, you can also
+right click for properties.;
+#X text 24 429 Objects \, like [print] above \, may have all sorts
+of functions depending on what's typed into them. The [print] object
+simply prints out every message it receives \, either from message
+boxes \, GUIs or the outlet of other objects.;
+#X text 24 495 To get help (for either GUIs \, message box or objects)
+\, right-click it. You should see a "help window" for the object.,
+f 60;
+#X text 24 166 There are four types of text objects in Pd: message
+\, GUI \, object \, and comment. Comments are simple texts (like this
+one) that do nothing., f 60;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
+#X connect 9 0 1 0;

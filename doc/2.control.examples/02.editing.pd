@@ -1,7 +1,7 @@
 #N canvas 594 23 533 668 12;
 #X msg 116 46 hello world;
 #X obj 225 82 print;
-#X floatatom 225 46 0 0 0 0 - - -;
+#X floatatom 225 46 0 0 0 0 - - - 0;
 #X text 115 25 message;
 #X text 225 24 atom;
 #X text 274 83 object;
