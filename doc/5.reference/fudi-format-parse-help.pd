@@ -15,37 +15,25 @@
 #X text 116 9 - convert messages to FUDI packets;
 #X obj 49 241 fudiformat -u;
 #X obj 376 366 print parse-output;
-#X obj 492 220 netreceive -u -b;
-#X msg 492 165 listen 5000;
-#X msg 504 193 listen 0;
-#X text 571 192 stop listening;
+#X obj 484 229 netreceive -u -b;
+#X msg 484 174 listen 5000;
+#X msg 496 202 listen 0;
+#X text 563 201 stop listening;
 #X msg 256 193 1 2 3 foo 5;
-#X text 489 141 packets from network;
-#X text 618 215 UDP packets \, binary output, f 13;
+#X text 481 150 packets from network;
+#X text 610 224 UDP packets \, binary output, f 13;
 #X obj 256 218 fudiformat;
 #X obj 356 218 fudiformat -u;
 #X text 356 156 without packet separator, f 14;
-#X text 579 165 listen on port 5000;
+#X text 571 174 listen on port 5000;
 #X obj 356 396 list;
 #X listbox 356 420 24 0 0 0 - - - 0;
 #X listbox 356 279 76 0 0 0 - - - 0;
 #X obj 356 336 fudiparse -u;
 #X obj 375 305 print packet;
 #X msg 356 193 1 2 3 foo 5;
-#X text 20 73 FUDI stands for "Fast Universal Digital Interface" and
-is a networking protocol used by Pd. The fudiformat object makes FUDI
-messages suitable for sending over the network via netsend (in UDP
-mode). Incoming messages are output as FUDI messages \, byte by byte.
-The '-u' creation argument switches to "UDP" mode \, omitting the packet
-separator. This saves some two bytes \, but only works when sending
-single FUDI messages over UDP. It doesn't work with TCP/IP (however
-\, you can use the default format even with UDP transport)., f 125
-;
 #X obj 31 34 fudiparse;
 #X text 116 34 - parse FUDI packets into Pd messages;
-#X text 545 319 The fudiparse object takes incoming lists of numbers
-\, interpreting them as the bytes in a FUDI message (as received when
-sending Pd-messages via [netreceive -b])., f 43;
 #N canvas 796 143 531 433 reference 0;
 #X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -81,6 +69,20 @@ sending Pd-messages via [netreceive -b])., f 43;
 0;
 #X obj 7 63 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 20 73 FUDI stands for "Fast Universal Digital Interface" and
+is a networking protocol used by Pd. The [fudiformat] object makes
+FUDI messages suitable for sending over the network via netsend (in
+UDP mode). Incoming messages are output as FUDI messages \, byte by
+byte. The '-u' creation argument switches to "UDP" mode \, omitting
+the packet separator. This saves some two bytes \, but only works when
+sending single FUDI messages over UDP. It doesn't work with TCP/IP
+(however \, you can use the default format even with UDP transport).
+, f 125;
+#X text 557 336 The [fudiparse] object takes incoming lists of numbers
+\, interpreting them as the bytes in a FUDI message (as received when
+sending Pd-messages via [netreceive -b])., f 43;
+#X obj 189 469 netsend;
+#X text 449 336 <-------------;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 3 0 4 0;

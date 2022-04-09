@@ -19,10 +19,6 @@ or not., f 30;
 #X obj 198 329 print velocity;
 #X text 184 197 "velocity" (also may be integer or not);
 #X obj 89 263 makenote 100 500;
-#X text 37 69 Makenote makes MIDI-style note-on/note-off pairs \, which
-you can use for MIDI output or to drive note-like processes within
-Pd. It can deal with any numbers (negative \, floats \, whatever) even
-though MIDI values need to be integers from 0 to 127!, f 63;
 #X obj 161 384 makenote;
 #X obj 230 384 bag;
 #N canvas 683 85 578 318 reference 0;
@@ -60,9 +56,13 @@ though MIDI values need to be integers from 0 to 127!, f 63;
 0;
 #X obj 7 370 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 85 15 -, f 1;
+#X text 85 15 -;
 #X text 98 7 send note-on messages and schedule note-off for later
 , f 27;
+#X text 37 69 [makenote] makes MIDI-style note-on/note-off pairs \,
+which you can use for MIDI output or to drive note-like processes within
+Pd. It can deal with any numbers (negative \, floats \, whatever) even
+though MIDI values need to be integers from 0 to 127!, f 63;
 #X connect 0 0 17 2;
 #X connect 1 0 17 1;
 #X connect 2 0 17 0;

@@ -3,21 +3,20 @@
 #N struct array4-template float y;
 #N canvas 615 26 619 575 12;
 #X text 16 534 see also:;
-#N canvas 393 50 506 269 setsize-template 0;
-#X obj 74 169 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
+#N canvas 393 50 510 198 setsize-template 0;
 #X obj 74 136 plot array4 500 1 10 15 10;
 #X obj 71 76 struct setsize-template float x float y array array4 array4-template
 , f 39;
-#X text 267 136 plot array4;
 #X text 68 29 struct with x/y fields and an array field named "array4"
 whose template is specified in "array4-template".;
-#X text 142 205 draw a purple filled polygon;
+#X text 267 136 plot "array4";
 #X restore 74 191 pd setsize-template;
 #N canvas 261 193 319 135 setsize-data 1;
 #X scalar setsize-template 31 23 \; 0 \; 10 \; 0 \; 10 \; 20 \; 10
 \; 20 \; 70 \; 10 \; \;;
+#X coords 0 135 1 134 0 0 0;
 #X restore 73 170 pd setsize-data;
-#N canvas 196 292 378 155 array4-template 0;
+#N canvas 556 257 378 155 array4-template 0;
 #X obj 45 94 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 50 50 struct array4-template float y;
 #X text 44 20 template for the array element;

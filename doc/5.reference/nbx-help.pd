@@ -1,7 +1,7 @@
 #N canvas 561 28 539 607 12;
 #X floatatom 179 332 7 0 0 0 - - - 0;
 #X msg 229 246 set \$1;
-#X obj 148 234 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc
+#X obj 148 234 bng 18 250 50 0 empty empty empty 8 -8 0 10 #dfdfdf
 #000000 #000000;
 #X obj 179 364 print nbx;
 #X floatatom 179 234 5 0 0 0 - - - 0;
@@ -434,8 +434,8 @@ set it directly via the properties window., f 50;
 #X obj 536 217 s \$0-nbx;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-errors because they have feedback protection. See example below., f
-50;
+errors because they have feedback protection. See example below.,
+f 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
 #X connect 2 0 7 0;
@@ -612,7 +612,7 @@ the atom number box and eventually [nbx] will be deprecated and removed
 from the Put Menu (but kept around)., f 68;
 #X obj 137 572 all_guis;
 #X text 99 15 - [my_numbox]/[nbx] - Number box;
-#N canvas 671 90 663 436 reference 1;
+#N canvas 671 90 663 436 reference 0;
 #X obj 8 52 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X text 118 184 label <symbol> - sets label symbol., f 72;

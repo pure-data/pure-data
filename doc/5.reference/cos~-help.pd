@@ -10,12 +10,8 @@
 #X text 14 368 see also:;
 #X obj 87 369 osc~;
 #X obj 126 369 tabread4~;
-#X text 35 49 The cos~ object outputs the cosine of two pi times its
-signal input. So -1 \, 0 \, 1 and 2 give 1 out \, 0.5 gives -1 \, and
-so on., f 61;
 #X text 303 366 updated for Pd version 0.41;
 #X text 64 11 - cosine waveshaper;
-#X text 168 108 <= Scroll to set input value;
 #X text 279 311 <= output of the cos~ object;
 #X obj 200 369 cos;
 #X obj 231 369 expr~;
@@ -23,7 +19,7 @@ so on., f 61;
 #X msg 303 233 \; pd dsp \$1;
 #X obj 200 209 loadbang;
 #X text 328 207 DSP on/off;
-#X obj 303 208 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 303 208 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X obj 7 43 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -40,19 +36,23 @@ so on., f 61;
 #X text 75 14 - cosine waveshaper;
 #X text 88 64 signal - input from 0-1 (wraps into 0-1 if outside this
 range)., f 63;
-#X text 88 113 signal - input from 0-1 (wraps into 0-1 if outside this
-range)., f 63;
 #X text 118 156 1) float - sets input value;
+#X text 88 113 signal - cosine output according to the input., f 63
+;
 #X restore 396 12 pd reference;
 #X obj 7 353 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 328 11 click =>;
 #X obj 123 209 cos~;
+#X text 168 108 <-- Scroll to set input value;
+#X text 30 50 The [cos~] object outputs the cosine of two pi times
+its signal input. So -1 \, 0 \, 1 and 2 give 1 out \, 0.5 gives -1
+\, and so on., f 63;
 #X connect 1 0 3 0;
-#X connect 2 0 27 0;
+#X connect 2 0 25 0;
 #X connect 4 0 2 0;
 #X connect 5 0 4 0;
-#X connect 18 0 1 0;
-#X connect 20 0 18 0;
-#X connect 22 0 19 0;
-#X connect 27 0 1 0;
+#X connect 16 0 1 0;
+#X connect 18 0 16 0;
+#X connect 20 0 17 0;
+#X connect 25 0 1 0;

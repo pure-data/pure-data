@@ -1,5 +1,5 @@
-#N canvas 289 23 1019 703 12;
-#X msg 135 484 set 45;
+#N canvas 226 23 1019 703 12;
+#X msg 225 483 set 45;
 #X floatatom 195 527 5 0 0 0 - - - 0;
 #X symbolatom 257 41 10 0 0 0 - - - 0;
 #X floatatom 56 41 5 0 0 0 - - - 0;
@@ -9,9 +9,7 @@
 #X msg 620 125 symbol hello\ world;
 #X obj 620 246 print symbol_box;
 #X obj 195 562 print number_box;
-#X msg 195 484 bang;
-#X msg 650 183 bang;
-#X msg 244 484 12;
+#X msg 155 483 12;
 #N canvas 450 199 417 455 properties 0;
 #N canvas 804 125 488 541 width 0;
 #X floatatom 281 445 1 0 0 0 - - - 0;
@@ -38,9 +36,9 @@ will actually have a minimum width of 3 digits and grow as needed to
 hold the typed or received number. A specific width is more CPU efficient
 though., f 58;
 #X text 149 497 see also:;
-#X obj 230 497 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 222 498 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X text 256 496 (toggle from iemguis);
+#X text 243 497 (toggle from iemguis);
 #X connect 1 0 9 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
@@ -230,7 +228,7 @@ label., f 74;
 instead of a number:, f 61;
 #X text 771 123 set and output a symbol;
 #X text 693 157 set only - don't output;
-#X text 688 181 output only - don't change value;
+#X text 674 182 output only - don't change value;
 #X text 27 88 These are GUI (Graphical User Interface) objects that
 display and send atoms (numbers or symbols) or lists. They may be created
 by selecting "number" (etc.) from the "put" menu. The contents can
@@ -250,7 +248,6 @@ word "list" to disambiguate them, f 32;
 #X msg 550 452 set 4 dog 5 6 donkey;
 #X text 703 447 "set" message changes contents but doesn't output them
 , f 30;
-#X msg 566 521 bang;
 #X text 614 490 "bang" is equivalent to an empty list in Pd \, but
 as a special case banging a list box outputs the current list. If you
 really want to display an empty list \, you can use a "set" message.
@@ -258,7 +255,7 @@ really want to display an empty list \, you can use a "set" message.
 #X msg 557 491 set;
 #X text 793 671 updated for Pd version 0.52;
 #X text 660 621 more details:;
-#N canvas 681 258 459 477 properties 0;
+#N canvas 815 193 459 477 properties 0;
 #N canvas 934 145 512 490 width 0;
 #X msg 132 130 symbol short;
 #X listbox 201 411 0 0 0 0 - - - 0;
@@ -409,7 +406,7 @@ value., f 62;
 #X obj 10 658 cnv 1 1000 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 913 36 <= click;
-#N canvas 829 54 437 675 reference 0;
+#N canvas 852 42 437 675 reference 0;
 #X obj 9 42 cnv 5 400 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 123 cnv 2 400 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -456,17 +453,23 @@ value., f 62;
 #X text 150 298 bang - output value.;
 #X text 150 532 bang - output value.;
 #X restore 819 36 pd reference;
+#X obj 195 484 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 566 521 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 650 183 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 0 0 1 0;
 #X connect 1 0 9 0;
 #X connect 5 0 8 0;
 #X connect 6 0 5 0;
 #X connect 7 0 5 0;
 #X connect 10 0 1 0;
-#X connect 11 0 5 0;
-#X connect 12 0 1 0;
-#X connect 23 0 24 0;
-#X connect 24 0 25 0;
-#X connect 26 0 24 0;
-#X connect 29 0 24 0;
-#X connect 31 0 24 0;
-#X connect 33 0 24 0;
+#X connect 21 0 22 0;
+#X connect 22 0 23 0;
+#X connect 24 0 22 0;
+#X connect 27 0 22 0;
+#X connect 30 0 22 0;
+#X connect 51 0 1 0;
+#X connect 52 0 22 0;
+#X connect 53 0 5 0;

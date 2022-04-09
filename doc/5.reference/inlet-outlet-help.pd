@@ -3,7 +3,7 @@
 #X obj 70 10 inlet~;
 #X obj 25 38 outlet;
 #X obj 75 38 outlet~;
-#X obj 273 288 print~;
+#X obj 273 290 print~;
 #X obj 273 208 sig~ 12;
 #X floatatom 31 212 5 0 0 0 - - - 0;
 #X floatatom 31 264 5 0 0 0 - - - 0;
@@ -11,7 +11,7 @@
 #X text 243 185 audio in and out;
 #X text 19 485 see also:;
 #X obj 93 486 block~;
-#X obj 285 266 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 285 266 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #N canvas 486 122 538 582 up/downsampling 0;
 #X obj 37 395 print~;
@@ -132,13 +132,7 @@ object to pass arguments to initialize signal inlets in abstractions.
 #X restore 31 238 pd subpatch-with-inlets-and-outlets;
 #N canvas 0 23 600 400 (subpatch) 0;
 #X restore 146 486 pd;
-#X text 51 83 Inlets/outlets are used to receive and get information
-on a patch window. This can be an abstraction or a subpatch. To create
-a subpatch \, type "pd" into an object box \, then you can put inlets
-and outlets by making "inlet" objects \, etc \, in the subpatch (open
-the patch below to see them.);
-#X text 230 325 <= details on up/downsampling;
-#X text 251 341 for inlet~ and outlet~, f 26;
+#X text 261 341 for inlet~ and outlet~, f 26;
 #X text 325 485 updated for Pd version 0.51;
 #N canvas 582 179 543 415 inlet~-forwarding 0;
 #X obj 173 182 inlet~ fwd;
@@ -168,14 +162,14 @@ message to such an inlet~ has no effect.);
 #X connect 5 0 4 0;
 #X connect 10 0 0 0;
 #X restore 96 422 pd inlet~-forwarding;
-#X obj 74 387 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 74 387 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X floatatom 39 385 4 0 0 0 - - - 0;
 #X msg 96 387 1 2 3;
 #X msg 143 387 poodle 50;
 #X text 245 421 <= catching messages to inlet~ objects;
-#X text 302 265 (DSP needs to be on);
-#X obj 401 191 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 307 265 (DSP needs to be on);
+#X obj 401 191 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 425 192 DSP on/off;
 #X msg 401 215 \; pd dsp \$1;
@@ -255,13 +249,19 @@ message to such an inlet~ has no effect.);
 0;
 #X obj 7 471 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 230 325 <-- details on up/downsampling;
+#X text 51 83 Inlets/outlets are used to receive and get information
+on a patch window. This can be an abstraction or a subpatch. To create
+a subpatch \, type "pd" into an object box \, then you can put inlets
+and outlets by making [inlet] objects \, etc \, in the subpatch (open
+the patch below to see them.);
 #X connect 5 0 14 1;
 #X connect 6 0 14 0;
 #X connect 12 0 4 0;
 #X connect 14 0 7 0;
 #X connect 14 1 4 0;
-#X connect 21 0 20 0;
-#X connect 22 0 20 0;
-#X connect 23 0 20 0;
-#X connect 24 0 20 0;
-#X connect 27 0 29 0;
+#X connect 19 0 18 0;
+#X connect 20 0 18 0;
+#X connect 21 0 18 0;
+#X connect 22 0 18 0;
+#X connect 25 0 27 0;

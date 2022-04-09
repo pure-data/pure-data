@@ -24,7 +24,6 @@
 #X restore 446 482 pd pointer-data;
 #X obj 67 437 pointer;
 #X msg 41 196 traverse pd-pointer-data;
-#X msg 61 222 bang;
 #X msg 77 248 next;
 #X obj 67 462 print out1;
 #X obj 158 462 print out2;
@@ -37,7 +36,7 @@
 #X text 221 195 sets to the "head" of the list;
 #X msg 85 283 vnext 1;
 #X msg 104 354 send pointer-help;
-#X text 101 222 output current value;
+#X text 84 222 output current value;
 #X obj 481 345 r pointer-help;
 #X obj 481 370 print pointer-help;
 #X text 145 276 output the next object (if arg is 0) or the next selected
@@ -49,7 +48,6 @@ to make sense)., f 74;
 #X text 246 403 send a message to the canvas containing the scalar
 ;
 #X msg 93 315 delete;
-#X text 348 437 Pointer equality =>;
 #N canvas 764 193 602 411 equal_message 0;
 #X obj 304 212 pointer;
 #X msg 304 146 traverse pd-pointer-data \, bang;
@@ -81,7 +79,7 @@ rightmost outlet., f 71;
 #X connect 7 2 10 0;
 #X connect 7 3 11 0;
 #X connect 13 0 1 0;
-#X restore 485 436 pd equal_message;
+#X restore 497 436 pd equal_message;
 #X text 482 671 updated for Pd version 0.51;
 #X obj 158 438 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
@@ -159,35 +157,38 @@ send a value to [pointer] (perhaps from another [pointer] object).
 The right inlet takes pointers and simply stores them. A bang in the
 left inlet outputs the pointer \, and a pointer in the left both sets
 and outputs the value., f 94;
-#X text 22 118 The value of a pointer can either indicate a real scalar
-\, or else the "head" (before the first element) of the list \, which
-allows you to point to an empty list (and append a scalar to the beginning
-of the list). Pointers are "safe": if you delete a scalar \, pointers
-to it are marked as invalid., f 94;
 #X text 121 241 move forward one item and output its pointer \, or
 send a "bang" to the right outlet if we reach the end of the list.
 , f 63;
 #X text 146 309 delete the current object and output the next one (or
 send a "bang" to rigt outlet if it was the last one in the list),
 f 67;
-#X text 233 354 send pointer to a receive name =>;
 #X text 23 496 Optional arguments to [pointer] allow you to select
 according to the template of the scalar being output:;
-#X connect 11 0 15 0;
-#X connect 11 1 37 0;
+#X obj 61 222 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 233 354 send pointer to a receive name -->;
+#X text 348 437 Pointer equality -->;
+#X text 22 118 The value of a [pointer] can either indicate a real
+scalar \, or else the "head" (before the first element) of the list
+\, which allows you to point to an empty list (and append a scalar
+to the beginning of the list). Pointers are "safe": if you delete a
+scalar \, pointers to it are marked as invalid., f 94;
+#X connect 11 0 14 0;
+#X connect 11 1 35 0;
 #X connect 12 0 11 0;
 #X connect 13 0 11 0;
-#X connect 14 0 11 0;
-#X connect 17 0 48 0;
-#X connect 18 0 48 0;
+#X connect 16 0 46 0;
+#X connect 17 0 46 0;
+#X connect 23 0 11 0;
 #X connect 24 0 11 0;
-#X connect 25 0 11 0;
-#X connect 27 0 28 0;
-#X connect 30 0 11 0;
-#X connect 31 0 30 0;
-#X connect 33 0 11 0;
-#X connect 37 0 16 0;
-#X connect 48 0 19 0;
-#X connect 48 1 20 0;
-#X connect 48 2 21 0;
-#X connect 48 3 22 0;
+#X connect 26 0 27 0;
+#X connect 29 0 11 0;
+#X connect 30 0 29 0;
+#X connect 32 0 11 0;
+#X connect 35 0 15 0;
+#X connect 46 0 18 0;
+#X connect 46 1 19 0;
+#X connect 46 2 20 0;
+#X connect 46 3 21 0;
+#X connect 51 0 11 0;

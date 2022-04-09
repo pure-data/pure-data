@@ -1,4 +1,4 @@
-#N canvas 215 36 1117 604 12;
+#N canvas 195 42 1117 604 12;
 #X obj 68 18 trigger;
 #X text 133 19 - sequence messages in right-to-left order;
 #X obj 96 43 t;
@@ -9,7 +9,7 @@
 #X obj 345 445 -;
 #X obj 327 473 *;
 #X floatatom 327 503 5 0 0 0 - - - 0;
-#X obj 41 383 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 41 383 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X obj 41 431 trigger bang bang bang;
 #X obj 192 486 print 1st;
@@ -19,7 +19,7 @@
 #X obj 488 280 t f b s l a p;
 #X obj 77 280 trigger float bang symbol list anything pointer;
 #X text 422 281 same as:;
-#X msg 675 141 1 2 3;
+#X msg 695 141 1 2 3;
 #X obj 695 172 t l f;
 #X listbox 727 200 7 0 0 0 - - - 0;
 #X msg 785 141 list a b c;
@@ -34,27 +34,18 @@
 #X msg 964 112 symbol a;
 #X msg 994 169 1 2 3;
 #X msg 979 141 list a b c;
-#X obj 892 112 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X floatatom 898 368 5 0 0 0 - - - 0;
 #X msg 942 368 symbol a;
 #X msg 965 423 1 2 3;
 #X msg 955 396 list a b c;
-#X obj 870 368 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X msg 775 368 dog my cats;
 #X obj 919 198 trigger list bang;
-#X obj 1035 225 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 898 454 trigger anything bang;
 #X obj 898 514 print [t a b];
 #X obj 919 268 print [t l b];
 #X text 888 565 updated for Pd version 0.52;
 #X obj 643 473 t;
 #X text 683 473 =;
-#X text 21 95 The trigger object outputs its input from right to left.
-Because of the hot/cold inlet paradigm of Pd \, output from right to
-left is the usual output order in Pd objects., f 88;
 #X text 649 432 the default is [t b b]:, f 12;
 #X obj 706 473 t b b;
 #X text 686 305 You can use the 'anything' specifier to bypass any
@@ -139,6 +130,15 @@ which can be abreviatted (default: f f)., f 52;
 0;
 #X obj 666 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 870 368 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 1035 225 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 892 112 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 21 95 The [trigger] object outputs its input from right to
+left. Because of the hot/cold inlet paradigm of Pd \, output from right
+to left is the usual output order in Pd objects., f 88;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;
 #X connect 5 1 6 0;
@@ -151,32 +151,32 @@ which can be abreviatted (default: f f)., f 52;
 #X connect 11 1 13 0;
 #X connect 11 2 12 0;
 #X connect 19 0 20 0;
-#X connect 20 0 61 0;
+#X connect 20 0 57 0;
 #X connect 20 1 21 0;
 #X connect 22 0 23 0;
-#X connect 23 0 62 0;
-#X connect 23 1 63 0;
+#X connect 23 0 58 0;
+#X connect 23 1 59 0;
 #X connect 25 0 7 1;
 #X connect 26 0 8 0;
-#X connect 29 0 41 0;
-#X connect 30 0 45 0;
-#X connect 31 0 41 0;
-#X connect 32 0 41 0;
-#X connect 33 0 41 0;
-#X connect 34 0 41 0;
-#X connect 35 0 43 0;
-#X connect 36 0 43 0;
-#X connect 37 0 43 0;
-#X connect 38 0 43 0;
-#X connect 39 0 43 0;
-#X connect 40 0 43 0;
-#X connect 41 0 30 0;
-#X connect 41 1 42 0;
-#X connect 42 0 45 0;
-#X connect 43 0 44 0;
-#X connect 43 1 44 0;
-#X connect 53 0 57 0;
-#X connect 53 1 57 1;
-#X connect 55 0 53 0;
-#X connect 56 0 57 0;
-#X connect 57 0 54 0;
+#X connect 29 0 39 0;
+#X connect 30 0 42 0;
+#X connect 31 0 39 0;
+#X connect 32 0 39 0;
+#X connect 33 0 39 0;
+#X connect 34 0 40 0;
+#X connect 35 0 40 0;
+#X connect 36 0 40 0;
+#X connect 37 0 40 0;
+#X connect 38 0 40 0;
+#X connect 39 0 30 0;
+#X connect 39 1 70 0;
+#X connect 40 0 41 0;
+#X connect 40 1 41 0;
+#X connect 49 0 53 0;
+#X connect 49 1 53 1;
+#X connect 51 0 49 0;
+#X connect 52 0 53 0;
+#X connect 53 0 50 0;
+#X connect 69 0 40 0;
+#X connect 70 0 42 0;
+#X connect 71 0 39 0;

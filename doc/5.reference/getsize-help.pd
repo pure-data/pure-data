@@ -1,11 +1,9 @@
 #N struct getsize-template float x float y array array5 array5-template
 ;
 #N struct array5-template float y;
-#N canvas 583 23 617 534 12;
+#N canvas 589 23 617 534 12;
 #X text 13 497 see also:;
-#N canvas 527 124 502 223 getsize-template 0;
-#X obj 84 150 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
-#X text 103 173 draw a purple filled polygon;
+#N canvas 565 285 501 184 getsize-template 0;
 #X obj 85 64 struct getsize-template float x float y array array5 array5-template
 , f 39;
 #X obj 84 112 plot array5 500 1 10 15 20;
@@ -13,9 +11,10 @@
 #X text 63 25 struct with x/y fields and an array field named "array5"
 whose template is specified in "array5-template".;
 #X restore 360 159 pd getsize-template;
-#N canvas 268 216 305 197 getsize-data 1;
-#X scalar getsize-template 31 23 \; 0 \; 10 \; 0 \; 10 \; 20 \; 10
-\; 20 \; 70 \; 10 \; \;;
+#N canvas 318 152 260 201 getsize-data 1;
+#X scalar getsize-template 31 23 \; 21 \; 62 \; -6 \; 102 \; 38 \;
+88 \; 40 \; 77 \; -1 \; \;;
+#X coords 0 201 1 200 0 0 0;
 #X restore 360 137 pd getsize-data;
 #X obj 218 497 pointer;
 #X obj 161 497 setsize;
@@ -44,18 +43,13 @@ whose template is specified in "array5-template".;
 #X text 29 76 set <symbol \, symbol> - set template and field name.
 , f 63;
 #X obj 24 15 getsize;
-#X text 84 16 - get of a Data Structures array.;
 #X text 120 57 pointer - pointer to a scalar with an array field.;
 #X text 152 154 1) symbol - template name.;
 #X text 134 119 float - array's size when receiving a pointer.;
+#X text 84 16 - get size of a Data Structures array.;
 #X restore 425 14 pd reference;
 #X text 523 15 <= click;
-#X text 86 14 - get of a Data Structures array;
 #X obj 83 497 array size;
-#X text 30 56 When sent a pointer to a scalar \, [getsize] looks up
-a agiven array field and outputs its number of elements. The template
-and field name are specified as creation arguments. The smallest possible
-size is one. Note you can also use [array size] for this., f 77;
 #X obj 332 272 pointer;
 #X floatatom 332 448 5 0 0 0 - - - 0;
 #X msg 332 232 traverse pd-getsize-data \, next;
@@ -70,20 +64,25 @@ array field., f 41;
 #X msg 421 322 set - array5;
 #X msg 402 288 set getsize-template array5;
 #X obj 38 232 getsize getsize-template array5;
-#N canvas 970 269 363 169 array5-template 0;
+#N canvas 679 322 363 169 array5-template 0;
 #X obj 45 94 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X text 44 20 template for the array element;
 #X text 42 123 draw a filled polygon for each element;
 #X obj 50 50 struct array5-template float y;
 #X restore 360 181 pd array5-template;
 #X text 83 262 the size of field "array5".;
-#X connect 5 0 30 0;
+#X text 86 14 - get size of a Data Structures array;
+#X text 30 56 When sent a pointer to a scalar \, [getsize] looks up
+a given array field and outputs its number of elements. The template
+and field name are specified as creation arguments. The smallest possible
+size is one. Note you can also use [array size] for this., f 77;
+#X connect 5 0 28 0;
 #X connect 6 0 5 0;
-#X connect 19 0 22 0;
-#X connect 19 0 27 0;
-#X connect 21 0 19 0;
-#X connect 22 0 23 0;
+#X connect 17 0 20 0;
+#X connect 17 0 25 0;
+#X connect 19 0 17 0;
+#X connect 20 0 21 0;
+#X connect 25 0 18 0;
+#X connect 26 0 20 0;
 #X connect 27 0 20 0;
-#X connect 28 0 22 0;
-#X connect 29 0 22 0;
-#X connect 30 0 7 0;
+#X connect 28 0 7 0;

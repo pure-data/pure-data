@@ -32,11 +32,12 @@ the bang GUI below:, f 22;
 #X obj 25 16 bang;
 #X text 99 16 - send "bang" message;
 #X obj 65 16 b;
-#X text 146 105 bang - a bang message, f 49;
-#X text 117 63 anything - any message outputs a bang, f 53;
 #X obj 8 132 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
 #X text 147 143 NONE, f 52;
+#X text 117 63 anything - any message outputs a bang., f 53;
+#X text 146 105 bang - a bang message for any input message., f 49
+;
 #X restore 237 35 pd reference;
 #X text 8 309 see also:;
 #X obj 83 311 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000

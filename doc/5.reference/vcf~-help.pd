@@ -60,21 +60,21 @@
 ;
 #X restore 414 14 pd reference;
 #X text 512 14 <= click;
-#X text 25 53 Vcf~ is a resonant band-pass and low-pass filter that
-takes either a control or an audio signal to set center frequency \,
-which may thus change continuously in time as in an analog voltage
-controlled filter (and unlike 'bp~' and 'lop~' that only take control
-values). The "Q" or filter sharpness is still only set by control messages.
-It is more expensive but more powerful than the bp~ bandpass filter.
-, f 78;
-#X text 24 146 Vcf~ is implemented as a one-pole complex filter with
-outlets for the real and imaginary value. These may be used as bandpass
-and lowpass filter outputs \, or combined to allow other possibilities.
-, f 78;
 #X obj 7 465 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 76 14 - voltage-controlled band/low-pass filter;
 #X text 270 216 resonant frequency in Hz;
+#X text 25 53 [vcf~] is a resonant band-pass and low-pass filter that
+takes either a control or an audio signal to set center frequency \,
+which may thus change continuously in time as in an analog voltage
+controlled filter (and unlike [bp~] and [lop~] that only take control
+values). The "Q" or filter sharpness is still only set by control messages.
+It is more expensive but more powerful than the [bp~] bandpass filter.
+, f 78;
+#X text 24 146 [vcf~] is implemented as a one-pole complex filter with
+outlets for the real and imaginary value. These may be used as bandpass
+and lowpass filter outputs \, or combined to allow other possibilities.
+, f 78;
 #X connect 0 0 6 1;
 #X connect 1 0 0 0;
 #X connect 2 0 6 2;

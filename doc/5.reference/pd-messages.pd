@@ -1,27 +1,25 @@
-#N canvas 247 23 1039 684 12;
-#X msg 716 131 dsp \$1;
-#X msg 604 144 \; pd dsp 0;
-#X obj 716 106 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 741 104 turn DSP engine on/off;
-#X msg 604 102 \; pd dsp 1;
-#X msg 74 298 \; pd compatibility 0.52;
-#X text 47 136 The 'compatibility' message takes a version number and
+#N canvas 247 23 997 676 12;
+#X msg 688 83 dsp \$1;
+#X msg 576 96 \; pd dsp 0;
+#X text 712 54 turn DSP engine on/off;
+#X msg 576 54 \; pd dsp 1;
+#X msg 56 298 \; pd compatibility 0.52;
+#X text 29 136 The 'compatibility' message takes a version number and
 sets the behaviour of some objects back to that particular version.
 This can be useful in some cases if you want to guarantee that your
 patch will work in the same way as in the version you created it. This
 is because sometimes a new version of Pd may promote a change in the
 behaviour of the object (usually to fix a bug) that can also break
 or change the result of a patch., f 62;
-#X text 53 365 Objects that change their behaviour according to the
+#X text 35 365 Objects that change their behaviour according to the
 set compatibility have that information in their help file.;
-#X text 63 277 set compatibility to Pd 0.52;
-#X text 291 266 set to Pd 0.49;
-#X text 125 411 For example \, check the help file of:, f 18;
-#X obj 276 420 wrap~;
-#X obj 277 542 trace;
-#X msg 72 534 \; pd set-tracing \$1;
-#X obj 72 495 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 45 277 set compatibility to Pd 0.52;
+#X text 273 266 set to Pd 0.49;
+#X text 107 411 For example \, check the help file of:, f 18;
+#X obj 258 420 wrap~;
+#X obj 259 542 trace;
+#X msg 54 534 \; pd set-tracing \$1;
+#X obj 54 495 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #N canvas 654 117 712 610 fast-forward 0;
 #X msg 176 449 stop;
@@ -83,7 +81,7 @@ example, f 76;
 #X connect 20 0 22 0;
 #X connect 22 0 17 0;
 #X connect 23 0 22 1;
-#X restore 821 381 pd fast-forward;
+#X restore 793 321 pd fast-forward;
 #N canvas 608 91 947 530 other-messages 0;
 #X msg 648 383 \; pd quit;
 #X obj 164 181 pdcontrol;
@@ -124,29 +122,27 @@ next section on parent patch)., f 64;
 #X connect 4 0 3 0;
 #X connect 10 0 13 0;
 #X connect 11 0 10 0;
-#X restore 841 459 pd other-messages;
-#X text 570 371 The "fast-forward" message to Pd allows batch processing.
+#X restore 813 399 pd other-messages;
+#X text 542 311 The "fast-forward" message to Pd allows batch processing.
 Open the subpatch for an example., f 32;
-#X text 541 449 Here are some other maybe interesting (maybe not) messages
+#X text 513 389 Here are some other maybe interesting (maybe not) messages
 you can send to Pd., f 41;
-#X text 40 635 see also:;
-#X obj 157 636 samplerate~;
-#X obj 115 636 send;
-#X obj 567 312 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X text 22 636 see also:;
+#X obj 139 636 samplerate~;
+#X obj 97 636 send;
+#X obj 539 252 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 567 279 receive pd-dsp-started;
-#X obj 781 279 receive pd-dsp-stopped;
-#X obj 781 312 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 587 311 when DSP is turned on;
-#X text 804 311 when DSP is turned off;
-#X obj 246 636 namecanvas;
-#X msg 334 636 message;
-#X obj 68 18 cnv 15 242 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Pd:
+#X obj 539 219 receive pd-dsp-started;
+#X obj 753 219 receive pd-dsp-stopped;
+#X text 561 251 when DSP is turned on;
+#X text 776 252 when DSP is turned off;
+#X obj 228 636 namecanvas;
+#X msg 314 636 message;
+#X obj 40 13 cnv 15 242 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Pd:
 10 12 0 14 #e0e0e0 #404040 0;
-#X obj 584 524 cnv 15 420 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Patch\\\ windows\\\ (canvases)
+#X obj 518 449 cnv 15 420 27 empty empty Messages\\\ you\\\ can\\\ send\\\ to\\\ Patch\\\ windows\\\ (canvases)
 10 12 0 14 #e0e0e0 #404040 0;
-#X obj 584 551 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
+#X obj 518 476 cnv 15 420 27 empty empty (aka\\\ Dynamic\\\ patching):
 117 12 0 14 #e0e0e0 #404040 0;
 #N canvas 587 182 779 412 Dynamic-Patching 0;
 #X text 99 166 For reference \, please check the help file of =>,
@@ -281,7 +277,7 @@ in Pd's tutorial examples.;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 91 196 pd open;
-#X text 115 165 <-- open first examle of the 4.Data.Structure section
+#X text 115 165 <-- open first example of the 4.Data.Structure section
 ;
 #X connect 0 0 13 0;
 #X connect 1 0 13 0;
@@ -417,27 +413,33 @@ or message box. See example below for creating 'boxes'., f 62;
 #X text 584 148 handling abstractions:, f 13;
 #X text 521 49 You can connect and disconnect boxes. See subpatch below:
 , f 30;
-#X restore 800 640 pd Dynamic-Patching;
-#X text 105 489 The set-tracing message is useful for debugging with
+#X restore 695 578 pd Dynamic-Patching;
+#X text 87 489 The set-tracing message is useful for debugging with
 the [trace] object. Check its help file., f 47;
-#X text 536 221 Note you can get a bang message sent by Pd when DSP
+#X text 508 161 Note you can get a bang message sent by Pd when DSP
 starts or stops if you receive from 'pd-dsp-started' and 'pd-dsp-stopped'.
 , f 65;
-#X text 690 593 Open subpatch for documentation on how to send messages
-to to a patch window:, f 35;
-#X obj 283 315 send pd;
-#X text 47 63 We can use both the [send] object or message boxes to
+#X text 601 528 Open subpatch for documentation on how to send messages
+to to a patch window:, f 38;
+#X obj 265 315 send pd;
+#X text 29 63 We can use both the [send] object or message boxes to
 send messages to Pd. Here are some messages that makes sense for you
 to send to Pd from within a patch. Conversely \, you can also send
 Pd these messages via Pd's command line., f 62;
-#X obj 716 160 send pd;
-#X msg 283 288 compatibility 0.49;
-#X text 42 604 updated for Pd version 0.52;
-#X text 605 36 The message "dsp 1" turns DSP on and "dsp 0" turns it
-off., f 32;
-#X connect 0 0 39 0;
-#X connect 2 0 0 0;
-#X connect 14 0 13 0;
-#X connect 23 0 22 0;
-#X connect 24 0 25 0;
-#X connect 40 0 37 0;
+#X obj 688 112 send pd;
+#X msg 265 288 compatibility 0.49;
+#X text 780 633 updated for Pd version 0.52;
+#X text 518 18 The message "dsp 1" turns DSP on and "dsp 0" turns it
+off.;
+#X obj 753 252 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 688 55 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 5 624 cnv 1 984 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 37 0;
+#X connect 13 0 12 0;
+#X connect 22 0 21 0;
+#X connect 23 0 41 0;
+#X connect 38 0 35 0;
+#X connect 42 0 0 0;

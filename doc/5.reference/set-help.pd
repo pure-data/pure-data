@@ -6,25 +6,26 @@
 #X obj 92 662 setsize;
 #X obj 157 661 element;
 #X msg 283 166 next;
-#X floatatom 110 168 5 0 0 0 - - - 0;
-#X floatatom 157 168 5 0 0 0 - - - 0;
+#X floatatom 110 168 5 0 200 0 - - - 0;
+#X floatatom 157 168 5 0 200 0 - - - 0;
 #X obj 268 192 pointer;
 #X text 322 167 output next item;
 #X text 285 231 Remaining args are names of fields.;
 #X obj 220 660 pointer;
 #X msg 268 139 traverse pd-set-data \, next;
-#N canvas 296 165 276 122 set-data 1;
-#X scalar set-template 30 34  \;;
-#X scalar set-template 130 41  \;;
+#N canvas 296 165 297 270 set-data 1;
+#X scalar set-template 70 32 monkey \;;
+#X scalar set-template 143 78 fish \;;
+#X coords 0 270 1 269 0 0 0;
 #X restore 407 562 pd set-data;
-#N canvas 637 400 502 278 set-template 0;
-#X obj 98 130 filledpolygon 9 0 1 0 0 20 0 20 30 0 30;
+#N canvas 637 400 495 262 set-template 0;
 #X obj 69 54 struct set-template float x float y symbol s;
-#X obj 150 224 drawsymbol s 0 -15 0 s=;
 #X text 45 18 a struct with x/y coordinate fields and a 's' symbol
 field.;
 #X text 102 103 draw a filled polygon;
-#X text 102 193 drawing instruction for the 's' field;
+#X text 100 179 drawing instruction for the 's' field;
+#X obj 98 130 filledpolygon 9 0 1 0 30 20 30 20 60 0 60;
+#X obj 138 210 drawsymbol s 25 50 0 s\ =\ ;
 #X restore 407 584 pd set-template;
 #X obj 110 218 set set-template x y, f 23;
 #X text 51 168 x value;
@@ -38,9 +39,6 @@ field.;
 #X symbolatom 148 364 10 0 0 0 - - - 0;
 #X msg 148 311 symbol monkey;
 #X msg 156 337 symbol fish;
-#X text 27 257 To set fields whose values are symbols \, give the set
-object the "-symbol" argument. (Unfortunately \, you can't mix symbols
-and numbers in the same "set" object.), f 73;
 #X text 346 664 updated for Pd version 0.47;
 #X text 25 423 You can use the template "-" as a wild card (this may
 be slower than if you use a specific template name). Also \, if there
@@ -104,12 +102,15 @@ to set struct name and field., f 47;
 #X text 20 49 [set] takes a pointer to a scalar in its rightmost inlet.
 The remaining inlets set fields values for floats and symbols (no text
 \, in which case you should use [text set]). Arrays are accessed using
-the element] object \, but you can also use [array set] instead. Only
-the leftmost inlet is "hot" and it also takes bang messages., f 73
-;
+the [element] object \, but you can also use [array set] instead. Only
+the leftmost inlet is "hot" and it also takes "bang" messages., f
+73;
+#X text 27 257 To set fields whose values are symbols \, give the set
+object the "-symbol" argument. (Unfortunately \, you can't mix symbols
+and numbers in the same [set] object.), f 73;
 #X connect 5 0 8 0;
 #X connect 6 0 15 0;
-#X connect 7 0 40 0;
+#X connect 7 0 39 0;
 #X connect 8 0 15 2;
 #X connect 12 0 8 0;
 #X connect 20 0 21 0;
@@ -118,12 +119,12 @@ the leftmost inlet is "hot" and it also takes bang messages., f 73
 #X connect 24 0 23 0;
 #X connect 25 0 24 0;
 #X connect 26 0 24 0;
-#X connect 32 0 30 0;
-#X connect 33 0 34 0;
-#X connect 34 0 31 1;
-#X connect 34 0 30 1;
-#X connect 35 0 31 0;
-#X connect 36 0 31 0;
-#X connect 37 0 31 0;
-#X connect 40 0 15 0;
-#X connect 40 1 15 1;
+#X connect 31 0 29 0;
+#X connect 32 0 33 0;
+#X connect 33 0 30 1;
+#X connect 33 0 29 1;
+#X connect 34 0 30 0;
+#X connect 35 0 30 0;
+#X connect 36 0 30 0;
+#X connect 39 0 15 0;
+#X connect 39 1 15 1;

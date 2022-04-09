@@ -14,7 +14,7 @@
 #X text 29 65 For instance:;
 #X obj 271 326 loadbang;
 #X floatatom 550 433 0 0 100 0 - - - 0;
-#X obj 550 314 vsl 20 100 0 10 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#X obj 550 314 vsl 20 100 0 10 0 0 empty empty empty 0 -9 0 10 #dfdfdf
 #000000 #000000 0 1;
 #X text 245 132 input is the index to read from the array, f 21;
 #X text 27 23 [expr] \, [expr~] and [fexpr~] can read values from array
@@ -80,8 +80,6 @@ variables (just either '$i3' or '$f#').;
 #X msg 767 376 1.3;
 #X msg 809 344 4.7;
 #X obj 767 304 loadbang;
-#X obj 590 323 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X floatatom 650 403 5 0 0 0 - - - 0;
 #X floatatom 590 403 5 0 0 0 - - - 0;
 #X text 514 245 A simpler practice that will always work for both table
@@ -112,19 +110,21 @@ the C-style expression syntax \, where symbols cannot start with a
 number \, so '\$0x' or '\$0_x' are illegal as Pd turns '\$0' into a
 number and thus the object won't load giving a syntax error!, f 62
 ;
+#X obj 590 323 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 0 0 3 0;
 #X connect 1 0 0 1;
 #X connect 2 0 0 0;
 #X connect 4 0 1 0;
 #X connect 6 0 8 0;
 #X connect 7 0 6 0;
-#X connect 11 0 17 0;
-#X connect 11 1 16 0;
+#X connect 11 0 16 0;
+#X connect 11 1 15 0;
 #X connect 12 0 9 0;
 #X connect 13 0 10 0;
 #X connect 14 0 12 0;
 #X connect 14 0 13 0;
-#X connect 15 0 11 0;
+#X connect 27 0 11 0;
 #X restore 475 524 pd Dealing_with_"\$0";
 #X text 18 619 see also:;
 #X obj 22 660 block~;
@@ -271,28 +271,26 @@ number and thus the object won't load giving a syntax error!, f 62
 #X connect 8 0 7 0;
 #X connect 10 0 1 0;
 #X restore 165 231 pd If-function;
-#N canvas 444 91 491 376 Random-function 0;
-#X floatatom 107 206 5 0 0 0 - - - 0;
-#X obj 107 175 expr random(10 \, 20);
-#X obj 107 147 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 133 142 random values from 10 to 19;
-#X floatatom 108 306 5 0 0 0 - - - 0;
-#X obj 108 247 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 108 275 expr random(-100 \, 101);
-#X text 134 242 random values from -100 to 100;
+#N canvas 444 91 455 353 Random-function 0;
+#X floatatom 107 187 5 0 0 0 - - - 0;
+#X obj 107 156 expr random(10 \, 20);
+#X text 128 128 random values from 10 to 19;
+#X floatatom 108 287 5 0 0 0 - - - 0;
+#X obj 108 256 expr random(-100 \, 101);
+#X text 130 227 random values from -100 to 100;
 #X text 36 32 The random function generates random numbers within a
 given range \, specified by the two arguments. The range is from the
 first argument to the second argument minus one., f 51;
+#X obj 107 128 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 108 228 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 1 0 0 0;
-#X connect 2 0 1 0;
-#X connect 5 0 6 0;
-#X connect 6 0 4 0;
+#X connect 4 0 3 0;
+#X connect 7 0 1 0;
+#X connect 8 0 4 0;
 #X restore 165 262 pd Random-function;
 #N canvas 558 74 604 529 Table-functions 0;
-#X obj 63 73 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X floatatom 63 163 0 0 0 0 - - - 0;
 #X floatatom 145 164 0 0 0 0 - - - 0;
 #X floatatom 228 164 0 0 0 0 - - - 0;
@@ -318,12 +316,8 @@ first argument to the second argument minus one., f 51;
 #X text 64 187 Sums a range of indexes, f 8;
 #X text 146 189 Sums all indexes, f 8;
 #X text 225 189 Gives array size, f 5;
-#X obj 47 269 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X floatatom 47 344 0 0 0 0 - - - 0;
 #X floatatom 240 344 0 0 0 0 - - - 0;
-#X obj 47 396 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X floatatom 47 469 0 0 0 0 - - - 0;
 #X floatatom 212 467 0 0 0 0 - - - 0;
 #X obj 47 299 expr avg("table") \; sum("table") / size("table");
@@ -336,18 +330,24 @@ avg \, Sum \, sum and size., f 45;
 #X text 354 286 You can use a symbol type to specify the array name.
 Note that the syntax requires that the array name is inside quotes.
 , f 23;
-#X connect 0 0 6 0;
-#X connect 5 0 8 0;
-#X connect 6 0 1 0;
-#X connect 6 1 2 0;
-#X connect 6 2 3 0;
-#X connect 7 0 5 0;
-#X connect 12 0 18 0;
-#X connect 15 0 19 0;
-#X connect 18 0 13 0;
-#X connect 18 1 14 0;
-#X connect 19 0 16 0;
-#X connect 19 1 17 0;
+#X obj 63 73 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 47 269 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 47 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X connect 4 0 7 0;
+#X connect 5 0 0 0;
+#X connect 5 1 1 0;
+#X connect 5 2 2 0;
+#X connect 6 0 4 0;
+#X connect 15 0 11 0;
+#X connect 15 1 12 0;
+#X connect 16 0 13 0;
+#X connect 16 1 14 0;
+#X connect 21 0 5 0;
+#X connect 22 0 15 0;
+#X connect 23 0 16 0;
 #X restore 165 331 pd Table-functions;
 #N canvas 576 55 570 578 Power-functions 0;
 #X floatatom 62 60 5 0 0 0 - - - 0;
@@ -508,8 +508,6 @@ Note that the syntax requires that the array name is inside quotes.
 #N canvas 332 23 592 281 Store-function 0;
 #X text 40 26 The store function is defined with "=" \, and it can
 store the result of any operation into a variable or table index.;
-#X obj 62 129 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X floatatom 62 211 5 0 0 0 - - - 0;
 #X floatatom 276 204 5 0 0 0 - - - 0;
 #X obj 62 158 expr array2[inc - 1] = 1 / inc \; inc = inc + 1;
@@ -519,10 +517,12 @@ store the result of any operation into a variable or table index.;
 #X restore 351 101 graph;
 #X obj 129 119 v inc;
 #X msg 129 94 0;
-#X connect 1 0 4 0;
-#X connect 4 0 2 0;
-#X connect 4 1 3 0;
-#X connect 7 0 6 0;
+#X obj 62 129 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X connect 3 0 1 0;
+#X connect 3 1 2 0;
+#X connect 6 0 5 0;
+#X connect 7 0 3 0;
 #X restore 165 296 pd Store-function;
 #X text 46 19 Here are all the operators and functions available for
 [expr] \, [expr~] and [fexpr~] \, even though the given examples are
@@ -684,23 +684,17 @@ subpatches below to check each group:, f 52;
 #N canvas 398 62 968 659 [expr] 0;
 #X obj 206 123 expr 1;
 #X floatatom 206 153 4 0 0 0 - - - 0;
-#X msg 206 95 bang;
-#X msg 307 96 bang;
 #X floatatom 307 151 4 0 0 0 - - - 0;
 #X floatatom 52 383 0 0 0 0 - - - 0;
-#X floatatom 557 49 0 0 0 0 - - - 0;
-#X floatatom 557 125 0 0 0 0 - - - 0;
+#X floatatom 557 49 6 0 0 0 - - - 0;
+#X floatatom 557 125 5 0 0 0 - - - 0;
 #X floatatom 573 344 0 0 0 0 - - - 0;
 #X obj 573 316 expr 8 / 3;
 #X floatatom 707 583 0 0 0 0 - - - 0;
-#X obj 573 292 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 707 495 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X floatatom 768 583 0 0 0 0 - - - 0;
 #X obj 557 77 expr cos(2 * 3.14159 * $f1 / 360) \; sin(2 * 3.14159
 * $f1 / 360);
-#X floatatom 792 125 0 0 0 0 - - - 0;
+#X floatatom 792 125 5 0 0 0 - - - 0;
 #X floatatom 308 450 5 0 0 0 - - - 0;
 #X floatatom 308 558 5 0 0 0 - - - 0;
 #X floatatom 352 557 5 0 0 0 - - - 0;
@@ -708,7 +702,7 @@ subpatches below to check each group:, f 52;
 #X obj 352 597 print expr;
 #X obj 52 352 expr ($f1 + 2) * $i2;
 #X text 71 111 A bang evaluates the expression, f 17;
-#X text 599 48 example of trigonometric functions;
+#X text 609 46 example of trigonometric functions;
 #X floatatom 793 345 0 0 0 0 - - - 0;
 #X msg 793 293 8;
 #X obj 793 317 expr $f1 / 3;
@@ -750,41 +744,49 @@ convert an integer to a float. A possible workaround is to have just
 a decimal point and the number inside parenthesis. Pd sees this as
 a symbol and doesn't remove the dot and [expr] will see it as a float.
 Other hacks like that are possible \, see below:, f 61;
+#X obj 206 95 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 307 96 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 573 292 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 707 495 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 0 0 1 0;
-#X connect 2 0 0 0;
-#X connect 3 0 35 0;
-#X connect 6 0 14 0;
-#X connect 9 0 8 0;
-#X connect 11 0 9 0;
-#X connect 12 0 32 0;
-#X connect 14 0 7 0;
-#X connect 14 1 15 0;
-#X connect 16 0 42 0;
-#X connect 17 0 20 0;
-#X connect 18 0 20 0;
-#X connect 19 0 20 0;
-#X connect 21 0 5 0;
+#X connect 4 0 10 0;
+#X connect 7 0 6 0;
+#X connect 10 0 5 0;
+#X connect 10 1 11 0;
+#X connect 12 0 38 0;
+#X connect 13 0 16 0;
+#X connect 14 0 16 0;
+#X connect 15 0 16 0;
+#X connect 17 0 3 0;
+#X connect 21 0 22 0;
+#X connect 22 0 20 0;
 #X connect 25 0 26 0;
 #X connect 26 0 24 0;
-#X connect 29 0 30 0;
-#X connect 30 0 28 0;
-#X connect 32 0 10 0;
-#X connect 32 1 13 0;
-#X connect 32 2 33 0;
-#X connect 35 0 4 0;
-#X connect 38 0 21 0;
-#X connect 38 1 21 1;
-#X connect 39 0 21 0;
-#X connect 40 0 38 0;
-#X connect 42 0 17 0;
-#X connect 42 1 18 0;
-#X connect 42 2 19 0;
+#X connect 28 0 8 0;
+#X connect 28 1 9 0;
+#X connect 28 2 29 0;
+#X connect 31 0 2 0;
+#X connect 34 0 17 0;
+#X connect 34 1 17 1;
+#X connect 35 0 17 0;
+#X connect 36 0 34 0;
+#X connect 38 0 13 0;
+#X connect 38 1 14 0;
+#X connect 38 2 15 0;
+#X connect 43 0 0 0;
+#X connect 44 0 31 0;
+#X connect 45 0 7 0;
+#X connect 46 0 28 0;
 #X restore 226 500 pd [expr] Examples;
 #N canvas 491 51 875 695 [expr~] 0;
-#X floatatom 80 361 0 0 0 0 - - - 0;
+#X floatatom 80 361 5 0 0 0 - - - 0;
 #X obj 80 468 dac~;
 #X text 125 361 frequency;
-#X floatatom 685 260 0 0 10 0 - - - 0;
+#X floatatom 685 260 7 0 10 0 - - - 0;
 #X obj 478 329 tabsend~ a1;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array a1 64 float 0;
@@ -801,7 +803,7 @@ Other hacks like that are possible \, see below:, f 61;
 #X coords 0 1 63 -1 200 140 1;
 #X restore 630 525 graph;
 #X obj 80 388 osc~ 440;
-#X obj 283 332 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#X obj 283 332 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 #dfdfdf
 #000000 #000000 0 1;
 #X floatatom 280 352 5 0 0 0 - - - 0;
 #X text 331 352 amplitude;
@@ -811,7 +813,7 @@ Other hacks like that are possible \, see below:, f 61;
 #X obj 88 561 osc~ 440;
 #X obj 478 252 osc~ 440;
 #X obj 478 290 expr~ max(min($v1 \, $f2) \, -$f2);
-#X obj 685 145 vsl 20 100 0 1 0 0 empty empty empty 0 -9 0 10 #fcfcfc
+#X obj 685 145 vsl 20 100 0 1 0 0 empty empty empty 0 -9 0 10 #dfdfdf
 #000000 #000000 0 1;
 #X text 460 187 Move the slider to change the limiter threshold (from
 0-1)., f 29;
@@ -819,8 +821,8 @@ Other hacks like that are possible \, see below:, f 61;
 ====>, f 30;
 #X obj 177 299 print~;
 #X msg 195 270 bang;
-#X floatatom 279 209 0 0 0 0 - - - 0;
-#X floatatom 177 184 0 0 0 0 - - - 0;
+#X floatatom 279 209 5 0 0 0 - - - 0;
+#X floatatom 177 184 6 0 0 0 - - - 0;
 #X obj 177 211 sig~ 1;
 #X obj 253 561 osc~ 550;
 #X text 458 163 A simple limiter/clip example:;
@@ -836,7 +838,7 @@ variables. Note that the first inlet of [expr~] needs to be of type
 '$v1'. You can still send floats to this left inlet as floats sent
 to audio inlets are promoted to signals., f 54;
 #X msg 290 55 \; pd dsp \$1;
-#X obj 290 30 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 290 30 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 83 512 a semicolon also creates more expressions and outlets
 (up to 100), f 35;
@@ -880,7 +882,7 @@ so on)., f 60;
 #X text 820 196 clears output buffer;
 #X obj 726 268 snapshot~;
 #X obj 590 220 metro 100;
-#X obj 590 198 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 590 198 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X floatatom 726 293 8 0 0 0 - - - 0;
 #X text 806 127 increment value;
@@ -901,7 +903,7 @@ the #th output (e.g. "set y3 1 2" sets $y3[-1] = 1 and $y3[-2] = 2).
 #X msg 802 479 0;
 #X obj 697 553 fexpr~ $x1 + $x1[$f2];
 #X msg 697 425 1102.5;
-#X floatatom 697 483 0 0 0 0 - - - 0;
+#X floatatom 697 483 7 0 0 0 - - - 0;
 #X text 556 342 Simple FIR filter:, f 58;
 #X msg 881 479 -20;
 #X msg 841 479 -10;
@@ -919,101 +921,42 @@ the #th output (e.g. "set y3 1 2" sets $y3[-1] = 1 and $y3[-2] = 2).
 #X text 113 143 - $x#[n]: input sample of inlet # indexed by 'n',
 f 50;
 #X text 919 578 more examples:;
-#N canvas 286 64 900 597 Difference 0;
-#X obj 194 193 v pr;
-#X obj 341 193 v r;
-#X obj 249 195 v b;
-#X floatatom 194 164 5 0 0 0 - - - 0;
-#X floatatom 341 166 5 0 0 0 - - - 0;
-#X msg 194 139 10;
-#X msg 172 251 set 1.2 2.3 4.4;
-#X floatatom 249 165 7 0 0 0 - - - 0;
-#X floatatom 399 166 5 0 0 0 - - - 0;
-#X obj 399 195 v dt;
-#X msg 341 137 18;
-#X msg 399 127 0.01;
-#X obj 172 65 bng 25 250 50 0 empty empty empty 20 8 0 8 #fcfcfc #000000
-#000000;
-#X obj 449 136 line;
-#X msg 449 110 0.01 \, 0.04 5000;
-#X obj 101 193 loadbang;
-#N canvas 0 50 450 300 (subpatch) 0;
-#X array X 64 float 0;
-#X coords 0 20 63 -20 200 140 1 0 0;
-#X restore 178 423 graph;
-#N canvas 0 50 450 300 (subpatch) 0;
-#X array Y 64 float 0;
-#X coords 0 20 63 -20 200 140 2 0 0;
-#X restore 418 421 graph;
-#N canvas 0 50 450 300 (subpatch) 0;
-#X array Z 64 float 0;
-#X coords 0 40 63 0 200 140 2 0 0;
-#X restore 655 420 graph;
-#X obj 249 136 expr 8./3;
-#X text 577 289 $y1 -> $y1[-1] $y2 -> $y2[-1] $y3 -> $y3[-1], f 15
-;
-#X text 145 547 -20;
-#X text 152 416 20;
-#X text 381 547 -20;
-#X text 388 416 20;
-#X text 635 547 0;
-#X text 630 416 40;
-#X text 624 24 Lorenz Equations written with 3 state variables X \,
-Y \, and Z:, f 30;
-#X text 412 301 <= Note the shorthands:;
-#X text 670 67 dX/dt = pr * (Y - X);
-#X text 670 87 dY/dt = X(r - Z) - Y;
-#X text 670 107 dZ/dt = X*Y - bZ, f 20;
-#X obj 172 285 fexpr~ $y1 + pr*($y2 - $y1) * dt \; $y2 + ($y1*(r -
-$y3) - $y2) * dt \; $y3 + ($y1*$y2 - b*$y3) * dt;
-#X obj 172 359 tabsend~ X;
-#X obj 286 359 tabsend~ Y;
-#X obj 400 360 tabsend~ Z;
-#X text 294 250 <= sets initial values of $y1[-1] \, $y2[-1] \, and
-$y3[-1];
-#X text 108 51 bang to start =>, f 8;
-#X msg 101 218 stop;
-#X text 446 165 <= experiment with these parameter values. If you;
-#X text 470 183 hear a click and audio stops \, the system went unstable
-and you need to bang on the top again to reload the default values.
-, f 46;
-#X msg 43 220 start;
-#X obj 67 376 output~;
-#X text 241 19 This is an example of how [fexpr~] can be used to solve
-differential equations such as the lorenz equations. Semicolons create
-new outlets as usual (up to 100). Here we have 3 expressions \, so
-we now have '$y2' and '$y3' variables., f 49;
-#X connect 3 0 0 0;
-#X connect 4 0 1 0;
-#X connect 5 0 3 0;
-#X connect 6 0 32 0;
-#X connect 7 0 2 0;
-#X connect 8 0 9 0;
-#X connect 10 0 4 0;
-#X connect 11 0 8 0;
-#X connect 12 0 5 0;
-#X connect 12 0 10 0;
-#X connect 12 0 11 0;
-#X connect 12 0 6 0;
-#X connect 12 0 41 0;
-#X connect 12 0 19 0;
-#X connect 13 0 8 0;
-#X connect 14 0 13 0;
-#X connect 15 0 38 0;
-#X connect 19 0 7 0;
-#X connect 32 0 33 0;
-#X connect 32 0 42 1;
-#X connect 32 0 42 0;
-#X connect 32 1 34 0;
-#X connect 32 2 35 0;
-#X connect 38 0 32 0;
-#X connect 41 0 32 0;
-#X restore 798 632 pd Difference equations (Lorenz);
-#N canvas 695 185 503 409 Fractional 0;
+#X text 612 364 -10 offset filters audio at frequency of 2205 Hz -20
+offset filters audio at frequency of 1102.5 Hz, f 50;
+#X msg 714 452 2205;
+#X obj 697 514 osc~ 2205;
+#X text 24 26 NOTE: - [fexpr~] operates on sample level data for things
+like filter design and can be very cpu intensive!, f 69;
+#X obj 250 202 fexpr~ $x1[0] + $y1[-1];
+#X text 181 203 example:;
+#X text 23 248 'n' goes from 0 to -(vector size -1). The vector (or
+'block') size is defined by the [block~] or [switch~] objects. As such
+\, $x#[0] specifies the current sample input \, and $y#[-1] the last
+sample output (which is the minimum 'n' value \, for $y#)., f 71;
+#X text 52 325 There are shorthands as follows:;
+#X text 83 623 - stop: stops the computation of [fexpr~], f 60;
+#X text 83 641 - start: starts the computation of [fexpr~], f 60;
+#X text 558 18 As noted \, [fexpr~] can be CPU expensive! By default
+\, [fexpr~] is on when it is loaded \, but you can save CPU and control
+when it is on or off with the 'start' and 'stop' messages. Below \,
+you need to click 'start' to get it running., f 73;
+#X msg 917 258 \; pd dsp \$1;
+#X obj 639 612 output~;
+#X obj 924 519 declare -stdpath ./;
+#X text 23 63 Besides '$f#' \, '$i#' and '$s#' \, [fexpr~] takes '$x#'
+and '$y#' variables (and no '$v#' variables from [expr~]). Note that
+the first inlet of [fexpr~] needs to be of type '$x1' (cannot be '$f1'
+\, '$i1' or '$s1'). You can still send floats to this left inlet as
+floats sent to audio inlets are promoted to signals. The '$x#' and
+'$y#' types are:, f 71;
+#X obj 917 233 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X text 938 233 <= turn on DSP;
+#N canvas 695 185 503 409 fractional-sample-index 0;
 #X msg 130 190 start;
 #X msg 78 189 stop;
 #X obj 78 158 loadbang;
-#X obj 308 147 hsl 128 15 0 -10 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#X obj 308 147 hsl 128 15 0 -10 0 0 empty empty empty -2 -8 0 10 #dfdfdf
 #000000 #000000 0 1;
 #X floatatom 305 173 0 -10 0 0 - - - 0;
 #X obj 305 233 line~;
@@ -1038,38 +981,98 @@ of 2205 Hz)., f 63;
 #X connect 7 0 9 0;
 #X connect 9 0 12 0;
 #X connect 9 0 12 1;
-#X restore 840 604 pd Fractional sample index;
-#X text 612 364 -10 offset filters audio at frequency of 2205 Hz -20
-offset filters audio at frequency of 1102.5 Hz, f 50;
-#X msg 714 452 2205;
-#X obj 697 514 osc~ 2205;
-#X text 24 26 NOTE: - [fexpr~] operates on sample level data for things
-like filter design and can be very cpu intensive!, f 69;
-#X obj 250 202 fexpr~ $x1[0] + $y1[-1];
-#X text 181 203 example:;
-#X text 23 248 'n' goes from 0 to -(vector size -1). The vector (or
-'block') size is defined by the [block~] or [switch~] objects. As such
-\, $x#[0] specifies the current sample input \, and $y#[-1] the last
-sample output (which is the minimum 'n' value \, for $y#)., f 71;
-#X text 52 325 There are shorthands as follows:;
-#X text 83 623 - stop: stops the computation of [fexpr~], f 60;
-#X text 83 641 - start: starts the computation of [fexpr~], f 60;
-#X text 558 18 As noted \, [fexpr~] can be CPU expensive! By default
-\, [fexpr~] is on when it is loaded \, but you can save CPU and control
-when it is on or off with the 'start' and 'stop' messages. Below \,
-you need to click 'start' to get it running., f 73;
-#X msg 917 258 \; pd dsp \$1;
-#X obj 917 233 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X obj 639 612 output~;
-#X obj 924 519 declare -stdpath ./;
-#X text 23 63 Besides '$f#' \, '$i#' and '$s#' \, [fexpr~] takes '$x#'
-and '$y#' variables (and no '$v#' variables from [expr~]). Note that
-the first inlet of [fexpr~] needs to be of type '$x1' (cannot be '$f1'
-\, '$i1' or '$s1'). You can still send floats to this left inlet as
-floats sent to audio inlets are promoted to signals. The '$x#' and
-'$y#' types are:, f 71;
-#X text 938 233 <= make DSP is on, f 18;
+#X restore 840 604 pd fractional-sample-index;
+#N canvas 286 64 900 597 difference-equations(Lorenz) 0;
+#X obj 194 193 v pr;
+#X obj 341 193 v r;
+#X obj 249 195 v b;
+#X floatatom 194 164 5 0 0 0 - - - 0;
+#X floatatom 341 166 5 0 0 0 - - - 0;
+#X msg 194 139 10;
+#X msg 172 251 set 1.2 2.3 4.4;
+#X floatatom 249 165 7 0 0 0 - - - 0;
+#X floatatom 399 166 5 0 0 0 - - - 0;
+#X obj 399 195 v dt;
+#X msg 341 137 18;
+#X msg 399 127 0.01;
+#X obj 172 65 bng 25 250 50 0 empty empty empty 20 8 0 8 #dfdfdf #000000
+#000000;
+#X obj 449 136 line;
+#X msg 449 110 0.01 \, 0.04 5000;
+#X obj 101 193 loadbang;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array X 64 float 0;
+#X coords 0 20 63 -20 200 140 1 0 0;
+#X restore 178 423 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array Y 64 float 0;
+#X coords 0 20 63 -20 200 140 2 0 0;
+#X restore 418 421 graph;
+#N canvas 0 50 450 300 (subpatch) 0;
+#X array Z 64 float 0;
+#X coords 0 40 63 0 200 140 2 0 0;
+#X restore 655 420 graph;
+#X obj 249 136 expr 8./3;
+#X text 587 289 $y1 -> $y1[-1] $y2 -> $y2[-1] $y3 -> $y3[-1], f 15
+;
+#X text 145 547 -20;
+#X text 152 416 20;
+#X text 381 547 -20;
+#X text 388 416 20;
+#X text 635 547 0;
+#X text 630 416 40;
+#X text 624 24 Lorenz Equations written with 3 state variables X \,
+Y \, and Z:, f 30;
+#X text 670 67 dX/dt = pr * (Y - X);
+#X text 670 87 dY/dt = X(r - Z) - Y;
+#X text 670 107 dZ/dt = X*Y - bZ, f 20;
+#X obj 172 285 fexpr~ $y1 + pr*($y2 - $y1) * dt \; $y2 + ($y1*(r -
+$y3) - $y2) * dt \; $y3 + ($y1*$y2 - b*$y3) * dt;
+#X obj 172 359 tabsend~ X;
+#X obj 286 359 tabsend~ Y;
+#X obj 400 360 tabsend~ Z;
+#X text 108 51 bang to start =>, f 8;
+#X msg 101 218 stop;
+#X text 475 182 hear a click and audio stops \, the system went unstable
+and you need to bang on the top again to reload the default values.
+, f 46;
+#X msg 43 220 start;
+#X obj 67 376 output~;
+#X text 241 19 This is an example of how [fexpr~] can be used to solve
+differential equations such as the lorenz equations. Semicolons create
+new outlets as usual (up to 100). Here we have 3 expressions \, so
+we now have '$y2' and '$y3' variables., f 49;
+#X text 412 301 <00 Note the shorthands:;
+#X text 294 250 <-- sets initial values of $y1[-1] \, $y2[-1] \, and
+$y3[-1];
+#X text 446 165 <-- experiment with these parameter values. If you
+;
+#X connect 3 0 0 0;
+#X connect 4 0 1 0;
+#X connect 5 0 3 0;
+#X connect 6 0 31 0;
+#X connect 7 0 2 0;
+#X connect 8 0 9 0;
+#X connect 10 0 4 0;
+#X connect 11 0 8 0;
+#X connect 12 0 5 0;
+#X connect 12 0 10 0;
+#X connect 12 0 11 0;
+#X connect 12 0 6 0;
+#X connect 12 0 38 0;
+#X connect 12 0 19 0;
+#X connect 13 0 8 0;
+#X connect 14 0 13 0;
+#X connect 15 0 36 0;
+#X connect 19 0 7 0;
+#X connect 31 0 32 0;
+#X connect 31 0 39 1;
+#X connect 31 0 39 0;
+#X connect 31 1 33 0;
+#X connect 31 2 34 0;
+#X connect 36 0 31 0;
+#X connect 38 0 31 0;
+#X restore 805 632 pd difference-equations(Lorenz);
 #X connect 4 0 9 0;
 #X connect 5 0 9 0;
 #X connect 6 0 5 0;
@@ -1086,15 +1089,15 @@ floats sent to audio inlets are promoted to signals. The '$x#' and
 #X connect 24 0 27 0;
 #X connect 25 0 24 0;
 #X connect 26 0 22 0;
-#X connect 27 0 56 0;
-#X connect 27 0 56 1;
+#X connect 27 0 53 0;
+#X connect 27 0 53 1;
 #X connect 28 0 29 0;
-#X connect 29 0 45 0;
+#X connect 29 0 43 0;
 #X connect 31 0 22 0;
 #X connect 32 0 22 0;
-#X connect 44 0 29 0;
-#X connect 45 0 27 0;
-#X connect 55 0 54 0;
+#X connect 42 0 29 0;
+#X connect 43 0 27 0;
+#X connect 56 0 52 0;
 #X restore 212 555 pd [fexpr~] Examples;
 #X obj 92 608 +;
 #X obj 92 633 +~;
@@ -1114,27 +1117,21 @@ floats sent to audio inlets are promoted to signals. The '$x#' and
 #X obj 261 149 value b;
 #X obj 304 123 value c;
 #X obj 91 337 expr (a + b) / c;
-#X obj 91 310 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X floatatom 91 371 0 0 0 0 - - - 0;
+#X floatatom 91 371 5 0 0 0 - - - 0;
 #X obj 596 103 trigger float bang;
 #X obj 697 288 expr i * 2 \; i = i + 1;
 #X floatatom 697 334 5 0 0 0 - - - 0;
 #X floatatom 771 335 5 0 0 0 - - - 0;
-#X obj 697 253 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 697 253 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 33 233 All you have to do is just use the variable name into
 the expression:, f 27;
 #X obj 90 422 expr~ (a + b) / c;
 #X obj 90 453 print~;
-#X obj 62 422 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X msg 221 97 5;
 #X msg 261 97 3;
 #X msg 304 97 2.5;
 #X obj 91 533 print~;
-#X obj 63 502 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X obj 91 502 fexpr~ (a + b) / c;
 #X text 325 291 Expressions are output from right to left order in
 [expr] \, since they're evaluated from bottom to top. This means you
@@ -1143,8 +1140,6 @@ it =============>, f 51;
 #X obj 576 504 v last;
 #X obj 450 535 fexpr~ last = $x1[-1] \; $x1[0] - last;
 #X obj 601 590 print~;
-#X obj 635 555 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 450 504 phasor~ 1000;
 #X text 100 98 loading values into [value] objects =======>, f 16
 ;
@@ -1159,38 +1154,45 @@ deals with whole signal vectors and not single values. As for [fexpr~]
 \, note that they're evaluated in from top to bottom instead. This
 means you need to update a variable and call it in the below expression
 \, check the following example:, f 75;
+#X obj 635 555 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 62 422 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 63 502 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 91 310 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 2 0 3 0;
 #X connect 4 0 0 0;
-#X connect 5 0 14 0;
-#X connect 7 0 24 0;
-#X connect 7 0 25 0;
+#X connect 5 0 13 0;
+#X connect 7 0 22 0;
 #X connect 7 0 23 0;
-#X connect 11 0 13 0;
-#X connect 12 0 11 0;
-#X connect 14 0 1 0;
-#X connect 14 1 2 0;
-#X connect 15 0 16 0;
-#X connect 15 1 17 0;
-#X connect 18 0 15 0;
-#X connect 20 0 21 0;
-#X connect 22 0 21 0;
-#X connect 23 0 8 0;
-#X connect 24 0 9 0;
-#X connect 25 0 10 0;
-#X connect 27 0 26 0;
-#X connect 28 0 26 0;
-#X connect 31 1 32 0;
-#X connect 33 0 32 0;
-#X connect 34 0 31 0;
+#X connect 7 0 21 0;
+#X connect 11 0 12 0;
+#X connect 13 0 1 0;
+#X connect 13 1 2 0;
+#X connect 14 0 15 0;
+#X connect 14 1 16 0;
+#X connect 17 0 14 0;
+#X connect 19 0 20 0;
+#X connect 21 0 8 0;
+#X connect 22 0 9 0;
+#X connect 23 0 10 0;
+#X connect 25 0 24 0;
+#X connect 28 1 29 0;
+#X connect 30 0 28 0;
+#X connect 35 0 29 0;
+#X connect 36 0 20 0;
+#X connect 37 0 24 0;
+#X connect 38 0 11 0;
 #X restore 550 497 pd [value];
 #X obj 105 258 expr $f1 + $s3[$i2];
 #X symbolatom 235 232 7 0 0 0 - - - 0;
 #X floatatom 170 231 3 0 0 0 - - - 0;
 #X floatatom 105 232 4 0 0 0 - - - 0;
 #X obj 278 329 sig~ 1;
-#X text 338 328 <= 1st inlet is an audio signal vector/block;
 #X obj 74 451 fexpr~ $x1[0] + $y1[-1];
 #X text 62 297 [expr~] has an exclusive input variable defined as '$v#'
 - which stands for an audio signal 'vector' (or block)., f 85;
@@ -1238,7 +1240,7 @@ below:, f 88;
 #X text 121 113 on a sample by sample basis, f 38;
 #X obj 7 137 cnv 1 730 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 451 57 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff #000000
+#X obj 451 57 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #N canvas 798 148 456 264 reference 0;
 #X obj 101 59 inlet;
@@ -1311,9 +1313,10 @@ as well (default: output zeros)., f 66;
 #X obj 531 609 mtof;
 #X obj 531 633 mtof~;
 #X text 573 618 - acoustic conversions;
+#X text 338 328 <-- 1st inlet is an audio signal vector/block;
 #X connect 18 0 17 2;
 #X connect 19 0 17 1;
 #X connect 20 0 17 0;
-#X connect 21 0 28 0;
-#X connect 29 0 28 1;
-#X connect 56 0 57 0;
+#X connect 21 0 27 0;
+#X connect 28 0 27 1;
+#X connect 55 0 56 0;

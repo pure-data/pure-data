@@ -4,19 +4,14 @@ array array2 array2-template array array3 array3-template;
 #N struct array2-template float x float y;
 #N struct array3-template float y float w;
 #N canvas 641 86 519 265 12;
-#N canvas 373 131 898 557 plot-template 0;
-#X obj 620 29 plot curve array2 70 3 100 0;
-#X obj 525 491 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10
-;
-#X text 526 449 To see the data itself \, select "properties" for the
-scalar by right clicking on the purple square., f 50;
-#X obj 675 300 struct plot-template float x float y array array1 array1-template
+#N canvas 373 131 849 557 plot-template 0;
+#X obj 621 37 plot curve array2 70 3 100 0;
+#X obj 625 400 struct plot-template float x float y array array1 array1-template
 array array2 array2-template array array3 array3-template, f 20;
-#X text 527 331 here's the "struct" for all this:, f 19;
 #X text 36 36 Optional flags:;
 #X text 41 239 Arguments:;
 #X text 32 9 Creation arguments:;
-#X obj 595 160 plot curve array3 9 1 120 50 20;
+#X obj 575 202 plot curve array3 9 1 120 50 20;
 #X msg 50 382 1;
 #X msg 83 382 0;
 #X text 138 402 (if no -v [field name] flag was given);
@@ -24,18 +19,18 @@ array array2 array2-template array array3 array3-template, f 20;
 point (10 \, 15). Horizontal spacing is 20 and the black diamonds come
 from the template of the array1 element itself. Check the template
 of array1 in the subpatch named "array1-template"., f 54;
-#X text 498 63 This plots a curved green spiral with: color 70 \, line
+#X text 499 81 This plots a curved green spiral with: color 70 \, line
 width 3 \, location (100 \, 0). Open the subpatch named "array2-template"
 to check the template for "array2". Since the template contains an
 "x" variable \, [plot] ignores x spacing requests and takes x from
-the data itself., f 53;
+the data itself., f 45;
 #X text 117 382 <= inlet sets visibility (1: visible \, 0: invisible)
 ;
 #X obj 83 429 plot array1 500 1 10 15 20;
-#X text 513 202 This draws the blue array. If a "w" variable is present
+#X text 514 250 This draws the blue array. If a "w" variable is present
 in the template as for array3 (see the subpatch array3-template) \,
 the line width argument is ignored and the "w" variable sets the width
-value for each element., f 50;
+value for each element., f 43;
 #X text 55 59 - "-c": sets to Bezier curve plot \; - "-n" flag to make
 invisible initially or "-v [name]" to assign a field name variable
 to make this visible/invisible (inutilized inlet input for that) \;
@@ -49,8 +44,9 @@ field name for w;
 array field name to plot \; - color (0=black \, 999=white \, 900=red
 \, 90=green \, 9=blue \, 555=grey \, etc.) \; - line width \; - relative
 x and y location \; - x spacing;
-#X connect 9 0 15 0;
-#X connect 10 0 15 0;
+#X text 632 353 here's the [struct] for all this:, f 19;
+#X connect 6 0 12 0;
+#X connect 7 0 12 0;
 #X restore 266 79 pd plot-template;
 #N canvas 565 310 476 286 array1-template 0;
 #X obj 88 182 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
@@ -75,7 +71,6 @@ the 'x' spacing argument is ignored in [plot]., f 53;
 width \, so you can drag/set it for each element in the array \, so
 the line width argument is ignored in [plot]., f 62;
 #X restore 266 146 pd array3-template;
-#X text 77 79 explanation is in here ==>;
 #X text 292 222 updated for Pd version 0.52;
 #X obj 98 231 array;
 #N canvas 297 110 322 210 plot-data 1;
@@ -136,3 +131,4 @@ scalars visible/invisible., f 78;
 #X obj 8 190 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 97 206 drawtext;
+#X text 77 79 explanation is in here -->;

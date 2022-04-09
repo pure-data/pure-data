@@ -1,5 +1,5 @@
 #N canvas 527 27 510 616 12;
-#X obj 72 254 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#X obj 72 254 bng 18 250 50 0 empty empty empty 8 -8 0 10 #dfdfdf #000000
 #000000;
 #X floatatom 107 434 4 0 0 0 - - - 0;
 #X msg 151 264 set \$1;
@@ -508,8 +508,8 @@ set it directly via the properties window., f 50;
 #X obj 536 440 r \$0-radio;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-errors because they have feedback protection. See example below., f
-50;
+errors because they have feedback protection. See example below.,
+f 50;
 #X connect 0 0 6 0;
 #X connect 5 0 1 0;
 #X connect 7 0 11 0;

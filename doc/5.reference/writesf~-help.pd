@@ -1,6 +1,5 @@
 #N canvas 407 38 639 585 12;
 #X msg 147 374 print;
-#X msg 26 273 bang;
 #X msg 128 320 start;
 #X msg 135 348 stop;
 #X obj 26 314 del 1000;
@@ -11,10 +10,6 @@
 #X obj 101 551 soundfiler;
 #X text 26 550 see also:;
 #X obj 153 407 osc~ 440;
-#X text 24 56 writesf~ creates a subthread whose task is to write audio
-streams to disk. You need not provide any disk access time between
-"open" and "start" \, but between "stop" and the next "open" you must
-give the object time to flush all the output to disk., f 83;
 #X msg 120 292 open -bytes 4 /tmp/foo.wav;
 #X msg 108 267 open -bytes 3 /tmp/foo.wav;
 #X obj 183 551 readsf~;
@@ -36,9 +31,9 @@ file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 , f 80;
 #X obj 222 407 noise~;
 #X msg 379 358 \; pd dsp \$1;
-#X obj 379 335 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 379 335 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 397 334 DSP on/off;
+#X text 400 334 DSP on/off;
 #X obj 7 43 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 533 11 <= click;
@@ -80,15 +75,21 @@ be resampled.), f 34;
 #X obj 7 538 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 101 175 -bytes <2 \, 3 \, or 4> (bit resolution), f 42;
-#X connect 0 0 7 0;
-#X connect 1 0 2 0;
-#X connect 1 0 4 0;
-#X connect 2 0 7 0;
-#X connect 3 0 7 0;
-#X connect 4 0 3 0;
-#X connect 8 0 7 0;
-#X connect 11 0 7 0;
-#X connect 13 0 7 0;
-#X connect 14 0 7 0;
-#X connect 27 0 7 1;
-#X connect 29 0 28 0;
+#X obj 26 273 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 15 56 [writesf~] creates a subthread whose task is to write
+audio streams to disk. You need not provide any disk access time between
+"open" and "start" \, but between "stop" and the next "open" you must
+give the object time to flush all the output to disk., f 85;
+#X connect 0 0 6 0;
+#X connect 1 0 6 0;
+#X connect 2 0 6 0;
+#X connect 3 0 2 0;
+#X connect 7 0 6 0;
+#X connect 10 0 6 0;
+#X connect 11 0 6 0;
+#X connect 12 0 6 0;
+#X connect 25 0 6 1;
+#X connect 27 0 26 0;
+#X connect 36 0 1 0;
+#X connect 36 0 3 0;

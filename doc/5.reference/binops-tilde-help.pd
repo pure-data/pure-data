@@ -1,4 +1,4 @@
-#N canvas 461 39 830 619 12;
+#N canvas 391 39 830 619 12;
 #X obj 30 164 +~;
 #X obj 167 164 -~;
 #X obj 294 164 *~;
@@ -34,17 +34,7 @@ f 36;
 #X obj 447 68 sig~ 2;
 #X obj 48 68 sig~ 1;
 #X obj 588 68 sig~ 0.5;
-#X obj 49 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 189 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 315 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 445 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 585 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 705 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 705 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 41 283 2;
 #X text 34 477 -2;
@@ -60,11 +50,11 @@ f 36;
 #X obj 100 584 expr~;
 #X text 148 584 - evaluate expressions on audio signals;
 #X text 376 556 - audio math objects;
-#X obj 474 409 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 474 409 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 474 439 \; pd dsp \$1;
-#X text 252 17 - binary operators on audio signals;
-#N canvas 590 203 575 283 reference 0;
+#X text 246 17 - binary operators on audio signals;
+#N canvas 689 202 575 283 reference 0;
 #X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 84 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
@@ -89,15 +79,25 @@ f 36;
 #X text 73 131 float/signal - value to the right side of operation.
 , f 62;
 #X text 117 172 signal - the result of the operation., f 58;
-#X text 179 214 initialize value of right inlet and makes it only take
-floats instead of signals (default 0)., f 49;
-#X text 103 214 1) float -;
+#X text 94 214 1) float -;
+#X text 170 214 initialize value of right inlet and makes it only take
+floats instead of signals (default signal input).;
 #X restore 720 17 pd reference;
 #X text 653 17 click =>;
 #X obj 10 48 cnv 1 810 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 10 518 cnv 1 810 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 49 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 189 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 315 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 445 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 585 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 2 0 12 0;
@@ -117,10 +117,10 @@ floats instead of signals (default 0)., f 49;
 #X connect 27 0 0 1;
 #X connect 28 0 19 1;
 #X connect 28 0 20 1;
-#X connect 29 0 10 0;
-#X connect 30 0 11 0;
-#X connect 31 0 12 0;
-#X connect 32 0 9 0;
-#X connect 33 0 18 0;
-#X connect 34 0 17 0;
-#X connect 49 0 50 0;
+#X connect 29 0 17 0;
+#X connect 44 0 45 0;
+#X connect 51 0 10 0;
+#X connect 52 0 11 0;
+#X connect 53 0 12 0;
+#X connect 54 0 9 0;
+#X connect 55 0 18 0;

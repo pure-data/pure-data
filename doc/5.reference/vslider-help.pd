@@ -503,8 +503,8 @@ set it directly via the properties window., f 50;
 #X obj 534 212 s \$0-slider;
 #X text 429 100 Feedback protection: iemguis can have the same name
 for both the send and receive symbols. This works without 'stack overflow'
-errors because they have feedback protection. See example below., f
-50;
+errors because they have feedback protection. See example below.,
+f 50;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
 #X connect 2 0 9 0;

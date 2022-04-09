@@ -3,12 +3,10 @@
 #N struct array6-template float y;
 #N canvas 584 23 649 537 12;
 #X text 21 500 see also:;
-#N canvas 581 221 520 284 element-template 0;
+#N canvas 581 221 518 208 element-template 0;
 #X obj 99 146 plot array6 500 1 10 15 20;
-#X obj 64 221 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 90 76 struct element-template float x float y array array6 array6-template
 , f 44;
-#X text 114 194 draw a purple filled polygon;
 #X text 292 145 plot array6;
 #X text 51 19 struct with x/y fields and an array field named "array6"
 whose template is specified in "array6-template".;
@@ -16,6 +14,7 @@ whose template is specified in "array6-template".;
 #N canvas 267 157 292 163 element-data 1;
 #X scalar element-template 35 24 \; 20 \; 10 \; 26 \; 10 \; 32 \; 10
 \; 43 \; -2 \; 33 \; \;;
+#X coords 0 163 1 162 0 0 0;
 #X restore 328 439 pd element-data;
 #N canvas 786 392 450 249 array6-template 0;
 #X obj 99 179 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
@@ -73,21 +72,14 @@ name., f 69;
 #X obj 8 486 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 61 349 element element-template array6;
-#X text 23 63 [element] takes a pointer at right and an index number
-at left. It looks up a field from the pointer \, which should be an
-array \, and outputs the element of the array specified by the index
-number. There are no pointers to arrays themselves \, just to individual
-elements. The template and field name are specified as creation arguments.
-Note that [array] can also access Data Structure arrays and perform
-operations on its elements., f 85;
 #X obj 342 500 array;
 #X obj 95 500 get;
 #X text 23 153 Indices range from 0 to the number of elements minus
 one (indices out of range are quietly replaced by the nearest endpoint.)
 , f 85;
-#X text 399 290 set template and field name;
+#X text 399 289 set template and field name;
 #X text 105 453 value of y;
-#X msg 397 314 set element-template array6;
+#X msg 397 313 set element-template array6;
 #X msg 435 341 set - array6;
 #X obj 435 390 element;
 #X obj 301 382 element - array6;
@@ -96,16 +88,23 @@ one (indices out of range are quietly replaced by the nearest endpoint.)
 #X text 68 377 <- pointer to a single element;
 #X floatatom 301 354 5 -5 15 0 - - - 0;
 #X floatatom 353 313 5 -5 15 0 - - - 0;
+#X text 23 63 [element] takes a pointer at right and an index number
+at left. It looks up a field from the pointer \, which should be an
+array \, and outputs the pointer to an element of the array specified
+by the index number. (There are no pointers to arrays themselves \,
+just to individual elements.) The template and field name are specified
+as creation arguments. Note that [array] can also access Data Structure's
+arrays and perform operations on its elements as well., f 85;
 #X connect 8 0 23 1;
+#X connect 8 0 31 1;
 #X connect 8 0 32 1;
-#X connect 8 0 33 1;
 #X connect 9 0 8 0;
 #X connect 10 0 23 0;
 #X connect 11 0 12 0;
 #X connect 23 0 11 0;
-#X connect 30 0 32 0;
-#X connect 31 0 32 0;
+#X connect 29 0 31 0;
+#X connect 30 0 31 0;
+#X connect 31 0 11 0;
 #X connect 32 0 11 0;
-#X connect 33 0 11 0;
-#X connect 37 0 33 0;
-#X connect 38 0 32 0;
+#X connect 36 0 32 0;
+#X connect 37 0 31 0;

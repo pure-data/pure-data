@@ -1,4 +1,4 @@
-#N canvas 434 69 606 347 12;
+#N canvas 434 69 606 339 12;
 #N canvas 307 220 491 176 help-template1 0;
 #X obj 94 26 struct struct-1 float x float y text z symbol dog array
 weasel struct-2, f 42;
@@ -54,10 +54,10 @@ array fields need an extra argument that specifies the template that
 the array elements should belong to., f 71;
 #X obj 297 277 text;
 #X text 87 203 open subpatch for examples -->;
-#X obj 209 310 get;
-#X obj 241 310 set;
-#X obj 88 310 getsize;
-#X obj 149 310 setsize;
-#X obj 326 310 element;
-#X obj 274 310 scalar;
-#X obj 24 310 pointer;
+#X obj 209 304 get;
+#X obj 241 304 set;
+#X obj 88 304 getsize;
+#X obj 149 304 setsize;
+#X obj 326 304 element;
+#X obj 274 304 scalar;
+#X obj 24 304 pointer;

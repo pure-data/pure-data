@@ -1,22 +1,12 @@
 #N canvas 545 23 479 478 12;
-#X msg 86 237 bang;
 #X floatatom 139 299 5 0 0 0 - - - 0;
 #X floatatom 86 354 0 0 0 0 - - - 0;
 #X msg 105 269 seed 123;
-#X text 127 236 bang for output;
+#X text 110 236 bang for output;
 #X text 177 270 message to set the seed;
 #X text 182 300 inlet to reset the range;
 #X text 155 326 argument to initialize the range;
 #X text 248 437 updated for Pd version 0.33;
-#X text 24 58 Random outputs pseudo random integers from 0 to N-1 where
-N is the creation argument (5 in the example below.) You can specify
-a seed if you wish. Seeds are kept locally so that if two Randoms are
-seeded the same they will have the same output (or indeed you can seed
-the same one twice to repeat the output.), f 60;
-#X text 24 155 On the other hand \, if you don't supply a seed each
-instance of random gets its own seed. WARNING: nothing is known about
-the quality of the pseudo random number generator. It isn't any standard
-one!;
 #X obj 27 13 random;
 #X text 81 12 - pseudo random integers;
 #X obj 86 382 print;
@@ -24,7 +14,7 @@ one!;
 #X obj 98 438 expr;
 #X obj 10 42 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 722 116 574 286 reference 1;
+#N canvas 722 116 574 286 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 184 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -52,8 +42,19 @@ one!;
 #X obj 10 422 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 86 326 random 5;
-#X connect 0 0 20 0;
-#X connect 1 0 20 1;
-#X connect 2 0 13 0;
-#X connect 3 0 20 0;
-#X connect 20 0 2 0;
+#X obj 86 237 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 24 58 [random] outputs pseudo random integers from 0 to N-1
+where N is the creation argument (5 in the example below.) You can
+specify a seed if you wish. Seeds are kept locally so that if two Randoms
+are seeded the same they will have the same output (or indeed you can
+seed the same one twice to repeat the output.);
+#X text 24 156 On the other hand \, if you don't supply a seed each
+instance of random gets its own seed. WARNING: Nothing is known about
+the quality of this pseudo random number generator. It isn't any standard
+one!;
+#X connect 0 0 17 1;
+#X connect 1 0 10 0;
+#X connect 2 0 17 0;
+#X connect 17 0 1 0;
+#X connect 18 0 17 0;

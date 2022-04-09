@@ -42,7 +42,7 @@ to see how to use these in practice., f 54;
 #X text 69 85 frequency in bins, f 9;
 #X text 84 165 frequency in Hz, f 9;
 #X msg 182 143 \; pd dsp \$1;
-#X obj 182 119 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 182 119 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 203 119 DSP on/off;
 #X msg 85 207 0.25;

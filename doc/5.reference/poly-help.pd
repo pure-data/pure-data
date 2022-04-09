@@ -11,30 +11,14 @@
 #X text 68 16 - MIDI-style polyphonic voice allocator;
 #X listbox 151 329 20 0 0 0 - - - 0;
 #X obj 151 298 pack f f f;
-#X text 228 268 <= first argument \, number of voices \; second argument
-selects voice stealing;
-#X text 249 181 <= emulating note on/off messages;
 #X msg 64 182 60 \$1;
 #X msg 111 182 62 \$1;
 #X msg 158 182 65 \$1;
 #X msg 206 182 69 \$1;
-#X obj 206 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 64;
-#X obj 111 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 64;
-#X obj 158 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 64;
-#X obj 64 162 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 64 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 64;
 #X text 261 211 clear memory;
 #X text 266 236 flush hanging note on messages;
-#X text 21 58 The poly object takes a stream of pitch/velocity pairs
-and outputs triples containing voice number \, pitch and velocity.
-You can pack the output and use the route object to route messages
-among a bank of voices depending on the first outlet. Another option
-is to connect it [clone] so you can route to different copies. Poly
-can be configured to do voice stealing or not (the default.), f 74
-;
 #X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 800 147 484 391 reference 0;
@@ -73,6 +57,21 @@ can be configured to do voice stealing or not (the default.), f 74
 #X text 477 17 <= click;
 #X obj 9 400 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 206 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X obj 111 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X obj 158 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X text 249 181 <-- emulating note on/off messages;
+#X text 228 268 <-- first argument \, number of voices second argument
+selects voice stealing;
+#X text 21 58 The [poly] object takes a stream of pitch/velocity pairs
+and outputs triples containing voice number \, pitch and velocity -
+it can be configured to do voice stealing or not (the default). You
+can pack the output and use the [route] object to route messages among
+a bank of voices depending on the first outlet. Another option is to
+connect it [clone] so you can route to different copies., f 74;
 #X connect 5 0 11 0;
 #X connect 5 1 11 1;
 #X connect 5 2 11 2;
@@ -80,11 +79,11 @@ can be configured to do voice stealing or not (the default.), f 74
 #X connect 8 0 5 0;
 #X connect 10 0 6 0;
 #X connect 11 0 10 0;
+#X connect 12 0 5 0;
+#X connect 13 0 5 0;
 #X connect 14 0 5 0;
 #X connect 15 0 5 0;
-#X connect 16 0 5 0;
-#X connect 17 0 5 0;
-#X connect 18 0 17 0;
-#X connect 19 0 15 0;
-#X connect 20 0 16 0;
-#X connect 21 0 14 0;
+#X connect 16 0 12 0;
+#X connect 23 0 15 0;
+#X connect 24 0 13 0;
+#X connect 25 0 14 0;

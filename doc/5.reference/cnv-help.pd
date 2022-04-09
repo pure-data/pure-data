@@ -1,4 +1,4 @@
-#N canvas 641 38 547 457 12;
+#N canvas 571 26 547 457 12;
 #X obj 142 227 cnv 40 150 102 empty empty Canvas 20 50 0 30 #a06888
 #fcfcfc 0;
 #X obj 19 8 cnv 15 100 60 empty empty empty 20 12 0 14 #e0e0e0 #404040
@@ -440,9 +440,9 @@ in the subpatches below:, f 39;
 #X text 64 350 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 337 425 updated for Pd version 0.51;
-#N canvas 360 93 481 370 example-room 1;
-#X obj 335 217 tgl 15 1 empty empty empty 20 8 0 10 #fcfcfc #000000
-#000000 1 1;
+#N canvas 360 93 481 370 example-room 0;
+#X obj 335 217 tgl 17 1 empty empty empty 20 8 0 10 #dfdfdf #000000
+#000000 0 1;
 #X msg 335 267 \; to_K get_pos;
 #X obj 335 192 loadbang;
 #N canvas 899 89 382 383 room 0;
@@ -455,7 +455,6 @@ included in Pd version 0.34., f 28;
 #X obj 330 333 cnv 25 25 25 from_K2 to_K K2 4 13 2 14 #94dcd4 #004450
 0;
 #X restore 182 179 pd room;
-#X text 120 180 click =>;
 #X obj 335 240 metro 5;
 #X floatatom 70 310 4 0 0 0 - - - 0;
 #X floatatom 123 310 4 0 0 0 - - - 0;
@@ -536,15 +535,16 @@ changed, f 23;
 #X connect 8 0 1 0;
 #X connect 11 0 5 0;
 #X restore 210 246 pd from_K2;
-#X connect 0 0 5 0;
+#X text 110 180 click -->;
+#X connect 0 0 4 0;
 #X connect 2 0 0 0;
-#X connect 5 0 1 0;
-#X connect 10 0 6 0;
-#X connect 10 1 7 0;
-#X connect 11 0 10 0;
-#X connect 16 0 12 0;
-#X connect 16 1 13 0;
-#X connect 19 0 16 0;
+#X connect 4 0 1 0;
+#X connect 9 0 5 0;
+#X connect 9 1 6 0;
+#X connect 10 0 9 0;
+#X connect 15 0 11 0;
+#X connect 15 1 12 0;
+#X connect 18 0 15 0;
 #X restore 378 283 pd example-room;
 #N canvas 665 62 632 612 position 0;
 #X floatatom 200 146 4 0 1000 0 - - - 0;
@@ -617,8 +617,8 @@ is highlighted as light blue., f 71;
 #X msg 120 230 label \$1;
 #X obj 79 307 nbx 15 30 1 100 0 0 \$0-file empty empty 0 -8 0 10 #fcfcfc
 #000000 #000000 0 256;
-#X obj 79 307 cnv 1 148 30 empty \$0-display file\ 050.wav 9 15 0 16
-#000000 #fc6460 0;
+#X obj 79 307 cnv 1 148 30 empty \$0-display file\\\ 050.wav 9 15 0
+16 #000000 #fc6460 0;
 #X text 236 316 <= also click and drag;
 #X text 166 164 <= click and drag;
 #X obj 120 201 makefilename file\ %03d.wav;
