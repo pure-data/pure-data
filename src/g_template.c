@@ -2473,6 +2473,7 @@ typedef struct _drawnumber
     t_fielddesc x_xloc;
     t_fielddesc x_yloc;
     t_fielddesc x_color;
+    t_fielddesc x_size;
     t_fielddesc x_vis;
     t_symbol *x_label;
     t_canvas *x_canvas;
@@ -2483,6 +2484,8 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
     const char *classname = classsym->s_name;
 
+    x->x_label = &s_;
+    fielddesc_setfloat_const(&x->x_size, 0);
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
     while (1)
@@ -2507,8 +2510,19 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_color, 1);
     if (argc)
-        x->x_label = atom_getsymbolarg(0, argc, argv);
-    else x->x_label = &s_;
+    {
+        if(argv->a_type == A_SYMBOL)
+        {
+            x->x_label = atom_getsymbolarg(0, argc, argv);
+        }
+        else
+        {
+            fielddesc_setfloatarg(&x->x_size, argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc)
+        fielddesc_setfloatarg(&x->x_size, argc--, argv++);
 
     return (x);
 }
@@ -2661,11 +2675,12 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
             colorstring);
         drawnumber_getbuf(x, data, template, buf);
+        int size = fielddesc_getfloat(&x->x_size, template, data, 1);
+        if (size <= 0)
+            size = sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist));
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
-        sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                sys_fontweight);
+        sys_vgui(" -font {{%s} -%d %s}", sys_font, size, sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
     else sys_vgui(".x%lx.c delete drawnumber%lx\n",
