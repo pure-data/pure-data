@@ -1,6 +1,6 @@
-#N struct drawtext-data float x float y float cat float dog symbol
+#N struct drawtext-template float x float y float cat float dog symbol
 weasel text boom;
-#N canvas 655 119 585 256 12;
+#N canvas 655 119 583 258 12;
 #X text 19 217 see also:;
 #X obj 37 12 drawnumber;
 #X obj 178 216 plot;
@@ -10,8 +10,6 @@ weasel text boom;
 #N canvas 508 59 517 640 drawtext-template 0;
 #X obj 42 489 drawsymbol weasel 0 -30 0 weasel=;
 #X obj 298 489 drawtext boom 0 -45 0 boom=;
-#X obj 95 530 struct drawtext-data float x float y float cat float
-dog symbol weasel text boom, f 47;
 #X text 50 92 - the field name to draw \; - an (x \, y) pair giving
 relative coordinates \; - RGB color (0=black \, 999=white \, 900=red
 \, 90=green \, 9=blue \, 555=grey \, etc.) \; - an optional label ("cat="
@@ -43,14 +41,14 @@ properties., f 69;
 You can see them by right-clicking on the object in the "drawtext-data"
 window and selecting "properties.";
 #X obj 242 246 drawnumber dog 0 -15 900 dog\ =\ ;
-#X connect 8 0 4 0;
-#X connect 9 0 4 0;
+#X obj 95 530 struct drawtext-template float x float y float cat float
+dog symbol weasel text boom, f 47;
+#X connect 7 0 3 0;
+#X connect 8 0 3 0;
 #X restore 399 125 pd drawtext-template;
 #N canvas 179 120 455 265 drawtext-data 1;
-#X scalar drawtext-data 63 134 628 658 hello \; a 1 b 2 c 3 \\\; \;
-;
-#X scalar drawtext-data 255 95 612 34 world \; 1 a 2 b 3 c \\\; \;
-;
+#X scalar drawtext-template 63 167 0 0 symbol \; \;;
+#X scalar drawtext-template 235 108 0 0 symbol \; \;;
 #X restore 399 152 pd drawtext-data;
 #X text 353 218 updated for Pd version 0.50.;
 #X obj 216 216 set;
