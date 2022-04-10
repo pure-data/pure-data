@@ -2691,7 +2691,6 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
         char colorstring[20], buf[DRAWNUMBER_BUFSIZE];
-// fuck
         if(x->x_color.fd_type == A_FLOAT)
             numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1), colorstring);
         else
