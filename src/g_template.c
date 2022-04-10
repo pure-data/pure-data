@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include "m_pd.h"
+#include "s_stuff.h"
 #include "g_canvas.h"
 
     /* pointer to "globals" for templates in this pd instance */
@@ -968,11 +969,19 @@ static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
     if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
     else if (argv->a_type == A_SYMBOL)
     {
-        fd->fd_type = A_SYMBOL;
-        fd->fd_var = 1;
-        fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-        fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
-            fd->fd_quantum = 0;
+        t_symbol *sym = argv->a_w.w_symbol;
+        if ('#' == sym->s_name[0])
+        {
+            fielddesc_setsymbol_const(fd, argv->a_w.w_symbol);
+        }
+        else
+        {
+            fd->fd_type = A_SYMBOL;
+            fd->fd_var = 1;
+            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
+            fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
+                fd->fd_quantum = 0;
+        }
     }
     else fielddesc_setsymbol_const(fd, &s_);
 }
@@ -1311,6 +1320,19 @@ static int numbertocolor(int n)
     color |= rangecolor(blue)  <<  8;
     color |= rangecolor(green) <<  0;
     return color;
+}
+
+static void symboltocolor(t_symbol *sym, char *s)
+{
+    if ('#' == sym->s_name[0])
+    {
+        int col = (int)strtol(sym->s_name+1, 0, 16) & 0xFFFFFF;
+        pd_snprintf(s, 8, "#%06x", col);
+    }
+    else
+    {
+        sprintf(s, "#%6.6x", 0);
+    }
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
@@ -2734,6 +2756,7 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
+    int hex = 0;
     while (1)
     {
         t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
@@ -2747,11 +2770,15 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloat_const(&x->x_vis, 0);
             argc--; argv++;
         }
+        else if (!strcmp(firstarg->s_name, "-h"))
+        {
+            hex = 1;
+            argc--; argv++;
+        }
         else if (*firstarg->s_name == '-')
         {
             pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
                 firstarg->s_name);
-            argc--; argv++;
         }
         else break;
     }
@@ -2764,7 +2791,13 @@ static void *drawtext_new(t_symbol *classsym, int argc, t_atom *argv)
     else fielddesc_setfloat_const(&x->x_xloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
-    if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
+    if (argc){
+        if(hex)
+            fielddesc_setsymbolarg(&x->x_color, argc, argv);
+        else
+            fielddesc_setfloatarg(&x->x_color, argc, argv);
+        argc--, argv++;
+    }
     else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
@@ -2933,8 +2966,14 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-        int color = numbertocolor(
-            fielddesc_getfloat(&x->x_color, template, data, 1));
+        char colorstr[8];
+        if(x->x_color.fd_type == A_FLOAT){
+            int color = numbertocolor(
+                fielddesc_getfloat(&x->x_color, template, data, 1));
+            pd_snprintf(colorstr, sizeof(colorstr), "#%06X", color);
+        }
+        else
+            symboltocolor(fielddesc_getsymbol(&x->x_color, template, data, 1), colorstr);
         char *textbuf;
         int textlen;
             /* draw label */
@@ -2944,16 +2983,16 @@ static void drawtext_vis(t_gobj *z, t_glist *glist,
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
             /* display label */
         if (*x->x_label->s_name)
-            pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            pdgui_vmess(0, "crr ii rs rs rs rA rS",
                 glist_getcanvas(glist), "create", "text",
                 xloc, yloc,
                 "-anchor", "nw",
-                "-fill", color,
+                "-fill", colorstr,
                 "-text", x->x_label->s_name,
                 "-font", 3, fontatoms,
                 "-tags", 2, tags);
             /* draw text */
-        rtext_setcolor(rtext, color);
+        rtext_setcolor(rtext, (int)strtol(colorstr+1, 0, 16) & 0xFFFFFF);
         drawtext_gettext(z, data, &textbuf, &textlen);
         rtext_retextforscalar(rtext, textbuf, textlen,
             xloc + glist_fontwidth(glist) * strlen(x->x_label->s_name), yloc);
