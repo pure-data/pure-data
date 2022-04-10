@@ -10,6 +10,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <wtypes.h>
 #include <time.h>
@@ -289,7 +290,8 @@ static t_class *oscparse_class;
 
 typedef struct _oscparse
 {
-    t_object x_obj;
+    t_object    x_obj;
+    t_int       x_flag;
 } t_oscparse;
 
 #define ROUNDUPTO4(x) (((x) + 3) & (~3))
@@ -385,8 +387,20 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
-        j < outc; j++)
-            SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+         j < outc; j++)
+    {
+        if(x->x_flag)
+        {
+            t_symbol *sym = grabstring(argc, argv, &i, 1);
+              t_float f = 0.0f;
+              char *str_end = NULL;
+              f = strtod(sym->s_name, &str_end);
+              if (f == 0 && sym->s_name == str_end)
+                  SETSYMBOL(outv+j, sym);
+              else SETFLOAT(outv+j, f);
+        }
+        else SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+    }
     for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
     {
         union
@@ -467,6 +481,11 @@ tooshort:
 static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_oscparse *x = (t_oscparse *)pd_new(oscparse_class);
+    x->x_flag = 0;
+    if (argc && argv[0].a_w.w_symbol == gensym("-float"))
+    {
+        x->x_flag = 1;
+    }
     outlet_new(&x->x_obj, gensym("list"));
     return (x);
 }
