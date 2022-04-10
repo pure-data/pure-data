@@ -1199,13 +1199,13 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
 
 static void numbertocolor(int n, char *s)
 {
-    int red, blue, green;
+    int red, green, blue;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
-    green = n % 10;
-    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(blue),
-        rangecolor(green));
+    green = ((n / 10) % 10);
+    blue = n % 10;
+    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(green),
+        rangecolor(blue));
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
