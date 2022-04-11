@@ -295,6 +295,11 @@ proc init_for_platform {} {
         "x11" {
             set ::modifier "Control"
             option add *PatchWindow*Canvas.background "white" startupFile
+            # enforce black foreground in check/radio buttons and open dialogs
+            option add *Checkbutton.foreground "black" userDefault
+            option add *Radiobutton.foreground "black" userDefault
+            option add *TkChooseDir*foreground "black" userDefault
+            option add *TkFDialog*foreground "black" userDefault
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
             catch {tk_getOpenFile -with-invalid-argument}
