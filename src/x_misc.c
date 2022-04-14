@@ -291,6 +291,7 @@ static t_class *oscparse_class;
 typedef struct _oscparse
 {
     t_object x_obj;
+    t_outlet *x_address_n;
     int x_flag;
 } t_oscparse;
 
@@ -386,6 +387,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     dataonset = ROUNDUPTO4(i + 1);
     /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
+    int address_n;
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
          j < outc; j++)
     {
@@ -400,6 +402,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             else SETFLOAT(outv+j, f);
         }
         else SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+        address_n = j + 1;
     }
     for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
     {
@@ -472,6 +475,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
         }
     }
+    outlet_float(x->x_address_n, address_n);
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
 tooshort:
@@ -487,6 +491,7 @@ static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
         x->x_flag = 1;
     }
     outlet_new(&x->x_obj, gensym("list"));
+    x->x_address_n = outlet_new((t_object *)x, &s_float);
     return (x);
 }
 
