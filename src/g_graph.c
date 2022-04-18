@@ -946,7 +946,7 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     else
     {
         x->gl_obj.te_xpix += dx;
-        x->gl_obj.te_ypix += dy;       
+        x->gl_obj.te_ypix += dy;
         if (glist_isvisible(glist) && x->gl_owner && !x->gl_isclone
         && glist_isvisible(x->gl_owner))
         {
