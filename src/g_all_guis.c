@@ -580,7 +580,7 @@ void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_iemgui *x = (t_iemgui *)z;
-    
+
     int zoom = glist_getzoom(glist);
     x->x_obj.te_xpix += dx;
     x->x_obj.te_ypix += dy;
