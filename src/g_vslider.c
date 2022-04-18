@@ -55,11 +55,11 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
     int r = ypos + x->x_gui.x_h - ((x->x_val + 50)/100);
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags [list %lxBASE %lxBODY]\n",
              canvas, xpos, ypos - tmargin,
              xpos + x->x_gui.x_w, ypos + x->x_gui.x_h + bmargin,
              IEMGUI_ZOOM(x),
-             x->x_gui.x_bcol, x);
+             x->x_gui.x_bcol, x, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
              canvas,
@@ -72,17 +72,27 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
              xpos, ypos - tmargin,
              xpos + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
              x, 0);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxKNOB\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags [list %lxKNOB %lxBODY]\n",
              canvas, xpos + IEMGUI_ZOOM(x), r,
              xpos + x->x_gui.x_w - IEMGUI_ZOOM(x), r,
-             1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x);
+             1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
+             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text %lxBODY]]\n",
              canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             x->x_gui.x_lcol, x);
+             x->x_gui.x_lcol, x, x);
+}
+
+static void vslider_draw_displace(t_vslider *x, t_glist *glist, int dx, int dy)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    sys_vgui(".x%lx.c move %lxBODY %d %d\n", canvas, x, dx, dy);
+    if(!x->x_gui.x_fsf.x_snd_able)
+        sys_vgui(".x%lx.c move %lxOUT%d %d %d\n", canvas, x, 0, dx, dy);
+    if(!x->x_gui.x_fsf.x_rcv_able)
+        sys_vgui(".x%lx.c move %lxIN%d %d %d\n", canvas, x, 0, dx, dy);
 }
 
 static void vslider_draw_move(t_vslider *x, t_glist *glist)
@@ -120,9 +130,7 @@ static void vslider_draw_erase(t_vslider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxKNOB\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
+    sys_vgui(".x%lx.c delete %lxBODY\n", canvas, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
@@ -195,9 +203,11 @@ static void vslider_draw_select(t_vslider *x, t_glist *glist)
     }
 }
 
-void vslider_draw(t_vslider *x, t_glist *glist, int mode)
+void vslider_draw(t_vslider *x, t_glist *glist, int mode, int dx, int dy)
 {
-    if(mode == IEM_GUI_DRAW_MODE_UPDATE)
+    if(mode == IEM_GUI_DRAW_MODE_DISPLACE)
+        vslider_draw_displace(x, glist, dx, dy);
+    else if(mode == IEM_GUI_DRAW_MODE_UPDATE)
         sys_queuegui(x, glist, vslider_draw_update);
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
         vslider_draw_move(x, glist);
@@ -373,9 +383,9 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
     vslider_check_height(x, h);
     vslider_check_minmax(x, min, max);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG, 0, 0);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags, 0, 0);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE, 0, 0);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
@@ -406,7 +416,7 @@ static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy,
     x->x_fval = vslider_getfval(x);
     if (old != x->x_val)
     {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE, 0, 0);
         vslider_bang(x);
     }
 }
@@ -422,7 +432,7 @@ static void vslider_click(t_vslider *x, t_floatarg xpos, t_floatarg ypos,
         x->x_val = 0;
     x->x_fval = vslider_getfval(x);
     x->x_pos = x->x_val;
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE, 0, 0);
     vslider_bang(x);
     glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
         (t_glistmotionfn)vslider_motion, 0, xpos, ypos);
@@ -472,7 +482,7 @@ static void vslider_set(t_vslider *x, t_floatarg f)
     x->x_val = IEMGUI_ZOOM(x) * (int)(100.0*g + 0.49999);
     x->x_pos = x->x_val;
     if(x->x_val != old)
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE, 0, 0);
 }
 
 static void vslider_float(t_vslider *x, t_floatarg f)
@@ -554,7 +564,7 @@ static void vslider_loadbang(t_vslider *x, t_floatarg action)
 {
     if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
     {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE, 0, 0);
         vslider_bang(x);
     }
 }

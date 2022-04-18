@@ -75,13 +75,14 @@
 
 #define IEM_MAX_SYM_LEN 127
 
-#define IEM_GUI_DRAW_MODE_UPDATE 0
-#define IEM_GUI_DRAW_MODE_MOVE   1
-#define IEM_GUI_DRAW_MODE_NEW    2
-#define IEM_GUI_DRAW_MODE_SELECT 3
-#define IEM_GUI_DRAW_MODE_ERASE  4
-#define IEM_GUI_DRAW_MODE_CONFIG 5
-#define IEM_GUI_DRAW_MODE_IO     6
+#define IEM_GUI_DRAW_MODE_DISPLACE  -1
+#define IEM_GUI_DRAW_MODE_UPDATE    0
+#define IEM_GUI_DRAW_MODE_MOVE      1
+#define IEM_GUI_DRAW_MODE_NEW       2
+#define IEM_GUI_DRAW_MODE_SELECT    3
+#define IEM_GUI_DRAW_MODE_ERASE     4
+#define IEM_GUI_DRAW_MODE_CONFIG    5
+#define IEM_GUI_DRAW_MODE_IO        6
 
 #define IEM_GUI_IOHEIGHT 2
 
@@ -134,7 +135,7 @@ typedef struct _iem_init_symargs
     unsigned int x_locked:1;
 } t_iem_init_symargs;
 
-typedef void (*t_iemfunptr)(void *x, t_glist *glist, int mode);
+typedef void (*t_iemfunptr)(void *x, t_glist *glist, int mode, int dx, int dy);
 
 typedef struct _iemgui
 {

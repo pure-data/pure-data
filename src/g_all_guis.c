@@ -426,7 +426,7 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable, 0, 0);
 }
 
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -461,7 +461,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_fsf.x_rcv_able = rcvable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable, 0, 0);
 }
 
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -526,7 +526,7 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 {
     if(glist_isvisible(iemgui->x_glist))
     {
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE, 0, 0);
         canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
     }
 }
@@ -534,11 +534,13 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av);
-    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av);
+    int dx = (int)atom_getfloatarg(0, ac, av);
+    int dy = (int)atom_getfloatarg(1, ac, av);
+    iemgui->x_obj.te_xpix += dx;
+    iemgui->x_obj.te_ypix += dy;
     if(glist_isvisible(iemgui->x_glist))
     {
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_DISPLACE, dx*zoom, dy*zoom);
         canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
     }
 }
@@ -546,11 +548,15 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av);
-    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av);
+    int xpos = (int)atom_getfloatarg(0, ac, av);
+    int ypos = (int)atom_getfloatarg(1, ac, av);
+    int dx = xpos - iemgui->x_obj.te_xpix;
+    int dy = ypos - iemgui->x_obj.te_ypix;
+    iemgui->x_obj.te_xpix = xpos;
+    iemgui->x_obj.te_ypix = ypos;
     if(glist_isvisible(iemgui->x_glist))
     {
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_DISPLACE, dx*zoom, dy*zoom);
         canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
     }
 }
@@ -568,18 +574,19 @@ void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
     if (ac >= 3)
         iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
     if(glist_isvisible(iemgui->x_glist))
-        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG, 0, 0);
 }
 
 void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_iemgui *x = (t_iemgui *)z;
-
+    
+    int zoom = glist_getzoom(glist);
     x->x_obj.te_xpix += dx;
     x->x_obj.te_ypix += dy;
     if(glist_isvisible(x->x_glist))
     {
-        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_MOVE);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_DISPLACE, dx*zoom, dy*zoom);
         canvas_fixlinesfor(glist, (t_text *)z);
     }
 }
@@ -590,7 +597,7 @@ void iemgui_select(t_gobj *z, t_glist *glist, int selected)
 
     x->x_fsf.x_selected = selected;
     if(glist_isvisible(x->x_glist))
-        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT, 0, 0);
 }
 
 void iemgui_delete(t_gobj *z, t_glist *glist)
@@ -603,10 +610,10 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
     t_iemgui *x = (t_iemgui *)z;
 
     if (vis)
-        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_NEW);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_NEW, 0, 0);
     else
     {
-        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE, 0, 0);
         sys_unqueuegui(z);
     }
 }
