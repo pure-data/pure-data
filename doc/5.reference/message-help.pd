@@ -1,4 +1,3 @@
-#N struct template1 float x float y float z float q;
 #N canvas 248 23 1043 711 12;
 #X msg 51 12 message boxes;
 #X msg 123 267 walk the dog;
@@ -10,7 +9,7 @@
 #X text 639 440 You can send messages to message boxes to change their
 content - open the subpatch below for details:, f 41;
 #N canvas 455 210 611 440 changing-messages 0;
-#X msg 49 373 dog bird monkey \; bird;
+#X msg 49 373;
 #X msg 49 60 set dog;
 #X msg 84 146 add monkey;
 #X msg 96 181 add2 bird;
@@ -83,12 +82,11 @@ considered a selector with no actual message attached.;
 #X obj 591 290 print message;
 #X msg 591 232 1 \, 2 \, 3 \; my-receiver-name 100 \, 200 \, 300 \;
 another-receiver -45 \, -12.5;
-#N canvas 549 120 1021 464 escaping-characters 0;
+#N canvas 345 120 1021 464 escaping-characters 0;
 #X symbolatom 71 181 20 0 0 0 - - - 0;
 #X obj 611 415 text fromlist example;
 #X obj 606 194 text define example;
 #X msg 639 377 list \\\$1 is literal and \$1 is not;
-#X text 753 194 <= click to open text window;
 #X msg 71 117 symbol one\ symbol;
 #X msg 81 148 symbol one\\\,\\\ symbol;
 #X msg 250 117 list one\ item two 3;
@@ -112,7 +110,7 @@ element it is attached to., f 66;
 ;
 #X msg 262 360 receive \\\$0-x;
 #X text 404 415 <= check properties;
-#X obj 265 417 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#X obj 265 417 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 #dfdfdf
 #000000 #000000 0 1;
 #X text 370 360 <= click;
 #X obj 60 402 send \$0-x;
@@ -135,20 +133,21 @@ characters that are handled differently in Pd. Such characters are:
 spaces \, commas \, semicolons \, dollar signs (as in the locality
 syntax) and the backslash character itself. See examples below., f
 66;
+#X text 753 194 <-- click to open text window;
 #X connect 3 0 1 0;
+#X connect 4 0 0 0;
 #X connect 5 0 0 0;
-#X connect 6 0 0 0;
-#X connect 7 0 11 0;
-#X connect 11 0 8 0;
-#X connect 11 1 9 0;
-#X connect 11 2 10 0;
-#X connect 15 0 3 0;
-#X connect 17 0 1 0;
-#X connect 18 0 20 0;
-#X connect 25 0 20 0;
-#X connect 26 0 22 0;
-#X connect 27 0 28 0;
-#X connect 29 0 30 0;
+#X connect 6 0 10 0;
+#X connect 10 0 7 0;
+#X connect 10 1 8 0;
+#X connect 10 2 9 0;
+#X connect 14 0 3 0;
+#X connect 16 0 1 0;
+#X connect 17 0 19 0;
+#X connect 24 0 19 0;
+#X connect 25 0 21 0;
+#X connect 26 0 27 0;
+#X connect 28 0 29 0;
 #X restore 748 631 pd escaping-characters;
 #N canvas 959 386 445 331 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in

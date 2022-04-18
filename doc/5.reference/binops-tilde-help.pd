@@ -23,14 +23,10 @@
 #X obj 563 236 tabwrite~ array1;
 #X obj 563 164 max~;
 #X obj 688 164 min~;
-#X obj 636 431 +~ 5;
+#X obj 699 479 +~ 5;
 #X text 24 557 see also:;
 #X obj 100 531 +;
-#X floatatom 661 405 5 0 0 0 - - - 0;
-#X text 498 305 These objects combine two signals as above \, or \,
-if you give a numeric argument \, the right inlet only takes floats
-(no signals) and the argument initializes the right inlet value:,
-f 36;
+#X floatatom 724 453 5 0 0 0 - - - 0;
 #X obj 447 68 sig~ 2;
 #X obj 48 68 sig~ 1;
 #X obj 588 68 sig~ 0.5;
@@ -50,9 +46,9 @@ f 36;
 #X obj 100 584 expr~;
 #X text 148 584 - evaluate expressions on audio signals;
 #X text 376 556 - audio math objects;
-#X obj 474 409 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 481 282 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X msg 474 439 \; pd dsp \$1;
+#X msg 481 312 \; pd dsp \$1;
 #X text 246 17 - binary operators on audio signals;
 #N canvas 689 202 575 283 reference 0;
 #X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -73,15 +69,15 @@ f 36;
 #X obj 124 18 /~;
 #X obj 157 18 max~;
 #X obj 199 18 min~;
-#X text 247 17 - binary operators on audio signals;
 #X text 115 92 signal - value to the left side of operation and output.
 ;
 #X text 73 131 float/signal - value to the right side of operation.
 , f 62;
 #X text 117 172 signal - the result of the operation., f 58;
 #X text 94 214 1) float -;
+#X text 247 17 - binary operators on audio signals.;
 #X text 170 214 initialize value of right inlet and makes it only take
-floats instead of signals (default signal input).;
+floats instead of signals (default: signal input).;
 #X restore 720 17 pd reference;
 #X text 653 17 click =>;
 #X obj 10 48 cnv 1 810 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -98,6 +94,11 @@ floats instead of signals (default signal input).;
 #000000 #000000;
 #X obj 585 204 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
+#X text 427 367 These objects perform the 4 arithmetic functions ([+~]
+\, etc) or output the minimum or maximum of two numbers ([min~] \,
+[max~]) \, They combine two signals as above \, or \, if you give a
+numeric argument \, the right inlet only takes floats (no signals)
+and the argument initializes the right inlet value:, f 53;
 #X connect 0 0 10 0;
 #X connect 1 0 11 0;
 #X connect 2 0 12 0;
@@ -111,16 +112,16 @@ floats instead of signals (default signal input).;
 #X connect 19 0 18 0;
 #X connect 20 0 17 0;
 #X connect 24 0 21 1;
-#X connect 26 0 3 1;
-#X connect 26 0 2 1;
-#X connect 27 0 1 1;
-#X connect 27 0 0 1;
-#X connect 28 0 19 1;
-#X connect 28 0 20 1;
-#X connect 29 0 17 0;
-#X connect 44 0 45 0;
-#X connect 51 0 10 0;
-#X connect 52 0 11 0;
-#X connect 53 0 12 0;
-#X connect 54 0 9 0;
-#X connect 55 0 18 0;
+#X connect 25 0 3 1;
+#X connect 25 0 2 1;
+#X connect 26 0 1 1;
+#X connect 26 0 0 1;
+#X connect 27 0 19 1;
+#X connect 27 0 20 1;
+#X connect 28 0 17 0;
+#X connect 43 0 44 0;
+#X connect 50 0 10 0;
+#X connect 51 0 11 0;
+#X connect 52 0 12 0;
+#X connect 53 0 9 0;
+#X connect 54 0 18 0;

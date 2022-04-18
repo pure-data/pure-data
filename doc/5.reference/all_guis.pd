@@ -47,5 +47,5 @@
 #X text 19 424 The boxes below are 'proper native' GUIs (not part of
 "IEM GUIs"). See also the array to the right as another GUI element.
 , f 36;
-#X text 40 572 The message box is also considered a GUI object since
+#X text 40 572 The message box is also considered a GUI object \, since
 you can interact with it by clicking on it., f 49;
