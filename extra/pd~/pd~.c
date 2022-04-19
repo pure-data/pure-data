@@ -106,14 +106,15 @@ static const char *pd_tilde_dllextent[] = {
     defined(__FreeBSD__)
     ARCHDLLEXT(".l_")
     ".pd_linux",
-    ".so",
 #elif defined(__APPLE__)
-    ".d_fat",
     ARCHDLLEXT(".d_")
+    ".d_fat",
     ".pd_darwin",
-    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+#endif
+        /* and some generic extensions */
+#if defined(_WIN32) || defined(__CYGWIN__)
     ".dll",
 #else
     ".so",
