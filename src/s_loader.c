@@ -62,22 +62,19 @@ a fat binary or an indication of the instruction set. */
 static const char*sys_dllextent[] = {
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
-#if defined(__x86_64__) || defined(_M_X64)
+# if defined(__x86_64__) || defined(_M_X64)
     ".l_ia64",      /* incorrect but probably in wide use */
-#endif
+# endif
     ".pd_linux",
-    ".so",
 #elif defined(__APPLE__)
     ".d_fat",
     ARCHDLLEXT(".d_")
     ".pd_darwin",
-    ".so",
-#elif defined(__OpenBSD__)
-    ARCHDLLEXT(".o_")
-    ".pd_openbsd",
-    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
+#endif
+        /* and some generic extensions */
+#if defined(_WIN32) || defined(__CYGWIN__)
     ".dll",
 #else
     ".so",
