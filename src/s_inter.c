@@ -1082,15 +1082,15 @@ static const char*deken_CPU =
  * returns 0, if the deken-specifier cannot be determined
  * (e.g. on new architectures)
  */
-const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic) {
+const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int fat) {
     unsigned int i;
     if (!deken_OS)
         return 0;
-    if (!deken_CPU)
+    if (!fat && !deken_CPU)
         return 0;
 
     snprintf(buf, bufsize-1,
-             "%s-%s-%d", deken_OS, deken_CPU, (float_agnostic?0:8) * sizeof(t_float));
+        "%s-%s-%d", deken_OS, fat?"fat":deken_CPU, (float_agnostic?0:8) * sizeof(t_float));
 
     buf[bufsize-1] = 0;
     for(i=0; i<bufsize && buf[i]; i++)

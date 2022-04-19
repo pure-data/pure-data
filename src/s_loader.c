@@ -37,6 +37,10 @@ objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
 darwin, or microsoft, followed by a more specific string, either "fat" for
 a fat binary or an indication of the instruction set. */
 
+#ifdef __APPLE__
+# define FAT_BINARIES 1
+#endif
+
 #if defined(__x86_64__) || defined(_M_X64)
 # define ARCHEXT "amd64"
 #elif defined(__i386__) || defined(_M_IX86)
@@ -56,8 +60,11 @@ a fat binary or an indication of the instruction set. */
 #endif
 
 
-static const char*sys_dllextent[] = {
+static const char*sys_dllextent_[] = {
     0, 0,
+#if FAT_BINARIES
+    0, 0,
+#endif
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 #if defined(__x86_64__) || defined(_M_X64)
@@ -78,25 +85,49 @@ static const char*sys_dllextent[] = {
 #endif
     0};
 
-const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize);
+static const char**sys_dllextent = 0;
+
+const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize, int fat);
 
     /* get an array of dll-extensions */
 const char**sys_get_dllextensions(void)
 {
     static int firsttime = 1;
-    static char extension_dek[2][MAXPDSTRING];
-    if(firsttime) {
-        char extbuf[MAXPDSTRING];
-        const char *systemext = sys_dllextent[sizeof(sys_dllextent)/sizeof(*sys_dllextent)-2];
-        int i;
-        firsttime = 0;
-        for(i=0; i<2; i++)
+    static char extension_dek[4][MAXPDSTRING];
+    if(!sys_dllextent) {
+            /* systemext: '.dll' on windows, '.so' on the others */
+        const char *systemext = sys_dllextent_[sizeof(sys_dllextent_)/sizeof(*sys_dllextent_)-2];
+        const int num_float_extensions = 2;
+        const int num_cpu_extensions =
+#if FAT_BINARIES
+            2
+#else
+            1
+#endif
+            ;
+        const int total_dek_extensions = num_float_extensions * num_cpu_extensions;
+        int num_dek_extensions = 0;
+        int i, j;
+
+            /* create deken-based extensions */
+        for(j=0; j<num_cpu_extensions; j++) /* cpu */
         {
-            snprintf(extension_dek[i], MAXPDSTRING-1, ".%s%s",
-                     sys_deken_specifier(extbuf, MAXPDSTRING, i), systemext);
-            extension_dek[i][MAXPDSTRING-1] = 0;
-            sys_dllextent[i] = extension_dek[i];
+            for(i=0; i<num_float_extensions; i++) /* floatsize */
+            {
+                char extbuf[MAXPDSTRING];
+                const char*dekenspecifier = sys_deken_specifier(extbuf, MAXPDSTRING, i, j);
+                if(!dekenspecifier)
+                    continue;
+                snprintf(extension_dek[num_dek_extensions++], MAXPDSTRING-1, ".%s%s",
+                    dekenspecifier, systemext);
+            }
         }
+            /* filter-out invalid deken-based extensions */
+        for(i=0; i<num_dek_extensions; i++) {
+            sys_dllextent_[i+total_dek_extensions-num_dek_extensions] = extension_dek[i];
+        }
+
+        sys_dllextent = sys_dllextent_ + total_dek_extensions - num_dek_extensions;
     }
     return sys_dllextent;
 }
