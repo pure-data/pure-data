@@ -2,7 +2,7 @@
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 
-/* g_7_guis.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
+/* hdial.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
 
 /* name change to hradio by MSP and changed to
@@ -17,12 +17,6 @@ put out a "float" as in sliders, toggles, etc. */
 
 #include "g_all_guis.h"
 #include <math.h>
-
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
 
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
@@ -153,8 +147,8 @@ void hradio_draw_config(t_hradio* x, t_glist* glist)
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
-             x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+             x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
     for(i = 0; i < n; i++)
     {
@@ -268,8 +262,9 @@ static void hradio_save(t_gobj *z, t_binbuf *b)
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiiisssiiiisssf", gensym("#X"),gensym("obj"),
-                (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
+    binbuf_addv(b, "ssiisiiiisssiiiisssf", gensym("#X"), gensym("obj"),
+                (int)x->x_gui.x_obj.te_xpix,
+                (int)x->x_gui.x_obj.te_ypix,
                 (pd_class(&x->x_gui.x_obj.ob_pd) == hradio_old_class ?
                     gensym("hdl") : gensym("hradio")),
                 x->x_gui.x_w/IEMGUI_ZOOM(x),
@@ -352,7 +347,6 @@ static void hradio_dialog(t_hradio *x, t_symbol *s, int argc, t_atom *argv)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
         canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
     }
-
 }
 
 static void hradio_set(t_hradio *x, t_floatarg f)

@@ -29,7 +29,7 @@ void vradio_draw_update(t_gobj *client, t_glist *glist)
     t_hradio *x = (t_hradio *)client;
     if(glist_isvisible(glist))
     {
-        t_canvas *canvas=glist_getcanvas(glist);
+        t_canvas *canvas = glist_getcanvas(glist);
 
         sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n",
                  canvas, x, x->x_drawn,
@@ -150,7 +150,7 @@ void vradio_draw_config(t_vradio* x, t_glist* glist)
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
-    for(i=0; i<n; i++)
+    for(i = 0; i < n; i++)
     {
         sys_vgui(".x%lx.c itemconfigure %lxBASE%d -fill #%06x\n", canvas, x, i,
                  x->x_gui.x_bcol);
@@ -396,7 +396,7 @@ static void vradio_bang(t_vradio *x)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
         outlet_float(x->x_gui.x_obj.ob_outlet, outval);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
             pd_float(x->x_gui.x_snd->s_thing, outval);
@@ -437,7 +437,7 @@ static void vradio_fout(t_vradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -487,7 +487,7 @@ static void vradio_float(t_vradio *x, t_floatarg f)
     }
     else
     {
-        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
+        t_float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -594,9 +594,10 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     int a = IEM_GUI_DEFAULTSIZE, on = 0, f = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
     int fs = 10;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-    char str[144];
-    float fval = 0;
+    t_float fval = 0;
+
+    iem_inttosymargs(&x->x_gui.x_isa, 0);
+    iem_inttofstyle(&x->x_gui.x_fsf, 0);
 
     x->x_gui.x_bcol = 0xFCFCFC;
     x->x_gui.x_fcol = 0x00;
