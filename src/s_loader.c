@@ -66,8 +66,8 @@ static const char*sys_dllextent[] = {
     ".pd_linux",
     ".so",
 #elif defined(__APPLE__)
-    ".d_fat",
     ARCHDLLEXT(".d_")
+    ".d_fat",
     ".pd_darwin",
     ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
