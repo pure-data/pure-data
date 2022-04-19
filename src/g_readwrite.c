@@ -379,7 +379,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
 
     if (scindex == -1)
     {
-        pd_error(0, "data_properties: scalar disappeared");
+        pd_error(x, "data_properties: scalar disappeared");
         return;
     }
     glist_readfrombinbuf(x, b, "properties dialog", 0);
@@ -399,7 +399,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
     }
     else gobj_vis((newone = x->gl_list), x, 0), x->gl_list = newone->g_next;
     if (!newone)
-        pd_error(0, "couldn't update properties (perhaps a format problem?)");
+        pd_error(x, "couldn't update properties (perhaps a format problem?)");
     else if (!oldone)
         bug("data_properties: couldn't find old element");
     else if (newone->g_pd == scalar_class && oldone->g_pd == scalar_class
