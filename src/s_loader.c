@@ -164,6 +164,98 @@ void class_set_extern_dir(t_symbol *s);
 
 static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     const char *path);
+
+
+static int sys_do_load_lib_from_file(int fd,
+    const char*objectname,
+    const char*dirbuf,
+    const char*nameptr,
+    const char*symname) {
+    char filename[MAXPDSTRING];
+    t_xxx makeout = NULL;
+#ifdef _WIN32
+    HINSTANCE dlobj;
+#else
+    void*dlobj = NULL;
+#endif
+        /* close dangling filedescriptor */
+    close(fd);
+
+        /* attempt to open the library and call the setup function */
+
+
+    class_set_extern_dir(gensym(dirbuf));
+
+        /* rebuild the absolute pathname */
+    strncpy(filename, dirbuf, MAXPDSTRING);
+    filename[MAXPDSTRING-2] = 0;
+    strcat(filename, "/");
+    strncat(filename, nameptr, MAXPDSTRING-strlen(filename));
+    filename[MAXPDSTRING-1] = 0;
+
+#ifdef _WIN32
+    {
+        char dirname[MAXPDSTRING], *s, *basename;
+        sys_bashfilename(filename, filename);
+        /* set the dirname as DllDirectory, meaning in the path for
+           loading other DLLs so that dependent libraries can be included
+           in the same folder as the external. SetDllDirectory() needs a
+           minimum supported version of Windows XP SP1 for
+           SetDllDirectory, so WINVER must be 0x0502 */
+        strncpy(dirname, filename, MAXPDSTRING);
+        s = strrchr(dirname, '\\');
+        basename = s;
+        if (s && *s)
+          *s = '\0';
+        if (!SetDllDirectory(dirname))
+           pd_error(0, "could not set '%s' as DllDirectory(), '%s' might not load.",
+                 dirname, basename);
+        /* now load the DLL for the external */
+        dlobj = LoadLibrary(filename);
+        if (!dlobj)
+        {
+            wchar_t wbuf[MAXPDSTRING];
+            char buf[MAXPDSTRING];
+            DWORD count, err = GetLastError();
+            count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, MAXPDSTRING, NULL);
+            if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, MAXPDSTRING, 0, 0))
+                *buf = '\0';
+            pd_error(0, "%s: %s (%d)", filename, buf, err);
+        } else {
+            makeout = (t_xxx)GetProcAddress(dlobj, symname);
+            if (!makeout)
+                makeout = (t_xxx)GetProcAddress(dlobj, "setup");
+        }
+        SetDllDirectory(NULL); /* reset DLL dir to nothing */
+    }
+#elif defined(HAVE_LIBDL)
+    {
+        dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
+        if (!dlobj)
+        {
+            pd_error(0, "%s:%s", filename, dlerror());
+        } else {
+            makeout = (t_xxx)dlsym(dlobj,  symname);
+            if(!makeout)
+                makeout = (t_xxx)dlsym(dlobj,  "setup");
+        }
+    }
+#else
+#warning "No dynamic loading mechanism specified, \
+libdl or WIN32 required for loading externals!"
+#endif
+
+    if(makeout)
+        (*makeout)();
+    else if (dlobj)
+        pd_error(0, "load_object: Symbol \"%s\" not found in \"%s\"", symname, filename);
+
+    class_set_extern_dir(&s_);
+
+    return (makeout)?1:0;
+}
+
 static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *path)
 {
@@ -174,9 +266,6 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     void *dlobj;
     t_xxx makeout = NULL;
     int i, hexmunge = 0, fd;
-#ifdef _WIN32
-    HINSTANCE ntdll;
-#endif
         /* NULL-path is only used as a last resort,
            but we have already tried all paths */
     if(!path)return (0);
@@ -223,7 +312,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     {
         if ((fd = sys_trytoopenone(path, objectname, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-                goto gotone;
+            if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
+                return 1;
     }
         /* next try (objectname)/(classname).(sys_dllextent) ... */
     strncpy(filename, objectname, MAXPDSTRING);
@@ -235,7 +325,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     {
         if ((fd = sys_trytoopenone(path, filename, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-                goto gotone;
+            if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
+                return 1;
     }
 #ifdef ANDROID
     /* Android libs have a 'lib' prefix, '.so' suffix and don't allow ~ */
@@ -247,82 +338,10 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     }
     if ((fd = sys_trytoopenone(path, libname, ".so",
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-            goto gotone;
+            if(sys_do_load_lib_from_file(fd, objectname, dirbuf, nameptr, symname))
+                return 1;
 #endif
     return (0);
-gotone:
-    close(fd);
-    class_set_extern_dir(gensym(dirbuf));
-
-        /* rebuild the absolute pathname */
-    strncpy(filename, dirbuf, MAXPDSTRING);
-    filename[MAXPDSTRING-2] = 0;
-    strcat(filename, "/");
-    strncat(filename, nameptr, MAXPDSTRING-strlen(filename));
-    filename[MAXPDSTRING-1] = 0;
-
-#ifdef _WIN32
-    {
-        char dirname[MAXPDSTRING], *s, *basename;
-        sys_bashfilename(filename, filename);
-        /* set the dirname as DllDirectory, meaning in the path for
-           loading other DLLs so that dependent libraries can be included
-           in the same folder as the external. SetDllDirectory() needs a
-           minimum supported version of Windows XP SP1 for
-           SetDllDirectory, so WINVER must be 0x0502 */
-        strncpy(dirname, filename, MAXPDSTRING);
-        s = strrchr(dirname, '\\');
-        basename = s;
-        if (s && *s)
-          *s = '\0';
-        if (!SetDllDirectory(dirname))
-           pd_error(0, "could not set '%s' as DllDirectory(), '%s' might not load.",
-                 dirname, basename);
-        /* now load the DLL for the external */
-        ntdll = LoadLibrary(filename);
-        if (!ntdll)
-        {
-            wchar_t wbuf[MAXPDSTRING];
-            char buf[MAXPDSTRING];
-            DWORD count, err = GetLastError();
-            count = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), wbuf, MAXPDSTRING, NULL);
-            if (!count || !WideCharToMultiByte(CP_UTF8, 0, wbuf, count+1, buf, MAXPDSTRING, 0, 0))
-                *buf = '\0';
-            pd_error(0, "%s: %s (%d)", filename, buf, err);
-            class_set_extern_dir(&s_);
-            return (0);
-        }
-        makeout = (t_xxx)GetProcAddress(ntdll, symname);
-        if (!makeout)
-             makeout = (t_xxx)GetProcAddress(ntdll, "setup");
-        SetDllDirectory(NULL); /* reset DLL dir to nothing */
-    }
-#elif defined(HAVE_LIBDL) || defined(__FreeBSD__)
-    dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
-    if (!dlobj)
-    {
-        pd_error(0, "%s: %s", filename, dlerror());
-        class_set_extern_dir(&s_);
-        return (0);
-    }
-    makeout = (t_xxx)dlsym(dlobj,  symname);
-    if(!makeout)
-        makeout = (t_xxx)dlsym(dlobj,  "setup");
-#else
-#warning "No dynamic loading mechanism specified, \
-libdl or WIN32 required for loading externals!"
-#endif
-
-    if (!makeout)
-    {
-        pd_error(0, "load_object: Symbol \"%s\" not found", symname);
-        class_set_extern_dir(&s_);
-        return 0;
-    }
-    (*makeout)();
-    class_set_extern_dir(&s_);
-    return (1);
 }
 
 
