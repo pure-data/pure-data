@@ -39,11 +39,12 @@ array set ::pdtk_canvas::::window_fullname {}
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
-if {$::tcl_version < 8.5 || \
+if {[tk windowingsystem] eq "win32" || \
+    $::tcl_version < 8.5 || \
         ($::tcl_version == 8.5 && \
              [tk windowingsystem] eq "aqua" && \
              [lindex [split [info patchlevel] "."] 2] < 13) } {
-    # fit the geometry onto screen for Tk 8.4,
+    # fit the geometry onto screen for Tk 8.4 or win32,
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
