@@ -382,6 +382,10 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
         pd_error(x, "data_properties: scalar disappeared");
         return;
     }
+    if (!b) {
+        pd_error(x, "couldn't update properties (none given)");
+        return;
+    }
     glist_readfrombinbuf(x, b, "properties dialog", 0);
     newone = 0;
         /* take the new object off the list */

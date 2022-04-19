@@ -152,7 +152,8 @@ static void gfxstub_end(t_gfxstub *x)
 {
     canvas_dataproperties((t_canvas *)x->x_owner,
         (t_scalar *)x->x_key, gfxstub_binbuf);
-    binbuf_free(gfxstub_binbuf);
+    if(gfxstub_binbuf)
+        binbuf_free(gfxstub_binbuf);
     gfxstub_binbuf = 0;
 }
 
