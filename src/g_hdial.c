@@ -527,6 +527,7 @@ static void hradio_loadbang(t_hradio *x, t_floatarg action)
 static void hradio_number(t_hradio *x, t_floatarg num)
 {
     int n = (int)num;
+    int vis = glist_isvisible(x->x_gui.x_glist);
 
     if(n < 1)
         n = 1;
@@ -534,13 +535,17 @@ static void hradio_number(t_hradio *x, t_floatarg num)
         n = IEM_RADIO_MAX;
     if(n != x->x_number)
     {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
+        if(vis)
+            (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
         x->x_number = n;
         if(x->x_on >= x->x_number)
             x->x_on = x->x_number - 1;
         x->x_on_old = x->x_on;
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
-        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+        if(vis)
+        {
+            (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+            canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+        }
     }
 }
 
