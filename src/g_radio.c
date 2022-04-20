@@ -146,11 +146,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
                  canvas,
                  xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
                  xpos + iow, ypos + x->x_gui.x_h,
-                 x, 0);
+                 x, x, 0);
         /* keep these above outlet */
         if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxOUT%d\n", canvas, x, x->x_on, x, 0);
@@ -161,11 +161,11 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
     if((old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && !x->x_gui.x_fsf.x_rcv_able)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxIN%d\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
                  canvas,
                  xpos, ypos,
                  xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-                 x, 0);
+                 x, x, 0);
         /* keep these above inlet */
         if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxIN%d\n", canvas, x, x->x_on, x, 0);
