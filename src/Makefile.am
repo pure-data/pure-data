@@ -125,10 +125,10 @@ pd_SOURCES_core = \
     g_editor_extras.c \
     g_graph.c \
     g_guiconnect.c \
-    g_hdial.c \
     g_io.c \
     g_mycanvas.c \
     g_numbox.c \
+    g_radio.c \
     g_readwrite.c \
     g_rtext.c \
     g_scalar.c \
@@ -138,7 +138,6 @@ pd_SOURCES_core = \
     g_toggle.c \
     g_traversal.c \
     g_undo.c \
-    g_vdial.c \
     g_vumeter.c \
     m_atom.c \
     m_binbuf.c \

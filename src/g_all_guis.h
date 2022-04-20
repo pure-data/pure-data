@@ -203,7 +203,8 @@ typedef struct _radio
     int      x_number;
     int      x_drawn;
     t_float  x_fval;
-    t_atom   x_at[2];
+    t_iem_orientation x_orientation;
+    int      x_compat; /* old version */
 } t_radio;
 
 typedef struct _toggle
