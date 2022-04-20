@@ -32,14 +32,48 @@ static t_class *bng_class;
 
 /*  widget helper functions  */
 
-static void bng_draw_update(t_bng *x, t_glist *glist)
+static void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
 {
-    if(glist_isvisible(glist))
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBUT -fill #%6.6x\n",
-            glist_getcanvas(glist), x,
-            (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    (void)old_snd_rcv_flags;
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+
+    if(!x->x_gui.x_fsf.x_snd_able) {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
+            canvas,
+            xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
+            xpos + iow, ypos + x->x_gui.x_h,
+            x, x, 0);
+        /* keep above outlet */
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
     }
+    if(!x->x_gui.x_fsf.x_rcv_able) {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
+            canvas,
+            xpos, ypos,
+            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
+            x, x, 0);
+        /* keep above inlet */
+        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
+    }
+}
+
+static void bng_draw_config(t_bng* x, t_glist* glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
+             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
+    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%6.6x\n", canvas, x, x->x_gui.x_bcol);
+    sys_vgui(".x%lx.c itemconfigure %lxBUT -fill #%6.6x\n", canvas, x,
+             (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
 }
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
@@ -84,62 +118,18 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
              x, x);
 }
 
-static void bng_draw_move(t_bng *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void bng_draw_erase(t_bng* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
 }
 
-static void bng_draw_config(t_bng* x, t_glist* glist)
+static void bng_draw_move(t_bng *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
-             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%6.6x\n", canvas, x, x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c itemconfigure %lxBUT -fill #%6.6x\n", canvas, x,
-             (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
-}
-
-static void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-
-    if(!x->x_gui.x_fsf.x_snd_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-            xpos + iow, ypos + x->x_gui.x_h,
-            x, x, 0);
-        /* keep above outlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
-    }
-    if(!x->x_gui.x_fsf.x_rcv_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
-        /* keep above inlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
-    }
+    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
+    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
 }
 
 static void bng_draw_select(t_bng* x, t_glist* glist)
@@ -157,6 +147,16 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
         sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%6.6x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
         sys_vgui(".x%lx.c itemconfigure %lxBUT -outline #%6.6x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%6.6x\n", canvas, x, x->x_gui.x_lcol);
+    }
+}
+
+static void bng_draw_update(t_bng *x, t_glist *glist)
+{
+    if(glist_isvisible(glist))
+    {
+        sys_vgui(".x%lx.c itemconfigure %lxBUT -fill #%6.6x\n",
+            glist_getcanvas(glist), x,
+            (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
     }
 }
 

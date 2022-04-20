@@ -30,33 +30,59 @@ static t_class *slider_class;
 
 /* widget helper functions */
 
-static void slider_draw_update(t_gobj *client, t_glist *glist)
+static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 {
-    t_slider *x = (t_slider *)client;
-    int a, b, c, d;
-    if (glist_isvisible(glist))
+    t_canvas *canvas = glist_getcanvas(glist);
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int lmargin = 0, tmargin=0, bmargin = 0;
+    if(x->x_orientation == horizontal)
     {
-        t_canvas *canvas = glist_getcanvas(glist);
-        int xpos = text_xpix(&x->x_gui.x_obj, glist);
-        int ypos = text_ypix(&x->x_gui.x_obj, glist);
-        int val = ((x->x_val + 50)/100);
-        if(x->x_orientation == horizontal)
-        {
-            int r = xpos + val;
-            a = r;
-            b = ypos + IEMGUI_ZOOM(x);
-            c = r;
-            d = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x);
-        } else {
-            int r = ypos + x->x_gui.x_h - val;
-            a = xpos + IEMGUI_ZOOM(x);
-            b = r;
-            c = xpos + x->x_gui.x_w - IEMGUI_ZOOM(x);
-            d = r;
-        }
-        sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
-            canvas, x, a, b, c, d);
+        lmargin = LMARGIN * IEMGUI_ZOOM(x);
+    } else {
+        tmargin = TMARGIN * IEMGUI_ZOOM(x);
+        bmargin = BMARGIN * IEMGUI_ZOOM(x);
     }
+
+    (void)old_snd_rcv_flags;
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+
+    if(!x->x_gui.x_fsf.x_snd_able)
+    {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
+            canvas,
+            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
+            x, x, 0);
+        /* keep these above outlet */
+        sys_vgui(".x%lx.c raise %lxKNOB %lxOUT%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
+    }
+    if(!x->x_gui.x_fsf.x_rcv_able)
+    {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
+            canvas,
+            xpos - lmargin, ypos - tmargin,
+            xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
+            x, x, 0);
+        /* keep these above inlet */
+        sys_vgui(".x%lx.c raise %lxKNOB %lxIN%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
+    }
+}
+
+static void slider_draw_config(t_slider* x, t_glist* glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
+             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
+    sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas, x, x->x_gui.x_fcol);
+    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
 
 static void slider_draw_new(t_slider *x, t_glist *glist)
@@ -117,73 +143,18 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
         x->x_gui.x_lcol, x, x);
 }
 
-static void slider_draw_move(t_slider *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void slider_draw_erase(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
 }
 
-static void slider_draw_config(t_slider* x, t_glist* glist)
+static void slider_draw_move(t_slider *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
-             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
-    sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas, x, x->x_gui.x_fcol);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
-}
-
-static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int lmargin = 0, tmargin=0, bmargin = 0;
-    if(x->x_orientation == horizontal)
-    {
-        lmargin = LMARGIN * IEMGUI_ZOOM(x);
-    } else {
-        tmargin = TMARGIN * IEMGUI_ZOOM(x);
-        bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    }
-
-    (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-
-    if(!x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
-            xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            x, x, 0);
-        /* keep these above outlet */
-        sys_vgui(".x%lx.c raise %lxKNOB %lxOUT%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
-    }
-    if(!x->x_gui.x_fsf.x_rcv_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos - lmargin, ypos - tmargin,
-            xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
-        /* keep these above inlet */
-        sys_vgui(".x%lx.c raise %lxKNOB %lxIN%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
-    }
+    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
+    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
 }
 
 static void slider_draw_select(t_slider* x, t_glist* glist)
@@ -201,6 +172,36 @@ static void slider_draw_select(t_slider* x, t_glist* glist)
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, x->x_gui.x_lcol);
     }
 }
+
+static void slider_draw_update(t_gobj *client, t_glist *glist)
+{
+    t_slider *x = (t_slider *)client;
+    int a, b, c, d;
+    if (glist_isvisible(glist))
+    {
+        t_canvas *canvas = glist_getcanvas(glist);
+        int xpos = text_xpix(&x->x_gui.x_obj, glist);
+        int ypos = text_ypix(&x->x_gui.x_obj, glist);
+        int val = ((x->x_val + 50)/100);
+        if(x->x_orientation == horizontal)
+        {
+            int r = xpos + val;
+            a = r;
+            b = ypos + IEMGUI_ZOOM(x);
+            c = r;
+            d = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x);
+        } else {
+            int r = ypos + x->x_gui.x_h - val;
+            a = xpos + IEMGUI_ZOOM(x);
+            b = r;
+            c = xpos + x->x_gui.x_w - IEMGUI_ZOOM(x);
+            d = r;
+        }
+        sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
+            canvas, x, a, b, c, d);
+    }
+}
+
 
 static void slider_draw(t_slider *x, t_glist *glist, int mode)
 {
