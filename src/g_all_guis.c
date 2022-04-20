@@ -537,7 +537,8 @@ static void iemgui_do_drawmove(void *x, t_iemgui*iemgui)
 
 void iemgui_size(void *x, t_iemgui *iemgui)
 {
-    iemgui_do_drawmove(x, iemgui);
+    iemgui_vis(x, iemgui->x_glist, 0);
+    iemgui_vis(x, iemgui->x_glist, 1);
 }
 
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
