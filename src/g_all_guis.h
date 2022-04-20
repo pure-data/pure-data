@@ -100,6 +100,11 @@
 #define IEM_GUI_COLOR_EDITED 16711680
 #define IEMGUI_MAX_NUM_LEN 32
 
+typedef enum {
+    horizontal = 0,
+    vertical = 1,
+} t_iem_orientation;
+
 #define IEMGUI_ZOOM(x) ((x)->x_gui.x_glist->gl_zoom)
 
 typedef struct _iem_fstyle_flags
@@ -185,6 +190,7 @@ typedef struct _slider
     double   x_max;
     double   x_k;
     t_float  x_fval;
+    t_iem_orientation x_orientation;
 } t_slider;
 
 typedef struct _radio
