@@ -89,32 +89,32 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
     }
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxBASE]\n",
-             canvas, xpos - lmargin, ypos - tmargin,
-             xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin,
-             IEMGUI_ZOOM(x),
-             x->x_gui.x_bcol, x);
+        canvas, xpos - lmargin, ypos - tmargin,
+        xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin,
+        IEMGUI_ZOOM(x),
+        x->x_gui.x_bcol, x, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d outlet]\n",
-             canvas,
-             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-             x, 0);
+            canvas,
+            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
+            x, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%dinlet]\n",
-             canvas,
-             xpos - lmargin, ypos - tmargin,
-             xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
-             x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d inlet]\n",
+            canvas,
+            xpos - lmargin, ypos - tmargin,
+            xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
+            x, x, 0);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxKNOB]\n",
         canvas, a, b, c, d,
-        1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x);
+        1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxOBJ %lxLABEL label text]\n",
-             canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
-             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-             x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             x->x_gui.x_lcol, x);
+        canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
+        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_lcol, x, x);
 }
 
 static void slider_draw_move(t_slider *x, t_glist *glist)
@@ -128,14 +128,7 @@ static void slider_draw_move(t_slider *x, t_glist *glist)
 static void slider_draw_erase(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxKNOB\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
 }
 
 static void slider_draw_config(t_slider* x, t_glist* glist)
