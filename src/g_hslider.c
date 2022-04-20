@@ -255,7 +255,7 @@ void hslider_check_width(t_slider *x, int w)
         x->x_val = x->x_pos;
     }
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
+        x->x_k = log(x->x_max / x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
     else
         x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
 }
@@ -269,12 +269,12 @@ void hslider_check_minmax(t_slider *x, double min, double max)
         if(max > 0.0)
         {
             if(min <= 0.0)
-                min = 0.01*max;
+                min = 0.01 * max;
         }
         else
         {
             if(min > 0.0)
-                max = 0.01*min;
+                max = 0.01 * min;
         }
     }
     x->x_min = min;
@@ -292,6 +292,7 @@ static void hslider_properties(t_gobj *z, t_glist *owner)
     t_symbol *srl[3];
 
     iemgui_properties(&x->x_gui, srl);
+
     sprintf(buf, "pdtk_iemgui_dialog %%s |hsl| \
             --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
             -----------output-range:----------- %g left: %g right: %g \
@@ -301,7 +302,7 @@ static void hslider_properties(t_gobj *z, t_glist *owner)
             %d %d \
             #%06x #%06x #%06x\n",
             x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE, x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_min, x->x_max, 0.0,/*no_schedule*/
+            x->x_min, x->x_max, 0,/*no_schedule*/
             x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_steady, -1,/*no multi, but iem-characteristic*/
             srl[0]->s_name, srl[1]->s_name,
             srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
@@ -378,6 +379,7 @@ static void hslider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
     int steady = (int)atom_getfloatarg(17, argc, argv);
     int sr_flags;
     t_atom undo[18];
+
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
     SETFLOAT(undo+2, x->x_min);
     SETFLOAT(undo+3, x->x_max);
@@ -440,8 +442,8 @@ static void hslider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
-        x->x_val = (int)(100.0 * (xpos -
-            text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)));
+        x->x_val = (int)(100.0 *
+            (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)));
     if(x->x_val > (100*x->x_gui.x_w - 100))
         x->x_val = 100*x->x_gui.x_w - 100;
     if(x->x_val < 0)
@@ -559,7 +561,8 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_slider *x = (t_slider *)pd_new(hslider_class);
     int w = IEM_SL_DEFAULTSIZE, h = IEM_GUI_DEFAULTSIZE;
-    int lilo = 0, ldx = -2, ldy = -8, steady = 1;
+    int lilo = 0, steady = 1;
+    int ldx = -2, ldy = -8;
     int fs = 10;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
     t_float v = 0;
@@ -609,16 +612,13 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_lin0_log1 = lilo;
     if(steady != 0) steady = 1;
     x->x_steady = steady;
-    if (!strcmp(x->x_gui.x_snd->s_name, "empty"))
-        x->x_gui.x_fsf.x_snd_able = 0;
-    if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
-        x->x_gui.x_fsf.x_rcv_able = 0;
+    if(!strcmp(x->x_gui.x_snd->s_name, "empty")) x->x_gui.x_fsf.x_snd_able = 0;
+    if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1) strcpy(x->x_gui.x_font, "helvetica");
     else if(x->x_gui.x_fsf.x_font_style == 2) strcpy(x->x_gui.x_font, "times");
     else { x->x_gui.x_fsf.x_font_style = 0;
         strcpy(x->x_gui.x_font, sys_font); }
-    if (x->x_gui.x_fsf.x_rcv_able)
-        pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
+    if(x->x_gui.x_fsf.x_rcv_able) pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
     if(fs < 4)

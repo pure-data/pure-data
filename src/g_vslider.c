@@ -36,13 +36,12 @@ static void vslider_draw_update(t_gobj *client, t_glist *glist)
     t_slider *x = (t_slider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h -
-            ((x->x_val + 50)/100);
+        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - ((x->x_val + 50)/100);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
-
+        t_canvas *canvas = glist_getcanvas(glist);
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
-                 glist_getcanvas(glist), x, xpos + IEMGUI_ZOOM(x), r,
-                 xpos + x->x_gui.x_w - IEMGUI_ZOOM(x), r);
+                 canvas, x, xpos + IEMGUI_ZOOM(x),
+                 r, xpos + x->x_gui.x_w - IEMGUI_ZOOM(x), r);
     }
 }
 
@@ -137,10 +136,8 @@ static void vslider_draw_config(t_slider* x, t_glist* glist)
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
-    sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas,
-             x, x->x_gui.x_fcol);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas,
-             x, x->x_gui.x_bcol);
+    sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas, x, x->x_gui.x_fcol);
+    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
 
 static void vslider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
@@ -179,7 +176,7 @@ static void vslider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
 }
 
-static void vslider_draw_select(t_slider *x, t_glist *glist)
+static void vslider_draw_select(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -412,10 +409,11 @@ static void vslider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
 }
 
 static void vslider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
-                          t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
+    t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
-        x->x_val = (int)(100.0 * (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos));
+        x->x_val = (int)(100.0 *
+            (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos));
     if(x->x_val > (100*x->x_gui.x_h - 100))
         x->x_val = 100*x->x_gui.x_h - 100;
     if(x->x_val < 0)
@@ -429,7 +427,7 @@ static void vslider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
 }
 
 static int vslider_newclick(t_gobj *z, struct _glist *glist,
-                            int xpix, int ypix, int shift, int alt, int dbl, int doit)
+    int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_slider* x = (t_slider *)z;
 
@@ -563,11 +561,11 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_slider *x = (t_slider *)pd_new(vslider_class);
     int w = IEM_GUI_DEFAULTSIZE, h = IEM_SL_DEFAULTSIZE;
-    int lilo = 0, f = 0, ldx = 0, ldy = -9;
-    int fs = 10, steady = 1;
+    int lilo = 0, steady = 1;
+    int ldx = 0, ldy = -9;
+    int fs = 10;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
-    char str[144];
-    float v = 0;
+    t_float v = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
