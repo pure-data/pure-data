@@ -633,7 +633,8 @@ static void slider_steady(t_slider *x, t_floatarg f)
 static void slider_orientation(t_slider *x, t_floatarg forient)
 {
     int orient = !!(int)forient;
-    if(orient != x->x_orientation) {
+    if(orient != x->x_orientation)
+    {
         int w = x->x_gui.x_w;
         x->x_gui.x_w = x->x_gui.x_h;
         x->x_gui.x_h = w;
