@@ -88,28 +88,28 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
         d = r;
     }
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxBASE]\n",
              canvas, xpos - lmargin, ypos - tmargin,
              xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin,
              IEMGUI_ZOOM(x),
              x->x_gui.x_bcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d outlet]\n",
              canvas,
              xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
              xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
              x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%dinlet]\n",
              canvas,
              xpos - lmargin, ypos - tmargin,
              xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
              x, 0);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxKNOB\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxKNOB]\n",
         canvas, a, b, c, d,
         1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
+             -font {{%s} -%d %s} -fill #%06x -tags [list %lxOBJ %lxLABEL label text]\n",
              canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
@@ -120,53 +120,9 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
 static void slider_draw_move(t_slider *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int val = ((x->x_val + 50)/100);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int lmargin = 0, rmargin = 0, tmargin = 0, bmargin = 0;
-    int a, b, c, d;
-    int r = xpos + (x->x_val + 50)/100;
-
-     if(x->x_orientation == horizontal)
-    {
-        int r = xpos + val;
-        lmargin = LMARGIN * IEMGUI_ZOOM(x);
-        rmargin = RMARGIN * IEMGUI_ZOOM(x);
-        a = r;
-        b = ypos + IEMGUI_ZOOM(x);
-        c = r;
-        d = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x);
-    } else {
-        int r = ypos + x->x_gui.x_h - val;
-        tmargin = TMARGIN * IEMGUI_ZOOM(x);
-        bmargin = BMARGIN * IEMGUI_ZOOM(x);
-
-        a = xpos + IEMGUI_ZOOM(x);
-        b = r;
-        c = xpos + x->x_gui.x_w - IEMGUI_ZOOM(x);
-        d = r;
-    }
-
-    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
-             canvas, x,
-             xpos - lmargin, ypos - tmargin,
-             xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0,
-             xpos - lmargin, ypos + x->x_gui.x_h +bmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0,
-             xpos - lmargin, ypos - tmargin,
-             xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh);
-    sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
-             canvas, x, a, b, c, d);
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
+    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
 }
 
 static void slider_draw_erase(t_slider* x, t_glist* glist)
