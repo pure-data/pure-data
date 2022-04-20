@@ -148,6 +148,7 @@ typedef struct _iemgui
     t_iemfunptr        x_draw;
     int                x_h;
     int                x_w;
+    int                x_prevX, x_prevY; /* previous position (when moving) */
     int                x_ldx;
     int                x_ldy;
     char               x_font[MAXPDSTRING]; /* font names can be long! */
