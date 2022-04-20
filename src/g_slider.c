@@ -630,6 +630,24 @@ static void slider_steady(t_slider *x, t_floatarg f)
     x->x_steady = (f == 0.0) ? 0 : 1;
 }
 
+static void slider_orientation(t_slider *x, t_floatarg forient)
+{
+    int orient = !!(int)forient;
+    if(orient != x->x_orientation) {
+        int w = x->x_gui.x_w;
+        x->x_gui.x_w = x->x_gui.x_h;
+        x->x_gui.x_h = w;
+    }
+    x->x_orientation = orient;
+
+    if(!glist_isvisible(x->x_gui.x_glist))
+        return;
+
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+}
+
 static void slider_zoom(t_slider *x, t_floatarg f)
 {
     /* scale current pixel value */
@@ -803,6 +821,8 @@ void g_slider_setup(void)
         gensym("init"), A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_steady,
         gensym("steady"), A_FLOAT, 0);
+    class_addmethod(slider_class, (t_method)slider_orientation,
+        gensym("orientation"), A_FLOAT, 0);
     class_addmethod(slider_class, (t_method)slider_zoom,
         gensym("zoom"), A_CANT, 0);
     slider_widgetbehavior.w_getrectfn =    slider_getrect;
