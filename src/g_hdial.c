@@ -730,7 +730,7 @@ void g_hradio_setup(void)
     class_setsavefn(hradio_class, hradio_save);
     class_setpropertiesfn(hradio_class, hradio_properties);
 
-        /*obsolete version (0.34-0.35) */
+        /* obsolete version (0.34-0.35) */
     hradio_old_class = class_new(gensym("hdl"), (t_newmethod)hdial_new,
         (t_method)hradio_ff, sizeof(t_radio), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)hradio_new, gensym("rdb"), A_GIMME, 0);
