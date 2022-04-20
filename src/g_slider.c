@@ -423,10 +423,8 @@ static void slider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
         x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
         slider_check_minmax(x, min, max, x->x_gui.x_h);
     }
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+
+    iemgui_size(x, &x->x_gui);
 }
 
 static void slider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,

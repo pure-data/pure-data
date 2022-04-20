@@ -335,24 +335,14 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
-    if(x->x_number != num)
+    x->x_number = num;
+    if(x->x_on >= x->x_number)
     {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
-        x->x_number = num;
-        if(x->x_on >= x->x_number)
-        {
-            x->x_on = x->x_number - 1;
-            x->x_on_old = x->x_on;
-        }
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+        x->x_on_old = x->x_on = x->x_number - 1;
+        x->x_on_old = x->x_on;
     }
-    else
-    {
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
-    }
+
+    iemgui_size((void *)x, &x->x_gui);
 }
 
 static void radio_set(t_radio *x, t_floatarg f)
