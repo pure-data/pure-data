@@ -537,8 +537,12 @@ static void iemgui_do_drawmove(void *x, t_iemgui*iemgui)
 
 void iemgui_size(void *x, t_iemgui *iemgui)
 {
-    iemgui_vis(x, iemgui->x_glist, 0);
-    iemgui_vis(x, iemgui->x_glist, 1);
+    if(glist_isvisible(iemgui->x_glist))
+    {
+        iemgui_vis(x, iemgui->x_glist, 0);
+        iemgui_vis(x, iemgui->x_glist, 1);
+        canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
+    }
 }
 
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -858,4 +862,3 @@ external GUI object uses obsolete Pd function iemgui_all_colfromload()");
         iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
     }
 }
-
