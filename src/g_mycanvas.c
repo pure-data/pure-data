@@ -28,61 +28,50 @@ static t_class *my_canvas_class;
 
 /* widget helper functions */
 
-void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
+static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int offset = (IEMGUI_ZOOM(x) > 1 ? IEMGUI_ZOOM(x) : 0); /* keep zoomed border inside visible area */
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%06x -outline #%06x -tags %lxRECT\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%06x -outline #%06x -tags [list %lxOBJ %lxRECT]\n",
              canvas, xpos, ypos,
              xpos + x->x_vis_w * IEMGUI_ZOOM(x),
              ypos + x->x_vis_h * IEMGUI_ZOOM(x),
-             x->x_gui.x_bcol, x->x_gui.x_bcol, x);
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -outline #%06x -tags %lxBASE\n",
+             x->x_gui.x_bcol, x->x_gui.x_bcol,
+             x, x);
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -outline #%06x -tags [list %lxOBJ %lxBASE]\n",
              canvas, xpos + offset, ypos + offset,
              xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h,
-             IEMGUI_ZOOM(x), x->x_gui.x_bcol, x);
+             IEMGUI_ZOOM(x), x->x_gui.x_bcol,
+             x, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
+             -font {{%s} -%d %s} -fill #%06x -tags [list %lxOBJ %lxLABEL label text]\n",
              canvas,
              xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             x->x_gui.x_lcol, x);
+             x->x_gui.x_lcol,
+             x, x);
 }
 
-void my_canvas_draw_move(t_my_canvas *x, t_glist *glist)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int offset = (IEMGUI_ZOOM(x) > 1 ? IEMGUI_ZOOM(x) : 0);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c coords %lxRECT %d %d %d %d\n",
-             canvas, x, xpos, ypos,
-             xpos + x->x_vis_w * IEMGUI_ZOOM(x),
-             ypos + x->x_vis_h * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
-             canvas, x, xpos + offset, ypos + offset,
-             xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-}
-
-void my_canvas_draw_erase(t_my_canvas* x, t_glist* glist)
+static void my_canvas_draw_move(t_my_canvas *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxRECT\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
+    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
+    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
 }
 
-void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
+static void my_canvas_draw_erase(t_my_canvas* x, t_glist* glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
+}
+
+static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -96,7 +85,7 @@ void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
 }
 
-void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
+static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -110,7 +99,7 @@ void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     }
 }
 
-void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
+static void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_MOVE)
         my_canvas_draw_move(x, glist);
@@ -218,8 +207,7 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     if(h < 1)
         h = 1;
     x->x_vis_h = h;
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
+    iemgui_size((void *)x, &x->x_gui);
 }
 
 static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
@@ -365,7 +353,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void my_canvas_ff(t_my_canvas *x)
+static void my_canvas_free(t_my_canvas *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
@@ -375,7 +363,7 @@ static void my_canvas_ff(t_my_canvas *x)
 void g_mycanvas_setup(void)
 {
     my_canvas_class = class_new(gensym("cnv"), (t_newmethod)my_canvas_new,
-        (t_method)my_canvas_ff, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)my_canvas_free, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
         gensym("dialog"), A_GIMME, 0);
@@ -411,7 +399,6 @@ void g_mycanvas_setup(void)
     my_canvas_widgetbehavior.w_visfn      = iemgui_vis;
     my_canvas_widgetbehavior.w_clickfn    = NULL;
     class_setwidget(my_canvas_class, &my_canvas_widgetbehavior);
-    class_sethelpsymbol(my_canvas_class, gensym("cnv"));
     class_setsavefn(my_canvas_class, my_canvas_save);
     class_setpropertiesfn(my_canvas_class, my_canvas_properties);
 }
