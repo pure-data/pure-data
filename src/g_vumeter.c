@@ -16,12 +16,6 @@
 #include "g_all_guis.h"
 #include <math.h>
 
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
-
 #define HMARGIN 1
 #define VMARGIN 2
 #define PEAKHEIGHT 10

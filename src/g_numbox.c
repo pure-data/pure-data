@@ -14,12 +14,6 @@
 #include "g_all_guis.h"
 #include <math.h>
 
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
-
 #define MINDIGITS 1
 #define MINFONT   4
 

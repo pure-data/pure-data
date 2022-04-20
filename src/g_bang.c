@@ -15,16 +15,6 @@
 #include "g_all_guis.h"
 #include <math.h>
 
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
-
-#ifdef _MSC_VER
-# define snprintf _snprintf
-#endif
-
 /* --------------- bng     gui-bang ------------------------- */
 
 t_widgetbehavior bng_widgetbehavior;

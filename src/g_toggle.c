@@ -14,13 +14,6 @@
 #include "g_canvas.h"
 
 #include "g_all_guis.h"
-#include <math.h>
-
-#ifdef _WIN32
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
 
 /* --------------- tgl     gui-toggle ------------------------- */
 
