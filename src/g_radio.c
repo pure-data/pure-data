@@ -104,7 +104,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
         x->x_gui.x_lcol, x, x);
 }
 
-static void hradio_draw_move(t_radio *x, t_glist *glist)
+static void radio_draw_move(t_radio *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
@@ -114,19 +114,8 @@ static void hradio_draw_move(t_radio *x, t_glist *glist)
 
 static void radio_draw_erase(t_radio* x, t_glist* glist)
 {
-    int n = x->x_number, i;
     t_canvas *canvas = glist_getcanvas(glist);
-
-    for(i = 0; i < n; i++)
-    {
-        sys_vgui(".x%lx.c delete %lxBASE%d\n", canvas, x, i);
-        sys_vgui(".x%lx.c delete %lxBUT%d\n", canvas, x, i);
-    }
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
 }
 
 static void radio_draw_config(t_radio* x, t_glist* glist)
@@ -213,12 +202,12 @@ static void radio_draw_select(t_radio* x, t_glist* glist)
     }
 }
 
-static void hradio_draw(t_radio *x, t_glist *glist, int mode)
+static void radio_draw(t_radio *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
         sys_queuegui(x, glist, radio_draw_update);
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        hradio_draw_move(x, glist);
+        radio_draw_move(x, glist);
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
         radio_draw_new(x, glist);
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
@@ -657,7 +646,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         fval = atom_getfloatarg(14, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
-    x->x_gui.x_draw = (t_iemfunptr)hradio_draw;
+    x->x_gui.x_draw = (t_iemfunptr)radio_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
