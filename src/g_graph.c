@@ -947,8 +947,19 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     {
         x->gl_obj.te_xpix += dx;
         x->gl_obj.te_ypix += dy;
-        if (glist_isvisible(glist)) {
-            glist_redraw(x);
+        if (glist_isvisible(glist) && x->gl_owner && !x->gl_isclone
+        && glist_isvisible(x->gl_owner))
+        {
+            sys_vgui(".x%lx.c move graph%lx %d %d\n",
+                glist_getcanvas(x->gl_owner), (t_int)x, dx*x->gl_zoom, dy*x->gl_zoom);
+            sys_vgui(".x%lx.c move graph%lxiolet %d %d\n",
+                glist_getcanvas(glist), (t_int)x, dx*x->gl_zoom, dy*x->gl_zoom);
+            t_gobj *g;
+            for (g = x->gl_list; g; g = g->g_next)
+            {
+                gobj_vis(g, x, 0); // gobj_displace doesn't work well (also moves inside graph)
+                gobj_vis(g, x, 1);
+            }
             canvas_fixlinesfor(glist, &x->gl_obj);
         }
     }

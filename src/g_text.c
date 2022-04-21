@@ -1251,8 +1251,10 @@ static void text_displace(t_gobj *z, t_glist *glist,
     {
         t_rtext *y = glist_findrtext(glist, x);
         rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
-        text_drawborder(x, glist, rtext_gettag(y),
-            rtext_width(y), rtext_height(y), 0);
+        sys_vgui(".x%lx.c move %sR %d %d\n", glist_getcanvas(glist), rtext_gettag(y),
+                 dx * glist->gl_zoom, dy * glist->gl_zoom);
+        sys_vgui(".x%lx.c move %siolet %d %d\n", glist_getcanvas(glist), rtext_gettag(y),
+                 dx * glist->gl_zoom, dy * glist->gl_zoom);
         canvas_fixlinesfor(glist, x);
     }
 }
@@ -1442,11 +1444,11 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         int onset = x1 + (width - iow) * i / nplus;
         if (firsttime)
             sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                "-tags [list %so%d outlet] -fill black\n",
+                "-tags [list %so%d %siolet outlet] -fill black\n",
                 glist_getcanvas(glist),
                 onset, y2 - oh + glist->gl_zoom,
                 onset + iow, y2,
-                tag, i);
+                tag, i, tag);
         else
             sys_vgui(".x%lx.c coords %so%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
@@ -1460,11 +1462,11 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         int onset = x1 + (width - iow) * i / nplus;
         if (firsttime)
             sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                "-tags [list %si%d inlet] -fill black\n",
+                "-tags [list %si%d %siolet inlet] -fill black\n",
                 glist_getcanvas(glist),
                 onset, y1,
                 onset + iow, y1 + ih - glist->gl_zoom,
-                tag, i);
+                tag, i, tag);
         else
             sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
