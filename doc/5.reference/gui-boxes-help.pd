@@ -195,7 +195,7 @@ and [receive] objects., f 49;
 window to change its parameters., f 47;
 #X text 43 122 The subpatches below offer details on each parameter
 from the properties window. The properties window is the same as the
-number box's and the behaviour is basically the same. One main difference
+number box's and the behavior is basically the same. One main difference
 is that the "limits" are not valid for the symbol box., f 53;
 #N canvas 912 421 450 289 loading-args 0;
 #X text 61 114 For instance \, below \, we have \$0 used in the label
@@ -310,7 +310,7 @@ and [receive] objects., f 58;
 window to change its parameters., f 47;
 #X text 43 122 The subpatches below offer details on each parameter
 from the properties window. The properties window is the same as the
-number box's and the behaviour is basically the same. One main difference
+number box's and the behavior is basically the same. One main difference
 is that the "limits" are not valid for the symbol box., f 53;
 #N canvas 912 421 450 289 loading-args 0;
 #X text 61 114 For instance \, below \, we have \$0 used in the label

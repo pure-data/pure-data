@@ -599,7 +599,7 @@ turns the previous toggle off before turning the new one on., f 29
 #X obj 20 508 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 138 371 send <symbol> - sets send symbol., f 71;
-#X text 110 390 recceive <symbol> - sets receive symbol., f 75;
+#X text 110 390 receive <symbol> - sets receive symbol., f 75;
 #X text 146 340 color <list> -;
 #X text 250 339 first element sets background color and third sets
 font color (either floats or symbols in hexadecimal format).;

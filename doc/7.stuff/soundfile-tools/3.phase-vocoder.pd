@@ -465,7 +465,7 @@
 #X text 48 55 This is a Fourier-based analysis/resynthesis tool. You
 can perform pitch shift in cents and perform a time stretch or compress
 with a speed parameter. The sample can move forward (positive speed)
-\, backward (negatie speed) or "freeze" at any point (0 speed). The
+\, backwards (negatie speed) or "freeze" at any point (0 speed). The
 location control sets the start location but also sets the location
 while running the transformation. The length is a maximum recording
 length \, you can stop before and it'll resize the buffer so you can

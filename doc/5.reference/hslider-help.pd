@@ -675,7 +675,7 @@ it if needed., f 34;
 #X obj 7 410 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 125 284 send <symbol> - sets send symbol., f 71;
-#X text 97 303 recceive <symbol> - sets receive symbol., f 75;
+#X text 97 303 receive <symbol> - sets receive symbol., f 75;
 #X text 133 253 color <list> -;
 #X text 237 252 first element sets background color and third sets
 font color (either floats or symbols in hexadecimal format).;
@@ -698,7 +698,7 @@ font color (either floats or symbols in hexadecimal format).;
 #X text 76 97 range <float \, float> - sets minimum and maximum range.
 , f 78;
 #X text 195 114 lin - sets mode to linear., f 61;
-#X text 195 131 log - sets mode to logarthmic., f 61;
+#X text 195 131 log - sets mode to logarithmic., f 61;
 #X text 118 166 steady <float> - non zero sets to steady \, zero sets
 to jump on click., f 72;
 #X text 181 382 float - slider value., f 63;

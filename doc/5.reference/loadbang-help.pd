@@ -17,7 +17,7 @@
 #X text 127 127 NONE, f 26;
 #X obj 28 15 loadbang;
 #X text 99 14 - send a "bang" message on load;
-#X text 117 91 bang - when loadding the patch.;
+#X text 117 91 bang - when loading the patch.;
 #X text 124 56 NONE;
 #X restore 374 15 pd reference;
 #X text 471 14 <= click;

@@ -606,7 +606,7 @@ turns the previous toggle off before turning the new one on., f 29
 #X text 62 194 label_pos <float \, float> -;
 #X text 250 193 sets label position., f 55;
 #X text 138 243 send <symbol> - sets send symbol., f 71;
-#X text 110 262 recceive <symbol> - sets receive symbol., f 75;
+#X text 110 262 receive <symbol> - sets receive symbol., f 75;
 #X text 146 212 color <list> -;
 #X text 250 211 first element sets background color and third sets
 font color (either floats or symbols in hexadecimal format).;

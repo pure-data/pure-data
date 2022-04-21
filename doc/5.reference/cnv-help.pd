@@ -104,22 +104,22 @@
 #X obj 345 481 send \$0-colors;
 #X msg 267 270 list #e1e1e1 #000000 #000000, f 7;
 #X obj 82 313 pack 1 22 22, f 20;
-#N canvas 755 128 818 419 old-behaviour 0;
+#N canvas 755 128 818 419 old-behavior 0;
 #X floatatom 395 117 3 0 29 0 - - - 0;
 #X floatatom 500 122 3 0 29 0 - - - 0;
 #X text 493 97 label;
 #X obj 500 158 t b f;
 #X msg 395 226 color \$1 \$2 \$3;
 #X text 393 97 background;
-#X obj 496 320 cnv 15 200 60 empty \$0-old-behaviour Label 35 30 0
+#X obj 496 320 cnv 15 200 60 empty \$0-old-behavior Label 35 30 0
 40 #e0e0e0 #000000 0;
-#X obj 395 266 send \$0-old-behaviour;
+#X obj 395 266 send \$0-old-behavior;
 #X floatatom 600 116 3 0 29 0 - - - 0;
 #X floatatom 705 121 3 0 29 0 - - - 0;
 #X text 698 96 label;
 #X obj 705 157 t b f;
 #X text 590 96 background;
-#X obj 600 265 send \$0-old-behaviour;
+#X obj 600 265 send \$0-old-behavior;
 #X obj 600 188 pack 1 22, f 20;
 #X msg 600 225 color \$1 \$2;
 #X text 48 302 Old "compatible" behavior, f 16;
@@ -158,7 +158,7 @@ and the 3rd value would set the color., f 46;
 #X connect 15 0 13 0;
 #X connect 26 0 27 0;
 #X connect 27 0 4 0;
-#X restore 467 590 pd old-behaviour;
+#X restore 467 590 pd old-behavior;
 #X text 435 523 COMPATIBILITY NOTE: The behavior changed in Pd 0.47!
 Check details and how to get it back:, f 23;
 #N canvas 720 84 576 472 old_way 0;
@@ -377,8 +377,8 @@ send messages., f 50;
 \, respectively \, the send and receive symbol. If you set these to
 "empty" \, the symbols are cleared (and can only be inserted back in
 the properties window)., f 50;
-#X text 41 511 Note you need to escape dollar signs with bacslashes
-to set something like "\$0-x". But the bacslash is not needed if you
+#X text 41 511 Note you need to escape dollar signs with backslashes
+to set something like "\$0-x". But the backslash is not needed if you
 set it directly via the properties window. Also note that like other
 iemguis \, we have feedback protection in the case both send and receive
 symbols are the same - though it is not that pertinent in this case.
@@ -665,7 +665,7 @@ size., f 81;
 #X obj 8 385 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 129 246 send <symbol> - sets send symbol., f 71;
-#X text 101 265 recceive <symbol> - sets receive symbol., f 75;
+#X text 101 265 receive <symbol> - sets receive symbol., f 75;
 #X text 136 214 color <list> -;
 #X text 241 214 first element sets background color and third sets
 font color (either floats or symbols in hexadecimal format).;

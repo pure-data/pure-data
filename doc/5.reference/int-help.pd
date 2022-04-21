@@ -23,7 +23,7 @@ value objects =>, f 34;
 #X obj 453 328 v int-help;
 #N canvas 771 162 565 399 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
-Pd - is widely used in send and receive names \, speacially in abstractions
+Pd - is widely used in send and receive names \, specially in abstractions
 so each copy has local connections instead of global., f 67;
 #X floatatom 341 339 5 0 0 0 - - - 0;
 #X msg 149 257 send \$1-x;

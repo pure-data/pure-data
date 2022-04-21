@@ -30,8 +30,8 @@
 #X text 125 137 NONE, f 36;
 #X obj 38 16 rsqrt~;
 #X text 95 15 - signal reciprocal square root.;
-#X text 84 59 signal - input to recciprocal square root function.;
-#X text 84 99 signal - output of recciprocal square root function.
+#X text 84 59 signal - input to reciprocal square root function.;
+#X text 84 99 signal - output of reciprocal square root function.
 ;
 #X restore 342 13 pd reference;
 #X text 439 13 <= click;

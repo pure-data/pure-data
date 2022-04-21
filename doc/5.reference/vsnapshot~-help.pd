@@ -38,7 +38,7 @@ this, f 35;
 #X obj 341 198 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 37 70 [vsnapshot~] is an attempt at making a version of [snapshot~]
-that trades off delay for time jitter control. The behaviour is the
+that trades off delay for time jitter control. The behavior is the
 same as [snapshot~] (it takes a bang and converts a signal to a float).
 The idea is that you can convert from an audio signal and get a specific
 value within an audio block depending on the exact time it receives

@@ -22,7 +22,7 @@ sent to by "this" or "next", f 43;
 #X text 379 532 optional "-s #" to set starting voice number \; optional
 -x to avoid setting \$1 to voice number \; filename \; number of copies
 \; optional arguments to copies;
-#X text 56 620 note: for backward compatibility \, you can also invoke
+#X text 56 620 note: for backwards compatibility \, you can also invoke
 this as "clone 16 clone-abstraction" (for instance) \, swapping the
 abstraction name and the number of voices., f 90;
 #X obj 181 550 output~;

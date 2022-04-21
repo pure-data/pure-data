@@ -5,13 +5,13 @@
 #X msg 576 54 \; pd dsp 1;
 #X msg 56 298 \; pd compatibility 0.52;
 #X text 29 136 The 'compatibility' message takes a version number and
-sets the behaviour of some objects back to that particular version.
+sets the behavior of some objects back to that particular version.
 This can be useful in some cases if you want to guarantee that your
 patch will work in the same way as in the version you created it. This
 is because sometimes a new version of Pd may promote a change in the
-behaviour of the object (usually to fix a bug) that can also break
+behavior of the object (usually to fix a bug) that can also break
 or change the result of a patch., f 62;
-#X text 35 365 Objects that change their behaviour according to the
+#X text 35 365 Objects that change their behavior according to the
 set compatibility have that information in their help file.;
 #X text 45 277 set compatibility to Pd 0.52;
 #X text 273 266 set to Pd 0.49;
@@ -351,7 +351,7 @@ it (and shows it too if it's opened)., f 31;
 #X text 466 214 Depending if changes were made with some dynamic patching
 messages \, it closes without saving., f 48;
 #X text 55 120 So first let's send a message to Pd to create a new
-patch/cavas., f 32;
+patch/canvas., f 32;
 #X text 151 37 In this example we are sending messages to the main
 window of a different patch that we first create.;
 #X text 478 267 Note that Pd won't ask you either to save changes in

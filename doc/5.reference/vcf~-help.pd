@@ -8,8 +8,8 @@
 #X obj 130 484 bp~;
 #X obj 192 309 vcf~ 1, f 10;
 #X text 384 484 updated for Pd version 0.46;
-#X text 126 430 (bandpass);
-#X text 258 431 (lowpass);
+#X text 126 430 (band-pass);
+#X text 258 431 (low-pass);
 #X text 126 413 real output;
 #X text 245 413 imaginary output;
 #X obj 164 484 bob~;
@@ -55,8 +55,8 @@
 0;
 #X obj 11 211 cnv 1 490 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 86 217 signal - real output (bandpasse filtered signal).;
-#X text 86 250 signal - imaginary output (bandpasse filtered signal).
+#X text 86 217 signal - real output (band-pass filtered signal).;
+#X text 86 250 signal - imaginary output (band-pass filtered signal).
 ;
 #X restore 414 14 pd reference;
 #X text 512 14 <= click;
@@ -69,11 +69,11 @@ takes either a control or an audio signal to set center frequency \,
 which may thus change continuously in time as in an analog voltage
 controlled filter (and unlike [bp~] and [lop~] that only take control
 values). The "Q" or filter sharpness is still only set by control messages.
-It is more expensive but more powerful than the [bp~] bandpass filter.
+It is more expensive but more powerful than the [bp~] band-pass filter.
 , f 78;
 #X text 24 146 [vcf~] is implemented as a one-pole complex filter with
-outlets for the real and imaginary value. These may be used as bandpass
-and lowpass filter outputs \, or combined to allow other possibilities.
+outlets for the real and imaginary value. These may be used as band-pass
+and low-pass filter outputs \, or combined to allow other possibilities.
 , f 78;
 #X connect 0 0 6 1;
 #X connect 1 0 0 0;

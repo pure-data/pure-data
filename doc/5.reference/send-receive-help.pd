@@ -70,7 +70,7 @@ you can set via properties (right click and check it)., f 40;
 #X msg 836 410 send x;
 #N canvas 847 151 914 439 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
-Pd - is widely used in send and receive names \, speacially in abstractions
+Pd - is widely used in send and receive names \, specially in abstractions
 so each copy has local connections instead of global., f 67;
 #X obj 171 164 send \$0-x;
 #X obj 294 120 receive \$0-x;

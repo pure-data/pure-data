@@ -1303,7 +1303,7 @@ symbol specifies a specific input (such as x1) or output (y1)., f
 number)., f 62;
 #X text 83 374 expression including operators \, functions \, inlet
 types \, float and symbols (for array names and variables). See html
-reference and examples for all operators and functions. Smicolons create
+reference and examples for all operators and functions. Semicolons create
 more expressions (and outlets). Inlet type has the format '$t#' - where
 't' is type (f \, i \, s \, v and x) and # is the inlet number \, fexpr~'s
 'x' type also has a sample number inside brackets and fexpr~ also has

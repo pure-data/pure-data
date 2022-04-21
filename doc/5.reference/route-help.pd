@@ -72,7 +72,7 @@ a symbol message., f 71;
 are implicit selectors and they stick to the message even if you can't
 see it and [route] cannot trim them!, f 50;
 #X text 27 296 On the other hand \, a "list a b c" message gets its
-list selector trimmed - as the usual behaviour of the object. The exception
+list selector trimmed - as the usual behavior of the object. The exception
 and inconsistency is with 'symbol' messages \, where the symbol selector
 is kept. This is a known bug that's been here forever and just won't
 be fixed anymore., f 50;
@@ -97,7 +97,7 @@ with [list trim]., f 50;
 #X text 435 589 One last special case of [route] is that it outputs
 bangs when matching to messages that have no further elements (see
 above). What happens is that it outputs an empty list \, which corresponds
-to a bang message. Note how in this case the behaviour is the same
+to a bang message. Note how in this case the behavior is the same
 of the [select] object., f 71;
 #X listbox 191 201 20 0 0 0 - - - 0;
 #X listbox 137 140 20 0 0 0 - - - 0;

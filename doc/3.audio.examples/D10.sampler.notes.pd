@@ -85,7 +85,7 @@ straight to the line~ we unpack it in order to fool with the amplitude
 field., f 45;
 #X text 146 378 convert amplitude to linear units.;
 #X text 141 407 take the fourth root. This because we want to raise
-the line~'s output to the 4th power afterward. This is an inexpensive
+the line~'s output to the 4th power afterwards. This is an inexpensive
 way to give the rise and decay a more natural sounding evolution than
 just a straight line., f 52;
 #X text 112 505 square the output twice to get the fourth power.;

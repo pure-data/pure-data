@@ -459,8 +459,8 @@ nobase_dist_libpd_DATA = \
      ./6.externs/test-obj4.pd \
      ./6.externs/test-obj5.pd \
      ./7.stuff/soundfile-tools/1.ring-mod.pd \
-     ./7.stuff/soundfile-tools/2.bandpass.pd \
-     ./7.stuff/soundfile-tools/3.phase.vocoder.pd \
+     ./7.stuff/soundfile-tools/2.band-pass.pd \
+     ./7.stuff/soundfile-tools/3.phase-vocoder.pd \
      ./7.stuff/soundfile-tools/4.looper.pd \
      ./7.stuff/soundfile-tools/5.reverb.pd \
      ./7.stuff/soundfile-tools/6.vocoder.pd \

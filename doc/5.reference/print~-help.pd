@@ -39,7 +39,7 @@ window.;
 #000000;
 #X text 41 66 The [print~] object takes a signal input and prints one
 or more blocks (or 'vectors') out when you send it a bang or a number.
-By default a blocck is 64 samples., f 63;
+By default a block is 64 samples long., f 63;
 #X obj 94 260 print~ phasor;
 #X floatatom 120 219 4 0 0 0 - - - 0;
 #X text 158 184 float sets number of successive vectors to print,

@@ -266,7 +266,7 @@ negative numbers doesn't work.;
 #X obj 262 386 makefilename [%X];
 #X text 61 46 This pattern allows you to insert a signed (only positive)
 hexadecimal integer into a symbol (symbols are converted to 0). Floats
-are trunctaed. The '%x' or '%X' pattern specify respectively whether
+are truncated. The '%x' or '%X' pattern specify respectively whether
 the the characters are lower or upper case. Note that since this is
 an unsigned format \, sending negative numbers doesn't work., f 61
 ;
@@ -523,7 +523,7 @@ a minimum of characters filled with spaces., f 48;
 #X msg 219 316 symbol abc;
 #X msg 246 383 symbol abcde;
 #X msg 234 350 symbol abcd;
-#X text 54 33 For symbol srtrings (%s) \, the precisio sets a maximum
+#X text 54 33 For symbol srtrings (%s) \, the precision sets a maximum
 character limit. Below \, we have a maximum of 4 characters \, hence
 \, the symbol "abcde" gets truncated., f 53;
 #X connect 1 0 2 0;
@@ -550,7 +550,7 @@ character limit. Below \, we have a maximum of 4 characters \, hence
 Instead \, it sets a fixed number of digits and adds zeroes to the
 left as a fill. This is slightly different than setting a width field
 with a '0' flag. The difference is only observed for numbers of different
-sign as below. Note how the width field will suprress a zero to include
+sign as below. Note how the width field will suppress a zero to include
 a "-" character., f 61;
 #X connect 1 0 0 0;
 #X connect 3 0 5 0;

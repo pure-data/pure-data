@@ -148,7 +148,7 @@ in octal., f 63;
 #000000 #000000;
 #X text 134 62 The data you read from or write to a file are lists
 of bytes \, which appear in Pd as lists of numbers from 0 to 255 (using
-out-of-range numbers of symbols leads to undefined behaviour.) The
+out-of-range numbers of symbols leads to undefined behavior.) The
 2nd inlet of the [file handle] object is documented in the [pd file
 define] subpatch., f 121;
 #X text 394 20 - short form for [file handle].;
@@ -290,7 +290,7 @@ requested explicitly \, never with a wildcard pattern.;
 #X text 592 212 vs;
 #X msg 496 213 symbol /tmp/*;
 #X msg 616 213 symbol /*/foo;
-#X text 53 196 - the behaviour of patterns that contain wildcards in
+#X text 53 196 - the behavior of patterns that contain wildcards in
 a path component other than the last one is *undefined* (and platform
 dependent). DO NOT USE THIS.;
 #X text 52 285 - patterns ending with anything else will match files
@@ -308,7 +308,7 @@ AND directories;
 #X text 52 136 - the pattern may contain the wildcards '*' (for any
 number of characters) and '?' (for a single character) in the last
 path component. no other wildcards are supported.;
-#X text 58 52 [file glob] attempts to unify the behaviour of wildcard
+#X text 58 52 [file glob] attempts to unify the behavior of wildcard
 matching on different platforms. as such \, it does not support all
 features of a given pattern matching implementation (or only accidentally).
 , f 107;

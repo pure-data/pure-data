@@ -51,7 +51,7 @@
 0;
 #X text 111 323 1) float - number of voices (default 1)., f 43;
 #X text 111 341 2) float - non-zero sets to voice stealing.;
-#X text 131 284 float - note velocitty., f 40;
+#X text 131 284 float - note velocity., f 40;
 #X text 131 254 float - note pitch., f 40;
 #X restore 383 17 pd reference;
 #X text 477 17 <= click;

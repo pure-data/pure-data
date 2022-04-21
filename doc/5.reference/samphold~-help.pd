@@ -80,7 +80,7 @@ its right input decreases in value - as a [phasor~] does each period
 \, so it was designed to be triggered by [phasor~]. Both inputs are
 audio signals., f 69;
 #X text 27 111 The "set" message sets the output value (which gets
-updated normally afterward.) The "reset" message causes [samphold~]
+updated normally afterwards.) The "reset" message causes [samphold~]
 to act as if the given value were the most recent value of the control
 (right) input. Use this \, for example \, if you reset the incoming
 [phasor~] but don't want the jump reflected in the output as in the

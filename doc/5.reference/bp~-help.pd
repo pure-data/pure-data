@@ -32,7 +32,7 @@ the center frequency \, so the less wide the frequency band is., f
 0;
 #N canvas 694 141 574 303 reference 0;
 #X obj 29 16 bp~;
-#X text 61 15 - 2-pole bandpass filter;
+#X text 61 15 - 2-pole band-pass filter;
 #X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
@@ -57,7 +57,7 @@ the center frequency \, so the less wide the frequency band is., f
 #X text 126 250 2) float - initial Q (default 0).;
 #X restore 294 9 pd reference;
 #X text 392 9 <= click;
-#X text 53 9 - 2-pole bandpass filter;
+#X text 53 9 - 2-pole band-pass filter;
 #X obj 30 513 biquad~;
 #X obj 89 512 slop~, f 7;
 #X obj 148 512 cpole~, f 7;

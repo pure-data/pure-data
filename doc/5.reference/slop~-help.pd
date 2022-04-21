@@ -639,7 +639,7 @@ patch) for more details., f 54;
 follower \, useful for example in peak metering. In this example a
 short burst of sound is metered using both the [env~] follower (which
 measures an average over a time window) and a fast-rising envelope
-follower cosisting of an [abs~] object (to rectify the signal) followed
+follower consisting of an [abs~] object (to rectify the signal) followed
 by a [slop~] object set to rise quickly (1e09 asymptotic rise speed
 \, 0 up-slew needed to engage it) and with controllable decay (asymptotic
 downward speed controlled by a number box). There is no linear region

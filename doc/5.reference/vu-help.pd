@@ -266,7 +266,7 @@ values from o to 255 \, the conversion formula is \; float = -(R *
 #X restore 89 551 pd old_way;
 #X msg 229 260 list #404040 #000000 #000000, f 7;
 #X obj 83 318 pack 2 0 22, f 12;
-#N canvas 571 147 780 409 old-behaviour 0;
+#N canvas 571 147 780 409 old-behavior 0;
 #X floatatom 379 36 3 0 29 0 - - - 0;
 #X floatatom 484 41 3 0 29 0 - - - 0;
 #X text 477 16 label;
@@ -318,7 +318,7 @@ the example above to the right doesn't work to set the label color.
 #X connect 21 0 25 0;
 #X connect 24 0 11 0;
 #X connect 25 0 4 0;
-#X restore 420 586 pd old-behaviour;
+#X restore 420 586 pd old-behavior;
 #X text 388 519 COMPATIBILITY NOTE: The behavior changed in Pd 0.47!
 Check details and how to get it back:, f 23;
 #X connect 0 0 25 0;
