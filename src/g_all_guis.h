@@ -268,6 +268,7 @@ EXTERN t_symbol *iemgui_dollararg2sym(t_symbol *s, int nth_arg, int tail_len, in
 EXTERN void iemgui_verify_snd_ne_rcv(t_iemgui *iemgui);
 EXTERN void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv);
+EXTERN t_symbol *iemgui_new_doget_labelname(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol);
