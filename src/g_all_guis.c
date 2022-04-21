@@ -539,8 +539,8 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 {
     if(glist_isvisible(iemgui->x_glist))
     {
-        iemgui_vis(x, iemgui->x_glist, 0);
-        iemgui_vis(x, iemgui->x_glist, 1);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
+        (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO);
         canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
     }
 }
