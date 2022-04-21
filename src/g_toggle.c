@@ -422,7 +422,7 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void toggle_ff(t_toggle *x)
+static void toggle_free(t_toggle *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
@@ -432,14 +432,14 @@ static void toggle_ff(t_toggle *x)
 void g_toggle_setup(void)
 {
     toggle_class = class_new(gensym("tgl"), (t_newmethod)toggle_new,
-                             (t_method)toggle_ff, sizeof(t_toggle), 0, A_GIMME, 0);
+        (t_method)toggle_free, sizeof(t_toggle), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)toggle_new, gensym("toggle"), A_GIMME, 0);
     class_addbang(toggle_class, toggle_bang);
     class_addfloat(toggle_class, toggle_float);
     class_addmethod(toggle_class, (t_method)toggle_click, gensym("click"),
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+        A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_dialog, gensym("dialog"),
-                    A_GIMME, 0);
+        A_GIMME, 0);
     class_addmethod(toggle_class, (t_method)toggle_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_set, gensym("set"), A_FLOAT, 0);
