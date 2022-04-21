@@ -120,6 +120,7 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
         sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxBASE%d %lxBASE %lxOBJ]\n", canvas, x, i, x, x);
         sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxBUT%d %lxBUT %lxOBJ]\n", canvas, x, i, x, x);
     }
+    sys_vgui(".x%lx.c raise %lxBUT %lxBASE\n", canvas, x, x);
     sys_vgui(".x%lx.c create text 0 0 -tags [list %lxLABEL %lxOBJ label text]\n", canvas, x, x);
     radio_draw_config(x, glist);
     radio_draw_io(x, glist, 0);
