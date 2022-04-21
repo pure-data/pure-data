@@ -101,7 +101,7 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
             xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
             x, x, 1, x);
             /* keep label above outlets */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT\n", canvas, x, x, 1);
+        sys_vgui(".x%lx.c lower %lxOUT %lxLABEL\n", canvas, x, x);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -116,7 +116,7 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
             xpos + x->x_gui.x_w + hmargin, ypos - vmargin - IEMGUI_ZOOM(x) + ioh,
             x, x, 1, x);
             /* keep label above inlets */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxIN\n", canvas, x, x, 1);
+        sys_vgui(".x%lx.c lower %lxIN %lxLABEL\n", canvas, x, x);
     }
 }
 

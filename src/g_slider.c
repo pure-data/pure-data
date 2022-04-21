@@ -56,8 +56,8 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
             x, x, 0);
-            /* keep these above outlet */
-        sys_vgui(".x%lx.c raise %lxKNOB %lxOUT%d\n", canvas, x, x, 0);
+            /* keep knob above outlet */
+        sys_vgui(".x%lx.c lower %lxOUT%d %lxKNOB\n", canvas, x, 0, x);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -66,10 +66,9 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
             x, x, 0);
-            /* keep these above inlet */
-        sys_vgui(".x%lx.c raise %lxKNOB %lxIN%d\n", canvas, x, x, 0);
+            /* keep knob above inlet */
+        sys_vgui(".x%lx.c lower %lxIN%d %lxKNOB\n", canvas, x, 0, x);
     }
-    sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
 }
 
 static void slider_draw_config(t_slider* x, t_glist* glist)

@@ -39,8 +39,8 @@ static void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
             xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
             xpos + iow, ypos + x->x_gui.x_h,
             x, x, 0);
-        /* keep above outlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
+        /* keep label above outlet */
+        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
     }
     if(!x->x_gui.x_fsf.x_rcv_able) {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
@@ -48,8 +48,8 @@ static void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
             xpos, ypos,
             xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
             x, x, 0);
-        /* keep above inlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
+        /* keep label above inlet */
+        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
     }
 }
 

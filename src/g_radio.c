@@ -45,7 +45,7 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
             x, x, 0);
 
             /* keep buttons above outlet */
-        sys_vgui(".x%lx.c raise %lxBUT %lxOUT%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c lower %lxOUT%d %lxBUT\n", canvas, x, 0, x);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -56,10 +56,8 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
             x, x, 0);
 
             /* keep buttons above inlet */
-        sys_vgui(".x%lx.c raise %lxBUT %lxIN%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c lower %lxIN%d %lxBUT\n", canvas, x, 0, x);
     }
-        /* and make sure labels are always on top */
-    sys_vgui(".x%lx.c raise %lxLABEL %lxBUT\n", canvas, x, x);
 }
 
 static void radio_draw_config(t_radio* x, t_glist* glist)
