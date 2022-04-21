@@ -448,13 +448,13 @@ f 50;
 #X text 37 17 All the parameters from the properties window can be
 set via messages as well. See examples in the subpatches below:, f
 39;
-#N canvas 972 139 469 406 linear/log 0;
+#N canvas 897 139 469 406 linear/log 0;
 #X msg 142 130 lin;
 #X msg 168 157 log;
 #X text 172 130 linear;
 #X text 198 157 logarithmic;
-#X obj 168 253 nbx 5 22 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 14
-#fcfcfc #000000 #000000 0 256;
+#X obj 168 253 nbx 5 22 20 20000 1 0 empty empty empty 0 -8 0 14 #fcfcfc
+#000000 #000000 0 256;
 #X msg 199 217 log_height \$1;
 #X floatatom 199 189 5 32 512 0 - - - 0;
 #X text 54 299 The "log height" parameter defines the vertical range
