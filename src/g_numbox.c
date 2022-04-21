@@ -108,10 +108,10 @@ static t_class *my_numbox_class;
 
 static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_flags)
 {
+    t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
 
     (void)old_snd_rcv_flags;
     sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -123,7 +123,7 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
             xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
             xpos + iow, ypos + x->x_gui.x_h,
             x, x, 0);
-        /* keep these above outlet */
+            /* keep these above outlet */
         sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
         sys_vgui(".x%lx.c raise %lxNUMBER %lxLABEL\n", canvas, x, x);
     }
@@ -133,7 +133,7 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
             xpos, ypos,
             xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
             x, x, 0);
-        /* keep these above inlet */
+            /* keep these above inlet */
         sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
         sys_vgui(".x%lx.c raise %lxNUMBER %lxLABEL\n", canvas, x, x);
     }
@@ -142,124 +142,85 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
 static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
-             strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name:"");
-    sys_vgui(".x%lx.c itemconfigure %lxNUMBER -font {{%s} -%d %s} -fill #%06x \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol));
-    sys_vgui(".x%lx.c itemconfigure %lxBASE1 -fill #%06x\n", canvas,
-             x, x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n", canvas, x,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol));
-}
-
-static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
-{
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int w = x->x_gui.x_w, half = x->x_gui.x_h/2;
     int d = IEMGUI_ZOOM(x) + x->x_gui.x_h/(34*IEMGUI_ZOOM(x));
     int corner = x->x_gui.x_h/4;
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+
+    int lcol = x->x_gui.x_lcol;
+    int fcol = x->x_gui.x_fcol;
+    if(x->x_gui.x_fsf.x_selected)
+        fcol = lcol = IEM_GUI_COLOR_SELECTED;
+    if(x->x_gui.x_fsf.x_change)
+        fcol =  IEM_GUI_COLOR_EDITED;
+
+    my_numbox_ftoa(x);
+
+
+    sys_vgui(".x%lx.c coords %lxBASE1 %d %d %d %d %d %d %d %d %d %d %d %d\n", canvas, x,
+        xpos,              ypos,
+        xpos + w - corner, ypos,
+        xpos + w,          ypos + corner,
+        xpos + w,          ypos + x->x_gui.x_h,
+        xpos,              ypos + x->x_gui.x_h,
+        xpos,              ypos);
+    sys_vgui(".x%lx.c itemconfigure %lxBASE1 -width %d -outline #%06x -fill #%06x\n", canvas, x,
+        IEMGUI_ZOOM(x), IEM_GUI_COLOR_NORMAL, x->x_gui.x_bcol);
+
+    sys_vgui(".x%lx.c coords %lxBASE2 %d %d %d %d %d %d\n", canvas, x,
+        xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
+        xpos + half, ypos + half,
+        xpos + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - IEMGUI_ZOOM(x));
+    sys_vgui(".x%lx.c itemconfigure %lxBASE2 -width %d -fill #%06x\n", canvas, x,
+        IEMGUI_ZOOM(x), x->x_gui.x_fcol);
+
+    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
+        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
+        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        lcol);
+
+    sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n", canvas, x,
+        xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d);
+    sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
+        x->x_buf,
+        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        fcol);
+}
+
+static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
+{
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d %d %d "
-             "-width %d -outline #%06x -fill #%06x -tags %lxBASE1\n",
-             canvas,
-             xpos, ypos,
-             xpos + w - corner, ypos,
-             xpos + w, ypos + corner,
-             xpos + w, ypos + x->x_gui.x_h,
-             xpos, ypos + x->x_gui.x_h,
-             xpos, ypos,
-             IEMGUI_ZOOM(x), IEM_GUI_COLOR_NORMAL, x->x_gui.x_bcol, x);
-    sys_vgui(".x%lx.c create line %d %d %d %d %d %d -width %d -fill #%06x -tags %lxBASE2\n",
-             canvas,
-             xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
-             xpos + half, ypos + half,
-             xpos + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - IEMGUI_ZOOM(x),
-             IEMGUI_ZOOM(x), x->x_gui.x_fcol, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas,
-             xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-             xpos + iow, ypos + x->x_gui.x_h,
-             x, 0);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
-             canvas,
-             xpos, ypos,
-             xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-             x, 0);
-    sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
-             canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
-             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-             x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             x->x_gui.x_lcol, x);
-    my_numbox_ftoa(x);
-    sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x -tags %lxNUMBER\n",
-             canvas, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d,
-             x->x_buf, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x),
-             sys_fontweight, (x->x_gui.x_fsf.x_change ? IEM_GUI_COLOR_EDITED : x->x_gui.x_fcol), x);
+    sys_vgui(".x%lx.c create polygon 0 0 -tags [list %lxOBJ %lxBASE1]\n",
+        canvas, x, x);
+    sys_vgui(".x%lx.c create line 0 0 0 0 -tags [list %lxOBJ %lxBASE2]\n",
+        canvas, x, x);
+    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxLABEL label text]\n",
+        canvas, x, x);
+    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxNUMBER]\n",
+        canvas, x, x);
+
+    my_numbox_draw_config(x, glist);
+    my_numbox_draw_io(x, glist, 0);
 }
 
 static void my_numbox_draw_erase(t_my_numbox* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxBASE1\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxBASE2\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxNUMBER\n", canvas, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
 }
 
 static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
 {
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int w = x->x_gui.x_w, half = x->x_gui.x_h/2;
-    int d = IEMGUI_ZOOM(x) + x->x_gui.x_h / (34 * IEMGUI_ZOOM(x));
-    int corner = x->x_gui.x_h/4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c coords %lxBASE1 %d %d %d %d %d %d %d %d %d %d %d %d\n",
-             canvas, x,
-             xpos, ypos,
-             xpos + w - corner, ypos,
-             xpos + w, ypos + corner,
-             xpos + w, ypos + x->x_gui.x_h,
-             xpos, ypos + x->x_gui.x_h,
-             xpos, ypos);
-    sys_vgui(".x%lx.c coords %lxBASE2 %d %d %d %d %d %d\n",
-             canvas, x,
-             xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
-             xpos + half, ypos + half,
-             xpos + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - IEMGUI_ZOOM(x));
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0,
-             xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-             xpos + iow, ypos + x->x_gui.x_h);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0,
-             xpos, ypos,
-             xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh);
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x,
-             xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n",
-             canvas, x, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d);
+    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
+    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
 }
 
 static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
@@ -314,16 +275,16 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
                 sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                         glist_getcanvas(glist), x,
-                         IEM_GUI_COLOR_EDITED, cp);
+                    glist_getcanvas(glist), x,
+                    IEM_GUI_COLOR_EDITED, cp);
                 x->x_buf[sl] = 0;
             }
             else
             {
                 my_numbox_ftoa(x);
                 sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                         glist_getcanvas(glist), x,
-                         IEM_GUI_COLOR_EDITED, x->x_buf);
+                    glist_getcanvas(glist), x,
+                    IEM_GUI_COLOR_EDITED, x->x_buf);
                 x->x_buf[0] = 0;
             }
         }
@@ -331,9 +292,9 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
         {
             my_numbox_ftoa(x);
             sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                     glist_getcanvas(glist), x,
-                     (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
-                     x->x_buf);
+                glist_getcanvas(glist), x,
+                (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
+                x->x_buf);
             x->x_buf[0] = 0;
         }
     }
