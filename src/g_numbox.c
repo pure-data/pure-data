@@ -489,10 +489,7 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
      my_numbox_bang(x);*/
     my_numbox_check_minmax(x, min, max);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    iemgui_size(x, &x->x_gui);
 }
 
 static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy,

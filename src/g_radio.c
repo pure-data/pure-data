@@ -517,13 +517,7 @@ static void radio_number(t_radio *x, t_floatarg num)
 static void radio_orientation(t_radio *x, t_floatarg forient)
 {
     x->x_orientation = !!(int)forient;
-
-    if(!glist_isvisible(x->x_gui.x_glist))
-        return;
-
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
-    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    iemgui_size(x, &x->x_gui);
 }
 
 static void radio_size(t_radio *x, t_symbol *s, int ac, t_atom *av)

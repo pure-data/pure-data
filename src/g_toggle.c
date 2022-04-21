@@ -262,10 +262,7 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    iemgui_size(x, &x->x_gui);
 }
 
 static void toggle_click(t_toggle *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)

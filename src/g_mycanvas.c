@@ -241,8 +241,7 @@ static void my_canvas_vis_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
             i = 1;
     }
     x->x_vis_h = i;
-    if(glist_isvisible(x->x_gui.x_glist))
-        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
+    iemgui_size(x, &x->x_gui);
 }
 
 static void my_canvas_color(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
