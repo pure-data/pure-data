@@ -407,7 +407,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     t_bng *x = (t_bng *)pd_new(bng_class);
     int a = IEM_GUI_DEFAULTSIZE;
     int ldx = 17, ldy = 7;
-    int fs = 10;
+    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
         fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
 

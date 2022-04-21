@@ -471,7 +471,8 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vu *x = (t_vu *)pd_new(vu_class);
     int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS*IEM_VU_DEFAULTSIZE;
-    int ldx = -1, ldy = -8, f = 0, fs = 10, scale  =1;
+    int ldx = -1, ldy = -8, f = 0, scale = 1;
+    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
 
