@@ -56,9 +56,8 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
             xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
             x, x, 0);
-        /* keep these above outlet */
+            /* keep these above outlet */
         sys_vgui(".x%lx.c raise %lxKNOB %lxOUT%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -67,27 +66,16 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
             xpos - lmargin, ypos - tmargin,
             xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
             x, x, 0);
-        /* keep these above inlet */
+            /* keep these above inlet */
         sys_vgui(".x%lx.c raise %lxKNOB %lxIN%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
     }
+    sys_vgui(".x%lx.c raise %lxLABEL %lxKNOB\n", canvas, x, x);
 }
 
 static void slider_draw_config(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
-             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
-    sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas, x, x->x_gui.x_fcol);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
-}
-
-static void slider_draw_new(t_slider *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int val = ((x->x_val + 50)/100);
@@ -114,33 +102,35 @@ static void slider_draw_new(t_slider *x, t_glist *glist)
         d = r;
     }
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxBASE]\n",
-        canvas, xpos - lmargin, ypos - tmargin,
-        xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin,
+    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n", canvas, x,
+        xpos - lmargin, ypos - tmargin,
+        xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
+    sys_vgui(".x%lx.c itemconfigure %lxBASE -width %d -fill #%06x\n", canvas, x,
         IEMGUI_ZOOM(x),
-        x->x_gui.x_bcol, x, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d outlet]\n",
-            canvas,
-            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
-            xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
-            x, x, 0);
-    if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d inlet]\n",
-            canvas,
-            xpos - lmargin, ypos - tmargin,
-            xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags [list %lxOBJ %lxKNOB]\n",
-        canvas, a, b, c, d,
+        x->x_gui.x_bcol);
+
+    sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n", canvas, x,
+        a, b, c, d);
+    sys_vgui(".x%lx.c itemconfigure %lxKNOB -width %d -fill #%06x\n", canvas, x,
         1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x, x);
-    sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%06x -tags [list %lxOBJ %lxLABEL label text]\n",
-        canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
+
+    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
+        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-        x->x_gui.x_lcol, x, x);
+        (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+}
+
+static void slider_draw_new(t_slider *x, t_glist *glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxOBJ %lxBASE]\n", canvas, x, x);
+    sys_vgui(".x%lx.c create line 0 0 0 0 -tags [list %lxOBJ %lxKNOB]\n", canvas, x, x);
+    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxLABEL label text]\n", canvas, x, x);
+    slider_draw_config(x, glist);
+    slider_draw_io(x, glist, 0);
 }
 
 static void slider_draw_erase(t_slider* x, t_glist* glist)
