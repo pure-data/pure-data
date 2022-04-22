@@ -469,19 +469,12 @@ static void vu_bang(t_vu *x)
 
 static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_vu *x = (t_vu *)pd_new(vu_class);
+    t_vu *x = (t_vu *)iemgui_new(vu_class);
     int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS*IEM_VU_DEFAULTSIZE;
     int ldx = -1, ldy = -8, f = 0, scale = 1;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
-
-    x->x_gui.x_bcol = 0x404040;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if((argc >= 11)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
        &&(IS_A_SYMBOL(argv,2)||IS_A_FLOAT(argv,2))
@@ -508,7 +501,6 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_gui.x_fsf.x_snd_able = 0;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
         x->x_gui.x_fsf.x_rcv_able = 0;
     if (x->x_gui.x_fsf.x_font_style == 1)
@@ -521,9 +513,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_gui.x_w = iemgui_clip_size(w);
     vu_check_height(x, h);
     if(scale != 0)

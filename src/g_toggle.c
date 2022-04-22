@@ -354,19 +354,12 @@ static void toggle_nonzero(t_toggle *x, t_floatarg f)
 
 static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_toggle *x = (t_toggle *)pd_new(toggle_class);
+    t_toggle *x = (t_toggle *)iemgui_new(toggle_class);
     int a = IEM_GUI_DEFAULTSIZE, f = 0;
     int ldx = 17, ldy = 7;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     t_float on = 0.0, nonzero = 1.0;
     char str[144];
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
-
-    x->x_gui.x_bcol = 0xFCFCFC;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if(((argc == 13)||(argc == 14))&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)
@@ -393,7 +386,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (!strcmp(x->x_gui.x_snd->s_name, "empty"))
         x->x_gui.x_fsf.x_snd_able = 0;
     if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
@@ -411,9 +403,7 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_verify_snd_ne_rcv(&x->x_gui);

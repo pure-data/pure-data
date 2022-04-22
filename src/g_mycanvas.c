@@ -264,13 +264,10 @@ static void my_canvas_label_font(t_my_canvas *x, t_symbol *s, int ac, t_atom *av
 
 static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_my_canvas *x = (t_my_canvas *)pd_new(my_canvas_class);
+    t_my_canvas *x = (t_my_canvas *)iemgui_new(my_canvas_class);
     int a = IEM_GUI_DEFAULTSIZE, w = 100, h = 60;
     int ldx = 20, ldy = 12, f = 2, i = 0;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
+    int fs = x->x_gui.x_fontsize;
 
     x->x_gui.x_bcol = 0xE0E0E0;
     x->x_gui.x_fcol = 0x00;
@@ -309,6 +306,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
         ldy = atom_getfloatarg(i+5, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(i+6, argc, argv));
         fs = atom_getfloatarg(i+7, argc, argv);
+        x->x_gui.x_fontsize = fs;
         iemgui_all_loadcolors(&x->x_gui, argv+i+8, 0, argv+i+9);
     }
     if((argc == 13)&&IS_A_FLOAT(argv,i+10))
@@ -318,7 +316,6 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_draw = (t_iemfunptr)my_canvas_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (!strcmp(x->x_gui.x_snd->s_name, "empty"))
         x->x_gui.x_fsf.x_snd_able = 0;
     if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
@@ -341,9 +338,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_at[0].a_type = A_FLOAT;
     x->x_at[1].a_type = A_FLOAT;
     iemgui_verify_snd_ne_rcv(&x->x_gui);

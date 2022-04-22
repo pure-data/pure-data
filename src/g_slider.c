@@ -659,9 +659,9 @@ static void slider_loadbang(t_slider *x, t_floatarg action)
 
 static void *slider_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_slider *x = (t_slider *)pd_new(slider_class);
+    t_slider *x = (t_slider *)iemgui_new(slider_class);
     int lilo = 0, steady = 1;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     double min = 0.0, max = (double)(IEM_SL_DEFAULTSIZE-1);
     t_float v = 0;
     int w, h, ldx, ldy;
@@ -680,13 +680,6 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
         ldx = 0;
         ldy = -9;
     }
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
-
-    x->x_gui.x_bcol = 0xFCFCFC;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if(((argc == 17)||(argc == 18))&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
        &&IS_A_FLOAT(argv,2)&&IS_A_FLOAT(argv,3)
@@ -717,7 +710,6 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_draw = (t_iemfunptr)slider_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (x->x_gui.x_isa.x_loadinit)
         x->x_val = v;
     else x->x_val = 0;
@@ -735,9 +727,7 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     if(x->x_gui.x_fsf.x_rcv_able) pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
 
     if(x->x_orientation == horizontal)
     {

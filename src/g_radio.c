@@ -573,21 +573,14 @@ static void radio_single_change(t_radio *x)
 
 static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
-    t_radio *x = (t_radio *)pd_new(radio_class);
+    t_radio *x = (t_radio *)iemgui_new(radio_class);
     int a = IEM_GUI_DEFAULTSIZE, on = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     t_float fval = 0;
     if('v' == *s->s_name)
         x->x_orientation = vertical;
     x->x_compat = old;
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
-
-    x->x_gui.x_bcol = 0xFCFCFC;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if((argc == 15)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
@@ -613,7 +606,6 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_gui.x_draw = (t_iemfunptr)radio_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if(!strcmp(x->x_gui.x_snd->s_name, "empty"))
         x->x_gui.x_fsf.x_snd_able = 0;
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty"))
@@ -643,9 +635,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_verify_snd_ne_rcv(&x->x_gui);

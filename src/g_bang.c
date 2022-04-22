@@ -404,19 +404,12 @@ static void bng_tick_lck(t_bng *x)
 
 static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_bng *x = (t_bng *)pd_new(bng_class);
+    t_bng *x = (t_bng *)iemgui_new(bng_class);
     int a = IEM_GUI_DEFAULTSIZE;
     int ldx = 17, ldy = 7;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
         fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-
-    iem_inttosymargs(&x->x_gui.x_isa, 0);
-    iem_inttofstyle(&x->x_gui.x_fsf, 0);
-
-    x->x_gui.x_bcol = 0xFCFCFC;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if((argc == 14)&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
@@ -427,7 +420,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)
        &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10))
     {
-
         a = (int)atom_getfloatarg(0, argc, argv);
         fthold = (int)atom_getfloatarg(1, argc, argv);
         ftbreak = (int)atom_getfloatarg(2, argc, argv);
@@ -446,7 +438,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_flashed = 0;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if (!strcmp(x->x_gui.x_snd->s_name, "empty"))
         x->x_gui.x_fsf.x_snd_able = 0;
     if (!strcmp(x->x_gui.x_rcv->s_name, "empty"))
@@ -461,9 +452,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
 
-    if(fs < 4)
-        fs = 4;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     bng_check_minmax(x, ftbreak, fthold);

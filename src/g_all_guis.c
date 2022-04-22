@@ -862,3 +862,25 @@ external GUI object uses obsolete Pd function iemgui_all_colfromload()");
         iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
     }
 }
+
+
+t_iemgui *iemgui_new(t_class*cls)
+{
+    t_iemgui *x = (t_iemgui *)pd_new(cls);
+    t_glist *cnv = canvas_getcurrent();
+    int fs = cnv->gl_font;
+    x->x_glist = cnv;
+    x->x_fontsize = (fs<4)?4:fs;
+/*
+    int fs = x->x_gui.x_fontsize;
+    x->x_gui.x_fontsize = (fs < 4)?4:fs;
+*/
+    iem_inttosymargs(&x->x_isa, 0);
+    iem_inttofstyle(&x->x_fsf, 0);
+
+    x->x_bcol = 0xFCFCFC;
+    x->x_fcol = 0x00;
+    x->x_lcol = 0x00;
+
+    return x;
+}

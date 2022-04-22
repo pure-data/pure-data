@@ -300,5 +300,11 @@ EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
 EXTERN void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n);
 EXTERN int iem_fstyletoint(t_iem_fstyle_flags *fstylep);
 
+
+/* wrapper around pd_new() for classes that start with a t_iemgui
+ * initializes the iemgui struct
+ */
+t_iemgui* iemgui_new(t_class*cls);
+
 #define __g_all_guis_h_
 #endif /* __g_all_guis_h_ */

@@ -736,16 +736,12 @@ static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 
 static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_my_numbox *x = (t_my_numbox *)pd_new(my_numbox_class);
+    t_my_numbox *x = (t_my_numbox *)iemgui_new(my_numbox_class);
     int w = 5, h = 14;
     int lilo = 0, ldx = 0, ldy = -8;
-    int fs = ((t_glist *)canvas_getcurrent())->gl_font;
+    int fs = x->x_gui.x_fontsize;
     int log_height = 256;
     double min = -1.0e+37, max = 1.0e+37, v = 0.0;
-
-    x->x_gui.x_bcol = 0xFCFCFC;
-    x->x_gui.x_fcol = 0x00;
-    x->x_gui.x_lcol = 0x00;
 
     if((argc >= 17)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
        &&IS_A_FLOAT(argv,2)&&IS_A_FLOAT(argv,3)
@@ -778,7 +774,6 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_draw = (t_iemfunptr)my_numbox_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
-    x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if(x->x_gui.x_isa.x_loadinit)
         x->x_val = v;
     else
@@ -800,9 +795,7 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    if(fs < MINFONT)
-        fs = MINFONT;
-    x->x_gui.x_fontsize = fs;
+    x->x_gui.x_fontsize = (fs < MINFONT)?MINFONT:fs;
     if(w < MINDIGITS)
         w = MINDIGITS;
     x->x_numwidth = w;
