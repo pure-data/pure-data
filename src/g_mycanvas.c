@@ -300,7 +300,14 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
             /* disastrously, the "label" sits in a different part of the
             message.  So we have to track its location separately (in
             the slot x_labelbindex) and initialize it specially here. */
-        iemgui_new_dogetname(&x->x_gui, i+3, argv);
+        if(IS_A_FLOAT(argv, i+3))
+        {
+            char str[80];
+            atom_string(argv+i+3, str, sizeof(str));
+            x->x_gui.x_lab = gensym(str);
+        } else {
+            x->x_gui.x_lab = iemgui_new_dogetname(&x->x_gui, i+3, argv);
+        }
         x->x_gui.x_labelbindex = i+4;
         ldx = atom_getfloatarg(i+4, argc, argv);
         ldy = atom_getfloatarg(i+5, argc, argv);

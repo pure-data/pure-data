@@ -223,12 +223,6 @@ t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv)
 {
     if (IS_A_SYMBOL(argv, indx))
         return (atom_getsymbolarg(indx, 100000, argv));
-    else if (IS_A_FLOAT(argv, indx))
-    {
-        char str[80];
-        sprintf(str, "%d", (int)atom_getfloatarg(indx, 100000, argv));
-        return (gensym(str));
-    }
     else return (gensym("empty"));
 }
 
@@ -238,7 +232,14 @@ void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
     {
         iemgui->x_snd = iemgui_new_dogetname(iemgui, indx, argv);
         iemgui->x_rcv = iemgui_new_dogetname(iemgui, indx+1, argv);
-        iemgui->x_lab = iemgui_new_dogetname(iemgui, indx+2, argv);
+        if(IS_A_FLOAT(argv, indx+2))
+        {
+            char str[80];
+            atom_string(argv+indx+2, str, sizeof(str));
+            iemgui->x_lab = gensym(str);
+        } else {
+            iemgui->x_lab = iemgui_new_dogetname(iemgui, indx+2, argv);
+        }
     }
     else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = gensym("empty");
     iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded =
