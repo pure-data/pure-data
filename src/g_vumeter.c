@@ -83,12 +83,13 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int snd_able = x->x_gui.x_fsf.x_snd_able || x->x_gui.x_fsf.x_rcv_able;
 
     (void)old_snd_rcv_flags;
     sys_vgui(".x%lx.c delete %lxOUT\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxIN\n", canvas, x);
 
-    if(!x->x_gui.x_fsf.x_snd_able)
+    if(!snd_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d %lxOUT]\n",
             canvas,
