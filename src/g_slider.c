@@ -174,7 +174,7 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
         t_canvas *canvas = glist_getcanvas(glist);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
-        int val = ((x->x_val + 50)/100);
+        int val = ((x->x_val + 50) / 100) * IEMGUI_ZOOM(x);
         if(x->x_orientation == horizontal)
         {
             int r = xpos + val;
@@ -264,10 +264,9 @@ static int slider_check_range(t_slider *x, int v)
 {
     if(v < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         v = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
-    if(x->x_val > (v*100 - 100))
+    if(x->x_val > (v * 100 - 100))
     {
-        x->x_pos = v*100 - 100;
-        x->x_val = x->x_pos;
+        x->x_val = v * 100 - 100;
     }
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max / x->x_min) / (double)(v/IEMGUI_ZOOM(x) - 1);
@@ -351,12 +350,15 @@ static void slider_properties(t_gobj *z, t_glist *owner)
 static t_float slider_getfval(t_slider *x)
 {
     t_float fval;
-    int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
-        x->x_val/IEMGUI_ZOOM(x) : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
+    int rounded_val = (x->x_gui.x_fsf.x_finemoved) ? x->x_val : (x->x_val / 100) * 100;
+
+    /* if rcv==snd, don't round the value to prevent bad dragging when zoomed-in */
+    if(x->x_gui.x_fsf.x_snd_able && (x->x_gui.x_snd == x->x_gui.x_rcv))
+        rounded_val = x->x_val;
 
     if (x->x_lin0_log1)
-        fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
-    else fval = (double)(zoomval) * 0.01 * x->x_k + x->x_min;
+        fval = x->x_min * exp(x->x_k * (double)(rounded_val) * 0.01);
+    else fval = (double)(rounded_val) * 0.01 * x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
@@ -425,37 +427,38 @@ static void slider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
     int old = x->x_val;
-    int pos, delta;
+    int pos;
+    float delta;
 
     if (up != 0)
         return;
 
     if(x->x_orientation == horizontal)
     {
-        pos = x->x_gui.x_w;
-        delta = (int)dx;
+        pos = x->x_gui.x_w / IEMGUI_ZOOM(x);
+        delta = dx;
     } else {
-        pos = x->x_gui.x_h;
-        delta = -(int)dy;
+        pos = x->x_gui.x_h / IEMGUI_ZOOM(x);
+        delta = -dy;
     }
 
     if(!x->x_gui.x_fsf.x_finemoved)
-        delta *= 100;
+        delta = (100 * delta) / IEMGUI_ZOOM(x);
 
-    x->x_pos += delta;
+    x->x_pos += (int)delta;
     x->x_val = x->x_pos;
 
-    if(x->x_val > (100*pos - 100))
+    if(x->x_val > (100 * pos - 100))
     {
-        x->x_val = 100*pos - 100;
-        x->x_pos += 50;
-        x->x_pos -= x->x_pos % 100;
+        x->x_val = 100 * pos - 100;
+        x->x_pos += 50 / IEMGUI_ZOOM(x);
+        x->x_pos -= x->x_pos % (100 / IEMGUI_ZOOM(x));
     }
     if(x->x_val < 0)
     {
         x->x_val = 0;
-        x->x_pos -= 50;
-        x->x_pos -= x->x_pos % 100;
+        x->x_pos -= 50 / IEMGUI_ZOOM(x);
+        x->x_pos -= x->x_pos % (100 / IEMGUI_ZOOM(x));
     }
     x->x_fval = slider_getfval(x);
     if (old != x->x_val)
@@ -473,15 +476,15 @@ static void slider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
     if(x->x_orientation == horizontal)
     {
         val = (xpos - text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist));
-        maxval = x->x_gui.x_w;
+        maxval = x->x_gui.x_w / IEMGUI_ZOOM(x);
     } else {
         val = (x->x_gui.x_h + text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - ypos);
-        maxval = x->x_gui.x_h;
+        maxval = x->x_gui.x_h / IEMGUI_ZOOM(x);
     }
     maxval = 100 * maxval - 100;
 
     if(!x->x_steady)
-        x->x_val = (int)(100.0 * val);
+        x->x_val = (int)((100.0 * val) / IEMGUI_ZOOM(x));
     if(x->x_val > maxval)
         x->x_val = maxval;
 
@@ -536,8 +539,7 @@ static void slider_set(t_slider *x, t_floatarg f)
         g = log(f/x->x_min) / x->x_k;
     else
         g = (f - x->x_min) / x->x_k;
-    x->x_val = IEMGUI_ZOOM(x) * (int)(100.0*g + 0.49999);
-    x->x_pos = x->x_val;
+    x->x_val = (int)(100.0*g + 0.49999);
     if(x->x_val != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
@@ -642,10 +644,8 @@ static void slider_orientation(t_slider *x, t_floatarg forient)
 
 static void slider_zoom(t_slider *x, t_floatarg f)
 {
-    /* scale current pixel value */
-    x->x_val = (IEMGUI_ZOOM(x) == 2 ? (x->x_val)/2 : (x->x_val)*2);
-    x->x_pos = x->x_val;
     iemgui_zoom(&x->x_gui, f);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void slider_loadbang(t_slider *x, t_floatarg action)
@@ -713,7 +713,6 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     if (x->x_gui.x_isa.x_loadinit)
         x->x_val = v;
     else x->x_val = 0;
-    x->x_pos = x->x_val;
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
     if(steady != 0) steady = 1;
