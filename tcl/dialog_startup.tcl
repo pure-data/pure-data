@@ -23,8 +23,6 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     wm minsize .inputbox 450 30
     wm resizable .inputbox 0 0
     wm geom .inputbox "450x30"
-    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
-    catch {wm attributes $mytoplevel -topmost 1}
 
     button .inputbox.button -text [_ "OK"] -command { destroy .inputbox } \
         -width [::msgcat::mcmax [_ "OK"]]
@@ -69,7 +67,7 @@ proc ::dialog_startup::commit { new_startup } {
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     variable defeatrt_button $defeatrt
-    if {$flags ne ""} {variable ::startup_flags $flags}
+    if {$flags ne ""} {variable ::startup_flags [subst -nocommands $flags]}
 
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel

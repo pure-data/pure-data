@@ -3,7 +3,7 @@ package provide pd_connect 0.1
 
 namespace eval ::pd_connect:: {
     variable pd_socket
-    variable cmds_from_pd ""
+    variable cmdbuf ""
     variable plugin_dispatch_receivers
 
     namespace export to_pd
@@ -34,11 +34,14 @@ proc ::pd_connect::to_pd {port {host localhost}} {
 }
 
 # if pd-gui opens first, it creates socket and requests a port.  The function
-# then returns the portnumber it receives. pd then connects to that port.
-proc ::pd_connect::create_socket {} {
-    if {[catch {set sock [socket -server ::pd_connect::from_pd -myaddr localhost 0]}]} {
-        puts stderr "ERROR: failed to allocate port, exiting!"
-        exit 3
+# then returns the portnumber it receives. pd then connects to that port.  If
+# portno is nonzero we're specifying the port; this is to allow us to serve a pd
+# that is started independently.
+proc ::pd_connect::create_socket {portno} {
+    if {[catch \
+        {set sock [socket -server ::pd_connect::from_pd -myaddr localhost $portno]}]} {
+            puts stderr "ERROR: failed to allocate port $portno, exiting!"
+            exit 3
     }
     return [lindex [fconfigure $sock -sockname] 2]
 }
@@ -68,22 +71,47 @@ proc ::pd_connect::register_plugin_dispatch_receiver { nameatom callback } {
     lappend plugin_dispatch_receivers($nameatom) $callback
 }
 
+proc ::pd_connect::assemble_cmd {A B} {
+    # assembles A & B into two strings cmds & rest
+    #  cmds: string that can be evaluated
+    #  rest: the remainder
+    # assembling is done from the end of $B (to get the maximum)
+    set lfi end
+    set ok 0
+    while { [set lfi [string last "\n" $B $lfi]] >= 0 } {
+        set ab $A[string range $B 0 $lfi]
+        set b [string range $B [expr $lfi + 1] end]
+        incr lfi -1
+        if {[info complete $ab]} {
+            set A $ab
+            set B $b
+            set ok 1
+            break
+        }
+        set ab ""
+        set b ""
+    }
+    if { $ok } {
+        list $A $B
+    } {
+        list {} [append A $B]
+    }
+}
+
 proc ::pd_connect::pd_readsocket {} {
      variable pd_socket
-     variable cmds_from_pd
+     variable cmdbuf
+
+     after cancel ::pd_connect::nuke_pd
+
      if {[eof $pd_socket]} {
          # if we lose the socket connection, that means pd quit, so we quit
          close $pd_socket
          exit
-     } 
-     append cmds_from_pd [read $pd_socket]
-     if {[string index $cmds_from_pd end] ne "\n" || \
-             ![info complete $cmds_from_pd]} {
-         # the block is incomplete, wait for the next block of data
-         return
-     } else {
-         set docmds $cmds_from_pd
-         set cmds_from_pd ""
+     }
+
+    foreach {docmds cmdbuf} [assemble_cmd $cmdbuf [read $pd_socket]] { break; }
+    if { [string length $docmds] > 0 } {
          if {![catch {uplevel #0 $docmds} errorname]} {
              # we ran the command block without error, reset the buffer
          } else {
@@ -103,4 +131,35 @@ proc ::pd_connect::pd_readsocket {} {
              }
          }
      }
+}
+
+# wiring to support killing Pd if (1) we started it from this GUI and
+# (2) it appears to be hung (no response to "verifyquit" after 2 seconds).
+# This should prevent the GUI from hanging on "quit" in cases where the
+# pd subprocess is hung.  This may need to be refined if Pd might take more
+# than 2 seconds to service closebangs, and if patches are provided a way to
+# insist that they be closed before PD can quit.  But at the moment Pd just
+# bails with all patches left open so this isn't a problem.
+
+set connect_pid ""
+
+proc ::pd_connect::set_pid {pid} {
+    set ::connect_pid $pid
+}
+
+# this is called if Pd doesn't respond to a request to quit.
+proc ::pd_connect::nuke_pd {} {
+    if {$::connect_pid ne ""} {
+        if {$::windowingsystem eq "win32"} {
+            exec taskkill /pid $::connect_pid
+        } else {
+            exec kill $::connect_pid
+        }
+    }
+}
+
+proc ::pd_connect::menu_quit {} {
+    pdsend "pd verifyquit"
+    # schedule nuke_pd - but it gets cancelled if Pd responds to verifyquit.
+    after 2000 ::pd_connect::nuke_pd
 }

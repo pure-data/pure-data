@@ -49,7 +49,7 @@ static void dac_dsp(t_dac *x, t_signal **sp)
     {
         int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
-            error("dac~: bad vector size");
+            pd_error(0, "dac~: bad vector size");
         else if (ch >= 0 && ch < sys_get_outchannels())
             dsp_add(plus_perform, 4, STUFF->st_soundout + DEFDACBLKSIZE*ch,
                 (*sp2)->s_vec, STUFF->st_soundout + DEFDACBLKSIZE*ch, (t_int)DEFDACBLKSIZE);
@@ -110,52 +110,6 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-t_int *copy_perform(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    while (n--) *out++ = *in1++;
-    return (w+4);
-}
-
-static t_int *copy_perf8(t_int *w)
-{
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-
-    for (; n; n -= 8, in1 += 8, out += 8)
-    {
-        t_sample f0 = in1[0];
-        t_sample f1 = in1[1];
-        t_sample f2 = in1[2];
-        t_sample f3 = in1[3];
-        t_sample f4 = in1[4];
-        t_sample f5 = in1[5];
-        t_sample f6 = in1[6];
-        t_sample f7 = in1[7];
-
-        out[0] = f0;
-        out[1] = f1;
-        out[2] = f2;
-        out[3] = f3;
-        out[4] = f4;
-        out[5] = f5;
-        out[6] = f6;
-        out[7] = f7;
-    }
-    return (w+4);
-}
-
-void dsp_add_copy(t_sample *in, t_sample *out, int n)
-{
-    if (n&7)
-        dsp_add(copy_perform, 3, in, out, (t_int)n);
-    else
-        dsp_add(copy_perf8, 3, in, out, (t_int)n);
-}
-
 static void adc_dsp(t_adc *x, t_signal **sp)
 {
     t_int i, *ip;
@@ -164,7 +118,7 @@ static void adc_dsp(t_adc *x, t_signal **sp)
     {
         int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
-            error("adc~: bad vector size");
+            pd_error(0, "adc~: bad vector size");
         else if (ch >= 0 && ch < sys_get_inchannels())
             dsp_add_copy(STUFF->st_soundin + DEFDACBLKSIZE*ch,
                 (*sp2)->s_vec, DEFDACBLKSIZE);

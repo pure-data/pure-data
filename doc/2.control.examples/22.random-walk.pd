@@ -1,16 +1,16 @@
-#N canvas 285 23 536 598 12;
-#X floatatom 140 248 5 0 0 0 - - -;
+#N canvas 748 41 536 598 12;
+#X floatatom 140 248 5 0 0 0 - - - 0;
 #X obj 167 125 f;
 #X obj 140 198 random 4;
 #X obj 74 197 random 2;
-#X floatatom 74 245 5 0 0 0 - - -;
+#X floatatom 74 245 5 0 0 0 - - - 0;
 #X obj 167 150 t b b f;
 #X obj 195 351 +;
 #X obj 167 99 metro 100;
-#X obj 167 77 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 167 77 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X obj 140 276 + 1;
-#X floatatom 278 155 5 0 0 0 - - -;
+#X floatatom 278 155 5 0 0 0 - - - 0;
 #X obj 122 332 *;
 #X msg 64 305 -1;
 #X obj 278 85 moses 0;

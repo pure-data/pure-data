@@ -1,0 +1,95 @@
+#N canvas 455 25 521 461 12;
+#X floatatom 54 379 5 0 0 0 - - - 0;
+#X obj 374 177 sig~ 50;
+#X obj 54 349 snapshot~;
+#X obj 374 212 throw~ signal1;
+#X obj 22 192 sig~ 25;
+#X obj 54 293 catch~ signal1;
+#X obj 34 15 throw~;
+#X obj 34 39 catch~;
+#X obj 305 313 metro 200;
+#X text 28 83 Any number of throw~ objects can add into one catch~
+object (but two catch~ objects cannot share the same name.);
+#X obj 188 349 snapshot~;
+#X obj 188 292 catch~ signal2;
+#X text 190 189 You can redirect throw~ via a "set" message., f 16
+;
+#X text 292 432 updated for Pd version 0.33;
+#X obj 103 433 send~;
+#X text 27 432 see also:;
+#X floatatom 188 379 5 0 0 0 - - - 0;
+#X obj 305 285 loadbang;
+#X msg 409 300 \; pd dsp 1;
+#X obj 409 274 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X text 428 274 DSP on/off;
+#X floatatom 22 166 5 0 0 0 - - - 0;
+#X floatatom 374 148 5 0 0 0 - - - 0;
+#X text 87 17 - summing signal bus and;
+#X text 101 34 non-local connection, f 22;
+#X obj 82 242 throw~ \$0-signal;
+#X msg 94 216 set signal;
+#X msg 82 192 set \$1-signal;
+#X obj 82 162 f \$0;
+#X obj 82 137 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 120 138 <= \$0 needs to be expanded from objects., f 23;
+#N canvas 525 216 510 156 execution-order 0;
+#X obj 115 95 ../3.audio.examples/G05.execution.order;
+#X text 46 30 You have to get the throw~ sorted before the catch~ or
+else you'll never get less than a block's delay. You can use the strategy
+given in the example below to control this.;
+#X restore 339 365 pd execution-order;
+#N canvas 624 141 570 427 reference 0;
+#X obj 8 53 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 114 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 151 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 190 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 321 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 366 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 403 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 146 123 NONE;
+#X obj 8 281 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 24 15 throw~ y;
+#X obj 24 245 catch~ y;
+#X text 142 294 NONE;
+#X text 190 376 catch~ name symbol (default: empty symbol).;
+#X text 97 84 set <symbol> - set throw~ name.;
+#X text 118 332 symbol - signal from matching throw~ object(s).;
+#X text 95 15 - throw signal to a matching catch~ object.;
+#X text 99 245 - catch signal from one or more throw~ objects.;
+#X text 139 65 signal - signal to throw to a matching catch~ object.
+;
+#X text 114 159 1) symbol - throw~ symbol name (default: empty symbol).
+;
+#X text 107 376 1) symbol -;
+#X restore 329 26 pd reference;
+#X text 426 27 <= click;
+#X obj 4 68 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 4 419 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 1 0 3 0;
+#X connect 2 0 0 0;
+#X connect 4 0 25 0;
+#X connect 5 0 2 0;
+#X connect 8 0 2 0;
+#X connect 8 0 10 0;
+#X connect 10 0 16 0;
+#X connect 11 0 10 0;
+#X connect 17 0 8 0;
+#X connect 19 0 18 0;
+#X connect 21 0 4 0;
+#X connect 22 0 1 0;
+#X connect 26 0 25 0;
+#X connect 27 0 25 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 0;

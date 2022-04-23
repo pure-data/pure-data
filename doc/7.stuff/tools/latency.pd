@@ -1,5 +1,5 @@
 #N canvas 292 145 707 484 12;
-#X floatatom 211 98 4 0 0 0 - - adc-gain;
+#X floatatom 211 98 4 0 0 0 - - adc-gain 0;
 #X text 289 17 latency measurement;
 #N canvas 340 47 928 842 guts 0;
 #X obj 292 35 adc~ 1 2 3 4 5 6 7 8;
@@ -24,7 +24,7 @@
 #X msg 59 177 set \$1;
 #X obj 59 201 s inchannel-set;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array pulse 120 float 3;
+#X array pulse 120 float 1;
 #A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618
 -0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239
 -0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055
@@ -48,8 +48,8 @@
 #X obj 52 616 until;
 #X obj 123 676 t f f;
 #X obj 46 780 tabwrite pulse;
-#X obj 50 563 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 50 563 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
 #X msg 143 570 \; pulse const 0;
 #X msg 140 620 0;
 #X obj 44 676 sel 100;
@@ -57,8 +57,8 @@
 #X obj 67 712 * 0.06283;
 #X obj 615 264 metro 1000;
 #X obj 615 218 r metro-on;
-#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
-1;
+#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 628 326 vline~;
 #X obj 627 357 tabread4~ pulse;
 #X obj 687 31 r inchannel;
@@ -76,8 +76,8 @@
 #X obj 650 581 dac~ 1 2 3 4 5 6 7 8;
 #X obj 431 268 bp~ 220 0.7;
 #X obj 693 622 env~ 65536;
-#X floatatom 693 649 4 0 0 0 - - -;
-#X floatatom 749 329 5 0 0 0 - - -;
+#X floatatom 693 649 4 0 0 0 - - - 0;
+#X floatatom 749 329 5 0 0 0 - - - 0;
 #X obj 704 414 +~;
 #X obj 430 292 rzero~ -1;
 #X obj 431 317 rzero~ -1;
@@ -92,10 +92,10 @@
 #X obj 332 245 dbtorms;
 #X obj 290 246 *~ 1;
 #X obj 160 281 env~ 65536;
-#X floatatom 160 308 4 0 0 0 - - -;
+#X floatatom 160 308 4 0 0 0 - - - 0;
 #X obj 431 370 bonk~;
-#X obj 431 395 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
+#X obj 431 395 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
 #X obj 412 489 -~ 0.1;
 #X obj 414 656 -~ 1;
 #X obj 414 683 *~ -1;
@@ -103,7 +103,7 @@
 #X msg 616 714 0;
 #X obj 664 703 del 800;
 #X obj 665 728 snapshot~;
-#X floatatom 665 779 6 0 0 0 - - -;
+#X floatatom 665 779 6 0 0 0 - - - 0;
 #X obj 666 756 * 1000;
 #X obj 87 328 s adc-db;
 #X obj 733 646 s dac-db;
@@ -239,20 +239,20 @@
 #X connect 94 0 93 0;
 #X connect 95 0 76 0;
 #X restore 571 350 pd guts;
-#X floatatom 214 50 4 1 8 0 inchannel inchannel-set inchannel;
-#X floatatom 563 229 6 0 0 0 - latency -;
+#X floatatom 214 50 4 1 8 0 inchannel inchannel-set inchannel 0;
+#X floatatom 563 229 6 0 0 0 - latency - 0;
 #X text 80 96 adjust gain here:;
 #X text 392 231 latency in milliseconds;
 #X text 508 207 THE ANSWER IS:;
-#X floatatom 464 144 4 0 0 0 - adc-db -;
-#X floatatom 463 93 4 0 0 0 - dac-db -;
+#X floatatom 464 144 4 0 0 0 - adc-db - 0;
+#X floatatom 463 93 4 0 0 0 - dac-db - 0;
 #X text 503 143 RMS amplitude in;
 #X text 500 94 RMS amplitude out;
 #X text 78 142 so that RMS amplitude in is between 60 and 70;
 #X text 80 121 (typically between -20 and 20);
 #X text 444 421 updated for Pd version 0.43;
 #X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
--262144 -1 -1;
+#fcfcfc #000000 #000000;
 #X text 75 212 discontinuity: this flashes if there are audio errors
 , f 27;
 #X text 60 275 To use this patch \, connect your audio output back

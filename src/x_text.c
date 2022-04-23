@@ -21,7 +21,7 @@ static t_class *text_define_class;
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -98,7 +98,7 @@ static void textbuf_open(t_textbuf *x)
             x, 600, 340, x->b_sym->s_name,
                  sys_hostfontsize(glist_getfont(x->b_canvas),
                     glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", (unsigned long)x);
+        sprintf(buf, ".x%lx", x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
@@ -106,9 +106,9 @@ static void textbuf_open(t_textbuf *x)
 
 static void textbuf_close(t_textbuf *x)
 {
-    sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
     if (x->b_guiconnect)
     {
+        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -470,23 +470,28 @@ equal:
     else return (1);
 }
 
-/* I can't seem to get to qsort_s on W2K - clicking on Pd complains it isn't
-found in msvcrt (which indeed it isn't in).  Rather than waste more time
-on this, just call qsort if we're Microsoft and single-instance.  I hope nobody
-will try to compile multi-instance Pd for 32-bit windows, but if they
-do, they might run into my qsort_s problem again. */
-#if defined(_WIN32) && !defined(PDINSTANCE)
-#define MICROSOFT_STUPID_SORT
-static void *stupid_zkeyinfo;
-static int stupid_sortcompare(const void *z1, const void *z2) {
-    return (text_sortcompare(z1, z2, stupid_zkeyinfo)); }
+
+/* 'qsort_r' is a GNU extension and 'qsort_s' is part of C11.
+ * Both are not available in Emscripten, Android or older MSVC versions.
+ * 'stupid_sortcompare' is thread-safe but not reentrant.
+ */
+#if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+#define STUPID_SORT
+#endif
+
+#ifdef STUPID_SORT
+static PERTHREAD void *stupid_zkeyinfo;
+static int stupid_sortcompare(const void *z1, const void *z2)
+{
+    return (text_sortcompare(z1, z2, stupid_zkeyinfo));
+}
 #endif
 
     /* sort the contents */
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
@@ -540,9 +545,9 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                 bug("text_define_sort");
             sortbuf[thisline++] = vec+i;
         }
-        startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
+        startline = (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
-#ifdef MICROSOFT_STUPID_SORT
+#ifdef STUPID_SORT
     stupid_zkeyinfo = &k;
     qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
 #else
@@ -551,7 +556,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
 #else /* __APPLE__ */
     qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
 #endif /* __APPLE__ */
-#endif /* MICROSOFT_STUPID_SORT */
+#endif /* STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
     {
@@ -566,10 +571,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float ||
-                    a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
                             goto doit;
             }
         }
@@ -831,6 +836,8 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
                 startfield, nfield);
+        else if (nfield < 0)
+            pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
             ATOMS_ALLOCA(outv, nfield);
@@ -1015,7 +1022,7 @@ static void text_insert_list(t_text_insert *x,
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int start, end, n, nwas, i,
-         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : (int)x->x_f1);
 
     t_atom *vec;
     if (!b)
@@ -1491,7 +1498,7 @@ typedef struct _text_sequence
     t_atom *x_argv;
     t_symbol *x_waitsym;    /* symbol to initiate wait, zero if none */
     int x_waitargc;         /* how many leading numbers to use for waiting */
-    t_clock *x_clock;       /* calback for auto mode */
+    t_clock *x_clock;       /* callback for auto mode */
     t_float x_nextdelay;
     t_symbol *x_lastto;     /* destination symbol if we're after a comma */
     unsigned char x_eaten;  /* true if we've eaten leading numbers already */
@@ -1659,7 +1666,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                 SETSYMBOL(outvec+i, s);
             else
             {
-                error("$%s: not enough arguments supplied",
+                pd_error(0, "$%s: not enough arguments supplied",
                     ap->a_w.w_symbol->s_name);
                 SETSYMBOL(outvec+i, &s_symbol);
             }
@@ -1853,7 +1860,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = text_sequence_new(s, argc-1, argv+1);
         else
         {
-            error("list %s: unknown function", str);
+            pd_error(0, "list %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

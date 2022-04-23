@@ -1,4 +1,5 @@
-#N canvas 300 159 574 541 12;
+#N canvas 733 234 574 541 12;
+#X declare -stdpath ./;
 #X text 237 44 CONTROLLING OUTPUT AMPLITUDE;
 #X obj 84 28 osc~ 440;
 #X obj 102 59 osc~ 550;
@@ -6,22 +7,26 @@
 #X obj 84 89 +~;
 #X obj 84 143 +~;
 #X text 178 203 and select "open" to see inside.;
-#X text 44 406 The output control automatically starts DSP whenever
+#X text 35 373 The output control automatically starts DSP whenever
 you touch the level control. Hitting "mute" toggles between the current
-level and zero.;
+level and zero., f 70;
 #X obj 61 179 output~;
-#X text 302 482 updated for Pd version 0.36;
-#X text 45 255 In this and subsequent patches \, we'll use a subwindow
-\, "output" \, to control overall amplitude. The amplitudes are in
-decibels \, with 100 being full blast. In this example \, you can't
-actually push the output amplitude past 90 or so without clipping.
-You'll know you're clipping if \, instead of an A major chord \, you
-hear a single \, distorted tone two octaves down. The clipping happens
-at Pd's last stage of audio output. Audio signals internal to Pd have
-essentially no level limit.;
 #X text 171 116 <= Here we make an A major triad as a test signal.
 ;
 #X text 137 183 <= this is a subwindow - right click on it;
+#X obj 47 480 declare -stdpath ./;
+#X text 35 264 In this and subsequent patches \, we'll use the "output~"
+abstraction to control overall amplitude. The amplitudes are in decibels
+\, with 100 being full blast. In this example \, you can't actually
+push the output amplitude past 90 or so without clipping. You'll know
+you're clipping if \, instead of an A major chord \, you hear a single
+\, distorted tone two octaves down. The clipping happens at Pd's last
+stage of audio output. Audio signals internal to Pd have essentially
+no level limit., f 70;
+#X text 34 424 The output~ abstraction is in the 'extra' folder (aka
+'standard path') \, so we use [declare -stdpath ./] to make sure Pd
+finds it., f 71;
+#X text 302 482 updated for Pd version 0.52;
 #X connect 1 0 4 0;
 #X connect 2 0 4 1;
 #X connect 3 0 5 1;

@@ -1,5 +1,6 @@
-#N canvas 2736 112 802 585 12;
-#X floatatom 468 293 0 0 0 0 - - -;
+#N canvas 681 156 802 585 12;
+#X declare -stdpath ./;
+#X floatatom 468 293 0 0 0 0 - - - 0;
 #N canvas 2689 55 791 659 fft 0;
 #X obj 98 224 *~;
 #X obj 66 224 *~;
@@ -99,8 +100,8 @@
 #X connect 34 0 35 0;
 #X connect 35 0 29 0;
 #X restore 99 454 pd fft;
-#X floatatom 641 353 0 0 120 0 - pitch-set -;
-#X floatatom 638 296 0 0 0 0 - specshift-set -;
+#X floatatom 641 353 0 0 120 0 - pitch-set - 0;
+#X floatatom 638 296 0 0 0 0 - specshift-set - 0;
 #X obj 638 319 s specshift;
 #X obj 468 400 s loco;
 #X obj 641 376 s pitch;
@@ -108,7 +109,7 @@
 #X obj 428 480 output~;
 #X text 61 22 PHASE BASHING;
 #X text 554 494 updated for Pd version 0.39;
-#X floatatom 260 347 5 0 0 0 - #0-samp-msec -;
+#X floatatom 260 347 5 0 0 0 - #0-samp-msec - 0;
 #X text 258 365 sample length \, msec;
 #X msg 259 249 ../sound/bell.aiff;
 #X msg 265 271 ../sound/voice.wav;
@@ -170,8 +171,8 @@
 #X connect 24 0 5 0;
 #X connect 24 1 6 0;
 #X restore 99 426 pd test-signal;
-#X obj 194 407 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 194 407 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #N canvas 0 110 565 454 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
@@ -277,8 +278,8 @@ and window-msec (analysis window size in seconds and msec).;
 #X connect 20 0 19 0;
 #X connect 22 0 12 0;
 #X restore 272 436 pd insample;
-#X obj 99 406 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 99 406 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 108 369 ---analyze---;
 #X text 92 388 sample;
 #X obj 138 486 tabwrite~ \$0-nophase;
@@ -301,8 +302,8 @@ of recorded sounds., f 46;
 #X obj 167 633 r invblk;
 #X obj 68 660 *~;
 #X obj 129 658 clip~ 1 1000;
-#X floatatom 154 143 0 0 0 0 - - -;
-#X floatatom 589 48 0 0 0 0 - - -;
+#X floatatom 154 143 0 0 0 0 - - - 0;
+#X floatatom 589 48 0 0 0 0 - - - 0;
 #X obj 488 636 *~;
 #X obj 634 606 samphold~;
 #X obj 721 606 samphold~;
@@ -536,6 +537,7 @@ and spectral shift \, using the "playback" controls., f 44;
 #X text 138 273 changing;
 #X text 138 289 window;
 #X text 139 303 size);
+#X obj 578 17 declare -stdpath ./;
 #X connect 0 0 7 0;
 #X connect 1 0 30 0;
 #X connect 1 0 31 0;

@@ -1,4 +1,5 @@
 #N canvas 577 81 508 474 12;
+#X declare -stdpath ./;
 #N canvas 280 40 837 707 fft 0;
 #X obj 63 584 *~;
 #X obj 288 539 *~;
@@ -282,8 +283,8 @@ one \, take the left-hand pair \, otherwise the right-hand one.;
 #X connect 58 1 13 1;
 #X connect 58 1 7 0;
 #X restore 147 328 pd fft;
-#X floatatom 311 266 0 0 1000 0 - revtime-set -;
-#X floatatom 120 264 0 0 0 0 - - -;
+#X floatatom 311 266 0 0 1000 0 - revtime-set - 0;
+#X floatatom 120 264 0 0 0 0 - - - 0;
 #X text 38 11 PIANO REVERB;
 #X text 352 269 reverb time;
 #X obj 147 363 output~;
@@ -299,13 +300,13 @@ than the input the input for that channel is ignored.;
 #X obj 46 25 inlet;
 #X obj 46 145 osc~;
 #X obj 115 201 line~;
-#X floatatom 46 86 0 0 0 0 - - -;
+#X floatatom 46 86 0 0 0 0 - - - 0;
 #X obj 46 59 mtof;
 #X obj 46 170 cos~;
 #X obj 46 194 hip~ 20;
 #X obj 46 117 t f b;
-#X obj 115 91 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 115 91 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 160 172 pack 0 30;
 #X obj 160 117 del 20;
 #X obj 115 144 pack 1 20;
@@ -334,8 +335,8 @@ propagated by a constant phase increment and multiplied downward by
 a gain that determines the "reverb time".;
 #N canvas 734 203 602 538 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-hann 4096 float 0;
-#X coords 0 1 4095 0 300 100 1;
+#X array \$0-hann 1024 float 0;
+#X coords 0 1 1023 0 300 100 1;
 #X restore 148 395 graph;
 #X obj 365 185 osc~;
 #X obj 365 210 *~ -0.5;
@@ -412,6 +413,7 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X text 275 389 Updated for Pd version 0.39;
 #X text 57 419 reverb in;
 #X text 139 420 reverb out;
+#X obj 336 14 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 0 0 5 1;
 #X connect 1 0 11 0;

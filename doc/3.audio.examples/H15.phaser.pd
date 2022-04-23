@@ -1,4 +1,5 @@
 #N canvas 569 67 602 647 12;
+#X declare -stdpath ./;
 #X text 37 20 PHASER;
 #N canvas 411 147 659 385 chord 0;
 #X obj 82 97 -~ 0.5;
@@ -75,6 +76,7 @@ In this example the coefficients range from 0.88 to 0.98 \, controlled
 by a phasor~ object (no relation). The phasor~ is converted to a triangle
 wave (abs($v1-0.5)) and then nonlinearly mapped into a suitable range.
 , f 66;
+#X obj 424 13 declare -stdpath ./;
 #X connect 1 0 4 0;
 #X connect 1 0 11 0;
 #X connect 3 0 6 0;

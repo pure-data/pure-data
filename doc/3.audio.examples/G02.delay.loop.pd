@@ -1,6 +1,7 @@
 #N canvas 807 42 543 599 12;
-#X floatatom 146 218 5 -30 130 0 - - -;
-#X floatatom 164 346 0 0 0 0 - - -;
+#X declare -stdpath ./;
+#X floatatom 146 218 5 -30 130 0 - - - 0;
+#X floatatom 164 346 0 0 0 0 - - - 0;
 #X text 341 464 write to delay line;
 #X text 313 374 read from delay line;
 #X text 177 425 add the original and the delayed signal;
@@ -27,6 +28,7 @@ Be sure to try shift-dragging on the pitch control.;
 #X obj 174 465 delwrite~ G02-del 2000;
 #X text 194 345 <= delay time;
 #X text 197 217 <= pitch;
+#X obj 355 20 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 0 0 6 0;
 #X connect 1 0 19 0;

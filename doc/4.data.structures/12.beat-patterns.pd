@@ -1,5 +1,5 @@
 #N struct rect float x float y float w float h;
-#N canvas 427 129 397 213 12;
+#N canvas 302 129 397 213 12;
 #N canvas 457 224 653 284 rect 0;
 #X obj 211 156 pointer;
 #X msg 211 125 traverse pd-test \, bang;
@@ -18,7 +18,7 @@
 #X connect 8 0 9 0;
 #X connect 9 0 7 0;
 #X restore 115 121 pd rect;
-#N canvas 861 61 649 658 output 1;
+#N canvas 716 48 649 658 output 1;
 #X scalar rect 57 179 2 10 \;;
 #X scalar rect 82 179 1 10 \;;
 #X scalar rect 107 179 1 10 \;;
@@ -362,43 +362,43 @@
 #X msg 632 94 traverse \$1 \, bang;
 #X msg 52 34 \; pd-output clear;
 #X msg 180 34 \; start pd-output;
-#X obj 57 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 208 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 362 171 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 57 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 208 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 362 171 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 208 128 r add-pts1;
-#X obj 52 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 187 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 323 280 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 52 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 187 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 323 280 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 187 230 r add-pts1;
 #X obj 57 190 beat-maker 3 2 600;
 #X obj 208 189 beat-maker 5 2 570;
 #X obj 362 190 beat-maker 7 2 540;
-#X obj 463 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 602 277 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 56 363 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 191 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 328 365 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 463 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 602 277 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 56 363 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 191 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 328 365 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 191 335 r add-pts1;
-#X obj 52 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 197 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 334 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 52 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 197 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 334 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 197 447 r add-pts1;
-#X obj 472 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 472 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 53 301 beat-maker 2 3 480;
 #X obj 323 301 beat-maker 5 3 420;
 #X obj 463 301 beat-maker 7 3 390;

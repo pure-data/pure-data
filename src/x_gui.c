@@ -387,18 +387,19 @@ static void key_setup(void)
         (t_newmethod)key_new, (t_method)key_free,
         sizeof(t_key), CLASS_NOINLET, 0);
     class_addfloat(key_class, key_float);
+    class_sethelpsymbol(key_class, gensym("key-input"));
 
     keyup_class = class_new(gensym("keyup"),
         (t_newmethod)keyup_new, (t_method)keyup_free,
         sizeof(t_keyup), CLASS_NOINLET, 0);
     class_addfloat(keyup_class, keyup_float);
-    class_sethelpsymbol(keyup_class, gensym("key"));
+    class_sethelpsymbol(keyup_class, gensym("key-input"));
 
     keyname_class = class_new(gensym("keyname"),
         (t_newmethod)keyname_new, (t_method)keyname_free,
         sizeof(t_keyname), CLASS_NOINLET, 0);
     class_addlist(keyname_class, keyname_list);
-    class_sethelpsymbol(keyname_class, gensym("key"));
+    class_sethelpsymbol(keyname_class, gensym("key-input"));
 }
 
 /* ------------------------ pdcontrol --------------------------------- */

@@ -1,4 +1,5 @@
-#N canvas 320 55 764 618 12;
+#N canvas 591 56 764 618 12;
+#X declare -stdpath ./;
 #X obj 59 215 hip~ 5;
 #X text 111 216 high pass filter to cut DC;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -8,7 +9,7 @@
 #X obj 59 183 tabread4~ sample-table;
 #X obj 59 151 line~;
 #X obj 59 102 * 441;
-#X floatatom 59 48 0 0 100 0 - - -;
+#X floatatom 59 48 0 0 100 0 - - - 0;
 #X obj 59 126 pack 0 100;
 #X text 90 14 SCRATCH MACHINE;
 #X text 106 102 convert to SAMPLES (441 samples in 0.01 sec);
@@ -42,6 +43,7 @@ sent when you load this patch by the "loadbang" object.), f 39;
 #X obj 144 312 soundfiler;
 #X obj 33 264 output~;
 #X text 94 48 <= read point in 100ths of a second;
+#X obj 88 587 declare -stdpath ./;
 #X connect 0 0 26 0;
 #X connect 0 0 26 1;
 #X connect 3 0 0 0;
