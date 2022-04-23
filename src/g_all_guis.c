@@ -752,19 +752,21 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
 #define SETCOLOR(a, col) do {char color[MAXPDSTRING]; snprintf(color, MAXPDSTRING-1, "#%06x", 0xffffff & col); color[MAXPDSTRING-1] = 0; SETSYMBOL(a, gensym(color));} while(0)
     t_float zoom = iemgui->x_glist->gl_zoom;
     t_symbol *srl[3];
+    int for_undo = 1;
     int i;
     for(i=0; i<argc; i++)
         SETFLOAT(argv+i, -1); /* initialize */
 
-    iemgui_properties(iemgui, srl);
+    if(!for_undo)
+        iemgui_properties(iemgui, srl);
 
     if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
     if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
     if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
     if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
-    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
-    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
-    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
+    if(argc> 7) SETSYMBOL(argv+ 7, for_undo?iemgui->x_snd:srl[0]);
+    if(argc> 8) SETSYMBOL(argv+ 8, for_undo?iemgui->x_rcv:srl[1]);
+    if(argc> 9) SETSYMBOL(argv+ 9, for_undo?iemgui->x_lab:srl[2]);
     if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
     if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
     if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
