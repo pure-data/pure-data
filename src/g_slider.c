@@ -672,11 +672,15 @@ static void *slider_new(t_symbol *s, int argc, t_atom *argv)
     {
         w = IEM_SL_DEFAULTSIZE;
         h = IEM_GUI_DEFAULTSIZE;
+        w *= IEM_GUI_DEFAULTSIZE_SCALE; /* keep aspect ratio */
+
         ldx = -2;
-        ldy = -8;
+        ldy = -8 * IEM_GUI_DEFAULTSIZE_SCALE;
     } else {
         w = IEM_GUI_DEFAULTSIZE;
         h = IEM_SL_DEFAULTSIZE;
+        h *= IEM_GUI_DEFAULTSIZE_SCALE; /* keep aspect ratio */
+
         ldx = 0;
         ldy = -9;
     }

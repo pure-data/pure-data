@@ -406,7 +406,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bng *x = (t_bng *)iemgui_new(bng_class);
     int a = IEM_GUI_DEFAULTSIZE;
-    int ldx = 17, ldy = 7;
+    int ldx = 0, ldy = -8 * IEM_GUI_DEFAULTSIZE_SCALE;
     int fs = x->x_gui.x_fontsize;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
         fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;

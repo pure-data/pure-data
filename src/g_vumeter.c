@@ -474,8 +474,8 @@ static void vu_bang(t_vu *x)
 static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vu *x = (t_vu *)iemgui_new(vu_class);
-    int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS*IEM_VU_DEFAULTSIZE;
-    int ldx = -1, ldy = -8, f = 0, scale = 1;
+    int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS*IEM_VU_DEFAULTSIZE * IEM_GUI_DEFAULTSIZE_SCALE;
+    int ldx = -1, ldy = -8 * IEM_GUI_DEFAULTSIZE_SCALE, f = 0, scale = 1;
     int fs = x->x_gui.x_fontsize;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];

@@ -48,6 +48,7 @@
 //#define IEM_GUI_DEFAULTSIZE 15
 /* the "+3+2" = "+TMARGIN+BMARGIN" from g_rtext.c */
 #define IEM_GUI_DEFAULTSIZE (sys_zoomfontheight(canvas_getcurrent()->gl_font, canvas_getcurrent()->gl_zoom, 0) + 2 + 3)
+#define IEM_GUI_DEFAULTSIZE_SCALE IEM_GUI_DEFAULTSIZE/15.
 #define IEM_GUI_MINSIZE     8
 #define IEM_GUI_MAXSIZE     1000
 #define IEM_SL_DEFAULTSIZE  128

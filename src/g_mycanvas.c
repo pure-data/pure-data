@@ -265,7 +265,8 @@ static void my_canvas_label_font(t_my_canvas *x, t_symbol *s, int ac, t_atom *av
 static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_my_canvas *x = (t_my_canvas *)iemgui_new(my_canvas_class);
-    int a = IEM_GUI_DEFAULTSIZE, w = 100, h = 60;
+    int a = IEM_GUI_DEFAULTSIZE;
+    int w = 100 * IEM_GUI_DEFAULTSIZE_SCALE, h = 60 * IEM_GUI_DEFAULTSIZE_SCALE;
     int ldx = 20, ldy = 12, f = 2, i = 0;
     int fs = x->x_gui.x_fontsize;
 

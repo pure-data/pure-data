@@ -575,7 +575,7 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_radio *x = (t_radio *)iemgui_new(radio_class);
     int a = IEM_GUI_DEFAULTSIZE, on = 0;
-    int ldx = 0, ldy = -8, chg = 1, num = 8;
+    int ldx = 0, ldy = -8 * IEM_GUI_DEFAULTSIZE_SCALE, chg = 1, num = 8;
     int fs = x->x_gui.x_fontsize;
     t_float fval = 0;
     if('v' == *s->s_name)
