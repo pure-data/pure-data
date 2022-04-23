@@ -83,12 +83,13 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int snd_able = x->x_gui.x_fsf.x_snd_able || x->x_gui.x_fsf.x_rcv_able;
 
     (void)old_snd_rcv_flags;
     sys_vgui(".x%lx.c delete %lxOUT\n", canvas, x);
     sys_vgui(".x%lx.c delete %lxIN\n", canvas, x);
 
-    if(!x->x_gui.x_fsf.x_snd_able)
+    if(!snd_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d %lxOUT]\n",
             canvas,
@@ -479,6 +480,8 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
 
+    x->x_gui.x_bcol = 0x404040;
+
     if((argc >= 11)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
        &&(IS_A_SYMBOL(argv,2)||IS_A_FLOAT(argv,2))
        &&(IS_A_SYMBOL(argv,3)||IS_A_FLOAT(argv,3))
@@ -580,7 +583,6 @@ void g_vumeter_setup(void)
     vu_widgetbehavior.w_visfn =        iemgui_vis;
     vu_widgetbehavior.w_clickfn =      NULL;
     class_setwidget(vu_class,&vu_widgetbehavior);
-    class_sethelpsymbol(vu_class, gensym("vu"));
     class_setsavefn(vu_class, vu_save);
     class_setpropertiesfn(vu_class, vu_properties);
 }
