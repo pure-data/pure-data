@@ -575,7 +575,8 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
         else
         {
             x->x_val = ftocompare;
-            my_numbox_clip(x);
+            if (pd_compatibilitylevel < 53)
+                my_numbox_clip(x);
         }
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
@@ -734,7 +735,8 @@ static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey)
         x->x_buf[0] = 0;
         x->x_gui.x_fsf.x_change = 0;
         clock_unset(x->x_clock_reset);
-        my_numbox_clip(x);
+        if (pd_compatibilitylevel < 53)
+            my_numbox_clip(x);
         my_numbox_bang(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
