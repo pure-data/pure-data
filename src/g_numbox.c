@@ -14,6 +14,11 @@
 #include "g_all_guis.h"
 #include <math.h>
 
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan _isnan
+#endif
+
 #define MINDIGITS 1
 #define MINFONT   4
 
@@ -557,8 +562,15 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
         ftocompare must be t_float type like x_val. */
     if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
-        x->x_val = ftocompare;
-        my_numbox_clip(x);
+        if(isnan(f))
+        {
+            x->x_val = f;
+        }
+        else
+        {
+            x->x_val = ftocompare;
+            my_numbox_clip(x);
+        }
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
 }
