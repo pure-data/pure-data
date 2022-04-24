@@ -337,8 +337,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
             set iemgui_type [_ "Bang"]
             set label_width "Size:"
             set label_range [_ "Flash Time (msec)"]
-            set label_range_min [_ "Intrrpt:"]
-            set label_range_max [_ "Hold:"] }
+            set label_range_min [_ "Min:"]
+            set label_range_max [_ "Max:"] }
         "|tgl|" {
             set iemgui_type [_ "Toggle"]
             set label_width [_ "Size:"]
