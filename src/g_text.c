@@ -146,6 +146,7 @@ extern int sys_noautopatch;
 static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     int *indexp, int *totalp)
 {
+    float dx = 5.5 * x->gl_zoom;
     int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
     int connectme = (x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next && !sys_noautopatch);
@@ -158,7 +159,7 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
             *xpixp = x1 / x->gl_zoom;
-            *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
+            *ypixp = (y2+dx) / x->gl_zoom;    /* 5 pixels down, rounded */
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,
