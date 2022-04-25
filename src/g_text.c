@@ -585,10 +585,6 @@ static void gatom_senditup(t_gatom *x)
             sys_queuegui(x, x->a_glist, gatom_redraw);
 }
 
-#ifdef _MSC_VER
-#include <float.h>
-#define isnan _isnan
-#endif
 static t_atom *gatom_getatom(t_gatom *x)
 {
     int ac = binbuf_getnatom(x->a_text.te_binbuf);
