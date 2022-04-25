@@ -5,8 +5,6 @@
 /* changes by Thomas Musil IEM KUG Graz Austria 2001 */
 /* all changes are labeled with      iemlib      */
 
-#include "m_pd.h"
-
 void g_array_setup(void);
 void g_canvas_setup(void);
 void g_guiconnect_setup(void);

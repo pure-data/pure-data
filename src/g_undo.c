@@ -1,6 +1,5 @@
 #include "m_pd.h"
 #include "g_canvas.h"
-#include <stdio.h>
 #include "g_undo.h"
 
 #if 0

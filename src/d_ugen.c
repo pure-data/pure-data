@@ -13,7 +13,6 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
-#include <stdlib.h>
 #include <stdarg.h>
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;

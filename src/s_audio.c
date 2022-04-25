@@ -19,9 +19,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #endif /* _WIN32 */
-#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <math.h>
 
 #ifdef _MSC_VER

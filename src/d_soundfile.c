@@ -18,7 +18,6 @@ objects use Posix-like threads. */
 #include <fcntl.h>
 #include <stdio.h>
 #include <pthread.h>
-#include <math.h>
 
 /* Supported sample formats: LPCM (16 or 24 bit int) & 32 bit float */
 

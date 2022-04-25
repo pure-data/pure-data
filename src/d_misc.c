@@ -6,8 +6,6 @@
 */
 
 #include "m_pd.h"
-#include <stdio.h>
-#include <string.h>
 
 /* ------------------------- print~ -------------------------- */
 static t_class *print_class;

@@ -2,10 +2,8 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"

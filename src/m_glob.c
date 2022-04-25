@@ -4,7 +4,6 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
-#include "s_stuff.h"
 
 t_class *glob_pdobject;
 static t_class *maxclass;

@@ -11,8 +11,6 @@ Alternatively, the  glist_read() and glist_write() routines read and write
 file format as in the dialog window for data.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>

@@ -9,14 +9,12 @@
 #include <stdlib.h>
 #include "m_pd.h"
 #include "m_imp.h"
-#include "s_stuff.h"
 
 #include "g_canvas.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-#include "s_utf8.h"
 #include "g_undo.h"
 
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */

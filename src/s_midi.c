@@ -22,7 +22,6 @@
 #endif
 #include <string.h>
 #include <stdio.h>
-#include <signal.h>
 
 /* channel voice messages */     /* dec, # */
 #define MIDI_NOTEOFF        0x80 /* 128, 2 */
