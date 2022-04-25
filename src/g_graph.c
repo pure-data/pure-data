@@ -11,7 +11,6 @@ to this file... */
 
 #include "g_canvas.h"
 #include <stdio.h>
-#include <string.h>
 
 /* ---------------------- forward definitions ----------------- */
 

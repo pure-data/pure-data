@@ -15,7 +15,6 @@
 #ifdef _WIN32
 #include <io.h>
 #endif
-#include <fcntl.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -1528,4 +1527,3 @@ void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
     }
     binbuf_addsemi(bto);
 }
-
