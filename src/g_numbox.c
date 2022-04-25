@@ -7,9 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "m_pd.h"
-#include "g_canvas.h"
 
 #include "g_all_guis.h"
 #include <math.h>

@@ -6,15 +6,11 @@
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
 
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "m_pd.h"
-#include "g_canvas.h"
 
 #include "g_all_guis.h"
-#include <math.h>
 
 #define HMARGIN 1
 #define VMARGIN 2

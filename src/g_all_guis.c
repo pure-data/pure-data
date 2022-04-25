@@ -11,11 +11,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "m_pd.h"
-#include "g_canvas.h"
 #include "s_stuff.h"
 
 #include "g_all_guis.h"
-#include <math.h>
 
 #ifdef _MSC_VER
 #define snprintf _snprintf

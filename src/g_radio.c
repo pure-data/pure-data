@@ -8,15 +8,11 @@
 /* name change to [vv]radio by MSP (it's a radio button really) and changed to
    put out a "float" as in sliders, toggles, etc. */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "m_pd.h"
-#include "g_canvas.h"
 
 #include "g_all_guis.h"
-#include <math.h>
 
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
