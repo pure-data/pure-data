@@ -21,37 +21,7 @@ t_widgetbehavior toggle_widgetbehavior;
 static t_class *toggle_class;
 
 /* widget helper functions */
-
-void toggle_draw_io(t_toggle* x, t_glist* glist, int old_snd_rcv_flags)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-
-    if(!x->x_gui.x_fsf.x_snd_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-            xpos + iow, ypos + x->x_gui.x_h,
-            x, x, 0);
-            /* keep label above outlet */
-        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
-    }
-    if(!x->x_gui.x_fsf.x_rcv_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
-            /* keep label above inlet */
-        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
-    }
-}
+#define toggle_draw_io 0
 void toggle_draw_config(t_toggle* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -107,21 +77,7 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
         canvas, x, x);
 
     toggle_draw_config(x, glist);
-    toggle_draw_io(x, glist, 0);
-}
-
-static void toggle_draw_erase(t_toggle* x, t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void toggle_draw_move(t_toggle *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 void toggle_draw_select(t_toggle* x, t_glist* glist)
@@ -150,24 +106,6 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
         sys_vgui(".x%lx.c itemconfigure %lxX1 -fill #%06x\n", canvas, x, col);
         sys_vgui(".x%lx.c itemconfigure %lxX2 -fill #%06x\n", canvas, x, col);
     }
-}
-
-void toggle_draw(t_toggle *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_UPDATE)
-        toggle_draw_update(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        toggle_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        toggle_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        toggle_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        toggle_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        toggle_draw_config(x, glist);
-    else if(mode >= IEM_GUI_DRAW_MODE_IO)
-        toggle_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
 }
 
 /* ------------------------ tgl widgetbehaviour----------------------------- */
@@ -361,6 +299,8 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     t_float on = 0.0, nonzero = 1.0;
     char str[144];
 
+    IEMGUI_SETDRAWFUNCTIONS(x, toggle);
+
     if(((argc == 13)||(argc == 14))&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)
        &&(IS_A_SYMBOL(argv,2)||IS_A_FLOAT(argv,2))
@@ -382,7 +322,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     else iemgui_new_getnames(&x->x_gui, 2, 0);
     if((argc == 14)&&IS_A_FLOAT(argv,13))
         nonzero = (t_float)atom_getfloatarg(13, argc, argv);
-    x->x_gui.x_draw = (t_iemfunptr)toggle_draw;
 
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;

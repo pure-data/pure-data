@@ -126,20 +126,6 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
     radio_draw_io(x, glist, 0);
 }
 
-static void radio_draw_erase(t_radio* x, t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void radio_draw_move(t_radio *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void radio_draw_select(t_radio* x, t_glist* glist)
 {
     int n = x->x_number, i;
@@ -168,24 +154,6 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
             x->x_gui.x_fcol, x->x_gui.x_fcol);
         x->x_drawn = x->x_on;
     }
-}
-
-static void radio_draw(t_radio *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_UPDATE)
-        sys_queuegui(x, glist, radio_draw_update);
-    else if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        radio_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        radio_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        radio_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        radio_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        radio_draw_config(x, glist);
-    else if(mode >= IEM_GUI_DRAW_MODE_IO)
-        radio_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
 }
 
 /* ------------------------ hdl widgetbehaviour----------------------------- */
@@ -582,6 +550,8 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         x->x_orientation = vertical;
     x->x_compat = old;
 
+    IEMGUI_SETDRAWFUNCTIONS(x, radio);
+
     if((argc == 15)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
        &&(IS_A_SYMBOL(argv,4)||IS_A_FLOAT(argv,4))
@@ -603,7 +573,6 @@ static void *radio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         fval = atom_getfloatarg(14, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
-    x->x_gui.x_draw = (t_iemfunptr)radio_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     if(!strcmp(x->x_gui.x_snd->s_name, "empty"))

@@ -28,6 +28,9 @@ static t_class *my_canvas_class;
 
 /* widget helper functions */
 
+#define my_canvas_draw_update 0
+
+static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -70,20 +73,6 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
     my_canvas_draw_config(x, glist);
 }
 
-static void my_canvas_draw_erase(t_my_canvas* x, t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void my_canvas_draw_move(t_my_canvas *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -96,20 +85,6 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
     {
         sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, x->x_gui.x_bcol);
     }
-}
-
-static void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        my_canvas_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        my_canvas_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        my_canvas_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        my_canvas_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        my_canvas_draw_config(x, glist);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
@@ -270,6 +245,8 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     int ldx = 20, ldy = 12, f = 2, i = 0;
     int fs = x->x_gui.x_fontsize;
 
+    IEMGUI_SETDRAWFUNCTIONS(x, my_canvas);
+
     x->x_gui.x_bcol = 0xE0E0E0;
     x->x_gui.x_fcol = 0x00;
     x->x_gui.x_lcol = 0x404040;
@@ -321,7 +298,6 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     {
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(i+10, argc, argv));
     }
-    x->x_gui.x_draw = (t_iemfunptr)my_canvas_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     if (!strcmp(x->x_gui.x_snd->s_name, "empty"))

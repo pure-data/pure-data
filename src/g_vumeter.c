@@ -76,6 +76,7 @@ static void vu_update_peak(t_vu *x, t_glist *glist)
 }
 
 static void vu_draw_update(t_gobj *client, t_glist *glist);
+
 static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -222,20 +223,6 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
     sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
 }
 
-static void vu_draw_erase(t_vu* x,t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void vu_draw_move(t_vu *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void vu_draw_select(t_vu* x,t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -263,22 +250,6 @@ static void vu_draw_update(t_gobj *client, t_glist *glist)
         vu_update_peak(x, glist);
         x->x_updatepeak = 0;
     }
-}
-
-void vu_draw(t_vu *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        vu_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        vu_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        vu_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        vu_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        vu_draw_config(x, glist);
-    else if(mode >= IEM_GUI_DRAW_MODE_IO)
-        vu_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
 }
 
 /* ------------------------ vu widgetbehaviour----------------------------- */
@@ -480,6 +451,8 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
 
+    IEMGUI_SETDRAWFUNCTIONS(x, vu);
+
     x->x_gui.x_bcol = 0x404040;
 
     if((argc >= 11)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
@@ -503,7 +476,6 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     else iemgui_new_getnames(&x->x_gui, 1, 0);
     if((argc == 12)&&IS_A_FLOAT(argv,11))
         iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(11, argc, argv));
-    x->x_gui.x_draw = (t_iemfunptr)vu_draw;
 
     x->x_gui.x_fsf.x_snd_able = 0;
     x->x_gui.x_fsf.x_rcv_able = 1;

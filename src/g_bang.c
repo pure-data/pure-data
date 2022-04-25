@@ -21,38 +21,7 @@ t_widgetbehavior bng_widgetbehavior;
 static t_class *bng_class;
 
 /*  widget helper functions  */
-
-static void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-
-    if(!x->x_gui.x_fsf.x_snd_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
-            xpos + iow, ypos + x->x_gui.x_h,
-            x, x, 0);
-        /* keep label above outlet */
-        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
-    }
-    if(!x->x_gui.x_fsf.x_rcv_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
-        /* keep label above inlet */
-        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
-    }
-}
-
+#define bng_draw_io 0
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -84,7 +53,6 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
     sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxOBJ %lxBASE]\n",
              canvas, x, x);
     sys_vgui(".x%lx.c create oval 0 0 0 0 -tags [list %lxOBJ %lxBUT]\n",
@@ -93,21 +61,7 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
              canvas, x, x);
 
     bng_draw_config(x, glist);
-    bng_draw_io(x, glist, 0);
-}
-
-static void bng_draw_erase(t_bng* x, t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void bng_draw_move(t_bng *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 static void bng_draw_select(t_bng* x, t_glist* glist)
@@ -136,24 +90,6 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
             glist_getcanvas(glist), x,
             (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
     }
-}
-
-static void bng_draw(t_bng *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_UPDATE)
-        bng_draw_update(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        bng_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        bng_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        bng_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        bng_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        bng_draw_config(x, glist);
-    else if(mode >= IEM_GUI_DRAW_MODE_IO)
-        bng_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
 }
 
 /* ------------------------ bng widgetbehaviour----------------------------- */
@@ -411,6 +347,8 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
         fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
 
+    IEMGUI_SETDRAWFUNCTIONS(x, bng);
+
     if((argc == 14)&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
@@ -432,8 +370,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
         iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
-
-    x->x_gui.x_draw = (t_iemfunptr)bng_draw;
 
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;

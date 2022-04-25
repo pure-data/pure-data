@@ -27,6 +27,12 @@
 #include <unistd.h>
 #endif
 
+
+typedef struct _iemgui_private {
+    int p_prevX, p_prevY;
+    t_iemgui_drawfunctions p_widget;
+} t_iemgui_private;
+
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
 
 /*------------------ global variables -------------------------*/
@@ -530,8 +536,8 @@ static void iemgui_do_drawmove(void *x, t_iemgui*iemgui)
         int xpos = text_xpix(&iemgui->x_obj, iemgui->x_glist);
         int ypos = text_ypix(&iemgui->x_obj, iemgui->x_glist);
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
-        iemgui->x_prevX = xpos;
-        iemgui->x_prevY = ypos;
+        iemgui->x_private->p_prevX = xpos;
+        iemgui->x_private->p_prevY = ypos;
         canvas_fixlinesfor(iemgui->x_glist, (t_text*)x);
     }
 }
@@ -612,8 +618,8 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
         (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
         sys_unqueuegui(z);
     }
-    x->x_prevX = text_xpix(&x->x_obj, glist);
-    x->x_prevY = text_ypix(&x->x_obj, glist);
+    x->x_private->p_prevX = text_xpix(&x->x_obj, glist);
+    x->x_private->p_prevY = text_ypix(&x->x_obj, glist);
 }
 
 void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
@@ -864,6 +870,111 @@ external GUI object uses obsolete Pd function iemgui_all_colfromload()");
     }
 }
 
+static void iemgui_draw_new(t_iemgui*x, t_glist*glist) {;}
+static void iemgui_draw_config(t_iemgui*x, t_glist*glist) {;}
+static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
+static void iemgui_draw_select(t_iemgui*x, t_glist*glist) {;}
+static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
+{
+    const int zoom = x->x_glist->gl_zoom;
+    int xpos = text_xpix(&x->x_obj, glist);
+    int ypos = text_ypix(&x->x_obj, glist);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    (void)old_snd_rcv_flags;
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+
+    if(!x->x_fsf.x_snd_able) {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
+            canvas,
+            xpos, ypos + x->x_h + zoom - ioh,
+            xpos + iow, ypos + x->x_h,
+            x, x, 0);
+        /* keep label above outlet */
+        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
+    }
+    if(!x->x_fsf.x_rcv_able) {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
+            canvas,
+            xpos, ypos,
+            xpos + iow, ypos - zoom + ioh,
+            x, x, 0);
+        /* keep label above inlet */
+        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
+    }
+}
+
+static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
+}
+
+static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
+{
+    t_canvas *canvas = glist_getcanvas(glist);
+    int dx = text_xpix(&x->x_obj, glist) - x->x_private->p_prevX;
+    int dy = text_ypix(&x->x_obj, glist) - x->x_private->p_prevY;
+    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
+}
+
+static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
+{
+#define DRAW_FUN(fun, x, glist) {                                       \
+        t_iemdrawfunptr do_draw = x->x_private->p_widget.draw_##fun;    \
+        if (!do_draw) do_draw = (t_iemdrawfunptr)iemgui_draw_##fun;     \
+        do_draw(x, glist);                                              \
+    }
+
+    switch(mode) {
+    case (IEM_GUI_DRAW_MODE_UPDATE):
+    {
+        t_iemdrawfunptr draw_update = x->x_private->p_widget.draw_update;
+        if(!draw_update)
+            draw_update = (t_iemdrawfunptr)iemgui_draw_update;
+        sys_queuegui(x, x->x_glist, (t_guicallbackfn)draw_update);
+    }
+        break;
+    case (IEM_GUI_DRAW_MODE_MOVE):
+        DRAW_FUN(move, x, glist);
+        break;
+    case (IEM_GUI_DRAW_MODE_NEW):
+        DRAW_FUN(new, x, glist);
+        break;
+    case (IEM_GUI_DRAW_MODE_SELECT):
+        DRAW_FUN(select, x, glist);
+        break;
+    case (IEM_GUI_DRAW_MODE_ERASE):
+        DRAW_FUN(erase, x, glist);
+        break;
+    case (IEM_GUI_DRAW_MODE_CONFIG):
+        DRAW_FUN(config, x, glist);
+        break;
+    default:
+        if(x->x_private->p_widget.draw_iolets)
+            x->x_private->p_widget.draw_iolets(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+        else
+            iemgui_draw_iolets(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
+}
+
+void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w)
+{
+#define SET_DRAW(x, fun) \
+    x->x_private->p_widget.draw_##fun = w->draw_##fun
+
+    SET_DRAW(iemgui, new);
+    SET_DRAW(iemgui, config);
+    SET_DRAW(iemgui, iolets);
+    SET_DRAW(iemgui, update);
+    SET_DRAW(iemgui, select);
+    SET_DRAW(iemgui, erase);
+    SET_DRAW(iemgui, move);
+}
+
+
 
 t_iemgui *iemgui_new(t_class*cls)
 {
@@ -871,6 +982,9 @@ t_iemgui *iemgui_new(t_class*cls)
     t_glist *cnv = canvas_getcurrent();
     int fs = cnv->gl_font;
     x->x_glist = cnv;
+    x->x_private = (t_iemgui_private*)getbytes(sizeof(*x->x_private));
+    x->x_draw = (t_iemfunptr)iemgui_draw;
+
     x->x_fontsize = (fs<4)?4:fs;
 /*
     int fs = x->x_gui.x_fontsize;

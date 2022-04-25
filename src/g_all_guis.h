@@ -146,6 +146,16 @@ typedef struct _iem_init_symargs
 
 typedef void (*t_iemfunptr)(void *x, t_glist *glist, int mode);
 
+typedef void (*t_iemdrawfunptr)(void *x, t_glist *glist);
+typedef struct _iemgui_drawfunctions {
+    t_iemdrawfunptr draw_new; /* create all widgets */
+    t_iemdrawfunptr draw_config; /* reconfigure (draw, but don't create) all widgets (except iolets) */
+    t_iemfunptr     draw_iolets;  /* reconfigure (draw, but don't create) all iolets (0 uses default iolets function) */
+    t_iemdrawfunptr draw_update; /* update the changeable part of the iemgui (e.g. the number in a numbox) */
+    t_iemdrawfunptr draw_select; /* highlight object when it's selected */
+    t_iemdrawfunptr draw_erase; /* destroy all widgets; (0 uses default erase function) */
+    t_iemdrawfunptr draw_move; /* move all widgets; (0 uses default move function) */
+} t_iemgui_drawfunctions;
 typedef struct _iemgui
 {
     t_object           x_obj;
@@ -153,7 +163,7 @@ typedef struct _iemgui
     t_iemfunptr        x_draw;
     int                x_h;
     int                x_w;
-    int                x_prevX, x_prevY; /* previous position (when moving) */
+    struct _iemgui_private *x_private;
     int                x_ldx;
     int                x_ldy;
     char               x_font[MAXPDSTRING]; /* font names can be long! */
@@ -300,6 +310,20 @@ EXTERN void iem_inttosymargs(t_iem_init_symargs *symargp, int n);
 EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
 EXTERN void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n);
 EXTERN int iem_fstyletoint(t_iem_fstyle_flags *fstylep);
+EXTERN void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w);
+
+#define IEMGUI_SETDRAWFUNCTIONS(x, prefix)                     \
+    {                                                            \
+        t_iemgui_drawfunctions w;                              \
+        w.draw_new    = (t_iemdrawfunptr)prefix##_draw_new;      \
+        w.draw_config = (t_iemdrawfunptr)prefix##_draw_config;   \
+        w.draw_iolets = (t_iemfunptr)prefix##_draw_io;       \
+        w.draw_update = (t_iemdrawfunptr)prefix##_draw_update;   \
+        w.draw_select = (t_iemdrawfunptr)prefix##_draw_select;   \
+        w.draw_erase = 0;                                        \
+        w.draw_move  = 0;                                        \
+        iemgui_setdrawfunctions(&x->x_gui, &w);                        \
+    }
 
 
 /* wrapper around pd_new() for classes that start with a t_iemgui

@@ -207,20 +207,6 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
     my_numbox_draw_io(x, glist, 0);
 }
 
-static void my_numbox_draw_erase(t_my_numbox* x, t_glist* glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
-}
-
-static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
-{
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevX;
-    int dy = text_ypix(&x->x_gui.x_obj, glist) - x->x_gui.x_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
-}
-
 static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
@@ -298,23 +284,6 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     }
 }
 
-void my_numbox_draw(t_my_numbox *x, t_glist *glist, int mode)
-{
-    if(mode == IEM_GUI_DRAW_MODE_UPDATE)
-        sys_queuegui(x, glist, my_numbox_draw_update);
-    else if(mode == IEM_GUI_DRAW_MODE_MOVE)
-        my_numbox_draw_move(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_NEW)
-        my_numbox_draw_new(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_SELECT)
-        my_numbox_draw_select(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_ERASE)
-        my_numbox_draw_erase(x, glist);
-    else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
-        my_numbox_draw_config(x, glist);
-    else if(mode >= IEM_GUI_DRAW_MODE_IO)
-        my_numbox_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
-}
 
 /* widget helper functions */
 
@@ -746,6 +715,8 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     int log_height = 256;
     double min = -1.0e+37, max = 1.0e+37, v = 0.0;
 
+    IEMGUI_SETDRAWFUNCTIONS(x, my_numbox);
+
     if((argc >= 17)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
        &&IS_A_FLOAT(argv,2)&&IS_A_FLOAT(argv,3)
        &&IS_A_FLOAT(argv,4)&&IS_A_FLOAT(argv,5)
@@ -774,7 +745,6 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     {
         log_height = (int)atom_getfloatarg(17, argc, argv);
     }
-    x->x_gui.x_draw = (t_iemfunptr)my_numbox_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     if(x->x_gui.x_isa.x_loadinit)
