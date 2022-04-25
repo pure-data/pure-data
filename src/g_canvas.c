@@ -948,7 +948,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    
+
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
