@@ -609,11 +609,11 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_iemgui *x = (t_iemgui *)z;
 
+    (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
     if (vis)
         (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_NEW);
     else
     {
-        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
         sys_unqueuegui(z);
     }
     x->x_private->p_prevX = text_xpix(&x->x_obj, glist);
