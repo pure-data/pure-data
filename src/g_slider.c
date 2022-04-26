@@ -601,6 +601,16 @@ static void slider_orientation(t_slider *x, t_floatarg forient)
         int w = x->x_gui.x_w;
         x->x_gui.x_w = x->x_gui.x_h;
         x->x_gui.x_h = w;
+
+            /* urgh. for historical reasons,
+             * sliders have a different offset depending on their orientation.
+             * for backwards-compatibility, an ideal solution would handle
+             * these offsets during load/save,
+             * but we cannot access the object position in the constructor,
+             * so we need to do it here...
+             */
+        x->x_gui.x_obj.te_xpix += LMARGIN * ((horizontal==orient)?1:-1);
+        x->x_gui.x_obj.te_ypix -= TMARGIN * ((horizontal==orient)?1:-1);
     }
     x->x_orientation = orient;
 
