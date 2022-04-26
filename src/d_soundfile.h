@@ -10,6 +10,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include <io.h>
+#endif
 #include <string.h>
 #include <limits.h>
 #include <errno.h>
