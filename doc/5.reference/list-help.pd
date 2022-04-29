@@ -233,19 +233,19 @@ f 33;
 0;
 #X text 97 95 anything -;
 #X obj 32 18 list split;
-#X text 114 17 - cut a list into smaller ones;
 #X text 177 95 messages to be split into smaller lists.;
 #X obj 7 225 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 7 187 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 7 255 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 7 255 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 140 303 1) float - initialize split point.;
 #X text 120 133 float - sets new 'n' split point.;
 #X text 141 231 list - the remaining portion of the list.;
 #X text 141 195 list - the first 'n' elements of the list.;
 #X text 141 264 list - if incoming list is shorter than n.;
+#X text 114 17 - cut a list into smaller ones.;
 #X restore 399 18 pd reference;
 #X obj 14 54 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
