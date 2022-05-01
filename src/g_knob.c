@@ -46,9 +46,6 @@ typedef struct _knb
     int      x_acol;
     unsigned int      x_lin0_log1:1;
     unsigned int      x_angular:1;
-    unsigned int      x_outline_visible:1;
-    unsigned int      x_inlet_visible:1;
-    unsigned int      x_outlet_visible:1;
     unsigned int      x_wiper_visible:1;
     unsigned int      x_arc_visible:1;
     unsigned int      x_center_visible:1;
@@ -59,7 +56,46 @@ static t_class *knb_class;
 
 /* widget helper functions */
 
-static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags);
+static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
+{
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    t_canvas *canvas = glist_getcanvas(glist);
+
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
+
+    if ((!x->x_gui.x_fsf.x_snd_able) || (!x->x_gui.x_fsf.x_rcv_able))
+    {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -tags [list %lxOUTLINE %lxOBJ %lxSELECT]\n",
+            canvas, xpos, ypos,
+            xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
+            IEMGUI_ZOOM(x),
+            x, x, x);
+    }
+
+    if (!x->x_gui.x_fsf.x_snd_able)
+    {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d %lxOBJ]\n",
+            canvas,
+            xpos, ypos + x->x_gui.x_w + IEMGUI_ZOOM(x) - ioh,
+            xpos + iow, ypos + x->x_gui.x_w,
+            x, 0, x);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
+    }
+
+    if (!x->x_gui.x_fsf.x_rcv_able)
+    {
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d %lxOBJ]\n",
+            canvas,
+            xpos, ypos,
+            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
+            x, 0, x);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
+    }
+}
 
 static void knb_update_knob(t_knb *x, t_glist *glist)
 {
@@ -175,11 +211,11 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
         float alpha = (alpha0 + dalpha * tick - 90.0) * M_PI / 180.0;
         xTc = xc + r1 * cos(alpha);
         yTc = yc + r1 * sin(alpha);
-        sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags %lxTICKS\n",
+        sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags [list %lxTICKS %lxOBJ]\n",
             canvas,
             NEAR(xTc - r2), NEAR(yTc - r2),
             NEAR(xTc + r2), NEAR(yTc + r2),
-            x->x_gui.x_fcol, x->x_gui.x_fcol, x);
+            x->x_gui.x_fcol, x->x_gui.x_fcol, x, x);
     }
 
         /* if x_min x_max are of opposite signs, then double the ticks for the negative side: */
@@ -188,11 +224,11 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
         float alpha = (alpha0 - dalphan * tick - 90.0) * M_PI / 180.0;
         xTc = xc + r1 * cos(alpha);
         yTc = yc + r1 * sin(alpha);
-        sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags %lxTICKS\n",
+        sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -outline #%06x -tags [list %lxTICKS %lxOBJ]\n",
             canvas,
             NEAR(xTc - r2), NEAR(yTc - r2),
             NEAR(xTc + r2), NEAR(yTc + r2),
-            x->x_gui.x_fcol, x->x_gui.x_fcol, x);
+            x->x_gui.x_fcol, x->x_gui.x_fcol, x, x);
     }
 }
 
@@ -212,102 +248,47 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     int yc = ypos + x->x_gui.x_w / 2;
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -width %d -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create oval %d %d %d %d -fill #%06x -width %d -tags [list %lxBASE %lxOBJ %lxSELECT]\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
         x->x_gui.x_bcol, IEMGUI_ZOOM(x),
-        x);
-    x->x_outline_visible = x->x_outlet_visible = x->x_inlet_visible = 0;
+        x, x, x);
     knb_draw_io(x, glist, 0);
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c create arc %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags %lxARC\n",
+    sys_vgui(".x%lx.c create arc %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags [list %lxARC %lxOBJ]\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-        x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x);
+        x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x, x);
 
     x->x_center_visible = (x->x_arc_width > 0) && 
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
-    sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags %lxCENTER\n",
+    sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags [list %lxCENTER %lxOBJ]\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
         x->x_gui.x_bcol, x->x_gui.x_bcol, 
-        x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x);
+        x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x, x);
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -state %s -tags %lxWIPER\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -state %s -tags [list %lxWIPER %lxOBJ]\n",
         canvas, xc, yc, xc, yc, 3 * IEMGUI_ZOOM(x), x->x_gui.x_fcol,
-        x->x_wiper_visible ? "normal" : "hidden", x);
+        x->x_wiper_visible ? "normal" : "hidden", x, x);
 
     knb_update_knob(x, glist);
     knb_update_ticks(x, glist);
 
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-        -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
+        -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text %lxOBJ]\n",
         canvas, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x),
         strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight, 
-        x->x_gui.x_lcol, x);
-}
-
-static void knb_draw_move(t_knb *x, t_glist *glist)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
-        canvas, x,
-        xpos, ypos,
-        xpos + x->x_gui.x_w, ypos + x->x_gui.x_w);
-    if (x->x_outline_visible) sys_vgui(".x%lx.c coords %lxOUTLINE %d %d %d %d\n",
-        canvas, x,
-        xpos, ypos,
-        xpos + x->x_gui.x_w, ypos + x->x_gui.x_w);
-    if (x->x_outlet_visible) sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-        canvas, x, 0,
-        xpos, ypos + x->x_gui.x_w + IEMGUI_ZOOM(x) - ioh,
-        xpos + iow, ypos + x->x_gui.x_w);
-    if (x->x_inlet_visible) sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-        canvas, x, 0,
-        xpos, ypos,
-        xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh);
-    knb_update_knob(x, glist);
-    knb_update_ticks(x, glist);
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-        canvas, x, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-        ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-}
-
-static void knb_draw_erase(t_knb *x,t_glist *glist)
-{
-    t_canvas *canvas=glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxWIPER\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxARC\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxCENTER\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxTICKS\n", canvas, x);
-    if (x->x_outline_visible)
-    {
-        sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
-        x->x_outline_visible = 0;
-    }
-    if (x->x_outlet_visible)
-    {
-        sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-        x->x_outlet_visible = 0;
-    }
-    if (x->x_inlet_visible)
-    {
-        sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-        x->x_inlet_visible = 0;
-    }
+        x->x_gui.x_lcol, x, x);
 }
 
 static void knb_draw_config(t_knb *x,t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
         canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
@@ -328,91 +309,29 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         x, x->x_gui.x_fcol, 3 * IEMGUI_ZOOM(x), x->x_wiper_visible ? "normal" : "hidden");
 
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
-}
 
-static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
-{
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
-    x->x_outline_visible = 0;
-    x->x_outlet_visible = 0;
-    x->x_inlet_visible = 0;
-
-    if ((!x->x_gui.x_fsf.x_snd_able) || (!x->x_gui.x_fsf.x_rcv_able))
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -tags %lxOUTLINE\n",
-            canvas, xpos, ypos,
-            xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-            IEMGUI_ZOOM(x),
-            x);
-        x->x_outline_visible = 1;
-    }
-
-    if (!x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
-            canvas,
-            xpos, ypos + x->x_gui.x_w + IEMGUI_ZOOM(x) - ioh,
-            xpos + iow, ypos + x->x_gui.x_w,
-            x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
-        x->x_outlet_visible = 1;
-    }
-
-    if (!x->x_gui.x_fsf.x_rcv_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxIN%d\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-            x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
-        x->x_inlet_visible = 1;
-    }
+    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
+        canvas, x,
+        xpos, ypos,
+        xpos + x->x_gui.x_w, ypos + x->x_gui.x_w);
+    knb_update_knob(x, glist);
+    knb_update_ticks(x, glist);
+    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
+        canvas, x, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+        ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x));
 }
 
 static void knb_draw_select(t_knb *x,t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
+    int lcol = x->x_gui.x_lcol;
+    int col = IEM_GUI_COLOR_NORMAL;
 
-    if (x->x_gui.x_fsf.x_selected)
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-        if (x->x_outline_visible)
-            sys_vgui(".x%lx.c itemconfigure %lxOUTLINE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-    }
-    else
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, x->x_gui.x_lcol);
-        if (x->x_outline_visible)
-            sys_vgui(".x%lx.c itemconfigure %lxOUTLINE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
-    }
-}
+    if(x->x_gui.x_fsf.x_selected)
+        lcol = col =  IEM_GUI_COLOR_SELECTED;
 
-void knb_draw(t_knb *x, t_glist *glist, int mode)
-{
-    if (mode == IEM_GUI_DRAW_MODE_UPDATE)
-        knb_draw_update(x, glist);
-    else if (mode == IEM_GUI_DRAW_MODE_MOVE)
-        knb_draw_move(x, glist);
-    else if (mode == IEM_GUI_DRAW_MODE_NEW)
-        knb_draw_new(x, glist);
-    else if (mode == IEM_GUI_DRAW_MODE_SELECT)
-        knb_draw_select(x, glist);
-    else if (mode == IEM_GUI_DRAW_MODE_ERASE)
-        knb_draw_erase(x, glist);
-    else if (mode == IEM_GUI_DRAW_MODE_CONFIG)
-        knb_draw_config(x, glist);
-    else if (mode >= IEM_GUI_DRAW_MODE_IO)
-        knb_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    sys_vgui(".x%lx.c itemconfigure %lxSELECT -outline #%06x\n", canvas, x, col);
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, lcol);
 }
 
 /* ------------------------ knb widgetbehaviour----------------------------- */
@@ -714,10 +633,7 @@ static void knb_size(t_knb *x, t_floatarg f)
 
     knb_check_wh(x, w, h);
     iemgui_size((void *)x, &x->x_gui);
-    if (glist_isvisible(x->x_gui.x_glist))
-    {
-        knb_draw_move(x, x->x_gui.x_glist);
-    }
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
 }
 
 static void knb_sensitivity(t_knb *x, t_floatarg f)
@@ -941,7 +857,6 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
         end_angle = (int)atom_getint(argv++);
     }
 
-    x->x_gui.x_draw = (t_iemfunptr)knb_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
@@ -997,9 +912,6 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     iemgui_newzoom(&x->x_gui);
 
     x->x_fval = knb_getfval(x);
-    x->x_outline_visible = 0;
-    x->x_inlet_visible = 0;
-    x->x_outlet_visible = 0;
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);
 }
