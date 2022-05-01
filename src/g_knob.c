@@ -308,7 +308,6 @@ static void knb_draw_erase(t_knb *x,t_glist *glist)
 static void knb_draw_config(t_knb *x,t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
-
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
         canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
@@ -338,62 +337,43 @@ static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
+    sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
+    x->x_outline_visible = 0;
+    x->x_outlet_visible = 0;
+    x->x_inlet_visible = 0;
+
     if ((!x->x_gui.x_fsf.x_snd_able) || (!x->x_gui.x_fsf.x_rcv_able))
     {
-        if (!x->x_outline_visible)
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -tags %lxOUTLINE\n",
-                canvas, xpos, ypos,
-                xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-                IEMGUI_ZOOM(x),
-                x);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -tags %lxOUTLINE\n",
+            canvas, xpos, ypos,
+            xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
+            IEMGUI_ZOOM(x),
+            x);
         x->x_outline_visible = 1;
-
-    }
-    else
-    {
-        if (x->x_outline_visible)
-            sys_vgui(".x%lx.c delete %lxOUTLINE\n", canvas, x);
-        x->x_outline_visible = 0;
     }
 
     if (!x->x_gui.x_fsf.x_snd_able)
     {
-        if (!x->x_outlet_visible)
-        {
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
-                canvas,
-                xpos, ypos + x->x_gui.x_w + IEMGUI_ZOOM(x) - ioh,
-                xpos + iow, ypos + x->x_gui.x_w,
-                x, 0);
-            sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
-        }
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxOUT%d\n",
+            canvas,
+            xpos, ypos + x->x_gui.x_w + IEMGUI_ZOOM(x) - ioh,
+            xpos + iow, ypos + x->x_gui.x_w,
+            x, 0);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
         x->x_outlet_visible = 1;
-    }
-    else
-    {
-        if (x->x_outlet_visible)
-            sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-        x->x_outlet_visible = 0;
     }
 
     if (!x->x_gui.x_fsf.x_rcv_able)
     {
-        if (!x->x_inlet_visible)
-        {
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxIN%d\n",
-                canvas,
-                xpos, ypos,
-                xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-                x, 0);
-            sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
-        }
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags %lxIN%d\n",
+            canvas,
+            xpos, ypos,
+            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
+            x, 0);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
         x->x_inlet_visible = 1;
-    }
-    else
-    {
-        if (x->x_inlet_visible)
-            sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-        x->x_inlet_visible = 0;
     }
 }
 
@@ -736,8 +716,7 @@ static void knb_size(t_knb *x, t_floatarg f)
     iemgui_size((void *)x, &x->x_gui);
     if (glist_isvisible(x->x_gui.x_glist))
     {
-        knb_draw_config(x, x->x_gui.x_glist);
-        knb_draw_update(x, x->x_gui.x_glist);
+        knb_draw_move(x, x->x_gui.x_glist);
     }
 }
 
@@ -904,7 +883,7 @@ static void knb_loadbang(t_knb *x, t_floatarg action)
 
 static void *knb_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_knb *x = (t_knb *)pd_new(knb_class);
+    t_knb *x = (t_knb *)iemgui_new(knb_class);
     int w = DEFAULT_SIZE, h = DEFAULT_SENSITIVITY;
     int fs = 12, lilo = 0, ldx = 0, ldy = -6;
     float v = 0;
@@ -919,6 +898,8 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fcol = 0x00;
     x->x_gui.x_lcol = 0x00;
     x->x_acol = 0x00;
+
+    IEMGUI_SETDRAWFUNCTIONS(x, knb);
 
     if ((argc >= 17)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)
             &&IS_A_FLOAT(argv,2)&&IS_A_FLOAT(argv,3)
