@@ -2,6 +2,7 @@
 package provide pdtk_canvas 0.1
 
 package require pd_bindings
+package require pd_canvaszoom
 
 namespace eval ::pdtk_canvas:: {
 
@@ -134,6 +135,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     }
 
     ::pd_bindings::patch_bindings $mytoplevel
+    ::pd_canvaszoom::zoominit $mytoplevel
 
     # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
