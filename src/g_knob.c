@@ -259,11 +259,11 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
         x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x, x);
 
-    x->x_center_visible = (x->x_arc_width > 0) && 
+    x->x_center_visible = (x->x_arc_width > 0) &&
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
     sys_vgui(".x%lx.c create oval %d %d %d %d -outline #%06x -fill #%06x -state %s -width %d -tags [list %lxCENTER %lxOBJ]\n",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_w,
-        x->x_gui.x_bcol, x->x_gui.x_bcol, 
+        x->x_gui.x_bcol, x->x_gui.x_bcol,
         x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x), x, x);
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
@@ -279,7 +279,7 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
         canvas, xpos+x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x),
         strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight, 
+        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         x->x_gui.x_lcol, x, x);
 }
 
@@ -295,12 +295,12 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -fill #%06x -state %s -width %d\n", 
+    sys_vgui(".x%lx.c itemconfigure %lxARC -outline #%06x -fill #%06x -state %s -width %d\n",
         canvas, x, x->x_acol, x->x_acol, x->x_arc_visible ? "normal" : "hidden", IEMGUI_ZOOM(x));
 
     x->x_center_visible = (x->x_arc_width > 0) &&
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * IEMGUI_ZOOM(x)));
-    sys_vgui(".x%lx.c itemconfigure %lxCENTER -outline #%06x -fill #%06x -state %s -width %d\n", 
+    sys_vgui(".x%lx.c itemconfigure %lxCENTER -outline #%06x -fill #%06x -state %s -width %d\n",
         canvas, x, x->x_gui.x_bcol, x->x_gui.x_bcol,
         x->x_center_visible ? "normal" : "hidden", IEMGUI_ZOOM(x));
 
@@ -602,7 +602,7 @@ static void knb_click(t_knb *x, t_floatarg xpos, t_floatarg ypos,
 
     knb_bang(x);
 
-    if (x->x_angular) 
+    if (x->x_angular)
         glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
             (t_glistmotionfn)knb_motion_angular, 0, xpos, ypos);
     else glist_grab(x->x_gui.x_glist, &x->x_gui.x_obj.te_g,
@@ -845,8 +845,8 @@ static void *knb_new(t_symbol *s, int argc, t_atom *argv)
     else iemgui_new_getnames(&x->x_gui, 6, 0);
 
     argc -= 17; argv += 17;
-    if ((argc > 5) && (IS_A_FLOAT(argv,0)) && (IS_A_FLOAT(argv,1)) 
-        && (IS_A_SYMBOL(argv,2)) && (IS_A_FLOAT(argv,3)) 
+    if ((argc > 5) && (IS_A_FLOAT(argv,0)) && (IS_A_FLOAT(argv,1))
+        && (IS_A_SYMBOL(argv,2)) && (IS_A_FLOAT(argv,3))
         && (IS_A_FLOAT(argv,4)) && (IS_A_FLOAT(argv,5)))
     {
         angular = (int)atom_getint(argv++);

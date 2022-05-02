@@ -95,7 +95,7 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
     radiobutton $mytoplevel.colors.select.radio3 -value 3 -variable \
         $var_iemgui_l2_f1_b0 -text [_ "Arc"] -justify left
     pack $mytoplevel.colors.select.radio3 $mytoplevel.colors.select.radio2 -side left
-    
+
     set var_iemgui_bcol [concat iemgui_bcol_$vid]
     global $var_iemgui_bcol
     set var_iemgui_fcol [concat iemgui_fcol_$vid]
