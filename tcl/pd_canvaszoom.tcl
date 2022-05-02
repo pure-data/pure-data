@@ -29,6 +29,7 @@ proc zoom {c fact} {
     # update fonts only after main zoom activity has ceased
     after cancel $data(idle)
     set data(idle) [after idle "zoomtext $c"]
+    set data(idle) [after idle "setwitdth $c"]
 }
 
 proc zoomtext {c} {
@@ -82,5 +83,16 @@ proc zoomtext {c} {
         $c configure -scrollregion [list -4 -4 \
             [expr {[winfo width $c]-4}] \
             [expr {[winfo height $c]-4}]]
+    }
+}
+
+proc setwitdth {c} {
+    upvar #0 $c data
+    # adjust line width
+    set newwitdth $data(zdepth)
+    if {$newwitdth < 1} { set newwitdth 1 }
+    foreach {i} [$c find all] {
+        if { [string equal [$c type $i] text]} {continue}
+        $c itemconfigure $i -width $newwitdth
     }
 }
