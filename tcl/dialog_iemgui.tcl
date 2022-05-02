@@ -401,7 +401,7 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     if {[eval concat $$var_iemgui_gn_dy] eq ""} {set $var_iemgui_gn_dy 0}
 
     set additonal_output [::dialog_iemgui::call_gui_proc $mytoplevel ::dialog_iemgui::apply_]
-    
+
     pdsend [concat $mytoplevel dialog \
             [eval concat $$var_iemgui_wdt] \
             [eval concat $$var_iemgui_hgt] \
