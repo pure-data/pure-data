@@ -90,9 +90,21 @@ proc setwitdth {c} {
     upvar #0 $c data
     # adjust line width
     set newwitdth $data(zdepth)
-    if {$newwitdth < 1} { set newwitdth 1 }
     foreach {i} [$c find all] {
         if { [string equal [$c type $i] text]} {continue}
+        set linewidth 0
+        # get original linewidth from tags if it was previously recorded
+        foreach {tag} [$c gettags $i] {
+            scan $tag {_lw%d} linewidth
+        }
+        # if not, then record current linewidth and use it
+        if {!$linewidth} {
+            set linewidth [$c itemcget $i -width]
+            $c addtag _lw$linewidth withtag $i
+        }
+        # scale
+        set newwitdth [expr {$linewidth * $data(zdepth)}]
+        if {$newwitdth < 1} {set newwitdth 1}
         $c itemconfigure $i -width $newwitdth
     }
 }
