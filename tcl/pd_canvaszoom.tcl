@@ -2,6 +2,7 @@ package provide pd_canvaszoom 0.1
 
 namespace eval ::pd_canvaszoom:: {
     namespace export zoominit
+    namespace export canvasxy
 }
 
 proc ::pd_canvaszoom::zoominit {mytoplevel {zfact {1.1}}} {
@@ -102,4 +103,11 @@ proc zoomtext {c} {
             [expr {[winfo width $c]-4}] \
             [expr {[winfo height $c]-4}]]
     }
+}
+
+proc ::pd_canvaszoom::canvasxy {tkcanvas x y} {
+    set mytoplevel [winfo toplevel $tkcanvas]
+    upvar #0 $tkcanvas data
+    set zdepth $data(zdepth)
+    return [list [expr int([$tkcanvas canvasx $x] / $zdepth)] [expr int([$tkcanvas canvasy $y] / $zdepth)]]
 }
