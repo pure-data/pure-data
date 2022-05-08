@@ -20,12 +20,15 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact {1.1}}} {
 
 proc zoom {c fact} {
     upvar #0 $c data
-    # zoom at the current mouse position
+    # zoom at the current mouse position ("origin" point)
     set x [$c canvasx [expr {[winfo pointerx $c] - [winfo rootx $c]}]]
     set y [$c canvasy [expr {[winfo pointery $c] - [winfo rooty $c]}]]
-    $c scale all $x $y $fact $fact
+    # don't use "origin" point of "scale" command to help mouse handling
+    # TODO: scroll to keep the "origin" point at the same place.
+    $c scale all 0 0 $fact $fact
     # save new zoom depth
     set data(zdepth) [expr {$data(zdepth) * $fact}]
+
     # update fonts only after main zoom activity has ceased
     after cancel $data(idle)
     set data(idle) [after idle "zoomtext $c"]
@@ -89,7 +92,6 @@ proc zoomtext {c} {
 proc setwitdth {c} {
     upvar #0 $c data
     # adjust line width
-    set newwitdth $data(zdepth)
     foreach {i} [$c find all] {
         if { [string equal [$c type $i] text]} {continue}
         set linewidth 0
