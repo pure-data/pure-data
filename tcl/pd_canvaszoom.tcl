@@ -29,53 +29,68 @@ proc zoom {c fact} {
     # save new zoom depth
     set data(zdepth) [expr {$data(zdepth) * $fact}]
 
-    # update fonts only after main zoom activity has ceased
+    # update fonts and linewidth only after main zoom activity has ceased
     after cancel $data(idle)
     set data(idle) [after idle "zoomtext $c"]
-    set data(idle) [after idle "setwitdth $c"]
+    # set data(idle) [after idle "setwitdth $c"]
 }
 
 proc zoomtext {c} {
     upvar #0 $c data
-    # adjust fonts
     foreach {i} [$c find all] {
-        if { ! [string equal [$c type $i] text]} {continue}
-        set fontsize 0
-        # get original fontsize and text from tags
-        #   if they were previously recorded
-        foreach {tag} [$c gettags $i] {
-            scan $tag {_f%d} fontsize
-            scan $tag "_t%\[^\0\]" text
-        }
-        # if not, then record current fontsize and text
-        #   and use them
-        set font [$c itemcget $i -font]
-        if {!$fontsize} {
-            set text [$c itemcget $i -text]
-            if {[llength $font] < 2} {
-                #new font API
-                set fontsize [font actual $font -size]
-            } {
-                #old font API
-                set fontsize [lindex $font 1]
+        if {[string equal [$c type $i] text]} { # adjust fonts of text items
+            set fontsize 0
+            # get original fontsize and text from tags
+            #   if they were previously recorded
+            foreach {tag} [$c gettags $i] {
+                scan $tag {_f%d} fontsize
+                scan $tag "_t%\[^\0\]" text
             }
-            $c addtag _f$fontsize withtag $i
-            $c addtag _t$text withtag $i
-        }
-        # scale font
-        set newsize [expr {int($fontsize * $data(zdepth))}]
-        if {abs($newsize) >= 4} {
-            if {[llength $font] < 2} {
-                #new font api
-                font configure $font -size $newsize
-            } {
-                #old font api
-                set font [lreplace $font 1 1 $newsize] ; # Save modified font! [ljl]
+            # if not, then record current fontsize and text
+            #   and use them
+            set font [$c itemcget $i -font]
+            if {!$fontsize} {
+                set text [$c itemcget $i -text]
+                if {[llength $font] < 2} {
+                    #new font API
+                    set fontsize [font actual $font -size]
+                } {
+                    #old font API
+                    set fontsize [lindex $font 1]
+                }
+                $c addtag _f$fontsize withtag $i
+                $c addtag _t$text withtag $i
             }
-            $c itemconfigure $i -font $font -text $text
-        } {
-            # suppress text if too small
-            $c itemconfigure $i -text {}
+            # scale font
+            set newsize [expr {int($fontsize * $data(zdepth))}]
+            if {abs($newsize) >= 4} {
+                if {[llength $font] < 2} {
+                    #new font api
+                    font configure $font -size $newsize
+                } {
+                    #old font api
+                    set font [lreplace $font 1 1 $newsize] ; # Save modified font! [ljl]
+                }
+                $c itemconfigure $i -font $font -text $text
+            } {
+                # suppress text if too small
+                $c itemconfigure $i -text {}
+            }
+        } else { # adjust linewidth of non-text items
+            set linewidth 0
+            # get original linewidth from tags if it was previously recorded
+            foreach {tag} [$c gettags $i] {
+                scan $tag {_lw%d} linewidth
+            }
+            # if not, then record current linewidth and use it
+            if {!$linewidth} {
+                set linewidth [$c itemcget $i -width]
+                $c addtag _lw$linewidth withtag $i
+            }
+            # scale
+            set newwitdth [expr {$linewidth * $data(zdepth)}]
+            if {$newwitdth < 1} {set newwitdth 1}
+            $c itemconfigure $i -width $newwitdth
         }
     }
     # update canvas scrollregion
@@ -86,27 +101,5 @@ proc zoomtext {c} {
         $c configure -scrollregion [list -4 -4 \
             [expr {[winfo width $c]-4}] \
             [expr {[winfo height $c]-4}]]
-    }
-}
-
-proc setwitdth {c} {
-    upvar #0 $c data
-    # adjust line width
-    foreach {i} [$c find all] {
-        if { [string equal [$c type $i] text]} {continue}
-        set linewidth 0
-        # get original linewidth from tags if it was previously recorded
-        foreach {tag} [$c gettags $i] {
-            scan $tag {_lw%d} linewidth
-        }
-        # if not, then record current linewidth and use it
-        if {!$linewidth} {
-            set linewidth [$c itemcget $i -width]
-            $c addtag _lw$linewidth withtag $i
-        }
-        # scale
-        set newwitdth [expr {$linewidth * $data(zdepth)}]
-        if {$newwitdth < 1} {set newwitdth 1}
-        $c itemconfigure $i -width $newwitdth
     }
 }
