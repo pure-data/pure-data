@@ -4,7 +4,7 @@
 #X obj 19 8 cnv 15 100 60 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 424 168 359 352 properties 0;
-#N canvas 815 23 654 646 colors 0;
+#N canvas 712 23 654 646 colors 0;
 #X floatatom 82 251 3 0 29 0 - - - 0;
 #X floatatom 187 256 3 0 29 0 - - - 0;
 #X text 180 231 label;
@@ -12,7 +12,7 @@
 #X msg 82 350 color \$1 \$2 \$3;
 #X text 191 350 presets;
 #X symbolatom 485 347 9 0 0 0 - - - 0;
-#N canvas 1126 148 390 482 label 0;
+#N canvas 976 148 390 482 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
 #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
@@ -104,7 +104,7 @@
 #X obj 345 481 send \$0-colors;
 #X msg 267 270 list #e1e1e1 #000000 #000000, f 7;
 #X obj 82 313 pack 1 22 22, f 20;
-#N canvas 755 128 818 419 old-behavior 0;
+#N canvas 548 128 818 419 old-behavior 0;
 #X floatatom 395 117 3 0 29 0 - - - 0;
 #X floatatom 500 122 3 0 29 0 - - - 0;
 #X text 493 97 label;
@@ -441,8 +441,8 @@ in the subpatches below:, f 39;
 included in Pd version 0.34., f 28;
 #X text 337 425 updated for Pd version 0.51;
 #N canvas 626 143 482 400 example-room 0;
-#X obj 330 225 tgl 17 1 empty empty empty 20 8 0 10 #dfdfdf #000000
-#000000 1 1;
+#X obj 330 225 tgl 17 0 empty empty empty 20 8 0 10 #dfdfdf #000000
+#000000 0 1;
 #N canvas 899 89 383 386 room 0;
 #X obj 2 3 cnv 40 376 376 empty empty empty 150 140 2 17 #606060 #14e814
 0;
