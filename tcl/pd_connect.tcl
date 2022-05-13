@@ -112,6 +112,7 @@ proc ::pd_connect::pd_readsocket {} {
 
     foreach {docmds cmdbuf} [assemble_cmd $cmdbuf [read $pd_socket]] { break; }
     if { [string length $docmds] > 0 } {
+         set docmds [::pd_canvaszoom::scalescript $docmds]
          if {![catch {uplevel #0 $docmds} errorname]} {
              # we ran the command block without error, reset the buffer
          } else {
