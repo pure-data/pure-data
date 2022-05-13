@@ -185,7 +185,7 @@ proc scale_command {cmd} {
             upvar #0 [lindex $cmd 1] data
             set zdepth $data(zdepth)
             set actualfontsize [getactualfontsize [lindex $cmd 6]]
-            set cmd [scale_consecutive_numbers $cmd 3 $zdepth]
+            set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
             set cmd [scale_consecutive_numbers $cmd 6 $zdepth true]
             set text [unescape [lindex $cmd 5]]
             lset cmd 2 [concat [lindex $cmd 2] _f$actualfontsize [list _t$text]]
@@ -231,13 +231,33 @@ proc scale_command {cmd} {
                 incr widthindex
                 set cmd [scale_consecutive_numbers $cmd $widthindex $zdepth]
             }
+            if {[set fontindex [lsearch -start 3 $cmd "-font"]] != -1} {
+                incr fontindex
+                set c [lindex $cmd 0]
+                set i [lindex $cmd 2]
+                upvar #0 $c data
+                set zdepth $data(zdepth)
+                set font [lindex $cmd $fontindex]
+                if {[llength $font] < 2} {
+                    #new font API
+                    set font [get_font_for_size [expr int([getactualfontsize [font actual $font -size]] * $zdepth])]
+                } {
+                    #old font API
+                    lset font 1 [expr int([lindex $font 1] * $zdepth)]
+                }
+                lset cmd $fontindex $font
+                # remove font tag
+                set str {foreach {tag} [$c gettags $i] {if {"_f" in [string range $tag 0 1]} {$c dtag $i $tag}}}
+                set str [string map [list {$c} $c {$i} $i] $str]
+                append cmd \n $str
+            }
             if {[lsearch -start 3 $cmd "-text"] != -1} {
                 # remove text tag
                 set c [lindex $cmd 0]
                 set i [lindex $cmd 2]
                 set str {foreach {tag} [$c gettags $i] {if {"_t" in [string range $tag 0 1]} {$c dtag $i $tag}}}
                 set str [string map [list {$c} $c {$i} $i] $str]
-                append cmd $str
+                append cmd \n $str
             }
             return $cmd
         }
