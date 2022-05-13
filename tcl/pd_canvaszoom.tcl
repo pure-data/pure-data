@@ -54,7 +54,6 @@ proc zoomtext {c} {
             #   and use them
             set font [$c itemcget $i -font]
             if {!$fontsize} {
-                #set text [$c itemcget $i -text]
                 if {[llength $font] < 2} {
                     #new font API
                     set fontsize [font actual $font -size]
@@ -62,8 +61,8 @@ proc zoomtext {c} {
                     #old font API
                     set fontsize [lindex $font 1]
                 }
-                $c addtag _f[expr $fontsize / $data(oldzdepth)] withtag $i
-                #$c addtag _t$text withtag $i
+                set fontsize [expr $fontsize / $data(oldzdepth)]
+                $c addtag _f$fontsize withtag $i
             }
             if {[string length $text] == 0} {
                 set text [$c itemcget $i -text]
