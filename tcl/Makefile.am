@@ -36,6 +36,7 @@ dist_libpdtcl_DATA = \
     helpbrowser.tcl \
     opt_parser.tcl \
     pd_bindings.tcl \
+    pd_canvaszoom.tcl \
     pd_connect.tcl \
     pd_deken.tcl \
     pd_docsdir.tcl \
