@@ -38,6 +38,7 @@ dist_libpdtcl_DATA = \
     dialog_message.tcl \
     helpbrowser.tcl \
     pdtk_canvas.tcl \
+    pd_canvaszoom.tcl \
     pkg_mkIndex.tcl \
     dialog_audio.tcl \
     dialog_font.tcl \
