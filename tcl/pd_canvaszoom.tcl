@@ -184,6 +184,14 @@ proc scale_consecutive_numbers {instring from zdepth {int 0} {max_elements 1e6}}
     return [string cat $startstring $numbers $endstring]
 }
 
+# like "lset", but without changing the other parts of the string
+proc string_lset {instring index newvalue} {
+    set positions [elements_position $instring [expr $index + 1]]
+    set startstring [string range $instring 0 [lindex $positions $index]]
+    set endstring [string range $instring [lindex $positions [expr $index + 1]] end]
+    return [string cat $startstring $newvalue $endstring]
+}
+
 proc unescape {text} {
     return [string range [subst -nocommands -novariables $text] 0 end-1]
 }
@@ -242,6 +250,20 @@ proc scale_command {cmd} {
             if {$widthindex != -1} {
                 incr widthindex
                 set cmd [scale_consecutive_numbers $cmd $widthindex $zdepth]
+            }
+            if {[set fontindex [lsearch -start 3 $cmd "-font"]] != -1} {
+                incr fontindex
+                set c [lindex $cmd 0]
+                set i [lindex $cmd 2]
+                set font [lindex $cmd $fontindex]
+                if {[llength $font] < 2} {
+                    #new font API
+                    set font [get_font_for_size [expr int([getactualfontsize [font actual $font -size]] * $zdepth])]
+                } {
+                    #old font API
+                    lset font 1 [expr int([lindex $font 1] * $zdepth)]
+                }
+                set cmd [string_lset $cmd $fontindex "\{$font\}"]
             }
             return $cmd
         }
