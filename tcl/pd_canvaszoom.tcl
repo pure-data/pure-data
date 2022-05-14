@@ -21,21 +21,45 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact {1.1}}} {
     bind $c <Control-MouseWheel> "if {%D > 0} {zoom $c $zfact} else {zoom $c [expr {1.0/$zfact}]}"
 }
 
+# scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
+proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
+    upvar #0 $c data
+    set zdepth $data(zdepth)
+    set scrollregion [$c cget -scrollregion]
+    set scrollx [expr { ($xcanvas * $zdepth - $xwin) / [lindex $scrollregion 2]}]
+    set scrolly [expr { ($ycanvas * $zdepth - $ywin) / [lindex $scrollregion 3]}]
+    $c xview moveto $scrollx
+    $c yview moveto $scrolly
+}
+
 proc zoom {c fact} {
     upvar #0 $c data
-    # zoom at the current mouse position ("origin" point)
-    set x [$c canvasx [expr {[winfo pointerx $c] - [winfo rootx $c]}]]
-    set y [$c canvasy [expr {[winfo pointery $c] - [winfo rooty $c]}]]
     # don't use "origin" point of "scale" command to help mouse handling
-    # TODO: scroll to keep the "origin" point at the same place.
     $c scale all 0 0 $fact $fact
-    # save new zoom depth
+    # save old zoom depth
     set data(oldzdepth) $data(zdepth)
+
+    # compute the (xcanvas, ycanvas) point of the (xwin, ywin) position on the window
+    set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
+    set ywin [expr {[winfo pointery $c] - [winfo rooty $c]}]
+    set scrollregion [$c cget -scrollregion]
+    set left_xview_pix [expr [lindex [$c xview] 0] * [lindex $scrollregion 2]]
+    set top_yview_pix [expr [lindex [$c yview] 0] * [lindex $scrollregion 3]]
+    set xcanvas [expr ($xwin + $left_xview_pix) / $data(zdepth)]
+    set ycanvas [expr ($ywin + $top_yview_pix) / $data(zdepth)]
+
+    # compute new zoom depth
     set data(zdepth) [expr {$data(zdepth) * $fact}]
 
-    # update fonts and linewidth and fix canvas scollbars visibily, only after main zoom activity has ceased
+    # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
+    ::pdtk_canvas::pdtk_canvas_getscroll $c
+    scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
+
+    # update fonts and linewidth and fix canvas scollbars again, only after main zoom activity has ceased
     after cancel $data(idle)
-    set data(idle) [after idle "zoomtext $c ; ::pdtk_canvas::pdtk_canvas_getscroll $c"]
+    set data(idle) [after idle "zoomtext $c ;\
+        ::pdtk_canvas::pdtk_canvas_getscroll $c ;\
+        scroll_point_to $c $xcanvas $ycanvas $xwin $ywin"]
 }
 
 proc zoomtext {c} {
@@ -101,15 +125,6 @@ proc zoomtext {c} {
                 $c itemconfigure $i -width $newwitdth
             }
         }
-    }
-    # update canvas scrollregion
-    set bbox [$c bbox all]
-    if {[llength $bbox]} {
-        $c configure -scrollregion $bbox
-    } {
-        $c configure -scrollregion [list -4 -4 \
-            [expr {[winfo width $c]-4}] \
-            [expr {[winfo height $c]-4}]]
     }
 }
 
