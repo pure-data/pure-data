@@ -13,12 +13,19 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact {1.1}}} {
     set data(zdepth) 1.0
     set data(oldzdepth) 1.0
     set data(idle) {}
+
     # add mousewheel bindings to canvas
-    bind all <Control-Button-4> \
-        {event generate [focus -displayof %W] <Control-MouseWheel> -delta  1}
-    bind all <Control-Button-5> \
-        {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
+    if {$::windowingsystem eq "x11"} {
+        bind all <Control-Button-4> \
+            {event generate [focus -displayof %W] <Control-MouseWheel> -delta  1}
+        bind all <Control-Button-5> \
+            {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
+    }
     bind $c <Control-MouseWheel> "if {%D > 0} {zoom $c $zfact} else {zoom $c [expr {1.0/$zfact}]}"
+
+    # add button-2 bindings to scroll the canvas
+    bind $c <ButtonPress-2> {+ %W scan mark %x %y}
+    bind $c <B2-Motion> {+ %W scan dragto %x %y 1}
 }
 
 # scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
