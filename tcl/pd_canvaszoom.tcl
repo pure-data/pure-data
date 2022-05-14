@@ -90,14 +90,16 @@ proc zoomtext {c} {
                 scan $tag {_lw%d} linewidth
             }
             # if not, then record current linewidth and use it
-            if {!$linewidth} {
-                set linewidth [expr ([$c itemcget $i -width] / $data(oldzdepth))]
-                $c addtag _lw$linewidth withtag $i
+            catch { # protect the case the item doesn't have "-width"
+                if {!$linewidth} {
+                    set linewidth [expr ([$c itemcget $i -width] / $data(oldzdepth))]
+                    $c addtag _lw$linewidth withtag $i
+                }
+                # scale
+                set newwitdth [expr {$linewidth * $data(zdepth)}]
+                if {$newwitdth < 1} {set newwitdth 1}
+                $c itemconfigure $i -width $newwitdth
             }
-            # scale
-            set newwitdth [expr {$linewidth * $data(zdepth)}]
-            if {$newwitdth < 1} {set newwitdth 1}
-            $c itemconfigure $i -width $newwitdth
         }
     }
     # update canvas scrollregion
@@ -175,14 +177,23 @@ proc getactualfontsize {fontsize} {
     }
 }
 
+proc getzdepth tkcanvas {
+    upvar #0 $tkcanvas data
+    if [info exists data] {
+        return $data(zdepth)
+    } {
+        return 0
+    }
+}
+
 proc scale_command {cmd} {
     set cmd [regsub -all "\}" $cmd "\} "]
     set cmd [regsub -all "\"\]" $cmd "\" \]"]
     set cmd [regsub -all {\\\n} $cmd " "]
     switch [lindex $cmd 0] {
+        "image" {return $cmd}
         "pdtk_text_new" {
-            upvar #0 [lindex $cmd 1] data
-            set zdepth $data(zdepth)
+            if {! [set zdepth [getzdepth [lindex $cmd 1]]]} {return $cmd}
             set actualfontsize [getactualfontsize [lindex $cmd 6]]
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
             set cmd [scale_consecutive_numbers $cmd 6 $zdepth true]
@@ -191,6 +202,7 @@ proc scale_command {cmd} {
             return $cmd
         }
         "pdtk_text_set" {
+            if {! [set zdepth [getzdepth [lindex $cmd 1]]]} {return $cmd}
             # remove text tag
             set c [lindex $cmd 1]
             set i [lindex $cmd 2]
@@ -202,8 +214,7 @@ proc scale_command {cmd} {
     }
     switch [lindex $cmd 1] {
         "create" {
-            upvar #0 [lindex $cmd 0] data
-            set zdepth $data(zdepth)
+            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth]
             set widthindex [lsearch -start 3 $cmd "-width"]
             if {$widthindex != -1} {
@@ -213,20 +224,17 @@ proc scale_command {cmd} {
             return $cmd
         }
         "coords" {
-            upvar #0 [lindex $cmd 0] data
-            set zdepth $data(zdepth)
+            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
             return [scale_consecutive_numbers $cmd 3 $zdepth]
         }
         "move" {
-            upvar #0 [lindex $cmd 0] data
-            set zdepth $data(zdepth)
+            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
             return [scale_consecutive_numbers $cmd 3 $zdepth]
         }
         "itemconfigure" {
+            if {! [set zdepth [getzdepth [lindex $cmd 0]]]} {return $cmd}
             set widthindex [lsearch -start 3 $cmd "-width"]
             if {$widthindex != -1} {
-                upvar #0 [lindex $cmd 0] data
-                set zdepth $data(zdepth)
                 incr widthindex
                 set cmd [scale_consecutive_numbers $cmd $widthindex $zdepth]
             }
@@ -234,8 +242,6 @@ proc scale_command {cmd} {
                 incr fontindex
                 set c [lindex $cmd 0]
                 set i [lindex $cmd 2]
-                upvar #0 $c data
-                set zdepth $data(zdepth)
                 set font [lindex $cmd $fontindex]
                 if {[llength $font] < 2} {
                     #new font API
