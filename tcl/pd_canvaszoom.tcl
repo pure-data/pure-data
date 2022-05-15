@@ -1,17 +1,22 @@
 package provide pd_canvaszoom 0.1
 
 namespace eval ::pd_canvaszoom:: {
+    # exported procedures
     namespace export zoominit
     namespace export canvasxy
     namespace export scalescript
+    namespace export getzdepth
+
+    # exported variables
+    variable zdepth
+    variable oldzdepth
 }
+
 
 proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
     set c [tkcanvas_name $mytoplevel]
-    # save zoom state in a global variable with the same name as the canvas handle
-    upvar #0 $c data
-    set data(zdepth) 1.0
-    set data(oldzdepth) 1.0
+    set ::pd_canvaszoom::zdepth($c) 1.0
+    set ::pd_canvaszoom::oldzdepth($c) 0.0
 
     if {!$zfact} {set zfact [expr pow(2.0, 1/5.0)]}
     # add mousewheel bindings to canvas
@@ -30,8 +35,7 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
 
 # scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
 proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
-    upvar #0 $c data
-    set zdepth $data(zdepth)
+    set zdepth $::pd_canvaszoom::zdepth($c)
     set scrollregion [$c cget -scrollregion]
     set scrollx [expr { ($xcanvas * $zdepth - $xwin) / [lindex $scrollregion 2]}]
     set scrolly [expr { ($ycanvas * $zdepth - $ywin) / [lindex $scrollregion 3]}]
@@ -40,9 +44,10 @@ proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
 }
 
 proc zoom {c fact} {
-    upvar #0 $c data
+    variable ::pd_canvaszoom::oldzdepth
+    variable ::pd_canvaszoom::zdepth
     # save old zoom depth
-    set data(oldzdepth) $data(zdepth)
+    set oldzdepth($c) $zdepth($c)
 
     # compute the position of the pointer, relatively to the window and to the canvas
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -50,11 +55,11 @@ proc zoom {c fact} {
     set scrollregion [$c cget -scrollregion]
     set left_xview_pix [expr [lindex [$c xview] 0] * [lindex $scrollregion 2]]
     set top_yview_pix [expr [lindex [$c yview] 0] * [lindex $scrollregion 3]]
-    set xcanvas [expr ($xwin + $left_xview_pix) / $data(zdepth)]
-    set ycanvas [expr ($ywin + $top_yview_pix) / $data(zdepth)]
+    set xcanvas [expr ($xwin + $left_xview_pix) / $zdepth($c)]
+    set ycanvas [expr ($ywin + $top_yview_pix) / $zdepth($c)]
 
     # compute new zoom depth
-    set data(zdepth) [expr {$data(zdepth) * $fact}]
+    set zdepth($c) [expr {$zdepth($c) * $fact}]
 
     # scale the canvas
     $c scale all 0 0 $fact $fact
@@ -68,7 +73,8 @@ proc zoom {c fact} {
 }
 
 proc zoomtext {c} {
-    upvar #0 $c data
+    set zdepth $::pd_canvaszoom::zdepth($c)
+    set oldzdepth $::pd_canvaszoom::oldzdepth($c)
     foreach {i} [$c find all] {
         if {[string equal [$c type $i] text]} { # adjust fonts of text items
             set fontsize 0
@@ -90,7 +96,7 @@ proc zoomtext {c} {
                     #old font API
                     set fontsize [lindex $font 1]
                 }
-                set fontsize [expr $fontsize / $data(oldzdepth)]
+                set fontsize [expr $fontsize / $oldzdepth]
                 $c addtag _f$fontsize withtag $i
             }
             if {[string length $text] == 0} {
@@ -98,7 +104,7 @@ proc zoomtext {c} {
                 $c addtag _t$text withtag $i
             }
             # scale font
-            set newsize [expr {int($fontsize * $data(zdepth))}]
+            set newsize [expr {int($fontsize * $zdepth)}]
             if {abs($newsize) >= 4} {
                 if {[llength $font] < 2} {
                     #new font api
@@ -121,11 +127,11 @@ proc zoomtext {c} {
             # if not, then record current linewidth and use it
             catch { # protect the case the item doesn't have "-width"
                 if {!$linewidth} {
-                    set linewidth [expr ([$c itemcget $i -width] / $data(oldzdepth))]
+                    set linewidth [expr ([$c itemcget $i -width] / $oldzdepth)]
                     $c addtag _lw$linewidth withtag $i
                 }
                 # scale
-                set newwitdth [expr {$linewidth * $data(zdepth)}]
+                set newwitdth [expr {$linewidth * $zdepth}]
                 if {$newwitdth < 1} {set newwitdth 1}
                 $c itemconfigure $i -width $newwitdth
             }
@@ -134,9 +140,7 @@ proc zoomtext {c} {
 }
 
 proc ::pd_canvaszoom::canvasxy {tkcanvas x y} {
-    set mytoplevel [winfo toplevel $tkcanvas]
-    upvar #0 $tkcanvas data
-    set zdepth $data(zdepth)
+    set zdepth $::pd_canvaszoom::zdepth($tkcanvas)
     return [list [expr int([$tkcanvas canvasx $x] / $zdepth)] [expr int([$tkcanvas canvasy $y] / $zdepth)]]
 }
 
@@ -205,16 +209,16 @@ proc getactualfontsize {fontsize} {
     }
 }
 
-proc getzdepth tkcanvas {
-    upvar #0 $tkcanvas data
-    if [info exists data] {
-        return $data(zdepth)
+proc ::pd_canvaszoom::getzdepth tkcanvas {
+    if [info exists ::pd_canvaszoom::zdepth($tkcanvas)] {
+        return $::pd_canvaszoom::zdepth($tkcanvas)
     } {
         return 0
     }
 }
 
 proc scale_command {cmd} {
+    namespace import ::pd_canvaszoom::getzdepth
     set cmd [regsub -all "\}" $cmd "\} "]
     set cmd [regsub -all "\"\]" $cmd "\" \]"]
     set cmd [regsub -all {\\\n} $cmd " "]
