@@ -6,14 +6,14 @@ namespace eval ::pd_canvaszoom:: {
     namespace export scalescript
 }
 
-proc ::pd_canvaszoom::zoominit {mytoplevel {zfact {1.1}}} {
+proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
     set c [tkcanvas_name $mytoplevel]
     # save zoom state in a global variable with the same name as the canvas handle
     upvar #0 $c data
     set data(zdepth) 1.0
     set data(oldzdepth) 1.0
-    set data(idle) {}
 
+    if {!$zfact} {set zfact [expr pow(2.0, 1/5.0)]}
     # add mousewheel bindings to canvas
     if {$::windowingsystem eq "x11"} {
         bind all <Control-Button-4> \
@@ -41,12 +41,10 @@ proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
 
 proc zoom {c fact} {
     upvar #0 $c data
-    # don't use "origin" point of "scale" command to help mouse handling
-    $c scale all 0 0 $fact $fact
     # save old zoom depth
     set data(oldzdepth) $data(zdepth)
 
-    # compute the (xcanvas, ycanvas) point of the (xwin, ywin) position on the window
+    # compute the position of the pointer, relatively to the window and to the canvas
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
     set ywin [expr {[winfo pointery $c] - [winfo rooty $c]}]
     set scrollregion [$c cget -scrollregion]
@@ -58,15 +56,15 @@ proc zoom {c fact} {
     # compute new zoom depth
     set data(zdepth) [expr {$data(zdepth) * $fact}]
 
-    # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
-    ::pdtk_canvas::pdtk_canvas_getscroll $c
-    scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
+    # scale the canvas
+    $c scale all 0 0 $fact $fact
+    # update fonts and linewidth
+    zoomtext $c
 
-    # update fonts and linewidth and fix canvas scollbars again, only after main zoom activity has ceased
-    after cancel $data(idle)
-    set data(idle) [after idle "zoomtext $c ;\
-        ::pdtk_canvas::pdtk_canvas_getscroll $c ;\
-        scroll_point_to $c $xcanvas $ycanvas $xwin $ywin"]
+    # check new visibility of scrollbars
+    ::pdtk_canvas::pdtk_canvas_getscroll $c
+    # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
+    scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
 }
 
 proc zoomtext {c} {
