@@ -282,9 +282,7 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
         .popup entryconfigure [_ "Open"] -state disabled
     }
     set tkcanvas [tkcanvas_name $mytoplevel]
-    upvar #0 $tkcanvas data
-    set zdepth $data(zdepth)
-
+    set zdepth [::pd_canvaszoom::getzdepth $tkcanvas]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
     set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
