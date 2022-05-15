@@ -6,6 +6,7 @@ namespace eval ::pd_canvaszoom:: {
     namespace export canvasxy
     namespace export scalescript
     namespace export getzdepth
+    namespace export setzdepth
 
     # exported variables
     variable zdepth
@@ -16,7 +17,7 @@ namespace eval ::pd_canvaszoom:: {
 proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
     set c [tkcanvas_name $mytoplevel]
     set ::pd_canvaszoom::zdepth($c) 1.0
-    set ::pd_canvaszoom::oldzdepth($c) 0.0
+    set ::pd_canvaszoom::oldzdepth($c) 1.0
 
     if {!$zfact} {set zfact [expr pow(2.0, 1/5.0)]}
     # add mousewheel bindings to canvas
@@ -44,10 +45,7 @@ proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
 }
 
 proc zoom {c fact} {
-    variable ::pd_canvaszoom::oldzdepth
     variable ::pd_canvaszoom::zdepth
-    # save old zoom depth
-    set oldzdepth($c) $zdepth($c)
 
     # compute the position of the pointer, relatively to the window and to the canvas
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -59,17 +57,27 @@ proc zoom {c fact} {
     set ycanvas [expr ($ywin + $top_yview_pix) / $zdepth($c)]
 
     # compute new zoom depth
-    set zdepth($c) [expr {$zdepth($c) * $fact}]
-
-    # scale the canvas
-    $c scale all 0 0 $fact $fact
-    # update fonts and linewidth
-    zoomtext $c
-
+    ::pd_canvaszoom::setzdepth $c [expr {$zdepth($c) * $fact}]
     # check new visibility of scrollbars
     ::pdtk_canvas::pdtk_canvas_getscroll $c
     # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
     scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
+}
+
+proc ::pd_canvaszoom::setzdepth {c newzdepth} {
+    variable ::pd_canvaszoom::oldzdepth
+    variable ::pd_canvaszoom::zdepth
+
+    # save old zoom depth
+    set oldzdepth($c) $zdepth($c)
+    # set new zoom depth
+    set zdepth($c) $newzdepth
+    # compute scaling factor
+    set fact [expr $zdepth($c) / $oldzdepth($c)]
+    # scale the canvas
+    $c scale all 0 0 $fact $fact
+    # update fonts and linewidth
+    zoomtext $c
 }
 
 proc zoomtext {c} {
