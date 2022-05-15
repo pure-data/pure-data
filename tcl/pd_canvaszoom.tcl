@@ -27,7 +27,7 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
         bind all <Control-Button-5> \
             {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
     }
-    bind $c <Control-MouseWheel> "if {%D > 0} {zoom $c $zfact} else {zoom $c [expr {1.0/$zfact}]}"
+    bind $c <Control-MouseWheel> "if {%D > 0} {::pd_canvaszoom::zoom $c $zfact} else {::pd_canvaszoom::zoom $c [expr {1.0/$zfact}]}"
 
     # add button-2 bindings to scroll the canvas
     bind $c <ButtonPress-2> {+ %W scan mark %x %y}
@@ -35,7 +35,7 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
 }
 
 # scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
-proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
+proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     set zdepth $::pd_canvaszoom::zdepth($c)
     set scrollregion [$c cget -scrollregion]
     set scrollx [expr { ($xcanvas * $zdepth - $xwin) / [lindex $scrollregion 2]}]
@@ -44,8 +44,8 @@ proc scroll_point_to {c xcanvas ycanvas xwin ywin} {
     $c yview moveto $scrolly
 }
 
-proc zoom {c fact} {
-    variable ::pd_canvaszoom::zdepth
+proc ::pd_canvaszoom::zoom {c fact} {
+    variable zdepth
 
     # compute the position of the pointer, relatively to the window and to the canvas
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -57,7 +57,7 @@ proc zoom {c fact} {
     set ycanvas [expr ($ywin + $top_yview_pix) / $zdepth($c)]
 
     # compute new zoom depth
-    ::pd_canvaszoom::setzdepth $c [expr {$zdepth($c) * $fact}]
+    setzdepth $c [expr {$zdepth($c) * $fact}]
     # check new visibility of scrollbars
     ::pdtk_canvas::pdtk_canvas_getscroll $c
     # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
@@ -65,8 +65,8 @@ proc zoom {c fact} {
 }
 
 proc ::pd_canvaszoom::setzdepth {c newzdepth} {
-    variable ::pd_canvaszoom::oldzdepth
-    variable ::pd_canvaszoom::zdepth
+    variable oldzdepth
+    variable zdepth
 
     # save old zoom depth
     set oldzdepth($c) $zdepth($c)
@@ -80,7 +80,7 @@ proc ::pd_canvaszoom::setzdepth {c newzdepth} {
     zoomtext $c
 }
 
-proc zoomtext {c} {
+proc ::pd_canvaszoom::zoomtext {c} {
     set zdepth $::pd_canvaszoom::zdepth($c)
     set oldzdepth $::pd_canvaszoom::oldzdepth($c)
     foreach {i} [$c find all] {
@@ -153,7 +153,7 @@ proc ::pd_canvaszoom::canvasxy {tkcanvas x y} {
 }
 
 # compute the position of the first character of each element of the string seen as a list
-proc elements_position {instring {max_elements 1e6}} {
+proc ::pd_canvaszoom::elements_position {instring {max_elements 1e6}} {
     set positions 0
     set pos 0
     set nextpos 0
@@ -176,7 +176,7 @@ proc elements_position {instring {max_elements 1e6}} {
 # process maximum "max_elements" elements, and round the result if "int" is not null.
 # "lset" isn't usable here, since it modifies the other parts of the string, which breaks Tcl commands,
 # that's why "elements_position" is needed.
-proc scale_consecutive_numbers {instring from zdepth {int 0} {max_elements 1e6}} {
+proc ::pd_canvaszoom::scale_consecutive_numbers {instring from zdepth {int 0} {max_elements 1e6}} {
     set i $from
     set numbers {}
     set positions [elements_position $instring [expr $from + $max_elements + 1]]
@@ -195,18 +195,18 @@ proc scale_consecutive_numbers {instring from zdepth {int 0} {max_elements 1e6}}
 }
 
 # like "lset", but without changing the other parts of the string
-proc string_lset {instring index newvalue} {
+proc ::pd_canvaszoom::string_lset {instring index newvalue} {
     set positions [elements_position $instring [expr $index + 1]]
     set startstring [string range $instring 0 [lindex $positions $index]]
     set endstring [string range $instring [lindex $positions [expr $index + 1]] end]
     return [string cat $startstring $newvalue $endstring]
 }
 
-proc unescape {text} {
+proc ::pd_canvaszoom::unescape {text} {
     return [string range [subst -nocommands -novariables $text] 0 end-1]
 }
 
-proc getactualfontsize {fontsize} {
+proc ::pd_canvaszoom::getactualfontsize {fontsize} {
     set font [get_font_for_size $fontsize]
     if {[llength $font] < 2} {
         #new font API
@@ -225,8 +225,7 @@ proc ::pd_canvaszoom::getzdepth tkcanvas {
     }
 }
 
-proc scale_command {cmd} {
-    namespace import ::pd_canvaszoom::getzdepth
+proc ::pd_canvaszoom::scale_command {cmd} {
     set cmd [regsub -all "\}" $cmd "\} "]
     set cmd [regsub -all "\"\]" $cmd "\" \]"]
     set cmd [regsub -all {\\\n} $cmd " "]
