@@ -780,7 +780,6 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_activate(t, 0);
         x->a_grabbed = 0;
         gatom_reborder(x);
-        gatom_senditup(x);
         gatom_redraw(&x->a_text.te_g, x->a_glist);
     }
     else if (c == '\n')
@@ -1171,6 +1170,7 @@ static void gatom_free(t_gatom *x)
         pd_unbind(&x->a_text.te_pd,
             canvas_realizedollar(x->a_glist, x->a_symfrom));
     gfxstub_deleteforkey(x);
+    sys_unqueuegui(x);
 }
 
 static void gatom_properties(t_gobj *z, t_glist *owner)
