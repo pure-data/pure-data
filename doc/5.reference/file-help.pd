@@ -148,9 +148,9 @@ in octal., f 63;
 #000000 #000000;
 #X text 134 62 The data you read from or write to a file are lists
 of bytes \, which appear in Pd as lists of numbers from 0 to 255 (using
-out-of-range numbers of symbols leads to undefined behavior.) The
-2nd inlet of the [file handle] object is documented in the [pd file
-define] subpatch., f 121;
+out-of-range numbers of symbols leads to undefined behavior.) The 2nd
+inlet of the [file handle] object is documented in the [pd file define]
+subpatch., f 121;
 #X text 394 20 - short form for [file handle].;
 #X text 314 548 If the file cannot be opened \, a bang is sent to the
 2nd outlet. When the end of the file is reached or a read error occurred
@@ -424,17 +424,16 @@ and returns the resolved path., f 69;
 #X obj 31 22 file which;
 #X text 114 22 - locate a file;
 #X text 127 65 symbol - file to locate using Pd's search-paths.;
-#X text 132 174 float - when there's an error creating the directory.
-;
 #X text 64 86 verbose <float> - set verbosity on or off., f 57;
-#X text 125 142 list - symbol path of located file and directory flag.
-;
 #X obj 7 208 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
 #X obj 7 234 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
+#X text 98 143 list - symbol path of located file and directory flag.
+;
+#X text 85 174 symbol - the input symbol if file isn't located.;
 #X restore 418 15 pd reference;
-#X text 157 273 directory?;
+#X text 157 273 directory flag \, always 0 \, see notes below.;
 #X connect 0 0 13 0;
 #X connect 0 1 12 0;
 #X connect 1 0 2 0;
