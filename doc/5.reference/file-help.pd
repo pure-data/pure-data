@@ -1,4 +1,4 @@
-#N canvas 563 23 564 676 12;
+#N canvas 459 23 564 676 12;
 #X text 439 70 details:;
 #X text 437 53 click for;
 #N canvas 215 30 1059 652 handle 0;
@@ -377,7 +377,7 @@ with a dot), f 39;
 #X obj 102 240 print not!found;
 #X msg 45 157 symbol nada;
 #X msg 35 121 symbol hilbert~.pd;
-#X text 67 363 notes:;
+#X text 73 364 notes:;
 #X text 126 364 - currently this only works for files \, not for directories!
 ;
 #X text 126 385 - currently only the first match is returned;
@@ -433,7 +433,8 @@ and returns the resolved path., f 69;
 ;
 #X text 85 174 symbol - the input symbol if file isn't located.;
 #X restore 418 15 pd reference;
-#X text 157 273 directory flag \, always 0 \, see notes below.;
+#X text 157 273 directory flag: 0 if file \, 1 if directory \, see
+notes below.;
 #X connect 0 0 13 0;
 #X connect 0 1 12 0;
 #X connect 1 0 2 0;
