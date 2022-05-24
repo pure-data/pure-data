@@ -1,4 +1,4 @@
-#N canvas 549 25 570 450 12;
+#N canvas 549 25 568 446 12;
 #X text 341 415 updated for Pd version 0.25;
 #X text 43 413 see also:;
 #X obj 29 16 poly;
@@ -65,7 +65,7 @@
 #000000 0 64;
 #X text 249 181 <-- emulating note on/off messages;
 #X text 228 268 <-- first argument \, number of voices second argument
-selects voice stealing;
+selects voice stealing, f 43;
 #X text 21 58 The [poly] object takes a stream of pitch/velocity pairs
 and outputs triples containing voice number \, pitch and velocity -
 it can be configured to do voice stealing or not (the default). You
