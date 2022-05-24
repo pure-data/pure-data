@@ -10,7 +10,7 @@ or not., f 30;
 #X text 239 230 duration in milliseconds;
 #X text 214 258 creation arguments initialize velocity and duration
 , f 29;
-#X obj 88 384 stripnote;
+#X obj 147 384 stripnote;
 #X text 294 384 updated for Pd version 0.33;
 #X text 14 384 see also:;
 #X floatatom 89 298 5 0 0 0 - - - 0;
@@ -19,8 +19,7 @@ or not., f 30;
 #X obj 198 329 print velocity;
 #X text 184 197 "velocity" (also may be integer or not);
 #X obj 89 263 makenote 100 500;
-#X obj 161 384 makenote;
-#X obj 230 384 bag;
+#X obj 220 384 bag;
 #N canvas 683 85 578 318 reference 0;
 #X obj 11 42 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -63,6 +62,7 @@ or not., f 30;
 which you can use for MIDI output or to drive note-like processes within
 Pd. It can deal with any numbers (negative \, floats \, whatever) even
 though MIDI values need to be integers from 0 to 127!, f 63;
+#X obj 87 384 noteout;
 #X connect 0 0 17 2;
 #X connect 1 0 17 1;
 #X connect 2 0 17 0;

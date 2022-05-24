@@ -1,29 +1,29 @@
 #N struct template3 float x float y float w float h float q;
-#N canvas 264 23 641 566 12;
+#N canvas 264 23 641 553 12;
 #X obj 328 255 pointer;
 #X msg 344 222 next;
 #X floatatom 328 345 4 0 0 0 - - - 0;
 #N canvas 927 44 381 425 data3 1;
-#X scalar template3 274 118 31 15 15 \;;
-#X scalar template3 57 149 58 69 413 \;;
-#X scalar template3 298 277 61 34 535 \;;
-#X scalar template3 45 110 39 55 742 \;;
-#X scalar template3 87 61 27 25 95 \;;
-#X scalar template3 265 236 71 34 310 \;;
-#X scalar template3 173 189 67 29 691 \;;
-#X scalar template3 109 313 37 52 541 \;;
-#X scalar template3 207 121 72 60 236 \;;
-#X scalar template3 50 232 59 73 654 \;;
-#X scalar template3 26 46 19 72 291 \;;
-#X scalar template3 167 69 73 73 508 \;;
-#X scalar template3 172 297 73 42 583 \;;
-#X scalar template3 288 66 70 30 241 \;;
-#X scalar template3 193 123 17 29 321 \;;
-#X scalar template3 92 40 10 5 708 \;;
-#X scalar template3 295 184 63 44 522 \;;
-#X scalar template3 242 196 7 28 693 \;;
-#X scalar template3 177 216 22 55 683 \;;
-#X scalar template3 169 175 24 4 267 \;;
+#X scalar template3 18 85 43 18 741 \;;
+#X scalar template3 111 169 75 25 72 \;;
+#X scalar template3 111 92 4 15 163 \;;
+#X scalar template3 59 61 13 34 563 \;;
+#X scalar template3 148 86 37 20 566 \;;
+#X scalar template3 173 281 76 48 763 \;;
+#X scalar template3 250 187 18 36 543 \;;
+#X scalar template3 124 270 78 21 107 \;;
+#X scalar template3 264 243 1 33 178 \;;
+#X scalar template3 26 88 56 60 132 \;;
+#X scalar template3 2 262 66 2 808 \;;
+#X scalar template3 270 106 74 51 881 \;;
+#X scalar template3 214 286 8 43 180 \;;
+#X scalar template3 57 205 51 58 939 \;;
+#X scalar template3 216 162 36 43 505 \;;
+#X scalar template3 166 146 68 9 614 \;;
+#X scalar template3 144 251 56 28 886 \;;
+#X scalar template3 228 62 62 1 758 \;;
+#X scalar template3 168 229 28 23 654 \;;
+#X scalar template3 223 308 73 50 727 \;;
 #X coords 0 425 1 424 0 0 0;
 #X restore 193 361 pd data3;
 #N canvas 503 200 512 300 template3 0;
@@ -117,7 +117,7 @@ drag or type to change the color parameter.;
 #X text 233 222 q;
 #X msg 328 191 traverse pd-data3 \, next;
 #X text 108 189 get pointer to first scalar =>;
-#X text 414 522 Updated for Pd version 0.52;
+#X text 414 515 Updated for Pd version 0.52;
 #X text 30 84 Getting parameter values is as in the previous patch.
 However \, as you traverse the list with "next" messages the new pointers
 are also sent to the [set] object \, whose arguments define the template
@@ -228,7 +228,7 @@ understand. The sliders range from 0 to 255, f 36;
 #X connect 39 0 2 0;
 #X connect 40 0 1 0;
 #X connect 41 0 0 0;
-#X restore 137 517 pd data-structures-colors;
+#X restore 81 510 pd data-structures-colors;
 #X text 24 400 Note that you can set values with decimal points for
 the field names and they can be retrieved by [get]. Nonetheless \,
 the x/y coordinates and width/height parameters for the scalars depend
