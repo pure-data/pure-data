@@ -7,71 +7,72 @@ float cat;
 #X obj 21 34 drawcurve;
 #X obj 126 11 filledpolygon;
 #X obj 127 34 filledcurve;
-#N canvas 347 163 964 504 drawshapes-template 0;
-#X text 34 7 [drawpolygon] and [drawcurve] take these creation arguments:
-, f 61;
-#X msg 52 299 1;
-#X msg 85 299 0;
-#X msg 537 10 1;
-#X msg 570 10 0;
-#X obj 85 345 drawpolygon 0 5 0 0 25 weasel 50 0;
-#X obj 570 39 filledpolygon 900 dog 3 15 0 25 cat 35 0;
-#X text 527 74 [filledpolygon] and [filledcurve] take the same inlet
+#N canvas 376 181 944 504 drawshapes-template 0;
+#X msg 41 299 1;
+#X msg 74 299 0;
+#X msg 514 19 1;
+#X msg 547 19 0;
+#X text 504 83 [filledpolygon] and [filledcurve] take the same inlet
 input. As for the arguments \, they take an extra first argument to
 specify interior color. Here we have \; - an interior color of red
 (900) \; - the outline color controlled by the "dog" field \; - an
 outline width of 3 \; - the three pair of coordinates that now describe
 a closed and filled triangle of altitude "cat".;
-#X text 150 318 (if no "-v <field-name>" flag was given);
-#X text 120 299 <-- inlet sets visibility (1: visible \, 0: invisible)
+#X text 139 318 (if no "-v <field-name>" flag was given);
+#X text 109 299 <-- inlet sets visibility (1: visible \, 0: invisible)
 ;
-#X text 37 32 Flags:;
-#X text 34 180 Arguments (numbers or field names like "weasel" below):
-;
-#X text 56 202 - color (0=black \, 999=white \, 900=red \, 90=green
+#X text 12 32 Flags:, f 65;
+#X text 12 191 Arguments (numbers or field names like "weasel" below):
+, f 67;
+#X text 26 210 - color (0=black \, 999=white \, 900=red \, 90=green
 \, 9=blue \, 555=grey \, etc.) \; - line width \; - (x \, y) pairs
 giving coordinates of each vertice in the shape (at least two pairs
-are needed to draw a line)., f 57;
-#X obj 217 465 drawcurve 900 3 -10 0 25 dog 60 0;
-#X text 38 378 The example above has the line color 0 (black) that
+are needed to draw a line)., f 65;
+#X text 23 378 The example above has the line color 0 (black) that
 is 5 pixels thick and 3 pairs of coordinates to draw an opened triangle
 with the height set by "weasel" (this also makes the height settable
 via click and dragging \, unless flags disable this). the [drawcurve]
 object below draws a red line over the 3 points using a bezier curve.
 , f 63;
-#X text 530 330 The [struct] object below defines the fields for this
+#X text 510 356 The [struct] object below defines the fields for this
 template. We have 2 of them in the "data" window and you can see their
 fields' values by right-clicking on the object and selecting "properties".
 The fields x and y automatically govern the placement of the object
 as a whole., f 57;
-#X obj 612 428 struct drawshapes-template float x float y float weasel
+#X obj 588 444 struct drawshapes-template float x float y float weasel
 float dog float cat, f 42;
-#X text 602 9 <-- visibility;
-#X obj 579 301 filledcurve -n 90 cat 8 -50 125 50 250 150 125;
-#X obj 579 271 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X text 579 18 <-- visibility;
+#X obj 556 290 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 520 201 The [filledcurve] below is invisible by default via
+#X text 504 210 The [filledcurve] below is invisible by default via
 the '-n' flag. Click on the toggle to draw a closed shape over the
 given points using a bezier curve \, interior color is green (90) and
 line color is given by the 'cat' field. It;
-#X text 605 271 <-- visibility;
-#X text 41 51 - "-n": make invisible initially \; - "-v [const or name]":
-assign a field to set visibility \; - "-xr": disable mouse actions
-when in "run" mode \; - "-xe": disable mouse actions when in "edit"
-mode (so don't stretch the bounding rectangle to include this item)
-\; - "-x": set both "-xr" and "-xe" \, disabling all mouse actions
-\; - "-xv": disable dragging vertices when in "run" mode (but keep
-reporting mouse clicks) \;, f 65;
-#X connect 1 0 5 0;
-#X connect 2 0 5 0;
-#X connect 3 0 6 0;
-#X connect 4 0 6 0;
-#X connect 19 0 18 0;
+#X text 582 290 <-- visibility;
+#X obj 547 48 filledpolygon 900 dog 3 15 0 25 cat 35 0;
+#X obj 556 320 filledcurve -n 90 cat 8 -50 125 50 250 150 125;
+#X obj 206 464 drawcurve 900 3 -10 0 25 dog 60 0;
+#X obj 74 345 drawpolygon 0 5 0 0 25 weasel 50 0;
+#X text 12 7 Creation arguments for [drawpolygon] and [drawcurve]:
+;
+#X text 26 51 - "-n": make invisible initially \; - "-v [const or name]":
+assign a field to set visibility \; - "-xv": disable dragging vertices
+when in "run" mode (but keep reporting mouse clicks) \; - "-xr": disable
+all mouse actions when in "run" mode \; - "-xe": disable all mouse
+actions when in "edit" mode (all drawing instructions in the scalar
+need this flag) \; - "-x": set both "-xr" and "-xe" \, disabling all
+mouse actions (all drawing instructions in the scalar need this flag)
+\;, f 63;
+#X connect 0 0 20 0;
+#X connect 1 0 20 0;
+#X connect 2 0 17 0;
+#X connect 3 0 17 0;
+#X connect 14 0 18 0;
 #X restore 280 131 pd drawshapes-template;
-#N canvas 82 45 485 364 drawshapes-data 1;
-#X scalar drawshapes-template 295 93 -53 170 39 \;;
-#X scalar drawshapes-template 86 95 72 200 31 \;;
-#X coords 0 364 1 363 0 0 0;
+#N canvas 133 55 428 365 drawshapes-data 1;
+#X scalar drawshapes-template 256 92 -53 170 60 \;;
+#X scalar drawshapes-template 67 84 72 200 28 \;;
+#X coords 0 365 1 364 0 0 0;
 #X restore 280 157 pd drawshapes-data;
 #X text 370 208 updated for Pd version 0.51.;
 #X text 232 13 - draw shapes for data structures, f 17;
@@ -79,7 +80,7 @@ reporting mouse clicks) \;, f 65;
 #X obj 96 207 drawtext;
 #X obj 8 67 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 714 72 569 433 reference 0;
+#N canvas 714 72 572 435 reference 0;
 #X obj 6 60 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 6 106 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
@@ -101,25 +102,25 @@ reporting mouse clicks) \;, f 65;
 0;
 #X obj 6 299 cnv 1 550 1 empty empty args: 8 12 0 13 #9f9f9f #000000
 0;
-#X text 80 192 "-v" <symbol>: assigns a field to make it visible/invisible.
-, f 63;
-#X text 80 210 "-xr": disable mouse actions when in "run" mode., f
+#X text 80 241 "-xr": disable mouse actions when in "run" mode., f
 63;
-#X text 80 174 "-n": makes it invisible initially., f 63;
-#X text 80 228 "-xe": disable mouse actions when in "edit" mode.,
+#X text 80 173 "-n": makes it invisible initially., f 63;
+#X text 80 259 "-xe": disable mouse actions when in "edit" mode.,
 f 63;
-#X text 80 246 "-x": set both "-xr" and "-xe" \, disabling all mouse
+#X text 80 277 "-x": set both "-xr" and "-xe" \, disabling all mouse
 actions., f 63;
 #X text 97 311 1) float* -;
 #X text 98 342 2) float* - line width (default 1)., f 60;
 #X text 145 383 * all of the above can also be field names.;
 #X text 112 361 3 list* - (x \, y) pairs giving coordinates of each
 vertice.;
-#X text 80 264 "-xv":;
-#X text 128 264 disable dragging vertices when in "run" mode (keeps
+#X text 80 209 "-xv":;
+#X text 129 209 disable dragging vertices when in "run" mode (keeps
 reporting mouse clicks)., f 56;
 #X text 182 310 line color \, filled shapes have an extra first interior
 color (default 0 \, 0)., f 48;
+#X text 80 191 "-v": <symbol>: assigns a field to make it visible/invisible.
+, f 63;
 #X restore 407 22 pd reference;
 #X text 505 23 <= click;
 #X obj 8 193 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
