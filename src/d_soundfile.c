@@ -2050,9 +2050,6 @@ static t_int *readsf_perform(t_int *w)
             if (x->x_fileerror)
                 object_sferror(x, "readsf~", x->x_filename,
                     x->x_fileerror, &x->x_sf);
-            clock_delay(x->x_clock, 0);
-            x->x_state = STATE_IDLE;
-
                 /* if there's a partial buffer left, copy it out */
             xfersize = (x->x_fifohead - x->x_fifotail + 1) /
                        sf.sf_bytesperframe;
@@ -2062,13 +2059,13 @@ static t_int *readsf_perform(t_int *w)
                     (unsigned char *)(x->x_buf + x->x_fifotail), xfersize);
                 vecsize -= xfersize;
             }
-                /* then zero out the (rest of the) output */
+            pthread_mutex_unlock(&x->x_mutex);
+                /* send bang and zero out the (rest of the) output */
+            clock_delay(x->x_clock, 0);
+            x->x_state = STATE_IDLE;
             for (i = 0; i < noutlets; i++)
                 for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
                     *fp++ = 0;
-
-            sfread_cond_signal(&x->x_requestcondition);
-            pthread_mutex_unlock(&x->x_mutex);
             return w + 2;
         }
 
