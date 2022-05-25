@@ -2016,15 +2016,16 @@ static void readsf_tick(t_readsf *x)
 static t_int *readsf_perform(t_int *w)
 {
     t_readsf *x = (t_readsf *)(w[1]);
-    t_soundfile sf = {0};
     int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i;
     size_t j;
     t_sample *fp;
-    soundfile_copy(&sf, &x->x_sf);
     if (x->x_state == STATE_STREAM)
     {
         int wantbytes;
+        t_soundfile sf = {0};
         pthread_mutex_lock(&x->x_mutex);
+            /* copy with mutex locked! */
+        soundfile_copy(&sf, &x->x_sf);
         wantbytes = vecsize * sf.sf_bytesperframe;
         while (!x->x_eof && x->x_fifohead >= x->x_fifotail &&
                 x->x_fifohead < x->x_fifotail + wantbytes-1)
@@ -2535,14 +2536,15 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 static t_int *writesf_perform(t_int *w)
 {
     t_writesf *x = (t_writesf *)(w[1]);
-    t_soundfile sf = {0};
     int vecsize = x->x_vecsize;
-    soundfile_copy(&sf, &x->x_sf);
     if (x->x_state == STATE_STREAM)
     {
         size_t roominfifo;
         size_t wantbytes;
+        t_soundfile sf = {0};
         pthread_mutex_lock(&x->x_mutex);
+            /* copy with mutex locked! */
+        soundfile_copy(&sf, &x->x_sf);
         wantbytes = vecsize * sf.sf_bytesperframe;
         roominfifo = x->x_fifotail - x->x_fifohead;
         if (roominfifo <= 0)
