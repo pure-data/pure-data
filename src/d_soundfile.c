@@ -1919,12 +1919,12 @@ static void *readsf_child_main(void *zz)
         {
             if (sf.sf_fd >= 0)
             {
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_sf.sf_fd = -1;
             }
             if (x->x_requestcode == REQUEST_CLOSE)
                 x->x_requestcode = REQUEST_NOTHING;
@@ -1934,12 +1934,12 @@ static void *readsf_child_main(void *zz)
         {
             if (sf.sf_fd >= 0)
             {
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_sf.sf_fd = -1;
             }
             x->x_requestcode = REQUEST_NOTHING;
             sfread_cond_signal(&x->x_answercondition);
@@ -2320,7 +2320,7 @@ static void *writesf_child_main(void *zz)
                     continue;
             }
                 /* cache sf *after* closing as x->sf's type
-                    may have changed in readsf_open() */
+                    may have changed in writesf_open() */
             soundfile_copy(&sf, &x->x_sf);
 
                 /* open the soundfile with the mutex unlocked */
@@ -2533,11 +2533,11 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 static t_int *writesf_perform(t_int *w)
 {
     t_writesf *x = (t_writesf *)(w[1]);
-    int vecsize = x->x_vecsize;
     if (x->x_state == STATE_STREAM)
     {
         size_t roominfifo;
         size_t wantbytes;
+        int vecsize = x->x_vecsize;
         t_soundfile sf = {0};
         pthread_mutex_lock(&x->x_mutex);
             /* copy with mutex locked! */
@@ -2630,6 +2630,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (argc)
         pd_error(x, "writesf~ open: extra argument(s) ignored");
     pthread_mutex_lock(&x->x_mutex);
+        /* make sure that the child thread has finished writing */
     while (x->x_requestcode != REQUEST_NOTHING)
     {
         sfread_cond_signal(&x->x_requestcondition);
