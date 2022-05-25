@@ -1901,13 +1901,17 @@ static void *readsf_child_main(void *zz)
                 set EOF and signal once more */
             if (sf.sf_fd >= 0)
             {
+                    /* only set EOF if there is no pending "open" request!
+                    Otherwise, we might accidentally set EOF after it has been
+                    unset in readsf_open() and the stream would fail silently. */
+                if (x->x_requestcode != REQUEST_OPEN)
+                    x->x_eof = 1;
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_eof = 1;
-                x->x_sf.sf_fd = -1;
             }
             sfread_cond_signal(&x->x_answercondition);
         }
