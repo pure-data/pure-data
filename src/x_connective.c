@@ -522,10 +522,21 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
         {
-            if (argc > 0 && argv[0].a_type == A_SYMBOL)
-                outlet_anything(e->e_outlet, argv[0].a_w.w_symbol,
-                    argc-1, argv+1);
-            else outlet_list(e->e_outlet, 0, argc, argv);
+            if (!argc)
+                outlet_bang(e->e_outlet);
+            else
+            {
+                if (argv[0].a_type == A_SYMBOL)
+                    outlet_anything(e->e_outlet, argv[0].a_w.w_symbol,
+                        argc-1, argv+1);
+                else if(argv[0].a_type == A_FLOAT)
+                {
+                    if(argc == 1)
+                        outlet_float(e->e_outlet, atom_getfloat(argv));
+                    else
+                        outlet_list(e->e_outlet, 0, argc, argv);
+                }
+            }
             return;
         }
     }
@@ -546,10 +557,24 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
-            if (argc > 1 && argv[1].a_type == A_SYMBOL)
-                outlet_anything(e->e_outlet, argv[1].a_w.w_symbol,
-                    argc-2, argv+2);
-            else outlet_list(e->e_outlet, 0, argc-1, argv+1);
+            if (argc == 1)
+            {
+                outlet_bang(e->e_outlet);
+                return;
+            }
+            if (argc >= 2)
+            {
+                if (argv[1].a_type == A_SYMBOL)
+                    outlet_anything(e->e_outlet, argv[1].a_w.w_symbol,
+                        argc-2, argv+2);
+                else if(argv[1].a_type == A_FLOAT)
+                {
+                    if(argc == 2)
+                        outlet_float(e->e_outlet, atom_getfloat(argv+1));
+                    else
+                        outlet_list(e->e_outlet, 0, argc-1, argv+1);
+                }
+            }
             return;
         }
     }
