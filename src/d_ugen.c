@@ -1270,7 +1270,7 @@ void dsp_add_copy(t_sample *in, t_sample *out, int n)
         dsp_add(copy_perf8, 3, in, out, (t_int)n);
 }
 
-static t_int *sig_tilde_perform(t_int *w)
+static t_int *scalarcopy_perform(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1280,7 +1280,7 @@ static t_int *sig_tilde_perform(t_int *w)
     return (w+4);
 }
 
-static t_int *sig_tilde_perf8(t_int *w)
+static t_int *scalarcopy_perf8(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1303,9 +1303,9 @@ static t_int *sig_tilde_perf8(t_int *w)
 void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
     if (n&7)
-        dsp_add(sig_tilde_perform, 3, in, out, (t_int)n);
+        dsp_add(scalarcopy_perform, 3, in, out, (t_int)n);
     else
-        dsp_add(sig_tilde_perf8, 3, in, out, (t_int)n);
+        dsp_add(scalarcopy_perf8, 3, in, out, (t_int)n);
 }
 
 /* ------------------------ samplerate~~ -------------------------- */
