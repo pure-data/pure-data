@@ -1,10 +1,10 @@
 #N canvas 467 37 604 603 12;
 #X obj 24 12 list;
 #X text 64 12 - building and using variable-length messages;
-#N canvas 640 85 526 653 about-lists 0;
-#X obj 75 611 print message;
+#N canvas 592 55 528 670 about-lists 0;
+#X obj 75 631 print message;
 #X msg 65 424 list x.wav 44100;
-#X msg 75 582 read \$1 \$2;
+#X msg 75 602 read \$1 \$2;
 #X msg 75 453 set x.wav 44100;
 #X msg 92 553 set \, add2 read \, adddollar 1 \, adddollar 2;
 #X msg 85 483 x.wav 44100;
@@ -13,40 +13,46 @@
 #X text 193 424 good;
 #X text 192 455 bad;
 #X text 178 483 ugly;
-#X text 48 164 The distinction becomes visible \, and ugly \, when
-the leading item in a data-holding message is a symbol. In this case
-\, to disambiguate it from the other sort \, the printed form of the
-message has a selector \, "list" or "symbol" prepended to it. Underneath
-\, there is always a selector in front of data messages \, but it is
-implied if the first data item is a number.;
 #X msg 302 445 list 44100 x.wav;
 #X msg 315 470 44100 x.wav;
 #X obj 302 496 print number-first;
 #X text 296 417 these two are equivalent:;
-#X text 48 275 In the example below \, the top message sets \$1 to
+#X text 22 157 The distinction becomes visible \, and ugly \, when
+the leading item in a data-holding message is a symbol. In this case
+\, to disambiguate it from the other sort \, the printed form of the
+message has a selector \, "list" or "symbol" prepended to it. Underneath
+\, there is always a selector in front of data messages \, but it is
+implied if the first data item is a number (a 'float' selector is implied
+for a single number and a 'list' selector is implied for lists that
+start with a number)., f 68;
+#X text 22 278 In the example below \, the top message sets \$1 to
 "x.wav" and \$2 to 44100 in the "read" message. The lower message box
 outputs the message "read x.wav 44100". The "set" message changes the
 content of the message box itself (click on the longer message box
-below to repair the damage.) The "ugly" message \, since it is neither
-"list" nor "set" \, gets interpreted in an arbitrary (and probably
-inappropriate!) way.;
-#X text 48 13 Messages in Pd are somewhat artificially divided into
+below to repair the damage.) The "ugly" message is neither "list" nor
+"set" but a 'x.wav' message \, so the first element of the message
+is 44100 and there's no second element \, this is why it "ugly" and
+an error is given., f 68;
+#X text 22 22 Messages in Pd are somewhat artificially divided into
 two classes. First are data-holding messages (bang \, float \, symbol
-\, list) which are the primary way of communicating between objects.
-Second is "everything else" (you could call them out-of-band messages
-or metamessages) that describe changes in configuration \, read and
-write files \, quit Pd \, etc. These are provided so that complex objects
-don't need to have 100 separate inlets for every possible functionality.
-It's not clear whether this was a good design choice \, but it's entrenched.
-;
+\, list and pointer) which are the primary way of communicating between
+objects. Second is "everything else" (you could call them out-of-band
+messages \, metamessages or generic messages) that describe changes
+in configuration \, read and write files \, quit Pd \, etc. These are
+provided so that complex objects don't need to have 100 separate inlets
+for every possible functionality. It's not clear whether this was a
+good design choice \, but it's entrenched., f 68;
+#X msg 381 626 message;
+#X text 211 589 for more details on setting messages and \$1 variables
+\, check the help file of message boxes:, f 36;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 6 0 4 0;
-#X connect 12 0 14 0;
-#X connect 13 0 14 0;
+#X connect 11 0 13 0;
+#X connect 12 0 13 0;
 #X restore 216 381 pd about-lists;
 #X obj 28 90 list append;
 #X obj 28 115 list prepend;
@@ -56,15 +62,14 @@ It's not clear whether this was a good design choice \, but it's entrenched.
 #X text 157 116 - prepend the second list to the first;
 #X text 157 165 - split a list in two;
 #X text 157 192 - trim the "list" selector off;
-#N canvas 646 56 545 446 trim 0;
-#X msg 156 255 1 2 3;
-#X msg 134 203 list cis boom bah;
-#X msg 123 177 walk the dog;
-#X obj 141 367 list trim;
-#X obj 141 400 print trim;
-#X msg 175 309 1 x y;
-#X msg 179 336 x 1 y;
-#X msg 146 229 55;
+#N canvas 646 56 545 487 trim 0;
+#X msg 143 325 1 2 3;
+#X msg 64 166 list cis boom bah;
+#X msg 122 270 walk the dog;
+#X obj 91 389 list trim;
+#X obj 91 422 print trim;
+#X msg 91 196 1 x y;
+#X msg 133 299 55;
 #X text 435 17 <= click;
 #N canvas 645 141 576 245 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
@@ -91,31 +96,32 @@ It's not clear whether this was a good design choice \, but it's entrenched.
 0;
 #X obj 32 18 list trim;
 #X text 107 17 - remove list selector.;
-#X obj 348 362 list trim;
-#X obj 348 395 print trim;
-#X symbolatom 348 324 10 0 0 0 - - - 0;
-#X msg 347 286 symbol cat;
-#X text 335 202 Symbol messages also gets the symbol selector trimmed.
-, f 15;
-#X obj 167 281 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 362 372 list trim;
+#X obj 362 405 print trim;
+#X symbolatom 362 334 10 0 0 0 - - - 0;
+#X msg 362 296 symbol cat;
+#X obj 154 351 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 22 67 The [list trim] object inputs lists (or makes lists out
-of incoming non-list messages) and outputs a message whose selector
-is the first item of the list \, and whose arguments \, if any \, are
-the remainder of the list. If the list has no items \, or if its first
-item is numeric \, the selector is "list" (which might print out as
-list \, float \, or bang.), f 68;
+#X text 55 73 The [list trim] object trims the 'list' selector of lists.
+If the input is not a list \, then the output is unaltered \, with
+the exception of symbol messages \, whose symbol selector is also trimmed.
+Lists that start with floats have an implicit list selector and this
+does not get trimmed., f 61;
+#X text 195 165 list selector gets trimmed;
+#X text 139 196 implicit list selector remains implicitly;
+#X text 110 246 don't get altered:;
+#X text 296 257 Symbol messages get the symbol selector trimmed:,
+f 20;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
 #X connect 5 0 3 0;
 #X connect 6 0 3 0;
-#X connect 7 0 3 0;
-#X connect 13 0 14 0;
-#X connect 15 0 13 0;
-#X connect 16 0 15 0;
-#X connect 18 0 3 0;
+#X connect 12 0 13 0;
+#X connect 14 0 12 0;
+#X connect 15 0 14 0;
+#X connect 16 0 3 0;
 #X restore 481 189 pd trim;
 #N canvas 612 115 624 532 append 0;
 #X floatatom 109 247 5 0 0 0 - - - 0;

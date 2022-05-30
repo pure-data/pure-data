@@ -26,7 +26,7 @@
 #X floatatom 219 392 5 0 0 0 - - - 0;
 #X text 59 347 abbreviated arguments =>, f 12;
 #X obj 162 463 trigger;
-#N canvas 756 82 610 216 pointer 0;
+#N canvas 598 147 610 216 pointer 0;
 #X obj 128 131 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #N canvas 491 316 412 249 open 0;
@@ -40,10 +40,10 @@
 #X restore 128 161 pd open;
 #X text 152 130 <-- open first examle of the 4.Data.Structure section
 ;
-#X text 75 40 The [unpack] object unpack a pointer from a list. A pointer
-can be the location of a Data Structure scalar somewhere or the head
-of a Data Structure list. To know more about Data Structures \, how
-to handle pointers and see examples \, please refer to the 4.Data.Structure
+#X text 75 40 The [unpack] object can also unpack pointers from a list.
+A pointer can be the location of a Data Structure scalar somewhere
+or the head of a Data Structure list. To know more about Data Structures
+\, how to handle pointers and see examples \, please refer to the 4.Data.Structure
 section of the Pd's tutorials., f 70;
 #X connect 0 0 1 0;
 #X restore 333 111 pd pointer;

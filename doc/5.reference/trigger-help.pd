@@ -1,8 +1,8 @@
-#N canvas 195 42 1117 604 12;
-#X obj 68 18 trigger;
-#X text 133 19 - sequence messages in right-to-left order;
-#X obj 96 43 t;
-#X text 134 43 - abbreviation;
+#N canvas 178 117 1117 604 12;
+#X obj 38 18 trigger;
+#X text 103 19 - sequence messages in right-to-left order;
+#X obj 66 43 t;
+#X text 104 43 - abbreviation;
 #X floatatom 263 331 5 0 0 0 - - - 0;
 #X obj 263 371 trigger float bang float;
 #X msg 345 411 10;
@@ -19,53 +19,48 @@
 #X obj 488 280 t f b s l a p;
 #X obj 77 280 trigger float bang symbol list anything pointer;
 #X text 422 281 same as:;
-#X msg 695 141 1 2 3;
-#X obj 695 172 t l f;
-#X listbox 727 200 7 0 0 0 - - - 0;
-#X msg 785 141 list a b c;
-#X obj 785 172 t l s;
+#X msg 705 151 1 2 3;
+#X obj 705 182 t l f;
+#X listbox 737 210 7 0 0 0 - - - 0;
+#X msg 805 151 list a b c;
+#X obj 805 182 t l s;
 #X text 310 324 mix floats and bang output, f 14;
 #X floatatom 428 401 5 0 0 0 - - - 0;
 #X floatatom 263 409 5 0 0 0 - - - 0;
 #X obj 156 567 unpack;
 #X text 40 566 see also:;
-#X floatatom 919 112 5 0 0 0 - - - 0;
-#X listbox 919 227 10 0 0 0 - - - 0;
-#X msg 964 112 symbol a;
-#X msg 994 169 1 2 3;
-#X msg 979 141 list a b c;
-#X floatatom 898 368 5 0 0 0 - - - 0;
-#X msg 942 368 symbol a;
-#X msg 965 423 1 2 3;
-#X msg 955 396 list a b c;
-#X msg 775 368 dog my cats;
-#X obj 919 198 trigger list bang;
-#X obj 898 454 trigger anything bang;
-#X obj 898 514 print [t a b];
-#X obj 919 268 print [t l b];
+#X floatatom 929 124 5 0 0 0 - - - 0;
+#X listbox 929 239 10 0 0 0 - - - 0;
+#X msg 974 124 symbol a;
+#X msg 1004 181 1 2 3;
+#X msg 989 153 list a b c;
+#X floatatom 898 378 5 0 0 0 - - - 0;
+#X msg 942 378 symbol a;
+#X msg 965 433 1 2 3;
+#X msg 955 406 list a b c;
+#X msg 775 378 dog my cats;
+#X obj 929 210 trigger list bang;
+#X obj 898 464 trigger anything bang;
+#X obj 898 510 print [t a b];
+#X obj 929 280 print [t l b];
 #X text 888 565 updated for Pd version 0.52;
 #X obj 643 473 t;
 #X text 683 473 =;
 #X text 649 432 the default is [t b b]:, f 12;
 #X obj 706 473 t b b;
-#X text 686 305 You can use the 'anything' specifier to bypass any
+#X text 683 314 You can use the 'anything' specifier to bypass any
 kind of message: a float \, a symbol \, a pointer \, a bang \, a list
-and also any generic message., f 59;
+and also any generic message.;
 #X obj 520 447 t b f;
 #X listbox 499 513 11 0 0 0 - - - 0;
 #X floatatom 520 422 7 0 0 0 - - - 0;
 #X floatatom 498 392 7 0 0 0 - - - 0;
 #X obj 499 478 pack f f;
 #X text 478 349 always force an output, f 12;
-#X text 686 14 The 'float' \, 'symbol' and 'pointer' specifiers can
-truncate to the first element of an input list. Conversely \, besides
-actual lists \, the 'list' specifier receives 1-element lists like
-a float \, symbol or pointer input and passes them unaltered. Note
-that a bang is a 0-element list and is also bypassed.;
 #X obj 115 567 bang;
-#X listbox 695 229 7 0 0 0 - - - 0;
-#X listbox 785 229 7 0 0 0 - - - 0;
-#X listbox 817 200 7 0 0 0 - - - 0;
+#X listbox 705 239 7 0 0 0 - - - 0;
+#X listbox 805 239 7 0 0 0 - - - 0;
+#X listbox 837 210 7 0 0 0 - - - 0;
 #X text 57 220 The message types/arguments are: 'float' \, 'bang' \,
 'symbol' \, 'list' \, 'anything' and 'pointer' (see [pd pointer]) -
 all of which can be abbreviated to its first letter like the object
@@ -98,7 +93,7 @@ input message type to the argument \, but a mix is possible and can
 be convenient. For instance \, it's very useful to insert a 'bang'
 message into a sequence \, so you'll always have a bang output with
 the 'bang' specifier no matter what the input is., f 89;
-#X obj 6 75 cnv 1 660 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 7 75 cnv 1 640 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 579 124 599 277 reference 0;
 #X obj 11 46 cnv 5 575 5 empty empty INLET: 8 18 0 13 #202020 #000000
@@ -124,21 +119,27 @@ of outlets and message type depends on the arguments., f 52;
 'bang' \, 'symbol' \, 'list' \, 'anything' and 'pointer' \, all of
 which can be abreviatted (default: f f)., f 52;
 #X obj 99 15 t;
-#X restore 491 41 pd reference;
-#X text 589 41 <= click;
+#X restore 470 41 pd reference;
+#X text 568 41 <= click;
 #X obj 6 548 cnv 1 1100 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 666 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 648 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 870 368 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 870 378 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 1035 225 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 1045 237 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 892 112 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 902 124 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 21 95 The [trigger] object outputs its input from right to
 left. Because of the hot/cold inlet paradigm of Pd \, output from right
 to left is the usual output order in Pd objects., f 88;
+#X text 670 12 The 'float' \, 'symbol' and 'pointer' specifiers can
+truncate to the first element of an input list. Conversely \, a 'list'
+specifier also deals with float \, symbol or pointer messages (considered
+the same as a 1 element list) and passes them unaltered. A bang message
+is considered as a 0-element list and is also bypassed via the 'list'
+argument., f 60;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;
 #X connect 5 1 6 0;
@@ -151,11 +152,11 @@ to left is the usual output order in Pd objects., f 88;
 #X connect 11 1 13 0;
 #X connect 11 2 12 0;
 #X connect 19 0 20 0;
-#X connect 20 0 57 0;
+#X connect 20 0 56 0;
 #X connect 20 1 21 0;
 #X connect 22 0 23 0;
-#X connect 23 0 58 0;
-#X connect 23 1 59 0;
+#X connect 23 0 57 0;
+#X connect 23 1 58 0;
 #X connect 25 0 7 1;
 #X connect 26 0 8 0;
 #X connect 29 0 39 0;
@@ -169,7 +170,7 @@ to left is the usual output order in Pd objects., f 88;
 #X connect 37 0 40 0;
 #X connect 38 0 40 0;
 #X connect 39 0 30 0;
-#X connect 39 1 70 0;
+#X connect 39 1 69 0;
 #X connect 40 0 41 0;
 #X connect 40 1 41 0;
 #X connect 49 0 53 0;
@@ -177,6 +178,6 @@ to left is the usual output order in Pd objects., f 88;
 #X connect 51 0 49 0;
 #X connect 52 0 53 0;
 #X connect 53 0 50 0;
-#X connect 69 0 40 0;
-#X connect 70 0 42 0;
-#X connect 71 0 39 0;
+#X connect 68 0 40 0;
+#X connect 69 0 42 0;
+#X connect 70 0 39 0;
