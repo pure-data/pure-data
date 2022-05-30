@@ -131,14 +131,14 @@ which can be abreviatted (default: f f)., f 52;
 #X text 21 95 The [trigger] object outputs its input from right to
 left. Because of the hot/cold inlet paradigm of Pd \, output from right
 to left is the usual output order in Pd objects., f 88;
-#X text 670 15 The 'float' \, 'symbol' and 'pointer' specifiers truncate
-to the first element of an input list. On the other hand \, note that
-a 'list' specifier outputs float \, symbol or pointer as one element
-list. Similarly \, a bang message is passed as a zero element list
-via the 'list' argument.;
 #X text 677 313 You can use the 'anything' specifier to bypass any
 kind of message unaltered \, be it a float \, a symbol \, a pointer
 \, a bang \, a list and also any generic message.;
+#X text 670 15 The 'float' \, 'symbol' and 'pointer' specifiers truncate
+to the first element of an input list. Conversely \, a 'list' specifier
+accepts floats \, symbols or pointers (conceptually these are one element
+list). Similarly \, a bang message is considered as a zero element
+list and is also passed via the 'list' argument.;
 #X connect 4 0 5 0;
 #X connect 5 0 26 0;
 #X connect 5 1 6 0;

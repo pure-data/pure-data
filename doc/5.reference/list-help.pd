@@ -102,7 +102,7 @@ good design choice \, but it's entrenched., f 68;
 #X msg 362 296 symbol cat;
 #X obj 154 351 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 55 73 The [list trim] object trims the 'list' selector of lists.
+#X text 49 69 The [list trim] object trims the 'list' selector of lists.
 If the input is not a list \, then the output is unaltered \, with
 the exception of symbol messages \, whose symbol selector is also trimmed.
 Lists that start with floats have an implicit list selector and this

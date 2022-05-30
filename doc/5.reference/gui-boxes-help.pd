@@ -222,9 +222,7 @@ label., f 74;
 #X restore 802 262 pd properties;
 #X text 112 537 more details:;
 #X listbox 490 41 20 0 0 0 - - - 0;
-#X text 767 138 set and output a symbol;
 #X text 689 172 set only - don't output;
-#X text 670 197 output only - don't change value;
 #X msg 541 362 1 2 3 foo 5;
 #X listbox 541 566 22 0 0 0 - - - 0;
 #X msg 555 401 list wombat weasel wallaby;
@@ -380,7 +378,7 @@ and/or double click to edit just one element., f 36;
 #X obj 10 658 cnv 1 1000 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 913 36 <= click;
-#N canvas 852 42 437 675 reference 0;
+#N canvas 808 23 436 675 reference 0;
 #X obj 9 42 cnv 5 400 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 9 123 cnv 2 400 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -427,11 +425,11 @@ and/or double click to edit just one element., f 36;
 #X text 150 298 bang - output value.;
 #X text 150 532 bang - output value.;
 #X restore 819 36 pd reference;
-#X obj 203 422 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 203 421 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 575 435 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 575 435 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 646 198 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 646 198 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 25 87 These are GUI (Graphical User Interface) objects that
 display and send atoms or lists. An atom is a single element message
@@ -456,64 +454,23 @@ instead of a number:, f 61;
 #X obj 616 261 print symbol box;
 #X text 540 318 List boxes hold arbitrary combinations of numbers and
 symbols:, f 38;
-#X text 597 433 output list;
-#X text 625 513 open -->;
-#N canvas 476 137 844 416 special 0;
-#X msg 507 145 set;
-#X obj 479 375 print list box special case;
-#X listbox 479 340 11 0 0 0 - - - 0;
-#X text 538 145 set to an empty list;
-#X msg 479 85 list 3;
-#X msg 490 111 list x;
-#X text 548 97 a list with one element;
-#X msg 457 36 list;
-#X msg 517 177 set 3;
-#X obj 526 208 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 564 176 set to a one element list;
-#X text 553 209 a proper bang;
-#X floatatom 528 250 5 0 0 0 - - - 0;
-#X symbolatom 534 278 10 0 0 0 - - - 0;
-#X text 570 250 a one element list (float);
-#X text 611 277 a one element list (symbol);
-#X text 536 308 both are converted to a one element list;
-#X text 502 31 an empty list (not treated as a bang \, unlike other
-objects usually do), f 38;
-#X text 39 62 Lists with 0 or just 1 element are possible in Pd and
-the list box can generate them \, but these are usually treated specially
-by objects: a zero length list is commonly treated as a bang and one
-element lists are conceptually the same as floats (if it's a number)
-or symbols (if it's a symbol)., f 56;
-#X text 39 160 The list box takes an empty list but doesn't treat it
-as a bang. Instead \, it considers it as an empty list and sets and
-outputs it \, which allows us to set and see an empty/clear list. The
-output is also an empty list. An empty 'set' message will create a
-0 element list as well., f 56;
-#X text 39 255 List boxes also take float and symbol messages as input
-\, but output one-element lists. You should then be aware that even
-though list can generate these messages \, most objects will treat
-0 element lists as bangs and 1 element lists as float/symbol messages.
-, f 56;
-#X connect 0 0 2 0;
-#X connect 2 0 1 0;
-#X connect 4 0 2 0;
-#X connect 5 0 2 0;
-#X connect 7 0 2 0;
-#X connect 8 0 2 0;
-#X connect 9 0 2 0;
-#X connect 12 0 2 0;
-#X connect 13 0 2 0;
-#X restore 694 513 pd special list cases;
+#X text 600 435 output list;
+#X text 764 138 set and output a symbol value;
+#X text 670 197 output symbol;
+#X msg 607 506 set;
+#X text 644 499 set to an empty list (normally treated as a bang in
+Pd), f 30;
 #X connect 0 0 1 0;
-#X connect 1 0 45 0;
-#X connect 5 0 50 0;
+#X connect 1 0 43 0;
+#X connect 5 0 48 0;
 #X connect 6 0 5 0;
 #X connect 7 0 5 0;
 #X connect 8 0 1 0;
-#X connect 16 0 17 0;
-#X connect 17 0 46 0;
-#X connect 18 0 17 0;
-#X connect 21 0 17 0;
-#X connect 41 0 1 0;
-#X connect 42 0 17 0;
-#X connect 43 0 5 0;
+#X connect 14 0 15 0;
+#X connect 15 0 44 0;
+#X connect 16 0 15 0;
+#X connect 19 0 15 0;
+#X connect 39 0 1 0;
+#X connect 40 0 15 0;
+#X connect 41 0 5 0;
+#X connect 53 0 15 0;
