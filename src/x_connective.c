@@ -641,7 +641,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
  rejected:
     if(argc == 0)
         outlet_bang(x->x_rejectout);
-    else if(argc == 1)
+    else if(argc == 1 && argv[0].a_type == A_SYMBOL)
         outlet_symbol(x->x_rejectout, argv[0].a_w.w_symbol);
     else
         outlet_list(x->x_rejectout, 0, argc, argv);

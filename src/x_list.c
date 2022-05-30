@@ -708,10 +708,21 @@ static void *list_trim_new(void)
 static void list_trim_list(t_list_trim *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    if (argc < 1 || argv[0].a_type != A_SYMBOL)
-        outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
-    else outlet_anything(x->x_obj.ob_outlet, argv[0].a_w.w_symbol,
+    if (argc == 0)
+    {
+        outlet_bang(x->x_obj.ob_outlet);
+        return;
+    }
+    if (argv[0].a_type == A_SYMBOL)
+        outlet_anything(x->x_obj.ob_outlet, argv[0].a_w.w_symbol,
         argc-1, argv+1);
+    else
+    {
+        if (argc == 1 && argv[0].a_type == A_FLOAT)
+            outlet_float(x->x_obj.ob_outlet, argv[0].a_w.w_float);
+        else
+            outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
+    }
 }
 
 static void list_trim_anything(t_list_trim *x, t_symbol *s,
