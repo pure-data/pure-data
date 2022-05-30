@@ -627,7 +627,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 }
             }
         }
-        else                                     /* one symbol arg */
+        else /* one symbol arg */
         {
             for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
@@ -640,7 +640,10 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
     }
  rejected:
-    outlet_list(x->x_rejectout, 0, argc, argv);
+    if(argc == 1)
+        outlet_float(x->x_rejectout, argv[0].a_w.w_float);
+    else
+        outlet_list(x->x_rejectout, 0, argc, argv);
 }
 
 
