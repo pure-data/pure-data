@@ -1,25 +1,34 @@
 #N canvas 511 32 530 673 12;
-#X floatatom 252 499 5 0 0 0 - - - 0;
-#X floatatom 205 499 5 0 0 0 - - - 0;
-#X floatatom 223 399 4 0 0 0 - - - 0;
-#X floatatom 303 175 0 0 0 0 - - - 0;
-#X floatatom 339 175 0 0 0 0 - - - 0;
-#X obj 303 149 +;
-#X floatatom 321 119 0 0 0 0 - - - 0;
-#X obj 339 149 +;
+#X floatatom 245 490 5 0 0 0 - - - 0;
+#X floatatom 198 490 5 0 0 0 - - - 0;
+#X floatatom 216 390 4 0 0 0 - - - 0;
+#X floatatom 296 183 4 0 0 0 - - - 0;
+#X floatatom 332 183 4 0 0 0 - - - 0;
+#X obj 296 157 +;
+#X floatatom 332 117 4 0 0 0 - - - 0;
+#X obj 332 157 +;
 #X floatatom 100 189 0 0 0 0 - - - 0;
-#X floatatom 100 95 0 0 0 0 - - - 0;
-#X floatatom 118 119 0 0 0 0 - - - 0;
+#X floatatom 100 94 4 0 0 0 - - - 0;
+#X floatatom 118 119 4 0 0 0 - - - 0;
 #X obj 100 163 +;
 #X text 76 141 hot;
 #X text 123 143 cold;
-#X text 294 195 good;
-#X text 339 195 bad;
-#X obj 252 472 *;
-#X obj 205 473 -;
-#X text 292 498 square;
-#X text 83 500 first difference;
+#X text 256 185 good;
+#X text 367 182 bad;
+#X obj 245 463 *;
+#X obj 198 464 -;
+#X text 285 489 square;
+#X text 76 491 first difference;
 #X text 296 637 updated for Pd version 0.33;
+#X obj 216 417 t f f;
+#X text 240 99 Here's the downside: drag this =>, f 20;
+#X text 265 417 same as:;
+#X obj 330 417 trigger float float;
+#X text 31 16 In Pd \, most objects carry out their functions when
+they get messages in their leftmost inlets \, and their other inlets
+are for storing values that can modify the next action. Here \, the
+[+] object does its thing only when the left-hand input changes.,
+f 64;
 #X text 37 233 In Pd you must sometimes think about what order an object
 is going to get its messages in. If an outlet is connected to more
 than one inlet it's undefined which inlet will get the cookie first.
@@ -27,23 +36,14 @@ I've rigged this example so that the left-hand side box gets its inputs
 in the good \, right-to-left order \, so that the hot inlet gets hit
 when all the data are good. The "bad adder" happens to receive its
 inputs in the wrong order and is perpetually doing its addition before
-all the data are in. There's an object that exists solely to allow
-you to control message order explicitly:, f 67;
-#X obj 223 426 t f f;
-#X text 229 101 Here's the downside: drag this =>, f 20;
-#X text 272 426 same as:;
-#X obj 337 426 trigger float float;
-#X text 31 16 In Pd \, most objects carry out their functions when
-they get messages in their leftmost inlets \, and their other inlets
-are for storing values that can modify the next action. Here \, the
-[+] object does its thing only when the left-hand input changes.,
-f 64;
-#X text 44 544 [trigger] takes any number of "bang" and "float" arguments
+all the data are in. There's a [trigger] object that exists solely
+to allow you to control message order explicitly:, f 67;
+#X text 44 544 A [trigger] takes any number of "bang" and "float" arguments
 (among others). The object and arguments can be abbreviated with the
 first letter. It sequences messages in right-to-left order. Hook it
 to two inputs without crossing the wires and you get the expected result.
 Cross the wires and you get a memory effect., f 64;
-#X connect 2 0 22 0;
+#X connect 2 0 21 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 6 0 7 1;
@@ -55,7 +55,7 @@ Cross the wires and you get a memory effect., f 64;
 #X connect 11 0 8 0;
 #X connect 16 0 0 0;
 #X connect 17 0 1 0;
-#X connect 22 0 16 0;
-#X connect 22 0 17 1;
-#X connect 22 1 16 1;
-#X connect 22 1 17 0;
+#X connect 21 0 16 0;
+#X connect 21 0 17 1;
+#X connect 21 1 16 1;
+#X connect 21 1 17 0;

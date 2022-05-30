@@ -34,10 +34,10 @@
 #X text 80 14 - trim first element and route messages according to
 it;
 #N canvas 279 37 975 670 special-selectors/message-types 0;
-#X msg 415 109 bang;
-#X msg 518 161 5;
-#X msg 558 161 symbol pie;
-#X msg 494 135 1 2 3;
+#X msg 415 107 bang;
+#X msg 518 159 5;
+#X msg 558 159 symbol pie;
+#X msg 494 133 1 2 3;
 #X msg 43 467 list a b c;
 #X obj 43 536 route list symbol;
 #X floatatom 83 111 5 0 0 0 - - - 0;
@@ -48,23 +48,23 @@ it;
 #X msg 65 499 symbol zorglub;
 #X obj 101 579 print untrimmed;
 #X obj 43 615 print trimmed;
-#X obj 517 249 list;
-#X msg 459 109 list x y z;
-#X msg 443 417 list;
-#X msg 479 445 list 5;
-#X msg 505 476 list pie;
-#X text 481 417 becomes a bang;
-#X text 531 444 becomes a float;
-#X text 574 469 becomes a symbol, f 8;
-#X obj 506 520 route bang float symbol;
-#X symbolatom 611 547 10 0 0 0 - - - 0;
-#X floatatom 558 547 5 0 0 0 - - - 0;
-#X obj 506 550 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 517 247 list;
+#X msg 459 107 list x y z;
+#X msg 433 409 list;
+#X msg 469 437 list 5;
+#X msg 495 468 list pie;
+#X text 471 409 becomes a bang;
+#X text 521 436 becomes a float;
+#X text 564 461 becomes a symbol, f 8;
+#X obj 496 512 route bang float symbol;
+#X symbolatom 601 539 10 0 0 0 - - - 0;
+#X floatatom 548 539 5 0 0 0 - - - 0;
+#X obj 496 542 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X msg 818 475 pie;
-#X obj 517 223 route list float symbol bang pure, f 56;
-#X msg 571 189 pure data;
-#X text 646 190 not a special selector;
+#X msg 808 467 pie;
+#X obj 517 221 route list float symbol bang pure, f 56;
+#X msg 571 187 pure data;
+#X text 646 188 not a special selector;
 #X text 26 16 Numbers in Pd are always given a 'float' selector. Similarly
 \, lists that start with floats are given the 'list' selector. These
 are implicit selectors and they stick to the message even if you can't
@@ -75,34 +75,31 @@ see it and [route] cannot trim them!, f 50;
 #X msg 265 472 list a 3;
 #X floatatom 265 631 3 0 0 0 - - - 0;
 #X floatatom 295 631 3 0 0 0 - - - 0;
-#X text 27 389 On the other hand \, if you want to route according
-to the first element of a list message \, you need to trim its selector
-with [list trim]., f 50;
-#X obj 818 550 print;
-#X obj 818 517 route pie;
-#X msg 859 462 symbol pie;
-#X obj 859 489 list trim;
-#X text 781 411 Note that [list trim] also trims the symbol selector.
+#X obj 808 539 print;
+#X obj 808 506 route pie;
+#X msg 849 451 symbol pie;
+#X obj 849 478 list trim;
+#X text 771 408 Note that [list trim] also trims the symbol selector.
 , f 21;
-#X obj 720 531 print;
-#X obj 720 498 route 12;
-#X msg 720 464 12;
+#X obj 710 523 print;
+#X obj 710 490 route 12;
+#X msg 710 456 12;
 #X listbox 191 201 20 0 0 0 - - - 0;
 #X listbox 137 140 20 0 0 0 - - - 0;
 #X msg 137 109 1 2 3 4 5 6 7;
-#X listbox 517 275 8 0 0 0 - - - 0;
-#X obj 517 300 print z1;
-#X obj 594 300 print z2;
-#X obj 672 300 print z3;
-#X obj 750 300 print z4;
-#X obj 828 300 print z5;
-#X floatatom 594 266 5 0 0 0 - - - 0;
-#X symbolatom 672 266 8 0 0 0 - - - 0;
-#X obj 750 266 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X listbox 517 273 8 0 0 0 - - - 0;
+#X obj 517 298 print z1;
+#X obj 594 298 print z2;
+#X obj 672 298 print z3;
+#X obj 750 298 print z4;
+#X obj 828 298 print z5;
+#X floatatom 594 264 5 0 0 0 - - - 0;
+#X symbolatom 672 264 8 0 0 0 - - - 0;
+#X obj 750 264 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X symbolatom 843 277 8 0 0 0 - - - 0;
-#X obj 843 251 symbol;
-#X text 411 17 The bang message can also be used as a symbol argument
+#X symbolatom 843 275 8 0 0 0 - - - 0;
+#X obj 843 249 symbol;
+#X text 411 15 The bang message can also be used as a symbol argument
 for [route] and it matches to a bang input. Below we route messages
 according to its type. Note that we have a [list] object to give the
 'list' selector back in the case of list messages that start with a
@@ -113,17 +110,12 @@ list selector trimmed - as in the usual behaviour of the object. The
 exception and inconsistency is with 'symbol' messages \, where the
 symbol selector is kept. This is a known bug that's been here forever
 and just won't be fixed anymore., f 50;
-#X text 431 344 Usually in Pd a list with no elements is converted
+#X text 431 339 Usually in Pd a list with no elements is converted
 into a 'bang' \, whereas a list with a single number becomes a float
 message and lists with a single symbol become a symbol message. This
 is the case with [route]., f 73;
-#X text 435 589 One last special case of [route] is that it outputs
-bangs when matching to messages that have no further elements (see
-above). What happens is that it outputs an empty list \, which is converted
-to a bang message. Note how in this case the behaviour is the same
-of the [select] object., f 71;
-#N canvas 553 110 599 334 pointer 0;
-#X obj 130 135 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#N canvas 728 98 599 334 pointer 0;
+#X obj 130 135 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
@@ -144,12 +136,21 @@ refer to the 4.Data.Structure section of the Pd's tutorials., f 70
 ;
 #X text 84 213 You should use the "pointer" argument to route pointers
 \, and in this case [route] does indeed expect a pointer data type
-and nothing else. In the case of a list of pointers \, the "list" argument
-should be given \, and this is a special case where the 'list' selector
+and nothing else. The 'pointer' selector is not removed in this case.
+, f 65;
+#X text 84 268 In the case of a list of pointers \, the "list" argument
+should be given \, and this is another case where the 'list' selector
 is not trimmed!, f 65;
 #X connect 0 0 1 0;
-#X restore 792 143 pd pointer;
-#X text 680 117 [route] also deals with pointers \, see:, f 23;
+#X restore 792 141 pd pointer;
+#X text 680 115 [route] also deals with pointers \, see:, f 23;
+#X text 27 389 Note that iff you want to route according to the first
+element of a list message \, you need to trim its selector with [list
+trim]., f 50;
+#X text 435 587 [route] outputs empty lists when matching to messages
+that have no further elements (see above to the right). Conceptually
+and usually \, these should be treated as bangs (just like [route]
+treats it)., f 69;
 #X connect 0 0 27 0;
 #X connect 1 0 27 0;
 #X connect 2 0 27 0;
@@ -160,9 +161,9 @@ is not trimmed!, f 65;
 #X connect 6 0 10 0;
 #X connect 8 0 9 0;
 #X connect 10 0 8 0;
-#X connect 10 1 46 0;
+#X connect 10 1 45 0;
 #X connect 11 0 5 0;
-#X connect 14 0 49 0;
+#X connect 14 0 48 0;
 #X connect 15 0 27 0;
 #X connect 16 0 22 0;
 #X connect 17 0 22 0;
@@ -170,32 +171,32 @@ is not trimmed!, f 65;
 #X connect 22 0 25 0;
 #X connect 22 1 24 0;
 #X connect 22 2 23 0;
-#X connect 26 0 39 0;
+#X connect 26 0 38 0;
 #X connect 27 0 14 0;
-#X connect 27 1 55 0;
-#X connect 27 2 56 0;
-#X connect 27 3 57 0;
-#X connect 27 4 59 0;
-#X connect 27 4 54 0;
+#X connect 27 1 54 0;
+#X connect 27 2 55 0;
+#X connect 27 3 56 0;
+#X connect 27 4 58 0;
+#X connect 27 4 53 0;
 #X connect 28 0 27 0;
 #X connect 31 0 35 0;
 #X connect 31 1 36 0;
 #X connect 32 0 31 0;
 #X connect 33 0 32 0;
 #X connect 34 0 32 0;
-#X connect 39 0 38 0;
-#X connect 40 0 41 0;
-#X connect 41 0 39 0;
+#X connect 38 0 37 0;
+#X connect 39 0 40 0;
+#X connect 40 0 38 0;
+#X connect 43 0 42 0;
 #X connect 44 0 43 0;
-#X connect 45 0 44 0;
-#X connect 46 0 7 0;
-#X connect 47 0 10 0;
-#X connect 48 0 47 0;
-#X connect 49 0 50 0;
+#X connect 45 0 7 0;
+#X connect 46 0 10 0;
+#X connect 47 0 46 0;
+#X connect 48 0 49 0;
+#X connect 54 0 50 0;
 #X connect 55 0 51 0;
 #X connect 56 0 52 0;
-#X connect 57 0 53 0;
-#X connect 59 0 58 0;
+#X connect 58 0 57 0;
 #X restore 730 512 pd special-selectors/message-types;
 #X text 21 573 see also:;
 #X obj 99 574 select;
