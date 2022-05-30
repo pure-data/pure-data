@@ -11,15 +11,19 @@ namespace eval ::pd_canvaszoom:: {
     # exported variables
     variable zdepth
     variable oldzdepth
+    variable zoomfactor
 }
 
 
 proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
+    variable zoomfactor
     set c [tkcanvas_name $mytoplevel]
     set ::pd_canvaszoom::zdepth($c) 1.0
     set ::pd_canvaszoom::oldzdepth($c) 1.0
 
     if {!$zfact} {set zfact [expr pow(2.0, 1/5.0)]}
+    set zoomfactor($c) $zfact
+
     # add mousewheel bindings to canvas
     if {$::windowingsystem eq "x11"} {
         bind all <Control-Button-4> \
@@ -27,7 +31,7 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
         bind all <Control-Button-5> \
             {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
     }
-    bind $c <Control-MouseWheel> "if {%D > 0} {::pd_canvaszoom::zoom $c $zfact} else {::pd_canvaszoom::zoom $c [expr {1.0/$zfact}]}"
+    bind $c <Control-MouseWheel> [list ::pd_canvaszoom::stepzoom $c %D]
 
     # add button-2 bindings to scroll the canvas
     bind $c <ButtonPress-2> {+ %W scan mark %x %y}
@@ -42,6 +46,20 @@ proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     set scrolly [expr { ($ycanvas * $zdepth - $ywin) / [lindex $scrollregion 3]}]
     $c xview moveto $scrollx
     $c yview moveto $scrolly
+}
+
+# zoom in (steps>0) or zoom out (steps<0)
+proc ::pd_canvaszoom::stepzoom {c steps} {
+    variable zoomfactor
+    # don't zoom if not initialized
+    if { ! [info exists zoomfactor($c)] } { return  }
+
+    set zfact $zoomfactor($c)
+    if { $steps > 0} {
+        ::pd_canvaszoom::zoom $c [expr $zfact]
+    } elseif {$steps < 0} {
+        ::pd_canvaszoom::zoom $c [expr 1.0 / $zfact]
+    }
 }
 
 proc ::pd_canvaszoom::zoom {c fact} {
