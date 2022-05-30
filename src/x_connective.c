@@ -539,7 +539,8 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     if (x->x_type == A_FLOAT)
     {
         t_float f;
-        if (!argc) return;
+        if (!argc)
+            goto rejected;;
         if (argv->a_type != A_FLOAT)
             goto rejected;
         f = atom_getfloat(argv);
@@ -615,6 +616,8 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
     }
  rejected:
+    if(argc == 0)
+        outlet_bang(x->x_rejectout);
     outlet_list(x->x_rejectout, 0, argc, argv);
 }
 
