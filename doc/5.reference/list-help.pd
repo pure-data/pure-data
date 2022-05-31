@@ -559,8 +559,9 @@ to its right inlet., f 38;
 #X text 120 17 - number of items in list;
 #X obj 231 233 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 38 62 The [list length] object outputs the number of arguments
-in a list or other message., f 61;
+#X text 38 62 The [list length] object outputs the number of elements
+in a list or another message., f 61;
+#X text 257 232 a bang is a zero element list;
 #X connect 0 0 7 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;
