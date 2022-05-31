@@ -73,7 +73,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
         sys_vgui(".x%lx.c itemconfigure l%lx -fill "
-        	"[::pdtk_canvas::get_color selected .x%lx]\n",
+            "[::pdtk_canvas::get_color selected .x%lx]\n",
             x, x->gl_editor->e_selectline_tag, x);
         sys_vgui(".x%lx.c raise l%lx\n",
             x, x->gl_editor->e_selectline_tag);
@@ -97,7 +97,7 @@ void glist_deselectline(t_glist *x)
         else
             issignal = 0;
         sys_vgui(".x%lx.c itemconfigure l%lx -fill "
-        	"[::pdtk_canvas::get_color %s .x%lx]\n",
+            "[::pdtk_canvas::get_color %s .x%lx]\n",
             x, x->gl_editor->e_selectline_tag,
             (issignal ? "signal_cord" : "msg_cord"), x);
     }
@@ -2524,8 +2524,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         if (!shiftmod) glist_noselect(x);
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -outline "
-        	"[::pdtk_canvas::get_color selection_rectangle .x%lx] -tags x\n",
-              x, xpos, ypos, xpos, ypos, x);
+            "[::pdtk_canvas::get_color selection_rectangle .x%lx] -tags x\n",
+            x, xpos, ypos, xpos, ypos, x);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -2591,17 +2591,14 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 + iom;
             ly2 = y21;
             sys_vgui(".x%lx.c create line %d %d %d %d -fill "
-            	"[::pdtk_canvas::get_color %s .x%lx] -width %d -tags "
-            	"[list l%lx cord]\n",
-                    glist_getcanvas(x),
-                        lx1, ly1, lx2, ly2,
-                    (issignal ? "signal_cord" : "msg_cord"),
-                    glist_getcanvas(x),
-                    (issignal ? 2 : 1) * x->gl_zoom,
-                    oc);
-            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                    canvas_getindex(x, &src->ob_g), nout,
-                    canvas_getindex(x, &sink->ob_g), nin));
+                "[::pdtk_canvas::get_color %s .x%lx] -width %d -tags "
+                "[list l%lx cord]\n",
+                glist_getcanvas(x),lx1, ly1, lx2, ly2,
+                (issignal ? "signal_cord" : "msg_cord"), glist_getcanvas(x),
+                (issignal ? 2 : 1) * x->gl_zoom, oc);
+            canvas_undo_add(x, UNDO_CONNECT, "connect",
+                canvas_undo_set_connect(x, canvas_getindex(x, &src->ob_g), nout,
+                canvas_getindex(x, &sink->ob_g), nin));
             canvas_dirty(x, 1);
             return 1;
         }

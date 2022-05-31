@@ -5,7 +5,7 @@
 # msg_box_text - text in a message box
 # comment
 # selected - selection
-# obj_box_outline_broken - outline of "broken" object 
+# obj_box_outline_broken - outline of "broken" object
 #                          (that failed to create)
 # obj_box_outline
 # msg_box_outline

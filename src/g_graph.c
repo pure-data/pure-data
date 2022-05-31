@@ -737,7 +737,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_symbol *arrayname;
         char selected[56];
         sprintf(selected, "[::pdtk_canvas::get_color %s .x%lx]",
-        	(state ? "selected" : "graph_outline"), (long)c);
+            (state ? "selected" : "graph_outline"), (long)c);
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
@@ -779,15 +779,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             {
                 int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    (int)glist_xtopixels(x, f), (int)upix,
+                    "%s -tags [list %s graph]\n",
+                    c, (int)glist_xtopixels(x, f), (int)upix,
                     (int)glist_xtopixels(x, f), (int)upix - tickpix,
                     glist_getzoom(x), selected, tag);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    (int)glist_xtopixels(x, f), (int)lpix,
+                    "%s -tags [list %s graph]\n",
+                    c, (int)glist_xtopixels(x, f), (int)lpix,
                     (int)glist_xtopixels(x, f), (int)lpix + tickpix,
                     glist_getzoom(x), selected, tag);
             }
@@ -797,15 +795,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             {
                 int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    (int)glist_xtopixels(x, f), (int)upix,
+                    "%s -tags [list %s graph]\n",
+                    c, (int)glist_xtopixels(x, f), (int)upix,
                     (int)glist_xtopixels(x, f), (int)upix - tickpix,
                     glist_getzoom(x), selected, tag);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    (int)glist_xtopixels(x, f), (int)lpix,
+                    "%s -tags [list %s graph]\n",
+                    c, (int)glist_xtopixels(x, f), (int)lpix,
                     (int)glist_xtopixels(x, f), (int)lpix + tickpix,
                     glist_getzoom(x), selected, tag);
             }
@@ -824,17 +820,15 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             {
                 int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    x1, (int)glist_ytopixels(x, f),
-                    x1 + tickpix, (int)glist_ytopixels(x, f), glist_getzoom(x),
-                    selected, tag);
+                    "%s -tags [list %s graph]\n",
+                    c, x1, (int)glist_ytopixels(x, f), x1 + tickpix,
+                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
+                    tag);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    x2, (int)glist_ytopixels(x, f),
-                    x2 - tickpix, (int)glist_ytopixels(x, f), glist_getzoom(x),
-                    selected, tag);
+                    "%s -tags [list %s graph]\n",
+                    c, x2, (int)glist_ytopixels(x, f), x2 - tickpix,
+                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
+                    tag);
             }
             for (i = 1, f = x->gl_ytick.k_point - x->gl_ytick.k_inc;
                 f > 0.99 * lbound + 0.01 * ubound;
@@ -842,17 +836,15 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             {
                 int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    x1, (int)glist_ytopixels(x, f),
-                    x1 + tickpix, (int)glist_ytopixels(x, f), glist_getzoom(x),
-                    selected, tag);
+                    "%s -tags [list %s graph]\n",
+                    c, x1, (int)glist_ytopixels(x, f), x1 + tickpix,
+                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
+                    tag);
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                	"%s -tags [list %s graph]\n",
-                    c,
-                    x2, (int)glist_ytopixels(x, f),
-                    x2 - tickpix, (int)glist_ytopixels(x, f), glist_getzoom(x),
-                    selected, tag);
+                    "%s -tags [list %s graph]\n",
+                    c, x2, (int)glist_ytopixels(x, f), x2 - tickpix,
+                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
+                    tag);
             }
         }
             /* draw x labels */
@@ -988,18 +980,18 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
         if (canvas_showtext(x))
             rtext_select(y, state);
         sys_vgui(".x%lx.c itemconfigure %sR -fill "
-        	"[::pdtk_canvas::get_color %s .x%lx]\n",
-       		glist, rtext_gettag(y),
-        	(state? "selected" : "graph_text"), glist);
+            "[::pdtk_canvas::get_color %s .x%lx]\n",
+            glist, rtext_gettag(y), (state? "selected" : "graph_text"),
+            glist);
         sys_vgui(".x%lx.c itemconfigure graph%lx&&!name -fill "
-        	"[::pdtk_canvas::get_color %s .x%lx]\n",
-            glist_getcanvas(glist), z,
-            (state? "selected" : "graph_outline"), glist);
+            "[::pdtk_canvas::get_color %s .x%lx]\n",
+            glist_getcanvas(glist), z, (state? "selected" : "graph_outline"),
+            glist);
         if (x->gl_list && pd_class(&x->gl_list->g_pd) == garray_class)
             sys_vgui(".x%lx.c itemconfigure graph%lx&&name -fill "
-				"[::pdtk_canvas::get_color %s .x%lx]\n",
-				glist_getcanvas(glist), z,
-				(state? "selected" : "array_name"), glist);
+                "[::pdtk_canvas::get_color %s .x%lx]\n",
+				glist_getcanvas(glist), z, (state? "selected" : "array_name"),
+				glist);
     }
 }
 

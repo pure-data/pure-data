@@ -30,7 +30,7 @@ proc pdtk_textwindow_open {name geometry title font} {
 		set tmpcol [::pdtk_canvas::get_color text_window_text $name]
 		if {$tmpcol ne ""} {
 			$name.text configure -foreground $tmpcol
-		}	
+		}
 		set tmpcol [::pdtk_canvas::get_color text_window_cursor $name]
 		if {$tmpcol ne ""} {
 			$name.text configure -insertbackground $tmpcol
