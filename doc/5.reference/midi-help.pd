@@ -1,142 +1,142 @@
-#N canvas 268 40 1061 607 12;
-#X obj 526 344 noteout;
-#X obj 609 433 pgmout;
-#X obj 524 433 bendout;
-#X floatatom 21 488 5 0 0 0 - - - 0;
-#X obj 672 362 ctlout;
-#X obj 693 433 touchout;
-#X obj 769 433 polytouchout;
-#X obj 576 66 midiin;
-#X obj 918 56 sysexin;
-#X obj 936 433 midiout;
-#X obj 748 66 midirealtimein;
-#X obj 236 460 touchin;
-#X obj 335 460 polytouchin;
-#X obj 21 208 notein;
-#X text 74 260 velocity;
-#X text 85 234 channel;
-#X obj 271 209 ctlin;
-#X text 302 297 value;
-#X text 435 488 channel;
-#X text 367 534 aftertouch value;
-#X floatatom 256 371 0 0 0 0 - - - 0;
-#X text 284 372 value;
-#X text 71 207 (omni);
-#X obj 161 233 notein 1;
-#X text 152 198 (channel 1);
-#X text 315 208 (all controllers \, omni);
-#X floatatom 60 365 0 0 0 0 - - - 0;
-#X text 17 366 value;
-#X obj 60 339 ctlin 4;
-#X floatatom 106 365 0 0 0 0 - - - 0;
-#X text 472 289 note;
-#X text 756 367 touch;
-#X text 811 381 note;
-#X text 116 338 (controller 4);
-#X text 704 283 value;
-#X text 737 336 channel;
-#X obj 845 335 ctlout 7;
-#X text 879 379 Raw MIDI (doesn't take arguments \, 2nd inlet sets
-port number):, f 22;
-#X text 531 119 raw MIDI byte by byte (except real-time messages),
+#N canvas 207 23 1076 714 12;
+#X obj 531 239 noteout;
+#X obj 675 338 pgmout;
+#X obj 560 338 bendout;
+#X floatatom 26 447 5 0 0 0 - - - 0;
+#X text 31 379 pitch bend, f 5;
+#X obj 677 257 ctlout;
+#X obj 779 338 touchout;
+#X obj 895 338 polytouchout;
+#X obj 69 567 midiin;
+#X obj 411 557 sysexin;
+#X obj 794 631 midiout;
+#X obj 241 567 midirealtimein;
+#X obj 241 419 touchin;
+#X obj 340 399 polytouchin;
+#X obj 26 167 notein;
+#X text 79 219 velocity;
+#X text 90 193 channel;
+#X obj 276 168 ctlin;
+#X text 307 256 value;
+#X text 440 427 channel;
+#X text 235 379 channel aftertouch, f 10;
+#X text 341 358 polyphonic aftertouch, f 10;
+#X text 372 473 aftertouch value;
+#X floatatom 261 330 0 0 0 0 - - - 0;
+#X text 289 331 value;
+#X text 76 166 (omni);
+#X obj 166 192 notein 1;
+#X text 157 157 (channel 1);
+#X text 320 167 (all controllers \, omni);
+#X floatatom 65 324 0 0 0 0 - - - 0;
+#X text 22 325 value;
+#X obj 65 298 ctlin 4;
+#X floatatom 111 324 0 0 0 0 - - - 0;
+#X text 509 186 note;
+#X text 882 272 touch;
+#X text 937 286 note;
+#X text 121 297 (controller 4);
+#X text 709 178 value;
+#X text 742 231 channel;
+#X obj 850 230 ctlout 7;
+#X text 24 620 raw MIDI byte by byte (except real-time messages),
 f 27;
-#X text 743 120 real-time messages;
-#X text 539 15 These three below are always omni \, don't take arguments
+#X text 236 621 real-time messages;
+#X text 32 516 These three below are always omni \, don't take arguments
 and output the port number on the right outlet:;
-#X text 722 310 controller #;
-#X text 318 267 controller #;
-#X text 56 282 note;
-#X text 154 284 note;
-#X text 195 284 velocity;
-#X text 404 511 note;
-#X obj 21 460 bendin, f 7;
-#X text 76 459 *;
-#X text 579 432 *;
-#X text 596 316 channel;
-#X text 583 290 velocity;
-#X text 898 107 system exclusive messages only \, byte by byte, f
-17;
-#X text 756 383 value;
-#X text 330 235 channel/port;
-#X text 160 212 (port 1);
-#X text 134 367 channel/port;
-#X obj 256 341 ctlin 7 17;
-#X text 334 335 (controller 7 \, channel 1/port 2), f 17;
-#X text 10 51 MIDI INPUTS: Inputs are omni by default \, an optional
+#X text 727 205 controller #;
+#X text 323 226 controller #;
+#X text 61 241 note;
+#X text 159 243 note;
+#X text 200 243 velocity;
+#X text 409 450 note;
+#X obj 26 419 bendin, f 7;
+#X text 81 418 *;
+#X text 615 337 *;
+#X text 613 211 channel;
+#X text 550 185 velocity;
+#X text 391 608 system exclusive messages only \, byte by byte, f
+16;
+#X text 882 288 value;
+#X text 335 194 channel/port;
+#X text 165 171 (port 1);
+#X text 139 326 channel/port;
+#X obj 261 300 ctlin 7 17;
+#X text 339 294 (controller 7 \, channel 1/port 2), f 17;
+#X text 15 10 MIDI INPUTS: Inputs are omni by default \, an optional
 argument sets the channel/port and removes the rightmost outlet (which
 outputs this information). For [ctlin] \, a first optional argument
 sets controller number and suppresses its corresponding outlet \, and
 a second argument sets the channel and also suppresses its corresponding
 outlet., f 70;
-#X text 544 184 MIDI OUTPUTS: Outputs are set to channel 1 / port 1
+#X text 549 79 MIDI OUTPUTS: Outputs are set to channel 1 / port 1
 by default \, but they also take a channel/port argument (where channels
 from 17 represent port 2 \, from 33 port 3 and so on). The [ctlout]
 object takes control and channel/port arguments. Inlets are not suppressed
 by arguments and change the parameters., f 67;
-#X text 805 268 (controller 7 \, channel/port 1), f 15;
-#X obj 956 335 ctlout 3 38;
-#X text 10 129 Port number is encoded as the channel number. Channels
+#X text 810 163 (controller 7 \, channel/port 1), f 15;
+#X obj 961 230 ctlout 3 38;
+#X text 15 88 Port number is encoded as the channel number. Channels
 1 to 16 are for port 1 \, channels 17 to 32 is the same as channels
 1 to 16 for port 2 \, channels 33 to 48 represents channels 1 to 16
 in port 3 \, and so on..., f 70;
-#X text 179 459 **;
-#X text 658 432 **;
-#X text 531 525 ** Program change values in [pgmin] and [pgmout] are
+#X text 184 418 **;
+#X text 724 337 **;
+#X text 539 437 ** Program change values in [pgmin] and [pgmout] are
 indexed from 1 \, which means that the possible values are from 1 to
 128 (not 0 to 127)!, f 70;
-#X text 531 475 * Known bug: [bendin] and [bendout] are inconsistent
+#X text 539 387 * Known bug: [bendin] and [bendout] are inconsistent
 ([bendin] outputs values from 0 to 16383 and [bendout] takes values
 from -8192 to 8191) - this won't change., f 70;
-#X text 834 582 updated for Pd version 0.48-2;
-#X text 935 268 (controller 3 \, channel 6/port 3), f 17;
-#X floatatom 21 282 4 0 127 0 - - - 0;
-#X floatatom 572 316 0 1 64 0 - - - 0;
-#X floatatom 524 407 5 0 0 0 - - - 0;
-#X floatatom 40 259 4 0 127 0 - - - 0;
-#X floatatom 161 262 4 0 127 0 - - - 0;
-#X floatatom 271 296 4 0 127 0 - - - 0;
-#X floatatom 287 267 4 0 127 0 - - - 0;
-#X floatatom 372 510 4 0 127 0 - - - 0;
-#X floatatom 335 532 4 0 127 0 - - - 0;
-#X floatatom 122 488 4 0 127 0 - - - 0;
-#X floatatom 236 488 4 0 127 0 - - - 0;
-#X floatatom 576 95 4 0 127 0 - - - 0;
-#X floatatom 748 95 4 0 127 0 - - - 0;
-#X floatatom 615 95 4 0 127 0 - - - 0;
-#X floatatom 918 85 4 0 127 0 - - - 0;
-#X floatatom 964 85 4 0 127 0 - - - 0;
-#X floatatom 843 95 4 0 127 0 - - - 0;
-#X floatatom 956 308 4 0 127 0 - - - 0;
-#X floatatom 845 308 4 0 127 0 - - - 0;
-#X floatatom 691 309 4 0 127 0 - - - 0;
-#X floatatom 672 282 4 0 127 0 - - - 0;
-#X floatatom 549 289 4 0 127 0 - - - 0;
-#X floatatom 511 289 4 0 127 0 - - - 0;
-#X floatatom 609 407 4 0 127 0 - - - 0;
-#X floatatom 693 407 4 0 127 0 - - - 0;
-#X floatatom 769 407 4 0 127 0 - - - 0;
-#X floatatom 809 407 4 0 127 0 - - - 0;
-#X floatatom 711 335 0 1 64 0 - - - 0;
-#X floatatom 303 234 0 1 64 0 - - - 0;
-#X floatatom 214 261 0 1 64 0 - - - 0;
-#X floatatom 60 234 0 1 64 0 - - - 0;
-#X floatatom 67 488 0 1 64 0 - - - 0;
-#X floatatom 282 488 0 1 64 0 - - - 0;
-#X floatatom 409 488 0 1 64 0 - - - 0;
-#X text 31 13 MIDI Input/Output objects;
-#X text 522 159 ==========================================================================
-, f 74;
-#X obj 122 460 pgmin 2;
-#X text 68 509 ch;
-#X text 284 508 ch;
-#X text 15 509 value;
-#X text 154 489 value;
-#X text 228 508 value;
-#X obj 2 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 839 682 updated for Pd version 0.48-2;
+#X text 940 163 (controller 3 \, channel 6/port 3), f 17;
+#X floatatom 26 241 4 0 127 0 - - - 0;
+#X floatatom 589 211 0 1 64 0 - - - 0;
+#X floatatom 560 312 5 0 0 0 - - - 0;
+#X floatatom 45 218 4 0 127 0 - - - 0;
+#X floatatom 166 221 4 0 127 0 - - - 0;
+#X floatatom 276 255 4 0 127 0 - - - 0;
+#X floatatom 292 226 4 0 127 0 - - - 0;
+#X floatatom 377 449 4 0 127 0 - - - 0;
+#X floatatom 340 471 4 0 127 0 - - - 0;
+#X floatatom 127 447 4 0 127 0 - - - 0;
+#X floatatom 241 447 4 0 127 0 - - - 0;
+#X floatatom 69 596 4 0 127 0 - - - 0;
+#X floatatom 241 596 4 0 127 0 - - - 0;
+#X floatatom 108 596 4 0 127 0 - - - 0;
+#X floatatom 411 586 4 0 127 0 - - - 0;
+#X floatatom 457 586 4 0 127 0 - - - 0;
+#X floatatom 336 596 4 0 127 0 - - - 0;
+#X floatatom 961 203 4 0 127 0 - - - 0;
+#X floatatom 850 203 4 0 127 0 - - - 0;
+#X floatatom 696 204 4 0 127 0 - - - 0;
+#X floatatom 677 177 4 0 127 0 - - - 0;
+#X floatatom 554 211 4 0 127 0 - - - 0;
+#X floatatom 516 211 4 0 127 0 - - - 0;
+#X floatatom 675 312 4 0 127 0 - - - 0;
+#X floatatom 779 312 4 0 127 0 - - - 0;
+#X floatatom 895 312 4 0 127 0 - - - 0;
+#X floatatom 935 312 4 0 127 0 - - - 0;
+#X floatatom 716 230 0 1 64 0 - - - 0;
+#X floatatom 308 193 0 1 64 0 - - - 0;
+#X floatatom 219 220 0 1 64 0 - - - 0;
+#X floatatom 65 193 0 1 64 0 - - - 0;
+#X floatatom 72 447 0 1 64 0 - - - 0;
+#X floatatom 287 447 0 1 64 0 - - - 0;
+#X floatatom 414 427 0 1 64 0 - - - 0;
+#X text 556 22 MIDI Input/Output objects;
+#X obj 127 419 pgmin 2;
+#X text 110 377 program change (channel 2), f 14;
+#X text 73 468 ch;
+#X text 289 467 ch;
+#X text 20 468 value;
+#X text 159 448 value;
+#X text 233 467 value;
+#X obj 527 50 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 2 572 cnv 1 1055 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 7 671 cnv 1 1055 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#N canvas 501 47 566 293 reference 0;
+#N canvas 502 23 566 293 reference 0;
 #N canvas 564 82 588 563 reference 0;
 #X obj 18 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -180,7 +180,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 146 426 float - MIDI channel.;
 #X text 141 498 1) float - sets MIDI channel (default 0).;
 #X text 55 224 1) float - sets MIDI channel and suppresses 3rd outlet
-(default OMNI)., f 71;
+(default OMNI)., f 69;
 #X restore 383 19 pd reference;
 #X obj 230 19 notein;
 #X text 350 20 ==>;
@@ -230,7 +230,7 @@ from -8192 to 8191) - this won't change., f 70;
 ;
 #X text 140 539 2) float - sets MIDI channel (default 0)., f 46;
 #X text 55 221 1) float - sets control number and suppresses 2nd outlet
-(default ALL)., f 72;
+(default ALL)., f 70;
 #X text 55 241 2) float - sets MIDI channel and suppresses 3rd outlet
 (default OMNI)., f 70;
 #X text 165 448 float - MIDI channel.;
@@ -270,7 +270,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X obj 39 16 bendin;
 #X text 92 15 - MIDI pitch bend input.;
 #X text 55 197 1) float - sets MIDI channel and suppresses 2nd outlet
-(default OMNI)., f 70;
+(default OMNI)., f 69;
 #X text 146 112 float - pitch bend value., f 27;
 #X obj 29 326 bendout;
 #X text 130 497 1) float - sets MIDI channel (default 0)., f 46;
@@ -351,7 +351,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X obj 17 387 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 55 197 1) float - sets MIDI channel and suppresses 2nd outlet
-(default OMNI)., f 70;
+(default OMNI)., f 69;
 #X text 130 497 1) float - sets MIDI channel (default 0)., f 46;
 #X text 155 420 float - MIDI channel number.;
 #X obj 39 16 touchin;
@@ -399,7 +399,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 146 426 float - MIDI channel.;
 #X text 141 498 1) float - sets MIDI channel (default 0).;
 #X text 55 221 1) float - sets MIDI channel and suppresses 3rd outlet
-(default OMNI)., f 70;
+(default OMNI)., f 69;
 #X obj 39 16 polytouchin;
 #X text 133 16 - MIDI polyphonic aftertouch input.;
 #X obj 29 306 polytouchout;
@@ -430,7 +430,7 @@ from -8192 to 8191) - this won't change., f 70;
 0;
 #X obj 18 107 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 18 356 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#X obj 18 336 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 18 450 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
 0;
@@ -441,7 +441,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 174 459 NONE;
 #X obj 17 415 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X obj 17 387 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X obj 17 367 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
 #X obj 33 12 midiin;
 #X obj 195 12 sysexin;
@@ -452,60 +452,71 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 128 117 midiin: raw MIDI (except real-time messages) \, midirealtimein:
 real-time messages \, sysexin: only system exclusive messages., f
 61;
-#X obj 29 326 midiout;
+#X obj 29 306 midiout;
 #X text 259 13 - raw \, realtime and sysex input.;
-#X text 155 392 float - raw MIDI.;
 #X text 155 420 float - port number.;
 #X text 174 494 NONE;
-#X text 87 325 - raw MIDI output (including real-time and sysex messages).
-;
+#X text 155 372 float - raw MIDI stream.;
+#X text 162 392 list - MIDI packets.;
+#X text 87 305 - raw MIDI output (including real time and sysex).;
 #X restore 383 246 pd reference;
 #X text 350 247 ==>;
-#X restore 326 10 pd reference;
-#X text 424 11 <= click;
-#X obj 521 2 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 851 19 pd reference;
+#X text 949 20 <= click;
+#X obj 1046 14 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 25 185 Note;
-#X text 269 186 Controller;
-#X text 26 420 Pitch Bend, f 5;
-#X text 105 418 Program Change (channel 2), f 14;
-#X text 230 420 Channel Aftertouch, f 10;
-#X text 336 419 Polyphonic Aftertouch, f 10;
-#X connect 7 0 81 0;
-#X connect 7 1 83 0;
-#X connect 8 0 84 0;
+#X obj 526 14 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X floatatom 794 571 5 0 0 0 - - - 0;
+#X text 552 563 In order to use MIDI Input or output objects \, be
+sure to set MIDI devices in:, f 29;
+#X text 582 614 Preferences --> MIDI;
+#X msg 794 542 144 \, 68 \, 120;
+#X msg 812 599 128 68 0;
+#X text 893 542 note on as a stream of raw MIDI., f 19;
+#X text 881 592 note off as a MIDI packet list, f 18;
+#X text 540 478 Raw MIDI output is provided by [midiout]. It deals
+with a stream of floats or MIDI packet lists. It doesn't take arguments
+and the 2nd inlet sets port number. You can use [midiout] to send raw
+real time and sysex messages as well., f 70;
+#X connect 8 0 83 0;
 #X connect 8 1 85 0;
-#X connect 10 0 82 0;
-#X connect 10 1 86 0;
-#X connect 11 0 80 0;
-#X connect 11 1 102 0;
-#X connect 12 0 78 0;
-#X connect 12 1 77 0;
-#X connect 12 2 103 0;
-#X connect 13 0 70 0;
-#X connect 13 1 73 0;
-#X connect 13 2 100 0;
-#X connect 16 0 75 0;
-#X connect 16 1 76 0;
-#X connect 16 2 98 0;
-#X connect 23 0 74 0;
-#X connect 23 1 99 0;
-#X connect 28 0 26 0;
-#X connect 28 1 29 0;
-#X connect 47 0 3 0;
-#X connect 47 1 101 0;
-#X connect 57 0 20 0;
-#X connect 71 0 0 2;
-#X connect 72 0 2 0;
-#X connect 87 0 62 0;
-#X connect 88 0 36 0;
-#X connect 89 0 4 1;
-#X connect 90 0 4 0;
-#X connect 91 0 0 1;
-#X connect 92 0 0 0;
-#X connect 93 0 1 0;
-#X connect 94 0 5 0;
-#X connect 95 0 6 0;
-#X connect 96 0 6 1;
-#X connect 97 0 4 2;
-#X connect 106 0 79 0;
+#X connect 9 0 86 0;
+#X connect 9 1 87 0;
+#X connect 11 0 84 0;
+#X connect 11 1 88 0;
+#X connect 12 0 82 0;
+#X connect 12 1 104 0;
+#X connect 13 0 80 0;
+#X connect 13 1 79 0;
+#X connect 13 2 105 0;
+#X connect 14 0 72 0;
+#X connect 14 1 75 0;
+#X connect 14 2 102 0;
+#X connect 17 0 77 0;
+#X connect 17 1 78 0;
+#X connect 17 2 100 0;
+#X connect 26 0 76 0;
+#X connect 26 1 101 0;
+#X connect 31 0 29 0;
+#X connect 31 1 32 0;
+#X connect 49 0 3 0;
+#X connect 49 1 103 0;
+#X connect 59 0 23 0;
+#X connect 73 0 0 2;
+#X connect 74 0 2 0;
+#X connect 89 0 64 0;
+#X connect 90 0 39 0;
+#X connect 91 0 5 1;
+#X connect 92 0 5 0;
+#X connect 93 0 0 1;
+#X connect 94 0 0 0;
+#X connect 95 0 1 0;
+#X connect 96 0 6 0;
+#X connect 97 0 7 0;
+#X connect 98 0 7 1;
+#X connect 99 0 5 2;
+#X connect 107 0 81 0;
+#X connect 120 0 10 0;
+#X connect 123 0 120 0;
+#X connect 124 0 10 0;
