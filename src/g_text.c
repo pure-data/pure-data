@@ -34,6 +34,28 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
 void canvas_startmotion(t_canvas *x);
 int glist_getindex(t_glist *x, t_gobj *y);
+void gatom_undarken(t_text *x);
+
+static void glist_nograb(t_glist *x)
+{
+    if (x->gl_editor)
+    {
+        if(x->gl_editor->e_textedfor)
+        {
+            rtext_retext(x->gl_editor->e_textedfor);
+            rtext_activate(x->gl_editor->e_textedfor, 0);
+        } else {
+            t_canvas *canvas = glist_getcanvas(x);
+            t_object *ob;
+            t_gobj*g;
+            for (g = canvas->gl_list; g; g = g->g_next)
+                if ((ob = pd_checkobject(&g->g_pd)) && T_ATOM == ob->te_type)
+                    gatom_undarken(ob);
+
+        }
+        x->gl_editor->e_grab = 0;
+    }
+}
 
 /* ----------------- the "text" object.  ------------------ */
 
@@ -65,6 +87,7 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         pd_vmess((t_pd *)glist_getcanvas(gl), gensym("editmode"), "i", 1);
         SETSYMBOL(&at, gensym("comment"));
         glist_noselect(gl);
+        glist_nograb(gl);
         glist_getnextxy(gl, &xpix, &ypix);
         x->te_xpix = xpix/gl->gl_zoom - 1;
         x->te_ypix = ypix/gl->gl_zoom - 1;
@@ -148,6 +171,7 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
     int connectme = (x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next && !sys_noautopatch);
+    glist_nograb(x);
     if (connectme)
     {
         t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;
