@@ -7,7 +7,7 @@
 #X obj 677 257 ctlout;
 #X obj 779 338 touchout;
 #X obj 895 338 polytouchout;
-#X obj 69 567 midiin;
+#X obj 69 559 midiin;
 #X obj 411 557 sysexin;
 #X obj 794 631 midiout;
 #X obj 241 567 midirealtimein;
@@ -39,7 +39,7 @@
 #X text 709 178 value;
 #X text 742 231 channel;
 #X obj 850 230 ctlout 7;
-#X text 24 620 raw MIDI byte by byte (except real-time messages),
+#X text 24 614 raw MIDI byte by byte (except real-time messages),
 f 27;
 #X text 236 621 real-time messages;
 #X text 32 516 These three below are always omni \, don't take arguments
@@ -63,20 +63,20 @@ and output the port number on the right outlet:;
 #X text 139 326 channel/port;
 #X obj 261 300 ctlin 7 17;
 #X text 339 294 (controller 7 \, channel 1/port 2), f 17;
-#X text 15 10 MIDI INPUTS: Inputs are omni by default \, an optional
+#X text 15 8 MIDI INPUTS: Inputs are omni by default \, an optional
 argument sets the channel/port and removes the rightmost outlet (which
 outputs this information). For [ctlin] \, a first optional argument
 sets controller number and suppresses its corresponding outlet \, and
 a second argument sets the channel and also suppresses its corresponding
 outlet., f 70;
-#X text 549 79 MIDI OUTPUTS: Outputs are set to channel 1 / port 1
+#X text 549 71 MIDI OUTPUTS: Outputs are set to channel 1 / port 1
 by default \, but they also take a channel/port argument (where channels
 from 17 represent port 2 \, from 33 port 3 and so on). The [ctlout]
 object takes control and channel/port arguments. Inlets are not suppressed
 by arguments and change the parameters., f 67;
 #X text 810 163 (controller 7 \, channel/port 1), f 15;
 #X obj 961 230 ctlout 3 38;
-#X text 15 88 Port number is encoded as the channel number. Channels
+#X text 15 89 Port number is encoded as the channel number. Channels
 1 to 16 are for port 1 \, channels 17 to 32 is the same as channels
 1 to 16 for port 2 \, channels 33 to 48 represents channels 1 to 16
 in port 3 \, and so on..., f 70;
@@ -101,9 +101,9 @@ from -8192 to 8191) - this won't change., f 70;
 #X floatatom 340 471 4 0 127 0 - - - 0;
 #X floatatom 127 447 4 0 127 0 - - - 0;
 #X floatatom 241 447 4 0 127 0 - - - 0;
-#X floatatom 69 596 4 0 127 0 - - - 0;
+#X floatatom 69 588 4 0 127 0 - - - 0;
 #X floatatom 241 596 4 0 127 0 - - - 0;
-#X floatatom 108 596 4 0 127 0 - - - 0;
+#X floatatom 108 588 4 0 127 0 - - - 0;
 #X floatatom 411 586 4 0 127 0 - - - 0;
 #X floatatom 457 586 4 0 127 0 - - - 0;
 #X floatatom 336 596 4 0 127 0 - - - 0;
@@ -124,7 +124,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X floatatom 72 447 0 1 64 0 - - - 0;
 #X floatatom 287 447 0 1 64 0 - - - 0;
 #X floatatom 414 427 0 1 64 0 - - - 0;
-#X text 556 22 MIDI Input/Output objects;
+#X text 561 12 MIDI Input/Output objects;
 #X obj 127 419 pgmin 2;
 #X text 110 377 program change (channel 2), f 14;
 #X text 73 468 ch;
@@ -132,7 +132,7 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 20 468 value;
 #X text 159 448 value;
 #X text 233 467 value;
-#X obj 527 50 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 529 40 cnv 1 540 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 7 671 cnv 1 1055 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -449,9 +449,6 @@ from -8192 to 8191) - this won't change., f 70;
 #X text 156 208 none;
 #X text 146 171 float - port number.;
 #X text 70 116 float -;
-#X text 128 117 midiin: raw MIDI (except real-time messages) \, midirealtimein:
-real-time messages \, sysexin: only system exclusive messages., f
-61;
 #X obj 29 306 midiout;
 #X text 259 13 - raw \, realtime and sysex input.;
 #X text 155 420 float - port number.;
@@ -459,26 +456,27 @@ real-time messages \, sysexin: only system exclusive messages., f
 #X text 155 372 float - raw MIDI stream.;
 #X text 162 392 list - MIDI packets.;
 #X text 87 305 - raw MIDI output (including real time and sysex).;
+#X text 128 117 midiin: raw MIDI (except real-time messages) \, midirealtimein:
+real-time messages \, sysexin: system exclusive messages., f 61;
 #X restore 383 246 pd reference;
 #X text 350 247 ==>;
-#X restore 851 19 pd reference;
-#X text 949 20 <= click;
-#X obj 1046 14 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 526 14 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 856 9 pd reference;
+#X text 954 10 <= click;
+#X obj 529 4 cnv 1 1 35 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X floatatom 794 571 5 0 0 0 - - - 0;
-#X text 552 563 In order to use MIDI Input or output objects \, be
+#X text 563 564 In order to use MIDI Input or output objects \, be
 sure to set MIDI devices in:, f 29;
-#X text 582 614 Preferences --> MIDI;
+#X text 593 615 Preferences --> MIDI;
 #X msg 794 542 144 \, 68 \, 120;
 #X msg 812 599 128 68 0;
 #X text 893 542 note on as a stream of raw MIDI., f 19;
 #X text 881 592 note off as a MIDI packet list, f 18;
+#X text 37 647 (sysex supported);
 #X text 540 478 Raw MIDI output is provided by [midiout]. It deals
 with a stream of floats or MIDI packet lists. It doesn't take arguments
 and the 2nd inlet sets port number. You can use [midiout] to send raw
-real time and sysex messages as well., f 70;
+real-time and sysex messages as well., f 70;
 #X connect 8 0 83 0;
 #X connect 8 1 85 0;
 #X connect 9 0 86 0;
@@ -517,6 +515,6 @@ real time and sysex messages as well., f 70;
 #X connect 98 0 7 1;
 #X connect 99 0 5 2;
 #X connect 107 0 81 0;
-#X connect 120 0 10 0;
-#X connect 123 0 120 0;
-#X connect 124 0 10 0;
+#X connect 119 0 10 0;
+#X connect 122 0 119 0;
+#X connect 123 0 10 0;
