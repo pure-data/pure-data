@@ -22,6 +22,8 @@ namespace eval ::pdtk_canvas:: {
 # so we can use it during menuclose
 array set ::pdtk_canvas::::window_fullname {}
 
+array set ::pdtk_canvas::geometry_needs_init {}
+
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
 # but not the same thing.  In Pd code, a 'canvas' is basically a patch, while
@@ -95,6 +97,13 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
+    if { "" eq $geometry } {
+        # no position set: this is a new window (rather than one loaded from file)
+        # we set a flag here, so we can query (and report) the actual geometry,
+        # once the window is fully created
+        set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
+    }
+
     foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
@@ -323,6 +332,22 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
     set ::loaded($mytoplevel) 1
     # send the virtual events now that everything is loaded
     event generate $mytoplevel <<Loaded>>
+
+    # if the window was created without a position (that is: a new window),
+    # we have the opportunity to query the actual position now
+    if { "" ne [array names ::pdtk_canvas::geometry_needs_init $mytoplevel ] } {
+        array unset ::pdtk_canvas::geometry_needs_init $mytoplevel
+        scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+        # on X11, 'wm geometry' won't report a useful position until the window was moved
+        # but 'winfo geometry' does (though slightly off, but we ignore this offset
+        # for newly created, never moved windows)
+        # other windowingsystems will already report a useful position, and luckily
+        # they report the same for 'wm geometry' and 'winfo geometry'
+        if { "+$x+$y" eq "+0+0" } {
+            scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+            pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+        }
+    }
 }
 
 #------------------------------------------------------------------------------#
