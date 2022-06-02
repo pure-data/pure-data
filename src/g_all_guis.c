@@ -256,8 +256,7 @@ void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
         }
     }
     else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = 0;
-    iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded =
-        iemgui->x_lab_unexpanded = 0;
+    iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded = iemgui->x_lab_unexpanded = 0;
     iemgui->x_binbufindex = indx;
     iemgui->x_labelbindex = indx + 3;
 }
@@ -650,6 +649,7 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
     x->x_private->p_prevY = text_ypix(&x->x_obj, glist);
 }
 
+/* store saveable symbols (with spaces and dollars escaped) into srl[3] */
 void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
 {
     int i;
