@@ -1,5 +1,5 @@
 #N struct text-struct float x float y text z;
-#N canvas 529 23 540 573 12;
+#N canvas 547 23 540 573 12;
 #X obj 91 539 list;
 #X obj 28 12 text;
 #X text 14 539 see also:;
@@ -135,7 +135,7 @@ commas and semicolons., f 98;
 #X connect 25 0 15 0;
 #X restore 353 206 pd define;
 #X obj 241 229 text get;
-#N canvas 379 89 819 598 get 0;
+#N canvas 379 89 819 598 get 1;
 #X floatatom 109 160 5 0 5 0 - - - 0;
 #X msg 33 129 0;
 #X msg 109 129 2;
@@ -560,106 +560,100 @@ the dog \\\;;
 #X restore 353 375 pd fromlist;
 #X text 99 374 convert from list;
 #X obj 241 398 text search;
-#N canvas 319 23 916 694 search 0;
-#X floatatom 46 328 5 0 0 0 - - - 0;
+#N canvas 339 23 916 694 search 0;
+#X floatatom 46 316 5 0 0 0 - - - 0;
 #X text 340 259 find another text by name or pointer;
 #X text 218 288 arguments: name of the text object or "-s struct-name"
 , f 55;
-#X obj 434 116 text define -k text-search;
+#X obj 443 132 text define -k text-search;
 #A set 1 2 3 dog \; 7 8 9 cat \; 4 5 3 dog \; 7 8 9 alligator \; random
 line that won't match numbers \;;
-#X f 17;
+#X f 14;
 #X obj 46 285 text search text-search;
 #X msg 204 259 symbol text-search;
-#X msg 22 97 1;
-#X msg 33 121 2;
+#X msg 22 96 1;
+#X msg 33 120 2;
 #X msg 46 145 4;
-#X msg 64 206 4 5;
-#X msg 74 232 4 13;
-#X msg 54 174 7;
-#X msg 45 373 7 cat;
-#X msg 95 372 7 alligator;
-#X floatatom 95 450 5 0 0 0 - - - 0;
-#X msg 104 397 7 dog;
-#X obj 95 424 text search text-search 0 3, f 33;
+#X msg 64 203 4 5;
+#X msg 73 228 4 13;
+#X msg 54 173 7;
+#X msg 83 365 7 cat;
+#X msg 133 365 7 alligator;
+#X floatatom 133 428 5 0 0 0 - - - 0;
+#X msg 33 365 7 dog;
+#X obj 133 400 text search text-search 0 3, f 33;
 #X floatatom 675 373 5 0 0 0 - - - 0;
 #X obj 675 332 text search text-search 1;
-#X msg 686 231 8 9;
+#X msg 686 235 8 9;
 #X msg 675 206 8 9 alligator;
-#X msg 700 258 8;
-#X msg 707 292 symbol line;
-#X floatatom 112 668 5 0 0 0 - - - 0;
-#X obj 112 639 text search text-search > 0, f 33;
-#X msg 92 533 2;
-#X msg 112 574 4;
-#X msg 128 606 10;
-#X obj 528 627 text search text-search 2 near 0;
-#X floatatom 528 665 5 0 0 0 - - - 0;
+#X msg 700 262 8;
+#X msg 709 292 symbol line;
+#X floatatom 112 665 5 0 0 0 - - - 0;
+#X obj 112 633 text search text-search > 0, f 33;
+#X msg 112 516 2;
+#X msg 132 553 4;
+#X msg 146 598 10;
+#X obj 528 621 text search text-search 2 near 0;
+#X floatatom 528 659 5 0 0 0 - - - 0;
 #X msg 528 472 3 3;
 #X msg 543 512 3 2.5 1;
 #X msg 556 568 3 3 1;
-#X text 437 94 click to open:;
+#X text 440 109 click to open:;
 #X obj 6 41 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 29 10 text search;
 #X text 811 11 <= click;
-#N canvas 701 130 576 366 reference 0;
-#X obj 9 46 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+#N canvas 726 130 570 392 reference 0;
+#X obj 9 47 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
-#X obj 9 164 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 9 194 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 8 339 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 8 364 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 9 106 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+#X obj 9 136 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 112 113 symbol - set array name., f 46;
-#X text 106 133 pointer - pointer to the array if -s flag is used.
+#X text 122 143 symbol - set array name., f 46;
+#X text 116 163 pointer - pointer to the array if -s flag is used.
 ;
-#X text 76 240 -s <symbol \, symbol>: struct name and field name of
+#X text 76 265 -s <symbol \, symbol>: struct name and field name of
 main structure., f 66;
 #X obj 35 14 text search;
-#X text 126 83 list - search key;
-#X obj 9 76 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+#X text 165 85 list - search key, f 40;
+#X obj 9 77 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
 0;
-#X text 107 278 1) symbol - array name if no flags are given (default:
+#X text 107 303 1) symbol - array name if no flags are given (default:
 none)., f 61;
-#X text 121 297 2) list -;
-#X obj 9 210 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X text 121 322 2) list -;
+#X obj 9 235 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X obj 9 236 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+#X obj 9 261 cnv 1 550 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
 0;
-#X obj 9 268 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+#X obj 9 293 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
 0;
 #X text 123 14 - search for a message.;
-#X text 124 173 float - found message number or -1 if not found.;
-#X text 190 298 search element number optionally preceded by ">" \,
+#X text 134 203 float - found message number or -1 if not found.;
+#X text 190 323 search element number optionally preceded by ">" \,
 ">=" \, "<" \, "<=" \, or "near"., f 49;
+#X text 53 104 range <float \, float> - set search range (indexed from
+0);
 #X restore 717 11 pd reference;
-#X text 53 96 matches first message (number 0);
+#X text 53 95 matches first message (number 0);
 #X text 117 10 - search for a message.;
 #X text 13 48 [text search] outputs the number of the message that
 best matches a search key. By default it seeks a message whose leading
 elements match the incoming list., f 79;
-#X text 61 120 doesn't match first element of any message so -1;
-#X text 74 146 matches message number 2;
+#X text 61 119 doesn't match first element of any message so -1;
+#X text 77 145 matches message number 2;
 #X text 86 166 if two messages match only the first is output (but
-see below for finding best matches)., f 48;
-#X text 98 205 matches two elements of message number 2;
-#X text 108 231 fails on second element so no match;
-#X text 211 307 ... then optional element numbers (starting from 0)
+see below for finding best matches)., f 46;
+#X text 95 203 matches two elements of message number 2;
+#X text 107 227 fails on second element so no match;
+#X text 213 306 ... then optional element numbers (starting from 0)
 optionally preceded by ">". ">=" \, "<" \, "<=" \, or "near".;
-#X text 188 367 in this example we ask to match both element 0 and
-element 3 exactly. In element 3 we're testing symbols for equality.
-, f 44;
-#X text 18 485 Match a message for which the search key is greater
-than the element zero of that message. The message getting closest
-to the key wins., f 68;
-#X text 129 526 messages 1 \, 2 \, and 3 match \, but 2 wins because
+#X text 145 509 messages 1 \, 2 \, and 3 match \, but 2 wins because
 its first element (4) is closest to the search key 2, f 51;
-#X text 151 564 this matches messages 1 and 3 \, and each is equally
-good \, so message 1 wins., f 43;
-#X text 165 605 nobody's first element is greater than 10;
-#X text 599 49 If the search pattern (the incoming list) has more elements
+#X text 178 597 nobody's first element is greater than 10;
+#X text 597 53 If the search pattern (the incoming list) has more elements
 than we have specified search elements \, extra search patterns match
 succeeding elements starting from the last one give as an argument.
 So for example if there are no arguments we look for matches to any
@@ -674,6 +668,16 @@ far from it) so message 0 whose second element is closer to 1 wins.
 #X text 607 558 Here message 2 wins because its element 0 is nearer
 to 3 \, notwithstanding that its element 1 is farther from 1, f 40
 ;
+#X text 225 359 here we ask to match both element 0 and 3 exactly.
+In element 3 we're testing symbols for equality., f 50;
+#X text 13 457 Match a message for which the search key is greater
+than the element zero of that message. The message getting closest
+to the key wins. You can also use the 'range' message to narrow the
+search., f 68;
+#X msg 20 567 range 2 4;
+#X text 22 517 narrow to elements 2 and 4, f 9;
+#X text 163 545 this matches messages 1 and 3 \, and each is equally
+good \, so message 1 wins \, unless you narroe the range, f 43;
 #X connect 4 0 0 0;
 #X connect 5 0 4 1;
 #X connect 6 0 4 0;
@@ -699,6 +703,7 @@ to 3 \, notwithstanding that its element 1 is farther from 1, f 40
 #X connect 30 0 28 0;
 #X connect 31 0 28 0;
 #X connect 32 0 28 0;
+#X connect 56 0 24 0;
 #X restore 353 398 pd search;
 #X text 50 421 sequencer/message-sender;
 #X obj 241 422 text sequence;
