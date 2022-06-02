@@ -494,9 +494,9 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
     t_symbol *old;
     char lab_escaped[MAXPDSTRING];
     old = iemgui->x_lab;
-    iemgui->x_lab = iemgui->x_lab_unexpanded = s;
+    iemgui->x_lab = s;
     if(s) {
-        iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
+        iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, s);
 
         lab_escaped[MAXPDSTRING-1] = 0;
         pdgui_strnescape(lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
@@ -513,6 +513,7 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 }
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
+    iemgui->x_lab_unexpanded = s;
     iemgui_dolabel(x, iemgui, s, -1);
 }
 
