@@ -663,18 +663,16 @@ void iemgui_newzoom(t_iemgui *iemgui)
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
     char label[MAXPDSTRING];
-
+    int i;
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
+    srl[2] = iemgui->x_lab;
 
-    strcpy(label, iemgui->x_lab->s_name);
-    pdgui_strnescape(label, MAXPDSTRING,
-                    iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name));
-    srl[2] = gensym(label);
-
-    iemgui_all_dollar2raute(srl);
     iemgui_all_sym2dollararg(iemgui, srl);
-    iemgui_all_put_in_braces(srl);
+
+    for(i=0; i<3; i++) {
+        srl[i] = gensym(pdgui_strnescape(label, sizeof(label), srl[i]->s_name, strlen(srl[i]->s_name)));
+    }
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
