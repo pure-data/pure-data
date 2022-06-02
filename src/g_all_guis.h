@@ -338,5 +338,15 @@ t_iemgui* iemgui_new(t_class*cls);
  */
 void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup);
 
+void iemgui_new_dialog(void*x, t_iemgui*iemgui,
+                       const char*objname,
+                       t_float width,  t_float width_min,
+                       t_float height, t_float height_min,
+                       t_float range_min, t_float range_max, int range_checkmode,
+                       int mode, /* lin0_log1 */
+                       const char* mode_label0, const char* mode_label1,
+                       int canloadbang, int steady, int number);
+
+
 #define __g_all_guis_h_
 #endif /* __g_all_guis_h_ */
