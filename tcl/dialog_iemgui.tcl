@@ -415,6 +415,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
                                        bcol fcol lcol} {
 
     set vid [string trimleft $mytoplevel .]
+    set snd [::pdtk_text::unescape $snd]
+    set rcv [::pdtk_text::unescape $rcv]
+    set gui_name [::pdtk_text::unescape $gui_name]
+
 
     set var_iemgui_wdt [concat iemgui_wdt_$vid]
     global $var_iemgui_wdt
