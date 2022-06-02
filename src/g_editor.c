@@ -2899,7 +2899,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
 {
     t_selection *y;
     int resortin = 0, resortout = 0;
-    if (!EDITOR->canvas_undo_already_set_move)
+    if (x->gl_editor->e_selection && !EDITOR->canvas_undo_already_set_move)
     {
         canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
         EDITOR->canvas_undo_already_set_move = 1;
