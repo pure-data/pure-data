@@ -109,8 +109,8 @@ proc ::dialog_iemgui::create_properties_knb {mytoplevel ticks arc_color arc_widt
     label $mytoplevel.colors.sections.exp.arc_bk -text [_ "Arc"] \
         -background [eval concat $$var_iemgui_bcol] \
         -activebackground [eval concat $$var_iemgui_bcol] \
-        -foreground [eval concat $$var_iemgui_lcol] \
-        -activeforeground [eval concat $$var_iemgui_lcol] \
+        -foreground [eval concat $$var_iemgui_acol] \
+        -activeforeground [eval concat $$var_iemgui_acol] \
         -font [list $::font_family 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     pack $mytoplevel.colors.sections.exp.arc_bk \
         -side right -anchor e -expand yes -fill both -pady 7 \
