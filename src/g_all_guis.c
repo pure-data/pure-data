@@ -285,16 +285,20 @@ void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
 static void iemgui_init_sym2dollararg(t_iemgui *iemgui, t_symbol **symp,
     int indx, t_symbol *fallback)
 {
-    if (!*symp)
+    t_binbuf *b = iemgui->x_obj.ob_binbuf;
+    if ((!*symp) && (binbuf_getnatom(b) > indx))
     {
-        t_binbuf *b = iemgui->x_obj.ob_binbuf;
-        if (binbuf_getnatom(b) > indx)
+        t_atom *a = binbuf_getvec(b) + indx;
+        char astring[80];
+        const char *buf = astring;
+        if(A_SYMBOL == a->a_type)
         {
-            char buf[80];
-            atom_string(binbuf_getvec(b) + indx, buf, sizeof(buf));
-            if(strcmp(buf, "empty"))
-                *symp = gensym(buf);
+            buf = atom_getsymbol(a)->s_name;
+        } else {
+            atom_string(a, astring, sizeof(astring));
         }
+        if(strcmp(buf, "empty"))
+            *symp = gensym(buf);
     }
     if (!*symp)
         *symp = fallback;
