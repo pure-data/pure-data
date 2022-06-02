@@ -142,26 +142,13 @@ static void toggle_save(t_gobj *z, t_binbuf *b)
 static void toggle_properties(t_gobj *z, t_glist *owner)
 {
     t_toggle *x = (t_toggle *)z;
-    char buf[800];
-    t_symbol *srl[3];
-
-    iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |tgl| \
-            ----------dimensions(pix):----------- %d %d size: 0 0 empty \
-            -----------non-zero-value:----------- %g value: 0.0 empty %g \
-            -1 lin log %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_nonzero, 1.0,/*non_zero-schedule*/
-            x->x_gui.x_isa.x_loadinit, -1, -1,/*no multi*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    iemgui_new_dialog(x, &x->x_gui, "tgl",
+                      x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
+                      0, 0,
+                      x->x_nonzero, 0,
+                      1,
+                      -1, "", "",
+                      1, -1, -1);
 }
 
 static void toggle_bang(t_toggle *x)

@@ -304,24 +304,13 @@ static void vu_properties(t_gobj *z, t_glist *owner)
     char buf[800];
     t_symbol *srl[3];
 
-    iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |vu| \
-            --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
-            empty 0.0 empty 0.0 empty %d \
-            %d no_scale scale %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x none #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_VU_STEPS*IEM_VU_MINSIZE,
-            0,/*no_schedule*/
-            x->x_scale, -1, -1, -1,/*no linlog, no init, no multi*/
-            srl[0]->s_name, srl[1]->s_name,/*no send*/
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    iemgui_new_dialog(x, &x->x_gui, "vu",
+                      x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE,
+                      x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
+                      0, 0,
+                      0,
+                      x->x_scale, "no scale", "scale",
+                      0, -1, -1);
 }
 
 static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)

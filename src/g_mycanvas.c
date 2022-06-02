@@ -114,26 +114,14 @@ static void my_canvas_save(t_gobj *z, t_binbuf *b)
 static void my_canvas_properties(t_gobj *z, t_glist *owner)
 {
     t_my_canvas *x = (t_my_canvas *)z;
-    char buf[800];
-    t_symbol *srl[3];
+    iemgui_new_dialog(x, &x->x_gui, "cnv",
+                      x->x_gui.x_w/IEMGUI_ZOOM(x), 1,
+                      0, 0,
+                      x->x_vis_w, x->x_vis_h,
+                      0,
+                      -1, "", "",
+                      0, -1, -1);
 
-    iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |cnv| \
-            ------selectable_dimensions(pix):------ %d %d size: 0.0 0.0 empty \
-            ------visible_rectangle(pix)(pix):------ %d width: %d height: %d \
-            %d empty empty %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x none #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), 1,
-            x->x_vis_w, x->x_vis_h, 0,/*no_schedule*/
-            -1, -1, -1, -1,/*no linlog, no init, no multi*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
 }
 
 static void my_canvas_get_pos(t_my_canvas *x)
