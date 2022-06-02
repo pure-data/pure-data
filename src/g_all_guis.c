@@ -756,6 +756,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int fcol = (int)iemgui_getcolorarg(15, argc, argv);
     int lcol = (int)iemgui_getcolorarg(16, argc, argv);
     int sndable=1, rcvable=1, oldsndrcvable=0;
+    int i;
 
     if(iemgui->x_fsf.x_rcv_able)
         oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
@@ -782,9 +783,8 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     }
     if(init != 0) init = 1;
     iemgui->x_isa.x_loadinit = init;
-    if(!strcmp(srl[0]->s_name, "empty")) srl[0] = 0;
-    if(!strcmp(srl[1]->s_name, "empty")) srl[1] = 0;
-    if(!strcmp(srl[2]->s_name, "empty")) srl[2] = 0;
+    for(i=0; i<3; i++)
+        if(srl[i] && !strcmp(srl[i]->s_name, "empty")) srl[i] = 0;
     if(!srl[0]) sndable = 0;
     if(!srl[1]) rcvable = 0;
 
