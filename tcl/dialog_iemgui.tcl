@@ -14,19 +14,14 @@ namespace eval ::dialog_iemgui:: {
 
 source [file join [file dirname [info script]] "dialog_iemgui_knob.tcl"]
 
-proc proc_exists p {
-    return [expr {[llength [info procs $p]] > 0}]
-}
-
 proc ::dialog_iemgui::call_gui_proc {mytoplevel p args} {
     set vid [string trimleft $mytoplevel .]
-    set var_iemgui_guitype [concat iemgui_guitype_$vid]
-    global $var_iemgui_guitype
+    global iemgui_guitype_$vid
+    upvar #0 iemgui_guitype_$vid guitype
+    set gui_proc "${p}${guitype}"
 
-    set gui_proc [concat $p[eval concat $$var_iemgui_guitype]]
-
-    if {[proc_exists $gui_proc]} {
-        return [eval $gui_proc $mytoplevel [eval concat $args]]
+    if {[info procs $gui_proc] ne {}} {
+        eval $gui_proc $mytoplevel {*}$args
     }
 }
 
