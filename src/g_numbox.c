@@ -175,17 +175,16 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
         xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         lcol);
-
     sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n", canvas, x,
         xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d);
     sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         x->x_buf,
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         fcol);
+    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
 static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)

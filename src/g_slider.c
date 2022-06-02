@@ -116,10 +116,10 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
         xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
+    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
 static void slider_draw_new(t_slider *x, t_glist *glist)

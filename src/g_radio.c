@@ -102,10 +102,10 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
 
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
         xx11b + x->x_gui.x_ldx * IEMGUI_ZOOM(x), yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
         x->x_gui.x_lcol);
+    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
 static void radio_draw_new(t_radio *x, t_glist *glist)
