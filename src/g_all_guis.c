@@ -469,15 +469,13 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
-void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
+void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 {
     t_symbol *old;
     char lab_escaped[MAXPDSTRING];
-
-        /* tb: fix for empty label { */
-        if (s == gensym(""))
-                s = gensym("empty");
-        /* tb } */
+    t_symbol*empty = gensym("empty");
+    if (s == gensym(""))
+        s = empty;
 
     old = iemgui->x_lab;
     iemgui->x_lab_unexpanded = s;
@@ -486,11 +484,20 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
     lab_escaped[MAXPDSTRING-1] = 0;
     pdgui_strnescape(lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
 
-    if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
+    if(senditup < 0) {
+        senditup = (glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old);
+    }
+
+    if(senditup)
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape {%s }] \n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 strcmp(s->s_name, "empty")?lab_escaped:"");
+                 (s != empty)?lab_escaped:"");
 }
+void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
+{
+    iemgui_dolabel(x, iemgui, s, -1);
+}
+
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {

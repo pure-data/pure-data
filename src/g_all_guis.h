@@ -331,5 +331,12 @@ EXTERN void iemgui_setdrawfunctions(t_iemgui *iemgui, t_iemgui_drawfunctions *w)
  */
 t_iemgui* iemgui_new(t_class*cls);
 
+/* these are deliberately not exported for now */
+
+/* update the label (both internally and on the GUI)
+ * senditup=0 never-to-gui; senditup=1 always-to-gui; senditup<0 autodetect
+ */
+void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup);
+
 #define __g_all_guis_h_
 #endif /* __g_all_guis_h_ */
