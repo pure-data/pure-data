@@ -40,19 +40,12 @@ static void glist_nograb(t_glist *x)
 {
     if (x->gl_editor)
     {
-        if(x->gl_editor->e_textedfor)
-        {
-            rtext_retext(x->gl_editor->e_textedfor);
-            rtext_activate(x->gl_editor->e_textedfor, 0);
-        } else {
-            t_canvas *canvas = glist_getcanvas(x);
-            t_object *ob;
-            t_gobj*g;
-            for (g = canvas->gl_list; g; g = g->g_next)
-                if ((ob = pd_checkobject(&g->g_pd)) && T_ATOM == ob->te_type)
-                    gatom_undarken(ob);
-
-        }
+        t_canvas *canvas = glist_getcanvas(x);
+        t_object *ob;
+        t_gobj*g;
+        for (g = canvas->gl_list; g; g = g->g_next)
+            if ((ob = pd_checkobject(&g->g_pd)) && T_ATOM == ob->te_type)
+                gatom_undarken(ob);
         x->gl_editor->e_grab = 0;
     }
 }
