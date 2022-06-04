@@ -1,50 +1,58 @@
-#N canvas 439 35 604 603 12;
+#N canvas 466 36 601 600 12;
 #X obj 24 12 list;
 #X text 64 12 - building and using variable-length messages;
-#N canvas 581 25 528 670 about-lists 0;
-#X obj 75 631 print message;
-#X msg 65 424 list x.wav 44100;
-#X msg 75 602 read \$1 \$2;
-#X msg 75 453 set x.wav 44100;
-#X msg 92 553 set \, add2 read \, adddollar 1 \, adddollar 2;
-#X msg 85 483 x.wav 44100;
-#X obj 92 527 loadbang;
-#X text 180 530 reset message as it was;
-#X text 193 424 good;
-#X text 192 455 bad;
-#X text 178 483 ugly;
-#X msg 302 445 list 44100 x.wav;
-#X msg 315 470 44100 x.wav;
-#X obj 302 496 print number-first;
-#X text 296 417 these two are equivalent:;
-#X text 22 157 The distinction becomes visible \, and ugly \, when
+#N canvas 581 25 529 694 about-lists 0;
+#X obj 95 661 print message;
+#X msg 85 455 list x.wav 44100;
+#X msg 95 632 read \$1 \$2;
+#X msg 95 484 set x.wav 44100;
+#X msg 128 595 set \, add2 read \, adddollar 1 \, adddollar 2;
+#X msg 105 514 x.wav 44100;
+#X obj 128 569 loadbang;
+#X text 216 572 reset message as it was;
+#X text 213 455 good;
+#X text 212 486 bad;
+#X text 198 514 ugly;
+#X msg 294 476 list 44100 x.wav;
+#X msg 307 501 44100 x.wav;
+#X obj 294 527 print number-first;
+#X text 288 448 these two are equivalent:;
+#X msg 412 662 message;
+#X text 247 626 for more details on setting messages and \$1 variables
+\, check the help file of message boxes:, f 36;
+#X text 22 12 Messages in Pd are somewhat artificially divided into
+two classes. First are data-holding messages (bang \, float \, symbol
+\, list and pointer) which are the primary way of communicating between
+objects. Second is "everything else" (you could call them out-of-band
+messages \, metamessages or generic messages) \, which are provided
+for specific functionalities in complex objects and describe changes
+in configuration \, read and write files \, quit Pd \, etc. It's not
+clear whether this was a good design choice \, but it's entrenched.
+, f 68;
+#X text 22 130 The distinction becomes visible \, and ugly \, when
 the leading item in a data-holding message is a symbol. In this case
-\, to disambiguate it from the other sort \, the printed form of the
-message has a selector \, "list" or "symbol" prepended to it. Underneath
-\, there is always a selector in front of data messages \, but it is
-implied if the first data item is a number (a 'float' selector is implied
-for a single number and a 'list' selector is implied for lists that
-start with a number)., f 68;
-#X text 22 278 In the example below \, the top message sets \$1 to
+\, to disambiguate it from the other sort \, the message has a selector
+\, "list" or "symbol" prepended to it. Underneath \, there is always
+a selector in front of data messages \, but it is implied if the first
+data item is a number (a 'float' selector is implied for a single number
+and a 'list' selector is implied for lists that start with a number).
+, f 68;
+#X text 22 235 Conceptually \, a float and a symbol are 1 element lists.
+Conversely \, a list with one element is converted to a float or symbol.
+Similarly a bang is a zero element list and an empty list becomes a
+bang. You can find this behaviour throughout the functions of [list].
+, f 68;
+#X msg 118 541 bang;
+#X text 22 298 In the example below \, the top message sets \$1 to
 "x.wav" and \$2 to 44100 in the "read" message. The lower message box
 outputs the message "read x.wav 44100". The "set" message changes the
 content of the message box itself (click on the longer message box
 below to repair the damage.) The "ugly" message is neither "list" nor
 "set" but a 'x.wav' message \, so the first element of the message
-is 44100 and there's no second element \, this is why it "ugly" and
-an error is given., f 68;
-#X text 22 22 Messages in Pd are somewhat artificially divided into
-two classes. First are data-holding messages (bang \, float \, symbol
-\, list and pointer) which are the primary way of communicating between
-objects. Second is "everything else" (you could call them out-of-band
-messages \, metamessages or generic messages) that describe changes
-in configuration \, read and write files \, quit Pd \, etc. These are
-provided so that complex objects don't need to have 100 separate inlets
-for every possible functionality. It's not clear whether this was a
-good design choice \, but it's entrenched., f 68;
-#X msg 381 626 message;
-#X text 211 589 for more details on setting messages and \$1 variables
-\, check the help file of message boxes:, f 36;
+is 44100 and there's no second element \, this is why it's "ugly" and
+an error is given that the '\$2' argument is out of range (which becomes
+0). A bang is the same as an empty list so both '\$1' and '\$2' are
+out of range., f 68;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
@@ -53,6 +61,7 @@ good design choice \, but it's entrenched., f 68;
 #X connect 6 0 4 0;
 #X connect 11 0 13 0;
 #X connect 12 0 13 0;
+#X connect 20 0 2 0;
 #X restore 216 381 pd about-lists;
 #X obj 28 90 list append;
 #X obj 28 115 list prepend;
@@ -205,24 +214,21 @@ a list);
 #X connect 29 0 18 1;
 #X connect 31 0 18 1;
 #X restore 480 90 pd append;
-#N canvas 665 26 580 659 split 0;
-#X msg 186 353 1 2 3;
-#X msg 97 208 list cis boom bah;
-#X obj 97 451 list split 2, f 15;
-#X floatatom 199 416 4 0 5 0 - - - 0;
-#X obj 97 618 print split1;
-#X msg 77 181 walk the dog;
-#X msg 181 329 1 2;
-#X msg 125 274 1;
-#X msg 192 378 1 2 3 4;
-#X msg 174 304 1 2 so are you;
-#X text 191 617 first n;
-#X text 237 415 new split point;
-#X text 173 180 non-list message converted to list;
-#X text 223 208 list with three symbols;
-#X text 237 342 ... etc;
-#X listbox 97 592 20 0 0 0 - - - 0;
-#X text 483 14 <= click;
+#N canvas 665 26 585 705 split 0;
+#X msg 204 373 1 2 3;
+#X msg 109 232 list cis boom bah;
+#X obj 131 459 list split 2, f 15;
+#X floatatom 233 431 4 0 5 0 - - - 0;
+#X obj 198 671 print split1;
+#X msg 79 205 walk the dog;
+#X msg 199 349 1 2;
+#X msg 145 295 1;
+#X msg 210 397 1 2 3 4;
+#X msg 192 324 1 2 so are you;
+#X text 240 232 list with three symbols;
+#X text 255 362 ... etc;
+#X listbox 198 645 20 0 0 0 - - - 0;
+#X text 493 11 <= click;
 #N canvas 645 141 576 366 reference 0;
 #X obj 9 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -251,61 +257,75 @@ a list);
 #X text 141 195 list - the first 'n' elements of the list.;
 #X text 141 264 list - if incoming list is shorter than n.;
 #X text 114 17 - cut a list into smaller ones.;
-#X restore 389 15 pd reference;
-#X obj 4 51 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 399 12 pd reference;
+#X obj 4 43 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 22 15 list split;
-#X text 104 14 - cut a list into smaller ones;
-#X obj 109 240 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 22 12 list split;
+#X text 104 11 - cut a list into smaller ones;
+#X obj 131 262 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 26 60 The [list split] object takes lists and outputs the first
-"n" items (left outlet) and the remaining ones (middle outlet). If
-the incoming list also has 'n' items \, the middle outlet spits a list
-with zero elements (which becomes a bang). The two outputs appear in
-the usual right-to-left order. In case there are fewer than "n" items
-in the list \, it is output (in its entirety) from the third outlet
-instead. The creation argument or the inlet sets the split point.,
-f 74;
-#X text 212 450 <-- creation arg inits split point;
-#X text 313 320 number \, it's a list., f 22;
-#X text 285 303 <-- if the first item is a;
-#X msg 159 274 symbol a;
-#X text 226 274 list with one element;
-#X obj 199 479 route bang;
-#X obj 284 506 print split3;
-#X text 378 505 shorter than n;
-#X listbox 284 479 20 0 0 0 - - - 0;
-#X obj 199 506 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X text 331 340 number \, it's a list., f 22;
+#X text 303 323 <-- if the first item is a;
+#X msg 179 295 symbol a;
+#X obj 233 488 route bang;
+#X obj 300 546 print split3;
+#X listbox 300 515 20 0 0 0 - - - 0;
+#X obj 233 515 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 148 536 route bang;
-#X obj 148 563 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 182 555 route bang;
+#X obj 182 580 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 241 562 print split2;
-#X text 333 561 rest of list;
-#X listbox 241 535 20 0 0 0 - - - 0;
-#X text 132 239 a bang is a zero element list;
+#X obj 249 607 print split2;
+#X listbox 249 580 20 0 0 0 - - - 0;
+#X obj 131 619 route bang;
+#X obj 131 645 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 246 458 <-- creation arg inits split point 'n';
+#X text 271 430 new split point 'n';
+#X text 292 672 first 'n' elements of the list;
+#X text 394 538 input list if shorter than 'n', f 16;
+#X text 25 53 The [list split] object takes lists and outputs the first
+'n' items (left outlet) and the remaining ones (middle outlet). If
+the incoming list also has 'n' items \, the middle outlet spits a bang
+(the same as a list with zero elements). The two outputs appear in
+the usual right-to-left order., f 75;
+#X text 175 204 non-list messages are converted to lists;
+#X text 344 601 the rest of the list (or bang if input list's lenght
+= n), f 29;
+#X text 159 255 a bang is a zero element list (goes out the right outlet
+if n > 0), f 35;
+#X text 247 295 floats/symbols are one element lists;
+#X text 25 116 In case there are fewer than 'n' items in the list \,
+it is output (in its entirety) via the third outlet instead. The creation
+argument or the inlet sets the 'n' split point. Lowest split point
+'n' is zero \, in which case a bang (zero element list) comes out the
+left outlet and the input list comes out via the mid outlet., f 75
+;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
-#X connect 2 0 15 0;
-#X connect 2 1 33 0;
-#X connect 2 2 28 0;
+#X connect 2 0 30 0;
+#X connect 2 1 26 0;
+#X connect 2 2 22 0;
 #X connect 3 0 2 1;
 #X connect 5 0 2 0;
 #X connect 6 0 2 0;
 #X connect 7 0 2 0;
 #X connect 8 0 2 0;
 #X connect 9 0 2 0;
-#X connect 15 0 4 0;
+#X connect 12 0 4 0;
+#X connect 18 0 2 0;
 #X connect 21 0 2 0;
-#X connect 26 0 2 0;
-#X connect 28 0 32 0;
-#X connect 28 1 31 0;
-#X connect 31 0 29 0;
-#X connect 32 0 29 0;
-#X connect 33 0 34 0;
-#X connect 33 1 37 0;
-#X connect 34 0 35 0;
-#X connect 37 0 35 0;
+#X connect 22 0 25 0;
+#X connect 22 1 24 0;
+#X connect 24 0 23 0;
+#X connect 25 0 23 0;
+#X connect 26 0 27 0;
+#X connect 26 1 29 0;
+#X connect 27 0 28 0;
+#X connect 29 0 28 0;
+#X connect 30 0 31 0;
+#X connect 30 1 12 0;
+#X connect 31 0 4 0;
 #X restore 481 164 pd split;
 #N canvas 514 118 615 560 prepend 0;
 #X obj 88 515 print prepend;
@@ -387,7 +407,7 @@ a list);
 #X connect 27 0 7 1;
 #X connect 29 0 7 1;
 #X restore 480 115 pd prepend;
-#X text 101 430 And here are some examples showing how to use these
+#X text 101 425 And here are some examples showing how to use these
 objects to compose and/or use variable length messages:, f 45;
 #N canvas 650 69 554 651 example1 0;
 #X text 57 102 send;
@@ -455,8 +475,8 @@ by the "send" button., f 28;
 #X connect 29 0 19 1;
 #X connect 30 0 9 0;
 #X connect 31 0 16 0;
-#X restore 237 471 pd example1;
-#X text 325 471 simple sequencer;
+#X restore 237 466 pd example1;
+#X text 325 466 simple sequencer;
 #N canvas 735 50 568 626 example2 0;
 #X text 301 196 clear;
 #X text 65 168 send;
@@ -523,8 +543,8 @@ inlet., f 52;
 #X connect 24 0 2 0;
 #X connect 25 0 4 1;
 #X connect 26 0 15 0;
-#X restore 237 497 pd example2;
-#X text 325 497 another sequencer;
+#X restore 237 492 pd example2;
+#X text 325 492 another sequencer;
 #N canvas 553 155 494 341 example3 0;
 #X obj 73 169 until;
 #X msg 107 113 1 2 3 4 a b c;
@@ -555,7 +575,7 @@ to its right inlet., f 38;
 #X connect 7 0 6 1;
 #X connect 8 0 6 1;
 #X connect 9 0 4 0;
-#X restore 237 524 pd example3;
+#X restore 237 519 pd example3;
 #X obj 28 297 list;
 #X text 65 298 - short for "list append";
 #X text 157 217 - output number of items in list;
@@ -609,73 +629,6 @@ in a list or another message., f 61;
 #X obj 28 214 list length;
 #X obj 28 239 list fromsymbol;
 #X obj 28 264 list tosymbol;
-#N canvas 502 154 604 361 from/to 0;
-#X symbolatom 47 221 10 0 0 0 - - - 0;
-#X obj 47 251 list fromsymbol;
-#X msg 239 163 115 101 118 101 110 116 101 101 110;
-#X obj 239 221 list tosymbol;
-#X obj 47 320 print from-symbol;
-#X symbolatom 239 251 10 0 0 0 - - - 0;
-#X msg 47 188 symbol seventeen;
-#X text 354 259 Neither of these objects promote non-list messages
-to lists (that would make little sense in this context)., f 32;
-#X text 21 95 These allow you to do string manipulations (such as scanning
-a filename for '/' characters). They convert a list of numbers (which
-might be ASCII or might be unicode if \, for example \, they represent
-a filename on a non-ASCII machine) to or from a symbol., f 79;
-#X listbox 47 287 36 0 0 0 - - - 0;
-#X obj 41 25 list fromsymbol;
-#X obj 41 50 list tosymbol;
-#X text 164 27 convert symbols to and from lists of numeric character
-codes, f 33;
-#X obj 7 83 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 527 41 <= click;
-#N canvas 598 131 595 416 reference 0;
-#X obj 19 18 list fromsymbol;
-#X text 135 17 - convert from symbols to lists of numeric character
-codes;
-#X obj 9 47 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 88 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 130 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 166 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 180 139 NONE.;
-#X text 109 59 symbol - symbol to be converted to a list of character
-codes., f 61;
-#X text 122 98 list - list of converted character codes.;
-#X obj 9 257 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 298 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 340 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 376 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 180 349 NONE.;
-#X obj 19 228 list tosymbol;
-#X text 119 227 - convert from list of numeric character codes to symbols.
-;
-#X text 122 273 list - list of character codes to convert to a symbol.
-;
-#X text 109 309 symbol - converted symbol from list of character codes.
-, f 61;
-#X restore 433 41 pd reference;
-#X obj 252 192 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 361 210 outputs an empty symbol;
-#X text 277 192 <-- a bang is zero element list and;
-#X connect 0 0 1 0;
-#X connect 1 0 9 0;
-#X connect 2 0 3 0;
-#X connect 3 0 5 0;
-#X connect 6 0 0 0;
-#X connect 9 0 4 0;
-#X connect 16 0 3 0;
-#X restore 482 252 pd from/to;
 #X text 156 141 - build up or break down a list;
 #X obj 28 140 list store;
 #N canvas 337 23 757 687 store 0;
@@ -861,8 +814,8 @@ list;
 #X connect 32 0 6 0;
 #X connect 34 0 6 0;
 #X restore 480 140 pd store;
-#X text 378 571 updated for Pd version 0.52;
-#X text 324 524 list iterator;
+#X text 383 566 updated for Pd version 0.52;
+#X text 324 519 list iterator;
 #X obj 7 44 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 527 13 <= click;
@@ -882,18 +835,85 @@ each function on parent patch., f 41;
 \, prepend \, store \, split \, trim \, length \, fromsymbol and tosymbol.
 The default value is 'append'., f 54;
 #X restore 433 13 pd reference;
-#X text 435 58 click for details:;
-#X obj 6 557 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+#X text 448 58 click for details:;
+#X obj 6 552 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 157 245 -;
 #X text 171 245 convert symbols to/from numeric characters, f 23;
-#X text 18 570 see also:;
-#X obj 96 570 array;
+#X text 18 565 see also:;
+#X obj 96 565 array;
 #X text 29 58 The [list] object's first argument sets its function:
 ;
 #X text 76 344 In general \, [list] will convert non-list messages
 (such as "set 5") to lists (such as "list set 5") automatically. Here's
 more about lists in Pd:, f 65;
-#X obj 182 570 float;
-#X obj 143 570 text;
-#X obj 230 570 symbol;
+#X obj 182 565 float;
+#X obj 143 565 text;
+#X obj 230 565 symbol;
+#N canvas 502 154 604 361 from/to 0;
+#X symbolatom 47 221 10 0 0 0 - - - 0;
+#X obj 47 251 list fromsymbol;
+#X msg 239 163 115 101 118 101 110 116 101 101 110;
+#X obj 239 221 list tosymbol;
+#X obj 47 320 print from-symbol;
+#X symbolatom 239 251 10 0 0 0 - - - 0;
+#X msg 47 188 symbol seventeen;
+#X text 354 259 Neither of these objects promote non-list messages
+to lists (that would make little sense in this context)., f 32;
+#X text 21 95 These allow you to do string manipulations (such as scanning
+a filename for '/' characters). They convert a list of numbers (which
+might be ASCII or might be unicode if \, for example \, they represent
+a filename on a non-ASCII machine) to or from a symbol., f 79;
+#X listbox 47 287 36 0 0 0 - - - 0;
+#X obj 41 25 list fromsymbol;
+#X obj 41 50 list tosymbol;
+#X text 164 27 convert symbols to and from lists of numeric character
+codes, f 33;
+#X obj 7 83 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 527 41 <= click;
+#N canvas 598 131 595 416 reference 0;
+#X obj 19 18 list fromsymbol;
+#X text 135 17 - convert from symbols to lists of numeric character
+codes;
+#X obj 9 47 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 88 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 130 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 166 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 180 139 NONE.;
+#X text 109 59 symbol - symbol to be converted to a list of character
+codes., f 61;
+#X text 122 98 list - list of converted character codes.;
+#X obj 9 257 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 298 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 340 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 376 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 180 349 NONE.;
+#X obj 19 228 list tosymbol;
+#X text 119 227 - convert from list of numeric character codes to symbols.
+;
+#X text 122 273 list - list of character codes to convert to a symbol.
+;
+#X text 109 309 symbol - converted symbol from list of character codes.
+, f 61;
+#X restore 433 41 pd reference;
+#X obj 252 192 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 361 210 outputs an empty symbol;
+#X text 277 192 <-- a bang is zero element list and;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 6 0 0 0;
+#X connect 9 0 4 0;
+#X connect 16 0 3 0;
+#X restore 482 243 pd from/to symbol;
