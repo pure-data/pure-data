@@ -34,8 +34,9 @@
  * 3) (task_workfn) workfn: a function to be called in the background.
  *    You would typically read from 'data', perform some operations and store
  *    the result back to 'data'.
- *    ***IMPORTANT***: do not call any Pd API functions, except for task_check().
- *    In particular, do not call sys_lock() or sys_unlock(), as this can cause deadlocks!
+ *    ***IMPORTANT***: do not call any Pd API functions, except for task_check(),
+ *    task_suspend() and task_resume(). In particular, do not call sys_lock()
+ *    or sys_unlock(), as this can cause deadlocks!
  * 4) (task_callback) cb: a function to be called after the task has completed.
  *    This is where the result can be safely moved from 'data' to the owning object.
  *    If the task has been cancelled, 'owner' is NULL; in this case, do not forget
@@ -86,6 +87,34 @@
  *     the task has been cancelled. This makes the overall task system more responsive.
  *
  * returns: 1 if running, 0 if cancelled
+ *
+ * ----------------------------------------------------------------------------------
+ *
+ * void task_suspend(t_task *task)
+ *
+ * description: suspend current execution
+ *     Call this function AFTER deferring to another thread, typically as the last
+ *     statement before returning from the worker function. The task will be suspended
+ *     until the other thread finally calls task_resume(), allowing other tasks to run
+ *     concurrently. This is useful for interfacing with event loops or other asynchronous
+ *     library calls. It also allows users to spawn a dedicated thread inside the worker
+ *     function, e.g. to prevent a long-running operation from blocking subsequent tasks.
+ *
+ * ----------------------------------------------------------------------------------
+ *
+ * void task_resume(t_task *task, t_task_workfn workfn)
+ *
+ * description: resume execution
+ *     This resumes a task that has been suspended with task_suspend().
+ *     It is always called from another thread.
+ *
+ * arguments:
+ * 1) (t_task *) task: the task handle
+ * 2) (t_task_workfn) workfn: (optional) worker function
+ *     The task will continue with the provided worker function;
+ *     if 'workfn' is NULL, the task is considered completed.
+ *     Generally, you should spend as little time as necessary in the external thread
+ *     and continue processing the result in a new worker function.
  *
  * ==================================================================================
  * For libpd clients:
@@ -140,6 +169,11 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 /* If PD_WORKERTHREADS is 1, tasks are pushed to a queue. A worker thread pops
  * tasks from the queue and executes the 'task_workfn' function. On completion,
@@ -159,10 +193,6 @@
 
 #if PD_WORKERTHREADS
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <pthread.h>
 
 /* NB: atomic_increment() and atomic_decrement() return the NEW value */
@@ -180,7 +210,7 @@
 
 #else /* PD_WORKERTHREADS */
 
-#define atomic_int int
+#define atomic_int volatile int
 
 #endif
 
@@ -192,6 +222,7 @@ struct _task
     t_task_workfn t_workfn;
     t_task_callback t_cb;
     atomic_int t_cancel;
+    atomic_int t_suspend;
 };
 
 typedef struct _tasklist
@@ -341,6 +372,7 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
         t_task *task = tasklist_pop(fromsched);
         if (task)
         {
+        do_task:
                 /* increment with mutex locked, see task_cancel() */
             atomic_increment(&queue->tq_pending);
             tasklist_unlock(fromsched);
@@ -352,15 +384,41 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
                 didsomething = 1;
             }
 
-                /* move task back to scheduler */
             tasklist_lock(tosched);
-            tasklist_push(tosched, task);
-                /* decrement with mutex locked, see task_cancel() */
-            atomic_decrement(&queue->tq_pending);
+            if (task->t_suspend > 0) /* suspended */
+            {
+                    /* NB: it is unlikely, but entirely possible, that the task
+                    is already fully resumed at this point, see task_resume() */
+                if (--task->t_suspend == 0) /* fully resumed */
+                {
+                        /* decrement with mutex locked, see task_cancel() */
+                    if (atomic_decrement(&queue->tq_pending) < 0)
+                        fprintf(stderr, "negative pending task count");
+                    if (task->t_workfn && !task->t_cancel) /* continue */
+                    {
+                        tasklist_unlock(tosched);
+                        tasklist_lock(fromsched);
+                        goto do_task;
+                    }
+                        /* move task back to scheduler */
+                    tasklist_push(tosched, task);
+                    tasklist_notify(tosched);
+                }
+            }
+            else /* not suspended */
+            {
+                if (task->t_suspend < 0)
+                    fprintf(stderr, "negative task suspend count\n");
+                    /* decrement with mutex locked, see task_cancel() */
+                if (atomic_decrement(&queue->tq_pending) < 0)
+                    fprintf(stderr, "negative pending task count\n");
+                    /* move task back to scheduler */
+                tasklist_push(tosched, task);
+                    /* notify the scheduler thread because it might
+                    be waiting in task_cancel() */
+                tasklist_notify(tosched);
+            }
             tasklist_unlock(tosched);
-                /* notify the scheduler thread because it might
-                be waiting in task_cancel() */
-            tasklist_notify(tosched);
 
             tasklist_lock(fromsched);
         }
@@ -565,6 +623,7 @@ t_task *task_sched(t_pd *owner, void *data,
     task->t_workfn = workfn;
     task->t_cb = cb;
     task->t_cancel = 0;
+    task->t_suspend = 0;
 
 #if PD_WORKERTHREADS
     if (queue->tq_running)
@@ -585,7 +644,7 @@ t_task *task_sched(t_pd *owner, void *data,
     }
 #else
         /* execute work function synchronously */
-    task->t_workfn(task->t_data);
+    task->t_workfn(task, task->t_data);
         /* push to list and defer to next clock timeout */
     tasklist_push(list, task);
     clock_delay(queue->tq_clock, 0);
@@ -647,6 +706,92 @@ int task_cancel(t_task *task, int sync)
 int task_check(t_task *task)
 {
     return task->t_cancel == 0;
+}
+
+#define POLL_INTERVAL 1
+
+static int taskqueue_havethreads(void)
+{
+#if PD_WORKERTHREADS
+    return (STUFF->st_taskqueue->tq_numthreads > 0)
+        || STUFF->st_taskqueue->tq_external;
+#else
+    return 0;
+#endif
+}
+
+void task_suspend(t_task *task)
+{
+#if PD_WORKERTHREADS
+    t_taskqueue *queue = STUFF->st_taskqueue;
+        /* NB: tq_running might have been unset in sys_taskqueue_stop()! */
+    if (taskqueue_havethreads())
+    {
+        t_tasklist *tosched = &queue->tq_tosched;
+        tasklist_lock(tosched);
+            /* must be decremented both in taskqueue_perform() and task_resume() */
+        task->t_suspend += 2;
+        tasklist_unlock(tosched);
+        return;
+    }
+#endif /* PD_WORKERTHREADS */
+        /* poll until task_resume() has been called from the other thread */
+    while (task->t_suspend == 0)
+    {
+  #ifdef _WIN32
+        Sleep(POLL_INTERVAL);
+  #else
+        usleep(POLL_INTERVAL * 1000);
+  #endif
+    }
+    task->t_suspend = 0;
+}
+
+void task_resume(t_task *task, t_task_workfn workfn)
+{
+#if PD_WORKERTHREADS
+    t_taskqueue *queue = STUFF->st_taskqueue;
+        /* NB: tq_running might have been unset in sys_taskqueue_stop()! */
+    if (taskqueue_havethreads())
+    {
+        t_tasklist *fromsched = &queue->tq_fromsched;
+        t_tasklist *tosched = &queue->tq_tosched;
+
+        tasklist_lock(tosched);
+        task->t_workfn = workfn;
+            /* NB: it is unlikely, but entirely possible, that
+            task_resume() is called before task_suspend() or
+            before the task is handled in taskqueue_perform().
+            In this case we do not want to handle the task yet;
+            instead, it will be handled later in taskqueue_perform(). */
+        if (--task->t_suspend == 0) /* fully resumed */
+        {
+                /* decrement with mutex locked, see task_cancel() */
+            if (atomic_decrement(&queue->tq_pending) < 0)
+                fprintf(stderr, "negative pending task count");
+                /* NB: don't reschedule if the taskqueue has been stopped! */
+            if (workfn && queue->tq_running && !task->t_cancel) /* continue */
+            {
+                tasklist_unlock(tosched);
+                    /* reschedule task */
+                tasklist_lock(fromsched);
+                tasklist_push(fromsched, task);
+                tasklist_unlock(fromsched);
+                tasklist_notify(fromsched);
+            }
+            else /* completed/cancelled */
+            {
+                tasklist_push(tosched, task);
+                tasklist_unlock(tosched);
+                tasklist_notify(tosched);
+            }
+        }
+        else
+            tasklist_unlock(tosched); /* ! */
+        return;
+    }
+#endif /* PD_WORKERTHREADS */
+    task->t_suspend = 1;
 }
 
 int sys_taskqueue_running(void)
