@@ -1,26 +1,40 @@
-#N canvas 369 184 455 434 12;
-#X obj 33 77 openpanel;
-#X obj 33 55 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#N canvas 363 123 502 576 12;
+#X obj 28 49 openpanel;
+#X obj 28 27 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 33 370 8 0 0 0 - - - 0;
-#X floatatom 79 345 5 0 0 0 - - - 0;
-#X text 122 344 byte;
-#X msg 124 253 get \$1;
-#X floatatom 124 227 8 0 0 0 - - - 0;
-#X text 31 27 try to open a huge file while running the test tone;
-#X obj 48 133 realtime;
-#X floatatom 48 157 8 0 0 0 - - - 0;
-#X obj 33 343 t f b;
-#X obj 33 101 t s b;
-#X text 180 254 get a single byte;
-#X text 98 371 file size (or -1 on failure);
-#X obj 33 319 taskobj;
-#X obj 33 188 pack s f;
-#X msg 33 227 read \$1 \$2;
-#X floatatom 103 189 6 0 0 0 - - - 0;
-#X msg 124 283 cancel;
-#X text 157 189 extra sleep (ms);
-#X text 183 283 cancel a running task;
+#X floatatom 28 342 8 0 0 0 - - - 0;
+#X floatatom 74 317 5 0 0 0 - - - 0;
+#X text 117 316 byte;
+#X msg 119 225 get \$1;
+#X floatatom 119 199 8 0 0 0 - - - 0;
+#X text 52 24 try to open a huge file while running the test tone;
+#X obj 43 105 realtime;
+#X floatatom 43 129 8 0 0 0 - - - 0;
+#X obj 28 315 t f b;
+#X obj 28 73 t s b;
+#X text 175 226 get a single byte;
+#X text 93 343 file size (or -1 on failure);
+#X obj 28 291 taskobj;
+#X obj 28 160 pack s f;
+#X msg 28 199 read \$1 \$2;
+#X floatatom 98 161 6 0 0 0 - - - 0;
+#X msg 119 255 cancel;
+#X text 178 255 cancel a running task;
+#X obj 30 507 taskobj;
+#X obj 30 535 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 30 462 download http://msp.ucsd.edu/Software/pd-0.52-2.src.tar.gz
+\$1/Pd.tar.gz;
+#X obj 30 432 pdcontrol;
+#X msg 30 403 dir;
+#X obj 30 381 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X text 106 433 download <url> <outputfile>;
+#X text 57 379 download Pd's source code from Miller's site (with 'curl')
+;
+#X text 69 404 notice how you can use the other taskobj concurrently!
+;
+#X text 152 161 extra sleep (ms) to fake work;
 #X connect 0 0 11 0;
 #X connect 1 0 0 0;
 #X connect 5 0 14 0;
@@ -36,3 +50,8 @@
 #X connect 16 0 14 0;
 #X connect 17 0 15 1;
 #X connect 18 0 14 0;
+#X connect 20 0 21 0;
+#X connect 22 0 20 0;
+#X connect 23 0 22 0;
+#X connect 24 0 23 0;
+#X connect 25 0 24 0;

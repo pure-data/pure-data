@@ -4,6 +4,11 @@
  * It outputs the file size on success or -1 on failure.
  *
  * With the "get" method you can get a single byte of the file.
+ *
+ * The "download" method uses the "curl" command to download a file from
+ * the internet to the specified location. It demonstrates how to use
+ * task_spawn() to execute a long-running task in its own thread,
+ * allowing other tasks to run concurrently.
  */
 
 #include "m_pd.h"
@@ -166,6 +171,66 @@ static void taskobj_read(t_taskobj *x, t_symbol *file, t_floatarg ms)
         (t_task_callback)taskobj_read_callback);
 }
 
+/* ------------------- taskobj_download --------------------- */
+
+typedef struct _download_data
+{
+    char url[256];
+    char filepath[256];
+    int success;
+} t_download_data;
+
+static void taskobj_download_workfn(t_task *task, t_download_data *x)
+{
+    char cmd[MAXPDSTRING];
+    snprintf(cmd, sizeof(cmd), "curl %s --output %s", x->url, x->filepath);
+        /* we're lazy and just call the 'curl' command with 'system()'.
+         * In reality, you should probably use libcurl instead :-) */
+    if (system(cmd) == EXIT_SUCCESS)
+        x->success = 1;
+    else
+    {
+        fprintf(stderr, "command '%s' failed\n", cmd);
+        x->success = 0;
+    }
+}
+
+static void taskobj_download_callback(t_taskobj *x, t_download_data *y)
+{
+    if (x) /* completed */
+    {
+        x->x_task = 0;
+        if (!y->success)
+            pd_error(x, "could not download %s to %s", y->url, y->filepath);
+        outlet_float(x->x_statusout, y->success);
+    }
+        /* finally free the task data object */
+    freebytes(y, sizeof(t_download_data));
+}
+
+static void taskobj_download(t_taskobj *x, t_symbol *url, t_symbol *file)
+{
+    t_download_data *y;
+        /* check if a task is still running */
+    if (x->x_task)
+    {
+    #if TASKOBJ_CANCEL
+        taskobj_cancel(x);
+    #else
+            /* treat as error and return */
+        pd_error(x, "taskobj: task still running");
+        return;
+    #endif
+    }
+    y = (t_download_data *)getbytes(sizeof(t_download_data));
+    y->success = 0;
+    snprintf(y->url, sizeof(y->url), "%s", url->s_name);
+    snprintf(y->filepath, sizeof(y->filepath), "%s", file->s_name);
+        /* spawn task as new thread and store task handle */
+    x->x_task = task_spawn((t_pd *)x, y, (t_task_workfn)taskobj_download_workfn,
+        (t_task_callback)taskobj_download_callback);
+}
+
 /* --------------------------------------------------------------------- */
 
 static void taskobj_get(t_taskobj *x, t_floatarg f)
@@ -228,4 +293,6 @@ void taskobj_setup(void)
         gensym("get"), A_FLOAT, 0);
     class_addmethod(taskobj_class, (t_method)taskobj_cancel,
         gensym("cancel"), 0);
+    class_addmethod(taskobj_class, (t_method)taskobj_download,
+        gensym("download"), A_SYMBOL, A_SYMBOL, 0);
 }
