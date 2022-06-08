@@ -52,6 +52,16 @@
  * NOTE: the order in which tasks are executed is undefined! Implementations might
  * use multiple worker threads which execute task concurrently.
  *
+ * --------------------------------------------------------------------------------
+ *
+ * t_task *task_spawn(t_pd *owner, void *data, task_workfn workfn, task_callback cb)
+ *
+ * description: spawn a new task
+ *    This function behaves just like task_sched(), except it runs the worker
+ *    function in its own thread, so that other tasks can run concurrently.
+ *    Use this if a task might take a long time - let's say more than 1 second
+ *    - and you cannot use asynchronous I/O with task_suspend() + task_resume().
+ *
  * ---------------------------------------------------------------------------------
  *
  * int task_cancel(t_task *task, int sync)
@@ -97,8 +107,7 @@
  *     statement before returning from the worker function. The task will be suspended
  *     until the other thread finally calls task_resume(), allowing other tasks to run
  *     concurrently. This is useful for interfacing with event loops or other asynchronous
- *     library calls. It also allows users to spawn a dedicated thread inside the worker
- *     function, e.g. to prevent a long-running operation from blocking subsequent tasks.
+ *     library calls.
  *
  * ----------------------------------------------------------------------------------
  *
@@ -336,18 +345,22 @@ struct _taskqueue
 
 #if PD_WORKERTHREADS
 
-static void *task_threadfn(void *x)
+static void lower_thread_priority(void)
 {
-        /* set lower thread priority */
 #ifdef _WIN32
     if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_LOWEST))
-        fprintf(stderr, "pd: couldn't set low priority for worker thread\n");
+        fprintf(stderr, "could not set low priority for worker thread\n");
 #else
     struct sched_param param;
     param.sched_priority = 0;
     if (pthread_setschedparam(pthread_self(), SCHED_OTHER, &param) != 0)
-        fprintf(stderr, "pd: couldn't set low priority for worker thread\n");
+        fprintf(stderr, "could not set low priority for worker thread\n");
 #endif
+}
+
+static void *task_threadfn(void *x)
+{
+    lower_thread_priority();
 
     sys_taskqueue_perform((t_pdinstance *)x, 0);
 
@@ -649,8 +662,77 @@ t_task *task_sched(t_pd *owner, void *data,
     tasklist_push(list, task);
     clock_delay(queue->tq_clock, 0);
 #endif
-
     return task;
+}
+
+#if PD_WORKERTHREADS
+
+typedef struct _spawn_data
+{
+    t_task *task;
+    t_task_workfn workfn;
+    t_task_callback cb;
+    void *data;
+} t_spawn_data;
+
+static void *task_spawn_threadfn(void *x)
+{
+    t_spawn_data *y = (t_spawn_data *)x;
+        /* in case pthread_attr_setinheritsched() did not work (seems to be the case on Windows...) */
+    lower_thread_priority();
+    y->workfn(y->task, y->data);
+    task_resume(y->task, 0);
+    return 0;
+}
+
+static void task_spawn_workfn(t_task *task, t_spawn_data *data)
+{
+    pthread_t tid;
+    pthread_attr_t attr;
+    int err;
+    data->task = task;
+        /* inherit thread priority and detach; this is done so that the thread already
+        starts with a low priority, instead of changing the priorty after the fact. */
+    pthread_attr_init(&attr);
+    if ((err = pthread_attr_setinheritsched(&attr, PTHREAD_INHERIT_SCHED)))
+        fprintf(stderr, "pthread_attr_setinheritedsched() failed (%d)\n", err);
+    if ((err = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)))
+        fprintf(stderr, "pthread_attr_setdetachstate() failed (%d)\n", err);
+        /* create thread and suspend task */
+    if ((err = pthread_create(&tid, &attr, task_spawn_threadfn, data)) == 0)
+        task_suspend(task);
+    else
+    {
+        fprintf(stderr, "pthread_create() failed (%d)\n", err);
+        task->t_cancel = 1;
+    }
+    pthread_attr_destroy(&attr);
+}
+
+static void task_spawn_callback(t_pd *x, t_spawn_data *y)
+{
+    y->cb(x, y->data);
+    freebytes(y, sizeof(t_spawn_data));
+}
+
+#endif /* PD_WORKERTHREADS */
+
+t_task *task_spawn(t_pd *owner, void *data,
+    t_task_workfn workfn, t_task_callback cb)
+{
+#if PD_WORKERTHREADS
+    if (STUFF->st_taskqueue->tq_running)
+    {
+        t_spawn_data *d = (t_spawn_data *)getbytes(sizeof(t_spawn_data));
+        d->workfn = workfn;
+        d->cb = cb;
+        d->data = data;
+        return task_sched(owner, d, (t_task_workfn)task_spawn_workfn,
+            (t_task_callback)task_spawn_callback);
+    }
+#endif /* PD_WORKERTHREADS */
+        /* just run synchronously */
+    return task_sched(owner, data, workfn, cb);
 }
 
 int task_cancel(t_task *task, int sync)
