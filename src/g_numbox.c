@@ -191,16 +191,22 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    int half = x->x_gui.x_h/2;
     sys_vgui(".x%lx.c create polygon 0 0 -tags [list %lxOBJ %lxBASE1]\n",
         canvas, x, x);
-    sys_vgui(".x%lx.c create line 0 0 0 0 -tags [list %lxOBJ %lxBASE2]\n",
-        canvas, x, x);
+sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d -width %d -outline #000000 -fill #ffffff -tags [list %lxOBJ %lxBASE2]\n",
+         canvas,
+         xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
+         xpos + half, ypos + half,
+         xpos + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - IEMGUI_ZOOM(x),
+         xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
+         IEMGUI_ZOOM(x), x, x);
     sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxLABEL label text]\n",
         canvas, x, x);
     sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxNUMBER]\n",
         canvas, x, x);
-
     my_numbox_draw_config(x, glist);
     my_numbox_draw_io(x, glist, 0);
 }
@@ -230,8 +236,8 @@ static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
     {
         sys_vgui(".x%lx.c itemconfigure %lxBASE1 -outline #%06x\n",
             canvas, x, IEM_GUI_COLOR_NORMAL);
-        sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n",
-            canvas, x, x->x_gui.x_fcol);
+        sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #ffffff\n",
+            canvas, x);
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n",
             canvas, x, x->x_gui.x_lcol);
         sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x\n",
@@ -255,27 +261,28 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                 x->x_buf[sl+1] = 0;
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
-                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                    glist_getcanvas(glist), x,
-                    IEM_GUI_COLOR_EDITED, cp);
+                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} \n",
+                          glist_getcanvas(glist), x, cp);
                 x->x_buf[sl] = 0;
             }
             else
             {
                 my_numbox_ftoa(x);
-                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                    glist_getcanvas(glist), x,
-                    IEM_GUI_COLOR_EDITED, x->x_buf);
+                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} \n",
+                         glist_getcanvas(glist), x, x->x_buf);
+                sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n",
+                         glist_getcanvas(glist), x, IEM_GUI_COLOR_EDITED);
                 x->x_buf[0] = 0;
             }
         }
         else
         {
             my_numbox_ftoa(x);
-            sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                glist_getcanvas(glist), x,
-                (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
-                x->x_buf);
+            sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} \n",
+                     glist_getcanvas(glist), x, x->x_buf);
+            sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n",
+                    glist_getcanvas(glist), x,
+                    (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : 0xffffff));
             x->x_buf[0] = 0;
         }
     }
