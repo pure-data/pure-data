@@ -684,7 +684,6 @@ static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey)
         {
             x->x_val = atof(x->x_buf);
             x->x_buf[0] = 0;
-//            x->x_gui.x_fsf.x_change = 0;
             clock_unset(x->x_clock_reset);
             my_numbox_clip(x);
             sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
