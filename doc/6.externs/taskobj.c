@@ -9,6 +9,13 @@
  * the internet to the specified location. It demonstrates how to use
  * task_spawn() to execute a long-running task in its own thread,
  * allowing other tasks to run concurrently.
+ *
+ * The "progress" method fakes some work and communicates the progress
+ * to the user. For this purpose we continuously update a (volatile)
+ * member in our object which in turn is polled regularly with a clock.
+ * Generally, you should avoid references to shared state, as it can easily
+ * introduce data races, but here it is the only way to achieve our goal.
+ * Note that we have to call task_cancel() with sync=1!
  */
 
 #include "m_pd.h"
@@ -34,7 +41,9 @@ typedef struct _taskobj
     t_outlet *x_byteout;
     char *x_data;
     int x_size;
+    volatile float x_progress;
     t_task *x_task;
+    t_clock *x_clock;
 } t_taskobj;
 
 static void taskobj_cancel(t_taskobj *x);
@@ -231,6 +240,78 @@ static void taskobj_download(t_taskobj *x, t_symbol *url, t_symbol *file)
         (t_task_callback)taskobj_download_callback);
 }
 
+/* ------------------- taskobj_progress --------------------- */
+
+#define POLL_INTERVAL 30
+
+typedef struct _progress_data
+{
+    float ms;
+    volatile float *progress;
+} t_progress_data;
+
+static void taskobj_progress_workfn(t_task *task, t_progress_data *x)
+{
+    const float delta = 20;
+    float elapsed = 0;
+        /* sleep to simulate work; return early if the task has been
+         * cancelled in the meantime */
+    while (elapsed < x->ms && task_check(task))
+    {
+    #ifdef _WIN32
+        Sleep(delta);
+    #else
+        usleep(delta * 1000.0);
+    #endif
+        *x->progress = elapsed / x->ms;
+        elapsed += delta;
+    }
+}
+
+static void taskobj_progress_callback(t_taskobj *x, t_progress_data *y)
+{
+    if (x) /* completed */
+    {
+        x->x_task = 0;
+        x->x_progress = -1; /* ! */
+        clock_unset(x->x_clock);
+        outlet_float(x->x_byteout, 1.);
+        outlet_bang(x->x_statusout);
+    }
+        /* finally free the task data object */
+    freebytes(y, sizeof(t_progress_data));
+}
+
+static void taskobj_progress_tick(t_taskobj *x)
+{
+    outlet_float(x->x_byteout, x->x_progress);
+    clock_delay(x->x_clock, POLL_INTERVAL);
+}
+
+static void taskobj_progress(t_taskobj *x, t_floatarg ms)
+{
+    t_progress_data *y;
+        /* check if a task is still running */
+    if (x->x_task)
+    {
+    #if TASKOBJ_CANCEL
+         taskobj_cancel(x);
+    #else
+            /* treat as error and return */
+        pd_error(x, "taskobj: task still running");
+        return;
+    #endif
+    }
+    y = (t_progress_data *)getbytes(sizeof(t_progress_data));
+    y->ms = ms;
+    y->progress = &x->x_progress;
+        /* schedule task and store task handle */
+    x->x_task = task_spawn((t_pd *)x, y, (t_task_workfn)taskobj_progress_workfn,
+        (t_task_callback)taskobj_progress_callback);
+        /* start clock */
+    clock_delay(x->x_clock, 0);
+}
+
 /* --------------------------------------------------------------------- */
 
 static void taskobj_get(t_taskobj *x, t_floatarg f)
@@ -251,9 +332,17 @@ static void taskobj_cancel(t_taskobj *x)
 {
     if (x->x_task)
     {
-            /* NB: our task data does not contain any references
-             * to our Pd object, so we don't have to synchronize! */
-        task_cancel(x->x_task, 0);
+        if (x->x_progress >= 0) /* "progress" method */
+        {
+                /* since t_progress_data contains a reference
+                 * to our object ("volatile float *progress"),
+                 * we have to synchronize with the worker thread! */
+            task_cancel(x->x_task, 1);
+            x->x_progress = -1;
+            clock_unset(x->x_clock);
+        }
+        else /* "read" or "download" method: no need to synchronize */
+            task_cancel(x->x_task, 0);
             /* don't forget to unset the task handle! */
         x->x_task = 0;
     }
@@ -267,8 +356,10 @@ static void *taskobj_new(void)
     x->x_data = 0;
     x->x_size = 0;
     x->x_task = 0;
+    x->x_progress = -1; /* not in progress */
     x->x_statusout = outlet_new(&x->x_obj, 0);
     x->x_byteout = outlet_new(&x->x_obj, 0);
+    x->x_clock = clock_new(x, (t_method)taskobj_progress_tick);
     return x;
 }
 
@@ -278,6 +369,7 @@ static void taskobj_free(t_taskobj *x)
     if (x->x_task)
         taskobj_cancel(x);
         /* cleanup */
+    clock_free(x->x_clock);
     if (x->x_data)
         free(x->x_data);
 }
@@ -295,4 +387,6 @@ void taskobj_setup(void)
         gensym("cancel"), 0);
     class_addmethod(taskobj_class, (t_method)taskobj_download,
         gensym("download"), A_SYMBOL, A_SYMBOL, 0);
+    class_addmethod(taskobj_class, (t_method)taskobj_progress,
+        gensym("progress"), A_FLOAT, 0);
 }

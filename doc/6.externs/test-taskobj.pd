@@ -1,40 +1,50 @@
-#N canvas 363 123 502 576 12;
+#N canvas 356 102 533 684 12;
 #X obj 28 49 openpanel;
 #X obj 28 27 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X floatatom 28 342 8 0 0 0 - - - 0;
-#X floatatom 74 317 5 0 0 0 - - - 0;
-#X text 117 316 byte;
-#X msg 119 225 get \$1;
-#X floatatom 119 199 8 0 0 0 - - - 0;
+#X floatatom 28 312 8 0 0 0 - - - 0;
+#X floatatom 74 287 5 0 0 0 - - - 0;
+#X text 117 286 byte;
+#X msg 119 195 get \$1;
+#X floatatom 119 169 8 0 0 0 - - - 0;
 #X text 52 24 try to open a huge file while running the test tone;
-#X obj 43 105 realtime;
-#X floatatom 43 129 8 0 0 0 - - - 0;
-#X obj 28 315 t f b;
+#X obj 76 73 realtime;
+#X floatatom 76 97 8 0 0 0 - - - 0;
+#X obj 28 285 t f b;
 #X obj 28 73 t s b;
-#X text 175 226 get a single byte;
-#X text 93 343 file size (or -1 on failure);
-#X obj 28 291 taskobj;
-#X obj 28 160 pack s f;
-#X msg 28 199 read \$1 \$2;
-#X floatatom 98 161 6 0 0 0 - - - 0;
-#X msg 119 255 cancel;
-#X text 178 255 cancel a running task;
-#X obj 30 507 taskobj;
-#X obj 30 535 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X text 175 196 get a single byte;
+#X text 93 313 file size (or -1 on failure);
+#X obj 28 261 taskobj;
+#X obj 28 130 pack s f;
+#X msg 28 169 read \$1 \$2;
+#X floatatom 98 131 6 0 0 0 - - - 0;
+#X msg 119 225 cancel;
+#X text 178 225 cancel a running task;
+#X obj 30 477 taskobj;
+#X obj 30 505 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000 0 1;
-#X msg 30 462 download http://msp.ucsd.edu/Software/pd-0.52-2.src.tar.gz
+#X msg 30 432 download http://msp.ucsd.edu/Software/pd-0.52-2.src.tar.gz
 \$1/Pd.tar.gz;
-#X obj 30 432 pdcontrol;
-#X msg 30 403 dir;
-#X obj 30 381 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 30 402 pdcontrol;
+#X msg 30 373 dir;
+#X obj 30 351 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X text 106 433 download <url> <outputfile>;
-#X text 57 379 download Pd's source code from Miller's site (with 'curl')
+#X text 106 403 download <url> <outputfile>;
+#X text 57 349 download Pd's source code from Miller's site (with 'curl')
 ;
-#X text 69 404 notice how you can use the other taskobj concurrently!
+#X text 69 374 notice how you can use the other taskobj concurrently!
 ;
-#X text 152 161 extra sleep (ms) to fake work;
+#X text 152 131 extra sleep (ms) to fake work;
+#X obj 30 623 taskobj;
+#X msg 30 566 progress \$1;
+#X floatatom 30 539 8 0 0 0 - - - 0;
+#X msg 99 540 10000;
+#X text 150 541 fake some work for 10 seconds and show progress;
+#X obj 79 649 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 #fcfcfc
+#000000 #000000 0 1;
+#X obj 30 648 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X msg 42 593 cancel;
 #X connect 0 0 11 0;
 #X connect 1 0 0 0;
 #X connect 5 0 14 0;
@@ -55,3 +65,9 @@
 #X connect 23 0 22 0;
 #X connect 24 0 23 0;
 #X connect 25 0 24 0;
+#X connect 30 0 36 0;
+#X connect 30 1 35 0;
+#X connect 31 0 30 0;
+#X connect 32 0 31 0;
+#X connect 33 0 31 0;
+#X connect 37 0 30 0;
