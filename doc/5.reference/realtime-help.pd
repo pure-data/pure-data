@@ -7,7 +7,7 @@
 #X text 244 313 updated for Pd version 0.33;
 #X obj 88 313 cputime;
 #X obj 156 313 timer;
-#X text 193 159 output elapsed time. You can click multiple times since
+#X text 202 161 output elapsed time. You can click multiple times since
 it was last reset., f 25;
 #X text 140 122 reset (set elapsed time to zero);
 #X text 17 314 see also:;
@@ -36,12 +36,12 @@ it was last reset., f 25;
 #X text 278 20 click =>;
 #X obj 13 296 cnv 1 450 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 119 123 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X obj 172 174 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 119 123 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 47 69 The [realtime] object measures elapsed real time \, as
 measured by your operating system., f 50;
+#X obj 172 174 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 3 0 0 0;
 #X connect 15 0 3 0;
-#X connect 16 0 3 1;
+#X connect 17 0 3 1;

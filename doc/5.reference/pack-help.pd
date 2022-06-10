@@ -15,13 +15,13 @@
 #X floatatom 415 394 6 0 0 0 - - - 0;
 #X floatatom 362 394 6 0 0 0 - - - 0;
 #X obj 415 507 print;
-#X obj 106 531 print;
-#X msg 106 400 a;
-#X obj 106 473 pack s f;
-#X floatatom 159 437 5 0 0 0 - - - 0;
+#X obj 108 531 print;
+#X msg 108 400 a;
+#X obj 108 473 pack s f;
+#X floatatom 161 437 5 0 0 0 - - - 0;
 #X text 458 419 <= trigger;
 #X listbox 69 335 20 0 0 0 - - - 0;
-#X listbox 106 504 20 0 0 0 - - - 0;
+#X listbox 108 504 20 0 0 0 - - - 0;
 #X listbox 415 480 17 0 0 0 - - - 0;
 #X obj 69 306 pack 10 100 symbol float;
 #X obj 169 582 trigger;
@@ -31,7 +31,7 @@ can be the location of a Data Structure scalar somewhere or the head
 of a Data Structure list. To know more about Data Structures \, how
 to handle pointers and see examples \, please refer to the 4.Data.Structure
 section of the Pd's tutorials., f 65;
-#X obj 93 124 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 93 124 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
@@ -42,7 +42,7 @@ section of the Pd's tutorials., f 65;
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 93 154 pd open;
-#X text 117 123 <-- open first examle of the 4.Data.Structure section
+#X text 118 124 <-- open first examle of the 4.Data.Structure section
 ;
 #X connect 1 0 2 0;
 #X restore 360 135 pd pointer;
@@ -80,8 +80,8 @@ numeric inlet and initializes the value \, 'float/f' initialized to
 #X text 501 15 <= click;
 #X obj 8 566 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 10 459 abbreviated arguments -->, f 13;
-#X obj 53 134 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X text 12 459 abbreviated arguments -->, f 13;
+#X obj 53 134 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 76 133 <-- outputs the packed elements;
 #X text 117 167 <-- first inlet generates output;
@@ -97,7 +97,7 @@ and initializes the value ('float'/'f' initializes to 0)., f 79;
 #X text 441 135 <-- about pointers;
 #X text 316 328 By default \, [pack] takes two floats. You can use
 [trigger] to force an output on secondary inlets., f 36;
-#X text 141 395 [pack] accepts 'anythings' in the left inlet, f 26
+#X text 143 395 [pack] accepts 'anythings' in the left inlet, f 26
 ;
 #X connect 0 0 24 0;
 #X connect 1 0 24 1;

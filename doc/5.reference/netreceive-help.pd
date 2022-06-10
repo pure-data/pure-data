@@ -14,7 +14,7 @@
 #X obj 403 564 print udp-binary;
 #X msg 59 265 listen 0;
 #X text 136 238 listen message to set or change port;
-#X text 138 265 (0 or negative number to close);
+#X text 128 265 (0 or negative number to close);
 #X msg 70 319 send foo \$1;
 #X floatatom 70 295 4 0 0 0 - - - 0;
 #X floatatom 219 487 4 0 0 0 - - - 0;

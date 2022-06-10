@@ -78,11 +78,11 @@ which all [catch~] objects of the same name read from. They may be
 in different windows or even different patches. Any number of [throw~]
 objects can add into one [catch~] object (but two [catch~] objects
 cannot share the same name.), f 61;
-#X obj 268 491 tabsend~;
-#X text 38 466 [send~]/[receive~] only work for the default block size
-(64). for FFT applications see also:, f 62;
+#X obj 238 487 tabsend~;
 #X text 190 226 You can redirect [throw~] via a "set" message., f
 16;
+#X text 38 466 [send~]/[receive~] only work for the default block size
+(64). for FFT applications check:, f 62;
 #X connect 1 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 23 0;

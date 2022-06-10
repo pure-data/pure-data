@@ -40,7 +40,6 @@ semicolon, f 36;
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
 #X restore 784 481 pd changing-messages;
-#X text 146 314 <= object (different border);
 #N canvas 866 231 495 492 more-on-selectors 0;
 #X msg 118 262 4;
 #X msg 118 196 bang;
@@ -174,8 +173,6 @@ load the '\$0' in an object \, since "\$0" doesn't work in messages.
 #X connect 7 0 8 0;
 #X connect 9 0 7 0;
 #X restore 794 537 pd Dealing_with_"\$0";
-#X text 646 519 open subpatch to see how to deal with '\$0' =>, f
-24;
 #X text 59 679 see also:;
 #X msg 110 233 bang;
 #X msg 99 203 symbol hi;
@@ -269,9 +266,7 @@ This is possible with [symbol] and [list] objects., f 61;
 #X connect 35 0 33 0;
 #X restore 372 625 pd dollar-variables;
 #X text 94 449 Open subpatch for more on selectors:, f 18;
-#X text 391 457 <= click;
-#X text 353 603 more on dollar variables:;
-#X text 294 568 <= click and drag;
+#X text 352 602 more on dollar variables:;
 #X text 226 261 a message with 'walk' selector, f 15;
 #X text 420 287 (number box);
 #X text 571 124 If you separate messages by a semicolon \, the following
@@ -284,7 +279,6 @@ left to right and top to bottom.e, f 65;
 #X text 648 579 Finally \, you can escape special characters with backslashes:
 " ". click and open the subpatch below for more information., f 42
 ;
-#X text 158 11 <== a message box;
 #X obj 11 42 cnv 1 1025 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 943 12 <= click;
@@ -336,21 +330,27 @@ output it \, but it doesn't work with the selector "doesn't"! A number
 box also understands a float message and passes it through. What comes
 out of control objects and number/symbol/list boxes are all just messages
 as well!, f 74;
+#X text 158 11 <-- a message box;
+#X text 641 519 open subpatch to see how to deal with '\$0' -->, f
+24;
+#X text 144 313 <-- object (different border);
+#X text 389 457 <-- click;
+#X text 293 567 <-- click and drag;
 #X connect 1 0 2 0;
 #X connect 3 0 4 0;
-#X connect 4 0 15 0;
-#X connect 5 0 16 0;
+#X connect 4 0 14 0;
+#X connect 5 0 15 0;
 #X connect 6 0 5 0;
-#X connect 13 0 12 0;
-#X connect 18 0 17 0;
-#X connect 23 0 2 0;
-#X connect 24 0 2 0;
-#X connect 27 0 29 0;
-#X connect 28 0 27 0;
-#X connect 29 0 30 0;
-#X connect 32 0 33 0;
-#X connect 34 0 27 0;
-#X connect 36 0 37 0;
+#X connect 12 0 11 0;
+#X connect 17 0 16 0;
+#X connect 21 0 2 0;
+#X connect 22 0 2 0;
+#X connect 25 0 27 0;
+#X connect 26 0 25 0;
+#X connect 27 0 28 0;
+#X connect 30 0 31 0;
+#X connect 32 0 25 0;
+#X connect 34 0 35 0;
+#X connect 35 0 36 0;
 #X connect 37 0 38 0;
-#X connect 39 0 40 0;
-#X connect 40 0 41 0;
+#X connect 38 0 39 0;

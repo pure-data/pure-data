@@ -33,9 +33,9 @@ f 69;
 #X text 400 362 the frequency;
 #X obj 115 311 loadbang;
 #X msg 362 228 \; pd dsp \$1;
-#X obj 362 203 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 362 203 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 382 202 DSP on/off;
+#X text 386 202 DSP on/off;
 #N canvas 731 147 586 252 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;

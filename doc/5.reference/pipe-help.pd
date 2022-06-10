@@ -15,7 +15,7 @@
 #X obj 45 16 pipe;
 #X text 84 15 - message "delay line";
 #X obj 63 380 print pipe;
-#X obj 96 240 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 96 240 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X symbolatom 135 586 13 0 0 0 - - - 0;
 #X msg 136 491 symbol ahoy;
@@ -106,7 +106,7 @@ default \, s \, p) and floats set float type and initial value., f
 0;
 #X text 119 178 output all scheduled messages immediately;
 #X text 128 208 forget all scheduled messages;
-#X obj 574 525 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 572 525 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X connect 0 0 23 0;
 #X connect 0 1 1 0;

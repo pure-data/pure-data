@@ -1,7 +1,7 @@
 #N canvas 541 23 578 563 12;
 #X declare -stdpath ./;
 #X floatatom 216 177 5 0 0 0 - - - 0;
-#X msg 156 150 clear;
+#X msg 113 124 clear;
 #X obj 25 15 hip~;
 #X text 70 14 - one-pole high pass filter;
 #X text 352 502 updated for Pd version 0.44;
@@ -19,7 +19,7 @@ To get the old (0.43 and earlier) behavior \, set "compatibility" to
 #X obj 136 502 bp~;
 #X obj 210 502 bob~;
 #X obj 170 502 vcf~;
-#X obj 89 128 noise~;
+#X obj 156 156 noise~;
 #X obj 156 262 output~;
 #X obj 156 204 hip~ 2000;
 #X obj 295 266 declare -stdpath ./;
@@ -57,7 +57,7 @@ To get the old (0.43 and earlier) behavior \, set "compatibility" to
 #X text 39 56 [hip~] is a one-pole high pass filter with a specified
 cutoff frequency. Left (audio) inlet is the incoming audio signal.
 Right (control) inlet sets cutoff frequency., f 72;
-#X text 205 150 <-- reinitialize internal state;
+#X text 162 124 <-- reinitialize internal state;
 #X text 259 176 <-- set cutoff frequency;
 #X connect 0 0 15 1;
 #X connect 1 0 15 0;

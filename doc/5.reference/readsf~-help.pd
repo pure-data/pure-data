@@ -3,13 +3,13 @@
 #X msg 92 242 1;
 #X msg 107 269 0;
 #X obj 471 395 print didit;
-#X obj 138 371 env~ 16384;
+#X obj 138 369 env~ 16384;
 #X floatatom 138 396 6 0 0 0 - - - 0;
 #X msg 121 298 print;
-#X obj 218 371 env~ 16384;
+#X obj 218 369 env~ 16384;
 #X obj 54 331 readsf~ 4 1e+06, f 60;
-#X obj 298 371 env~ 16384;
-#X obj 379 371 env~ 16384;
+#X obj 298 369 env~ 16384;
+#X obj 379 369 env~ 16384;
 #X msg 54 187 open ../sound/bell.aiff 0 200 4 2 b;
 #X text 21 60 The readsf~ object reads a soundfile into its signal
 outputs. You must open the soundfile in advance (a couple of seconds
@@ -30,9 +30,9 @@ automatically \, although only uncompressed 2- or 3-byte integer ("pcm")
 and 4-byte floating point samples are accepted., f 91;
 #X obj 54 372 output~;
 #X obj 185 477 writesf~;
-#X obj 471 371 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 471 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 502 326 - number of channels \; - per channel buffer size in
+#X text 502 324 - number of channels \; - per channel buffer size in
 bytes, f 22;
 #X msg 68 215 open ../sound/bell.aiff;
 #X obj 517 261 declare -stdpath ./;

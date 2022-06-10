@@ -10,7 +10,6 @@
 #X obj 43 340 print Integer;
 #X symbolatom 392 280 14 0 0 0 - - - 0;
 #X obj 392 313 print Symbol;
-#X text 221 262 <= argument is format string, f 14;
 #N canvas 703 91 524 392 multiple_substitutions 0;
 #X msg 50 111 symbol aif;
 #X msg 63 138 symbol wav;
@@ -629,7 +628,6 @@ can be combined and included in the order below:;
 #X msg 58 209 set cat\ %d.wav;
 #X obj 43 263 makefilename dog\ %d.aif;
 #X obj 392 246 makefilename dog\ %s.aif;
-#X text 283 390 More details =>;
 #X text 388 154 SUBSTITUTING A SYMBOL:;
 #X text 39 154 SUBSTITUTING AN INTEGER NUMBER:;
 #X text 163 299 (Note you can use backlashes to escape and insert a
@@ -667,12 +665,14 @@ have only one variable pattern \, but you can cascade objects for multiple
 substitutions., f 82;
 #X text 78 181 <-- numbers replace "%d" in string;
 #X text 174 208 <-- "set" message replaces format, f 18;
-#X connect 0 0 16 0;
-#X connect 1 0 17 0;
-#X connect 2 0 17 0;
-#X connect 5 0 16 0;
+#X text 221 262 <-- argument is format string, f 15;
+#X text 273 390 More details -->;
+#X connect 0 0 15 0;
+#X connect 1 0 16 0;
+#X connect 2 0 16 0;
+#X connect 5 0 15 0;
 #X connect 7 0 8 0;
 #X connect 9 0 10 0;
-#X connect 15 0 16 0;
-#X connect 16 0 7 0;
-#X connect 17 0 9 0;
+#X connect 14 0 15 0;
+#X connect 15 0 7 0;
+#X connect 16 0 9 0;

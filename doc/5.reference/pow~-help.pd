@@ -32,9 +32,9 @@ a protection against NaNs (they become 0)., f 65;
 #X text 112 451 (etc.) - signal binary operators;
 #X obj 234 423 expr~;
 #X msg 330 140 \; pd dsp \$1;
-#X obj 330 116 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 330 114 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 350 114 DSP on/off;
+#X text 355 114 DSP on/off;
 #N canvas 810 126 441 249 reference 0;
 #X obj 13 50 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;

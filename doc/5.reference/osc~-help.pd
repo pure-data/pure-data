@@ -15,7 +15,7 @@
 #X text 343 492 updated for Pd version 0.33;
 #X obj 153 287 tabwrite~ \$0-array;
 #X obj 65 257 output~;
-#X obj 171 229 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 171 227 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X obj 123 176 osc~ 440;
 #X msg 176 144 0;
@@ -23,7 +23,7 @@
 #X msg 210 144 0.5;
 #X text 21 143 set frequency;
 #X obj 342 251 sig~ 440;
-#X text 402 290 the frequency;
+#X text 402 292 the frequency;
 #X obj 342 300 osc~;
 #X obj 392 410 declare -stdpath ./;
 #N canvas 731 147 586 252 reference 0;
@@ -60,8 +60,8 @@ input can be either a float or a signal. The right inlet resets the
 phase with values from 0 to 1 (where '1' is the same as '0' and '0.5'
 is half the cycle)., f 67;
 #X text 190 176 <-- creation argument sets initial frequency;
-#X text 194 227 <-- graph;
-#X text 353 273 <----- signal controlling;
+#X text 195 227 <-- graph;
+#X text 353 275 <----- signal controlling;
 #X connect 0 0 13 0;
 #X connect 6 0 10 0;
 #X connect 12 0 6 0;

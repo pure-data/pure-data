@@ -9,7 +9,7 @@
 samples), f 35;
 #X text 301 360 updated for Pd version 0.48-2;
 #X obj 159 231 output~;
-#X obj 105 261 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 105 261 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 323 194 declare -stdpath ./;
 #X text 237 248 <= click and drag to hear and turn DSP on, f 20;

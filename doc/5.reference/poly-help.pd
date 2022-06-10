@@ -5,18 +5,15 @@
 #X obj 121 414 route;
 #X obj 175 414 makenote;
 #X obj 158 268 poly 4 1;
-#X obj 151 364 print;
 #X msg 227 236 stop;
 #X msg 216 210 clear;
 #X text 68 16 - MIDI-style polyphonic voice allocator;
 #X listbox 151 329 20 0 0 0 - - - 0;
 #X obj 151 298 pack f f f;
-#X msg 64 182 60 \$1;
-#X msg 111 182 62 \$1;
-#X msg 158 182 65 \$1;
-#X msg 206 182 69 \$1;
-#X obj 64 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
+#X msg 64 184 60 \$1;
+#X msg 111 184 62 \$1;
+#X msg 158 184 65 \$1;
+#X msg 206 184 69 \$1;
 #X text 261 211 clear memory;
 #X text 266 236 flush hanging note on messages;
 #X obj 9 50 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -57,13 +54,9 @@
 #X text 477 17 <= click;
 #X obj 9 400 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 206 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 206 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 64;
-#X obj 111 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X obj 158 160 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 64;
-#X text 249 181 <-- emulating note on/off messages;
+#X text 249 183 <-- emulating note on/off messages;
 #X text 228 268 <-- first argument \, number of voices second argument
 selects voice stealing, f 43;
 #X text 21 58 The [poly] object takes a stream of pitch/velocity pairs
@@ -72,18 +65,25 @@ it can be configured to do voice stealing or not (the default). You
 can pack the output and use the [route] object to route messages among
 a bank of voices depending on the first outlet. Another option is to
 connect it [clone] so you can route to different copies., f 74;
-#X connect 5 0 11 0;
-#X connect 5 1 11 1;
-#X connect 5 2 11 2;
+#X obj 64 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X obj 111 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X obj 158 158 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 64;
+#X obj 151 364 print poly;
+#X connect 5 0 10 0;
+#X connect 5 1 10 1;
+#X connect 5 2 10 2;
+#X connect 6 0 5 0;
 #X connect 7 0 5 0;
-#X connect 8 0 5 0;
-#X connect 10 0 6 0;
-#X connect 11 0 10 0;
+#X connect 9 0 28 0;
+#X connect 10 0 9 0;
+#X connect 11 0 5 0;
 #X connect 12 0 5 0;
 #X connect 13 0 5 0;
 #X connect 14 0 5 0;
-#X connect 15 0 5 0;
-#X connect 16 0 12 0;
-#X connect 23 0 15 0;
-#X connect 24 0 13 0;
-#X connect 25 0 14 0;
+#X connect 21 0 14 0;
+#X connect 25 0 11 0;
+#X connect 26 0 12 0;
+#X connect 27 0 13 0;

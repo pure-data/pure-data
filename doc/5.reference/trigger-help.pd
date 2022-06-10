@@ -122,11 +122,11 @@ which can be abreviatted (default: f f)., f 52;
 0;
 #X obj 648 3 cnv 1 1 73 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 870 381 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 870 381 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 1042 230 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 1042 232 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 899 117 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 898 117 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 21 95 The [trigger] object outputs its input from right to
 left. Because of the hot/cold inlet paradigm of Pd \, output from right

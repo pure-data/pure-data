@@ -1,6 +1,6 @@
 #N canvas 545 23 479 478 12;
 #X floatatom 139 299 5 0 0 0 - - - 0;
-#X floatatom 86 354 0 0 0 0 - - - 0;
+#X floatatom 86 354 4 0 0 0 - - - 0;
 #X msg 105 269 seed 123;
 #X text 110 236 bang for output;
 #X text 177 270 message to set the seed;
@@ -9,7 +9,6 @@
 #X text 248 437 updated for Pd version 0.33;
 #X obj 27 13 random;
 #X text 81 12 - pseudo random integers;
-#X obj 86 382 print;
 #X text 23 440 see also:;
 #X obj 98 438 expr;
 #X obj 10 42 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -42,7 +41,7 @@
 #X obj 10 422 cnv 1 460 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 86 326 random 5;
-#X obj 86 237 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 86 237 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 24 58 [random] outputs pseudo random integers from 0 to N-1
 where N is the creation argument (5 in the example below.) You can
@@ -53,8 +52,9 @@ seed the same one twice to repeat the output.);
 instance of random gets its own seed. WARNING: Nothing is known about
 the quality of this pseudo random number generator. It isn't any standard
 one!;
-#X connect 0 0 17 1;
-#X connect 1 0 10 0;
-#X connect 2 0 17 0;
-#X connect 17 0 1 0;
-#X connect 18 0 17 0;
+#X obj 86 382 print random;
+#X connect 0 0 16 1;
+#X connect 1 0 20 0;
+#X connect 2 0 16 0;
+#X connect 16 0 1 0;
+#X connect 17 0 16 0;

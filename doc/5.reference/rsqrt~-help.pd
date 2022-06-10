@@ -11,9 +11,9 @@
 #X text 398 330 - deprecated;
 #X obj 326 328 q8_rsqrt~;
 #X msg 84 201 \; pd dsp \$1;
-#X obj 84 174 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 84 173 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 105 174 DSP on/off;
+#X text 108 172 DSP on/off;
 #X obj 245 149 sig~ 2;
 #X obj 307 192 metro 200;
 #X obj 6 47 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -31,8 +31,7 @@
 #X obj 38 16 rsqrt~;
 #X text 95 15 - signal reciprocal square root.;
 #X text 84 59 signal - input to reciprocal square root function.;
-#X text 84 99 signal - output of reciprocal square root function.
-;
+#X text 84 99 signal - output of reciprocal square root function.;
 #X restore 342 13 pd reference;
 #X text 439 13 <= click;
 #X obj 5 388 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000

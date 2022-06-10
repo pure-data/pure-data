@@ -54,8 +54,6 @@ in GUIs as well as variable names in value objects., f 68;
 #X connect 15 0 9 0;
 #X restore 383 454 pd Dealing_with_"\$0";
 #X floatatom 464 309 5 0 0 0 - float-help - 0;
-#X text 196 441 open subpatch to see how to deal with '\$0' ======>
-, f 25;
 #X msg 85 211 10.5 12.9 A;
 #X obj 72 456 print float;
 #X text 171 211 list gets truncated to the first item;
@@ -105,7 +103,7 @@ and output., f 55;
 #X obj 122 512 symbol;
 #X obj 4 496 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 50 156 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 50 155 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 44 90 The [float] object stores a number \, initialized by
 its creation argument \, which may be reset using its right inlet and
@@ -116,8 +114,10 @@ inletsets a new value and outputs it., f 76;
 #X text 183 325 <-- type a number on a symbol box;
 #X text 213 236 send to a named object such as a GUI \, a receive or
 value objects -->, f 35;
+#X text 196 441 open subpatch to see how to deal with '\$0' ------>
+, f 25;
 #X connect 0 0 1 0;
-#X connect 1 0 21 0;
+#X connect 1 0 20 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 1;
 #X connect 8 0 5 0;
@@ -127,5 +127,5 @@ value objects -->, f 35;
 #X connect 13 0 0 0;
 #X connect 15 0 14 0;
 #X connect 16 0 15 0;
-#X connect 20 0 0 0;
-#X connect 37 0 0 0;
+#X connect 19 0 0 0;
+#X connect 36 0 0 0;

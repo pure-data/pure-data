@@ -27,8 +27,8 @@
 0;
 #X text 18 282 see also:;
 #X obj 96 283 pd-messages;
-#X obj 190 283 bang;
-#X obj 232 283 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 188 283 bang;
+#X obj 230 283 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
 #X text 40 54 The [loadbang] object outputs a "bang" message when the
 containing patch is opened as a document or included in another patch

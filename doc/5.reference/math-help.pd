@@ -113,8 +113,8 @@ for 'atan2' \, log base for 'log' and numeric power for 'pow'.;
 0;
 #X text 102 444 1) float - initialize value of right inlet (default
 0)., f 58;
-#X restore 395 23 pd reference;
-#X text 493 24 <= click;
+#X restore 410 22 pd reference;
+#X text 508 23 <= click;
 #X obj 6 66 cnv 1 585 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 6 568 cnv 1 585 1 empty empty empty 8 12 0 13 #000000 #000000

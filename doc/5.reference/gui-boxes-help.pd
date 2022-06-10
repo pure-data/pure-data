@@ -21,7 +21,6 @@
 #X floatatom 173 213 7 0 0 0 - - - 0;
 #X text 99 438 A width of one gives a clickable toggle switch, f 23
 ;
-#X text 299 446 <= click;
 #X text 42 22 The width is 5 characters by default. The number box
 fails to display numbers with more characters and only gives you its
 sign instead. Hence \, you need to increase the width to display it
@@ -37,6 +36,7 @@ though., f 58;
 #X text 105 385 width of 0 -->;
 #X text 219 184 <-- default (5 characters);
 #X text 232 214 <-- width of 7;
+#X text 299 446 <-- click;
 #X connect 1 0 8 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
@@ -86,29 +86,31 @@ range are accepted if you type it in or receive it via the inlet.;
 #X msg 265 119 set -100;
 #X text 88 174 and also type a value outside the range, f 15;
 #X obj 227 201 print number-range;
-#X floatatom 86 427 0 0 0 0 - - - 0;
-#X floatatom 216 427 0 0 0 0 - - - 0;
-#X msg 86 350 bang;
+#X floatatom 86 427 4 0 0 0 - - - 0;
+#X floatatom 216 427 5 0 0 0 - - - 0;
 #X text 70 254 Setting the lower and upper range to the same value
 (like "0" \, "0" - the default) removes the limit. Note that a ridiculously
 large number becomes infinity (negative infinity is also possible).
 The number box will display these and also 'NaN' (Not a Number).,
 f 55;
 #X obj 86 385 expr pow(2 \, 1e+10) \; -pow(2 \, 1e+10);
-#X floatatom 307 427 0 0 0 0 - - - 0;
-#X msg 307 350 bang;
+#X floatatom 307 427 4 0 0 0 - - - 0;
 #X obj 307 388 expr log(-1);
-#X text 125 351 infinity;
-#X text 345 350 nan;
+#X text 111 350 infinity;
+#X text 331 350 nan;
 #X text 88 158 click and drag -->;
+#X obj 86 350 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 307 350 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
 #X connect 0 0 6 0;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
-#X connect 9 0 11 0;
-#X connect 11 0 7 0;
-#X connect 11 1 8 0;
-#X connect 13 0 14 0;
-#X connect 14 0 12 0;
+#X connect 10 0 7 0;
+#X connect 10 1 8 0;
+#X connect 12 0 11 0;
+#X connect 16 0 10 0;
+#X connect 17 0 12 0;
 #X restore 183 202 pd limits;
 #N canvas 721 346 450 298 loading-args 0;
 #X floatatom 224 229 5 0 0 0 \$0-label - - 0;
@@ -220,7 +222,7 @@ label., f 74;
 #X restore 240 277 pd size;
 #X text 171 77 <-- right click for properties;
 #X restore 802 262 pd properties;
-#X text 112 537 more details:;
+#X text 112 536 more details:;
 #X listbox 490 41 20 0 0 0 - - - 0;
 #X text 689 172 set only - don't output;
 #X msg 541 362 1 2 3 foo 5;
@@ -236,12 +238,11 @@ word "list" to disambiguate them, f 28;
 #X text 793 671 updated for Pd version 0.52;
 #X text 709 620 more details:;
 #N canvas 815 193 459 477 properties 0;
-#N canvas 934 145 512 490 width 0;
+#N canvas 854 145 512 490 width 0;
 #X msg 132 130 symbol short;
 #X listbox 201 411 0 0 0 0 - - - 0;
 #X listbox 132 192 10 0 0 0 - - - 0;
 #X listbox 132 162 20 0 0 0 - - - 0;
-#X text 284 161 <= default (20 characters);
 #X msg 90 101 list 1 2 3 4 5 6 7 8 9 10 11 12;
 #X msg 201 377 1;
 #X text 58 247 Note that if you select a width of 0 \, the list box
@@ -252,14 +253,14 @@ efficient though.;
 #X text 54 23 By default the width is 20 characters. If the list box
 tries to display a larger symbol \, it gets truncated and the last
 displayed character is ">".;
-#X text 212 193 <= width of 10;
+#X text 284 161 <-- default (20 characters);
+#X text 212 193 <-- width of 10;
 #X connect 0 0 3 0;
 #X connect 3 0 2 0;
-#X connect 5 0 3 0;
-#X connect 6 0 1 0;
-#X connect 8 0 1 0;
+#X connect 4 0 3 0;
+#X connect 5 0 1 0;
+#X connect 7 0 1 0;
 #X restore 233 216 pd width;
-#X text 206 76 <= right click for properties;
 #N canvas 903 345 444 319 label 0;
 #X text 87 23 You can give it a label and place it in 4 different preset
 positions:, f 35;
@@ -268,7 +269,7 @@ positions:, f 35;
 #X listbox 134 190 20 0 0 1 right-label - - 0;
 #X listbox 135 229 20 0 0 3 bottom-label - - 0;
 #X restore 233 279 pd label;
-#N canvas 979 272 531 449 send/receive 0;
+#N canvas 835 272 531 449 send/receive 0;
 #X obj 108 371 print;
 #X text 55 28 The properties also allows you to set a send and receive
 symbol \, in which cases the inlet/outlet are removed (so no connections
@@ -280,8 +281,8 @@ and [receive] objects., f 58;
 #X listbox 104 290 20 0 0 0 - - - 0;
 #X obj 104 165 send \$0-list;
 #X obj 104 256 receive \$0-list;
-#X text 254 217 <= send symbol: \$0-list;
-#X text 259 333 <= receive symbol: \$0-list;
+#X text 252 217 <-- send symbol: \$0-list;
+#X text 257 333 <-- receive symbol: \$0-list;
 #X connect 2 0 6 0;
 #X connect 4 0 0 0;
 #X connect 7 0 5 0;
@@ -305,7 +306,7 @@ parameters are: width \, label and send/receive symbols., f 49;
 #X listbox 203 236 20 0 0 0 \$0-label - - 0;
 #X restore 196 418 pd loading-args;
 #X text 108 388 Loading arguments in properties:;
-#N canvas 795 289 688 310 size 0;
+#N canvas 678 289 688 310 size 0;
 #X text 90 44 By default \, when you create a box \, it'll use the
 font size that your patch is using. In this case it is "12". You can
 change the size settings in the properties. The 'auto' setting (the
@@ -318,11 +319,9 @@ label., f 74;
 #X restore 240 308 pd size;
 #X listbox 56 76 20 0 0 0 - - - 0;
 #N canvas 779 156 532 590 limits 0;
-#X text 71 178 click and drag =>;
 #X text 279 173 (range from -10 to 10), f 12;
-#X text 71 194 and also type a value outside the range, f 15;
+#X text 64 194 and also type a value outside the range, f 15;
 #X obj 197 221 print number-range;
-#X msg 154 383 bang;
 #X text 293 422 infinity;
 #X listbox 197 178 10 -10 10 0 - - - 0;
 #X msg 212 147 set -100 100;
@@ -342,15 +341,19 @@ you can define a range with a lower and upper limit values. This is
 just like the number box and affects numbers only. Note that this limit
 is only for clicking and dragging. Numbers outside this range are accepted
 if you type it in or receive it via the inlet., f 64;
-#X connect 4 0 10 0;
-#X connect 6 0 3 0;
-#X connect 7 0 6 0;
-#X connect 8 0 6 0;
-#X connect 10 0 12 0;
-#X connect 10 1 12 1;
-#X connect 10 2 12 2;
-#X connect 12 0 11 0;
+#X text 64 178 click and drag -->;
+#X obj 154 383 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X connect 4 0 2 0;
+#X connect 5 0 4 0;
+#X connect 6 0 4 0;
+#X connect 8 0 10 0;
+#X connect 8 1 10 1;
+#X connect 8 2 10 2;
+#X connect 10 0 9 0;
+#X connect 14 0 8 0;
 #X restore 227 248 pd limits;
+#X text 206 76 <-- right click for properties;
 #X restore 815 619 pd properties;
 #X text 25 195 Double-clicking activates a text editor \, so that you
 can select portions of the contents and/or cut/copy/paste values and
@@ -362,8 +365,6 @@ change using the "enter" key., f 66;
 by clicking and dragging. Shift-click changes the value in hundredths
 instead of units. This works for both number boxes and individual numbers
 in a list box., f 66;
-#X text 84 466 click and drag;
-#X text 248 466 or shift+click and drag;
 #X text 707 551 you can drag the numbers up and down individually \,
 and/or double click to edit just one element., f 36;
 #X text 33 671 see also:;
@@ -460,17 +461,19 @@ symbols:, f 38;
 #X msg 607 506 set;
 #X text 644 499 set to an empty list (normally treated as a bang in
 Pd), f 30;
+#X text 68 466 click and drag -->;
+#X text 248 465 (or shift+click and drag);
 #X connect 0 0 1 0;
-#X connect 1 0 43 0;
-#X connect 5 0 48 0;
+#X connect 1 0 41 0;
+#X connect 5 0 46 0;
 #X connect 6 0 5 0;
 #X connect 7 0 5 0;
 #X connect 8 0 1 0;
 #X connect 14 0 15 0;
-#X connect 15 0 44 0;
+#X connect 15 0 42 0;
 #X connect 16 0 15 0;
 #X connect 19 0 15 0;
-#X connect 39 0 1 0;
-#X connect 40 0 15 0;
-#X connect 41 0 5 0;
-#X connect 53 0 15 0;
+#X connect 37 0 1 0;
+#X connect 38 0 15 0;
+#X connect 39 0 5 0;
+#X connect 51 0 15 0;

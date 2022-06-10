@@ -39,7 +39,7 @@ this directory., f 35;
 #X msg 488 191 next 1;
 #X msg 446 63 print;
 #X text 492 62 print contents to Pd window;
-#X obj 488 390 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 488 389 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 161 513 text sequence;
 #X text 263 512 <= newer and better replacement for qlist, f 42;
@@ -89,7 +89,7 @@ terminate it., f 72;
 a "text define" object., f 38;
 #X text 764 512 Updated for Pd version 0.35;
 #X text 503 356 <--;
-#X obj 456 88 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 456 88 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 14 69 The [qlist] object reads text files containing time-tagged
 Pd messages. You can have them sequenced automatically (by sending

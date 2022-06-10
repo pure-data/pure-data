@@ -9,7 +9,6 @@ sent to it from anywhere., f 34;
 #X text 144 386 <= but you need to know the name of the canvas (file)
 in advance., f 32;
 #X text 40 438 Note this doesn't make it possible to use "\$0".;
-#X text 73 507 open =>;
 #X obj 712 166 s pd-subpatch;
 #X obj 466 393 namecanvas \$0-local-name;
 #N canvas 256 451 446 165 \$0-local-subpatch 0;
@@ -19,12 +18,10 @@ in advance., f 32;
 #X obj 460 476 s \$0-local-name;
 #X text 13 677 see also:;
 #X msg 460 449 msg 320 170 wassup?;
-#X text 604 449 <= click;
 #X msg 78 543 \; banzai msg 100 100 hello;
-#X text 258 551 <= click;
 #X text 40 136 click:;
 #X msg 726 569 vis \$1;
-#X text 745 543 show/hide window;
+#X text 748 541 show/hide window;
 #X text 28 469 You can use namecanvas to name subpatches s well.;
 #X text 16 596 But this is not necessary as you can also send messages
 to the subpatch using the subpatch's name (preceded by 'pd-'). Check
@@ -37,9 +34,9 @@ it., f 63;
 #X text 763 103 show window;
 #X text 768 135 hide window;
 #X msg 705 402 vis \$1;
-#X obj 705 377 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 705 377 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 726 376 show/hide window;
+#X text 727 376 show/hide window;
 #X text 422 539 Note that when you have a patch loaded as an abstraction
 \, besides the 'pd-' prefix \, you also need to end with ".pd"! This
 is used to the right to open the "pd-messages" example \, loaded below
@@ -91,14 +88,17 @@ second local name with "\$0". You can also use "\$0" in the name of
 subpatches by the way and we also have this example below. Note that
 in this case you need to use [send] as "\$0" doesn't work in messages.
 Again \, this is useful for abstractions., f 63;
-#X obj 726 545 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 726 543 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #N canvas 68 97 450 300 (subpatch) 0;
 #X restore 180 676 pd;
-#X connect 12 0 10 0;
-#X connect 17 0 32 0;
-#X connect 22 0 6 0;
-#X connect 23 0 6 0;
-#X connect 26 0 9 0;
-#X connect 27 0 26 0;
-#X connect 45 0 17 0;
+#X text 71 506 open -->;
+#X text 258 551 <-- click;
+#X text 604 449 <-- click;
+#X connect 11 0 9 0;
+#X connect 14 0 29 0;
+#X connect 19 0 5 0;
+#X connect 20 0 5 0;
+#X connect 23 0 8 0;
+#X connect 24 0 23 0;
+#X connect 42 0 14 0;

@@ -28,7 +28,7 @@ for when you don't have a signal input., f 23;
 #X obj 33 173 sig~ 8;
 #X obj 238 248 log~ 1.5;
 #X msg 292 146 \; pd dsp \$1;
-#X obj 292 123 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 292 122 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 313 122 DSP on/off;
 #N canvas 867 162 441 249 reference 0;

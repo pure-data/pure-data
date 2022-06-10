@@ -30,10 +30,10 @@ or 4-byte floating point. The soundfile format is determined by the
 file extension (ie. "foo.wav" \, "foo.aiff" \, "foo.caf" \, "foo.snd").
 , f 80;
 #X obj 222 407 noise~;
-#X msg 379 358 \; pd dsp \$1;
-#X obj 379 335 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X msg 379 361 \; pd dsp \$1;
+#X obj 379 335 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 400 334 DSP on/off;
+#X text 401 335 DSP on/off;
 #X obj 7 43 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 533 11 <= click;
@@ -75,7 +75,7 @@ be resampled.), f 34;
 #X obj 7 538 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 101 175 -bytes <2 \, 3 \, or 4> (bit resolution), f 42;
-#X obj 26 273 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 26 273 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 15 56 [writesf~] creates a subthread whose task is to write
 audio streams to disk. You need not provide any disk access time between

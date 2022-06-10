@@ -1,4 +1,4 @@
-#N canvas 491 50 635 355 12;
+#N canvas 491 50 635 344 12;
 #X obj 63 254 print;
 #X text 23 310 see also:;
 #X obj 63 199 savepanel;
@@ -47,7 +47,7 @@ can make [savepanel] open the current directory for querying for files.
 0;
 #X obj 5 293 cnv 1 625 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 63 111 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 63 110 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 89 110 open "save as" dialog;
 #X text 174 142 Starts dialog in specified directory, f 13;

@@ -1,17 +1,13 @@
 #N canvas 499 27 542 539 12;
 #X obj 82 226 openpanel;
-#X obj 82 282 print;
 #X text 15 500 see also:;
 #X obj 93 501 savepanel;
 #X msg 98 166 symbol /tmp;
 #X msg 110 195 symbol C:/;
-#X obj 240 446 print;
 #X obj 240 419 openpanel 1;
-#X obj 362 446 print;
 #X obj 362 419 openpanel 2;
 #X text 238 370 directory;
 #X text 361 370 multiple files;
-#X obj 115 446 print;
 #X obj 115 419 openpanel 0;
 #X obj 23 13 openpanel;
 #X text 317 500 updated for Pd version 0.51.;
@@ -28,7 +24,7 @@ files. See below;
 #X text 47 34 With the 'dir' message to the [pdcontrol] object \, you
 can make openpanel open the current directory for querying for files.
 , f 41;
-#X obj 155 219 print;
+#X obj 155 219 print current;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
@@ -64,22 +60,26 @@ f 31;
 #X obj 8 487 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 170 501 pdcontrol;
-#X obj 82 138 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 82 137 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
-#X obj 240 391 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 240 391 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 362 391 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 362 391 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 115 391 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 115 391 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X connect 0 0 23 0;
+#X obj 115 446 print file;
+#X obj 240 446 print dir;
+#X obj 362 446 print multiple;
+#X obj 82 282 print openpanel;
+#X connect 0 0 19 0;
+#X connect 3 0 0 0;
 #X connect 4 0 0 0;
-#X connect 5 0 0 0;
-#X connect 7 0 6 0;
-#X connect 9 0 8 0;
-#X connect 13 0 12 0;
-#X connect 23 0 1 0;
-#X connect 29 0 0 0;
-#X connect 30 0 7 0;
-#X connect 31 0 9 0;
-#X connect 32 0 13 0;
+#X connect 5 0 30 0;
+#X connect 6 0 31 0;
+#X connect 9 0 29 0;
+#X connect 19 0 32 0;
+#X connect 25 0 0 0;
+#X connect 26 0 5 0;
+#X connect 27 0 6 0;
+#X connect 28 0 9 0;

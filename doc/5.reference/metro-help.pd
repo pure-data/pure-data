@@ -1,8 +1,8 @@
 #N canvas 569 23 646 711 12;
 #X obj 29 12 metro;
 #X floatatom 179 426 5 0 0 0 - - - 0;
-#X msg 38 242 1;
-#X text 94 243 nonzero number or "bang" to start;
+#X msg 34 242 1;
+#X text 97 242 nonzero number or "bang" to start;
 #X msg 81 270 0;
 #X msg 114 270 stop;
 #X obj 70 489 bng 20 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000

@@ -15,10 +15,10 @@
 #X msg 47 263 reset 10;
 #X text 321 574 updated for Pd version 0.39;
 #X obj 56 451 loadbang;
-#X obj 203 441 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 203 439 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 203 466 \; pd dsp \$1;
-#X text 222 440 DSP on/off;
+#X text 228 439 DSP on/off;
 #X obj 395 374 phasor~ 1;
 #X obj 335 300 noise~;
 #X obj 335 402 samphold~;
@@ -26,9 +26,9 @@
 #X floatatom 415 503 10 0 0 0 - - - 0;
 #X obj 415 433 metro 100;
 #X obj 415 408 loadbang;
-#X msg 455 324 0;
+#X msg 455 327 0;
 #X msg 357 342 reset 0;
-#X obj 455 297 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 455 297 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 304 235 Sampling random values from noise at a frequency of
 1Hz., f 28;

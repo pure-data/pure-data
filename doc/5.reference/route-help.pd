@@ -30,7 +30,7 @@
 #X symbolatom 858 205 6 0 0 0 - - - 0;
 #X msg 866 178 symbol see;
 #X obj 791 310 print s1;
-#X obj 861 310 print s2;
+#X obj 858 310 print s2;
 #X text 80 14 - trim first element and route messages according to
 it;
 #N canvas 279 37 915 670 special-selectors/message-types 0;
@@ -200,9 +200,9 @@ its symbol arguments., f 62;
 #X listbox 596 272 7 0 0 0 - - - 0;
 #X listbox 663 272 7 0 0 0 - - - 0;
 #X obj 802 260 symbol;
-#X symbolatom 802 284 6 0 0 0 - - - 0;
-#X obj 875 260 list;
-#X listbox 875 284 10 0 0 0 - - - 0;
+#X symbolatom 802 284 7 0 0 0 - - - 0;
+#X obj 868 260 list;
+#X listbox 868 284 10 0 0 0 - - - 0;
 #X msg 858 152 symbol hi;
 #X text 574 70 If no argument is given \, [route] loads a float argument
 of 0 and creates a second inlet so you can change the argument value

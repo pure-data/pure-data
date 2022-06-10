@@ -15,8 +15,6 @@
 #X obj 106 322 print~ real;
 #X obj 119 297 print~ imaginary;
 #X obj 24 408 print~ resynthesized;
-#X msg 38 375 bang;
-#X msg 106 260 bang;
 #X text 300 324 There is no normalization \, so that an FFT followed
 by an IFFT has a gain of N., f 54;
 #X text 300 235 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
@@ -25,9 +23,6 @@ no imaginary part \, but the second through Nth output is as a real
 and imaginary pair \, which can be thought of as the cosine and sin
 component strengths., f 54;
 #X text 118 208 <= bash phase;
-#X text 77 375 <= print resynthesis;
-#X text 74 347 <= renormalize;
-#X text 148 261 <= print analysis;
 #X obj 434 199 block~ 128;
 #X obj 27 151 / 128;
 #X obj 24 347 /~ 128;
@@ -116,20 +111,27 @@ to see how to use these in practice., f 54;
 #X text 604 27 <= click;
 #X obj 5 444 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 106 260 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 130 261 <-- print analysis;
+#X text 74 347 <-- renormalize;
+#X obj 43 376 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 71 376 <-- print resynthesis;
 #X connect 0 0 3 0;
-#X connect 1 0 25 0;
+#X connect 1 0 20 0;
 #X connect 2 0 1 0;
 #X connect 3 0 10 0;
 #X connect 10 0 13 0;
 #X connect 10 0 12 0;
 #X connect 10 1 14 0;
 #X connect 10 1 12 1;
-#X connect 12 0 26 0;
-#X connect 16 0 15 0;
-#X connect 17 0 13 0;
-#X connect 17 0 14 0;
-#X connect 25 0 0 0;
-#X connect 26 0 15 0;
-#X connect 33 0 32 0;
-#X connect 35 0 3 1;
-#X connect 36 0 3 1;
+#X connect 12 0 21 0;
+#X connect 20 0 0 0;
+#X connect 21 0 15 0;
+#X connect 28 0 27 0;
+#X connect 30 0 3 1;
+#X connect 31 0 3 1;
+#X connect 36 0 13 0;
+#X connect 36 0 14 0;
+#X connect 39 0 15 0;
