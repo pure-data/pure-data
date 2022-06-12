@@ -1,31 +1,31 @@
 #N canvas 634 25 476 609 12;
-#X obj 83 158 bng 18 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
--1;
-#X obj 83 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
+#X obj 83 158 bng 18 250 50 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000;
+#X obj 83 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 83 414 route 0 1 2 3 4 5 6 7 8 9, f 29;
 #X msg 24 182 set \$1;
-#X floatatom 24 157 4 0 9 0 - - -;
-#X floatatom 95 185 4 0 9 0 - - -;
+#X floatatom 24 157 4 0 9 0 - - - 0;
+#X floatatom 95 185 4 0 9 0 - - - 0;
 #X obj 43 14 vdl;
-#X obj 103 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 123 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 143 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 163 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 183 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 203 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 223 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 243 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 263 437 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
+#X obj 103 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 123 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 143 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 163 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 183 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 203 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 223 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 243 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 263 437 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 102 386 print vdl;
 #X obj 83 215 vdl 20 1 0 8 empty empty empty 20 -8 192 10 -99865 -262144
 -260818 0;
@@ -35,9 +35,9 @@ value is selected \, it first sends a list with the last selected value
 followed by 0 to indicate it's now off. You can use this to feed a
 route object and connect to toggles., f 36;
 #N canvas 665 62 612 590 position 0;
-#X floatatom 142 146 4 0 1000 0 - - -;
+#X floatatom 142 146 4 0 1000 0 - - - 0;
 #X obj 191 173 t b f;
-#X floatatom 191 146 5 0 500 0 - - -;
+#X floatatom 191 146 5 0 500 0 - - - 0;
 #X msg 142 243 pos \$1 \$2;
 #X text 63 146 x-position;
 #X text 235 145 y-position;
@@ -79,14 +79,14 @@ in the patch. Check below:, f 41;
 #X text 85 49 WARNING: This object is still in Pd for backwarss compatibility
 but has been deprecated in Pd 0.36. Just use the new [vradio] instead
 now., f 39;
-#X obj 390 25 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
--1 0;
+#X obj 390 25 vradio 15 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000
+#000000 0;
 #X text 199 119 the new [vradio] object =>;
 #N canvas 552 167 368 313 parameters 0;
 #N canvas 828 23 656 672 colors 0;
-#X floatatom 72 244 3 0 29 0 - - -;
-#X floatatom 108 244 3 0 29 0 - - -;
-#X floatatom 177 249 3 0 29 0 - - -;
+#X floatatom 72 244 3 0 29 0 - - - 0;
+#X floatatom 108 244 3 0 29 0 - - - 0;
+#X floatatom 177 249 3 0 29 0 - - - 0;
 #X text 104 224 front;
 #X text 170 224 label;
 #X obj 108 273 t b f;
@@ -94,9 +94,9 @@ now., f 39;
 #X msg 72 343 color \$1 \$2 \$3;
 #X obj 72 306 pack 0 22 22, f 20;
 #X text 181 343 presets;
-#X symbolatom 507 340 9 0 0 0 - - -;
-#X symbolatom 421 339 9 0 0 0 - - -;
-#X symbolatom 335 339 9 0 0 0 - - -;
+#X symbolatom 507 340 9 0 0 0 - - - 0;
+#X symbolatom 421 339 9 0 0 0 - - - 0;
+#X symbolatom 335 339 9 0 0 0 - - - 0;
 #X obj 475 370 t b s;
 #X obj 389 370 t b s;
 #X obj 258 224 loadbang;
@@ -117,14 +117,14 @@ followed by "#"., f 77;
 #X text 61 157 Open subpatches for the conversion from RGB to hexadecimal
 ============>, f 38;
 #N canvas 1098 200 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 80 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 147 257 makefilename %02x;
 #X obj 113 284 makefilename %02x;
@@ -152,14 +152,14 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 507 158 pd label;
 #N canvas 990 215 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
 #X obj 74 341 pack s s s;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 146 257 makefilename %02x;
 #X obj 112 284 makefilename %02x;
@@ -187,13 +187,13 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 421 158 pd label;
 #N canvas 1035 234 390 482 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 81 250 t b f;
 #X obj 221 257 makefilename %02x;
 #X obj 141 284 makefilename %02x;
@@ -228,12 +228,12 @@ followed by "#"., f 77;
 #X restore 335 158 pd label;
 #N canvas 720 84 564 619 old_way 0;
 #N canvas 1056 203 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X text 66 56 label;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
@@ -251,12 +251,12 @@ followed by "#"., f 77;
 #X restore 360 146 pd label;
 #X text 199 121 Set RGB values in the sliders;
 #N canvas 928 251 392 476 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 12700 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 12700 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 12700 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 61 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 313 269 t b f;
 #X obj 171 269 t b f;
@@ -282,12 +282,12 @@ followed by "#"., f 77;
 #X coords 0 -1 1 1 80 170 2 50 50;
 #X restore 188 146 pd label;
 #N canvas 965 187 402 495 label 0;
-#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -8256
--262144 -1 0 1;
-#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -4033
--1 -1 0 1;
-#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 -258049
--1 -1 0 1;
+#X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
+#fcfcfc #000000 0 1;
+#X obj 81 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #00fc00
+#000000 #000000 0 1;
+#X obj 61 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #fc0000
+#000000 #000000 0 1;
 #X obj 59 361 expr -($f1 * 65536 + $f2 * 256 + $f3 + 1);
 #X obj 311 319 t b f;
 #X obj 169 319 t b f;
@@ -375,7 +375,7 @@ values., f 20;
 #X coords 0 0 1 1 85 60 0;
 #X restore 190 261 pd colors;
 #N canvas 905 67 360 411 size 0;
-#X floatatom 69 40 3 10 40 0 - - -;
+#X floatatom 69 40 3 10 40 0 - - - 0;
 #X obj 69 118 vdl 15 1 0 6 empty empty empty 0 -8 0 10 -262144 -1 -1
 0;
 #X msg 69 78 size \$1;
@@ -388,9 +388,9 @@ represents the width in pixels for each side of the square., f 24
 #X restore 204 121 pd size;
 #N canvas 847 74 604 539 label 0;
 #X msg 90 284 label \$1;
-#X floatatom 237 166 4 0 3 0 - - -;
+#X floatatom 237 166 4 0 3 0 - - - 0;
 #X obj 279 193 t b f;
-#X floatatom 279 166 5 5 50 0 - - -;
+#X floatatom 279 166 5 5 50 0 - - - 0;
 #X msg 237 263 label_font \$1 \$2;
 #X text 199 165 type;
 #X text 323 164 size;
@@ -400,9 +400,9 @@ represents the width in pixels for each side of the square., f 24
 #X text 258 118 Helvetica;
 #X text 258 133 Times;
 #X msg 102 252 symbol empty;
-#X floatatom 391 182 4 -200 100 0 - - -;
+#X floatatom 391 182 4 -200 100 0 - - - 0;
 #X obj 433 209 t b f;
-#X floatatom 433 182 5 -150 150 0 - - -;
+#X floatatom 433 182 5 -150 150 0 - - - 0;
 #X msg 391 279 label_pos \$1 \$2;
 #X text 373 181 x;
 #X text 477 180 y;
@@ -436,8 +436,8 @@ size and 'label_pos' sets the x/y coordinates., f 54;
 #X restore 197 233 pd label;
 #N canvas 904 91 439 451 init 0;
 #X msg 164 172 init \$1;
-#X obj 164 140 tgl 18 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
-1;
+#X obj 164 140 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
 #X text 187 140 init on/off;
 #X text 46 21 The 'init' message takes a float and sets to 'init mode'
 (if different than zero) or 'no init' (if equal to zero - the default
@@ -453,8 +453,8 @@ sends its holding value from when the patch was last saved., f 46
 #X connect 5 0 4 0;
 #X restore 204 149 pd init;
 #N canvas 869 39 444 557 send-receive 0;
-#X floatatom 48 234 5 0 8 0 - - -;
-#X floatatom 48 362 5 0 0 0 - - -;
+#X floatatom 48 234 5 0 8 0 - - - 0;
+#X floatatom 48 362 5 0 0 0 - - - 0;
 #X text 39 96 The 'send' and 'receive' messages take a symbol to set
 \, respectively \, the send and receive symbol. If you set these to
 "empty" \, the symbols are cleared., f 50;
@@ -482,7 +482,7 @@ set it directly via the properties window., f 50;
 #X restore 148 205 pd send-receive;
 #N canvas 872 191 383 447 number 0;
 #X msg 84 58 number \$1;
-#X floatatom 84 29 4 1 18 0 - - -;
+#X floatatom 84 29 4 1 18 0 - - - 0;
 #X obj 84 97 vdl 18 1 0 8 empty empty empty 0 -8 0 10 -262144 -1 -1
 0;
 #X text 146 127 You can set the number of cells with the 'number' message
@@ -496,27 +496,27 @@ examples below:, f 39;
 #N canvas 875 120 399 439 single/double-change 0;
 #X msg 99 128 single_change;
 #X msg 113 163 double_change;
-#X obj 99 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
+#X obj 99 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 99 369 route 0 1 2 3 4 5 6 7 8 9, f 29;
-#X obj 119 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 139 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 159 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 179 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 199 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 219 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 239 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 259 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
-#X obj 279 392 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
-1;
+#X obj 119 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 139 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 159 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 179 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 199 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 219 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 239 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 259 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
+#X obj 279 392 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
+#000000 0 1;
 #X obj 99 202 vdl;
 #X text 220 164 default behavior;
 #X obj 115 339 print single/double;
@@ -547,11 +547,11 @@ please don't \, just forget this ever existed! Use [vradio] instead
 #X text 265 480 (c) musil@iem.kug.ac.at;
 #X text 301 496 IEM KUG \, Graz \, Austria \, 2002, f 14;
 #X text 45 554 see also:;
-#X obj 119 555 x_all_guis;
 #X text 55 481 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 242 554 updated for Pd version 0.36;
 #X text 62 17 - [vdl]: deprecated vertical radio button;
+#X obj 119 555 all_guis;
 #X connect 0 0 17 0;
 #X connect 2 0 1 0;
 #X connect 2 1 7 0;

@@ -34,11 +34,14 @@ proc ::pd_connect::to_pd {port {host localhost}} {
 }
 
 # if pd-gui opens first, it creates socket and requests a port.  The function
-# then returns the portnumber it receives. pd then connects to that port.
-proc ::pd_connect::create_socket {} {
-    if {[catch {set sock [socket -server ::pd_connect::from_pd -myaddr localhost 0]}]} {
-        puts stderr "ERROR: failed to allocate port, exiting!"
-        exit 3
+# then returns the portnumber it receives. pd then connects to that port.  If
+# portno is nonzero we're specifying the port; this is to allow us to serve a pd
+# that is started independently.
+proc ::pd_connect::create_socket {portno} {
+    if {[catch \
+        {set sock [socket -server ::pd_connect::from_pd -myaddr localhost $portno]}]} {
+            puts stderr "ERROR: failed to allocate port $portno, exiting!"
+            exit 3
     }
     return [lindex [fconfigure $sock -sockname] 2]
 }

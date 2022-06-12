@@ -4,7 +4,7 @@
 <HEAD>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<TITLE>Pd Documentation 5</TITLE>
+<TITLE>Pd Manual 5</TITLE>
 <meta http-equiv="Content-Type" content="text/html">
 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
 <link rel="icon" type="image/png" href="favicon.ico">
@@ -19,7 +19,7 @@
 
 <div id=corpus>
 
-<H2>Pd Documentation chapter 5. current status</H2>
+<H2>Pd Manual chapter 5: current status</H2>
 
 <P>
 <A href="index.htm#s5"> back to table of contents </A>
@@ -30,16 +30,36 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
-<P> ------------------ 0.52-0 ------------------------------
+<P> ------------------ 0.52-2 ------------------------------
+
+<p> Many small bug fixes, and a few larger ones: under jack, Pd's delay adjusted
+upward to the jack blocksize if needed (to prevent a hang).
+
+<p> Many documentation fixes and improvements by Alexandre Porres
+
+<p> Reverted behavior when selecting and dragging a single text box, so that
+it now activates the text as traditional until 0.51.  Sometimes one behavior is
+wanted, sometines the other, so there should be an easy-to-understand way for
+users to control this.  At the moment you can rectangle-select an object to
+displace it without selecting the text, which is perhaps adequate, perhaps not.
+
+<p> added an indirect way to open Pd's gui on one machine and the real-time
+program on another without using X windows (so that it can be easily done on
+MacOS and Windows).  Requires ssh expertise - see commit c0e320f2142.  (This
+was already included in pd-0.51-1 but not documented).
+
+<P> ------------------ 0.52-0 and 0.52-1 ------------------------------
 
 <P> The Macintosh compiled version is now compiled at IEM (as part of the
 continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
-This should make Pd appear to be "safely" signed.
+This should make Pd appear to be "safely" signed.  Added compilation for
+arm64 target (but not sure if the released binary will include that or not).
 
 <P> New "list" box, like number and symbol but allows lists in addition to
 single atoms.  You can scroll up and down on any of the numbers in a list as
-if it were a number box.  You can also double-click on (number, symbol, list)
-to activate a "real" editor you can copy/paste from/to.
+if it were a number box. All boxes (number, symbol, list) can now set different
+sizes and you can also double-click on them to activate a "real" editor you can
+copy/paste from/to.
 
 <P> A new "trace" object allows you to get backward and forward traces of
 message passing.
@@ -47,7 +67,7 @@ message passing.
 <P> New "file" object by Iohannes with contributions from Jean-Michael
 Celerier - general file operations.
 
-<A> Support for CAVS soundfile support (by Dan Wilcox) - and the soundfile
+<P> Support for uncompressed CAF and AIFC soundfiles (by Dan Wilcox) - the soundfile
 code reorganized to make it more modular.
 
 <P> Improvements to the audio implementation - the most noticeable improvement
@@ -56,19 +76,32 @@ is better control of latency under jack.
 <P> Pd's GUI checks that Pd actually exits when asked to and if not, kills it
 to prevent rogue invisible pd instances from collecting behind the scenes.
 
-<P> bugfix in bob~ to output "correct" signal (old behavior still available
+<P> Bugfix in bob~ to output "correct" signal (old behavior still available
 by setting pd compatibility < 52).
 
 <P> libpd included as part of the Pd distribution.  A test libpd project is included
-in ../pd/libpdtest.
+in ../pd/libpd.
 
-<P> raised the limit on the size of incoming UDP packets in netreceive.
+<P> Raised the limit on the size of incoming UDP packets in netreceive.
 
-<P> some improvements to label handling in IEMguis.
+<P> Some improvements to label handling in IEMguis.
 
-<P> improved window positioning.
+<P> Improved window positioning.
 
-<P> as usual, numerous bug fixes and documentation updates.
+<p> New method for garrays to set colors, line width, visibility, display style
+and disable mouse editing (documented in 2.control.examples/16.more.arrays.pd).
+Also added more flags to the "plot" object that plots arrays in data structures
+(by Christof Ressi).
+
+<p> "set", "send", "delete" and "insert" methods added to "list store" object,
+and new features added to "get" method (by Christof Ressi).
+
+<p> The output~ abstraction, widely used in Pd's documentation is now part of
+'extra' - plus several documentation updates/improvements to the help files and
+chapter 4 of the manual (by Alexandre Porres). Also, other updates to the manual
+by Lucas Cordiviola.
+
+<P> As usual, numerous bug fixes.
 
 <P> ------------------ 0.51-4 ------------------------------
 

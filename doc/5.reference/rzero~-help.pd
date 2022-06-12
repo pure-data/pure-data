@@ -1,0 +1,126 @@
+#N canvas 448 50 540 593 12;
+#X declare -stdpath ./;
+#X floatatom 122 185 4 0 0 0 - - - 0;
+#X obj 69 102 osc~ 100;
+#X msg 85 132 clear;
+#X msg 93 158 set 1;
+#N canvas 711 170 318 329 test 0;
+#X obj 98 89 osc~;
+#X floatatom 98 66 5 0 0 0 - - - 0;
+#X obj 123 240 env~ 16384;
+#X floatatom 123 264 5 0 0 0 - - - 0;
+#X obj 126 118 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 98 116 *~;
+#X msg 119 148 set 1;
+#X floatatom 176 149 4 -100 100 0 - - - 0;
+#X obj 176 174 / 100;
+#X text 83 23 Stuff to test it:;
+#X obj 98 179 rzero~;
+#X obj 40 231 output~;
+#X obj 162 87 declare -stdpath ./;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 1;
+#X connect 5 0 10 0;
+#X connect 6 0 10 0;
+#X connect 7 0 8 0;
+#X connect 8 0 10 1;
+#X connect 10 0 2 0;
+#X connect 10 0 11 1;
+#X connect 10 0 11 0;
+#X restore 420 480 pd test;
+#X obj 30 10 rzero~;
+#X obj 69 210 rzero~ 1;
+#X text 34 283 where y[n] is the output \, x[n] the input \, and a[n]
+the filter coefficient. The filter is always stable.;
+#X text 35 319 The transfer function is H(Z) = 1 - aZ^-1.;
+#X text 94 262 y[n] = x[n] - a[n] * x[n-1];
+#X text 40 242 The action of rzero~ is:;
+#X text 149 103 <= signal to filter;
+#X text 133 131 <= clear internal state to zero;
+#X text 147 158 <= set internal state;
+#X text 155 185 <= filter coefficient (may be a signal);
+#X text 142 210 <= creation argument initializes filter coefficient
+;
+#X obj 88 530 lop~;
+#X obj 179 463 rzero~;
+#X obj 119 486 cpole~;
+#X obj 119 463 rpole~;
+#X obj 239 463 rzero_rev~;
+#X obj 179 486 czero~;
+#X obj 239 486 czero_rev~;
+#X text 318 463 real;
+#X text 317 485 complex;
+#X text 116 444 1-pole;
+#X text 176 444 1-zero;
+#X text 243 428 1-zero \, reversed, f 8;
+#X text 25 468 summary of raw filters:, f 12;
+#X obj 129 530 hip~;
+#X obj 170 530 bp~;
+#X obj 205 530 vcf~;
+#X text 286 530 - user-friendly filters;
+#X obj 246 530 bob~;
+#X obj 381 403 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
+#X text 24 356 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 381 436 pd Read-More;
+#X obj 19 562 biquad~;
+#X text 194 562 - not so friendly;
+#X obj 80 561 fexpr~;
+#X obj 135 561 slop~, f 7;
+#X text 335 562 updated for Pd version 0.38;
+#X text 15 530 see also:;
+#N canvas 675 145 567 283 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 180 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 256 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 218 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X text 127 79 signal -;
+#X text 127 149 signal -;
+#X text 134 115 clear -;
+#X text 190 79 real signal to filter., f 49;
+#X text 92 97 set <float> -;
+#X text 190 97 set internal state., f 49;
+#X text 190 115 clear internal state to zero (same as "set 0")., f
+49;
+#X text 190 149 filter coefficient., f 49;
+#X text 127 189 signal - filtered signal.;
+#X text 129 228 1) float - filter coefficient (default 0)., f 43;
+#X obj 30 10 rzero~;
+#X text 92 10 - real one-zero filter;
+#X obj 7 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 139 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 368 9 pd reference;
+#X text 462 9 <= click;
+#X obj 9 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 516 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 82 10 - real one-zero filter;
+#X text 37 45 Rzero~ filters an audio signal (left inlet) via a raw
+one-zero (recursive) real filter \, whose coefficient is controlled
+by a creation argument or by an audio signal (right inlet)., f 63
+;
+#X connect 0 0 6 1;
+#X connect 1 0 6 0;
+#X connect 2 0 6 0;
+#X connect 3 0 6 0;
+#X connect 34 0 36 0;

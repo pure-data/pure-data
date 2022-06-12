@@ -1,10 +1,9 @@
 #N struct template11 float x float y array a template11a;
 #N struct template11a float x float amp float w1 float w2;
 #N canvas 421 87 528 289 12;
-#X text 255 206 updated for Pd version 0.39;
 #N canvas 587 23 468 441 template11 0;
-#X obj 94 292 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 94 292 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 94 314 t b b;
 #X obj 237 340 pointer;
 #X msg 237 307 traverse pd-data11 \, bang;
@@ -33,8 +32,8 @@
 #X scalar template11 41 87 \; 2 0 0 0 \; 18 51 7 0 \; 98 41 0 5 \;
 109 0 0 0 \; \;;
 #X coords 0 196 1 195 0 0 0;
-#X restore 60 232 pd data11;
-#N canvas 336 497 481 86 template11a 0;
+#X restore 60 237 pd data11;
+#N canvas 364 422 481 86 template11a 0;
 #X obj 39 30 struct template11a float x float amp float w1 float w2
 ;
 #X restore 60 204 pd template11a;
@@ -47,3 +46,4 @@ to visualize it all., f 63;
 #X text 26 110 In this example the array points have no "y" field at
 all \, so if no variable is supplied to use instead of "y" \, the array
 is flat along its "x" axis., f 63;
+#X text 284 217 updated for Pd version 0.39;

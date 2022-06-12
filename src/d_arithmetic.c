@@ -96,7 +96,7 @@ static void plus_setup(void)
         sizeof(t_plus), 0, A_GIMME, 0);
     class_addmethod(plus_class, (t_method)plus_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(plus_class, t_plus, x_f);
-    class_sethelpsymbol(plus_class, gensym("sigbinops"));
+    class_sethelpsymbol(plus_class, gensym("binops-tilde"));
     scalarplus_class = class_new(gensym("+~"), 0, 0,
         sizeof(t_scalarplus), 0, 0);
     CLASS_MAINSIGNALIN(scalarplus_class, t_scalarplus, x_f);

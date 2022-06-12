@@ -98,7 +98,7 @@ typedef struct _audiosettings
     likely to offer a working device takes precedence so that if you
     start up Pd for the first time there's a reasonable chance you'll have
     sound.  (You'd think portaudio would be best but it seems to default
-    to jack on linux, and and on Windows we only use it for ASIO).
+    to jack on linux, and on Windows we only use it for ASIO).
     If nobody shows up, define DUMMY and make it the default.*/
 #if defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
@@ -133,16 +133,13 @@ typedef struct _audiosettings
 
 #define DEFMIDIDEV 0
 
-#define DEFAULTSRATE 48000
-#ifdef _WIN32
+#define DEFAULTSRATE 44100
+#if defined(_WIN32)
 #define DEFAULTADVANCE 80
-#define MMIODEFBLOCKSIZE 512
-#else
-#ifdef __APPLE__
+#elif defined(__APPLE__)
 #define DEFAULTADVANCE 5    /* this is in addition to their own delay */
 #else
 #define DEFAULTADVANCE 25
-#endif
 #endif
 
 typedef void (*t_audiocallback)(void);
@@ -350,10 +347,12 @@ void sys_setalarm(int microsec);
 void sys_set_priority(int higher);
 extern int sys_hipriority;      /* real-time flag, true if priority boosted */
 
-/* s_file.c */
+/* s_print.c */
 
 typedef void (*t_printhook)(const char *s);
-extern t_printhook sys_printhook;  /* set this to override printing */
+
+/* set this to override printing; used as default for STUFF->st_printhook */
+extern t_printhook sys_printhook;
 extern int sys_printtostderr;
 
 /* jsarlo { */
@@ -408,6 +407,8 @@ struct _instancestuff
     t_sample *st_soundout;
     t_sample *st_soundin;
     double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
+    t_printhook st_printhook;   /* set this to override per-instance printing */
+    void *st_impdata; /* optional implementation-specific data for libpd, etc */
 };
 
 #define STUFF (pd_this->pd_stuff)

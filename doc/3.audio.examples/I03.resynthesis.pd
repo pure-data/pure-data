@@ -1,4 +1,5 @@
 #N canvas 388 149 623 510 12;
+#X declare -stdpath ./;
 #N canvas 353 77 558 670 fft-analysis 0;
 #X obj 32 186 *~;
 #X obj 32 105 inlet~;
@@ -74,8 +75,8 @@ four. This window now computes blocks of 512 samples at intervals of
 #X text 272 359 0;
 #X text 288 372 0;
 #X obj 65 288 / 512;
-#X obj 57 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 57 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 336 221 Hann window;
 #X text 113 310 period 512;
 #X text 90 215 recalculate Hann;
@@ -108,7 +109,7 @@ the file smaller (it doesn't have to be saved with the array.);
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ;
 #X coords 0 1 256 -0.01 512 100 1 0 0;
 #X restore 54 205 graph;
 #X msg 268 364 const 0;
@@ -126,6 +127,7 @@ a graphic equalizer. There are N/2 = 256 points \, each spaced SR/512
 Hz. apart (although their frequency ranges overlap). Open the "fft-analysis"
 patch to see the workings., f 68;
 #X text 326 363 <= reset gain;
+#X obj 441 20 declare -stdpath ./;
 #X connect 0 0 3 0;
 #X connect 0 0 3 1;
 #X connect 4 0 0 0;

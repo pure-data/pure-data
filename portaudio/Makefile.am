@@ -4,10 +4,12 @@
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
-AM_CFLAGS = -DNEWBUFFER
+AM_CFLAGS = -DNEWBUFFER @PD_CFLAGS@
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portaudio/portaudio/include \
-    -I$(top_srcdir)/portaudio/portaudio/src/common
+    -I$(top_srcdir)/portaudio/portaudio/src/common \
+    @PD_CPPFLAGS@
+AM_LDFLAGS = @PD_LDFLAGS@
 
 #########################################
 ##### Files, Binaries, & Libs #####
@@ -73,7 +75,7 @@ endif
 endif
 
 # empty var for headers list footer
-empty=
+empty =
 
 # include the headers in the dist so you can build
 # find portaudio -type file -name *.h | sort | awk '{print "   ", $1, "\\"}'; echo '     $(empty)'

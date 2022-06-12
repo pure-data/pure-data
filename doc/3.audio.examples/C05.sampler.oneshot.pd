@@ -1,4 +1,5 @@
 #N canvas 338 23 919 681 12;
+#X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array tab28 176403 float 0;
 #X coords 0 1.02 176403 -1.02 200 130 1;
@@ -57,6 +58,7 @@ go forever (until the next trigger), f 31;
 #X text 102 88 <= play the sample;
 #X text 54 140 cut the sound off, f 9;
 #X text 208 135 Wait for the cutoff to finish, f 16;
+#X obj 741 14 declare -stdpath ./;
 #X connect 1 0 28 0;
 #X connect 2 0 25 0;
 #X connect 2 0 25 1;

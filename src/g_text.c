@@ -540,9 +540,7 @@ typedef struct _gatom
 } t_gatom;
 
     /* prepend "-" as necessary to avoid empty strings, so we can
-    use them in Pd messages.  A more complete solution would be
-    to introduce some quoting mechanism; but then we'd be much more
-    complicated. */
+    use them in Pd messages. */
 static t_symbol *gatom_escapit(t_symbol *s)
 {
     if (!*s->s_name)
@@ -555,10 +553,16 @@ static t_symbol *gatom_escapit(t_symbol *s)
         shmo[99] = 0;
         return (gensym(shmo));
     }
-    else return (iemgui_dollar2raute(s));
+    else return (s);
 }
 
-    /* undo previous operation: strip leading "-" if found. */
+    /* undo previous operation: strip leading "-" if found.  This is used
+    both to restore send, etc, names when loading from a file, and to
+    set them from the properties dialog.  In the former case, since before
+    version 0.52 '$" was aliases to "#", we also bash any "#" characters
+    to "$".  This is unnecessary when reading files saved from 0.52 or later,
+    and really we should test for that and only bash when necessary, just
+    in case someone wants to have a "#" in a name. */
 static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if (*s->s_name == '-')
@@ -682,8 +686,14 @@ static void gatom_bang(t_gatom *x)
     }
     else    /* list */
     {
-        int argc = binbuf_getnatom(x->a_text.te_binbuf);
+        int argc = binbuf_getnatom(x->a_text.te_binbuf), i;
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
+        for (i = 0; i < argc; i++)
+            if (argv[i].a_type != A_FLOAT && argv[i].a_type != A_SYMBOL)
+        {
+            pd_error(x, "list: only sends literal numbers and symbols");
+            return;
+        }
         if (x->a_text.te_outlet)
             outlet_list(x->a_text.te_outlet, &s_list, argc, argv);
         if (*x->a_expanded_to->s_name && x->a_expanded_to->s_thing)
@@ -744,14 +754,26 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
+void gatom_undarken(t_text *x)
+{
+    if (x->te_type == T_ATOM)
+    {
+        ((t_gatom *)x)->a_doubleclicked =
+            ((t_gatom *)x)->a_grabbed = 0;
+        gatom_reborder((t_gatom *)x);
+    }
+    else bug("gatom_undarken");
+}
+
 void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
     int c = f, bufsize, i;
     char *buf;
+    t_atom *ap = gatom_getatom(x);
 
     t_rtext *t = glist_findrtext(x->a_glist, &x->a_text);
-    if (c == 0)
+    if (c == 0 && !x->a_doubleclicked)
     {
         /* we're being notified that no more keys will come for this grab */
         if (t == x->a_glist->gl_editor->e_textedfor)
@@ -763,6 +785,7 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
     }
     else if (c == '\n')
     {
+        x->a_doubleclicked = 0;
         if (t == x->a_glist->gl_editor->e_textedfor)
         {
             rtext_gettext(t, &buf, &bufsize);
@@ -773,15 +796,15 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             while (i--)
                 rtext_key(t, '\b', &s_);
             rtext_gettext(t, &buf, &bufsize);
-            text_setto(&x->a_text, x->a_glist, buf, bufsize);
+            if (x->a_flavor == A_FLOAT)
+                ap->a_w.w_float = atof(buf);
+            else if (x->a_flavor == A_SYMBOL)
+                ap->a_w.w_symbol = gensym(buf);
+            else
+                text_setto(&x->a_text, x->a_glist, buf, bufsize);
             rtext_activate(t, 0);
         }
         gatom_bang(x);
-        if (c == 0)
-        {
-            x->a_grabbed = 0;
-            gatom_reborder(x);
-        }
         gatom_senditup(x);
     }
     else
@@ -794,12 +817,11 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
             rtext_key(t, '.', &s_);
             rtext_key(t, 0, gensym("Home"));
         }
-            /* automatically escape special characters in symbols */
-        if (x->a_flavor == A_SYMBOL && (c == ' ' || c == ',' || c == ';' ||
-            c == '$' | c == '\\'))
-                rtext_key(t, '\\', &s_);
-            /* and at last, insert the character */
-        rtext_key(t, c, keysym);
+        if (x->a_flavor == A_SYMBOL || x->a_flavor == A_LIST)
+            rtext_key(t, c, keysym);  /* insert the character */
+        else if (x->a_flavor == A_FLOAT && ((c >= '0' && c <= '9') || c == '.' ||
+            c == '-' || c == '+' || c == 'e' || c == 'E' || c == '\b'))
+                rtext_key(t, c, keysym);  /* insert the accepted characters */
     }
 }
 
@@ -817,6 +839,7 @@ static void gatom_motion(void *z, t_floatarg dx, t_floatarg dy,
     else
     {
         t_atom *ap;
+        x->a_doubleclicked = 0;
         if (x->a_dragindex <0)
             return;
         if (dy == 0 || x->a_dragindex < 0 ||
@@ -910,7 +933,7 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     return (1);
 }
 
-    /* probably never used but included in case needed for compatibilty */
+    /* probably never used but included in case needed for compatibility */
 static void gatom_click(t_gatom *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
@@ -983,6 +1006,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
     gobj_vis(&x->a_text.te_g, x->a_glist, 1);
     canvas_dirty(x->a_glist, 1);
+    canvas_fixlinesfor(x->a_glist, (t_text*)x);
 
     /* glist_retext(x->a_glist, &x->a_text); */
 }
@@ -1047,7 +1071,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 glist_getcanvas(glist), x,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x), "black");
+                gatom_fontsize(x) * glist_getzoom(glist), "black");
         }
         else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
     }
@@ -1113,7 +1137,8 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
-        x->a_text.te_width = (x->a_flavor == A_FLOAT ? 5 : 20);
+        x->a_text.te_width = (x->a_flavor == A_FLOAT ? 5 :
+            (x->a_flavor == A_SYMBOL ? 10 : 20));
         glist_add(gl, &x->a_text.te_g);
         glist_noselect(gl);
         glist_select(gl, &x->a_text.te_g);
@@ -1736,4 +1761,5 @@ void g_text_setup(void)
         A_GIMME, 0);
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
+    class_sethelpsymbol(gatom_class, gensym("gui-boxes"));
 }

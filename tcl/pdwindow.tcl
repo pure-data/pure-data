@@ -413,15 +413,13 @@ proc ::pdwindow::create_window {} {
     label .pdwindow.header.ioframe.iostate \
         -text [_ "Audio off"] -borderwidth 1 \
         -background lightgray -foreground black \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
         -text [_ "Audio I/O error"] -borderwidth 1 \
         -background lightgray -foreground lightgray \
-        -takefocus 0 \
-        -font {$::font_family -14}
+        -takefocus 0
 
     pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
         -side top
@@ -450,7 +448,7 @@ proc ::pdwindow::create_window {} {
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
     # TODO this should use the pd_font_$size created in pd-gui.tcl
-    text .pdwindow.text -relief raised -bd 2 -font {$::font_family 10} \
+    text .pdwindow.text -relief raised -bd 2 -font [list $::font_family 10] \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0

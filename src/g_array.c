@@ -39,7 +39,7 @@ t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_close(t_garray *x);
+static void garray_arrayviewlist_close(t_garray *x);
 /* } jsarlo */
 
 void array_resize(t_array *x, int n)
@@ -475,87 +475,70 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_new(t_garray *x)
-{
-    int i, yonset=0, elemsize=0;
-    t_float yval;
-    char cmdbuf[200];
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
-
-    if (!a)
-    {
-        /* FIXME */
-        pd_error(0, "error in garray_arrayviewlist_new()");
-    }
-    x->x_listviewing = 1;
-    sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s %s %d\n",
-            x->x_realname->s_name,
-            0);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
-    for (i = 0; i < ARRAYPAGESIZE && i < a->a_n; i++)
-    {
-        yval = *(t_float *)(a->a_vec +
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i,
-                 i,
-                 yval);
-    }
-}
-
-void garray_arrayviewlist_fillpage(t_garray *x,
-                                   t_float page,
+static void garray_arrayviewlist_fillpage(t_garray *x,
+                                   t_float fPage,
                                    t_float fTopItem)
 {
-    int i, yonset=0, elemsize=0, topItem;
-    t_float yval;
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
+    int i, size=0, topItem=(int)fTopItem;
+    int pagesize=ARRAYPAGESIZE, page=(int)fPage, maxpage;
+    t_word *data=0;
 
-    topItem = (int)fTopItem;
-    if (!a)
-    {
-        /* FIXME */
-        pd_error(0, "error in garray_arrayviewlist_new()");
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
     }
 
-    if (page < 0) {
-      page = 0;
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    else if ((page * ARRAYPAGESIZE) >= a->a_n) {
-      page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    sys_vgui(".%sArrayWindow.lb delete 0 %d\n",
-             x->x_realname->s_name,
-             ARRAYPAGESIZE - 1);
-    for (i = page * ARRAYPAGESIZE;
-         (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
+        /* make sure the requested page is within range */
+    maxpage = (size - 1) / pagesize;
+    if(page > maxpage)
+        page = maxpage;
+    if(page < 0)
+        page = 0;
+
+    sys_vgui("::dialog_array::listview_setpage {%s} %d %d %d\n",
+        x->x_realname->s_name,
+        page, maxpage+1, pagesize);
+
+    sys_vgui("::dialog_array::listview_setdata {%s} %ld",
+        x->x_realname->s_name,
+        (long long)(page * pagesize));
+    for (i = page * pagesize;
+         (i < (page + 1) * pagesize && i < size);
          i++)
     {
-        yval = *(t_float *)(a->a_vec + \
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i % ARRAYPAGESIZE,
-                 i,
-                 yval);
+        sys_vgui(" %g", data[i].w_float);
     }
-    sys_vgui(".%sArrayWindow.lb yview %d\n",
+    sys_vgui("\n");
+
+    sys_vgui("::dialog_array::listview_focus {%s} %d\n",
              x->x_realname->s_name,
              topItem);
 }
 
-void garray_arrayviewlist_close(t_garray *x)
+static void garray_arrayviewlist_new(t_garray *x)
+{
+    char cmdbuf[200];
+    int size=0;
+    t_word*data=0;
+
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
+    }
+    x->x_listviewing = 1;
+    sprintf(cmdbuf,
+            "pdtk_array_listview_new %%s {%s} %d\n",
+            x->x_realname->s_name,
+            0);
+    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+
+    garray_arrayviewlist_fillpage(x, 0, 0);
+}
+
+static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow %s\n",
+    sys_vgui("pdtk_array_listview_closeWindow {%s}\n",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -801,7 +784,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage %s\n",
+        sys_vgui("pdtk_array_listview_fillpage {%s}\n",
                  x->x_realname->s_name);
     }
     /* } jsarlo */

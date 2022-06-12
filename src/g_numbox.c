@@ -936,7 +936,7 @@ void g_numbox_setup(void)
     my_numbox_widgetbehavior.w_visfn =        iemgui_vis;
     my_numbox_widgetbehavior.w_clickfn =      my_numbox_newclick;
     class_setwidget(my_numbox_class, &my_numbox_widgetbehavior);
-    class_sethelpsymbol(my_numbox_class, gensym("numbox2"));
+    class_sethelpsymbol(my_numbox_class, gensym("nbx"));
     class_setsavefn(my_numbox_class, my_numbox_save);
     class_setpropertiesfn(my_numbox_class, my_numbox_properties);
 }

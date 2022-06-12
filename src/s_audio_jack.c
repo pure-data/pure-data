@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "s_audio_paring.h"
@@ -160,7 +161,10 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 static int
 jack_srate (jack_nframes_t srate, void *arg)
 {
+    const t_float oldrate = STUFF->st_dacsr;
     STUFF->st_dacsr = srate;
+    if (oldrate != STUFF->st_dacsr)
+        canvas_update_dsp();
     return 0;
 }
 
@@ -409,10 +413,18 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     STUFF->st_dacsr = jack_get_sample_rate (jack_client);
     jack_blocksize = jack_get_buffer_size (jack_client);
-    advance_samples = sys_schedadvance * (float)STUFF->st_dacsr / 1.e6;
+    advance_samples = sys_schedadvance * (double)STUFF->st_dacsr / 1.e6;
     advance_samples -= (advance_samples % DEFDACBLKSIZE);
-    if (advance_samples < DEFDACBLKSIZE)
-        advance_samples = DEFDACBLKSIZE;
+        /* make sure that the delay is not smaller than the Jack blocksize! */
+    if (advance_samples < jack_blocksize)
+    {
+        int delay = ((double)sys_schedadvance / 1000.) + 0.5;
+        int limit = ceil(jack_blocksize * 1000. / (double)STUFF->st_dacsr);
+        advance_samples = jack_blocksize;
+        post("warning: 'delay' setting (%d ms) too small for current blocksize "
+             "(%d samples); falling back to minimum value (%d ms)",
+             delay, jack_blocksize, limit);
+    }
 
     /* create the ports */
 
@@ -498,7 +510,7 @@ void jack_close_audio(void)
     jack_blocksize = 0;
 
         /* this should never be necessary since jack_close_audio() should
-        only be called form the main thread.  Still, it doens't hurt
+        only be called form the main thread.  Still, it doesn't hurt
         anything. */
     pthread_cond_broadcast(&jack_sem);
 

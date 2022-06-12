@@ -27,7 +27,8 @@
 #if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
-#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__)
+#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
+    || defined(_WIN32)
 #include <time.h>
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
@@ -475,6 +476,7 @@ void oscparse_setup(void)
     oscparse_class = class_new(gensym("oscparse"), (t_newmethod)oscparse_new,
         0, sizeof(t_oscparse), 0, A_GIMME, 0);
     class_addlist(oscparse_class, oscparse_list);
+    class_sethelpsymbol(oscparse_class, gensym("osc-format-parse"));
 }
 
 /* --------- oscformat - format simple OSC messages -------------- */
@@ -690,6 +692,7 @@ void oscformat_setup(void)
     class_addmethod(oscformat_class, (t_method)oscformat_format,
         gensym("format"), A_DEFSYM, 0);
     class_addlist(oscformat_class, oscformat_list);
+    class_sethelpsymbol(oscformat_class, gensym("osc-format-parse"));
 }
 
 
@@ -779,8 +782,9 @@ void fudiparse_setup(void) {
                               sizeof(t_fudiparse), CLASS_DEFAULT,
                               0);
   class_addlist(fudiparse_class, fudiparse_list);
+  class_sethelpsymbol(fudiparse_class, gensym("fudi-format-parse"));
 }
-/* --------- oscformat - format Pd (FUDI) messages to bytelists ------------ */
+/* --------- fudiformat - format Pd (FUDI) messages to bytelists ------------ */
 
 static t_class *fudiformat_class;
 
@@ -852,6 +856,7 @@ static void fudiformat_setup(void) {
                                sizeof(t_fudiformat), CLASS_DEFAULT,
                                A_DEFSYMBOL, 0);
   class_addanything(fudiformat_class, fudiformat_any);
+  class_sethelpsymbol(fudiformat_class, gensym("fudi-format-parse"));
 }
 
 

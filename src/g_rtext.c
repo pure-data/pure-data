@@ -46,6 +46,9 @@ t_rtext *rtext_new(t_glist *glist, t_text *who)
     x->x_selstart = x->x_selend = x->x_active =
         x->x_drawnwidth = x->x_drawnheight = 0;
     binbuf_gettext(who->te_binbuf, &x->x_buf, &x->x_bufsize);
+        /* allocate extra space for hidden null terminator */
+    x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
+    x->x_buf[x->x_bufsize] = 0;
     glist->gl_editor->e_rtext = x;
     sprintf(x->x_tag, ".x%lx.t%lx", (t_int)glist_getcanvas(x->x_glist),
         (t_int)x);
@@ -68,7 +71,7 @@ void rtext_free(t_rtext *x)
             break;
         }
     }
-    freebytes(x->x_buf, x->x_bufsize);
+    freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     freebytes(x, sizeof *x);
 }
 
@@ -90,7 +93,7 @@ void rtext_getseltext(t_rtext *x, char **buf, int *bufsize)
 
 t_text *rtext_getowner(t_rtext *x)
 {
-    return (x->x_text);;
+    return (x->x_text);
 }
 
 /* convert t_text te_type symbol for use as a Tk tag */
@@ -342,8 +345,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
         tempbuf[*outchars_b_p] = 0;
     }
-    if (*indexp >= *outchars_b_p)
-        *indexp = *outchars_b_p - 1;
+    if (*indexp > *outchars_b_p)
+        *indexp = *outchars_b_p;
     if (*indexp < 0)
         *indexp = 0;
     *selstart_b_p = x->x_selstart;
@@ -431,7 +434,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
         sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } %d %s\n",
-            (long)canvas, x->x_tag, rtext_gettype(x)->s_name,
+            canvas, x->x_tag, rtext_gettype(x)->s_name,
             text_xpix(x->x_text, x->x_glist) + lmargin,
                 text_ypix(x->x_text, x->x_glist) + tmargin,
             escbuf,
@@ -461,6 +464,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 sys_vgui(".x%lx.c select clear\n", canvas);
                 sys_vgui(".x%lx.c icursor %s %d\n", canvas, x->x_tag,
                     u8_charnum(x->x_buf, selstart_b));
+                sys_vgui("focus .x%lx.c\n", canvas);
                 sys_vgui(".x%lx.c focus %s\n", canvas, x->x_tag);
             }
         }
@@ -479,8 +483,11 @@ void rtext_retext(t_rtext *x)
 {
     int w = 0, h = 0, indx;
     t_text *text = x->x_text;
-    t_freebytes(x->x_buf, x->x_bufsize);
+    t_freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     binbuf_gettext(text->te_binbuf, &x->x_buf, &x->x_bufsize);
+        /* allocate extra space for hidden null terminator */
+    x->x_buf = resizebytes(x->x_buf, x->x_bufsize, x->x_bufsize+1);
+    x->x_buf[x->x_bufsize] = 0;
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
 
@@ -534,6 +541,8 @@ void rtext_select(t_rtext *x, int state)
         x->x_tag, (state? "blue" : "black"));
 }
 
+void gatom_undarken(t_text *x);
+
 void rtext_activate(t_rtext *x, int state)
 {
     int w = 0, h = 0, indx;
@@ -554,6 +563,8 @@ void rtext_activate(t_rtext *x, int state)
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
+        if (x->x_text->te_type == T_ATOM)
+            gatom_undarken(x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
@@ -582,7 +593,7 @@ int rtext_findatomfor(t_rtext *x, int xpos, int ypos)
     return (natom-1);
 }
 
-void gatom_key(void *z, t_floatarg f);
+void gatom_key(void *z, t_symbol *keysym, t_floatarg f);
 
 void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 {
@@ -591,7 +602,7 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         /* CR to atom boxes sends message and resets */
     if (keynum == '\n' && x->x_text->te_type == T_ATOM)
     {
-        gatom_key(x->x_text, keynum);
+        gatom_key(x->x_text, keysym, keynum);
         return;
     }
     if (keynum)
@@ -619,7 +630,9 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
         for (i = x->x_selend; i < x->x_bufsize; i++)
             x->x_buf[i- ndel] = x->x_buf[i];
         newsize = x->x_bufsize - ndel;
-        x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+            /* allocate extra space for hidden null terminator */
+        x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
+        x->x_buf[newsize] = 0;
         x->x_bufsize = newsize;
 
 /* at Guenter's suggestion, use 'n>31' to test whether a character might
@@ -634,10 +647,12 @@ be printable in whatever 8-bit character set we find ourselves. */
         if (n == '\n' || (n > 31 && n < 127))
         {
             newsize = x->x_bufsize+1;
-            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+                /* allocate extra space for hidden null terminator */
+            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
             for (i = x->x_bufsize; i > x->x_selstart; i--)
                 x->x_buf[i] = x->x_buf[i-1];
             x->x_buf[x->x_selstart] = n;
+            x->x_buf[newsize] = 0;
             x->x_bufsize = newsize;
             x->x_selstart = x->x_selstart + 1;
         }
@@ -646,9 +661,12 @@ be printable in whatever 8-bit character set we find ourselves. */
         {
             int ch_nbytes = u8_wc_nbytes(n);
             newsize = x->x_bufsize + ch_nbytes;
-            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
+                /* allocate extra space for hidden null terminator */
+            x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize+1);
+
             for (i = newsize-1; i > x->x_selstart; i--)
                 x->x_buf[i] = x->x_buf[i-ch_nbytes];
+            x->x_buf[newsize] = 0;
             x->x_bufsize = newsize;
             /*-- moo: assume canvas_key() has encoded keysym as UTF-8 */
             strncpy(x->x_buf+x->x_selstart, keysym->s_name, ch_nbytes);

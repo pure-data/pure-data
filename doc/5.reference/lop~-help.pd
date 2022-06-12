@@ -1,0 +1,59 @@
+#N canvas 530 29 579 392 12;
+#X declare -stdpath ./;
+#X floatatom 237 171 5 0 0 0 - - - 0;
+#X obj 26 13 lop~;
+#X text 66 14 - one-pole low pass filter;
+#X msg 184 143 clear;
+#X text 14 330 see also:;
+#X obj 93 329 hip~;
+#X obj 138 329 bp~;
+#X obj 175 329 vcf~;
+#X text 228 142 <= reinitialize internal state;
+#X text 280 172 <= set cutoff frequency;
+#X obj 220 329 bob~;
+#X obj 118 123 noise~;
+#X text 34 57 lop~ is a one-pole low pass filter with a specified rolloff
+frequency. The left inlet is the incoming audio signal. The right inlet
+is the cutoff frequency in Hz., f 70;
+#X obj 184 238 output~;
+#X obj 184 198 lop~ 100;
+#X text 255 195 The filter is initialized to cut off frequencies above
+100 Hz., f 32;
+#X obj 315 258 declare -stdpath ./;
+#X obj 28 358 biquad~;
+#X obj 87 357 slop~, f 7;
+#X obj 146 357 cpole~, f 7;
+#X obj 208 357 fexpr~;
+#X text 264 357 - unfriendly filters;
+#X text 362 328 updated for Pd version 0.38;
+#X obj 7 46 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 796 97 475 266 reference 0;
+#X obj 9 45 cnv 5 450 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 157 cnv 2 450 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 197 cnv 2 450 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 237 cnv 5 450 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 46 14 lop~;
+#X text 106 80 signal - audio signal to be filtered.;
+#X text 113 99 clear - clear filter's memory., f 36;
+#X text 106 167 signal - filtered signal.;
+#X obj 11 123 cnv 1 450 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 113 130 float - rolloff frequency., f 36;
+#X text 104 207 1) float - rolloff frequency in Hz (default 0).;
+#X text 86 15 - one-pole low pass filter.;
+#X obj 11 75 cnv 1 450 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X restore 385 13 pd reference;
+#X text 483 14 <= click;
+#X obj 7 312 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 0 0 14 1;
+#X connect 3 0 14 0;
+#X connect 11 0 14 0;
+#X connect 14 0 13 0;
+#X connect 14 0 13 1;

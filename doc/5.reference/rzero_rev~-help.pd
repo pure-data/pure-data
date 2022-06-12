@@ -1,0 +1,126 @@
+#N canvas 507 50 535 587 12;
+#X declare -stdpath ./;
+#X floatatom 128 199 4 0 0 0 - - - 0;
+#X obj 47 115 osc~ 100;
+#X msg 63 147 clear;
+#X msg 75 173 set 1;
+#N canvas 1015 291 317 298 test 0;
+#X obj 92 77 osc~;
+#X floatatom 92 54 5 0 0 0 - - - 0;
+#X obj 121 225 env~ 16384;
+#X floatatom 121 249 5 0 0 0 - - - 0;
+#X obj 130 106 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 92 104 *~;
+#X msg 108 134 set 1;
+#X floatatom 159 108 4 -100 100 0 - - - 0;
+#X obj 159 133 / 100;
+#X text 115 17 Stuff to test it:;
+#X obj 92 167 rzero_rev~;
+#X obj 35 221 output~;
+#X obj 151 64 declare -stdpath ./;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 1;
+#X connect 5 0 10 0;
+#X connect 6 0 10 0;
+#X connect 7 0 8 0;
+#X connect 8 0 10 1;
+#X connect 10 0 2 0;
+#X connect 10 0 11 0;
+#X connect 10 0 11 1;
+#X restore 400 468 pd test;
+#X text 32 294 where y[n] is the output \, x[n] the input \, and a[n]
+the filter coefficient. The filter is always stable., f 56;
+#X obj 20 10 rzero_rev~;
+#X obj 47 225 rzero_rev~ 1;
+#X text 95 275 y[n] = -a[n] * x[n] + x[n-1];
+#X text 30 326 The transfer function is H(Z) = -a + Z^-1.;
+#X text 151 227 <= creation argument initializes filter coefficient
+;
+#X text 160 199 <= filter coefficient (may be a signal);
+#X text 121 173 <= set internal state;
+#X text 107 146 <= clear internal state to zero;
+#X text 118 115 <= signal to filter;
+#X text 38 254 The action of rzero_rev~ is:;
+#X obj 90 523 lop~;
+#X text 11 524 see also:;
+#X obj 173 456 rzero~;
+#X obj 113 479 cpole~;
+#X obj 113 456 rpole~;
+#X obj 233 456 rzero_rev~;
+#X obj 173 479 czero~;
+#X obj 233 479 czero_rev~;
+#X text 312 456 real;
+#X text 311 478 complex;
+#X text 110 437 1-pole;
+#X text 170 437 1-zero;
+#X text 237 421 1-zero \, reversed, f 8;
+#X text 19 461 summary of raw filters:, f 12;
+#X obj 131 523 hip~;
+#X obj 172 523 bp~;
+#X obj 207 523 vcf~;
+#X text 288 523 - user-friendly filters;
+#X obj 248 523 bob~;
+#X obj 375 396 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
+#X text 18 349 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 375 429 pd Read-More;
+#X obj 14 553 biquad~;
+#X text 189 553 - not so friendly;
+#X obj 75 552 fexpr~;
+#X obj 130 552 slop~, f 7;
+#X text 109 10 real one-zero "reverse" filter;
+#X text 13 45 Rzero_rev~ filters an audio signal (left inlet) via a
+raw one-zero (non-recursive) real filter \, whose coefficient is controlled
+by a creation argument or by an audio signal (right inlet). The impulse
+response is that of "rzero" reversed in time., f 68;
+#N canvas 682 162 571 284 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 173 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 250 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 212 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X text 117 79 signal -;
+#X obj 7 139 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 117 145 signal -;
+#X text 124 115 clear -;
+#X obj 25 12 rzero_rev~;
+#X text 105 11 - real one-zero "reverse" filter.;
+#X text 180 79 real signal to filter., f 49;
+#X text 82 97 set <float> -;
+#X text 180 97 set internal state., f 49;
+#X text 180 115 clear internal state to zero (same as "set 0")., f
+49;
+#X text 180 145 filter coefficient., f 49;
+#X text 117 184 signal - filtered signal.;
+#X text 119 222 1) float - filter coefficient (default 0)., f 43;
+#X restore 363 9 pd reference;
+#X text 457 9 <= click;
+#X obj 4 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 509 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 332 553 updated for Pd version 0.38;
+#X connect 0 0 7 1;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 35 0 37 0;

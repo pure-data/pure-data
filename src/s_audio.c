@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -197,9 +198,10 @@ static void audio_compact_and_count_channels(int *ndev, int *devvec,
 
 /* ----------------------- public routines ----------------------- */
 
+static int initted = 0;
+
 void sys_get_audio_settings(t_audiosettings *a)
 {
-    static int initted;
     if (!initted)
     {
         audio_nextsettings.a_api = API_DEFAULT;
@@ -212,11 +214,7 @@ void sys_get_audio_settings(t_audiosettings *a)
         audio_nextsettings.a_chindevvec[0] =
             audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
         audio_nextsettings.a_advance = DEFAULTADVANCE;
-#ifdef _WIN32
-        audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
         audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
         initted = 1;
     }
     *a = audio_nextsettings;
@@ -260,6 +258,7 @@ void sys_set_audio_settings(t_audiosettings *a)
 
     sys_schedadvance = a->a_advance * 1000;
     audio_nextsettings = *a;
+    initted = 1;
 
     sys_log_error(ERR_NOTHING);
     sys_vgui("set pd_whichapi %d\n", audio_nextsettings.a_api);
@@ -321,6 +320,18 @@ void sys_close_audio(void)
     sys_vgui("set pd_whichapi 0\n");
 }
 
+void sys_init_audio(void)
+{
+    t_audiosettings as;
+    int totalinchans, totaloutchans;
+    sys_get_audio_settings(&as);
+    audio_compact_and_count_channels(&as.a_nindev, as.a_indevvec,
+        as.a_chindevvec, &totalinchans, MAXAUDIOINDEV);
+    audio_compact_and_count_channels(&as.a_noutdev, as.a_outdevvec,
+        as.a_choutdevvec, &totaloutchans, MAXAUDIOOUTDEV);
+    sys_setchsr(totalinchans, totaloutchans, as.a_srate);
+}
+
     /* open audio using currently requested parameters */
 void sys_reopen_audio(void)
 {
@@ -343,8 +354,17 @@ void sys_reopen_audio(void)
     if (as.a_api == API_PORTAUDIO)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
-        int nbufs = sys_schedadvance * as.a_srate / (blksize *1000000.);
-        if (nbufs < 1) nbufs = 1;
+        int nbufs = (double)sys_schedadvance / 1000000. * as.a_srate / blksize;
+            /* make sure that the delay is not smaller than the hardware blocksize */
+        if (nbufs < 1)
+        {
+            int delay = ((double)sys_schedadvance / 1000.) + 0.5;
+            int limit = ceil(blksize * 1000. / (double)as.a_srate);
+            nbufs = 1;
+            post("warning: 'delay' setting (%d ms) too small for current blocksize "
+                 "(%d samples); falling back to minimum value (%d ms)",
+                 delay, blksize, limit);
+        }
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
         (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
             STUFF->st_soundin, STUFF->st_soundout, blksize, nbufs,
@@ -774,11 +794,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_outdevvec[0] = DEFAULTAUDIODEV;
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
-#ifdef __WIN32
-            audio_nextsettings.a_blocksize = MMIODEFBLOCKSIZE;
-#else
             audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
-#endif
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);

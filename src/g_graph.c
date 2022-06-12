@@ -83,7 +83,13 @@ void glist_delete(t_glist *x, t_gobj *y)
     wasdeleting = canvas_setdeleting(canvas, 1);
     if (x->gl_editor)
     {
-        if (x->gl_editor->e_grab == y) x->gl_editor->e_grab = 0;
+            /* if we've grabbed events from canvas release them */
+        if (canvas->gl_editor && canvas->gl_editor->e_grab == y)
+            canvas->gl_editor->e_grab = 0;
+                /* perhaps we grabbed our own glist instead? don't know if
+                this ever happens: */
+        if (x->gl_editor->e_grab == y)
+            x->gl_editor->e_grab = 0;
         if (glist_isselected(x, y)) glist_deselect(x, y);
 
             /* HACK -- we had phantom outlets not getting erased on the
@@ -747,7 +753,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             i -= glist_fontheight(x);
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
                 "-font {{%s} -%d %s} -tags [list %s label graph]\n",
-                (long)glist_getcanvas(x),  x1, i,
+                glist_getcanvas(x),  x1, i,
                 arrayname->s_name, sys_font,
                 fs, sys_fontweight, tag);
         }

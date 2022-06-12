@@ -696,6 +696,7 @@ void sys_gui_midipreferences(void) {
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
+    char device[MAXPDSTRING];
 
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];

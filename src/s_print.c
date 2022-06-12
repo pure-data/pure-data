@@ -14,7 +14,7 @@
 #define snprintf _snprintf
 #endif
 
-t_printhook sys_printhook;
+t_printhook sys_printhook = NULL;
 int sys_printtostderr;
 
 /* escape characters for tcl/tk */
@@ -48,18 +48,10 @@ char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     return dst;
 }
 
-static char* strnpointerid(char *dest, const void *pointer, size_t len)
-{
-    *dest=0;
-    if (pointer)
-        snprintf(dest, len, ".x%lx", (unsigned long)pointer);
-    return dest;
-}
-
 static void dopost(const char *s)
 {
-    if (sys_printhook)
-        (*sys_printhook)(s);
+    if (STUFF->st_printhook)
+        (*STUFF->st_printhook)(s);
     else if (sys_printtostderr || !sys_havegui())
     {
 #ifdef _WIN32
@@ -86,10 +78,10 @@ static void doerror(const void *object, const char *s)
     upbuf[MAXPDSTRING-1]=0;
 
     // what about sys_printhook_error ?
-    if (sys_printhook)
+    if (STUFF->st_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
-        (*sys_printhook)(upbuf);
+        (*STUFF->st_printhook)(upbuf);
     }
     else if (sys_printtostderr)
     {
@@ -105,24 +97,23 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
-    {
-        char obuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::logpost {%s} 1 {%s}\n",
-                 strnpointerid(obuf, object, MAXPDSTRING),
-                 pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
-    }
+        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n",
+            object, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
 }
 
 static void dologpost(const void *object, const int level, const char *s)
 {
     char upbuf[MAXPDSTRING];
     upbuf[MAXPDSTRING-1]=0;
-
+        /* if it's a verbose message and we aren't set to 'verbose' just do
+            nothing */
+    if (level >= PD_VERBOSE && !sys_verbose)
+        return;
     // what about sys_printhook_verbose ?
-    if (sys_printhook)
+    if (STUFF->st_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
-        (*sys_printhook)(upbuf);
+        (*STUFF->st_printhook)(upbuf);
     }
     else if (sys_printtostderr)
     {
@@ -138,20 +129,15 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
-    {
-        char obuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
-                 strnpointerid(obuf, object, MAXPDSTRING),
-                 level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
-    }
+        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n",
+            object, level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
+    if (level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
@@ -164,8 +150,7 @@ void startlogpost(const void *object, const int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
+    if (level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
@@ -230,8 +215,8 @@ void postfloat(t_float f)
 
 void endpost(void)
 {
-    if (sys_printhook)
-        (*sys_printhook)("\n");
+    if (STUFF->st_printhook)
+        (*STUFF->st_printhook)("\n");
     else if (sys_printtostderr)
         fprintf(stderr, "\n");
     else post("");
@@ -240,7 +225,7 @@ void endpost(void)
   /* keep this in the Pd app for binary extern compatibility but don't
   include in libpd because it conflicts with the posix pd_error(0, ) function. */
 #ifdef PD_INTERNAL
-void error(const char *fmt, ...)
+EXTERN void error(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
@@ -261,18 +246,17 @@ void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
-    int loglevel=level+3;
 
-    if(level>sys_verbose)return;
+    if (level > sys_verbose) return;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
-    dologpost(NULL, loglevel, buf);
+        /* log levels for verbose() traditionally start at -3,
+        so we have to adjust it before passing it on to dologpost() */
+    dologpost(NULL, level + 3, buf);
 }
 
     /* here's the good way to log errors -- keep a pointer to the

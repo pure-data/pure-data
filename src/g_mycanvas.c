@@ -411,7 +411,7 @@ void g_mycanvas_setup(void)
     my_canvas_widgetbehavior.w_visfn      = iemgui_vis;
     my_canvas_widgetbehavior.w_clickfn    = NULL;
     class_setwidget(my_canvas_class, &my_canvas_widgetbehavior);
-    class_sethelpsymbol(my_canvas_class, gensym("my_canvas"));
+    class_sethelpsymbol(my_canvas_class, gensym("cnv"));
     class_setsavefn(my_canvas_class, my_canvas_save);
     class_setpropertiesfn(my_canvas_class, my_canvas_properties);
 }

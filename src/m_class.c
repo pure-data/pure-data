@@ -33,7 +33,7 @@ static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
 static t_class *class_list = 0;
-PERTHREAD t_pdinstance *pd_this;
+PERTHREAD t_pdinstance *pd_this = NULL;
 t_pdinstance **pd_instances;
 int pd_ninstances;
 #else
@@ -61,6 +61,8 @@ void s_stuff_newpdinstance(void)
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
     STUFF->st_dacsr = DEFDACSAMPLERATE;
+    STUFF->st_printhook = sys_printhook;
+    STUFF->st_impdata = NULL;
 }
 
 void s_stuff_freepdinstance(void)
@@ -114,7 +116,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
 }
 
 static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
-    int nmethod, t_gotfn fn, t_symbol *sel, t_atomtype *args,
+    int nmethod, t_gotfn fn, t_symbol *sel, unsigned char *args,
         t_pdinstance *pdinstance)
 {
     int i;
@@ -138,9 +140,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     m = (*methodlist) + nmethod;
     m->me_name = sel;
     m->me_fun = (t_gotfn)fn;
-    i = 0;
-    while ((m->me_arg[i] = args[i]))
-        i++;
+    memcpy(m->me_arg, args, MAXPDARG+1);
 }
 
 #ifdef PDINSTANCE
@@ -498,7 +498,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
     c->c_classfreefn = 0;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     c->c_methods = (t_methodentry **)t_getbytes(
         pd_ninstances * sizeof(*c->c_methods));
     for (i = 0; i < pd_ninstances; i++)
@@ -517,7 +517,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 void class_free(t_class *c)
 {
     int i;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     t_class *prev;
     if (class_list == c)
         class_list = c->c_next;
@@ -531,7 +531,7 @@ void class_free(t_class *c)
 #endif
     if (c->c_classfreefn)
         c->c_classfreefn(c);
-#if PDINSTANCE
+#ifdef PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
     {
         if(c->c_methods[i])
@@ -550,7 +550,7 @@ void class_setfreefn(t_class *c, t_classfreefn fn)
     c->c_classfreefn = fn;
 }
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 t_class *class_getfirst(void)
 {
     return class_list;
@@ -639,7 +639,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     }
     else
     {
-        t_atomtype argvec[MAXPDARG+1];
+        unsigned char argvec[MAXPDARG+1];
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {

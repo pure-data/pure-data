@@ -2013,6 +2013,7 @@ noinletnum:
 char *
 atoif(char *s, long int *value, long int *type)
 {
+    const char*s0 = s;
     char *p;
         long lval;
         float fval;
@@ -2034,6 +2035,9 @@ atoif(char *s, long int *value, long int *type)
                 }
                 s++;
         }
+        if(s0 == p)
+            return 0;
+
         *type = ET_INT;
         *((t_int *) value) = lval;
         return (p);

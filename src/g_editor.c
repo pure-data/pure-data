@@ -1881,15 +1881,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                     (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                     x->gl_edit);
             }
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
-                (unsigned long)c);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx", c);
             while (c->gl_owner && !c->gl_isclone) {
                 int cbuflen;
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                     MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                    " .x%lx", (unsigned long)c);
+                    " .x%lx", c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
@@ -2252,12 +2251,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
             else
             {
-                char *buf;
-                int bufsize;
-                rtext_gettext(x->gl_editor->e_textedfor, &buf, &bufsize);
-                text_setto(hitobj, x, buf, bufsize);
+                rtext_retext(x->gl_editor->e_textedfor);
                 rtext_activate(x->gl_editor->e_textedfor, 0);
-                pd_bang(&hitobj->te_pd);
             }
             return;
         }
@@ -2319,9 +2314,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         else
         {
             int noutlet;
-                /* resize?  only for "true" text boxes or canvases*/
+                /* resize? only for "true" text boxes or canvases */
             if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
-                !x->gl_editor->e_selection &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
                     hitobj->te_type == T_ATOM ||
                     pd_checkglist(&hitobj->te_pd)))
@@ -2655,7 +2649,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
                 !obj_issignalinlet(ob2, closest2))
             {
                 if (doit)
-                    pd_error(0, "can't connect signal outlet to control inlet");
+                    pd_error(0, "can't connect audio signal outlet to nonsignal inlet");
                 canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
                 return;
             }
@@ -2859,11 +2853,15 @@ void canvas_mouseup(t_canvas *x,
         canvas_doconnect(x, xpos, ypos, mod, 1);
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
-    else if (x->gl_editor->e_onmotion == MA_MOVE ||
-        x->gl_editor->e_onmotion == MA_RESIZE)
+    else if ((x->gl_editor->e_onmotion == MA_MOVE ||
+              x->gl_editor->e_onmotion == MA_RESIZE))
     {
-            /* after motion or resizing, if there's only one text item
-               selected, activate the text */
+            /* if there's only one text item selected activate the text.
+            LATER consider under sme conditions not activating it, for instance
+            if it appears to have been desired only to move the object.  Maybe
+            shift-click could allow dragging without activating text?  A
+            different solution (only activating if the object wasn't moved
+            (commit f0df4e586) turned out to flout ctrlD+move+retype. */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
@@ -3112,6 +3110,10 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
+    /* defined in g_text.c: */
+extern void text_getfont(t_text *x, t_glist *thisglist,
+    int *fwidthp, int *fheightp, int *guifsize);
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
@@ -3173,7 +3175,9 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
                     (pd_checkglist(&ob->te_pd) &&
                      !((t_canvas *)ob)->gl_isgraph)))
             {
-                wantwidth = wantwidth / glist_fontwidth(x);
+                int fwidth, fheight, guifsize;
+                text_getfont(ob, x, &fwidth, &fheight, &guifsize);
+                wantwidth = wantwidth / fwidth;
                 if (wantwidth < 1)
                     wantwidth = 1;
                 ob->te_width = wantwidth;
@@ -3480,7 +3484,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     int n;
-    
+
     for (g = gl->gl_list; g; g = g->g_next)
     {
         if (((const void *)g == error_object) || (message_get_responder(g) == error_object))
@@ -4794,8 +4798,6 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
-    if ((realresx != 1 || realresx != 1) || (oldfont != (int)font))
-        canvas_dirty(x2, 1);
     canvas_undo_add(x2, UNDO_FONT, "font",
         canvas_undo_set_font(x2, oldfont, realresize, whichresize));
 

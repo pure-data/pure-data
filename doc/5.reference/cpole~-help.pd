@@ -1,123 +1,180 @@
-#N canvas 562 47 554 682 12;
-#X obj 68 128 osc~ 100;
-#X msg 77 155 clear;
-#X text 27 407 The transfer function is H(Z) = 1/(1 - aZ^-1).;
-#X text 130 154 <-- clear internal state to zero;
-#N canvas 796 231 436 370 test 0;
+#N canvas 459 40 530 666 12;
+#X declare -stdpath ./;
+#X obj 58 127 osc~ 100;
+#X msg 67 154 clear;
+#X text 17 407 The transfer function is H(Z) = 1/(1 - aZ^-1).;
+#X obj 19 10 cpole~;
+#X obj 89 210 sig~;
+#X obj 121 233 sig~;
+#X obj 153 257 sig~;
+#X obj 58 282 cpole~ 0.9 0.4;
+#X text 205 299 coefficient (real and imaginary part);
+#X text 14 316 The action of cpole~ is:;
+#X text 16 358 where y[n] is the output \, x[n] the input \, and a[n]
+the filter coefficient (all complex numbers). The filter is unstable
+if/when |a[n]|>1.;
+#X msg 79 181 set 0.6 0.8;
+#X text 48 338 y[n] = x[n] + a[n] * y[n-1];
+#N canvas 796 231 441 392 test 0;
 #X obj 90 85 osc~;
-#X floatatom 90 52 5 0 0 0 - - -;
-#X obj 98 285 env~ 16384;
-#X floatatom 98 309 5 0 0 0 - - -;
-#X obj 118 114 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X floatatom 90 52 5 0 0 0 - - - 0;
+#X obj 146 304 env~ 16384;
+#X floatatom 146 328 5 0 0 0 - - - 0;
+#X obj 118 114 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 90 112 *~;
 #X msg 37 114 set 1;
-#X floatatom 334 113 4 -1000 1000 0 - - -;
-#X obj 284 313 dac~;
-#X obj 284 277 *~;
+#X floatatom 334 113 4 -1000 1000 0 - - - 0;
 #X text 138 14 Stuff to test it:;
 #X obj 215 113 cos~;
 #X obj 146 225 cpole~;
 #X obj 235 75 phasor~;
-#X floatatom 235 48 5 0 0 0 - - -;
-#X floatatom 146 52 5 0 0 0 - - -;
-#X obj 174 114 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X floatatom 235 48 5 0 0 0 - - - 0;
+#X floatatom 146 52 5 0 0 0 - - - 0;
+#X obj 174 114 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 146 112 *~;
 #X obj 146 85 phasor~;
-#X floatatom 298 46 5 0 0 0 - - -;
+#X floatatom 298 46 5 0 0 0 - - - 0;
 #X obj 298 75 / 1000;
 #X obj 258 113 -~ 0.25;
 #X obj 258 140 cos~;
 #X obj 334 142 / 1000;
 #X obj 215 178 *~;
 #X obj 258 178 *~;
-#X obj 185 285 env~ 16384;
-#X floatatom 185 309 5 0 0 0 - - -;
-#X obj 302 252 dbtorms;
-#X floatatom 302 227 5 0 0 0 - - -;
+#X obj 233 304 env~ 16384;
+#X floatatom 233 328 5 0 0 0 - - - 0;
+#X obj 49 291 output~;
+#X obj 258 238 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 1;
-#X connect 5 0 12 0;
-#X connect 6 0 12 0;
-#X connect 7 0 23 0;
-#X connect 9 0 8 0;
-#X connect 9 0 8 1;
-#X connect 11 0 24 0;
-#X connect 12 0 2 0;
-#X connect 12 0 9 0;
-#X connect 12 1 26 0;
-#X connect 13 0 21 0;
-#X connect 13 0 11 0;
-#X connect 14 0 13 0;
-#X connect 15 0 18 0;
-#X connect 16 0 17 1;
-#X connect 17 0 12 0;
-#X connect 18 0 17 0;
+#X connect 5 0 10 0;
+#X connect 6 0 10 0;
+#X connect 7 0 21 0;
+#X connect 9 0 22 0;
+#X connect 10 0 2 0;
+#X connect 10 0 26 0;
+#X connect 10 0 26 1;
+#X connect 10 1 24 0;
+#X connect 11 0 19 0;
+#X connect 11 0 9 0;
+#X connect 12 0 11 0;
+#X connect 13 0 16 0;
+#X connect 14 0 15 1;
+#X connect 15 0 10 0;
+#X connect 16 0 15 0;
+#X connect 17 0 18 0;
+#X connect 18 0 11 1;
 #X connect 19 0 20 0;
-#X connect 20 0 13 1;
-#X connect 21 0 22 0;
-#X connect 22 0 25 0;
-#X connect 23 0 25 1;
-#X connect 23 0 24 1;
-#X connect 24 0 12 2;
-#X connect 25 0 12 3;
-#X connect 26 0 27 0;
-#X connect 28 0 9 1;
-#X connect 29 0 28 0;
-#X restore 415 524 pd test;
-#X text 25 429 (Pd also provides a suite of user-friendly filters.
-This and other raw filters are provided for situations which the user-friendly
+#X connect 20 0 23 0;
+#X connect 21 0 23 1;
+#X connect 21 0 22 1;
+#X connect 22 0 10 2;
+#X connect 23 0 10 3;
+#X connect 24 0 25 0;
+#X restore 410 555 pd test;
+#X obj 81 603 lop~;
+#X text 8 602 see also:;
+#X obj 179 535 rzero~;
+#X obj 119 558 cpole~;
+#X obj 119 535 rpole~;
+#X obj 239 535 rzero_rev~;
+#X obj 179 558 czero~;
+#X obj 239 558 czero_rev~;
+#X text 318 535 real;
+#X text 317 557 complex;
+#X text 116 516 1-pole;
+#X text 176 516 1-zero;
+#X text 243 500 1-zero \, reversed, f 8;
+#X text 25 540 summary of raw filters:, f 12;
+#X obj 122 603 hip~;
+#X obj 163 603 bp~;
+#X obj 198 603 vcf~;
+#X text 279 603 - user-friendly filters;
+#X obj 239 603 bob~;
+#X obj 371 475 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
+#X text 15 429 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
-for an introduction to the necessary theory.), f 69;
-#X obj 59 10 cpole~;
-#X text 146 131 <-- signal to filter (real part);
-#X text 145 211 <-- signal to filter (imaginary part);
-#X obj 99 210 sig~;
-#X obj 131 233 sig~;
-#X text 177 235 <-- filter coefficient (real part);
-#X obj 163 257 sig~;
-#X obj 68 282 cpole~ 0.9 0.4;
-#X text 193 283 <-- creation arguments initialize filter;
-#X text 221 299 coefficient (real and imaginary part);
-#X text 29 316 The action of cpole~ is:;
-#X text 26 358 where y[n] is the output \, x[n] the input \, and a[n]
-the filter coefficient (all complex numbers). The filter is unstable
-if/when |a[n]|>1.;
-#X text 33 47 Cpole~ filters a complex audio signal (first two inlets)
-via a one-pole filter \, whose coefficients are controlled by creation
-arguments or by another complex audio signal (remaining two inlets).
-, f 63;
-#X text 186 181 <-- set internal state (real&imaginary parts);
-#X msg 89 181 set 0.6 0.8;
-#X text 208 259 <-- filter coefficient (imaginary part);
-#X text 88 338 y[n] = x[n] + a[n] * y[n-1];
-#X obj 111 602 lop~;
-#X text 32 603 see also:;
-#X obj 125 539 rzero~;
-#X obj 65 562 cpole~;
-#X obj 65 539 rpole~;
-#X obj 185 539 rzero_rev~;
-#X obj 125 562 czero~;
-#X obj 185 562 czero_rev~;
-#X text 284 539 real;
-#X text 283 561 complex;
-#X text 62 520 1-pole;
-#X text 122 520 1-zero;
-#X text 172 520 1-zero \, reversed;
-#X text 87 502 summary of raw filters:;
-#X text 313 639 updated for Pd version 0.43;
-#X obj 152 602 hip~;
-#X obj 194 602 bp~;
-#X obj 231 602 vcf~;
-#X text 316 602 - user-friendly filters;
-#X obj 276 602 bob~;
-#X text 121 10 - complex one-pole (recursive) filter \, raw;
-#X connect 0 0 13 0;
-#X connect 1 0 13 0;
-#X connect 9 0 13 1;
-#X connect 10 0 13 2;
-#X connect 12 0 13 3;
-#X connect 20 0 13 0;
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 371 509 pd Read-More;
+#X obj 11 632 biquad~;
+#X text 186 632 - not so friendly;
+#X obj 72 631 fexpr~;
+#X obj 127 631 slop~, f 7;
+#X text 328 631 updated for Pd version 0.43;
+#X text 126 128 <= signal to filter (real part);
+#X text 116 153 <= clear internal state to zero;
+#X text 135 211 <= signal to filter (imaginary part);
+#X text 167 235 <= filter coefficient (real part);
+#X text 198 259 <= filter coefficient (imaginary part);
+#X text 183 283 <= creation arguments initialize filter;
+#X text 71 10 - complex one-pole filter;
+#X text 23 47 Cpole~ filters a complex audio signal (first two inlets)
+via a raw one-pole (recursive) filter \, whose coefficients are controlled
+by creation arguments or by another complex audio signal (remaining
+two inlets)., f 67;
+#X text 168 181 <= set internal state (real & imaginary parts);
+#X obj 4 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 4 592 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 723 131 572 406 reference 0;
+#X obj 8 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 7 73 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 238 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 380 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 327 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 117 80 signal -;
+#X obj 29 14 cpole~;
+#X text 81 14 - complex one-pole filter;
+#X obj 7 141 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 174 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 205 cnv 1 550 1 empty empty 4th: 8 12 0 13 #9f9f9f #000000
+0;
+#X text 180 80 signal to filter (real part)., f 49;
+#X text 117 148 signal -;
+#X text 180 148 signal to filter (imaginary part)., f 49;
+#X text 117 180 signal -;
+#X text 117 213 signal -;
+#X text 180 213 filter coefficient (imaginary part)., f 49;
+#X text 180 180 filter coefficient (real part)., f 49;
+#X text 124 118 clear -;
+#X text 180 98 set internal state (real and imaginary part)., f 49
+;
+#X text 180 118 clear internal state to zero (same as "set 0 0").;
+#X text 71 352 1) list - real and imaginary part of coefficient (default
+0 0)., f 63;
+#X text 117 300 signal - filtered signal \, imaginary part.;
+#X text 117 269 signal - filtered signal \, real part.;
+#X text 33 98 set <float \, float> -;
+#X obj 8 263 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 293 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 355 9 pd reference;
+#X text 449 9 <= click;
+#X connect 0 0 7 0;
+#X connect 1 0 7 0;
+#X connect 4 0 7 1;
+#X connect 5 0 7 2;
+#X connect 6 0 7 3;
+#X connect 11 0 7 0;
+#X connect 33 0 35 0;

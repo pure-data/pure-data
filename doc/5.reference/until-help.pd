@@ -1,23 +1,50 @@
-#N canvas 675 95 495 378 12;
-#X msg 74 179 bang;
-#X obj 66 15 until;
-#X text 28 50 The until object's left inlet starts a loop in which
+#N canvas 462 63 425 418 12;
+#X msg 85 198 bang;
+#X obj 35 21 until;
+#X text 32 66 The until object's left inlet starts a loop in which
 it outputs "bang" until its right inlet gets a bang which stops it.
 If you start "until" with a number \, it iterates at most that number
-of times \, as in the Max "uzi" object.;
-#X text 33 128 WARNING: if you bang an "until" which doesn't have a
+of times \, as in the Max "uzi" object., f 52;
+#X text 32 142 WARNING: if you bang an "until" which doesn't have a
 stopping mechanism \, Pd goes into an infinite loop!;
-#X obj 74 237 until;
-#X text 119 178 start;
-#X msg 82 206 3;
-#X text 118 207 start limited to 3 iterations;
-#X obj 74 265 f;
-#X obj 112 265 + 1;
-#X obj 157 264 sel 0;
-#X obj 74 319 print;
-#X obj 112 291 mod 10;
-#X text 234 310 updated for Pd version 0.28;
-#X text 115 16 - loop;
+#X obj 85 256 until;
+#X text 130 197 start;
+#X msg 93 225 3;
+#X text 129 226 start limited to 3 iterations;
+#X obj 85 284 f;
+#X obj 123 284 + 1;
+#X obj 168 283 sel 0;
+#X obj 85 338 print;
+#X obj 123 310 mod 10;
+#X text 200 385 updated for Pd version 0.28;
+#X obj 12 52 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 12 371 cnv 1 400 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 334 21 <= click;
+#N canvas 598 111 573 271 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 170 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 246 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 207 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 147 218 NONE, f 52;
+#X obj 38 18 until;
+#X text 87 18 - bang loop;
+#X text 136 180 bang - bangs in a loop., f 49;
+#X text 137 106 bang - start loop until a bang reaches the right inlet.
+;
+#X text 130 86 float - set number of iterations in the loop.;
+#X obj 7 130 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 9 83 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 137 136 bang - stops the loop.;
+#X restore 240 21 pd reference;
+#X text 84 22 - bang loop;
 #X connect 0 0 4 0;
 #X connect 4 0 8 0;
 #X connect 6 0 4 0;
