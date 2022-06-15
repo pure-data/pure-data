@@ -13,7 +13,7 @@ array set ::dialog_iemgui_knb::var_end_angle {} ;
 proc ::dialog_iemgui_knb::preset_col {mytoplevel presetcol} {
     set vid [string trimleft $mytoplevel .]
 
-    if { $::dialog_iemgui::var_colortype($vid) == 3 } { 
+    if { $::dialog_iemgui::var_colortype($vid) == 3 } {
         set ::dialog_iemgui_knb::var_color_arc($vid) $presetcol
     }
 }
@@ -65,7 +65,7 @@ proc ::dialog_iemgui_knb::create_properties {mytoplevel current_font ticks arc_c
         $applycmd
     pack $mytoplevel.para.std.move_label -side left -expand 0 -ipadx 4
     pack $mytoplevel.para.std.move_mode -side left -expand 0 -ipadx 10
-        
+
     $mytoplevel.rng.min.lab configure -text [_ "Lower:"]
     $mytoplevel.rng.max_lab configure -text [_ "Upper:"]
     # style
