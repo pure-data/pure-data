@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2021-09-14 19:22+0200\n"
+"PO-Revision-Date: 2022-06-15 14:40+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
 "Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.3\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "------dimensions(chiffres)(pix):------"
@@ -389,6 +389,15 @@ msgstr "seulement Y"
 msgid "Atom Box Properties"
 msgstr "Propriétés de la boîte Nombre/Symbole"
 
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Send symbol:"
+msgstr "Envoyer au symbole :"
+
+msgid "Receive symbol:"
+msgstr "Recevoir du symbole :"
+
 msgid "Width:"
 msgstr "Largeur :"
 
@@ -416,15 +425,6 @@ msgstr "Haut"
 msgid "Bottom"
 msgstr "Bas"
 
-msgid "Messages"
-msgstr "Messages"
-
-msgid "Send symbol:"
-msgstr "Envoyer au symbole :"
-
-msgid "Receive symbol:"
-msgstr "Recevoir du symbole :"
-
 msgid "Background color"
 msgstr "Couleur de l'arrière plan"
 
@@ -434,29 +434,17 @@ msgstr "Couleur du premier plan"
 msgid "Label color"
 msgstr "Couleur du label"
 
-msgid "Init"
-msgstr "Initialisation"
-
-msgid "No init"
-msgstr "Pas d'init."
-
-msgid "Jump on click"
-msgstr "Instantané"
-
-msgid "Steady on click"
-msgstr "Glissant"
-
 msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr "Durée du flash (ms)"
 
-msgid "Intrrpt:"
-msgstr "Intrrpt :"
+msgid "Min:"
+msgstr ""
 
-msgid "Hold:"
-msgstr "Maintient :"
+msgid "Max:"
+msgstr ""
 
 msgid "Toggle"
 msgstr "Interrupteur"
@@ -513,6 +501,18 @@ msgstr "Propriétés de l'objet %s"
 msgid "Parameters"
 msgstr "Paramètres"
 
+msgid "Init"
+msgstr "Initialisation"
+
+msgid "No init"
+msgstr "Pas d'init."
+
+msgid "Jump on click"
+msgstr "Instantané"
+
+msgid "Steady on click"
+msgstr "Glissant"
+
 msgid "X offset:"
 msgstr "Offset en X :"
 
@@ -533,6 +533,42 @@ msgstr "Créer la couleur"
 
 msgid "Test label"
 msgstr "Label de test"
+
+msgid "Arc color"
+msgstr "Couleur de l'arc"
+
+msgid "Sensitivity:"
+msgstr "Sensibilité :"
+
+msgid "Move:"
+msgstr "Mouvement :"
+
+msgid "Angle"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "X+Y"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "Ticks: "
+msgstr "Graduations : "
+
+msgid "Arc thickness: "
+msgstr "Épaisseur arc : "
+
+msgid "Start angle: "
+msgstr "Angle début : "
+
+msgid "End angle: "
+msgstr "Angle fin : \" "
+
+msgid "Arc"
+msgstr ""
 
 msgid "Send a Pd message"
 msgstr "Envoyer un message à Pd"
@@ -945,8 +981,8 @@ msgstr "Installer %1$s dans %2$s ?"
 #, tcl-format
 msgid "Cancelling download of %s: No installation directory given."
 msgstr ""
-"Annulation du téléchargement de %s : aucun répertoire d'installation n'a "
-"été indiqué."
+"Annulation du téléchargement de %s : aucun répertoire d'installation n'a été "
+"indiqué."
 
 msgid "Installing to non-existent directory failed"
 msgstr "L'installation dans un répertoire inexistant a échoué"
@@ -1090,8 +1126,16 @@ msgstr "refus de supprimer un domaine vide"
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr "Impossible de créer des préférences \"%1$s\" en %2$s"
 
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "ignorer '%s' : n'existe pas"
+
 msgid "About Pd"
 msgstr "À propos de Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "impossible de lire le document : %s"
 
 msgid "Save"
 msgstr "Enregistrer"
@@ -1159,11 +1203,17 @@ msgstr "Message"
 msgid "Number"
 msgstr "Nombre"
 
+msgid "List"
+msgstr "Liste"
+
 msgid "Symbol"
 msgstr "Symbole"
 
 msgid "Comment"
 msgstr "Commentaire"
+
+msgid "Knob"
+msgstr "Bouton"
 
 msgid "Graph"
 msgstr "Graphique"
@@ -1224,6 +1274,9 @@ msgstr "Liste des objets..."
 
 msgid "puredata.info"
 msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr "Vérifier les mises à jour"
 
 msgid "Report a bug"
 msgstr "Signaler un problème"
@@ -1340,12 +1393,14 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #, tcl-format
-msgid "ignoring '%s': doesn't exist"
-msgstr "ignorer '%s' : n'existe pas"
-
-#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "Intrrpt:"
+#~ msgstr "Intrrpt :"
+
+#~ msgid "Hold:"
+#~ msgstr "Maintient :"
 
 #~ msgid "Are you online?"
 #~ msgstr "Êtes-vous connecté(e) ?"
