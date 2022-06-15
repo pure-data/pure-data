@@ -126,6 +126,7 @@ pd_SOURCES_core = \
     g_graph.c \
     g_guiconnect.c \
     g_io.c \
+    g_knob.c \
     g_mycanvas.c \
     g_numbox.c \
     g_radio.c \
