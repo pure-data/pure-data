@@ -397,6 +397,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     else rtext_formattext(x, widthp, heightp, indexp,
             tempbuf, &outchars_b, &selstart_b, &selend_b,
             fontwidth, fontheight);
+    tempbuf[outchars_b]=0;
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
