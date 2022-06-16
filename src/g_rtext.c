@@ -432,7 +432,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } %d %s\n",
+        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s} %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
             text_xpix(x->x_text, x->x_glist) + lmargin,
                 text_ypix(x->x_text, x->x_glist) + tmargin,
@@ -443,7 +443,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     }
     else if (action == SEND_UPDATE)
     {
-        sys_vgui("pdtk_text_set .x%lx.c %s {%s }\n",
+        sys_vgui("pdtk_text_set .x%lx.c %s {%s}\n",
             canvas, x->x_tag, escbuf);
         if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,

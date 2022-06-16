@@ -482,7 +482,7 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
     pdgui_strnescape( lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
 
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape \"%s \"] \n",
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape \"%s\"] \n",
                  glist_getcanvas(iemgui->x_glist), x,
                  strcmp(s->s_name, "empty")?lab_escaped:"");
 }
