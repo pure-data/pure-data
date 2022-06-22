@@ -285,9 +285,8 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
         method = symbol2resamplemethod(s);
         if (method >= 0)
             x->x_updown.method = method;
-        if (s == gensym("fwd"))         /* turn on forwarding */
-            x->x_fwdout = outlet_new(&x->x_obj, 0);
     }
+    x->x_fwdout = outlet_new(&x->x_obj, 0);
     return (x);
 }
 
