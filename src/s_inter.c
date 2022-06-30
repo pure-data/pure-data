@@ -46,8 +46,8 @@ that didn't really belong anywhere. */
 /* colorize output, but only on a TTY */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#else // if isatty exists outside unistd, please add another #ifdef
-static int isatty(int fd) {return 0;}
+#else /* if isatty exists outside unistd, please add another #ifdef */
+# define isatty(fd) 0
 #endif
 static int stderr_isatty;
 
