@@ -525,9 +525,17 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         f = 4;
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
-                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
-                 iemgui->x_fontsize*zoom, sys_fontweight);
+    {
+        char tag[128];
+        t_atom fontatoms[3];
+        sprintf(tag, "%lxLABEL", x);
+        SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
+        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        pdgui_vmess(0, "crs rA",
+            glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
+            "-font", 3, fontatoms);
+    }
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -857,4 +865,3 @@ external GUI object uses obsolete Pd function iemgui_all_colfromload()");
         iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
     }
 }
-

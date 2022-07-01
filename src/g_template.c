@@ -2645,12 +2645,16 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
     int vis)
 {
     t_drawnumber *x = (t_drawnumber *)z;
+    char tag[80];
+    const char*tags[] = {tag, "label"};
 
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag, "drawnumber%lx", data);
     if (vis)
     {
+        t_atom fontatoms[3];
         t_atom at;
         int xloc = glist_xtopixels(glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
@@ -2660,15 +2664,21 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
             colorstring);
         drawnumber_getbuf(x, data, template, buf);
-        sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
-                glist_getcanvas(glist), xloc, yloc, colorstring, buf);
-        sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                sys_fontweight);
-        sys_vgui(" -tags [list drawnumber%lx label]\n", data);
+
+        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        SETFLOAT (fontatoms+1,-sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        pdgui_vmess(0, "crr ii rs rs rs rA rS",
+            glist_getcanvas(glist), "create", "text",
+            xloc, yloc,
+            "-anchor", "nw",
+            "-fill", colorstring,
+            "-text", buf,
+            "-font", 3, fontatoms,
+            "-tags", 2, tags);
     }
-    else sys_vgui(".x%lx.c delete drawnumber%lx\n",
-        glist_getcanvas(glist), data);
+    else
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
 }
 
 static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,
