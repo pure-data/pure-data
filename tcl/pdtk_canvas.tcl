@@ -434,10 +434,17 @@ proc ::pdtk_canvas::addchild {mytoplevel child} {
 
 # receive a list of all my parent windows from 'pd'
 proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
-    set ::parentwindows($mytoplevel) $args
+    # check if the user passed a list (instead of multiple arguments)
+    if { [llength $args] == 1 } {set args [lindex $args 0]}
+    set parents {}
     foreach parent $args {
+        if { [catch {set parent [winfo toplevel $parent]}] } {
+            if { [file extension $parent] eq .c } {set parent [file rootname $parent]}
+        }
+        lappend parents $parent
         addchild $parent $mytoplevel
     }
+    set ::parentwindows($mytoplevel) $parents
 }
 
 # receive information for setting the info in the title bar of the window
