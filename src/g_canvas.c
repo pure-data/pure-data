@@ -972,6 +972,15 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     }
 }
 
+static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
+{
+    char tag[128];
+    if (!glist_isvisible(x))
+        return;
+    sprintf(tag, "l%lx", oc);
+    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+}
+
     /* kill all lines for the object */
 void canvas_deletelinesfor(t_canvas *x, t_text *text)
 {
@@ -982,11 +991,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            if (glist_isvisible(x))
-            {
-                sys_vgui(".x%lx.c delete l%lx\n",
-                    glist_getcanvas(x), oc);
-            }
+            _canvas_delete_line(x, oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1004,11 +1009,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
-            if (glist_isvisible(x))
-            {
-                sys_vgui(".x%lx.c delete l%lx\n",
-                    glist_getcanvas(x), oc);
-            }
+            _canvas_delete_line(x, oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }

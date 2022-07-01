@@ -58,6 +58,16 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 /* ------------------------ managing the selection ----------------- */
 void glist_deselectline(t_glist *x);
+
+static void _editor_selectlinecolor(t_glist*x, const char*color)
+{
+    char tag[128];
+    sprintf(tag, "l%lx", x->gl_editor->e_selectline_tag);
+    pdgui_vmess(0, "crs rs",
+        x, "itemconfigure", tag,
+        "-fill", color);
+
+}
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
     int outno, int index2, int inno)
 {
@@ -71,8 +81,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill blue\n",
-            x, x->gl_editor->e_selectline_tag);
+        _editor_selectlinecolor(x, "blue");
     }
 }
 
@@ -81,8 +90,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         x->gl_editor->e_selectedline = 0;
-        sys_vgui(".x%lx.c itemconfigure l%lx -fill black\n",
-            x, x->gl_editor->e_selectline_tag);
+        _editor_selectlinecolor(x, "black");
     }
 }
 

@@ -46,10 +46,16 @@ static t_gfxstub *gfxstub_list;
     it so we can provide a name by which the GUI can send us back
     messages; e.g., "pdtk_canvas_dofont %s 10". */
 
+static t_symbol*gfxstub_symbol(t_gfxstub *x)
+{
+    char namebuf[80];
+    sprintf(namebuf, ".gfxstub%lx", (t_int)x);
+    return gensym(namebuf);
+}
+
 void gfxstub_new(t_pd *owner, void *key, const char *cmd)
 {
     char buf[4*MAXPDSTRING];
-    char namebuf[80];
     char sprintfbuf[MAXPDSTRING];
     char *afterpercent;
     t_int afterpercentlen;
@@ -66,9 +72,8 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
         return;
     }
     x = (t_gfxstub *)pd_new(gfxstub_class);
-    sprintf(namebuf, ".gfxstub%lx", (t_int)x);
 
-    s = gensym(namebuf);
+    s = gfxstub_symbol(x);
     pd_bind(&x->x_pd, s);
     x->x_owner = owner;
     x->x_sym = s;
@@ -112,7 +117,8 @@ void gfxstub_deleteforkey(void *key)
         {
             if (y->x_key == key)
             {
-                sys_vgui("destroy .gfxstub%lx\n", y);
+                t_symbol *s = gfxstub_symbol(y);
+                pdgui_vmess("destroy", "s", s->s_name);
                 y->x_owner = 0;
                 gfxstub_offlist(y);
                 didit = 1;
