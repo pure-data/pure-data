@@ -1877,6 +1877,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
             char winpos[128];
+            t_canvas**parents = getbytes(0);
+            size_t numparents;
 
             canvas_create_editor(x);
             if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
@@ -1891,16 +1893,19 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 (int)(x->gl_screeny2 - x->gl_screeny1),
                 winpos, x->gl_edit);
 
+            numparents = 0;
             while (c->gl_owner && !c->gl_isclone) {
-                int cbuflen;
+                t_canvas**newparents = (t_canvas**)resizebytes(parents, numparents * sizeof(*newparents), (numparents+1) * sizeof(*newparents));
+                if (!newparents)
+                    break;
                 c = c->gl_owner;
-                cbuflen = (int)strlen(cbuf);
-                snprintf(cbuf + cbuflen,
-                    MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                    " .x%lx", c);
+                parents = newparents;
+                parents[numparents] = c;
+                numparents++;
             }
-            strcat(cbuf, "\n");
-            sys_gui(cbuf);
+            pdgui_vmess("pdtk_canvas_setparents", "^C", x, numparents, parents);
+            freebytes(parents, numparents * sizeof(t_canvas));
+
             x->gl_havewindow = 1;
             canvas_reflecttitle(x);
             canvas_updatewindowlist();
