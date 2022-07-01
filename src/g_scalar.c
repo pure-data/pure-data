@@ -587,13 +587,9 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     b = glist_writetobinbuf(owner, 0);
     binbuf_gettext(b, &buf, &bufsize);
     binbuf_free(b);
-    buf = t_resizebytes(buf, bufsize, bufsize+1);
-    buf[bufsize] = 0;
-    sprintf(buf2, "pdtk_data_dialog %%s {");
-    gfxstub_new((t_pd *)owner, x, buf2);
-    sys_gui(buf);
-    sys_gui("}\n");
-    t_freebytes(buf, bufsize+1);
+    pdgui_stub_vnew((t_pd*)owner, "pdtk_data_dialog", x,
+        "p", bufsize, buf);
+    t_freebytes(buf, bufsize);
 }
 
 static const t_widgetbehavior scalar_widgetbehavior =
@@ -620,7 +616,7 @@ static void scalar_free(t_scalar *x)
         return;
     }
     word_free(x->sc_vec, template);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
         /* the "size" field in the class is zero, so Pd doesn't try to free
         us automatically (see pd_free()) */
     freebytes(x, sizeof(t_scalar) + (template->t_n - 1) * sizeof(*x->sc_vec));

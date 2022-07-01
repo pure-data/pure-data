@@ -1299,7 +1299,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         t_int properties = gfxstub_haveproperties((void *)x);
         if (properties)
         {
-            gfxstub_deleteforkey(x);
+            pdgui_stub_deleteforkey(x);
         }
 #endif
             /* store current canvas values into temporary data holder */
@@ -2017,23 +2017,25 @@ void canvas_properties(t_gobj*z, t_glist*unused)
 {
     t_glist *x = (t_glist*)z;
     t_gobj *y;
-    char graphbuf[200];
-    if (glist_isgraph(x) != 0)
-        sprintf(graphbuf,
-            "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
-                0., 0.,
-                glist_isgraph(x) ,
-                x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
-    else sprintf(graphbuf,
-            "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
-                glist_dpixtodx(x, 1), -glist_dpixtody(x, 1),
-                0,
-                0., -1., 1., 1.,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
-    gfxstub_new(&x->gl_pd, x, graphbuf);
+    int isgraph = glist_isgraph(x);
+    t_float x1=0., y1=-1., x2=1., y2=1.;
+    t_float xscale=0., yscale=0.;
+    if(isgraph) {
+        x1=x->gl_x1;
+        y1=x->gl_y1;
+        x2=x->gl_x2;
+        y2=x->gl_y2;
+    } else {
+        xscale= glist_dpixtodx(x, 1);
+        yscale=-glist_dpixtody(x, 1);
+    }
+    pdgui_stub_vnew(&x->gl_pd, "pdtk_canvas_dialog", x, "ff i ffff ii ii",
+        xscale, yscale,  /* used to be %g ... */
+        isgraph,
+        x1,y1, x2,y2,  /* used to be %g ... */
+        (int)x->gl_pixwidth, (int)x->gl_pixheight,
+        (int)x->gl_xmargin, (int)x->gl_ymargin);
+
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == garray_class)
@@ -3366,11 +3368,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
     /* put up a dialog which may call canvas_font back to do the work */
 static void canvas_menufont(t_canvas *x)
 {
-    char buf[80];
     t_canvas *x2 = canvas_getrootfor(x);
-    gfxstub_deleteforkey(x2);
-    sprintf(buf, "pdtk_canvas_dofont %%s %d\n", x2->gl_font);
-    gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
+    pdgui_stub_deleteforkey(x2);
+    pdgui_stub_vnew(&x2->gl_pd, "pdtk_canvas_dofont", &x2->gl_pd,
+        "i", x2->gl_font);
 }
 
 typedef void (*t_zoomfn)(void *x, t_floatarg arg1);

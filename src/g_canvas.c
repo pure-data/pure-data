@@ -927,7 +927,7 @@ void canvas_free(t_canvas *x)
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
     gstub_cutoff(x->gl_stub);
-    gfxstub_deleteforkey(x);        /* probably unnecessary */
+    pdgui_stub_deleteforkey(x);        /* probably unnecessary */
     if (!x->gl_owner && !x->gl_isclone)
         canvas_takeofflist(x);
 }

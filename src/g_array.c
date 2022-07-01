@@ -265,7 +265,7 @@ static void garray_fittograph(t_garray *x, int n, int style)
             glist_redraw(gl);
         }
             /* close any dialogs that might have the wrong info now... */
-        gfxstub_deleteforkey(gl);
+        pdgui_stub_deleteforkey(gl);
     }
 }
 
@@ -347,21 +347,21 @@ void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *)canvas;
     int gcount;
-    char cmdbuf[200], arraybuf[80];
+    char arraybuf[80];
     for (gcount = 1; gcount < 1000; gcount++)
     {
         sprintf(arraybuf, "array%d", gcount);
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount);
-    gfxstub_new(&x->gl_pd, x, cmdbuf);
+    pdgui_stub_vnew(&x->gl_pd,
+        "pdtk_array_dialog", x, "siii",
+        arraybuf, 100, 3, 1);
 }
 
     /* called from graph_dialog to set properties */
 void garray_properties(t_garray *x)
 {
-    char cmdbuf[200];
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
     int style = template_getfloat(template_findbyname(sc->sc_template),
@@ -371,14 +371,12 @@ void garray_properties(t_garray *x)
 
     if (!a)
         return;
-    gfxstub_deleteforkey(x);
-        /* create dialog window.  LATER fix this to escape '$'
-        properly; right now we just detect a leading '$' and escape
-        it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, "pdtk_array_dialog %%s {%s} %d %d 0\n",
-            x->x_name->s_name, a->a_n, x->x_saveit +
-            2 * filestyle);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+    pdgui_stub_deleteforkey(x);
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_dialog", x,
+        "siii",
+        x->x_name->s_name,
+        a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
     /* this is called back from the dialog window to create a garray.
@@ -550,7 +548,7 @@ static void garray_free(t_garray *x)
         garray_arrayviewlist_close(x);
     }
     /* } jsarlo */
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
     while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
