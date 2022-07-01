@@ -280,29 +280,33 @@ static void vradio_save(t_gobj *z, t_binbuf *b)
 static void vradio_properties(t_gobj *z, t_glist *owner)
 {
     t_radio *x = (t_radio *)z;
-    char buf[800];
     t_symbol *srl[3];
     int hchange = -1;
+    char bcol[10], lcol[10], fcol[10];
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
     if(pd_class(&x->x_gui.x_obj.ob_pd) == vradio_old_class)
         hchange = x->x_change;
-    sprintf(buf, "pdtk_iemgui_dialog %%s |vradio| \
-            ----------dimensions(pix):----------- %d %d size: 0 0 empty \
-            empty 0.0 empty 0.0 empty %d \
-            %d new-only new&old %d %d number: %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            0,/*no_schedule*/
-            hchange, x->x_gui.x_isa.x_loadinit, -1, x->x_number,
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r ir ir  i  irr ii ri ss sii ii rrr",
+        "|vradio|",
+        "----------dimensions(pix):-----------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "size:",
+        0, 0, "empty",
+        "empty",
+        0, "empty",
+        0, "empty",
+        0 /* no schedule */,
+        hchange, "new-only", "new&old",
+        x->x_gui.x_isa.x_loadinit, -1 /* no steady */,
+        "number:", x->x_number, /* multi */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
+        bcol, fcol, lcol);
 }
 
 static void vradio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
@@ -682,7 +686,7 @@ static void vradio_ff(t_radio *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_vradio_setup(void)

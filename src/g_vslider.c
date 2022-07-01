@@ -291,27 +291,31 @@ void vslider_check_minmax(t_slider *x, double min, double max)
 static void vslider_properties(t_gobj *z, t_glist *owner)
 {
     t_slider *x = (t_slider *)z;
-    char buf[800];
     t_symbol *srl[3];
+    char bcol[10], lcol[10], fcol[10];
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
 
-    sprintf(buf, "pdtk_iemgui_dialog %%s |vsl| \
-            --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
-            -----------output-range:----------- %g bottom: %g top: %d \
-            %d lin log %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_SL_MINSIZE,
-            x->x_min, x->x_max, 0,/*no_schedule*/
-            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_steady, -1,/*no multi, but iem-characteristic*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii rrr",
+        "|vsl|",
+        "--------dimensions(pix)(pix):--------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "width:",
+        x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_SL_MINSIZE, "height:",
+        "-----------output-range:-----------",
+        x->x_min, "bottom:",
+        x->x_max, "top:",
+        0 /*no_schedule*/,
+        x->x_lin0_log1, "lin", "log",
+        x->x_gui.x_isa.x_loadinit, x->x_steady,
+        "empty", -1, /* no multi, but iem-characteristic */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
+        bcol, fcol, lcol);
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */
@@ -640,7 +644,7 @@ static void vslider_free(t_slider *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_vslider_setup(void)
