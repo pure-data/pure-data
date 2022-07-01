@@ -185,6 +185,50 @@ static void gfxstub_setup(void)
         gensym("cancel"), 0);
 }
 
+#include <stdarg.h>
+/* pdgui_*mess() are from s_inter_gui.c */
+void pdgui_vamess(const char* message, const char* format, va_list args);
+void pdgui_endmess(void);
+
+static void _pdguistub_vamess(const char*dest, const char*fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    pdgui_vamess(dest, fmt, args);
+    va_end(args);
+}
+void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...)
+{
+    t_symbol*s;
+    t_gfxstub *x;
+    va_list args;
+
+        /* if any exists with matching key, burn it. */
+    for (x = gfxstub_list; x; x = x->x_next)
+        if (x->x_key == key)
+            gfxstub_deleteforkey(key);
+    x = (t_gfxstub *)pd_new(gfxstub_class);
+    s = gfxstub_symbol(x);
+    pd_bind(&x->x_pd, s);
+    x->x_owner = owner;
+    x->x_sym = s;
+    x->x_key = key;
+    x->x_next = gfxstub_list;
+    gfxstub_list = x;
+
+    _pdguistub_vamess(destination, "s", s->s_name);
+    va_start(args, fmt);
+    pdgui_vamess(0, fmt, args);
+    va_end(args);
+    pdgui_endmess();
+
+
+}
+void pdgui_stub_deleteforkey(void *key)
+{
+    gfxstub_deleteforkey(key);
+}
+
 /* -------------------------- openpanel ------------------------------ */
 
 static t_class *openpanel_class;
