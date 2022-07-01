@@ -66,22 +66,28 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 static void textbuf_senditup(t_textbuf *x)
 {
     int i, ntxt;
-    char *txt;
+    char *txt, *buf;
     if (!x->b_guiconnect)
         return;
 
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
+    buf = getbytes(ntxt+2);
+    memcpy(buf, txt, ntxt);
+    buf[ntxt] = buf[ntxt+1] = 0;
+        /* append a trailing newline, but only if there isn't one there already */
+    if ('\n' != buf[ntxt-1]) buf[ntxt] = '\n';
+
     pdgui_vmess("pdtk_textwindow_clear", "^", x);
-    for (i = 0; i < ntxt; )
-    {
-        char *j = strchr(txt+i, '\n');
-        if (!j) j = txt + ntxt;
-        sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
-            x, j-txt-i, txt+i);
-        i = (int)((j-txt)+1);
-    }
+    pdgui_vmess("pdtk_textwindow_append", "^s", x, buf);
+#if 0
+        /* it would be nice to send the binbuf directly
+         * and let the GUI figure out when to do linebreaks */
+    pdgui_vmess("pdtk_textwindow_setatoms", "^A", x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
+#endif
+
     pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
     t_freebytes(txt, ntxt);
+    freebytes(buf, ntxt+2);
 }
 
 static void textbuf_open(t_textbuf *x)
