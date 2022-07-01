@@ -300,11 +300,20 @@ static int canvas_undo_confirmdiscard(t_gobj *g)
         canvas_isabstraction((t_glist *)g) &&
         (gl2 = glist_finddirty((t_glist *)g)))
     {
+        t_canvas*c = canvas_getrootfor(gl2);
+        const char *msg[]= {"Discard changes to '%s'?", c->gl_name->s_name};
+        char buf[80];
+        t_atom backmsg[2];
+        sprintf(buf, ".x%lx", gl2);
+        SETSYMBOL(backmsg+0, gensym("dirty"));
+        SETFLOAT (backmsg+1, 0);
         vmess(&gl2->gl_pd, gensym("menu-open"), "");
-        sys_vgui(
-            "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
-            canvas_getrootfor(gl2),
-            canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+        pdgui_vmess("pdtk_check", "^ Sms",
+            c,
+            2, msg,
+            gensym(buf), 2, backmsg,
+            "no");
+
         return 1;
     }
     return 0;
@@ -3258,17 +3267,28 @@ static t_glist *glist_finddirty(t_glist *x)
 void glob_verifyquit(void *dummy, t_floatarg f)
 {
     t_glist *g, *g2;
+    const char*msg = "really quit?";
         /* find all root canvases */
     for (g = pd_getcanvaslist(); g; g = g->gl_next)
         if ((g2 = glist_finddirty(g)))
         {
+            t_atom backmsg[2];
+            char buf[40];
+            sprintf(buf, ".x%lx", g2);
+            SETSYMBOL(backmsg+0, gensym("menuclose"));
+            SETFLOAT (backmsg+1, 3);
+
             canvas_vis(g2, 1);
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 3;\n}\n",
-                     canvas_getrootfor(g2), g2);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                        canvas_getrootfor(g),
+                        gensym(buf), 2, backmsg);
             return;
         }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check .pdwindow {really quit?} {pd quit} yes\n");
+        pdgui_vmess("pdtk_check", "r Sss",
+            ".pdwindow",
+            1, &msg,
+            "pd quit", "yes");
     else glob_quit(0);
 }
 
@@ -3283,6 +3303,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
     int force = fforce;
     t_glist *g;
+    t_atom backmsg[2];
+    char buf[40];
+    SETSYMBOL(backmsg+0, gensym("menuclose"));
+    SETSYMBOL(backmsg+1, 0);
     if (x->gl_owner && (force == 0 || force == 1))
         canvas_vis(x, 0);   /* if subpatch, just invis it */
     else if (force == 0)
@@ -3290,16 +3314,25 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         g = glist_finddirty(x);
         if (g)
         {
+            sprintf(buf, ".x%lx", g);
+            SETFLOAT(backmsg+1, 2);
+
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
-                     canvas_getrootfor(g), g);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
         else if (sys_perf)
         {
-            sys_vgui(
-                "pdtk_check .x%lx {Close this window?} {.x%lx menuclose 1;\n} yes\n",
-                canvas_getrootfor(x), x);
+            const char*msg = "Close this window?";
+            sprintf(buf, ".x%lx", x);
+            SETFLOAT(backmsg+1, 1);
+
+            pdgui_vmess("pdtk_check", "^ Sms",
+                canvas_getrootfor(x),
+                1, &msg,
+                gensym(buf), 2, backmsg,
+                "yes");
         }
         else pd_free(&x->gl_pd);
     }
@@ -3313,9 +3346,12 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         g = glist_finddirty(x);
         if (g)
         {
+            sprintf(buf, ".x%lx", g);
+            SETFLOAT(backmsg+1, 2);
+
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
-                     canvas_getrootfor(g), g);
+            pdgui_vmess("pdtk_canvas_menuclose", "^m",
+                        canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
         else pd_free(&x->gl_pd);
