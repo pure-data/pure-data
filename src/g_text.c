@@ -1600,7 +1600,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     if ((ob = pd_checkobject(&x->te_pd)))
         glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
     if (firsttime) /* raise cords over everything else */
-        sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
+        pdgui_vmess(0, "crr", glist_getcanvas(glist), "raise", "cord");
 }
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)

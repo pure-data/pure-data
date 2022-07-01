@@ -259,7 +259,7 @@ void sys_set_audio_settings(t_audiosettings *a)
     initted = 1;
 
     sys_log_error(ERR_NOTHING);
-    sys_vgui("set pd_whichapi %d\n", audio_nextsettings.a_api);
+    pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
 }
 
 void sys_close_audio(void)
@@ -315,7 +315,7 @@ void sys_close_audio(void)
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_callback_is_open = 0;
 
-    sys_vgui("set pd_whichapi 0\n");
+    pdgui_vmess("set", "ri", "pd_whichapi", 0);
 }
 
 void sys_init_audio(void)
@@ -440,7 +440,7 @@ void sys_reopen_audio(void)
             (as.a_callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
         audio_callback_is_open = as.a_callback;
     }
-    sys_vgui("set pd_whichapi %d\n",  sys_audioapiopened);
+    pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
 }
 
 int sys_send_dacs(void)

@@ -69,8 +69,9 @@ static void textbuf_senditup(t_textbuf *x)
     char *txt;
     if (!x->b_guiconnect)
         return;
+
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
-    sys_vgui("pdtk_textwindow_clear .x%lx\n", x);
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
     for (i = 0; i < ntxt; )
     {
         char *j = strchr(txt+i, '\n');
@@ -79,7 +80,7 @@ static void textbuf_senditup(t_textbuf *x)
             x, j-txt-i, txt+i);
         i = (int)((j-txt)+1);
     }
-    sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
+    pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
     t_freebytes(txt, ntxt);
 }
 
@@ -87,8 +88,8 @@ static void textbuf_open(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("wm deiconify .x%lx\n", x);
-        sys_vgui("raise .x%lx\n", x);
+        pdgui_vmess("wm", "r^", "deiconify", x);
+        pdgui_vmess("raise", "^", x);
         sys_vgui("focus .x%lx.text\n", x);
     }
     else
@@ -108,7 +109,7 @@ static void textbuf_close(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
+        pdgui_vmess("pdtk_textwindow_doclose", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -203,7 +204,7 @@ static void textbuf_free(t_textbuf *x)
         binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
-        sys_vgui("destroy .x%lx\n", x);
+        pdgui_vmess("destroy", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */

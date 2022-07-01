@@ -452,19 +452,20 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         {
             if (selend_b > selstart_b)
             {
-                sys_vgui(".x%lx.c select from %s %d\n", canvas,
+                pdgui_vmess(0, "crr si",
+                    canvas, "select", "from",
                     x->x_tag, u8_charnum(x->x_buf, selstart_b));
-                sys_vgui(".x%lx.c select to %s %d\n", canvas,
+                pdgui_vmess(0, "crr si",
+                    canvas, "select", "to",
                     x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
-                sys_vgui(".x%lx.c focus \"\"\n", canvas);
+                pdgui_vmess(0, "crs", canvas, "focus", "");
             }
             else
             {
-                sys_vgui(".x%lx.c select clear\n", canvas);
-                sys_vgui(".x%lx.c icursor %s %d\n", canvas, x->x_tag,
-                    u8_charnum(x->x_buf, selstart_b));
-                sys_vgui("focus .x%lx.c\n", canvas);
-                sys_vgui(".x%lx.c focus %s\n", canvas, x->x_tag);
+                pdgui_vmess(0, "crr", canvas, "select", "clear");
+                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag, u8_charnum(x->x_buf, selstart_b));
+                pdgui_vmess("focus", "c", canvas);
+                pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
             }
         }
     }
@@ -523,21 +524,20 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    sys_vgui(".x%lx.c delete %s\n", glist_getcanvas(x->x_glist), x->x_tag);
+    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
-    sys_vgui(".x%lx.c move %s %d %d\n", glist_getcanvas(x->x_glist),
-        x->x_tag, dx, dy);
+    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)
 {
-    t_glist *glist = x->x_glist;
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c itemconfigure %s -fill %s\n", canvas,
-        x->x_tag, (state? "blue" : "black"));
+    pdgui_vmess(0, "crs rr",
+        glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
+        "-fill", (state? "blue" : "black"));
 }
 
 void gatom_undarken(t_text *x);
@@ -549,7 +549,7 @@ void rtext_activate(t_rtext *x, int state)
     t_canvas *canvas = glist_getcanvas(glist);
     if (state)
     {
-        sys_vgui("pdtk_text_editing .x%lx %s 1\n", canvas, x->x_tag);
+        pdgui_vmess("pdtk_text_editing", "^si", canvas, x->x_tag, 1);
         glist->gl_editor->e_textedfor = x;
         glist->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
@@ -558,7 +558,7 @@ void rtext_activate(t_rtext *x, int state)
     }
     else
     {
-        sys_vgui("pdtk_text_editing .x%lx {} 0\n", canvas);
+        pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;

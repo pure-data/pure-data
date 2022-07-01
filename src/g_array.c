@@ -494,7 +494,7 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
     if(page < 0)
         page = 0;
 
-    sys_vgui("::dialog_array::listview_setpage {%s} %d %d %d\n",
+    pdgui_vmess("::dialog_array::listview_setpage", "s iii",
         x->x_realname->s_name,
         page, maxpage+1, pagesize);
 
@@ -509,7 +509,7 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
     }
     sys_vgui("\n");
 
-    sys_vgui("::dialog_array::listview_focus {%s} %d\n",
+    pdgui_vmess("::dialog_array::listview_focus", "si",
              x->x_realname->s_name,
              topItem);
 }
@@ -537,7 +537,7 @@ static void garray_arrayviewlist_new(t_garray *x)
 static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow {%s}\n",
+    pdgui_vmess("pdtk_array_listview_closeWindow", "s",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -783,7 +783,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage {%s}\n",
+          pdgui_vmess("pdtk_array_listview_fillpage", "s",
                  x->x_realname->s_name);
     }
     /* } jsarlo */

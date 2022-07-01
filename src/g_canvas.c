@@ -164,7 +164,7 @@ void canvas_updatewindowlist(void)
 {
             /* not if we're in a reload */
     if (!THISGUI->i_reloadingabstraction)
-        sys_gui("::pd_menus::update_window_menu\n");
+        pdgui_vmess("::pd_menus::update_window_menu", 0);
 }
 
     /* add a glist the list of "root" canvases (toplevels without parents.) */
@@ -739,8 +739,10 @@ void canvas_reflecttitle(t_canvas *x)
         strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
         namebuf[MAXPDSTRING-1] = 0;
     }
-    sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
-        x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        x->gl_dirty);
 }
 
     /* mark a glist dirty or clean */
@@ -768,12 +770,16 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-                x->gl_zoom);
+        pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rr",
+            glist_getcanvas(x), "create", "line",
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+            "-fill", "#ff8080",
+            "-width", x->gl_zoom,
+            "-capstyle", "projecting",
+            "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
     }
-    else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
+    else
+        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -801,7 +807,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
             canvas_drawlines(x);
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);
-            sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+            pdgui_vmess("pdtk_canvas_getscroll", "c", x);
         }
     }
     else
@@ -814,7 +820,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            sys_vgui(".x%lx.c delete all\n", x);
+            pdgui_vmess(0, "crs", x, "delete", "all");
             x->gl_mapped = 0;
         }
     }
@@ -1371,7 +1377,7 @@ static void canvas_start_dsp(void)
 {
     t_canvas *x;
     if (THISGUI->i_dspstate) ugen_stop();
-    else sys_gui("pdtk_pd_dsp ON\n");
+    else pdgui_vmess("pdtk_pd_dsp", "s", "ON");
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1387,7 +1393,7 @@ static void canvas_stop_dsp(void)
     if (THISGUI->i_dspstate)
     {
         ugen_stop();
-        sys_gui("pdtk_pd_dsp OFF\n");
+        pdgui_vmess("pdtk_pd_dsp", "s", "OFF");
         canvas_dspstate = THISGUI->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
@@ -2212,5 +2218,5 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
         return;
     }
     if (!glob_evalfile(ignore, name, dir))
-        sys_vgui("::pdwindow::busyrelease\n");
+        pdgui_vmess("::pdwindow::busyrelease", 0);
 }

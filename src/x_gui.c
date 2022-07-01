@@ -256,7 +256,7 @@ static void *openpanel_new(t_floatarg mode)
 static void openpanel_symbol(t_openpanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    sys_vgui("pdtk_openpanel {%s} {%s} %d\n",
+    pdgui_vmess("pdtk_openpanel", "ssi",
         x->x_s->s_name, path, x->x_mode);
 }
 
@@ -320,7 +320,8 @@ static void *savepanel_new(void)
 static void savepanel_symbol(t_savepanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    sys_vgui("pdtk_savepanel {%s} {%s}\n", x->x_s->s_name, path);
+    pdgui_vmess("pdtk_savepanel", "ss",
+        x->x_s->s_name, path);
 }
 
 static void savepanel_bang(t_savepanel *x)
@@ -513,11 +514,7 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 
 static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
 {
-    char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING, "::pd_menucommands::menu_openfile {%s}\n",
-        s->s_name);
-    buf[MAXPDSTRING-1] = 0;
-    sys_gui(buf);
+    pdgui_vmess("::pd_menucommands::menu_openfile", "s", s->s_name);
 }
 
 static void pdcontrol_isvisible(t_pdcontrol *x)

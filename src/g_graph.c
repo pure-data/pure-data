@@ -718,10 +718,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, glist_getzoom(x), tag);
         }
         else
-        {
-            sys_vgui(".x%lx.c delete %s\n",
-                glist_getcanvas(x->gl_owner), tag);
-        }
+            pdgui_vmess(0, "crs",
+                glist_getcanvas(x->gl_owner), "delete", tag);
         return;
     }
         /* otherwise draw (or erase) us as a graph inside another glist. */
@@ -857,8 +855,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     }
     else
     {
-        sys_vgui(".x%lx.c delete %s\n",
-            glist_getcanvas(x->gl_owner), tag);
+        pdgui_vmess(0, "crs", glist_getcanvas(x->gl_owner), "delete", tag);
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 0);
     }

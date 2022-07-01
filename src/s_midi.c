@@ -605,7 +605,7 @@ void sys_open_midi(int nmidiindev, int *midiindev,
     sys_save_midi_params(nmidiindev, midiindev,
         nmidioutdev, midioutdev);
 
-    sys_vgui("set pd_whichmidiapi %d\n", sys_midiapi);
+    pdgui_vmess("set", "ri", "pd_whichmidiapi", sys_midiapi);
 
 }
 
