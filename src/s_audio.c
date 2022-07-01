@@ -597,13 +597,13 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[MAXPDSTRING];
     t_audiosettings as;
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char device[MAXPDSTRING];
     char *indevs[MAXNDEV], *outdevs[MAXNDEV];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
+    char srate[80], callback[80], blocksize[80];
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
          &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
@@ -634,27 +634,26 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     if (as.a_nindev > 1 || as.a_noutdev > 1)
         flongform = 1;
 
+    sprintf(srate, "%s%d", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
+    sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
+    sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
+
         /* values that are fixed and must not be changed by the GUI are
         prefixed with '!';  * the GUI will then display these values but
         disable their widgets */
-    snprintf(buf, MAXPDSTRING,
-"pdtk_audio_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d \
-%s%d %d %d %s%d %d %s%d\n",
-        as.a_indevvec[0], as.a_indevvec[1],
-            as.a_indevvec[2], as.a_indevvec[3],
-        as.a_chindevvec[0], as.a_chindevvec[1],
-            as.a_chindevvec[2], as.a_chindevvec[3],
-        as.a_outdevvec[0], as.a_outdevvec[1],
-            as.a_outdevvec[2], as.a_outdevvec[3],
-        as.a_choutdevvec[0], as.a_choutdevvec[1],
-            as.a_choutdevvec[2], as.a_choutdevvec[3],
-        audio_isfixedsr(as.a_api)?"!":"", as.a_srate, as.a_advance, canmulti,
-        cancallback?"":"!", as.a_callback,
-        (flongform != 0), audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
+    pdgui_stub_deleteforkey(0);
+    pdgui_stub_vnew(&glob_pdobject,
+        "pdtk_audio_dialog", (void *)glob_audio_properties,
+        "iiii iiii iiii iiii  s ii s i s",
+        as.a_indevvec   [0], as.a_indevvec   [1], as.a_indevvec   [2], as.a_indevvec   [3],
+        as.a_chindevvec [0], as.a_chindevvec [1], as.a_chindevvec [2], as.a_chindevvec [3],
+        as.a_outdevvec  [0], as.a_outdevvec  [1], as.a_outdevvec  [2], as.a_outdevvec  [3],
+        as.a_choutdevvec[0], as.a_choutdevvec[1], as.a_choutdevvec[2], as.a_choutdevvec[3],
+        srate,
+        as.a_advance, canmulti,
+        callback,
+        (flongform != 0),
+        blocksize);
 }
 
     /* new values from dialog window */

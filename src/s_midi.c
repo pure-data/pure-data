@@ -690,7 +690,6 @@ extern t_class *glob_pdobject;
     /* start an midi settings dialog window */
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
@@ -744,30 +743,24 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
     midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
 
+    pdgui_stub_deleteforkey(0);
 #ifdef USEAPI_ALSA
-      if (sys_midiapi == API_ALSA)
-    sprintf(buf,
-"pdtk_alsa_midi_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d 1\n",
-        midiindev1, midiindev2, midiindev3, midiindev4,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4,
-        (flongform != 0));
-      else
+    if (sys_midiapi == API_ALSA)
+        pdgui_stub_vnew(&glob_pdobject,
+            "pdtk_alsa_midi_dialog", (void *)glob_midi_properties,
+            "iiii iiii ii",
+            midiindev1 , midiindev2 , midiindev3 , midiindev4 ,
+            midioutdev1, midioutdev2, midioutdev3, midioutdev4,
+            (flongform != 0), 1);
+    else
 #endif
-    sprintf(buf,
-"pdtk_midi_dialog %%s \
-%d %d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d %d \
-%d\n",
-        midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9,
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_midi_dialog", (void *)glob_midi_properties,
+        "iiiiiiiii iiiiiiiii i",
+        midiindev1 , midiindev2 , midiindev3 , midiindev4 , midiindev5 , midiindev6 , midiindev7 , midiindev8 , midiindev9 ,
+        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5, midioutdev6, midioutdev7, midioutdev8, midioutdev9,
         (flongform != 0));
-
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_midi_properties, buf);
 }
 
     /* new values from dialog window */
