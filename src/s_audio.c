@@ -602,20 +602,32 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char device[MAXPDSTRING];
+    char *indevs[MAXNDEV], *outdevs[MAXNDEV];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
          &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
 
-    sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend audio_indevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
-
-    sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
+        indevs[i] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend audio_outdevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+        outdevs[i] = outdevlist + i * DEVDESCSIZE;
+
+    if(!nindevs) {
+        nindevs = 1;
+        indevs[0] = "";
+    }
+    if(!noutdevs) {
+        noutdevs = 1;
+        outdevs[0] = "";
+    }
+
+    pdgui_vmess("set", "rS",
+            "::audio_indevlist",
+            nindevs, indevs);
+    pdgui_vmess("set", "rS",
+            "::audio_outdevlist",
+            noutdevs, outdevs);
 
     sys_get_audio_settings(&as);
 

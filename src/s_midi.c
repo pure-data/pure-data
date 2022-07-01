@@ -701,21 +701,24 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    char *indevs[1+MAXNDEV], *outdevs[1+MAXNDEV];
     int nindevs = 0, noutdevs = 0, i;
     char device[MAXPDSTRING];
 
+    indevs[0] = outdevs[0] = "none";
+
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
-
-    sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend midi_indevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
-
-    sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
+        indevs[i+1] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend midi_outdevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+        outdevs[i+1] = outdevlist + i * DEVDESCSIZE;
+
+    pdgui_vmess("set", "rS", "::midi_indevlist",
+        nindevs+1, indevs); /* +1 for the leading 'none' */
+
+    pdgui_vmess("set", "rS", "::midi_outdevlist",
+        noutdevs+1, outdevs); /* +1 for the leading 'none' */
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 
