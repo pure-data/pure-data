@@ -443,6 +443,9 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
+    set path [::pdtk_text::unescape $path]
+    set name [::pdtk_text::unescape $name]
+    set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
