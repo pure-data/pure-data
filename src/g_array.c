@@ -480,6 +480,7 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
 {
     int i, size=0, topItem=(int)fTopItem;
     int pagesize=ARRAYPAGESIZE, page=(int)fPage, maxpage;
+    int offset, length;
     t_word *data=0;
 
     if(!garray_getfloatwords(x, &size, &data)) {
@@ -498,16 +499,13 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
         x->x_realname->s_name,
         page, maxpage+1, pagesize);
 
-    sys_vgui("::dialog_array::listview_setdata {%s} %ld",
-        x->x_realname->s_name,
-        (long long)(page * pagesize));
-    for (i = page * pagesize;
-         (i < (page + 1) * pagesize && i < size);
-         i++)
-    {
-        sys_vgui(" %g", data[i].w_float);
-    }
-    sys_vgui("\n");
+    offset = page*pagesize;
+    length = ((offset+pagesize) > size)?size-offset:pagesize;
+
+    pdgui_vmess("::dialog_array::listview_setdata", "siw",
+             x->x_realname->s_name,
+             offset,
+             length, data + offset);
 
     pdgui_vmess("::dialog_array::listview_focus", "si",
              x->x_realname->s_name,
