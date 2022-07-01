@@ -658,9 +658,15 @@ void glist_redraw(t_glist *x)
                 /* redraw all the lines */
             linetraverser_start(&t, x);
             while ((oc = linetraverser_next(&t)))
-                sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
-                    glist_getcanvas(x), oc,
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            {
+                char tagbuf[128];
+                sprintf(tagbuf, "l%lx", oc);
+                pdgui_vmess(0, "crs iiii",
+                          glist_getcanvas(x),
+                          "coords",
+                          tagbuf,
+                          t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            }
             canvas_drawredrect(x, 0);
             if (x->gl_goprect)
             {
@@ -686,6 +692,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 {
     t_glist *x = (t_glist *)gr;
     char tag[50];
+    const char *tags2[] = {tag, "graph" };
     t_gobj *g;
     int x1, y1, x2, y2;
         /* ordinary subpatches: just act like a text object */
@@ -711,12 +718,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (x->gl_havewindow)
     {
         if (vis)
-        {
-            sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d "
-                "-width %d -fill #c0c0c0 -joinstyle miter -tags [list %s graph]\n",
-                glist_getcanvas(x->gl_owner),
-                x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, glist_getzoom(x), tag);
-        }
+            pdgui_vmess(0, "crr iiiiiiiiii ri rr rr rS",
+                glist_getcanvas(x->gl_owner), "create", "polygon",
+                x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                "-width", glist_getzoom(x),
+                "-fill", "#c0c0c0",
+                "-joinstyle", "miter",
+                "-tags", 2, tags2);
         else
             pdgui_vmess(0, "crs",
                 glist_getcanvas(x->gl_owner), "delete", tag);
@@ -734,13 +742,16 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         char *xlabelanchor =
             (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ? "s" : "n");
         int fs = sys_hostfontsize(glist_getfont(x), glist_getzoom(x));
+        const char *tags3[] = {tag, "label", "graph" };
 
             /* draw a rectangle around the graph */
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-width %d -capstyle projecting -tags [list %s graph]\n",
-            glist_getcanvas(x->gl_owner),
-            x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, glist_getzoom(x), tag);
-
+        pdgui_vmess(0, "crr iiiiiiiiii ri rr rS",
+                  glist_getcanvas(x->gl_owner),
+                  "create", "line",
+                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                  "-width", glist_getzoom(x),
+                  "-capstyle", "projecting",
+                  "-tags", 2, tags2);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -748,11 +759,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 !garray_getname((t_garray *)g, &arrayname))
         {
             i -= glist_fontheight(x);
-            sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
-                "-font {{%s} -%d %s} -tags [list %s label graph]\n",
-                glist_getcanvas(x),  x1, i,
-                arrayname->s_name, sys_font,
-                fs, sys_fontweight, tag);
+            _graph_create_text(x,
+                x1, i,
+                arrayname->s_name,
+                "nw", -fs,
+                3, tags3);
         }
 
             /* draw ticks on horizontal borders.  If lperb field is
@@ -958,12 +969,18 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
     else
     {
         t_rtext *y = glist_findrtext(glist, &x->gl_obj);
+        char tag[80];
         if (canvas_showtext(x))
             rtext_select(y, state);
-        sys_vgui(".x%lx.c itemconfigure %sR -fill %s\n", glist,
-        rtext_gettag(y), (state? "blue" : "black"));
-        sys_vgui(".x%lx.c itemconfigure graph%lx -fill %s\n",
-            glist_getcanvas(glist), z, (state? "blue" : "black"));
+
+        sprintf(tag, "%sR",  rtext_gettag(y));
+        pdgui_vmess(0, "crs rr",
+                  glist, "itemconfigure", tag,
+                  "-fill", (state? "blue" : "black"));
+        sprintf(tag, "graph%lx", (t_int)z);
+        pdgui_vmess(0, "crs rr",
+                  glist_getcanvas(glist), "itemconfigure", tag,
+                  "-fill", (state? "blue" : "black"));
     }
 }
 

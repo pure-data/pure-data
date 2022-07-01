@@ -88,17 +88,20 @@ static void textbuf_open(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
+        char textid[128];
+        sprintf(textid, ".x%lx.text", x);
         pdgui_vmess("wm", "r^", "deiconify", x);
         pdgui_vmess("raise", "^", x);
-        sys_vgui("focus .x%lx.text\n", x);
+        pdgui_vmess("focus", "s", textid);
     }
     else
     {
         char buf[40];
-        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s} %d\n",
-            x, 600, 340, x->b_sym->s_name,
-                 sys_hostfontsize(glist_getfont(x->b_canvas),
-                    glist_getzoom(x->b_canvas)));
+        sprintf(buf, "%dx%d", 600, 340);
+        pdgui_vmess("pdtk_textwindow_open", "^r si",
+                  x, buf,
+                  x->b_sym->s_name,
+                  sys_hostfontsize(glist_getfont(x->b_canvas), glist_getzoom(x->b_canvas)));
         sprintf(buf, ".x%lx", x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);

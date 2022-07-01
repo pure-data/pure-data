@@ -447,7 +447,9 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            sys_vgui(".x%lx.c delete l%lx\n", x, oc);
+            char tag[128];
+            sprintf(tag, "l%lx", oc);
+            pdgui_vmess(0, "crs", x, "delete", tag);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -1866,21 +1868,21 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             t_canvas *c = x;
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
+            char winpos[128];
+
             canvas_create_editor(x);
             if ((GLIST_DEFCANVASXLOC == x->gl_screenx1) && (GLIST_DEFCANVASYLOC == x->gl_screeny1)) /* initial values for new windows */
             {
-                sys_vgui("pdtk_canvas_new .x%lx %d %d {} %d\n", x,
-                    (int)(x->gl_screenx2 - x->gl_screenx1),
-                    (int)(x->gl_screeny2 - x->gl_screeny1),
-                    x->gl_edit);
+                winpos[0]=0;
             } else {
-                sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
-                    (int)(x->gl_screenx2 - x->gl_screenx1),
-                    (int)(x->gl_screeny2 - x->gl_screeny1),
-                    (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                    x->gl_edit);
+                sprintf(winpos, "+%d+%d", (int)(x->gl_screenx1), (int)(x->gl_screeny1));
             }
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx", c);
+
+            pdgui_vmess("pdtk_canvas_new", "^ ii si", x,
+                (int)(x->gl_screenx2 - x->gl_screenx1),
+                (int)(x->gl_screeny2 - x->gl_screeny1),
+                winpos, x->gl_edit);
+
             while (c->gl_owner && !c->gl_isclone) {
                 int cbuflen;
                 c = c->gl_owner;
@@ -2560,6 +2562,9 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int x11=0, x12=0, x21=0, x22=0;
             int y11=0, y12=0, y21=0, y22=0;
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
+            char tag[128];
+            char*tags[] = {tag, "cord"};
+            sprintf(tag, "l%lx", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
@@ -2574,13 +2579,11 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            sys_vgui(
-                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                glist_getcanvas(x),
-                lx1, ly1, lx2, ly2,
-                (obj_issignaloutlet(src, nout) ? 2 : 1) *
-                x->gl_zoom,
-                oc);
+            pdgui_vmess(0, "crr iiii ri rS",
+                glist_getcanvas(x), "create", "line",
+                lx1,ly1, lx2,ly2,
+                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
+                "-tags", 2, tags);
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
                     canvas_getindex(x, &sink->ob_g), nin));
@@ -4334,10 +4337,14 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        sys_vgui(
-            ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-            glist_getcanvas(x), 0, 0, 0, 0,
-            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
+        char tag[128];
+        char*tags[] = {tag, "cord"};
+        sprintf(tag, "l%lx", oc);
+        pdgui_vmess(0, "crr iiii ri rS",
+            glist_getcanvas(x), "create", "line",
+            0, 0, 0, 0,
+            "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
+            "-tags", 2, tags);
         canvas_fixlinesfor(x, objsrc);
     }
     return;

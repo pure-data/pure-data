@@ -378,8 +378,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     char smallbuf[200], *tempbuf;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
-    char smallescbuf[400], *escbuf = 0;
-    size_t escchars = 0;
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
         /* if we're a GOP (the new, "goprect" style) borrow the font size
         from the inside to preserve the spacing */
@@ -416,11 +414,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (action && !canvas->gl_havewindow)
         action = 0;
 
-    escbuf = (tempbuf == smallbuf)?smallescbuf:t_getbytes(2 * outchars_b + 1);
-    pdgui_strnescape(escbuf, 2 * outchars_b + 1, tempbuf, outchars_b);
-
     if (action == SEND_FIRST)
     {
+        const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
         int lmargin = LMARGIN, tmargin = TMARGIN;
         if (glist_getzoom(x->x_glist) > 1)
         {
@@ -432,19 +428,19 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s} %d %s\n",
-            canvas, x->x_tag, rtext_gettype(x)->s_name,
-            text_xpix(x->x_text, x->x_glist) + lmargin,
-                text_ypix(x->x_text, x->x_glist) + tmargin,
-            escbuf,
+        pdgui_vmess("pdtk_text_new", "c S ii s i r",
+            canvas,
+            3, tags,
+            text_xpix(x->x_text, x->x_glist) + lmargin, text_ypix(x->x_text, x->x_glist) + tmargin,
+            tempbuf,
             guifontsize,
-            (glist_isselected(x->x_glist,
-                &x->x_text->te_g)? "blue" : "black"));
+            (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
     }
     else if (action == SEND_UPDATE)
     {
-        sys_vgui("pdtk_text_set .x%lx.c %s {%s}\n",
-            canvas, x->x_tag, escbuf);
+        pdgui_vmess("pdtk_text_set", "cs s",
+                  canvas, x->x_tag,
+                  tempbuf);
         if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
                 *widthp, *heightp, 0);
@@ -474,8 +470,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
-    if(escbuf != smallescbuf)
-        t_freebytes(escbuf, 2 * outchars_b + 1);
 }
 
     /* remake text buffer from binbuf */

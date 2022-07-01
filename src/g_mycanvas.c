@@ -60,26 +60,35 @@ void my_canvas_draw_move(t_my_canvas *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int offset = (IEMGUI_ZOOM(x) > 1 ? IEMGUI_ZOOM(x) : 0);
     t_canvas *canvas = glist_getcanvas(glist);
+    char tag[128];
 
-    sys_vgui(".x%lx.c coords %lxRECT %d %d %d %d\n",
-             canvas, x, xpos, ypos,
-             xpos + x->x_vis_w * IEMGUI_ZOOM(x),
-             ypos + x->x_vis_h * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
-             canvas, x, xpos + offset, ypos + offset,
-             xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+    sprintf(tag, "%lx%s", x, "RECT");
+    pdgui_vmess(0, "crs iiii",
+              canvas, "coords", tag,
+        xpos, ypos,
+        xpos + x->x_vis_w * IEMGUI_ZOOM(x), ypos + x->x_vis_h * IEMGUI_ZOOM(x));
+    sprintf(tag, "%lx%s", x, "BASE");
+    pdgui_vmess(0, "crs iiii",
+              canvas, "coords", tag,
+        xpos + offset, ypos + offset,
+        xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
+    sprintf(tag, "%lx%s", x, "LABEL");
+    pdgui_vmess(0, "crs ii",
+              canvas, "coords", tag,
+        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
 }
 
 void my_canvas_draw_erase(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    sys_vgui(".x%lx.c delete %lxBASE\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxRECT\n", canvas, x);
-    sys_vgui(".x%lx.c delete %lxLABEL\n", canvas, x);
+    char tag[128];
+    sprintf(tag, "%lxBASE", x);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    sprintf(tag, "%lxRECT", x);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
 }
 
 void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
@@ -99,15 +108,11 @@ void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    if(x->x_gui.x_fsf.x_selected)
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-    }
-    else
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, x->x_gui.x_bcol);
-    }
+    char tag[128];
+    sprintf(tag, "%lxBASE", x);
+    pdgui_vmess(0, "crs rk",
+        canvas, "itemconfigure", tag,
+        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
 }
 
 void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
