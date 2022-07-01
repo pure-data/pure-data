@@ -512,7 +512,6 @@ static void garray_arrayviewlist_fillpage(t_garray *x,
 
 static void garray_arrayviewlist_new(t_garray *x)
 {
-    char cmdbuf[200];
     int size=0;
     t_word*data=0;
 
@@ -521,11 +520,11 @@ static void garray_arrayviewlist_new(t_garray *x)
         return;
     }
     x->x_listviewing = 1;
-    sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s {%s} %d\n",
-            x->x_realname->s_name,
-            0);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_listview_new", x,
+        "si",
+        x->x_realname->s_name, 0);
 
     garray_arrayviewlist_fillpage(x, 0, 0);
 }
