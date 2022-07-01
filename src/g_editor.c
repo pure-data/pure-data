@@ -2868,18 +2868,8 @@ void canvas_mouseup(t_canvas *x,
             t_glist *gl2;
                 /* first though, check we aren't an abstraction with a
                    dirty sub-patch that would be discarded if we edit this. */
-            if (pd_class(&g->g_pd) == canvas_class &&
-                canvas_isabstraction((t_glist *)g) &&
-                (gl2 = glist_finddirty((t_glist *)g)))
-            {
-                vmess(&gl2->gl_pd, gensym("menu-open"), "");
-                x->gl_editor->e_onmotion = MA_NONE;
-                sys_vgui(
-                    "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
-                    canvas_getrootfor(gl2),
-                    canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+            if (canvas_undo_confirmdiscard(g))
                 return;
-            }
                 /* OK, activate it */
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
