@@ -164,7 +164,8 @@ may be added; otherwise they're dropped.  */
 
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
 {
-    t_namelist *nl, *nl2;
+    t_namelist *nl;
+    t_namelist *nl2;
     nl2 = (t_namelist *) (getbytes(sizeof(*nl)));
     nl2->nl_next = 0;
     nl2->nl_string = (char *) getbytes(strlen(s) + 1);
@@ -215,7 +216,8 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
 
 void namelist_free(t_namelist *listwas)
 {
-    t_namelist *nl, *nl2;
+    t_namelist *nl;
+    t_namelist *nl2;
     for(nl = listwas; nl; nl = nl2)
     {
         nl2 = nl->nl_next;
@@ -333,7 +335,8 @@ int sys_open_absolute(const char *name, const char *ext, char *dirresult,
 {
     if(sys_isabsolutepath(name))
     {
-        char dirbuf[MAXPDSTRING], *z = strrchr(name, '/');
+        char dirbuf[MAXPDSTRING];
+        char *z = strrchr(name, '/');
         int dirlen;
         if(!z) return (0);
         dirlen = (int) (z - name);
@@ -442,7 +445,8 @@ FILE *sys_fopen(const char *filename, const char *mode)
 
 int sys_open(const char *path, int oflag, ...)
 {
-    int i, fd;
+    int i;
+    int fd;
     char pathbuf[MAXPDSTRING];
     sys_bashfilename(path, pathbuf);
     if(oflag & O_CREAT)
@@ -496,7 +500,9 @@ suffix here, even though we have to tear it back off for one of the
 search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
-    char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
+    char realname[MAXPDSTRING];
+    char dirbuf[MAXPDSTRING];
+    char *basename;
     /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
     int fd;

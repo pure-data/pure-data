@@ -74,7 +74,8 @@ static cfftw_info *cfftw_getplan(int n, int fwd)
 
 static void cfftw_term(void)
 {
-    int i, j;
+    int i;
+    int j;
     cfftw_info *cinfo[2];
 
     for(i = 0; i < MAXFFT + 1 - MINFFT; i++)
@@ -126,7 +127,8 @@ static rfftw_info *rfftw_getplan(int n, int fwd)
 
 static void rfftw_term(void)
 {
-    int i, j;
+    int i;
+    int j;
     rfftw_info *rinfo[2];
 
     for(i = 0; i < MAXFFT + 1 - MINFFT; i++)

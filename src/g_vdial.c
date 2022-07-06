@@ -41,13 +41,21 @@ void vradio_draw_update(t_gobj *client, t_glist *glist)
 
 void vradio_draw_new(t_vradio *x, t_glist *glist)
 {
-    int n = x->x_number, i, dy = x->x_gui.x_h, s4 = dy / 4;
+    int n = x->x_number;
+    int i;
+    int dy = x->x_gui.x_h;
+    int s4 = dy / 4;
     int yy11b = text_ypix(&x->x_gui.x_obj, glist);
-    int yy11 = yy11b, yy12 = yy11 + dy;
-    int yy21 = yy11 + s4, yy22 = yy12 - s4;
-    int xx11 = text_xpix(&x->x_gui.x_obj, glist), xx12 = xx11 + dy;
-    int xx21 = xx11 + s4, xx22 = xx12 - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int yy11 = yy11b;
+    int yy12 = yy11 + dy;
+    int yy21 = yy11 + s4;
+    int yy22 = yy12 - s4;
+    int xx11 = text_xpix(&x->x_gui.x_obj, glist);
+    int xx12 = xx11 + dy;
+    int xx21 = xx11 + s4;
+    int xx22 = xx12 - s4;
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -87,13 +95,21 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
 
 void vradio_draw_move(t_vradio *x, t_glist *glist)
 {
-    int n = x->x_number, i, dy = x->x_gui.x_h, s4 = dy / 4;
+    int n = x->x_number;
+    int i;
+    int dy = x->x_gui.x_h;
+    int s4 = dy / 4;
     int yy11b = text_ypix(&x->x_gui.x_obj, glist);
-    int yy11 = yy11b, yy12 = yy11 + dy;
-    int yy21 = yy11 + s4, yy22 = yy12 - s4;
-    int xx11 = text_xpix(&x->x_gui.x_obj, glist), xx12 = xx11 + dy;
-    int xx21 = xx11 + s4, xx22 = xx12 - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int yy11 = yy11b;
+    int yy12 = yy11 + dy;
+    int yy21 = yy11 + s4;
+    int yy22 = yy12 - s4;
+    int xx11 = text_xpix(&x->x_gui.x_obj, glist);
+    int xx12 = xx11 + dy;
+    int xx21 = xx11 + s4;
+    int xx22 = xx12 - s4;
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -120,7 +136,8 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
 
 void vradio_draw_erase(t_vradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -137,7 +154,8 @@ void vradio_draw_erase(t_vradio *x, t_glist *glist)
 
 void vradio_draw_config(t_vradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x "
@@ -160,7 +178,8 @@ void vradio_draw_io(t_vradio *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -200,7 +219,8 @@ void vradio_draw_io(t_vradio *x, t_glist *glist, int old_snd_rcv_flags)
 
 void vradio_draw_select(t_vradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     if(x->x_gui.x_fsf.x_selected)
@@ -591,11 +611,16 @@ static void vradio_single_change(t_vradio *x) { x->x_change = 0; }
 static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_vradio *x = (t_vradio *) pd_new(old ? vradio_old_class : vradio_class);
-    int a = IEM_GUI_DEFAULTSIZE, on = 0, f = 0;
-    int ldx = 0, ldy = -8, chg = 1, num = 8;
+    int a = IEM_GUI_DEFAULTSIZE;
+    int on = 0;
+    int f = 0;
+    int ldx = 0;
+    int ldy = -8;
+    int chg = 1;
+    int num = 8;
     int fs = 10;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
-        fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
+    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME;
+    int fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
     float fval = 0;
 

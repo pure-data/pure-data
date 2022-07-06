@@ -50,8 +50,10 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int tmargin = TMARGIN * IEMGUI_ZOOM(x);
+    int bmargin = BMARGIN * IEMGUI_ZOOM(x);
     int r = ypos + x->x_gui.x_h - ((x->x_val + 50) / 100);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -86,8 +88,10 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int tmargin = TMARGIN * IEMGUI_ZOOM(x);
+    int bmargin = BMARGIN * IEMGUI_ZOOM(x);
     int r = ypos + x->x_gui.x_h - ((x->x_val + 50) / 100);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -141,8 +145,10 @@ static void vslider_draw_io(t_vslider *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int tmargin = TMARGIN * IEMGUI_ZOOM(x);
+    int bmargin = BMARGIN * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -574,10 +580,16 @@ static void vslider_loadbang(t_vslider *x, t_floatarg action)
 static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vslider *x = (t_vslider *) pd_new(vslider_class);
-    int w = IEM_GUI_DEFAULTSIZE, h = IEM_SL_DEFAULTSIZE;
-    int lilo = 0, f = 0, ldx = 0, ldy = -9;
-    int fs = 10, steady = 1;
-    double min = 0.0, max = (double) (IEM_SL_DEFAULTSIZE - 1);
+    int w = IEM_GUI_DEFAULTSIZE;
+    int h = IEM_SL_DEFAULTSIZE;
+    int lilo = 0;
+    int f = 0;
+    int ldx = 0;
+    int ldy = -9;
+    int fs = 10;
+    int steady = 1;
+    double min = 0.0;
+    double max = (double) (IEM_SL_DEFAULTSIZE - 1);
     char str[144];
     float v = 0;
 

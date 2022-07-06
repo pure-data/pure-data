@@ -83,7 +83,8 @@ in s_audio_alsamm.c). */
 static int alsaio_canmmap(t_alsa_dev *dev)
 {
     snd_pcm_hw_params_t *hw_params;
-    int err1, err2;
+    int err1;
+    int err2;
 
     snd_pcm_hw_params_alloca(&hw_params);
 
@@ -113,7 +114,8 @@ static int alsaio_canmmap(t_alsa_dev *dev)
 static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     int nfrags, int frag_size)
 {
-    int bufsizeforthis, err;
+    int bufsizeforthis;
+    int err;
     snd_pcm_hw_params_t *hw_params;
     snd_pcm_sw_params_t *sw_params;
     unsigned int tmp_uint;
@@ -276,11 +278,17 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
     int *choutdev, int rate, int blocksize)
 {
-    int err, inchans = 0, outchans = 0, subunitdir;
+    int err;
+    int inchans = 0;
+    int outchans = 0;
+    int subunitdir;
     char devname[512];
     snd_output_t *out;
     int frag_size = (blocksize ? blocksize : ALSA_DEFFRAGSIZE);
-    int nfrags, i, iodev, dev2;
+    int nfrags;
+    int i;
+    int iodev;
+    int dev2;
 
     nfrags = sys_schedadvance * (float) rate / (1e6 * frag_size);
     /* save our belief as to ALSA's buffer size for later */
@@ -406,7 +414,8 @@ blewit:
 
 void alsa_close_audio(void)
 {
-    int err, iodev;
+    int err;
+    int iodev;
     if(alsa_usemmap)
     {
         alsamm_close_audio();
@@ -429,9 +438,20 @@ int alsa_send_dacs(void)
 {
     static double timenow;
     double timelast;
-    t_sample *fp, *fp1, *fp2;
-    int i, j, k, err, iodev, result, ch, goterror = 0, busy = 0;
-    int chansintogo, chansouttogo;
+    t_sample *fp;
+    t_sample *fp1;
+    t_sample *fp2;
+    int i;
+    int j;
+    int k;
+    int err;
+    int iodev;
+    int result;
+    int ch;
+    int goterror = 0;
+    int busy = 0;
+    int chansintogo;
+    int chansouttogo;
     unsigned int transfersize;
     if(alsa_usemmap) return (alsamm_send_dacs());
 
@@ -702,8 +722,13 @@ int alsa_send_dacs(void)
 
 void alsa_printstate(void)
 {
-    int i, result, iodev = 0;
-    snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
+    int i;
+    int result;
+    int iodev = 0;
+    snd_pcm_sframes_t indelay = 0;
+    snd_pcm_sframes_t inavail = 0;
+    snd_pcm_sframes_t outdelay = 0;
+    snd_pcm_sframes_t outavail = 0;
     if(!alsa_nindev && !alsa_noutdev)
     {
         post("alsa_printstate: alsa not open");
@@ -731,7 +756,8 @@ void alsa_printstate(void)
 
 void alsa_putzeros(int iodev, int n)
 {
-    int i, result;
+    int i;
+    int result;
     memset(alsa_snd_buf, 0,
         alsa_outdev[iodev].a_sampwidth * DEFDACBLKSIZE *
             alsa_outdev[iodev].a_channels);
@@ -749,7 +775,8 @@ void alsa_putzeros(int iodev, int n)
 
 void alsa_getzeros(int iodev, int n)
 {
-    int i, result;
+    int i;
+    int result;
     for(i = 0; i < n; i++)
     {
         result = snd_pcm_readi(
@@ -765,8 +792,16 @@ void alsa_getzeros(int iodev, int n)
 /* call this only if both input and output are open */
 static void alsa_checkiosync(void)
 {
-    int i, result, giveup = 50, alreadylogged = 0, iodev = 0, err;
-    snd_pcm_sframes_t minphase, maxphase, thisphase, outdelay;
+    int i;
+    int result;
+    int giveup = 50;
+    int alreadylogged = 0;
+    int iodev = 0;
+    int err;
+    snd_pcm_sframes_t minphase;
+    snd_pcm_sframes_t maxphase;
+    snd_pcm_sframes_t thisphase;
+    snd_pcm_sframes_t outdelay;
     while(1)
     {
         if(giveup-- <= 0)
@@ -903,7 +938,8 @@ void alsa_adddev(const char *name)
 
 static void alsa_numbertoname(int devno, char *devname, int nchar)
 {
-    int ndev = 0, cardno = -1;
+    int ndev = 0;
+    int cardno = -1;
     while(!snd_card_next(&cardno) && cardno >= 0)
         ndev++;
     if(devno < 2 * ndev)
@@ -924,7 +960,10 @@ static void alsa_numbertoname(int devno, char *devname, int nchar)
 void alsa_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int *canmulti, int maxndev, int devdescsize)
 {
-    int ndev = 0, cardno = -1, i, j;
+    int ndev = 0;
+    int cardno = -1;
+    int i;
+    int j;
     *canmulti = 2; /* supports multiple devices */
     while(!snd_card_next(&cardno) && cardno >= 0)
     {

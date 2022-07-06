@@ -102,7 +102,8 @@ static void alist_clear(t_alist *x)
 static void alist_copyin(
     t_alist *x, t_symbol *s, int argc, t_atom *argv, int where)
 {
-    int i, j;
+    int i;
+    int j;
     for(i = 0, j = where; i < argc; i++, j++)
     {
         x->l_vec[j].l_a = argv[i];
@@ -305,7 +306,8 @@ static void list_prepend_list(
     t_list_prepend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int n;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv + x->x_alist.l_n);
     if(x->x_alist.l_npointer)
@@ -328,7 +330,8 @@ static void list_prepend_anything(
     t_list_prepend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc + 1;
+    int n;
+    int outc = x->x_alist.l_n + argc + 1;
     ATOMS_ALLOCA(outv, outc);
     SETSYMBOL(outv + x->x_alist.l_n, s);
     atoms_copy(argc, argv, outv + x->x_alist.l_n + 1);
@@ -413,7 +416,8 @@ static void list_store_list(
     t_list_store *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int n;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv);
     if(x->x_alist.l_npointer)
@@ -494,7 +498,10 @@ static void list_store_prepend(
 
 static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
 {
-    int i, max, index = (int) f1, n = (int) f2;
+    int i;
+    int max;
+    int index = (int) f1;
+    int n = (int) f2;
     t_listelem *oldptr = x->x_alist.l_vec;
     if(index < 0 || index >= x->x_alist.l_n)
     {
@@ -548,7 +555,8 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
 static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
-    int onset = f1, outc = f2;
+    int onset = f1;
+    int outc = f2;
     if(!outc)
         outc = 1; /* default */
     else if(outc < 0)
@@ -586,7 +594,9 @@ static void list_store_set(t_list_store *x, t_symbol *s, int argc, t_atom *argv)
 {
     if(argc > 1)
     {
-        int n, max, onset = atom_getfloat(argv);
+        int n;
+        int max;
+        int onset = atom_getfloat(argv);
         if(onset < 0 || onset >= x->x_alist.l_n)
         {
             pd_error(x, "list_store_set: index %d out of range", onset);
@@ -780,7 +790,8 @@ static void *list_fromsymbol_new(void)
 static void list_fromsymbol_symbol(t_list_fromsymbol *x, t_symbol *s)
 {
     t_atom *outv;
-    int n, outc = (int) strlen(s->s_name);
+    int n;
+    int outc = (int) strlen(s->s_name);
     ATOMS_ALLOCA(outv, outc);
     for(n = 0; n < outc; n++)
         SETFLOAT(outv + n, (unsigned char) s->s_name[n]);

@@ -121,7 +121,9 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char *inbuf = sys_getrecvbuf(0);
-    int ret = 0, readbytes = 0, i;
+    int ret = 0;
+    int readbytes = 0;
+    int i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     if(!x->x_msgout)
@@ -198,7 +200,8 @@ static void netsend_readbin(t_netsend *x, int fd)
 static void netsend_read(void *z, t_binbuf *b)
 {
     t_netsend *x = (t_netsend *) z;
-    int msg, natom = binbuf_getnatom(b);
+    int msg;
+    int natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
     for(msg = 0; msg < natom;)
     {
@@ -249,8 +252,13 @@ static void netsend_notify(void *z, int fd)
 
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno, sportno, sockfd, multicast = 0, status;
-    struct addrinfo *ailist = NULL, *ai;
+    int portno;
+    int sportno;
+    int sockfd;
+    int multicast = 0;
+    int status;
+    struct addrinfo *ailist = NULL;
+    struct addrinfo *ai;
     const char *hostname = NULL;
     char hostbuf[256];
 
@@ -322,7 +330,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         if(sportno != 0)
         {
             int bound = 0;
-            struct addrinfo *sailist = NULL, *sai;
+            struct addrinfo *sailist = NULL;
+            struct addrinfo *sai;
             logpost(NULL, PD_VERBOSE, "connecting to %s %d, src port %d",
                 hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
@@ -429,8 +438,11 @@ static void netsend_disconnect(t_netsend *x)
 
 static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
 {
-    char *buf, *bp;
-    int length, sent, fail = 0;
+    char *buf;
+    char *bp;
+    int length;
+    int sent;
+    int fail = 0;
     t_binbuf *b = 0;
     if(x->x_bin)
     {
@@ -453,7 +465,8 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
     {
         static double lastwarntime;
         static double pleasewarn;
-        double timebefore = sys_getrealtime(), timeafter;
+        double timebefore = sys_getrealtime();
+        double timeafter;
         int late;
 
         int res = 0;
@@ -640,9 +653,13 @@ static void netreceive_closeall(t_netreceive *x)
 static void netreceive_listen(
     t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol,
-        multicast = 0;
-    struct addrinfo *ailist = NULL, *ai;
+    int portno = 0;
+    int sockfd;
+    int status;
+    int protocol = x->x_ns.x_protocol;
+    int multicast = 0;
+    struct addrinfo *ailist = NULL;
+    struct addrinfo *ai;
     const char *hostname = NULL; /* allowed or UDP multicast hostname */
 
     netreceive_closeall(x);

@@ -36,11 +36,11 @@ static void vu_update_rms(t_vu *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        int w4 = x->x_gui.x_w / 4,
-            off = text_ypix(&x->x_gui.x_obj, glist) - IEMGUI_ZOOM(x);
+        int w4 = x->x_gui.x_w / 4;
+        int off = text_ypix(&x->x_gui.x_obj, glist) - IEMGUI_ZOOM(x);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
-        int quad1 = xpos + w4 - IEMGUI_ZOOM(x),
-            quad3 = xpos + x->x_gui.x_w - w4 + IEMGUI_ZOOM(x);
+        int quad1 = xpos + w4 - IEMGUI_ZOOM(x);
+        int quad3 = xpos + x->x_gui.x_w - w4 + IEMGUI_ZOOM(x);
 
         sys_vgui(".x%lx.c coords %lxRCOVER %d %d %d %d\n",
             glist_getcanvas(glist), x, quad1, off, quad3,
@@ -103,15 +103,22 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int w4 = x->x_gui.x_w / 4, mid = xpos + x->x_gui.x_w / 2,
-        quad1 = xpos + w4 + IEMGUI_ZOOM(x);
-    int quad3 = xpos + x->x_gui.x_w - w4,
-        end = xpos + x->x_gui.x_w + 4 * IEMGUI_ZOOM(x);
-    int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x), k2 = IEM_VU_STEPS + 1,
-        k3 = k1 / 2;
-    int led_col, yyy, i, k4 = ypos - k3;
+    int hmargin = HMARGIN * IEMGUI_ZOOM(x);
+    int vmargin = VMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int w4 = x->x_gui.x_w / 4;
+    int mid = xpos + x->x_gui.x_w / 2;
+    int quad1 = xpos + w4 + IEMGUI_ZOOM(x);
+    int quad3 = xpos + x->x_gui.x_w - w4;
+    int end = xpos + x->x_gui.x_w + 4 * IEMGUI_ZOOM(x);
+    int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x);
+    int k2 = IEM_VU_STEPS + 1;
+    int k3 = k1 / 2;
+    int led_col;
+    int yyy;
+    int i;
+    int k4 = ypos - k3;
     int ledw = x->x_led_size * IEMGUI_ZOOM(x);
     int fs = x->x_gui.x_fontsize * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
@@ -192,14 +199,20 @@ static void vu_draw_move(t_vu *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int w4 = x->x_gui.x_w / 4, quad1 = xpos + w4 + IEMGUI_ZOOM(x);
-    int quad3 = xpos + x->x_gui.x_w - w4,
-        end = xpos + x->x_gui.x_w + 4 * IEMGUI_ZOOM(x);
-    int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x), k2 = IEM_VU_STEPS + 1,
-        k3 = k1 / 2;
-    int yyy, i, k4 = ypos - k3;
+    int hmargin = HMARGIN * IEMGUI_ZOOM(x);
+    int vmargin = VMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int w4 = x->x_gui.x_w / 4;
+    int quad1 = xpos + w4 + IEMGUI_ZOOM(x);
+    int quad3 = xpos + x->x_gui.x_w - w4;
+    int end = xpos + x->x_gui.x_w + 4 * IEMGUI_ZOOM(x);
+    int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x);
+    int k2 = IEM_VU_STEPS + 1;
+    int k3 = k1 / 2;
+    int yyy;
+    int i;
+    int k4 = ypos - k3;
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n", canvas, x, xpos - hmargin,
@@ -327,8 +340,10 @@ static void vu_draw_io(t_vu *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int hmargin = HMARGIN * IEMGUI_ZOOM(x);
+    int vmargin = VMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -439,7 +454,8 @@ static void vu_getrect(
     t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_vu *x = (t_vu *) z;
-    int hmargin = HMARGIN * IEMGUI_ZOOM(x), vmargin = VMARGIN * IEMGUI_ZOOM(x);
+    int hmargin = HMARGIN * IEMGUI_ZOOM(x);
+    int vmargin = VMARGIN * IEMGUI_ZOOM(x);
 
     *xp1 = text_xpix(&x->x_gui.x_obj, glist) - hmargin;
     *yp1 = text_ypix(&x->x_gui.x_obj, glist) - vmargin;
@@ -475,7 +491,8 @@ void vu_check_height(t_vu *x, int h)
 
 static void vu_scale(t_vu *x, t_floatarg fscale)
 {
-    int i, scale = (int) fscale;
+    int i;
+    int scale = (int) fscale;
 
     if(scale != 0) scale = 1;
     if(x->x_scale && !scale)
@@ -499,9 +516,11 @@ static void vu_scale(t_vu *x, t_floatarg fscale)
         int w4 = x->x_gui.x_w / 4;
         int end = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w +
                   4 * IEMGUI_ZOOM(x);
-        int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x), k2 = IEM_VU_STEPS + 1,
-            k3 = k1 / 2;
-        int yyy, k4 = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - k3;
+        int k1 = (x->x_led_size + 1) * IEMGUI_ZOOM(x);
+        int k2 = IEM_VU_STEPS + 1;
+        int k3 = k1 / 2;
+        int yyy;
+        int k4 = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - k3;
         int fs = x->x_gui.x_fontsize * IEMGUI_ZOOM(x);
         t_canvas *canvas = glist_getcanvas(x->x_gui.x_glist);
 
@@ -686,10 +705,15 @@ static void vu_bang(t_vu *x)
 static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vu *x = (t_vu *) pd_new(vu_class);
-    int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS * IEM_VU_DEFAULTSIZE;
-    int ldx = -1, ldy = -8, f = 0, fs = 10, scale = 1;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
-        fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
+    int w = IEM_GUI_DEFAULTSIZE;
+    int h = IEM_VU_STEPS * IEM_VU_DEFAULTSIZE;
+    int ldx = -1;
+    int ldy = -8;
+    int f = 0;
+    int fs = 10;
+    int scale = 1;
+    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME;
+    int fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

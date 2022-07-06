@@ -86,7 +86,8 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
 
 static void gfxstub_offlist(t_gfxstub *x)
 {
-    t_gfxstub *y1, *y2;
+    t_gfxstub *y1;
+    t_gfxstub *y2;
     if(gfxstub_list == x)
         gfxstub_list = x->x_next;
     else

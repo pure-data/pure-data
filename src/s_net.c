@@ -107,14 +107,16 @@ int addrinfo_ipv6_first(const struct addrinfo *ai1, const struct addrinfo *ai2)
 void addrinfo_sort_list(struct addrinfo **ailist,
     int (*compare)(const struct addrinfo *, const struct addrinfo *))
 {
-    struct addrinfo *result = NULL, *ai = (*ailist);
+    struct addrinfo *result = NULL;
+    struct addrinfo *ai = (*ailist);
     while(ai)
     {
         struct addrinfo *temp = ai;
         ai = ai->ai_next;
         if(result)
         {
-            struct addrinfo *ai2 = result, *last = NULL;
+            struct addrinfo *ai2 = result;
+            struct addrinfo *last = NULL;
             while(ai2 && (compare(temp, ai2) >= 0))
             {
                 last = ai2;
@@ -261,7 +263,8 @@ int socket_connect(
     {
         int status;
         struct timeval timeoutval;
-        fd_set writefds, errfds;
+        fd_set writefds;
+        fd_set errfds;
 #ifdef _WIN32
         if(socket_errno() != WSAEWOULDBLOCK)
 #else

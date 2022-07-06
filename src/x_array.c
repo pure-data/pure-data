@@ -121,9 +121,12 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     t_symbol *arrayname = &s_;
     t_float arraysize = 100;
     t_glist *x;
-    int keep = 0, gavesize = 0;
-    t_float ylo = -1, yhi = 1;
-    t_float xpix = 500, ypix = 300;
+    int keep = 0;
+    int gavesize = 0;
+    t_float ylo = -1;
+    t_float yhi = 1;
+    t_float xpix = 500;
+    t_float ypix = 300;
     while(
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
@@ -300,7 +303,8 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
         t_template *template = template_findbyname(x->tc_struct);
         t_gstub *gs = x->tc_gp.gp_stub;
         t_word *vec;
-        int onset, type;
+        int onset;
+        int type;
         t_symbol *arraytype;
         if(!template)
         {
@@ -560,7 +564,11 @@ static int array_rangeop_getrange(t_array_rangeop *x, char **firstitemp,
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
-    int stride, fieldonset, arrayonset, nitem, type;
+    int stride;
+    int fieldonset;
+    int arrayonset;
+    int nitem;
+    int type;
     t_symbol *arraytype;
     t_template *template;
     if(!a) return (0);
@@ -610,8 +618,12 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
 
 static void array_sum_bang(t_array_rangeop *x)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int arrayonset;
+    int i;
     double sum;
     if(!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
@@ -641,8 +653,12 @@ static void *array_get_new(t_symbol *s, int argc, t_atom *argv)
 
 static void array_get_bang(t_array_rangeop *x)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int arrayonset;
+    int i;
     t_atom *outv;
     if(!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
@@ -674,8 +690,12 @@ static void *array_set_new(t_symbol *s, int argc, t_atom *argv)
 static void array_set_list(
     t_array_rangeop *x, t_symbol *s, int argc, t_atom *argv)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int arrayonset;
+    int i;
     if(!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
     if(nitem > argc) nitem = argc;
@@ -699,8 +719,12 @@ static void *array_quantile_new(t_symbol *s, int argc, t_atom *argv)
 
 static void array_quantile_float(t_array_rangeop *x, t_floatarg f)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int arrayonset;
+    int i;
     double sum;
     if(!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
@@ -743,7 +767,9 @@ static void array_random_seed(t_array_random *x, t_floatarg f)
 static void array_random_bang(t_array_random *x)
 {
     char *firstitem;
-    int stride, nitem, arrayonset;
+    int stride;
+    int nitem;
+    int arrayonset;
 
     if(!array_rangeop_getrange(
            &x->x_r, &firstitem, &nitem, &stride, &arrayonset))
@@ -779,8 +805,13 @@ static void *array_max_new(t_symbol *s, int argc, t_atom *argv)
 
 static void array_max_bang(t_array_max *x)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i, besti;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int arrayonset;
+    int i;
+    int besti;
     t_float bestf;
     if(!array_rangeop_getrange(
            &x->x_rangeop, &firstitem, &nitem, &stride, &arrayonset))
@@ -820,8 +851,13 @@ static void *array_min_new(t_symbol *s, int argc, t_atom *argv)
 
 static void array_min_bang(t_array_min *x)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, i, arrayonset, besti;
+    char *itemp;
+    char *firstitem;
+    int stride;
+    int nitem;
+    int i;
+    int arrayonset;
+    int besti;
     t_float bestf;
     if(!array_rangeop_getrange(
            &x->x_rangeop, &firstitem, &nitem, &stride, &arrayonset))

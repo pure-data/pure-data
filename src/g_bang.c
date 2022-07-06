@@ -46,7 +46,8 @@ void bng_draw_new(t_bng *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int inset = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -81,7 +82,8 @@ void bng_draw_move(t_bng *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int inset = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -137,7 +139,8 @@ void bng_draw_io(t_bng *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -466,10 +469,11 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bng *x = (t_bng *) pd_new(bng_class);
     int a = IEM_GUI_DEFAULTSIZE;
-    int ldx = 17, ldy = 7;
+    int ldx = 17;
+    int ldy = 7;
     int fs = 10;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
-        fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
+    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME;
+    int fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);

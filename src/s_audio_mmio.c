@@ -73,7 +73,9 @@ static void mmio_allocbufs(
     t_sbuf bp[][MAXBUFFER], int ndevs, int nbufs, int blocksize, int setdone)
 {
     short *sp;
-    int i, devno, bufno;
+    int i;
+    int devno;
+    int bufno;
     for(devno = 0; devno < ndevs; devno++)
         for(bufno = 0; bufno < nbufs; bufno++)
         {
@@ -124,7 +126,9 @@ static void mmio_allocbufs(
 static void mmio_freebufs(t_sbuf bp[][MAXBUFFER], int ndevs, int nbufs)
 {
     short *sp;
-    int i, devno, bufno;
+    int i;
+    int devno;
+    int bufno;
     for(devno = 0; devno < ndevs; devno++)
         for(bufno = 0; bufno < nbufs; bufno++)
         {
@@ -145,9 +149,11 @@ static UINT nt_whichdac = WAVE_MAPPER, nt_whichadc = WAVE_MAPPER;
 int mmio_do_open_audio(void)
 {
     PCMWAVEFORMAT form;
-    int i, j;
+    int i;
+    int j;
     UINT mmresult;
-    int nad, nda;
+    int nad;
+    int nda;
     logpost(NULL, PD_VERBOSE, "%d devices in, %d devices out", nt_nwavein,
         nt_nwaveout);
 
@@ -224,7 +230,8 @@ int mmio_do_open_audio(void)
 void mmio_close_audio(void)
 {
     int errcode;
-    int nda, nad;
+    int nda;
+    int nad;
     logpost(NULL, PD_VERBOSE, "closing audio...");
 
     for(nda = 0; nda < nt_nwaveout; nda++) /*if (nt_nwaveout) wini */
@@ -403,7 +410,9 @@ static void nt_noresync(void) { nt_resync_cancelled = 1; }
 static void nt_resyncaudio(void)
 {
     UINT mmresult;
-    int nad, nda, count;
+    int nad;
+    int nda;
+    int count;
     if(nt_resync_cancelled) return;
     /* for each open input device, eat all buffers which are marked
         ready.  The next one will thus be "busy".  */
@@ -490,16 +499,22 @@ int mmio_send_dacs(void)
     HMMIO hmmio;
     UINT mmresult;
     HANDLE hFormat;
-    int i, j;
-    short *sp1, *sp2;
-    t_sample *fp1, *fp2;
-    int nextfill, doxfer = 0;
-    int nda, nad;
+    int i;
+    int j;
+    short *sp1;
+    short *sp2;
+    t_sample *fp1;
+    t_sample *fp2;
+    int nextfill;
+    int doxfer = 0;
+    int nda;
+    int nad;
     if(!nt_nwavein && !nt_nwaveout) return (0);
 
     if(nt_meters)
     {
-        int i, n;
+        int i;
+        int n;
         t_sample maxsamp;
         for(i = 0, n = 2 * nt_nwavein * DEFDACBLKSIZE, maxsamp = nt_inmax;
             i < n; i++)
@@ -762,7 +777,9 @@ void mmio_listdevs(void)
 void mmio_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int *canmulti, int maxndev, int devdescsize)
 {
-    int wRtn, ndev, i;
+    int wRtn;
+    int ndev;
+    int i;
     char utf8device[MAXPDSTRING];
 
     *canmulti = 2; /* supports multiple devices */

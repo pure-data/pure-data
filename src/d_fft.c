@@ -177,7 +177,8 @@ static t_int *sigrfft_perform(t_int *w)
 
 static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n >> 1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     t_sample *in1 = sp[0]->s_vec;
     t_sample *out1 = sp[1]->s_vec;
     t_sample *out2 = sp[2]->s_vec;
@@ -236,7 +237,8 @@ static t_int *sigrifft_perform(t_int *w)
 
 static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n >> 1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     t_sample *in1 = sp[0]->s_vec;
     t_sample *in2 = sp[1]->s_vec;
     t_sample *out1 = sp[2]->s_vec;
@@ -298,11 +300,16 @@ static t_int *sigframp_perform(t_int *w)
     t_sample *inimag = (t_sample *) (w[2]);
     t_sample *outfreq = (t_sample *) (w[3]);
     t_sample *outamp = (t_sample *) (w[4]);
-    t_sample lastreal = 0, currentreal = inreal[0], nextreal = inreal[1];
-    t_sample lastimag = 0, currentimag = inimag[0], nextimag = inimag[1];
+    t_sample lastreal = 0;
+    t_sample currentreal = inreal[0];
+    t_sample nextreal = inreal[1];
+    t_sample lastimag = 0;
+    t_sample currentimag = inimag[0];
+    t_sample nextimag = inimag[1];
     int n = (int) w[5];
     int m = n + 1;
-    t_sample fbin = 1, oneovern2 = 1.f / ((t_sample) n * (t_sample) n);
+    t_sample fbin = 1;
+    t_sample oneovern2 = 1.f / ((t_sample) n * (t_sample) n);
 
     inreal += 2;
     inimag += 2;
@@ -310,7 +317,10 @@ static t_int *sigframp_perform(t_int *w)
     n -= 2;
     while(n--)
     {
-        t_sample re, im, pow, freq;
+        t_sample re;
+        t_sample im;
+        t_sample pow;
+        t_sample freq;
         lastreal = currentreal;
         currentreal = nextreal;
         nextreal = *inreal++;
@@ -345,7 +355,8 @@ t_int *sigsqrt_perform(t_int *w);
 
 static void sigframp_dsp(t_sigframp *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n >> 1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     if(n < 4)
     {
         pd_error(0, "framp: minimum 4 points");

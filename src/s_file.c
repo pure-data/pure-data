@@ -80,7 +80,9 @@ static void sys_initloadpreferences_file(const char *filename)
 
 static int sys_getpreference_file(const char *key, char *value, int size)
 {
-    char searchfor[80], *where, *whereend;
+    char searchfor[80];
+    char *where;
+    char *whereend;
     if(!sys_prefbuf) return (0);
     sprintf(searchfor, "\n%s:", key);
     where = strstr(sys_prefbuf, searchfor);
@@ -470,8 +472,10 @@ static void sys_putpreference(const char *key, const char *value)
 
 static void sys_initloadpreferences(void)
 {
-    char filenamebuf[MAXPDSTRING], *homedir = getenv("HOME");
-    int fd, length;
+    char filenamebuf[MAXPDSTRING];
+    char *homedir = getenv("HOME");
+    int fd;
+    int length;
     char user_prefs_file[MAXPDSTRING]; /* user prefs file */
     /* default prefs embedded in the package */
     char default_prefs_file[MAXPDSTRING];
@@ -500,7 +504,8 @@ static void sys_doneloadpreferences(void) { sys_doneloadpreferences_file(); }
 
 static void sys_initsavepreferences(void)
 {
-    char filenamebuf[MAXPDSTRING], *homedir = getenv("HOME");
+    char filenamebuf[MAXPDSTRING];
+    char *homedir = getenv("HOME");
     FILE *fp;
 
     if(!homedir) return;
@@ -521,10 +526,16 @@ static void sys_donesavepreferences(void) { sys_donesavepreferences_file(); }
 void sys_loadpreferences(const char *filename, int startingup)
 {
     t_audiosettings as;
-    int nmidiindev, midiindev[MAXMIDIINDEV];
-    int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiapi, nolib, maxi, i;
-    char prefbuf[MAXPDSTRING], keybuf[80];
+    int nmidiindev;
+    int midiindev[MAXMIDIINDEV];
+    int nmidioutdev;
+    int midioutdev[MAXMIDIOUTDEV];
+    int midiapi;
+    int nolib;
+    int maxi;
+    int i;
+    char prefbuf[MAXPDSTRING];
+    char keybuf[80];
     sys_get_audio_settings(&as);
 
     if(*filename)
@@ -700,9 +711,12 @@ void sys_savepreferences(const char *filename)
 {
     t_audiosettings as;
     int i;
-    char buf1[MAXPDSTRING], buf2[MAXPDSTRING];
-    int nmidiindev, midiindev[MAXMIDIINDEV];
-    int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
+    char buf1[MAXPDSTRING];
+    char buf2[MAXPDSTRING];
+    int nmidiindev;
+    int midiindev[MAXMIDIINDEV];
+    int nmidioutdev;
+    int midioutdev[MAXMIDIOUTDEV];
 
     if(filename && *filename)
         sys_initsavepreferences_file(filename);

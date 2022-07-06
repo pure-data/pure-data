@@ -396,7 +396,9 @@ static t_outconnect **outlet_getconnectionpointer(t_outlet *x)
 static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
 {
     char msgbuf[104];
-    int nprint = (argc > NARGS ? NARGS : argc), nchar, i;
+    int nprint = (argc > NARGS ? NARGS : argc);
+    int nchar;
+    int i;
     snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
     nchar = strlen(msgbuf);
     for(i = 0; i < nprint && nchar < 100; i++)
@@ -419,7 +421,8 @@ static void backtracer_anything(
 {
     t_msgstack *m = (t_msgstack *) t_getbytes(sizeof(t_msgstack));
     t_outconnect *oc;
-    int ncopy = (argc > NARGS ? NARGS : argc), i;
+    int ncopy = (argc > NARGS ? NARGS : argc);
+    int i;
     m->m_next = backtracer_stack;
     backtracer_stack = m;
     m->m_sel = s;

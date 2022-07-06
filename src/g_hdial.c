@@ -48,13 +48,20 @@ void hradio_draw_update(t_gobj *client, t_glist *glist)
 
 void hradio_draw_new(t_hradio *x, t_glist *glist)
 {
-    int n = x->x_number, i, dx = x->x_gui.x_w, s4 = dx / 4;
-    int yy11 = text_ypix(&x->x_gui.x_obj, glist), yy12 = yy11 + dx;
-    int yy21 = yy11 + s4, yy22 = yy12 - s4;
-    int xx11b = text_xpix(&x->x_gui.x_obj, glist), xx11 = xx11b,
-        xx21 = xx11b + s4;
+    int n = x->x_number;
+    int i;
+    int dx = x->x_gui.x_w;
+    int s4 = dx / 4;
+    int yy11 = text_ypix(&x->x_gui.x_obj, glist);
+    int yy12 = yy11 + dx;
+    int yy21 = yy11 + s4;
+    int yy22 = yy12 - s4;
+    int xx11b = text_xpix(&x->x_gui.x_obj, glist);
+    int xx11 = xx11b;
+    int xx21 = xx11b + s4;
     int xx22 = xx11b + dx - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -94,13 +101,20 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
 
 void hradio_draw_move(t_hradio *x, t_glist *glist)
 {
-    int n = x->x_number, i, dx = x->x_gui.x_w, s4 = dx / 4;
-    int yy11 = text_ypix(&x->x_gui.x_obj, glist), yy12 = yy11 + dx;
-    int yy21 = yy11 + s4, yy22 = yy12 - s4;
-    int xx11b = text_xpix(&x->x_gui.x_obj, glist), xx11 = xx11b,
-        xx21 = xx11b + s4;
+    int n = x->x_number;
+    int i;
+    int dx = x->x_gui.x_w;
+    int s4 = dx / 4;
+    int yy11 = text_ypix(&x->x_gui.x_obj, glist);
+    int yy12 = yy11 + dx;
+    int yy21 = yy11 + s4;
+    int yy22 = yy12 - s4;
+    int xx11b = text_xpix(&x->x_gui.x_obj, glist);
+    int xx11 = xx11b;
+    int xx21 = xx11b + s4;
     int xx22 = xx11b + dx - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     xx11 = xx11b;
@@ -129,7 +143,8 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
 
 void hradio_draw_erase(t_hradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -146,7 +161,8 @@ void hradio_draw_erase(t_hradio *x, t_glist *glist)
 
 void hradio_draw_config(t_hradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x "
@@ -168,7 +184,8 @@ void hradio_draw_io(t_hradio *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -208,7 +225,8 @@ void hradio_draw_io(t_hradio *x, t_glist *glist, int old_snd_rcv_flags)
 
 void hradio_draw_select(t_hradio *x, t_glist *glist)
 {
-    int n = x->x_number, i;
+    int n = x->x_number;
+    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     if(x->x_gui.x_fsf.x_selected)
@@ -597,8 +615,12 @@ static void hradio_single_change(t_hradio *x) { x->x_change = 0; }
 static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_hradio *x = (t_hradio *) pd_new(old ? hradio_old_class : hradio_class);
-    int a = IEM_GUI_DEFAULTSIZE, on = 0;
-    int ldx = 0, ldy = -8, chg = 1, num = 8;
+    int a = IEM_GUI_DEFAULTSIZE;
+    int on = 0;
+    int ldx = 0;
+    int ldy = -8;
+    int chg = 1;
+    int num = 8;
     int fs = 10;
     t_float fval = 0;
 

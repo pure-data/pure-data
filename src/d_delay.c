@@ -99,8 +99,11 @@ static t_int *sigdelwrite_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_delwritectl *c = (t_delwritectl *) (w[2]);
     int n = (int) (w[3]);
-    int phase = c->c_phase, nsamps = c->c_n;
-    t_sample *vp = c->c_vec, *bp = vp + phase, *ep = vp + (c->c_n + XTRASAMPS);
+    int phase = c->c_phase;
+    int nsamps = c->c_n;
+    t_sample *vp = c->c_vec;
+    t_sample *bp = vp + phase;
+    t_sample *ep = vp + (c->c_n + XTRASAMPS);
     phase += n;
 
     while(n--)
@@ -201,8 +204,11 @@ static t_int *sigdelread_perform(t_int *w)
     t_delwritectl *c = (t_delwritectl *) (w[2]);
     int delsamps = *(int *) (w[3]);
     int n = (int) (w[4]);
-    int phase = c->c_phase - delsamps, nsamps = c->c_n;
-    t_sample *vp = c->c_vec, *bp, *ep = vp + (c->c_n + XTRASAMPS);
+    int phase = c->c_phase - delsamps;
+    int nsamps = c->c_n;
+    t_sample *vp = c->c_vec;
+    t_sample *bp;
+    t_sample *ep = vp + (c->c_n + XTRASAMPS);
     if(phase < 0) phase += nsamps;
     bp = vp + phase;
 
@@ -285,7 +291,9 @@ static t_int *sigvd_perform(t_int *w)
     int nsamps = ctl->c_n;
     t_sample limit = nsamps - n;
     t_sample fn = n - 1;
-    t_sample *vp = ctl->c_vec, *bp, *wp = vp + ctl->c_phase;
+    t_sample *vp = ctl->c_vec;
+    t_sample *bp;
+    t_sample *wp = vp + ctl->c_phase;
     t_sample zerodel = x->x_zerodel;
     if(limit < 0) /* blocksize is larger than delread~ buffer size */
     {
@@ -295,9 +303,14 @@ static t_int *sigvd_perform(t_int *w)
     }
     while(n--)
     {
-        t_sample delsamps = x->x_sr * *in++ - zerodel, frac;
+        t_sample delsamps = x->x_sr * *in++ - zerodel;
+        t_sample frac;
         int idelsamps;
-        t_sample a, b, c, d, cminusb;
+        t_sample a;
+        t_sample b;
+        t_sample c;
+        t_sample d;
+        t_sample cminusb;
         if(!(delsamps >= 1.00001f)) /* too small or NAN */
             delsamps = 1.00001f;
         if(delsamps > limit) /* too big */

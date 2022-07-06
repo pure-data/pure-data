@@ -178,7 +178,8 @@ static char *do_expandpath(const char *from, char *to, int bufsize)
 static char *do_pathnormalize(const char *from, char *to)
 {
     const char *rp;
-    char *wp, c;
+    char *wp;
+    char c;
     sys_unbashfilename(from, to);
     rp = wp = to;
     while((*wp++ = c = *rp++))
@@ -204,7 +205,8 @@ static char *do_expandunbash(const char *from, char *to, int bufsize)
 
 static int str_endswith(char *str, char *end)
 {
-    size_t strsize = strlen(str), endsize = strlen(end);
+    size_t strsize = strlen(str);
+    size_t endsize = strlen(end);
     if(strsize < endsize) return 0;
     return strcmp(str + strsize - endsize, end) == 0;
 }
@@ -461,7 +463,9 @@ static void file_handle_do_read(t_file_handle *x, t_float f)
 {
     t_atom *outv;
     unsigned char *buf;
-    ssize_t n, len, outc = f;
+    ssize_t n;
+    ssize_t len;
+    ssize_t outc = f;
     if(outc < 1)
     {
         pd_error(x, "cannot read %d bytes", (int) outc);
@@ -779,7 +783,10 @@ static void file_stat_symbol(t_file_handle *x, t_symbol *filename)
     struct stat sb;
     t_symbol *s;
     int is_symlink = 0;
-    int readable = 0, writable = 0, executable = 0, owned = -1;
+    int readable = 0;
+    int writable = 0;
+    int executable = 0;
+    int owned = -1;
     char buf[MAXPDSTRING + 1];
 
     if(do_file_stat(x, filename->s_name, &sb, &is_symlink) < 0)
@@ -1151,7 +1158,8 @@ static void file_which_symbol(t_file_handle *x, t_symbol *s)
     /* LATER we might output directories as well,... */
     int isdir = 0;
     t_atom outv[2];
-    char dirresult[MAXPDSTRING], *nameresult;
+    char dirresult[MAXPDSTRING];
+    char *nameresult;
     int fd = canvas_open(
         x->x_canvas, s->s_name, "", dirresult, &nameresult, MAXPDSTRING, 1);
     if(fd >= 0)
@@ -1171,7 +1179,9 @@ static void file_which_symbol(t_file_handle *x, t_symbol *s)
 /* ================ [file mkdir] ====================== */
 static void file_mkdir_symbol(t_file_handle *x, t_symbol *dir)
 {
-    char pathname[MAXPDSTRING], *path = pathname, *str;
+    char pathname[MAXPDSTRING];
+    char *path = pathname;
+    char *str;
     struct stat sb;
 
     do_expandpath(dir->s_name, pathname, MAXPDSTRING);
@@ -1323,7 +1333,8 @@ static int file_do_copy(const char *source, const char *destination, int mode)
     int result = 0;
     ssize_t len;
     char buf[1024];
-    int src, dst;
+    int src;
+    int dst;
     int wflags = O_WRONLY | O_CREAT | O_TRUNC;
 #ifdef _WIN32
     wflags |= O_BINARY;
@@ -1428,7 +1439,8 @@ static void file_do_copymove(t_file_handle *x, const char *verb,
     t_atom *argv)
 {
     struct stat sb;
-    char src[MAXPDSTRING], dst[MAXPDSTRING];
+    char src[MAXPDSTRING];
+    char dst[MAXPDSTRING];
     if(argc != 2 || A_SYMBOL != argv[0].a_type || A_SYMBOL != argv[1].a_type)
     {
         pd_error(x,
@@ -1494,8 +1506,10 @@ static void file_split_symbol(t_file_handle *x, t_symbol *path)
 {
     t_symbol *slashsym = gensym("/");
     t_atom *outv;
-    int outc = 0, outsize = 1;
-    char buffer[MAXPDSTRING], *pathname = buffer;
+    int outc = 0;
+    int outsize = 1;
+    char buffer[MAXPDSTRING];
+    char *pathname = buffer;
     sys_unbashfilename(path->s_name, buffer);
     buffer[MAXPDSTRING - 1] = 0;
 
@@ -1543,7 +1557,8 @@ static void file_join_list(
     {
         size_t newsize;
         int needsep = (argc > 0);
-        char abuf[MAXPDSTRING], *newbuffer;
+        char abuf[MAXPDSTRING];
+        char *newbuffer;
         size_t alen;
         atom_string(argv++, abuf, MAXPDSTRING);
         alen = strlen(abuf);

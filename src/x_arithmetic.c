@@ -484,7 +484,8 @@ static void *binop3_mod_new(t_floatarg f)
 
 static void binop3_mod_bang(t_binop *x)
 {
-    int n2 = x->x_f2, result;
+    int n2 = x->x_f2;
+    int result;
     if(n2 < 0)
         n2 = -n2;
     else if(!n2)
@@ -511,7 +512,9 @@ static void *binop3_div_new(t_floatarg f)
 
 static void binop3_div_bang(t_binop *x)
 {
-    int n1 = x->x_f1, n2 = x->x_f2, result;
+    int n1 = x->x_f1;
+    int n2 = x->x_f2;
+    int result;
     if(n2 < 0)
         n2 = -n2;
     else if(!n2)

@@ -45,8 +45,10 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int crossw = 1, w = x->x_gui.x_w / IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int crossw = 1;
+    int w = x->x_gui.x_w / IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     if(w >= 30) crossw = 2;
     if(w >= 60) crossw = 3;
@@ -91,9 +93,11 @@ void toggle_draw_move(t_toggle *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
-    int crossw = 1, w = x->x_gui.x_w / IEMGUI_ZOOM(x);
+    int crossw = 1;
+    int w = x->x_gui.x_w / IEMGUI_ZOOM(x);
     if(w >= 30) crossw = 2;
     if(w >= 60) crossw = 3;
     crossw *= IEMGUI_ZOOM(x);
@@ -158,7 +162,8 @@ void toggle_draw_io(t_toggle *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -423,10 +428,13 @@ static void toggle_nonzero(t_toggle *x, t_floatarg f)
 static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_toggle *x = (t_toggle *) pd_new(toggle_class);
-    int a = IEM_GUI_DEFAULTSIZE, f = 0;
-    int ldx = 17, ldy = 7;
+    int a = IEM_GUI_DEFAULTSIZE;
+    int f = 0;
+    int ldx = 17;
+    int ldy = 7;
     int fs = 10;
-    t_float on = 0.0, nonzero = 1.0;
+    t_float on = 0.0;
+    t_float nonzero = 1.0;
     char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

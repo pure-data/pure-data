@@ -318,9 +318,10 @@ void inmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 
 static void sys_dispatchnextmidiin(void)
 {
-    static t_midiparser parser[MAXMIDIINDEV], *parserp;
-    int portno = midi_inqueue[midi_intail].q_portno,
-        byte = midi_inqueue[midi_intail].q_byte1;
+    static t_midiparser parser[MAXMIDIINDEV];
+    static t_midiparser *parserp;
+    int portno = midi_inqueue[midi_intail].q_portno;
+    int byte = midi_inqueue[midi_intail].q_byte1;
     if(!midi_inqueue[midi_intail].q_onebyte) bug("sys_dispatchnextmidiin");
     if(portno < 0 || portno >= MAXMIDIINDEV) bug("sys_dispatchnextmidiin 2");
     parserp = parser + portno;
@@ -368,7 +369,10 @@ static void sys_dispatchnextmidiin(void)
         }
         else
         {
-            int status, chan, byte1, gotbyte1;
+            int status;
+            int chan;
+            int byte1;
+            int gotbyte1;
             /* data byte */
             inmidi_byte(portno, byte);
             status = (parserp->mp_status >= MIDI_SYSEX
@@ -564,7 +568,8 @@ void sys_get_midi_apis(char *buf)
 void sys_get_midi_params(
     int *pnmidiindev, int *pmidiindev, int *pnmidioutdev, int *pmidioutdev)
 {
-    int i, devn;
+    int i;
+    int devn;
     *pnmidiindev = midi_nmidiindev;
     for(i = 0; i < midi_nmidiindev; i++)
     {
@@ -632,16 +637,21 @@ void sys_open_midi(int nmidiindev, int *midiindev, int nmidioutdev,
 /* open midi using whatever parameters were last used */
 void sys_reopen_midi(void)
 {
-    int nmidiindev, midiindev[MAXMIDIINDEV];
-    int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
+    int nmidiindev;
+    int midiindev[MAXMIDIINDEV];
+    int nmidioutdev;
+    int midioutdev[MAXMIDIOUTDEV];
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 1);
 }
 
 void sys_listmididevs(void)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
 
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
@@ -715,16 +725,35 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
     char buf[1024 + 2 * MAXNDEV * (DEVDESCSIZE + 4)];
     /* these are the devices you're using: */
-    int nindev, midiindev[MAXMIDIINDEV];
-    int noutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiindev1, midiindev2, midiindev3, midiindev4, midiindev5, midiindev6,
-        midiindev7, midiindev8, midiindev9, midioutdev1, midioutdev2,
-        midioutdev3, midioutdev4, midioutdev5, midioutdev6, midioutdev7,
-        midioutdev8, midioutdev9;
+    int nindev;
+    int midiindev[MAXMIDIINDEV];
+    int noutdev;
+    int midioutdev[MAXMIDIOUTDEV];
+    int midiindev1;
+    int midiindev2;
+    int midiindev3;
+    int midiindev4;
+    int midiindev5;
+    int midiindev6;
+    int midiindev7;
+    int midiindev8;
+    int midiindev9;
+    int midioutdev1;
+    int midioutdev2;
+    int midioutdev3;
+    int midioutdev4;
+    int midioutdev5;
+    int midioutdev6;
+    int midioutdev7;
+    int midioutdev8;
+    int midioutdev9;
 
     /* these are all the devices on your system: */
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
     char device[MAXPDSTRING];
 
     sys_get_midi_devs(
@@ -790,11 +819,17 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 /* new values from dialog window */
 void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int nmidiindev, midiindev[MAXMIDIINDEV];
-    int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, nindev, noutdev;
-    int newmidiindev[9], newmidioutdev[9];
-    int alsadevin, alsadevout;
+    int nmidiindev;
+    int midiindev[MAXMIDIINDEV];
+    int nmidioutdev;
+    int midioutdev[MAXMIDIOUTDEV];
+    int i;
+    int nindev;
+    int noutdev;
+    int newmidiindev[9];
+    int newmidioutdev[9];
+    int alsadevin;
+    int alsadevout;
 
     for(i = 0; i < 9; i++)
     {
@@ -868,8 +903,11 @@ void sys_get_midi_devs(char *indevlist, int *nindevs, char *outdevlist,
 'output' parameter is true, otherwise input device).  Negative on failure. */
 int sys_mididevnametonumber(int output, const char *name)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
 
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
@@ -907,8 +945,11 @@ int sys_mididevnametonumber(int output, const char *name)
 'output' parameter is true, otherwise input device). Empty string on failure. */
 void sys_mididevnumbertoname(int output, int devno, char *name, int namesize)
 {
-    char indevlist[MAXNDEV * DEVDESCSIZE], outdevlist[MAXNDEV * DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i;
+    char indevlist[MAXNDEV * DEVDESCSIZE];
+    char outdevlist[MAXNDEV * DEVDESCSIZE];
+    int nindevs = 0;
+    int noutdevs = 0;
+    int i;
     if(devno < 0)
     {
         *name = 0;

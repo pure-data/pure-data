@@ -254,11 +254,13 @@ static t_int *vline_tilde_perform(t_int *w)
 {
     t_vline *x = (t_vline *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]), i;
+    int n = (int) (w[3]);
+    int i;
     double f = x->x_value;
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
-    double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
+    double timenow;
+    double logicaltimenow = clock_gettimesince(x->x_referencetime);
     t_vseg *s = x->x_list;
     if(logicaltimenow != x->x_lastlogicaltime)
     {
@@ -312,7 +314,8 @@ static t_int *vline_tilde_perform(t_int *w)
 
 static void vline_tilde_stop(t_vline *x)
 {
-    t_vseg *s1, *s2;
+    t_vseg *s1;
+    t_vseg *s2;
     for(s1 = x->x_list; s1; s1 = s2)
         s2 = s1->s_next, t_freebytes(s1, sizeof(*s1));
     x->x_list = 0;
@@ -328,7 +331,10 @@ static void vline_tilde_float(t_vline *x, t_float f)
     t_float inlet1 = (x->x_inlet1 < 0 ? 0 : x->x_inlet1);
     t_float inlet2 = x->x_inlet2;
     double starttime = timenow + inlet2;
-    t_vseg *s1, *s2, *deletefrom = 0, *snew;
+    t_vseg *s1;
+    t_vseg *s2;
+    t_vseg *deletefrom = 0;
+    t_vseg *snew;
     if(PD_BIGORSMALL(f)) f = 0;
 
     /* negative delay input means stop and jump immediately to new value */
@@ -496,7 +502,8 @@ static t_int *vsnapshot_tilde_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_vsnapshot *x = (t_vsnapshot *) (w[2]);
     t_sample *out = x->x_vec;
-    int n = x->x_n, i;
+    int n = x->x_n;
+    int i;
     for(i = 0; i < n; i++)
         out[i] = in[i];
     x->x_time = clock_getlogicaltime();

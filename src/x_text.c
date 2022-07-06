@@ -66,7 +66,8 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 
 static void textbuf_senditup(t_textbuf *x)
 {
-    int i, ntxt;
+    int i;
+    int ntxt;
     char *txt;
     if(!x->b_guiconnect) return;
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
@@ -220,7 +221,8 @@ static void textbuf_free(t_textbuf *x)
 /* random helper function to find the nth line in a text buffer */
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
-    int i, cnt = 0;
+    int i;
+    int cnt = 0;
     for(i = 0; i < n; i++)
     {
         if(cnt == line)
@@ -413,7 +415,8 @@ static int text_sortcompare(void *zkeyinfo, const void *z1, const void *z2)
 static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
 #endif
 {
-    const t_atom *a1 = *(t_atom **) z1, *a2 = *(t_atom **) z2;
+    const t_atom *a1 = *(t_atom **) z1;
+    const t_atom *a2 = *(t_atom **) z2;
     t_keyinfo *k = (t_keyinfo *) zkeyinfo;
     int count;
     /* advance first line by key onset and react if we run out early */
@@ -502,9 +505,16 @@ static int stupid_sortcompare(const void *z1, const void *z2)
 static void text_define_sort(
     t_text_define *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int nlines = 0, unique = 0, natom = binbuf_getnatom(x->x_binbuf), i,
-        thisline, startline;
-    t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
+    int nlines = 0;
+    int unique = 0;
+    int natom = binbuf_getnatom(x->x_binbuf);
+    int i;
+    int thisline;
+    int startline;
+    t_atom *vec = binbuf_getvec(x->x_binbuf);
+    t_atom **sortbuf;
+    t_atom *a1;
+    t_atom *a2;
     t_binbuf *newb;
     t_keyinfo k;
     k.ki_forward = 1;
@@ -683,7 +693,8 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
         t_template *template = template_findbyname(x->tc_struct);
         t_gstub *gs = x->tc_gp.gp_stub;
         t_word *vec;
-        int onset, type;
+        int onset;
+        int type;
         t_symbol *arraytype;
         if(!template)
         {
@@ -827,7 +838,11 @@ static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
 static void text_get_float(t_text_get *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, startfield, nfield;
+    int start;
+    int end;
+    int n;
+    int startfield;
+    int nfield;
     t_atom *vec;
     if(!b) return;
     vec = binbuf_getvec(b);
@@ -836,7 +851,8 @@ static void text_get_float(t_text_get *x, t_floatarg f)
     nfield = x->x_f2;
     if(text_nthline(n, vec, f, &start, &end))
     {
-        int outc = end - start, k;
+        int outc = end - start;
+        int k;
         t_atom *outv;
         if(x->x_f1 < 0) /* negative start field for whole line */
         {
@@ -929,8 +945,12 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
 static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, fieldno = x->x_f2, i,
-                       /* check for overflow in this conversion: */
+    int start;
+    int end;
+    int n;
+    int fieldno = x->x_f2;
+    int i;
+    int /* check for overflow in this conversion: */
         lineno = (x->x_f1 > (double) 0x7fffffff ? 0x7fffffff : (int) x->x_f1);
     t_atom *vec;
     if(!b) return;
@@ -974,9 +994,9 @@ static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
     }
     else if(fieldno < 0) /* if line number too high just append to end */
     {
-        int addsemi = (n && vec[n - 1].a_type != A_SEMI &&
-                       vec[n - 1].a_type != A_COMMA),
-            newsize = n + addsemi + argc + 1;
+        int addsemi =
+            (n && vec[n - 1].a_type != A_SEMI && vec[n - 1].a_type != A_COMMA);
+        int newsize = n + addsemi + argc + 1;
         (void) binbuf_resize(b, newsize);
         vec = binbuf_getvec(b);
         if(addsemi) SETSEMI(&vec[n]);
@@ -1043,8 +1063,12 @@ static void text_insert_list(
     t_text_insert *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, nwas, i,
-        lineno = (x->x_f1 > (double) 0x7fffffff ? 0x7fffffff : (int) x->x_f1);
+    int start;
+    int end;
+    int n;
+    int nwas;
+    int i;
+    int lineno = (x->x_f1 > (double) 0x7fffffff ? 0x7fffffff : (int) x->x_f1);
 
     t_atom *vec;
     if(!b) return;
@@ -1100,7 +1124,10 @@ static void *text_delete_new(t_symbol *s, int argc, t_atom *argv)
 static void text_delete_float(t_text_delete *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = (f > (double) 0x7fffffff ? 0x7fffffff : f);
+    int start;
+    int end;
+    int n;
+    int lineno = (f > (double) 0x7fffffff ? 0x7fffffff : f);
     t_atom *vec;
     if(!b) return;
     vec = binbuf_getvec(b);
@@ -1151,7 +1178,9 @@ static void *text_size_new(t_symbol *s, int argc, t_atom *argv)
 static void text_size_bang(t_text_size *x)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int n, i, cnt = 0;
+    int n;
+    int i;
+    int cnt = 0;
     t_atom *vec;
     if(!b) return;
     vec = binbuf_getvec(b);
@@ -1167,7 +1196,9 @@ static void text_size_bang(t_text_size *x)
 static void text_size_float(t_text_size *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n;
+    int start;
+    int end;
+    int n;
     t_atom *vec;
     if(!b) return;
     vec = binbuf_getvec(b);
@@ -1274,7 +1305,10 @@ typedef struct _text_search
 static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_search *x = (t_text_search *) pd_new(text_search_class);
-    int i, key, nkey, nextop;
+    int i;
+    int key;
+    int nkey;
+    int nextop;
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
     text_client_argparse(&x->x_tc, &argc, &argv, "text search");
     for(i = nkey = 0; i < argc; i++)
@@ -1329,8 +1363,15 @@ static void text_search_list(
     t_text_search *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int i, n, lineno, bestline = -1, beststart = -1, bestn, thisstart,
-                      nkeys = x->x_nkeys, failed = 0;
+    int i;
+    int n;
+    int lineno;
+    int bestline = -1;
+    int beststart = -1;
+    int bestn;
+    int thisstart;
+    int nkeys = x->x_nkeys;
+    int failed = 0;
     t_atom *vec;
     if(!b) return;
     if(argc < nkeys)
@@ -1344,7 +1385,10 @@ static void text_search_list(
     {
         if(vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA || i == n - 1)
         {
-            int thisn, j, field, binop;
+            int thisn;
+            int j;
+            int field;
+            int binop;
             if(lineno < x->x_onset) goto nomatch;
             if(lineno >= x->x_onset + x->x_range) break;
             thisn = i - thisstart;
@@ -1425,10 +1469,10 @@ static void text_search_list(
                         bug("text search 2");
                     if(argv[j].a_type == A_FLOAT) /* arg is a float */
                     {
-                        float thisv = vec[thisstart + field].a_w.w_float,
-                              bestv = (beststart >= 0
-                                           ? vec[beststart + field].a_w.w_float
-                                           : -1e20);
+                        float thisv = vec[thisstart + field].a_w.w_float;
+                        float bestv =
+                            (beststart >= 0 ? vec[beststart + field].a_w.w_float
+                                            : -1e20);
                         switch(binop)
                         {
                             case KB_GT:
@@ -1464,8 +1508,8 @@ static void text_search_list(
                                 }
                                 else
                                 {
-                                    float d1 = thisv - argv[j].a_w.w_float,
-                                          d2 = bestv - argv[j].a_w.w_float;
+                                    float d1 = thisv - argv[j].a_w.w_float;
+                                    float d2 = bestv - argv[j].a_w.w_float;
                                     if(d1 < 0) d1 = -d1;
                                     if(d2 < 0) d2 = -d2;
 
@@ -1611,8 +1655,16 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int n, i, onset, nfield, wait, eatsemi = 1, gotcomma = 0;
-    t_atom *vec, *outvec, *ap;
+    int n;
+    int i;
+    int onset;
+    int nfield;
+    int wait;
+    int eatsemi = 1;
+    int gotcomma = 0;
+    t_atom *vec;
+    t_atom *outvec;
+    t_atom *ap;
     if(!b) goto nosequence;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
@@ -1815,7 +1867,9 @@ static void text_sequence_step(t_text_sequence *x)
 static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int n, start, end;
+    int n;
+    int start;
+    int end;
     t_atom *vec;
     if(!b) return;
     x->x_lastto = 0;
@@ -1956,10 +2010,14 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
     x->x_innext = 1;
     while(1)
     {
-        int argc = binbuf_getnatom(x->x_binbuf), count, onset = x->x_onset,
-            onset2, wasrewound;
+        int argc = binbuf_getnatom(x->x_binbuf);
+        int count;
+        int onset = x->x_onset;
+        int onset2;
+        int wasrewound;
         t_atom *argv = binbuf_getvec(x->x_binbuf);
-        t_atom *ap = argv + onset, *ap2;
+        t_atom *ap = argv + onset;
+        t_atom *ap2;
         if(onset >= argc) goto end;
         while(ap->a_type == A_SEMI || ap->a_type == A_COMMA)
         {
@@ -2171,9 +2229,12 @@ static void *textfile_new(void)
 
 static void textfile_bang(t_qlist *x)
 {
-    int argc = binbuf_getnatom(x->x_binbuf), onset = x->x_onset, onset2;
+    int argc = binbuf_getnatom(x->x_binbuf);
+    int onset = x->x_onset;
+    int onset2;
     t_atom *argv = binbuf_getvec(x->x_binbuf);
-    t_atom *ap = argv + onset, *ap2;
+    t_atom *ap = argv + onset;
+    t_atom *ap2;
     while(onset < argc && (ap->a_type == A_SEMI || ap->a_type == A_COMMA))
         onset++, ap++;
     onset2 = onset;

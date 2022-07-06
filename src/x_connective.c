@@ -673,7 +673,10 @@ typedef struct _pack
 static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_pack *x = (t_pack *) pd_new(pack_class);
-    t_atom defarg[2], *ap, *vec, *vp;
+    t_atom defarg[2];
+    t_atom *ap;
+    t_atom *vec;
+    t_atom *vp;
     t_gpointer *gp;
     int nptr = 0;
     int i;
@@ -733,7 +736,9 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 
 static void pack_bang(t_pack *x)
 {
-    int i, reentered = 0, size = (int) (x->x_n * sizeof(t_atom));
+    int i;
+    int reentered = 0;
+    int size = (int) (x->x_n * sizeof(t_atom));
     t_gpointer *gp;
     t_atom *outvec;
     for(i = (int) x->x_nptr, gp = x->x_gpointer; i--; gp++)
@@ -859,7 +864,8 @@ typedef struct _unpack
 static void *unpack_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_unpack *x = (t_unpack *) pd_new(unpack_class);
-    t_atom defarg[2], *ap;
+    t_atom defarg[2];
+    t_atom *ap;
     t_unpackout *u;
     int i;
     if(!argc)
@@ -975,7 +981,8 @@ typedef struct _trigger
 static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_trigger *x = (t_trigger *) pd_new(trigger_class);
-    t_atom defarg[2], *ap;
+    t_atom defarg[2];
+    t_atom *ap;
     t_triggerout *u;
     int i;
     if(!argc)

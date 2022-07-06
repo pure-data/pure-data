@@ -221,7 +221,8 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
 #endif
 {
     struct expr *x;
-    int i, ninlet;
+    int i;
+    int ninlet;
     struct ex_ex *eptr;
     t_atom fakearg;
     int dsp_index; /* keeping track of the dsp inlets */
@@ -395,7 +396,8 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
 
 t_int *expr_perform(t_int *w)
 {
-    int i, j;
+    int i;
+    int j;
     t_expr *x = (t_expr *) w[1];
     struct ex_ex res;
     int n;
@@ -486,7 +488,8 @@ t_int *expr_perform(t_int *w)
 
 static void expr_dsp(t_expr *x, t_signal **sp)
 {
-    int i, nv;
+    int i;
+    int nv;
     int newsize;
 
     x->exp_error = 0; /* reset all errors */
@@ -610,7 +613,8 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sx;
     int vecno;
-    int i, nargs;
+    int i;
+    int nargs;
 
     if(!argc) return;
     sx = atom_getsymbolarg(0, argc, argv);
@@ -723,7 +727,8 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sx;
     int vecno;
-    int i, nargs;
+    int i;
+    int nargs;
 
     /*
      *  if no argument clear all input and output buffers

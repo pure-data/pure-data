@@ -63,7 +63,8 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     }
     else
     {
-        int xpix, ypix;
+        int xpix;
+        int ypix;
         pd_vmess((t_pd *) glist_getcanvas(gl), gensym("editmode"), "i", 1);
         SETSYMBOL(&at, gensym("comment"));
         glist_noselect(gl);
@@ -148,12 +149,21 @@ and whether to connect to it automatically */
 static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     int *indexp, int *totalp)
 {
-    int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
+    int xpix;
+    int ypix;
+    int indx = 0;
+    int nobj = 0;
+    int n2;
+    int x1;
+    int x2;
+    int y1;
+    int y2;
     int connectme = (x->gl_editor->e_selection &&
                      !x->gl_editor->e_selection->sel_next && !sys_noautopatch);
     if(connectme)
     {
-        t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;
+        t_gobj *g;
+        t_gobj *selected = x->gl_editor->e_selection->sel_what;
         for(g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
             if(g == selected)
             {
@@ -209,7 +219,11 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     {
         /* interactively create new object */
         t_binbuf *b = binbuf_new();
-        int connectme, xpix, ypix, indx, nobj;
+        int connectme;
+        int xpix;
+        int ypix;
+        int indx;
+        int nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         canvas_objtext(gl, xpix, ypix, 0, 1, b);
@@ -230,7 +244,8 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 {
     t_atom at;
     t_binbuf *b = binbuf_new();
-    int xpix, ypix;
+    int xpix;
+    int ypix;
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
     glist_noselect(gl);
@@ -480,7 +495,11 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         post("unable to create stub message in closed canvas!");
     else
     {
-        int connectme, xpix, ypix, indx, nobj;
+        int connectme;
+        int xpix;
+        int ypix;
+        int indx;
+        int nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
@@ -605,7 +624,8 @@ static t_atom *gatom_getatom(t_gatom *x)
 
 static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_atom *ap = gatom_getatom(x), oldatom;
+    t_atom *ap = gatom_getatom(x);
+    t_atom oldatom;
     int changed = 0;
     if(!argc && x->a_flavor != A_LIST) return;
     if(x->a_flavor == A_FLOAT)
@@ -626,7 +646,8 @@ static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
     else if(x->a_flavor == A_LIST) /* list */
     {
         t_atom *av = binbuf_getvec(x->a_text.te_binbuf);
-        int ac = binbuf_getnatom(x->a_text.te_binbuf), i;
+        int ac = binbuf_getnatom(x->a_text.te_binbuf);
+        int i;
         if(ac == argc)
         {
             for(i = 0; i < argc; i++)
@@ -683,7 +704,8 @@ static void gatom_bang(t_gatom *x)
     }
     else /* list */
     {
-        int argc = binbuf_getnatom(x->a_text.te_binbuf), i;
+        int argc = binbuf_getnatom(x->a_text.te_binbuf);
+        int i;
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
         for(i = 0; i < argc; i++)
             if(argv[i].a_type != A_FLOAT && argv[i].a_type != A_SYMBOL)
@@ -763,7 +785,9 @@ void gatom_undarken(t_text *x)
 void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *) z;
-    int c = f, bufsize, i;
+    int c = f;
+    int bufsize;
+    int i;
     char *buf;
     t_atom *ap = gatom_getatom(x);
 
@@ -904,7 +928,12 @@ static int gatom_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos, int shift,
     }
     else if(x->a_flavor == A_LIST)
     {
-        int x1, y1, x2, y2, indx, argc = binbuf_getnatom(x->a_text.te_binbuf);
+        int x1;
+        int y1;
+        int x2;
+        int y2;
+        int indx;
+        int argc = binbuf_getnatom(x->a_text.te_binbuf);
         t_atom *argv = binbuf_getvec(x->a_text.te_binbuf);
         gobj_getrect(z, gl, &x1, &y1, &x2, &y2);
         indx = rtext_findatomfor(t, xpos - x1, ypos - y1);
@@ -1006,8 +1035,12 @@ static int gatom_fontsize(t_gatom *x)
 /* ---------------- gatom-specific widget functions --------------- */
 static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
 {
-    int x1, y1, x2, y2;
-    int zoom = glist_getzoom(glist), fontsize = gatom_fontsize(x);
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+    int zoom = glist_getzoom(glist);
+    int fontsize = gatom_fontsize(x);
     text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
     if(x->a_wherelabel == ATOM_LABELLEFT)
     {
@@ -1051,7 +1084,8 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
     {
         if(vis)
         {
-            int x1, y1;
+            int x1;
+            int y1;
             gatom_getwherelabel(x, glist, &x1, &y1);
             sys_vgui(
                 "pdtk_text_new .x%lx.c {%lx.l label text} %f %f {%s } %d %s\n",
@@ -1115,7 +1149,11 @@ void canvas_atom(
     }
     else /* from menu - use default settings */
     {
-        int connectme, xpix, ypix, indx, nobj;
+        int connectme;
+        int xpix;
+        int ypix;
+        int indx;
+        int nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
         outlet_new(&x->a_text, x->a_flavor == A_FLOAT ? &s_float : &s_symbol);
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
@@ -1176,8 +1214,13 @@ static void text_getrect(
     t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_text *x = (t_text *) z;
-    int width, height, iscomment = (x->te_type == T_TEXT);
-    t_float x1, y1, x2, y2;
+    int width;
+    int height;
+    int iscomment = (x->te_type == T_TEXT);
+    t_float x1;
+    t_float y1;
+    t_float x2;
+    t_float y2;
 
     if(glist->gl_editor && glist->gl_editor->e_rtext)
     {
@@ -1413,10 +1456,13 @@ static const t_widgetbehavior gatom_widgetbehavior = {
 void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     const char *tag, int x1, int y1, int x2, int y2)
 {
-    int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n - 1), i;
+    int n = obj_noutlets(ob);
+    int nplus = (n == 1 ? 1 : n - 1);
+    int i;
     int width = x2 - x1;
     int iow = IOWIDTH * glist->gl_zoom;
-    int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
+    int ih = IHEIGHT * glist->gl_zoom;
+    int oh = OHEIGHT * glist->gl_zoom;
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
     for(i = 0; i < n; i++)
     {
@@ -1452,7 +1498,13 @@ void text_drawborder(t_text *x, t_glist *glist, const char *tag, int width2,
     int height2, int firsttime)
 {
     t_object *ob;
-    int x1, y1, x2, y2, width, height, corner;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+    int width;
+    int height;
+    int corner;
     text_getrect(&x->te_g, glist, &x1, &y1, &x2, &y2);
     width = x2 - x1;
     height = y2 - y1;
@@ -1497,7 +1549,8 @@ void text_drawborder(t_text *x, t_glist *glist, const char *tag, int width2,
     {
         /* number or symbol */
         int grabbed = glist->gl_zoom * ((t_gatom *) x)->a_grabbed;
-        int x1p = x1 + grabbed, y1p = y1 + grabbed;
+        int x1p = x1 + grabbed;
+        int y1p = y1 + grabbed;
         corner = ((y2 - y1) / 4);
         if(firsttime)
             sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d %d %d "
@@ -1517,7 +1570,8 @@ void text_drawborder(t_text *x, t_glist *glist, const char *tag, int width2,
     else if(x->te_type == T_ATOM) /* list (ATOM but not float or symbol) */
     {
         int grabbed = glist->gl_zoom * ((t_gatom *) x)->a_grabbed;
-        int x1p = x1 + grabbed, y1p = y1 + grabbed;
+        int x1p = x1 + grabbed;
+        int y1p = y1 + grabbed;
         corner = ((y2 - y1) / 4);
         if(firsttime)
             sys_vgui(
@@ -1560,7 +1614,8 @@ void text_drawborder(t_text *x, t_glist *glist, const char *tag, int width2,
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
 {
-    int i, n;
+    int i;
+    int n;
     n = obj_noutlets(ob);
     for(i = 0; i < n; i++)
         sys_vgui(".x%lx.c delete %so%d\n", glist_getcanvas(glist), tag, i);
@@ -1584,8 +1639,11 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
     if(x->te_type == T_OBJECT)
     {
         t_binbuf *b = binbuf_new();
-        int natom1, natom2, widthwas = x->te_width;
-        t_atom *vec1, *vec2;
+        int natom1;
+        int natom2;
+        int widthwas = x->te_width;
+        t_atom *vec1;
+        t_atom *vec2;
         binbuf_text(b, buf, bufsize);
         natom1 = binbuf_getnatom(x->te_binbuf);
         vec1 = binbuf_getvec(x->te_binbuf);
@@ -1607,7 +1665,8 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
         }
         else /* normally, just destroy the old one and make a new one. */
         {
-            int xwas = x->te_xpix, ywas = x->te_ypix;
+            int xwas = x->te_xpix;
+            int ywas = x->te_ypix;
             canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
                 (void *) canvas_undo_set_recreate(
                     glist_getcanvas(glist), &x->te_g, pos));
@@ -1646,7 +1705,8 @@ static void text_anything(t_text *x, t_symbol *s, int argc, t_atom *argv) {}
 void text_getfont(
     t_text *x, t_glist *thisglist, int *fwidthp, int *fheightp, int *guifsize)
 {
-    int font, zoom;
+    int font;
+    int zoom;
     t_glist *gl;
     if(pd_class(&x->te_pd) == canvas_class && ((t_glist *) (x))->gl_isgraph &&
         ((t_glist *) (x))->gl_goprect)

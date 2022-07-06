@@ -29,7 +29,8 @@ static int oss_midioutfd[MAXMIDIOUTDEV + 1];
 
 static void close_one_midi_fd(int fd)
 {
-    int i, j;
+    int i;
+    int j;
     close(fd);
     for(i = 0; i < oss_nmidiin; i++)
     {
@@ -72,7 +73,9 @@ void sys_do_open_midi(
         oss_midioutfd[i] = -1;
     for(i = 0, oss_nmidiin = 0; i < nmidiin; i++)
     {
-        int fd = -1, j, outdevindex = -1;
+        int fd = -1;
+        int j;
+        int outdevindex = -1;
         int devno = midiinvec[i];
         if(devno < 0 || devno >= oss_nmididevs) continue;
         for(j = 0; j < nmidiout; j++)
@@ -165,8 +168,10 @@ void sys_putmidibyte(int portno, int byte)
 
 void sys_poll_midi(void)
 {
-    int i, throttle = 100;
-    int did = 1, maxfd = 0;
+    int i;
+    int throttle = 100;
+    int did = 1;
+    int maxfd = 0;
     while(did)
     {
         did = 0;
@@ -206,7 +211,8 @@ void sys_close_midi()
 
 void midi_oss_init(void)
 {
-    int fd, devno;
+    int fd;
+    int devno;
     struct stat statbuf;
     char namebuf[80];
 
@@ -227,7 +233,8 @@ void midi_oss_init(void)
 void midi_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i, ndev;
+    int i;
+    int ndev;
     midi_oss_init();
 
     if((ndev = oss_nmididevs) > maxndev) ndev = maxndev;

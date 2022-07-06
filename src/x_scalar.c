@@ -21,7 +21,8 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_atom a[9];
     t_canvas *x, *z = canvas_getcurrent();
-    t_symbol *templatesym = &s_float, *asym = gensym("#A");
+    t_symbol *templatesym = &s_float;
+    t_symbol *asym = gensym("#A");
     t_template *template;
     t_scalar *sc;
     int keep = 0;
@@ -133,7 +134,8 @@ static void scalar_define_set(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     if(x->gl_list && pd_class(&x->gl_list->g_pd) == scalar_class)
     {
         t_binbuf *b = binbuf_new();
-        int nextmsg = 0, natoms;
+        int nextmsg = 0;
+        int natoms;
         t_atom *vec;
         glist_clear(x);
         binbuf_restore(b, argc, argv);

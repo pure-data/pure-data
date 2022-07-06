@@ -409,8 +409,10 @@ typedef struct _pipe
 static void *pipe_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_pipe *x = (t_pipe *) pd_new(pipe_class);
-    t_atom defarg, *ap;
-    t_pipeout *vec, *vp;
+    t_atom defarg;
+    t_atom *ap;
+    t_pipeout *vec;
+    t_pipeout *vp;
     t_gpointer *gp;
     int nptr = 0;
     int i;
@@ -502,7 +504,8 @@ static void hang_free(t_hang *h)
 static void hang_tick(t_hang *h)
 {
     t_pipe *x = h->h_owner;
-    t_hang *h2, *h3;
+    t_hang *h2;
+    t_hang *h3;
     t_pipeout *p;
     int i;
     union word *w;
@@ -545,9 +548,11 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
 {
     t_hang *h =
         (t_hang *) getbytes(sizeof(*h) + (x->x_n - 1) * sizeof(*h->h_vec));
-    t_gpointer *gp, *gp2;
+    t_gpointer *gp;
+    t_gpointer *gp2;
     t_pipeout *p;
-    int i, n = x->x_n;
+    int i;
+    int n = x->x_n;
     t_atom *ap;
     t_word *w;
     h->h_gp = (t_gpointer *) getbytes(x->x_nptr * sizeof(t_gpointer));

@@ -212,8 +212,11 @@ static long sys_ringbuf_AdvanceReadIndex(
 long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
     long numBytes, PA_VOLATILE char *buffer)
 {
-    long size1, size2, numWritten;
-    PA_VOLATILE void *data1, *data2;
+    long size1;
+    long size2;
+    long numWritten;
+    PA_VOLATILE void *data1;
+    void *data2;
     numWritten = sys_ringbuf_GetWriteRegions(
         rbuf, numBytes, &data1, &size1, &data2, &size2, buffer);
     if(size2 > 0)
@@ -236,8 +239,11 @@ long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
 long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
     PA_VOLATILE char *buffer)
 {
-    long size1, size2, numRead;
-    PA_VOLATILE void *data1, *data2;
+    long size1;
+    long size2;
+    long numRead;
+    PA_VOLATILE void *data1;
+    void *data2;
     numRead = sys_ringbuf_GetReadRegions(
         rbuf, numBytes, &data1, &size1, &data2, &size2, buffer);
     if(size2 > 0)

@@ -147,8 +147,11 @@ static t_int *cos_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     int n = (int) (w[3]);
-    float *tab = cos_table, *addr;
-    t_float f1, f2, frac;
+    float *tab = cos_table;
+    float *addr;
+    t_float f1;
+    t_float f2;
+    t_float frac;
     double dphase;
     int normhipart;
     union tabfudge tf;
@@ -201,7 +204,9 @@ static void cos_dsp(t_cos *x, t_signal **sp)
 static void cos_maketable(void)
 {
     int i;
-    float *fp, phase, phsinc = (2. * 3.14159) / COSTABSIZE;
+    float *fp;
+    float phase;
+    float phsinc = (2. * 3.14159) / COSTABSIZE;
     union tabfudge tf;
 
     if(cos_table) return;
@@ -263,8 +268,11 @@ static t_int *osc_perform(t_int *w)
     t_sample *in = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
     int n = (int) (w[4]);
-    float *tab = cos_table, *addr;
-    t_float f1, f2, frac;
+    float *tab = cos_table;
+    float *addr;
+    t_float f1;
+    t_float f2;
+    t_float frac;
     double dphase = x->x_phase + UNITBIT32;
     int normhipart;
     union tabfudge tf;
@@ -384,16 +392,23 @@ static t_int *sigvcf_perform(t_int *w)
     t_vcfctl *c = (t_vcfctl *) (w[5]);
     int n = (int) w[6];
     int i;
-    t_float re = c->c_re, re2;
+    t_float re = c->c_re;
+    t_float re2;
     t_float im = c->c_im;
     t_float q = c->c_q;
     t_float isr = c->c_isr;
     t_float qinv = (q > 0 ? 1.0f / q : 0);
     t_float ampcorrect = 2. - 2. / (q + 2.);
-    t_float coefr, coefi;
-    float *tab = cos_table, *addr, f1, f2, frac;
+    t_float coefr;
+    t_float coefi;
+    float *tab = cos_table;
+    float *addr;
+    float f1;
+    float f2;
+    float frac;
     double dphase;
-    int normhipart, tabindex;
+    int normhipart;
+    int tabindex;
     union tabfudge tf;
 
     tf.tf_d = UNITBIT32;
@@ -401,7 +416,10 @@ static t_int *sigvcf_perform(t_int *w)
 
     for(i = 0; i < n; i++)
     {
-        float cf, cfindx, r, oneminusr;
+        float cf;
+        float cfindx;
+        float r;
+        float oneminusr;
         cf = *in2++ * isr;
         if(cf < 0) cf = 0;
         cfindx = cf * (float) (COSTABSIZE / 6.28318f);

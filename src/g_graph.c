@@ -154,7 +154,8 @@ void glist_delete(t_glist *x, t_gobj *y)
 void glist_clear(t_glist *x)
 {
     t_gobj *y;
-    int dspstate = 0, suspended = 0;
+    int dspstate = 0;
+    int suspended = 0;
     t_symbol *dspsym = gensym("dsp");
     while((y = x->gl_list))
     {
@@ -208,7 +209,8 @@ static t_float gobj_getxforsort(t_gobj *g)
 {
     if(pd_class(&g->g_pd) == scalar_class)
     {
-        t_float x1, y1;
+        t_float x1;
+        t_float y1;
         scalar_getbasexy((t_scalar *) g, &x1, &y1);
         return (x1);
     }
@@ -218,8 +220,10 @@ static t_float gobj_getxforsort(t_gobj *g)
 
 static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
 {
-    t_gobj *g = 0, *g9 = 0;
-    t_float f1 = 0, f2 = 0;
+    t_gobj *g = 0;
+    t_gobj *g9 = 0;
+    t_float f1 = 0;
+    t_float f2 = 0;
     if(g1) f1 = gobj_getxforsort(g1);
     if(g2) f2 = gobj_getxforsort(g2);
     while(1)
@@ -266,8 +270,11 @@ static t_gobj *glist_dosort(t_glist *x, t_gobj *g, int nitems)
         return (g);
     else
     {
-        int n1 = nitems / 2, n2 = nitems - n1, i;
-        t_gobj *g2, *g3;
+        int n1 = nitems / 2;
+        int n2 = nitems - n1;
+        int i;
+        t_gobj *g2;
+        t_gobj *g3;
         for(g2 = g, i = n1 - 1; i--; g2 = g2->g_next)
             ;
         g3 = g2->g_next;
@@ -280,7 +287,8 @@ static t_gobj *glist_dosort(t_glist *x, t_gobj *g, int nitems)
 
 void glist_sort(t_glist *x)
 {
-    int nitems = 0, foo = 0;
+    int nitems = 0;
+    int foo = 0;
     t_float lastx = -1e37;
     t_gobj *g;
     for(g = x->gl_list; g; g = g->g_next)
@@ -330,8 +338,14 @@ extern void obj_moveinletfirst(t_object *x, t_inlet *i);
 
 void canvas_resortinlets(t_canvas *x)
 {
-    int ninlets = 0, i, j, xmax;
-    t_gobj *y, **vec, **vp, **maxp;
+    int ninlets = 0;
+    int i;
+    int j;
+    int xmax;
+    t_gobj *y;
+    t_gobj **vec;
+    t_gobj **vp;
+    t_gobj **maxp;
 
     for(ninlets = 0, y = x->gl_list; y; y = y->g_next)
         if(pd_class(&y->g_pd) == vinlet_class) ninlets++;
@@ -348,7 +362,10 @@ void canvas_resortinlets(t_canvas *x)
         t_inlet *ip;
         for(vp = vec, xmax = -0x7fffffff, maxp = 0, j = ninlets; j--; vp++)
         {
-            int x1, y1, x2, y2;
+            int x1;
+            int y1;
+            int x2;
+            int y2;
             t_gobj *g = *vp;
             if(!g) continue;
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
@@ -402,8 +419,14 @@ extern void obj_moveoutletfirst(t_object *x, t_outlet *i);
 
 void canvas_resortoutlets(t_canvas *x)
 {
-    int noutlets = 0, i, j, xmax;
-    t_gobj *y, **vec, **vp, **maxp;
+    int noutlets = 0;
+    int i;
+    int j;
+    int xmax;
+    t_gobj *y;
+    t_gobj **vec;
+    t_gobj **vp;
+    t_gobj **maxp;
 
     for(noutlets = 0, y = x->gl_list; y; y = y->g_next)
         if(pd_class(&y->g_pd) == voutlet_class) noutlets++;
@@ -420,7 +443,10 @@ void canvas_resortoutlets(t_canvas *x)
         t_outlet *ip;
         for(vp = vec, xmax = -0x7fffffff, maxp = 0, j = noutlets; j--; vp++)
         {
-            int x1, y1, x2, y2;
+            int x1;
+            int y1;
+            int x2;
+            int y2;
             t_gobj *g = *vp;
             if(!g) continue;
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
@@ -534,7 +560,10 @@ t_float glist_pixelstox(t_glist *x, t_float xpix)
      so get our screen rectangle on parent and transform. */
     else
     {
-        int x1, y1, x2, y2;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
         if(!x->gl_owner) bug("glist_pixelstox");
         graph_graphrect(&x->gl_gobj, x->gl_owner, &x1, &y1, &x2, &y2);
         return (x->gl_x1 + (x->gl_x2 - x->gl_x1) * (xpix - x1) / (x2 - x1));
@@ -550,7 +579,10 @@ t_float glist_pixelstoy(t_glist *x, t_float ypix)
                                (x->gl_screeny2 - x->gl_screeny1));
     else
     {
-        int x1, y1, x2, y2;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
         if(!x->gl_owner) bug("glist_pixelstox");
         graph_graphrect(&x->gl_gobj, x->gl_owner, &x1, &y1, &x2, &y2);
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * (ypix - y1) / (y2 - y1));
@@ -567,7 +599,10 @@ t_float glist_xtopixels(t_glist *x, t_float xval)
                (x->gl_x2 - x->gl_x1);
     else
     {
-        int x1, y1, x2, y2;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
         if(!x->gl_owner) bug("glist_pixelstox");
         graph_graphrect(&x->gl_gobj, x->gl_owner, &x1, &y1, &x2, &y2);
         return (x1 + (x2 - x1) * (xval - x->gl_x1) / (x->gl_x2 - x->gl_x1));
@@ -583,7 +618,10 @@ t_float glist_ytopixels(t_glist *x, t_float yval)
                (x->gl_y2 - x->gl_y1);
     else
     {
-        int x1, y1, x2, y2;
+        int x1;
+        int y1;
+        int x2;
+        int y2;
         if(!x->gl_owner) bug("glist_pixelstox");
         graph_graphrect(&x->gl_gobj, x->gl_owner, &x1, &y1, &x2, &y2);
         return (y1 + (y2 - y1) * (yval - x->gl_y1) / (x->gl_y2 - x->gl_y1));
@@ -685,7 +723,10 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     t_glist *x = (t_glist *) gr;
     char tag[50];
     t_gobj *g;
-    int x1, y1, x2, y2;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
     /* ordinary subpatches: just act like a text object */
     if(!x->gl_isgraph)
     {
@@ -757,7 +798,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         zero, this is disabled. */
         if(x->gl_xtick.k_lperb)
         {
-            t_float upix, lpix;
+            t_float upix;
+            t_float lpix;
             if(y2 < y1)
                 upix = y1, lpix = y2;
             else
@@ -799,7 +841,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         /* draw ticks in vertical borders*/
         if(x->gl_ytick.k_lperb)
         {
-            t_float ubound, lbound;
+            t_float ubound;
+            t_float lbound;
             if(x->gl_y2 < x->gl_y1)
                 ubound = x->gl_y1, lbound = x->gl_y2;
             else
@@ -875,7 +918,8 @@ static void graph_graphrect(
     t_glist *x = (t_glist *) z;
     int x1 = text_xpix(&x->gl_obj, glist);
     int y1 = text_ypix(&x->gl_obj, glist);
-    int x2, y2;
+    int x2;
+    int y2;
     x2 = x1 + x->gl_zoom * x->gl_pixwidth;
     y2 = y1 + x->gl_zoom * x->gl_pixheight;
 
@@ -890,13 +934,19 @@ meaning their formal bounds rectangles. */
 static void graph_getrect(
     t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    int x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
+    int x1 = 0x7fffffff;
+    int y1 = 0x7fffffff;
+    int x2 = -0x7fffffff;
+    int y2 = -0x7fffffff;
     t_glist *x = (t_glist *) z;
     if(x->gl_isgraph)
     {
         int hadwindow;
         t_gobj *g;
-        int x21, y21, x22, y22;
+        int x21;
+        int y21;
+        int x22;
+        int y22;
 
         graph_graphrect(z, glist, &x1, &y1, &x2, &y2);
         if(canvas_showtext(x))
@@ -992,13 +1042,14 @@ static void graph_delete(t_gobj *z, t_glist *glist)
 static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
 {
     t_glist *x = (t_glist *) z;
-    t_float newxpix = THISGUI->i_graph_lastxpix + dx,
-            newypix = THISGUI->i_graph_lastypix + dy;
+    t_float newxpix = THISGUI->i_graph_lastxpix + dx;
+    t_float newypix = THISGUI->i_graph_lastypix + dy;
     t_garray *a = (t_garray *) (x->gl_list);
     int oldx = 0.5 + glist_pixelstox(x, THISGUI->i_graph_lastxpix);
     int newx = 0.5 + glist_pixelstox(x, newxpix);
     t_word *vec;
-    int nelem, i;
+    int nelem;
+    int i;
     t_float oldy = glist_pixelstoy(x, THISGUI->i_graph_lastypix);
     t_float newy = glist_pixelstoy(x, newypix);
     THISGUI->i_graph_lastxpix = newxpix;
@@ -1042,7 +1093,10 @@ static int graph_click(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     {
         for(y = x->gl_list; y; y = y->g_next)
         {
-            int x1, y1, x2, y2;
+            int x1;
+            int y1;
+            int x2;
+            int y2;
             /* check if the object wants to be clicked */
             if(canvas_hitbox(x, y, xpix, ypix, &x1, &y1, &x2, &y2) &&
                 (clickreturned =
@@ -1075,7 +1129,8 @@ const t_widgetbehavior graph_widgetbehavior = {
 
 t_glist *glist_findgraph(t_glist *x)
 {
-    t_gobj *y = 0, *z;
+    t_gobj *y = 0;
+    t_gobj *z;
     for(z = x->gl_list; z; z = z->g_next)
         if(pd_class(&z->g_pd) == canvas_class && ((t_glist *) z)->gl_isgraph)
             y = z;

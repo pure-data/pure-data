@@ -295,8 +295,13 @@ static void my_canvas_label_font(
 static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_my_canvas *x = (t_my_canvas *) pd_new(my_canvas_class);
-    int a = IEM_GUI_DEFAULTSIZE, w = 100, h = 60;
-    int ldx = 20, ldy = 12, f = 2, i = 0;
+    int a = IEM_GUI_DEFAULTSIZE;
+    int w = 100;
+    int h = 60;
+    int ldx = 20;
+    int ldy = 12;
+    int f = 2;
+    int i = 0;
     int fs = 14;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

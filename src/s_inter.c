@@ -200,13 +200,16 @@ sleep. */
 static int sys_domicrosleep(int microsec)
 {
     struct timeval timeout;
-    int i, didsomething = 0;
+    int i;
+    int didsomething = 0;
     t_fdpoll *fp;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     if(INTER->i_nfdpoll)
     {
-        fd_set readset, writeset, exceptset;
+        fd_set readset;
+        fd_set writeset;
+        fd_set exceptset;
         FD_ZERO(&writeset);
         FD_ZERO(&readset);
         FD_ZERO(&exceptset);
@@ -343,7 +346,9 @@ void sys_set_priority(int mode)
 {
 #ifdef _POSIX_PRIORITY_SCHEDULING
     struct sched_param par;
-    int p1, p2, p3;
+    int p1;
+    int p2;
+    int p3;
     p1 = sched_get_priority_min(SCHED_FIFO);
     p2 = sched_get_priority_max(SCHED_FIFO);
 #ifdef USEAPI_JACK
@@ -408,7 +413,8 @@ void sys_sockerror(const char *s)
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
 {
-    int nfd, size;
+    int nfd;
+    int size;
     t_fdpoll *fp;
     sys_init_fdpoll();
     nfd = INTER->i_nfdpoll;
@@ -427,7 +433,8 @@ void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
 void sys_rmpollfn(int fd)
 {
     int nfd = INTER->i_nfdpoll;
-    int i, size = nfd * sizeof(t_fdpoll);
+    int i;
+    int size = nfd * sizeof(t_fdpoll);
     t_fdpoll *fp;
     INTER->i_fdschanged = 1;
     for(i = nfd, fp = INTER->i_fdpoll; i--; fp++)
@@ -484,8 +491,10 @@ void socketreceiver_free(t_socketreceiver *x)
 sitting on the stack while the messages are getting passed. */
 static int socketreceiver_doread(t_socketreceiver *x)
 {
-    char messbuf[INBUFSIZE], *bp = messbuf;
-    int indx, first = 1;
+    char messbuf[INBUFSIZE];
+    char *bp = messbuf;
+    int indx;
+    int first = 1;
     int inhead = x->sr_inhead;
     int intail = x->sr_intail;
     char *inbuf = x->sr_inbuf;
@@ -526,7 +535,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char *buf = (char *) sys_getrecvbuf(0);
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
-    int ret, readbytes = 0;
+    int ret;
+    int readbytes = 0;
     while(1)
     {
         ret = (int) recvfrom(fd, buf, NET_MAXPACKETSIZE - 1, 0,
@@ -753,7 +763,10 @@ int sys_havegui(void) { return (INTER->i_havegui); }
 
 void sys_vgui(const char *fmt, ...)
 {
-    int msglen, bytesleft, headwas, nwrote;
+    int msglen;
+    int bytesleft;
+    int headwas;
+    int nwrote;
     va_list ap;
 
     if(!sys_havegui()) return;
@@ -783,8 +796,8 @@ void sys_vgui(const char *fmt, ...)
     }
     if(msglen >= INTER->i_guisize - INTER->i_guihead)
     {
-        int msglen2,
-            newsize = INTER->i_guisize + 1 +
+        int msglen2;
+        int newsize = INTER->i_guisize + 1 +
                       (msglen > GUI_ALLOCCHUNK ? msglen : GUI_ALLOCCHUNK);
         sys_trytogetmoreguibuf(newsize);
 
@@ -818,7 +831,8 @@ void sys_gui(const char *s) { sys_vgui("%s", s); }
 
 static int sys_flushtogui(void)
 {
-    int writesize = INTER->i_guihead - INTER->i_guitail, nwrote = 0;
+    int writesize = INTER->i_guihead - INTER->i_guitail;
+    int nwrote = 0;
     if(writesize > 0)
         nwrote = (int) send(
             INTER->i_guisock, INTER->i_guibuf + INTER->i_guitail, writesize, 0);
@@ -905,7 +919,8 @@ void sys_pretendguibytes(int n) { INTER->i_bytessincelastping += n; }
 
 void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f)
 {
-    t_guiqueue **gqnextptr, *gq;
+    t_guiqueue **gqnextptr;
+    t_guiqueue *gq;
     if(!INTER->i_guiqueuehead)
         gqnextptr = &INTER->i_guiqueuehead;
     else
@@ -926,7 +941,8 @@ void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f)
 
 void sys_unqueuegui(void *client)
 {
-    t_guiqueue *gq, *gq2;
+    t_guiqueue *gq;
+    t_guiqueue *gq2;
     while(INTER->i_guiqueuehead && INTER->i_guiqueuehead->gq_client == client)
     {
         gq = INTER->i_guiqueuehead;
@@ -1039,8 +1055,10 @@ static void sys_init_deken(void)
 static int sys_do_startgui(const char *libdir)
 {
     char quotebuf[MAXPDSTRING];
-    char apibuf[256], apibuf2[256];
-    struct addrinfo *ailist = NULL, *ai;
+    char apibuf[256];
+    char apibuf2[256];
+    struct addrinfo *ailist = NULL;
+    struct addrinfo *ai;
     int sockfd = -1;
     int portno = -1;
 #ifndef _WIN32
@@ -1398,7 +1416,8 @@ void sys_setrealtime(const char *libdir)
     }
     if(sys_hipriority)
     {
-        int pipe9[2], watchpid;
+        int pipe9[2];
+        int watchpid;
         /* To prevent lockup, we fork off a watchdog process with
         higher real-time priority than ours.  The GUI has to send
         a stream of ping messages to the watchdog THROUGH the Pd

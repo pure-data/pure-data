@@ -83,7 +83,8 @@ t_int *upsampling_perform_linear(t_int *w)
     int length = parent * up;
     int n;
     t_sample *fp;
-    t_sample a = *x->buffer, b = *in;
+    t_sample a = *x->buffer;
+    t_sample b = *in;
 
     for(n = 0; n < length; n++)
     {

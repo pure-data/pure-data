@@ -218,8 +218,12 @@ static int wave_isheader(const char *buf, size_t size)
 
 static int wave_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
-        swap = (bigendian != sys_isbigendian()), formatfound = 1;
+    int nchannels = 1;
+    int bytespersample = 2;
+    int samplerate = 44100;
+    int bigendian = 0;
+    int swap = (bigendian != sys_isbigendian());
+    int formatfound = 1;
     off_t headersize = WAVEHEADSIZE;
     size_t bytelimit = WAVEMAXBYTES;
 
@@ -350,9 +354,10 @@ static int wave_readheader(t_soundfile *sf)
 
 static int wave_writeheader(t_soundfile *sf, size_t nframes)
 {
-    int isextended = wave_isextended(sf), swap = soundfile_needsbyteswap(sf);
-    size_t formatsize = WAVEFORMATSIZE,
-           datasize = nframes * sf->sf_bytesperframe;
+    int isextended = wave_isextended(sf);
+    int swap = soundfile_needsbyteswap(sf);
+    size_t formatsize = WAVEFORMATSIZE;
+    size_t datasize = nframes * sf->sf_bytesperframe;
     off_t headersize = 0;
     ssize_t byteswritten = 0;
     char buf[SFHDRBUFSIZE] = {0};
@@ -428,9 +433,10 @@ static int wave_writeheader(t_soundfile *sf, size_t nframes)
  * extended: head format+ext fact data */
 static int wave_updateheader(t_soundfile *sf, size_t nframes)
 {
-    int isextended = wave_isextended(sf), swap = soundfile_needsbyteswap(sf);
-    size_t datasize = nframes * sf->sf_bytesperframe,
-           headersize = WAVEHEADSIZE + WAVEFORMATSIZE;
+    int isextended = wave_isextended(sf);
+    int swap = soundfile_needsbyteswap(sf);
+    size_t datasize = nframes * sf->sf_bytesperframe;
+    size_t headersize = WAVEHEADSIZE + WAVEFORMATSIZE;
     int padbyte = (datasize & 1);
     uint32_t uinttmp;
 

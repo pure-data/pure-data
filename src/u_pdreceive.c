@@ -48,9 +48,12 @@ static void sockerror(char *s);
 
 int main(int argc, char **argv)
 {
-    int status, portno, multicast = 0;
+    int status;
+    int portno;
+    int multicast = 0;
     char *hostname = NULL;
-    struct addrinfo *ailist = NULL, *ai;
+    struct addrinfo *ailist = NULL;
+    struct addrinfo *ai;
     if(argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
         goto usage;
     if(argc > 2)
@@ -250,7 +253,8 @@ static void addport(int fd)
 static void rmport(t_fdpoll *x)
 {
     int nfd = nfdpoll;
-    int i, size = nfdpoll * sizeof(t_fdpoll);
+    int i;
+    int size = nfdpoll * sizeof(t_fdpoll);
     t_fdpoll *fp;
     for(i = nfdpoll, fp = fdpoll; i--; fp++)
     {
@@ -366,7 +370,9 @@ static void dopoll(void)
 {
     int i;
     t_fdpoll *fp;
-    fd_set readset, writeset, exceptset;
+    fd_set readset;
+    fd_set writeset;
+    fd_set exceptset;
     FD_ZERO(&writeset);
     FD_ZERO(&readset);
     FD_ZERO(&exceptset);

@@ -43,7 +43,8 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
 
 static void dac_dsp(t_dac *x, t_signal **sp)
 {
-    t_int i, *ip;
+    t_int i;
+    t_int *ip;
     t_signal **sp2;
     for(i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {
@@ -113,7 +114,8 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 
 static void adc_dsp(t_adc *x, t_signal **sp)
 {
-    t_int i, *ip;
+    t_int i;
+    t_int *ip;
     t_signal **sp2;
     for(i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {

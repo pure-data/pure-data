@@ -48,8 +48,10 @@ static void hslider_draw_new(t_hslider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int lmargin = LMARGIN * IEMGUI_ZOOM(x), rmargin = RMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int lmargin = LMARGIN * IEMGUI_ZOOM(x);
+    int rmargin = RMARGIN * IEMGUI_ZOOM(x);
     int r = xpos + (x->x_val + 50) / 100;
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -85,8 +87,10 @@ static void hslider_draw_move(t_hslider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int lmargin = LMARGIN * IEMGUI_ZOOM(x), rmargin = RMARGIN * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int lmargin = LMARGIN * IEMGUI_ZOOM(x);
+    int rmargin = RMARGIN * IEMGUI_ZOOM(x);
     int r = xpos + (x->x_val + 50) / 100;
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -141,7 +145,8 @@ static void hslider_draw_io(t_hslider *x, t_glist *glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int lmargin = LMARGIN * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -569,10 +574,15 @@ static void hslider_loadbang(t_hslider *x, t_floatarg action)
 static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_hslider *x = (t_hslider *) pd_new(hslider_class);
-    int w = IEM_SL_DEFAULTSIZE, h = IEM_GUI_DEFAULTSIZE;
-    int lilo = 0, ldx = -2, ldy = -8, steady = 1;
+    int w = IEM_SL_DEFAULTSIZE;
+    int h = IEM_GUI_DEFAULTSIZE;
+    int lilo = 0;
+    int ldx = -2;
+    int ldy = -8;
+    int steady = 1;
     int fs = 10;
-    double min = 0.0, max = (double) (IEM_SL_DEFAULTSIZE - 1);
+    double min = 0.0;
+    double max = (double) (IEM_SL_DEFAULTSIZE - 1);
     t_float v = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

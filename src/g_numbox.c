@@ -57,7 +57,8 @@ void my_numbox_clip(t_my_numbox *x)
 
 void my_numbox_calc_fontwidth(t_my_numbox *x)
 {
-    int w, f = 31;
+    int w;
+    int f = 31;
 
     if(x->x_gui.x_fsf.x_font_style == 1)
         f = 27;
@@ -73,7 +74,10 @@ void my_numbox_calc_fontwidth(t_my_numbox *x)
 void my_numbox_ftoa(t_my_numbox *x)
 {
     double f = x->x_val;
-    int bufsize, is_exp = 0, i, idecimal;
+    int bufsize;
+    int is_exp = 0;
+    int i;
+    int idecimal;
 
     sprintf(x->x_buf, "%g", f);
     bufsize = (int) strlen(x->x_buf);
@@ -171,10 +175,12 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int w = x->x_gui.x_w, half = x->x_gui.x_h / 2;
+    int w = x->x_gui.x_w;
+    int half = x->x_gui.x_h / 2;
     int d = IEMGUI_ZOOM(x) + x->x_gui.x_h / (34 * IEMGUI_ZOOM(x));
     int corner = x->x_gui.x_h / 4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d %d %d "
@@ -216,10 +222,12 @@ static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int w = x->x_gui.x_w, half = x->x_gui.x_h / 2;
+    int w = x->x_gui.x_w;
+    int half = x->x_gui.x_h / 2;
     int d = IEMGUI_ZOOM(x) + x->x_gui.x_h / (34 * IEMGUI_ZOOM(x));
     int corner = x->x_gui.x_h / 4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE1 %d %d %d %d %d %d %d %d %d %d %d %d\n",
@@ -282,7 +290,8 @@ static void my_numbox_draw_io(
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x);
+    int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
@@ -603,7 +612,8 @@ static void my_numbox_float(t_my_numbox *x, t_floatarg f)
 
 static void my_numbox_size(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 {
-    int h, w;
+    int h;
+    int w;
 
     w = (int) atom_getfloatarg(0, ac, av);
     if(w < MINDIGITS) w = MINDIGITS;
@@ -764,11 +774,16 @@ static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_my_numbox *x = (t_my_numbox *) pd_new(my_numbox_class);
-    int w = 5, h = 14;
-    int lilo = 0, ldx = 0, ldy = -8;
+    int w = 5;
+    int h = 14;
+    int lilo = 0;
+    int ldx = 0;
+    int ldy = -8;
     int fs = 10;
     int log_height = 256;
-    double min = -1.0e+37, max = 1.0e+37, v = 0.0;
+    double min = -1.0e+37;
+    double max = 1.0e+37;
+    double v = 0.0;
 
     x->x_gui.x_bcol = 0xFCFCFC;
     x->x_gui.x_fcol = 0x00;

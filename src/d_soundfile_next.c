@@ -119,7 +119,10 @@ static int next_isheader(const char *buf, size_t size)
 
 static int next_readheader(t_soundfile *sf)
 {
-    int format, bytespersample, bigendian = 1, swap = 0;
+    int format;
+    int bytespersample;
+    int bigendian = 1;
+    int swap = 0;
     off_t headersize = NEXTHEADSIZE;
     size_t bytelimit = NEXTMAXBYTES;
 

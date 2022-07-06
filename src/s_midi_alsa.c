@@ -222,7 +222,8 @@ void sys_alsa_putmidibyte(int portno, int byte)
 void sys_alsa_poll_midi(void)
 {
     unsigned char buf[ALSA_MAX_EVENT_SIZE];
-    int count, alsa_source;
+    int count;
+    int alsa_source;
     snd_seq_event_t *midievent = NULL;
 
     if(!alsa_nmidiout && !alsa_nmidiin) return;
@@ -279,7 +280,8 @@ void midi_alsa_setndevs(int in, int out)
 void midi_alsa_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i, ndev;
+    int i;
+    int ndev;
     if((ndev = alsa_nmidiindevs) > maxndev) ndev = maxndev;
     for(i = 0; i < ndev; i++)
         sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i + 1);

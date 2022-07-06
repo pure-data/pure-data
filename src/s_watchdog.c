@@ -18,7 +18,8 @@ int main(int argc, char **argv)
     while(1)
     {
         struct timeval timeout;
-        fd_set readset, exceptset;
+        fd_set readset;
+        fd_set exceptset;
         if(happy)
         {
             timeout.tv_sec = 5;

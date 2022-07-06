@@ -424,8 +424,10 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
     va_list ap;
-    t_atomtype vec[MAXPDARG + 1], *vp = vec;
-    int count = 0, i;
+    t_atomtype vec[MAXPDARG + 1];
+    t_atomtype *vp = vec;
+    int count = 0;
+    int i;
     t_class *c;
     int typeflag = flags & CLASS_TYPEMASK;
     if(!typeflag) typeflag = CLASS_PATCHABLE;
@@ -464,7 +466,8 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             longer file name; in this case, make this an admissible name
             too. */
             const char *loadstring = class_loadsym->s_name;
-            size_t l1 = strlen(s->s_name), l2 = strlen(loadstring);
+            size_t l1 = strlen(s->s_name);
+            size_t l2 = strlen(loadstring);
             if(l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method) newmethod,
                     class_loadsym, vec[0], vec[1], vec[2], vec[3], vec[4],
@@ -552,7 +555,8 @@ called back (and the new method explicitly takes care of this.) */
 void class_addcreator(t_newmethod newmethod, t_symbol *s, t_atomtype type1, ...)
 {
     va_list ap;
-    t_atomtype vec[MAXPDARG + 1], *vp = vec;
+    t_atomtype vec[MAXPDARG + 1];
+    t_atomtype *vp = vec;
     int count = 0;
     *vp = type1;
 
@@ -584,7 +588,8 @@ void class_addmethod(
 {
     va_list ap;
     t_atomtype argtype = arg1;
-    int nargs, i;
+    int nargs;
+    int i;
     if(!c) return;
     va_start(ap, arg1);
     /* "signal" method specifies that we take audio signals but
@@ -813,7 +818,8 @@ static t_symbol *dogensym(
     const char *s, t_symbol *oldsym, t_pdinstance *pdinstance)
 {
     char *symname = 0;
-    t_symbol **symhashloc, *sym2;
+    t_symbol **symhashloc;
+    t_symbol *sym2;
     unsigned int hash = 5381;
     int length = 0;
     const char *s2 = s;
@@ -868,7 +874,9 @@ doesn't know.  Pd tries to load it as an extern, then as an abstraction. */
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int fd;
-    char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+    char dirbuf[MAXPDSTRING];
+    char classslashclass[MAXPDSTRING];
+    char *nameptr;
     if(tryingalready > MAXOBJDEPTH)
     {
         pd_error(0, "maximum object loading depth %d reached", MAXOBJDEPTH);
@@ -922,11 +930,15 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_method *f;
     t_class *c = *x;
-    t_methodentry *m, *mlist;
-    unsigned char *wp, wanttype;
+    t_methodentry *m;
+    t_methodentry *mlist;
+    unsigned char *wp;
+    unsigned char wanttype;
     int i;
-    t_int ai[MAXPDARG + 1], *ap = ai;
-    t_floatarg ad[MAXPDARG + 1], *dp = ad;
+    t_int ai[MAXPDARG + 1];
+    t_int *ap = ai;
+    t_floatarg ad[MAXPDARG + 1];
+    t_floatarg *dp = ad;
     int narg = 0;
     t_pd *bonzo;
 
@@ -1103,7 +1115,8 @@ longer messages are likely to be programmatically generated anyway. */
 void pd_vmess(t_pd *x, t_symbol *sel, const char *fmt, ...)
 {
     va_list ap;
-    t_atom arg[10], *at = arg;
+    t_atom arg[10];
+    t_atom *at = arg;
     int nargs = 0;
     const char *fp = fmt;
 
@@ -1171,7 +1184,8 @@ void nullfn(void) {}
 t_gotfn getfn(const t_pd *x, t_symbol *s)
 {
     const t_class *c = *x;
-    t_methodentry *m, *mlist;
+    t_methodentry *m;
+    t_methodentry *mlist;
     int i;
 
 #ifdef PDINSTANCE
@@ -1188,7 +1202,8 @@ t_gotfn getfn(const t_pd *x, t_symbol *s)
 t_gotfn zgetfn(const t_pd *x, t_symbol *s)
 {
     const t_class *c = *x;
-    t_methodentry *m, *mlist;
+    t_methodentry *m;
+    t_methodentry *mlist;
     int i;
 
 #ifdef PDINSTANCE

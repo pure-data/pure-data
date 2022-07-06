@@ -564,9 +564,11 @@ t_ex_func ex_funcs[] = {{"min", ex_min, 2}, {"max", ex_max, 2},
 static void ex_min(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -584,9 +586,11 @@ static void ex_min(
 static void ex_max(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -604,7 +608,8 @@ static void ex_toint(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -628,7 +633,8 @@ static void ex_rint(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -645,7 +651,8 @@ static void ex_tofloat(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -661,9 +668,11 @@ static void ex_tofloat(
 static void ex_pow(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -680,7 +689,8 @@ static void ex_sqrt(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -697,7 +707,8 @@ static void ex_exp(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -714,7 +725,8 @@ static void ex_log(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -731,7 +743,8 @@ static void ex_ln(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -745,7 +758,8 @@ static void ex_sin(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -759,7 +773,8 @@ static void ex_cos(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -773,7 +788,8 @@ static void ex_tan(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -787,7 +803,8 @@ static void ex_asin(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -801,7 +818,8 @@ static void ex_acos(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -815,7 +833,8 @@ static void ex_atan(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -830,9 +849,11 @@ static void ex_atan(
 static void ex_atan2(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -847,9 +868,11 @@ static void ex_atan2(
 static void ex_fmod(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -866,7 +889,8 @@ static void ex_floor(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -882,7 +906,8 @@ static void ex_ceil(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -895,7 +920,8 @@ static void ex_sinh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -909,7 +935,8 @@ static void ex_cosh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -923,7 +950,8 @@ static void ex_tanh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -938,7 +966,8 @@ static void ex_asinh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -952,7 +981,8 @@ static void ex_acosh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -966,7 +996,8 @@ static void ex_atanh(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -998,7 +1029,8 @@ static void ex_fact(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -1023,9 +1055,11 @@ static int ex_dorandom(int i1, int i2)
 static void ex_random(
     t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-    struct ex_ex *left, *right;
+    struct ex_ex *left;
+    struct ex_ex *right;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -1039,7 +1073,8 @@ static void ex_abs(
 {
     struct ex_ex *left;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp; /* left and right vector pointers */
     t_float scalar;
     int j;
 
@@ -1054,11 +1089,16 @@ static void ex_abs(
 struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
     struct ex_ex *argv, int idx)
 {
-    struct ex_ex *left, *right, *cond, *res;
+    struct ex_ex *left;
+    struct ex_ex *right;
+    struct ex_ex *cond;
+    struct ex_ex *res;
     t_float *op;      /* output pointer */
-    t_float *lp, *rp; /* left and right vector pointers */
+    t_float *lp;
+    t_float *rp;      /* left and right vector pointers */
     t_float *cp;      /* condition pointer */
-    t_float leftvalue, rightvalue;
+    t_float leftvalue;
+    t_float rightvalue;
     int j;
     int condtrue = 0;
 

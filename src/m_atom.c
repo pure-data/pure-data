@@ -109,7 +109,8 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
                     quote = 1;
             if(quote)
             {
-                char *bp = buf, *ep = buf + (bufsize - 2);
+                char *bp = buf;
+                char *ep = buf + (bufsize - 2);
                 sp = a->a_w.w_symbol->s_name;
                 while(bp < ep && *sp)
                 {

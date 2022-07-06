@@ -22,9 +22,14 @@ char sendbuf[NET_MAXPACKETSIZE];
 
 int main(int argc, char **argv)
 {
-    int sockfd = -1, portno, protocol, status, multicast;
+    int sockfd = -1;
+    int portno;
+    int protocol;
+    int status;
+    int multicast;
     struct sockaddr_storage server;
-    struct addrinfo *ailist = NULL, *ai;
+    struct addrinfo *ailist = NULL;
+    struct addrinfo *ai;
     float timeout = 10;
     char *hostname;
     if(argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
@@ -116,7 +121,8 @@ int main(int argc, char **argv)
     while(1)
     {
         char *bp;
-        int nsent, nsend;
+        int nsent;
+        int nsend;
         if(!fgets(sendbuf, NET_MAXPACKETSIZE, stdin)) break;
         nsend = strlen(sendbuf);
         for(bp = sendbuf, nsent = 0; nsent < nsend;)

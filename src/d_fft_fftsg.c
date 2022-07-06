@@ -116,7 +116,8 @@ EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
 {
     FFTFLT *buf, *fp3;
     int i;
-    t_sample *fp1, *fp2;
+    t_sample *fp1;
+    t_sample *fp2;
     if(!ooura_init(2 * n)) return;
     buf = ooura_buffer;
     for(i = 0, fp1 = fz1, fp2 = fz2, fp3 = buf; i < n; i++)
@@ -147,8 +148,10 @@ EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 EXTERN void mayer_realfft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
-    int i, nover2 = n / 2;
-    t_sample *fp1, *fp2;
+    int i;
+    int nover2 = n / 2;
+    t_sample *fp1;
+    t_sample *fp2;
     if(!ooura_init(n)) return;
     buf = ooura_buffer;
     for(i = 0, fp1 = fz, fp3 = buf; i < n; i++, fp1++, fp3++)
@@ -164,8 +167,10 @@ EXTERN void mayer_realfft(int n, t_sample *fz)
 EXTERN void mayer_realifft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
-    int i, nover2 = n / 2;
-    t_sample *fp1, *fp2;
+    int i;
+    int nover2 = n / 2;
+    t_sample *fp1;
+    t_sample *fp2;
     if(!ooura_init(n)) return;
     buf = ooura_buffer;
     buf[0] = fz[0];
@@ -508,7 +513,8 @@ void rdft(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
     void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    int nw, nc;
+    int nw;
+    int nc;
     FFTFLT xi;
 
     nw = ip[0];
@@ -563,7 +569,9 @@ void ddct(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    int j, nw, nc;
+    int j;
+    int nw;
+    int nc;
     FFTFLT xr;
 
     nw = ip[0];
@@ -630,7 +638,9 @@ void ddst(int n, int isgn, FFTFLT *a, int *ip, FFTFLT *w)
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    int j, nw, nc;
+    int j;
+    int nw;
+    int nc;
     FFTFLT xr;
 
     nw = ip[0];
@@ -695,7 +705,13 @@ void dfct(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
     void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    int j, k, l, m, mh, nw, nc;
+    int j;
+    int k;
+    int l;
+    int m;
+    int mh;
+    int nw;
+    int nc;
     FFTFLT xr, xi, yr, yi;
 
     nw = ip[0];
@@ -803,7 +819,13 @@ void dfst(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
     void cftfsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w);
     void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c);
     void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c);
-    int j, k, l, m, mh, nw, nc;
+    int j;
+    int k;
+    int l;
+    int m;
+    int mh;
+    int nw;
+    int nc;
     FFTFLT xr, xi, yr, yi;
 
     nw = ip[0];
@@ -900,7 +922,10 @@ void dfst(int n, FFTFLT *a, FFTFLT *t, int *ip, FFTFLT *w)
 void makewt(int nw, int *ip, FFTFLT *w)
 {
     void makeipt(int nw, int *ip);
-    int j, nwh, nw0, nw1;
+    int j;
+    int nwh;
+    int nw0;
+    int nw1;
     FFTFLT delta, wn4r, wk1r, wk1i, wk3r, wk3i;
 
     ip[0] = nw;
@@ -969,7 +994,12 @@ void makewt(int nw, int *ip, FFTFLT *w)
 
 void makeipt(int nw, int *ip)
 {
-    int j, l, m, m2, p, q;
+    int j;
+    int l;
+    int m;
+    int m2;
+    int p;
+    int q;
 
     ip[2] = 0;
     ip[3] = 16;
@@ -990,7 +1020,8 @@ void makeipt(int nw, int *ip)
 
 void makect(int nc, int *ip, FFTFLT *c)
 {
-    int j, nch;
+    int j;
+    int nch;
     FFTFLT delta;
 
     ip[1] = nc;
@@ -1200,7 +1231,14 @@ void cftbsub(int n, FFTFLT *a, int *ip, int nw, FFTFLT *w)
 
 void bitrv2(int n, int *ip, FFTFLT *a)
 {
-    int j, j1, k, k1, l, m, nh, nm;
+    int j;
+    int j1;
+    int k;
+    int k1;
+    int l;
+    int m;
+    int nh;
+    int nm;
     FFTFLT xr, xi, yr, yi;
 
     m = 1;
@@ -1554,7 +1592,14 @@ void bitrv2(int n, int *ip, FFTFLT *a)
 
 void bitrv2conj(int n, int *ip, FFTFLT *a)
 {
-    int j, j1, k, k1, l, m, nh, nm;
+    int j;
+    int j1;
+    int k;
+    int k1;
+    int l;
+    int m;
+    int nh;
+    int nm;
     FFTFLT xr, xi, yr, yi;
 
     m = 1;
@@ -2095,7 +2140,14 @@ void bitrv208neg(FFTFLT *a)
 
 void cftf1st(int n, FFTFLT *a, FFTFLT *w)
 {
-    int j, j0, j1, j2, j3, k, m, mh;
+    int j;
+    int j0;
+    int j1;
+    int j2;
+    int j3;
+    int k;
+    int m;
+    int mh;
     FFTFLT wn4r, csc1, csc3, wk1r, wk1i, wk3r, wk3i, wd1r, wd1i, wd3r, wd3i;
     FFTFLT x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y1r, y1i, y2r, y2i,
         y3r, y3i;
@@ -2300,7 +2352,14 @@ void cftf1st(int n, FFTFLT *a, FFTFLT *w)
 
 void cftb1st(int n, FFTFLT *a, FFTFLT *w)
 {
-    int j, j0, j1, j2, j3, k, m, mh;
+    int j;
+    int j0;
+    int j1;
+    int j2;
+    int j3;
+    int k;
+    int m;
+    int mh;
     FFTFLT wn4r, csc1, csc3, wk1r, wk1i, wk3r, wk3i, wd1r, wd1i, wd3r, wd3i;
     FFTFLT x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y1r, y1i, y2r, y2i,
         y3r, y3i;
@@ -2621,7 +2680,10 @@ void cftrec4(int n, FFTFLT *a, int nw, FFTFLT *w)
     int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w);
     void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w);
     void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
-    int isplt, j, k, m;
+    int isplt;
+    int j;
+    int k;
+    int m;
 
     m = n;
     while(m > 512)
@@ -2643,7 +2705,9 @@ int cfttree(int n, int j, int k, FFTFLT *a, int nw, FFTFLT *w)
 {
     void cftmdl1(int n, FFTFLT *a, FFTFLT *w);
     void cftmdl2(int n, FFTFLT *a, FFTFLT *w);
-    int i, isplt, m;
+    int i;
+    int isplt;
+    int m;
 
     if((k & 3) != 0)
     {
@@ -2760,7 +2824,14 @@ void cftleaf(int n, int isplt, FFTFLT *a, int nw, FFTFLT *w)
 
 void cftmdl1(int n, FFTFLT *a, FFTFLT *w)
 {
-    int j, j0, j1, j2, j3, k, m, mh;
+    int j;
+    int j0;
+    int j1;
+    int j2;
+    int j3;
+    int k;
+    int m;
+    int mh;
     FFTFLT wn4r, wk1r, wk1i, wk3r, wk3i;
     FFTFLT x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -2870,7 +2941,15 @@ void cftmdl1(int n, FFTFLT *a, FFTFLT *w)
 
 void cftmdl2(int n, FFTFLT *a, FFTFLT *w)
 {
-    int j, j0, j1, j2, j3, k, kr, m, mh;
+    int j;
+    int j0;
+    int j1;
+    int j2;
+    int j3;
+    int k;
+    int kr;
+    int m;
+    int mh;
     FFTFLT wn4r, wk1r, wk1i, wk3r, wk3i, wd1r, wd1i, wd3r, wd3i;
     FFTFLT x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i, y0r, y0i, y2r, y2i;
 
@@ -3549,7 +3628,11 @@ void cftx020(FFTFLT *a)
 
 void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 {
-    int j, k, kk, ks, m;
+    int j;
+    int k;
+    int kk;
+    int ks;
+    int m;
     FFTFLT wkr, wki, xr, xi, yr, yi;
 
     m = n >> 1;
@@ -3574,7 +3657,11 @@ void rftfsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 
 void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 {
-    int j, k, kk, ks, m;
+    int j;
+    int k;
+    int kk;
+    int ks;
+    int m;
     FFTFLT wkr, wki, xr, xi, yr, yi;
 
     m = n >> 1;
@@ -3599,7 +3686,11 @@ void rftbsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 
 void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 {
-    int j, k, kk, ks, m;
+    int j;
+    int k;
+    int kk;
+    int ks;
+    int m;
     FFTFLT wkr, wki, xr;
 
     m = n >> 1;
@@ -3620,7 +3711,11 @@ void dctsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 
 void dstsub(int n, FFTFLT *a, int nc, FFTFLT *c)
 {
-    int j, k, kk, ks, m;
+    int j;
+    int k;
+    int kk;
+    int ks;
+    int m;
     FFTFLT wkr, wki, xr;
 
     m = n >> 1;

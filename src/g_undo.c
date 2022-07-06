@@ -320,7 +320,8 @@ void canvas_undo_undo(t_canvas *x)
 
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
-            char *undo_action, *redo_action;
+            char *undo_action;
+            char *redo_action;
             udo->u_last = udo->u_last->prev;
             undo_action = udo->u_last->name;
             redo_action = udo->u_last->next->name;
@@ -344,7 +345,8 @@ void canvas_undo_redo(t_canvas *x)
     dspwas = canvas_suspend_dsp();
     if(udo->u_queue && udo->u_last->next)
     {
-        char *undo_action, *redo_action;
+        char *undo_action;
+        char *redo_action;
         udo->u_doing = 1;
         udo->u_last = udo->u_last->next;
         canvas_editmode(x, 1);

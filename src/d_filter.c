@@ -268,7 +268,9 @@ static t_float sigbp_qcos(t_float f)
 
 static void sigbp_docoef(t_sigbp *x, t_floatarg f, t_floatarg q)
 {
-    t_float r, oneminusr, omega;
+    t_float r;
+    t_float oneminusr;
+    t_float omega;
     if(f < 0.001) f = 10;
     if(q < 0) q = 0;
     x->x_freq = f;
@@ -1051,7 +1053,8 @@ static t_int *slop_tilde_perform(t_int *w)
     for(i = 0; i < n; i++)
     {
         t_sample diff = *sigin++ - last;
-        t_sample inc = *freqin++ * coef, diffinc;
+        t_sample inc = *freqin++ * coef;
+        t_sample diffinc;
         t_sample posinc = *posfreqin++ * coef;
         t_sample neginc = *negfreqin++ * coef;
         t_sample maxdiff = *poslimit++;

@@ -110,13 +110,18 @@ static int sys_do_load_abs(
 static int sys_do_load_lib(
     t_canvas *canvas, const char *objectname, const char *path)
 {
-    char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
-        *nameptr;
+    char symname[MAXPDSTRING];
+    char filename[MAXPDSTRING];
+    char dirbuf[MAXPDSTRING];
+    char *nameptr;
     const char **dllextent;
-    const char *classname, *cnameptr;
+    const char *classname;
+    const char *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
-    int i, hexmunge = 0, fd;
+    int i;
+    int hexmunge = 0;
+    int fd;
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
@@ -338,7 +343,8 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     {
         /* this is just copied from sys_open_absolute()
            LATER avoid code duplication */
-        char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
+        char dirbuf[MAXPDSTRING];
+        char *z = strrchr(classname, '/');
         int dirlen;
         if(!z) return (0);
         dirlen = (int) (z - classname);
@@ -435,7 +441,9 @@ static t_pd *do_create_abstraction(t_symbol *s, int argc, t_atom *argv)
     if(!pd_setloadingabstraction(s))
     {
         const char *objectname = s->s_name;
-        char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+        char dirbuf[MAXPDSTRING];
+        char classslashclass[MAXPDSTRING];
+        char *nameptr;
         t_glist *glist = (t_glist *) canvas_getcurrent();
         t_canvas *canvas = (t_canvas *) glist_getcanvas(glist);
         int fd = -1;
@@ -474,7 +482,9 @@ static int sys_do_load_abs(
 {
     int fd;
     static t_gobj *abstraction_classes = 0;
-    char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+    char dirbuf[MAXPDSTRING];
+    char classslashclass[MAXPDSTRING];
+    char *nameptr;
     /* NULL-path is only used as a last resort,
        but we have already tried all paths */
     if(!path) return (0);

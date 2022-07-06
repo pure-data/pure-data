@@ -72,7 +72,8 @@ static void *random_new(t_floatarg f)
 
 static void random_bang(t_random *x)
 {
-    int n = x->x_f, nval;
+    int n = x->x_f;
+    int nval;
     int range = (n < 1 ? 1 : n);
     unsigned int randval = x->x_state;
     x->x_state = randval = randval * 472940017 + 832416023;
@@ -302,7 +303,8 @@ typedef struct _oscparse
 static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
 {
     char buf[MAXPDSTRING];
-    int first, nchar;
+    int first;
+    int nchar;
     if(slash)
         while(*ip < argc && argv[*ip].a_w.w_float == '/')
             (*ip)++;
@@ -320,7 +322,15 @@ static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
 
 static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i, j, j2, k, outc = 1, blob = 0, typeonset, dataonset, nfield;
+    int i;
+    int j;
+    int j2;
+    int k;
+    int outc = 1;
+    int blob = 0;
+    int typeonset;
+    int dataonset;
+    int nfield;
     t_atom *outv;
     if(!argc) return;
     for(i = 0; i < argc; i++)
@@ -544,9 +554,15 @@ static void putstring(t_atom *msg, int *ip, const char *s)
 
 static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int typeindex = 0, j, msgindex, msgsize, datastart, ndata;
+    int typeindex = 0;
+    int j;
+    int msgindex;
+    int msgsize;
+    int datastart;
+    int ndata;
     t_atom *msg;
-    const char *sp, *formatp = x->x_format->s_name;
+    const char *sp;
+    const char *formatp = x->x_format->s_name;
     char typecode;
     /* pass 1: go through args to find overall message size */
     for(j = ndata = 0, sp = formatp, msgindex = 0; j < argc;)
@@ -571,7 +587,8 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if(typecode == 'b')
         {
-            int blobsize = 0x7fffffff, blobindex;
+            int blobsize = 0x7fffffff;
+            int blobindex;
             /* check if we have a nonnegative size field */
             if(argv[j].a_type == A_FLOAT && (int) (argv[j].a_w.w_float) >= 0)
                 blobsize = (int) (argv[j].a_w.w_float);
@@ -625,7 +642,8 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
             putstring(msg, &msgindex, argv[j].a_w.w_symbol->s_name);
         else if(typecode == 'b')
         {
-            int blobsize = 0x7fffffff, blobindex;
+            int blobsize = 0x7fffffff;
+            int blobindex;
             if(argv[j].a_type == A_FLOAT && (int) (argv[j].a_w.w_float) >= 0)
                 blobsize = (int) (argv[j].a_w.w_float);
             if(blobsize > argc - j - 1) blobsize = argc - j - 1;
@@ -710,7 +728,8 @@ typedef struct _fudiparse
 
 static void fudiparse_binbufout(t_fudiparse *x, t_binbuf *b)
 {
-    int msg, natom = binbuf_getnatom(b);
+    int msg;
+    int natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
     for(msg = 0; msg < natom;)
     {

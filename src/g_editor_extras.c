@@ -82,7 +82,8 @@ static void obj_delete_undo(t_glist *x, t_object *obj)
 static t_object *triggerize_createobj(t_glist *x, t_binbuf *b)
 {
     /* send a binbuf to a canvas */
-    t_pd *boundx = s__X.s_thing, *boundn = s__N.s_thing;
+    t_pd *boundx = s__X.s_thing;
+    t_pd *boundn = s__N.s_thing;
     s__X.s_thing = &x->gl_pd;
     s__N.s_thing = &pd_canvasmaker;
 
@@ -99,7 +100,9 @@ static void stack_conn(t_glist *x, t_object *new, int *newoutlet, t_object *org,
     t_object *dest = 0;
     t_inlet *in = 0;
     int which;
-    int new_i, org_i, dest_i;
+    int new_i;
+    int org_i;
+    int dest_i;
     if(!conn) return;
     conn = obj_nexttraverseoutlet(conn, &dest, &in, &which);
     stack_conn(x, new, newoutlet, org, orgoutlet, conn);
@@ -166,7 +169,8 @@ static int triggerize_fanout_inplace(t_glist *x, t_object *obj)
     int posY = obj->te_ypix;
     t_atom *argv = binbuf_getvec(obj->te_binbuf);
     int obj_nout = obj_noutlets(obj);
-    int nout, newout;
+    int nout;
+    int newout;
     t_binbuf *b = 0;
     t_object *stub = 0;
     /* check if we actually do have a fan out */
@@ -244,7 +248,8 @@ static int triggerize_fanout(t_glist *x, t_object *obj)
     const int yoffset = 5;
     int obj_nout = obj_noutlets(obj);
     int nout;
-    int posX = 0, posY;
+    int posX = 0;
+    int posY;
     int didit = 0;
 
     int _x; /* dummy variable */
@@ -275,7 +280,9 @@ static int triggerize_fanout(t_glist *x, t_object *obj)
         }
         if(count > 1)
         {
-            int i, obj_i, stub_i;
+            int i;
+            int obj_i;
+            int stub_i;
             t_object *stub;
             /* fan out: create a [t] object to resolve it */
 
@@ -342,10 +349,16 @@ static int triggerize_line(t_glist *x, t_triggerize_return *tr)
     /* triggerize a single selected line, by inserting a [t a] object
      * (or it's signal equivalent) */
     t_editor *ed = x->gl_editor;
-    int src_obj, src_out, dst_obj, dst_in, new_obj;
-    t_gobj *src = 0, *dst = 0;
+    int src_obj;
+    int src_out;
+    int dst_obj;
+    int dst_in;
+    int new_obj;
+    t_gobj *src = 0;
+    t_gobj *dst = 0;
     t_binbuf *b = 0;
-    int posx = 100, posy = 100;
+    int posx = 100;
+    int posy = 100;
     t_object *stub = 0;
     int sigline = 0;
     int dspstate = 0;
@@ -368,12 +381,15 @@ static int triggerize_line(t_glist *x, t_triggerize_return *tr)
         t_object *obj2 = g2o(dst);
         if(obj1 && obj2)
         {
-            float posSource, posSink;
+            float posSource;
+            float posSink;
             int nio;
             int _x; /* dummy variable */
-            int posSourceY, posSinkY;
+            int posSourceY;
+            int posSinkY;
             int boxHeight; /* height of inserted box */
-            int posLeft, posRight;
+            int posLeft;
+            int posRight;
 
             /* get real x-position of the outlet */
             gobj_getrect(src, x, &posLeft, &_x, &posRight, &posSourceY);
@@ -463,7 +479,9 @@ static int minimize_trigger(t_glist *cnv, t_object *obj)
     t_atom *argv = binbuf_getvec(obj->te_binbuf);
     t_object *stub = 0;
     int obj_nout = obj_noutlets(obj);
-    int nout, stub_i, obj_i = canvas_getindex(cnv, o2g(obj));
+    int nout;
+    int stub_i;
+    int obj_i = canvas_getindex(cnv, o2g(obj));
 
     int count = 0;
 
@@ -509,7 +527,8 @@ static int minimize_trigger(t_glist *cnv, t_object *obj)
         /* repeat all connections of this outlet (should only be one) */
         while(conn)
         {
-            int which, dest_i;
+            int which;
+            int dest_i;
             t_object *dest = 0;
             t_inlet *in = 0;
             conn = obj_nexttraverseoutlet(conn, &dest, &in, &which);
@@ -537,7 +556,8 @@ static int expand_trigger(t_glist *cnv, t_object *obj)
     t_atom *argv = binbuf_getvec(obj->te_binbuf);
     t_object *stub = 0;
     int obj_nout = obj_noutlets(obj);
-    int stub_i, obj_i = canvas_getindex(cnv, o2g(obj));
+    int stub_i;
+    int obj_i = canvas_getindex(cnv, o2g(obj));
     int nout;
 
     binbuf_addv(

@@ -387,7 +387,8 @@ int alsamm_open_audio(int rate, int blocksize)
 
 void alsamm_close_audio(void)
 {
-    int i, err;
+    int i;
+    int err;
 
 #ifdef ALSAMM_DEBUG
     if(sys_verbose) post("closing devices");
@@ -451,7 +452,8 @@ static int set_hwparams(
 {
 #ifndef ALSAAPI9
     unsigned int rrate;
-    int err, dir;
+    int err;
+    int dir;
     int channels_allocated = 0;
 
     /* choose all parameters */
@@ -521,7 +523,9 @@ static int set_hwparams(
 
     /* Info on channels */
     {
-        int maxchs, minchs, channels = *chs;
+        int maxchs;
+        int minchs;
+        int channels = *chs;
 
         if((err = snd_pcm_hw_params_get_channels_max(
                 params, (unsigned int *) &maxchs)) < 0)
@@ -650,7 +654,8 @@ static int set_hwparams(
     if(sys_verbose) post("got period size of %d", (int) alsamm_period_size);
 #endif
     {
-        unsigned int pmin, pmax;
+        unsigned int pmin;
+        unsigned int pmax;
 
         err = snd_pcm_hw_params_get_periods_min(params, &pmin, &dir);
         if(err > 0)
@@ -707,8 +712,10 @@ static int set_swparams(
 {
 #ifndef ALSAAPI9
     int err;
-    snd_pcm_uframes_t ps, ops;
-    snd_pcm_uframes_t bs, obs;
+    snd_pcm_uframes_t ps;
+    snd_pcm_uframes_t ops;
+    snd_pcm_uframes_t bs;
+    snd_pcm_uframes_t obs;
 
     /* get the current swparams */
     err = snd_pcm_sw_params_current(handle, swparams);
@@ -905,7 +912,8 @@ static int alsamm_start()
 {
     int err = 0;
     int devno;
-    int chn, nchns;
+    int chn;
+    int nchns;
 
     const snd_pcm_channel_area_t *mm_areas;
 
@@ -919,7 +927,8 @@ static int alsamm_start()
     for(devno = 0; devno < alsa_noutdev; devno++)
     {
 
-        snd_pcm_uframes_t offset, avail;
+        snd_pcm_uframes_t offset;
+        snd_pcm_uframes_t avail;
         t_alsa_dev *dev = &alsa_outdev[devno];
 
         /* snd_pcm_prepare also in xrun, but cannot harm here */
@@ -991,7 +1000,8 @@ static int alsamm_start()
     for(devno = 0; devno < alsa_nindev; devno++)
     {
 
-        snd_pcm_uframes_t ioffset, iavail;
+        snd_pcm_uframes_t ioffset;
+        snd_pcm_uframes_t iavail;
         t_alsa_dev *dev = &alsa_indev[devno];
 
         /* if devices are synced then don't need to prepare
@@ -1123,17 +1133,25 @@ Problems to solve:
 int alsamm_send_dacs(void)
 {
 
-    static double timenow, timelast;
+    static double timenow;
+    static double timelast;
 
-    t_sample *fpo, *fpi, *fp1, *fp2;
-    int i, err, devno;
+    t_sample *fpo;
+    t_sample *fpi;
+    t_sample *fp1;
+    t_sample *fp2;
+    int i;
+    int err;
+    int devno;
 
     const snd_pcm_channel_area_t *my_areas;
     snd_pcm_sframes_t size;
     snd_pcm_sframes_t commitres;
     snd_pcm_state_t state;
-    snd_pcm_sframes_t ooffset, oavail;
-    snd_pcm_sframes_t ioffset, iavail;
+    snd_pcm_sframes_t ooffset;
+    snd_pcm_sframes_t oavail;
+    snd_pcm_sframes_t ioffset;
+    snd_pcm_sframes_t iavail;
 
     /*
        unused channels should be zeroed out on startup (open) and stay this

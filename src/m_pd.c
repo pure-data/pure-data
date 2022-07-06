@@ -163,7 +163,8 @@ void pd_unbind(t_pd *x, t_symbol *s)
         straight to the remaining element. */
 
         t_bindlist *b = (t_bindlist *) s->s_thing;
-        t_bindelem *e, *e2;
+        t_bindelem *e;
+        t_bindelem *e2;
         if((e = b->b_list)->e_who == x)
         {
             b->b_list = e->e_next;
@@ -197,7 +198,8 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
     if(*s->s_thing == bindlist_class)
     {
         t_bindlist *b = (t_bindlist *) s->s_thing;
-        t_bindelem *e, *e2;
+        t_bindelem *e;
+        t_bindelem *e2;
         int warned = 0;
         for(e = b->b_list; e; e = e->e_next)
             if(*e->e_who == c)

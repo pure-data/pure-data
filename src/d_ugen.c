@@ -166,7 +166,8 @@ static void *block_new(
 static void block_set(
     t_block *x, t_floatarg fcalcsize, t_floatarg foverlap, t_floatarg fupsample)
 {
-    int upsample, downsample;
+    int upsample;
+    int downsample;
     int calcsize = fcalcsize;
     int overlap = foverlap;
     int dspstate = canvas_suspend_dsp();
@@ -317,7 +318,8 @@ static t_int dsp_done(t_int *w) { return (0); }
 
 void dsp_add(t_perfroutine f, int n, ...)
 {
-    int newsize = THIS->u_dspchainsize + n + 1, i;
+    int newsize = THIS->u_dspchainsize + n + 1;
+    int i;
     va_list ap;
 
     THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
@@ -341,7 +343,8 @@ void dsp_add(t_perfroutine f, int n, ...)
 /* at Guenter's suggestion, here's a vectorized version */
 void dsp_addv(t_perfroutine f, int n, t_int *vec)
 {
-    int newsize = THIS->u_dspchainsize + n + 1, i;
+    int newsize = THIS->u_dspchainsize + n + 1;
+    int i;
 
     THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
         THIS->u_dspchainsize * sizeof(t_int), newsize * sizeof(t_int));
@@ -445,8 +448,10 @@ signal_setborrowed(). */
 
 static t_signal *signal_new(int n, t_float sr)
 {
-    int logn, vecsize = 0;
-    t_signal *ret, **whichlist;
+    int logn;
+    int vecsize = 0;
+    t_signal *ret;
+    t_signal **whichlist;
     logn = ilog2(n);
     if(n)
     {
@@ -662,7 +667,8 @@ void ugen_add(t_dspcontext *dc, t_object *obj)
 void ugen_connect(
     t_dspcontext *dc, t_object *x1, int outno, t_object *x2, int inno)
 {
-    t_ugenbox *u1, *u2;
+    t_ugenbox *u1;
+    t_ugenbox *u2;
     t_sigoutlet *uout;
     t_siginlet *uin;
     t_sigoutconnect *oc;
@@ -724,7 +730,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     t_siginlet *uin;
     t_sigoutconnect *oc;
     t_class *class = pd_class(&u->u_obj->ob_pd);
-    int i, n;
+    int i;
+    int n;
     /* suppress creating new signals for the outputs of signal
     inlets and subpatches; except in the case we're an inlet and "blocking"
     is set.  We don't yet know if a subcanvas will be "blocking" so there
@@ -739,7 +746,12 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     int nofreesigs =
         (class == canvas_class || class == clone_class ||
             ((class == voutlet_class) && !(dc->dc_reblock || dc->dc_switched)));
-    t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
+    t_signal **insig;
+    t_signal **outsig;
+    t_signal **sig;
+    t_signal *s1;
+    t_signal *s2;
+    t_signal *s3;
     t_ugenbox *u2;
 
     if(THIS->u_loud)
@@ -879,19 +891,27 @@ void ugen_done_graph(t_dspcontext *dc)
     t_ugenbox *u;
     t_sigoutlet *uout;
     t_siginlet *uin;
-    t_sigoutconnect *oc, *oc2;
-    int i, n;
+    t_sigoutconnect *oc;
+    t_sigoutconnect *oc2;
+    int i;
+    int n;
     t_block *blk;
     t_dspcontext *parent_context = dc->dc_parentcontext;
     t_float parent_srate;
     int parent_vecsize;
-    int period, frequency, phase, vecsize, calcsize;
+    int period;
+    int frequency;
+    int phase;
+    int vecsize;
+    int calcsize;
     t_float srate;
     int chainblockbegin; /* DSP chain onset before block prolog code */
     int chainblockend;   /* and after block epilog code */
     int chainafterall;   /* and after signal outlet epilog */
-    int reblock = 0, switched;
-    int downsample = 1, upsample = 1;
+    int reblock = 0;
+    int switched;
+    int downsample = 1;
+    int upsample = 1;
     /* debugging printout */
 
     if(THIS->u_loud)
@@ -1180,11 +1200,23 @@ t_int *plus_perf8(t_int *w)
     int n = (int) (w[4]);
     for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
     {
-        t_sample f0 = in1[0], f1 = in1[1], f2 = in1[2], f3 = in1[3];
-        t_sample f4 = in1[4], f5 = in1[5], f6 = in1[6], f7 = in1[7];
+        t_sample f0 = in1[0];
+        t_sample f1 = in1[1];
+        t_sample f2 = in1[2];
+        t_sample f3 = in1[3];
+        t_sample f4 = in1[4];
+        t_sample f5 = in1[5];
+        t_sample f6 = in1[6];
+        t_sample f7 = in1[7];
 
-        t_sample g0 = in2[0], g1 = in2[1], g2 = in2[2], g3 = in2[3];
-        t_sample g4 = in2[4], g5 = in2[5], g6 = in2[6], g7 = in2[7];
+        t_sample g0 = in2[0];
+        t_sample g1 = in2[1];
+        t_sample g2 = in2[2];
+        t_sample g3 = in2[3];
+        t_sample g4 = in2[4];
+        t_sample g5 = in2[5];
+        t_sample g6 = in2[6];
+        t_sample g7 = in2[7];
 
         out[0] = f0 + g0;
         out[1] = f1 + g1;

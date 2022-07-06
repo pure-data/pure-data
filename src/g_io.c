@@ -141,7 +141,8 @@ t_int *vinlet_doprolog(t_int *w)
     t_sample *out = x->x_fill;
     if(out == x->x_endbuf)
     {
-        t_sample *f1 = x->x_buf, *f2 = x->x_buf + x->x_hop;
+        t_sample *f1 = x->x_buf;
+        t_sample *f2 = x->x_buf + x->x_hop;
         int nshift = x->x_bufsize - x->x_hop;
         out -= x->x_hop;
         while(nshift--)
@@ -171,7 +172,10 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs, int myvecsize,
     parent. */
     if(reblock)
     {
-        int parentvecsize, bufsize, oldbufsize, prologphase;
+        int parentvecsize;
+        int bufsize;
+        int oldbufsize;
+        int prologphase;
         int re_parentvecsize; /* resampled parentvectorsize */
         /* this should never happen: */
         if(!x->x_buf) return;
@@ -383,7 +387,8 @@ t_int *voutlet_perform(t_int *w)
     t_voutlet *x = (t_voutlet *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
     int n = (int) (w[3]);
-    t_sample *out = x->x_write, *outwas = out;
+    t_sample *out = x->x_write;
+    t_sample *outwas = out;
     while(n--)
     {
         *out++ += *in++;
@@ -482,9 +487,13 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs, int myvecsize,
     if(reblock)
     {
         t_signal *outsig;
-        int parentvecsize, bufsize, oldbufsize;
+        int parentvecsize;
+        int bufsize;
+        int oldbufsize;
         int re_parentvecsize;
-        int bigperiod, epilogphase, blockphase;
+        int bigperiod;
+        int epilogphase;
+        int blockphase;
         if(parentsigs)
         {
             outsig = parentsigs[outlet_getsignalindex(x->x_parentoutlet)];

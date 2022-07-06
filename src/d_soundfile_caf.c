@@ -197,8 +197,12 @@ static int caf_isheader(const char *buf, size_t size)
 
 static int caf_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
-        fmtflags, swap = !sys_isbigendian();
+    int nchannels = 1;
+    int bytespersample = 2;
+    int samplerate = 44100;
+    int bigendian = 1;
+    int fmtflags;
+    int swap = !sys_isbigendian();
     off_t headersize = CAFHEADSIZE + CAFDESCSIZE;
     ssize_t bytelimit = CAFMAXBYTES;
 
@@ -274,7 +278,8 @@ static int caf_readheader(t_soundfile *sf)
     while(1)
     {
         int64_t chunksize = caf_getchunksize(chunk, swap);
-        off_t seekto = headersize + CAFCHUNKSIZE + chunksize, seekout;
+        off_t seekto = headersize + CAFCHUNKSIZE + chunksize;
+        off_t seekout;
         if(seekto & 1) /* pad up to even number of bytes */
             seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */

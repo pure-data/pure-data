@@ -46,7 +46,8 @@ static void garray_arrayviewlist_close(t_garray *x);
 
 void array_resize(t_array *x, int n)
 {
-    int elemsize, oldn;
+    int elemsize;
+    int oldn;
     char *tmp;
     t_template *template = template_findbyname(x->a_templatesym);
     if(n < 1) n = 1;
@@ -180,7 +181,8 @@ static t_garray *graph_scalar(
 /* get a garray's "array" structure. */
 t_array *garray_getarray(t_garray *x)
 {
-    int zonset, ztype;
+    int zonset;
+    int ztype;
     t_symbol *zarraytype;
     t_scalar *sc = x->x_scalar;
     t_symbol *templatesym = sc->sc_template;
@@ -210,7 +212,8 @@ static t_array *garray_getarray_floatonly(
     t_garray *x, int *yonsetp, int *elemsizep)
 {
     t_array *a = garray_getarray(x);
-    int yonset, type;
+    int yonset;
+    int type;
     t_symbol *arraytype;
     t_template *template = template_findbyname(a->a_templatesym);
     if(!template_find_field(
@@ -269,10 +272,16 @@ by a more coherent (and general) invocation. */
 t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     t_floatarg fsize, t_floatarg fflags)
 {
-    int n = fsize, zonset, ztype, saveit, savesize;
-    t_symbol *zarraytype, *asym = gensym("#A");
+    int n = fsize;
+    int zonset;
+    int ztype;
+    int saveit;
+    int savesize;
+    t_symbol *zarraytype;
+    t_symbol *asym = gensym("#A");
     t_garray *x;
-    t_template *template, *ztemplate;
+    t_template *template;
+    t_template *ztemplate;
     t_symbol *templatesym;
     int flags = fflags;
     int filestyle = ((flags & GRAPH_ARRAY_PLOTSTYLE) >> 1);
@@ -339,7 +348,8 @@ void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *) canvas;
     int gcount;
-    char cmdbuf[200], arraybuf[80];
+    char cmdbuf[200];
+    char arraybuf[80];
     for(gcount = 1; gcount < 1000; gcount++)
     {
         sprintf(arraybuf, "array%d", gcount);
@@ -463,8 +473,12 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 static void garray_arrayviewlist_fillpage(
     t_garray *x, t_float fPage, t_float fTopItem)
 {
-    int i, size = 0, topItem = (int) fTopItem;
-    int pagesize = ARRAYPAGESIZE, page = (int) fPage, maxpage;
+    int i;
+    int size = 0;
+    int topItem = (int) fTopItem;
+    int pagesize = ARRAYPAGESIZE;
+    int page = (int) fPage;
+    int maxpage;
     t_word *data = 0;
 
     if(!garray_getfloatwords(x, &size, &data))
@@ -553,7 +567,10 @@ void array_getcoordinate(t_glist *glist, char *elem, int xonset, int yonset,
     t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc,
     t_float *xp, t_float *yp, t_float *wp)
 {
-    t_float xval, yval, ypix, wpix;
+    t_float xval;
+    t_float yval;
+    t_float ypix;
+    t_float wpix;
     if(xonset >= 0)
         xval = *(t_float *) (elem + xonset);
     else
@@ -585,11 +602,17 @@ void array_getcoordinate(t_glist *glist, char *elem, int xonset, int yonset,
 static void array_getrect(
     t_array *array, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff,
-            y2 = -0x7fffffff;
+    t_float x1 = 0x7fffffff;
+    t_float y1 = 0x7fffffff;
+    t_float x2 = -0x7fffffff;
+    t_float y2 = -0x7fffffff;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
-    int elemsize, yonset, wonset, xonset, i;
+    int elemsize;
+    int yonset;
+    int wonset;
+    int xonset;
+    int i;
 
     if(!array_getfields(array->a_templatesym, &elemtemplatecanvas,
            &elemtemplate, &elemsize, 0, 0, 0, &xonset, &yonset, &wonset))
@@ -602,7 +625,9 @@ static void array_getrect(
             incr = array->a_n / 300;
         for(i = 0; i < array->a_n; i += incr)
         {
-            t_float pxpix, pypix, pwpix;
+            t_float pxpix;
+            t_float pypix;
+            t_float pwpix;
             array_getcoordinate(glist, (char *) (array->a_vec) + i * elemsize,
                 xonset, yonset, wonset, i, 0, 0, 1, 0, 0, 0, &pxpix, &pypix,
                 &pwpix);
@@ -671,12 +696,14 @@ void garray_savecontentsto(t_garray *x, t_binbuf *b)
         binbuf_addv(b, "ssi;", gensym("#A"), gensym("resize"), array->a_n);
     if(x->x_saveit)
     {
-        int n = array->a_n, n2 = 0;
+        int n = array->a_n;
+        int n2 = 0;
         if(n > 200000)
             post("warning: I'm saving an array with %d points!\n", n);
         while(n2 < n)
         {
-            int chunk = n - n2, i;
+            int chunk = n - n2;
+            int i;
             if(chunk > ARRAYWRITECHUNKSIZE) chunk = ARRAYWRITECHUNKSIZE;
             binbuf_addv(b, "si", gensym("#A"), n2);
             for(i = 0; i < chunk; i++)
@@ -690,7 +717,8 @@ void garray_savecontentsto(t_garray *x, t_binbuf *b)
 
 static void garray_save(t_gobj *z, t_binbuf *b)
 {
-    int style, filestyle;
+    int style;
+    int filestyle;
     t_garray *x = (t_garray *) z;
     t_array *array = garray_getarray(x);
     t_template *scalartemplate;
@@ -785,7 +813,8 @@ so returns the goods */
 
 int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
 {
-    int yonset, elemsize;
+    int yonset;
+    int elemsize;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!a)
     {
@@ -834,7 +863,9 @@ void garray_setsaveit(t_garray *x, int saveit)
 /*------------------- Pd messages ------------------------ */
 static void garray_const(t_garray *x, t_floatarg g)
 {
-    int yonset, i, elemsize;
+    int yonset;
+    int i;
+    int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
         pd_error(
@@ -849,8 +880,13 @@ static void garray_const(t_garray *x, t_floatarg g)
 static void garray_dofo(t_garray *x, long npoints, t_float dcval, int nsin,
     t_float *vsin, int sineflag)
 {
-    double phase, phaseincr, fj;
-    int yonset, i, j, elemsize;
+    double phase;
+    double phaseincr;
+    double fj;
+    int yonset;
+    int i;
+    int j;
+    int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {
@@ -929,8 +965,10 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 static void garray_normalize(t_garray *x, t_float f)
 {
     int i;
-    double maxv, renormer;
-    int yonset, elemsize;
+    double maxv;
+    double renormer;
+    int yonset;
+    int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {
@@ -961,7 +999,8 @@ the "y" slot of the array.  This generalizes Max's "table", sort of. */
 static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    int yonset, elemsize;
+    int yonset;
+    int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {
@@ -1028,7 +1067,8 @@ static void garray_ylabel(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
 static void garray_style(t_garray *x, t_floatarg fstyle)
 {
-    int stylewas, style = fstyle;
+    int stylewas;
+    int style = fstyle;
     t_template *scalartemplate;
     if(!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
@@ -1101,7 +1141,8 @@ static void garray_color(t_garray *x, t_floatarg color)
 
 static void garray_vis_msg(t_garray *x, t_floatarg fvis)
 {
-    int viswas, vis = fvis != 0;
+    int viswas;
+    int vis = fvis != 0;
     t_template *scalartemplate;
     if(!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
@@ -1135,10 +1176,14 @@ static void garray_rename(t_garray *x, t_symbol *s)
 
 static void garray_read(t_garray *x, t_symbol *filename)
 {
-    int nelem, filedesc, i;
+    int nelem;
+    int filedesc;
+    int i;
     FILE *fd;
-    char buf[MAXPDSTRING], *bufptr;
-    int yonset, elemsize;
+    char buf[MAXPDSTRING];
+    char *bufptr;
+    int yonset;
+    int elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {
@@ -1176,7 +1221,9 @@ static void garray_write(t_garray *x, t_symbol *filename)
 {
     FILE *fd;
     char buf[MAXPDSTRING];
-    int yonset, elemsize, i;
+    int yonset;
+    int elemsize;
+    int i;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if(!array)
     {

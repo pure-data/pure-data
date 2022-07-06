@@ -39,7 +39,9 @@ struct _rtext
 t_rtext *rtext_new(t_glist *glist, t_text *who)
 {
     t_rtext *x = (t_rtext *) getbytes(sizeof *x);
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     x->x_text = who;
     x->x_glist = glist;
     x->x_next = glist->gl_editor->e_rtext;
@@ -171,7 +173,9 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp, int *indexp,
     int inindex_b = 0;
     int inindex_c = 0;
     int x_bufsize_c = u8_charnum(x->x_buf, x->x_bufsize);
-    int nlines = 0, ncolumns = 0, reportedindex = 0;
+    int nlines = 0;
+    int ncolumns = 0;
+    int reportedindex = 0;
     int findx = (*widthp + (fontwidth / 2)) / fontwidth;
     int findy = *heightp / fontheight;
 
@@ -277,7 +281,11 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp, int *indexp,
     {
         /* try to reduce size by dropping decimal digits */
         int wantreduce = x->x_bufsize - x->x_text->te_width;
-        char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize, *s1, *s2;
+        char *decimal = 0;
+        char *nextchar;
+        char *ebuf = x->x_buf + x->x_bufsize;
+        char *s1;
+        char *s2;
         int ndecimals;
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
         tempbuf[x->x_bufsize] = 0;
@@ -304,7 +312,8 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp, int *indexp,
     }
     else
     {
-        int outchars_c = 0, prev_b = 0;
+        int outchars_c = 0;
+        int prev_b = 0;
         int widthlimit_c =
             (x->x_text->te_width > 0
                     ? x->x_text->te_width
@@ -369,12 +378,18 @@ void text_getfont(
 static void rtext_senditup(
     t_rtext *x, int action, int *widthp, int *heightp, int *indexp)
 {
-    char smallbuf[200], *tempbuf;
-    int outchars_b = 0, guifontsize, fontwidth, fontheight;
+    char smallbuf[200];
+    char *tempbuf;
+    int outchars_b = 0;
+    int guifontsize;
+    int fontwidth;
+    int fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
-    char smallescbuf[400], *escbuf = 0;
+    char smallescbuf[400];
+    char *escbuf = 0;
     size_t escchars = 0;
-    int selstart_b, selend_b; /* beginning and end of selection in bytes */
+    int selstart_b;
+    int selend_b; /* beginning and end of selection in bytes */
     /* if we're a GOP (the new, "goprect" style) borrow the font size
     from the inside to preserve the spacing */
 
@@ -398,8 +413,10 @@ static void rtext_senditup(
         same as the specified width, set specified width to zero
         so future text editing will automatically change width.
         Except atoms whose content changes at runtime. */
-        int widthwas = x->x_text->te_width, newwidth = 0, newheight = 0,
-            newindex = 0;
+        int widthwas = x->x_text->te_width;
+        int newwidth = 0;
+        int newheight = 0;
+        int newindex = 0;
         x->x_text->te_width = 0;
         rtext_senditup(x, 0, &newwidth, &newheight, &newindex);
         if(newwidth != *widthp) x->x_text->te_width = widthwas;
@@ -413,7 +430,8 @@ static void rtext_senditup(
 
     if(action == SEND_FIRST)
     {
-        int lmargin = LMARGIN, tmargin = TMARGIN;
+        int lmargin = LMARGIN;
+        int tmargin = TMARGIN;
         if(glist_getzoom(x->x_glist) > 1)
         {
             /* zoom margins */
@@ -467,7 +485,9 @@ static void rtext_senditup(
 /* remake text buffer from binbuf */
 void rtext_retext(t_rtext *x)
 {
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     t_text *text = x->x_text;
     t_freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     binbuf_gettext(text->te_binbuf, &x->x_buf, &x->x_bufsize);
@@ -489,21 +509,27 @@ t_rtext *glist_findrtext(t_glist *gl, t_text *who)
 
 int rtext_width(t_rtext *x)
 {
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     rtext_senditup(x, SEND_CHECK, &w, &h, &indx);
     return (w);
 }
 
 int rtext_height(t_rtext *x)
 {
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     rtext_senditup(x, SEND_CHECK, &w, &h, &indx);
     return (h);
 }
 
 void rtext_draw(t_rtext *x)
 {
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     rtext_senditup(x, SEND_FIRST, &w, &h, &indx);
 }
 
@@ -530,7 +556,9 @@ void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
-    int w = 0, h = 0, indx;
+    int w = 0;
+    int h = 0;
+    int indx;
     t_glist *glist = x->x_glist;
     t_canvas *canvas = glist_getcanvas(glist);
     if(state)
@@ -557,7 +585,12 @@ void rtext_activate(t_rtext *x, int state)
 clicked on a space or something */
 int rtext_findatomfor(t_rtext *x, int xpos, int ypos)
 {
-    int w = xpos, h = ypos, indx, natom = 0, i, gotone = 0;
+    int w = xpos;
+    int h = ypos;
+    int indx;
+    int natom = 0;
+    int i;
+    int gotone = 0;
     /* get byte index of character clicked on */
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
     /* search through for whitespace before that index */
@@ -580,8 +613,14 @@ void gatom_key(void *z, t_symbol *keysym, t_floatarg f);
 
 void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 {
-    int w = 0, h = 0, indx, i, newsize, ndel;
-    char *s1, *s2;
+    int w = 0;
+    int h = 0;
+    int indx;
+    int i;
+    int newsize;
+    int ndel;
+    char *s1;
+    char *s2;
     /* CR to atom boxes sends message and resets */
     if(keynum == '\n' && x->x_text->te_type == T_ATOM)
     {
@@ -716,7 +755,9 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 
 void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
 {
-    int w = xval, h = yval, indx;
+    int w = xval;
+    int h = yval;
+    int indx;
     rtext_senditup(x, SEND_CHECK, &w, &h, &indx);
     if(flag == RTEXT_DOWN)
     {
@@ -724,7 +765,8 @@ void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
     }
     else if(flag == RTEXT_DBL)
     {
-        int whereseparator, newseparator;
+        int whereseparator;
+        int newseparator;
         x->x_dragfrom = -1;
         whereseparator = 0;
         if((newseparator = lastone(x->x_buf, ' ', indx)) > whereseparator)

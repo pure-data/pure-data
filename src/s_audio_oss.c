@@ -90,7 +90,8 @@ static char oss_devnames[OSS_MAXDEV][20];
 /* find out how many OSS devices we have and get their names  */
 static void oss_init(void)
 {
-    int fd, devno;
+    int fd;
+    int devno;
     struct stat statbuf;
     char namebuf[80];
 
@@ -126,7 +127,11 @@ int oss_reset(int fd)
 void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
     int suggestedblocksize)
 {
-    int orig, param, nblk, fd = dev->d_fd, wantformat;
+    int orig;
+    int param;
+    int nblk;
+    int fd = dev->d_fd;
+    int wantformat;
     int nchannels = dev->d_nchannels;
     int advwas = sys_schedadvance;
 
@@ -155,7 +160,9 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
 
     if(oss_blockmode && !skipblocksize)
     {
-        int fragbytes, logfragsize, nfragment;
+        int fragbytes;
+        int logfragsize;
+        int nfragment;
         /* setting fragment count and size.  */
         linux_fragsize = suggestedblocksize;
         if(!linux_fragsize)
@@ -259,8 +266,12 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
     int *outdev, int nchout, int *chout, int rate, int blocksize)
 {
     int capabilities = 0;
-    int inchannels = 0, outchannels = 0;
-    int n, i, fd, flags;
+    int inchannels = 0;
+    int outchannels = 0;
+    int n;
+    int i;
+    int fd;
+    int flags;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
     int num_devs = 0;
     int wantmore = 0;
@@ -279,7 +290,9 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
 
     for(n = 0; n < noutdev; n++)
     {
-        int gotchans, j, inindex = -1;
+        int gotchans;
+        int j;
+        int inindex = -1;
         int thisdevice = (outdev[n] >= 0 ? outdev[n] : 0);
         int wantchannels = (nchout > n) ? chout[n] : wantmore;
         fd = -1;
@@ -530,7 +543,9 @@ in audio output and/or input. */
 
 static void oss_doresync(void)
 {
-    int dev, zeroed = 0, wantsize;
+    int dev;
+    int zeroed = 0;
+    int wantsize;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
     audio_buf_info ainfo;
 
@@ -614,16 +629,21 @@ static void oss_doresync(void)
 
 int oss_send_dacs(void)
 {
-    t_sample *fp1, *fp2;
+    t_sample *fp1;
+    t_sample *fp2;
     long fill;
-    int i, j, dev, rtnval = SENDDACS_YES;
+    int i;
+    int j;
+    int dev;
+    int rtnval = SENDDACS_YES;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
     t_oss_int16 *sp;
     t_oss_int32 *lp;
     /* the maximum number of samples we should have in the ADC buffer */
     int idle = 0;
     int thischan;
-    double timeref, timenow;
+    double timeref;
+    double timenow;
 
     if(!linux_nindevs && !linux_noutdevs) return (SENDDACS_NO);
 
@@ -779,7 +799,8 @@ int oss_send_dacs(void)
 void oss_getdevs(char *indevlist, int *nindevs, char *outdevlist, int *noutdevs,
     int *canmulti, int maxdev, int devdescsize)
 {
-    int i, ndev;
+    int i;
+    int ndev;
     oss_init();
     *canmulti = 2; /* supports multiple devices */
     if((ndev = oss_ndev) > maxdev) ndev = maxdev;

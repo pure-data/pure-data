@@ -128,7 +128,8 @@ int iemgui_modulo_color(int col)
 t_symbol *iemgui_dollar2raute(t_symbol *s)
 {
     const char *s1;
-    char buf[MAXPDSTRING + 1], *s2;
+    char buf[MAXPDSTRING + 1];
+    char *s2;
     if(strlen(s->s_name) >= MAXPDSTRING) return (s);
     for(s1 = s->s_name, s2 = buf;; s1++, s2++)
     {
@@ -143,7 +144,8 @@ t_symbol *iemgui_dollar2raute(t_symbol *s)
 t_symbol *iemgui_raute2dollar(t_symbol *s)
 {
     const char *s1;
-    char buf[MAXPDSTRING + 1], *s2;
+    char buf[MAXPDSTRING + 1];
+    char *s2;
     if(strlen(s->s_name) >= MAXPDSTRING) return (s);
     for(s1 = s->s_name, s2 = buf;; s1++, s2++)
     {
@@ -158,7 +160,8 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
 t_symbol *iemgui_put_in_braces(t_symbol *s)
 {
     const char *s1;
-    char buf[MAXPDSTRING + 1], *s2;
+    char buf[MAXPDSTRING + 1];
+    char *s2;
     int i = 0;
     if(strlen(s->s_name) >= MAXPDSTRING) return (s);
     for(s1 = s->s_name, s2 = buf;; s1++, s2++, i++)
@@ -390,7 +393,8 @@ void iemgui_all_put_in_braces(t_symbol **srlsym)
 
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
-    int sndable = 1, oldsndrcvable = 0;
+    int sndable = 1;
+    int oldsndrcvable = 0;
 
     if(iemgui->x_fsf.x_rcv_able) oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able) oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
@@ -408,7 +412,8 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *rcv;
-    int rcvable = 1, oldsndrcvable = 0;
+    int rcvable = 1;
+    int oldsndrcvable = 0;
 
     if(iemgui->x_fsf.x_rcv_able) oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able) oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
@@ -649,7 +654,9 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int bcol = (int) iemgui_getcolorarg(14, argc, argv);
     int fcol = (int) iemgui_getcolorarg(15, argc, argv);
     int lcol = (int) iemgui_getcolorarg(16, argc, argv);
-    int sndable = 1, rcvable = 1, oldsndrcvable = 0;
+    int sndable = 1;
+    int rcvable = 1;
+    int oldsndrcvable = 0;
 
     if(iemgui->x_fsf.x_rcv_able) oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able) oldsndrcvable += IEM_GUI_OLD_SND_FLAG;

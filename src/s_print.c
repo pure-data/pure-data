@@ -20,7 +20,8 @@ int sys_printtostderr;
 /* escape characters for tcl/tk */
 char *pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
 {
-    unsigned ptin = 0, ptout = 0;
+    unsigned ptin = 0;
+    unsigned ptout = 0;
     if(!dst || !src) return 0;
     while(1)
     {

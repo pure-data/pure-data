@@ -191,7 +191,8 @@ typedef struct _ctlin
 
 static void *ctlin_new(t_symbol *s, int argc, t_atom *argv)
 {
-    int ctlno, channel;
+    int ctlno;
+    int channel;
     t_ctlin *x = (t_ctlin *) pd_new(ctlin_class);
     if(!argc)
         ctlno = -1;
@@ -864,7 +865,8 @@ static void *makenote_new(t_floatarg velo, t_floatarg dur)
 static void makenote_tick(t_hang *hang)
 {
     t_makenote *x = hang->h_owner;
-    t_hang *h2, *h3;
+    t_hang *h2;
+    t_hang *h3;
     outlet_float(x->x_velout, 0);
     outlet_float(x->x_pitchout, hang->h_pitch);
     if(x->x_hang == hang)
@@ -993,7 +995,8 @@ typedef struct poly
 
 static void *poly_new(t_float fnvoice, t_float fsteal)
 {
-    int i, n = fnvoice;
+    int i;
+    int n = fnvoice;
     t_poly *x = (t_poly *) pd_new(poly_class);
     t_voice *v;
     if(n < 1) n = 1;
@@ -1015,8 +1018,12 @@ static void poly_float(t_poly *x, t_float f)
 {
     int i;
     t_voice *v;
-    t_voice *firston, *firstoff;
-    unsigned int serialon, serialoff, onindex = 0, offindex = 0;
+    t_voice *firston;
+    t_voice *firstoff;
+    unsigned int serialon;
+    unsigned int serialoff;
+    unsigned int onindex = 0;
+    unsigned int offindex = 0;
     if(x->x_vel > 0)
     {
         /* note on.  Look for a vacant voice */
@@ -1133,7 +1140,9 @@ static void *bag_new(void)
 
 static void bag_float(t_bag *x, t_float f)
 {
-    t_bagelem *bagelem, *e2, *e3;
+    t_bagelem *bagelem;
+    t_bagelem *e2;
+    t_bagelem *e3;
     if(x->x_velo != 0)
     {
         bagelem = (t_bagelem *) getbytes(sizeof *bagelem);

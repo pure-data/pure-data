@@ -299,7 +299,8 @@ int (*sys_idlehook)(void);
 /* when audio is idle, see to GUI and other stuff */
 static int sched_idletask(void)
 {
-    static int sched_nextmeterpolltime, sched_nextpingtime;
+    static int sched_nextmeterpolltime;
+    static int sched_nextpingtime;
     int rtn = 0;
     sys_lock();
     if(sys_pollgui()) rtn = 1;

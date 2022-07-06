@@ -162,7 +162,8 @@ int sys_hostfontsize(int fontsize, int zoom)
 
 int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 {
-    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg));
+    int ret;
     if(worstcase)
         ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
     else
@@ -172,7 +173,8 @@ int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 
 int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
 {
-    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg));
+    int ret;
     if(worstcase)
         ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
     else
@@ -195,7 +197,8 @@ int sys_defaultfont;
 
 static void openit(const char *dirname, const char *filename)
 {
-    char dirbuf[MAXPDSTRING], *nameptr;
+    char dirbuf[MAXPDSTRING];
+    char *nameptr;
     int fd =
         open_via_path(dirname, filename, "", dirbuf, &nameptr, MAXPDSTRING, 0);
     if(fd >= 0)
@@ -311,7 +314,8 @@ static void sys_printusage(void);
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, const char **argv)
 {
-    int i, noprefs;
+    int i;
+    int noprefs;
     const char *prefsfile = "";
     sys_externalschedlib = 0;
     sys_extraflags = 0;
@@ -579,7 +583,8 @@ invocation for Pd, or if that fails, by consulting the variable
 INSTALL_PREFIX.  In MSW, we don't try to use INSTALL_PREFIX. */
 void sys_findprogdir(const char *progname)
 {
-    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING];
+    char sbuf[MAXPDSTRING];
+    char sbuf2[MAXPDSTRING];
     char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
@@ -1459,8 +1464,10 @@ static void sys_afterargparse(void)
     char sbuf[MAXPDSTRING];
     int i;
     t_audiosettings as;
-    int nmidiindev = 0, midiindev[MAXMIDIINDEV];
-    int nmidioutdev = 0, midioutdev[MAXMIDIOUTDEV];
+    int nmidiindev = 0;
+    int midiindev[MAXMIDIINDEV];
+    int nmidioutdev = 0;
+    int midioutdev[MAXMIDIOUTDEV];
     /* add "extra" library to path */
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING - 30);
     sbuf[MAXPDSTRING - 30] = 0;
@@ -1705,9 +1712,12 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 int string2args(const char *cmd, int *retArgc, const char ***retArgv)
 {
     int errCode = 1;
-    int len = strlen(cmd), argCount = 0;
-    char strings[MAXPDSTRING], *cp;
-    const char **argTable = 0, **newArgTable;
+    int len = strlen(cmd);
+    int argCount = 0;
+    char strings[MAXPDSTRING];
+    char *cp;
+    const char **argTable = 0;
+    const char **newArgTable;
 
     if(retArgc) *retArgc = 0;
     if(retArgv) *retArgv = NULL;
@@ -1730,7 +1740,8 @@ int string2args(const char *cmd, int *retArgc, const char ***retArgv)
     while(*cp)
     {
         const char *cpIn = cp;
-        char *cpOut = cp, *argument;
+        char *cpOut = cp;
+        char *argument;
         int quote = '\0';
 
         /*

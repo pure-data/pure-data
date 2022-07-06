@@ -138,8 +138,11 @@ static int pa_lowlevel_callback(const void *inputBuffer, void *outputBuffer,
     PaStreamCallbackFlags myflags, void *userData)
 {
     int i;
-    unsigned int n, j;
-    float *fbuf, *fp2, *fp3;
+    unsigned int n;
+    unsigned int j;
+    float *fbuf;
+    float *fp2;
+    float *fp3;
     t_sample *soundiop;
     if(nframes % DEFDACBLKSIZE)
     {
@@ -279,7 +282,8 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
         /* check whether we have to change the numbers of channel and/or
          * samplerate */
         const PaDeviceInfo *info = 0;
-        double inRate = 0, outRate = 0;
+        double inRate = 0;
+        double outRate = 0;
 
         if(inchannels > 0)
         {
@@ -337,7 +341,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int outdeviceno, t_audiocallback callbackfn)
 {
     PaError err;
-    int j, devno, pa_indev = -1, pa_outdev = -1;
+    int j;
+    int devno;
+    int pa_indev = -1;
+    int pa_outdev = -1;
 
     pa_callback = callbackfn;
     /* fprintf(stderr, "open callback %d\n", (callbackfn != 0)); */
@@ -480,9 +487,11 @@ void pa_close_audio(void)
 int pa_send_dacs(void)
 {
     t_sample *fp;
-    float *fp2, *fp3;
+    float *fp2;
+    float *fp3;
     float *conversionbuf;
-    int j, k;
+    int j;
+    int k;
     int rtnval = SENDDACS_YES;
     int locked = 0;
     double timebefore;
@@ -689,7 +698,10 @@ static char *pdi2devname(const PaDeviceInfo *pdi, char *buf, size_t bufsize)
 void pa_getdevs(char *indevlist, int *nindevs, char *outdevlist, int *noutdevs,
     int *canmulti, int maxndev, int devdescsize)
 {
-    int i, nin = 0, nout = 0, ndev;
+    int i;
+    int nin = 0;
+    int nout = 0;
+    int ndev;
     *canmulti = 1; /* one dev each for input and output */
 
     pa_init();

@@ -172,7 +172,8 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
                     quote = 1;
             if(quote)
             {
-                char *bp = buf, *ep = buf + (bufsize - 2);
+                char *bp = buf;
+                char *ep = buf + (bufsize - 2);
                 sp = a->a_w.w_symbol->s_name;
                 while(bp < ep && *sp)
                 {
@@ -237,7 +238,8 @@ int expr_donew(struct expr *expr, int ac, t_atom *av)
     binbuf_free(b);
 #else /* MSP */
     {
-        char *buf = getbytes(0), *newbuf;
+        char *buf = getbytes(0);
+        char *newbuf;
         int length = 0;
         char string[250];
         t_atom *ap;
@@ -1125,11 +1127,15 @@ struct ex_ex *ex_eval(
 /* the result pointer */
 /* the sample number processed for fexpr~ */
 {
-    int i, j;
-    t_float *lp, *rp, *op; /* left, right, and out pointer to vectors */
+    int i;
+    int j;
+    t_float *lp;
+    t_float *rp;
+    t_float *op; /* left, right, and out pointer to vectors */
     t_float scalar;
     int nullret = 0;                      /* did we have an error */
-    struct ex_ex left = {0}, right = {0}; /* left and right operands */
+    struct ex_ex left = {0};
+    struct ex_ex right = {0}; /* left and right operands */
 
     left.ex_type = 0;
     left.ex_int = 0;
@@ -1654,8 +1660,9 @@ struct ex_ex *eval_sigidx(
     struct ex_ex arg = {0};
     struct ex_ex *reteptr;
     int i = 0;
-    t_float fi = 0, /* index in float */
-        rem_i = 0;  /* remains of the float */
+    t_float fi = 0;
+    t_float        /* index in float */
+        rem_i = 0; /* remains of the float */
 
     arg.ex_type = 0;
     arg.ex_int = 0;

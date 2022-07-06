@@ -120,7 +120,8 @@ static void clone_in_set(t_in *x, t_floatarg f)
 
 static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int phasewas = x->i_owner->x_phase, i;
+    int phasewas = x->i_owner->x_phase;
+    int i;
     for(i = 0; i < x->i_owner->x_n; i++)
     {
         x->i_owner->x_phase = i;
@@ -148,9 +149,9 @@ static void clone_in_fwd(t_in *x, t_symbol *s, int argc, t_atom *argv)
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
-    int first = 1 + (s != &s_list && s != &s_float && s != &s_symbol &&
-                        s != &s_bang),
-        outc = argc + first;
+    int first =
+        1 + (s != &s_list && s != &s_float && s != &s_symbol && s != &s_bang);
+    int outc = argc + first;
     ATOMS_ALLOCA(outv, outc);
     SETFLOAT(outv, x->o_n);
     if(first == 2) SETSYMBOL(outv + 1, s);
@@ -165,7 +166,8 @@ static void clone_free(t_clone *x)
 {
     if(x->x_vec)
     {
-        int i, voicetovis = -1;
+        int i;
+        int voicetovis = -1;
         if(THISGUI->i_reloadingabstraction)
         {
             for(i = 0; i < x->x_n; i++)
@@ -213,7 +215,10 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
 void clone_setn(t_clone *x, t_floatarg f)
 {
     int dspstate = canvas_suspend_dsp();
-    int nwas = x->x_n, wantn = f, i, j;
+    int nwas = x->x_n;
+    int wantn = f;
+    int i;
+    int j;
     if(wantn < 1)
     {
         pd_error(x, "can't resize to zero or negative number; setting to 1");
@@ -290,8 +295,12 @@ void signal_makereusable(t_signal *sig);
 
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
-    int i, j, nin, nout;
-    t_signal **tempsigs, **tempio;
+    int i;
+    int j;
+    int nin;
+    int nout;
+    t_signal **tempsigs;
+    t_signal **tempio;
     if(!x->x_n) return;
     for(i = nin = 0; i < x->x_nin; i++)
         if(x->x_invec[i].i_signal) nin++;
@@ -352,7 +361,10 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *) pd_new(clone_class);
     t_canvas *c;
-    int wantn, dspstate, i, voicetovis = clone_voicetovis;
+    int wantn;
+    int dspstate;
+    int i;
+    int voicetovis = clone_voicetovis;
     t_out *outvec;
     x->x_invec = 0;
     x->x_outvec = 0;

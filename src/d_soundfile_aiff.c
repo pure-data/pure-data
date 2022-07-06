@@ -162,8 +162,11 @@ static void aiff_set4(uint8_t *dst, uint32_t ui, int swap)
 /** read sample rate from comm chunk 80-bit AIFF-compatible number */
 static double aiff_getsamplerate(const uint8_t *src, int swap)
 {
-    unsigned char temp[10], *p = temp, exponent;
-    unsigned long mantissa, last = 0;
+    unsigned char temp[10];
+    unsigned char *p = temp;
+    unsigned char exponent;
+    unsigned long mantissa;
+    unsigned long last = 0;
 
     memcpy(temp, src, 10);
     swapstring4((char *) p + 2, swap);
@@ -271,8 +274,13 @@ static int aiff_isheader(const char *buf, size_t size)
 /** loop through chunks to find comm and data */
 static int aiff_readheader(t_soundfile *sf)
 {
-    int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
-        swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
+    int nchannels = 1;
+    int bytespersample = 2;
+    int samplerate = 44100;
+    int bigendian = 1;
+    int swap = !sys_isbigendian();
+    int isaiffc = 0;
+    int commfound = 0;
     off_t headersize = AIFFHEADSIZE;
     size_t bytelimit = AIFFMAXBYTES;
 
@@ -326,7 +334,8 @@ static int aiff_readheader(t_soundfile *sf)
         else if(!strncmp(chunk->c_id, "COMM", 4))
         {
             /* common chunk */
-            int bitspersample, isfloat = 0;
+            int bitspersample;
+            int isfloat = 0;
             t_commchunk *comm = &buf.b_commchunk;
             if(fd_read(sf->sf_fd, headersize + AIFFCHUNKSIZE,
                    buf.b_c + AIFFCHUNKSIZE, chunksize) < chunksize)
@@ -447,8 +456,10 @@ static int aiff_readheader(t_soundfile *sf)
 /** write basic header with order: head [ver] comm data */
 static int aiff_writeheader(t_soundfile *sf, size_t nframes)
 {
-    int isaiffc = aiff_isaiffc(sf), swap = !sys_isbigendian();
-    size_t commsize = AIFFCOMMSIZE, datasize = nframes * sf->sf_bytesperframe;
+    int isaiffc = aiff_isaiffc(sf);
+    int swap = !sys_isbigendian();
+    size_t commsize = AIFFCOMMSIZE;
+    size_t datasize = nframes * sf->sf_bytesperframe;
     off_t headersize = 0;
     ssize_t byteswritten = 0;
     char buf[SFHDRBUFSIZE] = {0};
@@ -525,9 +536,11 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
  * AIFF-C: head version comm data, comm chunk size variable due to str */
 static int aiff_updateheader(t_soundfile *sf, size_t nframes)
 {
-    int isaiffc = aiff_isaiffc(sf), swap = !sys_isbigendian();
-    size_t datasize = nframes * sf->sf_bytesperframe, headersize = AIFFHEADSIZE,
-           commsize = AIFFCOMMSIZE;
+    int isaiffc = aiff_isaiffc(sf);
+    int swap = !sys_isbigendian();
+    size_t datasize = nframes * sf->sf_bytesperframe;
+    size_t headersize = AIFFHEADSIZE;
+    size_t commsize = AIFFCOMMSIZE;
     uint32_t uinttmp;
     int32_t inttmp;
 
