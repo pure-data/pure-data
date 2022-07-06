@@ -57,8 +57,10 @@ static void sigdelwrite_updatesr(
 static void sigdelwrite_clear(t_sigdelwrite *x) /* added by Orm Finnendahl */
 {
     if(x->x_cspace.c_n > 0)
+    {
         memset(x->x_cspace.c_vec, 0,
             sizeof(t_sample) * (x->x_cspace.c_n + XTRASAMPS));
+    }
 }
 
 /* routine to check that all delwrites/delreads/vds have same vecsize */
@@ -192,9 +194,13 @@ static void sigdelread_float(t_sigdelread *x, t_float f)
         x->x_delsamps =
             (int) (0.5 + x->x_sr * x->x_deltime) + x->x_n - x->x_zerodel;
         if(x->x_delsamps < x->x_n)
+        {
             x->x_delsamps = x->x_n;
+        }
         else if(x->x_delsamps > delwriter->x_cspace.c_n)
+        {
             x->x_delsamps = delwriter->x_cspace.c_n;
+        }
     }
 }
 
@@ -238,8 +244,10 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
             &x->x_delsamps, (t_int) sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if(delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
+        {
             pd_error(x, "delread~ %s: blocksize larger than delwrite~ buffer",
                 x->x_sym->s_name);
+        }
     }
     else if(*x->x_sym->s_name)
         pd_error(x, "delread~: %s: no such delwrite~", x->x_sym->s_name);
@@ -348,8 +356,10 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
             &delwriter->x_cspace, x, (t_int) sp[0]->s_n);
         /* check block size - but only if delwriter has been initialized */
         if(delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
+        {
             pd_error(x, "delread4~ %s: blocksize larger than delwrite~ buffer",
                 x->x_sym->s_name);
+        }
     }
     else if(*x->x_sym->s_name)
         pd_error(x, "delread4~: %s: no such delwrite~", x->x_sym->s_name);

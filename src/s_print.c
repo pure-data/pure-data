@@ -44,9 +44,13 @@ char *pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
     }
 
     if(!dstlen || ptout < dstlen)
+    {
         dst[ptout] = 0;
+    }
     else
+    {
         dst[dstlen - 1] = 0;
+    }
 
     return dst;
 }
@@ -54,7 +58,9 @@ char *pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
 static void dopost(const char *s)
 {
     if(STUFF->st_printhook)
+    {
         (*STUFF->st_printhook)(s);
+    }
     else if(sys_printtostderr || !sys_havegui())
     {
 #ifdef _WIN32
@@ -101,8 +107,10 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
+    {
         sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n", object,
             pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    }
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -132,8 +140,10 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
+    {
         sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n", object, level,
             pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    }
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
@@ -218,11 +228,17 @@ void postfloat(t_float f)
 void endpost(void)
 {
     if(STUFF->st_printhook)
+    {
         (*STUFF->st_printhook)("\n");
+    }
     else if(sys_printtostderr)
+    {
         fprintf(stderr, "\n");
+    }
     else
+    {
         post("");
+    }
 }
 
 /* keep this in the Pd app for binary extern compatibility but don't
@@ -300,7 +316,9 @@ void pd_error(const void *object, const char *fmt, ...)
 void glob_finderror(t_pd *dummy)
 {
     if(!error_object)
+    {
         post("no findable error yet");
+    }
     else
     {
         post("last trackable error:");

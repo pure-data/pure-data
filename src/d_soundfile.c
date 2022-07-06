@@ -100,10 +100,14 @@ static void object_sferror(const void *x, const char *header,
     const char *filename, int errnum, const t_soundfile *sf)
 {
     if(sf && sf->sf_type)
+    {
         pd_error(x, "%s %s: %s: %s", header, sf->sf_type->t_name, filename,
             soundfile_strerror(errnum));
+    }
     else
+    {
         pd_error(x, "%s: %s: %s", header, filename, soundfile_strerror(errnum));
+    }
 }
 
 /* ----- soundfile type ----- */
@@ -234,6 +238,7 @@ int sys_isbigendian(void)
 uint64_t swap8(uint64_t n, int doit)
 {
     if(doit)
+    {
         return (((n >> 56) & 0x00000000000000ffULL) |
                 ((n >> 40) & 0x000000000000ff00ULL) |
                 ((n >> 24) & 0x0000000000ff0000ULL) |
@@ -242,6 +247,7 @@ uint64_t swap8(uint64_t n, int doit)
                 ((n << 24) & 0x0000ff0000000000ULL) |
                 ((n << 40) & 0x00ff000000000000ULL) |
                 ((n << 56) & 0xff00000000000000ULL));
+    }
     return n;
 }
 
@@ -261,8 +267,10 @@ int64_t swap8s(int64_t n, int doit)
 uint32_t swap4(uint32_t n, int doit)
 {
     if(doit)
+    {
         return (((n & 0x0000ff) << 24) | ((n & 0x0000ff00) << 8) |
                 ((n & 0xff0000) >> 8) | ((n & 0xff000000) >> 24));
+    }
     return n;
 }
 
@@ -465,15 +473,19 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
             {
                 for(j = 0, sp2 = sp, fp = vecs[i] + framesread; j < nframes;
                     j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
                     *fp = SCALE *
                           ((sp2[0] << 24) | (sp2[1] << 16) | (sp2[2] << 8));
+                }
             }
             else
             {
                 for(j = 0, sp2 = sp, fp = vecs[i] + framesread; j < nframes;
                     j++, sp2 += sf->sf_bytesperframe, fp++)
+                {
                     *fp = SCALE *
                           ((sp2[2] << 24) | (sp2[1] << 16) | (sp2[0] << 8));
+                }
             }
         }
         else if(sf->sf_bytespersample == 4)
@@ -503,8 +515,10 @@ static void soundfile_xferin_sample(const t_soundfile *sf, int nvecs,
     }
     /* zero out other outputs */
     for(i = sf->sf_nchannels; i < nvecs; i++)
+    {
         for(j = nframes, fp = vecs[i]; j--;)
             *fp++ = 0;
+    }
 }
 
 static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
@@ -539,15 +553,19 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
             {
                 for(j = 0, sp2 = sp, wp = vecs[i] + framesread; j < nframes;
                     j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
                     wp->w_float = SCALE * ((sp2[0] << 24) | (sp2[1] << 16) |
                                               (sp2[2] << 8));
+                }
             }
             else
             {
                 for(j = 0, sp2 = sp, wp = vecs[i] + framesread; j < nframes;
                     j++, sp2 += sf->sf_bytesperframe, wp++)
+                {
                     wp->w_float = SCALE * ((sp2[2] << 24) | (sp2[1] << 16) |
                                               (sp2[0] << 8));
+                }
             }
         }
         else if(sf->sf_bytespersample == 4)
@@ -577,8 +595,10 @@ static void soundfile_xferin_words(const t_soundfile *sf, int nvecs,
     }
     /* zero out other outputs */
     for(i = sf->sf_nchannels; i < nvecs; i++)
+    {
         for(j = nframes, wp = vecs[i]; j--;)
             (wp++)->w_float = 0;
+    }
 }
 
 /* soundfiler_write ...
@@ -770,8 +790,10 @@ static int create_soundfile(
     /* create file */
     strncpy(filenamebuf, filename, MAXPDSTRING);
     if(!sf->sf_type->t_hasextensionfn(filenamebuf, MAXPDSTRING - 10))
+    {
         if(!sf->sf_type->t_addextensionfn(filenamebuf, MAXPDSTRING - 10))
             return -1;
+    }
     filenamebuf[MAXPDSTRING - 10] = 0; /* FIXME: what is the 10 for? */
     canvas_makefilename(canvas, filenamebuf, pathbuf, MAXPDSTRING);
     if((fd = sys_open(pathbuf, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
@@ -795,8 +817,10 @@ static void soundfile_finishwrite(void *obj, const char *filename,
 {
     if(frameswritten >= nframes) return;
     if(nframes < SFMAXFRAMES)
+    {
         pd_error(obj, "soundfiler write: %ld out of %ld frames written",
             (long) frameswritten, (long) nframes);
+    }
     if(sf->sf_type->t_updateheaderfn(sf, frameswritten)) return;
     object_sferror(obj, "soundfiler write", filename, errno, sf);
 }
@@ -1090,14 +1114,18 @@ static int soundfiler_readascii(
 #endif
     if(a->aa_onsetframe > 0) atoms += a->aa_onsetframe * a->aa_nchannels;
     for(j = 0, ap = atoms; j < nframes; j++)
+    {
         for(i = 0; i < a->aa_nchannels; i++)
             a->aa_vectors[i][j].w_float = atom_getfloat(ap++);
+    }
     /* zero out remaining elements of vectors */
     for(i = 0; i < a->aa_nchannels; i++)
     {
         if(garray_getfloatwords(a->aa_garrays[i], &vecsize, &a->aa_vectors[i]))
+        {
             for(j = nframes; j < vecsize; j++)
                 a->aa_vectors[i][j].w_float = 0;
+        }
     }
     for(i = 0; i < a->aa_nchannels; i++)
         garray_redraw(a->aa_garrays[i]);
@@ -1172,9 +1200,13 @@ static void soundfiler_read(
         else if(!strcmp(flag, "raw"))
         {
             if(ascii)
+            {
                 post("'-ascii' overridden by '-raw'");
+            }
             else if(sf.sf_type)
+            {
                 post("'-%s' overridden by '-raw'", sf.sf_type->t_name);
+            }
             if(argc < 5 || argv[1].a_type != A_FLOAT ||
                 ((sf.sf_headersize = argv[1].a_w.w_float) < 0) ||
                 argv[2].a_type != A_FLOAT ||
@@ -1186,11 +1218,17 @@ static void soundfiler_read(
                     endianness != 'l' && endianness != 'n'))
                 goto usage;
             if(endianness == 'b')
+            {
                 sf.sf_bigendian = 1;
+            }
             else if(endianness == 'l')
+            {
                 sf.sf_bigendian = 0;
+            }
             else
+            {
                 sf.sf_bigendian = sys_isbigendian();
+            }
             sf.sf_samplerate = sys_getsr();
             sf.sf_bytesperframe = sf.sf_nchannels * sf.sf_bytespersample;
             raw = 1;
@@ -1257,8 +1295,10 @@ static void soundfiler_read(
             goto done;
         }
         else if(!garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+        {
             pd_error(x, "soundfiler read: %s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
+        }
         if(finalsize && finalsize != (size_t) vecsize && !resize)
         {
             post("arrays have different lengths, resizing...");
@@ -1357,8 +1397,10 @@ static void soundfiler_read(
     {
         int vecsize;
         if(garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
+        {
             for(j = framesread; j < (size_t) vecsize; j++)
                 vecs[i][j].w_float = 0;
+        }
     }
     /* zero out vectors in excess of number of channels */
     for(i = sf.sf_nchannels; i < argc; i++)
@@ -1366,8 +1408,10 @@ static void soundfiler_read(
         int vecsize;
         t_word *foo;
         if(garray_getfloatwords(garrays[i], &vecsize, &foo))
+        {
             for(j = 0; j < (size_t) vecsize; j++)
                 foo[j].w_float = 0;
+        }
     }
     /* do all graphics updates */
     for(i = 0; i < argc; i++)
@@ -1455,8 +1499,10 @@ size_t soundfiler_dowrite(
             goto fail;
         }
         else if(!garray_getfloatwords(garrays[i], &vecsize, &vectors[i]))
+        {
             pd_error(obj, "soundfiler write: %s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
+        }
         if(wa.wa_nframes > vecsize - wa.wa_onsetframes)
             wa.wa_nframes = vecsize - wa.wa_onsetframes;
     }
@@ -1473,9 +1519,13 @@ size_t soundfiler_dowrite(
         for(j = wa.wa_onsetframes; j < wa.wa_nframes + wa.wa_onsetframes; j++)
         {
             if(vectors[i][j].w_float > biggest)
+            {
                 biggest = vectors[i][j].w_float;
+            }
             else if(-vectors[i][j].w_float > biggest)
+            {
                 biggest = -vectors[i][j].w_float;
+            }
         }
     }
 
@@ -1489,9 +1539,13 @@ size_t soundfiler_dowrite(
         if(!ascii_hasextension(filenamebuf, MAXPDSTRING))
             ascii_addextension(filenamebuf, MAXPDSTRING);
         if(wa.wa_normalize)
+        {
             a.aa_normfactor = (biggest > 0 ? 32767. / (32768. * biggest) : 1);
+        }
         else
+        {
             a.aa_normfactor = 1;
+        }
         if((frameswritten = soundfiler_writeascii(obj, filenamebuf, &a)) == 0)
         {
             pd_error(obj, "soundfiler write: writing ascii failed");
@@ -1983,15 +2037,25 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     char *buf;
 
     if(nchannels < 1)
+    {
         nchannels = 1;
+    }
     else if(nchannels > MAXSFCHANS)
+    {
         nchannels = MAXSFCHANS;
+    }
     if(bufsize <= 0)
+    {
         bufsize = DEFBUFPERCHAN * nchannels;
+    }
     else if(bufsize < MINBUFSIZE)
+    {
         bufsize = MINBUFSIZE;
+    }
     else if(bufsize > MAXBUFSIZE)
+    {
         bufsize = MAXBUFSIZE;
+    }
     buf = getbytes(bufsize);
     if(!buf) return 0;
 
@@ -2060,8 +2124,10 @@ static t_int *readsf_perform(t_int *w)
         {
             int xfersize;
             if(x->x_fileerror)
+            {
                 object_sferror(
                     x, "readsf~", x->x_filename, x->x_fileerror, &x->x_sf);
+            }
             clock_delay(x->x_clock, 0);
             x->x_state = STATE_IDLE;
 
@@ -2076,8 +2142,10 @@ static t_int *readsf_perform(t_int *w)
             }
             /* then zero out the (rest of the) output */
             for(i = 0; i < noutlets; i++)
+            {
                 for(j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
                     *fp++ = 0;
+            }
 
             sfread_cond_signal(&x->x_requestcondition);
             pthread_mutex_unlock(&x->x_mutex);
@@ -2099,8 +2167,10 @@ static t_int *readsf_perform(t_int *w)
     else
     {
         for(i = 0; i < noutlets; i++)
+        {
             for(j = vecsize, fp = x->x_outvec[i]; j--;)
                 *fp++ = 0;
+        }
     }
     return w + 2;
 }
@@ -2110,9 +2180,13 @@ static t_int *readsf_perform(t_int *w)
 static void readsf_start(t_readsf *x)
 {
     if(x->x_state == STATE_STARTUP)
+    {
         x->x_state = STATE_STREAM;
+    }
     else
+    {
         pd_error(x, "readsf~: start requested with no prior 'open'");
+    }
 }
 
 /** LATER rethink whether you need the mutex just to set a variable? */
@@ -2128,9 +2202,13 @@ static void readsf_stop(t_readsf *x)
 static void readsf_float(t_readsf *x, t_floatarg f)
 {
     if(f != 0)
+    {
         readsf_start(x);
+    }
     else
+    {
         readsf_stop(x);
+    }
 }
 
 /** open method.  Called as:
@@ -2172,13 +2250,21 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_fifotail = 0;
     x->x_fifohead = 0;
     if(*endian->s_name == 'b')
+    {
         x->x_sf.sf_bigendian = 1;
+    }
     else if(*endian->s_name == 'l')
+    {
         x->x_sf.sf_bigendian = 0;
+    }
     else if(*endian->s_name)
+    {
         pd_error(x, "readsf~ open: endianness neither 'b' nor 'l'");
+    }
     else
+    {
         x->x_sf.sf_bigendian = sys_isbigendian();
+    }
     x->x_onsetframes = (onsetframes > 0 ? onsetframes : 0);
     x->x_sf.sf_headersize =
         (headersize > 0 ? headersize : (headersize == 0 ? -1 : 0));
@@ -2510,15 +2596,25 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     char *buf;
 
     if(nchannels < 1)
+    {
         nchannels = 1;
+    }
     else if(nchannels > MAXSFCHANS)
+    {
         nchannels = MAXSFCHANS;
+    }
     if(bufsize <= 0)
+    {
         bufsize = DEFBUFPERCHAN * nchannels;
+    }
     else if(bufsize < MINBUFSIZE)
+    {
         bufsize = MINBUFSIZE;
+    }
     else if(bufsize > MAXBUFSIZE)
+    {
         bufsize = MAXBUFSIZE;
+    }
     buf = getbytes(bufsize);
     if(!buf) return 0;
 
@@ -2579,8 +2675,10 @@ static t_int *writesf_perform(t_int *w)
         if(x->x_eof)
         {
             if(x->x_fileerror)
+            {
                 object_sferror(
                     x, "writesf~", x->x_filename, x->x_fileerror, &x->x_sf);
+            }
             x->x_state = STATE_IDLE;
             sfread_cond_signal(&x->x_requestcondition);
             pthread_mutex_unlock(&x->x_mutex);
@@ -2610,9 +2708,13 @@ static t_int *writesf_perform(t_int *w)
 static void writesf_start(t_writesf *x)
 {
     if(x->x_state == STATE_STARTUP)
+    {
         x->x_state = STATE_STREAM;
+    }
     else
+    {
         pd_error(x, "writesf~: start requested with no prior 'open'");
+    }
 }
 
 /** LATER rethink whether you need the mutex just to set a variable? */
@@ -2652,11 +2754,17 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     x->x_filename = wa.wa_filesym->s_name;
     x->x_sf.sf_type = wa.wa_type;
     if(wa.wa_samplerate > 0)
+    {
         x->x_sf.sf_samplerate = wa.wa_samplerate;
+    }
     else if(x->x_insamplerate > 0)
+    {
         x->x_sf.sf_samplerate = x->x_insamplerate;
+    }
     else
+    {
         x->x_sf.sf_samplerate = sys_getsr();
+    }
     x->x_sf.sf_bytespersample =
         (wa.wa_bytespersample > 2 ? wa.wa_bytespersample : 2);
     x->x_sf.sf_bigendian = wa.wa_bigendian;

@@ -80,9 +80,13 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
             textp++;
         if(textp == etext) break;
         if(*textp == ';')
+        {
             SETSEMI(ap), textp++;
+        }
         else if(*textp == ',')
+        {
             SETCOMMA(ap), textp++;
+        }
         else
         {
             /* it's an atom other than a comma or semi */
@@ -108,70 +112,114 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                     if(floatstate == 0) /* beginning */
                     {
                         if(minus)
+                        {
                             floatstate = 1;
+                        }
                         else if(digit)
+                        {
                             floatstate = 2;
+                        }
                         else if(dot)
+                        {
                             floatstate = 3;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 1) /* got minus */
                     {
                         if(digit)
+                        {
                             floatstate = 2;
+                        }
                         else if(dot)
+                        {
                             floatstate = 3;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 2) /* got digits */
                     {
                         if(dot)
+                        {
                             floatstate = 4;
+                        }
                         else if(expon)
+                        {
                             floatstate = 6;
+                        }
                         else if(!digit)
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 3) /* got '.' without digits */
                     {
                         if(digit)
+                        {
                             floatstate = 5;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 4) /* got '.' after digits */
                     {
                         if(digit)
+                        {
                             floatstate = 5;
+                        }
                         else if(expon)
+                        {
                             floatstate = 6;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 5) /* got digits after . */
                     {
                         if(expon)
+                        {
                             floatstate = 6;
+                        }
                         else if(!digit)
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 6) /* got 'e' */
                     {
                         if(plusminus)
+                        {
                             floatstate = 7;
+                        }
                         else if(digit)
+                        {
                             floatstate = 8;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 7) /* got plus or minus */
                     {
                         if(digit)
+                        {
                             floatstate = 8;
+                        }
                         else
+                        {
                             floatstate = -1;
+                        }
                     }
                     else if(floatstate == 8) /* got digits */
                     {
@@ -182,7 +230,9 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                     (textp != etext && textp[0] >= '0' && textp[0] <= '9'))
                     dollar = 1;
                 if(!slash)
+                {
                     bufp++;
+                }
                 else if(lastslash)
                 {
                     bufp++;
@@ -198,20 +248,26 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
 #endif
             if(floatstate == 2 || floatstate == 4 || floatstate == 5 ||
                 floatstate == 8)
+            {
                 SETFLOAT(ap, atof(buf));
             /* LATER try to figure out how to mix "$" and "\$" correctly;
             here, the backslashes were already stripped so we assume all
             "$" chars are real dollars.  In fact, we only know at least one
             was. */
+            }
             else if(dollar)
             {
                 if(buf[0] != '$') dollar = 0;
                 for(bufp = buf + 1; *bufp; bufp++)
                     if(*bufp < '0' || *bufp > '9') dollar = 0;
                 if(dollar)
+                {
                     SETDOLLAR(ap, atoi(buf + 1));
+                }
                 else
+                {
                     SETDOLLSYM(ap, gensym(buf));
+                }
             }
             else
                 SETSYMBOL(ap, gensym(buf));
@@ -253,9 +309,13 @@ void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp)
         strcpy(buf + length, string);
         length = newlength;
         if(ap->a_type == A_SEMI)
+        {
             buf[length - 1] = '\n';
+        }
         else
+        {
             buf[length - 1] = ' ';
+        }
     }
     if(length && buf[length - 1] == ' ')
     {
@@ -374,8 +434,10 @@ void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y)
                 break;
             case A_SYMBOL:
                 for(s = ap->a_w.w_symbol->s_name, fixit = 0; *s; s++)
+                {
                     if(*s == ';' || *s == ',' || *s == '$' || *s == '\\')
                         fixit = 1;
+                }
                 if(fixit)
                 {
                     atom_string(ap, tbuf, MAXPDSTRING);
@@ -421,9 +483,13 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
             const char *str = argv->a_w.w_symbol->s_name;
             const char *str2;
             if(!strcmp(str, ";"))
+            {
                 SETSEMI(ap);
+            }
             else if(!strcmp(str, ","))
+            {
                 SETCOMMA(ap);
+            }
             else
             {
                 char buf[MAXPDSTRING];
@@ -438,9 +504,13 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                         *sp2 && sp1 < buf + (MAXPDSTRING - 1); sp2++)
                     {
                         if(slashed)
+                        {
                             *sp1++ = *sp2, slashed = 0;
+                        }
                         else if(*sp2 == '\\')
+                        {
                             slashed = 1;
+                        }
                         else
                         {
                             if(*sp2 == '$' && sp2[1] >= '0' && sp2[1] <= '9')
@@ -459,17 +529,25 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                 {
                     int dollsym = 0;
                     if(*usestr != '$')
+                    {
                         dollsym = 1;
+                    }
                     else
+                    {
                         for(str2 = usestr + 1; *str2; str2++)
+                        {
                             if(*str2 < '0' || *str2 > '9')
                             {
                                 dollsym = 1;
                                 break;
                             }
+                        }
+                    }
                     if(dollsym)
+                    {
                         SETDOLLSYM(ap, usestr == str ? argv->a_w.w_symbol
                                                      : gensym(usestr));
+                    }
                     else
                     {
                         int dollar = 0;
@@ -478,8 +556,10 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     }
                 }
                 else
+                {
                     SETSYMBOL(ap,
                         usestr == str ? argv->a_w.w_symbol : gensym(usestr));
+                }
                 /* fprintf(stderr, "arg %s -> binbuf %s type %d\n",
                     argv->a_w.w_symbol->s_name, usestr, ap->a_type); */
             }
@@ -505,9 +585,13 @@ void binbuf_print(const t_binbuf *x)
         }
         postatom(1, x->b_vec + i);
         if(x->b_vec[i].a_type == A_SEMI)
+        {
             newline = 1;
+        }
         else
+        {
             newline = 0;
+        }
     }
     if(startedpost) endpost();
 }
@@ -683,7 +767,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
     t_pd *initial_target = target;
 
     if(ac <= SMALLMSG)
+    {
         mstack = smallstack;
+    }
     else
     {
 #if 1
@@ -695,7 +781,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         destination in the message, only because the original "target"
         points there. */
         if(target == &pd_objectmaker)
+        {
             maxnargs = ac;
+        }
         else
         {
             int i;
@@ -703,17 +791,27 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             for(i = 0; i < ac; i++)
             {
                 if(at[i].a_type == A_SEMI)
+                {
                     j = -1;
+                }
                 else if(at[i].a_type == A_COMMA)
+                {
                     j = 0;
+                }
                 else if(++j > maxnargs)
+                {
                     maxnargs = j;
+                }
             }
         }
         if(maxnargs <= SMALLMSG)
+        {
             mstack = smallstack;
+        }
         else
+        {
             ATOMS_ALLOCA(mstack, maxnargs);
+        }
 #else
         /* just pessimistically allocate enough to hold everything
         at once.  This turned out to run slower in a simple benchmark
@@ -770,8 +868,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 pd_error(initial_target, "%s: no such object ", s->s_name);
             cleanup:
                 do
+                {
                     at++, ac--;
-                while(ac && at->a_type != A_SEMI);
+                } while(ac && at->a_type != A_SEMI);
                 /* LATER eat args until semicolon and continue */
                 continue;
             }
@@ -815,13 +914,19 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     break;
                 case A_DOLLAR:
                     if(at->a_w.w_index > 0 && at->a_w.w_index <= argc)
+                    {
                         *msp = argv[at->a_w.w_index - 1];
+                    }
                     else if(at->a_w.w_index == 0)
+                    {
                         SETFLOAT(msp, canvas_getdollarzero());
+                    }
                     else
                     {
                         if(target == &pd_objectmaker)
+                        {
                             SETFLOAT(msp, 0);
+                        }
                         else
                         {
                             pd_error(target,
@@ -863,15 +968,23 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                     break;
                 case A_FLOAT:
                     if(nargs == 1)
+                    {
                         pd_float(target, mstack->a_w.w_float);
+                    }
                     else
+                    {
                         pd_list(target, 0, nargs, mstack);
+                    }
                     break;
                 case A_POINTER:
                     if(nargs == 1)
+                    {
                         pd_pointer(target, mstack->a_w.w_gpointer);
+                    }
                     else
+                    {
                         pd_list(target, 0, nargs, mstack);
+                    }
                     break;
                 default:
                     bug("bad selector");
@@ -898,9 +1011,13 @@ int binbuf_read(
     char namebuf[MAXPDSTRING];
 
     if(*dirname)
+    {
         snprintf(namebuf, MAXPDSTRING - 1, "%s/%s", dirname, filename);
+    }
     else
+    {
         snprintf(namebuf, MAXPDSTRING - 1, "%s", filename);
+    }
     namebuf[MAXPDSTRING - 1] = 0;
 
     if((fd = sys_open(namebuf, 0)) < 0)
@@ -1001,9 +1118,13 @@ int binbuf_write(
     int ncolumn = 0;
 
     if(*dir)
+    {
         snprintf(fbuf, MAXPDSTRING - 1, "%s/%s", dir, filename);
+    }
     else
+    {
         snprintf(fbuf, MAXPDSTRING - 1, "%s", filename);
+    }
     fbuf[MAXPDSTRING - 1] = 0;
 
     if(!strcmp(filename + strlen(filename) - 4, ".pat") ||
@@ -1020,9 +1141,13 @@ int binbuf_write(
         /* estimate how many characters will be needed.  Printing out
         symbols may need extra characters for inserting backslashes. */
         if(ap->a_type == A_SYMBOL || ap->a_type == A_DOLLSYM)
+        {
             length = 80 + (int) strlen(ap->a_w.w_symbol->s_name);
+        }
         else
+        {
             length = 40;
+        }
         if(ep - bp < length)
         {
             if(fwrite(sbuf, bp - sbuf, 1, f) < 1) goto fail;
@@ -1181,9 +1306,11 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                         classname == gensym("t"))
                     {
                         for(i = 7; i < natom; i++)
+                        {
                             if(nextmess[i].a_type == A_SYMBOL &&
                                 nextmess[i].a_w.w_symbol == gensym("i"))
                                 nextmess[i].a_w.w_symbol = gensym("f");
+                        }
                     }
                     if(classname == gensym("table"))
                         classname = gensym("TABLE");
@@ -1303,10 +1430,12 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                             -262144., -1., -1., 0., 1.);
                     }
                     else
+                    {
                         binbuf_addv(newb, "ssffs;", gensym("#X"), gensym("obj"),
                             atom_getfloatarg(3, natom, nextmess),
                             atom_getfloatarg(4, natom, nextmess),
                             atom_getsymbolarg(2, natom, nextmess));
+                    }
                     nobj++;
                 }
                 else if(!strcmp(second, "connect") || !strcmp(second, "fasten"))
@@ -1375,42 +1504,55 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                 {
                     t_symbol *classname = atom_getsymbolarg(4, natom, nextmess);
                     if(classname == gensym("inlet"))
+                    {
                         binbuf_addv(newb, "ssfff;", gensym("#P"),
                             gensym("inlet"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             10. + fontsize);
+                    }
                     else if(classname == gensym("inlet~"))
+                    {
                         binbuf_addv(newb, "ssffff;", gensym("#P"),
                             gensym("inlet"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             10. + fontsize, 1.);
+                    }
                     else if(classname == gensym("outlet"))
+                    {
                         binbuf_addv(newb, "ssfff;", gensym("#P"),
                             gensym("outlet"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             10. + fontsize);
+                    }
                     else if(classname == gensym("outlet~"))
+                    {
                         binbuf_addv(newb, "ssffff;", gensym("#P"),
                             gensym("outlet"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             10. + fontsize, 1.);
+                    }
                     else if(classname == gensym("bng"))
+                    {
                         binbuf_addv(newb, "ssffff;", gensym("#P"),
                             gensym("button"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             atom_getfloatarg(5, natom, nextmess), 0.);
+                    }
                     else if(classname == gensym("tgl"))
+                    {
                         binbuf_addv(newb, "ssffff;", gensym("#P"),
                             gensym("toggle"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
                             atom_getfloatarg(5, natom, nextmess), 0.);
+                    }
                     else if(classname == gensym("vsl"))
+                    {
                         binbuf_addv(newb, "ssffffff;", gensym("#P"),
                             gensym("slider"),
                             atom_getfloatarg(2, natom, nextmess),
@@ -1424,6 +1566,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                                         : atom_getfloatarg(6, natom, nextmess) -
                                               1),
                             atom_getfloatarg(7, natom, nextmess));
+                    }
                     else if(classname == gensym("hsl"))
                     {
                         t_float slmin = atom_getfloatarg(7, natom, nextmess);
@@ -1454,19 +1597,33 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
                         {
                             arg = atom_getsymbolarg(i, natom, nextmess);
                             if(arg == gensym("a"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("l"));
+                            }
                             else if(arg == gensym("anything"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("l"));
+                            }
                             else if(arg == gensym("bang"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("b"));
+                            }
                             else if(arg == gensym("float"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("f"));
+                            }
                             else if(arg == gensym("list"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("l"));
+                            }
                             else if(arg == gensym("symbol"))
+                            {
                                 SETSYMBOL(outmess + i + 2, gensym("s"));
+                            }
                             else
+                            {
                                 outmess[i + 2] = nextmess[i];
+                            }
                         }
                         SETSEMI(outmess + natom + 2);
                         binbuf_add(newb, natom + 3, outmess);
@@ -1545,7 +1702,9 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     /* set filename so that new canvases can pick them up */
     glob_setfilename(0, name, dir);
     if(binbuf_read(b, name->s_name, dir->s_name, 0))
+    {
         pd_error(0, "%s: read failed; %s", name->s_name, strerror(errno));
+    }
     else
     {
         /* save bindings of symbols #N, #A (and restore afterward) */
@@ -1585,7 +1744,9 @@ void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
                 !strchr(ap[k].a_w.w_symbol->s_name, ';') &&
                 !strchr(ap[k].a_w.w_symbol->s_name, ',') &&
                 !strchr(ap[k].a_w.w_symbol->s_name, '$')))
+        {
             binbuf_add(bto, 1, &ap[k]);
+        }
         else
         {
             char buf[MAXPDSTRING + 1];

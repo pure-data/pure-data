@@ -74,11 +74,17 @@ void sys_alsa_do_open_midi(
     }
 
     if(nmidiin > 0 && nmidiout > 0)
+    {
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_DUPLEX, 0);
+    }
     else if(nmidiin > 0)
+    {
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_INPUT, 0);
+    }
     else if(nmidiout > 0)
+    {
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_OUTPUT, 0);
+    }
 
     if(err != 0)
     {
@@ -213,8 +219,10 @@ void sys_alsa_putmidibyte(int portno, int byte)
         snd_seq_event_output_direct(midi_handle, &ev);
     }
     if(res != 0)
+    {
         // reinitialize the parser
         snd_midi_event_init(dev);
+    }
 }
 
 /* this version uses the asynchronous "read()" ... */

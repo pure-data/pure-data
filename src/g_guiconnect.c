@@ -48,7 +48,9 @@ or for a timeout. */
 void guiconnect_notarget(t_guiconnect *x, double timedelay)
 {
     if(!x->x_sym)
+    {
         pd_free(&x->x_obj.ob_pd);
+    }
     else
     {
         x->x_who = 0;
@@ -73,7 +75,9 @@ a timeout after which the guiconnect will disappear.) */
 static void guiconnect_signoff(t_guiconnect *x)
 {
     if(!x->x_who)
+    {
         pd_free(&x->x_obj.ob_pd);
+    }
     else
     {
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);

@@ -252,15 +252,21 @@ int alsamm_open_audio(int rate, int blocksize)
     /* set the asked buffer time (alsa buffertime in us)*/
     alsamm_buffertime = alsamm_buffersize = 0;
     if(blocksize == 0)
+    {
         alsamm_buffertime = sys_schedadvance;
+    }
     else
+    {
         alsamm_buffersize = blocksize;
+    }
 
     if(sys_verbose)
+    {
         post(
             "syschedadvance=%d microseconds so buffertime max should be this=%d"
             "or sys_blocksize=%d (samples) to use buffersize=%d",
             sys_schedadvance, alsamm_buffertime, blocksize, alsamm_buffersize);
+    }
 
     alsamm_periods = 0; /* no one wants periods setting from command line ;-) */
 
@@ -331,9 +337,11 @@ int alsamm_open_audio(int rate, int blocksize)
             alsa_indev[i].a_addr, 0, sizeof(char *) * alsa_indev[i].a_channels);
 
         if(sys_verbose)
+        {
             post(
                 "capture device with %d channels and buffertime %d us opened\n",
                 alsa_indev[i].a_channels, alsamm_buffertime);
+        }
     }
 
     /* check for linked handles of input for each output*/
@@ -864,13 +872,17 @@ static int xrun_recovery(snd_pcm_t *handle, int err)
         {
             err = snd_pcm_prepare(handle);
             if(err < 0)
+            {
                 check_error(
                     err, "couldn't recover from suspend, prepare failed");
+            }
 
             err = snd_pcm_start(handle);
             if(err < 0)
+            {
                 check_error(
                     err, "couldn't start when recovering from underrun");
+            }
         }
         return 0;
     }

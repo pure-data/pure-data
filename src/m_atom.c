@@ -33,9 +33,13 @@ t_symbol *atom_gensym(const t_atom *a) /* this works  better for graph labels */
     if(a->a_type == A_SYMBOL)
         return (a->a_w.w_symbol);
     if(a->a_type == A_FLOAT)
+    {
         sprintf(buf, "%g", a->a_w.w_float);
+    }
     else
+    {
         strcpy(buf, "???");
+    }
     return (gensym(buf));
 }
 
@@ -85,11 +89,17 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
         case A_FLOAT:
             sprintf(tbuf, "%g", a->a_w.w_float);
             if(strlen(tbuf) < bufsize - 1)
+            {
                 strcpy(buf, tbuf);
+            }
             else if(a->a_w.w_float < 0)
+            {
                 strcpy(buf, "-");
+            }
             else
+            {
                 strcpy(buf, "+");
+            }
             break;
         case A_SYMBOL:
         case A_DOLLSYM:
@@ -99,10 +109,12 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
             int quote;
             for(sp = a->a_w.w_symbol->s_name, len = 0, quote = 0; *sp;
                 sp++, len++)
+            {
                 if(*sp == ';' || *sp == ',' || *sp == '\\' || *sp == ' ' ||
                     (a->a_type == A_SYMBOL && *sp == '$' && sp[1] >= '0' &&
                         sp[1] <= '9'))
                     quote = 1;
+            }
             if(quote)
             {
                 char *bp = buf;
@@ -123,7 +135,9 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
             else
             {
                 if(len < bufsize - 1)
+                {
                     strcpy(buf, a->a_w.w_symbol->s_name);
+                }
                 else
                 {
                     strncpy(buf, a->a_w.w_symbol->s_name, bufsize - 2);

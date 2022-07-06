@@ -177,6 +177,7 @@ static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
         pd_error(0, "list_alloc: out of memory");
     }
     else
+    {
         for(i = 0; i < count; i++)
         {
             y->l_vec[i].l_a = x->l_vec[onset + i].l_a;
@@ -187,6 +188,7 @@ static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
                 y->l_npointer++;
             }
         }
+    }
 }
 
 /* function to restore gpointers after the list has moved in memory */
@@ -459,8 +461,10 @@ static void list_store_doinsert(
             (x->x_alist.l_n - index) * sizeof(*x->x_alist.l_vec));
         /* fix gpointers because of memmove() */
         if(x->x_alist.l_npointer)
+        {
             alist_restore_gpointers(
                 &x->x_alist, index + argc, x->x_alist.l_n - index);
+        }
     }
     /* finally copy new elements */
     alist_copyin(&x->x_alist, s, argc, argv, index);
@@ -509,9 +513,13 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     }
     max = x->x_alist.l_n - index;
     if(!n)
+    {
         n = 1; /* default */
+    }
     else if(n < 0 || n > max)
+    {
         n = max; /* till the end of the list */
+    }
 
     /* unset pointers for elements which are to be deleted */
     if(x->x_alist.l_npointer)
@@ -543,10 +551,14 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
         /* fix all gpointers in case resizebytes() has moved the alist in memory
          */
         if(x->x_alist.l_vec != oldptr)
+        {
             alist_restore_gpointers(&x->x_alist, 0, x->x_alist.l_n - n);
-        else /* only fix gpointers after index (because of of memmove()) */
+        }
+        else
+        { /* only fix gpointers after index (because of of memmove()) */
             alist_restore_gpointers(
                 &x->x_alist, index, x->x_alist.l_n - index - n);
+        }
     }
     x->x_alist.l_n -= n;
 }
@@ -557,7 +569,9 @@ static void list_store_get(t_list_store *x, float f1, float f2)
     int onset = f1;
     int outc = f2;
     if(!outc)
+    {
         outc = 1; /* default */
+    }
     else if(outc < 0)
     {
         outc = x->x_alist.l_n - onset; /* till the end of the list */
@@ -712,10 +726,14 @@ static void *list_trim_new(void)
 static void list_trim_list(t_list_trim *x, t_symbol *s, int argc, t_atom *argv)
 {
     if(argc < 1 || argv[0].a_type != A_SYMBOL)
+    {
         outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
+    }
     else
+    {
         outlet_anything(
             x->x_obj.ob_outlet, argv[0].a_w.w_symbol, argc - 1, argv + 1);
+    }
 }
 
 static void list_trim_anything(
@@ -854,27 +872,45 @@ static void list_tosymbol_setup(void)
 static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     if(!argc || argv[0].a_type != A_SYMBOL)
+    {
         pd_this->pd_newest = list_append_new(s, argc, argv);
+    }
     else
     {
         t_symbol *s2 = argv[0].a_w.w_symbol;
         if(s2 == gensym("append"))
+        {
             pd_this->pd_newest = list_append_new(s, argc - 1, argv + 1);
+        }
         else if(s2 == gensym("prepend"))
+        {
             pd_this->pd_newest = list_prepend_new(s, argc - 1, argv + 1);
+        }
         else if(s2 == gensym("split"))
+        {
             pd_this->pd_newest =
                 list_split_new(atom_getfloatarg(1, argc, argv));
+        }
         else if(s2 == gensym("trim"))
+        {
             pd_this->pd_newest = list_trim_new();
+        }
         else if(s2 == gensym("length"))
+        {
             pd_this->pd_newest = list_length_new();
+        }
         else if(s2 == gensym("fromsymbol"))
+        {
             pd_this->pd_newest = list_fromsymbol_new();
+        }
         else if(s2 == gensym("tosymbol"))
+        {
             pd_this->pd_newest = list_tosymbol_new();
+        }
         else if(s2 == gensym("store"))
+        {
             pd_this->pd_newest = list_store_new(s, argc - 1, argv + 1);
+        }
         else
         {
             pd_error(0, "list %s: unknown function", s2->s_name);

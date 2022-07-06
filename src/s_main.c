@@ -165,9 +165,13 @@ int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
     int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg));
     int ret;
     if(worstcase)
+    {
         ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
+    }
     else
+    {
         ret = sys_gotfonts[zoom - 1][sys_findfont(fontsize)].fi_width;
+    }
     return (ret < 1 ? 1 : ret);
 }
 
@@ -176,9 +180,13 @@ int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
     int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg));
     int ret;
     if(worstcase)
+    {
         ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    }
     else
+    {
         ret = sys_gotfonts[zoom - 1][sys_findfont(fontsize)].fi_height;
+    }
     return (ret < 1 ? 1 : ret);
 }
 
@@ -228,6 +236,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
     if(argc != 2 + 3 * NZOOM * NFONT) bug("glob_initfromgui");
     for(j = 0; j < NZOOM; j++)
+    {
         for(i = 0; i < NFONT; i++)
         {
             int size = atom_getfloatarg(3 * (i + j * NFONT) + 2, argc, argv);
@@ -254,12 +263,15 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
                     sys_gotfonts[j][i].fi_height);
 #endif
         }
+    }
     /* load dynamic libraries specified with "-lib" args */
     if(sys_oktoloadfiles(0))
     {
         for(nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+        {
             if(!sys_load_lib(0, nl->nl_string))
                 post("%s: can't load library", nl->nl_string);
+        }
         sys_oktoloadfiles(1);
     }
     /* open patches specifies with "-open" args */
@@ -353,13 +365,19 @@ int sys_main(int argc, const char **argv)
     {
         /* for prefs override */
         if(!strcmp(argv[i], "-noprefs"))
+        {
             noprefs = 1;
+        }
         else if(!strcmp(argv[i], "-prefsfile") && i < argc - 1)
+        {
             prefsfile = argv[i + 1];
         /* for external scheduler (to ignore audio api in sys_loadpreferences)
          */
+        }
         else if(!strcmp(argv[i], "-schedlib") && i < argc - 1)
+        {
             sys_externalschedlib = 1;
+        }
         else if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
         {
             sys_printusage();
@@ -371,8 +389,10 @@ int sys_main(int argc, const char **argv)
     if(sys_argparse(argc - 1, argv + 1))   /* parse cmd line args */
         return (1);
     if(sys_verbose || sys_version)
+    {
         fprintf(stderr, "%s compiled %s %s\n", pd_version, pd_compiletime,
             pd_compiledate);
+    }
     if(sys_verbose)
         fprintf(stderr, "float precision = %lu bits\n", sizeof(t_float) * 8);
     if(sys_version) /* if we were just asked our version, exit here. */
@@ -383,17 +403,25 @@ int sys_main(int argc, const char **argv)
     sys_setsignalhandlers();
     sys_afterargparse(); /* post-argparse settings */
     if(sys_dontstartgui)
+    {
         clock_set(
             (sys_fakefromguiclk = clock_new(0, (t_method) sys_fakefromgui)), 0);
-    else if(sys_startgui(sys_libdir->s_name)) /* start the gui */
+    }
+    else if(sys_startgui(sys_libdir->s_name))
+    { /* start the gui */
         return (1);
+    }
     if(sys_hipriority)
         sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if(sys_externalschedlib)
+    {
         return (
             sys_run_scheduler(sys_externalschedlibname, sys_extraflagsstring));
+    }
     if(sys_batch)
+    {
         return (m_batchmain());
+    }
     else
     {
         /* open audio and MIDI */
@@ -993,14 +1021,20 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_audiodevnametonumber(0, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find audio input device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     as.a_indevvec[as.a_nindev++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of audio devices limited to %d\n",
                     MAXAUDIOINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1013,14 +1047,20 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_audiodevnametonumber(1, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find audio output device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     as.a_outdevvec[as.a_noutdev++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of audio devices limited to %d\n",
                     MAXAUDIOINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1034,20 +1074,30 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_audiodevnametonumber(0, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find audio input device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     as.a_indevvec[as.a_nindev++] = devn + 1;
+                }
                 devn = sys_audiodevnametonumber(1, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find audio output device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     as.a_outdevvec[as.a_noutdev++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of audio devices limited to %d",
                     MAXAUDIOINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1111,14 +1161,20 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_mididevnametonumber(0, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find MIDI input device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     sys_midiindevlist[sys_nmidiin++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of MIDI devices limited to %d\n",
                     MAXMIDIINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1131,14 +1187,20 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_mididevnametonumber(1, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     sys_midioutdevlist[sys_nmidiout++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of MIDI devices limited to %d\n",
                     MAXMIDIINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1152,20 +1214,30 @@ int sys_argparse(int argc, const char **argv)
             {
                 int devn = sys_mididevnametonumber(1, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     sys_midioutdevlist[sys_nmidiin++] = devn + 1;
+                }
                 devn = sys_mididevnametonumber(1, argv[1]);
                 if(devn < 0)
+                {
                     fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
+                }
                 else
+                {
                     sys_midioutdevlist[sys_nmidiout++] = devn + 1;
+                }
             }
             else
+            {
                 fprintf(stderr, "number of MIDI devices limited to %d",
                     MAXMIDIINDEV);
+            }
             argc -= 2;
             argv += 2;
         }
@@ -1425,10 +1497,14 @@ int sys_argparse(int argc, const char **argv)
             argc--;
             argv++;
         }
-        else if(!strcmp(*argv, "-noprefs")) /* did this earlier */
+        else if(!strcmp(*argv, "-noprefs"))
+        { /* did this earlier */
             argc--, argv++;
-        else if(!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
+        }
+        else if(!strcmp(*argv, "-prefsfile") && argc > 1)
+        { /* this too */
             argc -= 2, argv += 2;
+        }
         else
         {
         usage:
@@ -1543,26 +1619,42 @@ t_symbol *sys_decodedialog(t_symbol *s)
     const char *sp = s->s_name;
     int i;
     if(*sp != '+')
+    {
         bug("sys_decodedialog: %s", sp);
+    }
     else
+    {
         sp++;
+    }
     for(i = 0; i < MAXPDSTRING - 1; i++, sp++)
     {
         if(!sp[0]) break;
         if(sp[0] == '+')
         {
             if(sp[1] == '_')
+            {
                 buf[i] = ' ', sp++;
+            }
             else if(sp[1] == '+')
+            {
                 buf[i] = '+', sp++;
+            }
             else if(sp[1] == 'c')
+            {
                 buf[i] = ',', sp++;
+            }
             else if(sp[1] == 's')
+            {
                 buf[i] = ';', sp++;
+            }
             else if(sp[1] == 'd')
+            {
                 buf[i] = '$', sp++;
+            }
             else
+            {
                 buf[i] = sp[0];
+            }
         }
         else
             buf[i] = sp[0];
@@ -1630,8 +1722,10 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i + 2, argc, argv));
         if(*s->s_name)
+        {
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, s->s_name);
+        }
     }
 }
 
@@ -1645,11 +1739,15 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     if(*s->s_name)
     {
         if(saveflag < 0)
+        {
             STUFF->st_temppath =
                 namelist_append_files(STUFF->st_temppath, s->s_name);
+        }
         else
+        {
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, s->s_name);
+        }
         if(saveit > 0) sys_savepreferences(0);
     }
 }
@@ -1694,8 +1792,10 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i + 2, argc, argv));
         if(*s->s_name)
+        {
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, s->s_name);
+        }
     }
 }
 
@@ -1843,9 +1943,13 @@ int string2args(const char *cmd, int *retArgc, const char ***retArgv)
 
     if(retArgc) *retArgc = argCount;
     if(retArgv)
+    {
         *retArgv = argTable;
+    }
     else
+    {
         free(argTable);
+    }
     return argCount;
 
 ouch:

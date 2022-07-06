@@ -72,14 +72,18 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
         ypos + crossw + IEMGUI_ZOOM(x), crossw,
         (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxOUT%d outlet]\n",
             canvas, xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
             xpos + iow, ypos + x->x_gui.x_h, x, 0);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxIN%d inlet]\n",
             canvas, xpos, ypos, xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh, x, 0);
+    }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
         canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
@@ -114,12 +118,16 @@ void toggle_draw_move(t_toggle *x, t_glist *glist)
         ypos + x->x_gui.x_h - crossw - IEMGUI_ZOOM(x),
         xpos + x->x_gui.x_w - crossw, ypos + crossw);
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n", canvas, x, 0, xpos,
             ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh, xpos + iow,
             ypos + x->x_gui.x_h);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n", canvas, x, 0, xpos,
             ypos, xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh);
+    }
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
         xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
@@ -212,19 +220,33 @@ void toggle_draw_select(t_toggle *x, t_glist *glist)
 void toggle_draw(t_toggle *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
+    {
         toggle_draw_update(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         toggle_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         toggle_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         toggle_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         toggle_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         toggle_draw_config(x, glist);
+    }
     else if(mode >= IEM_GUI_DRAW_MODE_IO)
+    {
         toggle_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
 }
 
 /* ------------------------ tgl widgetbehaviour----------------------------- */
@@ -328,8 +350,10 @@ static int toggle_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
     if(doit)
+    {
         toggle_click((t_toggle *) z, (t_floatarg) xpix, (t_floatarg) ypix,
             (t_floatarg) shift, 0, (t_floatarg) alt);
+    }
     return (1);
 }
 
@@ -473,9 +497,13 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     if(!strcmp(x->x_gui.x_snd->s_name, "empty")) x->x_gui.x_fsf.x_snd_able = 0;
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;
@@ -483,9 +511,13 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_nonzero = (nonzero != 0.0) ? nonzero : 1.0;
     if(x->x_gui.x_isa.x_loadinit)
+    {
         x->x_on = (on != 0.0) ? nonzero : 0.0;
+    }
     else
+    {
         x->x_on = 0.0;
+    }
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;

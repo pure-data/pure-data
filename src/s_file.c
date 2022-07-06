@@ -486,11 +486,17 @@ static void sys_initloadpreferences(void)
     snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
         (homedir ? homedir : "."));
     if(stat(user_prefs_file, &statbuf) == 0)
+    {
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
+    }
     else if(stat(default_prefs_file, &statbuf) == 0)
+    {
         strncpy(filenamebuf, default_prefs_file, MAXPDSTRING);
+    }
     else
+    {
         return;
+    }
     filenamebuf[MAXPDSTRING - 1] = 0;
     sys_initloadpreferences_file(filenamebuf);
 }
@@ -539,9 +545,13 @@ void sys_loadpreferences(const char *filename, int startingup)
     sys_get_audio_settings(&as);
 
     if(*filename)
+    {
         sys_initloadpreferences_file(filename);
+    }
     else
+    {
         sys_initloadpreferences();
+    }
     /* load audio preferences */
     if(!sys_externalschedlib &&
         sys_getpreference("audioapi", prefbuf, MAXPDSTRING) &&
@@ -550,7 +560,9 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("noaudioin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         as.a_nindev = 0;
+    }
     else
     {
         for(as.a_nindev = 0; as.a_nindev < MAXAUDIOINDEV; as.a_nindev++)
@@ -578,7 +590,9 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("noaudioout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         as.a_noutdev = 0;
+    }
     else
     {
         for(as.a_noutdev = 0; as.a_noutdev < MAXAUDIOOUTDEV; as.a_noutdev++)
@@ -604,10 +618,14 @@ void sys_loadpreferences(const char *filename, int startingup)
     if(sys_getpreference("callback", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &as.a_callback);
     if(sys_getpreference("audioblocksize", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &as.a_blocksize);
 #ifndef _WIN32
+    }
     else if(sys_getpreference("blocksize", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &as.a_blocksize);
+    }
 #endif
     sys_set_audio_settings(&as);
 
@@ -618,8 +636,11 @@ void sys_loadpreferences(const char *filename, int startingup)
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("nomidiin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         nmidiindev = 0;
+    }
     else
+    {
         for(nmidiindev = 0; nmidiindev < MAXMIDIINDEV; nmidiindev++)
         {
             /* first try to find a name - if that matches an existing device
@@ -628,7 +649,9 @@ void sys_loadpreferences(const char *filename, int startingup)
             sprintf(keybuf, "midiindevname%d", nmidiindev + 1);
             if(sys_getpreference(keybuf, prefbuf, MAXPDSTRING) &&
                 (devn = sys_mididevnametonumber(0, prefbuf)) >= 0)
+            {
                 midiindev[nmidiindev] = devn;
+            }
             else
             {
                 sprintf(keybuf, "midiindev%d", nmidiindev + 1);
@@ -636,18 +659,24 @@ void sys_loadpreferences(const char *filename, int startingup)
                 if(sscanf(prefbuf, "%d", &midiindev[nmidiindev]) < 1) break;
             }
         }
+    }
     /* JMZ/MB: brackets for initializing */
     if(sys_getpreference("nomidiout", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
+    {
         nmidioutdev = 0;
+    }
     else
+    {
         for(nmidioutdev = 0; nmidioutdev < MAXMIDIOUTDEV; nmidioutdev++)
         {
             int devn;
             sprintf(keybuf, "midioutdevname%d", nmidioutdev + 1);
             if(sys_getpreference(keybuf, prefbuf, MAXPDSTRING) &&
                 (devn = sys_mididevnametonumber(1, prefbuf)) >= 0)
+            {
                 midioutdev[nmidioutdev] = devn;
+            }
             else
             {
                 sprintf(keybuf, "midioutdev%d", nmidioutdev + 1);
@@ -655,13 +684,18 @@ void sys_loadpreferences(const char *filename, int startingup)
                 if(sscanf(prefbuf, "%d", &midioutdev[nmidioutdev]) < 1) break;
             }
         }
+    }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 
     /* search path */
     if(sys_getpreference("npath", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &maxi);
+    }
     else
+    {
         maxi = 0x7fffffff;
+    }
     for(i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "path%d", i + 1);
@@ -676,9 +710,13 @@ void sys_loadpreferences(const char *filename, int startingup)
 
     /* startup settings */
     if(sys_getpreference("nloadlib", prefbuf, MAXPDSTRING))
+    {
         sscanf(prefbuf, "%d", &maxi);
+    }
     else
+    {
         maxi = 0x7fffffff;
+    }
     for(i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "loadlib%d", i + 1);
@@ -694,18 +732,22 @@ void sys_loadpreferences(const char *filename, int startingup)
         if(startingup) sys_doflags();
     }
     if(sys_defeatrt)
+    {
         sys_hipriority = 0;
+    }
     else
+    {
 #if defined(ANDROID)
         sys_hipriority = 0;
 #else
         sys_hipriority = 1;
+    }
 #endif
     if(sys_getpreference("zoom", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_zoom_open);
 
     sys_doneloadpreferences();
-}
+    }
 
 void sys_savepreferences(const char *filename)
 {
@@ -719,9 +761,13 @@ void sys_savepreferences(const char *filename)
     int midioutdev[MAXMIDIOUTDEV];
 
     if(filename && *filename)
+    {
         sys_initsavepreferences_file(filename);
+    }
     else
+    {
         sys_initsavepreferences();
+    }
     /* audio settings */
     sys_get_audio_settings(&as);
 

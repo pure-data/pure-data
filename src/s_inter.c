@@ -220,12 +220,14 @@ static int sys_domicrosleep(int microsec)
             perror("microsleep select");
         INTER->i_fdschanged = 0;
         for(i = 0; i < INTER->i_nfdpoll && !INTER->i_fdschanged; i++)
+        {
             if(FD_ISSET(INTER->i_fdpoll[i].fdp_fd, &readset))
             {
                 (*INTER->i_fdpoll[i].fdp_fn)(
                     INTER->i_fdpoll[i].fdp_ptr, INTER->i_fdpoll[i].fdp_fd);
                 didsomething = 1;
             }
+        }
         if(didsomething) return (1);
     }
     if(microsec)
@@ -302,9 +304,13 @@ void sys_setalarm(int microsec)
     gonzo.it_value.tv_sec = sec;
     gonzo.it_value.tv_usec = microsec;
     if(microsec)
+    {
         sys_signal(SIGALRM, sys_alarmhandler);
+    }
     else
+    {
         sys_signal(SIGALRM, SIG_IGN);
+    }
     setitimer(ITIMER_REAL, &gonzo, 0);
 }
 
@@ -361,18 +367,26 @@ void sys_set_priority(int mode)
            0, (mode == MODE_NRT ? SCHED_OTHER : SCHED_FIFO), &par) < 0)
     {
         if(mode == MODE_WATCHDOG)
+        {
             fprintf(stderr, "priority %d scheduling failed.\n", p3);
+        }
         else
+        {
             post("priority %d scheduling failed; running at normal priority",
                 p3);
+        }
     }
     else
     {
         if(mode == MODE_RT)
+        {
             logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
+        }
         else
+        {
             logpost(NULL, PD_VERBOSE,
                 "running at normal (non-real-time) priority.\n");
+        }
     }
 #endif
 
@@ -583,14 +597,20 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
                 char *semi = strchr(buf, ';');
                 if(semi) *semi = 0;
                 if(x->sr_fromaddrfn)
+                {
                     (*x->sr_fromaddrfn)(
                         x->sr_owner, (const void *) x->sr_fromaddr);
+                }
                 binbuf_text(INTER->i_inbinbuf, buf, strlen(buf));
                 outlet_setstacklim();
                 if(x->sr_socketreceivefn)
+                {
                     (*x->sr_socketreceivefn)(x->sr_owner, INTER->i_inbinbuf);
+                }
                 else
+                {
                     bug("socketreceiver_getudp");
+                }
             }
             readbytes += ret;
             /* throttle */
@@ -603,8 +623,10 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 
 void socketreceiver_read(t_socketreceiver *x, int fd)
 {
-    if(x->sr_udp) /* UDP ("datagram") socket protocol */
+    if(x->sr_udp)
+    { /* UDP ("datagram") socket protocol */
         socketreceiver_getudp(x, fd);
+    }
     else /* TCP ("streaming") socket protocol */
     {
         char *semi;
@@ -659,15 +681,21 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                         socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
                         if(!getpeername(fd, (struct sockaddr *) x->sr_fromaddr,
                                &fromaddrlen))
+                        {
                             (*x->sr_fromaddrfn)(
                                 x->sr_owner, (const void *) x->sr_fromaddr);
+                        }
                     }
                     outlet_setstacklim();
                     if(x->sr_socketreceivefn)
+                    {
                         (*x->sr_socketreceivefn)(
                             x->sr_owner, INTER->i_inbinbuf);
+                    }
                     else
+                    {
                         binbuf_eval(INTER->i_inbinbuf, 0, 0, 0);
+                    }
                     if(x->sr_inhead == x->sr_intail) break;
                 }
             }
@@ -834,8 +862,10 @@ static int sys_flushtogui(void)
     int writesize = INTER->i_guihead - INTER->i_guitail;
     int nwrote = 0;
     if(writesize > 0)
+    {
         nwrote = (int) send(
             INTER->i_guisock, INTER->i_guibuf + INTER->i_guitail, writesize, 0);
+    }
 
 #if 0
     if (writesize)
@@ -848,9 +878,13 @@ static int sys_flushtogui(void)
         sys_bail(1);
     }
     else if(!nwrote)
+    {
         return (0);
+    }
     else if(nwrote >= INTER->i_guihead - INTER->i_guitail)
+    {
         INTER->i_guihead = INTER->i_guitail = 0;
+    }
     else if(nwrote)
     {
         INTER->i_guitail += nwrote;
@@ -922,7 +956,9 @@ void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f)
     t_guiqueue **gqnextptr;
     t_guiqueue *gq;
     if(!INTER->i_guiqueuehead)
+    {
         gqnextptr = &INTER->i_guiqueuehead;
+    }
     else
     {
         for(gq = INTER->i_guiqueuehead; gq->gq_next; gq = gq->gq_next)
@@ -951,12 +987,14 @@ void sys_unqueuegui(void *client)
     }
     if(!INTER->i_guiqueuehead) return;
     for(gq = INTER->i_guiqueuehead; (gq2 = gq->gq_next); gq = gq2)
+    {
         if(gq2->gq_client == client)
         {
             gq->gq_next = gq2->gq_next;
             t_freebytes(gq2, sizeof(*gq2));
             break;
         }
+    }
 }
 
 /* poll for any incoming packets, or for GUI updates to send.  call with
@@ -1048,8 +1086,10 @@ static void sys_init_deken(void)
 
     /* only send the arch info, if we are sure about it... */
     if(os && machine)
+    {
         sys_vgui("::deken::set_platform %s %s %d %d\n", os, machine,
             8 * sizeof(char *), 8 * sizeof(t_float));
+    }
 }
 
 static int sys_do_startgui(const char *libdir)
@@ -1195,7 +1235,9 @@ static int sys_do_startgui(const char *libdir)
 
 #ifndef _WIN32
         if(sys_guicmd)
+        {
             guicmd = sys_guicmd;
+        }
         else
         {
 #ifdef __APPLE__
@@ -1277,9 +1319,13 @@ static int sys_do_startgui(const char *libdir)
         if(childpid < 0)
         {
             if(errno)
+            {
                 perror("sys_startgui");
+            }
             else
+            {
                 fprintf(stderr, "sys_startgui failed\n");
+            }
             sys_closesocket(sockfd);
             return (1);
         }
@@ -1296,7 +1342,9 @@ static int sys_do_startgui(const char *libdir)
                 file descriptors.  Somehow this doesn't make the MAC OSX
                     version of Wish happy...*/
             if(pipe(stdinpipe) < 0)
+            {
                 sys_sockerror("pipe");
+            }
             else
             {
                 if(stdinpipe[0] != 0)
@@ -1437,9 +1485,13 @@ void sys_setrealtime(const char *libdir)
         if(watchpid < 0)
         {
             if(errno)
+            {
                 perror("sys_setpriority");
+            }
             else
+            {
                 fprintf(stderr, "sys_setpriority failed\n");
+            }
             return;
         }
         if(!watchpid) /* we're the child */
@@ -1559,6 +1611,7 @@ int sys_startgui(const char *libdir)
     INTER->i_guihead = INTER->i_guitail = 0;
     if(sys_do_startgui(libdir)) return (-1);
     for(x = pd_getcanvaslist(); x; x = x->gl_next)
+    {
         if(strcmp(x->gl_name->s_name, "_float_template") &&
             strcmp(x->gl_name->s_name, "_float_array_template") &&
             strcmp(x->gl_name->s_name, "_text_template"))
@@ -1566,6 +1619,7 @@ int sys_startgui(const char *libdir)
             glist_maybevis(x);
             canvas_vis(x, 1);
         }
+    }
     return (0);
 }
 

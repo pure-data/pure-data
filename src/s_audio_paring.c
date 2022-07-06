@@ -88,8 +88,10 @@ long sys_ringbuf_getreadavailable(PA_VOLATILE sys_ringbuf *rbuf)
     long ret = rbuf->writeIndex - rbuf->readIndex;
     if(ret < 0) ret += 2 * rbuf->bufferSize;
     if(ret < 0 || ret > rbuf->bufferSize)
+    {
         fprintf(
             stderr, "consistency check failed: sys_ringbuf_getreadavailable\n");
+    }
     return (ret);
 }
 

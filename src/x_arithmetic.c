@@ -459,18 +459,26 @@ static void binop2_pc_bang(t_binop *x)
     int n2 = x->x_f2;
     /* apparently "%" raises an exception for INT_MIN and -1 */
     if(n2 == -1)
+    {
         outlet_float(x->x_obj.ob_outlet, 0);
+    }
     else
+    {
         outlet_float(x->x_obj.ob_outlet, ((int) (x->x_f1)) % (n2 ? n2 : 1));
+    }
 }
 
 static void binop2_pc_float(t_binop *x, t_float f)
 {
     int n2 = x->x_f2;
     if(n2 == -1)
+    {
         outlet_float(x->x_obj.ob_outlet, 0);
+    }
     else
+    {
         outlet_float(x->x_obj.ob_outlet, ((int) (x->x_f1 = f)) % (n2 ? n2 : 1));
+    }
 }
 
 /* --------------------------- mod ---------------------------- */
@@ -487,9 +495,13 @@ static void binop3_mod_bang(t_binop *x)
     int n2 = x->x_f2;
     int result;
     if(n2 < 0)
+    {
         n2 = -n2;
+    }
     else if(!n2)
+    {
         n2 = 1;
+    }
     result = ((int) (x->x_f1)) % n2;
     if(result < 0) result += n2;
     outlet_float(x->x_obj.ob_outlet, (t_float) result);
@@ -516,9 +528,13 @@ static void binop3_div_bang(t_binop *x)
     int n2 = x->x_f2;
     int result;
     if(n2 < 0)
+    {
         n2 = -n2;
+    }
     else if(!n2)
+    {
         n2 = 1;
+    }
     if(n1 < 0) n1 -= (n2 - 1);
     result = n1 / n2;
     outlet_float(x->x_obj.ob_outlet, (t_float) result);
@@ -648,11 +664,17 @@ static void binop1_log_bang(t_binop *x)
 {
     t_float r;
     if(x->x_f1 <= 0)
+    {
         r = -1000;
+    }
     else if(x->x_f2 <= 0)
+    {
         r = LOG(x->x_f1);
+    }
     else
+    {
         r = LOG(x->x_f1) / LOG(x->x_f2);
+    }
     outlet_float(x->x_obj.ob_outlet, r);
 }
 

@@ -131,7 +131,9 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-k"))
+        {
             keep = 1;
+        }
         else if(!strcmp(argv->a_w.w_symbol->s_name, "-yrange") && argc >= 3 &&
                 argv[1].a_type == A_FLOAT && argv[2].a_type == A_FLOAT)
         {
@@ -217,7 +219,9 @@ static void array_define_send(t_glist *x, t_symbol *s)
 {
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     if(!s->s_thing)
+    {
         pd_error(x, "array_define_send: %s: no such object", s->s_name);
+    }
     else if(gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == garray_class)
     {
         t_gpointer gp;
@@ -251,9 +255,13 @@ static void array_define_anything(
 {
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     if(gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == garray_class)
+    {
         typedmess(&gl->gl_list->g_pd, s, argc, argv);
+    }
     else
+    {
         bug("array_define_anything");
+    }
 }
 
 /* ignore messages like "editmode" */
@@ -314,9 +322,13 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
             return (0);
         }
         if(gs->gs_which == GP_ARRAY)
+        {
             vec = x->tc_gp.gp_un.gp_w;
+        }
         else
+        {
             vec = x->tc_gp.gp_un.gp_scalar->sc_vec;
+        }
 
         if(!template_find_field(
                template, x->tc_field, &onset, &type, &arraytype))
@@ -331,7 +343,9 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
             return (0);
         }
         if(gs->gs_which == GP_GLIST)
+        {
             *glist = gs->gs_un.gs_glist;
+        }
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
@@ -409,9 +423,13 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
+    }
     outlet_new(&x->x_tc.tc_obj, &s_float);
     return (x);
 }
@@ -548,9 +566,13 @@ static void *array_rangeop_new(t_class *class, t_symbol *s, int *argcp,
         endpost();
     }
     if(x->x_struct)
+    {
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    }
     else
+    {
         symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
+    }
     *argcp = argc;
     *argvp = argv;
     return (x);
@@ -581,11 +603,17 @@ static int array_rangeop_getrange(t_array_rangeop *x, char **firstitemp,
     stride = a->a_elemsize;
     arrayonset = x->x_onset;
     if(arrayonset < 0)
+    {
         arrayonset = 0;
+    }
     else if(arrayonset > a->a_n)
+    {
         arrayonset = a->a_n;
+    }
     if(x->x_n < 0)
+    {
         nitem = a->a_n - arrayonset;
+    }
     else
     {
         nitem = x->x_n;
@@ -815,8 +843,10 @@ static void array_max_bang(t_array_max *x)
         return;
     for(i = 0, besti = -1, bestf = -1e30, itemp = firstitem; i < nitem;
         i++, itemp += stride)
+    {
         if(*(t_float *) itemp > bestf)
             bestf = *(t_float *) itemp, besti = i + arrayonset;
+    }
     outlet_float(x->x_out2, besti);
     outlet_float(x->x_out1, bestf);
 }
@@ -861,8 +891,10 @@ static void array_min_bang(t_array_min *x)
         return;
     for(i = 0, besti = -1, bestf = 1e30, itemp = firstitem; i < nitem;
         i++, itemp += stride)
+    {
         if(*(t_float *) itemp < bestf)
             bestf = *(t_float *) itemp, besti = i + arrayonset;
+    }
     outlet_float(x->x_out2, besti);
     outlet_float(x->x_out1, bestf);
 }
@@ -877,28 +909,48 @@ static void array_min_float(t_array_min *x, t_floatarg f)
 static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
 {
     if(!argc || argv[0].a_type != A_SYMBOL)
+    {
         pd_this->pd_newest = array_define_new(s, argc, argv);
+    }
     else
     {
         const char *str = argv[0].a_w.w_symbol->s_name;
         if(!strcmp(str, "d") || !strcmp(str, "define"))
+        {
             pd_this->pd_newest = array_define_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "size"))
+        {
             pd_this->pd_newest = array_size_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "sum"))
+        {
             pd_this->pd_newest = array_sum_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "get"))
+        {
             pd_this->pd_newest = array_get_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "set"))
+        {
             pd_this->pd_newest = array_set_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "quantile"))
+        {
             pd_this->pd_newest = array_quantile_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "random"))
+        {
             pd_this->pd_newest = array_random_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "max"))
+        {
             pd_this->pd_newest = array_max_new(s, argc - 1, argv + 1);
+        }
         else if(!strcmp(str, "min"))
+        {
             pd_this->pd_newest = array_min_new(s, argc - 1, argv + 1);
+        }
         else
         {
             pd_error(0, "array %s: unknown function", str);

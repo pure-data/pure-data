@@ -38,14 +38,20 @@ static void *print_new(t_symbol *sel, int argc, t_atom *argv)
 {
     t_print *x = (t_print *) pd_new(print_class);
     if(argc == 0)
+    {
         x->x_sym = gensym("print");
+    }
     else if(argc == 1 && argv->a_type == A_SYMBOL)
     {
         t_symbol *s = atom_getsymbolarg(0, argc, argv);
         if(!strcmp(s->s_name, "-n"))
+        {
             x->x_sym = &s_;
+        }
         else
+        {
             x->x_sym = s;
+        }
     }
     else
     {
@@ -101,7 +107,9 @@ static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
 static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
     if(!argc)
+    {
         print_bang(x);
+    }
     else if(argc == 1)
     {
         switch(argv->a_type)
@@ -125,10 +133,14 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
         int i;
         /* print first (numeric) atom, to avoid a leading space */
         if(*x->x_sym->s_name)
+        {
             print_startlogpost(
                 x, "%s: %g", x->x_sym->s_name, atom_getfloat(argv));
+        }
         else
+        {
             print_startlogpost(x, "%g", atom_getfloat(argv));
+        }
         argc--;
         argv++;
         for(i = 0; i < argc; i++)

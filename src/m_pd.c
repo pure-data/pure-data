@@ -155,7 +155,9 @@ void pd_bind(t_pd *x, t_symbol *s)
 void pd_unbind(t_pd *x, t_symbol *s)
 {
     if(s->s_thing == x)
+    {
         s->s_thing = 0;
+    }
     else if(s->s_thing && *s->s_thing == bindlist_class)
     {
         /* bindlists always have at least two elements... if the number
@@ -171,13 +173,17 @@ void pd_unbind(t_pd *x, t_symbol *s)
             freebytes(e, sizeof(t_bindelem));
         }
         else
+        {
             for(e = b->b_list; (e2 = e->e_next); e = e2)
+            {
                 if(e2->e_who == x)
                 {
                     e->e_next = e2->e_next;
                     freebytes(e2, sizeof(t_bindelem));
                     break;
                 }
+            }
+        }
         if(!b->b_list->e_next)
         {
             s->s_thing = b->b_list->e_who;
@@ -202,6 +208,7 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
         t_bindelem *e2;
         int warned = 0;
         for(e = b->b_list; e; e = e->e_next)
+        {
             if(*e->e_who == c)
             {
                 if(x && !warned)
@@ -211,6 +218,7 @@ t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
                 }
                 x = e->e_who;
             }
+        }
     }
     return x;
 }
@@ -252,7 +260,9 @@ void pd_pushsym(t_pd *x)
 void pd_popsym(t_pd *x)
 {
     if(!gstack_head || s__X.s_thing != x)
+    {
         bug("gstack_pop");
+    }
     else
     {
         t_gstack *headwas = gstack_head;

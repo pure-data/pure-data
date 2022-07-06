@@ -88,13 +88,17 @@ void sys_setchsr(int chin, int chout, int sr)
     int outbytes = (chout ? chout : 2) * (DEFDACBLKSIZE * sizeof(t_sample));
 
     if(STUFF->st_soundin)
+    {
         freebytes(STUFF->st_soundin,
             (STUFF->st_inchannels ? STUFF->st_inchannels : 2) *
                 (DEFDACBLKSIZE * sizeof(t_sample)));
+    }
     if(STUFF->st_soundout)
+    {
         freebytes(STUFF->st_soundout,
             (STUFF->st_outchannels ? STUFF->st_outchannels : 2) *
                 (DEFDACBLKSIZE * sizeof(t_sample)));
+    }
     STUFF->st_inchannels = chin;
     STUFF->st_outchannels = chout;
     if(!audio_isfixedsr(sys_audioapiopened)) STUFF->st_dacsr = sr;
@@ -148,9 +152,13 @@ static void audio_make_sane(
             for(i = *ndev; i < *nchan; i++)
             {
                 if(i == 0)
+                {
                     devvec[0] = DEFAULTAUDIODEV;
+                }
                 else
+                {
                     devvec[i] = devvec[i - 1] + 1;
+                }
             }
             *ndev = *nchan;
         }
@@ -159,9 +167,13 @@ static void audio_make_sane(
             for(i = *nchan; i < *ndev; i++)
             {
                 if(i == 0)
+                {
                     chanvec[0] = SYS_DEFAULTCH;
+                }
                 else
+                {
                     chanvec[i] = chanvec[i - 1];
+                }
             }
             *ndev = *nchan;
         }
@@ -183,6 +195,7 @@ static void audio_compact_and_count_channels(
     int newndev;
     /* count total number of input and output channels */
     for(i = newndev = *totalchans = 0; i < *ndev; i++)
+    {
         if(chanvec[i] > 0)
         {
             chanvec[newndev] = chanvec[i];
@@ -190,6 +203,7 @@ static void audio_compact_and_count_channels(
             *totalchans += chanvec[i];
             newndev++;
         }
+    }
     *ndev = newndev;
 }
 
@@ -274,41 +288,44 @@ void sys_close_audio(void)
     else
 #endif
 #ifdef USEAPI_JACK
-        if(sys_audioapiopened == API_JACK)
+    if(sys_audioapiopened == API_JACK)
         jack_close_audio();
     else
 #endif
 #ifdef USEAPI_OSS
-        if(sys_audioapiopened == API_OSS)
+    if(sys_audioapiopened == API_OSS)
         oss_close_audio();
     else
 #endif
 #ifdef USEAPI_ALSA
-        if(sys_audioapiopened == API_ALSA)
+    if(sys_audioapiopened == API_ALSA)
         alsa_close_audio();
     else
 #endif
 #ifdef USEAPI_MMIO
-        if(sys_audioapiopened == API_MMIO)
+    if(sys_audioapiopened == API_MMIO)
         mmio_close_audio();
     else
 #endif
 #ifdef USEAPI_AUDIOUNIT
-        if(sys_audioapiopened == API_AUDIOUNIT)
+    if(sys_audioapiopened == API_AUDIOUNIT)
         audiounit_close_audio();
     else
 #endif
 #ifdef USEAPI_ESD
-        if(sys_audioapiopened == API_ESD)
+    if(sys_audioapiopened == API_ESD)
         esd_close_audio();
     else
 #endif
 #ifdef USEAPI_DUMMY
-        if(sys_audioapiopened == API_DUMMY)
+    if(sys_audioapiopened == API_DUMMY)
         dummy_close_audio();
     else
 #endif
+    {
         post("sys_close_audio: unknown API %d", sys_audioapiopened);
+    }
+
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_callback_is_open = 0;
@@ -376,56 +393,72 @@ void sys_reopen_audio(void)
     else
 #endif
 #ifdef USEAPI_JACK
-        if(as.a_api == API_JACK)
+    if(as.a_api == API_JACK)
+    {
         outcome = jack_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
             (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0),
             (as.a_callback ? sched_audio_callbackfn : 0));
-
+    }
     else
 #endif
 #ifdef USEAPI_OSS
-        if(as.a_api == API_OSS)
+    if(as.a_api == API_OSS)
+    {
         outcome = oss_open_audio(as.a_nindev, as.a_indevvec, as.a_nindev,
             as.a_chindevvec, as.a_noutdev, as.a_outdevvec, as.a_noutdev,
             as.a_choutdevvec, as.a_srate, as.a_blocksize);
+    }
     else
 #endif
 #ifdef USEAPI_ALSA
-        if(as.a_api == API_ALSA)
+    if(as.a_api == API_ALSA)
+    {
         outcome = alsa_open_audio(as.a_nindev, as.a_indevvec, as.a_nindev,
             as.a_chindevvec, as.a_noutdev, as.a_outdevvec, as.a_noutdev,
             as.a_choutdevvec, as.a_srate, as.a_blocksize);
+    }
     else
 #endif
 #ifdef USEAPI_MMIO
-        if(as.a_api == API_MMIO)
+     if(as.a_api == API_MMIO)
+     {
         outcome = mmio_open_audio(as.a_nindev, as.a_indevvec, as.a_nindev,
             as.a_chindevvec, as.a_noutdev, as.a_outdevvec, as.a_noutdev,
             as.a_choutdevvec, as.a_srate, as.a_blocksize);
+    }
     else
 #endif
 #ifdef USEAPI_AUDIOUNIT
-        if(as.a_api == API_AUDIOUNIT)
+    if(as.a_api == API_AUDIOUNIT)
+    {
         outcome = audiounit_open_audio((as.a_nindev > 0 ? as.a_chindev[0] : 0),
             (as.a_nindev > 0 ? as.a_choutdev[0] : 0), as.a_srate);
+    }
     else
 #endif
 #ifdef USEAPI_ESD
-        if(as.a_api == API_ALSA)
+    if(as.a_api == API_ALSA)
+    {
         outcome = esd_open_audio(as.a_nindev, as.a_indevvec, as.a_nindev,
             as.a_chindevvec, as.a_noutdev, as.a_outdevvec, as.a_noutdev,
             as.a_choutdevvec, as.a_srate);
+    }
     else
 #endif
 #ifdef USEAPI_DUMMY
-        if(as.a_api == API_DUMMY)
+    if(as.a_api == API_DUMMY)
+    {
         outcome = dummy_open_audio(as.a_nindev, as.a_noutdev, as.a_srate);
+    }
     else
 #endif
-        if(as.a_api == API_NONE)
-        ;
+    if(as.a_api == API_NONE)
+    {;}
     else
+    {
         post("unknown audio API specified");
+    }
+
     if(outcome) /* failed */
     {
         sys_audioapiopened = API_NONE;
@@ -450,40 +483,41 @@ int sys_send_dacs(void)
     else
 #endif
 #ifdef USEAPI_JACK
-        if(sys_audioapiopened == API_JACK)
+    if(sys_audioapiopened == API_JACK)
         return (jack_send_dacs());
     else
 #endif
 #ifdef USEAPI_OSS
-        if(sys_audioapiopened == API_OSS)
+    if(sys_audioapiopened == API_OSS)
         return (oss_send_dacs());
     else
 #endif
 #ifdef USEAPI_ALSA
-        if(sys_audioapiopened == API_ALSA)
+    if(sys_audioapiopened == API_ALSA)
         return (alsa_send_dacs());
     else
 #endif
 #ifdef USEAPI_MMIO
-        if(sys_audioapiopened == API_MMIO)
+    if(sys_audioapiopened == API_MMIO)
         return (mmio_send_dacs());
     else
 #endif
 #ifdef USEAPI_AUDIOUNIT
-        if(sys_audioapiopened == API_AUDIOUNIT)
+    if(sys_audioapiopened == API_AUDIOUNIT)
         return (audiounit_send_dacs());
     else
 #endif
 #ifdef USEAPI_ESD
-        if(sys_audioapiopened == API_ESD)
+    if(sys_audioapiopened == API_ESD)
         return (esd_send_dacs());
     else
 #endif
 #ifdef USEAPI_DUMMY
-        if(sys_audioapiopened == API_DUMMY)
+    if(sys_audioapiopened == API_DUMMY)
         return (dummy_send_dacs());
+    else
 #endif
-    post("unknown API");
+        post("unknown API");
     return (0);
 }
 
@@ -513,7 +547,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_JACK
-        if(api == API_JACK)
+    if(api == API_JACK)
     {
         jack_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
@@ -522,7 +556,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_OSS
-        if(api == API_OSS)
+    if(api == API_OSS)
     {
         oss_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti, maxndev,
             devdescsize);
@@ -530,7 +564,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_ALSA
-        if(api == API_ALSA)
+    if(api == API_ALSA)
     {
         alsa_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
@@ -538,7 +572,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_MMIO
-        if(api == API_MMIO)
+    if(api == API_MMIO)
     {
         mmio_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
@@ -546,13 +580,13 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_AUDIOUNIT
-        if(api == API_AUDIOUNIT)
+    if(api == API_AUDIOUNIT)
     {
     }
     else
 #endif
 #ifdef USEAPI_ESD
-        if(api == API_ESD)
+    if(api == API_ESD)
     {
         esd_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti, maxndev,
             devdescsize);
@@ -560,7 +594,7 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
     else
 #endif
 #ifdef USEAPI_DUMMY
-        if(api == API_DUMMY)
+    if(api == API_DUMMY)
     {
         dummy_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
@@ -600,15 +634,19 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 
     sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for(i = 0; i < nindevs; i++)
+    {
         sys_vgui("lappend audio_indevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
     for(i = 0; i < noutdevs; i++)
+    {
         sys_vgui("lappend audio_outdevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_get_audio_settings(&as);
 
@@ -680,9 +718,13 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if(!audio_callback_is_open && !as.a_callback) sys_close_audio();
     sys_set_audio_settings(&as);
     if(!audio_callback_is_open && !as.a_callback)
+    {
         sys_reopen_audio();
+    }
     else
+    {
         sched_reopenmeplease();
+    }
 }
 
 void sys_listdevs(void)
@@ -698,7 +740,9 @@ void sys_listdevs(void)
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
     if(!nindevs)
+    {
         post("no audio input devices found");
+    }
     else
     {
         /* To agree with command line flags, normally start at 1 */
@@ -707,17 +751,23 @@ void sys_listdevs(void)
 
         post("audio input devices:");
         for(i = 0; i < nindevs; i++)
+        {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 indevlist + i * DEVDESCSIZE);
+        }
     }
     if(!noutdevs)
+    {
         post("no audio output devices found");
+    }
     else
     {
         post("audio output devices:");
         for(i = 0; i < noutdevs; i++)
+        {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 outdevlist + i * DEVDESCSIZE);
+        }
     }
     post("API number %d\n", audio_nextsettings.a_api);
     sys_listmididevs();
@@ -815,13 +865,17 @@ void sys_get_audio_apis(char *buf)
 {
     unsigned int n;
     if(sizeof(audio_apilist) / sizeof(t_apientry) < 2)
+    {
         strcpy(buf, "{}");
+    }
     else
     {
         strcpy(buf, "{ ");
         for(n = 0; n < sizeof(audio_apilist) / sizeof(t_apientry); n++)
+        {
             sprintf(buf + strlen(buf), "{%s %d} ", audio_apilist[n].a_name,
                 audio_apilist[n].a_id);
+        }
         strcat(buf, "}");
     }
 }
@@ -891,10 +945,16 @@ void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
     if(output && (devno < noutdevs))
+    {
         strncpy(name, outdevlist + devno * DEVDESCSIZE, namesize);
+    }
     else if(!output && (devno < nindevs))
+    {
         strncpy(name, indevlist + devno * DEVDESCSIZE, namesize);
+    }
     else
+    {
         *name = 0;
+    }
     name[namesize - 1] = 0;
 }

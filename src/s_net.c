@@ -269,8 +269,10 @@ int socket_connect(
         if(socket_errno() != WSAEWOULDBLOCK)
 #else
         if(socket_errno() != EINPROGRESS)
+        {
 #endif
             return -1; /* break on "real" error */
+    }
 
         /* block with select using timeout */
         if(timeout < 0) timeout = 0;
@@ -359,9 +361,13 @@ int socket_set_nonblocking(int socket, int nonblocking)
 #else
     int sockflags = fcntl(socket, F_GETFL, 0);
     if(nonblocking)
+    {
         sockflags |= O_NONBLOCK;
+    }
     else
+    {
         sockflags &= ~O_NONBLOCK;
+    }
     if(fcntl(socket, F_SETFL, sockflags) < 0) return -1;
 #endif
     return 0;

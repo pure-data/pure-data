@@ -22,28 +22,46 @@ void parsetimeunits(
     if(s[0] == 'p' && s[1] == 'e' && s[2] == 'r') /* starts with 'per' */
     {
         const char *s2 = s + 3;
-        if(!strcmp(s2, "millisecond") || !strcmp(s2, "msec")) /* msec */
+        if(!strcmp(s2, "millisecond") || !strcmp(s2, "msec"))
+        { /* msec */
             *samps = 0, *unit = 1. / amount;
-        else if(!strncmp(s2, "sec", 3)) /* seconds */
+        }
+        else if(!strncmp(s2, "sec", 3))
+        { /* seconds */
             *samps = 0, *unit = 1000. / amount;
-        else if(!strncmp(s2, "min", 3)) /* minutes */
+        }
+        else if(!strncmp(s2, "min", 3))
+        { /* minutes */
             *samps = 0, *unit = 60000. / amount;
-        else if(!strncmp(s2, "sam", 3)) /* samples */
+        }
+        else if(!strncmp(s2, "sam", 3))
+        { /* samples */
             *samps = 1, *unit = 1. / amount;
+        }
         else
+        {
             goto fail;
+        }
     }
     else
     {
         /* empty string defaults to msec */
         if(!strcmp(s, "millisecond") || !strcmp(s, "msec"))
+        {
             *samps = 0, *unit = amount;
+        }
         else if(!strncmp(s, "sec", 3))
+        {
             *samps = 0, *unit = 1000. * amount;
+        }
         else if(!strncmp(s, "min", 3))
+        {
             *samps = 0, *unit = 60000. * amount;
+        }
         else if(!strncmp(s, "sam", 3))
+        {
             *samps = 1, *unit = amount;
+        }
         else
         {
         fail:
@@ -51,10 +69,14 @@ void parsetimeunits(
             back compatibility, since it's possible someone threw a
             float argument to timer which had previously been ignored. */
             if(*s)
+            {
                 pd_error(x, "%s: unknown time unit", s);
+            }
             else
+            {
                 pd_error(x, "tempo setting needs time unit ('sec', 'samp', "
                             "'permin', etc.");
+            }
             *unit = 1;
             *samps = 0;
         }
@@ -154,9 +176,13 @@ static void metro_tick(t_metro *x)
 static void metro_float(t_metro *x, t_float f)
 {
     if(f != 0)
+    {
         metro_tick(x);
+    }
     else
+    {
         clock_unset(x->x_clock);
+    }
     x->x_hit = 1;
 }
 
@@ -243,11 +269,15 @@ static void line_float(t_line *x, t_float f)
     if(x->x_gotinlet && x->x_in1val > 0)
     {
         if(timenow > x->x_targettime)
+        {
             x->x_setval = x->x_targetval;
+        }
         else
+        {
             x->x_setval = x->x_setval + x->x_1overtimediff *
                                             (timenow - x->x_prevtime) *
                                             (x->x_targetval - x->x_setval);
+        }
         x->x_prevtime = timenow;
         x->x_targettime = clock_getsystimeafter(x->x_in1val);
         x->x_targetval = f;
@@ -278,11 +308,15 @@ static void line_stop(t_line *x)
     if(pd_compatibilitylevel >= 48)
     {
         if(clock_getsystime() >= x->x_targettime)
+        {
             x->x_setval = x->x_targetval;
+        }
         else
+        {
             x->x_setval += x->x_1overtimediff *
                            (clock_getsystime() - x->x_prevtime) *
                            (x->x_targetval - x->x_setval);
+        }
     }
     x->x_targetval = x->x_setval;
     clock_unset(x->x_clock);
@@ -510,8 +544,11 @@ static void hang_tick(t_hang *h)
     int i;
     union word *w;
     if(x->x_hang == h)
+    {
         x->x_hang = h->h_next;
+    }
     else
+    {
         for(h2 = x->x_hang; (h3 = h2->h_next); h2 = h3)
         {
             if(h3 == h)
@@ -520,6 +557,7 @@ static void hang_tick(t_hang *h)
                 break;
             }
         }
+    }
     for(i = x->x_n, p = x->x_vec + (x->x_n - 1), w = h->h_vec + (x->x_n - 1);
         i--; p--, w--)
     {
@@ -533,9 +571,13 @@ static void hang_tick(t_hang *h)
                 break;
             case A_POINTER:
                 if(gpointer_check(w->w_gpointer, 1))
+                {
                     outlet_pointer(p->p_outlet, w->w_gpointer);
+                }
                 else
+                {
                     pd_error(x, "pipe: stale pointer");
+                }
                 break;
             default:
                 break;
@@ -559,9 +601,13 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
     if(ac > n)
     {
         if(av[n].a_type == A_FLOAT)
+        {
             x->x_deltime = av[n].a_w.w_float;
+        }
         else
+        {
             pd_error(x, "pipe: symbol or pointer in time inlet");
+        }
         ac = n;
     }
     for(i = 0, gp = x->x_gp, p = x->x_vec, ap = av; i < ac; i++, p++, ap++)
@@ -577,7 +623,9 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
             case A_POINTER:
                 gpointer_unset(gp);
                 if(ap->a_type != A_POINTER)
+                {
                     pd_error(x, "pipe: bad pointer");
+                }
                 else
                 {
                     *gp = *(ap->a_w.w_gpointer);

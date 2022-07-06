@@ -136,10 +136,12 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
             canvas, quad1, yyy, quad3, yyy, ledw, iemgui_color_hex[led_col], x,
             i);
         if(((i + 2) & 3) && (x->x_scale))
+        {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
                      -font {{%s} -%d %s} -fill #%06x -tags %lxSCALE%d\n",
                 canvas, end, yyy + k3, iemgui_vu_scale_str[i], x->x_gui.x_font,
                 fs, sys_fontweight, x->x_gui.x_lcol, x, i);
+        }
     }
     if(x->x_scale)
     {
@@ -224,8 +226,10 @@ static void vu_draw_move(t_vu *x, t_glist *glist)
         sys_vgui(".x%lx.c coords %lxRLED%d %d %d %d %d\n", canvas, x, i, quad1,
             yyy, quad3, yyy);
         if(((i + 2) & 3) && (x->x_scale))
+        {
             sys_vgui(".x%lx.c coords %lxSCALE%d %d %d\n", canvas, x, i, end,
                 yyy + k3);
+        }
     }
     if(x->x_scale)
     {
@@ -308,12 +312,14 @@ static void vu_draw_config(t_vu *x, t_glist *glist)
         sys_vgui(
             ".x%lx.c itemconfigure %lxRLED%d -width %d\n", canvas, x, i, ledw);
         if(((i + 2) & 3) && (x->x_scale))
+        {
             sys_vgui(".x%lx.c itemconfigure %lxSCALE%d -text {%s} -font {{%s} "
                      "-%d %s} -fill #%06x\n",
                 canvas, x, i, iemgui_vu_scale_str[i], x->x_gui.x_font, fs,
                 sys_fontweight,
                 x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED
                                           : x->x_gui.x_lcol);
+        }
     }
     if(x->x_scale)
     {
@@ -399,8 +405,10 @@ static void vu_draw_select(t_vu *x, t_glist *glist)
         for(i = 1; i <= IEM_VU_STEPS; i++)
         {
             if(((i + 2) & 3) && (x->x_scale))
+            {
                 sys_vgui(".x%lx.c itemconfigure %lxSCALE%d -fill #%06x\n",
                     canvas, x, i, IEM_GUI_COLOR_SELECTED);
+            }
         }
         if(x->x_scale)
         {
@@ -418,8 +426,10 @@ static void vu_draw_select(t_vu *x, t_glist *glist)
         for(i = 1; i <= IEM_VU_STEPS; i++)
         {
             if(((i + 2) & 3) && (x->x_scale))
+            {
                 sys_vgui(".x%lx.c itemconfigure %lxSCALE%d -fill #%06x\n",
                     canvas, x, i, x->x_gui.x_lcol);
+            }
         }
         if(x->x_scale)
         {
@@ -435,17 +445,29 @@ static void vu_draw_select(t_vu *x, t_glist *glist)
 void vu_draw(t_vu *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         vu_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         vu_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         vu_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         vu_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         vu_draw_config(x, glist);
+    }
     else if(mode >= IEM_GUI_DRAW_MODE_IO)
+    {
         vu_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
 }
 
 /* ------------------------ vu widgetbehaviour----------------------------- */
@@ -531,11 +553,13 @@ static void vu_scale(t_vu *x, t_floatarg fscale)
             {
                 yyy = k4 + k1 * (k2 - i);
                 if((i + 2) & 3)
+                {
                     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
                              -font {{%s} -%d %s} -fill #%06x -tags %lxSCALE%d\n",
                         canvas, end, yyy + k3, iemgui_vu_scale_str[i],
                         x->x_gui.x_font, fs, sys_fontweight, x->x_gui.x_lcol, x,
                         i);
+                }
             }
             i = IEM_VU_STEPS + 1;
             yyy = k4 + k1 * (k2 - i);
@@ -657,9 +681,13 @@ static void vu_float(t_vu *x, t_floatarg rms)
     int i;
     int old = x->x_rms;
     if(rms <= IEM_VU_MINDB)
+    {
         x->x_rms = 0;
+    }
     else if(rms >= IEM_VU_MAXDB)
+    {
         x->x_rms = IEM_VU_STEPS;
+    }
     else
     {
         int i = (int) (2.0 * (rms + IEM_VU_OFFSET));
@@ -678,9 +706,13 @@ static void vu_ft1(t_vu *x, t_floatarg peak)
     int i;
     int old = x->x_peak;
     if(peak <= IEM_VU_MINDB)
+    {
         x->x_peak = 0;
+    }
     else if(peak >= IEM_VU_MAXDB)
+    {
         x->x_peak = IEM_VU_STEPS;
+    }
     else
     {
         int i = (int) (2.0 * (peak + IEM_VU_OFFSET));
@@ -752,9 +784,13 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_glist = (t_glist *) canvas_getcurrent();
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;

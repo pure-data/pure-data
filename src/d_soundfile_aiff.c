@@ -548,9 +548,13 @@ static int aiff_updateheader(t_soundfile *sf, size_t nframes)
     {
         /* AIFF-C compression info */
         if(sf->sf_bytespersample == 4)
+        {
             commsize += 4 + AIFF_FL32_LEN;
+        }
         else
+        {
             commsize += 4 + AIFF_NONE_LEN;
+        }
         headersize += AIFFVERSIZE;
     }
 

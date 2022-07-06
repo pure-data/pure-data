@@ -44,9 +44,13 @@ static void gstub_dis(t_gstub *gs)
 {
     int refcount = --gs->gs_refcount;
     if((!refcount) && gs->gs_which == GP_NONE)
+    {
         t_freebytes(gs, sizeof(*gs));
+    }
     else if(refcount < 0)
+    {
         bug("gstub_dis");
+    }
 }
 
 /* this routing is called by the owner to inform the gstub that it is
@@ -80,9 +84,13 @@ int gpointer_check(const t_gpointer *gp, int headok)
         if(!headok && !gp->gp_un.gp_scalar)
             return (0);
         if(gs->gs_un.gs_glist->gl_valid != gp->gp_valid)
+        {
             return (0);
+        }
         else
+        {
             return (1);
+        }
     }
     else
         return (0);
@@ -95,9 +103,13 @@ void gpointer_copy(const t_gpointer *gpfrom, t_gpointer *gpto)
 {
     *gpto = *gpfrom;
     if(gpto->gp_stub)
+    {
         gpto->gp_stub->gs_refcount++;
+    }
     else
+    {
         bug("gpointer_copy");
+    }
 }
 
 /* clear a gpointer that was previously set, releasing the associated
@@ -196,9 +208,13 @@ t_binbuf *pointertobinbuf(
         return (0);
     }
     if(gs->gs_which == GP_ARRAY)
+    {
         vec = gp->gp_un.gp_w;
+    }
     else
+    {
         vec = gp->gp_un.gp_scalar->sc_vec;
+    }
     return (vec[onset].w_binbuf);
 }
 
@@ -211,13 +227,21 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     {
         int type = datatypes->ds_type;
         if(type == DT_FLOAT)
+        {
             wp->w_float = 0;
+        }
         else if(type == DT_SYMBOL)
+        {
             wp->w_symbol = &s_symbol;
+        }
         else if(type == DT_ARRAY)
+        {
             wp->w_array = array_new(datatypes->ds_arraytemplate, gp);
+        }
         else if(type == DT_TEXT)
+        {
             wp->w_binbuf = binbuf_new();
+        }
     }
 }
 
@@ -264,9 +288,13 @@ void word_free(t_word *wp, t_template *template)
     for(dt = template->t_vec, i = 0; i < template->t_n; i++, dt++)
     {
         if(dt->ds_type == DT_ARRAY)
+        {
             array_free(wp[i].w_array);
+        }
         else if(dt->ds_type == DT_TEXT)
+        {
             binbuf_free(wp[i].w_binbuf);
+        }
     }
 }
 
@@ -278,6 +306,7 @@ static int template_cancreate(t_template *template)
     t_dataslot *datatypes = template->t_vec;
     t_template *elemtemplate;
     for(i = 0; i < nitems; i++, datatypes++)
+    {
         if(datatypes->ds_type == DT_ARRAY &&
             (!(elemtemplate =
                      template_findbyname(datatypes->ds_arraytemplate)) ||
@@ -287,6 +316,7 @@ static int template_cancreate(t_template *template)
                 0, "%s: no such template", datatypes->ds_arraytemplate->s_name);
             return (0);
         }
+    }
     return (1);
 }
 
@@ -439,8 +469,10 @@ static void scalar_select(t_gobj *z, t_glist *owner, int state)
     gpointer_setglist(&gp, owner, x);
     SETPOINTER(&at, &gp);
     if((tmpl = template_findbyname(templatesym)))
+    {
         template_notify(
             tmpl, (state ? gensym("select") : gensym("deselect")), 1, &at);
+    }
     gpointer_unset(&gp);
     scalar_drawselectrect(x, owner, state);
 }
@@ -469,13 +501,17 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     goty = template_find_field(template, gensym("y"), &yonset, &ytype, &zz);
     if(goty && (ytype != DT_FLOAT)) goty = 0;
     if(gotx)
+    {
         *(t_float *) (((char *) (x->sc_vec)) + xonset) +=
             glist->gl_zoom * dx *
             (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+    }
     if(goty)
+    {
         *(t_float *) (((char *) (x->sc_vec)) + yonset) +=
             glist->gl_zoom * dy *
             (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+    }
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);

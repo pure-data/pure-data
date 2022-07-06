@@ -56,14 +56,18 @@ void bng_draw_new(t_bng *x, t_glist *glist)
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h,
         IEMGUI_ZOOM(x), x->x_gui.x_bcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxOUT%d outlet]\n",
             canvas, xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
             xpos + iow, ypos + x->x_gui.x_h, x, 0);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxIN%d inlet]\n",
             canvas, xpos, ypos, xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh, x, 0);
+    }
     sys_vgui(
         ".x%lx.c create oval %d %d %d %d -width %d -fill #%6.6x -tags %lxBUT\n",
         canvas, xpos + inset, ypos + inset, xpos + x->x_gui.x_w - inset,
@@ -90,12 +94,16 @@ void bng_draw_move(t_bng *x, t_glist *glist)
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n", canvas, x, xpos, ypos,
         xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n", canvas, x, 0, xpos,
             ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh, xpos + iow,
             ypos + x->x_gui.x_h);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n", canvas, x, 0, xpos,
             ypos, xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh);
+    }
     sys_vgui(".x%lx.c coords %lxBUT %d %d %d %d\n", canvas, x, xpos + inset,
         ypos + inset, xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     sys_vgui(".x%lx.c itemconfigure %lxBUT -fill #%6.6x\n", canvas, x,
@@ -193,19 +201,33 @@ void bng_draw_select(t_bng *x, t_glist *glist)
 void bng_draw(t_bng *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
+    {
         bng_draw_update(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         bng_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         bng_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         bng_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         bng_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         bng_draw_config(x, glist);
+    }
     else if(mode >= IEM_GUI_DRAW_MODE_IO)
+    {
         bng_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
 }
 
 /* ------------------------ bng widgetbehaviour----------------------------- */
@@ -371,8 +393,10 @@ static int bng_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
     if(doit)
+    {
         bng_click((t_bng *) z, (t_floatarg) xpix, (t_floatarg) ypix,
             (t_floatarg) shift, 0, (t_floatarg) alt);
+    }
     return (1);
 }
 
@@ -513,9 +537,13 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     if(!strcmp(x->x_gui.x_snd->s_name, "empty")) x->x_gui.x_fsf.x_snd_able = 0;
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;

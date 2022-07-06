@@ -35,17 +35,27 @@ int main(int argc, char **argv)
     if(argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
         goto usage;
     if(argc >= 3)
+    {
         hostname = argv[2];
+    }
     else
+    {
         hostname = "localhost";
+    }
     if(argc >= 4)
     {
         if(!strcmp(argv[3], "tcp"))
+        {
             protocol = SOCK_STREAM;
+        }
         else if(!strcmp(argv[3], "udp"))
+        {
             protocol = SOCK_DGRAM;
+        }
         else
+        {
             goto usage;
+        }
     }
     else
         protocol = SOCK_STREAM;
@@ -104,9 +114,13 @@ int main(int argc, char **argv)
         sockaddr_get_addrstr(
             (struct sockaddr *) &server, addrstr, sizeof(addrstr));
         if(multicast)
+        {
             fprintf(stderr, "connected to %s (multicast)\n", addrstr);
+        }
         else
+        {
             fprintf(stderr, "connected to %s\n", addrstr);
+        }
         break;
     }
     freeaddrinfo(ailist);

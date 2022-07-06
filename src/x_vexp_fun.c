@@ -1012,9 +1012,13 @@ static double ex_dofact(int i)
     float ret = 0;
 
     if(i > 0)
+    {
         ret = 1;
+    }
     else
+    {
         return (1);
+    }
 
     do
     {
@@ -1153,9 +1157,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                             }
                             return (eptr);
                         case ET_FLT:
@@ -1163,9 +1171,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                             }
                             return (eptr);
                         case ET_VEC:
@@ -1174,9 +1186,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = *rp;
+                                }
                                 rp++;
                             }
                             return (eptr);
@@ -1196,9 +1212,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                             }
                             return (eptr);
                         case ET_FLT:
@@ -1206,9 +1226,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                             }
                             return (eptr);
                         case ET_VEC:
@@ -1217,9 +1241,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = leftvalue;
+                                }
                                 else
+                                {
                                     *op++ = *rp;
+                                }
                                 rp++;
                             }
                             return (eptr);
@@ -1240,9 +1268,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = *lp;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                                 lp++;
                             }
                             return (eptr);
@@ -1251,9 +1283,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = *lp;
+                                }
                                 else
+                                {
                                     *op++ = rightvalue;
+                                }
                                 lp++;
                             }
                             return (eptr);
@@ -1263,9 +1299,13 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
                             while(j--)
                             {
                                 if(*cp++)
+                                {
                                     *op++ = *lp;
+                                }
                                 else
+                                {
                                     *op++ = *rp;
+                                }
                                 lp++;
                                 rp++;
                             }
@@ -1286,15 +1326,23 @@ struct ex_ex *ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr,
             }
         case ET_INT:
             if(cond->ex_int)
+            {
                 condtrue = 1;
+            }
             else
+            {
                 condtrue = 0;
+            }
             break;
         case ET_FLT:
             if(cond->ex_flt)
+            {
                 condtrue = 1;
+            }
             else
+            {
                 condtrue = 0;
+            }
             break;
         case ET_SYM:
         default:

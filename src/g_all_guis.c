@@ -134,9 +134,13 @@ t_symbol *iemgui_dollar2raute(t_symbol *s)
     for(s1 = s->s_name, s2 = buf;; s1++, s2++)
     {
         if(*s1 == '$')
+        {
             *s2 = '#';
+        }
         else if(!(*s2 = *s1))
+        {
             break;
+        }
     }
     return (gensym(buf));
 }
@@ -150,9 +154,13 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
     for(s1 = s->s_name, s2 = buf;; s1++, s2++)
     {
         if(*s1 == '#')
+        {
             *s2 = '$';
+        }
         else if(!(*s2 = *s1))
+        {
             break;
+        }
     }
     return (gensym(buf));
 }
@@ -250,9 +258,13 @@ static void iemgui_init_sym2dollararg(
             *symp = gensym(buf);
         }
         else if(fallback)
+        {
             *symp = fallback;
+        }
         else
+        {
             *symp = gensym("empty");
+        }
     }
 }
 
@@ -322,15 +334,21 @@ static int colfromatomload(t_atom *colatom)
     /* old-fashioned color argument, either a number or symbol
     evaluating to an integer */
     if(colatom->a_type == A_FLOAT)
+    {
         color = atom_getfloat(colatom);
+    }
     else if(colatom->a_type == A_SYMBOL &&
             (isdigit(colatom->a_w.w_symbol->s_name[0]) ||
                 colatom->a_w.w_symbol->s_name[0] == '-'))
+    {
         color = atoi(colatom->a_w.w_symbol->s_name);
 
     /* symbolic color */
+    }
     else
+    {
         return (iemgui_getcolorarg(0, 1, colatom));
+    }
     if(color < 0)
     {
         color = -1 - color;
@@ -404,8 +422,10 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_fsf.x_snd_able = sndable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
+    {
         (*iemgui->x_draw)(
             x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    }
 }
 
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -439,8 +459,10 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     iemgui->x_fsf.x_rcv_able = rcvable;
     iemgui_verify_snd_ne_rcv(iemgui);
     if(glist_isvisible(iemgui->x_glist))
+    {
         (*iemgui->x_draw)(
             x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
+    }
 }
 
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -462,10 +484,12 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
         strlen(iemgui->x_lab->s_name));
 
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
+    {
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape "
                  "\"%s \"] \n",
             glist_getcanvas(iemgui->x_glist), x,
             strcmp(s->s_name, "empty") ? lab_escaped : "");
+    }
 }
 
 void iemgui_label_pos(
@@ -475,10 +499,12 @@ void iemgui_label_pos(
     iemgui->x_ldx = (int) atom_getfloatarg(0, ac, av);
     iemgui->x_ldy = (int) atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
+    {
         sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
             glist_getcanvas(iemgui->x_glist), x,
             text_xpix((t_object *) x, iemgui->x_glist) + iemgui->x_ldx * zoom,
             text_ypix((t_object *) x, iemgui->x_glist) + iemgui->x_ldy * zoom);
+    }
 }
 
 void iemgui_label_font(
@@ -488,9 +514,13 @@ void iemgui_label_font(
     int f = (int) atom_getfloatarg(0, ac, av);
 
     if(f == 1)
+    {
         strcpy(iemgui->x_font, "helvetica");
+    }
     else if(f == 2)
+    {
         strcpy(iemgui->x_font, "times");
+    }
     else
     {
         f = 0;
@@ -501,9 +531,11 @@ void iemgui_label_font(
     if(f < 4) f = 4;
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
+    {
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
             glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
             iemgui->x_fontsize * zoom, sys_fontweight);
+    }
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -543,11 +575,15 @@ void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     if(ac >= 1) iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
     if(ac == 2 && pd_compatibilitylevel < 47)
+    {
         /* old versions of Pd updated foreground and label color
         if only two args; now we do it more coherently. */
         iemgui->x_lcol = iemgui_compatible_colorarg(1, ac, av);
+    }
     else if(ac >= 2)
+    {
         iemgui->x_fcol = iemgui_compatible_colorarg(1, ac, av);
+    }
     if(ac >= 3) iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
@@ -585,7 +621,9 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
     t_iemgui *x = (t_iemgui *) z;
 
     if(vis)
+    {
         (*x->x_draw)((void *) z, glist, IEM_GUI_DRAW_MODE_NEW);
+    }
     else
     {
         (*x->x_draw)((void *) z, glist, IEM_GUI_DRAW_MODE_ERASE);
@@ -660,21 +698,27 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     if(iemgui->x_fsf.x_rcv_able) oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able) oldsndrcvable += IEM_GUI_OLD_SND_FLAG;
     if(IS_A_SYMBOL(argv, 7))
+    {
         srl[0] = atom_getsymbolarg(7, argc, argv);
+    }
     else if(IS_A_FLOAT(argv, 7))
     {
         sprintf(str, "%d", (int) atom_getfloatarg(7, argc, argv));
         srl[0] = gensym(str);
     }
     if(IS_A_SYMBOL(argv, 8))
+    {
         srl[1] = atom_getsymbolarg(8, argc, argv);
+    }
     else if(IS_A_FLOAT(argv, 8))
     {
         sprintf(str, "%d", (int) atom_getfloatarg(8, argc, argv));
         srl[1] = gensym(str);
     }
     if(IS_A_SYMBOL(argv, 9))
+    {
         srl[2] = atom_getsymbolarg(9, argc, argv);
+    }
     else if(IS_A_FLOAT(argv, 9))
     {
         sprintf(str, "%d", (int) atom_getfloatarg(9, argc, argv));
@@ -710,9 +754,13 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     iemgui->x_ldx = ldx;
     iemgui->x_ldy = ldy;
     if(f == 1)
+    {
         strcpy(iemgui->x_font, "helvetica");
+    }
     else if(f == 2)
+    {
         strcpy(iemgui->x_font, "times");
+    }
     else
     {
         f = 0;

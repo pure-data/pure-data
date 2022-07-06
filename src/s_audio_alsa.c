@@ -72,9 +72,11 @@ in the code the error was hit. */
 static void check_error(int err, int fn, const char *why)
 {
     if(err < 0)
+    {
         post("ALSA %serror (%s): %s",
             (fn == 1 ? "output " : (fn == 0 ? "input " : "")), why,
             snd_strerror(err));
+    }
 }
 
 /* figure out, when opening ALSA device, whether we should use the code in
@@ -179,8 +181,10 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         dev->a_handle, hw_params, &tmp_uint);
     check_error(err, out, "snd_pcm_hw_params_set_channels");
     if(tmp_uint != (unsigned) *channels)
+    {
         post("ALSA: set %s channels to %d", (out ? "output" : "input"),
             tmp_uint);
+    }
     *channels = tmp_uint;
     dev->a_channels = *channels;
 
@@ -335,9 +339,13 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     {
         post("using mmap audio interface");
         if(alsamm_open_audio(rate, blocksize))
+        {
             goto blewit;
+        }
         else
+        {
             return (0);
+        }
     }
     for(iodev = 0; iodev < alsa_nindev; iodev++)
     {
@@ -364,6 +372,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
 
     /* if duplex we can link the channels so they start together */
     for(iodev = 0; iodev < alsa_nindev; iodev++)
+    {
         for(dev2 = 0; dev2 < alsa_noutdev; dev2++)
         {
             if(alsa_indev[iodev].a_devno == alsa_outdev[iodev].a_devno)
@@ -372,6 +381,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
                     alsa_indev[iodev].a_handle, alsa_outdev[iodev].a_handle);
             }
         }
+    }
 
     /* allocate the status variables */
     if(!alsa_status)
@@ -390,8 +400,10 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
         while(i--)
         {
             for(iodev = 0; iodev < alsa_noutdev; iodev++)
+            {
                 snd_pcm_writei(
                     alsa_outdev[iodev].a_handle, alsa_snd_buf, DEFDACBLKSIZE);
+            }
         }
     }
     if(inchans)
@@ -399,10 +411,14 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
         /* some of the ADC devices might already have been started by
         starting the outputs above, but others might still need it. */
         for(iodev = 0; iodev < alsa_nindev; iodev++)
+        {
             if(snd_pcm_state(alsa_indev[iodev].a_handle) !=
                 SND_PCM_STATE_RUNNING)
+            {
                 if((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
                     check_error(err, -1, "input start failed");
+            }
+        }
     }
     return (0);
 blewit:
@@ -527,27 +543,36 @@ int alsa_send_dacs(void)
         if(alsa_outdev[iodev].a_sampwidth == 4)
         {
             for(i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
+            {
                 for(j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
                 {
                     t_sample s1 = *fp2 * INT32_MAX;
                     ((t_alsa_sample32 *) alsa_snd_buf)[j] = CLIP32(s1);
                 }
+            }
             for(; i < thisdevchans; i++, ch++)
+            {
                 for(j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((t_alsa_sample32 *) alsa_snd_buf)[j] = 0;
+            }
         }
         else if(alsa_outdev[iodev].a_sampwidth == 3)
         {
             for(i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
+            {
                 for(j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
                 {
                     int s = *fp2 * 8388352.;
                     if(s > 8388351)
+                    {
                         s = 8388351;
+                    }
                     else if(s < -8388351)
+                    {
                         s = -8388351;
+                    }
 #if BYTE_ORDER == LITTLE_ENDIAN
                     ((char *) (alsa_snd_buf))[3 * j] = (s & 255);
                     ((char *) (alsa_snd_buf))[3 * j + 1] = ((s >> 8) & 255);
@@ -556,28 +581,41 @@ int alsa_send_dacs(void)
                     fprintf(stderr, "big endian 24-bit not supported");
 #endif
                 }
+            }
             for(; i < thisdevchans; i++, ch++)
+            {
                 for(j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
+                {
                     ((char *) (alsa_snd_buf))[3 * j] =
                         ((char *) (alsa_snd_buf))[3 * j + 1] =
                             ((char *) (alsa_snd_buf))[3 * j + 2] = 0;
+                }
+            }
         }
         else /* 16 bit samples */
         {
             for(i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
+            {
                 for(j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
                 {
                     int s = *fp2 * 32767.;
                     if(s > 32767)
+                    {
                         s = 32767;
+                    }
                     else if(s < -32767)
+                    {
                         s = -32767;
+                    }
                     ((t_alsa_sample16 *) alsa_snd_buf)[j] = s;
                 }
+            }
             for(; i < thisdevchans; i++, ch++)
+            {
                 for(j = ch, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((t_alsa_sample16 *) alsa_snd_buf)[j] = 0;
+            }
         }
         result = snd_pcm_writei(
             alsa_outdev[iodev].a_handle, alsa_snd_buf, transfersize);
@@ -658,8 +696,10 @@ int alsa_send_dacs(void)
             {
                 for(j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
+                {
                     *fp2 = (t_sample) ((t_alsa_sample32 *) alsa_snd_buf)[j] *
                            (1. / INT32_MAX);
+                }
             }
         }
         else if(alsa_indev[iodev].a_sampwidth == 3)
@@ -669,6 +709,7 @@ int alsa_send_dacs(void)
             {
                 for(j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
+                {
                     *fp2 = ((t_sample) ((((unsigned char *) alsa_snd_buf)[3 * j]
                                             << 8) |
                                         (((unsigned char *)
@@ -678,6 +719,7 @@ int alsa_send_dacs(void)
                                                  alsa_snd_buf)[3 * j + 2]
                                             << 24))) *
                            (1. / INT32_MAX);
+                }
             }
 #else
             fprintf(stderr, "big endian 24-bit not supported");
@@ -689,8 +731,10 @@ int alsa_send_dacs(void)
             {
                 for(j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                     j += thisdevchans, fp2++)
+                {
                     *fp2 = (t_sample) ((t_alsa_sample16 *) alsa_snd_buf)[j] *
                            3.051850e-05;
+                }
             }
         }
     }
@@ -823,8 +867,10 @@ static void alsa_checkiosync(void)
                     alsa_outdev[iodev].a_handle, SND_PCM_STATE_XRUN, 0);
                 if(snd_pcm_state(alsa_outdev[iodev].a_handle) !=
                     SND_PCM_STATE_RUNNING)
+                {
                     post("snd_pcm_recover failed: state now %d",
                         snd_pcm_state(alsa_outdev[iodev].a_handle));
+                }
             }
             else if(result != SND_PCM_STATE_RUNNING)
             {
@@ -859,8 +905,10 @@ static void alsa_checkiosync(void)
                     alsa_indev[iodev].a_handle, SND_PCM_STATE_XRUN, 0);
                 if(snd_pcm_state(alsa_indev[iodev].a_handle) !=
                     SND_PCM_STATE_RUNNING)
+                {
                     post("snd_pcm_recover failed: state now %d",
                         snd_pcm_state(alsa_indev[iodev].a_handle));
+                }
             }
             else if(result != SND_PCM_STATE_RUNNING)
             {
@@ -927,11 +975,15 @@ static const char **alsa_names = 0;
 void alsa_adddev(const char *name)
 {
     if(alsa_nnames)
+    {
         alsa_names = (const char **) t_resizebytes(alsa_names,
             alsa_nnames * sizeof(const char *),
             (alsa_nnames + 1) * sizeof(const char *));
+    }
     else
+    {
         alsa_names = (const char **) t_getbytes(sizeof(const char *));
+    }
     alsa_names[alsa_nnames] = gensym(name)->s_name;
     alsa_nnames++;
 }
@@ -945,14 +997,22 @@ static void alsa_numbertoname(int devno, char *devname, int nchar)
     if(devno < 2 * ndev)
     {
         if(devno & 1)
+        {
             snprintf(devname, nchar, "plughw:%d", devno / 2);
+        }
         else
+        {
             snprintf(devname, nchar, "hw:%d", devno / 2);
+        }
     }
     else if(devno < 2 * ndev + alsa_nnames)
+    {
         snprintf(devname, nchar, "%s", alsa_names[devno - 2 * ndev]);
+    }
     else
+    {
         snprintf(devname, nchar, "???");
+    }
 }
 
 /* For each hardware card found, we list two devices, the "hard" and

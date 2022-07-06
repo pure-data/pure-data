@@ -111,7 +111,9 @@ static void template_takeofflist(t_template *x)
 {
     /* take it off the template list */
     if(x == pd_this->pd_templatelist)
+    {
         pd_this->pd_templatelist = x->t_next;
+    }
     else
     {
         t_template *z;
@@ -141,12 +143,18 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
         newtypesym = argv[0].a_w.w_symbol;
         newname = argv[1].a_w.w_symbol;
         if(newtypesym == &s_float)
+        {
             newtype = DT_FLOAT;
+        }
         else if(newtypesym == &s_symbol)
+        {
             newtype = DT_SYMBOL;
         /* "list" is old name.. accepted here but never saved as such */
+        }
         else if(newtypesym == gensym("text") || newtypesym == &s_list)
+        {
             newtype = DT_TEXT;
+        }
         else if(newtypesym == gensym("array"))
         {
             if(argc < 3 || argv[2].a_type != A_SYMBOL)
@@ -198,6 +206,7 @@ int template_find_field(t_template *x, t_symbol *name, int *p_onset,
     }
     n = x->t_n;
     for(i = 0; i < n; i++)
+    {
         if(x->t_vec[i].ds_name == name)
         {
             *p_onset = i * sizeof(t_word);
@@ -205,6 +214,7 @@ int template_find_field(t_template *x, t_symbol *name, int *p_onset,
             *p_arraytype = x->t_vec[i].ds_arraytemplate;
             return (1);
         }
+    }
     return (0);
 }
 
@@ -218,14 +228,20 @@ t_float template_getfloat(
     if(template_find_field(x, fieldname, &onset, &type, &arraytype))
     {
         if(type == DT_FLOAT)
+        {
             val = *(t_float *) (((char *) wp) + onset);
+        }
         else if(loud)
+        {
             pd_error(
                 0, "%s.%s: not a number", x->t_sym->s_name, fieldname->s_name);
+        }
     }
     else if(loud)
+    {
         pd_error(
             0, "%s.%s: no such field", x->t_sym->s_name, fieldname->s_name);
+    }
     return (val);
 }
 
@@ -238,14 +254,20 @@ void template_setfloat(
     if(template_find_field(x, fieldname, &onset, &type, &arraytype))
     {
         if(type == DT_FLOAT)
+        {
             *(t_float *) (((char *) wp) + onset) = f;
+        }
         else if(loud)
+        {
             pd_error(
                 0, "%s.%s: not a number", x->t_sym->s_name, fieldname->s_name);
+        }
     }
     else if(loud)
+    {
         pd_error(
             0, "%s.%s: no such field", x->t_sym->s_name, fieldname->s_name);
+    }
 }
 
 t_symbol *template_getsymbol(
@@ -258,14 +280,20 @@ t_symbol *template_getsymbol(
     if(template_find_field(x, fieldname, &onset, &type, &arraytype))
     {
         if(type == DT_SYMBOL)
+        {
             val = *(t_symbol **) (((char *) wp) + onset);
+        }
         else if(loud)
+        {
             pd_error(
                 0, "%s.%s: not a symbol", x->t_sym->s_name, fieldname->s_name);
+        }
     }
     else if(loud)
+    {
         pd_error(
             0, "%s.%s: no such field", x->t_sym->s_name, fieldname->s_name);
+    }
     return (val);
 }
 
@@ -278,14 +306,20 @@ void template_setsymbol(
     if(template_find_field(x, fieldname, &onset, &type, &arraytype))
     {
         if(type == DT_SYMBOL)
+        {
             *(t_symbol **) (((char *) wp) + onset) = s;
+        }
         else if(loud)
+        {
             pd_error(
                 0, "%s.%s: not a symbol", x->t_sym->s_name, fieldname->s_name);
+        }
     }
     else if(loud)
+    {
         pd_error(
             0, "%s.%s: no such field", x->t_sym->s_name, fieldname->s_name);
+    }
 }
 
 /* stringent check to see if a "saved" template, x2, matches the current
@@ -373,12 +407,14 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
             t_gobj *y;
             t_gobj *y2;
             for(y = glist->gl_list; (y2 = y->g_next); y = y2)
+            {
                 if(y2 == &scfrom->sc_gobj)
                 {
                     x->sc_gobj.g_next = y2->g_next;
                     y->g_next = &x->sc_gobj;
                     goto nobug;
                 }
+            }
             bug("template_conformscalar");
         nobug:;
         }
@@ -463,14 +499,20 @@ static void template_conformglist(
     for(g = glist->gl_list; g; g = g->g_next)
     {
         if(pd_class(&g->g_pd) == scalar_class)
+        {
             g = &template_conformscalar(
                 tfrom, tto, conformaction, glist, (t_scalar *) g)
                      ->sc_gobj;
+        }
         else if(pd_class(&g->g_pd) == canvas_class)
+        {
             template_conformglist(tfrom, tto, (t_glist *) g, conformaction);
+        }
         else if(pd_class(&g->g_pd) == garray_class)
+        {
             template_conformarray(
                 tfrom, tto, conformaction, garray_getarray((t_garray *) g));
+        }
     }
 }
 
@@ -502,22 +544,30 @@ void template_conform(t_template *tfrom, t_template *tto)
         }
     }
     for(i = 0; i < nto; i++)
+    {
         if(conformaction[i] < 0)
         {
             t_dataslot *dataslot = &tto->t_vec[i];
             for(j = 0; j < nfrom; j++)
+            {
                 if(!conformedfrom[j] &&
                     dataslot_matches(dataslot, &tfrom->t_vec[j], 0))
                 {
                     conformaction[i] = j;
                     conformedfrom[j] = 1;
                 }
+            }
         }
+    }
     if(nto != nfrom)
+    {
         doit = 1;
+    }
     else
+    {
         for(i = 0; i < nto; i++)
             if(conformaction[i] != i) doit = 1;
+    }
 
     if(doit)
     {
@@ -702,8 +752,10 @@ static void *gtemplate_new(t_symbol *s, int argc, t_atom *argv)
     t_symbol *sym = atom_getsymbolarg(0, argc, argv);
     if(argc >= 1) argc--, argv++;
     if(sym->s_name[0] == '-')
+    {
         post("warning: struct '%s' initial '-' may confuse get/set, etc.",
             sym->s_name);
+    }
     return (gtemplate_donew(canvas_makebindsym(sym), argc, argv));
 }
 
@@ -859,7 +911,9 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
         if(got == 3 || (got < 4 && strchr(s2, '('))) goto fail;
         if(got < 5 && (s3 = strchr(s2, '(')) && strchr(s3 + 1, '(')) goto fail;
         if(got == 4)
+        {
             fd->fd_quantum = 0;
+        }
         else if(got == 2)
         {
             fd->fd_quantum = 0;
@@ -884,17 +938,25 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
     if(argc <= 0)
+    {
         fielddesc_setfloat_const(fd, 0);
+    }
     else if(argv->a_type == A_SYMBOL)
+    {
         fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
+    }
     else
+    {
         fielddesc_setfloat_const(fd, argv->a_w.w_float);
+    }
 }
 
 static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
     if(argc <= 0)
+    {
         fielddesc_setsymbol_const(fd, &s_);
+    }
     else if(argv->a_type == A_SYMBOL)
     {
         fd->fd_type = A_SYMBOL;
@@ -910,7 +972,9 @@ static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
 static void fielddesc_setarrayarg(t_fielddesc *fd, int argc, t_atom *argv)
 {
     if(argc <= 0)
+    {
         fielddesc_setfloat_const(fd, 0);
+    }
     else if(argv->a_type == A_SYMBOL)
     {
         fd->fd_type = A_ARRAY;
@@ -998,7 +1062,9 @@ t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord)
 {
     t_float val;
     if(f->fd_screen2 == f->fd_screen1)
+    {
         val = coord;
+    }
     else
     {
         t_float div = (f->fd_v2 - f->fd_v1) / (f->fd_screen2 - f->fd_screen1);
@@ -1025,8 +1091,10 @@ void fielddesc_setcoord(
     else
     {
         if(loud)
+        {
             pd_error(0,
                 "attempt to set constant or symbolic data field to a number");
+        }
     }
 }
 
@@ -1114,17 +1182,29 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
     }
     x->x_flags = flags;
     if((flags & CLOSED) && argc)
+    {
         fielddesc_setfloatarg(&x->x_fillcolor, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_fillcolor, 0);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_outlinecolor, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_outlinecolor, 0);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_width, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_width, 1);
+    }
     if(argc < 0) argc = 0;
     nxy = (argc + (argc & 1));
     x->x_npoints = (nxy >> 1);
@@ -1290,15 +1370,21 @@ static void curve_vis(t_gobj *z, t_glist *glist, t_word *data,
                 sys_vgui("%d %d\\\n", pix[2 * i], pix[2 * i + 1]);
             sys_vgui("-width %f\\\n", width);
             if(flags & CLOSED)
+            {
                 sys_vgui("-fill %s -outline %s\\\n", fill, outline);
+            }
             else
+            {
                 sys_vgui("-fill %s\\\n", outline);
+            }
             if(flags & BEZ) sys_vgui("-smooth 1\\\n");
             sys_vgui("-tags curve%lx\n", data);
         }
         else
+        {
             post("warning: drawing shapes need at least two points to be "
                  "graphed");
+        }
     }
     else
     {
@@ -1341,15 +1427,21 @@ static void curve_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     }
     /* LATER figure out what to do to notify for an array? */
     if(TEMPLATE->curve_motion_scalar)
+    {
         template_notifyforscalar(TEMPLATE->curve_motion_template,
             TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar,
             gensym("change"), 1, &at);
+    }
     if(TEMPLATE->curve_motion_scalar)
+    {
         scalar_redraw(
             TEMPLATE->curve_motion_scalar, TEMPLATE->curve_motion_glist);
+    }
     if(TEMPLATE->curve_motion_array)
+    {
         array_redraw(
             TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_glist);
+    }
 }
 
 static int curve_click(t_gobj *z, t_glist *glist, t_word *data,
@@ -1401,11 +1493,15 @@ static int curve_click(t_gobj *z, t_glist *glist, t_word *data,
         TEMPLATE->curve_motion_field = 2 * bestn;
         TEMPLATE->curve_motion_template = template;
         if(TEMPLATE->curve_motion_scalar)
+        {
             gpointer_setglist(&TEMPLATE->curve_motion_gpointer,
                 TEMPLATE->curve_motion_glist, TEMPLATE->curve_motion_scalar);
+        }
         else
+        {
             gpointer_setarray(&TEMPLATE->curve_motion_gpointer,
                 TEMPLATE->curve_motion_array, TEMPLATE->curve_motion_wp);
+        }
         glist_grab(glist, z, curve_motionfn, 0, xpix, ypix);
     }
     return (1);
@@ -1532,33 +1628,61 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
             break;
     }
     if(argc)
+    {
         fielddesc_setarrayarg(&x->x_data, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_data, 1);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_outlinecolor, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_outlinecolor, 0);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_width, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_width, 1);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_xloc, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_xloc, 1);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_yloc, 1);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_xinc, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_xinc, 1);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_style, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_style, defstyle);
+    }
     return (x);
 }
 
@@ -1665,23 +1789,35 @@ int array_getfields(t_symbol *elemtemplatesym, t_canvas **elemtemplatecanvasp,
     }
     elemsize = elemtemplate->t_n * sizeof(t_word);
     if(yfielddesc && yfielddesc->fd_var)
+    {
         varname = yfielddesc->fd_un.fd_varsym;
+    }
     else
+    {
         varname = gensym("y");
+    }
     if(!template_find_field(elemtemplate, varname, &yonset, &type, &dummy) ||
         type != DT_FLOAT)
         yonset = -1;
     if(xfielddesc && xfielddesc->fd_var)
+    {
         varname = xfielddesc->fd_un.fd_varsym;
+    }
     else
+    {
         varname = gensym("x");
+    }
     if(!template_find_field(elemtemplate, varname, &xonset, &type, &dummy) ||
         type != DT_FLOAT)
         xonset = -1;
     if(wfielddesc && wfielddesc->fd_var)
+    {
         varname = wfielddesc->fd_un.fd_varsym;
+    }
     else
+    {
         varname = gensym("w");
+    }
     if(!template_find_field(elemtemplate, varname, &wonset, &type, &dummy) ||
         type != DT_FLOAT)
         wonset = -1;
@@ -1763,19 +1899,27 @@ static void plot_getrect(t_gobj *z, t_glist *glist, t_word *data,
             {
                 /* check also the drawing instructions for the scalar */
                 if(xonset >= 0)
+                {
                     usexloc = basex + xloc +
                               fielddesc_cvttocoord(xfielddesc,
                                   *(t_float *) (((char *) (array->a_vec) +
                                                     elemsize * i) +
                                                 xonset));
+                }
                 else
+                {
                     usexloc = basex + xsum, xsum += xinc;
+                }
                 if(yonset >= 0)
+                {
                     yval =
                         *(t_float *) (((char *) (array->a_vec) + elemsize * i) +
                                       yonset);
+                }
                 else
+                {
                     yval = 0;
+                }
                 useyloc = basey + yloc + fielddesc_cvttocoord(yfielddesc, yval);
                 for(y = elemtemplatecanvas->gl_list; y; y = y->g_next)
                 {
@@ -1912,9 +2056,13 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 }
 
                 if(yonset >= 0)
+                {
                     yval = yloc + *(t_float *) ((elem + elemsize * i) + yonset);
+                }
                 else
+                {
                     yval = 0;
+                }
                 yval = CLIP(yval);
                 if(yval < minyval) minyval = yval;
                 if(yval > maxyval) maxyval = yval;
@@ -1960,14 +2108,22 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 for(i = 0, xsum = xloc; i < nelem; i++)
                 {
                     if(xonset >= 0)
+                    {
                         usexloc = xloc +
                                   *(t_float *) ((elem + elemsize * i) + xonset);
+                    }
                     else
+                    {
                         usexloc = xsum, xsum += xinc;
+                    }
                     if(yonset >= 0)
+                    {
                         yval = *(t_float *) ((elem + elemsize * i) + yonset);
+                    }
                     else
+                    {
                         yval = 0;
+                    }
                     yval = CLIP(yval);
                     wval = *(t_float *) ((elem + elemsize * i) + wonset);
                     wval = CLIP(wval);
@@ -1992,14 +2148,22 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 {
                     t_float usexloc;
                     if(xonset >= 0)
+                    {
                         usexloc = xloc +
                                   *(t_float *) ((elem + elemsize * i) + xonset);
+                    }
                     else
+                    {
                         xsum -= xinc, usexloc = xsum;
+                    }
                     if(yonset >= 0)
+                    {
                         yval = *(t_float *) ((elem + elemsize * i) + yonset);
+                    }
                     else
+                    {
                         yval = 0;
+                    }
                     yval = CLIP(yval);
                     wval = *(t_float *) ((elem + elemsize * i) + wonset);
                     wval = CLIP(wval);
@@ -2052,14 +2216,22 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 {
                     t_float usexloc;
                     if(xonset >= 0)
+                    {
                         usexloc = xloc +
                                   *(t_float *) ((elem + elemsize * i) + xonset);
+                    }
                     else
+                    {
                         usexloc = xsum, xsum += xinc;
+                    }
                     if(yonset >= 0)
+                    {
                         yval = *(t_float *) ((elem + elemsize * i) + yonset);
+                    }
                     else
+                    {
                         yval = 0;
+                    }
                     yval = CLIP(yval);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
@@ -2077,12 +2249,16 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 }
                 /* TK will complain if there aren't at least 2 points... */
                 if(ndrawn == 0)
+                {
                     sys_vgui("0 0 0 0 \\\n");
+                }
                 else if(ndrawn == 1)
+                {
                     sys_vgui("%d %f \\\n", ixpix + 10,
                         glist_ytopixels(
                             glist, basey + yloc +
                                        fielddesc_cvttocoord(yfielddesc, yval)));
+                }
 
                 sys_vgui("-width %f\\\n", linewidth);
                 sys_vgui("-fill %s\\\n", outline);
@@ -2102,14 +2278,22 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
                 t_float useyloc;
                 t_gobj *y;
                 if(xonset >= 0)
+                {
                     usexloc = basex + xloc +
                               *(t_float *) ((elem + elemsize * i) + xonset);
+                }
                 else
+                {
                     usexloc = basex + xsum, xsum += xinc;
+                }
                 if(yonset >= 0)
+                {
                     yval = *(t_float *) ((elem + elemsize * i) + yonset);
+                }
                 else
+                {
                     yval = 0;
+                }
                 useyloc = basey + yloc + fielddesc_cvttocoord(yfielddesc, yval);
                 for(y = elemtemplatecanvas->gl_list; y; y = y->g_next)
                 {
@@ -2215,9 +2399,13 @@ static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
             1);
         t_float ydiff = newy - oldy;
         if(thisx < 0)
+        {
             thisx = 0;
+        }
         else if(thisx >= TEMPLATE->array_motion_npoints)
+        {
             thisx = TEMPLATE->array_motion_npoints - 1;
+        }
         increment = (thisx > TEMPLATE->array_motion_lastx ? -1 : 1);
         nchange = 1 + increment * (TEMPLATE->array_motion_lastx - thisx);
 
@@ -2233,11 +2421,15 @@ static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
         TEMPLATE->array_motion_lastx = thisx;
     }
     if(TEMPLATE->array_motion_scalar)
+    {
         scalar_redraw(
             TEMPLATE->array_motion_scalar, TEMPLATE->array_motion_glist);
+    }
     if(TEMPLATE->array_motion_array)
+    {
         array_redraw(
             TEMPLATE->array_motion_array, TEMPLATE->array_motion_glist);
+    }
 }
 
 int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
@@ -2268,21 +2460,29 @@ static int array_doclick_element(t_array *array, t_glist *glist,
         return (0);
     /* if it has more than 2000 points, just check 300 of them. */
     if(array->a_n < 2000)
+    {
         incr = 1;
+    }
     else
+    {
         incr = array->a_n / 300;
+    }
     for(i = 0, xsum = 0; i < array->a_n; i += incr)
     {
         t_float usexloc;
         t_float useyloc;
         if(xonset >= 0)
+        {
             usexloc =
                 xloc +
                 fielddesc_cvttocoord(xfield,
                     *(t_float *) (((char *) (array->a_vec) + elemsize * i) +
                                   xonset));
+        }
         else
+        {
             usexloc = xloc + xsum, xsum += xinc;
+        }
         useyloc =
             yloc + (yonset >= 0 ? fielddesc_cvttocoord(yfield,
                                       *(t_float *) (((char *) (array->a_vec) +
@@ -2334,9 +2534,13 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         {
             int xval = glist_pixelstox(glist, xpix);
             if(xval < 0)
+            {
                 xval = 0;
+            }
             else if(xval >= array->a_n)
+            {
                 xval = array->a_n - 1;
+            }
             TEMPLATE->array_motion_yfield = yfield;
             TEMPLATE->array_motion_ycumulative = glist_pixelstoy(glist, ypix);
             TEMPLATE->array_motion_fatten = 0;
@@ -2352,11 +2556,15 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                     glist_pixelstoy(glist, ypix), 1);
                 glist_grab(glist, 0, array_motionfn, 0, xpix, ypix);
                 if(TEMPLATE->array_motion_scalar)
+                {
                     scalar_redraw(TEMPLATE->array_motion_scalar,
                         TEMPLATE->array_motion_glist);
+                }
                 if(TEMPLATE->array_motion_array)
+                {
                     array_redraw(TEMPLATE->array_motion_array,
                         TEMPLATE->array_motion_glist);
+                }
             }
         }
         else
@@ -2439,11 +2647,17 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 if(dx + dy <= best || dx + dy2 <= best || dx + dy3 <= best)
                 {
                     if(dy < dy2 && dy < dy3)
+                    {
                         TEMPLATE->array_motion_fatten = 0;
+                    }
                     else if(dy2 < dy3)
+                    {
                         TEMPLATE->array_motion_fatten = -1;
+                    }
                     else
+                    {
                         TEMPLATE->array_motion_fatten = 1;
+                    }
                     if(doit)
                     {
                         char *elem = (char *) array->a_vec;
@@ -2478,9 +2692,13 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             TEMPLATE->array_motion_wp =
                                 (t_word *) (elem + i * elemsize);
                             if(shift)
+                            {
                                 TEMPLATE->array_motion_npoints = array->a_n - i;
+                            }
                             else
+                            {
                                 TEMPLATE->array_motion_npoints = 1;
+                            }
                         }
                         else
                         {
@@ -2528,9 +2746,11 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         return (CURSOR_RUNMODE_ADDPOINT);
                     }
                     else
+                    {
                         return (TEMPLATE->array_motion_fatten
                                     ? CURSOR_RUNMODE_THICKEN
                                     : CURSOR_RUNMODE_CLICKME);
+                    }
                 }
             }
         }
@@ -2631,21 +2851,37 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     x->x_fieldname = atom_getsymbolarg(0, argc, argv);
     if(argc) argc--, argv++;
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_xloc, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_xloc, 0);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_yloc, 0);
+    }
     if(argc)
+    {
         fielddesc_setfloatarg(&x->x_color, argc--, argv++);
+    }
     else
+    {
         fielddesc_setfloat_const(&x->x_color, 1);
+    }
     if(argc)
+    {
         x->x_label = atom_getsymbolarg(0, argc, argv);
+    }
     else
+    {
         x->x_label = &s_;
+    }
 
     return (x);
 }
@@ -2689,7 +2925,9 @@ static void drawnumber_getbuf(
     int onset;
     int type = drawnumber_gettype(x, data, template, &onset);
     if(type < 0)
+    {
         buf[0] = 0;
+    }
     else
     {
         strncpy(buf, x->x_label->s_name, DRAWNUMBER_BUFSIZE);
@@ -2715,9 +2953,13 @@ static void drawnumber_getbuf(
         {
             t_atom at;
             if(type == DT_FLOAT)
+            {
                 SETFLOAT(&at, ((t_word *) ((char *) data + onset))->w_float);
+            }
             else
+            {
                 SETSYMBOL(&at, ((t_word *) ((char *) data + onset))->w_symbol);
+            }
             atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
         }
     }
@@ -2814,8 +3056,10 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist, t_word *data,
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
     else
+    {
         sys_vgui(
             ".x%lx.c delete drawnumber%lx\n", glist_getcanvas(glist), data);
+    }
 }
 
 static void drawnumber_motionfn(
@@ -2835,16 +3079,22 @@ static void drawnumber_motionfn(
         TEMPLATE->drawnumber_motion_wp, TEMPLATE->drawnumber_motion_ycumulative,
         1);
     if(TEMPLATE->drawnumber_motion_scalar)
+    {
         template_notifyforscalar(TEMPLATE->drawnumber_motion_template,
             TEMPLATE->drawnumber_motion_glist,
             TEMPLATE->drawnumber_motion_scalar, gensym("change"), 1, &at);
+    }
 
     if(TEMPLATE->drawnumber_motion_scalar)
+    {
         scalar_redraw(TEMPLATE->drawnumber_motion_scalar,
             TEMPLATE->drawnumber_motion_glist);
+    }
     if(TEMPLATE->drawnumber_motion_array)
+    {
         array_redraw(TEMPLATE->drawnumber_motion_array,
             TEMPLATE->drawnumber_motion_glist);
+    }
 }
 
 static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
@@ -2863,13 +3113,17 @@ static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
     {
         /* key entry for a symbol field */
         if(TEMPLATE->drawnumber_motion_firstkey)
+        {
             sbuf[0] = 0;
+        }
         else
+        {
             strncpy(sbuf,
                 template_getsymbol(TEMPLATE->drawnumber_motion_template,
                     x->x_fieldname, TEMPLATE->drawnumber_motion_wp, 1)
                     ->s_name,
                 MAXPDSTRING);
+        }
         sbuf[MAXPDSTRING - 1] = 0;
         if(key == '\b')
         {
@@ -2886,11 +3140,15 @@ static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
         /* key entry for a numeric field.  This is just a stopgap. */
         double newf;
         if(TEMPLATE->drawnumber_motion_firstkey)
+        {
             sbuf[0] = 0;
+        }
         else
+        {
             sprintf(sbuf, "%g",
                 template_getfloat(TEMPLATE->drawnumber_motion_template,
                     x->x_fieldname, TEMPLATE->drawnumber_motion_wp, 1));
+        }
         TEMPLATE->drawnumber_motion_firstkey = (key == '\n');
         if(key == '\b')
         {
@@ -2905,15 +3163,21 @@ static void drawnumber_key(void *z, t_symbol *keysym, t_floatarg fkey)
         template_setfloat(TEMPLATE->drawnumber_motion_template, x->x_fieldname,
             TEMPLATE->drawnumber_motion_wp, (t_float) newf, 1);
         if(TEMPLATE->drawnumber_motion_scalar)
+        {
             template_notifyforscalar(TEMPLATE->drawnumber_motion_template,
                 TEMPLATE->drawnumber_motion_glist,
                 TEMPLATE->drawnumber_motion_scalar, gensym("change"), 1, &at);
+        }
         if(TEMPLATE->drawnumber_motion_scalar)
+        {
             scalar_redraw(TEMPLATE->drawnumber_motion_scalar,
                 TEMPLATE->drawnumber_motion_glist);
+        }
         if(TEMPLATE->drawnumber_motion_array)
+        {
             array_redraw(TEMPLATE->drawnumber_motion_array,
                 TEMPLATE->drawnumber_motion_glist);
+        }
     }
     else
         post("typing at text fields not yet implemented");
@@ -2948,13 +3212,17 @@ static int drawnumber_click(t_gobj *z, t_glist *glist, t_word *data,
                 template_getfloat(template, x->x_fieldname, data, 0);
             TEMPLATE->drawnumber_motion_type = type;
             if(TEMPLATE->drawnumber_motion_scalar)
+            {
                 gpointer_setglist(&TEMPLATE->drawnumber_motion_gpointer,
                     TEMPLATE->drawnumber_motion_glist,
                     TEMPLATE->drawnumber_motion_scalar);
+            }
             else
+            {
                 gpointer_setarray(&TEMPLATE->drawnumber_motion_gpointer,
                     TEMPLATE->drawnumber_motion_array,
                     TEMPLATE->drawnumber_motion_wp);
+            }
             glist_grab(
                 glist, z, drawnumber_motionfn, drawnumber_key, xpix, ypix);
         }

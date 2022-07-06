@@ -30,7 +30,9 @@ void glist_add(t_glist *x, t_gobj *y)
     t_object *ob;
     y->g_next = 0;
     if(!x->gl_list)
+    {
         x->gl_list = y;
+    }
     else
     {
         t_gobj *y2;
@@ -47,9 +49,11 @@ void glist_add(t_glist *x, t_gobj *y)
     }
     if(glist_isvisible(x)) gobj_vis(y, x, 1);
     if(class_isdrawcommand(y->g_pd))
+    {
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
                                         glist_getcanvas(x)->gl_name)),
             0);
+    }
 }
 
 /* this is to protect against a hairy problem in which deleting
@@ -111,17 +115,21 @@ void glist_delete(t_glist *x, t_gobj *y)
             else
             {
                 if(glist_isvisible(x))
+                {
                     text_eraseborder(&gl->gl_obj, x,
                         rtext_gettag(glist_findrtext(x, &gl->gl_obj)));
+                }
             }
         }
     }
     /* if we're a drawing command, erase all scalars now, before deleting
     it; we'll redraw them once it's deleted below. */
     if(drawcommand)
+    {
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
                                         glist_getcanvas(x)->gl_name)),
             2);
+    }
     gobj_delete(y, x);
     if(glist_isvisible(canvas))
     {
@@ -131,22 +139,30 @@ void glist_delete(t_glist *x, t_gobj *y)
         !(rtext = glist_findrtext(x, ob)))
         rtext = rtext_new(x, ob);
     if(x->gl_list == y)
+    {
         x->gl_list = y->g_next;
+    }
     else
+    {
         for(g = x->gl_list; g; g = g->g_next)
+        {
             if(g->g_next == y)
             {
                 g->g_next = y->g_next;
                 break;
             }
+        }
+    }
     if(y->g_pd == scalar_class) x->gl_valid = ++glist_valid;
     pd_free(&y->g_pd);
     if(rtext) rtext_free(rtext);
     if(chkdsp) canvas_update_dsp();
     if(drawcommand)
+    {
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
                                         glist_getcanvas(x)->gl_name)),
             1);
+    }
     canvas_setdeleting(canvas, wasdeleting);
 }
 
@@ -188,9 +204,13 @@ void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,
 {
     t_glist *x2 = glist_getcanvas(x);
     if(motionfn)
+    {
         x2->gl_editor->e_onmotion = MA_PASSOUT;
+    }
     else
+    {
         x2->gl_editor->e_onmotion = 0;
+    }
     x2->gl_editor->e_grab = y;
     x2->gl_editor->e_motionfn = motionfn;
     x2->gl_editor->e_keyfn = keyfn;
@@ -232,30 +252,46 @@ static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
             if(g2)
             {
                 if(f1 <= f2)
+                {
                     goto put1;
+                }
                 else
+                {
                     goto put2;
+                }
             }
             else
                 goto put1;
         }
         else if(g2)
+        {
             goto put2;
+        }
         else
+        {
             break;
+        }
     put1:
         if(g9)
+        {
             g9->g_next = g1, g9 = g1;
+        }
         else
+        {
             g9 = g = g1;
+        }
         if((g1 = g1->g_next)) f1 = gobj_getxforsort(g1);
         g9->g_next = 0;
         continue;
     put2:
         if(g9)
+        {
             g9->g_next = g2, g9 = g2;
+        }
         else
+        {
             g9 = g = g2;
+        }
         if((g2 = g2->g_next)) f2 = gobj_getxforsort(g2);
         g9->g_next = 0;
     }
@@ -500,7 +536,9 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     if(argc < 1)
+    {
         pd_error(0, "graph_xlabel: no y value given");
+    }
     else
     {
         x->gl_xlabely = atom_getfloat(argv);
@@ -519,7 +557,9 @@ static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     if(argc < 1)
+    {
         pd_error(0, "graph_ylabel: no x value given");
+    }
     else
     {
         x->gl_ylabelx = atom_getfloat(argv);
@@ -549,11 +589,13 @@ t_float glist_pixelstox(t_glist *x, t_float xpix)
     window right now, our range in our coordinates (x1, etc.) is spread
     over the visible window size, given by screenx1, etc. */
     if(x->gl_isgraph && x->gl_havewindow)
+    {
         return (x->gl_x1 + (x->gl_x2 - x->gl_x1) * (xpix) /
                                (x->gl_screenx2 - x->gl_screenx1));
 
     /* otherwise, we appear in a graph within a parent glist,
      so get our screen rectangle on parent and transform. */
+    }
     else
     {
         int x1;
@@ -571,8 +613,10 @@ t_float glist_pixelstoy(t_glist *x, t_float ypix)
     if(!x->gl_isgraph)
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * ypix / x->gl_zoom);
     if(x->gl_isgraph && x->gl_havewindow)
+    {
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * (ypix) /
                                (x->gl_screeny2 - x->gl_screeny1));
+    }
     else
     {
         int x1;
@@ -591,8 +635,10 @@ t_float glist_xtopixels(t_glist *x, t_float xval)
     if(!x->gl_isgraph)
         return (((xval - x->gl_x1) * x->gl_zoom) / (x->gl_x2 - x->gl_x1));
     if(x->gl_isgraph && x->gl_havewindow)
+    {
         return (x->gl_screenx2 - x->gl_screenx1) * (xval - x->gl_x1) /
                (x->gl_x2 - x->gl_x1);
+    }
     else
     {
         int x1;
@@ -610,8 +656,10 @@ t_float glist_ytopixels(t_glist *x, t_float yval)
     if(!x->gl_isgraph)
         return (((yval - x->gl_y1) * x->gl_zoom) / (x->gl_y2 - x->gl_y1));
     if(x->gl_isgraph && x->gl_havewindow)
+    {
         return (x->gl_screeny2 - x->gl_screeny1) * (yval - x->gl_y1) /
                (x->gl_y2 - x->gl_y1);
+    }
     else
     {
         int x1;
@@ -648,12 +696,16 @@ int text_xpix(t_text *x, t_glist *glist)
     if(glist->gl_havewindow || !glist->gl_isgraph)
         return (x->te_xpix * glist->gl_zoom);
     if(glist->gl_goprect)
+    {
         return (glist_xtopixels(glist, glist->gl_x1) +
                 glist->gl_zoom * (x->te_xpix - glist->gl_xmargin));
+    }
     else
+    {
         return (glist_xtopixels(glist,
             glist->gl_x1 + (glist->gl_x2 - glist->gl_x1) * x->te_xpix /
                                (glist->gl_screenx2 - glist->gl_screenx1)));
+    }
 }
 
 int text_ypix(t_text *x, t_glist *glist)
@@ -661,12 +713,16 @@ int text_ypix(t_text *x, t_glist *glist)
     if(glist->gl_havewindow || !glist->gl_isgraph)
         return (x->te_ypix * glist->gl_zoom);
     if(glist->gl_goprect)
+    {
         return (glist_ytopixels(glist, glist->gl_y1) +
                 glist->gl_zoom * (x->te_ypix - glist->gl_ymargin));
+    }
     else
+    {
         return (glist_ytopixels(glist,
             glist->gl_y1 + (glist->gl_y2 - glist->gl_y1) * x->te_ypix /
                                (glist->gl_screeny2 - glist->gl_screeny1)));
+    }
 }
 
 /* redraw all the items in a glist.  We construe this to mean
@@ -691,9 +747,11 @@ void glist_redraw(t_glist *x)
             /* redraw all the lines */
             linetraverser_start(&t, x);
             while((oc = linetraverser_next(&t)))
+            {
                 sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
                     glist_getcanvas(x), oc, t.tr_lx1, t.tr_ly1, t.tr_lx2,
                     t.tr_ly2);
+            }
             canvas_drawredrect(x, 0);
             if(x->gl_goprect)
             {
@@ -737,9 +795,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 
     sprintf(tag, "graph%lx", (t_int) x);
     if(vis)
+    {
         glist_drawiofor(parent_glist, &x->gl_obj, 1, tag, x1, y1, x2, y2);
+    }
     else
+    {
         glist_eraseiofor(parent_glist, &x->gl_obj, tag);
+    }
     /* if we look like a graph but have been moved to a toplevel,
     just show the bounding rectangle */
     if(x->gl_havewindow)
@@ -780,6 +842,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         /* if there's just one "garray" in the graph, write its name
             along the top */
         for(i = (y1 < y2 ? y1 : y2) - 1, g = x->gl_list; g; g = g->g_next)
+        {
             if(g->g_pd == garray_class &&
                 !garray_getname((t_garray *) g, &arrayname))
             {
@@ -789,6 +852,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                     glist_getcanvas(x), x1, i, arrayname->s_name, sys_font, fs,
                     sys_fontweight, tag);
             }
+        }
 
         /* draw ticks on horizontal borders.  If lperb field is
         zero, this is disabled. */
@@ -797,9 +861,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             t_float upix;
             t_float lpix;
             if(y2 < y1)
+            {
                 upix = y1, lpix = y2;
+            }
             else
+            {
                 upix = y2, lpix = y1;
+            }
             for(i = 0, f = x->gl_xtick.k_point;
                 f < 0.99 * x->gl_x2 + 0.01 * x->gl_x1;
                 i++, f += x->gl_xtick.k_inc)
@@ -840,9 +908,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             t_float ubound;
             t_float lbound;
             if(x->gl_y2 < x->gl_y1)
+            {
                 ubound = x->gl_y1, lbound = x->gl_y2;
+            }
             else
+            {
                 ubound = x->gl_y2, lbound = x->gl_y1;
+            }
             for(i = 0, f = x->gl_ytick.k_point;
                 f < 0.99 * ubound + 0.01 * lbound; i++, f += x->gl_ytick.k_inc)
             {
@@ -876,6 +948,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         }
         /* draw x labels */
         for(i = 0; i < x->gl_nxlabels; i++)
+        {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",
                 glist_getcanvas(x),
@@ -883,15 +956,18 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 (int) glist_ytopixels(x, x->gl_xlabely),
                 x->gl_xlabel[i]->s_name, sys_font, fs, sys_fontweight,
                 xlabelanchor, tag);
+        }
 
         /* draw y labels */
         for(i = 0; i < x->gl_nylabels; i++)
+        {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",
                 glist_getcanvas(x), (int) glist_xtopixels(x, x->gl_ylabelx),
                 (int) glist_ytopixels(x, atof(x->gl_ylabel[i]->s_name)),
                 x->gl_ylabel[i]->s_name, sys_font, fs, sys_fontweight,
                 ylabelanchor, tag);
+        }
 
         /* draw contents of graph as glist */
         for(g = x->gl_list; g; g = g->g_next)
@@ -986,7 +1062,9 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_glist *x = (t_glist *) z;
     if(!x->gl_isgraph)
+    {
         text_widgetbehavior.w_displacefn(z, glist, dx, dy);
+    }
     else
     {
         x->gl_obj.te_xpix += dx;
@@ -1003,7 +1081,9 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *) z;
     if(!x->gl_isgraph)
+    {
         text_widgetbehavior.w_selectfn(z, glist, state);
+    }
     else
     {
         t_rtext *y = glist_findrtext(glist, &x->gl_obj);
@@ -1060,14 +1140,18 @@ static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
     if(oldx < newx - 1)
     {
         for(i = oldx + 1; i <= newx; i++)
+        {
             vec[i].w_float = newy + (oldy - newy) * ((t_float) (newx - i)) /
                                         (t_float) (newx - oldx);
+        }
     }
     else if(oldx > newx + 1)
     {
         for(i = oldx - 1; i >= newx; i--)
+        {
             vec[i].w_float = newy + (oldy - newy) * ((t_float) (newx - i)) /
                                         (t_float) (newx - oldx);
+        }
     }
     else
         vec[newx].w_float = newy;
@@ -1081,10 +1165,14 @@ static int graph_click(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     t_gobj *y;
     int clickreturned = 0;
     if(!x->gl_isgraph)
+    {
         return (text_widgetbehavior.w_clickfn(
             z, glist, xpix, ypix, shift, alt, dbl, doit));
+    }
     if(x->gl_havewindow)
+    {
         return (0);
+    }
     else
     {
         for(y = x->gl_list; y; y = y->g_next)
@@ -1102,9 +1190,13 @@ static int graph_click(t_gobj *z, struct _glist *glist, int xpix, int ypix,
         if(!doit)
         {
             if(y)
+            {
                 canvas_setcursor(glist_getcanvas(x), clickreturned);
+            }
             else
+            {
                 canvas_setcursor(glist_getcanvas(x), CURSOR_RUNMODE_NOTHING);
+            }
         }
         return (clickreturned);
     }
@@ -1128,8 +1220,10 @@ t_glist *glist_findgraph(t_glist *x)
     t_gobj *y = 0;
     t_gobj *z;
     for(z = x->gl_list; z; z = z->g_next)
+    {
         if(pd_class(&z->g_pd) == canvas_class && ((t_glist *) z)->gl_isgraph)
             y = z;
+    }
     return ((t_glist *) y);
 }
 

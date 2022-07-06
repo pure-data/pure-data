@@ -89,14 +89,20 @@ static void gfxstub_offlist(t_gfxstub *x)
     t_gfxstub *y1;
     t_gfxstub *y2;
     if(gfxstub_list == x)
+    {
         gfxstub_list = x->x_next;
+    }
     else
+    {
         for(y1 = gfxstub_list; (y2 = y1->x_next); y1 = y2)
+        {
             if(y2 == x)
             {
                 y1->x_next = y2->x_next;
                 break;
             }
+        }
+    }
 }
 
 /* if the owner disappears, we still may have to stay around until our
@@ -215,9 +221,13 @@ static void openpanel_callback(
     if(x->x_mode != 2) /* single file or folder */
     {
         if(argc == 1 && argv->a_type == A_SYMBOL)
+        {
             outlet_symbol(x->x_obj.ob_outlet, argv->a_w.w_symbol);
+        }
         else
+        {
             bug("openpanel_callback");
+        }
     }
     else /* list of files */
         outlet_list(x->x_obj.ob_outlet, s, argc, argv);

@@ -104,7 +104,9 @@ static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
     t_sample *out1 = sp[2]->s_vec;
     t_sample *out2 = sp[3]->s_vec;
     if(out1 == in2 && out2 == in1)
+    {
         dsp_add(sigfft_swap, 3, out1, out2, (t_int) n);
+    }
     else if(out1 == in2)
     {
         dsp_add(copy_perform, 3, in2, out2, (t_int) n);
@@ -336,9 +338,13 @@ static t_int *sigframp_perform(t_int *w)
                 ((lastreal - nextreal) * re + (lastimag - nextimag) * im) /
                 (2.0f * pow);
             if(detune > 2 || detune < -2)
+            {
                 freq = pow = 0;
+            }
             else
+            {
                 freq = fbin + detune;
+            }
         }
         else
             freq = pow = 0;

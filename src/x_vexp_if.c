@@ -58,18 +58,28 @@ static void expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
         if(argv[i].a_type == A_FLOAT)
         {
             if(x->exp_var[i].ex_type == ET_FI)
+            {
                 x->exp_var[i].ex_flt = argv[i].a_w.w_float;
+            }
             else if(x->exp_var[i].ex_type == ET_II)
+            {
                 x->exp_var[i].ex_int = argv[i].a_w.w_float;
+            }
             else if(x->exp_var[i].ex_type)
+            {
                 pd_error(x, "expr: type mismatch");
+            }
         }
         else if(argv[i].a_type == A_SYMBOL)
         {
             if(x->exp_var[i].ex_type == ET_SI)
+            {
                 x->exp_var[i].ex_ptr = (char *) argv[i].a_w.w_symbol;
+            }
             else if(x->exp_var[i].ex_type)
+            {
                 pd_error(x, "expr: type mismatch");
+            }
         }
     }
     expr_bang(x);
@@ -80,9 +90,13 @@ static void expr_flt(t_expr *x, t_float f, int in)
     if(in >= MAX_VARS) return;
 
     if(x->exp_var[in].ex_type == ET_FI)
+    {
         x->exp_var[in].ex_flt = f;
+    }
     else if(x->exp_var[in].ex_type == ET_II)
+    {
         x->exp_var[in].ex_int = f;
+    }
 }
 
 static t_class *exprproxy_class;
@@ -116,9 +130,13 @@ void exprproxy_float(t_exprproxy *p, t_floatarg f)
     if(in >= MAX_VARS) return;
 
     if(x->exp_var[in].ex_type == ET_FI)
+    {
         x->exp_var[in].ex_flt = f;
+    }
     else if(x->exp_var[in].ex_type == ET_II)
+    {
         x->exp_var[in].ex_int = f;
+    }
 }
 
 /* method definitions */
@@ -304,10 +322,12 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
 
     ninlet = 1;
     for(i = 0, eptr = x->exp_var; i < MAX_VARS; i++, eptr++)
+    {
         if(eptr->ex_type)
         {
             ninlet = i + 1;
         }
+    }
 
     /*
      * create the new inlets
@@ -320,11 +340,13 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
             case 0:
                 /* nothing is using this inlet */
                 if(i < ninlet)
+                {
 #ifdef PD
                     floatinlet_new(&x->exp_ob, &eptr->ex_flt);
 #else /* MSP */
                     inlet_new(&x->exp_ob, "float");
 #endif
+                }
                 break;
 
             case ET_II:
@@ -359,7 +381,9 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
                     break;
                 }
                 else
+                {
                     post("expr: internal error expr_new");
+                }
                 /* falls through */
             default:
                 pd_error(x, "expr: bad type (%lx) inlet = %d\n", eptr->ex_type,
@@ -425,7 +449,9 @@ t_int *expr_perform(t_int *w)
          * inputs
          */
         if(x->exp_nexpr == 1)
+        {
             ex_eval(x, x->exp_stack[0], &x->exp_res[0], 0);
+        }
         else
         {
             res.ex_type = ET_VEC;
@@ -452,6 +478,7 @@ t_int *expr_perform(t_int *w)
      * we need to keep the output in  a different buffer
      */
     for(i = 0; i < x->exp_vsize; i++)
+    {
         for(j = 0; j < x->exp_nexpr; j++)
         {
             res.ex_type = 0;
@@ -469,6 +496,7 @@ t_int *expr_perform(t_int *w)
                     post("expr_perform: bad result type %d", res.ex_type);
             }
         }
+    }
     /*
      * copy inputs and results to the save buffers
      * inputs need to be copied first as the output buffer can be
@@ -476,8 +504,10 @@ t_int *expr_perform(t_int *w)
      */
     n = x->exp_vsize * sizeof(t_float);
     for(i = 0; i < MAX_VARS; i++)
+    {
         if(x->exp_var[i].ex_type == ET_XI)
             memcpy(x->exp_p_var[i], x->exp_var[i].ex_vec, n);
+    }
     for(i = 0; i < x->exp_nexpr; i++)
     {
         memcpy(x->exp_p_res[i], x->exp_tmpres[i], n);
@@ -501,6 +531,7 @@ static void expr_dsp(t_expr *x, t_signal **sp)
         x->exp_res[i].ex_vec = sp[x->exp_nivec + i]->s_vec;
     }
     for(i = 0, nv = 0; i < MAX_VARS; i++)
+    {
         /*
          * the first inlet is always a signal
          *
@@ -519,6 +550,7 @@ static void expr_dsp(t_expr *x, t_signal **sp)
             x->exp_var[i].ex_vec = sp[nv]->s_vec;
             nv++;
         }
+    }
     /* we always have one inlet but we may not use it */
     if(nv != x->exp_nivec && (nv != 0 || x->exp_nivec != 1))
     {
@@ -622,7 +654,9 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
     {
         case 'x':
             if(!sx->s_name[1])
+            {
                 vecno = 0;
+            }
             else
             {
                 vecno = atoi(sx->s_name + 1);
@@ -666,7 +700,9 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
             return;
         case 'y':
             if(!sx->s_name[1])
+            {
                 vecno = 0;
+            }
             else
             {
                 vecno = atoi(sx->s_name + 1);
@@ -737,8 +773,10 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
         for(i = 0; i < x->exp_nexpr; i++)
             memset(x->exp_p_res[i], 0, x->exp_vsize * sizeof(t_float));
         for(i = 0; i < MAX_VARS; i++)
+        {
             if(x->exp_var[i].ex_type == ET_XI)
                 memset(x->exp_p_var[i], 0, x->exp_vsize * sizeof(t_float));
+        }
         return;
     }
     if(argc > 1)
@@ -752,7 +790,9 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
     {
         case 'x':
             if(!sx->s_name[1])
+            {
                 vecno = 0;
+            }
             else
             {
                 vecno = atoi(sx->s_name + 1);
@@ -777,7 +817,9 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
             return;
         case 'y':
             if(!sx->s_name[1])
+            {
                 vecno = 0;
+            }
             else
             {
                 vecno = atoi(sx->s_name + 1);

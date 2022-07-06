@@ -89,9 +89,13 @@ t_int *zero_perf8(t_int *w)
 void dsp_add_zero(t_sample *out, int n)
 {
     if(n & 7)
+    {
         dsp_add(zero_perform, 2, out, (t_int) n);
+    }
     else
+    {
         dsp_add(zero_perf8, 2, out, (t_int) n);
+    }
 }
 
 /* ---------------------------- block~ ----------------------------- */
@@ -177,7 +181,9 @@ static void block_set(
         calcsize = 0; /* this means we'll get it from parent later. */
 
     if(fupsample <= 0)
+    {
         upsample = downsample = 1;
+    }
     else if(fupsample >= 1)
     {
         upsample = fupsample;
@@ -329,8 +335,10 @@ void dsp_add(t_perfroutine f, int n, ...)
     {
         THIS->u_dspchain[THIS->u_dspchainsize + i] = va_arg(ap, t_int);
         if(THIS->u_loud)
+        {
             post("add to chain: %lx",
                 THIS->u_dspchain[THIS->u_dspchainsize + i]);
+        }
     }
     va_end(ap);
     THIS->u_dspchain[newsize - 1] = (t_int) dsp_done;
@@ -461,7 +469,9 @@ static t_signal *signal_new(int n, t_float sr)
 
     /* first try to reclaim one from the free list */
     if((ret = *whichlist))
+    {
         *whichlist = ret->s_nextfree;
+    }
     else
     {
         /* LATER figure out what to do for out-of-space here! */
@@ -672,20 +682,27 @@ void ugen_connect(
     int sigoutno = obj_sigoutletindex(x1, outno);
     int siginno = obj_siginletindex(x2, inno);
     if(THIS->u_loud)
+    {
         post("%s -> %s: %d->%d", class_getname(x1->ob_pd),
             class_getname(x2->ob_pd), outno, inno);
+    }
     for(u1 = dc->dc_ugenlist; u1 && u1->u_obj != x1; u1 = u1->u_next)
         ;
     for(u2 = dc->dc_ugenlist; u2 && u2->u_obj != x2; u2 = u2->u_next)
         ;
     if(!u1 || !u2 || siginno < 0 || !u2->u_nin)
     {
-        if(!u1) pd_error(0, "object with signal outlets but no DSP method?");
-        /* check if it's a "text" (i.e., object wasn't created) -
-        if so fail silently */
+        if(!u1)
+        {
+            pd_error(0, "object with signal outlets but no DSP method?");
+            /* check if it's a "text" (i.e., object wasn't created) -
+            if so fail silently */
+        }
         else if(!(x2 && (pd_class(&x2->ob_pd) == text_class)))
+        {
             pd_error(u1->u_obj,
                 "audio signal outlet connected to nonsignal inlet (ignored)");
+        }
         return;
     }
     if(sigoutno < 0 || sigoutno >= u1->u_nout || siginno >= u2->u_nin)
@@ -762,9 +779,13 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             /* post("%s: unconnected signal inlet set to zero",
                 class_getname(u->u_obj->ob_pd)); */
             if((scalar = obj_findsignalscalar(u->u_obj, i)))
+            {
                 dsp_add_scalarcopy(scalar, s3->s_vec, s3->s_n);
+            }
             else
+            {
                 dsp_add_zero(s3->s_vec, s3->s_n);
+            }
             uin->i_signal = s3;
             s3->s_refcount = 1;
         }
@@ -782,9 +803,13 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         case we increment the reference count; the corresponding decrement
         is in sig_makereusable(). */
         if(nofreesigs)
+        {
             (*sig)->s_refcount++;
+        }
         else if(!newrefcount)
+        {
             signal_makereusable(*sig);
+        }
     }
     for(sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
@@ -819,17 +844,25 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     if(THIS->u_loud)
     {
         if(u->u_nin + u->u_nout == 0)
+        {
             post(
                 "put %s %d", class_getname(u->u_obj->ob_pd), ugen_index(dc, u));
+        }
         else if(u->u_nin + u->u_nout == 1)
+        {
             post("put %s %d (%lx)", class_getname(u->u_obj->ob_pd),
                 ugen_index(dc, u), sig[0]);
+        }
         else if(u->u_nin + u->u_nout == 2)
+        {
             post("put %s %d (%lx %lx)", class_getname(u->u_obj->ob_pd),
                 ugen_index(dc, u), sig[0], sig[1]);
+        }
         else
+        {
             post("put %s %d (%lx %lx %lx ...)", class_getname(u->u_obj->ob_pd),
                 ugen_index(dc, u), sig[0], sig[1], sig[2]);
+        }
     }
 
     /* pass it on and trip anyone whose last inlet was filled */
@@ -918,12 +951,14 @@ void ugen_done_graph(t_dspcontext *dc)
         {
             post("ugen: %s", class_getname(u->u_obj->ob_pd));
             for(uout = u->u_out, i = 0; i < u->u_nout; uout++, i++)
+            {
                 for(oc = uout->o_connections; oc; oc = oc->oc_next)
                 {
                     post("... out %d to %s, index %d, inlet %d", i,
                         class_getname(oc->oc_who->u_obj->ob_pd),
                         ugen_index(dc, oc->oc_who), oc->oc_inno);
                 }
+            }
         }
     }
 
@@ -934,10 +969,14 @@ void ugen_done_graph(t_dspcontext *dc)
         if(pd_class(zz) == block_class)
         {
             if(blk)
+            {
                 pd_error(blk,
                     "conflicting block~ and/or switch~ objects in same window");
+            }
             else
+            {
                 blk = (t_block *) zz;
+            }
         }
     }
 
@@ -1038,13 +1077,17 @@ void ugen_done_graph(t_dspcontext *dc)
         if(outsigs) outsigs += dc->dc_ninlets;
 
         if(pd_class(zz) == vinlet_class)
+        {
             vinlet_dspprolog((struct _vinlet *) zz, dc->dc_iosigs, vecsize,
                 calcsize, THIS->u_phase, period, frequency, downsample,
                 upsample, reblock, switched);
+        }
         else if(pd_class(zz) == voutlet_class)
+        {
             voutlet_dspprolog((struct _voutlet *) zz, outsigs, vecsize,
                 calcsize, THIS->u_phase, period, frequency, downsample,
                 upsample, reblock, switched);
+        }
     }
     chainblockbegin = THIS->u_dspchainsize;
 
@@ -1080,6 +1123,7 @@ void ugen_done_graph(t_dspcontext *dc)
     of ugens not yet scheduled. */
 
     for(u = dc->dc_ugenlist; u; u = u->u_next)
+    {
         if(!u->u_done)
         {
             t_signal **sigp;
@@ -1097,12 +1141,15 @@ void ugen_done_graph(t_dspcontext *dc)
                     (*sigp)->s_refcount++;
                     dsp_add_zero(s3->s_vec, s3->s_n);
                     if(THIS->u_loud)
+                    {
                         post("oops, belatedly set %lx->%lx", *sigp,
                             (*sigp)->s_borrowedfrom);
+                    }
                 }
             }
             break; /* don't need to keep looking. */
         }
+    }
 
     if(blk && (reblock || switched)) /* add block DSP epilog */
         dsp_add(block_epilog, 1, blk);
@@ -1135,8 +1182,10 @@ void ugen_done_graph(t_dspcontext *dc)
     {
         t_int *ip;
         if(!dc->dc_parentcontext)
+        {
             for(i = THIS->u_dspchainsize, ip = THIS->u_dspchain; i--; ip++)
                 post("chain %lx", *ip);
+        }
         post("... ugen_done_graph done.");
     }
     /* now delete everything. */
@@ -1162,9 +1211,13 @@ void ugen_done_graph(t_dspcontext *dc)
         freebytes(u, sizeof *u);
     }
     if(THIS->u_context == dc)
+    {
         THIS->u_context = dc->dc_parentcontext;
+    }
     else
+    {
         bug("THIS->u_context");
+    }
     freebytes(dc, sizeof(*dc));
 }
 
@@ -1230,9 +1283,13 @@ t_int *plus_perf8(t_int *w)
 void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n)
 {
     if(n & 7)
+    {
         dsp_add(plus_perform, 4, in1, in2, out, (t_int) n);
+    }
     else
+    {
         dsp_add(plus_perf8, 4, in1, in2, out, (t_int) n);
+    }
 }
 
 t_int *copy_perform(t_int *w)
@@ -1277,9 +1334,13 @@ static t_int *copy_perf8(t_int *w)
 void dsp_add_copy(t_sample *in, t_sample *out, int n)
 {
     if(n & 7)
+    {
         dsp_add(copy_perform, 3, in, out, (t_int) n);
+    }
     else
+    {
         dsp_add(copy_perf8, 3, in, out, (t_int) n);
+    }
 }
 
 static t_int *sig_tilde_perform(t_int *w)
@@ -1315,9 +1376,13 @@ static t_int *sig_tilde_perf8(t_int *w)
 void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
     if(n & 7)
+    {
         dsp_add(sig_tilde_perform, 3, in, out, (t_int) n);
+    }
     else
+    {
         dsp_add(sig_tilde_perf8, 3, in, out, (t_int) n);
+    }
 }
 
 /* ------------------------ samplerate~~ -------------------------- */

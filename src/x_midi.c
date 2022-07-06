@@ -195,9 +195,13 @@ static void *ctlin_new(t_symbol *s, int argc, t_atom *argv)
     int channel;
     t_ctlin *x = (t_ctlin *) pd_new(ctlin_class);
     if(!argc)
+    {
         ctlno = -1;
+    }
     else
+    {
         ctlno = atom_getfloatarg(0, argc, argv);
+    }
     channel = atom_getfloatarg(1, argc, argv);
     x->x_channel = channel;
     x->x_ctlno = ctlno;
@@ -706,9 +710,13 @@ static void pgmout_float(t_pgmout *x, t_floatarg f)
     int n = f - 1;
     if(binchan < 0) binchan = 0;
     if(n < 0)
+    {
         n = 0;
+    }
     else if(n > 127)
+    {
         n = 127;
+    }
     outmidi_programchange((binchan >> 4), (binchan & 15), n);
 }
 
@@ -870,8 +878,11 @@ static void makenote_tick(t_hang *hang)
     outlet_float(x->x_velout, 0);
     outlet_float(x->x_pitchout, hang->h_pitch);
     if(x->x_hang == hang)
+    {
         x->x_hang = hang->h_next;
+    }
     else
+    {
         for(h2 = x->x_hang; (h3 = h2->h_next); h2 = h3)
         {
             if(h3 == hang)
@@ -880,6 +891,7 @@ static void makenote_tick(t_hang *hang)
                 break;
             }
         }
+    }
     clock_free(hang->h_clock);
     freebytes(hang, sizeof(*hang));
 }
@@ -1032,10 +1044,14 @@ static void poly_float(t_poly *x, t_float f)
             i < x->x_n; v++, i++)
         {
             if(v->v_used && v->v_serial < serialon)
+            {
                 firston = v, serialon = (unsigned int) v->v_serial, onindex = i;
+            }
             else if(!v->v_used && v->v_serial < serialoff)
+            {
                 firstoff = v, serialoff = (unsigned int) v->v_serial,
                 offindex = i;
+            }
         }
         if(firstoff)
         {
@@ -1061,8 +1077,10 @@ static void poly_float(t_poly *x, t_float f)
     {
         for(v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff; i < x->x_n;
             v++, i++)
+        {
             if(v->v_used && v->v_pitch == f && v->v_serial < serialon)
                 firston = v, serialon = (unsigned int) v->v_serial, onindex = i;
+        }
         if(firston)
         {
             firston->v_used = 0;
@@ -1079,6 +1097,7 @@ static void poly_stop(t_poly *x)
     int i;
     t_voice *v;
     for(i = 0, v = x->x_vec; i < x->x_n; i++, v++)
+    {
         if(v->v_used)
         {
             outlet_float(x->x_velout, 0L);
@@ -1087,6 +1106,7 @@ static void poly_stop(t_poly *x)
             v->v_used = 0;
             v->v_serial = x->x_serial++;
         }
+    }
 }
 
 static void poly_clear(t_poly *x)
@@ -1149,7 +1169,9 @@ static void bag_float(t_bag *x, t_float f)
         bagelem->e_next = 0;
         bagelem->e_value = f;
         if(!x->x_first)
+        {
             x->x_first = bagelem;
+        }
         else /* LATER replace with a faster algorithm */
         {
             for(e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
@@ -1168,12 +1190,14 @@ static void bag_float(t_bag *x, t_float f)
             return;
         }
         for(e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
+        {
             if(e3->e_value == f)
             {
                 e2->e_next = e3->e_next;
                 freebytes(e3, sizeof(*e3));
                 return;
             }
+        }
     }
 }
 

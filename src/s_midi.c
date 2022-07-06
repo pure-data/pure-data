@@ -154,11 +154,15 @@ static void sys_putnext(void)
 #endif /* ALSA */
     {
         if(midi_outqueue[midi_outtail].q_onebyte)
+        {
             sys_putmidibyte(portno, midi_outqueue[midi_outtail].q_byte1);
+        }
         else
+        {
             sys_putmidimess(portno, midi_outqueue[midi_outtail].q_byte1,
                 midi_outqueue[midi_outtail].q_byte2,
                 midi_outqueue[midi_outtail].q_byte3);
+        }
     }
     midi_outtail = (midi_outtail + 1 == MIDIQSIZE ? 0 : midi_outtail + 1);
 }
@@ -187,9 +191,13 @@ void sys_pollmidioutqueue(void)
         }
 #endif
         if(midi_outqueue[midi_outtail].q_time <= midirealtime)
+        {
             sys_putnext();
+        }
         else
+        {
             break;
+        }
     }
 }
 
@@ -216,26 +224,42 @@ static void sys_queuemidimess(int portno, int onebyte, int a, int b, int c)
 void outmidi_noteon(int portno, int channel, int pitch, int velo)
 {
     if(pitch < 0)
+    {
         pitch = 0;
+    }
     else if(pitch > 127)
+    {
         pitch = 127;
+    }
     if(velo < 0)
+    {
         velo = 0;
+    }
     else if(velo > 127)
+    {
         velo = 127;
+    }
     sys_queuemidimess(portno, 0, MIDI_NOTEON + (channel & 0xf), pitch, velo);
 }
 
 void outmidi_controlchange(int portno, int channel, int ctl, int value)
 {
     if(ctl < 0)
+    {
         ctl = 0;
+    }
     else if(ctl > 127)
+    {
         ctl = 127;
+    }
     if(value < 0)
+    {
         value = 0;
+    }
     else if(value > 127)
+    {
         value = 127;
+    }
     sys_queuemidimess(
         portno, 0, MIDI_CONTROLCHANGE + (channel & 0xf), ctl, value);
 }
@@ -243,9 +267,13 @@ void outmidi_controlchange(int portno, int channel, int ctl, int value)
 void outmidi_programchange(int portno, int channel, int value)
 {
     if(value < 0)
+    {
         value = 0;
+    }
     else if(value > 127)
+    {
         value = 127;
+    }
     sys_queuemidimess(
         portno, 0, MIDI_PROGRAMCHANGE + (channel & 0xf), value, 0);
 }
@@ -253,9 +281,13 @@ void outmidi_programchange(int portno, int channel, int value)
 void outmidi_pitchbend(int portno, int channel, int value)
 {
     if(value < 0)
+    {
         value = 0;
+    }
     else if(value > 16383)
+    {
         value = 16383;
+    }
     sys_queuemidimess(portno, 0, MIDI_PITCHBEND + (channel & 0xf),
         (value & 127), ((value >> 7) & 127));
 }
@@ -263,22 +295,34 @@ void outmidi_pitchbend(int portno, int channel, int value)
 void outmidi_aftertouch(int portno, int channel, int value)
 {
     if(value < 0)
+    {
         value = 0;
+    }
     else if(value > 127)
+    {
         value = 127;
+    }
     sys_queuemidimess(portno, 0, MIDI_AFTERTOUCH + (channel & 0xf), value, 0);
 }
 
 void outmidi_polyaftertouch(int portno, int channel, int pitch, int value)
 {
     if(pitch < 0)
+    {
         pitch = 0;
+    }
     else if(pitch > 127)
+    {
         pitch = 127;
+    }
     if(value < 0)
+    {
         value = 0;
+    }
     else if(value > 127)
+    {
         value = 127;
+    }
     sys_queuemidimess(
         portno, 0, MIDI_POLYAFTERTOUCH + (channel & 0xf), pitch, value);
 }
@@ -385,31 +429,47 @@ static void sys_dispatchnextmidiin(void)
             {
                 case MIDI_NOTEOFF:
                     if(gotbyte1)
+                    {
                         inmidi_noteon(portno, chan, byte1, 0),
                             parserp->mp_gotbyte1 = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_NOTEON:
                     if(gotbyte1)
+                    {
                         inmidi_noteon(portno, chan, byte1, byte),
                             parserp->mp_gotbyte1 = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_POLYAFTERTOUCH:
                     if(gotbyte1)
+                    {
                         inmidi_polyaftertouch(portno, chan, byte1, byte),
                             parserp->mp_gotbyte1 = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_CONTROLCHANGE:
                     if(gotbyte1)
+                    {
                         inmidi_controlchange(portno, chan, byte1, byte),
                             parserp->mp_gotbyte1 = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_PROGRAMCHANGE:
                     inmidi_programchange(portno, chan, byte);
@@ -419,10 +479,14 @@ static void sys_dispatchnextmidiin(void)
                     break;
                 case MIDI_PITCHBEND:
                     if(gotbyte1)
+                    {
                         inmidi_pitchbend(portno, chan, ((byte << 7) + byte1)),
                             parserp->mp_gotbyte1 = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_SYSEX:
                     inmidi_sysex(portno, byte);
@@ -435,9 +499,13 @@ static void sys_dispatchnextmidiin(void)
                     break;
                 case MIDI_SONGPOS:
                     if(gotbyte1)
+                    {
                         parserp->mp_gotbyte1 = 0, parserp->mp_status = 0;
+                    }
                     else
+                    {
                         parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
+                    }
                     break;
                 case MIDI_SONGSELECT:
                     parserp->mp_status = 0;
@@ -575,18 +643,26 @@ void sys_get_midi_params(
     {
         if((devn = sys_mididevnametonumber(
                 0, &midi_indevnames[i * DEVDESCSIZE])) >= 0)
+        {
             pmidiindev[i] = devn;
+        }
         else
+        {
             pmidiindev[i] = midi_midiindev[i];
+        }
     }
     *pnmidioutdev = midi_nmidioutdev;
     for(i = 0; i < midi_nmidioutdev; i++)
     {
         if((devn = sys_mididevnametonumber(
                 1, &midi_outdevnames[i * DEVDESCSIZE])) >= 0)
+        {
             pmidioutdev[i] = devn;
+        }
         else
+        {
             pmidioutdev[i] = midi_midioutdev[i];
+        }
     }
 }
 
@@ -657,7 +733,9 @@ void sys_listmididevs(void)
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
 
     if(!nindevs)
+    {
         post("no MIDI input devices found");
+    }
     else
     {
         post("MIDI input devices:");
@@ -665,7 +743,9 @@ void sys_listmididevs(void)
             post("%d. %s", i + 1, indevlist + i * DEVDESCSIZE);
     }
     if(!noutdevs)
+    {
         post("no MIDI output devices found");
+    }
     else
     {
         post("MIDI output devices:");
@@ -761,15 +841,19 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for(i = 0; i < nindevs; i++)
+    {
         sys_vgui("lappend midi_indevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
     for(i = 0; i < noutdevs; i++)
+    {
         sys_vgui("lappend midi_outdevlist {%s}\n",
             pdgui_strnescape(
                 device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+    }
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 
@@ -958,10 +1042,16 @@ void sys_mididevnumbertoname(int output, int devno, char *name, int namesize)
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
     if(output && (devno < noutdevs))
+    {
         strncpy(name, outdevlist + devno * DEVDESCSIZE, namesize);
+    }
     else if(!output && (devno < nindevs))
+    {
         strncpy(name, indevlist + devno * DEVDESCSIZE, namesize);
+    }
     else
+    {
         *name = 0;
+    }
     name[namesize - 1] = 0;
 }

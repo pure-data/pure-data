@@ -130,9 +130,13 @@ static int sys_do_load_lib(
     if(!path) return (0);
 
     if((classname = strrchr(objectname, '/')))
+    {
         classname++;
+    }
     else
+    {
         classname = objectname;
+    }
     for(i = 0, cnameptr = classname; i < MAXPDSTRING - 7 && *cnameptr;
         cnameptr++)
     {
@@ -295,7 +299,9 @@ void sys_register_loader(loader_t loader)
         if(q->loader == loader) /* already loaded - nothing to do */
             return;
         if(q->next)
+        {
             q = q->next;
+        }
         else
         {
             q->next = (loader_queue_t *) getbytes(sizeof(loader_queue_t));
@@ -355,10 +361,11 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         sys_loadlib_iter(dirbuf, &data);
     }
     data.classname = classname;
-    if(!data.ok && !sys_isabsolutepath(
-                       classname)) /* don't iterate if classname is absolute */
+    if(!data.ok && !sys_isabsolutepath(classname))
+    { /* don't iterate if classname is absolute */
         canvas_path_iterate(
             canvas, (t_canvas_path_iterator) sys_loadlib_iter, &data);
+    }
 
     /* if loaders failed so far, we try a last time without a PATH
      * let the loaders search wherever they want */
@@ -460,9 +467,13 @@ static t_pd *do_create_abstraction(t_symbol *s, int argc, t_atom *argv)
 
             binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
             if(s__X.s_thing && was != s__X.s_thing)
+            {
                 canvas_popabstraction((t_canvas *) (s__X.s_thing));
+            }
             else
+            {
                 s__X.s_thing = was;
+            }
             canvas_setargs(0, 0);
             return (pd_this->pd_newest);
         }

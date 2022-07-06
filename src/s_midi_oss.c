@@ -79,9 +79,11 @@ void sys_do_open_midi(
         int devno = midiinvec[i];
         if(devno < 0 || devno >= oss_nmididevs) continue;
         for(j = 0; j < nmidiout; j++)
+        {
             if(midioutvec[j] >= 0 && midioutvec[j] <= oss_nmididevs &&
                 !strcmp(oss_midinames[midioutvec[j]], oss_midinames[devno]))
                 outdevindex = j;
+        }
 
         /* try to open the device for read/write. */
         if(outdevindex >= 0)
@@ -101,9 +103,13 @@ void sys_do_open_midi(
                 oss_midinames[devno], fd);
         }
         if(fd >= 0)
+        {
             oss_midiinfd[oss_nmidiin++] = fd;
+        }
         else
+        {
             post("couldn't open MIDI input device %s", oss_midinames[devno]);
+        }
     }
     for(i = 0, oss_nmidiout = 0; i < nmidiout; i++)
     {
@@ -118,14 +124,20 @@ void sys_do_open_midi(
                 oss_midinames[devno], fd);
         }
         if(fd >= 0)
+        {
             oss_midioutfd[oss_nmidiout++] = fd;
+        }
         else
+        {
             post("couldn't open MIDI output device %s", oss_midinames[devno]);
+        }
     }
 
     if(oss_nmidiin < nmidiin || oss_nmidiout < nmidiout || sys_verbose)
+    {
         post("opened %d MIDI input device(s) and %d MIDI output device(s).",
             oss_nmidiin, oss_nmidiout);
+    }
 
     sys_setalarm(0);
 }

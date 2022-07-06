@@ -59,11 +59,17 @@ int main(int argc, char **argv)
     if(argc > 2)
     {
         if(!strcmp(argv[2], "tcp"))
+        {
             protocol = SOCK_STREAM;
+        }
         else if(!strcmp(argv[2], "udp"))
+        {
             protocol = SOCK_DGRAM;
+        }
         else
+        {
             goto usage;
+        }
     }
     else
         protocol = SOCK_STREAM; /* default */
@@ -281,9 +287,13 @@ static void doconnect(void)
 {
     int fd = accept(sockfd, 0, 0);
     if(fd < 0)
+    {
         perror("accept");
+    }
     else
+    {
         addport(fd);
+    }
 }
 
 static void makeoutput(char *buf, int len)
@@ -361,9 +371,13 @@ static void tcpread(t_fdpoll *x)
         rmport(x);
     }
     else if(ret == 0)
+    {
         rmport(x);
+    }
     else
+    {
         tcpmakeoutput(x, inbuf, ret);
+    }
 }
 
 static void dopoll(void)

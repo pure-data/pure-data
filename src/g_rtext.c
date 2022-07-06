@@ -62,16 +62,20 @@ void rtext_free(t_rtext *x)
     if(x->x_glist->gl_editor->e_textedfor == x)
         x->x_glist->gl_editor->e_textedfor = 0;
     if(x->x_glist->gl_editor->e_rtext == x)
+    {
         x->x_glist->gl_editor->e_rtext = x->x_next;
+    }
     else
     {
         t_rtext *e2;
         for(e2 = x->x_glist->gl_editor->e_rtext; e2; e2 = e2->x_next)
+        {
             if(e2->x_next == x)
             {
                 e2->x_next = x->x_next;
                 break;
             }
+        }
     }
     freebytes(x->x_buf, x->x_bufsize + 1); /* extra 0 byte */
     freebytes(x, sizeof *x);
@@ -343,9 +347,13 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp, int *indexp,
             }
         }
         if(x->x_text->te_width > 0)
+        {
             *widthp = x->x_text->te_width * fontwidth;
+        }
         else
+        {
             *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
+        }
         tempbuf[*outchars_b_p] = 0;
     }
     if(*indexp > *outchars_b_p) *indexp = *outchars_b_p;
@@ -395,17 +403,25 @@ static void rtext_senditup(
 
     text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
     if(x->x_bufsize >= 100)
+    {
         tempbuf = (char *) t_getbytes(2 * x->x_bufsize + 1);
+    }
     else
+    {
         tempbuf = smallbuf;
+    }
     tempbuf[0] = 0;
 
     if(x->x_text->te_type == T_ATOM)
+    {
         rtext_formatatom(x, widthp, heightp, indexp, tempbuf, &outchars_b,
             &selstart_b, &selend_b, fontwidth, fontheight);
+    }
     else
+    {
         rtext_formattext(x, widthp, heightp, indexp, tempbuf, &outchars_b,
             &selstart_b, &selend_b, fontwidth, fontheight);
+    }
 
     if(action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
@@ -453,8 +469,10 @@ static void rtext_senditup(
     {
         sys_vgui("pdtk_text_set .x%lx.c %s {%s }\n", canvas, x->x_tag, escbuf);
         if(*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
+        {
             text_drawborder(
                 x->x_text, x->x_glist, x->x_tag, *widthp, *heightp, 0);
+        }
         if(x->x_active)
         {
             if(selend_b > selstart_b)
@@ -597,9 +615,13 @@ int rtext_findatomfor(t_rtext *x, int xpos, int ypos)
     for(i = 0; i <= indx; i++)
     {
         if(x->x_buf[i] == ';' || x->x_buf[i] == ',')
+        {
             natom++, gotone = 0;
+        }
         else if(x->x_buf[i] == ' ' || x->x_buf[i] == '\n')
+        {
             gotone = 0;
+        }
         else
         {
             if(!gotone) natom++;
@@ -801,9 +823,13 @@ void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
     else if(flag == RTEXT_SHIFT)
     {
         if(indx * 2 > x->x_selstart + x->x_selend)
+        {
             x->x_dragfrom = x->x_selstart, x->x_selend = indx;
+        }
         else
+        {
             x->x_dragfrom = x->x_selend, x->x_selstart = indx;
+        }
     }
     else if(flag == RTEXT_DRAG)
     {

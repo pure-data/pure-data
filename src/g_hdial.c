@@ -81,15 +81,19 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
         x->x_drawn = x->x_on;
     }
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxOUT%d outlet]\n",
             canvas, xx11b, yy12 + IEMGUI_ZOOM(x) - ioh, xx11b + iow, yy12, x,
             0);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxIN%d inlet]\n",
             canvas, xx11b, yy11, xx11b + iow, yy11 - IEMGUI_ZOOM(x) + ioh, x,
             0);
+    }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d "
              "%s} -fill #%06x -tags [list %lxLABEL label text]\n",
         canvas, xx11b + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
@@ -134,11 +138,15 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
         xx11b + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         yy11 + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n", canvas, x, 0, xx11b,
             yy12 + IEMGUI_ZOOM(x) - ioh, xx11b + iow, yy12);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n", canvas, x, 0, xx11b,
             yy11, xx11b + iow, yy11 - IEMGUI_ZOOM(x) + ioh);
+    }
 }
 
 void hradio_draw_erase(t_hradio *x, t_glist *glist)
@@ -254,19 +262,33 @@ void hradio_draw_select(t_hradio *x, t_glist *glist)
 void hradio_draw(t_hradio *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
+    {
         sys_queuegui(x, glist, hradio_draw_update);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         hradio_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         hradio_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         hradio_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         hradio_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         hradio_draw_config(x, glist);
+    }
     else if(mode >= IEM_GUI_DRAW_MODE_IO)
+    {
         hradio_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
 }
 
 /* ------------------------ hdl widgetbehaviour----------------------------- */
@@ -528,8 +550,10 @@ static int hradio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
     if(doit)
+    {
         hradio_click((t_hradio *) z, (t_floatarg) xpix, (t_floatarg) ypix,
             (t_floatarg) shift, 0, (t_floatarg) alt);
+    }
     return (1);
 }
 
@@ -660,9 +684,13 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(!strcmp(x->x_gui.x_snd->s_name, "empty")) x->x_gui.x_fsf.x_snd_able = 0;
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;
@@ -676,9 +704,13 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(on < 0) on = 0;
     if(on >= x->x_number) on = x->x_number - 1;
     if(x->x_gui.x_isa.x_loadinit)
+    {
         x->x_on = on;
+    }
     else
+    {
         x->x_on = 0;
+    }
     x->x_on_old = x->x_on;
     x->x_change = (chg == 0) ? 0 : 1;
     if(x->x_gui.x_fsf.x_rcv_able)

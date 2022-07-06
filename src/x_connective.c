@@ -41,9 +41,13 @@ static void pdint_float(t_pdint *x, t_float f)
 static void pdint_send(t_pdint *x, t_symbol *s)
 {
     if(s->s_thing)
+    {
         pd_float(s->s_thing, (t_float) (int64_t) x->x_f);
+    }
     else
+    {
         pd_error(x, "%s: no such object", s->s_name);
+    }
 }
 
 void pdint_setup(void)
@@ -98,17 +102,25 @@ static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
     char *str_end = NULL;
     f = strtod(s->s_name, &str_end);
     if(f == 0 && s->s_name == str_end)
+    {
         pd_error(x, "couldn't convert %s to float", s->s_name);
+    }
     else
+    {
         outlet_float(x->x_obj.ob_outlet, x->x_f = f);
+    }
 }
 
 static void pdfloat_send(t_pdfloat *x, t_symbol *s)
 {
     if(s->s_thing)
+    {
         pd_float(s->s_thing, x->x_f);
+    }
     else
+    {
         pd_error(x, "%s: no such object", s->s_name);
+    }
 }
 
 void pdfloat_setup(void)
@@ -167,11 +179,17 @@ object's responsibility?  Dunno... */
 static void pdsymbol_list(t_pdsymbol *x, t_symbol *s, int ac, t_atom *av)
 {
     if(!ac)
+    {
         pdsymbol_bang(x);
+    }
     else if(av->a_type == A_SYMBOL)
+    {
         pdsymbol_symbol(x, av->a_w.w_symbol);
+    }
     else
+    {
         pdsymbol_anything(x, s, ac, av);
+    }
 }
 
 void pdsymbol_setup(void)
@@ -354,17 +372,25 @@ typedef struct _sel1
 static void sel1_float(t_sel1 *x, t_float f)
 {
     if(x->x_atom.a_type == A_FLOAT && f == x->x_atom.a_w.w_float)
+    {
         outlet_bang(x->x_outlet1);
+    }
     else
+    {
         outlet_float(x->x_outlet2, f);
+    }
 }
 
 static void sel1_symbol(t_sel1 *x, t_symbol *s)
 {
     if(x->x_atom.a_type == A_SYMBOL && s == x->x_atom.a_w.w_symbol)
+    {
         outlet_bang(x->x_outlet1);
+    }
     else
+    {
         outlet_symbol(x->x_outlet2, s);
+    }
 }
 
 static t_class *sel2_class;
@@ -391,11 +417,13 @@ static void sel2_float(t_sel2 *x, t_float f)
     if(x->x_type == A_FLOAT)
     {
         for(nelement = (int) x->x_nelement, e = x->x_vec; nelement--; e++)
+        {
             if(e->e_w.w_float == f)
             {
                 outlet_bang(e->e_outlet);
                 return;
             }
+        }
     }
     outlet_float(x->x_rejectout, f);
 }
@@ -407,11 +435,13 @@ static void sel2_symbol(t_sel2 *x, t_symbol *s)
     if(x->x_type == A_SYMBOL)
     {
         for(nelement = (int) x->x_nelement, e = x->x_vec; nelement--; e++)
+        {
             if(e->e_w.w_symbol == s)
             {
                 outlet_bang(e->e_outlet);
                 return;
             }
+        }
     }
     outlet_symbol(x->x_rejectout, s);
 }
@@ -458,9 +488,13 @@ static void *select_new(t_symbol *s, int argc, t_atom *argv)
     {
         e->e_outlet = outlet_new(&x->x_obj, &s_bang);
         if((x->x_type = argv->a_type) == A_FLOAT)
+        {
             e->e_w.w_float = atom_getfloatarg(n, argc, argv);
+        }
         else
+        {
             e->e_w.w_symbol = atom_getsymbolarg(n, argc, argv);
+        }
     }
     x->x_rejectout = outlet_new(&x->x_obj, &s_float);
     return (x);
@@ -507,15 +541,21 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     if(x->x_type == A_SYMBOL)
     {
         for(nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        {
             if(e->e_w.w_symbol == sel)
             {
                 if(argc > 0 && argv[0].a_type == A_SYMBOL)
+                {
                     outlet_anything(
                         e->e_outlet, argv[0].a_w.w_symbol, argc - 1, argv + 1);
+                }
                 else
+                {
                     outlet_list(e->e_outlet, 0, argc, argv);
+                }
                 return;
             }
+        }
     }
     outlet_anything(x->x_rejectout, sel, argc, argv);
 }
@@ -531,15 +571,21 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         if(argv->a_type != A_FLOAT) goto rejected;
         f = atom_getfloat(argv);
         for(nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        {
             if(e->e_w.w_float == f)
             {
                 if(argc > 1 && argv[1].a_type == A_SYMBOL)
+                {
                     outlet_anything(
                         e->e_outlet, argv[1].a_w.w_symbol, argc - 2, argv + 2);
+                }
                 else
+                {
                     outlet_list(e->e_outlet, 0, argc - 1, argv + 1);
+                }
                 return;
             }
+        }
     }
     else /* symbol arguments */
     {
@@ -550,10 +596,14 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 if(e->e_w.w_symbol == &s_list)
                 {
                     if(argc > 0 && argv[0].a_type == A_SYMBOL)
+                    {
                         outlet_anything(e->e_outlet, argv[0].a_w.w_symbol,
                             argc - 1, argv + 1);
+                    }
                     else
+                    {
                         outlet_list(e->e_outlet, 0, argc, argv);
+                    }
                     return;
                 }
             }
@@ -631,16 +681,24 @@ static void *route_new(t_symbol *s, int argc, t_atom *argv)
     {
         e->e_outlet = outlet_new(&x->x_obj, &s_list);
         if(x->x_type == A_FLOAT)
+        {
             e->e_w.w_float = atom_getfloatarg(n, argc, argv);
+        }
         else
+        {
             e->e_w.w_symbol = atom_getsymbolarg(n, argc, argv);
+        }
     }
     if(argc == 1)
     {
         if(argv->a_type == A_FLOAT)
+        {
             floatinlet_new(&x->x_obj, &x->x_vec->e_w.w_float);
+        }
         else
+        {
             symbolinlet_new(&x->x_obj, &x->x_vec->e_w.w_symbol);
+        }
     }
     x->x_rejectout = outlet_new(&x->x_obj, &s_list);
     return (x);
@@ -740,11 +798,13 @@ static void pack_bang(t_pack *x)
     t_gpointer *gp;
     t_atom *outvec;
     for(i = (int) x->x_nptr, gp = x->x_gpointer; i--; gp++)
+    {
         if(!gpointer_check(gp, 1))
         {
             pd_error(x, "pack: stale pointer");
             return;
         }
+    }
     /* reentrancy protection.  The first time through use the pre-allocated
     x_outvec; if we're reentered we have to allocate new memory. */
     if(!x->x_outvec)
@@ -763,9 +823,13 @@ static void pack_bang(t_pack *x)
     memcpy(outvec, x->x_vec, size);
     outlet_list(x->x_obj.ob_outlet, &s_list, (int) x->x_n, outvec);
     if(reentered)
+    {
         t_freebytes(outvec, size);
+    }
     else
+    {
         x->x_outvec = outvec;
+    }
 }
 
 static void pack_pointer(t_pack *x, t_gpointer *gp)
@@ -894,8 +958,10 @@ static void *unpack_new(t_symbol *s, int argc, t_atom *argv)
             else
             {
                 if(c != 'f')
+                {
                     pd_error(
                         x, "unpack: %s: bad type", ap->a_w.w_symbol->s_name);
+                }
                 u->u_type = A_FLOAT;
                 u->u_outlet = outlet_new(&x->x_obj, &s_float);
             }
@@ -919,13 +985,21 @@ static void unpack_list(t_unpack *x, t_symbol *s, int argc, t_atom *argv)
     {
         t_atomtype type = u->u_type;
         if(type != ap->a_type)
+        {
             pd_error(x, "unpack: type mismatch");
+        }
         else if(type == A_FLOAT)
+        {
             outlet_float(u->u_outlet, ap->a_w.w_float);
+        }
         else if(type == A_SYMBOL)
+        {
             outlet_symbol(u->u_outlet, ap->a_w.w_symbol);
+        }
         else
+        {
             outlet_pointer(u->u_outlet, ap->a_w.w_gpointer);
+        }
     }
 }
 
@@ -997,26 +1071,44 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
         t_atomtype thistype = ap->a_type;
         char c;
         if(thistype == TR_SYMBOL)
+        {
             c = ap->a_w.w_symbol->s_name[0];
+        }
         else if(thistype == TR_FLOAT)
+        {
             c = 'f';
+        }
         else
+        {
             c = 0;
+        }
         if(c == 'p')
+        {
             u->u_type = TR_POINTER,
             u->u_outlet = outlet_new(&x->x_obj, &s_pointer);
+        }
         else if(c == 'f')
+        {
             u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+        }
         else if(c == 'b')
+        {
             u->u_type = TR_BANG, u->u_outlet = outlet_new(&x->x_obj, &s_bang);
+        }
         else if(c == 'l')
+        {
             u->u_type = TR_LIST, u->u_outlet = outlet_new(&x->x_obj, &s_list);
+        }
         else if(c == 's')
+        {
             u->u_type = TR_SYMBOL,
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
+        }
         else if(c == 'a')
+        {
             u->u_type = TR_ANYTHING,
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
+        }
         else
         {
             pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
@@ -1033,23 +1125,37 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
     for(i = (int) x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if(u->u_type == TR_FLOAT)
+        {
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
+        }
         else if(u->u_type == TR_BANG)
+        {
             outlet_bang(u->u_outlet);
+        }
         else if(u->u_type == TR_SYMBOL)
+        {
             outlet_symbol(
                 u->u_outlet, (argc ? atom_getsymbol(argv) : &s_symbol));
+        }
         else if(u->u_type == TR_POINTER)
         {
             if(!argc || argv->a_type != TR_POINTER)
+            {
                 pd_error(x, "trigger: bad pointer");
+            }
             else
+            {
                 outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
+            }
         }
         else if(u->u_type == TR_LIST)
+        {
             outlet_list(u->u_outlet, &s_list, argc, argv);
+        }
         else
+        {
             outlet_anything(u->u_outlet, s, argc, argv);
+        }
     }
 }
 
@@ -1060,12 +1166,18 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
     for(i = (int) x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if(u->u_type == TR_BANG)
+        {
             outlet_bang(u->u_outlet);
+        }
         else if(u->u_type == TR_ANYTHING)
+        {
             outlet_anything(u->u_outlet, s, argc, argv);
+        }
         else
+        {
             pd_error(x, "trigger: generic messages can only be converted to "
                         "'b' or 'a'");
+        }
     }
 }
 
@@ -1193,9 +1305,13 @@ static void *moses_new(t_floatarg f)
 static void moses_float(t_moses *x, t_float f)
 {
     if(f < x->x_y)
+    {
         outlet_float(x->x_ob.ob_outlet, f);
+    }
     else
+    {
         outlet_float(x->x_out2, f);
+    }
 }
 
 static void moses_setup(void)
@@ -1625,8 +1741,10 @@ static void *value_new(t_symbol *s)
 {
     t_value *x = (t_value *) pd_new(value_class);
     if(!*s->s_name)
+    {
         inlet_new(
             &x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
+    }
     x->x_sym = s;
     x->x_floatstar = value_get(s);
     outlet_new(&x->x_obj, &s_float);
@@ -1651,9 +1769,13 @@ static void value_symbol2(t_value *x, t_symbol *s)
 static void value_send(t_value *x, t_symbol *s)
 {
     if(s->s_thing)
+    {
         pd_float(s->s_thing, *x->x_floatstar);
+    }
     else
+    {
         pd_error(x, "%s: no such object", s->s_name);
+    }
 }
 
 static void value_ff(t_value *x) { value_release(x->x_sym); }

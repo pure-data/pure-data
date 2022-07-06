@@ -119,6 +119,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     int i;
     t_methodentry *m;
     for(i = 0; i < nmethod; i++)
+    {
         if(sel && (*methodlist)[i].me_name == sel)
         {
             char nbuf[80];
@@ -126,14 +127,19 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
             nbuf[79] = 0;
             (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
             if(c == pd_objectmaker)
+            {
                 logpost(NULL, PD_VERBOSE,
                     "warning: class '%s' overwritten; old one renamed '%s'",
                     sel->s_name, nbuf);
+            }
             else
+            {
                 logpost(NULL, PD_VERBOSE,
                     "warning: old method '%s' for class '%s' renamed '%s'",
                     sel->s_name, c->c_name->s_name, nbuf);
+            }
         }
+    }
     (*methodlist) = t_resizebytes((*methodlist), nmethod * sizeof(**methodlist),
         (nmethod + 1) * sizeof(**methodlist));
     m = (*methodlist) + nmethod;
@@ -289,9 +295,13 @@ static void pd_defaultanything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 static void pd_defaultbang(t_pd *x)
 {
     if(*(*x)->c_listmethod != pd_defaultlist)
+    {
         (*(*x)->c_listmethod)(x, 0, 0, 0);
+    }
     else
+    {
         (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
+    }
 }
 
 /* am empty list calls the 'bang' method unless it's the default
@@ -302,9 +312,13 @@ an empty list.  */
 void pd_emptylist(t_pd *x)
 {
     if(*(*x)->c_bangmethod != pd_defaultbang)
+    {
         (*(*x)->c_bangmethod)(x);
+    }
     else
+    {
         (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
+    }
 }
 
 static void pd_defaultpointer(t_pd *x, t_gpointer *gp)
@@ -392,15 +406,21 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     }
     /* Next try for an "anything" method */
     if((*x)->c_anymethod != pd_defaultanything)
+    {
         (*(*x)->c_anymethod)(x, &s_list, argc, argv);
 
     /* if the object is patchable (i.e., can have proper inlets)
         send it on to obj_list which will unpack the list into the inlets */
+    }
     else if((*x)->c_patchable)
+    {
         obj_list((t_object *) x, s, argc, argv);
     /* otherwise gove up and complain. */
+    }
     else
+    {
         pd_defaultanything(x, &s_list, argc, argv);
+    }
 }
 
 /* for now we assume that all "gobjs" are text unless explicitly
@@ -439,14 +459,18 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         if(count == MAXPDARG)
         {
             if(s)
+            {
                 pd_error(0,
                     "class %s: sorry: only %d args typechecked; use A_GIMME",
                     s->s_name, MAXPDARG);
+            }
             else
+            {
                 pd_error(0,
                     "unnamed class: sorry: only %d args typechecked; use "
                     "A_GIMME",
                     MAXPDARG);
+            }
             break;
         }
         vp++;
@@ -469,9 +493,11 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             size_t l1 = strlen(s->s_name);
             size_t l2 = strlen(loadstring);
             if(l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
+            {
                 class_addmethod(pd_objectmaker, (t_method) newmethod,
                     class_loadsym, vec[0], vec[1], vec[2], vec[3], vec[4],
                     vec[5]);
+            }
         }
     }
     c = (t_class *) t_getbytes(sizeof(*c));
@@ -566,12 +592,16 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s, t_atomtype type1, ...)
         if(count == MAXPDARG)
         {
             if(s)
+            {
                 pd_error(0, "class %s: sorry: only %d creation args allowed",
                     s->s_name, MAXPDARG);
+            }
             else
+            {
                 pd_error(0,
                     "unnamed class: sorry: only %d creation args allowed",
                     MAXPDARG);
+            }
             break;
         }
         vp++;
@@ -638,10 +668,12 @@ void class_addmethod(
             argtype = va_arg(ap, t_atomtype);
         }
         if(argtype != A_NULL)
+        {
             pd_error(0,
                 "%s_%s: only 5 arguments are typecheckable; use A_GIMME",
                 (c->c_name) ? (c->c_name->s_name) : "<anon>",
                 sel ? (sel->s_name) : "<nomethod>");
+        }
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
         for(i = 0; i < pd_ninstances; i++)
@@ -754,17 +786,23 @@ static void pd_floatforsignal(t_pd *x, t_float f)
 {
     int offset = (*x)->c_floatsignalin;
     if(offset > 0)
+    {
         *(t_float *) (((char *) x) + offset) = f;
+    }
     else
+    {
         pd_error(
             x, "%s: float unexpected for signal input", (*x)->c_name->s_name);
+    }
 }
 
 void class_domainsignalin(t_class *c, int onset)
 {
     if(!c) return;
     if(onset <= 0)
+    {
         onset = -1;
+    }
     else
     {
         if(c->c_floatmethod != pd_defaultfloat)
@@ -835,9 +873,13 @@ static t_symbol *dogensym(
         symhashloc = &sym2->s_next;
     }
     if(oldsym)
+    {
         sym2 = oldsym;
+    }
     else
+    {
         sym2 = (t_symbol *) t_getbytes(sizeof(*sym2));
+    }
     symname = t_getbytes(length + 1);
     sym2->s_next = 0;
     sym2->s_thing = 0;
@@ -946,11 +988,17 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     if(s == &s_float)
     {
         if(!argc)
+        {
             (*c->c_floatmethod)(x, 0.);
+        }
         else if(argv->a_type == A_FLOAT)
+        {
             (*c->c_floatmethod)(x, argv->a_w.w_float);
+        }
         else
+        {
             goto badarg;
+        }
         return;
     }
     if(s == &s_bang)
@@ -966,9 +1014,13 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     if(s == &s_symbol)
     {
         if(argc && argv->a_type == A_SYMBOL)
+        {
             (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
+        }
         else
+        {
             (*c->c_symbolmethod)(x, &s_);
+        }
         return;
     }
     /* pd_objectmaker doesn't require
@@ -976,9 +1028,13 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     if(s == &s_pointer && x != &pd_objectmaker)
     {
         if(argc && argv->a_type == A_POINTER)
+        {
             (*c->c_pointermethod)(x, argv->a_w.w_gpointer);
+        }
         else
+        {
             goto badarg;
+        }
         return;
     }
 #ifdef PDINSTANCE
@@ -987,16 +1043,21 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     mlist = c->c_methods;
 #endif
     for(i = c->c_nmethod, m = mlist; i--; m++)
+    {
         if(m->me_name == s)
         {
             wp = m->me_arg;
             if(*wp == A_GIMME)
             {
                 if(x == &pd_objectmaker)
+                {
                     pd_this->pd_newest =
                         (*((t_newgimme) (m->me_fun)))(s, argc, argv);
+                }
                 else
+                {
                     (*((t_messgimme) (m->me_fun)))(x, s, argc, argv);
+                }
                 return;
             }
             if(argc > MAXPDARG) argc = MAXPDARG;
@@ -1007,13 +1068,19 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 {
                     case A_POINTER:
                         if(!argc)
+                        {
                             goto badarg;
+                        }
                         else
                         {
                             if(argv->a_type == A_POINTER)
+                            {
                                 *ap = (t_int) (argv->a_w.w_gpointer);
+                            }
                             else
+                            {
                                 goto badarg;
+                            }
                             argc--;
                             argv++;
                         }
@@ -1024,13 +1091,19 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                         if(!argc) goto badarg; /* falls through */
                     case A_DEFFLOAT:
                         if(!argc)
+                        {
                             *dp = 0;
+                        }
                         else
                         {
                             if(argv->a_type == A_FLOAT)
+                            {
                                 *dp = argv->a_w.w_float;
+                            }
                             else
+                            {
                                 goto badarg;
+                            }
                             argc--;
                             argv++;
                         }
@@ -1040,21 +1113,29 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                         if(!argc) goto badarg; /* falls through */
                     case A_DEFSYM:
                         if(!argc)
+                        {
                             *ap = (t_int) (&s_);
+                        }
                         else
                         {
                             if(argv->a_type == A_SYMBOL)
+                            {
                                 *ap = (t_int) (argv->a_w.w_symbol);
                             /* if it's an unfilled "dollar" argument it appears
                             as zero here; cheat and bash it to the null
                             symbol.  Unfortunately, this lets real zeros
                             pass as symbols too, which seems wrong... */
+                            }
                             else if(x == &pd_objectmaker &&
                                     argv->a_type == A_FLOAT &&
                                     argv->a_w.w_float == 0)
+                            {
                                 *ap = (t_int) (&s_);
+                            }
                             else
+                            {
                                 goto badarg;
+                            }
                             argc--;
                             argv++;
                         }
@@ -1101,6 +1182,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             if(x == &pd_objectmaker) pd_this->pd_newest = bonzo;
             return;
         }
+    }
     (*c->c_anymethod)(x, s, argc, argv);
     return;
 badarg:
@@ -1158,20 +1240,30 @@ void pd_forwardmess(t_pd *x, int argc, t_atom *argv)
     {
         t_atomtype t = argv->a_type;
         if(t == A_SYMBOL)
+        {
             pd_typedmess(x, argv->a_w.w_symbol, argc - 1, argv + 1);
+        }
         else if(t == A_POINTER)
         {
             if(argc == 1)
+            {
                 pd_pointer(x, argv->a_w.w_gpointer);
+            }
             else
+            {
                 pd_list(x, &s_list, argc, argv);
+            }
         }
         else if(t == A_FLOAT)
         {
             if(argc == 1)
+            {
                 pd_float(x, argv->a_w.w_float);
+            }
             else
+            {
                 pd_list(x, &s_list, argc, argv);
+            }
         }
         else
             bug("pd_forwardmess");
@@ -1257,9 +1349,11 @@ class_new
         loglevel = 3;
     }
     else
+    {
         logpost(0, 3,
             "refusing to load unnamed %dbit-float object into %dbit-float Pd",
             ext_floatsize, PD_FLOATSIZE);
+    }
 
     return 0;
 }

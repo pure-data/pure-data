@@ -144,20 +144,32 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
         case A_FLOAT:
             sprintf(tbuf, "%g", a->a_w.w_float);
             if(strlen(tbuf) < bufsize - 1)
+            {
                 strcpy(buf, tbuf);
+            }
             else if(a->a_w.w_float < 0)
+            {
                 strcpy(buf, "-");
+            }
             else
+            {
                 strcat(buf, "+");
+            }
             break;
         case A_LONG:
             sprintf(tbuf, "%d", a->a_w.w_long);
             if(strlen(tbuf) < bufsize - 1)
+            {
                 strcpy(buf, tbuf);
+            }
             else if(a->a_w.w_float < 0)
+            {
                 strcpy(buf, "-");
+            }
             else
+            {
                 strcat(buf, "+");
+            }
             break;
         case A_SYMBOL:
         {
@@ -166,10 +178,12 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
             int quote;
             for(sp = a->a_w.w_symbol->s_name, len = 0, quote = 0; *sp;
                 sp++, len++)
+            {
                 if(*sp == ';' || *sp == ',' || *sp == '\\' ||
                     (*sp == '$' && sp == a->a_w.w_symbol->s_name &&
                         sp[1] >= '0' && sp[1] <= '9'))
                     quote = 1;
+            }
             if(quote)
             {
                 char *bp = buf;
@@ -190,7 +204,9 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
             else
             {
                 if(len < bufsize - 1)
+                {
                     strcpy(buf, a->a_w.w_symbol->s_name);
+                }
                 else
                 {
                     strncpy(buf, a->a_w.w_symbol->s_name, bufsize - 2);
@@ -259,9 +275,13 @@ int expr_donew(struct expr *expr, int ac, t_atom *av)
             strcpy(buf + length, string);
             length = newlength;
             if(ap->a_type == A_SEMI)
+            {
                 buf[length - 1] = '\n';
+            }
             else
+            {
                 buf[length - 1] = ' ';
+            }
         }
 
         if(length && buf[length - 1] == ' ')
@@ -596,6 +616,7 @@ struct ex_ex *ex_parse(
      * that is a special operator and is only legal in functions
      */
     for(eptr = iptr, count = 0; eptr->ex_type; eptr++, count++)
+    {
         switch(eptr->ex_type)
         {
             case ET_SYM:
@@ -732,6 +753,7 @@ struct ex_ex *ex_parse(
                 post("expr: ex_parse: type = 0x%lx\n", eptr->ex_type);
                 return (exNULL);
         }
+    }
 
     if(pre == HI_PRE)
     {
@@ -1092,11 +1114,17 @@ void ex_dzdetect(struct expr *expr)
     if((!expr->exp_error) & EE_DZ)
     {
         if(IS_EXPR(expr))
+        {
             etype = "expr";
+        }
         else if(IS_EXPR_TILDE(expr))
+        {
             etype = "expr~";
+        }
         else if(IS_FEXPR_TILDE(expr))
+        {
             etype = "fexpr~";
+        }
         else
         {
             post("expr -- ex_dzdetect internal error");
@@ -1147,18 +1175,26 @@ struct ex_ex *ex_eval(
     {
         case ET_INT:
             if(optr->ex_type == ET_VEC)
+            {
                 ex_mkvector(
                     optr->ex_vec, (t_float) eptr->ex_int, expr->exp_vsize);
+            }
             else
+            {
                 *optr = *eptr;
+            }
             return (++eptr);
 
         case ET_FLT:
 
             if(optr->ex_type == ET_VEC)
+            {
                 ex_mkvector(optr->ex_vec, eptr->ex_flt, expr->exp_vsize);
+            }
             else
+            {
                 *optr = *eptr;
+            }
             return (++eptr);
 
         case ET_SYM:
@@ -1227,10 +1263,14 @@ struct ex_ex *ex_eval(
 
         case ET_VI:
             if(optr->ex_type != ET_VEC)
+            {
                 *optr = expr->exp_var[eptr->ex_int];
+            }
             else if(optr->ex_vec != expr->exp_var[eptr->ex_int].ex_vec)
+            {
                 memcpy(optr->ex_vec, expr->exp_var[eptr->ex_int].ex_vec,
                     expr->exp_vsize * sizeof(t_float));
+            }
             return (++eptr);
         case ET_VEC:
             if(optr->ex_type != ET_VEC)
@@ -1272,10 +1312,14 @@ struct ex_ex *ex_eval(
              */
             optr->ex_type = ET_FLT;
             if(idx == 0)
+            {
                 optr->ex_flt =
                     expr->exp_p_res[eptr->ex_int][expr->exp_vsize - 1];
+            }
             else
+            {
                 optr->ex_flt = expr->exp_tmpres[eptr->ex_int][idx - 1];
+            }
             return (++eptr);
 
         case ET_YO:
@@ -1492,9 +1536,13 @@ struct ex_ex *eval_store(
             var = (char *) eptr->ex_ptr;
             eptr = ex_eval(expr, ++eptr, &arg, idx);
             if(max_ex_var_store(expr, (t_symbol *) var, &arg, optr))
+            {
                 retp = exNULL;
+            }
             else
+            {
                 retp = eptr;
+            }
 
             if(arg.ex_type == ET_VEC) fts_free(arg.ex_vec);
             return (retp);
@@ -1632,7 +1680,9 @@ struct ex_ex *eval_var(
             var = (char *) expr->exp_var[eptr->ex_int].ex_ptr;
     }
     else if(eptr->ex_type == ET_VAR)
+    {
         var = (char *) eptr->ex_ptr;
+    }
     else
     {
         post_error((fts_object_t *) expr, "expr: eval_tbl: bad type %ld\n",
@@ -1784,9 +1834,13 @@ static int cal_sigidx(struct ex_ex *optr, /* The output value */
     {
         /* from the curvec */
         if(rem_i)
+        {
             optr->ex_flt = curvec[n] + rem_i * (curvec[n] - curvec[n - 1]);
+        }
         else
+        {
             optr->ex_flt = curvec[n];
+        }
         return (0);
     }
     if(n == 0)
@@ -1796,9 +1850,13 @@ static int cal_sigidx(struct ex_ex *optr, /* The output value */
          * is between two tables
          */
         if(rem_i)
+        {
             optr->ex_flt = *curvec + rem_i * (*curvec - prevec[vsize - 1]);
+        }
         else
+        {
             optr->ex_flt = *curvec;
+        }
         return (0);
     }
     /* find the index in the saved buffer */
@@ -1806,9 +1864,13 @@ static int cal_sigidx(struct ex_ex *optr, /* The output value */
     if(n > 0)
     {
         if(rem_i)
+        {
             optr->ex_flt = prevec[n] + rem_i * (prevec[n] - prevec[n - 1]);
+        }
         else
+        {
             optr->ex_flt = prevec[n];
+        }
         return (0);
     }
     /* out of bound */
@@ -1933,7 +1995,9 @@ retry:
             break;
         case '=':
             if(*expr->exp_str != '=')
+            {
                 eptr->ex_op = OP_STORE;
+            }
             else
             {
                 expr->exp_str++;
@@ -2090,7 +2154,9 @@ retry:
                 ;
             }
             else if(!expr->exp_var[eptr->ex_op].ex_type)
+            {
                 expr->exp_var[eptr->ex_op].ex_type = eptr->ex_type;
+            }
             else if(expr->exp_var[eptr->ex_op].ex_type != eptr->ex_type)
             {
                 post("expr: syntax error: inlets can only have one type: %s\n",

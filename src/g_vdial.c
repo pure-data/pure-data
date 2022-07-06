@@ -76,14 +76,18 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
         x->x_drawn = x->x_on;
     }
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxOUT%d outlet]\n",
             canvas, xx11, yy11 + IEMGUI_ZOOM(x) - ioh, xx11 + iow, yy11, x, 0);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list "
                  "%lxIN%d inlet]\n",
             canvas, xx11, yy11b, xx11 + iow, yy11b - IEMGUI_ZOOM(x) + ioh, x,
             0);
+    }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d "
              "%s} -fill #%06x -tags [list %lxLABEL label text]\n",
         canvas, xx11 + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
@@ -124,11 +128,15 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
         yy22 += dy;
     }
     if(!x->x_gui.x_fsf.x_snd_able)
+    {
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n", canvas, x, 0, xx11,
             yy11 + IEMGUI_ZOOM(x) - ioh, xx11 + iow, yy11);
+    }
     if(!x->x_gui.x_fsf.x_rcv_able)
+    {
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n", canvas, x, 0, xx11,
             yy11b, xx11 + iow, yy11b - IEMGUI_ZOOM(x) + ioh);
+    }
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
         xx11 + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
         yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
@@ -248,19 +256,33 @@ void vradio_draw_select(t_vradio *x, t_glist *glist)
 void vradio_draw(t_vradio *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
+    {
         sys_queuegui(x, glist, vradio_draw_update);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         vradio_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         vradio_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         vradio_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         vradio_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         vradio_draw_config(x, glist);
+    }
     else if(mode >= IEM_GUI_DRAW_MODE_IO)
+    {
         vradio_draw_io(x, glist, mode - IEM_GUI_DRAW_MODE_IO);
+    }
 }
 
 /* ------------------------ vdl widgetbehaviour----------------------------- */
@@ -524,8 +546,10 @@ static int vradio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
     if(doit)
+    {
         vradio_click((t_vradio *) z, (t_floatarg) xpix, (t_floatarg) ypix,
             (t_floatarg) shift, 0, (t_floatarg) alt);
+    }
     return (1);
 }
 
@@ -657,9 +681,13 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(!strcmp(x->x_gui.x_snd->s_name, "empty")) x->x_gui.x_fsf.x_snd_able = 0;
     if(!strcmp(x->x_gui.x_rcv->s_name, "empty")) x->x_gui.x_fsf.x_rcv_able = 0;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;
@@ -673,9 +701,13 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(on < 0) on = 0;
     if(on >= x->x_number) on = x->x_number - 1;
     if(x->x_gui.x_isa.x_loadinit)
+    {
         x->x_on = on;
+    }
     else
+    {
         x->x_on = 0;
+    }
     x->x_on_old = x->x_on;
     x->x_change = (chg == 0) ? 0 : 1;
     if(x->x_gui.x_fsf.x_rcv_able)

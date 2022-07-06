@@ -30,7 +30,9 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
         argc && argv->a_type == A_SYMBOL && *argv->a_w.w_symbol->s_name == '-')
     {
         if(!strcmp(argv->a_w.w_symbol->s_name, "-k"))
+        {
             keep = 1;
+        }
         else
         {
             pd_error(0, "scalar define: unknown flag ...");
@@ -101,7 +103,9 @@ noscalar:
 static void scalar_define_send(t_glist *x, t_symbol *s)
 {
     if(!s->s_thing)
+    {
         pd_error(x, "scalar_define_send: %s: no such object", s->s_name);
+    }
     else if(x->gl_list && pd_class(&x->gl_list->g_pd) == scalar_class)
     {
         t_gpointer gp;
@@ -173,12 +177,16 @@ static void scalar_define_save(t_gobj *z, t_binbuf *bb)
 static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
 {
     if(!argc || argv[0].a_type != A_SYMBOL)
+    {
         pd_this->pd_newest = scalar_define_new(s, argc, argv);
+    }
     else
     {
         const char *str = argv[0].a_w.w_symbol->s_name;
         if(!strcmp(str, "d") || !strcmp(str, "define"))
+        {
             pd_this->pd_newest = scalar_define_new(s, argc - 1, argv + 1);
+        }
         else
         {
             pd_error(0, "scalar %s: unknown function", str);

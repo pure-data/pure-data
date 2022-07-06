@@ -157,12 +157,16 @@ static int pa_lowlevel_callback(const void *inputBuffer, void *outputBuffer,
             fbuf = ((float *) inputBuffer) + n * pa_inchans;
             soundiop = pa_soundin;
             for(i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
+            {
                 for(j = 0, fp3 = fp2; j < DEFDACBLKSIZE; j++, fp3 += pa_inchans)
                     *soundiop++ = (t_sample) *fp3;
+            }
         }
         else
+        {
             memset((void *) pa_soundin, 0,
                 DEFDACBLKSIZE * pa_inchans * sizeof(t_sample));
+        }
         memset((void *) pa_soundout, 0,
             DEFDACBLKSIZE * pa_outchans * sizeof(t_sample));
         (*pa_callback)();
@@ -171,9 +175,11 @@ static int pa_lowlevel_callback(const void *inputBuffer, void *outputBuffer,
             fbuf = ((float *) outputBuffer) + n * pa_outchans;
             soundiop = pa_soundout;
             for(i = 0, fp2 = fbuf; i < pa_outchans; i++, fp2++)
+            {
                 for(j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
                     j++, fp3 += pa_outchans)
                     *fp3 = (float) *soundiop++;
+            }
         }
     }
     return 0;
@@ -209,15 +215,23 @@ static int pa_fifo_callback(const void *inputBuffer, void *outputBuffer,
     if((unsigned) fiforoom >= nframes * pa_outchans * sizeof(float))
     {
         if(outputBuffer)
+        {
             sys_ringbuf_read(&pa_outring, outputBuffer,
                 nframes * pa_outchans * sizeof(float), pa_outbuf);
+        }
         else if(pa_outchans)
+        {
             post("audio error: no outputBuffer but output channels");
+        }
         if(inputBuffer)
+        {
             sys_ringbuf_write(&pa_inring, inputBuffer,
                 nframes * pa_inchans * sizeof(float), pa_inbuf);
+        }
         else if(pa_inchans)
+        {
             post("audio error: no inputBuffer but input channels");
+        }
     }
     else
     { /* PD could not keep up; generate zeros */
@@ -559,9 +573,11 @@ int pa_send_dacs(void)
     {
         for(j = 0, fp = STUFF->st_soundout, fp2 = conversionbuf;
             j < STUFF->st_outchannels; j++, fp2++)
+        {
             for(k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
                 k++, fp++, fp3 += STUFF->st_outchannels)
                 *fp3 = *fp;
+        }
         sys_ringbuf_write(&pa_outring, conversionbuf,
             STUFF->st_outchannels * (DEFDACBLKSIZE * sizeof(float)), pa_outbuf);
     }
@@ -602,9 +618,11 @@ int pa_send_dacs(void)
             STUFF->st_inchannels * (DEFDACBLKSIZE * sizeof(float)), pa_inbuf);
         for(j = 0, fp = STUFF->st_soundin, fp2 = conversionbuf;
             j < STUFF->st_inchannels; j++, fp2++)
+        {
             for(k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
                 k++, fp++, fp3 += STUFF->st_inchannels)
                 *fp = *fp3;
+        }
     }
 
 #else  /* FAKEBLOCKING */
@@ -661,7 +679,9 @@ int pa_send_dacs(void)
         pd_error(0, "trying to reopen audio device");
         sys_reopen_audio(); /* try to reopen it */
         if(audio_isopen())
+        {
             pd_error(0, "successfully reopened audio device");
+        }
         else
         {
             pd_error(0, "audio device not responding - closing audio");

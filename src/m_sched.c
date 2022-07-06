@@ -59,7 +59,9 @@ void clock_unset(t_clock *x)
     if(x->c_settime >= 0)
     {
         if(x == pd_this->pd_clock_setlist)
+        {
             pd_this->pd_clock_setlist = x->c_next;
+        }
         else
         {
             t_clock *x2 = pd_this->pd_clock_setlist;
@@ -129,9 +131,13 @@ void clock_setunit(t_clock *x, double timeunit, int sampflag)
                                        : (x->c_unit * (TIMEUNITPERSECOND /
                                                           STUFF->st_dacsr))));
     if(sampflag)
+    {
         x->c_unit = -timeunit; /* negate to flag sample-based */
+    }
     else
+    {
         x->c_unit = timeunit * TIMEUNITPERMSEC;
+    }
     if(timeleft >= 0) /* reschedule if already set */
         clock_delay(x, timeleft);
 }
@@ -158,8 +164,10 @@ double clock_gettimesincewithunits(
     units == 1 and (sys_time - prevsystime) is an integer number of
     DSP ticks, the result will be exact. */
     if(sampflag)
+    {
         return ((pd_this->pd_systime - prevsystime) /
                 ((TIMEUNITPERSECOND / STUFF->st_dacsr) * units));
+    }
     return ((pd_this->pd_systime - prevsystime) / (TIMEUNITPERMSEC * units));
 }
 
@@ -431,9 +439,13 @@ int m_mainloop(void)
     while(sys_quit != SYS_QUIT_QUIT)
     {
         if(sched_useaudio == SCHED_AUDIO_CALLBACK)
+        {
             m_callbackscheduler();
+        }
         else
+        {
             m_pollingscheduler();
+        }
         if(sys_quit == SYS_QUIT_RESTART)
         {
             sys_quit = 0;

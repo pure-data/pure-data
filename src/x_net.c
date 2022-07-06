@@ -86,13 +86,18 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
         argc = 0;
     }
     else
+    {
         while(argc && argv->a_type == A_SYMBOL &&
               *argv->a_w.w_symbol->s_name == '-')
         {
             if(!strcmp(argv->a_w.w_symbol->s_name, "-b"))
+            {
                 x->x_bin = 1;
+            }
             else if(!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+            {
                 x->x_protocol = SOCK_DGRAM;
+            }
             else
             {
                 pd_error(x, "netsend: unknown flag ...");
@@ -102,6 +107,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
             argc--;
             argv++;
         }
+    }
     if(argc)
     {
         pd_error(x, "netsend: extra arguments ignored:");
@@ -134,10 +140,14 @@ static void netsend_readbin(t_netsend *x, int fd)
     while(1)
     {
         if(x->x_protocol == SOCK_DGRAM)
+        {
             ret = (int) recvfrom(fd, inbuf, NET_MAXPACKETSIZE, 0,
                 (struct sockaddr *) &fromaddr, &fromaddrlen);
+        }
         else
+        {
             ret = (int) recv(fd, inbuf, NET_MAXPACKETSIZE, 0);
+        }
         if(ret <= 0)
         {
             if(ret < 0)
@@ -164,8 +174,10 @@ static void netsend_readbin(t_netsend *x, int fd)
         {
             t_atom *ap;
             if(x->x_fromout)
+            {
                 outlet_sockaddr(
                     x->x_fromout, (const struct sockaddr *) &fromaddr);
+            }
             /* handle too large UDP packets */
             if(ret > NET_MAXPACKETSIZE)
             {
@@ -188,8 +200,10 @@ static void netsend_readbin(t_netsend *x, int fd)
         {
             if(x->x_fromout &&
                 !getpeername(fd, (struct sockaddr *) &fromaddr, &fromaddrlen))
+            {
                 outlet_sockaddr(
                     x->x_fromout, (const struct sockaddr *) &fromaddr);
+            }
             for(i = 0; i < ret; i++)
                 outlet_float(x->x_msgout, inbuf[i]);
             return;
@@ -214,21 +228,29 @@ static void netsend_read(void *z, t_binbuf *b)
         {
             int i;
             for(i = msg; i < emsg; i++)
+            {
                 if(at[i].a_type == A_DOLLAR || at[i].a_type == A_DOLLSYM)
                 {
                     pd_error(x, "netreceive: got dollar sign in message");
                     goto nodice;
                 }
+            }
             if(at[msg].a_type == A_FLOAT)
             {
                 if(emsg > msg + 1)
+                {
                     outlet_list(x->x_msgout, 0, emsg - msg, at + msg);
+                }
                 else
+                {
                     outlet_float(x->x_msgout, at[msg].a_w.w_float);
+                }
             }
             else if(at[msg].a_type == A_SYMBOL)
+            {
                 outlet_anything(x->x_msgout, at[msg].a_w.w_symbol,
                     emsg - msg - 1, at + msg + 1);
+            }
         }
     nodice:
         msg = emsg + 1;
@@ -366,10 +388,14 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if(hostname && multicast)
+        {
             logpost(NULL, PD_VERBOSE, "connecting to %s %d (multicast)",
                 hostbuf, portno);
+        }
         else
+        {
             logpost(NULL, PD_VERBOSE, "connecting to %s %d", hostbuf, portno);
+        }
 
         if(x->x_protocol == SOCK_STREAM)
         {
@@ -406,7 +432,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     if(x->x_msgout) /* add polling function for return messages */
     {
         if(x->x_bin)
+        {
             sys_addpollfn(x->x_sockfd, (t_fdpollfn) netsend_readbin, x);
+        }
         else
         {
             t_socketreceiver *y = socketreceiver_new((void *) x, netsend_notify,
@@ -589,7 +617,9 @@ static void netreceive_connectpoll(t_netreceive *x)
 {
     int fd = accept(x->x_ns.x_sockfd, 0, 0);
     if(fd < 0)
+    {
         post("netreceive: accept failed");
+    }
     else
     {
         int nconnections = x->x_nconnections + 1;
@@ -602,15 +632,19 @@ static void netreceive_connectpoll(t_netreceive *x)
             nconnections * sizeof(t_socketreceiver *));
         x->x_receivers[x->x_nconnections] = NULL;
         if(x->x_ns.x_bin)
+        {
             sys_addpollfn(fd, (t_fdpollfn) netsend_readbin, x);
+        }
         else
         {
             t_socketreceiver *y = socketreceiver_new((void *) x,
                 (t_socketnotifier) netreceive_notify,
                 (x->x_ns.x_msgout ? netsend_read : 0), 0);
             if(x->x_ns.x_fromout)
+            {
                 socketreceiver_set_fromaddrfn(
                     y, (t_socketfromaddrfn) netreceive_fromaddr);
+            }
             sys_addpollfn(fd, (t_fdpollfn) socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
         }
@@ -821,15 +855,19 @@ static void netreceive_listen(
     if(protocol == SOCK_DGRAM) /* datagram protocol */
     {
         if(x->x_ns.x_bin)
+        {
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn) netsend_readbin, x);
+        }
         else
         {
             /* a UDP receiver doesn't get notifications! */
             t_socketreceiver *y = socketreceiver_new(
                 x, 0, (x->x_ns.x_msgout ? netsend_read : 0), 1);
             if(x->x_ns.x_fromout)
+            {
                 socketreceiver_set_fromaddrfn(
                     y, (t_socketfromaddrfn) netreceive_fromaddr);
+            }
             sys_addpollfn(
                 x->x_ns.x_sockfd, (t_fdpollfn) socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
@@ -894,11 +932,17 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
               *argv->a_w.w_symbol->s_name == '-')
         {
             if(!strcmp(argv->a_w.w_symbol->s_name, "-b"))
+            {
                 x->x_ns.x_bin = 1;
+            }
             else if(!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+            {
                 x->x_ns.x_protocol = SOCK_DGRAM;
+            }
             else if(!strcmp(argv->a_w.w_symbol->s_name, "-f"))
+            {
                 from = 1;
+            }
             else
             {
                 pd_error(x, "netreceive: unknown flag ...");
@@ -917,13 +961,21 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     else
         x->x_ns.x_msgout = outlet_new(&x->x_ns.x_obj, &s_anything);
     if(x->x_ns.x_protocol == SOCK_STREAM)
+    {
         x->x_ns.x_connectout = outlet_new(&x->x_ns.x_obj, &s_float);
+    }
     else
+    {
         x->x_ns.x_connectout = 0;
+    }
     if(from)
+    {
         x->x_ns.x_fromout = outlet_new(&x->x_ns.x_obj, &s_symbol);
+    }
     else
+    {
         x->x_ns.x_fromout = NULL;
+    }
     /* create a socket */
     netreceive_listen(x, 0, argc, argv); /* pass arguments */
 

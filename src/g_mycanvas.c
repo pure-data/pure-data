@@ -116,15 +116,25 @@ void my_canvas_draw_select(t_my_canvas *x, t_glist *glist)
 void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_MOVE)
+    {
         my_canvas_draw_move(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_NEW)
+    {
         my_canvas_draw_new(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_SELECT)
+    {
         my_canvas_draw_select(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_ERASE)
+    {
         my_canvas_draw_erase(x, glist);
+    }
     else if(mode == IEM_GUI_DRAW_MODE_CONFIG)
+    {
         my_canvas_draw_config(x, glist);
+    }
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
@@ -366,9 +376,13 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     if(h < 1) h = 1;
     x->x_vis_h = h;
     if(x->x_gui.x_fsf.x_font_style == 1)
+    {
         strcpy(x->x_gui.x_font, "helvetica");
+    }
     else if(x->x_gui.x_fsf.x_font_style == 2)
+    {
         strcpy(x->x_gui.x_font, "times");
+    }
     else
     {
         x->x_gui.x_fsf.x_font_style = 0;

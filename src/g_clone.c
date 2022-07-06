@@ -76,17 +76,25 @@ static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
     int n;
     if(argc < 1 || argv[0].a_type != A_FLOAT)
+    {
         pd_error(x->i_owner, "clone: no instance number in message");
+    }
     else if((n = argv[0].a_w.w_float - x->i_owner->x_startvoice) < 0 ||
             n >= x->i_owner->x_n)
+    {
         pd_error(x->i_owner, "clone: instance number %d out of range",
             n + x->i_owner->x_startvoice);
+    }
     else if(argc > 1 && argv[1].a_type == A_SYMBOL)
+    {
         obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n,
             argv[1].a_w.w_symbol, argc - 2, argv + 2);
+    }
     else
+    {
         obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n, &s_list,
             argc - 1, argv + 1);
+    }
 }
 
 static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
@@ -96,11 +104,15 @@ static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
     if(argc <= 0)
         return;
     if(argv->a_type == A_SYMBOL)
+    {
         obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
             argv[0].a_w.w_symbol, argc - 1, argv + 1);
+    }
     else
+    {
         obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n, &s_list,
             argc, argv);
+    }
 }
 
 static void clone_in_next(t_in *x, t_symbol *s, int argc, t_atom *argv)
@@ -134,9 +146,13 @@ static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
 {
     int n = fn - x->i_owner->x_startvoice;
     if(n < 0)
+    {
         n = 0;
+    }
     else if(n >= x->i_owner->x_n)
+    {
         n = x->i_owner->x_n - 1;
+    }
     canvas_vis(x->i_owner->x_vec[n].c_gl, (vis != 0));
 }
 
@@ -171,8 +187,10 @@ static void clone_free(t_clone *x)
         if(THISGUI->i_reloadingabstraction)
         {
             for(i = 0; i < x->x_n; i++)
+            {
                 if(x->x_vec[i].c_gl == THISGUI->i_reloadingabstraction)
                     voicetovis = i;
+            }
         }
         for(i = 0; i < x->x_n; i++)
         {
@@ -225,6 +243,7 @@ void clone_setn(t_clone *x, t_floatarg f)
         wantn = 1;
     }
     if(wantn > nwas)
+    {
         for(i = nwas; i < wantn; i++)
         {
             t_canvas *c;
@@ -256,6 +275,7 @@ void clone_setn(t_clone *x, t_floatarg f)
             }
             x->x_n++;
         }
+    }
     if(wantn < nwas)
     {
         for(i = wantn; i < nwas; i++)
@@ -282,11 +302,15 @@ static void clone_loadbang(t_clone *x, t_floatarg f)
 {
     int i;
     if(f == LB_LOAD)
+    {
         for(i = 0; i < x->x_n; i++)
             canvas_loadbang(x->x_vec[i].c_gl);
+    }
     else if(f == LB_CLOSE)
+    {
         for(i = 0; i < x->x_n; i++)
             canvas_closebang(x->x_vec[i].c_gl);
+    }
 }
 
 void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp);
@@ -341,11 +365,15 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         for(i = 0; i < nout; i++)
         {
             if(j == 0)
+            {
                 dsp_add_copy(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
                     tempsigs[i]->s_n);
+            }
             else
+            {
                 dsp_add_plus(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
                     tempsigs[i]->s_vec, tempsigs[i]->s_n);
+            }
             signal_makereusable(tempio[nin + i]);
         }
     }
@@ -389,18 +417,28 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             argv += 2;
         }
         else if(!strcmp(argv[0].a_w.w_symbol->s_name, "-x"))
+        {
             x->x_suppressvoice = 1, argc--, argv++;
+        }
         else
+        {
             goto usage;
+        }
     }
     if(argc >= 2 && (wantn = atom_getfloatarg(0, argc, argv)) >= 0 &&
         argv[1].a_type == A_SYMBOL)
+    {
         x->x_s = argv[1].a_w.w_symbol;
+    }
     else if(argc >= 2 && (wantn = atom_getfloatarg(1, argc, argv)) >= 0 &&
             argv[0].a_type == A_SYMBOL)
+    {
         x->x_s = argv[0].a_w.w_symbol;
+    }
     else
+    {
         goto usage;
+    }
     /* store a copy of the argmuents with an extra space (argc+1) for
     supplying an instance number, which we'll bash as we go. */
     x->x_argc = argc - 1;
@@ -423,9 +461,13 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         if(x->x_invec[i].i_signal)
+        {
             inlet_new(&x->x_obj, &x->x_invec[i].i_pd, &s_signal, &s_signal);
+        }
         else
+        {
             inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
+        }
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_outvec = (t_out **) getbytes(sizeof(*x->x_outvec));
@@ -504,8 +546,12 @@ t_glist *clone_get_instance(t_gobj *x, int n)
     c = (t_clone *) x;
     n -= c->x_startvoice;
     if(n < 0)
+    {
         n = 0;
+    }
     else if(n >= c->x_n)
+    {
         n = c->x_n - 1;
+    }
     return c->x_vec[n].c_gl;
 }
