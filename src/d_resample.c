@@ -202,7 +202,6 @@ void resamplefrom_dsp(
     }
 
     resample_dsp(x, in, insize, x->s_vec, x->s_n, method);
-    return;
 }
 
 void resampleto_dsp(
@@ -226,6 +225,4 @@ void resampleto_dsp(
     }
 
     resample_dsp(x, x->s_vec, x->s_n, out, outsize, method);
-
-    return;
 }

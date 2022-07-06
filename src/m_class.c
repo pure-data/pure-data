@@ -664,7 +664,6 @@ phooey:
         sel ? (sel->s_name) : "<nomethod>");
 done:
     va_end(ap);
-    return;
 }
 
 /* Instead of these, see the "class_addfloat", etc.,  macros in m_pd.h */

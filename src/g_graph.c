@@ -258,7 +258,6 @@ static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
             g9 = g = g2;
         if((g2 = g2->g_next)) f2 = gobj_getxforsort(g2);
         g9->g_next = 0;
-        continue;
     }
     return (g);
 }

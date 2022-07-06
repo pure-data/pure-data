@@ -124,7 +124,6 @@ void sys_alsa_do_open_midi(
 error:
     sys_setalarm(1000000);
     post("couldn't open alsa MIDI output device");
-    return;
 }
 
 void sys_alsa_putmidimess(int portno, int a, int b, int c)

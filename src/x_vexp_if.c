@@ -717,7 +717,6 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
             fexpr_set_usage();
             return;
     }
-    return;
 }
 
 /*
@@ -801,7 +800,6 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
             post("fexpr~ usage: 'clear' or 'clear {xy}[#]'");
             return;
     }
-    return;
 }
 
 #ifdef PD
