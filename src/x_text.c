@@ -234,8 +234,7 @@ static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
             *endp = j;
             return (1);
         }
-        else if(vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
-            cnt++;
+        if(vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA) cnt++;
     }
     return (0);
 }
@@ -455,8 +454,7 @@ static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
             {
                 if(a1->a_w.w_float < a2->a_w.w_float)
                     return (-k->ki_forward);
-                else if(a1->a_w.w_float > a2->a_w.w_float)
-                    return (k->ki_forward);
+                if(a1->a_w.w_float > a2->a_w.w_float) return (k->ki_forward);
             }
             else
                 return (-k->ki_forward);
@@ -681,12 +679,9 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
             (t_textbuf *) pd_findbyclass(x->tc_sym, text_define_class);
         if(y)
             return (y->b_binbuf);
-        else
-        {
-            pd_error(
-                x, "text: couldn't find text buffer '%s'", x->tc_sym->s_name);
-            return (0);
-        }
+
+        pd_error(x, "text: couldn't find text buffer '%s'", x->tc_sym->s_name);
+        return (0);
     }
     else if(x->tc_struct) /* by pointer */
     {
@@ -2055,7 +2050,7 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
         {
             if(ap->a_type != A_SYMBOL)
                 continue;
-            else if(!(target = ap->a_w.w_symbol->s_thing))
+            if(!(target = ap->a_w.w_symbol->s_thing))
             {
                 pd_error(
                     x, "qlist: %s: no such object", ap->a_w.w_symbol->s_name);
@@ -2452,8 +2447,7 @@ t_binbuf *text_getbufbyname(t_symbol *s)
     t_text_define *y = (t_text_define *) pd_findbyclass(s, text_define_class);
     if(y)
         return (y->x_textbuf.b_binbuf);
-    else
-        return (0);
+    return (0);
 }
 
 /* notify text object that binbuf was modified */

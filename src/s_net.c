@@ -199,7 +199,7 @@ unsigned int sockaddr_get_port(const struct sockaddr *sa)
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *) sa;
         return ntohs(sa6->sin6_port);
     }
-    else if(sa->sa_family == AF_INET)
+    if(sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *) sa;
         return ntohs(sa4->sin_port);
@@ -229,7 +229,7 @@ int sockaddr_is_multicast(const struct sockaddr *sa)
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *) sa;
         return (sa6->sin6_addr.s6_addr[0] == 0xFF);
     }
-    else if(sa->sa_family == AF_INET)
+    if(sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *) sa;
         return ((ntohl(sa4->sin_addr.s_addr) & 0xF0000000) == 0xE0000000);
@@ -287,7 +287,7 @@ int socket_connect(
             fprintf(stderr, "socket_connect: select failed");
             return -1;
         }
-        else if(status == 0) /* connection timed out */
+        if(status == 0) /* connection timed out */
         {
 #ifdef _WIN32
             WSASetLastError(WSAETIMEDOUT);
@@ -336,7 +336,7 @@ unsigned int socket_get_port(int socket)
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *) &sa;
         return ntohs(sa6->sin6_port);
     }
-    else if(sa.ss_family == AF_INET)
+    if(sa.ss_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *) &sa;
         return ntohs(sa4->sin_port);
@@ -391,7 +391,7 @@ int socket_join_multicast_group(int socket, const struct sockaddr *sa)
         return setsockopt(socket, IPPROTO_IPV6, IPV6_JOIN_GROUP,
             (char *) &mreq6, sizeof(mreq6));
     }
-    else if(sa->sa_family == AF_INET)
+    if(sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *) sa;
         struct ip_mreq mreq = {0};
@@ -414,7 +414,7 @@ int socket_leave_multicast_group(int socket, const struct sockaddr *sa)
         return setsockopt(socket, IPPROTO_IPV6, IPV6_LEAVE_GROUP,
             (char *) &mreq6, sizeof(mreq6));
     }
-    else if(sa->sa_family == AF_INET)
+    if(sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *) sa;
         struct ip_mreq mreq = {0};

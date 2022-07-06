@@ -65,8 +65,7 @@ static int next_isbigendian(const t_nextstep *next)
 {
     if(!strncmp(next->ns_id, ".snd", 4))
         return 1;
-    else if(!strncmp(next->ns_id, "dns.", 4))
-        return 0;
+    if(!strncmp(next->ns_id, "dns.", 4)) return 0;
     return -1;
 }
 

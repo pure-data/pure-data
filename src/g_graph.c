@@ -214,8 +214,7 @@ static t_float gobj_getxforsort(t_gobj *g)
         scalar_getbasexy((t_scalar *) g, &x1, &y1);
         return (x1);
     }
-    else
-        return (0);
+    return (0);
 }
 
 static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
@@ -268,21 +267,19 @@ static t_gobj *glist_dosort(t_glist *x, t_gobj *g, int nitems)
 {
     if(nitems < 2)
         return (g);
-    else
-    {
-        int n1 = nitems / 2;
-        int n2 = nitems - n1;
-        int i;
-        t_gobj *g2;
-        t_gobj *g3;
-        for(g2 = g, i = n1 - 1; i--; g2 = g2->g_next)
-            ;
-        g3 = g2->g_next;
-        g2->g_next = 0;
-        g = glist_dosort(x, g, n1);
-        g3 = glist_dosort(x, g3, n2);
-        return (glist_merge(x, g, g3));
-    }
+
+    int n1 = nitems / 2;
+    int n2 = nitems - n1;
+    int i;
+    t_gobj *g2;
+    t_gobj *g3;
+    for(g2 = g, i = n1 - 1; i--; g2 = g2->g_next)
+        ;
+    g3 = g2->g_next;
+    g2->g_next = 0;
+    g = glist_dosort(x, g, n1);
+    g3 = glist_dosort(x, g3, n2);
+    return (glist_merge(x, g, g3));
 }
 
 void glist_sort(t_glist *x)
@@ -552,7 +549,7 @@ t_float glist_pixelstox(t_glist *x, t_float xpix)
     /* if we're a graph when shown on parent, but own our own
     window right now, our range in our coordinates (x1, etc.) is spread
     over the visible window size, given by screenx1, etc. */
-    else if(x->gl_isgraph && x->gl_havewindow)
+    if(x->gl_isgraph && x->gl_havewindow)
         return (x->gl_x1 + (x->gl_x2 - x->gl_x1) * (xpix) /
                                (x->gl_screenx2 - x->gl_screenx1));
 
@@ -574,7 +571,7 @@ t_float glist_pixelstoy(t_glist *x, t_float ypix)
 {
     if(!x->gl_isgraph)
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * ypix / x->gl_zoom);
-    else if(x->gl_isgraph && x->gl_havewindow)
+    if(x->gl_isgraph && x->gl_havewindow)
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * (ypix) /
                                (x->gl_screeny2 - x->gl_screeny1));
     else
@@ -594,7 +591,7 @@ t_float glist_xtopixels(t_glist *x, t_float xval)
 {
     if(!x->gl_isgraph)
         return (((xval - x->gl_x1) * x->gl_zoom) / (x->gl_x2 - x->gl_x1));
-    else if(x->gl_isgraph && x->gl_havewindow)
+    if(x->gl_isgraph && x->gl_havewindow)
         return (x->gl_screenx2 - x->gl_screenx1) * (xval - x->gl_x1) /
                (x->gl_x2 - x->gl_x1);
     else
@@ -613,7 +610,7 @@ t_float glist_ytopixels(t_glist *x, t_float yval)
 {
     if(!x->gl_isgraph)
         return (((yval - x->gl_y1) * x->gl_zoom) / (x->gl_y2 - x->gl_y1));
-    else if(x->gl_isgraph && x->gl_havewindow)
+    if(x->gl_isgraph && x->gl_havewindow)
         return (x->gl_screeny2 - x->gl_screeny1) * (yval - x->gl_y1) /
                (x->gl_y2 - x->gl_y1);
     else
@@ -651,7 +648,7 @@ int text_xpix(t_text *x, t_glist *glist)
 {
     if(glist->gl_havewindow || !glist->gl_isgraph)
         return (x->te_xpix * glist->gl_zoom);
-    else if(glist->gl_goprect)
+    if(glist->gl_goprect)
         return (glist_xtopixels(glist, glist->gl_x1) +
                 glist->gl_zoom * (x->te_xpix - glist->gl_xmargin));
     else
@@ -664,7 +661,7 @@ int text_ypix(t_text *x, t_glist *glist)
 {
     if(glist->gl_havewindow || !glist->gl_isgraph)
         return (x->te_ypix * glist->gl_zoom);
-    else if(glist->gl_goprect)
+    if(glist->gl_goprect)
         return (glist_ytopixels(glist, glist->gl_y1) +
                 glist->gl_zoom * (x->te_ypix - glist->gl_ymargin));
     else
@@ -1087,7 +1084,7 @@ static int graph_click(t_gobj *z, struct _glist *glist, int xpix, int ypix,
     if(!x->gl_isgraph)
         return (text_widgetbehavior.w_clickfn(
             z, glist, xpix, ypix, shift, alt, dbl, doit));
-    else if(x->gl_havewindow)
+    if(x->gl_havewindow)
         return (0);
     else
     {

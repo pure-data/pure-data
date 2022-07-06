@@ -461,8 +461,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         /* Pa_Terminate(); */
         return (1);
     }
-    else
-        logpost(NULL, PD_VERBOSE, "... opened OK.");
+    logpost(NULL, PD_VERBOSE, "... opened OK.");
     return (0);
 }
 
@@ -672,8 +671,7 @@ int pa_send_dacs(void)
 #endif
         return SENDDACS_NO;
     }
-    else
-        return (rtnval);
+    return (rtnval);
 }
 
 static char *pdi2devname(const PaDeviceInfo *pdi, char *buf, size_t bufsize)

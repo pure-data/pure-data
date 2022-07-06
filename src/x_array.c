@@ -290,13 +290,10 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
             *glist = garray_getglist(y);
             return (garray_getarray(y));
         }
-        else
-        {
-            pd_error(
-                x, "array: couldn't find named array '%s'", x->tc_sym->s_name);
-            *glist = 0;
-            return (0);
-        }
+
+        pd_error(x, "array: couldn't find named array '%s'", x->tc_sym->s_name);
+        *glist = 0;
+        return (0);
     }
     else if(x->tc_struct) /* by pointer */
     {

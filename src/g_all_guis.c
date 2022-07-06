@@ -196,7 +196,7 @@ t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv)
 {
     if(IS_A_SYMBOL(argv, indx))
         return (atom_getsymbolarg(indx, 100000, argv));
-    else if(IS_A_FLOAT(argv, indx))
+    if(IS_A_FLOAT(argv, indx))
     {
         char str[80];
         sprintf(str, "%d", (int) atom_getfloatarg(indx, 100000, argv));
@@ -364,8 +364,7 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom *argv)
             int idx = iemgui_modulo_color(col);
             return (iemgui_color_hex[(idx)]);
         }
-        else
-            return ((-1 - col) & 0xffffff);
+        return ((-1 - col) & 0xffffff);
     }
     return iemgui_getcolorarg(index, argc, argv);
 }

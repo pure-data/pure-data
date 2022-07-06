@@ -14,8 +14,7 @@ t_float atom_getfloat(const t_atom *a)
 {
     if(a->a_type == A_FLOAT)
         return (a->a_w.w_float);
-    else
-        return (0);
+    return (0);
 }
 
 t_int atom_getint(const t_atom *a) { return (atom_getfloat(a)); }
@@ -25,8 +24,7 @@ t_symbol *atom_getsymbol(
 {
     if(a->a_type == A_SYMBOL)
         return (a->a_w.w_symbol);
-    else
-        return (&s_float);
+    return (&s_float);
 }
 
 t_symbol *atom_gensym(const t_atom *a) /* this works  better for graph labels */
@@ -34,7 +32,7 @@ t_symbol *atom_gensym(const t_atom *a) /* this works  better for graph labels */
     char buf[30];
     if(a->a_type == A_SYMBOL)
         return (a->a_w.w_symbol);
-    else if(a->a_type == A_FLOAT)
+    if(a->a_type == A_FLOAT)
         sprintf(buf, "%g", a->a_w.w_float);
     else
         strcpy(buf, "???");
@@ -47,8 +45,7 @@ t_float atom_getfloatarg(int which, int argc, const t_atom *argv)
     argv += which;
     if(argv->a_type == A_FLOAT)
         return (argv->a_w.w_float);
-    else
-        return (0);
+    return (0);
 }
 
 t_int atom_getintarg(int which, int argc, const t_atom *argv)
@@ -62,8 +59,7 @@ t_symbol *atom_getsymbolarg(int which, int argc, const t_atom *argv)
     argv += which;
     if(argv->a_type == A_SYMBOL)
         return (argv->a_w.w_symbol);
-    else
-        return (&s_);
+    return (&s_);
 }
 
 /* convert an atom into a string, in the reverse sense of binbuf_text (q.v.)

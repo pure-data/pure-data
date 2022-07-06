@@ -71,10 +71,8 @@ int rb_available_to_write(ring_buffer *buffer)
         int write_idx = SYNC_FETCH(&(buffer->write_idx));
         return (buffer->size + read_idx - write_idx - 1) % buffer->size;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }
 
 int rb_available_to_read(ring_buffer *buffer)
@@ -85,10 +83,8 @@ int rb_available_to_read(ring_buffer *buffer)
         int write_idx = SYNC_FETCH(&(buffer->write_idx));
         return (buffer->size + write_idx - read_idx) % buffer->size;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }
 
 int rb_write_to_buffer(ring_buffer *buffer, int n, ...)

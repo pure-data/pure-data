@@ -294,7 +294,7 @@ void sys_register_loader(loader_t loader)
     {
         if(q->loader == loader) /* already loaded - nothing to do */
             return;
-        else if(q->next)
+        if(q->next)
             q = q->next;
         else
         {
@@ -419,12 +419,10 @@ int sys_run_scheduler(
 #endif
     if(externalmainfunc)
         return ((*externalmainfunc)(sys_extraflagsstring));
-    else
-    {
-        fprintf(stderr, "%s: couldn't find pd_extern_sched() or main()\n",
-            filename);
-        return (0);
-    }
+
+    fprintf(
+        stderr, "%s: couldn't find pd_extern_sched() or main()\n", filename);
+    return (0);
 }
 
 /* abstraction loading */

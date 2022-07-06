@@ -447,25 +447,23 @@ static void *select_new(t_symbol *s, int argc, t_atom *argv)
         }
         return (x);
     }
-    else
+
+    int n;
+    t_selectelement *e;
+    t_sel2 *x = (t_sel2 *) pd_new(sel2_class);
+    x->x_nelement = argc;
+    x->x_vec = (t_selectelement *) getbytes(argc * sizeof(*x->x_vec));
+    x->x_type = argv[0].a_type;
+    for(n = 0, e = x->x_vec; n < argc; n++, e++)
     {
-        int n;
-        t_selectelement *e;
-        t_sel2 *x = (t_sel2 *) pd_new(sel2_class);
-        x->x_nelement = argc;
-        x->x_vec = (t_selectelement *) getbytes(argc * sizeof(*x->x_vec));
-        x->x_type = argv[0].a_type;
-        for(n = 0, e = x->x_vec; n < argc; n++, e++)
-        {
-            e->e_outlet = outlet_new(&x->x_obj, &s_bang);
-            if((x->x_type = argv->a_type) == A_FLOAT)
-                e->e_w.w_float = atom_getfloatarg(n, argc, argv);
-            else
-                e->e_w.w_symbol = atom_getsymbolarg(n, argc, argv);
-        }
-        x->x_rejectout = outlet_new(&x->x_obj, &s_float);
-        return (x);
+        e->e_outlet = outlet_new(&x->x_obj, &s_bang);
+        if((x->x_type = argv->a_type) == A_FLOAT)
+            e->e_w.w_float = atom_getfloatarg(n, argc, argv);
+        else
+            e->e_w.w_symbol = atom_getsymbolarg(n, argc, argv);
     }
+    x->x_rejectout = outlet_new(&x->x_obj, &s_float);
+    return (x);
 }
 
 void select_setup(void)

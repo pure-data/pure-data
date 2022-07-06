@@ -13,7 +13,7 @@ t_float mtof(t_float f)
 {
     if(f <= -1500)
         return (0);
-    else if(f > 1499)
+    if(f > 1499)
         return (mtof(1499));
     else
         return (8.17579891564 * exp(.0577622650 * f));
@@ -28,43 +28,36 @@ t_float powtodb(t_float f)
 {
     if(f <= 0)
         return (0);
-    else
-    {
-        t_float val = 100 + 10. / LOGTEN * log(f);
-        return (val < 0 ? 0 : val);
-    }
+
+    t_float val = 100 + 10. / LOGTEN * log(f);
+    return (val < 0 ? 0 : val);
 }
 
 t_float rmstodb(t_float f)
 {
     if(f <= 0)
         return (0);
-    else
-    {
-        t_float val = 100 + 20. / LOGTEN * log(f);
-        return (val < 0 ? 0 : val);
-    }
+
+    t_float val = 100 + 20. / LOGTEN * log(f);
+    return (val < 0 ? 0 : val);
 }
 
 t_float dbtopow(t_float f)
 {
     if(f <= 0)
         return (0);
-    else
-    {
-        if(f > 870) f = 870;
-        return (exp((LOGTEN * 0.1) * (f - 100.)));
-    }
+
+    if(f > 870) f = 870;
+    return (exp((LOGTEN * 0.1) * (f - 100.)));
 }
 
 t_float dbtorms(t_float f)
 {
     if(f <= 0)
         return (0);
-    else
-    {
-        if(f > 485) f = 485;
-    }
+
+    if(f > 485) f = 485;
+
     return (exp((LOGTEN * 0.05) * (f - 100.)));
 }
 

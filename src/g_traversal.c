@@ -32,8 +32,7 @@ static t_symbol *template_getbindsym(t_symbol *s)
 {
     if(!*s->s_name || !strcmp(s->s_name, "-"))
         return (&s_);
-    else
-        return (canvas_makebindsym(s));
+    return (canvas_makebindsym(s));
 }
 
 /* ---------------------- pointers ----------------------------- */

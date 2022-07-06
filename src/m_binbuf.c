@@ -562,7 +562,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
         sprintf(buf, "$");
         return 0;
     }
-    else if(argno < 0 || argno > ac) /* undefined argument */
+    if(argno < 0 || argno > ac) /* undefined argument */
     {
         if(!tonew) return 0;
         sprintf(buf, "$%d", argno);
@@ -775,11 +775,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 /* LATER eat args until semicolon and continue */
                 continue;
             }
-            else
-            {
-                at++, ac--;
-                break;
-            }
+
+            at++, ac--;
+            break;
         }
         if(!ac) break;
         nargs = 0;
@@ -958,12 +956,10 @@ int binbuf_read_via_canvas(
         pd_error(0, "%s: can't open", filename);
         return (1);
     }
-    else
-        close(filedesc);
+    close(filedesc);
     if(binbuf_read(b, bufptr, buf, crflag))
         return (1);
-    else
-        return (0);
+    return (0);
 }
 
 /* old version */
@@ -979,12 +975,10 @@ int binbuf_read_via_path(
         pd_error(0, "%s: can't open", filename);
         return (1);
     }
-    else
-        close(filedesc);
+    close(filedesc);
     if(binbuf_read(b, bufptr, buf, crflag))
         return (1);
-    else
-        return (0);
+    return (0);
 }
 
 #define WBUFSIZE 4096

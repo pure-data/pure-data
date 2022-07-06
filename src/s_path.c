@@ -90,10 +90,8 @@ int sys_isabsolutepath(const char *dir)
     {
         return 1;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }
 
 /* expand env vars and ~ at the beginning of a path and make a copy to return */
@@ -173,20 +171,19 @@ t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
     sys_unbashfilename(nl2->nl_string, nl2->nl_string);
     if(!listwas)
         return (nl2);
-    else
+
+    for(nl = listwas;;)
     {
-        for(nl = listwas;;)
+        if(!allowdup && !strcmp(nl->nl_string, s))
         {
-            if(!allowdup && !strcmp(nl->nl_string, s))
-            {
-                freebytes(nl2->nl_string, strlen(nl2->nl_string) + 1);
-                return (listwas);
-            }
-            if(!nl->nl_next) break;
-            nl = nl->nl_next;
+            freebytes(nl2->nl_string, strlen(nl2->nl_string) + 1);
+            return (listwas);
         }
-        nl->nl_next = nl2;
+        if(!nl->nl_next) break;
+        nl = nl->nl_next;
     }
+    nl->nl_next = nl2;
+
     return (listwas);
 }
 
@@ -347,8 +344,7 @@ int sys_open_absolute(const char *name, const char *ext, char *dirresult,
             dirbuf, name + (dirlen + 1), ext, dirresult, nameresult, size, bin);
         return (1);
     }
-    else
-        return (0);
+    return (0);
 }
 
 /* search for a file in a specified directory, then along the globally

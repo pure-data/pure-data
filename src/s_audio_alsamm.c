@@ -856,7 +856,7 @@ static int xrun_recovery(snd_pcm_t *handle, int err)
 
         return 0;
     }
-    else if(err == -ESTRPIPE)
+    if(err == -ESTRPIPE)
     {
         while((err = snd_pcm_resume(handle)) == -EAGAIN)
             sleep(1); /* wait until the suspend flag is released */

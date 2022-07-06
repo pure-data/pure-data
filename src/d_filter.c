@@ -262,8 +262,7 @@ static t_float sigbp_qcos(t_float f)
                     g * 0.5) +
                 1);
     }
-    else
-        return (0);
+    return (0);
 }
 
 static void sigbp_docoef(t_sigbp *x, t_floatarg f, t_floatarg q)

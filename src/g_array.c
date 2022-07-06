@@ -683,8 +683,7 @@ static int garray_click(t_gobj *z, t_glist *glist, int xpix, int ypix,
     if(x->x_edit)
         return (gobj_click(
             &x->x_scalar->sc_gobj, glist, xpix, ypix, shift, alt, dbl, doit));
-    else
-        return (0);
+    return (0);
 }
 
 #define ARRAYWRITECHUNKSIZE 1000
@@ -822,7 +821,7 @@ int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
             0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return (0);
     }
-    else if(elemsize != sizeof(t_word))
+    if(elemsize != sizeof(t_word))
     {
         pd_error(0, "%s: has more than one field", x->x_realname->s_name);
         return (0);
@@ -1208,8 +1207,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
                 i, nelem);
             break;
         }
-        else
-            *((t_float *) (array->a_vec + elemsize * i) + yonset) = f;
+        *((t_float *) (array->a_vec + elemsize * i) + yonset) = f;
     }
     while(i < nelem)
         *((t_float *) (array->a_vec + elemsize * i) + yonset) = 0, i++;

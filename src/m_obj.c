@@ -389,8 +389,7 @@ static t_outconnect **outlet_getconnectionpointer(t_outlet *x)
 {
     if(x->o_connections && *(x->o_connections->oc_to) == backtracer_class)
         return (&((t_backtracer *) (x->o_connections->oc_to))->b_connections);
-    else
-        return (&x->o_connections);
+    return (&x->o_connections);
 }
 
 static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
@@ -454,11 +453,9 @@ int backtracer_settracing(void *x, int tracing)
             pd_error(x, "trace: already tracing");
             return (0);
         }
-        else
-        {
-            backtracer_tracing = 1;
-            return (1);
-        }
+
+        backtracer_tracing = 1;
+        return (1);
     }
     else /* when stopping, print backtrace to here */
     {
@@ -785,8 +782,7 @@ t_outconnect *obj_starttraverseoutlet(
     *op = o;
     if(o)
         return (*outlet_getconnectionpointer(o));
-    else
-        return (0);
+    return (0);
 }
 
 t_outconnect *obj_nexttraverseoutlet(
@@ -821,8 +817,7 @@ t_object *pd_checkobject(t_pd *x)
 {
     if((*x)->c_patchable)
         return ((t_object *) x);
-    else
-        return (0);
+    return (0);
 }
 
 /* move an inlet or outlet to the head of the list */
@@ -831,15 +826,14 @@ void obj_moveinletfirst(t_object *x, t_inlet *i)
     t_inlet *i2;
     if(x->ob_inlet == i)
         return;
-    else
-        for(i2 = x->ob_inlet; i2; i2 = i2->i_next)
-            if(i2->i_next == i)
-            {
-                i2->i_next = i->i_next;
-                i->i_next = x->ob_inlet;
-                x->ob_inlet = i;
-                return;
-            }
+    for(i2 = x->ob_inlet; i2; i2 = i2->i_next)
+        if(i2->i_next == i)
+        {
+            i2->i_next = i->i_next;
+            i->i_next = x->ob_inlet;
+            x->ob_inlet = i;
+            return;
+        }
 }
 
 void obj_moveoutletfirst(t_object *x, t_outlet *o)
@@ -847,15 +841,14 @@ void obj_moveoutletfirst(t_object *x, t_outlet *o)
     t_outlet *o2;
     if(x->ob_outlet == o)
         return;
-    else
-        for(o2 = x->ob_outlet; o2; o2 = o2->o_next)
-            if(o2->o_next == o)
-            {
-                o2->o_next = o->o_next;
-                o->o_next = x->ob_outlet;
-                x->ob_outlet = o;
-                return;
-            }
+    for(o2 = x->ob_outlet; o2; o2 = o2->o_next)
+        if(o2->o_next == o)
+        {
+            o2->o_next = o->o_next;
+            o->o_next = x->ob_outlet;
+            x->ob_outlet = o;
+            return;
+        }
 }
 
 /* routines for DSP sorting, which are used in d_ugen.c and g_canvas.c */
@@ -897,8 +890,7 @@ int obj_issignalinlet(const t_object *x, int m)
     {
         if(!m)
             return (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin);
-        else
-            m--;
+        m--;
     }
     for(i = x->ob_inlet; i && m; i = i->i_next, m--)
         ;

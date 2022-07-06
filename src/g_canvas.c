@@ -149,8 +149,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
                 (ob->te_pd == canvas_class && (((t_glist *) ob)->gl_isgraph)) ||
                 (glist->gl_goprect && (ob->te_type == T_TEXT)));
     }
-    else
-        return (1);
+    return (1);
 }
 
 void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
@@ -165,8 +164,7 @@ int gobj_click(t_gobj *x, struct _glist *glist, int xpix, int ypix, int shift,
     if(x->g_pd->c_wb && x->g_pd->c_wb->w_clickfn)
         return ((*x->g_pd->c_wb->w_clickfn)(
             x, glist, xpix, ypix, shift, alt, dbl, doit));
-    else
-        return (0);
+    return (0);
 }
 
 /* maintain the list of visible toplevels for the GUI's "windows" menu */
@@ -270,8 +268,7 @@ int canvas_getdollarzero(void)
     t_canvasenvironment *env = (x ? canvas_getenv(x) : 0);
     if(env)
         return (env->ce_dollarzero);
-    else
-        return (0);
+    return (0);
 }
 
 void canvas_getargs(int *argcp, t_atom **argvp)
@@ -1280,8 +1277,7 @@ int canvas_showtext(const t_canvas *x)
                    argv[0].a_w.w_symbol == gensym("graph"));
     if(x->gl_hidetext)
         return 0;
-    else
-        return (!isarray);
+    return (!isarray);
 }
 
 /* get the document containing this canvas */
@@ -1289,8 +1285,7 @@ t_canvas *canvas_getrootfor(t_canvas *x)
 {
     if((!x->gl_owner) || canvas_isabstraction(x))
         return (x);
-    else
-        return (canvas_getrootfor(x->gl_owner));
+    return (canvas_getrootfor(x->gl_owner));
 }
 
 t_undo *canvas_undo_get(t_canvas *x)
@@ -1955,8 +1950,7 @@ t_glist *pd_checkglist(t_pd *x)
 {
     if(*x == canvas_class || *x == array_define_class)
         return ((t_canvas *) x);
-    else
-        return (0);
+    return (0);
 }
 
 /* ------------------------------- setup routine ------------------------ */

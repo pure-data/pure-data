@@ -95,7 +95,7 @@ static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
     if(phase < 0 || phase >= x->i_owner->x_n) phase = 0;
     if(argc <= 0)
         return;
-    else if(argv->a_type == A_SYMBOL)
+    if(argv->a_type == A_SYMBOL)
         obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
             argv[0].a_w.w_symbol, argc - 1, argv + 1);
     else
@@ -492,8 +492,7 @@ int clone_get_n(t_gobj *x)
 {
     if(pd_class(&x->g_pd) != clone_class)
         return 0;
-    else
-        return ((t_clone *) x)->x_n;
+    return ((t_clone *) x)->x_n;
 }
 
 t_glist *clone_get_instance(t_gobj *x, int n)

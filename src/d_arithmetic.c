@@ -38,14 +38,12 @@ static void *plus_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_plus *x = (t_plus *) pd_new(plus_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_plus *x = (t_plus *) pd_new(plus_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *scalarplus_perform(t_int *w)
@@ -146,14 +144,12 @@ static void *minus_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_minus *x = (t_minus *) pd_new(minus_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_minus *x = (t_minus *) pd_new(minus_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *minus_perform(t_int *w)
@@ -310,14 +306,12 @@ static void *times_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_times *x = (t_times *) pd_new(times_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_times *x = (t_times *) pd_new(times_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *times_perform(t_int *w)
@@ -473,14 +467,12 @@ static void *over_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_over *x = (t_over *) pd_new(over_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_over *x = (t_over *) pd_new(over_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *over_perform(t_int *w)
@@ -641,14 +633,12 @@ static void *max_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_max *x = (t_max *) pd_new(max_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_max *x = (t_max *) pd_new(max_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *max_perform(t_int *w)
@@ -810,14 +800,12 @@ static void *min_new(t_symbol *s, int argc, t_atom *argv)
         x->x_f = 0;
         return (x);
     }
-    else
-    {
-        t_min *x = (t_min *) pd_new(min_class);
-        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-        outlet_new(&x->x_obj, &s_signal);
-        x->x_f = 0;
-        return (x);
-    }
+
+    t_min *x = (t_min *) pd_new(min_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
 }
 
 t_int *min_perform(t_int *w)

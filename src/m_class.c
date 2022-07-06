@@ -377,8 +377,8 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             (*(*x)->c_floatmethod)(x, argv->a_w.w_float);
             return;
         }
-        else if(argv->a_type == A_SYMBOL &&
-                *(*x)->c_symbolmethod != pd_defaultsymbol)
+        if(argv->a_type == A_SYMBOL &&
+            *(*x)->c_symbolmethod != pd_defaultsymbol)
         {
             (*(*x)->c_symbolmethod)(x, argv->a_w.w_symbol);
             return;

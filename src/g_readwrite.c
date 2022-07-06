@@ -283,7 +283,7 @@ void glist_readfrombinbuf(
             t_freebytes(templateargs, sizeof(*templateargs) * ntemplateargs);
             break;
         }
-        else if(nline > 2)
+        if(nline > 2)
             canvas_readerror(
                 natoms, vec, message, nline, "extra items ignored");
         else if(vec[message].a_type != A_SYMBOL ||

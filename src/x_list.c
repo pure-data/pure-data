@@ -478,8 +478,7 @@ static void list_store_insert(
             pd_error(x, "list_store_insert: index %d out of range", index);
             return;
         }
-        else if(index > x->x_alist.l_n)
-            index = x->x_alist.l_n;
+        if(index > x->x_alist.l_n) index = x->x_alist.l_n;
         list_store_doinsert(x, s, --argc, ++argv, index);
     }
 }

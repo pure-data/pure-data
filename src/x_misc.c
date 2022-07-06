@@ -363,7 +363,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
         }
         return;
     }
-    else if(argv[0].a_w.w_float != '/')
+    if(argv[0].a_w.w_float != '/')
     {
         pd_error(x, "oscparse: not an OSC message (no leading slash)");
         return;

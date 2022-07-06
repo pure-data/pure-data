@@ -114,9 +114,8 @@ t_float q8_rsqrt(t_float f0)
     u.f = f0;
     if(u.f < 0)
         return (0);
-    else
-        return (t_float) (rsqrt_exptab[(u.l >> 23) & 0xff] *
-                          rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
+    return (t_float) (rsqrt_exptab[(u.l >> 23) & 0xff] *
+                      rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
 t_float q8_sqrt(t_float f0)
@@ -131,9 +130,8 @@ t_float q8_sqrt(t_float f0)
     u.f = f0;
     if(u.f < 0)
         return (0);
-    else
-        return (t_float) (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
-                          rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
+    return (t_float) (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
+                      rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
 t_float qsqrt(t_float f) { return (q8_sqrt(f)); }

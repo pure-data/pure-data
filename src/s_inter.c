@@ -558,7 +558,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             }
             return;
         }
-        else if(ret > 0)
+        if(ret > 0)
         {
             /* handle too large UDP packets */
             if(ret > NET_MAXPACKETSIZE - 1)
@@ -1283,7 +1283,7 @@ static int sys_do_startgui(const char *libdir)
             sys_closesocket(sockfd);
             return (1);
         }
-        else if(!childpid) /* we're the child */
+        if(!childpid) /* we're the child */
         {
             sys_closesocket(sockfd); /* child doesn't listen */
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
@@ -1442,7 +1442,7 @@ void sys_setrealtime(const char *libdir)
                 fprintf(stderr, "sys_setpriority failed\n");
             return;
         }
-        else if(!watchpid) /* we're the child */
+        if(!watchpid) /* we're the child */
         {
             sys_set_priority(MODE_WATCHDOG);
             if(pipe9[1] != 0)

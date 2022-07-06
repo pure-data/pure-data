@@ -42,8 +42,7 @@ int main(int argc, char **argv)
             happy = 1;
             if(read(0, &buf, 100) <= 0)
                 return (0);
-            else
-                continue;
+            continue;
         }
         happy = 0;
         kill(getppid(), SIGHUP);

@@ -269,12 +269,10 @@ static t_int *block_prolog(t_int *w)
         x->x_phase = phase;
         return (w + x->x_blocklength); /* skip block; jump past epilog */
     }
-    else
-    {
-        x->x_count = x->x_frequency;
-        x->x_phase = (x->x_period > 1 ? 1 : 0);
-        return (w + PROLOGCALL); /* beginning of block is next ugen */
-    }
+
+    x->x_count = x->x_frequency;
+    x->x_phase = (x->x_period > 1 ? 1 : 0);
+    return (w + PROLOGCALL); /* beginning of block is next ugen */
 }
 
 static t_int *block_epilog(t_int *w)
@@ -290,8 +288,7 @@ static t_int *block_epilog(t_int *w)
             w - (x->x_blocklength -
                     (PROLOGCALL + EPILOGCALL))); /* go to ugen after prolog */
     }
-    else
-        return (w + EPILOGCALL);
+    return (w + EPILOGCALL);
 }
 
 static void block_dsp(t_block *x, t_signal **sp)

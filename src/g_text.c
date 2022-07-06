@@ -182,8 +182,7 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
                 indx = n2;
                 break;
             }
-            else if(!g->g_next)
-                indx = nobj - 1;
+            if(!g->g_next) indx = nobj - 1;
         }
     }
     else
@@ -523,8 +522,7 @@ t_pd *message_get_responder(t_gobj *x)
 {
     if(pd_class(&x->g_pd) != message_class)
         return NULL;
-    else
-        return (t_pd *) &((t_message *) x)->m_messresponder.mr_pd;
+    return (t_pd *) &((t_message *) x)->m_messresponder.mr_pd;
 }
 
 /* ---------------------- the "atom" text item ------------------------ */
@@ -562,7 +560,7 @@ static t_symbol *gatom_escapit(t_symbol *s)
 {
     if(!*s->s_name)
         return (gensym("-"));
-    else if(*s->s_name == '-')
+    if(*s->s_name == '-')
     {
         char shmo[100];
         shmo[0] = '-';
@@ -585,8 +583,7 @@ static t_symbol *gatom_unescapit(t_symbol *s)
 {
     if(*s->s_name == '-')
         return (gensym(s->s_name + 1));
-    else
-        return (iemgui_raute2dollar(s));
+    return (iemgui_raute2dollar(s));
 }
 
 static void gatom_redraw(t_gobj *client, t_glist *glist)
@@ -1344,8 +1341,7 @@ static int text_click(t_gobj *z, struct _glist *glist, int xpix, int ypix,
                     (double) ypix, (double) shift, (double) 0, (double) alt);
             return (1);
         }
-        else
-            return (0);
+        return (0);
     }
     else if(x->te_type == T_MESSAGE)
     {

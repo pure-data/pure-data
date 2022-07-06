@@ -392,7 +392,7 @@ int sys_main(int argc, const char **argv)
     if(sys_externalschedlib)
         return (
             sys_run_scheduler(sys_externalschedlibname, sys_extraflagsstring));
-    else if(sys_batch)
+    if(sys_batch)
         return (m_batchmain());
     else
     {
@@ -554,15 +554,13 @@ static int sys_parsedevlist(int *np, int *vecp, int max, const char *str)
     {
         if(!*str)
             break;
-        else
-        {
-            char *endp;
-            vecp[n] = (int) strtol(str, &endp, 10);
-            if(endp == str) break;
-            n++;
-            if(!*endp) break;
-            str = endp + 1;
-        }
+
+        char *endp;
+        vecp[n] = (int) strtol(str, &endp, 10);
+        if(endp == str) break;
+        n++;
+        if(!*endp) break;
+        str = endp + 1;
     }
     return (*np = n);
 }

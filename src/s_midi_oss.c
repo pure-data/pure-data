@@ -187,8 +187,7 @@ void sys_poll_midi(void)
                     close_one_midi_fd(oss_midiinfd[i]);
                     return; /* oss_nmidiinfd changed so blow off the rest */
                 }
-                else if(errno != EAGAIN)
-                    perror("MIDI");
+                if(errno != EAGAIN) perror("MIDI");
             }
             else if(ret != 0)
             {

@@ -73,14 +73,13 @@ int gpointer_check(const t_gpointer *gp, int headok)
     {
         if(gs->gs_un.gs_array->a_valid != gp->gp_valid)
             return (0);
-        else
-            return (1);
+        return (1);
     }
     else if(gs->gs_which == GP_GLIST)
     {
         if(!headok && !gp->gp_un.gp_scalar)
             return (0);
-        else if(gs->gs_un.gs_glist->gl_valid != gp->gp_valid)
+        if(gs->gs_un.gs_glist->gl_valid != gp->gp_valid)
             return (0);
         else
             return (1);
@@ -153,8 +152,7 @@ t_symbol *gpointer_gettemplatesym(const t_gpointer *gp)
         t_scalar *sc = gp->gp_un.gp_scalar;
         if(sc)
             return (sc->sc_template);
-        else
-            return (0);
+        return (0);
     }
     else
     {

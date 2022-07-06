@@ -160,9 +160,7 @@ double clock_gettimesincewithunits(
     if(sampflag)
         return ((pd_this->pd_systime - prevsystime) /
                 ((TIMEUNITPERSECOND / STUFF->st_dacsr) * units));
-    else
-        return (
-            (pd_this->pd_systime - prevsystime) / (TIMEUNITPERMSEC * units));
+    return ((pd_this->pd_systime - prevsystime) / (TIMEUNITPERMSEC * units));
 }
 
 /* what value the system clock will have after a delay */

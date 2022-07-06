@@ -482,9 +482,8 @@ int sys_send_dacs(void)
 #ifdef USEAPI_DUMMY
         if(sys_audioapiopened == API_DUMMY)
         return (dummy_send_dacs());
-    else
 #endif
-        post("unknown API");
+    post("unknown API");
     return (0);
 }
 

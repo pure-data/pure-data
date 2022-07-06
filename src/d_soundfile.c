@@ -1860,8 +1860,7 @@ static void *readsf_child_main(void *zz)
 #endif
                         continue;
                     }
-                    else
-                        wantbytes = READSIZE;
+                    wantbytes = READSIZE;
                     if(sf.sf_bytelimit >= 0 &&
                         wantbytes > (size_t) sf.sf_bytelimit)
                         wantbytes = sf.sf_bytelimit;
@@ -1883,7 +1882,7 @@ static void *readsf_child_main(void *zz)
                     x->x_fileerror = errno;
                     break;
                 }
-                else if(bytesread == 0)
+                if(bytesread == 0)
                 {
                     x->x_eof = 1;
                     break;

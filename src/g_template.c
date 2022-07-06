@@ -930,8 +930,7 @@ static t_float fielddesc_getfloat(
     {
         if(f->fd_var)
             return (template_getfloat(template, f->fd_un.fd_varsym, wp, loud));
-        else
-            return (f->fd_un.fd_float);
+        return (f->fd_un.fd_float);
     }
     else
     {
@@ -969,8 +968,7 @@ t_float fielddesc_getcoord(
                 template_getfloat(template, f->fd_un.fd_varsym, wp, loud);
             return (fielddesc_cvttocoord(f, val));
         }
-        else
-            return (f->fd_un.fd_float);
+        return (f->fd_un.fd_float);
     }
     else
     {
@@ -986,8 +984,7 @@ static t_symbol *fielddesc_getsymbol(
     {
         if(f->fd_var)
             return (template_getsymbol(template, f->fd_un.fd_varsym, wp, loud));
-        else
-            return (f->fd_un.fd_symbol);
+        return (f->fd_un.fd_symbol);
     }
     else
     {
@@ -2403,8 +2400,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         xloc, xinc, yloc, xfield, yfield, wfield, xpix, ypix,
                         shift, alt, dbl, doit));
                 }
-                else
-                    return (0);
+                return (0);
             }
             /* Now we walk over the array again and decide whether we
             a) grab an element, b) change the line width,
@@ -2461,7 +2457,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                                 array, glist, array->a_n - 1);
                             return (0);
                         }
-                        else if(alt)
+                        if(alt)
                         {
                             /* add a point (after the clicked-on one) */
                             array_resize_and_redraw(
@@ -2529,8 +2525,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                     {
                         if(xpix < pxpix)
                             return (CURSOR_EDITMODE_DISCONNECT);
-                        else
-                            return (CURSOR_RUNMODE_ADDPOINT);
+                        return (CURSOR_RUNMODE_ADDPOINT);
                     }
                     else
                         return (TEMPLATE->array_motion_fatten
@@ -2569,8 +2564,7 @@ static int plot_click(t_gobj *z, t_glist *glist, t_word *data,
             basex + xloc, xinc, basey + yloc, scalarvis, edit, xfielddesc,
             yfielddesc, wfielddesc, xpix, ypix, shift, alt, dbl, doit));
     }
-    else
-        return (0);
+    return (0);
 }
 
 const t_parentwidgetbehavior plot_widgetbehavior = {
@@ -2683,8 +2677,7 @@ static int drawnumber_gettype(
            template, x->x_fieldname, onsetp, &type, &arraytype) &&
         type != DT_ARRAY)
         return (type);
-    else
-        return (-1);
+    return (-1);
 }
 
 #define DRAWNUMBER_BUFSIZE 1024
@@ -2967,8 +2960,7 @@ static int drawnumber_click(t_gobj *z, t_glist *glist, t_word *data,
         }
         return (1);
     }
-    else
-        return (0);
+    return (0);
 }
 
 const t_parentwidgetbehavior drawnumber_widgetbehavior = {

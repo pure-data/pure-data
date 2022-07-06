@@ -280,7 +280,7 @@ static int do_parse_creationmode(t_atom *ap)
         long mode = strtol(s + 2, &endptr, 8);
         return (*endptr) ? -1 : (int) mode;
     }
-    else if(!strncmp(s, "0x", 2))
+    if(!strncmp(s, "0x", 2))
     {
         /* hex mode: nobody sane uses this... */
         char *endptr;
@@ -338,10 +338,8 @@ static void do_parse_args(t_file_handle *x, int argc, t_atom *argv)
                 pd_error(x, "invalid creation mode '%s'", buf);
                 break;
             }
-            else
-            {
-                x->x_creationmode = mode;
-            }
+
+            x->x_creationmode = mode;
         }
         else
         {

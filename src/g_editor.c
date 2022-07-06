@@ -1751,8 +1751,7 @@ int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos, int *x1p,
         *y2p = y2;
         return (1);
     }
-    else
-        return (0);
+    return (0);
 }
 
 /* find the last gobj, if any, containing the point. */
@@ -2137,7 +2136,7 @@ static void canvas_done_popup(
                 (*class_getpropertiesfn(pd_class(&y->g_pd)))(y, x);
                 return;
             }
-            else if(which == 1) /* open */
+            if(which == 1) /* open */
             {
                 if(!zgetfn(&y->g_pd, gensym("menu-open"))) continue;
                 vmess(&y->g_pd, gensym("menu-open"), "");
@@ -3351,8 +3350,7 @@ static t_glist *glist_finddirty(t_glist *x)
 
     if(x->gl_env && x->gl_dirty)
         return (x);
-    else
-        return (0);
+    return (0);
 }
 
 /* quit, after calling glist_finddirty() on all toplevels and verifying
@@ -3398,7 +3396,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                 canvas_getrootfor(g), g);
             return;
         }
-        else if(sys_perf)
+        if(sys_perf)
         {
             sys_vgui("pdtk_check .x%lx {Close this window?} {.x%lx menuclose "
                      "1;\n} yes\n",
@@ -3422,8 +3420,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                 canvas_getrootfor(g), g);
             return;
         }
-        else
-            pd_free(&x->gl_pd);
+        pd_free(&x->gl_pd);
     }
     else if(force == 3)
     {
@@ -3618,7 +3615,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             glist_select(gl, g);
             return (1);
         }
-        else if(g->g_pd == canvas_class)
+        if(g->g_pd == canvas_class)
         {
             if(glist_dofinderror((t_canvas *) g, error_object)) return (1);
         }

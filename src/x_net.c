@@ -501,11 +501,9 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
             fail = 1;
             break;
         }
-        else
-        {
-            sent += res;
-            bp += res;
-        }
+
+        sent += res;
+        bp += res;
     }
 done:
     if(!x->x_bin)

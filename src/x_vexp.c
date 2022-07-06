@@ -1401,8 +1401,7 @@ struct ex_ex *ex_eval(
     if(right.ex_type == ET_VEC) fts_free(right.ex_vec);
     if(nullret)
         return (exNULL);
-    else
-        return (eptr);
+    return (eptr);
 }
 
 extern struct ex_ex *ex_if(t_expr *expr, struct ex_ex *eptr, struct ex_ex *optr,
