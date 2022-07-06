@@ -9,29 +9,24 @@
 
 #include <stdio.h>
 
-int dummy_open_audio(int nin, int nout, int sr) {
-  return 0;
-}
+int dummy_open_audio(int nin, int nout, int sr) { return 0; }
 
-int dummy_close_audio(void) {
-  return 0;
-}
+int dummy_close_audio(void) { return 0; }
 
-int dummy_send_dacs(void) {
-  return 0;
-}
+int dummy_send_dacs(void) { return 0; }
 
 void dummy_getdevs(char *indevlist, int *nindevs, char *outdevlist,
-    int *noutdevs, int *canmulti, int maxndev, int devdescsize) {
-  sprintf(indevlist, "NONE");
-  sprintf(outdevlist, "NONE");
-  *nindevs = *noutdevs = 1;
-  *canmulti = 0;
+    int *noutdevs, int *canmulti, int maxndev, int devdescsize)
+{
+    sprintf(indevlist, "NONE");
+    sprintf(outdevlist, "NONE");
+    *nindevs = *noutdevs = 1;
+    *canmulti = 0;
 }
 
-void dummy_listdevs(void) {
-  // do nothing
+void dummy_listdevs(void)
+{
+    // do nothing
 }
 
 #endif
-

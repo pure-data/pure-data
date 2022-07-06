@@ -1,7 +1,7 @@
 /* Copyright (c) 1997-1999 Guenter Geiger, Miller Puckette, Larry Troxler,
-* Winfried Ritsch, Karl MacMillan, and others.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * Winfried Ritsch, Karl MacMillan, and others.
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* MIDI I/O for Linux using ALSA */
 
@@ -20,20 +20,20 @@
 
 /* full status byte definitions in s_midi.c */
 /* channel voice messages */
-#define MIDI_NOTEOFF        0x80
-#define MIDI_NOTEON         0x90
+#define MIDI_NOTEOFF 0x80
+#define MIDI_NOTEON 0x90
 #define MIDI_POLYAFTERTOUCH 0xa0
-#define MIDI_CONTROLCHANGE  0xb0
-#define MIDI_PROGRAMCHANGE  0xc0
-#define MIDI_AFTERTOUCH     0xd0
-#define MIDI_PITCHBEND      0xe0
+#define MIDI_CONTROLCHANGE 0xb0
+#define MIDI_PROGRAMCHANGE 0xc0
+#define MIDI_AFTERTOUCH 0xd0
+#define MIDI_PITCHBEND 0xe0
 /* system common messages */
-#define MIDI_SYSEX          0xf0
-#define MIDI_TIMECODE       0xf1
-#define MIDI_SONGPOS        0xf2
-#define MIDI_SONGSELECT     0xf3
+#define MIDI_SYSEX 0xf0
+#define MIDI_TIMECODE 0xf1
+#define MIDI_SONGPOS 0xf2
+#define MIDI_SONGSELECT 0xf3
 
-//the maximum length of input messages
+// the maximum length of input messages
 #ifndef ALSA_MAX_EVENT_SIZE
 #define ALSA_MAX_EVENT_SIZE 512
 #endif
@@ -47,8 +47,8 @@ static snd_seq_t *midi_handle;
 
 static snd_midi_event_t *midiev;
 
-void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
-    int nmidiout, int *midioutvec)
+void sys_alsa_do_open_midi(
+    int nmidiin, int *midiinvec, int nmidiout, int *midioutvec)
 {
 
     char portname[50];
@@ -60,57 +60,57 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     alsa_nmidiin = 0;
     alsa_nmidiout = 0;
 
-    if (nmidiout == 0 && nmidiin == 0) return;
+    if(nmidiout == 0 && nmidiin == 0) return;
 
-    if (nmidiin > MAXMIDIINDEV )
+    if(nmidiin > MAXMIDIINDEV)
     {
         post("MIDI input ports reduced to maximum %d", MAXMIDIINDEV);
         nmidiin = MAXMIDIINDEV;
     }
-    if (nmidiout > MAXMIDIOUTDEV)
+    if(nmidiout > MAXMIDIOUTDEV)
     {
         post("MIDI output ports reduced to maximum %d", MAXMIDIOUTDEV);
         nmidiout = MAXMIDIOUTDEV;
     }
 
-    if (nmidiin > 0 && nmidiout > 0)
+    if(nmidiin > 0 && nmidiout > 0)
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_DUPLEX, 0);
-    else if (nmidiin > 0)
+    else if(nmidiin > 0)
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_INPUT, 0);
-    else if (nmidiout > 0)
+    else if(nmidiout > 0)
         err = snd_seq_open(&midi_handle, "default", SND_SEQ_OPEN_OUTPUT, 0);
 
-    if (err != 0)
+    if(err != 0)
     {
-            sys_setalarm(1000000);
-            post("couldn't open alsa sequencer");
-            return;
+        sys_setalarm(1000000);
+        post("couldn't open alsa sequencer");
+        return;
     }
-    for (i = 0; i < nmidiin; i++)
+    for(i = 0; i < nmidiin; i++)
     {
         int port;
-        sprintf(portname, "Pure Data Midi-In %d", i+1);
-        port = snd_seq_create_simple_port(midi_handle,portname,
-                                          SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
-                                          SND_SEQ_PORT_TYPE_APPLICATION);
+        sprintf(portname, "Pure Data Midi-In %d", i + 1);
+        port = snd_seq_create_simple_port(midi_handle, portname,
+            SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,
+            SND_SEQ_PORT_TYPE_APPLICATION);
         alsa_midiinfd[i] = port;
-        if (port < 0) goto error;
+        if(port < 0) goto error;
     }
 
-    for (i = 0; i < nmidiout; i++)
+    for(i = 0; i < nmidiout; i++)
     {
         int port;
-        sprintf(portname,"Pure Data Midi-Out %d", i+1);
-        port = snd_seq_create_simple_port(midi_handle,portname,
-                                          SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
-                                          SND_SEQ_PORT_TYPE_APPLICATION);
+        sprintf(portname, "Pure Data Midi-Out %d", i + 1);
+        port = snd_seq_create_simple_port(midi_handle, portname,
+            SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
+            SND_SEQ_PORT_TYPE_APPLICATION);
         alsa_midioutfd[i] = port;
-        if (port < 0) goto error;
+        if(port < 0) goto error;
     }
 
     snd_seq_client_info_malloc(&alsainfo);
     snd_seq_get_client_info(midi_handle, alsainfo);
-    snd_seq_client_info_set_name(alsainfo,"Pure Data");
+    snd_seq_client_info_set_name(alsainfo, "Pure Data");
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
@@ -121,7 +121,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     alsa_nmidiin = nmidiin;
 
     return;
- error:
+error:
     sys_setalarm(1000000);
     post("couldn't open alsa MIDI output device");
     return;
@@ -129,14 +129,14 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
 
 void sys_alsa_putmidimess(int portno, int a, int b, int c)
 {
-    if (portno >= 0 && portno < alsa_nmidiout)
+    if(portno >= 0 && portno < alsa_nmidiout)
     {
         snd_seq_event_t ev;
         int status = a & 0xf0;
         int channel = a & 0x0f;
         snd_seq_ev_clear(&ev);
         status = (status >= MIDI_SYSEX) ? status : (status & 0xf0);
-        switch (status)
+        switch(status)
         {
             case MIDI_NOTEON:
                 snd_seq_ev_set_noteon(&ev, channel, b, c);
@@ -157,8 +157,9 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 snd_seq_ev_set_chanpress(&ev, channel, b);
                 break;
             case MIDI_PITCHBEND:
-                /* b and c are already correct but alsa needs to recalculate them */
-                snd_seq_ev_set_pitchbend(&ev, channel, (((c<<7)|b)-8192));
+                /* b and c are already correct but alsa needs to recalculate
+                 * them */
+                snd_seq_ev_set_pitchbend(&ev, channel, (((c << 7) | b) - 8192));
                 break;
             case MIDI_TIMECODE:
                 ev.type = SND_SEQ_EVENT_QFRAME;
@@ -188,69 +189,76 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
         snd_seq_ev_set_source(&ev, alsa_midioutfd[portno]);
         snd_seq_event_output_direct(midi_handle, &ev);
     }
-    //post("%d %d %d\n", a, b, c);
+    // post("%d %d %d\n", a, b, c);
 }
 
 void sys_alsa_putmidibyte(int portno, int byte)
 {
-  static snd_midi_event_t *dev = NULL;
-  int res;
-  snd_seq_event_t ev;
-  if (!dev) {
-    snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
-    //assert(dev);
-    snd_midi_event_init(dev);
-  }
-  snd_seq_ev_clear(&ev);
-  res = snd_midi_event_encode_byte(dev, byte, &ev);
-  if (res > 0 && ev.type != SND_SEQ_EVENT_NONE) {
-    // got a complete event, output it
-    snd_seq_ev_set_direct(&ev);
-    snd_seq_ev_set_subs(&ev);
-    snd_seq_ev_set_source(&ev, alsa_midioutfd[portno]);
-    snd_seq_event_output_direct(midi_handle, &ev);
-  }
-  if (res != 0)
-    // reinitialize the parser
-    snd_midi_event_init(dev);
+    static snd_midi_event_t *dev = NULL;
+    int res;
+    snd_seq_event_t ev;
+    if(!dev)
+    {
+        snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
+        // assert(dev);
+        snd_midi_event_init(dev);
+    }
+    snd_seq_ev_clear(&ev);
+    res = snd_midi_event_encode_byte(dev, byte, &ev);
+    if(res > 0 && ev.type != SND_SEQ_EVENT_NONE)
+    {
+        // got a complete event, output it
+        snd_seq_ev_set_direct(&ev);
+        snd_seq_ev_set_subs(&ev);
+        snd_seq_ev_set_source(&ev, alsa_midioutfd[portno]);
+        snd_seq_event_output_direct(midi_handle, &ev);
+    }
+    if(res != 0)
+        // reinitialize the parser
+        snd_midi_event_init(dev);
 }
 
-
-    /* this version uses the asynchronous "read()" ... */
+/* this version uses the asynchronous "read()" ... */
 void sys_alsa_poll_midi(void)
 {
-   unsigned char buf[ALSA_MAX_EVENT_SIZE];
-   int count, alsa_source;
-   snd_seq_event_t *midievent = NULL;
+    unsigned char buf[ALSA_MAX_EVENT_SIZE];
+    int count, alsa_source;
+    snd_seq_event_t *midievent = NULL;
 
-   if (!alsa_nmidiout && !alsa_nmidiin) return;
+    if(!alsa_nmidiout && !alsa_nmidiin) return;
 
-   snd_midi_event_init(midiev);
+    snd_midi_event_init(midiev);
 
-   while (snd_seq_event_input_pending(midi_handle, 1) > 0) {
-       while (snd_seq_event_input_pending(midi_handle, 0) > 0) {
-           int rslt = snd_seq_event_input(midi_handle, &midievent);
-           if(rslt >= 0) {
-               long length = snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
-               long i;
-               alsa_source = midievent->dest.port;
-               for(i = 0; i < length; i++)
-                   sys_midibytein(alsa_source, (buf[i] & 0xff));
-           } else if (rslt == -ENOSPC) {
-               pd_error(0, "MIDI input queue overflow!");
-           }
-       }
-   }
+    while(snd_seq_event_input_pending(midi_handle, 1) > 0)
+    {
+        while(snd_seq_event_input_pending(midi_handle, 0) > 0)
+        {
+            int rslt = snd_seq_event_input(midi_handle, &midievent);
+            if(rslt >= 0)
+            {
+                long length =
+                    snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
+                long i;
+                alsa_source = midievent->dest.port;
+                for(i = 0; i < length; i++)
+                    sys_midibytein(alsa_source, (buf[i] & 0xff));
+            }
+            else if(rslt == -ENOSPC)
+            {
+                pd_error(0, "MIDI input queue overflow!");
+            }
+        }
+    }
 }
 
 void sys_alsa_close_midi()
 {
     alsa_nmidiin = alsa_nmidiout = 0;
-    if (midi_handle)
+    if(midi_handle)
     {
         snd_seq_close(midi_handle);
         midi_handle = NULL;
-        if (midiev)
+        if(midiev)
         {
             snd_midi_event_free(midiev);
             midiev = NULL;
@@ -260,9 +268,7 @@ void sys_alsa_close_midi()
 
 static int alsa_nmidiindevs = 1, alsa_nmidioutdevs = 1;
 
-void midi_alsa_init(void)
-{
-}
+void midi_alsa_init(void) {}
 
 void midi_alsa_setndevs(int in, int out)
 {
@@ -270,19 +276,17 @@ void midi_alsa_setndevs(int in, int out)
     alsa_nmidioutdevs = out;
 }
 
-void midi_alsa_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
+void midi_alsa_getdevs(char *indevlist, int *nindevs, char *outdevlist,
+    int *noutdevs, int maxndev, int devdescsize)
 {
     int i, ndev;
-    if ((ndev = alsa_nmidiindevs) > maxndev)
-        ndev = maxndev;
-    for (i = 0; i < ndev; i++)
-        sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
+    if((ndev = alsa_nmidiindevs) > maxndev) ndev = maxndev;
+    for(i = 0; i < ndev; i++)
+        sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i + 1);
     *nindevs = ndev;
 
-    if ((ndev = alsa_nmidioutdevs) > maxndev)
-        ndev = maxndev;
-    for (i = 0; i < ndev; i++)
-        sprintf(outdevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
+    if((ndev = alsa_nmidioutdevs) > maxndev) ndev = maxndev;
+    for(i = 0; i < ndev; i++)
+        sprintf(outdevlist + i * devdescsize, "ALSA MIDI device #%d", i + 1);
     *noutdevs = ndev;
 }

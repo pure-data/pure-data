@@ -11,11 +11,12 @@ int sys_main(int argc, char **argv);
 #include <windows.h>
 #include <stdio.h>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(
+    HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    __try {
-        sys_main(__argc,__argv);
+    __try
+    {
+        sys_main(__argc, __argv);
     }
     __finally
     {
@@ -24,11 +25,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     return (0);
 }
 
-#else /* not _MSC_VER ... */
-int main(int argc, char **argv)
-{
-    return (sys_main(argc, argv));
-}
+#else  /* not _MSC_VER ... */
+int main(int argc, char **argv) { return (sys_main(argc, argv)); }
 #endif /* _MSC_VER */
-
-

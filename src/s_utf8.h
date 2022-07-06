@@ -4,7 +4,7 @@
 #include "m_pd.h"
 
 #ifndef UCS4
-# define UCS4 uint32_t
+#define UCS4 uint32_t
 #endif
 
 /* UTF8_SUPPORT_FULL_UCS4
@@ -21,24 +21,24 @@
  *  maximum bytes per character including NUL terminator
  */
 #ifdef UTF8_SUPPORT_FULL_UCS4
-# ifndef UTF8_MAXBYTES
-#  define UTF8_MAXBYTES  6
-# endif
-# ifndef UTF8_MAXBYTES1
-#  define UTF8_MAXBYTES1 7
-# endif
+#ifndef UTF8_MAXBYTES
+#define UTF8_MAXBYTES 6
+#endif
+#ifndef UTF8_MAXBYTES1
+#define UTF8_MAXBYTES1 7
+#endif
 #else
-# ifndef UTF8_MAXBYTES
-#  define UTF8_MAXBYTES  4
-# endif
-# ifndef UTF8_MAXBYTES1
-#  define UTF8_MAXBYTES1 5
-# endif
+#ifndef UTF8_MAXBYTES
+#define UTF8_MAXBYTES 4
+#endif
+#ifndef UTF8_MAXBYTES1
+#define UTF8_MAXBYTES1 5
+#endif
 #endif
 /*--/moo--*/
 
 /* is c the start of a utf8 sequence? */
-#define isutf(c) (((c)&0xC0)!=0x80)
+#define isutf(c) (((c) &0xC0) != 0x80)
 
 /* convert UTF-8 data to UCS-2 wide character */
 int u8_utf8toucs2(uint16_t *dest, int sz, const char *src, int srcsz);
@@ -83,6 +83,6 @@ void u8_dec_ptr(char **sp);
 int u8_seqlen(const char *s);
 
 /* convert a string in the current encoding to UTF-8 */
-int u8_nativetoutf8(char* dest, int sz, const char* src, int srcsz);
+int u8_nativetoutf8(char *dest, int sz, const char *src, int srcsz);
 
 #endif /* S_UTF8_H */

@@ -44,30 +44,31 @@ extern "C"
 another one writes to the same ring buffer, define this as 'volatile' : */
 #define PA_VOLATILE
 
-typedef struct
-{
-    long   bufferSize;              /* Number of bytes in FIFO.
-                                        Set by sys_ringbuf_init */
-    PA_VOLATILE long   writeIndex; /* Index of next writable byte.
-                                        Set by sys_ringbuf_AdvanceWriteIndex */
-    PA_VOLATILE long   readIndex;  /* Index of next readable byte.
-                                        Set by sys_ringbuf_AdvanceReadIndex */
-} sys_ringbuf;
+    typedef struct
+    {
+        long bufferSize; /* Number of bytes in FIFO.
+                             Set by sys_ringbuf_init */
+        PA_VOLATILE long
+            writeIndex;             /* Index of next writable byte.
+                                         Set by sys_ringbuf_AdvanceWriteIndex */
+        PA_VOLATILE long readIndex; /* Index of next readable byte.
+                                         Set by sys_ringbuf_AdvanceReadIndex */
+    } sys_ringbuf;
 
-/* Initialize Ring Buffer. */
-long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes,
-    PA_VOLATILE char *dataPtr, long nfill);
+    /* Initialize Ring Buffer. */
+    long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes,
+        PA_VOLATILE char *dataPtr, long nfill);
 
-/* Return number of bytes available for writing. */
-long sys_ringbuf_getwriteavailable(PA_VOLATILE sys_ringbuf *rbuf);
-/* Return number of bytes available for read. */
-long sys_ringbuf_getreadavailable(PA_VOLATILE sys_ringbuf *rbuf);
-/* Return bytes written. */
-long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
-    long numBytes, PA_VOLATILE char *buffer);
-/* Return bytes read. */
-long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
-    PA_VOLATILE char *buffer);
+    /* Return number of bytes available for writing. */
+    long sys_ringbuf_getwriteavailable(PA_VOLATILE sys_ringbuf *rbuf);
+    /* Return number of bytes available for read. */
+    long sys_ringbuf_getreadavailable(PA_VOLATILE sys_ringbuf *rbuf);
+    /* Return bytes written. */
+    long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
+        long numBytes, PA_VOLATILE char *buffer);
+    /* Return bytes read. */
+    long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data,
+        long numBytes, PA_VOLATILE char *buffer);
 
 #ifdef __cplusplus
 }
