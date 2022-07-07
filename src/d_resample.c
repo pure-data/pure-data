@@ -53,7 +53,7 @@ t_int *upsampling_perform_hold(t_int *w)
     {
         for(int j = 0; j < up; j++)
         {
-            out[i * up + j] = in[i]
+            out[i * up + j] = in[i];
         }
     }
     return (w + 5);
@@ -66,7 +66,7 @@ t_int *upsampling_perform_linear(t_int *w)
     t_sample *out = (t_sample *) (w[3]); /* upsampled signal    */
     int up = (int) (w[4]);               /* upsampling factor   */
     int in_num_samples = (int) (w[5]);   /* original vectorsize */
-    int out_num_samples = parent * up;
+    int out_num_samples = in_num_samples * up;
 
     t_sample a = *x->buffer;
     t_sample b = in[0];
@@ -74,7 +74,7 @@ t_int *upsampling_perform_linear(t_int *w)
     for(int i = 0; i < out_num_samples; i++)
     {
         t_sample f_in_idx = (t_sample) (i + 1) / up;
-        int i_in_idx = (int) f_source_idx;
+        int i_in_idx = (int) f_in_idx;
         t_sample frac = f_in_idx - (t_sample) i_in_idx;
         if(frac == 0.)
             frac = 1.;
