@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-1999 Miller Puckette.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* changes by Thomas Musil IEM KUG Graz Austria 2001 */
 /* all changes are labeled with      iemlib      */
@@ -62,7 +62,7 @@ void conf_init(void)
     g_array_setup();
     g_canvas_setup();
     g_guiconnect_setup();
-/* iemlib */
+    /* iemlib */
     g_bang_setup();
     g_hradio_setup();
     g_hslider_setup();
@@ -72,7 +72,7 @@ void conf_init(void)
     g_vradio_setup();
     g_vslider_setup();
     g_vumeter_setup();
-/* iemlib */
+    /* iemlib */
     g_io_setup();
     g_scalar_setup();
     g_template_setup();

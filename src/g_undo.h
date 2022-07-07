@@ -23,8 +23,9 @@ location). Then we need to call check_canvas_pointers to update all of the old
 (stale) undo actions to corresepond with the new memory location.
 
 What about abstractions? Once they are recreated  (e.g. after delete, followed
-by an undo) all undo actions (except for its deletion in the parent window should
-be purged since abstraction's state will now default to its original (saved) state.
+by an undo) all undo actions (except for its deletion in the parent window
+should be purged since abstraction's state will now default to its original
+(saved) state.
 
 Types of undo data:
 0  - init data (start of the queue)
@@ -49,32 +50,33 @@ Types of undo data:
 typedef enum
 {
     UNDO_INIT = 0,
-    UNDO_CONNECT,      /* 1: OK */
-    UNDO_DISCONNECT,   /* 2: OK */
-    UNDO_CUT,          /* 3: OK */
-    UNDO_MOTION,       /* 4: OK */
-    UNDO_PASTE,        /* 5: OK */
-    UNDO_APPLY,        /* 6: how to test? */
-    UNDO_ARRANGE,      /* 7: FIXME: skipped */
-    UNDO_CANVAS_APPLY, /* 8: OK */
-    UNDO_CREATE,       /* 9: OK */
-    UNDO_RECREATE,     /* 10: OK */
-    UNDO_FONT,         /* 11: OK */
+    UNDO_CONNECT,        /* 1: OK */
+    UNDO_DISCONNECT,     /* 2: OK */
+    UNDO_CUT,            /* 3: OK */
+    UNDO_MOTION,         /* 4: OK */
+    UNDO_PASTE,          /* 5: OK */
+    UNDO_APPLY,          /* 6: how to test? */
+    UNDO_ARRANGE,        /* 7: FIXME: skipped */
+    UNDO_CANVAS_APPLY,   /* 8: OK */
+    UNDO_CREATE,         /* 9: OK */
+    UNDO_RECREATE,       /* 10: OK */
+    UNDO_FONT,           /* 11: OK */
     UNDO_SEQUENCE_START, /* 12 start an atomic sequence of undo actions*/
     UNDO_SEQUENCE_END,   /* 13 end an atomic sequence of undo actions */
-    UNDO_OBJECT_STATE,  /* 14: internal object state: t_atom-list to send to the object */
+    UNDO_OBJECT_STATE, /* 14: internal object state: t_atom-list to send to the
+                          object */
 
     UNDO_LAST
 } t_undo_type;
 
 struct _undo_action
 {
-	t_canvas *x;				/* canvas undo is associated with */
-	t_undo_type type;			/* defines what kind of data container it is */
-	void *data;					/* each action will have a different data container */
-	char *name;					/* name of current action */
-	struct _undo_action *prev;	/* previous undo action */
-	struct _undo_action *next;	/* next undo action */
+    t_canvas *x;      /* canvas undo is associated with */
+    t_undo_type type; /* defines what kind of data container it is */
+    void *data;       /* each action will have a different data container */
+    char *name;       /* name of current action */
+    struct _undo_action *prev; /* previous undo action */
+    struct _undo_action *next; /* next undo action */
 };
 
 #ifndef t_undo_action
@@ -86,18 +88,18 @@ struct _undo
     t_undo_action *u_queue;
     t_undo_action *u_last;
     void *u_cleanstate; /* pointer to non-dirty state */
-    int u_doing; /* currently undoing */
+    int u_doing;        /* currently undoing */
 };
+
 #define t_undo struct _undo
 
-
-EXTERN t_undo*canvas_undo_get(t_canvas*x);
+EXTERN t_undo *canvas_undo_get(t_canvas *x);
 
 EXTERN void canvas_undo_cleardirty(t_canvas *x);
 
 EXTERN t_undo_action *canvas_undo_init(t_canvas *x);
-EXTERN t_undo_action *canvas_undo_add(t_canvas *x,
-	t_undo_type type, const char *name, void *data);
+EXTERN t_undo_action *canvas_undo_add(
+    t_canvas *x, t_undo_type type, const char *name, void *data);
 EXTERN void canvas_undo_undo(t_canvas *x);
 EXTERN void canvas_undo_redo(t_canvas *x);
 EXTERN void canvas_undo_rebranch(t_canvas *x);
@@ -107,20 +109,19 @@ EXTERN void canvas_undo_free(t_canvas *x);
 
 /* --------- 1. connect ---------- */
 
-EXTERN void *canvas_undo_set_connect(t_canvas *x,
-    int index1, int outno, int index2, int inno);
+EXTERN void *canvas_undo_set_connect(
+    t_canvas *x, int index1, int outno, int index2, int inno);
 EXTERN int canvas_undo_connect(t_canvas *x, void *z, int action);
 
 /* --------- 2. disconnect ------- */
 
-EXTERN void *canvas_undo_set_disconnect(t_canvas *x,
-    int index1, int outno, int index2, int inno);
+EXTERN void *canvas_undo_set_disconnect(
+    t_canvas *x, int index1, int outno, int index2, int inno);
 EXTERN int canvas_undo_disconnect(t_canvas *x, void *z, int action);
 
 /* --------- 3. cut -------------- */
 
-EXTERN void *canvas_undo_set_cut(t_canvas *x,
-    int mode);
+EXTERN void *canvas_undo_set_cut(t_canvas *x, int mode);
 EXTERN int canvas_undo_cut(t_canvas *x, void *z, int action);
 
 /* --------- 4. move ------------- */
@@ -130,20 +131,18 @@ EXTERN int canvas_undo_move(t_canvas *x, void *z, int action);
 
 /* --------- 5. paste ------------ */
 
-EXTERN void *canvas_undo_set_paste(t_canvas *x,
-    int offset, int duplicate, int d_offset);
+EXTERN void *canvas_undo_set_paste(
+    t_canvas *x, int offset, int duplicate, int d_offset);
 EXTERN int canvas_undo_paste(t_canvas *x, void *z, int action);
 
 /* --------- 6. apply ------------ */
 
-EXTERN void *canvas_undo_set_apply(t_canvas *x,
-    int n);
+EXTERN void *canvas_undo_set_apply(t_canvas *x, int n);
 EXTERN int canvas_undo_apply(t_canvas *x, void *z, int action);
 
 /* --------- 7. arrange ---------- */
 
-EXTERN void *canvas_undo_set_arrange(t_canvas *x,
-    t_gobj *obj, int newindex);
+EXTERN void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex);
 EXTERN int canvas_undo_arrange(t_canvas *x, void *z, int action);
 
 /* --------- 8. canvas apply ----- */
@@ -158,14 +157,13 @@ EXTERN int canvas_undo_create(t_canvas *x, void *z, int action);
 
 /* --------- 10. recreate -------- */
 
-EXTERN void *canvas_undo_set_recreate(t_canvas *x,
-    t_gobj *y, int old_pos);
+EXTERN void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int old_pos);
 EXTERN int canvas_undo_recreate(t_canvas *x, void *z, int action);
 
 /* --------- 11. font ------------ */
 
-EXTERN void *canvas_undo_set_font(t_canvas *x,
-    int font, t_float realresize, int whichresize);
+EXTERN void *canvas_undo_set_font(
+    t_canvas *x, int font, t_float realresize, int whichresize);
 EXTERN int canvas_undo_font(t_canvas *x, void *z, int action);
 
 /* ------------------------------- */

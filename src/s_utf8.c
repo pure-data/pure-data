@@ -22,36 +22,34 @@
 #include <string.h>
 #include <stdarg.h>
 #ifdef _WIN32
-# include <malloc.h> /* MSVC or mingw on windows */
+#include <malloc.h> /* MSVC or mingw on windows */
 #elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
-# include <alloca.h> /* linux, mac, mingw, cygwin */
+#include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-# include <stdlib.h> /* BSDs for example */
+#include <stdlib.h> /* BSDs for example */
 #endif
 
 #include "s_utf8.h"
 
-static const uint32_t offsetsFromUTF8[6] = {
-    0x00000000UL, 0x00003080UL, 0x000E2080UL,
-    0x03C82080UL, 0xFA082080UL, 0x82082080UL
-};
+static const uint32_t offsetsFromUTF8[6] = {0x00000000UL, 0x00003080UL,
+    0x000E2080UL, 0x03C82080UL, 0xFA082080UL, 0x82082080UL};
 
-static const char trailingBytesForUTF8[256] = {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
-};
-
+static const char trailingBytesForUTF8[256] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 
 /* returns length of next utf-8 sequence */
 int u8_seqlen(const char *s)
 {
-    return trailingBytesForUTF8[(unsigned int)(unsigned char)s[0]] + 1;
+    return trailingBytesForUTF8[(unsigned int) (unsigned char) s[0]] + 1;
 }
 
 /* conversions without error checking
@@ -69,29 +67,38 @@ int u8_utf8toucs2(uint16_t *dest, int sz, const char *src, int srcsz)
     uint16_t ch;
     const char *src_end = src + srcsz;
     int nb;
-    int i=0;
+    int i = 0;
 
-    while (i < sz-1) {
-        nb = trailingBytesForUTF8[(unsigned char)*src];
-        if (srcsz == -1) {
-            if (*src == 0)
-                goto done_toucs;
+    while(i < sz - 1)
+    {
+        nb = trailingBytesForUTF8[(unsigned char) *src];
+        if(srcsz == -1)
+        {
+            if(*src == 0) goto done_toucs;
         }
-        else {
-            if (src + nb >= src_end)
-                goto done_toucs;
+        else
+        {
+            if(src + nb >= src_end) goto done_toucs;
         }
         ch = 0;
-        switch (nb) {
-        case 3: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
-        case 2: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
-        case 1: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
-        case 0: ch += (unsigned char)*src++; /* falls through */
+        switch(nb)
+        {
+            case 3:
+                ch += (unsigned char) *src++;
+                ch <<= 6; /* falls through */
+            case 2:
+                ch += (unsigned char) *src++;
+                ch <<= 6; /* falls through */
+            case 1:
+                ch += (unsigned char) *src++;
+                ch <<= 6; /* falls through */
+            case 0:
+                ch += (unsigned char) *src++; /* falls through */
         }
         ch -= offsetsFromUTF8[nb];
         dest[i++] = ch;
     }
- done_toucs:
+done_toucs:
     dest[i] = 0;
     return i;
 }
@@ -114,64 +121,68 @@ int u8_ucs2toutf8(char *dest, int sz, const uint16_t *src, int srcsz)
     int i = 0;
     char *dest_end = dest + sz;
 
-    while (srcsz<0 ? src[i]!=0 : i < srcsz) {
+    while(srcsz < 0 ? src[i] != 0 : i < srcsz)
+    {
         ch = src[i];
-        if (ch < 0x80) {
-            if (dest >= dest_end)
-                return i;
-            *dest++ = (char)ch;
+        if(ch < 0x80)
+        {
+            if(dest >= dest_end) return i;
+            *dest++ = (char) ch;
         }
-        else if (ch < 0x800) {
-            if (dest >= dest_end-1)
-                return i;
-            *dest++ = (ch>>6) | 0xC0;
+        else if(ch < 0x800)
+        {
+            if(dest >= dest_end - 1) return i;
+            *dest++ = (ch >> 6) | 0xC0;
             *dest++ = (ch & 0x3F) | 0x80;
         }
-        else {
-            if (dest >= dest_end-2)
-                return i;
-            *dest++ = (ch>>12) | 0xE0;
-            *dest++ = ((ch>>6) & 0x3F) | 0x80;
+        else
+        {
+            if(dest >= dest_end - 2) return i;
+            *dest++ = (ch >> 12) | 0xE0;
+            *dest++ = ((ch >> 6) & 0x3F) | 0x80;
             *dest++ = (ch & 0x3F) | 0x80;
         }
         i++;
     }
-    if (dest < dest_end)
-        *dest = '\0';
+    if(dest < dest_end) *dest = '\0';
     return i;
 }
 
 /* moo: get byte length of character number, or 0 if not supported */
 int u8_wc_nbytes(uint32_t ch)
 {
-  if (ch < 0x80) return 1;
-  if (ch < 0x800) return 2;
-  if (ch < 0x10000) return 3;
-  if (ch < 0x200000) return 4;
-  return 0; /*-- bad input --*/
+    if(ch < 0x80) return 1;
+    if(ch < 0x800) return 2;
+    if(ch < 0x10000) return 3;
+    if(ch < 0x200000) return 4;
+    return 0; /*-- bad input --*/
 }
 
 int u8_wc_toutf8(char *dest, uint32_t ch)
 {
-    if (ch < 0x80) {
-        dest[0] = (char)ch;
+    if(ch < 0x80)
+    {
+        dest[0] = (char) ch;
         return 1;
     }
-    if (ch < 0x800) {
-        dest[0] = (ch>>6) | 0xC0;
+    if(ch < 0x800)
+    {
+        dest[0] = (ch >> 6) | 0xC0;
         dest[1] = (ch & 0x3F) | 0x80;
         return 2;
     }
-    if (ch < 0x10000) {
-        dest[0] = (ch>>12) | 0xE0;
-        dest[1] = ((ch>>6) & 0x3F) | 0x80;
+    if(ch < 0x10000)
+    {
+        dest[0] = (ch >> 12) | 0xE0;
+        dest[1] = ((ch >> 6) & 0x3F) | 0x80;
         dest[2] = (ch & 0x3F) | 0x80;
         return 3;
     }
-    if (ch < 0x110000) {
-        dest[0] = (ch>>18) | 0xF0;
-        dest[1] = ((ch>>12) & 0x3F) | 0x80;
-        dest[2] = ((ch>>6) & 0x3F) | 0x80;
+    if(ch < 0x110000)
+    {
+        dest[0] = (ch >> 18) | 0xF0;
+        dest[1] = ((ch >> 12) & 0x3F) | 0x80;
+        dest[2] = ((ch >> 6) & 0x3F) | 0x80;
         dest[3] = (ch & 0x3F) | 0x80;
         return 4;
     }
@@ -181,9 +192,9 @@ int u8_wc_toutf8(char *dest, uint32_t ch)
 /*-- moo --*/
 int u8_wc_toutf8_nul(char *dest, uint32_t ch)
 {
-  int sz = u8_wc_toutf8(dest,ch);
-  dest[sz] = '\0';
-  return sz;
+    int sz = u8_wc_toutf8(dest, ch);
+    dest[sz] = '\0';
+    return sz;
 }
 
 /* charnum => byte offset */
@@ -191,13 +202,18 @@ int u8_offset(const char *str, int charnum)
 {
     const char *string = str;
 
-    while (charnum > 0 && *string != '\0') {
-        if (*string++ & 0x80) {
-            if (!isutf(*string)) {
+    while(charnum > 0 && *string != '\0')
+    {
+        if(*string++ & 0x80)
+        {
+            if(!isutf(*string))
+            {
                 ++string;
-                if (!isutf(*string)) {
+                if(!isutf(*string))
+                {
                     ++string;
-                    if (!isutf(*string)) {
+                    if(!isutf(*string))
+                    {
                         ++string;
                     }
                 }
@@ -206,7 +222,7 @@ int u8_offset(const char *str, int charnum)
         --charnum;
     }
 
-    return (int)(string - str);
+    return (int) (string - str);
 }
 
 /* byte offset => charnum */
@@ -216,13 +232,18 @@ int u8_charnum(const char *s, int offset)
     const char *string = s;
     const char *const end = string + offset;
 
-    while (string < end && *string != '\0') {
-        if (*string++ & 0x80) {
-            if (!isutf(*string)) {
+    while(string < end && *string != '\0')
+    {
+        if(*string++ & 0x80)
+        {
+            if(!isutf(*string))
+            {
                 ++string;
-                if (!isutf(*string)) {
+                if(!isutf(*string))
+                {
                     ++string;
-                    if (!isutf(*string)) {
+                    if(!isutf(*string))
+                    {
                         ++string;
                     }
                 }
@@ -239,12 +260,13 @@ uint32_t u8_nextchar(const char *s, int *i)
     uint32_t ch = 0;
     int sz = 0;
 
-    do {
+    do
+    {
         ch <<= 6;
-        ch += (unsigned char)s[(*i)++];
+        ch += (unsigned char) s[(*i)++];
         sz++;
-    } while (s[*i] && !isutf(s[*i]));
-    ch -= offsetsFromUTF8[sz-1];
+    } while(s[*i] && !isutf(s[*i]));
+    ch -= offsetsFromUTF8[sz - 1];
 
     return ch;
 }
@@ -255,7 +277,7 @@ int u8_strlen(const char *s)
     int count = 0;
     int i = 0;
 
-    while (u8_nextchar(s, &i) != 0)
+    while(u8_nextchar(s, &i) != 0)
         count++;
 
     return count;
@@ -263,12 +285,16 @@ int u8_strlen(const char *s)
 
 void u8_inc(const char *s, int *i)
 {
-    if (s[(*i)++] & 0x80) {
-        if (!isutf(s[*i])) {
+    if(s[(*i)++] & 0x80)
+    {
+        if(!isutf(s[*i]))
+        {
             ++(*i);
-            if (!isutf(s[*i])) {
+            if(!isutf(s[*i]))
+            {
                 ++(*i);
-                if (!isutf(s[*i])) {
+                if(!isutf(s[*i]))
+                {
                     ++(*i);
                 }
             }
@@ -278,10 +304,8 @@ void u8_inc(const char *s, int *i)
 
 void u8_dec(const char *s, int *i)
 {
-    (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
-           isutf(s[--(*i)]) || --(*i));
+    (void) (isutf(s[--(*i)]) || isutf(s[--(*i)]) || isutf(s[--(*i)]) || --(*i));
 }
-
 
 /* srcsz = number of source characters, or -1 if 0-terminated
    sz = size of dest buffer in bytes
@@ -296,24 +320,27 @@ int u8_nativetoutf8(char *dest, int sz, const char *src, int srcsz)
     int len;
 #ifdef _WIN32
     int res;
-    wchar_t*wbuf = 0;
-    if(srcsz < 0) {
+    wchar_t *wbuf = 0;
+    if(srcsz < 0)
+    {
         len = MultiByteToWideChar(CP_OEMCP, 0, src, srcsz, wbuf, 0);
-    } else {
-        len = (srcsz < sz)?srcsz:sz;
+    }
+    else
+    {
+        len = (srcsz < sz) ? srcsz : sz;
     }
     wbuf = getbytes(len * sizeof(*wbuf));
     res = MultiByteToWideChar(CP_OEMCP, 0, src, srcsz, wbuf, len);
-    if(res) {
+    if(res)
+    {
         res = WideCharToMultiByte(CP_UTF8, 0, wbuf, len, dest, sz, 0, 0);
     }
     freebytes(wbuf, len * sizeof(*wbuf));
-    return (res)?len:0;
+    return (res) ? len : 0;
 #endif
-        /* on other systems, we use UTF-8 for everything, so this is a no-op */
-    if(srcsz < 0)
-        srcsz = strlen(src) + 1;
-    len = (srcsz < sz)?srcsz:sz;
+    /* on other systems, we use UTF-8 for everything, so this is a no-op */
+    if(srcsz < 0) srcsz = strlen(src) + 1;
+    len = (srcsz < sz) ? srcsz : sz;
     strncpy(dest, src, len);
     return len;
 }

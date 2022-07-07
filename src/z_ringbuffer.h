@@ -13,7 +13,8 @@
 
 /// simple lock-free ring buffer implementation for one writer thread
 /// and one consumer thread
-typedef struct ring_buffer {
+typedef struct ring_buffer
+{
     int size;
     char *buf_ptr;
     int write_idx;

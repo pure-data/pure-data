@@ -1,6 +1,6 @@
 /* Copyright (c) 1997- Miller Puckette and others.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
 
@@ -13,43 +13,40 @@ linked in.  The configure script can be used to select which one.
 
 /* ------------------ initialization and cleanup -------------------------- */
 
-void mayer_init( void);
-void mayer_term( void);
+void mayer_init(void);
+void mayer_term(void);
 
-static void fftclass_cleanup(t_class *c)
-{
-    mayer_term();
-}
+static void fftclass_cleanup(t_class *c) { mayer_term(); }
 
 /* ---------------- utility functions for DSP chains ---------------------- */
 
-    /* swap two arrays */
+/* swap two arrays */
 static t_int *sigfft_swap(t_int *w)
 {
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    int n = (int)w[3];
-    for (;n--; in1++, in2++)
+    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in2 = (t_sample *) (w[2]);
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1;
-        *in1 = *in2;
-        *in2 = f;
+        t_sample f = in1[i];
+        in1[i] = in2[i];
+        in2[i] = f;
     }
-    return (w+4);
+    return (w + 4);
 }
 
-    /* take array1 (supply a pointer to beginning) and copy it,
-    into decreasing addresses, into array 2 (supply a pointer one past the
-    end), and negate the sign. */
+/* take array1 (supply a pointer to beginning) and copy it,
+into decreasing addresses, into array 2 (supply a pointer one past the
+end), and negate the sign. */
 
 static t_int *sigrfft_flip(t_int *w)
 {
-    t_sample *in = (t_sample *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)w[3];
-    while (n--)
-        *(--out) = - *in++;
-    return (w+4);
+    t_sample *in = (t_sample *) (w[1]);
+    t_sample *out = (t_sample *) (w[2]);
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
+        *(--out) = -*in++;
+    return (w + 4);
 }
 
 /* ------------------------ fft~ and ifft~ -------------------------------- */
@@ -63,7 +60,7 @@ typedef struct fft
 
 static void *sigfft_new(void)
 {
-    t_sigfft *x = (t_sigfft *)pd_new(sigfft_class);
+    t_sigfft *x = (t_sigfft *) pd_new(sigfft_class);
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
@@ -73,7 +70,7 @@ static void *sigfft_new(void)
 
 static void *sigifft_new(void)
 {
-    t_sigfft *x = (t_sigfft *)pd_new(sigifft_class);
+    t_sigfft *x = (t_sigfft *) pd_new(sigifft_class);
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
@@ -83,20 +80,20 @@ static void *sigifft_new(void)
 
 static t_int *sigfft_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    int n = (int)w[3];
-    mayer_fft(n, in1, in2);
-    return (w+4);
+    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in2 = (t_sample *) (w[2]);
+    int num_samples = (int) (w[3]);
+    mayer_fft(num_samples, in1, in2);
+    return (w + 4);
 }
 
 static t_int *sigifft_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *)(w[1]);
-    t_sample *in2 = (t_sample *)(w[2]);
-    int n = (int)w[3];
-    mayer_ifft(n, in1, in2);
-    return (w+4);
+    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in2 = (t_sample *) (w[2]);
+    int num_samples = (int) w[3];
+    mayer_ifft(num_samples, in1, in2);
+    return (w + 4);
 }
 
 static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
@@ -106,19 +103,21 @@ static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
     t_sample *in2 = sp[1]->s_vec;
     t_sample *out1 = sp[2]->s_vec;
     t_sample *out2 = sp[3]->s_vec;
-    if (out1 == in2 && out2 == in1)
-        dsp_add(sigfft_swap, 3, out1, out2, (t_int)n);
-    else if (out1 == in2)
+    if(out1 == in2 && out2 == in1)
     {
-        dsp_add(copy_perform, 3, in2, out2, (t_int)n);
-        dsp_add(copy_perform, 3, in1, out1, (t_int)n);
+        dsp_add(sigfft_swap, 3, out1, out2, (t_int) n);
+    }
+    else if(out1 == in2)
+    {
+        dsp_add(copy_perform, 3, in2, out2, (t_int) n);
+        dsp_add(copy_perform, 3, in1, out1, (t_int) n);
     }
     else
     {
-        if (out1 != in1) dsp_add(copy_perform, 3, in1, out1, (t_int)n);
-        if (out2 != in2) dsp_add(copy_perform, 3, in2, out2, (t_int)n);
+        if(out1 != in1) dsp_add(copy_perform, 3, in1, out1, (t_int) n);
+        if(out2 != in2) dsp_add(copy_perform, 3, in2, out2, (t_int) n);
     }
-    dsp_add(f, 3, sp[2]->s_vec, sp[3]->s_vec, (t_int)n);
+    dsp_add(f, 3, sp[2]->s_vec, sp[3]->s_vec, (t_int) n);
 }
 
 static void sigfft_dsp(t_sigfft *x, t_signal **sp)
@@ -133,20 +132,20 @@ static void sigifft_dsp(t_sigfft *x, t_signal **sp)
 
 static void sigfft_setup(void)
 {
-    sigfft_class = class_new(gensym("fft~"), sigfft_new, 0,
-        sizeof(t_sigfft), 0, 0);
+    sigfft_class =
+        class_new(gensym("fft~"), sigfft_new, 0, sizeof(t_sigfft), 0, 0);
     class_setfreefn(sigfft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigfft_class, t_sigfft, x_f);
-    class_addmethod(sigfft_class, (t_method)sigfft_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        sigfft_class, (t_method) sigfft_dsp, gensym("dsp"), A_CANT, 0);
     mayer_init();
 
-    sigifft_class = class_new(gensym("ifft~"), sigifft_new, 0,
-        sizeof(t_sigfft), 0, 0);
+    sigifft_class =
+        class_new(gensym("ifft~"), sigifft_new, 0, sizeof(t_sigfft), 0, 0);
     class_setfreefn(sigifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigifft_class, t_sigfft, x_f);
-    class_addmethod(sigifft_class, (t_method)sigifft_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        sigifft_class, (t_method) sigifft_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigifft_class, gensym("fft~"));
     mayer_init();
 }
@@ -163,7 +162,7 @@ typedef struct rfft
 
 static void *sigrfft_new(void)
 {
-    t_sigrfft *x = (t_sigrfft *)pd_new(sigrfft_class);
+    t_sigrfft *x = (t_sigrfft *) pd_new(sigrfft_class);
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
@@ -172,41 +171,41 @@ static void *sigrfft_new(void)
 
 static t_int *sigrfft_perform(t_int *w)
 {
-    t_sample *in = (t_sample *)(w[1]);
-    int n = (int)w[2];
+    t_sample *in = (t_sample *) (w[1]);
+    int n = (int) w[2];
     mayer_realfft(n, in);
-    return (w+3);
+    return (w + 3);
 }
 
 static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n>>1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     t_sample *in1 = sp[0]->s_vec;
     t_sample *out1 = sp[1]->s_vec;
     t_sample *out2 = sp[2]->s_vec;
-    if (n < 4)
+    if(n < 4)
     {
         pd_error(0, "fft: minimum 4 points");
         return;
     }
-    if (in1 != out1)
-        dsp_add(copy_perform, 3, in1, out1, (t_int)n);
-    dsp_add(sigrfft_perform, 2, out1, (t_int)n);
-    dsp_add(sigrfft_flip, 3, out1 + (n2+1), out2 + n2, (t_int)(n2-1));
-    dsp_add_zero(out1 + (n2+1), ((n2-1)&(~7)));
-    dsp_add_zero(out1 + (n2+1) + ((n2-1)&(~7)), ((n2-1)&7));
+    if(in1 != out1) dsp_add(copy_perform, 3, in1, out1, (t_int) n);
+    dsp_add(sigrfft_perform, 2, out1, (t_int) n);
+    dsp_add(sigrfft_flip, 3, out1 + (n2 + 1), out2 + n2, (t_int) (n2 - 1));
+    dsp_add_zero(out1 + (n2 + 1), ((n2 - 1) & (~7)));
+    dsp_add_zero(out1 + (n2 + 1) + ((n2 - 1) & (~7)), ((n2 - 1) & 7));
     dsp_add_zero(out2 + n2, n2);
     dsp_add_zero(out2, 1);
 }
 
 static void sigrfft_setup(void)
 {
-    sigrfft_class = class_new(gensym("rfft~"), sigrfft_new, 0,
-        sizeof(t_sigrfft), 0, 0);
+    sigrfft_class =
+        class_new(gensym("rfft~"), sigrfft_new, 0, sizeof(t_sigrfft), 0, 0);
     class_setfreefn(sigrfft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrfft_class, t_sigrfft, x_f);
-    class_addmethod(sigrfft_class, (t_method)sigrfft_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        sigrfft_class, (t_method) sigrfft_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigrfft_class, gensym("fft~"));
     mayer_init();
 }
@@ -223,7 +222,7 @@ typedef struct rifft
 
 static void *sigrifft_new(void)
 {
-    t_sigrifft *x = (t_sigrifft *)pd_new(sigrifft_class);
+    t_sigrifft *x = (t_sigrifft *) pd_new(sigrifft_class);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     outlet_new(&x->x_obj, gensym("signal"));
     x->x_f = 0;
@@ -232,44 +231,45 @@ static void *sigrifft_new(void)
 
 static t_int *sigrifft_perform(t_int *w)
 {
-    t_sample *in = (t_sample *)(w[1]);
-    int n = (int)w[2];
+    t_sample *in = (t_sample *) (w[1]);
+    int n = (int) w[2];
     mayer_realifft(n, in);
-    return (w+3);
+    return (w + 3);
 }
 
 static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n>>1);
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
     t_sample *in1 = sp[0]->s_vec;
     t_sample *in2 = sp[1]->s_vec;
     t_sample *out1 = sp[2]->s_vec;
-    if (n < 4)
+    if(n < 4)
     {
         pd_error(0, "fft: minimum 4 points");
         return;
     }
-    if (in2 == out1)
+    if(in2 == out1)
     {
-        dsp_add(sigrfft_flip, 3, out1+1, out1 + n, (t_int)(n2-1));
-        dsp_add(copy_perform, 3, in1, out1, (t_int)(n2+1));
+        dsp_add(sigrfft_flip, 3, out1 + 1, out1 + n, (t_int) (n2 - 1));
+        dsp_add(copy_perform, 3, in1, out1, (t_int) (n2 + 1));
     }
     else
     {
-        if (in1 != out1) dsp_add(copy_perform, 3, in1, out1, (t_int)(n2+1));
-        dsp_add(sigrfft_flip, 3, in2+1, out1 + n, (t_int)(n2-1));
+        if(in1 != out1) dsp_add(copy_perform, 3, in1, out1, (t_int) (n2 + 1));
+        dsp_add(sigrfft_flip, 3, in2 + 1, out1 + n, (t_int) (n2 - 1));
     }
-    dsp_add(sigrifft_perform, 2, out1, (t_int)n);
+    dsp_add(sigrifft_perform, 2, out1, (t_int) n);
 }
 
 static void sigrifft_setup(void)
 {
-    sigrifft_class = class_new(gensym("rifft~"), sigrifft_new, 0,
-        sizeof(t_sigrifft), 0, 0);
+    sigrifft_class =
+        class_new(gensym("rifft~"), sigrifft_new, 0, sizeof(t_sigrifft), 0, 0);
     class_setfreefn(sigrifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrifft_class, t_sigrifft, x_f);
-    class_addmethod(sigrifft_class, (t_method)sigrifft_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        sigrifft_class, (t_method) sigrifft_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigrifft_class, gensym("fft~"));
     mayer_init();
 }
@@ -286,11 +286,11 @@ typedef struct framp
 
 static void *sigframp_new(void)
 {
-    t_sigframp *x = (t_sigframp *)pd_new(sigframp_class);
+    t_sigframp *x = (t_sigframp *) pd_new(sigframp_class);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     outlet_new(&x->x_obj, gensym("signal"));
     outlet_new(&x->x_obj, gensym("signal"));
-        /* q8_rsqrt() triggers init_rsqrt() as a side-effect */
+    /* q8_rsqrt() triggers init_rsqrt() as a side-effect */
     q8_rsqrt(-1.);
     x->x_f = 0;
     return (x);
@@ -298,23 +298,31 @@ static void *sigframp_new(void)
 
 static t_int *sigframp_perform(t_int *w)
 {
-    t_sample *inreal = (t_sample *)(w[1]);
-    t_sample *inimag = (t_sample *)(w[2]);
-    t_sample *outfreq = (t_sample *)(w[3]);
-    t_sample *outamp = (t_sample *)(w[4]);
-    t_sample lastreal = 0, currentreal = inreal[0], nextreal = inreal[1];
-    t_sample lastimag = 0, currentimag = inimag[0], nextimag = inimag[1];
-    int n = (int)w[5];
+    t_sample *inreal = (t_sample *) (w[1]);
+    t_sample *inimag = (t_sample *) (w[2]);
+    t_sample *outfreq = (t_sample *) (w[3]);
+    t_sample *outamp = (t_sample *) (w[4]);
+    t_sample lastreal = 0;
+    t_sample currentreal = inreal[0];
+    t_sample nextreal = inreal[1];
+    t_sample lastimag = 0;
+    t_sample currentimag = inimag[0];
+    t_sample nextimag = inimag[1];
+    int n = (int) w[5];
     int m = n + 1;
-    t_sample fbin = 1, oneovern2 = 1.f/((t_sample)n * (t_sample)n);
+    t_sample fbin = 1;
+    t_sample oneovern2 = 1.f / ((t_sample) n * (t_sample) n);
 
     inreal += 2;
     inimag += 2;
     *outamp++ = *outfreq++ = 0;
     n -= 2;
-    while (n--)
+    while(n--)
     {
-        t_sample re, im, pow, freq;
+        t_sample re;
+        t_sample im;
+        t_sample pow;
+        t_sample freq;
         lastreal = currentreal;
         currentreal = nextreal;
         nextreal = *inreal++;
@@ -324,45 +332,55 @@ static t_int *sigframp_perform(t_int *w)
         re = currentreal - 0.5f * (lastreal + nextreal);
         im = currentimag - 0.5f * (lastimag + nextimag);
         pow = re * re + im * im;
-        if (pow > 1e-19)
+        if(pow > 1e-19)
         {
-            t_sample detune = ((lastreal - nextreal) * re +
-                    (lastimag - nextimag) * im) / (2.0f * pow);
-            if (detune > 2 || detune < -2) freq = pow = 0;
-            else freq = fbin + detune;
+            t_sample detune =
+                ((lastreal - nextreal) * re + (lastimag - nextimag) * im) /
+                (2.0f * pow);
+            if(detune > 2 || detune < -2)
+            {
+                freq = pow = 0;
+            }
+            else
+            {
+                freq = fbin + detune;
+            }
         }
-        else freq = pow = 0;
+        else
+            freq = pow = 0;
         *outfreq++ = freq;
         *outamp++ = oneovern2 * pow;
         fbin += 1.0f;
     }
-    while (m--) *outamp++ = *outfreq++ = 0;
-    return (w+6);
+    while(m--)
+        *outamp++ = *outfreq++ = 0;
+    return (w + 6);
 }
 
 t_int *sigsqrt_perform(t_int *w);
 
 static void sigframp_dsp(t_sigframp *x, t_signal **sp)
 {
-    int n = sp[0]->s_n, n2 = (n>>1);
-    if (n < 4)
+    int n = sp[0]->s_n;
+    int n2 = (n >> 1);
+    if(n < 4)
     {
         pd_error(0, "framp: minimum 4 points");
         return;
     }
-    dsp_add(sigframp_perform, 5, sp[0]->s_vec, sp[1]->s_vec,
-        sp[2]->s_vec, sp[3]->s_vec, (t_int)n2);
-    dsp_add(sigsqrt_perform, 3, sp[3]->s_vec, sp[3]->s_vec, (t_int)n2);
+    dsp_add(sigframp_perform, 5, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec,
+        sp[3]->s_vec, (t_int) n2);
+    dsp_add(sigsqrt_perform, 3, sp[3]->s_vec, sp[3]->s_vec, (t_int) n2);
 }
 
 static void sigframp_setup(void)
 {
-    sigframp_class = class_new(gensym("framp~"), sigframp_new, 0,
-        sizeof(t_sigframp), 0, 0);
+    sigframp_class =
+        class_new(gensym("framp~"), sigframp_new, 0, sizeof(t_sigframp), 0, 0);
     class_setfreefn(sigframp_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigframp_class, t_sigframp, x_f);
-    class_addmethod(sigframp_class, (t_method)sigframp_dsp,
-        gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        sigframp_class, (t_method) sigframp_dsp, gensym("dsp"), A_CANT, 0);
     mayer_init();
 }
 

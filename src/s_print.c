@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-1999 Miller Puckette.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
 #include <stdlib.h>
@@ -18,48 +18,57 @@ t_printhook sys_printhook = NULL;
 int sys_printtostderr;
 
 /* escape characters for tcl/tk */
-char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
+char *pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
 {
-    unsigned ptin = 0, ptout = 0;
-    if(!dst || !src)return 0;
+    unsigned ptin = 0;
+    unsigned ptout = 0;
+    if(!dst || !src) return 0;
     while(1)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}' || c == '[' || c == ']') {
+        if(c == '\\' || c == '{' || c == '}' || c == '[' || c == ']')
+        {
             dst[ptout++] = '\\';
-            if (dstlen && ptout >= dstlen){
-                dst[ptout-1] = 0;
+            if(dstlen && ptout >= dstlen)
+            {
+                dst[ptout - 1] = 0;
                 break;
             }
         }
         dst[ptout] = c;
         ptin++;
         ptout++;
-        if (c==0) break;
-        if (srclen && ptin  >= srclen) break;
-        if (dstlen && ptout >= dstlen) break;
+        if(c == 0) break;
+        if(srclen && ptin >= srclen) break;
+        if(dstlen && ptout >= dstlen) break;
     }
 
     if(!dstlen || ptout < dstlen)
-        dst[ptout]=0;
+    {
+        dst[ptout] = 0;
+    }
     else
-        dst[dstlen-1]=0;
+    {
+        dst[dstlen - 1] = 0;
+    }
 
     return dst;
 }
 
 static void dopost(const char *s)
 {
-    if (STUFF->st_printhook)
+    if(STUFF->st_printhook)
+    {
         (*STUFF->st_printhook)(s);
-    else if (sys_printtostderr || !sys_havegui())
+    }
+    else if(sys_printtostderr || !sys_havegui())
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
+#ifdef _MSC_VER
         fwprintf(stderr, L"%S", s);
-    #else
+#else
         fwprintf(stderr, L"%s", s);
-    #endif
+#endif
         fflush(stderr);
 #else
         fprintf(stderr, "%s", s);
@@ -68,78 +77,82 @@ static void dopost(const char *s)
     else
     {
         char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::post {%s}\n", pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        sys_vgui("::pdwindow::post {%s}\n",
+            pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
     }
 }
 
 static void doerror(const void *object, const char *s)
 {
     char upbuf[MAXPDSTRING];
-    upbuf[MAXPDSTRING-1]=0;
+    upbuf[MAXPDSTRING - 1] = 0;
 
     // what about sys_printhook_error ?
-    if (STUFF->st_printhook)
+    if(STUFF->st_printhook)
     {
-        snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
+        snprintf(upbuf, MAXPDSTRING - 1, "error: %s", s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr)
+    else if(sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
+#ifdef _MSC_VER
         fwprintf(stderr, L"error: %S", s);
-    #else
+#else
         fwprintf(stderr, L"error: %s", s);
-    #endif
+#endif
         fflush(stderr);
 #else
         fprintf(stderr, "error: %s", s);
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n",
-            object, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    {
+        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n", object,
+            pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    }
 }
 
 static void dologpost(const void *object, const int level, const char *s)
 {
     char upbuf[MAXPDSTRING];
-    upbuf[MAXPDSTRING-1]=0;
-        /* if it's a verbose message and we aren't set to 'verbose' just do
-            nothing */
-    if (level >= PD_VERBOSE && !sys_verbose)
-        return;
+    upbuf[MAXPDSTRING - 1] = 0;
+    /* if it's a verbose message and we aren't set to 'verbose' just do
+        nothing */
+    if(level >= PD_VERBOSE && !sys_verbose) return;
     // what about sys_printhook_verbose ?
-    if (STUFF->st_printhook)
+    if(STUFF->st_printhook)
     {
-        snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
+        snprintf(upbuf, MAXPDSTRING - 1, "verbose(%d): %s", level, s);
         (*STUFF->st_printhook)(upbuf);
     }
-    else if (sys_printtostderr)
+    else if(sys_printtostderr)
     {
 #ifdef _WIN32
-    #ifdef _MSC_VER
+#ifdef _MSC_VER
         fwprintf(stderr, L"verbose(%d): %S", level, s);
-    #else
+#else
         fwprintf(stderr, L"verbose(%d): %s", level, s);
-    #endif
+#endif
         fflush(stderr);
 #else
         fprintf(stderr, "verbose(%d): %s", level, s);
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n",
-            object, level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    {
+        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n", object, level,
+            pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+    }
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    if (level > PD_DEBUG && !sys_verbose) return;
+    if(level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
@@ -150,14 +163,13 @@ void startlogpost(const void *object, const int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    if (level > PD_DEBUG && !sys_verbose) return;
+    if(level > PD_DEBUG && !sys_verbose) return;
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
 
     dologpost(object, level, buf);
 }
-
 
 void post(const char *fmt, ...)
 {
@@ -166,7 +178,7 @@ void post(const char *fmt, ...)
     t_int arg[8];
     int i;
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
@@ -180,7 +192,7 @@ void startpost(const char *fmt, ...)
     t_int arg[8];
     int i;
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
 
     dopost(buf);
@@ -195,11 +207,10 @@ void poststring(const char *s)
 
 void postatom(int argc, const t_atom *argv)
 {
-    int i;
-    for (i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         char buf[MAXPDSTRING];
-        atom_string(argv+i, buf, MAXPDSTRING);
+        atom_string(argv + i, buf, MAXPDSTRING);
         poststring(buf);
     }
 }
@@ -215,15 +226,22 @@ void postfloat(t_float f)
 
 void endpost(void)
 {
-    if (STUFF->st_printhook)
+    if(STUFF->st_printhook)
+    {
         (*STUFF->st_printhook)("\n");
-    else if (sys_printtostderr)
+    }
+    else if(sys_printtostderr)
+    {
         fprintf(stderr, "\n");
-    else post("");
+    }
+    else
+    {
+        post("");
+    }
 }
 
-  /* keep this in the Pd app for binary extern compatibility but don't
-  include in libpd because it conflicts with the posix pd_error(0, ) function. */
+/* keep this in the Pd app for binary extern compatibility but don't
+include in libpd because it conflicts with the posix pd_error(0, ) function. */
 #ifdef PD_INTERNAL
 EXTERN void error(const char *fmt, ...)
 {
@@ -233,7 +251,7 @@ EXTERN void error(const char *fmt, ...)
     int i;
 
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
@@ -247,21 +265,21 @@ void verbose(int level, const char *fmt, ...)
     char buf[MAXPDSTRING];
     va_list ap;
 
-    if (level > sys_verbose) return;
+    if(level > sys_verbose) return;
 
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
-        /* log levels for verbose() traditionally start at -3,
-        so we have to adjust it before passing it on to dologpost() */
+    /* log levels for verbose() traditionally start at -3,
+    so we have to adjust it before passing it on to dologpost() */
     dologpost(NULL, level + 3, buf);
 }
 
-    /* here's the good way to log errors -- keep a pointer to the
-    offending or offended object around so the user can search for it
-    later. */
+/* here's the good way to log errors -- keep a pointer to the
+offending or offended object around so the user can search for it
+later. */
 
 static const void *error_object;
 static char error_string[256];
@@ -276,7 +294,7 @@ void pd_error(const void *object, const char *fmt, ...)
     static int saidit;
 
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
 
@@ -286,18 +304,20 @@ void pd_error(const void *object, const char *fmt, ...)
     strncpy(error_string, buf, 256);
     error_string[255] = 0;
 
-    if (!saidit)
+    if(!saidit)
     {
         logpost(NULL, 4,
-                "... you might be able to track this down from the Find menu.");
+            "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }
 }
 
 void glob_finderror(t_pd *dummy)
 {
-    if (!error_object)
+    if(!error_object)
+    {
         post("no findable error yet");
+    }
     else
     {
         post("last trackable error:");
@@ -306,15 +326,15 @@ void glob_finderror(t_pd *dummy)
     }
 }
 
-void glob_findinstance(t_pd *dummy, t_symbol*s)
+void glob_findinstance(t_pd *dummy, t_symbol *s)
 {
     // revert s to (potential) pointer to object
     PD_LONGINTTYPE obj = 0;
-    if (sscanf(s->s_name, ".x%lx", &obj))
+    if(sscanf(s->s_name, ".x%lx", &obj))
     {
-        if (obj)
+        if(obj)
         {
-            canvas_finderror((void *)obj);
+            canvas_finderror((void *) obj);
         }
     }
 }
@@ -326,14 +346,16 @@ void bug(const char *fmt, ...)
     t_int arg[8];
     int i;
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING - 1, fmt, ap);
     va_end(ap);
 
     pd_error(0, "consistency check failed: %s", buf);
 }
 
-    /* don't use these.  They're included for binary compatibility with
-    old externs but never worked and now do nothing. */
+/* don't use these.  They're included for binary compatibility with
+old externs but never worked and now do nothing. */
 void sys_logerror(const char *object, const char *s) {}
+
 void sys_unixerror(const char *object) {}
+
 void sys_ouch(void) {}

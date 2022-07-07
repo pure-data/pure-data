@@ -1,13 +1,12 @@
 /* Copyright (c) 1997-1999 Miller Puckette and others.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* sampling */
 
 /* LATER make tabread4 and tabread~ */
 
 #include "m_pd.h"
-
 
 /* ------------------------- tabwrite~ -------------------------- */
 
@@ -27,7 +26,7 @@ static void tabwrite_tilde_tick(t_tabwrite_tilde *x);
 
 static void *tabwrite_tilde_new(t_symbol *s)
 {
-    t_tabwrite_tilde *x = (t_tabwrite_tilde *)pd_new(tabwrite_tilde_class);
+    t_tabwrite_tilde *x = (t_tabwrite_tilde *) pd_new(tabwrite_tilde_class);
     x->x_phase = 0x7fffffff;
     x->x_arrayname = s;
     x->x_f = 0;
@@ -36,42 +35,50 @@ static void *tabwrite_tilde_new(t_symbol *s)
 
 static void tabwrite_tilde_redraw(t_tabwrite_tilde *x)
 {
-    t_garray *a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class);
-    if (!a)
+    t_garray *a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class);
+    if(!a)
+    {
         bug("tabwrite_tilde_redraw");
-    else garray_redraw(a);
+    }
+    else
+    {
+        garray_redraw(a);
+    }
 }
 
 static t_int *tabwrite_tilde_perform(t_int *w)
 {
-    t_tabwrite_tilde *x = (t_tabwrite_tilde *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    int n = (int)(w[3]), phase = x->x_phase, endphase = x->x_nsampsintab;
-    if (!x->x_vec) goto bad;
+    t_tabwrite_tilde *x = (t_tabwrite_tilde *) (w[1]);
+    t_sample *in = (t_sample *) (w[2]);
+    int num_samples = (int) (w[3]);
+    int phase = x->x_phase;
+    int endphase = x->x_nsampsintab;
+    if(!x->x_vec) goto bad;
 
-    if (endphase > phase)
+    if(endphase > phase)
     {
         int nxfer = endphase - phase;
-        t_word *wp = x->x_vec + phase;
-        if (nxfer > n) nxfer = n;
-        phase += nxfer;
-        while (nxfer--)
+        if(nxfer > num_samples) nxfer = num_samples;
+
+        for(int i = 0; i < nxfer; i++)
         {
-            t_sample f = *in++;
-            if (PD_BIGORSMALL(f))
-                f = 0;
-            (wp++)->w_float = f;
+            t_sample f = in[i];
+            if(PD_BIGORSMALL(f)) f = 0;
+            x->x_vec[i + phase].w_float = f;
         }
-        if (phase >= endphase)
+        phase += nxfer;
+
+        if(phase >= endphase)
         {
             tabwrite_tilde_redraw(x);
             phase = 0x7fffffff;
         }
         x->x_phase = phase;
     }
-    else x->x_phase = 0x7fffffff;
+    else
+        x->x_phase = 0x7fffffff;
 bad:
-    return (w+4);
+    return (w + 4);
 }
 
 static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s)
@@ -79,30 +86,28 @@ static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name) pd_error(x, "tabwrite~: %s: no such array",
-            x->x_arrayname->s_name);
+        if(*s->s_name)
+            pd_error(x, "tabwrite~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_nsampsintab, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_nsampsintab, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabwrite~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabwrite_tilde_dsp(t_tabwrite_tilde *x, t_signal **sp)
 {
     tabwrite_tilde_set(x, x->x_arrayname);
-    dsp_add(tabwrite_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(tabwrite_tilde_perform, 3, x, sp[0]->s_vec, (t_int) sp[0]->s_n);
 }
 
-static void tabwrite_tilde_bang(t_tabwrite_tilde *x)
-{
-    x->x_phase = 0;
-}
+static void tabwrite_tilde_bang(t_tabwrite_tilde *x) { x->x_phase = 0; }
 
 static void tabwrite_tilde_start(t_tabwrite_tilde *x, t_floatarg f)
 {
@@ -111,7 +116,7 @@ static void tabwrite_tilde_start(t_tabwrite_tilde *x, t_floatarg f)
 
 static void tabwrite_tilde_stop(t_tabwrite_tilde *x)
 {
-    if (x->x_phase != 0x7fffffff)
+    if(x->x_phase != 0x7fffffff)
     {
         tabwrite_tilde_redraw(x);
         x->x_phase = 0x7fffffff;
@@ -120,17 +125,17 @@ static void tabwrite_tilde_stop(t_tabwrite_tilde *x)
 
 static void tabwrite_tilde_setup(void)
 {
-    tabwrite_tilde_class = class_new(gensym("tabwrite~"),
-        (t_newmethod)tabwrite_tilde_new, 0,
-        sizeof(t_tabwrite_tilde), 0, A_DEFSYM, 0);
+    tabwrite_tilde_class =
+        class_new(gensym("tabwrite~"), (t_newmethod) tabwrite_tilde_new, 0,
+            sizeof(t_tabwrite_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabwrite_tilde_class, t_tabwrite_tilde, x_f);
-    class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_dsp,
+    class_addmethod(tabwrite_tilde_class, (t_method) tabwrite_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_set,
+    class_addmethod(tabwrite_tilde_class, (t_method) tabwrite_tilde_set,
         gensym("set"), A_SYMBOL, 0);
-    class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_stop,
+    class_addmethod(tabwrite_tilde_class, (t_method) tabwrite_tilde_stop,
         gensym("stop"), 0);
-    class_addmethod(tabwrite_tilde_class, (t_method)tabwrite_tilde_start,
+    class_addmethod(tabwrite_tilde_class, (t_method) tabwrite_tilde_start,
         gensym("start"), A_DEFFLOAT, 0);
     class_addbang(tabwrite_tilde_class, tabwrite_tilde_bang);
 }
@@ -155,8 +160,8 @@ static void tabplay_tilde_tick(t_tabplay_tilde *x);
 
 static void *tabplay_tilde_new(t_symbol *s)
 {
-    t_tabplay_tilde *x = (t_tabplay_tilde *)pd_new(tabplay_tilde_class);
-    x->x_clock = clock_new(x, (t_method)tabplay_tilde_tick);
+    t_tabplay_tilde *x = (t_tabplay_tilde *) pd_new(tabplay_tilde_class);
+    x->x_clock = clock_new(x, (t_method) tabplay_tilde_tick);
     x->x_phase = 0x7fffffff;
     x->x_limit = 0;
     x->x_arrayname = s;
@@ -167,36 +172,45 @@ static void *tabplay_tilde_new(t_symbol *s)
 
 static t_int *tabplay_tilde_perform(t_int *w)
 {
-    t_tabplay_tilde *x = (t_tabplay_tilde *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
+    t_tabplay_tilde *x = (t_tabplay_tilde *) (w[1]);
+    t_sample *out = (t_sample *) (w[2]);
     t_word *wp;
-    int n = (int)(w[3]), phase = x->x_phase,
-        endphase = (x->x_nsampsintab < x->x_limit ?
-            x->x_nsampsintab : x->x_limit), nxfer, n3;
-    if (!x->x_vec || phase >= endphase)
-        goto zero;
+    int num_samples = (int) (w[3]);
+    int phase = x->x_phase;
+    int endphase =
+        (x->x_nsampsintab < x->x_limit ? x->x_nsampsintab : x->x_limit);
+    int nxfer;
+    int n3;
+    if(!x->x_vec || phase >= endphase) goto zero;
 
     nxfer = endphase - phase;
     wp = x->x_vec + phase;
-    if (nxfer > n)
-        nxfer = n;
-    n3 = n - nxfer;
+    if(nxfer > num_samples) nxfer = num_samples;
+    n3 = num_samples - nxfer;
     phase += nxfer;
-    while (nxfer--)
-        *out++ = (wp++)->w_float;
-    if (phase >= endphase)
+
+    for(int i = 0; i < nxfer; i++)
+    {
+        out[i] = wp[i].w_float;
+    }
+    if(phase >= endphase)
     {
         clock_delay(x->x_clock, 0);
         x->x_phase = 0x7fffffff;
-        while (n3--)
-            *out++ = 0;
+        for(int i = nxfer; i < num_samples; i++)
+            out[i] = 0;
     }
-    else x->x_phase = phase;
+    else
+    {
+        x->x_phase = phase;
+    }
 
-    return (w+4);
+    return (w + 4);
+
 zero:
-    while (n--) *out++ = 0;
-    return (w+4);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
+    return (w + 4);
 }
 
 static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s)
@@ -204,64 +218,63 @@ static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name) pd_error(x, "tabplay~: %s: no such array",
-            x->x_arrayname->s_name);
+        if(*s->s_name)
+            pd_error(x, "tabplay~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_nsampsintab, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_nsampsintab, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabplay~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabplay_tilde_dsp(t_tabplay_tilde *x, t_signal **sp)
 {
     tabplay_tilde_set(x, x->x_arrayname);
-    dsp_add(tabplay_tilde_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(tabplay_tilde_perform, 3, x, sp[0]->s_vec, (t_int) sp[0]->s_n);
 }
 
-static void tabplay_tilde_list(t_tabplay_tilde *x, t_symbol *s,
-    int argc, t_atom *argv)
+static void tabplay_tilde_list(
+    t_tabplay_tilde *x, t_symbol *s, int argc, t_atom *argv)
 {
     long start = atom_getfloatarg(0, argc, argv);
     long length = atom_getfloatarg(1, argc, argv);
-    if (start < 0) start = 0;
-    if (length <= 0)
+    if(start < 0) start = 0;
+    if(length <= 0)
+    {
         x->x_limit = 0x7fffffff;
+    }
     else
-        x->x_limit = (int)(start + length);
-    x->x_phase = (int)start;
+    {
+        x->x_limit = (int) (start + length);
+    }
+    x->x_phase = (int) start;
 }
 
-static void tabplay_tilde_stop(t_tabplay_tilde *x)
-{
-    x->x_phase = 0x7fffffff;
-}
+static void tabplay_tilde_stop(t_tabplay_tilde *x) { x->x_phase = 0x7fffffff; }
 
 static void tabplay_tilde_tick(t_tabplay_tilde *x)
 {
     outlet_bang(x->x_bangout);
 }
 
-static void tabplay_tilde_free(t_tabplay_tilde *x)
-{
-    clock_free(x->x_clock);
-}
+static void tabplay_tilde_free(t_tabplay_tilde *x) { clock_free(x->x_clock); }
 
 static void tabplay_tilde_setup(void)
 {
     tabplay_tilde_class = class_new(gensym("tabplay~"),
-        (t_newmethod)tabplay_tilde_new, (t_method)tabplay_tilde_free,
+        (t_newmethod) tabplay_tilde_new, (t_method) tabplay_tilde_free,
         sizeof(t_tabplay_tilde), 0, A_DEFSYM, 0);
-    class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_dsp,
+    class_addmethod(tabplay_tilde_class, (t_method) tabplay_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_stop,
-        gensym("stop"), 0);
-    class_addmethod(tabplay_tilde_class, (t_method)tabplay_tilde_set,
+    class_addmethod(
+        tabplay_tilde_class, (t_method) tabplay_tilde_stop, gensym("stop"), 0);
+    class_addmethod(tabplay_tilde_class, (t_method) tabplay_tilde_set,
         gensym("set"), A_DEFSYM, 0);
     class_addlist(tabplay_tilde_class, tabplay_tilde_list);
 }
@@ -281,7 +294,7 @@ typedef struct _tabread_tilde
 
 static void *tabread_tilde_new(t_symbol *s)
 {
-    t_tabread_tilde *x = (t_tabread_tilde *)pd_new(tabread_tilde_class);
+    t_tabread_tilde *x = (t_tabread_tilde *) pd_new(tabread_tilde_class);
     x->x_arrayname = s;
     x->x_vec = 0;
     outlet_new(&x->x_obj, gensym("signal"));
@@ -291,32 +304,36 @@ static void *tabread_tilde_new(t_symbol *s)
 
 static t_int *tabread_tilde_perform(t_int *w)
 {
-    t_tabread_tilde *x = (t_tabread_tilde *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
+    t_tabread_tilde *x = (t_tabread_tilde *) (w[1]);
+    t_sample *in = (t_sample *) (w[2]);
+    t_sample *out = (t_sample *) (w[3]);
+    int num_samples = (int) (w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
-    int i;
 
     maxindex = x->x_npoints - 1;
-    if(maxindex<0) goto zero;
-    if (!buf) goto zero;
+    if(maxindex < 0) goto zero;
+    if(!buf) goto zero;
 
-    for (i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        int index = *in++;
-        if (index < 0)
+        int index = in[i];
+        if(index < 0)
+        {
             index = 0;
-        else if (index > maxindex)
+        }
+        else if(index > maxindex)
+        {
             index = maxindex;
-        *out++ = buf[index].w_float;
+        }
+        out[i] = buf[index].w_float;
     }
-    return (w+5);
- zero:
-    while (n--) *out++ = 0;
+    return (w + 5);
+zero:
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
-    return (w+5);
+    return (w + 5);
 }
 
 static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s)
@@ -324,42 +341,40 @@ static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name)
+        if(*s->s_name)
             pd_error(x, "tabread~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabread~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabread_tilde_dsp(t_tabread_tilde *x, t_signal **sp)
 {
     tabread_tilde_set(x, x->x_arrayname);
 
-    dsp_add(tabread_tilde_perform, 4, x,
-        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
-
+    dsp_add(tabread_tilde_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec,
+        (t_int) sp[0]->s_n);
 }
 
-static void tabread_tilde_free(t_tabread_tilde *x)
-{
-}
+static void tabread_tilde_free(t_tabread_tilde *x) {}
 
 static void tabread_tilde_setup(void)
 {
     tabread_tilde_class = class_new(gensym("tabread~"),
-        (t_newmethod)tabread_tilde_new, (t_method)tabread_tilde_free,
+        (t_newmethod) tabread_tilde_new, (t_method) tabread_tilde_free,
         sizeof(t_tabread_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabread_tilde_class, t_tabread_tilde, x_f);
-    class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_dsp,
+    class_addmethod(tabread_tilde_class, (t_method) tabread_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabread_tilde_class, (t_method)tabread_tilde_set,
+    class_addmethod(tabread_tilde_class, (t_method) tabread_tilde_set,
         gensym("set"), A_SYMBOL, 0);
 }
 
@@ -379,7 +394,7 @@ typedef struct _tabread4_tilde
 
 static void *tabread4_tilde_new(t_symbol *s)
 {
-    t_tabread4_tilde *x = (t_tabread4_tilde *)pd_new(tabread4_tilde_class);
+    t_tabread4_tilde *x = (t_tabread4_tilde *) pd_new(tabread4_tilde_class);
     x->x_arrayname = s;
     x->x_vec = 0;
     outlet_new(&x->x_obj, gensym("signal"));
@@ -391,21 +406,21 @@ static void *tabread4_tilde_new(t_symbol *s)
 
 static t_int *tabread4_tilde_perform(t_int *w)
 {
-    t_tabread4_tilde *x = (t_tabread4_tilde *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
+    t_tabread4_tilde *x = (t_tabread4_tilde *) (w[1]);
+    t_sample *in = (t_sample *) (w[2]);
+    t_sample *out = (t_sample *) (w[3]);
+    int num_samples = (int) (w[4]);
     int maxindex;
-    t_word *buf = x->x_vec, *wp;
+    t_word *buf = x->x_vec;
+    t_word *wp;
     double onset = x->x_onset;
-    int i;
 
     maxindex = x->x_npoints - 3;
-    if(maxindex<0) goto zero;
+    if(maxindex < 0) goto zero;
 
-    if (!buf) goto zero;
+    if(!buf) goto zero;
 
-#if 0       /* test for spam -- I'm not ready to deal with this */
+#if 0 /* test for spam -- I'm not ready to deal with this */
     for (i = 0,  xmax = 0, xmin = maxindex,  fp = in1; i < n; i++,  fp++)
     {
         t_sample f = *in1;
@@ -421,33 +436,44 @@ static t_int *tabread4_tilde_perform(t_int *w)
     }
 #endif
 
-    for (i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        double findex = *in++ + onset;
+        double findex = in[i] + onset;
         int index = findex;
-        t_sample frac,  a,  b,  c,  d, cminusb;
-        if (index < 1)
+        t_sample frac;
+        t_sample a;
+        t_sample b;
+        t_sample c;
+        t_sample d;
+        t_sample cminusb;
+        if(index < 1)
+        {
             index = 1, frac = 0;
-        else if (index > maxindex)
+        }
+        else if(index > maxindex)
+        {
             index = maxindex, frac = 1;
-        else frac = findex - index;
+        }
+        else
+        {
+            frac = findex - index;
+        }
         wp = buf + index;
         a = wp[-1].w_float;
         b = wp[0].w_float;
         c = wp[1].w_float;
         d = wp[2].w_float;
-        cminusb = c-b;
-        *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
-            )
-        );
+        cminusb = c - b;
+        out[i] = b + frac * (cminusb - 0.1666667f * (1. - frac) *
+                                           ((d - a - 3.0f * cminusb) * frac +
+                                               (d + 2.0f * a - 3.0f * b)));
     }
-    return (w+5);
- zero:
-    while (n--) *out++ = 0;
+    return (w + 5);
+zero:
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
-    return (w+5);
+    return (w + 5);
 }
 
 static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s)
@@ -455,52 +481,50 @@ static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name)
+        if(*s->s_name)
             pd_error(x, "tabread4~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabread4~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabread4_tilde_dsp(t_tabread4_tilde *x, t_signal **sp)
 {
     tabread4_tilde_set(x, x->x_arrayname);
 
-    dsp_add(tabread4_tilde_perform, 4, x,
-        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
-
+    dsp_add(tabread4_tilde_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec,
+        (t_int) sp[0]->s_n);
 }
 
-static void tabread4_tilde_free(t_tabread4_tilde *x)
-{
-}
+static void tabread4_tilde_free(t_tabread4_tilde *x) {}
 
 static void tabread4_tilde_setup(void)
 {
     tabread4_tilde_class = class_new(gensym("tabread4~"),
-        (t_newmethod)tabread4_tilde_new, (t_method)tabread4_tilde_free,
+        (t_newmethod) tabread4_tilde_new, (t_method) tabread4_tilde_free,
         sizeof(t_tabread4_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabread4_tilde_class, t_tabread4_tilde, x_f);
-    class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_dsp,
+    class_addmethod(tabread4_tilde_class, (t_method) tabread4_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabread4_tilde_class, (t_method)tabread4_tilde_set,
+    class_addmethod(tabread4_tilde_class, (t_method) tabread4_tilde_set,
         gensym("set"), A_SYMBOL, 0);
 }
 
 /******************** tabosc4~ ***********************/
 
 /* this is all copied from d_osc.c... what include file could this go in? */
-#define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
+#define UNITBIT32 1572864. /* 3*2^19; bit 32 has place value 1 */
 
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
-    || defined(__OpenBSD__)
+#if defined(__FreeBSD__) || defined(__APPLE__) || \
+    defined(__FreeBSD_kernel__) || defined(__OpenBSD__)
 #include <machine/endian.h>
 #endif
 
@@ -524,11 +548,11 @@ static void tabread4_tilde_setup(void)
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
-# define HIOFFSET 1
-# define LOWOFFSET 0
+#define HIOFFSET 1
+#define LOWOFFSET 0
 #else
-# define HIOFFSET 0    /* word offset to find MSB */
-# define LOWOFFSET 1    /* word offset to find LSB */
+#define HIOFFSET 0  /* word offset to find MSB */
+#define LOWOFFSET 1 /* word offset to find LSB */
 #endif
 
 union tabfudge
@@ -553,11 +577,11 @@ typedef struct _tabosc4_tilde
 
 static void *tabosc4_tilde_new(t_symbol *s)
 {
-    t_tabosc4_tilde *x = (t_tabosc4_tilde *)pd_new(tabosc4_tilde_class);
+    t_tabosc4_tilde *x = (t_tabosc4_tilde *) pd_new(tabosc4_tilde_class);
     x->x_arrayname = s;
     x->x_vec = 0;
     x->x_fnpoints = 512.;
-    x->x_finvnpoints = (1./512.);
+    x->x_finvnpoints = (1. / 512.);
     outlet_new(&x->x_obj, gensym("signal"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_float, gensym("ft1"));
     x->x_f = 0;
@@ -566,28 +590,34 @@ static void *tabosc4_tilde_new(t_symbol *s)
 
 static t_int *tabosc4_tilde_perform(t_int *w)
 {
-    t_tabosc4_tilde *x = (t_tabosc4_tilde *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);
+    t_tabosc4_tilde *x = (t_tabosc4_tilde *) (w[1]);
+    t_sample *in = (t_sample *) (w[2]);
+    t_sample *out = (t_sample *) (w[3]);
+    int num_samples = (int) (w[4]);
     int normhipart;
     union tabfudge tf;
     t_float fnpoints = x->x_fnpoints;
     int mask = fnpoints - 1;
     t_float conv = fnpoints * x->x_conv;
-    t_word *tab = x->x_vec, *addr;
+    t_word *tab = x->x_vec;
+    t_word *addr;
     double dphase = fnpoints * x->x_phase + UNITBIT32;
 
-    if (!tab) goto zero;
+    if(!tab) goto zero;
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
 #if 1
-    while (n--)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample frac,  a,  b,  c,  d, cminusb;
+        t_sample frac;
+        t_sample a;
+        t_sample b;
+        t_sample c;
+        t_sample d;
+        t_sample cminusb;
         tf.tf_d = dphase;
-        dphase += *in++ * conv;
+        dphase += in[i] * conv;
         addr = tab + (tf.tf_i[HIOFFSET] & mask);
         tf.tf_i[HIOFFSET] = normhipart;
         frac = tf.tf_d - UNITBIT32;
@@ -595,12 +625,10 @@ static t_int *tabosc4_tilde_perform(t_int *w)
         b = addr[1].w_float;
         c = addr[2].w_float;
         d = addr[3].w_float;
-        cminusb = c-b;
-        *out++ = b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b)
-            )
-        );
+        cminusb = c - b;
+        out[i] = b + frac * (cminusb - 0.1666667f * (1. - frac) *
+                                           ((d - a - 3.0f * cminusb) * frac +
+                                               (d + 2.0f * a - 3.0f * b)));
     }
 #endif
 
@@ -608,32 +636,34 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     normhipart = tf.tf_i[HIOFFSET];
     tf.tf_d = dphase + (UNITBIT32 * fnpoints - UNITBIT32);
     tf.tf_i[HIOFFSET] = normhipart;
-    x->x_phase = (tf.tf_d - UNITBIT32 * fnpoints)  * x->x_finvnpoints;
-    return (w+5);
- zero:
-    while (n--) *out++ = 0;
+    x->x_phase = (tf.tf_d - UNITBIT32 * fnpoints) * x->x_finvnpoints;
+    return (w + 5);
+zero:
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
-    return (w+5);
+    return (w + 5);
 }
 
 static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
 {
     t_garray *a;
-    int npoints, pointsinarray;
+    int npoints;
+    int pointsinarray;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name)
+        if(*s->s_name)
             pd_error(x, "tabosc4~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &pointsinarray, &x->x_vec))
+    else if(!garray_getfloatwords(a, &pointsinarray, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabosc4~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if ((npoints = pointsinarray - 3) != (1 << ilog2(pointsinarray - 3)))
+    else if((npoints = pointsinarray - 3) != (1 << ilog2(pointsinarray - 3)))
     {
         pd_error(x, "%s: number of points (%d) not a power of 2 plus three",
             x->x_arrayname->s_name, pointsinarray);
@@ -643,36 +673,33 @@ static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
     else
     {
         x->x_fnpoints = npoints;
-        x->x_finvnpoints = 1./npoints;
+        x->x_finvnpoints = 1. / npoints;
         garray_usedindsp(a);
     }
 }
 
-static void tabosc4_tilde_ft1(t_tabosc4_tilde *x, t_float f)
-{
-    x->x_phase = f;
-}
+static void tabosc4_tilde_ft1(t_tabosc4_tilde *x, t_float f) { x->x_phase = f; }
 
 static void tabosc4_tilde_dsp(t_tabosc4_tilde *x, t_signal **sp)
 {
     x->x_conv = 1. / sp[0]->s_sr;
     tabosc4_tilde_set(x, x->x_arrayname);
 
-    dsp_add(tabosc4_tilde_perform, 4, x,
-        sp[0]->s_vec, sp[1]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(tabosc4_tilde_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec,
+        (t_int) sp[0]->s_n);
 }
 
 static void tabosc4_tilde_setup(void)
 {
-    tabosc4_tilde_class = class_new(gensym("tabosc4~"),
-        (t_newmethod)tabosc4_tilde_new, 0,
-        sizeof(t_tabosc4_tilde), 0, A_DEFSYM, 0);
+    tabosc4_tilde_class =
+        class_new(gensym("tabosc4~"), (t_newmethod) tabosc4_tilde_new, 0,
+            sizeof(t_tabosc4_tilde), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabosc4_tilde_class, t_tabosc4_tilde, x_f);
-    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_dsp,
+    class_addmethod(tabosc4_tilde_class, (t_method) tabosc4_tilde_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_set,
+    class_addmethod(tabosc4_tilde_class, (t_method) tabosc4_tilde_set,
         gensym("set"), A_SYMBOL, 0);
-    class_addmethod(tabosc4_tilde_class, (t_method)tabosc4_tilde_ft1,
+    class_addmethod(tabosc4_tilde_class, (t_method) tabosc4_tilde_ft1,
         gensym("ft1"), A_FLOAT, 0);
 }
 
@@ -695,7 +722,7 @@ static void tabsend_tick(t_tabsend *x);
 
 static void *tabsend_new(t_symbol *s)
 {
-    t_tabsend *x = (t_tabsend *)pd_new(tabsend_class);
+    t_tabsend *x = (t_tabsend *) pd_new(tabsend_class);
     x->x_graphcount = 0;
     x->x_arrayname = s;
     x->x_f = 0;
@@ -704,32 +731,42 @@ static void *tabsend_new(t_symbol *s)
 
 static t_int *tabsend_perform(t_int *w)
 {
-    t_tabsend *x = (t_tabsend *)(w[1]);
-    t_sample *in = (t_sample *)(w[2]);
-    int n = (int)w[3];
+    t_tabsend *x = (t_tabsend *) (w[1]);
+    t_sample *in = (t_sample *) (w[2]);
+    int num_samples = (int) w[3];
     t_word *dest = x->x_vec;
-    int i = x->x_graphcount;
-    if (!x->x_vec) goto bad;
-    if (n > x->x_npoints)
-        n = x->x_npoints;
-    while (n--)
+    int graphcount = x->x_graphcount;
+
+    if(!x->x_vec) goto bad;
+
+    int num_samples_to_send;
+    if(num_samples > x->x_npoints) 
+        num_samples_to_send = x->x_npoints;
+    else
+        num_samples_to_send = num_samples;
+
+    for(int i = 0; i < num_samples_to_send; i++)
     {
-        t_sample f = *in++;
-        if (PD_BIGORSMALL(f))
-            f = 0;
-         (dest++)->w_float = f;
+        t_sample f = in[i];
+        if(PD_BIGORSMALL(f)) f = 0;
+        dest[i].w_float = f;
     }
-    if (!i--)
+    if(!graphcount--)
     {
-        t_garray *a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class);
-        if (!a)
+        t_garray *a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class);
+        if(!a)
+        {
             bug("tabsend_dsp");
-        else garray_redraw(a);
-        i = x->x_graphperiod;
+        }
+        else
+        {
+            garray_redraw(a);
+        }
+        graphcount = x->x_graphperiod;
     }
-    x->x_graphcount = i;
+    x->x_graphcount = graphcount;
 bad:
-    return (w+4);
+    return (w + 4);
 }
 
 static void tabsend_set(t_tabsend *x, t_symbol *s)
@@ -737,40 +774,41 @@ static void tabsend_set(t_tabsend *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name)
+        if(*s->s_name)
             pd_error(x, "tabsend~: %s: no such array", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
     {
         pd_error(x, "%s: bad template for tabsend~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
     int n = sp[0]->s_n;
-    int ticksper = sp[0]->s_sr/n;
+    int ticksper = sp[0]->s_sr / n;
     tabsend_set(x, x->x_arrayname);
-    if (ticksper < 1) ticksper = 1;
+    if(ticksper < 1) ticksper = 1;
     x->x_graphperiod = ticksper;
-    if (x->x_graphcount > ticksper) x->x_graphcount = ticksper;
-    dsp_add(tabsend_perform, 3, x, sp[0]->s_vec, (t_int)n);
+    if(x->x_graphcount > ticksper) x->x_graphcount = ticksper;
+    dsp_add(tabsend_perform, 3, x, sp[0]->s_vec, (t_int) n);
 }
 
 static void tabsend_setup(void)
 {
-    tabsend_class = class_new(gensym("tabsend~"), (t_newmethod)tabsend_new,
-        0, sizeof(t_tabsend), 0, A_DEFSYM, 0);
+    tabsend_class = class_new(gensym("tabsend~"), (t_newmethod) tabsend_new, 0,
+        sizeof(t_tabsend), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabsend_class, t_tabsend, x_f);
-    class_addmethod(tabsend_class, (t_method)tabsend_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabsend_class, (t_method)tabsend_set,
-        gensym("set"), A_SYMBOL, 0);
+    class_addmethod(
+        tabsend_class, (t_method) tabsend_dsp, gensym("dsp"), A_CANT, 0);
+    class_addmethod(
+        tabsend_class, (t_method) tabsend_set, gensym("set"), A_SYMBOL, 0);
     class_sethelpsymbol(tabsend_class, gensym("tabsend-receive~"));
 }
 
@@ -788,24 +826,31 @@ typedef struct _tabreceive
 
 static t_int *tabreceive_perform(t_int *w)
 {
-    t_tabreceive *x = (t_tabreceive *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)w[3];
+    t_tabreceive *x = (t_tabreceive *) (w[1]);
+    t_sample *out = (t_sample *) (w[2]);
+    int num_samples = (int) w[3];
     t_word *from = x->x_vec;
-    if (from)
+    if(from)
     {
         t_int vecsize = x->x_npoints;
-        if (vecsize > n)
-            vecsize = n;
-        while (vecsize--)
-            *out++ = (from++)->w_float;
-        vecsize = n - x->x_npoints;
-        if (vecsize > 0)
-            while (vecsize--)
-                *out++ = 0;
+        t_int num_samples_to_receive;
+        if(vecsize > num_samples) 
+            num_samples_to_receive = num_samples;
+        else
+            num_samples_to_receive = vecsize;
+
+        for(int i = 0; i < num_samples_to_receive; i++)
+            out[i] = from[i].w_float;
+
+        for(int i = num_samples_to_receive; i < num_samples; i++) 
+            out[i] = 0;
     }
-    else while (n--) *out++ = 0;
-    return (w+4);
+    else
+    {
+        for(int i = 0; i < num_samples; i++)
+            out[i] = 0;
+    }
+    return (w + 4);
 }
 
 static void tabreceive_set(t_tabreceive *x, t_symbol *s)
@@ -813,31 +858,33 @@ static void tabreceive_set(t_tabreceive *x, t_symbol *s)
     t_garray *a;
 
     x->x_arrayname = s;
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*s->s_name)
-            pd_error(x, "tabreceive~: %s: no such array",
-                x->x_arrayname->s_name);
+        if(*s->s_name)
+        {
+            pd_error(
+                x, "tabreceive~: %s: no such array", x->x_arrayname->s_name);
+        }
         x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
+    else if(!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
     {
-        pd_error(x, "%s: bad template for tabreceive~",
-            x->x_arrayname->s_name);
+        pd_error(x, "%s: bad template for tabreceive~", x->x_arrayname->s_name);
         x->x_vec = 0;
     }
-    else garray_usedindsp(a);
+    else
+        garray_usedindsp(a);
 }
 
 static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
 {
     tabreceive_set(x, x->x_arrayname);
-    dsp_add(tabreceive_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    dsp_add(tabreceive_perform, 3, x, sp[0]->s_vec, (t_int) sp[0]->s_n);
 }
 
 static void *tabreceive_new(t_symbol *s)
 {
-    t_tabreceive *x = (t_tabreceive *)pd_new(tabreceive_class);
+    t_tabreceive *x = (t_tabreceive *) pd_new(tabreceive_class);
     x->x_arrayname = s;
     outlet_new(&x->x_obj, &s_signal);
     return (x);
@@ -846,12 +893,11 @@ static void *tabreceive_new(t_symbol *s)
 static void tabreceive_setup(void)
 {
     tabreceive_class = class_new(gensym("tabreceive~"),
-        (t_newmethod)tabreceive_new, 0,
-        sizeof(t_tabreceive), 0, A_DEFSYM, 0);
-    class_addmethod(tabreceive_class, (t_method)tabreceive_dsp,
-        gensym("dsp"), A_CANT, 0);
-    class_addmethod(tabreceive_class, (t_method)tabreceive_set,
-        gensym("set"), A_SYMBOL, 0);
+        (t_newmethod) tabreceive_new, 0, sizeof(t_tabreceive), 0, A_DEFSYM, 0);
+    class_addmethod(
+        tabreceive_class, (t_method) tabreceive_dsp, gensym("dsp"), A_CANT, 0);
+    class_addmethod(tabreceive_class, (t_method) tabreceive_set, gensym("set"),
+        A_SYMBOL, 0);
     class_sethelpsymbol(tabreceive_class, gensym("tabsend-receive~"));
 }
 
@@ -871,27 +917,34 @@ static void tabread_float(t_tabread *x, t_float f)
     int npoints;
     t_word *vec;
 
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
-    else if (!garray_getfloatwords(a, &npoints, &vec))
+    }
+    else if(!garray_getfloatwords(a, &npoints, &vec))
+    {
         pd_error(x, "%s: bad template for tabread", x->x_arrayname->s_name);
+    }
     else
     {
         int n = f;
-        if (n < 0) n = 0;
-        else if (n >= npoints) n = npoints - 1;
+        if(n < 0)
+        {
+            n = 0;
+        }
+        else if(n >= npoints)
+        {
+            n = npoints - 1;
+        }
         outlet_float(x->x_obj.ob_outlet, (npoints ? vec[n].w_float : 0));
     }
 }
 
-static void tabread_set(t_tabread *x, t_symbol *s)
-{
-    x->x_arrayname = s;
-}
+static void tabread_set(t_tabread *x, t_symbol *s) { x->x_arrayname = s; }
 
 static void *tabread_new(t_symbol *s)
 {
-    t_tabread *x = (t_tabread *)pd_new(tabread_class);
+    t_tabread *x = (t_tabread *) pd_new(tabread_class);
     x->x_arrayname = s;
     outlet_new(&x->x_obj, &s_float);
     return (x);
@@ -899,11 +952,11 @@ static void *tabread_new(t_symbol *s)
 
 static void tabread_setup(void)
 {
-    tabread_class = class_new(gensym("tabread"), (t_newmethod)tabread_new,
-        0, sizeof(t_tabread), 0, A_DEFSYM, 0);
-    class_addfloat(tabread_class, (t_method)tabread_float);
-    class_addmethod(tabread_class, (t_method)tabread_set, gensym("set"),
-        A_SYMBOL, 0);
+    tabread_class = class_new(gensym("tabread"), (t_newmethod) tabread_new, 0,
+        sizeof(t_tabread), 0, A_DEFSYM, 0);
+    class_addfloat(tabread_class, (t_method) tabread_float);
+    class_addmethod(
+        tabread_class, (t_method) tabread_set, gensym("set"), A_SYMBOL, 0);
 }
 
 /* ---------- tabread4: control, 4-point interpolation --------------- */
@@ -922,44 +975,56 @@ static void tabread4_float(t_tabread4 *x, t_float f)
     int npoints;
     t_word *vec;
 
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
-    else if (!garray_getfloatwords(a, &npoints, &vec))
+    }
+    else if(!garray_getfloatwords(a, &npoints, &vec))
+    {
         pd_error(x, "%s: bad template for tabread4", x->x_arrayname->s_name);
-    else if (npoints < 4)
+    }
+    else if(npoints < 4)
+    {
         outlet_float(x->x_obj.ob_outlet, 0);
-    else if (f <= 1)
+    }
+    else if(f <= 1)
+    {
         outlet_float(x->x_obj.ob_outlet, vec[1].w_float);
-    else if (f >= npoints - 2)
+    }
+    else if(f >= npoints - 2)
+    {
         outlet_float(x->x_obj.ob_outlet, vec[npoints - 2].w_float);
+    }
     else
     {
         int n = f;
-        float a, b, c, d, cminusb, frac;
+        float a;
+        float b;
+        float c;
+        float d;
+        float cminusb;
+        float frac;
         t_word *wp;
-        if (n >= npoints - 2)
-            n = npoints - 3;
+        if(n >= npoints - 2) n = npoints - 3;
         wp = vec + n;
         frac = f - n;
         a = wp[-1].w_float;
         b = wp[0].w_float;
         c = wp[1].w_float;
         d = wp[2].w_float;
-        cminusb = c-b;
-        outlet_float(x->x_obj.ob_outlet, b + frac * (
-            cminusb - 0.1666667f * (1.-frac) * (
-                (d - a - 3.0f * cminusb) * frac + (d + 2.0f*a - 3.0f*b))));
+        cminusb = c - b;
+        outlet_float(x->x_obj.ob_outlet,
+            b + frac * (cminusb - 0.1666667f * (1. - frac) *
+                                      ((d - a - 3.0f * cminusb) * frac +
+                                          (d + 2.0f * a - 3.0f * b))));
     }
 }
 
-static void tabread4_set(t_tabread4 *x, t_symbol *s)
-{
-    x->x_arrayname = s;
-}
+static void tabread4_set(t_tabread4 *x, t_symbol *s) { x->x_arrayname = s; }
 
 static void *tabread4_new(t_symbol *s)
 {
-    t_tabread4 *x = (t_tabread4 *)pd_new(tabread4_class);
+    t_tabread4 *x = (t_tabread4 *) pd_new(tabread4_class);
     x->x_arrayname = s;
     outlet_new(&x->x_obj, &s_float);
     return (x);
@@ -967,11 +1032,11 @@ static void *tabread4_new(t_symbol *s)
 
 static void tabread4_setup(void)
 {
-    tabread4_class = class_new(gensym("tabread4"), (t_newmethod)tabread4_new,
+    tabread4_class = class_new(gensym("tabread4"), (t_newmethod) tabread4_new,
         0, sizeof(t_tabread4), 0, A_DEFSYM, 0);
-    class_addfloat(tabread4_class, (t_method)tabread4_float);
-    class_addmethod(tabread4_class, (t_method)tabread4_set, gensym("set"),
-        A_SYMBOL, 0);
+    class_addfloat(tabread4_class, (t_method) tabread4_float);
+    class_addmethod(
+        tabread4_class, (t_method) tabread4_set, gensym("set"), A_SYMBOL, 0);
 }
 
 /* ------------------ tabwrite: control ------------------------ */
@@ -991,30 +1056,35 @@ static void tabwrite_float(t_tabwrite *x, t_float f)
     t_garray *a;
     t_word *vec;
 
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    if(!(a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class)))
+    {
         pd_error(x, "%s: no such array", x->x_arrayname->s_name);
-    else if (!garray_getfloatwords(a, &vecsize, &vec))
+    }
+    else if(!garray_getfloatwords(a, &vecsize, &vec))
+    {
         pd_error(x, "%s: bad template for tabwrite", x->x_arrayname->s_name);
+    }
     else
     {
         int n = x->x_ft1;
-        if (n < 0)
+        if(n < 0)
+        {
             n = 0;
-        else if (n >= vecsize)
-            n = vecsize-1;
+        }
+        else if(n >= vecsize)
+        {
+            n = vecsize - 1;
+        }
         vec[n].w_float = f;
         garray_redraw(a);
     }
 }
 
-static void tabwrite_set(t_tabwrite *x, t_symbol *s)
-{
-    x->x_arrayname = s;
-}
+static void tabwrite_set(t_tabwrite *x, t_symbol *s) { x->x_arrayname = s; }
 
 static void *tabwrite_new(t_symbol *s)
 {
-    t_tabwrite *x = (t_tabwrite *)pd_new(tabwrite_class);
+    t_tabwrite *x = (t_tabwrite *) pd_new(tabwrite_class);
     x->x_ft1 = 0;
     x->x_arrayname = s;
     floatinlet_new(&x->x_obj, &x->x_ft1);
@@ -1023,11 +1093,11 @@ static void *tabwrite_new(t_symbol *s)
 
 void tabwrite_setup(void)
 {
-    tabwrite_class = class_new(gensym("tabwrite"), (t_newmethod)tabwrite_new,
+    tabwrite_class = class_new(gensym("tabwrite"), (t_newmethod) tabwrite_new,
         0, sizeof(t_tabwrite), 0, A_DEFSYM, 0);
-    class_addfloat(tabwrite_class, (t_method)tabwrite_float);
-    class_addmethod(tabwrite_class, (t_method)tabwrite_set, gensym("set"),
-        A_SYMBOL, 0);
+    class_addfloat(tabwrite_class, (t_method) tabwrite_float);
+    class_addmethod(
+        tabwrite_class, (t_method) tabwrite_set, gensym("set"), A_SYMBOL, 0);
 }
 
 /* ------------------------ global setup routine ------------------------- */
@@ -1045,4 +1115,3 @@ void d_array_setup(void)
     tabread4_setup();
     tabwrite_setup();
 }
-
