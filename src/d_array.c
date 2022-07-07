@@ -50,7 +50,7 @@ static t_int *tabwrite_tilde_perform(t_int *w)
 {
     t_tabwrite_tilde *x = (t_tabwrite_tilde *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     int phase = x->x_phase;
     int endphase = x->x_nsampsintab;
     if(!x->x_vec) goto bad;
@@ -58,15 +58,16 @@ static t_int *tabwrite_tilde_perform(t_int *w)
     if(endphase > phase)
     {
         int nxfer = endphase - phase;
-        t_word *wp = x->x_vec + phase;
-        if(nxfer > n) nxfer = n;
-        phase += nxfer;
-        while(nxfer--)
+        if(nxfer > num_samples) nxfer = num_samples;
+
+        for(int i = 0; i < nxfer; i++)
         {
-            t_sample f = *in++;
+            t_sample f = in[i];
             if(PD_BIGORSMALL(f)) f = 0;
-            (wp++)->w_float = f;
+            x->x_vec[i + phase].w_float = f;
         }
+        phase += nxfer;
+
         if(phase >= endphase)
         {
             tabwrite_tilde_redraw(x);
@@ -174,7 +175,7 @@ static t_int *tabplay_tilde_perform(t_int *w)
     t_tabplay_tilde *x = (t_tabplay_tilde *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_word *wp;
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     int phase = x->x_phase;
     int endphase =
         (x->x_nsampsintab < x->x_limit ? x->x_nsampsintab : x->x_limit);
@@ -184,25 +185,31 @@ static t_int *tabplay_tilde_perform(t_int *w)
 
     nxfer = endphase - phase;
     wp = x->x_vec + phase;
-    if(nxfer > n) nxfer = n;
-    n3 = n - nxfer;
+    if(nxfer > num_samples) nxfer = num_samples;
+    n3 = num_samples - nxfer;
     phase += nxfer;
-    while(nxfer--)
-        *out++ = (wp++)->w_float;
+
+    for(int i = 0; i < nxfer; i++)
+    {
+        out[i] = wp[i].w_float;
+    }
     if(phase >= endphase)
     {
         clock_delay(x->x_clock, 0);
         x->x_phase = 0x7fffffff;
-        while(n3--)
-            *out++ = 0;
+        for(int i = nxfer; i < num_samples; i++)
+            out[i] = 0;
     }
     else
+    {
         x->x_phase = phase;
+    }
 
     return (w + 4);
+
 zero:
-    while(n--)
-        *out++ = 0;
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
     return (w + 4);
 }
 
@@ -300,7 +307,7 @@ static t_int *tabread_tilde_perform(t_int *w)
     t_tabread_tilde *x = (t_tabread_tilde *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
 
@@ -308,9 +315,9 @@ static t_int *tabread_tilde_perform(t_int *w)
     if(maxindex < 0) goto zero;
     if(!buf) goto zero;
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        int index = *in++;
+        int index = in[i];
         if(index < 0)
         {
             index = 0;
@@ -319,12 +326,12 @@ static t_int *tabread_tilde_perform(t_int *w)
         {
             index = maxindex;
         }
-        *out++ = buf[index].w_float;
+        out[i] = buf[index].w_float;
     }
     return (w + 5);
 zero:
-    while(n--)
-        *out++ = 0;
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
     return (w + 5);
 }
@@ -402,7 +409,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
     t_tabread4_tilde *x = (t_tabread4_tilde *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
     t_word *wp;
@@ -429,9 +436,9 @@ static t_int *tabread4_tilde_perform(t_int *w)
     }
 #endif
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        double findex = *in++ + onset;
+        double findex = in[i] + onset;
         int index = findex;
         t_sample frac;
         t_sample a;
@@ -457,14 +464,14 @@ static t_int *tabread4_tilde_perform(t_int *w)
         c = wp[1].w_float;
         d = wp[2].w_float;
         cminusb = c - b;
-        *out++ = b + frac * (cminusb - 0.1666667f * (1. - frac) *
+        out[i] = b + frac * (cminusb - 0.1666667f * (1. - frac) *
                                            ((d - a - 3.0f * cminusb) * frac +
                                                (d + 2.0f * a - 3.0f * b)));
     }
     return (w + 5);
 zero:
-    while(n--)
-        *out++ = 0;
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
     return (w + 5);
 }
@@ -586,7 +593,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     t_tabosc4_tilde *x = (t_tabosc4_tilde *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     int normhipart;
     union tabfudge tf;
     t_float fnpoints = x->x_fnpoints;
@@ -601,7 +608,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     normhipart = tf.tf_i[HIOFFSET];
 
 #if 1
-    while(n--)
+    for(int i = 0; i < num_samples; i++)
     {
         t_sample frac;
         t_sample a;
@@ -610,7 +617,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
         t_sample d;
         t_sample cminusb;
         tf.tf_d = dphase;
-        dphase += *in++ * conv;
+        dphase += in[i] * conv;
         addr = tab + (tf.tf_i[HIOFFSET] & mask);
         tf.tf_i[HIOFFSET] = normhipart;
         frac = tf.tf_d - UNITBIT32;
@@ -619,7 +626,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
         c = addr[2].w_float;
         d = addr[3].w_float;
         cminusb = c - b;
-        *out++ = b + frac * (cminusb - 0.1666667f * (1. - frac) *
+        out[i] = b + frac * (cminusb - 0.1666667f * (1. - frac) *
                                            ((d - a - 3.0f * cminusb) * frac +
                                                (d + 2.0f * a - 3.0f * b)));
     }
@@ -632,8 +639,8 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     x->x_phase = (tf.tf_d - UNITBIT32 * fnpoints) * x->x_finvnpoints;
     return (w + 5);
 zero:
-    while(n--)
-        *out++ = 0;
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
 
     return (w + 5);
 }
@@ -726,18 +733,25 @@ static t_int *tabsend_perform(t_int *w)
 {
     t_tabsend *x = (t_tabsend *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) w[3];
+    int num_samples = (int) w[3];
     t_word *dest = x->x_vec;
-    int i = x->x_graphcount;
+    int graphcount = x->x_graphcount;
+
     if(!x->x_vec) goto bad;
-    if(n > x->x_npoints) n = x->x_npoints;
-    while(n--)
+
+    int num_samples_to_send;
+    if(num_samples > x->x_npoints) 
+        num_samples_to_send = x->x_npoints;
+    else
+        num_samples_to_send = num_samples;
+
+    for(int i = 0; i < num_samples_to_send; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
         if(PD_BIGORSMALL(f)) f = 0;
-        (dest++)->w_float = f;
+        dest[i].w_float = f;
     }
-    if(!i--)
+    if(!graphcount--)
     {
         t_garray *a = (t_garray *) pd_findbyclass(x->x_arrayname, garray_class);
         if(!a)
@@ -748,9 +762,9 @@ static t_int *tabsend_perform(t_int *w)
         {
             garray_redraw(a);
         }
-        i = x->x_graphperiod;
+        graphcount = x->x_graphperiod;
     }
-    x->x_graphcount = i;
+    x->x_graphcount = graphcount;
 bad:
     return (w + 4);
 }
@@ -814,25 +828,27 @@ static t_int *tabreceive_perform(t_int *w)
 {
     t_tabreceive *x = (t_tabreceive *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) w[3];
+    int num_samples = (int) w[3];
     t_word *from = x->x_vec;
     if(from)
     {
         t_int vecsize = x->x_npoints;
-        if(vecsize > n) vecsize = n;
-        while(vecsize--)
-            *out++ = (from++)->w_float;
-        vecsize = n - x->x_npoints;
-        if(vecsize > 0)
-        {
-            while(vecsize--)
-                *out++ = 0;
-        }
+        t_int num_samples_to_receive;
+        if(vecsize > num_samples) 
+            num_samples_to_receive = num_samples;
+        else
+            num_samples_to_receive = vecsize;
+
+        for(int i = 0; i < num_samples_to_receive; i++)
+            out[i] = from[i].w_float;
+
+        for(int i = num_samples_to_receive; i < num_samples; i++) 
+            out[i] = 0;
     }
     else
     {
-        while(n--)
-            *out++ = 0;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = 0;
     }
     return (w + 4);
 }

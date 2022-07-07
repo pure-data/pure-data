@@ -37,12 +37,10 @@ static t_int *sigsend_perform(t_int *w)
 {
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
     {
-        *out = (PD_BIGORSMALL(*in) ? 0 : *in);
-        out++;
-        in++;
+        out[i] = (PD_BIGORSMALL(in[i]) ? 0 : in[i]);
     }
     return (w + 4);
 }
@@ -101,17 +99,17 @@ static t_int *sigreceive_perform(t_int *w)
 {
     t_sigreceive *x = (t_sigreceive *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     t_sample *in = x->x_wherefrom;
     if(in)
     {
-        while(n--)
-            *out++ = *in++;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = in[i];
     }
     else
     {
-        while(n--)
-            *out++ = 0;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = 0;
     }
     return (w + 4);
 }
@@ -121,11 +119,11 @@ static t_int *sigreceive_perf8(t_int *w)
 {
     t_sigreceive *x = (t_sigreceive *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     t_sample *in = x->x_wherefrom;
     if(in)
     {
-        for(; n; n -= 8, in += 8, out += 8)
+        for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
         {
             out[0] = in[0];
             out[1] = in[1];
@@ -139,7 +137,7 @@ static t_int *sigreceive_perf8(t_int *w)
     }
     else
     {
-        for(; n; n -= 8, in += 8, out += 8)
+        for(int i = 0; i < num_samples; i += 8, out += 8)
         {
             out[0] = 0;
             out[1] = 0;
@@ -236,9 +234,12 @@ static t_int *sigcatch_perform(t_int *w)
 {
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
-        *out++ = *in, *in++ = 0;
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
+    {
+        out[i] = in[i];
+        in[i] = 0;
+    }
     return (w + 4);
 }
 
@@ -247,8 +248,8 @@ static t_int *sigcatch_perf8(t_int *w)
 {
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         out[0] = in[0];
         out[1] = in[1];
@@ -332,15 +333,13 @@ static t_int *sigthrow_perform(t_int *w)
 {
     t_sigthrow *x = (t_sigthrow *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     t_sample *out = x->x_whereto;
     if(out)
     {
-        while(n--)
+        for(int i = 0; i < num_samples; i++)
         {
-            *out += (PD_BIGORSMALL(*in) ? 0 : *in);
-            out++;
-            in++;
+            out[i] += (PD_BIGORSMALL(in[i]) ? 0 : in[i]);
         }
     }
     return (w + 4);

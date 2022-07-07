@@ -22,9 +22,9 @@ static t_int *sig_tilde_perform(t_int *w)
 {
     t_float f = *(t_float *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
-        *out++ = f;
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = f;
     return (w + 4);
 }
 
@@ -32,9 +32,9 @@ static t_int *sig_tilde_perf8(t_int *w)
 {
     t_float f = *(t_float *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
 
-    for(; n; n -= 8, out += 8)
+    for(int i = 0; i < num_samples; i += 8, out += 8)
     {
         out[0] = f;
         out[1] = f;
@@ -94,7 +94,7 @@ static t_int *line_tilde_perform(t_int *w)
 {
     t_line *x = (t_line *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     t_sample f = x->x_value;
 
     if(PD_BIGORSMALL(f)) x->x_value = f = 0;
@@ -110,16 +110,19 @@ static t_int *line_tilde_perform(t_int *w)
     if(x->x_ticksleft)
     {
         t_sample f = x->x_value;
-        while(n--)
-            *out++ = f, f += x->x_inc;
+        for(int i = 0; i < num_samples; i++)
+        {
+            out[i] = f;
+            f += x->x_inc;
+        }
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
     else
     {
         t_sample g = x->x_value = x->x_target;
-        while(n--)
-            *out++ = g;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = g;
     }
     return (w + 4);
 }
@@ -129,7 +132,7 @@ static t_int *line_tilde_perf8(t_int *w)
 {
     t_line *x = (t_line *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     t_sample f = x->x_value;
 
     if(PD_BIGORSMALL(f)) x->x_value = f = 0;
@@ -145,15 +148,18 @@ static t_int *line_tilde_perf8(t_int *w)
     if(x->x_ticksleft)
     {
         t_sample f = x->x_value;
-        while(n--)
-            *out++ = f, f += x->x_inc;
+        for(int i = 0; i < num_samples; i++)
+        {
+            out[i] = f;
+            f += x->x_inc;
+        }
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
     else
     {
         t_sample f = x->x_value = x->x_target;
-        for(; n; n -= 8, out += 8)
+        for(int i = 0; i < num_samples; i += 8, out += 8)
         {
             out[0] = f;
             out[1] = f;
@@ -624,26 +630,22 @@ static t_int *env_tilde_perform(t_int *w)
 {
     t_sigenv *x = (t_sigenv *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     int count;
     t_sample *sump;
-    in += n;
     for(count = x->x_phase, sump = x->x_sumbuf; count < x->x_npoints;
         count += x->x_realperiod, sump++)
     {
-        t_sample *hp = x->x_buf + count;
-        t_sample *fp = in;
         t_sample sum = *sump;
 
-        for(int i = 0; i < n; i++)
+        for(int i = 0; i < num_samples; i++)
         {
-            fp--;
-            sum += *hp++ * (*fp * *fp);
+            sum += x->x_buf[count + i] * (in[num_samples - i] * in[num_samples - i]);
         }
         *sump = sum;
     }
     sump[0] = 0;
-    x->x_phase -= n;
+    x->x_phase -= num_samples;
     if(x->x_phase < 0)
     {
         x->x_result = x->x_sumbuf[0];
@@ -651,7 +653,7 @@ static t_int *env_tilde_perform(t_int *w)
             count += x->x_realperiod, sump++)
             sump[0] = sump[1];
         sump[0] = 0;
-        x->x_phase = x->x_realperiod - n;
+        x->x_phase = x->x_realperiod - num_samples;
         clock_delay(x->x_clock, 0L);
     }
     return (w + 4);
@@ -777,9 +779,9 @@ static void threshold_tilde_tick(t_threshold_tilde *x)
 
 static t_int *threshold_tilde_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in = (t_sample *) (w[1]);
     t_threshold_tilde *x = (t_threshold_tilde *) (w[2]);
-    int n = (int) w[3];
+    int num_samples = (int) w[3];
     if(x->x_deadwait > 0)
     {
         x->x_deadwait -= x->x_msecpertick;
@@ -787,9 +789,9 @@ static t_int *threshold_tilde_perform(t_int *w)
     else if(x->x_state)
     {
         /* we're high; look for low sample */
-        for(; n--; in1++)
+        for(int i = 0; i < num_samples; i++)
         {
-            if(*in1 < x->x_lothresh)
+            if(in[i] < x->x_lothresh)
             {
                 clock_delay(x->x_clock, 0L);
                 x->x_state = 0;
@@ -801,9 +803,9 @@ static t_int *threshold_tilde_perform(t_int *w)
     else
     {
         /* we're low; look for high sample */
-        for(; n--; in1++)
+        for(int i = 0; i < num_samples; i++)
         {
-            if(*in1 >= x->x_hithresh)
+            if(in[i] >= x->x_hithresh)
             {
                 clock_delay(x->x_clock, 0L);
                 x->x_state = 1;

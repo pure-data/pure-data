@@ -51,9 +51,9 @@ t_int *scalarplus_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in++ + f;
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in[i] + f;
     return (w + 5);
 }
 
@@ -62,8 +62,8 @@ t_int *scalarplus_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];
@@ -161,9 +161,12 @@ t_int *minus_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in1++ - *in2++;
+    int num_samples = (int) (w[4]);
+
+    for(int i = 0; i < num_samples; i++)
+    {
+        out[i] = in1[i] - in2[i];
+    }
     return (w + 5);
 }
 
@@ -172,8 +175,8 @@ t_int *minus_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -210,9 +213,9 @@ t_int *scalarminus_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in++ - f;
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in[i] - f;
     return (w + 5);
 }
 
@@ -221,8 +224,9 @@ t_int *scalarminus_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[4]);
+
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];
@@ -331,9 +335,9 @@ t_int *times_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in1++ * *in2++;
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in1[i] + in2[i];
     return (w + 5);
 }
 
@@ -342,8 +346,8 @@ t_int *times_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -380,9 +384,9 @@ t_int *scalartimes_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in++ * f;
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in[i] * f;
     return (w + 5);
 }
 
@@ -391,8 +395,8 @@ t_int *scalartimes_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];
@@ -500,12 +504,12 @@ t_int *over_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1++;
-        t_sample g = *in2++;
-        *out++ = (g ? f / g : 0);
+        t_sample f = in1[i];
+        t_sample g = in2[i];
+        out[i] = (g ? f / g : 0);
     }
     return (w + 5);
 }
@@ -515,8 +519,8 @@ t_int *over_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -553,10 +557,11 @@ t_int *scalarover_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    if(f) f = 1. / f;
-    while(n--)
-        *out++ = *in++ * f;
+    int num_samples = (int) (w[4]);
+    if(f) 
+        f = 1. / f;
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in[i] * f;
     return (w + 5);
 }
 
@@ -565,9 +570,9 @@ t_int *scalarover_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     if(g) g = 1.f / g;
-    for(; n; n -= 8, in += 8, out += 8)
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];
@@ -674,12 +679,12 @@ t_int *max_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1++;
-        t_sample g = *in2++;
-        *out++ = (f > g ? f : g);
+        t_sample f = in1[i];
+        t_sample g = in2[i];
+        out[i] = (f > g ? f : g);
     }
     return (w + 5);
 }
@@ -689,8 +694,8 @@ t_int *max_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -727,11 +732,11 @@ t_int *scalarmax_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample g = *in++;
-        *out++ = (f > g ? f : g);
+        t_sample g = in[i];
+        out[i] = (f > g ? f : g);
     }
     return (w + 5);
 }
@@ -741,8 +746,8 @@ t_int *scalarmax_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];
@@ -849,12 +854,12 @@ t_int *min_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1++;
-        t_sample g = *in2++;
-        *out++ = (f < g ? f : g);
+        t_sample f = in1[i];
+        t_sample g = in2[i];
+        out[i] = (f < g ? f : g);
     }
     return (w + 5);
 }
@@ -864,8 +869,8 @@ t_int *min_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -902,11 +907,11 @@ t_int *scalarmin_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float f = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample g = *in++;
-        *out++ = (f < g ? f : g);
+        t_sample g = in[i];
+        out[i] = (f < g ? f : g);
     }
     return (w + 5);
 }
@@ -916,8 +921,8 @@ t_int *scalarmin_perf8(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_float g = *(t_float *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
         t_sample f0 = in[0];
         t_sample f1 = in[1];

@@ -39,13 +39,13 @@ static t_int *clip_perform(t_int *w)
     t_clip *x = (t_clip *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
         if(f < x->x_lo) f = x->x_lo;
         if(f > x->x_hi) f = x->x_hi;
-        *out++ = f;
+        out[i] = f;
     }
     return (w + 5);
 }
@@ -158,10 +158,10 @@ static t_int *sigrsqrt_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    while(n--)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
 
         union
         {
@@ -172,13 +172,13 @@ static t_int *sigrsqrt_perform(t_int *w)
         u.f = f;
         if(f < 0)
         {
-            *out++ = 0;
+            out[i] = 0;
         }
         else
         {
             t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
                          rsqrt_mantissatab[(u.l >> 13) & 0x3ff];
-            *out++ = 1.5 * g - 0.5 * g * g * g * f;
+            out[i] = 1.5 * g - 0.5 * g * g * g * f;
         }
     }
     return (w + 4);
@@ -224,10 +224,10 @@ t_int *sigsqrt_perform(t_int *w) /* not static; also used in d_fft.c */
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    while(n--)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
 
         union
         {
@@ -238,13 +238,13 @@ t_int *sigsqrt_perform(t_int *w) /* not static; also used in d_fft.c */
         u.f = f;
         if(f < 0)
         {
-            *out++ = 0;
+            out[i] = 0;
         }
         else
         {
             t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
                          rsqrt_mantissatab[(u.l >> 13) & 0x3ff];
-            *out++ = f * (1.5 * g - 0.5 * g * g * g * f);
+            out[i] = f * (1.5 * g - 0.5 * g * g * g * f);
         }
     }
     return (w + 4);
@@ -287,20 +287,20 @@ static t_int *sigwrap_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    while(n--)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
         int k;
-        t_sample f = *in++;
+        t_sample f = in[i];
         f = (f > INT_MAX || f < INT_MIN) ? 0. : f;
         k = (int) f;
         if(k <= f)
         {
-            *out++ = f - k;
+            out[i] = f - k;
         }
         else
         {
-            *out++ = f - (k - 1);
+            out[i] = f - (k - 1);
         }
     }
     return (w + 4);
@@ -311,18 +311,18 @@ static t_int *sigwrap_old_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    while(n--)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
         int k = f;
         if(f > 0)
         {
-            *out++ = f - k;
+            out[i] = f - k;
         }
         else
         {
-            *out++ = f - (k - 1);
+            out[i] = f - (k - 1);
         }
     }
     return (w + 4);
@@ -366,18 +366,18 @@ static t_int *mtof_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
+        t_sample f = in[i];
         if(f <= -1500)
         {
-            *out = 0;
+            out[i] = 0;
         }
         else
         {
             if(f > 1499) f = 1499;
-            *out = 8.17579891564 * exp(.0577622650 * f);
+            out[i] = 8.17579891564 * exp(.0577622650 * f);
         }
     }
     return (w + 4);
@@ -420,11 +420,11 @@ static t_int *ftom_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
-        *out = (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);
+        t_sample f = in[i];
+        out[i] = (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);
     }
     return (w + 4);
 }
@@ -466,18 +466,18 @@ static t_int *dbtorms_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
+        t_sample f = in[i];
         if(f <= 0)
         {
-            *out = 0;
+            out[i] = 0;
         }
         else
         {
             if(f > 485) f = 485;
-            *out = exp((LOGTEN * 0.05) * (f - 100.));
+            out[i] = exp((LOGTEN * 0.05) * (f - 100.));
         }
     }
     return (w + 4);
@@ -520,18 +520,18 @@ static t_int *rmstodb_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
+        t_sample f = in[i];
         if(f <= 0)
         {
-            *out = 0;
+            out[i] = 0;
         }
         else
         {
             t_sample g = 100 + 20. / LOGTEN * log(f);
-            *out = (g < 0 ? 0 : g);
+            out[i] = (g < 0 ? 0 : g);
         }
     }
     return (w + 4);
@@ -574,18 +574,18 @@ static t_int *dbtopow_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
+        t_sample f = in[i];
         if(f <= 0)
         {
-            *out = 0;
+            out[i] = 0;
         }
         else
         {
             if(f > 870) f = 870;
-            *out = exp((LOGTEN * 0.1) * (f - 100.));
+            out[i] = exp((LOGTEN * 0.1) * (f - 100.));
         }
     }
     return (w + 4);
@@ -628,18 +628,18 @@ static t_int *powtodb_tilde_perform(t_int *w)
 {
     t_sample *in = (t_sample *) w[1];
     t_sample *out = (t_sample *) w[2];
-    int n = (int) w[3];
-    for(; n--; in++, out++)
+    int num_samples = (int) w[3];
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in;
+        t_sample f = in[i];
         if(f <= 0)
         {
-            *out = 0;
+            out[i] = 0;
         }
         else
         {
             t_sample g = 100 + 10. / LOGTEN * log(f);
-            *out = (g < 0 ? 0 : g);
+            out[i] = (g < 0 ? 0 : g);
         }
     }
     return (w + 4);
@@ -684,12 +684,12 @@ t_int *pow_tilde_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f1 = *in1++;
-        t_sample f2 = *in2++;
-        *out++ = (f1 == 0 && f2 < 0) || (f1 < 0 && (f2 - (int) f2) != 0)
+        t_sample f1 = in1[i];
+        t_sample f2 = in2[i];
+        out[i] = (f1 == 0 && f2 < 0) || (f1 < 0 && (f2 - (int) f2) != 0)
                      ? 0
                      : pow(f1, f2);
     }
@@ -729,11 +729,13 @@ static void *exp_tilde_new(void)
 
 t_int *exp_tilde_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
-        *out++ = exp(*in1++);
+    int num_samples = (int) (w[3]);
+
+    for(int i = 0; i < num_samples; i++)
+        out[i] = exp(in[i]);
+
     return (w + 4);
 }
 
@@ -777,24 +779,23 @@ t_int *log_tilde_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1++;
-        t_sample g = *in2++;
+        t_sample f = in1[i];
+        t_sample g = in2[i];
         if(f <= 0)
         {
-            *out = -1000; /* rather than blow up, output a number << 0 */
+            out[i] = -1000; /* rather than blow up, output a number << 0 */
         }
         else if(g <= 0)
         {
-            *out = log(f);
+            out[i] = log(f);
         }
         else
         {
-            *out = log(f) / log(g);
+            out[i] = log(f) / log(g);
         }
-        out++;
     }
     return (w + 5);
 }
@@ -832,13 +833,13 @@ static void *abs_tilde_new(void)
 
 t_int *abs_tilde_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1++;
-        *out++ = (f >= 0 ? f : -f);
+        t_sample f = in[i];
+        out[i] = (f >= 0 ? f : -f);
     }
     return (w + 4);
 }

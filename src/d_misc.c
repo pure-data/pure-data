@@ -24,11 +24,11 @@ static t_int *print_perform(t_int *w)
 {
     t_print *x = (t_print *) (w[1]);
     t_sample *in = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     if(x->x_count)
     {
         startpost("%s:", x->x_sym->s_name);
-        for(int i = 0; i < n; i++)
+        for(int i = 0; i < num_samples; i++)
         {
             if(i % 8 == 0) endpost();
             startpost("%.4g  ", in[i]);

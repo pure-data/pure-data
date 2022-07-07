@@ -61,18 +61,18 @@ void d_ugen_freepdinstance(void) { freebytes(THIS, sizeof(*THIS)); }
 t_int *zero_perform(t_int *w) /* zero out a vector */
 {
     t_sample *out = (t_sample *) (w[1]);
-    int n = (int) (w[2]);
-    while(n--)
-        *out++ = 0;
+    int num_samples = (int) (w[2]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = 0;
     return (w + 3);
 }
 
 t_int *zero_perf8(t_int *w)
 {
     t_sample *out = (t_sample *) (w[1]);
-    int n = (int) (w[2]);
+    int num_samples = (int) (w[2]);
 
-    for(; n; n -= 8, out += 8)
+    for(int i = 0; i < num_samples; i += 8, out += 8)
     {
         out[0] = 0;
         out[1] = 0;
@@ -1233,9 +1233,9 @@ t_int *plus_perform(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    while(n--)
-        *out++ = *in1++ + *in2++;
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in1[i] + in2[i];
     return (w + 5);
 }
 
@@ -1244,8 +1244,8 @@ t_int *plus_perf8(t_int *w)
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
-    int n = (int) (w[4]);
-    for(; n; n -= 8, in1 += 8, in2 += 8, out += 8)
+    int num_samples = (int) (w[4]);
+    for(int i = 0; i < num_samples; i += 8, in1 += 8, in2 += 8, out += 8)
     {
         t_sample f0 = in1[0];
         t_sample f1 = in1[1];
@@ -1291,30 +1291,30 @@ void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n)
 
 t_int *copy_perform(t_int *w)
 {
-    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
-        *out++ = *in1++;
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = in[i];
     return (w + 4);
 }
 
 static t_int *copy_perf8(t_int *w)
 {
-    t_sample *in1 = (t_sample *) (w[1]);
+    t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
 
-    for(; n; n -= 8, in1 += 8, out += 8)
+    for(int i = 0; i < num_samples; i += 8, in += 8, out += 8)
     {
-        t_sample f0 = in1[0];
-        t_sample f1 = in1[1];
-        t_sample f2 = in1[2];
-        t_sample f3 = in1[3];
-        t_sample f4 = in1[4];
-        t_sample f5 = in1[5];
-        t_sample f6 = in1[6];
-        t_sample f7 = in1[7];
+        t_sample f0 = in[0];
+        t_sample f1 = in[1];
+        t_sample f2 = in[2];
+        t_sample f3 = in[3];
+        t_sample f4 = in[4];
+        t_sample f5 = in[5];
+        t_sample f6 = in[6];
+        t_sample f7 = in[7];
 
         out[0] = f0;
         out[1] = f1;
@@ -1344,9 +1344,9 @@ static t_int *sig_tilde_perform(t_int *w)
 {
     t_float f = *(t_float *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    while(n--)
-        *out++ = f;
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
+        out[i] = f;
     return (w + 4);
 }
 
@@ -1354,9 +1354,9 @@ static t_int *sig_tilde_perf8(t_int *w)
 {
     t_float f = *(t_float *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
 
-    for(; n; n -= 8, out += 8)
+    for(int i = 0; i < num_samples; i += 8, out += 8)
     {
         out[0] = f;
         out[1] = f;

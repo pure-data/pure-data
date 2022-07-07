@@ -59,16 +59,16 @@ static t_int *sighip_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_hipctl *c = (t_hipctl *) (w[3]);
-    int n = (int) w[4];
-    t_sample last = c->c_x;
+    int num_samples = (int) (w[4]);
     t_sample coef = c->c_coef;
     if(coef < 1)
     {
         t_sample normal = 0.5 * (1 + coef);
-        for(int i = 0; i < n; i++)
+        t_sample last = c->c_x;
+        for(int i = 0; i < num_samples; i++)
         {
-            t_sample new = *in++ + coef *last;
-            *out++ = normal * (new - last);
+            t_sample new = in[i] + coef * last;
+            out[i] = normal * (new - last);
             last = new;
         }
         if(PD_BIGORSMALL(last)) last = 0;
@@ -76,8 +76,8 @@ static t_int *sighip_perform(t_int *w)
     }
     else
     {
-        for(int i = 0; i < n; i++)
-            *out++ = *in++;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = in[i];
         c->c_x = 0;
     }
     return (w + 5);
@@ -88,15 +88,15 @@ static t_int *sighip_perform_old(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_hipctl *c = (t_hipctl *) (w[3]);
-    int n = (int) w[4];
-    t_sample last = c->c_x;
+    int num_samples = (int) (w[4]);
     t_sample coef = c->c_coef;
     if(coef < 1)
     {
-        for(int i = 0; i < n; i++)
+        t_sample last = c->c_x;
+        for(int i = 0; i < num_samples; i++)
         {
-            t_sample new = *in++ + coef *last;
-            *out++ = new - last;
+            t_sample new = in[i] + coef * last;
+            out[i] = new - last;
             last = new;
         }
         if(PD_BIGORSMALL(last)) last = 0;
@@ -104,8 +104,8 @@ static t_int *sighip_perform_old(t_int *w)
     }
     else
     {
-        for(int i = 0; i < n; i++)
-            *out++ = *in++;
+        for(int i = 0; i < num_samples; i++)
+            out[i] =in[i];
         c->c_x = 0;
     }
     return (w + 5);
@@ -188,12 +188,12 @@ static t_int *siglop_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_lopctl *c = (t_lopctl *) (w[3]);
-    int n = (int) w[4];
+    int num_samples = (int) (w[4]);
     t_sample last = c->c_x;
     t_sample coef = c->c_coef;
     t_sample feedback = 1 - coef;
-    for(int i = 0; i < n; i++)
-        last = *out++ = coef * *in++ + feedback * last;
+    for(int i = 0; i < num_samples; i++)
+        last = out[i] = coef * in[i] + feedback * last;
     if(PD_BIGORSMALL(last)) last = 0;
     c->c_x = last;
     return (w + 5);
@@ -314,16 +314,16 @@ static t_int *sigbp_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_bpctl *c = (t_bpctl *) (w[3]);
-    int n = (int) w[4];
+    int num_samples = (int) w[4];
     t_sample last = c->c_x1;
     t_sample prev = c->c_x2;
     t_sample coef1 = c->c_coef1;
     t_sample coef2 = c->c_coef2;
     t_sample gain = c->c_gain;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample output = *in++ + coef1 * last + coef2 * prev;
-        *out++ = gain * output;
+        t_sample output = in[i] + coef1 * last + coef2 * prev;
+        out[i] = gain * output;
         prev = last;
         last = output;
     }
@@ -395,7 +395,7 @@ static t_int *sigbiquad_perform(t_int *w)
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     t_biquadctl *c = (t_biquadctl *) (w[3]);
-    int n = (int) w[4];
+    int num_samples = (int) (w[4]);
     t_sample last = c->c_x1;
     t_sample prev = c->c_x2;
     t_sample fb1 = c->c_fb1;
@@ -403,11 +403,11 @@ static t_int *sigbiquad_perform(t_int *w)
     t_sample ff1 = c->c_ff1;
     t_sample ff2 = c->c_ff2;
     t_sample ff3 = c->c_ff3;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample output = *in++ + fb1 * last + fb2 * prev;
+        t_sample output = in[i] + fb1 * last + fb2 * prev;
         if(PD_BIGORSMALL(output)) output = 0;
-        *out++ = ff1 * output + ff2 * last + ff3 * prev;
+        out[i] = ff1 * output + ff2 * last + ff3 * prev;
         prev = last;
         last = output;
     }
@@ -506,14 +506,14 @@ static t_int *sigsamphold_perform(t_int *w)
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
     t_sigsamphold *x = (t_sigsamphold *) (w[4]);
-    int n = (int) w[5];
+    int num_samples = (int) (w[5]);
     t_sample lastin = x->x_lastin;
     t_sample lastout = x->x_lastout;
-    for(int i = 0; i < n; i++, in1++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample next = *in2++;
-        if(next < lastin) lastout = *in1;
-        *out++ = lastout;
+        t_sample next = in2[i];
+        if(next < lastin) lastout = in1[i];
+        out[i] = lastout;
         lastin = next;
     }
     x->x_lastin = lastin;
@@ -578,13 +578,13 @@ static t_int *sigrpole_perform(t_int *w)
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
     t_sigrpole *x = (t_sigrpole *) (w[4]);
-    int n = (int) w[5];
+    int num_samples = (int) w[5];
     t_sample last = x->x_last;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample next = *in1++;
-        t_sample coef = *in2++;
-        *out++ = last = coef * last + next;
+        t_sample next = in1[i];
+        t_sample coef = in2[i];
+        out[i] = last = coef * last + next;
     }
     if(PD_BIGORSMALL(last)) last = 0;
     x->x_last = last;
@@ -642,13 +642,13 @@ static t_int *sigrzero_perform(t_int *w)
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
     t_sigrzero *x = (t_sigrzero *) (w[4]);
-    int n = (int) w[5];
+    int num_samples = (int) w[5];
     t_sample last = x->x_last;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample next = *in1++;
-        t_sample coef = *in2++;
-        *out++ = next - coef * last;
+        t_sample next = in1[i];
+        t_sample coef = in2[i];
+        out[i] = next - coef * last;
         last = next;
     }
     x->x_last = last;
@@ -706,13 +706,13 @@ static t_int *sigrzero_rev_perform(t_int *w)
     t_sample *in2 = (t_sample *) (w[2]);
     t_sample *out = (t_sample *) (w[3]);
     t_sigrzero_rev *x = (t_sigrzero_rev *) (w[4]);
-    int n = (int) w[5];
+    int num_samples = (int) w[5];
     t_sample last = x->x_last;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample next = *in1++;
-        t_sample coef = *in2++;
-        *out++ = last - coef * next;
+        t_sample next = in1[i];
+        t_sample coef = in2[i];
+        out[i] = last - coef * next;
         last = next;
     }
     x->x_last = last;
@@ -781,17 +781,17 @@ static t_int *sigcpole_perform(t_int *w)
     t_sample *outre = (t_sample *) (w[5]);
     t_sample *outim = (t_sample *) (w[6]);
     t_sigcpole *x = (t_sigcpole *) (w[7]);
-    int n = (int) w[8];
+    int num_samples = (int) w[8];
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample nextre = *inre1++;
-        t_sample nextim = *inim1++;
-        t_sample coefre = *inre2++;
-        t_sample coefim = *inim2++;
-        t_sample tempre = *outre++ = nextre + lastre * coefre - lastim * coefim;
-        lastim = *outim++ = nextim + lastre * coefim + lastim * coefre;
+        t_sample nextre = inre1[i];
+        t_sample nextim = inim1[i];
+        t_sample coefre = inre2[i];
+        t_sample coefim = inim2[i];
+        t_sample tempre = outre[i] = nextre + lastre * coefre - lastim * coefim;
+        lastim = outim[i] = nextim + lastre * coefim + lastim * coefre;
         lastre = tempre;
     }
     if(PD_BIGORSMALL(lastre)) lastre = 0;
@@ -866,17 +866,17 @@ static t_int *sigczero_perform(t_int *w)
     t_sample *outre = (t_sample *) (w[5]);
     t_sample *outim = (t_sample *) (w[6]);
     t_sigczero *x = (t_sigczero *) (w[7]);
-    int n = (int) w[8];
+    int num_samples = (int) w[8];
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample nextre = *inre1++;
-        t_sample nextim = *inim1++;
-        t_sample coefre = *inre2++;
-        t_sample coefim = *inim2++;
-        *outre++ = nextre - lastre * coefre + lastim * coefim;
-        *outim++ = nextim - lastre * coefim - lastim * coefre;
+        t_sample nextre = inre1[i];
+        t_sample nextim = inim1[i];
+        t_sample coefre = inre2[i];
+        t_sample coefim = inim2[i];
+        outre[i] = nextre - lastre * coefre + lastim * coefim;
+        outim[i] = nextim - lastre * coefim - lastim * coefre;
         lastre = nextre;
         lastim = nextim;
     }
@@ -950,19 +950,19 @@ static t_int *sigczero_rev_perform(t_int *w)
     t_sample *outre = (t_sample *) (w[5]);
     t_sample *outim = (t_sample *) (w[6]);
     t_sigczero_rev *x = (t_sigczero_rev *) (w[7]);
-    int n = (int) w[8];
+    int num_samples = (int) w[8];
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample nextre = *inre1++;
-        t_sample nextim = *inim1++;
-        t_sample coefre = *inre2++;
-        t_sample coefim = *inim2++;
+        t_sample nextre = inre1[i];
+        t_sample nextim = inim1[i];
+        t_sample coefre = inre2[i];
+        t_sample coefim = inim2[i];
         /* transfer function is (A bar) - Z^-1, for the same
         frequency response as 1 - AZ^-1 from czero_tilde. */
-        *outre++ = lastre - nextre * coefre - nextim * coefim;
-        *outim++ = lastim - nextre * coefim + nextim * coefre;
+        outre[i] = lastre - nextre * coefre - nextim * coefim;
+        outim[i] = lastim - nextre * coefim + nextim * coefre;
         lastre = nextre;
         lastim = nextim;
     }
@@ -1046,17 +1046,17 @@ static t_int *slop_tilde_perform(t_int *w)
     t_sample *posfreqin = (t_sample *) (w[7]);
     t_sample coef = x->x_coef;
     t_sample *out = (t_sample *) (w[8]);
-    int n = (int) w[9];
+    int num_samples = (int) w[9];
     t_sample last = x->x_last;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample diff = *sigin++ - last;
-        t_sample inc = *freqin++ * coef;
+        t_sample diff = sigin[i] - last;
+        t_sample inc = freqin[i] * coef;
         t_sample diffinc;
-        t_sample posinc = *posfreqin++ * coef;
-        t_sample neginc = *negfreqin++ * coef;
-        t_sample maxdiff = *poslimit++;
-        t_sample mindiff = *neglimit++;
+        t_sample posinc = posfreqin[i] * coef;
+        t_sample neginc = negfreqin[i] * coef;
+        t_sample maxdiff = poslimit[i];
+        t_sample mindiff = neglimit[i];
         if(inc < 0.f)
         {
             inc = 0.f;
@@ -1095,7 +1095,7 @@ static t_int *slop_tilde_perform(t_int *w)
         {
             diffinc = inc * diff;
         }
-        last = *out++ = last + diffinc;
+        last = out[i] = last + diffinc;
     }
     if(PD_BIGORSMALL(last)) last = 0;
     x->x_last = last;

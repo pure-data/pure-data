@@ -78,7 +78,7 @@ static t_int *phasor_perform(t_int *w)
     t_phasor *x = (t_phasor *) (w[1]);
     t_sample *in = (t_float *) (w[2]);
     t_sample *out = (t_float *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     double dphase = x->x_phase + (double) UNITBIT32;
     union tabfudge tf;
     int normhipart;
@@ -88,11 +88,11 @@ static t_int *phasor_perform(t_int *w)
     normhipart = tf.tf_i[HIOFFSET];
     tf.tf_d = dphase;
 
-    while(n--)
+    for(int i = 0; i < num_samples; i++)
     {
         tf.tf_i[HIOFFSET] = normhipart;
-        dphase += *in++ * conv;
-        *out++ = tf.tf_d - UNITBIT32;
+        dphase += in[i] * conv;
+        out[i] = tf.tf_d - UNITBIT32;
         tf.tf_d = dphase;
     }
     tf.tf_i[HIOFFSET] = normhipart;
@@ -390,7 +390,7 @@ static t_int *sigvcf_perform(t_int *w)
     t_sample *out1 = (t_sample *) (w[3]);
     t_sample *out2 = (t_sample *) (w[4]);
     t_vcfctl *c = (t_vcfctl *) (w[5]);
-    int n = (int) w[6];
+    int num_samples = (int) w[6];
     t_float re = c->c_re;
     t_float re2;
     t_float im = c->c_im;
@@ -413,13 +413,13 @@ static t_int *sigvcf_perform(t_int *w)
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < num_samples; i++)
     {
         float cf;
         float cfindx;
         float r;
         float oneminusr;
-        cf = *in2++ * isr;
+        cf = in2[i] * isr;
         if(cf < 0) cf = 0;
         cfindx = cf * (float) (COSTABSIZE / 6.28318f);
         r = (qinv > 0 ? 1 - cf * qinv : 0);
@@ -440,10 +440,10 @@ static t_int *sigvcf_perform(t_int *w)
         f2 = addr[1];
         coefi = r * (f1 + frac * (f2 - f1));
 
-        f1 = *in1++;
+        f1 = in1[i];
         re2 = re;
-        *out1++ = re = ampcorrect * oneminusr * f1 + coefr * re2 - coefi * im;
-        *out2++ = im = coefi * re2 + coefr * im;
+        out1[i] = re = ampcorrect * oneminusr * f1 + coefr * re2 - coefi * im;
+        out2[i] = im = coefi * re2 + coefr * im;
     }
     if(PD_BIGORSMALL(re)) re = 0;
     if(PD_BIGORSMALL(im)) im = 0;
@@ -494,11 +494,11 @@ static t_int *noise_perform(t_int *w)
 {
     t_sample *out = (t_sample *) (w[1]);
     int *vp = (int *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     int val = *vp;
-    while(n--)
+    for(int i = 0; i < num_samples; i++)
     {
-        *out++ = ((t_sample) ((val & 0x7fffffff) - 0x40000000)) *
+        out[i] = ((t_sample) ((val & 0x7fffffff) - 0x40000000)) *
                  (t_sample) (1.0 / 0x40000000);
         val = val * 435898247 + 382842987;
     }

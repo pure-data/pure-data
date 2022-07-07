@@ -25,12 +25,12 @@ static t_int *sigfft_swap(t_int *w)
 {
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
-    int n = (int) w[3];
-    for(; n--; in1++, in2++)
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in1;
-        *in1 = *in2;
-        *in2 = f;
+        t_sample f = in1[i];
+        in1[i] = in2[i];
+        in2[i] = f;
     }
     return (w + 4);
 }
@@ -43,8 +43,8 @@ static t_int *sigrfft_flip(t_int *w)
 {
     t_sample *in = (t_sample *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) w[3];
-    while(n--)
+    int num_samples = (int) (w[3]);
+    for(int i = 0; i < num_samples; i++)
         *(--out) = -*in++;
     return (w + 4);
 }
@@ -82,8 +82,8 @@ static t_int *sigfft_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
-    int n = (int) w[3];
-    mayer_fft(n, in1, in2);
+    int num_samples = (int) (w[3]);
+    mayer_fft(num_samples, in1, in2);
     return (w + 4);
 }
 
@@ -91,8 +91,8 @@ static t_int *sigifft_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *) (w[1]);
     t_sample *in2 = (t_sample *) (w[2]);
-    int n = (int) w[3];
-    mayer_ifft(n, in1, in2);
+    int num_samples = (int) w[3];
+    mayer_ifft(num_samples, in1, in2);
     return (w + 4);
 }
 

@@ -97,12 +97,15 @@ t_int *vinlet_perform(t_int *w)
 {
     t_vinlet *x = (t_vinlet *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
-    int n = (int) (w[3]);
-    t_sample *in = x->x_read;
-    while(n--)
-        *out++ = *in++;
-    if(in == x->x_endbuf) in = x->x_buf;
-    x->x_read = in;
+    int num_samples = (int) (w[3]);
+
+    for(int i = 0; i < num_samples; i++)
+        out[i] = x->x_read[i];
+
+    if(x->x_read + num_samples == x->x_endbuf) 
+        x->x_read = x->x_buf;
+    else
+        x->x_read = x->x_read + num_samples;
     return (w + 4);
 }
 
@@ -422,10 +425,15 @@ static t_int *voutlet_doepilog(t_int *w)
 
     int n = (int) (w[3]);
     t_sample *in = x->x_empty;
-    if(x->x_updown.downsample != x->x_updown.upsample) out = x->x_updown.s_vec;
+    if(x->x_updown.downsample != x->x_updown.upsample) 
+        out = x->x_updown.s_vec;
     for(; n--; in++)
-        *out++ = *in, *in = 0;
-    if(in == x->x_endbuf) in = x->x_buf;
+    {
+        *out++ = *in;
+        *in = 0;
+    }
+    if(in == x->x_endbuf) 
+        in = x->x_buf;
     x->x_empty = in;
     return (w + 4);
 }
@@ -437,8 +445,12 @@ static t_int *voutlet_doepilog_resampling(t_int *w)
     t_sample *in = x->x_empty;
     t_sample *out = x->x_updown.s_vec;
     for(; n--; in++)
-        *out++ = *in, *in = 0;
-    if(in == x->x_endbuf) in = x->x_buf;
+    {
+        *out++ = *in;
+        *in = 0;
+    }
+    if(in == x->x_endbuf) 
+        in = x->x_buf;
     x->x_empty = in;
     return (w + 3);
 }

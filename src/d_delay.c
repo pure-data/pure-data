@@ -100,20 +100,21 @@ static t_int *sigdelwrite_perform(t_int *w)
 {
     t_sample *in = (t_sample *) (w[1]);
     t_delwritectl *c = (t_delwritectl *) (w[2]);
-    int n = (int) (w[3]);
+    int num_samples = (int) (w[3]);
     int phase = c->c_phase;
     int nsamps = c->c_n;
     t_sample *vp = c->c_vec;
     t_sample *bp = vp + phase;
     t_sample *ep = vp + (c->c_n + XTRASAMPS);
-    phase += n;
+    phase += num_samples;
 
-    while(n--)
+    
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample f = *in++;
+        t_sample f = in[i];
         if(PD_BIGORSMALL(f)) f = 0;
-        *bp++ = f;
-        if(bp == ep)
+        bp[i] = f;
+        if(bp + i == ep)
         {
             vp[0] = ep[-4];
             vp[1] = ep[-3];
@@ -209,18 +210,17 @@ static t_int *sigdelread_perform(t_int *w)
     t_sample *out = (t_sample *) (w[1]);
     t_delwritectl *c = (t_delwritectl *) (w[2]);
     int delsamps = *(int *) (w[3]);
-    int n = (int) (w[4]);
+    int num_samples = (int) (w[4]);
     int phase = c->c_phase - delsamps;
     int nsamps = c->c_n;
     t_sample *vp = c->c_vec;
-    t_sample *bp;
     t_sample *ep = vp + (c->c_n + XTRASAMPS);
     if(phase < 0) phase += nsamps;
-    bp = vp + phase;
+    t_sample *bp = vp + phase;
 
-    while(n--)
+    for(int i = 0; i < num_samples; i++)
     {
-        *out++ = *bp++;
+        out[i] = bp[i];
         if(bp == ep) bp -= nsamps;
     }
     return (w + 5);
@@ -294,24 +294,24 @@ static t_int *sigvd_perform(t_int *w)
     t_sample *out = (t_sample *) (w[2]);
     t_delwritectl *ctl = (t_delwritectl *) (w[3]);
     t_sigvd *x = (t_sigvd *) (w[4]);
-    int n = (int) (w[5]);
+    int num_samples = (int) (w[5]);
 
     int nsamps = ctl->c_n;
-    t_sample limit = nsamps - n;
-    t_sample fn = n - 1;
+    t_sample limit = nsamps - num_samples;
+    t_sample fn = num_samples - 1;
     t_sample *vp = ctl->c_vec;
     t_sample *bp;
     t_sample *wp = vp + ctl->c_phase;
     t_sample zerodel = x->x_zerodel;
     if(limit < 0) /* blocksize is larger than delread~ buffer size */
     {
-        while(n--)
-            *out++ = 0;
+        for(int i = 0; i < num_samples; i++)
+            out[i] = 0;
         return (w + 6);
     }
-    while(n--)
+    for(int i = 0; i < num_samples; i++)
     {
-        t_sample delsamps = x->x_sr * *in++ - zerodel;
+        t_sample delsamps = x->x_sr * in[i] - zerodel;
         t_sample frac;
         int idelsamps;
         t_sample a;
@@ -334,7 +334,7 @@ static t_int *sigvd_perform(t_int *w)
         b = bp[-1];
         a = bp[0];
         cminusb = c - b;
-        *out++ = b + frac * (cminusb - 0.1666667f * (1. - frac) *
+        out[i] = b + frac * (cminusb - 0.1666667f * (1. - frac) *
                                            ((d - a - 3.0f * cminusb) * frac +
                                                (d + 2.0f * a - 3.0f * b)));
     }
