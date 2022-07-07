@@ -10,14 +10,13 @@ t_int *downsampling_perform_0(t_int *w)
     t_sample *in = (t_sample *) (w[1]);  /* original signal     */
     t_sample *out = (t_sample *) (w[2]); /* downsampled signal  */
     int down = (int) (w[3]);             /* downsampling factor */
-    int parent = (int) (w[4]);           /* original vectorsize */
+    int in_num_samples = (int) (w[4]);           /* original vectorsize */
 
-    int n = parent / down;
+    int out_num_samples = in_num_samples / down;
 
-    while(n--)
+    for(int i = 0; i < out_num_samples; i++)
     {
-        *out++ = *in;
-        in += down;
+        out[i] = in[i * down];
     }
 
     return (w + 5);
@@ -28,20 +27,16 @@ t_int *upsampling_perform_0(t_int *w)
     t_sample *in = (t_sample *) (w[1]);  /* original signal     */
     t_sample *out = (t_sample *) (w[2]); /* upsampled signal    */
     int up = (int) (w[3]);               /* upsampling factor   */
-    int parent = (int) (w[4]);           /* original vectorsize */
+    int in_num_samples = (int) (w[4]);           /* original vectorsize */
 
-    int n = parent * up;
-    t_sample *dummy = out;
+    int out_num_samples = in_num_samples * up;
 
-    while(n--)
-        *out++ = 0;
+    for(int i = 0; i < out_num_samples; i++)
+        out[i] = 0;
 
-    n = parent;
-    out = dummy;
-    while(n--)
+    for(int i = 0; i < in_num_samples; i++)
     {
-        *out = *in++;
-        out += up;
+        out[i * up] = in[i];
     }
 
     return (w + 5);
@@ -52,22 +47,13 @@ t_int *upsampling_perform_hold(t_int *w)
     t_sample *in = (t_sample *) (w[1]);  /* original signal     */
     t_sample *out = (t_sample *) (w[2]); /* upsampled signal    */
     int up = (int) (w[3]);               /* upsampling factor   */
-    int parent = (int) (w[4]);           /* original vectorsize */
-    int i = up;
+    int in_num_samples = (int) (w[4]);   /* original vectorsize */
 
-    int n = parent;
-    t_sample *dum_out = out;
-    t_sample *dum_in = in;
-
-    while(i--)
+    for(int i = 0; i < in_num_samples; i++)
     {
-        n = parent;
-        out = dum_out + i;
-        in = dum_in;
-        while(n--)
+        for(int j = 0; j < up; j++)
         {
-            *out = *in++;
-            out += up;
+            out[i * up + j] = in[i]
         }
     }
     return (w + 5);
@@ -79,23 +65,24 @@ t_int *upsampling_perform_linear(t_int *w)
     t_sample *in = (t_sample *) (w[2]);  /* original signal     */
     t_sample *out = (t_sample *) (w[3]); /* upsampled signal    */
     int up = (int) (w[4]);               /* upsampling factor   */
-    int parent = (int) (w[5]);           /* original vectorsize */
-    int length = parent * up;
-    int n;
-    t_sample *fp;
-    t_sample a = *x->buffer;
-    t_sample b = *in;
+    int in_num_samples = (int) (w[5]);   /* original vectorsize */
+    int out_num_samples = parent * up;
 
-    for(n = 0; n < length; n++)
+    t_sample a = *x->buffer;
+    t_sample b = in[0];
+
+    for(int i = 0; i < out_num_samples; i++)
     {
-        t_sample findex = (t_sample) (n + 1) / up;
-        int index = findex;
-        t_sample frac = findex - index;
-        if(frac == 0.) frac = 1.;
-        *out++ = frac * b + (1. - frac) * a;
-        fp = in + index;
-        b = *fp;
-        a = (index) ? *(fp - 1) : a;
+        t_sample f_in_idx = (t_sample) (i + 1) / up;
+        int i_in_idx = (int) f_source_idx;
+        t_sample frac = f_in_idx - (t_sample) i_in_idx;
+        if(frac == 0.)
+            frac = 1.;
+
+        out[i] = frac * b + (1. - frac) * a;
+
+        b = in[i_in_idx];
+        a = (i_in_idx) ? in[i_in_idx - 1] : a;
     }
 
     *x->buffer = a;
