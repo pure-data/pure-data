@@ -72,8 +72,7 @@ typedef struct _alist
 
 static void atoms_copy(int argc, t_atom *from, t_atom *to)
 {
-    int i;
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         to[i] = from[i];
 }
 
@@ -90,8 +89,7 @@ static void alist_init(t_alist *x)
 
 static void alist_clear(t_alist *x)
 {
-    int i;
-    for(i = 0; i < x->l_n; i++)
+    for(int i = 0; i < x->l_n; i++)
     {
         if(x->l_vec[i].l_a.a_type == A_POINTER)
             gpointer_unset(x->l_vec[i].l_a.a_w.w_gpointer);
@@ -134,7 +132,6 @@ static void alist_list(t_alist *x, t_symbol *s, int argc, t_atom *argv)
 /* set contents to an arbitrary non-list message */
 static void alist_anything(t_alist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     alist_clear(x);
     if(!(x->l_vec = (t_listelem *) getbytes((argc + 1) * sizeof(*x->l_vec))))
     {
@@ -145,7 +142,7 @@ static void alist_anything(t_alist *x, t_symbol *s, int argc, t_atom *argv)
     x->l_n = argc + 1;
     x->l_npointer = 0;
     SETSYMBOL(&x->l_vec[0].l_a, s);
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         x->l_vec[i + 1].l_a = argv[i];
         if(x->l_vec[i + 1].l_a.a_type == A_POINTER)
@@ -160,14 +157,12 @@ static void alist_anything(t_alist *x, t_symbol *s, int argc, t_atom *argv)
 
 static void alist_toatoms(t_alist *x, t_atom *to, int onset, int count)
 {
-    int i;
-    for(i = 0; i < count; i++)
+    for(int i = 0; i < count; i++)
         to[i] = x->l_vec[onset + i].l_a;
 }
 
 static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
 {
-    int i;
     y->l_pd = alist_class;
     y->l_n = count;
     y->l_npointer = 0;
@@ -178,7 +173,7 @@ static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
     }
     else
     {
-        for(i = 0; i < count; i++)
+        for(int i = 0; i < count; i++)
         {
             y->l_vec[i].l_a = x->l_vec[onset + i].l_a;
             if(y->l_vec[i].l_a.a_type == A_POINTER)
@@ -501,7 +496,6 @@ static void list_store_prepend(
 
 static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
 {
-    int i;
     int max;
     int index = (int) f1;
     int n = (int) f2;
@@ -525,7 +519,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     if(x->x_alist.l_npointer)
     {
         t_listelem *vec = x->x_alist.l_vec + index;
-        for(i = 0; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
             if(vec[i].l_a.a_type == A_POINTER)
             {
@@ -843,13 +837,12 @@ static void *list_tosymbol_new(void)
 static void list_tosymbol_list(
     t_list_tosymbol *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
 #if HAVE_ALLOCA
     char *str = alloca(argc + 1);
 #else
     char *str = getbytes(argc + 1);
 #endif
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         str[i] = (char) atom_getfloatarg(i, argc, argv);
     str[argc] = 0;
     outlet_symbol(x->x_obj.ob_outlet, gensym(str));

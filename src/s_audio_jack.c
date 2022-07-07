@@ -208,7 +208,7 @@ static char **jack_get_clients(void)
     jack_client_names[0] = NULL;
 
     /* Build a list of clients from the list of ports */
-    for(i = 0; jack_ports[i] != NULL; i++)
+    for(int i = 0; jack_ports[i] != NULL; i++)
     {
         int client_seen;
         regmatch_t match_info;
@@ -273,8 +273,7 @@ static char **jack_get_clients(void)
 static int jack_connect_ports(char *client)
 {
     char regex_pattern[100]; /* its always the same, ... */
-    int i;
-    const char **jack_ports;
+    zconst char **jack_ports;
 
     if(strlen(client) > 96) return -1;
 
@@ -284,7 +283,7 @@ static int jack_connect_ports(char *client)
         jack_get_ports(jack_client, regex_pattern, NULL, JackPortIsOutput);
     if(jack_ports)
     {
-        for(i = 0; jack_ports[i] != NULL && i < STUFF->st_inchannels; i++)
+        for(int i = 0; jack_ports[i] != NULL && i < STUFF->st_inchannels; i++)
             if(jack_connect(
                    jack_client, jack_ports[i], jack_port_name(input_port[i])))
                 pd_error(0, "JACK: cannot connect input ports %s -> %s",
@@ -295,7 +294,7 @@ static int jack_connect_ports(char *client)
         jack_get_ports(jack_client, regex_pattern, NULL, JackPortIsInput);
     if(jack_ports)
     {
-        for(i = 0; jack_ports[i] != NULL && i < STUFF->st_outchannels; i++)
+        for(int i = 0; jack_ports[i] != NULL && i < STUFF->st_outchannels; i++)
             if(jack_connect(
                    jack_client, jack_port_name(output_port[i]), jack_ports[i]))
                 pd_error(0, "JACK: cannot connect output ports %s -> %s",
@@ -600,10 +599,10 @@ int jack_send_dacs(void)
 void jack_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int *canmulti, int maxndev, int devdescsize)
 {
-    int i, ndev;
+    int ndev;
     *canmulti = 0; /* supports multiple devices */
     ndev = 1;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
     {
         sprintf(indevlist + i * devdescsize, "JACK");
         sprintf(outdevlist + i * devdescsize, "JACK");

@@ -716,7 +716,6 @@ static char *pdi2devname(const PaDeviceInfo *pdi, char *buf, size_t bufsize)
 void pa_getdevs(char *indevlist, int *nindevs, char *outdevlist, int *noutdevs,
     int *canmulti, int maxndev, int devdescsize)
 {
-    int i;
     int nin = 0;
     int nout = 0;
     int ndev;
@@ -724,7 +723,7 @@ void pa_getdevs(char *indevlist, int *nindevs, char *outdevlist, int *noutdevs,
 
     pa_init();
     ndev = Pa_GetDeviceCount();
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
     {
         char utf8device[MAXPDSTRING];
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);

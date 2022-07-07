@@ -800,12 +800,11 @@ void alsa_printstate(void)
 
 void alsa_putzeros(int iodev, int n)
 {
-    int i;
     int result;
     memset(alsa_snd_buf, 0,
         alsa_outdev[iodev].a_sampwidth * DEFDACBLKSIZE *
             alsa_outdev[iodev].a_channels);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         result = snd_pcm_writei(
             alsa_outdev[iodev].a_handle, alsa_snd_buf, DEFDACBLKSIZE);
@@ -819,9 +818,8 @@ void alsa_putzeros(int iodev, int n)
 
 void alsa_getzeros(int iodev, int n)
 {
-    int i;
     int result;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         result = snd_pcm_readi(
             alsa_indev[iodev].a_handle, alsa_snd_buf, DEFDACBLKSIZE);

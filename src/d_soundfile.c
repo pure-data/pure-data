@@ -1059,8 +1059,6 @@ static int soundfiler_readascii(
     t_soundfiler *x, const char *filename, t_asciiargs *a)
 {
     t_binbuf *b = binbuf_new();
-    int i;
-    int j;
     int vecsize;
     ssize_t framesinfile;
     ssize_t nframes = a->aa_nframes;
@@ -1093,7 +1091,7 @@ static int soundfiler_readascii(
             framesinfile = a->aa_maxsize;
         }
         nframes = framesinfile - a->aa_onsetframe;
-        for(i = 0; i < a->aa_nchannels; i++)
+        for(int i = 0; i < a->aa_nchannels; i++)
         {
             garray_resize_long(a->aa_garrays[i], nframes);
             garray_setsaveit(a->aa_garrays[i], 0);
@@ -1113,21 +1111,21 @@ static int soundfiler_readascii(
     post("ascii: read 2 frames %d", nframes);
 #endif
     if(a->aa_onsetframe > 0) atoms += a->aa_onsetframe * a->aa_nchannels;
-    for(j = 0, ap = atoms; j < nframes; j++)
+    for(int j = 0, ap = atoms; j < nframes; j++)
     {
-        for(i = 0; i < a->aa_nchannels; i++)
+        for(int i = 0; i < a->aa_nchannels; i++)
             a->aa_vectors[i][j].w_float = atom_getfloat(ap++);
     }
     /* zero out remaining elements of vectors */
-    for(i = 0; i < a->aa_nchannels; i++)
+    for(int i = 0; i < a->aa_nchannels; i++)
     {
         if(garray_getfloatwords(a->aa_garrays[i], &vecsize, &a->aa_vectors[i]))
         {
-            for(j = nframes; j < vecsize; j++)
+            for(int j = nframes; j < vecsize; j++)
                 a->aa_vectors[i][j].w_float = 0;
         }
     }
-    for(i = 0; i < a->aa_nchannels; i++)
+    for(int i = 0; i < a->aa_nchannels; i++)
         garray_redraw(a->aa_garrays[i]);
 #ifdef DEBUG_SOUNDFILE
     post("ascii: read 3");
@@ -1160,13 +1158,11 @@ static void soundfiler_read(
     int resize = 0;
     int ascii = 0;
     int raw = 0;
-    int i;
     size_t skipframes = 0;
     size_t finalsize = 0;
     size_t maxsize = SFMAXFRAMES;
     size_t framesread = 0;
     size_t bufframes;
-    size_t j;
     ssize_t nframes;
     ssize_t framesinfile;
     char endianness;
@@ -1283,7 +1279,7 @@ static void soundfiler_read(
     if(!ascii && !sf.sf_type && sf.sf_headersize < 0)
         ascii = ascii_hasextension(filename, MAXPDSTRING);
 
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         int vecsize;
         if(argv[i].a_type != A_SYMBOL) goto usage;
@@ -1344,7 +1340,7 @@ static void soundfiler_read(
             framesinfile = maxsize;
         }
         finalsize = framesinfile;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
         {
             int vecsize;
             garray_resize_long(garrays[i], finalsize);
@@ -1393,28 +1389,28 @@ static void soundfiler_read(
     }
 
     /* zero out remaining elements of vectors */
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         int vecsize;
         if(garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
         {
-            for(j = framesread; j < (size_t) vecsize; j++)
+            for(size_t j = framesread; j < (size_t) vecsize; j++)
                 vecs[i][j].w_float = 0;
         }
     }
     /* zero out vectors in excess of number of channels */
-    for(i = sf.sf_nchannels; i < argc; i++)
+    for(int i = sf.sf_nchannels; i < argc; i++)
     {
         int vecsize;
         t_word *foo;
         if(garray_getfloatwords(garrays[i], &vecsize, &foo))
         {
-            for(j = 0; j < (size_t) vecsize; j++)
+            for(size_t j = 0; j < (size_t) vecsize; j++)
                 foo[j].w_float = 0;
         }
     }
     /* do all graphics updates */
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         garray_redraw(garrays[i]);
     goto done;
 usage:
@@ -1467,10 +1463,8 @@ size_t soundfiler_dowrite(
 {
     t_soundfiler_writeargs wa = {0};
     int fd = -1;
-    int i;
     size_t bufframes;
     size_t frameswritten = 0;
-    size_t j;
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
@@ -1487,7 +1481,7 @@ size_t soundfiler_dowrite(
     sf->sf_bytesperframe = argc * wa.wa_bytespersample;
     if(sf->sf_nchannels < 1 || sf->sf_nchannels > MAXSFCHANS) goto usage;
     if(sf->sf_samplerate <= 0) sf->sf_samplerate = sys_getsr();
-    for(i = 0; i < sf->sf_nchannels; i++)
+    for(int i = 0; i < sf->sf_nchannels; i++)
     {
         int vecsize;
         if(argv[i].a_type != A_SYMBOL) goto usage;
@@ -1514,9 +1508,9 @@ size_t soundfiler_dowrite(
     }
 
     /* find biggest sample for normalizing */
-    for(i = 0; i < sf->sf_nchannels; i++)
+    for(int i = 0; i < sf->sf_nchannels; i++)
     {
-        for(j = wa.wa_onsetframes; j < wa.wa_nframes + wa.wa_onsetframes; j++)
+        for(size_t j = wa.wa_onsetframes; j < wa.wa_nframes + wa.wa_onsetframes; j++)
         {
             if(vectors[i][j].w_float > biggest)
             {
@@ -2061,7 +2055,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 
     x = (t_readsf *) pd_new(readsf_class);
 
-    for(i = 0; i < nchannels; i++)
+    for(int i = 0; i < nchannels; i++)
         outlet_new(&x->x_obj, gensym("signal"));
     x->x_noutlets = nchannels;
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
@@ -2094,8 +2088,6 @@ static t_int *readsf_perform(t_int *w)
     t_soundfile sf = {0};
     int vecsize = x->x_vecsize;
     int noutlets = x->x_noutlets;
-    int i;
-    size_t j;
     t_sample *fp;
     soundfile_copy(&sf, &x->x_sf);
     if(x->x_state == STATE_STREAM)
@@ -2141,8 +2133,9 @@ static t_int *readsf_perform(t_int *w)
                 vecsize -= xfersize;
             }
             /* then zero out the (rest of the) output */
-            for(i = 0; i < noutlets; i++)
+            for(int i = 0; i < noutlets; i++)
             {
+                size_t j;
                 for(j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
                     *fp++ = 0;
             }
@@ -2166,8 +2159,9 @@ static t_int *readsf_perform(t_int *w)
     }
     else
     {
-        for(i = 0; i < noutlets; i++)
+        for(int i = 0; i < noutlets; i++)
         {
+            size_t j;
             for(j = vecsize, fp = x->x_outvec[i]; j--;)
                 *fp++ = 0;
         }
@@ -2277,7 +2271,9 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
         x->x_sf.sf_type = NULL;
     }
     else
+    {
         x->x_sf.sf_type = type;
+    }
     x->x_eof = 0;
     x->x_fileerror = 0;
     x->x_state = STATE_STARTUP;
@@ -2297,7 +2293,7 @@ static void readsf_dsp(t_readsf *x, t_signal **sp)
     pthread_mutex_lock(&x->x_mutex);
     x->x_vecsize = sp[0]->s_n;
     x->x_sigperiod = x->x_fifosize / (x->x_sf.sf_bytesperframe * x->x_vecsize);
-    for(i = 0; i < noutlets; i++)
+    for(int i = 0; i < noutlets; i++)
         x->x_outvec[i] = sp[i]->s_vec;
     pthread_mutex_unlock(&x->x_mutex);
     dsp_add(readsf_perform, 1, x);
@@ -2592,7 +2588,6 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     t_writesf *x;
     int nchannels = fnchannels;
     int bufsize = fbufsize;
-    int i;
     char *buf;
 
     if(nchannels < 1)
@@ -2620,7 +2615,7 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 
     x = (t_writesf *) pd_new(writesf_class);
 
-    for(i = 1; i < nchannels; i++)
+    for(int i = 1; i < nchannels; i++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
 
     x->x_f = 0;
@@ -2791,13 +2786,12 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 
 static void writesf_dsp(t_writesf *x, t_signal **sp)
 {
-    int i;
     int ninlets = x->x_sf.sf_nchannels;
     pthread_mutex_lock(&x->x_mutex);
     x->x_vecsize = sp[0]->s_n;
     x->x_sigperiod =
         (x->x_fifosize / (16 * x->x_sf.sf_bytesperframe * x->x_vecsize));
-    for(i = 0; i < ninlets; i++)
+    for(int i = 0; i < ninlets; i++)
         x->x_outvec[i] = sp[i]->s_vec;
     x->x_insamplerate = sp[0]->s_sr;
     pthread_mutex_unlock(&x->x_mutex);

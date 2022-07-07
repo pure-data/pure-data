@@ -197,7 +197,6 @@ int template_find_field(t_template *x, t_symbol *name, int *p_onset,
     int *p_type, t_symbol **p_arraytype)
 {
     t_template *t;
-    int i;
     int n;
     if(!x)
     {
@@ -205,7 +204,7 @@ int template_find_field(t_template *x, t_symbol *name, int *p_onset,
         return (0);
     }
     n = x->t_n;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(x->t_vec[i].ds_name == name)
         {
@@ -327,14 +326,13 @@ void template_setsymbol(
     arrays.  This is used for reading in "data files". */
 int template_match(t_template *x1, t_template *x2)
 {
-    int i;
     if(x1->t_n < x2->t_n) return (0);
-    for(i = x2->t_n; i < x1->t_n; i++)
+    for(int i = x2->t_n; i < x1->t_n; i++)
     {
         if(x1->t_vec[i].ds_type == DT_ARRAY) return (0);
     }
     if(x2->t_n > x1->t_n) post("add elements...");
-    for(i = 0; i < x2->t_n; i++)
+    for(int i = 0; i < x2->t_n; i++)
         if(!dataslot_matches(&x1->t_vec[i], &x2->t_vec[i], 1)) return (0);
     return (1);
 }
@@ -354,8 +352,7 @@ static void template_conformwords(t_template *tfrom, t_template *tto,
 {
     int nfrom = tfrom->t_n;
     int nto = tto->t_n;
-    int i;
-    for(i = 0; i < nto; i++)
+    for(int i = 0; i < nto; i++)
     {
         if(conformaction[i] >= 0)
         {
@@ -376,7 +373,6 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
     t_gpointer gp;
     int nto = tto->t_n;
     int nfrom = tfrom->t_n;
-    int i;
     t_template *scalartemplate;
     /* post("conform scalar"); */
     /* possibly replace the scalar */
@@ -428,7 +424,7 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
         scalartemplate = template_findbyname(x->sc_template);
     }
     /* convert all array elements */
-    for(i = 0; i < scalartemplate->t_n; i++)
+    for(int i = 0; i < scalartemplate->t_n; i++)
     {
         t_dataslot *ds = scalartemplate->t_vec + i;
         if(ds->ds_type == DT_ARRAY)
@@ -444,8 +440,6 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
 static void template_conformarray(
     t_template *tfrom, t_template *tto, int *conformaction, t_array *a)
 {
-    int i;
-    int j;
     t_template *scalartemplate = 0;
     if(a->a_templatesym == tfrom->t_sym)
     {
@@ -455,7 +449,7 @@ static void template_conformarray(
         char *newarray = getbytes(newelemsize * a->a_n);
         char *oldarray = a->a_vec;
         if(a->a_elemsize != oldelemsize) bug("template_conformarray");
-        for(i = 0; i < a->a_n; i++)
+        for(int i = 0; i < a->a_n; i++)
         {
             t_word *wp = (t_word *) (newarray + newelemsize * i);
             word_init(wp, tto, &a->a_gp);
@@ -470,10 +464,10 @@ static void template_conformarray(
     else
         scalartemplate = template_findbyname(a->a_templatesym);
     /* convert all arrays and sublist fields in each element of the array */
-    for(i = 0; i < a->a_n; i++)
+    for(int i = 0; i < a->a_n; i++)
     {
         t_word *wp = (t_word *) (a->a_vec + sizeof(t_word) * a->a_n * i);
-        for(j = 0; j < scalartemplate->t_n; j++)
+        for(int j = 0; j < scalartemplate->t_n; j++)
         {
             t_dataslot *ds = scalartemplate->t_vec + j;
             if(ds->ds_type == DT_ARRAY)
@@ -521,19 +515,17 @@ void template_conform(t_template *tfrom, t_template *tto)
 {
     int nto = tto->t_n;
     int nfrom = tfrom->t_n;
-    int i;
-    int j;
     int *conformaction = (int *) getbytes(sizeof(int) * nto);
     int *conformedfrom = (int *) getbytes(sizeof(int) * nfrom);
     int doit = 0;
-    for(i = 0; i < nto; i++)
+    for(int i = 0; i < nto; i++)
         conformaction[i] = -1;
-    for(i = 0; i < nfrom; i++)
+    for(int i = 0; i < nfrom; i++)
         conformedfrom[i] = 0;
-    for(i = 0; i < nto; i++)
+    for(int i = 0; i < nto; i++)
     {
         t_dataslot *dataslot = &tto->t_vec[i];
-        for(j = 0; j < nfrom; j++)
+        for(int j = 0; j < nfrom; j++)
         {
             t_dataslot *dataslot2 = &tfrom->t_vec[j];
             if(dataslot_matches(dataslot, dataslot2, 1))
@@ -543,12 +535,12 @@ void template_conform(t_template *tfrom, t_template *tto)
             }
         }
     }
-    for(i = 0; i < nto; i++)
+    for(int i = 0; i < nto; i++)
     {
         if(conformaction[i] < 0)
         {
             t_dataslot *dataslot = &tto->t_vec[i];
-            for(j = 0; j < nfrom; j++)
+            for(int j = 0; j < nfrom; j++)
             {
                 if(!conformedfrom[j] &&
                     dataslot_matches(dataslot, &tfrom->t_vec[j], 0))
@@ -565,14 +557,13 @@ void template_conform(t_template *tfrom, t_template *tto)
     }
     else
     {
-        for(i = 0; i < nto; i++)
+        for(int i = 0; i < nto; i++)
             if(conformaction[i] != i) doit = 1;
     }
 
     if(doit)
     {
-        t_glist *gl;
-        for(gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        for(t_glist *gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
             template_conformglist(tfrom, tto, gl, conformaction);
     }
     freebytes(conformaction, sizeof(int) * nto);
@@ -692,14 +683,13 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
 {
     t_gtemplate *x = (t_gtemplate *) pd_new(gtemplate_class);
     t_template *t = template_findbyname(sym);
-    int i;
     t_symbol *sx = gensym("x");
     x->x_owner = canvas_getcurrent();
     x->x_next = 0;
     x->x_sym = sym;
     x->x_argc = argc;
     x->x_argv = (t_atom *) getbytes(argc * sizeof(t_atom));
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         x->x_argv[i] = argv[i];
 
     /* already have a template by this name? */
@@ -1366,7 +1356,7 @@ static void curve_vis(t_gobj *z, t_glist *glist, t_word *data,
             }
             else
                 sys_vgui(".x%lx.c create line\\\n", glist_getcanvas(glist));
-            for(i = 0; i < n; i++)
+            for(int i = 0; i < n; i++)
                 sys_vgui("%d %d\\\n", pix[2 * i], pix[2 * i + 1]);
             sys_vgui("-width %f\\\n", width);
             if(flags & CLOSED)
@@ -2312,8 +2302,7 @@ static void plot_vis(t_gobj *z, t_glist *glist, t_word *data,
         /* un-draw the individual points */
         if(scalarvis != 0)
         {
-            int i;
-            for(i = 0; i < nelem; i++)
+            for(int i = 0; i < nelem; i++)
             {
                 t_gobj *y;
                 for(y = elemtemplatecanvas->gl_list; y; y = y->g_next)
@@ -2343,8 +2332,7 @@ static void array_motionfn(void *z, t_floatarg dx, t_floatarg dy, t_floatarg up)
     if(TEMPLATE->array_motion_xfield)
     {
         /* it's an x, y plot */
-        int i;
-        for(i = 0; i < TEMPLATE->array_motion_npoints; i++)
+        for(int i = 0; i < TEMPLATE->array_motion_npoints; i++)
         {
             t_word *thisword =
                 (t_word *) (((char *) TEMPLATE->array_motion_wp) +
@@ -2511,7 +2499,6 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
     int yonset;
     int wonset;
     int xonset;
-    int i;
 
     if(!array_getfields(elemtemplatesym, &elemtemplatecanvas, &elemtemplate,
            &elemsize, xfield, yfield, wfield, &xonset, &yonset, &wonset))
@@ -2570,7 +2557,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         else
         {
             /* First we get the closest distance to any element */
-            for(i = 0; i < array->a_n; i += incr)
+            for(int i = 0; i < array->a_n; i += incr)
             {
                 t_float pxpix;
                 t_float pypix;
@@ -2616,7 +2603,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
             best += 0.001; /* add truncation error margin */
                            /* otherwise we try to grab a vertex */
             if(!edit) return (0);
-            for(i = 0; i < array->a_n; i += incr)
+            for(int i = 0; i < array->a_n; i += incr)
             {
                 t_float pxpix;
                 t_float pypix;

@@ -153,8 +153,6 @@ static UINT nt_whichdac = WAVE_MAPPER, nt_whichadc = WAVE_MAPPER;
 int mmio_do_open_audio(void)
 {
     PCMWAVEFORMAT form;
-    int i;
-    int j;
     UINT mmresult;
     int nad;
     int nda;
@@ -192,7 +190,7 @@ int mmio_do_open_audio(void)
         }
         else
         {
-            for(i = 0; i < nt_naudiobuffer; i++)
+            for(int i = 0; i < nt_naudiobuffer; i++)
             {
                 mmresult = waveInPrepareHeader(ntsnd_indev[nad],
                     ntsnd_invec[nad][i].lpWaveHdr, sizeof(WAVEHDR));
@@ -797,14 +795,13 @@ void mmio_getdevs(char *indevlist, int *nindevs, char *outdevlist,
 {
     int wRtn;
     int ndev;
-    int i;
     char utf8device[MAXPDSTRING];
 
     *canmulti = 2; /* supports multiple devices */
     ndev = waveInGetNumDevs();
     if(ndev > maxndev) ndev = maxndev;
     *nindevs = ndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
     {
         WAVEINCAPS wicap;
         wRtn = waveInGetDevCaps(i, (LPWAVEINCAPS) &wicap, sizeof(wicap));
@@ -817,7 +814,7 @@ void mmio_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     ndev = waveOutGetNumDevs();
     if(ndev > maxndev) ndev = maxndev;
     *noutdevs = ndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
     {
         WAVEOUTCAPS wocap;
         wRtn = waveOutGetDevCaps(i, (LPWAVEOUTCAPS) &wocap, sizeof(wocap));

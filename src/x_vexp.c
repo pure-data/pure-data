@@ -244,7 +244,6 @@ int expr_donew(struct expr *expr, int ac, t_atom *av)
     char *exp_string;
     int exp_strlen;
     t_binbuf *b;
-    int i;
 
     memset(expr->exp_var, 0, MAX_VARS * sizeof(*expr->exp_var));
 #ifdef PD
@@ -343,7 +342,7 @@ int expr_donew(struct expr *expr, int ac, t_atom *av)
     t_freebytes(exp_string, exp_strlen + 1);
     return (0);
 error:
-    for(i = 0; i < expr->exp_nexpr; i++)
+    for(int i = 0; i < expr->exp_nexpr; i++)
     {
         fts_free(expr->exp_stack[i]);
         expr->exp_stack[i] = 0;
@@ -1462,7 +1461,6 @@ struct ex_ex *eval_func(
 /* the operation stack */
 /* the result pointer */
 {
-    int i;
     struct ex_ex args[MAX_ARGS];
     t_ex_func *f;
 
@@ -1484,7 +1482,7 @@ struct ex_ex *eval_func(
      */
     if(f->f_func != (void(*)) ex_if)
     {
-        for(i = 0; i < f->f_argc; i++)
+        for(int i = 0; i < f->f_argc; i++)
         {
             args[i].ex_type = 0;
             args[i].ex_int = 0;
@@ -1494,14 +1492,14 @@ struct ex_ex *eval_func(
     }
     else
     {
-        for(i = 0; i < f->f_argc; i++)
+        for(int i = 0; i < f->f_argc; i++)
         {
             args[i].ex_type = 0;
             args[i].ex_int = 0;
         }
         eptr = ex_if(expr, eptr, optr, args, idx);
     }
-    for(i = 0; i < f->f_argc; i++)
+    for(int i = 0; i < f->f_argc; i++)
     {
         if(args[i].ex_type == ET_VEC) fts_free(args[i].ex_vec);
     }

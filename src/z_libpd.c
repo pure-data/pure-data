@@ -181,12 +181,12 @@ static const t_sample sample_to_short = SHRT_MAX,
                       short_to_sample = 1.0 / (t_sample) SHRT_MAX;
 
 #define PROCESS(_x, _y)                                                   \
-    int i, j, k;                                                          \
-    t_sample *p0, *p1;                                                    \
     sys_lock();                                                           \
     sys_pollgui();                                                        \
-    for(i = 0; i < ticks; i++)                                            \
+    for(int i = 0; i < ticks; i++)                                        \
     {                                                                     \
+        int j, k;                                                         \
+        t_sample *p0, *p1;                                                \
         for(j = 0, p0 = STUFF->st_soundin; j < DEFDACBLKSIZE; j++, p0++)  \
         {                                                                 \
             for(k = 0, p1 = p0; k < STUFF->st_inchannels;                 \
@@ -295,8 +295,7 @@ int libpd_resize_array(const char *name, long size)
     GETARRAY                                                                  \
     if(n < 0 || offset < 0 || offset + n > garray_npoints(garray)) return -2; \
     t_word *vec = ((t_word *) garray_vec(garray)) + offset;                   \
-    int i;                                                                    \
-    for(i = 0; i < n; i++)                                                    \
+    for(int i = 0; i < n; i++)                                                \
         _x = _y;
 
 int libpd_read_array(float *dest, const char *name, int offset, int n)

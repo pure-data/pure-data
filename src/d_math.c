@@ -74,12 +74,11 @@ static float *rsqrt_exptab, *rsqrt_mantissatab;
 
 static void init_rsqrt(void)
 {
-    int i;
     if(!rsqrt_exptab)
     {
         rsqrt_exptab = (float *) getbytes(DUMTAB1SIZE * sizeof(float));
         rsqrt_mantissatab = (float *) getbytes(DUMTAB2SIZE * sizeof(float));
-        for(i = 0; i < DUMTAB1SIZE; i++)
+        for(int i = 0; i < DUMTAB1SIZE; i++)
         {
             union
             {
@@ -92,7 +91,7 @@ static void init_rsqrt(void)
             u.l = l;
             rsqrt_exptab[i] = 1. / sqrt(u.f);
         }
-        for(i = 0; i < DUMTAB2SIZE; i++)
+        for(int i = 0; i < DUMTAB2SIZE; i++)
         {
             float f = 1 + (1. / DUMTAB2SIZE) * i;
             rsqrt_mantissatab[i] = 1. / sqrt(f);

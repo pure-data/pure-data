@@ -786,8 +786,7 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom *argv)
     } while(0)
     t_float zoom = iemgui->x_glist->gl_zoom;
     t_symbol *srl[3];
-    int i;
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         SETFLOAT(argv + i, -1); /* initialize */
 
     iemgui_properties(iemgui, srl);

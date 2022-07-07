@@ -230,14 +230,12 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
-    unsigned int i;
     int did_fontwarning = 0;
-    int j;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
     if(argc != 2 + 3 * NZOOM * NFONT) bug("glob_initfromgui");
-    for(j = 0; j < NZOOM; j++)
+    for(int j = 0; j < NZOOM; j++)
     {
-        for(i = 0; i < NFONT; i++)
+        for(unsigned int i = 0; i < NFONT; i++)
         {
             int size = atom_getfloatarg(3 * (i + j * NFONT) + 2, argc, argv);
             int width = atom_getfloatarg(3 * (i + j * NFONT) + 3, argc, argv);
@@ -305,7 +303,6 @@ static void sys_fakefromgui(void)
     /* fake the GUI's message giving cwd and font sizes in case
     we aren't starting the gui. */
     t_atom zz[NDEFAULTFONT + 2];
-    int i;
     char buf[MAXPDSTRING];
 #ifdef _WIN32
     if(GetCurrentDirectory(MAXPDSTRING, buf) == 0) strcpy(buf, ".");
@@ -314,7 +311,7 @@ static void sys_fakefromgui(void)
 #endif
     SETSYMBOL(zz, gensym(buf));
     SETFLOAT(zz + 1, 0);
-    for(i = 0; i < (int) NDEFAULTFONT; i++)
+    for(int i = 0; i < (int) NDEFAULTFONT; i++)
         SETFLOAT(zz + i + 2, defaultfontshit[i]);
     glob_initfromgui(0, 0, 2 + NDEFAULTFONT, zz);
     clock_free(sys_fakefromguiclk);
@@ -566,8 +563,7 @@ static char *(usagemessage[]) = {
 
 static void sys_printusage(void)
 {
-    unsigned int i;
-    for(i = 0; i < sizeof(usagemessage) / sizeof(*usagemessage); i++)
+    for(unsigned int i = 0; i < sizeof(usagemessage) / sizeof(*usagemessage); i++)
     {
         fprintf(stderr, "%s", usagemessage[i]);
         fflush(stderr);
@@ -1536,7 +1532,6 @@ from command-line arguments */
 static void sys_afterargparse(void)
 {
     char sbuf[MAXPDSTRING];
-    int i;
     t_audiosettings as;
     int nmidiindev = 0;
     int midiindev[MAXMIDIINDEV];
@@ -1553,9 +1548,9 @@ static void sys_afterargparse(void)
     strcat(sbuf, "/doc/5.reference");
     STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
 
-    for(i = 0; i < sys_nmidiin; i++)
+    for(int i = 0; i < sys_nmidiin; i++)
         sys_midiindevlist[i]--;
-    for(i = 0; i < sys_nmidiout; i++)
+    for(int i = 0; i < sys_nmidiout; i++)
         sys_midioutdevlist[i]--;
 
     if(sys_listplease) sys_listdevs();
@@ -1564,13 +1559,13 @@ static void sys_afterargparse(void)
     if(sys_nmidiin >= 0)
     {
         nmidiindev = sys_nmidiin;
-        for(i = 0; i < nmidiindev; i++)
+        for(int i = 0; i < nmidiindev; i++)
             midiindev[i] = sys_midiindevlist[i];
     }
     if(sys_nmidiout >= 0)
     {
         nmidioutdev = sys_nmidiout;
-        for(i = 0; i < nmidioutdev; i++)
+        for(int i = 0; i < nmidioutdev; i++)
             midioutdev[i] = sys_midioutdevlist[i];
     }
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
@@ -1617,7 +1612,6 @@ t_symbol *sys_decodedialog(t_symbol *s)
 {
     char buf[MAXPDSTRING];
     const char *sp = s->s_name;
-    int i;
     if(*sp != '+')
     {
         bug("sys_decodedialog: %s", sp);
@@ -1626,6 +1620,7 @@ t_symbol *sys_decodedialog(t_symbol *s)
     {
         sp++;
     }
+    int i;
     for(i = 0; i < MAXPDSTRING - 1; i++, sp++)
     {
         if(!sp[0]) break;
@@ -1713,12 +1708,11 @@ void glob_start_path_dialog(t_pd *dummy)
 /* new values from dialog window */
 void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
     sys_usestdpath = atom_getfloatarg(0, argc, argv);
     sys_verbose = atom_getfloatarg(1, argc, argv);
-    for(i = 0; i < argc - 2; i++)
+    for(int i = 0; i < argc - 2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i + 2, argc, argv));
         if(*s->s_name)
@@ -1783,12 +1777,11 @@ void glob_start_startup_dialog(t_pd *dummy)
 /* new values from dialog window */
 void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
     sys_defeatrt = atom_getfloatarg(0, argc, argv);
     sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for(i = 0; i < argc - 2; i++)
+    for(int i = 0; i < argc - 2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i + 2, argc, argv));
         if(*s->s_name)

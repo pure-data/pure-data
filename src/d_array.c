@@ -303,13 +303,12 @@ static t_int *tabread_tilde_perform(t_int *w)
     int n = (int) (w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
-    int i;
 
     maxindex = x->x_npoints - 1;
     if(maxindex < 0) goto zero;
     if(!buf) goto zero;
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         int index = *in++;
         if(index < 0)
@@ -408,7 +407,6 @@ static t_int *tabread4_tilde_perform(t_int *w)
     t_word *buf = x->x_vec;
     t_word *wp;
     double onset = x->x_onset;
-    int i;
 
     maxindex = x->x_npoints - 3;
     if(maxindex < 0) goto zero;
@@ -431,7 +429,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
     }
 #endif
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         double findex = *in++ + onset;
         int index = findex;

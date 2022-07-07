@@ -2577,7 +2577,7 @@ void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w)
 {
     void *cftrec1_th(void *p);
     void *cftrec2_th(void *p);
-    int i, idiv4, m, nthread;
+    int idiv4, m, nthread;
     cdft_thread_t th[4];
     cdft_arg_t ag[4];
 
@@ -2590,7 +2590,7 @@ void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w)
         idiv4 = 1;
         m >>= 1;
     }
-    for(i = 0; i < nthread; i++)
+    for(int i = 0; i < nthread; i++)
     {
         ag[i].n0 = n;
         ag[i].n = m;
@@ -2606,7 +2606,7 @@ void cftrec4_th(int n, FFTFLT *a, int nw, FFTFLT *w)
             cdft_thread_create(&th[i], cftrec2_th, &ag[i]);
         }
     }
-    for(i = 0; i < nthread; i++)
+    for(int i = 0; i < nthread; i++)
     {
         cdft_thread_wait(th[i]);
     }

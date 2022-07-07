@@ -322,7 +322,6 @@ static t_int dsp_done(t_int *w) { return (0); }
 void dsp_add(t_perfroutine f, int n, ...)
 {
     int newsize = THIS->u_dspchainsize + n + 1;
-    int i;
     va_list ap;
 
     THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
@@ -331,7 +330,7 @@ void dsp_add(t_perfroutine f, int n, ...)
     if(THIS->u_loud)
         post("add to chain: %lx", THIS->u_dspchain[THIS->u_dspchainsize - 1]);
     va_start(ap, n);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         THIS->u_dspchain[THIS->u_dspchainsize + i] = va_arg(ap, t_int);
         if(THIS->u_loud)
@@ -349,12 +348,11 @@ void dsp_add(t_perfroutine f, int n, ...)
 void dsp_addv(t_perfroutine f, int n, t_int *vec)
 {
     int newsize = THIS->u_dspchainsize + n + 1;
-    int i;
 
     THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
         THIS->u_dspchainsize * sizeof(t_int), newsize * sizeof(t_int));
     THIS->u_dspchain[THIS->u_dspchainsize - 1] = (t_int) f;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         THIS->u_dspchain[THIS->u_dspchainsize + i] = vec[i];
     THIS->u_dspchain[newsize - 1] = (t_int) dsp_done;
     THIS->u_dspchainsize = newsize;
@@ -389,7 +387,6 @@ int ilog2(int n)
 static void signal_cleanup(void)
 {
     t_signal *sig;
-    int i;
     while((sig = THIS->u_signals))
     {
         THIS->u_signals = sig->s_nextused;
@@ -397,7 +394,7 @@ static void signal_cleanup(void)
             t_freebytes(sig->s_vec, sig->s_vecsize * sizeof(*sig->s_vec));
         t_freebytes(sig, sizeof *sig);
     }
-    for(i = 0; i <= MAXLOGSIG; i++)
+    for(int i = 0; i <= MAXLOGSIG; i++)
         THIS->u_freelist[i] = 0;
     THIS->u_freeborrowed = 0;
 }

@@ -200,13 +200,13 @@ sleep. */
 static int sys_domicrosleep(int microsec)
 {
     struct timeval timeout;
-    int i;
     int didsomething = 0;
     t_fdpoll *fp;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
     if(INTER->i_nfdpoll)
     {
+        int i;
         fd_set readset;
         fd_set writeset;
         fd_set exceptset;

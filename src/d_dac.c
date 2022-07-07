@@ -23,7 +23,6 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_dac *x = (t_dac *) pd_new(dac_class);
     t_atom defarg[2];
-    int i;
     if(!argc)
     {
         argv = defarg;
@@ -33,9 +32,9 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_int *) getbytes(argc * sizeof(*x->x_vec));
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         x->x_vec[i] = atom_getfloatarg(i, argc, argv);
-    for(i = 1; i < argc; i++)
+    for(int i = 1; i < argc; i++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     x->x_f = 0;
     return (x);
@@ -64,8 +63,7 @@ static void dac_dsp(t_dac *x, t_signal **sp)
 
 static void dac_set(t_dac *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
-    for(i = 0; i < argc && i < x->x_n; i++)
+    for(int i = 0; i < argc && i < x->x_n; i++)
         x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     canvas_update_dsp();
 }
@@ -99,7 +97,6 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_adc *x = (t_adc *) pd_new(adc_class);
     t_atom defarg[2];
-    int i;
     if(!argc)
     {
         argv = defarg;
@@ -109,9 +106,9 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_int *) getbytes(argc * sizeof(*x->x_vec));
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         x->x_vec[i] = atom_getfloatarg(i, argc, argv);
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         outlet_new(&x->x_obj, &s_signal);
     return (x);
 }
@@ -142,8 +139,7 @@ static void adc_dsp(t_adc *x, t_signal **sp)
 
 static void adc_set(t_adc *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
-    for(i = 0; i < argc && i < x->x_n; i++)
+    for(int i = 0; i < argc && i < x->x_n; i++)
         x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     canvas_update_dsp();
 }

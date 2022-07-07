@@ -746,9 +746,8 @@ void canvas_reflecttitle(t_canvas *x)
     }
     if(env->ce_argc)
     {
-        int i;
         strcpy(namebuf, " (");
-        for(i = 0; i < env->ce_argc; i++)
+        for(int i = 0; i < env->ce_argc; i++)
         {
             if(strlen(namebuf) > MAXPDSTRING / 2 - 5) break;
             if(i != 0) strcat(namebuf, " ");
@@ -1820,14 +1819,13 @@ static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 
 void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     t_canvasenvironment *e = canvas_getenv(x);
 #if 0
     startpost("declare:: %s", s->s_name);
     postatom(argc, argv);
     endpost();
 #endif
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         const char *item =

@@ -54,7 +54,6 @@ void sys_alsa_do_open_midi(
     char portname[50];
     int err = 0;
     int client;
-    int i;
     snd_seq_client_info_t *alsainfo;
 
     alsa_nmidiin = 0;
@@ -92,7 +91,7 @@ void sys_alsa_do_open_midi(
         post("couldn't open alsa sequencer");
         return;
     }
-    for(i = 0; i < nmidiin; i++)
+    for(int i = 0; i < nmidiin; i++)
     {
         int port;
         sprintf(portname, "Pure Data Midi-In %d", i + 1);
@@ -103,7 +102,7 @@ void sys_alsa_do_open_midi(
         if(port < 0) goto error;
     }
 
-    for(i = 0; i < nmidiout; i++)
+    for(int i = 0; i < nmidiout; i++)
     {
         int port;
         sprintf(portname, "Pure Data Midi-Out %d", i + 1);
@@ -246,9 +245,8 @@ void sys_alsa_poll_midi(void)
             {
                 long length =
                     snd_midi_event_decode(midiev, buf, sizeof(buf), midievent);
-                long i;
                 alsa_source = midievent->dest.port;
-                for(i = 0; i < length; i++)
+                for(long i = 0; i < length; i++)
                     sys_midibytein(alsa_source, (buf[i] & 0xff));
             }
             else if(rslt == -ENOSPC)
@@ -287,15 +285,14 @@ void midi_alsa_setndevs(int in, int out)
 void midi_alsa_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i;
     int ndev;
     if((ndev = alsa_nmidiindevs) > maxndev) ndev = maxndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
         sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i + 1);
     *nindevs = ndev;
 
     if((ndev = alsa_nmidioutdevs) > maxndev) ndev = maxndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
         sprintf(outdevlist + i * devdescsize, "ALSA MIDI device #%d", i + 1);
     *noutdevs = ndev;
 }

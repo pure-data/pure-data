@@ -259,7 +259,6 @@ static t_int *vline_tilde_perform(t_int *w)
     t_vline *x = (t_vline *) (w[1]);
     t_sample *out = (t_sample *) (w[2]);
     int n = (int) (w[3]);
-    int i;
     double f = x->x_value;
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
@@ -274,7 +273,7 @@ static t_int *vline_tilde_perform(t_int *w)
     }
     timenow = x->x_nextblocktime;
     x->x_nextblocktime = timenow + n * msecpersamp;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         double timenext = timenow + msecpersamp;
     checknext:
@@ -507,8 +506,7 @@ static t_int *vsnapshot_tilde_perform(t_int *w)
     t_vsnapshot *x = (t_vsnapshot *) (w[2]);
     t_sample *out = x->x_vec;
     int n = x->x_n;
-    int i;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         out[i] = in[i];
     x->x_time = clock_getlogicaltime();
     x->x_gotone = 1;
@@ -595,7 +593,6 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
     int period = fperiod;
     t_sigenv *x;
     t_sample *buf;
-    int i;
 
     if(npoints < 1) npoints = 1024;
     if(period < 1) period = npoints / 2;
@@ -610,11 +607,11 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
     x->x_npoints = npoints;
     x->x_phase = 0;
     x->x_period = period;
-    for(i = 0; i < MAXOVERLAP; i++)
+    for(int i = 0; i < MAXOVERLAP; i++)
         x->x_sumbuf[i] = 0;
-    for(i = 0; i < npoints; i++)
+    for(int i = 0; i < npoints; i++)
         buf[i] = (1. - cos((2 * 3.14159 * i) / npoints)) / npoints;
-    for(; i < npoints + INITVSTAKEN; i++)
+    for(int i = npoints; i < npoints + INITVSTAKEN; i++)
         buf[i] = 0;
     x->x_clock = clock_new(x, (t_method) env_tilde_tick);
     x->x_outlet = outlet_new(&x->x_obj, gensym("float"));
@@ -637,9 +634,8 @@ static t_int *env_tilde_perform(t_int *w)
         t_sample *hp = x->x_buf + count;
         t_sample *fp = in;
         t_sample sum = *sump;
-        int i;
 
-        for(i = 0; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
             fp--;
             sum += *hp++ * (*fp * *fp);

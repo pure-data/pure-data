@@ -133,8 +133,7 @@ static void clone_in_set(t_in *x, t_floatarg f)
 static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
     int phasewas = x->i_owner->x_phase;
-    int i;
-    for(i = 0; i < x->i_owner->x_n; i++)
+    for(int i = 0; i < x->i_owner->x_n; i++)
     {
         x->i_owner->x_phase = i;
         clone_in_this(x, s, argc, argv);
@@ -182,17 +181,16 @@ static void clone_free(t_clone *x)
 {
     if(x->x_vec)
     {
-        int i;
         int voicetovis = -1;
         if(THISGUI->i_reloadingabstraction)
         {
-            for(i = 0; i < x->x_n; i++)
+            for(int i = 0; i < x->x_n; i++)
             {
                 if(x->x_vec[i].c_gl == THISGUI->i_reloadingabstraction)
                     voicetovis = i;
             }
         }
-        for(i = 0; i < x->x_n; i++)
+        for(int i = 0; i < x->x_n; i++)
         {
             canvas_closebang(x->x_vec[i].c_gl);
             pd_free(&x->x_vec[i].c_gl->gl_pd);
@@ -300,15 +298,14 @@ static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
 
 static void clone_loadbang(t_clone *x, t_floatarg f)
 {
-    int i;
     if(f == LB_LOAD)
     {
-        for(i = 0; i < x->x_n; i++)
+        for(int i = 0; i < x->x_n; i++)
             canvas_loadbang(x->x_vec[i].c_gl);
     }
     else if(f == LB_CLOSE)
     {
-        for(i = 0; i < x->x_n; i++)
+        for(int i = 0; i < x->x_n; i++)
             canvas_closebang(x->x_vec[i].c_gl);
     }
 }
@@ -319,18 +316,16 @@ void signal_makereusable(t_signal *sig);
 
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
-    int i;
-    int j;
     int nin;
     int nout;
     t_signal **tempsigs;
     t_signal **tempio;
     if(!x->x_n) return;
-    for(i = nin = 0; i < x->x_nin; i++)
+    for(int i = nin = 0; i < x->x_nin; i++)
         if(x->x_invec[i].i_signal) nin++;
-    for(i = nout = 0; i < x->x_nout; i++)
+    for(int i = nout = 0; i < x->x_nout; i++)
         if(x->x_outvec[0][i].o_signal) nout++;
-    for(j = 0; j < x->x_n; j++)
+    for(int j = 0; j < x->x_n; j++)
     {
         if(obj_ninlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nin ||
             obj_noutlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nout ||
@@ -338,7 +333,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             obj_nsigoutlets(&x->x_vec[j].c_gl->gl_obj) != nout)
         {
             pd_error(x, "clone: can't do DSP until edited copy is saved");
-            for(i = 0; i < nout; i++)
+            for(int i = 0; i < nout; i++)
                 dsp_add_zero(sp[nin + i]->s_vec, sp[nin + i]->s_n);
             return;
         }
@@ -346,7 +341,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     tempsigs = (t_signal **) alloca((nin + 2 * nout) * sizeof(*tempsigs));
     tempio = tempsigs + nout;
     /* load input signals into signal vector to send subpatches */
-    for(i = 0; i < nin; i++)
+    for(int i = 0; i < nin; i++)
     {
         /* we already have one reference "counted" for our presumed
         use of this input signal but add one for each additional copy. */
@@ -354,15 +349,15 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         tempio[i] = sp[i];
     }
     /* for first copy, write output to first nout temp sigs */
-    for(i = 0; i < nout; i++)
+    for(int i = 0; i < nout; i++)
         tempsigs[i] = signal_newfromcontext(0);
 
-    for(j = 0; j < x->x_n; j++)
+    for(int j = 0; j < x->x_n; j++)
     {
-        for(i = 0; i < nout; i++)
+        for(int i = 0; i < nout; i++)
             tempio[nin + i] = signal_newfromcontext(1);
         canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
-        for(i = 0; i < nout; i++)
+        for(int i = 0; i < nout; i++)
         {
             if(j == 0)
             {
@@ -378,7 +373,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         }
     }
     /* copy to output signsls */
-    for(i = 0; i < nout; i++)
+    for(int i = 0; i < nout; i++)
     {
         dsp_add_copy(tempsigs[i]->s_vec, sp[nin + i]->s_vec, tempsigs[i]->s_n);
         signal_makereusable(tempsigs[i]);
@@ -391,7 +386,6 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     t_canvas *c;
     int wantn;
     int dspstate;
-    int i;
     int voicetovis = clone_voicetovis;
     t_out *outvec;
     x->x_invec = 0;
@@ -453,7 +447,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = 1;
     x->x_nin = obj_ninlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_invec = (t_in *) getbytes(x->x_nin * sizeof(*x->x_invec));
-    for(i = 0; i < x->x_nin; i++)
+    for(int i = 0; i < x->x_nin; i++)
     {
         x->x_invec[i].i_pd = clone_in_class;
         x->x_invec[i].i_owner = x;
@@ -472,7 +466,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_outvec = (t_out **) getbytes(sizeof(*x->x_outvec));
     x->x_outvec[0] = outvec = (t_out *) getbytes(x->x_nout * sizeof(*outvec));
-    for(i = 0; i < x->x_nout; i++)
+    for(int i = 0; i < x->x_nout; i++)
     {
         outvec[i].o_pd = clone_out_class;
         outvec[i].o_signal = obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);

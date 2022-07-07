@@ -503,11 +503,10 @@ typedef struct _oscformat
 static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     char buf[MAXPDSTRING];
-    int i;
     size_t newsize;
     *x->x_pathbuf = 0;
     buf[0] = '/';
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         char *where =
             (argv[i].a_type == A_SYMBOL && *argv[i].a_w.w_symbol->s_name == '/'
@@ -868,7 +867,6 @@ static void fudiformat_any(t_fudiformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     char *buf;
     int length;
-    int i;
     t_atom at;
     t_binbuf *bbuf = binbuf_new();
     SETSYMBOL(&at, s);
@@ -891,7 +889,7 @@ static void fudiformat_any(t_fudiformat *x, t_symbol *s, int argc, t_atom *argv)
         x->x_atoms = getbytes(sizeof(*x->x_atoms) * x->x_numatoms);
     }
 
-    for(i = 0; i < length; i++)
+    for(int i = 0; i < length; i++)
     {
         SETFLOAT(x->x_atoms + i, buf[i]);
     }

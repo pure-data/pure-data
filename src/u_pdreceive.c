@@ -326,11 +326,10 @@ static void udpread(void)
 
 static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
 {
-    int i;
     int outlen = x->fdp_outlen;
     char *outbuf = x->fdp_outbuf;
 
-    for(i = 0; i < len; i++)
+    for(int i = 0; i < len; i++)
     {
         char c = inbuf[i];
 
@@ -382,7 +381,6 @@ static void tcpread(t_fdpoll *x)
 
 static void dopoll(void)
 {
-    int i;
     t_fdpoll *fp;
     fd_set readset;
     fd_set writeset;
@@ -394,6 +392,7 @@ static void dopoll(void)
     FD_SET(sockfd, &readset);
     if(protocol == SOCK_STREAM)
     {
+        int i;
         for(fp = fdpoll, i = nfdpoll; i--; fp++)
             FD_SET(fp->fdp_fd, &readset);
     }
@@ -404,7 +403,7 @@ static void dopoll(void)
     }
     if(protocol == SOCK_STREAM)
     {
-        for(i = 0; i < nfdpoll; i++)
+        for(int i = 0; i < nfdpoll; i++)
             if(FD_ISSET(fdpoll[i].fdp_fd, &readset)) tcpread(&fdpoll[i]);
         if(FD_ISSET(sockfd, &readset)) doconnect();
     }

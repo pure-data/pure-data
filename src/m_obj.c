@@ -197,9 +197,8 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
 static void inlet_fwd(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *argvec = (t_atom *) alloca((argc + 1) * sizeof(t_atom));
-    int i;
     SETSYMBOL(argvec, s);
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         argvec[i + 1] = argv[i];
     typedmess(x->i_dest, gensym("fwd"), argc + 1, argvec);
 }
@@ -472,7 +471,7 @@ static void backtracer_printmsg(t_pd *who, t_symbol *s, int argc, t_atom *argv)
     int i;
     snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
     nchar = strlen(msgbuf);
-    for(i = 0; i < nprint && nchar < 100; i++)
+    for(int i = 0; i < nprint && nchar < 100; i++)
     {
         if(nchar < 100)
         {
@@ -499,12 +498,11 @@ static void backtracer_anything(
     t_msgstack *m = (t_msgstack *) t_getbytes(sizeof(t_msgstack));
     t_outconnect *oc;
     int ncopy = (argc > NARGS ? NARGS : argc);
-    int i;
     m->m_next = backtracer_stack;
     backtracer_stack = m;
     m->m_sel = s;
     m->m_argc = argc;
-    for(i = 0; i < ncopy; i++)
+    for(int i = 0; i < ncopy; i++)
         m->m_argv[i] = argv[i];
     m->m_owner = x;
     if(backtracer_tracing) backtracer_printmsg(x->b_owner, s, argc, argv);

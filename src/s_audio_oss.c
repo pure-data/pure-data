@@ -285,7 +285,6 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
     int inchannels = 0;
     int outchannels = 0;
     int n;
-    int i;
     int fd;
     int flags;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
@@ -297,7 +296,7 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
 
     linux_nindevs = linux_noutdevs = 0;
     /* mark devices unopened */
-    for(i = 0; i < OSS_MAXDEV; i++)
+    for(int i = 0; i < OSS_MAXDEV; i++)
         linux_adcs[i].d_fd = linux_dacs[i].d_fd = -1;
 
     /* open output devices */
@@ -494,7 +493,7 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
         if(sys_verbose) fprintf(stderr, "...done.\n");
     }
     /* now go and fill all the output buffers. */
-    for(i = 0; i < linux_noutdevs; i++)
+    for(int i = 0; i < linux_noutdevs; i++)
     {
         int j;
         memset(buf, 0,
@@ -515,11 +514,10 @@ int oss_open_audio(int nindev, int *indev, int nchin, int *chin, int noutdev,
 
 void oss_close_audio(void)
 {
-    int i;
-    for(i = 0; i < linux_nindevs; i++)
+    for(int i = 0; i < linux_nindevs; i++)
         close(linux_adcs[i].d_fd);
 
-    for(i = 0; i < linux_noutdevs; i++)
+    for(int i = 0; i < linux_noutdevs; i++)
         close(linux_dacs[i].d_fd);
 
     linux_nindevs = linux_noutdevs = 0;
@@ -627,7 +625,7 @@ static void oss_doresync(void)
             if(!zeroed)
             {
                 unsigned int i;
-                for(i = 0; i < OSS_XFERSAMPS(linux_dacs[dev].d_nchannels); i++)
+                for(int i = 0; i < OSS_XFERSAMPS(linux_dacs[dev].d_nchannels); i++)
                     buf[i] = 0;
                 zeroed = 1;
             }
@@ -861,12 +859,11 @@ int oss_send_dacs(void)
 void oss_getdevs(char *indevlist, int *nindevs, char *outdevlist, int *noutdevs,
     int *canmulti, int maxdev, int devdescsize)
 {
-    int i;
     int ndev;
     oss_init();
     *canmulti = 2; /* supports multiple devices */
     if((ndev = oss_ndev) > maxdev) ndev = maxdev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
     {
         sprintf(indevlist + i * devdescsize, "OSS device #%d", i + 1);
         sprintf(outdevlist + i * devdescsize, "OSS device #%d", i + 1);

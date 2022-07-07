@@ -129,7 +129,6 @@ static void netsend_readbin(t_netsend *x, int fd)
     unsigned char *inbuf = sys_getrecvbuf(0);
     int ret = 0;
     int readbytes = 0;
-    int i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     if(!x->x_msgout)
@@ -187,7 +186,7 @@ static void netsend_readbin(t_netsend *x, int fd)
                 ret = NET_MAXPACKETSIZE;
             }
             ap = (t_atom *) alloca(ret * sizeof(t_atom));
-            for(i = 0; i < ret; i++)
+            for(int i = 0; i < ret; i++)
                 SETFLOAT(ap + i, inbuf[i]);
             outlet_list(x->x_msgout, 0, ret, ap);
             readbytes += ret;
@@ -204,7 +203,7 @@ static void netsend_readbin(t_netsend *x, int fd)
                 outlet_sockaddr(
                     x->x_fromout, (const struct sockaddr *) &fromaddr);
             }
-            for(i = 0; i < ret; i++)
+            for(int i = 0; i < ret; i++)
                 outlet_float(x->x_msgout, inbuf[i]);
             return;
         }
@@ -226,8 +225,7 @@ static void netsend_read(void *z, t_binbuf *b)
             ;
         if(emsg > msg)
         {
-            int i;
-            for(i = msg; i < emsg; i++)
+            for(int i = msg; i < emsg; i++)
             {
                 if(at[i].a_type == A_DOLLAR || at[i].a_type == A_DOLLSYM)
                 {
@@ -474,9 +472,8 @@ static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
     t_binbuf *b = 0;
     if(x->x_bin)
     {
-        int i;
         buf = alloca(argc);
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
             ((unsigned char *) buf)[i] = atom_getfloatarg(i, argc, argv);
         length = argc;
     }
@@ -576,8 +573,7 @@ static void netsend_setup(void)
 
 static void netreceive_notify(t_netreceive *x, int fd)
 {
-    int i;
-    for(i = 0; i < x->x_nconnections; i++)
+    for(int i = 0; i < x->x_nconnections; i++)
     {
         if(x->x_connections[i] == fd)
         {
@@ -654,8 +650,7 @@ static void netreceive_connectpoll(t_netreceive *x)
 
 static void netreceive_closeall(t_netreceive *x)
 {
-    int i;
-    for(i = 0; i < x->x_nconnections; i++)
+    for(int i = 0; i < x->x_nconnections; i++)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
@@ -893,13 +888,12 @@ static void netreceive_listen(
 static void netreceive_send(
     t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     if(x->x_ns.x_protocol != SOCK_STREAM)
     {
         pd_error(x, "netreceive: 'send' only works for TCP");
         return;
     }
-    for(i = 0; i < x->x_nconnections; i++)
+    for(int i = 0; i < x->x_nconnections; i++)
     {
         if(netsend_dosend(&x->x_ns, x->x_connections[i], argc, argv))
             pd_error(x, "netreceive: send message failed");

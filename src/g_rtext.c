@@ -607,12 +607,11 @@ int rtext_findatomfor(t_rtext *x, int xpos, int ypos)
     int h = ypos;
     int indx;
     int natom = 0;
-    int i;
     int gotone = 0;
     /* get byte index of character clicked on */
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
     /* search through for whitespace before that index */
-    for(i = 0; i <= indx; i++)
+    for(int i = 0; i <= indx; i++)
     {
         if(x->x_buf[i] == ';' || x->x_buf[i] == ',')
         {

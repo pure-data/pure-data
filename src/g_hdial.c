@@ -49,7 +49,6 @@ void hradio_draw_update(t_gobj *client, t_glist *glist)
 void hradio_draw_new(t_hradio *x, t_glist *glist)
 {
     int n = x->x_number;
-    int i;
     int dx = x->x_gui.x_w;
     int s4 = dx / 4;
     int yy11 = text_ypix(&x->x_gui.x_obj, glist);
@@ -64,7 +63,7 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
     int ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x "
                  "-tags %lxBASE%d\n",
@@ -106,7 +105,6 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
 void hradio_draw_move(t_hradio *x, t_glist *glist)
 {
     int n = x->x_number;
-    int i;
     int dx = x->x_gui.x_w;
     int s4 = dx / 4;
     int yy11 = text_ypix(&x->x_gui.x_obj, glist);
@@ -124,7 +122,7 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
     xx11 = xx11b;
     xx21 = xx11b + s4;
     xx22 = xx11b + dx - s4;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         sys_vgui(".x%lx.c coords %lxBASE%d %d %d %d %d\n", canvas, x, i, xx11,
             yy11, xx11 + dx, yy12);
@@ -152,10 +150,9 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
 void hradio_draw_erase(t_hradio *x, t_glist *glist)
 {
     int n = x->x_number;
-    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         sys_vgui(".x%lx.c delete %lxBASE%d\n", canvas, x, i);
         sys_vgui(".x%lx.c delete %lxBUT%d\n", canvas, x, i);
@@ -170,7 +167,6 @@ void hradio_draw_erase(t_hradio *x, t_glist *glist)
 void hradio_draw_config(t_hradio *x, t_glist *glist)
 {
     int n = x->x_number;
-    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x "
@@ -178,7 +174,7 @@ void hradio_draw_config(t_hradio *x, t_glist *glist)
         canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol,
         strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : "");
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         sys_vgui(".x%lx.c itemconfigure %lxBASE%d -fill #%06x\n", canvas, x, i,
             x->x_gui.x_bcol);
@@ -234,12 +230,11 @@ void hradio_draw_io(t_hradio *x, t_glist *glist, int old_snd_rcv_flags)
 void hradio_draw_select(t_hradio *x, t_glist *glist)
 {
     int n = x->x_number;
-    int i;
     t_canvas *canvas = glist_getcanvas(glist);
 
     if(x->x_gui.x_fsf.x_selected)
     {
-        for(i = 0; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
             sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%06x\n", canvas,
                 x, i, IEM_GUI_COLOR_SELECTED);
@@ -249,7 +244,7 @@ void hradio_draw_select(t_hradio *x, t_glist *glist)
     }
     else
     {
-        for(i = 0; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
             sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%06x\n", canvas,
                 x, i, IEM_GUI_COLOR_NORMAL);

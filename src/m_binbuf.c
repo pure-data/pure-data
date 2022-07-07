@@ -572,10 +572,9 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 
 void binbuf_print(const t_binbuf *x)
 {
-    int i;
     int startedpost = 0;
     int newline = 1;
-    for(i = 0; i < x->b_n; i++)
+    for(int i = 0; i < x->b_n; i++)
     {
         if(newline)
         {
@@ -786,9 +785,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         }
         else
         {
-            int i;
             int j = (target ? 0 : -1);
-            for(i = 0; i < ac; i++)
+            for(int i = 0; i < ac; i++)
             {
                 if(at[i].a_type == A_SEMI)
                 {
@@ -1045,8 +1043,7 @@ int binbuf_read(
     /* optionally map carriage return to semicolon */
     if(crflag)
     {
-        int i;
-        for(i = 0; i < length; i++)
+        for(int i = 0; i < length; i++)
             if(buf[i] == '\n') buf[i] = ';';
     }
     binbuf_text(b, buf, length);
@@ -1240,7 +1237,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
             /* case 1: importing a ".pat" file into Pd. */
 
             /* dollar signs in file translate to symbols */
-            for(i = 0; i < natom; i++)
+            for(int i = 0; i < natom; i++)
             {
                 if(nextmess[i].a_type == A_DOLLAR)
                 {

@@ -66,13 +66,12 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 
 static void textbuf_senditup(t_textbuf *x)
 {
-    int i;
     int ntxt;
     char *txt;
     if(!x->b_guiconnect) return;
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
     sys_vgui("pdtk_textwindow_clear .x%lx\n", x);
-    for(i = 0; i < ntxt;)
+    for(int i = 0; i < ntxt;)
     {
         char *j = strchr(txt + i, '\n');
         if(!j) j = txt + ntxt;
@@ -225,9 +224,8 @@ static void textbuf_free(t_textbuf *x)
 /* random helper function to find the nth line in a text buffer */
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
-    int i;
     int cnt = 0;
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(cnt == line)
         {
@@ -1008,7 +1006,6 @@ static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
     int end;
     int n;
     int fieldno = x->x_f2;
-    int i;
     int /* check for overflow in this conversion: */
         lineno = (x->x_f1 > (double) 0x7fffffff ? 0x7fffffff : (int) x->x_f1);
     t_atom *vec;
@@ -1067,7 +1064,7 @@ static void text_set_list(t_text_set *x, t_symbol *s, int argc, t_atom *argv)
         post("text set: %d: line number out of range", lineno);
         return;
     }
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         if(argv[i].a_type == A_POINTER)
         {
@@ -1136,7 +1133,6 @@ static void text_insert_list(
     int end;
     int n;
     int nwas;
-    int i;
     int lineno = (x->x_f1 > (double) 0x7fffffff ? 0x7fffffff : (int) x->x_f1);
 
     t_atom *vec;
@@ -1156,7 +1152,7 @@ static void text_insert_list(
         memmove(&vec[start + (argc + 1)], &vec[start],
             sizeof(*vec) * (nwas - start));
     }
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         if(argv[i].a_type == A_POINTER)
         {
@@ -1264,13 +1260,12 @@ static void text_size_bang(t_text_size *x)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n;
-    int i;
     int cnt = 0;
     t_atom *vec;
     if(!b) return;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         if(vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA) cnt++;
     }
@@ -2067,10 +2062,9 @@ static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 static void text_sequence_args(
     t_text_sequence *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     x->x_argv = t_resizebytes(
         x->x_argv, x->x_argc * sizeof(t_atom), argc * sizeof(t_atom));
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
         x->x_argv[i] = argv[i];
     x->x_argc = argc;
 }

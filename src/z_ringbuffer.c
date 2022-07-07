@@ -94,8 +94,7 @@ int rb_write_to_buffer(ring_buffer *buffer, int n, ...)
     int available = rb_available_to_write(buffer);
     va_list args;
     va_start(args, n);
-    int i;
-    for(i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const char *src = va_arg(args, const char *);
         int len = va_arg(args, int);

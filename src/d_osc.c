@@ -391,7 +391,6 @@ static t_int *sigvcf_perform(t_int *w)
     t_sample *out2 = (t_sample *) (w[4]);
     t_vcfctl *c = (t_vcfctl *) (w[5]);
     int n = (int) w[6];
-    int i;
     t_float re = c->c_re;
     t_float re2;
     t_float im = c->c_im;
@@ -414,7 +413,7 @@ static t_int *sigvcf_perform(t_int *w)
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
         float cf;
         float cfindx;

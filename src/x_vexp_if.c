@@ -49,11 +49,9 @@ t_int *expr_perform(t_int *w);
 
 static void expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
 {
-    int i;
-
     if(argc > MAX_VARS) argc = MAX_VARS;
 
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         if(argv[i].a_type == A_FLOAT)
         {
@@ -143,7 +141,6 @@ void exprproxy_float(t_exprproxy *p, t_floatarg f)
 static void expr_ff(t_expr *x)
 {
     t_exprproxy *y;
-    int i;
 
     y = x->exp_proxy;
     while(y)
@@ -157,13 +154,13 @@ static void expr_ff(t_expr *x)
 #endif
         y = x->exp_proxy;
     }
-    for(i = 0; i < x->exp_nexpr; i++)
+    for(int i = 0; i < x->exp_nexpr; i++)
         if(x->exp_stack[i]) fts_free(x->exp_stack[i]);
     /*
      * SDY free all the allocated buffers here for expr~ and fexpr~
      * check to see if there are others
      */
-    for(i = 0; i < MAX_VARS; i++)
+    for(int i = 0; i < MAX_VARS; i++)
     {
         if(x->exp_p_var[i]) fts_free(x->exp_p_var[i]);
         if(x->exp_p_res[i]) fts_free(x->exp_p_res[i]);
@@ -420,7 +417,6 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
 
 t_int *expr_perform(t_int *w)
 {
-    int i;
     int j;
     t_expr *x = (t_expr *) w[1];
     struct ex_ex res;
@@ -435,7 +431,7 @@ t_int *expr_perform(t_int *w)
 
     if(x->exp_flags & EF_STOP)
     {
-        for(i = 0; i < x->exp_nexpr; i++)
+        for(int i = 0; i < x->exp_nexpr; i++)
             memset(x->exp_res[i].ex_vec, 0, x->exp_vsize * sizeof(t_float));
         return (w + 2);
     }
@@ -455,13 +451,13 @@ t_int *expr_perform(t_int *w)
         else
         {
             res.ex_type = ET_VEC;
-            for(i = 0; i < x->exp_nexpr; i++)
+            for(int i = 0; i < x->exp_nexpr; i++)
             {
                 res.ex_vec = x->exp_tmpres[i];
                 ex_eval(x, x->exp_stack[i], &res, 0);
             }
             n = x->exp_vsize * sizeof(t_float);
-            for(i = 0; i < x->exp_nexpr; i++)
+            for(int i = 0; i < x->exp_nexpr; i++)
                 memcpy(x->exp_res[i].ex_vec, x->exp_tmpres[i], n);
         }
         return (w + 2);
@@ -477,7 +473,7 @@ t_int *expr_perform(t_int *w)
      * since the output buffer could be the same as one of the inputs
      * we need to keep the output in  a different buffer
      */
-    for(i = 0; i < x->exp_vsize; i++)
+    for(int i = 0; i < x->exp_vsize; i++)
     {
         for(j = 0; j < x->exp_nexpr; j++)
         {
@@ -503,12 +499,12 @@ t_int *expr_perform(t_int *w)
      * same as an input buffer
      */
     n = x->exp_vsize * sizeof(t_float);
-    for(i = 0; i < MAX_VARS; i++)
+    for(int i = 0; i < MAX_VARS; i++)
     {
         if(x->exp_var[i].ex_type == ET_XI)
             memcpy(x->exp_p_var[i], x->exp_var[i].ex_vec, n);
     }
-    for(i = 0; i < x->exp_nexpr; i++)
+    for(int i = 0; i < x->exp_nexpr; i++)
     {
         memcpy(x->exp_p_res[i], x->exp_tmpres[i], n);
         memcpy(x->exp_res[i].ex_vec, x->exp_tmpres[i], n);
@@ -645,7 +641,6 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sx;
     int vecno;
-    int i;
     int nargs;
 
     if(!argc) return;
@@ -692,7 +687,7 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                     x->exp_vsize);
                 nargs = x->exp_vsize;
             }
-            for(i = 0; i < nargs; i++)
+            for(int i = 0; i < nargs; i++)
             {
                 x->exp_p_var[vecno][x->exp_vsize - i - 1] =
                     atom_getfloatarg(i + 1, argc, argv);
@@ -733,7 +728,7 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                     x->exp_vsize);
                 nargs = x->exp_vsize;
             }
-            for(i = 0; i < nargs; i++)
+            for(int i = 0; i < nargs; i++)
             {
                 x->exp_p_res[vecno][x->exp_vsize - i - 1] =
                     atom_getfloatarg(i + 1, argc, argv);
@@ -745,7 +740,7 @@ static void fexpr_tilde_set(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                 post("fexpr~.set: only %d outlets available", x->exp_nexpr);
                 post("fexpr~.set: the extra set values are ignored");
             }
-            for(i = 0; i < x->exp_nexpr && i < argc; i++)
+            for(int i = 0; i < x->exp_nexpr && i < argc; i++)
                 x->exp_p_res[i][x->exp_vsize - 1] =
                     atom_getfloatarg(i, argc, argv);
             return;
@@ -762,7 +757,6 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sx;
     int vecno;
-    int i;
     int nargs;
 
     /*
@@ -770,9 +764,9 @@ static void fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
      */
     if(!argc)
     {
-        for(i = 0; i < x->exp_nexpr; i++)
+        for(int i = 0; i < x->exp_nexpr; i++)
             memset(x->exp_p_res[i], 0, x->exp_vsize * sizeof(t_float));
-        for(i = 0; i < MAX_VARS; i++)
+        for(int i = 0; i < MAX_VARS; i++)
         {
             if(x->exp_var[i].ex_type == ET_XI)
                 memset(x->exp_p_var[i], 0, x->exp_vsize * sizeof(t_float));

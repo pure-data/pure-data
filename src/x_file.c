@@ -1130,8 +1130,7 @@ static void file_glob_symbol(t_file_handle *x, t_symbol *spattern)
     }
     else
     {
-        size_t i;
-        for(i = 0; i < gg.gl_pathc; i++)
+        for(size_t i = 0; i < gg.gl_pathc; i++)
         {
             t_symbol *s;
             char *path = gg.gl_pathv[i];

@@ -624,14 +624,13 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
         /* now reposition objects to their original locations */
         if(mode == UCUT_CUT || mode == UCUT_CLEAR)
         {
-            int i = 0;
 
             /* location of the first newly pasted object */
             int paste_pos = glist_getindex(x, 0) - buf->n_obj;
             t_gobj *y_prev;
             t_gobj *y;
             t_gobj *y_next;
-            for(i = 0; i < buf->n_obj; i++)
+            for(int i = 0; i < buf->n_obj; i++)
             {
                 /* first check if we are in the same position already */
                 if(paste_pos + i != buf->p_a[i])
@@ -691,14 +690,12 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
     {
         if(mode == UCUT_CUT || mode == UCUT_CLEAR)
         {
-            int i;
             /* we can't just blindly do clear here when the user may have
              * unselected things between undo and redo, so first let's select
              * the right stuff
              */
             glist_noselect(x);
-            i = 0;
-            for(i = 0; i < buf->n_obj; i++)
+            for(int i = 0; i < buf->n_obj; i++)
                 glist_select(x, glist_nth(x, buf->p_a[i]));
             canvas_doclear(x);
         }
@@ -791,8 +788,7 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
     {
         int resortin = 0;
         int resortout = 0;
-        int i;
-        for(i = 0; i < buf->u_n; i++)
+        for(int i = 0; i < buf->u_n; i++)
         {
             float newx = (buf->u_vec[i].e_xpix) * x->gl_zoom;
             float newy = (buf->u_vec[i].e_ypix) * x->gl_zoom;
@@ -825,7 +821,7 @@ int canvas_undo_move(t_canvas *x, void *z, int action)
             }
         }
         glist_noselect(x);
-        for(i = 0; i < buf->u_n; i++)
+        for(int i = 0; i < buf->u_n; i++)
         {
             t_gobj *y = glist_nth(x, buf->u_vec[i].e_index);
             if(y) glist_select(x, y);
@@ -3835,8 +3831,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
         }
         else if((n = clone_get_n(g)) != 0)
         {
-            int i;
-            for(i = 0; i < n; i++)
+            for(int i = 0; i < n; i++)
             {
                 if(glist_dofinderror(clone_get_instance(g, i), error_object))
                     return 1;

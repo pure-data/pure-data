@@ -80,14 +80,13 @@ void my_numbox_ftoa(t_my_numbox *x)
     double f = x->x_val;
     int bufsize;
     int is_exp = 0;
-    int i;
     int idecimal;
 
     sprintf(x->x_buf, "%g", f);
     bufsize = (int) strlen(x->x_buf);
     if(bufsize >= 5) /* if it is in exponential mode */
     {
-        i = bufsize - 4;
+        int i = bufsize - 4;
         if((x->x_buf[i] == 'e') || (x->x_buf[i] == 'E')) is_exp = 1;
     }
     if(bufsize > x->x_numwidth) /* if to reduce */
@@ -99,7 +98,7 @@ void my_numbox_ftoa(t_my_numbox *x)
                 x->x_buf[0] = (f < 0.0 ? '-' : '+');
                 x->x_buf[1] = 0;
             }
-            i = bufsize - 4;
+            int i = bufsize - 4;
             for(idecimal = 0; idecimal < i; idecimal++)
                 if(x->x_buf[idecimal] == '.') break;
             if(idecimal > (x->x_numwidth - 4))
@@ -112,7 +111,7 @@ void my_numbox_ftoa(t_my_numbox *x)
                 int new_exp_index = x->x_numwidth - 4;
                 int old_exp_index = bufsize - 4;
 
-                for(i = 0; i < 4; i++, new_exp_index++, old_exp_index++)
+                for(int i = 0; i < 4; i++, new_exp_index++, old_exp_index++)
                     x->x_buf[new_exp_index] = x->x_buf[old_exp_index];
                 x->x_buf[x->x_numwidth] = 0;
             }

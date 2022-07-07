@@ -117,7 +117,6 @@ void sys_setchsr(int chin, int chout, int sr)
 static void audio_make_sane(
     int *ndev, int *devvec, int *nchan, int *chanvec, int maxdev)
 {
-    int i;
     if(*ndev == -1)
     { /* no input audio devices specified */
         if(*nchan == -1)
@@ -134,7 +133,7 @@ static void audio_make_sane(
         }
         else
         {
-            for(i = 0; i < maxdev; i++)
+            for(int i = 0; i < maxdev; i++)
                 devvec[i] = i;
             *ndev = *nchan;
         }
@@ -144,12 +143,12 @@ static void audio_make_sane(
         if(*nchan == -1)
         {
             *nchan = *ndev;
-            for(i = 0; i < *ndev; i++)
+            for(int i = 0; i < *ndev; i++)
                 chanvec[i] = SYS_DEFAULTCH;
         }
         else if(*nchan > *ndev)
         {
-            for(i = *ndev; i < *nchan; i++)
+            for(int i = *ndev; i < *nchan; i++)
             {
                 if(i == 0)
                 {
@@ -164,7 +163,7 @@ static void audio_make_sane(
         }
         else if(*nchan < *ndev)
         {
-            for(i = *nchan; i < *ndev; i++)
+            for(int i = *nchan; i < *ndev; i++)
             {
                 if(i == 0)
                 {
@@ -178,9 +177,9 @@ static void audio_make_sane(
             *ndev = *nchan;
         }
     }
-    for(i = *ndev; i < maxdev; i++)
+    for(int i = *ndev; i < maxdev; i++)
         devvec[i] = -1;
-    for(i = *nchan; i < maxdev; i++)
+    for(int i = *nchan; i < maxdev; i++)
         chanvec[i] = 0;
 }
 
@@ -603,9 +602,8 @@ void sys_get_audio_devs(char *indevlist, int *nindevs, char *outdevlist,
 #endif
     {
         /* this shouldn't happen once all the above get filled in. */
-        int i;
         *nindevs = *noutdevs = 3;
-        for(i = 0; i < 3; i++)
+        for(int i = 0; i < 3; i++)
         {
             sprintf(indevlist + i * devdescsize, "input device #%d", i + 1);
             sprintf(outdevlist + i * devdescsize, "output device #%d", i + 1);
@@ -627,13 +625,12 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     int noutdevs = 0;
     int canmulti = 0;
     int cancallback = 0;
-    int i;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
 
     sys_gui("global audio_indevlist; set audio_indevlist {}\n");
-    for(i = 0; i < nindevs; i++)
+    for(int i = 0; i < nindevs; i++)
     {
         sys_vgui("lappend audio_indevlist {%s}\n",
             pdgui_strnescape(
@@ -641,7 +638,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     }
 
     sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
-    for(i = 0; i < noutdevs; i++)
+    for(int i = 0; i < noutdevs; i++)
     {
         sys_vgui("lappend audio_outdevlist {%s}\n",
             pdgui_strnescape(
@@ -733,7 +730,6 @@ void sys_listdevs(void)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
     int canmulti = 0;
     int cancallback = 0;
 
@@ -750,7 +746,7 @@ void sys_listdevs(void)
         /* (see also sys_mmio variable in s_main.c)  */
 
         post("audio input devices:");
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
         {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 indevlist + i * DEVDESCSIZE);
@@ -763,7 +759,7 @@ void sys_listdevs(void)
     else
     {
         post("audio output devices:");
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
         {
             post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
                 outdevlist + i * DEVDESCSIZE);
@@ -889,7 +885,6 @@ int sys_audiodevnametonumber(int output, const char *name)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
     int canmulti;
     int cancallback;
 
@@ -899,10 +894,10 @@ int sys_audiodevnametonumber(int output, const char *name)
     if(output)
     {
         /* try first for exact match */
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
             if(!strcmp(name, outdevlist + i * DEVDESCSIZE)) return (i);
         /* failing that, a match up to end of shorter string */
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
         {
             unsigned long comp = strlen(name);
             if(comp > strlen(outdevlist + i * DEVDESCSIZE))
@@ -912,9 +907,9 @@ int sys_audiodevnametonumber(int output, const char *name)
     }
     else
     {
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
             if(!strcmp(name, indevlist + i * DEVDESCSIZE)) return (i);
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
         {
             unsigned long comp = strlen(name);
             if(comp > strlen(indevlist + i * DEVDESCSIZE))

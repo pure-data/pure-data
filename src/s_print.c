@@ -207,8 +207,7 @@ void poststring(const char *s)
 
 void postatom(int argc, const t_atom *argv)
 {
-    int i;
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         char buf[MAXPDSTRING];
         atom_string(argv + i, buf, MAXPDSTRING);

@@ -29,23 +29,21 @@ static int oss_midioutfd[MAXMIDIOUTDEV + 1];
 
 static void close_one_midi_fd(int fd)
 {
-    int i;
-    int j;
     close(fd);
-    for(i = 0; i < oss_nmidiin; i++)
+    for(int i = 0; i < oss_nmidiin; i++)
     {
         if(oss_midiinfd[i] == fd)
         {
-            for(j = i; j < oss_nmidiin - 1; j++)
+            for(int j = i; j < oss_nmidiin - 1; j++)
                 oss_midiinfd[j] = oss_midiinfd[j + 1];
             oss_nmidiin--;
         }
     }
-    for(i = 0; i < oss_nmidiout; i++)
+    for(int i = 0; i < oss_nmidiout; i++)
     {
         if(oss_midioutfd[i] == fd)
         {
-            for(j = i; j < oss_nmidiout - 1; j++)
+            for(int j = i; j < oss_nmidiout - 1; j++)
                 oss_midioutfd[j] = oss_midioutfd[j + 1];
             oss_nmidiout--;
         }
@@ -180,7 +178,6 @@ void sys_putmidibyte(int portno, int byte)
 
 void sys_poll_midi(void)
 {
-    int i;
     int throttle = 100;
     int did = 1;
     int maxfd = 0;
@@ -188,7 +185,7 @@ void sys_poll_midi(void)
     {
         did = 0;
         if(throttle-- < 0) break;
-        for(i = 0; i < oss_nmidiin; i++)
+        for(int i = 0; i < oss_nmidiin; i++)
         {
             char c;
             int ret = read(oss_midiinfd[i], &c, 1);
@@ -212,10 +209,9 @@ void sys_poll_midi(void)
 
 void sys_close_midi()
 {
-    int i;
-    for(i = 0; i < oss_nmidiin; i++)
+    for(int i = 0; i < oss_nmidiin; i++)
         close(oss_midiinfd[i]);
-    for(i = 0; i < oss_nmidiout; i++)
+    for(int i = 0; i < oss_nmidiout; i++)
         close(oss_midioutfd[i]);
     oss_nmidiin = oss_nmidiout = 0;
 }
@@ -244,17 +240,16 @@ void midi_oss_init(void)
 void midi_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i;
     int ndev;
     midi_oss_init();
 
     if((ndev = oss_nmididevs) > maxndev) ndev = maxndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
         strcpy(indevlist + i * devdescsize, oss_midinames[i]);
     *nindevs = ndev;
 
     if((ndev = oss_nmididevs) > maxndev) ndev = maxndev;
-    for(i = 0; i < ndev; i++)
+    for(int i = 0; i < ndev; i++)
         strcpy(outdevlist + i * devdescsize, oss_midinames[i]);
     *noutdevs = ndev;
 }

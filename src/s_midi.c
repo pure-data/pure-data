@@ -636,10 +636,9 @@ void sys_get_midi_apis(char *buf)
 void sys_get_midi_params(
     int *pnmidiindev, int *pmidiindev, int *pnmidioutdev, int *pmidioutdev)
 {
-    int i;
     int devn;
     *pnmidiindev = midi_nmidiindev;
-    for(i = 0; i < midi_nmidiindev; i++)
+    for(int i = 0; i < midi_nmidiindev; i++)
     {
         if((devn = sys_mididevnametonumber(
                 0, &midi_indevnames[i * DEVDESCSIZE])) >= 0)
@@ -652,7 +651,7 @@ void sys_get_midi_params(
         }
     }
     *pnmidioutdev = midi_nmidioutdev;
-    for(i = 0; i < midi_nmidioutdev; i++)
+    for(int i = 0; i < midi_nmidioutdev; i++)
     {
         if((devn = sys_mididevnametonumber(
                 1, &midi_outdevnames[i * DEVDESCSIZE])) >= 0)
@@ -669,16 +668,15 @@ void sys_get_midi_params(
 static void sys_save_midi_params(
     int nmidiindev, int *midiindev, int nmidioutdev, int *midioutdev)
 {
-    int i;
     midi_nmidiindev = nmidiindev;
-    for(i = 0; i < nmidiindev; i++)
+    for(int i = 0; i < nmidiindev; i++)
     {
         midi_midiindev[i] = midiindev[i];
         sys_mididevnumbertoname(
             0, midiindev[i], &midi_indevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
     midi_nmidioutdev = nmidioutdev;
-    for(i = 0; i < nmidioutdev; i++)
+    for(int i = 0; i < nmidioutdev; i++)
     {
         midi_midioutdev[i] = midioutdev[i];
         sys_mididevnumbertoname(
@@ -727,7 +725,6 @@ void sys_listmididevs(void)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
 
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
@@ -739,7 +736,7 @@ void sys_listmididevs(void)
     else
     {
         post("MIDI input devices:");
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
             post("%d. %s", i + 1, indevlist + i * DEVDESCSIZE);
     }
     if(!noutdevs)
@@ -749,7 +746,7 @@ void sys_listmididevs(void)
     else
     {
         post("MIDI output devices:");
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
             post("%d. %s", i + DEVONSET, outdevlist + i * DEVDESCSIZE);
     }
 }
@@ -833,14 +830,13 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
     char device[MAXPDSTRING];
 
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
 
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
-    for(i = 0; i < nindevs; i++)
+    for(int i = 0; i < nindevs; i++)
     {
         sys_vgui("lappend midi_indevlist {%s}\n",
             pdgui_strnescape(
@@ -848,7 +844,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     }
 
     sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
-    for(i = 0; i < noutdevs; i++)
+    for(int i = 0; i < noutdevs; i++)
     {
         sys_vgui("lappend midi_outdevlist {%s}\n",
             pdgui_strnescape(
@@ -991,7 +987,6 @@ int sys_mididevnametonumber(int output, const char *name)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
 
     sys_get_midi_devs(
         indevlist, &nindevs, outdevlist, &noutdevs, MAXNDEV, DEVDESCSIZE);
@@ -999,10 +994,10 @@ int sys_mididevnametonumber(int output, const char *name)
     if(output)
     {
         /* try first for exact match */
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
             if(!strcmp(name, outdevlist + i * DEVDESCSIZE)) return (i);
         /* failing that, a match up to end of shorter string */
-        for(i = 0; i < noutdevs; i++)
+        for(int i = 0; i < noutdevs; i++)
         {
             unsigned int comp = strlen(name);
             if(comp > strlen(outdevlist + i * DEVDESCSIZE))
@@ -1012,9 +1007,9 @@ int sys_mididevnametonumber(int output, const char *name)
     }
     else
     {
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
             if(!strcmp(name, indevlist + i * DEVDESCSIZE)) return (i);
-        for(i = 0; i < nindevs; i++)
+        for(int i = 0; i < nindevs; i++)
         {
             unsigned int comp = strlen(name);
             if(comp > strlen(indevlist + i * DEVDESCSIZE))
@@ -1033,7 +1028,6 @@ void sys_mididevnumbertoname(int output, int devno, char *name, int namesize)
     char outdevlist[MAXNDEV * DEVDESCSIZE];
     int nindevs = 0;
     int noutdevs = 0;
-    int i;
     if(devno < 0)
     {
         *name = 0;

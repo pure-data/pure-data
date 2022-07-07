@@ -534,7 +534,6 @@ static void graph_yticks(
 
 static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     if(argc < 1)
     {
         pd_error(0, "graph_xlabel: no y value given");
@@ -547,7 +546,7 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
         x->gl_xlabel = (t_symbol **) t_resizebytes(x->gl_xlabel,
             x->gl_nxlabels * sizeof(t_symbol *), argc * sizeof(t_symbol *));
         x->gl_nxlabels = argc;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
             x->gl_xlabel[i] = atom_gensym(&argv[i]);
     }
     glist_redraw(x);
@@ -555,7 +554,6 @@ static void graph_xlabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 
 static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     if(argc < 1)
     {
         pd_error(0, "graph_ylabel: no x value given");
@@ -568,7 +566,7 @@ static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
         x->gl_ylabel = (t_symbol **) t_resizebytes(x->gl_ylabel,
             x->gl_nylabels * sizeof(t_symbol *), argc * sizeof(t_symbol *));
         x->gl_nylabels = argc;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
             x->gl_ylabel[i] = atom_gensym(&argv[i]);
     }
     glist_redraw(x);
@@ -776,7 +774,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 {
     t_glist *x = (t_glist *) gr;
     char tag[50];
-    t_gobj *g;
     int x1;
     int y1;
     int x2;
@@ -823,9 +820,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     /* otherwise draw (or erase) us as a graph inside another glist. */
     if(vis)
     {
-        int i;
         t_float f;
-        t_gobj *g;
         t_symbol *arrayname;
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5 * (x->gl_x1 + x->gl_x2) ? "w" : "e");
@@ -841,6 +836,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
 
         /* if there's just one "garray" in the graph, write its name
             along the top */
+        int i;
+        t_gobj *g;
         for(i = (y1 < y2 ? y1 : y2) - 1, g = x->gl_list; g; g = g->g_next)
         {
             if(g->g_pd == garray_class &&
@@ -947,7 +944,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             }
         }
         /* draw x labels */
-        for(i = 0; i < x->gl_nxlabels; i++)
+        for(int i = 0; i < x->gl_nxlabels; i++)
         {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",
@@ -959,7 +956,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         }
 
         /* draw y labels */
-        for(i = 0; i < x->gl_nylabels; i++)
+        for(int i = 0; i < x->gl_nylabels; i++)
         {
             sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
                      "-anchor %s -tags [list %s label graph]\n",
@@ -970,13 +967,13 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         }
 
         /* draw contents of graph as glist */
-        for(g = x->gl_list; g; g = g->g_next)
+        for(t_gobj *g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 1);
     }
     else
     {
         sys_vgui(".x%lx.c delete %s\n", glist_getcanvas(x->gl_owner), tag);
-        for(g = x->gl_list; g; g = g->g_next)
+        for(t_gobj *g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 0);
     }
 }

@@ -153,8 +153,7 @@ static int alsamm_xruns = 0;
 
 static void show_availist(void)
 {
-    int i;
-    for(i = 1; i < WATCH_PERIODS; i++)
+    for(int i = 1; i < WATCH_PERIODS; i++)
     {
         post("%2d:avail i=%7d %s o=%7d(%5d), offset i=%7d %s o=%7d, ptr i=%12p "
              "o=%12p, %d xruns ",
@@ -206,7 +205,6 @@ int alsamm_open_audio(int rate, int blocksize)
        alsa...
        ...we use periodsize and buffersize in frames */
 
-    int i;
     short *tmp_buf;
     unsigned int tmp_uint;
 
@@ -225,7 +223,7 @@ int alsamm_open_audio(int rate, int blocksize)
 #endif
 
     /* init some structures */
-    for(i = 0; i < ALSA_MAXDEV; i++)
+    for(int i = 0; i < ALSA_MAXDEV; i++)
     {
         alsa_indev[i].a_synced = alsa_outdev[i].a_synced = 0;
         alsa_indev[i].a_channels = alsa_outdev[i].a_channels =
@@ -270,7 +268,7 @@ int alsamm_open_audio(int rate, int blocksize)
 
     alsamm_periods = 0; /* no one wants periods setting from command line ;-) */
 
-    for(i = 0; i < alsa_noutdev; i++)
+    for(int i = 0; i < alsa_noutdev; i++)
     {
         /*   post("open audio out %d, of %lx, %d",i,&alsa_device[i],
                    alsa_outdev[i].a_handle); */
@@ -304,7 +302,7 @@ int alsamm_open_audio(int rate, int blocksize)
             alsa_outdev[i].a_channels, alsamm_buffertime);
     }
 
-    for(i = 0; i < alsa_nindev; i++)
+    for(int i = 0; i < alsa_nindev; i++)
     {
 
         if(sys_verbose) post("capture card %d:--------------------", i);
@@ -346,7 +344,7 @@ int alsamm_open_audio(int rate, int blocksize)
 
     /* check for linked handles of input for each output*/
 
-    for(i = 0; i < (alsa_noutdev < alsa_nindev ? alsa_noutdev : alsa_nindev);
+    for(int i = 0; i < (alsa_noutdev < alsa_nindev ? alsa_noutdev : alsa_nindev);
         i++)
     {
         t_alsa_dev *ad = &alsa_outdev[i];
@@ -376,10 +374,10 @@ int alsamm_open_audio(int rate, int blocksize)
 
     /* start alsa in open or better in send_dacs once ??? we will see */
 
-    for(i = 0; i < alsa_noutdev; i++)
+    for(int i = 0; i < alsa_noutdev; i++)
         snd_pcm_dump(alsa_outdev[i].a_handle, alsa_stdout);
 
-    for(i = 0; i < alsa_nindev; i++)
+    for(int i = 0; i < alsa_nindev; i++)
         snd_pcm_dump(alsa_indev[i].inhandle, alsa_stdout);
 
     fflush(stdout);
@@ -395,7 +393,6 @@ int alsamm_open_audio(int rate, int blocksize)
 
 void alsamm_close_audio(void)
 {
-    int i;
     int err;
 
 #ifdef ALSAMM_DEBUG
@@ -404,7 +401,7 @@ void alsamm_close_audio(void)
 
     alsamm_stop();
 
-    for(i = 0; i < alsa_noutdev; i++)
+    for(int i = 0; i < alsa_noutdev; i++)
     {
 
 #ifdef ALSAMM_DEBUG
@@ -430,7 +427,7 @@ void alsamm_close_audio(void)
         alsa_outdev[i].a_channels = 0;
     }
 
-    for(i = 0; i < alsa_nindev; i++)
+    for(int i = 0; i < alsa_nindev; i++)
     {
 
         err = snd_pcm_close(alsa_indev[i].a_handle);
@@ -1152,7 +1149,6 @@ int alsamm_send_dacs(void)
     t_sample *fpi;
     t_sample *fp1;
     t_sample *fp2;
-    int i;
     int err;
     int devno;
 
@@ -1321,7 +1317,7 @@ int alsamm_send_dacs(void)
                 osc(buf, oframes, (dac_send%1000 <
                 500)?-100.0:-10.0,440,&(indexes[chn]));
                 */
-
+                int i;
                 for(i = 0, fp2 = fp1 + chn * alsamm_transfersize; i < oframes;
                     i++, fp2++)
                 {
@@ -1443,7 +1439,7 @@ int alsamm_send_dacs(void)
             {
 
                 t_alsa_sample32 *buf = (t_alsa_sample32 *) dev->a_addr[chn];
-
+                int i;
                 for(i = 0, fp2 = fp1 + chn * alsamm_transfersize; i < iframes;
                     i++, fp2++)
                 {

@@ -48,8 +48,6 @@ static int mac_nmidioutdev;
 void sys_do_open_midi(
     int nmidiin, int *midiinvec, int nmidiout, int *midioutvec)
 {
-    int i = 0;
-    int j;
     int devno;
     int n = 0;
     PmError err;
@@ -57,9 +55,9 @@ void sys_do_open_midi(
     Pt_Start(1, 0, 0); /* start a timer with millisecond accuracy */
 
     mac_nmidiindev = 0;
-    for(i = 0; i < nmidiin; i++)
+    for(int i = 0; i < nmidiin; i++)
     {
-        for(j = 0, devno = 0; j < Pm_CountDevices(); j++)
+        for(int j = 0, devno = 0; j < Pm_CountDevices(); j++)
         {
             const PmDeviceInfo *info = Pm_GetDeviceInfo(j);
             if(info->input)
@@ -88,9 +86,9 @@ void sys_do_open_midi(
     }
 
     mac_nmidioutdev = 0;
-    for(i = 0; i < nmidiout; i++)
+    for(int i = 0; i < nmidiout; i++)
     {
-        for(j = 0, devno = 0; j < Pm_CountDevices(); j++)
+        for(int j = 0, devno = 0; j < Pm_CountDevices(); j++)
         {
             const PmDeviceInfo *info = Pm_GetDeviceInfo(j);
             if(info->output)
@@ -119,11 +117,10 @@ void sys_do_open_midi(
 
 void sys_close_midi(void)
 {
-    int i;
-    for(i = 0; i < mac_nmidiindev; i++)
+    for(int i = 0; i < mac_nmidiindev; i++)
         Pm_Close(mac_midiindevlist[i]);
     mac_nmidiindev = 0;
-    for(i = 0; i < mac_nmidioutdev; i++)
+    for(int i = 0; i < mac_nmidioutdev; i++)
         Pm_Close(mac_midioutdevlist[i]);
     mac_nmidioutdev = 0;
 }
@@ -272,11 +269,10 @@ void nd_sysex_inword(int midiindev, int status, int data1, int data2, int data3)
 
 void sys_poll_midi(void)
 {
-    int i;
     int nmess;
     int throttle = 100;
     PmEvent buffer;
-    for(i = 0; i < mac_nmidiindev; i++)
+    for(int i = 0; i < mac_nmidiindev; i++)
     {
         while((nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1)))
         {
@@ -347,12 +343,11 @@ overload:;
 void midi_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int maxndev, int devdescsize)
 {
-    int i;
     int nindev = 0;
     int noutdev = 0;
     char utf8device[MAXPDSTRING];
     utf8device[0] = 0;
-    for(i = 0; i < Pm_CountDevices(); i++)
+    for(int i = 0; i < Pm_CountDevices(); i++)
     {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
         /* post("%d: %s, %s (%d,%d)", i, info->interf, info->name,

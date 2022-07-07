@@ -419,8 +419,7 @@ static void *pdcontrol_new(void)
 static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
-    int i;
-    for(i = 0; i < (int) f; i++)
+    for(int i = 0; i < (int) f; i++)
     {
         while(!c->gl_env) /* back up to containing canvas or abstraction */
             c = c->gl_owner;
@@ -442,10 +441,9 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
 static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
-    int i;
     int argc;
     t_atom *argv;
-    for(i = 0; i < (int) f; i++)
+    for(int i = 0; i < (int) f; i++)
     {
         while(!c->gl_env) /* back up to containing canvas or abstraction */
             c = c->gl_owner;

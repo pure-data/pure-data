@@ -91,10 +91,9 @@ static void glob_perf(t_pd *dummy, t_float f) { sys_perf = (f != 0); }
 
 void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     char str[80];
     startpost("%s: unknown message %s ", class_getname(pd_class(x)), s->s_name);
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         atom_string(argv + i, str, 80);
         poststring(str);
@@ -104,10 +103,9 @@ void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     char str[80];
     sys_vgui("pdtk_plugin_dispatch ");
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         atom_string(argv + i, str, 80);
         sys_vgui("%s", str);

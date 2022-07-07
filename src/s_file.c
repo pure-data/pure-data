@@ -539,7 +539,6 @@ void sys_loadpreferences(const char *filename, int startingup)
     int midiapi;
     int nolib;
     int maxi;
-    int i;
     char prefbuf[MAXPDSTRING];
     char keybuf[80];
     sys_get_audio_settings(&as);
@@ -696,7 +695,7 @@ void sys_loadpreferences(const char *filename, int startingup)
     {
         maxi = 0x7fffffff;
     }
-    for(i = 0; i < maxi; i++)
+    for(int i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "path%d", i + 1);
         if(!sys_getpreference(keybuf, prefbuf, MAXPDSTRING)) break;
@@ -717,7 +716,7 @@ void sys_loadpreferences(const char *filename, int startingup)
     {
         maxi = 0x7fffffff;
     }
-    for(i = 0; i < maxi; i++)
+    for(int i = 0; i < maxi; i++)
     {
         sprintf(keybuf, "loadlib%d", i + 1);
         if(!sys_getpreference(keybuf, prefbuf, MAXPDSTRING)) break;
@@ -774,7 +773,7 @@ void sys_savepreferences(const char *filename)
     sprintf(buf1, "%d", as.a_api);
     sys_putpreference("audioapi", buf1);
     sys_putpreference("noaudioin", (as.a_nindev <= 0 ? "True" : "False"));
-    for(i = 0; i < as.a_nindev; i++)
+    for(int i = 0; i < as.a_nindev; i++)
     {
         sprintf(buf1, "audioindev%d", i + 1);
         sprintf(buf2, "%d %d", as.a_indevvec[i], as.a_chindevvec[i]);
@@ -785,7 +784,7 @@ void sys_savepreferences(const char *filename)
         sys_putpreference(buf1, buf2);
     }
     sys_putpreference("noaudioout", (as.a_noutdev <= 0 ? "True" : "False"));
-    for(i = 0; i < as.a_noutdev; i++)
+    for(int i = 0; i < as.a_noutdev; i++)
     {
         sprintf(buf1, "audiooutdev%d", i + 1);
         sprintf(buf2, "%d %d", as.a_outdevvec[i], as.a_choutdevvec[i]);
@@ -814,7 +813,7 @@ void sys_savepreferences(const char *filename)
 
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     sys_putpreference("nomidiin", (nmidiindev <= 0 ? "True" : "False"));
-    for(i = 0; i < nmidiindev; i++)
+    for(int i = 0; i < nmidiindev; i++)
     {
         sprintf(buf1, "midiindev%d", i + 1);
         sprintf(buf2, "%d", midiindev[i]);
@@ -825,7 +824,7 @@ void sys_savepreferences(const char *filename)
         sys_putpreference(buf1, buf2);
     }
     sys_putpreference("nomidiout", (nmidioutdev <= 0 ? "True" : "False"));
-    for(i = 0; i < nmidioutdev; i++)
+    for(int i = 0; i < nmidioutdev; i++)
     {
         sprintf(buf1, "midioutdev%d", i + 1);
         sprintf(buf2, "%d", midioutdev[i]);
@@ -837,7 +836,7 @@ void sys_savepreferences(const char *filename)
     }
     /* file search path */
 
-    for(i = 0; 1; i++)
+    for(int i = 0; 1; i++)
     {
         const char *pathelem = namelist_get(STUFF->st_searchpath, i);
         if(!pathelem) break;
@@ -852,7 +851,7 @@ void sys_savepreferences(const char *filename)
     sys_putpreference("verbose", buf1);
 
     /* startup */
-    for(i = 0; 1; i++)
+    for(int i = 0; 1; i++)
     {
         const char *pathelem = namelist_get(STUFF->st_externlist, i);
         if(!pathelem) break;

@@ -75,7 +75,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     x->pd_canvaslist = 0;
     x->pd_templatelist = 0;
     x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
-    for(i = 0; i < SYMTABHASHSIZE; i++)
+    for(int i = 0; i < SYMTABHASHSIZE; i++)
         x->pd_symhash[i] = 0;
 #ifdef PDINSTANCE
     dogensym("pointer", &x->pd_s_pointer, x);
@@ -116,9 +116,8 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     int nmethod, t_gotfn fn, t_symbol *sel, unsigned char *args,
     t_pdinstance *pdinstance)
 {
-    int i;
     t_methodentry *m;
-    for(i = 0; i < nmethod; i++)
+    for(int i = 0; i < nmethod; i++)
     {
         if(sel && (*methodlist)[i].me_name == sel)
         {
@@ -153,8 +152,7 @@ EXTERN void pd_setinstance(t_pdinstance *x) { pd_this = x; }
 
 static void pdinstance_renumber(void)
 {
-    int i;
-    for(i = 0; i < pd_ninstances; i++)
+    for(int i = 0; i < pd_ninstances; i++)
         pd_instances[i]->pd_instanceno = i;
 }
 
@@ -165,7 +163,6 @@ EXTERN t_pdinstance *pdinstance_new(void)
 {
     t_pdinstance *x = (t_pdinstance *) getbytes(sizeof(t_pdinstance));
     t_class *c;
-    int i;
     pd_this = x;
     s_inter_newpdinstance();
     pdinstance_init(x);
@@ -181,7 +178,7 @@ EXTERN t_pdinstance *pdinstance_new(void)
             pd_ninstances * sizeof(*c->c_methods),
             (pd_ninstances + 1) * sizeof(*c->c_methods));
         c->c_methods[pd_ninstances] = t_getbytes(0);
-        for(i = 0; i < c->c_nmethod; i++)
+        for(int i = 0; i < c->c_nmethod; i++)
             class_addmethodtolist(c, &c->c_methods[pd_ninstances], i,
                 c->c_methods[0][i].me_fun,
                 dogensym(c->c_methods[0][i].me_name->s_name, 0, x),
@@ -201,8 +198,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
-    int i, instanceno;
-    t_class *c;
+    int instanceno;
     t_instanceinter *inter;
     pd_setinstance(x);
     sys_lock();
@@ -215,7 +211,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *) x->pd_canvaslist);
     while(x->pd_templatelist)
         pd_free((t_pd *) x->pd_templatelist);
-    for(c = class_list; c; c = c->c_next)
+    for(t_class *c = class_list; c; c = c->c_next)
     {
         if(c->c_methods[instanceno])
             freebytes(c->c_methods[instanceno],
@@ -227,7 +223,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
             pd_ninstances * sizeof(*c->c_methods),
             (pd_ninstances - 1) * sizeof(*c->c_methods));
     }
-    for(i = 0; i < SYMTABHASHSIZE; i++)
+    for(int i = 0; i < SYMTABHASHSIZE; i++)
     {
         while((s = x->pd_symhash[i]))
         {
@@ -447,7 +443,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     t_atomtype vec[MAXPDARG + 1];
     t_atomtype *vp = vec;
     int count = 0;
-    int i;
     t_class *c;
     int typeflag = flags & CLASS_TYPEMASK;
     if(!typeflag) typeflag = CLASS_PATCHABLE;
@@ -524,7 +519,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 #ifdef PDINSTANCE
     c->c_methods =
         (t_methodentry **) t_getbytes(pd_ninstances * sizeof(*c->c_methods));
-    for(i = 0; i < pd_ninstances; i++)
+    for(int i = 0; i < pd_ninstances; i++)
         c->c_methods[i] = t_getbytes(0);
     c->c_next = class_list;
     class_list = c;
@@ -539,7 +534,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 
 void class_free(t_class *c)
 {
-    int i;
 #ifdef PDINSTANCE
     t_class *prev;
     if(class_list == c)
@@ -554,7 +548,7 @@ void class_free(t_class *c)
 #endif
     if(c->c_classfreefn) c->c_classfreefn(c);
 #ifdef PDINSTANCE
-    for(i = 0; i < pd_ninstances; i++)
+    for(int i = 0; i < pd_ninstances; i++)
     {
         if(c->c_methods[i])
             freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
@@ -619,7 +613,6 @@ void class_addmethod(
     va_list ap;
     t_atomtype argtype = arg1;
     int nargs;
-    int i;
     if(!c) return;
     va_start(ap, arg1);
     /* "signal" method specifies that we take audio signals but
@@ -676,7 +669,7 @@ void class_addmethod(
         }
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
-        for(i = 0; i < pd_ninstances; i++)
+        for(int i = 0; i < pd_ninstances; i++)
         {
             class_addmethodtolist(c, &c->c_methods[i], c->c_nmethod,
                 (t_gotfn) fn,

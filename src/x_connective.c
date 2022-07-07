@@ -875,8 +875,7 @@ static void pack_list(t_pack *x, t_symbol *s, int ac, t_atom *av)
 static void pack_anything(t_pack *x, t_symbol *s, int ac, t_atom *av)
 {
     t_atom *av2 = (t_atom *) getbytes((ac + 1) * sizeof(t_atom));
-    int i;
-    for(i = 0; i < ac; i++)
+    for(int i = 0; i < ac; i++)
         av2[i + 1] = av[i];
     SETSYMBOL(av2, s);
     obj_list(&x->x_obj, 0, ac + 1, av2);
@@ -1006,8 +1005,7 @@ static void unpack_list(t_unpack *x, t_symbol *s, int argc, t_atom *argv)
 static void unpack_anything(t_unpack *x, t_symbol *s, int ac, t_atom *av)
 {
     t_atom *av2 = (t_atom *) getbytes((ac + 1) * sizeof(t_atom));
-    int i;
-    for(i = 0; i < ac; i++)
+    for(int i = 0; i < ac; i++)
         av2[i + 1] = av[i];
     SETSYMBOL(av2, s);
     unpack_list(x, 0, ac + 1, av2);

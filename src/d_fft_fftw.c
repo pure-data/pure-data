@@ -74,16 +74,14 @@ static cfftw_info *cfftw_getplan(int n, int fwd)
 
 static void cfftw_term(void)
 {
-    int i;
-    int j;
     cfftw_info *cinfo[2];
 
-    for(i = 0; i < MAXFFT + 1 - MINFFT; i++)
+    for(int i = 0; i < MAXFFT + 1 - MINFFT; i++)
     {
         cinfo[0] = &cfftw_fwd[i];
         cinfo[1] = &cfftw_bwd[i];
 
-        for(j = 0; j < 2; j++)
+        for(int j = 0; j < 2; j++)
         {
             if(cinfo[j]->plan)
             {
@@ -127,16 +125,14 @@ static rfftw_info *rfftw_getplan(int n, int fwd)
 
 static void rfftw_term(void)
 {
-    int i;
-    int j;
     rfftw_info *rinfo[2];
 
-    for(i = 0; i < MAXFFT + 1 - MINFFT; i++)
+    for(int i = 0; i < MAXFFT + 1 - MINFFT; i++)
     {
         rinfo[0] = &rfftw_fwd[i];
         rinfo[1] = &rfftw_bwd[i];
 
-        for(j = 0; j < 2; j++)
+        for(int j = 0; j < 2; j++)
         {
             if(rinfo[j]->plan)
             {
@@ -206,31 +202,29 @@ EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 
 EXTERN void mayer_realfft(int n, t_sample *fz)
 {
-    int i;
     rfftw_info *p = rfftw_getplan(n, 1);
     if(!p) return;
 
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         p->in[i] = fz[i];
     fftwf_execute(p->plan);
-    for(i = 0; i < n / 2 + 1; i++)
+    for(int i = 0; i < n / 2 + 1; i++)
         fz[i] = p->out[i];
-    for(; i < n; i++)
+    for(int i = n / 2 + 1; i < n; i++)
         fz[i] = -p->out[i];
 }
 
 EXTERN void mayer_realifft(int n, t_sample *fz)
 {
-    int i;
     rfftw_info *p = rfftw_getplan(n, 0);
     if(!p) return;
 
-    for(i = 0; i < n / 2 + 1; i++)
+    for(int i = 0; i < n / 2 + 1; i++)
         p->in[i] = fz[i];
-    for(; i < n; i++)
+    for(int i = n / 2 + 1; i < n; i++)
         p->in[i] = -fz[i];
     fftwf_execute(p->plan);
-    for(i = 0; i < n; i++)
+    for(int i = 0; i < n; i++)
         fz[i] = p->out[i];
 }
 

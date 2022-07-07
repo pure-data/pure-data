@@ -54,9 +54,8 @@ static int atom_equal(const t_atom *v0, const t_atom *v1)
 
 static int lists_are_equal(int c0, const t_atom *v0, int c1, const t_atom *v1)
 {
-    int i;
     if(c0 != c1) return 0;
-    for(i = 0; i < c0; i++)
+    for(int i = 0; i < c0; i++)
         if(!atom_equal(v0++, v1++)) return 0;
     return 1;
 }

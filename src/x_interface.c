@@ -92,10 +92,9 @@ static void print_float(t_print *x, t_float f)
 
 static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
     print_startlogpost(x, "%s%s%s", x->x_sym->s_name,
         (*x->x_sym->s_name ? ": " : ""), s->s_name);
-    for(i = 0; i < argc; i++)
+    for(int i = 0; i < argc; i++)
     {
         char buf[MAXPDSTRING];
         atom_string(argv + i, buf, MAXPDSTRING);
@@ -130,7 +129,6 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
     }
     else if(argv->a_type == A_FLOAT)
     {
-        int i;
         /* print first (numeric) atom, to avoid a leading space */
         if(*x->x_sym->s_name)
         {
@@ -143,7 +141,7 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
         }
         argc--;
         argv++;
-        for(i = 0; i < argc; i++)
+        for(int i = 0; i < argc; i++)
         {
             char buf[MAXPDSTRING];
             atom_string(argv + i, buf, MAXPDSTRING);
