@@ -6,7 +6,7 @@
 #X text 14 672 see also:;
 #X obj 138 672 timer;
 #X obj 90 672 metro;
-#X obj 68 270 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X obj 64 270 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 491 672 updated for Pd version 0.45;
 #X obj 117 491 delay 1000 1 msec;
@@ -29,7 +29,7 @@ delay of 500 msec (1/2 second)., f 42;
 min (hence \, the same as 'BPM')., f 50;
 #X obj 346 593 delay 2 2 persec;
 #X obj 346 616 delay 0.0166667 1 min;
-#X text 23 271 start;
+#X text 19 270 start;
 #X text 132 270 cancel the delay;
 #X text 156 297 set delay time and start;
 #X msg 188 389 tempo 0.001 second;
@@ -90,12 +90,11 @@ which set a tempo value and a time unit symbol. Possible symbols are:
 , f 28;
 #X obj 8 657 cnv 1 690 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 59 36 <-- also known as;
 #X obj 117 520 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 194 563 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 194 562 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 194 619 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 194 619 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 20 75 The [delay] object outputs a bang after a given delay
 time (via argument or right inlet). A bang starts the delay. A float
@@ -103,14 +102,15 @@ specifies the time delay and starts it. If the delay is running and
 scheduled to output \, sending a bang or a float cancels the previous
 setting and reschedules the output., f 94;
 #X text 247 491 <-- creation arguments: - delay time (float);
+#X text 59 36 <-- abbreviation;
 #X connect 2 0 9 1;
 #X connect 3 0 9 0;
 #X connect 7 0 9 0;
-#X connect 9 0 45 0;
-#X connect 11 0 47 0;
+#X connect 9 0 44 0;
+#X connect 11 0 46 0;
 #X connect 15 0 9 0;
 #X connect 16 0 9 0;
 #X connect 17 0 16 0;
 #X connect 19 0 9 0;
 #X connect 28 0 9 0;
-#X connect 46 0 11 0;
+#X connect 45 0 11 0;

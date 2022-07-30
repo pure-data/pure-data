@@ -2,7 +2,7 @@
 ;
 #N struct template7-element float x float y float w;
 #N canvas 449 23 670 446 12;
-#N canvas 704 32 508 538 stuff 0;
+#N canvas 662 27 508 538 stuff 0;
 #X obj 167 189 pointer;
 #X text 119 62 click here to re-initialize;
 #X obj 93 104 trigger bang bang bang, f 31;
@@ -78,9 +78,9 @@ range for both X and Y is from 0 to 300 and the X and Y size is also
 300 \, so the unit per pixel is "1" for both X and Y., f 38;
 #X text 365 225 You can still click and change values of scalars (triangle's
 apex or array's elements)., f 38;
-#X text 53 26 The subwindow used to plot Scalars can also be graphed
-on the parent patch. This is also possible for abstractions. In this
-case the "Units per pixel" is meaningless and you must set the range
-accordingly. You can also hide the name of the window if you want (here
-we show it: "pd data7")., f 76;
+#X text 45 24 The subwindow used to plot scalars can also be graphed
+on the parent patch (hence \, you can also design abstractions that
+plot Data Structures). In this case the "Units per pixel" is meaningless
+and you must set the range accordingly. You can also hide the name
+of the window if you want (here we show it: "pd data7")., f 82;
 #X coords 0 0 1 1 85 60 0;

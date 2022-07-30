@@ -1,8 +1,8 @@
 #N canvas 849 54 433 485 12;
 #X obj 210 286 textfile;
-#X obj 203 421 bng 15 250 50 0 empty empty store 16 7 0 10 #dfdfdf
+#X obj 202 421 bng 17 250 50 0 empty empty store 20 9 0 10 #dfdfdf
 #000000 #000000;
-#X obj 257 422 bng 15 250 50 0 empty empty recall 16 7 0 10 #dfdfdf
+#X obj 255 421 bng 17 250 50 0 empty empty recall 20 9 0 10 #dfdfdf
 #000000 #000000;
 #X obj 104 59 t b b b;
 #X msg 210 110 clear;
@@ -47,4 +47,4 @@
 #X connect 17 0 0 0;
 #X connect 18 0 17 1;
 #X connect 19 0 17 1;
-#X coords 0 0 1 1 110 40 1 200 400;
+#X coords 0 0 1 1 113 40 1 200 400;

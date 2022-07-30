@@ -71,9 +71,9 @@
 #X obj 69 244 + 24;
 #X obj 69 215 random 48;
 #X obj 33 49 preset preset1 x;
-#X obj 154 49 preset preset2 x;
-#X obj 280 49 preset preset3 x;
-#X obj 405 49 preset preset4 x;
+#X obj 157 49 preset preset2 x;
+#X obj 283 49 preset preset3 x;
+#X obj 409 49 preset preset4 x;
 #X obj 383 470 numset 2nd x;
 #A saved 0;
 #X text 65 136 random-note tester;
@@ -97,7 +97,7 @@
 #X text 466 473 2nd osc detune;
 #X text 466 502 2nd osc amp (%);
 #X obj 69 535 pack f f f f f f f f f f f f f f f f;
-#X text 62 18 polyphonic synth with voice presets;
+#X text 43 18 polyphonic synth with voice presets;
 #X obj 69 305 pack f f;
 #X text 284 590 <-- flush hanging notes;
 #X connect 0 0 48 0;
