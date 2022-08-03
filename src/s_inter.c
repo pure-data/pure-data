@@ -1081,7 +1081,7 @@ static const char*deken_CPU[] = {
 #  warning unknown architecture
 # endif
 #endif
-        , 0};
+        , 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 static void init_deken_arch(void)
 {
@@ -1089,31 +1089,53 @@ static void init_deken_arch(void)
     if(initialized)
         return;
     initialized = 1;
+#define CPUNAME_SIZE 15
 
-#if !defined(DEKEN_CPU) && defined(__linux__) && _POSIX_VERSION >= 200112L && defined(__ARM_ARCH)
+#if !defined(DEKEN_CPU)
+# if defined __ARM_ARCH
         /* ARM-specific:
+         * if we are running ARMv7, we can also load ARMv6 externals
+         */
+    if (deken_CPU && sizeof(deken_CPU)/sizeof(*deken_CPU) > 0)
+    {
+        int arm_cpu = __ARM_ARCH;
+        int cpu_v;
+        int n;
+        const char endianness =
+#  if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            'b';
+#  else
+            0;
+#  endif
+
+#  if defined(__linux__) && _POSIX_VERSION >= 200112L
+        /*
          * Pd might be compiled for ARMv6 (as in Raspbian),
          * but run on an ARMv7 (or higher) (e.g. RPi2 and newer).
-         * In this case, announce the newer CPU
+         * Therefore we try to detect the actual CPU, and announce that
          */
-    if (1)
-    {
         struct utsname name;
         if (uname (&name) >= 0) {
-            if(!strncmp(name.machine, "arm", 3)) {
-#define CPUNAME_SIZE 15
-                static char cpuname[CPUNAME_SIZE+1];
-                size_t cpuname_size;
-                strncpy(cpuname, name.machine, CPUNAME_SIZE);
-                cpuname[CPUNAME_SIZE]=0;
-                cpuname_size = strlen(cpuname);
-                if ('l' == cpuname[cpuname_size-1])
-                    cpuname[cpuname_size-1] = 0;
-                deken_CPU[0] = cpuname;
+            if(!strncmp(name.machine, "armv", 4)) {
+                cpu_v = name.machine[4] - '0';
+                if((cpu_v >= 6) && (cpu_v <= 9))
+                    arm_cpu = cpu_v;
             }
         }
+#  endif /* uname() */
+
+            /* list all compatible ARM CPUs */
+        for(cpu_v = arm_cpu;
+            (cpu_v >= 6 && n < (sizeof(deken_CPU)/sizeof(*deken_CPU)));
+            cpu_v--)
+        {
+            static char cpuname[CPUNAME_SIZE+1];
+            snprintf(cpuname, CPUNAME_SIZE, "armv%d%c", cpu_v, endianness);
+            deken_CPU[n++] = gensym(cpuname)->s_name;
+        }
     }
-#endif /* linux && arm */
+# endif /* arm */
+#endif /* !DEKEN_CPU */
 }
 
 /* get the (normalized) deken-specifier
