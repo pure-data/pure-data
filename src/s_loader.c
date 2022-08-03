@@ -99,7 +99,7 @@ static void add_dllextension(const char*ext) {
     num_dllextents++;
 }
 
-const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize, int fat);
+const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize, int cpu);
 
 static char*add_deken_extension(const char*systemext, int float_agnostic, int cpu)
 {
