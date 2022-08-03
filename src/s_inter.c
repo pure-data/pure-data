@@ -44,6 +44,10 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+#if defined(__linux__) && _POSIX_VERSION >= 200112L
+# include <sys/utsname.h>
+#endif
+
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
 #endif
@@ -1080,6 +1084,40 @@ static const char*deken_CPU =
 #endif
         ;
 
+
+static void init_deken(void)
+{
+    static int initialized = 0;
+    if(initialized)
+        return;
+    initialized = 1;
+
+#if !defined(DEKEN_CPU) && defined(__linux__) && _POSIX_VERSION >= 200112L && defined(__ARM_ARCH)
+        /* ARM-specific:
+         * Pd might be compiled for ARMv6 (as in Raspbian),
+         * but run on an ARMv7 (or higher) (e.g. RPi2 and newer).
+         * In this case, announce the newer CPU
+         */
+    if (1)
+    {
+        struct utsname name;
+        if (uname (&name) >= 0) {
+            if(!strncmp(name.machine, "arm", 3)) {
+#define CPUNAME_SIZE 15
+                static char cpuname[CPUNAME_SIZE+1];
+                size_t cpuname_size;
+                strncpy(cpuname, name.machine, CPUNAME_SIZE);
+                cpuname[CPUNAME_SIZE]=0;
+                cpuname_size = strlen(cpuname);
+                if ('l' == cpuname[cpuname_size-1])
+                    cpuname[cpuname_size-1] = 0;
+                deken_CPU = cpuname;
+            }
+        }
+    }
+#endif /* linux && arm */
+}
+
 /* get the (normalized) deken-specifier
  * if 'float_agnostic' is non-0, the float-size is included.
  * otherwise a floatsize-agnostic specifier is generated.
@@ -1088,6 +1126,7 @@ static const char*deken_CPU =
  */
 const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int fat) {
     unsigned int i;
+    init_deken();
     if (!deken_OS)
         return 0;
     if (!fat && !deken_CPU)
@@ -1104,6 +1143,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
 
 static void sys_init_deken(void)
 {
+    init_deken();
         /* only send the arch info, if we are sure about it... */
     if (deken_OS && deken_CPU)
         sys_vgui("::deken::set_platform %s %s %d %d\n",
