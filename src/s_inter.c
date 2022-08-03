@@ -1085,7 +1085,7 @@ static const char*deken_CPU =
         ;
 
 
-static void init_deken(void)
+static void init_deken_arch(void)
 {
     static int initialized = 0;
     if(initialized)
@@ -1126,7 +1126,7 @@ static void init_deken(void)
  */
 const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int fat) {
     unsigned int i;
-    init_deken();
+    init_deken_arch();
     if (!deken_OS)
         return 0;
     if (!fat && !deken_CPU)
@@ -1143,7 +1143,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
 
 static void sys_init_deken(void)
 {
-    init_deken();
+    init_deken_arch();
         /* only send the arch info, if we are sure about it... */
     if (deken_OS && deken_CPU)
         sys_vgui("::deken::set_platform %s %s %d %d\n",
