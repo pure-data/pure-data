@@ -132,13 +132,19 @@ const char**sys_get_dllextensions(void)
         const char *systemext = sys_dllextent_base[sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base)-1];
         const int num_float_extensions = 2; /* floatsize, float-agnostic */
 
-        int i, floatsize;
+        int i, cpu, floatsize;
 
             /* create deken-based extensions */
-        for(floatsize=0; floatsize<num_float_extensions; floatsize++)
+        for(cpu=0; ; cpu++)
         {
-            add_deken_extension(systemext, floatsize, 0);
+            /* iterate over compatible CPUs  */
+            for(floatsize=0; floatsize<num_float_extensions; floatsize++)
+            {
+                if (!add_deken_extension(systemext, floatsize, cpu))
+                    goto no_more_cpus;
+            }
         }
+    no_more_cpus:
 #if FAT_BINARIES
         for(floatsize=0; floatsize<num_float_extensions; floatsize++)
         {

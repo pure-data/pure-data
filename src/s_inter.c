@@ -1058,7 +1058,7 @@ static const char*deken_OS =
         0
 #endif
         ;
-static const char*deken_CPU =
+static const char*deken_CPU[] = {
 #if defined DEKEN_CPU
         stringify(DEKEN_CPU)
 #elif defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
@@ -1080,10 +1080,8 @@ static const char*deken_CPU =
 # if defined(__GNUC__)
 #  warning unknown architecture
 # endif
-        0
 #endif
-        ;
-
+        , 0};
 
 static void init_deken_arch(void)
 {
@@ -1111,7 +1109,7 @@ static void init_deken_arch(void)
                 cpuname_size = strlen(cpuname);
                 if ('l' == cpuname[cpuname_size-1])
                     cpuname[cpuname_size-1] = 0;
-                deken_CPU = cpuname;
+                deken_CPU[0] = cpuname;
             }
         }
     }
@@ -1132,7 +1130,7 @@ const char*sys_deken_specifier(char*buf, size_t bufsize, int float_agnostic, int
     init_deken_arch();
     if (!deken_OS)
         return 0;
-    if (cpu>=0 && !deken_CPU)
+    if ((cpu>=0) && (((!deken_CPU) || (cpu >= (sizeof(deken_CPU)/sizeof(*deken_CPU))) || (!deken_CPU[cpu]))))
         return 0;
 
     snprintf(buf, bufsize-1,
@@ -1148,9 +1146,9 @@ static void sys_init_deken(void)
 {
     init_deken_arch();
         /* only send the arch info, if we are sure about it... */
-    if (deken_OS && deken_CPU)
+    if (deken_OS && deken_CPU && deken_CPU[0])
         sys_vgui("::deken::set_platform %s %s %d %d\n",
-                 deken_OS, deken_CPU,
+                 deken_OS, deken_CPU[0],
                  8 * sizeof(char*),
                  8 * sizeof(t_float));
 }
