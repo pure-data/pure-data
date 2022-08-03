@@ -63,11 +63,7 @@ a fat binary or an indication of the instruction set. */
 #endif
 
 
-static const char*sys_dllextent_[] = {
-    0, 0,
-#if FAT_BINARIES
-    0, 0,
-#endif
+static const char*sys_dllextent_base[] = {
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 # if defined(__x86_64__) || defined(_M_X64)
@@ -87,51 +83,77 @@ static const char*sys_dllextent_[] = {
 #else
     ".so",
 #endif
-    0};
+    };
 
 static const char**sys_dllextent = 0;
+static size_t num_dllextents = 0;
+static void add_dllextension(const char*ext) {
+    const char**extensions = resizebytes(sys_dllextent
+        , sizeof(*sys_dllextent) * num_dllextents
+        , sizeof(*sys_dllextent) * (num_dllextents+1)
+        );
+    if(!extensions)
+        return;
+    sys_dllextent = extensions;
+    sys_dllextent[num_dllextents] = ext;
+    num_dllextents++;
+}
 
 const char*sys_deken_specifier(char*buf, size_t bufsize, int include_floatsize, int fat);
+
+static char*add_deken_extension(const char*systemext, int float_agnostic, int cpu)
+{
+    char extbuf[MAXPDSTRING];
+    char*ext = 0;
+
+    if(!(sys_deken_specifier(extbuf, sizeof(extbuf), float_agnostic, cpu)))
+        return 0;
+
+    ext = getbytes(MAXPDSTRING);
+    if(!ext)
+        return 0;
+    ext[MAXPDSTRING-1] = 0;
+
+    if(snprintf(ext, MAXPDSTRING-1, ".%s%s", extbuf, systemext) > 0)
+        add_dllextension(ext);
+    else
+    {
+        freebytes(ext, MAXPDSTRING);
+        ext = 0;
+    }
+    return ext;
+}
 
     /* get an array of dll-extensions */
 const char**sys_get_dllextensions(void)
 {
-    static int firsttime = 1;
-    static char extension_dek[4][MAXPDSTRING];
     if(!sys_dllextent) {
             /* systemext: '.dll' on windows, '.so' on the others */
-        const char *systemext = sys_dllextent_[sizeof(sys_dllextent_)/sizeof(*sys_dllextent_)-2];
-        const int num_float_extensions = 2;
-        const int num_cpu_extensions =
-#if FAT_BINARIES
-            2
-#else
-            1
-#endif
-            ;
-        const int total_dek_extensions = num_float_extensions * num_cpu_extensions;
-        int num_dek_extensions = 0;
-        int i, j;
+        const char *systemext = sys_dllextent_base[sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base)-1];
+        const int num_float_extensions = 2; /* floatsize, float-agnostic */
+
+        int i, floatsize;
 
             /* create deken-based extensions */
-        for(j=0; j<num_cpu_extensions; j++) /* cpu */
+        for(floatsize=0; floatsize<num_float_extensions; floatsize++)
         {
-            for(i=0; i<num_float_extensions; i++) /* floatsize */
-            {
-                char extbuf[MAXPDSTRING];
-                const char*dekenspecifier = sys_deken_specifier(extbuf, MAXPDSTRING, i, j);
-                if(!dekenspecifier)
-                    continue;
-                snprintf(extension_dek[num_dek_extensions++], MAXPDSTRING-1, ".%s%s",
-                    dekenspecifier, systemext);
-            }
+            add_deken_extension(systemext, floatsize, 0);
         }
-            /* filter-out invalid deken-based extensions */
-        for(i=0; i<num_dek_extensions; i++) {
-            sys_dllextent_[i+total_dek_extensions-num_dek_extensions] = extension_dek[i];
+#if FAT_BINARIES
+        for(floatsize=0; floatsize<num_float_extensions; floatsize++)
+        {
+            add_deken_extension(systemext, floatsize, -1);
         }
+#endif
 
-        sys_dllextent = sys_dllextent_ + total_dek_extensions - num_dek_extensions;
+            /* and add the legacy extensions */
+        for(i=0; i<sizeof(sys_dllextent_base)/sizeof(*sys_dllextent_base); i++)
+        {
+            if(sys_dllextent_base[i])
+                add_dllextension(sys_dllextent_base[i]);
+        }
+            /* 0-terminate the extension list */
+        add_dllextension(0);
     }
     return sys_dllextent;
 }
