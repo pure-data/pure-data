@@ -499,8 +499,13 @@ EXTERN const char *class_gethelpname(const t_class *c);
 EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(const t_class *c);
-EXTERN void class_domainsignalin(t_class *c, int onset);
 EXTERN void class_set_extern_dir(t_symbol *s);
+
+EXTERN void class_setdsp(t_class *c, int flags);
+#define CLASS_DSP_BIGSIGNALS 1      /* use large signal structure */
+#define CLASS_DSP_MANUALSCALARS 2   /* suppress promoting float to signal */
+
+EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
     class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
 
@@ -596,11 +601,17 @@ typedef union _sampleint_union {
 
 typedef struct _signal
 {
-    int s_n;            /* number of points in the array */
-    t_sample *s_vec;    /* the array */
-    t_float s_sr;         /* sample rate */
-    int s_refcount;     /* number of times used */
-    int s_isborrowed;   /* whether we're going to borrow our array */
+    union
+    {
+        int s_length;       /* number of items per channel */
+        int s_n;            /* for source compatibility: pre-0.54 name */
+    };
+    t_sample *s_vec;        /* the samples, s_nchans vectors of s_length */
+    t_float s_sr;           /* samples per second per channel */
+    int s_nchans;           /* number of channels */
+    int s_overlap;          /* number of times each sample appears */
+    int s_refcount;         /* number of times signal is referenced */
+    int s_isborrowed;       /* whether we're going to borrow our array */
     struct _signal *s_borrowedfrom;     /* signal to borrow it from */
     struct _signal *s_nextfree;         /* next in freelist */
     struct _signal *s_nextused;         /* next in used list */
