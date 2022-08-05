@@ -1,5 +1,5 @@
 current:
-	echo make pd_linux, pd_linux32, pd_nt, pd_darwin
+	echo make pd_linux, pd_linux32, pd_nt, pd_darwin, pd_darwin_arm
 
 clean: ; rm -f *.pd_linux *.o
 
@@ -60,7 +60,7 @@ LINUXINCLUDE =  -I../../src
 	strip --strip-unneeded $*.l_ia64
 	rm $*.o
 
-# ----------------------- macOS -----------------------
+# ----------------------- macOS x86 -----------------------
 
 pd_darwin: obj1.pd_darwin obj2.pd_darwin \
      obj3.pd_darwin obj4.pd_darwin obj5.pd_darwin dspobj~.pd_darwin
@@ -74,5 +74,21 @@ DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
 	cc $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
 	cc -bundle -undefined suppress -arch i386 -arch x86_64 \
             -flat_namespace -o $*.pd_darwin $*.o 
+	rm -f $*.o
+
+# ----------------------- macOS ARM -----------------------
+
+pd_darwin_arm: obj1.pd_darwin_arm obj2.pd_darwin_arm \
+     obj3.pd_darwin_arm obj4.pd_darwin_arm obj5.pd_darwin_arm dspobj~.pd_darwin_arm
+
+.SUFFIXES: .pd_darwin_arm
+
+DARWINARMCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
+    -Wno-unused -Wno-parentheses -Wno-switch
+
+.c.pd_darwin_arm:
+	cc $(DARWINARMCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
+	cc -bundle -undefined suppress \
+            -flat_namespace -o $*.pd_darwin_arm $*.o
 	rm -f $*.o
 
