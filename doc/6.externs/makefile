@@ -68,11 +68,11 @@ pd_darwin: obj1.pd_darwin obj2.pd_darwin \
 .SUFFIXES: .pd_darwin
 
 DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
-    -Wno-unused -Wno-parentheses -Wno-switch -arch i386 -arch x86_64
+    -Wno-unused -Wno-parentheses -Wno-switch
 
 .c.pd_darwin:
 	cc $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
-	cc -bundle -undefined suppress -arch i386 -arch x86_64 \
+	cc -bundle -undefined suppress \
             -flat_namespace -o $*.pd_darwin $*.o 
 	rm -f $*.o
 
