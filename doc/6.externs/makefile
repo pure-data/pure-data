@@ -1,7 +1,12 @@
 current:
 	echo make pd_linux, pd_linux32, pd_nt, pd_darwin
 
-clean: ; rm -f *.pd_linux *.o
+clean:
+	rm -f *.o
+	rm -f *.pd_linux
+	rm -f *.pd_darwin
+	rm -f *.l_ia64
+	rm -f *.l_i386
 
 # ----------------------- Windows-----------------------
 # note; you will certainly have to edit the definition of VC to agree with
