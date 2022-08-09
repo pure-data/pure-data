@@ -1564,30 +1564,22 @@ void glist_drawiofor_atoms(t_gatom *x, t_glist *glist, t_object *ob,
     int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
     if(!*x->a_symto->s_name){
-        for (i = 0; i < n; i++)
-        {
-            int onset = x1 + (width - iow) * i / nplus;
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                "-tags [list %sR %so outlet] -fill black\n",
-                glist_getcanvas(glist),
-                onset, y2 - oh + glist->gl_zoom,
-                onset + iow, y2,
-                tag, tag);
-        }
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+            "-tags [list %sR %so outlet] -fill black\n",
+            glist_getcanvas(glist),
+            x1, y2 - oh + glist->gl_zoom,
+            x1 + iow, y2,
+            tag, tag);
     }
     n = obj_ninlets(ob);
     nplus = (n == 1 ? 1 : n-1);
     if(!*x->a_symfrom->s_name){
-        for (i = 0; i < n; i++)
-        {
-            int onset = x1 + (width - iow) * i / nplus;
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                "-tags [list %sR %si inlet] -fill black\n",
-                glist_getcanvas(glist),
-                onset, y1,
-                onset + iow, y1 + ih - glist->gl_zoom,
-                tag, tag);
-        }
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+            "-tags [list %sR %si inlet] -fill black\n",
+            glist_getcanvas(glist),
+            x1, y1,
+            x1 + iow, y1 + ih - glist->gl_zoom,
+            tag, tag);
     }
 }
 
