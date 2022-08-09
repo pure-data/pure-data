@@ -749,17 +749,6 @@ static void gatom_reborder(t_gatom *x)
         rtext_width(y), rtext_height(y), 0);
 }
 
-void gatom_undarken(t_text *x)
-{
-    if (x->te_type == T_ATOM)
-    {
-        ((t_gatom *)x)->a_doubleclicked =
-            ((t_gatom *)x)->a_grabbed = 0;
-        gatom_reborder((t_gatom *)x);
-    }
-    else bug("gatom_undarken");
-}
-
 void gatom_key(void *z, t_symbol *keysym, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;

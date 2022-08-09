@@ -539,8 +539,6 @@ void rtext_select(t_rtext *x, int state)
         x->x_tag, (state? "blue" : "black"));
 }
 
-void gatom_undarken(t_text *x);
-
 void rtext_activate(t_rtext *x, int state)
 {
     int w = 0, h = 0, indx;
@@ -561,8 +559,6 @@ void rtext_activate(t_rtext *x, int state)
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
-        if (x->x_text->te_type == T_ATOM)
-            gatom_undarken(x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
