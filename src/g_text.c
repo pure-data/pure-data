@@ -951,7 +951,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
                             argc, argv);
 
     gobj_vis(&x->a_text.te_g, x->a_glist, 0);
-    if (!*symfrom->s_name && *x->a_symfrom->s_name)
+/*    if (!*symfrom->s_name && *x->a_symfrom->s_name)
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
     else if (*symfrom->s_name && !*x->a_symfrom->s_name && x->a_text.te_inlet)
     {
@@ -966,7 +966,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
         canvas_deletelinesforio(x->a_glist, &x->a_text,
             0, x->a_text.te_outlet);
         outlet_free(x->a_text.te_outlet);
-    }
+    }*/
     if (draglo >= draghi)
         draglo = draghi = 0;
     x->a_draglo = draglo;
@@ -1081,6 +1081,8 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     x->a_revertbuf = 0;
     x->a_fontsize = 0;
     (void)gatom_getatom(x);  /* this forces initialization of binbuf */
+    outlet_new(&x->a_text, x->a_flavor == A_FLOAT ? &s_float: &s_symbol);
+    inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
     if (argc > 1)
         /* create from file. x, y, width, low-range, high-range, flags,
             label, receive-name, send-name, fontsize */
@@ -1103,11 +1105,6 @@ void canvas_atom(t_glist *gl, t_atomtype type,
 
         x->a_symto = gatom_unescapit(atom_getsymbolarg(8, argc, argv));
         x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
-        if (x->a_symto == &s_)
-            outlet_new(&x->a_text,
-                x->a_flavor == A_FLOAT ? &s_float: &s_symbol);
-        if (x->a_symfrom == &s_)
-            inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         x->a_fontsize = atom_getfloatarg(9, argc, argv);
         glist_add(gl, &x->a_text.te_g);
     }
@@ -1115,9 +1112,6 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     {
         int connectme, xpix, ypix, indx, nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
-        outlet_new(&x->a_text,
-            x->a_flavor == A_FLOAT ? &s_float: &s_symbol);
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
