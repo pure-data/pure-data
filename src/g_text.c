@@ -1625,7 +1625,6 @@ void atom_drawborder(t_gatom *x, t_text *t, t_glist *glist,
         glist_drawiofor_atoms(x, glist, ob, tag, x1, y1, x2, y2);
     /* raise cords over everything else */
     sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
-    
 }
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
