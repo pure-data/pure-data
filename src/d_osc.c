@@ -22,12 +22,6 @@
 #include <endian.h>
 #endif
 
-#ifdef _WIN32
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-
 #ifdef __MINGW32__
 #include <sys/param.h>
 #endif
@@ -473,21 +467,13 @@ void sigvcf_setup(void)
 /* -------------------------- noise~ ------------------------------ */
 static t_class *noise_class;
 
-static int instanceindex = 0;
-
 typedef struct _noise
 {
     t_object x_obj;
     int x_val;
 } t_noise;
 
-static int makeseed(void)
-{
-    /* seed each instance differently.  Once in a blue moon two threads
-    could grab the same seed value.  We can live with that. */
-    int init = time(NULL) * ++instanceindex;
-    return (init *= 1319);
-}
+int makeseed(){};
 
 static void *noise_new(void)
 {

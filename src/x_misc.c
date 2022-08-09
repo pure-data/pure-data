@@ -46,8 +46,6 @@
 
 static t_class *random_class;
 
-static int instanceindex = 0;
-
 typedef struct _random
 {
     t_object x_obj;
@@ -58,7 +56,9 @@ typedef struct _random
 
 static int makeseed(void)
 {
-    unsigned int random_nextseed = time(NULL) * ++instanceindex * 151;
+    static PERTHREAD unsigned int random_nextseed = 0;
+    if (!random_nextseed)
+        random_nextseed = time(NULL);
     random_nextseed = random_nextseed * 435898247 + 938284287;
     return (random_nextseed & 0x7fffffff);
 }

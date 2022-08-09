@@ -13,9 +13,6 @@
 #endif
 #ifdef _WIN32
 #include <io.h>
-#include <time.h>
-#else
-#include <sys/time.h>
 #endif
 
 #ifdef _WIN32
@@ -710,20 +707,13 @@ static void array_quantile_float(t_array_rangeop *x, t_floatarg f)
 /* ----  array random -- output random value with array as distribution ---- */
 static t_class *array_random_class;
 
-static int instanceindex = 0;
-
 typedef struct _array_random   /* any operation meaningful on a subrange */
 {
     t_array_rangeop x_r;
     unsigned int x_state;
 } t_array_random;
 
-static int makeseed(void)
-{
-    unsigned int random_nextseed = time(NULL) * ++instanceindex * 151;
-    random_nextseed = random_nextseed * 435898247 + 938284287;
-    return (random_nextseed & 0x7fffffff);
-}
+int makeseed();
 
 static void *array_random_new(t_symbol *s, int argc, t_atom *argv)
 {
