@@ -952,24 +952,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     pd_undo_set_objectstate(x->a_glist, (t_pd*)x, gensym("param"),
                             8, undo,
                             argc, argv);
-
-    gobj_vis(&x->a_text.te_g, x->a_glist, 0);
-/*    if (!*symfrom->s_name && *x->a_symfrom->s_name)
-        inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
-    else if (*symfrom->s_name && !*x->a_symfrom->s_name && x->a_text.te_inlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            x->a_text.te_inlet, 0);
-        inlet_free(x->a_text.te_inlet);
-    }
-    if (!*symto->s_name && *x->a_symto->s_name)
-        outlet_new(&x->a_text, 0);
-    else if (*symto->s_name && !*x->a_symto->s_name && x->a_text.te_outlet)
-    {
-        canvas_deletelinesforio(x->a_glist, &x->a_text,
-            0, x->a_text.te_outlet);
-        outlet_free(x->a_text.te_outlet);
-    }*/
+    gobj_vis(&x->a_text.te_g, x->a_glist, 0); // erase
     if (draglo >= draghi)
         draglo = draghi = 0;
     x->a_draglo = draglo;
@@ -991,7 +974,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
             canvas_realizedollar(x->a_glist, x->a_symfrom));
     x->a_symto = symto;
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
-    gobj_vis(&x->a_text.te_g, x->a_glist, 1);
+    gobj_vis(&x->a_text.te_g, x->a_glist, 1); // draw
     canvas_dirty(x->a_glist, 1);
     canvas_fixlinesfor(x->a_glist, (t_text*)x);
 
@@ -1066,6 +1049,17 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 rtext_width(y), rtext_height(y));
             rtext_draw(y);
         }
+        if (*x->a_label->s_name)
+        {
+            int x1, y1;
+            gatom_getwherelabel(x, glist, &x1, &y1);
+            sys_vgui("pdtk_text_new .x%lx.c {%lx.l label text} %f %f {%s } %d %s\n",
+                glist_getcanvas(glist), x,
+                (double)x1, (double)y1,
+                canvas_realizedollar(x->a_glist, x->a_label)->s_name,
+                gatom_fontsize(x),
+                "black");
+        }
     }
     else
     {
@@ -1075,24 +1069,10 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
             text_eraseborder(t, glist, rtext_gettag(y));
             rtext_erase(y);
         }
-    }
-    if (*x->a_label->s_name)
-    {
-        if (vis)
-        {
-            int x1, y1;
-            gatom_getwherelabel(x, glist, &x1, &y1);
-            sys_vgui("pdtk_text_new .x%lx.c {%lx.l label text} %f %f {%s } %d %s\n",
-                glist_getcanvas(glist), x,
-                (double)x1, (double)y1,
-                canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                "black");
-        }
-        else sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
-    }
-    if (!vis)
+        if (*x->a_label->s_name)
+            sys_vgui(".x%lx.c delete %lx.l\n", glist_getcanvas(glist), x);
         sys_unqueuegui(x);
+    }
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
@@ -1563,7 +1543,8 @@ void glist_drawiofor_atoms(t_gatom *x, t_glist *glist, t_object *ob,
     int iow = IOWIDTH * glist->gl_zoom;
     int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
-    if(!*x->a_symto->s_name){
+    if (!*x->a_symto->s_name)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d "
             "-tags [list %sR %so outlet] -fill black\n",
             glist_getcanvas(glist),
@@ -1573,7 +1554,8 @@ void glist_drawiofor_atoms(t_gatom *x, t_glist *glist, t_object *ob,
     }
     n = obj_ninlets(ob);
     nplus = (n == 1 ? 1 : n-1);
-    if(!*x->a_symfrom->s_name){
+    if (!*x->a_symfrom->s_name)
+    {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d "
             "-tags [list %sR %si inlet] -fill black\n",
             glist_getcanvas(glist),
