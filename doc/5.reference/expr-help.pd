@@ -271,7 +271,7 @@ number and thus the object won't load giving a syntax error!, f 62
 #X connect 8 0 7 0;
 #X connect 10 0 1 0;
 #X restore 165 231 pd If-function;
-#N canvas 444 91 455 353 Random-function 0;
+#N canvas 444 91 443 422 Random-function 0;
 #X floatatom 107 187 5 0 0 0 - - - 0;
 #X obj 107 156 expr random(10 \, 20);
 #X text 128 128 random values from 10 to 19;
@@ -285,6 +285,12 @@ first argument to the second argument minus one., f 51;
 #000000 #000000;
 #X obj 108 228 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
+#X text 54 325 Unlike other pseudo number generators in Pd \, you cannot
+set a seed value., f 49;
+#X text 57 375 see also:;
+#X obj 131 375 random;
+#X obj 189 375 noise~;
+#X obj 247 375 array random;
 #X connect 1 0 0 0;
 #X connect 4 0 3 0;
 #X connect 7 0 1 0;
@@ -1220,7 +1226,7 @@ size;
 #X obj 422 660 sqrt~;
 #X obj 308 660 exp~;
 #X obj 384 660 log~;
-#X obj 468 660 pow~;
+#X obj 467 660 pow~;
 #X text 51 147 These objects have several built in operators and functions
 and the syntax is quite similar to how expressions are written in C.
 They receive input variables via the inlets and understand the variable
@@ -1303,12 +1309,12 @@ symbol specifies a specific input (such as x1) or output (y1)., f
 number)., f 62;
 #X text 83 374 expression including operators \, functions \, inlet
 types \, float and symbols (for array names and variables). See html
-reference and examples for all operators and functions. Semicolons create
-more expressions (and outlets). Inlet type has the format '$t#' - where
-'t' is type (f \, i \, s \, v and x) and # is the inlet number \, fexpr~'s
-'x' type also has a sample number inside brackets and fexpr~ also has
-a 'y' variable for output samples with previous samples inside brackets
-as well (default: output zeros)., f 66;
+reference and examples for all operators and functions. Semicolons
+create more expressions (and outlets). Inlet type has the format '$t#'
+- where 't' is type (f \, i \, s \, v and x) and # is the inlet number
+\, fexpr~'s 'x' type also has a sample number inside brackets and fexpr~
+also has a 'y' variable for output samples with previous samples inside
+brackets as well (default: output zeros)., f 66;
 #X restore 561 91 pd reference;
 #X obj 531 609 mtof;
 #X obj 531 633 mtof~;

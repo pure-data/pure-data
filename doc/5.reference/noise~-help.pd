@@ -1,4 +1,4 @@
-#N canvas 479 37 533 392 12;
+#N canvas 479 37 537 394 12;
 #X declare -stdpath ./;
 #X obj 141 178 noise~;
 #X obj 141 313 print~;
@@ -11,8 +11,7 @@ samples), f 35;
 #X obj 159 231 output~;
 #X obj 105 261 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X obj 323 194 declare -stdpath ./;
-#X text 237 248 <= click and drag to hear and turn DSP on, f 20;
+#X obj 360 309 declare -stdpath ./;
 #N canvas 691 155 584 206 reference 0;
 #X obj 18 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -35,9 +34,62 @@ samples), f 35;
 0;
 #X obj 6 348 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 42 65 [noise~] is a random number generator that outputs white
-noise from a pseudo-random number generator at the audio rate (with
-output from -1 to 1)., f 62;
+#X text 42 65 [noise~] outputs white noise from a pseudo-random number
+generator at the audio rate (with output from -1 to 1)., f 57;
+#X text 237 248 <-- click and drag to hear and turn DSP on, f 21;
+#X text 14 359 see also:;
+#X obj 88 359 random;
+#X obj 140 359 expr~;
+#X obj 188 359 array random;
+#N canvas 645 77 476 568 more 0;
+#X text 57 22 Pseudo random number generators aren't true random number
+generators. Instead \, an algorithm is used to provide a sequence of
+numbers that seem random. The same sequence can be reproduced if you
+set a "seed" value \, which can be any integer number., f 52;
+#X msg 95 249 seed 1.54312e+07;
+#X text 57 101 Seeds are kept locally \, which means that if two [noise~]
+objects are seeded the same they will have the same output. Conversely
+\, you can seed the same [noise~] object twice with the same seed to
+repeat the output., f 52;
+#X obj 95 302 noise~;
+#X obj 295 316 phasor~ 1;
+#X obj 235 295 noise~;
+#X obj 235 357 samphold~;
+#X obj 235 449 snapshot~;
+#X floatatom 235 480 10 0 0 0 - - - 0;
+#X obj 315 391 metro 100;
+#X obj 315 366 loadbang;
+#X obj 95 357 samphold~;
+#X obj 95 449 snapshot~;
+#X floatatom 95 480 10 0 0 0 - - - 0;
+#X msg 355 291 0;
+#X text 57 178 If you don't supply a seed each [noise~] object gets
+its own seed. The example below uses [samphold~] to get random values
+from [noise~] at a fixed rate., f 52;
+#X text 132 527 see also:;
+#X obj 207 527 samphold~;
+#X msg 235 249 seed 7.31594e+08;
+#X connect 1 0 3 0;
+#X connect 1 0 5 0;
+#X connect 1 0 14 0;
+#X connect 3 0 11 0;
+#X connect 4 0 6 1;
+#X connect 4 0 11 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 9 0 7 0;
+#X connect 9 0 12 0;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 0;
+#X connect 14 0 4 1;
+#X connect 18 0 5 0;
+#X connect 18 0 3 0;
+#X connect 18 0 14 0;
+#X restore 352 168 pd more about seed;
+#X f 10;
+#X text 293 176 see -->;
 #X connect 0 0 1 0;
 #X connect 0 0 7 0;
 #X connect 0 0 7 1;

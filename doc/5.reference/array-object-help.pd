@@ -436,7 +436,7 @@ of the array are dropped., f 77;
 #X text 150 290 - set contents from a list;
 #X text 150 314 - get a quantile;
 #X obj 37 338 array random;
-#N canvas 562 23 699 671 quantile+random 0;
+#N canvas 562 23 699 671 quantile+random 1;
 #X floatatom 64 243 5 0 100 0 - - - 0;
 #X obj 33 340 array quantile array-5, f 14;
 #X floatatom 96 278 5 -1 100 0 - - - 0;
@@ -449,7 +449,6 @@ of the array are dropped., f 77;
 #000000 #000000;
 #X floatatom 367 496 5 0 0 0 - - - 0;
 #X floatatom 377 528 5 0 0 0 - - - 0;
-#X msg 351 467 seed 56;
 #X text 149 378 - optional number to initialize onset - default 0,
 f 61;
 #X text 149 397 - optional number to initialize number of points -
@@ -553,7 +552,6 @@ at bangs.;
 #X obj 36 38 array random;
 #X text 379 629 index;
 #X text 360 435 generate a random value;
-#X text 413 467 set random's seed;
 #X text 51 453 [array random] makes a pseudo-random number from 0 to
 1 and outputs its quantile (which will therefore have probabilities
 proportional to the table's values.), f 36;
@@ -592,6 +590,42 @@ the range 0-1 output the x values at the two extremes of the array
 of the middle indexes is higher than the lower and upper ones. This
 is also known as a "weighted" random., f 36;
 #X text 148 38 - array as weighted probabilities;
+#X text 416 467 set seed \, see -->;
+#N canvas 741 135 468 484 seed 0;
+#X text 44 41 Pseudo random number generators aren't true random number
+generators. Instead \, an algorithm is used to provide a sequence of
+numbers that seem random. The same sequence can be reproduced if you
+set a "seed" value \, which can be any integer number., f 52;
+#X msg 98 302 seed 1.54312e+07;
+#X text 44 120 Seeds are kept locally \, which means that if two [array
+random] objects are seeded the same they will have the same output.
+Conversely \, you can seed the same [array random] object twice with
+the same seed to repeat the output., f 52;
+#X text 44 197 If you don't supply a seed each [array random] object
+gets its own seed., f 52;
+#X floatatom 75 391 5 0 100 0 - - - 0;
+#X obj 75 347 array random array-5;
+#X obj 75 264 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 117 390 index;
+#X obj 75 423 print random;
+#X msg 281 302 seed 1.54312e+07;
+#X floatatom 258 391 5 0 100 0 - - - 0;
+#X obj 258 347 array random array-5;
+#X text 300 390 index;
+#X obj 258 423 print random;
+#X obj 258 264 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X connect 1 0 5 0;
+#X connect 4 0 8 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X connect 9 0 11 0;
+#X connect 10 0 13 0;
+#X connect 11 0 10 0;
+#X connect 14 0 11 0;
+#X restore 544 466 pd seed;
+#X msg 351 467 seed 156;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 2;
@@ -601,9 +635,9 @@ is also known as a "weighted" random., f 36;
 #X connect 8 0 7 0;
 #X connect 9 0 7 0;
 #X connect 10 0 7 1;
-#X connect 11 0 7 0;
-#X connect 20 0 1 3;
-#X connect 22 0 7 2;
+#X connect 19 0 1 3;
+#X connect 21 0 7 2;
+#X connect 40 0 7 0;
 #X restore 421 327 pd quantile+random;
 #X obj 37 361 array max;
 #N canvas 579 106 649 580 min+max 0;
