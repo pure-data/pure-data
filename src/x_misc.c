@@ -54,9 +54,11 @@ typedef struct _random
 } t_random;
 
 
-static int makeseed(void)
+int makeseed(void)
 {
-    static unsigned int random_nextseed = 1489853723;
+    static PERTHREAD unsigned int random_nextseed = 0;
+    if (!random_nextseed)
+        random_nextseed = time(NULL);
     random_nextseed = random_nextseed * 435898247 + 938284287;
     return (random_nextseed & 0x7fffffff);
 }
@@ -83,9 +85,12 @@ static void random_bang(t_random *x)
     outlet_float(x->x_obj.ob_outlet, nval);
 }
 
-static void random_seed(t_random *x, t_float f, t_float glob)
+static void random_seed(t_random *x, t_symbol *s, int argc, t_atom *argv)
 {
-    x->x_state = f;
+    if(!argc)
+        x->x_state = makeseed();
+    else
+        x->x_state = (unsigned int)(atom_getfloat(argv));
 }
 
 static void random_setup(void)
@@ -94,7 +99,7 @@ static void random_setup(void)
         sizeof(t_random), 0, A_DEFFLOAT, 0);
     class_addbang(random_class, random_bang);
     class_addmethod(random_class, (t_method)random_seed,
-        gensym("seed"), A_FLOAT, 0);
+        gensym("seed"), A_GIMME, 0);
 }
 
 
