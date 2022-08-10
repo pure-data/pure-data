@@ -436,34 +436,34 @@ of the array are dropped., f 77;
 #X text 150 290 - set contents from a list;
 #X text 150 314 - get a quantile;
 #X obj 37 338 array random;
-#N canvas 562 23 699 671 quantile+random 1;
+#N canvas 562 23 699 671 quantile+random 0;
 #X floatatom 64 243 5 0 100 0 - - - 0;
 #X obj 33 340 array quantile array-5, f 14;
 #X floatatom 96 278 5 -1 100 0 - - - 0;
 #X floatatom 33 192 5 -1 100 0 - - - 0;
 #X obj 33 217 / 100;
 #X floatatom 33 384 5 0 100 0 - - - 0;
-#X floatatom 337 628 5 0 100 0 - - - 0;
-#X obj 337 584 array random array-5, f 12;
-#X obj 337 436 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X floatatom 354 628 5 0 100 0 - - - 0;
+#X obj 354 584 array random array-5, f 12;
+#X obj 354 436 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X floatatom 367 496 5 0 0 0 - - - 0;
-#X floatatom 377 528 5 0 0 0 - - - 0;
+#X floatatom 384 496 5 0 0 0 - - - 0;
+#X floatatom 394 528 5 0 0 0 - - - 0;
 #X text 149 378 - optional number to initialize onset - default 0,
 f 61;
 #X text 149 397 - optional number to initialize number of points -
 default -1, f 61;
-#X text 440 592 same creation arguments;
+#X text 457 592 same creation arguments;
 #X text 156 346 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure, f 60;
 #X text 138 279 number of points or -1 for end of array;
-#X text 411 496 onset;
-#X text 419 527 number of points;
+#X text 428 496 onset;
+#X text 436 527 number of points;
 #X text 78 191 quantile (between 0 and 1);
 #X msg 128 315 symbol array-2;
 #X text 235 315 set name or pointer;
-#X msg 418 558 symbol array-2;
-#X text 528 556 set name or pointer;
+#X msg 435 558 symbol array-2;
+#X text 545 556 set name or pointer;
 #X text 599 33 <= click;
 #N canvas 188 138 1156 393 reference 0;
 #X obj 10 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -550,9 +550,9 @@ at bangs.;
 0;
 #X obj 36 13 array quantile;
 #X obj 36 38 array random;
-#X text 379 629 index;
-#X text 360 435 generate a random value;
-#X text 51 453 [array random] makes a pseudo-random number from 0 to
+#X text 396 629 index;
+#X text 377 435 generate a random value;
+#X text 49 442 [array random] makes a pseudo-random number from 0 to
 1 and outputs its quantile (which will therefore have probabilities
 proportional to the table's values.), f 36;
 #X text 37 80 [array quantile] outputs the specified quantile by interpreting
@@ -586,11 +586,11 @@ the range 0-1 output the x values at the two extremes of the array
 1.23423e-06;
 #X coords 0 1 99 0 220 130 1 0 0;
 #X restore 441 193 graph;
-#X text 51 543 Since the array has a gaussian bell shape \, the probability
+#X text 49 522 Since the array has a gaussian bell shape \, the probability
 of the middle indexes is higher than the lower and upper ones. This
 is also known as a "weighted" random., f 36;
 #X text 148 38 - array as weighted probabilities;
-#X text 416 467 set seed \, see -->;
+#X text 433 467 set seed \, see -->;
 #N canvas 741 135 468 484 seed 0;
 #X text 44 41 Pseudo random number generators aren't true random number
 generators. Instead \, an algorithm is used to provide a sequence of
@@ -624,8 +624,10 @@ gets its own seed., f 52;
 #X connect 10 0 13 0;
 #X connect 11 0 10 0;
 #X connect 14 0 11 0;
-#X restore 544 466 pd seed;
-#X msg 351 467 seed 156;
+#X restore 561 466 pd seed;
+#X msg 368 467 seed 156;
+#X text 47 601 WARNING: Nothing is known about the quality of this
+pseudo random number generator. It isn't any standard one!, f 37;
 #X connect 0 0 1 1;
 #X connect 1 0 5 0;
 #X connect 2 0 1 2;
