@@ -473,7 +473,7 @@ typedef struct _noise
     int x_val;
 } t_noise;
 
-int makeseed(){};
+int makeseed(void);
 
 static void *noise_new(void)
 {

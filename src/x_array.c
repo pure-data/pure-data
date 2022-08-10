@@ -713,7 +713,7 @@ typedef struct _array_random   /* any operation meaningful on a subrange */
     unsigned int x_state;
 } t_array_random;
 
-int makeseed();
+int makeseed(void);
 
 static void *array_random_new(t_symbol *s, int argc, t_atom *argv)
 {
