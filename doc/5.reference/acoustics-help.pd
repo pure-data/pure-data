@@ -1,30 +1,30 @@
-#N canvas 535 24 537 686 12;
-#X obj 110 548 ftom;
-#X obj 110 489 mtof;
-#X floatatom 110 518 9 0 0 0 - - - 0;
-#X obj 245 489 dbtorms;
-#X obj 245 548 rmstodb;
-#X obj 389 489 dbtopow;
-#X obj 389 548 powtodb;
-#X floatatom 245 518 9 0 0 0 - - - 0;
-#X floatatom 389 518 9 0 0 0 - - - 0;
-#X floatatom 110 460 6 -10 140 0 - - - 0;
-#X floatatom 389 460 6 -10 140 0 - - - 0;
-#X floatatom 110 582 6 0 0 0 - - - 0;
-#X floatatom 245 582 6 0 0 0 - - - 0;
-#X floatatom 389 582 6 0 0 0 - - - 0;
+#N canvas 474 34 537 674 12;
+#X obj 107 541 ftom;
+#X obj 107 483 mtof;
+#X floatatom 107 512 9 0 0 0 - - - 0;
+#X obj 242 483 dbtorms;
+#X obj 242 541 rmstodb;
+#X obj 386 483 dbtopow;
+#X obj 386 541 powtodb;
+#X floatatom 242 512 9 0 0 0 - - - 0;
+#X floatatom 386 512 9 0 0 0 - - - 0;
+#X floatatom 107 455 6 -10 140 0 - - - 0;
+#X floatatom 386 455 6 -10 140 0 - - - 0;
+#X floatatom 107 571 6 0 0 0 - - - 0;
+#X floatatom 242 571 6 0 0 0 - - - 0;
+#X floatatom 386 571 6 0 0 0 - - - 0;
 #X obj 26 14 mtof;
 #X obj 67 14 ftom;
 #X obj 106 14 dbtorms;
 #X obj 25 40 rmstodb;
 #X obj 83 40 dbtopow;
 #X obj 144 40 powtodb;
-#X text 315 653 updated for Pd version 0.40.;
+#X text 315 640 updated for Pd version 0.40.;
 #X text 170 14 - acoustic conversions;
-#X text 15 642 see also:;
-#X obj 92 629 mtof~;
-#X text 139 628 (etc.) - acoustic conversions for audio signals;
-#X obj 93 656 expr;
+#X text 18 629 see also:;
+#X obj 95 616 mtof~;
+#X text 142 615 (etc.) - acoustic conversions for audio signals;
+#X obj 96 643 expr;
 #N canvas 676 54 572 362 reference 0;
 #X obj 8 207 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -50,49 +50,51 @@
 #X text 138 265 float - the converted value., f 52;
 #X text 97 122 - Linear "RMS" to dB.;
 #X text 97 169 - Power unit (square of "RMS") to dB.;
-#X restore 418 40 pd reference;
-#X obj 10 71 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X restore 418 38 pd reference;
+#X obj 10 69 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 10 616 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 10 605 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 355 40 click =>;
-#X text 33 85 The [mtof] object converts a MIDI pitch value to a frequency
+#X text 355 38 click =>;
+#X text 24 82 The [mtof] object converts a MIDI pitch value to a frequency
 in Hertz (so that "69" converts to "440"). Microtonal pitches are possible
 \, where "69.5" is a quarter tone higher than 69 (or 50 cents higher
-\, so 0.01 = 1 cent)., f 69;
-#X text 33 147 The [ftom] object does the reverse. A frequency of zero
+\, so 0.01 = 1 cent)., f 70;
+#X text 24 143 The [ftom] object does the reverse. A frequency of zero
 Hertz is given a MIDI value of -1500 (strictly speaking \, it's negative
-infinity.), f 69;
-#X text 33 364 A dBFS scale is possible if you simply add 100 to the
+infinity.), f 70;
+#X text 24 359 A dBFS scale is possible if you simply add 100 to the
 dB input value or subtract 100 from the dB output value (in this case
-\, minus infinity dB is clipped to -100 dBFS)., f 69;
-#X text 33 414 Finally \, [dbtopow] and [powtodb] convert decibels
+\, minus infinity dB is clipped to -100 dBFS)., f 70;
+#X text 24 406 Finally \, [dbtopow] and [powtodb] convert decibels
 to and from power units \, equal to the square of the "RMS" amplitude.
-, f 69;
-#X text 33 196 The [dbtorms] object converts from dB to linear ("RMS")
+, f 70;
+#X text 24 180 The [dbtorms] object converts from dB to linear ("RMS")
 amplitude. Decibels in Pd are basically dBFS with an offset of 100!
 Hence \, the typical range is arbitrarily set from 0 to 100 dB (where
 100 dB corresponds to an "RMS" of 1). When converted to linear amplitude
 \, negative dB values are clipped to zero "RMS". Zero dB \, which should
 correspond to 1e-05 in linear "RMS" \, is rounded down to zero instead.
-, f 69;
-#X text 73 459 MIDI;
-#X text 67 518 Hertz;
-#X text 75 582 MIDI;
-#X text 222 457 dB;
-#X text 197 508 linear;
-#X text 199 523 "RMS";
-#X text 222 582 dB;
-#X text 365 457 dB;
-#X text 365 582 dB;
-#X text 345 510 Power;
-#X text 349 525 unit;
-#X floatatom 245 460 6 -10 140 0 - - - 0;
-#X text 33 288 The [rmstodb] object does the opposite conversion and
-Zero "RMS" amplitude (strictly speaking \, minus infinity dB) is clipped
-to zero dB. Note that "RMS" is misleading as you can consider that
-the linear amplitude value refers to "peak" amplitude as well. Also
-\, RMS can be measured in dB., f 69;
+, f 70;
+#X text 70 454 MIDI;
+#X text 64 512 Hertz;
+#X text 72 571 MIDI;
+#X text 219 454 dB;
+#X text 194 502 linear;
+#X text 196 517 "RMS";
+#X text 219 571 dB;
+#X text 362 454 dB;
+#X text 362 571 dB;
+#X text 342 504 Power;
+#X text 346 519 unit;
+#X floatatom 242 455 6 -10 140 0 - - - 0;
+#X text 24 269 The [rmstodb] object does the opposite conversion \,
+where 1e-05 "RMS" amplitude corresponds to 0 dB. Values below 1e-05
+down to 0 would output negative values (where 0 corresponds to minus
+infinity dB) \, but these are clipped to 0 dB instead. Note that "RMS"
+is misleading because the linear amplitude value maey refer to "peak"
+amplitude as well. Also \, RMS can be equally be measured in dB.,
+f 70;
 #X connect 0 0 11 0;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
