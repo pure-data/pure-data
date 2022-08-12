@@ -1,7 +1,12 @@
 current:
 	echo make pd_linux, pd_linux32, pd_nt, pd_darwin
 
-clean: ; rm -f *.pd_linux *.o
+clean:
+	rm -f *.o
+	rm -f *.pd_linux
+	rm -f *.pd_darwin
+	rm -f *.l_ia64
+	rm -f *.l_i386
 
 # ----------------------- Windows-----------------------
 # note; you will certainly have to edit the definition of VC to agree with
@@ -68,11 +73,11 @@ pd_darwin: obj1.pd_darwin obj2.pd_darwin \
 .SUFFIXES: .pd_darwin
 
 DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
-    -Wno-unused -Wno-parentheses -Wno-switch -arch i386 -arch x86_64
+    -Wno-unused -Wno-parentheses -Wno-switch
 
 .c.pd_darwin:
 	cc $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
-	cc -bundle -undefined suppress -arch i386 -arch x86_64 \
+	cc -bundle -undefined suppress \
             -flat_namespace -o $*.pd_darwin $*.o 
 	rm -f $*.o
 
