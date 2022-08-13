@@ -79,7 +79,7 @@ DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
 .c.pd_darwin:
-	cc $$(DARWINCFLAGS) $(LINUXINCLUDE) $(CFLAGS) -o $*.o -c $*.c
+	cc $(DARWINCFLAGS) $(LINUXINCLUDE) $(CFLAGS) -o $*.o -c $*.c
 	cc $(CFLAGS) -bundle -undefined suppress \
             -flat_namespace -o $*.pd_darwin $*.o 
 	rm -f $*.o
