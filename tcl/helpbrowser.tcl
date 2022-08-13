@@ -1,5 +1,5 @@
 
-package provide helpbrowser 0.2
+package provide helpbrowser 0.3
 
 namespace eval ::helpbrowser:: {
     variable libdirlist
