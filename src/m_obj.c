@@ -187,8 +187,14 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
         typedmess(x->i_dest, x->i_symto, argc, argv);
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
-    else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
-        inlet_fwd(x, s, argc, argv);
+    else if (x->i_symfrom == &s_signal)
+    {
+        if (zgetfn(x->i_dest, gensym("fwd")))
+            inlet_fwd(x, s, argc, argv);
+                /* the "symto" field is undefined, so we don't attempt
+                to translate the selector, just forward the original msg. */
+        else typedmess(x->i_dest, &s_signal, argc, argv);
+    }
     else inlet_wrong(x, s);
 }
 
