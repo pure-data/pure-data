@@ -439,7 +439,7 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
     set parents {}
     foreach parent $args {
         if { [catch {set parent [winfo toplevel $parent]}] } {
-            if { [file extension $parent] eq .c } {set parent [file rootname $parent]}
+            if { [file extension $parent] eq ".c" } {set parent [file rootname $parent]}
         }
         lappend parents $parent
         addchild $parent $mytoplevel
