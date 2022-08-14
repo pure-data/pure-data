@@ -234,7 +234,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
                     dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
                         (t_int)re_parentvecsize);
             else {
-              int method = (x->x_updown.method == 3?
+              int method = (x->x_updown.method == -1?
                   (pd_compatibilitylevel < 44 ? 0 : 1) : x->x_updown.method);
               resamplefrom_dsp(&x->x_updown, insig->s_vec, parentvecsize,
                   re_parentvecsize, method);
