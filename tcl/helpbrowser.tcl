@@ -38,7 +38,7 @@ proc ::helpbrowser::open_helpbrowser {} {
         wm withdraw .helpbrowser
         ::helpbrowser::make_frame .helpbrowser
 
-        # hit up or down after browser opens to focus on first listbox
+        # hit up, down, or tab after browser opens to focus on first listbox
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.c.f.root0"
         bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.c.f.root0"
 
@@ -76,7 +76,7 @@ proc ::helpbrowser::check_destroy {level} {
 # create the base frame and root listbox, build path references
 proc ::helpbrowser::make_frame {mytoplevel} {
     scrollbar $mytoplevel.sx -command [list $mytoplevel.c xview] \
-        -orient horizontal
+        -orient horizontal -takefocus 0
     canvas $mytoplevel.c -xscrollcommand [list $mytoplevel.sx set] \
         -highlightthickness 0
     frame $mytoplevel.c.f
