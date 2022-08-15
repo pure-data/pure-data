@@ -350,12 +350,12 @@ static void lower_thread_priority(void)
 {
 #ifdef _WIN32
     if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_LOWEST))
-        fprintf(stderr, "could not set low priority for worker thread\n");
+        fprintf(stderr, "warning: could not set low priority for worker thread\n");
 #else
     struct sched_param param;
     param.sched_priority = 0;
     if (pthread_setschedparam(pthread_self(), SCHED_OTHER, &param) != 0)
-        fprintf(stderr, "could not set low priority for worker thread\n");
+        fprintf(stderr, "warning: could not set low priority for worker thread\n");
 #endif
 }
 
@@ -407,7 +407,7 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
                 {
                         /* decrement with mutex locked, see task_cancel() */
                     if (atomic_decrement(&queue->tq_pending) < 0)
-                        fprintf(stderr, "negative pending task count");
+                        fprintf(stderr, "bug: negative pending task count\n");
                     if (task->t_workfn && !task->t_cancel) /* continue */
                     {
                         tasklist_unlock(tosched);
@@ -422,10 +422,10 @@ int sys_taskqueue_perform(t_pdinstance *pd, int nonblocking)
             else /* not suspended */
             {
                 if (task->t_suspend < 0)
-                    fprintf(stderr, "negative task suspend count\n");
+                    fprintf(stderr, "bug: negative task suspend count\n");
                     /* decrement with mutex locked, see task_cancel() */
                 if (atomic_decrement(&queue->tq_pending) < 0)
-                    fprintf(stderr, "negative pending task count\n");
+                    fprintf(stderr, "bug: negative pending task count\n");
                     /* move task back to scheduler */
                 tasklist_push(tosched, task);
                     /* notify the scheduler thread because it might
@@ -696,15 +696,15 @@ static void task_spawn_workfn(t_task *task, t_spawn_data *data)
         starts with a low priority, instead of changing the priorty after the fact. */
     pthread_attr_init(&attr);
     if ((err = pthread_attr_setinheritsched(&attr, PTHREAD_INHERIT_SCHED)))
-        fprintf(stderr, "pthread_attr_setinheritedsched() failed (%d)\n", err);
+        fprintf(stderr, "warning: pthread_attr_setinheritedsched() failed (%d)\n", err);
     if ((err = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)))
-        fprintf(stderr, "pthread_attr_setdetachstate() failed (%d)\n", err);
+        fprintf(stderr, "warning: pthread_attr_setdetachstate() failed (%d)\n", err);
         /* create thread and suspend task */
     if ((err = pthread_create(&tid, &attr, task_spawn_threadfn, data)) == 0)
         task_suspend(task);
     else
     {
-        fprintf(stderr, "pthread_create() failed (%d)\n", err);
+        fprintf(stderr, "error: pthread_create() failed (%d)\n", err);
         task->t_cancel = 1;
     }
     pthread_attr_destroy(&attr);
@@ -851,7 +851,7 @@ void task_resume(t_task *task, t_task_workfn workfn)
         {
                 /* decrement with mutex locked, see task_cancel() */
             if (atomic_decrement(&queue->tq_pending) < 0)
-                fprintf(stderr, "negative pending task count");
+                fprintf(stderr, "bug: negative pending task count\n");
                 /* NB: don't reschedule if the taskqueue has been stopped! */
             if (workfn && queue->tq_running && !task->t_cancel) /* continue */
             {
