@@ -44,8 +44,8 @@ proc ::helpbrowser::open_helpbrowser {} {
 
         # ignore undo bindings?
         # on macOS, this posts a ".helpbrowser: no such object" error
-        bind .helpbrowser <Mod1-z> "break"
-        bind .helpbrowser <Mod1-Z> "break"
+        bind .helpbrowser <$::modifier-Key-z> "break"
+        bind .helpbrowser <$::modifier-Key-Z> "break"
 
         # re-adjust size based on backing canvas
         wm minsize .helpbrowser [winfo reqwidth .helpbrowser.c] [winfo reqheight .helpbrowser.c]
