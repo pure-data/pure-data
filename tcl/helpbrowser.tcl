@@ -35,9 +35,10 @@ proc ::helpbrowser::open_helpbrowser {} {
 
         # only make x-axis scrollable
         wm resizable .helpbrowser 0 1
+        wm withdraw .helpbrowser
         ::helpbrowser::make_frame .helpbrowser
 
-        # hit up, down, or Tab after browser opens to focus on first listbox
+        # hit up or down after browser opens to focus on first listbox
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.c.f.root0"
         bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.c.f.root0"
 
@@ -46,7 +47,10 @@ proc ::helpbrowser::open_helpbrowser {} {
         bind .helpbrowser <$::modifier-Key-z> "break"
         bind .helpbrowser <$::modifier-Key-Z> "break"
 
+        # re-adjust size based on backing canvas
+        wm minsize .helpbrowser [winfo reqwidth .helpbrowser.c] [winfo reqheight .helpbrowser.c]
         position_over_window .helpbrowser .pdwindow
+        raise .helpbrowser
     }
 }
 
@@ -109,11 +113,11 @@ proc ::helpbrowser::make_frame {mytoplevel} {
     grid columnconfigure $mytoplevel 0 -weight 1
     build_references
     make_rootlistbox
+
+    # fit canvas size to frame
     update idletasks
-    $mytoplevel.c configure -width [winfo width .helpbrowser.c.f] -height \
-        [winfo height .helpbrowser.c.f.root0]
-    # for some reason a final "update" is sometimes necessary
-    update
+    $mytoplevel.c configure -width [winfo reqwidth .helpbrowser.c.f] -height \
+        [winfo reqheight .helpbrowser.c.f.root0]
 }
 
 # make the root listbox of the help browser using the pre-built lists
