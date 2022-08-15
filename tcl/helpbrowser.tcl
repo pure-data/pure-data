@@ -310,6 +310,9 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
+    # force display update
+    update idletasks
+
     # select first entry & update next col
     if {$select && [$current_listbox size] != "0"} {
         $current_listbox selection set 0
@@ -317,9 +320,6 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     }
 
     .helpbrowser.c configure -width [winfo width .helpbrowser.c.f]
-
-    # force display update
-    update idletasks
 
     return $current_listbox
 }
