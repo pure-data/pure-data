@@ -12,40 +12,56 @@
 
 /* NULL-terminated */
 #define GUI_VMESS__END     0
+/* use space to structure the format-string */
 #define GUI_VMESS__IGNORE  ' '
 
+/* floating point number (automatically promoted to double) */
 #define GUI_VMESS__FLOAT   'f'
+/* fixed point number (automatically promoted to int) */
 #define GUI_VMESS__INT     'i'
-/* 0-terminated strings and pascalstrings (with an explicit size) are untrusted and need escaping */
+
+/* 0-terminated strings are untrusted and need escaping */
 #define GUI_VMESS__STRING  's'
+/* the same goes for char arrays ("pascalstring") */
 #define GUI_VMESS__PASCALSTRING 'p'
 /* rawstrings don't need encoding */
 #define GUI_VMESS__RAWSTRING  'r'
+
+/* takes an int-representation of a 24bit RGB color */
 #define GUI_VMESS__COLOR      'k'
 
+/* generic pointer; this is not actually used, and probably should stay that way */
 #define GUI_VMESS__POINTER    'x'
+/* a Pd-object */
 #define GUI_VMESS__OBJECT     'o'
+
+/* takes a Pd-message of the form "t_symbol*, int argc, t_atom*argv" */
 #define GUI_VMESS__MESSAGE    'm'
 
 /* arrays are capitalized */
 #define GUI_VMESS__ATOMS          'a' /* flat list of atoms */
 #define GUI_VMESS__ATOMARRAY      'A'
 #define GUI_VMESS__FLOATARRAY     'F'
-#define GUI_VMESS__FLOATWORDS     'w'
+#define GUI_VMESS__FLOATWORDS     'w' /* flat list of float words */
 #define GUI_VMESS__FLOATWORDARRAY 'W'
 #define GUI_VMESS__STRINGARRAY    'S'
 #define GUI_VMESS__RAWSTRINGARRAY 'R'
 
-/* why are these capitalized? because they are pointers? */
-#define GUI_VMESS__WINDOW '^' /* legacy: this should go away (use 'c' instead) */
+/* canvases */
 #define GUI_VMESS__CANVAS 'c'
 #define GUI_VMESS__CANVASARRAY 'C'
 
+/* toplevel windows are legacy: this should go away (use 'c' instead) */
+#define GUI_VMESS__WINDOW '^'
+
 /* more ideas for types (the IDs need discussion)
  * - float32 array ('1'), float64 array ('2'): think libpd
- * - symbols ('y'), symbolarray ('Y'): this is just a shorthand for 's', so probably overkill
+ * - symbols ('y'), symbolarray ('Y'): this is just a shorthand for 's',
+ *   so probably overkill
  * - t_word array ('W')
- * - color (?): '#%06x'
+
+ * - a continuation char ('+'), to keep formating and values close together:
+ *   e.g.  pdgui_vmess(..., "i+", 12, "i+", 13);
  */
 
 
@@ -57,7 +73,8 @@ static PERTHREAD size_t s_esclength = 0;
 static char*get_escapebuffer(const char*s, int size)
 {
     size_t len = (size>0)?size:strlen(s);
-    len = 2*len + 1; /* worst case needs escaping each character; and a terminating \0... */
+        /* worst case needs escaping each character; AND a terminating \0... */
+    len = 2*len + 1;
     if (len > s_esclength) {
         freebytes(s_escbuffer, s_esclength);
         s_esclength = GUI_ALLOCCHUNK*(1+len/GUI_ALLOCCHUNK);
