@@ -591,39 +591,39 @@ of the middle indexes is higher than the lower and upper ones. This
 is also known as a "weighted" random., f 36;
 #X text 148 38 - array as weighted probabilities;
 #X text 433 467 set seed \, see -->;
-#N canvas 741 135 468 484 seed 0;
-#X text 44 41 Pseudo random number generators aren't true random number
-generators. Instead \, an algorithm is used to provide a sequence of
-numbers that seem random. The same sequence can be reproduced if you
-set a "seed" value \, which can be any integer number., f 52;
-#X msg 98 302 seed 1.54312e+07;
-#X text 44 120 Seeds are kept locally \, which means that if two [array
+#N canvas 741 135 468 474 seed 0;
+#X msg 98 292 seed 1.54312e+07;
+#X text 44 110 Seeds are kept locally \, which means that if two [array
 random] objects are seeded the same they will have the same output.
 Conversely \, you can seed the same [array random] object twice with
 the same seed to repeat the output., f 52;
-#X text 44 197 If you don't supply a seed each [array random] object
+#X text 44 187 If you don't supply a seed each [array random] object
 gets its own seed., f 52;
-#X floatatom 75 391 5 0 100 0 - - - 0;
-#X obj 75 347 array random array-5;
-#X obj 75 264 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#X floatatom 75 381 5 0 100 0 - - - 0;
+#X obj 75 337 array random array-5;
+#X obj 75 254 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
-#X text 117 390 index;
-#X obj 75 423 print random;
-#X msg 281 302 seed 1.54312e+07;
-#X floatatom 258 391 5 0 100 0 - - - 0;
-#X obj 258 347 array random array-5;
-#X text 300 390 index;
-#X obj 258 423 print random;
-#X obj 258 264 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X text 117 380 index;
+#X obj 75 413 print random;
+#X msg 281 292 seed 1.54312e+07;
+#X floatatom 258 381 5 0 100 0 - - - 0;
+#X obj 258 337 array random array-5;
+#X text 300 380 index;
+#X obj 258 413 print random;
+#X obj 258 254 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X connect 1 0 5 0;
-#X connect 4 0 8 0;
+#X text 44 30 Pseudo random number generators aren't true random number
+generators. Instead \, an algorithm is used to provide a sequence of
+numbers that seems random. The same sequence can be reproduced if you
+set a "seed" value \, which can be any integer number., f 52;
+#X connect 0 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
 #X connect 5 0 4 0;
-#X connect 6 0 5 0;
-#X connect 9 0 11 0;
-#X connect 10 0 13 0;
-#X connect 11 0 10 0;
-#X connect 14 0 11 0;
+#X connect 8 0 10 0;
+#X connect 9 0 12 0;
+#X connect 10 0 9 0;
+#X connect 13 0 10 0;
 #X restore 561 466 pd seed;
 #X msg 368 467 seed 156;
 #X text 47 601 WARNING: Nothing is known about the quality of this

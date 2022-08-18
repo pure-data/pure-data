@@ -48,11 +48,7 @@
 #X obj 172 378 array random;
 #X text 24 117 WARNING: Nothing is known about the quality of this
 pseudo random number generator. It isn't any standard one!, f 60;
-#N canvas 741 135 467 460 more 0;
-#X text 54 40 Pseudo random number generators aren't true random number
-generators. Instead \, an algorithm is used to provide a sequence of
-numbers that seem random. The same sequence can be reproduced if you
-set a "seed" value \, which can be any integer number., f 52;
+#N canvas 725 64 467 460 more 0;
 #X text 54 196 If you don't supply a seed each [random] object gets
 its own seed., f 52;
 #X floatatom 83 381 4 0 0 0 - - - 0;
@@ -71,14 +67,18 @@ its own seed., f 52;
 objects are seeded the same they will have the same output. Conversely
 \, you can seed the same [random] object twice with the same seed to
 repeat the output., f 52;
-#X connect 2 0 4 0;
-#X connect 3 0 6 0;
-#X connect 5 0 6 0;
-#X connect 6 0 2 0;
-#X connect 7 0 9 0;
-#X connect 8 0 11 0;
-#X connect 10 0 11 0;
-#X connect 11 0 7 0;
+#X text 54 40 Pseudo random number generators aren't true random number
+generators. Instead \, an algorithm is used to provide a sequence of
+numbers that seems random. The same sequence can be reproduced if you
+set a "seed" value \, which can be any integer number., f 52;
+#X connect 1 0 3 0;
+#X connect 2 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 1 0;
+#X connect 6 0 8 0;
+#X connect 7 0 10 0;
+#X connect 9 0 10 0;
+#X connect 10 0 6 0;
 #X restore 333 204 pd more about seed;
 #X f 10;
 #X text 24 60 [random] outputs pseudo random integers from 0 to N-1

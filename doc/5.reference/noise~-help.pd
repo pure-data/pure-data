@@ -42,10 +42,6 @@ generator at the audio rate (with output from -1 to 1)., f 57;
 #X obj 140 389 expr~;
 #X obj 188 389 array random;
 #N canvas 645 77 476 568 more 0;
-#X text 57 22 Pseudo random number generators aren't true random number
-generators. Instead \, an algorithm is used to provide a sequence of
-numbers that seem random. The same sequence can be reproduced if you
-set a "seed" value \, which can be any integer number., f 52;
 #X msg 95 249 seed 1.54312e+07;
 #X text 57 101 Seeds are kept locally \, which means that if two [noise~]
 objects are seeded the same they will have the same output. Conversely
@@ -72,25 +68,29 @@ from [noise~] at a fixed rate., f 52;
 #X msg 358 473 \; pd dsp \$1;
 #X obj 358 443 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X connect 1 0 3 0;
-#X connect 1 0 5 0;
-#X connect 1 0 14 0;
-#X connect 3 0 11 0;
-#X connect 4 0 6 1;
-#X connect 4 0 11 1;
+#X text 57 22 Pseudo random number generators aren't true random number
+generators. Instead \, an algorithm is used to provide a sequence of
+numbers that seems random. The same sequence can be reproduced if you
+set a "seed" value \, which can be any integer number., f 52;
+#X connect 0 0 2 0;
+#X connect 0 0 4 0;
+#X connect 0 0 13 0;
+#X connect 2 0 10 0;
+#X connect 3 0 5 1;
+#X connect 3 0 10 1;
+#X connect 4 0 5 0;
 #X connect 5 0 6 0;
 #X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 9 0 7 0;
-#X connect 9 0 12 0;
-#X connect 10 0 9 0;
+#X connect 8 0 6 0;
+#X connect 8 0 11 0;
+#X connect 9 0 8 0;
+#X connect 10 0 11 0;
 #X connect 11 0 12 0;
-#X connect 12 0 13 0;
-#X connect 14 0 4 1;
-#X connect 18 0 5 0;
-#X connect 18 0 3 0;
-#X connect 18 0 14 0;
-#X connect 20 0 19 0;
+#X connect 13 0 3 1;
+#X connect 17 0 4 0;
+#X connect 17 0 2 0;
+#X connect 17 0 13 0;
+#X connect 19 0 18 0;
 #X restore 352 198 pd more about seed;
 #X f 10;
 #X text 293 206 see -->;
