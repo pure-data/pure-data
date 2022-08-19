@@ -1,12 +1,10 @@
 current:
-	@echo make pd_linux, pd_linux32, pd_nt, or pd_darwin
+	@echo make pd_linux, pd_nt, or pd_darwin
 
 clean:
 	rm -f *.o
 	rm -f *.pd_linux
 	rm -f *.pd_darwin
-	rm -f *.l_ia64
-	rm -f *.l_i386
 
 # ----------------------- Windows-----------------------
 # note: you will certainly have to edit the definition of VC to agree with
@@ -39,30 +37,24 @@ dspobj~.dll: dspobj~.c;
 
 # ----------------------- LINUX i386 -----------------------
 
-pd_linux: obj1.l_ia64 obj2.l_ia64 obj3.l_ia64 obj4.l_ia64 \
-    obj5.l_ia64 dspobj~.l_ia64
+pd_linux: obj1.pd_linux obj2.pd_linux obj3.pd_linux obj4.pd_linux \
+    obj5.pd_linux dspobj~.pd_linux
 
 pd_linux32: obj1.l_i386 obj2.l_i386 obj3.l_i386 obj4.l_i386 \
     obj5.l_i386 dspobj~.l_i386
 
-.SUFFIXES: .l_i386 .l_ia64
+.SUFFIXES: .l_i386 .pd_linux
 
-LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer \
-    -Wall -W -Wshadow -Wstrict-prototypes -Werror \
+LINUXCFLAGS = -DPD -g -O2 -fPIC -funroll-loops -fomit-frame-pointer \
+    -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
 LINUXINCLUDE =  -I../../src
 
-.c.l_i386:
-	cc $(LINUXCFLAGS) $(LINUXINCLUDE) $(CFLAGS) -o $*.o -c $*.c
-	ld -shared -o $*.l_i386 $*.o -lc -lm
-	strip --strip-unneeded $*.l_i386
-	rm $*.o
-
-.c.l_ia64:
-	cc $(LINUXCFLAGS) $(LINUXINCLUDE) $(CFLAGS) -fPIC -o $*.o -c $*.c
-	ld -shared -o $*.l_ia64 $*.o -lc -lm
-	strip --strip-unneeded $*.l_ia64
+.c.pd_linux:
+	$(CC) $(LINUXCFLAGS) $(LINUXINCLUDE) $(CFLAGS) -o $*.o -c $*.c
+	$(LD) -shared -o $*.pd_linux $*.o -lc -lm
+	strip --strip-unneeded $*.pd_linux
 	rm $*.o
 
 # ----------------------- macOS -----------------------
