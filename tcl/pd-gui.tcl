@@ -202,6 +202,8 @@ set popup_ycanvas 0
 set modifier ""
 # current state of the Edit Mode menu item
 set editmode_button 0
+# use bezier curves
+set curve_cords false
 
 
 ## per toplevel/patch data

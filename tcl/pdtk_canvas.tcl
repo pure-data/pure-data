@@ -467,3 +467,69 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
         }
     }
 }
+
+proc ::pdtk_canvas::pdtk_connect {x1 y1 x2 y2 width tags canv} {
+# from pd-l2ork
+	if {$::curve_cords} {
+		set ymax 0;
+		set halfx [expr {($x2 - $x1)/2}]
+		set halfy [expr {($y2 - $y1)/2}]
+		set yoff [expr {abs($halfy)}]
+		if {$halfy >= 0} {
+			# second object is below the first
+			if {abs($halfx) <= 10} {
+				set ymax [expr {abs($halfy * pow($halfx/10.0, 2))}]
+				if {$ymax > 10} {
+					set ymax 10
+				}
+			} else {
+				set ymax 10
+			}
+		} else {
+			# second object is above the first
+			set ymax 20
+		}
+		if {$yoff > $ymax} {
+			set yoff $ymax;
+		}
+		${canv} create line $x1 $y1 $x1 [expr {$y1 + $yoff}] \
+			[expr {$x1 + $halfx}] [expr {$y1 + $halfy}] $x2 \
+			[expr {$y2 - $yoff}] $x2 $y2 -smooth 1 -width $width -tags $tags
+	} else {
+		# have to set smooth and splinesteps in case it changes
+		${canv} create line $x1 $y1 $x2 $y2 -width $width -tags $tags \
+			-smooth 1
+	}
+}
+
+proc ::pdtk_canvas::pdtk_coords {x1 y1 x2 y2 tag canv} {
+	# from pd-l2ork
+	if {$::curve_cords} {
+		set ymax 0;
+		set halfx [expr {($x2 - $x1)/2}]
+		set halfy [expr {($y2 - $y1)/2}]
+		set yoff [expr {abs($halfy)}]
+		if {$halfy >= 0} {
+			# second object is below the first
+			if {abs($halfx) <= 10} {
+				set ymax [expr {abs($halfy * pow($halfx/10.0, 2))}]
+				if {$ymax > 10} {
+					set ymax 10
+				}
+			} else {
+				set ymax 10
+			}
+		} else {
+			# second object is above the first
+			set ymax 20
+		}
+		if {$yoff > $ymax} {
+			set yoff $ymax;
+		}
+		${canv} coords $tag $x1 $y1 $x1 [expr {$y1 + $yoff}] \
+			[expr {$x1 + $halfx}] [expr {$y1 + $halfy}] $x2 \
+			[expr {$y2 - $yoff}] $x2 $y2
+	} else {
+		${canv} coords $tag $x1 $y1 $x2 $y2
+	}
+}
