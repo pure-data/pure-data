@@ -18,7 +18,7 @@ typedef struct _sig
     t_float x_f;
 } t_sig;
 
-static t_int *sig_tilde_perform(t_int *w)
+t_int *sig_tilde_perform(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -28,7 +28,7 @@ static t_int *sig_tilde_perform(t_int *w)
     return (w+4);
 }
 
-static t_int *sig_tilde_perf8(t_int *w)
+t_int *sig_tilde_perf8(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -55,7 +55,10 @@ static void sig_tilde_float(t_sig *x, t_float f)
 
 static void sig_tilde_dsp(t_sig *x, t_signal **sp)
 {
-    dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    if (sp[0]->s_n & 7)
+        dsp_add(sig_tilde_perform, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
+    else
+        dsp_add(sig_tilde_perf8, 3, &x->x_f, sp[0]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void *sig_tilde_new(t_floatarg f)

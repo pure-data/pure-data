@@ -1270,35 +1270,8 @@ void dsp_add_copy(t_sample *in, t_sample *out, int n)
         dsp_add(copy_perf8, 3, in, out, (t_int)n);
 }
 
-static t_int *sig_tilde_perform(t_int *w)
-{
-    t_float f = *(t_float *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-    while (n--)
-        *out++ = f;
-    return (w+4);
-}
-
-static t_int *sig_tilde_perf8(t_int *w)
-{
-    t_float f = *(t_float *)(w[1]);
-    t_sample *out = (t_sample *)(w[2]);
-    int n = (int)(w[3]);
-
-    for (; n; n -= 8, out += 8)
-    {
-        out[0] = f;
-        out[1] = f;
-        out[2] = f;
-        out[3] = f;
-        out[4] = f;
-        out[5] = f;
-        out[6] = f;
-        out[7] = f;
-    }
-    return (w+4);
-}
+extern t_int *sig_tilde_perform(t_int *w);
+extern t_int *sig_tilde_perf8(t_int *w);
 
 void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
