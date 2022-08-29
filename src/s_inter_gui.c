@@ -382,7 +382,8 @@ void pdgui_vamess(const char* message, const char* format, va_list args)
         if(va2value(*fmt, args, &v) < 1)
             continue;
         addmess(v);
-        sys_vgui("%s", " ");
+        if(GUI_VMESS__IGNORE != v.type)
+            sys_vgui("%s", " ");
     }
 }
 void pdgui_endmess(void)
