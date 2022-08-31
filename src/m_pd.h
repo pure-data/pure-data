@@ -865,6 +865,7 @@ struct _pdinstance
 #if PDTHREADS
     int pd_islocked;
 #endif
+    int pd_numsymbols;          /* number of created symbols in hash table */
 };
 #define t_pdinstance struct _pdinstance
 EXTERN t_pdinstance pd_maininstance;

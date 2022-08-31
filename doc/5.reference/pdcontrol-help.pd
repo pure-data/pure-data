@@ -1,9 +1,9 @@
-#N canvas 557 44 727 512 12;
+#N canvas 557 44 727 554 12;
 #X obj 37 19 pdcontrol;
-#X text 483 477 updated for Pd version 0.50.;
-#X obj 42 257 pdcontrol;
-#X obj 42 314 print;
-#X msg 280 324 isvisible;
+#X text 483 517 updated for Pd version 0.50.;
+#X obj 42 247 pdcontrol;
+#X obj 42 304 print;
+#X msg 165 351 isvisible;
 #N canvas 568 591 287 200 subpatch 0;
 #X obj 99 26 inlet;
 #X obj 99 78 pdcontrol;
@@ -12,8 +12,8 @@
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 0 3 0;
-#X restore 280 349 pd subpatch;
-#X text 130 331 open and shut the subpatch to test "isvisible" message
+#X restore 165 376 pd subpatch;
+#X text 23 354 open and shut the subpatch to test "isvisible" message
 , f 19;
 #X msg 58 158 dir;
 #X text 101 158 get directory this patch is in;
@@ -38,7 +38,7 @@ inside another that contains arguments).;
 #X connect 2 0 6 0;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
-#X restore 367 422 pd args;
+#X restore 227 459 pd args;
 #X text 244 121 open a URL in a browser;
 #X msg 42 122 browse http://msp.ucsd.edu;
 #X text 307 184 Optional argument to specify this patch (0) \, owning
@@ -47,25 +47,25 @@ a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 55;
 #X text 116 19 - communicate with pd and/or this patch;
-#X floatatom 280 383 5 0 0 0 - - - 0;
-#X text 152 422 get the patch's arguments =>;
+#X floatatom 165 410 5 0 0 0 - - - 0;
+#X text 12 459 get the patch's arguments =>;
 #X text 60 67 pdcontrol lets you open a URL in a web browser or communicate
 with the patch to get its owning directory \, arguments or its visible/invisible
 state., f 76;
-#X symbolatom 42 285 80 0 0 0 - - - 0;
+#X symbolatom 42 275 80 0 0 0 - - - 0;
 #X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 610 19 <= click;
-#N canvas 648 157 718 300 reference 0;
+#N canvas 648 157 718 326 reference 0;
 #X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 200 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 230 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 276 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 306 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 237 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 267 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X text 165 248 NONE, f 52;
+#X text 165 278 NONE, f 52;
 #X obj 28 20 pdcontrol;
 #X text 107 20 - communicate with pd and/or this patch;
 #X text 77 65 browse <symbol> - open a URL given by the symbol., f
@@ -79,12 +79,19 @@ level (0 \, this patch \, 1 \, its owner \, and so on). Optional symbol
 sets a folder relative to the directory., f 68;
 #X text 204 155 outputs patch's argument. Optional float sets level
 (0 \, this patch \, 1 \, its owner \, and so on)., f 68;
-#X text 155 210 list - list of args \, dir symbol of visibility float.
+#X text 155 240 list - list of args \, dir symbol of visibility float.
 ;
+#X text 113 194 numsymbols - outputs float giving the total number
+of created symbols., f 80;
 #X restore 516 19 pd reference;
-#X obj 13 463 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 13 503 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 329 384 1 if this patch is visible \, 0 if not., f 39;
+#X text 208 413 1 if this patch is visible \, 0 if not., f 38;
+#X obj 499 388 pdcontrol;
+#X msg 499 366 numsymbols;
+#X text 497 319 get the total number of symbols that have been created
+since Pd started., f 26;
+#X floatatom 499 411 8 0 0 0 - - - 0;
 #X connect 2 0 18 0;
 #X connect 4 0 5 0;
 #X connect 5 0 15 0;
@@ -92,3 +99,5 @@ sets a folder relative to the directory., f 68;
 #X connect 9 0 2 0;
 #X connect 12 0 2 0;
 #X connect 18 0 3 0;
+#X connect 24 0 27 0;
+#X connect 25 0 24 0;

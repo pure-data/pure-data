@@ -870,6 +870,7 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     strcpy(symname, s);
     sym2->s_name = symname;
     *symhashloc = sym2;
+    pdinstance->pd_numsymbols++;
     return (sym2);
 }
 
