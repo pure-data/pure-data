@@ -118,6 +118,25 @@ midi APIs:            PortMidi</pre>
 # build Pd using a system installed PortAudio
 ./configure --without-local-portaudio</pre>
 
+<p>The default build will do some moderate optimization.
+This can be tuned with the "--enable-optimizations" flag, which will tell the
+compiler to optimize for speed more aggressively (even at the cost of incorrect
+math operations).
+
+<pre># build with speed optimizations
+./configure --enable-optimizations</pre>
+
+<p>If things go wrong and you need to run Pd through a debugger (like gdb), you can
+build Pd with debugging symbols using the "--enable-debug" flag.
+It's possible to specify both the "--enable-debug" and "--enable-optimizations"
+flags, which will build a optimized binary with debug symbols. However, the
+optimizer might mangle the source code in a way, that makes the debugging
+information less useful than you would wish for.
+If in doubt, disable optimizations when enabling the debug build.
+
+<pre># build Pd with debugging information
+./configure --enable-debug</pre>
+
 <p>An important configure option for some platforms is --enable-universal which allows you to specify the desired architecture(s) when building Pd. For Intel and AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with --enable-universal:</p>
 
 <pre># build 32 bit Pd
