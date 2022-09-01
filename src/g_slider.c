@@ -277,38 +277,40 @@ static void slider_properties(t_gobj *z, t_glist *owner)
 
     if(x->x_orientation == horizontal)
     {
-        objname = "hsl";
-        rangeA = "left";
-        rangeB = "right";
+        objname = "|hsl|";
+        rangeA = "left:";
+        rangeB = "right:";
         minWidth = IEM_SL_MINSIZE;
         minHeight = IEM_GUI_MINSIZE;
     } else {
-        objname = "vsl";
-        rangeA = "bottom";
-        rangeB = "top";
+        objname = "|vsl|";
+        rangeA = "bottom:";
+        rangeB = "top:";
         minWidth = IEM_GUI_MINSIZE;
         minHeight = IEM_SL_MINSIZE;
     }
 
     iemgui_properties(&x->x_gui, srl);
 
-    sprintf(buf, "pdtk_iemgui_dialog %%s |%s| \
-            --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
-            -----------output-range:----------- %g %s: %g %s: %d \
-            %d lin log %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
+    pdgui_stub_vnew(
+        &x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog",
+        x,
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii kkk",
         objname,
-        x->x_gui.x_w/IEMGUI_ZOOM(x), minWidth, x->x_gui.x_h/IEMGUI_ZOOM(x), minHeight,
-        x->x_min, rangeA, x->x_max, rangeB, 0,/*no_schedule*/
-        x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_steady, -1,/*no multi, but iem-characteristic*/
-        srl[0]->s_name, srl[1]->s_name, srl[2]->s_name,
-        x->x_gui.x_ldx, x->x_gui.x_ldy,
+        "--------dimensions(pix)(pix):--------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), minWidth, "width:",
+        x->x_gui.x_h/IEMGUI_ZOOM(x), minHeight, "height:",
+        "-----------output-range:-----------",
+        x->x_min, rangeA,
+        x->x_max, rangeB,
+        0, /*no_schedule*/
+        x->x_lin0_log1, "lin", "log",
+        x->x_gui.x_isa.x_loadinit, x->x_steady,
+        "empty", -1, /*no multi, but iem-characteristic*/
+        srl[0]->s_name, srl[1]->s_name,
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
         x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-        0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+        x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol);
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */
@@ -732,7 +734,7 @@ static void slider_free(t_slider *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_slider_setup(void)
