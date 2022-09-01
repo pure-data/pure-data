@@ -459,8 +459,11 @@ int my_numbox_check_minmax(t_my_numbox *x, double min, double max)
 static void my_numbox_properties(t_gobj *z, t_glist *owner)
 {
     t_my_numbox *x = (t_my_numbox *)z;
-    char buf[800];
     t_symbol *srl[3];
+    char bcol[10], lcol[10], fcol[10];
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
     if(x->x_gui.x_fsf.x_change)
@@ -469,24 +472,25 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
         clock_unset(x->x_clock_reset);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
-    sprintf(buf, "pdtk_iemgui_dialog %%s |nbx| \
-            -------dimensions(digits)(pix):------- %d %d width: %d %d height: \
-            -----------output-range:----------- %g min: %g max: %d \
-            %d lin log %d %d log-height: %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_numwidth, MINDIGITS, x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_min, x->x_max, 0,/*no_schedule*/
-            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, -1,
-                x->x_log_height, /*no multi, but iem-characteristic*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol,
-                0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+
+    pdgui_stub_vnew(
+        &x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii rrr",
+        "|nbx|",
+        "-------dimensions(digits)(pix):-------",
+        x->x_numwidth, MINDIGITS, "width:",
+        x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "height:",
+        "-----------output-range:-----------",
+        x->x_min, "min:",
+        x->x_max, "max:",
+        0 /* no_schedule */,
+        x->x_lin0_log1, "lin", "log",
+        x->x_gui.x_isa.x_loadinit, -1,
+        "log-height:", x->x_log_height, /* no multi, but iem-characteristic */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
+        bcol, fcol, lcol);
 }
 
 static void my_numbox_bang(t_my_numbox *x)
@@ -877,7 +881,7 @@ static void my_numbox_free(t_my_numbox *x)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     clock_free(x->x_clock_reset);
     clock_free(x->x_clock_wait);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_numbox_setup(void)

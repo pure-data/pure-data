@@ -8,10 +8,7 @@
 #include "s_stuff.h"
 #include "s_net.h"
 
-#include <sys/types.h>
 #include <string.h>
-#include <errno.h>
-#include <stdlib.h>
 
 #include "m_private_utils.h"
 

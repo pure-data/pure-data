@@ -33,7 +33,7 @@ static t_class *hslider_class;
 
 static void hslider_draw_update(t_gobj *client, t_glist *glist)
 {
-    t_hslider *x = (t_hslider *)client;
+    t_slider *x = (t_slider *)client;
     if (glist_isvisible(glist))
     {
         int r = text_xpix(&x->x_gui.x_obj, glist) + ((x->x_val + 50)/100);
@@ -45,7 +45,7 @@ static void hslider_draw_update(t_gobj *client, t_glist *glist)
     }
 }
 
-static void hslider_draw_new(t_hslider *x, t_glist *glist)
+static void hslider_draw_new(t_slider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
@@ -84,7 +84,7 @@ static void hslider_draw_new(t_hslider *x, t_glist *glist)
              x->x_gui.x_lcol, x);
 }
 
-static void hslider_draw_move(t_hslider *x, t_glist *glist)
+static void hslider_draw_move(t_slider *x, t_glist *glist)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
@@ -115,7 +115,7 @@ static void hslider_draw_move(t_hslider *x, t_glist *glist)
              ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x));
 }
 
-static void hslider_draw_erase(t_hslider* x, t_glist* glist)
+static void hslider_draw_erase(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -128,7 +128,7 @@ static void hslider_draw_erase(t_hslider* x, t_glist* glist)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
 }
 
-static void hslider_draw_config(t_hslider* x, t_glist* glist)
+static void hslider_draw_config(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -140,7 +140,7 @@ static void hslider_draw_config(t_hslider* x, t_glist* glist)
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x, x->x_gui.x_bcol);
 }
 
-static void hslider_draw_io(t_hslider* x, t_glist* glist, int old_snd_rcv_flags)
+static void hslider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
@@ -176,7 +176,7 @@ static void hslider_draw_io(t_hslider* x, t_glist* glist, int old_snd_rcv_flags)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
 }
 
-static void hslider_draw_select(t_hslider* x, t_glist* glist)
+static void hslider_draw_select(t_slider* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
 
@@ -192,7 +192,7 @@ static void hslider_draw_select(t_hslider* x, t_glist* glist)
     }
 }
 
-void hslider_draw(t_hslider *x, t_glist *glist, int mode)
+void hslider_draw(t_slider *x, t_glist *glist, int mode)
 {
     if(mode == IEM_GUI_DRAW_MODE_UPDATE)
         sys_queuegui(x, glist, hslider_draw_update);
@@ -216,7 +216,7 @@ void hslider_draw(t_hslider *x, t_glist *glist, int mode)
 static void hslider_getrect(t_gobj *z, t_glist *glist,
                             int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_hslider* x = (t_hslider*)z;
+    t_slider* x = (t_slider*)z;
 
     *xp1 = text_xpix(&x->x_gui.x_obj, glist) - LMARGIN*glist_getzoom(glist);
     *yp1 = text_ypix(&x->x_gui.x_obj, glist);
@@ -226,7 +226,7 @@ static void hslider_getrect(t_gobj *z, t_glist *glist,
 
 static void hslider_save(t_gobj *z, t_binbuf *b)
 {
-    t_hslider *x = (t_hslider *)z;
+    t_slider *x = (t_slider *)z;
     t_symbol *bflcol[3];
     t_symbol *srl[3];
 
@@ -244,7 +244,7 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
-void hslider_check_width(t_hslider *x, int w)
+void hslider_check_width(t_slider *x, int w)
 {
     if(w < IEM_SL_MINSIZE * IEMGUI_ZOOM(x))
         w = IEM_SL_MINSIZE * IEMGUI_ZOOM(x);
@@ -260,7 +260,7 @@ void hslider_check_width(t_hslider *x, int w)
         x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
 }
 
-void hslider_check_minmax(t_hslider *x, double min, double max)
+void hslider_check_minmax(t_slider *x, double min, double max)
 {
     if(x->x_lin0_log1)
     {
@@ -287,30 +287,35 @@ void hslider_check_minmax(t_hslider *x, double min, double max)
 
 static void hslider_properties(t_gobj *z, t_glist *owner)
 {
-    t_hslider *x = (t_hslider *)z;
-    char buf[800];
+    t_slider *x = (t_slider *)z;
     t_symbol *srl[3];
+    char bcol[10], lcol[10], fcol[10];
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |hsl| \
-            --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
-            -----------output-range:----------- %g left: %g right: %g \
-            %d lin log %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE, x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_min, x->x_max, 0.0,/*no_schedule*/
-            x->x_lin0_log1, x->x_gui.x_isa.x_loadinit, x->x_steady, -1,/*no multi, but iem-characteristic*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii rrr",
+        "|hsl|",
+        "--------dimensions(pix)(pix):--------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE, "width:",
+        x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "height:",
+        "-----------output-range:-----------",
+        x->x_min, "bottom:",
+        x->x_max, "top:",
+        0 /*no_schedule*/,
+        x->x_lin0_log1, "lin", "log",
+        x->x_gui.x_isa.x_loadinit, x->x_steady,
+        "empty", -1, /* no multi, but iem-characteristic */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
+        bcol, fcol, lcol);
 }
 
-static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
+static void hslider_set(t_slider *x, t_floatarg f)    /* bugfix */
 {
     int old = x->x_val;
     double g;
@@ -341,7 +346,7 @@ static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */
-static t_float hslider_getfval(t_hslider *x)
+static t_float hslider_getfval(t_slider *x)
 {
     t_float fval;
     int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
@@ -355,7 +360,7 @@ static t_float hslider_getfval(t_hslider *x)
     return (fval);
 }
 
-static void hslider_bang(t_hslider *x)
+static void hslider_bang(t_slider *x)
 {
     double out;
 
@@ -367,7 +372,7 @@ static void hslider_bang(t_hslider *x)
         pd_float(x->x_gui.x_snd->s_thing, out);
 }
 
-static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
+static void hslider_dialog(t_slider *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int w = (int)atom_getfloatarg(0, argc, argv) * IEMGUI_ZOOM(x);
@@ -404,7 +409,7 @@ static void hslider_dialog(t_hslider *x, t_symbol *s, int argc, t_atom *argv)
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
-static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy,
+static void hslider_motion(t_slider *x, t_floatarg dx, t_floatarg dy,
     t_floatarg up)
 {
     int old = x->x_val;
@@ -436,7 +441,7 @@ static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy,
     }
 }
 
-static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
+static void hslider_click(t_slider *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
     if(!x->x_steady)
@@ -457,7 +462,7 @@ static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
 static int hslider_newclick(t_gobj *z, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
-    t_hslider* x = (t_hslider *)z;
+    t_slider* x = (t_slider *)z;
 
     if(doit)
     {
@@ -471,7 +476,7 @@ static int hslider_newclick(t_gobj *z, struct _glist *glist,
     return (1);
 }
 
-static void hslider_size(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_size(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {
     hslider_check_width(x, (int)atom_getfloatarg(0, ac, av)*IEMGUI_ZOOM(x));
     if(ac > 1)
@@ -479,59 +484,59 @@ static void hslider_size(t_hslider *x, t_symbol *s, int ac, t_atom *av)
     iemgui_size((void *)x, &x->x_gui);
 }
 
-static void hslider_delta(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_delta(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_delta((void *)x, &x->x_gui, s, ac, av);}
 
-static void hslider_pos(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_pos(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_pos((void *)x, &x->x_gui, s, ac, av);}
 
-static void hslider_range(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_range(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {
     hslider_check_minmax(x, (double)atom_getfloatarg(0, ac, av),
                             (double)atom_getfloatarg(1, ac, av));
 }
 
-static void hslider_color(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_color(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_color((void *)x, &x->x_gui, s, ac, av);}
 
-static void hslider_send(t_hslider *x, t_symbol *s)
+static void hslider_send(t_slider *x, t_symbol *s)
 {iemgui_send(x, &x->x_gui, s);}
 
-static void hslider_receive(t_hslider *x, t_symbol *s)
+static void hslider_receive(t_slider *x, t_symbol *s)
 {iemgui_receive(x, &x->x_gui, s);}
 
-static void hslider_label(t_hslider *x, t_symbol *s)
+static void hslider_label(t_slider *x, t_symbol *s)
 {iemgui_label((void *)x, &x->x_gui, s);}
 
-static void hslider_label_pos(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_label_pos(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_label_pos((void *)x, &x->x_gui, s, ac, av);}
 
-static void hslider_label_font(t_hslider *x, t_symbol *s, int ac, t_atom *av)
+static void hslider_label_font(t_slider *x, t_symbol *s, int ac, t_atom *av)
 {iemgui_label_font((void *)x, &x->x_gui, s, ac, av);}
 
-static void hslider_log(t_hslider *x)
+static void hslider_log(t_slider *x)
 {
     x->x_lin0_log1 = 1;
     hslider_check_minmax(x, x->x_min, x->x_max);
 }
 
-static void hslider_lin(t_hslider *x)
+static void hslider_lin(t_slider *x)
 {
     x->x_lin0_log1 = 0;
     x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_w/IEMGUI_ZOOM(x) - 1);
 }
 
-static void hslider_init(t_hslider *x, t_floatarg f)
+static void hslider_init(t_slider *x, t_floatarg f)
 {
     x->x_gui.x_isa.x_loadinit = (f == 0.0) ? 0 : 1;
 }
 
-static void hslider_steady(t_hslider *x, t_floatarg f)
+static void hslider_steady(t_slider *x, t_floatarg f)
 {
     x->x_steady = (f == 0.0) ? 0 : 1;
 }
 
-static void hslider_zoom(t_hslider *x, t_floatarg f)
+static void hslider_zoom(t_slider *x, t_floatarg f)
 {
     /* scale current pixel value */
     x->x_val = (IEMGUI_ZOOM(x) == 2 ? (x->x_val)/2 : (x->x_val)*2);
@@ -539,14 +544,14 @@ static void hslider_zoom(t_hslider *x, t_floatarg f)
     iemgui_zoom(&x->x_gui, f);
 }
 
-static void hslider_float(t_hslider *x, t_floatarg f)
+static void hslider_float(t_slider *x, t_floatarg f)
 {
     hslider_set(x, f);
     if(x->x_gui.x_fsf.x_put_in2out)
         hslider_bang(x);
 }
 
-static void hslider_loadbang(t_hslider *x, t_floatarg action)
+static void hslider_loadbang(t_slider *x, t_floatarg action)
 {
     if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
     {
@@ -557,7 +562,7 @@ static void hslider_loadbang(t_hslider *x, t_floatarg action)
 
 static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_hslider *x = (t_hslider *)pd_new(hslider_class);
+    t_slider *x = (t_slider *)pd_new(hslider_class);
     int w = IEM_SL_DEFAULTSIZE, h = IEM_GUI_DEFAULTSIZE;
     int lilo = 0, ldx = -2, ldy = -8, steady = 1;
     int fs = 10;
@@ -634,17 +639,17 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void hslider_free(t_hslider *x)
+static void hslider_free(t_slider *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_hslider_setup(void)
 {
     hslider_class = class_new(gensym("hsl"), (t_newmethod)hslider_new,
-        (t_method)hslider_free, sizeof(t_hslider), 0, A_GIMME, 0);
+        (t_method)hslider_free, sizeof(t_slider), 0, A_GIMME, 0);
 #ifndef GGEE_HSLIDER_COMPATIBLE
     class_addcreator((t_newmethod)hslider_new, gensym("hslider"), A_GIMME, 0);
 #endif

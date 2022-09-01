@@ -2,10 +2,8 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
@@ -380,8 +378,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     char smallbuf[200], *tempbuf;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
-    char smallescbuf[400], *escbuf = 0;
-    size_t escchars = 0;
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
         /* if we're a GOP (the new, "goprect" style) borrow the font size
         from the inside to preserve the spacing */
@@ -399,6 +395,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     else rtext_formattext(x, widthp, heightp, indexp,
             tempbuf, &outchars_b, &selstart_b, &selend_b,
             fontwidth, fontheight);
+    tempbuf[outchars_b]=0;
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
@@ -417,11 +414,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (action && !canvas->gl_havewindow)
         action = 0;
 
-    escbuf = (tempbuf == smallbuf)?smallescbuf:t_getbytes(2 * outchars_b + 1);
-    pdgui_strnescape(escbuf, 2 * outchars_b + 1, tempbuf, outchars_b);
-
     if (action == SEND_FIRST)
     {
+        const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
         int lmargin = LMARGIN, tmargin = TMARGIN;
         if (glist_getzoom(x->x_glist) > 1)
         {
@@ -433,19 +428,19 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
             drops the last character in the string. */
-        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %d %d {%s } %d %s\n",
-            canvas, x->x_tag, rtext_gettype(x)->s_name,
-            text_xpix(x->x_text, x->x_glist) + lmargin,
-                text_ypix(x->x_text, x->x_glist) + tmargin,
-            escbuf,
+        pdgui_vmess("pdtk_text_new", "c S ii s i r",
+            canvas,
+            3, tags,
+            text_xpix(x->x_text, x->x_glist) + lmargin, text_ypix(x->x_text, x->x_glist) + tmargin,
+            tempbuf,
             guifontsize,
-            (glist_isselected(x->x_glist,
-                &x->x_text->te_g)? "blue" : "black"));
+            (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
     }
     else if (action == SEND_UPDATE)
     {
-        sys_vgui("pdtk_text_set .x%lx.c %s {%s }\n",
-            canvas, x->x_tag, escbuf);
+        pdgui_vmess("pdtk_text_set", "cs s",
+                  canvas, x->x_tag,
+                  tempbuf);
         if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
                 *widthp, *heightp, 0);
@@ -453,19 +448,20 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         {
             if (selend_b > selstart_b)
             {
-                sys_vgui(".x%lx.c select from %s %d\n", canvas,
+                pdgui_vmess(0, "crr si",
+                    canvas, "select", "from",
                     x->x_tag, u8_charnum(x->x_buf, selstart_b));
-                sys_vgui(".x%lx.c select to %s %d\n", canvas,
+                pdgui_vmess(0, "crr si",
+                    canvas, "select", "to",
                     x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
-                sys_vgui(".x%lx.c focus \"\"\n", canvas);
+                pdgui_vmess(0, "crs", canvas, "focus", "");
             }
             else
             {
-                sys_vgui(".x%lx.c select clear\n", canvas);
-                sys_vgui(".x%lx.c icursor %s %d\n", canvas, x->x_tag,
-                    u8_charnum(x->x_buf, selstart_b));
-                sys_vgui("focus .x%lx.c\n", canvas);
-                sys_vgui(".x%lx.c focus %s\n", canvas, x->x_tag);
+                pdgui_vmess(0, "crr", canvas, "select", "clear");
+                pdgui_vmess(0, "cr si", canvas, "icursor", x->x_tag, u8_charnum(x->x_buf, selstart_b));
+                pdgui_vmess("focus", "c", canvas);
+                pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
             }
         }
     }
@@ -474,8 +470,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
-    if(escbuf != smallescbuf)
-        t_freebytes(escbuf, 2 * outchars_b + 1);
 }
 
     /* remake text buffer from binbuf */
@@ -524,21 +518,20 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    sys_vgui(".x%lx.c delete %s\n", glist_getcanvas(x->x_glist), x->x_tag);
+    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
-    sys_vgui(".x%lx.c move %s %d %d\n", glist_getcanvas(x->x_glist),
-        x->x_tag, dx, dy);
+    pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
+        dx, dy);
 }
 
 void rtext_select(t_rtext *x, int state)
 {
-    t_glist *glist = x->x_glist;
-    t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c itemconfigure %s -fill %s\n", canvas,
-        x->x_tag, (state? "blue" : "black"));
+    pdgui_vmess(0, "crs rr",
+        glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
+        "-fill", (state? "blue" : "black"));
 }
 
 void gatom_undarken(t_text *x);
@@ -550,7 +543,7 @@ void rtext_activate(t_rtext *x, int state)
     t_canvas *canvas = glist_getcanvas(glist);
     if (state)
     {
-        sys_vgui("pdtk_text_editing .x%lx %s 1\n", canvas, x->x_tag);
+        pdgui_vmess("pdtk_text_editing", "^si", canvas, x->x_tag, 1);
         glist->gl_editor->e_textedfor = x;
         glist->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
@@ -559,7 +552,7 @@ void rtext_activate(t_rtext *x, int state)
     }
     else
     {
-        sys_vgui("pdtk_text_editing .x%lx {} 0\n", canvas);
+        pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;

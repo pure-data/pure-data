@@ -17,8 +17,6 @@
   modified by IOhannes m zmölnig (umlaeute) Nov 2021
   + convert native strings to UTF-8
 */
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 

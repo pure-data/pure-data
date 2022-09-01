@@ -518,27 +518,29 @@ static void vu_scale(t_vu *x, t_floatarg fscale)
 static void vu_properties(t_gobj *z, t_glist *owner)
 {
     t_vu *x = (t_vu *)z;
-    char buf[800];
     t_symbol *srl[3];
+    char bcol[10], lcol[10], *fcol="none";
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |vu| \
-            --------dimensions(pix)(pix):-------- %d %d width: %d %d height: \
-            empty 0.0 empty 0.0 empty %d \
-            %d no_scale scale %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x none #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_VU_STEPS*IEM_VU_MINSIZE,
-            0,/*no_schedule*/
-            x->x_scale, -1, -1, -1,/*no linlog, no init, no multi*/
-            srl[0]->s_name, srl[1]->s_name,/*no send*/
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r ir ir  i  irr ii ri ss sii ii rrr",
+        "|vu|",
+        "--------dimensions(pix)(pix):--------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "width:",
+        x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_VU_STEPS*IEM_VU_MINSIZE, "height:",
+        "empty",
+        0, "empty",
+        0, "empty",
+        0 /* no schedule */,
+        x->x_scale, "no_scale", "scale",
+        -1 /* no loadbang */, -1 /* no steady */,
+        "empty", -1, /* no multi */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,  /* label font */
+        bcol, fcol, lcol);
 }
 
 static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
@@ -738,7 +740,7 @@ static void vu_free(t_vu *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_vumeter_setup(void)

@@ -480,9 +480,13 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
     pdgui_strnescape( lab_escaped, MAXPDSTRING, iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name) );
 
     if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -text [::pdtk_text::unescape \"%s \"] \n",
-                 glist_getcanvas(iemgui->x_glist), x,
-                 strcmp(s->s_name, "empty")?lab_escaped:"");
+    {
+        char tag[128];
+        sprintf(tag, "%lxLABEL", x);
+        pdgui_vmess("pdtk_text_set", "css",
+                  glist_getcanvas(iemgui->x_glist),
+                  tag, strcmp(s->s_name, "empty")?s->s_name:"");
+    }
 }
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -491,10 +495,14 @@ void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av
     iemgui->x_ldx = (int)atom_getfloatarg(0, ac, av);
     iemgui->x_ldy = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
-        sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-                 glist_getcanvas(iemgui->x_glist), x,
-                 text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
-                 text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
+    {
+        char tag[128];
+        sprintf(tag, "%lxLABEL", x);
+        pdgui_vmess(0, "crs ii",
+            glist_getcanvas(iemgui->x_glist), "coords", tag,
+            text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
+            text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
+    }
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -515,9 +523,17 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         f = 4;
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
-                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
-                 iemgui->x_fontsize*zoom, sys_fontweight);
+    {
+        char tag[128];
+        t_atom fontatoms[3];
+        sprintf(tag, "%lxLABEL", x);
+        SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
+        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        pdgui_vmess(0, "crs rA",
+            glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
+            "-font", 3, fontatoms);
+    }
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -644,19 +660,10 @@ void iemgui_newzoom(t_iemgui *iemgui)
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 {
-    char label[MAXPDSTRING];
-
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
-
-    strcpy(label, iemgui->x_lab->s_name);
-    pdgui_strnescape(label, MAXPDSTRING,
-                    iemgui->x_lab->s_name, strlen(iemgui->x_lab->s_name));
-    srl[2] = gensym(label);
-
-    iemgui_all_dollar2raute(srl);
+    srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
-    iemgui_all_put_in_braces(srl);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
@@ -856,4 +863,3 @@ external GUI object uses obsolete Pd function iemgui_all_colfromload()");
         iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
     }
 }
-
