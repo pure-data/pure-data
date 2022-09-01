@@ -886,35 +886,48 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     int ypos = text_ypix(&x->x_obj, glist);
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
+    char tag_object[128], tag_label[128], tag[128];
+    char *tags[] = {tag_object, tag};
 
     (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
 
+    sprintf(tag_object, "%lxOBJ", x);
+    sprintf(tag_label, "%lxLABEL", x);
+
+    /* re-create outlet */
+    sprintf(tag, "%lxOUT%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_snd_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + x->x_h + zoom - ioh,
-            xpos + iow, ypos + x->x_h,
-            x, x, 0);
+        pdgui_vmess(0, "crr iiii rs rS",
+            canvas, "create", "rectangle",
+            xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
+            "-fill", "black",
+            "-tags", 2, tags);
         /* keep label above outlet */
-        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
     }
+
+    /* re-create inlet */
+    sprintf(tag, "%lxIN%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_fsf.x_rcv_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - zoom + ioh,
-            x, x, 0);
+        pdgui_vmess(0, "crr iiii rs rS",
+            canvas, "create", "rectangle",
+            xpos, ypos, xpos + iow, ypos - zoom + ioh,
+            "-fill", "black",
+            "-tags", 2, tags);
         /* keep label above inlet */
-        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
     }
 }
 
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-    sys_vgui(".x%lx.c delete %lxOBJ\n", canvas, x);
+    char tag_object[128];
+    sprintf(tag_object, "%lxOBJ", x);
+
+    pdgui_vmess(0, "crs", canvas, "delete", tag_object);
 }
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
@@ -922,7 +935,11 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     int dx = text_xpix(&x->x_obj, glist) - x->x_private->p_prevX;
     int dy = text_ypix(&x->x_obj, glist) - x->x_private->p_prevY;
-    sys_vgui(".x%lx.c move %lxOBJ %d %d\n", canvas, x, dx, dy);
+
+    char tag_object[128];
+    sprintf(tag_object, "%lxOBJ", x);
+
+    pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
 }
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
