@@ -32,17 +32,18 @@ static void slider_set(t_slider *x, t_floatarg f);
 
 static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int lmargin = 0, tmargin=0, bmargin = 0;
     if(x->x_orientation == horizontal)
     {
-        lmargin = LMARGIN * IEMGUI_ZOOM(x);
+        lmargin = LMARGIN * zoom;
     } else {
-        tmargin = TMARGIN * IEMGUI_ZOOM(x);
-        bmargin = BMARGIN * IEMGUI_ZOOM(x);
+        tmargin = TMARGIN * zoom;
+        bmargin = BMARGIN * zoom;
     }
 
     (void)old_snd_rcv_flags;
@@ -53,7 +54,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
             canvas,
-            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
+            xpos - lmargin, ypos + x->x_gui.x_h + bmargin + zoom - ioh,
             xpos - lmargin + iow, ypos + x->x_gui.x_h + bmargin,
             x, x, 0);
             /* keep knob above outlet */
@@ -64,7 +65,7 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
             canvas,
             xpos - lmargin, ypos - tmargin,
-            xpos - lmargin + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
+            xpos - lmargin + iow, ypos - tmargin - zoom + ioh,
             x, x, 0);
             /* keep knob above inlet */
         sys_vgui(".x%lx.c lower %lxIN%d %lxKNOB\n", canvas, x, 0, x);
@@ -73,31 +74,32 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
 
 static void slider_draw_config(t_slider* x, t_glist* glist)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int val = ((x->x_val + 50)/100);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int lmargin = 0, rmargin = 0, tmargin = 0, bmargin = 0;
     int a, b, c, d;
     if(x->x_orientation == horizontal)
     {
         int r = xpos + val;
-        lmargin = LMARGIN * IEMGUI_ZOOM(x);
-        rmargin = RMARGIN * IEMGUI_ZOOM(x);
+        lmargin = LMARGIN * zoom;
+        rmargin = RMARGIN * zoom;
         a = r;
-        b = ypos + IEMGUI_ZOOM(x);
+        b = ypos + zoom;
         c = r;
-        d = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x);
+        d = ypos + x->x_gui.x_h - zoom;
     } else {
         int r = ypos + x->x_gui.x_h - val;
-        tmargin = TMARGIN * IEMGUI_ZOOM(x);
-        bmargin = BMARGIN * IEMGUI_ZOOM(x);
+        tmargin = TMARGIN * zoom;
+        bmargin = BMARGIN * zoom;
 
-        a = xpos + IEMGUI_ZOOM(x);
+        a = xpos + zoom;
         b = r;
-        c = xpos + x->x_gui.x_w - IEMGUI_ZOOM(x);
+        c = xpos + x->x_gui.x_w - zoom;
         d = r;
     }
 
@@ -105,20 +107,20 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
         xpos - lmargin, ypos - tmargin,
         xpos + x->x_gui.x_w + rmargin, ypos + x->x_gui.x_h + bmargin);
     sys_vgui(".x%lx.c itemconfigure %lxBASE -width %d -fill #%06x\n", canvas, x,
-        IEMGUI_ZOOM(x),
+        zoom,
         x->x_gui.x_bcol);
 
     sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n", canvas, x,
         a, b, c, d);
     sys_vgui(".x%lx.c itemconfigure %lxKNOB -width %d -fill #%06x\n", canvas, x,
-        1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x, x);
+        1 + 2 * zoom, x->x_gui.x_fcol, x, x);
 
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
-        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+        xpos + x->x_gui.x_ldx * zoom,
+        ypos + x->x_gui.x_ldy * zoom);
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
         (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
 }
 
@@ -154,22 +156,23 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
     int a, b, c, d;
     if (glist_isvisible(glist))
     {
+        const int zoom = IEMGUI_ZOOM(x);
         t_canvas *canvas = glist_getcanvas(glist);
         int xpos = text_xpix(&x->x_gui.x_obj, glist);
         int ypos = text_ypix(&x->x_gui.x_obj, glist);
-        int val = ((x->x_val + 50) / 100) * IEMGUI_ZOOM(x);
+        int val = ((x->x_val + 50) / 100) * zoom;
         if(x->x_orientation == horizontal)
         {
             int r = xpos + val;
             a = r;
-            b = ypos + IEMGUI_ZOOM(x);
+            b = ypos + zoom;
             c = r;
-            d = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x);
+            d = ypos + x->x_gui.x_h - zoom;
         } else {
             int r = ypos + x->x_gui.x_h - val;
-            a = xpos + IEMGUI_ZOOM(x);
+            a = xpos + zoom;
             b = r;
-            c = xpos + x->x_gui.x_w - IEMGUI_ZOOM(x);
+            c = xpos + x->x_gui.x_w - zoom;
             d = r;
         }
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",

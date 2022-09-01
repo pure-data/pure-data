@@ -20,29 +20,30 @@ static t_class *bng_class;
 #define bng_draw_io 0
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
-    int inset = IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
+    int inset = zoom;
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n", canvas, x,
              xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
     sys_vgui(".x%lx.c itemconfigure %lxBASE -width %d -fill #%6.6x\n", canvas, x,
-             IEMGUI_ZOOM(x), x->x_gui.x_bcol);
+             zoom, x->x_gui.x_bcol);
 
     sys_vgui(".x%lx.c coords %lxBUT %d %d %d %d\n", canvas, x,
         xpos + inset, ypos + inset,
         xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
     sys_vgui(".x%lx.c itemconfigure %lxBUT -width %d -fill #%6.6x\n", canvas, x,
-        IEMGUI_ZOOM(x),
+        zoom,
         (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
 
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
-        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x), ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%6.6x\n", canvas, x,
         (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
         (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
 }
 

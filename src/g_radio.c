@@ -22,33 +22,35 @@ static t_class *radio_class;
 /* widget helper functions */
 static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
 
     (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
 
+    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
             canvas,
-            xpos, ypos + height + IEMGUI_ZOOM(x) - ioh,
+            xpos, ypos + height + zoom - ioh,
             xpos + iow, ypos + height,
             x, x, 0);
 
             /* keep buttons above outlet */
         sys_vgui(".x%lx.c lower %lxOUT%d %lxBUT\n", canvas, x, 0, x);
     }
+
+    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
             canvas,
             xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
+            xpos + iow, ypos - zoom + ioh,
             x, x, 0);
 
             /* keep buttons above inlet */
@@ -59,8 +61,9 @@ static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
     int i;
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int xx11b = text_xpix(&x->x_gui.x_obj, glist);
     int yy11b = text_ypix(&x->x_gui.x_obj, glist);
     int d, dx = 0, dy = 0, d4;
@@ -88,7 +91,7 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
         sys_vgui(".x%lx.c coords %lxBASE%d %d %d %d %d\n", canvas, x, i,
             xx11, yy11, xx12, yy12);
         sys_vgui(".x%lx.c itemconfigure %lxBASE%d -width %d -fill #%06x\n", canvas, x, i,
-            IEMGUI_ZOOM(x), x->x_gui.x_bcol);
+            zoom, x->x_gui.x_bcol);
 
         sys_vgui(".x%lx.c coords %lxBUT%d %d %d %d %d\n", canvas, x, i,
             xx21, yy21, xx22, yy22);
@@ -101,10 +104,10 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
     }
 
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
-        xx11b + x->x_gui.x_ldx * IEMGUI_ZOOM(x), yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+        xx11b + x->x_gui.x_ldx * zoom, yy11b + x->x_gui.x_ldy * zoom);
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
         x->x_gui.x_lcol);
 }
 

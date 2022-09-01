@@ -106,10 +106,11 @@ static t_class *my_numbox_class;
 
 static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_flags)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
 
     (void)old_snd_rcv_flags;
     sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -118,7 +119,7 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
     if(!x->x_gui.x_fsf.x_snd_able) {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
             canvas,
-            xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
+            xpos, ypos + x->x_gui.x_h + zoom - ioh,
             xpos + iow, ypos + x->x_gui.x_h,
             x, x, 0);
             /* keep label above outlet */
@@ -128,7 +129,7 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
             canvas,
             xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
+            xpos + iow, ypos - zoom + ioh,
             x, x, 0);
             /* keep label above inlet */
         sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
@@ -137,13 +138,14 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
 
 static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int w = x->x_gui.x_w, half = x->x_gui.x_h/2;
-    int d = IEMGUI_ZOOM(x) + x->x_gui.x_h/(34*IEMGUI_ZOOM(x));
+    int d = zoom + x->x_gui.x_h/(34*zoom);
     int corner = x->x_gui.x_h/4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
 
     int lcol = x->x_gui.x_lcol;
     int fcol = x->x_gui.x_fcol;
@@ -163,28 +165,28 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         xpos,              ypos + x->x_gui.x_h,
         xpos,              ypos);
     sys_vgui(".x%lx.c itemconfigure %lxBASE1 -width %d -outline #%06x -fill #%06x\n", canvas, x,
-        IEMGUI_ZOOM(x), IEM_GUI_COLOR_NORMAL, x->x_gui.x_bcol);
+        zoom, IEM_GUI_COLOR_NORMAL, x->x_gui.x_bcol);
 
     sys_vgui(".x%lx.c coords %lxBASE2 %d %d %d %d %d %d\n", canvas, x,
-        xpos + IEMGUI_ZOOM(x), ypos + IEMGUI_ZOOM(x),
+        xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
-        xpos + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - IEMGUI_ZOOM(x));
+        xpos + zoom, ypos + x->x_gui.x_h - zoom);
     sys_vgui(".x%lx.c itemconfigure %lxBASE2 -width %d -fill #%06x\n", canvas, x,
-        IEMGUI_ZOOM(x), x->x_gui.x_fcol);
+        zoom, x->x_gui.x_fcol);
 
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
-        xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-        ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
+        xpos + x->x_gui.x_ldx * zoom,
+        ypos + x->x_gui.x_ldy * zoom);
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
         lcol);
 
     sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n", canvas, x,
-        xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d);
+        xpos + half + 2*zoom, ypos + half + d);
     sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
         x->x_buf,
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
+        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
         fcol);
 }
 
