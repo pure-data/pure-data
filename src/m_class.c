@@ -878,6 +878,25 @@ t_symbol *gensym(const char *s)
     return(dogensym(s, 0, pd_this));
 }
 
+    /* this function is used by [pdcontrol]. */
+int getnumsymbols()
+{
+    int numsymbols = 0;
+    t_symbol **symhashloc, *sym2;
+    symhashloc = pd_this->pd_symhash;
+    while(symhashloc < pd_this->pd_symhash + SYMTABHASHSIZE)
+    {
+        sym2 = *symhashloc;
+        while (sym2)
+        {
+            numsymbols++;
+            sym2 = sym2->s_next;
+        }
+        symhashloc++;
+    }
+    return numsymbols;
+}
+
 static t_symbol *addfileextent(t_symbol *s)
 {
     char namebuf[MAXPDSTRING];

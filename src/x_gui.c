@@ -480,6 +480,16 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
     outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
 }
 
+extern int getnumsymbols(); /* from m_class.c */
+
+static void pdcontrol_runtimeinfo(t_pdcontrol *x)
+{
+    t_atom at;
+
+    SETFLOAT(&at, (float)getnumsymbols());
+    outlet_anything(x->x_outlet, gensym("numsymbols"), 1, &at);
+}
+
 static void pdcontrol_setup(void)
 {
     pdcontrol_class = class_new(gensym("pdcontrol"),
@@ -492,6 +502,8 @@ static void pdcontrol_setup(void)
         gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_runtimeinfo,
+        gensym("runtimeinfo"), 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
