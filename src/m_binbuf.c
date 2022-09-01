@@ -916,7 +916,6 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     t_binbuf *y = 0;
     const t_binbuf *z = x;
     int indx;
-    int ncolumn = 0;
 
     if (*dir)
         snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
@@ -954,17 +953,14 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
             atom_string(ap, bp, (unsigned int)((ep-bp)-2));
             length = (int)strlen(bp);
             bp += length;
-            ncolumn += length;
         }
-        if (ap->a_type == A_SEMI || (!crflag && ncolumn > 65))
+        if (ap->a_type == A_SEMI)
         {
             *bp++ = '\n';
-            ncolumn = 0;
         }
         else
         {
             *bp++ = ' ';
-            ncolumn++;
         }
     }
     if (fwrite(sbuf, bp-sbuf, 1, f) < 1)

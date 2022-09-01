@@ -72,15 +72,11 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
-
-    if(x->x_gui.x_fsf.x_selected)
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-    }
-    else
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, x->x_gui.x_bcol);
-    }
+    char tag[128];
+    sprintf(tag, "%lxBASE", x);
+    pdgui_vmess(0, "crs rk",
+        canvas, "itemconfigure", tag,
+        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */
@@ -114,26 +110,26 @@ static void my_canvas_save(t_gobj *z, t_binbuf *b)
 static void my_canvas_properties(t_gobj *z, t_glist *owner)
 {
     t_my_canvas *x = (t_my_canvas *)z;
-    char buf[800];
     t_symbol *srl[3];
 
     iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |cnv| \
-            ------selectable_dimensions(pix):------ %d %d size: 0.0 0.0 empty \
-            ------visible_rectangle(pix)(pix):------ %d width: %d height: %d \
-            %d empty empty %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x none #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), 1,
-            x->x_vis_w, x->x_vis_h, 0,/*no_schedule*/
-            -1, -1, -1, -1,/*no linlog, no init, no multi*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r ir ir  i  irr ii ri ss sii ii krk",
+        "|cnv|",
+        "------selectable_dimensions(pix):------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), 1, "size:",
+        0, 0, "empty",
+        "------visible_rectangle(pix)(pix):------",
+        x->x_vis_w, "width:",
+        x->x_vis_h, "height:",
+        0, /* no_schedule */
+        -1, "empty", "empty", /* no linlog */
+        -1, -1, /* no loadbang, no steady */
+        "empty", -1, /* num */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,  /* label font */
+        x->x_gui.x_bcol, "none", x->x_gui.x_lcol);
 }
 
 static void my_canvas_get_pos(t_my_canvas *x)
@@ -330,7 +326,7 @@ static void my_canvas_free(t_my_canvas *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_mycanvas_setup(void)

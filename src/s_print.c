@@ -67,8 +67,7 @@ static void dopost(const char *s)
     }
     else
     {
-        char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::post {%s}\n", pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::post", "s", s);
     }
 }
 
@@ -97,8 +96,8 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n",
-            object, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::logpost", "ois",
+                  object, 1, s);
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -129,8 +128,8 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n",
-            object, level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::logpost", "ois",
+                  object, level, s);
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
