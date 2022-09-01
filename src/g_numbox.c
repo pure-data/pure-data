@@ -104,51 +104,28 @@ void my_numbox_ftoa(t_my_numbox *x)
 t_widgetbehavior my_numbox_widgetbehavior;
 static t_class *my_numbox_class;
 
-static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_flags)
-{
-    const int zoom = IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-
-    (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-
-    if(!x->x_gui.x_fsf.x_snd_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + x->x_gui.x_h + zoom - ioh,
-            xpos + iow, ypos + x->x_gui.x_h,
-            x, x, 0);
-            /* keep label above outlet */
-        sys_vgui(".x%lx.c lower %lxOUT%d %lxLABEL\n", canvas, x, 0, x);
-    }
-    if(!x->x_gui.x_fsf.x_rcv_able) {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
-            xpos, ypos,
-            xpos + iow, ypos - zoom + ioh,
-            x, x, 0);
-            /* keep label above inlet */
-        sys_vgui(".x%lx.c lower %lxIN%d %lxLABEL\n", canvas, x, 0, x);
-    }
-}
+#define my_numbox_draw_io 0
 
 static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
+    t_iemgui *iemgui = &x->x_gui;
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int w = x->x_gui.x_w, half = x->x_gui.x_h/2;
     int d = zoom + x->x_gui.x_h/(34*zoom);
     int corner = x->x_gui.x_h/4;
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
+    char tag[128];
 
     int lcol = x->x_gui.x_lcol;
     int fcol = x->x_gui.x_fcol;
+    t_atom fontatoms[3];
+    SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+
     if(x->x_gui.x_fsf.x_selected)
         fcol = lcol = IEM_GUI_COLOR_SELECTED;
     if(x->x_gui.x_fsf.x_change)
@@ -156,60 +133,79 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
 
     my_numbox_ftoa(x);
 
-
-    sys_vgui(".x%lx.c coords %lxBASE1 %d %d %d %d %d %d %d %d %d %d %d %d\n", canvas, x,
+    sprintf(tag, "%lxBASE1", x);
+    pdgui_vmess(0, "crs  ii ii ii ii ii ii", canvas, "coords", tag,
         xpos,              ypos,
         xpos + w - corner, ypos,
         xpos + w,          ypos + corner,
         xpos + w,          ypos + x->x_gui.x_h,
         xpos,              ypos + x->x_gui.x_h,
         xpos,              ypos);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE1 -width %d -outline #%06x -fill #%06x\n", canvas, x,
-        zoom, IEM_GUI_COLOR_NORMAL, x->x_gui.x_bcol);
+    pdgui_vmess(0, "crs  ri rk rk", canvas, "itemconfigure", tag,
+        "-width", zoom,
+        "-outline", IEM_GUI_COLOR_NORMAL,
+        "-fill", x->x_gui.x_bcol);
 
-    sys_vgui(".x%lx.c coords %lxBASE2 %d %d %d %d %d %d\n", canvas, x,
+
+    sprintf(tag, "%lxBASE2", x);
+    pdgui_vmess(0, "crs  ii ii ii", canvas, "coords", tag,
         xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
         xpos + zoom, ypos + x->x_gui.x_h - zoom);
-    sys_vgui(".x%lx.c itemconfigure %lxBASE2 -width %d -fill #%06x\n", canvas, x,
-        zoom, x->x_gui.x_fcol);
+    pdgui_vmess(0, "crs  ri rk", canvas, "itemconfigure", tag,
+        "-width", zoom,
+        "-fill", x->x_gui.x_fcol);
 
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom,
         ypos + x->x_gui.x_ldy * zoom);
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
-        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
-        lcol);
+    pdgui_vmess(0, "crs  rs rA rk", canvas, "itemconfigure", tag,
+        "-text", (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
+        "-font", 3, fontatoms,
+        "-fill", lcol);
 
-    sys_vgui(".x%lx.c coords %lxNUMBER %d %d\n", canvas, x,
+    sprintf(tag, "%lxNUMBER", x);
+    pdgui_vmess(0, "crs  ii", canvas, "coords", tag,
         xpos + half + 2*zoom, ypos + half + d);
-    sys_vgui(".x%lx.c itemconfigure %lxNUMBER -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        x->x_buf,
-        x->x_gui.x_font, x->x_gui.x_fontsize * zoom, sys_fontweight,
-        fcol);
+    pdgui_vmess(0, "crs  rs rA rk", canvas, "itemconfigure", tag,
+        "-text", x->x_buf,
+        "-font", 3, fontatoms,
+        "-fill", fcol);
 }
 
 static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
+    char tag[128], tag_object[128];
+    char*tags[] = {tag_object, tag, "label", "text"};
+    sprintf(tag_object, "%lxOBJ", x);
 
-    sys_vgui(".x%lx.c create polygon 0 0 -tags [list %lxOBJ %lxBASE1]\n",
-        canvas, x, x);
-    sys_vgui(".x%lx.c create line 0 0 0 0 -tags [list %lxOBJ %lxBASE2]\n",
-        canvas, x, x);
-    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxLABEL label text]\n",
-        canvas, x, x);
-    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxOBJ %lxNUMBER]\n",
-        canvas, x, x);
+    sprintf(tag, "%lxBASE1", x);
+    pdgui_vmess(0, "crr ii rS", canvas, "create", "polygon",
+        0, 0, "-tags", 2, tags);
+
+    sprintf(tag, "%lxBASE2", x);
+    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
+        0, 0, 0, 0, "-tags", 2, tags);
+
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
+        0, 0, "-anchor", "w", "-tags", 4, tags);
+
+    sprintf(tag, "%lxNUMBER", x);
+    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
+        0, 0, "-anchor", "w", "-tags", 2, tags);
 
     my_numbox_draw_config(x, glist);
-    my_numbox_draw_io(x, glist, 0);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
+    int bcol = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol, fcol = x->x_gui.x_fcol;
+    char tag[128];
 
     if(x->x_gui.x_fsf.x_selected)
     {
@@ -220,26 +216,17 @@ static void my_numbox_draw_select(t_my_numbox *x, t_glist *glist)
             x->x_buf[0] = 0;
             sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         }
-        sys_vgui(".x%lx.c itemconfigure %lxBASE1 -outline #%06x\n",
-            canvas, x, IEM_GUI_COLOR_SELECTED);
-        sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n",
-            canvas, x, IEM_GUI_COLOR_SELECTED);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n",
-            canvas, x, IEM_GUI_COLOR_SELECTED);
-        sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x\n",
-            canvas, x, IEM_GUI_COLOR_SELECTED);
+        bcol = lcol = fcol = IEM_GUI_COLOR_SELECTED;
     }
-    else
-    {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE1 -outline #%06x\n",
-            canvas, x, IEM_GUI_COLOR_NORMAL);
-        sys_vgui(".x%lx.c itemconfigure %lxBASE2 -fill #%06x\n",
-            canvas, x, x->x_gui.x_fcol);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n",
-            canvas, x, x->x_gui.x_lcol);
-        sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x\n",
-            canvas, x, x->x_gui.x_fcol);
-    }
+
+    sprintf(tag, "%lxBASE1", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", bcol);
+    sprintf(tag, "%lxBASE2", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    sprintf(tag, "%lxNUMBER", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", fcol);
 }
 
 static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
@@ -247,6 +234,9 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     t_my_numbox *x = (t_my_numbox *)client;
     if(glist_isvisible(glist))
     {
+        t_canvas *canvas = glist_getcanvas(glist);
+        char tag[128];
+        sprintf(tag, "%lxNUMBER", x);
         if(x->x_gui.x_fsf.x_change)
         {
             if(x->x_buf[0])
@@ -258,27 +248,24 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                 x->x_buf[sl+1] = 0;
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
-                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                    glist_getcanvas(glist), x,
-                    IEM_GUI_COLOR_EDITED, cp);
+                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
+                    "-fill", IEM_GUI_COLOR_EDITED, "-text", cp);
                 x->x_buf[sl] = 0;
             }
             else
             {
                 my_numbox_ftoa(x);
-                sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                    glist_getcanvas(glist), x,
-                    IEM_GUI_COLOR_EDITED, x->x_buf);
+                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
+                    "-fill", IEM_GUI_COLOR_EDITED, "-text", x->x_buf);
                 x->x_buf[0] = 0;
             }
         }
         else
         {
             my_numbox_ftoa(x);
-            sys_vgui(".x%lx.c itemconfigure %lxNUMBER -fill #%06x -text {%s} \n",
-                glist_getcanvas(glist), x,
-                (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
-                x->x_buf);
+                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
+                    "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_fcol),
+                    "-text", x->x_buf);
             x->x_buf[0] = 0;
         }
     }
