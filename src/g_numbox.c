@@ -380,10 +380,6 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
 {
     t_my_numbox *x = (t_my_numbox *)z;
     t_symbol *srl[3];
-    char bcol[10], lcol[10], fcol[10];
-    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
-    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
-    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
     if(x->x_gui.x_fsf.x_change)
@@ -395,7 +391,7 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
 
     pdgui_stub_vnew(
         &x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
-        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii rrr",
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii kkk",
         "|nbx|",
         "-------dimensions(digits)(pix):-------",
         x->x_numwidth, MINDIGITS, "width:",
@@ -410,7 +406,7 @@ static void my_numbox_properties(t_gobj *z, t_glist *owner)
         srl[0]->s_name, srl[1]->s_name, /* send/receive */
         srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
         x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
-        bcol, fcol, lcol);
+        x->x_gui.x_bcol,  x->x_gui.x_fcol, x->x_gui.x_lcol);
 }
 
 static void my_numbox_bang(t_my_numbox *x)

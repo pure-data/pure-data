@@ -302,13 +302,10 @@ static void vu_properties(t_gobj *z, t_glist *owner)
 {
     t_vu *x = (t_vu *)z;
     t_symbol *srl[3];
-    char bcol[10], lcol[10], *fcol="none";
-    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
-    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
     pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
-        "r  r iir iir  r ir ir  i  irr ii ri ss sii ii rrr",
+        "r  r iir iir  r ir ir  i  irr ii ri ss sii ii krk",
         "|vu|",
         "--------dimensions(pix)(pix):--------",
         x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "width:",
@@ -323,7 +320,7 @@ static void vu_properties(t_gobj *z, t_glist *owner)
         srl[0]->s_name, srl[1]->s_name, /* send/receive */
         srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
         x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,  /* label font */
-        bcol, fcol, lcol);
+        x->x_gui.x_bcol,  "none", x->x_gui.x_lcol);
 }
 
 static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
