@@ -5,7 +5,6 @@
 /*  "filters", both linear and nonlinear.
 */
 #include "m_pd.h"
-#include <math.h>
 
 /* ---------------- hip~ - 1-pole 1-zero hipass filter. ----------------- */
 

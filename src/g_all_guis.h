@@ -174,7 +174,7 @@ typedef struct _bng
     double x_lastflashtime;
 } t_bng;
 
-typedef struct _hslider
+typedef struct _slider
 {
     t_iemgui x_gui;
     int      x_pos;
@@ -185,9 +185,9 @@ typedef struct _hslider
     double   x_max;
     double   x_k;
     t_float  x_fval;
-} t_hslider;
+} t_slider;
 
-typedef struct _hdial
+typedef struct _radio
 {
     t_iemgui x_gui;
     int      x_on;
@@ -197,7 +197,7 @@ typedef struct _hdial
     int      x_drawn;
     t_float  x_fval;
     t_atom   x_at[2];
-} t_hdial;
+} t_radio;
 
 typedef struct _toggle
 {
@@ -214,18 +214,6 @@ typedef struct _my_canvas
     int      x_vis_h;
 } t_my_canvas;
 
-typedef struct _vslider
-{
-    t_iemgui x_gui;
-    int      x_pos;
-    int      x_val;
-    int      x_lin0_log1;
-    int      x_steady;
-    double   x_min;
-    double   x_max;
-    double   x_k;
-    t_float  x_fval;
-} t_vslider;
 
 typedef struct _vu
 {
@@ -256,21 +244,6 @@ typedef struct _my_numbox
     int      x_numwidth;
     int      x_log_height;
 } t_my_numbox;
-
-typedef struct _vdial
-{
-    t_iemgui x_gui;
-    int      x_on;
-    int      x_on_old;
-    int      x_change;
-    int      x_number;
-    int      x_drawn;
-    t_float  x_fval;
-    t_atom   x_at[2];
-} t_vdial;
-
-#define t_vradio t_vdial
-#define t_hradio t_hdial
 
 extern int iemgui_color_hex[];
 extern int iemgui_vu_db2i[];

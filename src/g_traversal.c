@@ -16,9 +16,7 @@ sublist - get a pointer into a list which is an element of another scalar
 
 */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
 

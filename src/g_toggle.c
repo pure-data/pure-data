@@ -265,26 +265,32 @@ static void toggle_save(t_gobj *z, t_binbuf *b)
 static void toggle_properties(t_gobj *z, t_glist *owner)
 {
     t_toggle *x = (t_toggle *)z;
-    char buf[800];
     t_symbol *srl[3];
+    char bcol[10], lcol[10], fcol[10];
+    sprintf(bcol, "#%06x", 0xffffff & x->x_gui.x_bcol);
+    sprintf(fcol, "#%06x", 0xffffff & x->x_gui.x_fcol);
+    sprintf(lcol, "#%06x", 0xffffff & x->x_gui.x_lcol);
 
     iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s |tgl| \
-            ----------dimensions(pix):----------- %d %d size: 0 0 empty \
-            -----------non-zero-value:----------- %g value: 0.0 empty %g \
-            -1 lin log %d %d empty %d \
-            %s %s \
-            %s %d %d \
-            %d %d \
-            #%06x #%06x #%06x\n",
-            x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE,
-            x->x_nonzero, 1.0,/*non_zero-schedule*/
-            x->x_gui.x_isa.x_loadinit, -1, -1,/*no multi*/
-            srl[0]->s_name, srl[1]->s_name,
-            srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+
+    pdgui_stub_vnew(
+        &x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r  r iir iir  r fr fr  i  irr ii ri ss sii ii rrr",
+        "|tgl|",
+        "----------dimensions(pix):-----------",
+        x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_GUI_MINSIZE, "size:",
+        0, 0, "empty",
+        "-----------non-zero-value:-----------",
+        x->x_nonzero, "value:",
+        0.0, "empty",
+        1 /* non_zero-schedule */,
+        -1, "lin", "log",
+        x->x_gui.x_isa.x_loadinit, -1,
+        "empty", -1, /* no multi */
+        srl[0]->s_name, srl[1]->s_name, /* send/receive */
+        srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy, /* label + pos */
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize, /* label font */
+        bcol, fcol, lcol);
 }
 
 static void toggle_bang(t_toggle *x)
@@ -487,7 +493,7 @@ static void toggle_ff(t_toggle *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_toggle_setup(void)
