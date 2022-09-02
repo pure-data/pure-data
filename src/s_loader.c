@@ -44,6 +44,10 @@ a fat binary or an indication of the instruction set. */
 # define FAT_BINARIES 1
 #endif
 
+#define STR(s) #s
+#define STRINGIFY(s) STR(s)
+
+
 #if defined(__x86_64__) || defined(_M_X64)
 # define ARCHEXT "amd64"
 #elif defined(__i386__) || defined(_M_IX86)
@@ -64,6 +68,9 @@ a fat binary or an indication of the instruction set. */
 
 
 static const char*sys_dllextent_base[] = {
+#if defined EXTERNAL_EXTENSION
+    STRINGIFY(EXTERNAL_EXTENSION),
+#endif
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
     ARCHDLLEXT(".l_")
 # if defined(__x86_64__) || defined(_M_X64)

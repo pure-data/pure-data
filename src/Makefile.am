@@ -232,6 +232,9 @@ DEKEN_DEFINE+=$(if $(DEKEN_OS),-DDEKEN_OS="$(DEKEN_OS)")
 DEKEN_DEFINE+=$(if $(DEKEN_CPU),-DDEKEN_CPU="$(DEKEN_CPU)")
 pd_CFLAGS += $(DEKEN_DEFINE)
 
+
+DEKEN_DEFINE+=$(if $(EXTERNAL_EXTENSION),-DEXTERNAL_EXTENSION=".$(EXTERNAL_EXTENSION)")
+
 #########################################
 ##### Configurations Per Library #####
 
