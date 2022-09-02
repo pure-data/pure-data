@@ -95,7 +95,16 @@ static const char*sys_dllextent_base[] = {
 static const char**sys_dllextent = 0;
 static size_t num_dllextents = 0;
 static void add_dllextension(const char*ext) {
-    const char**extensions = resizebytes(sys_dllextent
+    const char**extensions;
+    if(ext) {
+        /* prevent duplicate entries */
+        int i;
+        for(i=0; i<num_dllextents; i++) {
+            if(!strcmp(ext, sys_dllextent[i]))
+                return;
+        }
+    }
+    extensions = resizebytes(sys_dllextent
         , sizeof(*sys_dllextent) * num_dllextents
         , sizeof(*sys_dllextent) * (num_dllextents+1)
         );
