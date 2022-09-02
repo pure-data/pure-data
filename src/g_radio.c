@@ -20,7 +20,54 @@ t_widgetbehavior radio_widgetbehavior;
 static t_class *radio_class;
 
 /* widget helper functions */
-#define radio_draw_io 0
+
+/* cannot use iemgui's default draw_iolets, because
+ * - vradio would use show the outlet at the 0th button rather than the last...
+ */
+static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
+{
+    const int zoom = IEMGUI_ZOOM(x);
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
+    t_canvas *canvas = glist_getcanvas(glist);
+    char tag_object[128], tag_but[128], tag[128];
+    char *tags[] = {tag_object, tag};
+
+    (void)old_snd_rcv_flags;
+
+    sprintf(tag_object, "%lxOBJ", x);
+    sprintf(tag_but, "%lxBUT", x);
+
+    sprintf(tag, "%lxOUT%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    if(!x->x_gui.x_fsf.x_snd_able)
+    {
+        int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
+        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+            xpos, ypos + height + zoom - ioh,
+            xpos + iow, ypos + height,
+            "-fill", "black",
+            "-tags", 2, tags);
+
+            /* keep buttons above outlet */
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_but);
+    }
+
+    sprintf(tag, "%lxIN%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
+    if(!x->x_gui.x_fsf.x_rcv_able)
+    {
+        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+            xpos, ypos,
+            xpos + iow, ypos - zoom + ioh,
+            "-fill", "black",
+            "-tags", 2, tags);
+
+            /* keep buttons above inlet */
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_but);
+    }
+}
 
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
