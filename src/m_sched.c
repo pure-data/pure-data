@@ -189,7 +189,7 @@ void sys_log_error(int type)
     if (type != ERR_NOTHING && !sched_diored &&
         (sched_counter >= sched_dioredtime))
     {
-        sys_vgui("pdtk_pd_dio 1\n");
+        pdgui_vmess("pdtk_pd_dio", "i", 1);
         sched_diored = 1;
     }
     sched_dioredtime = sched_counter + APPROXTICKSPERSEC;
@@ -233,7 +233,7 @@ void sched_set_using_audio(int flag)
                 post("sorry, can't turn off callbacks yet; restart Pd");
                     /* not right yet! */
 
-    sys_vgui("pdtk_pd_audio %s\n", flag ? "on" : "off");
+    pdgui_vmess("pdtk_pd_audio", "r", flag ? "on" : "off");
 }
 
     /* take the scheduler forward one DSP tick, also handling clock timeouts */
@@ -320,7 +320,7 @@ static int sched_idletask( void)
     {
         if (sched_diored && (sched_counter - sched_dioredtime > 0))
         {
-            sys_vgui("pdtk_pd_dio 0\n");
+            pdgui_vmess("pdtk_pd_dio", "i", 0);
             sched_diored = 0;
         }
         sched_nextmeterpolltime = sched_counter + APPROXTICKSPERSEC;

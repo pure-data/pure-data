@@ -184,7 +184,15 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->i_symfrom == s)
-        typedmess(x->i_dest, x->i_symto, argc, argv);
+    {
+        /* the "symto" field is undefined for signal inlets, so we don't
+         attempt to translate the selector, just forward the original msg. */
+        
+        if (x->i_symfrom == &s_signal)
+            typedmess(x->i_dest, s, argc, argv);
+        else
+            typedmess(x->i_dest, x->i_symto, argc, argv);
+    }
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
     else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))

@@ -528,4 +528,3 @@ gotone:
     close (fd);
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
-

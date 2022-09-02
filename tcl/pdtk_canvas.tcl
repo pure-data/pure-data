@@ -434,15 +434,25 @@ proc ::pdtk_canvas::addchild {mytoplevel child} {
 
 # receive a list of all my parent windows from 'pd'
 proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
-    set ::parentwindows($mytoplevel) $args
+    # check if the user passed a list (instead of multiple arguments)
+    if { [llength $args] == 1 } {set args [lindex $args 0]}
+    set parents {}
     foreach parent $args {
+        if { [catch {set parent [winfo toplevel $parent]}] } {
+            if { [file extension $parent] eq ".c" } {set parent [file rootname $parent]}
+        }
+        lappend parents $parent
         addchild $parent $mytoplevel
     }
+    set ::parentwindows($mytoplevel) $parents
 }
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
+    set path [::pdtk_text::unescape $path]
+    set name [::pdtk_text::unescape $name]
+    set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
