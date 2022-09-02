@@ -3555,7 +3555,7 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
                 if(argc>0 && A_SYMBOL == argv[0].a_type) {
                     t_symbol*s = atom_getsymbol(argv);
                     if (s && s->s_name && *s->s_name)
-                        sys_vgui("::deken::open_search_objects {%s}\n", s->s_name);
+                        pdgui_vmess("::deken::open_search_objects", "s", s->s_name);
                 }
             }
             return (1);
