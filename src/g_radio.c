@@ -255,6 +255,7 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     int chg = (int)atom_getfloatarg(4, argc, argv);
     int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    int redraw = 0;
     t_atom undo[18];
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
     SETFLOAT(undo+1, 0);
@@ -272,6 +273,12 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
+    if (num != x->x_number && glist_isvisible(x->x_gui.x_glist))
+    {
+        /* we need to recreate the buttons */
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
+        redraw = 1;
+    }
     x->x_number = num;
     if(x->x_on >= x->x_number)
     {
@@ -279,7 +286,14 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
         x->x_on_old = x->x_on;
     }
 
-    iemgui_size((void *)x, &x->x_gui);
+    if (redraw && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
+    {
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    } else {
+        /* just reconfigure */
+        iemgui_size((void *)x, &x->x_gui);
+    }
 }
 
 static void radio_set(t_radio *x, t_floatarg f)
