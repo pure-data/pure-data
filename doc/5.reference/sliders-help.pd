@@ -1,4 +1,4 @@
-#N canvas 493 39 545 605 12;
+#N canvas 469 23 545 605 12;
 #X floatatom 202 412 7 0 0 0 - - - 0;
 #X msg 252 308 set \$1;
 #X obj 171 296 bng 18 250 50 0 empty empty empty 8 -8 0 10 #dfdfdf #000000 #000000;
@@ -588,7 +588,6 @@
 #X text 132 168 init <float> - non zero sets to init mode., f 70;
 #X obj 7 388 cnv 5 640 5 empty empty OUTLET: 8 18 0 13 #202020 #000000 0;
 #X obj 45 18 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc #000000 #000000 0 1;
-#X text 185 17 - [hslider]/[hsl]: Horizontal Slider., f 44;
 #X text 76 116 range <float \, float> - sets minimum and maximum range., f 78;
 #X text 195 133 lin - sets mode to linear., f 61;
 #X text 195 150 log - sets mode to logarithmic., f 61;
@@ -596,6 +595,7 @@
 #X text 181 401 float - slider value., f 63;
 #X text 83 80 size <float \, float> - widht and height in pixels., f 77;
 #X text 83 99 orientation <float> - non zero sets to vertical \, zero sets to horizontal., f 77;
+#X text 185 17 - Sliders., f 44;
 #X restore 361 15 pd reference;
 #X text 452 15 <= click;
 #X obj 7 49 cnv 1 525 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -603,19 +603,19 @@
 #X text 22 60 The slider GUI (Graphical User Interface) sends numbers via clicking and dragging. The values are evenly spread depending on the slider's range and size - use shift-click and drag for fine-tuning by a factor of a hundredth. Incoming floats set the slider's value and are passed through (even if outside the slider's range). The 'set' message only sets the slider value without output. A bang message sends the slider's value., f 70;
 #X obj 32 282 vsl 18 140 0 127 0 0 empty empty empty 0 -9 0 12 #dfdfdf #000000 #000000 0 1;
 #X text 171 14 - [vsl]/[hsl]: Sliders;
-#X text 22 165 Insert it from the Put menu (named as "Vslider" or "Hslider") or its shortcuts for the Vertical and Horizontal versions respectively. Alternatively \, create it by typing "vslider" or "vsl" (for vertical) and "hslider" or "hsl" (for horizontal) into an object box. You can change the orienteation from vertical to horizontal and vice verda via a maessage of properties. Right click for properties to set size \, colors \, labels and more., f 70;
 #X obj 32 460 print vsl;
 #X text 323 576 updated for Pd version 0.53;
 #X floatatom 32 434 5 0 0 0 - - - 0;
 #X text 58 286 Vertical;
 #X text 53 357 <--;
 #X text 78 357 click & drag --> (shift-click for fine tuning). Right click for properties., f 16;
-#X text 255 384 horizontal;
+#X text 22 165 Insert it from the Put menu (named as "Vslider" or "Hslider") or its shortcuts for the Vertical and Horizontal versions respectively. Alternatively \, create it by typing "vslider" or "vsl" (for vertical) and "hslider" or "hsl" (for horizontal) into an object box. You can change the orienteation from vertical to horizontal and vice versa via a message of properties. Also right click for properties to set size \, colors \, labels and more., f 70;
+#X text 255 384 Horizontal;
 #X connect 0 0 4 0;
 #X connect 1 0 7 0;
 #X connect 2 0 7 0;
 #X connect 5 0 7 0;
 #X connect 6 0 1 0;
 #X connect 7 0 0 0;
-#X connect 23 0 28 0;
-#X connect 28 0 26 0;
+#X connect 23 0 27 0;
+#X connect 27 0 25 0;
