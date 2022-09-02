@@ -717,35 +717,26 @@ void iemgui_new_dialog(void*x, t_iemgui*iemgui,
                        const char* label_mode1,
                        int canloadbang, int steady, int number)
 {
-    char buf[MAXPDSTRING];
+    char objname_[MAXPDSTRING];
     t_symbol *srl[3];
     iemgui_properties(iemgui, srl);
+    sprintf(objname_, "|%s|", objname);
 
-    sprintf(buf, "pdtk_iemgui_dialog %%s |%s| {}" /* x objname (dimension_label) */
-            " %g %g {} %g %g {}" /* width width_min (width_label) height height_min (height_label) */
-            " {} %g {} %g {}" /* (range_label) range_min range_max */
-            " %d" /* schedule */
-            " %d {%s} {%s}" /* mode label_mode0 label_mode1 */
-            " %d %d" /* loadbang steady */
-            " {} %d" /* (number_label) number */
-            " {%s} {%s} {%s}" /* send receive label */
-            " %d %d" /* label_posX label_posY */
-            " %d %d" /* label_fontID label_fontsize */
-            " #%06x #%06x #%06x\n" /* background foreground labelcolour */
-            ,
-            objname,
-            width, width_min, height, height_min,
-            range_min, range_max,
-            schedule,
-            mode, label_mode0, label_mode1,
-            canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
-            number,
-            srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
-            iemgui->x_ldx, iemgui->x_ldy,
-            iemgui->x_fsf.x_font_style, iemgui->x_fontsize,
-            0xffffff & iemgui->x_bcol, 0xffffff & iemgui->x_fcol, 0xffffff & iemgui->x_lcol
-            );
-    gfxstub_new(&iemgui->x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&iemgui->x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "r s ffs ffs sfsfs i iss ii si sss ii ii kkk",
+        objname_,
+        "",
+        width, width_min, "",
+        height, height_min, "",
+        "", range_min, "", range_max, "",
+        schedule,
+        mode, label_mode0, label_mode1,
+        canloadbang?iemgui->x_isa.x_loadinit:-1, steady,
+        "", number,
+        srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
+        iemgui->x_ldx, iemgui->x_ldy,
+        iemgui->x_fsf.x_font_style, iemgui->x_fontsize,
+        iemgui->x_bcol, iemgui->x_fcol, iemgui->x_lcol);
 }
 
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
