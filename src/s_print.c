@@ -309,13 +309,19 @@ void glob_findinstance(t_pd *dummy, t_symbol*s)
 {
     // revert s to (potential) pointer to object
     PD_LONGINTTYPE obj = 0;
-    if (sscanf(s->s_name, ".x%lx", &obj))
-    {
-        if (obj)
-        {
-            canvas_finderror((void *)obj);
-        }
-    }
+    const char*addr;
+    if(!s || !s->s_name)
+        return;
+    addr = s->s_name;
+    if (('.' != addr[0]) && ('0' != addr[0]))
+        return;
+    if (!sscanf(addr+1, "x%lx", &obj))
+        return;
+
+    if(!obj)
+        return;
+
+    canvas_finderror((void *)obj);
 }
 
 void bug(const char *fmt, ...)
