@@ -20,53 +20,74 @@ t_widgetbehavior radio_widgetbehavior;
 static t_class *radio_class;
 
 /* widget helper functions */
+
+/* cannot use iemgui's default draw_iolets, because
+ * - vradio would use show the outlet at the 0th button rather than the last...
+ */
 static void radio_draw_io(t_radio* x, t_glist* glist, int old_snd_rcv_flags)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     t_canvas *canvas = glist_getcanvas(glist);
+    char tag_object[128], tag_but[128], tag[128];
+    char *tags[] = {tag_object, tag};
 
     (void)old_snd_rcv_flags;
-    sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
-    sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
 
+    sprintf(tag_object, "%lxOBJ", x);
+    sprintf(tag_but, "%lxBUT", x);
+
+    sprintf(tag, "%lxOUT%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
         int height = x->x_gui.x_h * ((x->x_orientation == horizontal)? 1: x->x_number);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxOUT%d]\n",
-            canvas,
-            xpos, ypos + height + IEMGUI_ZOOM(x) - ioh,
+        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
+            xpos, ypos + height + zoom - ioh,
             xpos + iow, ypos + height,
-            x, x, 0);
+            "-fill", "black",
+            "-tags", 2, tags);
 
             /* keep buttons above outlet */
-        sys_vgui(".x%lx.c lower %lxOUT%d %lxBUT\n", canvas, x, 0, x);
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_but);
     }
+
+    sprintf(tag, "%lxIN%d", x, 0);
+    pdgui_vmess(0, "crs", canvas, "delete", tag);
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOBJ %lxIN%d]\n",
-            canvas,
+        pdgui_vmess(0, "crr iiii rs rS", canvas, "create", "rectangle",
             xpos, ypos,
-            xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
-            x, x, 0);
+            xpos + iow, ypos - zoom + ioh,
+            "-fill", "black",
+            "-tags", 2, tags);
 
             /* keep buttons above inlet */
-        sys_vgui(".x%lx.c lower %lxIN%d %lxBUT\n", canvas, x, 0, x);
+        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_but);
     }
 }
 
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
     int i;
+    const int zoom = IEMGUI_ZOOM(x);
+    t_iemgui *iemgui = &x->x_gui;
     t_canvas *canvas = glist_getcanvas(glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     int xx11b = text_xpix(&x->x_gui.x_obj, glist);
     int yy11b = text_ypix(&x->x_gui.x_obj, glist);
     int d, dx = 0, dy = 0, d4;
 
     int xx11=xx11b, xx12=0, xx21=0, xx22=0;
     int yy11=yy11b, yy12=0, yy21=0, yy22=0;
+
+    char tag[128];
+    t_atom fontatoms[3];
+    SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
+    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
+    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
     if(x->x_orientation == horizontal)
     {
@@ -85,26 +106,29 @@ static void radio_draw_config(t_radio* x, t_glist* glist)
     for(i = 0; i < x->x_number; i++)
     {
         int col = (x->x_on == i) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-        sys_vgui(".x%lx.c coords %lxBASE%d %d %d %d %d\n", canvas, x, i,
+        sprintf(tag, "%lxBASE%d", x, i);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx11, yy11, xx12, yy12);
-        sys_vgui(".x%lx.c itemconfigure %lxBASE%d -width %d -fill #%06x\n", canvas, x, i,
-            IEMGUI_ZOOM(x), x->x_gui.x_bcol);
+        pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
+            "-width", zoom, "-fill", x->x_gui.x_bcol);
 
-        sys_vgui(".x%lx.c coords %lxBUT%d %d %d %d %d\n", canvas, x, i,
+        sprintf(tag, "%lxBUT%d", x, i);
+        pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             xx21, yy21, xx22, yy22);
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n", canvas, x, i,
-            col, col);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", col, "-outline", col);
         xx11 += dx; xx12 += dx; xx21 += dx; xx22 += dx;
         yy11 += dy; yy12 += dy; yy21 += dy; yy22 += dy;
 
         x->x_drawn = x->x_on;
     }
 
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n", canvas, x,
-        xx11b + x->x_gui.x_ldx * IEMGUI_ZOOM(x), yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -anchor w -font {{%s} -%d %s} -fill #%06x\n", canvas, x,
-        x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-        x->x_gui.x_lcol);
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
+        xx11b + x->x_gui.x_ldx * zoom, yy11b + x->x_gui.x_ldy * zoom);
+    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
+        "-font", 3, fontatoms,
+        "-fill", x->x_gui.x_lcol);
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
@@ -112,14 +136,33 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     int i;
+    char tag_n[128], tag[128], tag_object[128];
+    char *tags[] = {tag_object, tag, tag_n, "text"};
+    sprintf(tag_object, "%lxOBJ", x);
+
     for(i=0; i<x->x_number; i++) {
-        sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxBASE%d %lxBASE %lxOBJ]\n", canvas, x, i, x, x);
-        sys_vgui(".x%lx.c create rectangle 0 0 0 0 -tags [list %lxBUT%d %lxBUT %lxOBJ]\n", canvas, x, i, x, x);
+        sprintf(tag, "%lxBASE", x);
+        sprintf(tag_n, "%lxBASE%d", x, i);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+            0, 0, 0, 0, "-tags", 3, tags);
+
+        sprintf(tag, "%lxBUT", x);
+        sprintf(tag_n, "%lxBUT%d", x, i);
+        pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
+            0, 0, 0, 0, "-tags", 3, tags);
     }
-    sys_vgui(".x%lx.c raise %lxBUT %lxBASE\n", canvas, x, x);
-    sys_vgui(".x%lx.c create text 0 0 -tags [list %lxLABEL %lxOBJ label text]\n", canvas, x, x);
+    /* make sure the buttons are above their base */
+    sprintf(tag, "%lxBUT", x);
+    sprintf(tag_n, "%lxBASE", x);
+    pdgui_vmess(0, "crss", canvas, "raise", tag, tag_n);
+
+    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag_n, "label");
+    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
+        0, 0, "-anchor", "w", "-tags", 4, tags);
+
     radio_draw_config(x, glist);
-    radio_draw_io(x, glist, 0);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 static void radio_draw_select(t_radio* x, t_glist* glist)
@@ -128,11 +171,15 @@ static void radio_draw_select(t_radio* x, t_glist* glist)
     t_canvas *canvas = glist_getcanvas(glist);
     int lcol = x->x_gui.x_lcol;
     int col = IEM_GUI_COLOR_NORMAL;
+    char tag[128];
 
     if(x->x_gui.x_fsf.x_selected)
         lcol = col =  IEM_GUI_COLOR_SELECTED;
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, col);
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, lcol);
+
+    sprintf(tag, "%lxBASE", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
+    sprintf(tag, "%lxLABEL", x);
+    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
 static void radio_draw_update(t_gobj *client, t_glist *glist)
@@ -141,13 +188,18 @@ static void radio_draw_update(t_gobj *client, t_glist *glist)
     if(glist_isvisible(glist))
     {
         t_canvas *canvas = glist_getcanvas(glist);
+        char tag[128];
 
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n",
-            canvas, x, x->x_drawn,
-            x->x_gui.x_bcol, x->x_gui.x_bcol);
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n",
-            canvas, x, x->x_on,
-            x->x_gui.x_fcol, x->x_gui.x_fcol);
+        sprintf(tag, "%lxBUT%d", x, x->x_drawn);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", x->x_gui.x_bcol,
+            "-outline", x->x_gui.x_bcol);
+
+        sprintf(tag, "%lxBUT%d", x, x->x_on);
+        pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
+            "-fill", x->x_gui.x_fcol,
+            "-outline", x->x_gui.x_fcol);
+
         x->x_drawn = x->x_on;
     }
 }
@@ -236,6 +288,7 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     int chg = (int)atom_getfloatarg(4, argc, argv);
     int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    int redraw = 0;
     t_atom undo[18];
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
     SETFLOAT(undo+1, 0);
@@ -253,6 +306,12 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
+    if (num != x->x_number && glist_isvisible(x->x_gui.x_glist))
+    {
+        /* we need to recreate the buttons */
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_ERASE);
+        redraw = 1;
+    }
     x->x_number = num;
     if(x->x_on >= x->x_number)
     {
@@ -260,7 +319,14 @@ static void radio_dialog(t_radio *x, t_symbol *s, int argc, t_atom *argv)
         x->x_on_old = x->x_on;
     }
 
-    iemgui_size((void *)x, &x->x_gui);
+    if (redraw && gobj_shouldvis((t_gobj *)x, x->x_gui.x_glist))
+    {
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_NEW);
+        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+    } else {
+        /* just reconfigure */
+        iemgui_size((void *)x, &x->x_gui);
+    }
 }
 
 static void radio_set(t_radio *x, t_floatarg f)
@@ -605,7 +671,7 @@ static void radio_free(t_radio *x)
 {
     if(x->x_gui.x_fsf.x_rcv_able)
         pd_unbind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
 }
 
 void g_radio_setup(void)

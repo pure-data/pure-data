@@ -123,7 +123,7 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
     set fgcol $::dialog_iemgui::var_color_label($vid)
     $mytoplevel.colors.sections.exp.lb_bk configure \
         -background $::dialog_iemgui::var_color_background($vid) \
-        -activebackground($vid) $::dialog_iemgui::var_color_background($vid) \
+        -activebackground $::dialog_iemgui::var_color_background($vid) \
         -foreground $fgcol -activeforeground $fgcol
 
     set fgcol $::dialog_iemgui::var_color_foreground($vid)
