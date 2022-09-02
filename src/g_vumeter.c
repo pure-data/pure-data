@@ -363,7 +363,6 @@ static void vu_scale(t_vu *x, t_floatarg fscale)
 static void vu_properties(t_gobj *z, t_glist *owner)
 {
     t_vu *x = (t_vu *)z;
-    t_symbol *srl[3];
 
     iemgui_new_dialog(x, &x->x_gui, "vu",
                       x->x_gui.x_w/IEMGUI_ZOOM(x), IEM_SL_MINSIZE,
@@ -392,7 +391,6 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
                             18, undo,
                             argc, argv);
 
-    srl[0] = gensym("empty");
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
     x->x_gui.x_fsf.x_snd_able = 0;
     x->x_gui.x_isa.x_loadinit = 0;
