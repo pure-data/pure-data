@@ -343,7 +343,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/hradio-help.pd \
-     ./5.reference/hslider-help.pd \
      ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
      ./5.reference/key-input-help.pd \
@@ -402,6 +401,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sig~-help.pd \
+     ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
@@ -439,7 +439,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vradio-help.pd \
-     ./5.reference/vslider-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \
      ./5.reference/wrap~-help.pd \
