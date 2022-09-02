@@ -662,7 +662,10 @@ void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
     srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
     for(i=0; i<3; i++)
-        if(!srl[i])srl[i]=gensym("empty");
+    {
+        if(!srl[i] || !srl[i]->s_name || !srl[i]->s_name[0])
+            srl[i]=gensym("empty");
+    }
     iemgui_all_col2save(iemgui, bflcol);
 }
 
