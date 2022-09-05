@@ -340,7 +340,7 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
          0, 0, 0, 0, "-tags", 3, seltags);
 
     knb_draw_io(x, glist, 0);
-    
+
     sprintf(tag, "%lxARC", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "arc",
          0, 0, 0, 0, "-tags", 2, tags);
