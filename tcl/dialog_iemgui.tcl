@@ -487,7 +487,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header_UNUSE
     if {$::dialog_iemgui::var_number($vid) > 0} {
         pack $mytoplevel.para.std.num -side left -expand 1 -ipadx 10
     }
-    if {$::dialog_iemgui::var_steady($vid) >= 0} {
+    if {[string is int $::dialog_iemgui::var_steady($vid)] && $::dialog_iemgui::var_steady($vid) >= 0} {
         ::dialog_iemgui::popupmenu $mytoplevel.para.std.stdy_jmp \
             ::dialog_iemgui::var_steady($vid) [list [_ "Jump on click"] [_ "Steady on click"] ] \
             $applycmd

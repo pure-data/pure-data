@@ -1,32 +1,24 @@
-#N canvas 576 182 747 469 12;
-#X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 #fcfcfc #004450
-0;
+#N canvas 576 182 768 469 12;
+#X obj 0 0 cnv 8 100 60 empty empty knb 20 20 1 18 #fcfcfc #004450 0;
 #X floatatom 63 177 5 0 0 0 - - - 0;
 #X floatatom 63 87 5 0 0 0 - - - 0;
 #X msg 11 135 set \$1;
 #X floatatom 217 165 5 0 0 0 - - - 0;
 #X floatatom 217 92 5 0 0 0 - - - 0;
-#X obj 126 89 knb 80 100 0 99 0 1 kii_snd kii_rcv empty -2 -6 0 8 #0400fc
-#f8fc00 #000000 0.666667 2 0 #c7c6ff 3 -135 135;
-#X obj 63 113 knb 30 128 0 127 0 0 empty empty empty -2 -6 0 8 #0400fc
-#000000 #000000 0 2 0 #000000 0 -135 135;
-#X obj 63 154 knb 20 128 127 0 0 0 empty empty empty -2 -6 0 8 #fc0400
-#000000 #000000 0 2 0 #000000 0 -135 135;
-#X obj 371 308 knb 60 128 0 1 0 1 empty empty empty -2 -6 0 8 #fcfcfc
-#000000 #000000 0.683639 0 8 #fc2828 5 -180 180;
+#X obj 126 89 knb 80 100 0 99 0 1 kii_snd\ \ \  kii_rcv\ \ \  \ \ \  -2 -6 0 8 #0400fc #f8fc00 #000000 0.222222 xy 0 #c7c6ff 3 -135 135;
+#X obj 63 113 knb 30 128 0 127 0 0 empty empty empty -2 -6 0 8 #0400fc #000000 #000000 0 xy 0 #000000 0 -135 135;
+#X obj 63 154 knb 20 128 127 0 0 0 empty empty empty -2 -6 0 8 #fc0400 #000000 #000000 0 xy 0 #000000 0 -135 135;
+#X obj 371 308 knb 60 128 0 1 0 1 empty empty empty -2 -6 0 8 #fcfcfc #000000 #000000 0.318806 angle 8 #fc2828 5 -180 180;
 #X text 503 63 high sens;
 #X text 523 86 default;
 #X text 68 12 gui-round-knob:;
-#X text 33 48 right click for properties to modify geometry \, colors
-\, etc., f 30;
-#X text 29 198 shift-click & drag for fine-tuning (0.01 pixels), f
-25;
+#X text 33 48 right click for properties to modify geometry \, colors \, etc., f 30;
+#X text 29 198 shift-click & drag for fine-tuning (0.01 pixels), f 25;
 #X text 559 205 270° rotation;
 #X text 557 229 360° rotation;
 #X msg 311 79 size \$1;
 #X floatatom 311 58 5 0 0 0 - - - 0;
-#X text 366 8 "sensitivity" parameter sets mouse excursion for full
-range., f 35;
+#X text 366 8 "sensitivity" parameter sets mouse excursion for full range., f 35;
 #X msg 369 40 sensitivity 300;
 #X msg 398 63 sensitivity 10;
 #X text 481 41 low sensitivity;
@@ -202,22 +194,15 @@ range., f 35;
 #X connect 42 0 37 1;
 #X restore 211 112 pd RGB;
 #X f 21;
-#X obj 130 23 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 130 23 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X text 86 82 front;
 #X text 122 111 label;
-#X obj 12 201 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 13 55 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 17 336 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 238 341 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 252 457 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 428 282 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 12 201 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 13 55 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 17 336 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 238 341 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 252 457 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 428 282 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X floatatom 212 215 3 4 55 0 - - - 0;
 #X msg 212 238 \; kii_rcv size \$1;
 #X msg 23 506 \; kii_rcv label log.freq.;
@@ -233,8 +218,7 @@ range., f 35;
 #X floatatom 683 270 3 63 156 1 start_angle - - 0;
 #X floatatom 718 294 3 -20 37 1 end_angle - - 0;
 #X obj 665 317 pack 0 0;
-#X obj 657 270 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 657 270 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X msg 665 342 \; kii_rcv angle \$1 \$2;
 #X obj 211 144 pack f f f f;
 #X msg 211 173 \; kii_rcv color \$1 \$2 \$3 \$4;
@@ -296,36 +280,28 @@ range., f 35;
 #X obj 217 142 r kii_snd;
 #X msg 453 204 angle -135 135;
 #X msg 453 228 angle -180 180;
-#X text 527 180 angular control;
+#X text 560 180 angular control;
 #X floatatom 454 252 5 0 0 1 arc_width - - 0;
 #X msg 454 275 arc \$1;
-#X obj 52 273 knb 50 128 -1 1 0 1 empty empty empty -2 -6 0 8 #fc0400
-#000000 #000000 0.272727 2 0 #faff00 11 -135 135;
+#X obj 52 273 knb 50 128 -1 1 0 1 empty empty empty -2 -6 0 8 #fc0400 #000000 #000000 0.272727 xy 0 #faff00 11 -135 135;
 #X floatatom 52 325 5 0 0 0 - - - 0;
-#X text 11 241 when Lower and Upper settings are of opposite sign \,
-the arc turns to +/- mode:, f 37;
-#X text 11 355 if Receive or Send symbol is empty \, an square outline
-is drawn. If both Send and Receive are defined \, the outline is hidden:
-, f 45;
-#X obj 44 403 knb 25 128 0 127 0 0 empty empty empty -2 -6 0 8 #fcfcfc
-#000000 #000000 0 2 0 #000000 0 -135 135;
-#X obj 79 403 knb 25 128 0 127 0 0 \$0-send_is_defined \$0-receive_is_defined
-empty -2 -6 0 8 #fcfcfc #000000 #000000 0 2 0 #000000 0 -135 135;
-#X obj 551 387 knb 50 128 0 127 0 1 \$0-moon \$0-moon empty -2 -6 0
-8 #fcfcfc #fcfcfc #000000 0.99 2 0 #202020 24 -90 90;
-#X text 473 352 if background and front colors are equal \, then the
-cursor is not shown:, f 30;
+#X text 11 241 when Lower and Upper settings are of opposite sign \, the arc turns to +/- mode:, f 37;
+#X text 11 355 if Receive or Send symbol is empty \, an square outline is drawn. If both Send and Receive are defined \, the outline is hidden:, f 45;
+#X obj 44 403 knb 25 128 0 127 0 0 empty empty empty -2 -6 0 8 #fcfcfc #000000 #000000 0 xy 0 #000000 0 -135 135;
+#X obj 79 403 knb 25 128 0 127 0 0 \$0-send_is_defined \$0-receive_is_defined empty -2 -6 0 8 #fcfcfc #000000 #000000 0 xy 0 #000000 0 -135 135;
+#X obj 551 387 knb 50 128 0 127 0 1 \$0-moon \$0-moon empty -2 -6 0 8 #fcfcfc #fcfcfc #000000 0.99 xy 0 #202020 24 -90 90;
+#X text 473 352 if background and front colors are equal \, then the cursor is not shown:, f 30;
 #X floatatom 571 253 5 0 100 1 ticks - - 0;
 #X msg 571 276 ticks \$1;
 #X msg 413 85 sensitivity 128;
-#X text 505 109 linear control X;
-#X text 510 132 linear control Y;
-#X text 521 156 linear control X+Y (default);
+#X text 513 112 linear control X;
+#X text 519 136 linear control Y;
+#X text 534 158 linear control X+Y (default);
 #X text 4 433 (c) Antoine Rousseau 2003-2022;
-#X msg 426 109 move_mode 0;
-#X msg 432 133 move_mode 1;
-#X msg 443 157 move_mode 2;
-#X msg 449 181 move_mode 3;
+#X msg 426 109 move_mode x;
+#X msg 432 133 move_mode y;
+#X msg 443 157 move_mode xy;
+#X msg 449 181 move_mode angle;
 #X connect 2 0 7 0;
 #X connect 3 0 7 0;
 #X connect 5 0 24 0;

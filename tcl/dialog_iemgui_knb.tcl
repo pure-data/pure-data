@@ -43,6 +43,20 @@ proc ::dialog_iemgui_knb::toggle_font {mytoplevel current_font_spec} {
     $mytoplevel.colors.sections.exp.arc_bk configure -font $current_font_spec
 }
 
+proc ::dialog_iemgui_knb::popupmenu_strval {path varname values labels {command {}}} {
+    upvar 1 $varname var
+
+    menubutton ${path} -menu ${path}.menu -indicatoron 1 -relief raised \
+        -text [lindex $labels [lsearch -exact $values $var]]
+    menu ${path}.menu -tearoff 0
+    set idx 0
+    foreach l $labels {
+        $path.menu add radiobutton -label "$l" -variable $varname -value [lindex $values $idx]
+        $path.menu entryconfigure last -command "\{$path\} configure -text \{$l\}; $command"
+        incr idx
+    }
+}
+
 proc ::dialog_iemgui_knb::create_properties {mytoplevel current_font ticks arc_color arc_width \
         start_angle end_angle} {
     set vid [string trimleft $mytoplevel .]
@@ -60,8 +74,9 @@ proc ::dialog_iemgui_knb::create_properties {mytoplevel current_font ticks arc_c
     }
     destroy $mytoplevel.para.std.stdy_jmp
     label $mytoplevel.para.std.move_label -text [_ "Move:"]
-    ::dialog_iemgui::popupmenu $mytoplevel.para.std.move_mode \
-        ::dialog_iemgui::var_steady($vid) [list [_ "X"] [_ "Y"] [_ "X+Y"] [_ "Angle"] ] \
+    ::dialog_iemgui_knb::popupmenu_strval $mytoplevel.para.std.move_mode \
+        ::dialog_iemgui::var_steady($vid) \
+        [list "x" "y" "xy" "angle"] [list [_ "X"] [_ "Y"] [_ "X+Y"] [_ "Angle"] ] \
         $applycmd
     pack $mytoplevel.para.std.move_label -side left -expand 0 -ipadx 4
     pack $mytoplevel.para.std.move_mode -side left -expand 0 -ipadx 10
