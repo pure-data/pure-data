@@ -151,6 +151,7 @@ pd_SOURCES_core = \
     m_sched.c \
     s_audio.c \
     s_inter.c \
+    s_inter_gui.c \
     s_loader.c \
     s_main.c \
     s_net.c \

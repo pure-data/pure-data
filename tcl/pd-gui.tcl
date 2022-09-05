@@ -593,9 +593,25 @@ proc pdtk_yesnodialog {mytoplevel message default} {
     }
     return 0
 }
-##### routine to ask user if OK and, if so, send a message on to Pd ######
+
+# routine to ask user if OK and, if so, send a message on to Pd ######
+# with built-informatting+ translation
+# modern usage:
+## pdtk_check .pdwindow {"Hello world!"} "pd dsp 1" no
+# legacy:
+## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
-    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
+    # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+    if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
+        set message [ list $message ]
+    }
+
+    if {[ catch {
+              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+          } ]} {
+           set msg [_ $message]
+       }
+    if {[ pdtk_yesnodialog $mytoplevel $msg $default ]} {
         pdsend $reply_to_pd
     }
 }
