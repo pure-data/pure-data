@@ -421,6 +421,19 @@ static void *pdcontrol_new( void)
     return (x);
 }
 
+static t_canvas *canvas_get_nth_parent(t_canvas *c, int n)
+{
+    int i;
+    for (i = 0; i < (int)n; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    return c;
+}
+
     /* output containing directory of patch.  optional args:
     1. a number, zero for this patch, one for the parent, etc.;
     2. a symbol to concatenate onto the directory; */
@@ -428,14 +441,7 @@ static void *pdcontrol_new( void)
 static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
-    int i;
-    for (i = 0; i < (int)f; i++)
-    {
-        while (!c->gl_env)  /* back up to containing canvas or abstraction */
-            c = c->gl_owner;
-        if (c->gl_owner)    /* back up one more into an owner if any */
-            c = c->gl_owner;
-    }
+    c = canvas_get_nth_parent(c, (int)f);
     if (*s->s_name)
     {
         char buf[MAXPDSTRING];
@@ -450,16 +456,9 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
 static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
-    int i;
     int argc;
     t_atom *argv;
-    for (i = 0; i < (int)f; i++)
-    {
-        while (!c->gl_env)  /* back up to containing canvas or abstraction */
-            c = c->gl_owner;
-        if (c->gl_owner)    /* back up one more into an owner if any */
-            c = c->gl_owner;
-    }
+    c = canvas_get_nth_parent(c, (int)f);
     canvas_setcurrent(c);
     canvas_getargs(&argc, &argv);
     canvas_unsetcurrent(c);
@@ -481,13 +480,63 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
 }
 
 extern int getnumsymbols(); /* from m_class.c */
+extern int clone_get_n(t_gobj *x);
+extern t_glist *clone_get_instance(t_gobj *x, int n);
 
-static void pdcontrol_runtimeinfo(t_pdcontrol *x)
+static int glist_do_countobjects(t_glist *gl, int *numobjects, int *numcanvases)
 {
-    t_atom at;
+    t_gobj *g;
+    int n;
 
-    SETFLOAT(&at, (float)getnumsymbols());
-    outlet_anything(x->x_outlet, gensym("numsymbols"), 1, &at);
+    (*numcanvases)++;
+    for (g = gl->gl_list; g; g = g->g_next)
+    {
+        (*numobjects)++;
+        if (g->g_pd == canvas_class)
+        {
+            glist_do_countobjects((t_canvas *)g, numobjects, numcanvases);
+        }
+        else if ((n = clone_get_n(g)) != 0)
+        {
+            int i;
+            for(i = 0; i < n; i++)
+            {
+                glist_do_countobjects(clone_get_instance(g, i), numobjects, numcanvases);
+            }
+        }
+    }
+    return (0);
+}
+
+static void canvas_countobjects(t_canvas *c, int *numobjects, int *numcanvases)
+{
+    if (c == NULL) {
+            /* find all root canvases */
+        for (c = pd_getcanvaslist(); c; c = c->gl_next)
+        {
+            glist_do_countobjects(c, numobjects, numcanvases);
+        }
+    }
+    else
+    {
+        glist_do_countobjects(c, numobjects, numcanvases);
+    }
+}
+
+static void pdcontrol_runtimeinfo(t_pdcontrol *x, t_floatarg f)
+{
+    t_atom at[2];
+    int numobjects = 0, numcanvases = 0;
+    t_canvas *c = x->x_canvas;
+    if (f >= 0) c = canvas_get_nth_parent(c, (int)f);
+    else c = NULL;
+
+    SETFLOAT(&at[0], (float)getnumsymbols());
+    outlet_anything(x->x_outlet, gensym("numsymbols"), 1, at);
+    canvas_countobjects(c, &numobjects, &numcanvases);
+    SETFLOAT(&at[0], (float)numobjects);
+    SETFLOAT(&at[1], (float)numcanvases);
+    outlet_anything(x->x_outlet, gensym("numobjects"), 2, at);
 }
 
 static void pdcontrol_setup(void)
@@ -503,7 +552,7 @@ static void pdcontrol_setup(void)
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_runtimeinfo,
-        gensym("runtimeinfo"), 0);
+        gensym("runtimeinfo"), A_DEFFLOAT, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */

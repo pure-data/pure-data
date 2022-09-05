@@ -1,6 +1,6 @@
-#N canvas 557 44 727 554 12;
+#N canvas 557 44 727 589 12;
 #X obj 37 19 pdcontrol;
-#X text 483 517 updated for Pd version 0.50.;
+#X text 483 547 updated for Pd version 0.50.;
 #X obj 42 247 pdcontrol;
 #X obj 42 304 print;
 #X msg 165 351 isvisible;
@@ -56,16 +56,16 @@ state., f 76;
 #X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 610 19 <= click;
-#N canvas 157 329 718 352 reference 0;
+#N canvas 157 329 718 417 reference 0;
 #X obj 8 52 cnv 5 690 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
-#X obj 8 250 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+#X obj 8 310 cnv 2 690 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
 0;
-#X obj 7 326 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
+#X obj 7 386 cnv 5 690 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
-#X obj 8 287 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+#X obj 8 347 cnv 2 690 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X text 165 298 NONE, f 52;
+#X text 165 358 NONE, f 52;
 #X obj 28 20 pdcontrol;
 #X text 107 20 - communicate with pd and/or this patch;
 #X text 77 65 browse <symbol> - open a URL given by the symbol., f
@@ -79,23 +79,34 @@ level (0 \, this patch \, 1 \, its owner \, and so on). Optional symbol
 sets a folder relative to the directory., f 68;
 #X text 204 155 outputs patch's argument. Optional float sets level
 (0 \, this patch \, 1 \, its owner \, and so on)., f 68;
-#X text 155 260 list - list of args \, dir symbol of visibility float.
+#X text 155 320 list - list of args \, dir symbol of visibility float.
 ;
-#X text 113 194 runtimeinfo - outputs runtime information \, currently:
-, f 80;
-#X text 212 208 numsymbols [float]: total number of symbols that have
+#X text 212 212 numsymbols [float]: total number of symbols that have
 been created since Pd started., f 67;
+#X text 49 195 runtimeinfo <float> - outputs runtime information \,
+currently:, f 80;
+#X text 200 262 Optional float sets level (-1: all patches \, 0: this
+patch \, 1: its owner \, and so on) for counting objects and canvases.
+, f 68;
+#X text 211 244 numobjects [float] [float]: total number of objects
+and canvases., f 67;
 #X restore 516 19 pd reference;
-#X obj 13 503 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 13 533 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 208 413 1 if this patch is visible \, 0 if not., f 38;
-#X obj 499 363 pdcontrol;
-#X floatatom 499 411 8 0 0 0 - - - 0;
-#X obj 499 387 route numsymbols;
-#X msg 499 341 runtimeinfo;
-#X text 496 429 number of symbols that have been created since Pd started.
+#X text 208 413 1 if this patch is visible \, 0 if not., f 27;
+#X obj 431 364 pdcontrol;
+#X floatatom 431 432 8 0 0 0 - - - 0;
+#X msg 431 328 runtimeinfo;
+#X text 428 450 number of symbols that have been created since Pd started.
 , f 17;
-#X text 497 319 get runtime information, f 26;
+#X text 429 304 get runtime information, f 26;
+#X obj 559 433 unpack f f;
+#X floatatom 559 457 8 0 0 3 objects - - 0;
+#X floatatom 626 457 8 0 0 3 canvases - - 0;
+#X obj 431 408 route numsymbols numobjects, f 37;
+#X msg 527 328 runtimeinfo -1;
+#X text 526 346 if optional parent argument (see above) is -1 \, count
+the objects and canvases in every window., f 27;
 #X connect 2 0 18 0;
 #X connect 4 0 5 0;
 #X connect 5 0 15 0;
@@ -103,6 +114,10 @@ been created since Pd started., f 67;
 #X connect 9 0 2 0;
 #X connect 12 0 2 0;
 #X connect 18 0 3 0;
-#X connect 24 0 26 0;
-#X connect 26 0 25 0;
-#X connect 27 0 24 0;
+#X connect 24 0 32 0;
+#X connect 26 0 24 0;
+#X connect 29 0 30 0;
+#X connect 29 1 31 0;
+#X connect 32 0 25 0;
+#X connect 32 1 29 0;
+#X connect 33 0 24 0;
