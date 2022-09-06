@@ -27,7 +27,6 @@
  * `JACK_CLIENT_NAME_SIZE` definitions I could find in the wild. */
 #define CLIENT_NAME_SIZE_FALLBACK 128
 
-
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
 # define HAVE_ALLOCA 1
 #endif
@@ -50,6 +49,11 @@
 
 #define MAX_ALLOCA_SAMPLES 16*1024
 
+/* enable thread signaling instead of polling */
+#if 0
+#define THREADSIGNAL
+#endif
+
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
@@ -62,14 +66,13 @@ static int jack_dio_error;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
 static int jack_blocksize = 0; /* should this be PERTHREAD? */
-pthread_mutex_t jack_mutex;
-pthread_cond_t jack_sem;
+#ifdef THREADSIGNAL
+t_semaphore *jack_sem;
+#endif
 static PA_VOLATILE char *jack_outbuf;
 static PA_VOLATILE sys_ringbuf jack_outring;
 static PA_VOLATILE char *jack_inbuf;
 static PA_VOLATILE sys_ringbuf jack_inring;
-
-/* #define TESTCANSLEEP */
 
     /* callback routine for non-callback client... throw samples into
         and read them out of a FIFO.  Since we don't know at compile time
@@ -88,10 +91,6 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
     jack_default_audio_sample_t *jp;
     ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
 
-        /* even though the FIFO is lock-free we have to lock here
-        to prevent a race condition in the waiting thread between
-        the FIFO and the pthread_cond_wait() call. */
-    pthread_mutex_lock(&jack_mutex);
     if (infiforoom < nframes * STUFF->st_inchannels * sizeof(t_sample) ||
         outfiforoom < nframes * STUFF->st_outchannels * sizeof(t_sample))
     {
@@ -135,9 +134,10 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
             }
         }
     }
-    pthread_cond_broadcast(&jack_sem);
-    pthread_mutex_unlock(&jack_mutex);
     FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
+#ifdef THREADSIGNAL
+    sys_semaphore_post(jack_sem);
+#endif
     return 0;
 }
 
@@ -355,6 +355,10 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     if (jack_client)
         jack_close_audio();
 
+#ifdef THREADSIGNAL
+    jack_sem = sys_semaphore_create();
+#endif
+
     jack_dio_error = 0;
 
     if ((inchans == 0) && (outchans == 0)) return 0;
@@ -513,10 +517,6 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 
     if (jack_client_names[0] && jack_should_autoconnect)
         jack_connect_ports(jack_client_names[0]);
-
-    pthread_mutex_init(&jack_mutex, NULL);
-    pthread_cond_init(&jack_sem, NULL);
-
     return 0;
 }
 
@@ -535,46 +535,41 @@ void jack_close_audio(void)
     jack_started = 0;
     jack_blocksize = 0;
 
-        /* this should never be necessary since jack_close_audio() should
-        only be called form the main thread.  Still, it doesn't hurt
-        anything. */
-    pthread_cond_broadcast(&jack_sem);
-
-    pthread_cond_destroy(&jack_sem);
-    pthread_mutex_destroy(&jack_mutex);
+#ifdef THREADSIGNAL
+    if (jack_sem)
+    {
+        sys_semaphore_destroy(jack_sem);
+        jack_sem = 0;
+    }
+#endif
 }
 
 int jack_send_dacs(void)
 {
-    unsigned long infiforoom, outfiforoom;
     t_sample *muxbuffer;
     t_sample *fp, *fp2, *jp;
     int j, ch;
-    double timenow, timeref = sys_getrealtime();
     const size_t muxbufsize = DEFDACBLKSIZE *
         (STUFF->st_inchannels > STUFF->st_outchannels ?
          STUFF->st_inchannels : STUFF->st_outchannels);
-    if (!STUFF->st_inchannels && !STUFF->st_outchannels) return (SENDDACS_NO);
+    int retval = SENDDACS_YES;
+        /* this shouldn't really happen... */
+    if (!jack_client || (!STUFF->st_inchannels && !STUFF->st_outchannels))
+        return (SENDDACS_NO);
 
-#ifdef TESTCANSLEEP
-    pthread_mutex_lock(&jack_mutex);
-    while (jack_client &&
-        (sys_ringbuf_getreadavailable(&jack_inring) <
-            (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) &&
-        (sys_ringbuf_getwriteavailable(&jack_outring) <
-            (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
-                pthread_cond_wait(&jack_sem,&jack_mutex);
-    pthread_mutex_unlock(&jack_mutex);
-    if (!jack_client)
-        return SENDDACS_NO;
-#else
-    if (!jack_client ||
+    while (
         (sys_ringbuf_getreadavailable(&jack_inring) <
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE*sizeof(t_sample))) ||
         (sys_ringbuf_getwriteavailable(&jack_outring) <
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
-                return (SENDDACS_NO);
+    {
+#ifdef THREADSIGNAL
+        sys_semaphore_wait(jack_sem);
+        retval = SENDDACS_SLEPT;
+#else
+        return (SENDDACS_NO);
 #endif
+    }
     if (jack_dio_error)
     {
         sys_log_error(ERR_RESYNC);
@@ -611,12 +606,8 @@ int jack_send_dacs(void)
     }
     memset(STUFF->st_soundout, 0,
         DEFDACBLKSIZE*sizeof(t_sample) * STUFF->st_outchannels);
-            /* fprintf(stderr, "%g ", sys_getrealtime() - timeref); */
-
     FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
-    if ((timenow = sys_getrealtime()) - timeref > 0.0002)
-        return (SENDDACS_SLEPT);
-    else return (SENDDACS_YES);
+    return retval;
 }
 
 void jack_getdevs(char *indevlist, int *nindevs,
