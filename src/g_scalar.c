@@ -8,8 +8,6 @@ can contain numbers, sublists, and arrays.
 
 */
 
-#include <stdlib.h>
-#include <string.h>
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
@@ -385,20 +383,21 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
 
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
 {
+    char tag[128];
+    sprintf(tag, "select%lx", x);
     if (state)
     {
         int x1, y1, x2, y2;
-
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d \
-            -width 0 -fill blue -tags select%lx\n",
-                glist_getcanvas(glist), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-                x);
-    }
-    else
-    {
-        sys_vgui(".x%lx.c delete select%lx\n", glist_getcanvas(glist), x);
+        pdgui_vmess(0, "crr iiiiiiiiii ri rr rs",
+                  glist_getcanvas(glist), "create", "line",
+                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                  "-width", 0,
+                  "-fill", "blue",
+                  "-tags", tag);
+    } else {
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
@@ -476,14 +475,21 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
         /* if we don't know how to draw it, make a small rectangle */
     if (!templatecanvas)
     {
+        char tag[128];
+        sprintf(tag, "scalar%lx", x);
+
         if (vis)
         {
             int x1 = glist_xtopixels(owner, basex);
             int y1 = glist_ytopixels(owner, basey);
-            sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags scalar%lx\n",
-                glist_getcanvas(owner), x1-1, y1-1, x1+1, y1+1, x);
+            pdgui_vmess(0, "crr iiii rs",
+                      glist_getcanvas(owner),
+                      "create", "rectangle",
+                      x1-1,y1-1, x1+1,y1+1,
+                      "-tags", tag);
         }
-        else sys_vgui(".x%lx.c delete scalar%lx\n", glist_getcanvas(owner), x);
+        else
+            pdgui_vmess(0, "crs", glist_getcanvas(owner), "delete", tag);
         return;
     }
 
@@ -581,13 +587,9 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     b = glist_writetobinbuf(owner, 0);
     binbuf_gettext(b, &buf, &bufsize);
     binbuf_free(b);
-    buf = t_resizebytes(buf, bufsize, bufsize+1);
-    buf[bufsize] = 0;
-    sprintf(buf2, "pdtk_data_dialog %%s {");
-    gfxstub_new((t_pd *)owner, x, buf2);
-    sys_gui(buf);
-    sys_gui("}\n");
-    t_freebytes(buf, bufsize+1);
+    pdgui_stub_vnew((t_pd*)owner, "pdtk_data_dialog", x,
+        "p", bufsize, buf);
+    t_freebytes(buf, bufsize);
 }
 
 static const t_widgetbehavior scalar_widgetbehavior =
@@ -614,7 +616,7 @@ static void scalar_free(t_scalar *x)
         return;
     }
     word_free(x->sc_vec, template);
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
         /* the "size" field in the class is zero, so Pd doesn't try to free
         us automatically (see pd_free()) */
     freebytes(x, sizeof(t_scalar) + (template->t_n - 1) * sizeof(*x->sc_vec));

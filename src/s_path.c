@@ -38,7 +38,6 @@
 #include "s_utf8.h"
 #include <stdio.h>
 #include <fcntl.h>
-#include <ctype.h>
 
 #ifdef _LARGEFILE64_SOURCE
 # define open  open64
@@ -529,4 +528,3 @@ gotone:
     close (fd);
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
-

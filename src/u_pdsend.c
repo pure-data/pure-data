@@ -5,10 +5,8 @@
 /* the "pdsend" command.  This is a standalone program that forwards messages
 from its standard input to Pd via the netsend/netreceive ("FUDI") protocol. */
 
-#include <sys/types.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
 
 #include "s_net.h"
