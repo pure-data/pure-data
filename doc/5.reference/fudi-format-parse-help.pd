@@ -29,7 +29,6 @@
 #X obj 356 396 list;
 #X listbox 356 420 24 0 0 0 - - - 0;
 #X listbox 356 279 76 0 0 0 - - - 0;
-#X obj 356 336 fudiparse -u;
 #X obj 375 305 print packet;
 #X msg 356 193 1 2 3 foo 5;
 #X obj 31 34 fudiparse;
@@ -69,20 +68,21 @@
 0;
 #X obj 7 63 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 20 73 FUDI stands for "Fast Universal Digital Interface" and
-is a networking protocol used by Pd. The [fudiformat] object makes
-FUDI messages suitable for sending over the network via netsend (in
-UDP mode). Incoming messages are output as FUDI messages \, byte by
-byte. The '-u' creation argument switches to "UDP" mode \, omitting
-the packet separator. This saves some two bytes \, but only works when
-sending single FUDI messages over UDP. It doesn't work with TCP/IP
-(however \, you can use the default format even with UDP transport).
-, f 125;
-#X text 557 336 The [fudiparse] object takes incoming lists of numbers
+#X text 537 336 The [fudiparse] object takes incoming lists of numbers
 \, interpreting them as the bytes in a FUDI message (as received when
 sending Pd-messages via [netreceive -b])., f 43;
 #X obj 189 469 netsend;
-#X text 449 336 <-------------;
+#X text 429 336 <-------------;
+#X obj 356 336 fudiparse;
+#X text 20 73 FUDI stands for "Fast Universal Digital Interface" and
+is a networking protocol used by Pd. The [fudiformat] object converts
+incoming Pd messages and makes them FUDI suitable for sending over
+the network via [netsend] (in UDP mode) \, which are output byte by
+byte. The '-u' creation flag switches to "UDP" mode \, omitting the
+packet separator \, which saves some two bytes \, but only works when
+sending single FUDI messages over UDP. It doesn't work with TCP/IP
+(however \, you can use the default format even with UDP transport).
+See the [fudiparse] object below., f 125;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 3 0 4 0;
@@ -97,7 +97,7 @@ sending Pd-messages via [netreceive -b])., f 43;
 #X connect 24 0 29 0;
 #X connect 27 0 28 0;
 #X connect 29 0 30 0;
-#X connect 29 0 31 0;
-#X connect 30 0 15 0;
-#X connect 30 0 27 0;
-#X connect 32 0 24 0;
+#X connect 29 0 41 0;
+#X connect 31 0 24 0;
+#X connect 41 0 15 0;
+#X connect 41 0 27 0;
