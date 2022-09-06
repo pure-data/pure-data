@@ -1,4 +1,4 @@
-#N canvas 193 39 1076 639 12;
+#N canvas 193 39 1082 636 12;
 #X obj 30 384 netsend;
 #X msg 30 198 connect localhost 3000;
 #X msg 57 353 send foo \$1;
@@ -154,6 +154,8 @@ number. There should be a "netreceive" on the remote host with a matching
 port number., f 70;
 #X obj 291 413 print backwards;
 #X msg 665 353 1 2 3 \$1;
+#X obj 262 604 fudiformat;
+#X obj 186 604 oscformat;
 #X connect 0 0 8 0;
 #X connect 0 1 60 0;
 #X connect 1 0 0 0;

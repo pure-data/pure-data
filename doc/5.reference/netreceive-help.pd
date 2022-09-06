@@ -145,10 +145,10 @@ with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" flag specifies binary messages instead
 \, which appear in Pd as lists of numbers from 0 to 255 (You could
 use this for OSC messages \, for example.), f 85;
-#X obj 157 683 oscparse;
-#X obj 224 682 fudiformat;
+#X obj 237 683 fudiformat;
 #X text 37 153 There are some possibilities for intercommunication
 with other programs... see the help for [netsend]., f 85;
+#X obj 160 683 oscformat;
 #X connect 5 0 4 0;
 #X connect 10 0 11 0;
 #X connect 13 0 40 0;
