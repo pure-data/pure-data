@@ -69,6 +69,17 @@ long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
 long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
     PA_VOLATILE char *buffer);
 
+/* semaphore for signaling the consumer thread */
+struct _semaphore;
+typedef struct _semaphore t_semaphore;
+
+t_semaphore * sys_semaphore_create(void);
+void sys_semaphore_destroy(t_semaphore *sem);
+void sys_semaphore_wait(t_semaphore *sem);
+/* wait with timeout (in seconds) */
+int sys_semaphore_waitfor(t_semaphore *sem, double seconds);
+void sys_semaphore_post(t_semaphore *sem);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
