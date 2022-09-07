@@ -1868,7 +1868,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     minyval = 1e20;
                     maxyval = -1e20;
                 }
-                if (ndrawn > 2000 || ixpix >= 3000) break;
+                if (ndrawn > 2000) break;
             }
         }
         else
