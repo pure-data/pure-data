@@ -497,6 +497,10 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
     t_symbol *old = iemgui->x_lab;
     iemgui->x_lab = s = s?canvas_realizedollar(iemgui->x_glist, s):gensym("");
 
+    if(senditup < 0) {
+        senditup = (glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old);
+    }
+
     if(senditup)
     {
         char tag[128];
