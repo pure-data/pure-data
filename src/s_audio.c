@@ -713,21 +713,32 @@ void sys_listdevs(void)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i, canmulti = 0, cancallback = 0;
+    int offset = 0;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE,
             audio_nextsettings.a_api);
+
+#if 0
+        /* To agree with command line flags, normally start at 1 */
+        /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
+        /* (see also sys_mmio variable in s_main.c)  */
+
+       /* JMZ: otoh, it seems that the '-audiodev' flags 0-based
+        * indices on ALSA and PORTAUDIO as well,
+        * so we better show the correct ones here
+        * (hence this line is disabled via #ifdef's)
+        */
+    offset = (audio_nextsettings.a_api != API_MMIO);
+#endif
+
     if (!nindevs)
         post("no audio input devices found");
     else
     {
-            /* To agree with command line flags, normally start at 1 */
-            /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
-            /* (see also sys_mmio variable in s_main.c)  */
-
         post("audio input devices:");
         for (i = 0; i < nindevs; i++)
-            post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
+            post("%d. %s", i + offset,
                 indevlist + i * DEVDESCSIZE);
     }
     if (!noutdevs)
@@ -736,7 +747,7 @@ void sys_listdevs(void)
     {
         post("audio output devices:");
         for (i = 0; i < noutdevs; i++)
-            post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
+            post("%d. %s", i + offset,
                 outdevlist + i * DEVDESCSIZE);
     }
     post("API number %d\n", audio_nextsettings.a_api);
