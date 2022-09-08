@@ -137,7 +137,7 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
         a, b, c, d);
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", 1 + 2 * zoom,
-        "-fill", x->x_gui.x_fcol);
+        "-outline", x->x_gui.x_fcol);
 
     sprintf(tag, "%lxLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
