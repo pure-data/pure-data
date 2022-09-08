@@ -655,14 +655,17 @@ static void my_numbox_key(void *z, t_symbol *keysym, t_floatarg fkey)
     }
     else if((c == '\n') || (c == 13))
     {
-        x->x_val = atof(x->x_buf);
-        x->x_buf[0] = 0;
-        x->x_gui.x_fsf.x_change = 0;
-        clock_unset(x->x_clock_reset);
-        if (pd_compatibilitylevel < 53)
-            my_numbox_clip(x);
+        if(x->x_buf[0])
+        {
+            x->x_val = atof(x->x_buf);
+            x->x_buf[0] = 0;
+            x->x_gui.x_fsf.x_change = 0;
+            clock_unset(x->x_clock_reset);
+            if (pd_compatibilitylevel < 53)
+                my_numbox_clip(x);
+            sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+        }
         my_numbox_bang(x);
-        sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
     clock_delay(x->x_clock_reset, 3000);
 }
