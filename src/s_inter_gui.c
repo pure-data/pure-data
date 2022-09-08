@@ -175,12 +175,17 @@ static void sendatoms(int argc, t_atom*argv, int raw) {
             sys_vgui("%g ", atom_getfloat(a));
             break;
         case A_DOLLAR:
+            if(raw)
+                sys_vgui("$%d ", a->a_w.w_index);
+            else
+                sys_vgui("{$%d} ", a->a_w.w_index);
+            break;
         case A_DOLLSYM:
         case A_SYMBOL:
             if(raw)
-                sys_vgui("%s ", atom_getsymbol(a)->s_name);
+                sys_vgui("%s ", a->a_w.w_symbol->s_name);
             else
-                sys_vgui("{%s} ", str_escape(atom_getsymbol(a)->s_name, 0));
+                sys_vgui("{%s} ", str_escape(a->a_w.w_symbol->s_name, 0));
             break;
         case A_POINTER:
             sys_vgui("%p ", a->a_w.w_gpointer);
