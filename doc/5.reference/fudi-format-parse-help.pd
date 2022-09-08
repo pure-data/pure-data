@@ -1,19 +1,17 @@
-#N canvas 316 34 936 492 12;
-#X text 37 449 see also:;
-#X text 74 183 FUDI messages with numbers and symbols., f 20;
-#X obj 113 450 oscformat;
-#X text 693 451 updated for Pd version 0.48.0;
+#N canvas 316 34 934 450 12;
+#X text 37 418 see also:;
+#X obj 113 418 oscformat;
+#X text 698 418 updated for Pd version 0.48.0;
 #X obj 31 10 fudiformat;
 #X text 116 9 - convert messages to FUDI packets;
-#X msg 227 183 1 2 3 foo 5;
-#X obj 227 208 fudiformat;
-#X obj 327 208 fudiformat -u;
-#X text 462 183 without packet separator;
-#X listbox 327 392 14 0 0 0 - - - 0;
-#X listbox 327 259 63 0 0 0 - - - 0;
+#X msg 209 176 1 2 3 foo 5;
+#X obj 209 201 fudiformat;
+#X obj 309 201 fudiformat -u;
+#X listbox 309 345 14 0 0 0 - - - 0;
+#X listbox 309 249 63 0 0 0 - - - 0;
 #X obj 31 34 fudiparse;
 #X text 116 34 - parse FUDI packets into Pd messages;
-#N canvas 796 143 531 433 reference 0;
+#N canvas 790 123 531 433 reference 0;
 #X obj 8 52 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 100 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
@@ -21,7 +19,6 @@
 #X obj 7 195 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 28 19 fudiformat;
-#X text 113 18 - convert messages to FUDI packets;
 #X text 83 66 anything - any message to convert to a FUDI packet.;
 #X text 118 110 list - converted FUDI packet., f 42;
 #X text 131 170 '-u': switches to "UDP" mode, f 31;
@@ -42,36 +39,23 @@
 0;
 #X obj 7 137 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
+#X text 113 18 - convert messages into FUDI packets;
 #X restore 734 25 pd reference;
 #X text 828 25 <= click;
-#X obj 6 434 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 405 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 7 63 cnv 1 920 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 189 450 netsend;
-#X obj 327 316 fudiparse;
-#X text 400 316 <------------;
-#X text 498 316 The [fudiparse] object takes incoming lists of numbers
+#X obj 189 418 netsend;
+#X obj 309 288 fudiparse;
+#X text 382 288 <------------;
+#X text 480 288 The [fudiparse] object takes incoming lists of numbers
 \, interpreting them as the bytes in a FUDI message (as received when
 sending Pd-messages via [netreceive -b]). The object can still parse
 the message if it doesn't contain the packet separator (as received
 when using [fudiformat -u])., f 55;
-#X text 32 73 FUDI stands for "Fast Universal Digital Interface" and
-is a networking protocol used by Pd. The [fudiformat] object converts
-incoming Pd messages to the FUDI protocol so you can send them over
-the network with [netsend] (either via UDP or TCP/IP). The converted
-message is a list of bytes ending with a packet separator (59 10).
-The '-u' flag switches to "UDP" mode and omits the packet separator
-\, so it only works when sending single FUDI messages over UDP (not
-TCP/IP). The default format with the packet separator is suited for
-sending via TCP/IP \, but you can use the default format over UDP as
-well. See the description of the [fudiparse] object below., f 122
-;
-#X obj 377 286 print FUDI-message;
-#X obj 340 357 print parse-output;
-#X obj 327 285 t a a;
-#X msg 327 183 list foo 1 2 3 5;
-#N canvas 329 100 873 445 [netsend]-UDP-example 0;
+#X msg 309 176 list foo 1 2 3 5;
+#N canvas 361 143 873 445 [netsend]-UDP-example 0;
 #X msg 119 327 disconnect;
 #X msg 108 299 connect localhost 5000;
 #X obj 79 189 list prepend send;
@@ -117,13 +101,19 @@ with [netsend] and listen to them with [netreceive]., f 105;
 #X connect 22 0 12 0;
 #X connect 24 0 25 0;
 #X connect 25 0 2 0;
-#X restore 66 351 pd [netsend]-UDP-example;
-#X connect 6 0 7 0;
-#X connect 7 0 11 0;
-#X connect 8 0 11 0;
-#X connect 11 0 25 0;
-#X connect 19 0 10 0;
-#X connect 19 0 24 0;
-#X connect 25 0 19 0;
-#X connect 25 1 23 0;
-#X connect 26 0 8 0;
+#X restore 66 324 pd [netsend]-UDP-example;
+#X text 60 75 FUDI stands for "Fast Universal Digital Interface" and
+is a networking protocol used by Pd. The [fudiformat] object converts
+messages to the FUDI protocol so you can send them over the network.
+The converted message is a list of bytes ending with a packet separator
+(59 10). The '-u' flag switches to "UDP" mode and omits the packet
+separator making it suitable for sending FUDI messages over UDP (but
+you can also use the default format over UDP). See the description
+of the [fudiparse] object below., f 115;
+#X text 414 201 (convert without packet separator);
+#X connect 5 0 6 0;
+#X connect 6 0 9 0;
+#X connect 7 0 9 0;
+#X connect 9 0 17 0;
+#X connect 17 0 8 0;
+#X connect 20 0 7 0;
