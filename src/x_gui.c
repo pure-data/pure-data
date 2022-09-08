@@ -571,20 +571,52 @@ static void canvas_countobjects(t_canvas *c, int *numobjects, int *numcanvases)
     }
 }
 
-static void pdcontrol_runtimeinfo(t_pdcontrol *x, t_floatarg f)
+static void pdcontrol_runtimeinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom *argv)
 {
-    t_atom at[2];
-    int numobjects = 0, numcanvases = 0;
+    t_atom at[3];
     t_canvas *c = x->x_canvas;
-    if (f >= 0) c = canvas_get_nth_parent(c, (int)f);
+    int parent_level = -1;
+    enum {NUMSYMBOLS, NUMOBJECTS, PDVERSION};
+    int command = 0;
+
+    while (argc) {
+        if (argv->a_type == A_SYMBOL) {
+            t_symbol *com = atom_getsymbol(argv);
+            if(com == gensym("numsymbols")) command |= 1 << NUMSYMBOLS;
+            else if(com == gensym("numobjects")) command |= 1 << NUMOBJECTS;
+            else if(com == gensym("pdversion")) command |= 1 << PDVERSION;
+        }
+        else if (argv->a_type == A_FLOAT) {
+            parent_level = atom_getfloat(argv);
+        }
+        argc--;
+        argv++;
+    }
+    post("command: %d", command);
+    if (parent_level >= 0) c = canvas_get_nth_parent(c, (int)parent_level);
     else c = NULL;
 
-    SETFLOAT(&at[0], (float)getnumsymbols());
-    outlet_anything(x->x_outlet, gensym("numsymbols"), 1, at);
-    canvas_countobjects(c, &numobjects, &numcanvases);
-    SETFLOAT(&at[0], (float)numobjects);
-    SETFLOAT(&at[1], (float)numcanvases);
-    outlet_anything(x->x_outlet, gensym("numobjects"), 2, at);
+    #define ENABLED(which) (command == 0 || (command & (1 << which)) != 0)
+
+    if (ENABLED(NUMSYMBOLS)) {
+        SETFLOAT(&at[0], (float)getnumsymbols());
+        outlet_anything(x->x_outlet, gensym("numsymbols"), 1, at);
+    }
+    if (ENABLED(NUMOBJECTS)) {
+        int numobjects = 0, numcanvases = 0;
+        canvas_countobjects(c, &numobjects, &numcanvases);
+        SETFLOAT(&at[0], (float)numobjects);
+        SETFLOAT(&at[1], (float)numcanvases);
+        outlet_anything(x->x_outlet, gensym("numobjects"), 2, at);
+    }
+    if (ENABLED(PDVERSION)) {
+        int major, minor, bugfix;
+        sys_getversion(&major, &minor, &bugfix);
+        SETFLOAT(&at[0], (float)major);
+        SETFLOAT(&at[1], (float)minor);
+        SETFLOAT(&at[2], (float)bugfix);
+        outlet_anything(x->x_outlet, gensym("pdversion"), 3, at);
+    }
 }
 
 static void pdcontrol_setup(void)
@@ -600,7 +632,7 @@ static void pdcontrol_setup(void)
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_runtimeinfo,
-        gensym("runtimeinfo"), A_DEFFLOAT, 0);
+        gensym("runtimeinfo"), A_GIMME, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
