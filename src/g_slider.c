@@ -321,7 +321,7 @@ static void slider_properties(t_gobj *z, t_glist *owner)
         minWidth = IEM_SL_MINSIZE;
         minHeight = IEM_GUI_MINSIZE;
     } else {
-        objname = "|vsl|";
+        objname = "vsl";
         minWidth = IEM_GUI_MINSIZE;
         minHeight = IEM_SL_MINSIZE;
     }
