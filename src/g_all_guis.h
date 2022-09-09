@@ -173,10 +173,12 @@ typedef struct _iemgui
     int                x_fcol;
     int                x_bcol;
     int                x_lcol;
+    /* send/receive/label as used ($args expanded) */
     t_symbol           *x_snd;              /* send symbol */
     t_symbol           *x_rcv;              /* receive */
     t_symbol           *x_lab;              /* label */
-    t_symbol           *x_snd_unexpanded;   /* same 3, with '$' unexpanded */
+    /* same, with $args unexpanded */
+    t_symbol           *x_snd_unexpanded;   /* NULL=uninitialized; gensym("")=empty */
     t_symbol           *x_rcv_unexpanded;
     t_symbol           *x_lab_unexpanded;
     int                x_binbufindex;       /* where in binbuf to find these */

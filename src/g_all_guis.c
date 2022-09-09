@@ -33,6 +33,13 @@ typedef struct _iemgui_private {
 
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
 
+/* helpers */
+static int srl_is_valid(const t_symbol* s)
+{
+    return (!!s && s != &s_);
+}
+
+
 /*------------------ global variables -------------------------*/
 
 int iemgui_color_hex[]=
@@ -131,7 +138,6 @@ char *iemgui_vu_scale_str[]=
 
 
 /*------------------ global functions -------------------------*/
-
 
 int iemgui_clip_size(int size)
 {
@@ -255,8 +261,8 @@ static void iemgui_init_sym2dollararg(t_iemgui *iemgui, t_symbol **symp,
         *symp = fallback;
 }
 
-    /* get the unexpanded versions of the symbols; initialize them if
-    necessary. */
+    /* get the unexpanded versions of the symbols;
+       initialize them if necessary. */
 void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
 {
     iemgui_init_sym2dollararg(iemgui, &iemgui->x_snd_unexpanded,
@@ -398,7 +404,8 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
         iemgui->x_snd_unexpanded = s;
         iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
     } else {
-        iemgui->x_snd_unexpanded = iemgui->x_snd = 0;
+        iemgui->x_snd_unexpanded = &s_;
+        iemgui->x_snd = 0;
         sndable = 0;
     }
     iemgui->x_fsf.x_snd_able = sndable;
@@ -420,7 +427,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         iemgui->x_rcv_unexpanded = s;
         s = canvas_realizedollar(iemgui->x_glist, s);
     } else {
-        iemgui->x_rcv_unexpanded = 0;
+        iemgui->x_rcv_unexpanded = &s_;
     }
     if(s)
     {
@@ -708,7 +715,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int bcol = (int)iemgui_getcolorarg(14, argc, argv);
     int fcol = (int)iemgui_getcolorarg(15, argc, argv);
     int lcol = (int)iemgui_getcolorarg(16, argc, argv);
-    int sndable=1, rcvable=1, oldsndrcvable=0;
+    int rcv_changed=0, oldsndrcvable=0;
     int i;
 
     if(iemgui->x_fsf.x_rcv_able)
@@ -737,30 +744,33 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     if(init != 0) init = 1;
     iemgui->x_isa.x_loadinit = init;
     for(i=0; i<3; i++)
-        if(srl[i] && !strcmp(srl[i]->s_name, "empty")) srl[i] = 0;
-    if(!srl[0]) sndable = 0;
-    if(!srl[1]) rcvable = 0;
+        if(!srl_is_valid(srl[i]) || (!strcmp(srl[i]->s_name, "empty"))) srl[i] = &s_;
 
+        /* expand dollargs
+         * after this, srl holds the $-expanded versions of the labels
+         * and iemgui->x_(snd|rcv|lab)_unexpanded hold the unexpanded versions
+         */
     iemgui_all_dollararg2sym(iemgui, srl);
-    if(rcvable && (!iemgui->x_rcv || strcmp(srl[1]->s_name, iemgui->x_rcv->s_name)))
-    {
-        if(iemgui->x_rcv && iemgui->x_fsf.x_rcv_able)
-            pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-        iemgui->x_rcv = srl[1];
-        pd_bind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-    }
-    else if(!rcvable && iemgui->x_fsf.x_rcv_able)
-    {
+
+        /* check if the receiver changed */
+    if(0
+       || (!srl_is_valid(iemgui->x_rcv) && srl_is_valid(srl[1])) /* there was none, but now there is */
+       || ( srl_is_valid(iemgui->x_rcv) && !(srl_is_valid(srl[1]))) /* there was one, but now there is */
+       || ( srl_is_valid(iemgui->x_rcv) && srl_is_valid(srl[1]) && iemgui->x_rcv != srl[1])) /* both are valid, but changed */
+        rcv_changed = 1;
+
+        /* if the receiver changed (and was previously set), unbind it */
+    if(rcv_changed && srl_is_valid(iemgui->x_rcv))
         pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
-        iemgui->x_rcv = srl[1];
-    }
+
     iemgui->x_snd = srl[0];
-    iemgui->x_fsf.x_snd_able = sndable;
-    iemgui->x_fsf.x_rcv_able = rcvable;
+    iemgui->x_fsf.x_snd_able = srl_is_valid(srl[0]);
+    iemgui->x_rcv = srl[1];
+    iemgui->x_fsf.x_rcv_able = srl_is_valid(srl[1]);
+    iemgui->x_lab = srl[2];
     iemgui->x_lcol = lcol & 0xffffff;
     iemgui->x_fcol = fcol & 0xffffff;
     iemgui->x_bcol = bcol & 0xffffff;
-    iemgui->x_lab = srl[2];
     iemgui->x_ldx = ldx;
     iemgui->x_ldy = ldy;
     if(f == 1) strcpy(iemgui->x_font, "helvetica");
@@ -774,6 +784,11 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     if(fs < 4)
         fs = 4;
     iemgui->x_fontsize = fs;
+
+        /* if the receiver changed (and is now set), bind it */
+    if(rcv_changed && srl_is_valid(iemgui->x_rcv))
+        pd_bind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
+
     iemgui_verify_snd_ne_rcv(iemgui);
     canvas_dirty(iemgui->x_glist, 1);
     return(oldsndrcvable);
