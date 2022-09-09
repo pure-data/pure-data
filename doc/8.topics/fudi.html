@@ -3,20 +3,20 @@
 <head>
 <title>FUDI</title>
 <style>
-BODY { 
+BODY {
     background:  #ffffff;;
     color:       #000000;
     font-family: Georgia, serif;
     font-size:   12 pt; 
     line-height: 1.6;
 }
-    
+
 #corpus {
     width:      6.5in; 
     margin-left: 0.8in;
 }
 
-H1, H2, H3, H4, H5, H6, ol, ul, mark, p, PRE { 
+H1, H2, H3, H4, H5, H6, ol, ul, mark, p, PRE {
     color: #3E4349; 
 }
 
@@ -25,7 +25,7 @@ H1, H2 {
     font-weight: normal;
 }
 
-PRE { 
+PRE {
    font-size: 110%;
    background-color:#f0f0f0;
    text-align:  left;
@@ -62,8 +62,8 @@ a:active {
 
 <p>FUDI (<strong>F</strong>ast <strong>U</strong>niversal <strong>D</strong>igital <strong>
 I</strong>nterface) is a networking protocol used by the Pure Data patching language invented
- by Miller Puckette. It is a string based protocol in which messages are separated by 
- semicolons. Messages are made up of tokens separated by whitespaces, and numerical 
+ by Miller Puckette. It is a string based protocol in which messages are separated by
+ semicolons. Messages are made up of tokens separated by whitespaces, and numerical
  tokens are represented as strings.</p>
 
 <h3 id="Format">Format</h3>
@@ -80,25 +80,25 @@ I</strong>nterface) is a networking protocol used by the Pure Data patching lang
 <p>A <strong>whitespace</strong> is either a space (ascii 32), a tab (ascii 9) or a newline
  (ascii 10).</p>
 
-<p>A <strong>semicolon</strong> (ascii 59) is mandatory to terminate (and send) a message. 
-A <strong>newline</strong> is just treated as whitespace and not needed for message termination.</p>
+<p>A <strong>semicolon</strong> (ascii 59) is mandatory to terminate (and send) a message.
+ A <strong>newline</strong> is just treated as whitespace and not needed for message termination.</p>
 
 <h3 id="Implementations">Implementations</h3>
 
 <p><strong>pdsend / pdreceive</strong></p>
 
-<p>Those command-line tools are distributed with the software Pure Data. They are meant 
-to be used with their counterparts, the classes [netsend] / [netreceive] of Pd.</p>
+<p>Those command-line tools are distributed with the software Pure Data. They are meant
+ to be used with their counterparts, the classes [netsend] / [netreceive] of Pd.</p>
 
 <p><strong>[netsend] / [netreceive]</strong></p>
 
-<p>Those classes can be used to transport Pd-messages over a TCP or UDP socket. 
-Both are part of Pd-vanilla.</p>
+<p>Those classes can be used to transport Pd-messages over a TCP or UDP socket.
+ Both are part of Pd-vanilla.</p>
 
 <p><strong>[netserver] / [netclient]</strong></p>
 
-<p>Those are part of maxlib and allow bidirectional connections of multiple clients with 
-one server.</p>
+<p>Those are part of maxlib and allow bidirectional connections of multiple clients with
+ one server.</p>
 
 <h3 id="Example.messages">Example messages</h3>
 
