@@ -492,6 +492,8 @@ void pa_close_audio(void)
 #endif
 }
 
+int sched_idletask(void);
+
 int pa_send_dacs(void)
 {
     PaError err;
@@ -501,7 +503,7 @@ int pa_send_dacs(void)
     int j, k;
     int retval = SENDDACS_YES;
     double timeref = sys_getrealtime();
-
+        /* this shouldn't really happen... */
     if (!pa_stream || (!STUFF->st_inchannels && !STUFF->st_outchannels))
         return (SENDDACS_NO);
 
@@ -516,6 +518,9 @@ int pa_send_dacs(void)
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
     {
 #ifdef THREADSIGNAL
+        if (sched_idletask())
+            continue;
+            /* only go to sleep if there is nothing else to do. */
         if (!sys_semaphore_waitfor(pa_sem, POLL_TIMEOUT))
         {
                 /* timed out -> check stream */

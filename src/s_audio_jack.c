@@ -542,6 +542,8 @@ void jack_close_audio(void)
 #endif
 }
 
+int sched_idletask(void);
+
 int jack_send_dacs(void)
 {
     t_sample *muxbuffer;
@@ -562,6 +564,9 @@ int jack_send_dacs(void)
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
     {
 #ifdef THREADSIGNAL
+        if (sched_idletask())
+            continue;
+            /* only go to sleep if there is nothing else to do. */
         sys_semaphore_wait(jack_sem);
         retval = SENDDACS_SLEPT;
 #else
