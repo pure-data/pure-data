@@ -292,7 +292,7 @@ will now sleep. */
 int (*sys_idlehook)(void);
 
     /* when audio is idle, see to GUI and other stuff */
-static int sched_idletask( void)
+int sched_idletask(void)
 {
     static int sched_nextmeterpolltime, sched_nextpingtime;
     int rtn = 0;
