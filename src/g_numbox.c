@@ -118,6 +118,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
     int corner = x->x_gui.x_h/4;
     int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
     char tag[128];
+    int borderwidth = zoom * (1+!!x->x_gui.x_fsf.x_change);
 
     t_atom fontatoms[3];
     SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
@@ -145,7 +146,7 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         xpos,              ypos + x->x_gui.x_h,
         xpos,              ypos);
     pdgui_vmess(0, "crs  ri rk rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
+        "-width", borderwidth,
         "-outline", THISGUI->i_foregroundcolor,
         "-fill", x->x_gui.x_bcol);
 
@@ -240,12 +241,13 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
     if(glist_isvisible(glist))
     {
         t_canvas *canvas = glist_getcanvas(glist);
+        int borderwidth = IEMGUI_ZOOM(x) * (1+!!x->x_gui.x_fsf.x_change);
         char tag[128];
         sprintf(tag, "%pNUMBER", x);
         if(x->x_gui.x_fsf.x_change)
         {
             if(x->x_buf[0])
-            {
+            { /* while typing */
                 char *cp = x->x_buf;
                 int sl = (int)strlen(x->x_buf);
 
@@ -253,15 +255,15 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                 x->x_buf[sl+1] = 0;
                 if(sl >= x->x_numwidth)
                     cp += sl - x->x_numwidth + 1;
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", THISGUI->i_gopcolor, "-text", cp);
+                pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
+                    "-text", cp);
                 x->x_buf[sl] = 0;
             }
             else
-            {
+            { /* when activated */
                 my_numbox_ftoa(x);
-                pdgui_vmess(0, "crs rk rs", canvas, "itemconfigure", tag,
-                    "-fill", THISGUI->i_gopcolor, "-text", x->x_buf);
+                pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
+                    "-text", x->x_buf);
                 x->x_buf[0] = 0;
             }
         }
@@ -278,6 +280,11 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
                     "-text", x->x_buf);
             x->x_buf[0] = 0;
         }
+        /* highlight border */
+        sprintf(tag, "%pBASE1", x);
+        pdgui_vmess(0, "crs ri", canvas, "itemconfigure", tag,
+            "-width", borderwidth);
+
     }
 }
 
