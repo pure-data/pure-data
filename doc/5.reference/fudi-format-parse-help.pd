@@ -99,7 +99,7 @@ of the message or use it with other low level network externals like
 #X connect 19 0 10 0;
 #X connect 21 0 22 0;
 #X connect 22 0 18 0;
-#X restore 46 302 pd [netsend]-UDP-example;
+#X restore 31 351 pd [netsend]-UDP-example;
 #X obj 6 449 cnv 1 860 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 236 462 list tosymbol;
@@ -115,12 +115,29 @@ messages to the FUDI protocol so you can send them over the network.
 The converted message is a list of bytes ending with a packet separator
 (59 10). The '-u' flag switches to "UDP" mode and omits the packet
 separator making it suitable for sending FUDI messages over UDP (but
-you can also use the default format over UDP). For more info on the
-FUDI protocol \, check <https://en.wikipedia.org/wiki/FUDI>. See the
-description of the [fudiparse] object below, f 115;
+you can also use the default format over UDP). See the description
+of the [fudiparse] object below., f 115;
+#X obj 31 287 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#N canvas 798 148 488 282 html-reference 0;
+#X obj 101 59 inlet;
+#X obj 101 190 pdcontrol;
+#X obj 101 130 pdcontrol;
+#X msg 101 105 dir;
+#X text 205 94 this window opens the html reference link via the [pdcontrol]
+object., f 25;
+#X msg 101 159 browse \$1/../8.topics/fudi.html;
+#X connect 0 0 3 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 5 0 1 0;
+#X restore 31 316 pd html-reference;
+#X text 18 256 For more details on "FUDI":;
+#X text 54 286 <-- Open HTML reference;
 #X connect 5 0 6 0;
 #X connect 6 0 9 0;
 #X connect 7 0 9 0;
 #X connect 9 0 16 0;
 #X connect 16 0 8 0;
 #X connect 18 0 7 0;
+#X connect 27 0 28 0;
