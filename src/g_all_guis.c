@@ -140,13 +140,6 @@ int iemgui_clip_size(int size)
     return(size);
 }
 
-int iemgui_clip_font(int size)
-{
-    if(size < IEM_FONT_MINSIZE)
-        size = IEM_FONT_MINSIZE;
-    return(size);
-}
-
 int iemgui_modulo_color(int col)
 {
     while(col >= IEM_GUI_MAX_COLOR)
@@ -184,31 +177,6 @@ t_symbol *iemgui_raute2dollar(t_symbol *s)
             *s2 = '$';
         else if (!(*s2 = *s1))
             break;
-    }
-    return(gensym(buf));
-}
-
-t_symbol *iemgui_put_in_braces(t_symbol *s)
-{
-    const char *s1;
-    char buf[MAXPDSTRING+1], *s2;
-    int i = 0;
-    if (strlen(s->s_name) >= MAXPDSTRING)
-        return (s);
-    for (s1 = s->s_name, s2 = buf; ; s1++, s2++, i++)
-    {
-        if (i == 0)
-        {
-            *s2 = '{';
-            s2++;
-        }
-        if (!(*s2 = *s1))
-        {
-            *s2 = '}';
-            s2++;
-            *s2 = '\0';
-            break;
-        }
     }
     return(gensym(buf));
 }
@@ -256,26 +224,10 @@ void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv)
         }
     }
     else iemgui->x_snd = iemgui->x_rcv = iemgui->x_lab = 0;
+    /* in the object's constructor, we can't access the raw values yet: */
     iemgui->x_snd_unexpanded = iemgui->x_rcv_unexpanded = iemgui->x_lab_unexpanded = 0;
     iemgui->x_binbufindex = indx;
     iemgui->x_labelbindex = indx + 3;
-}
-
-static t_symbol*do_all_dollarg2sym(t_iemgui*iemgui, t_symbol**s, size_t index)
-{
-    t_symbol*org = s[index];
-    if(org) {
-        s[index] = canvas_realizedollar(iemgui->x_glist, org);
-    }
-    return org;
-}
-    /* convert symbols in "$" form to the expanded symbols */
-void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
-{
-        /* save unexpanded ones for later */
-    iemgui->x_snd_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 0);
-    iemgui->x_rcv_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 1);
-    iemgui->x_lab_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 2);
 }
 
     /* initialize a single symbol in unexpanded form.  We reach into the
@@ -318,6 +270,26 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
     srlsym[2] = iemgui->x_lab_unexpanded;
 }
 
+    /* helper for iemgui_all_dollararg2sym */
+static t_symbol*do_all_dollarg2sym(t_iemgui*iemgui, t_symbol**s, size_t index)
+{
+    t_symbol*org = s[index];
+    if(org) {
+        s[index] = canvas_realizedollar(iemgui->x_glist, org);
+    }
+    return org;
+}
+    /* convert symbols in "$" form to the expanded symbols */
+void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
+{
+        /* save unexpanded ones for later */
+    iemgui->x_snd_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 0);
+    iemgui->x_rcv_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 1);
+    iemgui->x_lab_unexpanded = do_all_dollarg2sym(iemgui, srlsym, 2);
+}
+
+
+
 static t_symbol* color2symbol(int col) {
     const int  compat = (pd_compatibilitylevel < 48) ? 1 : 0;
 
@@ -335,7 +307,7 @@ static t_symbol* color2symbol(int col) {
     return gensym(colname);
 }
 
-void iemgui_all_col2save(t_iemgui *iemgui, t_symbol**bflcol)
+static void iemgui_all_col2save(t_iemgui *iemgui, t_symbol**bflcol)
 {
     bflcol[0] = color2symbol(iemgui->x_bcol);
     bflcol[1] = color2symbol(iemgui->x_fcol);
@@ -411,27 +383,6 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
                return((-1 -col)&0xffffff);
         }
     return iemgui_getcolorarg(index, argc, argv);
-}
-
-void iemgui_all_dollar2raute(t_symbol **srlsym)
-{
-    srlsym[0] = iemgui_dollar2raute(srlsym[0]);
-    srlsym[1] = iemgui_dollar2raute(srlsym[1]);
-    srlsym[2] = iemgui_dollar2raute(srlsym[2]);
-}
-
-void iemgui_all_raute2dollar(t_symbol **srlsym)
-{
-    srlsym[0] = iemgui_raute2dollar(srlsym[0]);
-    srlsym[1] = iemgui_raute2dollar(srlsym[1]);
-    srlsym[2] = iemgui_raute2dollar(srlsym[2]);
-}
-
-void iemgui_all_put_in_braces(t_symbol **srlsym)
-{
-    srlsym[0] = iemgui_put_in_braces(srlsym[0]);
-    srlsym[1] = iemgui_put_in_braces(srlsym[1]);
-    srlsym[2] = iemgui_put_in_braces(srlsym[2]);
 }
 
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -900,51 +851,6 @@ int iem_fstyletoint(t_iem_fstyle_flags *fstylep)
     return ((fstylep->x_font_style << 0) & 63);
 }
 
-    /* for compatibility with pre-0.47 unofficial IEM GUIS like "knob". */
-void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol)
-{
-    static int warned;
-    if (!warned)
-    {
-        post("warning:\
-external GUI object uses obsolete Pd function iemgui_all_colfromload()");
-        warned = 1;
-    }
-    if(bflcol[0] < 0)
-    {
-        bflcol[0] = -1 - bflcol[0];
-        iemgui->x_bcol = ((bflcol[0] & 0x3f000) << 6)|((bflcol[0] & 0xfc0) << 4)|
-            ((bflcol[0] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[0] = iemgui_modulo_color(bflcol[0]);
-        iemgui->x_bcol = iemgui_color_hex[bflcol[0]];
-    }
-    if(bflcol[1] < 0)
-    {
-        bflcol[1] = -1 - bflcol[1];
-        iemgui->x_fcol = ((bflcol[1] & 0x3f000) << 6)|((bflcol[1] & 0xfc0) << 4)|
-            ((bflcol[1] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[1] = iemgui_modulo_color(bflcol[1]);
-        iemgui->x_fcol = iemgui_color_hex[bflcol[1]];
-    }
-    if(bflcol[2] < 0)
-    {
-        bflcol[2] = -1 - bflcol[2];
-        iemgui->x_lcol = ((bflcol[2] & 0x3f000) << 6)|((bflcol[2] & 0xfc0) << 4)|
-            ((bflcol[2] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[2] = iemgui_modulo_color(bflcol[2]);
-        iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
-    }
-}
-
 static void iemgui_draw_new(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_config(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
@@ -1091,3 +997,117 @@ t_iemgui *iemgui_new(t_class*cls)
 
     return x;
 }
+
+
+#if 1
+/* LEGACY (for binary compatibility with existing externals)
+ * DO NOT USE
+ */
+
+/* g_all_guis.h */
+/* *********** */
+int iemgui_clip_font(int size)
+{
+    if(size < IEM_FONT_MINSIZE)
+        size = IEM_FONT_MINSIZE;
+    return(size);
+}
+
+void iemgui_all_dollar2raute(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_dollar2raute(srlsym[0]);
+    srlsym[1] = iemgui_dollar2raute(srlsym[1]);
+    srlsym[2] = iemgui_dollar2raute(srlsym[2]);
+}
+
+void iemgui_all_raute2dollar(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_raute2dollar(srlsym[0]);
+    srlsym[1] = iemgui_raute2dollar(srlsym[1]);
+    srlsym[2] = iemgui_raute2dollar(srlsym[2]);
+}
+
+
+
+/* g_canvas.h */
+/* ********** */
+
+t_symbol *iemgui_put_in_braces(t_symbol *s)
+{
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
+    int i = 0;
+    if (strlen(s->s_name) >= MAXPDSTRING)
+        return (s);
+    for (s1 = s->s_name, s2 = buf; ; s1++, s2++, i++)
+    {
+        if (i == 0)
+        {
+            *s2 = '{';
+            s2++;
+        }
+        if (!(*s2 = *s1))
+        {
+            *s2 = '}';
+            s2++;
+            *s2 = '\0';
+            break;
+        }
+    }
+    return(gensym(buf));
+}
+
+
+/* no header */
+/* ********* */
+void iemgui_all_put_in_braces(t_symbol **srlsym)
+{
+    srlsym[0] = iemgui_put_in_braces(srlsym[0]);
+    srlsym[1] = iemgui_put_in_braces(srlsym[1]);
+    srlsym[2] = iemgui_put_in_braces(srlsym[2]);
+}
+
+    /* for compatibility with pre-0.47 unofficial IEM GUIS like "knob". */
+void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol)
+{
+    static int warned = 0;
+    if (!warned)
+    {
+        post("warning: external GUI object uses obsolete Pd function %s()", __FUNCTION__);
+        warned = 1;
+    }
+    if(bflcol[0] < 0)
+    {
+        bflcol[0] = -1 - bflcol[0];
+        iemgui->x_bcol = ((bflcol[0] & 0x3f000) << 6)|((bflcol[0] & 0xfc0) << 4)|
+            ((bflcol[0] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[0] = iemgui_modulo_color(bflcol[0]);
+        iemgui->x_bcol = iemgui_color_hex[bflcol[0]];
+    }
+    if(bflcol[1] < 0)
+    {
+        bflcol[1] = -1 - bflcol[1];
+        iemgui->x_fcol = ((bflcol[1] & 0x3f000) << 6)|((bflcol[1] & 0xfc0) << 4)|
+            ((bflcol[1] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[1] = iemgui_modulo_color(bflcol[1]);
+        iemgui->x_fcol = iemgui_color_hex[bflcol[1]];
+    }
+    if(bflcol[2] < 0)
+    {
+        bflcol[2] = -1 - bflcol[2];
+        iemgui->x_lcol = ((bflcol[2] & 0x3f000) << 6)|((bflcol[2] & 0xfc0) << 4)|
+            ((bflcol[2] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[2] = iemgui_modulo_color(bflcol[2]);
+        iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
+    }
+}
+#endif
