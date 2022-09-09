@@ -8,10 +8,7 @@
 #include "s_stuff.h"
 #include "s_net.h"
 
-#include <sys/types.h>
 #include <string.h>
-#include <errno.h>
-#include <stdlib.h>
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
