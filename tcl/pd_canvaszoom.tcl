@@ -34,7 +34,7 @@ proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
     bind $c <Control-MouseWheel> [list ::pd_canvaszoom::stepzoom $c %D]
 
     # add button-2 bindings to scroll the canvas
-    bind $c <ButtonPress-2> {+ %W scan mark %x %y}
+    bind $c <ButtonPress-2> {%W scan mark %x %y}
     bind $c <B2-Motion> {+ %W scan dragto %x %y 1}
 }
 
