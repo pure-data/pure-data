@@ -50,7 +50,7 @@
 #define MAX_ALLOCA_SAMPLES 16*1024
 
 /* enable thread signaling instead of polling */
-#if 0
+#if 1
 #define THREADSIGNAL
 #endif
 

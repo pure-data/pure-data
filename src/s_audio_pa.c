@@ -44,7 +44,7 @@
 #endif
 
 /* enable thread signaling instead of polling */
-#if 0
+#if 1
 #define THREADSIGNAL
 #endif
 
