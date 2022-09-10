@@ -221,7 +221,7 @@ proc ::pd_canvaszoom::string_lset {instring index newvalue} {
 }
 
 proc ::pd_canvaszoom::unescape {text} {
-    return [string range [subst -nocommands -novariables $text] 0 end-1]
+    return [string range [subst -nocommands -novariables $text] 0 end]
 }
 
 proc ::pd_canvaszoom::getactualfontsize {fontsize} {
@@ -244,6 +244,7 @@ proc ::pd_canvaszoom::getzdepth tkcanvas {
 }
 
 proc ::pd_canvaszoom::scale_command {cmd} {
+    set cmd [regsub -lineanchor ";$" $cmd ""]
     set cmd [regsub -all "\}" $cmd "\} "]
     set cmd [regsub -all "\"\]" $cmd "\" \]"]
     set cmd [regsub -all {\\\n} $cmd " "]
@@ -255,7 +256,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
             set cmd [scale_consecutive_numbers $cmd 6 $zdepth true]
             set text [unescape [lindex $cmd 5]]
-            lset cmd 2 [concat [lindex $cmd 2] _f$actualfontsize [list _t$text]]
+            set cmd [string_lset $cmd 2 [concat "\{ " [lindex $cmd 2] _f$actualfontsize [list _t$text] " \}"]]
             return $cmd
         }
         "pdtk_text_set" {
