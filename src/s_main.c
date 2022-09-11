@@ -1518,7 +1518,7 @@ static void namelist2gui(const char*name, t_namelist*namelist)
     }
     pdgui_vmess("set", "rS",
               name,
-              i, names);
+              (int)i, names);
     freebytes(names, namesize*sizeof(const char*));
 }
 
