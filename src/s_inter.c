@@ -1751,20 +1751,11 @@ void sys_bail(int n)
     else _exit(1);
 }
 
-extern void sys_exit(void);
+void sys_exit(int status);
 
 void glob_exit(void *dummy, t_float status)
 {
-        /* sys_exit() sets the sys_quit flag, so all loops end */
-    sys_exit();
-    sys_close_audio();
-    sys_close_midi();
-    if (sys_havegui())
-    {
-        sys_closesocket(INTER->i_guisock);
-        sys_rmpollfn(INTER->i_guisock);
-    }
-    exit((int)status);
+    sys_exit(status);
 }
 void glob_quit(void *dummy)
 {

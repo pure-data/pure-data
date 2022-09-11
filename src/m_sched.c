@@ -23,6 +23,7 @@
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_RESTART 2
 static int sys_quit;
+static int sys_exitcode;
 extern int sys_nosleep;
 
 int sys_usecsincelastsleep(void);
@@ -211,6 +212,11 @@ void dsp_tick(void);
 
 static int sched_useaudio = SCHED_AUDIO_NONE;
 static double sched_referencerealtime, sched_referencelogicaltime;
+void sys_exit(int status)
+{
+    sys_exitcode = status;
+    sys_quit = SYS_QUIT_QUIT;
+}
 
 void sched_reopenmeplease(void)   /* request from s_audio for deferred reopen */
 {
@@ -422,6 +428,10 @@ static void m_callbackscheduler(void)
 
 int m_mainloop(void)
 {
+        /* open audio and MIDI */
+    sys_reopen_midi();
+    if (audio_shouldkeepopen())
+        sys_reopen_audio();
     while (sys_quit != SYS_QUIT_QUIT)
     {
         if (sched_useaudio == SCHED_AUDIO_CALLBACK)
@@ -437,17 +447,15 @@ int m_mainloop(void)
             }
         }
     }
-    return (0);
+
+    sys_close_audio();
+    sys_close_midi();
+    return (sys_exitcode);
 }
 
 int m_batchmain(void)
 {
     while (sys_quit != SYS_QUIT_QUIT)
         sched_tick();
-    return (0);
-}
-
-void sys_exit(void)
-{
-    sys_quit = SYS_QUIT_QUIT;
+    return (sys_exitcode);
 }
