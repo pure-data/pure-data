@@ -9,7 +9,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-
 /* NULL-terminated */
 #define GUI_VMESS__END     0
 /* use space to structure the format-string */
@@ -366,11 +365,12 @@ static int va2value(const char fmt, va_list *args, t_val*v) {
 }
 
 
-void pdgui_vamess(const char* message, const char* format, va_list args)
+void pdgui_vamess(const char* message, const char* format, va_list args_)
 {
     const char* fmt;
     char* buf;
     t_val v;
+    va_list args;
 
     v.type = GUI_VMESS__RAWSTRING;
     v.size = 1;
@@ -381,6 +381,7 @@ void pdgui_vamess(const char* message, const char* format, va_list args)
         sys_vgui("%s", " ");
     }
 
+    va_copy(args, args_);
         /* iterate over the format-string and add elements */
     for(fmt = format; *fmt; fmt++) {
         if(va2value(*fmt, &args, &v) < 1)
@@ -389,6 +390,7 @@ void pdgui_vamess(const char* message, const char* format, va_list args)
         if(GUI_VMESS__IGNORE != v.type)
             sys_vgui("%s", " ");
     }
+    va_end(args);
 }
 void pdgui_endmess(void)
 {
