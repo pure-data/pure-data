@@ -14,7 +14,7 @@
     Windows.  If FAKEBLOCKING is defined we can choose between two methods
     for waiting on the (presumably other-thread) I/O to complete, either
     correct thread synchronization (by defining THREADSIGNAL) or just sleeping
-    and polling; the latter seems to work better so far.
+    and polling.
 */
 
 /* dolist...
@@ -332,7 +332,7 @@ PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
     err = Pa_StartStream(pa_stream);
     if (err != paNoError)
     {
-        post("error opening failed; closing audio stream: %s",
+        post("could not start stream; closing audio: %s",
             Pa_GetErrorText(err));
         pa_close_audio();
         goto error;
@@ -492,11 +492,41 @@ void pa_close_audio(void)
 #endif
 }
 
+void sys_do_close_audio(void);
+void sys_do_reopen_audio(void);
+
+int pa_reopen_audio(void)
+{
+    int success;
+        /* NB: unfortunately, Pa_IsStreamActive() always returns true,
+           even if the audio device has been disconnected... */
+    sys_do_close_audio();
+#ifdef __APPLE__
+        /* TODO: the portaudio coreaudio implementation doesn't handle
+           re-connection, so suggest restarting */
+    pd_error(0, "audio device not responding - closing audio");
+    pd_error(0, "you may need to save and restart pd");
+    return 0;
+#else
+        /* portaudio seems to handle this better on windows and linux */
+    pd_error(0, "trying to reopen audio device");
+
+    sys_do_reopen_audio(); /* try to reopen it */
+    success = audio_isopen();
+
+    if (success)
+        pd_error(0, "successfully reopened audio device");
+    else
+        pd_error(0, "audio device not responding - closing audio.\n"
+                    "please try to reconnect and reselect it in the settings (or toggle DSP)");
+#endif
+    return success;
+}
+
 int sched_idletask(void);
 
 int pa_send_dacs(void)
 {
-    PaError err;
     t_sample *fp;
     float *fp2, *fp3;
     float *conversionbuf;
@@ -523,19 +553,14 @@ int pa_send_dacs(void)
             /* only go to sleep if there is nothing else to do. */
         if (!sys_semaphore_waitfor(pa_sem, POLL_TIMEOUT))
         {
-                /* timed out -> check stream */
-            if ((err = Pa_IsStreamActive(pa_stream)) < 0)
-                goto try_reopen;
-            else /* should not really happen */
-                return SENDDACS_NO;
+            pa_reopen_audio();
+            return SENDDACS_NO;
         }
         retval = SENDDACS_SLEPT;
 #else
-        if (((timeref - pa_lastdactime) >= POLL_TIMEOUT)
-            && ((err = Pa_IsStreamActive(&pa_stream)) < 0))
-                goto try_reopen;
-        else
-            return SENDDACS_NO;
+        if ((timeref - pa_lastdactime) >= POLL_TIMEOUT)
+            pa_reopen_audio();
+        return SENDDACS_NO;
 #endif
     }
     pa_lastdactime = timeref;
@@ -578,15 +603,19 @@ int pa_send_dacs(void)
                     k++, fp++, fp3 += STUFF->st_outchannels)
                         *fp3 = *fp;
         if (Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
-            if ((err = Pa_IsStreamActive(&pa_stream)) < 0)
-                goto try_reopen;
+        {
+            pa_reopen_audio();
+            return SENDDACS_NO;
+        }
     }
         /* read input */
     if (STUFF->st_inchannels)
     {
         if (Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
-            if ((err = Pa_IsStreamActive(&pa_stream)) < 0)
-                goto try_reopen;
+        {
+            pa_reopen_audio();
+            return SENDDACS_NO;
+        }
         for (j = 0, fp = STUFF->st_soundin, fp2 = conversionbuf;
             j < STUFF->st_inchannels; j++, fp2++)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
@@ -602,28 +631,6 @@ int pa_send_dacs(void)
         DEFDACBLKSIZE*sizeof(t_sample)*STUFF->st_outchannels);
 
     return retval;
-
-try_reopen:
-    pd_error(0, "error %d: %s", err, Pa_GetErrorText(err));
-    sys_close_audio();
-    #ifdef __APPLE__
-        /* TODO: the portaudio coreaudio implementation doesn't handle
-           re-connection, so suggest restarting */
-        pd_error(0, "audio device not responding - closing audio");
-        pd_error(0, "you may need to save and restart pd");
-    #else
-        /* portaudio seems to handle this better on windows and linux */
-        pd_error(0, "trying to reopen audio device");
-        sys_reopen_audio(); /* try to reopen it */
-        if (audio_isopen())
-            pd_error(0, "successfully reopened audio device");
-        else
-        {
-            pd_error(0, "audio device not responding - closing audio");
-            pd_error(0, "reconnect and reselect it in the settings (or toggle DSP)");
-        }
-    #endif
-    return SENDDACS_NO;
 }
 
 static char*pdi2devname(const PaDeviceInfo*pdi, char*buf, size_t bufsize) {

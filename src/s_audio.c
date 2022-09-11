@@ -33,13 +33,11 @@
 int sys_schedadvance;   /* scheduler advance in microseconds */
 
 static int sys_audioapiopened; /* what API is open, API_NONE if none */
-static int audio_callback_is_open;  /* true if we're open in callback mode */
 
     /* current parameters (if an API is open) or requested ones otherwise: */
 static t_audiosettings audio_nextsettings;
 
 void sched_audio_callbackfn(void);
-void sched_reopenmeplease(void);
 
 int audio_isopen(void)
 {
@@ -260,7 +258,8 @@ void sys_set_audio_settings(t_audiosettings *a)
     pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
 }
 
-void sys_close_audio(void)
+    /* close the audio device. Must not be called from a Pd message! */
+void sys_do_close_audio(void)
 {
     if (sys_externalschedlib)
     {
@@ -311,7 +310,6 @@ void sys_close_audio(void)
         post("sys_close_audio: unknown API %d", sys_audioapiopened);
     sys_audioapiopened = API_NONE;
     sched_set_using_audio(SCHED_AUDIO_NONE);
-    audio_callback_is_open = 0;
 
     pdgui_vmess("set", "ri", "pd_whichapi", 0);
 }
@@ -328,8 +326,9 @@ void sys_init_audio(void)
     sys_setchsr(totalinchans, totaloutchans, as.a_srate);
 }
 
-    /* open audio using currently requested parameters */
-void sys_reopen_audio(void)
+    /* open audio using currently requested parameters.
+    Must not be called from a Pd message! */
+void sys_do_reopen_audio(void)
 {
     t_audiosettings as;
     int outcome = 0, totalinchans, totaloutchans;
@@ -429,16 +428,39 @@ void sys_reopen_audio(void)
     {
         sys_audioapiopened = API_NONE;
         sched_set_using_audio(SCHED_AUDIO_NONE);
-        audio_callback_is_open = 0;
     }
     else
     {
         sys_audioapiopened = as.a_api;
         sched_set_using_audio(
             (as.a_callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
-        audio_callback_is_open = as.a_callback;
     }
     pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
+}
+
+    /* called by the scheduler if the audio system appears to be stuck */
+int sys_try_reopen_audio(void)
+{
+    int success;
+#ifdef USEAPI_PORTAUDIO
+    if (sys_audioapiopened == API_PORTAUDIO)
+        return pa_reopen_audio();
+#endif
+        /* generic implementation: close audio and try to reopen it */
+    sys_do_close_audio();
+
+    pd_error(0, "trying to reopen audio device");
+
+    sys_do_reopen_audio();
+    success = audio_isopen();
+
+    if (success)
+        pd_error(0, "successfully reopened audio device");
+    else
+        pd_error(0, "audio device not responding - closing audio.\n"
+                    "please try to reconnect and reselect it in the settings (or toggle DSP)");
+
+    return success;
 }
 
 int sys_send_dacs(void)
@@ -709,12 +731,8 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if (as.a_blocksize < DEFDACBLKSIZE || as.a_blocksize > MAXBLOCKSIZE)
             as.a_blocksize = DEFDACBLKSIZE;
 
-    if (!audio_callback_is_open && !as.a_callback)
-        sys_close_audio();
     sys_set_audio_settings(&as);
-    if (!audio_callback_is_open && !as.a_callback)
-        sys_reopen_audio();
-    else sched_reopenmeplease();
+    sys_reopen_audio();
 }
 
 void sys_listdevs(void)
@@ -773,7 +791,6 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
         }
         else
         {
-            sys_close_audio();
             audio_nextsettings.a_api = newapi;
                 /* bash device params back to default */
             audio_nextsettings.a_nindev = audio_nextsettings.a_nchindev =
@@ -797,16 +814,12 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     /* start or stop the audio hardware */
 void sys_set_audio_state(int onoff)
 {
-    if (onoff)  /* start */
-    {
-        if (!audio_isopen())
-            sys_reopen_audio();
-    }
-    else
-    {
-        if (audio_isopen())
-            sys_close_audio();
-    }
+        /* NB: only reopen audio if it has been closed, so we don't
+        interfere with audio_shouldkeepopen()! See also glob_dsp(). */
+    if (onoff && !audio_isopen())  /* start */
+        sys_reopen_audio();
+    else if (!onoff && audio_isopen())
+        sys_close_audio();
 }
 
 #define MAXAPIENTRY 10
