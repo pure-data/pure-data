@@ -306,7 +306,7 @@ static int addmess(t_val v)
     return 0;
 }
 
-static int va2value(const char fmt, va_list args, t_val*v) {
+static int va2value(const char fmt, va_list *args, t_val*v) {
     int result = 1;
     v->type = fmt;
     v->size = 1;
@@ -316,15 +316,15 @@ static int va2value(const char fmt, va_list args, t_val*v) {
         v->type = GUI_VMESS__IGNORE;
         break;
     case GUI_VMESS__ATOMS:
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, t_atom*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, t_atom*);
         break;
     case GUI_VMESS__FLOAT:
-        v->value.d = va_arg(args, double);
+        v->value.d = va_arg(*args, double);
         break;
     case GUI_VMESS__INT:
     case GUI_VMESS__COLOR:
-        v->value.i = va_arg(args, int);
+        v->value.i = va_arg(*args, int);
         break;
     case GUI_VMESS__RAWSTRING:
     case GUI_VMESS__STRING:
@@ -332,7 +332,7 @@ static int va2value(const char fmt, va_list args, t_val*v) {
     case GUI_VMESS__POINTER:
     case GUI_VMESS__WINDOW:
     case GUI_VMESS__CANVAS:
-        v->value.p = va_arg(args, void*);
+        v->value.p = va_arg(*args, void*);
         break;
     case GUI_VMESS__ATOMARRAY:
     case GUI_VMESS__CANVASARRAY:
@@ -342,15 +342,15 @@ static int va2value(const char fmt, va_list args, t_val*v) {
     case GUI_VMESS__STRINGARRAY:
     case GUI_VMESS__RAWSTRINGARRAY:
     case GUI_VMESS__PASCALSTRING:
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, void*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, void*);
         break;
     case GUI_VMESS__MESSAGE:
     {
-        t_symbol*s = va_arg(args, t_symbol*);
+        t_symbol*s = va_arg(*args, t_symbol*);
         v->string = s?s->s_name:0;
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, void*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, void*);
         break;
     }
     default:
@@ -379,7 +379,7 @@ void pdgui_vamess(const char* message, const char* format, va_list args)
 
         /* iterate over the format-string and add elements */
     for(fmt = format; *fmt; fmt++) {
-        if(va2value(*fmt, args, &v) < 1)
+        if(va2value(*fmt, &args, &v) < 1)
             continue;
         addmess(v);
         if(GUI_VMESS__IGNORE != v.type)
