@@ -91,7 +91,7 @@ static const char* str_escape(const char*s, int size)
 
 typedef struct _val {
     int type;
-    size_t size;
+    int size;
     const char* string;
     union
     {
