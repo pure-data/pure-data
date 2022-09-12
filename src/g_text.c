@@ -1481,7 +1481,7 @@ static const t_widgetbehavior gatom_widgetbehavior =
 void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     const char *tag, int x1, int y1, int x2, int y2)
 {
-    int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
+    int isInlet, i;
     int width = x2 - x1;
     int iow = IOWIDTH * glist->gl_zoom;
     int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
@@ -1489,42 +1489,43 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     char tagbuf[128];
 
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
-    for (i = 0; i < n; i++)
+    for (isInlet = 0; isInlet < 2; isInlet++)
     {
-        int onset = x1 + (width - iow) * i / nplus;
-        sprintf(tagbuf, "%so%d", tag, i);
-        tags[0] = tagbuf;
-        tags[1] = "outlet";
-        if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
-                glist_getcanvas(glist), "create", "rectangle",
-                onset, y2 - oh + glist->gl_zoom, onset + iow, y2,
-                "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "black");
-        else
-            pdgui_vmess(0, "crs iiii",
-                glist_getcanvas(glist), "coords", tagbuf,
-                onset, y2 - oh + glist->gl_zoom, onset + iow, y2);
-    }
-    n = obj_ninlets(ob);
-    nplus = (n == 1 ? 1 : n-1);
-    for (i = 0; i < n; i++)
-    {
-        int onset = x1 + (width - iow) * i / nplus;
-        sprintf(tagbuf, "%si%d", tag, i);
-        tags[0] = tagbuf;
-        tags[1] = "inlet";
-        if (firsttime)
-            pdgui_vmess(0, "crr iiii rS rr",
-                glist_getcanvas(glist),
-                "create", "rectangle",
-                onset, y1, onset + iow, y1 + ih - glist->gl_zoom,
-                "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
-                "-fill", "black");
-        else
-            pdgui_vmess(0, "crs iiii",
-                glist_getcanvas(glist), "coords", tagbuf,
-                onset, y1, onset + iow, y1 + ih - glist->gl_zoom);
+        int n = isInlet ? obj_ninlets(ob) : obj_noutlets(ob);
+        int nplus = (n == 1 ? 1 : n-1), i;
+        for (i = 0; i < n; i++)
+        {
+            int iox1, iox2, ioy1, ioy2;
+            char c;
+            iox1 = x1 + (width - iow) * i / nplus;
+            iox2 = iox1 + iow;
+            if(isInlet)
+            {
+                ioy1 = y1;
+                ioy2 = y1 + ih - glist->gl_zoom;
+                c = 'i';
+                tags[1] = "inlet";
+            }
+            else
+            {
+                ioy1 = y2 - oh + glist->gl_zoom;
+                ioy2 = y2;
+                c = 'o';
+                tags[1] = "outlet";
+            }
+            sprintf(tagbuf, "%s%c%d", tag, c, i);
+            tags[0] = tagbuf;
+            if (firsttime)
+                pdgui_vmess(0, "crr iiii rS rr",
+                    glist_getcanvas(glist), "create", "rectangle",
+                    iox1, ioy1, iox2, ioy2,
+                    "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
+                    "-fill", "black");
+            else
+                pdgui_vmess(0, "crs iiii",
+                    glist_getcanvas(glist), "coords", tagbuf,
+                    iox1, ioy1, iox2, ioy2);
+        }
     }
 }
 
