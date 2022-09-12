@@ -514,7 +514,7 @@ proc ::pdtk_canvas::create {args} {
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
-    set cnvCoordsTypes { obj }
+    set cnvCoordsTypes { obj inlet outlet }
     if { $type in $cnvCoordsTypes} {
         if { $argc < 5 } {
             puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
@@ -535,6 +535,14 @@ proc ::pdtk_canvas::create {args} {
         set width [lindex $args 6]
         set tag [lindex $args 7]
         set docmds "$cnv create line $x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1 -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type} }"
+    }
+    if {$type eq "outlet" || $type eq "inlet"} {
+        if { $argc != 6 } {
+            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
+            return
+        }
+        set tag [lindex $args 5]
+        set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
