@@ -98,6 +98,27 @@ proc ::pd_connect::assemble_cmd {A B} {
     }
 }
 
+proc ::pd_connect::pd_docmds {docmds} {
+    if {![catch {uplevel #0 $docmds} errorname]} {
+        # we ran the command block without error
+    } else {
+        # oops, error, alert the user:
+        global errorInfo
+        switch -regexp -- $errorname {
+            "missing close-brace" {
+                ::pdwindow::fatal \
+                    [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo "\n"]
+            } "^invalid command name" {
+                ::pdwindow::fatal \
+                    [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
+            } default {
+                ::pdwindow::fatal \
+                    [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
+            }
+        }
+    }
+}
+
 proc ::pd_connect::pd_readsocket {} {
      variable pd_socket
      variable cmdbuf
@@ -112,25 +133,8 @@ proc ::pd_connect::pd_readsocket {} {
 
     foreach {docmds cmdbuf} [assemble_cmd $cmdbuf [read $pd_socket]] { break; }
     if { [string length $docmds] > 0 } {
-         if {![catch {uplevel #0 $docmds} errorname]} {
-             # we ran the command block without error, reset the buffer
-         } else {
-             # oops, error, alert the user:
-             global errorInfo
-             switch -regexp -- $errorname {
-                 "missing close-brace" {
-                     ::pdwindow::fatal \
-                         [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo "\n"]
-                 } "^invalid command name" {
-                     ::pdwindow::fatal \
-                         [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
-                 } default {
-                     ::pdwindow::fatal \
-                         [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
-                 }
-             }
-         }
-     }
+        pd_docmds $docmds
+    }
 }
 
 # wiring to support killing Pd if (1) we started it from this GUI and
