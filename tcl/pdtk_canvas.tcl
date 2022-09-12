@@ -503,3 +503,40 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
         }
     }
 }
+
+proc ::pdtk_canvas::create {args} {
+    #puts "pdtk_canvas::create got: $args"
+    set docmds ""
+    if {[llength $args] < 1} {
+        puts "ERROR: ::pdtk_canvas::create: no arguments"
+        return
+    }
+    set type [lindex $args 0]
+    set args [lrange $args 1 end]
+    set argc [llength $args]
+    set cnvCoordsTypes { obj }
+    if { $type in $cnvCoordsTypes} {
+        if { $argc < 5 } {
+            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
+            return
+        }
+        set cnv [lindex $args 0]
+        set x1 [lindex $args 1]
+        set y1 [lindex $args 2]
+        set x2 [lindex $args 3]
+        set y2 [lindex $args 4]
+    }
+    if {$type eq "obj"} {
+        if { $argc != 8 } {
+            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
+            return
+        }
+        set pattern [lindex $args 5]
+        set width [lindex $args 6]
+        set tag [lindex $args 7]
+        set docmds "$cnv create line $x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1 -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type} }"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}

@@ -22,6 +22,7 @@
 #define ATOM_BMARGIN 4 /* 1 pixel smaller than object TMARGIN+BMARGIN */
 
 #define MESSAGE_CLICK_WIDTH 5
+#define USE_PDTK_CANVAS_CREATE
 
 t_class *text_class;
 static t_class *message_class;
@@ -1546,6 +1547,16 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
         char *tags[] = {tagR, "obj"};
         if (firsttime)
+        {
+#ifdef USE_PDTK_CANVAS_CREATE
+            pdgui_vmess(0, "rr c iiii r i s",
+                "::pdtk_canvas::create", tags[1],
+                glist_getcanvas(glist),
+                x1, y1,  x2, y2,
+                pattern,
+                glist->gl_zoom,
+                tags[0]);
+#else // USE_PDTK_CANVAS_CREATE
             pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,  x1, y1,
@@ -1553,6 +1564,8 @@ void text_drawborder(t_text *x, t_glist *glist,
                 "-width", glist->gl_zoom,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
+#endif // USE_PDTK_CANVAS_CREATE
+        }
         else
         {
             pdgui_vmess(0, "crs iiiiiiiiii",
