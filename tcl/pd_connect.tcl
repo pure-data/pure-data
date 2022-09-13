@@ -100,6 +100,9 @@ proc ::pd_connect::assemble_cmd {A B} {
 }
 
 proc ::pd_connect::pd_docmds {docmds} {
+    puts stderr "START_DOCMDS"
+    puts stderr [string trim "$docmds"]
+    puts stderr "STOP_DOCMDS"
     if {![catch {uplevel #0 $docmds} errorname]} {
         # we ran the command block without error
     } else {
