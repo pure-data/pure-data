@@ -372,14 +372,16 @@ static void m_pollingscheduler(void)
                 }
                 timeforward = (lateness > 0 ? SENDDACS_YES : SENDDACS_NO);
             }
-            else timeforward = sys_send_dacs();
+            else
+                timeforward = sys_send_dacs();
             sys_addhist(3);
                 /* test for idle; if so, do graphics updates. */
-            if (timeforward != SENDDACS_YES && !sched_idletask() && !sys_nosleep)
+            if (timeforward != SENDDACS_YES && !sched_idletask())
             {
                 /* if even that had nothing to do, sleep. */
                 sys_addhist(4);
-                sys_microsleep();
+                if (!sys_nosleep && timeforward != SENDDACS_SLEPT)
+                    sys_microsleep();
             }
             sys_addhist(5);
             sys_lock();
