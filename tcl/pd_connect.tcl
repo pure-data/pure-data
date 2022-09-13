@@ -75,13 +75,14 @@ proc ::pd_connect::assemble_cmd {A B} {
     # assembles A & B into two strings cmds & rest
     #  cmds: string that can be evaluated
     #  rest: the remainder
-    # assembling is done from the end of $B (to get the maximum)
-    set lfi end
+    # assembling is done from the beginning of $B (to get a single command at a
+    # time)
+    set lfi 0
     set ok 0
-    while { [set lfi [string last "\n" $B $lfi]] >= 0 } {
+    while { [set lfi [string first "\n" $B $lfi]] >= 0 } {
         set ab $A[string range $B 0 $lfi]
         set b [string range $B [expr $lfi + 1] end]
-        incr lfi -1
+        incr lfi +1
         if {[info complete $ab]} {
             set A $ab
             set B $b
@@ -131,10 +132,14 @@ proc ::pd_connect::pd_readsocket {} {
          exit
      }
 
-    foreach {docmds cmdbuf} [assemble_cmd $cmdbuf [read $pd_socket]] { break; }
-    if { [string length $docmds] > 0 } {
-        pd_docmds $docmds
+    set rest $cmdbuf[read $pd_socket]
+    while {[string length $rest] > 0} {
+        foreach {docmds rest} [assemble_cmd "" $rest] { break; }
+        if { [string length $docmds] > 0 } {
+            pd_docmds $docmds
+        }
     }
+    set cmdbuf $rest
 }
 
 # wiring to support killing Pd if (1) we started it from this GUI and
