@@ -28,17 +28,33 @@ static void my_numbox_clip(t_my_numbox *x)
         x->x_val = x->x_max;
 }
 
+int sys_nearestfontsize(int fontsize);
 static void my_numbox_calc_fontwidth(t_my_numbox *x)
 {
-    int w, f = 31;
+    int w;
+    float f = x->x_gui.x_fontsize;
+    int nearest_fontsize =  sys_nearestfontsize(x->x_gui.x_fontsize);
+    int nearest_fontwidth = sys_zoomfontwidth(nearest_fontsize, 1, 1);
+    float fontwidth = (float)nearest_fontwidth * f / (float)nearest_fontsize;
 
-    if(x->x_gui.x_fsf.x_font_style == 1)
-        f = 27;
-    else if(x->x_gui.x_fsf.x_font_style == 2)
-        f = 25;
+        /* legacy font calculation */
+    switch(x->x_gui.x_fsf.x_font_style) {
+    default:
+        f *= 31./36.;
+        break;
+    case 1:
+        f *= 27./36.;
+        break;
+    case 2:
+        f *= 25./36.;
+        break;
+    }
 
-    w = x->x_gui.x_fontsize * f * x->x_numwidth;
-    w /= 36;
+        /* make sure to not exceed the legacy font-size */
+    if ((f < fontwidth) || (pd_compatibilitylevel < 53))
+        fontwidth = f;
+
+    w = (int)(fontwidth * x->x_numwidth);
     x->x_gui.x_w = (w + (x->x_gui.x_h/2)/IEMGUI_ZOOM(x) + 4) * IEMGUI_ZOOM(x);
 }
 
@@ -456,7 +472,7 @@ static void my_numbox_set(t_my_numbox *x, t_floatarg f)
     if (memcmp(&ftocompare, &x->x_val, sizeof(ftocompare)))
     {
         x->x_val = ftocompare;
-        if (pd_compatibilitylevel < 53)
+        if (pd_compatibilitylevel < 56)
             my_numbox_clip(x);
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
     }
