@@ -42,6 +42,8 @@ static void my_numbox_calc_fontwidth(t_my_numbox *x)
     x->x_gui.x_w = (w + (x->x_gui.x_h/2)/IEMGUI_ZOOM(x) + 4) * IEMGUI_ZOOM(x);
 }
 
+/* gatom_float_sizelimit() from g_rtext.c */
+const char* gatom_float_sizelimit(char*buf, int bufsize, int maxsize);
 static void my_numbox_ftoa(t_my_numbox *x)
 {
     double f = x->x_val;
@@ -49,54 +51,8 @@ static void my_numbox_ftoa(t_my_numbox *x)
 
     sprintf(x->x_buf, "%g", f);
     bufsize = (int)strlen(x->x_buf);
-    if(bufsize >= 5)/* if it is in exponential mode */
-    {
-        i = bufsize - 4;
-        if((x->x_buf[i] == 'e') || (x->x_buf[i] == 'E'))
-            is_exp = 1;
-    }
-    if(bufsize > x->x_numwidth)/* if to reduce */
-    {
-        if(is_exp)
-        {
-            if(x->x_numwidth <= 5)
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            i = bufsize - 4;
-            for(idecimal = 0; idecimal < i; idecimal++)
-                if(x->x_buf[idecimal] == '.')
-                    break;
-            if(idecimal > (x->x_numwidth - 4))
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            else
-            {
-                int new_exp_index = x->x_numwidth - 4;
-                int old_exp_index = bufsize - 4;
 
-                for(i = 0; i < 4; i++, new_exp_index++, old_exp_index++)
-                    x->x_buf[new_exp_index] = x->x_buf[old_exp_index];
-                x->x_buf[x->x_numwidth] = 0;
-            }
-        }
-        else
-        {
-            for(idecimal = 0; idecimal < bufsize; idecimal++)
-                if(x->x_buf[idecimal] == '.')
-                    break;
-            if(idecimal > x->x_numwidth)
-            {
-                x->x_buf[0] = (f < 0.0 ? '-' : '+');
-                x->x_buf[1] = 0;
-            }
-            else
-                x->x_buf[x->x_numwidth] = 0;
-        }
-    }
+    gatom_float_sizelimit(x->x_buf, bufsize, x->x_numwidth);
 }
 
 /* ------------ nbx gui-my number box ----------------------- */
@@ -250,7 +206,6 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
             { /* while typing */
                 char *cp = x->x_buf;
                 int sl = (int)strlen(x->x_buf);
-
                 x->x_buf[sl] = '>';
                 x->x_buf[sl+1] = 0;
                 if(sl >= x->x_numwidth)
