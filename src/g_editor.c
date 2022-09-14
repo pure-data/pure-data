@@ -466,7 +466,7 @@ void canvas_disconnect(t_canvas *x,
         {
             char tag[128];
             sprintf(tag, "l%lx", oc);
-            pdgui_vmess(0, "crs", x, "delete", tag);
+            canvas_deletefromtag(x, tag);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -2631,7 +2631,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #endif
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        canvas_deletefromtag(x, "x");
     }
     else
         pdgui_vmess(0, "crs iiii",
@@ -2854,7 +2854,7 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        canvas_deletefromtag(x, "x");
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
@@ -4800,8 +4800,7 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x), "delete", "commentbar");
+            glist_deletefromtag(x, "commentbar");
         }
     }
     if (glist_isvisible(x) && x->gl_havewindow)

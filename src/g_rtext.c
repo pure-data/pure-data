@@ -518,7 +518,7 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
-    pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+    glist_deletefromtag(x->x_glist, x->x_tag);
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)

@@ -1279,7 +1279,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     else
     {
         if (n > 1)
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+            glist_deletefromtag(glist, tag);
     }
 }
 
@@ -2094,7 +2094,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        glist_deletefromtag(glist, tag);
     }
 }
 
@@ -2746,7 +2746,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
             "-tags", 2, tags);
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        glist_deletefromtag(glist, tag);
 }
 
 static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,

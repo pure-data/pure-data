@@ -410,6 +410,7 @@ EXTERN void glist_deselect(t_glist *x, t_gobj *y);
 EXTERN void glist_noselect(t_glist *x);
 EXTERN void glist_selectall(t_glist *x);
 EXTERN void glist_delete(t_glist *x, t_gobj *y);
+EXTERN void glist_deletefromtag(t_glist *x, const char* tag);
 EXTERN void glist_retext(t_glist *x, t_text *y);
 EXTERN void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,
     t_glistkeyfn keyfn, int xpos, int ypos);
@@ -489,6 +490,7 @@ EXTERN t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv);
 EXTERN t_symbol *canvas_makebindsym(t_symbol *s);
 EXTERN void canvas_fixlinesfor(t_canvas *x, t_text *text);
 EXTERN void canvas_deletelinesfor(t_canvas *x, t_text *text);
+EXTERN void canvas_deletefromtag(t_canvas *x, const char *tag);
 EXTERN void canvas_stowconnections(t_canvas *x);
 EXTERN void canvas_restoreconnections(t_canvas *x);
 EXTERN void canvas_redraw(t_canvas *x);

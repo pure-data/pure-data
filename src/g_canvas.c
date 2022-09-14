@@ -779,7 +779,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
             "-tags", "GOP"); /* better: "-tags", 1, &"GOP" */
     }
     else
-        pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", "GOP");
+        glist_deletefromtag(x, "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -820,7 +820,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            pdgui_vmess(0, "crs", x, "delete", "all");
+            canvas_deletefromtag(x, "all");
             x->gl_mapped = 0;
         }
     }
@@ -978,7 +978,17 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     if (!glist_isvisible(x))
         return;
     sprintf(tag, "l%lx", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
+    glist_deletefromtag(x, tag);
+}
+
+void canvas_deletefromtag(t_canvas* x, const char* tag)
+{
+    pdgui_vmess(0, "crs", x, "delete", tag);
+}
+
+void glist_deletefromtag(t_canvas* x, const char* tag)
+{
+    canvas_deletefromtag(glist_getcanvas(x), tag);
 }
 
     /* kill all lines for the object */

@@ -397,7 +397,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
                   "-fill", "blue",
                   "-tags", tag);
     } else {
-        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
+        glist_deletefromtag(glist, tag);
     }
 }
 
@@ -489,7 +489,7 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
                       "-tags", tag);
         }
         else
-            pdgui_vmess(0, "crs", glist_getcanvas(owner), "delete", tag);
+            glist_deletefromtag(owner, tag);
         return;
     }
 

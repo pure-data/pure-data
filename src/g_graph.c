@@ -757,8 +757,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 "-joinstyle", "miter",
                 "-tags", 2, tags2);
         else
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x->gl_owner), "delete", tag);
+            glist_deletefromtag(x->gl_owner, tag);
         return;
     }
         /* otherwise draw (or erase) us as a graph inside another glist. */
@@ -894,7 +893,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     }
     else
     {
-        pdgui_vmess(0, "crs", glist_getcanvas(x->gl_owner), "delete", tag);
+        glist_deletefromtag(x->gl_owner, tag);
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 0);
     }
