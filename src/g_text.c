@@ -1654,21 +1654,19 @@ void text_drawborder(t_text *x, t_glist *glist,
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, const char *tag)
 {
-    int i, n;
-    n = obj_noutlets(ob);
-    char tagbuf[MAXPDSTRING];
-    for (i = 0; i < n; i++)
+    int isInlet;
+    for(isInlet = 0; isInlet < 2; isInlet++)
     {
-        sprintf(tagbuf, "%so%d", tag, i);
-        pdgui_vmess(0, "crs",
-            glist_getcanvas(glist), "delete", tagbuf);
-    }
-    n = obj_ninlets(ob);
-    for (i = 0; i < n; i++)
-    {
-        sprintf(tagbuf, "%si%d", tag, i);
-        pdgui_vmess(0, "crs",
-            glist_getcanvas(glist), "delete", tagbuf);
+        int n = isInlet ? obj_ninlets(ob) : obj_noutlets(ob);
+        char c = isInlet ? 'i' : 'o';
+        int i;
+        for (i = 0; i < n; i++)
+        {
+            char tagbuf[MAXPDSTRING];
+            sprintf(tagbuf, "%s%c%d", tag, c, i);
+            pdgui_vmess(0, "crs",
+                glist_getcanvas(glist), "delete", tagbuf);
+        }
     }
 }
 
