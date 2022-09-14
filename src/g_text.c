@@ -1311,11 +1311,19 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     {
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
+#ifdef USE_PDTK_CANVAS_CREATE
+        // TODO: this case also covers atoms, so maybe obj is not the best type
+        // name?
+        pdgui_vmess(0, "rr csr",
+            "::pdtk_canvas::select", "obj",
+            glist, buf, (state ? "blue" : "black"));
+#else // USE_PDTK_CANVAS_CREATE
         pdgui_vmess(0, "crs rr",
             glist,
             "itemconfigure",
             buf,
             "-fill", (state? "blue" : "black"));
+#endif // USE_PDTK_CANVAS_CREATE
     }
 }
 
@@ -1611,12 +1619,22 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
+#ifdef USE_PDTK_CANVAS_CREATE
+            pdgui_vmess(0, "rr c iiii i i s",
+                "::pdtk_canvas::create", tags[1],
+                glist_getcanvas(glist),
+                x1p, y1p, x2, y2,
+                corner,
+                glist->gl_zoom+grabbed,
+                tags[0]);
+#else // USE_PDTK_CANVAS_CREATE
             pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist), "create", "line",
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,  x1p, y2,  x1p, y1p,
                 "-width", glist->gl_zoom+grabbed,
                 "-capstyle", "projecting",
                 "-tags", 2, tags);
+#endif // USE_PDTK_CANVAS_CREATE
         else
         {
             pdgui_vmess(0, "crs iiiiiiiiiiii",

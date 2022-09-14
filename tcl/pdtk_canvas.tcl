@@ -507,14 +507,14 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
     set docmds ""
-    if {[llength $args] < 1} {
-        puts "ERROR: ::pdtk_canvas::create: no arguments"
+    if {[llength $args] < 2} {
+        puts "ERROR: ::pdtk_canvas::create: not enough arguments"
         return
     }
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
-    set cnvCoordsTypes { obj inlet outlet }
+    set cnvCoordsTypes { obj inlet outlet atom }
     if { $type in $cnvCoordsTypes} {
         if { $argc < 5 } {
             puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
@@ -543,6 +543,41 @@ proc ::pdtk_canvas::create {args} {
         }
         set tag [lindex $args 5]
         set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
+    }
+    if {"atom" eq $type} {
+        if { $argc != 8 } {
+            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
+            return
+        }
+        set corner [lindex $args 5]
+        set width [lindex $args 6]
+        set tag [lindex $args 7]
+        set docmds "$cnv create line $x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1 -width $width -capstyle projecting -tags {{$tag} {$type}}"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
+
+proc ::pdtk_canvas::select {args} {
+    #puts "pdtk_canvas::select got: $args"
+    set docmds ""
+    if {[llength $args] < 2} {
+        puts "ERROR: ::pdtk_canvas::select: not enough arguments"
+        return
+    }
+    set type [lindex $args 0]
+    set args [lrange $args 1 end]
+    set argc [llength $args]
+    if {"obj" eq $type} {
+        if { $argc != 3} {
+            puts "ERROR: ::pdtk_canvas::select: only $argc arguments for $type"
+            return
+        }
+        set glist [lindex $args 0]
+        set buf [lindex $args 1]
+        set state [lindex $args 2]
+        set docmds "$glist itemconfigure $buf -fill $state"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
