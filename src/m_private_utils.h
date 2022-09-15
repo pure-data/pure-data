@@ -18,8 +18,16 @@
 # include "config.h"
 #endif
 
-
 /* --------------------------- stack allocation helpers --------------------- */
+
+# ifdef HAVE_ALLOCA_H
+#  include <alloca.h> /* linux, mac, mingw, cygwin,... */
+# elif defined _WIN32
+#  include <malloc.h> /* MSVC or mingw on windows */
+# else
+#  include <stdlib.h> /* BSDs for example */
+# endif
+
 /* alloca helpers
  * - ALLOCA(type, array, nmemb, maxnmemb)
  *     allocates <nmemb> elements of <type> and points <array> to the newly
@@ -45,6 +53,20 @@
 #  undef FREEA
 # endif
 
+#ifndef PSEUDOSTACK
+#define PSEUDOSTACK 1
+#endif
+
+#if PSEUDOSTACK
+    /* use pseudo stack; we can ignore 'maxnmemb' because pd_stack_alloc() knows
+    when it runs out of space and automatically switches to heap allocation */
+# define ALLOCA(type, array, nmemb, maxnmemb) \
+        ((array) = (type *)pd_stack_alloc((nmemb) * sizeof(type)))
+# define FREEA(type, array, nmemb, maxnmemb) \
+        (pd_stack_free((array), (nmemb) * sizeof(type)))
+
+#else /* PSEUDOSTACK */
+
 #if DONT_USE_ALLOCA
 /* heap versions */
 # define ALLOCA(type, array, nmemb, maxnmemb) ((array) = (type *)getbytes((nmemb) * sizeof(type)))
@@ -52,21 +74,14 @@
 
 #else /* !DONT_USE_ALLOCA */
 /* stack version (unless <nmemb> exceeds <maxnmemb>) */
-
-# ifdef HAVE_ALLOCA_H
-#  include <alloca.h> /* linux, mac, mingw, cygwin,... */
-# elif defined _WIN32
-#  include <malloc.h> /* MSVC or mingw on windows */
-# else
-#  include <stdlib.h> /* BSDs for example */
-# endif
-
 # define ALLOCA(type, array, nmemb, maxnmemb) ((array) = (type *)((nmemb) < (maxnmemb) ? \
             alloca((nmemb) * sizeof(type)) : getbytes((nmemb) * sizeof(type))))
 # define FREEA(type, array, nmemb, maxnmemb) (                          \
         ((nmemb) < (maxnmemb) || (freebytes((array), (nmemb) * sizeof(type)), 0)))
+
 #endif /* !DONT_USE_ALLOCA */
 
+#endif /* PSEUDOSTACK */
 
 /* --------------------------- endianness helpers --------------------- */
 #ifdef HAVE_MACHINE_ENDIAN_H

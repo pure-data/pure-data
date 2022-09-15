@@ -393,6 +393,11 @@ EXTERN void inmidi_polyaftertouch(int portno,
 /* } jsarlo */
 EXTERN int sys_zoom_open;
 
+/* default Pd stack size */
+#ifndef PD_DEFSTACKSIZE
+#define PD_DEFSTACKSIZE 262144 /* 256 KB */
+#endif
+
 struct _instancestuff
 {
     t_namelist *st_externlist;
@@ -410,6 +415,10 @@ struct _instancestuff
     double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
     t_printhook st_printhook;   /* set this to override per-instance printing */
     void *st_impdata; /* optional implementation-specific data for libpd, etc */
+    char *st_stackmem; /* pseudo stack for safe (recursive) stack allocations */
+    char *st_stackstart; /* (aligned) stack start */
+    char *st_stackend; /* stack end */
+    char *st_stackptr; /* current stack pointer */
 };
 
 #define STUFF (pd_this->pd_stuff)
