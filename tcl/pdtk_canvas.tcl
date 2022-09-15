@@ -504,6 +504,14 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     }
 }
 
+proc get_rect_coords {x1 y1 x2 y2} {
+    return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+}
+
+proc get_atom_coords {x1 y1 x2 y2 corner} {
+    return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
+}
+
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
     set docmds ""
@@ -534,7 +542,7 @@ proc ::pdtk_canvas::create {args} {
         set pattern [lindex $args 5]
         set width [lindex $args 6]
         set tag [lindex $args 7]
-        set docmds "$cnv create line $x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1 -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type} }"
+        set docmds "$cnv create line [get_rect_coords $x1 $y1 $x2 $y2] -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type} }"
     }
     if {$type eq "outlet" || $type eq "inlet"} {
         if { $argc != 6 } {
@@ -552,7 +560,7 @@ proc ::pdtk_canvas::create {args} {
         set corner [lindex $args 5]
         set width [lindex $args 6]
         set tag [lindex $args 7]
-        set docmds "$cnv create line $x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1 -width $width -capstyle projecting -tags {{$tag} {$type}}"
+        set docmds "$cnv create line [get_atom_coords $x1 $y1 $x2 $y2 $corner] -width $width -capstyle projecting -tags {{$tag} {$type}}"
     }
     if {"bang" eq $type} {
         if { $argc != 13 } {
