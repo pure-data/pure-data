@@ -67,7 +67,6 @@ when using [fudiformat -u])., f 55;
 #X obj 320 331 fudiparse;
 #X obj 370 291 print FUDI-message;
 #X obj 340 361 print parse-output;
-#X obj 320 290 t a a;
 #X obj 320 110 loadbang;
 #X obj 78 275 loadbang;
 #X floatatom 49 134 5 0 0 0 - - - 0;
@@ -83,29 +82,29 @@ the '-b' flag. Hence \, you should probably use [fudiformat]/[fudiparse]
 for more specific use cases where you want to manipulate the bytes
 of the message or use it with other low level network externals like
 "iemnet" and [comport]., f 107;
-#X connect 0 0 18 0;
-#X connect 1 0 18 0;
-#X connect 3 0 19 0;
-#X connect 4 0 19 0;
+#X obj 320 290 t l l;
+#X connect 0 0 17 0;
+#X connect 1 0 17 0;
+#X connect 3 0 18 0;
+#X connect 4 0 18 0;
 #X connect 8 0 9 0;
-#X connect 10 0 14 0;
+#X connect 10 0 23 0;
 #X connect 11 0 8 0;
 #X connect 11 0 13 0;
-#X connect 14 0 11 0;
-#X connect 14 1 12 0;
-#X connect 15 0 3 0;
-#X connect 16 0 1 0;
-#X connect 17 0 21 0;
-#X connect 19 0 10 0;
-#X connect 21 0 22 0;
-#X connect 22 0 18 0;
+#X connect 14 0 3 0;
+#X connect 15 0 1 0;
+#X connect 16 0 20 0;
+#X connect 18 0 10 0;
+#X connect 20 0 21 0;
+#X connect 21 0 17 0;
+#X connect 23 0 11 0;
+#X connect 23 1 12 0;
 #X restore 31 351 pd [netsend]-UDP-example;
 #X obj 6 449 cnv 1 860 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X obj 236 462 list tosymbol;
 #X obj 341 462 list fromsymbol;
 #X text 352 291 <--------;
-#X text 384 204 (convert without the packet separator);
 #X text 28 399 Note that [fudiformat] and [fudiparse] also relate to
 [list fromsymbol] and [list tosymbol] \, but it's more powerful as
 it deals with any kind of message \, not only symbols., f 115;
@@ -134,10 +133,11 @@ object., f 25;
 #X restore 31 316 pd html-reference;
 #X text 18 256 For more details on "FUDI":;
 #X text 54 286 <-- Open HTML reference;
+#X text 384 204 <-- convert without the packet separator;
 #X connect 5 0 6 0;
 #X connect 6 0 9 0;
 #X connect 7 0 9 0;
 #X connect 9 0 16 0;
 #X connect 16 0 8 0;
 #X connect 18 0 7 0;
-#X connect 27 0 28 0;
+#X connect 26 0 27 0;
