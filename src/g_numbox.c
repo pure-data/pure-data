@@ -122,11 +122,11 @@ static void my_numbox_draw_config(t_my_numbox* x, t_glist* glist)
         "-outline", THISGUI->i_foregroundcolor,
         "-fill", x->x_gui.x_bcol);
 
-
     sprintf(tag, "%pBASE2", x);
-    pdgui_vmess(0, "crs  ii ii ii", canvas, "coords", tag,
+    pdgui_vmess(0, "crs  ii ii ii ii", canvas, "coords", tag,
         xpos + zoom, ypos + zoom,
         xpos + half, ypos + half,
+        xpos + half, ypos + half + x->x_gui.x_h%2,
         xpos + zoom, ypos + x->x_gui.x_h - zoom);
     pdgui_vmess(0, "crs  ri rk", canvas, "itemconfigure", tag,
         "-width", zoom,
