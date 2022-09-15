@@ -148,7 +148,7 @@ in octal., f 63;
 #000000 #000000;
 #X text 134 62 The data you read from or write to a file are lists
 of bytes \, which appear in Pd as lists of numbers from 0 to 255 (using
-out-of-range numbers of symbols leads to undefined behavior.) The 2nd
+out-of-range numbers or symbols leads to undefined behavior.) The 2nd
 inlet of the [file handle] object is documented in the [pd file define]
 subpatch., f 121;
 #X text 394 20 - short form for [file handle].;
