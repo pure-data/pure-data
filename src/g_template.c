@@ -1214,11 +1214,13 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-    char tag[80];
+    char tag0[80], tag[80];
+    const char*tags[] = {tag, tag0, "curve"};
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag, "curve%lx", data);
+    sprintf(tag0, "curve%lx", x);
+    sprintf(tag , "curve%lx_data%lx", x, data);
     if (vis)
     {
         if (n > 1)
@@ -1248,13 +1250,13 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
                 outline);
 
-            pdgui_vmess(0, "crr iiii rf ri rs",
+            pdgui_vmess(0, "crr iiii rf ri rS",
                 glist_getcanvas(glist), "create",
                 (flags & CLOSED)?"polygon":"line",
                 0, 0, 0, 0,
                 "-width", width,
                 "-smooth", !!(flags & BEZ),
-                "-tags", tag);
+                "-tags", 3, tags);
 
             pdgui_vmess(0, "crs w",
                 glist_getcanvas(glist), "coords", tag,
