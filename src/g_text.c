@@ -1078,13 +1078,15 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     text_displace(z, glist, dx, dy);
     if (glist_isvisible(glist))
     {
+        int mdx = dx * glist->gl_zoom;
+        int mdy = dy * glist->gl_zoom;
         char buf[MAXPDSTRING];
         sprintf(buf, "%lx.l", x);
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(glist),
             "move",
             buf,
-            dx * glist->gl_zoom, dy * glist->gl_zoom);
+            mdx, mdy);
     }
 }
 
