@@ -517,7 +517,7 @@ t_soundfile_type wave = {
     wave_endianness
 };
 
-void soundfile_wave_setup()
+void soundfile_wave_setup( void)
 {
     soundfile_addtype(&wave);
 }

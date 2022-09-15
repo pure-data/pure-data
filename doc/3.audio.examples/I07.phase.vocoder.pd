@@ -1,7 +1,8 @@
 #N canvas 551 103 763 598 12;
-#X floatatom 480 282 5 0 0 0 - transpo-set -;
-#X floatatom 186 319 3 0 0 0 - speed-set -;
-#X floatatom 93 321 7 0 0 0 - location-set -;
+#X declare -stdpath ./;
+#X floatatom 480 282 5 0 0 0 - transpo-set - 0;
+#X floatatom 186 319 3 0 0 0 - speed-set - 0;
+#X floatatom 93 321 7 0 0 0 - location-set - 0;
 #N canvas 471 44 754 709 fft-analysis 0;
 #X obj 56 486 *~;
 #X obj 23 486 *~;
@@ -56,7 +57,7 @@ bang;
 #X text 308 368 reading location (samples);
 #X obj 165 574 / 4;
 #X obj 398 219 * 0.01;
-#X floatatom 469 475 7 0 0 0 - - -;
+#X floatatom 469 475 7 0 0 0 - - - 0;
 #X obj 469 451 *;
 #X obj 589 324 r transpo;
 #X obj 589 348 * 0.01;
@@ -92,7 +93,7 @@ bang;
 #X obj 294 317 r \$0-insamprate;
 #X obj 521 522 r rewind;
 #X msg 521 700 \; location \$1;
-#X floatatom 199 146 5 0 0 0 - - -;
+#X floatatom 199 146 5 0 0 0 - - - 0;
 #X obj 200 75 t f b;
 #X obj 232 99 samplerate~;
 #X obj 199 171 / 4;
@@ -469,19 +470,19 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 25 0 26 0;
 #X connect 27 0 12 0;
 #X restore 438 445 pd insample;
-#X floatatom 583 443 5 0 0 0 - #0-samp-msec -;
+#X floatatom 583 443 5 0 0 0 - #0-samp-msec - 0;
 #X msg 235 439 ../sound/bell.aiff;
 #X msg 244 462 ../sound/voice.wav;
 #X msg 248 484 ../sound/voice2.wav;
 #X obj 235 515 s read-sample;
-#X obj 438 404 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 480 340 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
+#X obj 438 404 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 480 340 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
 #X obj 93 343 s location;
 #X obj 186 343 s speed;
-#X obj 271 324 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 271 324 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X obj 271 346 s rewind;
 #X msg 349 270 200;
 #X msg 357 294 100;
@@ -496,7 +497,7 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X text 184 284 motion in;
 #X text 238 417 read input sound;
 #X text 628 442 length \, msec;
-#X floatatom 582 416 5 0 0 0 - window-size -;
+#X floatatom 582 416 5 0 0 0 - window-size - 0;
 #X msg 582 281 512;
 #X msg 588 304 1024;
 #X msg 593 327 2048;
@@ -519,15 +520,16 @@ boxes - the number box is for readout). The "lock" feature forces phase
 coherency between neighboring channels \, which makes a more present
 sound but can add artifacts to the sound. Look in "pd fft-analysis"
 to see the workings., f 79;
-#X obj 537 283 bng 15 250 50 0 no-detune empty empty 0 -6 0 8 -262144
--1 -1;
-#X obj 512 425 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 537 283 bng 15 250 50 0 no-detune empty empty 0 -6 0 8 #fcfcfc
+#000000 #000000;
+#X obj 512 425 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #X text 69 21 PHASE VOCODER FOR TIME STRETCHING AND CONTRACTION;
 #X text 529 542 updated for Pd version 0.44;
 #X text 459 423 file =>;
 #X text 456 402 <= record;
 #X text 617 280 <= set;
+#X obj 560 21 declare -stdpath ./;
 #X connect 0 0 5 0;
 #X connect 1 0 20 0;
 #X connect 2 0 19 0;

@@ -11,7 +11,7 @@ this patch:, f 46;
 #X msg 115 310 1;
 #X obj 154 340 + 1;
 #X obj 115 339 f;
-#X floatatom 115 371 0 0 0 0 - - -;
+#X floatatom 115 371 5 0 0 0 - - - 0;
 #X text 229 509 updated for Pd version 0.34;
 #X text 44 400 ... because the "depth" is infinite. The counters you've
 seen always have the message chain terminated somewhere in a cold inlet:
@@ -19,7 +19,7 @@ seen always have the message chain terminated somewhere in a cold inlet:
 #X msg 106 464 1;
 #X obj 145 494 + 1;
 #X obj 106 493 f;
-#X floatatom 106 525 0 0 0 0 - - -;
+#X floatatom 106 525 4 0 0 0 - - - 0;
 #X text 142 464 <= better;
 #X text 146 309 <= maybe you shouldn't click here;
 #X text 106 63 <= click here;

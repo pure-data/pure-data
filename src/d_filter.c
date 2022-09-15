@@ -5,7 +5,6 @@
 /*  "filters", both linear and nonlinear.
 */
 #include "m_pd.h"
-#include <math.h>
 
 /* ---------------- hip~ - 1-pole 1-zero hipass filter. ----------------- */
 
@@ -21,7 +20,6 @@ typedef struct sighip
     t_float x_sr;
     t_float x_hz;
     t_hipctl x_cspace;
-    t_hipctl *x_ctl;
     t_float x_f;
 } t_sighip;
 
@@ -34,7 +32,6 @@ static void *sighip_new(t_floatarg f)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
     outlet_new(&x->x_obj, &s_signal);
     x->x_sr = 44100;
-    x->x_ctl = &x->x_cspace;
     x->x_cspace.c_x = 0;
     sighip_ft1(x, f);
     x->x_f = 0;
@@ -45,11 +42,11 @@ static void sighip_ft1(t_sighip *x, t_floatarg f)
 {
     if (f < 0) f = 0;
     x->x_hz = f;
-    x->x_ctl->c_coef = 1 - f * (2 * 3.14159) / x->x_sr;
-    if (x->x_ctl->c_coef < 0)
-        x->x_ctl->c_coef = 0;
-    else if (x->x_ctl->c_coef > 1)
-        x->x_ctl->c_coef = 1;
+    x->x_cspace.c_coef = 1 - f * (2 * 3.14159) / x->x_sr;
+    if (x->x_cspace.c_coef < 0)
+        x->x_cspace.c_coef = 0;
+    else if (x->x_cspace.c_coef > 1)
+        x->x_cspace.c_coef = 1;
 }
 
 static t_int *sighip_perform(t_int *w)
@@ -119,7 +116,7 @@ static void sighip_dsp(t_sighip *x, t_signal **sp)
     sighip_ft1(x,  x->x_hz);
     dsp_add((pd_compatibilitylevel > 43 ?
         sighip_perform : sighip_perform_old),
-            4, sp[0]->s_vec, sp[1]->s_vec, x->x_ctl, (t_int)sp[0]->s_n);
+            4, sp[0]->s_vec, sp[1]->s_vec, &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
 static void sighip_clear(t_sighip *x, t_floatarg q)
@@ -153,7 +150,6 @@ typedef struct siglop
     t_float x_sr;
     t_float x_hz;
     t_lopctl x_cspace;
-    t_lopctl *x_ctl;
     t_float x_f;
 } t_siglop;
 
@@ -167,7 +163,6 @@ static void *siglop_new(t_floatarg f)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
     outlet_new(&x->x_obj, &s_signal);
     x->x_sr = 44100;
-    x->x_ctl = &x->x_cspace;
     x->x_cspace.c_x = 0;
     siglop_ft1(x, f);
     x->x_f = 0;
@@ -178,11 +173,11 @@ static void siglop_ft1(t_siglop *x, t_floatarg f)
 {
     if (f < 0) f = 0;
     x->x_hz = f;
-    x->x_ctl->c_coef = f * (2 * 3.14159) / x->x_sr;
-    if (x->x_ctl->c_coef > 1)
-        x->x_ctl->c_coef = 1;
-    else if (x->x_ctl->c_coef < 0)
-        x->x_ctl->c_coef = 0;
+    x->x_cspace.c_coef = f * (2 * 3.14159) / x->x_sr;
+    if (x->x_cspace.c_coef > 1)
+        x->x_cspace.c_coef = 1;
+    else if (x->x_cspace.c_coef < 0)
+        x->x_cspace.c_coef = 0;
 }
 
 static void siglop_clear(t_siglop *x, t_floatarg q)
@@ -214,8 +209,7 @@ static void siglop_dsp(t_siglop *x, t_signal **sp)
     siglop_ft1(x,  x->x_hz);
     dsp_add(siglop_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, (t_int)sp[0]->s_n);
-
+            &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
 void siglop_setup(void)
@@ -248,7 +242,6 @@ typedef struct sigbp
     t_float x_freq;
     t_float x_q;
     t_bpctl x_cspace;
-    t_bpctl *x_ctl;
     t_float x_f;
 } t_sigbp;
 
@@ -263,7 +256,6 @@ static void *sigbp_new(t_floatarg f, t_floatarg q)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft2"));
     outlet_new(&x->x_obj, &s_signal);
     x->x_sr = 44100;
-    x->x_ctl = &x->x_cspace;
     x->x_cspace.c_x1 = 0;
     x->x_cspace.c_x2 = 0;
     sigbp_docoef(x, f, q);
@@ -293,11 +285,11 @@ static void sigbp_docoef(t_sigbp *x, t_floatarg f, t_floatarg q)
     else oneminusr = omega/q;
     if (oneminusr > 1.0f) oneminusr = 1.0f;
     r = 1.0f - oneminusr;
-    x->x_ctl->c_coef1 = 2.0f * sigbp_qcos(omega) * r;
-    x->x_ctl->c_coef2 = - r * r;
-    x->x_ctl->c_gain = 2 * oneminusr * (oneminusr + r * omega);
+    x->x_cspace.c_coef1 = 2.0f * sigbp_qcos(omega) * r;
+    x->x_cspace.c_coef2 = - r * r;
+    x->x_cspace.c_gain = 2 * oneminusr * (oneminusr + r * omega);
     /* post("r %f, omega %f, coef1 %f, coef2 %f",
-        r, omega, x->x_ctl->c_coef1, x->x_ctl->c_coef2); */
+        r, omega, x->x_cspace.c_coef1, x->x_cspace.c_coef2); */
 }
 
 static void sigbp_ft1(t_sigbp *x, t_floatarg f)
@@ -312,7 +304,7 @@ static void sigbp_ft2(t_sigbp *x, t_floatarg q)
 
 static void sigbp_clear(t_sigbp *x, t_floatarg q)
 {
-    x->x_ctl->c_x1 = x->x_ctl->c_x2 = 0;
+    x->x_cspace.c_x1 = x->x_cspace.c_x2 = 0;
 }
 
 static t_int *sigbp_perform(t_int *w)
@@ -349,8 +341,7 @@ static void sigbp_dsp(t_sigbp *x, t_signal **sp)
     sigbp_docoef(x, x->x_freq, x->x_q);
     dsp_add(sigbp_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, (t_int)sp[0]->s_n);
-
+            &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
 void sigbp_setup(void)
@@ -385,7 +376,6 @@ typedef struct sigbiquad
     t_object x_obj;
     t_float x_f;
     t_biquadctl x_cspace;
-    t_biquadctl *x_ctl;
 } t_sigbiquad;
 
 t_class *sigbiquad_class;
@@ -396,7 +386,6 @@ static void *sigbiquad_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_sigbiquad *x = (t_sigbiquad *)pd_new(sigbiquad_class);
     outlet_new(&x->x_obj, &s_signal);
-    x->x_ctl = &x->x_cspace;
     x->x_cspace.c_x1 = x->x_cspace.c_x2 = 0;
     sigbiquad_list(x, s, argc, argv);
     x->x_f = 0;
@@ -439,7 +428,7 @@ static void sigbiquad_list(t_sigbiquad *x, t_symbol *s, int argc, t_atom *argv)
     t_float ff2 = atom_getfloatarg(3, argc, argv);
     t_float ff3 = atom_getfloatarg(4, argc, argv);
     t_float discriminant = fb1 * fb1 + 4 * fb2;
-    t_biquadctl *c = x->x_ctl;
+    t_biquadctl *c = &x->x_cspace;
     if (discriminant < 0) /* imaginary roots -- resonant filter */
     {
             /* they're conjugates so we just check that the product
@@ -467,7 +456,7 @@ stable:
 
 static void sigbiquad_set(t_sigbiquad *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_biquadctl *c = x->x_ctl;
+    t_biquadctl *c = &x->x_cspace;
     c->c_x1 = atom_getfloatarg(0, argc, argv);
     c->c_x2 = atom_getfloatarg(1, argc, argv);
 }
@@ -476,8 +465,7 @@ static void sigbiquad_dsp(t_sigbiquad *x, t_signal **sp)
 {
     dsp_add(sigbiquad_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, (t_int)sp[0]->s_n);
-
+            &x->x_cspace, (t_int)sp[0]->s_n);
 }
 
 void sigbiquad_setup(void)

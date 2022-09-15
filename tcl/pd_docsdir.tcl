@@ -34,9 +34,6 @@ namespace eval ::pd_docsdir:: {
 # if set to "DISABLED", the docs dir functionality is disabled
 set ::pd_docsdir::docspath ""
 
-# self-init after loading
-after 1000 {::pd_docsdir::init}
-
 # check the Pd documents directory path & prompt user to create if it's empty,
 # otherwise ignore all of this if the user cancelled it
 # set reset to true to force the welcome prompt
@@ -268,3 +265,7 @@ proc ::pd_docsdir::is_externals_path_deken_installpath {} {
     }
     return 0
 }
+
+
+# self-init after loading
+::pd_docsdir::init

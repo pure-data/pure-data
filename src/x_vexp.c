@@ -1828,7 +1828,7 @@ retry:
                 case 'x':
                         if (IS_FEXPR_TILDE(expr)) {
                                 eptr->ex_type = ET_XI;
-                                if (isdigit(*expr->exp_str))
+                                if (isdigit((int)(*expr->exp_str)))
                                         break;
                                 /* for $x[] is a shorhand for $x1[] */
                                 /* eptr->ex_int = 0; */
@@ -1844,7 +1844,7 @@ retry:
                         if (IS_FEXPR_TILDE(expr)) {
                                 eptr->ex_type = ET_YO;
                                 /*$y takes no number */
-                                if (isdigit(*expr->exp_str))
+                                if (isdigit((int)(*expr->exp_str)))
                                         break;
                                 /* for $y[] is a shorhand for $y1[] */
                                 /* eptr->ex_int = 0; */
@@ -2013,6 +2013,7 @@ noinletnum:
 char *
 atoif(char *s, long int *value, long int *type)
 {
+    const char*s0 = s;
     char *p;
         long lval;
         float fval;
@@ -2034,6 +2035,9 @@ atoif(char *s, long int *value, long int *type)
                 }
                 s++;
         }
+        if(s0 == p)
+            return 0;
+
         *type = ET_INT;
         *((t_int *) value) = lval;
         return (p);

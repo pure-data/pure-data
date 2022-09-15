@@ -1,4 +1,5 @@
-#N canvas 100 131 1082 657 12;
+#N canvas 256 130 1082 657 12;
+#X declare -stdpath ./;
 #N canvas 305 163 441 440 samples 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array sample1 176403 float 0;
@@ -128,6 +129,7 @@ sample2, f 33;
 #X msg 887 175 record 2;
 #X msg 900 219 reload;
 #X msg 905 241 browse;
+#X obj 899 21 declare -stdpath ./;
 #X connect 10 0 43 0;
 #X connect 11 0 12 0;
 #X connect 12 0 13 0;

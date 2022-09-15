@@ -8,11 +8,19 @@ behavior for "gobjs" appears at the end of this file.  */
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include <string.h>
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
+#endif
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
+#ifdef _MSC_VER
+#define snprintf _snprintf
 #endif
 
 union inletunion
@@ -176,7 +184,15 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->i_symfrom == s)
-        typedmess(x->i_dest, x->i_symto, argc, argv);
+    {
+        /* the "symto" field is undefined for signal inlets, so we don't
+         attempt to translate the selector, just forward the original msg. */
+        
+        if (x->i_symfrom == &s_signal)
+            typedmess(x->i_dest, s, argc, argv);
+        else
+            typedmess(x->i_dest, x->i_symto, argc, argv);
+    }
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
     else if (x->i_symfrom == &s_signal && zgetfn(x->i_dest, gensym("fwd")))
@@ -294,55 +310,8 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     else pd_symbol(&x->ob_pd, argv->a_w.w_symbol);
 }
 
-void obj_init(void)
-{
-    inlet_class = class_new(gensym("inlet"), 0, 0,
-        sizeof(t_inlet), CLASS_PD, 0);
-    class_addbang(inlet_class, inlet_bang);
-    class_addpointer(inlet_class, inlet_pointer);
-    class_addfloat(inlet_class, inlet_float);
-    class_addsymbol(inlet_class, inlet_symbol);
-    class_addlist(inlet_class, inlet_list);
-    class_addanything(inlet_class, inlet_anything);
-
-    pointerinlet_class = class_new(gensym("inlet"), 0, 0,
-        sizeof(t_inlet), CLASS_PD, 0);
-    class_addpointer(pointerinlet_class, pointerinlet_pointer);
-    class_addanything(pointerinlet_class, inlet_wrong);
-
-    floatinlet_class = class_new(gensym("inlet"), 0, 0,
-        sizeof(t_inlet), CLASS_PD, 0);
-    class_addfloat(floatinlet_class, (t_method)floatinlet_float);
-    class_addanything(floatinlet_class, inlet_wrong);
-
-    symbolinlet_class = class_new(gensym("inlet"), 0, 0,
-        sizeof(t_inlet), CLASS_PD, 0);
-    class_addsymbol(symbolinlet_class, symbolinlet_symbol);
-    class_addanything(symbolinlet_class, inlet_wrong);
-
-}
-
 /* --------------------------- outlets ------------------------------ */
 
-static PERTHREAD int stackcount = 0; /* iteration counter */
-#define STACKITER 1000 /* maximum iterations allowed */
-
-static PERTHREAD int outlet_eventno;
-
-    /* set a stack limit (on each incoming event that can set off messages)
-    for the outlet functions to check to prevent stack overflow from message
-    recursion */
-
-void outlet_setstacklim(void)
-{
-    outlet_eventno++;
-}
-
-    /* get a number unique to the (clock, MIDI, GUI, etc.) event we're on */
-int sched_geteventno(void)
-{
-    return (outlet_eventno);
-}
 
 struct _outconnect
 {
@@ -358,6 +327,203 @@ struct _outlet
     t_symbol *o_sym;
 };
 
+/* ------- backtracer - keep track of stack for backtracing  --------- */
+#define NARGS 5
+typedef struct _msgstack
+{
+    struct _backtracer *m_owner;
+    t_symbol *m_sel;
+    int m_argc;
+    t_atom m_argv[NARGS];
+    struct _msgstack *m_next;
+} t_msgstack;
+
+typedef struct _backtracer
+{
+    t_pd b_pd;
+    t_outconnect *b_connections;
+    t_pd *b_owner;
+} t_backtracer;
+
+static t_msgstack *backtracer_stack;
+int backtracer_cantrace = 0;
+int backtracer_tracing;
+t_class *backtracer_class;
+
+static PERTHREAD int stackcount = 0; /* iteration counter */
+#define STACKITER 1000 /* maximum iterations allowed */
+
+static PERTHREAD int outlet_eventno;
+
+    /* initialize stack depth count on each incoming event that can set off
+    messages so that  the outlet functions can check to prevent stack overflow]
+    from message recursion.  Also count message initiations. */
+
+void outlet_setstacklim(void)
+{
+    t_msgstack *m;
+    while ((m = backtracer_stack))
+        backtracer_stack = m->m_next; t_freebytes(m, sizeof (*m));
+    stackcount = 0;
+    outlet_eventno++;
+}
+
+    /* get a number unique to the (clock, MIDI, GUI, etc.) event we're on */
+int sched_geteventno(void)
+{
+    return (outlet_eventno);
+}
+
+    /* get pointer to connection list for an outlet (for editing/traversing) */
+static t_outconnect **outlet_getconnectionpointer(t_outlet *x)
+{
+    if (x->o_connections && *(x->o_connections->oc_to) == backtracer_class)
+        return (&((t_backtracer *)(x->o_connections->oc_to))->b_connections);
+    else return (&x->o_connections);
+}
+
+static void backtracer_printmsg(t_pd *who, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    char msgbuf[104];
+    int nprint = (argc > NARGS ? NARGS : argc), nchar, i;
+    snprintf(msgbuf, 100, "%s: %s ", class_getname(*who), s->s_name);
+    nchar = strlen(msgbuf);
+    for (i = 0; i < nprint && nchar < 100; i++)
+        if (nchar < 100)
+    {
+        char buf[100];
+        atom_string(&argv[i], buf, 100);
+        snprintf(msgbuf + nchar, 100-nchar, " %s", buf);
+        nchar = strlen(msgbuf);
+    }
+    if (argc > nprint && nchar < 100)
+        sprintf(msgbuf + nchar, "...");
+    else memcpy(msgbuf+100, "...", 4); /* in case we didn't finish */
+    logpost(who, 2, "%s", msgbuf);
+}
+
+static void backtracer_anything(t_backtracer *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    t_msgstack *m = (t_msgstack *)t_getbytes(sizeof(t_msgstack));
+    t_outconnect *oc;
+    int ncopy = (argc > NARGS ? NARGS : argc), i;
+    m->m_next = backtracer_stack;
+    backtracer_stack = m;
+    m->m_sel = s;
+    m->m_argc = argc;
+    for (i = 0; i < ncopy; i++)
+        m->m_argv[i] = argv[i];
+    m->m_owner = x;
+    if (backtracer_tracing)
+        backtracer_printmsg(x->b_owner, s, argc, argv);
+    for (oc = x->b_connections; oc; oc = oc->oc_next)
+        typedmess(oc->oc_to, s, argc, argv);
+    backtracer_stack = m->m_next;
+    t_freebytes(m, sizeof(*m));
+}
+
+t_backtracer *backtracer_new(t_pd *owner)
+{
+    t_backtracer *x = (t_backtracer *)pd_new(backtracer_class);
+    x->b_connections = 0;
+    x->b_owner = owner;
+    return (x);
+}
+
+int backtracer_settracing(void *x, int tracing)
+{
+    if (tracing)
+    {
+        if (backtracer_tracing)
+        {
+            pd_error(x, "trace: already tracing");
+            return (0);
+        }
+        else
+        {
+            backtracer_tracing = 1;
+            return (1);
+        }
+    }
+    else    /* when stopping, print backtrace to here */
+    {
+        t_msgstack *m = backtracer_stack;
+        post("backtrace:");
+        while (m)
+        {
+            backtracer_printmsg(m->m_owner->b_owner, m->m_sel,
+                m->m_argc, m->m_argv);
+            m = m->m_next;
+        }
+        backtracer_tracing = 0;
+        return (0);
+    }
+}
+
+void canvas_settracing(int onoff);
+static t_clock *backtrace_unsetclock;
+
+static void backtrace_dounsettracing(void *dummy)
+{
+    canvas_settracing(0);
+    backtracer_cantrace = 0;
+    clock_free(backtrace_unsetclock);
+    backtrace_unsetclock = 0;
+}
+
+    /* globally turn tracing on and off. */
+void glob_settracing(void *dummy, t_float f)
+{
+#ifndef PDINSTANCE  /* this won't work with pd instances so just don't */
+    if (f != 0)
+    {
+        if (backtracer_cantrace)
+            post("pd: tracing already enabled");
+        else canvas_settracing(1);
+        backtracer_cantrace = 1;
+    }
+    else
+    {
+        if (!backtracer_cantrace)
+            post("pd: tracing already disabled");
+        else if (!backtrace_unsetclock)
+        {
+            backtrace_unsetclock = clock_new(dummy,
+                (t_method)backtrace_dounsettracing);
+            clock_delay(backtrace_unsetclock, 0);
+        }
+    }
+#endif
+}
+
+    /* this is called on every object, via canvas_settracing() call above */
+void obj_dosettracing(t_object *ob, int onoff)
+{
+    t_outlet *o;
+    for (o = ob->ob_outlet; o; o = o->o_next)
+    {
+        if (onoff)
+        {
+            t_backtracer *b = backtracer_new(&ob->ob_pd);
+            b->b_connections = o->o_connections;
+            o->o_connections =  (t_outconnect *)t_getbytes(sizeof(t_outconnect));
+            o->o_connections->oc_next = 0;
+            o->o_connections->oc_to = &b->b_pd;
+        }
+        else if (o->o_connections &&
+            (*o->o_connections->oc_to == backtracer_class))
+        {
+            t_backtracer *b = (t_backtracer *)o->o_connections->oc_to;
+            t_freebytes(o->o_connections, sizeof(*o->o_connections));
+            o->o_connections = b->b_connections;
+            t_freebytes(b, sizeof(*b));
+        }
+        else bug("obj_dosettracing");
+    }
+}
+
 t_outlet *outlet_new(t_object *owner, t_symbol *s)
 {
     t_outlet *x = (t_outlet *)getbytes(sizeof(*x)), *y, *y2;
@@ -369,7 +535,14 @@ t_outlet *outlet_new(t_object *owner, t_symbol *s)
         y->o_next = x;
     }
     else owner->ob_outlet = x;
-    x->o_connections = 0;
+    if (backtracer_cantrace)
+    {
+        t_backtracer *b = backtracer_new(&owner->ob_pd);
+        x->o_connections =  (t_outconnect *)t_getbytes(sizeof(t_outconnect));
+        x->o_connections->oc_next = 0;
+        x->o_connections->oc_to = &b->b_pd;
+    }
+    else x->o_connections = 0;
     x->o_sym = s;
     return (x);
 }
@@ -478,7 +651,7 @@ t_outconnect *obj_connect(t_object *source, int outno,
     t_inlet *i;
     t_outlet *o;
     t_pd *to;
-    t_outconnect *oc, *oc2;
+    t_outconnect *oc, *oc2, **ochead;
 
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--) ;
     if (!o) return (0);
@@ -496,17 +669,19 @@ t_outconnect *obj_connect(t_object *source, int outno,
     if (!i) return (0);
     to = &i->i_pd;
 doit:
+    ochead = outlet_getconnectionpointer(o);
     oc = (t_outconnect *)t_getbytes(sizeof(*oc));
     oc->oc_next = 0;
     oc->oc_to = to;
         /* append it to the end of the list */
         /* LATER we might cache the last "oc" to make this faster. */
-    if ((oc2 = o->o_connections))
+    if ((oc2 = *ochead))
     {
-        while (oc2->oc_next) oc2 = oc2->oc_next;
+        while (oc2->oc_next)
+            oc2 = oc2->oc_next;
         oc2->oc_next = oc;
     }
-    else o->o_connections = oc;
+    else *ochead = oc;
     if (o->o_sym == &s_signal) canvas_update_dsp();
 
     return (oc);
@@ -517,7 +692,7 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     t_inlet *i;
     t_outlet *o;
     t_pd *to;
-    t_outconnect *oc, *oc2;
+    t_outconnect *oc, *oc2, **ochead;
 
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--) ;
     if (!o) return;
@@ -534,10 +709,11 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     if (!i) return;
     to = &i->i_pd;
 doit:
-    if (!(oc = o->o_connections)) return;
+    ochead = outlet_getconnectionpointer(o);
+    if (!(oc = *ochead)) return;
     if (oc->oc_to == to)
     {
-        o->o_connections = oc->oc_next;
+        *ochead = oc->oc_next;
         freebytes(oc, sizeof(*oc));
         goto done;
     }
@@ -579,7 +755,8 @@ t_outconnect *obj_starttraverseoutlet(const t_object *x, t_outlet **op, int nout
     t_outlet *o = x->ob_outlet;
     while (nout-- && o) o = o->o_next;
     *op = o;
-    if (o) return (o->o_connections);
+    if (o)
+        return (*outlet_getconnectionpointer(o));
     else return (0);
 }
 
@@ -780,3 +957,38 @@ void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
         typedmess(&i->i_pd, s, argc, argv);
     else bug("obj_sendinlet");
 }
+
+/* ------------------- setup routine, somewhat misnamed */
+void obj_init(void)
+{
+    inlet_class = class_new(gensym("inlet"), 0, 0,
+        sizeof(t_inlet), CLASS_PD, 0);
+    class_addbang(inlet_class, inlet_bang);
+    class_addpointer(inlet_class, inlet_pointer);
+    class_addfloat(inlet_class, inlet_float);
+    class_addsymbol(inlet_class, inlet_symbol);
+    class_addlist(inlet_class, inlet_list);
+    class_addanything(inlet_class, inlet_anything);
+
+    pointerinlet_class = class_new(gensym("inlet"), 0, 0,
+        sizeof(t_inlet), CLASS_PD, 0);
+    class_addpointer(pointerinlet_class, pointerinlet_pointer);
+    class_addanything(pointerinlet_class, inlet_wrong);
+
+    floatinlet_class = class_new(gensym("inlet"), 0, 0,
+        sizeof(t_inlet), CLASS_PD, 0);
+    class_addfloat(floatinlet_class, (t_method)floatinlet_float);
+    class_addanything(floatinlet_class, inlet_wrong);
+
+    symbolinlet_class = class_new(gensym("inlet"), 0, 0,
+        sizeof(t_inlet), CLASS_PD, 0);
+    class_addsymbol(symbolinlet_class, symbolinlet_symbol);
+    class_addanything(symbolinlet_class, inlet_wrong);
+
+    backtracer_class = class_new(gensym("backtracer"), 0, 0,
+        sizeof(t_backtracer), CLASS_PD, 0);
+    class_addanything(backtracer_class, backtracer_anything);
+
+}
+
+

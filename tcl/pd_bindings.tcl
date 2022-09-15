@@ -2,6 +2,7 @@ package provide pd_bindings 0.1
 
 package require pd_menucommands
 package require dialog_find
+package require pd_connect
 
 namespace eval ::pd_bindings:: {
     namespace export global_bindings
@@ -16,8 +17,8 @@ set ::pd_bindings::key2iso ""
 # the actual bind-sequence is is build as '<${seq_prefix}-${seq_nocase}',
 # with the $seq_nocase part bing bound both as upper-case and lower-case
 proc ::pd_bindings::bind_capslock {tag seq_prefix seq_nocase script} {
-    bind $tag <${seq_prefix}-[string tolower ${seq_nocase}]> $script
-    bind $tag <${seq_prefix}-[string toupper ${seq_nocase}]> $script
+    bind $tag <${seq_prefix}-[string tolower ${seq_nocase}]> "::pd_menucommands::scheduleAction $script"
+    bind $tag <${seq_prefix}-[string toupper ${seq_nocase}]> "::pd_menucommands::scheduleAction $script"
 }
 
 # TODO rename pd_bindings to window_bindings after merge is done
@@ -67,22 +68,22 @@ proc ::pd_bindings::global_bindings {} {
     bind_capslock all $::modifier-Key w {::pd_bindings::window_close %W}
     bind_capslock all $::modifier-Key x {menu_send %W cut}
     bind_capslock all $::modifier-Key z {menu_undo}
-    bind all <$::modifier-Key-1>        {menu_send_float %W obj 0}
-    bind all <$::modifier-Key-2>        {menu_send_float %W msg 0}
-    bind all <$::modifier-Key-3>        {menu_send_float %W floatatom 0}
-    bind all <$::modifier-Key-4>        {menu_send_float %W symbolatom 0}
-    bind all <$::modifier-Key-5>        {menu_send_float %W text 0}
-    bind all <$::modifier-Key-slash>    {pdsend "pd dsp 1"}
-    bind all <$::modifier-Key-period>   {pdsend "pd dsp 0"}
+    bind all <$::modifier-Key-1>        {::pd_menucommands::scheduleAction menu_send_float %W obj 0}
+    bind all <$::modifier-Key-2>        {::pd_menucommands::scheduleAction menu_send_float %W msg 0}
+    bind all <$::modifier-Key-3>        {::pd_menucommands::scheduleAction menu_send_float %W floatatom 0}
+    bind all <$::modifier-Key-4>        {::pd_menucommands::scheduleAction menu_send_float %W listbox 0}
+    bind all <$::modifier-Key-5>        {::pd_menucommands::scheduleAction menu_send_float %W text 0}
+    bind all <$::modifier-Key-slash>    {::pd_menucommands::scheduleAction pdsend "pd dsp 1"}
+    bind all <$::modifier-Key-period>   {::pd_menucommands::scheduleAction pdsend "pd dsp 0"}
 
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
     # expected it... go figure.
-    bind all <$::modifier-Key-equal>       {menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-plus>        {menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-minus>       {menu_send_float %W zoom 1}
-    bind all <$::modifier-Key-KP_Add>      {menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-KP_Subtract> {menu_send_float %W zoom 1}
+    bind all <$::modifier-Key-equal>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
+    bind all <$::modifier-Key-plus>        {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
+    bind all <$::modifier-Key-minus>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind all <$::modifier-Key-KP_Add>      {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
+    bind all <$::modifier-Key-KP_Subtract> {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
@@ -111,9 +112,9 @@ proc ::pd_bindings::global_bindings {} {
     if {$::windowingsystem eq "aqua"} {
          # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
         if {$::tcl_version < 8.5} {
-            bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
-            bind_capslock all $::modifier-Key m       {menu_minimize %W}
-            bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
+            bind_capslock all $::modifier-Key q       {::pd_menucommands::scheduleAction ::pd_connect::menu_quit}
+            bind_capslock all $::modifier-Key m       {::pd_menucommands::scheduleAction menu_minimize %W}
+            bind all <$::modifier-quoteleft>   {::pd_menucommands::scheduleAction menu_raisenextwindow}
         }
         # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
         # so we set them to the empty string and let ::pd_bindings::sendkey guess the correct values
@@ -126,7 +127,7 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
-        bind_capslock all $::modifier-Key q       {pdsend "pd verifyquit"}
+        bind_capslock all $::modifier-Key q       {::pd_connect::menu_quit}
         bind_capslock all $::modifier-Key m       {menu_minimize %W}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
@@ -347,9 +348,11 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     if {$width == 1 || $height == 1} {
         # make sure the window is fully created
         update idletasks
-        set width [winfo width $mytoplevel]
-        set height [winfo height $mytoplevel]
     }
+    # the geometry we receive from the callback is really for the frame
+    # however, we need position including the border decoration
+    # as this is how we restore the position
+    scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:
     #    left top right bottom

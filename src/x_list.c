@@ -7,7 +7,7 @@
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -122,7 +122,7 @@ static void alist_list(t_alist *x, t_symbol *s, int argc, t_atom *argv)
     if (!(x->l_vec = (t_listelem *)getbytes(argc * sizeof(*x->l_vec))))
     {
         x->l_n = 0;
-        error("list: out of memory");
+        pd_error(0, "list: out of memory");
         return;
     }
     x->l_n = argc;
@@ -138,7 +138,7 @@ static void alist_anything(t_alist *x, t_symbol *s, int argc, t_atom *argv)
     if (!(x->l_vec = (t_listelem *)getbytes((argc+1) * sizeof(*x->l_vec))))
     {
         x->l_n = 0;
-        error("list_alloc: out of memory");
+        pd_error(0, "list_alloc: out of memory");
         return;
     }
     x->l_n = argc+1;
@@ -173,7 +173,7 @@ static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
     if (!(y->l_vec = (t_listelem *)getbytes(y->l_n * sizeof(*y->l_vec))))
     {
         y->l_n = 0;
-        error("list_alloc: out of memory");
+        pd_error(0, "list_alloc: out of memory");
     }
     else for (i = 0; i < count; i++)
     {
@@ -449,7 +449,7 @@ static void list_store_doinsert(t_list_store *x, t_symbol *s,
         (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
     {
         x->x_alist.l_n = 0;
-        error("list: out of memory");
+        pd_error(0, "list: out of memory");
         return;
     }
         /* fix gpointers in case resizebytes() has moved the alist in memory */
@@ -534,7 +534,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
         (x->x_alist.l_n - n) * sizeof(*x->x_alist.l_vec))))
     {
         x->x_alist.l_n = 0;
-        error("list: out of memory");
+        pd_error(0, "list: out of memory");
         return;
     }
     if (x->x_alist.l_npointer)
@@ -555,7 +555,14 @@ static void list_store_get(t_list_store *x, float f1, float f2)
     if (!outc)
         outc = 1; /* default */
     else if (outc < 0)
+    {
         outc = x->x_alist.l_n - onset; /* till the end of the list */
+        if (outc <= 0) /* onset out of range */
+        {
+            outlet_bang(x->x_out2);
+            return;
+        }
+    }
     if (onset < 0 || (onset + outc > x->x_alist.l_n))
     {
         outlet_bang(x->x_out2);
@@ -867,7 +874,7 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = list_store_new(s, argc-1, argv+1);
         else
         {
-            error("list %s: unknown function", s2->s_name);
+            pd_error(0, "list %s: unknown function", s2->s_name);
             pd_this->pd_newest = 0;
         }
     }

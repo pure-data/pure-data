@@ -14,6 +14,7 @@ proc open_file {filename} {
         ::pd_guiprefs::update_recentfiles $filename true
         return
     }
+    set ::fileopendir $directory
     if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
@@ -150,7 +151,14 @@ proc enquote_path {message} {
 #enquote a string to send it to Pd.  Blow off semi and comma; alias spaces
 #we also blow off "{", "}", "\" because they'll just cause bad trouble later.
 proc unspace_text {x} {
-    set y [string map {" " "_" ";" "" "," "" "{" "" "}" "" "\\" ""} $x]
+    set y [string map {" " {\ } ";" "" "," "" "{" "" "}" "" "\\" ""} $x]
+    if {$y eq ""} {set y "empty"}
+    concat $y
+}
+
+#dequote a string received from Pd.
+proc respace_text {x} {
+    set y [string map {{\ } " "} $x]
     if {$y eq ""} {set y "empty"}
     concat $y
 }

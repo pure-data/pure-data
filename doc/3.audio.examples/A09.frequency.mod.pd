@@ -1,7 +1,8 @@
-#N canvas 345 23 655 688 12;
+#N canvas 691 23 655 688 12;
+#X declare -stdpath ./;
 #X obj 218 172 *~;
-#X floatatom 218 87 0 0 0 0 - - -;
-#X floatatom 148 132 0 0 0 0 - - -;
+#X floatatom 218 87 0 0 0 0 - - - 0;
+#X floatatom 148 132 0 0 0 0 - - - 0;
 #X obj 148 202 +~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array fm-output 441 float 0;
@@ -9,7 +10,7 @@
 #X restore 401 97 graph;
 #X msg 204 254 bang;
 #X obj 204 288 tabwrite~ fm-output;
-#X floatatom 236 142 0 0 0 0 - - -;
+#X floatatom 236 142 0 0 0 0 - - - 0;
 #X text 123 89 carrier;
 #X text 122 107 frequency;
 #X text 203 63 frequency;
@@ -42,6 +43,7 @@ discussion of FM occurs in part 5 of this series., f 71;
 #X text 43 247 oscillator =>;
 #X text 53 201 frequency =>;
 #X text 246 254 <= click to graph;
+#X obj 461 26 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 19 0;
 #X connect 2 0 3 0;

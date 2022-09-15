@@ -9,6 +9,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -72,7 +73,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     {
                         /* disable default active sense filtering */
                         Pm_SetFilter(mac_midiindevlist[mac_nmidiindev], 0);
-                        verbose(PD_VERBOSE, "MIDI input (%s) opened.",
+                        logpost(NULL, PD_VERBOSE, "MIDI input (%s) opened.",
                             info->name);
                         mac_nmidiindev++;
                     }
@@ -100,7 +101,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                             j, info->name, Pm_GetErrorText(err));
                     else
                     {
-                        verbose(PD_VERBOSE, "MIDI output (%s) opened.",
+                        logpost(NULL, PD_VERBOSE, "MIDI output (%s) opened.",
                             info->name);
                         mac_nmidioutdev++;
                     }
@@ -325,7 +326,7 @@ void sys_poll_midi(void)
             }
             else
             {
-                error("%s", Pm_GetErrorText(nmess));
+                pd_error(0, "%s", Pm_GetErrorText(nmess));
                 if (nmess != pmBufferOverflow)
                     break;
             }
@@ -338,19 +339,23 @@ void midi_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
 {
     int i, nindev = 0, noutdev = 0;
+    char utf8device[MAXPDSTRING];
+    utf8device[0] = 0;
     for (i = 0; i < Pm_CountDevices(); i++)
     {
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
         /* post("%d: %s, %s (%d,%d)", i, info->interf, info->name,
             info->input, info->output); */
+        if(!u8_nativetoutf8(utf8device, MAXPDSTRING, info->name, -1))
+            continue;
         if (info->input && nindev < maxndev)
         {
-            strcpy(indevlist + nindev * devdescsize, info->name);
+            strcpy(indevlist + nindev * devdescsize, utf8device);
             nindev++;
         }
         if (info->output && noutdev < maxndev)
         {
-            strcpy(outdevlist + noutdev * devdescsize, info->name);
+            strcpy(outdevlist + noutdev * devdescsize, utf8device);
             noutdev++;
         }
     }

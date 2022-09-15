@@ -1,8 +1,7 @@
-#N canvas 533 36 520 705 12;
-#X text 293 662 updated for Pd version 0.34;
+#N canvas 533 36 948 552 12;
 #X obj 88 119 send \$1;
 #X obj 199 119 + \$2;
-#X floatatom 303 93 0 0 0 0 - - -;
+#X floatatom 303 93 0 0 0 0 - - - 0;
 #X obj 303 144 print;
 #X msg 303 119 blah \$1;
 #X text 36 173 This may sound inconsistent \, but it's not--object
@@ -13,42 +12,60 @@ Message box \, at message time.;
 #X obj 188 312 symbol \$1;
 #X msg 98 284 bang;
 #X obj 98 312 float \$2;
-#X floatatom 98 339 5 0 0 0 - - -;
-#X symbolatom 188 341 10 0 0 0 - - -;
+#X floatatom 98 339 5 0 0 0 - - - 0;
+#X symbolatom 188 341 10 0 0 0 - - - 0;
 #X text 36 241 So how do you put creation arguments in messages? Use
 "float" and "symbol" as shown:;
-#X msg 97 395 bang;
-#X obj 97 419 float \$2;
-#X msg 97 446 five \$1;
-#X text 41 369 Then if you wish \, connect to a message box as in:
+#X msg 138 415 bang;
+#X obj 138 439 float \$2;
+#X msg 138 486 five \$1;
+#X text 45 380 Then if you wish \, connect to a message box as in:
 ;
-#X obj 97 471 print;
-#X msg 144 532 bang;
-#X obj 144 586 symbol \$1;
-#X obj 260 586 f \$2;
-#X obj 144 613 pack symbol float;
-#X msg 144 639 six \$1 \$2;
-#X obj 144 666 print;
-#X text 37 499 For messages combining more than one creation argument
+#X obj 138 511 print;
+#X msg 600 62 bang;
+#X obj 600 116 symbol \$1;
+#X obj 716 116 f \$2;
+#X obj 600 143 pack symbol float;
+#X msg 600 169 six \$1 \$2;
+#X obj 600 196 print;
+#X text 493 29 For messages combining more than one creation argument
 try:;
 #X text 37 40 In Object boxes \, dollar signs refer to the abstraction's
 creation arguments. In Messages \, they change dynamically:;
 #X text 41 8 This is an abstraction used in example 14 \, "dollarsigns".
 ;
-#X obj 144 558 trigger bang bang;
-#X connect 3 0 5 0;
-#X connect 5 0 4 0;
-#X connect 7 0 8 0;
-#X connect 8 0 12 0;
+#X obj 600 88 trigger bang bang;
+#X msg 644 300 args;
+#X obj 644 328 pdcontrol;
+#X obj 644 380 list prepend six;
+#X obj 644 410 list trim;
+#X obj 644 440 print;
+#X text 701 496 updated for Pd version 0.52;
+#X listbox 644 353 15 0 0 0 - - - 0;
+#X floatatom 138 463 5 0 0 0 - - - 0;
+#X text 502 240 You can also use [pdcontrol] \, which is better suited
+for abstractions that can take different numbers of arguments \, which
+come out as a list:;
+#X text 689 298 <= click;
+#X connect 2 0 4 0;
+#X connect 4 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 11 0;
+#X connect 8 0 9 0;
 #X connect 9 0 10 0;
-#X connect 10 0 11 0;
-#X connect 14 0 15 0;
-#X connect 15 0 16 0;
-#X connect 16 0 18 0;
-#X connect 19 0 28 0;
-#X connect 20 0 22 0;
-#X connect 21 0 22 1;
+#X connect 13 0 14 0;
+#X connect 14 0 35 0;
+#X connect 15 0 17 0;
+#X connect 18 0 27 0;
+#X connect 19 0 21 0;
+#X connect 20 0 21 1;
+#X connect 21 0 22 0;
 #X connect 22 0 23 0;
-#X connect 23 0 24 0;
-#X connect 28 0 20 0;
-#X connect 28 1 21 0;
+#X connect 27 0 19 0;
+#X connect 27 1 20 0;
+#X connect 28 0 29 0;
+#X connect 29 0 34 0;
+#X connect 30 0 31 0;
+#X connect 31 0 32 0;
+#X connect 34 0 30 0;
+#X connect 35 0 15 0;

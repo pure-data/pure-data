@@ -22,6 +22,8 @@ namespace eval ::pdtk_canvas:: {
 # so we can use it during menuclose
 array set ::pdtk_canvas::::window_fullname {}
 
+array set ::pdtk_canvas::geometry_needs_init {}
+
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
 # but not the same thing.  In Pd code, a 'canvas' is basically a patch, while
@@ -39,11 +41,12 @@ array set ::pdtk_canvas::::window_fullname {}
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
-if {$::tcl_version < 8.5 || \
+if {[tk windowingsystem] eq "win32" || \
+    $::tcl_version < 8.5 || \
         ($::tcl_version == 8.5 && \
              [tk windowingsystem] eq "aqua" && \
              [lindex [split [info patchlevel] "."] 2] < 13) } {
-    # fit the geometry onto screen for Tk 8.4,
+    # fit the geometry onto screen for Tk 8.4 or win32,
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
@@ -56,7 +59,7 @@ if {$::tcl_version < 8.5 || \
         }
         if {$h > $height} {
             # 30 for window framing
-            set h [expr $height - $::menubarsize - $::windowframey]
+            set h [expr $height - $::menubarsize]
             set y $::menubarsize
         }
 
@@ -77,17 +80,16 @@ if {$::tcl_version < 8.5 || \
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
-    ::pdwindow::configure_window_offset
-
     # read back the current geometry +posx+posy into variables
-    scan $geometry {%[+]%d%[+]%d} - x - y
-    set xywh [pdtk_canvas_wrap_window \
-        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
-    set x [lindex $xywh 0]
-    set y [lindex $xywh 1]
-    set w [lindex $xywh 2]
-    set h [lindex $xywh 3]
-    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
+    set w $width
+    set h $height
+    set xypos ""
+    if { "" != ${geometry} } {
+        scan $geometry {%[+]%d%[+]%d} - x - y
+        foreach {x y w h} [pdtk_canvas_wrap_window $x $y $width $height] {break}
+        set xypos +${x}+${y}
+    }
+    return [list ${w} ${h} ${w}x${h}${xypos}]
 }
 
 
@@ -95,10 +97,14 @@ proc pdtk_canvas_place_window {width height geometry} {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
-    set l [pdtk_canvas_place_window $width $height $geometry]
-    set width [lindex $l 0]
-    set height [lindex $l 1]
-    set geometry [lindex $l 2]
+    if { "" eq $geometry } {
+        # no position set: this is a new window (rather than one loaded from file)
+        # we set a flag here, so we can query (and report) the actual geometry,
+        # once the window is fully created
+        set ::pdtk_canvas::geometry_needs_init($mytoplevel) 1
+    }
+
+    foreach {width height geometry} [pdtk_canvas_place_window $width $height $geometry] {break;}
     set ::undo_actions($mytoplevel) no
     set ::redo_actions($mytoplevel) no
 
@@ -116,7 +122,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # started_loading_file proc.  Perhaps this doesn't make sense tho
     event generate $mytoplevel <<Loading>>
 
-    wm geometry $mytoplevel $geometry
+    if { "" != ${geometry} } {
+        wm geometry $mytoplevel $geometry
+    }
     wm minsize $mytoplevel $::canvas_minwidth $::canvas_minheight
 
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -183,7 +191,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
     }
     set dirname [file dirname $filename]
     set basename [file tail $filename]
-    pdsend "$toplevel savetofile [enquote_path $basename] [enquote_path \
+    pdsend "$mytoplevel savetofile [enquote_path $basename] [enquote_path \
          $dirname] $destroyflag"
     set ::filenewdir $dirname
     # add to recentfiles
@@ -324,6 +332,22 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
     set ::loaded($mytoplevel) 1
     # send the virtual events now that everything is loaded
     event generate $mytoplevel <<Loaded>>
+
+    # if the window was created without a position (that is: a new window),
+    # we have the opportunity to query the actual position now
+    if { "" ne [array names ::pdtk_canvas::geometry_needs_init $mytoplevel ] } {
+        array unset ::pdtk_canvas::geometry_needs_init $mytoplevel
+        scan [wm geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+        # on X11, 'wm geometry' won't report a useful position until the window was moved
+        # but 'winfo geometry' does (though slightly off, but we ignore this offset
+        # for newly created, never moved windows)
+        # other windowingsystems will already report a useful position, and luckily
+        # they report the same for 'wm geometry' and 'winfo geometry'
+        if { "+$x+$y" eq "+0+0" } {
+            scan [winfo geometry $mytoplevel] {%dx%d%[+]%d%[+]%d} width height - x - y
+            pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+        }
+    }
 }
 
 #------------------------------------------------------------------------------#
@@ -410,15 +434,25 @@ proc ::pdtk_canvas::addchild {mytoplevel child} {
 
 # receive a list of all my parent windows from 'pd'
 proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
-    set ::parentwindows($mytoplevel) $args
+    # check if the user passed a list (instead of multiple arguments)
+    if { [llength $args] == 1 } {set args [lindex $args 0]}
+    set parents {}
     foreach parent $args {
+        if { [catch {set parent [winfo toplevel $parent]}] } {
+            if { [file extension $parent] eq ".c" } {set parent [file rootname $parent]}
+        }
+        lappend parents $parent
         addchild $parent $mytoplevel
     }
+    set ::parentwindows($mytoplevel) $parents
 }
 
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
+    set path [::pdtk_text::unescape $path]
+    set name [::pdtk_text::unescape $name]
+    set arguments [::pdtk_text::unescape $arguments]
     set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name
     set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
@@ -450,4 +484,22 @@ proc ::pdtk_canvas::cleanname {name} {
         return [string replace "$name" 0 [expr $untitled_len - 1] "Untitled"]
     }
     return $name
+}
+
+set enable_cords_to_foreground false
+
+proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
+    global enable_cords_to_foreground
+    if {$enable_cords_to_foreground eq "true"} {
+        set col black
+        if { $state == 0 } {
+            set col lightgrey
+        }
+        foreach id [$mytoplevel find withtag {cord && !selected}] {
+            # don't apply backgrouding on selected (blue) lines
+            if { [lindex [$mytoplevel itemconfigure $id -fill] 4 ] ne "blue" } {
+                $mytoplevel itemconfigure $id -fill $col
+            }
+        }
+    }
 }

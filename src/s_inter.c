@@ -43,13 +43,23 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+/* colorize output, but only on a TTY */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else /* if isatty exists outside unistd, please add another #ifdef */
+# define isatty(fd) 0
+#endif
+static int stderr_isatty;
+
 #define stringify(s) str(s)
 #define str(s) #s
 
 #define INTER (pd_this->pd_inter)
 
-#define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
-#define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
+#define DEBUG_MESSUP   1<<0    /* messages up from pd to pd-gui */
+#define DEBUG_MESSDOWN 1<<1    /* messages down from pd-gui to pd */
+#define DEBUG_COLORIZE 1<<2    /* colorize messages (if we are on a TTY) */
+
 
 #ifndef PDBINDIR
 #define PDBINDIR "bin/"
@@ -82,8 +92,6 @@ typedef struct _fdpoll
     t_fdpollfn fdp_fn;
     void *fdp_ptr;
 } t_fdpoll;
-
-#define INBUFSIZE 4096
 
 struct _socketreceiver
 {
@@ -131,6 +139,8 @@ struct _instanceinter
 #if PDTHREADS
     pthread_mutex_t i_mutex;
 #endif
+
+    unsigned char i_recvbuf[NET_MAXPACKETSIZE];
 };
 
 extern int sys_guisetportnumber;
@@ -193,20 +203,18 @@ double sys_getrealtime(void)
 #endif
 }
 
-extern int sys_nosleep;
-
-/* sleep (but cancel the sleeping if pollem is set and any file descriptors are
+/* sleep (but cancel the sleeping if any file descriptors are
 ready - in that case, dispatch any resulting Pd messages and return.  Called
 with sys_lock() set.  We will temporarily release the lock if we actually
 sleep. */
-static int sys_domicrosleep(int microsec, int pollem)
+static int sys_domicrosleep(int microsec)
 {
     struct timeval timeout;
     int i, didsomething = 0;
     t_fdpoll *fp;
     timeout.tv_sec = 0;
     timeout.tv_usec = 0;
-    if (pollem && INTER->i_nfdpoll)
+    if (INTER->i_nfdpoll)
     {
         fd_set readset, writeset, exceptset;
         FD_ZERO(&writeset);
@@ -245,11 +253,11 @@ static int sys_domicrosleep(int microsec, int pollem)
 }
 
     /* sleep (but if any incoming or to-gui sending to do, do that instead.)
-    Call with the PD unstance lock UNSET - we set it here. */
-void sys_microsleep(int microsec)
+    Call with the PD instance lock UNSET - we set it here. */
+void sys_microsleep( void)
 {
     sys_lock();
-    sys_domicrosleep(microsec, 1);
+    sys_domicrosleep(sched_get_sleepgrain());
     sys_unlock();
 }
 
@@ -368,8 +376,8 @@ void sys_set_priority(int mode)
     else
     {
         if (mode == MODE_RT)
-            verbose(PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
-        else verbose(PD_VERBOSE, "running at normal (non-real-time) priority.\n");
+            logpost(NULL, PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
+        else logpost(NULL, PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
 #endif
 
@@ -393,12 +401,19 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
+unsigned char *sys_getrecvbuf(unsigned int *size)
+{
+    if (size)
+        *size = NET_MAXPACKETSIZE;
+    return INTER->i_recvbuf;
+}
+
 void sys_sockerror(const char *s)
 {
     char buf[MAXPDSTRING];
     int err = socket_errno();
     socket_strerror(err, buf, sizeof(buf));
-    error("%s: %s (%d)", s, buf, err);
+    pd_error(0, "%s: %s (%d)", s, buf, err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -444,6 +459,11 @@ void sys_rmpollfn(int fd)
     post("warning: %d removed from poll list but not found", fd);
 }
 
+    /* Size of the buffer used for parsing FUDI messages
+    received over TCP. Must be a power of two!
+    LATER make this settable per socketreceiver instance */
+#define INBUFSIZE 4096
+
 t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     t_socketreceivefn socketreceivefn, int udp)
 {
@@ -455,13 +475,20 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_udp = udp;
     x->sr_fromaddr = NULL;
     x->sr_fromaddrfn = NULL;
-    if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
+    if (!udp)
+    {
+        if (!(x->sr_inbuf = malloc(INBUFSIZE)))
+            bug("t_socketreceiver");
+    }
+    else
+        x->sr_inbuf = NULL;
     return (x);
 }
 
 void socketreceiver_free(t_socketreceiver *x)
 {
-    free(x->sr_inbuf);
+    if (x->sr_inbuf)
+        free(x->sr_inbuf);
     if (x->sr_fromaddr) free(x->sr_fromaddr);
     freebytes(x, sizeof(*x));
 }
@@ -479,7 +506,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
         first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
     {
             /* if we hit a semi that isn't preceded by a \, it's a message
-            boundary.  LATER we should deal with the possibility that the
+            boundary. LATER we should deal with the possibility that the
             preceding \ might itself be escaped! */
         char c = *bp++ = inbuf[indx];
         if (c == ';' && (!indx || inbuf[indx-1] != '\\'))
@@ -489,7 +516,26 @@ static int socketreceiver_doread(t_socketreceiver *x)
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
                 size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
-                fprintf(stderr, "<< %.*s\n", bufsize, messbuf);
+                int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+                const char*msg = messbuf;
+                if (('\r' == messbuf[0]) && ('\n' == messbuf[1]))
+                {
+                    bufsize-=2;
+                    msg+=2;
+                }
+        #ifdef _WIN32
+            #ifdef _MSC_VER
+                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, msg);
+            #else
+                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, msg);
+            #endif
+                fflush(stderr);
+        #else
+                if(colorize)
+                    fprintf(stderr, "\e[0;1;36m<< %.*s\e[0m\n", (int)bufsize, msg);
+                else
+                    fprintf(stderr, "<< %.*s\n", (int)bufsize, msg);
+        #endif
             }
             x->sr_inhead = inhead;
             x->sr_intail = intail;
@@ -501,12 +547,12 @@ static int socketreceiver_doread(t_socketreceiver *x)
 
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
-    char buf[INBUFSIZE+1];
+    char *buf = (char *)sys_getrecvbuf(0);
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     int ret, readbytes = 0;
     while (1)
     {
-        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
+        ret = (int)recvfrom(fd, buf, NET_MAXPACKETSIZE-1, 0,
             (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
         if (ret < 0)
         {
@@ -527,11 +573,11 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         else if (ret > 0)
         {
                 /* handle too large UDP packets */
-            if (ret > INBUFSIZE)
+            if (ret > NET_MAXPACKETSIZE-1)
             {
                 post("warning: incoming UDP packet truncated from %d to %d bytes.",
-                    ret, INBUFSIZE);
-                ret = INBUFSIZE;
+                    ret, NET_MAXPACKETSIZE-1);
+                ret = NET_MAXPACKETSIZE-1;
             }
             buf[ret] = 0;
     #if 0
@@ -540,7 +586,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             if (buf[ret-1] != '\n')
             {
     #if 0
-                error("dropped bad buffer %s\n", buf);
+                pd_error(0, "dropped bad buffer %s\n", buf);
     #endif
             }
             else
@@ -559,7 +605,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             }
             readbytes += ret;
             /* throttle */
-            if (readbytes >= INBUFSIZE)
+            if (readbytes >= NET_MAXPACKETSIZE)
                 return;
             /* check for pending UDP packets */
             if (socket_bytes_available(fd) <= 0)
@@ -579,7 +625,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
             (x->sr_inhead >= x->sr_intail ? INBUFSIZE : x->sr_intail-1);
         int ret;
 
-            /* the input buffer might be full.  If so, drop the whole thing */
+            /* the input buffer might be full. If so, drop the whole thing */
         if (readto == x->sr_inhead)
         {
             fprintf(stderr, "pd: dropped message from gui\n");
@@ -597,7 +643,11 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                 if (x == INTER->i_socketreceiver)
                 {
                     if (pd_this == &pd_maininstance)
+                    {
+                        fprintf(stderr, "read from GUI socket: %s; stopping\n",
+                            strerror(errno));
                         sys_bail(1);
+                    }
                     else
                     {
                         sys_rmpollfn(fd);
@@ -788,7 +838,26 @@ void sys_vgui(const char *fmt, ...)
             msglen  = INTER->i_guisize - INTER->i_guihead;
     }
     if (sys_debuglevel & DEBUG_MESSUP)
-        fprintf(stderr, ">> %s", INTER->i_guibuf + INTER->i_guihead);
+    {
+        const char *mess = INTER->i_guibuf + INTER->i_guihead;
+        int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+        static int newmess = 1;
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        fwprintf(stderr, L"%S", mess);
+    #else
+        fwprintf(stderr, L"%s", mess);
+    #endif
+        fflush(stderr);
+#else
+        if (colorize)
+            fprintf(stderr, "\e[0;1;35m%s%s\e[0m", (newmess)?">> ":"", mess);
+        else
+            fprintf(stderr, "%s%s", (newmess)?">> ":"", mess);
+
+        newmess = ('\n' == mess[msglen-1]);
+#endif
+    }
     INTER->i_guihead += msglen;
     INTER->i_bytessincelastping += msglen;
 }
@@ -950,7 +1019,7 @@ int sys_pollgui(void)
 {
     static double lasttime = 0;
     double now = 0;
-    int didsomething = sys_domicrosleep(0, 1);
+    int didsomething = sys_domicrosleep(0);
     if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
     {
         didsomething |= sys_poll_togui();
@@ -1127,7 +1196,8 @@ static int sys_do_startgui(const char *libdir)
         char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
         int spawnret;
 #else
-        char cmdbuf[4*MAXPDSTRING], *guicmd;
+        char cmdbuf[4*MAXPDSTRING];
+        const char *guicmd;
 #endif
         /* get addrinfo list using hostname (get random port from OS) */
         status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);
@@ -1363,10 +1433,15 @@ static int sys_do_startgui(const char *libdir)
              apibuf, apibuf2,
              pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
              sys_fontweight);
-    sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
+
+    do {
+        t_audiosettings as;
+        sys_get_audio_settings(&as);
+        sys_vgui("set pd_whichapi %d\n", as.a_api);
+    } while(0);
     return (0);
 }
 
@@ -1454,7 +1529,7 @@ void sys_setrealtime(const char *libdir)
                 this is done later when the socket is open. */
         }
     }
-    else verbose(PD_VERBOSE, "not setting real-time priority");
+    else logpost(NULL, PD_VERBOSE, "not setting real-time priority");
 #endif /* __linux__ */
 
 #ifdef _WIN32
@@ -1537,6 +1612,7 @@ static void glist_maybevis(t_glist *gl)
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;
+    stderr_isatty = isatty(2);
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
     INTER->i_havegui = 1;
@@ -1597,6 +1673,9 @@ void s_inter_free(t_instanceinter *inter)
         inter->i_fdpoll = 0;
         inter->i_nfdpoll = 0;
     }
+#if PDTHREADS
+    pthread_mutex_destroy(&INTER->i_mutex);
+#endif
     freebytes(inter, sizeof(*inter));
 }
 

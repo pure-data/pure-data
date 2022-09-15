@@ -1,72 +1,104 @@
 #N struct help-get-template1 float x float y symbol s;
-#N canvas 558 56 631 652 12;
-#X text 46 582 see also:;
-#X obj 205 584 set;
-#X obj 240 584 append;
-#X obj 42 612 getsize;
-#X obj 110 612 setsize;
-#X obj 178 612 element;
-#X msg 80 123 next;
+#N canvas 597 23 539 654 12;
+#X text 22 600 see also:;
+#X obj 165 600 set;
+#X obj 200 600 append;
+#X obj 25 626 getsize;
+#X obj 84 626 setsize;
+#X obj 142 626 element;
+#X msg 65 128 next;
 #N canvas 292 338 470 126 help-get-template1 0;
 #X obj 85 70 filledpolygon 9 0 1 0 0 20 0 20 30 0 30;
 #X obj 61 25 struct help-get-template1 float x float y symbol s;
-#X restore 449 514 pd help-get-template1;
-#N canvas 189 229 276 156 help-get-data 1;
+#X restore 368 519 pd help-get-template1;
+#N canvas 342 225 276 156 help-get-data 0;
 #X scalar help-get-template1 46 23 dog \;;
 #X scalar help-get-template1 106 73 cat \;;
-#X restore 449 492 pd help-get-data;
-#X obj 50 14 get;
-#X msg 65 95 traverse pd-help-get-data \, next;
-#X floatatom 65 204 5 0 0 0 - - -;
-#X floatatom 161 204 5 0 0 0 - - -;
-#X obj 65 150 pointer;
-#X text 296 95 output first scalar in list;
-#X text 123 122 output next item;
-#X text 278 163 First argument selects template.;
-#X text 278 179 Remaining args are names of fields.;
-#X text 61 220 x output;
-#X text 159 221 y output;
-#X obj 138 584 pointer;
-#X obj 246 612 struct;
-#X obj 65 178 get help-get-template1 x y s;
-#X text 254 222 s output;
-#X symbolatom 258 204 6 0 0 0 - - -;
-#X obj 138 151 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X msg 404 253 traverse pd-help-get-data \, next, f 17;
-#X obj 404 309 pointer;
-#X msg 124 436 traverse pd-help-get-data \, next;
-#X obj 124 462 pointer;
-#X obj 124 545 get;
-#X msg 139 487 set help-get-template1 x;
-#X msg 147 512 set - y;
-#X obj 404 335 get - x;
-#X floatatom 404 360 5 0 0 0 - - -;
-#X text 403 604 updated for Pd version 0.47;
-#X text 37 376 If there are zero or one data fields specified \, you
+#X restore 368 497 pd help-get-data;
+#X obj 26 13 get;
+#X msg 50 100 traverse pd-help-get-data \, next;
+#X floatatom 50 209 5 0 0 0 - - - 0;
+#X floatatom 146 209 5 0 0 0 - - - 0;
+#X obj 50 155 pointer;
+#X text 281 100 output first scalar in list;
+#X text 108 127 output next item;
+#X text 263 168 First argument selects template.;
+#X text 46 225 x output;
+#X text 144 226 y output;
+#X obj 98 600 pointer;
+#X obj 201 626 struct;
+#X obj 50 183 get help-get-template1 x y s;
+#X text 239 227 s output;
+#X symbolatom 243 209 6 0 0 0 - - - 0;
+#X obj 123 156 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X msg 383 270 traverse pd-help-get-data \, next, f 17;
+#X obj 383 326 pointer;
+#X msg 103 441 traverse pd-help-get-data \, next;
+#X obj 103 467 pointer;
+#X obj 103 550 get;
+#X msg 118 492 set help-get-template1 x;
+#X msg 126 517 set - y;
+#X obj 383 352 get - x;
+#X floatatom 383 377 5 0 0 0 - - - 0;
+#X text 320 617 updated for Pd version 0.47;
+#X text 26 381 If there are zero or one data fields specified \, you
 can use the "set" message to change the template and/or field name
 on the fly:, f 47;
-#X text 65 48 "Get" \, when sent a pointer to a scalar \, retrieves
-fields from it by name. The fields can be float or symbol., f 59;
-#X text 470 332 wild card template, f 9;
-#X text 34 257 If you have data whose template is variable (from a
+#X text 449 349 wild card template, f 9;
+#X text 23 262 If you have data whose template is variable (from a
 heterogeneous list \, for example) you can use the template "-" as
 a wild card. In Pd 0.47 and earlier \, there is no penalty for this
 \, but future versions may run faster with pre-specified templates
 than with "-" (by looking up the variable names in advance)., f 46
 ;
-#X text 90 12 - get values from a scalar;
+#X text 61 12 - get values from a scalar;
+#X obj 6 43 cnv 1 530 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 754 159 575 294 reference 0;
+#X obj 9 45 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 121 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 188 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 262 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 84 212 1) symbol -;
+#X obj 34 14 get;
+#X text 69 13 - get values from a scalar;
+#X text 124 59 pointer -;
+#X text 200 59 pointer to a Data Structure scalar., f 46;
+#X text 33 79 set <symbol \, symbol> -;
+#X text 193 79 set template and field name (if none or just one argument
+is given)., f 47;
+#X obj 9 153 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
+0;
+#X text 102 162 float/symbol - field value.;
+#X text 170 212 template name., f 28;
+#X text 98 233 2) list -;
+#X text 170 233 one or more field names (defines number of outlets).
+;
+#X text 94 127 ('n' outlets depends on number of arguments);
+#X restore 354 13 pd reference;
+#X text 452 12 <= click;
+#X obj 5 587 cnv 1 530 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 50 53 "Get" \, when sent a pointer to a scalar \, retrieves
+fields from it by name. The fields can be floats or symbols., f 59
+;
+#X text 263 184 Remaining args are field names.;
 #X connect 6 0 13 0;
 #X connect 10 0 13 0;
-#X connect 13 0 22 0;
-#X connect 13 1 25 0;
-#X connect 22 0 11 0;
-#X connect 22 1 12 0;
-#X connect 22 2 24 0;
-#X connect 26 0 27 0;
-#X connect 27 0 33 0;
+#X connect 13 0 21 0;
+#X connect 13 1 24 0;
+#X connect 21 0 11 0;
+#X connect 21 1 12 0;
+#X connect 21 2 23 0;
+#X connect 25 0 26 0;
+#X connect 26 0 32 0;
+#X connect 27 0 28 0;
 #X connect 28 0 29 0;
-#X connect 29 0 30 0;
-#X connect 31 0 30 0;
-#X connect 32 0 30 0;
-#X connect 33 0 34 0;
+#X connect 30 0 29 0;
+#X connect 31 0 29 0;
+#X connect 32 0 33 0;

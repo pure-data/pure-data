@@ -5,10 +5,25 @@
 /* interface objects */
 
 #include "m_pd.h"
+#include "s_stuff.h"
 #include <string.h>
 
 /* -------------------------- print ------------------------------ */
 static t_class *print_class;
+
+#define PRINT_LOGLEVEL 2
+
+  /* imported from s_print.c: */
+extern void startlogpost(const void *object, const int level, const char *fmt, ...)
+    ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
+  /* avoid prefixing with "verbose(PRINT_LOGLEVEL): "
+  when printing to stderr or via printhook. */
+#define print_startlogpost(object, fmt, ...) do{ \
+    if (STUFF->st_printhook || sys_printtostderr) \
+        startpost(fmt, __VA_ARGS__); \
+    else startlogpost(object, PRINT_LOGLEVEL, fmt, __VA_ARGS__); \
+} while(0)
 
 typedef struct _print
 {
@@ -46,29 +61,32 @@ static void *print_new(t_symbol *sel, int argc, t_atom *argv)
 
 static void print_bang(t_print *x)
 {
-    logpost(x, 2, "%s%sbang", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    print_startlogpost(x, "%s%sbang", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    endpost();
 }
 
 static void print_pointer(t_print *x, t_gpointer *gp)
 {
-    logpost(x, 2, "%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    print_startlogpost(x, "%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    endpost();
 }
 
 static void print_float(t_print *x, t_float f)
 {
-    logpost(x, 2, "%s%s%g", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""), f);
+    print_startlogpost(x, "%s%s%g", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""), f);
+    endpost();
 }
 
 static void print_anything(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
-    startlogpost(x, 2, "%s%s%s", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""),
+    print_startlogpost(x, "%s%s%s", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""),
         s->s_name);
     for (i = 0; i < argc; i++)
     {
         char buf[MAXPDSTRING];
         atom_string(argv+i, buf, MAXPDSTRING);
-        startlogpost(x, 2, " %s", buf);
+        print_startlogpost(x, " %s", buf);
     }
     endpost();
 }
@@ -98,19 +116,17 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
     else if (argv->a_type == A_FLOAT)
     {
         int i;
+        /* print first (numeric) atom, to avoid a leading space */
         if (*x->x_sym->s_name)
-            startlogpost(x, 2, "%s: ", x->x_sym->s_name);
+            print_startlogpost(x, "%s: %g", x->x_sym->s_name, atom_getfloat(argv));
         else
-        {
-            /* print first (numeric) atom, to avoid a trailing space */
-            startlogpost(x, 2, "%g", atom_getfloat(argv));
-            argc--; argv++;
-        }
+            print_startlogpost(x, "%g", atom_getfloat(argv));
+        argc--; argv++;
         for (i = 0; i < argc; i++)
         {
             char buf[MAXPDSTRING];
             atom_string(argv+i, buf, MAXPDSTRING);
-            startlogpost(x, 2, " %s", buf);
+            print_startlogpost(x, " %s", buf);
         }
         endpost();
     }
@@ -129,7 +145,58 @@ static void print_setup(void)
     class_addanything(print_class, print_anything);
 }
 
+/* ------------------- trace - see message passing traces ------------- */
+int backtracer_settracing(void *x, int tracing);
+extern int backtracer_cantrace;
+
+static t_class *trace_class;
+
+typedef struct _trace
+{
+    t_object x_obj;
+    t_symbol *x_sym;
+    t_float x_f;
+} t_trace;
+
+static void *trace_new(t_symbol *s)
+{
+    t_trace *x = (t_trace *)pd_new(trace_class);
+    x->x_sym = s;
+    x->x_f = 0;
+    floatinlet_new(&x->x_obj, &x->x_f);
+    outlet_new(&x->x_obj, &s_anything);
+    return (x);
+}
+
+static void trace_anything(t_trace *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int nturns = x->x_f;
+    if (nturns > 0)
+    {
+        if (!backtracer_cantrace)
+        {
+            pd_error(x, "trace requested but tracing is not enabled");
+            x->x_f = 0;
+        }
+        else if (backtracer_settracing(x, 1))
+        {
+            outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+            x->x_f = nturns-1;
+            (void)backtracer_settracing(x, 0);
+        }
+    }
+    else outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+}
+
+static void trace_setup(void)
+{
+    trace_class = class_new(gensym("trace"), (t_newmethod)trace_new, 0,
+        sizeof(t_trace), 0, A_DEFSYM, 0);
+    class_addanything(trace_class, trace_anything);
+}
+
 void x_interface_setup(void)
 {
     print_setup();
+    trace_setup();
 }

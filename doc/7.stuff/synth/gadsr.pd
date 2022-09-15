@@ -1,4 +1,4 @@
-#N canvas 71 56 698 578 12;
+#N canvas 425 105 698 578 12;
 #X obj 9 412 inlet;
 #X obj 24 314 inlet;
 #X text 21 437 trigger;
@@ -7,30 +7,30 @@
 #X obj 289 316 inlet;
 #X obj 426 321 inlet;
 #X obj 566 321 inlet;
-#X text 26 366 level;
+#X text 44 103 level;
 #X obj 156 512 outlet~;
-#X text 148 365 attack;
-#X text 284 366 decay;
-#X text 390 366 sustain;
-#X text 536 374 release;
+#X text 73 103 attack;
+#X text 118 104 decay;
+#X text 140 101 sustain;
+#X text 182 102 release;
 #X obj 460 480 snapshot~;
 #X obj 460 452 metro 200;
 #X msg 460 508 set \$1;
-#X floatatom 475 13 5 0 0;
+#X floatatom 208 54 5 0 0 0 - - - 0;
 #X obj 15 286 f \$1;
 #X obj 460 426 loadbang;
 #X obj 13 233 loadbang;
-#X obj 273 58 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 346 63 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X msg 346 85 0;
-#X obj 206 60 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X msg 206 81 1;
-#X msg 273 83 -1;
+#X obj 161 55 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 176 55 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X msg 347 133 0;
+#X obj 146 55 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X msg 207 129 1;
+#X msg 274 131 -1;
 #X obj 143 288 f \$2;
-#X floatatom 143 342 4 0 0;
+#X floatatom 88 76 4 0 0 0 - - - 0;
 #N canvas 110 169 840 732 control 0;
 #X obj 368 662 outlet;
 #X obj 37 46 inlet;
@@ -95,15 +95,15 @@
 #X obj 280 288 f \$2;
 #X obj 410 286 f \$2;
 #X obj 543 286 f \$2;
-#X floatatom 280 345 4 0 0;
-#X floatatom 410 345 4 0 0;
-#X floatatom 543 346 4 0 0;
+#X floatatom 121 76 4 0 0 0 - - - 0;
+#X floatatom 155 76 4 0 0 0 - - - 0;
+#X floatatom 190 76 4 0 0 0 - - - 0;
 #X obj 489 74 pack 0 20;
 #X msg 495 110 0;
 #X obj 489 47 t f b;
 #X text 104 541 gadsr - arguments: level \, attack time \, decay time
 \, sustain percentage \, release time;
-#X floatatom 15 341 4 0 0;
+#X floatatom 53 76 4 0 0 0 - - - 0;
 #X connect 0 0 29 0;
 #X connect 1 0 40 0;
 #X connect 3 0 28 0;
@@ -143,4 +143,4 @@
 #X connect 38 0 36 0;
 #X connect 38 1 37 0;
 #X connect 40 0 29 1;
-#X coords 0 0 1 1 200 40 1;
+#X coords 0 0 1 1 200 48 1 50 50;

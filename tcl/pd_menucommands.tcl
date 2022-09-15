@@ -232,6 +232,11 @@ proc ::pd_menucommands::set_filenewdir {mytoplevel} {
 proc ::pd_menucommands::menu_aboutpd {} {
     set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
     set filename "$::sys_libdir/doc/1.manual/1.introduction.txt"
+    if {![file exists $filename]} {
+        ::pdwindow::error [format [_ "ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::error "\n"
+        #return
+    }
     if {[winfo exists .aboutpd]} {
         wm deiconify .aboutpd
         raise .aboutpd
@@ -248,14 +253,20 @@ proc ::pd_menucommands::menu_aboutpd {} {
         pack .aboutpd.text -side left -fill both -expand 1
         bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
 
-        set textfile [open $filename]
-        while {![eof $textfile]} {
-            set bigstring [read $textfile 1000]
-            regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
-            regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
-            .aboutpd.text insert end $bigstring3
+        if { [catch {
+            set textfile [open $filename]
+            while {![eof $textfile]} {
+                set bigstring [read $textfile 1000]
+                regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
+                regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
+                .aboutpd.text insert end $bigstring3
+            }
+            close $textfile
+        } stderr ] } {
+            ::pdwindow::error [format [_ "couldn't read \"%s\" document" ] [_ "About Pd" ] ]
+            ::pdwindow::error "\n\t$stderr\n"
+            destroy .aboutpd
         }
-        close $textfile
     }
 }
 
@@ -316,3 +327,17 @@ proc ::pd_menucommands::menu_bringalltofront {} {
     }
     wm deiconify .
 }
+
+# this is needed because on macOS the Menu-Accelerators are actually used
+# (rather than just displayed)
+# so this proc simply gobbles the commands to suppress duplicates:
+# only the first $script until the next idle-period is run (the rest is discarded)
+# see https://stackoverflow.com/a/69900053/1169096
+proc ::pd_menucommands::scheduleAction {args} {
+    if {$::pd_menucommands::currentAction eq ""} {
+        # Prepend a command to clear the variable
+        set act "set ::pd_menucommands::currentAction {};$args"
+        set ::pd_menucommands::currentAction [after idle $act]
+    }
+}
+set ::pd_menucommands::currentAction {}

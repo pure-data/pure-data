@@ -103,7 +103,7 @@ t_int *upsampling_perform_linear(t_int *w)
 
 void resample_init(t_resample *x)
 {
-  x->method=0;
+  x->method=-1;
 
   x->downsample=x->upsample=1;
 
@@ -136,25 +136,25 @@ void resample_dsp(t_resample *x,
 
   if (insize > outsize) { /* downsampling */
     if (insize % outsize) {
-      error("bad downsampling factor");
+      pd_error(0, "bad downsampling factor");
       return;
     }
     switch (method) {
-    default:
+    default: /* always zero padding */
       dsp_add(downsampling_perform_0, 4, in, out, (t_int)(insize/outsize), (t_int)insize);
     }
 
 
   } else { /* upsampling */
     if (outsize % insize) {
-      error("bad upsampling factor");
+      pd_error(0, "bad upsampling factor");
       return;
     }
     switch (method) {
-    case 1:
+    case 1: /* sample and hold */
       dsp_add(upsampling_perform_hold, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
-    case 2:
+    case 2: /* linear interpolation */
       if (x->bufsize != 1) {
         t_freebytes(x->buffer, x->bufsize*sizeof(*x->buffer));
         x->bufsize = 1;
@@ -162,7 +162,7 @@ void resample_dsp(t_resample *x,
       }
       dsp_add(upsampling_perform_linear, 5, x, in, out, (t_int)(outsize/insize), (t_int)insize);
       break;
-    default:
+    default: /* zero padding */
       dsp_add(upsampling_perform_0, 4, in, out, (t_int)(outsize/insize), (t_int)insize);
     }
   }

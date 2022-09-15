@@ -1,47 +1,70 @@
 #N struct help-getsize-template float x float y array array1 help-getsize-array1-template
 ;
 #N struct help-getsize-array1-template float y;
-#N canvas 506 114 615 481 12;
-#X text 40 381 see also:;
-#N canvas 393 50 468 206 help-getsize-template 0;
+#N canvas 641 105 576 410 12;
+#X text 3 375 see also:;
+#N canvas 527 124 468 206 help-getsize-template 0;
 #X obj 30 78 plot array1 500 1 10 15 20;
 #X obj 60 137 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
 #X obj 28 21 struct help-getsize-template float x float y array array1
 help-getsize-array1-template;
-#X restore 349 372 pd help-getsize-template;
-#N canvas 142 211 305 197 help-getsize-data 1;
+#X restore 333 217 pd help-getsize-template;
+#N canvas 294 217 305 197 help-getsize-data 1;
 #X scalar help-getsize-template 43 37 \; 0 \; 10 \; 0 \; 10 \; 20 \;
 10 \; 20 \; 70 \; 10 \; \;;
-#X restore 349 350 pd help-getsize-data;
-#N canvas 672 342 369 138 help-getsize-array1-template 0;
+#X restore 333 195 pd help-getsize-data;
+#N canvas 980 442 369 138 help-getsize-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-getsize-array1-template float y;
-#X restore 349 394 pd help-getsize-array1-template;
-#X obj 105 407 pointer;
-#X obj 237 407 setsize;
-#X obj 37 228 pointer;
-#X msg 37 204 traverse pd-help-getsize-data \, next;
-#X floatatom 37 346 5 0 0 0 - - -;
-#X text 302 316 arguments: template \, field name;
-#X text 88 347 here we just get the value of y.;
-#X obj 37 317 getsize help-getsize-template array1;
-#X text 46 296 inlet for pointer;
-#X obj 40 19 getsize;
-#X text 34 51 When sent a pointer \, "element" looks up a field \,
-which should be an array \, and outputs the number of elements of the
-array. The template and field name are specified as creation arguments.
-;
-#X text 34 119 The smallest possible size is one.;
-#X obj 170 407 element;
-#X obj 48 407 struct;
-#X text 104 247 set template and field name;
-#X text 387 437 updated for Pd version 0.47;
-#X text 34 145 If you don't know the template name you may specify
+#X restore 333 239 pd help-getsize-array1-template;
+#X obj 119 375 pointer;
+#X obj 233 375 setsize;
+#X obj 41 203 pointer;
+#X msg 41 179 traverse pd-help-getsize-data \, next;
+#X floatatom 41 321 5 0 0 0 - - - 0;
+#X text 306 291 arguments: template \, field name, f 32;
+#X text 92 322 here we just get the value of y.;
+#X obj 41 292 getsize help-getsize-template array1;
+#X text 50 271 inlet for pointer;
+#X obj 27 13 getsize;
+#X obj 176 375 element;
+#X obj 69 375 struct;
+#X text 108 222 set template and field name;
+#X text 369 375 updated for Pd version 0.47;
+#X text 34 115 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiency and clarity.;
-#X msg 47 266 set help-getsize-template array1;
-#X text 103 20 - get number of elements of an array;
+\, at some possible cost in efficiency and clarity., f 68;
+#X msg 51 241 set help-getsize-template array1;
+#X obj 7 44 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 768 182 526 227 reference 0;
+#X obj 9 43 cnv 5 500 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 109 cnv 2 500 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 146 cnv 2 500 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 198 cnv 5 500 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 152 154 1) symbol - template name.;
+#X text 152 173 2) symbol - field name., f 26;
+#X text 29 76 set <symbol \, symbol> - set template and field name.
+, f 63;
+#X text 134 119 float - array's size.;
+#X obj 24 15 getsize;
+#X text 84 16 - get of a Data Structures array.;
+#X text 120 57 pointer - pointer to a scalar with an array field.;
+#X restore 385 14 pd reference;
+#X text 483 15 <= click;
+#X obj 7 358 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 291 375 array get;
+#X text 86 14 - get of a Data Structures array;
+#X text 34 51 When sent a pointer of a scalar \, "getsize" looks up
+a field \, which should be an array \, and outputs the number of elements
+of the array. The template and field name are specified as creation
+arguments. The smallest possible size is one., f 68;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
 #X connect 11 0 8 0;
-#X connect 21 0 11 0;
+#X connect 19 0 11 0;

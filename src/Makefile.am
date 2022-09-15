@@ -2,17 +2,23 @@
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
-CLEANFILES=
+CLEANFILES =
 
 bin_SCRIPTS =
 noinst_SCRIPTS =
 
-pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
-pd_LDFLAGS =
+AM_CPPFLAGS = @PD_CPPFLAGS@
+AM_CFLAGS = @PD_CFLAGS@
+AM_LDFLAGS = @PD_LDFLAGS@
+
+pd_CFLAGS = -DPD -DPD_INTERNAL -DINSTALL_PREFIX=\"$(prefix)\" @PD_CFLAGS@
+pd_LDFLAGS = @PD_LDFLAGS@
 pd_LDADD =
-libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY
+
+libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY @PD_CPPFLAGS@
+libpd_la_CFLAGS = @PD_CFLAGS@
 libpd_la_LIBADD =
-libpd_la_LDFLAGS =
+libpd_la_LDFLAGS = @PD_LDFLAGS@
 libpdincludedir = $(includedir)/libpd
 libpdinclude_HEADERS =
 
@@ -20,14 +26,14 @@ libpdinclude_HEADERS =
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
 # also, the "_core" suffix is used as this keeps automake from thinking these
 # are library or binary variables since we only need them as placeholders
-pd_LDFLAGS_core =
+pd_LDFLAGS_core = @PD_LDFLAGS@
 pd_LDADD_core =
-pd_LDFLAGS_standalone =
+pd_LDFLAGS_standalone = @PD_LDFLAGS@
 pd_LDADD_standalone =
 
-pdsend_CFLAGS =
-pdreceive_CFLAGS =
-pd_watchdog_CFLAGS =
+pdsend_CFLAGS = @PD_CFLAGS@
+pdreceive_CFLAGS = @PD_CFLAGS@
+pd_watchdog_CFLAGS = @PD_CFLAGS@
 
 LIBS = @LIBS@
 
@@ -87,8 +93,6 @@ libpd_la_SOURCES += \
     $(empty)
 endif
 
-
-
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
 # (where all the logic resides), that's why we have to split the sources
 # (only to later merge them again for non-Windows systems)
@@ -121,21 +125,19 @@ pd_SOURCES_core = \
     g_editor_extras.c \
     g_graph.c \
     g_guiconnect.c \
-    g_hdial.c \
-    g_hslider.c \
     g_io.c \
     g_mycanvas.c \
     g_numbox.c \
+    g_radio.c \
     g_readwrite.c \
     g_rtext.c \
     g_scalar.c \
+    g_slider.c \
     g_template.c \
     g_text.c \
     g_toggle.c \
     g_traversal.c \
     g_undo.c \
-    g_vdial.c \
-    g_vslider.c \
     g_vumeter.c \
     m_atom.c \
     m_binbuf.c \
@@ -148,6 +150,7 @@ pd_SOURCES_core = \
     m_sched.c \
     s_audio.c \
     s_inter.c \
+    s_inter_gui.c \
     s_loader.c \
     s_main.c \
     s_net.c \
@@ -200,7 +203,7 @@ endif
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
-    makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
+    makefile.gnu makefile.mac makefile.mingw makefile.msvc \
     d_soundfile.h s_audio_audiounit.c s_audio_esd.c
 
 # add WISH define if it's set
@@ -256,7 +259,7 @@ endif
 ##### PortAudio #####
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_SOURCES_standalone += s_audio_pa.c s_audio_paring.c
+pd_SOURCES_standalone += s_audio_pa.c
 
 if LOCAL_PORTAUDIO
 # link the included portaudio which is built as a static lib
@@ -269,7 +272,7 @@ endif
 
 # need Carbon framework for PA on Mac
 if MACOSX
-LIBS += -framework Carbon -framework CoreFoundation
+LIBS += -framework Carbon
 endif
 
 endif
@@ -298,10 +301,19 @@ endif
 
 # need Carbon framework for PM on Mac
 if MACOSX
-LIBS += -framework CoreFoundation -framework Carbon
+LIBS += -framework Carbon
 endif
 
 endif
+
+##### Jack Audio Connection Kit #####
+if JACK
+pd_SOURCES_standalone += s_audio_paring.c
+else !JACK
+if PORTAUDIO
+pd_SOURCES_standalone += s_audio_paring.c
+endif PORTAUDIO
+endif !JACK
 
 ##### NO API? #####
 # if no audio or midi api was detected/specified, fall back to dummy apis
@@ -376,8 +388,14 @@ libpdbin_PROGRAMS = pd-watchdog
 pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
-LIBS += -ldl -lm -lpthread
+LIBS += -ldl -lm -lpthread -framework CoreFoundation
 libpd_la_LIBADD += -ldl -lm -lpthread
+libpd_la_LDFLAGS += -framework CoreFoundation
+
+# PERTHREAD requires macOS 10.9+ SDK
+if LIBPD_MULTIINSTANCE
+libpd_la_CFLAGS += -mmacosx-version-min=10.9
+endif
 
 endif
 

@@ -10,6 +10,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef _WIN32
+#include <io.h>
+#endif
 #include <string.h>
 #include <limits.h>
 #include <errno.h>
@@ -46,8 +49,6 @@ typedef SSIZE_T ssize_t;
 
 /* ----- soundfile ----- */
 
-typedef struct _soundfile_type t_soundfile_type;
-
     /** soundfile file descriptor, backend type, and format info
         note: headersize and bytelimit are signed as they are used for < 0
               comparisons, hopefully ssize_t is large enough
@@ -55,7 +56,7 @@ typedef struct _soundfile_type t_soundfile_type;
 typedef struct _soundfile
 {
     int sf_fd;             /**< file descriptor, >= 0 : open, -1 : closed */
-    t_soundfile_type *sf_type; /**< type implementation                   */
+    struct _soundfile_type *sf_type; /**< type implementation             */
     /* format info */
     int sf_samplerate;     /**< read: file sr, write: pd sr               */
     int sf_nchannels;      /**< number of channels                        */
@@ -72,7 +73,7 @@ void soundfile_clear(t_soundfile *sf);
     /** copy src soundfile info into dst */
 void soundfile_copy(t_soundfile *dst, const t_soundfile *src);
 
-    /** returns 1 if bytes need to be swapped due to endianess, otherwise 0 */
+    /** returns 1 if bytes need to be swapped due to endianness, otherwise 0 */
 int soundfile_needsbyteswap(const t_soundfile *sf);
 
     /** generic soundfile errors */
@@ -96,13 +97,13 @@ typedef int (*t_soundfile_isheaderfn)(const char *buf, size_t size);
 
     /** read format info from soundfile header,
         returns 1 on success or 0 on error
-        note: set sf_bytelimit = sound data size, optionaly set errno
+        note: set sf_bytelimit = sound data size, optionally set errno
         this may be called in a background thread */
 typedef int (*t_soundfile_readheaderfn)(t_soundfile *sf);
 
     /** write header to beginning of an open file from an info struct
         returns header bytes written or < 0 on error
-        note: optionaly set errno
+        note: optionally set errno
         this may be called in a background thread */
 typedef int (*t_soundfile_writeheaderfn)(t_soundfile *sf, size_t nframes);
 
@@ -160,20 +161,20 @@ int sys_isbigendian(void);
     /** swap 8 bytes and return if doit = 1, otherwise return n */
 uint64_t swap8(uint64_t n, int doit);
 
-    /** swap a 64 bit signed int and return if do it = 1, otherwise return n */
+    /** swap a 64 bit signed int and return if doit = 1, otherwise return n */
 int64_t swap8s(int64_t n, int doit);
 
     /** swap 4 bytes and return if doit = 1, otherwise return n */
 uint32_t swap4(uint32_t n, int doit);
 
-    /** swap a 32 bit signed int and return if do it = 1, otherwise return n */
+    /** swap a 32 bit signed int and return if doit = 1, otherwise return n */
 int32_t swap4s(int32_t n, int doit);
 
     /** swap 2 bytes and return if doit = 1, otherwise return n */
 uint16_t swap2(uint16_t n, int doit);
 
-    /** swap a 4 byte string in place if do it = 1, otherewise do nothing */
+    /** swap a 4 byte string in place if doit = 1, otherwise do nothing */
 void swapstring4(char *foo, int doit);
 
-    /** swap an 8 byte string in place if do it = 1, otherwise do nothing */
+    /** swap an 8 byte string in place if doit = 1, otherwise do nothing */
 void swapstring8(char *foo, int doit);

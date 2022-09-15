@@ -21,7 +21,7 @@ static t_class *text_define_class;
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -66,39 +66,51 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 static void textbuf_senditup(t_textbuf *x)
 {
     int i, ntxt;
-    char *txt;
+    char *txt, *buf;
     if (!x->b_guiconnect)
         return;
+
+#if 0
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
-    sys_vgui("pdtk_textwindow_clear .x%lx\n", x);
-    for (i = 0; i < ntxt; )
-    {
-        char *j = strchr(txt+i, '\n');
-        if (!j) j = txt + ntxt;
-        sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
-            x, j-txt-i, txt+i);
-        i = (int)((j-txt)+1);
-    }
-    sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
+    buf = getbytes(ntxt+2);
+    memcpy(buf, txt, ntxt);
+    buf[ntxt] = buf[ntxt+1] = 0;
+        /* append a trailing newline, but only if there isn't one there already */
+    if ('\n' != buf[ntxt-1]) buf[ntxt] = '\n';
+
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
+    pdgui_vmess("pdtk_textwindow_append", "^s", x, buf);
+#else
+        /* send the binbuf directly
+         * and let the GUI figure out when to do linebreaks and how to escape special charsand $1*/
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
+    pdgui_vmess("pdtk_textwindow_appendatoms", "^A", x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
+#endif
+
+    pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
     t_freebytes(txt, ntxt);
+    freebytes(buf, ntxt+2);
 }
 
 static void textbuf_open(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("wm deiconify .x%lx\n", x);
-        sys_vgui("raise .x%lx\n", x);
-        sys_vgui("focus .x%lx.text\n", x);
+        char textid[128];
+        sprintf(textid, ".x%lx.text", x);
+        pdgui_vmess("wm", "r^", "deiconify", x);
+        pdgui_vmess("raise", "^", x);
+        pdgui_vmess("focus", "s", textid);
     }
     else
     {
         char buf[40];
-        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s} %d\n",
-            x, 600, 340, x->b_sym->s_name,
-                 sys_hostfontsize(glist_getfont(x->b_canvas),
-                    glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", (unsigned long)x);
+        sprintf(buf, "%dx%d", 600, 340);
+        pdgui_vmess("pdtk_textwindow_open", "^r si",
+                  x, buf,
+                  x->b_sym->s_name,
+                  sys_hostfontsize(glist_getfont(x->b_canvas), glist_getzoom(x->b_canvas)));
+        sprintf(buf, ".x%lx", x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
@@ -108,7 +120,7 @@ static void textbuf_close(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
+        pdgui_vmess("pdtk_textwindow_doclose", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -203,7 +215,7 @@ static void textbuf_free(t_textbuf *x)
         binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
-        sys_vgui("destroy .x%lx\n", x);
+        pdgui_vmess("destroy", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */
@@ -477,6 +489,9 @@ equal:
  */
 #if defined(_WIN32) || defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #define STUPID_SORT
+#endif
+
+#ifdef STUPID_SORT
 static PERTHREAD void *stupid_zkeyinfo;
 static int stupid_sortcompare(const void *z1, const void *z2)
 {
@@ -833,6 +848,8 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
                 startfield, nfield);
+        else if (nfield < 0)
+            pd_error(x, "text get: bad field count (%d)", nfield);
         else
         {
             ATOMS_ALLOCA(outv, nfield);
@@ -1661,7 +1678,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                 SETSYMBOL(outvec+i, s);
             else
             {
-                error("$%s: not enough arguments supplied",
+                pd_error(0, "$%s: not enough arguments supplied",
                     ap->a_w.w_symbol->s_name);
                 SETSYMBOL(outvec+i, &s_symbol);
             }
@@ -1855,7 +1872,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = text_sequence_new(s, argc-1, argv+1);
         else
         {
-            error("list %s: unknown function", str);
+            pd_error(0, "list %s: unknown function", str);
             pd_this->pd_newest = 0;
         }
     }

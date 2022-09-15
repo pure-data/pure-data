@@ -1,0 +1,185 @@
+#N canvas 534 32 531 676 12;
+#X declare -stdpath ./;
+#X obj 42 125 osc~ 100;
+#X msg 60 152 clear;
+#N canvas 471 254 550 387 test 0;
+#X obj 127 283 env~ 16384;
+#X floatatom 127 307 5 0 0 0 - - - 0;
+#X floatatom 414 112 4 -1000 1000 0 - - - 0;
+#X obj 294 112 cos~;
+#X floatatom 229 57 5 0 0 0 - - - 0;
+#X obj 269 119 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 229 117 *~;
+#X obj 229 80 phasor~;
+#X floatatom 338 53 5 0 0 0 - - - 0;
+#X obj 338 76 / 1000;
+#X obj 338 113 -~ 0.25;
+#X obj 338 135 cos~;
+#X obj 414 137 / 1000;
+#X obj 293 178 *~;
+#X obj 338 178 *~;
+#X obj 325 282 env~ 16384;
+#X floatatom 325 306 5 0 0 0 - - - 0;
+#X obj 230 207 czero~, f 14;
+#X floatatom 165 106 4 -1000 1000 0 - - - 0;
+#X obj 56 108 cos~;
+#X obj 55 69 phasor~;
+#X floatatom 55 44 5 0 0 0 - - - 0;
+#X obj 99 109 -~ 0.25;
+#X obj 99 133 cos~;
+#X obj 165 135 / 1000;
+#X obj 55 161 *~;
+#X obj 99 161 *~;
+#X text 151 14 Stuff to test it:;
+#X obj 229 278 output~;
+#X obj 26 223 declare -stdpath ./;
+#X connect 0 0 1 0;
+#X connect 2 0 12 0;
+#X connect 3 0 13 0;
+#X connect 4 0 7 0;
+#X connect 5 0 6 1;
+#X connect 6 0 17 0;
+#X connect 7 0 6 0;
+#X connect 8 0 9 0;
+#X connect 9 0 3 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 14 0;
+#X connect 12 0 14 1;
+#X connect 12 0 13 1;
+#X connect 13 0 17 2;
+#X connect 14 0 17 3;
+#X connect 15 0 16 0;
+#X connect 17 0 0 0;
+#X connect 17 0 28 0;
+#X connect 17 0 28 1;
+#X connect 17 1 15 0;
+#X connect 18 0 24 0;
+#X connect 19 0 25 0;
+#X connect 20 0 22 0;
+#X connect 20 0 19 0;
+#X connect 21 0 20 0;
+#X connect 22 0 23 0;
+#X connect 23 0 26 0;
+#X connect 24 0 26 1;
+#X connect 24 0 25 1;
+#X connect 25 0 17 0;
+#X connect 26 0 17 1;
+#X restore 396 562 pd test;
+#X obj 91 207 sig~;
+#X obj 123 231 sig~;
+#X obj 155 255 sig~;
+#X text 202 297 coefficient (real and imaginary part);
+#X msg 70 178 set 0.6 0.8;
+#X obj 28 11 czero~;
+#X text 25 320 The action of czero~ is:;
+#X text 84 341 y[n] = x[n] - a[n] * x[n-1];
+#X text 31 369 where y[n] is the output \, x[n] the input \, and a[n]
+the filter coefficient (all complex numbers). The filter is always
+stable., f 63;
+#X text 32 415 The transfer function is H(Z) = 1 - aZ^-1.;
+#X obj 60 279 czero~ 0.9 0.4;
+#X text 108 125 <= signal to filter (real part);
+#X text 130 206 <= signal to filter (imaginary part);
+#X text 165 230 <= filter coefficient (real part);
+#X text 174 281 <= creation arguments initialize filter;
+#X text 195 255 <= filter coefficient (imaginary part);
+#X obj 91 613 lop~;
+#X text 12 614 see also:;
+#X obj 174 546 rzero~;
+#X obj 114 569 cpole~;
+#X obj 114 546 rpole~;
+#X obj 234 546 rzero_rev~;
+#X obj 174 569 czero~;
+#X obj 234 569 czero_rev~;
+#X text 313 546 real;
+#X text 312 568 complex;
+#X text 111 527 1-pole;
+#X text 171 527 1-zero;
+#X text 238 511 1-zero \, reversed, f 8;
+#X text 20 551 summary of raw filters:, f 12;
+#X obj 132 613 hip~;
+#X obj 173 613 bp~;
+#X obj 208 613 vcf~;
+#X text 289 613 - user-friendly filters;
+#X obj 249 613 bob~;
+#X obj 376 487 bng 17 250 50 0 empty empty empty 17 7 0 10 #ffffff
+#000000 #000000;
+#X text 19 440 Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
+for an introduction to the necessary theory (click) =>, f 69;
+#N canvas 798 148 456 264 Read-More 0;
+#X obj 11 59 inlet;
+#X obj 11 190 pdcontrol;
+#X msg 11 139 browse http://msp.ucsd.edu/techniques/latest/book-html/node127.html
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 376 520 pd Read-More;
+#X obj 14 644 biquad~;
+#X text 187 645 - not so friendly;
+#X obj 75 644 fexpr~;
+#X obj 130 644 slop~, f 7;
+#X text 326 644 updated for Pd version 0.38;
+#X obj 6 38 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 601 cnv 1 520 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 699 138 571 409 reference 0;
+#X obj 8 45 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 245 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 382 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 326 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X text 117 81 signal -;
+#X text 180 81 signal to filter (real part)., f 49;
+#X text 117 149 signal -;
+#X text 180 149 signal to filter (imaginary part)., f 49;
+#X text 117 182 signal -;
+#X text 117 212 signal -;
+#X text 180 212 filter coefficient (imaginary part)., f 49;
+#X text 180 182 filter coefficient (real part)., f 49;
+#X text 124 119 clear -;
+#X text 180 99 set internal state (real and imaginary part)., f 49
+;
+#X text 180 119 clear internal state to zero (same as "set 0 0").;
+#X text 71 353 1) list - real and imaginary part of coefficient (default
+0 0)., f 64;
+#X text 117 301 signal - filtered signal \, imaginary part.;
+#X text 117 275 signal - filtered signal \, real part.;
+#X text 33 99 set <float \, float> -;
+#X obj 31 14 czero~;
+#X text 91 14 complex one-zero filter;
+#X obj 7 74 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 142 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 175 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 206 cnv 1 550 1 empty empty 4th: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 269 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 7 297 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
+0;
+#X restore 357 11 pd reference;
+#X text 451 11 <= click;
+#X text 88 11 complex one-zero filter;
+#X text 23 48 Czero~ filters a complex audio signal (first two inlets)
+via a raw one-zero (non-recursive) filter \, whose coefficients are
+controlled by creation arguments or by another complex audio signal
+(remaining two inlets)., f 66;
+#X text 105 152 <= clear internal state (last samples) to zero;
+#X text 157 178 <= set internal state (real & imaginary parts);
+#X connect 0 0 13 0;
+#X connect 1 0 13 0;
+#X connect 3 0 13 1;
+#X connect 4 0 13 2;
+#X connect 5 0 13 3;
+#X connect 7 0 13 0;
+#X connect 38 0 40 0;

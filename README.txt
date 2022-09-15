@@ -12,12 +12,12 @@ or from the Pure Data community site:
 
     https://puredata.info
 
-Installation instructions are in INSTALL.txt and the HTML documentation at:
+Installation instructions are in INSTALL.txt and the Pd Manual at:
 
     http://msp.ucsd.edu/Pd_documentation/index.htm
 
-If you download and unpack Pd, you will also find the HTML documentation
-locally in the file "doc/1.manual/index.htm".
+If you download and unpack Pd, you will also find the Manual locally
+in the file "doc/1.manual/index.htm".
 
 Linux (or FreeBSD): In some Linux installations you can download Pd via "apt-get
 install puredata" or "dnf install puredata"; otherwise you can download
@@ -58,4 +58,4 @@ Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
 Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
 Wilcox, David Zicarelli, IOhannes m zmoelnig, and probably many others for
 contributions of code, documentation, ideas, and expertise. This work has
-received support from Intel, Keith McMillen Instruments, ZKM, and UCSD.
+received support from Intel, Keith McMillen Instruments, ZKM, IEM, and UCSD.

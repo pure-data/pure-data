@@ -22,7 +22,6 @@
 #endif
 #include <string.h>
 #include <stdio.h>
-#include <signal.h>
 
 /* channel voice messages */     /* dec, # */
 #define MIDI_NOTEOFF        0x80 /* 128, 2 */
@@ -105,7 +104,7 @@ void sys_initmidiqueue(void)
     /* this is called from the OS dependent code from time to time when we
     think we know the delay (outbuftime) in seconds, at which the last-output
     audio sample will go out the door. */
-void sys_setmiditimediff(double inbuftime, double outbuftime)
+static void sys_setmiditimediff(double inbuftime, double outbuftime)
 {
     double dactimeminusrealtime =
         .001 * clock_gettimesince(sys_midiinittime)
@@ -351,7 +350,7 @@ static void sys_dispatchnextmidiin(void)
         else if (parserp->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            error("dropping unexpected MIDI byte %02X", byte);
+            pd_error(0, "dropping unexpected MIDI byte %02X", byte);
         }
         else
         {
@@ -492,13 +491,7 @@ void sys_midibytein(int portno, int byte)
 
 void sys_pollmidiqueue(void)
 {
-#if 0
-    static double lasttime;
-    double newtime = sys_getrealtime();
-    if (newtime - lasttime > 0.007)
-        post("delay %d", (int)(1000 * (newtime - lasttime)));
-    lasttime = newtime;
-#endif
+    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
         sys_alsa_poll_midi();
@@ -612,7 +605,7 @@ void sys_open_midi(int nmidiindev, int *midiindev,
     sys_save_midi_params(nmidiindev, midiindev,
         nmidioutdev, midioutdev);
 
-    sys_vgui("set pd_whichmidiapi %d\n", sys_midiapi);
+    pdgui_vmess("set", "ri", "pd_whichmidiapi", sys_midiapi);
 
 }
 
@@ -661,12 +654,12 @@ void sys_set_midi_api(int which)
     case(API_DEFAULTMIDI): break;
 #endif
     default:
-        verbose(PD_VERBOSE, "ignoring unknown MIDI API %d", which);
+        logpost(NULL, PD_VERBOSE, "ignoring unknown MIDI API %d", which);
         return;
     }
 
     sys_midiapi = which;
-    verbose(PD_VERBOSE, "sys_midiapi %d", sys_midiapi);
+    logpost(NULL, PD_VERBOSE, "sys_midiapi %d", sys_midiapi);
 }
 
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
@@ -697,7 +690,6 @@ extern t_class *glob_pdobject;
     /* start an midi settings dialog window */
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[1024 + 2 * MAXNDEV*(DEVDESCSIZE+4)];
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
@@ -708,20 +700,24 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    char *indevs[1+MAXNDEV], *outdevs[1+MAXNDEV];
     int nindevs = 0, noutdevs = 0, i;
+    char device[MAXPDSTRING];
+
+    indevs[0] = outdevs[0] = "none";
 
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
-
-    sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend midi_indevlist {%s}\n",
-            indevlist + i * DEVDESCSIZE);
-
-    sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
+        indevs[i+1] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend midi_outdevlist {%s}\n",
-            outdevlist + i * DEVDESCSIZE);
+        outdevs[i+1] = outdevlist + i * DEVDESCSIZE;
+
+    pdgui_vmess("set", "rS", "::midi_indevlist",
+        nindevs+1, indevs); /* +1 for the leading 'none' */
+
+    pdgui_vmess("set", "rS", "::midi_outdevlist",
+        noutdevs+1, outdevs); /* +1 for the leading 'none' */
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 
@@ -747,30 +743,24 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
     midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
 
+    pdgui_stub_deleteforkey(0);
 #ifdef USEAPI_ALSA
-      if (sys_midiapi == API_ALSA)
-    sprintf(buf,
-"pdtk_alsa_midi_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d 1\n",
-        midiindev1, midiindev2, midiindev3, midiindev4,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4,
-        (flongform != 0));
-      else
+    if (sys_midiapi == API_ALSA)
+        pdgui_stub_vnew(&glob_pdobject,
+            "pdtk_alsa_midi_dialog", (void *)glob_midi_properties,
+            "iiii iiii ii",
+            midiindev1 , midiindev2 , midiindev3 , midiindev4 ,
+            midioutdev1, midioutdev2, midioutdev3, midioutdev4,
+            (flongform != 0), 1);
+    else
 #endif
-    sprintf(buf,
-"pdtk_midi_dialog %%s \
-%d %d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d %d \
-%d\n",
-        midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
-        midioutdev6, midioutdev7, midioutdev8, midioutdev9,
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_midi_dialog", (void *)glob_midi_properties,
+        "iiiiiiiii iiiiiiiii i",
+        midiindev1 , midiindev2 , midiindev3 , midiindev4 , midiindev5 , midiindev6 , midiindev7 , midiindev8 , midiindev9 ,
+        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5, midioutdev6, midioutdev7, midioutdev8, midioutdev9,
         (flongform != 0));
-
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_midi_properties, buf);
 }
 
     /* new values from dialog window */

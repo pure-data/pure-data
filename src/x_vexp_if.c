@@ -1041,7 +1041,7 @@ if (!sym || !(garray = (t_garray *)pd_findbyclass(sym, garray_class)) || \
                 !garray_getfloatwords(garray, &size, &vec))  {          \
         optr->ex_type = ET_FLT;                                         \
         optr->ex_int = 0;                                               \
-        error("no such table '%s'", sym?(sym->s_name):"(null)");                       \
+        pd_error(0, "no such table '%s'", sym?(sym->s_name):"(null)");                       \
         return;                                                         \
 }
 

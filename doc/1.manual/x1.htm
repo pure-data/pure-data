@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 1</TITLE>
-    <meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual 1</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
 
 <BODY>
 
-<H2>Pd Documentation chapter 1: introduction</H2>
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
+
+<H2>Pd Manual chapter 1: introduction</H2>
 
 <P>
 <A href="index.htm#s1"> back to table of contents </A>
@@ -27,60 +34,80 @@ go to
     <A href="http://msp.ucsd.edu/software.html">
     http://msp.ucsd.edu/software.html</A>
 to get it.
-<H3> <A id=s1> 1.1. guide to the documentation </A> </H3>
+<H3> <A id=s1> 1.1. Guide to Pd's documentation </A> </H3>
 
-<P> Pd's documentation consists of:
+<P> Pd's documentation lives in the "doc" folder of the distribution and consists of:
 
 <UL>
-<LI> this HTML manual
-<LI> "reference" patches, one for each kind of object in Pd
-<LI> "example" patches showing how to do things
-<LI> sample C code
+<LI>this HTML manual<br>
+<PRE>
+Pd/
+├── doc/
+    ├── 1.manual/ 
+</PRE>
+	
+<LI>"reference" (or 'help') patches, for all objects in Pd<br>
+<PRE>
+Pd/
+├── doc/
+    ├── 5.reference/ 
+</PRE>
+	
+<LI>"example" patches showing how to do things<br>
+	
+	 
+<PRE>
+Pd/
+├── doc/
+    ├── 2.control.examples/
+    ├── 3.audio.examples/
+    ├── 4.data.structures/ 
+</PRE>
+	
+<LI>sample C code on how to write externals<br>
+<PRE>
+Pd/
+├── doc/
+    ├── 6.externs/
+</PRE>
+
 </UL>
 
 <P>
-This manual has five sections:
+This Manual has six sections:
 
 <OL>
-<LI> this overview
+<LI> this introduction
 <LI> <A href="x2.htm">
     a theory of operations, explaining how Pd works </A>
 <LI> <A href="x3.htm">
     instructions on installing Pd and getting it to run </A>
 <LI> <A href="x4.htm"> externals </A>
 <LI> <A href="x5.htm"> release notes and known bugs </A>
+<LI> <A href="x6.htm"> installing from source </A>
 </OL>
 
 <P>
-For a list of all the objects you can use in Pd, see the text file,
-"0.INTRO.txt" in the directory, "../5.reference".  To get help on any
+For a list of all the objects you can use menu <b>Help/List of objects</b>. To get help on any
 Pd object you can right click on it; or you can browse the help patches
-by choosing "Browser..." in the Pd help menu and looking in
-5.reference.
+by choosing menu <b>Help/Browser</b> and looking in
+"Pure Data/5.reference".
 
 <P>
-The example patches are also available from the "Browser..." item
-in Pd's "help" menu.  They appear in subdirectories named
-"2.control.examples", "3.audio.examples" and "4.fft.examples."  Some additional
+The "example" patches are also available from Pd's browser. They appear in subdirectories 
+named "2.control.examples", "3.audio.examples" and "4.data.structures". Some additional 
 patches in "7.stuff" might also be helpful.
 
 <P>
-To get started writing your own C extensions, refer to <A href=x4.htm>chapter 4 </A>of this manual.
+To get started writing your own C extensions, refer to "6.externs". For more about externals, 
+please refer to <A href=x4.htm>chapter 4 </A>of this manual.
 
 <H3> <A id=s2> 1.2. other resources </A> </H3>
 
 <P> There is a very extensive Pd community web site,
-<a href="http://www.pure-data.info/"> pure-data.info</a>, which aims to be the
-central resource for Pd, from documentation and
-downloads; to forums, member pages, and a patch exchange.
-You can check <A href=http://puredata.info/docs/BooksAboutPd/>
-puredata.info/docs/BooksAboutPd/</A>.
-
-<P> More documentation is available on the Pd FLOSS site:
-<A href=https://en.flossmanuals.net/pure-data/_full/>
-en.flossmanuals.net/pure-data/_full/</A> (English) and
-<A href=http://fr.flossmanuals.net/PureData/>
-fr.flossmanuals.net/PureData/</A> (French).
+<a href="http://www.pure-data.info/"> pure-data.info</a>, which aims to be the central resource for Pd, 
+from documentation and downloads; to forums, member pages, and a patch exchange. You can check
+<A href=https://puredata.info/docs/> https://puredata.info/docs/</A> for more documentation.
 
 <P>
 Most of the interesting news related to Pd shows up on the Pd mailing list,
@@ -94,15 +121,24 @@ best source of recent information regarding installation problems and bugs.  It
 is perfectly reasonable to post "beginner" questions on this list; alternatively
 you can contact msp@ucsd.edu for help.
 
-<P> Many extensions to Pd are announced on the mailing list.  In particular,
+<P> Many extensions to Pd are announced on the mailing list. In particular,
 for people interested in graphics, there is a 3D graphics rendering package,
 named GEM, based on OpenGL, written by Mark Danks, adapted to Linux by
 Guenter Geiger, and now maintained by IOhannes zm&ouml;lnig. You can get
-it from: <A href="http://gem.iem.at/">http://gem.iem.at/</A>, via "Find externals"
-or package manager of your Linux distribution.
+it from: <A href="http://gem.iem.at/">http://gem.iem.at/</A>, via "Find externals" in the
+'Help Menu' or package manager of your Linux distribution. Another option is Ofelia, a Pd external
+that allows you to use openFrameworks and Lua within Pd for creating audiovisual artwork 
+or multimedia applications such as games. Get it also via via "Find externals" or from 
+<A href="https://github.com/cuinjune/Ofelia">https://github.com/cuinjune/Ofelia</A>.
 
-<P> Here are some
-<a href="http://msp.ucsd.edu/external-links.htm">
-more external links</A>.
+<P>
+<BR><BR>
+<A href="x2.htm"> next chapter </A><BR>
+<A href="index.htm#s1"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
+
 </BODY>
 </HTML>

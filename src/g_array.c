@@ -2,7 +2,6 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
@@ -39,7 +38,7 @@ t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_close(t_garray *x);
+static void garray_arrayviewlist_close(t_garray *x);
 /* } jsarlo */
 
 void array_resize(t_array *x, int n)
@@ -190,18 +189,18 @@ t_array *garray_getarray(t_garray *x)
     t_template *template = template_findbyname(templatesym);
     if (!template)
     {
-        error("array: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "array: couldn't find template %s", templatesym->s_name);
         return (0);
     }
     if (!template_find_field(template, gensym("z"),
         &zonset, &ztype, &zarraytype))
     {
-        error("array: template %s has no 'z' field", templatesym->s_name);
+        pd_error(0, "array: template %s has no 'z' field", templatesym->s_name);
         return (0);
     }
     if (ztype != DT_ARRAY)
     {
-        error("array: template %s, 'z' field is not an array",
+        pd_error(0, "array: template %s, 'z' field is not an array",
             templatesym->s_name);
         return (0);
     }
@@ -266,7 +265,7 @@ static void garray_fittograph(t_garray *x, int n, int style)
             glist_redraw(gl);
         }
             /* close any dialogs that might have the wrong info now... */
-        gfxstub_deleteforkey(gl);
+        pdgui_stub_deleteforkey(gl);
     }
 }
 
@@ -289,31 +288,31 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
     if (templateargsym != &s_float)
     {
-        error("array %s: only 'float' type understood", templateargsym->s_name);
+        pd_error(0, "array %s: only 'float' type understood", templateargsym->s_name);
         return (0);
     }
     templatesym = gensym("pd-float-array");
     template = template_findbyname(templatesym);
     if (!template)
     {
-        error("array: couldn't find template %s", templatesym->s_name);
+        pd_error(0, "array: couldn't find template %s", templatesym->s_name);
         return (0);
     }
     if (!template_find_field(template, gensym("z"),
         &zonset, &ztype, &zarraytype))
     {
-        error("array: template %s has no 'z' field", templatesym->s_name);
+        pd_error(0, "array: template %s has no 'z' field", templatesym->s_name);
         return (0);
     }
     if (ztype != DT_ARRAY)
     {
-        error("array: template %s, 'z' field is not an array",
+        pd_error(0, "array: template %s, 'z' field is not an array",
             templatesym->s_name);
         return (0);
     }
     if (!(ztemplate = template_findbyname(zarraytype)))
     {
-        error("array: no template of type %s", zarraytype->s_name);
+        pd_error(0, "array: no template of type %s", zarraytype->s_name);
         return (0);
     }
     saveit = ((flags & GRAPH_ARRAY_SAVE) != 0);
@@ -348,21 +347,21 @@ void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *)canvas;
     int gcount;
-    char cmdbuf[200], arraybuf[80];
+    char arraybuf[80];
     for (gcount = 1; gcount < 1000; gcount++)
     {
         sprintf(arraybuf, "array%d", gcount);
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount);
-    gfxstub_new(&x->gl_pd, x, cmdbuf);
+    pdgui_stub_vnew(&x->gl_pd,
+        "pdtk_array_dialog", x, "siii",
+        arraybuf, 100, 3, 1);
 }
 
     /* called from graph_dialog to set properties */
 void garray_properties(t_garray *x)
 {
-    char cmdbuf[200];
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
     int style = template_getfloat(template_findbyname(sc->sc_template),
@@ -372,14 +371,12 @@ void garray_properties(t_garray *x)
 
     if (!a)
         return;
-    gfxstub_deleteforkey(x);
-        /* create dialog window.  LATER fix this to escape '$'
-        properly; right now we just detect a leading '$' and escape
-        it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, "pdtk_array_dialog %%s %s %d %d 0\n",
-            iemgui_dollar2raute(x->x_name)->s_name, a->a_n, x->x_saveit +
-            2 * filestyle);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+    pdgui_stub_deleteforkey(x);
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_dialog", x,
+        "siii",
+        x->x_name->s_name,
+        a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
     /* this is called back from the dialog window to create a garray.
@@ -395,7 +392,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
         gl = glist_addglist(parent, &s_, 0, 1,
             size, -1, 0, 0, 0, 0);
-    a = graph_array(gl, iemgui_raute2dollar(name), &s_float, size, flags);
+    a = graph_array(gl, name, &s_float, size, flags);
     canvas_dirty(parent, 1);
 }
 
@@ -421,7 +418,6 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     else
     {
         long size;
-        t_symbol *argname = iemgui_raute2dollar(name);
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
         if (!a)
@@ -431,11 +427,11 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         }
         if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
         {
-            error("array: no template of type %s",
+            pd_error(0, "array: no template of type %s",
                 x->x_scalar->sc_template->s_name);
             return;
         }
-        if (argname != x->x_name)
+        if (name != x->x_name)
         {
             /* jsarlo { */
             if (x->x_listviewing)
@@ -443,9 +439,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
               garray_arrayviewlist_close(x);
             }
             /* } jsarlo */
-            x->x_name = argname;
+            x->x_name = name;
             pd_unbind(&x->x_gobj.g_pd, x->x_realname);
-            x->x_realname = canvas_realizedollar(x->x_glist, argname);
+            x->x_realname = canvas_realizedollar(x->x_glist, name);
             pd_bind(&x->x_gobj.g_pd, x->x_realname);
                 /* redraw the whole glist, just so the name change shows up */
             if (x->x_glist->gl_havewindow)
@@ -476,87 +472,67 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_new(t_garray *x)
-{
-    int i, yonset=0, elemsize=0;
-    t_float yval;
-    char cmdbuf[200];
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
-
-    if (!a)
-    {
-        /* FIXME */
-        error("error in garray_arrayviewlist_new()");
-    }
-    x->x_listviewing = 1;
-    sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s %s %d\n",
-            x->x_realname->s_name,
-            0);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
-    for (i = 0; i < ARRAYPAGESIZE && i < a->a_n; i++)
-    {
-        yval = *(t_float *)(a->a_vec +
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i,
-                 i,
-                 yval);
-    }
-}
-
-void garray_arrayviewlist_fillpage(t_garray *x,
-                                   t_float page,
+static void garray_arrayviewlist_fillpage(t_garray *x,
+                                   t_float fPage,
                                    t_float fTopItem)
 {
-    int i, yonset=0, elemsize=0, topItem;
-    t_float yval;
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
+    int i, size=0, topItem=(int)fTopItem;
+    int pagesize=ARRAYPAGESIZE, page=(int)fPage, maxpage;
+    int offset, length;
+    t_word *data=0;
 
-    topItem = (int)fTopItem;
-    if (!a)
-    {
-        /* FIXME */
-        error("error in garray_arrayviewlist_new()");
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
     }
 
-    if (page < 0) {
-      page = 0;
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    else if ((page * ARRAYPAGESIZE) >= a->a_n) {
-      page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    sys_vgui(".%sArrayWindow.lb delete 0 %d\n",
+        /* make sure the requested page is within range */
+    maxpage = (size - 1) / pagesize;
+    if(page > maxpage)
+        page = maxpage;
+    if(page < 0)
+        page = 0;
+
+    pdgui_vmess("::dialog_array::listview_setpage", "s iii",
+        x->x_realname->s_name,
+        page, maxpage+1, pagesize);
+
+    offset = page*pagesize;
+    length = ((offset+pagesize) > size)?size-offset:pagesize;
+
+    pdgui_vmess("::dialog_array::listview_setdata", "siw",
              x->x_realname->s_name,
-             ARRAYPAGESIZE - 1);
-    for (i = page * ARRAYPAGESIZE;
-         (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
-         i++)
-    {
-        yval = *(t_float *)(a->a_vec + \
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i % ARRAYPAGESIZE,
-                 i,
-                 yval);
-    }
-    sys_vgui(".%sArrayWindow.lb yview %d\n",
+             offset,
+             length, data + offset);
+
+    pdgui_vmess("::dialog_array::listview_focus", "si",
              x->x_realname->s_name,
              topItem);
 }
 
-void garray_arrayviewlist_close(t_garray *x)
+static void garray_arrayviewlist_new(t_garray *x)
+{
+    int size=0;
+    t_word*data=0;
+
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
+    }
+    x->x_listviewing = 1;
+
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_listview_new", x,
+        "si",
+        x->x_realname->s_name, 0);
+
+    garray_arrayviewlist_fillpage(x, 0, 0);
+}
+
+static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow %s\n",
+    pdgui_vmess("pdtk_array_listview_closeWindow", "s",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -571,7 +547,7 @@ static void garray_free(t_garray *x)
         garray_arrayviewlist_close(x);
     }
     /* } jsarlo */
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
     while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
@@ -750,7 +726,7 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     }
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
-        error("array: no template of type %s",
+        pd_error(0, "array: no template of type %s",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -802,7 +778,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage %s\n",
+          pdgui_vmess("pdtk_array_listview_fillpage", "s",
                  x->x_realname->s_name);
     }
     /* } jsarlo */
@@ -842,12 +818,12 @@ int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!a)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return (0);
     }
     else if (elemsize != sizeof(t_word))
     {
-        error("%s: has more than one field", x->x_realname->s_name);
+        pd_error(0, "%s: has more than one field", x->x_realname->s_name);
         return (0);
     }
     *size = garray_npoints(x);
@@ -865,9 +841,9 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
             patchname = x->x_glist->gl_owner->gl_name;
         else
             patchname = x->x_glist->gl_name;
-        error("an operation on the array '%s' in the patch '%s'",
+        pd_error(0, "an operation on the array '%s' in the patch '%s'",
               x->x_name->s_name, patchname->s_name);
-        error("failed since it uses garray_getfloatarray while running 64-bit");
+        pd_error(0, "failed since it uses garray_getfloatarray while running 64-bit");
     }
     return (garray_getfloatwords(x, size, (t_word **)vec));
 }
@@ -887,7 +863,7 @@ static void garray_const(t_garray *x, t_floatarg g)
     int yonset, i, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
     else for (i = 0; i < array->a_n; i++)
         *((t_float *)((char *)array->a_vec
             + elemsize * i) + yonset) = g;
@@ -903,7 +879,7 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     if (npoints == 0)
@@ -935,7 +911,7 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     int i;
     if (argc < 2)
     {
-        error("sinesum: %s: need number of points and partial strengths",
+        pd_error(0, "sinesum: %s: need number of points and partial strengths",
             x->x_realname->s_name);
         return;
     }
@@ -959,7 +935,7 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     int i;
     if (argc < 2)
     {
-        error("sinesum: %s: need number of points and partial strengths",
+        pd_error(0, "sinesum: %s: need number of points and partial strengths",
             x->x_realname->s_name);
         return;
     }
@@ -984,7 +960,7 @@ static void garray_normalize(t_garray *x, t_float f)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
 
@@ -1019,7 +995,7 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     if (argc < 2) return;
@@ -1084,7 +1060,7 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
     t_template *scalartemplate;
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
-        error("array: no template of type %s",
+        pd_error(0, "array: no template of type %s",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -1116,7 +1092,7 @@ static void garray_width(t_garray *x, t_floatarg width)
     t_template *scalartemplate;
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
-        error("array: no template of type %s",
+        pd_error(0, "array: no template of type %s",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -1137,7 +1113,7 @@ static void garray_color(t_garray *x, t_floatarg color)
     t_template *scalartemplate;
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
-        error("array: no template of type %s",
+        pd_error(0, "array: no template of type %s",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -1157,7 +1133,7 @@ static void garray_vis_msg(t_garray *x, t_floatarg fvis)
     t_template *scalartemplate;
     if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
     {
-        error("array: no template of type %s",
+        pd_error(0, "array: no template of type %s",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -1194,7 +1170,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     nelem = array->a_n;
@@ -1202,7 +1178,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
             filename->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0
                 || !(fd = fdopen(filedesc, "r")))
     {
-        error("%s: can't open", filename->s_name);
+        pd_error(0, "%s: can't open", filename->s_name);
         return;
     }
     for (i = 0; i < nelem; i++)
@@ -1231,14 +1207,14 @@ static void garray_write(t_garray *x, t_symbol *filename)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
+        pd_error(0, "%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     canvas_makefilename(glist_getcanvas(x->x_glist), filename->s_name,
         buf, MAXPDSTRING);
     if (!(fd = sys_fopen(buf, "w")))
     {
-        error("%s: can't create", buf);
+        pd_error(0, "%s: can't create", buf);
         return;
     }
     for (i = 0; i < array->a_n; i++)

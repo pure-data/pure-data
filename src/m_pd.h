@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 51
-#define PD_BUGFIX_VERSION 4
+#define PD_MINOR_VERSION 52
+#define PD_BUGFIX_VERSION 2
 #define PD_TEST_VERSION ""
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
@@ -42,11 +42,11 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #endif /* EXTERN */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
-    structure whose elements are defined elsewhere.  On MSVC, when compiling
-    C (but not C++) code, you have to say "extern struct foo;".  So we make
-    a stupid macro: */
+    structure whose elements are defined elsewhere.  On very old MSVC versions,
+    when compiling C (but not C++) code, you have to say "extern struct foo;".
+    So we make a stupid macro: */
 #if defined(_MSC_VER) && !defined(_LANGUAGE_C_PLUS_PLUS) \
-    && !defined(__cplusplus)
+    && !defined(__cplusplus) && (_MSC_VER < 1700)
 #define EXTERN_STRUCT extern struct
 #else
 #define EXTERN_STRUCT struct
@@ -533,28 +533,31 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 /* ------------   printing --------------------------------- */
 
-typedef enum {
-    PD_CRITICAL = -3,
-    PD_ERROR,
-    PD_NORMAL,
-    PD_DEBUG,
-    PD_VERBOSE
-} t_loglevel;
-
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
+
+/* for logpost(); does *not* work with verbose()! */
+typedef enum {
+    PD_CRITICAL = 0,
+    PD_ERROR,
+    PD_NORMAL,
+    PD_DEBUG,
+    PD_VERBOSE
+} t_loglevel;
+
+EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
-EXTERN void startlogpost(const void *object, const int level, const char *fmt, ...)
-    ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
+/* deprecated, use logpost() instead. */
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isabsolutepath(const char *dir);
@@ -708,14 +711,62 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(const char *fmt, ...);
-EXTERN void sys_gui(const char *s);
+EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
+EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);
     /* dialog window creation and destruction */
-EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd);
-EXTERN void gfxstub_deleteforkey(void *key);
+EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
+EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
+
+/*
+ * send a message to the GUI, with a simplified formatting syntax
+ * <destination>: receiver on the GUI side (e.g. a Tcl/Tk 'proc')
+ * <fmt>: string of format specifiers
+ * <...>: values according to the format specifiers
+ *
+ * the <destination> can be a NULL pointer (in which case it is ignored)
+ * the user of NULL as a <destination> is discouraged
+
+ * depending on the format specifiers, one or more values are passed
+ *    'f' : <double:value>        : a floating point number
+ *    'i' : <int:value>           : an integer number
+ *    's' : <const char*:value>   : a string
+ *    'r' : <const char*:value>   : a raw string
+ *    'x' : <void*:value>         : a generic pointer
+ *    'o' : <t_object*:value>     : an graphical object
+ *    '^' : <t_canvas*:value>     : a toplevel window (legacy)
+ *    'c' : <t_canvas*:value>     : a canvas (on a window)
+ *    'F' : <int:size> <const t_float*:values>: array of t_float's
+ *    'S' : <int:size> <const char**:values>: array of strings
+ *    'R' : <int:size> <const char**:values>: array of raw strings
+ *    'a' : <int:size> <const t_atom*:values>: list of atoms
+ *    'A' : <int:size> <const t_atom*:values>: array of atoms
+ *    'w' : <int:size> <const t_word*:values>: list of floatwords
+ *    'W' : <int:size> <const t_word*:values>: array of floatwords
+ *    'm' : <t_symbol*s:recv> <int:argc> <t_atom*:argv>: a Pd message
+ *    'p' : <int:size> <const char*:values>  : a pascal string (explicit size; not \0-terminated)
+ *    'k' : <int:color>           : a color (or kolor, if you prefer)
+ *    ' ' : none                  : ignored
+ * the use of the specifiers 'x^' is discouraged
+ * raw-strings ('rR') should only be used for constant, well-known strings
+ */
+EXTERN void pdgui_vmess(const char* destination, const char* fmt, ...);
+
+
+/* improved dialog window creation
+ * this will insert a first argument to <destination> based on <key>
+ * which the GUI can then use to callback.
+ * gfxstub_new() ensures that the given receiver will be available,
+ * even if the <owner> has been removed in the meantime.
+ * see pdgui_vmess() for a description of <fmt> and the varargs
+ */
+
+EXTERN void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...);
+EXTERN void pdgui_stub_deleteforkey(void *key);
+
 
 extern t_class *glob_pdobject;  /* object to send "pd" messages */
 

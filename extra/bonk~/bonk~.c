@@ -162,7 +162,7 @@ static t_filterkernel bonk_filterkernels[NFILTERS];
 #endif
 
    /* and 1.3 */
-#define MAXNFILTERS 50
+#define MAXNFILTERS 200
 #define MASKHIST 8
 
 static t_filterbank *bonk_filterbanklist;
@@ -438,7 +438,7 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
     x->x_npoints = npoints;
     x->x_period = period;
     x->x_ninsig = nsig;
-    x->x_nfilters = nfilters;
+    x->x_nfilters = (nfilters > MAXNFILTERS ? MAXNFILTERS : nfilters);
     x->x_halftones = halftones;
     x->x_template = (t_template *)getbytes(0);
     x->x_ntemplate = 0;
@@ -943,12 +943,15 @@ static void bonk_print(t_bonk *x, t_floatarg f)
                      h->h_power, h->h_mask[x->x_maskphase],
                      h->h_before, h->h_countup);
         }
-        post("filter details (frequencies are in units of %.2f-Hz. bins):",
+        post("bin size %.2f Hz ... filters:",
              x->x_sr/x->x_npoints);
         for (j = 0; j < x->x_nfilters; j++)
-            post("%2d  cf %.2f  bw %.2f  nhops %d hop %d skip %d npoints %d",
+            post("\
+    %2d  cf %.2f(%.2f bins) bw %.2f(%.2f) nhops %d hop %d skip %d npoints %d",
                  j, 
+                 x->x_filterbank->b_vec[j].k_centerfreq*x->x_sr/x->x_npoints,
                  x->x_filterbank->b_vec[j].k_centerfreq,
+                 x->x_filterbank->b_vec[j].k_bandwidth*x->x_sr/x->x_npoints,
                  x->x_filterbank->b_vec[j].k_bandwidth,
                  x->x_filterbank->b_vec[j].k_nhops,
                  x->x_filterbank->b_vec[j].k_hoppoints,

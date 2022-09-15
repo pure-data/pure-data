@@ -26,7 +26,7 @@
   this implementation:
 
     * does not support headerless files
-    * supports big and little endian, system endianess used by default
+    * supports big and little endian, system endianness used by default
     * sets a default info string: "Pd "
     * tries to set sound data length, otherwise falls back to "unknown size"
     * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
@@ -291,7 +291,7 @@ t_soundfile_type next = {
     next_endianness
 };
 
-void soundfile_next_setup()
+void soundfile_next_setup( void)
 {
     soundfile_addtype(&next);
 }

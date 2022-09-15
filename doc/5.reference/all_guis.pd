@@ -1,0 +1,51 @@
+#N canvas 554 47 529 629 12;
+#X obj 313 181 bng 18 250 50 0 empty empty empty -8 -12 0 12 #fcfcfc
+#000000 #0400fc;
+#X obj 313 214 tgl 18 1.04858e+06 empty empty empty -6 -11 0 12 #fcfcfc
+#000000 #0400fc 0 1;
+#X obj 166 111 vsl 18 128 0 127 0 1.04858e+06 empty empty empty -7
+-13 0 12 #fcfcfc #000000 #0400fc 0 1;
+#X obj 306 144 hsl 128 18 0 127 0 0 empty empty empty 2 -12 0 12 #fcfcfc
+#000000 #0400fc 0 1;
+#X obj 302 95 hradio 18 1 0 8 empty empty empty 4 -12 0 12 #fcfcfc
+#000000 #0400fc 0;
+#X obj 75 100 vu 15 160 \$6 empty -4 -16 0 12 #202020 #000000 1 0;
+#X obj 55 299 cnv 60 100 60 empty empty empty 2 -12 0 12 #dcdcdc #0400fc
+1.04858e+06;
+#X obj 235 109 vradio 18 1 0 8 empty empty empty -17 -11 0 12 #fcfcfc
+#000000 #0400fc 0;
+#X obj 198 307 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 1 -13 0
+12 #fcfcfc #000000 #0400fc 0 256;
+#X text 337 180 Bang Button;
+#X text 338 213 Toggle Button;
+#X text 314 289 (c) musil@iem.kug.ac.at;
+#X text 350 305 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 196 281 Number Box;
+#X text 57 278 Canvas;
+#X symbolatom 80 500 10 0 0 0 - - - 0;
+#X floatatom 36 500 5 0 0 0 - - - 0;
+#X text 63 73 VU Meter;
+#X text 149 71 Vertical;
+#X text 155 86 Slider;
+#X text 219 69 Vertical;
+#X text 225 84 Radio;
+#X text 300 71 Horizontal Radio;
+#X text 301 123 Horizontal Slider;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array 100 float 2;
+#X coords 0 1 100 -1 200 140 1 0 0;
+#X restore 290 414 graph;
+#X text 10 370 ----------------------------------------------------------------------
+, f 70;
+#X listbox 36 528 20 0 0 0 - - - 0;
+#X text 159 498 atom boxes;
+#X text 185 528 list box;
+#X msg 403 577 message;
+#X text 45 572 The message box is also considered a GUI object since
+you can click on it and interact with it., f 47;
+#X text 19 424 The boxes below are 'proper native' GUIs not part of
+"IEM GUIs". See also the array to the right as another GUI element.
+, f 36;
+#X text 93 19 All IEM GUIs (objects from the "iemguis" external library
+\, natively included in Pd version 0.34):, f 49;
+#X text 20 397 Original native GUIs:;

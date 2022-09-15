@@ -1,4 +1,5 @@
 #N canvas 566 95 631 544 12;
+#X declare -stdpath ./;
 #N canvas 352 24 545 673 fft-analysis 0;
 #X obj 92 534 *~;
 #X obj 53 534 *~;
@@ -94,7 +95,7 @@ with the filter input.);
 #X text 43 414 input;
 #X text 223 415 source;
 #X text 224 396 control;
-#X floatatom 54 262 0 0 500 0 - squelch-set -;
+#X floatatom 54 262 0 0 500 0 - squelch-set - 0;
 #X obj 54 286 s squelch;
 #X obj 101 457 output~;
 #X msg 158 240 ../sound/bell.aiff;
@@ -108,11 +109,11 @@ with the filter input.);
 #X text 347 218 control source;
 #X text 170 217 filter input;
 #X text 246 193 change input sounds;
-#X floatatom 433 383 5 0 0 0 - #0-samp-msec -;
-#X obj 101 371 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 210 372 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X floatatom 433 383 5 0 0 0 - #0-samp-msec - 0;
+#X obj 101 371 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 210 372 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
 #N canvas 386 50 626 626 test-signals 0;
 #X obj 80 481 line~;
 #X obj 80 561 outlet~;
@@ -293,7 +294,7 @@ with the filter input.);
 #X connect 16 0 9 0;
 #X connect 18 0 11 0;
 #X restore 313 382 pd insample1;
-#X floatatom 432 406 5 0 0 0 - #0-samp2-msec -;
+#X floatatom 432 406 5 0 0 0 - #0-samp2-msec - 0;
 #N canvas 163 152 567 523 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
@@ -357,6 +358,7 @@ algorithm from the previous patch in this series. The best value of
 for the filter input and the control source., f 67;
 #X text 381 472 updated for Pd version 0.39;
 #X text 118 370 <= record =>;
+#X obj 451 20 declare -stdpath ./;
 #X connect 0 0 8 0;
 #X connect 0 0 8 1;
 #X connect 6 0 7 0;

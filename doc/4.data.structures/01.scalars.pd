@@ -1,36 +1,36 @@
 #N struct template1 float x float y float z float q;
-#N canvas 430 77 579 461 12;
-#N canvas 1044 125 297 180 data 1;
+#N canvas 549 64 525 428 12;
+#N canvas 1147 128 297 180 data 1;
 #X scalar template1 50 100 30 9 \;;
 #X scalar template1 150 100 -20 900 \;;
-#X restore 89 352 pd data;
-#N canvas 347 413 550 300 template1 0;
-#X obj 81 53 filledpolygon 244 q 5 0 0 20 z 40 0;
-#X text 55 177 The filledpolygon's arguments are interior color \,
+#X restore 89 322 pd data;
+#N canvas 552 390 545 339 template1 0;
+#X obj 113 178 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X text 63 221 The filledpolygon's arguments are interior color \,
 border color \, border width \, and then the points of the polygon.
 Arguments which are symbols ("q" and "z" in this case) mean to take
 the values from the data structure. Other values are constant. The
 position of the object is automatically controlled by fields named
-"x" and "y".;
+"x" and "y"., f 56;
 #X obj 81 28 struct template1 float x float y float z float q;
-#X text 54 92 This subpatch acts as a template which describes the
+#X text 65 73 This subpatch acts as a template which describes the
 data structure. The "struct" specifies four floating point values named
 x \, y \, z \, and q. The "filledpolygon" is a drawing instruction.
-Templates should have only one template object but may have any number
-of drawing instructions.;
-#X restore 89 376 pd template1;
-#N canvas 453 379 598 342 stuff 0;
-#X obj 285 171 pointer;
-#X obj 120 203 append template1 x y z q;
-#X msg 400 102 \; pd-data clear;
-#X msg 285 149 traverse pd-data \, bang;
-#X msg 210 64 bang;
-#X obj 210 33 loadbang;
-#X text 244 64 click here to re-initialize;
-#X text 108 252 This subpatch sets up the "data" window with two objects.
-How this works will get explained later.;
-#X msg 55 152 50 100 30 9 \, 150 100 -20 900;
-#X obj 210 105 trigger bang bang bang;
+Template subpatches should have only one [struct] object \, but may
+have any number of drawing instructions., f 54;
+#X restore 89 346 pd template1;
+#N canvas 373 341 516 321 stuff 0;
+#X obj 234 174 pointer;
+#X obj 69 205 append template1 x y z q;
+#X msg 349 100 \; pd-data clear;
+#X msg 234 147 traverse pd-data \, bang;
+#X msg 159 66 bang;
+#X obj 159 35 loadbang;
+#X text 193 66 click here to re-initialize;
+#X text 88 251 This subpatch sets up the "data" window with two objects.
+How this works will get explained later., f 49;
+#X msg 69 154 50 100 30 9 \, 150 100 -20 900, f 15;
+#X obj 159 107 trigger bang bang bang;
 #X connect 0 0 1 4;
 #X connect 3 0 0 0;
 #X connect 4 0 9 0;
@@ -39,7 +39,7 @@ How this works will get explained later.;
 #X connect 9 0 8 0;
 #X connect 9 1 3 0;
 #X connect 9 2 2 0;
-#X restore 90 401 pd stuff;
+#X restore 90 371 pd stuff;
 #X text 37 73 The positions \, border color \, and altitude of each
 triangle are numeric values which can control \, or be controlled by
 \, other elements of the patch., f 63;
@@ -48,9 +48,7 @@ can drag the apex of either triangle up or down to change the altitude
 (you should see the cursor change with dragging is meaningful.) In
 edit (unlocked) mode \, you can move the entire triangles around \,
 or cut \, copy \, and paste them., f 63;
-#X text 77 329 subpatches:;
-#X text 36 280 Data is not persistent. If you save a Pd patch and reopen
-it \, the "data" isn't preserved., f 63;
+#X text 77 299 subpatches:;
 #X text 37 18 This patch shows a simple data window with two objects
 in it. The objects' data structures and appearances are defined by
 the "template1" subpatch. This kind of object is called a "scalar."
@@ -60,4 +58,4 @@ The subwindows are found by their name \, in this case "template1."
 The template describes what form the data take and how it is shown.
 It's possible to mix data of many different templates in the same collection.
 , f 63;
-#X text 290 403 updated for Pd version 0.35.;
+#X text 254 352 updated for Pd version 0.52.;

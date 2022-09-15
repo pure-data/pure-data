@@ -1,0 +1,102 @@
+#N canvas 543 64 535 516 12;
+#X floatatom 318 363 5 0 0 0 - - - 0;
+#X obj 34 204 sig~ 50;
+#X obj 318 333 snapshot~;
+#X text 179 21 - one-to-many nonlocal signal connections;
+#X obj 318 284 metro 200;
+#X text 297 477 updated for Pd version 0.33.;
+#X obj 34 282 sig~ 25;
+#X text 48 417 Send~/Receive~ only work for the default block size
+(64) \; for FFT applications see also:;
+#X obj 278 442 tabsend~;
+#X obj 115 46 s~;
+#X obj 146 46 r~;
+#X text 41 477 see also:;
+#X obj 173 478 send;
+#X obj 117 478 throw~;
+#X text 179 45 - abbreviation;
+#X obj 318 252 loadbang;
+#X obj 420 204 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000 0 1;
+#X msg 420 227 \; pd dsp \$1;
+#X text 443 204 on/off;
+#X floatatom 34 180 5 0 0 0 - - - 0;
+#X floatatom 410 363 5 0 0 0 - - - 0;
+#X obj 410 333 snapshot~;
+#X obj 410 300 r~ signal1;
+#X text 24 97 A send~ object copies its input to a local buffer which
+all receive~ objects of the same name read from. They may be in different
+windows or even different patches. Any number of receives may be associated
+with one send~ but it is an error to have two send~s of the same name.
+Receive~ takes "set" messages to switch between send~s., f 68;
+#X obj 35 20 send~ x;
+#X obj 95 21 receive~ x;
+#X obj 34 227 send~ \$0-signal;
+#X obj 34 308 send~ signal;
+#X msg 178 264 set signal;
+#X msg 166 237 set \$1-signal;
+#X obj 166 213 f \$0;
+#X obj 166 190 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#000000 #000000;
+#X text 205 192 <= \$0 needs to be expanded from objects., f 23;
+#X floatatom 34 257 5 0 0 0 - - - 0;
+#N canvas 525 216 510 156 execution-order 0;
+#X obj 115 95 ../3.audio.examples/G05.execution.order;
+#X text 46 30 You have to get the send~ sorted before the receive~
+or else you'll never get less than a block's delay. You can use the
+strategy given in the example below to control this.;
+#X restore 73 355 pd execution-order;
+#X obj 166 292 receive~ \$0-signal;
+#N canvas 697 108 571 432 reference 0;
+#X obj 8 53 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 97 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 134 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 175 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 321 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 366 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 403 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 146 107 NONE;
+#X obj 28 15 send~ y;
+#X obj 24 245 receive~ y;
+#X text 89 15 - send signal to one or more receive~ objects.;
+#X obj 8 281 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X text 109 294 set <name> - set receive name.;
+#X text 139 67 signal - signal to send to matching receive~ object(s).
+;
+#X text 107 244 - receive signal from a send~ object.;
+#X text 138 332 signal - outputs signal from a matching send~ object.
+;
+#X text 124 142 1) symbol - send symbol name (default: empty symbol).
+;
+#X text 106 376 1) symbol - receive name symbol (default: empty symbol).
+;
+#X restore 335 52 pd reference;
+#X text 432 53 <= click;
+#X obj 14 87 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 14 397 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X connect 1 0 26 0;
+#X connect 2 0 0 0;
+#X connect 4 0 2 0;
+#X connect 4 0 21 0;
+#X connect 6 0 27 0;
+#X connect 15 0 4 0;
+#X connect 16 0 17 0;
+#X connect 19 0 1 0;
+#X connect 21 0 20 0;
+#X connect 22 0 21 0;
+#X connect 28 0 35 0;
+#X connect 29 0 35 0;
+#X connect 30 0 29 0;
+#X connect 31 0 30 0;
+#X connect 33 0 6 0;
+#X connect 35 0 2 0;

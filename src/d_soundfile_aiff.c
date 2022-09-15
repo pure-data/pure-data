@@ -78,7 +78,7 @@ typedef struct _head
     char h_formtype[4];              /**< format: "AIFF" or "AIFC"     */
 } t_head;
 
-    /** commmon chunk, 26 (AIFF) or 30+ (AIFC) bytes
+    /** common chunk, 26 (AIFF) or 30+ (AIFC) bytes
         note: sample frames is split to avoid struct alignment padding */
 typedef struct _commchunk
 {
@@ -425,7 +425,6 @@ static int aiff_readheader(t_soundfile *sf)
     if (bytelimit == AIFFMAXBYTES)
     {
         bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
-        if (bytelimit > AIFFMAXBYTES || bytelimit < 0)
             bytelimit = AIFFMAXBYTES;
     }
 
@@ -453,10 +452,10 @@ static int aiff_writeheader(t_soundfile *sf, size_t nframes)
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
         swap2(sf->sf_nchannels, swap),          /* channels         */
-        0,                                      /* sample frames    */
+        {0},                                      /* sample frames    */
         swap2(sf->sf_bytespersample / 8, swap), /* bits per sample  */
-        0,                                      /* sample rate      */
-        0, 0                                    /* comp info        */
+        {0},                                      /* sample rate      */
+        {0}, {0}                                    /* comp info        */
     };
     t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 
@@ -615,7 +614,7 @@ static const t_soundfile_type aiff = {
     aiff_endianness
 };
 
-void soundfile_aiff_setup()
+void soundfile_aiff_setup( void)
 {
     soundfile_addtype(&aiff);
 }
