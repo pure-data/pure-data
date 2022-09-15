@@ -1021,7 +1021,7 @@ static t_pd*bytestruct_new(t_symbol*s, int argc, t_atom*argv) {
     else if (!strcmp("size", verb->s_name))
         return bytestruct_size_new(atom_getsymbolarg(1, argc, argv));
 fail:
-    error("%s: valid verbs are 'pack', 'unpack' 'size'", s->s_name);
+    pd_error(0, "%s: valid verbs are 'pack', 'unpack' 'size'", s->s_name);
     return 0;
 }
 
