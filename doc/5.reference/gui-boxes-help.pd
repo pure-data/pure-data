@@ -1,13 +1,13 @@
 #N canvas 193 23 1017 701 12;
-#X msg 233 421 set 45;
-#X floatatom 203 465 5 0 0 0 - - - 0;
+#X msg 241 421 set 45;
+#X floatatom 211 465 5 0 0 0 - - - 0;
 #X symbolatom 257 41 10 0 0 0 - - - 0;
 #X floatatom 56 41 5 0 0 0 - - - 0;
 #X text 801 240 more details:;
 #X symbolatom 616 228 15 0 0 0 - - - 0;
 #X msg 632 168 set hi;
 #X msg 616 140 symbol hello\ world;
-#X msg 163 421 12;
+#X msg 171 421 12;
 #N canvas 450 199 417 455 properties 0;
 #N canvas 804 125 488 541 width 0;
 #X floatatom 281 445 1 0 0 0 - - - 0;
@@ -138,7 +138,7 @@ Below \, we have a size of "36". The font setting also affects the
 label., f 56;
 #X restore 196 267 pd size;
 #X text 116 78 <-- right click for properties;
-#X restore 216 536 pd properties;
+#X restore 220 533 pd properties;
 #N canvas 635 260 459 438 properties 0;
 #N canvas 856 145 510 501 width 0;
 #X symbolatom 162 162 10 0 0 0 - - - 0;
@@ -222,18 +222,16 @@ label., f 74;
 #X restore 240 277 pd size;
 #X text 171 77 <-- right click for properties;
 #X restore 802 262 pd properties;
-#X text 112 536 more details:;
+#X text 116 533 more details:;
 #X listbox 490 41 20 0 0 0 - - - 0;
-#X text 689 172 set only - don't output;
+#X text 689 165 set only - don't output;
 #X msg 541 362 1 2 3 foo 5;
 #X listbox 541 566 22 0 0 0 - - - 0;
 #X msg 555 401 list wombat weasel wallaby;
 #X text 636 355 messages beginning with a number are implicitly understood
 as lists, f 35;
-#X text 756 390 lists starting with a symbol must be preceded by the
-word "list" to disambiguate them, f 28;
 #X msg 593 467 set 4 dog 5 6 donkey;
-#X text 746 462 "set" message changes contents but doesn't output them
+#X text 748 462 "set" message changes contents but doesn't output them
 , f 30;
 #X text 793 671 updated for Pd version 0.52;
 #X text 709 620 more details:;
@@ -355,13 +353,7 @@ if you type it in or receive it via the inlet., f 64;
 #X restore 227 248 pd limits;
 #X text 206 76 <-- right click for properties;
 #X restore 815 619 pd properties;
-#X text 25 195 Double-clicking activates a text editor \, so that you
-can select portions of the contents and/or cut/copy/paste values and
-hit enter when done. You may also simply single-click and enter the
-new contents from scratch. If you start retyping with a single click
-you can cancel the action by clicking outside the box \, or adopt the
-change using the "enter" key., f 66;
-#X text 25 286 You can also change a numeric value upward or downward
+#X text 27 279 You can also change a numeric value upward or downward
 by clicking and dragging. Shift-click changes the value in hundredths
 instead of units. This works for both number boxes and individual numbers
 in a list box., f 66;
@@ -426,30 +418,14 @@ and/or double click to edit just one element., f 36;
 #X text 150 298 bang - output value.;
 #X text 150 532 bang - output value.;
 #X restore 819 36 pd reference;
-#X obj 203 421 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#X obj 211 421 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 575 435 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 646 198 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 25 87 These are GUI (Graphical User Interface) objects that
-display and send atoms or lists. An atom is a single element message
-(either a symbol or a float). A list is composed of more than one atom
-and can hold floats and/or symbols. These may be created by selecting
-"number" (etc.) from the "put" menu. The contents can be changed while
-the patch in in "run" mode (as opposed to "edit") \, so these are useful
-as controls and displays in a finished patch., f 66;
-#X obj 203 500 print number box;
+#X obj 211 492 print number box;
 #X obj 541 595 print list box;
-#X text 25 571 The atom number box object toggles between 0 and a non
-zero value If you click on a number box while pressing "control" (in
-Linux or Windows) or "command" (Mac). The non zero value is the last
-non zero value that the box holds (by default \, this value is "1").
-, f 66;
-#X text 25 349 If the objects receive a proper message (like a float
-message for the number box below) \, they get displayed and pass through.
-A "set" message updates but doesn't output. A bang outputs its holding
-value., f 66;
 #X text 541 86 Symbol atom boxes are like number boxes but hold a symbol
 instead of a number:, f 61;
 #X obj 616 261 print symbol box;
@@ -461,19 +437,43 @@ symbols:, f 38;
 #X msg 607 506 set;
 #X text 644 499 set to an empty list (normally treated as a bang in
 Pd), f 30;
-#X text 68 466 click and drag -->;
-#X text 248 465 (or shift+click and drag);
+#X text 76 466 click and drag -->;
+#X text 256 465 (or shift+click and drag);
+#X text 27 83 These GUI (Graphical User Interface) objects display
+and send atoms or lists. An atom is a single element message (either
+a symbol or a float). A list is composed of more than one atom and
+can hold floats and/or symbols. These may be created by selecting "number"
+(etc.) from the "put" menu. The contents can be changed while the patch
+is in "run" mode (as opposed to "edit moe") \, so these are useful
+as controls and displays in a finished patch., f 66;
+#X text 27 188 Clicking on the object activates it so you can hit enter
+to output the value or type in a new value before it. If you start
+retyping with a single click you can cancel the action by clicking
+outside the box. Double-clicking activates a text editor \, so that
+you can select portions of the contents and/or cut/copy/paste values
+and hit enter when done., f 66;
+#X text 27 342 If the objects receive a proper message (like a float
+message for the number box below) \, they get displayed and pass through.
+A "set" message updates but doesn't output. A bang outputs its holding
+value. See the Number atom box below:, f 66;
+#X text 27 568 The number atom box object toggles between 0 and a non
+zero value If you click on a number box while pressing "control" (in
+Linux or Windows) or "command" (Mac). The non zero value is the last
+non zero value that the box holds (by default \, this value is "1").
+, f 66;
+#X text 756 390 lists starting with a symbol must be preceded by the
+"list" selector to disambiguate them, f 30;
 #X connect 0 0 1 0;
-#X connect 1 0 41 0;
-#X connect 5 0 46 0;
+#X connect 1 0 38 0;
+#X connect 5 0 41 0;
 #X connect 6 0 5 0;
 #X connect 7 0 5 0;
 #X connect 8 0 1 0;
 #X connect 14 0 15 0;
-#X connect 15 0 42 0;
+#X connect 15 0 39 0;
 #X connect 16 0 15 0;
-#X connect 19 0 15 0;
-#X connect 37 0 1 0;
-#X connect 38 0 15 0;
-#X connect 39 0 5 0;
-#X connect 51 0 15 0;
+#X connect 18 0 15 0;
+#X connect 35 0 1 0;
+#X connect 36 0 15 0;
+#X connect 37 0 5 0;
+#X connect 46 0 15 0;
