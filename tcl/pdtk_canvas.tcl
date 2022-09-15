@@ -648,3 +648,17 @@ proc ::pdtk_canvas::select {args} {
         ::pd_connect::pd_docmds "$docmds"
     }
 }
+
+proc ::pdtk_canvas::delete {args} {
+    set docmds ""
+    if {[llength $args] < 2} {
+        puts "ERROR: ::pdtk_canvas::delete: not enough arguments"
+        return
+    }
+    set cnv [lindex $args 0]
+    set tag [lindex $args 1]
+    set docmds "$cnv delete $tag"
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
