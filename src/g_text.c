@@ -1684,7 +1684,7 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     /* change text; if T_OBJECT, remake it.  */
 void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
 {
-    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
+    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);
     if (x->te_type == T_OBJECT)
     {
         t_binbuf *b = binbuf_new();
