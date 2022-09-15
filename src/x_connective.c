@@ -9,6 +9,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#endif
 
 /* -------------------------- int ------------------------------ */
 static t_class *pdint_class;
@@ -670,17 +675,16 @@ static t_class *pack_class;
 typedef struct _pack
 {
     t_object x_obj;
-    t_int x_n;              /* number of args */
     t_atom *x_vec;          /* input values */
-    t_int x_nptr;           /* number of pointers */
     t_gpointer *x_gpointer; /* the pointers */
-    t_atom *x_outvec;       /* space for output values */
+    int x_n;                /* number of args */
+    int x_nptr;             /* number of pointers */
 } t_pack;
 
 static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_pack *x = (t_pack *)pd_new(pack_class);
-    t_atom defarg[2], *ap, *vec, *vp;
+    t_atom defarg[2], *vec;
     t_gpointer *gp;
     int nptr = 0;
     int i;
@@ -694,34 +698,33 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_n = argc;
     vec = x->x_vec = (t_atom *)getbytes(argc * sizeof(*x->x_vec));
-    x->x_outvec = (t_atom *)getbytes(argc * sizeof(*x->x_outvec));
 
-    for (i = argc, ap = argv; i--; ap++)
-        if (ap->a_type == A_SYMBOL && *ap->a_w.w_symbol->s_name == 'p')
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type == A_SYMBOL && *argv[i].a_w.w_symbol->s_name == 'p')
             nptr++;
 
     gp = x->x_gpointer = (t_gpointer *)t_getbytes(nptr * sizeof (*gp));
     x->x_nptr = nptr;
 
-    for (i = 0, vp = x->x_vec, ap = argv; i < argc; i++, ap++, vp++)
+    for (i = 0; i < argc; i++)
     {
-        if (ap->a_type == A_FLOAT)
+        if (argv[i].a_type == A_FLOAT)
         {
-            *vp = *ap;
-            if (i) floatinlet_new(&x->x_obj, &vp->a_w.w_float);
+            vec[i] = argv[i];
+            if (i) floatinlet_new(&x->x_obj, &vec[i].a_w.w_float);
         }
-        else if (ap->a_type == A_SYMBOL)
+        else if (argv[i].a_type == A_SYMBOL)
         {
-            char c = *ap->a_w.w_symbol->s_name;
+            char c = *argv[i].a_w.w_symbol->s_name;
             if (c == 's')
             {
-                SETSYMBOL(vp, &s_symbol);
-                if (i) symbolinlet_new(&x->x_obj, &vp->a_w.w_symbol);
+                SETSYMBOL(&vec[i], &s_symbol);
+                if (i) symbolinlet_new(&x->x_obj, &vec[i].a_w.w_symbol);
             }
             else if (c == 'p')
             {
-                vp->a_type = A_POINTER;
-                vp->a_w.w_gpointer = gp;
+                vec[i].a_type = A_POINTER;
+                vec[i].a_w.w_gpointer = gp;
                 gpointer_init(gp);
                 if (i) pointerinlet_new(&x->x_obj, gp);
                 gp++;
@@ -729,9 +732,9 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
             else
             {
                 if (c != 'f') pd_error(x, "pack: %s: bad type",
-                    ap->a_w.w_symbol->s_name);
-                SETFLOAT(vp, 0);
-                if (i) floatinlet_new(&x->x_obj, &vp->a_w.w_float);
+                    argv[i].a_w.w_symbol->s_name);
+                SETFLOAT(&vec[i], 0);
+                if (i) floatinlet_new(&x->x_obj, &vec[i].a_w.w_float);
             }
         }
     }
@@ -741,35 +744,33 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 
 static void pack_bang(t_pack *x)
 {
-    int i, reentered = 0, size = (int)(x->x_n * sizeof(t_atom));
-    t_gpointer *gp;
-    t_atom *outvec;
-    for (i = (int)x->x_nptr, gp = x->x_gpointer; i--; gp++)
-        if (!gpointer_check(gp, 1))
+    int i;
+    t_atom *outvec = (t_atom *)alloca(x->x_n * sizeof(t_atom));
+    t_gpointer *gpvec, *gp;
+    if (x->x_nptr > 0)
     {
-        pd_error(x, "pack: stale pointer");
-        return;
-    }
-        /* reentrancy protection.  The first time through use the pre-allocated
-        x_outvec; if we're reentered we have to allocate new memory. */
-    if (!x->x_outvec)
-    {
-            /* LATER figure out how to deal with reentrancy and pointers... */
-        if (x->x_nptr)
-            post("pack_bang: warning: reentry with pointers unprotected");
-        outvec = t_getbytes(size);
-        reentered = 1;
+        gp = gpvec = (t_gpointer *)alloca(x->x_nptr * sizeof(t_gpointer));
+        for (i = 0; i < x->x_n; i++)
+        {
+            outvec[i] = x->x_vec[i];
+            if (x->x_vec[i].a_type == A_POINTER)
+            {
+                gpointer_copy(x->x_vec[i].a_w.w_gpointer, gp);
+                outvec[i].a_w.w_gpointer = gp;
+                gp++;
+            }
+        }
     }
     else
     {
-        outvec = x->x_outvec;
-        x->x_outvec = 0;
+        for (i = 0; i < x->x_n; i++)
+            outvec[i] = x->x_vec[i];
     }
-    memcpy(outvec, x->x_vec, size);
-    outlet_list(x->x_obj.ob_outlet, &s_list, (int)x->x_n, outvec);
-    if (reentered)
-        t_freebytes(outvec, size);
-    else x->x_outvec = outvec;
+
+    outlet_list(x->x_obj.ob_outlet, &s_list, x->x_n, outvec);
+
+    for (i = 0; i < x->x_nptr; i++)
+        gpointer_unset(&gpvec[i]);
 }
 
 static void pack_pointer(t_pack *x, t_gpointer *gp)
@@ -777,8 +778,7 @@ static void pack_pointer(t_pack *x, t_gpointer *gp)
     if (x->x_vec->a_type == A_POINTER)
     {
         gpointer_unset(x->x_gpointer);
-        *x->x_gpointer = *gp;
-        if (gp->gp_stub) gp->gp_stub->gs_refcount++;
+        gpointer_copy(gp, x->x_gpointer);
         pack_bang(x);
     }
     else pd_error(x, "pack_pointer: wrong type");
@@ -804,6 +804,7 @@ static void pack_symbol(t_pack *x, t_symbol *s)
     else pd_error(x, "pack_symbol: wrong type");
 }
 
+    /* without a list method, pack_anything() would be called */
 static void pack_list(t_pack *x, t_symbol *s, int ac, t_atom *av)
 {
     obj_list(&x->x_obj, 0, ac, av);
@@ -811,23 +812,20 @@ static void pack_list(t_pack *x, t_symbol *s, int ac, t_atom *av)
 
 static void pack_anything(t_pack *x, t_symbol *s, int ac, t_atom *av)
 {
-    t_atom *av2 = (t_atom *)getbytes((ac + 1) * sizeof(t_atom));
+    t_atom *av2 = (t_atom *)alloca((ac + 1) * sizeof(t_atom));
     int i;
     for (i = 0; i < ac; i++)
         av2[i + 1] = av[i];
     SETSYMBOL(av2, s);
-    obj_list(&x->x_obj, 0, ac+1, av2);
-    freebytes(av2, (ac + 1) * sizeof(t_atom));
+    obj_list(&x->x_obj, 0, ac + 1, av2);
 }
 
 static void pack_free(t_pack *x)
 {
-    t_gpointer *gp;
     int i;
-    for (gp = x->x_gpointer, i = (int)x->x_nptr; i--; gp++)
-        gpointer_unset(gp);
+    for (i = 0; i < x->x_nptr; i++)
+        gpointer_unset(&x->x_gpointer[i]);
     freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
-    freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
     freebytes(x->x_gpointer, x->x_nptr * sizeof(*x->x_gpointer));
 }
 
