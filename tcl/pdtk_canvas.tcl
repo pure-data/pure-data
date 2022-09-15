@@ -504,6 +504,42 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
     }
 }
 
+proc _check_argc {count argc type mode} {
+    set should_throw false
+    if {"exact" eq $mode} {
+        if {$argc != $count} {
+            set should_throw true
+        }
+    } else {
+        if {$argc < $count} {
+            set should_throw true
+        }
+    }
+    if {$should_throw} {
+        throw "pd<->gui comm" "[info level -2] >> only $argc arguments for $type"
+    }
+}
+
+proc check_argc_exact {count argc {type {}} } {
+    _check_argc $count $argc $type exact
+}
+
+proc check_argc_least {count argc {type {}} } {
+    _check_argc $count $argc $$type least
+}
+
+set cnv_coords_types { obj inlet outlet atom bang }
+
+proc parse_cnv_coords {args argc name} {
+    check_argc_least 5 $argc "parse_cnv_coords"
+    upvar 1 $name arr
+    set arr(cnv) [lindex $args 0]
+    set arr(x1) [lindex $args 1]
+    set arr(y1) [lindex $args 2]
+    set arr(x2) [lindex $args 3]
+    set arr(y2) [lindex $args 4]
+}
+
 proc get_rect_coords {x1 y1 x2 y2} {
     return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
 }
@@ -515,58 +551,35 @@ proc get_atom_coords {x1 y1 x2 y2 corner} {
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
     set docmds ""
-    if {[llength $args] < 2} {
-        puts "ERROR: ::pdtk_canvas::create: not enough arguments"
-        return
-    }
+    check_argc_least 2 $args
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
-    set cnvCoordsTypes { obj inlet outlet atom bang }
-    if { $type in $cnvCoordsTypes} {
-        if { $argc < 5 } {
-            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
-            return
-        }
-        set cnv [lindex $args 0]
-        set x1 [lindex $args 1]
-        set y1 [lindex $args 2]
-        set x2 [lindex $args 3]
-        set y2 [lindex $args 4]
+    if { $type in $::cnv_coords_types} {
+        parse_cnv_coords $args $argc parsed
+        foreach name [array names parsed] { set $name $parsed($name) }
     }
-    if {$type eq "obj"} {
-        if { $argc != 8 } {
-            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
-            return
-        }
+    if {"obj" eq $type} {
+        check_argc_exact 8 $argc $type
         set pattern [lindex $args 5]
         set width [lindex $args 6]
         set tag [lindex $args 7]
-        set docmds "$cnv create line [get_rect_coords $x1 $y1 $x2 $y2] -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type} }"
+        set docmds "$cnv create line [get_rect_coords $x1 $y1 $x2 $y2] -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type}}"
     }
     if {$type eq "outlet" || $type eq "inlet"} {
-        if { $argc != 6 } {
-            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
-            return
-        }
+        check_argc_exact 6 $argc $type
         set tag [lindex $args 5]
         set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
     }
     if {"atom" eq $type} {
-        if { $argc != 8 } {
-            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
-            return
-        }
+        check_argc_exact 8 $argc $type
         set corner [lindex $args 5]
         set width [lindex $args 6]
         set tag [lindex $args 7]
         set docmds "$cnv create line [get_atom_coords $x1 $y1 $x2 $y2 $corner] -width $width -capstyle projecting -tags {{$tag} {$type}}"
     }
     if {"bang" eq $type} {
-        if { $argc != 13 } {
-            puts "ERROR: ::pdtk_canvas::create: only $argc arguments for $type"
-            return
-        }
+        check_argc_exact 13 $argc $type
         set obj [lindex $args 5]
         set zoom [lindex $args 6]
         set bcol [lindex $args 7]
@@ -612,28 +625,19 @@ proc ::pdtk_canvas::create {args} {
 proc ::pdtk_canvas::select {args} {
     #puts "pdtk_canvas::select got: $args"
     set docmds ""
-    if {[llength $args] < 2} {
-        puts "ERROR: ::pdtk_canvas::select: not enough arguments"
-        return
-    }
+    check_argc_least 2 [llength $args]
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
     if {"obj" eq $type} {
-        if { $argc != 3} {
-            puts "ERROR: ::pdtk_canvas::select: only $argc arguments for $type"
-            return
-        }
+        check_argc_exact 3 $argc
         set glist [lindex $args 0]
         set buf [lindex $args 1]
         set state [lindex $args 2]
         set docmds "$glist itemconfigure $buf -fill $state"
     }
     if {"bang" eq $type} {
-        if { $argc != 4 } {
-            puts "ERROR: ::pdtk_canvas::select: only $argc arguments for $type"
-            return
-        }
+        check_argc_exact 4 $argc
         set cnv [lindex $args 0]
         set obj [lindex $args 1]
         set col [lindex $args 2]
@@ -659,10 +663,7 @@ proc ::pdtk_canvas::select {args} {
 
 proc ::pdtk_canvas::delete {args} {
     set docmds ""
-    if {[llength $args] < 2} {
-        puts "ERROR: ::pdtk_canvas::delete: not enough arguments"
-        return
-    }
+    check_argc_exact 2 [llength $args]
     set cnv [lindex $args 0]
     set tag [lindex $args 1]
     set docmds "$cnv delete $tag"
