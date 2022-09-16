@@ -530,22 +530,39 @@ proc check_argc_least {count argc {type {}} } {
 
 set cnv_coords_types { obj inlet outlet atom bang }
 
-proc parse_cnv_coords {args argc name} {
-    check_argc_least 5 $argc "parse_cnv_coords"
-    upvar 1 $name arr
-    set arr(cnv) [lindex $args 0]
-    set arr(x1) [lindex $args 1]
-    set arr(y1) [lindex $args 2]
-    set arr(x2) [lindex $args 3]
-    set arr(y2) [lindex $args 4]
+proc parse_cnv_coords {args argc outPtr} {
+    check_argc_least 5 $argc
+    upvar 1 $outPtr out
+    set out(cnv) [lindex $args 0]
+    set out(x1) [lindex $args 1]
+    set out(y1) [lindex $args 2]
+    set out(x2) [lindex $args 3]
+    set out(y2) [lindex $args 4]
 }
 
-proc get_rect_coords {x1 y1 x2 y2} {
-    return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+proc parse_obj_atom_args {args argc type outPtr} {
+    check_argc_exact 8 $argc
+    upvar 1 $outPtr out
+    if { "atom" eq $type } {
+        set out(corner) [lindex $args 5]
+        set out(pattern) ""
+        set out(width) "-width [lindex $args 6]"
+        set out(tag) [lindex $args 7]
+    } elseif { "obj" eq $type } {
+        set out(pattern) "-dash \"[lindex $args 5]\""
+        set out(width) "-width [lindex $args 6]"
+        set out(tag) [lindex $args 7]
+    }
 }
 
-proc get_atom_coords {x1 y1 x2 y2 corner} {
-    return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
+proc get_poly_coords {pPtr} {
+    upvar 1 $pPtr p
+    foreach name [array names p] { set $name $p($name) }
+    if [info exists corner] {
+        return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
+    } else {
+        return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+    }
 }
 
 proc ::pdtk_canvas::create {args} {
@@ -556,27 +573,17 @@ proc ::pdtk_canvas::create {args} {
     set args [lrange $args 1 end]
     set argc [llength $args]
     if { $type in $::cnv_coords_types} {
-        parse_cnv_coords $args $argc parsed
-        foreach name [array names parsed] { set $name $parsed($name) }
+        parse_cnv_coords $args $argc p
+        foreach name [array names p] { set $name $p($name) }
     }
-    if {"obj" eq $type} {
-        check_argc_exact 8 $argc $type
-        set pattern [lindex $args 5]
-        set width [lindex $args 6]
-        set tag [lindex $args 7]
-        set docmds "$cnv create line [get_rect_coords $x1 $y1 $x2 $y2] -dash \"$pattern\" -width $width -capstyle projecting -tags {{$tag} {$type}}"
+    if {"obj" eq $type || "atom" eq $type} {
+        parse_obj_atom_args $args $argc $type p
+        set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) -capstyle projecting -tags {{$p(tag)} {$type}}"
     }
     if {$type eq "outlet" || $type eq "inlet"} {
         check_argc_exact 6 $argc $type
         set tag [lindex $args 5]
         set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
-    }
-    if {"atom" eq $type} {
-        check_argc_exact 8 $argc $type
-        set corner [lindex $args 5]
-        set width [lindex $args 6]
-        set tag [lindex $args 7]
-        set docmds "$cnv create line [get_atom_coords $x1 $y1 $x2 $y2 $corner] -width $width -capstyle projecting -tags {{$tag} {$type}}"
     }
     if {"bang" eq $type} {
         check_argc_exact 13 $argc $type
