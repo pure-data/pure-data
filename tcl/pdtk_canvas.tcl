@@ -607,13 +607,16 @@ proc ::pdtk_canvas::create {args} {
         append tag_label $obj LABEL
         set inset $zoom
 
-        #bng_draw_new()
-        set cmd "$cnv create rectangle 0 0 0 0 -tags {$tag_object $tag_base}"
-        append docmds "$cmd;\n"
-        set cmd "$cnv create oval 0 0 0 0 -tags {$tag_object $tag_button}"
-        append docmds "$cmd;\n"
-        set cmd "$cnv create text 0 0 -anchor w -tags {$tag_object $tag_label label text}"
-        append docmds "$cmd;\n"
+        if { ![llength [$cnv coords $tag_base]] } {
+            # if item doesn't exist, create it first
+            #bang_draw_new()
+            set cmd "$cnv create rectangle 0 0 0 0 -tags {$tag_object $tag_base}"
+            append docmds "$cmd;\n"
+            set cmd "$cnv create oval 0 0 0 0 -tags {$tag_object $tag_button}"
+            append docmds "$cmd;\n"
+            set cmd "$cnv create text 0 0 -anchor w -tags {$tag_object $tag_label label text}"
+            append docmds "$cmd;\n"
+        }
 
         #bng_draw_config()
         append docmds "$cnv coords $tag_base $x1 $y1 $x2 $y2;\n"
