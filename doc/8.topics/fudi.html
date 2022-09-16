@@ -58,72 +58,79 @@ a:active {
 </style>
 <body>
 <div id=corpus>
-<h1 id="FUDI">FUDI</h1>
 
-<p>FUDI (<strong>F</strong>ast <strong>U</strong>niversal <strong>D</strong>igital <strong>
-I</strong>nterface) is a networking protocol invented by Miller Puckette and used in Pure Data.
- It is a string based protocol in which messages are separated by semicolons. Messages are
- made up of tokens separated by whitespaces, and numerical tokens are represented as strings.</p>
-
-<h3 id="Format">Format</h3>
-
-<p><strong>FUDI</strong> is a packet oriented protocol.</p>
-
-<p>Each message consists of one or more <strong>atom</strong>s, separated by one or more
- <strong>whitespace</strong> characters, and it&rsquo;s terminated by a <strong>semicolon
- </strong> character.</p>
-
-<p>An <strong>atom</strong> is a sequence of one or more characters; whitespaces inside atoms
- can be escaped by the <strong>backslash</strong> (ascii 92) character (see Examples below).</p>
-
-<p>A <strong>whitespace</strong> is either a space (ascii 32), a tab (ascii 9) or a newline
- (ascii 10).</p>
-
-<p>A <strong>semicolon</strong> (ascii 59) is mandatory to terminate (and send) a message.
- A <strong>newline</strong> is just treated as whitespace and not needed for message termination.</p>
-
-<h3 id="Implementations">Implementations</h3>
-
-<p><strong>pdsend / pdreceive</strong></p>
-
-<p>Those command-line tools are distributed with the software Pure Data. They are meant
- to be used with their counterparts, the classes [netsend] / [netreceive] of Pd.</p>
-
-<p><strong>[netsend] / [netreceive]</strong></p>
-
-<p>Those classes can be used to transport Pd-messages over a TCP or UDP socket.
- Both are part of Pd-vanilla.</p>
-
-<p><strong>[netserver] / [netclient]</strong></p>
-
-<p>Those are part of maxlib and allow bidirectional connections of multiple clients with
- one server.</p>
-
-<h3 id="Example.messages">Example messages</h3>
-
-<pre><code>test/blah 123.45314;
-</code></pre>
-
-<pre><code>my-slider 12;
-</code></pre>
-
-<pre><code>hello this is a message;
-</code></pre>
-
+<h1 id="fudi">FUDI</h1>
+<p><strong>FUDI</strong> is a the networking protocol used by Pd
+internally to communicate between the GUI process and the DSP process.
+The same protocol is also used for saving patches to the Pd file. FUDI
+stand for ‘Fast Unified Digital Interface’ (or according to Miller
+Puckette, whatever other acronym people can come up with :)</p>
+<h3 id="format">Format:</h3>
+<p><strong>FUDI</strong> is a packet oriented protocol. Each message
+consists of one or more <strong>atoms</strong>, separated by one or more
+<strong>whitespace</strong> characters, and it’s terminated by a
+<strong>semicolon</strong> character. An <strong>atom</strong> is a
+sequence of one or more characters; whitespaces inside atoms can be
+escaped by the <strong>backslash</strong> (ascii 92) character (see
+Examples below).</p>
+<p>A <strong>whitespace</strong> is either a space (ascii 32), a tab
+(ascii 9) or a newline (ascii 10).</p>
+<p>A <strong>semicolon</strong> (ascii 59) is mandatory to terminate
+(and send) a message. A <strong>newline</strong> is just treated as
+whitespace and not needed for message termination.</p>
+<h3 id="implementations">Implementations:</h3>
+<p><strong>netsend</strong> / <strong>netreceive</strong></p>
+<p>Those classes can be used to transport Pd-messages over a TCP or UDP
+socket. Both are Pd’s built-in objects.</p>
+<h3 id="example-messages">Example messages:</h3>
+<pre><code>test/blah 123.45314;</code></pre>
+<pre><code>my-slider 12;</code></pre>
+<pre><code>hello this is a message;</code></pre>
 <pre><code>this message continues
 in the following
-line;
-</code></pre>
-
-<pre><code>you; can; send; multiple messages; in a line;
-</code></pre>
-
-<pre><code>this\ is\ one\ whole\ atom;
-</code></pre>
-
+line;</code></pre>
+<pre><code>you; can; send; multiple messages; in a line;</code></pre>
+<pre><code>this\ is\ one\ whole\ atom;</code></pre>
 <pre><code>this_atom_contains_a\
-newline_character_in_it;
-</code></pre>
+newline_character_in_it;</code></pre>
+<h3 id="message-conversion">Message conversion:</h3>
+<p><strong>fudiformat</strong> / <strong>fudiparse</strong></p>
+<p>These classes can be used to convert Pd-messages to FUDI and
+vice-versa. Both are Pd’s built-in objects.</p>
+<p><strong>fudiformat</strong>: convert Pd messages to FUDI packets.</p>
+<p><strong>fudiparse</strong>: parse FUDI packets into Pd messages</p>
+<hr />
+<h3 id="using-other-languages-or-tools">Using other languages or
+tools:</h3>
+<h3 id="pdsend">pdsend</h3>
+<p>usage: pdsend <portnumber> [host] [udp|tcp] (default is localhost and
+tcp)</p>
+<p>Example:</p>
+<pre><code>echo &quot;list foo bar;&quot; | pdsend 8888</code></pre>
+<h3 id="tcl">Tcl</h3>
+<p>Just create a socket object and write data to it:</p>
+<pre><code>set sock [socket localhost 8888]
+puts $sock &quot;test/blah 123.45314;&quot;</code></pre>
+<p>note that since newline is not mandatory, you can send messages
+without newline at the end, but you have to flush the socket buffer (or
+change buffering mode - not recommended):</p>
+<pre><code>set sock [socket localhost 8888]
+puts -nonewline $sock &quot;test/blah 123.45314;&quot;
+flush $sock</code></pre>
+<h3 id="netcat">netcat</h3>
+<p>netcat (aka nc) is a handy command line tool for networking. You can
+use it to send FUDI messages:</p>
+<pre><code>echo &quot;blah;&quot; | nc localhost 8888</code></pre>
+<hr />
+<h3 id="related">Related:</h3>
+<p>Pd also interfaces via <em>OpenSoundControl</em> (aka
+<strong>OSC</strong>)</p>
+<p><a
+href="https://en.wikipedia.org/wiki/Open_Sound_Control">https://en.wikipedia.org/wiki/Open_Sound_Control</a></p>
+<p>Pd’s built-in objects:</p>
+<p><strong>oscforma</strong>t - convert Pd lists to OSC packets</p>
+<p><strong>oscparse</strong> - parse OSC packets into Pd messages</p>
+
 </div>
 </body>
 </html>
