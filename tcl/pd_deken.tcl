@@ -1767,7 +1767,7 @@ proc ::deken::clicked_link {URL filename} {
     set installdir [::deken::ensure_installdir "" ${filename}]
     if { "${installdir}" == "" } {
         ::deken::utilities::debug [format [_ "Cancelling download of %s: No installation directory given." ] $filename]
-        ::deken::status [format [_ "Installing to non-existant directory failed" ] $filename]
+        ::deken::status [format [_ "Installing to non-existent directory failed" ] $filename]
         return
     }
     set fullpkgfile [file join $installdir $filename]

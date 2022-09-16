@@ -499,7 +499,7 @@ proc set_base_font {family weight} {
     ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
 }
 
-# finds sizes of the chosen font that just fit into the requried metrics
+# finds sizes of the chosen font that just fit into the required metrics
 # e.g. if the metric requires the 'M' to be 15x10 pixels,
 # and the given font at size 12 is 15x7 and at size 16 it is 19x10,
 # then we would pick size 12.
@@ -593,9 +593,25 @@ proc pdtk_yesnodialog {mytoplevel message default} {
     }
     return 0
 }
-##### routine to ask user if OK and, if so, send a message on to Pd ######
+
+# routine to ask user if OK and, if so, send a message on to Pd ######
+# with built-informatting+ translation
+# modern usage:
+## pdtk_check .pdwindow {"Hello world!"} "pd dsp 1" no
+# legacy:
+## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
-    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
+    # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+    if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
+        set message [ list $message ]
+    }
+
+    if {[ catch {
+              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+          } ]} {
+           set msg [_ $message]
+       }
+    if {[ pdtk_yesnodialog $mytoplevel $msg $default ]} {
         pdsend $reply_to_pd
     }
 }

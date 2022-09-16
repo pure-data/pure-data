@@ -30,7 +30,25 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
-<P> ------------------ 0.52-0 ------------------------------
+<P> ------------------ 0.52-2 ------------------------------
+
+<p> Many small bug fixes, and a few larger ones: under jack, Pd's delay adjusted
+upward to the jack blocksize if needed (to prevent a hang).
+
+<p> Many documentation fixes and improvements by Alexandre Porres
+
+<p> Reverted behavior when selecting and dragging a single text box, so that
+it now activates the text as traditional until 0.51.  Sometimes one behavior is
+wanted, sometines the other, so there should be an easy-to-understand way for
+users to control this.  At the moment you can rectangle-select an object to
+displace it without selecting the text, which is perhaps adequate, perhaps not.
+
+<p> added an indirect way to open Pd's gui on one machine and the real-time
+program on another without using X windows (so that it can be easily done on
+MacOS and Windows).  Requires ssh expertise - see commit c0e320f2142.  (This
+was already included in pd-0.51-1 but not documented).
+
+<P> ------------------ 0.52-0 and 0.52-1 ------------------------------
 
 <P> The Macintosh compiled version is now compiled at IEM (as part of the
 continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).

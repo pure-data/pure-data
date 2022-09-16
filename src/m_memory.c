@@ -5,11 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "m_pd.h"
-#include "m_imp.h"
-
-/* #define LOUD */
-#ifdef LOUD
-#include <stdio.h>
+#if (defined LOUD) || (defined DEBUGMEM)
+# include <stdio.h>
 #endif
 
 /* #define DEBUGMEM */
@@ -80,8 +77,6 @@ void freebytes(void *fatso, size_t nbytes)
 }
 
 #ifdef DEBUGMEM
-#include <stdio.h>
-
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     fprintf(stderr, "total mem %d\n", totalmem);
