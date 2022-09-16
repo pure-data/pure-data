@@ -25,6 +25,7 @@
 #include <unistd.h>
 #endif
 
+#define USE_PDTK_CANVAS_CREATE
 
 typedef struct _iemgui_private {
     int p_prevX, p_prevY;
@@ -931,7 +932,14 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     char tag_object[128];
     sprintf(tag_object, "%lxOBJ", x);
 
+#ifdef USE_PDTK_CANVAS_CREATE
+    pdgui_vmess(0, "rr c rii",
+        "::pdtk_canvas::move", "tag",
+        canvas,
+        tag_object, dx, dy);
+#else // USE_PDTK_CANVAS_CREATE
     pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
+#endif // USE_PDTK_CANVAS_CREATE
 }
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)

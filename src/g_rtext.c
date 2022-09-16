@@ -9,6 +9,8 @@
 #include "g_canvas.h"
 #include "s_utf8.h"
 
+#define USE_PDTK_CANVAS_CREATE
+
 #define LMARGIN 2
 #define RMARGIN 2
 #define TMARGIN 3
@@ -523,8 +525,15 @@ void rtext_erase(t_rtext *x)
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
+#ifdef USE_PDTK_CANVAS_CREATE
+    pdgui_vmess(0, "rr c rii",
+        "::pdtk_canvas::move", "tag",
+        glist_getcanvas(x->x_glist),
+        x->x_tag, dx, dy);
+#else // USE_PDTK_CANVAS_CREATE
     pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         dx, dy);
+#endif // USE_PDTK_CANVAS_CREATE
 }
 
 void rtext_select(t_rtext *x, int state)

@@ -668,6 +668,38 @@ proc ::pdtk_canvas::select {args} {
     }
 }
 
+proc ::pdtk_canvas::move {args} {
+    set docmds ""
+    check_argc_least 2 [llength $args]
+    set type [lindex $args 0]
+    set args [lrange $args 1 end]
+    set argc [llength $args]
+    if { $type in [list atom obj]} {
+        parse_cnv_coords $args $argc p
+        parse_obj_atom_args $args $argc $type p
+        append docmds "$p(cnv) coords $p(tag) [get_poly_coords p];\n"
+        if { "obj" eq $type } {
+            # this is for backwards compatibility in order to ensure the exact
+            # same command as before get executed. It can be removed later, as
+            # there is no effect in an additional `-width` property with the
+            # same width as in create()
+            set p(width) ""
+        }
+        append docmds "$p(cnv) itemconfigure $p(tag) $p(pattern) $p(width);\n"
+    }
+    if { "tag" eq $type} { ;#meta-type for those commands that call tk's "move" directly
+        check_argc_exact 4 $argc $type
+        set cnv [lindex $args 0]
+        set tag [lindex $args 1]
+        set dx [lindex $args 2]
+        set dy [lindex $args 3]
+        set docmds "$cnv move $tag $dx $dy"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
+
 proc ::pdtk_canvas::delete {args} {
     set docmds ""
     check_argc_exact 2 [llength $args]
