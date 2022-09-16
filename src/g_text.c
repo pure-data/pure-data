@@ -1319,10 +1319,8 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
 #ifdef USE_PDTK_CANVAS_CREATE
-        // TODO: this case also covers atoms, so maybe obj is not the best type
-        // name?
         pdgui_vmess(0, "rr csr",
-            "::pdtk_canvas::select", "obj",
+            "::pdtk_canvas::select", "tag",
             glist, buf, (state ? "blue" : "black"));
 #else // USE_PDTK_CANVAS_CREATE
         pdgui_vmess(0, "crs rr",

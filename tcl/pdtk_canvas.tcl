@@ -636,7 +636,7 @@ proc ::pdtk_canvas::select {args} {
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
-    if {"obj" eq $type} {
+    if {$type eq "tag"} {
         check_argc_exact 3 $argc
         set glist [lindex $args 0]
         set buf [lindex $args 1]
