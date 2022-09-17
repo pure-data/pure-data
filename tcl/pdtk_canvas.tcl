@@ -530,6 +530,15 @@ proc check_argc_least {count argc {type {}} } {
 
 set cnv_coords_types { obj inlet outlet atom }
 
+# expand array to variables named after the array members in the caller's scope
+proc array_to_vars {arrPtr} {
+    upvar 1 $arrPtr arr
+    foreach name [array names arr] {
+        upvar 1 $name $name
+        set $name $arr($name)
+    }
+}
+
 proc parse_cnv_coords {args argc outPtr} {
     check_argc_least 5 $argc
     upvar 1 $outPtr out
@@ -557,7 +566,7 @@ proc parse_obj_atom_args {args argc type outPtr} {
 
 proc get_poly_coords {pPtr} {
     upvar 1 $pPtr p
-    foreach name [array names p] { set $name $p($name) }
+    array_to_vars p
     if [info exists corner] {
         return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
     } else {
@@ -587,7 +596,7 @@ proc ::pdtk_canvas::create {args} {
     set argc [llength $args]
     if { $type in $::cnv_coords_types} {
         parse_cnv_coords $args $argc p
-        foreach name [array names p] { set $name $p($name) }
+        array_to_vars p
     }
     if {"obj" eq $type || "atom" eq $type} {
         parse_obj_atom_args $args $argc $type p
@@ -663,7 +672,7 @@ proc ::pdtk_canvas::config {args} {
     if { "bang" eq $type} {
         check_argc_exact 13 $argc $type
         parse_cnv_coords $args $argc p
-        foreach name [array names p] { set $name $p($name) }
+        array_to_vars p
         set obj [lindex $args 5]
         set zoom [lindex $args 6]
         set bcol [lindex $args 7]
