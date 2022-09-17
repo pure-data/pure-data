@@ -124,10 +124,17 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     if(glist_isvisible(glist))
     {
         int col = (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol);
+#ifdef USE_PDTK_CANVAS_CREATE
+        pdgui_vmess(0, "rr co k",
+            "::pdtk_canvas::update", "bang",
+            glist_getcanvas(glist), x,
+            col);
+#else // USE_PDTK_CANVAS_CREATE
         char tag[128];
         sprintf(tag, "%lxBUT", x);
         pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
             "-fill", col);
+#endif // USE_PDTK_CANVAS_CREATE
     }
 }
 

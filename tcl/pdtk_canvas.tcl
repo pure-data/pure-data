@@ -671,6 +671,26 @@ proc ::pdtk_canvas::select {args} {
     }
 }
 
+proc ::pdtk_canvas::update {args} {
+    set docmds ""
+    check_argc_least 2 [llength $args]
+    set type [lindex $args 0]
+    set args [lrange $args 1 end]
+    set argc [llength $args]
+    if { "bang" eq $type} {
+        check_argc_exact 3 $argc $type
+        set cnv [lindex $args 0]
+        set obj [lindex $args 1]
+        set col [lindex $args 2]
+        set obj [string replace $obj 0 1 "" ]; # same as above
+        append tag_button $obj BUT
+        set docmds "$cnv itemconfigure $tag_button -fill $col"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
+
 proc ::pdtk_canvas::move {args} {
     set docmds ""
     check_argc_least 2 [llength $args]
