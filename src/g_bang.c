@@ -35,9 +35,10 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess("::pdtk_canvas::create", "r c iiii o ikk ii A k",
+    pdgui_vmess("::pdtk_canvas::config", "r c iiii o ikk ii A k",
         "bang",
-        canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h,
+        canvas,
+        xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h,
         x, // used to generate various tags
         zoom, x->x_gui.x_bcol, x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol,
         xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom, // label coord
@@ -70,10 +71,11 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
-#ifdef USE_PDTK_CANVAS_PROC
-    // deferred till bng_draw_config()
-#else // USE_PDTK_CANVAS_PROC
     t_canvas *canvas = glist_getcanvas(glist);
+#ifdef USE_PDTK_CANVAS_PROC
+    pdgui_vmess("::pdtk_canvas::create", "rco",
+        "bang", canvas, x);
+#else // USE_PDTK_CANVAS_PROC
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
     sprintf(tag_object, "%lxOBJ", x);

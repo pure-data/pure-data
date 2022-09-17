@@ -528,7 +528,7 @@ proc check_argc_least {count argc {type {}} } {
     _check_argc $count $argc $$type least
 }
 
-set cnv_coords_types { obj inlet outlet atom bang }
+set cnv_coords_types { obj inlet outlet atom }
 
 proc parse_cnv_coords {args argc outPtr} {
     check_argc_least 5 $argc
@@ -586,16 +586,9 @@ proc ::pdtk_canvas::create {args} {
         set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
     }
     if {"bang" eq $type} {
-        check_argc_exact 13 $argc $type
-        set obj [lindex $args 5]
-        set zoom [lindex $args 6]
-        set bcol [lindex $args 7]
-        set fcol [lindex $args 8]
-        set ldx [lindex $args 9]
-        set ldy [lindex $args 10]
-        set fontatoms [lindex $args 11]
-        set lcol [lindex $args 12]
-
+        check_argc_exact 2 $argc
+        set cnv [lindex $args 0]
+        set obj [lindex $args 1]
         #The C backend sends $obj with trailing 0x, however the legacy version
         #would create tags with sprintf(...%lx..)(i.e.: no leading 0x). Here we
         #remove the trailing 0x.
@@ -605,27 +598,13 @@ proc ::pdtk_canvas::create {args} {
         append tag_base $obj BASE
         append tag_button $obj BUT
         append tag_label $obj LABEL
-        set inset $zoom
-
-        if { ![llength [$cnv coords $tag_base]] } {
-            # if item doesn't exist, create it first
-            #bang_draw_new()
-            set cmd "$cnv create rectangle 0 0 0 0 -tags {$tag_object $tag_base}"
-            append docmds "$cmd;\n"
-            set cmd "$cnv create oval 0 0 0 0 -tags {$tag_object $tag_button}"
-            append docmds "$cmd;\n"
-            set cmd "$cnv create text 0 0 -anchor w -tags {$tag_object $tag_label label text}"
-            append docmds "$cmd;\n"
-        }
-
-        #bng_draw_config()
-        append docmds "$cnv coords $tag_base $x1 $y1 $x2 $y2;\n"
-        append docmds "$cnv itemconfigure $tag_base -width $zoom -fill $bcol;\n"
-        append docmds "$cnv coords $tag_button [expr $x1 + $inset] \
-            [expr $y1 + $inset] [expr $x2 - $inset] [expr $y2 - $inset];\n"
-        append docmds "$cnv itemconfigure $tag_button -width $zoom -fill $fcol;\n"
-        append docmds "$cnv coords $tag_label $ldx $ldy;\n"
-        append docmds "$cnv itemconfigure $tag_label -font {$fontatoms} -fill $lcol;\n"
+        #bang_draw_new()
+        set cmd "$cnv create rectangle 0 0 0 0 -tags {$tag_object $tag_base}"
+        append docmds "$cmd;\n"
+        set cmd "$cnv create oval 0 0 0 0 -tags {$tag_object $tag_button}"
+        append docmds "$cmd;\n"
+        set cmd "$cnv create text 0 0 -anchor w -tags {$tag_object $tag_label label text}"
+        append docmds "$cmd;\n"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
@@ -665,6 +644,49 @@ proc ::pdtk_canvas::select {args} {
         append docmds "$cnv itemconfigure $tag_base -outline $col;\n"
         append docmds "$cnv itemconfigure $tag_button -outline $col;\n"
         append docmds "$cnv itemconfigure $tag_label -fill $lcol;\n"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
+
+proc ::pdtk_canvas::config {args} {
+    set docmds ""
+    check_argc_least 2 [llength $args]
+    set type [lindex $args 0]
+    set args [lrange $args 1 end]
+    set argc [llength $args]
+    if { "bang" eq $type} {
+        check_argc_exact 13 $argc $type
+        parse_cnv_coords $args $argc p
+        foreach name [array names p] { set $name $p($name) }
+        set obj [lindex $args 5]
+        set zoom [lindex $args 6]
+        set bcol [lindex $args 7]
+        set fcol [lindex $args 8]
+        set ldx [lindex $args 9]
+        set ldy [lindex $args 10]
+        set fontatoms [lindex $args 11]
+        set lcol [lindex $args 12]
+
+        #The C backend sends $obj with trailing 0x, however the legacy version
+        #would create tags with sprintf(...%lx..)(i.e.: no leading 0x). Here we
+        #remove the trailing 0x.
+        #TODO: better options would be to find a a better type from C instead
+        set obj [string replace $obj 0 1 "" ];
+        append tag_object $obj OBJ
+        append tag_base $obj BASE
+        append tag_button $obj BUT
+        append tag_label $obj LABEL
+        set inset $zoom
+        #bng_draw_config()
+        append docmds "$cnv coords $tag_base $x1 $y1 $x2 $y2;\n"
+        append docmds "$cnv itemconfigure $tag_base -width $zoom -fill $bcol;\n"
+        append docmds "$cnv coords $tag_button [expr $x1 + $inset] \
+            [expr $y1 + $inset] [expr $x2 - $inset] [expr $y2 - $inset];\n"
+        append docmds "$cnv itemconfigure $tag_button -width $zoom -fill $fcol;\n"
+        append docmds "$cnv coords $tag_label $ldx $ldy;\n"
+        append docmds "$cnv itemconfigure $tag_label -font {$fontatoms} -fill $lcol;\n"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
