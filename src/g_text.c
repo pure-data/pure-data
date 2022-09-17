@@ -1533,11 +1533,11 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
             tags[0] = tagbuf;
             if (firsttime)
 #ifdef USE_PDTK_CANVAS_PROC
-                pdgui_vmess("::pdtk_canvas::create", "r c iiii s",
+                pdgui_vmess("::pdtk_canvas::create", "r c iiii S",
                     tags[1],
                     glist_getcanvas(glist),
                     iox1, ioy1, iox2, ioy2,
-                    tags[0]);
+                    2, tags);
 #else // USE_PDTK_CANVAS_PROC
                 pdgui_vmess(0, "crr iiii rS rr",
                     glist_getcanvas(glist), "create", "rectangle",

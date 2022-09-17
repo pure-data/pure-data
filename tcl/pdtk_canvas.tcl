@@ -604,8 +604,8 @@ proc ::pdtk_canvas::create {args} {
     }
     if {$type eq "outlet" || $type eq "inlet"} {
         check_argc_exact 6 $argc $type
-        set tag [lindex $args 5]
-        set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {{$tag} {$type}} -fill black"
+        set tags [lindex $args 5]
+        set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {$tags} -fill black"
     }
     if {"bang" eq $type} {
         check_argc_exact 2 $argc
