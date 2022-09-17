@@ -15,7 +15,7 @@ to be different but are now unified except for some fossilized names.) */
 #include <string.h>
 #include "g_undo.h"
 
-#define USE_PDTK_CANVAS_CREATE
+#define USE_PDTK_CANVAS_PROC
 
 #ifdef _WIN32
 #include <io.h>
@@ -985,13 +985,13 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
 
 void canvas_deletefromtag(t_canvas* x, const char* tag)
 {
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
     pdgui_vmess(0, "r cs",
         "::pdtk_canvas::delete",
             x, tag);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
     pdgui_vmess(0, "crs", x, "delete", tag);
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
 }
 
 void glist_deletefromtag(t_canvas* x, const char* tag)

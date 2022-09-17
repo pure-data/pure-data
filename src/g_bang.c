@@ -11,7 +11,7 @@
 
 #include "g_all_guis.h"
 
-#define USE_PDTK_CANVAS_CREATE
+#define USE_PDTK_CANVAS_PROC
 /* --------------- bng     gui-bang ------------------------- */
 
 t_widgetbehavior bng_widgetbehavior;
@@ -34,7 +34,7 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
     pdgui_vmess(0, "rr c iiii o ikk ii A k",
         "::pdtk_canvas::create", "bang",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h,
@@ -44,7 +44,7 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
         3, fontatoms,
         x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol);
 
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
     sprintf(tag, "%lxBASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
@@ -64,15 +64,15 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
         "-font", 3, fontatoms,
         "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
 }
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
     // deferred till bng_draw_config()
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128], tag_object[128];
     char*tags[] = {tag_object, tag, "label", "text"};
@@ -89,7 +89,7 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
     sprintf(tag, "%lxLABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
 
     bng_draw_config(x, glist);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
@@ -104,19 +104,19 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
     if(x->x_gui.x_fsf.x_selected)
         col = lcol = IEM_GUI_COLOR_SELECTED;
 
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
     pdgui_vmess(0, "rr co kk",
         "::pdtk_canvas::select", "bang",
         canvas, x,
         col, lcol);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
     sprintf(tag, "%lxBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%lxBUT", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
     sprintf(tag, "%lxLABEL", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
 }
 
 static void bng_draw_update(t_bng *x, t_glist *glist)
@@ -124,17 +124,17 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     if(glist_isvisible(glist))
     {
         int col = (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol);
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "rr co k",
             "::pdtk_canvas::update", "bang",
             glist_getcanvas(glist), x,
             col);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
         char tag[128];
         sprintf(tag, "%lxBUT", x);
         pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
             "-fill", col);
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 

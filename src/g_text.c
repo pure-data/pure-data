@@ -22,7 +22,7 @@
 #define ATOM_BMARGIN 4 /* 1 pixel smaller than object TMARGIN+BMARGIN */
 
 #define MESSAGE_CLICK_WIDTH 5
-#define USE_PDTK_CANVAS_CREATE
+#define USE_PDTK_CANVAS_PROC
 
 t_class *text_class;
 static t_class *message_class;
@@ -1083,18 +1083,18 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
         int mdy = dy * glist->gl_zoom;
         char buf[MAXPDSTRING];
         sprintf(buf, "%lx.l", x);
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "rr c rii",
             "::pdtk_canvas::move", "tag",
             glist_getcanvas(glist),
             buf, mdx, mdy);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(glist),
             "move",
             buf,
             mdx, mdy);
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 
@@ -1318,17 +1318,17 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     {
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "rr csr",
             "::pdtk_canvas::select", "tag",
             glist, buf, (state ? "blue" : "black"));
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crs rr",
             glist,
             "itemconfigure",
             buf,
             "-fill", (state? "blue" : "black"));
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 
@@ -1532,19 +1532,19 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
             sprintf(tagbuf, "%s%c%d", tag, c, i);
             tags[0] = tagbuf;
             if (firsttime)
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
                 pdgui_vmess(0, "rr c iiii s",
                     "::pdtk_canvas::create", tags[1],
                     glist_getcanvas(glist),
                     iox1, ioy1, iox2, ioy2,
                     tags[0]);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
                 pdgui_vmess(0, "crr iiii rS rr",
                     glist_getcanvas(glist), "create", "rectangle",
                     iox1, ioy1, iox2, ioy2,
                     "-tags", (int)(sizeof(tags)/sizeof(*tags)), tags,
                     "-fill", "black");
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
             else
                 pdgui_vmess(0, "crs iiii",
                     glist_getcanvas(glist), "coords", tagbuf,
@@ -1567,7 +1567,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     {
         char *pattern = ((pd_class(&x->te_pd) == text_class) ? "-" : "\"\"");
         char *tags[] = {tagR, "obj"};
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
         pdgui_vmess(0, "rr c iiii r i s",
             cmd, tags[1],
@@ -1576,7 +1576,7 @@ void text_drawborder(t_text *x, t_glist *glist,
             pattern,
             glist->gl_zoom, // unused when !firsttime
             tags[0]);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
         if (firsttime)
         {
             pdgui_vmess(0, "crr iiiiiiiiii rr ri rr rS",
@@ -1596,7 +1596,7 @@ void text_drawborder(t_text *x, t_glist *glist,
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-dash", pattern);
         }
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     }
     else if (x->te_type == T_MESSAGE)
     {
@@ -1624,7 +1624,7 @@ void text_drawborder(t_text *x, t_glist *glist,
         int x1p = x1 + grabbed, y1p = y1 + grabbed;
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
-#ifdef USE_PDTK_CANVAS_CREATE
+#ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
         pdgui_vmess(0, "rr c iiii i i s",
             cmd, tags[1],
@@ -1633,7 +1633,7 @@ void text_drawborder(t_text *x, t_glist *glist,
             corner,
             glist->gl_zoom+grabbed,
             tags[0]);
-#else // USE_PDTK_CANVAS_CREATE
+#else // USE_PDTK_CANVAS_PROC
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist), "create", "line",
@@ -1650,7 +1650,7 @@ void text_drawborder(t_text *x, t_glist *glist,
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);
         }
-#endif // USE_PDTK_CANVAS_CREATE
+#endif // USE_PDTK_CANVAS_PROC
     }
     else if (x->te_type == T_ATOM ) /* list (ATOM but not float or symbol) */
     {
