@@ -99,10 +99,11 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
+        int col = (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol);
         char tag[128];
         sprintf(tag, "%lxBUT", x);
         pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
-            "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
+            "-fill", col);
     }
 }
 
