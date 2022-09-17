@@ -565,6 +565,19 @@ proc get_poly_coords {pPtr} {
     }
 }
 
+proc bang_get_tags { obj outPtr } {
+    upvar 1 $outPtr out
+    #The C backend sends $obj with trailing 0x, however the legacy version
+    #would create tags with sprintf(...%lx..)(i.e.: no leading 0x). Here we
+    #remove the trailing 0x.
+    #TODO: better options would be to find a a better type from C instead
+    set obj [string replace $obj 0 1 "" ];
+    append out(object) $obj OBJ
+    append out(base) $obj BASE
+    append out(button) $obj BUT
+    append out(label) $obj LABEL
+}
+
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
     set docmds ""
@@ -631,19 +644,10 @@ proc ::pdtk_canvas::select {args} {
         set obj [lindex $args 1]
         set col [lindex $args 2]
         set lcol [lindex $args 3]
-        #The C backend sends $obj with trailing 0x, however the legacy version
-        #would create tags with sprintf(...%lx..)(i.e.: no leading 0x). Here we
-        #remove the trailing 0x.
-        #TODO: better options would be to find a a better type from C instead
-        set obj [string replace $obj 0 1 "" ];
-        append tag_object $obj OBJ
-        append tag_base $obj BASE
-        append tag_button $obj BUT
-        append tag_label $obj LABEL
-
-        append docmds "$cnv itemconfigure $tag_base -outline $col;\n"
-        append docmds "$cnv itemconfigure $tag_button -outline $col;\n"
-        append docmds "$cnv itemconfigure $tag_label -fill $lcol;\n"
+        bang_get_tags $obj tags
+        append docmds "$cnv itemconfigure $tags(base) -outline $col;\n"
+        append docmds "$cnv itemconfigure $tags(button) -outline $col;\n"
+        append docmds "$cnv itemconfigure $tags(label) -fill $lcol;\n"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
@@ -669,24 +673,16 @@ proc ::pdtk_canvas::config {args} {
         set fontatoms [lindex $args 11]
         set lcol [lindex $args 12]
 
-        #The C backend sends $obj with trailing 0x, however the legacy version
-        #would create tags with sprintf(...%lx..)(i.e.: no leading 0x). Here we
-        #remove the trailing 0x.
-        #TODO: better options would be to find a a better type from C instead
-        set obj [string replace $obj 0 1 "" ];
-        append tag_object $obj OBJ
-        append tag_base $obj BASE
-        append tag_button $obj BUT
-        append tag_label $obj LABEL
+        bang_get_tags $obj tags
         set inset $zoom
         #bng_draw_config()
-        append docmds "$cnv coords $tag_base $x1 $y1 $x2 $y2;\n"
-        append docmds "$cnv itemconfigure $tag_base -width $zoom -fill $bcol;\n"
-        append docmds "$cnv coords $tag_button [expr $x1 + $inset] \
+        append docmds "$cnv coords $tags(base) $x1 $y1 $x2 $y2;\n"
+        append docmds "$cnv itemconfigure $tags(base) -width $zoom -fill $bcol;\n"
+        append docmds "$cnv coords $tags(button) [expr $x1 + $inset] \
             [expr $y1 + $inset] [expr $x2 - $inset] [expr $y2 - $inset];\n"
-        append docmds "$cnv itemconfigure $tag_button -width $zoom -fill $fcol;\n"
-        append docmds "$cnv coords $tag_label $ldx $ldy;\n"
-        append docmds "$cnv itemconfigure $tag_label -font {$fontatoms} -fill $lcol;\n"
+        append docmds "$cnv itemconfigure $tags(button) -width $zoom -fill $fcol;\n"
+        append docmds "$cnv coords $tags(label) $ldx $ldy;\n"
+        append docmds "$cnv itemconfigure $tags(label) -font {$fontatoms} -fill $lcol;\n"
     }
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
