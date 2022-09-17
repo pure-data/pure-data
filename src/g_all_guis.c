@@ -891,6 +891,13 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
     sprintf(tag, "%lxOUT%d", x, 0);
     canvas_deletefromtag(canvas, tag);
     if(!x->x_fsf.x_snd_able) {
+#ifdef USE_PDTK_CANVAS_PROC
+        pdgui_vmess("::pdtk_canvas::create", "r c iiii Ss",
+            "iemgui_outlet",
+            canvas,
+            xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
+            2, tags, tag_label);
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crr iiii rs rS",
             canvas, "create", "rectangle",
             xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
@@ -898,12 +905,20 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
             "-tags", 2, tags);
         /* keep label above outlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
+#endif // USE_PDTK_CANVAS_PROC
     }
 
     /* re-create inlet */
     sprintf(tag, "%lxIN%d", x, 0);
     canvas_deletefromtag(canvas, tag);
     if(!x->x_fsf.x_rcv_able) {
+#ifdef USE_PDTK_CANVAS_PROC
+        pdgui_vmess("::pdtk_canvas::create", "r c iiii Ss",
+            "iemgui_inlet",
+            canvas,
+            xpos, ypos, xpos + iow, ypos - zoom + ioh,
+            2, tags, tag_label);
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crr iiii rs rS",
             canvas, "create", "rectangle",
             xpos, ypos, xpos + iow, ypos - zoom + ioh,
@@ -911,6 +926,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
             "-tags", 2, tags);
         /* keep label above inlet */
         pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 

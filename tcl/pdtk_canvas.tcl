@@ -528,8 +528,6 @@ proc check_argc_least {count argc {type {}} } {
     _check_argc $count $argc $$type least
 }
 
-set cnv_coords_types { obj inlet outlet atom }
-
 # expand array to variables named after the array members in the caller's scope
 proc array_to_vars {arrPtr} {
     upvar 1 $arrPtr arr
@@ -587,6 +585,9 @@ proc bang_get_tags { obj outPtr } {
     append out(label) $obj LABEL
 }
 
+set iolets {outlet inlet iemgui_outlet iemgui_inlet}
+append cnv_coords_types "obj atom $::iolets"
+
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
     set docmds ""
@@ -602,10 +603,37 @@ proc ::pdtk_canvas::create {args} {
         parse_obj_atom_args $args $argc $type p
         set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) -capstyle projecting -tags {{$p(tag)} {$type}}"
     }
-    if {$type eq "outlet" || $type eq "inlet"} {
-        check_argc_exact 6 $argc $type
+    if { $type in $::iolets } {
+        if {[string match "iemgui_*" $type]} {
+            set is_iemgui True
+        } else {
+            set is_iemgui False
+        }
+        if {$is_iemgui} {
+            check_argc_exact 7 $argc $type
+            set tag_label [lindex $args 6]
+        } else {
+            check_argc_exact 6 $argc $type
+        }
         set tags [lindex $args 5]
-        set docmds "$cnv create rectangle $x1 $y1 $x2 $y2 -tags {$tags} -fill black"
+        set fill "-fill black"
+        # this is for backwards compatibility in order to ensure the exact
+        # same command as before get executed.
+        # iemgui_draw_iolets() and glist_drawiofor() have a different ordering
+        # of the -tags and -fill attributes.
+        if {$is_iemgui} {
+            # this is iemgui_draw_iolets, so -fill goes before -tags
+            set fill0 $fill
+            set fill1 ""
+        } else {
+            # this is glist_drawiofor, so -tags goes before -fill
+            set fill0 ""
+            set fill1 $fill
+        }
+        append docmds "$cnv create rectangle $x1 $y1 $x2 $y2 $fill0 -tags {$tags} $fill1;\n"
+        if {$is_iemgui} {
+            append docmds "$cnv lower [lindex $tags 1] $tag_label;\n"
+        }
     }
     if {"bang" eq $type} {
         check_argc_exact 2 $argc
