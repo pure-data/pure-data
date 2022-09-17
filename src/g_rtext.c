@@ -526,8 +526,8 @@ void rtext_erase(t_rtext *x)
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess(0, "rr c rii",
-        "::pdtk_canvas::move", "tag",
+    pdgui_vmess("::pdtk_canvas::move", "r c rii",
+        "tag",
         glist_getcanvas(x->x_glist),
         x->x_tag, dx, dy);
 #else // USE_PDTK_CANVAS_PROC

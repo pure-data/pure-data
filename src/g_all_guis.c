@@ -933,8 +933,8 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
     sprintf(tag_object, "%lxOBJ", x);
 
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess(0, "rr c rii",
-        "::pdtk_canvas::move", "tag",
+    pdgui_vmess("::pdtk_canvas::move", "r c rii",
+        "tag",
         canvas,
         tag_object, dx, dy);
 #else // USE_PDTK_CANVAS_PROC

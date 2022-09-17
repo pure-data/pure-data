@@ -1084,8 +1084,8 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
         char buf[MAXPDSTRING];
         sprintf(buf, "%lx.l", x);
 #ifdef USE_PDTK_CANVAS_PROC
-        pdgui_vmess(0, "rr c rii",
-            "::pdtk_canvas::move", "tag",
+        pdgui_vmess("::pdtk_canvas::move", "r c rii",
+            "tag",
             glist_getcanvas(glist),
             buf, mdx, mdy);
 #else // USE_PDTK_CANVAS_PROC
@@ -1319,8 +1319,8 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
 #ifdef USE_PDTK_CANVAS_PROC
-        pdgui_vmess(0, "rr csr",
-            "::pdtk_canvas::select", "tag",
+        pdgui_vmess("::pdtk_canvas::select", "r csr",
+            "tag",
             glist, buf, (state ? "blue" : "black"));
 #else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crs rr",
@@ -1533,8 +1533,8 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
             tags[0] = tagbuf;
             if (firsttime)
 #ifdef USE_PDTK_CANVAS_PROC
-                pdgui_vmess(0, "rr c iiii s",
-                    "::pdtk_canvas::create", tags[1],
+                pdgui_vmess("::pdtk_canvas::create", "r c iiii s",
+                    tags[1],
                     glist_getcanvas(glist),
                     iox1, ioy1, iox2, ioy2,
                     tags[0]);
@@ -1569,8 +1569,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "obj"};
 #ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
-        pdgui_vmess(0, "rr c iiii r i s",
-            cmd, tags[1],
+        pdgui_vmess(cmd, "r c iiii r i s",
+            tags[1],
             glist_getcanvas(glist),
             x1, y1, x2, y2,
             pattern,
@@ -1626,8 +1626,8 @@ void text_drawborder(t_text *x, t_glist *glist,
         corner = ((y2-y1)/4);
 #ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
-        pdgui_vmess(0, "rr c iiii i i s",
-            cmd, tags[1],
+        pdgui_vmess(cmd, "r c iiii i i s",
+            tags[1],
             glist_getcanvas(glist),
             x1p, y1p, x2, y2,
             corner,

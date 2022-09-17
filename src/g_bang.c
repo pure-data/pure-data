@@ -35,8 +35,8 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess(0, "rr c iiii o ikk ii A k",
-        "::pdtk_canvas::create", "bang",
+    pdgui_vmess("::pdtk_canvas::create", "r c iiii o ikk ii A k",
+        "bang",
         canvas, xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h,
         x, // used to generate various tags
         zoom, x->x_gui.x_bcol, x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol,
@@ -105,8 +105,8 @@ static void bng_draw_select(t_bng* x, t_glist* glist)
         col = lcol = IEM_GUI_COLOR_SELECTED;
 
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess(0, "rr co kk",
-        "::pdtk_canvas::select", "bang",
+    pdgui_vmess("::pdtk_canvas::select", "r co kk",
+        "bang",
         canvas, x,
         col, lcol);
 #else // USE_PDTK_CANVAS_PROC
@@ -125,8 +125,8 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
     {
         int col = (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol);
 #ifdef USE_PDTK_CANVAS_PROC
-        pdgui_vmess(0, "rr co k",
-            "::pdtk_canvas::update", "bang",
+        pdgui_vmess("::pdtk_canvas::update", "r co k",
+            "bang",
             glist_getcanvas(glist), x,
             col);
 #else // USE_PDTK_CANVAS_PROC

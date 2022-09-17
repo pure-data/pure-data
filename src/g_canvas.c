@@ -986,8 +986,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
 void canvas_deletefromtag(t_canvas* x, const char* tag)
 {
 #ifdef USE_PDTK_CANVAS_PROC
-    pdgui_vmess(0, "r cs",
-        "::pdtk_canvas::delete",
+    pdgui_vmess("::pdtk_canvas::delete", "cs",
             x, tag);
 #else // USE_PDTK_CANVAS_PROC
     pdgui_vmess(0, "crs", x, "delete", tag);
