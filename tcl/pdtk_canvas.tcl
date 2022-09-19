@@ -788,3 +788,34 @@ proc ::pdtk_canvas::delete {args} {
         ::pd_connect::pd_docmds "$docmds"
     }
 }
+
+proc ::pdtk_canvas::iemgui_label_pos {args} {
+    set docmds ""
+    check_argc_exact 5 [llength $args]
+    set type [lindex $args 0]
+    set cnv [lindex $args 1]
+    if {"tag" eq $type} {
+        set tag [lindex $args 2]
+        set x0 [lindex $args 3]
+        set y0 [lindex $args 4]
+        set docmds "$cnv coords $tag $x0 $y0"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}
+
+proc ::pdtk_canvas::iemgui_label_font {args} {
+    set docmds ""
+    check_argc_exact 4 [llength $args]
+    set type [lindex $args 0]
+    set cnv [lindex $args 1]
+    if {"tag" eq $type} {
+        set tag [lindex $args 2]
+        set font [lindex $args 3]
+        set docmds "$cnv itemconfigure $tag -font {$font}"
+    }
+    if { [string length $docmds] > 0 } {
+        ::pd_connect::pd_docmds "$docmds"
+    }
+}

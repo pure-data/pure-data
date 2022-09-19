@@ -487,9 +487,15 @@ void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av
         sprintf(tag, "%lxLABEL", x);
         int x0 = text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom;
         int y0 = text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom;
+#ifdef USE_PDTK_CANVAS_PROC
+        pdgui_vmess("::pdtk_canvas::iemgui_label_pos", "rcr ii",
+            "tag", glist_getcanvas(iemgui->x_glist), tag,
+            x0, y0);
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(iemgui->x_glist), "coords", tag,
             x0, y0);
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 
@@ -518,9 +524,15 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
         SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
         SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+#ifdef USE_PDTK_CANVAS_PROC
+        pdgui_vmess("::pdtk_canvas::iemgui_label_font", "rcs A",
+            "tag", glist_getcanvas(iemgui->x_glist), tag,
+            3, fontatoms);
+#else // USE_PDTK_CANVAS_PROC
         pdgui_vmess(0, "crs rA",
             glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
             "-font", 3, fontatoms);
+#endif // USE_PDTK_CANVAS_PROC
     }
 }
 
