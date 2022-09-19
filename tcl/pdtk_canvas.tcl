@@ -778,11 +778,7 @@ proc ::pdtk_canvas::move {args} {
     }
 }
 
-proc ::pdtk_canvas::delete {args} {
-    set docmds ""
-    check_argc_exact 2 [llength $args]
-    set cnv [lindex $args 0]
-    set tag [lindex $args 1]
+proc ::pdtk_canvas::delete {cnv tag} {
     set docmds "$cnv delete $tag"
     if { [string length $docmds] > 0 } {
         ::pd_connect::pd_docmds "$docmds"
