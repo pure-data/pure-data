@@ -484,10 +484,11 @@ void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av
     {
         char tag[128];
         sprintf(tag, "%lxLABEL", x);
+        int x0 = text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom;
+        int y0 = text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom;
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(iemgui->x_glist), "coords", tag,
-            text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
-            text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
+            x0, y0);
     }
 }
 
