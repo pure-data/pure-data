@@ -1569,13 +1569,13 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "obj"};
 #ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
-        pdgui_vmess(cmd, "r c iiii r i s",
-            tags[1],
+        pdgui_vmess(cmd, "r c iiii r i S",
+            "obj",
             glist_getcanvas(glist),
             x1, y1, x2, y2,
             pattern,
             glist->gl_zoom, // unused when !firsttime
-            tags[0]);
+            2, tags);
 #else // USE_PDTK_CANVAS_PROC
         if (firsttime)
         {
@@ -1604,6 +1604,16 @@ void text_drawborder(t_text *x, t_glist *glist,
         corner = ((y2-y1)/4);
         if (corner > 10*glist->gl_zoom)
             corner = 10*glist->gl_zoom; /* looks bad if too big */
+#ifdef USE_PDTK_CANVAS_PROC
+        const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
+        pdgui_vmess(cmd, "r c iiii i i S",
+            "msg",
+            glist_getcanvas(glist),
+            x1, y1, x2, y2,
+            corner,
+            glist->gl_zoom, // unused when !firsttime
+            2, tags);
+#else // USE_PDTK_CANVAS_PROC
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist), "create", "line",
@@ -1615,6 +1625,7 @@ void text_drawborder(t_text *x, t_glist *glist,
             pdgui_vmess(0, "crs iiiiiiiiiiiiii",
                 glist_getcanvas(glist), "coords", tagR,
                 x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,  x1, y1);
+#endif // USE_PDTK_CANVAS_PROC
     }
     else if (x->te_type == T_ATOM && (((t_gatom *)x)->a_flavor == A_FLOAT ||
            ((t_gatom *)x)->a_flavor == A_SYMBOL))
@@ -1626,13 +1637,14 @@ void text_drawborder(t_text *x, t_glist *glist,
         corner = ((y2-y1)/4);
 #ifdef USE_PDTK_CANVAS_PROC
         const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
-        pdgui_vmess(cmd, "r c iiii i i s",
-            tags[1],
+        const char* type = ((t_gatom *)x)->a_flavor == A_FLOAT ? "floatatom" : "symbolatom";
+        pdgui_vmess(cmd, "r c iiii i i S",
+            type,
             glist_getcanvas(glist),
             x1p, y1p, x2, y2,
             corner,
             glist->gl_zoom+grabbed,
-            tags[0]);
+            2, tags);
 #else // USE_PDTK_CANVAS_PROC
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiii ri rr rS",
@@ -1658,6 +1670,16 @@ void text_drawborder(t_text *x, t_glist *glist,
         int x1p = x1 + grabbed, y1p = y1 + grabbed;
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
+#ifdef USE_PDTK_CANVAS_PROC
+        const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
+        pdgui_vmess(cmd, "r c iiii i i S",
+            "listbox",
+            glist_getcanvas(glist),
+            x1p, y1p, x2, y2,
+            corner,
+            glist->gl_zoom+grabbed,
+            2, tags);
+#else // USE_PDTK_CANVAS_PROC
         if (firsttime)
             pdgui_vmess(0, "crr iiiiiiiiiiiiii ri rr rS",
                 glist_getcanvas(glist),
@@ -1675,6 +1697,7 @@ void text_drawborder(t_text *x, t_glist *glist,
                 glist_getcanvas(glist), "itemconfigure", tagR,
                 "-width", glist->gl_zoom+grabbed);
         }
+#endif // USE_PDTK_CANVAS_PROC
     }
         /* for comments, just draw a bar on RHS if unlocked; when a visible
         canvas is unlocked we have to call this anew on all comments, and when

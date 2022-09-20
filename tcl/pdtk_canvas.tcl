@@ -547,28 +547,46 @@ proc parse_cnv_coords {args argc outPtr} {
     set out(y2) [lindex $args 4]
 }
 
-proc parse_obj_atom_args {args argc type outPtr} {
+proc parse_poly_types_args {args argc type outPtr} {
     check_argc_exact 8 $argc
     upvar 1 $outPtr out
-    if { "atom" eq $type } {
+    if { $type in {floatatom symbolatom listbox msg} } {
         set out(corner) [lindex $args 5]
         set out(pattern) ""
         set out(width) "-width [lindex $args 6]"
-        set out(tag) [lindex $args 7]
+        set out(tags) [lindex $args 7]
+        switch $type {
+            "listbox" { set out(shape) twocorners }
+            "msg" { set out(shape) twospikes }
+            default { set out(shape) onecorner }
+        }
     } elseif { "obj" eq $type } {
         set out(pattern) "-dash \"[lindex $args 5]\""
         set out(width) "-width [lindex $args 6]"
-        set out(tag) [lindex $args 7]
+        set out(tags) [lindex $args 7]
+        set out(shape) "rectangle"
     }
 }
 
 proc get_poly_coords {pPtr} {
     upvar 1 $pPtr p
     array_to_vars p
-    if [info exists corner] {
-        return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
-    } else {
-        return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+    switch $shape {
+        "twocorners" {
+            return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 [expr $y2 - $corner] [expr $x2 - $corner] $y2 $x1 $y2 $x1 $y1"
+        }
+        "onecorner" {
+            return "$x1 $y1 [expr $x2 - $corner] $y1 $x2 [expr $y1 + $corner] $x2 $y2 $x1 $y2 $x1 $y1"
+        }
+        "twospikes" {
+            return "$x1 $y1 [expr $x2 + $corner] $y1 $x2 [expr $y1 + $corner] $x2  [expr $y2 - $corner] [expr $x2 + $corner] $y2 $x1 $y2 $x1 $y1"
+        }
+        "rectangle" {
+            return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+        }
+        default {
+            throw "get_poly_coords()" "[info level -2] >> unknown shape $shape"
+        }
     }
 }
 
@@ -586,7 +604,8 @@ proc bang_get_tags { obj outPtr } {
 }
 
 set iolets {outlet inlet iemgui_outlet iemgui_inlet}
-append cnv_coords_types "obj atom $::iolets"
+set poly_types {obj floatatom symbolatom listbox msg}
+set cnv_coords_types "$::poly_types $::iolets"
 
 proc ::pdtk_canvas::create {args} {
     #puts "pdtk_canvas::create got: $args"
@@ -599,9 +618,9 @@ proc ::pdtk_canvas::create {args} {
         parse_cnv_coords $args $argc p
         array_to_vars p
     }
-    if {"obj" eq $type || "atom" eq $type} {
-        parse_obj_atom_args $args $argc $type p
-        set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) -capstyle projecting -tags {{$p(tag)} {$type}}"
+    if {$type in $::poly_types} {
+        parse_poly_types_args $args $argc $type p
+        set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) -capstyle projecting -tags {$p(tags)}"
     }
     if { $type in $::iolets } {
         if {[string match "iemgui_*" $type]} {
@@ -752,10 +771,11 @@ proc ::pdtk_canvas::move {args} {
     set type [lindex $args 0]
     set args [lrange $args 1 end]
     set argc [llength $args]
-    if { $type in [list atom obj]} {
+    if { $type in $::poly_types} {
         parse_cnv_coords $args $argc p
-        parse_obj_atom_args $args $argc $type p
-        append docmds "$p(cnv) coords $p(tag) [get_poly_coords p];\n"
+        parse_poly_types_args $args $argc $type p
+        set tag [lindex $p(tags) 0]
+        append docmds "$p(cnv) coords $tag [get_poly_coords p];\n"
         if { "obj" eq $type } {
             # this is for backwards compatibility in order to ensure the exact
             # same command as before get executed. It can be removed later, as
@@ -763,7 +783,7 @@ proc ::pdtk_canvas::move {args} {
             # same width as in create()
             set p(width) ""
         }
-        append docmds "$p(cnv) itemconfigure $p(tag) $p(pattern) $p(width);\n"
+        append docmds "$p(cnv) itemconfigure $tag $p(pattern) $p(width);\n"
     }
     if { "tag" eq $type} { ;#meta-type for those commands that call tk's "move" directly
         check_argc_exact 4 $argc $type
