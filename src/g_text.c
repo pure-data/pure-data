@@ -1705,6 +1705,14 @@ void text_drawborder(t_text *x, t_glist *glist,
     else if (x->te_type == T_TEXT && glist->gl_edit)
     {
         char *tags[] = {tagR, "commentbar"};
+#ifdef USE_PDTK_CANVAS_PROC
+        const char* cmd = firsttime ? "::pdtk_canvas::create" : "::pdtk_canvas::move";
+        pdgui_vmess(cmd, "r c iiii S",
+            "commentbar",
+            glist_getcanvas(glist),
+            x2, y1, x2, y2, // x2...x2 : a vertical line
+            2, tags);
+#else // USE_PDTK_CANVAS_PROC
         if (firsttime)
             pdgui_vmess(0, "crr iiii rS",
                 glist_getcanvas(glist), "create", "line",
@@ -1714,6 +1722,7 @@ void text_drawborder(t_text *x, t_glist *glist,
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(glist), "coords", tagR,
                 x2, y1,  x2, y2);
+#endif // USE_PDTK_CANVAS_PROC
     }
         /* draw inlets/outlets */
 

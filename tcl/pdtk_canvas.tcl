@@ -548,9 +548,10 @@ proc parse_cnv_coords {args argc outPtr} {
 }
 
 proc parse_poly_types_args {args argc type outPtr} {
-    check_argc_exact 8 $argc
     upvar 1 $outPtr out
+    set defaultCapstyle "-capstyle projecting"
     if { $type in {floatatom symbolatom listbox msg} } {
+        check_argc_exact 8 $argc
         set out(corner) [lindex $args 5]
         set out(pattern) ""
         set out(width) "-width [lindex $args 6]"
@@ -560,11 +561,21 @@ proc parse_poly_types_args {args argc type outPtr} {
             "msg" { set out(shape) twospikes }
             default { set out(shape) onecorner }
         }
+        set out(capstyle) $defaultCapstyle
     } elseif { "obj" eq $type } {
+        check_argc_exact 8 $argc
         set out(pattern) "-dash \"[lindex $args 5]\""
         set out(width) "-width [lindex $args 6]"
         set out(tags) [lindex $args 7]
         set out(shape) "rectangle"
+        set out(capstyle) $defaultCapstyle
+    } elseif { "commentbar" eq $type } {
+        check_argc_exact 6 $argc
+        set out(pattern) ""
+        set out(width) ""
+        set out(tags) [lindex $args 5]
+        set out(shape) "line"
+        set out(capstyle) ""
     }
 }
 
@@ -583,6 +594,9 @@ proc get_poly_coords {pPtr} {
         }
         "rectangle" {
             return "$x1 $y1 $x2 $y1 $x2 $y2 $x1 $y2 $x1 $y1"
+        }
+        "line" {
+            return "$x1 $y1 $x2 $y2"
         }
         default {
             throw "get_poly_coords()" "[info level -2] >> unknown shape $shape"
@@ -604,7 +618,7 @@ proc bang_get_tags { obj outPtr } {
 }
 
 set iolets {outlet inlet iemgui_outlet iemgui_inlet}
-set poly_types {obj floatatom symbolatom listbox msg}
+set poly_types {obj floatatom symbolatom listbox msg commentbar}
 set cnv_coords_types "$::poly_types $::iolets"
 
 proc ::pdtk_canvas::create {args} {
@@ -620,7 +634,7 @@ proc ::pdtk_canvas::create {args} {
     }
     if {$type in $::poly_types} {
         parse_poly_types_args $args $argc $type p
-        set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) -capstyle projecting -tags {$p(tags)}"
+        set docmds "$p(cnv) create line [get_poly_coords p] $p(pattern) $p(width) $p(capstyle) -tags {$p(tags)}"
     }
     if { $type in $::iolets } {
         if {[string match "iemgui_*" $type]} {
@@ -783,7 +797,9 @@ proc ::pdtk_canvas::move {args} {
             # same width as in create()
             set p(width) ""
         }
-        append docmds "$p(cnv) itemconfigure $tag $p(pattern) $p(width);\n"
+        if {$type ne "commentbar"} {
+            append docmds "$p(cnv) itemconfigure $tag $p(pattern) $p(width);\n"
+        }
     }
     if { "tag" eq $type} { ;#meta-type for those commands that call tk's "move" directly
         check_argc_exact 4 $argc $type
