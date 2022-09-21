@@ -45,13 +45,14 @@ proc ::pd::widget::canvas::config {obj args} {
                          -label 1
                      } $args]
     set tag [::pd::widget::base_tag $obj]
-    # TODO!
-    set zoom 1
+
+foreach cnv [::pd::widget::get_canvases $obj] {
+    set zoom [::pdtk_canvas::get_zoom $cnv]
     set offset 0
     if {$zoom > 1} {
         set offset $zoom
     }
-foreach cnv [::pd::widget::get_canvases $obj] {
+
     dict for {k v} $options {
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
         set xpos [expr $xpos * $zoom]

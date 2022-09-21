@@ -49,8 +49,7 @@ proc ::pd::widget::bang::config {obj args} {
     set tag [::pd::widget::base_tag $obj]
 
 foreach cnv [::pd::widget::get_canvases $obj] {
-    # TODO!
-    set zoom 1
+    set zoom [::pdtk_canvas::get_zoom $cnv]
     set inset $zoom
     dict for {k v} $options {
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
