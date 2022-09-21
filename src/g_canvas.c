@@ -1019,6 +1019,7 @@ typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
 
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
+    pdgui_vmess("::pdtk_canvas::set_zoom", "cf", x, (t_float)sys_zoom_open);
     if (glist_istoplevel(x) && (sys_zoom_open == 2))
     {
         t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
@@ -1027,7 +1028,6 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis)
     }
     if (fvis != 0)
         canvas_vis(x, 1);
-    pdgui_vmess("::pdtk_canvas::set_zoom", "cf", x, (t_float)sys_zoom_open);
     pd_popsym(&x->gl_pd);
     canvas_resortinlets(x);
     canvas_resortoutlets(x);
