@@ -90,6 +90,9 @@ proc ::pd::widget::move {obj dx dy} {
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
 }
+proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
+    ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
+}
 
 # fallback widget behaviours (private, DO NOT CALL DIRECTLY)
 proc ::pd::widget::_defaultproc {id arguments body} {
@@ -129,6 +132,20 @@ proc ::pd::widget::_defaultproc {id arguments body} {
         }
     }
 }
+::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
+    set tag [::pd::widget::base_tag $obj]
+    set icolor {}
+    set ocolor {}
+    if {$show_inlets } {set icolor black}
+    if {$show_outlets} {set ocolor black}
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {
+            $cnv itemconfigure ${tag}INLET  -fill $icolor
+            $cnv itemconfigure ${tag}OUTLET -fill $ocolor
+        }
+    }
+}
+
 
 
 ############## helpers
