@@ -21,89 +21,36 @@ static t_class *bng_class;
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    t_iemgui *iemgui = &x->x_gui;
-    t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    int inset = zoom;
-    char tag[128];
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol);
-
-    sprintf(tag, "%lxBUT", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + inset, ypos + inset,
-        xpos + x->x_gui.x_w - inset, ypos + x->x_gui.x_h - inset);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
-    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
+    pdgui_vmess("::pd::widget::moveto", "o ii", x
+        , text_xpix(&x->x_gui.x_obj, glist) / zoom
+        , text_ypix(&x->x_gui.x_obj, glist) / zoom
+        );
+    pdgui_vmess("::pd::widget::config", "o rii rkkk rsi rii rs"
+        , x
+        , "-size", x->x_gui.x_w, x->x_gui.x_h
+        , "-colors", x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol
+        , "-font", x->x_gui.x_font, x->x_gui.x_fontsize
+        , "-labelpos",  x->x_gui.x_ldx,  x->x_gui.x_ldy
+        , "-label", (x->x_gui.x_lab?canvas_realizedollar(x->x_gui.x_glist, x->x_gui.x_lab)->s_name:"")
+        );
 }
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag[128], tag_object[128];
-    char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%lxOBJ", x);
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxBUT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
-        0, 0, "-anchor", "w", "-tags", 4, tags);
-
+    pdgui_vmess("::pd::widget::create", "roc", "bang", x, glist_getcanvas(glist));
     bng_draw_config(x, glist);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 static void bng_draw_select(t_bng* x, t_glist* glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
-    char tag[128];
-
-    if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%lxBUT", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    pdgui_vmess("::pd::widget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 static void bng_draw_update(t_bng *x, t_glist *glist)
 {
-    if(glist_isvisible(glist))
-    {
-        char tag[128];
-        sprintf(tag, "%lxBUT", x);
-        pdgui_vmess(0, "crs rk", glist_getcanvas(glist), "itemconfigure", tag,
-            "-fill", (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
-    }
+    pdgui_vmess("::pd::widget::bang::flash", "ok", x,
+        (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
 }
 
 /* ------------------------ bng widgetbehaviour----------------------------- */
