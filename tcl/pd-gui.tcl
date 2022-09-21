@@ -56,6 +56,7 @@ package require pdtk_textwindow
 package require pd_guiprefs
 package require pd_widget
 package require pdwidget_canvas
+package require pdwidget_bang
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
