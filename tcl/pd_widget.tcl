@@ -7,7 +7,11 @@ package provide pd_widget 0.1
 # - dict
 package require Tcl 8.5
 
-namespace eval ::pd::widget { }
+namespace eval ::pd::widget {
+    variable IOWIDTH 7
+    variable IHEIGHT 3
+    variable OHEIGHT 3
+}
 
 
 namespace eval ::pd::widget::_procs { }
