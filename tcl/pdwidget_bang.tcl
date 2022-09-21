@@ -50,26 +50,24 @@ proc ::pd::widget::bang::config {obj args} {
 
 foreach cnv [::pd::widget::get_canvases $obj] {
     set zoom [::pdtk_canvas::get_zoom $cnv]
-    set inset $zoom
+    set iow $::pd::widget::IOWIDTH
+    set ih [expr $::pd::widget::IHEIGHT - 0.5]
+    set oh [expr $::pd::widget::OHEIGHT - 1]
     dict for {k v} $options {
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-        set xpos [expr $xpos * $zoom]
-        set ypos [expr $ypos * $zoom]
         switch -exact -- $k {
             default {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}LABEL" [expr ($xpos + $xnew) * $zoom] [expr ($ypos + $ynew) * $zoom]
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}BASE" $xpos $ypos [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                set xpos [expr $xpos + $inset]
-                set ypos [expr $ypos + $inset]
-                set xnew [expr $xnew - 2 * $inset]
-                set ynew [expr $ynew - 2 * $inset]
-                $cnv coords "${tag}BUT" $xpos $ypos [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}BASE" [expr $xpos * $zoom] [expr $ypos * $zoom] [expr ($xpos + $xnew) * $zoom] [expr ($ypos + $ynew) * $zoom]
+                $cnv coords "${tag}BUT" \
+                    [expr ($xpos + 1) * $zoom] [expr ($ypos + 1) * $zoom] \
+                    [expr ($xpos + $xnew - 1.5) * $zoom] [expr ($ypos + $ynew - 1.5) * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}BUT"  -fill $color

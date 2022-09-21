@@ -62,9 +62,12 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}LABEL" \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
-                $cnv coords "${tag}BASE" $xpos $ypos [expr $xpos + $v * $zoom] [expr $ypos + $v * $zoom]
+                $cnv coords "${tag}BASE" \
+                    [expr $xpos + $offset] [expr $ypos + $offset] \
+                    [expr $xpos + $v * $zoom + $offset] [expr $ypos + $v * $zoom + $offset]
             } "-visible" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]

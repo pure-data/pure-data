@@ -29,9 +29,10 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::config", "o ri rii rkk rsi rii rs"
+    const float zoom = IEMGUI_ZOOM(x);
+    pdgui_vmess("::pd::widget::config", "o rf rii rkk rsi rii rs"
         , x
-        , "-size", x->x_gui.x_w
+        , "-size", x->x_gui.x_w / zoom
         , "-visible",  x->x_vis_w, x->x_vis_h
         , "-colors", x->x_gui.x_bcol, x->x_gui.x_lcol
         , "-font", x->x_gui.x_font, x->x_gui.x_fontsize

@@ -128,6 +128,9 @@ proc ::pd::widget::_defaultproc {id arguments body} {
 }
 
 ::pd::widget::_defaultproc moveto {obj cnv x y} {
+    set zoom [::pdtk_canvas::get_zoom $cnv]
+    set x [expr $x * $zoom]
+    set y [expr $y * $zoom]
     set tag [::pd::widget::base_tag $obj]
     if {[catch {$cnv moveto $tag $x $y}]} {
         foreach {oldx oldy} [$cnv coords $tag] {

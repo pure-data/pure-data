@@ -20,9 +20,10 @@ static t_class *bng_class;
 #define bng_draw_io 0
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::config", "o rii rkkk rsi rii rs"
+    const float zoom = IEMGUI_ZOOM(x);
+    pdgui_vmess("::pd::widget::config", "o rff rkkk rsi rii rs"
         , x
-        , "-size", x->x_gui.x_w, x->x_gui.x_h
+        , "-size", x->x_gui.x_w / zoom, x->x_gui.x_h / zoom
         , "-colors", x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol
         , "-font", x->x_gui.x_font, x->x_gui.x_fontsize
         , "-labelpos",  x->x_gui.x_ldx,  x->x_gui.x_ldy
