@@ -45,21 +45,29 @@ proc ::pd::widget::canvas::config {obj args} {
                          -label 1
                      } $args]
     set tag [::pd::widget::base_tag $obj]
+    # TODO!
+    set zoom 1
+    set offset 0
+    if {$zoom > 1} {
+        set offset $zoom
+    }
 foreach cnv [::pd::widget::get_canvases $obj] {
     dict for {k v} $options {
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        set xpos [expr $xpos * $zoom]
+        set ypos [expr $ypos * $zoom]
         switch -exact -- $k {
             default {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" [expr $xpos + $xnew] [expr $ypos + $ynew]
+                $cnv coords "${tag}LABEL" [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
-                $cnv coords "${tag}BASE" $xpos $ypos [expr $xpos + $v] [expr $ypos + $v]
+                $cnv coords "${tag}BASE" $xpos $ypos [expr $xpos + $v * $zoom] [expr $ypos + $v * $zoom]
             } "-visible" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]
-                $cnv coords "${tag}RECT" $xpos $ypos [expr $xpos + $w] [expr $ypos + $h]
+                $cnv coords "${tag}RECT" $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}RECT" -fill $color -outline $color
@@ -70,14 +78,15 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 set fontweight $::font_weight
                 set font [lindex $v 0]
                 set fontsize [lindex $v 1]
-                set fontsize [expr -int($fontsize)]
+                set fontsize [expr -int($fontsize) * $zoom]
                 $cnv itemconfigure "${tag}LABEL" -font [list $font $fontsize $fontweight]
             } "-label" {
                 pdtk_text_set $cnv "${tag}LABEL" $v
             }
-
         }
     }
+    $cnv itemconfigure "${tag}BASE" -width $zoom
+    # TODO: in the original code, BASE was shifted by $offset to 'keep zoomed border inside visible area'
 }
 }
 proc ::pd::widget::canvas::select {obj state} {
