@@ -923,14 +923,7 @@ static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_obj, glist) - x->x_private->p_prevX;
-    int dy = text_ypix(&x->x_obj, glist) - x->x_private->p_prevY;
-
-    char tag_object[128];
-    sprintf(tag_object, "%lxOBJ", x);
-
-    pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
+    pdgui_vmess("::pd::widget::moveto", "oii", x, text_xpix(&x->x_obj, glist), text_ypix(&x->x_obj, glist));
 }
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
