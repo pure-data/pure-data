@@ -49,7 +49,12 @@ dist_libpdtcl_DATA = \
     scrollbox.tcl \
     pd_guiprefs.tcl \
     pd_deken.tcl \
-    pd_docsdir.tcl
+    pd_docsdir.tcl \
+    pd_widget.tcl \
+    pdwidget_bang.tcl \
+    pdwidget_canvas.tcl \
+    $(empty)
+
 
 # we want these in the dist tarball
 EXTRA_DIST = pd.gif pd.ico pd.xpm
