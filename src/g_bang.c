@@ -20,11 +20,6 @@ static t_class *bng_class;
 #define bng_draw_io 0
 static void bng_draw_config(t_bng* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::moveto", "o ii", x
-        , text_xpix(&x->x_gui.x_obj, glist) / zoom
-        , text_ypix(&x->x_gui.x_obj, glist) / zoom
-        );
     pdgui_vmess("::pd::widget::config", "o rii rkkk rsi rii rs"
         , x
         , "-size", x->x_gui.x_w, x->x_gui.x_h
@@ -37,7 +32,13 @@ static void bng_draw_config(t_bng* x, t_glist* glist)
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     pdgui_vmess("::pd::widget::create", "roc", "bang", x, glist_getcanvas(glist));
+    pdgui_vmess("::pd::widget::moveto", "o ii"
+        , x
+        , text_xpix(&x->x_gui.x_obj, glist) / zoom
+        , text_ypix(&x->x_gui.x_obj, glist) / zoom
+        );
     bng_draw_config(x, glist);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }

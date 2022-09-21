@@ -29,11 +29,6 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::moveto", "o ii", x
-        , text_xpix(&x->x_gui.x_obj, glist) / zoom
-        , text_ypix(&x->x_gui.x_obj, glist) / zoom
-        );
     pdgui_vmess("::pd::widget::config", "o ri rii rkk rsi rii rs"
         , x
         , "-size", x->x_gui.x_w
@@ -47,7 +42,13 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 
 static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
+    const int zoom = IEMGUI_ZOOM(x);
     pdgui_vmess("::pd::widget::create", "roc", "canvas", x, glist_getcanvas(glist));
+    pdgui_vmess("::pd::widget::moveto", "o ii"
+        , x
+        , text_xpix(&x->x_gui.x_obj, glist) / zoom
+        , text_ypix(&x->x_gui.x_obj, glist) / zoom
+        );
     my_canvas_draw_config(x, glist);
 }
 
