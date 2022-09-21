@@ -48,7 +48,6 @@ proc ::pd::widget::canvas::config {obj args} {
 foreach cnv [::pd::widget::get_canvases $obj] {
     dict for {k v} $options {
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-        ::pdwindow::error "old position @$xpos/$ypos\n"
         switch -exact -- $k {
             default {
             } "-labelpos" {
