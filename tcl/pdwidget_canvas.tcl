@@ -6,7 +6,6 @@ package provide pdwidget_canvas 0.1
 namespace eval ::pd::widget::canvas:: {
 
 }
-set ::pd::widget::canvas::_state [dict create]
 
 proc printme {args} {
     ::pdwindow::error "${args}\n"
@@ -21,8 +20,6 @@ proc ::pd::widget::canvas::create {obj cnv} {
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}RECT]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}BASE]
     $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
-
-    dict set ::pd::widget::canvas::_state $obj canvas $cnv
 
     ::pd::widget::widgetbehaviour $obj config ::pd::widget::canvas::config
     ::pd::widget::widgetbehaviour $obj select ::pd::widget::canvas::select
@@ -57,11 +54,9 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}RECT" -fill $color -outline $color
-                $cnv itemconfigure "${tag}BASE" -width 1 -outline $color
-                dict set ::pd::widget::canvas::_state $obj color $color
+                $cnv itemconfigure "${tag}BASE" -width 1 -outline {}
                 set color [lindex $v 1]
                 $cnv itemconfigure "${tag}LABEL" -fill $color
-                dict set ::pd::widget::canvas::_state $obj labelcolor $color
             } "-font" {
                 set fontweight $::font_weight
                 set font [lindex $v 0]
@@ -78,12 +73,11 @@ foreach cnv [::pd::widget::get_canvases $obj] {
 }
 proc ::pd::widget::canvas::select {obj state} {
     # get the normal color from the object's state
-    set d0 [dict get $::pd::widget::canvas::_state $obj]
-    dict with d0 {}
-
     # if selection is activated, use a different color
     if {$state != 0} {
         set color #0000FF
+    } else {
+        set color {}
     }
     set tag "[::pd::widget::base_tag $obj]BASE"
     foreach cnv [::pd::widget::get_canvases $obj] {
