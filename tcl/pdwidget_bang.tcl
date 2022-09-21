@@ -72,7 +72,7 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 $cnv coords "${tag}BUT" $xpos $ypos [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
-                $cnv itemconfigure "${tag}BUT" -fill $color
+                $cnv itemconfigure "${tag}BUT"  -fill $color
                 $cnv itemconfigure "${tag}BASE" -fill $color
                 dict set ::pd::widget::canvas::_state $obj flashcolor [lindex $v 1]
                 set color [lindex $v 2]
