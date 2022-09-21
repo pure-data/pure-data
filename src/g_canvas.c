@@ -1027,6 +1027,7 @@ static void canvas_pop(t_canvas *x, t_floatarg fvis)
     }
     if (fvis != 0)
         canvas_vis(x, 1);
+    pdgui_vmess("::pdtk_canvas::set_zoom", "cf", x, (t_float)sys_zoom_open);
     pd_popsym(&x->gl_pd);
     canvas_resortinlets(x);
     canvas_resortoutlets(x);

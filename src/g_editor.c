@@ -3422,6 +3422,7 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
             canvas_redraw(x);
         }
     }
+    pdgui_vmess("::pdtk_canvas::set_zoom", "cf", x, zoom);
 }
 
     /* function to support searching */

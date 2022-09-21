@@ -22,6 +22,9 @@ namespace eval ::pdtk_canvas:: {
 # so we can use it during menuclose
 array set ::pdtk_canvas::::window_fullname {}
 
+# store whether the canvas is currently zoomed or not
+array set ::pdtk_canvas::_zoom {}
+
 array set ::pdtk_canvas::geometry_needs_init {}
 
 # One thing that is tricky to understand is the difference between a Tk
@@ -502,4 +505,15 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
             }
         }
     }
+}
+
+
+proc ::pdtk_canvas::set_zoom {cnv zoom} {
+    set ::pdtk_canvas::_zoom($cnv) $zoom
+}
+proc ::pdtk_canvas::get_zoom {cnv} {
+    if {[info exists ::pdtk_canvas::_zoom($cnv)]} {
+        return $::pdtk_canvas::_zoom($cnv)
+    }
+    return 1
 }
