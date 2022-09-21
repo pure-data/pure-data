@@ -436,34 +436,31 @@ of the array are dropped., f 77;
 #X text 150 290 - set contents from a list;
 #X text 150 314 - get a quantile;
 #X obj 37 338 array random;
-#N canvas 562 23 699 671 quantile+random 0;
-#X floatatom 64 243 5 0 100 0 - - - 0;
-#X obj 33 340 array quantile array-5, f 14;
-#X floatatom 96 278 5 -1 100 0 - - - 0;
-#X floatatom 33 192 5 -1 100 0 - - - 0;
-#X obj 33 217 / 100;
-#X floatatom 33 384 5 0 100 0 - - - 0;
-#X floatatom 354 628 5 0 100 0 - - - 0;
-#X obj 354 584 array random array-5, f 12;
-#X obj 354 436 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#N canvas 504 23 699 671 quantile+random 0;
+#X floatatom 64 268 5 0 100 0 - - - 0;
+#X obj 33 350 array quantile array-5, f 14;
+#X floatatom 96 295 5 -1 100 0 - - - 0;
+#X floatatom 33 394 5 0 100 0 - - - 0;
+#X floatatom 354 635 5 0 100 0 - - - 0;
+#X obj 354 591 array random array-5, f 12;
+#X obj 354 443 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X floatatom 384 496 5 0 0 0 - - - 0;
-#X floatatom 394 528 5 0 0 0 - - - 0;
-#X text 149 378 - optional number to initialize onset - default 0,
+#X floatatom 384 503 5 0 0 0 - - - 0;
+#X floatatom 394 535 5 0 0 0 - - - 0;
+#X text 149 388 - optional number to initialize onset - default 0,
 f 61;
-#X text 149 397 - optional number to initialize number of points -
+#X text 149 407 - optional number to initialize number of points -
 default -1, f 61;
-#X text 457 592 same creation arguments;
-#X text 156 346 creation arguments: either array name or "-s" and optional
+#X text 457 599 same creation arguments;
+#X text 156 356 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure, f 60;
-#X text 138 279 number of points or -1 for end of array;
-#X text 428 496 onset;
-#X text 436 527 number of points;
-#X text 78 191 quantile (between 0 and 1);
-#X msg 128 315 symbol array-2;
-#X text 235 315 set name or pointer;
-#X msg 435 558 symbol array-2;
-#X text 545 556 set name or pointer;
+#X text 138 295 number of points or -1 for end of array;
+#X text 428 503 onset;
+#X text 436 534 number of points;
+#X msg 128 325 symbol array-2;
+#X text 235 325 set name or pointer;
+#X msg 435 565 symbol array-2;
+#X text 545 563 set name or pointer;
 #X text 599 33 <= click;
 #N canvas 188 138 1156 393 reference 0;
 #X obj 10 42 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -550,22 +547,10 @@ at bangs.;
 0;
 #X obj 36 13 array quantile;
 #X obj 36 38 array random;
-#X text 396 629 index;
-#X text 377 435 generate a random value;
-#X text 49 442 [array random] makes a pseudo-random number from 0 to
-1 and outputs its quantile (which will therefore have probabilities
-proportional to the table's values.), f 36;
-#X text 37 80 [array quantile] outputs the specified quantile by interpreting
-the array as a histogram. The output will always be in the range from
-0 to "array size - 1". The 0.5 quantile is also known as the median.
-This generalizes the [array random] function allowing you to use the
-same source of randomness on several arrays \, for example. Negative
-numbers in the array are silently replaced by zero. Quantiles outside
-the range 0-1 output the x values at the two extremes of the array
-(0 and 99 here)., f 89;
-#X text 106 236 onset (first index \, zero for start of array), f
-24;
-#X text 74 384 index;
+#X text 396 636 index;
+#X text 377 442 generate a random value;
+#X text 105 268 onset (first index \, zero for start of array);
+#X text 74 394 index;
 #X text 148 13 - outputs the specified quantile;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array-5 100 float 1;
@@ -584,13 +569,10 @@ the range 0-1 output the x values at the two extremes of the array
 0.0004276 0.000279558 0.00018071 0.000115497 7.29861e-05 4.56022e-05
 2.81715e-05 1.72073e-05 1.03918e-05 6.20514e-06 3.66344e-06 2.13848e-06
 1.23423e-06;
-#X coords 0 1 99 0 220 130 1 0 0;
-#X restore 441 193 graph;
-#X text 49 522 Since the array has a gaussian bell shape \, the probability
-of the middle indexes is higher than the lower and upper ones. This
-is also known as a "weighted" random., f 36;
+#X coords 0 1 99 0 220 100 1 0 0;
+#X restore 440 201 graph;
 #X text 148 38 - array as weighted probabilities;
-#X text 433 467 set seed \, see -->;
+#X text 433 474 set seed \, see -->;
 #N canvas 741 135 468 474 seed 0;
 #X msg 98 292 seed 1.54312e+07;
 #X text 44 110 Seeds are kept locally \, which means that if two [array
@@ -624,27 +606,110 @@ set a "seed" value \, which can be any integer number., f 52;
 #X connect 9 0 12 0;
 #X connect 10 0 9 0;
 #X connect 13 0 10 0;
-#X restore 561 466 pd seed;
-#X msg 368 467 seed 156;
-#X text 47 601 WARNING: Nothing is known about the quality of this
+#X restore 561 473 pd seed;
+#X msg 368 474 seed 156;
+#X text 47 557 WARNING: Nothing is known about the quality of this
 pseudo random number generator. It isn't any standard one!, f 37;
-#X connect 0 0 1 1;
-#X connect 1 0 5 0;
-#X connect 2 0 1 2;
+#X floatatom 33 235 8 -1 100 0 - - - 0;
+#X text 99 228 quantile (between 0 and 1 \, values outside are clipped)
+, f 27;
+#X obj 36 208 hsl 128 15 -0.1 1.1 0 0 empty empty empty -2 -8 0 10
+#dfdfdf #000000 #000000 0 1;
+#X text 37 82 The [array quantile] object outputs the specified quantile
+by interpreting the array as a histogram. The input is from 0 to 1
+and the output is from 0 to "array size - 1" \, so the 0.5 quantile
+is the median. Input outside the 0-1 range is clipped to the array's
+extremes (0 and 99 in this example). The [array random] object generates
+pseudo-random numbers from 0 to 1 and outputs its quantile \, so the
+index outputs have probabilities proportional to their values in the
+table (which is then treated as probability density function)., f
+87;
+#X text 466 306 A Gaussian distribution (aka normal distribution),
+f 25;
+#X text 48 461 When generating random values to the right \, given
+the gaussian bell shape of the array \, the probability of the middle
+indexes are higher than the lower and upper ones. This is also known
+as a "weighted" random., f 37;
+#N canvas 248 134 1028 407 examples 0;
+#X text 79 32 The [array quantile] object generalizes the [array random]
+function allowing you to use the same source of randomness on several
+arrays \, for example. So here we have a single [random] object feeding
+two [array quantile] objects.;
+#X obj 79 161 random 100;
+#X obj 79 128 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 79 195 / 99;
+#X obj 116 242 array quantile array-5;
+#X floatatom 116 276 5 0 100 0 - - - 0;
+#X floatatom 79 351 5 0 100 0 - - - 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array array-6 100 float 1;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0.00715053 0.00715053 0.0285789 0.0500072
+0.0714356 0.100007 0.128578 0.164292 0.207148 0.478574 0.628573 0.678572
+0.721429 0.717857 0.714286 0.707143 0.7 0.692857 0.685715 0.678572
+0.18572 0.164292 0.157149 0.0142931 -0.00713521 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.014293 0.0214357 0.0357213 0.078578
+0.142863 0.207148 0.335718 0.407146 0.435717 0.478574 0.514288 0.557144
+0.592858 0.642858 0.7 0.692857 0.692857 0.692857 0.692857 0.7 0.696429
+0.349997 0.335712 0.321426 0.278569 0.192856 0.149999 0.135714 0.114285
+0.0999998 0.0714298 0.0642871 0.0571443 0.0285732 0 0 0 0 0;
+#X coords 0 1 99 0 200 140 1 0 0;
+#X restore 304 160 graph;
+#X obj 79 317 array quantile array-6;
+#X obj 772 163 array define histo 128;
+#X obj 607 320 tabwrite histo;
+#X obj 607 254 tabread histo;
+#X obj 607 288 + 1;
+#X obj 607 216 trigger float float;
+#X msg 772 126 const 0;
+#X obj 607 148 stripnote;
+#X obj 607 117 notein;
+#X floatatom 630 181 5 0 127 0 - - - 0;
+#X floatatom 782 293 5 0 100 0 - - - 0;
+#X obj 782 259 array random histo;
+#X obj 782 225 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 832 126 clear;
+#X text 552 39 The example below creates a histogram from a MIDI note
+input \, or use the number box to feed it. Then we use [array random]
+to output weighted random values according to the histogram., f 61
+;
+#X text 807 225 weighted random;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
 #X connect 3 0 4 0;
-#X connect 4 0 1 0;
-#X connect 7 0 6 0;
-#X connect 8 0 7 0;
-#X connect 9 0 7 0;
-#X connect 10 0 7 1;
-#X connect 19 0 1 3;
-#X connect 21 0 7 2;
-#X connect 40 0 7 0;
+#X connect 3 0 8 0;
+#X connect 4 0 5 0;
+#X connect 8 0 6 0;
+#X connect 11 0 12 0;
+#X connect 12 0 10 0;
+#X connect 13 0 11 0;
+#X connect 13 1 10 1;
+#X connect 14 0 9 0;
+#X connect 15 0 13 0;
+#X connect 16 0 15 0;
+#X connect 16 1 15 1;
+#X connect 17 0 13 0;
+#X connect 19 0 18 0;
+#X connect 20 0 19 0;
+#X restore 133 626 pd examples;
+#X connect 0 0 1 1;
+#X connect 1 0 3 0;
+#X connect 2 0 1 2;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X connect 7 0 5 0;
+#X connect 8 0 5 1;
+#X connect 16 0 1 3;
+#X connect 18 0 5 2;
+#X connect 34 0 5 0;
+#X connect 36 0 1 0;
+#X connect 38 0 36 0;
 #X restore 421 327 pd quantile+random;
 #X obj 37 361 array max;
 #N canvas 579 106 649 580 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array array-6 100 float 1;
+#X array array-7 100 float 1;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711
 0.55714 0.585711 0.599997 0.614282 0.63571 0.649996 0.664282 0.671424
 0.699995 0.699995 0.714281 0.721424 0.707138 0.699995 0.692853 0.68571
@@ -669,7 +734,6 @@ pseudo random number generator. It isn't any standard one!, f 37;
 "-f" flags to refer to an array in a data structure;
 #X msg 177 249 symbol array-2;
 #X text 283 249 set name or pointer;
-#X obj 61 277 array max array-6;
 #X floatatom 177 322 6 0 100 0 - - - 0;
 #X floatatom 99 536 7 0 100 0 - - - 0;
 #X obj 99 393 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
@@ -679,7 +743,6 @@ pseudo random number generator. It isn't any standard one!, f 37;
 #X text 156 428 onset;
 #X floatatom 215 536 6 0 100 0 - - - 0;
 #X text 198 462 number of points;
-#X obj 99 501 array min array-6;
 #X text 60 345 value;
 #X text 172 346 index;
 #X text 538 27 <= click;
@@ -747,17 +810,19 @@ value). The search may be restricted to a sub-domain of the array by
 specifying the "onset" and "number of points"., f 79;
 #X text 123 183 onset (0 for start);
 #X text 161 218 number of points (-1 for the end of the array);
-#X connect 2 0 8 0;
-#X connect 3 0 8 0;
-#X connect 4 0 8 1;
-#X connect 6 0 8 2;
-#X connect 8 0 1 0;
-#X connect 8 1 9 0;
-#X connect 11 0 17 0;
-#X connect 12 0 17 0;
-#X connect 13 0 17 1;
-#X connect 17 0 10 0;
-#X connect 17 1 15 0;
+#X obj 61 277 array max array-7;
+#X obj 99 501 array min array-7;
+#X connect 2 0 32 0;
+#X connect 3 0 32 0;
+#X connect 4 0 32 1;
+#X connect 6 0 32 2;
+#X connect 10 0 33 0;
+#X connect 11 0 33 0;
+#X connect 12 0 33 1;
+#X connect 32 0 1 0;
+#X connect 32 1 8 0;
+#X connect 33 0 9 0;
+#X connect 33 1 14 0;
 #X restore 421 372 pd min+max;
 #X obj 37 384 array min;
 #X obj 177 496 list;
@@ -862,28 +927,23 @@ contents., f 32;
 #X text 44 25 [struct] with x/y coordinate fields and an array field
 named 'z' \, whose template is defined in [pd element-struct2], f
 42;
-#X restore 321 406 pd array-struct2;
+#X restore 301 406 pd array-struct2;
 #N canvas 149 306 399 321 array-data2 0;
 #X scalar array-struct2 80 30 \; -52 200 17 \; 138 -10 3 \; -32 26
 0 \; 109 141 8 \; 267 26 3 \; \;;
 #X text 51 267 A structure whose array has (x \, y \, w) triples -
 right-click to see contents., f 40;
 #X coords 0 321 1 320 0 0 0;
-#X restore 335 384 pd array-data2;
+#X restore 315 384 pd array-data2;
 #X msg 310 474 traverse pd-array-data2 \, next, f 24;
 #N canvas 830 245 407 149 element-struct2 0;
 #X obj 39 58 struct element-struct2 float x float y float w;
-#X restore 307 429 pd element-struct2;
+#X restore 287 429 pd element-struct2;
 #X obj 117 542 array sum -s array-struct2 z -f element-struct2 w,
 f 28;
 #X text 166 583 sum of all the 'w' values in the array;
-#X text 442 406 <= main structure;
-#X text 442 429 <= element structure;
 #X obj 117 497 trigger bang bang;
-#X text 442 384 <= click for the array;
 #X obj 117 190 t b b;
-#X text 272 105 click for the array =>;
-#X text 314 129 the structure =>;
 #X text 37 627 To know more about Data Structures \, how to handle
 pointers and see examples \, please refer to the 4.Data.Structure section
 of the Pd's tutorials., f 50;
@@ -918,17 +978,22 @@ in the array we're referring to. In this example the array has (x \,
 y \, w) triples (in [struct element-struct2]) \, the "-f" flag specifies
 the element's struct name and the 'w' field., f 85;
 #X text 435 626 <----;
+#X text 262 105 click for the array -->;
+#X text 304 129 the structure -->;
+#X text 422 384 <-- click for the array;
+#X text 422 406 <-- main structure;
+#X text 422 428 <-- element structure;
 #X connect 0 0 5 2;
 #X connect 3 0 0 0;
-#X connect 4 0 19 0;
+#X connect 4 0 16 0;
 #X connect 5 0 6 0;
 #X connect 7 0 13 2;
 #X connect 11 0 7 0;
 #X connect 13 0 8 0;
-#X connect 17 0 13 0;
-#X connect 17 1 11 0;
-#X connect 19 0 5 0;
-#X connect 19 1 3 0;
-#X connect 25 0 17 0;
-#X connect 26 0 23 0;
+#X connect 15 0 13 0;
+#X connect 15 1 11 0;
+#X connect 16 0 5 0;
+#X connect 16 1 3 0;
+#X connect 20 0 15 0;
+#X connect 21 0 18 0;
 #X restore 359 421 pd data-structures;
