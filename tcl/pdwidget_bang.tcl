@@ -30,6 +30,8 @@ proc ::pd::widget::bang::create {obj cnv} {
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}BASE]
     $cnv create oval 0 0 0 0 -tags [list ${tag} ${tag}BUT]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}INLET] -outline {} -fill {}
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}OUTLET] -outline {} -fill {}
     $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
 
     dict set ::pd::widget::bang::_state $obj canvas $cnv
@@ -68,6 +70,13 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 $cnv coords "${tag}BUT" \
                     [expr ($xpos + 1) * $zoom] [expr ($ypos + 1) * $zoom] \
                     [expr ($xpos + $xnew - 1.5) * $zoom] [expr ($ypos + $ynew - 1.5) * $zoom]
+
+                $cnv coords "${tag}INLET" \
+                    [expr $xpos          * $zoom] [expr ($ypos              ) * $zoom] \
+                    [expr ($xpos + $iow) * $zoom] [expr ($ypos +         $ih) * $zoom]
+                $cnv coords "${tag}OUTLET" \
+                    [expr $xpos          * $zoom] [expr ($ypos + $ynew - $oh) * $zoom] \
+                    [expr ($xpos + $iow) * $zoom] [expr ($ypos + $ynew      ) * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}BUT"  -fill $color

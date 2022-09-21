@@ -872,44 +872,9 @@ static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_select(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 {
-    const int zoom = x->x_glist->gl_zoom;
-    int xpos = text_xpix(&x->x_obj, glist);
-    int ypos = text_ypix(&x->x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag_object[128], tag_label[128], tag[128];
-    char *tags[] = {tag_object, tag};
-
-    (void)old_snd_rcv_flags;
-
-    sprintf(tag_object, "%lxOBJ", x);
-    sprintf(tag_label, "%lxLABEL", x);
-
-    /* re-create outlet */
-    sprintf(tag, "%lxOUT%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
-    if(!x->x_fsf.x_snd_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
-            canvas, "create", "rectangle",
-            xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", "black",
-            "-tags", 2, tags);
-        /* keep label above outlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
-    }
-
-    /* re-create inlet */
-    sprintf(tag, "%lxIN%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
-    if(!x->x_fsf.x_rcv_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
-            canvas, "create", "rectangle",
-            xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
-            "-tags", 2, tags);
-        /* keep label above inlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
-    }
+    pdgui_vmess("::pd::widget::show_iolets", "o ii"
+        , x
+        , !x->x_fsf.x_rcv_able, !x->x_fsf.x_snd_able);
 }
 
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
