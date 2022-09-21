@@ -87,8 +87,8 @@ proc ::pd::widget::select {obj state} {
 proc ::pd::widget::move {obj dx dy} {
     ::pd::widget::_call move $obj $dx $dy
 }
-proc ::pd::widget::moveto {obj x y} {
-    ::pd::widget::_call moveto $obj $x $y
+proc ::pd::widget::moveto {obj cnv x y} {
+    ::pd::widget::_call moveto $obj $cnv $x $y
 }
 
 # fallback widget behaviours (private, DO NOT CALL DIRECTLY)
@@ -120,11 +120,12 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     }
 }
 
-::pd::widget::_defaultproc moveto {obj x y} {
+::pd::widget::_defaultproc moveto {obj cnv x y} {
     set tag [::pd::widget::base_tag $obj]
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            ::pd::widget::canvas_moveto $cnv $tag $x $y
+    if {[catch {$cnv moveto $tag $x $y}]} {
+        foreach {oldx oldy} [$cnv coords $tag] {
+            puts $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
+            $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
 }
@@ -184,14 +185,5 @@ proc ::pd::widget::base_tag {obj} {
 proc ::pd::widget::get_canvases {obj} {
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         return $::pd::widget::_obj2canvas($obj)
-    }
-}
-
-proc ::pd::widget::canvas_moveto {cnv tag x y} {
-    if {[catch {$cnv moveto $tag $x $y}]} {
-        foreach {oldx oldy} [$cnv coords $tag] {
-            puts $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
-            $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
-        }
     }
 }

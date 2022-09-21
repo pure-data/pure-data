@@ -34,8 +34,8 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
     pdgui_vmess("::pd::widget::create", "roc", "bang", x, glist_getcanvas(glist));
-    pdgui_vmess("::pd::widget::moveto", "o ii"
-        , x
+    pdgui_vmess("::pd::widget::moveto", "oc ii"
+        , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
