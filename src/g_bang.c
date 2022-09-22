@@ -18,18 +18,7 @@ static t_class *bng_class;
 
 /*  widget helper functions  */
 #define bng_draw_io 0
-static void bng_draw_config(t_bng* x, t_glist* glist)
-{
-    const float zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::config", "o rff rkkk rsi rii rs"
-        , x
-        , "-size", x->x_gui.x_w / zoom, x->x_gui.x_h / zoom
-        , "-colors", x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol
-        , "-font", x->x_gui.x_font, x->x_gui.x_fontsize
-        , "-labelpos",  x->x_gui.x_ldx,  x->x_gui.x_ldy
-        , "-label", (x->x_gui.x_lab?canvas_realizedollar(x->x_gui.x_glist, x->x_gui.x_lab)->s_name:"")
-        );
-}
+#define bng_draw_config 0
 
 static void bng_draw_new(t_bng *x, t_glist *glist)
 {
@@ -40,7 +29,7 @@ static void bng_draw_new(t_bng *x, t_glist *glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
-    bng_draw_config(x, glist);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 

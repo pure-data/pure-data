@@ -896,6 +896,8 @@ static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
 {
+    const float zoom = x->x_glist->gl_zoom;
+
 #define DRAW_FUN(fun, x, glist) {                                       \
         t_iemdrawfunptr do_draw = x->x_private->p_widget.draw_##fun;    \
         if (!do_draw) do_draw = (t_iemdrawfunptr)iemgui_draw_##fun;     \
@@ -924,6 +926,14 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         DRAW_FUN(erase, x, glist);
         break;
     case (IEM_GUI_DRAW_MODE_CONFIG):
+        pdgui_vmess("::pd::widget::config", "o rff rkkk rsi rii rs"
+            , x
+            , "-size", x->x_w / zoom, x->x_h / zoom
+            , "-colors", x->x_bcol, x->x_fcol, x->x_lcol
+            , "-font", x->x_font, x->x_fontsize
+            , "-labelpos",  x->x_ldx,  x->x_ldy
+            , "-label", (x->x_lab?canvas_realizedollar(x->x_glist, x->x_lab)->s_name:"")
+        );
         DRAW_FUN(config, x, glist);
         break;
     default:

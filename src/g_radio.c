@@ -24,15 +24,6 @@ static t_class *radio_class;
 #define radio_draw_io 0
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
-    const float zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::config", "o rff rkkk rsi rii rs"
-        , x
-        , "-size", x->x_gui.x_w / zoom, x->x_gui.x_h / zoom
-        , "-colors", x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol
-        , "-font", x->x_gui.x_font, x->x_gui.x_fontsize
-        , "-labelpos",  x->x_gui.x_ldx,  x->x_gui.x_ldy
-        , "-label", (x->x_gui.x_lab?canvas_realizedollar(x->x_gui.x_glist, x->x_gui.x_lab)->s_name:"")
-        );
     pdgui_vmess("::pd::widget::config", "o rii"
         , x
         , "-number"
@@ -53,9 +44,9 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
 
-    radio_draw_config(x, glist);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
-    }
+}
 
 static void radio_draw_select(t_radio *x, t_glist* glist)
 {
