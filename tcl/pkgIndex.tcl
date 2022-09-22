@@ -31,6 +31,7 @@ package ifneeded pd_menucommands 0.1 [list source [file join $dir pd_menucommand
 package ifneeded pd_menus 0.1 [list source [file join $dir pd_menus.tcl]]
 package ifneeded pd_widget 0.1 [list source [file join $dir pd_widget.tcl]]
 package ifneeded pd_windows 0.1 [list source [file join $dir pd_windows.tcl]]
+package ifneeded pd_canvas 0.1 [list source [file join $dir pd_canvas.tcl]]
 package ifneeded pdtk_canvas 0.1 [list source [file join $dir pdtk_canvas.tcl]]
 package ifneeded pdtk_text 0.1 [list source [file join $dir pdtk_text.tcl]]
 package ifneeded pdtk_textwindow 0.1 [list source [file join $dir pdtk_textwindow.tcl]]
