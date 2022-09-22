@@ -38,9 +38,9 @@ proc ::pd::widget::canvas::config {obj args} {
     set options [::pd::widget::parseargs \
                      {
                          -labelpos 2
-                         -size 1
+                         -size 2
                          -visible 2
-                         -colors 2
+                         -colors 3
                          -font 2
                          -label 1
                      } $args]
@@ -63,9 +63,11 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 $cnv coords "${tag}LABEL" \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
                 $cnv coords "${tag}BASE" \
                     [expr $xpos + $offset] [expr $ypos + $offset] \
-                    [expr $xpos + $v * $zoom + $offset] [expr $ypos + $v * $zoom + $offset]
+                    [expr $xpos + $xnew * $zoom + $offset] [expr $ypos + $ynew * $zoom + $offset]
             } "-visible" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]
@@ -74,7 +76,8 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}RECT" -fill $color -outline $color
                 $cnv itemconfigure "${tag}BASE" -width 1 -outline {}
-                set color [lindex $v 1]
+                # set unused_color [lindex $v 1]
+                set color [lindex $v 2]
                 $cnv itemconfigure "${tag}LABEL" -fill $color
             } "-font" {
                 set fontweight $::font_weight
