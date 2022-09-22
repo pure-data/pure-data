@@ -36,7 +36,7 @@ proc ::pd::widget::canvas::config {obj args} {
     set tag [::pd::widget::base_tag $obj]
 
 foreach cnv [::pd::widget::get_canvases $obj] {
-    set zoom [::pdtk_canvas::get_zoom $cnv]
+    set zoom [::pd::canvas::get_zoom $cnv]
     set offset 0
     if {$zoom > 1} {
         set offset $zoom

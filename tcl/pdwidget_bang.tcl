@@ -37,7 +37,7 @@ proc ::pd::widget::bang::config {obj args} {
     set tag [::pd::widget::base_tag $obj]
 
 foreach cnv [::pd::widget::get_canvases $obj] {
-    set zoom [::pdtk_canvas::get_zoom $cnv]
+    set zoom [::pd::canvas::get_zoom $cnv]
     set iow $::pd::widget::IOWIDTH
     set ih [expr $::pd::widget::IHEIGHT - 0.5]
     set oh [expr $::pd::widget::OHEIGHT - 1]

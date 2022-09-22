@@ -125,7 +125,7 @@ proc ::pd::widget::radio::config {obj args} {
         break;
     }
     foreach cnv $canvases {
-        set zoom [::pdtk_canvas::get_zoom $cnv]
+        set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
             switch -exact -- $k {

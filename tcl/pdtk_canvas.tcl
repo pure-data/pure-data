@@ -506,14 +506,3 @@ proc ::pdtk_canvas::cords_to_foreground {mytoplevel {state 1}} {
         }
     }
 }
-
-
-proc ::pdtk_canvas::set_zoom {cnv zoom} {
-    set ::pdtk_canvas::_zoom($cnv) $zoom
-}
-proc ::pdtk_canvas::get_zoom {cnv} {
-    if {[info exists ::pdtk_canvas::_zoom($cnv)]} {
-        return $::pdtk_canvas::_zoom($cnv)
-    }
-    return 1
-}
