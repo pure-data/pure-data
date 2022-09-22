@@ -80,6 +80,10 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}BASE" -fill $color
+                if { [$cnv itemcget "${tag}BUT" -fill] ne {} } {
+                    set color [lindex $v 1]
+                    $cnv itemconfigure "${tag}BUT" -fill $color
+                }
                 set color [lindex $v 2]
                 $cnv itemconfigure "${tag}LABEL" -fill $color
             } "-font" {
