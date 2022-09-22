@@ -16,7 +16,6 @@ package provide pdwidget_bang 0.1
 namespace eval ::pd::widget::bang:: {
 
 }
-set ::pd::widget::bang::_state [dict create]
 
 proc printme {args} {
     ::pdwindow::error "${args}\n"
@@ -33,8 +32,6 @@ proc ::pd::widget::bang::create {obj cnv} {
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}INLET] -outline {} -fill {}
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}OUTLET] -outline {} -fill {}
     $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
-
-    dict set ::pd::widget::bang::_state $obj canvas $cnv
 
     ::pd::widget::widgetbehaviour $obj config ::pd::widget::bang::config
     ::pd::widget::widgetbehaviour $obj select ::pd::widget::bang::select
@@ -84,7 +81,6 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}BUT"  -fill $color
                 $cnv itemconfigure "${tag}BASE" -fill $color
-                dict set ::pd::widget::canvas::_state $obj flashcolor [lindex $v 1]
                 set color [lindex $v 2]
                 $cnv itemconfigure "${tag}LABEL" -fill $color
             } "-font" {
