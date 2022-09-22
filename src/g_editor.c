@@ -1719,14 +1719,14 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 /* ------------------------ event handling ------------------------ */
 
 static const char *cursorlist[] = {
-    "$cursor_runmode_nothing",
-    "$cursor_runmode_clickme",
-    "$cursor_runmode_thicken",
-    "$cursor_runmode_addpoint",
-    "$cursor_editmode_nothing",
-    "$cursor_editmode_connect",
-    "$cursor_editmode_disconnect",
-    "$cursor_editmode_resize"
+    "runmode_nothing",
+    "runmode_clickme",
+    "runmode_thicken",
+    "runmode_addpoint",
+    "editmode_nothing",
+    "editmode_connect",
+    "editmode_disconnect",
+    "editmode_resize"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)
@@ -1739,7 +1739,7 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
     if (EDITOR->canvas_cursorcanvaswas != x ||
         EDITOR->canvas_cursorwas != cursornum)
     {
-        pdgui_vmess(0, "^r rr", x, "configure", "-cursor", cursorlist[cursornum]);
+        pdgui_vmess("::pd::window::set_cursor", "^r", x, cursorlist[cursornum]);
         EDITOR->canvas_cursorcanvaswas = x;
         EDITOR->canvas_cursorwas = cursornum;
     }
