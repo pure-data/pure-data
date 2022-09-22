@@ -109,7 +109,6 @@ proc ::pd::widget::toggle::select {obj state} {
     set tag "[::pd::widget::base_tag $obj]"
     foreach cnv [::pd::widget::get_canvases $obj] {
         $cnv itemconfigure "${tag}BASE" -outline $color
-        $cnv itemconfigure "${tag}X" -fill $color
     }
 }
 
