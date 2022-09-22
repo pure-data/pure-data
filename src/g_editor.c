@@ -4815,14 +4815,11 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x), "delete", "commentbar");
         }
     }
+    pdgui_vmess("::pd::canvas::set_editmode", "ci", glist_getcanvas(x), x->gl_edit);
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        pdgui_vmess("pdtk_canvas_editmode", "^i",
-            glist_getcanvas(x), x->gl_edit);
         canvas_reflecttitle(x);
     }
 }

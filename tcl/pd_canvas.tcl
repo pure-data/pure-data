@@ -18,3 +18,15 @@ proc ::pd::canvas::get_zoom {cnv} {
     }
     return 1
 }
+
+
+proc ::pd::canvas::set_editmode {cnv state} {
+    set ::editmode_button $state
+    set ::editmode($cnv) $state
+    if { [winfo exists $cnv] } {
+        if { ! $state && [winfo toplevel $cnv] ne $cnv} {
+            catch {$cnv delete commentbar}
+        }
+        event generate $cnv <<EditMode>>
+    }
+}
