@@ -38,4 +38,5 @@ package ifneeded scrollboxwindow 0.1 [list source [file join $dir scrollboxwindo
 package ifneeded wheredoesthisgo 0.1 [list source [file join $dir wheredoesthisgo.tcl]]
 
 package ifneeded pdwidget_canvas 0.1 [list source [file join $dir pdwidget_canvas.tcl]]
-package ifneeded pdwidget_bang 0.1 [list source [file join $dir pdwidget_bang.tcl]]
+package ifneeded pdwidget_bang   0.1 [list source [file join $dir pdwidget_bang.tcl  ]]
+package ifneeded pdwidget_toggle 0.1 [list source [file join $dir pdwidget_toggle.tcl]]

@@ -53,6 +53,7 @@ dist_libpdtcl_DATA = \
     pd_widget.tcl \
     pdwidget_bang.tcl \
     pdwidget_canvas.tcl \
+    pdwidget_toggle.tcl \
     $(empty)
 
 
