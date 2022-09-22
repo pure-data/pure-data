@@ -79,7 +79,6 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                     [expr $xpos + $iow * $zoom] [expr $ypos + ($ynew      ) * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
-                $cnv itemconfigure "${tag}BUT"  -fill $color
                 $cnv itemconfigure "${tag}BASE" -fill $color
                 set color [lindex $v 2]
                 $cnv itemconfigure "${tag}LABEL" -fill $color
@@ -115,11 +114,14 @@ proc ::pd::widget::bang::select {obj state} {
     }
 }
 
-proc ::pd::widget::bang::flash {obj color} {
+proc ::pd::widget::bang::activate {obj state activecolor} {
     # LATER: have the timer work on the GUI side!
     set tag "[::pd::widget::base_tag $obj]BUT"
+    if {! $state} {
+        set activecolor {}
+    }
     foreach cnv [::pd::widget::get_canvases $obj] {
-        $cnv itemconfigure $tag -fill $color
+        $cnv itemconfigure $tag -fill $activecolor
     }
 }
 

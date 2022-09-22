@@ -53,8 +53,8 @@ static void bng_draw_update(t_bng *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        pdgui_vmess("::pd::widget::bang::flash", "ok", x,
-            (x->x_flashed ? x->x_gui.x_fcol : x->x_gui.x_bcol));
+        pdgui_vmess("::pd::widget::bang::activate", "o ik", x,
+            x->x_flashed, x->x_gui.x_fcol);
     }
 }
 
