@@ -211,3 +211,10 @@ proc ::pd::widget::get_canvases {obj} {
         return $::pd::widget::_obj2canvas($obj)
     }
 }
+
+
+
+
+# finally import the actual widget implementations
+package require pdwidget_canvas
+package require pdwidget_bang
