@@ -1,15 +1,4 @@
 ## infrastructure for drawing Pd "widgets" (graphical objects)
-
-
-# TODO: ZOOM
-# zoom is currently ignored (the canvas should now the zoom state).
-#   even better if https://github.com/pure-data/pure-data/pull/1659 gets accepted,
-#   and the core doesn't know anything about zoom any more
-#
-#   until then:
-#   - apart from coordinate scaling, the BASE should adjust it's 'width' with the zoom level
-#     this also involves a slight repositioning of BASE
-
 package provide pdwidget_canvas 0.1
 
 
