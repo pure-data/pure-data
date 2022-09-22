@@ -62,21 +62,24 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" [expr ($xpos + $xnew) * $zoom] [expr ($ypos + $ynew) * $zoom]
+                $cnv coords "${tag}LABEL" \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}BASE" [expr $xpos * $zoom] [expr $ypos * $zoom] [expr ($xpos + $xnew) * $zoom] [expr ($ypos + $ynew) * $zoom]
+                $cnv coords "${tag}BASE" \
+                          $xpos                        $ypos                  \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
                 $cnv coords "${tag}BUT" \
-                    [expr ($xpos + 1) * $zoom] [expr ($ypos + 1) * $zoom] \
-                    [expr ($xpos + $xnew - 1.5) * $zoom] [expr ($ypos + $ynew - 1.5) * $zoom]
+                    [expr $xpos +                 $zoom] [expr $ypos +                 $zoom] \
+                    [expr $xpos + ($xnew - 1.5) * $zoom] [expr $ypos + ($ynew - 1.5) * $zoom]
 
                 $cnv coords "${tag}INLET" \
-                    [expr $xpos          * $zoom] [expr ($ypos              ) * $zoom] \
-                    [expr ($xpos + $iow) * $zoom] [expr ($ypos +         $ih) * $zoom]
+                          $xpos                       $ypos                          \
+                    [expr $xpos + $iow * $zoom] [expr $ypos +           $ih * $zoom]
                 $cnv coords "${tag}OUTLET" \
-                    [expr $xpos          * $zoom] [expr ($ypos + $ynew - $oh) * $zoom] \
-                    [expr ($xpos + $iow) * $zoom] [expr ($ypos + $ynew      ) * $zoom]
+                          $xpos                 [expr $ypos + ($ynew - $oh) * $zoom] \
+                    [expr $xpos + $iow * $zoom] [expr $ypos + ($ynew      ) * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
                 $cnv itemconfigure "${tag}BUT"  -fill $color
