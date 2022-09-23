@@ -47,6 +47,9 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
+                $cnv coords "${tag}" \
+                          $xpos                        $ypos                  \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
                 $cnv coords "${tag}BASE" \
                           $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
