@@ -11,6 +11,17 @@ namespace eval ::pdtk_text:: {
     }
 }
 
+proc ::pdtk_text::atoms2text {atoms {escape_spaces true}} {
+    set txt {}
+    if { $escape_spaces} {
+        foreach a $atoms {
+            lappend txt [string map {" " "\\ " ";" "\\;"} $a]
+        }
+        return [join $txt]
+    }
+    return [join $atoms]
+}
+
 # create a new text object (ie. obj, msg, comment)
 # the initializing string ends in an extra space.  This is done in case
 # the last character should have been a backslash ('\') which would have
