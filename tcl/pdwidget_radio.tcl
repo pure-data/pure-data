@@ -6,13 +6,6 @@ namespace eval ::pd::widget::radio:: {
 
 }
 
-proc printme {args} {
-    ::pdwindow::error "${args}\n"
-}
-proc debug {args} {
-    ::pdwindow::error "${args}\n"
-    {*}$args
-}
 proc ::pd::widget::radio::create {obj cnv} {
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0

@@ -19,6 +19,7 @@ array set ::pd::widget::_procs::constructor {}
 array set ::pd::widget::_obj2canvas {}
 array set ::pd::widget::_canvas2obj {}
 
+# private helpers
 proc ::pd::widget::_lremove {list value} {
     set result {}
     foreach x $list {

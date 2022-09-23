@@ -114,3 +114,12 @@ proc pdtk_watchdog {} {
 proc pdtk_ping {} {
     pdsend "pd ping"
 }
+
+# ------------------------------------------------------------------------------
+# debugging functions
+
+# print the function with params before it gets called
+proc DDD {args} {
+    ::pdwindow::error "${args}\n"
+    {*}$args
+}
