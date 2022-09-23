@@ -23,8 +23,7 @@ static t_class *toggle_class;
 void toggle_draw_new(t_toggle *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::create", "roc", "toggle", x, glist_getcanvas(glist));
-    pdgui_vmess("::pd::widget::moveto", "oc ii"
+    pdgui_vmess("::pd::widget::create", "roc ii", "toggle"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom

@@ -80,9 +80,9 @@ proc ::pd::widget::_call {behaviour obj args} {
 }
 
 #
-proc ::pd::widget::create {type obj cnv} {
+proc ::pd::widget::create {type obj cnv posX posY} {
     $cnv delete $obj
-    if {[catch {$::pd::widget::_procs::constructor($type) $obj $cnv} stdout]} {
+    if {[catch {$::pd::widget::_procs::constructor($type) $obj $cnv $posX $posY} stdout]} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
         # associate this obj with the cnv

@@ -6,7 +6,7 @@ namespace eval ::pd::widget::bang:: {
 
 }
 
-proc ::pd::widget::bang::create {obj cnv} {
+proc ::pd::widget::bang::create {obj cnv posX posY} {
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}BASE]
@@ -14,6 +14,7 @@ proc ::pd::widget::bang::create {obj cnv} {
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}INLET] -outline {} -fill {}
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}OUTLET] -outline {} -fill {}
     $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
+    $cnv move $tag $posX $posY
 
     ::pd::widget::widgetbehaviour $obj config ::pd::widget::bang::config
     ::pd::widget::widgetbehaviour $obj select ::pd::widget::bang::select

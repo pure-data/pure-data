@@ -38,8 +38,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::create", "roc", "canvas", x, glist_getcanvas(glist));
-    pdgui_vmess("::pd::widget::moveto", "oc ii"
+    pdgui_vmess("::pd::widget::create", "roc ii", "canvas"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
