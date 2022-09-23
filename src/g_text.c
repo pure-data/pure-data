@@ -1320,8 +1320,8 @@ static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
     t_rtext *y = glist_findrtext(glist, x);
-    if (z->g_pd != gatom_class)
-        rtext_activate(y, state);
+
+    rtext_activate(y, state);
 }
 
 static void text_delete(t_gobj *z, t_glist *glist)
@@ -1469,7 +1469,7 @@ static const t_widgetbehavior gatom_widgetbehavior =
     text_getrect,
     gatom_displace,
     text_select,
-    text_activate,
+    NULL,
     text_delete,
     gatom_vis,
     gatom_doclick,
