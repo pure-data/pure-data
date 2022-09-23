@@ -30,3 +30,26 @@ proc ::pd::canvas::set_editmode {cnv state} {
         event generate $cnv <<EditMode>>
     }
 }
+
+proc ::pd::canvas::set_cursor {cnv cursor} {
+    set cur {}
+    switch -exact -- $cursor {
+        "runmode_nothing" {set cur $::cursor_runmode_nothing}
+        "runmode_clickme" {set cur $::cursor_runmode_clickme}
+        "runmode_thicken" {set cur $::cursor_runmode_thicken}
+        "runmode_addpoint" {set cur $::cursor_runmode_addpoint}
+
+        "editmode_nothing" {set cur $::cursor_editmode_nothing}
+        "editmode_connect" {set cur $::cursor_editmode_connect}
+        "editmode_disconnect" {set cur $::cursor_editmode_disconnect}
+        "editmode_resize" {set cur $::cursor_editmode_resize}
+
+        default {
+            ::pdwindow::error "Unknown cursor '${cursor}'\n"
+        }
+    }
+    if { $cur ne {} } {
+        ::pdwindow::error "set cursor to $cursor\n"
+        $cnv configure -cursor $cur
+    }
+}

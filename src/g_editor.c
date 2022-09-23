@@ -1739,7 +1739,7 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
     if (EDITOR->canvas_cursorcanvaswas != x ||
         EDITOR->canvas_cursorwas != cursornum)
     {
-        pdgui_vmess("::pd::window::set_cursor", "^r", x, cursorlist[cursornum]);
+        pdgui_vmess("::pd::canvas::set_cursor", "cr", x, cursorlist[cursornum]);
         EDITOR->canvas_cursorcanvaswas = x;
         EDITOR->canvas_cursorwas = cursornum;
     }
