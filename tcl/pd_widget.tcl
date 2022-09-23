@@ -44,11 +44,11 @@ proc ::pd::widget::register {type ctor} {
 # common function dispatcher
 # on the C-side we have
 # - getrect: get the bounding rectangle (NOT our business, LATER send the rect back to the core if needed)
-# - displace: relative move of object (::pd::widget::move)
+# - displace: relative move of object (::pd::widget::displace)
 # - select: (de)select and object (::pd::widget::select)
 # - activate: (de)activate the object's editor
-# - delete: delete an object (::pd::widget::delete)
-# - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::delete)
+# - delete: delete an object (::pd::widget::destroy)
+# - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::destroy)
 # - click: called on hitbox detection with mouse-click (NOT our business, for now)
 
 proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
@@ -90,10 +90,10 @@ proc ::pd::widget::create {type obj cnv} {
         lappend ::pd::widget::_obj2canvas($obj) $cnv
     }
 }
-proc ::pd::widget::delete {obj} {
-    ::pd::widget::_call delete $obj
+proc ::pd::widget::destroy {obj} {
+    ::pd::widget::_call destroy $obj
     # always clean up our internal state
-    ::pd::widget::_delete $obj
+    ::pd::widget::_destroy $obj
 }
 proc ::pd::widget::config {obj args} {
     ::pd::widget::_call config $obj {*}$args
@@ -101,8 +101,8 @@ proc ::pd::widget::config {obj args} {
 proc ::pd::widget::select {obj state} {
     ::pd::widget::_call select $obj $state
 }
-proc ::pd::widget::move {obj dx dy} {
-    ::pd::widget::_call move $obj $dx $dy
+proc ::pd::widget::displace {obj dx dy} {
+    ::pd::widget::_call displace $obj $dx $dy
 }
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
@@ -117,7 +117,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     array set ::pd::widget::_procs::widget_${id} [list {} ::pd::widget::_${id}]
 }
 
-::pd::widget::_defaultproc delete {obj} {
+::pd::widget::_defaultproc destroy {obj} {
     set tag [::pd::widget::base_tag $obj]
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
@@ -131,7 +131,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
 }
 
 
-::pd::widget::_defaultproc move {obj dx dy} {
+::pd::widget::_defaultproc displace {obj dx dy} {
     set tag [::pd::widget::base_tag $obj]
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
