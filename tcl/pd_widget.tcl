@@ -36,7 +36,6 @@ proc ::pd::widget::_lremove {list value} {
 # the <ctor> takes a handle to an object and the associated canvas
 # and is responsible for registering per-object widgetfunctions
 proc ::pd::widget::register {type ctor} {
-    puts "registering widget '$type' with $ctor"
     set ::pd::widget::_procs::constructor($type) $ctor
 }
 
@@ -147,7 +146,6 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     set tag [::pd::widget::base_tag $obj]
     if {[catch {$cnv moveto $tag $x $y}]} {
         foreach {oldx oldy} [$cnv coords $tag] {
-            puts $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
