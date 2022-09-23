@@ -39,6 +39,18 @@ proc ::pd::widget::register {type ctor} {
     puts "registering widget '$type' with $ctor"
     set ::pd::widget::_procs::constructor($type) $ctor
 }
+
+
+# common function dispatcher
+# on the C-side we have
+# - getrect: get the bounding rectangle (NOT our business, LATER send the rect back to the core if needed)
+# - displace: relative move of object (::pd::widget::move)
+# - select: (de)select and object (::pd::widget::select)
+# - activate: (de)activate the object's editor
+# - delete: delete an object (::pd::widget::delete)
+# - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::delete)
+# - click: called on hitbox detection with mouse-click (NOT our business, for now)
+
 proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
     if {$obj eq {} } {
         ::pdwindow::error "refusing to add ${behaviour} proc without an object\n"
