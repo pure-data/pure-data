@@ -76,17 +76,4 @@ proc ::pd::widget::object::select {obj state} {
     }
 }
 
-proc ::pd::widget::object::activate {obj state activecolor} {
-    # LATER: have the timer work on the GUI side!
-    set tag "[::pd::widget::base_tag $obj]&&RECT"
-    if {! $state} {
-        set activecolor {}
-    }
-    foreach cnv [::pd::widget::get_canvases $obj] {
-        $cnv itemconfigure $tag -fill $activecolor
-    }
-}
-
-
-
 ::pd::widget::register object ::pd::widget::object::create
