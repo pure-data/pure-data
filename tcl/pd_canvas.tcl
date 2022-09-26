@@ -9,6 +9,20 @@ package provide pd_canvas 0.1
 namespace eval ::pd::canvas { }
 
 
+# private helpers
+proc ::pd::canvas::_lremove {list value} {
+    set result {}
+    foreach x $list {
+        if {$x ne $value} {
+            lappend result $x
+        }
+    }
+    return $result
+}
+
+
+
+
 proc ::pd::canvas::set_zoom {cnv zoom} {
     set ::pdtk_canvas::_zoom($cnv) $zoom
 }
@@ -51,5 +65,21 @@ proc ::pd::canvas::set_cursor {cnv cursor} {
     if { $cur ne {} } {
         ::pdwindow::error "set cursor to $cursor\n"
         $cnv configure -cursor $cur
+    }
+}
+
+
+# keep track of objects on this canvas
+array set ::pd::canvas::_objects {}
+proc ::pd::canvas::add_object {cnv obj} {
+    if {[info exists ::pd::canvas::_objects($cnv)] && [lsearch $::pd::canvas::_objects($cnv) $obj] >= 0} {
+    } else {
+        lappend ::pd::canvas::_objects($cnv) $obj
+    }
+}
+
+proc ::pd::canvas::remove_object {cnv obj} {
+    if {[info exists ::pd::canvas::_objects($cnv)]} {
+        set ::pd::canvas::_objects($cnv) [_lremove $::pd::canvas::_objects($cnv) $obj]
     }
 }

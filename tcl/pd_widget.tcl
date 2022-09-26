@@ -106,6 +106,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
             $cnv delete $tag
+            ::pd::canvas::remove_object $cnv $obj
         }
         unset ::pd::widget::_obj2canvas($obj)
     }
@@ -155,6 +156,7 @@ proc ::pd::widget::create {type obj cnv posX posY} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
         # associate this obj with the cnv
+        ::pd::canvas::add_object $cnv $obj
         lappend ::pd::widget::_obj2canvas($obj) $cnv
     }
 }
