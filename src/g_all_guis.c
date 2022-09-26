@@ -461,11 +461,10 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 
     if(senditup)
     {
-        char tag[128];
-        sprintf(tag, "%lxLABEL", x);
-        pdgui_vmess("pdtk_text_set", "cs s",
-            glist_getcanvas(iemgui->x_glist), tag,
-            (strcmp(s->s_name, "empty"))?s->s_name:"");
+        pdgui_vmess("::pd::widget::config", "o rs"
+            , x
+            , "-label", (s?canvas_realizedollar(iemgui->x_glist, s)->s_name:"")
+        );
     }
 }
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -477,18 +476,10 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_ldx = (int)atom_getfloatarg(0, ac, av);
-    iemgui->x_ldy = (int)atom_getfloatarg(1, ac, av);
-    if(glist_isvisible(iemgui->x_glist))
-    {
-        char tag[128];
-        sprintf(tag, "%lxLABEL", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(iemgui->x_glist), "coords", tag,
-            text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
-            text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
-    }
+    pdgui_vmess("::pd::widget::config", "o rii"
+        , x
+        , "-labelpos",  iemgui->x_ldx,  iemgui->x_ldy
+        );
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -508,18 +499,10 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(f < 4)
         f = 4;
     iemgui->x_fontsize = f;
-    if(glist_isvisible(iemgui->x_glist))
-    {
-        char tag[128];
-        t_atom fontatoms[3];
-        sprintf(tag, "%lxLABEL", x);
-        SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-        pdgui_vmess(0, "crs rA",
-            glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
-            "-font", 3, fontatoms);
-    }
+    pdgui_vmess("::pd::widget::config", "o rsi"
+        , x
+        , "-font", iemgui->x_font, iemgui->x_fontsize
+        );
 }
 
 static void iemgui_do_drawmove(void *x, t_iemgui*iemgui)
@@ -879,11 +862,7 @@ static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag_object[128];
-    sprintf(tag_object, "%lxOBJ", x);
-
-    pdgui_vmess(0, "crs", canvas, "delete", tag_object);
+    pdgui_vmess("::pd::widget::destroy", "o", x);
 }
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
