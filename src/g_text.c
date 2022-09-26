@@ -453,35 +453,13 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    if (glist_isvisible(x->m_glist))
-    {
-        /* not zooming click width for now as it gets too fat */
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs ri",
-            glist_getcanvas(x->m_glist),
-            "itemconfigure",
-            buf,
-            "-width", MESSAGE_CLICK_WIDTH);
-        clock_delay(x->m_clock, 120);
-    }
+    pdgui_vmess("::pd::widget::message::activate", "oi", x, 120);
     message_float(x, 0);
 }
 
 static void message_tick(t_message *x)
 {
-    if (glist_isvisible(x->m_glist))
-    {
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs ri",
-            glist_getcanvas(x->m_glist),
-            "itemconfigure",
-            buf,
-            "-width", glist_getzoom(x->m_glist));
-    }
+    pdgui_vmess("::pd::widget::message::activate", "oi", x, 0);
 }
 
 static void message_free(t_message *x)
@@ -1475,6 +1453,77 @@ static const t_widgetbehavior gatom_widgetbehavior =
     gatom_doclick,
 };
 
+
+/* -------------------- widget behavior for messageboxes ------------ */
+static void message_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
+{
+    //pd_error(0, "%s", __FUNCTION__);
+    text_getrect(z, glist, xp1, yp1, xp2, yp2);
+}
+static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
+{
+    pdgui_vmess("::pd::widget::displace", "o ii", z, dx, dy);
+}
+static void message_select(t_gobj *z, t_glist *glist, int state)
+{
+    t_message *x = (t_message *)z;
+    pdgui_vmess("::pd::widget::select", "oi", x, state);
+}
+static void message_activate(t_gobj *z, t_glist *glist, int state)
+{ pd_error(z, "%s(%d)", __FUNCTION__, state); }
+static void message_delete(t_gobj *z, t_glist *glist)
+{
+    t_message *x = (t_message *)z;
+    pdgui_vmess("::pd::widget::destroy", "o", x);
+}
+void rtext_configure(t_object*, t_rtext *x);
+static void message_vis(t_gobj *z, t_glist *glist, int vis)
+{
+    t_message *x = (t_message *)z;
+    pd_error(z, "%s(%d)", __FUNCTION__, vis);
+    pdgui_vmess("::pd::widget::destroy", "o", x);
+    if(vis)
+    {
+        const int zoom = glist_getzoom(glist);
+        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
+
+        int x1, y1, x2, y2, width, height, corner;
+        text_getrect(z, glist, &x1, &y1, &x2, &y2);
+
+        pdgui_vmess("::pd::widget::create", "roc ii", "message"
+            , x, glist_getcanvas(glist)
+            , x1 / zoom
+            , y1 / zoom
+            );
+        rtext_configure(&x->m_text, y);
+    } else {
+        sys_unqueuegui(z);
+    }
+    pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
+    pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
+
+}
+static int message_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
+    int shift, int alt, int dbl, int doit)
+{
+    if (doit)
+        message_click((t_message *)z, (t_floatarg)xpos, (t_floatarg)ypos,
+            (t_floatarg)shift, (t_floatarg)0, (t_floatarg)alt);
+    return 1;
+}
+
+
+static const t_widgetbehavior message_widgetbehavior =
+{
+    message_getrect,
+    message_displace,
+    message_select,
+    message_activate,
+    message_delete,
+    message_vis,
+    message_doclick,
+};
+
 /* -------------------- the "text" class  ------------ */
 
     /* draw inlets and outlets for a text object or for a graph. */
@@ -1807,6 +1856,7 @@ void g_text_setup(void)
         gensym("adddollar"), A_FLOAT, 0);
     class_addmethod(message_class, (t_method)message_adddollsym,
         gensym("adddollsym"), A_SYMBOL, 0);
+    class_setwidget(message_class, &message_widgetbehavior);
 
     messresponder_class = class_new(gensym("messresponder"), 0, 0,
         sizeof(t_text), CLASS_PD, 0);

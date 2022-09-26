@@ -780,3 +780,31 @@ void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
+
+
+void rtext_configure(t_object*obj, t_rtext *x)
+{
+    int w = 0, h = 0, index = 0;
+    char smallbuf[200], *tempbuf;
+    int outchars_b = 0, guifontsize, fontwidth, fontheight;
+    t_canvas *canvas = glist_getcanvas(x->x_glist);
+    int selstart_b, selend_b;   /* beginning and end of selection in bytes */
+        /* if we're a GOP (the new, "goprect" style) borrow the font size
+        from the inside to preserve the spacing */
+
+    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
+    if (x->x_bufsize >= 100)
+         tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
+    else tempbuf = smallbuf;
+    tempbuf[0] = 0;
+
+    rtext_formattext(x, &w, &h, &index,
+        tempbuf, &outchars_b, &selstart_b, &selend_b,
+        fontwidth, fontheight);
+    tempbuf[outchars_b]=0;
+
+    pdgui_vmess("::pd::widget::config", "o rii rs", obj
+        , "-size", w, h
+        , "-text", tempbuf
+        );
+}
