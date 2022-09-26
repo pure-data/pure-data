@@ -141,10 +141,91 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     if {$show_outlets} {set ocolor black}
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv itemconfigure ${tag}INLET  -fill $icolor
-            $cnv itemconfigure ${tag}OUTLET -fill $ocolor
+            $cnv itemconfigure ${tag}&&inlet  -fill $icolor
+            $cnv itemconfigure ${tag}&&outlet -fill $ocolor
         }
     }
+}
+proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
+    set tag [::pd::widget::base_tag $obj]
+    set numiolets [llength $iolets]
+    if {$numiolets < 2} {set numiolets 2}
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {
+            $cnv delete "${tag}&&${iotag}"
+            set zoom [::pd::canvas::get_zoom $cnv]
+            foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
+            set w [expr $x1 - $x0]
+            set h [expr $y1 - $y0]
+            set iw [expr $iowidth * $zoom]
+            set ih [expr ($ioheight - 0.5) * $zoom]
+            set delta [expr ($w - $iw)/($numiolets - 1.) ]
+            set objheight 0
+            if {$iotag eq "outlet"} {
+                set objheight [expr $h - $ih]
+            }
+
+            set numin 0
+            foreach iolet $iolets {
+                set iotype message
+                switch -exact $iolet {
+                    default {
+                        set iotype message
+                    } 1 {
+                        set iotype signal
+                    }
+                }
+                # create an iolet (with an 'anchor' where the connection starts)
+                set centerX [expr $iw / 2]
+                set centerY [expr $ih / 2]
+                ::DDD $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
+                $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
+                # move the iolet in place
+                $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
+
+                incr numin
+            }
+            $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
+            $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
+        }
+    }
+}
+::pd::widget::_defaultproc create_inlets {obj inlets} {
+    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
+}
+::pd::widget::_defaultproc create_outlets {obj outlets} {
+    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+}
+::pd::widget::_defaultproc create_iolets {obj {inlets {}} {outlets {}}} {
+    if {$inlets eq {} } {
+        set inlets [::pd::widget::get_iolets $obj inlet]
+    }
+    if {$outlets eq {} } {
+        set outlets [::pd::widget::get_iolets $obj outlet]
+    }
+    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
+    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+}
+
+# get inlet types
+proc ::pd::widget::get_iolets {obj type} {
+    set cnv {}
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {break}
+    }
+    if { $cnv eq {} } {return}
+    set tag [::pd::widget::base_tag $obj]
+
+    set result {}
+    foreach id [$cnv find withtag "${tag}&&${type}&&!anchor" ] {
+        set tags [$cnv gettags $id]
+        if { [lsearch -exact $tags signal] >= 0 } {
+            lappend result 1
+        } else {
+            lappend result 0
+        }
+    }
+    return $result
 }
 
 
@@ -176,6 +257,17 @@ proc ::pd::widget::displace {obj dx dy} {
 }
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
+}
+proc ::pd::widget::create_inlets {obj args} {
+    ::pd::widget::_call create_inlets $obj $args
+}
+proc ::pd::widget::create_outlets {obj args} {
+    ::pd::widget::_call create_outlets $obj $args
+}
+
+# these are actually used internally (not by Pd-core)
+proc ::pd::widget::create_iolets {obj {inlets {}} {outlets {}}} {
+    ::pd::widget::_call create_iolets $obj $inlets $outlets
 }
 proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
     ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets

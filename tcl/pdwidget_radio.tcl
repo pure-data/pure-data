@@ -10,8 +10,7 @@ proc ::pd::widget::radio::create {obj cnv posX posY} {
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE0]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}INLET] -outline {} -fill {}
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}OUTLET] -outline {} -fill {}
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {}
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
@@ -62,6 +61,8 @@ proc ::pd::widget::radio::_reconfigure_buttons {cnv obj zoom} {
 
     # get the coord of the outlet...
     set ylast $ypos
+    set numX 0
+    set numY 0
 
     # resize/reposition the buttons
     foreach id [$cnv find withtag "${tag}&&KNOB"] {
@@ -73,6 +74,9 @@ proc ::pd::widget::radio::_reconfigure_buttons {cnv obj zoom} {
             }
         }
         if { $x eq {} || $y eq {} } { break }
+        if {$x > $numX} {set numX $x}
+        if {$y > $numY} {set numY $y}
+
         set xy "${x}x${y}"
         set ylast [expr $h * $y]
         $cnv coords "${tag}&&BASE&&GRID${xy}" 0 0 $w $h
@@ -82,17 +86,7 @@ proc ::pd::widget::radio::_reconfigure_buttons {cnv obj zoom} {
     $cnv itemconfigure "${tag}&&BASE" -outline black
     $cnv move "${tag}&&RADIO" $xpos $ypos
 
-    ## reposition the iolets
-
-    # these need to be scaled
-    set iow [expr $::pd::widget::IOWIDTH * $zoom]
-    set ih [expr ($::pd::widget::IHEIGHT - 0.5) * $zoom]
-    set oh [expr ($::pd::widget::OHEIGHT -   1) * $zoom]
-
-    $cnv coords "${tag}INLET" 0 0 $iow $ih
-    $cnv coords "${tag}OUTLET" 0 0 $iow $oh
-    $cnv move "${tag}INLET" $xpos $ypos
-    $cnv move "${tag}OUTLET" $xpos [expr $ypos + $ylast + $h - $oh]
+    $cnv coords "${tag}" $xpos $ypos [expr $xpos + ($numX + 1) * $w * $zoom] [expr $ypos + ($numY + 1) * $h * $zoom]
 
 }
 
@@ -108,6 +102,7 @@ proc ::pd::widget::radio::config {obj args} {
                      } $args]
     set tag [::pd::widget::base_tag $obj]
     set canvases [::pd::widget::get_canvases $obj]
+    set recreate_iolets 0
 
     # which button is activated?
     set active {}
@@ -149,11 +144,13 @@ proc ::pd::widget::radio::config {obj args} {
                     foreach {x y} [$cnv coords "${tag}&&BASE0"] {break}
                     $cnv coords "${tag}&&BASE0" $x $y [expr $x + $w * $zoom] [expr $y + $h * $zoom]
                     ::pd::widget::radio::_reconfigure_buttons $cnv $obj $zoom
+                    set recreate_iolets 1
                 } "-number" {
                     set xnew [lindex $v 0]
                     set ynew [lindex $v 1]
                     ::pd::widget::radio::_recreate_buttons $cnv $obj $xnew $ynew
                     ::pd::widget::radio::_reconfigure_buttons $cnv $obj $zoom
+                    set recreate_iolets 1
                 }
 
             }
@@ -163,6 +160,16 @@ proc ::pd::widget::radio::config {obj args} {
     if { $active ne {} } {
         ::pd::widget::radio::activate $obj $active $activecolor
     }
+    if { $recreate_iolets } {
+        set iolets [::pd::widget::get_iolets $obj inlet]
+        ::pd::widget::create_inlets $obj {*}$iolets
+        set iolets [::pd::widget::get_iolets $obj outlet]
+        ::pd::widget::create_outlets $obj {*}$iolets
+    }
+
+
+
+
 }
 proc ::pd::widget::radio::select {obj state} {
     # if selection is activated, use a different color

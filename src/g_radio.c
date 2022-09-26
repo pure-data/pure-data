@@ -42,6 +42,8 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
+    pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
+    pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
 
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
