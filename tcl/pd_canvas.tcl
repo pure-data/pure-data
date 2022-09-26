@@ -33,6 +33,16 @@ proc ::pd::canvas::get_zoom {cnv} {
     return 1
 }
 
+array set ::pd::canvas::_fontsize {}
+proc ::pd::canvas::set_fontsize {cnv fontsize} {
+    set ::pdtk_canvas::_fontsize($cnv) $fontsize
+}
+proc ::pd::canvas::get_fontsize {cnv} {
+    if {[info exists ::pdtk_canvas::_fontsize($cnv)]} {
+        return $::pdtk_canvas::_fontsize($cnv)
+    }
+    return 12
+}
 
 proc ::pd::canvas::set_editmode {cnv state} {
     set ::editmode_button $state
