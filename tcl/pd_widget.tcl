@@ -117,6 +117,15 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
             $cnv move $tag $dx $dy
+
+            # update connections
+            foreach id [$cnv find withtag "connection&&src:${tag}" ] {
+                foreach {_ _ x1 y1} [$cnv coords $id] {$cnv coords $id $x $y $x1 $y1}
+            }
+            # find all connections going to $cnv (and adjust their end-point)
+            foreach id [$cnv find withtag "connection&&dst:${tag}" ] {
+                foreach {x0 y0 _ _} [$cnv coords $id] {$cnv coords $id $x0 $y0 $x $y}
+            }
         }
     }
 }
@@ -130,6 +139,14 @@ proc ::pd::widget::_defaultproc {id arguments body} {
         foreach {oldx oldy} [$cnv coords $tag] {
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
+    }
+    # update connections
+    foreach id [$cnv find withtag "connection&&src:${tag}" ] {
+        foreach {_ _ x1 y1} [$cnv coords $id] {$cnv coords $id $x $y $x1 $y1}
+    }
+    # find all connections going to $cnv (and adjust their end-point)
+    foreach id [$cnv find withtag "connection&&dst:${tag}" ] {
+        foreach {x0 y0 _ _} [$cnv coords $id] {$cnv coords $id $x0 $y0 $x $y}
     }
 }
 
@@ -258,6 +275,34 @@ proc ::pd::widget::displace {obj dx dy} {
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
 }
+proc ::pd::widget::connect {src outlet dst inlet} {
+    set srctag [::pd::widget::base_tag $src]
+    set dsttag [::pd::widget::base_tag $dst]
+    if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
+    foreach cnv $::pd::widget::_obj2canvas($src) {
+        foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
+        puts "outlet-tag: ${srctag}&&anchor&&outlet${outlet}"
+        puts "inlet--tag: ${dsttag}&&anchor&&inlet${inlet}"
+        foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
+        foreach {x1 y1} [$cnv coords "${dsttag}&&anchor&&inlet${inlet}"] {break}
+        if {$x0 eq {} || $x1 eq {}} {
+            ::pdwindow::error "Unable to connect ${src}:${outlet} with ${dst}:${inlet} on $cnv : $x0 $x1\n"
+            continue
+        }
+        $cnv create line $x0 $y0 $x1 $y1 -tags [list "connection" "src:$srctag" "src:$srctag:${outlet}" "dst:$dsttag" "dst:$dsttag:${inlet}" connection]
+    }
+}
+proc ::pd::widget::disconnect {src outlet dst inlet} {
+    set srctag [::pd::widget::base_tag $src]
+    set dsttag [::pd::widget::base_tag $dst]
+    if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
+    foreach cnv $::pd::widget::_obj2canvas($src) {
+        foreach id [$cnv find withtag "connection&&src:${srctag}:${outlet}&&dst:$dsttag:${inlet}"] {
+            $cnv delete $id
+        }
+    }
+}
+
 proc ::pd::widget::create_inlets {obj args} {
     ::pd::widget::_call create_inlets $obj $args
 }
