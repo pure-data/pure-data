@@ -63,7 +63,6 @@ proc ::pd::canvas::set_cursor {cnv cursor} {
         }
     }
     if { $cur ne {} } {
-        ::pdwindow::error "set cursor to $cursor\n"
         $cnv configure -cursor $cur
     }
 }
