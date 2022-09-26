@@ -9,12 +9,12 @@ namespace eval ::pd::widget::toggle:: {
 proc ::pd::widget::toggle::create {obj cnv posX posY} {
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}BASE]
-    $cnv create line 0 0 0 0 -tags [list ${tag} ${tag}X ${tag}X1] -fill {}
-    $cnv create line 0 0 0 0 -tags [list ${tag} ${tag}X ${tag}X2] -fill {}
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
+    $cnv create line 0 0 0 0 -tags [list ${tag} X X1] -fill {}
+    $cnv create line 0 0 0 0 -tags [list ${tag} X X2] -fill {}
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}INLET] -outline {} -fill {}
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}OUTLET] -outline {} -fill {}
-    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
+    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
     ::pd::widget::widgetbehaviour $obj config ::pd::widget::toggle::config
@@ -43,12 +43,12 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" \
+                $cnv coords "${tag}&&label" \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}BASE" \
+                $cnv coords "${tag}&&BASE" \
                           $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
 
@@ -57,9 +57,9 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                 set y0 [expr $ypos +          $crossw  * $zoom]
                 set x1 [expr $xpos + ($xnew - $crossw) * $zoom]
                 set y1 [expr $ypos + ($ynew - $crossw) * $zoom]
-                $cnv coords "${tag}X1" $x0 $y0 $x1 $y1
-                $cnv coords "${tag}X2" $x0 $y1 $x1 $y0
-                $cnv itemconfigure ${tag}X -width [expr $crossw - 1]
+                $cnv coords "${tag}&&X1" $x0 $y0 $x1 $y1
+                $cnv coords "${tag}&&X2" $x0 $y1 $x1 $y0
+                $cnv itemconfigure ${tag}&&X -width [expr $crossw - 1]
 
                 $cnv coords "${tag}INLET" \
                           $xpos                       $ypos                          \
@@ -69,25 +69,25 @@ foreach cnv [::pd::widget::get_canvases $obj] {
                     [expr $xpos + $iow * $zoom] [expr $ypos + ($ynew      ) * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
-                $cnv itemconfigure "${tag}BASE" -fill $color
-                if { [$cnv itemcget "${tag}X" -fill] ne {} } {
+                $cnv itemconfigure "${tag}&&BASE" -fill $color
+                if { [$cnv itemcget "${tag}&&X" -fill] ne {} } {
                     set color [lindex $v 1]
-                    $cnv itemconfigure "${tag}X" -fill $color
+                    $cnv itemconfigure "${tag}&&X" -fill $color
                 }
                 set color [lindex $v 2]
-                $cnv itemconfigure "${tag}LABEL" -fill $color
+                $cnv itemconfigure "${tag}&&label" -fill $color
             } "-font" {
                 set fontweight $::font_weight
                 set font [lindex $v 0]
                 set fontsize [lindex $v 1]
                 set fontsize [expr -int($fontsize) * $zoom]
-                $cnv itemconfigure "${tag}LABEL" -font [list $font $fontsize $fontweight]
+                $cnv itemconfigure "${tag}&&label" -font [list $font $fontsize $fontweight]
             } "-label" {
-                pdtk_text_set $cnv "${tag}LABEL" $v
+                pdtk_text_set $cnv "${tag}&&label" $v
             }
 
         }
-        $cnv itemconfigure "${tag}BASE" -width $zoom
+        $cnv itemconfigure "${tag}&&BASE" -width $zoom
     }
 }
 }
@@ -102,14 +102,14 @@ proc ::pd::widget::toggle::select {obj state} {
     }
     set tag "[::pd::widget::base_tag $obj]"
     foreach cnv [::pd::widget::get_canvases $obj] {
-        $cnv itemconfigure "${tag}BASE" -outline $color
+        $cnv itemconfigure "${tag}&&BASE" -outline $color
     }
 }
 
 proc ::pd::widget::toggle::activate {obj state activecolor} {
     # LATER: have the timer work on the GUI side!
     set tag "[::pd::widget::base_tag $obj]"
-    set tag "${tag}X"
+    set tag "${tag}&&X"
     if {! $state} {
         set activecolor {}
     }

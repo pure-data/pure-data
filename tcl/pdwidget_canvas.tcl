@@ -9,9 +9,9 @@ namespace eval ::pd::widget::canvas:: {
 proc ::pd::widget::canvas::create {obj cnv posX posY} {
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}RECT]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}BASE]
-    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}LABEL label text]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} RECT]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
+    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
     ::pd::widget::widgetbehaviour $obj config ::pd::widget::canvas::config
@@ -43,37 +43,38 @@ foreach cnv [::pd::widget::get_canvases $obj] {
             } "-labelpos" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}LABEL" \
+                $cnv coords "${tag}&&label" \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}BASE" \
-                    [expr $xpos + $offset] [expr $ypos + $offset] \
-                    [expr $xpos + $xnew * $zoom + $offset] [expr $ypos + $ynew * $zoom + $offset]
+                $cnv coords "${tag}&&BASE" \
+                    [expr $xpos + $offset]                 [expr $ypos + $offset] \
+                    [expr $xpos + $offset + $xnew * $zoom] [expr $ypos + $offset + $ynew * $zoom]
             } "-visible" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]
-                $cnv coords "${tag}RECT" $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
+                $cnv coords "${tag}"       $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
+                $cnv coords "${tag}&&RECT" $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
             } "-colors" {
                 set color [lindex $v 0]
-                $cnv itemconfigure "${tag}RECT" -fill $color -outline $color
-                $cnv itemconfigure "${tag}BASE" -width 1 -outline {}
+                $cnv itemconfigure "${tag}&&RECT" -fill $color -outline $color
+                $cnv itemconfigure "${tag}&&BASE" -width 1 -outline {}
                 # set unused_color [lindex $v 1]
                 set color [lindex $v 2]
-                $cnv itemconfigure "${tag}LABEL" -fill $color
+                $cnv itemconfigure "${tag}&&label" -fill $color
             } "-font" {
                 set fontweight $::font_weight
                 set font [lindex $v 0]
                 set fontsize [lindex $v 1]
                 set fontsize [expr -int($fontsize) * $zoom]
-                $cnv itemconfigure "${tag}LABEL" -font [list $font $fontsize $fontweight]
+                $cnv itemconfigure "${tag}&&label" -font [list $font $fontsize $fontweight]
             } "-label" {
-                pdtk_text_set $cnv "${tag}LABEL" $v
+                pdtk_text_set $cnv "${tag}&&label" $v
             }
         }
     }
-    $cnv itemconfigure "${tag}BASE" -width $zoom
+    $cnv itemconfigure "${tag}&&BASE" -width $zoom
     # TODO: in the original code, BASE was shifted by $offset to 'keep zoomed border inside visible area'
 }
 }
@@ -85,7 +86,7 @@ proc ::pd::widget::canvas::select {obj state} {
     } else {
         set color {}
     }
-    set tag "[::pd::widget::base_tag $obj]BASE"
+    set tag "[::pd::widget::base_tag $obj]&&BASE"
     foreach cnv [::pd::widget::get_canvases $obj] {
         $cnv itemconfigure ${tag} -outline $color
     }
