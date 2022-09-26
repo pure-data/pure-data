@@ -12,6 +12,7 @@ namespace eval ::pd_canvaszoom:: {
     variable zdepth
     variable oldzdepth
     variable zoomfactor
+    variable font_measure
 }
 
 
@@ -98,6 +99,36 @@ proc ::pd_canvaszoom::setzdepth {c newzdepth} {
     zoomtext $c
 }
 
+# compute the width of "M" for every size of the font.
+# "fontname" here is [list $family $weight]
+proc ::pd_canvaszoom::measure_font {fontname} {
+    variable font_measure
+    set family [lindex $fontname 0]
+    set weight [lindex $fontname 1]
+    set font_measure($fontname) 0
+    for {set fsize 1} {$fsize < 120} {incr fsize} {
+        set foo [list $family -$fsize $weight]
+        set width [font measure $foo M]
+        lappend font_measure($fontname) $width
+    }
+}
+
+# scale a font so that it's not wider than the original one scaled by zdepth
+proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
+    variable font_measure
+    set fontsize [expr abs($fontsize)]
+    set fontname [list [lindex $font 0] [lindex $font 2]]
+    if {! [info exist font_measure($fontname)]} {
+        measure_font $fontname
+    }
+    set target_width [expr [lindex $font_measure($fontname) $fontsize] * $zdepth]
+    set new_fontsize [expr {int($fontsize * $zdepth)}]
+    while {[lindex $font_measure($fontname) $new_fontsize] > $target_width} {
+        incr new_fontsize -1
+    }
+    return [lreplace $font 1 1 -$new_fontsize];
+}
+
 proc ::pd_canvaszoom::zoomtext {c} {
     set zdepth $::pd_canvaszoom::zdepth($c)
     set oldzdepth $::pd_canvaszoom::oldzdepth($c)
@@ -115,14 +146,7 @@ proc ::pd_canvaszoom::zoomtext {c} {
             #   and use them
             set font [$c itemcget $i -font]
             if {!$fontsize} {
-                if {[llength $font] < 2} {
-                    #new font API
-                    set fontsize [font actual $font -size]
-                } {
-                    #old font API
-                    set fontsize [lindex $font 1]
-                }
-                set fontsize [expr $fontsize / $oldzdepth]
+                set fontsize [expr int([lindex $font 1] / $oldzdepth)]
                 $c addtag _f$fontsize withtag $i
             }
             if {[string length $text] == 0} {
@@ -130,15 +154,8 @@ proc ::pd_canvaszoom::zoomtext {c} {
                 $c addtag _t$text withtag $i
             }
             # scale font
-            set newsize [expr {int($fontsize * $zdepth)}]
-            if {abs($newsize) >= 4} {
-                if {[llength $font] < 2} {
-                    #new font api
-                    font configure $font -size $newsize
-                } {
-                    #old font api
-                    set font [lreplace $font 1 1 $newsize] ; # Save modified font! [ljl]
-                }
+            if {[expr {abs($fontsize * $zdepth)}] >= 4} {
+                set font [scalefont $font $fontsize $zdepth];
                 $c itemconfigure $i -font $font -text $text
             } {
                 # suppress text if too small
@@ -224,17 +241,6 @@ proc ::pd_canvaszoom::unescape {text} {
     return [string range [subst -nocommands -novariables $text] 0 end]
 }
 
-proc ::pd_canvaszoom::getactualfontsize {fontsize} {
-    set font [get_font_for_size $fontsize]
-    if {[llength $font] < 2} {
-        #new font API
-        return [font actual $font -size]
-    } {
-        #old font API
-        return [lindex $font 1]
-    }
-}
-
 proc ::pd_canvaszoom::getzdepth tkcanvas {
     if [info exists ::pd_canvaszoom::zdepth($tkcanvas)] {
         return $::pd_canvaszoom::zdepth($tkcanvas)
@@ -252,11 +258,16 @@ proc ::pd_canvaszoom::scale_command {cmd} {
         "image" {return $cmd}
         "pdtk_text_new" {
             if {! [set zdepth [getzdepth [lindex $cmd 1]]]} {return $cmd}
-            set actualfontsize [getactualfontsize [lindex $cmd 6]]
+            set font [get_font_for_size [lindex $cmd 6]]
+            set fontsize [lindex $font 1]
+            # scale position
             set cmd [scale_consecutive_numbers $cmd 3 $zdepth 0 2]
-            set cmd [scale_consecutive_numbers $cmd 6 $zdepth true]
+            # scale font
+            set displayed_fontsize [lindex [scalefont $font $fontsize $zdepth] 1]
+            set cmd [string_lset $cmd 6 [expr abs($displayed_fontsize)]]
+            # init tags
             set text [unescape [lindex $cmd 5]]
-            set cmd [string_lset $cmd 2 [concat "\{ " [lindex $cmd 2] _f$actualfontsize [list _t$text] " \}"]]
+            set cmd [string_lset $cmd 2 [concat "\{ " [lindex $cmd 2] _f$fontsize [list _t$text] " \}"]]
             return $cmd
         }
         "pdtk_text_set" {
@@ -284,13 +295,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
                 set c [lindex $cmd 0]
                 set i [lindex $cmd 2]
                 set font [lindex $cmd $fontindex]
-                if {[llength $font] < 2} {
-                    #new font API
-                    set font [get_font_for_size [expr int([getactualfontsize [font actual $font -size]] * $zdepth])]
-                } {
-                    #old font API
-                    lset font 1 [expr int([lindex $font 1] * $zdepth)]
-                }
+                set font [scalefont $font [lindex $font 1] $zdepth]
                 set cmd [string_lset $cmd $fontindex "\{$font\}"]
             }
             return $cmd
@@ -315,13 +320,7 @@ proc ::pd_canvaszoom::scale_command {cmd} {
                 set c [lindex $cmd 0]
                 set i [lindex $cmd 2]
                 set font [lindex $cmd $fontindex]
-                if {[llength $font] < 2} {
-                    #new font API
-                    set font [get_font_for_size [expr int([getactualfontsize [font actual $font -size]] * $zdepth])]
-                } {
-                    #old font API
-                    lset font 1 [expr int([lindex $font 1] * $zdepth)]
-                }
+                set font [scalefont $font [lindex $font 1] $zdepth]
                 lset cmd $fontindex $font
                 # remove font tag
                 set str {foreach {tag} [$c gettags $i] {if {"_f" in [string range $tag 0 1]} {$c dtag $i $tag}}}
