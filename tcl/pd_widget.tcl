@@ -391,7 +391,9 @@ proc ::pd::widget::get_canvases {obj} {
 
 
 # finally import the actual widget implementations
-package require pdwidget_canvas
+package require pdwidget_object
+
 package require pdwidget_bang
+package require pdwidget_canvas
 package require pdwidget_radio
 package require pdwidget_toggle

@@ -53,6 +53,7 @@ dist_libpdtcl_DATA = \
     pd_docsdir.tcl \
     pd_widget.tcl \
     pd_windows.tcl \
+    pdwidget_object.tcl \
     pdwidget_bang.tcl \
     pdwidget_canvas.tcl \
     pdwidget_radio.tcl \
