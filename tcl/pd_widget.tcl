@@ -286,6 +286,7 @@ proc ::pd::widget::connect {src outlet dst inlet} {
     set dsttag [::pd::widget::base_tag $dst]
     if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
     foreach cnv $::pd::widget::_obj2canvas($src) {
+        set zoom [::pd::canvas::get_zoom $cnv]
         foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
         foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
         foreach {x1 y1} [$cnv coords "${dsttag}&&anchor&&inlet${inlet}"] {break}
@@ -293,7 +294,13 @@ proc ::pd::widget::connect {src outlet dst inlet} {
             ::pdwindow::error "Unable to connect ${src}:${outlet} with ${dst}:${inlet} on $cnv : $x0 $x1\n"
             continue
         }
-        $cnv create line $x0 $y0 $x1 $y1 -tags [list "connection" "src:$srctag" "src:$srctag:${outlet}" "dst:$dsttag" "dst:$dsttag:${inlet}" connection]
+        set cordwidth $zoom
+        foreach id [$cnv find withtag "${srctag}&&!anchor&&outlet${outlet}"] {
+            if { [lsearch -exact [$cnv gettags $id] signal] >= 0 } {
+                set cordwidth [expr 2 * $zoom]
+            }
+        }
+        $cnv create line $x0 $y0 $x1 $y1 -tags [list "connection" "src:$srctag" "src:$srctag:${outlet}" "dst:$dsttag" "dst:$dsttag:${inlet}"] -width $cordwidth
     }
 }
 proc ::pd::widget::disconnect {src outlet dst inlet} {
