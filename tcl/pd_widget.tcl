@@ -151,7 +151,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
 
 #
 proc ::pd::widget::create {type obj cnv posX posY} {
-    $cnv delete $obj
+    $cnv delete [base_tag $obj]
     if {[catch {$::pd::widget::_procs::constructor($type) $obj $cnv $posX $posY} stdout]} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
