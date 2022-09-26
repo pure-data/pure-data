@@ -87,6 +87,28 @@ static void slider_draw_io(t_slider* x, t_glist* glist, int old_snd_rcv_flags)
     }
 }
 
+static void slider_knob_position(t_slider*x, t_glist *glist, int val, int *x0, int *y0, int *x1, int *y1)
+{
+    const int zoom = IEMGUI_ZOOM(x);
+    int xpos = text_xpix(&x->x_gui.x_obj, glist);
+    int ypos = text_ypix(&x->x_gui.x_obj, glist);
+    if(x->x_orientation == horizontal)
+    {
+        int r = xpos + val;
+        *x0 = r;
+        *y0 = ypos + (zoom + 1);
+        *x1 = r;
+        *y1 = ypos + x->x_gui.x_h - (zoom * 2);
+    } else {
+        int r = ypos + x->x_gui.x_h - val;
+        *x0 = xpos + (zoom + 1);
+        *y0 = r;
+        *x1 = xpos + x->x_gui.x_w - (zoom * 2);
+        *y1 = r;
+    }
+
+}
+
 static void slider_draw_config(t_slider* x, t_glist* glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
@@ -106,23 +128,13 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
 
     if(x->x_orientation == horizontal)
     {
-        int r = xpos + val;
         lmargin = LMARGIN * zoom;
         rmargin = RMARGIN * zoom;
-        a = r;
-        b = ypos + zoom;
-        c = r;
-        d = ypos + x->x_gui.x_h - zoom;
     } else {
-        int r = ypos + x->x_gui.x_h - val;
         tmargin = TMARGIN * zoom;
         bmargin = BMARGIN * zoom;
-
-        a = xpos + zoom;
-        b = r;
-        c = xpos + x->x_gui.x_w - zoom;
-        d = r;
     }
+    slider_knob_position(x, glist, val, &a, &b, &c, &d);
 
     sprintf(tag, "%lxBASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
@@ -137,7 +149,7 @@ static void slider_draw_config(t_slider* x, t_glist* glist)
         a, b, c, d);
     pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
         "-width", 1 + 2 * zoom,
-        "-fill", x->x_gui.x_fcol);
+        "-outline", x->x_gui.x_fcol);
 
     sprintf(tag, "%lxLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
@@ -202,20 +214,7 @@ static void slider_draw_update(t_gobj *client, t_glist *glist)
         char tag[128];
         sprintf(tag, "%lxKNOB", x);
 
-        if(x->x_orientation == horizontal)
-        {
-            int r = xpos + val;
-            a = r;
-            b = ypos + zoom;
-            c = r;
-            d = ypos + x->x_gui.x_h - zoom;
-        } else {
-            int r = ypos + x->x_gui.x_h - val;
-            a = xpos + zoom;
-            b = r;
-            c = xpos + x->x_gui.x_w - zoom;
-            d = r;
-        }
+        slider_knob_position(x, glist, val, &a, &b, &c, &d);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag, a, b, c, d);
     }
 }
@@ -321,7 +320,7 @@ static void slider_properties(t_gobj *z, t_glist *owner)
         minWidth = IEM_SL_MINSIZE;
         minHeight = IEM_GUI_MINSIZE;
     } else {
-        objname = "|vsl|";
+        objname = "vsl";
         minWidth = IEM_GUI_MINSIZE;
         minHeight = IEM_SL_MINSIZE;
     }

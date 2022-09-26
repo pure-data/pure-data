@@ -1868,7 +1868,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     minyval = 1e20;
                     maxyval = -1e20;
                 }
-                if (ndrawn > 2000 || ixpix >= 3000) break;
+                if (ndrawn > 2000) break;
             }
         }
         else
@@ -2628,10 +2628,21 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
         else
         {
             t_atom at;
-            if (type == DT_FLOAT)
+            switch(type)
+            {
+            default:
+                SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_FLOAT:
                 SETFLOAT(&at, ((t_word *)((char *)data + onset))->w_float);
-            else SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
-            atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_SYMBOL:
+                strncpy(buf + nchars,
+                    ((t_word *)((char *)data + onset))->w_symbol->s_name,
+                    DRAWNUMBER_BUFSIZE - nchars);
+            }
         }
     }
 }
