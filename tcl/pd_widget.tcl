@@ -287,8 +287,6 @@ proc ::pd::widget::connect {src outlet dst inlet} {
     if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
     foreach cnv $::pd::widget::_obj2canvas($src) {
         foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
-        puts "outlet-tag: ${srctag}&&anchor&&outlet${outlet}"
-        puts "inlet--tag: ${dsttag}&&anchor&&inlet${inlet}"
         foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
         foreach {x1 y1} [$cnv coords "${dsttag}&&anchor&&inlet${inlet}"] {break}
         if {$x0 eq {} || $x1 eq {}} {
