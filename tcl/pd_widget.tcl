@@ -105,6 +105,12 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     set tag [::pd::widget::base_tag $obj]
     if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         foreach cnv $::pd::widget::_obj2canvas($obj) {
+            foreach id [$cnv find withtag "connection&&src:${tag}"] {
+                $cnv delete $id
+            }
+            foreach id [$cnv find withtag "connection&&dst:${tag}"] {
+                $cnv delete $id
+            }
             $cnv delete $tag
             ::pd::canvas::remove_object $cnv $obj
         }
