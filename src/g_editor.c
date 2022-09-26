@@ -464,9 +464,14 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
+#ifndef PD_GUI_CONNECT
             char tag[128];
             sprintf(tag, "l%lx", oc);
             pdgui_vmess(0, "crs", x, "delete", tag);
+#else
+            pdgui_vmess("::pd::widget::disconnect", "oioi",
+                t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
+#endif
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -2595,6 +2600,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         if(oc)
         {
+#ifndef PD_GUI_CONNECT
             int iow = IOWIDTH * x->gl_zoom;
             int iom = IOMIDDLE * x->gl_zoom;
             int x11=0, x12=0, x21=0, x22=0;
@@ -2622,6 +2628,10 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 lx1,ly1, lx2,ly2,
                 "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
                 "-tags", 2, tags);
+#else
+            pdgui_vmess("::pd::widget::connect", "oioi",
+                src, nout, sink, nin);
+#endif
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
                     canvas_getindex(x, &sink->ob_g), nin));
@@ -4402,6 +4412,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
     if (glist_isvisible(x) && x->gl_havewindow)
     {
+#ifndef PD_GUI_CONNECT
         char tag[128];
         char*tags[] = {tag, "cord"};
         sprintf(tag, "l%lx", oc);
@@ -4411,6 +4422,10 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
             "-tags", 2, tags);
         canvas_fixlinesfor(x, objsrc);
+#else
+        pdgui_vmess("::pd::widget::connect", "oioi",
+            objsrc, outno, objsink, inno);
+#endif
     }
     return;
 

@@ -944,12 +944,17 @@ static void canvas_drawlines(t_canvas *x)
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
+#ifndef PD_GUI_CONNECT
             sprintf(tag, "l%lx", oc);
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
                 "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
                 "-tags", 2, tags);
+#else
+            pdgui_vmess("::pd::widget::connect", "oioi",
+                t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
+#endif
         }
     }
 }
@@ -957,6 +962,9 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
+#ifdef PD_GUI_CONNECT
+    return;
+#endif
 
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
@@ -972,6 +980,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     }
 }
 
+#ifndef PD_GUI_CONNECT
 static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
 {
     char tag[128];
@@ -980,6 +989,13 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     sprintf(tag, "l%lx", oc);
     pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
 }
+#else
+static void _canvas_delete_connection(t_canvas*x, t_linetraverser *t)
+{
+    pdgui_vmess("::pd::widget::disconnect", "oioi",
+        t->tr_ob, t->tr_outno, t->tr_ob2, t->tr_inno);
+}
+#endif
 
     /* kill all lines for the object */
 void canvas_deletelinesfor(t_canvas *x, t_text *text)
@@ -991,7 +1007,11 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
+#ifndef PD_GUI_CONNECT
             _canvas_delete_line(x, oc);
+#else
+            _canvas_delete_connection(x, &t);
+#endif
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1009,7 +1029,11 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
+#ifndef PD_GUI_CONNECT
             _canvas_delete_line(x, oc);
+#else
+            _canvas_delete_connection(x, &t);
+#endif
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
