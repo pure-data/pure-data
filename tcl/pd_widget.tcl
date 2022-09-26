@@ -9,7 +9,7 @@ package require Tcl 8.5
 
 namespace eval ::pd::widget {
     variable IOWIDTH 7
-    variable IHEIGHT 3
+    variable IHEIGHT 2
     variable OHEIGHT 3
 }
 
