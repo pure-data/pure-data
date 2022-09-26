@@ -33,9 +33,8 @@ array set ::pd::widget::_obj2canvas {}
 # ::pd::widget::displace    | relative move
 # ::pd::widget::moveto      | absolute move
 # ::pd::widget::show_iolets | show/hide inlets resp. outlets
-# TODO:
-# ::pd::widget::create_inlets  |
-# ::pd::widget::create_outlets |
+# ::pd::widget::create_inlets  | create inlets (arguments are inlet types: 0=message, 1=signal)
+# ::pd::widget::create_outlets | create outlets for obj (see above for arguments)
 
 # register a new GUI-object by name
 # e.g. '::pd::widget::register "bang" ::pd::widget::bang::create'
