@@ -107,7 +107,6 @@ proc ::pd::widget::toggle::select {obj state} {
 }
 
 proc ::pd::widget::toggle::activate {obj state activecolor} {
-    # LATER: have the timer work on the GUI side!
     set tag "[::pd::widget::base_tag $obj]"
     set tag "${tag}&&X"
     if {! $state} {
