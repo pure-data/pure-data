@@ -195,7 +195,7 @@ proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
                 # create an iolet (with an 'anchor' where the connection starts)
                 set centerX [expr $iw / 2]
                 set centerY [expr $ih / 2]
-                ::DDD $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
+                $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
                 $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
                 # move the iolet in place
                 $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
