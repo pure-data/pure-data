@@ -17,20 +17,25 @@ namespace eval ::pd::widget {
 namespace eval ::pd::widget::_procs { }
 array set ::pd::widget::_procs::constructor {}
 array set ::pd::widget::_obj2canvas {}
-array set ::pd::widget::_canvas2obj {}
 
-# private helpers
-proc ::pd::widget::_lremove {list value} {
-    set result {}
-    foreach x $list {
-        if {$x ne $value} {
-            lappend result $x
-        }
-    }
-    return $result
-}
+# GUI widget interface (for writing your own widgets)
 
-# public interface for Pd->GUI communication
+# public widget functions (to be called from Pd-core)
+# a widget MUST implement at least the 'create' procedure,
+# and needs to register this constructor via '::pd::widget::register'
+# any additional widget-procs can then be registered within the
+# constructor with '::pd::widget::widgetbehaviour'
+
+# ::pd::widget::create      | create an object on a given canvas
+# ::pd::widget::destroy     | destroy the object
+# ::pd::widget::config      | re-configure the object (using a parameter syntax)
+# ::pd::widget::select      | show that an object is (de)selected
+# ::pd::widget::displace    | relative move
+# ::pd::widget::moveto      | absolute move
+# ::pd::widget::show_iolets | show/hide inlets resp. outlets
+# TODO:
+# ::pd::widget::create_inlets  |
+# ::pd::widget::create_outlets |
 
 # register a new GUI-object by name
 # e.g. '::pd::widget::register "bang" ::pd::widget::bang::create'
@@ -40,9 +45,26 @@ proc ::pd::widget::register {type ctor} {
     set ::pd::widget::_procs::constructor($type) $ctor
 }
 
+# register a proc for a given (common) widget behaviour
+# to be called from the constructor
+# the behaviour proc is associated with a single object
+#
+# if a given behaviour is not implemented, a default implementation
+# is used, which makes a few assumptions about how the widget is written
+# the most important assumption is, that all components of an object are bound
+# to the tag that can be obtained with [::pd::widget::base_tag obj],
+# and that the first item (in the stack order) with this tag defines the
+# object's position (and bounding rectangle)
+proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
+    if {$obj eq {} } {
+        ::pdwindow::error "refusing to add ${behaviour} proc without an object\n"
+    } else {
+        array set ::pd::widget::_procs::widget_$behaviour [list $obj $behaviourproc]
+    }
+}
 
-# common function dispatcher
-# on the C-side we have
+
+# widgetbehaviour on the core-side (and how this relates to us)
 # - getrect: get the bounding rectangle (NOT our business, LATER send the rect back to the core if needed)
 # - displace: relative move of object (::pd::widget::displace)
 # - select: (de)select and object (::pd::widget::select)
@@ -51,13 +73,6 @@ proc ::pd::widget::register {type ctor} {
 # - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::destroy)
 # - click: called on hitbox detection with mouse-click (NOT our business, for now)
 
-proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
-    if {$obj eq {} } {
-        ::pdwindow::error "refusing to add ${behaviour} proc without an object\n"
-    } else {
-        array set ::pd::widget::_procs::widget_$behaviour [list $obj $behaviourproc]
-    }
-}
 proc ::pd::widget::_call {behaviour obj args} {
     set proc {}
     set wb ::pd::widget::_procs::widget_${behaviour}
@@ -79,6 +94,60 @@ proc ::pd::widget::_call {behaviour obj args} {
     }
 }
 
+# fallback widget behaviours (private, DO NOT CALL DIRECTLY)
+proc ::pd::widget::_defaultproc {id arguments body} {
+    proc ::pd::widget::_${id} $arguments $body
+    array set ::pd::widget::_procs::widget_${id} [list {} ::pd::widget::_${id}]
+}
+
+# 'destroy' an object (removing it from the canvas(es))
+::pd::widget::_defaultproc destroy {obj} {
+    set tag [::pd::widget::base_tag $obj]
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {
+            $cnv delete $tag
+        }
+        unset ::pd::widget::_obj2canvas($obj)
+    }
+}
+
+::pd::widget::_defaultproc displace {obj dx dy} {
+    set tag [::pd::widget::base_tag $obj]
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {
+            $cnv move $tag $dx $dy
+        }
+    }
+}
+
+::pd::widget::_defaultproc moveto {obj cnv x y} {
+    set zoom [::pd::canvas::get_zoom $cnv]
+    set x [expr $x * $zoom]
+    set y [expr $y * $zoom]
+    set tag [::pd::widget::base_tag $obj]
+    if {[catch {$cnv moveto $tag $x $y}]} {
+        foreach {oldx oldy} [$cnv coords $tag] {
+            $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
+        }
+    }
+}
+
+::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
+    set tag [::pd::widget::base_tag $obj]
+    set icolor {}
+    set ocolor {}
+    if {$show_inlets } {set icolor black}
+    if {$show_outlets} {set ocolor black}
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
+        foreach cnv $::pd::widget::_obj2canvas($obj) {
+            $cnv itemconfigure ${tag}INLET  -fill $icolor
+            $cnv itemconfigure ${tag}OUTLET -fill $ocolor
+        }
+    }
+}
+
+
+
 #
 proc ::pd::widget::create {type obj cnv posX posY} {
     $cnv delete $obj
@@ -86,7 +155,6 @@ proc ::pd::widget::create {type obj cnv posX posY} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
         # associate this obj with the cnv
-        lappend ::pd::widget::_canvas2obj($cnv) $obj
         lappend ::pd::widget::_obj2canvas($obj) $cnv
     }
 }
@@ -109,60 +177,6 @@ proc ::pd::widget::moveto {obj cnv x y} {
 }
 proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
     ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
-}
-
-# fallback widget behaviours (private, DO NOT CALL DIRECTLY)
-proc ::pd::widget::_defaultproc {id arguments body} {
-    proc ::pd::widget::_${id} $arguments $body
-    array set ::pd::widget::_procs::widget_${id} [list {} ::pd::widget::_${id}]
-}
-
-::pd::widget::_defaultproc destroy {obj} {
-    set tag [::pd::widget::base_tag $obj]
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv delete $tag
-            if {[info exists ::pd::widget::_canvas2obj($cnv)]} {
-                set ::pd::widget::_canvas2obj($cnv) [_lremove $::pd::widget::_canvas2obj($cnv) $obj]
-            }
-        }
-        unset ::pd::widget::_obj2canvas($obj)
-    }
-}
-
-
-::pd::widget::_defaultproc displace {obj dx dy} {
-    set tag [::pd::widget::base_tag $obj]
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv move $tag $dx $dy
-        }
-    }
-}
-
-::pd::widget::_defaultproc moveto {obj cnv x y} {
-    set zoom [::pd::canvas::get_zoom $cnv]
-    set x [expr $x * $zoom]
-    set y [expr $y * $zoom]
-    set tag [::pd::widget::base_tag $obj]
-    if {[catch {$cnv moveto $tag $x $y}]} {
-        foreach {oldx oldy} [$cnv coords $tag] {
-            $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
-        }
-    }
-}
-::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
-    set tag [::pd::widget::base_tag $obj]
-    set icolor {}
-    set ocolor {}
-    if {$show_inlets } {set icolor black}
-    if {$show_outlets} {set ocolor black}
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv itemconfigure ${tag}INLET  -fill $icolor
-            $cnv itemconfigure ${tag}OUTLET -fill $ocolor
-        }
-    }
 }
 
 
