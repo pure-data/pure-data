@@ -117,21 +117,37 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     }
 }
 
+proc ::pd::widget::_update_iolets_on_canvas {cnv objtag} {
+    set numio 0
+    foreach anchor [$cnv find withtag "${objtag}&&outlet${numio}&&anchor"] {
+        foreach {x y} [$cnv coords $anchor] {
+            foreach id [$cnv find withtag "connection&&src:${objtag}:${numio}" ] {
+                foreach {_ _ x1 y1} [$cnv coords $id] {
+                    $cnv coords $id $x $y $x1 $y1
+                    break
+                }
+            }
+            break
+        }
+    }
+    set numio 0
+    foreach anchor [$cnv find withtag "${objtag}&&inlet${numio}&&anchor"] {
+        foreach {x y} [$cnv coords $anchor] {
+            foreach id [$cnv find withtag "connection&&dst:${objtag}:${numio}" ] {
+                foreach {x0 y0 _ _} [$cnv coords $id] {
+                    $cnv coords $id $x0 $y0 $x $y
+                    break
+                }
+            }
+            break
+        }
+    }
+}
 ::pd::widget::_defaultproc displace {obj dx dy} {
     set tag [::pd::widget::base_tag $obj]
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv move $tag $dx $dy
-
-            # update connections
-            foreach id [$cnv find withtag "connection&&src:${tag}" ] {
-                foreach {_ _ x1 y1} [$cnv coords $id] {$cnv coords $id $x $y $x1 $y1}
-            }
-            # find all connections going to $cnv (and adjust their end-point)
-            foreach id [$cnv find withtag "connection&&dst:${tag}" ] {
-                foreach {x0 y0 _ _} [$cnv coords $id] {$cnv coords $id $x0 $y0 $x $y}
-            }
-        }
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv move $tag $dx $dy
+        ::pd::widget::_update_iolets_on_canvas $cnv $tag
     }
 }
 
@@ -145,14 +161,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
-    # update connections
-    foreach id [$cnv find withtag "connection&&src:${tag}" ] {
-        foreach {_ _ x1 y1} [$cnv coords $id] {$cnv coords $id $x $y $x1 $y1}
-    }
-    # find all connections going to $cnv (and adjust their end-point)
-    foreach id [$cnv find withtag "connection&&dst:${tag}" ] {
-        foreach {x0 y0 _ _} [$cnv coords $id] {$cnv coords $id $x0 $y0 $x $y}
-    }
+    ::pd::widget::_update_iolets_on_canvas $cnv $tag
 }
 
 ::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
