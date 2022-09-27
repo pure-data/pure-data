@@ -1462,6 +1462,9 @@ static void message_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *
 }
 static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
+    t_message *x = (t_message *)z;
+    x->m_text.te_xpix += dx;
+    x->m_text.te_ypix += dy;
     pdgui_vmess("::pd::widget::displace", "o ii", z, dx, dy);
 }
 static void message_select(t_gobj *z, t_glist *glist, int state)
