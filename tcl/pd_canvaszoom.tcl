@@ -9,21 +9,15 @@ namespace eval ::pd_canvaszoom:: {
     namespace export setzdepth
 
     # exported variables
+    variable zsteps
     variable zdepth
-    variable oldzdepth
-    variable zoomfactor
     variable font_measure
 }
 
-
-proc ::pd_canvaszoom::zoominit {mytoplevel {zfact 0.0}} {
-    variable zoomfactor
+proc ::pd_canvaszoom::zoominit {mytoplevel} {
     set c [tkcanvas_name $mytoplevel]
+    set ::pd_canvaszoom::zsteps($c) 0
     set ::pd_canvaszoom::zdepth($c) 1.0
-    set ::pd_canvaszoom::oldzdepth($c) 1.0
-
-    if {!$zfact} {set zfact [expr pow(2.0, 1/5.0)]}
-    set zoomfactor($c) $zfact
 
     # add mousewheel bindings to canvas
     if {$::windowingsystem eq "x11"} {
@@ -51,20 +45,20 @@ proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
 
 # zoom in (steps>0) or zoom out (steps<0)
 proc ::pd_canvaszoom::stepzoom {c steps} {
-    variable zoomfactor
+    variable zsteps
     # don't zoom if not initialized
-    if { ! [info exists zoomfactor($c)] } { return  }
-
-    set zfact $zoomfactor($c)
-    if { $steps > 0} {
-        ::pd_canvaszoom::zoom $c [expr $zfact]
-    } elseif {$steps < 0} {
-        ::pd_canvaszoom::zoom $c [expr 1.0 / $zfact]
-    }
+    if { ! [info exists zsteps($c)] } { return  }
+    set newsteps [expr $zsteps($c) + $steps * 20]
+    ::pd_canvaszoom::setzoom $c $newsteps
 }
 
-proc ::pd_canvaszoom::zoom {c fact} {
+proc ::pd_canvaszoom::steps2depth {steps} {
+    return [expr pow(2, $steps/100.0)]
+}
+
+proc ::pd_canvaszoom::setzoom {c steps} {
     variable zdepth
+    variable zsteps
 
     # compute the position of the pointer, relatively to the window and to the canvas
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
@@ -75,28 +69,21 @@ proc ::pd_canvaszoom::zoom {c fact} {
     set xcanvas [expr ($xwin + $left_xview_pix) / $zdepth($c)]
     set ycanvas [expr ($ywin + $top_yview_pix) / $zdepth($c)]
 
-    # compute new zoom depth
-    setzdepth $c [expr {$zdepth($c) * $fact}]
+    set zsteps($c) $steps
+    # save old zoom depth
+    set oldzdepth $zdepth($c)
+    # set new zoom depth
+    set zdepth($c) [::pd_canvaszoom::steps2depth $steps]
+    # compute scaling factor
+    set fact [expr $zdepth($c) / $oldzdepth]
+    # scale the canvas
+    $c scale all 0 0 $fact $fact
+    # update fonts and linewidth
+    zoom_text_and_lines $c $oldzdepth $zdepth($c)
     # check new visibility of scrollbars
     ::pdtk_canvas::pdtk_canvas_getscroll $c
     # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
     scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
-}
-
-proc ::pd_canvaszoom::setzdepth {c newzdepth} {
-    variable oldzdepth
-    variable zdepth
-
-    # save old zoom depth
-    set oldzdepth($c) $zdepth($c)
-    # set new zoom depth
-    set zdepth($c) $newzdepth
-    # compute scaling factor
-    set fact [expr $zdepth($c) / $oldzdepth($c)]
-    # scale the canvas
-    $c scale all 0 0 $fact $fact
-    # update fonts and linewidth
-    zoomtext $c
 }
 
 # compute the width of "M" for every size of the font.
@@ -129,9 +116,7 @@ proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
     return [lreplace $font 1 1 -$new_fontsize];
 }
 
-proc ::pd_canvaszoom::zoomtext {c} {
-    set zdepth $::pd_canvaszoom::zdepth($c)
-    set oldzdepth $::pd_canvaszoom::oldzdepth($c)
+proc ::pd_canvaszoom::zoom_text_and_lines {c oldzdepth zdepth} {
     foreach {i} [$c find all] {
         if {[string equal [$c type $i] text]} { # adjust fonts of text items
             set fontsize 0
