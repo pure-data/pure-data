@@ -1457,7 +1457,6 @@ static const t_widgetbehavior gatom_widgetbehavior =
 /* -------------------- widget behavior for messageboxes ------------ */
 static void message_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    //pd_error(0, "%s", __FUNCTION__);
     text_getrect(z, glist, xp1, yp1, xp2, yp2);
 }
 static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
@@ -1465,7 +1464,7 @@ static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     t_message *x = (t_message *)z;
     x->m_text.te_xpix += dx;
     x->m_text.te_ypix += dy;
-    pdgui_vmess("::pd::widget::displace", "o ii", z, dx, dy);
+    pdgui_vmess("::pd::widget::displace", "o ii", x, dx, dy);
 }
 static void message_select(t_gobj *z, t_glist *glist, int state)
 {
@@ -1473,7 +1472,10 @@ static void message_select(t_gobj *z, t_glist *glist, int state)
     pdgui_vmess("::pd::widget::select", "oi", x, state);
 }
 static void message_activate(t_gobj *z, t_glist *glist, int state)
-{ pd_error(z, "%s(%d)", __FUNCTION__, state); }
+{
+        /* TODO */
+    pd_error(z, "%s(%d)", __FUNCTION__, state);
+}
 static void message_delete(t_gobj *z, t_glist *glist)
 {
     t_message *x = (t_message *)z;
@@ -1483,8 +1485,6 @@ void rtext_configure(t_object*, t_rtext *x);
 static void message_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_message *x = (t_message *)z;
-    pd_error(z, "%s(%d)", __FUNCTION__, vis);
-    pdgui_vmess("::pd::widget::destroy", "o", x);
     if(vis)
     {
         const int zoom = glist_getzoom(glist);
@@ -1498,13 +1498,14 @@ static void message_vis(t_gobj *z, t_glist *glist, int vis)
             , x1 / zoom
             , y1 / zoom
             );
+            /* common ::config for Pd-primitives (text + size) */
         rtext_configure(&x->m_text, y);
-    } else {
-        sys_unqueuegui(z);
-    }
-    pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
-    pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
 
+        pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
+        pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
+    } else {
+        pdgui_vmess("::pd::widget::destroy", "o", x);
+    }
 }
 static int message_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     int shift, int alt, int dbl, int doit)
