@@ -85,6 +85,7 @@ proc ::pd::widget::message::select {obj state} {
     set tag "[::pd::widget::base_tag $obj]"
     foreach cnv [::pd::widget::get_canvases $obj] {
         $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
+        $cnv itemconfigure "${tag}&&text" -fill $color
     }
 }
 
