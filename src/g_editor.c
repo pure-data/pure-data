@@ -4408,7 +4408,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             , x, glist_getcanvas(x)
             , 0, 0
             );
-        pdgui_vmess("::pd::widget::config", "o rffff rs", x
+        pdgui_vmess("::pd::widget::config", "o rs", x
             , "-type", (obj_issignaloutlet(objsrc, outno) ? "signal":"message")
             );
         canvas_fixlinesfor(x, objsrc);
