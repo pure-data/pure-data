@@ -410,6 +410,7 @@ proc ::pd::widget::get_canvases {obj} {
 
 
 # finally import the actual widget implementations
+package require pdwidget_connection
 package require pdwidget_object
 package require pdwidget_message
 
