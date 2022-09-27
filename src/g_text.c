@@ -1464,6 +1464,7 @@ static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     t_message *x = (t_message *)z;
     x->m_text.te_xpix += dx;
     x->m_text.te_ypix += dy;
+    canvas_fixlinesfor(glist, &x->m_text);
     pdgui_vmess("::pd::widget::displace", "o ii", x, dx, dy);
 }
 static void message_select(t_gobj *z, t_glist *glist, int state)
