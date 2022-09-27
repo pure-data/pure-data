@@ -82,7 +82,7 @@ proc ::pd::widget::bang::config {obj args} {
         }
     }
     if {$recreate_iolets} {
-        ::pd::widget::create_iolets $obj
+        ::pd::widget::refresh_iolets $obj
     }
 }
 proc ::pd::widget::bang::select {obj state} {

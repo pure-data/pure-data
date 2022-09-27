@@ -117,7 +117,7 @@ proc ::pd::widget::_defaultproc {id arguments body} {
     }
 }
 
-proc ::pd::widget::_update_iolets_on_canvas {cnv objtag} {
+proc ::pd::widget::_update_connections_on_canvas {cnv objtag} {
     set numio 0
     foreach anchor [$cnv find withtag "${objtag}&&outlet${numio}&&anchor"] {
         foreach {x y} [$cnv coords $anchor] {
@@ -143,11 +143,12 @@ proc ::pd::widget::_update_iolets_on_canvas {cnv objtag} {
         }
     }
 }
+
 ::pd::widget::_defaultproc displace {obj dx dy} {
     set tag [::pd::widget::base_tag $obj]
     foreach cnv [::pd::widget::get_canvases $obj] {
         $cnv move $tag $dx $dy
-        ::pd::widget::_update_iolets_on_canvas $cnv $tag
+        ::pd::widget::_update_connections_on_canvas $cnv $tag
     }
 }
 
@@ -161,7 +162,7 @@ proc ::pd::widget::_update_iolets_on_canvas {cnv objtag} {
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
-    ::pd::widget::_update_iolets_on_canvas $cnv $tag
+    ::pd::widget::_update_connections_on_canvas $cnv $tag
 }
 
 ::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
@@ -228,15 +229,21 @@ proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
     ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
 }
 ::pd::widget::_defaultproc create_iolets {obj {inlets {}} {outlets {}}} {
-    if {$inlets eq {} } {
-        set inlets [::pd::widget::get_iolets $obj inlet]
-    }
-    if {$outlets eq {} } {
-        set outlets [::pd::widget::get_iolets $obj outlet]
-    }
     ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
     ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
 }
+::pd::widget::_defaultproc refresh_iolets {obj} {
+    set tag [::pd::widget::base_tag $obj]
+    set inlets [::pd::widget::get_iolets $obj inlet]
+    set outlets [::pd::widget::get_iolets $obj outlet]
+    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
+    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        ::DDD ::pd::widget::_update_connections_on_canvas $cnv $tag
+    }
+}
+
 
 # get inlet types
 proc ::pd::widget::get_iolets {obj type} {
@@ -335,6 +342,9 @@ proc ::pd::widget::create_iolets {obj {inlets {}} {outlets {}}} {
 }
 proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
     ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
+}
+proc ::pd::widget::refresh_iolets {obj} {
+    ::pd::widget::_call refresh_iolets $obj
 }
 
 
