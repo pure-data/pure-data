@@ -49,6 +49,7 @@ proc ::pd_canvaszoom::stepzoom {c steps} {
     # don't zoom if not initialized
     if { ! [info exists zsteps($c)] } { return  }
     set newsteps [expr $zsteps($c) + $steps * 20]
+    set newsteps [expr min(max($newsteps, -400), 400)]
     ::pd_canvaszoom::setzoom $c $newsteps
 }
 
