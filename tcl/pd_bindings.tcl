@@ -79,11 +79,11 @@ proc ::pd_bindings::global_bindings {} {
     # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
     # "+" key... this only makes sense on US keyboards but some users
     # expected it... go figure.
-    bind all <$::modifier-Key-equal>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-plus>        {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-minus>       {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
-    bind all <$::modifier-Key-KP_Add>      {::pd_menucommands::scheduleAction menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-KP_Subtract> {::pd_menucommands::scheduleAction menu_send_float %W zoom 1}
+    bind all <$::modifier-Key-equal>       {::pd_canvaszoom::stepzoom %W 1}
+    bind all <$::modifier-Key-plus>        {::pd_canvaszoom::stepzoom %W 1}
+    bind all <$::modifier-Key-minus>       {::pd_canvaszoom::stepzoom %W -1}
+    bind all <$::modifier-Key-KP_Add>      {::pd_canvaszoom::stepzoom %W 1}
+    bind all <$::modifier-Key-KP_Subtract> {::pd_canvaszoom::stepzoom %W -1}
 
     # note: we avoid CMD-H & CMD+Shift-H as it hides Pd on macOS
 
