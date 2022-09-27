@@ -296,6 +296,11 @@ proc ::pd::widget::displace {obj dx dy} {
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
 }
+
+# 'connect' and 'disconnect' show how connection handling might actually word
+# in practice, this would break compatibility with GUI externals
+#
+# a backward-compatible approach is to use the 'connection' widget
 proc ::pd::widget::connect {src outlet dst inlet} {
     set srctag [::pd::widget::base_tag $src]
     set dsttag [::pd::widget::base_tag $dst]
@@ -335,13 +340,13 @@ proc ::pd::widget::create_inlets {obj args} {
 proc ::pd::widget::create_outlets {obj args} {
     ::pd::widget::_call create_outlets $obj $args
 }
+proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
+    ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
+}
 
 # these are actually used internally (not by Pd-core)
 proc ::pd::widget::create_iolets {obj {inlets {}} {outlets {}}} {
     ::pd::widget::_call create_iolets $obj $inlets $outlets
-}
-proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
-    ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
 }
 proc ::pd::widget::refresh_iolets {obj} {
     ::pd::widget::_call refresh_iolets $obj
