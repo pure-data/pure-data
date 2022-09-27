@@ -18,6 +18,9 @@
 #define SEND_UPDATE 2
 #define SEND_CHECK 0
 
+void text_getfont(t_text *x, t_glist *thisglist,
+    int *fheightp, int *fwidthp, int *guifsize);
+
 struct _rtext
 {
     char *x_buf;    /*-- raw byte string, assumed UTF-8 encoded (moo) --*/
@@ -161,7 +164,7 @@ static int lastone(char *s, int c, int n)
 
 #define DEFAULTBOXWIDTH 60
 
-static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
+static void rtext_formattext(const t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
     int *selend_b_p, int fontwidth, int fontheight)
 {
@@ -220,7 +223,8 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
             *indexp = inindex_b + u8_offset(x->x_buf + inindex_b, actualx);
             reportedindex = 1;
         }
-        strncpy(tempbuf+ *outchars_b_p, x->x_buf + inindex_b, foundit_b);
+        if(tempbuf)
+            strncpy(tempbuf+ *outchars_b_p, x->x_buf + inindex_b, foundit_b);
         if (x->x_selstart >= inindex_b &&
             x->x_selstart <= inindex_b + foundit_b + eatchar)
                 *selstart_b_p = x->x_selstart + *outchars_b_p - inindex_b;
@@ -230,7 +234,7 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         *outchars_b_p += foundit_b;
         inindex_b += (foundit_b + eatchar);
         inindex_c += (foundit_c + eatchar);
-        if (inindex_b < x->x_bufsize)
+        if (tempbuf && inindex_b < x->x_bufsize)
             tempbuf[(*outchars_b_p)++] = '\n';
         if (foundit_c > ncolumns)
             ncolumns = foundit_c;
@@ -243,7 +247,7 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
     {
         while (ncolumns < (x->x_text->te_type == T_TEXT ? 1 : 3))
         {
-            tempbuf[(*outchars_b_p)++] = ' ';
+            if(tempbuf) tempbuf[(*outchars_b_p)++] = ' ';
             ncolumns++;
         }
     }
@@ -261,11 +265,10 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         *widthp += LMARGIN + RMARGIN;
         *heightp += TMARGIN + BMARGIN;
     }
-
 }
 
     /* same as above, but for atom boxes, which are always on one line. */
-static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
+static void rtext_formatatom(const t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
     int *selend_b_p, int fontwidth, int fontheight)
 {
@@ -282,6 +285,11 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
             *s1, *s2;
         int ndecimals;
+        if(!tempbuf)
+        {
+            *outchars_b_p = x->x_text->te_width;
+            goto done;
+        }
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
         tempbuf[x->x_bufsize] = 0;
         ebuf = tempbuf + x->x_bufsize;
@@ -329,6 +337,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                 *(outchars_b_p) = prev_b;
                 break;
             }
+            if(!tempbuf) continue;
             memcpy(tempbuf + prev_b, x->x_buf + prev_b, *outchars_b_p - prev_b);
                 /* if box is full and there's more, bash last char to '>' */
             if (outchars_c == widthlimit_c-1 && x->x_bufsize > *(outchars_b_p)
@@ -341,7 +350,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         if (x->x_text->te_width > 0)
             *widthp = x->x_text->te_width * fontwidth;
         else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
-        tempbuf[*outchars_b_p] = 0;
+        if(tempbuf)tempbuf[*outchars_b_p] = 0;
     }
     if (*indexp > *outchars_b_p)
         *indexp = *outchars_b_p;
@@ -351,6 +360,40 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
     *selend_b_p = x->x_selend;
     *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
     *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
+}
+
+static void rtext_format(const t_rtext *x, char *buf,
+    int *widthp, int *heightp,
+    int *indexp, int *outcharsp,
+    int *selstartp, int *selendp, int *guifontsizep)
+{
+    int fontwidth=0, fontheight=0, _guifontsize=0;
+    int _width=0, _height=0;
+    int _index=0, _outchars=0, _selstart=0, _selend=0;
+    if(widthp)_width=*widthp;
+    if(heightp)_height=*heightp;
+
+        /* if we're a GOP (the new, "goprect" style) borrow the font size
+           from the inside to preserve the spacing */
+    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &_guifontsize);
+
+    if (x->x_text->te_type == T_ATOM)
+        rtext_formatatom(x, &_width, &_height, &_index,
+            buf, &_outchars, &_selstart, &_selend,
+            fontwidth, fontheight);
+    else rtext_formattext(x, &_width, &_height, &_index,
+            buf, &_outchars, &_selstart, &_selend,
+            fontwidth, fontheight);
+
+    if(buf)buf[_outchars]=0;
+#define set_ptr(x) if(x##p)*x##p = _##x
+    set_ptr(width);
+    set_ptr(height);
+    set_ptr(index);
+    set_ptr(outchars);
+    set_ptr(selstart);
+    set_ptr(selend);
+    set_ptr(guifontsize);
 }
 
     /* the following routine computes line breaks and carries out
@@ -369,9 +412,6 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         a limit of 1950 characters, imposed by sys_vgui(). */
 #define UPBUFSIZE 4000
 
-void text_getfont(t_text *x, t_glist *thisglist,
-    int *fheightp, int *fwidthp, int *guifsize);
-
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
 {
@@ -379,23 +419,12 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
-        /* if we're a GOP (the new, "goprect" style) borrow the font size
-        from the inside to preserve the spacing */
-
-    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
     if (x->x_bufsize >= 100)
          tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
     else tempbuf = smallbuf;
     tempbuf[0] = 0;
 
-    if (x->x_text->te_type == T_ATOM)
-        rtext_formatatom(x, widthp, heightp, indexp,
-            tempbuf, &outchars_b, &selstart_b,  &selend_b,
-            fontwidth, fontheight);
-    else rtext_formattext(x, widthp, heightp, indexp,
-            tempbuf, &outchars_b, &selstart_b, &selend_b,
-            fontwidth, fontheight);
-    tempbuf[outchars_b]=0;
+    rtext_format(x, tempbuf, widthp, heightp, indexp, &outchars_b, &selstart_b, &selend_b, &guifontsize);
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
