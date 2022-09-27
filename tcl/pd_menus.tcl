@@ -185,9 +185,9 @@ proc ::pd_menus::build_edit_menu {mymenu {patchwindow true}} {
     $mymenu add command -label [_ "Font"] \
         -command {::pd_menucommands::scheduleAction menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 2}
+        -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] 1}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
-        -command {::pd_menucommands::scheduleAction menu_send_float $::focused_window zoom 1}
+        -command {::pd_menucommands::scheduleAction ::pd_canvaszoom::stepzoom [tkcanvas_name $::focused_window] -1}
     $mymenu add  separator
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {::pd_menucommands::scheduleAction menu_clear_console}
