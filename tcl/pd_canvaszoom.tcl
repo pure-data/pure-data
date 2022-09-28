@@ -66,8 +66,12 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
 proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     set zdepth $::pd_canvaszoom::zdepth($c)
     set scrollregion [$c cget -scrollregion]
-    set scrollx [expr { ($xcanvas * $zdepth - $xwin) / [lindex $scrollregion 2]}]
-    set scrolly [expr { ($ycanvas * $zdepth - $ywin) / [lindex $scrollregion 3]}]
+    set x0 [lindex $scrollregion 0]
+    set y0 [lindex $scrollregion 1]
+    set W [expr [lindex $scrollregion 2] - [lindex $scrollregion 0]]
+    set H [expr [lindex $scrollregion 3] - [lindex $scrollregion 1]]
+    set scrollx [expr { ($xcanvas * $zdepth - $xwin - $x0) / $W}]
+    set scrolly [expr { ($ycanvas * $zdepth - $ywin - $y0) / $H}]
     $c xview moveto $scrollx
     $c yview moveto $scrolly
 }
@@ -90,8 +94,12 @@ proc ::pd_canvaszoom::setzoom {c steps} {
     set xwin [expr {[winfo pointerx $c] - [winfo rootx $c]}]
     set ywin [expr {[winfo pointery $c] - [winfo rooty $c]}]
     set scrollregion [$c cget -scrollregion]
-    set left_xview_pix [expr [lindex [$c xview] 0] * [lindex $scrollregion 2]]
-    set top_yview_pix [expr [lindex [$c yview] 0] * [lindex $scrollregion 3]]
+    set x0 [lindex $scrollregion 0]
+    set y0 [lindex $scrollregion 1]
+    set W [expr [lindex $scrollregion 2] - [lindex $scrollregion 0]]
+    set H [expr [lindex $scrollregion 3] - [lindex $scrollregion 1]]
+    set left_xview_pix [expr $x0 + [lindex [$c xview] 0] * $W]
+    set top_yview_pix [expr $y0 + [lindex [$c yview] 0] * $H]
     set xcanvas [expr ($xwin + $left_xview_pix) / $zdepth($c)]
     set ycanvas [expr ($ywin + $top_yview_pix) / $zdepth($c)]
 
