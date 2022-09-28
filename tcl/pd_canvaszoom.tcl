@@ -12,12 +12,41 @@ namespace eval ::pd_canvaszoom:: {
     variable zsteps
     variable zdepth
     variable font_measure
+    variable default_zoom
+}
+
+proc ::pd_canvaszoom::steps2depth {steps} {
+    return [expr pow(2, $steps/100.0)]
+}
+
+proc ::pd_canvaszoom::set_default_zoom {steps} {
+    set ::pd_canvaszoom::default_zoom $steps
+    ::pd_guiprefs::write default_zoom $::pd_canvaszoom::default_zoom
+}
+
+proc ::pd_canvaszoom::init_default_zoom {} {
+    variable default_zoom
+    if {[info exists default_zoom]} return;
+
+    set default_zoom [::pd_guiprefs::read default_zoom]
+    if { $default_zoom == {}} { set default_zoom 0 }
+
+    # update "File/Preferences/Zoom New Windows" menu entry
+    # for now, "Zoom New Windows" is a checkbox;
+    # LATER: allow other default_zoom values than 0(100%) or 100(200%)
+    set ::zoom_open [expr $default_zoom >= 100]
 }
 
 proc ::pd_canvaszoom::zoominit {mytoplevel} {
+    # read or define default_zoom if not already done
+    ::pd_canvaszoom::init_default_zoom
+
+    # init zoom state for this canvas, if it didn't exist
     set c [tkcanvas_name $mytoplevel]
-    set ::pd_canvaszoom::zsteps($c) 0
-    set ::pd_canvaszoom::zdepth($c) 1.0
+    if { ! [info exists ::pd_canvaszoom::zsteps($c)]} {
+        set ::pd_canvaszoom::zsteps($c) $::pd_canvaszoom::default_zoom
+        set ::pd_canvaszoom::zdepth($c) [pd_canvaszoom::steps2depth $::pd_canvaszoom::zsteps($c)]
+    }
 
     # add mousewheel bindings to canvas
     if {$::windowingsystem eq "x11"} {
@@ -51,10 +80,6 @@ proc ::pd_canvaszoom::stepzoom {c steps} {
     set newsteps [expr $zsteps($c) + $steps * 20]
     set newsteps [expr min(max($newsteps, -400), 400)]
     ::pd_canvaszoom::setzoom $c $newsteps
-}
-
-proc ::pd_canvaszoom::steps2depth {steps} {
-    return [expr pow(2, $steps/100.0)]
 }
 
 proc ::pd_canvaszoom::setzoom {c steps} {
