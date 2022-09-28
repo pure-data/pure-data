@@ -112,6 +112,7 @@ proc ::pd_canvaszoom::setzoom {c steps} {
     scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
 }
 
+
 # compute the width of "M" for every size of the font.
 # "fontname" here is [list $family $weight]
 proc ::pd_canvaszoom::measure_font {fontname} {
@@ -129,10 +130,13 @@ proc ::pd_canvaszoom::measure_font {fontname} {
 # scale a font so that it's not wider than the original one scaled by zdepth
 proc ::pd_canvaszoom::scalefont {font fontsize zdepth} {
     variable font_measure
-    set fontsize [expr abs($fontsize)]
+    set fontsize [expr int(abs($fontsize))]
     set fontname [list [lindex $font 0] [lindex $font 2]]
     if {! [info exist font_measure($fontname)]} {
         measure_font $fontname
+    }
+    if {$fontsize >= [llength $font_measure($fontname)]} {
+        set fontsize [expr [llength $font_measure($fontname)] - 1]
     }
     set target_width [expr [lindex $font_measure($fontname) $fontsize] * $zdepth]
     set new_fontsize [expr {int($fontsize * $zdepth)}]
