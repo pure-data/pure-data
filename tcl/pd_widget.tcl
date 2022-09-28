@@ -24,7 +24,7 @@ array set ::pd::widget::_obj2canvas {}
 # a widget MUST implement at least the 'create' procedure,
 # and needs to register this constructor via '::pd::widget::register'
 # any additional widget-procs can then be registered within the
-# constructor with '::pd::widget::widgetbehaviour'
+# constructor with '::pd::widget::widgetbehavior'
 
 # ::pd::widget::create      | create an object on a given canvas
 # ::pd::widget::destroy     | destroy the object
@@ -44,26 +44,26 @@ proc ::pd::widget::register {type ctor} {
     set ::pd::widget::_procs::constructor($type) $ctor
 }
 
-# register a proc for a given (common) widget behaviour
+# register a proc for a given (common) widget behavior
 # to be called from the constructor
-# the behaviour proc is associated with a single object
+# the behavior proc is associated with a single object
 #
-# if a given behaviour is not implemented, a default implementation
+# if a given behavior is not implemented, a default implementation
 # is used, which makes a few assumptions about how the widget is written
 # the most important assumption is, that all components of an object are bound
 # to the tag that can be obtained with [::pd::widget::base_tag obj],
 # and that the first item (in the stack order) with this tag defines the
 # object's position (and bounding rectangle)
-proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
+proc ::pd::widget::widgetbehavior {obj behavior behaviorproc} {
     if {$obj eq {} } {
-        ::pdwindow::error "refusing to add ${behaviour} proc without an object\n"
+        ::pdwindow::error "refusing to add ${behavior} proc without an object\n"
     } else {
-        array set ::pd::widget::_procs::widget_$behaviour [list $obj $behaviourproc]
+        array set ::pd::widget::_procs::widget_$behavior [list $obj $behaviorproc]
     }
 }
 
 
-# widgetbehaviour on the core-side (and how this relates to us)
+# widgetbehavior on the core-side (and how this relates to us)
 # - getrect: get the bounding rectangle (NOT our business, LATER send the rect back to the core if needed)
 # - displace: relative move of object (::pd::widget::displace)
 # - select: (de)select and object (::pd::widget::select)
@@ -72,28 +72,28 @@ proc ::pd::widget::widgetbehaviour {obj behaviour behaviourproc} {
 # - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::destroy)
 # - click: called on hitbox detection with mouse-click (NOT our business, for now)
 
-proc ::pd::widget::_call {behaviour obj args} {
+proc ::pd::widget::_call {behavior obj args} {
     set proc {}
-    set wb ::pd::widget::_procs::widget_${behaviour}
+    set wb ::pd::widget::_procs::widget_${behavior}
     if { [info exists $wb] } {
-        # get widget-behaviour for this object
+        # get widget-behavior for this object
         if {$proc eq {} } {
             foreach {_ proc} [array get $wb $obj] {break}
         }
-        # if there's no specific widget-behaviour, check if there's a default one
+        # if there's no specific widget-behavior, check if there's a default one
         if {$proc eq {} } {
             foreach {_ proc} [array get $wb {}] {break}
         }
     }
     if { $proc eq {} } {
-        ::pdwindow::error "NOT IMPLEMENTED: ::pd::widget::$behaviour $obj $args\n"
+        ::pdwindow::error "NOT IMPLEMENTED: ::pd::widget::$behavior $obj $args\n"
     } else {
         # {*} requires Tcl-8.5
         $proc $obj {*}$args
     }
 }
 
-# fallback widget behaviours (private, DO NOT CALL DIRECTLY)
+# fallback widget behaviors (private, DO NOT CALL DIRECTLY)
 proc ::pd::widget::_defaultproc {id arguments body} {
     proc ::pd::widget::_${id} $arguments $body
     array set ::pd::widget::_procs::widget_${id} [list {} ::pd::widget::_${id}]

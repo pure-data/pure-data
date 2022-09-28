@@ -22,8 +22,8 @@ proc ::pd::widget::message::create {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehaviour $obj config ::pd::widget::message::config
-    ::pd::widget::widgetbehaviour $obj select ::pd::widget::message::select
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::message::config
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::message::select
 }
 proc ::pd::widget::message::config {obj args} {
     set options [::pd::widget::parseargs \

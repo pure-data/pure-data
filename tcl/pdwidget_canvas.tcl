@@ -14,8 +14,8 @@ proc ::pd::widget::canvas::create {obj cnv posX posY} {
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehaviour $obj config ::pd::widget::canvas::config
-    ::pd::widget::widgetbehaviour $obj select ::pd::widget::canvas::select
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::canvas::config
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::canvas::select
 }
 proc ::pd::widget::canvas::config {obj args} {
     set options [::pd::widget::parseargs \

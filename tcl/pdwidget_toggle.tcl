@@ -16,8 +16,8 @@ proc ::pd::widget::toggle::create {obj cnv posX posY} {
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehaviour $obj config ::pd::widget::toggle::config
-    ::pd::widget::widgetbehaviour $obj select ::pd::widget::toggle::select
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::toggle::config
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::toggle::select
 }
 proc ::pd::widget::toggle::config {obj args} {
     set options [::pd::widget::parseargs \

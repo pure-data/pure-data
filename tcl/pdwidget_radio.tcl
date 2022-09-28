@@ -14,8 +14,8 @@ proc ::pd::widget::radio::create {obj cnv posX posY} {
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehaviour $obj config ::pd::widget::radio::config
-    ::pd::widget::widgetbehaviour $obj select ::pd::widget::radio::select
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::radio::config
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::radio::select
 }
 proc ::pd::widget::radio::_recreate_buttons {cnv obj numX numY} {
     # create an array of numX*numY buttons

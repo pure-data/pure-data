@@ -19,8 +19,8 @@ proc ::pd::widget::connection::create {obj cnv posX posY} {
     $cnv create line 0 0 0 0 -tags [list ${tag} cord] -fill black
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehaviour $obj config ::pd::widget::connection::config
-    ::pd::widget::widgetbehaviour $obj select ::pd::widget::connection::select
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::connection::config
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::connection::select
 }
 proc ::pd::widget::connection::config {obj args} {
     set options [::pd::widget::parseargs \
