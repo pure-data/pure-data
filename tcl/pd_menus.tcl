@@ -581,9 +581,11 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {::pd_menucommands::scheduleAction pdsend "pd audio-properties"}
     $mymenu add command -label [_ "MIDI..."] \
         -command {::pd_menucommands::scheduleAction pdsend "pd midi-properties"}
+    # LATER: allow other default_zoom values than 0(100%) or 100(200%)
     $mymenu add check -label [_ "Zoom New Windows"] \
         -variable ::zoom_open \
-        -command {::pd_menucommands::scheduleAction pdsend "pd zoom-open $zoom_open"}
+        -command {::pd_menucommands::scheduleAction \
+        ::pd_canvaszoom::set_default_zoom [expr $zoom_open * 100]}
     $mymenu add  separator
     $mymenu add command -label [_ "Save All Preferences"] \
         -command {::pd_menucommands::scheduleAction pdsend "pd save-preferences"}
