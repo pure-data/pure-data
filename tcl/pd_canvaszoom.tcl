@@ -76,6 +76,31 @@ proc ::pd_canvaszoom::scroll_point_to {c xcanvas ycanvas xwin ywin} {
     $c yview moveto $scrolly
 }
 
+proc ::pd_canvaszoom::delete_toastzoom {c} {
+    if {[info commands $c] == {}} return
+    $c delete _zoomtoast_
+}
+
+proc ::pd_canvaszoom::toastzoom {c} {
+    variable zdepth
+    if { ! [info exists zdepth($c)] } {return}
+    set zoom [expr int($zdepth($c) * 100)]
+    set scrollregion [$c cget -scrollregion]
+    set x0 [lindex $scrollregion 0]
+    set y0 [lindex $scrollregion 1]
+    set W [expr [lindex $scrollregion 2] - [lindex $scrollregion 0]]
+    set H [expr [lindex $scrollregion 3] - [lindex $scrollregion 1]]
+    set xT [expr $x0 + $W * [lindex [$c xview] 1] - 1]
+    set yT [expr $y0 + $H * [lindex [$c yview] 0]]
+    after cancel ::pd_canvaszoom::delete_toastzoom $c
+    delete_toastzoom $c
+    $c create rectangle $xT $yT [expr $xT - 50] [expr $yT + 16] -tags _zoomtoast_ -fill "#E7E7E7"
+    $c create text $xT $yT -tags _zoomtoast_ \
+        -text "$zoom% " \
+        -fill black -anchor ne -font [get_font_for_size 14]
+    after 1200 ::pd_canvaszoom::delete_toastzoom $c
+}
+
 # zoom in (steps>0) or zoom out (steps<0)
 proc ::pd_canvaszoom::stepzoom {c steps} {
     variable zsteps
@@ -118,6 +143,8 @@ proc ::pd_canvaszoom::setzoom {c steps} {
     ::pdtk_canvas::pdtk_canvas_getscroll $c
     # adjust scrolling to keep the (xcanvas, ycanvas) point at the same (xwin, ywin) position on the screen
     scroll_point_to $c $xcanvas $ycanvas $xwin $ywin
+
+    ::pd_canvaszoom::toastzoom $c
 }
 
 
