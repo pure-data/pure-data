@@ -2210,6 +2210,19 @@ static void canvas_done_popup(t_canvas *x, t_float which,
 
 #define DCLICKINTERVAL 0.25
 
+    /* undarken deselected gatoms:
+     * it's slightly ugly to have this in here,  but we cannot undarken
+     * in gatom_key (which is the gatom's e_keyfn) as this is also called
+     * when the user just hits <kbd>Enter</kbd>
+     */
+void gatom_undarken(t_text *x);
+static void undarken_if_gatom(t_gobj*gobj)
+{
+    t_object*obj = gobj?pd_checkobject(&gobj->g_pd):0;
+    if(obj && T_ATOM == obj->te_type)
+        gatom_undarken(obj);
+}
+
     /* mouse click */
 static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     int mod, int doit)
@@ -2236,6 +2249,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
     {
         (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, &s_, 0);
+        undarken_if_gatom(x->gl_editor->e_grab);
         glist_grab(x, 0, 0, 0, 0, 0);
     }
 

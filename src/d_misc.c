@@ -128,7 +128,3 @@ void d_misc_setup(void)
     print_setup();
     bang_tilde_setup();
 }
-
-
-
-

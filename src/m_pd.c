@@ -336,4 +336,3 @@ EXTERN t_canvas *pd_getcanvaslist(void)
 {
     return (pd_this->pd_canvaslist);
 }
-
