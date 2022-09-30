@@ -55,11 +55,11 @@ proc ::pd_canvaszoom::zoominit {mytoplevel} {
         bind all <Control-Button-5> \
             {event generate [focus -displayof %W] <Control-MouseWheel> -delta -1}
     }
-    bind $c <Control-MouseWheel> [list after idle ::pd_canvaszoom::stepzoom $c %D]
+    bind $c <Control-MouseWheel> [list ::pd_canvaszoom::delayed_stepzoom $c %D]
 
     # add button-2 bindings to scroll the canvas
     bind $c <ButtonPress-2> {%W scan mark %x %y}
-    bind $c <B2-Motion> {after idle %W scan dragto %x %y 1}
+    bind $c <B2-Motion> {%W scan dragto %x %y 1}
 }
 
 # scroll so that the point (xcanvas, ycanvas) moves to the window-relative position (xwin, ywin)
@@ -101,8 +101,19 @@ proc ::pd_canvaszoom::toastzoom {c} {
     after 1200 ::pd_canvaszoom::delete_toastzoom $c
 }
 
+set ::pd_canvaszoom::stepzoom_task {}
+set ::pd_canvaszoom::accum_steps 0
+proc ::pd_canvaszoom::delayed_stepzoom {c steps} {
+    variable stepzoom_task
+    variable accum_steps
+    after cancel $stepzoom_task
+    incr accum_steps $steps
+    set stepzoom_task [after idle ::pd_canvaszoom::stepzoom $c $accum_steps]
+}
+
 # zoom in (steps>0) or zoom out (steps<0)
 proc ::pd_canvaszoom::stepzoom {c steps} {
+    set ::pd_canvaszoom::accum_steps 0
     variable zsteps
     # don't zoom if not initialized
     if { ! [info exists zsteps($c)] } { return  }
