@@ -34,6 +34,7 @@ proc ::pd::widget::object::config {obj args} {
     set tag [::pd::widget::base_tag $obj]
     set tmargin 3
     set lmargin 2
+    set sizechanged 0
 
     foreach cnv [::pd::widget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
@@ -44,6 +45,7 @@ proc ::pd::widget::object::config {obj args} {
                 } "-size" {
                     set xnew [lindex $v 0]
                     set ynew [lindex $v 1]
+                    set sizechanged 1
                     $cnv coords "${tag}" \
                         $xpos                        $ypos                  \
                         [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
@@ -59,6 +61,9 @@ proc ::pd::widget::object::config {obj args} {
             }
             $cnv itemconfigure "${tag}&&RECT" -width $zoom
         }
+    }
+    if { $sizechanged } {
+        ::pd::widget::refresh_iolets $obj
     }
 }
 proc ::pd::widget::object::select {obj state} {
