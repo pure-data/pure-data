@@ -324,6 +324,70 @@ void canvas_objfor(t_glist *gl, t_text *x, int argc, t_atom *argv)
     glist_add(gl, &x->te_g);
 }
 
+void rtext_configure(t_object*, t_rtext *x);
+static void object_vis(t_gobj *z, t_glist *glist, int vis)
+{
+    t_text *x = (t_text *)z;
+    t_glist *rglist = glist;
+    const char*type;
+    switch(x->te_type) {
+    case T_TEXT:
+        type = "comment";
+        break;
+    default:
+        type = "object";
+        break;
+    case T_MESSAGE:
+        type = "message";
+        break;
+    case T_ATOM:
+        type = "atom";
+        break;
+    }
+
+    if(vis)
+    {
+        const int zoom = glist_getzoom(glist);
+            //t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
+        t_rtext *y = glist_findrtext(glist, x);
+        int iolets;
+
+        int x1, y1, x2, y2, width, height, corner;
+        text_getrect(z, glist, &x1, &y1, &x2, &y2);
+
+        pdgui_vmess("::pd::widget::create", "roc ii", type
+            , x, glist_getcanvas(glist)
+            , x1 / zoom
+            , y1 / zoom
+            );
+            /* common ::config for Pd-primitives (text + size) */
+        rtext_configure(x, y);
+
+        iolets = obj_ninlets(x);
+        if(iolets) {
+            int i;
+            t_float*intypes = (t_float*)getbytes(iolets *  sizeof(*intypes));
+            for(i=0; i<iolets; i++) {
+                intypes[i] = obj_issignalinlet(x, i);
+            }
+            pdgui_vmess("::pd::widget::create_inlets" , "o F", x, iolets, intypes);
+            freebytes(intypes, iolets *  sizeof(*intypes));
+        }
+        iolets = obj_noutlets(x);
+        if(iolets) {
+            int i;
+            t_float*outtypes = (t_float*)getbytes(iolets *  sizeof(*outtypes));
+            for(i=0; i<iolets; i++) {
+                outtypes[i] = obj_issignaloutlet(x, i);
+            }
+            pdgui_vmess("::pd::widget::create_outlets" , "o F", x, iolets, outtypes);
+            freebytes(outtypes, iolets *  sizeof(*outtypes));
+        }
+    } else {
+        pdgui_vmess("::pd::widget::destroy", "o", x);
+    }
+}
+
 /* ---------------------- the "message" text item ------------------------ */
 
 typedef struct _messresponder
@@ -1307,7 +1371,6 @@ static void text_delete(t_gobj *z, t_glist *glist)
     t_text *x = (t_text *)z;
         canvas_deletelinesfor(glist, x);
 }
-
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
@@ -1438,7 +1501,7 @@ const t_widgetbehavior text_widgetbehavior =
     text_select,
     text_activate,
     text_delete,
-    text_vis,
+    object_vis,
     text_click,
 };
 
@@ -1482,7 +1545,6 @@ static void message_delete(t_gobj *z, t_glist *glist)
     t_message *x = (t_message *)z;
     pdgui_vmess("::pd::widget::destroy", "o", x);
 }
-void rtext_configure(t_object*, t_rtext *x);
 static void message_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_message *x = (t_message *)z;
