@@ -436,14 +436,18 @@ static int rtext_format(const t_rtext *x,
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
 {
-    char smallbuf[200], *tempbuf;
+    char smallbuf[200], *tempbuf = 0;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
-    if (x->x_bufsize >= 100)
-         tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
-    else tempbuf = smallbuf;
-    tempbuf[0] = 0;
+    if (action)
+    {
+            /* we only need a tempbuf if there's an action */
+        if (x->x_bufsize >= 100)
+            tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
+        else tempbuf = smallbuf;
+        tempbuf[0] = 0;
+    }
 
     rtext_format(x,
         *widthp, *heightp, /* mouse position */
