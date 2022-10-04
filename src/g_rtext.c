@@ -449,7 +449,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         tempbuf[0] = 0;
     }
 
-    rtext_format(x,
+    sizechanged = rtext_format(x,
         *widthp, *heightp, /* mouse position */
         tempbuf, &outchars_b, /* line-broken output buffer */
         widthp, heightp, /* required width/height of the box */
@@ -499,7 +499,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         pdgui_vmess("pdtk_text_set", "cs s",
                   canvas, x->x_tag,
                   tempbuf);
-        if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
+        if (sizechanged)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
                 *widthp, *heightp, 0);
         if (x->x_active)
