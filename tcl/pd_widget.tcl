@@ -334,11 +334,11 @@ proc ::pd::widget::disconnect {src outlet dst inlet} {
     }
 }
 
-proc ::pd::widget::create_inlets {obj args} {
-    ::pd::widget::_call create_inlets $obj $args
+proc ::pd::widget::create_inlets {obj inlets} {
+    ::pd::widget::_call create_inlets $obj $inlets
 }
-proc ::pd::widget::create_outlets {obj args} {
-    ::pd::widget::_call create_outlets $obj $args
+proc ::pd::widget::create_outlets {obj outlets} {
+    ::pd::widget::_call create_outlets $obj $outlets
 }
 proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
     ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
