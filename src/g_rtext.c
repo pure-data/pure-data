@@ -440,6 +440,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
+    int sizechanged;
     if (action)
     {
             /* we only need a tempbuf if there's an action */
@@ -458,22 +459,35 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     x->x_drawnwidth = *widthp;
     x->x_drawnheight = *heightp;
 
-    if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
+    if(!action)
+        return;
+
+    if (x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
             /* if our width is specified but the "natural" width is the
             same as the specified width, set specified width to zero
             so future text editing will automatically change width.
             Except atoms whose content changes at runtime. */
-        int widthwas = x->x_text->te_width, newwidth = 0, newheight = 0,
-            newindex = 0;
+
+            /* sidenote: if a box is explicitely oversized and gets filled up
+            while editing, it will lose its explicit size (as we clear the
+            size when we reach it  */
+        int oldwidth = x->x_text->te_width;
+        int newwidth = 0;
         x->x_text->te_width = 0;
-        rtext_senditup(x, 0, &newwidth, &newheight, &newindex);
+            /* check what the "natural" width would be */
+        rtext_format(x,
+            0, 0, /* mouse position */
+            0, 0, /* line-broken output buffer */
+            &newwidth, /* required width of the box */
+            0, 0, 0, 0, 0); /* ignored: height; index; selection; fontsize */
+            /* if we are not at the natural width, restore the object-width */
         if (newwidth != *widthp)
-            x->x_text->te_width = widthwas;
+            x->x_text->te_width = oldwidth;
     }
 
-    if (action && !canvas->gl_havewindow)
-        action = 0;
+    if (!canvas->gl_havewindow)
+        return;
 
     if (action == SEND_FIRST)
     {
@@ -523,8 +537,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             }
         }
     }
-    x->x_drawnwidth = *widthp;
-    x->x_drawnheight = *heightp;
 
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
