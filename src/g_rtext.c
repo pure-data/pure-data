@@ -362,16 +362,35 @@ static void rtext_formatatom(const t_rtext *x, int *widthp, int *heightp,
     *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
 }
 
-static void rtext_format(const t_rtext *x, char *buf,
+/*
+ * breaks the text into lines, storing it into buf.
+ * the size of the line-broken text is returned in *widthp/*heightp;
+ * also computes byte index of character at location (xpos, ypos),
+ * and the beginning & end of selection
+ *
+ * The UTF-8 input is taken from x->buf and x->bufsize fields of the text object
+ * the wrapped text is put in "tempbuf" with byte length in *outcharsp.
+ *
+ * tempbuf can be NULL, in which case only the size calculations are done
+ * and no line-broken text is generated.
+ *
+ * the pointers to the output variables can also be NULL,
+ * in which case they are ignored.
+ *
+ * returns >0 if the drawnsize changed, and 0 if it didn't
+ *
+ * this works for objects, messageboxes, comments and atoms alike.
+ */
+static int rtext_format(const t_rtext *x,
+    int posX, int posY,
+    char *buf, int *outcharsp,
     int *widthp, int *heightp,
-    int *indexp, int *outcharsp,
+    int *indexp,
     int *selstartp, int *selendp, int *guifontsizep)
 {
     int fontwidth=0, fontheight=0, _guifontsize=0;
-    int _width=0, _height=0;
+    int _width=posX, _height=posY;
     int _index=0, _outchars=0, _selstart=0, _selend=0;
-    if(widthp)_width=*widthp;
-    if(heightp)_height=*heightp;
 
         /* if we're a GOP (the new, "goprect" style) borrow the font size
            from the inside to preserve the spacing */
@@ -394,6 +413,8 @@ static void rtext_format(const t_rtext *x, char *buf,
     set_ptr(selstart);
     set_ptr(selend);
     set_ptr(guifontsize);
+
+    return (_width != x->x_drawnwidth || _height != x->x_drawnheight);
 }
 
     /* the following routine computes line breaks and carries out
@@ -424,7 +445,14 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     else tempbuf = smallbuf;
     tempbuf[0] = 0;
 
-    rtext_format(x, tempbuf, widthp, heightp, indexp, &outchars_b, &selstart_b, &selend_b, &guifontsize);
+    rtext_format(x,
+        *widthp, *heightp, /* mouse position */
+        tempbuf, &outchars_b, /* line-broken output buffer */
+        widthp, heightp, /* required width/height of the box */
+        indexp, &selstart_b, &selend_b, /* index @ mouse; selection */
+        &guifontsize);
+    x->x_drawnwidth = *widthp;
+    x->x_drawnheight = *heightp;
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
