@@ -30,6 +30,7 @@ array set ::pd::widget::_obj2canvas {}
 # ::pd::widget::destroy     | destroy the object
 # ::pd::widget::config      | re-configure the object (using a parameter syntax)
 # ::pd::widget::select      | show that an object is (de)selected
+# ::pd::widget::editmode    | show that an object is in editmode
 # ::pd::widget::displace    | relative move
 # ::pd::widget::moveto      | absolute move
 # ::pd::widget::show_iolets | show/hide inlets resp. outlets
@@ -143,6 +144,11 @@ proc ::pd::widget::_update_connections_on_canvas {cnv objtag} {
         }
     }
 }
+
+::pd::widget::_defaultproc editmode {obj state} {
+    # just ignore
+}
+
 
 ::pd::widget::_defaultproc displace {obj dx dy} {
     set tag [::pd::widget::base_tag $obj]
@@ -289,6 +295,9 @@ proc ::pd::widget::config {obj args} {
 }
 proc ::pd::widget::select {obj state} {
     ::pd::widget::_call select $obj $state
+}
+proc ::pd::widget::editmode {obj state} {
+    ::pd::widget::_call editmode $obj $state
 }
 proc ::pd::widget::displace {obj dx dy} {
     ::pd::widget::_call displace $obj $dx $dy

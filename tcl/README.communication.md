@@ -33,7 +33,8 @@ Pd-GUI
 | `::pd::widget::create`         | create a new widget of a given type on a canvas |
 | `::pd::widget::destroy`        | destroy all instances of the widget |
 | `::pd::widget::config`         | change properties of a widget |
-| `::pd::widget::select`         | mark a widget as (de)selected |
+| `::pd::widget::select`         | display a widget as (de)selected |
+| `::pd::widget::editmode`       | display a widget as editable |
 | `::pd::widget::displace`       | move a widget by an offset |
 | `::pd::widget::moveto`         | move a widget to an absolute position |
 | `::pd::widget::create_inlets`  | create inlets for a widget |
@@ -72,6 +73,18 @@ If `<state`> is `1`, this makes the object appear as "selected".
 If `<state`> is `0`, this makes the object appear as "unselected".
 
 Example: `::pd::widget::select 0x55559a95ae40 1`
+
+
+#### `::pd::widget::editmode <obj> <state>`
+
+If `<state`> is `1`, this makes the object appear as "editable".
+If `<state`> is `0`, this makes the object appear as "runnable".
+
+Example: `::pd::widget::editmode 0x55559a95ae40 1`
+
+Some objects might want to change their appearance depending on whether
+a canvas is in edit-mode or not.
+The default for this is a no-op.
 
 
 #### `::pd::widget::displace <obj> <dx> <dy>`
