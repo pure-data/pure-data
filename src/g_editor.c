@@ -57,6 +57,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 /* ------------------------ managing the selection ----------------- */
+static const char*selection_tag = "selection"; /* we really only need an address */
 void glist_deselectline(t_glist *x);
 
 static void _editor_selectlinecolor(t_glist*x, const char*color)
@@ -2545,10 +2546,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (doit)
     {
         if (!shiftmod) glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rs",
-            x, "create", "rectangle",
-            xpos,ypos, xpos,ypos,
-            "-tags", "x");
+        pdgui_vmess("::pd::widget::create", "roc ii", "selection"
+                    , selection_tag, x, xpos, ypos);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -2870,13 +2869,13 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess("::pd::widget::destroy", "o", selection_tag);
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else
-        pdgui_vmess(0, "crs iiii",
-            x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
+        pdgui_vmess("::pd::widget::config", "o rii", selection_tag
+            , "-size", xpos-x->gl_editor->e_xwas, ypos-x->gl_editor->e_ywas
+            );
 }
 
 void canvas_mouseup(t_canvas *x,
