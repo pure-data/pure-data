@@ -965,7 +965,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
             const t_float zoom = glist_getzoom(x);
-            pdgui_vmess("::pd::widget::config", "o rffff", x
+            pdgui_vmess("::pd::widget::config", "o rffff", oc
                 , "-position", t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom
                 );
         }
