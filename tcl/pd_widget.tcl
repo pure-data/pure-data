@@ -177,55 +177,51 @@ proc ::pd::widget::_update_connections_on_canvas {cnv objtag} {
     set ocolor {}
     if {$show_inlets } {set icolor black}
     if {$show_outlets} {set ocolor black}
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv itemconfigure ${tag}&&inlet  -fill $icolor
-            $cnv itemconfigure ${tag}&&outlet -fill $ocolor
-        }
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv itemconfigure ${tag}&&inlet  -fill $icolor
+        $cnv itemconfigure ${tag}&&outlet -fill $ocolor
     }
 }
 proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
     set tag [::pd::widget::base_tag $obj]
     set numiolets [llength $iolets]
     if {$numiolets < 2} {set numiolets 2}
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            $cnv delete "${tag}&&${iotag}"
-            set zoom [::pd::canvas::get_zoom $cnv]
-            foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
-            set w [expr $x1 - $x0]
-            set h [expr $y1 - $y0]
-            set iw [expr $iowidth * $zoom]
-            set ih [expr ($ioheight - 0.5) * $zoom]
-            set delta [expr ($w - $iw)/($numiolets - 1.) ]
-            set objheight 0
-            if {$iotag eq "outlet"} {
-                set objheight [expr $h - $ih]
-            }
-
-            set numin 0
-            foreach iolet $iolets {
-                set iotype message
-                switch -exact $iolet {
-                    default {
-                        set iotype message
-                    } 1 {
-                        set iotype signal
-                    }
-                }
-                # create an iolet (with an 'anchor' where the connection starts)
-                set centerX [expr $iw / 2]
-                set centerY [expr $ih / 2]
-                $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
-                $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
-                # move the iolet in place
-                $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
-
-                incr numin
-            }
-            $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
-            $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv delete "${tag}&&${iotag}"
+        set zoom [::pd::canvas::get_zoom $cnv]
+        foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
+        set w [expr $x1 - $x0]
+        set h [expr $y1 - $y0]
+        set iw [expr $iowidth * $zoom]
+        set ih [expr ($ioheight - 0.5) * $zoom]
+        set delta [expr ($w - $iw)/($numiolets - 1.) ]
+        set objheight 0
+        if {$iotag eq "outlet"} {
+            set objheight [expr $h - $ih]
         }
+
+        set numin 0
+        foreach iolet $iolets {
+            set iotype message
+            switch -exact $iolet {
+                default {
+                    set iotype message
+                } 1 {
+                    set iotype signal
+                }
+            }
+            # create an iolet (with an 'anchor' where the connection starts)
+            set centerX [expr $iw / 2]
+            set centerY [expr $ih / 2]
+            $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
+            $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
+            # move the iolet in place
+            $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
+
+            incr numin
+        }
+        $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
+        $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
     }
 }
 ::pd::widget::_defaultproc create_inlets {obj inlets} {
@@ -254,9 +250,7 @@ proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
 # get inlet types
 proc ::pd::widget::get_iolets {obj type} {
     set cnv {}
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {break}
-    }
+    foreach cnv [::pd::widget::get_canvases $obj] {break}
     if { $cnv eq {} } {return}
     set tag [::pd::widget::base_tag $obj]
 
@@ -325,8 +319,7 @@ proc ::pd::widget::textselect {obj {index {}} {selectionlength {}}} {
 proc ::pd::widget::connect {src outlet dst inlet} {
     set srctag [::pd::widget::base_tag $src]
     set dsttag [::pd::widget::base_tag $dst]
-    if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
-    foreach cnv $::pd::widget::_obj2canvas($src) {
+    foreach cnv [::pd::widget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
         foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
@@ -347,8 +340,7 @@ proc ::pd::widget::connect {src outlet dst inlet} {
 proc ::pd::widget::disconnect {src outlet dst inlet} {
     set srctag [::pd::widget::base_tag $src]
     set dsttag [::pd::widget::base_tag $dst]
-    if {![info exists ::pd::widget::_obj2canvas($src)]} {return}
-    foreach cnv $::pd::widget::_obj2canvas($src) {
+    foreach cnv [::pd::widget::get_canvases $obj] {
         foreach id [$cnv find withtag "connection&&src:${srctag}:${outlet}&&dst:$dsttag:${inlet}"] {
             $cnv delete $id
         }
