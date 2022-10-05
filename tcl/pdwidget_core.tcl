@@ -193,6 +193,84 @@ proc ::pd::widget::message::activate {obj flashtime} {
 
 
 ########################################################################
+# comment
+
+proc ::pd::widget::core::create_comment {obj cnv posX posY} {
+    # stack order
+    # - boundingrectangle
+    # - outlets
+    # - inlets
+    # - text
+    set tag [::pd::widget::base_tag $obj]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
+    $cnv create line 0 0 0 0 -tags [list ${tag} commentbar] -fill {}
+    # the 'iolet' tag is used to properly place iolets in the display list
+    # (inlets and outlets are to be placed directly above this tag)
+    $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
+    pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
+    $cnv move $tag $posX $posY
+
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_comment
+    ::pd::widget::widgetbehavior $obj editmode ::pd::widget::core::edit_comment
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+}
+
+proc ::pd::widget::core::config_comment {obj args} {
+    set options [::pd::widget::parseargs \
+                     {
+                         -size 2
+                         -text 1
+                     } $args]
+    set tag [::pd::widget::base_tag $obj]
+    set tmargin 3
+    set lmargin 2
+    set sizechanged 0
+
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        set zoom [::pd::canvas::get_zoom $cnv]
+        dict for {k v} $options {
+            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+            switch -exact -- $k {
+                default {
+                } "-size" {
+                    set xnew [lindex $v 0]
+                    set ynew [lindex $v 1]
+                    set sizechanged 1
+                    $cnv coords "${tag}" \
+                        $xpos                        $ypos                  \
+                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                    $cnv coords "${tag}&&commentbar" \
+                        [expr $xpos + $xnew * $zoom] $ypos \
+                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                    $cnv coords "${tag}&&text" \
+                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+                } "-text" {
+                    pdtk_text_set $cnv "${tag}&&text" "$v"
+                }
+
+            }
+            $cnv itemconfigure "${tag}&&commentbar" -width $zoom
+        }
+    }
+    if { $sizechanged } {
+        ::pd::widget::refresh_iolets $obj
+    }
+}
+proc ::pd::widget::core::edit_comment {obj state} {
+    if {$state != 0} {
+        set color #000000
+    } else {
+        set color ""
+    }
+    set tag "[::pd::widget::base_tag $obj]&&commentbar"
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv itemconfigure "${tag}" -fill $color
+    }
+
+}
+
+########################################################################
 # connection
 
 proc ::pd::widget::core::create_conn {obj cnv posX posY} {
@@ -252,4 +330,5 @@ proc ::pd::widget::core::config_conn {obj args} {
 ## register objects
 ::pd::widget::register object ::pd::widget::core::create_obj
 ::pd::widget::register message ::pd::widget::core::create_msg
+::pd::widget::register comment ::pd::widget::core::create_comment
 ::pd::widget::register connection ::pd::widget::core::create_conn
