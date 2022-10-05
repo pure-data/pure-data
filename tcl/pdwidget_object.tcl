@@ -24,6 +24,7 @@ proc ::pd::widget::object::create {obj cnv posX posY} {
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::object::config
     ::pd::widget::widgetbehavior $obj select ::pd::widget::object::select
+    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::object::textselect
 }
 proc ::pd::widget::object::config {obj args} {
     set options [::pd::widget::parseargs \
@@ -80,5 +81,24 @@ proc ::pd::widget::object::select {obj state} {
         $cnv itemconfigure "${tag}&&RECT" -outline $color
     }
 }
+
+proc ::pd::widget::object::textselect {obj {start {}} {length {}}} {
+    set tag "[::pd::widget::base_tag $obj]&&text"
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv select clear
+        if { $start ne {} } {
+            if { $length > 0 } {
+                $cnv select from $tag $start
+                $cnv select to $tag [expr $start + $length - 1]
+                $cnv focus {}
+            } else {
+                $cnv icursor $tag $start
+                focus $cnv
+                $cnv focus $tag
+            }
+        }
+    }
+}
+
 
 ::pd::widget::register object ::pd::widget::object::create
