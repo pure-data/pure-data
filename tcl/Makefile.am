@@ -54,10 +54,7 @@ dist_libpdtcl_DATA = \
     pd_widget.tcl \
     pd_windows.tcl \
     pdwidget_core.tcl \
-    pdwidget_bang.tcl \
-    pdwidget_canvas.tcl \
-    pdwidget_radio.tcl \
-    pdwidget_toggle.tcl \
+    pdwidget_iemgui.tcl \
     $(empty)
 
 
