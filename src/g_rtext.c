@@ -492,8 +492,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (action == SEND_FIRST)
     {
 #if 1
-        pdgui_vmess("::pd::widget::config", "o rii rs", x->x_text,
-            "-size", *widthp, *heightp,
+        t_float zoom = glist_getzoom(x->x_glist);
+        pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text,
+            "-size", (*widthp)/zoom, (*heightp)/zoom,
             "-text", tempbuf);
         pdgui_vmess("::pd::widget::select", "oi", x->x_text,
                     glist_isselected(x->x_glist, &x->x_text->te_g));
@@ -519,8 +520,9 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     else if (action == SEND_UPDATE)
     {
 #if 1
-        pdgui_vmess("::pd::widget::config", "o rii rs", x->x_text,
-            "-size", *widthp, *heightp,
+        t_float zoom = glist_getzoom(x->x_glist);
+        pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text,
+            "-size", (*widthp)/zoom, (*heightp)/zoom,
             "-text", tempbuf);
         if (x->x_active)
         {
