@@ -895,6 +895,7 @@ void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
 
 void rtext_configure(t_object*obj, t_rtext *x)
 {
+    float zoom = glist_getzoom(x->x_glist);
     int w = 0, h = 0, index = 0;
     char smallbuf[200], *tempbuf;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
@@ -914,8 +915,8 @@ void rtext_configure(t_object*obj, t_rtext *x)
         fontwidth, fontheight);
     tempbuf[outchars_b]=0;
 
-    pdgui_vmess("::pd::widget::config", "o rii rs", obj
-        , "-size", w, h
+    pdgui_vmess("::pd::widget::config", "o rff rs", obj
+        , "-size", w/zoom, h/zoom
         , "-text", tempbuf
         );
 }

@@ -5,10 +5,10 @@
 # - comments
 # - connections
 
+
+
 package provide pdwidget_core 0.1
 namespace eval ::pd::widget::core:: { }
-
-
 
 ########################################################################
 # common procedures
@@ -56,6 +56,7 @@ proc ::pd::widget::core::create_obj {obj cnv posX posY} {
     # - outlets
     # - inlets
     # - text
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} OUTLINE]
@@ -63,7 +64,7 @@ proc ::pd::widget::core::create_obj {obj cnv posX posY} {
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_obj
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
@@ -116,6 +117,7 @@ proc ::pd::widget::core::config_obj {obj args} {
 # message
 
 proc ::pd::widget::core::create_msg {obj cnv posX posY} {
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
@@ -123,7 +125,7 @@ proc ::pd::widget::core::create_msg {obj cnv posX posY} {
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_msg
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
@@ -201,6 +203,7 @@ proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
     # - outlets
     # - inlets
     # - text
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
@@ -208,7 +211,7 @@ proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_gatom
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
@@ -272,6 +275,7 @@ proc ::pd::widget::core::create_latom {obj cnv posX posY} {
     # - outlets
     # - inlets
     # - text
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
@@ -279,7 +283,7 @@ proc ::pd::widget::core::create_latom {obj cnv posX posY} {
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_latom
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
@@ -345,6 +349,7 @@ proc ::pd::widget::core::create_comment {obj cnv posX posY} {
     # - outlets
     # - inlets
     # - text
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create line 0 0 0 0 -tags [list ${tag} commentbar] -fill {}
@@ -352,7 +357,7 @@ proc ::pd::widget::core::create_comment {obj cnv posX posY} {
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_comment
     ::pd::widget::widgetbehavior $obj editmode ::pd::widget::core::edit_comment
@@ -418,11 +423,12 @@ proc ::pd::widget::core::edit_comment {obj state} {
 # connection
 
 proc ::pd::widget::core::create_conn {obj cnv posX posY} {
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {} -width 0
     $cnv create line 0 0 0 0 -tags [list ${tag} cord] -fill black
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_conn
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
@@ -473,12 +479,13 @@ proc ::pd::widget::core::config_conn {obj args} {
 # selection lasso
 
 proc ::pd::widget::core::create_sel {obj cnv posX posY} {
+    set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pd::widget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} lasso iolets] -outline black -fill {} -width 1
 
-    $cnv move $tag $posX $posY
+    $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_sel
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select

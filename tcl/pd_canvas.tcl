@@ -38,10 +38,12 @@ proc ::pd::canvas::set_fontsize {cnv fontsize} {
     set ::pdtk_canvas::_fontsize($cnv) $fontsize
 }
 proc ::pd::canvas::get_fontsize {cnv} {
+    set zoom [::pd::canvas::get_zoom $cnv]
+    set fontsize 12
     if {[info exists ::pdtk_canvas::_fontsize($cnv)]} {
-        return $::pdtk_canvas::_fontsize($cnv)
+        set fontsize $::pdtk_canvas::_fontsize($cnv)
     }
-    return 12
+    return [expr $fontsize * $zoom]
 }
 
 proc ::pd::canvas::set_editmode {cnv state} {

@@ -2538,9 +2538,10 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
     if (doit)
     {
+        t_float zoom = x->gl_zoom;
         if (!shiftmod) glist_noselect(x);
-        pdgui_vmess("::pd::widget::create", "roc ii", "selection"
-                    , selection_tag, x, xpos, ypos);
+        pdgui_vmess("::pd::widget::create", "roc ff", "selection"
+                    , selection_tag, x, xpos/zoom, ypos/zoom);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -2873,11 +2874,12 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
         canvas_selectinrect(x, lox, loy, hix, hiy);
         pdgui_vmess("::pd::widget::destroy", "o", selection_tag);
         x->gl_editor->e_onmotion = MA_NONE;
-    }
-    else
-        pdgui_vmess("::pd::widget::config", "o rii", selection_tag
-            , "-size", xpos-x->gl_editor->e_xwas, ypos-x->gl_editor->e_ywas
+    } else {
+        t_float zoom = x->gl_zoom;
+        pdgui_vmess("::pd::widget::config", "o rff", selection_tag
+            , "-size", (xpos-x->gl_editor->e_xwas) / zoom, (ypos-x->gl_editor->e_ywas) / zoom
             );
+    }
 }
 
 void canvas_mouseup(t_canvas *x,
