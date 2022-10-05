@@ -296,6 +296,18 @@ proc ::pd::widget::displace {obj dx dy} {
 proc ::pd::widget::moveto {obj cnv x y} {
     ::pd::widget::_call moveto $obj $cnv $x $y
 }
+proc ::pd::widget::textselect {obj {index {}} {selectionlength {}}} {
+    set args $obj
+    if { $index ne {} } {
+        lappend args $index
+        if { $selectionlength ne {} } {
+            lappend args $selectionlength
+        }
+    }
+    ::pd::widget::_call textselect {*}$args
+}
+
+
 
 # 'connect' and 'disconnect' show how connection handling might actually word
 # in practice, this would break compatibility with GUI externals
