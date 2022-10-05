@@ -103,17 +103,17 @@ proc ::pd::widget::_defaultproc {id arguments body} {
 # 'destroy' an object (removing it from the canvas(es))
 ::pd::widget::_defaultproc destroy {obj} {
     set tag [::pd::widget::base_tag $obj]
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        foreach cnv $::pd::widget::_obj2canvas($obj) {
-            foreach id [$cnv find withtag "connection&&src:${tag}"] {
-                $cnv delete $id
-            }
-            foreach id [$cnv find withtag "connection&&dst:${tag}"] {
-                $cnv delete $id
-            }
-            $cnv delete $tag
-            ::pd::canvas::remove_object $cnv $obj
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        foreach id [$cnv find withtag "connection&&src:${tag}"] {
+            $cnv delete $id
         }
+        foreach id [$cnv find withtag "connection&&dst:${tag}"] {
+            $cnv delete $id
+        }
+        $cnv delete $tag
+        ::pd::canvas::remove_object $cnv $obj
+    }
+    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
         unset ::pd::widget::_obj2canvas($obj)
     }
 }
@@ -276,7 +276,9 @@ proc ::pd::widget::create {type obj cnv posX posY} {
     } else {
         # associate this obj with the cnv
         ::pd::canvas::add_object $cnv $obj
-        lappend ::pd::widget::_obj2canvas($obj) $cnv
+        if {[info exists ::pd::widget::_obj2canvas($obj) ] && [lsearch -exact $::pd::widget::_obj2canvas($obj) $cnv ] >= 0 } { } else {
+            lappend ::pd::widget::_obj2canvas($obj) $cnv
+        }
     }
 }
 proc ::pd::widget::destroy {obj} {
