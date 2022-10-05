@@ -325,6 +325,46 @@ proc ::pd::widget::core::config_conn {obj args} {
 }
 
 
+########################################################################
+# selection lasso
+
+proc ::pd::widget::core::create_sel {obj cnv posX posY} {
+    set tag [::pd::widget::base_tag $obj]
+    # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} lasso iolets] -outline black -fill {} -width 1
+
+    $cnv move $tag $posX $posY
+
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_sel
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+}
+proc ::pd::widget::core::config_sel {obj args} {
+    set options [::pd::widget::parseargs \
+                     {
+                         -size 2
+                     } $args]
+    set tag [::pd::widget::base_tag $obj]
+    set tmargin 3
+    set lmargin 2
+
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        set zoom [::pd::canvas::get_zoom $cnv]
+        dict for {k v} $options {
+            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+            switch -exact -- $k {
+                default {
+                } "-size" {
+                    foreach {xnew ynew} $v {break}
+                    $cnv coords "${tag}&&lasso" \
+                        $xpos $ypos \
+                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                }
+            }
+        }
+    }
+}
+
 
 ########################################################################
 ## register objects
@@ -332,3 +372,4 @@ proc ::pd::widget::core::config_conn {obj args} {
 ::pd::widget::register message ::pd::widget::core::create_msg
 ::pd::widget::register comment ::pd::widget::core::create_comment
 ::pd::widget::register connection ::pd::widget::core::create_conn
+::pd::widget::register selection ::pd::widget::core::create_sel
