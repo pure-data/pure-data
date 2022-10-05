@@ -3,14 +3,51 @@
 # - messages
 # - gatoms
 # - comments
-
 # - connections
+
 package provide pdwidget_core 0.1
-
-
 namespace eval ::pd::widget::core:: { }
 
-######################################################
+
+
+########################################################################
+# common procedures
+proc ::pd::widget::core::select {obj state} {
+    # if selection is activated, use a different color
+    # TODO: label
+
+    if {$state != 0} {
+        set color #0000FF
+    } else {
+        set color #000000
+    }
+    set tag "[::pd::widget::base_tag $obj]"
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
+        $cnv itemconfigure "${tag}&&text" -fill $color
+        $cnv itemconfigure "${tag}&&cord" -fill $color
+    }
+}
+proc ::pd::widget::core::textselect {obj {start {}} {length {}}} {
+    set tag "[::pd::widget::base_tag $obj]&&text"
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        $cnv select clear
+        if { $start ne {} } {
+            if { $length > 0 } {
+                $cnv select from $tag $start
+                $cnv select to $tag [expr $start + $length - 1]
+                $cnv focus {}
+            } else {
+                $cnv icursor $tag $start
+                focus $cnv
+                $cnv focus $tag
+            }
+        }
+    }
+}
+
+
+########################################################################
 # object
 
 proc ::pd::widget::core::create_obj {obj cnv posX posY} {
@@ -74,43 +111,8 @@ proc ::pd::widget::core::config_obj {obj args} {
         ::pd::widget::refresh_iolets $obj
     }
 }
-proc ::pd::widget::core::select {obj state} {
-    # if selection is activated, use a different color
-    # TODO: label
 
-    if {$state != 0} {
-        set color #0000FF
-    } else {
-        set color #000000
-    }
-    set tag "[::pd::widget::base_tag $obj]"
-    foreach cnv [::pd::widget::get_canvases $obj] {
-        $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
-        $cnv itemconfigure "${tag}&&text" -fill $color
-        $cnv itemconfigure "${tag}&&cord" -fill $color
-    }
-}
-
-proc ::pd::widget::core::textselect {obj {start {}} {length {}}} {
-    set tag "[::pd::widget::base_tag $obj]&&text"
-    foreach cnv [::pd::widget::get_canvases $obj] {
-        $cnv select clear
-        if { $start ne {} } {
-            if { $length > 0 } {
-                $cnv select from $tag $start
-                $cnv select to $tag [expr $start + $length - 1]
-                $cnv focus {}
-            } else {
-                $cnv icursor $tag $start
-                focus $cnv
-                $cnv focus $tag
-            }
-        }
-    }
-}
-
-
-######################################################
+########################################################################
 # message
 
 proc ::pd::widget::core::create_msg {obj cnv posX posY} {
@@ -190,7 +192,7 @@ proc ::pd::widget::message::activate {obj flashtime} {
 }
 
 
-######################################################
+########################################################################
 # connection
 
 proc ::pd::widget::core::create_conn {obj cnv posX posY} {
@@ -246,6 +248,7 @@ proc ::pd::widget::core::config_conn {obj args} {
 
 
 
+########################################################################
 ## register objects
 ::pd::widget::register object ::pd::widget::core::create_obj
 ::pd::widget::register message ::pd::widget::core::create_msg
