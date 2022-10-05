@@ -944,10 +944,10 @@ static void canvas_drawlines(t_canvas *x)
         {
             const t_float zoom = glist_getzoom(x);
             pdgui_vmess("::pd::widget::create", "roc ii", "connection"
-                , x, glist_getcanvas(x)
+                , oc, glist_getcanvas(x)
                 , 0, 0
                 );
-            pdgui_vmess("::pd::widget::config", "o rffff rs", x
+            pdgui_vmess("::pd::widget::config", "o rffff rs", oc
                 , "-position", t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom
                 , "-type", (outlet_getsymbol(t.tr_outlet) == &s_signal ? "signal":"message")
                 );

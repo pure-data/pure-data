@@ -2617,10 +2617,10 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 + iom;
             ly2 = y21;
             pdgui_vmess("::pd::widget::create", "roc ii", "connection"
-                , x, glist_getcanvas(x)
+                , oc, glist_getcanvas(x)
                 , 0, 0
                 );
-            pdgui_vmess("::pd::widget::config", "o rffff rs", x
+            pdgui_vmess("::pd::widget::config", "o rffff rs", oc
                 , "-position", lx1/zoom, ly1/zoom, lx2/zoom ,ly2/zoom
                 , "-type", (obj_issignaloutlet(src, nout) ? "signal":"message")
                 );
@@ -4405,10 +4405,10 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x) && x->gl_havewindow)
     {
         pdgui_vmess("::pd::widget::create", "roc ii", "connection"
-            , x, glist_getcanvas(x)
+            , oc, glist_getcanvas(x)
             , 0, 0
             );
-        pdgui_vmess("::pd::widget::config", "o rs", x
+        pdgui_vmess("::pd::widget::config", "o rs", oc
             , "-type", (obj_issignaloutlet(objsrc, outno) ? "signal":"message")
             );
         canvas_fixlinesfor(x, objsrc);
