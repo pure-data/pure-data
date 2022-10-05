@@ -362,7 +362,17 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
         type = "message";
         break;
     case T_ATOM:
-        type = "atom";
+        switch (((t_gatom*)x)->a_flavor) {
+        case A_FLOAT:
+            type = "floatatom";
+            break;
+        case A_SYMBOL:
+            type = "symbolatom";
+            break;
+        default:
+            type = "listatom";
+            break;
+        }
         break;
     }
 
@@ -404,6 +414,8 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
             pdgui_vmess("::pd::widget::create_outlets" , "o F", x, iolets, outtypes);
             freebytes(outtypes, iolets *  sizeof(*outtypes));
         }
+        pdgui_vmess("::pd::widget::select", "oi", x,
+                    glist_isselected(glist, &x->te_g));
     } else {
         pdgui_vmess("::pd::widget::destroy", "o", x);
     }
@@ -1132,6 +1144,11 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
+#if 1
+    t_gatom *x = (t_gatom*)z;
+    object_vis(z, glist, vis);
+#warning TODO gatom labels
+#else
     t_gatom *x = (t_gatom*)z;
     text_vis(z, glist, vis);
     if (*x->a_label->s_name)
@@ -1157,6 +1174,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         else
             pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", buf);
     }
+#endif
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
@@ -1587,7 +1605,7 @@ static const t_widgetbehavior message_widgetbehavior =
     message_select,
     message_activate,
     message_delete,
-    message_vis,
+    object_vis,
     message_doclick,
 };
 
@@ -1647,6 +1665,8 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 void text_drawborder(t_text *x, t_glist *glist,
     const char *tag, int width2, int height2, int firsttime)
 {
+    #warning early return
+    return;
     t_object *ob;
     int x1, y1, x2, y2, width, height, corner;
     char tagR[128];

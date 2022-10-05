@@ -491,6 +491,13 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 
     if (action == SEND_FIRST)
     {
+#if 1
+        pdgui_vmess("::pd::widget::config", "o rii rs", x->x_text,
+            "-size", *widthp, *heightp,
+            "-text", tempbuf);
+        pdgui_vmess("::pd::widget::select", "oi", x->x_text,
+                    glist_isselected(x->x_glist, &x->x_text->te_g));
+#else
         const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
         int lmargin = LMARGIN, tmargin = TMARGIN;
         if (glist_getzoom(x->x_glist) > 1)
@@ -507,9 +514,25 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tempbuf,
             guifontsize,
             (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
+#endif
     }
     else if (action == SEND_UPDATE)
     {
+#if 1
+        pdgui_vmess("::pd::widget::config", "o rii rs", x->x_text,
+            "-size", *widthp, *heightp,
+            "-text", tempbuf);
+        if (x->x_active)
+        {
+            int start = u8_charnum(x->x_buf, selstart_b);
+            int end = u8_charnum(x->x_buf, selend_b);
+            int length = end - start;
+            pdgui_vmess("::pd::widget::textselect", "o ii",
+                        x->x_text, start, (length>0)?length:0);
+        } else {
+            pdgui_vmess("::pd::widget::textselect", "o");
+        }
+#else
         pdgui_vmess("pdtk_text_set", "cs s",
                   canvas, x->x_tag,
                   tempbuf);
@@ -536,6 +559,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
             }
         }
+#endif
     }
 
     if (tempbuf != smallbuf)
@@ -588,26 +612,40 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
+#if 1
+    pdgui_vmess("::pd::widget::destroy", "o", x->x_text);
+#else
     pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+#endif
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
+#if 1
+    pd_error(x->x_text, "rtext_displace(%p, %d, %d)", x, dx, dy);
+    pdgui_vmess("::pd::widget::displace", "o ii", x->x_text, dx, dy);
+#else
     pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         dx, dy);
+#endif
 }
 
 void rtext_select(t_rtext *x, int state)
 {
+#if 1
+    pdgui_vmess("::pd::widget::select", "o i", x->x_text, state);
+#else
     pdgui_vmess(0, "crs rr",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
         "-fill", (state? "blue" : "black"));
+#endif
 }
 
 void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
+#warning old-style pdgui_vmess
     int w = 0, h = 0, indx;
     t_glist *glist = x->x_glist;
     t_canvas *canvas = glist_getcanvas(glist);
