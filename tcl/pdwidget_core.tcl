@@ -193,6 +193,150 @@ proc ::pd::widget::message::activate {obj flashtime} {
 
 
 ########################################################################
+# gatom
+
+proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
+    # stack order
+    # - boundingrectangle
+    # - outlets
+    # - inlets
+    # - text
+    set tag [::pd::widget::base_tag $obj]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
+    $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
+    # the 'iolet' tag is used to properly place iolets in the display list
+    # (inlets and outlets are to be placed directly above this tag)
+    $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
+    pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
+    $cnv move $tag $posX $posY
+
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_gatom
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+}
+proc ::pd::widget::core::config_gatom {obj args} {
+    set options [::pd::widget::parseargs \
+                     {
+                         -size 2
+                         -text 1
+                     } $args]
+    set tag [::pd::widget::base_tag $obj]
+    set tmargin 3
+    set lmargin 2
+    set sizechanged 0
+
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        set zoom [::pd::canvas::get_zoom $cnv]
+        dict for {k v} $options {
+            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+            switch -exact -- $k {
+                default {
+                } "-size" {
+                    set sizechanged 1
+                    set xnew [lindex $v 0]
+                    set ynew [lindex $v 1]
+                    set corner [expr $ynew/4]
+                    set xpos2 [expr $xpos + $xnew * $zoom]
+                    set ypos2 [expr $ypos + $ynew * $zoom]
+                    set corner [expr $corner * $zoom]
+
+
+                    $cnv coords "${tag}" \
+                        $xpos $ypos  $xpos2 $ypos2
+                    $cnv coords "${tag}&&OUTLINE" \
+                              $xpos                   $ypos \
+                        [expr $xpos2 - $corner]       $ypos \
+                              $xpos2            [expr $ypos + $corner] \
+                              $xpos2                  $ypos2 \
+                              $xpos                   $ypos2 \
+                              $xpos                   $ypos
+                    $cnv coords "${tag}&&text" \
+                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+                } "-text" {
+                    pdtk_text_set $cnv "${tag}&&text" "$v"
+                }
+
+            }
+            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+        }
+    }
+    if { $sizechanged } {
+        ::pd::widget::refresh_iolets $obj
+    }
+}
+
+# list atoms
+proc ::pd::widget::core::create_latom {obj cnv posX posY} {
+    # stack order
+    # - boundingrectangle
+    # - outlets
+    # - inlets
+    # - text
+    set tag [::pd::widget::base_tag $obj]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
+    $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
+    # the 'iolet' tag is used to properly place iolets in the display list
+    # (inlets and outlets are to be placed directly above this tag)
+    $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
+    pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
+    $cnv move $tag $posX $posY
+
+    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_latom
+    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+}
+proc ::pd::widget::core::config_latom {obj args} {
+    set options [::pd::widget::parseargs \
+                     {
+                         -size 2
+                         -text 1
+                     } $args]
+    set tag [::pd::widget::base_tag $obj]
+    set tmargin 3
+    set lmargin 2
+    set sizechanged 0
+
+    foreach cnv [::pd::widget::get_canvases $obj] {
+        set zoom [::pd::canvas::get_zoom $cnv]
+        dict for {k v} $options {
+            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+            switch -exact -- $k {
+                default {
+                } "-size" {
+                    set sizechanged 1
+                    set xnew [lindex $v 0]
+                    set ynew [lindex $v 1]
+                    set corner [expr $ynew/4]
+                    set xpos2 [expr $xpos + $xnew * $zoom]
+                    set ypos2 [expr $ypos + $ynew * $zoom]
+                    set corner [expr $corner * $zoom]
+
+
+                    $cnv coords "${tag}" \
+                        $xpos $ypos  $xpos2 $ypos2
+                    $cnv coords "${tag}&&OUTLINE" \
+                              $xpos                   $ypos \
+                        [expr $xpos2 - $corner]       $ypos \
+                              $xpos2            [expr $ypos + $corner] \
+                              $xpos2            [expr $ypos2 - $corner] \
+                        [expr $xpos2 - $corner]       $ypos2 \
+                              $xpos                   $ypos2 \
+                              $xpos                   $ypos
+                    $cnv coords "${tag}&&text" \
+                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+                } "-text" {
+                    pdtk_text_set $cnv "${tag}&&text" "$v"
+                }
+
+            }
+            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+        }
+    }
+    if { $sizechanged } {
+        ::pd::widget::refresh_iolets $obj
+    }
+}
+########################################################################
 # comment
 
 proc ::pd::widget::core::create_comment {obj cnv posX posY} {
@@ -370,6 +514,9 @@ proc ::pd::widget::core::config_sel {obj args} {
 ## register objects
 ::pd::widget::register object ::pd::widget::core::create_obj
 ::pd::widget::register message ::pd::widget::core::create_msg
+::pd::widget::register floatatom ::pd::widget::core::create_gatom
+::pd::widget::register symbolatom ::pd::widget::core::create_gatom
+::pd::widget::register listatom ::pd::widget::core::create_latom
 ::pd::widget::register comment ::pd::widget::core::create_comment
 ::pd::widget::register connection ::pd::widget::core::create_conn
 ::pd::widget::register selection ::pd::widget::core::create_sel
