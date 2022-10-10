@@ -76,6 +76,7 @@ proc ::pd::widget::core::config_obj {obj args} {
                      {
                          -size 2
                          -text 1
+                         -state 1
                      } $args]
     set tag [::pd::widget::base_tag $obj]
     set tmargin 3
@@ -102,6 +103,16 @@ proc ::pd::widget::core::config_obj {obj args} {
                         [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
                 } "-text" {
                     pdtk_text_set $cnv "${tag}&&text" "$v"
+                } "-state" {
+                    switch -exact -- $v {
+                        "normal" {
+                            $cnv itemconfigure "${tag}&&OUTLINE" -dash ""
+                        } "broken" {
+                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "."
+                        } "edit" {
+                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "-"
+                        }
+                    }
                 }
 
             }
