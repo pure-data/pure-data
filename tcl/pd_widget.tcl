@@ -242,7 +242,7 @@ proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
     ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
 
     foreach cnv [::pd::widget::get_canvases $obj] {
-        ::DDD ::pd::widget::_update_connections_on_canvas $cnv $tag
+        ::pd::widget::_update_connections_on_canvas $cnv $tag
     }
 }
 
