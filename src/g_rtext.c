@@ -919,10 +919,7 @@ void rtext_configure(t_object*obj, t_rtext *x)
     else tempbuf = smallbuf;
     tempbuf[0] = 0;
 
-    rtext_formattext(x, &w, &h, &index,
-        tempbuf, &outchars_b, &selstart_b, &selend_b,
-        fontwidth, fontheight);
-    tempbuf[outchars_b]=0;
+    rtext_format(x, w, h, tempbuf, 0, &w, &h, 0, 0, 0, 0);
 
     pdgui_vmess("::pd::widget::config", "o rff rs", obj
         , "-size", w/zoom, h/zoom
