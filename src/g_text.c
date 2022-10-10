@@ -1545,7 +1545,9 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 void text_drawborder(t_text *x, t_glist *glist,
     const char *tag, int width2, int height2, int firsttime)
 {
-    #warning early return
+#if defined(__GNUC__)
+# warning early return
+#endif
     return;
     t_object *ob;
     int x1, y1, x2, y2, width, height, corner;

@@ -661,7 +661,9 @@ void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
-#warning old-style pdgui_vmess
+#if defined(__GNUC__)
+# warning old-style pdgui_vmess
+#endif /* GNUC */
     int w = 0, h = 0, indx;
     t_glist *glist = x->x_glist;
     t_canvas *canvas = glist_getcanvas(glist);
