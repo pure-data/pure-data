@@ -47,7 +47,6 @@ typedef struct _gatom
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
-static void text_vis(t_gobj *z, t_glist *glist, int vis);
 static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2);
 
@@ -1320,29 +1319,6 @@ static void text_delete(t_gobj *z, t_glist *glist)
 {
     t_text *x = (t_text *)z;
     canvas_deletelinesfor(glist, x);
-}
-static void text_vis(t_gobj *z, t_glist *glist, int vis)
-{
-    t_text *x = (t_text *)z;
-    if (vis)
-    {
-        if (gobj_shouldvis(&x->te_g, glist))
-        {
-            t_rtext *y = glist_findrtext(glist, x);
-            text_drawborder(x, glist, rtext_gettag(y),
-                rtext_width(y), rtext_height(y), 1);
-            rtext_draw(y);
-        }
-    }
-    else
-    {
-        t_rtext *y = glist_findrtext(glist, x);
-        if (gobj_shouldvis(&x->te_g, glist))
-        {
-            text_eraseborder(x, glist, rtext_gettag(y));
-            rtext_erase(y);
-        }
-    }
 }
 
 static int text_click(t_gobj *z, struct _glist *glist,
