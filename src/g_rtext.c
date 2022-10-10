@@ -533,13 +533,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             int length = end - start;
             pdgui_vmess("::pd::widget::textselect", "o ii",
                         x->x_text, start, (length>0)?length:0);
-            pdgui_vmess("::pd::widget::config", "o rs", x->x_text, "-state", "edit");
         } else {
-            const char*state = "normal";
-            if (x->x_text->te_type == T_OBJECT && pd_class(&x->x_text->te_pd) == text_class)
-                state = "broken";
             pdgui_vmess("::pd::widget::textselect", "o", x->x_text);
-            pdgui_vmess("::pd::widget::config", "o rs", x->x_text, "-state", state);
         }
 #else
         pdgui_vmess("pdtk_text_set", "cs s",
@@ -666,13 +661,20 @@ void rtext_activate(t_rtext *x, int state)
         x->x_dragfrom = x->x_selstart = 0;
         x->x_selend = x->x_bufsize;
         x->x_active = 1;
+        pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+            , "-state", "edit");
     }
     else
     {
+        const char*state = "normal";
+        if (x->x_text->te_type == T_OBJECT && pd_class(&x->x_text->te_pd) == text_class)
+            state = "broken";
         pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
+        pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+            , "-state", state);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
