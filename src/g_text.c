@@ -1102,85 +1102,32 @@ static int gatom_fontsize(t_gatom *x)
 }
 
     /* ---------------- gatom-specific widget functions --------------- */
-static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
-{
-    int x1, y1, x2, y2;
-    int zoom = glist_getzoom(glist), fontsize = gatom_fontsize(x);
-    text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
-    if (x->a_wherelabel == ATOM_LABELLEFT)
-    {
-        *xp = x1 - 3 * zoom - (
-            (int)strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
-                sys_zoomfontwidth(fontsize, zoom, 0));
-        *yp = y1 + 2 * zoom;
-    }
-    else if (x->a_wherelabel == ATOM_LABELRIGHT)
-    {
-        *xp = x2 + 2 * zoom;
-        *yp = y1 + 2 * zoom;
-    }
-    else if (x->a_wherelabel == ATOM_LABELUP)
-    {
-        *xp = x1 - 1 * zoom;
-        *yp = y1 - 1 * zoom - sys_zoomfontheight(fontsize, zoom, 0);
-    }
-    else
-    {
-        *xp = x1 - 1 * zoom;
-        *yp = y2 + 3 * zoom;
-    }
-}
-
-static void gatom_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy)
-{
-    t_gatom *x = (t_gatom*)z;
-    text_displace(z, glist, dx, dy);
-    if (glist_isvisible(glist))
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(glist),
-            "move",
-            buf,
-            dx * glist->gl_zoom, dy * glist->gl_zoom);
-    }
-}
 
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
-#if 1
     t_gatom *x = (t_gatom*)z;
-    object_vis(z, glist, vis);
-#warning TODO gatom labels
-#else
-    t_gatom *x = (t_gatom*)z;
-    text_vis(z, glist, vis);
-    if (*x->a_label->s_name)
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
-        if (vis)
-        {
-            int x1, y1;
-            char *tags[] = {
-                buf,
-                "label",
-                "text"
-            };
-            gatom_getwherelabel(x, glist, &x1, &y1);
-            pdgui_vmess("pdtk_text_new", "cS ff s ir",
-                glist_getcanvas(glist),
-                3, tags,
-                (double)x1, (double)y1,
-                canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x) * glist_getzoom(glist), "black");
-        }
-        else
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", buf);
+    const char*labelpos = "top";
+    switch(x->a_wherelabel) {
+    default: break;
+    case ATOM_LABELLEFT:
+        labelpos = "left";
+        break;
+    case ATOM_LABELRIGHT:
+        labelpos = "right";
+        break;
+    case ATOM_LABELUP:
+        labelpos = "top";
+        break;
+    case ATOM_LABELDOWN:
+        labelpos = "bottom";
+        break;
     }
-#endif
+    object_vis(z, glist, vis);
+    pdgui_vmess("::pd::widget::config", "o ri rs rs", x
+        , "-fontsize", gatom_fontsize(x)
+        , "-label", canvas_realizedollar(x->a_glist, x->a_label)->s_name
+        , "-labelpos", labelpos
+        );
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
@@ -1532,7 +1479,7 @@ const t_widgetbehavior text_widgetbehavior =
 static const t_widgetbehavior gatom_widgetbehavior =
 {
     text_getrect,
-    gatom_displace,
+    text_displace,
     text_select,
     NULL,
     text_delete,
