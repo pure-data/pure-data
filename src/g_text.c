@@ -48,8 +48,6 @@ t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
 static void text_vis(t_gobj *z, t_glist *glist, int vis);
-static void text_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy);
 static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2);
 
@@ -1296,37 +1294,18 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     *yp2 = y2;
 }
 
-static void text_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy)
+static void text_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_text *x = (t_text *)z;
     x->te_xpix += dx;
     x->te_ypix += dy;
-    if (glist_isvisible(glist))
-    {
-        t_rtext *y = glist_findrtext(glist, x);
-        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
-        text_drawborder(x, glist, rtext_gettag(y),
-            rtext_width(y), rtext_height(y), 0);
-        canvas_fixlinesfor(glist, x);
-    }
+    canvas_fixlinesfor(glist, x);
+    pdgui_vmess("::pd::widget::displace", "o ii", x, dx, dy);
 }
 
-static void text_select(t_gobj *z, t_glist *glist, int state)
+static void text_select(t_gobj *x, t_glist *glist, int state)
 {
-    t_text *x = (t_text *)z;
-    t_rtext *y = glist_findrtext(glist, x);
-    rtext_select(y, state);
-    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? "blue" : "black"));
-    }
+    pdgui_vmess("::pd::widget::select", "o i", x, state);
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)
@@ -1340,7 +1319,7 @@ static void text_activate(t_gobj *z, t_glist *glist, int state)
 static void text_delete(t_gobj *z, t_glist *glist)
 {
     t_text *x = (t_text *)z;
-        canvas_deletelinesfor(glist, x);
+    canvas_deletelinesfor(glist, x);
 }
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
@@ -1489,58 +1468,6 @@ static const t_widgetbehavior gatom_widgetbehavior =
 
 
 /* -------------------- widget behavior for messageboxes ------------ */
-static void message_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
-{
-    text_getrect(z, glist, xp1, yp1, xp2, yp2);
-}
-static void message_displace(t_gobj *z, t_glist *glist, int dx, int dy)
-{
-    t_message *x = (t_message *)z;
-    x->m_text.te_xpix += dx;
-    x->m_text.te_ypix += dy;
-    canvas_fixlinesfor(glist, &x->m_text);
-    pdgui_vmess("::pd::widget::displace", "o ii", x, dx, dy);
-}
-static void message_select(t_gobj *z, t_glist *glist, int state)
-{
-    t_message *x = (t_message *)z;
-    pdgui_vmess("::pd::widget::select", "oi", x, state);
-}
-static void message_activate(t_gobj *z, t_glist *glist, int state)
-{
-        /* TODO */
-    pd_error(z, "%s(%d)", __FUNCTION__, state);
-}
-static void message_delete(t_gobj *z, t_glist *glist)
-{
-    t_message *x = (t_message *)z;
-    pdgui_vmess("::pd::widget::destroy", "o", x);
-}
-static void message_vis(t_gobj *z, t_glist *glist, int vis)
-{
-    t_message *x = (t_message *)z;
-    if(vis)
-    {
-        const int zoom = glist_getzoom(glist);
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-
-        int x1, y1, x2, y2, width, height, corner;
-        text_getrect(z, glist, &x1, &y1, &x2, &y2);
-
-        pdgui_vmess("::pd::widget::create", "roc ii", "message"
-            , x, glist_getcanvas(glist)
-            , x1 / zoom
-            , y1 / zoom
-            );
-            /* common ::config for Pd-primitives (text + size) */
-        rtext_configure(&x->m_text, y);
-
-        pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
-        pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
-    } else {
-        pdgui_vmess("::pd::widget::destroy", "o", x);
-    }
-}
 static int message_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
     int shift, int alt, int dbl, int doit)
 {
@@ -1553,11 +1480,11 @@ static int message_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
 
 static const t_widgetbehavior message_widgetbehavior =
 {
-    message_getrect,
-    message_displace,
-    message_select,
-    message_activate,
-    message_delete,
+    text_getrect,
+    text_displace,
+    text_select,
+    NULL,
+    text_delete,
     object_vis,
     message_doclick,
 };
