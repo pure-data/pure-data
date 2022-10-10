@@ -381,6 +381,7 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
         const int zoom = glist_getzoom(glist);
             //t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
         t_rtext *y = glist_findrtext(glist, x);
+        const char*state = "normal";
         int iolets;
 
         int x1, y1, x2, y2, width, height, corner;
@@ -393,6 +394,11 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
             );
             /* common ::config for Pd-primitives (text + size) */
         rtext_configure(x, y);
+
+        if(x->te_type == T_OBJECT && pd_class(&x->te_pd) == text_class)
+            state = "broken";
+        pdgui_vmess("::pd::widget::config", "o rs", x, "-state", state);
+
 
         iolets = obj_ninlets(x);
         if(iolets) {

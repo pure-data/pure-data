@@ -21,6 +21,8 @@
 void text_getfont(t_text *x, t_glist *thisglist,
     int *fheightp, int *fwidthp, int *guifsize);
 
+extern t_class *text_class;
+
 struct _rtext
 {
     char *x_buf;    /*-- raw byte string, assumed UTF-8 encoded (moo) --*/
@@ -531,8 +533,13 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             int length = end - start;
             pdgui_vmess("::pd::widget::textselect", "o ii",
                         x->x_text, start, (length>0)?length:0);
+            pdgui_vmess("::pd::widget::config", "o rs", x->x_text, "-state", "edit");
         } else {
+            const char*state = "normal";
+            if (x->x_text->te_type == T_OBJECT && pd_class(&x->x_text->te_pd) == text_class)
+                state = "broken";
             pdgui_vmess("::pd::widget::textselect", "o");
+            pdgui_vmess("::pd::widget::config", "o rs", x->x_text, "-state", state);
         }
 #else
         pdgui_vmess("pdtk_text_set", "cs s",

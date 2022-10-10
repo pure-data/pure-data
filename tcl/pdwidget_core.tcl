@@ -108,9 +108,9 @@ proc ::pd::widget::core::config_obj {obj args} {
                         "normal" {
                             $cnv itemconfigure "${tag}&&OUTLINE" -dash ""
                         } "broken" {
-                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "."
-                        } "edit" {
                             $cnv itemconfigure "${tag}&&OUTLINE" -dash "-"
+                        } "edit" {
+                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "."
                         }
                     }
                 }
