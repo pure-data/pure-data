@@ -1483,7 +1483,7 @@ static const t_widgetbehavior message_widgetbehavior =
     text_getrect,
     text_displace,
     text_select,
-    NULL,
+    text_activate,
     text_delete,
     object_vis,
     message_doclick,

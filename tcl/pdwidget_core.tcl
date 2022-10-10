@@ -140,6 +140,7 @@ proc ::pd::widget::core::create_msg {obj cnv posX posY} {
 
     ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_msg
     ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
 }
 proc ::pd::widget::core::config_msg {obj args} {
     set options [::pd::widget::parseargs \
