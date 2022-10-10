@@ -538,7 +538,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             const char*state = "normal";
             if (x->x_text->te_type == T_OBJECT && pd_class(&x->x_text->te_pd) == text_class)
                 state = "broken";
-            pdgui_vmess("::pd::widget::textselect", "o");
+            pdgui_vmess("::pd::widget::textselect", "o", x->x_text);
             pdgui_vmess("::pd::widget::config", "o rs", x->x_text, "-state", state);
         }
 #else
