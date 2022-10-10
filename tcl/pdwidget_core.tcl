@@ -221,6 +221,7 @@ proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
     # the 'iolet' tag is used to properly place iolets in the display list
     # (inlets and outlets are to be placed directly above this tag)
     $cnv create rectangle 0 0 0 0 -tags [list $tag iolets] -outline {} -fill {} -width 0
+    pdtk_text_new $cnv [list ${tag} label] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
@@ -232,6 +233,9 @@ proc ::pd::widget::core::config_gatom {obj args} {
     set options [::pd::widget::parseargs \
                      {
                          -size 2
+                         -fontsize 1
+                         -labelpos 1
+                         -label 1
                          -text 1
                      } $args]
     set tag [::pd::widget::base_tag $obj]
@@ -266,6 +270,34 @@ proc ::pd::widget::core::config_gatom {obj args} {
                               $xpos                   $ypos
                     $cnv coords "${tag}&&text" \
                         [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+                } "-fontsize" {
+                    set font [$cnv itemcget "${tag}&&text" -font]
+                    lset font 1 -${v}
+                    set font [get_font_for_size [expr $v * $zoom] ]
+                    puts $font
+                    $cnv itemconfigure "${tag}&&text" -font $font
+                    $cnv itemconfigure "${tag}&&label" -font $font
+                } "-label" {
+                    pdtk_text_set $cnv "${tag}&&label" "$v"
+                } "-labelpos" {
+                    set txt [$cnv itemcget "${tag}&&label" -text]
+                    set txtlen [string length $txt]
+                    foreach {x1 y1 x2 y2} [$cnv coords "${tag}"] {break}
+                    switch -exact -- $v {
+                        "left" {
+                            $cnv itemconfigure "${tag}&&label" -anchor ne
+                            $cnv coords "${tag}&&label" [expr $x1 - 3 * $zoom] [expr $y1 + 2 * $zoom]
+                        } "right" {
+                            $cnv itemconfigure "${tag}&&label" -anchor nw
+                            $cnv coords "${tag}&&label" [expr $x2 + 2 * $zoom] [expr $y1 + 2 * $zoom]
+                        } "top" {
+                            $cnv itemconfigure "${tag}&&label" -anchor sw
+                            $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y1 - 1 * $zoom]
+                        } "bottom" {
+                            $cnv itemconfigure "${tag}&&label" -anchor nw
+                            $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y2 + 3 * $zoom]
+                        }
+                    }
                 } "-text" {
                     pdtk_text_set $cnv "${tag}&&text" "$v"
                 }
