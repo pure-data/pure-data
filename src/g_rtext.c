@@ -495,9 +495,15 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     {
 #if 1
         t_float zoom = glist_getzoom(x->x_glist);
-        pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text,
-            "-size", (*widthp)/zoom, (*heightp)/zoom,
-            "-text", tempbuf);
+        if (sizechanged)
+            pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text
+                , "-size", (*widthp)/zoom, (*heightp)/zoom
+                , "-text", tempbuf
+                );
+        else
+            pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+                , "-text", tempbuf
+                );
         pdgui_vmess("::pd::widget::select", "oi", x->x_text,
                     glist_isselected(x->x_glist, &x->x_text->te_g));
 #else
@@ -523,9 +529,17 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     {
 #if 1
         t_float zoom = glist_getzoom(x->x_glist);
-        pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text,
-            "-size", (*widthp)/zoom, (*heightp)/zoom,
-            "-text", tempbuf);
+
+        if (sizechanged)
+            pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text
+                , "-size", (*widthp)/zoom, (*heightp)/zoom
+                , "-text", tempbuf
+                );
+        else
+            pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+                , "-text", tempbuf
+                );
+
         if (x->x_active)
         {
             int start = u8_charnum(x->x_buf, selstart_b);
@@ -533,8 +547,6 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             int length = end - start;
             pdgui_vmess("::pd::widget::textselect", "o ii",
                         x->x_text, start, (length>0)?length:0);
-        } else {
-            pdgui_vmess("::pd::widget::textselect", "o", x->x_text);
         }
 #else
         pdgui_vmess("pdtk_text_set", "cs s",
@@ -675,6 +687,7 @@ void rtext_activate(t_rtext *x, int state)
         x->x_active = 0;
         pdgui_vmess("::pd::widget::config", "o rs", x->x_text
             , "-state", state);
+        pdgui_vmess("::pd::widget::textselect", "o", x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
