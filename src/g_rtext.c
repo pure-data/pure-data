@@ -496,15 +496,15 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
 #if 1
         t_float zoom = glist_getzoom(x->x_glist);
         if (sizechanged)
-            pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text
+            pdgui_vmess("::pdwidget::config", "o rff rs", x->x_text
                 , "-size", (*widthp)/zoom, (*heightp)/zoom
                 , "-text", tempbuf
                 );
         else
-            pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+            pdgui_vmess("::pdwidget::config", "o rs", x->x_text
                 , "-text", tempbuf
                 );
-        pdgui_vmess("::pd::widget::select", "oi", x->x_text,
+        pdgui_vmess("::pdwidget::select", "oi", x->x_text,
                     glist_isselected(x->x_glist, &x->x_text->te_g));
 #else
         const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
@@ -531,12 +531,12 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         t_float zoom = glist_getzoom(x->x_glist);
 
         if (sizechanged)
-            pdgui_vmess("::pd::widget::config", "o rff rs", x->x_text
+            pdgui_vmess("::pdwidget::config", "o rff rs", x->x_text
                 , "-size", (*widthp)/zoom, (*heightp)/zoom
                 , "-text", tempbuf
                 );
         else
-            pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+            pdgui_vmess("::pdwidget::config", "o rs", x->x_text
                 , "-text", tempbuf
                 );
 
@@ -545,7 +545,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             int start = u8_charnum(x->x_buf, selstart_b);
             int end = u8_charnum(x->x_buf, selend_b);
             int length = end - start;
-            pdgui_vmess("::pd::widget::textselect", "o ii",
+            pdgui_vmess("::pdwidget::textselect", "o ii",
                         x->x_text, start, (length>0)?length:0);
         }
 #else
@@ -629,7 +629,7 @@ void rtext_draw(t_rtext *x)
 void rtext_erase(t_rtext *x)
 {
 #if 1
-    pdgui_vmess("::pd::widget::destroy", "o", x->x_text);
+    pdgui_vmess("::pdwidget::destroy", "o", x->x_text);
 #else
     pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
 #endif
@@ -639,7 +639,7 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 {
 #if 1
     pd_error(x->x_text, "rtext_displace(%p, %d, %d)", x, dx, dy);
-    pdgui_vmess("::pd::widget::displace", "o ii", x->x_text, dx, dy);
+    pdgui_vmess("::pdwidget::displace", "o ii", x->x_text, dx, dy);
 #else
     pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         dx, dy);
@@ -649,7 +649,7 @@ void rtext_displace(t_rtext *x, int dx, int dy)
 void rtext_select(t_rtext *x, int state)
 {
 #if 1
-    pdgui_vmess("::pd::widget::select", "o i", x->x_text, state);
+    pdgui_vmess("::pdwidget::select", "o i", x->x_text, state);
 #else
     pdgui_vmess(0, "crs rr",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
@@ -675,7 +675,7 @@ void rtext_activate(t_rtext *x, int state)
         x->x_dragfrom = x->x_selstart = 0;
         x->x_selend = x->x_bufsize;
         x->x_active = 1;
-        pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+        pdgui_vmess("::pdwidget::config", "o rs", x->x_text
             , "-state", "edit");
     }
     else
@@ -687,9 +687,9 @@ void rtext_activate(t_rtext *x, int state)
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
-        pdgui_vmess("::pd::widget::config", "o rs", x->x_text
+        pdgui_vmess("::pdwidget::config", "o rs", x->x_text
             , "-state", state);
-        pdgui_vmess("::pd::widget::textselect", "o", x->x_text);
+        pdgui_vmess("::pdwidget::textselect", "o", x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
@@ -938,7 +938,7 @@ void rtext_configure(t_object*obj, t_rtext *x)
 
     rtext_format(x, w, h, tempbuf, 0, &w, &h, 0, 0, 0, 0);
 
-    pdgui_vmess("::pd::widget::config", "o rff rs", obj
+    pdgui_vmess("::pdwidget::config", "o rff rs", obj
         , "-size", w/zoom, h/zoom
         , "-text", tempbuf
         );

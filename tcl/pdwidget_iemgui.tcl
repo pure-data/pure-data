@@ -1,11 +1,11 @@
 ## infrastructure for drawing Pd "widgets" (graphical objects)
 package provide pdwidget_iemgui 0.1
 
-namespace eval ::pd::widget::iemgui:: { }
+namespace eval ::pdwidget::iemgui:: { }
 
 
-proc ::pd::widget::iemgui::create_bang {obj cnv posX posY} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::iemgui::create_bang {obj cnv posX posY} {
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
     $cnv create oval 0 0 0 0 -tags [list ${tag} BUTTON]
@@ -13,15 +13,15 @@ proc ::pd::widget::iemgui::create_bang {obj cnv posX posY} {
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::iemgui::config_bang
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::iemgui::select
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_bang
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
 }
 
 
 ########################################################################
 # common procedures
 
-proc ::pd::widget::iemgui::select {obj state} {
+proc ::pdwidget::iemgui::select {obj state} {
     # if selection is activated, use a different color
     # TODO: label
 
@@ -30,8 +30,8 @@ proc ::pd::widget::iemgui::select {obj state} {
     } else {
         set color #000000
     }
-    set tag "[::pd::widget::base_tag $obj]"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    set tag "[::pdwidget::base_tag $obj]"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure "${tag}&&BASE" -outline $color
         $cnv itemconfigure "${tag}&&BUTTON" -outline $color
     }
@@ -39,7 +39,7 @@ proc ::pd::widget::iemgui::select {obj state} {
 
 # this is a helper to be called from the object-specific 'config' procs
 # that deals with the labels (it's the same with every iemgui)
-proc ::pd::widget::iemgui::_config_common {tag cnv options} {
+proc ::pdwidget::iemgui::_config_common {tag cnv options} {
     set zoom [::pd::canvas::get_zoom $cnv]
     foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
     dict for {k v} $options {
@@ -65,8 +65,8 @@ proc ::pd::widget::iemgui::_config_common {tag cnv options} {
 
 ########################################################################
 # [bng]
-proc ::pd::widget::iemgui::config_bang {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::iemgui::config_bang {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -labelpos 2
                          -size 2
@@ -74,15 +74,15 @@ proc ::pd::widget::iemgui::config_bang {obj args} {
                          -font 2
                          -label 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set recreate_iolets 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
-        set iow $::pd::widget::IOWIDTH
-        set ih [expr $::pd::widget::IHEIGHT - 0.5]
-        set oh [expr $::pd::widget::OHEIGHT - 1]
-        ::pd::widget::iemgui::_config_common $tag $cnv $options
+        set iow $::pdwidget::IOWIDTH
+        set ih [expr $::pdwidget::IHEIGHT - 0.5]
+        set oh [expr $::pdwidget::OHEIGHT - 1]
+        ::pdwidget::iemgui::_config_common $tag $cnv $options
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
         dict for {k v} $options {
             switch -exact -- $k {
@@ -118,25 +118,25 @@ proc ::pd::widget::iemgui::config_bang {obj args} {
         }
     }
     if {$recreate_iolets} {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
 
 ########################################################################
 # [cnv]
-proc ::pd::widget::iemgui::create_canvas {obj cnv posX posY} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::iemgui::create_canvas {obj cnv posX posY} {
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} RECT]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::iemgui::config_canvas
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::iemgui::select_canvas
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_canvas
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select_canvas
 }
-proc ::pd::widget::iemgui::config_canvas {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::iemgui::config_canvas {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -labelpos 2
                          -size 2
@@ -145,16 +145,16 @@ proc ::pd::widget::iemgui::config_canvas {obj args} {
                          -font 2
                          -label 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         set offset 0
         if {$zoom > 1} {
             set offset $zoom
         }
 
-        ::pd::widget::iemgui::_config_common $tag $cnv $options
+        ::pdwidget::iemgui::_config_common $tag $cnv $options
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
             switch -exact -- $k {
@@ -184,7 +184,7 @@ proc ::pd::widget::iemgui::config_canvas {obj args} {
         # TODO: in the original code, BASE was shifted by $offset to 'keep zoomed border inside visible area'
     }
 }
-proc ::pd::widget::iemgui::select_canvas {obj state} {
+proc ::pdwidget::iemgui::select_canvas {obj state} {
     # get the normal color from the object's state
     # if selection is activated, use a different color
     if {$state != 0} {
@@ -192,28 +192,28 @@ proc ::pd::widget::iemgui::select_canvas {obj state} {
     } else {
         set color {}
     }
-    set tag "[::pd::widget::base_tag $obj]&&BASE"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    set tag "[::pdwidget::base_tag $obj]&&BASE"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure ${tag} -outline $color
     }
 }
 
 ########################################################################
 # [hradio], [vradio]
-proc ::pd::widget::iemgui::create_radio {obj cnv posX posY} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::iemgui::create_radio {obj cnv posX posY} {
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE0]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {}
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::iemgui::config_radio
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::iemgui::select
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_radio
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
 }
-proc ::pd::widget::iemgui::_radio_recreate_buttons {cnv obj numX numY} {
+proc ::pdwidget::iemgui::_radio_recreate_buttons {cnv obj numX numY} {
     # create an array of numX*numY buttons
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv delete ${tag}&&RADIO
     for {set x 0} {$x < $numX} {incr x} {
         for {set y 0} {$y < $numY} {incr y} {
@@ -226,7 +226,7 @@ proc ::pd::widget::iemgui::_radio_recreate_buttons {cnv obj numX numY} {
     $cnv lower "${tag}&&RADIO" "${tag}&&BASE0"
     $cnv raise "${tag}&&RADIO" "${tag}&&BASE0"
 }
-proc ::pd::widget::iemgui::_radio_getactive {cnv tag} {
+proc ::pdwidget::iemgui::_radio_getactive {cnv tag} {
     set t {}
     foreach t [$cnv find withtag ${tag}&&X] {break}
     if { $t eq {} } {return}
@@ -240,8 +240,8 @@ proc ::pd::widget::iemgui::_radio_getactive {cnv tag} {
         incr i
     }
 }
-proc ::pd::widget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
+    set tag [::pdwidget::base_tag $obj]
     foreach {xpos ypos w h} [$cnv coords "${tag}&&BASE0"] {break}
     set w [expr $w - $xpos]
     set h [expr $h - $ypos]
@@ -281,8 +281,8 @@ proc ::pd::widget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
     $cnv coords "${tag}" $xpos $ypos [expr $xpos + ($numX + 1) * $w * $zoom] [expr $ypos + ($numY + 1) * $h * $zoom]
 
 }
-proc ::pd::widget::iemgui::config_radio {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::iemgui::config_radio {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -labelpos 2
                          -size 2
@@ -291,8 +291,8 @@ proc ::pd::widget::iemgui::config_radio {obj args} {
                          -label 1
                          -number 2
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
-    set canvases [::pd::widget::get_canvases $obj]
+    set tag [::pdwidget::base_tag $obj]
+    set canvases [::pdwidget::get_canvases $obj]
     set recreate_iolets 0
 
     # which button is activated?
@@ -300,14 +300,14 @@ proc ::pd::widget::iemgui::config_radio {obj args} {
     set activecolor {}
     set bgcolor {}
     foreach cnv $canvases {
-        foreach {active activecolor} [::pd::widget::iemgui::_radio_getactive $cnv $tag] {break}
+        foreach {active activecolor} [::pdwidget::iemgui::_radio_getactive $cnv $tag] {break}
         set bgcolor [$cnv itemcget "${tag}&&BASE" -fill]
         # we only check a single canvas (they are all the same)
         break;
     }
     foreach cnv $canvases {
         set zoom [::pd::canvas::get_zoom $cnv]
-        ::pd::widget::iemgui::_config_common $tag $cnv $options
+        ::pdwidget::iemgui::_config_common $tag $cnv $options
         dict for {k v} $options {
             switch -exact -- $k {
                 default {
@@ -321,13 +321,13 @@ proc ::pd::widget::iemgui::config_radio {obj args} {
                     set h [lindex $v 1]
                     foreach {x y} [$cnv coords "${tag}&&BASE0"] {break}
                     $cnv coords "${tag}&&BASE0" $x $y [expr $x + $w * $zoom] [expr $y + $h * $zoom]
-                    ::pd::widget::iemgui::_radio_reconfigure_buttons $cnv $obj $zoom
+                    ::pdwidget::iemgui::_radio_reconfigure_buttons $cnv $obj $zoom
                     set recreate_iolets 1
                 } "-number" {
                     set xnew [lindex $v 0]
                     set ynew [lindex $v 1]
-                    ::pd::widget::iemgui::_radio_recreate_buttons $cnv $obj $xnew $ynew
-                    ::pd::widget::iemgui::_radio_reconfigure_buttons $cnv $obj $zoom
+                    ::pdwidget::iemgui::_radio_recreate_buttons $cnv $obj $xnew $ynew
+                    ::pdwidget::iemgui::_radio_reconfigure_buttons $cnv $obj $zoom
                     set recreate_iolets 1
                 }
 
@@ -336,20 +336,20 @@ proc ::pd::widget::iemgui::config_radio {obj args} {
         $cnv itemconfigure "${tag}&&BASE" -width $zoom -fill $bgcolor
     }
     if { $active ne {} } {
-        ::pd::widget::radio::activate $obj $active $activecolor
+        ::pdwidget::radio::activate $obj $active $activecolor
     }
     if { $recreate_iolets } {
-        set iolets [::pd::widget::get_iolets $obj inlet]
-        ::pd::widget::create_inlets $obj {*}$iolets
-        set iolets [::pd::widget::get_iolets $obj outlet]
-        ::pd::widget::create_outlets $obj {*}$iolets
+        set iolets [::pdwidget::get_iolets $obj inlet]
+        ::pdwidget::create_inlets $obj {*}$iolets
+        set iolets [::pdwidget::get_iolets $obj outlet]
+        ::pdwidget::create_outlets $obj {*}$iolets
     }
 }
 
 ########################################################################
 # [tgl]
-proc ::pd::widget::iemgui::create_toggle {obj cnv posX posY} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::iemgui::create_toggle {obj cnv posX posY} {
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
     $cnv create line 0 0 0 0 -tags [list ${tag} X X1] -fill {}
@@ -358,11 +358,11 @@ proc ::pd::widget::iemgui::create_toggle {obj cnv posX posY} {
     $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
     $cnv move $tag $posX $posY
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::iemgui::config_toggle
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::iemgui::select
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_toggle
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
 }
-proc ::pd::widget::iemgui::config_toggle {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::iemgui::config_toggle {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -labelpos 2
                          -size 2
@@ -370,15 +370,15 @@ proc ::pd::widget::iemgui::config_toggle {obj args} {
                          -font 2
                          -label 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set recreate_iolets 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
-        set iow $::pd::widget::IOWIDTH
-        set ih [expr $::pd::widget::IHEIGHT - 0.5]
-        set oh [expr $::pd::widget::OHEIGHT - 1]
-        ::pd::widget::iemgui::_config_common $tag $cnv $options
+        set iow $::pdwidget::IOWIDTH
+        set ih [expr $::pdwidget::IHEIGHT - 0.5]
+        set oh [expr $::pdwidget::OHEIGHT - 1]
+        ::pdwidget::iemgui::_config_common $tag $cnv $options
         foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
         dict for {k v} $options {
             switch -exact -- $k {
@@ -418,7 +418,7 @@ proc ::pd::widget::iemgui::config_toggle {obj args} {
         }
     }
     if {$recreate_iolets} {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
 
@@ -426,10 +426,10 @@ proc ::pd::widget::iemgui::config_toggle {obj args} {
 # object-specific procs from the core
 #
 # for whatever reasons, we use per-object namespaces
-namespace eval ::pd::widget::radio:: { }
-proc ::pd::widget::radio::activate {obj state activecolor} {
-    set tag "[::pd::widget::base_tag $obj]"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+namespace eval ::pdwidget::radio:: { }
+proc ::pdwidget::radio::activate {obj state activecolor} {
+    set tag "[::pdwidget::base_tag $obj]"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         # pass the 'activated' tag to the newly selected button
         $cnv dtag "${tag}" "X"
         set id [lindex [$cnv find withtag ${tag}&&KNOB] $state]
@@ -442,26 +442,26 @@ proc ::pd::widget::radio::activate {obj state activecolor} {
     }
 }
 
-namespace eval ::pd::widget::bang:: { }
-proc ::pd::widget::bang::activate {obj state activecolor} {
+namespace eval ::pdwidget::bang:: { }
+proc ::pdwidget::bang::activate {obj state activecolor} {
     # LATER: have the timer work on the GUI side!
-    set tag "[::pd::widget::base_tag $obj]&&BUTTON"
+    set tag "[::pdwidget::base_tag $obj]&&BUTTON"
     if {! $state} {
         set activecolor {}
     }
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure $tag -fill $activecolor
     }
 }
 
-namespace eval ::pd::widget::toggle:: { }
-proc ::pd::widget::toggle::activate {obj state activecolor} {
-    set tag "[::pd::widget::base_tag $obj]"
+namespace eval ::pdwidget::toggle:: { }
+proc ::pdwidget::toggle::activate {obj state activecolor} {
+    set tag "[::pdwidget::base_tag $obj]"
     set tag "${tag}&&X"
     if {! $state} {
         set activecolor {}
     }
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure $tag -fill $activecolor
     }
 }
@@ -470,7 +470,7 @@ proc ::pd::widget::toggle::activate {obj state activecolor} {
 
 ########################################################################
 # register the new objects
-::pd::widget::register bang ::pd::widget::iemgui::create_bang
-::pd::widget::register canvas ::pd::widget::iemgui::create_canvas
-::pd::widget::register radio ::pd::widget::iemgui::create_radio
-::pd::widget::register toggle ::pd::widget::iemgui::create_toggle
+::pdwidget::register bang ::pdwidget::iemgui::create_bang
+::pdwidget::register canvas ::pdwidget::iemgui::create_canvas
+::pdwidget::register radio ::pdwidget::iemgui::create_radio
+::pdwidget::register toggle ::pdwidget::iemgui::create_toggle

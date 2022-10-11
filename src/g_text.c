@@ -384,7 +384,7 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
         int x1, y1, x2, y2, width, height, corner;
         text_getrect(z, glist, &x1, &y1, &x2, &y2);
 
-        pdgui_vmess("::pd::widget::create", "roc ii", type
+        pdgui_vmess("::pdwidget::create", "roc ii", type
             , x, glist_getcanvas(glist)
             , x1 / zoom
             , y1 / zoom
@@ -394,7 +394,7 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
 
         if(x->te_type == T_OBJECT && pd_class(&x->te_pd) == text_class)
             state = "broken";
-        pdgui_vmess("::pd::widget::config", "o rs", x, "-state", state);
+        pdgui_vmess("::pdwidget::config", "o rs", x, "-state", state);
 
 
         iolets = obj_ninlets(x);
@@ -404,7 +404,7 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
             for(i=0; i<iolets; i++) {
                 intypes[i] = obj_issignalinlet(x, i);
             }
-            pdgui_vmess("::pd::widget::create_inlets" , "o F", x, iolets, intypes);
+            pdgui_vmess("::pdwidget::create_inlets" , "o F", x, iolets, intypes);
             freebytes(intypes, iolets *  sizeof(*intypes));
         }
         iolets = obj_noutlets(x);
@@ -414,13 +414,13 @@ static void object_vis(t_gobj *z, t_glist *glist, int vis)
             for(i=0; i<iolets; i++) {
                 outtypes[i] = obj_issignaloutlet(x, i);
             }
-            pdgui_vmess("::pd::widget::create_outlets" , "o F", x, iolets, outtypes);
+            pdgui_vmess("::pdwidget::create_outlets" , "o F", x, iolets, outtypes);
             freebytes(outtypes, iolets *  sizeof(*outtypes));
         }
-        pdgui_vmess("::pd::widget::select", "oi", x,
+        pdgui_vmess("::pdwidget::select", "oi", x,
                     glist_isselected(glist, &x->te_g));
     } else {
-        pdgui_vmess("::pd::widget::destroy", "o", x);
+        pdgui_vmess("::pdwidget::destroy", "o", x);
     }
 }
 
@@ -553,13 +553,13 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    pdgui_vmess("::pd::widget::message::activate", "oi", x, 120);
+    pdgui_vmess("::pdwidget::message::activate", "oi", x, 120);
     message_float(x, 0);
 }
 
 static void message_tick(t_message *x)
 {
-    pdgui_vmess("::pd::widget::message::activate", "oi", x, 0);
+    pdgui_vmess("::pdwidget::message::activate", "oi", x, 0);
 }
 
 static void message_free(t_message *x)
@@ -1120,7 +1120,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         break;
     }
     object_vis(z, glist, vis);
-    pdgui_vmess("::pd::widget::config", "o ri rs rs", x
+    pdgui_vmess("::pdwidget::config", "o ri rs rs", x
         , "-fontsize", gatom_fontsize(x)
         , "-label", canvas_realizedollar(x->a_glist, x->a_label)->s_name
         , "-labelpos", labelpos
@@ -1299,12 +1299,12 @@ static void text_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     x->te_xpix += dx;
     x->te_ypix += dy;
     canvas_fixlinesfor(glist, x);
-    pdgui_vmess("::pd::widget::displace", "o ii", x, dx, dy);
+    pdgui_vmess("::pdwidget::displace", "o ii", x, dx, dy);
 }
 
 static void text_select(t_gobj *x, t_glist *glist, int state)
 {
-    pdgui_vmess("::pd::widget::select", "o i", x, state);
+    pdgui_vmess("::pdwidget::select", "o i", x, state);
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)

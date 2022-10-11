@@ -23,13 +23,13 @@ static t_class *toggle_class;
 void toggle_draw_new(t_toggle *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::create", "roc ii", "toggle"
+    pdgui_vmess("::pdwidget::create", "roc ii", "toggle"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
-    pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
-    pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
+    pdgui_vmess("::pdwidget::create_inlets" , "o i", x, 0);
+    pdgui_vmess("::pdwidget::create_outlets", "o i", x, 0);
 
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
@@ -37,14 +37,14 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
 
 void toggle_draw_select(t_toggle* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::select", "oi", x, x->x_gui.x_fsf.x_selected);
+    pdgui_vmess("::pdwidget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 void toggle_draw_update(t_toggle *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        pdgui_vmess("::pd::widget::toggle::activate", "o ik", x,
+        pdgui_vmess("::pdwidget::toggle::activate", "o ik", x,
             (x->x_on != 0.0), x->x_gui.x_fcol);
     }
 }

@@ -8,11 +8,11 @@
 
 
 package provide pdwidget_core 0.1
-namespace eval ::pd::widget::core:: { }
+namespace eval ::pdwidget::core:: { }
 
 ########################################################################
 # common procedures
-proc ::pd::widget::core::select {obj state} {
+proc ::pdwidget::core::select {obj state} {
     # if selection is activated, use a different color
     # TODO: label
 
@@ -21,16 +21,16 @@ proc ::pd::widget::core::select {obj state} {
     } else {
         set color #000000
     }
-    set tag "[::pd::widget::base_tag $obj]"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    set tag "[::pdwidget::base_tag $obj]"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
         $cnv itemconfigure "${tag}&&text" -fill $color
         $cnv itemconfigure "${tag}&&cord" -fill $color
     }
 }
-proc ::pd::widget::core::textselect {obj {start {}} {length {}}} {
-    set tag "[::pd::widget::base_tag $obj]&&text"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+proc ::pdwidget::core::textselect {obj {start {}} {length {}}} {
+    set tag "[::pdwidget::base_tag $obj]&&text"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv select clear
         if { $start ne {} } {
             if { $length > 0 } {
@@ -50,14 +50,14 @@ proc ::pd::widget::core::textselect {obj {start {}} {length {}}} {
 ########################################################################
 # object
 
-proc ::pd::widget::core::create_obj {obj cnv posX posY} {
+proc ::pdwidget::core::create_obj {obj cnv posX posY} {
     # stack order
     # - boundingrectangle
     # - outlets
     # - inlets
     # - text
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} OUTLINE]
     # the 'iolet' tag is used to properly place iolets in the display list
@@ -66,24 +66,24 @@ proc ::pd::widget::core::create_obj {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_obj
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
-    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_obj
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 
-proc ::pd::widget::core::config_obj {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_obj {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                          -text 1
                          -state 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -120,16 +120,16 @@ proc ::pd::widget::core::config_obj {obj args} {
         }
     }
     if { $sizechanged } {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
 
 ########################################################################
 # message
 
-proc ::pd::widget::core::create_msg {obj cnv posX posY} {
+proc ::pdwidget::core::create_msg {obj cnv posX posY} {
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
     # the 'iolet' tag is used to properly place iolets in the display list
@@ -138,21 +138,21 @@ proc ::pd::widget::core::create_msg {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_msg
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
-    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_msg
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pd::widget::core::config_msg {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_msg {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                          -text 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -191,32 +191,32 @@ proc ::pd::widget::core::config_msg {obj args} {
     }
 }
 
-namespace eval ::pd::widget::message:: { }
-proc ::pd::widget::message::_activate {obj width} {
-    set tag "[::pd::widget::base_tag $obj]&&OUTLINE"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+namespace eval ::pdwidget::message:: { }
+proc ::pdwidget::message::_activate {obj width} {
+    set tag "[::pdwidget::base_tag $obj]&&OUTLINE"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         $cnv itemconfigure $tag -width [expr $width * $zoom]
     }
 }
 
-proc ::pd::widget::message::activate {obj flashtime} {
-    ::pd::widget::message::_activate $obj 5
-    after 120 [list ::pd::widget::message::_activate $obj 1]
+proc ::pdwidget::message::activate {obj flashtime} {
+    ::pdwidget::message::_activate $obj 5
+    after 120 [list ::pdwidget::message::_activate $obj 1]
 }
 
 
 ########################################################################
 # gatom
 
-proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
+proc ::pdwidget::core::create_gatom {obj cnv posX posY} {
     # stack order
     # - boundingrectangle
     # - outlets
     # - inlets
     # - text
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
     # the 'iolet' tag is used to properly place iolets in the display list
@@ -226,12 +226,12 @@ proc ::pd::widget::core::create_gatom {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_gatom
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
-    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_gatom
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pd::widget::core::config_gatom {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_gatom {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                          -fontsize 1
@@ -239,12 +239,12 @@ proc ::pd::widget::core::config_gatom {obj args} {
                          -label 1
                          -text 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -308,19 +308,19 @@ proc ::pd::widget::core::config_gatom {obj args} {
         }
     }
     if { $sizechanged } {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
 
 # list atoms
-proc ::pd::widget::core::create_latom {obj cnv posX posY} {
+proc ::pdwidget::core::create_latom {obj cnv posX posY} {
     # stack order
     # - boundingrectangle
     # - outlets
     # - inlets
     # - text
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create polygon 0 0 -tags [list ${tag} OUTLINE] -fill {} -outline black
     # the 'iolet' tag is used to properly place iolets in the display list
@@ -329,22 +329,22 @@ proc ::pd::widget::core::create_latom {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_latom
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
-    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_latom
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pd::widget::core::config_latom {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_latom {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                          -text 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -381,20 +381,20 @@ proc ::pd::widget::core::config_latom {obj args} {
         }
     }
     if { $sizechanged } {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
 ########################################################################
 # comment
 
-proc ::pd::widget::core::create_comment {obj cnv posX posY} {
+proc ::pdwidget::core::create_comment {obj cnv posX posY} {
     # stack order
     # - boundingrectangle
     # - outlets
     # - inlets
     # - text
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create line 0 0 0 0 -tags [list ${tag} commentbar] -fill {}
     # the 'iolet' tag is used to properly place iolets in the display list
@@ -403,24 +403,24 @@ proc ::pd::widget::core::create_comment {obj cnv posX posY} {
     pdtk_text_new $cnv [list ${tag} text] 0 0 {} [::pd::canvas::get_fontsize $cnv] black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_comment
-    ::pd::widget::widgetbehavior $obj editmode ::pd::widget::core::edit_comment
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
-    ::pd::widget::widgetbehavior $obj textselect ::pd::widget::core::textselect
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_comment
+    ::pdwidget::widgetbehavior $obj editmode ::pdwidget::core::edit_comment
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 
-proc ::pd::widget::core::config_comment {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_comment {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                          -text 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -447,17 +447,17 @@ proc ::pd::widget::core::config_comment {obj args} {
         }
     }
     if { $sizechanged } {
-        ::pd::widget::refresh_iolets $obj
+        ::pdwidget::refresh_iolets $obj
     }
 }
-proc ::pd::widget::core::edit_comment {obj state} {
+proc ::pdwidget::core::edit_comment {obj state} {
     if {$state != 0} {
         set color #000000
     } else {
         set color ""
     }
-    set tag "[::pd::widget::base_tag $obj]&&commentbar"
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    set tag "[::pdwidget::base_tag $obj]&&commentbar"
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure "${tag}" -fill $color
     }
 
@@ -466,29 +466,29 @@ proc ::pd::widget::core::edit_comment {obj state} {
 ########################################################################
 # connection
 
-proc ::pd::widget::core::create_conn {obj cnv posX posY} {
+proc ::pdwidget::core::create_conn {obj cnv posX posY} {
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {} -width 0
     $cnv create line 0 0 0 0 -tags [list ${tag} cord] -fill black
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_conn
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_conn
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
-proc ::pd::widget::core::config_conn {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_conn {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -position 4
                          -text 1
                          -type 1
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -522,28 +522,28 @@ proc ::pd::widget::core::config_conn {obj args} {
 ########################################################################
 # selection lasso
 
-proc ::pd::widget::core::create_sel {obj cnv posX posY} {
+proc ::pdwidget::core::create_sel {obj cnv posX posY} {
     set zoom [::pd::canvas::get_zoom $cnv]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} lasso iolets] -outline black -fill {} -width 1
 
     $cnv move $tag [expr $zoom * $posX] [expr $zoom * $posY]
 
-    ::pd::widget::widgetbehavior $obj config ::pd::widget::core::config_sel
-    ::pd::widget::widgetbehavior $obj select ::pd::widget::core::select
+    ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_sel
+    ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
-proc ::pd::widget::core::config_sel {obj args} {
-    set options [::pd::widget::parseargs \
+proc ::pdwidget::core::config_sel {obj args} {
+    set options [::pdwidget::parseargs \
                      {
                          -size 2
                      } $args]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         dict for {k v} $options {
             foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
@@ -563,11 +563,11 @@ proc ::pd::widget::core::config_sel {obj args} {
 
 ########################################################################
 ## register objects
-::pd::widget::register object ::pd::widget::core::create_obj
-::pd::widget::register message ::pd::widget::core::create_msg
-::pd::widget::register floatatom ::pd::widget::core::create_gatom
-::pd::widget::register symbolatom ::pd::widget::core::create_gatom
-::pd::widget::register listatom ::pd::widget::core::create_latom
-::pd::widget::register comment ::pd::widget::core::create_comment
-::pd::widget::register connection ::pd::widget::core::create_conn
-::pd::widget::register selection ::pd::widget::core::create_sel
+::pdwidget::register object ::pdwidget::core::create_obj
+::pdwidget::register message ::pdwidget::core::create_msg
+::pdwidget::register floatatom ::pdwidget::core::create_gatom
+::pdwidget::register symbolatom ::pdwidget::core::create_gatom
+::pdwidget::register listatom ::pdwidget::core::create_latom
+::pdwidget::register comment ::pdwidget::core::create_comment
+::pdwidget::register connection ::pdwidget::core::create_conn
+::pdwidget::register selection ::pdwidget::core::create_sel

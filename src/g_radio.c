@@ -24,26 +24,26 @@ static t_class *radio_class;
 #define radio_draw_io 0
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::config", "o rii"
+    pdgui_vmess("::pdwidget::config", "o rii"
         , x
         , "-number"
         , (x->x_orientation == horizontal)?x->x_number:1
         , (x->x_orientation == horizontal)?1:x->x_number
         );
-    pdgui_vmess("::pd::widget::radio::activate", "o ik", x,
+    pdgui_vmess("::pdwidget::radio::activate", "o ik", x,
         x->x_on, x->x_gui.x_fcol);
 }
 
 static void radio_draw_new(t_radio *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::create", "roc ii", "radio"
+    pdgui_vmess("::pdwidget::create", "roc ii", "radio"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
         );
-    pdgui_vmess("::pd::widget::create_inlets" , "o i", x, 0);
-    pdgui_vmess("::pd::widget::create_outlets", "o i", x, 0);
+    pdgui_vmess("::pdwidget::create_inlets" , "o i", x, 0);
+    pdgui_vmess("::pdwidget::create_outlets", "o i", x, 0);
 
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
@@ -51,14 +51,14 @@ static void radio_draw_new(t_radio *x, t_glist *glist)
 
 static void radio_draw_select(t_radio *x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::select", "oi", x, x->x_gui.x_fsf.x_selected);
+    pdgui_vmess("::pdwidget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 static void radio_draw_update(t_radio *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        pdgui_vmess("::pd::widget::radio::activate", "o ik", x,
+        pdgui_vmess("::pdwidget::radio::activate", "o ik", x,
             x->x_on, x->x_gui.x_fcol);
         x->x_drawn = x->x_on;
     }

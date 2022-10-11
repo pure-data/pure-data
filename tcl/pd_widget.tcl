@@ -7,42 +7,42 @@ package provide pd_widget 0.1
 # - dict
 package require Tcl 8.5
 
-namespace eval ::pd::widget {
+namespace eval ::pdwidget {
     variable IOWIDTH 7
     variable IHEIGHT 2
     variable OHEIGHT 3
 }
 
 
-namespace eval ::pd::widget::_procs { }
-array set ::pd::widget::_procs::constructor {}
-array set ::pd::widget::_obj2canvas {}
+namespace eval ::pdwidget::_procs { }
+array set ::pdwidget::_procs::constructor {}
+array set ::pdwidget::_obj2canvas {}
 
 # GUI widget interface (for writing your own widgets)
 
 # public widget functions (to be called from Pd-core)
 # a widget MUST implement at least the 'create' procedure,
-# and needs to register this constructor via '::pd::widget::register'
+# and needs to register this constructor via '::pdwidget::register'
 # any additional widget-procs can then be registered within the
-# constructor with '::pd::widget::widgetbehavior'
+# constructor with '::pdwidget::widgetbehavior'
 
-# ::pd::widget::create      | create an object on a given canvas
-# ::pd::widget::destroy     | destroy the object
-# ::pd::widget::config      | re-configure the object (using a parameter syntax)
-# ::pd::widget::select      | show that an object is (de)selected
-# ::pd::widget::editmode    | show that an object is in editmode
-# ::pd::widget::displace    | relative move
-# ::pd::widget::moveto      | absolute move
-# ::pd::widget::show_iolets | show/hide inlets resp. outlets
-# ::pd::widget::create_inlets  | create inlets (arguments are inlet types: 0=message, 1=signal)
-# ::pd::widget::create_outlets | create outlets for obj (see above for arguments)
+# ::pdwidget::create      | create an object on a given canvas
+# ::pdwidget::destroy     | destroy the object
+# ::pdwidget::config      | re-configure the object (using a parameter syntax)
+# ::pdwidget::select      | show that an object is (de)selected
+# ::pdwidget::editmode    | show that an object is in editmode
+# ::pdwidget::displace    | relative move
+# ::pdwidget::moveto      | absolute move
+# ::pdwidget::show_iolets | show/hide inlets resp. outlets
+# ::pdwidget::create_inlets  | create inlets (arguments are inlet types: 0=message, 1=signal)
+# ::pdwidget::create_outlets | create outlets for obj (see above for arguments)
 
 # register a new GUI-object by name
-# e.g. '::pd::widget::register "bang" ::pd::widget::bang::create'
+# e.g. '::pdwidget::register "bang" ::pdwidget::bang::create'
 # the <ctor> takes a handle to an object and the associated canvas
 # and is responsible for registering per-object widgetfunctions
-proc ::pd::widget::register {type ctor} {
-    set ::pd::widget::_procs::constructor($type) $ctor
+proc ::pdwidget::register {type ctor} {
+    set ::pdwidget::_procs::constructor($type) $ctor
 }
 
 # register a proc for a given (common) widget behavior
@@ -52,30 +52,30 @@ proc ::pd::widget::register {type ctor} {
 # if a given behavior is not implemented, a default implementation
 # is used, which makes a few assumptions about how the widget is written
 # the most important assumption is, that all components of an object are bound
-# to the tag that can be obtained with [::pd::widget::base_tag obj],
+# to the tag that can be obtained with [::pdwidget::base_tag obj],
 # and that the first item (in the stack order) with this tag defines the
 # object's position (and bounding rectangle)
-proc ::pd::widget::widgetbehavior {obj behavior behaviorproc} {
+proc ::pdwidget::widgetbehavior {obj behavior behaviorproc} {
     if {$obj eq {} } {
         ::pdwindow::error "refusing to add ${behavior} proc without an object\n"
     } else {
-        array set ::pd::widget::_procs::widget_$behavior [list $obj $behaviorproc]
+        array set ::pdwidget::_procs::widget_$behavior [list $obj $behaviorproc]
     }
 }
 
 
 # widgetbehavior on the core-side (and how this relates to us)
 # - getrect: get the bounding rectangle (NOT our business, LATER send the rect back to the core if needed)
-# - displace: relative move of object (::pd::widget::displace)
-# - select: (de)select and object (::pd::widget::select)
+# - displace: relative move of object (::pdwidget::displace)
+# - select: (de)select and object (::pdwidget::select)
 # - activate: (de)activate the object's editor
-# - delete: delete an object (::pd::widget::destroy)
-# - vis: show/hide an object (handled via ::pd::widget::create and ::pd::widget::destroy)
+# - delete: delete an object (::pdwidget::destroy)
+# - vis: show/hide an object (handled via ::pdwidget::create and ::pdwidget::destroy)
 # - click: called on hitbox detection with mouse-click (NOT our business, for now)
 
-proc ::pd::widget::_call {behavior obj args} {
+proc ::pdwidget::_call {behavior obj args} {
     set proc {}
-    set wb ::pd::widget::_procs::widget_${behavior}
+    set wb ::pdwidget::_procs::widget_${behavior}
     if { [info exists $wb] } {
         # get widget-behavior for this object
         if {$proc eq {} } {
@@ -87,7 +87,7 @@ proc ::pd::widget::_call {behavior obj args} {
         }
     }
     if { $proc eq {} } {
-        ::pdwindow::error "NOT IMPLEMENTED: ::pd::widget::$behavior $obj $args\n"
+        ::pdwindow::error "NOT IMPLEMENTED: ::pdwidget::$behavior $obj $args\n"
     } else {
         # {*} requires Tcl-8.5
         $proc $obj {*}$args
@@ -95,15 +95,15 @@ proc ::pd::widget::_call {behavior obj args} {
 }
 
 # fallback widget behaviors (private, DO NOT CALL DIRECTLY)
-proc ::pd::widget::_defaultproc {id arguments body} {
-    proc ::pd::widget::_${id} $arguments $body
-    array set ::pd::widget::_procs::widget_${id} [list {} ::pd::widget::_${id}]
+proc ::pdwidget::_defaultproc {id arguments body} {
+    proc ::pdwidget::_${id} $arguments $body
+    array set ::pdwidget::_procs::widget_${id} [list {} ::pdwidget::_${id}]
 }
 
 # 'destroy' an object (removing it from the canvas(es))
-::pd::widget::_defaultproc destroy {obj} {
-    set tag [::pd::widget::base_tag $obj]
-    foreach cnv [::pd::widget::get_canvases $obj] {
+::pdwidget::_defaultproc destroy {obj} {
+    set tag [::pdwidget::base_tag $obj]
+    foreach cnv [::pdwidget::get_canvases $obj] {
         foreach id [$cnv find withtag "connection&&src:${tag}"] {
             $cnv delete $id
         }
@@ -113,12 +113,12 @@ proc ::pd::widget::_defaultproc {id arguments body} {
         $cnv delete $tag
         ::pd::canvas::remove_object $cnv $obj
     }
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        unset ::pd::widget::_obj2canvas($obj)
+    if {[info exists ::pdwidget::_obj2canvas($obj)]} {
+        unset ::pdwidget::_obj2canvas($obj)
     }
 }
 
-proc ::pd::widget::_update_connections_on_canvas {cnv objtag} {
+proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
     set numio 0
     foreach anchor [$cnv find withtag "${objtag}&&outlet${numio}&&anchor"] {
         foreach {x y} [$cnv coords $anchor] {
@@ -145,48 +145,48 @@ proc ::pd::widget::_update_connections_on_canvas {cnv objtag} {
     }
 }
 
-::pd::widget::_defaultproc editmode {obj state} {
+::pdwidget::_defaultproc editmode {obj state} {
     # just ignore
 }
 
 
-::pd::widget::_defaultproc displace {obj dx dy} {
-    set tag [::pd::widget::base_tag $obj]
-    foreach cnv [::pd::widget::get_canvases $obj] {
+::pdwidget::_defaultproc displace {obj dx dy} {
+    set tag [::pdwidget::base_tag $obj]
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv move $tag $dx $dy
-        ::pd::widget::_update_connections_on_canvas $cnv $tag
+        ::pdwidget::_update_connections_on_canvas $cnv $tag
     }
 }
 
-::pd::widget::_defaultproc moveto {obj cnv x y} {
+::pdwidget::_defaultproc moveto {obj cnv x y} {
     set zoom [::pd::canvas::get_zoom $cnv]
     set x [expr $x * $zoom]
     set y [expr $y * $zoom]
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
     if {[catch {$cnv moveto $tag $x $y}]} {
         foreach {oldx oldy} [$cnv coords $tag] {
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
-    ::pd::widget::_update_connections_on_canvas $cnv $tag
+    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
-::pd::widget::_defaultproc show_iolets {obj show_inlets show_outlets} {
-    set tag [::pd::widget::base_tag $obj]
+::pdwidget::_defaultproc show_iolets {obj show_inlets show_outlets} {
+    set tag [::pdwidget::base_tag $obj]
     set icolor {}
     set ocolor {}
     if {$show_inlets } {set icolor black}
     if {$show_outlets} {set ocolor black}
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv itemconfigure ${tag}&&inlet  -fill $icolor
         $cnv itemconfigure ${tag}&&outlet -fill $ocolor
     }
 }
-proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
-    set tag [::pd::widget::base_tag $obj]
+proc ::pdwidget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
+    set tag [::pdwidget::base_tag $obj]
     set numiolets [llength $iolets]
     if {$numiolets < 2} {set numiolets 2}
-    foreach cnv [::pd::widget::get_canvases $obj] {
+    foreach cnv [::pdwidget::get_canvases $obj] {
         $cnv delete "${tag}&&${iotag}"
         set zoom [::pd::canvas::get_zoom $cnv]
         foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
@@ -224,35 +224,35 @@ proc ::pd::widget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
         $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
     }
 }
-::pd::widget::_defaultproc create_inlets {obj inlets} {
-    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
+::pdwidget::_defaultproc create_inlets {obj inlets} {
+    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
 }
-::pd::widget::_defaultproc create_outlets {obj outlets} {
-    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+::pdwidget::_defaultproc create_outlets {obj outlets} {
+    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
 }
-::pd::widget::_defaultproc create_iolets {obj {inlets {}} {outlets {}}} {
-    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
-    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+::pdwidget::_defaultproc create_iolets {obj {inlets {}} {outlets {}}} {
+    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
+    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
 }
-::pd::widget::_defaultproc refresh_iolets {obj} {
-    set tag [::pd::widget::base_tag $obj]
-    set inlets [::pd::widget::get_iolets $obj inlet]
-    set outlets [::pd::widget::get_iolets $obj outlet]
-    ::pd::widget::_do_create_iolets $obj inlet $inlets $::pd::widget::IOWIDTH $::pd::widget::IHEIGHT
-    ::pd::widget::_do_create_iolets $obj outlet $outlets $::pd::widget::IOWIDTH $::pd::widget::OHEIGHT
+::pdwidget::_defaultproc refresh_iolets {obj} {
+    set tag [::pdwidget::base_tag $obj]
+    set inlets [::pdwidget::get_iolets $obj inlet]
+    set outlets [::pdwidget::get_iolets $obj outlet]
+    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
+    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
 
-    foreach cnv [::pd::widget::get_canvases $obj] {
-        ::pd::widget::_update_connections_on_canvas $cnv $tag
+    foreach cnv [::pdwidget::get_canvases $obj] {
+        ::pdwidget::_update_connections_on_canvas $cnv $tag
     }
 }
 
 
 # get inlet types
-proc ::pd::widget::get_iolets {obj type} {
+proc ::pdwidget::get_iolets {obj type} {
     set cnv {}
-    foreach cnv [::pd::widget::get_canvases $obj] {break}
+    foreach cnv [::pdwidget::get_canvases $obj] {break}
     if { $cnv eq {} } {return}
-    set tag [::pd::widget::base_tag $obj]
+    set tag [::pdwidget::base_tag $obj]
 
     set result {}
     foreach id [$cnv find withtag "${tag}&&${type}&&!anchor" ] {
@@ -269,39 +269,39 @@ proc ::pd::widget::get_iolets {obj type} {
 
 
 #
-proc ::pd::widget::create {type obj cnv posX posY} {
+proc ::pdwidget::create {type obj cnv posX posY} {
     $cnv delete [base_tag $obj]
-    if {[catch {$::pd::widget::_procs::constructor($type) $obj $cnv $posX $posY} stdout]} {
+    if {[catch {$::pdwidget::_procs::constructor($type) $obj $cnv $posX $posY} stdout]} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
         # associate this obj with the cnv
         ::pd::canvas::add_object $cnv $obj
-        if {[info exists ::pd::widget::_obj2canvas($obj) ] && [lsearch -exact $::pd::widget::_obj2canvas($obj) $cnv ] >= 0 } { } else {
-            lappend ::pd::widget::_obj2canvas($obj) $cnv
+        if {[info exists ::pdwidget::_obj2canvas($obj) ] && [lsearch -exact $::pdwidget::_obj2canvas($obj) $cnv ] >= 0 } { } else {
+            lappend ::pdwidget::_obj2canvas($obj) $cnv
         }
     }
 }
-proc ::pd::widget::destroy {obj} {
-    ::pd::widget::_call destroy $obj
+proc ::pdwidget::destroy {obj} {
+    ::pdwidget::_call destroy $obj
     # always clean up our internal state
-    ::pd::widget::_destroy $obj
+    ::pdwidget::_destroy $obj
 }
-proc ::pd::widget::config {obj args} {
-    ::pd::widget::_call config $obj {*}$args
+proc ::pdwidget::config {obj args} {
+    ::pdwidget::_call config $obj {*}$args
 }
-proc ::pd::widget::select {obj state} {
-    ::pd::widget::_call select $obj $state
+proc ::pdwidget::select {obj state} {
+    ::pdwidget::_call select $obj $state
 }
-proc ::pd::widget::editmode {obj state} {
-    ::pd::widget::_call editmode $obj $state
+proc ::pdwidget::editmode {obj state} {
+    ::pdwidget::_call editmode $obj $state
 }
-proc ::pd::widget::displace {obj dx dy} {
-    ::pd::widget::_call displace $obj $dx $dy
+proc ::pdwidget::displace {obj dx dy} {
+    ::pdwidget::_call displace $obj $dx $dy
 }
-proc ::pd::widget::moveto {obj cnv x y} {
-    ::pd::widget::_call moveto $obj $cnv $x $y
+proc ::pdwidget::moveto {obj cnv x y} {
+    ::pdwidget::_call moveto $obj $cnv $x $y
 }
-proc ::pd::widget::textselect {obj {index {}} {selectionlength {}}} {
+proc ::pdwidget::textselect {obj {index {}} {selectionlength {}}} {
     set args $obj
     if { $index ne {} } {
         lappend args $index
@@ -309,7 +309,7 @@ proc ::pd::widget::textselect {obj {index {}} {selectionlength {}}} {
             lappend args $selectionlength
         }
     }
-    ::pd::widget::_call textselect {*}$args
+    ::pdwidget::_call textselect {*}$args
 }
 
 
@@ -318,10 +318,10 @@ proc ::pd::widget::textselect {obj {index {}} {selectionlength {}}} {
 # in practice, this would break compatibility with GUI externals
 #
 # a backward-compatible approach is to use the 'connection' widget
-proc ::pd::widget::connect {src outlet dst inlet} {
-    set srctag [::pd::widget::base_tag $src]
-    set dsttag [::pd::widget::base_tag $dst]
-    foreach cnv [::pd::widget::get_canvases $obj] {
+proc ::pdwidget::connect {src outlet dst inlet} {
+    set srctag [::pdwidget::base_tag $src]
+    set dsttag [::pdwidget::base_tag $dst]
+    foreach cnv [::pdwidget::get_canvases $obj] {
         set zoom [::pd::canvas::get_zoom $cnv]
         foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
         foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
@@ -339,32 +339,32 @@ proc ::pd::widget::connect {src outlet dst inlet} {
         $cnv create line $x0 $y0 $x1 $y1 -tags [list "connection" "src:$srctag" "src:$srctag:${outlet}" "dst:$dsttag" "dst:$dsttag:${inlet}"] -width $cordwidth
     }
 }
-proc ::pd::widget::disconnect {src outlet dst inlet} {
-    set srctag [::pd::widget::base_tag $src]
-    set dsttag [::pd::widget::base_tag $dst]
-    foreach cnv [::pd::widget::get_canvases $obj] {
+proc ::pdwidget::disconnect {src outlet dst inlet} {
+    set srctag [::pdwidget::base_tag $src]
+    set dsttag [::pdwidget::base_tag $dst]
+    foreach cnv [::pdwidget::get_canvases $obj] {
         foreach id [$cnv find withtag "connection&&src:${srctag}:${outlet}&&dst:$dsttag:${inlet}"] {
             $cnv delete $id
         }
     }
 }
 
-proc ::pd::widget::create_inlets {obj inlets} {
-    ::pd::widget::_call create_inlets $obj $inlets
+proc ::pdwidget::create_inlets {obj inlets} {
+    ::pdwidget::_call create_inlets $obj $inlets
 }
-proc ::pd::widget::create_outlets {obj outlets} {
-    ::pd::widget::_call create_outlets $obj $outlets
+proc ::pdwidget::create_outlets {obj outlets} {
+    ::pdwidget::_call create_outlets $obj $outlets
 }
-proc ::pd::widget::show_iolets {obj show_inlets show_outlets} {
-    ::pd::widget::_call show_iolets $obj $show_inlets $show_outlets
+proc ::pdwidget::show_iolets {obj show_inlets show_outlets} {
+    ::pdwidget::_call show_iolets $obj $show_inlets $show_outlets
 }
 
 # these are actually used internally (not by Pd-core)
-proc ::pd::widget::create_iolets {obj {inlets {}} {outlets {}}} {
-    ::pd::widget::_call create_iolets $obj $inlets $outlets
+proc ::pdwidget::create_iolets {obj {inlets {}} {outlets {}}} {
+    ::pdwidget::_call create_iolets $obj $inlets $outlets
 }
-proc ::pd::widget::refresh_iolets {obj} {
-    ::pd::widget::_call refresh_iolets $obj
+proc ::pdwidget::refresh_iolets {obj} {
+    ::pdwidget::_call refresh_iolets $obj
 }
 
 
@@ -384,12 +384,12 @@ proc ::pd::widget::refresh_iolets {obj} {
 # example:
 #   % set options {-position 2 -help 0}
 #   % set arguments {-help -position 10 20 30 40}
-#   % puts [::pd::widget::parseargs $options $arguments]
+#   % puts [::pdwidget::parseargs $options $arguments]
 #   -help {} -position {10 20} {} {30 40}
 #   %
-# call '::pd::widget::parseargs {-position 2 -label 1} {-position 10 20}'
+# call '::pdwidget::parseargs {-position 2 -label 1} {-position 10 20}'
 # and it will return a dictionary {-position {10 20}}
-proc ::pd::widget::parseargs {optionspec argv} {
+proc ::pdwidget::parseargs {optionspec argv} {
     set result [dict create]
     set numargs [llength $argv]
     set argc 1
@@ -414,15 +414,15 @@ proc ::pd::widget::parseargs {optionspec argv} {
 }
 
 # get a string to be used as a base-tag for $obj
-proc ::pd::widget::base_tag {obj} {
+proc ::pdwidget::base_tag {obj} {
     set tag [string trimleft $obj 0x]
     return "${tag}OBJ"
     # this one is much nicer...
     return "_$obj"
 }
-proc ::pd::widget::get_canvases {obj} {
-    if {[info exists ::pd::widget::_obj2canvas($obj)]} {
-        return $::pd::widget::_obj2canvas($obj)
+proc ::pdwidget::get_canvases {obj} {
+    if {[info exists ::pdwidget::_obj2canvas($obj)]} {
+        return $::pdwidget::_obj2canvas($obj)
     }
 }
 

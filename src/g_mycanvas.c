@@ -29,7 +29,7 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::config", "o rii"
+    pdgui_vmess("::pdwidget::config", "o rii"
         , x
         , "-visible",  x->x_vis_w, x->x_vis_h
         );
@@ -38,7 +38,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
     const int zoom = IEMGUI_ZOOM(x);
-    pdgui_vmess("::pd::widget::create", "roc ii", "canvas"
+    pdgui_vmess("::pdwidget::create", "roc ii", "canvas"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_gui.x_obj, glist) / zoom
         , text_ypix(&x->x_gui.x_obj, glist) / zoom
@@ -48,7 +48,7 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 
 static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::select", "oi", x, x->x_gui.x_fsf.x_selected);
+    pdgui_vmess("::pdwidget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */

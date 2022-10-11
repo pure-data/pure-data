@@ -943,11 +943,11 @@ static void canvas_drawlines(t_canvas *x)
         while ((oc = linetraverser_next(&t)))
         {
             const t_float zoom = glist_getzoom(x);
-            pdgui_vmess("::pd::widget::create", "roc ii", "connection"
+            pdgui_vmess("::pdwidget::create", "roc ii", "connection"
                 , oc, glist_getcanvas(x)
                 , 0, 0
                 );
-            pdgui_vmess("::pd::widget::config", "o rffff rs", oc
+            pdgui_vmess("::pdwidget::config", "o rffff rs", oc
                 , "-position", t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom
                 , "-type", (outlet_getsymbol(t.tr_outlet) == &s_signal ? "signal":"message")
                 );
@@ -965,7 +965,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
             const t_float zoom = glist_getzoom(x);
-            pdgui_vmess("::pd::widget::config", "o rffff", oc
+            pdgui_vmess("::pdwidget::config", "o rffff", oc
                 , "-position", t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom
                 );
         }
@@ -983,7 +983,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            pdgui_vmess("::pd::widget::destroy", "o", oc);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1001,7 +1001,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
-            pdgui_vmess("::pd::widget::destroy", "o", oc);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }

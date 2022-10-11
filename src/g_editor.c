@@ -74,7 +74,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        pdgui_vmess("::pd::widget::select", "oi", x->gl_editor->e_selectline_tag, 1);
+        pdgui_vmess("::pdwidget::select", "oi", x->gl_editor->e_selectline_tag, 1);
     }
 }
 
@@ -83,7 +83,7 @@ void glist_deselectline(t_glist *x)
     if (x->gl_editor)
     {
         if(x->gl_editor->e_selectline_tag)
-            pdgui_vmess("::pd::widget::select", "oi", x->gl_editor->e_selectline_tag, 0);
+            pdgui_vmess("::pdwidget::select", "oi", x->gl_editor->e_selectline_tag, 0);
         x->gl_editor->e_selectedline = 0;
     }
 }
@@ -458,7 +458,7 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            pdgui_vmess("::pd::widget::destroy", "o", oc);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -2393,9 +2393,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
-                        pdgui_vmess("::pd::widget::create", "roc ii", "connection"
+                        pdgui_vmess("::pdwidget::create", "roc ii", "connection"
                             , o, x, xpos, ypos);
-                        pdgui_vmess("::pd::widget::config", "o rs", o
+                        pdgui_vmess("::pdwidget::config", "o rs", o
                             , "-type", issignal?"signal":"message");
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
@@ -2540,7 +2540,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         t_float zoom = x->gl_zoom;
         if (!shiftmod) glist_noselect(x);
-        pdgui_vmess("::pd::widget::create", "roc ff", "selection"
+        pdgui_vmess("::pdwidget::create", "roc ff", "selection"
                     , selection_tag, x, xpos/zoom, ypos/zoom);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
@@ -2609,11 +2609,11 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess("::pd::widget::create", "roc ii", "connection"
+            pdgui_vmess("::pdwidget::create", "roc ii", "connection"
                 , oc, glist_getcanvas(x)
                 , 0, 0
                 );
-            pdgui_vmess("::pd::widget::config", "o rffff rs", oc
+            pdgui_vmess("::pdwidget::config", "o rffff rs", oc
                 , "-position", lx1/zoom, ly1/zoom, lx2/zoom ,ly2/zoom
                 , "-type", (obj_issignaloutlet(src, nout) ? "signal":"message")
                 );
@@ -2679,9 +2679,9 @@ static int _doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess("::pd::widget::destroy", "o", out);
+        pdgui_vmess("::pdwidget::destroy", "o", out);
     } else {
-        pdgui_vmess("::pd::widget::config", "o riiii", out
+        pdgui_vmess("::pdwidget::config", "o riiii", out
             , "-position", xwas, ywas, xpos, ypos
             );
     }
@@ -2872,11 +2872,11 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess("::pd::widget::destroy", "o", selection_tag);
+        pdgui_vmess("::pdwidget::destroy", "o", selection_tag);
         x->gl_editor->e_onmotion = MA_NONE;
     } else {
         t_float zoom = x->gl_zoom;
-        pdgui_vmess("::pd::widget::config", "o rff", selection_tag
+        pdgui_vmess("::pdwidget::config", "o rff", selection_tag
             , "-size", (xpos-x->gl_editor->e_xwas) / zoom, (ypos-x->gl_editor->e_ywas) / zoom
             );
     }
@@ -4407,11 +4407,11 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        pdgui_vmess("::pd::widget::create", "roc ii", "connection"
+        pdgui_vmess("::pdwidget::create", "roc ii", "connection"
             , oc, glist_getcanvas(x)
             , 0, 0
             );
-        pdgui_vmess("::pd::widget::config", "o rs", oc
+        pdgui_vmess("::pdwidget::config", "o rs", oc
             , "-type", (obj_issignaloutlet(objsrc, outno) ? "signal":"message")
             );
         canvas_fixlinesfor(x, objsrc);

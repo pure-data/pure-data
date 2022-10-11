@@ -461,7 +461,7 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 
     if(senditup)
     {
-        pdgui_vmess("::pd::widget::config", "o rs"
+        pdgui_vmess("::pdwidget::config", "o rs"
             , x
             , "-label", (s?canvas_realizedollar(iemgui->x_glist, s)->s_name:"")
         );
@@ -476,7 +476,7 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    pdgui_vmess("::pd::widget::config", "o rii"
+    pdgui_vmess("::pdwidget::config", "o rii"
         , x
         , "-labelpos",  iemgui->x_ldx,  iemgui->x_ldy
         );
@@ -499,7 +499,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(f < 4)
         f = 4;
     iemgui->x_fontsize = f;
-    pdgui_vmess("::pd::widget::config", "o rsi"
+    pdgui_vmess("::pdwidget::config", "o rsi"
         , x
         , "-font", iemgui->x_font, iemgui->x_fontsize
         );
@@ -855,20 +855,20 @@ static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_select(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 {
-    pdgui_vmess("::pd::widget::show_iolets", "o ii"
+    pdgui_vmess("::pdwidget::show_iolets", "o ii"
         , x
         , !x->x_fsf.x_rcv_able, !x->x_fsf.x_snd_able);
 }
 
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
-    pdgui_vmess("::pd::widget::destroy", "o", x);
+    pdgui_vmess("::pdwidget::destroy", "o", x);
 }
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
 {
     const float inv_zoom = 1. / x->x_glist->gl_zoom;
-    pdgui_vmess("::pd::widget::moveto", "oc ff"
+    pdgui_vmess("::pdwidget::moveto", "oc ff"
         , x, glist_getcanvas(glist)
         , text_xpix(&x->x_obj, glist) * inv_zoom, text_ypix(&x->x_obj, glist) * inv_zoom);
 }
@@ -905,7 +905,7 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         DRAW_FUN(erase, x, glist);
         break;
     case (IEM_GUI_DRAW_MODE_CONFIG):
-        pdgui_vmess("::pd::widget::config", "o rff rkkk rsi rii rs"
+        pdgui_vmess("::pdwidget::config", "o rff rkkk rsi rii rs"
             , x
             , "-size", x->x_w / zoom, x->x_h / zoom
             , "-colors", x->x_bcol, x->x_fcol, x->x_lcol
