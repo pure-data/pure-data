@@ -136,13 +136,14 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
                boxes inside graphs---except comments, if we're doing the new
                (goprect) style. */
         return (glist->gl_havewindow ||
+            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
             (ob->te_pd != canvas_class &&
 #if __GNUC__
 # warning stupid check for text_widgetbehaviour
                     /* in the re-write, we use different widget-behaviours for msgboxes, gatoms,... */
 #endif
+             (ob->te_type != T_MESSAGE) &&
                 ob->te_pd->c_wb != &text_widgetbehavior) ||
-            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
             (glist->gl_goprect && (ob->te_type == T_TEXT)));
     }
     else return (1);
