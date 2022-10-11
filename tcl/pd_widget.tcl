@@ -102,20 +102,7 @@ proc ::pdwidget::_defaultproc {id arguments body} {
 
 # 'destroy' an object (removing it from the canvas(es))
 ::pdwidget::_defaultproc destroy {obj} {
-    set tag [::pdwidget::base_tag $obj]
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        foreach id [$cnv find withtag "connection&&src:${tag}"] {
-            $cnv delete $id
-        }
-        foreach id [$cnv find withtag "connection&&dst:${tag}"] {
-            $cnv delete $id
-        }
-        $cnv delete $tag
-        ::pd::canvas::remove_object $cnv $obj
-    }
-    if {[info exists ::pdwidget::_obj2canvas($obj)]} {
-        unset ::pdwidget::_obj2canvas($obj)
-    }
+    # dummy fallback to not throw an error
 }
 
 proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
@@ -283,8 +270,23 @@ proc ::pdwidget::create {type obj cnv posX posY} {
 }
 proc ::pdwidget::destroy {obj} {
     ::pdwidget::_call destroy $obj
+
     # always clean up our internal state
-    ::pdwidget::_destroy $obj
+    set tag [::pdwidget::base_tag $obj]
+    foreach cnv [::pdwidget::get_canvases $obj] {
+        foreach id [$cnv find withtag "connection&&src:${tag}"] {
+            $cnv delete $id
+        }
+        foreach id [$cnv find withtag "connection&&dst:${tag}"] {
+            $cnv delete $id
+        }
+        $cnv delete $tag
+        ::pd::canvas::remove_object $cnv $obj
+    }
+    # finally get rid of the obj2canvas mapping
+    if {[info exists ::pdwidget::_obj2canvas($obj)]} {
+        unset ::pdwidget::_obj2canvas($obj)
+    }
 }
 proc ::pdwidget::config {obj args} {
     ::pdwidget::_call config $obj {*}$args
