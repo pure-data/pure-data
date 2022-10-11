@@ -73,7 +73,7 @@ proc ::pdwidget::widgetbehavior {obj behavior behaviorproc} {
 # - vis: show/hide an object (handled via ::pdwidget::create and ::pdwidget::destroy)
 # - click: called on hitbox detection with mouse-click (NOT our business, for now)
 
-proc ::pdwidget::_call {behavior obj args} {
+proc ::pdwidget::_call {canvases behavior obj args} {
     set proc {}
     set wb ::pdwidget::_procs::widget_${behavior}
     if { [info exists $wb] } {
@@ -90,7 +90,10 @@ proc ::pdwidget::_call {behavior obj args} {
         ::pdwindow::error "NOT IMPLEMENTED: ::pdwidget::$behavior $obj $args\n"
     } else {
         # {*} requires Tcl-8.5
-        $proc $obj {*}$args
+        if { $canvases eq {} } {set canvases [::pdwidget::get_canvases $obj] }
+        foreach cnv $canvases {
+            $proc $obj $cnv {*}$args
+        }
     }
 }
 
@@ -101,7 +104,7 @@ proc ::pdwidget::_defaultproc {id arguments body} {
 }
 
 # 'destroy' an object (removing it from the canvas(es))
-::pdwidget::_defaultproc destroy {obj} {
+::pdwidget::_defaultproc destroy {obj cnv} {
     # dummy fallback to not throw an error
 }
 
@@ -132,17 +135,15 @@ proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
     }
 }
 
-::pdwidget::_defaultproc editmode {obj state} {
+::pdwidget::_defaultproc editmode {obj cnv state} {
     # just ignore
 }
 
 
-::pdwidget::_defaultproc displace {obj dx dy} {
+::pdwidget::_defaultproc displace {obj cnv dx dy} {
     set tag [::pdwidget::base_tag $obj]
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv move $tag $dx $dy
-        ::pdwidget::_update_connections_on_canvas $cnv $tag
-    }
+    $cnv move $tag $dx $dy
+    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
 ::pdwidget::_defaultproc moveto {obj cnv x y} {
@@ -158,86 +159,82 @@ proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
     ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
-::pdwidget::_defaultproc show_iolets {obj show_inlets show_outlets} {
+::pdwidget::_defaultproc show_iolets {obj cnv show_inlets show_outlets} {
     set tag [::pdwidget::base_tag $obj]
     set icolor {}
     set ocolor {}
     if {$show_inlets } {set icolor black}
     if {$show_outlets} {set ocolor black}
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv itemconfigure ${tag}&&inlet  -fill $icolor
-        $cnv itemconfigure ${tag}&&outlet -fill $ocolor
-    }
+    $cnv itemconfigure ${tag}&&inlet  -fill $icolor
+    $cnv itemconfigure ${tag}&&outlet -fill $ocolor
 }
-proc ::pdwidget::_do_create_iolets {obj iotag iolets iowidth ioheight} {
+proc ::pdwidget::_do_create_iolets {obj cnv iotag iolets iowidth ioheight} {
     set tag [::pdwidget::base_tag $obj]
     set numiolets [llength $iolets]
     if {$numiolets < 2} {set numiolets 2}
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv delete "${tag}&&${iotag}"
-        set zoom [::pd::canvas::get_zoom $cnv]
-        foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
-        set w [expr $x1 - $x0]
-        set h [expr $y1 - $y0]
-        set iw [expr $iowidth * $zoom]
-        set ih [expr ($ioheight - 0.5) * $zoom]
-        set delta [expr ($w - $iw)/($numiolets - 1.) ]
-        set objheight 0
-        if {$iotag eq "outlet"} {
-            set objheight [expr $h - $ih]
-        }
 
-        set numin 0
-        foreach iolet $iolets {
-            set iotype message
-            switch -exact $iolet {
-                default {
-                    set iotype message
-                } 1 {
-                    set iotype signal
-                }
+    $cnv delete "${tag}&&${iotag}"
+    set zoom [::pd::canvas::get_zoom $cnv]
+    foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
+    set w [expr $x1 - $x0]
+    set h [expr $y1 - $y0]
+    set iw [expr $iowidth * $zoom]
+    set ih [expr ($ioheight - 0.5) * $zoom]
+    set delta [expr ($w - $iw)/($numiolets - 1.) ]
+    set objheight 0
+    if {$iotag eq "outlet"} {
+        set objheight [expr $h - $ih]
+    }
+
+    set numin 0
+    foreach iolet $iolets {
+        set iotype message
+        switch -exact $iolet {
+            default {
+                set iotype message
+            } 1 {
+                set iotype signal
             }
-            # create an iolet (with an 'anchor' where the connection starts)
-            set centerX [expr $iw / 2]
-            set centerY [expr $ih / 2]
-            $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
-            $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
-            # move the iolet in place
-            $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
-
-            incr numin
         }
-        $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
-        $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
-    }
-}
-::pdwidget::_defaultproc create_inlets {obj inlets} {
-    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
-}
-::pdwidget::_defaultproc create_outlets {obj outlets} {
-    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
-}
-::pdwidget::_defaultproc create_iolets {obj {inlets {}} {outlets {}}} {
-    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
-    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
-}
-::pdwidget::_defaultproc refresh_iolets {obj} {
-    set tag [::pdwidget::base_tag $obj]
-    set inlets [::pdwidget::get_iolets $obj inlet]
-    set outlets [::pdwidget::get_iolets $obj outlet]
-    ::pdwidget::_do_create_iolets $obj inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
-    ::pdwidget::_do_create_iolets $obj outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
+        # create an iolet (with an 'anchor' where the connection starts)
+        set centerX [expr $iw / 2]
+        set centerY [expr $ih / 2]
+        $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
+        $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
+        # move the iolet in place
+        $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        ::pdwidget::_update_connections_on_canvas $cnv $tag
+        incr numin
     }
+    $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
+    $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
+}
+::pdwidget::_defaultproc create_inlets {obj cnv inlets} {
+    ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
+}
+::pdwidget::_defaultproc create_outlets {obj cnv outlets} {
+    ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
+}
+::pdwidget::_defaultproc create_iolets {obj cnv {inlets {}} {outlets {}}} {
+    ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
+    ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
+}
+::pdwidget::_defaultproc refresh_iolets {obj cnv} {
+    set tag [::pdwidget::base_tag $obj]
+    set inlets [::pdwidget::get_iolets $obj $cnv inlet]
+    set outlets [::pdwidget::get_iolets $obj $cnv outlet]
+    ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
+    ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
+
+    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
 
 # get inlet types
-proc ::pdwidget::get_iolets {obj type} {
-    set cnv {}
-    foreach cnv [::pdwidget::get_canvases $obj] {break}
+proc ::pdwidget::get_iolets {obj cnv type} {
+    if { $cnv eq {} } {
+        foreach cnv [::pdwidget::get_canvases $obj] {break}
+    }
     if { $cnv eq {} } {return}
     set tag [::pdwidget::base_tag $obj]
 
@@ -269,7 +266,7 @@ proc ::pdwidget::create {type obj cnv posX posY} {
     }
 }
 proc ::pdwidget::destroy {obj} {
-    ::pdwidget::_call destroy $obj
+    ::pdwidget::_call {} destroy $obj
 
     # always clean up our internal state
     set tag [::pdwidget::base_tag $obj]
@@ -289,19 +286,19 @@ proc ::pdwidget::destroy {obj} {
     }
 }
 proc ::pdwidget::config {obj args} {
-    ::pdwidget::_call config $obj {*}$args
+    ::pdwidget::_call {} config $obj {*}$args
 }
 proc ::pdwidget::select {obj state} {
-    ::pdwidget::_call select $obj $state
+    ::pdwidget::_call {} select $obj $state
 }
 proc ::pdwidget::editmode {obj state} {
-    ::pdwidget::_call editmode $obj $state
+    ::pdwidget::_call {} editmode $obj $state
 }
 proc ::pdwidget::displace {obj dx dy} {
-    ::pdwidget::_call displace $obj $dx $dy
+    ::pdwidget::_call {} displace $obj $dx $dy
 }
 proc ::pdwidget::moveto {obj cnv x y} {
-    ::pdwidget::_call moveto $obj $cnv $x $y
+    ::pdwidget::_call $cnv moveto $obj $x $y
 }
 proc ::pdwidget::textselect {obj {index {}} {selectionlength {}}} {
     set args $obj
@@ -311,7 +308,7 @@ proc ::pdwidget::textselect {obj {index {}} {selectionlength {}}} {
             lappend args $selectionlength
         }
     }
-    ::pdwidget::_call textselect {*}$args
+    ::pdwidget::_call {} textselect {*}$args
 }
 
 
@@ -352,21 +349,23 @@ proc ::pdwidget::disconnect {src outlet dst inlet} {
 }
 
 proc ::pdwidget::create_inlets {obj inlets} {
-    ::pdwidget::_call create_inlets $obj $inlets
+    ::pdwidget::_call {} create_inlets $obj $inlets
 }
 proc ::pdwidget::create_outlets {obj outlets} {
-    ::pdwidget::_call create_outlets $obj $outlets
+    ::pdwidget::_call {} create_outlets $obj $outlets
 }
 proc ::pdwidget::show_iolets {obj show_inlets show_outlets} {
-    ::pdwidget::_call show_iolets $obj $show_inlets $show_outlets
+    ::pdwidget::_call {} show_iolets $obj $show_inlets $show_outlets
 }
 
 # these are actually used internally (not by Pd-core)
 proc ::pdwidget::create_iolets {obj {inlets {}} {outlets {}}} {
-    ::pdwidget::_call create_iolets $obj $inlets $outlets
+## TODO add cnv (?)
+    ::pdwidget::_call {} create_iolets $obj $inlets $outlets
 }
 proc ::pdwidget::refresh_iolets {obj} {
-    ::pdwidget::_call refresh_iolets $obj
+## TODO add cnv (?)
+    ::pdwidget::_call {} refresh_iolets $obj
 }
 
 

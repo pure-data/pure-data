@@ -12,7 +12,7 @@ namespace eval ::pdwidget::core:: { }
 
 ########################################################################
 # common procedures
-proc ::pdwidget::core::select {obj state} {
+proc ::pdwidget::core::select {obj cnv state} {
     # if selection is activated, use a different color
     # TODO: label
 
@@ -22,26 +22,24 @@ proc ::pdwidget::core::select {obj state} {
         set color #000000
     }
     set tag "[::pdwidget::base_tag $obj]"
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
-        $cnv itemconfigure "${tag}&&text" -fill $color
-        $cnv itemconfigure "${tag}&&cord" -fill $color
-    }
+
+    $cnv itemconfigure "${tag}&&OUTLINE" -outline $color
+    $cnv itemconfigure "${tag}&&text" -fill $color
+    $cnv itemconfigure "${tag}&&cord" -fill $color
 }
-proc ::pdwidget::core::textselect {obj {start {}} {length {}}} {
+proc ::pdwidget::core::textselect {obj cnv {start {}} {length {}}} {
     set tag "[::pdwidget::base_tag $obj]&&text"
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv select clear
-        if { $start ne {} } {
-            if { $length > 0 } {
-                $cnv select from $tag $start
-                $cnv select to $tag [expr $start + $length - 1]
-                $cnv focus {}
-            } else {
-                $cnv icursor $tag $start
-                focus $cnv
-                $cnv focus $tag
-            }
+
+    $cnv select clear
+    if { $start ne {} } {
+        if { $length > 0 } {
+            $cnv select from $tag $start
+            $cnv select to $tag [expr $start + $length - 1]
+            $cnv focus {}
+        } else {
+            $cnv icursor $tag $start
+            focus $cnv
+            $cnv focus $tag
         }
     }
 }
@@ -71,7 +69,7 @@ proc ::pdwidget::core::create_obj {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 
-proc ::pdwidget::core::config_obj {obj args} {
+proc ::pdwidget::core::config_obj {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -83,41 +81,39 @@ proc ::pdwidget::core::config_obj {obj args} {
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    set xnew [lindex $v 0]
-                    set ynew [lindex $v 1]
-                    set sizechanged 1
-                    $cnv coords "${tag}" \
-                        $xpos                        $ypos                  \
-                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                    $cnv coords "${tag}&&OUTLINE" \
-                        $xpos                        $ypos                  \
-                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                    $cnv coords "${tag}&&text" \
-                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
-                } "-state" {
-                    switch -exact -- $v {
-                        "normal" {
-                            $cnv itemconfigure "${tag}&&OUTLINE" -dash ""
-                        } "broken" {
-                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "-"
-                        } "edit" {
-                            $cnv itemconfigure "${tag}&&OUTLINE" -dash "."
-                        }
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
+                set sizechanged 1
+                $cnv coords "${tag}" \
+                    $xpos                        $ypos                  \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}&&OUTLINE" \
+                    $xpos                        $ypos                  \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}&&text" \
+                    [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
+            } "-state" {
+                switch -exact -- $v {
+                    "normal" {
+                        $cnv itemconfigure "${tag}&&OUTLINE" -dash ""
+                    } "broken" {
+                        $cnv itemconfigure "${tag}&&OUTLINE" -dash "-"
+                    } "edit" {
+                        $cnv itemconfigure "${tag}&&OUTLINE" -dash "."
                     }
                 }
-
             }
-            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+
         }
+        $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
     }
     if { $sizechanged } {
         ::pdwidget::refresh_iolets $obj
@@ -142,7 +138,7 @@ proc ::pdwidget::core::create_msg {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pdwidget::core::config_msg {obj args} {
+proc ::pdwidget::core::config_msg {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -152,42 +148,40 @@ proc ::pdwidget::core::config_msg {obj args} {
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    set xnew [lindex $v 0]
-                    set ynew [lindex $v 1]
-                    set corner [expr $ynew/4]
-                    if {$corner > 10} {set corner 10}
-                    set xnew [expr $xnew * $zoom]
-                    set ynew [expr $ynew * $zoom]
-                    set corner [expr $corner * $zoom]
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
+                set corner [expr $ynew/4]
+                if {$corner > 10} {set corner 10}
+                set xnew [expr $xnew * $zoom]
+                set ynew [expr $ynew * $zoom]
+                set corner [expr $corner * $zoom]
 
-                    $cnv coords "${tag}" \
-                              $xpos                $ypos          \
-                        [expr $xpos + $xnew] [expr $ypos + $ynew]
-                    $cnv coords "${tag}&&OUTLINE"                                     \
-                        $xpos                                $ypos                    \
-                        [expr $xpos + $xnew + $corner] [expr $ypos                  ] \
-                        [expr $xpos + $xnew          ] [expr $ypos         + $corner] \
-                        [expr $xpos + $xnew          ] [expr $ypos + $ynew - $corner] \
-                        [expr $xpos + $xnew + $corner] [expr $ypos + $ynew          ] \
-                              $xpos                    [expr $ypos + $ynew          ] \
-                        $xpos                                $ypos
+                $cnv coords "${tag}" \
+                    $xpos                $ypos          \
+                    [expr $xpos + $xnew] [expr $ypos + $ynew]
+                $cnv coords "${tag}&&OUTLINE"                                     \
+                    $xpos                                $ypos                    \
+                    [expr $xpos + $xnew + $corner] [expr $ypos                  ] \
+                    [expr $xpos + $xnew          ] [expr $ypos         + $corner] \
+                    [expr $xpos + $xnew          ] [expr $ypos + $ynew - $corner] \
+                    [expr $xpos + $xnew + $corner] [expr $ypos + $ynew          ] \
+                    $xpos                    [expr $ypos + $ynew          ] \
+                    $xpos                                $ypos
 
-                    $cnv coords "${tag}&&text" \
-                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
-                }
-
+                $cnv coords "${tag}&&text" \
+                    [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
             }
-            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+
         }
+        $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
     }
 }
 
@@ -230,7 +224,7 @@ proc ::pdwidget::core::create_gatom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pdwidget::core::config_gatom {obj args} {
+proc ::pdwidget::core::config_gatom {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -244,68 +238,66 @@ proc ::pdwidget::core::config_gatom {obj args} {
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    set sizechanged 1
-                    set xnew [lindex $v 0]
-                    set ynew [lindex $v 1]
-                    set corner [expr $ynew/4]
-                    set xpos2 [expr $xpos + $xnew * $zoom]
-                    set ypos2 [expr $ypos + $ynew * $zoom]
-                    set corner [expr $corner * $zoom]
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                set sizechanged 1
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
+                set corner [expr $ynew/4]
+                set xpos2 [expr $xpos + $xnew * $zoom]
+                set ypos2 [expr $ypos + $ynew * $zoom]
+                set corner [expr $corner * $zoom]
 
 
-                    $cnv coords "${tag}" \
-                        $xpos $ypos  $xpos2 $ypos2
-                    $cnv coords "${tag}&&OUTLINE" \
-                              $xpos                   $ypos \
-                        [expr $xpos2 - $corner]       $ypos \
-                              $xpos2            [expr $ypos + $corner] \
-                              $xpos2                  $ypos2 \
-                              $xpos                   $ypos2 \
-                              $xpos                   $ypos
-                    $cnv coords "${tag}&&text" \
-                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
-                } "-fontsize" {
-                    set font [$cnv itemcget "${tag}&&text" -font]
-                    lset font 1 -${v}
-                    set font [get_font_for_size [expr $v * $zoom] ]
-                    puts $font
-                    $cnv itemconfigure "${tag}&&text" -font $font
-                    $cnv itemconfigure "${tag}&&label" -font $font
-                } "-label" {
-                    pdtk_text_set $cnv "${tag}&&label" "$v"
-                } "-labelpos" {
-                    set txt [$cnv itemcget "${tag}&&label" -text]
-                    set txtlen [string length $txt]
-                    foreach {x1 y1 x2 y2} [$cnv coords "${tag}"] {break}
-                    switch -exact -- $v {
-                        "left" {
-                            $cnv itemconfigure "${tag}&&label" -anchor ne
-                            $cnv coords "${tag}&&label" [expr $x1 - 3 * $zoom] [expr $y1 + 2 * $zoom]
-                        } "right" {
-                            $cnv itemconfigure "${tag}&&label" -anchor nw
-                            $cnv coords "${tag}&&label" [expr $x2 + 2 * $zoom] [expr $y1 + 2 * $zoom]
-                        } "top" {
-                            $cnv itemconfigure "${tag}&&label" -anchor sw
-                            $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y1 - 1 * $zoom]
-                        } "bottom" {
-                            $cnv itemconfigure "${tag}&&label" -anchor nw
-                            $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y2 + 3 * $zoom]
-                        }
+                $cnv coords "${tag}" \
+                    $xpos $ypos  $xpos2 $ypos2
+                $cnv coords "${tag}&&OUTLINE" \
+                    $xpos                   $ypos \
+                    [expr $xpos2 - $corner]       $ypos \
+                    $xpos2            [expr $ypos + $corner] \
+                    $xpos2                  $ypos2 \
+                    $xpos                   $ypos2 \
+                    $xpos                   $ypos
+                $cnv coords "${tag}&&text" \
+                    [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+            } "-fontsize" {
+                set font [$cnv itemcget "${tag}&&text" -font]
+                lset font 1 -${v}
+                set font [get_font_for_size [expr $v * $zoom] ]
+                puts $font
+                $cnv itemconfigure "${tag}&&text" -font $font
+                $cnv itemconfigure "${tag}&&label" -font $font
+            } "-label" {
+                pdtk_text_set $cnv "${tag}&&label" "$v"
+            } "-labelpos" {
+                set txt [$cnv itemcget "${tag}&&label" -text]
+                set txtlen [string length $txt]
+                foreach {x1 y1 x2 y2} [$cnv coords "${tag}"] {break}
+                switch -exact -- $v {
+                    "left" {
+                        $cnv itemconfigure "${tag}&&label" -anchor ne
+                        $cnv coords "${tag}&&label" [expr $x1 - 3 * $zoom] [expr $y1 + 2 * $zoom]
+                    } "right" {
+                        $cnv itemconfigure "${tag}&&label" -anchor nw
+                        $cnv coords "${tag}&&label" [expr $x2 + 2 * $zoom] [expr $y1 + 2 * $zoom]
+                    } "top" {
+                        $cnv itemconfigure "${tag}&&label" -anchor sw
+                        $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y1 - 1 * $zoom]
+                    } "bottom" {
+                        $cnv itemconfigure "${tag}&&label" -anchor nw
+                        $cnv coords "${tag}&&label" [expr $x1 - 1 * $zoom] [expr $y2 + 3 * $zoom]
                     }
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
                 }
-
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
             }
-            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+
         }
+        $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
     }
     if { $sizechanged } {
         ::pdwidget::refresh_iolets $obj
@@ -333,7 +325,7 @@ proc ::pdwidget::core::create_latom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
-proc ::pdwidget::core::config_latom {obj args} {
+proc ::pdwidget::core::config_latom {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -344,41 +336,39 @@ proc ::pdwidget::core::config_latom {obj args} {
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    set sizechanged 1
-                    set xnew [lindex $v 0]
-                    set ynew [lindex $v 1]
-                    set corner [expr $ynew/4]
-                    set xpos2 [expr $xpos + $xnew * $zoom]
-                    set ypos2 [expr $ypos + $ynew * $zoom]
-                    set corner [expr $corner * $zoom]
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                set sizechanged 1
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
+                set corner [expr $ynew/4]
+                set xpos2 [expr $xpos + $xnew * $zoom]
+                set ypos2 [expr $ypos + $ynew * $zoom]
+                set corner [expr $corner * $zoom]
 
 
-                    $cnv coords "${tag}" \
-                        $xpos $ypos  $xpos2 $ypos2
-                    $cnv coords "${tag}&&OUTLINE" \
-                              $xpos                   $ypos \
-                        [expr $xpos2 - $corner]       $ypos \
-                              $xpos2            [expr $ypos + $corner] \
-                              $xpos2            [expr $ypos2 - $corner] \
-                        [expr $xpos2 - $corner]       $ypos2 \
-                              $xpos                   $ypos2 \
-                              $xpos                   $ypos
-                    $cnv coords "${tag}&&text" \
-                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
-                }
-
+                $cnv coords "${tag}" \
+                    $xpos $ypos  $xpos2 $ypos2
+                $cnv coords "${tag}&&OUTLINE" \
+                    $xpos                   $ypos \
+                    [expr $xpos2 - $corner]       $ypos \
+                    $xpos2            [expr $ypos + $corner] \
+                    $xpos2            [expr $ypos2 - $corner] \
+                    [expr $xpos2 - $corner]       $ypos2 \
+                    $xpos                   $ypos2 \
+                    $xpos                   $ypos
+                $cnv coords "${tag}&&text" \
+                    [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
             }
-            $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
+
         }
+        $cnv itemconfigure "${tag}&&OUTLINE" -width $zoom
     }
     if { $sizechanged } {
         ::pdwidget::refresh_iolets $obj
@@ -409,7 +399,7 @@ proc ::pdwidget::core::create_comment {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 
-proc ::pdwidget::core::config_comment {obj args} {
+proc ::pdwidget::core::config_comment {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -420,47 +410,42 @@ proc ::pdwidget::core::config_comment {obj args} {
     set lmargin 2
     set sizechanged 0
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    set xnew [lindex $v 0]
-                    set ynew [lindex $v 1]
-                    set sizechanged 1
-                    $cnv coords "${tag}" \
-                        $xpos                        $ypos                  \
-                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                    $cnv coords "${tag}&&commentbar" \
-                        [expr $xpos + $xnew * $zoom] $ypos \
-                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                    $cnv coords "${tag}&&text" \
-                        [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
-                }
-
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                set xnew [lindex $v 0]
+                set ynew [lindex $v 1]
+                set sizechanged 1
+                $cnv coords "${tag}" \
+                    $xpos                        $ypos                  \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}&&commentbar" \
+                    [expr $xpos + $xnew * $zoom] $ypos \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
+                $cnv coords "${tag}&&text" \
+                    [expr $xpos + $lmargin * $zoom] [expr $ypos + $tmargin * $zoom]
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
             }
-            $cnv itemconfigure "${tag}&&commentbar" -width $zoom
+
         }
+        $cnv itemconfigure "${tag}&&commentbar" -width $zoom
     }
     if { $sizechanged } {
         ::pdwidget::refresh_iolets $obj
     }
 }
-proc ::pdwidget::core::edit_comment {obj state} {
+proc ::pdwidget::core::edit_comment {obj cnv state} {
     if {$state != 0} {
         set color #000000
     } else {
         set color ""
     }
     set tag "[::pdwidget::base_tag $obj]&&commentbar"
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        $cnv itemconfigure "${tag}" -fill $color
-    }
-
+    $cnv itemconfigure "${tag}" -fill $color
 }
 
 ########################################################################
@@ -477,7 +462,7 @@ proc ::pdwidget::core::create_conn {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_conn
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
-proc ::pdwidget::core::config_conn {obj args} {
+proc ::pdwidget::core::config_conn {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -position 4
@@ -488,33 +473,31 @@ proc ::pdwidget::core::config_conn {obj args} {
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-position" {
-                    foreach {x0 y0 x1 y1} $v {break}
-                    $cnv coords "${tag}&&cord" \
-                        [expr $x0 * $zoom] [expr $y0 * $zoom] \
-                        [expr $x1 * $zoom] [expr $y1 * $zoom]
-                    $cnv coords "${tag}" [$cnv coords "${tag}&&cord"]
-                } "-text" {
-                    pdtk_text_set $cnv "${tag}&&text" "$v"
-                } "-type" {
-                    $cnv dtag "${tag}&&cord" signal
-                    switch -exact $v {
-                        "signal" {
-                            $cnv addtag signal withtag "${tag}&&cord"
-                        }
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-position" {
+                foreach {x0 y0 x1 y1} $v {break}
+                $cnv coords "${tag}&&cord" \
+                    [expr $x0 * $zoom] [expr $y0 * $zoom] \
+                    [expr $x1 * $zoom] [expr $y1 * $zoom]
+                $cnv coords "${tag}" [$cnv coords "${tag}&&cord"]
+            } "-text" {
+                pdtk_text_set $cnv "${tag}&&text" "$v"
+            } "-type" {
+                $cnv dtag "${tag}&&cord" signal
+                switch -exact $v {
+                    "signal" {
+                        $cnv addtag signal withtag "${tag}&&cord"
                     }
                 }
             }
-
-            $cnv itemconfigure "${tag}&&cord&&!signal" -width $zoom
-            $cnv itemconfigure "${tag}&&cord&&signal" -width [expr $zoom * 2]
         }
+
+        $cnv itemconfigure "${tag}&&cord&&!signal" -width $zoom
+        $cnv itemconfigure "${tag}&&cord&&signal" -width [expr $zoom * 2]
     }
 }
 
@@ -534,7 +517,7 @@ proc ::pdwidget::core::create_sel {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_sel
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
-proc ::pdwidget::core::config_sel {obj args} {
+proc ::pdwidget::core::config_sel {obj cnv args} {
     set options [::pdwidget::parseargs \
                      {
                          -size 2
@@ -543,18 +526,16 @@ proc ::pdwidget::core::config_sel {obj args} {
     set tmargin 3
     set lmargin 2
 
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        dict for {k v} $options {
-            foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
-            switch -exact -- $k {
-                default {
-                } "-size" {
-                    foreach {xnew ynew} $v {break}
-                    $cnv coords "${tag}&&lasso" \
-                        $xpos $ypos \
-                        [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                }
+    set zoom [::pd::canvas::get_zoom $cnv]
+    dict for {k v} $options {
+        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+        switch -exact -- $k {
+            default {
+            } "-size" {
+                foreach {xnew ynew} $v {break}
+                $cnv coords "${tag}&&lasso" \
+                    $xpos $ypos \
+                    [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             }
         }
     }
