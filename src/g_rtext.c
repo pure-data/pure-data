@@ -495,9 +495,10 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     {
 #if 1
         t_float zoom = glist_getzoom(x->x_glist);
+        t_float size[2] = {(*widthp)/zoom, (*heightp)/zoom};
         if (sizechanged)
-            pdgui_vmess("::pdwidget::config", "o rff rs", x->x_text
-                , "-size", (*widthp)/zoom, (*heightp)/zoom
+            pdgui_vmess("::pdwidget::config", "o rF rs", x->x_text
+                , "-size", 2, size
                 , "-text", tempbuf
                 );
         else
@@ -529,10 +530,10 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     {
 #if 1
         t_float zoom = glist_getzoom(x->x_glist);
-
+        t_float size[2] = {(*widthp)/zoom, (*heightp)/zoom};
         if (sizechanged)
-            pdgui_vmess("::pdwidget::config", "o rff rs", x->x_text
-                , "-size", (*widthp)/zoom, (*heightp)/zoom
+            pdgui_vmess("::pdwidget::config", "o rF rs", x->x_text
+                , "-size", 2, size
                 , "-text", tempbuf
                 );
         else
@@ -926,6 +927,7 @@ void rtext_configure(t_object*obj, t_rtext *x)
     char smallbuf[200], *tempbuf;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
+    t_float size[2];
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
         /* if we're a GOP (the new, "goprect" style) borrow the font size
         from the inside to preserve the spacing */
@@ -938,8 +940,10 @@ void rtext_configure(t_object*obj, t_rtext *x)
 
     rtext_format(x, w, h, tempbuf, 0, &w, &h, 0, 0, 0, 0);
 
-    pdgui_vmess("::pdwidget::config", "o rff rs", obj
-        , "-size", w/zoom, h/zoom
+    size[0] = w/zoom;
+    size[1] = h/zoom;
+    pdgui_vmess("::pdwidget::config", "o rF rs", obj
+        , "-size", 2, size
         , "-text", tempbuf
         );
 }

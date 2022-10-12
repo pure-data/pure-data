@@ -24,11 +24,12 @@ static t_class *radio_class;
 #define radio_draw_io 0
 static void radio_draw_config(t_radio* x, t_glist* glist)
 {
-    pdgui_vmess("::pdwidget::config", "o rii"
+    t_float number[2] = {(x->x_orientation == horizontal)?x->x_number:1,
+                         (x->x_orientation == horizontal)?1:x->x_number};
+
+    pdgui_vmess("::pdwidget::config", "o rF"
         , x
-        , "-number"
-        , (x->x_orientation == horizontal)?x->x_number:1
-        , (x->x_orientation == horizontal)?1:x->x_number
+        , "-number", 2, number
         );
     pdgui_vmess("::pdwidget::radio::activate", "o ik", x,
         x->x_on, x->x_gui.x_fcol);

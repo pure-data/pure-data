@@ -29,9 +29,10 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    pdgui_vmess("::pdwidget::config", "o rii"
+    t_float visible[2] = {x->x_vis_w, x->x_vis_h};
+    pdgui_vmess("::pdwidget::config", "o rF"
         , x
-        , "-visible",  x->x_vis_w, x->x_vis_h
+        , "-visible", 2, visible
         );
 }
 

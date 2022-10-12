@@ -2594,6 +2594,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
             char*tags[] = {tag, "cord"};
+            t_float position[4];
             sprintf(tag, "l%lx", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
@@ -2609,12 +2610,18 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
+
+            position[0] = lx1/zoom;
+            position[1] = ly1/zoom;
+            position[2] = lx2/zoom;
+            position[3] = ly2/zoom;
+
             pdgui_vmess("::pdwidget::create", "roc ii", "connection"
                 , oc, glist_getcanvas(x)
                 , 0, 0
                 );
-            pdgui_vmess("::pdwidget::config", "o rffff rs", oc
-                , "-position", lx1/zoom, ly1/zoom, lx2/zoom ,ly2/zoom
+            pdgui_vmess("::pdwidget::config", "o rF rs", oc
+                , "-position", 4, position
                 , "-type", (obj_issignaloutlet(src, nout) ? "signal":"message")
                 );
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
@@ -2681,8 +2688,9 @@ static int _doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
         pdgui_vmess("::pdwidget::destroy", "o", out);
     } else {
-        pdgui_vmess("::pdwidget::config", "o riiii", out
-            , "-position", xwas, ywas, xpos, ypos
+        t_float position[4] = {xwas, ywas, xpos, ypos};
+        pdgui_vmess("::pdwidget::config", "o rF", out
+            , "-position", 4, position
             );
     }
 
@@ -2876,8 +2884,9 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
         x->gl_editor->e_onmotion = MA_NONE;
     } else {
         t_float zoom = x->gl_zoom;
-        pdgui_vmess("::pdwidget::config", "o rff", selection_tag
-            , "-size", (xpos-x->gl_editor->e_xwas) / zoom, (ypos-x->gl_editor->e_ywas) / zoom
+        t_float size[2] = {(xpos-x->gl_editor->e_xwas) / zoom, (ypos-x->gl_editor->e_ywas) / zoom};
+        pdgui_vmess("::pdwidget::config", "o rF", selection_tag
+            , "-size", 2, size
             );
     }
 }

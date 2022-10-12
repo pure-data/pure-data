@@ -476,9 +476,12 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    pdgui_vmess("::pdwidget::config", "o rii"
+    t_float pos[2];
+    pos[0] = (t_float)iemgui->x_ldx;
+    pos[1] = (t_float)iemgui->x_ldy;
+    pdgui_vmess("::pdwidget::config", "o rF"
         , x
-        , "-labelpos",  iemgui->x_ldx,  iemgui->x_ldy
+        , "-labelpos",  2, pos
         );
 }
 
@@ -499,9 +502,10 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(f < 4)
         f = 4;
     iemgui->x_fontsize = f;
-    pdgui_vmess("::pdwidget::config", "o rsi"
+    pdgui_vmess("::pdwidget::config", "o rs ri"
         , x
-        , "-font", iemgui->x_font, iemgui->x_fontsize
+        , "-font", iemgui->x_font
+        , "-fontsize", iemgui->x_fontsize
         );
 }
 
@@ -905,15 +909,25 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         DRAW_FUN(erase, x, glist);
         break;
     case (IEM_GUI_DRAW_MODE_CONFIG):
-        pdgui_vmess("::pdwidget::config", "o rff rkkk rsi rii rs"
+    {
+        t_float size[2], labelpos[2];
+        size[0] = x->x_w / zoom;
+        size[1] = x->x_h / zoom;
+        labelpos[0] = x->x_ldx;
+        labelpos[1] = x->x_ldy;
+        pdgui_vmess("::pdwidget::config", "o rF rk rk rk rs ri rF rs"
             , x
-            , "-size", x->x_w / zoom, x->x_h / zoom
-            , "-colors", x->x_bcol, x->x_fcol, x->x_lcol
-            , "-font", x->x_font, x->x_fontsize
-            , "-labelpos",  x->x_ldx,  x->x_ldy
+            , "-size", 2, size
+            , "-bcolor", x->x_bcol
+            , "-fcolor", x->x_fcol
+            , "-lcolor", x->x_lcol
+            , "-font", x->x_font
+            , "-fontsize", x->x_fontsize
+            , "-labelpos", 2, labelpos
             , "-label", (x->x_lab?canvas_realizedollar(x->x_glist, x->x_lab)->s_name:"")
         );
         DRAW_FUN(config, x, glist);
+    }
         break;
     default:
         if(x->x_private->p_widget.draw_iolets)

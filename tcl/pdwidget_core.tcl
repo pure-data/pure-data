@@ -70,20 +70,14 @@ proc ::pdwidget::core::create_obj {obj cnv posX posY} {
 }
 
 proc ::pdwidget::core::config_obj {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                         -text 1
-                         -state 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
@@ -139,18 +133,13 @@ proc ::pdwidget::core::create_msg {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 proc ::pdwidget::core::config_msg {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                         -text 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
@@ -225,22 +214,14 @@ proc ::pdwidget::core::create_gatom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 proc ::pdwidget::core::config_gatom {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                         -fontsize 1
-                         -labelpos 1
-                         -label 1
-                         -text 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
@@ -325,19 +306,14 @@ proc ::pdwidget::core::create_latom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
 }
 proc ::pdwidget::core::config_latom {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                         -text 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
@@ -399,19 +375,14 @@ proc ::pdwidget::core::create_comment {obj cnv posX posY} {
 }
 
 proc ::pdwidget::core::config_comment {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                         -text 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
     set sizechanged 0
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
@@ -462,19 +433,13 @@ proc ::pdwidget::core::create_conn {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
 proc ::pdwidget::core::config_conn {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -position 4
-                         -text 1
-                         -type 1
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {k v} $args {
         switch -exact -- $k {
             default {
             } "-position" {
@@ -483,6 +448,7 @@ proc ::pdwidget::core::config_conn {obj cnv args} {
                     [expr $x0 * $zoom] [expr $y0 * $zoom] \
                     [expr $x1 * $zoom] [expr $y1 * $zoom]
                 $cnv coords "${tag}" [$cnv coords "${tag}&&cord"]
+                foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
             } "-text" {
                 pdtk_text_set $cnv "${tag}&&text" "$v"
             } "-type" {
@@ -517,17 +483,13 @@ proc ::pdwidget::core::create_sel {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
 }
 proc ::pdwidget::core::config_sel {obj cnv args} {
-    set options [::pdwidget::parseargs \
-                     {
-                         -size 2
-                     } $args]
     set tag [::pdwidget::base_tag $obj]
     set tmargin 3
     set lmargin 2
 
     set zoom [::pd::canvas::get_zoom $cnv]
-    dict for {k v} $options {
-        foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
+    dict for {k v} $args {
         switch -exact -- $k {
             default {
             } "-size" {
