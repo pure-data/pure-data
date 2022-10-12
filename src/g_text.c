@@ -1119,11 +1119,12 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         break;
     }
     object_vis(z, glist, vis);
-    pdgui_vmess("::pdwidget::config", "o ri rs rs", x
-        , "-fontsize", gatom_fontsize(x)
-        , "-label", canvas_realizedollar(x->a_glist, x->a_label)->s_name
-        , "-labelpos", labelpos
-        );
+    if(vis)
+        pdgui_vmess("::pdwidget::config", "o ri rs rs", x
+            , "-fontsize", gatom_fontsize(x)
+            , "-label", canvas_realizedollar(x->a_glist, x->a_label)->s_name
+            , "-labelpos", labelpos
+            );
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
