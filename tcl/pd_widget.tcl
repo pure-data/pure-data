@@ -252,10 +252,11 @@ proc ::pdwidget::get_iolets {obj cnv type} {
 
 
 
-#
-proc ::pdwidget::create {type obj cnv posX posY} {
+# create a widget of type <type>, with id <obj> at position <posX>/<posY> on canvas <cnv>
+# use <args> to pass additional configuration options (as in the 'config' proc)
+proc ::pdwidget::create {type obj cnv posX posY args} {
     $cnv delete [base_tag $obj]
-    if {[catch {$::pdwidget::_procs::constructor($type) $obj $cnv $posX $posY} stdout]} {
+    if {[catch {$::pdwidget::_procs::constructor($type) $obj $cnv $posX $posY {*}$args} stdout]} {
         ::pdwindow::error "Unknown widget type '$type': $stdout\n"
     } else {
         # associate this obj with the cnv

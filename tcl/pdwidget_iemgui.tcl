@@ -4,7 +4,7 @@ package provide pdwidget_iemgui 0.1
 namespace eval ::pdwidget::iemgui:: { }
 
 
-proc ::pdwidget::iemgui::create_bang {obj cnv posX posY} {
+proc ::pdwidget::iemgui::create_bang {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
@@ -15,6 +15,7 @@ proc ::pdwidget::iemgui::create_bang {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_bang
     ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
+    if { $args ne {} } {::pdwidget::iemgui::config_bang $obj $cnv {*}$args }
 }
 
 
@@ -118,7 +119,7 @@ proc ::pdwidget::iemgui::config_bang {obj cnv args} {
 
 ########################################################################
 # [cnv]
-proc ::pdwidget::iemgui::create_canvas {obj cnv posX posY} {
+proc ::pdwidget::iemgui::create_canvas {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} RECT]
@@ -128,6 +129,7 @@ proc ::pdwidget::iemgui::create_canvas {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_canvas
     ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select_canvas
+    if { $args ne {} } {::pdwidget::iemgui::config_canvas $obj $cnv {*}$args }
 }
 proc ::pdwidget::iemgui::config_canvas {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
@@ -177,7 +179,7 @@ proc ::pdwidget::iemgui::select_canvas {obj cnv state} {
 
 ########################################################################
 # [hradio], [vradio]
-proc ::pdwidget::iemgui::create_radio {obj cnv posX posY} {
+proc ::pdwidget::iemgui::create_radio {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE0]
@@ -187,6 +189,7 @@ proc ::pdwidget::iemgui::create_radio {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_radio
     ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
+    if { $args ne {} } {::pdwidget::iemgui::config_radio $obj $cnv {*}$args }
 }
 proc ::pdwidget::iemgui::_radio_recreate_buttons {cnv obj numX numY} {
     # create an array of numX*numY buttons
@@ -308,7 +311,7 @@ proc ::pdwidget::iemgui::config_radio {obj cnv args} {
 
 ########################################################################
 # [tgl]
-proc ::pdwidget::iemgui::create_toggle {obj cnv posX posY} {
+proc ::pdwidget::iemgui::create_toggle {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
     $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
@@ -320,6 +323,7 @@ proc ::pdwidget::iemgui::create_toggle {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_toggle
     ::pdwidget::widgetbehavior $obj select ::pdwidget::iemgui::select
+    if { $args ne {} } {::pdwidget::iemgui::config_toggle $obj $cnv {*}$args }
 }
 proc ::pdwidget::iemgui::config_toggle {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]

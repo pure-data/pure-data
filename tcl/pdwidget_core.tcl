@@ -48,7 +48,7 @@ proc ::pdwidget::core::textselect {obj cnv {start {}} {length {}}} {
 ########################################################################
 # object
 
-proc ::pdwidget::core::create_obj {obj cnv posX posY} {
+proc ::pdwidget::core::create_obj {obj cnv posX posY args} {
     # stack order
     # - boundingrectangle
     # - outlets
@@ -67,6 +67,7 @@ proc ::pdwidget::core::create_obj {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_obj
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
+    if { $args ne {} } {::pdwidget::core::config_obj $obj $cnv {*}$args }
 }
 
 proc ::pdwidget::core::config_obj {obj cnv args} {
@@ -117,7 +118,7 @@ proc ::pdwidget::core::config_obj {obj cnv args} {
 ########################################################################
 # message
 
-proc ::pdwidget::core::create_msg {obj cnv posX posY} {
+proc ::pdwidget::core::create_msg {obj cnv posX posY args} {
     set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
@@ -131,6 +132,7 @@ proc ::pdwidget::core::create_msg {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_msg
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
+    if { $args ne {} } {::pdwidget::core::config_msg $obj $cnv {*}$args }
 }
 proc ::pdwidget::core::config_msg {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
@@ -192,7 +194,7 @@ proc ::pdwidget::message::activate {obj flashtime} {
 ########################################################################
 # gatom
 
-proc ::pdwidget::core::create_gatom {obj cnv posX posY} {
+proc ::pdwidget::core::create_gatom {obj cnv posX posY args} {
     # stack order
     # - boundingrectangle
     # - outlets
@@ -212,6 +214,8 @@ proc ::pdwidget::core::create_gatom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_gatom
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
+
+    if { $args ne {} } {::pdwidget::core::config_gatom $obj $cnv {*}$args }
 }
 proc ::pdwidget::core::config_gatom {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
@@ -285,7 +289,7 @@ proc ::pdwidget::core::config_gatom {obj cnv args} {
 }
 
 # list atoms
-proc ::pdwidget::core::create_latom {obj cnv posX posY} {
+proc ::pdwidget::core::create_latom {obj cnv posX posY args} {
     # stack order
     # - boundingrectangle
     # - outlets
@@ -304,6 +308,7 @@ proc ::pdwidget::core::create_latom {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_latom
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
+    if { $args ne {} } {::pdwidget::core::config_latom $obj $cnv {*}$args }
 }
 proc ::pdwidget::core::config_latom {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
@@ -352,7 +357,7 @@ proc ::pdwidget::core::config_latom {obj cnv args} {
 ########################################################################
 # comment
 
-proc ::pdwidget::core::create_comment {obj cnv posX posY} {
+proc ::pdwidget::core::create_comment {obj cnv posX posY args} {
     # stack order
     # - boundingrectangle
     # - outlets
@@ -372,6 +377,7 @@ proc ::pdwidget::core::create_comment {obj cnv posX posY} {
     ::pdwidget::widgetbehavior $obj editmode ::pdwidget::core::edit_comment
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
     ::pdwidget::widgetbehavior $obj textselect ::pdwidget::core::textselect
+    if { $args ne {} } {::pdwidget::core::config_comment $obj $cnv {*}$args }
 }
 
 proc ::pdwidget::core::config_comment {obj cnv args} {
@@ -421,7 +427,7 @@ proc ::pdwidget::core::edit_comment {obj cnv state} {
 ########################################################################
 # connection
 
-proc ::pdwidget::core::create_conn {obj cnv posX posY} {
+proc ::pdwidget::core::create_conn {obj cnv posX posY args} {
     set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pdwidget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
@@ -431,6 +437,7 @@ proc ::pdwidget::core::create_conn {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_conn
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    if { $args ne {} } {::pdwidget::core::config_conn $obj $cnv {*}$args }
 }
 proc ::pdwidget::core::config_conn {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
@@ -470,7 +477,7 @@ proc ::pdwidget::core::config_conn {obj cnv args} {
 ########################################################################
 # selection lasso
 
-proc ::pdwidget::core::create_sel {obj cnv posX posY} {
+proc ::pdwidget::core::create_sel {obj cnv posX posY args} {
     set zoom [::pd::canvas::get_zoom $cnv]
     set tag [::pdwidget::base_tag $obj]
     # the 'iolets' tag might be expected by some helper scripts, but it not really needed...
@@ -481,6 +488,7 @@ proc ::pdwidget::core::create_sel {obj cnv posX posY} {
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::core::config_sel
     ::pdwidget::widgetbehavior $obj select ::pdwidget::core::select
+    if { $args ne {} } {::pdwidget::core::config_sel $obj $cnv {*}$args }
 }
 proc ::pdwidget::core::config_sel {obj cnv args} {
     set tag [::pdwidget::base_tag $obj]
