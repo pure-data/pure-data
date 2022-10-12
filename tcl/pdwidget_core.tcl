@@ -268,7 +268,6 @@ proc ::pdwidget::core::config_gatom {obj cnv args} {
                 set font [$cnv itemcget "${tag}&&text" -font]
                 lset font 1 -${v}
                 set font [get_font_for_size [expr $v * $zoom] ]
-                puts $font
                 $cnv itemconfigure "${tag}&&text" -font $font
                 $cnv itemconfigure "${tag}&&label" -font $font
             } "-label" {
