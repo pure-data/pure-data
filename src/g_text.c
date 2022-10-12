@@ -346,7 +346,6 @@ void rtext_configure(t_object*, t_rtext *x);
 static void object_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
-    t_glist *rglist = glist;
     const char*type;
     switch(x->te_type) {
     case T_TEXT:
