@@ -771,7 +771,7 @@ static void gatom_symbol(t_gatom *x, t_symbol *s)
     "nofirstin" flag, the standard list behavior gets confused. */
 static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
-        /* bang outputs value for float and symbol but clears list */
+    /* empty lists are like bang and output value for float and symbol, but clears list */
     if (argc || x->a_flavor == A_LIST)
         gatom_set(x, s, argc, argv);
     gatom_bang(x);

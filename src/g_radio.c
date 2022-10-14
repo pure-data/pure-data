@@ -729,7 +729,7 @@ void g_radio_setup(void)
     radio_widgetbehavior.w_clickfn = radio_newclick;
     class_setwidget(radio_class, &radio_widgetbehavior);
 
-    class_sethelpsymbol(radio_class, gensym("hradio"));
+    class_sethelpsymbol(radio_class, gensym("radio"));
     class_setsavefn(radio_class, radio_save);
     class_setpropertiesfn(radio_class, radio_properties);
 

@@ -1,4 +1,4 @@
-#N canvas 650 64 602 577 12;
+#N canvas 650 64 527 540 12;
 #X declare -stdpath ./;
 #N canvas 564 152 562 441 delay-writer 0;
 #X obj 91 254 inlet~;
@@ -33,36 +33,36 @@ the output level control as well.;
 #X connect 4 0 11 0;
 #X connect 5 0 10 0;
 #X connect 10 0 3 0;
-#X restore 136 417 pd delay-writer;
-#X obj 238 381 expr 1000/$f1;
-#X obj 238 355 mtof;
-#X obj 136 258 metro 500;
-#X obj 238 301 random 60;
-#X obj 136 232 loadbang;
-#X obj 238 327 + 30;
-#X text 86 9 CONTROLLING DELAY WITH BLOCK~;
-#X text 63 43 In situations where a delay read feeds back to a delay
+#X restore 124 417 pd delay-writer;
+#X obj 226 381 expr 1000/$f1;
+#X obj 226 355 mtof;
+#X obj 124 258 metro 500;
+#X obj 226 301 random 60;
+#X obj 124 232 loadbang;
+#X obj 226 327 + 30;
+#X text 74 9 CONTROLLING DELAY WITH BLOCK~;
+#X text 51 43 In situations where a delay read feeds back to a delay
 write \, the minimum possible delay you can achieve is one block \,
 which by default is 64 samples \, or 1.45 msec at 44100 Hz. You can
 shorten the minimum delay by changing the block size. Do this in a
 subpatch (open it to see how).;
-#X obj 136 466 output~;
-#X obj 136 384 vline~;
-#X text 300 499 updated for Pd version 0.37-1;
-#X text 61 124 Here we use this principle to make a harpsichord-like
+#X obj 124 466 output~;
+#X obj 124 384 vline~;
+#X text 297 476 updated for Pd version 0.37-1;
+#X text 49 124 Here we use this principle to make a harpsichord-like
 sound by sending pulses into a recirculating delay line (which imitates
 the travel of the wave up and down the harpsichord string.) This is
 related to Karplus-Strong synthesis \, but the idea is probably much
 older than their paper.;
-#X text 42 388 long., f 12;
-#X text 341 373 length of delay line is;
-#X text 342 391 1000/(frequency);
-#X text 42 373 pulse 1 msec;
-#X text 255 417 <= here is the delay loop;
-#X text 42 358 rectangular, f 12;
-#X text 42 344 this makes a;
-#X msg 136 342 1 \, 0 0 1;
-#X obj 423 16 declare -stdpath ./;
+#X text 30 388 long., f 12;
+#X text 329 373 length of delay line is;
+#X text 330 391 1000/(frequency);
+#X text 30 373 pulse 1 msec;
+#X text 243 417 <= here is the delay loop;
+#X text 30 358 rectangular, f 12;
+#X text 30 344 this makes a;
+#X msg 124 342 1 \, 0 0 1;
+#X obj 338 239 declare -stdpath ./;
 #X connect 0 0 9 0;
 #X connect 0 0 9 1;
 #X connect 1 0 0 1;
