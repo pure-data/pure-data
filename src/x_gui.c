@@ -592,7 +592,6 @@ static void pdcontrol_runtimeinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom
         argc--;
         argv++;
     }
-    post("command: %d", command);
     if (parent_level >= 0) c = canvas_get_nth_parent(c, (int)parent_level);
     else c = NULL;
 
