@@ -1,4 +1,4 @@
-#N canvas 542 119 549 715 12;
+#N canvas 542 31 549 702 12;
 #X declare -stdpath ./;
 #X obj 72 115 r trigger;
 #X text 110 14 USING ADSR'S OUTPUT AS dB;
@@ -25,7 +25,7 @@
 12.5893;
 #X coords 0 10 123 0 200 100 1;
 #X restore 275 185 graph;
-#N canvas 461 495 594 359 make-table 0;
+#N canvas 461 387 594 359 make-table 0;
 #X obj 101 232 moses 2;
 #X msg 62 32 bang;
 #X obj 62 61 t b b;
@@ -68,7 +68,7 @@ object., f 34;
 #X connect 17 1 9 0;
 #X restore 318 386 pd make-table;
 #X text 301 346 here's the patch I used to make the table:, f 24;
-#X obj 93 192 osc~ 440;
+#X obj 90 192 osc~ 440;
 #X text 477 278 0;
 #X text 478 179 10;
 #X text 294 288 ------ 123 samples ------;

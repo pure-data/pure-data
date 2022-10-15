@@ -9,7 +9,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-
 /* NULL-terminated */
 #define GUI_VMESS__END     0
 /* use space to structure the format-string */
@@ -91,7 +90,7 @@ static const char* str_escape(const char*s, int size)
 
 typedef struct _val {
     int type;
-    size_t size;
+    int size;
     const char* string;
     union
     {
@@ -175,12 +174,17 @@ static void sendatoms(int argc, t_atom*argv, int raw) {
             sys_vgui("%g ", atom_getfloat(a));
             break;
         case A_DOLLAR:
+            if(raw)
+                sys_vgui("$%d ", a->a_w.w_index);
+            else
+                sys_vgui("{$%d} ", a->a_w.w_index);
+            break;
         case A_DOLLSYM:
         case A_SYMBOL:
             if(raw)
-                sys_vgui("%s ", atom_getsymbol(a)->s_name);
+                sys_vgui("%s ", a->a_w.w_symbol->s_name);
             else
-                sys_vgui("{%s} ", str_escape(atom_getsymbol(a)->s_name, 0));
+                sys_vgui("{%s} ", str_escape(a->a_w.w_symbol->s_name, 0));
             break;
         case A_POINTER:
             sys_vgui("%p ", a->a_w.w_gpointer);
@@ -198,66 +202,65 @@ static void sendatoms(int argc, t_atom*argv, int raw) {
     }
 }
 
-
-static int addmess(t_val v)
+static int addmess(const t_val *v)
 {
     int i;
     char escbuf[MAXPDSTRING];
         //dprintf(2, "add-message: "); print_val(v);
-    switch (v.type) {
+    switch (v->type) {
     case GUI_VMESS__IGNORE:
         break;
     case GUI_VMESS__FLOAT:
-        sys_vgui("%g", v.value.d);
+        sys_vgui("%g", v->value.d);
         break;
     case GUI_VMESS__INT:
-        sys_vgui("%d", v.value.i);
+        sys_vgui("%d", v->value.i);
         break;
     case GUI_VMESS__COLOR:
-        sys_vgui("#%06x", v.value.i & 0xFFFFFF);
+        sys_vgui("#%06x", v->value.i & 0xFFFFFF);
         break;
     case GUI_VMESS__RAWSTRING:
-        sys_vgui("%s", v.value.p);
+        sys_vgui("%s", v->value.p);
         break;
     case GUI_VMESS__STRING:
-        sys_vgui("{%s}", str_escape(v.value.p, 0));
+        sys_vgui("{%s}", str_escape(v->value.p, 0));
         break;
     case GUI_VMESS__PASCALSTRING:
-        sys_vgui("{%s}", str_escape(v.value.p, v.size));
+        sys_vgui("{%s}", str_escape(v->value.p, v->size));
         break;
     case GUI_VMESS__POINTER:
     case GUI_VMESS__OBJECT:
-        sys_vgui("%p", v.value.p);
+        sys_vgui("%p", v->value.p);
         break;
     case GUI_VMESS__MESSAGE:
         sys_vgui("{");
-        if (v.string)
-            sys_vgui("%s ", v.string);
+        if (v->string)
+            sys_vgui("%s ", v->string);
         else
             ;
-        sendatoms(v.size, (t_atom*)v.value.p, 1);
+        sendatoms(v->size, (t_atom*)v->value.p, 1);
         sys_vgui("}");
         break;
     case GUI_VMESS__WINDOW:
-        sys_vgui(".x%lx", v.value.p);
+        sys_vgui(".x%lx", v->value.p);
         break;
     case GUI_VMESS__CANVAS:
-        sys_vgui(".x%lx.c", v.value.p);
+        sys_vgui(".x%lx.c", v->value.p);
         break;
     case GUI_VMESS__CANVASARRAY:
     {
-        const t_canvas**data = (const t_canvas**)v.value.p;
+        const t_canvas**data = (const t_canvas**)v->value.p;
         sys_vgui("{");
-        for(i=0; i<v.size; i++)
+        for(i=0; i<v->size; i++)
             sys_vgui(".x%lx.c ", data[i]);
         sys_vgui("}");
         break;
     }
     case GUI_VMESS__FLOATARRAY:
     {
-        const t_float*data = (const t_float*)v.value.p;
+        const t_float*data = (const t_float*)v->value.p;
         sys_vgui("{");
-        for(i=0; i<v.size; i++)
+        for(i=0; i<v->size; i++)
             sys_vgui("%f ", *data++);
         sys_vgui("}");
         break;
@@ -265,24 +268,24 @@ static int addmess(t_val v)
     case GUI_VMESS__FLOATWORDS:
     case GUI_VMESS__FLOATWORDARRAY:
     {
-        const t_word*data = (const t_word*)v.value.p;
-        if (GUI_VMESS__FLOATWORDARRAY == v.type)
+        const t_word*data = (const t_word*)v->value.p;
+        if (GUI_VMESS__FLOATWORDARRAY == v->type)
             sys_vgui("{");
-        for(i=0; i<v.size; i++)
+        for(i=0; i<v->size; i++)
             sys_vgui("%g ", data[i].w_float);
-        if (GUI_VMESS__FLOATWORDARRAY == v.type)
+        if (GUI_VMESS__FLOATWORDARRAY == v->type)
             sys_vgui("}");
         break;
     }
     case GUI_VMESS__RAWSTRINGARRAY:
     case GUI_VMESS__STRINGARRAY:
     {
-        const char**data = (const char**)v.value.p;
+        const char**data = (const char**)v->value.p;
         sys_vgui("{");
-        for(i=0; i<v.size; i++)
+        for(i=0; i<v->size; i++)
         {
             const char*s=data[i];
-            if (GUI_VMESS__RAWSTRINGARRAY == v.type)
+            if (GUI_VMESS__RAWSTRINGARRAY == v->type)
                 sys_vgui("%s ", s);
             else
                 sys_vgui("{%s} ", str_escape(s, 0));
@@ -293,10 +296,10 @@ static int addmess(t_val v)
     case GUI_VMESS__ATOMS:
     case GUI_VMESS__ATOMARRAY:
     {
-        if (GUI_VMESS__ATOMARRAY == v.type)
+        if (GUI_VMESS__ATOMARRAY == v->type)
             sys_vgui("{");
-        sendatoms(v.size, (t_atom*)v.value.p, 0);
-        if (GUI_VMESS__ATOMARRAY == v.type)
+        sendatoms(v->size, (t_atom*)v->value.p, 0);
+        if (GUI_VMESS__ATOMARRAY == v->type)
             sys_vgui("}");
         break;
     }
@@ -306,7 +309,7 @@ static int addmess(t_val v)
     return 0;
 }
 
-static int va2value(const char fmt, va_list args, t_val*v) {
+static int va2value(const char fmt, va_list *args, t_val*v) {
     int result = 1;
     v->type = fmt;
     v->size = 1;
@@ -316,15 +319,15 @@ static int va2value(const char fmt, va_list args, t_val*v) {
         v->type = GUI_VMESS__IGNORE;
         break;
     case GUI_VMESS__ATOMS:
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, t_atom*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, t_atom*);
         break;
     case GUI_VMESS__FLOAT:
-        v->value.d = va_arg(args, double);
+        v->value.d = va_arg(*args, double);
         break;
     case GUI_VMESS__INT:
     case GUI_VMESS__COLOR:
-        v->value.i = va_arg(args, int);
+        v->value.i = va_arg(*args, int);
         break;
     case GUI_VMESS__RAWSTRING:
     case GUI_VMESS__STRING:
@@ -332,7 +335,7 @@ static int va2value(const char fmt, va_list args, t_val*v) {
     case GUI_VMESS__POINTER:
     case GUI_VMESS__WINDOW:
     case GUI_VMESS__CANVAS:
-        v->value.p = va_arg(args, void*);
+        v->value.p = va_arg(*args, void*);
         break;
     case GUI_VMESS__ATOMARRAY:
     case GUI_VMESS__CANVASARRAY:
@@ -342,15 +345,15 @@ static int va2value(const char fmt, va_list args, t_val*v) {
     case GUI_VMESS__STRINGARRAY:
     case GUI_VMESS__RAWSTRINGARRAY:
     case GUI_VMESS__PASCALSTRING:
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, void*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, void*);
         break;
     case GUI_VMESS__MESSAGE:
     {
-        t_symbol*s = va_arg(args, t_symbol*);
+        t_symbol*s = va_arg(*args, t_symbol*);
         v->string = s?s->s_name:0;
-        v->size = va_arg(args, int);
-        v->value.p = va_arg(args, void*);
+        v->size = va_arg(*args, int);
+        v->value.p = va_arg(*args, void*);
         break;
     }
     default:
@@ -362,29 +365,32 @@ static int va2value(const char fmt, va_list args, t_val*v) {
 }
 
 
-void pdgui_vamess(const char* message, const char* format, va_list args)
+void pdgui_vamess(const char* message, const char* format, va_list args_)
 {
     const char* fmt;
     char* buf;
     t_val v;
+    va_list args;
 
     v.type = GUI_VMESS__RAWSTRING;
     v.size = 1;
     v.value.p = message;
 
     if(message) {
-        addmess(v);
+        addmess(&v);
         sys_vgui("%s", " ");
     }
 
+    va_copy(args, args_);
         /* iterate over the format-string and add elements */
     for(fmt = format; *fmt; fmt++) {
-        if(va2value(*fmt, args, &v) < 1)
+        if(va2value(*fmt, &args, &v) < 1)
             continue;
-        addmess(v);
+        addmess(&v);
         if(GUI_VMESS__IGNORE != v.type)
             sys_vgui("%s", " ");
     }
+    va_end(args);
 }
 void pdgui_endmess(void)
 {
@@ -392,7 +398,7 @@ void pdgui_endmess(void)
     v.type = GUI_VMESS__RAWSTRING;
     v.size = 1;
     v.value.p = ";\n";
-    addmess(v);
+    addmess(&v);
 }
 
 

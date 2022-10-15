@@ -65,11 +65,12 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 
 static void textbuf_senditup(t_textbuf *x)
 {
-    int i, ntxt;
+    int ntxt;
     char *txt, *buf;
     if (!x->b_guiconnect)
         return;
 
+#if 0
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
     buf = getbytes(ntxt+2);
     memcpy(buf, txt, ntxt);
@@ -79,15 +80,18 @@ static void textbuf_senditup(t_textbuf *x)
 
     pdgui_vmess("pdtk_textwindow_clear", "^", x);
     pdgui_vmess("pdtk_textwindow_append", "^s", x, buf);
-#if 0
-        /* it would be nice to send the binbuf directly
-         * and let the GUI figure out when to do linebreaks */
-    pdgui_vmess("pdtk_textwindow_setatoms", "^A", x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
+
+    freebytes(txt, ntxt);
+    freebytes(buf, ntxt+2);
+#else
+        /* send the binbuf directly and let the GUI figure out when to do
+         * linebreaks and how to escape special character $1*/
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
+    pdgui_vmess("pdtk_textwindow_appendatoms", "^A",
+        x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
 #endif
 
     pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
-    t_freebytes(txt, ntxt);
-    freebytes(buf, ntxt+2);
 }
 
 static void textbuf_open(t_textbuf *x)

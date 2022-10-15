@@ -26,17 +26,12 @@
 #X text 354 635 updated for Pd version 0.33;
 #X text 91 40 - abbreviation;
 #X floatatom 173 250 5 0 0 0 - - - 0;
-#X obj 85 250 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 85 250 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X floatatom 474 384 5 0 0 0 - - - 0;
 #X symbolatom 85 525 10 0 0 0 - - - 0;
-#X symbolatom 180 577 10 0 0 0 - - - 0;
+#X symbolatom 180 580 10 0 0 0 - - - 0;
 #X symbolatom 468 576 10 0 0 0 - - - 0;
-#X text 27 79 In its simplest form shown below \, select checks its
-input against the constant "6". If they match \, the first outlet gives
-"bang" and otherwise the input is copied to the second outlet. If select
-is used with a single argument \, a second inlet allows you to change
-the test value., f 73;
 #X text 64 315 You can also give several arguments. You get an outlet
 for each test value and finally an outlet for values which match none
 of them. In this case you don't get inlets to change the test values.
@@ -85,21 +80,26 @@ here., f 52;
 #X obj 17 621 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 245 161 <= change argument;
-#X text 74 420 Select can also be used to sort symbols \, but it cannot
-mix floats and symbols:, f 40;
-#X obj 85 577 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
-#X obj 317 576 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 392 576 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 365 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 401 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 437 384 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 173 277 print unselected;
+#X obj 85 580 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 317 576 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 392 578 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 365 384 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 401 384 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 437 384 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 27 79 In its simplest form shown below \, [select] checks its
+input against the constant "6". If they match \, the first outlet gives
+"bang" and otherwise the input is copied to the second outlet. If [select]
+is used with a single argument \, a second inlet allows you to change
+the test value., f 73;
+#X text 65 420 [select] can also be used to sort symbols \, but it
+cannot mix floats and symbols:, f 42;
 #X connect 0 0 12 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
@@ -113,23 +113,23 @@ mix floats and symbols:, f 40;
 #X connect 9 1 26 0;
 #X connect 10 0 11 0;
 #X connect 11 0 9 0;
-#X connect 12 0 48 0;
-#X connect 12 1 49 0;
-#X connect 12 2 50 0;
+#X connect 12 0 47 0;
+#X connect 12 1 48 0;
+#X connect 12 2 49 0;
 #X connect 12 3 28 0;
 #X connect 14 0 29 0;
 #X connect 15 0 29 0;
-#X connect 16 0 34 0;
-#X connect 17 0 34 0;
-#X connect 18 0 45 0;
+#X connect 16 0 33 0;
+#X connect 17 0 33 0;
+#X connect 18 0 44 0;
 #X connect 18 1 30 0;
-#X connect 19 0 46 0;
-#X connect 19 1 47 0;
+#X connect 19 0 45 0;
+#X connect 19 1 46 0;
 #X connect 19 2 31 0;
-#X connect 26 0 51 0;
+#X connect 26 0 43 0;
 #X connect 29 0 18 0;
-#X connect 34 0 18 1;
-#X connect 35 0 38 0;
-#X connect 36 0 38 0;
-#X connect 37 0 38 0;
-#X connect 38 0 19 0;
+#X connect 33 0 18 1;
+#X connect 34 0 37 0;
+#X connect 35 0 37 0;
+#X connect 36 0 37 0;
+#X connect 37 0 19 0;

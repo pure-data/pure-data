@@ -1,4 +1,4 @@
-#N canvas 343 23 880 675 12;
+#N canvas 351 23 876 709 12;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array97 5 float 1;
 #A 0 0.486666 0.126666 0.566675 0.0333376 0.5;
@@ -11,13 +11,11 @@
 #X text 26 276 setting the bounds rectangle:;
 #X text 30 441 adding labels. Give a y value and a bunch of x values
 or vice versa:, f 37;
-#X obj 585 379 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 585 379 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 585 403 \; array98 vis \$1;
-#X obj 707 377 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X msg 538 658 \; array98 style \$1;
-#X obj 538 613 hradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc
+#X msg 518 658 \; array98 style \$1;
+#X obj 518 613 hradio 15 1 0 3 empty empty empty 0 -8 0 10 #dfdfdf
 #000000 #000000 0;
 #X msg 538 521 \; array98 width \$1;
 #X floatatom 538 493 5 1 10 0 - - - 0;
@@ -47,7 +45,7 @@ appearance of arrays:, f 51;
 #X text 506 392 show/hide arrays:, f 9;
 #X text 526 467 set line width;
 #X text 755 494 set color;
-#X floatatom 538 634 5 0 0 0 - - - 0;
+#X floatatom 518 634 5 0 0 0 - - - 0;
 #X msg 302 166 \; array97 3 -0.5 0.5;
 #X msg 27 229 \; array97 rename george;
 #X msg 231 229 \; george rename array97;
@@ -76,37 +74,40 @@ of global., f 70;
 #X obj 348 168 float \$0;
 #X text 371 126 <= click;
 #X text 67 306 You can use "\$0" in an array name wherever you want
-as above. If you need to send a message to the array \, use the send
-object or load the "\$0" in a float object and pass it to a message
+as above. If you need to send a message to the array \, use the [send]
+object or load the "\$0" in a [float] object and pass it to a message
 used as a send. This is because "\$0" doesn't get expanded in messages.
 , f 69;
 #X connect 3 0 6 0;
 #X connect 4 0 2 0;
 #X connect 6 0 5 0;
-#X restore 342 617 pd locality;
-#X text 63 617 open subpatch for local array names =>;
+#X restore 251 629 pd locality;
+#X text 103 615 open subpatch for local array names =>, f 20;
 #X msg 693 615 0;
 #X msg 683 578 1;
 #X text 716 572 allow editing with mouse, f 13;
 #X text 722 608 prevent mouse interaction, f 14;
-#X text 456 634 0- point \; 1- polygon \; 2- bezier;
-#X text 515 589 set display style;
+#X text 436 634 0- point \; 1- polygon \; 2- bezier;
+#X text 511 589 set display style;
 #X msg 683 645 \; array97 edit \$1 \; array98 edit \$1;
-#X text 61 671 last updated for version 0.52.;
 #X text 487 214 You can put more than one array in a single "graph"
 (which is Pd's name for the bounding rectangle \, and is a synonym
 for "canvas".) Arrays' sizes need not match the bounds of the containing
 graph. But if you resize an array \, and if it is the only array contained
 in a graph \, then the graph automatically resets its bounds to match.
 , f 51;
+#X text 46 673 updated for version 0.52.;
+#X text 567 611 (radio button);
+#X obj 707 377 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
 #X connect 5 0 6 0;
-#X connect 7 0 37 0;
-#X connect 9 0 27 0;
-#X connect 11 0 10 0;
-#X connect 12 0 13 0;
-#X connect 15 0 12 0;
-#X connect 16 0 12 0;
-#X connect 17 0 12 0;
-#X connect 27 0 8 0;
-#X connect 40 0 46 0;
-#X connect 41 0 46 0;
+#X connect 8 0 26 0;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
+#X connect 14 0 11 0;
+#X connect 15 0 11 0;
+#X connect 16 0 11 0;
+#X connect 26 0 7 0;
+#X connect 39 0 45 0;
+#X connect 40 0 45 0;
+#X connect 49 0 36 0;

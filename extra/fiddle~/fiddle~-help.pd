@@ -6,25 +6,6 @@
 #X obj 510 528 unpack;
 #X obj 404 548 print attack;
 #X obj 313 548 print pitch;
-#X text 19 117 The Fiddle object estimates the pitch and amplitude
-of an incoming sound \, both continuously and as a stream of discrete
-"note" events. Fiddle optionally outputs a list of detected sinusoidal
-peaks used to make the pitch determination. Fiddle is described theoretically
-in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu., f 51;
-#X text 19 234 Fiddle's creation arguments specify an analysis window
-size \, the maximum polyphony (i.e. \, the number of simultaneous "pitches"
-to try to find) \, the number of peaks in the spectrum to consider
-\, and the number of peaks \, if any \, to output "raw." The outlets
-give discrete pitch (a number) \, detected attacks in the amplitude
-envelope (a bang) \, one or more voices of continuous pitch and amplitude
-\, overall amplitude \, and optionally a sequence of messages with
-the peaks., f 51;
-#X text 19 388 The analysis hop size is half the window size so in
-the example shown here \, one analysis is done every 512 samples (11.6
-msec at 44K1) \, and the analysis uses the most recent 1024 samples
-(23.2 msec at 44K1). The minimum frequency that Fiddle will report
-is 2-1/2 cycles per analysis windows \, or about 108 Hz. (just below
-MIDI 45.), f 51;
 #X text 701 463 number of pitch outlets (1-3 \, default 1), f 43;
 #X text 701 480 number of peaks to find (1-100 \, default 20);
 #X msg 404 66 amp-range 40 50;
@@ -45,7 +26,6 @@ notes in the cooked pitch output., f 68;
 #X text 621 615 (dB), f 7;
 #X msg 466 285 auto 1;
 #X msg 473 307 auto 0;
-#X msg 487 336 bang;
 #X text 536 236 Higher partials are weighed less strongly than lower
 ones in determining the pitch. This specifies the number of the partial
 (7) which will be weighted half as strongly as the fundamental., f
@@ -92,7 +72,7 @@ is below the low threshold \, no pitches or peaks are output. The high
 threshold is a minimum at which "cooked" outputs may appear., f 68
 ;
 #X msg 140 563 \; pd dsp \$1;
-#X obj 140 539 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 140 539 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 163 539 DSP on/off;
 #X floatatom 510 578 7 0 0 0 - - - 0;
@@ -163,36 +143,58 @@ window., f 84;
 #X obj 4 657 cnv 1 1050 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 701 497 number of peaks to output (default 0), f 43;
-#X text 525 335 poll current values (useful when not in auto mode)
+#X text 507 335 poll current values (useful when not in auto mode)
 ;
 #X text 30 668 see also:;
 #X obj 108 668 sigmund~;
-#X text 174 667 (newer and better replacement for fiddle~);
-#X connect 0 0 44 0;
-#X connect 0 1 45 0;
-#X connect 1 0 18 0;
-#X connect 2 0 46 0;
-#X connect 2 1 47 0;
-#X connect 3 0 48 0;
-#X connect 3 1 49 0;
-#X connect 4 0 43 0;
-#X connect 4 1 51 0;
-#X connect 12 0 18 0;
-#X connect 13 0 18 0;
-#X connect 14 0 18 0;
-#X connect 15 0 18 0;
-#X connect 18 0 6 0;
-#X connect 18 1 5 0;
-#X connect 18 2 4 0;
-#X connect 18 3 50 0;
-#X connect 18 4 37 0;
-#X connect 22 0 18 0;
-#X connect 23 0 18 0;
-#X connect 24 0 18 0;
-#X connect 29 0 18 0;
-#X connect 31 0 18 0;
-#X connect 37 0 0 0;
-#X connect 37 1 2 0;
-#X connect 37 2 3 0;
-#X connect 38 0 18 0;
-#X connect 41 0 40 0;
+#X text 19 117 The [fiddle~] object estimates the pitch and amplitude
+of an incoming sound \, both continuously and as a stream of discrete
+"note" events. It optionally outputs a list of detected sinusoidal
+peaks used to make the pitch determination. The [fiddle~] object is
+described theoretically in the 1998 ICMC proceedings \, reprinted on
+msp.ucsd.edu., f 52;
+#X text 19 234 [fiddle~]'s creation arguments specify an analysis window
+size \, the maximum polyphony (i.e. \, the number of simultaneous "pitches"
+to try to find) \, the number of peaks in the spectrum to consider
+\, and the number of peaks \, if any \, to output "raw." The outlets
+give discrete pitch (a number) \, detected attacks in the amplitude
+envelope (a bang) \, one or more voices of continuous pitch and amplitude
+\, overall amplitude \, and optionally a sequence of messages with
+the peaks., f 51;
+#X text 19 388 The analysis hop size is half the window size so in
+the example shown here \, one analysis is done every 512 samples (11.6
+msec at 44K1) \, and the analysis uses the most recent 1024 samples
+(23.2 msec at 44K1). The minimum frequency that [fiddle~] will report
+is 2-1/2 cycles per analysis windows \, or about 108 Hz. (just below
+MIDI 45.), f 51;
+#X obj 487 336 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 174 667 (newer and better replacement for [fiddle~]);
+#X connect 0 0 40 0;
+#X connect 0 1 41 0;
+#X connect 1 0 15 0;
+#X connect 2 0 42 0;
+#X connect 2 1 43 0;
+#X connect 3 0 44 0;
+#X connect 3 1 45 0;
+#X connect 4 0 39 0;
+#X connect 4 1 47 0;
+#X connect 9 0 15 0;
+#X connect 10 0 15 0;
+#X connect 11 0 15 0;
+#X connect 12 0 15 0;
+#X connect 15 0 6 0;
+#X connect 15 1 5 0;
+#X connect 15 2 4 0;
+#X connect 15 3 46 0;
+#X connect 15 4 33 0;
+#X connect 19 0 15 0;
+#X connect 20 0 15 0;
+#X connect 25 0 15 0;
+#X connect 27 0 15 0;
+#X connect 33 0 0 0;
+#X connect 33 1 2 0;
+#X connect 33 2 3 0;
+#X connect 34 0 15 0;
+#X connect 37 0 36 0;
+#X connect 62 0 15 0;

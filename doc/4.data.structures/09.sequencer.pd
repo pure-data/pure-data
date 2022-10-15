@@ -1,0 +1,173 @@
+#N struct template-event float x float y float color array pitch template-pitch
+array amp template-amp;
+#N struct template-pitch float x float y float w;
+#N struct template-amp float x float y float w;
+#N canvas 352 61 498 433 12;
+#X declare -stdpath ./;
+#N canvas 368 112 453 283 template-event 0;
+#X obj 38 196 plot pitch color 3 10 0;
+#X obj 38 223 plot amp 0 3 10 0;
+#X obj 38 156 filledpolygon 9 9 0 0 -2 0 2 5 2 5 -2;
+#X obj 38 76 struct template-event float x float y float color array
+pitch template-pitch array amp template-amp, f 52;
+#X text 25 22 Template contains x/y coordinates \, a color field for
+the pitch's array color and two arrays (pitch and amp)., f 57;
+#X text 41 132 draw a small blue rectangle;
+#X text 210 196 plot the pitch array;
+#X text 170 222 plot the amp array;
+#X restore 50 278 pd template-event;
+#N canvas 416 229 394 148 template-amp 0;
+#X obj 46 70 struct template-amp float x float y float w;
+#X text 44 33 template for the element of the 'amp' array;
+#X restore 50 302 pd template-amp;
+#N canvas 434 368 414 98 template-pitch 0;
+#X obj 40 55 struct template-pitch float x float y float w;
+#X text 37 24 template for the element of the 'pitch' array;
+#X restore 50 326 pd template-pitch;
+#N canvas 471 138 593 572 synthesis 0;
+#X msg 61 237 next;
+#X msg 152 253 traverse pd-data \, next;
+#X obj 152 142 inlet;
+#X obj 152 182 route start stop;
+#X obj 350 289 r reset;
+#X obj 61 211 r next-evt;
+#X obj 152 395 outlet~;
+#X msg 350 317 \; reset-stop stop \; time-of-last-evt 0 \; pd-data
+sort;
+#X obj 350 245 s delay-multiplier;
+#X obj 152 355 clone 4 voice;
+#X msg 152 320 next \$1;
+#X obj 152 290 pointer;
+#X obj 152 219 t b b;
+#X obj 206 219 s reset;
+#X obj 350 193 expr 1000 / $f1;
+#X obj 350 142 inlet;
+#X text 396 143 tempo;
+#X floatatom 350 220 9 0 0 0 - - - 0;
+#X floatatom 350 168 5 0 0 0 - - - 0;
+#X text 30 20 We start by traversing the [pd data] window and getting
+the pointer for the first scalar. The pointer is sent to [clone] \,
+which loads 4 copies of the [voice] abstraction. The actual synthesis
+and sequencing is taken care inside [voice] \, which calls for the
+next scalar/event ("next-evt") after a delayed period that depends
+on the horizontal (x) coordinate. Check the [voice] abstraction in
+[clone] for more details., f 72;
+#N canvas 542 74 488 534 voice-routing 0;
+#X msg 162 165 next;
+#X msg 126 133 traverse pd-data \, next;
+#X obj 126 195 pointer;
+#X obj 126 267 get template-event color, f 21;
+#N canvas 68 97 265 165 red 0;
+#X obj 90 56 inlet;
+#X obj 90 94 print red;
+#X connect 0 0 1 0;
+#X restore 161 474 pd red;
+#N canvas 662 320 276 195 yellow 0;
+#X obj 100 66 inlet;
+#X obj 100 104 print yellow;
+#X connect 0 0 1 0;
+#X restore 195 445 pd yellow;
+#N canvas 360 146 228 194 green 0;
+#X obj 78 37 inlet;
+#X obj 78 81 print green;
+#X connect 0 0 1 0;
+#X restore 229 416 pd green;
+#N canvas 357 186 312 198 purple 0;
+#X obj 98 33 inlet;
+#X obj 98 78 print purple;
+#X connect 0 0 1 0;
+#X restore 263 390 pd purple;
+#X obj 161 360 route 900 990 90 909;
+#X obj 126 229 trigger pointer pointer;
+#X obj 161 325 pack float pointer;
+#X text 41 24 This example shows how one can use a different approach
+to route scalars to a specific voice subpatch depending on the color
+of the pitch array. Alternativelly \, inside a cloned abstraction \,
+one could use the color parameter to choose a different noise input
+or something., f 57;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 2 0 9 0;
+#X connect 3 0 10 0;
+#X connect 8 0 4 0;
+#X connect 8 1 5 0;
+#X connect 8 2 6 0;
+#X connect 8 3 7 0;
+#X connect 9 0 3 0;
+#X connect 9 1 10 1;
+#X connect 10 0 8 0;
+#X restore 211 513 pd voice-routing;
+#X text 91 442 Here we have a single abstraction for all voices \,
+so they're all playing the same "instrument". The color parameter on
+the event is not used \, but one could use it to route to a specific
+instrument/abstraction. Check the subpatch below for ideas:;
+#X connect 0 0 11 0;
+#X connect 1 0 11 0;
+#X connect 2 0 3 0;
+#X connect 3 0 12 0;
+#X connect 3 1 13 0;
+#X connect 4 0 7 0;
+#X connect 5 0 0 0;
+#X connect 9 0 6 0;
+#X connect 10 0 9 0;
+#X connect 11 0 10 0;
+#X connect 12 0 1 0;
+#X connect 12 1 13 0;
+#X connect 14 0 17 0;
+#X connect 15 0 18 0;
+#X connect 17 0 8 0;
+#X connect 18 0 14 0;
+#X restore 260 310 pd synthesis;
+#X floatatom 341 270 4 0 0 1 tempo tempo-set - 16;
+#X msg 260 245 start;
+#X msg 271 276 stop;
+#N canvas 866 48 445 471 data 1;
+#X scalar template-event 22 69.5 900 \; 0 0 12 \; 10 0 12 \; \; 0 0
+0 \; 10 0 2.5 \; 11 0 0 \; \;;
+#X scalar template-event 33 63.5 990 \; 0 0 12 \; 10 0 12 \; \; 0 0
+2.5 \; 10 0 2.5 \; 11 0 0 \; \;;
+#X scalar template-event 57 26.75 90 \; 0 65 12 \; 100 10 0 \; 100
+10 12 \; 230 50 0 \; 230 10 3 \; 240 60 0 \; 240 25 10 \; 250 60 0
+\; 250 37 10 \; 260 65 0.5 \; 285 65 0.5 \; \; 1 0 2 \; 103 0 1 \;
+195 0 2 \; 220 0 0.75 \; 225 0 1.25 \; 248 0 2.5 \; 251 0 2.25 \; 255
+0 0 \; 256 0 1.5 \; 260 0 0 \; 261 0 2 \; 265 0 0 \; 266 0 2.5 \; 270
+0 0 \; 271 0 3 \; 275 0 0 \; \;;
+#X scalar template-event 93 61 900 \; 0 5 0.25 \; 60 5 0.25 \; \; 0
+0 0 \; 28 -0.25 3.5 \; 58 -0.25 0 \; \;;
+#X scalar template-event 161 88.5 900 \; 0 0 12 \; 70 -20 12 \; \;
+0 0 0 \; 10 0 2.5 \; 20 0 0 \; 30 0 0 \; 40 0 2.5 \; 50 0 0 \; 60 0
+2.5 \; 70 0 0 \; \;;
+#X scalar template-event 338 47 909 \; 0 0 12 \; 50 0 12 \; \; 0 0
+4 \; 10 0 2.5 \; 50 0 0 \; \;;
+#X coords 0 117.75 1 117.5 0 0 0;
+#X restore 379 342 pd data;
+#N canvas 553 421 419 189 stuff 0;
+#X msg 48 33 \; pd-data read event.txt;
+#X obj 248 39 loadbang;
+#X msg 48 119 \; pd-data sort;
+#X msg 48 77 \; pd-data write event.txt;
+#X obj 240 126 declare -stdpath ./;
+#X msg 248 66 \; tempo-set 60;
+#X connect 1 0 5 0;
+#X restore 379 368 pd stuff;
+#X text 39 11 This patch shows an example of how to use data collections
+as musical sequences (with apologies to Yuasa and Stockhausen). Here
+the black traces show dynamics and the colored ones show pitch. The
+fatness of the pitch traces give bandwidth. Any of the three can change
+over the life of the event., f 61;
+#X text 38 93 To hear the result \, turn the volume up to 70 or so
+(higher if it's not loud enough the first time) and hit "start". You
+can set the tempo lower if that helps you follow the "event" the first
+couple of times., f 61;
+#X obj 260 348 output~;
+#X text 30 376 Updated for Pd version 0.52;
+#X text 52 255 templates:;
+#X text 38 159 Note the screen units in the "data" window is 0.25 (ask
+for "properties" to see them) \, meaning that adding one to a 'y' values
+in arrays moves it up four pixels. In other words \, this stretches
+the vertical display of the scalar objects., f 61;
+#X connect 3 0 11 0;
+#X connect 3 0 11 1;
+#X connect 4 0 3 1;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
