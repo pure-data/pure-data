@@ -574,7 +574,6 @@ static void canvas_countobjects(t_canvas *c, int *numobjects, int *numcanvases)
 static void pdcontrol_runtimeinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom *argv)
 {
     t_atom at[3];
-    t_canvas *c = x->x_canvas;
     int parent_level = -1;
     enum {NUMSYMBOLS, NUMOBJECTS, PDVERSION};
     int command = 0;
@@ -586,24 +585,17 @@ static void pdcontrol_runtimeinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom
             else if(com == gensym("numobjects")) command |= 1 << NUMOBJECTS;
             else if(com == gensym("pdversion")) command |= 1 << PDVERSION;
         }
-        else if (argv->a_type == A_FLOAT) {
-            parent_level = atom_getfloat(argv);
-        }
         argc--;
         argv++;
     }
-    if (parent_level >= 0) c = canvas_get_nth_parent(c, (int)parent_level);
-    else c = NULL;
-
     #define ENABLED(which) (command == 0 || (command & (1 << which)) != 0)
-
     if (ENABLED(NUMSYMBOLS)) {
         SETFLOAT(&at[0], (float)getnumsymbols());
         outlet_anything(x->x_outlet, gensym("numsymbols"), 1, at);
     }
     if (ENABLED(NUMOBJECTS)) {
         int numobjects = 0, numcanvases = 0;
-        canvas_countobjects(c, &numobjects, &numcanvases);
+        canvas_countobjects(NULL, &numobjects, &numcanvases);
         SETFLOAT(&at[0], (float)numobjects);
         SETFLOAT(&at[1], (float)numcanvases);
         outlet_anything(x->x_outlet, gensym("numobjects"), 2, at);
@@ -616,6 +608,24 @@ static void pdcontrol_runtimeinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom
         SETFLOAT(&at[2], (float)bugfix);
         outlet_anything(x->x_outlet, gensym("pdversion"), 3, at);
     }
+}
+
+static void pdcontrol_canvasinfo(t_pdcontrol *x,  t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom at[3];
+    t_canvas *c = x->x_canvas;
+    int parent_level = 0;
+    int numobjects = 0, numcanvases = 0;
+
+    if (argv->a_type == A_FLOAT) {
+        parent_level = atom_getfloat(argv);
+        if (parent_level < 0) parent_level = 0;
+    }
+    c = canvas_get_nth_parent(c, (int)parent_level);
+    canvas_countobjects(c, &numobjects, &numcanvases);
+    SETFLOAT(&at[0], (float)numobjects);
+    SETFLOAT(&at[1], (float)numcanvases);
+    outlet_anything(x->x_outlet, gensym("numobjects"), 2, at);
 }
 
 static void pdcontrol_setup(void)
@@ -632,6 +642,8 @@ static void pdcontrol_setup(void)
         gensym("isvisible"), 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_runtimeinfo,
         gensym("runtimeinfo"), A_GIMME, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_canvasinfo,
+        gensym("canvasinfo"), A_GIMME, 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
