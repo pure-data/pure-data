@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 52
-#define PD_BUGFIX_VERSION 3
+#define PD_MINOR_VERSION 53
+#define PD_BUGFIX_VERSION 0
 #define PD_TEST_VERSION "test1"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
