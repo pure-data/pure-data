@@ -49,11 +49,12 @@ when you release the note., f 63;
 0;
 #X obj 8 420 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 33 52 Stripnote ignores note-off (zero-velocity) messages from
-a stream of MIDI-style note message and passes the others through unchanged.
-It can deal with any kind of number (negative \, floats \, whatever)
-even though MIDI values need to be integers from 0 to 127!, f 63;
 #X text 176 306 <-- note off ignored;
+#X text 33 52 [stripnote] ignores note-off (zero-velocity) messages
+from a stream of MIDI-style note message and passes the others through
+unchanged. It can deal with any kind of number (negative \, floats
+\, whatever) even though MIDI values need to be integers from 0 to
+127!, f 63;
 #X connect 2 0 8 0;
 #X connect 2 1 9 0;
 #X connect 3 0 2 0;

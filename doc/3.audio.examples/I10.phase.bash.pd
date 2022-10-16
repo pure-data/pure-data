@@ -1,7 +1,7 @@
-#N canvas 681 156 802 585 12;
+#N canvas 564 26 802 585 12;
 #X declare -stdpath ./;
-#X floatatom 468 293 0 0 0 0 - - - 0;
-#N canvas 2689 55 791 659 fft 0;
+#X floatatom 468 293 4 0 0 0 - - - 0;
+#N canvas 575 55 791 659 fft 0;
 #X obj 98 224 *~;
 #X obj 66 224 *~;
 #X obj 66 167 *~;
@@ -38,8 +38,6 @@
 #X obj 357 561 del;
 #X obj 393 463 / 2;
 #X obj 393 486 - 1;
-#X msg 163 61 \; pd dsp 1 \; window-size 1024 \; pitch 48 \; specshift
-0;
 #X text 135 267 magnitude of FT;
 #X text 77 346 align partials to middle of window;
 #X text 98 329 alternate every other sign to;
@@ -59,6 +57,7 @@
 #X text 542 463 recording synchronously., f 26;
 #X text 65 519 output phase-aligned frames;
 #X text 412 594 output a bang to start recording;
+#X msg 163 61 \; window-size 1024 \; pitch 48 \; specshift 0;
 #X connect 0 0 8 0;
 #X connect 1 0 8 0;
 #X connect 2 0 4 0;
@@ -76,7 +75,7 @@
 #X connect 10 0 24 0;
 #X connect 11 0 15 0;
 #X connect 11 1 16 0;
-#X connect 12 0 36 0;
+#X connect 12 0 55 0;
 #X connect 13 0 22 0;
 #X connect 15 0 5 1;
 #X connect 16 0 15 1;
@@ -100,16 +99,15 @@
 #X connect 34 0 35 0;
 #X connect 35 0 29 0;
 #X restore 99 454 pd fft;
-#X floatatom 641 353 0 0 120 0 - pitch-set - 0;
-#X floatatom 638 296 0 0 0 0 - specshift-set - 0;
+#X floatatom 641 353 3 0 120 0 - pitch-set - 0;
+#X floatatom 638 296 4 0 0 0 - specshift-set - 0;
 #X obj 638 319 s specshift;
 #X obj 468 400 s loco;
 #X obj 641 376 s pitch;
-#X obj 468 316 pack 0 100;
 #X obj 428 480 output~;
 #X text 61 22 PHASE BASHING;
 #X text 554 494 updated for Pd version 0.39;
-#X floatatom 260 347 5 0 0 0 - #0-samp-msec - 0;
+#X floatatom 260 347 8 0 0 0 - \$0-samp-msec - 0;
 #X text 258 365 sample length \, msec;
 #X msg 259 249 ../sound/bell.aiff;
 #X msg 265 271 ../sound/voice.wav;
@@ -171,8 +169,6 @@
 #X connect 24 0 5 0;
 #X connect 24 1 6 0;
 #X restore 99 426 pd test-signal;
-#X obj 194 407 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
 #N canvas 0 110 565 454 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
@@ -278,10 +274,8 @@ and window-msec (analysis window size in seconds and msec).;
 #X connect 20 0 19 0;
 #X connect 22 0 12 0;
 #X restore 272 436 pd insample;
-#X obj 99 406 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X text 108 369 ---analyze---;
-#X text 92 388 sample;
+#X text 108 366 ---analyze---;
+#X text 92 385 sample;
 #X obj 138 486 tabwrite~ \$0-nophase;
 #X obj 41 497 output~;
 #X msg 476 341 0 \, 400 4000;
@@ -524,7 +518,7 @@ size)/2, f 20;
 #X text 620 256 spectral shift;
 #X text 618 272 (hundredths of;
 #X text 681 289 octave);
-#X text 181 387 live;
+#X text 181 384 live;
 #X text 400 58 You can save the analyses and needn't be running the
 FFT patch to do the resynthesis. You can read a sample \, select window
 size \, and press "sample" to analyze it \, or else analyze a "live"
@@ -538,25 +532,30 @@ and spectral shift \, using the "playback" controls., f 44;
 #X text 138 289 window;
 #X text 139 303 size);
 #X obj 578 17 declare -stdpath ./;
-#X connect 0 0 7 0;
-#X connect 1 0 30 0;
-#X connect 1 0 31 0;
-#X connect 1 0 31 1;
-#X connect 1 1 30 0;
+#X obj 194 404 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 99 403 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 468 316 pack f 100;
+#X connect 0 0 52 0;
+#X connect 1 0 27 0;
+#X connect 1 0 28 0;
+#X connect 1 0 28 1;
+#X connect 1 1 27 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;
-#X connect 7 0 5 0;
-#X connect 13 0 17 0;
-#X connect 14 0 17 0;
-#X connect 15 0 17 0;
-#X connect 18 0 1 0;
-#X connect 19 0 18 1;
-#X connect 21 0 24 0;
-#X connect 22 0 24 0;
-#X connect 23 0 24 0;
-#X connect 25 0 24 0;
-#X connect 27 0 18 0;
-#X connect 32 0 5 0;
-#X connect 33 0 5 0;
-#X connect 40 0 8 0;
-#X connect 40 0 8 1;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
+#X connect 14 0 16 0;
+#X connect 17 0 1 0;
+#X connect 19 0 22 0;
+#X connect 20 0 22 0;
+#X connect 21 0 22 0;
+#X connect 23 0 22 0;
+#X connect 29 0 5 0;
+#X connect 30 0 5 0;
+#X connect 37 0 7 0;
+#X connect 37 0 7 1;
+#X connect 50 0 17 1;
+#X connect 51 0 17 0;
+#X connect 52 0 5 0;

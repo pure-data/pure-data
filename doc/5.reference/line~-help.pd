@@ -21,16 +21,9 @@ starts!), f 31;
 #X text 117 185 a pair of numbers starts a ramp (first value: destination
 \, second: ramp time), f 38;
 #X msg 62 208 0 5000;
-#X text 28 57 The line~ object generates linear ramps whose levels
-and timing are determined by messages you send it. A list of two floats
-distributes the value over the inlets \, as usual in Pd. Note that
-the right inlet (that sets the ramp time in milliseconds) does not
-remember old values (unlike every other inlet in Pd). Thus \, if you
-don't priorly specify a time in the right inlet and sent line~ a float
-\, it jumps immediately to the target value., f 64;
 #X obj 145 450 metro 100;
 #X obj 145 423 loadbang;
-#X obj 274 432 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 274 432 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 274 458 \; pd dsp \$1;
 #X text 297 430 DSP on/off;
@@ -64,6 +57,13 @@ don't priorly specify a time in the right inlet and sent line~ a float
 #X msg 106 329 0 \, 1 1000;
 #X text 185 322 setting start \, target and duration with two messages.
 , f 28;
+#X text 28 57 The [line~] object generates linear ramps whose levels
+and timing are determined by messages you send it. A list of two floats
+distributes the value over the inlets \, as usual in Pd. Note that
+the right inlet (that sets the ramp time in milliseconds) does not
+remember old values (unlike every other inlet in Pd). Thus \, if you
+don't priorly specify a time in the right inlet and sent [line~] a
+float \, it jumps immediately to the target value., f 65;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 2 0;
@@ -72,7 +72,7 @@ don't priorly specify a time in the right inlet and sent line~ a float
 #X connect 8 0 2 0;
 #X connect 14 0 2 1;
 #X connect 18 0 2 0;
-#X connect 20 0 0 0;
-#X connect 21 0 20 0;
-#X connect 22 0 23 0;
-#X connect 29 0 2 0;
+#X connect 19 0 0 0;
+#X connect 20 0 19 0;
+#X connect 21 0 22 0;
+#X connect 28 0 2 0;

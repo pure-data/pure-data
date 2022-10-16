@@ -1,0 +1,228 @@
+#N struct template6 float x float y array bazoo template6-element1
+array boom template6-element2 array blargh float;
+#N struct template6-element1 float y;
+#N struct template6-element2 float x float y float w float i;
+#N struct float float y;
+#N canvas 202 26 707 677 12;
+#X obj 250 486 pointer;
+#X floatatom 35 459 4 0 0 0 - - - 0;
+#X obj 425 349 pointer;
+#N canvas 924 74 386 321 data6 0;
+#X scalar template6 30 50 \; 0 \; 0 \; 0 \; 0 \; 50 \; 0 \; 0 \; 0
+\; 0 \; 0 \; 0 \; -9 \; 0 \; 0 \; 0 \; 3 \; 0 \; 0 \; 0 \; 30 \; 0
+\; 0 \; 0 \; -43 \; 0 \; \; 0 100 10 0 \; 10 50 2 1 \; 200 75 15 2
+\; 225 25 1 3 \; 40 100 5 4 \; \; -2 \; -2.26667 \; -2.53333 \; -2.8
+\; -3.06667 \; -3.33333 \; -3.6 \; -3.86667 \; -4.13333 \; -4.4 \;
+-4.66667 \; -4.93333 \; -5.2 \; -5.46667 \; -5.73333 \; -6 \; -6.22222
+\; -6.44444 \; -6.66667 \; -6.88889 \; -7.11111 \; -7.33333 \; -7.55556
+\; -7.77778 \; -7.99999 \; -8.23333 \; -8.46666 \; -8.69999 \; -8.93333
+\; -9.16666 \; -9.39999 \; -9.63333 \; -9.86666 \; -10.1 \; -10.3333
+\; -10.5667 \; -10.8 \; -11.0333 \; -11.2667 \; -11.5 \; -11.7333 \;
+-11.9667 \; -12.2 \; -12.4333 \; -12.6667 \; -12.9 \; -13.1333 \; -13.3667
+\; -13.6 \; -13.8333 \; -14.0667 \; -14.3 \; -14.5333 \; -14.7667 \;
+-15 \; -15.2105 \; -15.4211 \; -15.6316 \; -15.8421 \; -16.0526 \;
+-16.2632 \; -16.4737 \; -16.6842 \; -16.8947 \; -17.1053 \; -17.3158
+\; 7 \; 7 \; 7 \; 7 \; 6.66667 \; 6.33333 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \;
+6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6
+\; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 6 \; 8 \; \;;
+#X coords 0 321 1 320 0 0 0;
+#X restore 470 520 pd data6;
+#N canvas 530 47 530 538 template6 0;
+#X obj 24 213 plot bazoo 700 3 30 10 10;
+#X text 28 122 This [struct] now also declares arrays named "bazoo"
+and "boom" whose elements are described by spearate template named
+\, named respectively "template6-element1" and "template6-element2".
+Array declarations need this extra element's template name which is
+declared on a separate subpatch., f 65;
+#X text 212 214 draw instruction for the 'bazoo' array;
+#X text 31 247 The first argument of [plot] is the array name (bazoo)
+\, other arguments are: color (700) \, line width (3) \, position coordinate
+(30 \, 40) and horizontal spacing for the elements (5)., f 64;
+#X text 220 324 draw instruction for the 'boom' array;
+#X text 41 353 since the 'boom' array define x and w fields \, the
+arguments for line width and horizontal spacing are ignored in [plot].
+;
+#X obj 126 30 struct template6 float x float y array bazoo template6-element1
+array boom template6-element2 array blargh float, f 32;
+#X text 226 411 draw instruction for the 'blargh' array;
+#X text 51 446 This one has a built in float template so we don't need
+a subpatch to define its element. This is a simple template also used
+for regular arrays in Pd. Here we plot it with a purple line with a
+thickness of 2 pixels.;
+#X obj 43 413 plot blargh 909 2 30 200;
+#X obj 53 323 plot boom 90 1 30 50 1;
+#X restore 470 543 pd template6;
+#N canvas 260 134 601 508 stuff 0;
+#X obj 112 170 pointer;
+#X text 64 43 click here to re-initialize;
+#X msg 270 124 \; pd-data6 clear;
+#X msg 112 125 traverse pd-data6 \, bang, f 18;
+#X obj 497 324 element template6 bazoo, f 10;
+#X obj 38 85 trigger bang bang bang, f 31;
+#X obj 336 179 trigger bang bang pointer, f 33;
+#X msg 450 223 25;
+#X msg 336 207 50 4 \, 3 15 \, -9 11 \, 30 19 \, -43 23, f 6;
+#X text 494 301 index;
+#X obj 450 248 array size -s template6 bazoo, f 15;
+#X obj 336 338 set template6-element1 y, f 20;
+#X obj 38 244 trigger pointer pointer, f 24;
+#X obj 336 296 unpack;
+#X obj 37 277 trigger bang bang pointer, f 27;
+#X obj 244 415 element template6 boom, f 17;
+#X msg 130 313 5;
+#X obj 130 343 setsize template6 boom, f 14;
+#X obj 37 394 t l b;
+#X obj 263 392 + 1;
+#X msg 252 362 0;
+#X msg 37 308 0 100 10 \, 10 50 2 \, 200 75 15 \, 225 25 1 \, 40 100
+5, f 10;
+#X msg 38 145 30 50;
+#X obj 38 208 append template6 x y;
+#X obj 38 44 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 38 14 loadbang;
+#X obj 37 466 set template6-element2 x y w i;
+#X obj 192 430 t f f;
+#X obj 220 387 float;
+#X connect 0 0 23 2;
+#X connect 3 0 0 0;
+#X connect 4 0 11 1;
+#X connect 5 0 22 0;
+#X connect 5 1 3 0;
+#X connect 5 2 20 0;
+#X connect 5 2 2 0;
+#X connect 6 0 8 0;
+#X connect 6 1 7 0;
+#X connect 6 2 4 1;
+#X connect 6 2 10 1;
+#X connect 7 0 10 0;
+#X connect 8 0 13 0;
+#X connect 12 0 14 0;
+#X connect 12 1 6 0;
+#X connect 13 0 11 0;
+#X connect 13 1 4 0;
+#X connect 14 0 21 0;
+#X connect 14 1 16 0;
+#X connect 14 2 15 1;
+#X connect 14 2 17 1;
+#X connect 15 0 26 4;
+#X connect 16 0 17 0;
+#X connect 18 0 26 0;
+#X connect 18 1 28 0;
+#X connect 19 0 28 1;
+#X connect 20 0 28 1;
+#X connect 21 0 18 0;
+#X connect 22 0 23 0;
+#X connect 23 0 12 0;
+#X connect 24 0 5 0;
+#X connect 25 0 24 0;
+#X connect 27 0 26 3;
+#X connect 27 1 15 0;
+#X connect 28 0 19 0;
+#X connect 28 0 27 0;
+#X restore 470 611 pd stuff;
+#X msg 425 324 traverse pd-data6 \, next;
+#X obj 80 415 element template6 bazoo;
+#X text 271 324 click to get pointer;
+#X text 293 357 set size;
+#X text 35 523 work as before \, but on;
+#X text 35 540 array elements...;
+#X text 35 508 normal "set" and "get";
+#X floatatom 260 359 4 0 256 0 - - - 0;
+#X floatatom 80 386 4 0 25 0 - - - 0;
+#X floatatom 250 537 7 0 0 1 y-value - - 0;
+#X text 565 544 top-level;
+#X obj 250 456 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 76 345 select an element from an index number, f 21;
+#X text 33 583 When you press the control (or "command" in mac) before
+passing the mouse over a point \, the cursor becomes an "X" so you
+can click and remove that point or it becomes "+" so you can click
+and add a new point to the array., f 56;
+#X text 463 648 Updated for version Pd 0.52;
+#X text 537 463 see also:;
+#X obj 615 463 array;
+#N canvas 196 208 538 281 template6-element1 0;
+#X obj 119 211 drawpolygon 0 2 -2 -2 2 -2 2 2 -2 2 -2 -2;
+#X text 34 124 We don't really need any drawing instructions for the
+elements in the array. Note that the top-level template has drawing
+instructions for the array with the [plot] object. Nonetheless \, we
+have a small polygon drawn here for each element in the array., f
+69;
+#X obj 100 21 struct template6-element1 float y;
+#X text 27 54 This says that array elements will have a single floating-point
+number named "y". The variable name "y" is automatically assumed to
+control the vertical position and it's needed to plot 'y-values'. It
+also allows you to click and drag to change the y-value of each element.
+, f 70;
+#X restore 470 566 pd template6-element1;
+#N canvas 230 117 497 280 template6-element2 0;
+#X obj 78 187 filledpolygon 900 0 2 -2 -2 2 -2 2 2 -2 2;
+#X text 81 158 draw a filled polygon on each element.;
+#X obj 66 21 struct template6-element2 float x float y float w float
+i;
+#X obj 81 226 drawnumber i 10 5;
+#X text 213 226 draw the value of 'i';
+#X text 54 55 This says that array elements have special fields x \,
+y and w \, which set coordinates (x \, y) and line width (w). We can
+also include other data types and here we add an extra float data type
+named "i" (used for the array's index). Alternatively \, you can also
+add symbol fields \, text fields and even nested arrays indefinitely.
+, f 55;
+#X restore 470 588 pd template6-element2;
+#X obj 250 511 get template6-element1 y;
+#X obj 35 486 set template6-element1 y;
+#X text 17 250 The [elemment] object takes an index number and outputs
+a pointer to the corresponding array element. The [setsize] object
+sets the array size and [getsize] gets it \, but note you can also
+use [array] for this and other operations on arrays instead., f 93
+;
+#X text 17 196 Like explained with other scalars \, the x/y/w values
+depend on the 'Units per pixel' parameter for the x/y dimensions (1
+for both in this case). This means that the display will only increment
+in integer vaues \, even though you can set values with decimal points.
+, f 93;
+#X text 17 10 Scalars may also contain arrays \, whose elements are
+also scalars with their own template and can include any data type
+(float \, symbols \, text and even sub-arrays recursively.) In this
+case \, "template6" contains the definition of the top-level scalar
+and we have two templates: "template6-element1" for the elements of
+the 'bazoo' array and "template6-element2" for the elements of the
+'boom' array. A third array has a builtin float template. See the template
+subpatches for more information., f 93;
+#X obj 260 415 setsize template6 blargh;
+#X obj 449 434 array set -s template6 blargh;
+#X floatatom 449 402 5 0 0 0 - - - 0;
+#X text 17 103 The elements of the array usually have at least a float
+field 'y' for the horizontal values of the array \, but you can also
+have an 'x' field to set the horizontal value and there's also a special
+'w' field that controls the line width. When these three fields are
+given (as in the green array in this example) you can click on an array
+point and move it bidimensionally \, and when the cursor becomes a
+double vertical arrow you can click and drag vertically to change the
+width. This template also has an 'i' field for the array index \, which
+is plotted., f 93;
+#X connect 0 0 25 0;
+#X connect 1 0 26 0;
+#X connect 2 0 7 1;
+#X connect 2 0 30 1;
+#X connect 2 0 31 2;
+#X connect 6 0 2 0;
+#X connect 7 0 0 0;
+#X connect 7 0 26 1;
+#X connect 13 0 30 0;
+#X connect 14 0 7 0;
+#X connect 17 0 0 0;
+#X connect 25 0 15 0;
+#X connect 32 0 31 0;

@@ -15,12 +15,10 @@
 #X obj 85 324 log~;
 #X obj 125 298 sqrt~;
 #X obj 127 323 expr~;
-#X obj 257 157 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 257 157 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 257 185 \; pd dsp \$1;
 #X text 280 156 DSP on/off;
-#X text 48 64 Exp~ raises the Euler number 'e' (about 2.718) \, to
-the power of the input signal., f 43;
 #N canvas 722 152 435 194 reference 0;
 #X obj 9 49 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000
 0;
@@ -41,6 +39,8 @@ the power of the input signal., f 43;
 0;
 #X obj 5 287 cnv 1 430 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 48 64 [exp~] raises the Euler number 'e' (about 2.718) \, to
+the power of the input signal., f 43;
 #X connect 0 0 10 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
