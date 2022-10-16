@@ -1,4 +1,5 @@
-#N canvas 378 104 729 494 12;
+#N canvas 414 81 629 493 12;
+#X declare -stdpath ./;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array waveform11 259 float 1;
 #A 0 -0.0896033 0 0.0896033 0.178356 0.265425 0.350007 0.431348 0.508756
@@ -38,66 +39,10 @@
 -0.649386 -0.581625 -0.508772 -0.431366 -0.350025 -0.265443 -0.178375
 -0.0896226 -1.94061e-05 0.089584;
 #X coords 0 1.02 258 -1.02 258 130 1;
-#X restore 399 191 graph;
-#X floatatom 215 209 0 0 100 0 - - -;
-#N canvas 159 26 532 285 output 0;
-#X obj 338 160 t b;
-#X obj 338 110 f;
-#X obj 338 60 inlet;
-#X text 344 29 mute;
-#X obj 338 185 f;
-#X msg 426 180 0;
-#X msg 338 85 bang;
-#X obj 338 135 moses 1;
-#X obj 397 110 moses 1;
-#X obj 83 148 dbtorms;
-#X obj 397 85 r master-lvl;
-#X obj 83 42 r master-lvl;
-#X obj 338 210 s master-lvl;
-#X obj 20 155 inlet~;
-#X obj 199 41 inlet;
-#X text 199 18 level;
-#X obj 199 105 s master-lvl;
-#X msg 96 65 set \$1;
-#X obj 96 90 outlet;
-#X msg 214 65 \; pd dsp 1;
-#X obj 83 198 line~;
-#X obj 20 207 *~;
-#X obj 20 232 dac~;
-#X obj 83 173 pack 0 50;
-#X text 20 132 audio;
-#X text 96 114 show level;
-#X obj 426 155 t b;
-#X obj 20 181 hip~ 1;
-#X connect 0 0 4 0;
-#X connect 1 0 7 0;
-#X connect 2 0 6 0;
-#X connect 4 0 12 0;
-#X connect 5 0 12 0;
-#X connect 6 0 1 0;
-#X connect 7 0 0 0;
-#X connect 7 1 26 0;
-#X connect 8 1 4 1;
-#X connect 9 0 23 0;
-#X connect 10 0 1 1;
-#X connect 10 0 8 0;
-#X connect 11 0 9 0;
-#X connect 11 0 17 0;
-#X connect 13 0 27 0;
-#X connect 14 0 16 0;
-#X connect 14 0 19 0;
-#X connect 17 0 18 0;
-#X connect 20 0 21 1;
-#X connect 21 0 22 0;
-#X connect 21 0 22 1;
-#X connect 23 0 20 0;
-#X connect 26 0 5 0;
-#X connect 27 0 21 0;
-#X restore 185 237 pd output;
-#X msg 245 210 MUTE;
-#X text 466 449 updated for Pd version 0.34;
-#X text 59 41 WAVETABLE OSCILLATORS;
-#X text 87 144 wavetable;
+#X restore 323 194 graph;
+#X text 395 455 updated for Pd version 0.34;
+#X text 19 44 WAVETABLE OSCILLATORS;
+#X text 47 147 wavetable;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array pitch11 259 float 1;
 #A 0 757.143 757.143 735.714 700 671.429 650 621.429 600 571.429 550
@@ -129,21 +74,21 @@
 957.143 950 214.286 214.286 207.143 207.143 957.143 957.143 950 200
 207.143 207.143 942.857 942.857 942.857 950 950;
 #X coords 0 1000 258 0 259 140 1;
-#X restore 399 28 graph;
-#X obj 185 125 tabosc4~ pitch11;
-#X obj 185 161 tabosc4~ waveform11;
-#X obj 185 93 sig~ 0.5;
-#X text 71 347 Here's a tabosc4~ controlling the frequency of another
+#X restore 323 31 graph;
+#X obj 145 128 tabosc4~ pitch11;
+#X obj 145 164 tabosc4~ waveform11;
+#X obj 145 96 sig~ 0.5;
+#X text 41 164 oscillator =>;
+#X text 69 95 pitch =>;
+#X obj 145 215 output~;
+#X obj 144 291 declare -stdpath ./;
+#X text 63 349 Here's a [tabosc4~] controlling the frequency of another
 one. If you get properties on the two arrays \, you'll see that the
-top graph has a vertical scale from 0 to 1000 \; we're looping through
-that at a frequency of 0.5 Hz. and the output is used as the frequency
-input of the second tabosc4~. I've detected Klingons \, Captain Kirk...
-;
-#X text 81 161 oscillator =>;
-#X text 109 92 pitch =>;
-#X connect 1 0 2 1;
-#X connect 2 0 1 0;
-#X connect 3 0 2 2;
-#X connect 8 0 9 0;
-#X connect 9 0 2 0;
-#X connect 10 0 8 0;
+top graph has a vertical scale from 0 to 1000, f 69;
+#X text 63 397 We're looping through that at a frequency of 0.5 Hz.
+and the output is used as the frequency input of the second [tabosc4~].
+I've detected Klingons \, Captain Kirk..., f 69;
+#X connect 5 0 6 0;
+#X connect 6 0 10 0;
+#X connect 6 0 10 1;
+#X connect 7 0 5 0;

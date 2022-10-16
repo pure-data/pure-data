@@ -4,8 +4,6 @@
 #X obj 97 683 netsend;
 #X obj 46 444 print tcp;
 #X obj 52 561 print udp;
-#X text 37 153 There are some possibilities for intercommunication
-with other programs... see the help for "netsend.", f 84;
 #X obj 52 533 netreceive -u 3001;
 #X text 186 324 creation arguments:;
 #X text 187 343 optional -u flag for UDP;
@@ -16,12 +14,7 @@ with other programs... see the help for "netsend.", f 84;
 #X obj 403 564 print udp-binary;
 #X msg 59 265 listen 0;
 #X text 136 238 listen message to set or change port;
-#X text 138 265 (0 or negative number to close);
-#X text 37 92 By default the messages are ASCII text messages compatible
-with Pd (i.e. \, numbers and symbols terminated with a semicolon --
-the "FUDI" protocol). The "-b" creation argument specifies binary messages
-instead \, which appear in Pd as lists of numbers from 0 to 255 (You
-could use this for OSC messages \, for example.), f 84;
+#X text 128 265 (0 or negative number to close);
 #X msg 70 319 send foo \$1;
 #X floatatom 70 295 4 0 0 0 - - - 0;
 #X floatatom 219 487 4 0 0 0 - - - 0;
@@ -35,13 +28,9 @@ respectively:, f 67;
 #X text 37 186 SECURITY NOTE: Don't publish the port number of your
 netreceive unless you wouldn't mind other people being able to send
 you messages., f 84;
-#X text 37 45 The netreceive object opens a socket for TCP ("stream")
-or UDP ("datagram") network reception on a specified port. If using
-TCP \, an outlet gives you the number of netsend objects (or other
-compatible clients) that have opened connections here., f 84;
 #X obj 521 620 netreceive 3004 1;
 #X msg 219 511 4 5 6 \$1;
-#N canvas 225 168 526 506 IP 0;
+#N canvas 683 168 526 506 IP 0;
 #X obj 23 421 print udp-hostname;
 #X text 284 279 IPv4 multicast;
 #X text 269 311 IPv6 multicast;
@@ -58,7 +47,7 @@ compatible clients) that have opened connections here., f 84;
 #X obj 325 422 print tcp-hostname;
 #X text 324 358 listen for IPv6 TCP messages on localhost, f 22;
 #X msg 23 146 listen 3005;
-#X text 119 145 any IPv4 and IPv6 messages (default);
+#X text 113 145 any IPv4 and IPv6 messages (default);
 #X text 167 215 IPv6 messages *);
 #X text 219 239 IPv4 and/or IPv6 messages (system dependent!), f 26
 ;
@@ -66,14 +55,14 @@ compatible clients) that have opened connections here., f 84;
 This certainly doesn't work on Windows!, f 54;
 #X text 21 115 For backwards compatibility \, hostname resolution favors
 IPv4 results., f 69;
-#X text 20 63 By default \, netreceive listens on all IPv4 and IPv6
-interfaces \, but you can restrict it to a specific interface \, e.g.
-"127.0.0.1" to only receive IPv4 messages from the same computer.,
-f 66;
-#X text 21 13 As of Pd 0.51+ \, netreceive accepts a hostname which
+#X text 21 13 As of Pd 0.51+ \, [netreceive] accepts a hostname which
 can be a UDP multicast address or a network interface. Note that you
 can't specify a remote host - that is the job of a firewall., f 61
 ;
+#X text 20 63 By default \, [netreceive] listens on all IPv4 and IPv6
+interfaces \, but you can restrict it to a specific interface \, e.g.
+"127.0.0.1" to only receive IPv4 messages from the same computer.,
+f 66;
 #X connect 3 0 0 0;
 #X connect 3 1 4 0;
 #X connect 5 0 3 0;
@@ -94,7 +83,6 @@ can't specify a remote host - that is the job of a firewall., f 61
 #X text 26 635 As of 0.51 \, Pd supports IPv6 addresses.;
 #X obj 23 8 netreceive;
 #X text 107 8 - listen for incoming messages from network;
-#X text 182 445 <= number of open connections;
 #X obj 7 36 cnv 1 650 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 567 7 <= click;
@@ -147,15 +135,29 @@ f 64;
 #X msg 46 237 listen 3000;
 #X obj 46 348 netreceive 3000;
 #X text 107 295 "send" sends back to connected netsend objects;
-#X connect 6 0 4 0;
-#X connect 11 0 12 0;
-#X connect 14 0 44 0;
-#X connect 18 0 44 0;
-#X connect 19 0 18 0;
-#X connect 20 0 29 0;
-#X connect 24 0 13 0;
-#X connect 24 1 25 0;
-#X connect 29 0 11 0;
-#X connect 43 0 44 0;
-#X connect 44 0 3 0;
-#X connect 44 1 0 0;
+#X text 37 45 The [netreceive] object opens a socket for TCP ("stream")
+or UDP ("datagram") network reception on a specified port. If using
+TCP \, an outlet gives you the number of [netsend] objects (or other
+compatible clients) that have opened connections here., f 85;
+#X text 182 445 <-- number of open connections;
+#X text 37 92 By default the messages are ASCII text messages compatible
+with Pd (i.e. \, numbers and symbols terminated with a semicolon --
+the "FUDI" protocol). The "-b" flag specifies binary messages instead
+\, which appear in Pd as lists of numbers from 0 to 255 (You could
+use this for OSC messages \, for example.), f 85;
+#X obj 237 683 fudiformat;
+#X text 37 153 There are some possibilities for intercommunication
+with other programs... see the help for [netsend]., f 85;
+#X obj 160 683 oscformat;
+#X connect 5 0 4 0;
+#X connect 10 0 11 0;
+#X connect 13 0 40 0;
+#X connect 16 0 40 0;
+#X connect 17 0 16 0;
+#X connect 18 0 26 0;
+#X connect 22 0 12 0;
+#X connect 22 1 23 0;
+#X connect 26 0 10 0;
+#X connect 39 0 40 0;
+#X connect 40 0 3 0;
+#X connect 40 1 0 0;

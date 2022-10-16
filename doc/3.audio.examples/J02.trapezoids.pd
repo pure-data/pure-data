@@ -1,4 +1,4 @@
-#N canvas 413 34 755 681 12;
+#N canvas 553 23 755 681 12;
 #X declare -stdpath ./;
 #X obj 132 178 wrap~;
 #X obj 132 207 -~ 0.5;
@@ -36,7 +36,7 @@
 #X text 330 238 AMPLITUDES (percent);
 #X obj 186 328 +~;
 #X obj 187 354 +~;
-#X obj 238 359 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 238 357 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X obj 44 96 phasor~ 88.2;
 #X obj 238 381 metro 193;

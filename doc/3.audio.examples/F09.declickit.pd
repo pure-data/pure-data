@@ -1,23 +1,21 @@
-#N canvas 545 23 588 744 12;
+#N canvas 545 23 587 711 12;
 #X declare -stdpath ./;
-#X obj 132 521 cos~;
-#X obj 132 461 *~;
-#X obj 174 521 cos~;
-#X obj 226 434 wrap~;
-#X obj 189 439 -~;
-#X obj 174 491 +~;
-#X obj 174 556 -~;
-#X obj 208 596 *~;
-#X obj 190 622 +~;
-#X obj 224 178 loadbang;
-#X obj 224 204 metro 400;
-#X obj 262 233 del 200;
-#X obj 262 351 samphold~;
+#X obj 132 511 cos~;
+#X obj 132 451 *~;
+#X obj 174 511 cos~;
+#X obj 226 424 wrap~;
+#X obj 189 429 -~;
+#X obj 174 481 +~;
+#X obj 174 546 -~;
+#X obj 208 578 *~;
+#X obj 190 604 +~;
+#X obj 224 168 loadbang;
+#X obj 224 194 metro 400;
+#X obj 262 223 del 200;
+#X obj 262 341 samphold~;
 #N canvas 620 86 502 538 switch 0;
 #X obj 240 431 outlet~;
-#X obj 203 219 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 259 219 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 259 219 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X obj 203 130 loadbang;
 #X obj 203 162 1;
@@ -29,22 +27,24 @@
 #X obj 185 345 *~;
 #X obj 240 312 inlet~;
 #X obj 240 352 *~;
-#X connect 1 0 5 0;
-#X connect 1 0 10 1;
-#X connect 2 0 7 0;
-#X connect 2 0 12 1;
-#X connect 3 0 4 0;
-#X connect 4 0 1 0;
-#X connect 5 0 6 0;
-#X connect 6 0 2 0;
-#X connect 7 0 8 0;
-#X connect 8 0 1 0;
-#X connect 9 0 10 0;
-#X connect 10 0 0 0;
-#X connect 11 0 12 0;
-#X connect 12 0 0 0;
+#X obj 203 219 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000 0 1;
+#X connect 1 0 6 0;
+#X connect 1 0 11 1;
+#X connect 2 0 3 0;
+#X connect 3 0 12 0;
+#X connect 4 0 5 0;
+#X connect 5 0 1 0;
+#X connect 6 0 7 0;
+#X connect 7 0 12 0;
+#X connect 8 0 9 0;
+#X connect 9 0 0 0;
+#X connect 10 0 11 0;
+#X connect 11 0 0 0;
+#X connect 12 0 4 0;
+#X connect 12 0 9 1;
 #X coords 0 0 1 1 80 41 1 200 200;
-#X restore 189 380 pd switch;
+#X restore 189 370 pd switch;
 #X text 59 18 CHANGING THE CENTER FREQUENCY QUICKLY;
 #X text 54 60 Since in the previous patch the amplitudes of the two
 cosines depend on "center frequency" we can't change that discontinuously
@@ -53,18 +53,18 @@ samphold~ object to keep the center frequency frozen except at phase
 crossings. At the phase crossings the two weighted cosines add to one
 \, so we can discontinuously change the frequencies and weights there.
 , f 65;
-#X obj 190 656 output~;
-#X floatatom 315 260 3 0 50 0 - - - 0;
-#X text 333 672 updated for Pd version 0.37;
-#X obj 262 313 line~;
-#X msg 262 259 13.5;
-#X msg 224 246 4;
-#X obj 132 310 phasor~ 80;
-#X obj 262 287 pack f f;
-#X text 347 259 <= gliss time;
-#X text 299 414 one is actually used;
-#X text 275 398 <= toggles to select which;
+#X obj 190 638 output~;
+#X floatatom 315 250 4 0 50 0 - - - 0;
+#X text 333 654 updated for Pd version 0.37;
+#X obj 262 303 line~;
+#X msg 262 249 13.5;
+#X msg 224 236 4;
+#X obj 132 300 phasor~ 80;
+#X obj 262 277 pack f f;
+#X text 307 404 one is actually used;
 #X obj 405 17 declare -stdpath ./;
+#X text 351 250 <-- gliss time;
+#X text 275 388 <-- toggles to select which;
 #X connect 0 0 6 1;
 #X connect 0 0 8 0;
 #X connect 1 0 0 0;

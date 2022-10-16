@@ -1,4 +1,4 @@
-#N canvas 612 23 684 794 12;
+#N canvas 612 23 684 723 12;
 #X declare -stdpath ./;
 #X obj 136 177 wrap~;
 #X obj 136 204 -~ 0.5;
@@ -9,7 +9,7 @@
 #X text 446 259 ---- 0.02 seconds ----;
 #X text 438 752 updated for Pd version 0.39;
 #X obj 235 485 output~;
-#X obj 334 490 tabwrite~ \$0-sum;
+#X obj 339 490 tabwrite~ \$0-sum;
 #X obj 136 151 -~;
 #X obj 154 107 / 100;
 #X floatatom 154 86 4 -100 100 0 - - - 0;
@@ -36,9 +36,9 @@
 #X text 364 310 AMPLITUDES (percent);
 #X obj 136 396 +~;
 #X obj 293 444 +~;
-#X obj 334 436 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 339 434 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
-#X obj 334 458 metro 193;
+#X obj 339 458 metro 193;
 #X obj 81 109 phasor~;
 #X floatatom 81 88 5 0 0 0 - - - 0;
 #X text 61 65 frequency;

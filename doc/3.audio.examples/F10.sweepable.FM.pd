@@ -88,9 +88,9 @@ until much later.;
 #X connect 27 0 2 0;
 #X connect 29 0 25 1;
 #X restore 240 432 pd fft;
-#X obj 259 380 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 259 380 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
-#X obj 279 405 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 279 405 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X text 551 534 updated for Pd version 0.37;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -108,11 +108,11 @@ don't line up \, so that \, for indices of modulation above about 20%
 , f 43;
 #X text 539 434 -- frequency --;
 #X text 717 425 2700;
-#X text 281 380 <= graph once;
-#X text 300 404 <= repeatedly;
 #X text 97 34 center freq. (in tenths of fundamental), f 13;
 #X text 39 93 fundamental (= mod freq), f 12;
 #X obj 622 25 declare -stdpath ./;
+#X text 281 380 <-- graph once;
+#X text 300 404 <-- repeatedly;
 #X connect 0 0 6 1;
 #X connect 0 0 37 0;
 #X connect 1 0 24 0;

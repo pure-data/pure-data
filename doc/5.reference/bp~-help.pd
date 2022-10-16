@@ -1,4 +1,4 @@
-#N canvas 588 53 480 548 12;
+#N canvas 588 45 480 548 12;
 #X declare -stdpath ./;
 #X floatatom 139 208 7 0 0 0 - - - 0;
 #X msg 106 181 clear;
@@ -11,14 +11,11 @@ gain (approximately). Other frequencies are attenuated.;
 #X text 25 393 NOTE: the maximum center frequency is sample rate divided
 by 6.28 \, or about 12kHz at the "usual" rates - for a more general
 and stable (but slightly more CPU-expensive) filter \, try vcf~.;
-#X text 196 208 <= center frequency;
-#X text 153 180 <= reinitialize internal state;
 #X text 194 260 Arguments initialize center frequency and Q, f 22
 ;
 #X obj 48 314 output~;
 #X obj 38 196 noise~;
 #X obj 284 141 declare -stdpath ./;
-#X text 220 235 <= Q (controls bandwidth);
 #X obj 106 268 bp~ 500 10;
 #X text 124 312 Listen to how the white noise input is filtered. The
 higher the Q \, the more attenuation we have for frequencies besides
@@ -35,7 +32,7 @@ the center frequency \, so the less wide the frequency band is., f
 0;
 #N canvas 694 141 574 303 reference 0;
 #X obj 29 16 bp~;
-#X text 61 15 - 2-pole bandpass filter;
+#X text 61 15 - 2-pole band-pass filter;
 #X obj 8 49 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
 #X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
@@ -60,16 +57,19 @@ the center frequency \, so the less wide the frequency band is., f
 #X text 126 250 2) float - initial Q (default 0).;
 #X restore 294 9 pd reference;
 #X text 392 9 <= click;
-#X text 53 9 - 2-pole bandpass filter;
+#X text 53 9 - 2-pole band-pass filter;
 #X obj 30 513 biquad~;
 #X obj 89 512 slop~, f 7;
 #X obj 148 512 cpole~, f 7;
 #X obj 210 512 fexpr~;
 #X obj 2 471 cnv 1 470 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X connect 0 0 13 1;
-#X connect 1 0 13 0;
-#X connect 3 0 13 2;
-#X connect 10 0 13 0;
-#X connect 13 0 9 0;
-#X connect 13 0 9 1;
+#X text 153 180 <-- reinitialize internal state;
+#X text 196 208 <-- center frequency;
+#X text 220 235 <-- Q (controls bandwidth);
+#X connect 0 0 10 1;
+#X connect 1 0 10 0;
+#X connect 3 0 10 2;
+#X connect 8 0 10 0;
+#X connect 10 0 7 0;
+#X connect 10 0 7 1;

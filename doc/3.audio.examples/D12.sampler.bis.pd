@@ -1,95 +1,74 @@
-#N canvas 244 53 1118 697 12;
+#N canvas 239 30 1071 662 12;
 #X declare -stdpath ./;
 #N canvas 642 163 417 426 samples 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array sample1 176403 float 0;
+#X array sample5 176403 float 0;
 #X coords 0 1.02 176403 -1.02 200 130 1;
 #X restore 116 45 graph;
 #X text 125 352 ------ 4 seconds ------;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array sample2 176403 float 0;
+#X array sample6 176403 float 0;
 #X coords 0 1.02 176403 -1.02 200 130 1;
 #X restore 116 210 graph;
-#X restore 555 595 pd samples;
-#X text 781 463 sample number;
-#X obj 562 129 poly 8 1;
-#X obj 647 275 route 1 2 3 4 5 6 7 8;
-#X obj 556 500 output~;
-#X obj 562 154 swap;
-#X obj 562 201 route 0;
-#X obj 562 178 pack;
-#X obj 608 226 unpack;
-#X obj 556 302 sampvoice2;
-#X obj 562 226 pack;
-#X text 932 416 amplitude;
-#X text 931 440 pitch;
-#X text 850 349 ARGUMENTS FOR:;
-#X text 783 391 pitch;
-#X text 783 415 amplitude;
-#X text 783 439 duration;
-#X text 40 12 POLY SAMPLER \, VERSION 2 FOR SEPARATE NOTE-ON/OFF MESSAGES
+#X restore 481 531 pd samples;
+#X text 745 463 sample number;
+#X obj 542 118 poly 8 1;
+#X obj 611 351 output~;
+#X obj 542 143 swap;
+#X obj 542 190 route 0;
+#X obj 542 167 pack;
+#X text 896 416 amplitude;
+#X text 895 440 pitch;
+#X text 814 349 ARGUMENTS FOR:;
+#X text 747 391 pitch;
+#X text 747 415 amplitude;
+#X text 747 439 duration;
+#X text 41 9 POLY SAMPLER \, VERSION 2 FOR SEPARATE NOTE-ON/OFF MESSAGES
 ;
-#X obj 633 56 r onoff;
-#X text 931 373 ON/OFF TRANSITIONS:;
-#X text 784 372 ENTIRE NOTES:;
-#X text 931 395 tag;
-#X text 781 490 sample onset;
-#X text 781 516 rise time;
-#X text 782 540 decay time;
-#X text 928 465 (same other 4);
-#X obj 809 154 f;
-#X obj 845 154 + 1;
-#X obj 819 180 mod 1e+06;
-#X obj 890 60 r note;
-#X text 841 643 updated for Pd version 0.37;
-#X obj 863 123 t b f;
-#X obj 904 291 s onoff;
-#X obj 858 236 pipe;
-#X obj 858 259 pack;
-#X msg 129 533 \; onoff 1 90 60 1 0 0 100;
-#X msg 349 533 \; onoff 1 0;
-#X msg 130 575 \; onoff 2 90 48 1 0 0 100;
-#X msg 350 575 \; onoff 2 0;
-#X msg 130 632 \; note 51 90 1000 1 0 0 100;
-#X obj 556 325 sampvoice2;
-#X obj 556 349 sampvoice2;
-#X obj 556 373 sampvoice2;
-#X obj 556 396 sampvoice2;
-#X obj 556 420 sampvoice2;
-#X obj 556 443 sampvoice2;
-#X obj 556 467 sampvoice2;
-#X text 59 42 Here is a variation on the polyphonic sampler \, which
+#X obj 597 56 r onoff;
+#X text 895 373 ON/OFF TRANSITIONS:;
+#X text 748 372 ENTIRE NOTES:;
+#X text 895 395 tag;
+#X text 745 490 sample onset;
+#X text 745 516 rise time;
+#X text 746 540 decay time;
+#X text 892 465 (same other 4);
+#X obj 773 154 f;
+#X obj 809 154 + 1;
+#X obj 783 180 mod 1e+06;
+#X obj 854 60 r note;
+#X obj 827 123 t b f;
+#X obj 868 291 s onoff;
+#X obj 822 236 pipe;
+#X obj 822 259 pack;
+#X msg 313 513 \; onoff 1 0;
+#X msg 314 555 \; onoff 2 0;
+#X text 30 39 Here is a variation on the polyphonic sampler \, which
 can take separate messages to start and stop notes (so that you can
 attach it to a MIDI keyboard \, for example.) "Note" messages act as
 before \, but in an intermediate step they are split onto note-on and
 note-off messages \, sent to "onoff". You can alternatively send messages
-straight to onoff if you don't know the duration in advance.;
-#X text 59 149 Messages to "onoff" require a tag \, which is a number
+straight to onoff if you don't know the duration in advance., f 67
+;
+#X text 29 146 Messages to "onoff" require a tag \, which is a number
 shared between the note-on and note-off message so that we can track
 down the voice to turn it off. If you're using MIDI input \, you can
-just re-use the pitch as a tag., f 60;
-#X text 128 513 separate messages for not on and off:;
-#X text 127 613 single messages to do both as before:;
-#X text 58 218 Messages to "onoff" whose amplitude is zero are note-off
+just re-use the pitch as a tag., f 67;
+#X text 91 593 single messages to do both as before:;
+#X text 29 215 Messages to "onoff" whose amplitude is zero are note-off
 messages (the other parameters of note-off messages are ignored). The
 "sampvoice2" abstraction is a modification of "sampvoice" which looks
 at the amplitude field to decide whether to begin or end a note.,
-f 60;
-#X text 58 298 To convert "note" messages to pairs of "onoff" messages
+f 67;
+#X text 29 295 To convert "note" messages to pairs of "onoff" messages
 \, first a counter generates a tag. The the "pipe" object delays a
 copy of the tag \, which the following "pack" object converts into
-a note-off message (a pair of numbers \, the tag and a zero.);
-#X text 58 376 Under "r onoff" \, the poly object allocates a voice
-number \, putting it out paired with velocity. After swapping the two
-and packing them into a single message \, the amplitude is checked
-against zero by the "route 0" object \; if zero \, the "pack" confects
-a 2-argument message (voice number and zero). Otherwise \, the "unpack"
-retrieves the nonzero amplitude for a note-on message \, to which we
-add all the other parameters and route to the appropriate voice.;
-#X obj 633 81 unpack f f f f f f f;
-#X obj 647 250 pack f f f f f f f;
-#X obj 890 86 unpack f f f f f f f;
-#X obj 904 236 pack f f f f f f f;
+a note-off message (a pair of numbers \, the tag and a zero.), f 67
+;
+#X obj 597 81 unpack f f f f f f f;
+#X obj 611 250 pack f f f f f f f;
+#X obj 854 86 unpack f f f f f f f;
+#X obj 868 236 pack f f f f f f f;
 #N canvas 282 191 708 551 recorder 0;
 #X obj 152 363 adc~ 1;
 #X obj 152 391 hip~ 5;
@@ -98,7 +77,7 @@ add all the other parameters and route to the appropriate voice.;
 #X msg 221 393 1;
 #X obj 280 358 del 3990;
 #X msg 257 393 0 10;
-#X obj 152 471 tabwrite~ sample1;
+#X obj 152 471 tabwrite~ sample5;
 #X obj 66 296 makefilename sample%1;
 #X msg 66 325 set \$1 \, bang;
 #X msg 324 329 stop;
@@ -109,9 +88,9 @@ add all the other parameters and route to the appropriate voice.;
 #X text 446 370 v-- re-read original samples;
 #X obj 242 168 route record stop reload browse;
 #X obj 406 452 soundfiler;
-#X msg 406 394 read ../sound/bell.aiff sample1 \, read ../sound/voice2.wav
-sample2, f 33;
-#X msg 402 260 read \$1 sample1;
+#X msg 406 394 read ../sound/bell.aiff sample5 \, read ../sound/voice2.wav
+sample6, f 33;
+#X msg 402 260 read \$1 sample5;
 #X obj 402 287 soundfiler;
 #X text 440 205 <= browse for samples;
 #X text 228 21 record \, etc.;
@@ -148,59 +127,60 @@ sample2, f 33;
 #X connect 25 0 16 0;
 #X connect 26 0 16 0;
 #X connect 27 0 16 0;
-#X restore 555 619 pd recorder;
-#X obj 941 15 declare -stdpath ./;
-#X connect 2 0 5 0;
-#X connect 2 2 5 1;
-#X connect 3 0 9 1;
-#X connect 3 1 40 1;
-#X connect 3 2 41 1;
-#X connect 3 3 42 1;
-#X connect 3 4 43 1;
-#X connect 3 5 44 1;
-#X connect 3 6 45 1;
-#X connect 3 7 46 1;
-#X connect 5 0 7 0;
-#X connect 5 1 7 1;
-#X connect 6 0 10 0;
-#X connect 6 1 8 0;
-#X connect 7 0 6 0;
-#X connect 8 1 55 0;
-#X connect 9 0 40 0;
-#X connect 10 0 3 0;
-#X connect 18 0 54 0;
-#X connect 26 0 27 0;
-#X connect 27 0 28 0;
-#X connect 28 0 26 1;
-#X connect 28 0 33 0;
-#X connect 28 0 57 0;
-#X connect 29 0 56 0;
-#X connect 31 0 26 0;
-#X connect 31 1 57 2;
-#X connect 33 0 34 0;
-#X connect 34 0 32 0;
-#X connect 40 0 41 0;
-#X connect 41 0 42 0;
-#X connect 42 0 43 0;
-#X connect 43 0 44 0;
-#X connect 44 0 45 0;
-#X connect 45 0 46 0;
-#X connect 46 0 4 0;
-#X connect 46 0 4 1;
-#X connect 54 0 2 0;
-#X connect 54 1 2 1;
-#X connect 54 1 55 1;
-#X connect 54 2 55 2;
-#X connect 54 3 55 3;
-#X connect 54 4 55 4;
-#X connect 54 5 55 5;
-#X connect 54 6 55 6;
-#X connect 55 0 3 0;
-#X connect 56 0 31 0;
-#X connect 56 1 57 1;
-#X connect 56 2 33 1;
-#X connect 56 3 57 3;
-#X connect 56 4 57 4;
-#X connect 56 5 57 5;
-#X connect 56 6 57 6;
-#X connect 57 0 32 0;
+#X restore 481 555 pd recorder;
+#X obj 481 595 declare -stdpath ./;
+#X obj 611 296 clone -s 1 sampvoice2 8;
+#X msg 542 217 \$1 0;
+#X msg 588 218 \$2;
+#X text 29 361 Under "r onoff" \, the poly object allocates a voice
+number \, putting it out paired with velocity. After swapping the two
+and packing them into a single message \, the amplitude is checked
+against zero by the [route 0] object. If zero \, the "\$1 0" confects
+a 2-argument message (voice number and zero). Otherwise \, the "\$2"
+retrieves the nonzero amplitude for a note-on message \, to which we
+add all the other parameters and route to the appropriate voice inside
+[clone]., f 67;
+#X text 822 606 updated for Pd version 0.52;
+#X msg 93 513 \; onoff 1 90 60 5 0 0 100;
+#X msg 94 555 \; onoff 2 90 48 5 0 0 100;
+#X msg 94 612 \; note 51 90 1000 5 0 0 100;
+#X text 92 493 separate messages for note on and off:;
+#X connect 2 0 4 0;
+#X connect 2 2 4 1;
+#X connect 4 0 6 0;
+#X connect 4 1 6 1;
+#X connect 5 0 44 0;
+#X connect 5 1 45 0;
+#X connect 6 0 5 0;
+#X connect 14 0 37 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;
+#X connect 24 0 22 1;
+#X connect 24 0 28 0;
+#X connect 24 0 40 0;
+#X connect 25 0 39 0;
+#X connect 26 0 22 0;
+#X connect 26 1 40 2;
+#X connect 28 0 29 0;
+#X connect 29 0 27 0;
+#X connect 37 0 2 0;
+#X connect 37 1 2 1;
+#X connect 37 1 38 1;
+#X connect 37 2 38 2;
+#X connect 37 3 38 3;
+#X connect 37 4 38 4;
+#X connect 37 5 38 5;
+#X connect 37 6 38 6;
+#X connect 38 0 43 0;
+#X connect 39 0 26 0;
+#X connect 39 1 40 1;
+#X connect 39 2 28 1;
+#X connect 39 3 40 3;
+#X connect 39 4 40 4;
+#X connect 39 5 40 5;
+#X connect 39 6 40 6;
+#X connect 40 0 27 0;
+#X connect 43 0 3 0;
+#X connect 43 0 3 1;
+#X connect 44 0 43 0;
+#X connect 45 0 38 0;

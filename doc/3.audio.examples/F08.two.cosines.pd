@@ -1,4 +1,4 @@
-#N canvas 608 61 726 656 12;
+#N canvas 504 51 726 656 12;
 #X declare -stdpath ./;
 #X obj 114 329 cos~;
 #X floatatom 161 118 4 0 100 0 - - - 0;
@@ -32,7 +32,7 @@ a center frequency of 5.3 (in units of the fundamental.) We just take
 partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f
 52;
 #X obj 246 511 tabwrite~ F08-carrier;
-#X obj 246 486 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 246 486 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
 #X obj 64 245 phasor~ 100;
 #X text 100 71 center frequency (in;
@@ -44,8 +44,8 @@ partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f
 #X text 204 375 c2 - c1;
 #X text 217 422 q * (c2 - c1);
 #X text 196 459 q * c2 + (1-q) * c1;
-#X text 269 485 <= graph;
 #X obj 524 27 declare -stdpath ./;
+#X text 269 485 <-- graph;
 #X connect 0 0 15 1;
 #X connect 0 0 17 0;
 #X connect 1 0 2 0;

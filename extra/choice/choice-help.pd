@@ -10,15 +10,6 @@
 #X floatatom 147 378 5 0 0 0 - - - 0;
 #X obj 23 14 choice;
 #X text 79 13 - search for a best match to an incoming list;
-#X text 52 60 The choice object holds a list of vectors \, each having
-up to ten elements. When sent a list of numbers \, it outputs the index
-of the known vector that matches most closely. The quality of the match
-is the dot product of the two vectors after normalizing them \, i.e.
-\, the vector whose direction is closest to that of the input wins.
-, f 76;
-#X text 52 416 If given a nonzero creation argument \, choice tries
-to avoid repetitious outputs by weighting less recently output vectors
-preferentially., f 76;
 #X text 52 455 You can use this to choose interactively between a number
 of behaviors depending on their attributes. For example \, you might
 have stored a number of melodies \, of which some are syncopated \,
@@ -38,7 +29,7 @@ f 25;
 #X text 217 346 creation argument to avoid repeated output;
 #X text 193 377 output is the index of best match \, counting from
 zero;
-#X obj 147 251 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 147 251 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 147 300 pack float float float;
 #X obj 147 275 f, f 4;
@@ -69,17 +60,26 @@ window., f 61;
 0;
 #X obj 4 616 cnv 1 620 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 52 60 The [choice] object holds a list of vectors \, each having
+up to ten elements. When sent a list of numbers \, it outputs the index
+of the known vector that matches most closely. The quality of the match
+is the dot product of the two vectors after normalizing them \, i.e.
+\, the vector whose direction is closest to that of the input wins.
+, f 76;
+#X text 52 416 If given a nonzero creation argument \, [choice] tries
+to avoid repetitious outputs by weighting less recently output vectors
+preferentially., f 76;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 2 0 6 0;
 #X connect 3 0 0 0;
 #X connect 3 0 6 0;
-#X connect 4 0 22 1;
+#X connect 4 0 20 1;
 #X connect 6 0 7 0;
-#X connect 20 0 22 0;
-#X connect 21 0 0 0;
-#X connect 21 0 6 0;
-#X connect 22 0 21 0;
-#X connect 23 0 21 2;
-#X connect 24 0 21 1;
+#X connect 18 0 20 0;
+#X connect 19 0 0 0;
+#X connect 19 0 6 0;
+#X connect 20 0 19 0;
+#X connect 21 0 19 2;
+#X connect 22 0 19 1;

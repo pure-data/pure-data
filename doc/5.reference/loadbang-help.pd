@@ -1,17 +1,9 @@
-#N struct template1 float x float y float z float q;
-#N canvas 641 48 547 317 12;
-#X obj 142 173 loadbang;
-#X floatatom 142 226 5 0 0 0 - - - 0;
+#N canvas 597 54 547 317 12;
+#X obj 166 170 loadbang;
+#X floatatom 166 223 5 0 0 0 - - - 0;
 #X obj 20 15 loadbang;
 #X text 89 14 - send a "bang" message on load;
-#X msg 142 200 123;
-#X text 40 54 The loadbang object outputs a 'bang' message when the
-containing patch is opened as a document or included in another patch
-as an abstraction., f 69;
-#X text 40 105 Loadbangs within abstractions send their "bang" messages
-before those of loadbangs in the calling patch. Otherwise \, the order
-in which the "bangs" are sent from two loadbang objects is undefined.
-, f 69;
+#X msg 166 197 123;
 #X text 338 279 updated for Pd version 0.47;
 #N canvas 775 143 439 180 reference 0;
 #X obj 9 46 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -25,7 +17,7 @@ in which the "bangs" are sent from two loadbang objects is undefined.
 #X text 127 127 NONE, f 26;
 #X obj 28 15 loadbang;
 #X text 99 14 - send a "bang" message on load;
-#X text 117 91 bang - when loadding the patch.;
+#X text 117 91 bang - when loading the patch.;
 #X text 124 56 NONE;
 #X restore 374 15 pd reference;
 #X text 471 14 <= click;
@@ -35,10 +27,17 @@ in which the "bangs" are sent from two loadbang objects is undefined.
 0;
 #X text 18 282 see also:;
 #X obj 96 283 pd-messages;
-#X obj 190 283 bang;
-#X obj 232 283 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 188 283 bang;
+#X obj 230 283 bng 19 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
 #000000 #000000;
-#X text 266 177 You can force loaddbangs to fire if you send a 'loadbang'
-message to the patch (see 'pd-messages')., f 33;
+#X text 40 54 The [loadbang] object outputs a "bang" message when the
+containing patch is opened as a document or included in another patch
+as an abstraction., f 66;
+#X text 40 105 [loadbang] objects within abstractions send their "bang"
+messages before [loadbang] objects in the calling patch. Otherwise
+\, the order in which the "bangs" are sent from two [loadbang] objects
+is undefined., f 66;
+#X text 258 183 You can force a [loaddbang] to fire if you send a 'loadbang'
+message to the patch (see 'pd-messages')., f 35;
 #X connect 0 0 4 0;
 #X connect 4 0 1 0;

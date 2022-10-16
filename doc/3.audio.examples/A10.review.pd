@@ -1,4 +1,4 @@
-#N canvas 389 47 605 539 12;
+#N canvas 515 37 605 539 12;
 #X text 157 10 PART 1 REVIEW;
 #X obj 77 122 tabwrite~;
 #X obj 77 96 line~;
@@ -27,10 +27,10 @@
 #X text 119 247 (etc.) -- arithmetic;
 #X text 345 482 updated for Pd version 0.40.;
 #X text 122 148 -- sinusoidal oscillator;
-#X obj 84 467 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
-;
+#X obj 84 467 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
 #X text 107 465 -- toggle switch;
-#X floatatom 84 444 0 0 0 0 - - -;
+#X floatatom 84 444 0 0 0 0 - - - 0;
 #X text 119 443 -- number box;
 #X msg 84 421;
 #X text 121 421 -- message box;

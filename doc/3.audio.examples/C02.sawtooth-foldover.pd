@@ -5,7 +5,7 @@
 #X text 77 17 FOLDOVER IN SAWTOOTH WAVES;
 #X obj 176 348 clip~ 0 1;
 #X obj 176 168 mtof;
-#X floatatom 176 146 3 0 0 0 - - - 0;
+#X floatatom 176 146 5 0 0 0 - - - 0;
 #X obj 176 294 *~ 20;
 #X obj 176 320 -~ 19;
 #X obj 176 192 phasor~;
@@ -18,16 +18,16 @@ in the pulse train here \, and less clearly (but still audibly) in
 the straight sawtooth \, especially at high pitches.;
 #X text 233 396 <= pulse train amplitude;
 #X text 259 223 <= sawtooth amplitude;
-#N canvas 939 344 451 177 set 0;
-#X obj 25 74 loadbang;
-#X msg 25 99 61;
-#X obj 25 124 outlet;
+#N canvas 698 337 212 167 set 0;
+#X obj 45 74 loadbang;
+#X msg 45 99 61;
+#X obj 45 124 outlet;
 #X text 7 6 This sets the pitch initially to 61 when the patch is first
-opened.;
+opened., f 26;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X restore 176 120 pd set;
-#X text 205 145 <= pitch;
+#X text 219 145 <= pitch;
 #X obj 341 151 declare -stdpath ./;
 #X connect 3 0 0 0;
 #X connect 3 0 0 1;

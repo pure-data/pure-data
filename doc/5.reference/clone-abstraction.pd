@@ -12,7 +12,7 @@
 #X obj 226 142 pack 0 4000;
 #X obj 145 129 pack 1 10;
 #X obj 265 297 float \$1;
-#X obj 265 274 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 265 274 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 265 350 print;
 #X text 58 307 You can access the instance number within the patch:

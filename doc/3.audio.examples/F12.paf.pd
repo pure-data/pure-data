@@ -101,9 +101,9 @@
 #X text 616 433 2700;
 #X obj 82 718 output~;
 #X obj 105 681 hip~;
-#X obj 182 621 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 182 621 bng 18 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
-#X obj 202 646 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 202 646 tgl 18 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X text 34 42 Instead of using the two cosines as FM carrier oscillators
 \, we can use them as ring modulators for a natural or synthetic tone.

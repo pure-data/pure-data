@@ -1,0 +1,86 @@
+#N struct template7 float x float y float z array boom template7-element
+;
+#N struct template7-element float x float y float w;
+#N canvas 449 23 670 446 12;
+#N canvas 662 27 508 538 stuff 0;
+#X obj 167 189 pointer;
+#X text 119 62 click here to re-initialize;
+#X obj 93 104 trigger bang bang bang, f 31;
+#X obj 92 266 trigger bang bang pointer, f 27;
+#X obj 103 423 t l b;
+#X obj 289 379 f;
+#X obj 322 384 + 1;
+#X msg 307 351 0;
+#X obj 93 63 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X obj 93 33 loadbang;
+#X msg 325 143 \; pd-data7 clear;
+#X msg 167 144 traverse pd-data7 \, bang, f 18;
+#X obj 289 407 element template7 boom, f 17;
+#X obj 103 458 set template7-element x y w;
+#X obj 185 332 setsize template7 boom, f 14;
+#X msg 185 302 4;
+#X msg 92 297 10 10 0 \, 50 150 5 \, 250 50 0 \, 10 100 15, f 10;
+#X obj 93 227 append template7 x y z;
+#X msg 93 164 0 0 280;
+#X connect 0 0 17 3;
+#X connect 2 0 18 0;
+#X connect 2 1 11 0;
+#X connect 2 2 7 0;
+#X connect 2 2 10 0;
+#X connect 3 0 16 0;
+#X connect 3 1 15 0;
+#X connect 3 2 12 1;
+#X connect 3 2 14 1;
+#X connect 4 0 13 0;
+#X connect 4 1 5 0;
+#X connect 5 0 6 0;
+#X connect 5 0 12 0;
+#X connect 6 0 5 1;
+#X connect 7 0 5 1;
+#X connect 8 0 2 0;
+#X connect 9 0 8 0;
+#X connect 11 0 0 0;
+#X connect 12 0 13 3;
+#X connect 15 0 14 0;
+#X connect 16 0 4 0;
+#X connect 17 0 3 0;
+#X connect 18 0 17 0;
+#X restore 403 358 pd stuff;
+#X text 498 311 top-level;
+#X text 396 395 Updated for version Pd 0.52;
+#N canvas 741 97 455 538 data7 0;
+#X scalar template7 0 0 280 \; 10 10 0 \; 50 150 5 \; 250 50 0 \; 10
+100 15 \; \;;
+#X coords 0 300 300 0 300 300 1 50 50;
+#X restore 38 111 pd data7;
+#N canvas 469 23 441 203 template7 0;
+#X obj 90 98 plot boom 600;
+#X obj 91 51 struct template7 float x float y float z array boom template7-element
+, f 40;
+#X obj 91 134 filledpolygon 244 90 5 150 150 200 z 250 150;
+#X restore 403 310 pd template7;
+#N canvas 230 117 485 281 template7-element 0;
+#X obj 81 176 drawnumber w 10 5;
+#X text 41 55 This says that array elements have special fields x \,
+y and w \, which set coordinates (x \, y) and line width (w)., f 55
+;
+#X text 213 176 draw the value of 'w';
+#X text 76 206 In this case you can also click on the drawn float and
+drag or type the width value of that element., f 50;
+#X text 81 108 draw a filled polygon on each element.;
+#X obj 66 21 struct template7-element float x float y float w;
+#X obj 78 137 filledpolygon 600 0 2 -2 -2 2 -2 2 2 -2 2;
+#X restore 403 335 pd template7-element;
+#X text 365 117 The "Units per pixel" in this case depends on the ratio
+of the size of the graph and its range values. in This case \, the
+range for both X and Y is from 0 to 300 and the X and Y size is also
+300 \, so the unit per pixel is "1" for both X and Y., f 38;
+#X text 365 225 You can still click and change values of scalars (triangle's
+apex or array's elements)., f 38;
+#X text 45 24 The subwindow used to plot scalars can also be graphed
+on the parent patch (hence \, you can also design abstractions that
+plot Data Structures). In this case the "Units per pixel" is meaningless
+and you must set the range accordingly. You can also hide the name
+of the window if you want (here we show it: "pd data7")., f 82;
+#X coords 0 0 1 1 85 60 0;

@@ -1,10 +1,10 @@
 #N canvas 541 23 578 563 12;
 #X declare -stdpath ./;
-#X floatatom 216 179 5 0 0 0 - - - 0;
-#X msg 156 152 clear;
+#X floatatom 216 177 5 0 0 0 - - - 0;
+#X msg 113 124 clear;
 #X obj 25 15 hip~;
 #X text 70 14 - one-pole high pass filter;
-#X text 342 502 updated for Pd version 0.44;
+#X text 352 502 updated for Pd version 0.44;
 #X msg 297 442 \; pd compatibility 0.43;
 #X text 231 206 Creation argument initializes cutoff frequency.;
 #X text 40 344 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
@@ -14,18 +14,13 @@ than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY
 in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
 To get the old (0.43 and earlier) behavior \, set "compatibility" to
 0.43 in Pd's command line or by a message:, f 67;
-#X text 205 152 <= reinitialize internal state;
 #X text 24 503 see also:;
 #X obj 97 502 lop~;
 #X obj 136 502 bp~;
 #X obj 210 502 bob~;
 #X obj 170 502 vcf~;
-#X obj 89 128 noise~;
+#X obj 156 156 noise~;
 #X obj 156 262 output~;
-#X text 263 178 <= set cutoff frequency;
-#X text 39 56 hip~ is a one-pole high pass filter with a specified
-cutoff frequency. Left (audio) inlet is the incoming audio signal.
-Right (control) inlet sets cutoff frequency., f 71;
 #X obj 156 204 hip~ 2000;
 #X obj 295 266 declare -stdpath ./;
 #X obj 96 531 biquad~;
@@ -59,8 +54,13 @@ Right (control) inlet sets cutoff frequency., f 71;
 #X text 493 16 <= click;
 #X obj 8 491 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X connect 0 0 18 1;
-#X connect 1 0 18 0;
-#X connect 14 0 18 0;
-#X connect 18 0 15 0;
-#X connect 18 0 15 1;
+#X text 39 56 [hip~] is a one-pole high pass filter with a specified
+cutoff frequency. Left (audio) inlet is the incoming audio signal.
+Right (control) inlet sets cutoff frequency., f 72;
+#X text 162 124 <-- reinitialize internal state;
+#X text 259 176 <-- set cutoff frequency;
+#X connect 0 0 15 1;
+#X connect 1 0 15 0;
+#X connect 13 0 15 0;
+#X connect 15 0 14 0;
+#X connect 15 0 14 1;

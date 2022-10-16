@@ -1,4 +1,4 @@
-#N canvas 569 67 602 647 12;
+#N canvas 567 32 602 647 12;
 #X declare -stdpath ./;
 #X text 37 20 PHASER;
 #N canvas 411 147 659 385 chord 0;

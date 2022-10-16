@@ -1,0 +1,51 @@
+#N struct template8 float x float y float z float q array bazoo template8-element
+;
+#N struct template8-element float x float y float w;
+#N canvas 196 37 638 475 12;
+#N canvas 224 314 480 261 template8 0;
+#X obj 55 207 plot bazoo 700 3 10 20 20;
+#X obj 36 39 struct template8 float x float y float z float q array
+bazoo template8-element;
+#X obj 36 91 drawpolygon q 4 0 0 20 z z -5 10 20;
+#X text 36 128 draw a polygon with color 'q' \, line width of 4 \,
+and the coordinates for four points. Both the y coordinate of the 2nd
+point and horizontal coordinate of the 3rd point is given by the value
+of 'z';
+#X text 246 206 plot the 'bazoo' array;
+#X restore 293 253 pd template8;
+#N canvas 279 313 424 139 template8-element 0;
+#X obj 51 80 drawpolygon 10 2 5 0 0 -5 -5 0 0 5 5 0;
+#X obj 52 45 struct template8-element float x float y float w;
+#X restore 293 279 pd template8-element;
+#X text 393 114 <-- click to clear the window;
+#X text 447 160 <-- restore from file;
+#X text 434 203 <-- write to a file;
+#X text 44 113 data \; template template8 \; float x \; float y \;
+float z \; float q \; array bazoo template8-element \; \; template
+template8-element \; float x \; float y \; float w \; \;;
+#X text 24 23 Besides the "clear" and "scalar" messages to the subpatch
+(explained before) \, we can send the "write" and "read" messages to
+save to and load from a .txt file (reading reinitializes and replaces
+data.) The file format is similar to the data displayed when you right
+click on the scalar for its properties \, compare them. Here's the
+header of the file:, f 84;
+#X text 383 436 Updated for version Pd 0.52;
+#X text 48 324 The header starts with the 'data' message and includes
+the template name and its field names. This Scalar has an array field
+and the element's template is also defined. This header is also present
+in the properties of scalars \, the rest of the properties shows field
+values for the template and the array's values. The file also shows
+this after the header \, but the it lists the data for all scalars
+(which are three in this example)., f 76;
+#N canvas 855 59 471 418 data8 1;
+#X scalar template8 103 181 -66 85 \; 0 0 0 \; 30 0 0 \; 0 111 8 \;
+-47 22 0 \; 0 0 0 \; 0 70 0 \; 0 70 70 \; 70 70 0 \; 0 70 0 \; \;;
+#X scalar template8 329 142 -78 802 \; -46 88 0 \; 0 0 4 \; 67 59 0
+\; 0 76 12 \; -46 18 12 \; \;;
+#X scalar template8 233 300 88 80 \; 0 0 0 \; 40 0 4 \; 60 50 0 \;
+100 30 3 \; 200 0 0 \; \;;
+#X coords 0 418 1 417 0 0 0;
+#X restore 501 262 pd data8;
+#X msg 288 107 \; pd-data8 clear;
+#X msg 287 152 \; pd-data8 read file.txt;
+#X msg 287 197 \; pd-data8 write z.txt;

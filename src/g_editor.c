@@ -2212,6 +2212,19 @@ static void canvas_done_popup(t_canvas *x, t_float which,
 
 #define DCLICKINTERVAL 0.25
 
+    /* undarken deselected gatoms:
+     * it's slightly ugly to have this in here,  but we cannot undarken
+     * in gatom_key (which is the gatom's e_keyfn) as this is also called
+     * when the user just hits <kbd>Enter</kbd>
+     */
+void gatom_undarken(t_text *x);
+static void undarken_if_gatom(t_gobj*gobj)
+{
+    t_object*obj = gobj?pd_checkobject(&gobj->g_pd):0;
+    if(obj && T_ATOM == obj->te_type)
+        gatom_undarken(obj);
+}
+
     /* mouse click */
 static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     int mod, int doit)
@@ -2238,6 +2251,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
     {
         (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, &s_, 0);
+        undarken_if_gatom(x->gl_editor->e_grab);
         glist_grab(x, 0, 0, 0, 0, 0);
     }
 
@@ -3532,6 +3546,7 @@ static void canvas_find_parent(t_canvas *x)
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
+extern t_class *text_class;
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
@@ -3547,6 +3562,16 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             canvas_vis((t_canvas *)gl, 1);
             canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
+            if (pd_class(&g->g_pd) == text_class) {
+                t_text* x = (t_text*)g;
+                int argc = binbuf_getnatom(x->te_binbuf);
+                t_atom*argv = binbuf_getvec(x->te_binbuf);
+                if(argc>0 && A_SYMBOL == argv[0].a_type) {
+                    t_symbol*s = atom_getsymbol(argv);
+                    if (s && s->s_name && *s->s_name)
+                        pdgui_vmess("::deken::open_search_objects", "s", s->s_name);
+                }
+            }
             return (1);
         }
         else if (g->g_pd == canvas_class)
@@ -4336,8 +4361,6 @@ static void canvas_reselect(t_canvas *x)
             /* otherwise activate first item in selection */
         gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
-
-extern t_class *text_class;
 
 void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_floatarg fwhoin, t_floatarg finno)

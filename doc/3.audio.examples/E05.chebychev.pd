@@ -202,15 +202,7 @@ them in a wavetable for use later., f 30;
 #X connect 61 0 56 0;
 #X restore 470 166 pd make-table;
 #X f 17;
-#X obj 470 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 499 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 528 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 557 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 586 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 470 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
 #X text 471 127 2;
 #X text 499 127 3;
@@ -239,19 +231,27 @@ draw your own functions by hand and/or try other formulas., f 62;
 #X text 42 5 WAVESHAPING WITH CHEBYCHEV POLYNOMIALS;
 #X text 458 86 subpatch to calculate Chebychev polynomials, f 21;
 #X obj 478 25 declare -stdpath ./;
+#X obj 499 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 528 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 557 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
+#X obj 586 146 bng 15 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
+#000000;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;
 #X connect 3 0 9 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 7 0 3 1;
-#X connect 9 0 23 0;
-#X connect 10 0 24 0;
+#X connect 9 0 19 0;
+#X connect 10 0 20 0;
 #X connect 13 0 12 0;
-#X connect 14 0 12 1;
-#X connect 15 0 12 2;
-#X connect 16 0 12 3;
-#X connect 17 0 12 4;
-#X connect 23 0 10 0;
-#X connect 24 0 0 0;
-#X connect 24 0 0 1;
+#X connect 19 0 10 0;
+#X connect 20 0 0 0;
+#X connect 20 0 0 1;
+#X connect 29 0 12 1;
+#X connect 30 0 12 2;
+#X connect 31 0 12 3;
+#X connect 32 0 12 4;

@@ -17,11 +17,7 @@
 #X obj 176 475 tabread4~;
 #X msg 90 214 0 44100;
 #X msg 84 189 44100;
-#X msg 77 165 bang;
-#X text 62 67 The tabplay~ object plays a sample \, or part of one
-\, with no transposition or interpolation. It is cheaper than tabread4~
-and there are none of tabread4~'s interpolation artifacts.;
-#X text 111 166 "bang" or 0 plays whole sample;
+#X text 101 164 "bang" or 0 plays whole sample;
 #X text 131 188 play starting at 44100th sample;
 #X text 148 212 play starting at beginning for 44100 samples;
 #X msg 95 239 44100 1000;
@@ -29,9 +25,8 @@ and there are none of tabread4~'s interpolation artifacts.;
 #X text 647 476 updated for Pd version 0.43;
 #X msg 102 264 stop;
 #X text 138 265 stop playing (outputs zeros when stopped);
-#X obj 165 328 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 165 328 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 185 327 <= bang when finished playing the table;
 #X text 122 17 - play a table as a sample (non-transposing);
 #X obj 63 291 tabplay~ sample;
 #X msg 63 139 set sample;
@@ -142,15 +137,22 @@ of Pd's tutorial:, f 39;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X restore 507 475 pd array-examples;
+#X text 62 67 The [tabplay~] object plays a sample \, or part of one
+\, with no transposition or interpolation. It is cheaper than [tabread4~]
+and there are none of [tabread4~]'s interpolation artifacts., f 62
+;
+#X text 185 327 <-- bang when finished playing the table;
+#X obj 77 165 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
 #X connect 7 0 8 0;
-#X connect 11 0 26 0;
-#X connect 12 0 26 0;
-#X connect 13 0 26 0;
-#X connect 18 0 26 0;
-#X connect 21 0 26 0;
-#X connect 26 0 29 0;
-#X connect 26 0 29 1;
-#X connect 26 1 23 0;
-#X connect 27 0 26 0;
-#X connect 31 0 7 0;
-#X connect 33 0 31 0;
+#X connect 11 0 23 0;
+#X connect 12 0 23 0;
+#X connect 16 0 23 0;
+#X connect 19 0 23 0;
+#X connect 23 0 26 0;
+#X connect 23 0 26 1;
+#X connect 23 1 21 0;
+#X connect 24 0 23 0;
+#X connect 28 0 7 0;
+#X connect 30 0 28 0;
+#X connect 41 0 23 0;

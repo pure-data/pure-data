@@ -1,10 +1,10 @@
-#N canvas 641 38 547 457 12;
+#N canvas 519 23 547 457 12;
 #X obj 142 227 cnv 40 150 102 empty empty Canvas 20 50 0 30 #a06888
 #fcfcfc 0;
 #X obj 19 8 cnv 15 100 60 empty empty empty 20 12 0 14 #e0e0e0 #404040
 0;
 #N canvas 424 168 359 352 properties 0;
-#N canvas 815 23 654 646 colors 0;
+#N canvas 712 23 654 646 colors 0;
 #X floatatom 82 251 3 0 29 0 - - - 0;
 #X floatatom 187 256 3 0 29 0 - - - 0;
 #X text 180 231 label;
@@ -12,7 +12,7 @@
 #X msg 82 350 color \$1 \$2 \$3;
 #X text 191 350 presets;
 #X symbolatom 485 347 9 0 0 0 - - - 0;
-#N canvas 1126 148 390 482 label 0;
+#N canvas 976 148 390 482 label 0;
 #X obj 102 80 vsl 15 128 0 255 0 0 empty empty empty 0 -9 0 10 #0800fc
 #fcfcfc #000000 0 1;
 #X obj 109 225 t b f;
@@ -104,22 +104,22 @@
 #X obj 345 481 send \$0-colors;
 #X msg 267 270 list #e1e1e1 #000000 #000000, f 7;
 #X obj 82 313 pack 1 22 22, f 20;
-#N canvas 755 128 818 419 old-behaviour 0;
+#N canvas 548 128 818 419 old-behavior 0;
 #X floatatom 395 117 3 0 29 0 - - - 0;
 #X floatatom 500 122 3 0 29 0 - - - 0;
 #X text 493 97 label;
 #X obj 500 158 t b f;
 #X msg 395 226 color \$1 \$2 \$3;
 #X text 393 97 background;
-#X obj 496 320 cnv 15 200 60 empty \$0-old-behaviour Label 35 30 0
-40 #e0e0e0 #000000 0;
-#X obj 395 266 send \$0-old-behaviour;
+#X obj 496 320 cnv 15 200 60 empty \$0-old-behavior Label 35 30 0 40
+#e0e0e0 #000000 0;
+#X obj 395 266 send \$0-old-behavior;
 #X floatatom 600 116 3 0 29 0 - - - 0;
 #X floatatom 705 121 3 0 29 0 - - - 0;
 #X text 698 96 label;
 #X obj 705 157 t b f;
 #X text 590 96 background;
-#X obj 600 265 send \$0-old-behaviour;
+#X obj 600 265 send \$0-old-behavior;
 #X obj 600 188 pack 1 22, f 20;
 #X msg 600 225 color \$1 \$2;
 #X text 48 302 Old "compatible" behavior, f 16;
@@ -158,7 +158,7 @@ and the 3rd value would set the color., f 46;
 #X connect 15 0 13 0;
 #X connect 26 0 27 0;
 #X connect 27 0 4 0;
-#X restore 467 590 pd old-behaviour;
+#X restore 467 590 pd old-behavior;
 #X text 435 523 COMPATIBILITY NOTE: The behavior changed in Pd 0.47!
 Check details and how to get it back:, f 23;
 #N canvas 720 84 576 472 old_way 0;
@@ -377,8 +377,8 @@ send messages., f 50;
 \, respectively \, the send and receive symbol. If you set these to
 "empty" \, the symbols are cleared (and can only be inserted back in
 the properties window)., f 50;
-#X text 41 511 Note you need to escape dollar signs with bacslashes
-to set something like "\$0-x". But the bacslash is not needed if you
+#X text 41 511 Note you need to escape dollar signs with backslashes
+to set something like "\$0-x". But the backslash is not needed if you
 set it directly via the properties window. Also note that like other
 iemguis \, we have feedback protection in the case both send and receive
 symbols are the same - though it is not that pertinent in this case.
@@ -440,29 +440,26 @@ in the subpatches below:, f 39;
 #X text 64 350 This object is part of the "iemguis" library \, natively
 included in Pd version 0.34., f 28;
 #X text 337 425 updated for Pd version 0.51;
-#N canvas 360 93 481 370 example-room 1;
-#X obj 335 217 tgl 15 1 empty empty empty 20 8 0 10 #fcfcfc #000000
-#000000 1 1;
-#X msg 335 267 \; to_K get_pos;
-#X obj 335 192 loadbang;
-#N canvas 899 89 382 383 room 0;
-#X obj 1 1 cnv 40 380 380 empty empty empty 150 140 2 17 #606060 #14e814
+#N canvas 626 143 482 400 example-room 0;
+#X obj 330 225 tgl 17 0 empty empty empty 20 8 0 10 #dfdfdf #000000
+#000000 0 1;
+#N canvas 899 89 383 386 room 0;
+#X obj 2 3 cnv 40 376 376 empty empty empty 150 140 2 17 #606060 #14e814
 0;
-#X obj 2 2 cnv 378 1 1 empty empty empty 115 160 2 17 #fc0400 #14e814
+#X obj 1 2 cnv 378 1 1 empty empty empty 115 160 2 17 #fc0400 #14e814
 0;
-#X obj 13 14 cnv 25 25 25 from_K1 to_K K1 4 13 0 14 #e8b484 #900000
-0;
-#X obj 330 333 cnv 25 25 25 from_K2 to_K K2 4 13 2 14 #94dcd4 #004450
-0;
+#X obj 17 15 cnv 25 25 25 \$0-from_K1 \$0-to_K K1 4 13 0 14 #e8b484
+#900000 0;
+#X obj 333 338 cnv 25 25 25 \$0-from_K2 \$0-to_K K2 4 13 2 14 #94dcd4
+#004450 0;
 #X restore 182 179 pd room;
-#X text 120 180 click =>;
-#X obj 335 240 metro 5;
-#X floatatom 70 310 4 0 0 0 - - - 0;
-#X floatatom 123 310 4 0 0 0 - - - 0;
-#X text 56 310 x;
-#X text 154 309 y;
-#X obj 70 278 unpack, f 8;
-#N canvas 103 309 451 443 from_K1 0;
+#X obj 330 251 metro 5;
+#X floatatom 60 340 4 0 0 0 - - - 0;
+#X floatatom 113 340 4 0 0 0 - - - 0;
+#X text 46 340 x;
+#X text 144 339 y;
+#X obj 60 308 unpack, f 8;
+#N canvas 276 231 451 443 from_K1 0;
 #X obj 124 136 t f f;
 #X obj 110 201 ||;
 #X obj 64 137 t f f;
@@ -473,10 +470,10 @@ included in Pd version 0.34., f 28;
 #X obj 128 170 !=;
 #X obj 68 171 !=;
 #X obj 155 371 outlet;
-#X obj 64 43 receive from_K1;
 #X text 212 274 The list is output only if either of the values has
 changed, f 23;
 #X obj 175 334 print K1;
+#X obj 64 43 receive \$0-from_K1;
 #X connect 0 0 7 1;
 #X connect 0 1 7 0;
 #X connect 1 0 3 0;
@@ -484,20 +481,20 @@ changed, f 23;
 #X connect 2 1 8 0;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
-#X connect 4 0 12 0;
+#X connect 4 0 11 0;
 #X connect 5 0 6 0;
 #X connect 5 1 4 1;
 #X connect 6 0 2 0;
 #X connect 6 1 0 0;
 #X connect 7 0 1 1;
 #X connect 8 0 1 0;
-#X connect 10 0 5 0;
-#X restore 70 246 pd from_K1;
-#X floatatom 210 310 4 0 0 0 - - - 0;
-#X floatatom 263 310 4 0 0 0 - - - 0;
-#X text 196 309 x;
-#X text 294 309 y;
-#X obj 210 278 unpack, f 8;
+#X connect 12 0 5 0;
+#X restore 60 276 pd from_K1;
+#X floatatom 200 340 4 0 0 0 - - - 0;
+#X floatatom 253 340 4 0 0 0 - - - 0;
+#X text 186 339 x;
+#X text 284 339 y;
+#X obj 200 308 unpack, f 8;
 #X text 46 24 In this example \, we drag canvases in a subpatch and
 get their position at a rate from a metro object (below to the right).
 The values are then received below to the left., f 52;
@@ -505,7 +502,7 @@ The values are then received below to the left., f 52;
 and "K2" canvases. Note that the subpatch needs to be in edit mode
 so the objects can be selected and dragged. Hence \, click to open
 it and then get into the edit mode to move them., f 52;
-#N canvas 317 55 455 465 from_K2 0;
+#N canvas 430 179 455 465 from_K2 0;
 #X obj 124 136 t f f;
 #X obj 110 201 ||;
 #X obj 64 137 t f f;
@@ -518,8 +515,8 @@ it and then get into the edit mode to move them., f 52;
 #X obj 155 381 outlet;
 #X text 212 274 The list is output only if either of the values has
 changed, f 23;
-#X obj 64 43 receive from_K2;
 #X obj 180 336 print K2;
+#X obj 64 43 receive \$0-from_K2;
 #X connect 0 0 7 1;
 #X connect 0 1 7 0;
 #X connect 1 0 3 0;
@@ -527,24 +524,28 @@ changed, f 23;
 #X connect 2 1 8 0;
 #X connect 3 0 4 0;
 #X connect 4 0 9 0;
-#X connect 4 0 12 0;
+#X connect 4 0 11 0;
 #X connect 5 0 6 0;
 #X connect 5 1 4 1;
 #X connect 6 0 2 0;
 #X connect 6 1 0 0;
 #X connect 7 0 1 1;
 #X connect 8 0 1 0;
-#X connect 11 0 5 0;
-#X restore 210 246 pd from_K2;
-#X connect 0 0 5 0;
-#X connect 2 0 0 0;
-#X connect 5 0 1 0;
-#X connect 10 0 6 0;
-#X connect 10 1 7 0;
-#X connect 11 0 10 0;
-#X connect 16 0 12 0;
-#X connect 16 1 13 0;
-#X connect 19 0 16 0;
+#X connect 12 0 5 0;
+#X restore 200 276 pd from_K2;
+#X text 110 180 click -->;
+#X text 73 224 click to start getting position -->;
+#X obj 330 313 s \$0-to_K;
+#X msg 330 284 get_pos;
+#X connect 0 0 2 0;
+#X connect 2 0 20 0;
+#X connect 7 0 3 0;
+#X connect 7 1 4 0;
+#X connect 8 0 7 0;
+#X connect 13 0 9 0;
+#X connect 13 1 10 0;
+#X connect 16 0 13 0;
+#X connect 20 0 19 0;
 #X restore 378 283 pd example-room;
 #N canvas 665 62 632 612 position 0;
 #X floatatom 200 146 4 0 1000 0 - - - 0;
@@ -617,8 +618,8 @@ is highlighted as light blue., f 71;
 #X msg 120 230 label \$1;
 #X obj 79 307 nbx 15 30 1 100 0 0 \$0-file empty empty 0 -8 0 10 #fcfcfc
 #000000 #000000 0 256;
-#X obj 79 307 cnv 1 148 30 empty \$0-display file\ 050.wav 9 15 0 16
-#000000 #fc6460 0;
+#X obj 79 307 cnv 1 148 30 empty \$0-display file\\\ 050.wav 9 15 0
+16 #000000 #fc6460 0;
 #X text 236 316 <= also click and drag;
 #X text 166 164 <= click and drag;
 #X obj 120 201 makefilename file\ %03d.wav;
@@ -665,7 +666,7 @@ size., f 81;
 #X obj 8 385 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X text 129 246 send <symbol> - sets send symbol., f 71;
-#X text 101 265 recceive <symbol> - sets receive symbol., f 75;
+#X text 101 265 receive <symbol> - sets receive symbol., f 75;
 #X text 136 214 color <list> -;
 #X text 241 214 first element sets background color and third sets
 font color (either floats or symbols in hexadecimal format).;

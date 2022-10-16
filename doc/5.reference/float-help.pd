@@ -1,48 +1,35 @@
 #N canvas 506 23 614 546 12;
-#X msg 50 156 bang;
 #X obj 72 396 float 6.5;
 #X floatatom 72 426 6 0 0 0 - - - 0;
 #X floatatom 73 184 6 0 0 0 - - - 0;
 #X floatatom 132 366 6 0 0 0 - - - 0;
-#X text 44 90 The float object stores a number \, initialized by its
-creation argument \, which may be reset using its inlet and output
-by sending it the "bang" message. Sending a number sets a new value
-and outputs it., f 71;
-#X text 178 367 sets the value;
 #X text 150 397 creation argument initializes the value;
-#X floatatom 463 204 5 0 0 0 - - - 0;
-#X text 92 155 output the value;
+#X floatatom 466 202 5 0 0 0 - - - 0;
+#X text 72 155 output the value;
 #X text 123 183 set and output the value;
-#X obj 463 180 r float-help;
+#X obj 466 178 r float-help;
 #X msg 95 242 send float-help;
 #X obj 106 299 makefilename %f;
 #X msg 106 275 42.23;
 #X text 225 290 symbols that look like floats are converted., f 23
 ;
 #X symbolatom 106 325 10 0 0 0 - - - 0;
-#X text 183 325 <= type a number on a symbol box;
-#X floatatom 464 277 5 0 0 0 - - - 0;
-#X obj 464 253 v float-help;
-#X obj 464 233 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X floatatom 467 275 5 0 0 0 - - - 0;
+#X obj 467 251 v float-help;
+#X obj 467 229 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#N canvas 995 162 565 399 Dealing_with_"\$0" 0;
+#N canvas 801 162 565 399 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
-Pd - is widely used in send and receive names \, speacially in abstractions
+Pd - is widely used in send and receive names \, specially in abstractions
 so each copy has local connections instead of global., f 67;
 #X floatatom 341 339 5 0 0 0 - - - 0;
 #X obj 149 295 float 1.5;
 #X msg 149 257 send \$1-x;
 #X obj 149 225 f \$0;
-#X obj 149 198 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 288 221 value \$0-x;
-#X obj 288 192 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X floatatom 288 256 5 0 0 0 - - - 0;
 #X floatatom 390 221 5 0 0 0 - \$0-x - 0;
 #X msg 44 254 send \$1;
-#X obj 44 200 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
 #X obj 44 225 symbol \$0-y;
 #X obj 341 298 receive \$0-y;
 #X text 435 220 <= right click for properties, f 10;
@@ -50,22 +37,23 @@ so each copy has local connections instead of global., f 67;
 to set a send name with it \, you need to use something like a symbol
 or a float object. Note that "\$0" is also used in send/receive names
 in GUIs as well as variable names in value objects., f 68;
+#X obj 149 193 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 288 193 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 44 189 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
 #X connect 3 0 2 0;
 #X connect 4 0 3 0;
-#X connect 5 0 4 0;
-#X connect 6 0 8 0;
-#X connect 7 0 6 0;
-#X connect 10 0 2 0;
-#X connect 11 0 12 0;
-#X connect 12 0 10 0;
-#X connect 13 0 1 0;
+#X connect 5 0 6 0;
+#X connect 8 0 2 0;
+#X connect 9 0 8 0;
+#X connect 10 0 1 0;
+#X connect 13 0 4 0;
+#X connect 14 0 5 0;
+#X connect 15 0 9 0;
 #X restore 383 454 pd Dealing_with_"\$0";
 #X floatatom 464 309 5 0 0 0 - float-help - 0;
-#X text 510 309 <= right click for properties, f 10;
-#X text 213 236 send to a named object such as a GUI \, a receive or
-value objects =>, f 34;
-#X text 196 441 open subpatch to see how to deal with '\$0' ======>
-, f 25;
 #X msg 85 211 10.5 12.9 A;
 #X obj 72 456 print float;
 #X text 171 211 list gets truncated to the first item;
@@ -115,16 +103,29 @@ and output., f 55;
 #X obj 122 512 symbol;
 #X obj 4 496 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X obj 50 155 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 44 90 The [float] object stores a number \, initialized by
+its creation argument \, which may be reset using its right inlet and
+output by sending it the "bang" message. Sending a number to the left
+inletsets a new value and outputs it., f 76;
+#X text 510 309 <-- right click for properties, f 10;
+#X text 178 367 sets the value (no output);
+#X text 183 325 <-- type a number on a symbol box;
+#X text 213 236 send to a named object such as a GUI \, a receive or
+value objects -->, f 35;
+#X text 196 441 open subpatch to see how to deal with '\$0' ------>
+, f 25;
 #X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 27 0;
-#X connect 3 0 1 0;
-#X connect 4 0 1 1;
-#X connect 11 0 8 0;
-#X connect 12 0 1 0;
-#X connect 13 0 16 0;
-#X connect 14 0 13 0;
-#X connect 16 0 1 0;
-#X connect 19 0 18 0;
-#X connect 20 0 19 0;
-#X connect 26 0 1 0;
+#X connect 1 0 20 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 1;
+#X connect 8 0 5 0;
+#X connect 9 0 0 0;
+#X connect 10 0 13 0;
+#X connect 11 0 10 0;
+#X connect 13 0 0 0;
+#X connect 15 0 14 0;
+#X connect 16 0 15 0;
+#X connect 19 0 0 0;
+#X connect 36 0 0 0;

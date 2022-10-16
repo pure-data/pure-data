@@ -2,6 +2,7 @@
 # This file is put in the public domain.
 # Mikel Olasagasti <hey_neken@euskal.org>, 2004, 2005.
 # Fvargas Grc  <fvargasgrc@yahoo.es> 2015.
+# Gorka Egino <gorkaegino.com> 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
@@ -38,20 +39,20 @@ msgstr ""
 
 #, fuzzy
 msgid "bottom:"
-msgstr "Behean"
+msgstr "azpia:"
 
 #, fuzzy
 msgid "height:"
-msgstr "Eskuinea"
+msgstr "altuera:"
 
 msgid "hold:"
-msgstr ""
+msgstr "mantendu:"
 
 msgid "intrrpt:"
-msgstr ""
+msgstr "eten:"
 
 msgid "left:"
-msgstr ""
+msgstr "ezkerra:"
 
 msgid "lin"
 msgstr ""
@@ -63,46 +64,46 @@ msgid "log-height:"
 msgstr ""
 
 msgid "max:"
-msgstr ""
+msgstr "max:"
 
 msgid "min:"
-msgstr ""
+msgstr "min:"
 
 #, fuzzy
 msgid "right:"
-msgstr "Eskuinea"
+msgstr "eskuina:"
 
 #, fuzzy
 msgid "size:"
-msgstr "Neurria:"
+msgstr "neurria:"
 
 msgid "top:"
-msgstr ""
+msgstr "goia:"
 
 msgid "value:"
-msgstr ""
+msgstr "balioa"
 
 #, fuzzy
 msgid "width:"
-msgstr "Zabalera:"
+msgstr "zabalera:"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr "'%s'-ren egiten duzun aldaketak gorde nahi duzu?"
+msgstr "'%s' fitxategian egin dituzun aldaketak gorde nahi dituzu?"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "'%s'-ren aldaketak utzi"
+msgstr "'%s' fitxategiko aldaketak baztertu?"
 
 msgid "Undo clear"
-msgstr "Argitu desegin"
+msgstr "Ezabatu desegin"
 
 msgid "Undo connect"
-msgstr "Lotura desegin"
+msgstr "Lotu desegin"
 
 #, fuzzy
 msgid "Undo cut"
-msgstr "Ebakia desegin"
+msgstr "Ebaki desegin"
 
 msgid "Undo disconnect"
 msgstr "Deslotu desegin"
@@ -112,63 +113,63 @@ msgid "Undo duplicate"
 msgstr "Bikoiztu desegin"
 
 msgid "Undo motion"
-msgstr "Mugitze desegin"
+msgstr "Mugimendua desegin"
 
 msgid "Undo paste"
 msgstr "Itsatsi desegin"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Idatzi desegin"
 
 #, fuzzy
 msgid "Redo clear"
-msgstr "Argitu desegin"
+msgstr "Ezabadu berregin"
 
 #, fuzzy
 msgid "Redo connect"
-msgstr "Lotura desegin"
+msgstr "Lotu berregin"
 
 #, fuzzy
 msgid "Redo cut"
-msgstr "Ebakia desegin"
+msgstr "Ebaki berregin"
 
 #, fuzzy
 msgid "Redo disconnect"
-msgstr "Deslotu desegin"
+msgstr "Deslotu berregin"
 
 #, fuzzy
 msgid "Redo duplicate"
-msgstr "Bikoiztu desegin"
+msgstr "Bikoiztu berregin"
 
 #, fuzzy
 msgid "Redo motion"
-msgstr "Mugitze desegin"
+msgstr "Mugimendua berregin"
 
 #, fuzzy
 msgid "Redo paste"
-msgstr "Itsatsi desegin"
+msgstr "Itsatsi berregin"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Idatzi berregin"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "Ez dago ezabatzeko Pd ezarpenik"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr ".pdsettings fitxategia ezabatu da"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "ezin izan da .pdsettings fitxategia ezabatu"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "ezin izan dira Pd ezarpenak ezabatu"
 
 #, fuzzy
 msgid "erased Pd settings"
-msgstr "Ezarpen gustiak gorde"
+msgstr "Pd ezarpenak ezabatuak"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "Ez dago ezabatzeko Pd ezarpenik"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
@@ -187,11 +188,11 @@ msgid "Put"
 msgstr "Jarri"
 
 msgid "Find"
-msgstr "Aurikitu"
+msgstr "Aurkitu"
 
 #, fuzzy
 msgid "Media"
-msgstr "Komunikabidea"
+msgstr "Media"
 
 #, fuzzy
 msgid "Window"
@@ -201,7 +202,7 @@ msgid "Help"
 msgstr "Laguntza"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Erakutsi fitxategi eta karpeta ezkutuak"
 
 msgid "Copy"
 msgstr "Kopiatu"
@@ -211,10 +212,10 @@ msgid "Paste"
 msgstr "Itsatsi"
 
 msgid "Array Properties"
-msgstr ""
+msgstr "Array ezarpenak"
 
 msgid "Array"
-msgstr ""
+msgstr "Array"
 
 #, fuzzy
 msgid "Name:"
@@ -228,7 +229,7 @@ msgid "Save contents"
 msgstr "Edukiak gorde"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "Honela marraztu:"
 
 #, fuzzy
 msgid "Polygon"
@@ -242,7 +243,7 @@ msgid "Bezier curve"
 msgstr "Bezier-en kurba"
 
 msgid "Put array into:"
-msgstr ""
+msgstr "Array-a hemen jarri:"
 
 msgid "New graph"
 msgstr "Grafiko berria"
@@ -252,7 +253,7 @@ msgid "Last graph"
 msgstr "Azken grafikoa"
 
 msgid "Options"
-msgstr ""
+msgstr "Aukerak"
 
 #, fuzzy
 msgid "Open List View..."
@@ -266,103 +267,103 @@ msgid "Cancel"
 msgstr "Utzi"
 
 msgid "Apply"
-msgstr "Aplikatu"
+msgstr "Ezarri"
 
 msgid "OK"
-msgstr ""
+msgstr "Ados"
 
 msgid "Audio Settings"
 msgstr "Audioaren ezarpenak"
 
 #, fuzzy
 msgid "Settings"
-msgstr "MIDI-ren Ezarpenak"
+msgstr "Ezarpenak"
 
 msgid "Sample rate:"
-msgstr "Samplearen heina:"
+msgstr "Lagin tasa:"
 
 msgid "Delay (msec):"
-msgstr ""
+msgstr "Delay (mseg):"
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44.1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Bloke tamaina"
 
 msgid "Use callbacks"
 msgstr ""
 
 msgid "Input Devices"
-msgstr "Sartze tresna"
+msgstr "Sarrera gailuak"
 
 msgid "Channels:"
 msgstr "Kanalak:"
 
 msgid "Output Devices"
-msgstr "Irtendako tresna"
+msgstr "Irteera gailuak"
 
 #, fuzzy
 msgid "(same as input device)..."
-msgstr "(sartze tresna bezala) ..............       "
+msgstr "(sarrera gailua bera)... "
 
 #, fuzzy
 msgid "Use Multiple Devices"
-msgstr "Anitz tresna erabili"
+msgstr "Gailu anitz erabili"
 
 msgid "Save All Settings"
-msgstr "Ezarpen gustiak gorde"
+msgstr "Ezarpen guztiak gorde"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Oihalaren ezaugarriak"
 
 #, fuzzy
 msgid "Scale"
 msgstr "Eskala"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "X unitate pixeleko"
 
 msgid "Y units per pixel:"
-msgstr "Y unitateak pixelengatik"
+msgstr "Y unitate pixeleko"
 
 msgid "Appearance on parent patch"
-msgstr "Sortzaile patch-ean agertu"
+msgstr "Patch gurasoan agertu"
 
 msgid "Graph-On-Parent"
-msgstr "Sortzailean-Agertu"
+msgstr "Gurasoan-grafikatu"
 
 msgid "Hide object name and arguments"
-msgstr "Objetuaren izena eta argumentuak ezkutatu"
+msgstr "Objektuaren izena eta argumentuak ezkutatu"
 
 msgid "Range and size"
 msgstr "Heina eta neurria"
 
 msgid "X range: from"
-msgstr ""
+msgstr "X heina:"
 
 msgid "to"
-msgstr ""
+msgstr "-"
 
 #, fuzzy
 msgid "Margin:"
-msgstr "Ertz:"
+msgstr "Marjina:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Y heina:"
 
 #, fuzzy
 msgid "Data Properties"
-msgstr "Letraren propietateak"
+msgstr "Datuen ezaugarriak"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -374,7 +375,7 @@ msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Search in %s for:"
-msgstr "Bilatu"
+msgstr "%s-(e)n hurrengoa bilatu:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -589,16 +590,16 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr "MIDI-ren Ezarpenak"
+msgstr "MIDI ezarpenak"
 
 msgid "ALSA MIDI Settings"
 msgstr "ALSA MIDI-ren Esarpenak"
 
 msgid "In Ports:"
-msgstr "Sartzeko Portuetan:"
+msgstr "Sarrera portuak:"
 
 msgid "Out Ports:"
-msgstr "Aterako Portuetan:"
+msgstr "Irteera portuak:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
@@ -626,7 +627,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Clear"
-msgstr "Menua Garbitu"
+msgstr "Garbitu"
 
 msgid "Choose Pd documents directory:"
 msgstr ""

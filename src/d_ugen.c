@@ -250,7 +250,15 @@ static void block_bang(t_block *x)
             ip = (*(t_perfroutine)(*ip))(ip);
         x->x_return = 0;
     }
-    else pd_error(x, "bang to block~ or on-state switch~ has no effect");
+    else if (!x->x_switched)
+        pd_error(x, "[block~]: bang has no effect");
+    else if (x->x_switched)
+    {
+        if (x->x_switchon)
+            pd_error(x, "[switch~]: bang has no effect at on-state");
+        if (!THIS->u_dspchain)
+            pd_error(x, "[switch~]: bang has no effect if DSP is off");
+    }
 }
 
 

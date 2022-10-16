@@ -51,8 +51,8 @@
 #X restore 390 330 pd conversion-tables;
 #X obj 167 451 line~;
 #X obj 167 427 pack 0 100;
-#X floatatom 167 379 3 0 150 0 - #0-cf - 0;
-#X floatatom 179 505 3 0 999 0 - #0-q - 0;
+#X floatatom 167 379 3 0 150 0 - \$0-cf - 0;
+#X floatatom 179 505 3 0 999 0 - \$0-q - 0;
 #X obj 122 557 vcf~;
 #X obj 167 476 tabread4~ mtof;
 #X text 51 28 ANOTHER SWEEPING FILTER EXAMPLE;
@@ -62,19 +62,19 @@
 #X text 29 298 trick to;
 #X text 30 315 make symmetric;
 #X text 28 332 triangle wave;
-#X obj 139 183 f;
-#X obj 172 181 + 1;
+#X obj 139 186 f;
+#X obj 172 184 + 1;
 #X obj 139 261 mtof;
-#X obj 172 205 mod 8;
+#X obj 172 208 mod 8;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array \$0-array1 8 float 2;
 #X coords 0 96 8 36 200 100 1;
 #X restore 346 175 graph;
-#X obj 139 154 metro 85;
-#X text 206 182 sequencer for;
-#X text 228 200 8 note loop;
+#X obj 139 157 metro 85;
+#X text 206 185 sequencer for;
+#X text 228 203 8 note loop;
 #X obj 124 636 output~;
-#X obj 139 130 tgl 15 0 empty \$0-metro empty 0 -6 0 8 #fcfcfc #000000
+#X obj 139 130 tgl 17 0 empty \$0-metro empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #N canvas 876 177 379 259 startup 0;
 #X obj 35 27 loadbang;

@@ -22,7 +22,7 @@ line or by a message:, f 28;
 #X text 89 15 - remainder modulo 1 for signals;
 #X obj 160 335 expr~;
 #X msg 161 209 \; pd dsp \$1;
-#X obj 161 184 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 161 184 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 184 183 On/off;
 #X obj 75 221 metro 200;

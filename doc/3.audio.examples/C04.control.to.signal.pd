@@ -1,4 +1,4 @@
-#N canvas 625 107 544 580 12;
+#N canvas 544 30 544 580 12;
 #X declare -stdpath ./;
 #X text 47 16 CONVERTING CONTROL TO SIGNALS;
 #X obj 244 379 output~;

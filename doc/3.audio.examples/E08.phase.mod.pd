@@ -1,14 +1,14 @@
-#N canvas 452 68 698 772 12;
+#N canvas 452 23 698 723 12;
 #X declare -stdpath ./;
 #X obj 224 164 *~;
-#X floatatom 224 107 0 0 0 0 - - - 0;
+#X floatatom 224 107 4 0 0 0 - - - 0;
 #X obj 312 144 line~;
-#X floatatom 128 121 0 0 0 0 - - - 0;
+#X floatatom 128 121 4 0 0 0 - - - 0;
 #X obj 128 235 cos~;
 #X obj 128 191 +~;
 #X obj 224 132 osc~ 0;
 #X obj 312 118 pack 0 50;
-#X floatatom 312 65 0 0 0 0 - - - 0;
+#X floatatom 312 65 4 0 0 0 - - - 0;
 #X obj 312 92 / 100;
 #X text 286 27 modulation index;
 #X text 286 42 in hundredths;

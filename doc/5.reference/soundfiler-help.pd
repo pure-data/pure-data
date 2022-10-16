@@ -36,12 +36,6 @@ outputs info as a list: samplerate \, headersize \, num channels \,
 bytes per sample \, & endianness ("b" or "l"). If no array name is
 given \, no samples are read but the info is provided anyway., f 63
 ;
-#X text 30 61 The soundfiler object reads and writes floating point
-arrays to binary soundfiles which may contain uncompressed 2- or 3-byte
-integer ("pcm") or 4-byte floating point samples in wave \, aiff \,
-caf \, next \, or ascii text formats. The number of channels of the
-soundfile need not match the number of arrays given (extras are dropped
-and unsupplied channels are zeroed out)., f 114;
 #X msg 81 298 write -nframes 10000 /tmp/foo2.wav array2;
 #X text 380 298 set type by file ext;
 #X text 287 352 ... write to an ascii file;
@@ -142,13 +136,19 @@ and type information to be ignored. Endianness is "l" ("little") for
 Intel machines or "b" ("big") for older PPC Macintoshes. You can give
 "n" (natural) to take the byte order your machine prefers., f 67;
 #X restore 674 216 pd read-write-flags;
+#X text 30 61 The [soundfiler] object reads and writes floating point
+arrays to binary soundfiles which may contain uncompressed 2- or 3-byte
+integer ("pcm") or 4-byte floating point samples in wave \, aiff \,
+caf \, next \, or ascii text formats. The number of channels of the
+soundfile need not match the number of arrays given (extras are dropped
+and unsupplied channels are zeroed out)., f 114;
 #X connect 2 0 6 0;
-#X connect 2 1 35 0;
+#X connect 2 1 34 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 7 0 2 0;
 #X connect 23 0 2 0;
 #X connect 24 0 2 0;
-#X connect 27 0 2 0;
-#X connect 30 0 2 0;
+#X connect 26 0 2 0;
+#X connect 29 0 2 0;

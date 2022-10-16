@@ -6,10 +6,6 @@
 #X coords 0 1 881 -1 300 170 1 0 0;
 #X restore 272 151 graph;
 #X floatatom 47 125 4 0 0 0 - - - 0;
-#X text 47 59 The Hilbert transform (the name is abused here according
-to computer music tradition) puts out a phase quadrature version of
-the input signal suitable for signal sideband modulation via complex-mod~.
-, f 68;
 #X text 23 379 see also:;
 #X obj 100 379 complex-mod~;
 #X obj 24 15 hilbert~;
@@ -17,10 +13,10 @@ the input signal suitable for signal sideband modulation via complex-mod~.
 #X obj 124 218 loadbang;
 #X obj 47 153 osc~ 110;
 #X obj 124 247 metro 200;
-#X obj 143 133 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 143 133 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 143 159 \; pd dsp \$1;
-#X text 161 129 DSP on/off;
+#X text 166 132 DSP on/off;
 #X text 510 10 <= click;
 #N canvas 767 120 577 295 reference 0;
 #X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -50,7 +46,7 @@ the input signal suitable for signal sideband modulation via complex-mod~.
 #X restore 416 11 pd reference;
 #X obj 5 45 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X obj 100 188 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 100 188 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 58 187 clear;
 #X text 24 125 hz;
@@ -66,12 +62,16 @@ the input signal suitable for signal sideband modulation via complex-mod~.
 #X connect 0 0 1 0;
 #X restore 520 124 pd init;
 #X text 380 379 updated for Pd version 0.52;
-#X connect 0 0 21 0;
-#X connect 0 1 22 0;
-#X connect 2 0 9 0;
-#X connect 8 0 10 0;
-#X connect 9 0 0 0;
-#X connect 10 0 21 0;
-#X connect 10 0 22 0;
-#X connect 11 0 12 0;
-#X connect 17 0 0 1;
+#X text 47 59 The Hilbert transform (the name is abused here according
+to computer music tradition) puts out a phase quadrature version of
+the input signal suitable for signal sideband modulation via [complex-mod~].
+, f 68;
+#X connect 0 0 20 0;
+#X connect 0 1 21 0;
+#X connect 2 0 8 0;
+#X connect 7 0 9 0;
+#X connect 8 0 0 0;
+#X connect 9 0 20 0;
+#X connect 9 0 21 0;
+#X connect 10 0 11 0;
+#X connect 16 0 0 1;

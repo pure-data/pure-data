@@ -18,9 +18,9 @@
 #X text 240 343 oscillator;
 #X obj 186 482 output~;
 #X obj 186 441 hip~;
-#X obj 259 388 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 259 388 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000;
-#X obj 279 415 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 279 415 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X text 457 505 updated for Pd version 0.37;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -41,8 +41,6 @@ at the original period when the center frequency roosts on a harmonic.
 #X text 83 321 carrier;
 #X text 62 336 oscillator;
 #X text 60 24 HOW NOT TO APPLY TWO-COSINE CARRIER TO FM;
-#X text 281 388 <= graph once;
-#X text 300 414 <= repeatedly;
 #X text 170 130 center freq. (in tenths of fundamental), f 13;
 #N canvas 605 126 534 605 fft 0;
 #X obj 95 134 inlet~;
@@ -102,8 +100,10 @@ until much later.;
 #X connect 28 0 24 1;
 #X restore 240 441 pd fft;
 #X obj 522 22 declare -stdpath ./;
+#X text 281 388 <-- graph once;
+#X text 300 414 <-- repeatedly;
 #X connect 0 0 17 0;
-#X connect 0 0 36 0;
+#X connect 0 0 34 0;
 #X connect 1 0 2 0;
 #X connect 2 0 26 0;
 #X connect 3 0 25 0;
@@ -116,8 +116,8 @@ until much later.;
 #X connect 13 0 0 0;
 #X connect 17 0 16 0;
 #X connect 17 0 16 1;
-#X connect 18 0 36 1;
-#X connect 19 0 36 2;
+#X connect 18 0 34 1;
+#X connect 19 0 34 2;
 #X connect 25 0 28 0;
 #X connect 26 0 25 0;
 #X connect 26 1 25 1;

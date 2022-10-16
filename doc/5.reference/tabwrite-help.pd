@@ -17,7 +17,7 @@ input values are clipped to the range from 0 to size-1, f 37;
 #X obj 152 420 tabread;
 #X obj 209 420 tabread4;
 #X obj 274 420 array;
-#N canvas 515 381 401 220 init-table 0;
+#N canvas 742 134 401 220 init-table 0;
 #X obj 35 42 loadbang;
 #X msg 35 74 \; tabwrite-ex resize 10 \; tabwrite-ex bounds 0 10 10
 0 \; tabwrite-ex xlabel -0.2 0 1 2 3 4 5 6 7 8 9 \; tabwrite-ex ylabel
@@ -26,9 +26,6 @@ input values are clipped to the range from 0 to size-1, f 37;
 #X restore 521 112 pd init-table;
 #X obj 28 295 tabwrite tabwrite-ex;
 #X msg 49 170 set tabwrite-ex;
-#X text 22 66 Tabwrite writes floats into an array \, input values
-are set in the left inlet \, while the index is set on the right inlet.
-, f 62;
 #N canvas 792 534 593 356 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in
 Pd - is widely used in send/receive names as well as array names. This
@@ -109,6 +106,9 @@ of Pd's tutorial:, f 39;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X restore 317 420 pd array-examples;
+#X text 22 66 [tabwrite] writes floats into an array \, input values
+are set in the left inlet \, while the index is set on the right inlet.
+, f 62;
 #X connect 1 0 15 0;
 #X connect 3 0 15 1;
 #X connect 16 0 15 0;

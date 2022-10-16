@@ -1,7 +1,7 @@
-#N canvas 556 34 719 478 12;
-#X text 100 151 index;
+#N canvas 556 34 719 467 12;
+#X text 100 149 index;
 #X obj 66 18 tabread;
-#X floatatom 67 152 4 0 9 0 - - - 0;
+#X floatatom 67 150 4 0 9 0 - - - 0;
 #X floatatom 67 268 5 0 0 0 - - - 0;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array table-ex 10 float 3;
@@ -10,21 +10,16 @@
 #X restore 391 151 graph;
 #X text 191 216 creation argument;
 #X text 193 232 gives array name;
-#X text 176 184 change array name;
-#X text 473 424 updated for Pd version 0.43;
+#X text 177 184 change array name;
+#X text 495 413 updated for Pd version 0.43;
 #X obj 240 407 tabwrite~;
 #X obj 168 407 tabwrite;
 #X obj 97 435 tabsend~;
 #X obj 163 435 tabreceive~;
 #X obj 314 407 tabplay~;
 #X obj 97 407 tabread4;
-#X text 51 61 The tabread object reads values from an array ("table")
-according to an index. The index is rounded down to the next lower
-integer. Values in the table correspond to indices starting at 0 Indices
-outside of the range are replaced by the nearest index in range (from
-0 to 9 in this example)., f 84;
 #X obj 67 224 tabread table-ex;
-#X msg 77 184 set table-ex;
+#X msg 83 184 set table-ex;
 #X text 110 269 output = table-ex[index];
 #N canvas 746 749 401 220 init-table 0;
 #X obj 35 42 loadbang;
@@ -116,6 +111,11 @@ of Pd's tutorial:, f 39;
 #X connect 2 0 0 0;
 #X restore 252 435 pd array-examples;
 #X text 20 418 see also:;
-#X connect 2 0 16 0;
-#X connect 16 0 3 0;
-#X connect 17 0 16 0;
+#X text 51 61 The [tabread] object reads values from an array ("table")
+according to an index. The index is rounded down to the next lower
+integer. Values in the table correspond to indices (starting at 0).
+Indices outside of the range are replaced by the nearest index in range
+(from 0 to 9 in this example)., f 84;
+#X connect 2 0 15 0;
+#X connect 15 0 3 0;
+#X connect 16 0 15 0;

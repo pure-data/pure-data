@@ -77,7 +77,7 @@ included in Pd version 0.34., f 28;
 #X obj 258 394 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000
 #000000 0 1;
 #X text 120 100 the new [hdradio] object:;
-#X text 35 57 WARNING: This object is still in Pd for backwarss compatibility
+#X text 35 57 WARNING: This object is still in Pd for backwards compatibility
 but has been deprecated in Pd 0.36. Just use the new [hradio] instead:
 , f 63;
 #X obj 78 302 hdl 20 1 0 8 empty empty empty 20 -8 192 10 -99865 -262144

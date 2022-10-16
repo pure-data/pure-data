@@ -1,6 +1,6 @@
 #N canvas 470 23 753 703 12;
 #X declare -stdpath ./;
-#X floatatom 181 253 5 36 110 0 - - - 0;
+#X floatatom 181 248 5 36 110 0 - - - 0;
 #X obj 181 277 t b f, f 9;
 #X obj 181 302 f;
 #X obj 181 327 mod 16;
@@ -22,7 +22,7 @@ sent to by "this" or "next", f 43;
 #X text 379 532 optional "-s #" to set starting voice number \; optional
 -x to avoid setting \$1 to voice number \; filename \; number of copies
 \; optional arguments to copies;
-#X text 56 620 note: for backward compatibility \, you can also invoke
+#X text 56 620 note: for backwards compatibility \, you can also invoke
 this as "clone 16 clone-abstraction" (for instance) \, swapping the
 abstraction name and the number of voices., f 90;
 #X obj 181 550 output~;
@@ -94,18 +94,6 @@ first number., f 68;
 #X floatatom 288 408 5 0 15 0 - - - 0;
 #X floatatom 297 456 5 36 110 0 - - - 0;
 #X text 49 513 click to open --> (first copy only), f 17;
-#X text 40 49 clone creates any number of copies of a desired abstraction
-(a patch loaded as an object in another patch). Within each copy \,
-"\$1" is set to the instance number. (These count from 0 unless overridden
-by the "-s" option in the creation arguments. You can avoid this behavior
-using the "-x" option.) You can pass additional arguments to the copies
-that appear as \$2 and onward (or \$1 and onward with "-x" option).
-, f 95;
-#X text 40 125 clone's inlets and outlets correspond to those of the
-contained patch \, and may be signal and/or control inlets and outlets.
-(In this example there's one control inlet and one signal outlet).
-You can click on the clone object to see the first of the created instances.
-, f 95;
 #X text 40 173 Control inlets forward messages as shown below. Signal
 inlets can get non float messages with the 'fwd' argument in the same
 way \, but signals are sent to all the instances. Signal outlets output
@@ -113,24 +101,36 @@ the sum of all instances' outputs \, and control outlets forward messages
 with the number of the instance prepended to them., f 95;
 #X obj 181 512 clone clone-abstraction 16;
 #X text 78 10 - make multiple copies of an abstraction.;
+#X text 40 49 [clone] creates any number of copies of an abstraction
+(a patch loaded as an object in another patch). By default "\$1" is
+set to the instance number within each copy (counted from 0 unless
+overridden by the "-s" flag. You can prevent '\$1' from reflecting
+the instance number with the "-x" flag. You can pass additional arguments
+to the copies that appear as \$2 and onward (or \$1 and onward with
+the "-x" flag)., f 95;
+#X text 40 125 [clone]'s inlets/outlets correspond to those of the
+contained patch \, and may be signal and/or control inlets/outlets.
+(In this example there's one control inlet and one signal outlet).
+You can click on the clone object to see the first of the created instances.
+, f 95;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 21 1;
 #X connect 2 0 3 0;
 #X connect 3 0 21 0;
 #X connect 3 0 26 0;
-#X connect 4 0 38 0;
-#X connect 5 0 38 0;
-#X connect 6 0 38 0;
-#X connect 7 0 38 0;
-#X connect 8 0 38 0;
-#X connect 9 0 38 0;
+#X connect 4 0 36 0;
+#X connect 5 0 36 0;
+#X connect 6 0 36 0;
+#X connect 7 0 36 0;
+#X connect 8 0 36 0;
+#X connect 9 0 36 0;
 #X connect 21 0 22 0;
-#X connect 22 0 38 0;
+#X connect 22 0 36 0;
 #X connect 26 0 2 1;
 #X connect 30 0 4 0;
 #X connect 31 0 5 0;
 #X connect 32 0 6 0;
 #X connect 33 0 9 0;
-#X connect 38 0 19 0;
-#X connect 38 0 19 1;
+#X connect 36 0 19 0;
+#X connect 36 0 19 1;

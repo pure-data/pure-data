@@ -18,20 +18,15 @@
 #X msg 117 356 64 fft-real fft-imag 10;
 #X obj 117 410 print;
 #X obj 116 151 osc~ 5000;
-#X text 17 79 pique takes unwindowed FFT analyses as input (they should
-be stored in arrays) and outputs a list of peaks \, giving their peak
-number \, frequency \, amplitude \, and phase (as a cosine/sine pair.)
-, f 64;
 #X text 20 308 message arguments: number of FFT points \, fft real
 part \, fft imaginary part \, maximum number of peaks to report.;
 #X text 554 462 updated for Pd 0.31.;
 #X text 97 12 - find peaks in an FFT spectrum;
 #X msg 346 180 \; pd dsp \$1;
-#X obj 346 153 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 346 153 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 366 154 DSP on/off;
-#X obj 343 55 sigmund~;
-#X text 38 55 NOTE: pique~ is obsolete - consider using;
+#X obj 360 55 sigmund~;
 #X obj 5 43 cnv 1 710 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 639 12 <= click;
@@ -59,6 +54,11 @@ and sine components., f 42;
 0;
 #X text 40 458 see also:;
 #X obj 117 458 sigmund~;
+#X text 18 55 NOTE: [pique~] is obsolete - consider using -->;
+#X text 17 79 [pique~] takes unwindowed FFT analyses as input (they
+should be stored in arrays) and outputs a list of peaks \, giving their
+peak number \, frequency \, amplitude \, and phase (as a cosine/sine
+pair.), f 64;
 #X connect 1 0 5 0;
 #X connect 1 1 6 0;
 #X connect 2 0 1 0;
@@ -68,4 +68,4 @@ and sine components., f 42;
 #X connect 9 0 11 0;
 #X connect 10 0 9 0;
 #X connect 12 0 1 0;
-#X connect 18 0 17 0;
+#X connect 17 0 16 0;

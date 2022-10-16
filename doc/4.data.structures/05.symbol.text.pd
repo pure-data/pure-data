@@ -1,0 +1,142 @@
+#N struct template5a float x float y symbol sym;
+#N struct template5b float x float y text bla;
+#N canvas 334 23 628 657 12;
+#X text 389 615 Updated for Pd version 0.52;
+#N canvas 971 72 304 326 data5 1;
+#X scalar template5a 50 50 banana \;;
+#X scalar template5a 150 120 banana \;;
+#X scalar template5b 50 220 \; 88 \\\; \;;
+#X restore 519 376 pd data5;
+#X symbolatom 78 354 10 0 0 0 - - - 0;
+#X msg 86 323 symbol apple;
+#X text 78 271 set symbol:;
+#X obj 78 385 set -symbol template5a sym;
+#N canvas 347 126 508 418 template5a 0;
+#X text 212 191 The instruction is to draw the "sym" variable in the
+20/25 coordinates., f 36;
+#X obj 56 198 drawsymbol sym 20 25;
+#X obj 61 82 struct template5a float x float y symbol sym;
+#X obj 89 341 drawpolygon 0 10 0 0 105 0 105 55 0 55 0 0;
+#X text 67 35 Besides the usual x/y fields we now have a symbol field
+named "sym"., f 35;
+#X text 55 152 We now use the [drawsymbol] object \, which is actually
+the same as [dranumber]., f 41;
+#X text 97 298 We also have a [drawpolygon] that draws a frame around
+the symbol., f 34;
+#X text 51 241 Unlike floats fields \, you can't edit symbol values
+by click and typing directly on them.;
+#X restore 484 330 pd template5a;
+#N canvas 357 56 561 407 stuff 0;
+#X obj 356 189 pointer;
+#X obj 157 65 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#000000;
+#X msg 356 148 traverse pd-data5 \, bang;
+#X obj 219 218 append template5a x y;
+#X msg 290 314 symbol banana;
+#X obj 290 355 set -symbol template5a sym;
+#X obj 290 281 trigger bang pointer;
+#X msg 219 153 50 50 \, 150 120;
+#X obj 82 273 append template5b x y;
+#X obj 157 95 trigger bang bang bang bang;
+#X msg 385 91 \; pd-data5 clear;
+#X obj 187 63 loadbang;
+#X msg 82 236 50 220;
+#X obj 82 317 s text-pointer;
+#X obj 157 32 inlet;
+#X text 65 343 send pointer to [text set];
+#X text 290 255 initialize symbol value;
+#X connect 0 0 3 2;
+#X connect 1 0 9 0;
+#X connect 2 0 0 0;
+#X connect 3 0 6 0;
+#X connect 3 0 8 2;
+#X connect 4 0 5 0;
+#X connect 6 0 4 0;
+#X connect 6 1 5 1;
+#X connect 7 0 3 0;
+#X connect 8 0 13 0;
+#X connect 9 0 12 0;
+#X connect 9 1 7 0;
+#X connect 9 2 2 0;
+#X connect 9 3 10 0;
+#X connect 11 0 9 0;
+#X connect 12 0 8 0;
+#X connect 14 0 1 0;
+#X restore 337 428 pd stuff;
+#X msg 257 288 traverse pd-data5 \, next;
+#X listbox 400 542 15 0 0 0 - - - 0;
+#X obj 400 513 get template5a sym;
+#X msg 234 254 send get;
+#X obj 400 485 r get;
+#N canvas 440 166 440 359 template5b 0;
+#X obj 66 69 struct template5b float x float y text bla;
+#X obj 41 192 drawtext bla 10 10;
+#X text 78 18 Besides the usual x/y fields we now have a text field
+named "bla"., f 35;
+#X text 45 112 The [drawtext] is again just another alias for [drawnumber]/[drawsymbol]
+and has a drawing instruction for it., f 46;
+#X text 180 184 draw the "bla" text variable in the 10/10 coordinates.
+, f 28;
+#X obj 72 280 drawpolygon 600 5 0 0 160 0 160 60 0 60 0 0;
+#X text 102 235 We also have a [drawpolygon] to draw a frame around
+the text., f 32;
+#X restore 484 353 pd template5b;
+#X obj 81 485 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #dcdcdc #000000
+#000000 0;
+#X floatatom 81 537 3 0 0 0 - - - 0;
+#X msg 128 508 1 2 3 4 a b c d e;
+#X msg 142 535 list a b c d e f g h i j;
+#X msg 108 482 symbol text;
+#X floatatom 159 563 5 0 0 0 - - - 0;
+#X msg 78 296 symbol orange;
+#X obj 307 578 r text-pointer;
+#X obj 128 609 text set -s template5b bla;
+#X msg 266 325 next;
+#X text 20 11 Besides floats \, scalars can have other data types \,
+namely: symbols \, text and arrays. This example shows how to deal
+with symbols and text. A text can have many lines with lists of one
+or more elements (symbols or floats)., f 82;
+#X text 304 254 <-- send pointer to "get".;
+#X text 104 458 set text:;
+#X text 356 398 <-- recreate;
+#X obj 337 399 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X text 155 354 <-- type;
+#X text 408 429 <-- open to see how it works, f 15;
+#X obj 257 351 pointer template5a;
+#X text 433 288 <-- click here first;
+#X text 20 154 We now have two separate templates mixed in the same
+collection on [pd data5]. See that [pointer] can have an argument to
+specify a particular template \, we use it to traverse the two scalars
+containing symbols and clicking the "next" message now loops back to
+the beggining of the list when reaching its end. Another feature of
+[pointer] here is to use the "send" message to send the pointer to
+a [get] object., f 82;
+#X text 451 484 get symbol value;
+#X text 20 60 You can only set float fields when adding an item with
+[append]. We need to use the [set] object to set symbol values and
+the [text set] object to set texts. When setting a symbol with [set]
+\, you need the "-symbol" flag and you can't set floats and symbols
+with the same [set] object. For [text] \, you need to use the "-s"
+flag to deal with Data Structures. Check also the help file of [text]
+to see how to use [text get] to get values from text fields., f 82
+;
+#X text 37 492 set line, f 4;
+#X connect 2 0 5 0;
+#X connect 3 0 2 0;
+#X connect 8 0 31 0;
+#X connect 10 0 9 0;
+#X connect 11 0 31 0;
+#X connect 12 0 10 0;
+#X connect 14 0 15 0;
+#X connect 15 0 22 1;
+#X connect 16 0 22 0;
+#X connect 17 0 22 0;
+#X connect 18 0 22 0;
+#X connect 19 0 22 0;
+#X connect 20 0 2 0;
+#X connect 21 0 22 3;
+#X connect 23 0 31 0;
+#X connect 28 0 7 0;
+#X connect 31 0 5 1;
+#X connect 31 2 8 0;

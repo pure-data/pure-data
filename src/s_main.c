@@ -1495,7 +1495,7 @@ t_symbol *sys_decodedialog(t_symbol *s)
 static void namelist2gui(const char*name, t_namelist*namelist)
 {
     const size_t allocchunk = 32;
-    size_t i;
+    int i;
     t_namelist *nl;
 
     size_t namesize = allocchunk;
