@@ -7,14 +7,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2022-10-17 00:04+0200\n"
-"Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
-"Language-Team: Deutsch <LL@li.org>\n"
+"PO-Revision-Date: 2022-10-17 16:48+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.1.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
@@ -346,7 +348,7 @@ msgid "Y range: from"
 msgstr "Y-Spanne, von"
 
 msgid "Data Properties"
-msgstr "Canvas  Eigenschaften"
+msgstr "Canvas Eigenschaften"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -451,7 +453,7 @@ msgid "Bang"
 msgstr "Taster (Bang)"
 
 msgid "Flash Time (msec)"
-msgstr "Blinkdauer (msec):"
+msgstr "Blinkdauer (msec)"
 
 msgid "Min:"
 msgstr "Min:"
@@ -472,7 +474,7 @@ msgid "Number2"
 msgstr "Number2"
 
 msgid "Width (digits):"
-msgstr "Breite (Stellen)"
+msgstr "Breite (Stellen):"
 
 # iemgui
 msgid "Height:"
@@ -643,7 +645,7 @@ msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
 msgid "[deken] installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 "[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
-"%2$s]"
+"%2$s]!"
 
 #, tcl-format
 msgid "installing deken package '%s'"
@@ -1014,10 +1016,7 @@ msgstr "Herunterladen von '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
-"Herunterladen von\n"
-"'%1$s'\n"
-"nach '%2$s'..."
+msgstr "Herunterladen von '%1$s' nach '%2$s' beginnt..."
 
 msgid "aborting."
 msgstr "... Abbruch."
