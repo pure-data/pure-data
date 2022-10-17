@@ -1,0 +1,123 @@
+#N struct template11 float x float y float a float b float n;
+#N canvas 290 36 621 540 12;
+#N canvas 243 114 724 522 template11 0;
+#X obj 441 148 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000 0 1;
+#X obj 441 25 inlet;
+#X obj 69 458 outlet;
+#X text 164 148 show/hide this drawing instruction --> globally via
+the inlet, f 38;
+#X text 124 208 draw a "circle" of radius a \, visible when b != 0
+(inlet is deactivated), f 49;
+#X text 129 360 this is a square that is always visible;
+#X obj 69 105 struct template11 float x float y float a float b float
+n, f 33;
+#X text 24 47 Template demonstrating turning a drawing instruction
+on and off. Field values are x/y coordinates \, 'a' (radius) \, 'b'
+(visibility) and 'n' (object number)., f 53;
+#X obj 123 252 filledcurve -v b 900 900 8 a(0:100)(0:100) 0 a(0:100)(0:71)
+a(0:100)(0:71) 0 a(0:100)(0:100) a(0:100)(0:-71) a(0:100)(0:71) a(0:100)(0:-100)
+0 a(0:100)(0:-71) a(0:100)(0:-71) 0 a(0:100)(0:-100) a(0:100)(0:71)
+a(0:100)(0:-71) a(0:100)(0:100) 0;
+#X obj 441 173 drawnumber b -10 -28 0 b=;
+#X obj 126 386 drawpolygon 0 2 20 20 20 -20 -20 -20 -20 20 20 20;
+#X connect 0 0 9 0;
+#X connect 1 0 0 0;
+#X connect 6 0 2 0;
+#X restore 61 279 pd template11;
+#N canvas 912 70 310 309 data11 1;
+#X scalar template11 107 222 15 0 0 \;;
+#X scalar template11 197 174 15 0 1 \;;
+#X scalar template11 106 117 15 0 2 \;;
+#X coords 0 309 1 308 0 0 0;
+#X restore 453 282 pd data11;
+#X text 21 17 Drawing instructions can be dynamically turned on and
+off \, either globally for all data of a given template \, or locally
+according to a data field. In this example the "drawcurve" instruction's
+arguments contain the leading flag "-v b" meaning that its visibility
+is turned on and off by the field b., f 82;
+#X text 21 82 To turn a drawing instruction on and off globally \,
+send a number to its inlet. By default drawing instructions are initially
+visible \, unless given the "-n" flag., f 82;
+#X text 21 120 Arrays have the additional possibility of turning on
+and off drawing instructions for their individual points as scalars.
+Use "-vs z" to make the variable z control this., f 82;
+#X obj 342 462 pointer;
+#X obj 184 499 set template11 b, f 23;
+#X obj 184 469 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X msg 342 406 traverse pd-data11 \, next;
+#X msg 381 434 next;
+#X obj 61 249 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X text 402 499 updated for Pd version 0.52;
+#X text 165 279 <-- open template;
+#X msg 184 441 set \$1;
+#X text 390 383 click here first;
+#X text 426 427 go to next and loop, f 11;
+#N canvas 189 313 696 328 set/get 0;
+#X obj 160 236 set template11 b;
+#X obj 36 59 route click;
+#X msg 181 165 set \$1;
+#X obj 160 200 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 181 136 get template11 b;
+#X obj 36 136 get template11 n;
+#X obj 36 274 outlet;
+#X obj 36 21 inlet;
+#X obj 36 94 trigger pointer bang pointer, f 36;
+#X text 330 115 The [struct] object sends a 'click' message with the
+pointer to the clicked object and we use this to get the value of 'b'
+and set to the opposite state. Next we get the value of 'n' to route
+and get the toggle value on the parent window., f 46;
+#X obj 36 236 pack float float;
+#X connect 1 0 8 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 0;
+#X connect 3 0 10 1;
+#X connect 4 0 2 0;
+#X connect 5 0 10 0;
+#X connect 7 0 1 0;
+#X connect 8 0 5 0;
+#X connect 8 1 3 0;
+#X connect 8 2 4 0;
+#X connect 8 2 0 1;
+#X connect 10 0 6 0;
+#X restore 61 311 pd set/get;
+#X obj 61 366 route 0 1 2;
+#X obj 110 399 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X text 21 173 This example also allows you to turn the state of the
+scalars "on" or "off" by clicking on them then get the data in the
+patch. See [pd set/get] for details., f 82;
+#X text 327 337 you can also traverse and set value of 'b' field locally
+this way., f 35;
+#X obj 184 406 get template11 b n;
+#X floatatom 307 431 3 0 0 0 - - - 0;
+#X obj 61 399 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 85 399 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X text 87 248 <-- globally turn on/off number drawing instruction.
+;
+#X listbox 61 338 5 0 0 0 - - - 0;
+#X obj 61 224 loadbang;
+#X text 146 311 <-- set/get values, f 18;
+#X text 174 328 from clicks, f 14;
+#X connect 0 0 16 0;
+#X connect 5 0 6 1;
+#X connect 5 0 21 0;
+#X connect 5 1 8 0;
+#X connect 7 0 6 0;
+#X connect 8 0 5 0;
+#X connect 9 0 5 0;
+#X connect 10 0 0 0;
+#X connect 13 0 7 0;
+#X connect 16 0 26 0;
+#X connect 17 0 23 0;
+#X connect 17 1 24 0;
+#X connect 17 2 18 0;
+#X connect 21 0 13 0;
+#X connect 21 1 22 0;
+#X connect 26 0 17 0;
+#X connect 27 0 10 0;

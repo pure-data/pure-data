@@ -1,8 +1,7 @@
 #N canvas 341 38 815 441 12;
-#X msg 29 130 bang;
 #X text 114 264 creation argument initializes the value, f 21;
-#X text 69 128 output the value;
-#X text 136 159 set and output the value;
+#X text 57 128 output the value;
+#X text 129 159 set and output the value;
 #X obj 29 272 symbol foo;
 #X msg 44 160 symbol bar;
 #X symbolatom 29 310 10 0 0 0 - - - 0;
@@ -10,14 +9,11 @@
 #X symbolatom 96 237 10 0 0 0 - - - 0;
 #X msg 50 190 zorglub;
 #X text 113 190 any other message is 'converted';
-#X text 14 66 The symbol object stores a symbol \, Pd's data type for
-handling fixed strings (often filenames \, array names \, send/receive
-names or the names of other objects in pd).;
 #X symbolatom 509 254 16 0 0 0 - - - 0;
 #X symbolatom 653 185 16 0 0 0 - - - 0;
 #X obj 509 216 symbol cis\ boom\ bah;
 #X msg 509 121 symbol hey\\\,\\\ stop;
-#X obj 484 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 484 161 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X obj 29 343 print;
 #X obj 509 285 print;
@@ -25,9 +21,6 @@ names or the names of other objects in pd).;
 #X text 436 61 Note you can also use backslashes to escape spaces and
 other special characters (comma \, semicolons \, dollar signs and backslash).
 , f 50;
-#X text 149 324 NOTE: unlike "float" \, etc. \, there's no "send" message
-to forward to another object -- that would conflict with the function
-of converting arbitrary messages to symbols., f 86;
 #X obj 34 14 symbol;
 #X text 90 13 - store a symbol (i.e. \, string);
 #X text 32 400 see also:;
@@ -64,15 +57,25 @@ symbol).;
 0;
 #X text 709 16 <= click;
 #X obj 157 400 int;
-#X connect 0 0 4 0;
-#X connect 4 0 6 0;
-#X connect 5 0 4 0;
-#X connect 6 0 17 0;
-#X connect 8 0 4 1;
-#X connect 9 0 4 0;
-#X connect 12 0 18 0;
-#X connect 13 0 14 1;
+#X text 14 66 The [symbol] object stores a symbol \, Pd's data type
+for handling fixed strings (often filenames \, array names \, send/receive
+names or the names of other objects in pd).;
+#X obj 29 130 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X text 149 321 NOTE: unlike [float] \, [int] \, [value] \, [list store]
+and [pointer] \, there's no "send" message to forward to another object
+-- that would conflict with the function of converting arbitrary messages
+to symbols., f 86;
+#X obj 191 400 list store;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 15 0;
+#X connect 7 0 3 1;
+#X connect 8 0 3 0;
+#X connect 10 0 16 0;
+#X connect 11 0 12 1;
+#X connect 12 0 10 0;
+#X connect 13 0 12 0;
 #X connect 14 0 12 0;
-#X connect 15 0 14 0;
-#X connect 16 0 14 0;
-#X connect 19 0 14 0;
+#X connect 17 0 12 0;
+#X connect 30 0 3 0;

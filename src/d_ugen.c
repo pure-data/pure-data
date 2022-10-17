@@ -13,7 +13,6 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
-#include <stdlib.h>
 #include <stdarg.h>
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
@@ -251,7 +250,15 @@ static void block_bang(t_block *x)
             ip = (*(t_perfroutine)(*ip))(ip);
         x->x_return = 0;
     }
-    else pd_error(x, "bang to block~ or on-state switch~ has no effect");
+    else if (!x->x_switched)
+        pd_error(x, "[block~]: bang has no effect");
+    else if (x->x_switched)
+    {
+        if (x->x_switchon)
+            pd_error(x, "[switch~]: bang has no effect at on-state");
+        if (!THIS->u_dspchain)
+            pd_error(x, "[switch~]: bang has no effect if DSP is off");
+    }
 }
 
 
@@ -1270,7 +1277,7 @@ void dsp_add_copy(t_sample *in, t_sample *out, int n)
         dsp_add(copy_perf8, 3, in, out, (t_int)n);
 }
 
-static t_int *sig_tilde_perform(t_int *w)
+static t_int *scalarcopy_perform(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1280,7 +1287,7 @@ static t_int *sig_tilde_perform(t_int *w)
     return (w+4);
 }
 
-static t_int *sig_tilde_perf8(t_int *w)
+static t_int *scalarcopy_perf8(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
@@ -1303,9 +1310,9 @@ static t_int *sig_tilde_perf8(t_int *w)
 void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
     if (n&7)
-        dsp_add(sig_tilde_perform, 3, in, out, (t_int)n);
+        dsp_add(scalarcopy_perform, 3, in, out, (t_int)n);
     else
-        dsp_add(sig_tilde_perf8, 3, in, out, (t_int)n);
+        dsp_add(scalarcopy_perf8, 3, in, out, (t_int)n);
 }
 
 /* ------------------------ samplerate~~ -------------------------- */
@@ -1356,4 +1363,3 @@ void d_ugen_setup(void)
     block_tilde_setup();
     samplerate_tilde_setup();
 }
-

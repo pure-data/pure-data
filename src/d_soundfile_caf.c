@@ -5,7 +5,7 @@
 /* ref: https://developer.apple.com/library/archive/documentation/MusicAudio/Reference/CAFSpec/CAF_spec/CAF_spec.html */
 
 #include "d_soundfile.h"
-#include <math.h>
+
 #ifndef _MSC_VER
 #include <inttypes.h>
 #endif

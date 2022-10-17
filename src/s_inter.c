@@ -43,13 +43,23 @@ that didn't really belong anywhere. */
 #include <stdlib.h>
 #endif
 
+/* colorize output, but only on a TTY */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else /* if isatty exists outside unistd, please add another #ifdef */
+# define isatty(fd) 0
+#endif
+static int stderr_isatty;
+
 #define stringify(s) str(s)
 #define str(s) #s
 
 #define INTER (pd_this->pd_inter)
 
-#define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
-#define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
+#define DEBUG_MESSUP   1<<0    /* messages up from pd to pd-gui */
+#define DEBUG_MESSDOWN 1<<1    /* messages down from pd-gui to pd */
+#define DEBUG_COLORIZE 1<<2    /* colorize messages (if we are on a TTY) */
+
 
 #ifndef PDBINDIR
 #define PDBINDIR "bin/"
@@ -506,15 +516,25 @@ static int socketreceiver_doread(t_socketreceiver *x)
             if (sys_debuglevel & DEBUG_MESSDOWN)
             {
                 size_t bufsize = (bp>messbuf)?(bp-messbuf):0;
+                int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+                const char*msg = messbuf;
+                if (('\r' == messbuf[0]) && ('\n' == messbuf[1]))
+                {
+                    bufsize-=2;
+                    msg+=2;
+                }
         #ifdef _WIN32
             #ifdef _MSC_VER
-                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, messbuf);
+                fwprintf(stderr, L"<< %.*S\n", (int)bufsize, msg);
             #else
-                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, messbuf);
+                fwprintf(stderr, L"<< %.*s\n", (int)bufsize, msg);
             #endif
                 fflush(stderr);
         #else
-                fprintf(stderr, "<< %.*s\n", (int)bufsize, messbuf);
+                if(colorize)
+                    fprintf(stderr, "\e[0;1;36m<< %.*s\e[0m\n", (int)bufsize, msg);
+                else
+                    fprintf(stderr, "<< %.*s\n", (int)bufsize, msg);
         #endif
             }
             x->sr_inhead = inhead;
@@ -820,15 +840,22 @@ void sys_vgui(const char *fmt, ...)
     if (sys_debuglevel & DEBUG_MESSUP)
     {
         const char *mess = INTER->i_guibuf + INTER->i_guihead;
+        int colorize = stderr_isatty && (sys_debuglevel & DEBUG_COLORIZE);
+        static int newmess = 1;
 #ifdef _WIN32
     #ifdef _MSC_VER
-        fwprintf(stderr, L">> %S", mess);
+        fwprintf(stderr, L"%S", mess);
     #else
-        fwprintf(stderr, L">> %s", mess);
+        fwprintf(stderr, L"%s", mess);
     #endif
         fflush(stderr);
 #else
-        fprintf(stderr, ">> %s", mess);
+        if (colorize)
+            fprintf(stderr, "\e[0;1;35m%s%s\e[0m", (newmess)?">> ":"", mess);
+        else
+            fprintf(stderr, "%s%s", (newmess)?">> ":"", mess);
+
+        newmess = ('\n' == mess[msglen-1]);
 #endif
     }
     INTER->i_guihead += msglen;
@@ -1585,6 +1612,7 @@ static void glist_maybevis(t_glist *gl)
 int sys_startgui(const char *libdir)
 {
     t_canvas *x;
+    stderr_isatty = isatty(2);
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
     INTER->i_havegui = 1;

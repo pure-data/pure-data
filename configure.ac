@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.52.2])
+AC_INIT([pd], [0.53.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -45,7 +45,7 @@ midi_backends=""
 
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer -O3"
+RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
 
 # common flags applied to all pd binaries
 PD_CPPFLAGS=""
@@ -575,6 +575,7 @@ AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
                 font/Makefile
+                linux/Makefile
                 mac/Makefile
                 man/Makefile
                 msw/Makefile

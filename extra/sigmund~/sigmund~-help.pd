@@ -9,7 +9,7 @@
 #X obj 362 422 loadbang;
 #X floatatom 362 481 5 0 0 0 - - - 0;
 #X obj 362 538 tabwrite~ insignal;
-#X obj 339 509 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 339 509 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 125 19 Using sigmund~ on arrays;
 #X text 53 41 If invoked with the "-t" flag (as a creation argument)
@@ -42,10 +42,7 @@ outputs are meaningful.;
 #X floatatom 265 600 7 0 0 0 - - - 0;
 #X obj 72 523 mtof;
 #X text 137 599 pitch;
-#X text 15 53 Sigmund~ analyzes an incoming sound into sinusoidal components
-\, which may be reported individually or combined to form a pitch estimate.
-Possible outputs are specified as creation arguments:, f 85;
-#X text 158 86 pitch - output pitch continuously, f 57;
+#X text 159 86 pitch - output pitch continuously, f 57;
 #N canvas 589 25 499 697 setting-parameters 0;
 #X msg 182 66 print;
 #X floatatom 192 92 5 0 0 0 - - - 0;
@@ -114,7 +111,7 @@ five numbers \, one for each sinusoid at each analysis period. The
 first is the index number of the sinusoid (so you can use "route" to
 claw them apart). The other four are as shown:, f 65;
 #X obj 542 184 *~;
-#X obj 560 155 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 560 155 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 515 30 If you ask for "tracks" \, the output is four numbers:
 index \, frequency \, and amplitude as before \, and finally a flag
@@ -166,9 +163,9 @@ for an empty track., f 62;
 #X connect 36 1 32 0;
 #X connect 36 2 33 0;
 #X restore 405 487 pd sinusoid-tracking;
-#X text 158 154 tracks - output sinusoidal peaks organized into tracks
+#X text 159 154 tracks - output sinusoidal peaks organized into tracks
 , f 57;
-#X text 158 103 notes - output pitch at the beginning of notes, f
+#X text 159 103 notes - output pitch at the beginning of notes, f
 57;
 #X text 414 464 more details:;
 #X text 69 206 npts - number of points in each analysis window (1024)
@@ -178,11 +175,11 @@ f 54;
 #X text 69 240 npeak - number of sinusoidal peaks (20), f 54;
 #X text 69 303 vibrato - depth of vibrato to expect in 1/2-tones (1)
 , f 54;
-#X text 158 137 peaks - output all sinusoidal peaks in order of amplitude
+#X text 159 137 peaks - output all sinusoidal peaks in order of amplitude
 ;
 #X text 69 257 maxfreq - maximum sinusoid frequency in Hz. (1000000)
 , f 54;
-#X text 158 120 env - output amplitude continuously, f 57;
+#X text 159 120 env - output amplitude continuously, f 57;
 #X text 69 320 stabletime - time (msec) to wait to report notes (50)
 , f 54;
 #X text 69 337 minpower - minimum power (dB) to report a note (50)
@@ -192,7 +189,7 @@ f 54;
 #X msg 72 473 69;
 #X obj 38 12 sigmund~;
 #X text 107 11 - sinusoidal analysis and pitch tracking;
-#X obj 242 468 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 242 468 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 242 492 \; pd dsp \$1;
 #X text 262 468 DSP on/off;
@@ -288,11 +285,15 @@ powers of two. The example below specifies a huge hop of 4096 (to slow
 the output down) and to output "pitch" and "env" (the default outputs).
 , f 82;
 #X obj 72 574 sigmund~ -hop 4096 pitch env;
-#X connect 1 0 40 0;
-#X connect 2 0 25 0;
+#X text 8 53 [sigmund~] analyzes an incoming sound into sinusoidal
+components \, which may be reported individually or combined to form
+a pitch estimate. Possible outputs are specified as creation arguments:
+, f 87;
+#X connect 1 0 39 0;
+#X connect 2 0 24 0;
 #X connect 3 0 6 0;
 #X connect 6 0 1 0;
-#X connect 25 0 3 0;
-#X connect 28 0 29 0;
-#X connect 40 0 4 0;
-#X connect 40 1 5 0;
+#X connect 24 0 3 0;
+#X connect 27 0 28 0;
+#X connect 39 0 4 0;
+#X connect 39 1 5 0;

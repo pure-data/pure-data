@@ -28,16 +28,13 @@ for when you don't have a signal input., f 23;
 using an i386 or ia64 processor. Out-of-range floating point values
 are thousands of times slower to compute with than in-range ones. There'
 a protection against NaNs (they become 0)., f 65;
-#X text 44 63 pow~ raises a signal to a numeric power (given by another
-signal or argument/float). The inputs may be positive \, zero \, or
-negative.;
 #X obj 81 449 +~;
 #X text 112 451 (etc.) - signal binary operators;
 #X obj 234 423 expr~;
 #X msg 330 140 \; pd dsp \$1;
-#X obj 330 119 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 330 114 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
-#X text 349 117 DSP on/off;
+#X text 355 114 DSP on/off;
 #N canvas 810 126 441 249 reference 0;
 #X obj 13 50 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000
 0;
@@ -63,6 +60,9 @@ negative.;
 0;
 #X obj 3 407 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 44 62 [pow~] raises a signal to a numeric power (given by another
+signal or argument/float). The inputs may be positive \, zero \, or
+negative.;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 2 0 18 0;
@@ -76,4 +76,4 @@ negative.;
 #X connect 20 0 18 0;
 #X connect 21 0 8 0;
 #X connect 22 0 8 1;
-#X connect 29 0 28 0;
+#X connect 28 0 27 0;
