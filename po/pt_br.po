@@ -156,7 +156,7 @@ msgid "no Pd settings to erase"
 msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-"pulando carregar preferências... o Pd parece ter travado na inicialização"
+msgstr "pulando carregar preferências... o Pd parece ter travado na inicialização"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(re-salvar preferências para reinstanciá-las)"
@@ -291,7 +291,7 @@ msgid "Save All Settings"
 msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -734,7 +734,7 @@ msgstr "Configuraçõs da plataforma"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr Platforma padrão: %s"
+msgstr "Platforma padrão: %s"
 
 msgid "User-defined platform:"
 msgstr "Platforma definida pelo usuário:"
@@ -745,7 +745,7 @@ msgstr "Esconder arquiteturas estrangeiras"
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
-msgstr 
+msgstr ""
 "Apenas mostrar a mais nova versão de uma biblioteca\n"
 "(tratar outras versões como arquiteturas estrangeiras)"
 
@@ -813,7 +813,7 @@ msgstr "Falhou instalação do pacote"
 msgid ""
 "Failed to completely remove %1$s.\n"
 "Please manually remove the directory %2$s after quitting Pd."
-msgstr 
+msgstr ""
 "Falha ao completamente remover %1$s.\n"
 "Por favor remover manualmente o diretório %2$s depois de fechar o Pd."
 
