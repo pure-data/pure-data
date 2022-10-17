@@ -6,15 +6,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2022-10-17 12:18+0200\n"
-"Last-Translator: Antoine Rousseau\n"
-"Language-Team: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
-"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
+"PO-Revision-Date: 2022-10-18 08:15+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "------dimensions(chiffres)(pix):------"
@@ -441,10 +442,10 @@ msgid "Flash Time (msec)"
 msgstr "Durée du flash (ms)"
 
 msgid "Min:"
-msgstr ""
+msgstr "Min :"
 
 msgid "Max:"
-msgstr ""
+msgstr "Max :"
 
 msgid "Toggle"
 msgstr "Interrupteur"
@@ -905,7 +906,7 @@ msgid "Preferences..."
 msgstr "Préférences..."
 
 msgid "Search for: "
-msgstr "Rechercher des :"
+msgstr "Rechercher des : "
 
 msgid "libraries"
 msgstr "bibliothèques"
@@ -925,22 +926,22 @@ msgstr ""
 "confiance."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr ""
+msgstr "Désactivation de la vue par onglets : incompatibilité Tcl/Tk détectée"
 
 msgid "Library"
 msgstr "Bibliothèque"
 
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 msgid "Uploader"
 msgstr "Mis en ligne par :"
 
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 msgid "Search Results"
 msgstr "Résultats de la recherche"
@@ -950,14 +951,14 @@ msgstr "Journal"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Recherche de '%s'..."
+msgstr "Recherche de « %s »…"
 
 #, tcl-format
 msgid "online? %s"
-msgstr "connecté ? %s"
+msgstr "connecté ? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
+msgstr "La recherche n'a pu pas aboutir. Êtes-vous connecté(e) ?"
 
 msgid "_"
 msgstr "_"
