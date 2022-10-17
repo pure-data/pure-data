@@ -3546,6 +3546,7 @@ static void canvas_find_parent(t_canvas *x)
 }
 
 extern t_pd *message_get_responder(t_gobj *x);
+extern t_class *text_class;
 
 static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
@@ -3561,6 +3562,16 @@ static int glist_dofinderror(t_glist *gl, const void *error_object)
             canvas_vis((t_canvas *)gl, 1);
             canvas_editmode((t_canvas *)gl, 1.);
             glist_select(gl, g);
+            if (pd_class(&g->g_pd) == text_class) {
+                t_text* x = (t_text*)g;
+                int argc = binbuf_getnatom(x->te_binbuf);
+                t_atom*argv = binbuf_getvec(x->te_binbuf);
+                if(argc>0 && A_SYMBOL == argv[0].a_type) {
+                    t_symbol*s = atom_getsymbol(argv);
+                    if (s && s->s_name && *s->s_name)
+                        pdgui_vmess("::deken::open_search_objects", "s", s->s_name);
+                }
+            }
             return (1);
         }
         else if (g->g_pd == canvas_class)
@@ -4350,8 +4361,6 @@ static void canvas_reselect(t_canvas *x)
             /* otherwise activate first item in selection */
         gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
-
-extern t_class *text_class;
 
 void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     t_floatarg fwhoin, t_floatarg finno)

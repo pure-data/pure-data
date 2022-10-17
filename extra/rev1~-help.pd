@@ -12,19 +12,17 @@ but its loop gain depends on reverb time., f 53;
 (100 normal) after one second \, so that 100 corresponds to infinite
 reverb time \, 70 to two seconds \, 40 to one second \, and 0 to 0
 , f 53;
-#X text 418 376 The rev1~ module eats about 18% of my 300mHz P2 machine.
-, f 28;
 #X obj 126 307 rev1~;
 #X text 243 280 The "clear" button impolitely clears out all the delay
 lines \, You may immediately resume pumping the reverberator \, but
 the input signal should be cleanly enveloped. The output \, too \,
 must be enveloped and may not be opened until 5 msec after the "clear"
 message is sent., f 53;
-#X obj 29 121 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 29 121 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
-#X obj 29 71 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000
+#X obj 29 71 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000
 0 1;
-#X obj 158 283 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 158 283 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 99 236 dB after 1 sec, f 8;
 #X msg 117 66 20;
@@ -125,20 +123,22 @@ message is sent., f 53;
 #X obj 6 429 cnv 1 630 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 417 447 updated for Pd version 0.30.;
-#X text 156 66 <= tone burst durtions in ms;
-#X connect 0 0 6 1;
-#X connect 1 0 8 0;
-#X connect 6 0 27 0;
-#X connect 6 0 27 1;
-#X connect 8 0 25 0;
-#X connect 9 0 1 0;
-#X connect 10 0 6 2;
-#X connect 12 0 15 0;
-#X connect 13 0 15 0;
-#X connect 14 0 15 0;
-#X connect 15 0 25 2;
-#X connect 16 0 15 0;
-#X connect 17 0 25 1;
-#X connect 25 0 6 0;
-#X connect 25 0 26 0;
-#X connect 25 0 26 1;
+#X text 404 375 The [rev1~] module eats about 18% of my 300mHz P2 machine.
+, f 29;
+#X text 156 66 <-- tone burst durtions in ms;
+#X connect 0 0 5 1;
+#X connect 1 0 7 0;
+#X connect 5 0 26 0;
+#X connect 5 0 26 1;
+#X connect 7 0 24 0;
+#X connect 8 0 1 0;
+#X connect 9 0 5 2;
+#X connect 11 0 14 0;
+#X connect 12 0 14 0;
+#X connect 13 0 14 0;
+#X connect 14 0 24 2;
+#X connect 15 0 14 0;
+#X connect 16 0 24 1;
+#X connect 24 0 5 0;
+#X connect 24 0 25 0;
+#X connect 24 0 25 1;

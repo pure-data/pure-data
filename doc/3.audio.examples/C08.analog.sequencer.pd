@@ -1,4 +1,4 @@
-#N canvas 453 94 812 654 12;
+#N canvas 498 39 812 654 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array 29-sequence 9 float 3;
@@ -79,8 +79,7 @@
 #X obj 113 435 +~ 129;
 #X obj 72 435 +~ 1;
 #X obj 131 226 *~ 9;
-#N canvas 711 183 533 565 make-tables 0;
-#X msg 162 81 bang;
+#N canvas 736 149 533 565 make-tables 0;
 #X obj 162 106 t b b;
 #X obj 205 163 f;
 #X obj 243 163 + 1;
@@ -95,46 +94,47 @@
 #X msg 116 445 \; 29-sequence 0 55 550 385 495 165 385 495 275 615
 ;
 #X text 74 22 bang to recalculate the envelope table (I did this but
-then went in and changed it with the mouse afterward.), f 55;
+then went in and changed it with the mouse afterwards.), f 55;
 #X obj 160 197 sel 103;
 #X text 84 388 The sequence is just a list of specified frequencies.
 the wavetable is a cosine.;
-#X connect 0 0 1 0;
-#X connect 1 0 5 0;
-#X connect 1 1 4 0;
-#X connect 2 0 14 0;
-#X connect 3 0 2 1;
-#X connect 4 0 2 1;
-#X connect 5 0 2 0;
-#X connect 6 0 7 0;
-#X connect 6 1 8 1;
-#X connect 7 0 9 0;
-#X connect 7 1 10 0;
-#X connect 9 0 8 0;
-#X connect 10 0 8 0;
-#X connect 14 0 5 1;
-#X connect 14 1 6 0;
+#X obj 162 77 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X connect 0 0 4 0;
+#X connect 0 1 3 0;
+#X connect 1 0 13 0;
+#X connect 2 0 1 1;
+#X connect 3 0 1 1;
+#X connect 4 0 1 0;
+#X connect 5 0 6 0;
+#X connect 5 1 7 1;
+#X connect 6 0 8 0;
+#X connect 6 1 9 0;
+#X connect 8 0 7 0;
+#X connect 9 0 7 0;
+#X connect 13 0 4 1;
+#X connect 13 1 5 0;
+#X connect 15 0 0 0;
 #X restore 590 473 pd make-tables;
 #X text 64 13 ANALOG-SYNTH-STYLE SEQUENCER;
 #X obj 131 198 phasor~ 0.6;
 #X text 172 226 main loop: sawtooth of amplitude 9;
 #X text 221 258 read frequency sequence;
 #X text 187 288 9x original frequency sawtooth;
-#X text 198 313 adjust for reading;
-#X text 371 313 envelope sample;
 #X text 149 387 multiply envelope by audio-frequency sawtooth;
 #X text 169 420 adjust amplitude and center for wavetable;
 #X text 128 493 multiply by raised-cosine smoothing function;
 #X text 549 451 how to make the tables:;
+#X obj 624 19 declare -stdpath ./;
+#X text 187 312 adjust for reading envelope sample;
 #X text 49 41 Some control operations can be carried out entirely by
 tilde objects passing audio signals around. Here is an imitation of
-an analog sequencer and envelope generator. A phasor~ loops through
+an analog sequencer and envelope generator. A [phasor~] loops through
 the "sequence" table at 0.6 Hz \, generating 9 frequencies. Simultaneously
 \, by multiplying by 9 and wrapping \, we create a sawtooth at 9*0.6=5.4
 Hz \, which reads a second table for an envelope shape. This becomes
 the grain size for a sampler based on the 18.sampler.looped example
-earlier., f 56;
-#X obj 624 19 declare -stdpath ./;
+earlier., f 57;
 #X connect 1 0 2 0;
 #X connect 2 0 14 0;
 #X connect 2 0 14 1;

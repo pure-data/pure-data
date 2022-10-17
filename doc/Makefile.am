@@ -106,7 +106,6 @@ nobase_dist_libpd_DATA = \
      ./1.manual/x6.htm \
      ./1.manual/x6-a.htm \
      ./1.manual/x6-b.htm \
-     ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
      ./2.control.examples/03.connections.pd \
@@ -136,7 +135,6 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/dollarsign2.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
-     ./3.audio.examples/A00.intro.txt \
      ./3.audio.examples/A01.sinewave.pd \
      ./3.audio.examples/A02.amplitude.pd \
      ./3.audio.examples/A03.line.pd \
@@ -269,31 +267,29 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
-     ./3.audio.examples/sinevoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
-     ./4.data.structures/00.intro.txt \
      ./4.data.structures/01.scalars.pd \
      ./4.data.structures/02.getting.data.pd \
      ./4.data.structures/03.setting.data.pd \
      ./4.data.structures/04.append.pd \
-     ./4.data.structures/05.array.pd \
-     ./4.data.structures/06.file.pd \
-     ./4.data.structures/07.sequencer.pd \
-     ./4.data.structures/08.selection.pd \
-     ./4.data.structures/09.scaling.pd \
-     ./4.data.structures/10.onoff.pd \
-     ./4.data.structures/11.array.controls.pd \
-     ./4.data.structures/12.beat-patterns.pd \
-     ./4.data.structures/13.sliderule.pd \
-     ./4.data.structures/14.partialtracer.pd \
+     ./4.data.structures/05.symbol.text.pd \
+     ./4.data.structures/06.array.pd \
+     ./4.data.structures/07.graph.on.parent.pd \
+     ./4.data.structures/08.file.pd \
+     ./4.data.structures/09.sequencer.pd \
+     ./4.data.structures/10.interaction.pd \
+     ./4.data.structures/11.scaling.pd \
+     ./4.data.structures/12.onoff.pd \
+     ./4.data.structures/13.array.controls.pd \
+     ./4.data.structures/14.beat-patterns.pd \
+     ./4.data.structures/15.sliderule.pd \
+     ./4.data.structures/16.partialtracer.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
-     ./4.data.structures/data-start.pd \
      ./4.data.structures/file.txt \
      ./4.data.structures/osc-voice.pd \
      ./4.data.structures/voice.pd \
-     ./4.data.structures/z.txt \
      ./5.reference/pd-messages.pd \
      ./5.reference/abs~-help.pd \
      ./5.reference/acoustics-help.pd \
@@ -346,8 +342,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
-     ./5.reference/hradio-help.pd \
-     ./5.reference/hslider-help.pd \
      ./5.reference/inlet-outlet-help.pd \
      ./5.reference/int-help.pd \
      ./5.reference/key-input-help.pd \
@@ -385,6 +379,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/print~-help.pd \
      ./5.reference/qlist-help.pd \
      ./5.reference/qlist.txt \
+     ./5.reference/radio-help.pd \
      ./5.reference/random-help.pd \
      ./5.reference/readsf~-help.pd \
      ./5.reference/realtime-help.pd \
@@ -406,6 +401,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sig~-help.pd \
+     ./5.reference/sliders-help.pd \
      ./5.reference/slop~-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
@@ -442,8 +438,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/vcf~-help.pd \
      ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
-     ./5.reference/vradio-help.pd \
-     ./5.reference/vslider-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \
      ./5.reference/wrap~-help.pd \
@@ -463,8 +457,8 @@ nobase_dist_libpd_DATA = \
      ./6.externs/test-obj4.pd \
      ./6.externs/test-obj5.pd \
      ./7.stuff/soundfile-tools/1.ring-mod.pd \
-     ./7.stuff/soundfile-tools/2.bandpass.pd \
-     ./7.stuff/soundfile-tools/3.phase.vocoder.pd \
+     ./7.stuff/soundfile-tools/2.band-pass.pd \
+     ./7.stuff/soundfile-tools/3.phase-vocoder.pd \
      ./7.stuff/soundfile-tools/4.looper.pd \
      ./7.stuff/soundfile-tools/5.reverb.pd \
      ./7.stuff/soundfile-tools/6.vocoder.pd \
@@ -487,6 +481,7 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
      ./8.topics/expr.html \
+     ./8.topics/fudi.html \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \

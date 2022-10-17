@@ -817,7 +817,7 @@ void g_slider_setup(void)
     slider_widgetbehavior.w_visfn =        iemgui_vis;
     slider_widgetbehavior.w_clickfn =      slider_newclick;
     class_setwidget(slider_class, &slider_widgetbehavior);
-    class_sethelpsymbol(slider_class, gensym("hslider"));
+    class_sethelpsymbol(slider_class, gensym("sliders"));
     class_setsavefn(slider_class, slider_save);
     class_setpropertiesfn(slider_class, slider_properties);
 }

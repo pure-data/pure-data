@@ -4,8 +4,6 @@
 #X obj 27 13 sig~;
 #X obj 70 151 sig~;
 #X floatatom 70 119 6 0 0 0 - - - 0;
-#X text 44 57 In this example \, the sig~ object converts numbers to
-an audio signal \, which the snapshot~ converts back again.;
 #X obj 92 226 metro 200;
 #X text 266 366 updated for Pd version 0.33;
 #X text 120 119 <= Scroll to set value, f 12;
@@ -16,7 +14,7 @@ an audio signal \, which the snapshot~ converts back again.;
 #X floatatom 186 206 6 0 0 0 - - - 0;
 #X floatatom 186 314 6 0 0 0 - - - 0;
 #X text 251 228 An argument initializes the signal value., f 15;
-#X obj 319 130 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 319 130 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X msg 319 157 \; pd dsp \$1;
 #X text 14 366 see also:;
@@ -42,13 +40,15 @@ an audio signal \, which the snapshot~ converts back again.;
 #X restore 315 14 pd reference;
 #X text 409 14 <= click;
 #X text 63 13 - convert numbers to signals;
+#X text 44 57 [sig~] object converts numbers to an audio signal. In
+this example \, the [snapshot~] converts back again.;
 #X connect 0 0 1 0;
 #X connect 3 0 0 0;
 #X connect 4 0 3 0;
-#X connect 6 0 0 0;
-#X connect 6 0 12 0;
-#X connect 9 0 6 0;
-#X connect 11 0 12 0;
-#X connect 12 0 14 0;
-#X connect 13 0 11 0;
-#X connect 16 0 17 0;
+#X connect 5 0 0 0;
+#X connect 5 0 11 0;
+#X connect 8 0 5 0;
+#X connect 10 0 11 0;
+#X connect 11 0 13 0;
+#X connect 12 0 10 0;
+#X connect 15 0 16 0;
