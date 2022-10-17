@@ -203,8 +203,8 @@ activesense 254 \, systemreset 255;
 #X connect 5 1 6 0;
 #X connect 6 1 1 0;
 #X restore 234 153 pd send realtime messages;
-#X obj 234 65 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#X obj 234 65 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
 #X text 293 63 send;
 #X text 64 64 receive;
 #X text 33 17 Test patch which sends & receives all MIDI messages.

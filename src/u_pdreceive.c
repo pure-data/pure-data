@@ -11,10 +11,8 @@ standard output. */
     Moonix::Antoine Rousseau
 */
 
-#include <sys/types.h>
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
 #ifndef _WIN32
 #include <unistd.h>

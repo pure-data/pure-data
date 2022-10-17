@@ -3,12 +3,12 @@
 #X msg 76 162 walk the cat;
 #X msg 64 130 45;
 #X obj 64 203 bang;
-#X obj 77 234 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 77 234 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X text 53 77 The [bang] object outputs a "bang" message for whatever
 message it receives., f 42;
 #X msg 240 222 bang;
-#X obj 302 223 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 302 223 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
 #X text 208 145 this is more efficient than using a message box and
 the bang GUI below:, f 22;
@@ -30,18 +30,18 @@ the bang GUI below:, f 22;
 #X obj 7 171 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
 0;
 #X obj 25 16 bang;
-#X text 99 16 - send "bang" message;
 #X obj 65 16 b;
-#X text 146 105 bang - a bang message, f 49;
-#X text 117 63 anything - any message outputs a bang, f 53;
 #X obj 8 132 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
 0;
-#X text 147 143 NONE, f 52;
+#X text 147 143 NONE, f 44;
+#X text 117 63 anything - any message outputs a bang., f 48;
+#X text 146 105 bang - a bang message for any input message.;
+#X text 99 16 - send "bang" message.;
 #X restore 237 35 pd reference;
 #X text 8 309 see also:;
 #X obj 83 311 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
 #000000;
-#X msg 108 309;
+#X msg 108 309 bang;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;

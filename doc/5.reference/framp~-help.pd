@@ -13,25 +13,14 @@
 #X obj 103 329 print~ frequency;
 #X obj 118 304 print~ amplitude;
 #X obj 30 204 osc~;
-#X text 304 87 Framp~ takes as input a rectangular-windowed FFT and
-outputs \, for each FFT channel \, the estimated amplitude and frequency
-of any component feeding that channel. A sinusoidal component should
-appear in four components (or three in the special case of a sinusoid
-exactly tuned to a bin.) Frequency output is in bins \, i.e. \, units
-of SR/N., f 50;
 #X text 75 65 frequency in bins (< 63);
 #X obj 30 90 t f b;
 #X obj 62 121 samplerate~;
 #X obj 30 120 *;
 #X text 465 369 updated for Pd version 0.47;
-#X text 304 198 The estimation is done according to the hop-1 trick
-described in Puckette&Brown \, Accuracy of Frequency Estimates Using
-the Phase Vocoder \, using a Hann window. A more sophisticated version
-of this technique is used in the sigmund~ object., f 50;
-#X obj 103 256 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
+#X obj 103 256 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
 #000000 #000000;
-#X text 129 257 <= print analysis;
-#X obj 178 144 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 178 144 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000 0 1;
 #X text 201 143 DSP on/off;
 #X obj 11 48 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000
@@ -64,18 +53,31 @@ of this technique is used in the sigmund~ object., f 50;
 #X text 597 14 <= click;
 #X obj 11 360 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
+#X text 123 255 <-- print analysis;
+#X text 304 87 [framp~] takes as input a rectangular-windowed FFT and
+outputs \, for each FFT channel \, the estimated amplitude and frequency
+of any component feeding that channel. A sinusoidal component should
+appear in four components (or three in the special case of a sinusoid
+exactly tuned to a bin.) Frequency output is in bins \, i.e. \, units
+of SR/N., f 50;
+#X text 304 198 The estimation is done according to the hop-1 trick
+described in Puckette&Brown \, Accuracy of Frequency Estimates Using
+the Phase Vocoder \, using a Hann window. A more sophisticated version
+of this technique is used in the [sigmund~] object., f 50;
+#X text 32 373 see also:;
+#X obj 109 372 sigmund~;
 #X connect 1 0 12 0;
-#X connect 2 0 15 0;
+#X connect 2 0 14 0;
 #X connect 4 0 9 0;
 #X connect 4 1 9 1;
 #X connect 5 0 1 0;
 #X connect 9 0 10 0;
 #X connect 9 1 11 0;
 #X connect 12 0 4 0;
-#X connect 15 0 17 0;
-#X connect 15 1 16 0;
-#X connect 16 0 17 1;
-#X connect 17 0 5 0;
-#X connect 20 0 10 0;
-#X connect 20 0 11 0;
-#X connect 22 0 6 0;
+#X connect 14 0 16 0;
+#X connect 14 1 15 0;
+#X connect 15 0 16 1;
+#X connect 16 0 5 0;
+#X connect 18 0 10 0;
+#X connect 18 0 11 0;
+#X connect 19 0 6 0;

@@ -4,15 +4,15 @@
 #X obj 44 65 delread4~;
 #X obj 703 284 vd~;
 #X obj 612 231 delread4~ \$0-delay;
-#X obj 69 306 delwrite~ \$0-delay 1000;
+#X obj 79 306 delwrite~ \$0-delay 1000;
 #X obj 612 199 line~;
-#X obj 69 245 osc~ 440;
+#X obj 79 245 osc~ 440;
 #X obj 612 278 output~;
 #X obj 612 171 pack f 1000;
 #X obj 396 226 declare -stdpath ./;
-#X msg 89 274 clear;
-#X text 134 274 set all samples of delay line to zero.;
-#X text 243 304 1st argument: name of delay line, f 42;
+#X msg 99 274 clear;
+#X text 144 274 set all samples of delay line to zero.;
+#X text 253 304 1st argument: name of delay line, f 42;
 #X obj 43 15 delwrite~;
 #X text 115 15 - writes a signal in a delay line;
 #X obj 50 40 delread~;
@@ -24,21 +24,13 @@
 most the length of the delay line (specified by a corresponding delwrite~).
 , f 46;
 #X obj 627 436 ../3.audio.examples/G05.execution.order;
-#X text 579 346 In case the delwrite~ runs later in the DSP loop than
-the delread~ or delread4~ objects \, the delay is constrained below
-by one vector length (usually 64 samples.) Open the file below as an
-example on how to control this to obtain very short delays., f 50
-;
 #X text 123 376 input (delay time in ms);
 #X msg 49 376 500;
 #X text 732 527 updated for Pd version 0.52;
-#X text 243 321 2nd argument: length of delay line in msec (the maximum
+#X text 253 321 2nd argument: length of delay line in msec (the maximum
 delay time in read objects), f 42;
 #X text 119 64 - read from a delay line with 4-point interpolation
 (for variable delay times), f 40;
-#X text 597 12 Delread4~ implements a 4-point interpolating delay tap.
-The delay in milliseconds of the tap is specified by an incoming signal
-for variable delay times., f 46;
 #X text 656 198 signal input (variable delay time in ms);
 #X text 736 283 - old name of delread4~ ('vd' for 'variable delay')
 , f 27;
@@ -96,15 +88,7 @@ in read objects)., f 47;
 #X text 175 443 initial delay time in ms for [delread~] (default 0).
 ;
 #X restore 394 21 pd reference;
-#X floatatom 69 218 5 0 0 0 - - - 0;
-#X text 15 112 Delread~ and delread4~ objects read from a delay line
-allocated in a delwrite~ object with the same name. Note that in this
-help file we're using delay names with "\$0" (the patch ID number used
-to force locality in Pd). You can use more than one delread~ and/or
-delread4~ objects for the same delwrite~ object. If the specified delay
-time in delread~/delread4~ is longer than the size of the delay line
-or less than zero it is clipped to the length of the delay line.,
-f 78;
+#X floatatom 79 218 5 0 0 0 - - - 0;
 #X obj 85 407 delread~ \$0-delay 500;
 #X msg 85 376 1000;
 #X msg 612 144 500;
@@ -112,16 +96,32 @@ f 78;
 #X obj 576 3 cnv 1 1 100 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 406 70 --> a.k.a.:;
+#X text 12 112 The [delread~] and [delread4~] objects read from a delay
+line allocated in a [delwrite~] object with the same name. Note that
+in this help file we're using delay names with "\$0" (the patch ID
+number used to force locality in Pd). You can use more than one [delread~]
+and/or [delread4~] objects for the same [delwrite~] object. If the
+specified delay time in [delread~]/[delread4~] is longer than the size
+of the delay line or less than zero it is clipped to the length of
+the delay line., f 81;
+#X text 597 12 [delread4~] implements a 4-point interpolating delay
+tap. The delay in milliseconds of the tap is specified by an incoming
+signal for variable delay times., f 46;
+#X text 568 350 In case [delwrite~] runs later in the DSP loop than
+the [delread~] or [delread4~] objects \, the delay is constrained below
+by one vector length (usually 64 samples.) Open the file below as an
+example on how to control this to obtain very short delays., f 51
+;
 #X connect 3 0 7 0;
 #X connect 3 0 7 1;
 #X connect 5 0 3 0;
 #X connect 6 0 4 0;
 #X connect 8 0 5 0;
 #X connect 10 0 4 0;
-#X connect 24 0 41 0;
-#X connect 39 0 6 0;
-#X connect 41 0 19 0;
-#X connect 41 0 19 1;
-#X connect 42 0 41 0;
-#X connect 43 0 8 0;
-#X connect 44 0 8 0;
+#X connect 23 0 38 0;
+#X connect 37 0 6 0;
+#X connect 38 0 19 0;
+#X connect 38 0 19 1;
+#X connect 39 0 38 0;
+#X connect 40 0 8 0;
+#X connect 41 0 8 0;

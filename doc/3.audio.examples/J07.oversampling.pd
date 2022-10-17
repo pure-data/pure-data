@@ -1,4 +1,4 @@
-#N canvas 674 111 520 620 12;
+#N canvas 568 60 520 620 12;
 #X declare -stdpath ./;
 #N canvas 514 169 716 525 16x 0;
 #X obj 35 254 *~ 0.125;
@@ -62,12 +62,12 @@ H13.butterworth.pd in this series.;
 #X connect 28 0 0 0;
 #X connect 29 0 12 0;
 #X restore 169 146 pd 16x;
-#X floatatom 225 109 7 0 0 0 - - - 0;
+#X floatatom 225 109 8 0 0 0 - - - 0;
 #X obj 225 146 phasor~;
 #X obj 111 191 output~;
 #X obj 225 191 output~;
-#X obj 225 81 mtof;
-#X floatatom 225 57 3 -24 135 0 - - - 0;
+#X obj 225 83 mtof;
+#X floatatom 225 57 5 -24 135 0 - - - 0;
 #X text 55 19 UPSAMPLING TO CONTROL FOLDOVER;
 #X text 242 247 not;
 #X text 114 263 sampled;
@@ -86,7 +86,7 @@ over as it gets downsampled at the outlet~ object.;
 \, the filter is set for a cutoff of 15 kHz. Lowering it to 7500 Hz
 would further reduce foldover by 18 dB at the expense of losing energy
 in the range 7500-15000 Hz.;
-#X text 258 55 <= pitch;
+#X text 263 55 <= pitch;
 #X obj 362 23 declare -stdpath ./;
 #X connect 0 0 3 0;
 #X connect 0 0 3 1;

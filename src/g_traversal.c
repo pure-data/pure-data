@@ -7,18 +7,15 @@ and arrays:
 
 pointer - point to an object belonging to a template
 get -     get numeric fields
-set -     change numeric fields
+set -     set numeric/symbolic fields
 element - get an array element
 getsize - get the size of an array
-setsize - change the size of an array
+setsize - set the size of an array
 append -  add an element to a list
-sublist - get a pointer into a list which is an element of another scalar
 
 */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
 
@@ -36,7 +33,7 @@ static t_symbol *template_getbindsym(t_symbol *s)
 }
 
 
-/* ---------------------- pointers ----------------------------- */
+/* ---------------------- pointer ----------------------------- */
 
 static t_class *ptrobj_class;
 
@@ -92,24 +89,24 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
 
     if (!gs)
     {
-        pd_error(x, "ptrobj_next: no current pointer");
+        pd_error(x, "pointer next: no current pointer");
         return;
     }
     if (gs->gs_which != GP_GLIST)
     {
-        pd_error(x, "ptrobj_next: lists only, not arrays");
+        pd_error(x, "pointer next: lists only, not arrays");
         return;
     }
     glist = gs->gs_un.gs_glist;
     if (glist->gl_valid != gp->gp_valid)
     {
-        pd_error(x, "ptrobj_next: stale pointer");
+        pd_error(x, "pointer next: stale pointer");
         return;
     }
     if (wantselected && !glist_isvisible(glist))
     {
         pd_error(x,
-            "ptrobj_vnext: next-selected only works for a visible window");
+            "pointer vnext: next-selected only works for a visible window");
         return;
     }
     gobj = &gp->gp_un.gp_scalar->sc_gobj;
@@ -158,33 +155,33 @@ static void ptrobj_delete(t_ptrobj *x)
     t_glist *glist;
     if (!gs)
     {
-        pd_error(x, "ptrobj_delete: no current pointer");
+        pd_error(x, "pointer delete: no current pointer");
         return;
     }
     if (gs->gs_which != GP_GLIST)
     {
-        pd_error(x, "ptrobj_delete: lists only, not arrays");
+        pd_error(x, "pointer delete: lists only, not arrays");
         return;
     }
     glist = gs->gs_un.gs_glist;
     if (glist->gl_valid != gp->gp_valid)
     {
-        pd_error(x, "ptrobj_delete: stale pointer");
+        pd_error(x, "pointer delete: stale pointer");
         return;
     }
     if (!gp->gp_un.gp_scalar)
     {
-        pd_error(x, "ptrobj_delete: pointing to head");
+        pd_error(x, "pointer delete: pointing to head");
         return;
     }
     if (gp->gp_un.gp_scalar->sc_template == gensym("pd-text"))
     {
-        pd_error(x, "ptrobj_delete: can't delete 'pd-text' scalar");
+        pd_error(x, "pointer delete: can't delete 'pd-text' scalar");
         return;
     }
     if (gp->gp_un.gp_scalar->sc_template == gensym("pd-float-array"))
     {
-        pd_error(x, "ptrobj_delete: can't delete 'pd-float-array' scalar");
+        pd_error(x, "pointer delete: can't delete 'pd-float-array' scalar");
         return;
     }
 
@@ -228,7 +225,7 @@ static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
     t_typedout *to;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "pointer_bang: empty pointer");
+        pd_error(x, "pointer equal: empty pointer");
         return;
     }
     /* we don't care for the actual type in the union because they are all pointers */
@@ -263,7 +260,7 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     t_gstub *gs;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "send-window: empty pointer");
+        pd_error(x, "pointer send-window: empty pointer");
         return;
     }
     gs = x->x_gp.gp_stub;
@@ -279,7 +276,7 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     canvas = (t_pd *)glist_getcanvas(glist);
     if (argc && argv->a_type == A_SYMBOL)
         pd_typedmess(canvas, argv->a_w.w_symbol, argc-1, argv+1);
-    else pd_error(x, "send-window: no message?");
+    else pd_error(x, "pointer send-window: no message?");
 }
 
 
@@ -289,7 +286,7 @@ static void ptrobj_send(t_ptrobj *x, t_symbol *s)
     if (!s->s_thing)
         pd_error(x, "%s: no such object", s->s_name);
     else if (!gpointer_check(&x->x_gp, 1))
-        pd_error(x, "pointer_send: empty pointer");
+        pd_error(x, "pointer send: empty pointer");
     else pd_pointer(s->s_thing, &x->x_gp);
 }
 
@@ -300,7 +297,7 @@ static void ptrobj_bang(t_ptrobj *x)
     t_typedout *to;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "pointer_bang: empty pointer");
+        pd_error(x, "pointer bang: empty pointer");
         return;
     }
     templatesym = gpointer_gettemplatesym(&x->x_gp);
@@ -335,13 +332,13 @@ static void ptrobj_rewind(t_ptrobj *x)
     t_gstub *gs;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "pointer_rewind: empty pointer");
+        pd_error(x, "pointer rewind: empty pointer");
         return;
     }
     gs = x->x_gp.gp_stub;
     if (gs->gs_which != GP_GLIST)
     {
-        pd_error(x, "pointer_rewind: sorry, unavailable for arrays");
+        pd_error(x, "pointer rewind: sorry, unavailable for arrays");
         return;
     }
     glist = gs->gs_un.gs_glist;
@@ -635,7 +632,7 @@ static void set_float(t_set *x, t_float f)
         x->x_variables[0].gv_w.w_float = f;
         set_bang(x);
     }
-    else pd_error(x, "type mismatch or no field specified");
+    else pd_error(x, "set: type mismatch or no field specified");
 }
 
 static void set_symbol(t_set *x, t_symbol *s)
@@ -645,7 +642,7 @@ static void set_symbol(t_set *x, t_symbol *s)
         x->x_variables[0].gv_w.w_symbol = s;
         set_bang(x);
     }
-    else pd_error(x, "type mismatch or no field specified");
+    else pd_error(x, "set: type mismatch or no field specified");
 }
 
 static void set_free(t_set *x)
@@ -665,7 +662,7 @@ static void set_setup(void)
         A_SYMBOL, A_SYMBOL, 0);
 }
 
-/* ---------------------- elem ----------------------------- */
+/* ---------------------- element ----------------------------- */
 
 static t_class *elem_class;
 
@@ -717,7 +714,7 @@ static void elem_float(t_elem *x, t_float f)
         if ((templatesym = x->x_templatesym) !=
             gpointer_gettemplatesym(gparent))
         {
-            pd_error(x, "elem %s: got wrong template (%s)",
+            pd_error(x, "element %s: got wrong template (%s)",
                 templatesym->s_name, gpointer_gettemplatesym(gparent)->s_name);
             return;
         }
@@ -725,7 +722,7 @@ static void elem_float(t_elem *x, t_float f)
     else templatesym = gpointer_gettemplatesym(gparent);
     if (!(template = template_findbyname(templatesym)))
     {
-        pd_error(x, "elem: couldn't find template %s", templatesym->s_name);
+        pd_error(x, "element: couldn't find template %s", templatesym->s_name);
         return;
     }
     if (gparent->gp_stub->gs_which == GP_ARRAY) w = gparent->gp_un.gp_w;
@@ -826,7 +823,7 @@ static void getsize_pointer(t_getsize *x, t_gpointer *gp)
         if ((templatesym = x->x_templatesym) !=
             gpointer_gettemplatesym(gp))
         {
-            pd_error(x, "elem %s: got wrong template (%s)",
+            pd_error(x, "getsize %s: got wrong template (%s)",
                 templatesym->s_name, gpointer_gettemplatesym(gp)->s_name);
             return;
         }
@@ -834,7 +831,7 @@ static void getsize_pointer(t_getsize *x, t_gpointer *gp)
     else templatesym = gpointer_gettemplatesym(gp);
     if (!(template = template_findbyname(templatesym)))
     {
-        pd_error(x, "elem: couldn't find template %s", templatesym->s_name);
+        pd_error(x, "getsize: couldn't find template %s", templatesym->s_name);
         return;
     }
     if (!template_find_field(template, fieldsym,
@@ -917,7 +914,7 @@ static void setsize_float(t_setsize *x, t_float f)
         if ((templatesym = x->x_templatesym) !=
             gpointer_gettemplatesym(gp))
         {
-            pd_error(x, "elem %s: got wrong template (%s)",
+            pd_error(x, "setsize %s: got wrong template (%s)",
                 templatesym->s_name, gpointer_gettemplatesym(gp)->s_name);
             return;
         }
@@ -925,7 +922,7 @@ static void setsize_float(t_setsize *x, t_float f)
     else templatesym = gpointer_gettemplatesym(gp);
     if (!(template = template_findbyname(templatesym)))
     {
-        pd_error(x, "elem: couldn't find template %s", templatesym->s_name);
+        pd_error(x, "setsize: couldn't find template %s", templatesym->s_name);
         return;
     }
 
@@ -945,7 +942,7 @@ static void setsize_float(t_setsize *x, t_float f)
 
     if (!(elemtemplate = template_findbyname(elemtemplatesym)))
     {
-        pd_error(x,"element: couldn't find field template %s",
+        pd_error(x,"setsize: couldn't find field template %s",
             elemtemplatesym->s_name);
         return;
     }
@@ -1090,7 +1087,7 @@ static void *append_new(t_symbol *why, int argc, t_atom *argv)
 static void append_set(t_append *x, t_symbol *templatesym, t_symbol *field)
 {
     if (x->x_nin != 1)
-        pd_error(x, "set: cannot set multiple fields.");
+        pd_error(x, "append set: cannot set multiple fields.");
     else
     {
        x->x_templatesym = template_getbindsym(templatesym);

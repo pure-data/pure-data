@@ -15,7 +15,7 @@
 #X obj 45 16 pipe;
 #X text 84 15 - message "delay line";
 #X obj 63 380 print pipe;
-#X obj 96 240 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
+#X obj 96 240 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
 #000000;
 #X symbolatom 135 586 13 0 0 0 - - - 0;
 #X msg 136 491 symbol ahoy;
@@ -25,8 +25,6 @@
 time (0 by default), f 37;
 #X text 120 234 bang outputs the last received message after the delay
 time, f 30;
-#X obj 574 525 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
 #X obj 592 585 pipe 5 6 7 1000;
 #X obj 517 225 t f f b, f 12;
 #X msg 603 264 symbol stop;
@@ -108,36 +106,38 @@ default \, s \, p) and floats set float type and initial value., f
 0;
 #X text 119 178 output all scheduled messages immediately;
 #X text 128 208 forget all scheduled messages;
-#X connect 0 0 24 0;
+#X obj 572 525 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X connect 0 0 23 0;
 #X connect 0 1 1 0;
 #X connect 0 2 2 0;
-#X connect 1 0 24 1;
-#X connect 2 0 24 2;
-#X connect 4 0 49 0;
+#X connect 1 0 23 1;
+#X connect 2 0 23 2;
+#X connect 4 0 48 0;
 #X connect 6 0 4 0;
 #X connect 7 0 4 0;
 #X connect 16 0 4 0;
 #X connect 17 0 20 0;
-#X connect 18 0 34 0;
-#X connect 19 0 34 0;
-#X connect 23 0 24 0;
-#X connect 24 0 46 0;
-#X connect 24 1 47 0;
-#X connect 24 2 48 0;
-#X connect 25 0 36 0;
-#X connect 25 1 27 0;
-#X connect 25 2 26 0;
-#X connect 26 0 36 2;
-#X connect 27 0 36 1;
-#X connect 29 0 36 3;
-#X connect 31 0 34 1;
-#X connect 34 0 17 0;
-#X connect 36 0 44 0;
-#X connect 36 1 45 0;
-#X connect 36 2 28 0;
-#X connect 39 0 36 0;
-#X connect 41 0 4 1;
-#X connect 42 0 4 0;
-#X connect 43 0 25 0;
-#X connect 49 0 15 0;
-#X connect 50 0 0 0;
+#X connect 18 0 33 0;
+#X connect 19 0 33 0;
+#X connect 23 0 45 0;
+#X connect 23 1 46 0;
+#X connect 23 2 47 0;
+#X connect 24 0 35 0;
+#X connect 24 1 26 0;
+#X connect 24 2 25 0;
+#X connect 25 0 35 2;
+#X connect 26 0 35 1;
+#X connect 28 0 35 3;
+#X connect 30 0 33 1;
+#X connect 33 0 17 0;
+#X connect 35 0 43 0;
+#X connect 35 1 44 0;
+#X connect 35 2 27 0;
+#X connect 38 0 35 0;
+#X connect 40 0 4 1;
+#X connect 41 0 4 0;
+#X connect 42 0 24 0;
+#X connect 48 0 15 0;
+#X connect 49 0 0 0;
+#X connect 56 0 23 0;

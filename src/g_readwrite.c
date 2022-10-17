@@ -11,8 +11,6 @@ Alternatively, the  glist_read() and glist_write() routines read and write
 file format as in the dialog window for data.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
@@ -379,7 +377,11 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
 
     if (scindex == -1)
     {
-        pd_error(0, "data_properties: scalar disappeared");
+        pd_error(x, "data_properties: scalar disappeared");
+        return;
+    }
+    if (!b) {
+        pd_error(x, "couldn't update properties (none given)");
         return;
     }
     glist_readfrombinbuf(x, b, "properties dialog", 0);
@@ -399,7 +401,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
     }
     else gobj_vis((newone = x->gl_list), x, 0), x->gl_list = newone->g_next;
     if (!newone)
-        pd_error(0, "couldn't update properties (perhaps a format problem?)");
+        pd_error(x, "couldn't update properties (perhaps a format problem?)");
     else if (!oldone)
         bug("data_properties: couldn't find old element");
     else if (newone->g_pd == scalar_class && oldone->g_pd == scalar_class
@@ -823,8 +825,10 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
 static void canvas_menusaveas(t_canvas *x, t_float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    sys_vgui("pdtk_canvas_saveas .x%lx {%s} {%s} %d\n", x2,
-        x2->gl_name->s_name, canvas_getdir(x2)->s_name, (fdestroy != 0));
+    pdgui_vmess("pdtk_canvas_saveas", "^ ss i",
+        x2,
+        x2->gl_name->s_name, canvas_getdir(x2)->s_name,
+        (fdestroy != 0));
 }
 
 static void canvas_menusave(t_canvas *x, t_float fdestroy)

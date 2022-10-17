@@ -65,39 +65,53 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
 
 static void textbuf_senditup(t_textbuf *x)
 {
-    int i, ntxt;
-    char *txt;
+    int ntxt;
+    char *txt, *buf;
     if (!x->b_guiconnect)
         return;
+
+#if 0
     binbuf_gettext(x->b_binbuf, &txt, &ntxt);
-    sys_vgui("pdtk_textwindow_clear .x%lx\n", x);
-    for (i = 0; i < ntxt; )
-    {
-        char *j = strchr(txt+i, '\n');
-        if (!j) j = txt + ntxt;
-        sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
-            x, j-txt-i, txt+i);
-        i = (int)((j-txt)+1);
-    }
-    sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
-    t_freebytes(txt, ntxt);
+    buf = getbytes(ntxt+2);
+    memcpy(buf, txt, ntxt);
+    buf[ntxt] = buf[ntxt+1] = 0;
+        /* append a trailing newline, but only if there isn't one there already */
+    if ('\n' != buf[ntxt-1]) buf[ntxt] = '\n';
+
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
+    pdgui_vmess("pdtk_textwindow_append", "^s", x, buf);
+
+    freebytes(txt, ntxt);
+    freebytes(buf, ntxt+2);
+#else
+        /* send the binbuf directly and let the GUI figure out when to do
+         * linebreaks and how to escape special character $1*/
+    pdgui_vmess("pdtk_textwindow_clear", "^", x);
+    pdgui_vmess("pdtk_textwindow_appendatoms", "^A",
+        x, binbuf_getnatom(x->b_binbuf), binbuf_getvec(x->b_binbuf));
+#endif
+
+    pdgui_vmess("pdtk_textwindow_setdirty", "^i", x, 0);
 }
 
 static void textbuf_open(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("wm deiconify .x%lx\n", x);
-        sys_vgui("raise .x%lx\n", x);
-        sys_vgui("focus .x%lx.text\n", x);
+        char textid[128];
+        sprintf(textid, ".x%lx.text", x);
+        pdgui_vmess("wm", "r^", "deiconify", x);
+        pdgui_vmess("raise", "^", x);
+        pdgui_vmess("focus", "s", textid);
     }
     else
     {
         char buf[40];
-        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s} %d\n",
-            x, 600, 340, x->b_sym->s_name,
-                 sys_hostfontsize(glist_getfont(x->b_canvas),
-                    glist_getzoom(x->b_canvas)));
+        sprintf(buf, "%dx%d", 600, 340);
+        pdgui_vmess("pdtk_textwindow_open", "^r si",
+                  x, buf,
+                  x->b_sym->s_name,
+                  sys_hostfontsize(glist_getfont(x->b_canvas), glist_getzoom(x->b_canvas)));
         sprintf(buf, ".x%lx", x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
@@ -108,7 +122,7 @@ static void textbuf_close(t_textbuf *x)
 {
     if (x->b_guiconnect)
     {
-        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
+        pdgui_vmess("pdtk_textwindow_doclose", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
     }
@@ -203,7 +217,7 @@ static void textbuf_free(t_textbuf *x)
         binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
-        sys_vgui("destroy .x%lx\n", x);
+        pdgui_vmess("destroy", "^", x);
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */

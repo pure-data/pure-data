@@ -76,7 +76,7 @@ in the patch. Check below:, f 41;
 #X connect 17 0 21 0;
 #X connect 22 0 3 0;
 #X restore 335 421 pd position;
-#X text 85 49 WARNING: This object is still in Pd for backwarss compatibility
+#X text 85 49 WARNING: This object is still in Pd for backwards compatibility
 but has been deprecated in Pd 0.36. Just use the new [vradio] instead
 now., f 39;
 #X obj 390 25 vradio 15 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000

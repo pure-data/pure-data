@@ -3,18 +3,13 @@
 #X floatatom 237 171 5 0 0 0 - - - 0;
 #X obj 26 13 lop~;
 #X text 66 14 - one-pole low pass filter;
-#X msg 184 143 clear;
+#X msg 140 120 clear;
 #X text 14 330 see also:;
 #X obj 93 329 hip~;
 #X obj 138 329 bp~;
 #X obj 175 329 vcf~;
-#X text 228 142 <= reinitialize internal state;
-#X text 280 172 <= set cutoff frequency;
 #X obj 220 329 bob~;
-#X obj 118 123 noise~;
-#X text 34 57 lop~ is a one-pole low pass filter with a specified rolloff
-frequency. The left inlet is the incoming audio signal. The right inlet
-is the cutoff frequency in Hz., f 70;
+#X obj 184 152 noise~;
 #X obj 184 238 output~;
 #X obj 184 198 lop~ 100;
 #X text 255 195 The filter is initialized to cut off frequencies above
@@ -52,8 +47,13 @@ is the cutoff frequency in Hz., f 70;
 #X text 483 14 <= click;
 #X obj 7 312 cnv 1 560 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X connect 0 0 14 1;
-#X connect 3 0 14 0;
-#X connect 11 0 14 0;
-#X connect 14 0 13 0;
-#X connect 14 0 13 1;
+#X text 34 57 [lop~] is a one-pole low pass filter with a specified
+rolloff frequency. The left inlet is the incoming audio signal. The
+right inlet is the cutoff frequency in Hz., f 72;
+#X text 280 172 <-- set cutoff frequency;
+#X text 184 119 <-- reinitialize internal state;
+#X connect 0 0 11 1;
+#X connect 3 0 11 0;
+#X connect 9 0 11 0;
+#X connect 11 0 10 0;
+#X connect 11 0 10 1;

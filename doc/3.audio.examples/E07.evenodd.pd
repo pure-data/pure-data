@@ -1,4 +1,4 @@
-#N canvas 514 51 894 710 12;
+#N canvas 472 36 894 710 12;
 #X declare -stdpath ./;
 #X obj 288 216 f;
 #X obj 322 192 + 1;
@@ -27,7 +27,7 @@
 #X text 226 230 S;
 #X floatatom 340 164 0 1 11 0 - - - 0;
 #X obj 84 308 *~ 0.01;
-#X obj 288 104 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#X obj 288 104 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
 #000000 0 1;
 #X obj 155 524 output~;
 #X text 634 653 updated for Pd version 0.37;
@@ -75,8 +75,8 @@ Between the two we get mixtures of even and odd., f 61;
 #X text 355 265 <= transpose;
 #X text 371 165 <= increment;
 #X text 380 101 <= msec;
-#X text 203 101 ON/OFF =>;
 #X obj 657 22 declare -stdpath ./;
+#X text 209 101 ON/OFF -->;
 #X connect 0 0 1 0;
 #X connect 0 0 40 0;
 #X connect 1 0 2 0;

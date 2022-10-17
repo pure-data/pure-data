@@ -19,9 +19,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #endif /* _WIN32 */
-#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
 #include <math.h>
 
 #ifdef _MSC_VER
@@ -261,7 +259,7 @@ void sys_set_audio_settings(t_audiosettings *a)
     initted = 1;
 
     sys_log_error(ERR_NOTHING);
-    sys_vgui("set pd_whichapi %d\n", audio_nextsettings.a_api);
+    pdgui_vmess("set", "ri", "pd_whichapi", audio_nextsettings.a_api);
 }
 
 void sys_close_audio(void)
@@ -317,7 +315,7 @@ void sys_close_audio(void)
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_callback_is_open = 0;
 
-    sys_vgui("set pd_whichapi 0\n");
+    pdgui_vmess("set", "ri", "pd_whichapi", 0);
 }
 
 void sys_init_audio(void)
@@ -442,7 +440,7 @@ void sys_reopen_audio(void)
             (as.a_callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
         audio_callback_is_open = as.a_callback;
     }
-    sys_vgui("set pd_whichapi %d\n",  sys_audioapiopened);
+    pdgui_vmess("set", "ri", "pd_whichapi", sys_audioapiopened);
 }
 
 int sys_send_dacs(void)
@@ -599,52 +597,63 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    char buf[MAXPDSTRING];
     t_audiosettings as;
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     char device[MAXPDSTRING];
+    char *indevs[MAXNDEV], *outdevs[MAXNDEV];
     int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
+    char srate[80], callback[80], blocksize[80];
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
          &cancallback, MAXNDEV, DEVDESCSIZE, audio_nextsettings.a_api);
 
-    sys_gui("global audio_indevlist; set audio_indevlist {}\n");
     for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend audio_indevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, indevlist + i * DEVDESCSIZE, 0));
-
-    sys_gui("global audio_outdevlist; set audio_outdevlist {}\n");
+        indevs[i] = indevlist + i * DEVDESCSIZE;
     for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend audio_outdevlist {%s}\n",
-            pdgui_strnescape(device, MAXPDSTRING, outdevlist + i * DEVDESCSIZE, 0));
+        outdevs[i] = outdevlist + i * DEVDESCSIZE;
+
+    if(!nindevs) {
+        nindevs = 1;
+        indevs[0] = "";
+    }
+    if(!noutdevs) {
+        noutdevs = 1;
+        outdevs[0] = "";
+    }
+
+    pdgui_vmess("set", "rS",
+            "::audio_indevlist",
+            nindevs, indevs);
+    pdgui_vmess("set", "rS",
+            "::audio_outdevlist",
+            noutdevs, outdevs);
 
     sys_get_audio_settings(&as);
 
     if (as.a_nindev > 1 || as.a_noutdev > 1)
         flongform = 1;
 
+    sprintf(srate, "%s%d", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
+    sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
+    sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
+
         /* values that are fixed and must not be changed by the GUI are
         prefixed with '!';  * the GUI will then display these values but
         disable their widgets */
-    snprintf(buf, MAXPDSTRING,
-"pdtk_audio_dialog %%s \
-%d %d %d %d %d %d %d %d \
-%d %d %d %d %d %d %d %d \
-%s%d %d %d %s%d %d %s%d\n",
-        as.a_indevvec[0], as.a_indevvec[1],
-            as.a_indevvec[2], as.a_indevvec[3],
-        as.a_chindevvec[0], as.a_chindevvec[1],
-            as.a_chindevvec[2], as.a_chindevvec[3],
-        as.a_outdevvec[0], as.a_outdevvec[1],
-            as.a_outdevvec[2], as.a_outdevvec[3],
-        as.a_choutdevvec[0], as.a_choutdevvec[1],
-            as.a_choutdevvec[2], as.a_choutdevvec[3],
-        audio_isfixedsr(as.a_api)?"!":"", as.a_srate, as.a_advance, canmulti,
-        cancallback?"":"!", as.a_callback,
-        (flongform != 0), audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
-    gfxstub_deleteforkey(0);
-    gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
+    pdgui_stub_deleteforkey(0);
+    pdgui_stub_vnew(&glob_pdobject,
+        "pdtk_audio_dialog", (void *)glob_audio_properties,
+        "iiii iiii iiii iiii  s ii s i s",
+        as.a_indevvec   [0], as.a_indevvec   [1], as.a_indevvec   [2], as.a_indevvec   [3],
+        as.a_chindevvec [0], as.a_chindevvec [1], as.a_chindevvec [2], as.a_chindevvec [3],
+        as.a_outdevvec  [0], as.a_outdevvec  [1], as.a_outdevvec  [2], as.a_outdevvec  [3],
+        as.a_choutdevvec[0], as.a_choutdevvec[1], as.a_choutdevvec[2], as.a_choutdevvec[3],
+        srate,
+        as.a_advance, canmulti,
+        callback,
+        (flongform != 0),
+        blocksize);
 }
 
     /* new values from dialog window */
@@ -704,21 +713,32 @@ void sys_listdevs(void)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i, canmulti = 0, cancallback = 0;
+    int offset = 0;
 
     sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE,
             audio_nextsettings.a_api);
+
+#if 0
+        /* To agree with command line flags, normally start at 1 */
+        /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
+        /* (see also sys_mmio variable in s_main.c)  */
+
+       /* JMZ: otoh, it seems that the '-audiodev' flags 0-based
+        * indices on ALSA and PORTAUDIO as well,
+        * so we better show the correct ones here
+        * (hence this line is disabled via #ifdef's)
+        */
+    offset = (audio_nextsettings.a_api != API_MMIO);
+#endif
+
     if (!nindevs)
         post("no audio input devices found");
     else
     {
-            /* To agree with command line flags, normally start at 1 */
-            /* But microsoft "MMIO" device list starts at 0 (the "mapper"). */
-            /* (see also sys_mmio variable in s_main.c)  */
-
         post("audio input devices:");
         for (i = 0; i < nindevs; i++)
-            post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
+            post("%d. %s", i + offset,
                 indevlist + i * DEVDESCSIZE);
     }
     if (!noutdevs)
@@ -727,7 +747,7 @@ void sys_listdevs(void)
     {
         post("audio output devices:");
         for (i = 0; i < noutdevs; i++)
-            post("%d. %s", i + (audio_nextsettings.a_api != API_MMIO),
+            post("%d. %s", i + offset,
                 outdevlist + i * DEVDESCSIZE);
     }
     post("API number %d\n", audio_nextsettings.a_api);

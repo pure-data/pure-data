@@ -4,7 +4,6 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
-#include "s_stuff.h"
 
 t_class *glob_pdobject;
 static t_class *maxclass;
@@ -107,18 +106,7 @@ void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int i;
-    char str[80];
-    sys_vgui("pdtk_plugin_dispatch ");
-    for (i = 0; i < argc; i++)
-    {
-        atom_string(argv+i, str, 80);
-        sys_vgui("%s", str);
-        if (i < argc-1) {
-            sys_vgui(" ");
-        }
-    }
-    sys_vgui("\n");
+    pdgui_vmess("pdtk_plugin_dispatch", "a", argc, argv);
 }
 
 int sys_zoom_open = 1;
@@ -218,4 +206,3 @@ void sys_getversion(int *major, int *minor, int *bugfix)
     if (bugfix)
         *bugfix = PD_BUGFIX_VERSION;
 }
-

@@ -6,8 +6,6 @@
 */
 
 #include "m_pd.h"
-#include <stdio.h>
-#include <string.h>
 
 /* ------------------------- print~ -------------------------- */
 static t_class *print_class;
@@ -130,7 +128,3 @@ void d_misc_setup(void)
     print_setup();
     bang_tilde_setup();
 }
-
-
-
-
