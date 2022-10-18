@@ -18,16 +18,16 @@ msgstr ""
 "X-Generator: Poedit 2.2.3\n"
 
 msgid "linear"
-msgstr ""
+msgstr "Lineal"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "Logarítmico"
 
 msgid "new-only"
-msgstr ""
+msgstr "solo-nuevo"
 
 msgid "new&old"
-msgstr ""
+msgstr "nuevo y viejo"
 
 msgid "no scale"
 msgstr "Sin escala"
@@ -309,7 +309,9 @@ msgid "Pd window"
 msgstr "Ventana de Pd"
 
 msgid "Match whole word only"
-msgstr "Comparar solo con palabra completa"
+msgstr ""
+"Comparar solo con\n"
+"palabra completa"
 
 msgid "Close"
 msgstr "Cerrar"
@@ -557,34 +559,38 @@ msgid "Help Browser"
 msgstr "Navegador de Ayuda"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "Archivos Asociados"
 
 msgid "Pd Files"
 msgstr "Archivos Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "Archivos de patch MAX"
 
 msgid "Max Text Files"
 msgstr "Archivos de texto Max/MSP"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "Archivos de MAX (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "Archivos de texto de MAX (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "fuente detectada: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ADVERTENCIA: familia de fuente '%1$s' no encontrada, usando predeterminada "
+"(%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ADVERTENCIA: tamaño de fuente '%1$s' no encontrada, usando predeterminada "
+"(%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -592,11 +598,11 @@ msgstr "usando fuente: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "'%1$s' ya esta cargado, ignorando: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Cargando plugin: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
@@ -604,15 +610,15 @@ msgstr "(Tcl) ERROR SIN TRATAR: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "FALLO AL CARGAR %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "Fallo al leer el plugin %s ...salteando!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "No se encuentra el plugins en %s ...salteando!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) FALTA LLAVE DE CIERRE '}': "
@@ -924,7 +930,7 @@ msgid "Library"
 msgstr "Librería"
 
 msgid "Version"
-msgstr ""
+msgstr "Versión"
 
 msgid "Description"
 msgstr "Descripción"
@@ -1407,8 +1413,8 @@ msgstr "Eliminar"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
 
-#~ msgid "_"
-#~ msgstr "_"
+msgid "_"
+msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "-------dimensiones(dígitos)(pix):-------"
