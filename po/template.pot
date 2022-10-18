@@ -940,9 +940,6 @@ msgstr ""
 msgid "Unable to perform search. Are you online?"
 msgstr ""
 
-msgid "_"
-msgstr ""
-
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr ""
