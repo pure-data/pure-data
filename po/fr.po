@@ -109,8 +109,7 @@ msgstr "pas de paramètres a effacer"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
-"Pd semble avoir planté au démarrage\n"
-", les préférences n'ont pas été chargées"
+"Pd semble avoir planté au démarrage, les préférences n'ont pas été chargées"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(enregistrez à nouveau les préférences afin de les rétablir)"
@@ -245,7 +244,7 @@ msgid "Save All Settings"
 msgstr "Enregistrer tous les réglages"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "ATTENTION: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "ATTENTION : pdtk_canvas_dialog a reçu des paramètres inconnus"
 
 msgid "Canvas Properties"
 msgstr "Propriétés du Canvas"
@@ -674,7 +673,7 @@ msgstr "2. Copier le contenu dans %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr "3. Effacer %s (optionnel)."
+msgstr "3. Effacer %s (optionnel)"
 
 #, tcl-format
 msgid "Removing '%s'"
@@ -884,7 +883,7 @@ msgstr ""
 "caractères."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "par exemple  '*-plugin' trouvera 'deken-plugin' (entre autres)"
+msgstr "par exemple '*-plugin' trouvera 'deken-plugin' (entre autres)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
@@ -1425,74 +1424,90 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-#~ msgid "_"
-#~ msgstr "_"
+msgid "_"
+msgstr "_"
 
-#~ msgid "-------dimensions(digits)(pix):-------"
-#~ msgstr "------dimensions(chiffres)(pix):------"
+msgid "-------dimensions(digits)(pix):-------"
+msgstr "------dimensions(chiffres)(pix):------"
 
-#~ msgid "--------dimensions(pix)(pix):--------"
-#~ msgstr "--------dimensions(pix)(pix):--------"
+msgid "--------dimensions(pix)(pix):--------"
+msgstr "--------dimensions(pix)(pix):--------"
 
-#~ msgid "----------dimensions(pix):-----------"
-#~ msgstr "----------dimensions(pix):-----------"
+msgid "----------dimensions(pix):-----------"
+msgstr "----------dimensions(pix):-----------"
 
-#~ msgid "--------flash-time(ms)(ms):---------"
-#~ msgstr "-------durée_du_flash(ms)(ms):------"
+msgid "--------flash-time(ms)(ms):---------"
+msgstr "-------durée_du_flash(ms)(ms):------"
 
-#~ msgid "-----------output-range:-----------"
-#~ msgstr "---------échelle_de_sortie:--------"
+msgid "-----------output-range:-----------"
+msgstr "---------échelle_de_sortie:--------"
 
-#~ msgid "------selectable_dimensions(pix):------"
-#~ msgstr "----dimensions_sélectionnable(pix):----"
+msgid "------selectable_dimensions(pix):------"
+msgstr "----dimensions_sélectionnable(pix):----"
 
-#~ msgid "------visible_rectangle(pix)(pix):------"
-#~ msgstr "------rectangle_visible(pix)(pix):------"
+msgid "------visible_rectangle(pix)(pix):------"
+msgstr "------rectangle_visible(pix)(pix):------"
 
-#~ msgid "bottom:"
-#~ msgstr "bas :"
+msgid "bottom:"
+msgstr "bas :"
 
-#~ msgid "height:"
-#~ msgstr "hauteur :"
+msgid "height:"
+msgstr "hauteur :"
 
-#~ msgid "hold:"
-#~ msgstr "maintient :"
+msgid "hold:"
+msgstr "maintient :"
 
-#~ msgid "intrrpt:"
-#~ msgstr "intrrpt :"
+msgid "intrrpt:"
+msgstr "intrrpt :"
 
-#~ msgid "left:"
-#~ msgstr "gauche :"
+msgid "left:"
+msgstr "gauche :"
 
-#~ msgid "lin"
-#~ msgstr "lin"
+msgid "lin"
+msgstr "lin"
 
-#~ msgid "log"
-#~ msgstr "log"
+msgid "log"
+msgstr "log"
 
-#~ msgid "log-height:"
-#~ msgstr "Hauteur de log :"
+msgid "log-height:"
+msgstr "Hauteur de log :"
 
-#~ msgid "max:"
-#~ msgstr "max :"
+msgid "max:"
+msgstr "max :"
 
-#~ msgid "min:"
-#~ msgstr "min :"
+msgid "min:"
+msgstr "min :"
 
-#~ msgid "right:"
-#~ msgstr "droite :"
+msgid "right:"
+msgstr "droite :"
 
-#~ msgid "size:"
-#~ msgstr "taille :"
+msgid "size:"
+msgstr "taille :"
 
-#~ msgid "top:"
-#~ msgstr "haut :"
+msgid "top:"
+msgstr "haut :"
 
-#~ msgid "value:"
-#~ msgstr "valeur :"
+msgid "value:"
+msgstr "valeur :"
 
-#~ msgid "width:"
-#~ msgstr "largeur :"
+msgid "width:"
+msgstr "largeur :"
+
+#, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s\n"
+msgstr "impossible de créer le dossier Documents : %s\n"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Intrrpt :"
