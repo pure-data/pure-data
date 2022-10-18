@@ -477,26 +477,26 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "detected font: $::font_family\n"
+    set msg [_ "detected font: %s" ]
+    ::pdwindow::verbose 0 [format "${msg}\n" $::font_family ]
 }
 
 proc set_base_font {family weight} {
     if {[lsearch -exact [font families] $family] > -1} {
         set ::font_family $family
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font family '%s' not found, using default (%s)\n"] \
-                $family $::font_family]
+        set msg [_ "WARNING: font family '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $family $::font_family]
     }
     if {[lsearch -exact {bold normal} $weight] > -1} {
         set ::font_weight $weight
         set using_defaults 0
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font weight '%s' not found, using default (%s)\n"] \
-                $weight $::font_weight]
+        set msg [_ "WARNING: font weight '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
+    set msg [_ "using font: %1\$s %2\$s" ]
+    ::pdwindow::verbose 0 [ format "${msg}\n" $::font_family $::font_weight ]
 }
 
 # finds sizes of the chosen font that just fit into the required metrics
