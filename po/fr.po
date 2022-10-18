@@ -29,11 +29,9 @@ msgstr ""
 msgid "new&old"
 msgstr ""
 
-#, fuzzy
 msgid "no scale"
-msgstr "Échelle"
+msgstr "Pas d'échelle"
 
-#, fuzzy
 msgid "scale"
 msgstr "Échelle"
 
@@ -560,16 +558,14 @@ msgstr "Navigateur d'aide"
 msgid "Associated Files"
 msgstr ""
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "Fichiers ZIP"
+msgstr "Fichiers Pd"
 
 msgid "Max Patch Files"
 msgstr ""
 
-#, fuzzy
 msgid "Max Text Files"
-msgstr "Fichiers TAR"
+msgstr "Fichiers texte Max/MSP"
 
 msgid "Max Patch Files (.pat)"
 msgstr ""
@@ -589,9 +585,9 @@ msgstr ""
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr "'%1$s' non trouvé dans %2$s"
+msgstr "police utilisée : %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -601,9 +597,9 @@ msgstr ""
 msgid "Loading plugin: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr "(Tcl) ERREUR : "
+msgstr "ERREUR NON GÉRÉE : %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
@@ -1138,13 +1134,13 @@ msgstr ""
 "\n"
 "Choisir un nouvel emplacement ?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr "impossible de créer le dossier Documents : %s\n"
+msgstr "impossible de créer le dossier de documents Pd : %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s"
 
 msgid "refusing to delete empty domain"
 msgstr "refus de supprimer un domaine vide"
