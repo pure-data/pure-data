@@ -15,74 +15,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "-------dimensions(digits)(pix):-------"
+msgid "linear"
 msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
 msgstr ""
 
-msgid "----------dimensions(pix):-----------"
+msgid "new-only"
 msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
+msgid "new&old"
 msgstr ""
 
-msgid "-----------output-range:-----------"
+msgid "no scale"
 msgstr ""
 
-msgid "------selectable_dimensions(pix):------"
-msgstr ""
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr ""
-
-msgid "bottom:"
-msgstr ""
-
-msgid "height:"
-msgstr ""
-
-msgid "hold:"
-msgstr ""
-
-msgid "intrrpt:"
-msgstr ""
-
-msgid "left:"
-msgstr ""
-
-msgid "lin"
-msgstr ""
-
-msgid "log"
-msgstr ""
-
-msgid "log-height:"
-msgstr ""
-
-msgid "max:"
-msgstr ""
-
-msgid "min:"
-msgstr ""
-
-msgid "right:"
-msgstr ""
-
-msgid "size:"
-msgstr ""
-
-msgid "top:"
-msgstr ""
-
-msgid "value:"
-msgstr ""
-
-msgid "width:"
-msgstr ""
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
+msgid "scale"
 msgstr ""
 
 #, tcl-format
@@ -1300,6 +1248,10 @@ msgid "Open Recent"
 msgstr ""
 
 msgid "Quit"
+msgstr ""
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
 msgstr ""
 
 msgid "Properties"
