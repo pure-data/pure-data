@@ -1390,7 +1390,7 @@ msgid "Audio I/O error"
 msgstr "Audio E/A-Fehler"
 
 msgid "Log:"
-msgstr ""
+msgstr "Protokoll:"
 
 msgid "fatal"
 msgstr "schwerwiegende Fehler"
@@ -1421,80 +1421,102 @@ msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "überspringe '%s': kein Pd-File"
 
 # iemgui
-#~ msgid "-------dimensions(digits)(pix):-------"
-#~ msgstr "------Rahmengröße(Zahlen)(pix):-------"
+msgid "-------dimensions(digits)(pix):-------"
+msgstr "------Rahmengröße(Zahlen)(pix):-------"
 
 # iemgui
-#~ msgid "--------dimensions(pix)(pix):--------"
-#~ msgstr "--------Rahmengröße(pix)(pix):--------"
+msgid "--------dimensions(pix)(pix):--------"
+msgstr "--------Rahmengröße(pix)(pix):--------"
 
 # iemgui
-#~ msgid "----------dimensions(pix):-----------"
-#~ msgstr "----------Rahmengröße(pix):-----------"
+msgid "----------dimensions(pix):-----------"
+msgstr "----------Rahmengröße(pix):-----------"
 
 # iemgui
-#~ msgid "--------flash-time(ms)(ms):---------"
-#~ msgstr "----------Blinkzeit(ms)(ms):-----------"
+msgid "--------flash-time(ms)(ms):---------"
+msgstr "----------Blinkzeit(ms)(ms):-----------"
 
 # iemgui
-#~ msgid "-----------output-range:-----------"
-#~ msgstr "----------Ausgangsbereich:-----------"
+msgid "-----------output-range:-----------"
+msgstr "----------Ausgangsbereich:-----------"
 
 # iemgui
-#~ msgid "------selectable_dimensions(pix):------"
-#~ msgstr "----------selektierbare Größe(pix):-----------"
+msgid "------selectable_dimensions(pix):------"
+msgstr "----------selektierbare Größe(pix):-----------"
 
 # iemgui
-#~ msgid "------visible_rectangle(pix)(pix):------"
-#~ msgstr "-------sichtbare Größe(pix)(pix):--------"
+msgid "------visible_rectangle(pix)(pix):------"
+msgstr "-------sichtbare Größe(pix)(pix):--------"
 
-#~ msgid "bottom:"
-#~ msgstr "Unten:"
-
-# iemgui
-#~ msgid "height:"
-#~ msgstr "Höhe:"
-
-#~ msgid "hold:"
-#~ msgstr "Haltezeit:"
-
-#~ msgid "intrrpt:"
-#~ msgstr "Interruptzeit:"
+msgid "bottom:"
+msgstr "Unten:"
 
 # iemgui
-#~ msgid "left:"
-#~ msgstr "links:"
+msgid "height:"
+msgstr "Höhe:"
 
-#~ msgid "lin"
-#~ msgstr "linear"
+msgid "hold:"
+msgstr "Haltezeit:"
 
-#~ msgid "log"
-#~ msgstr "logarithmisch"
-
-#~ msgid "log-height:"
-#~ msgstr "log Höhe:"
-
-#~ msgid "max:"
-#~ msgstr "max:"
-
-#~ msgid "min:"
-#~ msgstr "min:"
+msgid "intrrpt:"
+msgstr "Interruptzeit:"
 
 # iemgui
-#~ msgid "right:"
-#~ msgstr "rechts:"
+msgid "left:"
+msgstr "links:"
 
-#~ msgid "size:"
-#~ msgstr "Größe:"
+msgid "lin"
+msgstr "linear"
 
-#~ msgid "top:"
-#~ msgstr "Oben:"
+msgid "log"
+msgstr "logarithmisch"
 
-#~ msgid "value:"
-#~ msgstr "Wert:"
+msgid "log-height:"
+msgstr "log Höhe:"
 
-#~ msgid "width:"
-#~ msgstr "Breite:"
+msgid "max:"
+msgstr "max:"
+
+msgid "min:"
+msgstr "min:"
+
+# iemgui
+msgid "right:"
+msgstr "rechts:"
+
+msgid "size:"
+msgstr "Größe:"
+
+msgid "top:"
+msgstr "Oben:"
+
+msgid "value:"
+msgstr "Wert:"
+
+msgid "width:"
+msgstr "Breite:"
+
+msgid "_"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet (%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
+"(%s)"
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s\n"
+msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Interruptzeit:"
@@ -1592,3 +1614,18 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #~ msgid "Filters"
 #~ msgstr "Filter"
+
+#, tcl-format
+#~ msgid "installed version [%1$s] > %2$s...skipping!"
+#~ msgstr ""
+#~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
+
+#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
+#~ msgstr ""
+#~ "WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
+#~ "(%s)"
+
+#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
+#~ msgstr ""
+#~ "WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet "
+#~ "(%s)"
