@@ -29,11 +29,9 @@ msgstr ""
 msgid "new&old"
 msgstr ""
 
-#, fuzzy
 msgid "no scale"
-msgstr "Escala"
+msgstr "Sin escala"
 
-#, fuzzy
 msgid "scale"
 msgstr "Escala"
 
@@ -293,7 +291,7 @@ msgstr "Encontrado '%1$s' en %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr "No se encontró  '%1$s' en %2$s"
+msgstr "No se encontró '%1$s' en %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
@@ -311,9 +309,7 @@ msgid "Pd window"
 msgstr "Ventana de Pd"
 
 msgid "Match whole word only"
-msgstr ""
-"Comparar solo con\n"
-"palabra completa"
+msgstr "Comparar solo con palabra completa"
 
 msgid "Close"
 msgstr "Cerrar"
@@ -563,16 +559,14 @@ msgstr "Navegador de Ayuda"
 msgid "Associated Files"
 msgstr ""
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "Archivos ZIP"
+msgstr "Archivos Pd"
 
 msgid "Max Patch Files"
 msgstr ""
 
-#, fuzzy
 msgid "Max Text Files"
-msgstr "Archivos TAR"
+msgstr "Archivos de texto Max/MSP"
 
 msgid "Max Patch Files (.pat)"
 msgstr ""
@@ -592,9 +586,9 @@ msgstr ""
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr "No se encontró  '%1$s' en %2$s"
+msgstr "usando fuente: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -604,9 +598,9 @@ msgstr ""
 msgid "Loading plugin: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr "(Tcl) ERROR SIN TRATAR: "
+msgstr "(Tcl) ERROR SIN TRATAR: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
@@ -874,7 +868,7 @@ msgid "Enter an exact library or object name."
 msgstr "Ingrese un nombre exacto de librería u objeto."
 
 msgid "e.g. 'freeverb~'"
-msgstr "e.g. 'freeverb~'"
+msgstr "p.ej. 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Use el comodín '*' para coincidir cualquier numero de caracteres."
@@ -960,7 +954,7 @@ msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr "Se encontraron %1$d paquetes usables (de %2$d paquetes en total)"
+msgstr "Se encontraron %1$d paquetes usables (de %2$d paquetes en total)."
 
 msgid "It appears that there are no matching packages for your architecture."
 msgstr "Parece no haber paquetes compatibles para tu arquitectura de CPU."
@@ -992,7 +986,7 @@ msgstr "Falla al instalar en un directorio que no existe"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr "Fallo la instalación de '%s'!"
+msgstr "Fallo la instalación de '%s'"
 
 msgid "Directory does not exist!"
 msgstr "No existe el directorio!"
@@ -1006,10 +1000,7 @@ msgstr "Descargando '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
-"Comenzando descarga de:\n"
-"'%1$s'\n"
-"en '%2$s'..."
+msgstr "Comenzando descarga de '%1$s' en '%2$s'..."
 
 msgid "aborting."
 msgstr "abortando."
@@ -1130,13 +1121,13 @@ msgstr ""
 "\n"
 "¿Elegir otro directorio?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr "no se ha podido crear el directorio de documentos de Pd: %s\n"
+msgstr "no se ha podido crear el directorio de documentos de Pd: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "no se ha podido crear el directorio \"externals\" en: %s\n"
+msgstr "no se ha podido crear el directorio \"externals\" en: %s"
 
 msgid "refusing to delete empty domain"
 msgstr "negándose a borrar dominio vacío"
@@ -1305,7 +1296,7 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 "¿Desea eliminar todas las preferencias?\n"
-"Tomara efecto cuando reinicie Pd."
+"(Tomara efecto cuando reinicie Pd)"
 
 msgid "removed GUI settings"
 msgstr "preferencias GUI eliminadas"
@@ -1416,8 +1407,8 @@ msgstr "Eliminar"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
 
-#~ msgid "_"
-#~ msgstr "_"
+msgid "_"
+msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "-------dimensiones(dígitos)(pix):-------"
