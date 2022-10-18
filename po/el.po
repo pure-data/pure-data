@@ -579,6 +579,60 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Πλοήγηση..."
 
+msgid "Associated Files"
+msgstr "Συνδεόμενα Αρχεία"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Αρχεία Pd"
+
+msgid "Max Patch Files"
+msgstr "Αρχεία Patch από MAX"
+
+msgid "Max Text Files"
+msgstr "Αρχεία Κειμένου από MAX"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Αρχεία Patch από MAX (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Αρχεία Κειμένου από MAX (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
+"(%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1399,22 +1453,12 @@ msgstr ""
 #~ msgid "Output device 3:"
 #~ msgstr "Συσκευή εξόδου 3:"
 
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Αρχεία Κειμένου από MAX (.mxt)"
-
 #~ msgid "Input device 2:"
 #~ msgstr "Συσκευή εισόδου 2:"
 
 #, fuzzy
 #~ msgid "really quit?"
 #~ msgstr "έξοδος οπωσδήποτε;"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Αρχεία Κειμένου από MAX"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
 
 #~ msgid "Generators"
 #~ msgstr "Γεννήτριες"
@@ -1432,11 +1476,6 @@ msgstr ""
 #~ msgid "Output device 2:"
 #~ msgstr "Συσκευή εξόδου 2:"
 
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
-#~ "(%s)"
-
 #~ msgid "Font Properties"
 #~ msgstr "Ιδιότητες Γραμματοσειράς"
 
@@ -1445,9 +1484,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Φίλτρα"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Αρχεία Patch από MAX (.pat)"
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Απόρριψη αλλαγών σε αυτό το παράθυρο;;"
@@ -1461,14 +1497,8 @@ msgstr ""
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ΣΦΑΛΜΑ: το 'pd' δεν εμφανίστηκε ποτέ, έξοδος του 'pd-gui'!"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Αρχεία Patch από MAX"
-
 #~ msgid "Input device 3:"
 #~ msgstr "Συσκευή εισόδου 3:"
-
-#~ msgid "Associated Files"
-#~ msgstr "Συνδεόμενα Αρχεία"
 
 #~ msgid "Close this window??"
 #~ msgstr "Κλείσιμο αυτού του παραθύρου;;"

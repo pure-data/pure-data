@@ -603,6 +603,57 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Arakatu..."
 
+msgid "Associated Files"
+msgstr "Lotutako Fitxategiak"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Pd Fitxategiak"
+
+msgid "Max Patch Files"
+msgstr "Max Patch Fitxategiak"
+
+msgid "Max Text Files"
+msgstr "Max Testu Fitxategiak"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Max Patch Fitxategiak (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Max Testu Fitxategiak (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr "ADI: Letraren familia '%s' aurkiturik ez, (%s) lehenetsi erabiltzen"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr "ADI: Letraren familia '%s' aurkiturik ez, (%s) lehenetsi erabiltzen"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1451,9 +1502,6 @@ msgstr ""
 #~ msgid "start searching for externals..."
 #~ msgstr "'%s'-ren aldaketak utzi"
 
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr "ADI: Letraren familia '%s' aurkiturik ez, (%s) lehenetsi erabiltzen"
-
 #~ msgid "Generators"
 #~ msgstr "Generadoreak"
 
@@ -1475,17 +1523,11 @@ msgstr ""
 #~ msgid "really quit?"
 #~ msgstr "Benetan irten?"
 
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Max Patch Fitxategiak (.pat)"
-
 #~ msgid "Untitled"
 #~ msgstr "Izenburu gabe"
 
 #~ msgid "Output device 2:"
 #~ msgstr "Irtendako tresna 2:"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Max Testu Fitxategiak"
 
 #~ msgid "Signal"
 #~ msgstr "Seinalea"
@@ -1504,17 +1546,8 @@ msgstr ""
 #~ msgid "Input device 3:"
 #~ msgstr "Sartze tresna 3:"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Max Patch Fitxategiak"
-
-#~ msgid "Associated Files"
-#~ msgstr "Lotutako Fitxategiak"
-
 #~ msgid "Input device 4:"
 #~ msgstr "Sartze tresna 4:"
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Max Testu Fitxategiak (.mxt)"
 
 #, fuzzy
 #~ msgid "Filters"

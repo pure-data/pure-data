@@ -585,6 +585,57 @@ msgstr ""
 msgid "Help Browser"
 msgstr "דפדף..."
 
+#, fuzzy
+msgid "Associated Files"
+msgstr "לאשר אוטומטית שליחות של דיסיסי"
+
+msgid "Pd Files"
+msgstr ""
+
+msgid "Max Patch Files"
+msgstr ""
+
+msgid "Max Text Files"
+msgstr ""
+
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1413,10 +1464,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Filters"
 #~ msgstr "פאלט.."
-
-#, fuzzy
-#~ msgid "Associated Files"
-#~ msgstr "לאשר אוטומטית שליחות של דיסיסי"
 
 #, fuzzy
 #~ msgid "Others"

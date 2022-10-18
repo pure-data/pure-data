@@ -579,6 +579,58 @@ msgstr ""
 msgid "Help Browser"
 msgstr ""
 
+msgid "Associated Files"
+msgstr "File associati"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "File Pd"
+
+msgid "Max Patch Files"
+msgstr "Patch Max"
+
+msgid "Max Text Files"
+msgstr "File di testo Max"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Patch Max (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "File di testo Max (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"ATTENZIONE: Famiglia di font '%s\" non trovata, uso quella di default (%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr "ATTENZIONE: Peso '%s' del font non trovato, uso quello di default (%s)"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1396,18 +1448,11 @@ msgstr ""
 #~ msgid "Signal"
 #~ msgstr "Segnali"
 
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ATTENZIONE: Peso '%s' del font non trovato, uso quello di default (%s)"
-
 #~ msgid "Close this window??"
 #~ msgstr "Chiudere questa finestra??"
 
 #~ msgid "Input device 3:"
 #~ msgstr "Dispositivo di ingresso 3:"
-
-#~ msgid "Associated Files"
-#~ msgstr "File associati"
 
 #~ msgid "Output device 4:"
 #~ msgstr "Dispositivo di uscita 4:"
@@ -1415,15 +1460,8 @@ msgstr ""
 #~ msgid "Generators"
 #~ msgstr "Generatori"
 
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ATTENZIONE: Famiglia di font '%s\" non trovata, uso quella di default (%s)"
-
 #~ msgid "Output device 2:"
 #~ msgstr "Dispositivo di uscita 2:"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Patch Max (.pat)"
 
 #~ msgid "Sampling"
 #~ msgstr "Campionamento"
@@ -1440,9 +1478,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Font Properties"
 #~ msgstr "Proprietà"
-
-#~ msgid "Max Patch Files"
-#~ msgstr "Patch Max"
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
 #~ msgstr ""
@@ -1469,12 +1504,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Filtri"
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "File di testo Max (.mxt)"
-
-#~ msgid "Max Text Files"
-#~ msgstr "File di testo Max"
 
 #~ msgid "Output device 3:"
 #~ msgstr "Dispositivo di uscita 3:"

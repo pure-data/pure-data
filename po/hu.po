@@ -581,6 +581,59 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Beépített böngésző..."
 
+msgid "Associated Files"
+msgstr "Kapcsolódó fájlok"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Pd fájlok"
+
+msgid "Max Patch Files"
+msgstr "Max patch fájlok"
+
+msgid "Max Text Files"
+msgstr "Max szövegfájlok"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Max patch fájlok (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Max szövegfájlok (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"FIGYELEM: Nem található '%s' betűcsalád, az alapbeállítás (%s) érvényes"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"FIGYELEM: Nem található '%s' betűvastagság, az alapbeállítás (%s) érvényes"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1406,14 +1459,8 @@ msgstr ""
 #~ msgid "Sampling"
 #~ msgstr "Mintavételezés"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Max patch fájlok"
-
 #~ msgid "Untitled"
 #~ msgstr "Névtelen"
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Max szövegfájlok (.mxt)"
 
 #~ msgid "GUI"
 #~ msgstr "Kezelőfelület"
@@ -1429,9 +1476,6 @@ msgstr ""
 
 #~ msgid "Input device 2:"
 #~ msgstr "2. bemeneti eszköz:"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Max szövegfájlok"
 
 #~ msgid "Signal"
 #~ msgstr "Jel"
@@ -1463,25 +1507,11 @@ msgstr ""
 #~ msgid "Output device 2:"
 #~ msgstr "2. kimeneti eszköz:"
 
-#~ msgid "Associated Files"
-#~ msgstr "Kapcsolódó fájlok"
-
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "FIGYELEM: Nem található '%s' betűcsalád, az alapbeállítás (%s) érvényes"
-
 #~ msgid "I/O"
 #~ msgstr "I/O"
 
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Max patch fájlok (.pat)"
-
 #~ msgid "Input device 4:"
 #~ msgstr "4. bemeneti eszköz:"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "FIGYELEM: Nem található '%s' betűvastagság, az alapbeállítás (%s) érvényes"
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Elveti az ablak változtatásait?"

@@ -563,6 +563,60 @@ msgstr "Echtzeit-Modus unterdrücken"
 msgid "Help Browser"
 msgstr "Hilfebrowser"
 
+msgid "Associated Files"
+msgstr "Zugehörige Dateien"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "ZIP Archive"
+
+msgid "Max Patch Files"
+msgstr "Max Patch Dateien"
+
+msgid "Max Text Files"
+msgstr "Max Textdateien"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Max Patch Dateien (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Max Textdateien (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet (%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
+"(%s)"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1457,11 +1511,6 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgstr "Paket installieren"
 
 #, tcl-format
-#~ msgid "installed version [%1$s] > %2$s...skipping!"
-#~ msgstr ""
-#~ "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
-
-#, tcl-format
 #~ msgid "installed version [%1$s] < %2$s...overwriting!"
 #~ msgstr "überschreibe die installierte Version [%1$s] mit %2$s!"
 
@@ -1478,12 +1527,6 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #~ msgid "for:"
 #~ msgstr "für:"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Max Textdateien"
-
-#~ msgid "Max Patch Files"
-#~ msgstr "Max Patch Dateien"
 
 #~ msgid "really quit?"
 #~ msgstr "Wirklich Abbrechen?"
@@ -1503,33 +1546,17 @@ msgstr "überspringe '%s': kein Pd-File"
 #~ msgid "Untitled"
 #~ msgstr "Unbenannt"
 
-#~ msgid "Associated Files"
-#~ msgstr "Zugehörige Dateien"
-
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Änderungen an diesem Fenster verwerfen?"
 
 #~ msgid "Close this window??"
 #~ msgstr "Dieses Fenster schließen?"
 
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
-#~ "(%s)"
-
 #~ msgid "Input device 4:"
 #~ msgstr "Eingabegerät 4:"
 
 #~ msgid "Toggle Console"
 #~ msgstr "Konsole Ein/Aus"
-
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet "
-#~ "(%s)"
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Max Textdateien (.mxt)"
 
 #~ msgid "Font Properties"
 #~ msgstr "Zeichensatz-Einstellungen"
@@ -1560,6 +1587,3 @@ msgstr "überspringe '%s': kein Pd-File"
 
 #~ msgid "Filters"
 #~ msgstr "Filter"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Max Patch Dateien (.pat)"

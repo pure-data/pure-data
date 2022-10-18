@@ -575,6 +575,58 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Navegador"
 
+msgid "Associated Files"
+msgstr "Ficheiros associados"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Ficheiros Pd"
+
+msgid "Max Patch Files"
+msgstr "Ficheiros Max-Patches"
+
+msgid "Max Text Files"
+msgstr "Ficheiros Max-Texto"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Ficheiros Max-Patches (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Ficheiros Max-Texto (.mxt)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr "AVISO: O tipo de letra '%s' não foi encontrado, usando o padrão (%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"AVISO: O formato de letra '%s' não foi encontrado, usando o padrão (%s)"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -1391,14 +1443,6 @@ msgstr ""
 #~ msgid "for:"
 #~ msgstr "por:"
 
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "AVISO: O tipo de letra '%s' não foi encontrado, usando o padrão (%s)"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "AVISO: O formato de letra '%s' não foi encontrado, usando o padrão (%s)"
-
 #~ msgid "really quit?"
 #~ msgstr "Fechar mesmo?"
 
@@ -1439,17 +1483,11 @@ msgstr ""
 #~ msgid "Output device 4:"
 #~ msgstr "Dispositivo de saída 4:"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Ficheiros Max-Patches"
-
 # this is broken, its missing all of the formats
 #, fuzzy
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
 #~ msgstr ""
 #~ "AVISO: O tamanho de letra '%s' não foi encontrado, usando o padrão (%s)"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Ficheiros Max-Patches (.pat)"
 
 #~ msgid "Generators"
 #~ msgstr "Geradores"
@@ -1466,17 +1504,8 @@ msgstr ""
 #~ msgid "Untitled"
 #~ msgstr "Sem título"
 
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Ficheiros Max-Texto (.mxt)"
-
-#~ msgid "Associated Files"
-#~ msgstr "Ficheiros associados"
-
 #~ msgid "Signal"
 #~ msgstr "Sinal"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Ficheiros Max-Texto"
 
 #~ msgid "Output device 2:"
 #~ msgstr "Dispositivo de saída 2:"
