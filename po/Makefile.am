@@ -67,6 +67,8 @@ LOCAL_TCLFILES = \
 FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
         $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
+EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.po)
+
 # these are the supported languages
 ALL_LINGUAS = af az be bg de el en_ca eu es fr gu he hi hu it pa pt_br pt_pt sq sv vi
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
@@ -79,8 +81,11 @@ libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
 # files that are included but not built
-EXTRA_DIST = $(POFILES) $(TEMPLATE) README.txt \
-             $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
+EXTRA_DIST = \
+    $(POFILES) $(TEMPLATE) README.txt \
+    _exclude.po \
+    $(LOCAL_TCLFILES) \
+    $(empty)
 
 #########################################
 ##### Targets #####
@@ -105,7 +110,8 @@ $(TEMPLATE): $(FILES)
 		--sort-by-file --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
-		--foreign-user \
+        --foreign-user \
+        --exclude-file=$(EXCLUDE_FILE) \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
 	sed -i.bak -E '/^#:/d' $(TEMPLATE)
