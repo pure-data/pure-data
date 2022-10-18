@@ -19,24 +19,22 @@ msgstr ""
 "X-Generator: Weblate 4.15-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "linear"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logarithmisch"
 
 msgid "new-only"
-msgstr ""
+msgstr "nur neuer Wert"
 
 msgid "new&old"
-msgstr ""
+msgstr "alter und neuer Wert"
 
-#, fuzzy
 msgid "no scale"
-msgstr "Skalierung"
+msgstr "keine Skala"
 
-#, fuzzy
 msgid "scale"
-msgstr "Skalierung"
+msgstr "Skala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -424,7 +422,7 @@ msgid "Output Range"
 msgstr "Ausgabebereich"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Log-Höhe:"
 
 msgid "Vslider"
 msgstr "Slider (vert.)"
@@ -566,9 +564,8 @@ msgstr "Hilfebrowser"
 msgid "Associated Files"
 msgstr "Zugehörige Dateien"
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "ZIP Archive"
+msgstr "Pd-Dateien"
 
 msgid "Max Patch Files"
 msgstr "Max Patch Dateien"
