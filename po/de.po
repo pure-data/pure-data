@@ -582,16 +582,24 @@ msgstr "Max Patch Dateien (.pat)"
 msgid "Max Text Files (.mxt)"
 msgstr "Max Textdateien (.mxt)"
 
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
 #, fuzzy, tcl-format
-msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
 "WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet (%s)"
 
 #, fuzzy, tcl-format
-msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
 "WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
 "(%s)"
+
+#, fuzzy, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "Konnte '%1$s' nicht in %2$s finden"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -1129,12 +1137,12 @@ msgstr ""
 "\n"
 "Wollen Sie einen neuen Speicherort wählen?"
 
-#, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create Pd documents directory: %s"
 msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
-#, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
 
 msgid "refusing to delete empty domain"

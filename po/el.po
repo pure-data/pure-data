@@ -598,16 +598,24 @@ msgstr "Αρχεία Patch από MAX (.pat)"
 msgid "Max Text Files (.mxt)"
 msgstr "Αρχεία Κειμένου από MAX (.mxt)"
 
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
 #, fuzzy, tcl-format
-msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
 "ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
 "(%s)"
 
 #, fuzzy, tcl-format
-msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
 "ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -1125,11 +1133,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s"
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr ""
 
 msgid "refusing to delete empty domain"

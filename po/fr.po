@@ -579,12 +579,20 @@ msgid "Max Text Files (.mxt)"
 msgstr ""
 
 #, tcl-format
-msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgid "detected font: %s"
 msgstr ""
 
 #, tcl-format
-msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "'%1$s' non trouvé dans %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -1134,12 +1142,12 @@ msgstr ""
 "\n"
 "Choisir un nouvel emplacement ?"
 
-#, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create Pd documents directory: %s"
 msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
 msgid "refusing to delete empty domain"
