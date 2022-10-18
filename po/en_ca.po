@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 16:55+0200\n"
+"POT-Creation-Date: 2022-10-18 15:28+0200\n"
 "PO-Revision-Date: 2009-08-25 18:19-0400\n"
 "Last-Translator: Ben Bogart <ben@ekran.org>\n"
 "Language-Team: Canadian English <pd-list@iem.at>\n"
@@ -938,9 +938,6 @@ msgid "online? %s"
 msgstr ""
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
-
-msgid "_"
 msgstr ""
 
 #, tcl-format

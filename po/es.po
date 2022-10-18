@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2022-10-18 15:28+0200\n"
 "PO-Revision-Date: 2022-10-17 10:10-0300\n"
 "Last-Translator: Lucas Cordiviola <lucarda27@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -958,9 +958,6 @@ msgstr "¿Está usted online? %s"
 msgid "Unable to perform search. Are you online?"
 msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
 
-msgid "_"
-msgstr "_"
-
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr "Se encontraron %1$d paquetes usables (de %2$d paquetes en total)"
@@ -1418,6 +1415,9 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "_"
+#~ msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "-------dimensiones(dígitos)(pix):-------"

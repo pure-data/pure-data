@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
+"POT-Creation-Date: 2022-10-18 15:28+0200\n"
 "PO-Revision-Date: 2022-10-17 16:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -967,9 +967,6 @@ msgstr "Verbindungsprobleme? %s"
 
 msgid "Unable to perform search. Are you online?"
 msgstr "Die Suche schlug fehl. Sind Sie online?"
-
-msgid "_"
-msgstr ""
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
