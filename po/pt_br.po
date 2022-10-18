@@ -28,11 +28,9 @@ msgstr ""
 msgid "new&old"
 msgstr ""
 
-#, fuzzy
 msgid "no scale"
-msgstr "Escala"
+msgstr "Sem escala"
 
-#, fuzzy
 msgid "scale"
 msgstr "Escala"
 
@@ -340,13 +338,13 @@ msgid "GUI Box Properties"
 msgstr "Propriedades da Caixa de GUI"
 
 msgid "Messages"
-msgstr "Largura:"
+msgstr "Mensagens"
 
 msgid "Send symbol:"
-msgstr "Símbolo de envio"
+msgstr "Símbolo de envio:"
 
 msgid "Receive symbol:"
-msgstr "Símbolo de recebimento"
+msgstr "Símbolo de recebimento:"
 
 msgid "Width:"
 msgstr "Largura:"
@@ -391,10 +389,10 @@ msgid "Flash Time (msec)"
 msgstr "Tempo de piscagem (msec)"
 
 msgid "Min:"
-msgstr "Mínimo"
+msgstr "Mínimo:"
 
 msgid "Max:"
-msgstr "Máximo"
+msgstr "Máximo:"
 
 msgid "Toggle"
 msgstr "Toggle"
@@ -403,22 +401,22 @@ msgid "Non Zero Value"
 msgstr "Valor Ligado (Não Zero)"
 
 msgid "Value:"
-msgstr "Valor"
+msgstr "Valor:"
 
 msgid "Number2"
 msgstr "Number2"
 
 msgid "Width (digits):"
-msgstr "Largura (dígitos)"
+msgstr "Largura (dígitos):"
 
 msgid "Height:"
-msgstr "Altura"
+msgstr "Altura:"
 
 msgid "Output Range"
 msgstr "Registro de Saída"
 
 msgid "Log height:"
-msgstr "Altura de Log"
+msgstr "Altura de Log:"
 
 msgid "Vslider"
 msgstr "Slider vertical"
@@ -430,7 +428,7 @@ msgid "Vradio"
 msgstr "Rádio vertical"
 
 msgid "Num cells:"
-msgstr "Número de células"
+msgstr "Número de células:"
 
 msgid "Hradio"
 msgstr "Rádio horizontal"
@@ -525,7 +523,7 @@ msgid "Disable"
 msgstr "Desabilitar"
 
 msgid "Externals Install Directory"
-msgstr "Instalar externals no diretório:"
+msgstr "Instalar externals no diretório"
 
 msgid "Clear"
 msgstr "Limpar"
@@ -560,16 +558,14 @@ msgstr "Navegador de Ajuda"
 msgid "Associated Files"
 msgstr ""
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "Arquivos ZIP"
+msgstr "Arquivos Pd"
 
 msgid "Max Patch Files"
 msgstr ""
 
-#, fuzzy
 msgid "Max Text Files"
-msgstr "Arquivos TAR"
+msgstr "Arquivos de texto Max/MSP"
 
 msgid "Max Patch Files (.pat)"
 msgstr ""
@@ -589,9 +585,9 @@ msgstr ""
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr "Não foi possível encontrar '%1$s' em %2$s"
+msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
@@ -601,9 +597,9 @@ msgstr ""
 msgid "Loading plugin: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr "(Tcl) ERRO NÃO TRATADO:"
+msgstr "(Tcl) ERRO NÃO TRATADO: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
@@ -624,7 +620,7 @@ msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) NOME DE COMANDO INVÁLIDO: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr "(Tcl) ERRO NÃO TRATADO:"
+msgstr "(Tcl) ERRO NÃO TRATADO: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -655,21 +651,21 @@ msgid "Successfully unzipped %1$s into %2$s."
 msgstr "%1$s descompactado em %2$s com sucesso."
 
 msgid "Unable to extract package automatically."
-msgstr "incapaz de extrair o pacote automaticamente"
+msgstr "Incapaz de extrair o pacote automaticamente."
 
 msgid "Please perform the following steps manually:"
 msgstr "por favor realize os seguintes passos manualmente:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr "1. descompactar %s"
+msgstr "1. descompactar %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
 msgstr "Você poderá ter que mudar a extensão de arquivo de .dek para .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr "2. copiar o conteúdo para %s"
+msgstr "2. copiar o conteúdo para %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
@@ -697,7 +693,7 @@ msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
-msgstr "Incapaz de fazer verificação SHA256 de '%s'"
+msgstr "Incapaz de fazer verificação SHA256 de '%s'."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
@@ -725,7 +721,7 @@ msgid "Check"
 msgstr "Checar"
 
 msgid "Installation options:"
-msgstr "Opções de instalação"
+msgstr "Opções de instalação:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr "Tentar verificar o checksum das bibliotecas (re)instalando-as"
@@ -743,7 +739,7 @@ msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém instaladas ao caminho de busca do Pd"
 
 msgid "Platform settings:"
-msgstr "Configuraçõs da plataforma"
+msgstr "Configuraçõs da plataforma:"
 
 #, tcl-format
 msgid "Default platform: %s"
@@ -806,7 +802,7 @@ msgid "Installing package '%s'"
 msgstr "Instalando pacote '%s'"
 
 msgid "Installation completed!"
-msgstr "Instalação completa"
+msgstr "Instalação completa!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
@@ -843,7 +839,7 @@ msgid "Added %s to search paths"
 msgstr "%s adicionado aos caminhos de busca"
 
 msgid "No packages selected for installation."
-msgstr "Nenhum pacote selecionado para instalação"
+msgstr "Nenhum pacote selecionado para instalação."
 
 #, tcl-format
 msgid "Processed %d packages selected for installation."
@@ -870,7 +866,7 @@ msgid "Enter an exact library or object name."
 msgstr "Entre um nome exato de objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
-msgstr "e.g. 'freeverb~'"
+msgstr "por exemplo, 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Usar a wildcard '*' para combinar com qualquer número de caracteres."
@@ -964,7 +960,7 @@ msgid "It appears that there are no matching packages for your architecture."
 msgstr "Aparentemente não há pacotes encontrados para sua arquitetura."
 
 msgid "No matching externals found."
-msgstr "Nenhum external encontrado"
+msgstr "Nenhum external encontrado."
 
 msgid "Try using the full name e.g. 'freeverb~'."
 msgstr "Tente usar o nome completo e.g. 'freeverb~'."
@@ -998,14 +994,14 @@ msgstr "Directório não é 'writable'!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr "Downloading '%s'"
+msgstr "Baixando '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
 msgstr "Começando download de '%1$s' em '%2$s'..."
 
 msgid "aborting."
-msgstr "abortando"
+msgstr "abortando."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
@@ -1022,7 +1018,7 @@ msgstr "Ignorando mismatch de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s"
+msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1123,13 +1119,13 @@ msgstr ""
 "\n"
 "Escolher um novo local?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr "impossível criar diretório de documentos Pd: %s\n"
+msgstr "impossível criar diretório de documentos Pd: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "impossível criar diretório de documentos Pd: %s\n"
+msgstr "impossível criar diretório de documentos Pd em: %s"
 
 msgid "refusing to delete empty domain"
 msgstr "recusando deletar domínio vazio"
@@ -1409,8 +1405,8 @@ msgstr "Deletar"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece com um arquivo de Pd"
 
-#~ msgid "_"
-#~ msgstr "_"
+msgid "_"
+msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensões(dígitos)(pix):--------"
