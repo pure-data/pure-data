@@ -18,16 +18,16 @@ msgstr ""
 "X-Generator: Weblate 4.15-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "linéaire"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logarithmique"
 
 msgid "new-only"
-msgstr ""
+msgstr "nouveau seulement"
 
 msgid "new&old"
-msgstr ""
+msgstr "nouveau et ancien"
 
 msgid "no scale"
 msgstr "Pas d'échelle"
@@ -556,34 +556,38 @@ msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "Fichiers Associés"
 
 msgid "Pd Files"
 msgstr "Fichiers Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "Fichiers de patchs Max"
 
 msgid "Max Text Files"
 msgstr "Fichiers texte Max/MSP"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "Fichiers de patchs Max (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "Fichiers texte Max (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "police détectée : %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ATTENTION : la famille de police '%1$s' n'a pas pu être trouvée, utilisation "
+"de la fonte par défaut (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ATTENTION : l’épaisseur de police '%1$s' n'a pas pu être trouvée, "
+"utilisation de la valeur par défaut (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -591,11 +595,11 @@ msgstr "police utilisée : %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "'%1$s' déjà chargé, ignorer : '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Chargement du plugin : %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
@@ -603,15 +607,15 @@ msgstr "ERREUR NON GÉRÉE : %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "ÉCHEC DU CHARGEMENT DE %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "Échec de la lecture du plugin %s ... passer !"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "Impossible de trouver des plugins dans %s... passer !"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) CARACTÈRE MANQUANT '}' : "
@@ -943,7 +947,7 @@ msgid "Description"
 msgstr "Description"
 
 msgid "Uploader"
-msgstr "Mis en ligne par :"
+msgstr "Mis en ligne par"
 
 msgid "Date"
 msgstr "Date"
@@ -963,7 +967,7 @@ msgid "online? %s"
 msgstr "connecté ? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr "La recherche n'a pu pas aboutir. Êtes-vous connecté(e) ?"
+msgstr "La recherche n'a pas pu aboutir. Êtes-vous connecté(e) ?"
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
@@ -1420,82 +1424,94 @@ msgstr "Supprimer"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
 
-#~ msgid "_"
-#~ msgstr "_"
+msgid "_"
+msgstr "_"
 
-#~ msgid "-------dimensions(digits)(pix):-------"
-#~ msgstr "------dimensions(chiffres)(pix):------"
+msgid "-------dimensions(digits)(pix):-------"
+msgstr "------dimensions(chiffres)(pix):------"
 
-#~ msgid "--------dimensions(pix)(pix):--------"
-#~ msgstr "--------dimensions(pix)(pix):--------"
+msgid "--------dimensions(pix)(pix):--------"
+msgstr "--------dimensions(pix)(pix):--------"
 
-#~ msgid "----------dimensions(pix):-----------"
-#~ msgstr "----------dimensions(pix):-----------"
+msgid "----------dimensions(pix):-----------"
+msgstr "----------dimensions(pix):-----------"
 
-#~ msgid "--------flash-time(ms)(ms):---------"
-#~ msgstr "-------durée_du_flash(ms)(ms):------"
+msgid "--------flash-time(ms)(ms):---------"
+msgstr "-------durée_du_flash(ms)(ms):------"
 
-#~ msgid "-----------output-range:-----------"
-#~ msgstr "---------échelle_de_sortie:--------"
+msgid "-----------output-range:-----------"
+msgstr "---------échelle_de_sortie:--------"
 
-#~ msgid "------selectable_dimensions(pix):------"
-#~ msgstr "----dimensions_sélectionnable(pix):----"
+msgid "------selectable_dimensions(pix):------"
+msgstr "----dimensions_sélectionnable(pix):----"
 
-#~ msgid "------visible_rectangle(pix)(pix):------"
-#~ msgstr "------rectangle_visible(pix)(pix):------"
+msgid "------visible_rectangle(pix)(pix):------"
+msgstr "------rectangle_visible(pix)(pix):------"
 
-#~ msgid "bottom:"
-#~ msgstr "bas :"
+msgid "bottom:"
+msgstr "bas :"
 
-#~ msgid "height:"
-#~ msgstr "hauteur :"
+msgid "height:"
+msgstr "hauteur :"
 
-#~ msgid "hold:"
-#~ msgstr "maintient :"
+msgid "hold:"
+msgstr "maintient :"
 
-#~ msgid "intrrpt:"
-#~ msgstr "intrrpt :"
+msgid "intrrpt:"
+msgstr "intrrpt :"
 
-#~ msgid "left:"
-#~ msgstr "gauche :"
+msgid "left:"
+msgstr "gauche :"
 
-#~ msgid "lin"
-#~ msgstr "lin"
+msgid "lin"
+msgstr "lin"
 
-#~ msgid "log"
-#~ msgstr "log"
+msgid "log"
+msgstr "log"
 
-#~ msgid "log-height:"
-#~ msgstr "Hauteur de log :"
+msgid "log-height:"
+msgstr "Hauteur de log :"
 
-#~ msgid "max:"
-#~ msgstr "max :"
+msgid "max:"
+msgstr "max :"
 
-#~ msgid "min:"
-#~ msgstr "min :"
+msgid "min:"
+msgstr "min :"
 
-#~ msgid "right:"
-#~ msgstr "droite :"
+msgid "right:"
+msgstr "droite :"
 
-#~ msgid "size:"
-#~ msgstr "taille :"
+msgid "size:"
+msgstr "taille :"
 
-#~ msgid "top:"
-#~ msgstr "haut :"
+msgid "top:"
+msgstr "haut :"
 
-#~ msgid "value:"
-#~ msgstr "valeur :"
+msgid "value:"
+msgstr "valeur :"
 
-#~ msgid "width:"
-#~ msgstr "largeur :"
-
-#, tcl-format
-#~ msgid "couldn't create Pd documents directory: %s\n"
-#~ msgstr "impossible de créer le dossier Documents : %s\n"
+msgid "width:"
+msgstr "largeur :"
 
 #, tcl-format
-#~ msgid "couldn't create \"externals\" directory in: %s\n"
-#~ msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+msgid "couldn't create Pd documents directory: %s\n"
+msgstr "impossible de créer le dossier Documents : %s\n"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+
+#, tcl-format
+msgid "WARNING: font family '%s' not found, using default (%s)\n"
+msgstr ""
+"ATTENTION : la famille de police '%s' n'a pas pu être trouvée, utilisation "
+"de la police par défaut (%s)\n"
+
+#, tcl-format
+msgid "WARNING: font weight '%s' not found, using default (%s)\n"
+msgstr ""
+"ATTENTION : l'épaisseur de police '%s' n'a pas pu être trouvée, utilisation "
+"de la valeur par défaut (%s)\n"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Intrrpt :"
