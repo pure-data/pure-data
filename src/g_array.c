@@ -57,15 +57,8 @@ void array_resize(t_array *x, int n)
     x->a_vec = tmp;
     x->a_n = n;
     if (n > oldn)
-    {
-        char *cp = x->a_vec + elemsize * oldn;
-        int i = n - oldn;
-        for (; i--; cp += elemsize)
-        {
-            t_word *wp = (t_word *)cp;
-            word_init(wp, template, &x->a_gp);
-        }
-    }
+        word_initvec((t_word *)(x->a_vec + elemsize * oldn), template,
+            &x->a_gp, n - oldn);
     x->a_valid = ++glist_valid;
 }
 
@@ -89,6 +82,7 @@ void array_free(t_array *x)
     int i;
     t_template *scalartemplate = template_findbyname(x->a_templatesym);
     gstub_cutoff(x->a_stub);
+    word_freevec((t_word *)x->a_vec, scalartemplate, x->a_n);
     for (i = 0; i < x->a_n; i++)
     {
         t_word *wp = (t_word *)(x->a_vec + x->a_elemsize * i);

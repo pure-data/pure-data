@@ -585,11 +585,13 @@ EXTERN void gpointer_setarray(t_gpointer *gp, t_array *array, t_word *w);
 
 /* --------------------- scalars ------------------------- */
 EXTERN void word_init(t_word *wp, t_template *tmpl, t_gpointer *gp);
+EXTERN void word_initvec(t_word *wp, t_template *tmpl, t_gpointer *gp, long n);
 EXTERN void word_restore(t_word *wp, t_template *tmpl,
     int argc, t_atom *argv);
 EXTERN t_scalar *scalar_new(t_glist *owner,
     t_symbol *templatesym);
 EXTERN void word_free(t_word *wp, t_template *tmpl);
+EXTERN void word_freevec(t_word *wp, t_template *tmpl, long n);
 EXTERN void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey);
 EXTERN void scalar_redraw(t_scalar *x, t_glist *glist);
 EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
