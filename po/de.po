@@ -456,7 +456,7 @@ msgid "Parameters"
 msgstr "Parameter"
 
 msgid "Init"
-msgstr "Init"
+msgstr "mit Initialisierung"
 
 msgid "No init"
 msgstr "Kein Init"
@@ -581,55 +581,55 @@ msgstr "Max Textdateien (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "Erkannte Schriftart: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
-"WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet (%s)"
+"WARNUNG: Zeichensatzfamilie '%1$s' nicht gefunden, Standard wird verwendet "
+"(%2$s)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
-"WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
-"(%s)"
+"WARNUNG: Schriftstärke '%1$s' nicht gefunden, Standard wird verwendet (%2$s)"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr "Konnte '%1$s' nicht in %2$s finden"
+msgstr "Verwendete Schrift: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "'%1$s' bereits geladen, ignoriere: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Plugin wird geladen: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr ""
+msgstr "UNBEHANDELTER FEHLER: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "LADEFEHLER %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr "die installierte Version ist bereits am neuesten Stand [%1$s] == %2$s!"
+msgstr "Plugin %s konnte nicht gelesen werden ... wird übersprungen!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "Es konnten keine Plugins in %s gefunden werden ... überspringen!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) INVALID COMMAND NAME: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) UNHANDLED ERROR: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
@@ -1131,13 +1131,13 @@ msgstr ""
 "\n"
 "Wollen Sie einen neuen Speicherort wählen?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
+msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
+msgstr "konnte das \"externals\" Verzeichnis in nicht '%s' erstellen"
 
 msgid "refusing to delete empty domain"
 msgstr "leere Domäne kann nicht gelöscht werden"
@@ -1290,7 +1290,7 @@ msgid "List of objects..."
 msgstr "Liste aller Objekte..."
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
 msgstr "Nach Updates suchen"
@@ -1372,10 +1372,10 @@ msgid "Audio off"
 msgstr "Audio aus"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
@@ -1496,16 +1496,15 @@ msgstr "Breite:"
 msgid "_"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font family '%s' not found, using default (%s)\n"
 msgstr ""
-"WARNUNG: Zeichensatzfamilie '%s' nicht gefunden, Standard wird verwendet (%s)"
+"WARNUNG: Schriftart '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font weight '%s' not found, using default (%s)\n"
 msgstr ""
-"WARNUNG: Zeichensatz Schnitt '%s' nicht gefunden, Standard wird verwendet "
-"(%s)"
+"WARNUNG: Schriftstärke '%s' nicht gefunden, Standard wird verwendet (%s)\n"
 
 #, tcl-format
 msgid "couldn't create Pd documents directory: %s\n"
