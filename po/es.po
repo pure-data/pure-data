@@ -17,75 +17,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.3\n"
 
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "-------dimensiones(dígitos)(pix):-------"
+msgid "linear"
+msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensiones(pix)(pix):--------"
+msgid "logarithmic"
+msgstr ""
 
-msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensiones(pix):-----------"
+msgid "new-only"
+msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "--------intermitencia(ms)(ms):---------"
+msgid "new&old"
+msgstr ""
 
-msgid "-----------output-range:-----------"
-msgstr "-----------rango-de-salida:-----------"
+#, fuzzy
+msgid "no scale"
+msgstr "Escala"
 
-msgid "------selectable_dimensions(pix):------"
-msgstr "-----dimensiones_seleccionables(pix):-----"
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "------rectángulo_visible(pix)(pix):------"
-
-msgid "bottom:"
-msgstr "abajo:"
-
-msgid "height:"
-msgstr "altura:"
-
-msgid "hold:"
-msgstr "hold:"
-
-msgid "intrrpt:"
-msgstr "intrrpt:"
-
-msgid "left:"
-msgstr "izquierda:"
-
-msgid "lin"
-msgstr "lin"
-
-msgid "log"
-msgstr "log"
-
-msgid "log-height:"
-msgstr "altura log:"
-
-msgid "max:"
-msgstr "máx.:"
-
-msgid "min:"
-msgstr "min.:"
-
-msgid "right:"
-msgstr "derecha:"
-
-msgid "size:"
-msgstr "tamaño:"
-
-msgid "top:"
-msgstr "arriba:"
-
-msgid "value:"
-msgstr "valor:"
-
-msgid "width:"
-msgstr "ancho:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "¿Desea guardar los cambios realizados en '%s'?"
+#, fuzzy
+msgid "scale"
+msgstr "Escala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -1342,6 +1292,10 @@ msgstr "Abrir Recientes"
 msgid "Quit"
 msgstr "Salir"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "¿Desea guardar los cambios realizados en '%s'?"
+
 msgid "Properties"
 msgstr "Propiedades"
 
@@ -1404,6 +1358,72 @@ msgstr "Eliminar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': no parece ser un archivo de Pd"
+
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "-------dimensiones(dígitos)(pix):-------"
+
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------dimensiones(pix)(pix):--------"
+
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------dimensiones(pix):-----------"
+
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "--------intermitencia(ms)(ms):---------"
+
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "-----------rango-de-salida:-----------"
+
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "-----dimensiones_seleccionables(pix):-----"
+
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "------rectángulo_visible(pix)(pix):------"
+
+#~ msgid "bottom:"
+#~ msgstr "abajo:"
+
+#~ msgid "height:"
+#~ msgstr "altura:"
+
+#~ msgid "hold:"
+#~ msgstr "hold:"
+
+#~ msgid "intrrpt:"
+#~ msgstr "intrrpt:"
+
+#~ msgid "left:"
+#~ msgstr "izquierda:"
+
+#~ msgid "lin"
+#~ msgstr "lin"
+
+#~ msgid "log"
+#~ msgstr "log"
+
+#~ msgid "log-height:"
+#~ msgstr "altura log:"
+
+#~ msgid "max:"
+#~ msgstr "máx.:"
+
+#~ msgid "min:"
+#~ msgstr "min.:"
+
+#~ msgid "right:"
+#~ msgstr "derecha:"
+
+#~ msgid "size:"
+#~ msgstr "tamaño:"
+
+#~ msgid "top:"
+#~ msgstr "arriba:"
+
+#~ msgid "value:"
+#~ msgstr "valor:"
+
+#~ msgid "width:"
+#~ msgstr "ancho:"
 
 #~ msgid "More..."
 #~ msgstr "Mas..."

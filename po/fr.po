@@ -8,8 +8,8 @@ msgstr ""
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2022-10-18 08:15+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,75 +17,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.15-dev\n"
 
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "------dimensions(chiffres)(pix):------"
+msgid "linear"
+msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
+msgstr ""
 
-msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensions(pix):-----------"
+msgid "new-only"
+msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "-------durée_du_flash(ms)(ms):------"
+msgid "new&old"
+msgstr ""
 
-msgid "-----------output-range:-----------"
-msgstr "---------échelle_de_sortie:--------"
+#, fuzzy
+msgid "no scale"
+msgstr "Échelle"
 
-msgid "------selectable_dimensions(pix):------"
-msgstr "----dimensions_sélectionnable(pix):----"
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "------rectangle_visible(pix)(pix):------"
-
-msgid "bottom:"
-msgstr "bas :"
-
-msgid "height:"
-msgstr "hauteur :"
-
-msgid "hold:"
-msgstr "maintient :"
-
-msgid "intrrpt:"
-msgstr "intrrpt :"
-
-msgid "left:"
-msgstr "gauche :"
-
-msgid "lin"
-msgstr "lin"
-
-msgid "log"
-msgstr "log"
-
-msgid "log-height:"
-msgstr "Hauteur de log :"
-
-msgid "max:"
-msgstr "max :"
-
-msgid "min:"
-msgstr "min :"
-
-msgid "right:"
-msgstr "droite :"
-
-msgid "size:"
-msgstr "taille :"
-
-msgid "top:"
-msgstr "haut :"
-
-msgid "value:"
-msgstr "valeur :"
-
-msgid "width:"
-msgstr "largeur :"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Enregistrer les modifications de '%s' ?"
+#, fuzzy
+msgid "scale"
+msgstr "Échelle"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -1351,6 +1301,10 @@ msgstr "Ouvrir un élément récent"
 msgid "Quit"
 msgstr "Quitter"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Enregistrer les modifications de '%s' ?"
+
 msgid "Properties"
 msgstr "Propriétés"
 
@@ -1413,6 +1367,72 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorer '%s' : ne semble pas être un fichier Pd"
+
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "------dimensions(chiffres)(pix):------"
+
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------dimensions(pix)(pix):--------"
+
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------dimensions(pix):-----------"
+
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "-------durée_du_flash(ms)(ms):------"
+
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "---------échelle_de_sortie:--------"
+
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "----dimensions_sélectionnable(pix):----"
+
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "------rectangle_visible(pix)(pix):------"
+
+#~ msgid "bottom:"
+#~ msgstr "bas :"
+
+#~ msgid "height:"
+#~ msgstr "hauteur :"
+
+#~ msgid "hold:"
+#~ msgstr "maintient :"
+
+#~ msgid "intrrpt:"
+#~ msgstr "intrrpt :"
+
+#~ msgid "left:"
+#~ msgstr "gauche :"
+
+#~ msgid "lin"
+#~ msgstr "lin"
+
+#~ msgid "log"
+#~ msgstr "log"
+
+#~ msgid "log-height:"
+#~ msgstr "Hauteur de log :"
+
+#~ msgid "max:"
+#~ msgstr "max :"
+
+#~ msgid "min:"
+#~ msgstr "min :"
+
+#~ msgid "right:"
+#~ msgstr "droite :"
+
+#~ msgid "size:"
+#~ msgstr "taille :"
+
+#~ msgid "top:"
+#~ msgstr "haut :"
+
+#~ msgid "value:"
+#~ msgstr "valeur :"
+
+#~ msgid "width:"
+#~ msgstr "largeur :"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Intrrpt :"

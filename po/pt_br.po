@@ -15,75 +15,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.1.1\n"
 
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "------dimensões(dígitos)(pix):--------"
+msgid "linear"
+msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensões(pix)(pix):---------"
+msgid "logarithmic"
+msgstr ""
 
-msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensões(pix):------------"
+msgid "new-only"
+msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "-----tempo-de-piscagem(ms)(ms):------"
+msgid "new&old"
+msgstr ""
 
-msgid "-----------output-range:-----------"
-msgstr "---------registro-de-saída:----------"
+#, fuzzy
+msgid "no scale"
+msgstr "Escala"
 
-msgid "------selectable_dimensions(pix):------"
-msgstr "----dimensões_selecionáveis(pix):------"
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "-----retângulo_visível(pix)(pix):-------"
-
-msgid "bottom:"
-msgstr "abaixo:"
-
-msgid "height:"
-msgstr "altura:"
-
-msgid "hold:"
-msgstr "segurar"
-
-msgid "intrrpt:"
-msgstr "interromper"
-
-msgid "left:"
-msgstr "esquerda:"
-
-msgid "lin"
-msgstr "linear"
-
-msgid "log"
-msgstr "logarítmico"
-
-msgid "log-height:"
-msgstr "altura-do-log:"
-
-msgid "max:"
-msgstr "máximo:"
-
-msgid "min:"
-msgstr "mínimo:"
-
-msgid "right:"
-msgstr "direita:"
-
-msgid "size:"
-msgstr "tamanho:"
-
-msgid "top:"
-msgstr "topo:"
-
-msgid "value:"
-msgstr "valor:"
-
-msgid "width:"
-msgstr "largura:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Você deseja salvar as alterações feitas em '%s'?"
+#, fuzzy
+msgid "scale"
+msgstr "Escala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -156,7 +106,8 @@ msgid "no Pd settings to erase"
 msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "pulando carregar preferências... o Pd parece ter travado na inicialização"
+msgstr ""
+"pulando carregar preferências... o Pd parece ter travado na inicialização"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(re-salvar preferências para reinstanciá-las)"
@@ -291,7 +242,8 @@ msgid "Save All Settings"
 msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+msgstr ""
+"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -866,17 +818,20 @@ msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "e.g. '*-plugin' combinará com 'deken-plugin' (e mais)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
-msgstr "Você pode restringir a busca para apenas-bibliotecas ou apenas-objetos."
+msgstr ""
+"Você pode restringir a busca para apenas-bibliotecas ou apenas-objetos."
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
-
+msgstr ""
+"Para receber uma lista com todos os externals disponíveis, tente uma busca "
+"vazia."
 
 msgid "Right-clicking a search result will give you more options..."
 msgstr "Click-direito num resultado de busca lhe dará mais opções..."
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr "Você também pode procurar por bibliotecas e objetos via seu web browser:"
+msgstr ""
+"Você também pode procurar por bibliotecas e objetos via seu web browser:"
 
 msgid "Find externals"
 msgstr "Procurar externals"
@@ -1076,7 +1031,8 @@ msgstr ""
 "\n"
 "Localidade: %s\n"
 "\n"
-"Você pode mudar ou desabilitar isso posteriormente em preferências de Caminho."
+"Você pode mudar ou desabilitar isso posteriormente em preferências de "
+"Caminho."
 
 #, tcl-format
 msgid ""
@@ -1092,8 +1048,8 @@ msgstr ""
 "\n"
 "Localidade: %s\n"
 "\n"
-"Você pode mudar ou desabilitar isso posteriormente em preferências de Caminho."
-
+"Você pode mudar ou desabilitar isso posteriormente em preferências de "
+"Caminho."
 
 #, tcl-format
 msgid ""
@@ -1328,6 +1284,10 @@ msgstr "Abrir Recente"
 msgid "Quit"
 msgstr "Sair"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Você deseja salvar as alterações feitas em '%s'?"
+
 msgid "Properties"
 msgstr "Propriedades"
 
@@ -1390,3 +1350,69 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece com um arquivo de Pd"
+
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "------dimensões(dígitos)(pix):--------"
+
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------dimensões(pix)(pix):---------"
+
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------dimensões(pix):------------"
+
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "-----tempo-de-piscagem(ms)(ms):------"
+
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "---------registro-de-saída:----------"
+
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "----dimensões_selecionáveis(pix):------"
+
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "-----retângulo_visível(pix)(pix):-------"
+
+#~ msgid "bottom:"
+#~ msgstr "abaixo:"
+
+#~ msgid "height:"
+#~ msgstr "altura:"
+
+#~ msgid "hold:"
+#~ msgstr "segurar"
+
+#~ msgid "intrrpt:"
+#~ msgstr "interromper"
+
+#~ msgid "left:"
+#~ msgstr "esquerda:"
+
+#~ msgid "lin"
+#~ msgstr "linear"
+
+#~ msgid "log"
+#~ msgstr "logarítmico"
+
+#~ msgid "log-height:"
+#~ msgstr "altura-do-log:"
+
+#~ msgid "max:"
+#~ msgstr "máximo:"
+
+#~ msgid "min:"
+#~ msgstr "mínimo:"
+
+#~ msgid "right:"
+#~ msgstr "direita:"
+
+#~ msgid "size:"
+#~ msgstr "tamanho:"
+
+#~ msgid "top:"
+#~ msgstr "topo:"
+
+#~ msgid "value:"
+#~ msgstr "valor:"
+
+#~ msgid "width:"
+#~ msgstr "largura:"

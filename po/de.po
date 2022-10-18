@@ -9,8 +9,8 @@ msgstr ""
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2022-10-17 16:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,85 +18,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.15-dev\n"
 
-# iemgui
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "------Rahmengröße(Zahlen)(pix):-------"
+msgid "linear"
+msgstr ""
 
-# iemgui
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------Rahmengröße(pix)(pix):--------"
+msgid "logarithmic"
+msgstr ""
 
-# iemgui
-msgid "----------dimensions(pix):-----------"
-msgstr "----------Rahmengröße(pix):-----------"
+msgid "new-only"
+msgstr ""
 
-# iemgui
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "----------Blinkzeit(ms)(ms):-----------"
+msgid "new&old"
+msgstr ""
 
-# iemgui
-msgid "-----------output-range:-----------"
-msgstr "----------Ausgangsbereich:-----------"
+#, fuzzy
+msgid "no scale"
+msgstr "Skalierung"
 
-# iemgui
-msgid "------selectable_dimensions(pix):------"
-msgstr "----------selektierbare Größe(pix):-----------"
-
-# iemgui
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "-------sichtbare Größe(pix)(pix):--------"
-
-msgid "bottom:"
-msgstr "Unten:"
-
-# iemgui
-msgid "height:"
-msgstr "Höhe:"
-
-msgid "hold:"
-msgstr "Haltezeit:"
-
-msgid "intrrpt:"
-msgstr "Interruptzeit:"
-
-# iemgui
-msgid "left:"
-msgstr "links:"
-
-msgid "lin"
-msgstr "linear"
-
-msgid "log"
-msgstr "logarithmisch"
-
-msgid "log-height:"
-msgstr "log Höhe:"
-
-msgid "max:"
-msgstr "max:"
-
-msgid "min:"
-msgstr "min:"
-
-# iemgui
-msgid "right:"
-msgstr "rechts:"
-
-msgid "size:"
-msgstr "Größe:"
-
-msgid "top:"
-msgstr "Oben:"
-
-msgid "value:"
-msgstr "Wert:"
-
-msgid "width:"
-msgstr "Breite:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Änderungen in '%s' speichern?"
+#, fuzzy
+msgid "scale"
+msgstr "Skalierung"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -1354,6 +1294,10 @@ msgstr "Letzte Dateien öffnen"
 msgid "Quit"
 msgstr "Beenden"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Änderungen in '%s' speichern?"
+
 msgid "Properties"
 msgstr "Eigenschaften"
 
@@ -1416,6 +1360,82 @@ msgstr "Löschen"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "überspringe '%s': kein Pd-File"
+
+# iemgui
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "------Rahmengröße(Zahlen)(pix):-------"
+
+# iemgui
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------Rahmengröße(pix)(pix):--------"
+
+# iemgui
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------Rahmengröße(pix):-----------"
+
+# iemgui
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "----------Blinkzeit(ms)(ms):-----------"
+
+# iemgui
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "----------Ausgangsbereich:-----------"
+
+# iemgui
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "----------selektierbare Größe(pix):-----------"
+
+# iemgui
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "-------sichtbare Größe(pix)(pix):--------"
+
+#~ msgid "bottom:"
+#~ msgstr "Unten:"
+
+# iemgui
+#~ msgid "height:"
+#~ msgstr "Höhe:"
+
+#~ msgid "hold:"
+#~ msgstr "Haltezeit:"
+
+#~ msgid "intrrpt:"
+#~ msgstr "Interruptzeit:"
+
+# iemgui
+#~ msgid "left:"
+#~ msgstr "links:"
+
+#~ msgid "lin"
+#~ msgstr "linear"
+
+#~ msgid "log"
+#~ msgstr "logarithmisch"
+
+#~ msgid "log-height:"
+#~ msgstr "log Höhe:"
+
+#~ msgid "max:"
+#~ msgstr "max:"
+
+#~ msgid "min:"
+#~ msgstr "min:"
+
+# iemgui
+#~ msgid "right:"
+#~ msgstr "rechts:"
+
+#~ msgid "size:"
+#~ msgstr "Größe:"
+
+#~ msgid "top:"
+#~ msgstr "Oben:"
+
+#~ msgid "value:"
+#~ msgstr "Wert:"
+
+#~ msgid "width:"
+#~ msgstr "Breite:"
 
 #~ msgid "Intrrpt:"
 #~ msgstr "Interruptzeit:"
