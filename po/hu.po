@@ -798,15 +798,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "Pd fájlok"
+msgstr "ZIP fájlok"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "Pd fájlok"
+msgstr "TAR fájlok"
 
 #, fuzzy
 msgid "All Files"
-msgstr "Pd fájlok"
+msgstr "Minden fájl"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"

@@ -804,15 +804,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "Fil"
+msgstr "ZIP-Filer"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "Fil"
+msgstr "TAR-Filer"
 
 #, fuzzy
 msgid "All Files"
-msgstr "Fil"
+msgstr "Alla filer"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"

@@ -791,15 +791,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "Ficheiros Pd"
+msgstr "Arquivos ZIP"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "Ficheiros Pd"
+msgstr "Arquivos TAR"
 
 #, fuzzy
 msgid "All Files"
-msgstr "Ficheiros Pd"
+msgstr "todos os arquivos"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"

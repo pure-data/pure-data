@@ -817,15 +817,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "ફાઇલ"
+msgstr "ઝીપ ફાઇલો"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "ફાઇલ"
+msgstr "TAR ફાઇલો"
 
 #, fuzzy
 msgid "All Files"
-msgstr "ફાઇલ"
+msgstr "બધી ફાઈલ"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"

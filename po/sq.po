@@ -815,15 +815,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "Kartelë"
+msgstr "skedarët ZIP"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "Kartelë"
+msgstr "skedarët TAR"
 
 #, fuzzy
 msgid "All Files"
-msgstr "Kartelë"
+msgstr "te gjitha dokumentet"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"

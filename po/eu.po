@@ -818,15 +818,15 @@ msgstr ""
 
 #, fuzzy
 msgid "ZIP Files"
-msgstr "Pd Fitxategiak"
+msgstr "ZIP Fitxategiak"
 
 #, fuzzy
 msgid "TAR Files"
-msgstr "Pd Fitxategiak"
+msgstr "TAR Fitxategiak"
 
 #, fuzzy
 msgid "All Files"
-msgstr "Pd Fitxategiak"
+msgstr "Fitxategi guztiak"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
