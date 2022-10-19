@@ -147,8 +147,9 @@ msgstr "Pegar"
 msgid "Array Properties"
 msgstr "Propiedades del Array"
 
+#, fuzzy
 msgid "Array"
-msgstr ""
+msgstr "Arreglo"
 
 msgid "Name:"
 msgstr "Nombre:"
@@ -211,13 +212,15 @@ msgid "Delay (msec):"
 msgstr "Retardo (msec):"
 
 msgid "48k"
-msgstr ""
+msgstr "48kHz"
 
+#, fuzzy
 msgid "44.1k"
-msgstr ""
+msgstr "44.1kHz"
 
+#, fuzzy
 msgid "96k"
-msgstr ""
+msgstr "96kHz"
 
 msgid "Block size:"
 msgstr "Tamaño de Bloque:"
@@ -393,20 +396,22 @@ msgstr "Color de Frente"
 msgid "Label color"
 msgstr "Color de Etiqueta"
 
+#, fuzzy
 msgid "Bang"
-msgstr ""
+msgstr "Disparo"
 
 msgid "Flash Time (msec)"
 msgstr "Intermitencia (flashtime)"
 
 msgid "Min:"
-msgstr ""
+msgstr "Min:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Max:"
 
+#, fuzzy
 msgid "Toggle"
-msgstr ""
+msgstr "Interruptor"
 
 msgid "Non Zero Value"
 msgstr "Valor No Cero"
@@ -415,7 +420,7 @@ msgid "Value:"
 msgstr "Valor:"
 
 msgid "Number2"
-msgstr ""
+msgstr "NúmeroConfigurable"
 
 msgid "Width (digits):"
 msgstr "Ancho (dígitos):"
@@ -429,11 +434,13 @@ msgstr "Rango de Salida"
 msgid "Log height:"
 msgstr "Altura Log:"
 
+#, fuzzy
 msgid "Vslider"
-msgstr ""
+msgstr "ReguladorV"
 
+#, fuzzy
 msgid "Hslider"
-msgstr ""
+msgstr "ReguladorH"
 
 msgid "Vradio"
 msgstr ""
@@ -447,8 +454,9 @@ msgstr ""
 msgid "VU Meter"
 msgstr ""
 
+#, fuzzy
 msgid "Canvas"
-msgstr ""
+msgstr "Lienzo"
 
 msgid "Visible Rectangle (pix)"
 msgstr "Rectángulo Visible (pix)"
