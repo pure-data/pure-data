@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 10:34+0200\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2009-08-25 18:19-0400\n"
 "Last-Translator: Ben Bogart <ben@ekran.org>\n"
 "Language-Team: Canadian English <pd-list@iem.at>\n"
@@ -280,6 +280,12 @@ msgstr ""
 msgid "Data Properties"
 msgstr ""
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr ""
@@ -531,6 +537,10 @@ msgid "Install externals to directory:"
 msgstr ""
 
 msgid "Add a new path"
+msgstr ""
+
+#, tcl-format
+msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"

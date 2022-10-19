@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 10:34+0200\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-19 08:29+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -286,6 +286,12 @@ msgstr "Rango Y: de"
 msgid "Data Properties"
 msgstr "Propiedades de Data"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr "Encontrado '%1$s' en %2$s"
@@ -540,6 +546,10 @@ msgstr "Instalar externos en el directorio:"
 
 msgid "Add a new path"
 msgstr "Agregar una nueva ruta"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
 
 msgid "Add new library"
 msgstr "Añadir nueva librería"

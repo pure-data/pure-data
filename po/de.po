@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 10:34+0200\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-17 16:48+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -288,6 +288,12 @@ msgstr "Y-Spanne, von"
 msgid "Data Properties"
 msgstr "Canvas Eigenschaften"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr "'%1$s' in %2$s gefunden"
@@ -542,6 +548,10 @@ msgstr "Externals in folgendes Verzeichnis installieren:"
 
 msgid "Add a new path"
 msgstr "Neuen Pfad hinzufügen"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
