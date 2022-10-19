@@ -1405,8 +1405,8 @@ msgstr "Deletar"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece com um arquivo de Pd"
 
-msgid "_"
-msgstr "_"
+#~ msgid "_"
+#~ msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensões(dígitos)(pix):--------"
