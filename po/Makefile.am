@@ -107,16 +107,18 @@ $(TEMPLATE): $(FILES)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
-		--sort-by-file --output=$(TEMPLATE) \
+		--sort-by-file --output=$(TEMPLATE).new \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
-        --foreign-user \
-        --exclude-file=$(EXCLUDE_FILE) \
+		--foreign-user \
+		--no-location \
+		--exclude-file=$(EXCLUDE_FILE) \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-	sed -i.bak -E '/^#:/d' $(TEMPLATE)
-	sed -i.bak -E '/^"POT-Creation-Date/d' $(TEMPLATE)
-	rm -f $(TEMPLATE).bak
+	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
+	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE) > $(TEMPLATE).nodate
+	cmp $(TEMPLATE).new.nodate $(TEMPLATE).old.nodate || cat $(TEMPLATE).new > $(TEMPLATE)
+	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
 locations:
