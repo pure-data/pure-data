@@ -16,56 +16,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "linear"
-msgstr ""
+msgstr "linear"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logarithmic"
 
 msgid "new-only"
-msgstr ""
+msgstr "new-only"
 
 msgid "new&old"
-msgstr ""
+msgstr "new&old"
 
 msgid "no scale"
-msgstr ""
+msgstr "no scale"
 
 msgid "scale"
-msgstr ""
+msgstr "scale"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "Discard changes to '%s'?"
 
 msgid "Undo clear"
-msgstr ""
+msgstr "Undo clear"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "Undo connect"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "Undo cut"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "Undo disconnect"
 
 msgid "Undo duplicate"
-msgstr ""
+msgstr "Undo duplicate"
 
 msgid "Undo motion"
-msgstr ""
+msgstr "Undo motion"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "Undo paste"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Undo typing"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "Redo clear"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "Redo connect"
 
 msgid "Redo cut"
 msgstr ""
@@ -164,7 +164,7 @@ msgid "Points"
 msgstr ""
 
 msgid "Bezier curve"
-msgstr "Béziercurve"
+msgstr "Bézier curve"
 
 msgid "Put array into:"
 msgstr ""
