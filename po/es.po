@@ -147,9 +147,8 @@ msgstr "Pegar"
 msgid "Array Properties"
 msgstr "Propiedades del Array"
 
-#, fuzzy
 msgid "Array"
-msgstr "Arreglo"
+msgstr "Array"
 
 msgid "Name:"
 msgstr "Nombre:"
@@ -161,7 +160,7 @@ msgid "Save contents"
 msgstr "Guardar contenidos"
 
 msgid "Draw as:"
-msgstr "Trazar como:"
+msgstr "Dibujar como:"
 
 msgid "Polygon"
 msgstr "Polígono"
