@@ -237,7 +237,7 @@ msgid "Output Devices"
 msgstr "Ausgabegeräte"
 
 msgid "(same as input device)..."
-msgstr "(wie Eingabegerät) .............."
+msgstr "(wie Eingabegerät)"
 
 msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
@@ -286,7 +286,7 @@ msgid "Y range: from"
 msgstr "Y-Spanne, von"
 
 msgid "Data Properties"
-msgstr "Canvas Eigenschaften"
+msgstr "Daten Eigenschaften"
 
 msgid "Send"
 msgstr ""
