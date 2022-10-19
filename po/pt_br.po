@@ -7,32 +7,32 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 10:34+0200\n"
-"PO-Revision-Date: 2022-10-16 23:00\n"
+"PO-Revision-Date: 2022-10-18 14:02-0300\n"
 "Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
 "Language-Team: Português Brasileiro <LL@li.org>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 3.1.1\n"
 
 msgid "linear"
-msgstr ""
+msgstr "linear"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logarítmico"
 
 msgid "new-only"
-msgstr ""
+msgstr "novo-apenas"
 
 msgid "new&old"
-msgstr ""
+msgstr "novo&velho"
 
 msgid "no scale"
-msgstr "Sem escala"
+msgstr "sem escala"
 
 msgid "scale"
-msgstr "Escala"
+msgstr "escala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -102,7 +102,7 @@ msgid "erased Pd settings"
 msgstr "configurações do Pd apagadas"
 
 msgid "no Pd settings to erase"
-msgstr "Nenhuma configuração do Pd para apagar"
+msgstr "nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
@@ -556,34 +556,34 @@ msgid "Help Browser"
 msgstr "Navegador de Ajuda"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "Arquivos associados"
 
 msgid "Pd Files"
 msgstr "Arquivos Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "Arquivos de Patch de Max"
 
 msgid "Max Text Files"
 msgstr "Arquivos de texto Max/MSP"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "Arquivos de Patch de Max (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "Arquivos de Patch de Max (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "fonte detectada: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr ""
+msgstr "AVISO: família de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr ""
+msgstr "AVISO: peso de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -591,11 +591,11 @@ msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "‘%1$s’ já carregado, ignorando: ‘%2$s’"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Carregando plugin: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
@@ -603,15 +603,15 @@ msgstr "(Tcl) ERRO NÃO TRATADO: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "FALHA AO CARREGAR %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "Falha ao ler plugin %s …pulando!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "Falha ao encontrar plugin em %s …pulando!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) FALTANDO FECHA CHAVES '}': "
@@ -654,7 +654,7 @@ msgid "Unable to extract package automatically."
 msgstr "Incapaz de extrair o pacote automaticamente."
 
 msgid "Please perform the following steps manually:"
-msgstr "por favor realize os seguintes passos manualmente:"
+msgstr "Por favor realize os seguintes passos manualmente:"
 
 #, tcl-format
 msgid "1. Unzip %s."
@@ -1351,7 +1351,7 @@ msgstr "descartadas %d linhas da janela de Pd"
 
 #, tcl-format
 msgid "the Pd window filtered %d lines"
-msgstr "A janela do Pd filtrou %d linhas"
+msgstr "a janela do Pd filtrou %d linhas"
 
 msgid "Audio on"
 msgstr "Áudio ligado"
@@ -1387,7 +1387,7 @@ msgid "normal"
 msgstr ""
 
 msgid "debug"
-msgstr ""
+msgstr "debugar"
 
 msgid "all"
 msgstr "todos"
