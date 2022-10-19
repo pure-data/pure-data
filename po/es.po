@@ -98,7 +98,7 @@ msgid "couldn't delete .pdsettings file"
 msgstr "no pude borrar el archivo .pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr "falla al borrar el archivo de configuraciones de Pd"
+msgstr "falla al borrar configuraciones de Pd"
 
 msgid "erased Pd settings"
 msgstr "configuraciones de Pd eliminadas"
@@ -136,7 +136,7 @@ msgid "Help"
 msgstr "Ayuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr "Mostrar Archivos y Carpetas Ocultos"
+msgstr "Mostrar Archivos y Carpetas Ocultas"
 
 msgid "Copy"
 msgstr "Copiar"
