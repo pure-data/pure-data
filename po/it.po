@@ -18,10 +18,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "linear"
-msgstr ""
+msgstr "lineare"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "logaritmico"
 
 msgid "new-only"
 msgstr ""
@@ -98,13 +98,13 @@ msgid "Redo typing"
 msgstr "Annulla inserimento"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "nessuna impostazione Pd da pulire"
 
 msgid "removed .pdsettings file"
 msgstr ""
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "impossibile cancellare il file .pdsettings"
 
 msgid "failed to erase Pd settings"
 msgstr ""
@@ -125,7 +125,6 @@ msgstr ""
 msgid "File"
 msgstr "File"
 
-#, fuzzy
 msgid "Edit"
 msgstr "Modifica"
 
