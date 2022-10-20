@@ -267,15 +267,20 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 {
     t_atom at;
     t_binbuf *b = binbuf_new();
-    int xpix, ypix;
+
+    int connectme, xpix, ypix, indx, nobj;
+    canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
+
     glist_noselect(gl);
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
-    glist_getnextxy(gl, &xpix, &ypix);
+
     canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
-    canvas_startmotion(glist_getcanvas(gl));
+    if(connectme)
+        canvas_connect(gl, indx, 0, nobj, 0);
+    else canvas_startmotion(glist_getcanvas(gl));
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
