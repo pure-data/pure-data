@@ -283,6 +283,12 @@ msgstr "Amplitude de Y: de"
 msgid "Data Properties"
 msgstr "Propriedades dos Dados"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr "Encontrado '%1$s' em %2$s"
@@ -536,6 +542,10 @@ msgstr "Instalar externals no diretório:"
 
 msgid "Add a new path"
 msgstr "Adicionar um novo caminho"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -1022,7 +1032,7 @@ msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] platforma detectada: %s"
+msgstr "[deken] Platforma detectada: %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1405,8 +1415,8 @@ msgstr "Deletar"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece com um arquivo de Pd"
 
-msgid "_"
-msgstr "_"
+#~ msgid "_"
+#~ msgstr "_"
 
 #~ msgid "-------dimensions(digits)(pix):-------"
 #~ msgstr "------dimensões(dígitos)(pix):--------"

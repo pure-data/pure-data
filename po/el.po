@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2009-09-13 01:51+0200\n"
 "Last-Translator: Γεώργιος Κερατζάκης <geokeratz@gmail.com>\n"
 "Language-Team: Greek <pd-dev@iem.at>\n"
@@ -15,80 +15,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "-------dimensions(digits)(pix):-------"
+msgid "linear"
 msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
 msgstr ""
 
-msgid "----------dimensions(pix):-----------"
+msgid "new-only"
 msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr ""
-
-msgid "-----------output-range:-----------"
-msgstr ""
-
-msgid "------selectable_dimensions(pix):------"
-msgstr ""
-
-msgid "------visible_rectangle(pix)(pix):------"
+msgid "new&old"
 msgstr ""
 
 #, fuzzy
-msgid "bottom:"
-msgstr "Κάτω"
+msgid "no scale"
+msgstr "Κλίμακα"
 
 #, fuzzy
-msgid "height:"
-msgstr "Δεξιά"
-
-msgid "hold:"
-msgstr ""
-
-msgid "intrrpt:"
-msgstr ""
-
-msgid "left:"
-msgstr ""
-
-msgid "lin"
-msgstr ""
-
-msgid "log"
-msgstr ""
-
-msgid "log-height:"
-msgstr ""
-
-msgid "max:"
-msgstr ""
-
-msgid "min:"
-msgstr ""
-
-#, fuzzy
-msgid "right:"
-msgstr "Δεξιά"
-
-#, fuzzy
-msgid "size:"
-msgstr "Μέγεθος:"
-
-msgid "top:"
-msgstr ""
-
-msgid "value:"
-msgstr ""
-
-#, fuzzy
-msgid "width:"
-msgstr "Εύρος:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Αποθήκευση αλλαγών που έγιναν στο '%s';"
+msgid "scale"
+msgstr "Κλίμακα"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -350,6 +295,12 @@ msgstr "περιοχή Y, από"
 msgid "Data Properties"
 msgstr "Ιδιότητες Καμβά"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr ""
@@ -401,8 +352,18 @@ msgstr "Μόνο Χ"
 msgid "Y only"
 msgstr "Μόνο Y"
 
-msgid "Atom Box Properties"
+#, fuzzy
+msgid "GUI Box Properties"
 msgstr "Ιδιότητες Atom Box"
+
+msgid "Messages"
+msgstr "Μηνύματα"
+
+msgid "Send symbol:"
+msgstr "Αποστολή symbol:"
+
+msgid "Receive symbol:"
+msgstr "Λήψη συμβόλου:"
 
 msgid "Width:"
 msgstr "Εύρος:"
@@ -432,15 +393,6 @@ msgstr "Κορυφή"
 msgid "Bottom"
 msgstr "Κάτω"
 
-msgid "Messages"
-msgstr "Μηνύματα"
-
-msgid "Send symbol:"
-msgstr "Αποστολή symbol:"
-
-msgid "Receive symbol:"
-msgstr "Λήψη συμβόλου:"
-
 msgid "Background color"
 msgstr "Χρώμα φόντου"
 
@@ -450,20 +402,6 @@ msgstr "Χρώμα πρώτου πλάνου"
 msgid "Label color"
 msgstr "Χρώμα ετικέτας"
 
-msgid "Init"
-msgstr ""
-
-msgid "No init"
-msgstr ""
-
-#, fuzzy
-msgid "Jump on click"
-msgstr "Μεταπήδηση στο κλικ"
-
-#, fuzzy
-msgid "Steady on click"
-msgstr "Σταθερότητα στο κλικ"
-
 msgid "Bang"
 msgstr ""
 
@@ -471,10 +409,10 @@ msgstr ""
 msgid "Flash Time (msec)"
 msgstr "Καθυστέρηση (msec):"
 
-msgid "Intrrpt:"
+msgid "Min:"
 msgstr ""
 
-msgid "Hold:"
+msgid "Max:"
 msgstr ""
 
 msgid "Toggle"
@@ -535,6 +473,20 @@ msgstr "%s Ιδιότητες"
 msgid "Parameters"
 msgstr ""
 
+msgid "Init"
+msgstr ""
+
+msgid "No init"
+msgstr ""
+
+#, fuzzy
+msgid "Jump on click"
+msgstr "Μεταπήδηση στο κλικ"
+
+#, fuzzy
+msgid "Steady on click"
+msgstr "Σταθερότητα στο κλικ"
+
 #, fuzzy
 msgid "X offset:"
 msgstr "Παράθεση Χ"
@@ -577,7 +529,7 @@ msgstr "Θύρες Εισόδου:"
 msgid "Out Ports:"
 msgstr "Θύρες Εξόδου:"
 
-msgid "Pd search path for objects, help, fonts, and other files"
+msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
@@ -614,6 +566,10 @@ msgstr ""
 msgid "Add a new path"
 msgstr ""
 
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
 msgid "Add new library"
 msgstr ""
 
@@ -633,6 +589,68 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Πλοήγηση..."
 
+msgid "Associated Files"
+msgstr "Συνδεόμενα Αρχεία"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Αρχεία Pd"
+
+msgid "Max Patch Files"
+msgstr "Αρχεία Patch από MAX"
+
+msgid "Max Text Files"
+msgstr "Αρχεία Κειμένου από MAX"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Αρχεία Patch από MAX (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Αρχεία Κειμένου από MAX (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+"ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
+"(%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+"ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -643,84 +661,119 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] > %2$s...skipping!"
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] < %2$s...overwriting!"
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] == %2$s...skipping!"
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "successfully unzipped %1$s into %2$s"
-msgstr ""
-
-msgid "unable to extract package automatically"
-msgstr ""
-
-msgid "please perform the following steps manually:"
+msgid "installing deken package '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "1. unzip %s"
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Installing '%s'"
+msgstr "Απόρριψη αλλαγών σε '%s';"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
 msgstr ""
 
 #, tcl-format
-msgid "2. copy the contents into %s"
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling '%s'"
+msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling %1$s from %2$s failed!"
+msgid "3. Remove %s. (optional)"
 msgstr ""
 
 #, tcl-format
-msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
+msgid "Removing '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "platform detected: %s"
+msgid "Uninstalling %1$s from %2$s failed!"
 msgstr ""
 
 #, tcl-format
-msgid "platform re-detected: %s"
+msgid "Skipping SHA256 verification of '%s'."
 msgstr ""
 
-msgid "Show all"
+#, tcl-format
+msgid "SHA256 verification of '%s'"
 msgstr ""
 
-#, fuzzy
-msgid "Search"
-msgstr "Αναζήτηση σε"
-
-msgid "To get a list of all available externals, try an empty search."
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
-msgid "Find externals"
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
-msgid "Only install externals uploaded by people you trust."
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
 msgstr ""
 
-msgid "Preferences"
-msgstr "Προτιμήσεις"
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
 
 msgid "Installation options:"
 msgstr ""
 
-msgid "Try to remove libraries before (re)installing them?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
 
-msgid "Show README of newly installed libraries (if present)?"
+msgid "Try to remove libraries before (re)installing them"
 msgstr ""
 
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
 msgid "Platform settings:"
@@ -733,34 +786,222 @@ msgstr ""
 msgid "User-defined platform:"
 msgstr ""
 
-msgid "Hide foreign architectures?"
+msgid "Hide foreign architectures"
+msgstr ""
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
 msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Προτιμήσεις"
 
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
 #, fuzzy
-msgid "start searching for externals..."
+msgid "ZIP Files"
+msgstr "Αρχεία ZIP"
+
+#, fuzzy
+msgid "TAR Files"
+msgstr "Αρχεία TAR"
+
+#, fuzzy
+msgid "All Files"
+msgstr "Ολα τα αρχεία"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr ""
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr ""
+
+msgid "Installation completed!"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+#, fuzzy
+msgid "Search"
+msgstr "Αναζήτηση σε"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Install DEK file..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr "Προτιμήσεις..."
+
+#, fuzzy
+msgid "Search for: "
+msgstr "Αναζήτηση σε"
+
+msgid "libraries"
+msgstr ""
+
+msgid "objects"
+msgstr ""
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Uploader"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+#, fuzzy
+msgid "Search Results"
+msgstr "Αναζήτηση σε"
+
+msgid "Log"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Searching for \"%s\"..."
 msgstr "Απόρριψη αλλαγών σε '%s';"
 
 #, tcl-format
 msgid "online? %s"
 msgstr ""
 
-msgid "Are you online?"
+msgid "Unable to perform search. Are you online?"
 msgstr ""
 
-msgid "Unable to perform search."
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr ""
 
-msgid "no matching externals found"
-msgstr ""
-
-msgid "try using the full name e.g. 'freeverb'"
+msgid "It appears that there are no matching packages for your architecture."
 msgstr ""
 
 msgid "No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "Or use wildcards like 'freeverb*'."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
@@ -771,59 +1012,102 @@ msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
-msgid ""
-"commencing downloading of:\n"
-"%1$s\n"
-"into %2$s..."
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr ""
+
+msgid "Installing to non-existant directory failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr ""
+
+msgid "Directory does not exist!"
+msgstr ""
+
+msgid "Directory is not writable!"
+msgstr ""
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
 msgstr ""
 
 #, fuzzy
-msgid "... aborting"
+msgid "aborting."
 msgstr "Δρομολόγηση"
 
 #, tcl-format
-msgid "unable to add %s to search paths"
+msgid "Downloading '%s' failed"
+msgstr ""
+
+msgid "Download failed!"
+msgstr ""
+
+msgid "Download completed! Verifying..."
+msgstr ""
+
+msgid "Ignoring checksum mismatch"
 msgstr ""
 
 #, tcl-format
-msgid "Add %s to the Pd search paths?"
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
-msgid "added %s to search paths"
-msgstr ""
-
-#, tcl-format
-msgid "unable to download from %1$s [%2$s]"
-msgstr ""
-
-#, tcl-format
-msgid "unable to remove stray file %s"
-msgstr ""
-
-#, tcl-format
-msgid "unable to rename downloaded file to %s"
+msgid "[deken] Platform detected: %s"
 msgstr ""
 
 #, fuzzy, tcl-format
-msgid "searching for '%s'"
+msgid "Searching on %s..."
 msgstr "Απόρριψη αλλαγών σε '%s';"
 
-msgid "unable to perform search"
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr ""
+
+msgid "No usable servers for searching found..."
 msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-msgid "Install package"
+#, fuzzy, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "Απόρριψη αλλαγών σε '%s';"
+
+#, fuzzy
+msgid "Search failed"
+msgstr "Αναζήτηση σε"
+
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Deselect package"
 msgstr ""
 
 #, fuzzy
-msgid "Open webpage"
+msgid "Open package webpage"
 msgstr "Άνοιγμα Πρόσφατου"
 
-msgid "_"
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstall '%s'"
 msgstr ""
 
 #, tcl-format
@@ -856,11 +1140,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s"
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr ""
 
 msgid "refusing to delete empty domain"
@@ -870,8 +1154,16 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr ""
+
 msgid "About Pd"
 msgstr "Περί..."
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr ""
 
 msgid "Save"
 msgstr "Αποθήκευση"
@@ -914,9 +1206,6 @@ msgstr "Αναίρεση"
 msgid "Redo"
 msgstr "Ακύρωση Αναίρεσης"
 
-msgid "List of objects..."
-msgstr ""
-
 msgid "New"
 msgstr "Νέο"
 
@@ -943,6 +1232,9 @@ msgid "Message"
 msgstr "Μήνυμα"
 
 msgid "Number"
+msgstr ""
+
+msgid "List"
 msgstr ""
 
 msgid "Symbol"
@@ -1008,7 +1300,13 @@ msgstr "Εγχειρίδιο HTML..."
 msgid "Browser..."
 msgstr "Πλοήγηση..."
 
+msgid "List of objects..."
+msgstr ""
+
 msgid "puredata.info"
+msgstr ""
+
+msgid "Check for updates"
 msgstr ""
 
 msgid "Report a bug"
@@ -1021,6 +1319,10 @@ msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+
+#, fuzzy
+msgid "removed GUI settings"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
 
 msgid "no Pd-GUI settings to clear"
 msgstr ""
@@ -1057,14 +1359,29 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
 msgid "Open Recent"
 msgstr "Άνοιγμα Πρόσφατου"
 
 msgid "Quit"
 msgstr "Έξοδος"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Αποθήκευση αλλαγών που έγιναν στο '%s';"
+
 msgid "Properties"
 msgstr "Ιδιότητες"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr ""
 
 #, fuzzy
 msgid "Audio on"
@@ -1118,12 +1435,32 @@ msgid "Delete"
 msgstr "Διαγραφή πίνακα"
 
 #, tcl-format
-msgid "ignoring '%s': doesn't exist"
-msgstr ""
-
-#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "bottom:"
+#~ msgstr "Κάτω"
+
+#, fuzzy
+#~ msgid "height:"
+#~ msgstr "Δεξιά"
+
+#, fuzzy
+#~ msgid "right:"
+#~ msgstr "Δεξιά"
+
+#, fuzzy
+#~ msgid "size:"
+#~ msgstr "Μέγεθος:"
+
+#, fuzzy
+#~ msgid "width:"
+#~ msgstr "Εύρος:"
+
+#, fuzzy
+#~ msgid "start searching for externals..."
+#~ msgstr "Απόρριψη αλλαγών σε '%s';"
 
 #~ msgid "for:"
 #~ msgstr "για:"
@@ -1131,25 +1468,12 @@ msgstr ""
 #~ msgid "Output device 3:"
 #~ msgstr "Συσκευή εξόδου 3:"
 
-#~ msgid "Preferences..."
-#~ msgstr "Προτιμήσεις..."
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Αρχεία Κειμένου από MAX (.mxt)"
-
 #~ msgid "Input device 2:"
 #~ msgstr "Συσκευή εισόδου 2:"
 
 #, fuzzy
 #~ msgid "really quit?"
 #~ msgstr "έξοδος οπωσδήποτε;"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Αρχεία Κειμένου από MAX"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
 
 #~ msgid "Generators"
 #~ msgstr "Γεννήτριες"
@@ -1167,11 +1491,6 @@ msgstr ""
 #~ msgid "Output device 2:"
 #~ msgstr "Συσκευή εξόδου 2:"
 
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
-#~ "(%s)"
-
 #~ msgid "Font Properties"
 #~ msgstr "Ιδιότητες Γραμματοσειράς"
 
@@ -1180,9 +1499,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Φίλτρα"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Αρχεία Patch από MAX (.pat)"
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Απόρριψη αλλαγών σε αυτό το παράθυρο;;"
@@ -1196,20 +1512,11 @@ msgstr ""
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ΣΦΑΛΜΑ: το 'pd' δεν εμφανίστηκε ποτέ, έξοδος του 'pd-gui'!"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Αρχεία Patch από MAX"
-
 #~ msgid "Input device 3:"
 #~ msgstr "Συσκευή εισόδου 3:"
 
-#~ msgid "Associated Files"
-#~ msgstr "Συνδεόμενα Αρχεία"
-
 #~ msgid "Close this window??"
 #~ msgstr "Κλείσιμο αυτού του παραθύρου;;"
-
-#~ msgid "Pd Files"
-#~ msgstr "Αρχεία Pd"
 
 #~ msgid "Signal"
 #~ msgstr "Σήμα"

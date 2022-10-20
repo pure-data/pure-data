@@ -202,7 +202,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
     set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
-    set message [format {Do you want to save the changes you made in "%s"?} $filename]
+    set message [format [_ "Do you want to save the changes you made in '%s'?"] $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {
