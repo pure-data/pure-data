@@ -67,7 +67,7 @@ LOCAL_TCLFILES = \
 FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
         $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
-EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.po)
+EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.txt)
 
 # these are the supported languages
 ALL_LINGUAS = af az be bg de el en_ca eu es fr gu he hi hu it pa pt_br pt_pt sq sv vi
@@ -83,7 +83,7 @@ dist_libpdpo_DATA =
 # files that are included but not built
 EXTRA_DIST = \
     $(POFILES) $(TEMPLATE) README.txt \
-    _exclude.po \
+    _exclude.txt \
     $(LOCAL_TCLFILES) \
     $(empty)
 
@@ -103,7 +103,7 @@ template: $(TEMPLATE)
 # remove string file locations and header "POT-Creation-Date" to suppress
 # unnecessary changes, we really only want to update the .po files when a
 # translation string changes in a tcl file
-$(TEMPLATE): $(FILES)
+$(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
