@@ -7,15 +7,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2009-10-27 21:07+0100\n"
-"Last-Translator: Lorenzo Sutton (lorenzosu) <lsutton@libero.it>\n"
-"Language-Team: American English <>\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "lineare"
@@ -67,35 +68,33 @@ msgstr "Annulla inserimento"
 
 #, fuzzy
 msgid "Redo clear"
-msgstr "Annulla pulisci"
+msgstr "Ripeti pulisci"
 
-#, fuzzy
 msgid "Redo connect"
-msgstr "Annulla connetti"
+msgstr "Ripeti connetti"
 
 #, fuzzy
 msgid "Redo cut"
-msgstr "Annulla taglia"
+msgstr "Ripeti taglia"
 
 #, fuzzy
 msgid "Redo disconnect"
-msgstr "Annulla disconnetti"
+msgstr "Ripeti disconnetti"
 
 #, fuzzy
 msgid "Redo duplicate"
-msgstr "Annulla duplica"
+msgstr "Ripeti duplica"
 
 #, fuzzy
 msgid "Redo motion"
 msgstr "Annulla spostamento "
 
-#, fuzzy
 msgid "Redo paste"
-msgstr "Annulla incolla"
+msgstr "Ripeti incolla"
 
 #, fuzzy
 msgid "Redo typing"
-msgstr "Annulla inserimento"
+msgstr "Ripeti inserimento"
 
 msgid "no Pd settings to clear"
 msgstr "nessuna impostazione Pd da pulire"
@@ -107,17 +106,18 @@ msgid "couldn't delete .pdsettings file"
 msgstr "impossibile cancellare il file .pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "impossibile cancellare le impostazioni di Pd"
 
 #, fuzzy
 msgid "erased Pd settings"
 msgstr "Salva tutti i settaggi"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "nessuna impostazione Pd da cancellare"
 
+#, fuzzy
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr ""
+msgstr "salto il caricamento delle preferenze... Pd pare sia crashato all'avvio"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr ""
@@ -144,7 +144,7 @@ msgid "Help"
 msgstr "Aiuto"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Mostra i File e le Cartelle Nascosti"
 
 msgid "Copy"
 msgstr "Copia"
@@ -189,7 +189,7 @@ msgid "Last graph"
 msgstr "Ultimo grafico"
 
 msgid "Options"
-msgstr ""
+msgstr "Opzioni"
 
 msgid "Open List View..."
 msgstr "Apri visualizzazione lista..."
@@ -209,9 +209,8 @@ msgstr "OK"
 msgid "Audio Settings"
 msgstr "Settaggi Audio"
 
-#, fuzzy
 msgid "Settings"
-msgstr "Settaggi MIDI"
+msgstr "Impostazioni"
 
 msgid "Sample rate:"
 msgstr "Frequenza di campionamento"
@@ -220,16 +219,16 @@ msgid "Delay (msec):"
 msgstr "Ritardo (msec):"
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44.1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Dimensione del blocco:"
 
 msgid "Use callbacks"
 msgstr "Usa callback"
@@ -247,9 +246,8 @@ msgstr "Dispositivo di uscita"
 msgid "(same as input device)..."
 msgstr "(lo stesso del dispositivo di ingresso)..........."
 
-#, fuzzy
 msgid "Use Multiple Devices"
-msgstr "Usa dispositivi multipli"
+msgstr "Usa Dispositivi Multipli"
 
 msgid "Save All Settings"
 msgstr "Salva tutti i settaggi"
