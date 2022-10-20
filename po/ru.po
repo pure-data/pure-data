@@ -7,510 +7,516 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "линейный"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "логарифмический"
 
 msgid "new-only"
-msgstr ""
+msgstr "только для новых"
 
 msgid "new&old"
-msgstr ""
+msgstr "новые и старые"
 
 msgid "no scale"
-msgstr ""
+msgstr "без шкалы"
 
 msgid "scale"
-msgstr ""
+msgstr "со шкалой"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "Отменить изменения в файле '%s'?"
 
 msgid "Undo clear"
-msgstr ""
+msgstr "Отменить удаление"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "Отменить соединение"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "Отменить \"вырезать\""
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "Отменить отсоединение"
 
 msgid "Undo duplicate"
-msgstr ""
+msgstr "Отменить \"сделать копию\""
 
 msgid "Undo motion"
-msgstr ""
+msgstr "Отменить перемещение объектов"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "Отменить вставку"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Отменить ввод текста"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "Повторить удаление"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "Повторить соединение"
 
 msgid "Redo cut"
-msgstr ""
+msgstr "Повторить \"вырезать\""
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "Повторить отсоединение"
 
 msgid "Redo duplicate"
-msgstr ""
+msgstr "Повторить \"сделать копию\""
 
 msgid "Redo motion"
-msgstr ""
+msgstr "Повторить перемещение обхектов"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "Повторить вставку"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Повторить ввод текста"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "нет настроек Pd, доступных для удаления"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "удален файл .pdsettings"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "невозможно удалить файл .pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "невозможно стереть настройки Pd"
 
 msgid "erased Pd settings"
-msgstr ""
+msgstr "настройки Pd удалены"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "нет доступных для удаления настроек Pd"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
+"пропускаем загрузку настроен... вероятно, Pd некорректно завершил работу во "
+"время загрузки"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(пересохраните настройки для того, чтобы перезагрузить их)"
 
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 msgid "Put"
-msgstr ""
+msgstr "Добавить"
 
 msgid "Find"
-msgstr ""
+msgstr "Найти"
 
 msgid "Media"
-msgstr ""
+msgstr "Медиа"
 
 msgid "Window"
-msgstr ""
+msgstr "Окно"
 
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Показать Ск&рытые Файлы и Папки"
 
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
 msgid "Paste"
-msgstr ""
+msgstr "Вставить"
 
 msgid "Array Properties"
-msgstr ""
+msgstr "Свойства Массива"
 
 msgid "Array"
-msgstr ""
+msgstr "Массив"
 
 msgid "Name:"
-msgstr ""
+msgstr "Имя:"
 
 msgid "Size:"
-msgstr ""
+msgstr "Размер:"
 
 msgid "Save contents"
-msgstr ""
+msgstr "Сохранить содержимое"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "Отображать как:"
 
 msgid "Polygon"
-msgstr ""
+msgstr "Полигон"
 
 msgid "Points"
-msgstr ""
+msgstr "Точки"
 
 msgid "Bezier curve"
-msgstr ""
+msgstr "Кривая Безье"
 
 msgid "Put array into:"
-msgstr ""
+msgstr "Разместить массив в:"
 
 msgid "New graph"
-msgstr ""
+msgstr "Новом графе"
 
 msgid "Last graph"
-msgstr ""
+msgstr "Последнем созданном графе"
 
 msgid "Options"
-msgstr ""
+msgstr "Опции"
 
 msgid "Open List View..."
-msgstr ""
+msgstr "Открыть просмотр в виде списка..."
 
 msgid "Delete array"
-msgstr ""
+msgstr "Удалить массив"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
 msgid "OK"
-msgstr ""
+msgstr "ОК"
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "Настройки Аудио"
 
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 msgid "Sample rate:"
-msgstr ""
+msgstr "Частота дискретизации:"
 
 msgid "Delay (msec):"
-msgstr ""
+msgstr "Задержка (мсек):"
 
 msgid "48k"
-msgstr ""
+msgstr "48000"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44100"
 
 msgid "96k"
-msgstr ""
+msgstr "96000"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Размер блока:"
 
 msgid "Use callbacks"
-msgstr ""
+msgstr "Использовать обратный вызов функции (callback)"
 
 msgid "Input Devices"
-msgstr ""
+msgstr "Входы"
 
 msgid "Channels:"
-msgstr ""
+msgstr "Каналы:"
 
 msgid "Output Devices"
-msgstr ""
+msgstr "Выходы"
 
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(такой же, как вход)..."
 
 msgid "Use Multiple Devices"
-msgstr ""
+msgstr "Использовать несколько устройств"
 
 msgid "Save All Settings"
-msgstr ""
+msgstr "Сохранить все настройки"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "ВНИМАНИЕ: неизвестные флаги graphme получены в pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Свойства патча"
 
 msgid "Scale"
-msgstr ""
+msgstr "Масштаб"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "Горизонтальных (X) единиц в пикселе:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Вертикальных (Y) единиц в пикселе:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Отображение в родительском патче"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Отображать-в-родительском-патче (Graph-On-Parent)"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "Скрыть имя объекта и аргументы"
 
 msgid "Range and size"
-msgstr ""
+msgstr "Диапазон и размер"
 
 msgid "X range: from"
-msgstr ""
+msgstr "Диапазон значений X: от"
 
 msgid "to"
-msgstr ""
+msgstr "до"
 
 msgid "Margin:"
-msgstr ""
+msgstr "Отступ:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Диапазон значений Y: от"
 
 msgid "Data Properties"
-msgstr ""
+msgstr "Свойства данных"
 
 msgid "Send"
-msgstr ""
+msgstr "Отправить"
 
 msgid "Done"
-msgstr ""
+msgstr "Готово"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Найдено '%1$s' в %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Невозможно найти '%1$s' в %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "Искать в %s:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Отображать последний '%1$s' в %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
+msgstr "Отображать '%1$d' из %2$d элементов в %3$s"
 
 msgid "Pd window"
-msgstr ""
+msgstr "Окно Pd"
 
 msgid "Match whole word only"
-msgstr ""
+msgstr "Проверять совпадение только со словом целиком"
 
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "Шрифт %s"
 
 msgid "Font"
-msgstr ""
+msgstr "Шрифт"
 
 msgid "Font Size"
-msgstr ""
+msgstr "Размер шрифта"
 
 msgid "Stretch"
-msgstr ""
+msgstr "Масштаб"
 
 msgid "X and Y"
-msgstr ""
+msgstr "X и Y"
 
 msgid "X only"
-msgstr ""
+msgstr "только X"
 
 msgid "Y only"
-msgstr ""
+msgstr "только Y"
 
 msgid "GUI Box Properties"
-msgstr ""
+msgstr "Свойства бокса GUI"
 
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 msgid "Send symbol:"
-msgstr ""
+msgstr "Отправить символ:"
 
 msgid "Receive symbol:"
-msgstr ""
+msgstr "Получить символ:"
 
 msgid "Width:"
-msgstr ""
+msgstr "Ширина:"
 
 msgid "Limits"
-msgstr ""
+msgstr "Диапазон"
 
 msgid "Lower:"
-msgstr ""
+msgstr "Нижнее значение:"
 
 msgid "Upper:"
-msgstr ""
+msgstr "Верхнее значение:"
 
 msgid "Label"
-msgstr ""
+msgstr "Надпись"
 
 msgid "Left"
-msgstr ""
+msgstr "Слева"
 
 msgid "Right"
-msgstr ""
+msgstr "Справа"
 
 msgid "Top"
-msgstr ""
+msgstr "Вверху"
 
 msgid "Bottom"
-msgstr ""
+msgstr "Внизу"
 
 msgid "Background color"
-msgstr ""
+msgstr "Цвет фона"
 
 msgid "Foreground color"
-msgstr ""
+msgstr "Основной цвет"
 
 msgid "Label color"
-msgstr ""
+msgstr "Цвет надписи"
 
 msgid "Bang"
-msgstr ""
+msgstr "Кнопка (Bang)"
 
 msgid "Flash Time (msec)"
-msgstr ""
+msgstr "Длительность индикации (мсек)"
 
 msgid "Min:"
-msgstr ""
+msgstr "Минимум:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Максимум:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "Выключатель"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Не-нулевое значение"
 
 msgid "Value:"
-msgstr ""
+msgstr "Значение:"
 
 msgid "Number2"
-msgstr ""
+msgstr "Числовой бокс 2 (Number2)"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Ширина (количество цифр):"
 
 msgid "Height:"
-msgstr ""
+msgstr "Высота:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Диапазон выходящих значений"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Высота логарифмической шкалы:"
 
 msgid "Vslider"
-msgstr ""
+msgstr "Вертикальный слайдер (Vslider)"
 
 msgid "Hslider"
-msgstr ""
+msgstr "Горизонтальный слайдер (Hslider)"
 
 msgid "Vradio"
-msgstr ""
+msgstr "Вертикальный переключатель"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Количество ячеек:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "Горизонтальный переключатель (Hradio)"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "Измеритель уровня (VU)"
 
 msgid "Canvas"
-msgstr ""
+msgstr "Текстовый объект (Canvas)"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Видимый прямоугольник (пиксели)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "Свойства %s"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Параметры"
 
 msgid "Init"
-msgstr ""
+msgstr "Инициализировать"
 
 msgid "No init"
-msgstr ""
+msgstr "Не инициализировать"
 
 msgid "Jump on click"
-msgstr ""
+msgstr "Менять значение по клику"
 
 msgid "Steady on click"
-msgstr ""
+msgstr "Сохранять значение при клике"
 
 msgid "X offset:"
-msgstr ""
+msgstr "смещение по оси X:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "смещение по оси Y:"
 
 msgid "Colors"
-msgstr ""
+msgstr "Цвета"
 
 msgid "Background"
-msgstr ""
+msgstr "Фон"
 
 msgid "Front"
-msgstr ""
+msgstr "Основной"
 
 msgid "Compose color"
-msgstr ""
+msgstr "Создать цвет"
 
 msgid "Test label"
-msgstr ""
+msgstr "Тестовая надпись"
 
 msgid "Send a Pd message"
-msgstr ""
+msgstr "Отправить сообщение Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(используйте клавиши со стрелками вверх-вниз для просмотра истории)"
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "Настройки MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "Настройки MIDI в ALSA"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "Входы:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "Выходы:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Путь поиска Pd для объектов, справки, аудио, текстовых и других файлов"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Использовать стандартные пути"
 
 msgid "Verbose"
-msgstr ""
+msgstr "Подробный режим"
 
 msgid "Pd Documents Directory"
 msgstr ""
