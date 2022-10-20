@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-10-17 16:57-0300\n"
+"POT-Creation-Date: 2022-10-18 15:28+0200\n"
+"PO-Revision-Date: 2022-10-18 14:02-0300\n"
 "Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
 "Language-Team: Português Brasileiro <LL@li.org>\n"
 "Language: pt_BR\n"
@@ -16,75 +16,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.1.1\n"
 
-msgid "-------dimensions(digits)(pix):-------"
-msgstr "------dimensões(dígitos)(pix):--------"
-
-msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensões(pix)(pix):---------"
-
-msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensões(pix):------------"
-
-msgid "--------flash-time(ms)(ms):---------"
-msgstr "-----tempo-de-piscagem(ms)(ms):------"
-
-msgid "-----------output-range:-----------"
-msgstr "---------registro-de-saída:----------"
-
-msgid "------selectable_dimensions(pix):------"
-msgstr "----dimensões_selecionáveis(pix):------"
-
-msgid "------visible_rectangle(pix)(pix):------"
-msgstr "-----retângulo_visível(pix)(pix):-------"
-
-msgid "bottom:"
-msgstr "abaixo:"
-
-msgid "height:"
-msgstr "altura:"
-
-msgid "hold:"
-msgstr "segurar:"
-
-msgid "intrrpt:"
-msgstr "interromper:"
-
-msgid "left:"
-msgstr "esquerda:"
-
-msgid "lin"
+msgid "linear"
 msgstr "linear"
 
-msgid "log"
+msgid "logarithmic"
 msgstr "logarítmico"
 
-msgid "log-height:"
-msgstr "altura-do-log:"
+msgid "new-only"
+msgstr "novo-apenas"
 
-msgid "max:"
-msgstr "máximo:"
+msgid "new&old"
+msgstr "novo&velho"
 
-msgid "min:"
-msgstr "mínimo:"
+msgid "no scale"
+msgstr "sem escala"
 
-msgid "right:"
-msgstr "direita:"
-
-msgid "size:"
-msgstr "tamanho:"
-
-msgid "top:"
-msgstr "topo:"
-
-msgid "value:"
-msgstr "valor:"
-
-msgid "width:"
-msgstr "largura:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Você deseja salvar as alterações feitas em '%s'?"
+msgid "scale"
+msgstr "escala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -157,7 +105,8 @@ msgid "no Pd settings to erase"
 msgstr "nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "pulando carregar preferências... o Pd parece ter travado na inicialização"
+msgstr ""
+"pulando carregar preferências... o Pd parece ter travado na inicialização"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(re-salvar preferências para reinstanciá-las)"
@@ -265,7 +214,7 @@ msgid "44.1k"
 msgstr "44.1k"
 
 msgid "96k"
-msgstr "96k"
+msgstr "96l"
 
 msgid "Block size:"
 msgstr "Tamanho do bloco:"
@@ -292,7 +241,8 @@ msgid "Save All Settings"
 msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+msgstr ""
+"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -436,7 +386,7 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Tempo de piscagem (ms)"
+msgstr "Tempo de piscagem (msec)"
 
 msgid "Min:"
 msgstr "Mínimo:"
@@ -457,7 +407,7 @@ msgid "Number2"
 msgstr "Number2"
 
 msgid "Width (digits):"
-msgstr "Largura (dígitos)"
+msgstr "Largura (dígitos):"
 
 msgid "Height:"
 msgstr "Altura:"
@@ -551,7 +501,8 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, de texto e outros"
+msgstr ""
+"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -603,6 +554,64 @@ msgstr "Anular agendamento em tempo real"
 
 msgid "Help Browser"
 msgstr "Navegador de Ajuda"
+
+msgid "Associated Files"
+msgstr "Arquivos associados"
+
+msgid "Pd Files"
+msgstr "Arquivos Pd"
+
+msgid "Max Patch Files"
+msgstr "Arquivos de Patch de Max"
+
+msgid "Max Text Files"
+msgstr "Arquivos de texto Max/MSP"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Arquivos de Patch de Max (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Arquivos de Patch de Max (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "fonte detectada: %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr "AVISO: família de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr "AVISO: peso de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "usando fonte: %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "‘%1$s’ já carregado, ignorando: ‘%2$s’"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "Carregando plugin: %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "(Tcl) ERRO NÃO TRATADO: %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "FALHA AO CARREGAR %s"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "Falha ao ler plugin %s …pulando!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "Falha ao encontrar plugin em %s …pulando!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) FALTANDO FECHA CHAVES '}': "
@@ -684,7 +693,7 @@ msgstr "Incapaz de coletar referência SHA256 de '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
-msgstr "Incapaz de fazer verificação SHA256 de ‘%s’."
+msgstr "Incapaz de fazer verificação SHA256 de '%s'."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
@@ -730,14 +739,14 @@ msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém instaladas ao caminho de busca do Pd"
 
 msgid "Platform settings:"
-msgstr "Configurações da plataforma:"
+msgstr "Configuraçõs da plataforma:"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr "Plataforma padrão: %s"
+msgstr "Platforma padrão: %s"
 
 msgid "User-defined platform:"
-msgstr "Plataforma definida pelo usuário:"
+msgstr "Platforma definida pelo usuário:"
 
 msgid "Hide foreign architectures"
 msgstr "Esconder arquiteturas estrangeiras"
@@ -837,7 +846,7 @@ msgid "Processed %d packages selected for installation."
 msgstr "Processado %d pacotes selecionados para instalação."
 
 msgid "Show all"
-msgstr "Mostrar todos"
+msgstr "Mostra todos"
 
 msgid "Search"
 msgstr "Procurar"
@@ -857,7 +866,7 @@ msgid "Enter an exact library or object name."
 msgstr "Entre um nome exato de objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
-msgstr "e.g. 'freeverb~'"
+msgstr "por exemplo, 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Usar a wildcard '*' para combinar com qualquer número de caracteres."
@@ -866,16 +875,20 @@ msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "e.g. '*-plugin' combinará com 'deken-plugin' (e mais)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
-msgstr "Você pode restringir a busca para apenas-bibliotecas ou apenas-objetos."
+msgstr ""
+"Você pode restringir a busca para apenas-bibliotecas ou apenas-objetos."
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
+msgstr ""
+"Para receber uma lista com todos os externals disponíveis, tente uma busca "
+"vazia."
 
 msgid "Right-clicking a search result will give you more options..."
 msgstr "Click-direito num resultado de busca lhe dará mais opções..."
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr "Você também pode procurar por bibliotecas e objetos via seu web browser:"
+msgstr ""
+"Você também pode procurar por bibliotecas e objetos via seu web browser:"
 
 msgid "Find externals"
 msgstr "Procurar externals"
@@ -939,9 +952,6 @@ msgstr "online? %s"
 msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de fazer busca. Você está online?"
 
-msgid "_"
-msgstr "_"
-
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr "Encontrado %1$d pacotes usáveis (de %2$d pacotes no total)."
@@ -984,7 +994,7 @@ msgstr "Directório não é 'writable'!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr "Downloading '%s'"
+msgstr "Baixando '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
@@ -1027,7 +1037,7 @@ msgstr "Nenhum servidor encontrado para procurar..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Enviado por %1$s em %2$s"
+msgstr "Enviado por %1$s @ %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1063,34 +1073,37 @@ msgstr "Desinstalar '%s'"
 
 #, tcl-format
 msgid ""
-"Do you want Pd to use the existing documents directory for patches and external "
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Você quer que o Pd use o diretório de documentos existe para patches e "
+"Bibliotecas de externals?\n"
+"\n"
+"Localidade: %s\n"
+"\n"
+"Você pode mudar ou desabilitar isso posteriormente em preferências de "
+"Caminho."
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
 "Location: %s\n"
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"Você quer que o Pd use o diretório de documentos existe para patches e Bibliotecas de "
-"externals?\n"
+"Você quer que o Pd crie um diretório de documentos para patches bibliotecas "
+"de externals?\n"
 "\n"
 "Localidade: %s\n"
 "\n"
-"Você pode mudar ou desabilitar isso posteriormente em preferências de Caminho."
-
-#, tcl-format
-msgid ""
-"Do you want Pd to create a documents directory for patches and external libraries?\n"
-"\n"
-"Location: %s\n"
-"\n"
-"You can change or disable this later in the Path preferences."
-msgstr ""
-"Você quer que o Pd crie um diretório de documentos para patches bibliotecas de "
-"externals?\n"
-"\n"
-"Localidade: %s\n"
-"\n"
-"Você pode mudar ou desabilitar isso posteriormente em preferências de Caminho."
+"Você pode mudar ou desabilitar isso posteriormente em preferências de "
+"Caminho."
 
 #, tcl-format
 msgid ""
@@ -1107,12 +1120,12 @@ msgstr ""
 "Escolher um novo local?"
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
-msgstr "não foi possível criar o diretório de documentos Pd: %s\n"
+msgid "couldn't create Pd documents directory: %s"
+msgstr "impossível criar diretório de documentos Pd: %s"
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
-msgstr "não foi possível criar o diretório de “externas” em: %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "impossível criar diretório de documentos Pd em: %s"
 
 msgid "refusing to delete empty domain"
 msgstr "recusando deletar domínio vazio"
@@ -1136,7 +1149,7 @@ msgid "Save"
 msgstr "Salvar"
 
 msgid "Save As..."
-msgstr "Salvar Como..."
+msgstr "Salvar como..."
 
 msgid "Print..."
 msgstr "Imprimir..."
@@ -1325,6 +1338,10 @@ msgstr "Abrir Recente"
 msgid "Quit"
 msgstr "Sair"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Você deseja salvar as alterações feitas em '%s'?"
+
 msgid "Properties"
 msgstr "Propriedades"
 
@@ -1370,7 +1387,7 @@ msgid "normal"
 msgstr ""
 
 msgid "debug"
-msgstr ""
+msgstr "debugar"
 
 msgid "all"
 msgstr "todos"
@@ -1387,3 +1404,72 @@ msgstr "Deletar"
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "ignorando '%s': não parece com um arquivo de Pd"
+
+msgid "_"
+msgstr "_"
+
+#~ msgid "-------dimensions(digits)(pix):-------"
+#~ msgstr "------dimensões(dígitos)(pix):--------"
+
+#~ msgid "--------dimensions(pix)(pix):--------"
+#~ msgstr "--------dimensões(pix)(pix):---------"
+
+#~ msgid "----------dimensions(pix):-----------"
+#~ msgstr "----------dimensões(pix):------------"
+
+#~ msgid "--------flash-time(ms)(ms):---------"
+#~ msgstr "-----tempo-de-piscagem(ms)(ms):------"
+
+#~ msgid "-----------output-range:-----------"
+#~ msgstr "---------registro-de-saída:----------"
+
+#~ msgid "------selectable_dimensions(pix):------"
+#~ msgstr "----dimensões_selecionáveis(pix):------"
+
+#~ msgid "------visible_rectangle(pix)(pix):------"
+#~ msgstr "-----retângulo_visível(pix)(pix):-------"
+
+#~ msgid "bottom:"
+#~ msgstr "abaixo:"
+
+#~ msgid "height:"
+#~ msgstr "altura:"
+
+#~ msgid "hold:"
+#~ msgstr "segurar"
+
+#~ msgid "intrrpt:"
+#~ msgstr "interromper"
+
+#~ msgid "left:"
+#~ msgstr "esquerda:"
+
+#~ msgid "lin"
+#~ msgstr "linear"
+
+#~ msgid "log"
+#~ msgstr "logarítmico"
+
+#~ msgid "log-height:"
+#~ msgstr "altura-do-log:"
+
+#~ msgid "max:"
+#~ msgstr "máximo:"
+
+#~ msgid "min:"
+#~ msgstr "mínimo:"
+
+#~ msgid "right:"
+#~ msgstr "direita:"
+
+#~ msgid "size:"
+#~ msgstr "tamanho:"
+
+#~ msgid "top:"
+#~ msgstr "topo:"
+
+#~ msgid "value:"
+#~ msgstr "valor:"
+
+#~ msgid "width:"
+#~ msgstr "largura:"
