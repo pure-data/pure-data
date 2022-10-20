@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
-"Last-Translator: Jaime E Oliver La Rosa <la.rosa@nyu.edu>\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -213,13 +213,11 @@ msgstr "Retardo (mseg):"
 msgid "48k"
 msgstr "48kHz"
 
-#, fuzzy
 msgid "44.1k"
-msgstr "44.1kHz"
+msgstr "44.1 kHz"
 
-#, fuzzy
 msgid "96k"
-msgstr "96kHz"
+msgstr "96 kHz"
 
 msgid "Block size:"
 msgstr "Tamaño de Bloque:"
@@ -289,10 +287,10 @@ msgid "Data Properties"
 msgstr "Propiedades de la Data"
 
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 msgid "Done"
-msgstr ""
+msgstr "Completo"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -466,7 +464,6 @@ msgstr "%s Propiedades"
 msgid "Parameters"
 msgstr "Parámetros"
 
-#, fuzzy
 msgid "Init"
 msgstr "Init"
 
@@ -556,7 +553,7 @@ msgstr "Agregar una nueva ruta"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Editar ruta existente [%s]"
 
 msgid "Add new library"
 msgstr "Añadir nueva librería"
