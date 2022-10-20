@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/ru/>\n"
@@ -519,561 +519,579 @@ msgid "Verbose"
 msgstr "Подробный режим"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Папка документов Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Выбрать папку"
 
 msgid "Reset"
-msgstr ""
+msgstr "Сброс"
 
 msgid "Disable"
-msgstr ""
+msgstr "Выключить"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Папка для внешних объектов"
 
 msgid "Clear"
-msgstr ""
+msgstr "Сбросить"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Выбрать папку документов Pd:"
 
 msgid "Install externals to directory:"
-msgstr ""
+msgstr "Установить внешние объекты в папку:"
 
 msgid "Add a new path"
-msgstr ""
+msgstr "Добавить новый путь"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Редактировать существующий путь [%s]"
 
 msgid "Add new library"
-msgstr ""
+msgstr "Добавить новую библиотеку"
 
 msgid "Edit library"
-msgstr ""
+msgstr "Редактировать библиотеку"
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "Библиотеки Pd, загружаемые при запуске"
 
 msgid "Startup flags:"
-msgstr ""
+msgstr "Флаги при загрузке:"
 
 msgid "Defeat real-time scheduling"
-msgstr ""
+msgstr "Не использовать режим реального времени планировщика событий"
 
 msgid "Help Browser"
-msgstr ""
+msgstr "Просмотр справки"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "Все доступные типы файлов"
 
 msgid "Pd Files"
-msgstr ""
+msgstr "Файлы Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "Файлы патчей Max"
 
 msgid "Max Text Files"
-msgstr ""
+msgstr "Текстовые файлы Max"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "Файлы патчей Max (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "Текстовые файлы Max (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "обнаруженный шрифт: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ВНИМАНИЕ: семейство шрифтов'%1$s' не найдено, используется шрифт по-"
+"умолчанию (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
+"ВНИМАНИЕ: насыщенность шрифта '%1$s' не найдена, используется значение по-"
+"умолчанию (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr ""
+msgstr "используется шрифт: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "'%1$s' уже загружен, игнорируется: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Загрузка плагина: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr ""
+msgstr "НЕОБРАБОТАННАЯ ОШИБКА: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "НЕВОЗМОЖНО ЗАГРУЗИТЬ %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "Невозможно прочитать плагин %s ...пропущено!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "Невозможно найти плагины в %s ...пропущено!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
+"(Tcl) MISSING CLOSE-BRACE '}': [Ошибка Tcl: Отсутствует закрывающая скобка "
+"'}'] "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) INVALID COMMAND NAME: [Ошибка Tcl: некорректное имя команды:] "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) UNHANDLED ERROR: [Ошибка Tcl: неизвестная ошибка:] "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken] установлена версия [%1$s] > %2$s ...пропущено!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken] установлена версия [%1$s] < %2$s ...переписано!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken] установлена версия [%1$s] == %2$s ...пропущено!"
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr ""
+msgstr "установка пакета deken '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
-msgstr ""
+msgstr "пропущен пакет '%s': не распознан как пакет deken"
 
 #, tcl-format
 msgid "Installing '%s'"
-msgstr ""
+msgstr "Установка '%s'"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "Успешно распакован %1$s в %2$s."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "Невозможно автоматически распаковать пакет."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "Пожалуйста выполните вручную следующие шаги:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Распакуйте %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr ""
+msgstr "Возможно, вам необходимо поменять разрешение файла с .dek на .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Скопируйте содержимое в %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr ""
+msgstr "3. Удалите %s. (опционально)"
 
 #, tcl-format
 msgid "Removing '%s'"
-msgstr ""
+msgstr "Удаление '%s'"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr ""
+msgstr "Деинсталляция %1$s из %2$s завершилась неудачно!"
 
 #, tcl-format
 msgid "Skipping SHA256 verification of '%s'."
-msgstr ""
+msgstr "Пропуск верификации SHA256 для '%s'."
 
 #, tcl-format
 msgid "SHA256 verification of '%s'"
-msgstr ""
+msgstr "Верификация SHA256 '%s'"
 
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
-msgstr ""
+msgstr "Невозможно получить значение SHA256 для '%s'."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
-msgstr ""
+msgstr "Невозможно выполнить верификацию SHA256 для '%s'."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "Невозможно скачать %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to download from '%s'!"
-msgstr ""
+msgstr "Невозможно скачать из '%s'!"
 
 msgid "Download failed"
-msgstr ""
+msgstr "Скачивание завершилось неудачей"
 
 #, tcl-format
 msgid "Unable to remove stray file '%s'"
-msgstr ""
+msgstr "Невозможно удалить временный файл '%s'"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to '%s'"
-msgstr ""
+msgstr "Невозможно переименовать скачанный файл в '%s'"
 
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
 msgid "Check"
-msgstr ""
+msgstr "Проверить"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "Опции установки:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
+"Попробовать верифицировать контрольную сумму библиотек перед их "
+"(пере)установкой"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr ""
+msgstr "Пробовать удалить библиотеки перед их (пере)установкой"
 
 msgid "Show README of newly installed libraries (if present)"
-msgstr ""
+msgstr "Показывать файл README для вновь установленных библиотек (если имеется)"
 
 msgid "Keep package files after installation"
-msgstr ""
+msgstr "Сохранять файлы пакета после установки"
 
 msgid "Add newly installed libraries to Pd's search path"
-msgstr ""
+msgstr "Добавить вновь установленные библиотеки в путь поиска Pd"
 
 msgid "Platform settings:"
-msgstr ""
+msgstr "Настройки платформы:"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Платформа по умолчанию: %s"
 
 msgid "User-defined platform:"
-msgstr ""
+msgstr "Выбранная платформа:"
 
 msgid "Hide foreign architectures"
-msgstr ""
+msgstr "Скрыть недоступные архитектуры"
 
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
+"Отображать только новую версию библиотеки\n"
+"(обозначает другие версии так же, как недоступные архитектуры)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
-msgstr ""
+msgstr "Настройки %s Deken"
 
 #, tcl-format
 msgid "Platform re-detected: %s"
-msgstr ""
+msgstr "Платформа переобнаружена: %s"
 
 msgid "Deken Packages"
-msgstr ""
+msgstr "Пакеты Deken"
 
 msgid "ZIP Files"
-msgstr ""
+msgstr "Файлы ZIP"
 
 msgid "TAR Files"
-msgstr ""
+msgstr "Файлы TAR"
 
 msgid "All Files"
-msgstr ""
+msgstr "Все файлы"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
-msgstr ""
+msgstr "Контрольная сумма не совпадает для '%s'"
 
 #, tcl-format
 msgid "SHA256 verification of '%s' failed!"
-msgstr ""
+msgstr "SHA256 для '%s' не подтвержден!"
 
 msgid "SHA256 verification failed"
-msgstr ""
+msgstr "проверка SHA256 завершилась неудачей"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
-msgstr ""
+msgstr "Деинсталляция предыдущей установки '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr ""
+msgstr "Временное перемещение %1$s в %2$s завершилось неудачей."
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr ""
+msgstr "Установка пакета '%s'"
 
 msgid "Installation completed!"
-msgstr ""
+msgstr "Установка завершена!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr ""
+msgstr "Успешно установлено '%s'!"
 
 msgid "Installation failed!"
-msgstr ""
+msgstr "Установка завершилась неудачей!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
-msgstr ""
+msgstr "Невозможно установить '%s'!"
 
 msgid "Package installation failed"
-msgstr ""
+msgstr "Установка пакета завершилась неудачей"
 
 #, tcl-format
 msgid ""
 "Failed to completely remove %1$s.\n"
 "Please manually remove the directory %2$s after quitting Pd."
 msgstr ""
+"Невозможно полностью удалить %1$s.\n"
+"Пожалуйста, удалите папку %2$s после выхода из Pd."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
-msgstr ""
+msgstr "Невозможно добавить %s к путям для поиска"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
-msgstr ""
+msgstr "Добавить %s в пути для поиска Pd?"
 
 #, tcl-format
 msgid "Added %s to search paths"
-msgstr ""
+msgstr "Добавлено %s в пути для поиска"
 
 msgid "No packages selected for installation."
-msgstr ""
+msgstr "Нет выбранных пакетов для установки."
 
 #, tcl-format
 msgid "Processed %d packages selected for installation."
-msgstr ""
+msgstr "Обработано %d пакетов, выбранных для установки."
 
 msgid "Show all"
-msgstr ""
+msgstr "Показать все"
 
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #, tcl-format
 msgid "Install (%d)"
-msgstr ""
+msgstr "Установка (%d)"
 
 msgid "Install"
-msgstr ""
+msgstr "Установка"
 
 #, tcl-format
 msgid "%s%% of download completed"
-msgstr ""
+msgstr "завершено %s%% загрузки"
 
 msgid "Enter an exact library or object name."
-msgstr ""
+msgstr "Введите точное название библиотеки или объекта."
 
 msgid "e.g. 'freeverb~'"
-msgstr ""
+msgstr "например, 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr ""
+msgstr "Используйте '*' для того, чтобы обозначить любое количество символов."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr ""
+msgstr "например, '*-plugin' позволит найти 'deken-plugin' (и другие)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr ""
+"Вы можете ограничить поиск только среди библиотек или только среди объектов."
 
 msgid "To get a list of all available externals, try an empty search."
 msgstr ""
+"Для того, чтобы получить список всех доступных внешних объектов, попробуйте "
+"поиск с пустой строкой."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr ""
+msgstr "Правый клик по результату поиска откроет список дополнительных опций..."
 
 msgid "You can also search for libraries & objects via your web browser:"
 msgstr ""
+"Вы также можете искать библиотеки и объекты при помощи вашего веб-броузера:"
 
 msgid "Find externals"
-msgstr ""
+msgstr "Найти внешние объекты"
 
 msgid "Install DEK file..."
-msgstr ""
+msgstr "Установить файл DEK..."
 
 msgid "Preferences..."
-msgstr ""
+msgstr "Свойства..."
 
 msgid "Search for: "
-msgstr ""
+msgstr "Искать: "
 
 msgid "libraries"
-msgstr ""
+msgstr "библиотеки"
 
 msgid "objects"
-msgstr ""
+msgstr "объекты"
 
 msgid "both"
-msgstr ""
+msgstr "и то, и другое"
 
 msgid "translations"
-msgstr ""
+msgstr "переводы"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
+"Устанавливайте внешние объекты только в том случае, когда вы доверяете "
+"людям, которые их создали и загрузили."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr ""
+msgstr "Отменен вид с закладками: обнаружена несовместимая версия Tcl/Tk"
 
 msgid "Library"
-msgstr ""
+msgstr "Библиотека"
 
 msgid "Version"
-msgstr ""
+msgstr "Версия"
 
 msgid "Description"
-msgstr ""
+msgstr "Описания"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Кем была загружена"
 
 msgid "Date"
-msgstr ""
+msgstr "Дата"
 
 msgid "Search Results"
-msgstr ""
+msgstr "Результаты поиска"
 
 msgid "Log"
-msgstr ""
+msgstr "Журнал"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr ""
+msgstr "Поиск \"%s\"..."
 
 #, tcl-format
 msgid "online? %s"
-msgstr ""
+msgstr "онлаын? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "Невозможно выполнить поиск. Вы онлайн?"
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr ""
+msgstr "Найдено %1$d доступных пакетов (из общего числа %s$d пакетов)."
 
 msgid "It appears that there are no matching packages for your architecture."
-msgstr ""
+msgstr "Не было найдено подходящих пакетов для вашей архитектуры."
 
 msgid "No matching externals found."
-msgstr ""
+msgstr "Не найдено подходящих внешних объектов."
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr ""
+msgstr "Попробуйте использовать полное имя, например 'freeverb~'."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr ""
+msgstr "Или используйте паттерны, например 'freeverb*'."
 
 msgid "Please select a (writable) installation directory!"
-msgstr ""
+msgstr "Пожалуйста, выберите папку для установки (в которой разрешена запись)!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
-msgstr ""
+msgstr "Установить %1$s в %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr ""
+msgstr "Отмена установки '%s': Не указана папка для установки."
 
 msgid "Installing to non-existant directory failed"
-msgstr ""
+msgstr "Установка в несуществующую папку завершилась неудачно"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
+msgstr "Невозможно установить в '%s'"
 
 msgid "Directory does not exist!"
-msgstr ""
+msgstr "Папка не существует!"
 
 msgid "Directory is not writable!"
-msgstr ""
+msgstr "Папка не доступна для записи!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr ""
+msgstr "Скачивание '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
+msgstr "Начало загрузки '%1$s' в '%2$s'..."
 
 msgid "aborting."
-msgstr ""
+msgstr "отмена."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr ""
+msgstr "Загрузка '%s' завершилась неудачно"
 
 msgid "Download failed!"
-msgstr ""
+msgstr "Загрузка завершилась неудачно!"
 
 msgid "Download completed! Verifying..."
-msgstr ""
+msgstr "Загрузка завершена! Проверка..."
 
 msgid "Ignoring checksum mismatch"
-msgstr ""
+msgstr "Игнорируется несовпадение контрольной суммы"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
+msgstr "[deken] deken-plugin.tcl (Pd externals search) загружен из %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] Обнаружена платформа: %s"
 
 #, tcl-format
 msgid "Searching on %s..."
-msgstr ""
+msgstr "Поиск в %s..."
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
-msgstr ""
+msgstr "Поиск %1$s вернул %2$d результатов"
 
 msgid "No usable servers for searching found..."
-msgstr ""
+msgstr "Не найдено подходящих для поиска серверов..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr ""
+msgstr "Загружено %1$s @ %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
-msgstr ""
+msgstr "Поиск '%s' завершился неудачно!"
 
 msgid "Search failed"
-msgstr ""
+msgstr "Поиск завершился неудачно"
 
 msgid "Unable to perform search."
-msgstr ""
+msgstr "Невозможно выполнить поиск."
 
 msgid "Select package for installation"
-msgstr ""
+msgstr "Выбрать пакет для установки"
 
 msgid "Deselect package"
-msgstr ""
+msgstr "Отменить выбор пакета"
 
 msgid "Open package webpage"
-msgstr ""
+msgstr "Открыть веб-страницу пакета"
 
 msgid "Copy package URL"
-msgstr ""
+msgstr "Скопировать URL пакета"
 
 msgid "Copy SHA256 checksum URL"
-msgstr ""
+msgstr "Скопировать URL контрольной суммы SHA256"
 
 msgid "Copy OpenGPG signature URL"
-msgstr ""
+msgstr "Скопировать URL подписи OpenGPG"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr ""
+msgstr "Деинсталлировать '%s'"
 
 #, tcl-format
 msgid ""
@@ -1084,6 +1102,13 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Хотите ли вы, чтобы Pd использовал существующую папку для патчей и библиотек "
+"внешних пакетов:\n"
+"\n"
+"Путь: %s\n"
+"\n"
+"Вы можете позднее изменить или выключить эту настройку в свойствах путей ("
+"path preferences)."
 
 #, tcl-format
 msgid ""
@@ -1094,6 +1119,13 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Хотите ли вы, чтобы программа Pd создала папку для патчей и библиотек "
+"внешних объектов?\n"
+"\n"
+"Путь:\n"
+"\n"
+"Вы можете позднее изменить или выключить эту настройку в свойствах путей ("
+"path preferences)."
 
 #, tcl-format
 msgid ""
@@ -1103,287 +1135,296 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
+"Папка документов Pd не найдена:\n"
+"\n"
+"%s\n"
+"\n"
+"Выбрать новый путь?"
 
 #, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr ""
+msgstr "невозможно создать папку документов Pd: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr ""
+msgstr "невозможно создать папку \"externals\" в: %s"
 
 msgid "refusing to delete empty domain"
-msgstr ""
+msgstr "невозможно удалить пустой объект"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr ""
+msgstr "Невозможно создать свойства \"%1$s\" в %2$s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr ""
+msgstr "игнорируется '%s': не существует"
 
 msgid "About Pd"
-msgstr ""
+msgstr "О Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
-msgstr ""
+msgstr "невозможно прочитать документ \"%s\""
 
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 msgid "Save As..."
-msgstr ""
+msgstr "Сохранить Как..."
 
 msgid "Print..."
-msgstr ""
+msgstr "Печать..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Вставка с заменой"
 
 msgid "Duplicate"
-msgstr ""
+msgstr "Сделать копию"
 
 msgid "Zoom In"
-msgstr ""
+msgstr "Масштаб: приблизить"
 
 msgid "Zoom Out"
-msgstr ""
+msgstr "Масштаб: удалиться"
 
 msgid "Tidy Up"
-msgstr ""
+msgstr "Привести в порядок"
 
 msgid "(Dis)Connect Selection"
-msgstr ""
+msgstr "(От)соединить выбранные объекты"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "Добавить выключатели"
 
 msgid "Edit Mode"
-msgstr ""
+msgstr "Режим редактирования"
 
 msgid "Undo"
-msgstr ""
+msgstr "Отмена"
 
 msgid "Redo"
-msgstr ""
+msgstr "Повторить"
 
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 msgid "Message..."
-msgstr ""
+msgstr "Сообщение..."
 
 msgid "Cut"
-msgstr ""
+msgstr "Вырезать"
 
 msgid "Select All"
-msgstr ""
+msgstr "Выбрать все"
 
 msgid "Clear Console"
-msgstr ""
+msgstr "Очистить консоль"
 
 msgid "Object"
-msgstr ""
+msgstr "Объект"
 
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 msgid "Number"
-msgstr ""
+msgstr "Числовой бокс"
 
 msgid "List"
-msgstr ""
+msgstr "Список"
 
 msgid "Symbol"
-msgstr ""
+msgstr "Символ"
 
 msgid "Comment"
-msgstr ""
+msgstr "Комментарий"
 
 msgid "Graph"
-msgstr ""
+msgstr "Граф (субпатч)"
 
 msgid "Find..."
-msgstr ""
+msgstr "Найти..."
 
 msgid "Find Again"
-msgstr ""
+msgstr "Найти снова"
 
 msgid "Find Last Error"
-msgstr ""
+msgstr "Найти последнюю ошибку"
 
 msgid "DSP On"
-msgstr ""
+msgstr "DSP включено"
 
 msgid "DSP Off"
-msgstr ""
+msgstr "DSP выключено"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
+msgstr "Проверка аудио и MIDI..."
 
 msgid "Load Meter"
-msgstr ""
+msgstr "Измеритель загрузки"
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "Настройки аудио..."
 
 msgid "MIDI Settings..."
-msgstr ""
+msgstr "Настройки MIDI..."
 
 msgid "Minimize"
-msgstr ""
+msgstr "Свернуть"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Развернуть"
 
 msgid "Bring All to Front"
-msgstr ""
+msgstr "На передний план"
 
 msgid "Next Window"
-msgstr ""
+msgstr "Следующее окно"
 
 msgid "Previous Window"
-msgstr ""
+msgstr "Предыдущее окно"
 
 msgid "Parent Window"
-msgstr ""
+msgstr "Родительское окно"
 
 msgid "HTML Manual..."
-msgstr ""
+msgstr "Учебник HTML..."
 
 msgid "Browser..."
-msgstr ""
+msgstr "Броузер..."
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Список объектов..."
 
 msgid "puredata.info"
-msgstr ""
+msgstr "сайт puredata.info"
 
 msgid "Check for updates"
-msgstr ""
+msgstr "Проверить обновления"
 
 msgid "Report a bug"
-msgstr ""
+msgstr "Сообщить об ошибке"
 
 msgid "Clear Menu"
-msgstr ""
+msgstr "Очистить меню"
 
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"Удалить все настройки?\n"
+"(будет применено при перезагрузке Pd)"
 
 msgid "removed GUI settings"
-msgstr ""
+msgstr "удаленные настройки GUI"
 
 msgid "no Pd-GUI settings to clear"
-msgstr ""
+msgstr "нет настроек Pd-GUI для удаления"
 
 msgid "Path..."
-msgstr ""
+msgstr "Путь..."
 
 msgid "Startup..."
-msgstr ""
+msgstr "Настройки при запуске..."
 
 msgid "Audio..."
-msgstr ""
+msgstr "Аудио..."
 
 msgid "MIDI..."
-msgstr ""
+msgstr "MIDI..."
 
 msgid "Zoom New Windows"
-msgstr ""
+msgstr "Развернуть новые окна"
 
 msgid "Save All Preferences"
-msgstr ""
+msgstr "Сохранить все настройки"
 
 msgid "Save to..."
-msgstr ""
+msgstr "Сохранить в..."
 
 msgid "Load from..."
-msgstr ""
+msgstr "Загрузить из..."
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Забыть все..."
 
 msgid "Preferences"
-msgstr ""
+msgstr "Настройки"
 
 msgid "Open Recent"
-msgstr ""
+msgstr "Открыть недавние"
 
 msgid "Quit"
-msgstr ""
+msgstr "Выйти"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr ""
+msgstr "Вы хотите сохранить изменения в '%s'?"
 
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
-msgstr ""
+msgstr "пропущено %d строк в окне Pd"
 
 #, tcl-format
 msgid "the Pd window filtered %d lines"
-msgstr ""
+msgstr "окно Pd пропустило %d строк"
 
 msgid "Audio on"
-msgstr ""
+msgstr "Аудио включено"
 
 msgid "Audio off"
-msgstr ""
+msgstr "Аудио выключено"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
+"(Tcl) MISSING CLOSE-BRACKET ']': [Ошибка Tcl: Отсутствует закрывающая "
+"скобка']'] "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Ошибка ввода-вывода звука"
 
 msgid "Log:"
-msgstr ""
+msgstr "Журнал:"
 
 msgid "fatal"
-msgstr ""
+msgstr "критические"
 
 msgid "error"
-msgstr ""
+msgstr "ошибки"
 
 msgid "normal"
-msgstr ""
+msgstr "нормальные"
 
 msgid "debug"
-msgstr ""
+msgstr "отладочные"
 
 msgid "all"
-msgstr ""
+msgstr "все"
 
 msgid "New..."
-msgstr ""
+msgstr "Новый..."
 
 msgid "Edit..."
-msgstr ""
+msgstr "Редактировать..."
 
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr ""
+msgstr "игнорируется '%s': невозможно распознать файл Pd"
