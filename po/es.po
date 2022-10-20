@@ -7,16 +7,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-19 08:29+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/es/>\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"Last-Translator: Jaime E Oliver La Rosa <la.rosa@nyu.edu>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -184,7 +184,7 @@ msgid "Options"
 msgstr "Opciones"
 
 msgid "Open List View..."
-msgstr "Ver Lista..."
+msgstr "Ver vista de Lista..."
 
 msgid "Delete array"
 msgstr "Eliminar array"
@@ -199,16 +199,16 @@ msgid "OK"
 msgstr "Aceptar"
 
 msgid "Audio Settings"
-msgstr "Configuración de audio"
+msgstr "Configuraciones de audio"
 
 msgid "Settings"
-msgstr "Configuración"
+msgstr "Configuraciones"
 
 msgid "Sample rate:"
-msgstr "Velocidad de Sampleo:"
+msgstr "Frecuencia de Muestreo:"
 
 msgid "Delay (msec):"
-msgstr "Retardo (msec):"
+msgstr "Retardo (mseg):"
 
 msgid "48k"
 msgstr "48kHz"
@@ -243,7 +243,7 @@ msgid "Use Multiple Devices"
 msgstr "Usar múltiples dispositivos"
 
 msgid "Save All Settings"
-msgstr "Guardar Configuraciones"
+msgstr "Guardar todas las Configuraciones"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -286,7 +286,7 @@ msgid "Y range: from"
 msgstr "Rango Y: de"
 
 msgid "Data Properties"
-msgstr "Propiedades de Data"
+msgstr "Propiedades de la Data"
 
 msgid "Send"
 msgstr ""
@@ -304,7 +304,7 @@ msgstr "No se encontró '%1$s' en %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr "Buscar en %s para:"
+msgstr "Buscar en %s el término:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -333,10 +333,10 @@ msgid "Font"
 msgstr "Fuente"
 
 msgid "Font Size"
-msgstr "Tamaño Fuente"
+msgstr "Tamaño de Fuente"
 
 msgid "Stretch"
-msgstr "Compensar"
+msgstr "Expandir"
 
 msgid "X and Y"
 msgstr "X e Y"
@@ -354,10 +354,10 @@ msgid "Messages"
 msgstr "Mensajes"
 
 msgid "Send symbol:"
-msgstr "Símbolo send:"
+msgstr "Enviar Símbolo :"
 
 msgid "Receive symbol:"
-msgstr "Símbolo receive:"
+msgstr "Recibir símbolo:"
 
 msgid "Width:"
 msgstr "Ancho:"
@@ -395,12 +395,11 @@ msgstr "Color de Frente"
 msgid "Label color"
 msgstr "Color de Etiqueta"
 
-#, fuzzy
 msgid "Bang"
-msgstr "Disparo"
+msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Intermitencia (flashtime)"
+msgstr "Duración de estado encendido (mseg)"
 
 msgid "Min:"
 msgstr "Min:"
@@ -413,7 +412,7 @@ msgid "Toggle"
 msgstr "Interruptor"
 
 msgid "Non Zero Value"
-msgstr "Valor No Cero"
+msgstr "Valor cuando no es cero"
 
 msgid "Value:"
 msgstr "Valor:"
@@ -442,16 +441,16 @@ msgid "Hslider"
 msgstr "ReguladorH"
 
 msgid "Vradio"
-msgstr ""
+msgstr "selectorV"
 
 msgid "Num cells:"
 msgstr "Número de Celdas:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "SelectorH"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "Medidor VU"
 
 #, fuzzy
 msgid "Canvas"
@@ -467,23 +466,24 @@ msgstr "%s Propiedades"
 msgid "Parameters"
 msgstr "Parámetros"
 
+#, fuzzy
 msgid "Init"
-msgstr ""
+msgstr "Init"
 
 msgid "No init"
 msgstr "Sin init"
 
 msgid "Jump on click"
-msgstr "Saltar a Valor"
+msgstr "Saltar a Valor con el click"
 
 msgid "Steady on click"
-msgstr "No saltar (Steady)"
+msgstr "No saltar con el click ( steady)"
 
 msgid "X offset:"
-msgstr "Compensar X:"
+msgstr "desplazamiento X:"
 
 msgid "Y offset:"
-msgstr "Compensar Y:"
+msgstr "Desplazamiento Y:"
 
 msgid "Colors"
 msgstr "Colores"
@@ -498,10 +498,10 @@ msgid "Compose color"
 msgstr "Componer color"
 
 msgid "Test label"
-msgstr "Etiqueta prueba"
+msgstr "Etiqueta de prueba"
 
 msgid "Send a Pd message"
-msgstr "Enviar un mensaje Pd"
+msgstr "Enviar un mensaje de Pd"
 
 msgid "(use arrow keys for history)"
 msgstr "(usar flechas del teclado para historial)"
@@ -525,7 +525,7 @@ msgid "Use standard paths"
 msgstr "Usar rutas estándar"
 
 msgid "Verbose"
-msgstr "Verbosa"
+msgstr "Verborréico (verbose)"
 
 msgid "Pd Documents Directory"
 msgstr "Directorio de documentos de Pd"
@@ -540,7 +540,7 @@ msgid "Disable"
 msgstr "Desactivar"
 
 msgid "Externals Install Directory"
-msgstr "Directorio de instalación de externos"
+msgstr "Directorio de instalación de externals"
 
 msgid "Clear"
 msgstr "Borrar"
@@ -549,7 +549,7 @@ msgid "Choose Pd documents directory:"
 msgstr "Elegir directorio de documentos de Pd:"
 
 msgid "Install externals to directory:"
-msgstr "Instalar externos en el directorio:"
+msgstr "Instalar externals en el directorio:"
 
 msgid "Add a new path"
 msgstr "Agregar una nueva ruta"
@@ -565,7 +565,7 @@ msgid "Edit library"
 msgstr "Editar librería"
 
 msgid "Pd libraries to load on startup"
-msgstr "Librerías de Pd para cargar en inicio"
+msgstr "Librerías de Pd para cargar al inicio"
 
 msgid "Startup flags:"
 msgstr "Banderas de Inicio:"
@@ -583,16 +583,16 @@ msgid "Pd Files"
 msgstr "Archivos Pd"
 
 msgid "Max Patch Files"
-msgstr "Archivos de patch MAX"
+msgstr "Archivos de patch Max/MSP"
 
 msgid "Max Text Files"
 msgstr "Archivos de texto Max/MSP"
 
 msgid "Max Patch Files (.pat)"
-msgstr "Archivos de MAX (.pat)"
+msgstr "Archivos de Max/MSP (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr "Archivos de texto de MAX (.mxt)"
+msgstr "Archivos de texto de Max/MSP (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
@@ -628,15 +628,15 @@ msgstr "(Tcl) ERROR SIN TRATAR: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr "FALLO AL CARGAR %s"
+msgstr "NO PUDO CARGAR %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr "Fallo al leer el plugin %s ...salteando!"
+msgstr "No pudo leer el plugin %s ...salteando!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr "No se encuentra el plugins en %s ...salteando!"
+msgstr "No se encontró el plugin en %s ...salteando!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) FALTA LLAVE DE CIERRE '}': "
