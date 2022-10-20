@@ -6,16 +6,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-19 08:29+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/fr/>\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"Last-Translator: Serguei Mokhov <mokhov@cse.concordia.ca>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "linéaire"
@@ -283,11 +283,13 @@ msgstr "Intervalle Y : de"
 msgid "Data Properties"
 msgstr "Propriétés de la donnée"
 
+#, fuzzy
 msgid "Send"
-msgstr ""
+msgstr "Envoyer"
 
+#, fuzzy
 msgid "Done"
-msgstr ""
+msgstr "Fini"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -543,9 +545,9 @@ msgstr "Installer les externals dans le dossier :"
 msgid "Add a new path"
 msgstr "Ajouter un chemin"
 
-#, tcl-format
+#, fuzzy, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Modifier le chemin d'accès existant [%s]"
 
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
