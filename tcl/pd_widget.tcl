@@ -108,33 +108,6 @@ proc ::pdwidget::_defaultproc {id arguments body} {
     # dummy fallback to not throw an error
 }
 
-proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
-    set numio 0
-    foreach anchor [$cnv find withtag "${objtag}&&outlet${numio}&&anchor"] {
-        foreach {x y} [$cnv coords $anchor] {
-            foreach id [$cnv find withtag "connection&&src:${objtag}:${numio}" ] {
-                foreach {_ _ x1 y1} [$cnv coords $id] {
-                    $cnv coords $id $x $y $x1 $y1
-                    break
-                }
-            }
-            break
-        }
-    }
-    set numio 0
-    foreach anchor [$cnv find withtag "${objtag}&&inlet${numio}&&anchor"] {
-        foreach {x y} [$cnv coords $anchor] {
-            foreach id [$cnv find withtag "connection&&dst:${objtag}:${numio}" ] {
-                foreach {x0 y0 _ _} [$cnv coords $id] {
-                    $cnv coords $id $x0 $y0 $x $y
-                    break
-                }
-            }
-            break
-        }
-    }
-}
-
 ::pdwidget::_defaultproc editmode {obj cnv state} {
     # just ignore
 }
@@ -143,7 +116,6 @@ proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
 ::pdwidget::_defaultproc displace {obj cnv dx dy} {
     set tag [::pdwidget::base_tag $obj]
     $cnv move $tag $dx $dy
-    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
 ::pdwidget::_defaultproc moveto {obj cnv x y} {
@@ -156,7 +128,6 @@ proc ::pdwidget::_update_connections_on_canvas {cnv objtag} {
             $cnv move $tag [expr $x - $oldx] [expr $y - $oldy]
         }
     }
-    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
 ::pdwidget::_defaultproc show_iolets {obj cnv show_inlets show_outlets} {
@@ -215,18 +186,12 @@ proc ::pdwidget::_do_create_iolets {obj cnv iotag iolets iowidth ioheight} {
 ::pdwidget::_defaultproc create_outlets {obj cnv outlets} {
     ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
 }
-::pdwidget::_defaultproc create_iolets {obj cnv {inlets {}} {outlets {}}} {
-    ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
-    ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
-}
 ::pdwidget::_defaultproc refresh_iolets {obj cnv} {
     set tag [::pdwidget::base_tag $obj]
     set inlets [::pdwidget::get_iolets $obj $cnv inlet]
     set outlets [::pdwidget::get_iolets $obj $cnv outlet]
     ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
     ::pdwidget::_do_create_iolets $obj $cnv outlet $outlets $::pdwidget::IOWIDTH $::pdwidget::OHEIGHT
-
-    ::pdwidget::_update_connections_on_canvas $cnv $tag
 }
 
 
@@ -272,12 +237,6 @@ proc ::pdwidget::destroy {obj} {
     # always clean up our internal state
     set tag [::pdwidget::base_tag $obj]
     foreach cnv [::pdwidget::get_canvases $obj] {
-        foreach id [$cnv find withtag "connection&&src:${tag}"] {
-            $cnv delete $id
-        }
-        foreach id [$cnv find withtag "connection&&dst:${tag}"] {
-            $cnv delete $id
-        }
         $cnv delete $tag
         ::pd::canvas::remove_object $cnv $obj
     }
@@ -313,42 +272,6 @@ proc ::pdwidget::textselect {obj {index {}} {selectionlength {}}} {
 }
 
 
-
-# 'connect' and 'disconnect' show how connection handling might actually word
-# in practice, this would break compatibility with GUI externals
-#
-# a backward-compatible approach is to use the 'connection' widget
-proc ::pdwidget::connect {src outlet dst inlet} {
-    set srctag [::pdwidget::base_tag $src]
-    set dsttag [::pdwidget::base_tag $dst]
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        set zoom [::pd::canvas::get_zoom $cnv]
-        foreach {x0 y0 x1 y1} {{} {} {} {}} {break}
-        foreach {x0 y0} [$cnv coords "${srctag}&&anchor&&outlet${outlet}"] {break}
-        foreach {x1 y1} [$cnv coords "${dsttag}&&anchor&&inlet${inlet}"] {break}
-        if {$x0 eq {} || $x1 eq {}} {
-            ::pdwindow::error "Unable to connect ${src}:${outlet} with ${dst}:${inlet} on $cnv : $x0 $x1\n"
-            continue
-        }
-        set cordwidth $zoom
-        foreach id [$cnv find withtag "${srctag}&&!anchor&&outlet${outlet}"] {
-            if { [lsearch -exact [$cnv gettags $id] signal] >= 0 } {
-                set cordwidth [expr 2 * $zoom]
-            }
-        }
-        $cnv create line $x0 $y0 $x1 $y1 -tags [list "connection" "src:$srctag" "src:$srctag:${outlet}" "dst:$dsttag" "dst:$dsttag:${inlet}"] -width $cordwidth
-    }
-}
-proc ::pdwidget::disconnect {src outlet dst inlet} {
-    set srctag [::pdwidget::base_tag $src]
-    set dsttag [::pdwidget::base_tag $dst]
-    foreach cnv [::pdwidget::get_canvases $obj] {
-        foreach id [$cnv find withtag "connection&&src:${srctag}:${outlet}&&dst:$dsttag:${inlet}"] {
-            $cnv delete $id
-        }
-    }
-}
-
 proc ::pdwidget::create_inlets {obj inlets} {
     ::pdwidget::_call {} create_inlets $obj $inlets
 }
@@ -359,11 +282,6 @@ proc ::pdwidget::show_iolets {obj show_inlets show_outlets} {
     ::pdwidget::_call {} show_iolets $obj $show_inlets $show_outlets
 }
 
-# these are actually used internally (not by Pd-core)
-proc ::pdwidget::create_iolets {obj {inlets {}} {outlets {}}} {
-## TODO add cnv (?)
-    ::pdwidget::_call {} create_iolets $obj $inlets $outlets
-}
 proc ::pdwidget::refresh_iolets {obj} {
 ## TODO add cnv (?)
     ::pdwidget::_call {} refresh_iolets $obj
