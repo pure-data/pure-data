@@ -7,13 +7,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2009-08-25 18:19-0400\n"
-"Last-Translator: Ben Bogart <ben@ekran.org>\n"
-"Language-Team: Canadian English <pd-list@iem.at>\n"
-"Language: en_CA\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"Last-Translator: Serguei Mokhov <mokhov@cse.concordia.ca>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/en_CA/>\n"
+"Language: en_ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -68,151 +71,151 @@ msgid "Redo connect"
 msgstr "Redo connect"
 
 msgid "Redo cut"
-msgstr ""
+msgstr "Redo cut"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "Redo disconnect"
 
 msgid "Redo duplicate"
-msgstr ""
+msgstr "Redo duplicate"
 
 msgid "Redo motion"
-msgstr ""
+msgstr "Redo motion"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "Redo paste"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Redo typing"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "no Pd settings to clear"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "removed .pdsettings file"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "couldn't delete .pdsettings file"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "failed to erase Pd settings"
 
 msgid "erased Pd settings"
-msgstr ""
+msgstr "erased Pd settings"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "no Pd settings to erase"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr ""
+msgstr "skipping loading preferences... Pd seems to have crashed on startup"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(re-save preferences to reinstate them)"
 
 msgid "File"
-msgstr ""
+msgstr "File"
 
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 msgid "Put"
-msgstr ""
+msgstr "Put"
 
 msgid "Find"
-msgstr ""
+msgstr "Find"
 
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 msgid "Window"
-msgstr ""
+msgstr "Window"
 
 msgid "Help"
-msgstr ""
+msgstr "Help"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Show &Hidden Files and Directories"
 
 msgid "Copy"
-msgstr ""
+msgstr "Copy"
 
 msgid "Paste"
-msgstr ""
+msgstr "Paste"
 
 msgid "Array Properties"
-msgstr ""
+msgstr "Array Properties"
 
 msgid "Array"
-msgstr ""
+msgstr "Array"
 
 msgid "Name:"
-msgstr ""
+msgstr "Name:"
 
 msgid "Size:"
-msgstr ""
+msgstr "Size:"
 
 msgid "Save contents"
-msgstr ""
+msgstr "Save contents"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "Draw as:"
 
 msgid "Polygon"
-msgstr ""
+msgstr "Polygon"
 
 msgid "Points"
-msgstr ""
+msgstr "Points"
 
 msgid "Bezier curve"
 msgstr "Bézier curve"
 
 msgid "Put array into:"
-msgstr ""
+msgstr "Put array into:"
 
 msgid "New graph"
-msgstr ""
+msgstr "New graph"
 
 msgid "Last graph"
-msgstr ""
+msgstr "Last graph"
 
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 msgid "Open List View..."
-msgstr ""
+msgstr "Open List View..."
 
 msgid "Delete array"
-msgstr ""
+msgstr "Delete array"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 msgid "Apply"
-msgstr ""
+msgstr "Apply"
 
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "Audio Settings"
 
 msgid "Settings"
-msgstr ""
+msgstr "Settings"
 
 msgid "Sample rate:"
-msgstr ""
+msgstr "Sample rate:"
 
 msgid "Delay (msec):"
-msgstr ""
+msgstr "Delay (msec):"
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44.1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
 msgstr ""
