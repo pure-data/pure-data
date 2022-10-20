@@ -7,16 +7,16 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.52\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-17 16:48+0000\n"
+"PO-Revision-Date: 2022-10-20 10:55+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/de/>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -289,10 +289,10 @@ msgid "Data Properties"
 msgstr "Daten Eigenschaften"
 
 msgid "Send"
-msgstr ""
+msgstr "Abschicken"
 
 msgid "Done"
-msgstr ""
+msgstr "Fertig"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -551,7 +551,7 @@ msgstr "Neuen Pfad hinzufügen"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Vorhandenen Pfad editieren (%s)"
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
@@ -920,7 +920,7 @@ msgid "Install DEK file..."
 msgstr "Installiere DEK-Datei..."
 
 msgid "Preferences..."
-msgstr "Voreinstellungen..."
+msgstr "Einstellungen..."
 
 msgid "Search for: "
 msgstr "Suche nach: "
@@ -962,11 +962,11 @@ msgid "Search Results"
 msgstr "Suchergebnisse"
 
 msgid "Log"
-msgstr "Log"
+msgstr "Protokoll"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Suche nach '%s'..."
+msgstr "Suche nach \"%s\"..."
 
 #, tcl-format
 msgid "online? %s"
@@ -1046,7 +1046,7 @@ msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] Paketarchitektur gefunden: %s"
+msgstr "[deken] Paketarchitektur erkannt: %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1061,7 +1061,7 @@ msgstr "Keine benutzbaren Server für die Suche gefunden..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Von %1$s am %2$s hochgeladen"
+msgstr "Am %2$s von %1$s hochgeladen"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1071,7 +1071,7 @@ msgid "Search failed"
 msgstr "Suche schlug fehl"
 
 msgid "Unable to perform search."
-msgstr "Die Suche schlug fehl."
+msgstr "Suche nicht möglich."
 
 msgid "Select package for installation"
 msgstr "Paket zur Installation vormerken"
@@ -1080,7 +1080,7 @@ msgid "Deselect package"
 msgstr "Paketauswahl aufheben"
 
 msgid "Open package webpage"
-msgstr "Webseite öffnen"
+msgstr "Webseite des Pakets öffnen"
 
 msgid "Copy package URL"
 msgstr "Paket URL kopieren"
@@ -1093,7 +1093,7 @@ msgstr "URL zur OpenPGP-Signatur kopieren"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr "Entferne '%s'"
+msgstr "'%s' deinstallieren"
 
 #, tcl-format
 msgid ""
@@ -1143,7 +1143,7 @@ msgstr ""
 
 #, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s"
+msgstr "konnte das Verzeichnis für Pd-Dokumente nicht erstellen: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
@@ -1154,11 +1154,11 @@ msgstr "leere Domäne kann nicht gelöscht werden"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr "Konnte Einstellungen '%1$s' nicht in %2$s erzeugen"
+msgstr "Konnte Einstellungen '%1$s' nicht in %2$s erstellen"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr "überspringe '%s': existiert nicht"
+msgstr "'%s' wird ignoriert: existiert nicht"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -1255,13 +1255,13 @@ msgid "Find Last Error"
 msgstr "Letzten Fehler finden"
 
 msgid "DSP On"
-msgstr "DSP An"
+msgstr "DSP Ein"
 
 msgid "DSP Off"
 msgstr "DSP Aus"
 
 msgid "Test Audio and MIDI..."
-msgstr "Teste Audio und MIDI..."
+msgstr "Audio und MIDI testen..."
 
 msgid "Load Meter"
 msgstr "Auslastungsanzeige"
@@ -1270,7 +1270,7 @@ msgid "Audio Settings..."
 msgstr "Audioeinstellungen..."
 
 msgid "MIDI Settings..."
-msgstr "MIDI Einstellungen..."
+msgstr "MIDI-Einstellungen..."
 
 msgid "Minimize"
 msgstr "Minimieren"
@@ -1316,7 +1316,7 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 "Alle Einstellungen löschen?\n"
-"(Benötigt Neustart von Pd)"
+"(wird wirksam, wenn Pd neu gestartet wird)"
 
 msgid "removed GUI settings"
 msgstr "GUI-Einstellungen entfernt"
@@ -1369,14 +1369,14 @@ msgstr "Eigenschaften"
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
-msgstr "%d Zeilen von der Pd-Konsole entfernt"
+msgstr "%d Zeilen aus der Pd-Konsole verloren"
 
 #, tcl-format
 msgid "the Pd window filtered %d lines"
 msgstr "%d Zeilen aus der Pd-Konsole gefiltert"
 
 msgid "Audio on"
-msgstr "Audio an"
+msgstr "Audio ein"
 
 msgid "Audio off"
 msgstr "Audio aus"
