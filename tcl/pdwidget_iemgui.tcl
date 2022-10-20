@@ -7,10 +7,9 @@ namespace eval ::pdwidget::iemgui:: { }
 proc ::pdwidget::iemgui::create_bang {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
-    $cnv create oval 0 0 0 0 -tags [list ${tag} BUTTON]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {}
-    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}_BASE]
+    $cnv create oval 0 0 0 0 -tags [list ${tag} ${tag}_BUTTON ${tag}_iolets]
+    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}_label]
     $cnv move $tag $posX $posY
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_bang
@@ -32,8 +31,8 @@ proc ::pdwidget::iemgui::select {obj cnv state} {
         set color #000000
     }
     set tag "[::pdwidget::base_tag $obj]"
-    $cnv itemconfigure "${tag}&&BASE" -outline $color
-    $cnv itemconfigure "${tag}&&BUTTON" -outline $color
+    $cnv itemconfigure "${tag}_BASE" -outline $color
+    $cnv itemconfigure "${tag}_BUTTON" -outline $color
 }
 
 # this is a helper to be called from the object-specific 'config' procs
@@ -49,12 +48,12 @@ proc ::pdwidget::iemgui::_config_common {tag cnv options} {
                 foreach {xpos ypos _ _} [$cnv coords "${tag}"] {break}
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}&&label" \
+                $cnv coords "${tag}_label" \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
             } "-lcolor" {
-                $cnv itemconfigure "${tag}&&label" -fill $v
+                $cnv itemconfigure "${tag}_label" -fill $v
             } "-label" {
-                pdtk_text_set $cnv "${tag}&&label" $v
+                pdtk_text_set $cnv "${tag}_label" $v
             } "-font" {
                 set fontname $v
             } "-fontsize" {
@@ -63,11 +62,11 @@ proc ::pdwidget::iemgui::_config_common {tag cnv options} {
         }
     }
     if { $fontname ne {} || $fontsize ne {} } {
-        set font [$cnv itemcget "${tag}&&label" -font]
+        set font [$cnv itemcget "${tag}_label" -font]
         if { $fontname ne {} } { lset font 0 $fontname }
         if { $fontsize ne {} } { lset font 1 $fontsize }
         lset font 2 $::font_weight
-        $cnv itemconfigure "${tag}&&label" -font $font
+        $cnv itemconfigure "${tag}_label" -font $font
     }
 }
 
@@ -93,23 +92,23 @@ proc ::pdwidget::iemgui::config_bang {obj cnv args} {
                 $cnv coords "${tag}" \
                     $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                $cnv coords "${tag}&&BASE" \
+                $cnv coords "${tag}_BASE" \
                     $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                $cnv coords "${tag}&&BUTTON" \
+                $cnv coords "${tag}_BUTTON" \
                     [expr $xpos +                 $zoom] [expr $ypos +                 $zoom] \
                     [expr $xpos + ($xnew - 1.5) * $zoom] [expr $ypos + ($ynew - 1.5) * $zoom]
                 set recreate_iolets 1
             } "-bcolor" {
-                $cnv itemconfigure "${tag}&&BASE" -fill $v
+                $cnv itemconfigure "${tag}_BASE" -fill $v
             } "-fcolor" {
-                if { [$cnv itemcget "${tag}&&BUTTON" -fill] ne {} } {
-                    $cnv itemconfigure "${tag}&&BUTTON" -fill $v
+                if { [$cnv itemcget "${tag}_BUTTON" -fill] ne {} } {
+                    $cnv itemconfigure "${tag}_BUTTON" -fill $v
                 }
             }
         }
-        $cnv itemconfigure "${tag}&&BASE" -width $zoom
-        $cnv itemconfigure "${tag}&&BUTTON" -width $zoom
+        $cnv itemconfigure "${tag}_BASE" -width $zoom
+        $cnv itemconfigure "${tag}_BUTTON" -width $zoom
     }
 
     if {$recreate_iolets} {
@@ -122,9 +121,9 @@ proc ::pdwidget::iemgui::config_bang {obj cnv args} {
 proc ::pdwidget::iemgui::create_canvas {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} RECT]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
-    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}_RECT]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}_BASE]
+    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}_label]
     $cnv move $tag $posX $posY
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_canvas
@@ -148,21 +147,21 @@ proc ::pdwidget::iemgui::config_canvas {obj cnv args} {
             } "-size" {
                 set xnew [lindex $v 0]
                 set ynew [lindex $v 1]
-                $cnv coords "${tag}&&BASE" \
+                $cnv coords "${tag}_BASE" \
                     [expr $xpos + $offset]                 [expr $ypos + $offset] \
                     [expr $xpos + $offset + $xnew * $zoom] [expr $ypos + $offset + $ynew * $zoom]
             } "-visible" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]
                 $cnv coords "${tag}"       $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
-                $cnv coords "${tag}&&RECT" $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
+                $cnv coords "${tag}_RECT" $xpos $ypos [expr $xpos + $w * $zoom] [expr $ypos + $h * $zoom]
             } "-bcolor" {
-                $cnv itemconfigure "${tag}&&RECT" -fill $v -outline $v
-                $cnv itemconfigure "${tag}&&BASE" -width 1 -outline {}
+                $cnv itemconfigure "${tag}_RECT" -fill $v -outline $v
+                $cnv itemconfigure "${tag}_BASE" -width 1 -outline {}
             }
         }
     }
-    $cnv itemconfigure "${tag}&&BASE" -width $zoom
+    $cnv itemconfigure "${tag}_BASE" -width $zoom
     # TODO: in the original code, BASE was shifted by $offset to 'keep zoomed border inside visible area'
 }
 proc ::pdwidget::iemgui::select_canvas {obj cnv state} {
@@ -173,7 +172,7 @@ proc ::pdwidget::iemgui::select_canvas {obj cnv state} {
     } else {
         set color {}
     }
-    set tag "[::pdwidget::base_tag $obj]&&BASE"
+    set tag "[::pdwidget::base_tag $obj]_BASE"
     $cnv itemconfigure ${tag} -outline $color
 }
 
@@ -182,9 +181,8 @@ proc ::pdwidget::iemgui::select_canvas {obj cnv state} {
 proc ::pdwidget::iemgui::create_radio {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
     $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE0]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {}
-    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}_BASE0 ${tag}_iolets]
+    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}_label]
     $cnv move $tag $posX $posY
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_radio
@@ -194,25 +192,27 @@ proc ::pdwidget::iemgui::create_radio {obj cnv posX posY args} {
 proc ::pdwidget::iemgui::_radio_recreate_buttons {cnv obj numX numY} {
     # create an array of numX*numY buttons
     set tag [::pdwidget::base_tag $obj]
-    $cnv delete ${tag}&&RADIO
+    $cnv delete ${tag}_RADIO
     for {set x 0} {$x < $numX} {incr x} {
         for {set y 0} {$y < $numY} {incr y} {
+            set xy "${x}x${y}"
+
             $cnv create rectangle 0 0 0 0 -fill {} -outline {} \
-                -tags [list ${tag} RADIO BASE GRID${x}x${y}]
+                -tags [list ${tag} ${tag}_RADIO ${tag}_BASE ${tag}_BASE_${xy} ${tag}_GRID${xy} GRID${xy}]
             $cnv create rectangle 0 0 0 0 -fill {} -outline {} \
-                -tags [list ${tag} RADIO KNOB GRID${x}x${y}]
+                -tags [list ${tag} ${tag}_RADIO ${tag}_KNOB ${tag}_KNOB_${xy} ${tag}_GRID${xy} GRID${xy}]
         }
     }
-    $cnv lower "${tag}&&RADIO" "${tag}&&BASE0"
-    $cnv raise "${tag}&&RADIO" "${tag}&&BASE0"
+    $cnv lower "${tag}_RADIO" "${tag}_BASE0"
+    $cnv raise "${tag}_RADIO" "${tag}_BASE0"
 }
 proc ::pdwidget::iemgui::_radio_getactive {cnv tag} {
     set t {}
-    foreach t [$cnv find withtag ${tag}&&X] {break}
+    foreach t [$cnv find withtag ${tag}_X] {break}
     if { $t eq {} } {return}
     # we have an active button, but which one is it?
     set i 0
-    foreach t [$cnv find withtag ${tag}&&KNOB] {
+    foreach t [$cnv find withtag ${tag}_KNOB] {
         if {[lsearch -exact [$cnv gettags $t] X] >= 0} {
             # found it
             return [list $i [$cnv itemcget $t -fill]]
@@ -222,7 +222,7 @@ proc ::pdwidget::iemgui::_radio_getactive {cnv tag} {
 }
 proc ::pdwidget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
     set tag [::pdwidget::base_tag $obj]
-    foreach {xpos ypos w h} [$cnv coords "${tag}&&BASE0"] {break}
+    foreach {xpos ypos w h} [$cnv coords "${tag}_BASE0"] {break}
     set w [expr $w - $xpos]
     set h [expr $h - $ypos]
 
@@ -237,7 +237,7 @@ proc ::pdwidget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
     set numY 0
 
     # resize/reposition the buttons
-    foreach id [$cnv find withtag "${tag}&&KNOB"] {
+    foreach id [$cnv find withtag "${tag}_KNOB"] {
         set x {}
         set y {}
         foreach t [$cnv gettags $id] {
@@ -251,12 +251,12 @@ proc ::pdwidget::iemgui::_radio_reconfigure_buttons {cnv obj zoom} {
 
         set xy "${x}x${y}"
         set ylast [expr $h * $y]
-        $cnv coords "${tag}&&BASE&&GRID${xy}" 0 0 $w $h
-        $cnv coords "${tag}&&KNOB&&GRID${xy}" $knob_x0 $knob_y0 $knob_x1 $knob_y1
-        $cnv move "${tag}&&GRID${xy}" [expr $w * $x] $ylast
+        $cnv coords "${tag}_BASE_${xy}" 0 0 $w $h
+        $cnv coords "${tag}_KNOB_${xy}" $knob_x0 $knob_y0 $knob_x1 $knob_y1
+        $cnv move "${tag}_GRID${xy}" [expr $w * $x] $ylast
     }
-    $cnv itemconfigure "${tag}&&BASE" -outline black
-    $cnv move "${tag}&&RADIO" $xpos $ypos
+    $cnv itemconfigure "${tag}_BASE" -outline black
+    $cnv move "${tag}_RADIO" $xpos $ypos
 
     $cnv coords "${tag}" $xpos $ypos [expr $xpos + ($numX + 1) * $w * $zoom] [expr $ypos + ($numY + 1) * $h * $zoom]
 
@@ -276,14 +276,14 @@ proc ::pdwidget::iemgui::config_radio {obj cnv args} {
         switch -exact -- $k {
             default {
             } "-bcolor" {
-                $cnv itemconfigure "${tag}&&BASE" -fill $v
+                $cnv itemconfigure "${tag}_BASE" -fill $v
             } "-fcolor" {
                 set activecolor $v
             } "-size" {
                 set w [lindex $v 0]
                 set h [lindex $v 1]
-                foreach {x y} [$cnv coords "${tag}&&BASE0"] {break}
-                $cnv coords "${tag}&&BASE0" $x $y [expr $x + $w * $zoom] [expr $y + $h * $zoom]
+                foreach {x y} [$cnv coords "${tag}_BASE0"] {break}
+                $cnv coords "${tag}_BASE0" $x $y [expr $x + $w * $zoom] [expr $y + $h * $zoom]
                 ::pdwidget::iemgui::_radio_reconfigure_buttons $cnv $obj $zoom
                 set recreate_iolets 1
             } "-number" {
@@ -295,7 +295,7 @@ proc ::pdwidget::iemgui::config_radio {obj cnv args} {
             }
         }
     }
-    $cnv itemconfigure "${tag}&&BASE" -width $zoom
+    $cnv itemconfigure "${tag}_BASE" -width $zoom
 
     if { $active ne {} } {
         ::pdwidget::radio::activate $obj $active $activecolor
@@ -313,12 +313,10 @@ proc ::pdwidget::iemgui::config_radio {obj cnv args} {
 # [tgl]
 proc ::pdwidget::iemgui::create_toggle {obj cnv posX posY args} {
     set tag [::pdwidget::base_tag $obj]
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag}] -outline {} -fill {} -width 0
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} BASE]
-    $cnv create line 0 0 0 0 -tags [list ${tag} X X1] -fill {}
-    $cnv create line 0 0 0 0 -tags [list ${tag} X X2] -fill {}
-    $cnv create rectangle 0 0 0 0 -tags [list ${tag} iolets] -outline {} -fill {}
-    $cnv create text 0 0 -anchor w -tags [list ${tag} label text]
+    $cnv create rectangle 0 0 0 0 -tags [list ${tag} ${tag}_BASE]
+    $cnv create line 0 0 0 0 -tags [list ${tag} ${tag}_X ${tag}_X1] -fill {}
+    $cnv create line 0 0 0 0 -tags [list ${tag} ${tag}_X ${tag}_X2 ${tag}_iolets] -fill {}
+    $cnv create text 0 0 -anchor w -tags [list ${tag} ${tag}_label]
     $cnv move $tag $posX $posY
 
     ::pdwidget::widgetbehavior $obj config ::pdwidget::iemgui::config_toggle
@@ -344,7 +342,7 @@ proc ::pdwidget::iemgui::config_toggle {obj cnv args} {
                 $cnv coords "${tag}" \
                     $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
-                $cnv coords "${tag}&&BASE" \
+                $cnv coords "${tag}_BASE" \
                     $xpos                        $ypos                  \
                     [expr $xpos + $xnew * $zoom] [expr $ypos + $ynew * $zoom]
 
@@ -353,21 +351,21 @@ proc ::pdwidget::iemgui::config_toggle {obj cnv args} {
                 set y0 [expr $ypos +          $crossw  * $zoom]
                 set x1 [expr $xpos + ($xnew - $crossw) * $zoom]
                 set y1 [expr $ypos + ($ynew - $crossw) * $zoom]
-                $cnv coords "${tag}&&X1" $x0 $y0 $x1 $y1
-                $cnv coords "${tag}&&X2" $x0 $y1 $x1 $y0
-                $cnv itemconfigure ${tag}&&X -width [expr $crossw - 1]
+                $cnv coords "${tag}_X1" $x0 $y0 $x1 $y1
+                $cnv coords "${tag}_X2" $x0 $y1 $x1 $y0
+                $cnv itemconfigure ${tag}_X -width [expr $crossw - 1]
                 set recreate_iolets 1
             } "-bcolor" {
-                $cnv itemconfigure "${tag}&&BASE" -fill $v
+                $cnv itemconfigure "${tag}_BASE" -fill $v
             } "-fcolor" {
-                if { [$cnv itemcget "${tag}&&X" -fill] ne {} } {
-                    $cnv itemconfigure "${tag}&&X" -fill $v
+                if { [$cnv itemcget "${tag}_X" -fill] ne {} } {
+                    $cnv itemconfigure "${tag}_X" -fill $v
                 }
             }
 
         }
-        $cnv itemconfigure "${tag}&&BASE" -width $zoom
     }
+    $cnv itemconfigure "${tag}_BASE" -width $zoom
 
     if {$recreate_iolets} {
         ::pdwidget::refresh_iolets $obj
@@ -384,20 +382,20 @@ proc ::pdwidget::radio::activate {obj state activecolor} {
     foreach cnv [::pdwidget::get_canvases $obj] {
         # pass the 'activated' tag to the newly selected button
         $cnv dtag "${tag}" "X"
-        set id [lindex [$cnv find withtag ${tag}&&KNOB] $state]
+        set id [lindex [$cnv find withtag ${tag}_KNOB] $state]
         if { $id ne {} } {
-            $cnv addtag "X" withtag $id
+            $cnv addtag "${tag}_X" withtag $id
         }
         # show (de)activation
-        $cnv itemconfigure "${tag}&&KNOB" -fill {} -outline {}
-        $cnv itemconfigure "${tag}&&X" -fill $activecolor -outline $activecolor
+        $cnv itemconfigure "${tag}_KNOB" -fill {} -outline {}
+        $cnv itemconfigure "${tag}_X" -fill $activecolor -outline $activecolor
     }
 }
 
 namespace eval ::pdwidget::bang:: { }
 proc ::pdwidget::bang::activate {obj state activecolor} {
     # LATER: have the timer work on the GUI side!
-    set tag "[::pdwidget::base_tag $obj]&&BUTTON"
+    set tag "[::pdwidget::base_tag $obj]_BUTTON"
     if {! $state} {
         set activecolor {}
     }
@@ -409,7 +407,7 @@ proc ::pdwidget::bang::activate {obj state activecolor} {
 namespace eval ::pdwidget::toggle:: { }
 proc ::pdwidget::toggle::activate {obj state activecolor} {
     set tag "[::pdwidget::base_tag $obj]"
-    set tag "${tag}&&X"
+    set tag "${tag}_X"
     if {! $state} {
         set activecolor {}
     }

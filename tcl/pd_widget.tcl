@@ -136,15 +136,15 @@ proc ::pdwidget::_defaultproc {id arguments body} {
     set ocolor {}
     if {$show_inlets } {set icolor black}
     if {$show_outlets} {set ocolor black}
-    $cnv itemconfigure ${tag}&&inlet  -fill $icolor
-    $cnv itemconfigure ${tag}&&outlet -fill $ocolor
+    $cnv itemconfigure ${tag}_inlet  -fill $icolor
+    $cnv itemconfigure ${tag}_outlet -fill $ocolor
 }
 proc ::pdwidget::_do_create_iolets {obj cnv iotag iolets iowidth ioheight} {
     set tag [::pdwidget::base_tag $obj]
     set numiolets [llength $iolets]
     if {$numiolets < 2} {set numiolets 2}
 
-    $cnv delete "${tag}&&${iotag}"
+    $cnv delete "${tag}_${iotag}"
     set zoom [::pd::canvas::get_zoom $cnv]
     foreach {x0 y0 x1 y1} [$cnv coords $tag] {break}
     set w [expr $x1 - $x0]
@@ -156,29 +156,23 @@ proc ::pdwidget::_do_create_iolets {obj cnv iotag iolets iowidth ioheight} {
     if {$iotag eq "outlet"} {
         set objheight [expr $h - $ih]
     }
+    set tagio "${tag}_${iotag}"
 
     set numin 0
     foreach iolet $iolets {
         set iotype message
-        switch -exact $iolet {
-            default {
-                set iotype message
-            } 1 {
+        if { $iolet eq 1 } {
                 set iotype signal
-            }
         }
-        # create an iolet (with an 'anchor' where the connection starts)
-        set centerX [expr $iw / 2]
-        set centerY [expr $ih / 2]
-        $cnv create rectangle $centerX $centerY $centerX $centerY -tags [list $tag ${iotag} ${iotag}${numin} anchor] -outline {} -fill {} -width 0
-        $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${iotag} ${iotag}${numin} $iotype] -fill black
+        # create an iolet
+        $cnv create rectangle 0 0 $iw $ih -tags [list $tag ${tagio} ${tagio}${numin} $iotype] -fill black
         # move the iolet in place
-        $cnv move "${tag}&&${iotag}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
+        $cnv move "${tagio}${numin}" [expr $x0 + $numin * $delta] [expr $y0 + $objheight]
 
         incr numin
     }
-    $cnv lower "${tag}&&${iotag}" "${tag}&&iolets"
-    $cnv raise "${tag}&&${iotag}" "${tag}&&iolets"
+    $cnv lower "${tagio}" "${tag}_iolets"
+    $cnv raise "${tagio}" "${tag}_iolets"
 }
 ::pdwidget::_defaultproc create_inlets {obj cnv inlets} {
     ::pdwidget::_do_create_iolets $obj $cnv inlet $inlets $::pdwidget::IOWIDTH $::pdwidget::IHEIGHT
@@ -202,9 +196,10 @@ proc ::pdwidget::get_iolets {obj cnv type} {
     }
     if { $cnv eq {} } {return}
     set tag [::pdwidget::base_tag $obj]
+    set tag "${tag}_${type}"
 
     set result {}
-    foreach id [$cnv find withtag "${tag}&&${type}&&!anchor" ] {
+    foreach id [$cnv find withtag ${tag} ] {
         set tags [$cnv gettags $id]
         if { [lsearch -exact $tags signal] >= 0 } {
             lappend result 1
