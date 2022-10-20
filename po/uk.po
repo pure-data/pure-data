@@ -7,22 +7,26 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "лінійний"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "логарифмічний"
 
 msgid "new-only"
-msgstr ""
+msgstr "тільки новий"
 
 msgid "new&old"
 msgstr ""
@@ -224,7 +228,7 @@ msgid "Input Devices"
 msgstr ""
 
 msgid "Channels:"
-msgstr ""
+msgstr "Канали:"
 
 msgid "Output Devices"
 msgstr ""
@@ -350,43 +354,43 @@ msgid "Receive symbol:"
 msgstr ""
 
 msgid "Width:"
-msgstr ""
+msgstr "Ширина:"
 
 msgid "Limits"
-msgstr ""
+msgstr "Межі"
 
 msgid "Lower:"
-msgstr ""
+msgstr "Нижній:"
 
 msgid "Upper:"
-msgstr ""
+msgstr "Верхній:"
 
 msgid "Label"
-msgstr ""
+msgstr "Напис"
 
 msgid "Left"
-msgstr ""
+msgstr "Лiворуч"
 
 msgid "Right"
-msgstr ""
+msgstr "Правильно"
 
 msgid "Top"
-msgstr ""
+msgstr "Вгорі"
 
 msgid "Bottom"
-msgstr ""
+msgstr "Внизу"
 
 msgid "Background color"
-msgstr ""
+msgstr "Колір фону"
 
 msgid "Foreground color"
-msgstr ""
+msgstr "Основний колір"
 
 msgid "Label color"
-msgstr ""
+msgstr "Колір напису"
 
 msgid "Bang"
-msgstr ""
+msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr ""
@@ -1194,40 +1198,40 @@ msgid "List"
 msgstr ""
 
 msgid "Symbol"
-msgstr ""
+msgstr "Символ"
 
 msgid "Comment"
-msgstr ""
+msgstr "Коментар"
 
 msgid "Graph"
 msgstr ""
 
 msgid "Find..."
-msgstr ""
+msgstr "Знайти..."
 
 msgid "Find Again"
-msgstr ""
+msgstr "Знову знайти"
 
 msgid "Find Last Error"
-msgstr ""
+msgstr "Знайти останню помилку"
 
 msgid "DSP On"
-msgstr ""
+msgstr "DSP включено"
 
 msgid "DSP Off"
-msgstr ""
+msgstr "DSP вимкнено"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
+msgstr "тест аудіо i MIDI..."
 
 msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "Налаштування звуку..."
 
 msgid "MIDI Settings..."
-msgstr ""
+msgstr "Налаштування MIDI..."
 
 msgid "Minimize"
 msgstr ""
