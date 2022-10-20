@@ -2,12 +2,13 @@
 # This file is put in the public domain
 #
 # Lorenzo Sutton (lorenzosu) <lsutton@libero.it>, 2009.
+# Valerio Orlandini <valeriorlandini@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"PO-Revision-Date: 2022-10-21 17:41+0000\n"
 "Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/it/>\n"
@@ -40,7 +41,7 @@ msgstr "Scala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Cestinare le modifiche apportate a '%s'?"
+msgstr "Scartare le modifiche apportate a '%s'?"
 
 msgid "Undo clear"
 msgstr "Annulla pulisci"
@@ -58,7 +59,7 @@ msgid "Undo duplicate"
 msgstr "Annulla duplica"
 
 msgid "Undo motion"
-msgstr "Annulla spostamento "
+msgstr "Annulla spostamento"
 
 msgid "Undo paste"
 msgstr "Annulla incolla"
@@ -120,7 +121,7 @@ msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr "salto il caricamento delle preferenze... Pd pare sia crashato all'avvio"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(salva di nuovo le preferenze per reinstanziarle)"
 
 msgid "File"
 msgstr "File"
@@ -298,18 +299,18 @@ msgid "Data Properties"
 msgstr "Proprietà Canvas"
 
 msgid "Send"
-msgstr ""
+msgstr "Invia"
 
 msgid "Done"
-msgstr ""
+msgstr "Fatto"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Trovato '%1$s' in %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Impossibile trovare '%1$s' in %2$s"
 
 #, fuzzy, tcl-format
 msgid "Search in %s for:"
@@ -321,7 +322,7 @@ msgstr ""
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
+msgstr "Mostro '%1$d' su %2$d elementi in %3$s"
 
 msgid "Pd window"
 msgstr "Finestra Pd"
@@ -412,32 +413,32 @@ msgid "Flash Time (msec)"
 msgstr "Ritardo (msec):"
 
 msgid "Min:"
-msgstr ""
+msgstr "Min:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Max:"
 
 msgid "Toggle"
 msgstr "Toggle"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Valore Non Zero"
 
 msgid "Value:"
-msgstr ""
+msgstr "Valore:"
 
 msgid "Number2"
 msgstr "Numero2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Larghezza (cifre):"
 
 #, fuzzy
 msgid "Height:"
 msgstr "Destra"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Intervallo in Uscita"
 
 msgid "Log height:"
 msgstr ""
@@ -464,14 +465,14 @@ msgid "Canvas"
 msgstr "Tavolozza"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Rettangolo Visibile (pix)"
 
 #, tcl-format
 msgid "%s Properties"
 msgstr "%s Proprietà"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parametri"
 
 msgid "Init"
 msgstr ""
@@ -528,10 +529,10 @@ msgid "Out Ports:"
 msgstr "Porte Uscita:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Percorsi di ricerca di Pd per oggetti, help, audio, testi e altri file"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Usa i percorsi standard"
 
 msgid "Verbose"
 msgstr ""
@@ -556,7 +557,7 @@ msgid "Clear"
 msgstr "Pulisci menu"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Scegli la cartella per i documenti Pd:"
 
 msgid "Install externals to directory:"
 msgstr ""
