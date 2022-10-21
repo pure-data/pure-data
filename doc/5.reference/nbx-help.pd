@@ -554,11 +554,11 @@
 #X connect 9 0 13 0;
 #X connect 15 0 13 0;
 #X restore 366 569 pd old-behavior;
-#X text 34 544 ATTENTION: COMPATIBILITY NOTE NAD FUTURE SUPPORT: The behavior changed in Pd 0.53! Check details and more info on future plans for this object, f 49;
 #X text 324 622 updated for Pd version 0.53;
 #X text 54 364 click & drag --> (shift-click for fine tuning). Right click for properties., f 16;
 #X text 22 180 Clicking on the object activates it \, which is indicated via a red number. Clicking outside the box deactivates it. When active \, you can hit enter to output the current value and this can be done multiple times. You can also type new values (using backspace to correct typing is allowed) and hit enter to validate and output them. You can cancel the typing action by reclicking on the object (to keep it activated) or outside it (to deactivate it)., f 71;
 #X text 22 56 The number box is a GUI (Graphical User Interface) that sends numbers. Click on it and drag to output values or type new values. Incoming floats set the number box's value and are passed through. The 'set' message only sets the value without output. A bang message sends the number box's value., f 71;
+#X text 34 544 ATTENTION: COMPATIBILITY NOTE AND FUTURE SUPPORT: The behavior changed in Pd 0.53! Check details and more info on future plans for this object, f 49;
 #X connect 0 0 3 0;
 #X connect 1 0 6 0;
 #X connect 2 0 6 0;

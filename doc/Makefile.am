@@ -54,6 +54,7 @@ empty=
 # find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
+     ./1.manual/deken.gif \
      ./1.manual/favicon.ico \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.jpg \
