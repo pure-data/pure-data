@@ -8,8 +8,8 @@ msgstr ""
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-21 17:41+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
-"pure-data/pure-data/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -508,7 +508,8 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr "Caminho de busca do Pd para objetos, arquivos de ajuda, fontes e outros"
+msgstr ""
+"Caminho de busca do Pd para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -990,7 +991,7 @@ msgid "Cancelling download of '%s': No installation directory given."
 msgstr "Cancelando download de '%s': Nenhum diretório de instalação foi dado."
 
 msgid "Installing to non-existant directory failed"
-msgstr "Instalação a um diretório não existente falhou"
+msgstr "Falha ao instalar em um diretório não existente"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
@@ -1015,7 +1016,7 @@ msgstr "abortando."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr "Falha fazendo download de '%s'"
+msgstr "Falha ao fazer download de '%s'"
 
 msgid "Download failed!"
 msgstr "Download falhou!"
@@ -1028,7 +1029,7 @@ msgstr "Ignorando mismatch de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s."
+msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1047,7 +1048,7 @@ msgstr "Nenhum servidor encontrado para procurar..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Enviado por %1$s @ %2$s"
+msgstr "Enviado por %1$s em %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1066,7 +1067,7 @@ msgid "Deselect package"
 msgstr "Desselecionar pacote"
 
 msgid "Open package webpage"
-msgstr "Abrir webpage do package"
+msgstr "Abrir webpage do pacote"
 
 msgid "Copy package URL"
 msgstr "Copiar URL do pacote"
@@ -1090,7 +1091,7 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"Você quer que o Pd use o diretório de documentos existe para patches e "
+"Você quer que o Pd use o diretório de documentos existente para patches e "
 "Bibliotecas de externals?\n"
 "\n"
 "Localidade: %s\n"
@@ -1123,7 +1124,7 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
-"Diretório de documentos do Pd não pode ser encontrado:\n"
+"Diretório de documentos do Pd não encontrado:\n"
 "\n"
 "%s\n"
 "\n"
@@ -1135,7 +1136,7 @@ msgstr "impossível criar diretório de documentos Pd: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "impossível criar diretório de documentos Pd em: %s"
+msgstr "impossível criar diretório de \"externals\" em: %s"
 
 msgid "refusing to delete empty domain"
 msgstr "recusando deletar domínio vazio"
@@ -1153,13 +1154,13 @@ msgstr "Sobre o Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
-msgstr "não foi possível ler documento \"%s\""
+msgstr "não foi possível ler o documento \"%s\""
 
 msgid "Save"
 msgstr "Salvar"
 
 msgid "Save As..."
-msgstr "Salvar como..."
+msgstr "Salvar Como..."
 
 msgid "Print..."
 msgstr "Imprimir..."
@@ -1370,7 +1371,7 @@ msgid "Audio off"
 msgstr "Áudio desligado"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
 
 msgid "Tcl:"
 msgstr "Tcl:"
@@ -1413,7 +1414,7 @@ msgstr "Deletar"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr "ignorando '%s': não parece com um arquivo de Pd"
+msgstr "ignorando '%s': não parece ser um arquivo de Pd"
 
 #~ msgid "_"
 #~ msgstr "_"
