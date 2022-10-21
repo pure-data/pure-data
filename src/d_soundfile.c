@@ -1331,7 +1331,13 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             (unsigned char *)sampbuf, nframes);
         framesread += nframes;
     }
-
+        /* warn if a file's bad size field is gobbling memory */
+    if (resize && framesread < (size_t)finalsize)
+    {
+        post("warning: soundfile %s header promised \
+%ld points but file was truncated to %ld",
+            filename, (long)finalsize, (long)framesread);
+    }
         /* zero out remaining elements of vectors */
     for (i = 0; i < argc; i++)
     {
