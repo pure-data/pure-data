@@ -3,13 +3,14 @@
 #
 # Lorenzo Sutton (lorenzosu) <lsutton@libero.it>, 2009.
 # Valerio Orlandini <valeriorlandini@gmail.com>, 2022.
+# Matteo Mazzanti <info@taklia.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-21 17:41+0000\n"
-"Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
+"Last-Translator: Matteo Mazzanti <info@taklia.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/it/>\n"
 "Language: it\n"
@@ -26,18 +27,16 @@ msgid "logarithmic"
 msgstr "logaritmico"
 
 msgid "new-only"
-msgstr ""
+msgstr "solo-nuovo"
 
 msgid "new&old"
-msgstr ""
+msgstr "nuovo-e-vecchio"
 
-#, fuzzy
 msgid "no scale"
-msgstr "Scala"
+msgstr "nessuna scala"
 
-#, fuzzy
 msgid "scale"
-msgstr "Scala"
+msgstr "scala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -67,33 +66,27 @@ msgstr "Annulla incolla"
 msgid "Undo typing"
 msgstr "Annulla inserimento"
 
-#, fuzzy
 msgid "Redo clear"
-msgstr "Ripeti pulisci"
+msgstr "ripeti pulizia"
 
 msgid "Redo connect"
-msgstr "Ripeti connetti"
+msgstr "re-connetti"
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "Ripeti taglia"
+msgstr "Ripeti taglio"
 
-#, fuzzy
 msgid "Redo disconnect"
-msgstr "Ripeti disconnetti"
+msgstr "Ri-disconnetti"
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "Ripeti duplica"
+msgstr "Ripeti duplicazione"
 
-#, fuzzy
 msgid "Redo motion"
-msgstr "Annulla spostamento "
+msgstr "Annulla spostamento"
 
 msgid "Redo paste"
 msgstr "Ripeti incolla"
 
-#, fuzzy
 msgid "Redo typing"
 msgstr "Ripeti inserimento"
 
@@ -101,7 +94,7 @@ msgid "no Pd settings to clear"
 msgstr "nessuna impostazione Pd da pulire"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "archivio .pdsettings rimosso"
 
 msgid "couldn't delete .pdsettings file"
 msgstr "impossibile cancellare il file .pdsettings"
@@ -109,16 +102,16 @@ msgstr "impossibile cancellare il file .pdsettings"
 msgid "failed to erase Pd settings"
 msgstr "impossibile cancellare le impostazioni di Pd"
 
-#, fuzzy
 msgid "erased Pd settings"
-msgstr "Salva tutti i settaggi"
+msgstr "impostazioni Pd cancellate"
 
 msgid "no Pd settings to erase"
 msgstr "nessuna impostazione Pd da cancellare"
 
-#, fuzzy
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "salto il caricamento delle preferenze... Pd pare sia crashato all'avvio"
+msgstr ""
+"salto il caricamento delle preferenze... pare che Pd sia fallito durante "
+"l'avvio"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(salva di nuovo le preferenze per reinstanziarle)"
