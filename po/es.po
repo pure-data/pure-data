@@ -1182,7 +1182,7 @@ msgid "Print..."
 msgstr "Imprimir..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Pegar reemplazar"
 
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -1239,7 +1239,7 @@ msgid "Number"
 msgstr "Número"
 
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 msgid "Symbol"
 msgstr "Símbolo"
