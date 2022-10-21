@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-21 17:41+0000\n"
-"Last-Translator: Matteo Mazzanti <info@taklia.com>\n"
+"PO-Revision-Date: 2022-10-22 15:42+0000\n"
+"Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/it/>\n"
 "Language: it\n"
@@ -207,7 +207,7 @@ msgid "Settings"
 msgstr "Impostazioni"
 
 msgid "Sample rate:"
-msgstr "Frequenza di campionamento"
+msgstr "Frequenza di campionamento:"
 
 msgid "Delay (msec):"
 msgstr "Ritardo (msec):"
@@ -236,9 +236,8 @@ msgstr "Canali:"
 msgid "Output Devices"
 msgstr "Dispositivo di uscita"
 
-#, fuzzy
 msgid "(same as input device)..."
-msgstr "(lo stesso del dispositivo di ingresso)..........."
+msgstr "(identico al dispositivo di ingresso)..."
 
 msgid "Use Multiple Devices"
 msgstr "Usa Dispositivi Multipli"
@@ -247,7 +246,7 @@ msgid "Save All Settings"
 msgstr "Salva tutti i settaggi"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "ATTENZIONE: flag graphme sconosciute ricevute da pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Proprietà Canvas"
@@ -256,7 +255,7 @@ msgid "Scale"
 msgstr "Scala"
 
 msgid "X units per pixel:"
-msgstr "X unità per pixel"
+msgstr "X unità per pixel:"
 
 msgid "Y units per pixel:"
 msgstr "Y unità per pixel:"
@@ -273,9 +272,8 @@ msgstr "Nascondi il nome oggetto e gli argomenti"
 msgid "Range and size"
 msgstr "Intervallo e dimensioni"
 
-#, fuzzy
 msgid "X range: from"
-msgstr "Intervallo X, da"
+msgstr "Intervallo X: da"
 
 msgid "to"
 msgstr "a"
@@ -283,13 +281,11 @@ msgstr "a"
 msgid "Margin:"
 msgstr "Margine:"
 
-#, fuzzy
 msgid "Y range: from"
-msgstr "Intervallo Y, da"
+msgstr "Intervallo Y: da"
 
-#, fuzzy
 msgid "Data Properties"
-msgstr "Proprietà Canvas"
+msgstr "Proprietà Dati"
 
 msgid "Send"
 msgstr "Invia"
@@ -305,13 +301,13 @@ msgstr "Trovato '%1$s' in %2$s"
 msgid "Couldn't find '%1$s' in %2$s"
 msgstr "Impossibile trovare '%1$s' in %2$s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "Cerca in"
+msgstr "Cerca in %s:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Mostrato ultimo '%1$s' in %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
@@ -326,15 +322,15 @@ msgstr "Solo parole intere"
 msgid "Close"
 msgstr "Chiudi"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
-msgstr "Carattere"
+msgstr "Carattere %s"
 
 msgid "Font"
 msgstr "Carattere"
 
 msgid "Font Size"
-msgstr "Dimensione carattere:"
+msgstr "Dimensione Carattere"
 
 msgid "Stretch"
 msgstr "Allarga/riduci:"
@@ -348,9 +344,8 @@ msgstr "Solo X"
 msgid "Y only"
 msgstr "Solo Y"
 
-#, fuzzy
 msgid "GUI Box Properties"
-msgstr "Proprietà Atom Box"
+msgstr "Proprietà GUI Box"
 
 msgid "Messages"
 msgstr "Messaggi"
@@ -376,9 +371,8 @@ msgstr "Superiore:"
 msgid "Label"
 msgstr "Etichetta"
 
-#, fuzzy
 msgid "Left"
-msgstr "Sinistra   "
+msgstr "Sinistra"
 
 msgid "Right"
 msgstr "Destra"
@@ -401,9 +395,8 @@ msgstr "Colore etichetta"
 msgid "Bang"
 msgstr "Bang"
 
-#, fuzzy
 msgid "Flash Time (msec)"
-msgstr "Ritardo (msec):"
+msgstr "Tempo di Lampeggiamento (msec):"
 
 msgid "Min:"
 msgstr "Min:"
@@ -426,9 +419,8 @@ msgstr "Numero2"
 msgid "Width (digits):"
 msgstr "Larghezza (cifre):"
 
-#, fuzzy
 msgid "Height:"
-msgstr "Destra"
+msgstr "Altezza:"
 
 msgid "Output Range"
 msgstr "Intervallo in Uscita"
@@ -479,13 +471,11 @@ msgstr "Click imposta il valore"
 msgid "Steady on click"
 msgstr "Click incrementa/decrementa"
 
-#, fuzzy
 msgid "X offset:"
-msgstr "Spostamento X"
+msgstr "Scostamento X:"
 
-#, fuzzy
 msgid "Y offset:"
-msgstr "Spostamento Y"
+msgstr "Scostamento Y:"
 
 msgid "Colors"
 msgstr "Colori"
@@ -502,12 +492,11 @@ msgstr "Crea colore"
 msgid "Test label"
 msgstr "Test etichetta"
 
-#, fuzzy
 msgid "Send a Pd message"
-msgstr "Invia un Messaggio..."
+msgstr "Invia un Messaggio Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(usa i tasti freccia per la cronologia)"
 
 msgid "MIDI Settings"
 msgstr "Settaggi MIDI"
@@ -540,14 +529,13 @@ msgid "Reset"
 msgstr ""
 
 msgid "Disable"
-msgstr ""
+msgstr "Disabilita"
 
 msgid "Externals Install Directory"
 msgstr ""
 
-#, fuzzy
 msgid "Clear"
-msgstr "Pulisci menu"
+msgstr "Pulisci"
 
 msgid "Choose Pd documents directory:"
 msgstr "Scegli la cartella per i documenti Pd:"
@@ -563,13 +551,13 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"
-msgstr ""
+msgstr "Aggiungi una nuova libreria"
 
 msgid "Edit library"
 msgstr ""
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "Librerie Pd da caricare all'avvio"
 
 msgid "Startup flags:"
 msgstr ""
@@ -603,10 +591,10 @@ msgstr "File di testo Max (.mxt)"
 msgid "detected font: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
-"ATTENZIONE: Famiglia di font '%s\" non trovata, uso quella di default (%s)"
+"ATTENZIONE: Famiglia di font '%1$s' non trovata, uso quella di default (%2$s)"
 
 #, fuzzy, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
@@ -669,9 +657,9 @@ msgstr ""
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Installing '%s'"
-msgstr "Cestinare le modifiche apportate a '%s'?"
+msgstr "Installazione di '%s'"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -783,9 +771,9 @@ msgid ""
 "(treats other versions like foreign architectures)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Preferenze"
+msgstr "Preferenze di Deken %s"
 
 #, tcl-format
 msgid "Platform re-detected: %s"
@@ -794,17 +782,14 @@ msgstr ""
 msgid "Deken Packages"
 msgstr ""
 
-#, fuzzy
 msgid "ZIP Files"
 msgstr "File ZIP"
 
-#, fuzzy
 msgid "TAR Files"
 msgstr "File TAR"
 
-#, fuzzy
 msgid "All Files"
-msgstr "tutti i files"
+msgstr "Tutti i file"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
@@ -876,7 +861,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Search"
-msgstr "Cerca in"
+msgstr "Cerca"
 
 #, tcl-format
 msgid "Install (%d)"
@@ -922,16 +907,14 @@ msgstr ""
 msgid "Preferences..."
 msgstr "Preferenze..."
 
-#, fuzzy
 msgid "Search for: "
-msgstr "Cerca in"
+msgstr "Cerca: "
 
 msgid "libraries"
 msgstr ""
 
-#, fuzzy
 msgid "objects"
-msgstr "Oggetto"
+msgstr "oggetti"
 
 msgid "both"
 msgstr ""
@@ -960,16 +943,15 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#, fuzzy
 msgid "Search Results"
-msgstr "Cerca in"
+msgstr "Risultati della Ricerca"
 
 msgid "Log"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Cestinare le modifiche apportate a '%s'?"
+msgstr "Ricerca di \"%s\"..."
 
 #, tcl-format
 msgid "online? %s"
