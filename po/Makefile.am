@@ -70,7 +70,25 @@ FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
 EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.txt)
 
 # these are the supported languages
-ALL_LINGUAS = af az be bg de el en_ca eu es fr gu he hi hu it pa pt_br pt_pt sq sv vi
+ALL_LINGUAS = \
+	af ar az \
+	be bg \
+	de \
+	el en_ca es eu \
+	fi fr \
+	gu \
+	he hi hu hy \
+	it \
+	ja \
+	ko \
+	nl \
+	pa pl pt_br pt_pt \
+	ru sq sv \
+	tr \
+	uk \
+	vi \
+	zho_HANT@tw
+
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
 
