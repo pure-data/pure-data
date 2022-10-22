@@ -87,7 +87,7 @@ ALL_LINGUAS = \
 	tr \
 	uk \
 	vi \
-	zho_HANT@tw
+	tw
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
