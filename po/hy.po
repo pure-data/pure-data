@@ -1,4 +1,4 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Armenian.
 # This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #

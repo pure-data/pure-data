@@ -1,14 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Dutch.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Timothy Schoen <timschoen123@gmail.com>, 2022.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
-"Last-Translator: Timothy Schoen <timschoen123@gmail.com>\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/nl/>\n"
 "Language: nl\n"
@@ -1088,7 +1089,7 @@ msgstr "Kopieer OpenGPG-handtekening URL"
 msgid "Uninstall '%s'"
 msgstr "Verwijder '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid ""
 "Do you want Pd to use the existing documents directory for patches and "
 "external libraries?\n"
@@ -1102,9 +1103,9 @@ msgstr ""
 "\n"
 "Locatie: %s\n"
 "\n"
-"Je kunt dit later wijzigen of uitschakelen in de Pad-voorkeuren."
+"Je kunt dit later wijzigen of uitschakelen in de Pd voorkeuren."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid ""
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
@@ -1118,7 +1119,7 @@ msgstr ""
 "\n"
 "Locatie: %s\n"
 "\n"
-"U kunt dit later wijzigen of uitschakelen in de Pad-voorkeuren."
+"U kunt dit later wijzigen of uitschakelen in de Pd voorkeuren."
 
 #, tcl-format
 msgid ""
@@ -1360,7 +1361,7 @@ msgstr "Wilt u de wijzigingen die u in '%s' heeft aangebracht opslaan?"
 msgid "Properties"
 msgstr "Eigenschappen"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "dropped %d lines from the Pd window"
 msgstr "%d regels uit het Pd-venster verwijderd"
 

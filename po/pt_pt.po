@@ -1,5 +1,6 @@
 # Portugal Portugeuse translation for Pure Data
-#
+# This file is put in the public domain.
+# João Pais <jmmmpais@googlemail.com>, 2009.
 #
 msgid ""
 msgstr ""

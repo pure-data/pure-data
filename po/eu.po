@@ -1,8 +1,8 @@
 # Basque translation of Pure Data.
 # This file is put in the public domain.
 # Mikel Olasagasti <hey_neken@euskal.org>, 2004, 2005.
-# Fvargas Grc  <fvargasgrc@yahoo.es> 2015.
-# Gorka Egino <gorkaegino.com> 2022.
+# Fvargas Grc  <fvargasgrc@yahoo.es>, 2015.
+# Gorka Egino <gorkaegino.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"

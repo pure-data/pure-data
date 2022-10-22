@@ -1,7 +1,6 @@
-# Translation of Pure Data to Arabic.
+# Translation of Pure Data to Turkish.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
@@ -10,7 +9,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: ar\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

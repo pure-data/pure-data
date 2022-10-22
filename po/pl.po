@@ -1,16 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Polish.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# | || | | <aalderson@caramail.com>, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 10:34+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/pl/>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -262,82 +262,88 @@ msgid "Y units per pixel:"
 msgstr "Y jednostki na piksel:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Wygląd na patch-u nadrzędnym"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Wyświetl-w-patchu"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "Ukryj nazwę i argumenty obiektu"
 
 msgid "Range and size"
-msgstr ""
+msgstr "Zakres i rozmiar"
 
 msgid "X range: from"
-msgstr ""
+msgstr "X zakres: od"
 
 msgid "to"
-msgstr ""
+msgstr "do"
 
 msgid "Margin:"
-msgstr ""
+msgstr "Margines:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Y zakres: od"
 
 msgid "Data Properties"
+msgstr "Właściwości Danych"
+
+msgid "Send"
+msgstr ""
+
+msgid "Done"
 msgstr ""
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Znaleziono '%1$s' w '%2$s'"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Nie odnaleziono '%1$s' w '%2$s'"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "Szukaj w %s dla:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Pokazano ostatnie '%1$s' w %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
 msgid "Pd window"
-msgstr ""
+msgstr "Okno Pd"
 
 msgid "Match whole word only"
 msgstr ""
 
 msgid "Close"
-msgstr ""
+msgstr "Zamknij"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "%s Czcionka"
 
 msgid "Font"
-msgstr ""
+msgstr "Czcionka"
 
 msgid "Font Size"
-msgstr ""
+msgstr "Rozmiar Czcionki"
 
 msgid "Stretch"
-msgstr ""
+msgstr "Rozciągnij"
 
 msgid "X and Y"
-msgstr ""
+msgstr "X i Y"
 
 msgid "X only"
-msgstr ""
+msgstr "X tylko"
 
 msgid "Y only"
-msgstr ""
+msgstr "Y tylko"
 
 msgid "GUI Box Properties"
 msgstr ""
@@ -539,6 +545,10 @@ msgid "Install externals to directory:"
 msgstr ""
 
 msgid "Add a new path"
+msgstr ""
+
+#, tcl-format
+msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"

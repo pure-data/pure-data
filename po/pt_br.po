@@ -1,20 +1,21 @@
 # Brazilian Portuguese translation for Pure Data
 # This file is put in the public domain.
-# Alexandre Torres Porres <porres@gmail.com>, 2022.
-#
+# Alexandre Torres Porres <porres@gmail.com>, 2017, 2018, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-18 14:02-0300\n"
-"Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
-"Language-Team: Português Brasileiro <LL@li.org>\n"
+"PO-Revision-Date: 2022-10-21 17:41+0000\n"
+"Last-Translator: porres <porres@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
+"data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.1.1\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr "linear"
@@ -133,7 +134,7 @@ msgid "Help"
 msgstr "Ajuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr "Mostrar Diretórios e Arquivos &Escondidos"
+msgstr "Mostrar &Arquivos Escondidos e Diretórios"
 
 msgid "Copy"
 msgstr "Copiar"
@@ -166,7 +167,7 @@ msgid "Points"
 msgstr "Pontos"
 
 msgid "Bezier curve"
-msgstr "Curva de Bezier"
+msgstr "Curva de Bézier"
 
 msgid "Put array into:"
 msgstr "Inserir tabela em:"
@@ -263,13 +264,13 @@ msgid "Graph-On-Parent"
 msgstr "Mostrar Gráfico no Patch Pai"
 
 msgid "Hide object name and arguments"
-msgstr "Esconder nome e argumentos"
+msgstr "Esconder nome do objeto e argumentos"
 
 msgid "Range and size"
 msgstr "Registro e tamanho"
 
 msgid "X range: from"
-msgstr "Amplitude de X: de"
+msgstr "Registro de X: de"
 
 msgid "to"
 msgstr "a"
@@ -278,16 +279,16 @@ msgid "Margin:"
 msgstr "Margem:"
 
 msgid "Y range: from"
-msgstr "Amplitude de Y: de"
+msgstr "Registro de Y: de"
 
 msgid "Data Properties"
-msgstr "Propriedades dos Dados"
+msgstr "Propriedades da Estrutura de Dados"
 
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 msgid "Done"
-msgstr ""
+msgstr "Pronto"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -392,7 +393,7 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Tempo de piscagem (msec)"
+msgstr "Tempo de piscagem (ms)"
 
 msgid "Min:"
 msgstr "Mínimo:"
@@ -468,10 +469,10 @@ msgid "Steady on click"
 msgstr "Fixo ao clicar"
 
 msgid "X offset:"
-msgstr "Deslocamento eixo X:"
+msgstr "Deslocamento X:"
 
 msgid "Y offset:"
-msgstr "Deslocamento eixo Y:"
+msgstr "Deslocamento Y:"
 
 msgid "Colors"
 msgstr "Cores"
@@ -489,7 +490,7 @@ msgid "Test label"
 msgstr "Rótulo teste"
 
 msgid "Send a Pd message"
-msgstr "Enviar uma mensagem ao Pd"
+msgstr "Enviar uma mensagem"
 
 msgid "(use arrow keys for history)"
 msgstr "(use setas para histórico)"
@@ -508,7 +509,7 @@ msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
-"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+"Caminho de busca do Pd para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -529,7 +530,7 @@ msgid "Disable"
 msgstr "Desabilitar"
 
 msgid "Externals Install Directory"
-msgstr "Instalar externals no diretório"
+msgstr "Diretório de Instalação de Externals"
 
 msgid "Clear"
 msgstr "Limpar"
@@ -545,7 +546,7 @@ msgstr "Adicionar um novo caminho"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Editar caminho existente [%s]"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -557,7 +558,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Bibliotecas de Pd para carregar na inicialização"
 
 msgid "Startup flags:"
-msgstr "Marcadores de inicialização:"
+msgstr "Flags de inicialização:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
@@ -569,19 +570,19 @@ msgid "Associated Files"
 msgstr "Arquivos associados"
 
 msgid "Pd Files"
-msgstr "Arquivos Pd"
+msgstr "Arquivos de Pd"
 
 msgid "Max Patch Files"
 msgstr "Arquivos de Patch de Max"
 
 msgid "Max Text Files"
-msgstr "Arquivos de texto Max/MSP"
+msgstr "Arquivos de texto de Max"
 
 msgid "Max Patch Files (.pat)"
 msgstr "Arquivos de Patch de Max (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr "Arquivos de Patch de Max (.mxt)"
+msgstr "Arquivos de Texto de Max (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
@@ -609,7 +610,7 @@ msgstr "Carregando plugin: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr "(Tcl) ERRO NÃO TRATADO: %s"
+msgstr "ERRO NÃO TRATADO: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
@@ -624,10 +625,10 @@ msgid "Failed to find plugins in %s ...skipping!"
 msgstr "Falha ao encontrar plugin em %s …pulando!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) FALTANDO FECHA CHAVES '}': "
+msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr "(Tcl) NOME DE COMANDO INVÁLIDO: "
+msgstr "(Tcl) INVALID COMMAND NAME: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr "(Tcl) ERRO NÃO TRATADO: "
@@ -668,14 +669,14 @@ msgstr "Por favor realize os seguintes passos manualmente:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr "1. descompactar %s."
+msgstr "1. Descompactar %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
 msgstr "Você poderá ter que mudar a extensão de arquivo de .dek para .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr "2. copiar o conteúdo para %s."
+msgstr "2. Copiar conteúdo em %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
@@ -734,10 +735,10 @@ msgid "Installation options:"
 msgstr "Opções de instalação:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr "Tentar verificar o checksum das bibliotecas (re)instalando-as"
+msgstr "Tentar verificar o checksum das bibliotecas antes de (re)instalá-las"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr "Tentar remover bibliotecas antes de (re)instala-las"
+msgstr "Tentar remover bibliotecas antes de (re)instalá-las"
 
 msgid "Show README of newly installed libraries (if present)"
 msgstr "Mostrar README de bibliotecas recém instaladas (se presente)"
@@ -749,7 +750,7 @@ msgid "Add newly installed libraries to Pd's search path"
 msgstr "Adicionar bibliotecas recém instaladas ao caminho de busca do Pd"
 
 msgid "Platform settings:"
-msgstr "Configuraçõs da plataforma:"
+msgstr "Configurações da plataforma:"
 
 #, tcl-format
 msgid "Default platform: %s"
@@ -805,7 +806,7 @@ msgstr "Desinstalando instalação prévia de '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr "Temporariamente movendo %1$s para %2$s falhou."
+msgstr "Mover temporariamente %1$s para %2$s falhou."
 
 #, tcl-format
 msgid "Installing package '%s'"
@@ -876,7 +877,7 @@ msgid "Enter an exact library or object name."
 msgstr "Entre um nome exato de objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
-msgstr "por exemplo, 'freeverb~'"
+msgstr "e.g, 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
 msgstr "Usar a wildcard '*' para combinar com qualquer número de caracteres."
@@ -928,7 +929,7 @@ msgid "Only install externals uploaded by people you trust."
 msgstr "Instale apenas externals enviados por quem você confia."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr "Desabilitando vista em tabelas: Tcl/Tk incompatível detectado"
+msgstr "Desabilitando vista tabelada: Tcl/Tk incompatível detectado"
 
 msgid "Library"
 msgstr "Biblioteca"
@@ -953,7 +954,7 @@ msgstr "Log"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "Procrando por \"%s\"..."
+msgstr "Procurando por \"%s\"..."
 
 #, tcl-format
 msgid "online? %s"
@@ -987,10 +988,10 @@ msgstr "Instalar %1$s em %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr "Cancelando download de '%s': Nenhum diretório de instalação dado."
+msgstr "Cancelando download de '%s': Nenhum diretório de instalação foi dado."
 
 msgid "Installing to non-existant directory failed"
-msgstr "Instalação a um diretório não existente falhou"
+msgstr "Falha ao instalar em um diretório não existente"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
@@ -1015,7 +1016,7 @@ msgstr "abortando."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr "Falha fazendo download de '%s'"
+msgstr "Falha ao fazer download de '%s'"
 
 msgid "Download failed!"
 msgstr "Download falhou!"
@@ -1028,7 +1029,7 @@ msgstr "Ignorando mismatch de checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "deken-plugin.tcl (busca de externals Pd) carregado de %s."
+msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1047,7 +1048,7 @@ msgstr "Nenhum servidor encontrado para procurar..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Enviado por %1$s @ %2$s"
+msgstr "Enviado por %1$s em %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1066,7 +1067,7 @@ msgid "Deselect package"
 msgstr "Desselecionar pacote"
 
 msgid "Open package webpage"
-msgstr "Abrir webpage do package"
+msgstr "Abrir webpage do pacote"
 
 msgid "Copy package URL"
 msgstr "Copiar URL do pacote"
@@ -1090,7 +1091,7 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"Você quer que o Pd use o diretório de documentos existe para patches e "
+"Você quer que o Pd use o diretório de documentos existente para patches e "
 "Bibliotecas de externals?\n"
 "\n"
 "Localidade: %s\n"
@@ -1123,7 +1124,7 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
-"Diretório de documentos do Pd não pode ser encontrado:\n"
+"Diretório de documentos do Pd não encontrado:\n"
 "\n"
 "%s\n"
 "\n"
@@ -1135,7 +1136,7 @@ msgstr "impossível criar diretório de documentos Pd: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr "impossível criar diretório de documentos Pd em: %s"
+msgstr "impossível criar diretório de \"externals\" em: %s"
 
 msgid "refusing to delete empty domain"
 msgstr "recusando deletar domínio vazio"
@@ -1153,13 +1154,13 @@ msgstr "Sobre o Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
-msgstr "não foi possível ler documento \"%s\""
+msgstr "não foi possível ler o documento \"%s\""
 
 msgid "Save"
 msgstr "Salvar"
 
 msgid "Save As..."
-msgstr "Salvar como..."
+msgstr "Salvar Como..."
 
 msgid "Print..."
 msgstr "Imprimir..."
@@ -1370,31 +1371,31 @@ msgid "Audio off"
 msgstr "Áudio desligado"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
 msgstr "Erro de Entrada/Saída de áudio"
 
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatal"
 
 msgid "error"
 msgstr "erro"
 
 msgid "normal"
-msgstr ""
+msgstr "normal"
 
 msgid "debug"
 msgstr "debugar"
@@ -1413,7 +1414,7 @@ msgstr "Deletar"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr "ignorando '%s': não parece com um arquivo de Pd"
+msgstr "ignorando '%s': não parece ser um arquivo de Pd"
 
 #~ msgid "_"
 #~ msgstr "_"

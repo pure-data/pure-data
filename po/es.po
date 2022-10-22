@@ -1,16 +1,20 @@
 # Spanish translations for Pure Data package.
 # This file is put in the public domain.
 # Federico Camara Halac <camarafede@gmail.com>, 2017.
+# Lucas Cordiviola <lucarda27@hotmail.com>, 2020, 2021, 2022.
+# Jaime E Oliver La Rosa <la.rosa@nyu.edu>, 2022.
+# Gravedad Cero <gravedadcerolabs@gmail.com>, 2022
+# Alex Nadzharov <anadjarov@gmail.com>, 2022
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
-"Last-Translator: Jaime E Oliver La Rosa <la.rosa@nyu.edu>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/es/>\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -95,10 +99,10 @@ msgid "removed .pdsettings file"
 msgstr "archivo .pdsettings eliminado"
 
 msgid "couldn't delete .pdsettings file"
-msgstr "no pude borrar el archivo .pdsettings"
+msgstr "no se pudo borrar el archivo .pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr "falla al borrar configuraciones de Pd"
+msgstr "hubo una falla al borrar las configuraciones de Pd"
 
 msgid "erased Pd settings"
 msgstr "configuraciones de Pd eliminadas"
@@ -112,7 +116,7 @@ msgstr ""
 "inicio"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "(click en Guardar Preferencias para re-establecerlas)"
+msgstr "(volver a guardar preferencias para re-establecerlas)"
 
 msgid "File"
 msgstr "Archivo"
@@ -184,7 +188,7 @@ msgid "Options"
 msgstr "Opciones"
 
 msgid "Open List View..."
-msgstr "Ver vista de Lista..."
+msgstr "Ver vista de lista..."
 
 msgid "Delete array"
 msgstr "Eliminar array"
@@ -211,30 +215,28 @@ msgid "Delay (msec):"
 msgstr "Retardo (mseg):"
 
 msgid "48k"
-msgstr "48kHz"
+msgstr "48 kHz"
 
-#, fuzzy
 msgid "44.1k"
-msgstr "44.1kHz"
+msgstr "44.1 kHz"
 
-#, fuzzy
 msgid "96k"
-msgstr "96kHz"
+msgstr "96 kHz"
 
 msgid "Block size:"
-msgstr "Tamaño de Bloque:"
+msgstr "Tamaño de bloque:"
 
 msgid "Use callbacks"
 msgstr "Usar callbacks"
 
 msgid "Input Devices"
-msgstr "Dispositivos de Entrada"
+msgstr "Dispositivos de entrada"
 
 msgid "Channels:"
 msgstr "Canales:"
 
 msgid "Output Devices"
-msgstr "Dispositivos de Salida"
+msgstr "Dispositivos de salida"
 
 msgid "(same as input device)..."
 msgstr "(igual que dispositivos de entrada)..."
@@ -243,14 +245,14 @@ msgid "Use Multiple Devices"
 msgstr "Usar múltiples dispositivos"
 
 msgid "Save All Settings"
-msgstr "Guardar todas las Configuraciones"
+msgstr "Guardar todas las configuraciones"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 "ADVERTENCIA: banderas graphme desconocidas recibidas en pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
-msgstr "Propiedades de Canvas"
+msgstr "Propiedades del canvas"
 
 msgid "Scale"
 msgstr "Escala"
@@ -271,7 +273,7 @@ msgid "Hide object name and arguments"
 msgstr "Ocultar nombre y argumentos del objeto"
 
 msgid "Range and size"
-msgstr "Rango y Tamaño"
+msgstr "Rango y tamaño"
 
 msgid "X range: from"
 msgstr "Rango X: de"
@@ -286,21 +288,21 @@ msgid "Y range: from"
 msgstr "Rango Y: de"
 
 msgid "Data Properties"
-msgstr "Propiedades de la Data"
+msgstr "Propiedades de los datos"
 
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 msgid "Done"
-msgstr ""
+msgstr "Hecho"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr "Encontrado '%1$s' en %2$s"
+msgstr "Se ha encontrado '%1$s' en %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr "No se encontró '%1$s' en %2$s"
+msgstr "No se ha encontrado '%1$s' en %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
@@ -308,7 +310,7 @@ msgstr "Buscar en %s el término:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr "Último '%1$s' en %2$s ha sido mostrado"
+msgstr "El último '%1$s' en %2$s ha sido mostrado"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
@@ -333,7 +335,7 @@ msgid "Font"
 msgstr "Fuente"
 
 msgid "Font Size"
-msgstr "Tamaño de Fuente"
+msgstr "Tamaño de fuente"
 
 msgid "Stretch"
 msgstr "Expandir"
@@ -348,16 +350,16 @@ msgid "Y only"
 msgstr "Solo Y"
 
 msgid "GUI Box Properties"
-msgstr "Propiedades de Caja GUI"
+msgstr "Propiedades de caja GUI"
 
 msgid "Messages"
 msgstr "Mensajes"
 
 msgid "Send symbol:"
-msgstr "Enviar Símbolo :"
+msgstr "Símbolo de envío :"
 
 msgid "Receive symbol:"
-msgstr "Recibir símbolo:"
+msgstr "Símbolo de recepción:"
 
 msgid "Width:"
 msgstr "Ancho:"
@@ -387,25 +389,25 @@ msgid "Bottom"
 msgstr "Abajo"
 
 msgid "Background color"
-msgstr "Color de Fondo"
+msgstr "Color de fondo"
 
 msgid "Foreground color"
-msgstr "Color de Frente"
+msgstr "Color de frente"
 
 msgid "Label color"
-msgstr "Color de Etiqueta"
+msgstr "Color de etiqueta"
 
 msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Duración de estado encendido (mseg)"
+msgstr "Duración del flash (mseg)"
 
 msgid "Min:"
-msgstr "Min:"
+msgstr "Mín:"
 
 msgid "Max:"
-msgstr "Max:"
+msgstr "Máx:"
 
 #, fuzzy
 msgid "Toggle"
@@ -418,7 +420,7 @@ msgid "Value:"
 msgstr "Valor:"
 
 msgid "Number2"
-msgstr "NúmeroConfigurable"
+msgstr "Número2"
 
 msgid "Width (digits):"
 msgstr "Ancho (dígitos):"
@@ -427,10 +429,10 @@ msgid "Height:"
 msgstr "Altura:"
 
 msgid "Output Range"
-msgstr "Rango de Salida"
+msgstr "Rango de salida"
 
 msgid "Log height:"
-msgstr "Altura Log:"
+msgstr "Altura log:"
 
 #, fuzzy
 msgid "Vslider"
@@ -441,13 +443,13 @@ msgid "Hslider"
 msgstr "ReguladorH"
 
 msgid "Vradio"
-msgstr "selectorV"
+msgstr "Selector (vert.)"
 
 msgid "Num cells:"
-msgstr "Número de Celdas:"
+msgstr "Número de celdas:"
 
 msgid "Hradio"
-msgstr "SelectorH"
+msgstr "Selector (horiz.)"
 
 msgid "VU Meter"
 msgstr "Medidor VU"
@@ -457,7 +459,7 @@ msgid "Canvas"
 msgstr "Lienzo"
 
 msgid "Visible Rectangle (pix)"
-msgstr "Rectángulo Visible (pix)"
+msgstr "Rectángulo visible (pix)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -466,24 +468,23 @@ msgstr "%s Propiedades"
 msgid "Parameters"
 msgstr "Parámetros"
 
-#, fuzzy
 msgid "Init"
-msgstr "Init"
+msgstr "Inicializar"
 
 msgid "No init"
-msgstr "Sin init"
+msgstr "Sin inicializar"
 
 msgid "Jump on click"
-msgstr "Saltar a Valor con el click"
+msgstr "Saltar al valor con click"
 
 msgid "Steady on click"
-msgstr "No saltar con el click ( steady)"
+msgstr "Mantener valor con click"
 
 msgid "X offset:"
-msgstr "desplazamiento X:"
+msgstr "Compensar X:"
 
 msgid "Y offset:"
-msgstr "Desplazamiento Y:"
+msgstr "Compensar Y:"
 
 msgid "Colors"
 msgstr "Colores"
@@ -501,10 +502,10 @@ msgid "Test label"
 msgstr "Etiqueta de prueba"
 
 msgid "Send a Pd message"
-msgstr "Enviar un mensaje de Pd"
+msgstr "Enviar un mensaje Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "(usar flechas del teclado para historial)"
+msgstr "(usar flechas del teclado para navegar el historial)"
 
 msgid "MIDI Settings"
 msgstr "Configuración MIDI"
@@ -513,10 +514,10 @@ msgid "ALSA MIDI Settings"
 msgstr "Configuración ALSA MIDI"
 
 msgid "In Ports:"
-msgstr "Puertos de Entrada:"
+msgstr "Puertos de entrada:"
 
 msgid "Out Ports:"
-msgstr "Puertos de Salida:"
+msgstr "Puertos de salida:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr "Ruta de búsqueda de Pd para objetos, ayuda, fuentes, y otros archivos"
@@ -525,13 +526,13 @@ msgid "Use standard paths"
 msgstr "Usar rutas estándar"
 
 msgid "Verbose"
-msgstr "Verborréico (verbose)"
+msgstr "Consola detallada"
 
 msgid "Pd Documents Directory"
 msgstr "Directorio de documentos de Pd"
 
 msgid "Browse"
-msgstr "Explorar"
+msgstr "Navegar"
 
 msgid "Reset"
 msgstr "Resetear"
@@ -556,7 +557,7 @@ msgstr "Agregar una nueva ruta"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Editar ruta existente [%s]"
 
 msgid "Add new library"
 msgstr "Añadir nueva librería"
@@ -1181,7 +1182,7 @@ msgid "Print..."
 msgstr "Imprimir..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Pegar reemplazar"
 
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -1199,7 +1200,7 @@ msgid "(Dis)Connect Selection"
 msgstr "(Des)Conectar Selección"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "Triggerizar"
 
 msgid "Edit Mode"
 msgstr "Modo Edición"
@@ -1238,7 +1239,7 @@ msgid "Number"
 msgstr "Número"
 
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 msgid "Symbol"
 msgstr "Símbolo"
@@ -1304,7 +1305,7 @@ msgid "List of objects..."
 msgstr "Lista de objetos..."
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
 msgstr "Buscar actualizaciones"
@@ -1335,10 +1336,10 @@ msgid "Startup..."
 msgstr "Inicio..."
 
 msgid "Audio..."
-msgstr ""
+msgstr "Audio..."
 
 msgid "MIDI..."
-msgstr ""
+msgstr "MIDI..."
 
 msgid "Zoom New Windows"
 msgstr "Agrandar nuevas ventanas"
@@ -1389,19 +1390,19 @@ msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr "(Tcl) FALTA CORCHETE DE CIERRE ']': "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
 msgstr "Error E/S de Audio"
 
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 msgid "fatal"
 msgstr "fatal"

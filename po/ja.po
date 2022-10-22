@@ -1,41 +1,44 @@
-# Translation of Pure Data to Arabic.
+# Translation of Pure Data to Japanese.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: ar\n"
+"PO-Revision-Date: 2022-10-21 17:41+0000\n"
+"Last-Translator: Hyun-Mook Lim <windshy8500@naver.com>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "線形"
 
+#, fuzzy
 msgid "logarithmic"
-msgstr ""
+msgstr "対数形"
 
 msgid "new-only"
-msgstr ""
+msgstr "新しいのみ"
 
 msgid "new&old"
-msgstr ""
+msgstr "新しい＆古い"
 
 msgid "no scale"
-msgstr ""
+msgstr "スケールなし"
 
 msgid "scale"
-msgstr ""
+msgstr "スケール"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "'%s'の変更を保存しないで続けますか?"
 
 msgid "Undo clear"
 msgstr ""

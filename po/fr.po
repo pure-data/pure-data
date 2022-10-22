@@ -1,13 +1,18 @@
 # French translation for Pure Data
 # This file is put in the public domain.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
+# Antoine Rousseau <antoine@metalu.net>, 2017 2018, 2019, 2020, 2021, 2022.
+# J. Lavoie <j.lavoie@net-c.ca>, 2022.
+# Serguei Mokhov <mokhov@cse.concordia.ca>, 2022.
+# cyrille henry <ch@nozoid.com>, 2009, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 10:55+0000\n"
-"Last-Translator: Serguei Mokhov <mokhov@cse.concordia.ca>\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
 "Language: fr\n"
@@ -283,13 +288,11 @@ msgstr "Intervalle Y : de"
 msgid "Data Properties"
 msgstr "Propriétés de la donnée"
 
-#, fuzzy
 msgid "Send"
 msgstr "Envoyer"
 
-#, fuzzy
 msgid "Done"
-msgstr "Fini"
+msgstr "D'accord"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -461,7 +464,7 @@ msgid "Init"
 msgstr "Initialisation"
 
 msgid "No init"
-msgstr "Pas d'init."
+msgstr "Pas d'init"
 
 msgid "Jump on click"
 msgstr "Instantané"
@@ -545,7 +548,7 @@ msgstr "Installer les externals dans le dossier :"
 msgid "Add a new path"
 msgstr "Ajouter un chemin"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Edit existing path [%s]"
 msgstr "Modifier le chemin d'accès existant [%s]"
 
