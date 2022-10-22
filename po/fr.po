@@ -1,5 +1,10 @@
 # French translation for Pure Data
 # This file is put in the public domain.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
+# Antoine Rousseau <antoine@metalu.net>, 2017 2018, 2019, 2020, 2021, 2022.
+# J. Lavoie <j.lavoie@net-c.ca>, 2022.
+# Serguei Mokhov <mokhov@cse.concordia.ca>, 2022.
+# cyrille henry <ch@nozoid.com>, 2009, 2017.
 #
 msgid ""
 msgstr ""

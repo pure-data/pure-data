@@ -1,6 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Polish.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# | || | | <aalderson@caramail.com>, 2022.
 #
 msgid ""
 msgstr ""

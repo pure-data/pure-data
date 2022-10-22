@@ -1,4 +1,4 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Japanese.
 # This file is put in the public domain.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 msgid ""

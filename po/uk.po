@@ -1,6 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Ukrainian.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
 #
 msgid ""
 msgstr ""

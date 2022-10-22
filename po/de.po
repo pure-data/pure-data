@@ -1,6 +1,9 @@
 # German translation of Pure Data
 # This file is put in the public domain
-# Max Neupert <first_letter_of_name@maxneupert.de>, 2009.
+# Max Neupert <first_letter_of_name@maxneupert.de>, 2009, 2018.
+# Dan Wilcox <danomatika@gmail.com>, 2017, 2018, 2019.
+# IOhannes m zmölnig <zmoelnig@iem.at>, 2017, 2018, 2019, 2020, 2021, 2022.
+# Winfried Ritsch <ritsch@iem.at>, 2018.
 #
 msgid ""
 msgstr ""

@@ -1,4 +1,4 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Arabic.
 # This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #

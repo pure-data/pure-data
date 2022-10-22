@@ -1,6 +1,10 @@
 # Spanish translations for Pure Data package.
 # This file is put in the public domain.
 # Federico Camara Halac <camarafede@gmail.com>, 2017.
+# Lucas Cordiviola <lucarda27@hotmail.com>, 2020, 2021, 2022.
+# Jaime E Oliver La Rosa <la.rosa@nyu.edu>, 2022.
+# Gravedad Cero <gravedadcerolabs@gmail.com>, 2022
+# Alex Nadzharov <anadjarov@gmail.com>, 2022
 #
 msgid ""
 msgstr ""

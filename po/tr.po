@@ -1,4 +1,4 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Turkish.
 # This file is put in the public domain.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
 msgid ""

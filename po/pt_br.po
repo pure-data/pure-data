@@ -1,6 +1,6 @@
 # Brazilian Portuguese translation for Pure Data
 # This file is put in the public domain.
-# Alexandre Torres Porres <porres@gmail.com>, 2022.
+# Alexandre Torres Porres <porres@gmail.com>, 2017, 2018, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"

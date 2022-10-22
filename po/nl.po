@@ -1,6 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Dutch.
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Timothy Schoen <timschoen123@gmail.com>, 2022.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
 #
 msgid ""
 msgstr ""

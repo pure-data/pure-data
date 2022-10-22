@@ -1,5 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
+# Translation of Pure Data to Korean.
 # This file is put in the public domain.
+# Max Neupert <abonnements@revolwear.com>, 2022.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 msgid ""
 msgstr ""
