@@ -187,7 +187,7 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     {
         /* the "symto" field is undefined for signal inlets, so we don't
          attempt to translate the selector, just forward the original msg. */
-        
+
         if (x->i_symfrom == &s_signal)
             typedmess(x->i_dest, s, argc, argv);
         else
@@ -732,6 +732,12 @@ done:
 }
 
 /* ------ traversal routines for code that can't see our structures ------ */
+t_outlet *obj_getoutlet(const t_object *x, int nout)
+{
+    t_outlet *o;
+    for(o = x->ob_outlet; o && nout--; o = o->o_next);
+    return o;
+}
 
 int obj_noutlets(const t_object *x)
 {
@@ -741,6 +747,12 @@ int obj_noutlets(const t_object *x)
     return (n);
 }
 
+t_inlet *obj_getinlet(const t_object *x, int nin)
+{
+    t_inlet *i;
+    for(i = x->ob_inlet; i && nin--; i = i->i_next);
+    return i;
+}
 int obj_ninlets(const t_object *x)
 {
     int n;
@@ -990,5 +1002,3 @@ void obj_init(void)
     class_addanything(backtracer_class, backtracer_anything);
 
 }
-
-

@@ -55,19 +55,12 @@ static t_glist *glist_finddirty(t_glist *x);
 static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
 void canvas_setgraph(t_glist *x, int flag, int nogoprect);
+t_outlet *obj_getoutlet(const t_object *x, int nout);
 
 /* ------------------------ managing the selection ----------------- */
+static const char*selection_tag = "selection"; /* we really only need an address */
 void glist_deselectline(t_glist *x);
 
-static void _editor_selectlinecolor(t_glist*x, const char*color)
-{
-    char tag[128];
-    sprintf(tag, "l%lx", x->gl_editor->e_selectline_tag);
-    pdgui_vmess(0, "crs rs",
-        x, "itemconfigure", tag,
-        "-fill", color);
-
-}
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
     int outno, int index2, int inno)
 {
@@ -81,7 +74,7 @@ void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
         x->gl_editor->e_selectline_index2 = index2;
         x->gl_editor->e_selectline_inno = inno;
         x->gl_editor->e_selectline_tag = oc;
-        _editor_selectlinecolor(x, "blue");
+        pdgui_vmess("::pdwidget::select", "oi", x->gl_editor->e_selectline_tag, 1);
     }
 }
 
@@ -89,8 +82,9 @@ void glist_deselectline(t_glist *x)
 {
     if (x->gl_editor)
     {
+        if(x->gl_editor->e_selectline_tag)
+            pdgui_vmess("::pdwidget::select", "oi", x->gl_editor->e_selectline_tag, 0);
         x->gl_editor->e_selectedline = 0;
-        _editor_selectlinecolor(x, "black");
     }
 }
 
@@ -464,9 +458,7 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            char tag[128];
-            sprintf(tag, "l%lx", oc);
-            pdgui_vmess(0, "crs", x, "delete", tag);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }
@@ -1719,14 +1711,14 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 /* ------------------------ event handling ------------------------ */
 
 static const char *cursorlist[] = {
-    "$cursor_runmode_nothing",
-    "$cursor_runmode_clickme",
-    "$cursor_runmode_thicken",
-    "$cursor_runmode_addpoint",
-    "$cursor_editmode_nothing",
-    "$cursor_editmode_connect",
-    "$cursor_editmode_disconnect",
-    "$cursor_editmode_resize"
+    "runmode_nothing",
+    "runmode_clickme",
+    "runmode_thicken",
+    "runmode_addpoint",
+    "editmode_nothing",
+    "editmode_connect",
+    "editmode_disconnect",
+    "editmode_resize"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)
@@ -1739,7 +1731,7 @@ void canvas_setcursor(t_canvas *x, unsigned int cursornum)
     if (EDITOR->canvas_cursorcanvaswas != x ||
         EDITOR->canvas_cursorwas != cursornum)
     {
-        pdgui_vmess(0, "^r rr", x, "configure", "-cursor", cursorlist[cursornum]);
+        pdgui_vmess("::pd::canvas::set_cursor", "cr", x, cursorlist[cursornum]);
         EDITOR->canvas_cursorcanvaswas = x;
         EDITOR->canvas_cursorwas = cursornum;
     }
@@ -2395,16 +2387,16 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 {
                     if (doit)
                     {
+                        t_outlet*o = obj_getoutlet(hitobj, closest);
                         int issignal = obj_issignaloutlet(hitobj, closest);
                         x->gl_editor->e_onmotion = MA_CONNECT;
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
-                        pdgui_vmess(0, "crr iiii ri rs",
-                            x, "create", "line",
-                            xpos,ypos, xpos,ypos,
-                            "-width", (issignal ? 2 : 1) * x->gl_zoom,
-                            "-tags", "x");
+                        pdgui_vmess("::pdwidget::create", "roc ii", "connection"
+                            , o, x, xpos, ypos);
+                        pdgui_vmess("::pdwidget::config", "o rs", o
+                            , "-type", issignal?"signal":"message");
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2546,11 +2538,10 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
     if (doit)
     {
+        t_float zoom = x->gl_zoom;
         if (!shiftmod) glist_noselect(x);
-        pdgui_vmess(0, "crr iiii rs",
-            x, "create", "rectangle",
-            xpos,ypos, xpos,ypos,
-            "-tags", "x");
+        pdgui_vmess("::pdwidget::create", "roc ff", "selection"
+                    , selection_tag, x, xpos/zoom, ypos/zoom);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -2595,6 +2586,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         if(oc)
         {
+            const t_float zoom = glist_getzoom(x);
             int iow = IOWIDTH * x->gl_zoom;
             int iom = IOMIDDLE * x->gl_zoom;
             int x11=0, x12=0, x21=0, x22=0;
@@ -2602,6 +2594,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
             char*tags[] = {tag, "cord"};
+            t_float position[4];
             sprintf(tag, "l%lx", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
@@ -2617,11 +2610,20 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess(0, "crr iiii ri rS",
-                glist_getcanvas(x), "create", "line",
-                lx1,ly1, lx2,ly2,
-                "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
-                "-tags", 2, tags);
+
+            position[0] = lx1/zoom;
+            position[1] = ly1/zoom;
+            position[2] = lx2/zoom;
+            position[3] = ly2/zoom;
+
+            pdgui_vmess("::pdwidget::create", "roc ii", "connection"
+                , oc, glist_getcanvas(x)
+                , 0, 0
+                );
+            pdgui_vmess("::pdwidget::config", "o rF rs", oc
+                , "-position", 4, position
+                , "-type", (obj_issignaloutlet(src, nout) ? "signal":"message")
+                );
             canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &src->ob_g), nout,
                     canvas_getindex(x, &sink->ob_g), nin));
@@ -2632,215 +2634,225 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
     return 0;
 }
 
-static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
+
+static t_object*_getobjectat(t_canvas *x, int posX, int posY, int*x1, int*y1, int*x2, int *y2)
+{
+    t_gobj*y = canvas_findhitbox(x, posX, posY, x1, y1, x2, y2);
+    if(y)
+        return pd_checkobject(&y->g_pd);
+    return 0;
+}
+static int _getclosest(int numiolets, int posX, int x1, int x2)
+{
+    int width = x1-x2, closest;
+    if(!width)
+        return 0;
+
+    switch(numiolets) {
+    case 1:
+        closest = 0;
+        break;
+    default:
+        closest = ((posX-x1) * (numiolets-1) + width/2)/width;
+        break;
+    }
+    if(closest >= numiolets)
+        closest = numiolets - 1;
+    if(closest < 0)
+        closest = 0;
+    return closest;
+}
+static int _doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 {
     int x11=0, y11=0, x12=0, y12=0;
-    t_gobj *y1;
     int x21=0, y21=0, x22=0, y22=0;
-    t_gobj *y2;
     int xwas = x->gl_editor->e_xwas,
         ywas = x->gl_editor->e_ywas;
+    t_object *ob1 = _getobjectat(x, xwas, ywas, &x11, &y11, &x12, &y12);
+    t_object *ob2 = 0;
+    int closest1, closest2, noutlet1, ninlet2;
+    t_outlet*out;
+    t_selection *sel;
+    int selmode = 0;
+    if(!ob1)return CURSOR_EDITMODE_NOTHING;
+    noutlet1 = obj_noutlets(ob1);
+    if(!noutlet1)return CURSOR_EDITMODE_NOTHING;
+    closest1 = _getclosest(noutlet1, xwas, x11, x12);
+    out = obj_getoutlet(ob1, closest1);
+
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
+
     if (doit) {
         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 1);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess("::pdwidget::destroy", "o", out);
+    } else {
+        t_float position[4] = {xwas, ywas, xpos, ypos};
+        pdgui_vmess("::pdwidget::config", "o rF", out
+            , "-position", 4, position
+            );
     }
-    else
-        pdgui_vmess(0, "crs iiii",
-            x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
 
-    if ((y1 = canvas_findhitbox(x, xwas, ywas, &x11, &y11, &x12, &y12))
-        && (y2 = canvas_findhitbox(x, xpos, ypos, &x21, &y21, &x22, &y22)))
+    ob2 = _getobjectat(x, xpos, ypos, &x21, &y21, &x22, &y22);
+    if(!ob2)return CURSOR_EDITMODE_NOTHING;
+    ninlet2 = obj_ninlets(ob2);
+    if(!ninlet2)return CURSOR_EDITMODE_NOTHING;
+    closest2 = _getclosest(ninlet2, xpos, x21, x22);
+
+    if (canvas_isconnected (x, ob1, closest1, ob2, closest2))
+        return CURSOR_EDITMODE_NOTHING;
+
+    if (obj_issignaloutlet(ob1, closest1) &&
+        !obj_issignalinlet(ob2, closest2))
     {
-        t_object *ob1 = pd_checkobject(&y1->g_pd);
-        t_object *ob2 = pd_checkobject(&y2->g_pd);
-        int noutlet1, ninlet2;
-        if (ob1 && ob2 && ob1 != ob2 &&
-            (noutlet1 = obj_noutlets(ob1))
-            && (ninlet2 = obj_ninlets(ob2)))
-        {
-            int width1 = x12 - x11, closest1, hotspot1;
-            int width2 = x22 - x21, closest2, hotspot2;
-
-            if (noutlet1 > 1)
-            {
-                closest1 = ((xwas-x11) * (noutlet1-1) + width1/2)/width1;
-                hotspot1 = x11 +
-                    (width1 - IOWIDTH) * closest1 / (noutlet1-1);
-            }
-            else closest1 = 0, hotspot1 = x11;
-
-            if (ninlet2 > 1)
-            {
-                closest2 = ((xpos-x21) * (ninlet2-1) + width2/2)/width2;
-                hotspot2 = x21 +
-                    (width2 - IOWIDTH) * closest2 / (ninlet2-1);
-            }
-            else closest2 = 0, hotspot2 = x21;
-
-            if (closest1 >= noutlet1)
-                closest1 = noutlet1 - 1;
-            if (closest2 >= ninlet2)
-                closest2 = ninlet2 - 1;
-
-            if (canvas_isconnected (x, ob1, closest1, ob2, closest2))
-            {
-                canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
-                return;
-            }
-            if (obj_issignaloutlet(ob1, closest1) &&
-                !obj_issignalinlet(ob2, closest2))
-            {
-                if (doit)
-                    pd_error(0, "can't connect audio signal outlet to nonsignal inlet");
-                canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
-                return;
-            }
-            if (doit)
-            {
-                t_selection *sel;
-                int selmode = 0;
-                canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
-                tryconnect(x, ob1, closest1, ob2, closest2);
-                canvas_dirty(x, 1);
-                    /* now find out if either ob1 xor ob2 are part of the selection,
-                     * and if so, connect the rest of the selection as well */
-                if(mod & SHIFTMOD) /* intelligent patching needs to be activated by modifier key */
-                    selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
-                switch(selmode) {
-                case 3: /* both source and sink are selected */
-                        /* if only the source & sink are selected, keep connecting them */
-                    if(0 == x->gl_editor->e_selection->sel_next->sel_next)
-                    {
-                        int i, j;
-                        for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
-                            tryconnect(x, ob1, i, ob2, j);
-                    }
-                    else
-                            /* if other objects are selected as well, connect those either as
-                             * sources or sinks, whichever allows for more connections
-                             */
-                    {
-                            /* get a left-right sorted list of all selected objects
-                             * (but the already connected ones)
-                             * count the possibles sinks and sources
-                             */
-                        int mode = 0;
-                        int i;
-                        int sinks = 0, sources = 0;
-                        t_float ysinks = 0., ysources = 0.;
-                        int msgout = !obj_issignaloutlet(ob1, closest1);
-                        int sigin = obj_issignalinlet(ob2, closest2);
-                        t_selection*sortedsel = 0;
-                            /* sort the selected objects from left-right */
-                        for(sel = x->gl_editor->e_selection, i=1; sel; sel = sel->sel_next, i++)
-                        {
-                            t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
-                            t_selection*sob = 0;
-                                /* skip illegal objects and the reference source&sink */
-                            if (!ob || (ob1 == ob) || (ob2 == ob))
-                                continue;
-
-                            if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
-                            {
-                                sinks += 1;
-                                ysinks += ob->te_ypix;
-                            }
-                            if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
-                            {
-                                sources += 1;
-                                ysources += ob->te_ypix;
-                            }
-
-                                /* insert the object into the sortedsel list */
-                            if((sob = getbytes(sizeof(*sob)))) {
-                                t_selection*s, *slast=0;
-                                sob->sel_what = &ob->te_g;
-                                for(s=sortedsel; s; s=s->sel_next)
-                                {
-                                    t_object*o = pd_checkobject(&s->sel_what->g_pd);
-                                    if(!o) continue;
-                                    if((ob->te_xpix < o->te_xpix) || ((ob->te_xpix == o->te_xpix) && (ob->te_ypix < o->te_ypix)))
-                                    {
-                                        sob->sel_next = s;
-                                        if(slast)
-                                            slast->sel_next = sob;
-                                        else
-                                            sortedsel = sob;
-                                        break;
-                                    }
-                                    slast=s;
-                                }
-                                if(slast)
-                                    slast->sel_next = sob;
-                                else
-                                    sortedsel = sob;
-                            }
-                        }
-                            /* try to maximize connections */
-                        mode = (sinks > sources);
-
-                            /* maximizing failed, so prefer to connect from top to bottom */
-                        if (sinks && (sinks == sources)) {
-                            mode = ((ysinks - ob1->te_ypix) / sinks) > ((ysources - ob2->te_ypix) / sources) * -1.;
-                        }
-
-                        sinks = 0;
-                        sources = 0;
-                        if (mode)
-                            for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
-                            {
-                                sinks += tryconnect(x,
-                                                    ob1, closest1 + 1 + sinks,
-                                                    pd_checkobject(&sel->sel_what->g_pd), closest2);
-                            }
-                        else
-                            for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
-                            {
-                                sources += tryconnect(x,
-                                                      pd_checkobject(&sel->sel_what->g_pd), closest1,
-                                                      ob2, closest2 + 1 + sources);
-                            }
-
-                            /* free the sorted list of selections */
-                        for(sel=sortedsel; sel; )
-                        {
-                            t_selection*s = sel->sel_next;
-                            freebytes(sel, sizeof(*sel));
-                            sel = s;
-                        }
-                    }
-                    break;
-                case 1: /* source(s) selected */
-                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-                    {
-                        t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
-                        if (!selo || selo == ob1)
-                            continue;
-                        tryconnect(x, selo, closest1, ob2, closest2);
-                    }
-                    break;
-                case 2: /* sink(s) selected */
-                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
-                    {
-                        t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
-                        if (!selo || selo == ob2)
-                            continue;
-                        tryconnect(x, ob1, closest1, selo, closest2);
-                    }
-                    break;
-                default: break;
-                }
-                canvas_undo_add(x, UNDO_SEQUENCE_END, "connect", 0);
-            }
-            else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
-            return;
-        }
+        if (doit)
+            pd_error(0, "can't connect audio signal outlet to nonsignal inlet");
+        return CURSOR_EDITMODE_NOTHING;
     }
-    canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
+
+    if(!doit)
+        return CURSOR_EDITMODE_CONNECT;
+
+    canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
+    tryconnect(x, ob1, closest1, ob2, closest2);
+    canvas_dirty(x, 1);
+    /* now find out if either ob1 xor ob2 are part of the selection,
+     * and if so, connect the rest of the selection as well */
+    if(mod & SHIFTMOD) /* intelligent patching needs to be activated by modifier key */
+        selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
+    switch(selmode) {
+    case 3: /* both source and sink are selected */
+        /* if only the source & sink are selected, keep connecting them */
+        if(0 == x->gl_editor->e_selection->sel_next->sel_next)
+        {
+            int i, j;
+            for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
+                tryconnect(x, ob1, i, ob2, j);
+        }
+        else
+            /* if other objects are selected as well, connect those either as
+             * sources or sinks, whichever allows for more connections
+             */
+        {
+            /* get a left-right sorted list of all selected objects
+             * (but the already connected ones)
+             * count the possibles sinks and sources
+             */
+            int mode = 0;
+            int i;
+            int sinks = 0, sources = 0;
+            t_float ysinks = 0., ysources = 0.;
+            int msgout = !obj_issignaloutlet(ob1, closest1);
+            int sigin = obj_issignalinlet(ob2, closest2);
+            t_selection*sortedsel = 0;
+            /* sort the selected objects from left-right */
+            for(sel = x->gl_editor->e_selection, i=1; sel; sel = sel->sel_next, i++)
+            {
+                t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
+                t_selection*sob = 0;
+                /* skip illegal objects and the reference source&sink */
+                if (!ob || (ob1 == ob) || (ob2 == ob))
+                    continue;
+
+                if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
+                {
+                    sinks += 1;
+                    ysinks += ob->te_ypix;
+                }
+                if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
+                {
+                    sources += 1;
+                    ysources += ob->te_ypix;
+                }
+
+                /* insert the object into the sortedsel list */
+                if((sob = getbytes(sizeof(*sob)))) {
+                    t_selection*s, *slast=0;
+                    sob->sel_what = &ob->te_g;
+                    for(s=sortedsel; s; s=s->sel_next)
+                    {
+                        t_object*o = pd_checkobject(&s->sel_what->g_pd);
+                        if(!o) continue;
+                        if((ob->te_xpix < o->te_xpix) || ((ob->te_xpix == o->te_xpix) && (ob->te_ypix < o->te_ypix)))
+                        {
+                            sob->sel_next = s;
+                            if(slast)
+                                slast->sel_next = sob;
+                            else
+                                sortedsel = sob;
+                            break;
+                        }
+                        slast=s;
+                    }
+                    if(slast)
+                        slast->sel_next = sob;
+                    else
+                        sortedsel = sob;
+                }
+            }
+            /* try to maximize connections */
+            mode = (sinks > sources);
+
+            /* maximizing failed, so prefer to connect from top to bottom */
+            if (sinks && (sinks == sources)) {
+                mode = ((ysinks - ob1->te_ypix) / sinks) > ((ysources - ob2->te_ypix) / sources) * -1.;
+            }
+
+            sinks = 0;
+            sources = 0;
+            if (mode)
+                for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
+                {
+                    sinks += tryconnect(x,
+                                        ob1, closest1 + 1 + sinks,
+                                        pd_checkobject(&sel->sel_what->g_pd), closest2);
+                }
+            else
+                for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
+                {
+                    sources += tryconnect(x,
+                                          pd_checkobject(&sel->sel_what->g_pd), closest1,
+                                          ob2, closest2 + 1 + sources);
+                }
+
+            /* free the sorted list of selections */
+            for(sel=sortedsel; sel; )
+            {
+                t_selection*s = sel->sel_next;
+                freebytes(sel, sizeof(*sel));
+                sel = s;
+            }
+        }
+        break;
+    case 1: /* source(s) selected */
+        for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+        {
+            t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
+            if (!selo || selo == ob1)
+                continue;
+            tryconnect(x, selo, closest1, ob2, closest2);
+        }
+        break;
+    case 2: /* sink(s) selected */
+        for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+        {
+            t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
+            if (!selo || selo == ob2)
+                continue;
+            tryconnect(x, ob1, closest1, selo, closest2);
+        }
+        break;
+    default: break;
+    }
+    canvas_undo_add(x, UNDO_SEQUENCE_END, "connect", 0);
+    return -1;
+}
+static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
+{
+    int cursor = _doconnect(x, xpos, ypos, mod, doit);
+    if(cursor >= 0)
+        canvas_setcursor(x, cursor);
 }
 
 void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy)
@@ -2868,13 +2880,15 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
             loy = x->gl_editor->e_ywas, hiy = ypos;
         else hiy = x->gl_editor->e_ywas, loy = ypos;
         canvas_selectinrect(x, lox, loy, hix, hiy);
-        pdgui_vmess(0, "crs", x, "delete", "x");
+        pdgui_vmess("::pdwidget::destroy", "o", selection_tag);
         x->gl_editor->e_onmotion = MA_NONE;
+    } else {
+        t_float zoom = x->gl_zoom;
+        t_float size[2] = {(xpos-x->gl_editor->e_xwas) / zoom, (ypos-x->gl_editor->e_ywas) / zoom};
+        pdgui_vmess("::pdwidget::config", "o rF", selection_tag
+            , "-size", 2, size
+            );
     }
-    else
-        pdgui_vmess(0, "crs iiii",
-            x, "coords", "x",
-            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos);
 }
 
 void canvas_mouseup(t_canvas *x,
@@ -3393,6 +3407,7 @@ typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
 /* LATER, if canvas is flipped, re-scroll to preserve bottom left corner */
 static void canvas_zoom(t_canvas *x, t_floatarg zoom)
 {
+    pdgui_vmess("::pd::canvas::set_zoom", "cf", x, zoom);
     if (zoom != x->gl_zoom && (zoom == 1 || zoom == 2))
     {
         t_gobj *g;
@@ -4410,14 +4425,13 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        char tag[128];
-        char*tags[] = {tag, "cord"};
-        sprintf(tag, "l%lx", oc);
-        pdgui_vmess(0, "crr iiii ri rS",
-            glist_getcanvas(x), "create", "line",
-            0, 0, 0, 0,
-            "-width", (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom,
-            "-tags", 2, tags);
+        pdgui_vmess("::pdwidget::create", "roc ii", "connection"
+            , oc, glist_getcanvas(x)
+            , 0, 0
+            );
+        pdgui_vmess("::pdwidget::config", "o rs", oc
+            , "-type", (obj_issignaloutlet(objsrc, outno) ? "signal":"message")
+            );
         canvas_fixlinesfor(x, objsrc);
     }
     return;
@@ -4823,14 +4837,11 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         if (glist_isvisible(x) && glist_istoplevel(x))
         {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
-            pdgui_vmess(0, "crs",
-                glist_getcanvas(x), "delete", "commentbar");
         }
     }
+    pdgui_vmess("::pd::canvas::set_editmode", "ci", glist_getcanvas(x), x->gl_edit);
     if (glist_isvisible(x) && x->gl_havewindow)
     {
-        pdgui_vmess("pdtk_canvas_editmode", "^i",
-            glist_getcanvas(x), x->gl_edit);
         canvas_reflecttitle(x);
     }
 }

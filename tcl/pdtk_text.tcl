@@ -11,6 +11,17 @@ namespace eval ::pdtk_text:: {
     }
 }
 
+proc ::pdtk_text::atoms2text {atoms {escape_spaces true}} {
+    set txt {}
+    if { $escape_spaces} {
+        foreach a $atoms {
+            lappend txt [string map {" " "\\ " ";" "\\;"} $a]
+        }
+        return [join $txt]
+    }
+    return [join $atoms]
+}
+
 # create a new text object (ie. obj, msg, comment)
 # the initializing string ends in an extra space.  This is done in case
 # the last character should have been a backslash ('\') which would have
@@ -44,8 +55,7 @@ proc pdtk_pastetext {tkcanvas} {
         # no selection... do nothing
     } else {
         # turn unicode-encoded stuff (\u...) into unicode characters
-        # 'unescape' needs a trailing space...
-        set buf [::pdtk_text::unescape "${buf} " ]
+        set buf [::pdtk_text::unescape "${buf}" ]
         for {set i 0} {$i < [string length $buf]} {incr i 1} {
             set cha [string index $buf $i]
             scan $cha %c keynum

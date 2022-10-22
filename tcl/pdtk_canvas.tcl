@@ -22,6 +22,9 @@ namespace eval ::pdtk_canvas:: {
 # so we can use it during menuclose
 array set ::pdtk_canvas::::window_fullname {}
 
+# store whether the canvas is currently zoomed or not
+array set ::pdtk_canvas::_zoom {}
+
 array set ::pdtk_canvas::geometry_needs_init {}
 
 # One thing that is tricky to understand is the difference between a Tk
@@ -355,9 +358,7 @@ proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
 
 # check or uncheck the "edit" menu item
 proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
-    set ::editmode_button $state
-    set ::editmode($mytoplevel) $state
-    event generate $mytoplevel <<EditMode>>
+    ::pd::canvas::set_editmode $mytoplevel $state
 }
 
 # message from Pd to update the currently available undo/redo action

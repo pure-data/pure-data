@@ -29,71 +29,27 @@ static t_class *my_canvas_class;
 static void my_canvas_draw_io(t_my_canvas* x, t_glist* glist, int mode) { ; }
 static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
 {
-    const int zoom = IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int offset = (zoom > 1 ? zoom : 0); /* keep zoomed border inside visible area */
-    char tag[128];
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(x->x_gui.x_font));
-    SETFLOAT (fontatoms+1, -(x->x_gui.x_fontsize)*zoom);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-
-    sprintf(tag, "%lxRECT", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos, ypos, xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom);
-    pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
-        "-fill", x->x_gui.x_bcol,
-        "-outline", x->x_gui.x_bcol);
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + offset, ypos + offset,
-        xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom,
-        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom,
-        ypos + x->x_gui.x_ldy * zoom);
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", x->x_gui.x_lcol);
-    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
+    t_float visible[2] = {x->x_vis_w, x->x_vis_h};
+    pdgui_vmess("::pdwidget::config", "o rF"
+        , x
+        , "-visible", 2, visible
+        );
 }
 
 static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag_object[128], tag[128];
-    char *tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%lxOBJ", x);
-
-    sprintf(tag, "%lxRECT", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
-        0, 0, "-anchor", "w", "-tags", 4, tags);
-
-    my_canvas_draw_config(x, glist);
+    const int zoom = IEMGUI_ZOOM(x);
+    pdgui_vmess("::pdwidget::create", "roc ii", "canvas"
+        , x, glist_getcanvas(glist)
+        , text_xpix(&x->x_gui.x_obj, glist) / zoom
+        , text_ypix(&x->x_gui.x_obj, glist) / zoom
+        );
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
 }
 
 static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag[128];
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
-        "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
+    pdgui_vmess("::pdwidget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 /* ------------------------ cnv widgetbehaviour----------------------------- */

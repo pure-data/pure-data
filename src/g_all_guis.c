@@ -461,11 +461,10 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 
     if(senditup)
     {
-        char tag[128];
-        sprintf(tag, "%lxLABEL", x);
-        pdgui_vmess("pdtk_text_set", "cs s",
-            glist_getcanvas(iemgui->x_glist), tag,
-            (strcmp(s->s_name, "empty"))?s->s_name:"");
+        pdgui_vmess("::pdwidget::config", "o rs"
+            , x
+            , "-label", (s?canvas_realizedollar(iemgui->x_glist, s)->s_name:"")
+        );
     }
 }
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -477,18 +476,13 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_ldx = (int)atom_getfloatarg(0, ac, av);
-    iemgui->x_ldy = (int)atom_getfloatarg(1, ac, av);
-    if(glist_isvisible(iemgui->x_glist))
-    {
-        char tag[128];
-        sprintf(tag, "%lxLABEL", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(iemgui->x_glist), "coords", tag,
-            text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
-            text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
-    }
+    t_float pos[2];
+    pos[0] = (t_float)iemgui->x_ldx;
+    pos[1] = (t_float)iemgui->x_ldy;
+    pdgui_vmess("::pdwidget::config", "o rF"
+        , x
+        , "-labelpos",  2, pos
+        );
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
@@ -508,18 +502,11 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(f < 4)
         f = 4;
     iemgui->x_fontsize = f;
-    if(glist_isvisible(iemgui->x_glist))
-    {
-        char tag[128];
-        t_atom fontatoms[3];
-        sprintf(tag, "%lxLABEL", x);
-        SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-        SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-        pdgui_vmess(0, "crs rA",
-            glist_getcanvas(iemgui->x_glist), "itemconfigure", tag,
-            "-font", 3, fontatoms);
-    }
+    pdgui_vmess("::pdwidget::config", "o rs ri"
+        , x
+        , "-font", iemgui->x_font
+        , "-fontsize", iemgui->x_fontsize
+        );
 }
 
 static void iemgui_do_drawmove(void *x, t_iemgui*iemgui)
@@ -872,69 +859,28 @@ static void iemgui_draw_update(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_select(t_iemgui*x, t_glist*glist) {;}
 static void iemgui_draw_iolets(t_iemgui*x, t_glist*glist, int old_snd_rcv_flags)
 {
-    const int zoom = x->x_glist->gl_zoom;
-    int xpos = text_xpix(&x->x_obj, glist);
-    int ypos = text_ypix(&x->x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag_object[128], tag_label[128], tag[128];
-    char *tags[] = {tag_object, tag};
-
-    (void)old_snd_rcv_flags;
-
-    sprintf(tag_object, "%lxOBJ", x);
-    sprintf(tag_label, "%lxLABEL", x);
-
-    /* re-create outlet */
-    sprintf(tag, "%lxOUT%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
-    if(!x->x_fsf.x_snd_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
-            canvas, "create", "rectangle",
-            xpos, ypos + x->x_h + zoom - ioh, xpos + iow, ypos + x->x_h,
-            "-fill", "black",
-            "-tags", 2, tags);
-        /* keep label above outlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
-    }
-
-    /* re-create inlet */
-    sprintf(tag, "%lxIN%d", x, 0);
-    pdgui_vmess(0, "crs", canvas, "delete", tag);
-    if(!x->x_fsf.x_rcv_able) {
-        pdgui_vmess(0, "crr iiii rs rS",
-            canvas, "create", "rectangle",
-            xpos, ypos, xpos + iow, ypos - zoom + ioh,
-            "-fill", "black",
-            "-tags", 2, tags);
-        /* keep label above inlet */
-        pdgui_vmess(0, "crss", canvas, "lower", tag, tag_label);
-    }
+    pdgui_vmess("::pdwidget::show_iolets", "o ii"
+        , x
+        , !x->x_fsf.x_rcv_able, !x->x_fsf.x_snd_able);
 }
 
 static void iemgui_draw_erase(t_iemgui* x, t_glist* glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag_object[128];
-    sprintf(tag_object, "%lxOBJ", x);
-
-    pdgui_vmess(0, "crs", canvas, "delete", tag_object);
+    pdgui_vmess("::pdwidget::destroy", "o", x);
 }
 
 static void iemgui_draw_move(t_iemgui *x, t_glist *glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    int dx = text_xpix(&x->x_obj, glist) - x->x_private->p_prevX;
-    int dy = text_ypix(&x->x_obj, glist) - x->x_private->p_prevY;
-
-    char tag_object[128];
-    sprintf(tag_object, "%lxOBJ", x);
-
-    pdgui_vmess(0, "crs ii", canvas, "move", tag_object, dx, dy);
+    const float inv_zoom = 1. / x->x_glist->gl_zoom;
+    pdgui_vmess("::pdwidget::moveto", "oc ff"
+        , x, glist_getcanvas(glist)
+        , text_xpix(&x->x_obj, glist) * inv_zoom, text_ypix(&x->x_obj, glist) * inv_zoom);
 }
 
 static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
 {
+    const float zoom = x->x_glist->gl_zoom;
+
 #define DRAW_FUN(fun, x, glist) {                                       \
         t_iemdrawfunptr do_draw = x->x_private->p_widget.draw_##fun;    \
         if (!do_draw) do_draw = (t_iemdrawfunptr)iemgui_draw_##fun;     \
@@ -963,7 +909,25 @@ static void iemgui_draw(t_iemgui *x, t_glist *glist, int mode)
         DRAW_FUN(erase, x, glist);
         break;
     case (IEM_GUI_DRAW_MODE_CONFIG):
+    {
+        t_float size[2], labelpos[2];
+        size[0] = x->x_w / zoom;
+        size[1] = x->x_h / zoom;
+        labelpos[0] = x->x_ldx;
+        labelpos[1] = x->x_ldy;
+        pdgui_vmess("::pdwidget::config", "o rF rk rk rk rs ri rF rs"
+            , x
+            , "-size", 2, size
+            , "-bcolor", x->x_bcol
+            , "-fcolor", x->x_fcol
+            , "-lcolor", x->x_lcol
+            , "-font", x->x_font
+            , "-fontsize", x->x_fontsize
+            , "-labelpos", 2, labelpos
+            , "-label", (x->x_lab?canvas_realizedollar(x->x_glist, x->x_lab)->s_name:"")
+        );
         DRAW_FUN(config, x, glist);
+    }
         break;
     default:
         if(x->x_private->p_widget.draw_iolets)

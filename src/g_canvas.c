@@ -136,9 +136,14 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
                boxes inside graphs---except comments, if we're doing the new
                (goprect) style. */
         return (glist->gl_havewindow ||
-            (ob->te_pd != canvas_class &&
-                ob->te_pd->c_wb != &text_widgetbehavior) ||
             (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
+            (ob->te_pd != canvas_class &&
+#if __GNUC__
+# warning stupid check for text_widgetbehaviour
+                    /* in the re-write, we use different widget-behaviours for msgboxes, gatoms,... */
+#endif
+             (ob->te_type != T_MESSAGE) &&
+                ob->te_pd->c_wb != &text_widgetbehavior) ||
             (glist->gl_goprect && (ob->te_type == T_TEXT)));
     }
     else return (1);
@@ -939,17 +944,19 @@ static void canvas_drawlines(t_canvas *x)
     t_linetraverser t;
     t_outconnect *oc;
     {
-        char tag[128];
-        const char*tags[2] = {tag, "cord"};
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
-            sprintf(tag, "l%lx", oc);
-            pdgui_vmess(0, "crr iiii ri rS",
-                glist_getcanvas(x), "create", "line",
-                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
-                "-width", (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
-                "-tags", 2, tags);
+            const t_float zoom = glist_getzoom(x);
+            t_float position[4] = {t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom};
+            pdgui_vmess("::pdwidget::create", "roc ii", "connection"
+                , oc, glist_getcanvas(x)
+                , 0, 0
+                );
+            pdgui_vmess("::pdwidget::config", "o rF rs", oc
+                , "-position", 4, position
+                , "-type", (outlet_getsymbol(t.tr_outlet) == &s_signal ? "signal":"message")
+                );
         }
     }
 }
@@ -963,23 +970,15 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            char tag[128];
-            sprintf(tag, "l%lx", oc);
-            pdgui_vmess(0, "crs iiii",
-                glist_getcanvas(x), "coords", tag,
-                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2);
+            const t_float zoom = glist_getzoom(x);
+            t_float position[4] = {t.tr_lx1/zoom, t.tr_ly1/zoom, t.tr_lx2/zoom ,t.tr_ly2/zoom};
+            pdgui_vmess("::pdwidget::config", "o rF", oc
+                , "-position", 4, position
+                );
         }
     }
 }
 
-static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
-{
-    char tag[128];
-    if (!glist_isvisible(x))
-        return;
-    sprintf(tag, "l%lx", oc);
-    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
-}
 
     /* kill all lines for the object */
 void canvas_deletelinesfor(t_canvas *x, t_text *text)
@@ -991,7 +990,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            _canvas_delete_line(x, oc);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1009,7 +1008,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
-            _canvas_delete_line(x, oc);
+            pdgui_vmess("::pdwidget::destroy", "o", oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1019,6 +1018,7 @@ typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
 
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
+    pdgui_vmess("::pd::canvas::set_zoom", "cf", x, (t_float)sys_zoom_open);
     if (glist_istoplevel(x) && (sys_zoom_open == 2))
     {
         t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));

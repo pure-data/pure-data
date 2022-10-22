@@ -23,12 +23,30 @@
 
 #define MESSAGE_CLICK_WIDTH 5
 
+typedef struct _gatom
+{
+    t_text a_text;
+    int a_flavor;           /* A_FLOAT, A_SYMBOL, or A_LIST */
+    t_glist *a_glist;       /* owning glist */
+    t_float a_toggle;       /* value to toggle to */
+    t_float a_draghi;       /* high end of drag range */
+    t_float a_draglo;       /* low end of drag range */
+    t_symbol *a_label;      /* symbol to show as label next to box */
+    t_symbol *a_symfrom;    /* "receive" name -- bind ourselves to this */
+    t_symbol *a_symto;      /* "send" name -- send to this on output */
+    t_binbuf *a_revertbuf;  /* binbuf to revert to if typing canceled */
+    int a_dragindex;        /* index of atom being dragged */
+    int a_fontsize;
+    unsigned int a_shift:1;         /* was shift key down when drag started? */
+    unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
+    unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
+    unsigned int a_doubleclicked:1; /* 1 if dragging from a double click */
+    t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
+} t_gatom;
+
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
-static void text_vis(t_gobj *z, t_glist *glist, int vis);
-static void text_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy);
 static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2);
 
@@ -353,6 +371,87 @@ void canvas_objfor(t_glist *gl, t_text *x, int argc, t_atom *argv)
     glist_add(gl, &x->te_g);
 }
 
+void rtext_configure(t_object*, t_rtext *x);
+static void object_vis(t_gobj *z, t_glist *glist, int vis)
+{
+    t_text *x = (t_text *)z;
+    const char*type;
+    switch(x->te_type) {
+    case T_TEXT:
+        type = "comment";
+        break;
+    default:
+        type = "object";
+        break;
+    case T_MESSAGE:
+        type = "message";
+        break;
+    case T_ATOM:
+        switch (((t_gatom*)x)->a_flavor) {
+        case A_FLOAT:
+            type = "floatatom";
+            break;
+        case A_SYMBOL:
+            type = "symbolatom";
+            break;
+        default:
+            type = "listatom";
+            break;
+        }
+        break;
+    }
+
+    if(vis)
+    {
+        const int zoom = glist_getzoom(glist);
+            //t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
+        t_rtext *y = glist_findrtext(glist, x);
+        const char*state = "normal";
+        int iolets;
+
+        int x1, y1, x2, y2, width, height, corner;
+        text_getrect(z, glist, &x1, &y1, &x2, &y2);
+
+        pdgui_vmess("::pdwidget::create", "roc ii", type
+            , x, glist_getcanvas(glist)
+            , x1 / zoom
+            , y1 / zoom
+            );
+            /* common ::config for Pd-primitives (text + size) */
+        rtext_configure(x, y);
+
+        if(x->te_type == T_OBJECT && pd_class(&x->te_pd) == text_class)
+            state = "broken";
+        pdgui_vmess("::pdwidget::config", "o rs", x, "-state", state);
+
+
+        iolets = obj_ninlets(x);
+        if(iolets) {
+            int i;
+            t_float*intypes = (t_float*)getbytes(iolets *  sizeof(*intypes));
+            for(i=0; i<iolets; i++) {
+                intypes[i] = obj_issignalinlet(x, i);
+            }
+            pdgui_vmess("::pdwidget::create_inlets" , "o F", x, iolets, intypes);
+            freebytes(intypes, iolets *  sizeof(*intypes));
+        }
+        iolets = obj_noutlets(x);
+        if(iolets) {
+            int i;
+            t_float*outtypes = (t_float*)getbytes(iolets *  sizeof(*outtypes));
+            for(i=0; i<iolets; i++) {
+                outtypes[i] = obj_issignaloutlet(x, i);
+            }
+            pdgui_vmess("::pdwidget::create_outlets" , "o F", x, iolets, outtypes);
+            freebytes(outtypes, iolets *  sizeof(*outtypes));
+        }
+        pdgui_vmess("::pdwidget::select", "oi", x,
+                    glist_isselected(glist, &x->te_g));
+    } else {
+        pdgui_vmess("::pdwidget::destroy", "o", x);
+    }
+}
+
 /* ---------------------- the "message" text item ------------------------ */
 
 typedef struct _messresponder
@@ -482,35 +581,13 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    if (glist_isvisible(x->m_glist))
-    {
-        /* not zooming click width for now as it gets too fat */
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs ri",
-            glist_getcanvas(x->m_glist),
-            "itemconfigure",
-            buf,
-            "-width", MESSAGE_CLICK_WIDTH);
-        clock_delay(x->m_clock, 120);
-    }
+    pdgui_vmess("::pdwidget::message::activate", "oi", x, 120);
     message_float(x, 0);
 }
 
 static void message_tick(t_message *x)
 {
-    if (glist_isvisible(x->m_glist))
-    {
-        t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs ri",
-            glist_getcanvas(x->m_glist),
-            "itemconfigure",
-            buf,
-            "-width", glist_getzoom(x->m_glist));
-    }
+    pdgui_vmess("::pdwidget::message::activate", "oi", x, 0);
 }
 
 static void message_free(t_message *x)
@@ -571,27 +648,6 @@ t_pd *message_get_responder(t_gobj *x)
 #define ATOM_LABELUP 2
 #define ATOM_LABELDOWN 3
 #define A_LIST A_NULL /* fake atom type - use A_NULL for list 'flavor' */
-
-typedef struct _gatom
-{
-    t_text a_text;
-    int a_flavor;           /* A_FLOAT, A_SYMBOL, or A_LIST */
-    t_glist *a_glist;       /* owning glist */
-    t_float a_toggle;       /* value to toggle to */
-    t_float a_draghi;       /* high end of drag range */
-    t_float a_draglo;       /* low end of drag range */
-    t_symbol *a_label;      /* symbol to show as label next to box */
-    t_symbol *a_symfrom;    /* "receive" name -- bind ourselves to this */
-    t_symbol *a_symto;      /* "send" name -- send to this on output */
-    t_binbuf *a_revertbuf;  /* binbuf to revert to if typing canceled */
-    int a_dragindex;        /* index of atom being dragged */
-    int a_fontsize;
-    unsigned int a_shift:1;         /* was shift key down when drag started? */
-    unsigned int a_wherelabel:2;    /* 0-3 for left, right, above, below */
-    unsigned int a_grabbed:1;       /* 1 if we've grabbed keyboard */
-    unsigned int a_doubleclicked:1; /* 1 if dragging from a double click */
-    t_symbol *a_expanded_to; /* a_symto after $0, $1, ...  expansion */
-} t_gatom;
 
     /* prepend "-" as necessary to avoid empty strings, so we can
     use them in Pd messages. */
@@ -1071,79 +1127,33 @@ static int gatom_fontsize(t_gatom *x)
 }
 
     /* ---------------- gatom-specific widget functions --------------- */
-static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
-{
-    int x1, y1, x2, y2;
-    int zoom = glist_getzoom(glist), fontsize = gatom_fontsize(x);
-    text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
-    if (x->a_wherelabel == ATOM_LABELLEFT)
-    {
-        *xp = x1 - 3 * zoom - (
-            (int)strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
-                sys_zoomfontwidth(fontsize, zoom, 0));
-        *yp = y1 + 2 * zoom;
-    }
-    else if (x->a_wherelabel == ATOM_LABELRIGHT)
-    {
-        *xp = x2 + 2 * zoom;
-        *yp = y1 + 2 * zoom;
-    }
-    else if (x->a_wherelabel == ATOM_LABELUP)
-    {
-        *xp = x1 - 1 * zoom;
-        *yp = y1 - 1 * zoom - sys_zoomfontheight(fontsize, zoom, 0);
-    }
-    else
-    {
-        *xp = x1 - 1 * zoom;
-        *yp = y2 + 3 * zoom;
-    }
-}
-
-static void gatom_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy)
-{
-    t_gatom *x = (t_gatom*)z;
-    text_displace(z, glist, dx, dy);
-    if (glist_isvisible(glist))
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(glist),
-            "move",
-            buf,
-            dx * glist->gl_zoom, dy * glist->gl_zoom);
-    }
-}
 
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_gatom *x = (t_gatom*)z;
-    text_vis(z, glist, vis);
-    if (*x->a_label->s_name)
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
-        if (vis)
-        {
-            int x1, y1;
-            char *tags[] = {
-                buf,
-                "label",
-                "text"
-            };
-            gatom_getwherelabel(x, glist, &x1, &y1);
-            pdgui_vmess("pdtk_text_new", "cS ff s ir",
-                glist_getcanvas(glist),
-                3, tags,
-                (double)x1, (double)y1,
-                canvas_realizedollar(x->a_glist, x->a_label)->s_name,
-                gatom_fontsize(x) * glist_getzoom(glist), "black");
-        }
-        else
-            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", buf);
+    const char*labelpos = "top";
+    switch(x->a_wherelabel) {
+    default: break;
+    case ATOM_LABELLEFT:
+        labelpos = "left";
+        break;
+    case ATOM_LABELRIGHT:
+        labelpos = "right";
+        break;
+    case ATOM_LABELUP:
+        labelpos = "top";
+        break;
+    case ATOM_LABELDOWN:
+        labelpos = "bottom";
+        break;
     }
+    object_vis(z, glist, vis);
+    if(vis)
+        pdgui_vmess("::pdwidget::config", "o ri rs rs", x
+            , "-fontsize", gatom_fontsize(x)
+            , "-label", canvas_realizedollar(x->a_glist, x->a_label)->s_name
+            , "-labelpos", labelpos
+            );
 }
 
 void canvas_atom(t_glist *gl, t_atomtype type,
@@ -1312,75 +1322,32 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     *yp2 = y2;
 }
 
-static void text_displace(t_gobj *z, t_glist *glist,
-    int dx, int dy)
+static void text_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
     t_text *x = (t_text *)z;
     x->te_xpix += dx;
     x->te_ypix += dy;
-    if (glist_isvisible(glist))
-    {
-        t_rtext *y = glist_findrtext(glist, x);
-        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
-        text_drawborder(x, glist, rtext_gettag(y),
-            rtext_width(y), rtext_height(y), 0);
-        canvas_fixlinesfor(glist, x);
-    }
+    canvas_fixlinesfor(glist, x);
+    pdgui_vmess("::pdwidget::displace", "o ii", x, dx, dy);
 }
 
-static void text_select(t_gobj *z, t_glist *glist, int state)
+static void text_select(t_gobj *x, t_glist *glist, int state)
 {
-    t_text *x = (t_text *)z;
-    t_rtext *y = glist_findrtext(glist, x);
-    rtext_select(y, state);
-    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
-    {
-        char buf[MAXPDSTRING];
-        sprintf(buf, "%sR", rtext_gettag(y));
-        pdgui_vmess(0, "crs rr",
-            glist,
-            "itemconfigure",
-            buf,
-            "-fill", (state? "blue" : "black"));
-    }
+    pdgui_vmess("::pdwidget::select", "o i", x, state);
 }
 
 static void text_activate(t_gobj *z, t_glist *glist, int state)
 {
     t_text *x = (t_text *)z;
     t_rtext *y = glist_findrtext(glist, x);
-    if (z->g_pd != gatom_class)
-        rtext_activate(y, state);
+
+    rtext_activate(y, state);
 }
 
 static void text_delete(t_gobj *z, t_glist *glist)
 {
     t_text *x = (t_text *)z;
-        canvas_deletelinesfor(glist, x);
-}
-
-static void text_vis(t_gobj *z, t_glist *glist, int vis)
-{
-    t_text *x = (t_text *)z;
-    if (vis)
-    {
-        if (gobj_shouldvis(&x->te_g, glist))
-        {
-            t_rtext *y = glist_findrtext(glist, x);
-            text_drawborder(x, glist, rtext_gettag(y),
-                rtext_width(y), rtext_height(y), 1);
-            rtext_draw(y);
-        }
-    }
-    else
-    {
-        t_rtext *y = glist_findrtext(glist, x);
-        if (gobj_shouldvis(&x->te_g, glist))
-        {
-            text_eraseborder(x, glist, rtext_gettag(y));
-            rtext_erase(y);
-        }
-    }
+    canvas_deletelinesfor(glist, x);
 }
 
 static int text_click(t_gobj *z, struct _glist *glist,
@@ -1489,19 +1456,42 @@ const t_widgetbehavior text_widgetbehavior =
     text_select,
     text_activate,
     text_delete,
-    text_vis,
+    object_vis,
     text_click,
 };
 
 static const t_widgetbehavior gatom_widgetbehavior =
 {
     text_getrect,
-    gatom_displace,
+    text_displace,
     text_select,
-    text_activate,
+    NULL,
     text_delete,
     gatom_vis,
     gatom_doclick,
+};
+
+
+/* -------------------- widget behavior for messageboxes ------------ */
+static int message_doclick(t_gobj *z, t_glist *gl, int xpos, int ypos,
+    int shift, int alt, int dbl, int doit)
+{
+    if (doit)
+        message_click((t_message *)z, (t_floatarg)xpos, (t_floatarg)ypos,
+            (t_floatarg)shift, (t_floatarg)0, (t_floatarg)alt);
+    return 1;
+}
+
+
+static const t_widgetbehavior message_widgetbehavior =
+{
+    text_getrect,
+    text_displace,
+    text_select,
+    text_activate,
+    text_delete,
+    object_vis,
+    message_doclick,
 };
 
 /* -------------------- the "text" class  ------------ */
@@ -1560,6 +1550,10 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 void text_drawborder(t_text *x, t_glist *glist,
     const char *tag, int width2, int height2, int firsttime)
 {
+#if defined(__GNUC__)
+# warning early return
+#endif
+    return;
     t_object *ob;
     int x1, y1, x2, y2, width, height, corner;
     char tagR[128];
@@ -1836,6 +1830,7 @@ void g_text_setup(void)
         gensym("adddollar"), A_FLOAT, 0);
     class_addmethod(message_class, (t_method)message_adddollsym,
         gensym("adddollsym"), A_SYMBOL, 0);
+    class_setwidget(message_class, &message_widgetbehavior);
 
     messresponder_class = class_new(gensym("messresponder"), 0, 0,
         sizeof(t_text), CLASS_PD, 0);

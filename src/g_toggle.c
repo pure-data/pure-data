@@ -19,111 +19,33 @@ static t_class *toggle_class;
 
 /* widget helper functions */
 #define toggle_draw_io 0
-void toggle_draw_config(t_toggle* x, t_glist* glist)
-{
-    const int zoom = IEMGUI_ZOOM(x);
-    t_iemgui *iemgui = &x->x_gui;
-    t_canvas *canvas = glist_getcanvas(glist);
-    int xpos = text_xpix(&x->x_gui.x_obj, glist);
-    int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * zoom, ioh = IEM_GUI_IOHEIGHT * zoom;
-    int crossw = 1, w = x->x_gui.x_w / zoom;
-    int col = x->x_on ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-    char tag[128];
-    t_atom fontatoms[3];
-    SETSYMBOL(fontatoms+0, gensym(iemgui->x_font));
-    SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
-    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-
-    if(w >= 30)
-        crossw = 2;
-    if(w >= 60)
-        crossw = 3;
-    crossw *= zoom;
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos, ypos, xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", zoom, "-fill", x->x_gui.x_bcol);
-
-    sprintf(tag, "%lxX1", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + crossw + zoom, ypos + crossw + zoom,
-        xpos + x->x_gui.x_w - crossw - zoom, ypos + x->x_gui.x_h - crossw - zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
-
-    sprintf(tag, "%lxX2", x);
-    pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
-        xpos + crossw + zoom, ypos + x->x_gui.x_h - crossw - zoom,
-        xpos + x->x_gui.x_w - crossw - zoom, ypos + crossw + zoom);
-    pdgui_vmess(0, "crs ri rk", canvas, "itemconfigure", tag,
-        "-width", crossw, "-fill", col);
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-        xpos + x->x_gui.x_ldx * zoom, ypos + x->x_gui.x_ldy * zoom);
-    pdgui_vmess(0, "crs rA rk", canvas, "itemconfigure", tag,
-        "-font", 3, fontatoms,
-        "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
-    iemgui_dolabel(x, &x->x_gui, x->x_gui.x_lab, 1);
-}
+#define toggle_draw_config 0
 void toggle_draw_new(t_toggle *x, t_glist *glist)
 {
-        /* create the widgets (but don't configure them yet) */
-    t_canvas *canvas = glist_getcanvas(glist);
-    char tag[128], tag_object[128];
-    char*tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%lxOBJ", x);
+    const int zoom = IEMGUI_ZOOM(x);
+    pdgui_vmess("::pdwidget::create", "roc ii", "toggle"
+        , x, glist_getcanvas(glist)
+        , text_xpix(&x->x_gui.x_obj, glist) / zoom
+        , text_ypix(&x->x_gui.x_obj, glist) / zoom
+        );
+    pdgui_vmess("::pdwidget::create_inlets" , "o i", x, 0);
+    pdgui_vmess("::pdwidget::create_outlets", "o i", x, 0);
 
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxX1", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxX2", x);
-    pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
-        0, 0, 0, 0, "-tags", 2, tags);
-
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
-        0, 0, "-anchor", "w", "-tags", 4, tags);
-
-    toggle_draw_config(x, glist);
+    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO);
 }
 
 void toggle_draw_select(t_toggle* x, t_glist* glist)
 {
-    t_canvas *canvas = glist_getcanvas(glist);
-    int col = IEM_GUI_COLOR_NORMAL, lcol = x->x_gui.x_lcol;
-    char tag[128];
-
-    if(x->x_gui.x_fsf.x_selected)
-        col = lcol = IEM_GUI_COLOR_SELECTED;
-
-    sprintf(tag, "%lxBASE", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%lxLABEL", x);
-    pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
+    pdgui_vmess("::pdwidget::select", "oi", x, x->x_gui.x_fsf.x_selected);
 }
 
 void toggle_draw_update(t_toggle *x, t_glist *glist)
 {
     if(glist_isvisible(glist))
     {
-        t_canvas *canvas = glist_getcanvas(glist);
-        int col = (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol;
-        char tag[128];
-
-        sprintf(tag, "%lxX1", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
-        sprintf(tag, "%lxX2", x);
-        pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", col);
+        pdgui_vmess("::pdwidget::toggle::activate", "o ik", x,
+            (x->x_on != 0.0), x->x_gui.x_fcol);
     }
 }
 

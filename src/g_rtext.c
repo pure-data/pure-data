@@ -18,6 +18,11 @@
 #define SEND_UPDATE 2
 #define SEND_CHECK 0
 
+void text_getfont(t_text *x, t_glist *thisglist,
+    int *fheightp, int *fwidthp, int *guifsize);
+
+extern t_class *text_class;
+
 struct _rtext
 {
     char *x_buf;    /*-- raw byte string, assumed UTF-8 encoded (moo) --*/
@@ -161,7 +166,7 @@ static int lastone(char *s, int c, int n)
 
 #define DEFAULTBOXWIDTH 60
 
-static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
+static void rtext_formattext(const t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
     int *selend_b_p, int fontwidth, int fontheight)
 {
@@ -220,7 +225,8 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
             *indexp = inindex_b + u8_offset(x->x_buf + inindex_b, actualx);
             reportedindex = 1;
         }
-        strncpy(tempbuf+ *outchars_b_p, x->x_buf + inindex_b, foundit_b);
+        if(tempbuf)
+            strncpy(tempbuf+ *outchars_b_p, x->x_buf + inindex_b, foundit_b);
         if (x->x_selstart >= inindex_b &&
             x->x_selstart <= inindex_b + foundit_b + eatchar)
                 *selstart_b_p = x->x_selstart + *outchars_b_p - inindex_b;
@@ -230,7 +236,7 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         *outchars_b_p += foundit_b;
         inindex_b += (foundit_b + eatchar);
         inindex_c += (foundit_c + eatchar);
-        if (inindex_b < x->x_bufsize)
+        if (tempbuf && inindex_b < x->x_bufsize)
             tempbuf[(*outchars_b_p)++] = '\n';
         if (foundit_c > ncolumns)
             ncolumns = foundit_c;
@@ -243,7 +249,7 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
     {
         while (ncolumns < (x->x_text->te_type == T_TEXT ? 1 : 3))
         {
-            tempbuf[(*outchars_b_p)++] = ' ';
+            if(tempbuf) tempbuf[(*outchars_b_p)++] = ' ';
             ncolumns++;
         }
     }
@@ -261,11 +267,10 @@ static void rtext_formattext(t_rtext *x, int *widthp, int *heightp,
         *widthp += LMARGIN + RMARGIN;
         *heightp += TMARGIN + BMARGIN;
     }
-
 }
 
     /* same as above, but for atom boxes, which are always on one line. */
-static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
+static void rtext_formatatom(const t_rtext *x, int *widthp, int *heightp,
     int *indexp,  char *tempbuf, int *outchars_b_p, int *selstart_b_p,
     int *selend_b_p, int fontwidth, int fontheight)
 {
@@ -282,6 +287,11 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         char *decimal = 0, *nextchar, *ebuf = x->x_buf + x->x_bufsize,
             *s1, *s2;
         int ndecimals;
+        if(!tempbuf)
+        {
+            *outchars_b_p = x->x_text->te_width;
+            goto done;
+        }
         strncpy(tempbuf, x->x_buf, x->x_bufsize);
         tempbuf[x->x_bufsize] = 0;
         ebuf = tempbuf + x->x_bufsize;
@@ -329,6 +339,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
                 *(outchars_b_p) = prev_b;
                 break;
             }
+            if(!tempbuf) continue;
             memcpy(tempbuf + prev_b, x->x_buf + prev_b, *outchars_b_p - prev_b);
                 /* if box is full and there's more, bash last char to '>' */
             if (outchars_c == widthlimit_c-1 && x->x_bufsize > *(outchars_b_p)
@@ -341,7 +352,7 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         if (x->x_text->te_width > 0)
             *widthp = x->x_text->te_width * fontwidth;
         else *widthp = (outchars_c > 3 ? outchars_c : 3) * fontwidth;
-        tempbuf[*outchars_b_p] = 0;
+        if(tempbuf)tempbuf[*outchars_b_p] = 0;
     }
     if (*indexp > *outchars_b_p)
         *indexp = *outchars_b_p;
@@ -351,6 +362,61 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
     *selend_b_p = x->x_selend;
     *widthp += (LMARGIN + RMARGIN - 2) * glist_getzoom(x->x_glist);
     *heightp = fontheight + (TMARGIN + BMARGIN - 1) * glist_getzoom(x->x_glist);
+}
+
+/*
+ * breaks the text into lines, storing it into buf.
+ * the size of the line-broken text is returned in *widthp/*heightp;
+ * also computes byte index of character at location (xpos, ypos),
+ * and the beginning & end of selection
+ *
+ * The UTF-8 input is taken from x->buf and x->bufsize fields of the text object
+ * the wrapped text is put in "tempbuf" with byte length in *outcharsp.
+ *
+ * tempbuf can be NULL, in which case only the size calculations are done
+ * and no line-broken text is generated.
+ *
+ * the pointers to the output variables can also be NULL,
+ * in which case they are ignored.
+ *
+ * returns >0 if the drawnsize changed, and 0 if it didn't
+ *
+ * this works for objects, messageboxes, comments and atoms alike.
+ */
+static int rtext_format(const t_rtext *x,
+    int posX, int posY,
+    char *buf, int *outcharsp,
+    int *widthp, int *heightp,
+    int *indexp,
+    int *selstartp, int *selendp, int *guifontsizep)
+{
+    int fontwidth=0, fontheight=0, _guifontsize=0;
+    int _width=posX, _height=posY;
+    int _index=0, _outchars=0, _selstart=0, _selend=0;
+
+        /* if we're a GOP (the new, "goprect" style) borrow the font size
+           from the inside to preserve the spacing */
+    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &_guifontsize);
+
+    if (x->x_text->te_type == T_ATOM)
+        rtext_formatatom(x, &_width, &_height, &_index,
+            buf, &_outchars, &_selstart, &_selend,
+            fontwidth, fontheight);
+    else rtext_formattext(x, &_width, &_height, &_index,
+            buf, &_outchars, &_selstart, &_selend,
+            fontwidth, fontheight);
+
+    if(buf)buf[_outchars]=0;
+#define set_ptr(x) if(x##p)*x##p = _##x
+    set_ptr(width);
+    set_ptr(height);
+    set_ptr(index);
+    set_ptr(outchars);
+    set_ptr(selstart);
+    set_ptr(selend);
+    set_ptr(guifontsize);
+
+    return (_width != x->x_drawnwidth || _height != x->x_drawnheight);
 }
 
     /* the following routine computes line breaks and carries out
@@ -369,53 +435,79 @@ static void rtext_formatatom(t_rtext *x, int *widthp, int *heightp,
         a limit of 1950 characters, imposed by sys_vgui(). */
 #define UPBUFSIZE 4000
 
-void text_getfont(t_text *x, t_glist *thisglist,
-    int *fheightp, int *fwidthp, int *guifsize);
-
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
 {
-    char smallbuf[200], *tempbuf;
+    char smallbuf[200], *tempbuf = 0;
     int outchars_b = 0, guifontsize, fontwidth, fontheight;
     t_canvas *canvas = glist_getcanvas(x->x_glist);
     int selstart_b, selend_b;   /* beginning and end of selection in bytes */
-        /* if we're a GOP (the new, "goprect" style) borrow the font size
-        from the inside to preserve the spacing */
+    int sizechanged;
+    if (action)
+    {
+            /* we only need a tempbuf if there's an action */
+        if (x->x_bufsize >= 100)
+            tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
+        else tempbuf = smallbuf;
+        tempbuf[0] = 0;
+    }
 
-    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
-    if (x->x_bufsize >= 100)
-         tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
-    else tempbuf = smallbuf;
-    tempbuf[0] = 0;
+    sizechanged = rtext_format(x,
+        *widthp, *heightp, /* mouse position */
+        tempbuf, &outchars_b, /* line-broken output buffer */
+        widthp, heightp, /* required width/height of the box */
+        indexp, &selstart_b, &selend_b, /* index @ mouse; selection */
+        &guifontsize);
+    x->x_drawnwidth = *widthp;
+    x->x_drawnheight = *heightp;
 
-    if (x->x_text->te_type == T_ATOM)
-        rtext_formatatom(x, widthp, heightp, indexp,
-            tempbuf, &outchars_b, &selstart_b,  &selend_b,
-            fontwidth, fontheight);
-    else rtext_formattext(x, widthp, heightp, indexp,
-            tempbuf, &outchars_b, &selstart_b, &selend_b,
-            fontwidth, fontheight);
-    tempbuf[outchars_b]=0;
+    if(!action)
+        return;
 
-    if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
+    if (x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
             /* if our width is specified but the "natural" width is the
             same as the specified width, set specified width to zero
             so future text editing will automatically change width.
             Except atoms whose content changes at runtime. */
-        int widthwas = x->x_text->te_width, newwidth = 0, newheight = 0,
-            newindex = 0;
+
+            /* sidenote: if a box is explicitely oversized and gets filled up
+            while editing, it will lose its explicit size (as we clear the
+            size when we reach it  */
+        int oldwidth = x->x_text->te_width;
+        int newwidth = 0;
         x->x_text->te_width = 0;
-        rtext_senditup(x, 0, &newwidth, &newheight, &newindex);
+            /* check what the "natural" width would be */
+        rtext_format(x,
+            0, 0, /* mouse position */
+            0, 0, /* line-broken output buffer */
+            &newwidth, /* required width of the box */
+            0, 0, 0, 0, 0); /* ignored: height; index; selection; fontsize */
+            /* if we are not at the natural width, restore the object-width */
         if (newwidth != *widthp)
-            x->x_text->te_width = widthwas;
+            x->x_text->te_width = oldwidth;
     }
 
-    if (action && !canvas->gl_havewindow)
-        action = 0;
+    if (!canvas->gl_havewindow)
+        return;
 
     if (action == SEND_FIRST)
     {
+#if 1
+        t_float zoom = glist_getzoom(x->x_glist);
+        t_float size[2] = {(*widthp)/zoom, (*heightp)/zoom};
+        if (sizechanged)
+            pdgui_vmess("::pdwidget::config", "o rF rs", x->x_text
+                , "-size", 2, size
+                , "-text", tempbuf
+                );
+        else
+            pdgui_vmess("::pdwidget::config", "o rs", x->x_text
+                , "-text", tempbuf
+                );
+        pdgui_vmess("::pdwidget::select", "oi", x->x_text,
+                    glist_isselected(x->x_glist, &x->x_text->te_g));
+#else
         const char *tags[] = {x->x_tag, rtext_gettype(x)->s_name, "text"};
         int lmargin = LMARGIN, tmargin = TMARGIN;
         if (glist_getzoom(x->x_glist) > 1)
@@ -424,10 +516,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             lmargin *= glist_getzoom(x->x_glist);
             tmargin *= glist_getzoom(x->x_glist);
         }
-            /* we add an extra space to the string just in case the last
-            character is an unescaped backslash ('\') which would have confused
-            tcl/tk by escaping the close brace otherwise.  The GUI code
-            drops the last character in the string. */
+
         pdgui_vmess("pdtk_text_new", "c S ii s i r",
             canvas,
             3, tags,
@@ -435,13 +524,36 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             tempbuf,
             guifontsize,
             (glist_isselected(x->x_glist, &x->x_text->te_g)? "blue" : "black"));
+#endif
     }
     else if (action == SEND_UPDATE)
     {
+#if 1
+        t_float zoom = glist_getzoom(x->x_glist);
+        t_float size[2] = {(*widthp)/zoom, (*heightp)/zoom};
+        if (sizechanged)
+            pdgui_vmess("::pdwidget::config", "o rF rs", x->x_text
+                , "-size", 2, size
+                , "-text", tempbuf
+                );
+        else
+            pdgui_vmess("::pdwidget::config", "o rs", x->x_text
+                , "-text", tempbuf
+                );
+
+        if (x->x_active)
+        {
+            int start = u8_charnum(x->x_buf, selstart_b);
+            int end = u8_charnum(x->x_buf, selend_b);
+            int length = end - start;
+            pdgui_vmess("::pdwidget::textselect", "o ii",
+                        x->x_text, start, (length>0)?length:0);
+        }
+#else
         pdgui_vmess("pdtk_text_set", "cs s",
                   canvas, x->x_tag,
                   tempbuf);
-        if (*widthp != x->x_drawnwidth || *heightp != x->x_drawnheight)
+        if (sizechanged)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
                 *widthp, *heightp, 0);
         if (x->x_active)
@@ -464,9 +576,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 pdgui_vmess(0, "crs", canvas, "focus", x->x_tag);
             }
         }
+#endif
     }
-    x->x_drawnwidth = *widthp;
-    x->x_drawnheight = *heightp;
 
     if (tempbuf != smallbuf)
         t_freebytes(tempbuf, 2 * x->x_bufsize + 1);
@@ -518,26 +629,42 @@ void rtext_draw(t_rtext *x)
 
 void rtext_erase(t_rtext *x)
 {
+#if 1
+    pdgui_vmess("::pdwidget::destroy", "o", x->x_text);
+#else
     pdgui_vmess(0, "crs", glist_getcanvas(x->x_glist), "delete", x->x_tag);
+#endif
 }
 
 void rtext_displace(t_rtext *x, int dx, int dy)
 {
+#if 1
+    pd_error(x->x_text, "rtext_displace(%p, %d, %d)", x, dx, dy);
+    pdgui_vmess("::pdwidget::displace", "o ii", x->x_text, dx, dy);
+#else
     pdgui_vmess(0, "crs ii", glist_getcanvas(x->x_glist), "move", x->x_tag,
         dx, dy);
+#endif
 }
 
 void rtext_select(t_rtext *x, int state)
 {
+#if 1
+    pdgui_vmess("::pdwidget::select", "o i", x->x_text, state);
+#else
     pdgui_vmess(0, "crs rr",
         glist_getcanvas(x->x_glist), "itemconfigure", x->x_tag,
         "-fill", (state? "blue" : "black"));
+#endif
 }
 
 void gatom_undarken(t_text *x);
 
 void rtext_activate(t_rtext *x, int state)
 {
+#if defined(__GNUC__)
+# warning old-style pdgui_vmess
+#endif /* GNUC */
     int w = 0, h = 0, indx;
     t_glist *glist = x->x_glist;
     t_canvas *canvas = glist_getcanvas(glist);
@@ -549,13 +676,21 @@ void rtext_activate(t_rtext *x, int state)
         x->x_dragfrom = x->x_selstart = 0;
         x->x_selend = x->x_bufsize;
         x->x_active = 1;
+        pdgui_vmess("::pdwidget::config", "o rs", x->x_text
+            , "-state", "edit");
     }
     else
     {
+        const char*state = "normal";
+        if (x->x_text->te_type == T_OBJECT && pd_class(&x->x_text->te_pd) == text_class)
+            state = "broken";
         pdgui_vmess("pdtk_text_editing", "^si", canvas, "", 0);
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;
+        pdgui_vmess("::pdwidget::config", "o rs", x->x_text
+            , "-state", state);
+        pdgui_vmess("::pdwidget::textselect", "o", x->x_text);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
 }
@@ -782,4 +917,33 @@ void rtext_mouse(t_rtext *x, int xval, int yval, int flag)
         x->x_selend = (x->x_dragfrom > indx ? x->x_dragfrom : indx);
     }
     rtext_senditup(x, SEND_UPDATE, &w, &h, &indx);
+}
+
+
+void rtext_configure(t_object*obj, t_rtext *x)
+{
+    float zoom = glist_getzoom(x->x_glist);
+    int w = 0, h = 0, index = 0;
+    char smallbuf[200], *tempbuf;
+    int outchars_b = 0, guifontsize, fontwidth, fontheight;
+    t_canvas *canvas = glist_getcanvas(x->x_glist);
+    t_float size[2];
+    int selstart_b, selend_b;   /* beginning and end of selection in bytes */
+        /* if we're a GOP (the new, "goprect" style) borrow the font size
+        from the inside to preserve the spacing */
+
+    text_getfont(x->x_text, x->x_glist, &fontwidth, &fontheight, &guifontsize);
+    if (x->x_bufsize >= 100)
+         tempbuf = (char *)t_getbytes(2 * x->x_bufsize + 1);
+    else tempbuf = smallbuf;
+    tempbuf[0] = 0;
+
+    rtext_format(x, w, h, tempbuf, 0, &w, &h, 0, 0, 0, 0);
+
+    size[0] = w/zoom;
+    size[1] = h/zoom;
+    pdgui_vmess("::pdwidget::config", "o rF rs", obj
+        , "-size", 2, size
+        , "-text", tempbuf
+        );
 }

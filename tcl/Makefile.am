@@ -37,6 +37,7 @@ dist_libpdtcl_DATA = \
     dialog_find.tcl \
     dialog_message.tcl \
     helpbrowser.tcl \
+    pd_canvas.tcl \
     pdtk_canvas.tcl \
     pkg_mkIndex.tcl \
     dialog_audio.tcl \
@@ -49,7 +50,13 @@ dist_libpdtcl_DATA = \
     scrollbox.tcl \
     pd_guiprefs.tcl \
     pd_deken.tcl \
-    pd_docsdir.tcl
+    pd_docsdir.tcl \
+    pd_widget.tcl \
+    pd_windows.tcl \
+    pdwidget_core.tcl \
+    pdwidget_iemgui.tcl \
+    $(empty)
+
 
 # we want these in the dist tarball
 EXTRA_DIST = pd.gif pd.ico pd.xpm

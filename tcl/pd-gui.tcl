@@ -51,9 +51,12 @@ package require helpbrowser
 package require pd_menucommands
 package require opt_parser
 package require pdtk_canvas
+package require pd_canvas
 package require pdtk_text
 package require pdtk_textwindow
 package require pd_guiprefs
+package require pd_widget
+package require pd_windows
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
