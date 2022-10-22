@@ -1,6 +1,7 @@
 # Translation of Pure Data to Ukrainian.
 # This file is put in the public domain.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
+# Nick Acorne, 2022.
 #
 msgid ""
 msgstr ""
