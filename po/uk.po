@@ -2,16 +2,15 @@
 # This file is put in the public domain.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
 # Nick Acorne, 2022.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"PO-Revision-Date: 2022-10-23 21:43+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -245,31 +244,31 @@ msgid "Save All Settings"
 msgstr "Зберегти всі налаштування"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "УВАГА: невідомі прапори graphme отримані у pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Властивості патчу"
 
 msgid "Scale"
-msgstr ""
+msgstr "Масштаб"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "Горизонтальних (X) одиниць у пікселі:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Вертикальних (Y) одиниць у пікселі:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Відображення у батьківському патчі"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Відображати-в-батьківському-патчі (Graph-On-Parent)"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "Приховати ім'я об'єкта та аргументи"
 
 msgid "Range and size"
-msgstr ""
+msgstr "Діапазон та розмір"
 
 msgid "X range: from"
 msgstr ""
