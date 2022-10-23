@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-23 21:43+0000\n"
+"PO-Revision-Date: 2022-10-23 23:15+0000\n"
 "Last-Translator: Charles K. Neimog <charlesneimog@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
@@ -244,7 +244,7 @@ msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
-"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+"AVISO: marcadores desconhecidos de 'graphme' recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -591,7 +591,7 @@ msgstr "fonte detectada: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr "AVISO: família de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+msgstr "AVISO: família de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
@@ -603,7 +603,7 @@ msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr "‘%1$s’ já carregado, ignorando: ‘%2$s’"
+msgstr "'%1$s' já carregado, ignorando: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
@@ -736,13 +736,13 @@ msgid "Installation options:"
 msgstr "Opções de instalação:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr "Tentar verificar o checksum das bibliotecas antes de (re)instalá-las"
+msgstr "Tente verificar o checksum das bibliotecas antes de (re)instalá-las"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Tentar remover bibliotecas antes de (re)instalá-las"
 
 msgid "Show README of newly installed libraries (if present)"
-msgstr "Mostrar README de bibliotecas recém instaladas (se presente)"
+msgstr "Mostrar README de bibliotecas recém-instaladas (se houver)"
 
 msgid "Keep package files after installation"
 msgstr "Manter arquivos do pacote depois da instalação"
@@ -807,7 +807,7 @@ msgstr "Desinstalando instalação prévia de '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr "Mover temporariamente %1$s para %2$s falhou."
+msgstr "A movimentação temporária de %1$s em %2$s falhou."
 
 #, tcl-format
 msgid "Installing package '%s'"
