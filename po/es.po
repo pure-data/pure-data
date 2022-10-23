@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-23 21:43+0000\n"
-"Last-Translator: Fede Camara Halac <fch226@nyu.edu>\n"
+"PO-Revision-Date: 2022-10-23 23:15+0000\n"
+"Last-Translator: Jaime E Oliver La Rosa <la.rosa@nyu.edu>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -747,8 +747,7 @@ msgstr "Opciones de instalación:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
-"Intentar verificar el checksum de la(s) librería(s) antes de "
-"(re)instalarla(s)"
+"Intente verificar el checksum de la(s) librería(s) antes de (re)instalarla(s)"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Intentar eliminar librerías antes de (re)instalarlas"
@@ -819,11 +818,11 @@ msgstr "Desinstalando la instalación preexistente de '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr "Falló el movimiento temporario de %1$s a %2$s."
+msgstr "Falló mover temporalmente %1$s a %2$s."
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr "Instalar paquete '%s'"
+msgstr "Instalando paquete '%s'"
 
 msgid "Installation completed!"
 msgstr "¡Instalación completa!"
