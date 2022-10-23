@@ -41,6 +41,7 @@ ssh $MAC 'cd work/b32/; ./build-i386 ' $VERSION && \
 ---------- grab CI version -----------
 git push origin --tags
 git push origin
+*** check that the tag actually makes it up to github; this seems buggy ***
 wait 90 min...
 grab "macOS:archive" from https://git.iem.at/pd/pure-data/pipelines
 --> pure-data_$VERSION_macOS.zip
