@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-23 23:15+0000\n"
+"PO-Revision-Date: 2022-10-24 00:22+0000\n"
 "Last-Translator: porres <porres@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
@@ -427,19 +427,19 @@ msgid "Log height:"
 msgstr "Altura de Log:"
 
 msgid "Vslider"
-msgstr "Slider vertical"
+msgstr "Slider Vertical"
 
 msgid "Hslider"
-msgstr "Slider horizontal"
+msgstr "Slider Horizontal"
 
 msgid "Vradio"
-msgstr "Rádio vertical"
+msgstr "Rádio Vertical"
 
 msgid "Num cells:"
 msgstr "Número de células:"
 
 msgid "Hradio"
-msgstr "Rádio horizontal"
+msgstr "Rádio Horizontal"
 
 msgid "VU Meter"
 msgstr "VU Meter"
@@ -807,7 +807,7 @@ msgstr "Desinstalando instalação prévia de '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr "A movimentação temporária de %1$s em %2$s falhou."
+msgstr "A movimentação temporária de %1$s para %2$s falhou."
 
 #, tcl-format
 msgid "Installing package '%s'"
@@ -835,7 +835,7 @@ msgid ""
 "Failed to completely remove %1$s.\n"
 "Please manually remove the directory %2$s after quitting Pd."
 msgstr ""
-"Falha ao completamente remover %1$s.\n"
+"Falha ao remover completamente %1$s.\n"
 "Por favor remover manualmente o diretório %2$s depois de fechar o Pd."
 
 #, tcl-format
@@ -875,7 +875,7 @@ msgid "%s%% of download completed"
 msgstr "download de %s%% completado"
 
 msgid "Enter an exact library or object name."
-msgstr "Entre um nome exato de objeto ou biblioteca."
+msgstr "Digite o nome exato de um objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
 msgstr "e.g, 'freeverb~'"
@@ -927,7 +927,7 @@ msgid "translations"
 msgstr "traduções"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Instale apenas externals enviados por quem você confia."
+msgstr "Apenas Instale externals enviados por quem você confia."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
 msgstr "Desabilitando vista tabelada: Tcl/Tk incompatível detectado"
@@ -975,7 +975,7 @@ msgid "No matching externals found."
 msgstr "Nenhum external encontrado."
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr "Tente usar o nome completo e.g. 'freeverb~'."
+msgstr "Tente usar o nome completo p. ex. 'freeverb~'."
 
 msgid "Or use wildcards like 'freeverb*'."
 msgstr "Ou use wildcards como 'freeverb*'."
@@ -1068,7 +1068,7 @@ msgid "Deselect package"
 msgstr "Desselecionar pacote"
 
 msgid "Open package webpage"
-msgstr "Abrir webpage do pacote"
+msgstr "Abrir a página do pacote na web"
 
 msgid "Copy package URL"
 msgstr "Copiar URL do pacote"
