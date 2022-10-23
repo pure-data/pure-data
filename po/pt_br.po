@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-24 00:22+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"Last-Translator: Charles K. Neimog <charlesneimog@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
@@ -595,7 +595,7 @@ msgstr "AVISO: família de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "AVISO: peso de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+msgstr "AVISO: peso de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -673,7 +673,7 @@ msgid "1. Unzip %s."
 msgstr "1. Descompactar %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr "Você poderá ter que mudar a extensão de arquivo de .dek para .zip"
+msgstr "Talvez você precise alterar a extensão do arquivo de .dek para .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
@@ -818,10 +818,10 @@ msgstr "Instalação completa!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr "Instalação de '%s' bem sucedida!"
+msgstr "Instalação de '%s' bem-sucedida!"
 
 msgid "Installation failed!"
-msgstr "Installation falhou!"
+msgstr "Instalação falhou!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
@@ -872,16 +872,16 @@ msgstr "Instalar"
 
 #, tcl-format
 msgid "%s%% of download completed"
-msgstr "download de %s%% completado"
+msgstr "download de %s%% concluído"
 
 msgid "Enter an exact library or object name."
 msgstr "Digite o nome exato de um objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
-msgstr "e.g, 'freeverb~'"
+msgstr "p. ex., 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr "Usar a wildcard '*' para combinar com qualquer número de caracteres."
+msgstr "Use o curinga '*' para combinar com qualquer número de caracteres."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "e.g. '*-plugin' combinará com 'deken-plugin' (e mais)."
@@ -896,11 +896,10 @@ msgstr ""
 "vazia."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr "Click-direito num resultado de busca lhe dará mais opções..."
+msgstr "Click-direito no resultado da busca lhe dará mais opções..."
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr ""
-"Você também pode procurar por bibliotecas e objetos via seu web browser:"
+msgstr "Você também pode procurar por bibliotecas e objetos via seu navegador:"
 
 msgid "Find externals"
 msgstr "Procurar externals"
@@ -930,7 +929,7 @@ msgid "Only install externals uploaded by people you trust."
 msgstr "Apenas Instale externals enviados por quem você confia."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr "Desabilitando vista tabelada: Tcl/Tk incompatível detectado"
+msgstr "Desabilitando a visão por abas: Tcl/Tk incompatível detectado"
 
 msgid "Library"
 msgstr "Biblioteca"
@@ -978,10 +977,10 @@ msgid "Try using the full name e.g. 'freeverb~'."
 msgstr "Tente usar o nome completo p. ex. 'freeverb~'."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr "Ou use wildcards como 'freeverb*'."
+msgstr "Ou use curingas como 'freeverb*'."
 
 msgid "Please select a (writable) installation directory!"
-msgstr "Por favor selecione um diretório de instalação (writable)!"
+msgstr "Por favor selecione um diretório de instalação (gravável)!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
@@ -989,7 +988,7 @@ msgstr "Instalar %1$s em %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr "Cancelando download de '%s': Nenhum diretório de instalação foi dado."
+msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido."
 
 msgid "Installing to non-existant directory failed"
 msgstr "Falha ao instalar em um diretório não existente"
@@ -1002,7 +1001,7 @@ msgid "Directory does not exist!"
 msgstr "Diretório não existe!"
 
 msgid "Directory is not writable!"
-msgstr "Directório não é 'writable'!"
+msgstr "Directório não é 'gravável'!"
 
 #, tcl-format
 msgid "Downloading '%s'"
@@ -1013,7 +1012,7 @@ msgid "Commencing download of '%1$s' into '%2$s'..."
 msgstr "Começando download de '%1$s' em '%2$s'..."
 
 msgid "aborting."
-msgstr "abortando."
+msgstr "cancelando."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
