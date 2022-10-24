@@ -247,7 +247,7 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    for(i = 1; i < IEM_VU_STEPS+2; i++)
+    for(i = 1; i < IEM_VU_STEPS+1; i++)
     {
         sprintf(tag, "%lxRLED", x);
         sprintf(tag_n, "%lxRLED%d", x, i);
@@ -259,6 +259,11 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
         pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
             0, 0, "-anchor", "w", "-tags", 3, tags);
     }
+    /* and a final scale item */
+    sprintf(tag, "%lxSCALE", x);
+    sprintf(tag_n, "%lxSCALE%d", x, i);
+    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
+        0, 0, "-anchor", "w", "-tags", 3, tags);
 
     sprintf(tag, "%lxRCOVER", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
