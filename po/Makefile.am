@@ -87,7 +87,7 @@ ALL_LINGUAS = \
 	tr \
 	uk \
 	vi \
-	tw
+	zh_tw
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
@@ -135,7 +135,7 @@ $(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 		$(FILES)
 	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
 	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE) > $(TEMPLATE).nodate
-	cmp $(TEMPLATE).new.nodate $(TEMPLATE).old.nodate || cat $(TEMPLATE).new > $(TEMPLATE)
+	cmp $(TEMPLATE).new.nodate $(TEMPLATE).nodate || cat $(TEMPLATE).new > $(TEMPLATE)
 	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
