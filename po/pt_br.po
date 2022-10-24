@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: 2022-10-24 08:22+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
+"Last-Translator: Charles K. Neimog <charlesneimog@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
@@ -739,7 +739,7 @@ msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr "Tente verificar o checksum das bibliotecas antes de (re)instalá-las"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr "Tentar remover bibliotecas antes de (re)instalá-las"
+msgstr "Tente remover as bibliotecas antes de (re)instalá-las"
 
 msgid "Show README of newly installed libraries (if present)"
 msgstr "Mostrar README de bibliotecas recém-instaladas (se houver)"
@@ -748,7 +748,7 @@ msgid "Keep package files after installation"
 msgstr "Manter arquivos do pacote depois da instalação"
 
 msgid "Add newly installed libraries to Pd's search path"
-msgstr "Adicionar bibliotecas recém instaladas ao caminho de busca do Pd"
+msgstr "Adicionar bibliotecas recém-instaladas ao caminho de busca do Pd"
 
 msgid "Platform settings:"
 msgstr "Configurações da plataforma:"
@@ -828,7 +828,7 @@ msgid "Failed to install '%s'!"
 msgstr "Falha ao instalar '%s'!"
 
 msgid "Package installation failed"
-msgstr "Falhou instalação do pacote"
+msgstr "Falha na instalação do pacote"
 
 #, tcl-format
 msgid ""
