@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-25 19:25+0000\n"
+"PO-Revision-Date: 2022-10-26 12:13+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/uk/>\n"
@@ -769,68 +769,70 @@ msgid "Keep package files after installation"
 msgstr "Зберігати файли пакета після інсталяції"
 
 msgid "Add newly installed libraries to Pd's search path"
-msgstr ""
+msgstr "Додати нові бібліотеки в шлях пошуку Pd"
 
 msgid "Platform settings:"
-msgstr ""
+msgstr "Налаштування платформи:"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Платформа за замовчуванням: %s"
 
 msgid "User-defined platform:"
-msgstr ""
+msgstr "Вибрана платформа:"
 
 msgid "Hide foreign architectures"
-msgstr ""
+msgstr "Приховати недоступні архітектури"
 
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
+"Відображати лише нову версію бібліотеки\n"
+"(позначає інші версії так само, як недоступні архітектури)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
-msgstr ""
+msgstr "Налаштування %s Deken"
 
 #, tcl-format
 msgid "Platform re-detected: %s"
-msgstr ""
+msgstr "Платформа перевиявлена: %s"
 
 msgid "Deken Packages"
-msgstr ""
+msgstr "Пакети Deken"
 
 msgid "ZIP Files"
-msgstr ""
+msgstr "Файли ZIP"
 
 msgid "TAR Files"
-msgstr ""
+msgstr "Файли TAR"
 
 msgid "All Files"
-msgstr ""
+msgstr "Усі файли"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
-msgstr ""
+msgstr "Контрольна сума не збігається для '%s'"
 
 #, tcl-format
 msgid "SHA256 verification of '%s' failed!"
-msgstr ""
+msgstr "SHA256 для '%s' не підтверджено!"
 
 msgid "SHA256 verification failed"
-msgstr ""
+msgstr "перевірка SHA256 завершилася невдачею"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
-msgstr ""
+msgstr "Деінсталяція попередньої установки '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr ""
+msgstr "Тимчасове переміщення %1$s у %2$s завершилося невдачею."
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr ""
+msgstr "Встановлення пакета '%s'"
 
 msgid "Installation completed!"
 msgstr ""
