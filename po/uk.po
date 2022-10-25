@@ -2,16 +2,15 @@
 # This file is put in the public domain.
 # Alex Nadzharov <anadjarov@gmail.com>, 2022.
 # Nick Acorne, 2022.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"PO-Revision-Date: 2022-10-25 19:25+0000\n"
 "Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -244,116 +243,124 @@ msgstr "Використовувати декілька пристроїв"
 msgid "Save All Settings"
 msgstr "Зберегти всі налаштування"
 
+#, fuzzy
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "УВАГА: невідомі прапори graphme отримані у pdtk_canvas_dialog"
 
+#, fuzzy
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Властивості патчу"
 
 msgid "Scale"
-msgstr ""
+msgstr "Масштаб"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "Горизонтальних (X) одиниць у пікселі:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Вертикальних (Y) одиниць у пікселі:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Відображення у батьківському патчі"
 
+#, fuzzy
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Відображати-в-батьківському-патчі (Graph-On-Parent)"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "Приховати ім'я об'єкта та аргументи"
 
 msgid "Range and size"
-msgstr ""
+msgstr "Діапазон та розмір"
 
 msgid "X range: from"
-msgstr ""
+msgstr "Діапазон значень X: від"
 
 msgid "to"
-msgstr ""
+msgstr "до"
 
 msgid "Margin:"
-msgstr ""
+msgstr "Відступ:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Діапазон значень Y: від"
 
+#, fuzzy
 msgid "Data Properties"
-msgstr ""
+msgstr "Властивості даних"
 
+#, fuzzy
 msgid "Send"
-msgstr ""
+msgstr "Надіслати"
 
 msgid "Done"
-msgstr ""
+msgstr "Готово"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Знайдено '%1$s' в %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Неможливо знайти '%1$s' у %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "Шукати в %s:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Відображати останній '%1$s' у %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
+msgstr "Відображати '%1$d' з %2$d елементів у %3$s"
 
 msgid "Pd window"
-msgstr ""
+msgstr "Вікно Pd"
 
+#, fuzzy
 msgid "Match whole word only"
-msgstr ""
+msgstr "Перевіряти збіг тільки зі словом цілком"
 
 msgid "Close"
-msgstr ""
+msgstr "Закрити"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "Шрифт %s"
 
 msgid "Font"
-msgstr ""
+msgstr "Шрифт"
 
 msgid "Font Size"
-msgstr ""
+msgstr "Розмiр шрифта"
 
 msgid "Stretch"
-msgstr ""
+msgstr "Масштаб"
 
 msgid "X and Y"
-msgstr ""
+msgstr "X та Y"
 
 msgid "X only"
-msgstr ""
+msgstr "тільки X"
 
 msgid "Y only"
-msgstr ""
+msgstr "тільки Y"
 
 msgid "GUI Box Properties"
-msgstr ""
+msgstr "Властивості боксу GUI"
 
 msgid "Messages"
-msgstr ""
+msgstr "Повідомлення"
 
+#, fuzzy
 msgid "Send symbol:"
-msgstr ""
+msgstr "Надіслати символ:"
 
+#, fuzzy
 msgid "Receive symbol:"
-msgstr ""
+msgstr "Отримати символ:"
 
 msgid "Width:"
 msgstr "Ширина:"
@@ -395,357 +402,371 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr ""
+msgstr "Тривалість індикації (мсек)"
 
 msgid "Min:"
-msgstr ""
+msgstr "Мінімум:"
 
 msgid "Max:"
-msgstr ""
+msgstr "Максимум:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "Вимикач"
 
+#, fuzzy
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Не-нульове значення"
 
 msgid "Value:"
-msgstr ""
+msgstr "Значення:"
 
+#, fuzzy
 msgid "Number2"
-msgstr ""
+msgstr "Числовий бокс 2 (Number2)"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Ширина (кількість цифр):"
 
 msgid "Height:"
-msgstr ""
+msgstr "Висота:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Діапазон вихідних значень"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Висота логарифмічної шкали:"
 
+#, fuzzy
 msgid "Vslider"
-msgstr ""
+msgstr "Вертикальний слайдер (Vslider)"
 
 msgid "Hslider"
-msgstr ""
+msgstr "Горизонтальний слайдер (Hslider)"
 
 msgid "Vradio"
-msgstr ""
+msgstr "Вертикальний перемикач"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Кількість осередків:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "Горизонтальний перемикач (Hradio)"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "Вимірник рівня (VU)"
 
 msgid "Canvas"
-msgstr ""
+msgstr "Текстовий об'єкт (Canvas)"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Видимо прямокутник (пікселі)"
 
-#, tcl-format
+#, fuzzy, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "Властивості %s"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Параметри"
 
 msgid "Init"
-msgstr ""
+msgstr "Ініціалізувати"
 
 msgid "No init"
-msgstr ""
+msgstr "Не ініціалізувати"
 
 msgid "Jump on click"
-msgstr ""
+msgstr "Змінювати значення натискання"
 
 msgid "Steady on click"
-msgstr ""
+msgstr "Зберігати значення при натисканні"
 
 msgid "X offset:"
-msgstr ""
+msgstr "зміщення по осі X:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "зміщення по осі Y:"
 
 msgid "Colors"
-msgstr ""
+msgstr "Кольори"
 
 msgid "Background"
-msgstr ""
+msgstr "Фон"
 
 msgid "Front"
-msgstr ""
+msgstr "Основний"
 
 msgid "Compose color"
-msgstr ""
+msgstr "Створити колір"
 
 msgid "Test label"
-msgstr ""
+msgstr "Тестовий напис"
 
 msgid "Send a Pd message"
-msgstr ""
+msgstr "Надіслати повідомлення Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(використовуйте клавіші зі стрілками вгору-вниз для перегляду історії)"
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "Налаштування MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "Налаштування MIDI в ALSA"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "Входи:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "Виходи:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "Шлях пошуку Pd для об'єктів, довідки, аудіо, текстових та інших файлів"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Використовувати стандартні шляхи"
 
+#, fuzzy
 msgid "Verbose"
-msgstr ""
+msgstr "Детальний режим"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Папка документів Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Вибрати папку"
 
 msgid "Reset"
-msgstr ""
+msgstr "Скидання"
 
 msgid "Disable"
-msgstr ""
+msgstr "Вимкнути"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Папка для зовнішніх об'єктів"
 
 msgid "Clear"
-msgstr ""
+msgstr "Скинути"
 
+#, fuzzy
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Вибрати папку документів Pd:"
 
 msgid "Install externals to directory:"
-msgstr ""
+msgstr "Встановити зовнішні об'єкти в папку:"
 
 msgid "Add a new path"
-msgstr ""
+msgstr "Додати новий шлях"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "Редагувати існуючий шлях [%s]"
 
 msgid "Add new library"
-msgstr ""
+msgstr "Додати нову бібліотеку"
 
 msgid "Edit library"
-msgstr ""
+msgstr "Редагувати бібліотеку"
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "Бібліотеки Pd, що завантажуються під час запуску"
 
+#, fuzzy
 msgid "Startup flags:"
-msgstr ""
+msgstr "Прапори при завантаженні:"
 
 msgid "Defeat real-time scheduling"
-msgstr ""
+msgstr "Не використовувати режим реального часу планувальника подій"
 
 msgid "Help Browser"
-msgstr ""
+msgstr "Перегляд довідки"
 
+#, fuzzy
 msgid "Associated Files"
-msgstr ""
+msgstr "Усі доступні типи файлів"
 
 msgid "Pd Files"
-msgstr ""
+msgstr "Файли Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "Файли патчів Max"
 
 msgid "Max Text Files"
-msgstr ""
+msgstr "Текстові файли Max"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "Файли патчів Max (.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "Текстові файли Max (.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "виявлений шрифт: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
 msgstr ""
+"УВАГА: сімейство шрифтів '%1$s' не знайдено, використовується шрифт за "
+"промовчанням (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
 msgstr ""
+"УВАГА: насиченість шрифту '%1$s' не знайдена, використовується значення за "
+"замовчуванням (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr ""
+msgstr "використовується шрифт: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "%1$s' вже завантажено, ігнорується: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "Завантаження плагіна: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr ""
+msgstr "НЕОБРОБЛЕНА ПОМИЛКА: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "НЕВОЗМОЖНО ЗАГРУЗИТЬ %s"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "Неможливо прочитати плагін %s ...пропущено!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "Неможливо знайти плагіни в %s ...пропущено!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
+"(Tcl) MISSING CLOSE-BRACE '}': [Помилка Tcl: Відсутня дужка, що закриває '}']"
+" "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) INVALID COMMAND NAME: [Помилка Tcl: некоректне ім'я команди:] "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) UNHANDLED ERROR: [Помилка Tcl: невідома помилка:] "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken] встановлена версія [%1$s] > %2$s ...пропущено!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken] встановлена версія [%1$s] < %2$s ...переписано!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken] встановлена версія [%1$s] == %2$s ...пропущено!"
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr ""
+msgstr "встановлення пакету deken '%s'"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
-msgstr ""
+msgstr "пропущено пакет '%s': не розпізнаний як пакет deken"
 
 #, tcl-format
 msgid "Installing '%s'"
-msgstr ""
+msgstr "Встановлення '%s'"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "Успішно розпаковано %1$s у %2$s."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "Неможливо автоматично розпакувати пакет."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "Будь ласка, виконайте вручну такі кроки:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Розпакуйте %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr ""
+msgstr "Можливо, вам необхідно змінити роздільну здатність файлу з .dek на .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Скопіюйте вміст у %s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr ""
+msgstr "3. Видаліть %s. (опціонально)"
 
 #, tcl-format
 msgid "Removing '%s'"
-msgstr ""
+msgstr "Видалення '%s'"
 
-#, tcl-format
+#, fuzzy, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr ""
+msgstr "Деінсталяція %1$s із %2$s завершилася невдало!"
 
 #, tcl-format
 msgid "Skipping SHA256 verification of '%s'."
-msgstr ""
+msgstr "Пропуск верифікації SHA256 для %s."
 
 #, tcl-format
 msgid "SHA256 verification of '%s'"
-msgstr ""
+msgstr "Верифікація SHA256 '%s'"
 
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
-msgstr ""
+msgstr "Неможливо отримати значення SHA256 для %s."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
-msgstr ""
+msgstr "Неможливо виконати верифікацію SHA256 для '%s'."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "Неможливо завантажити %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to download from '%s'!"
-msgstr ""
+msgstr "Неможливо завантажити з '%s'!"
 
 msgid "Download failed"
-msgstr ""
+msgstr "Завантаження завершилося невдачею"
 
 #, tcl-format
 msgid "Unable to remove stray file '%s'"
-msgstr ""
+msgstr "Неможливо видалити тимчасовий файл '%s'"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to '%s'"
-msgstr ""
+msgstr "Неможливо перейменувати завантажений файл на '%s'"
 
 msgid "Create"
-msgstr ""
+msgstr "Створити"
 
 msgid "Check"
-msgstr ""
+msgstr "Перевірити"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "Опції встановлення:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
+"Спробувати верифікувати контрольну суму бібліотек перед їх (пере)установкою"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr ""
+msgstr "Пробувати видалити бібліотеки перед їх (пере)установкою"
 
 msgid "Show README of newly installed libraries (if present)"
-msgstr ""
+msgstr "Показувати файл README для нововстановлених бібліотек (якщо є)"
 
 msgid "Keep package files after installation"
-msgstr ""
+msgstr "Зберігати файли пакета після інсталяції"
 
 msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
