@@ -83,11 +83,13 @@ ALL_LINGUAS = \
 	ko \
 	nl \
 	pa pl pt_br pt_pt \
-	ru sq sv \
+	ru \
+	sq sv \
 	tr \
 	uk \
 	vi \
-	zh_tw
+	zh_cn zh_tw \
+	$(empty)
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
