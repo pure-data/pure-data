@@ -27,10 +27,10 @@ msgid "logarithmic"
 msgstr "logaritmico"
 
 msgid "new-only"
-msgstr "solo-nuovo"
+msgstr "solo nuovi"
 
 msgid "new&old"
-msgstr "nuovo-e-vecchio"
+msgstr "nuovi e vecchi"
 
 msgid "no scale"
 msgstr "nessuna scala"
@@ -94,7 +94,7 @@ msgid "no Pd settings to clear"
 msgstr "nessuna impostazione Pd da pulire"
 
 msgid "removed .pdsettings file"
-msgstr "archivio .pdsettings rimosso"
+msgstr "file .pdsettings rimosso"
 
 msgid "couldn't delete .pdsettings file"
 msgstr "impossibile cancellare il file .pdsettings"
@@ -408,7 +408,7 @@ msgid "Toggle"
 msgstr "Toggle"
 
 msgid "Non Zero Value"
-msgstr "Valore Non Zero"
+msgstr "Valore diverso da zero"
 
 msgid "Value:"
 msgstr "Valore:"
@@ -1238,7 +1238,7 @@ msgid "Test Audio and MIDI..."
 msgstr "Test Audio e MIDI..."
 
 msgid "Load Meter"
-msgstr "Misura carico cpu"
+msgstr "Misura carico CPU"
 
 msgid "Audio Settings..."
 msgstr "Settaggi audio..."
@@ -1274,7 +1274,7 @@ msgid "List of objects..."
 msgstr ""
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
 msgstr "Controlla aggiornamenti"
@@ -1356,10 +1356,10 @@ msgid "Audio off"
 msgstr "Audio inattivo"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
 msgstr "Pd"
