@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-23 23:15+0000\n"
+"PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Jaime E Oliver La Rosa <la.rosa@nyu.edu>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
@@ -866,7 +866,7 @@ msgstr "No hay paquetes seleccionados para instalar."
 
 #, tcl-format
 msgid "Processed %d packages selected for installation."
-msgstr "Procesando %d paquetes seleccionados para instalación."
+msgstr "Han sido procesados %d paquetes seleccionados para instalación."
 
 msgid "Show all"
 msgstr "Mostrar todos"
