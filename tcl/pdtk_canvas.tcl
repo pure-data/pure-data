@@ -63,10 +63,10 @@ if {[tk windowingsystem] eq "win32" || \
             set y $::menubarsize
         }
 
-        set x [ expr $x % $width]
-        set y [ expr $y % $height]
-        if {$x < 0} {set x 0}
-        if {$y < 0} {set y 0}
+        set xmin [winfo vrootx .]
+        set ymin [winfo vrooty .]
+        set x [expr ($x - $xmin) % $width + $xmin] 
+        set y [expr ($y - $ymin) % $height + $ymin] 
 
         return [list ${x} ${y} ${w} ${h}]
     }
