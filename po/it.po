@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-25 19:25+0000\n"
+"PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/it/>\n"
@@ -563,7 +563,7 @@ msgid "Startup flags:"
 msgstr "Opzioni di avvio:"
 
 msgid "Defeat real-time scheduling"
-msgstr ""
+msgstr "Non attivare lo scheduling in tempo reale"
 
 msgid "Help Browser"
 msgstr "Browser della Guida"
@@ -900,16 +900,16 @@ msgstr ""
 "ricerca vuota."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr ""
+msgstr "Cliccando con il pulsante destro su un risultato ti darà più opzioni..."
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr ""
+msgstr "Puoi anche cercare librerie e oggetti attraverso il tuo browser web:"
 
 msgid "Find externals"
-msgstr ""
+msgstr "Trova externals"
 
 msgid "Install DEK file..."
-msgstr ""
+msgstr "Installa file DEK..."
 
 msgid "Preferences..."
 msgstr "Preferenze..."
@@ -918,43 +918,43 @@ msgid "Search for: "
 msgstr "Cerca: "
 
 msgid "libraries"
-msgstr ""
+msgstr "librerie"
 
 msgid "objects"
 msgstr "oggetti"
 
 msgid "both"
-msgstr ""
+msgstr "entrambi"
 
 msgid "translations"
-msgstr ""
+msgstr "traduzioni"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr ""
+msgstr "Installa solo externals caricati da persone di cui ti fidi."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr ""
+msgstr "Vista a schede disabilitata: trovato Tcl/Tk incompatibile"
 
 msgid "Library"
-msgstr ""
+msgstr "Libreria"
 
 msgid "Version"
-msgstr ""
+msgstr "Versione"
 
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Caricato da"
 
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 msgid "Search Results"
 msgstr "Risultati della Ricerca"
 
 msgid "Log"
-msgstr ""
+msgstr "Log"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
@@ -962,82 +962,87 @@ msgstr "Ricerca di \"%s\"..."
 
 #, tcl-format
 msgid "online? %s"
-msgstr ""
+msgstr "online? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "Impossibile effettuare la ricerca. Sei online?"
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr ""
+msgstr "Trovati %1$d pacchetti utilizzabili (di %2$d pacchetti in totale)."
 
 msgid "It appears that there are no matching packages for your architecture."
 msgstr ""
+"Sembra che non ci siano pacchetti corrispondenti per la tua architettura."
 
 msgid "No matching externals found."
-msgstr ""
+msgstr "Nessun external corrispondente trovato."
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr ""
+msgstr "Prova a usare il nome completo, ad esempio 'freeverb~'."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr ""
+msgstr "O usa caratteri jolly, come 'freeverb*'."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
+"Per favore scegli una cartella (con permessi di scrittura) per "
+"l'installazione!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
-msgstr ""
+msgstr "Installare %1$s in %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
+"Cancellazione del download di '%s': Nessuna cartella di installazione "
+"fornita."
 
 msgid "Installing to non-existant directory failed"
-msgstr ""
+msgstr "Installazione su una cartella non esistente fallita"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
+msgstr "Impossibile installare in '%s'"
 
 msgid "Directory does not exist!"
-msgstr ""
+msgstr "La cartella non esiste!"
 
 msgid "Directory is not writable!"
-msgstr ""
+msgstr "Non è possibile scrivere nella cartella!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr ""
+msgstr "Scaricamento di '%s'"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
+msgstr "Inizio a scaricare '%1$s' in '%2$s'..."
 
 msgid "aborting."
-msgstr ""
+msgstr "interrompo."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr ""
+msgstr "Scaricamento di '%s' non riuscito"
 
 msgid "Download failed!"
-msgstr ""
+msgstr "Scaricamento fallito!"
 
 msgid "Download completed! Verifying..."
-msgstr ""
+msgstr "Scaricamento completato! Sto verificando..."
 
 msgid "Ignoring checksum mismatch"
-msgstr ""
+msgstr "Ignoro la non corrispondenza del checksum"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
+msgstr "[deken] deken-plugin.tcl (ricerca di externals di Pd) caricato da %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] Piattaforma identificata: %s"
 
 #, tcl-format
 msgid "Searching on %s..."
@@ -1045,14 +1050,14 @@ msgstr "Ricerca su %s..."
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
-msgstr ""
+msgstr "La ricerca su %1$s ha restituito %2$d risultati"
 
 msgid "No usable servers for searching found..."
-msgstr ""
+msgstr "Non sono stati trovati server utilizzabili per la ricerca..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr ""
+msgstr "Caricato da %1$s @ %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
@@ -1062,29 +1067,29 @@ msgid "Search failed"
 msgstr "Ricerca non riuscita"
 
 msgid "Unable to perform search."
-msgstr ""
+msgstr "Impossibile effettuare la ricerca."
 
 msgid "Select package for installation"
-msgstr ""
+msgstr "Seleziona il pacchetto per l'installazione"
 
 msgid "Deselect package"
-msgstr ""
+msgstr "Deseleziona il pacchetto"
 
 msgid "Open package webpage"
 msgstr "Apri la pagina web del pacchetto"
 
 msgid "Copy package URL"
-msgstr ""
+msgstr "Copia l'URL del pacchetto"
 
 msgid "Copy SHA256 checksum URL"
-msgstr ""
+msgstr "Copia l'URL del checksum SHA256"
 
 msgid "Copy OpenGPG signature URL"
-msgstr ""
+msgstr "Copia l'URL della firma OpenGPG"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr ""
+msgstr "Disinstalla '%s'"
 
 #, tcl-format
 msgid ""
@@ -1095,6 +1100,13 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Vuoi che Pd usi la cartella dei documenti esistente per le tue patch e le "
+"librerie esterne?\n"
+"\n"
+"Posizione: %s\n"
+"\n"
+"Puoi cambiare o disabilitare questa scelta in seguito nelle preferenze del "
+"percorso."
 
 #, tcl-format
 msgid ""
@@ -1105,6 +1117,12 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Vuoi che Pd crei una cartella dei documenti per le patch e le librerie "
+"esterne?\n"
+"\n"
+"Posizione: %s\n"
+"\n"
+"Puoi cambiarlo o disabilitarlo in seguito nelle preferenze del percorso."
 
 #, tcl-format
 msgid ""
@@ -1114,32 +1132,37 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
+"La cartella dei documenti di Pd non può essere trovata:\n"
+"\n"
+"%s\n"
+"\n"
+"Scegliere una nuova posizione?"
 
 #, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr ""
+msgstr "impossibile creare la cartella documenti di Pd: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr ""
+msgstr "impossibile creare la cartella \"externals\" in: %s"
 
 msgid "refusing to delete empty domain"
-msgstr ""
+msgstr "non cancello il dominio vuoto"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr ""
+msgstr "Impossibile creare le preferenze \"%1$s\" in %2$s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr ""
+msgstr "ignoro '%s': non esiste"
 
 msgid "About Pd"
 msgstr "Informazioni su Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
-msgstr ""
+msgstr "impossibile leggere il documento \"%s\""
 
 msgid "Save"
 msgstr "Salva"
@@ -1151,25 +1174,25 @@ msgid "Print..."
 msgstr "Stampa..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Incolla e Sostituisci"
 
 msgid "Duplicate"
 msgstr "Duplica"
 
 msgid "Zoom In"
-msgstr ""
+msgstr "Zoom Avanti"
 
 msgid "Zoom Out"
-msgstr ""
+msgstr "Zoom Indietro"
 
 msgid "Tidy Up"
 msgstr "Allinea elementi"
 
 msgid "(Dis)Connect Selection"
-msgstr ""
+msgstr "(Dis)Connetti Selezionati"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "Triggerizza"
 
 msgid "Edit Mode"
 msgstr "Modalità modifica"
@@ -1268,10 +1291,10 @@ msgid "HTML Manual..."
 msgstr "Manuale HTML..."
 
 msgid "Browser..."
-msgstr ""
+msgstr "Browser..."
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Lista degli oggetti..."
 
 msgid "puredata.info"
 msgstr "puredata.info"
@@ -1323,7 +1346,7 @@ msgid "Load from..."
 msgstr "Carica da..."
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Rimuovi Tutte..."
 
 msgid "Preferences"
 msgstr "Preferenze"
@@ -1343,7 +1366,7 @@ msgstr "Proprietà"
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
-msgstr ""
+msgstr "tolte %d righe dalla finestra Pd"
 
 #, tcl-format
 msgid "the Pd window filtered %d lines"
@@ -1371,22 +1394,22 @@ msgid "Audio I/O error"
 msgstr "Errore I/O Audio"
 
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatale"
 
 msgid "error"
-msgstr ""
+msgstr "errori"
 
 msgid "normal"
-msgstr ""
+msgstr "normale"
 
 msgid "debug"
-msgstr ""
+msgstr "debug"
 
 msgid "all"
-msgstr ""
+msgstr "tutto"
 
 msgid "New..."
 msgstr "Nuovo..."
@@ -1399,7 +1422,7 @@ msgstr "Rimuovi"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr ""
+msgstr "ignoro '%s': non sembra un file Pd"
 
 #, fuzzy
 #~ msgid "bottom:"
