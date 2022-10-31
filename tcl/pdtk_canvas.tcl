@@ -64,8 +64,8 @@ if {[tk windowingsystem] eq "win32" || \
 
         set xmin [winfo vrootx .]
         set ymin [winfo vrooty .]
-        set x [expr ($x - $xmin) % $width + $xmin] 
-        set y [expr ($y - $ymin) % $height + $ymin] 
+        set x [expr ($x - $xmin) % $width + $xmin]
+        set y [expr ($y - $ymin) % $height + $ymin]
 
         return [list ${x} ${y} ${w} ${h}]
     }
