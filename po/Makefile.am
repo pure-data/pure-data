@@ -19,37 +19,40 @@ endif
 ##### Files, Binaries, & Libs #####
 
 TCLFILES = \
-    apple_events.tcl \
-    dialog_canvas.tcl \
-    dialog_gatom.tcl \
-    dialog_path.tcl \
-    pd_bindings.tcl \
-    pd_menus.tcl \
-    pdwindow.tcl \
-    scrollboxwindow.tcl \
     AppMain.tcl \
-    dialog_data.tcl \
-    dialog_iemgui.tcl \
-    dialog_startup.tcl \
-    pd_connect.tcl \
-    pkgIndex.tcl \
-    wheredoesthisgo.tcl \
+    apple_events.tcl \
     dialog_array.tcl \
-    dialog_find.tcl \
-    dialog_message.tcl \
-    helpbrowser.tcl \
-    pdtk_canvas.tcl \
-    pkg_mkIndex.tcl \
     dialog_audio.tcl \
+    dialog_canvas.tcl \
+    dialog_data.tcl \
+    dialog_find.tcl \
     dialog_font.tcl \
+    dialog_gatom.tcl \
+    dialog_iemgui.tcl \
+    dialog_message.tcl \
     dialog_midi.tcl \
+    dialog_path.tcl \
+    dialog_startup.tcl \
+    helpbrowser.tcl \
     opt_parser.tcl \
-    pd_menucommands.tcl \
-    pdtk_text.tcl \
-    scrollbox.tcl \
-    pd_guiprefs.tcl \
+    pd-gui.tcl \
+    pd_bindings.tcl \
+    pd_connect.tcl \
     pd_deken.tcl \
-    pd_docsdir.tcl
+    pd_docsdir.tcl \
+    pd_guiprefs.tcl \
+    pd_menucommands.tcl \
+    pd_menus.tcl \
+    pdtk_canvas.tcl \
+    pdtk_text.tcl \
+    pdtk_textwindow.tcl \
+    pdwindow.tcl \
+    pkgIndex.tcl \
+    pkg_mkIndex.tcl \
+    scrollbox.tcl \
+    scrollboxwindow.tcl \
+    wheredoesthisgo.tcl \
+    $(empty)
 
 LOCAL_TCLFILES = \
     iemgui_dynamic_strings.tcl \
@@ -64,8 +67,28 @@ LOCAL_TCLFILES = \
 FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
         $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
+EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.txt)
+
 # these are the supported languages
-ALL_LINGUAS = af az be bg de el en_ca eu es fr gu he hi hu it pa pt_br pt_pt sq sv vi
+ALL_LINGUAS = \
+	af ar az \
+	be bg \
+	de \
+	el en_ca es eu \
+	fi fr \
+	gu \
+	he hi hu hy \
+	it \
+	ja \
+	ko \
+	nl \
+	pa pl pt_br pt_pt \
+	ru sq sv \
+	tr \
+	uk \
+	vi \
+	zh_tw
+
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
 
@@ -76,8 +99,11 @@ libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
 # files that are included but not built
-EXTRA_DIST = $(POFILES) $(TEMPLATE) README.txt \
-             $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
+EXTRA_DIST = \
+    $(POFILES) $(TEMPLATE) README.txt \
+    _exclude.txt \
+    $(LOCAL_TCLFILES) \
+    $(empty)
 
 #########################################
 ##### Targets #####
@@ -95,19 +121,22 @@ template: $(TEMPLATE)
 # remove string file locations and header "POT-Creation-Date" to suppress
 # unnecessary changes, we really only want to update the .po files when a
 # translation string changes in a tcl file
-$(TEMPLATE): $(FILES)
+$(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
-		--sort-by-file --output=$(TEMPLATE) \
+		--sort-by-file --output=$(TEMPLATE).new \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
 		--foreign-user \
+		--no-location \
+		--exclude-file=$(EXCLUDE_FILE) \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-	sed -i.bak -E '/^#:/d' $(TEMPLATE)
-	sed -i.bak -E '/^"POT-Creation-Date/d' $(TEMPLATE)
-	rm -f $(TEMPLATE).bak
+	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
+	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE) > $(TEMPLATE).nodate
+	cmp $(TEMPLATE).new.nodate $(TEMPLATE).nodate || cat $(TEMPLATE).new > $(TEMPLATE)
+	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
 locations:

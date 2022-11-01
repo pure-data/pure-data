@@ -1,21 +1,18 @@
-# Translation of Pure Data 0.43.po to Punjabi.
+# Translation of Pure Data to Chinese (Traditional).
 # This file is put in the public domain.
-#
-# Amanpreet Singh Alam <amanpreetalam@yahoo.com>, 2005.
+# Max Neupert <abonnements@revolwear.com>, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.43\n"
+"Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2005-11-04 08:04+0530\n"
-"Last-Translator: Amanpreet Singh Alam <amanpreetalam@yahoo.com>\n"
-"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
-"Language: pa\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zho_HANT@tw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "linear"
 msgstr ""
@@ -29,69 +26,63 @@ msgstr ""
 msgid "new&old"
 msgstr ""
 
-#, fuzzy
 msgid "no scale"
-msgstr "ਸੰਭਾਲੋ"
+msgstr ""
 
-#, fuzzy
 msgid "scale"
-msgstr "ਸੰਭਾਲੋ"
+msgstr "縮放"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
 msgstr ""
 
 msgid "Undo clear"
-msgstr ""
+msgstr "回復清除"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "回復連結"
 
-#, fuzzy
 msgid "Undo cut"
-msgstr "ਯੂਗਾਂਡਾ"
+msgstr "回復剪下"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "回復斷線"
 
-#, fuzzy
 msgid "Undo duplicate"
-msgstr "ਮਿਤੀ"
+msgstr "回復複製"
 
 msgid "Undo motion"
-msgstr ""
+msgstr "回復動態"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "回復貼上"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "回復輸入"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "重做清除"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "重做連結"
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "ਯੂਗਾਂਡਾ"
+msgstr "重做剪下"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "重做斷線"
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "ਮਿਤੀ"
+msgstr "重做複製"
 
 msgid "Redo motion"
-msgstr ""
+msgstr "重做動態"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "重做貼上"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "重做輸入"
 
 msgid "no Pd settings to clear"
 msgstr ""
@@ -118,103 +109,91 @@ msgid "(re-save preferences to reinstate them)"
 msgstr ""
 
 msgid "File"
-msgstr "ਫਾਇਲ"
+msgstr "檔案"
 
-#, fuzzy
 msgid "Edit"
-msgstr "ਸੋਧ(_E)"
+msgstr "編輯"
 
 msgid "Put"
-msgstr ""
+msgstr "放置"
 
 msgid "Find"
-msgstr "ਖੋਜ"
+msgstr "搜尋"
 
-#, fuzzy
 msgid "Media"
-msgstr "ਮੈਕਡੋਨੀਆ"
+msgstr "媒體"
 
-#, fuzzy
 msgid "Window"
-msgstr "ਝਰੋਖਾ(_W)"
+msgstr "視窗"
 
 msgid "Help"
-msgstr "ਸਹਾਇਤਾ"
+msgstr ""
 
 msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
-msgstr "ਨਕਲ"
+msgstr "複製"
 
-#, fuzzy
 msgid "Paste"
-msgstr "ਮਿਤੀ"
+msgstr "貼上"
 
 msgid "Array Properties"
+msgstr "Array 內容"
+
+msgid "Array"
 msgstr ""
 
-#, fuzzy
-msgid "Array"
-msgstr "ਅਡੂਰਾ"
-
-#, fuzzy
 msgid "Name:"
-msgstr "ਨਾਂ"
+msgstr "名稱:"
 
 msgid "Size:"
-msgstr "ਅਕਾਰ:"
+msgstr "大小:"
 
-#, fuzzy
 msgid "Save contents"
-msgstr "ਭਾਗ(_C)"
+msgstr "儲存"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "描繪成"
 
-#, fuzzy
 msgid "Polygon"
-msgstr "ਪੋਲੈਂਡ"
+msgstr "多邊形"
 
-#, fuzzy
 msgid "Points"
-msgstr "ਪੋਰਟ"
+msgstr "點"
 
 msgid "Bezier curve"
-msgstr ""
+msgstr "貝茲曲線"
 
 msgid "Put array into:"
 msgstr ""
 
 msgid "New graph"
-msgstr ""
+msgstr "新 graph"
 
-#, fuzzy
 msgid "Last graph"
-msgstr "ਆਖਰੀ ਸੁਨੇਹਾ:"
+msgstr "上一個 graph"
 
 msgid "Options"
 msgstr ""
 
-#, fuzzy
 msgid "Open List View..."
-msgstr "ਪਾਬੰਦੀ ਸੂਚੀ..."
+msgstr "開啟 List View..."
 
-#, fuzzy
 msgid "Delete array"
-msgstr "ਹਟਾਓ"
+msgstr "刪除 Array"
 
 msgid "Cancel"
-msgstr "ਰੱਦ"
+msgstr "取消"
 
 msgid "Apply"
-msgstr "ਲਾਗੂ"
+msgstr "套用"
 
 msgid "OK"
-msgstr ""
+msgstr "確定"
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "音效設定"
 
 msgid "Settings"
 msgstr ""
@@ -223,7 +202,7 @@ msgid "Sample rate:"
 msgstr ""
 
 msgid "Delay (msec):"
-msgstr ""
+msgstr "延遲(微秒):"
 
 msgid "48k"
 msgstr ""
@@ -238,23 +217,22 @@ msgid "Block size:"
 msgstr ""
 
 msgid "Use callbacks"
-msgstr ""
+msgstr "使用 callbacks"
 
 msgid "Input Devices"
-msgstr ""
+msgstr "輸入設備"
 
-#, fuzzy
 msgid "Channels:"
-msgstr "ਰੱਦ"
+msgstr "頻道:"
 
 msgid "Output Devices"
-msgstr ""
+msgstr "輸出設備"
 
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(如同輸入設備)..."
 
 msgid "Use Multiple Devices"
-msgstr ""
+msgstr "使用多個 設備"
 
 msgid "Save All Settings"
 msgstr ""
@@ -263,48 +241,46 @@ msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Canvas 內容"
 
-#, fuzzy
 msgid "Scale"
-msgstr "ਸੰਭਾਲੋ"
+msgstr "縮放"
 
 msgid "X units per pixel:"
 msgstr ""
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "單一像素的 Y 單位:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "上層 patch 的顯示選項"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "在上層顯示介面"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "隱藏 object 名稱與參數"
 
 msgid "Range and size"
-msgstr ""
+msgstr "範圍與尺寸"
 
 msgid "X range: from"
-msgstr ""
+msgstr "X 範圍, 自"
 
 msgid "to"
-msgstr ""
+msgstr "到"
 
-#, fuzzy
 msgid "Margin:"
-msgstr "ਨਿਸ਼ਾਨ ਰੇਖਾ:"
+msgstr "邊框:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "Y 範圍: 自"
 
 msgid "Data Properties"
-msgstr ""
+msgstr "資料內容"
 
 msgid "Send"
-msgstr ""
+msgstr "傳送"
 
 msgid "Done"
 msgstr ""
@@ -317,9 +293,9 @@ msgstr ""
 msgid "Couldn't find '%1$s' in %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -329,113 +305,99 @@ msgstr ""
 msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
-#, fuzzy
 msgid "Pd window"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+msgstr "Pd 主視窗"
 
 msgid "Match whole word only"
-msgstr ""
+msgstr "完全吻合"
 
 msgid "Close"
-msgstr "ਬੰਦ ਕਰੋ"
+msgstr "關閉"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
-msgstr "ਫੋਂਟ:"
+msgstr "%s 字體"
 
-#, fuzzy
 msgid "Font"
-msgstr "ਫੋਂਟ:"
+msgstr "%s"
 
-#, fuzzy
 msgid "Font Size"
-msgstr "ਅਕਾਰ:"
+msgstr "字體"
 
-#, fuzzy
 msgid "Stretch"
-msgstr "ਸ਼ੁਰੂ:"
+msgstr "延展"
 
 msgid "X and Y"
-msgstr ""
+msgstr "X 和 Y"
 
 msgid "X only"
-msgstr ""
+msgstr "只有 X"
 
 msgid "Y only"
-msgstr ""
+msgstr "只有 Y"
 
 msgid "GUI Box Properties"
 msgstr ""
 
-#, fuzzy
 msgid "Messages"
-msgstr "ਸੁਨੇਹਾ"
+msgstr ""
 
 msgid "Send symbol:"
-msgstr ""
+msgstr "傳送 symbol:"
 
-#, fuzzy
 msgid "Receive symbol:"
-msgstr "ਪ੍ਰਾਪਤੀ ਝਰੋਖਾ"
+msgstr "接收 symbol:"
 
 msgid "Width:"
-msgstr ""
+msgstr "寬度:"
 
-#, fuzzy
 msgid "Limits"
-msgstr "ਉਪਭੋਗੀ ਸੀਮਾ"
+msgstr "範圍"
 
 msgid "Lower:"
-msgstr ""
+msgstr "最小值："
 
-#, fuzzy
 msgid "Upper:"
-msgstr "ਉਪਭੋਗੀ:"
+msgstr "最大值："
 
 msgid "Label"
-msgstr ""
+msgstr "標籤"
 
-#, fuzzy
 msgid "Left"
-msgstr "ਖੱਬਾ"
+msgstr "左"
 
 msgid "Right"
-msgstr "ਸੱਜਾ"
+msgstr "右"
 
 msgid "Top"
-msgstr "ਉੱਪਰ"
+msgstr "上"
 
 msgid "Bottom"
-msgstr "ਹੇਠਾਂ"
+msgstr "下"
 
-#, fuzzy
 msgid "Background color"
-msgstr "ਪਿੱਠਭੂਮੀ:"
+msgstr "背景顏色"
 
-#, fuzzy
 msgid "Foreground color"
-msgstr "ਮੁੱਖ-ਭੂਮੀ:"
+msgstr "前景顏色"
 
-#, fuzzy
 msgid "Label color"
-msgstr "ਚੋਣ ਰੰਗ"
+msgstr "標籤顏色"
 
-#, fuzzy
 msgid "Bang"
-msgstr "ਪਾਬੰਦੀ"
+msgstr ""
 
 msgid "Flash Time (msec)"
 msgstr ""
 
 msgid "Min:"
-msgstr ""
+msgstr "最小:"
 
 msgid "Max:"
-msgstr ""
+msgstr "最大:"
 
-#, fuzzy
 msgid "Toggle"
-msgstr "ਟੂਗੂ"
+msgstr ""
 
 msgid "Non Zero Value"
 msgstr ""
@@ -443,19 +405,18 @@ msgstr ""
 msgid "Value:"
 msgstr ""
 
-#, fuzzy
 msgid "Number2"
-msgstr "$ ਅੰਕ"
-
-msgid "Width (digits):"
 msgstr ""
 
 #, fuzzy
+msgid "Width (digits):"
+msgstr "寬度 (digits):"
+
 msgid "Height:"
-msgstr "ਸੱਜਾ"
+msgstr "高:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "輸出範圍"
 
 msgid "Log height:"
 msgstr ""
@@ -463,13 +424,11 @@ msgstr ""
 msgid "Vslider"
 msgstr ""
 
-#, fuzzy
 msgid "Hslider"
-msgstr "ਓਹਲੇ"
+msgstr ""
 
-#, fuzzy
 msgid "Vradio"
-msgstr "ਵਰਜਨ"
+msgstr ""
 
 msgid "Num cells:"
 msgstr ""
@@ -480,23 +439,21 @@ msgstr ""
 msgid "VU Meter"
 msgstr ""
 
-#, fuzzy
 msgid "Canvas"
-msgstr "ਕੈਨੇਡਾ"
+msgstr ""
 
 msgid "Visible Rectangle (pix)"
 msgstr ""
 
 #, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "%s 內容"
 
 msgid "Parameters"
 msgstr ""
 
-#, fuzzy
 msgid "Init"
-msgstr "ਸੱਦਾ"
+msgstr ""
 
 msgid "No init"
 msgstr ""
@@ -508,47 +465,43 @@ msgid "Steady on click"
 msgstr ""
 
 msgid "X offset:"
-msgstr ""
+msgstr "X 軸位移:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "Y 軸位移:"
 
 msgid "Colors"
-msgstr "ਰੰਗ"
+msgstr "顏色"
 
-#, fuzzy
 msgid "Background"
-msgstr "ਪਿੱਠਭੂਮੀ:"
+msgstr "背景"
 
-#, fuzzy
 msgid "Front"
-msgstr "ਫੋਂਟ:"
+msgstr "字型"
 
 msgid "Compose color"
+msgstr "制定顏色"
+
+msgid "Test label"
 msgstr ""
 
-#, fuzzy
-msgid "Test label"
-msgstr "ਸਭ ਦੀ ਜਾਂਚ"
-
-#, fuzzy
 msgid "Send a Pd message"
-msgstr "ਸੁਨੇਹਾ"
+msgstr "送出 Pd message"
 
 msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "MIDI 設定"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "ALSA MIDI 設定"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "輸入埠:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "輸出埠:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
@@ -557,7 +510,7 @@ msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
-msgstr ""
+msgstr "額外套件"
 
 msgid "Pd Documents Directory"
 msgstr ""
@@ -574,9 +527,8 @@ msgstr ""
 msgid "Externals Install Directory"
 msgstr ""
 
-#, fuzzy
 msgid "Clear"
-msgstr "ਸੂਚੀ ਸਾਫ਼"
+msgstr ""
 
 msgid "Choose Pd documents directory:"
 msgstr ""
@@ -592,13 +544,13 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"
-msgstr ""
+msgstr "新增函式庫"
 
 msgid "Edit library"
-msgstr ""
+msgstr "編輯函式庫"
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "啟動時載入函式庫"
 
 msgid "Startup flags:"
 msgstr ""
@@ -606,23 +558,20 @@ msgstr ""
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-#, fuzzy
 msgid "Help Browser"
-msgstr "ਝਲਕ..."
+msgstr ""
 
 msgid "Associated Files"
 msgstr ""
 
-#, fuzzy
 msgid "Pd Files"
-msgstr "ਫਾਇਲ"
+msgstr ""
 
 msgid "Max Patch Files"
 msgstr ""
 
-#, fuzzy
 msgid "Max Text Files"
-msgstr "ਫਾਇਲ"
+msgstr ""
 
 msgid "Max Patch Files (.pat)"
 msgstr ""
@@ -699,9 +648,9 @@ msgstr ""
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Installing '%s'"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -813,9 +762,9 @@ msgid ""
 "(treats other versions like foreign architectures)"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "ਮੇਰੀ ਪਸੰਦ..."
+msgstr ""
 
 #, tcl-format
 msgid "Platform re-detected: %s"
@@ -824,17 +773,14 @@ msgstr ""
 msgid "Deken Packages"
 msgstr ""
 
-#, fuzzy
 msgid "ZIP Files"
-msgstr "ZIP ਫਾਈਲਾਂ"
+msgstr ""
 
-#, fuzzy
 msgid "TAR Files"
-msgstr "TAR ਫਾਈਲਾਂ"
+msgstr ""
 
-#, fuzzy
 msgid "All Files"
-msgstr "ਸਾਰੀਆਂ ਫਾਈਲਾਂ"
+msgstr ""
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
@@ -904,9 +850,8 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-#, fuzzy
 msgid "Search"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr "於"
 
 #, tcl-format
 msgid "Install (%d)"
@@ -950,11 +895,10 @@ msgid "Install DEK file..."
 msgstr ""
 
 msgid "Preferences..."
-msgstr "ਮੇਰੀ ਪਸੰਦ..."
+msgstr "偏好設定..."
 
-#, fuzzy
 msgid "Search for: "
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr "於 "
 
 msgid "libraries"
 msgstr ""
@@ -989,16 +933,15 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#, fuzzy
 msgid "Search Results"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 msgid "Log"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 #, tcl-format
 msgid "online? %s"
@@ -1079,9 +1022,9 @@ msgstr ""
 msgid "[deken] Platform detected: %s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching on %s..."
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
@@ -1094,13 +1037,12 @@ msgstr ""
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for '%s' failed!"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
-#, fuzzy
 msgid "Search failed"
-msgstr "ਪਾਠ ਖੋਜ..."
+msgstr ""
 
 msgid "Unable to perform search."
 msgstr ""
@@ -1175,41 +1117,36 @@ msgstr ""
 msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
-#, fuzzy
 msgid "About Pd"
-msgstr "ਇਸ ਬਾਰੇ(_A)"
+msgstr "關於 Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
 msgstr ""
 
 msgid "Save"
-msgstr "ਸੰਭਾਲੋ"
+msgstr "儲存"
 
 msgid "Save As..."
-msgstr "ਇੰਞ ਸੰਭਾਲੋ..."
+msgstr "另存新檔..."
 
-#, fuzzy
 msgid "Print..."
-msgstr "ਸੋਧ(_E)..."
+msgstr "列印..."
 
 msgid "Paste Replace"
 msgstr ""
 
-#, fuzzy
 msgid "Duplicate"
-msgstr "ਮਿਤੀ"
+msgstr "重複"
 
-#, fuzzy
 msgid "Zoom In"
-msgstr "ਹੇਠਾਂ"
+msgstr ""
 
-#, fuzzy
 msgid "Zoom Out"
-msgstr "ਹੇਠਾਂ"
+msgstr ""
 
 msgid "Tidy Up"
-msgstr ""
+msgstr "整理"
 
 msgid "(Dis)Connect Selection"
 msgstr ""
@@ -1217,49 +1154,41 @@ msgstr ""
 msgid "Triggerize"
 msgstr ""
 
-#, fuzzy
 msgid "Edit Mode"
-msgstr "ਮੋਡ"
+msgstr "編輯模式"
 
-#, fuzzy
 msgid "Undo"
-msgstr "ਯੂਗਾਂਡਾ"
+msgstr "復原"
 
-#, fuzzy
 msgid "Redo"
-msgstr "ਲਾਲ:"
+msgstr "重做"
 
-#, fuzzy
 msgid "New"
-msgstr "ਨਵਾਂ(_N)"
+msgstr ""
 
 msgid "Open"
-msgstr "ਖੋਲੋ"
+msgstr "開啟"
 
-#, fuzzy
 msgid "Message..."
-msgstr "ਸੁਨੇਹਾ"
+msgstr ""
 
 msgid "Cut"
 msgstr ""
 
-#, fuzzy
 msgid "Select All"
-msgstr "ਚੋਣ ਰੰਗ"
+msgstr ""
 
-#, fuzzy
 msgid "Clear Console"
-msgstr "ਸੂਚੀ ਸਾਫ਼"
+msgstr "清除控制台"
 
 msgid "Object"
 msgstr ""
 
 msgid "Message"
-msgstr "ਸੁਨੇਹਾ"
+msgstr ""
 
-#, fuzzy
 msgid "Number"
-msgstr "$ ਅੰਕ"
+msgstr ""
 
 msgid "List"
 msgstr ""
@@ -1267,86 +1196,77 @@ msgstr ""
 msgid "Symbol"
 msgstr ""
 
-#, fuzzy
 msgid "Comment"
-msgstr "ਕਮਾਂਡ"
+msgstr ""
 
 msgid "Graph"
-msgstr "ਗਰਾਫ਼"
+msgstr ""
 
-#, fuzzy
 msgid "Find..."
-msgstr "ਖੋਜ"
+msgstr "尋找..."
 
 msgid "Find Again"
-msgstr ""
+msgstr "再尋找"
 
 msgid "Find Last Error"
-msgstr ""
+msgstr "尋找上次錯誤"
 
 msgid "DSP On"
-msgstr ""
+msgstr "打開 DSP"
 
-#, fuzzy
 msgid "DSP Off"
-msgstr "ਬੰਦ"
+msgstr "關閉 DSP"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
+msgstr "聲音和 MIDI 測試..."
 
 msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "音效設定..."
 
 msgid "MIDI Settings..."
 msgstr ""
 
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
-#, fuzzy
 msgid "Zoom"
-msgstr "ਹੇਠਾਂ"
+msgstr "縮放"
 
 msgid "Bring All to Front"
-msgstr ""
+msgstr "將此程式所有視窗移至最前"
 
-#, fuzzy
 msgid "Next Window"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+msgstr "下一個視窗"
 
-#, fuzzy
 msgid "Previous Window"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+msgstr "前一個視窗"
 
-#, fuzzy
 msgid "Parent Window"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+msgstr "上層視窗"
 
 msgid "HTML Manual..."
 msgstr ""
 
-#, fuzzy
 msgid "Browser..."
-msgstr "ਝਲਕ..."
+msgstr ""
 
 msgid "List of objects..."
 msgstr ""
 
 msgid "puredata.info"
-msgstr ""
+msgstr "puredata.info"
 
 msgid "Check for updates"
 msgstr ""
 
 msgid "Report a bug"
-msgstr ""
+msgstr "回報錯誤"
 
-#, fuzzy
 msgid "Clear Menu"
-msgstr "ਸੂਚੀ ਸਾਫ਼"
+msgstr "清除選單"
 
 msgid ""
 "Delete all preferences?\n"
@@ -1371,17 +1291,14 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-#, fuzzy
 msgid "Zoom New Windows"
-msgstr "ਭੇਜਣ ਝਰੋਖਾ"
+msgstr ""
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "ਮੇਰੀ ਪਸੰਦ..."
+msgstr ""
 
-#, fuzzy
 msgid "Save to..."
-msgstr "ਇੰਞ ਸੰਭਾਲੋ..."
+msgstr ""
 
 msgid "Load from..."
 msgstr ""
@@ -1389,23 +1306,21 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
-#, fuzzy
 msgid "Preferences"
-msgstr "ਮੇਰੀ ਪਸੰਦ..."
+msgstr "偏好設定"
 
 msgid "Open Recent"
-msgstr ""
+msgstr "打開最近使用的檔案"
 
-#, fuzzy
 msgid "Quit"
-msgstr "ਬਾਹਰ(_Q)"
+msgstr "離開"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr ""
+msgstr "要儲存已修改過的 '%s' 嗎？"
 
 msgid "Properties"
-msgstr ""
+msgstr "內容"
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
@@ -1430,9 +1345,8 @@ msgstr ""
 msgid "Pd"
 msgstr ""
 
-#, fuzzy
 msgid "DSP"
-msgstr "ਬੰਦ"
+msgstr ""
 
 msgid "Audio I/O error"
 msgstr ""
@@ -1456,52 +1370,14 @@ msgid "all"
 msgstr ""
 
 msgid "New..."
-msgstr ""
+msgstr "新增..."
 
-#, fuzzy
 msgid "Edit..."
-msgstr "ਸੋਧ(_E)"
+msgstr "編輯..."
 
-#, fuzzy
 msgid "Delete"
-msgstr "ਹਟਾਓ"
+msgstr ""
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr ""
-
-#, fuzzy
-#~ msgid "bottom:"
-#~ msgstr "ਹੇਠਾਂ"
-
-#, fuzzy
-#~ msgid "height:"
-#~ msgstr "ਸੱਜਾ"
-
-#, fuzzy
-#~ msgid "right:"
-#~ msgstr "ਸੱਜਾ"
-
-#, fuzzy
-#~ msgid "size:"
-#~ msgstr "ਅਕਾਰ:"
-
-#, fuzzy
-#~ msgid "start searching for externals..."
-#~ msgstr "ਪਾਠ ਖੋਜ..."
-
-#, fuzzy
-#~ msgid "for:"
-#~ msgstr "ਪੋਰਟ:"
-
-#, fuzzy
-#~ msgid "Close this window??"
-#~ msgstr "ਝਰੋਖਾ ਬੰਦ(_C)"
-
-#, fuzzy
-#~ msgid "Filters"
-#~ msgstr "ਫਾਇਲ"
-
-#, fuzzy
-#~ msgid "Text Editor"
-#~ msgstr "ਪਾਠ ਰੰਗ"
+msgstr "忽略 '%s': 這不像是Pd檔案"

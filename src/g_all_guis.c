@@ -450,10 +450,30 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_IO + oldsndrcvable);
 }
 
+static void iemgui_dolabelpos(t_object*obj, t_iemgui*iemgui) {
+    int zoom = glist_getzoom(iemgui->x_glist);
+    int x0 = text_xpix((t_object *)obj, iemgui->x_glist);
+    int y0 = text_ypix((t_object *)obj, iemgui->x_glist);
+    int dx = iemgui->x_ldx, dy = iemgui->x_ldy;
+    char tag[128];
+    sprintf(tag, "%lxLABEL", obj);
+    if(gensym("") == iemgui->x_lab) {
+        /* put empty labels where they don't create scrollbars */
+        dx = 0;
+        dy = 7;
+    }
+    pdgui_vmess(0, "crs ii",
+        glist_getcanvas(iemgui->x_glist), "coords", tag,
+        x0  + dx*zoom, y0 + dy*zoom);
+}
 void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 {
+    t_symbol *empty = gensym("");
     t_symbol *old = iemgui->x_lab;
-    iemgui->x_lab = s = s?canvas_realizedollar(iemgui->x_glist, s):gensym("");
+    s = s?canvas_realizedollar(iemgui->x_glist, s):0;
+    if (!(s && s->s_name && s->s_name[0] && strcmp(s->s_name, "empty")))
+        s = empty;
+    iemgui->x_lab = s;
 
     if(senditup < 0) {
         senditup = (glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old);
@@ -461,11 +481,14 @@ void iemgui_dolabel(void *x, t_iemgui *iemgui, t_symbol *s, int senditup)
 
     if(senditup)
     {
+        const char*label = s->s_name;
+        int have_label = (s != empty);
         char tag[128];
         sprintf(tag, "%lxLABEL", x);
         pdgui_vmess("pdtk_text_set", "cs s",
             glist_getcanvas(iemgui->x_glist), tag,
-            (strcmp(s->s_name, "empty"))?s->s_name:"");
+            have_label?s->s_name:"");
+        iemgui_dolabelpos(x, iemgui);
     }
 }
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
@@ -477,18 +500,10 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int zoom = glist_getzoom(iemgui->x_glist);
     iemgui->x_ldx = (int)atom_getfloatarg(0, ac, av);
     iemgui->x_ldy = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
-    {
-        char tag[128];
-        sprintf(tag, "%lxLABEL", x);
-        pdgui_vmess(0, "crs ii",
-            glist_getcanvas(iemgui->x_glist), "coords", tag,
-            text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
-            text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
-    }
+        iemgui_dolabelpos(x, iemgui);
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)

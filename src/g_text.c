@@ -177,15 +177,12 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     if (connectme)
     {
         t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;
-        for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
-            if (g == selected)
-        {
-            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
-            indx = nobj;
-            *xpixp = x1 / x->gl_zoom;
-            *ypixp = (y2+dx) / x->gl_zoom;    /* 5 pixels down, rounded */
-        }
+            /* get number of objects */
+        for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++) ;
+
+            /* deselect the current selection (and create pending objects) */
         glist_noselect(x);
+
             /* search back for 'selected' and if it isn't on the list,
                 plan just to connect from the last item on the list. */
         for (g = x->gl_list, n2 = 0; g; g = g->g_next, n2++)
@@ -195,8 +192,26 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
                 indx = n2;
                 break;
             }
-            else if (!g->g_next)
+            else if (!g->g_next) {
+                    /* we couldn't find the selected object any more
+                     * this probably means, that it was replaced by a newly
+                     * created object, which is now the last on the list.
+                     */
                 indx = nobj-1;
+                break;
+            }
+        }
+            /* so where do we put the new object?
+               just below the one we connect from! */
+        if(g) {
+            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
+            *xpixp = x1 / x->gl_zoom;
+            *ypixp = (y2+dx) / x->gl_zoom;  /* 5 pixels down, rounded */
+        } else {
+                /* just in case */
+            glist_getnextxy(x, xpixp, ypixp);
+            *xpixp = *xpixp/x->gl_zoom - 3;
+            *ypixp = *ypixp/x->gl_zoom - 3;
         }
     }
     else
@@ -252,15 +267,20 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 {
     t_atom at;
     t_binbuf *b = binbuf_new();
-    int xpix, ypix;
+
+    int connectme, xpix, ypix, indx, nobj;
+    canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
+
     glist_noselect(gl);
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
-    glist_getnextxy(gl, &xpix, &ypix);
+
     canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
-    canvas_startmotion(glist_getcanvas(gl));
+    if(connectme)
+        canvas_connect(gl, indx, 0, nobj, 0);
+    else canvas_startmotion(glist_getcanvas(gl));
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }

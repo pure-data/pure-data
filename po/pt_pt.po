@@ -1,11 +1,12 @@
 # Portugal Portugeuse translation for Pure Data
-#
+# This file is put in the public domain.
+# João Pais <jmmmpais@googlemail.com>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: João Pais <jmmmpais@googlemail.com>\n"
 "Language-Team: \n"
@@ -16,80 +17,25 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: PORTUGAL\n"
 
-msgid "-------dimensions(digits)(pix):-------"
+msgid "linear"
 msgstr ""
 
-msgid "--------dimensions(pix)(pix):--------"
+msgid "logarithmic"
 msgstr ""
 
-msgid "----------dimensions(pix):-----------"
+msgid "new-only"
 msgstr ""
 
-msgid "--------flash-time(ms)(ms):---------"
-msgstr ""
-
-msgid "-----------output-range:-----------"
-msgstr ""
-
-msgid "------selectable_dimensions(pix):------"
-msgstr ""
-
-msgid "------visible_rectangle(pix)(pix):------"
+msgid "new&old"
 msgstr ""
 
 #, fuzzy
-msgid "bottom:"
-msgstr "Abaixo"
+msgid "no scale"
+msgstr "Escala"
 
 #, fuzzy
-msgid "height:"
-msgstr "Direita"
-
-msgid "hold:"
-msgstr ""
-
-msgid "intrrpt:"
-msgstr ""
-
-msgid "left:"
-msgstr ""
-
-msgid "lin"
-msgstr ""
-
-msgid "log"
-msgstr ""
-
-msgid "log-height:"
-msgstr ""
-
-msgid "max:"
-msgstr ""
-
-msgid "min:"
-msgstr ""
-
-#, fuzzy
-msgid "right:"
-msgstr "Direita"
-
-#, fuzzy
-msgid "size:"
-msgstr "Tamanho:"
-
-msgid "top:"
-msgstr ""
-
-msgid "value:"
-msgstr ""
-
-#, fuzzy
-msgid "width:"
-msgstr "Largura:"
-
-#, tcl-format
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Quer gravar as modificações feitas em '%s'?"
+msgid "scale"
+msgstr "Escala"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -350,6 +296,12 @@ msgstr "Faixa Y, de"
 msgid "Data Properties"
 msgstr "Propriedades da tela"
 
+msgid "Send"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
 msgstr ""
@@ -401,8 +353,18 @@ msgstr "Apenas X"
 msgid "Y only"
 msgstr "Apenas Y"
 
-msgid "Atom Box Properties"
+#, fuzzy
+msgid "GUI Box Properties"
 msgstr "Propriedades da atom box"
+
+msgid "Messages"
+msgstr ""
+
+msgid "Send symbol:"
+msgstr "Símbolo para enviar:"
+
+msgid "Receive symbol:"
+msgstr "Símbolo para receber:"
 
 msgid "Width:"
 msgstr "Largura:"
@@ -432,15 +394,6 @@ msgstr "Acima"
 msgid "Bottom"
 msgstr "Abaixo"
 
-msgid "Messages"
-msgstr ""
-
-msgid "Send symbol:"
-msgstr "Símbolo para enviar:"
-
-msgid "Receive symbol:"
-msgstr "Símbolo para receber:"
-
 msgid "Background color"
 msgstr "Cor de fundo"
 
@@ -450,18 +403,6 @@ msgstr "Cor frontal"
 msgid "Label color"
 msgstr "Cor da legenda"
 
-msgid "Init"
-msgstr "Iniciar"
-
-msgid "No init"
-msgstr "Não iniciar"
-
-msgid "Jump on click"
-msgstr "Saltar no clique"
-
-msgid "Steady on click"
-msgstr "Manter no clique"
-
 msgid "Bang"
 msgstr "Bang"
 
@@ -469,10 +410,10 @@ msgstr "Bang"
 msgid "Flash Time (msec)"
 msgstr "Delay (mseg):"
 
-msgid "Intrrpt:"
+msgid "Min:"
 msgstr ""
 
-msgid "Hold:"
+msgid "Max:"
 msgstr ""
 
 msgid "Toggle"
@@ -531,6 +472,18 @@ msgstr "Propriedades de %s"
 msgid "Parameters"
 msgstr ""
 
+msgid "Init"
+msgstr "Iniciar"
+
+msgid "No init"
+msgstr "Não iniciar"
+
+msgid "Jump on click"
+msgstr "Saltar no clique"
+
+msgid "Steady on click"
+msgstr "Manter no clique"
+
 #, fuzzy
 msgid "X offset:"
 msgstr "Posição X"
@@ -573,7 +526,7 @@ msgstr "Ports de entrada:"
 msgid "Out Ports:"
 msgstr "Ports de saída:"
 
-msgid "Pd search path for objects, help, fonts, and other files"
+msgid "Pd search path for objects, help, audio, text and other files"
 msgstr ""
 
 msgid "Use standard paths"
@@ -610,6 +563,10 @@ msgstr ""
 msgid "Add a new path"
 msgstr ""
 
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
 msgid "Add new library"
 msgstr ""
 
@@ -629,6 +586,66 @@ msgstr ""
 msgid "Help Browser"
 msgstr "Navegador"
 
+msgid "Associated Files"
+msgstr "Ficheiros associados"
+
+#, fuzzy
+msgid "Pd Files"
+msgstr "Ficheiros Pd"
+
+msgid "Max Patch Files"
+msgstr "Ficheiros Max-Patches"
+
+msgid "Max Text Files"
+msgstr "Ficheiros Max-Texto"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Ficheiros Max-Patches (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Ficheiros Max-Texto (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr "AVISO: O tipo de letra '%s' não foi encontrado, usando o padrão (%s)"
+
+#, fuzzy, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+"AVISO: O formato de letra '%s' não foi encontrado, usando o padrão (%s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr ""
 
@@ -639,84 +656,119 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] > %2$s...skipping!"
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] < %2$s...overwriting!"
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
 msgstr ""
 
 #, tcl-format
-msgid "installed version [%1$s] == %2$s...skipping!"
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
 #, tcl-format
-msgid "successfully unzipped %1$s into %2$s"
-msgstr ""
-
-msgid "unable to extract package automatically"
-msgstr ""
-
-msgid "please perform the following steps manually:"
+msgid "installing deken package '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "1. unzip %s"
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Installing '%s'"
+msgstr "Rejeitar modificações em '%s'?"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
 msgstr ""
 
 #, tcl-format
-msgid "2. copy the contents into %s"
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling '%s'"
+msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
-msgid "uninstalling %1$s from %2$s failed!"
+msgid "3. Remove %s. (optional)"
 msgstr ""
 
 #, tcl-format
-msgid "deken-plugin.tcl (Pd externals search) loaded from %s"
+msgid "Removing '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "platform detected: %s"
+msgid "Uninstalling %1$s from %2$s failed!"
 msgstr ""
 
 #, tcl-format
-msgid "platform re-detected: %s"
+msgid "Skipping SHA256 verification of '%s'."
 msgstr ""
 
-msgid "Show all"
+#, tcl-format
+msgid "SHA256 verification of '%s'"
 msgstr ""
 
-#, fuzzy
-msgid "Search"
-msgstr "Procurar em"
-
-msgid "To get a list of all available externals, try an empty search."
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
 msgstr ""
 
-msgid "Find externals"
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
 msgstr ""
 
-msgid "Only install externals uploaded by people you trust."
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
 msgstr ""
 
-msgid "Preferences"
-msgstr "Preferências"
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
 
 msgid "Installation options:"
 msgstr ""
 
-msgid "Try to remove libraries before (re)installing them?"
+msgid "Try to verify the libraries' checksum before (re)installing them"
 msgstr ""
 
-msgid "Show README of newly installed libraries (if present)?"
+msgid "Try to remove libraries before (re)installing them"
 msgstr ""
 
-msgid "Should newly installed libraries be added to Pd's search path?"
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
 msgid "Platform settings:"
@@ -729,34 +781,223 @@ msgstr ""
 msgid "User-defined platform:"
 msgstr ""
 
-msgid "Hide foreign architectures?"
+msgid "Hide foreign architectures"
+msgstr ""
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
 msgstr ""
 
 #, fuzzy, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Preferências"
 
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
 #, fuzzy
-msgid "start searching for externals..."
+msgid "ZIP Files"
+msgstr "Arquivos ZIP"
+
+#, fuzzy
+msgid "TAR Files"
+msgstr "Arquivos TAR"
+
+#, fuzzy
+msgid "All Files"
+msgstr "todos os arquivos"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr ""
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr ""
+
+msgid "Installation completed!"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+#, fuzzy
+msgid "Search"
+msgstr "Procurar em"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Install DEK file..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr "Preferências..."
+
+#, fuzzy
+msgid "Search for: "
+msgstr "Procurar em"
+
+msgid "libraries"
+msgstr ""
+
+#, fuzzy
+msgid "objects"
+msgstr "Object"
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Uploader"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+#, fuzzy
+msgid "Search Results"
+msgstr "Procurar em"
+
+msgid "Log"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Searching for \"%s\"..."
 msgstr "Rejeitar modificações em '%s'?"
 
 #, tcl-format
 msgid "online? %s"
 msgstr ""
 
-msgid "Are you online?"
+msgid "Unable to perform search. Are you online?"
 msgstr ""
 
-msgid "Unable to perform search."
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
 msgstr ""
 
-msgid "no matching externals found"
-msgstr ""
-
-msgid "try using the full name e.g. 'freeverb'"
+msgid "It appears that there are no matching packages for your architecture."
 msgstr ""
 
 msgid "No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "Or use wildcards like 'freeverb*'."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
@@ -767,58 +1008,101 @@ msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
-msgid ""
-"commencing downloading of:\n"
-"%1$s\n"
-"into %2$s..."
+msgid "Cancelling download of '%s': No installation directory given."
 msgstr ""
 
-msgid "... aborting"
+msgid "Installing to non-existant directory failed"
 msgstr ""
 
 #, tcl-format
-msgid "unable to add %s to search paths"
+msgid "Unable to install to '%s'"
+msgstr ""
+
+msgid "Directory does not exist!"
+msgstr ""
+
+msgid "Directory is not writable!"
 msgstr ""
 
 #, tcl-format
-msgid "Add %s to the Pd search paths?"
+msgid "Downloading '%s'"
 msgstr ""
 
 #, tcl-format
-msgid "added %s to search paths"
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr ""
+
+msgid "aborting."
 msgstr ""
 
 #, tcl-format
-msgid "unable to download from %1$s [%2$s]"
+msgid "Downloading '%s' failed"
+msgstr ""
+
+msgid "Download failed!"
+msgstr ""
+
+msgid "Download completed! Verifying..."
+msgstr ""
+
+msgid "Ignoring checksum mismatch"
 msgstr ""
 
 #, tcl-format
-msgid "unable to remove stray file %s"
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
-msgid "unable to rename downloaded file to %s"
+msgid "[deken] Platform detected: %s"
 msgstr ""
 
 #, fuzzy, tcl-format
-msgid "searching for '%s'"
+msgid "Searching on %s..."
 msgstr "Rejeitar modificações em '%s'?"
 
-msgid "unable to perform search"
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr ""
+
+msgid "No usable servers for searching found..."
 msgstr ""
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-msgid "Install package"
+#, fuzzy, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "Rejeitar modificações em '%s'?"
+
+#, fuzzy
+msgid "Search failed"
+msgstr "Procurar em"
+
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Deselect package"
 msgstr ""
 
 #, fuzzy
-msgid "Open webpage"
+msgid "Open package webpage"
 msgstr "Abrir recente"
 
-msgid "_"
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstall '%s'"
 msgstr ""
 
 #, tcl-format
@@ -851,11 +1135,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s"
 msgstr ""
 
 #, tcl-format
-msgid "couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s"
 msgstr ""
 
 msgid "refusing to delete empty domain"
@@ -865,8 +1149,16 @@ msgstr ""
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
 msgstr ""
 
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr ""
+
 msgid "About Pd"
 msgstr "Sobre o Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr ""
 
 msgid "Save"
 msgstr "Guardar"
@@ -909,9 +1201,6 @@ msgstr "Anular"
 msgid "Redo"
 msgstr "Restaurar"
 
-msgid "List of objects..."
-msgstr ""
-
 msgid "New"
 msgstr "Novo"
 
@@ -939,6 +1228,9 @@ msgstr "Mensagem"
 
 msgid "Number"
 msgstr "Número"
+
+msgid "List"
+msgstr ""
 
 msgid "Symbol"
 msgstr "Symbol"
@@ -1002,7 +1294,13 @@ msgstr "Manual HTML"
 msgid "Browser..."
 msgstr "Navegador"
 
+msgid "List of objects..."
+msgstr ""
+
 msgid "puredata.info"
+msgstr ""
+
+msgid "Check for updates"
 msgstr ""
 
 msgid "Report a bug"
@@ -1016,6 +1314,9 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 
+#, fuzzy
+msgid "removed GUI settings"
+msgstr "Gravar a configuração"
 
 msgid "no Pd-GUI settings to clear"
 msgstr ""
@@ -1052,14 +1353,29 @@ msgstr ""
 msgid "Forget All..."
 msgstr ""
 
+msgid "Preferences"
+msgstr "Preferências"
+
 msgid "Open Recent"
 msgstr "Abrir recente"
 
 msgid "Quit"
 msgstr "Sair"
 
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Quer gravar as modificações feitas em '%s'?"
+
 msgid "Properties"
 msgstr "Propriedades"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr ""
 
 #, fuzzy
 msgid "Audio on"
@@ -1113,23 +1429,35 @@ msgid "Delete"
 msgstr "Apagar array"
 
 #, tcl-format
-msgid "ignoring '%s': doesn't exist"
-msgstr ""
-
-#, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
 
+#, fuzzy
+#~ msgid "bottom:"
+#~ msgstr "Abaixo"
+
+#, fuzzy
+#~ msgid "height:"
+#~ msgstr "Direita"
+
+#, fuzzy
+#~ msgid "right:"
+#~ msgstr "Direita"
+
+#, fuzzy
+#~ msgid "size:"
+#~ msgstr "Tamanho:"
+
+#, fuzzy
+#~ msgid "width:"
+#~ msgstr "Largura:"
+
+#, fuzzy
+#~ msgid "start searching for externals..."
+#~ msgstr "Rejeitar modificações em '%s'?"
+
 #~ msgid "for:"
 #~ msgstr "por:"
-
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "AVISO: O tipo de letra '%s' não foi encontrado, usando o padrão (%s)"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "AVISO: O formato de letra '%s' não foi encontrado, usando o padrão (%s)"
 
 #~ msgid "really quit?"
 #~ msgstr "Fechar mesmo?"
@@ -1142,9 +1470,6 @@ msgstr ""
 
 #~ msgid "Output device 3:"
 #~ msgstr "Dispositivo de saída 3:"
-
-#~ msgid "Preferences..."
-#~ msgstr "Preferências..."
 
 #~ msgid "Filters"
 #~ msgstr "Filtros"
@@ -1174,20 +1499,11 @@ msgstr ""
 #~ msgid "Output device 4:"
 #~ msgstr "Dispositivo de saída 4:"
 
-#~ msgid "Max Patch Files"
-#~ msgstr "Ficheiros Max-Patches"
-
 # this is broken, its missing all of the formats
 #, fuzzy
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
 #~ msgstr ""
 #~ "AVISO: O tamanho de letra '%s' não foi encontrado, usando o padrão (%s)"
-
-#~ msgid "Pd Files"
-#~ msgstr "Ficheiros Pd"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Ficheiros Max-Patches (.pat)"
 
 #~ msgid "Generators"
 #~ msgstr "Geradores"
@@ -1204,17 +1520,8 @@ msgstr ""
 #~ msgid "Untitled"
 #~ msgstr "Sem título"
 
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Ficheiros Max-Texto (.mxt)"
-
-#~ msgid "Associated Files"
-#~ msgstr "Ficheiros associados"
-
 #~ msgid "Signal"
 #~ msgstr "Sinal"
-
-#~ msgid "Max Text Files"
-#~ msgstr "Ficheiros Max-Texto"
 
 #~ msgid "Output device 2:"
 #~ msgstr "Dispositivo de saída 2:"
