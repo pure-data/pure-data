@@ -1,85 +1,64 @@
-#N canvas 371 31 629 664 12;
+#N canvas 483 33 629 664 12;
 #X obj 152 437 env~;
-#X floatatom 152 468 6 0 0 0 - - - 0;
+#X floatatom 152 468 8 0 0 0 - - - 0;
 #X floatatom 53 306 5 0 0 0 - - - 0;
 #X obj 53 437 env~;
-#X floatatom 53 468 6 0 0 0 - - - 0;
-#X text 78 498 Compare the value of the straight signal on the left
-with the value of the filtered signal on the right.;
+#X floatatom 53 468 8 0 0 0 - - - 0;
+#X text 78 498 Compare the value of the straight signal on the left with the value of the filtered signal on the right.;
 #X obj 152 407 biquad~ 1.41407 -0.9998 1 -1.41421 1;
 #X msg 152 303 1.41407 -0.9998 1 -1.41421 1;
 #X msg 186 369 clear;
 #X obj 53 352 osc~ 5512.5;
-#X text 227 433 this biquad~ is a notch filter for;
-#X text 223 450 fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k);
 #X msg 459 268 \; pd dsp \$1;
-#X obj 459 243 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X text 482 242 DSP on/off;
-#X text 39 227 The filter's coefficients syntax (set via arguments
-or list input) is: fb1 fb2 ff1 ff2 ff3, f 51;
-#X text 259 330 set internal state (previous input samples), f 24
-;
+#X obj 459 240 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 482 240 DSP on/off;
+#X text 39 227 The filter's coefficients syntax (set via arguments or list input) is: fb1 fb2 ff1 ff2 ff3, f 51;
+#X text 259 330 set internal state (previous input samples), f 24;
 #X msg 171 338 set 0.5 0.4;
 #X text 234 369 or clear memory (same as 'set 0 0').;
 #X text 149 281 list sets filter's parameters;
 #X obj 21 14 biquad~;
 #X text 83 13 - a 2nd order (2-pole / 2-zero) filter;
 #X text 406 631 updated for Pd version 0.30.;
-#X obj 5 45 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 5 45 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 732 181 586 254 reference 0;
-#X obj 18 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 148 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 185 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
-#X obj 17 229 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 18 148 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 185 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 17 229 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 39 16 biquad~;
 #X text 101 15 - a 2nd order (2-pole / 2-zero) filter;
 #X text 121 60 signal - input signal to be filtered., f 59;
-#X text 135 79 list - input signal to be filtered (fb1 fb2 ff1 ff2
-ff3).;
+#X text 135 79 list - input signal to be filtered (fb1 fb2 ff1 ff2 ff3).;
 #X text 129 117 clear - clear filter's memory buffer., f 58;
 #X text 123 158 signal - the filtered signal output.;
-#X text 112 198 1) list - initializes the 5 coefficients (fb1 fb2 ff1
-ff2 ff3)., f 63;
-#X text 38 98 set <float \, float> - set the last two input samples.
-, f 71;
+#X text 112 198 1) list - initializes the 5 coefficients (fb1 fb2 ff1 ff2 ff3)., f 63;
+#X text 38 98 set <float \, float> - set the last two input samples., f 71;
 #X restore 387 13 pd reference;
 #X text 485 13 <= click;
-#X text 48 561 see also:;
-#X obj 179 610 rzero~;
-#X obj 122 633 cpole~;
-#X obj 122 610 rpole~;
-#X obj 236 610 rzero_rev~;
-#X obj 179 633 czero~;
-#X obj 236 633 czero_rev~;
-#X obj 122 560 lop~;
-#X obj 163 560 hip~;
-#X obj 205 560 bp~;
-#X obj 240 560 vcf~;
-#X obj 280 560 bob~;
-#X text 14 621 raw filters =>;
-#X text 321 560 <= user-friendly filters;
-#X obj 122 585 fexpr~;
-#X obj 177 585 slop~, f 7;
-#X text 236 585 <= not friendly;
-#X text 14 57 [biquad~] calculates the following difference equation:
-;
-#X text 45 86 y[n] = fb1 * y[n-1] + fb2 * y[n-2] + ff1 * x[n] + ff2
-* x[n-1] + ff3 * x[n-3], f 77;
-#X obj 6 545 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 17 116 Where y[n] is the output sample \, y[n-1] is the last
-output sample and y[n-2] is the output previous to the last one. These
-samples are fedback \, hence you have the 'fb' (standing for 'feedback')
-coefficients., f 81;
-#X text 17 165 x[n] is the input sample \, x[n-1] is the last input
-sample and x[n-2] is the input previous to the last one. Hence you
-have 'fb' (standing for 'feedforward') coefficients., f 81;
+#X text 54 561 see also:;
+#X obj 185 610 rzero~;
+#X obj 128 633 cpole~;
+#X obj 128 610 rpole~;
+#X obj 242 610 rzero_rev~;
+#X obj 185 633 czero~;
+#X obj 242 633 czero_rev~;
+#X obj 128 560 lop~;
+#X obj 169 560 hip~;
+#X obj 211 560 bp~;
+#X obj 246 560 vcf~;
+#X obj 286 560 bob~;
+#X obj 128 585 fexpr~;
+#X obj 183 585 slop~, f 7;
+#X text 14 57 [biquad~] calculates the following difference equation:;
+#X text 45 86 y[n] = fb1 * y[n-1] + fb2 * y[n-2] + ff1 * x[n] + ff2 * x[n-1] + ff3 * x[n-3], f 77;
+#X obj 6 545 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 17 116 Where y[n] is the output sample \, y[n-1] is the last output sample and y[n-2] is the output previous to the last one. These samples are fedback \, hence you have the 'fb' (standing for 'feedback') coefficients., f 81;
+#X text 17 165 x[n] is the input sample \, x[n-1] is the last input sample and x[n-2] is the input previous to the last one. Hence you have 'ff' (standing for 'feedforward') coefficients., f 81;
+#X text 227 432 this [biquad~] is a notch filter for fn = Pi/4 (= SR/8 = 5512.5Hz @44.1k), f 36;
+#X text 327 560 <-- user-friendly filters;
+#X text 242 585 <-- not friendly;
+#X text 14 621 raw filters -->;
 #X connect 0 0 1 0;
 #X connect 2 0 9 0;
 #X connect 3 0 4 0;
@@ -88,5 +67,5 @@ have 'fb' (standing for 'feedforward') coefficients., f 81;
 #X connect 8 0 6 0;
 #X connect 9 0 3 0;
 #X connect 9 0 6 0;
-#X connect 13 0 12 0;
-#X connect 17 0 6 0;
+#X connect 11 0 10 0;
+#X connect 15 0 6 0;
