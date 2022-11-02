@@ -1,13 +1,14 @@
 # Translation of Pure Data to Japanese.
 # This file is put in the public domain.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
+# Shozo KUZE <shozo@mathrax.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-21 17:41+0000\n"
-"Last-Translator: Hyun-Mook Lim <windshy8500@naver.com>\n"
+"PO-Revision-Date: 2022-11-02 03:33+0000\n"
+"Last-Translator: Shozo KUZE <shozo@mathrax.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/ja/>\n"
 "Language: ja\n"
@@ -41,25 +42,25 @@ msgid "Discard changes to '%s'?"
 msgstr "'%s'の変更を保存しないで続けますか?"
 
 msgid "Undo clear"
-msgstr ""
+msgstr "クリアを元に戻す"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "接続を元に戻す"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "カットを元に戻す"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "切断を元に戻す"
 
 msgid "Undo duplicate"
-msgstr ""
+msgstr "複製を元に戻す"
 
 msgid "Undo motion"
 msgstr ""
 
 msgid "Undo paste"
-msgstr ""
+msgstr "ペーストを元に戻す"
 
 msgid "Undo typing"
 msgstr ""
