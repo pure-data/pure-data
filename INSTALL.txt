@@ -207,7 +207,7 @@ By default, Pd is built for the current system architecture, usually 64 bit. If
 you want to override this you can use the --enable-universal configure option
 which allows you to specify the desired architecture(s) when building Pd. For
 Intel/AMD processors, 32 bit is called "i386" and 64 bit is "x86_64". For Apple
-Silicon processors (M1, M2, etc), the 64 bit archotecture is called "arm64". By
+Silicon processors (M1, M2, etc), the 64 bit architecture is called "arm64". By
 default, Pd is built for the architecture of the current system, however you may
 want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You
 can override the defaults with --enable-universal:
