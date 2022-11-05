@@ -216,7 +216,7 @@ Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64</pre>
 
 <pre>brew install automake autoconf libtool pkg-config gettext
 brew link --force gettext</pre>
-&quot;
+
 <p>By default, Pd is built for the current system architecture, usually 64 bit. If you want to override this you can use the --enable-universal configure option which allows you to specify the desired architecture(s) when building Pd. For Intel/AMD processors, 32 bit is called &quot;i386&quot; and 64 bit is &quot;x86_64&quot;. For Apple Silicon processors (M1, M2, etc), the 64 bit architecture is called &quot;arm64&quot;. By default, Pd is built for the architecture of the current system, however you may want a 32 bit Pd to work with existing 32 bit externals on a 64 bit system. You can override the defaults with --enable-universal: you want to override this you can use the --enable-universal configure option, as mentioned in the main Autotools Build section. On macOS, running this option without arguments will build a &quot;fat&quot; Pd for all architectures supported by the compiler:</p>
 
 <ul>
