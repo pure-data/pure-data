@@ -479,6 +479,7 @@ if HAVEHUGO
      ./1.manual/html/theory-of-operation.html \
      ./1.manual/html/x/css/pdmanual.css \
      ./1.manual/html/x/favicon.ico \
+     ./1.manual/html/x/img/deken.gif \
      ./1.manual/html/x/img/fig1.1.png \
      ./1.manual/html/x/img/fig1.2.jpg \
      ./1.manual/html/x/img/fig1.3.jpg \
