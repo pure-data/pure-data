@@ -1,13 +1,18 @@
 ### pdmanual-hugo
 
-The Pd Manual exported to `.md` files and then built to an `HTML` site via [HUGO](https://gohugo.io/)
+The Pd Manual built to `HTML` via [HUGO](https://gohugo.io/)
 
-To build the manual:
+1. Install hugo in your system:
 
-1. Install HUGO --> https://gohugo.io/getting-started/installing/
+   - Windows/MinGW: `pacman -S mingw64/mingw-w64-x86_64-hugo`
+
+   - Linux(Debian): `sudo apt install hugo`
+
+   - macOS: `brew install hugo`
+  
 1. on a terminal `cd` to this folder.
 1. run the `hugo` command
-1. you should get something like
+1. you should get something like:
 
 ```
 Start building sites …
@@ -26,7 +31,8 @@ hugo v0.89.4-AB01BA6E windows/amd64 BuildDate=2021-11-17T08:24:09Z VendorInfo=go
 
 Total in 111 ms
 ```
-now a `public` folder has been created in the local repo. You can browse `index.html`
+now a `public` folder has been created. You can browse `index.html`
 
 You can also run command `hugo server` and browse files via `http://localhost:1313/` in your web-browser. If you edit the `.md` files on the `doc/1.manual/markdown` folder changes show-up live.
 
+this docs are also built (if  `hugo` is installed) when Pd is built via `makefile.gnu` or `autotools`
