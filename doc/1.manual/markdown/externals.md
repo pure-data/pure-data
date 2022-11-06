@@ -236,7 +236,7 @@ can also look for an external name and the library that contains it
 might be shown. All available versions of the library specific for your
 operating system will be shown to you. See figure below.
 
-![](x/img/fig4.4.png)
+![](x/img/deken.gif)
 
 When you click on the version you want, by default Pd downloads it to
 `~/Documents/Pd/externals`.
