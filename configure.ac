@@ -651,7 +651,7 @@ AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
 AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
  AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
-AS_IF([test x"$HUGO_CHECK" != x"yes"], 
+AS_IF([test x"$HUGO_CHECK" != x"yes"],
  AC_MSG_WARN([Hugo not installed. HTML docs will not be generated.]))
 
 # TODO portaudio

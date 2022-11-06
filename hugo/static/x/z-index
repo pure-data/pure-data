@@ -4,20 +4,20 @@
 <title>Pd docs</title>
 <style>
 BODY { 
-	background:  #ffffff;;
+	background:  #ffffff;
 	color: 	     #000000;
 	font-family: Georgia, serif;
 	font-size:   12.7pt; 
 	line-height: 1.6;
 }
-	
+
 #corpus {
-	width: 	    6.5in; 
+	width: 	    6.5in;
 	margin-left: 0.8in;
 }
 
-H1, H2, H3, H4, H5, H6, ol, ul, mark, p, PRE { 
-	color: #3E4349; 
+H1, H2, H3, H4, H5, H6, ol, ul, mark, p, PRE {
+	color: #3E4349;
 }
 
 H1, H2 {

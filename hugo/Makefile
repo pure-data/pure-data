@@ -9,7 +9,6 @@ all:
 
 install: all
 
-clean: 
+clean:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;\
 	cp static/x/z-index $(INDEXFILE)
-
