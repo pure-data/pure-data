@@ -230,11 +230,11 @@ C) GNU/Linux:
 Since version 0.47-0, Pd Vanilla has its own external manager! This is a
 built in .tcl plug-in named "deken" (check
 <https://github.com/pure-data/deken> for reference). Open it by
-selecting the **Help => Find externals** tab. Then you can type the
-library's name you're looking for and hit 'enter' or click 'search'. You
-can also look for an external name and the library that contains it
-might be shown. All available versions of the library specific for your
-operating system will be shown to you. See figure below.
+selecting the **Help => Find externals** tab. Then you can type 
+and search for object name, library name or both. The wildcard '*' can be used
+to broaden the search, or an exact name can be used instead. All available versions of
+the library/external specific for your operating system will be shown to you. 
+See figure below.
 
 ![](x/img/deken.gif)
 
