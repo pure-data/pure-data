@@ -88,3 +88,8 @@ mac/build
 !libpd/Makefile
 !libpd/test_libpd/Makefile
 libpd/test_libpd/test_libpd
+
+# hugo
+!hugo/Makefile
+doc/1.manual/html
+doc/index.htm
