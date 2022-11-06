@@ -96,7 +96,7 @@ This patch mixes *control* objects (notein, stripnote, and ftom) with
 their function sporadically, as a result of one or more type of *event*
 . In this case, incoming MIDI note messages set off the control
 computation. The result of the computation is, when the note happens to
-be a "note on" (and not a "note off", to compute the frequency in
+be a "note on" (and not a "note off"), to compute the frequency in
 cycles per second and pass it on to the oscillator ("osc~").
 
 The second half of the patch, the osc~, \*~, and dac~ objects,
