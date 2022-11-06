@@ -338,7 +338,7 @@ better control and management of paths. But you may want to permanently
 add a path in your own system if you know exactly what you have and what
 you need.
 
-We've seen that even if you have a folder into
+We've seen that even if you have a folder in
 "`~/Documents/Pd/externals`" you still need to tell Pd to look for it.
 You can manually add a User Added Paths in Preferences => Path by
 clicking "New".
@@ -409,7 +409,7 @@ some people may prefer for the simple fact that it's just clearer from
 which library folder we're loading the external. But there are some
 rare cases where this is the only way to guarantee you have loaded the
 correct external, which is a problem when you have too many libraries in
-your system and using more than one that has an external with the same
+your system and are using more than one that has an external with the same
 name. Hence, some external libraries like 'Cyclone' and 'ELSE' use
 this in the documentation of the help files to make sure you load the
 correct external.
@@ -434,7 +434,7 @@ example, the 'ceammc' library is a single binary pack and it included
 an object called [xfade~]. The ELSE library has separate binaries for
 each object and also has one called [xfade~]. If you're using both
 libraries, ceammc's [xfade~] object will have priority and it
-deosn't help you to have [declare -path else]. You can then use
+doesn't help you to have [declare -path else]. You can then use
 [else/xfade~] to specifically call ELSE's [xfade~] instead.
 
 It was mentioned how a library name prefix may also be possible in the
@@ -466,7 +466,7 @@ the orderr they are listed, then in the standard paths. As soon as Pd
 finds the object in this search order, it'll stop searching further
 more and will add the found object to its "class list", which is the
 set of all Pd classes you can use. Pd then tries to create the object
-you asked for, and if everrything is fine with it, this happens
+you asked for, and if everything is fine with it, this happens
 successfully (creation errors are given otherwise). In the case of a
 single binary pack, all the externals it contains get preloaded in Pd,
 even though they're only created in object boxes when you require them.
@@ -496,13 +496,13 @@ objects with the same name (such as [>~]) will override and prevail.
 
 And here's an interesting feature, you can also override internal Pd
 Vanilla objects with externals! Say you have an external called
-[phasor~]. It it's a single binary, you can force Pd to find it with
+[phasor~]. If it's a single binary, you can force Pd to find it with
 slash declarations. Otherwise, if it's a binary pack, you can load as
 any other library and if it has objects with the same name as vanilla's
 internals, they get overridden! But Pd still keeps a copy of the old one
 and renames it by appending "_aliased", so you can still load the old
 "phasor~", for instance, as **[phasor~_aliased]**. You probably
-don't want to mess overriding internals, but it makes sense if you
+don't want to mess with overriding internals, but it makes sense if you
 provide new versions with more features but fully backwards compatible.
 
 ### Search order for loading objects
@@ -524,7 +524,7 @@ the order they are listed from left to right.
 **Third** is time to search the path relative to the patch.
 
 **Fourth** it goes to the user added paths, defined at "Preferences =>
-Path". An order is also respeccted, from top to bottom.
+Path". An order is also respected, from top to bottom.
 
 **Fifth** and last, it searches the "standard paths", which includes
 the 'extra' library provided by the Pd Vanilla distribution. Note you
