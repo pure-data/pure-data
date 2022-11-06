@@ -3,11 +3,11 @@
 <head>
 <title>Pd docs</title>
 <style>
-BODY { 
+BODY {
 	background:  #ffffff;
 	color: 	     #000000;
 	font-family: Georgia, serif;
-	font-size:   12.7pt; 
+	font-size:   12.7pt;
 	line-height: 1.6;
 }
 
@@ -58,7 +58,7 @@ a:active {
 </ul>
 <p>or</p>
 <ul>
-  <li>browse to the latests on-line version 
+  <li>browse to the latests on-line version
   <a href="http://msp.ucsd.edu/Pd_documentation/">here</a>
   </li>
 </ul>
@@ -71,14 +71,14 @@ a:active {
   var foo2 = foo1.replace("index.htm","");
   var foo3 = "markdown"
   document.getElementById("markdownfolder").innerHTML = foo2+foo3
-  
+
   var folder = foo.replace("index.htm","");
   var folder1 = folder+foo3
-  
+
   function openfolder1()
   {
     window.location.href = folder1
-  }  
+  }
 
 </script>
 </html>
