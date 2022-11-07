@@ -5,9 +5,9 @@
 #X msg 11 135 set \$1;
 #X floatatom 217 165 5 0 0 0 - - - 0;
 #X floatatom 217 92 5 0 0 0 - - - 0;
-#X obj 126 89 knb 80 100 0 99 0 1 kii_snd\ \ \  kii_rcv\ \ \  \ \ \  -2 -6 0 8 #0400fc #f8fc00 #000000 0.222222 xy 0 #c7c6ff 3 -135 135;
-#X obj 63 113 knb 30 128 0 127 0 0 empty empty empty -2 -6 0 8 #0400fc #000000 #000000 0 xy 0 #000000 0 -135 135;
-#X obj 63 154 knb 20 128 127 0 0 0 empty empty empty -2 -6 0 8 #fc0400 #000000 #000000 0 xy 0 #000000 0 -135 135;
+#X obj 126 89 knb 80 100 0 99 0 1 kii_snd kii_rcv empty -2 -6 0 8 #0400fc #f8fc00 #000000 0.222222 xy 0 #c7c6ff 3 -135 135;
+#X obj 63 113 knb 30 128 0 127 0 0 empty empty empty -2 -6 0 8 #0400fc #000000 #000000 0.01 xy 0 #000000 0 -135 135;
+#X obj 63 154 knb 20 128 127 0 0 0 empty empty empty -2 -6 0 8 #fc0400 #000000 #000000 0.01 xy 0 #000000 0 -135 135;
 #X obj 371 308 knb 60 128 0 1 0 1 empty empty empty -2 -6 0 8 #fcfcfc #000000 #000000 0.318806 angle 8 #fc2828 5 -180 180;
 #X text 503 63 high sens;
 #X text 523 86 default;
