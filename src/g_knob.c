@@ -799,6 +799,7 @@ static void knb_angle(t_knb *x, t_floatarg start, t_floatarg end)
     x->x_start_angle = start;
     x->x_end_angle = end;
     knb_set(x, x->x_fval);
+    if (glist_isvisible(x->x_gui.x_glist)) knb_update_ticks(x, x->x_gui.x_glist);
     knb_draw_update(x, x->x_gui.x_glist);
 }
 
