@@ -1,0 +1,87 @@
+#########################################
+##### Files, Binaries, & Libs #####
+
+find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+
+# files that are included but not built
+EXTRA_DIST = \
+     ./.gitignore \
+     ./.hugo_build.lock \
+     ./README.md \
+     ./config.toml \
+     ./layouts/_default/baseof.html \
+     ./layouts/_default/section.html \
+     ./layouts/_default/single.html \
+     ./layouts/index.html \
+     ./layouts/partials/plink.html \
+     ./layouts/shortcodes/green-button.html \
+     ./layouts/shortcodes/has-math.html \
+     ./layouts/shortcodes/md_include.html \
+     ./layouts/shortcodes/mdlink.html \
+     ./markdown/_index.md \
+     ./markdown/current-status.md \
+     ./markdown/expr.md \
+     ./markdown/externals.md \
+     ./markdown/fudi.md \
+     ./markdown/getting-pd-to-run.md \
+     ./markdown/installing-from-source.md \
+     ./markdown/introduction.md \
+     ./markdown/more-bsd.md \
+     ./markdown/more-macos.md \
+     ./markdown/more-windows.md \
+     ./markdown/slop-tilde.md \
+     ./markdown/theory-of-operation.md \
+     ./static/x/css/pdmanual.css \
+     ./static/x/favicon.ico \
+     ./static/x/img/deken.gif \
+     ./static/x/img/fig1.1.png \
+     ./static/x/img/fig1.2.jpg \
+     ./static/x/img/fig1.3.jpg \
+     ./static/x/img/fig1.4.png \
+     ./static/x/img/fig1.5.jpg \
+     ./static/x/img/fig11.1.png \
+     ./static/x/img/fig11.2.png \
+     ./static/x/img/fig11.3.png \
+     ./static/x/img/fig11.4.png \
+     ./static/x/img/fig3.1.jpg \
+     ./static/x/img/fig3.10.jpg \
+     ./static/x/img/fig3.2.jpg \
+     ./static/x/img/fig3.3.jpg \
+     ./static/x/img/fig3.4.jpg \
+     ./static/x/img/fig3.5.jpg \
+     ./static/x/img/fig3.6.jpg \
+     ./static/x/img/fig3.7.jpg \
+     ./static/x/img/fig3.8.jpg \
+     ./static/x/img/fig3.9.jpg \
+     ./static/x/img/fig4.1.png \
+     ./static/x/img/fig4.2.png \
+     ./static/x/img/fig4.3.png \
+     ./static/x/img/fig4.4.png \
+     ./static/x/img/fig4.5.png \
+     ./static/x/img/fig4.6.png \
+     ./static/x/img/fig4.7.png \
+     ./static/x/img/fig7.1.jpg \
+     ./static/x/img/fig7.2.jpg \
+     ./static/x/img/fig7.3.jpg \
+     ./static/x/img/fig7.4.jpg \
+     ./static/x/img/fig7.5.jpg \
+     ./static/x/img/fig7.6.jpg \
+     ./static/x/img/fig8.1.jpg \
+     ./static/x/img/fig8.2.jpg \
+     ./static/x/img/fig8.3.jpg \
+     ./static/x/img/fig8.4.jpg \
+     ./static/x/img/fig8.5.jpg \
+     ./static/x/img/fig8.6.jpg \
+     ./static/x/img/fig9.1.jpg \
+     ./static/x/img/fig9.2.jpg \
+     ./static/x/img/fig9.3.jpg \
+     ./static/x/slop-tilde/slop-compander-patch.png \
+     ./static/x/slop-tilde/slop-peak-meter-graph.png \
+     ./static/x/slop-tilde/slop-peak-meter-patch.png \
+     ./static/x/slop-tilde/slop-slew-limit.png \
+     ./static/x/slop-tilde/slop-slew-limiting-patch.png \
+     ./static/x/slop-tilde/slop-tilde-1-curves.png \
+     ./static/x/x-index \
+     ./static/x/z-index \
+     $(empty)
+
