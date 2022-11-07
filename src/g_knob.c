@@ -192,9 +192,10 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
     int tick;
     int x0, y0;
     float xc, yc, xTc, yTc, r1, r2;
-    float alpha0, dalpha, dalphan = 0;
+    float alpha0, dalpha;
     char tag_object[128], tag[128];
     char *tags[] = {tag_object, tag};
+    int divs = x->x_ticks;
 
     sprintf(tag_object, "%lxOBJ", x);
     sprintf(tag, "%lxTICKS", x);
@@ -210,43 +211,14 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
     r1 = x->x_gui.x_w / 2.0 - IEMGUI_ZOOM(x) * 2.0;
     r2 = IEMGUI_ZOOM(x) * 1.0 ;
 
-    if ((x->x_min * x->x_max) < 0)
-    {
-        float pos0;
-        if (x->x_min < 0)
-            pos0 = -x->x_min / (fabs(x->x_min) + fabs(x->x_max));
-        else
-            pos0 = -x->x_max / (fabs(x->x_min) + fabs(x->x_max));
-        alpha0 = x->x_start_angle + pos0 * (x->x_end_angle - x->x_start_angle);
-        dalpha = (x->x_end_angle - alpha0) / ((float)x->x_ticks - 1);
-        dalphan = (alpha0 - x->x_start_angle) / ((float)x->x_ticks - 1);
-    }
-    else
-    {
-        int divs = x->x_ticks;
-        if ((divs > 1) && ((x->x_end_angle - x->x_start_angle + 360) % 360 != 0))
-            divs = divs - 1;
-        dalpha = (x->x_end_angle - x->x_start_angle) / (float)divs;
-        alpha0 = x->x_start_angle;
-    }
+    if ((divs > 1) && ((x->x_end_angle - x->x_start_angle + 360) % 360 != 0))
+        divs = divs - 1;
+    dalpha = (x->x_end_angle - x->x_start_angle) / (float)divs;
+    alpha0 = x->x_start_angle;
 
     for (tick = 0; tick < x->x_ticks; tick++)
     {
         float alpha = (alpha0 + dalpha * tick - 90.0) * M_PI / 180.0;
-        xTc = xc + r1 * cos(alpha);
-        yTc = yc + r1 * sin(alpha);
-        pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "oval",
-            NEAR(xTc - r2), NEAR(yTc - r2),
-            NEAR(xTc + r2), NEAR(yTc + r2),
-            "-fill", x->x_gui.x_fcol,
-            "-outline", x->x_gui.x_fcol,
-            "-tags", 2, tags);
-    }
-
-        /* if x_min x_max are of opposite signs, then double the ticks for the negative side: */
-    if (dalphan != 0) for (tick = 0; tick < x->x_ticks; tick++)
-    {
-        float alpha = (alpha0 - dalphan * tick - 90.0) * M_PI / 180.0;
         xTc = xc + r1 * cos(alpha);
         yTc = yc + r1 * sin(alpha);
         pdgui_vmess(0, "crr iiii rk rk rS", canvas, "create", "oval",
