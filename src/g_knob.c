@@ -426,31 +426,22 @@ static void knb_properties(t_gobj *z, t_glist *owner)
     t_symbol *srl[3];
 
     iemgui_properties(&x->x_gui, srl);
-    sprintf(buf, "pdtk_iemgui_dialog %%s knb {}" /* x objname (dimension_label) */
-            " %d %d {Size:} %d %d {Sensitivity:}" /* width width_min (width_label) height height_min (height_label) */
-            " {Output Range} %g {Lower:} %g {Upper:}" /* (range_label) range_min range_max */
-            " %d" /* schedule */
-            " %d linear logarithmic" /* mode label_mode0 label_mode1 */
-            " %d %s" /* loadbang movemode */
-            " {} %d" /* (number_label) number */
-            " {%s } {%s } {%s }" /* send receive label */
-            " %d %d" /* label_posX label_posY */
-            " %d %d" /* label_fontID label_fontsize */
-            " #%06x #%06x #%06x" /* background foreground labelcolour */
-            " %d #%06x %d %d %d\n" /* ticks arc_color arc_width start_angle end_angle */
-            ,
-            x->x_gui.x_w / IEMGUI_ZOOM(x), MIN_SIZE, x->x_gui.x_h / IEMGUI_ZOOM(x), 0,
-            x->x_min, x->x_max,
-            0, /*no_schedule*/
-            x->x_lin0_log1,
-            x->x_gui.x_isa.x_loadinit, x->x_move_mode->s_name,
-            -1,
-            srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
-            x->x_gui.x_ldx, x->x_gui.x_ldy,
-            x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
-            0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_fcol, 0xffffff & x->x_gui.x_lcol,
-            x->x_ticks, 0xffffff & x->x_acol, x->x_arc_width, x->x_start_angle, x->x_end_angle);
-    gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
+    pdgui_stub_vnew(&x->x_gui.x_obj.ob_pd, "pdtk_iemgui_dialog", x,
+        "s s ffs ffs sfsfs i iss is si sss ii ii kkk ikiii",
+        "knb",
+        "",
+        (float)(x->x_gui.x_w / IEMGUI_ZOOM(x)), (float)MIN_SIZE, "Size:",
+        (float)(x->x_gui.x_h / IEMGUI_ZOOM(x)), 0.0, "Sensitivity:",
+        "Output Range", x->x_min, "Lower:", x->x_max, "Upper:",
+        0,
+        x->x_lin0_log1, "linear", "logarithmic",
+        x->x_gui.x_isa.x_loadinit, x->x_move_mode->s_name,
+        "", -1,
+        srl[0]?srl[0]->s_name:"", srl[1]?srl[1]->s_name:"", srl[2]?srl[2]->s_name:"",
+        x->x_gui.x_ldx, x->x_gui.x_ldy,
+        x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
+        x->x_gui.x_bcol, x->x_gui.x_fcol, x->x_gui.x_lcol,
+        x->x_ticks, x->x_acol, x->x_arc_width, x->x_start_angle, x->x_end_angle);
 }
 
     /* compute numeric value (fval) from pixel location (val) and range */
