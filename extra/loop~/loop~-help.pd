@@ -1,12 +1,9 @@
-#N canvas 643 40 620 646 12;
+#N canvas 643 40 620 640 12;
 #X declare -stdpath ./;
 #X floatatom 21 186 6 0 0 0 - - - 0;
 #X obj 265 435 print~;
-#X msg 265 394 bang;
 #X floatatom 105 287 7 0 0 0 - - - 0;
-#X msg 93 247 bang;
 #X obj 214 435 print~;
-#X msg 214 392 bang;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array sample 155944 float 0;
 #X coords 0 1 155943 -1 250 150 1 0 0;
@@ -19,7 +16,7 @@
 #X obj 128 363 *~ 1000;
 #X msg 73 221 set 0.5;
 #X text 133 220 set phase (0 to 1);
-#X text 130 247 reset phase to 0;
+#X text 111 246 reset phase to 0;
 #X text 187 310 right signal input is window size in samples;
 #X text 169 337 here's how to handle onsets;
 #X text 212 368 print outputs;
@@ -69,36 +66,42 @@ waiting for the next phase crossing., f 80;
 #X msg 296 198 read -resize ../doc/sound/bell.aiff sample;
 #X msg 308 224 read -resize ../doc/sound/voice.wav sample;
 #X obj 87 485 tabread4~ sample;
-#X text 25 56 loop~ takes input signals to set transposition and window
-size \, and outputs a phase and a sampled window size. The window size
-only changes at phase zero crossings and the phase output is adjusted
-so that changing window size doesn't change the transposition., f
-80;
 #X text 41 605 see also:;
 #X obj 122 605 tabread4~;
 #X obj 105 310 sig~ 22050;
 #X obj 73 371 loop~;
-#X connect 0 0 32 0;
-#X connect 2 0 1 0;
-#X connect 3 0 39 0;
-#X connect 4 0 40 0;
-#X connect 6 0 5 0;
-#X connect 8 0 31 0;
-#X connect 9 0 11 0;
-#X connect 10 0 11 1;
-#X connect 11 0 35 0;
-#X connect 12 0 13 0;
-#X connect 13 0 10 0;
-#X connect 14 0 40 0;
-#X connect 25 0 33 0;
-#X connect 32 0 40 0;
-#X connect 33 0 8 0;
-#X connect 34 0 8 0;
-#X connect 35 0 23 0;
-#X connect 35 0 23 1;
-#X connect 39 0 40 1;
-#X connect 40 0 5 0;
-#X connect 40 0 9 0;
-#X connect 40 0 10 1;
-#X connect 40 1 1 0;
-#X connect 40 1 9 1;
+#X text 25 56 [loop~] takes input signals to set transposition and
+window size \, and outputs a phase and a sampled window size. The window
+size only changes at phase zero crossings and the phase output is adjusted
+so that changing window size doesn't change the transposition., f
+80;
+#X obj 214 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 265 392 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
+#000000 #000000;
+#X obj 93 247 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000;
+#X connect 0 0 29 0;
+#X connect 2 0 35 0;
+#X connect 5 0 28 0;
+#X connect 6 0 8 0;
+#X connect 7 0 8 1;
+#X connect 8 0 32 0;
+#X connect 9 0 10 0;
+#X connect 10 0 7 0;
+#X connect 11 0 36 0;
+#X connect 22 0 30 0;
+#X connect 29 0 36 0;
+#X connect 30 0 5 0;
+#X connect 31 0 5 0;
+#X connect 32 0 20 0;
+#X connect 32 0 20 1;
+#X connect 35 0 36 1;
+#X connect 36 0 3 0;
+#X connect 36 0 6 0;
+#X connect 36 0 7 1;
+#X connect 36 1 1 0;
+#X connect 36 1 6 1;
+#X connect 38 0 3 0;
+#X connect 39 0 1 0;
+#X connect 40 0 36 0;

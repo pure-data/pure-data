@@ -179,7 +179,7 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
     sprintf(tag, "%lxRLED", x);
     pdgui_vmess(0, "crs ri", canvas, "itemconfigure", tag, "-width", ledw);
 
-    for(i = 1; i <= IEM_VU_STEPS; i++)
+    for(i = 1; i <= IEM_VU_STEPS + 1; i++)
     {
         sprintf(tag, "%lxRLED%d", x, i);
         led_col = iemgui_vu_col[i];
@@ -189,18 +189,18 @@ static void vu_draw_config(t_vu* x, t_glist* glist)
         pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
             "-fill", iemgui_color_hex[led_col]);
 
-        if((i+2) & 3) {
-            sprintf(tag, "%lxSCALE%d", x, i);
-            pdgui_vmess(0, "crs ii", canvas, "coords", tag,
-                end, yyy + k3);
+        sprintf(tag, "%lxSCALE%d", x, i);
+        pdgui_vmess(0, "crs ii", canvas, "coords", tag,
+            end, yyy + k3);
+        if((i+2) & 3)
             pdgui_vmess(0, "crs rs", canvas, "itemconfigure", tag,
-                "-text", (x->x_scale)?iemgui_vu_scale_str[i]:"");
-        }
+            "-text", (x->x_scale)?iemgui_vu_scale_str[i]:"");
     }
 
     i = IEM_VU_STEPS + 1;
     yyy = k4 + k1 * (k2 - i);
 
+        /* this was already set in the loop above, overwritten here */
     sprintf(tag, "%lxSCALE%d", x, i);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         end, yyy + k3);
@@ -247,7 +247,7 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    for(i = 0; i < IEM_VU_STEPS+2; i++)
+    for(i = 1; i < IEM_VU_STEPS+1; i++)
     {
         sprintf(tag, "%lxRLED", x);
         sprintf(tag_n, "%lxRLED%d", x, i);
@@ -259,6 +259,11 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
         pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
             0, 0, "-anchor", "w", "-tags", 3, tags);
     }
+    /* and a final scale item */
+    sprintf(tag, "%lxSCALE", x);
+    sprintf(tag_n, "%lxSCALE%d", x, i);
+    pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
+        0, 0, "-anchor", "w", "-tags", 3, tags);
 
     sprintf(tag, "%lxRCOVER", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",

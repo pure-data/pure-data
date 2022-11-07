@@ -1,0 +1,1383 @@
+# Translation of Pure Data to Chinese (Traditional).
+# This file is put in the public domain.
+# Max Neupert <abonnements@revolwear.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.53.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zho_HANT@tw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "linear"
+msgstr ""
+
+msgid "logarithmic"
+msgstr ""
+
+msgid "new-only"
+msgstr ""
+
+msgid "new&old"
+msgstr ""
+
+msgid "no scale"
+msgstr ""
+
+msgid "scale"
+msgstr "縮放"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr ""
+
+msgid "Undo clear"
+msgstr "回復清除"
+
+msgid "Undo connect"
+msgstr "回復連結"
+
+msgid "Undo cut"
+msgstr "回復剪下"
+
+msgid "Undo disconnect"
+msgstr "回復斷線"
+
+msgid "Undo duplicate"
+msgstr "回復複製"
+
+msgid "Undo motion"
+msgstr "回復動態"
+
+msgid "Undo paste"
+msgstr "回復貼上"
+
+msgid "Undo typing"
+msgstr "回復輸入"
+
+msgid "Redo clear"
+msgstr "重做清除"
+
+msgid "Redo connect"
+msgstr "重做連結"
+
+msgid "Redo cut"
+msgstr "重做剪下"
+
+msgid "Redo disconnect"
+msgstr "重做斷線"
+
+msgid "Redo duplicate"
+msgstr "重做複製"
+
+msgid "Redo motion"
+msgstr "重做動態"
+
+msgid "Redo paste"
+msgstr "重做貼上"
+
+msgid "Redo typing"
+msgstr "重做輸入"
+
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+msgid "erased Pd settings"
+msgstr ""
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
+msgid "File"
+msgstr "檔案"
+
+msgid "Edit"
+msgstr "編輯"
+
+msgid "Put"
+msgstr "放置"
+
+msgid "Find"
+msgstr "搜尋"
+
+msgid "Media"
+msgstr "媒體"
+
+msgid "Window"
+msgstr "視窗"
+
+msgid "Help"
+msgstr ""
+
+msgid "Show &Hidden Files and Directories"
+msgstr ""
+
+msgid "Copy"
+msgstr "複製"
+
+msgid "Paste"
+msgstr "貼上"
+
+msgid "Array Properties"
+msgstr "Array 內容"
+
+msgid "Array"
+msgstr ""
+
+msgid "Name:"
+msgstr "名稱:"
+
+msgid "Size:"
+msgstr "大小:"
+
+msgid "Save contents"
+msgstr "儲存"
+
+msgid "Draw as:"
+msgstr "描繪成"
+
+msgid "Polygon"
+msgstr "多邊形"
+
+msgid "Points"
+msgstr "點"
+
+msgid "Bezier curve"
+msgstr "貝茲曲線"
+
+msgid "Put array into:"
+msgstr ""
+
+msgid "New graph"
+msgstr "新 graph"
+
+msgid "Last graph"
+msgstr "上一個 graph"
+
+msgid "Options"
+msgstr ""
+
+msgid "Open List View..."
+msgstr "開啟 List View..."
+
+msgid "Delete array"
+msgstr "刪除 Array"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Apply"
+msgstr "套用"
+
+msgid "OK"
+msgstr "確定"
+
+msgid "Audio Settings"
+msgstr "音效設定"
+
+msgid "Settings"
+msgstr ""
+
+msgid "Sample rate:"
+msgstr ""
+
+msgid "Delay (msec):"
+msgstr "延遲(微秒):"
+
+msgid "48k"
+msgstr ""
+
+msgid "44.1k"
+msgstr ""
+
+msgid "96k"
+msgstr ""
+
+msgid "Block size:"
+msgstr ""
+
+msgid "Use callbacks"
+msgstr "使用 callbacks"
+
+msgid "Input Devices"
+msgstr "輸入設備"
+
+msgid "Channels:"
+msgstr "頻道:"
+
+msgid "Output Devices"
+msgstr "輸出設備"
+
+msgid "(same as input device)..."
+msgstr "(如同輸入設備)..."
+
+msgid "Use Multiple Devices"
+msgstr "使用多個 設備"
+
+msgid "Save All Settings"
+msgstr ""
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr ""
+
+msgid "Canvas Properties"
+msgstr "Canvas 內容"
+
+msgid "Scale"
+msgstr "縮放"
+
+msgid "X units per pixel:"
+msgstr ""
+
+msgid "Y units per pixel:"
+msgstr "單一像素的 Y 單位:"
+
+msgid "Appearance on parent patch"
+msgstr "上層 patch 的顯示選項"
+
+msgid "Graph-On-Parent"
+msgstr "在上層顯示介面"
+
+msgid "Hide object name and arguments"
+msgstr "隱藏 object 名稱與參數"
+
+msgid "Range and size"
+msgstr "範圍與尺寸"
+
+msgid "X range: from"
+msgstr "X 範圍, 自"
+
+msgid "to"
+msgstr "到"
+
+msgid "Margin:"
+msgstr "邊框:"
+
+msgid "Y range: from"
+msgstr "Y 範圍: 自"
+
+msgid "Data Properties"
+msgstr "資料內容"
+
+msgid "Send"
+msgstr "傳送"
+
+msgid "Done"
+msgstr ""
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr ""
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr ""
+
+msgid "Pd window"
+msgstr "Pd 主視窗"
+
+msgid "Match whole word only"
+msgstr "完全吻合"
+
+msgid "Close"
+msgstr "關閉"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s 字體"
+
+msgid "Font"
+msgstr "%s"
+
+msgid "Font Size"
+msgstr "字體"
+
+msgid "Stretch"
+msgstr "延展"
+
+msgid "X and Y"
+msgstr "X 和 Y"
+
+msgid "X only"
+msgstr "只有 X"
+
+msgid "Y only"
+msgstr "只有 Y"
+
+msgid "GUI Box Properties"
+msgstr ""
+
+msgid "Messages"
+msgstr ""
+
+msgid "Send symbol:"
+msgstr "傳送 symbol:"
+
+msgid "Receive symbol:"
+msgstr "接收 symbol:"
+
+msgid "Width:"
+msgstr "寬度:"
+
+msgid "Limits"
+msgstr "範圍"
+
+msgid "Lower:"
+msgstr "最小值："
+
+msgid "Upper:"
+msgstr "最大值："
+
+msgid "Label"
+msgstr "標籤"
+
+msgid "Left"
+msgstr "左"
+
+msgid "Right"
+msgstr "右"
+
+msgid "Top"
+msgstr "上"
+
+msgid "Bottom"
+msgstr "下"
+
+msgid "Background color"
+msgstr "背景顏色"
+
+msgid "Foreground color"
+msgstr "前景顏色"
+
+msgid "Label color"
+msgstr "標籤顏色"
+
+msgid "Bang"
+msgstr ""
+
+msgid "Flash Time (msec)"
+msgstr ""
+
+msgid "Min:"
+msgstr "最小:"
+
+msgid "Max:"
+msgstr "最大:"
+
+msgid "Toggle"
+msgstr ""
+
+msgid "Non Zero Value"
+msgstr ""
+
+msgid "Value:"
+msgstr ""
+
+msgid "Number2"
+msgstr ""
+
+#, fuzzy
+msgid "Width (digits):"
+msgstr "寬度 (digits):"
+
+msgid "Height:"
+msgstr "高:"
+
+msgid "Output Range"
+msgstr "輸出範圍"
+
+msgid "Log height:"
+msgstr ""
+
+msgid "Vslider"
+msgstr ""
+
+msgid "Hslider"
+msgstr ""
+
+msgid "Vradio"
+msgstr ""
+
+msgid "Num cells:"
+msgstr ""
+
+msgid "Hradio"
+msgstr ""
+
+msgid "VU Meter"
+msgstr ""
+
+msgid "Canvas"
+msgstr ""
+
+msgid "Visible Rectangle (pix)"
+msgstr ""
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s 內容"
+
+msgid "Parameters"
+msgstr ""
+
+msgid "Init"
+msgstr ""
+
+msgid "No init"
+msgstr ""
+
+msgid "Jump on click"
+msgstr ""
+
+msgid "Steady on click"
+msgstr ""
+
+msgid "X offset:"
+msgstr "X 軸位移:"
+
+msgid "Y offset:"
+msgstr "Y 軸位移:"
+
+msgid "Colors"
+msgstr "顏色"
+
+msgid "Background"
+msgstr "背景"
+
+msgid "Front"
+msgstr "字型"
+
+msgid "Compose color"
+msgstr "制定顏色"
+
+msgid "Test label"
+msgstr ""
+
+msgid "Send a Pd message"
+msgstr "送出 Pd message"
+
+msgid "(use arrow keys for history)"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI 設定"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI 設定"
+
+msgid "In Ports:"
+msgstr "輸入埠:"
+
+msgid "Out Ports:"
+msgstr "輸出埠:"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr ""
+
+msgid "Use standard paths"
+msgstr ""
+
+msgid "Verbose"
+msgstr "額外套件"
+
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Externals Install Directory"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+msgid "Install externals to directory:"
+msgstr ""
+
+msgid "Add a new path"
+msgstr ""
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr ""
+
+msgid "Add new library"
+msgstr "新增函式庫"
+
+msgid "Edit library"
+msgstr "編輯函式庫"
+
+msgid "Pd libraries to load on startup"
+msgstr "啟動時載入函式庫"
+
+msgid "Startup flags:"
+msgstr ""
+
+msgid "Defeat real-time scheduling"
+msgstr ""
+
+msgid "Help Browser"
+msgstr ""
+
+msgid "Associated Files"
+msgstr ""
+
+msgid "Pd Files"
+msgstr ""
+
+msgid "Max Patch Files"
+msgstr ""
+
+msgid "Max Text Files"
+msgstr ""
+
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr ""
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr ""
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr ""
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr ""
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr ""
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr ""
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr ""
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
+msgstr ""
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr ""
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr ""
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr ""
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr ""
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr ""
+
+msgid "Download failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Installation options:"
+msgstr ""
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr ""
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr ""
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr ""
+
+msgid "Keep package files after installation"
+msgstr ""
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr ""
+
+msgid "Platform settings:"
+msgstr ""
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr ""
+
+msgid "User-defined platform:"
+msgstr ""
+
+msgid "Hide foreign architectures"
+msgstr ""
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr ""
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr ""
+
+msgid "Deken Packages"
+msgstr ""
+
+msgid "ZIP Files"
+msgstr ""
+
+msgid "TAR Files"
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr ""
+
+msgid "SHA256 verification failed"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr ""
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr ""
+
+msgid "Installation completed!"
+msgstr ""
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr ""
+
+msgid "Installation failed!"
+msgstr ""
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr ""
+
+msgid "Package installation failed"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+msgid "No packages selected for installation."
+msgstr ""
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+msgid "Search"
+msgstr "於"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr ""
+
+msgid "Enter an exact library or object name."
+msgstr ""
+
+msgid "e.g. 'freeverb~'"
+msgstr ""
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr ""
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr ""
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr ""
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr ""
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Install DEK file..."
+msgstr ""
+
+msgid "Preferences..."
+msgstr "偏好設定..."
+
+msgid "Search for: "
+msgstr "於 "
+
+msgid "libraries"
+msgstr ""
+
+msgid "objects"
+msgstr ""
+
+msgid "both"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Uploader"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Search Results"
+msgstr ""
+
+msgid "Log"
+msgstr ""
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr ""
+
+#, tcl-format
+msgid "online? %s"
+msgstr ""
+
+msgid "Unable to perform search. Are you online?"
+msgstr ""
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr ""
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr ""
+
+msgid "No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr ""
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr ""
+
+msgid "Please select a (writable) installation directory!"
+msgstr ""
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr ""
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr ""
+
+msgid "Installing to non-existant directory failed"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr ""
+
+msgid "Directory does not exist!"
+msgstr ""
+
+msgid "Directory is not writable!"
+msgstr ""
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr ""
+
+msgid "aborting."
+msgstr ""
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr ""
+
+msgid "Download failed!"
+msgstr ""
+
+msgid "Download completed! Verifying..."
+msgstr ""
+
+msgid "Ignoring checksum mismatch"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr ""
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr ""
+
+msgid "No usable servers for searching found..."
+msgstr ""
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr ""
+
+msgid "Search failed"
+msgstr ""
+
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "Select package for installation"
+msgstr ""
+
+msgid "Deselect package"
+msgstr ""
+
+msgid "Open package webpage"
+msgstr ""
+
+msgid "Copy package URL"
+msgstr ""
+
+msgid "Copy SHA256 checksum URL"
+msgstr ""
+
+msgid "Copy OpenGPG signature URL"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr ""
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr ""
+
+msgid "refusing to delete empty domain"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr ""
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr ""
+
+msgid "About Pd"
+msgstr "關於 Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr ""
+
+msgid "Save"
+msgstr "儲存"
+
+msgid "Save As..."
+msgstr "另存新檔..."
+
+msgid "Print..."
+msgstr "列印..."
+
+msgid "Paste Replace"
+msgstr ""
+
+msgid "Duplicate"
+msgstr "重複"
+
+msgid "Zoom In"
+msgstr ""
+
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Tidy Up"
+msgstr "整理"
+
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
+msgstr ""
+
+msgid "Edit Mode"
+msgstr "編輯模式"
+
+msgid "Undo"
+msgstr "復原"
+
+msgid "Redo"
+msgstr "重做"
+
+msgid "New"
+msgstr ""
+
+msgid "Open"
+msgstr "開啟"
+
+msgid "Message..."
+msgstr ""
+
+msgid "Cut"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "Clear Console"
+msgstr "清除控制台"
+
+msgid "Object"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Number"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Symbol"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Graph"
+msgstr ""
+
+msgid "Find..."
+msgstr "尋找..."
+
+msgid "Find Again"
+msgstr "再尋找"
+
+msgid "Find Last Error"
+msgstr "尋找上次錯誤"
+
+msgid "DSP On"
+msgstr "打開 DSP"
+
+msgid "DSP Off"
+msgstr "關閉 DSP"
+
+msgid "Test Audio and MIDI..."
+msgstr "聲音和 MIDI 測試..."
+
+msgid "Load Meter"
+msgstr ""
+
+msgid "Audio Settings..."
+msgstr "音效設定..."
+
+msgid "MIDI Settings..."
+msgstr ""
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Zoom"
+msgstr "縮放"
+
+msgid "Bring All to Front"
+msgstr "將此程式所有視窗移至最前"
+
+msgid "Next Window"
+msgstr "下一個視窗"
+
+msgid "Previous Window"
+msgstr "前一個視窗"
+
+msgid "Parent Window"
+msgstr "上層視窗"
+
+msgid "HTML Manual..."
+msgstr ""
+
+msgid "Browser..."
+msgstr ""
+
+msgid "List of objects..."
+msgstr ""
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr ""
+
+msgid "Report a bug"
+msgstr "回報錯誤"
+
+msgid "Clear Menu"
+msgstr "清除選單"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
+msgid "removed GUI settings"
+msgstr ""
+
+msgid "no Pd-GUI settings to clear"
+msgstr ""
+
+msgid "Path..."
+msgstr ""
+
+msgid "Startup..."
+msgstr ""
+
+msgid "Audio..."
+msgstr ""
+
+msgid "MIDI..."
+msgstr ""
+
+msgid "Zoom New Windows"
+msgstr ""
+
+msgid "Save All Preferences"
+msgstr ""
+
+msgid "Save to..."
+msgstr ""
+
+msgid "Load from..."
+msgstr ""
+
+msgid "Forget All..."
+msgstr ""
+
+msgid "Preferences"
+msgstr "偏好設定"
+
+msgid "Open Recent"
+msgstr "打開最近使用的檔案"
+
+msgid "Quit"
+msgstr "離開"
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "要儲存已修改過的 '%s' 嗎？"
+
+msgid "Properties"
+msgstr "內容"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr ""
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr ""
+
+msgid "Audio on"
+msgstr ""
+
+msgid "Audio off"
+msgstr ""
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr ""
+
+msgid "Tcl:"
+msgstr ""
+
+msgid "Pd"
+msgstr ""
+
+msgid "DSP"
+msgstr ""
+
+msgid "Audio I/O error"
+msgstr ""
+
+msgid "Log:"
+msgstr ""
+
+msgid "fatal"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "normal"
+msgstr ""
+
+msgid "debug"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "New..."
+msgstr "新增..."
+
+msgid "Edit..."
+msgstr "編輯..."
+
+msgid "Delete"
+msgstr ""
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "忽略 '%s': 這不像是Pd檔案"

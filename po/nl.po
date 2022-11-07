@@ -1,0 +1,1422 @@
+# Translation of Pure Data to Dutch.
+# This file is put in the public domain.
+# Timothy Schoen <timschoen123@gmail.com>, 2022.
+# Alex Nadzharov <anadjarov@gmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.53.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"PO-Revision-Date: 2022-10-20 12:48+0000\n"
+"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/nl/>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
+
+msgid "linear"
+msgstr "lineair"
+
+msgid "logarithmic"
+msgstr "logaritmisch"
+
+msgid "new-only"
+msgstr "alleen-nieuw"
+
+msgid "new&old"
+msgstr "nieuw&oud"
+
+msgid "no scale"
+msgstr "niet schalen"
+
+msgid "scale"
+msgstr "schalen"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "Wijzigingen in \"%s\" verwijderen?"
+
+msgid "Undo clear"
+msgstr "Wissen ongedaan maken"
+
+msgid "Undo connect"
+msgstr "Verbinden ongedaan maken"
+
+msgid "Undo cut"
+msgstr "Knippen ongedaan maken"
+
+msgid "Undo disconnect"
+msgstr "Verbinding doorbreken ongedaan maken"
+
+msgid "Undo duplicate"
+msgstr "Dupliceren ongedaan maken"
+
+msgid "Undo motion"
+msgstr "Beweging ongedaanmaken"
+
+msgid "Undo paste"
+msgstr "Plakken ongedaan maken"
+
+msgid "Undo typing"
+msgstr "Typen ongedaan maken"
+
+msgid "Redo clear"
+msgstr "Wissen opnieuw doen"
+
+msgid "Redo connect"
+msgstr "Verbinden opnieuw doen"
+
+msgid "Redo cut"
+msgstr "Knippen opnieuw doen"
+
+msgid "Redo disconnect"
+msgstr "Verbinding doorbreken opnieuw doen"
+
+msgid "Redo duplicate"
+msgstr "Dupliceren opnieuw doen"
+
+msgid "Redo motion"
+msgstr "Beweging opnieuw doen"
+
+msgid "Redo paste"
+msgstr "Plakken opnieuw doen"
+
+msgid "Redo typing"
+msgstr "Typen opnieuw doen"
+
+msgid "no Pd settings to clear"
+msgstr "geen Pd instellingen te wissen"
+
+msgid "removed .pdsettings file"
+msgstr ".pdsettings bestand verwijderd"
+
+msgid "couldn't delete .pdsettings file"
+msgstr "Kon .pdsettings bestand niet aanmaken"
+
+msgid "failed to erase Pd settings"
+msgstr "Wissen van Pd settings gefaald"
+
+msgid "erased Pd settings"
+msgstr "Pd settings verwijderd"
+
+msgid "no Pd settings to erase"
+msgstr "Geen Pd settings te verwijderen"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr ""
+"laden van voorkeuren overslaan... Pd lijkt te zijn gecrasht bij het opstarten"
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(sla voorkeuren opnieuw op om ze te herstellen)"
+
+msgid "File"
+msgstr "Bestand"
+
+msgid "Edit"
+msgstr "Bewerken"
+
+msgid "Put"
+msgstr "Plaatsen"
+
+msgid "Find"
+msgstr "Zoek"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Window"
+msgstr "Venster"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "Toon &Verborgen bestanden en mappen"
+
+msgid "Copy"
+msgstr "Kopiëren"
+
+msgid "Paste"
+msgstr "Plakken"
+
+msgid "Array Properties"
+msgstr "Array-eigenschappen"
+
+msgid "Array"
+msgstr "Array"
+
+msgid "Name:"
+msgstr "Naam:"
+
+msgid "Size:"
+msgstr "Grootte:"
+
+msgid "Save contents"
+msgstr "Inhoud opslaan"
+
+msgid "Draw as:"
+msgstr "Teken als:"
+
+msgid "Polygon"
+msgstr "Veelhoek"
+
+msgid "Points"
+msgstr "Punten"
+
+msgid "Bezier curve"
+msgstr "Bezier-curve"
+
+msgid "Put array into:"
+msgstr "Zet array in:"
+
+msgid "New graph"
+msgstr "Nieuwe grafiek"
+
+msgid "Last graph"
+msgstr "Laatste grafiek"
+
+msgid "Options"
+msgstr "Opties"
+
+msgid "Open List View..."
+msgstr "Open Lijstweergave..."
+
+msgid "Delete array"
+msgstr "Array verwijderen"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Apply"
+msgstr "Toepassen"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Audio Settings"
+msgstr "Audio-instellingen"
+
+msgid "Settings"
+msgstr "Instellingen"
+
+msgid "Sample rate:"
+msgstr "Sample rate:"
+
+msgid "Delay (msec):"
+msgstr "Vertraging (ms):"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44,1 K"
+
+msgid "96k"
+msgstr "96k"
+
+msgid "Block size:"
+msgstr "Blokgrootte:"
+
+msgid "Use callbacks"
+msgstr "Gebruik callbacks"
+
+msgid "Input Devices"
+msgstr "Invoerapparaten"
+
+msgid "Channels:"
+msgstr "Kanalen:"
+
+msgid "Output Devices"
+msgstr "Uitvoerapparaten"
+
+msgid "(same as input device)..."
+msgstr "(zelfde als invoerapparaat)..."
+
+msgid "Use Multiple Devices"
+msgstr "Meerdere apparaten gebruiken"
+
+msgid "Save All Settings"
+msgstr "Alle instellingen opslaan"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "WAARSCHUWING: onbekende graphme vlaggen ontvangen in pdtk_canvas_dialog"
+
+msgid "Canvas Properties"
+msgstr "Canvas-eigenschappen"
+
+msgid "Scale"
+msgstr "Schaal"
+
+msgid "X units per pixel:"
+msgstr "X eenheden per pixel:"
+
+msgid "Y units per pixel:"
+msgstr "Y eenheden per pixel:"
+
+msgid "Appearance on parent patch"
+msgstr "Weergave op bovenliggende patch"
+
+msgid "Graph-On-Parent"
+msgstr "Grafiek-op-ouder"
+
+msgid "Hide object name and arguments"
+msgstr "Verberg objectnaam en argumenten"
+
+msgid "Range and size"
+msgstr "Bereik en grootte"
+
+msgid "X range: from"
+msgstr "X bereik: van"
+
+msgid "to"
+msgstr "tot"
+
+msgid "Margin:"
+msgstr "Marge:"
+
+msgid "Y range: from"
+msgstr "Y bereik: van"
+
+msgid "Data Properties"
+msgstr "Gegevenseigenschappen"
+
+msgid "Send"
+msgstr "Versturen"
+
+msgid "Done"
+msgstr "Klaar"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "'%1$s' gevonden in %2$s"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "Kon '%1$s' niet vinden in %2$s"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "Zoek in %s naar:"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "Laatst getoonde '%1$s' in %2$s"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "Toont '%1$d' van %2$d items in %3$s"
+
+msgid "Pd window"
+msgstr "Pd venster"
+
+msgid "Match whole word only"
+msgstr "Alleen hele woorden"
+
+msgid "Close"
+msgstr "Sluit"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s Lettertype"
+
+msgid "Font"
+msgstr "Lettertype"
+
+msgid "Font Size"
+msgstr "Lettergrootte"
+
+msgid "Stretch"
+msgstr "Rekken"
+
+msgid "X and Y"
+msgstr "X en Y"
+
+msgid "X only"
+msgstr "Alleen X"
+
+msgid "Y only"
+msgstr "Alleen Y"
+
+msgid "GUI Box Properties"
+msgstr "Eigenschappen GUI Box"
+
+msgid "Messages"
+msgstr "Berichten"
+
+msgid "Send symbol:"
+msgstr "Verzendsymbool:"
+
+msgid "Receive symbol:"
+msgstr "Ontvangstsymbool:"
+
+msgid "Width:"
+msgstr "Breedte:"
+
+msgid "Limits"
+msgstr "Limieten"
+
+msgid "Lower:"
+msgstr "Ondergrens:"
+
+msgid "Upper:"
+msgstr "Bovengrens:"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Left"
+msgstr "Links"
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Top"
+msgstr "Boven"
+
+msgid "Bottom"
+msgstr "Beneden"
+
+msgid "Background color"
+msgstr "Achtergrondkleur"
+
+msgid "Foreground color"
+msgstr "Voorgrondkleur"
+
+msgid "Label color"
+msgstr "Labelkleur"
+
+msgid "Bang"
+msgstr "Bang"
+
+msgid "Flash Time (msec)"
+msgstr "Flitstijd (ms)"
+
+msgid "Min:"
+msgstr "Min:"
+
+msgid "Max:"
+msgstr "Max:"
+
+msgid "Toggle"
+msgstr "Schakelaar"
+
+msgid "Non Zero Value"
+msgstr "Niet-nulwaarde"
+
+msgid "Value:"
+msgstr "Waarde:"
+
+msgid "Number2"
+msgstr "Nummer2"
+
+msgid "Width (digits):"
+msgstr "Breedte (cijfers):"
+
+msgid "Height:"
+msgstr "Hoogte:"
+
+msgid "Output Range"
+msgstr "Uitvoerbereik"
+
+msgid "Log height:"
+msgstr "Log hoogte:"
+
+msgid "Vslider"
+msgstr "Vslider"
+
+msgid "Hslider"
+msgstr "Hslider"
+
+msgid "Vradio"
+msgstr "Vradio"
+
+msgid "Num cells:"
+msgstr "Aantal cellen:"
+
+msgid "Hradio"
+msgstr "Hradio"
+
+msgid "VU Meter"
+msgstr "VU-meter"
+
+msgid "Canvas"
+msgstr "Canvas"
+
+msgid "Visible Rectangle (pix)"
+msgstr "Zichtbare rechthoek (pix)"
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s Eigenschappen"
+
+msgid "Parameters"
+msgstr "Parameters"
+
+msgid "Init"
+msgstr "Init"
+
+msgid "No init"
+msgstr "Geen initiatie"
+
+msgid "Jump on click"
+msgstr "Spring op klik"
+
+msgid "Steady on click"
+msgstr "Stabiel bij klik"
+
+msgid "X offset:"
+msgstr "X-offset:"
+
+msgid "Y offset:"
+msgstr "Y-offset:"
+
+msgid "Colors"
+msgstr "Kleuren"
+
+msgid "Background"
+msgstr "Achtergrond"
+
+msgid "Front"
+msgstr "Voorzijde"
+
+msgid "Compose color"
+msgstr "Kleur samenstellen"
+
+msgid "Test label"
+msgstr "Testlabel"
+
+msgid "Send a Pd message"
+msgstr "Stuur een Pd-bericht"
+
+msgid "(use arrow keys for history)"
+msgstr "(gebruik de pijltjestoetsen voor geschiedenis)"
+
+msgid "MIDI Settings"
+msgstr "MIDI-instellingen"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI-instellingen"
+
+msgid "In Ports:"
+msgstr "Ingangen:"
+
+msgid "Out Ports:"
+msgstr "Uitgangen:"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr "Pd-zoekpad voor objecten, help, audio, tekst en andere bestanden"
+
+msgid "Use standard paths"
+msgstr "Standaardpaden gebruiken"
+
+msgid "Verbose"
+msgstr "Uitgebreid"
+
+msgid "Pd Documents Directory"
+msgstr "Pd-documenten map"
+
+msgid "Browse"
+msgstr "Bladeren"
+
+msgid "Reset"
+msgstr "Resetten"
+
+msgid "Disable"
+msgstr "Uitschakelen"
+
+msgid "Externals Install Directory"
+msgstr "Installatiemap externals"
+
+msgid "Clear"
+msgstr "Wissen"
+
+msgid "Choose Pd documents directory:"
+msgstr "Kies Pd-documentenmap:"
+
+msgid "Install externals to directory:"
+msgstr "Installeer externals in map:"
+
+msgid "Add a new path"
+msgstr "Een nieuw pad toevoegen"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr "Bestaand pad bewerken [%s]"
+
+msgid "Add new library"
+msgstr "Nieuwe bibliotheek toevoegen"
+
+msgid "Edit library"
+msgstr "Bibliotheek bewerken"
+
+msgid "Pd libraries to load on startup"
+msgstr "Pd bibliotheken te laden bij het opstarten"
+
+msgid "Startup flags:"
+msgstr "Opstartvlaggen:"
+
+msgid "Defeat real-time scheduling"
+msgstr "Versla real-time planning"
+
+msgid "Help Browser"
+msgstr "Help Browser"
+
+msgid "Associated Files"
+msgstr "Bijbehorende bestanden"
+
+msgid "Pd Files"
+msgstr "Pd-bestanden"
+
+msgid "Max Patch Files"
+msgstr "Max patchbestanden"
+
+msgid "Max Text Files"
+msgstr "Max tekstbestanden"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Max-patchbestanden (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Max tekstbestanden (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "gedetecteerd lettertype: %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr ""
+"WAARSCHUWING: lettertypefamilie '%1$s' niet gevonden, standaard gebruikt "
+"(%2$s)"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr ""
+"WAARSCHUWING: lettertypegewicht '%1$s' niet gevonden, standaard gebruikt "
+"(%2$s)"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "gebruikt lettertype: %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "'%1$s' already loaded, '%2$s' wordt genegeerd"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "Plugin wordt geladen: %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "ONVERWERKTE FOUT: %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "%s KAN NIET WORDEN GELADEN"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "Niet gelukt om plugin %s te lezen ... wordt overgeslagen!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "Niet gelukt om plugin %s te vinden ... wordt overgeslagen!"
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr "(Tcl) ONTBREKENDE CLOSE-BRACE '}': "
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr "(Tcl) ONGELDIGE OPDRACHTNAAM: "
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr "(Tcl) ONVERWERKTE FOUT: "
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr "[deken] geïnstalleerde versie [%1$s] > %2$s...overslaan!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken] geïnstalleerde versie [%1$s] < %2$s...overschrijven!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr "[deken] geïnstalleerde versie [%1$s] == %2$s...overslaan!"
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr "dekenpakket '%s' installeren"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr "'%s' negeren: lijkt niet op een deken-pakket"
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr "'%s' installeren"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s uitgepakt in %2$s."
+
+msgid "Unable to extract package automatically."
+msgstr "Kan pakket niet automatisch uitpakken."
+
+msgid "Please perform the following steps manually:"
+msgstr "Voer de volgende stappen handmatig uit:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. Pak %s uit."
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr "Misschien moet u de bestandsextensie veranderen van .dek in .zip"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. Kopieer de inhoud naar %s."
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr "3. Verwijder %s. (optioneel)"
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr "'%s' verwijderen"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "Het verwijderen van %1$s uit %2$s is mislukt!"
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr "SHA256-verificatie van '%s' wordt overgeslagen."
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr "SHA256-verificatie van '%s'"
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr "Kan referentie SHA256 niet ophalen voor '%s'."
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr "Kan SHA256-verificatie voor '%s' niet uitvoeren."
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "Kan niet downloaden van %1$s [%2$s]"
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr "Kan niet downloaden van '%s'!"
+
+msgid "Download failed"
+msgstr "Download mislukt"
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr "Kan verdwaald bestand '%s' niet verwijderen"
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr "Kan gedownload bestand niet hernoemen naar '%s'"
+
+msgid "Create"
+msgstr "Aanmaken"
+
+msgid "Check"
+msgstr "Controleren"
+
+msgid "Installation options:"
+msgstr "Installatie opties:"
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr ""
+"Probeer de checksum van de bibliotheken te controleren voordat u ze (opnieuw)"
+" installeert"
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr "Probeer bibliotheken te verwijderen voordat u ze (opnieuw) installeert"
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr "Toon README van nieuw geïnstalleerde bibliotheken (indien aanwezig)"
+
+msgid "Keep package files after installation"
+msgstr "Pakketbestanden bewaren na installatie"
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr "Nieuw geïnstalleerde bibliotheken toevoegen aan het zoekpad van Pd"
+
+msgid "Platform settings:"
+msgstr "Platforminstellingen:"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "Standaardplatform: %s"
+
+msgid "User-defined platform:"
+msgstr "Door de gebruiker gedefinieerd platform:"
+
+msgid "Hide foreign architectures"
+msgstr "Verberg vreemde architecturen"
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+"Toon alleen de nieuwste versie van een bibliotheek\n"
+"(behandelt andere versies als vreemde architecturen)"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Deken %s Voorkeuren"
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr "Platform opnieuw gedetecteerd: %s"
+
+msgid "Deken Packages"
+msgstr "Deken Pakketten"
+
+msgid "ZIP Files"
+msgstr "ZIP-bestanden"
+
+msgid "TAR Files"
+msgstr "TAR-bestanden"
+
+msgid "All Files"
+msgstr "Alle bestanden"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "Checksum komt niet overeen voor '%s'"
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "SHA256-verificatie van '%s' mislukt!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 verificatie mislukt"
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr "Vorige installatie van '%s' verwijderen"
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr "Het tijdelijk verplaatsen van %1$s naar %2$s is mislukt."
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr "Pakket '%s' installeren"
+
+msgid "Installation completed!"
+msgstr "Installatie voltooid!"
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr "'%s' succesvol geïnstalleerd!"
+
+msgid "Installation failed!"
+msgstr "Installatie mislukt!"
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr "Kan '%s' niet installeren!"
+
+msgid "Package installation failed"
+msgstr "Pakketinstallatie mislukt"
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+"Het is niet gelukt om %1$s volledig te verwijderen.\n"
+"Verwijder handmatig de map %2$s na het afsluiten van Pd."
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "Kan %s niet toevoegen aan zoekpaden"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "%s toevoegen aan de Pd-zoekpaden?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "%s toegevoegd aan zoekpaden"
+
+msgid "No packages selected for installation."
+msgstr "Geen pakketten geselecteerd voor installatie."
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr "%d geselecteerde pakketten verwerkt."
+
+msgid "Show all"
+msgstr "Alles tonen"
+
+msgid "Search"
+msgstr "Zoeken"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr "Installeren (%d)"
+
+msgid "Install"
+msgstr "Installeer"
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr "%s%% van download voltooid"
+
+msgid "Enter an exact library or object name."
+msgstr "Voer een exacte bibliotheek- of objectnaam in."
+
+msgid "e.g. 'freeverb~'"
+msgstr "bijv. 'freeverb~'"
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr ""
+"Gebruik het jokerteken '*' om met een willekeurig aantal tekens overeen te "
+"komen."
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr "bv. '*-plugin' komt overeen met 'deken-plugin' (en meer)."
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr "U kunt het zoeken beperken tot alleen-bibliotheken of alleen-objecten."
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+"Om een lijst van alle beschikbare externen te krijgen, kunt u een lege "
+"zoekopdracht uitvoeren."
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr "Rechts klikken op een zoekresultaat geeft je meer opties..."
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr "U kunt ook zoeken naar bibliotheken en objecten via uw webbrowser:"
+
+msgid "Find externals"
+msgstr "Zoek externals"
+
+msgid "Install DEK file..."
+msgstr "DEK-bestand installeren..."
+
+msgid "Preferences..."
+msgstr "Voorkeuren..."
+
+msgid "Search for: "
+msgstr "Zoeken naar: "
+
+msgid "libraries"
+msgstr "bibliotheken"
+
+msgid "objects"
+msgstr "objecten"
+
+msgid "both"
+msgstr "beide"
+
+msgid "translations"
+msgstr "vertalingen"
+
+msgid "Only install externals uploaded by people you trust."
+msgstr "Installeer alleen externals geüpload door mensen die je vertrouwt."
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr "Tabbladweergave uitschakelen: incompatibele Tcl/Tk gedetecteerd"
+
+msgid "Library"
+msgstr "Bibliotheek"
+
+msgid "Version"
+msgstr "Versie"
+
+msgid "Description"
+msgstr "Beschrijving"
+
+msgid "Uploader"
+msgstr "Uploader"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Search Results"
+msgstr "Zoekresultaten"
+
+msgid "Log"
+msgstr "Logboek"
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr "Zoeken naar \"%s\"..."
+
+#, tcl-format
+msgid "online? %s"
+msgstr "online? %s"
+
+msgid "Unable to perform search. Are you online?"
+msgstr "Kan geen zoekopdracht uitvoeren. Bent u online?"
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr "%1$d bruikbare pakketten gevonden (van in totaal %2$d pakketten)."
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr ""
+"Het lijkt erop dat er geen passende pakketten zijn voor uw architectuur."
+
+msgid "No matching externals found."
+msgstr "Geen overeenstemmende externals gevonden."
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "Probeer de volledige naam te gebruiken, bijvoorbeeld 'freeverb~'."
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr "Of gebruik jokertekens zoals 'freeverb*'."
+
+msgid "Please select a (writable) installation directory!"
+msgstr "Selecteer een (beschrijfbare) installatiemap!"
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr "Installeer %1$s naar %2$s?"
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr "Download van '%s' geannulleerd: Geen installatiemap gegeven."
+
+msgid "Installing to non-existant directory failed"
+msgstr "Installeren naar niet-bestaande directory mislukt"
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr "Kan niet installeren naar '%s'"
+
+msgid "Directory does not exist!"
+msgstr "Map bestaat niet!"
+
+msgid "Directory is not writable!"
+msgstr "Map is niet schrijfbaar!"
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr "'%s' downloaden"
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr "Beginnen met downloaden van '%1$s' naar '%2$s'..."
+
+msgid "aborting."
+msgstr "afbreken."
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr "Downloaden van '%s' is mislukt"
+
+msgid "Download failed!"
+msgstr "Download mislukt!"
+
+msgid "Download completed! Verifying..."
+msgstr "Download compleet! Verifiëren..."
+
+msgid "Ignoring checksum mismatch"
+msgstr "Checksum-mismatch negeren"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] deken-plugin.tcl (Pd externals search) geladen van %s."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] Platform gedetecteerd: %s"
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr "Zoeken op %s..."
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr "Zoeken op %1$s heeft %2$d resultaten opgeleverd"
+
+msgid "No usable servers for searching found..."
+msgstr "Geen bruikbare servers om te zoeken gevonden..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "Geüpload door %1$s @ %2$s"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "Zoeken naar '%s' is mislukt!"
+
+msgid "Search failed"
+msgstr "Zoeken mislukt"
+
+msgid "Unable to perform search."
+msgstr "Kan geen zoekopdracht uitvoeren."
+
+msgid "Select package for installation"
+msgstr "Selecteer pakket voor installatie"
+
+msgid "Deselect package"
+msgstr "Deselecteer pakket"
+
+msgid "Open package webpage"
+msgstr "De webpagina van het pakket openen"
+
+msgid "Copy package URL"
+msgstr "Kopieer pakket URL"
+
+msgid "Copy SHA256 checksum URL"
+msgstr "Kopieer SHA256 controlesom URL"
+
+msgid "Copy OpenGPG signature URL"
+msgstr "Kopieer OpenGPG-handtekening URL"
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr "Verwijder '%s'"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Wilt u dat Pd de bestaande documentenmap gebruikt voor patches en externe "
+"bibliotheken?\n"
+"\n"
+"Locatie: %s\n"
+"\n"
+"Je kunt dit later wijzigen of uitschakelen in de Pd voorkeuren."
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Wilt u dat Pd een documentenmap aanmaakt voor patches en externe "
+"bibliotheken?\n"
+"\n"
+"Locatie: %s\n"
+"\n"
+"U kunt dit later wijzigen of uitschakelen in de Pd voorkeuren."
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"Pd-documentenmap kan niet worden gevonden:\n"
+"\n"
+"%s\n"
+"\n"
+"Nieuwe locatie kiezen?"
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr "kon geen Pd-documentenmap aanmaken: %s"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "kon \"externals\" map niet aanmaken in: %s"
+
+msgid "refusing to delete empty domain"
+msgstr "weigeren leeg domein te verwijderen"
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "Kon voorkeuren \"%1$s\" niet aanmaken in %2$s"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "'%s' wordt genegeerd: bestaat niet"
+
+msgid "About Pd"
+msgstr "Over Pd"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "kon \"%s\" document niet lezen"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Save As..."
+msgstr "Opslaan als..."
+
+msgid "Print..."
+msgstr "Afdrukken..."
+
+msgid "Paste Replace"
+msgstr "Plakken Vervangen"
+
+msgid "Duplicate"
+msgstr "Dupliceren"
+
+msgid "Zoom In"
+msgstr "Inzoomen"
+
+msgid "Zoom Out"
+msgstr "Uitzoomen"
+
+msgid "Tidy Up"
+msgstr "Opruimen"
+
+msgid "(Dis)Connect Selection"
+msgstr "Selectie (ont)verbinden"
+
+msgid "Triggerize"
+msgstr "Triggerize"
+
+msgid "Edit Mode"
+msgstr "Bewerkingsmodus"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Redo"
+msgstr "Opnieuw doen"
+
+msgid "New"
+msgstr "Nieuw"
+
+msgid "Open"
+msgstr "Openen"
+
+msgid "Message..."
+msgstr "Bericht..."
+
+msgid "Cut"
+msgstr "Knippen"
+
+msgid "Select All"
+msgstr "Alles selecteren"
+
+msgid "Clear Console"
+msgstr "Console wissen"
+
+msgid "Object"
+msgstr "Object"
+
+msgid "Message"
+msgstr "Bericht"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "List"
+msgstr "Lijst"
+
+msgid "Symbol"
+msgstr "Symbool"
+
+msgid "Comment"
+msgstr "Opmerking"
+
+msgid "Graph"
+msgstr "Grafiek"
+
+msgid "Find..."
+msgstr "Zoek..."
+
+msgid "Find Again"
+msgstr "Zoek opnieuw"
+
+msgid "Find Last Error"
+msgstr "Laatste fout zoeken"
+
+msgid "DSP On"
+msgstr "DSP Aan"
+
+msgid "DSP Off"
+msgstr "DSP Uit"
+
+msgid "Test Audio and MIDI..."
+msgstr "Audio en MIDI testen..."
+
+msgid "Load Meter"
+msgstr "Lastmeter"
+
+msgid "Audio Settings..."
+msgstr "Audio-instellingen..."
+
+msgid "MIDI Settings..."
+msgstr "MIDI-instellingen..."
+
+msgid "Minimize"
+msgstr "Minimaliseren"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Bring All to Front"
+msgstr "Breng alles naar voren"
+
+msgid "Next Window"
+msgstr "Volgend venster"
+
+msgid "Previous Window"
+msgstr "Vorig venster"
+
+msgid "Parent Window"
+msgstr "Bovenliggend venster"
+
+msgid "HTML Manual..."
+msgstr "HTML-handleiding..."
+
+msgid "Browser..."
+msgstr "Browser..."
+
+msgid "List of objects..."
+msgstr "Lijst van objecten..."
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr "Controleren op updates"
+
+msgid "Report a bug"
+msgstr "Een fout melden"
+
+msgid "Clear Menu"
+msgstr "Menu wissen"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+"Alle voorkeuren verwijderen?\n"
+"(treedt in werking wanneer Pd opnieuw wordt opgestart)"
+
+msgid "removed GUI settings"
+msgstr "verwijderde GUI-instellingen"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "geen Pd-GUI instellingen te wissen"
+
+msgid "Path..."
+msgstr "Pad..."
+
+msgid "Startup..."
+msgstr "Opstarten..."
+
+msgid "Audio..."
+msgstr "Audio..."
+
+msgid "MIDI..."
+msgstr "MIDI..."
+
+msgid "Zoom New Windows"
+msgstr "Nieuwe vensters inzoomen"
+
+msgid "Save All Preferences"
+msgstr "Alle voorkeuren opslaan"
+
+msgid "Save to..."
+msgstr "Opslaan in..."
+
+msgid "Load from..."
+msgstr "Laden van..."
+
+msgid "Forget All..."
+msgstr "Vergeet alles..."
+
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+msgid "Open Recent"
+msgstr "Recentelijk geopend"
+
+msgid "Quit"
+msgstr "Afsluiten"
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Wilt u de wijzigingen die u in '%s' heeft aangebracht opslaan?"
+
+msgid "Properties"
+msgstr "Eigenschappen"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr "%d regels uit het Pd-venster verwijderd"
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr "het Pd-venster filterde %d regels"
+
+msgid "Audio on"
+msgstr "Audio aan"
+
+msgid "Audio off"
+msgstr "Audio uit"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+msgid "Tcl:"
+msgstr "Tcl:"
+
+msgid "Pd"
+msgstr "Pd"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio I/O error"
+msgstr "Audio I/O-fout"
+
+msgid "Log:"
+msgstr "Logboek:"
+
+msgid "fatal"
+msgstr "fataal"
+
+msgid "error"
+msgstr "fout"
+
+msgid "normal"
+msgstr "normaal"
+
+msgid "debug"
+msgstr "debug"
+
+msgid "all"
+msgstr "alle"
+
+msgid "New..."
+msgstr "Nieuw..."
+
+msgid "Edit..."
+msgstr "Bewerken..."
+
+msgid "Delete"
+msgstr "Verwijderen"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "'%s' wordt genegeerd: ziet er niet uit als een Pd-bestand"

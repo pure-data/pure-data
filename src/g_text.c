@@ -105,6 +105,20 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 
 void canvas_getargs(int *argcp, t_atom **argvp);
 
+static void canvas_error_couldntcreate(void*x, t_binbuf*b, const char*errmsg)
+{
+    char *buf=0;
+    int bufsize=0;
+    if (!binbuf_getnatom(b))
+        return;
+    binbuf_gettext(b, &buf, &bufsize);
+    buf = resizebytes(buf, bufsize, bufsize+1);
+    buf[bufsize] = 0;
+    logpost(x, PD_CRITICAL, "%s", buf);
+    logpost(x, PD_ERROR, "%s", errmsg);
+    freebytes(buf, bufsize);
+}
+
 static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     int selected, t_binbuf *b)
 {
@@ -121,19 +135,14 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
             x = 0;
         else if (!(x = pd_checkobject(pd_this->pd_newest)))
         {
-            binbuf_print(b);
-            pd_error(0, "... didn't return a patchable object");
+            canvas_error_couldntcreate(0, b, "... didn't return a patchable object");
         }
     }
     else x = 0;
     if (!x)
     {
         x = (t_text *)pd_new(text_class);
-        if (binbuf_getnatom(b))
-        {
-            binbuf_print(b);
-            pd_error(x, "... couldn't create");
-        }
+        canvas_error_couldntcreate(x, b, "... couldn't create");
     }
     x->te_binbuf = b;
     x->te_xpix = xpix;
@@ -168,15 +177,12 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     if (connectme)
     {
         t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;
-        for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
-            if (g == selected)
-        {
-            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
-            indx = nobj;
-            *xpixp = x1 / x->gl_zoom;
-            *ypixp = (y2+dx) / x->gl_zoom;    /* 5 pixels down, rounded */
-        }
+            /* get number of objects */
+        for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++) ;
+
+            /* deselect the current selection (and create pending objects) */
         glist_noselect(x);
+
             /* search back for 'selected' and if it isn't on the list,
                 plan just to connect from the last item on the list. */
         for (g = x->gl_list, n2 = 0; g; g = g->g_next, n2++)
@@ -186,8 +192,26 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
                 indx = n2;
                 break;
             }
-            else if (!g->g_next)
+            else if (!g->g_next) {
+                    /* we couldn't find the selected object any more
+                     * this probably means, that it was replaced by a newly
+                     * created object, which is now the last on the list.
+                     */
                 indx = nobj-1;
+                break;
+            }
+        }
+            /* so where do we put the new object?
+               just below the one we connect from! */
+        if(g) {
+            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
+            *xpixp = x1 / x->gl_zoom;
+            *ypixp = (y2+dx) / x->gl_zoom;  /* 5 pixels down, rounded */
+        } else {
+                /* just in case */
+            glist_getnextxy(x, xpixp, ypixp);
+            *xpixp = *xpixp/x->gl_zoom - 3;
+            *ypixp = *ypixp/x->gl_zoom - 3;
         }
     }
     else
@@ -243,15 +267,20 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 {
     t_atom at;
     t_binbuf *b = binbuf_new();
-    int xpix, ypix;
+
+    int connectme, xpix, ypix, indx, nobj;
+    canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
+
     glist_noselect(gl);
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
-    glist_getnextxy(gl, &xpix, &ypix);
+
     canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
-    canvas_startmotion(glist_getcanvas(gl));
+    if(connectme)
+        canvas_connect(gl, indx, 0, nobj, 0);
+    else canvas_startmotion(glist_getcanvas(gl));
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
@@ -762,7 +791,7 @@ static void gatom_symbol(t_gatom *x, t_symbol *s)
     "nofirstin" flag, the standard list behavior gets confused. */
 static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
-        /* bang outputs value for float and symbol but clears list */
+    /* empty lists are like bang and output value for float and symbol, but clears list */
     if (argc || x->a_flavor == A_LIST)
         gatom_set(x, s, argc, argv);
     gatom_bang(x);
@@ -973,6 +1002,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     t_symbol *symto = gatom_unescapit(atom_getsymbolarg(6, argc, argv));
     int newfont = atom_getfloatarg(7, argc, argv);
     t_atom undo[8];
+    int is_visible = glist_isvisible(x->a_glist);
+    int should_visible = gobj_shouldvis((t_gobj*)x, x->a_glist);
 
     SETFLOAT (undo+0, x->a_text.te_width);
     SETFLOAT (undo+1, x->a_draglo);
@@ -986,7 +1017,8 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
                             8, undo,
                             argc, argv);
 
-    gobj_vis(&x->a_text.te_g, x->a_glist, 0);
+    if(is_visible)
+        gobj_vis(&x->a_text.te_g, x->a_glist, 0);
     if (!*symfrom->s_name && *x->a_symfrom->s_name)
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
     else if (*symfrom->s_name && !*x->a_symfrom->s_name && x->a_text.te_inlet)
@@ -1024,10 +1056,12 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
             canvas_realizedollar(x->a_glist, x->a_symfrom));
     x->a_symto = symto;
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
-    gobj_vis(&x->a_text.te_g, x->a_glist, 1);
-    canvas_dirty(x->a_glist, 1);
-    canvas_fixlinesfor(x->a_glist, (t_text*)x);
 
+    if(is_visible && should_visible)
+        gobj_vis(&x->a_text.te_g, x->a_glist, 1);
+    canvas_dirty(x->a_glist, 1);
+    if(is_visible)
+        canvas_fixlinesfor(x->a_glist, (t_text*)x);
     /* glist_retext(x->a_glist, &x->a_text); */
 }
 
@@ -1679,7 +1713,7 @@ void text_eraseborder(t_text *x, t_glist *glist, const char *tag)
     /* change text; if T_OBJECT, remake it.  */
 void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
 {
-    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
+    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);
     if (x->te_type == T_OBJECT)
     {
         t_binbuf *b = binbuf_new();

@@ -1495,7 +1495,7 @@ t_symbol *sys_decodedialog(t_symbol *s)
 static void namelist2gui(const char*name, t_namelist*namelist)
 {
     const size_t allocchunk = 32;
-    size_t i;
+    int i;
     t_namelist *nl;
 
     size_t namesize = allocchunk;
@@ -1606,7 +1606,7 @@ void glob_start_startup_dialog(t_pd *dummy)
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_startup_dialog", (void *)glob_start_path_dialog,
-        "is", sys_defeatrt, sys_flags?sys_flags->s_name:0);
+        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
 }
 
     /* new values from dialog window */
