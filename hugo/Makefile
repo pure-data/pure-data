@@ -10,3 +10,5 @@ install: all
 
 clean:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
+
+distdir: all
