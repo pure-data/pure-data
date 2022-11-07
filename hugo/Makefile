@@ -5,10 +5,8 @@ all:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;\
 	hugo; \
 	mv public $(OUTDIR); \
-	cp static/x/x-index $(INDEXFILE)
 
 install: all
 
 clean:
-	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;\
-	cp static/x/z-index $(INDEXFILE)
+	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
