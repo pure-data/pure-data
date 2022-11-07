@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>  | Pd Manual </title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link rel="stylesheet" type="text/css" href="./x/css/pdmanual.css" media="screen">
+	<link rel="icon" type="image/png" href="./x/favicon.ico">
+  </head>
+  <body>
+    <div id=corpus>
+      <main><h3 id="expr-family-objects-by-shahrokh-yadegarihttpyadegariorg">Expr family objects by <a href="http://yadegari.org/">Shahrokh Yadegari</a>.</h3>
+<p>Based on original sources from IRCAM&rsquo;s jMax Released under BSD License.</p>
+<p>The <strong>expr</strong> family is a set of C-like expression evaluation objects for the graphical music language Pure Data. It used to come as an &rsquo;extra&rsquo; external, but it is now a built-in native object.</p>
+<p><strong>expr</strong> runs in control rate and evaluates C-like expressions. See below for the list of operators. Multiple expressions separated by semicolons can be defined in a single expr object and this results in multiple outlets (up to 100, each for each expression). Expressions are evaluated from right to left (which means that the bottom expression will be the first executed.) The number of inlets in expr are defined by variables that take a few different forms: <strong>$i#</strong>, <strong>$i#</strong> and <strong>$s#</strong> for &lsquo;integers&rsquo;, &lsquo;floats&rsquo; and &lsquo;symbols&rsquo; (&rsquo;#&rsquo; is an inlet number from 1 up to 100, ordered from left to right). As an example, we can have 3 inlets defined as &ldquo;$i1&rdquo;, &ldquo;$f2&rdquo; and &ldquo;$s3&rdquo;, where:</p>
+<ul>
+<li><strong>$i1</strong> is the input from the first (left) inlet and is treated as an integer</li>
+<li><strong>$f2</strong> is the input from the second (middle) inlet and is treated as a float</li>
+<li><strong>$s3</strong> is the input from the third (middle) and expects a symbol (used to define array names)</li>
+</ul>
+<p>Arrays and variables (defined using the &lsquo;value&rsquo; object) can be accessed the same way one dimensional arrays are accessed in C; for example, &ldquo;valx + 10&rdquo; will be evaluated to the value of variable &lsquo;valx&rsquo; + 10 and &ldquo;tabname[5]&rdquo; will be evaluated to be the 5th element of an array named &ldquo;tabname&rdquo;. As shown above, the name of the arrays can be given by an input; for example &ldquo;$s2[5]&rdquo; will be evaluated to be the 5 element of the array whose symbol has been passed in inlet 2.</p>
+<p>Type conversion from a float input to an integer is done automatically if the inlet is defined as an integer. Conversely, you can convert it explicitly by using functions (see below for the list of functions).</p>
+<p><strong>expr~</strong> is designed to efficiently combine signal and control stream processing by vector operations on the basis of the audio block size. The operations, functions, and syntax for <strong>expr~</strong> is just like expr with the addition of the $v# variable for signal vector input (also numbered up to 100). The <strong>&rsquo;$v&rsquo;</strong> is needed at least for the first and main input, so:</p>
+<ul>
+<li><strong>$v1</strong> - means the first inlet is a signal input</li>
+<li><strong>$i2</strong> - means the second inlet is an integer input</li>
+<li><strong>$f2</strong> - means the third inlet is a float input</li>
+<li><strong>$s4</strong> - means the fourth inlet is a symbol input</li>
+</ul>
+<p>The result of an expression from expr~ is also an audio signal and multiple expressions up to 1000 can also be defined via semicolons.</p>
+<p>Note for MSP users: Currently in the MSP version all signal inputs should come first followed by other types of inlet. (There seems to be no way of mixing signal and other types of inlets in their order in Max/MSP, if you know otherwise, please let me know.) This means that signal inlets cannot be mixed with other types of inlets. For example, &ldquo;expr~ $v1$f2$v3 &quot; is not legal. The second and third inlet should be switched and &ldquo;expr~ $v1$v2$f3&rdquo; should be used. In Pd you can mix them in any way you want.</p>
+<p>The <strong>fexpr~</strong> object provides a flexible mechanism for building FIR and IIR filters by evaluating expressions on a sample by sample basis and providing access to prior samples of the input and output audio streams. When fractional offset is used, <strong>fexpr~</strong> uses linear interpolation to determine the value of the indexed sample. The operations, functions, and syntax for expr~ is just like expr with the addition of <strong>$x#</strong> and <strong>$y#</strong> variables. <strong>fexpr~</strong> can access previous input and output samples up to the block size (64 by default).</p>
+<p><strong>$x#</strong> is used to denote a signal input whose samples we would like to access. The syntax is $x followed by &lsquo;#&rsquo; (the inlet number up to 100) and the samples indexed by brackets, for example $x1[-1] specifies the previous sample of the first inlet. Therefore, if we are to build a simple filter which replaces every sample by the average of that sample and its previous one, we would use &quot; <strong>fexpr~ ($x1[0]+$x1[-1])/2</strong> &ldquo;. For ease of when the brackets are omitted, the current sample is implied, so we can write the previous filter expression as follows: &quot; <strong>fexpr~ ($x1+$x1[-1])/2</strong> &ldquo;. To build IIR filters <strong>$y#</strong> is used to access the previous output samples indexed from -1 inside brackets. Note now that &lsquo;#&rsquo; here is used to define the outlet number.</p>
+<ul>
+<li><strong>$x1[n]</strong> - means the first inlet is a signal input and &rsquo;n&rsquo; is an index from 0 to -block size</li>
+<li><strong>$y1[n]</strong> - is used to access output samples from the first expression and &rsquo;n&rsquo; is an index from -1 to -block size</li>
+<li><strong>$i2</strong> - means the second inlet is an integer input</li>
+<li><strong>$f2</strong> - means the third inlet is a float input</li>
+<li><strong>$s4</strong> - means the fourth inlet is a symbol input</li>
+</ul>
+<hr>
+<h3 id="the-operators-expr-expr-and-fexpr-support-listed-from-highest-precedence-to-lowest-are-as-follows">The operators expr, expr~ and fexpr~ support (listed from highest precedence to lowest) are as follows:</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Operator</th>
+<th style="text-align:right">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">~</td>
+<td style="text-align:right">One&rsquo;s complement</td>
+</tr>
+<tr>
+<td style="text-align:left">*</td>
+<td style="text-align:right">Multiply</td>
+</tr>
+<tr>
+<td style="text-align:left">/</td>
+<td style="text-align:right">Divide</td>
+</tr>
+<tr>
+<td style="text-align:left">%</td>
+<td style="text-align:right">Modulo</td>
+</tr>
+<tr>
+<td style="text-align:left">+</td>
+<td style="text-align:right">Add</td>
+</tr>
+<tr>
+<td style="text-align:left">-</td>
+<td style="text-align:right">Subtract</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;&lt;</td>
+<td style="text-align:right">Shift Left</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;&gt;</td>
+<td style="text-align:right">Shift Right</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;</td>
+<td style="text-align:right">Less than (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">&lt;=</td>
+<td style="text-align:right">Less than or equal (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;</td>
+<td style="text-align:right">Greater than (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">&gt;=</td>
+<td style="text-align:right">Greater than or equal (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">==</td>
+<td style="text-align:right">Equal (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">!=</td>
+<td style="text-align:right">Not equal (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">&amp;</td>
+<td style="text-align:right">Bitwise And</td>
+</tr>
+<tr>
+<td style="text-align:left">^</td>
+<td style="text-align:right">Exclusive Or</td>
+</tr>
+<tr>
+<td style="text-align:left">|</td>
+<td style="text-align:right">Bitwise Or</td>
+</tr>
+<tr>
+<td style="text-align:left">&amp;&amp;</td>
+<td style="text-align:right">Logical And (boolean)</td>
+</tr>
+<tr>
+<td style="text-align:left">||</td>
+<td style="text-align:right">Logical Or (boolean)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-supported-functions-for-expr-expr-and-fexpr-are">The supported functions for expr, expr~ and fexpr~ are:</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Functions</th>
+<th style="text-align:left"># of Args</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">if ()</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">conditional - if (condition, IfTrue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)v</td>
+</tr>
+<tr>
+<td style="text-align:left">int ()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert to integer</td>
+</tr>
+<tr>
+<td style="text-align:left">rint ()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">round a float to a nearby integer</td>
+</tr>
+<tr>
+<td style="text-align:left">float ()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert to float</td>
+</tr>
+<tr>
+<td style="text-align:left">min ()</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">minimum</td>
+</tr>
+<tr>
+<td style="text-align:left">max ()</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">maximum</td>
+</tr>
+<tr>
+<td style="text-align:left">abs()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">absolute value (added in version 0.3)</td>
+</tr>
+<tr>
+<td style="text-align:left">if()</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">conditional - if (condition, IfTrue-expr, IfFalse-expr) - in expr~ if &lsquo;condition&rsquo; is a signal, the result will be determined on sample by sample basis (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">isinf()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">is the value infinite (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">finite()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">is the value finite (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">isnan</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">is the value non a number (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">copysign()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">copy sign of a number(added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">imodf</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">get signed integer value from floating point number(added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">modf</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">get signed fractional value from floating-point number(added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">drem</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">floating-point remainder function (added in version 0.4)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="power-functions">power functions</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Functions</th>
+<th style="text-align:left"># of Args</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">pow ()</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">raise to the power of {e.g., pow(x,y) is x to the power of y}</td>
+</tr>
+<tr>
+<td style="text-align:left">sqrt ()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">square root</td>
+</tr>
+<tr>
+<td style="text-align:left">exp()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">e raised to the power of the argument {e.g., exp(5.2) is e raised to the power of 5.2}</td>
+</tr>
+<tr>
+<td style="text-align:left">ln() and log()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">natural log</td>
+</tr>
+<tr>
+<td style="text-align:left">log10()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">log base 10</td>
+</tr>
+<tr>
+<td style="text-align:left">fact()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">factorial</td>
+</tr>
+<tr>
+<td style="text-align:left">erf()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">error function (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">erfc()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">complementary error function (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">cbrt()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">cube root (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">expm1()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">exponential minus 1 (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">log1p()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">logarithm of 1 plus (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">ldexp()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">multiply floating-point number by integral power of 2 (added in version 0.4)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trigonometric">Trigonometric</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Functions</th>
+<th style="text-align:left"># of Args</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">sin()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">sine</td>
+</tr>
+<tr>
+<td style="text-align:left">cos()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">cosine</td>
+</tr>
+<tr>
+<td style="text-align:left">tan()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">tangent</td>
+</tr>
+<tr>
+<td style="text-align:left">asin()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">arc sine</td>
+</tr>
+<tr>
+<td style="text-align:left">acos()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">arc cosine</td>
+</tr>
+<tr>
+<td style="text-align:left">atan()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">arc tangent</td>
+</tr>
+<tr>
+<td style="text-align:left">atan2()</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">arc tangent of 2 variables</td>
+</tr>
+<tr>
+<td style="text-align:left">sinh()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">hyperbolic sine</td>
+</tr>
+<tr>
+<td style="text-align:left">cosh()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">hyperbolic cosine</td>
+</tr>
+<tr>
+<td style="text-align:left">tanh()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">hyperbolic tangent</td>
+</tr>
+<tr>
+<td style="text-align:left">asinh()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">inverse hyperbolic sine</td>
+</tr>
+<tr>
+<td style="text-align:left">acosh()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">inverse hyperbolic cosine</td>
+</tr>
+<tr>
+<td style="text-align:left">atan()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">inverse hyperbolic tangent</td>
+</tr>
+<tr>
+<td style="text-align:left">floor()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">largest integral value not greater than argument (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">ceil()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">smallest integral value not less than argument (added in version 0.4)</td>
+</tr>
+<tr>
+<td style="text-align:left">fmod()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">floating-point remainder function (added in version 0.4)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="table-functions">Table Functions</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Functions</th>
+<th style="text-align:left"># of Args</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">size()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">size of a table</td>
+</tr>
+<tr>
+<td style="text-align:left">sum()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">sum of all elements of a table</td>
+</tr>
+<tr>
+<td style="text-align:left">Sum()</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">sum of elements of a specified boundary of a table</td>
+</tr>
+<tr>
+<td style="text-align:left">avg()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">averages all elements of a table</td>
+</tr>
+<tr>
+<td style="text-align:left">Avg()</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">averages elements of a specified boundary of a table</td>
+</tr>
+</tbody>
+</table>
+<h3 id="acoustics">Acoustics</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Functions</th>
+<th style="text-align:left"># of Args</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">mtof()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert MIDI pitch to frequency in hertz</td>
+</tr>
+<tr>
+<td style="text-align:left">ftom()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert frequency in hertz to MIDI pitch</td>
+</tr>
+<tr>
+<td style="text-align:left">dbtorms()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert db to rms</td>
+</tr>
+<tr>
+<td style="text-align:left">rmstodb()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert rms to db</td>
+</tr>
+<tr>
+<td style="text-align:left">powtodb()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert power to db</td>
+</tr>
+<tr>
+<td style="text-align:left">dbtopow()</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">convert db to power</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="changelog">CHANGELOG:</h3>
+<h4 id="new-additions-in-version-057">New Additions in version 0.57</h4>
+<ul>
+<li>fixed a bug in fact().</li>
+<li>fact() (factorial) now calculates and returns its value in double</li>
+<li>fixed the bad lvalue bug - &ldquo;4 + 5 = 3&rdquo; was not caught before
+Added mtof(), mtof(), dbtorms(), rmstodb(), powtodb(), dbtopow()</li>
+</ul>
+<h4 id="new-additions-in-version-056">New Additions in version 0.56</h4>
+<ul>
+<li>Fexpr~ now accepts a float in its first input.</li>
+<li>Added avg() and Avg() back to the list of functions</li>
+</ul>
+<h4 id="new-additions-in-version-055">New Additions in version 0.55</h4>
+<ul>
+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
+<li>The arrays now redraw after a store into one of their members</li>
+<li>ex_if() (the &ldquo;if()&rdquo; function is reworked to only evaluate either the left or the right args depending on the truth value of the condition. However, if the condition is an audio vector, both the left and the right are evaluated regardless.</li>
+<li>priority of &lsquo;,&rsquo; and &lsquo;=&rsquo; was switched to fix the bug of using store &ldquo;=&rdquo; in functions with multiple arguments, which caused an error during execution.</li>
+<li>The number of inlet and outlets (MAX_VARS) is now set at 100</li>
+</ul>
+<h4 id="new-additions-in-version-05">New Additions in version 0.5</h4>
+<ul>
+<li>Expr, expr~, and fexpr~ are now built-in native objects.</li>
+<li>minor fixes/improvements.</li>
+</ul>
+<h4 id="new-additions-in-version-04">New Additions in version 0.4</h4>
+<ul>
+<li>Expr, expr~, and fexpr~ now support multiple expressions separated by semicolons which results in multiple outlets.</li>
+<li>Variables are supported now in the same way they are supported in C. - Variables have to be defined with the &ldquo;value&rdquo; object prior to execution.</li>
+<li>A new if function if (condition-expression, IfTrue-expression, IfFalse-expression) has been added.</li>
+<li>New math functions added.</li>
+<li>New shorthand notations for fexpr~ have been added.
+<ul>
+<li>$x -&gt;$x1[0] $x# -&gt; $x#[0]</li>
+<li>$y = $y1[-1] and $y# = $y#[-1]</li>
+</ul>
+</li>
+<li>New &lsquo;set&rsquo; and &lsquo;clear&rsquo; methods were added for fexpr~
+<ul>
+<li>clear - clears all the past input and output buffers</li>
+<li>clear x# - clears all the past values of the #th input</li>
+<li>clear y# - clears all the past values of the #th output</li>
+<li>set x# val-1 val-2 &hellip; - sets as many supplied value of the #th input; e.g., &ldquo;set x2 3.4 0.4&rdquo; - sets x2[-1]=3.4 and x2[-2]=0.4</li>
+<li>set y# val-1 val-2 &hellip; - sets as many supplied values of the #th output; e.g, &ldquo;set y3 1.1 3.3 4.5&rdquo; - sets y3[-1]=1.1 y3[-2]=3.3 and y3[-3]=4.5;</li>
+<li>set val val &hellip; - sets the first past values of each output; e.g., e.g., &ldquo;set 0.1 2.2 0.4&rdquo; - sets y1[-1]=0.1, y2[-1]=2.2, y3[-1]=0.4</li>
+</ul>
+</li>
+</ul>
+<hr>
+</main>
+    </div>
+  </body>
+</html>

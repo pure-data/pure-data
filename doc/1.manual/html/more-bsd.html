@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> more on BSD | Pd Manual </title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link rel="stylesheet" type="text/css" href="./x/css/pdmanual.css" media="screen">
+	<link rel="icon" type="image/png" href="./x/favicon.ico">
+  </head>
+  <body>
+    <div id=corpus>
+      <main><p><a href="index.html">back to table of contents</a> <br>
+<a class="green" href="installing-from-source.html#linux--bsd">back to &#39;installing from source&#39;</a></p>
+<h3 id="bsd">BSD</h3>
+<p>Building Pd for the various BSD variants is similar to the Linux way.
+The major difference is the used package manager (and the names of the
+packages), you&rsquo;ll want to install.</p>
+<h3 id="freebsd">FreeBSD</h3>
+<p>(Tested on FreeBSD-13)</p>
+<p>Install the core build requirements:</p>
+<pre><code>sudo pkg install gcc automake autoconf libtool gettext gmake
+</code></pre>
+<p>You may install one (or more) libraries (depending on your needs). It
+seems that with FreeBSD-13, there are ALSA and JACK packages available:</p>
+<pre><code>sudo pkg install alsa-lib jackit
+</code></pre>
+<p>Once your build system is set up, you can follow the general autotools
+build steps to build Pd, but make sure to use <code>gmake</code> (aka &ldquo;GNU make&rdquo;).
+The ordinary BSD <code>make</code> will not suffice!</p>
+<pre><code>./autogen.sh
+./configure --deken-os=FreeBSD MAKE=gmake
+gmake
+
+sudo gmake install
+</code></pre>
+<h3 id="openbsd">OpenBSD</h3>
+<p>(Tested on OpenBSD-7)</p>
+<p>Install the core build requirements:</p>
+<pre><code>sudo pkg_add gcc automake autoconf libtool gettext-tools gmake
+</code></pre>
+<p>(If there are multiple versions for one or more of the packages, pick
+your favourite or the newest one).</p>
+<p>You may install one (or more) libraries (depending on your needs). It
+seems that with OpenBSD-7, there are only JACK packages available:</p>
+<pre><code>sudo pkg_add jack
+</code></pre>
+<p>By default, OpenBSD installs all its packages into <code>/usr/local/</code>, but
+the compiler does not look for headers resp. libraries in this
+directory. We can instruct autotools to automatically consider these
+directories by creating a file &lsquo;/usr/local/share/config.site&rsquo;:</p>
+<pre><code>cat | sudo tee /usr/local/share/config.site&gt;/dev/null &lt;&lt; EOF
+CPPFLAGS=&quot;-I/usr/local/include $CPPFLAGS&quot;
+LDFLAGS=&quot;-L/usr/local/lib $LDFLAGS&quot;
+EOF
+</code></pre>
+<p>Also, because OpenBSD allows to coinstall multiple versions of the
+autotools (with no &ldquo;default&rdquo;), we must specify which version we want to
+use:</p>
+<pre><code>export AUTOCONF_VERSION=$(ls -S /usr/local/bin/autoconf-* | sed -e 's|.*-||' | sort -n | tail -1)
+export AUTOMAKE_VERSION=$(ls -S /usr/local/bin/automake-* | sed -e 's|.*-||' | sort -n | tail -1)
+</code></pre>
+<p>Now that your build system is set up, you can follow the general
+autotools build steps to build Pd, but make sure to use <code>gmake</code> (aka
+&ldquo;GNU make&rdquo;). The ordinary BSD <code>make</code> will not suffice!</p>
+<pre><code>./autogen.sh
+./configure --deken-os=OpenBSD --enable-jack MAKE=gmake
+gmake
+
+sudo gmake install
+</code></pre>
+<h3 id="netbsd">NetBSD</h3>
+<p>(Tested on NetBSD-9)</p>
+<p>Install the core build requirements:</p>
+<pre><code>sudo pkgin install gcc automake autoconf libtool gettext-tools gmake
+</code></pre>
+<p>You may install one (or more) libraries (depending on your needs). It
+seems that with NetBSD-9, there are JACK and ALSA packages available,
+but the ALSA packages seem to be broken. OSS appears to be built-in.</p>
+<pre><code>sudo pkgin install jack
+</code></pre>
+<p>By default, NetBSD installs all its packages into <code>/usr/pkg/</code>, but the
+compiler does not look for headers resp. libraries in this directory. We
+can instruct autotools to automatically consider these directories by
+creating a file &lsquo;/usr/pkg/share/config.site&rsquo;:</p>
+<pre><code>cat | sudo tee /usr/pkg/share/config.site&gt;/dev/null &lt;&lt; EOF
+CPPFLAGS=&quot;-I/usr/pkg/include $CPPFLAGS&quot;
+LDFLAGS=&quot;-L/usr/pkg/lib -Wl,-R/usr/pkg/lib $LDFLAGS&quot;
+EOF
+</code></pre>
+<p>Now that your build system is set up, you can follow the general
+autotools build steps to build Pd, but make sure to use <code>gmake</code> (aka
+&ldquo;GNU make&rdquo;). The ordinary BSD <code>make</code> will not suffice!</p>
+<pre><code>./autogen.sh
+./configure --deken-os=NetBSD --prefix=/usr/pkg --disable-alsa --enable-jack MAKE=gmake
+gmake
+
+sudo gmake install
+</code></pre>
+<p><a class="green" href="installing-from-source.html#linux--bsd">back to &#39;installing from source&#39;</a> <br>
+<a href="index.html">back to table of contents</a></p>
+</main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+	<meta name="generator" content="Hugo 0.97.3" />
+    <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Pd Manual       </title>
+    <meta http-equiv="Content-Type" content="text/html">
+    <link rel="stylesheet" type="text/css" href="./x/css/pdmanual.css" media="screen">
+	<link rel="icon" type="image/png" href="./x/favicon.ico">
+  </head>
+  <body>
+    <div id=corpus>
+      <main><h1 id="pd-manual">Pd Manual</h1>
+<p>This is the Manual for Pd, a patchable environment for audio analysis,
+synthesis, and processing, with a rich set of multimedia capabilities.
+The latest version of this page can be found at:
+<a href="http://msp.ucsd.edu/software.html">http://msp.ucsd.edu/software.html</a>.</p>
+<ol>
+<li><a href="introduction.html#">introduction</a>
+<ol>
+<li><a href="introduction.html#guide-to-the-documentation">guide to the documentation</a></li>
+<li><a href="introduction.html#other-resources">other resources</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#">theory of operation</a>
+<ol>
+<li><a href="theory-of-operation.html#overview">overview</a>
+<ol>
+<li><a href="theory-of-operation.html#main-window-canvases-and-printout">main window, canvases, and printout</a></li>
+<li><a href="theory-of-operation.html#object-boxes">object boxes</a></li>
+<li><a href="theory-of-operation.html#message-and-gui-boxes">message and GUI boxes</a></li>
+<li><a href="theory-of-operation.html#patches-and-files">patches and files</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#editing-pd-patches">how to edit patches</a>
+<ol>
+<li><a href="theory-of-operation.html#edit-and-run-mode">edit and run mode</a></li>
+<li><a href="theory-of-operation.html#creating-boxes">creating boxes</a></li>
+<li><a href="theory-of-operation.html#the-selection">the selection</a></li>
+<li><a href="theory-of-operation.html#deleting-cutting-and-pasting">deleting, cutting, and pasting</a></li>
+<li><a href="theory-of-operation.html#changing-the-text">changing the text</a></li>
+<li><a href="theory-of-operation.html#connecting-and-disconnecting-boxes">connecting and disconnecting boxes</a></li>
+<li><a href="theory-of-operation.html#popup-menu-for-properties-open-and-help">properties and help</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#messages">messages</a>
+<ol>
+<li><a href="theory-of-operation.html#anatomy-of-a-message">anatomy of a message</a></li>
+<li><a href="theory-of-operation.html#depth-first-message-passing">depth first message passing</a></li>
+<li><a href="theory-of-operation.html#hot-and-cold-inlets-and-right-to-left-outlet-order">hot and cold inlets and right to left outlet
+order</a></li>
+<li><a href="theory-of-operation.html#message-boxes">message boxes</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#audio-signals">audio signals</a>
+<ol>
+<li><a href="theory-of-operation.html#sample-rate-and-format">sample rate and format</a></li>
+<li><a href="theory-of-operation.html#tilde-objects-and-audio-connections">tilde objects and audio connections</a></li>
+<li><a href="theory-of-operation.html#converting-audio-to-and-from-messages">converting to and from messages</a></li>
+<li><a href="theory-of-operation.html#switching-and-blocking">switching and blocking</a></li>
+<li><a href="theory-of-operation.html#nonlocal-signal-connections">nonlocal signal connections</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#scheduling">scheduling</a>
+<ol>
+<li><a href="theory-of-operation.html#audio-and-messages">audio and messages</a></li>
+<li><a href="theory-of-operation.html#computation-load">computation load</a></li>
+<li><a href="theory-of-operation.html#determinism">determinism</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#semantics">semantics</a>
+<ol>
+<li><a href="theory-of-operation.html#creation-of-objects">creation of objects</a></li>
+<li><a href="theory-of-operation.html#persistence-of-data">persistence of data</a></li>
+<li><a href="theory-of-operation.html#message-passing">message passing</a></li>
+<li><a href="theory-of-operation.html#inlets-and-lists">inlets and lists</a></li>
+<li><a href="theory-of-operation.html#dollar-signs">dollar signs</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#subpatches">subpatches</a>
+<ol>
+<li><a href="theory-of-operation.html#abstractions">abstractions</a></li>
+<li><a href="theory-of-operation.html#graph-on-parent-subpatches">graph-on-parent subpatches</a></li>
+</ol>
+</li>
+<li><a href="theory-of-operation.html#numeric-arrays">numeric arrays</a></li>
+<li><a href="theory-of-operation.html#data-structures">data structures</a>
+<ol>
+<li><a href="theory-of-operation.html#traversal">traversal</a></li>
+<li><a href="theory-of-operation.html#accessing-and-changing-data">accessing and changing data</a></li>
+<li><a href="theory-of-operation.html#editing">editing</a></li>
+<li><a href="theory-of-operation.html#limitations">limitations</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="getting-pd-to-run.html#">getting Pd to run</a>
+<ol>
+<li><a href="getting-pd-to-run.html#audio-and-midi">audio and MIDI</a></li>
+<li><a href="getting-pd-to-run.html#installing-pd-in-microsoft-windows">installing Pd in Microsoft Windows</a></li>
+<li><a href="getting-pd-to-run.html#installing-pd-in-linux">installing Pd in Linux</a></li>
+<li><a href="getting-pd-to-run.html#installing-pd-in-macos">installing Pd in macOS</a></li>
+<li><a href="getting-pd-to-run.html#preferences-and-startup-options">preferences and startup options</a></li>
+<li><a href="getting-pd-to-run.html#how-pd-searches-for-files">how Pd searches for files</a></li>
+</ol>
+</li>
+<li><a href="externals.html#">externals</a>
+<ol>
+<li><a href="externals.html#external-objects--libraries">external objects &amp; libraries</a>
+<ol>
+<li><a href="externals.html#what-are-vanilla-objects-internals--externals">what are: vanilla objects, internals &amp;
+externals?</a></li>
+<li><a href="externals.html#what-are-the-types-of-external-objects">what are the types of external objects?</a>
+<ol>
+<li><a href="externals.html#compiled-objects">compiled objects:</a></li>
+<li><a href="externals.html#abstractions">abstractions:</a></li>
+</ol>
+</li>
+<li><a href="externals.html#what-are-external-libraries">what are external libraries?</a></li>
+<li><a href="externals.html#what-are-the-types-of-external-libraries">what are the types of external libraries?</a></li>
+</ol>
+</li>
+<li><a href="externals.html#installing-external-objects-and-libraries">installing external objects and libraries</a>
+<ol>
+<li><a href="externals.html#where-to-include-the-externals">where to include the externals?</a></li>
+<li><a href="externals.html#how-to-download-externals-from-pd-vanilla">how to download externals from Pd vanilla?</a></li>
+</ol>
+</li>
+<li><a href="externals.html#loading-externals">loading externals</a>
+<ol>
+<li><a href="externals.html#using-the-declare-object">using the [declare] object</a>
+<ol>
+<li><a href="externals.html#declare--path">[declare -path]</a></li>
+<li><a href="externals.html#declare--lib">[declare -lib]</a></li>
+</ol>
+</li>
+<li><a href="externals.html#load-via-path-and-startup">load via path and startup</a>
+<ol>
+<li><a href="externals.html#user-added-path">user added path</a></li>
+<li><a href="externals.html#startup">startup</a></li>
+</ol>
+</li>
+<li><a href="externals.html#slash-declarations">load using slash declarations</a></li>
+</ol>
+</li>
+<li><a href="externals.html#how-external-binaries-are-loaded">how external binaries are loaded</a>
+<ol>
+<li><a href="externals.html#overriding-objects-externals-and-native">overriding objects (externals and native):</a></li>
+<li><a href="externals.html#search-order-for-loading-objects">search order for loading objects</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="installing-from-source.html#">installing from source</a>
+<ol>
+<li><a href="installing-from-source.html#requirements">requirements</a></li>
+<li><a href="installing-from-source.html#autotools-build-recommended">autotools build (recommended)</a></li>
+<li><a href="installing-from-source.html#linux--bsd">Linux &amp; BSD</a>
+<ol>
+<li><a href="more-bsd.html#">BSD</a></li>
+</ol>
+</li>
+<li><a href="installing-from-source.html#macos">macOS</a>
+<ol>
+<li><a href="more-macos.html#">macOS resources</a></li>
+</ol>
+</li>
+<li><a href="installing-from-source.html#windows">Windows</a>
+<ol>
+<li><a href="more-windows.html#windows-resources">Windows resources</a></li>
+<li><a href="more-windows.html#windows-asio-support">Windows ASIO support</a></li>
+</ol>
+</li>
+<li><a href="installing-from-source.html#double-precision">double precision</a></li>
+<li><a href="installing-from-source.html#other-flags">other flags</a></li>
+<li><a href="installing-from-source.html#cross-compilation-for-windows-on-linux">cross-compilation for Windows on Linux</a></li>
+<li><a href="installing-from-source.html#makefile-build">makefile build</a></li>
+<li><a href="installing-from-source.html#reporting-bugs">reporting bugs</a></li>
+</ol>
+</li>
+<li><a href="current-status.html#">current status</a>
+<ol>
+<li><a href="current-status.html#release-notes">release notes</a></li>
+<li><a href="current-status.html#known-bugs">known bugs</a></li>
+<li><a href="current-status.html#differences-from-maxmsp">differences from Max/MSP</a></li>
+</ol>
+</li>
+</ol>
+</main>
+    </div>
+  </body>
+</html>
