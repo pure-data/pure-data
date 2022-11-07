@@ -524,7 +524,7 @@ msgid "Start angle: "
 msgstr "Angle début : "
 
 msgid "End angle: "
-msgstr "Angle fin : \" "
+msgstr "Angle fin : "
 
 msgid "Arc"
 msgstr ""
