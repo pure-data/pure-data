@@ -8,4 +8,4 @@ relativeURLs = 'true'
 
 uglyurls = 'true'
 
-contentDir="../doc/1.manual/markdown"
+contentDir="markdown"
