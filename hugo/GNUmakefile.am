@@ -1,9 +1,21 @@
 #########################################
-##### Files, Binaries, & Libs #####
+##### hugo #####
 
-# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+AUTOMAKE_OPTIONS = foreign
+OUTDIR = "../doc/1.manual/html"
+hugodir = $(pkglibdir)/hugo
 
-# files that are included but not built
+
+all:
+	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;\
+	hugo; \
+	mv public $(OUTDIR);
+
+clean:
+	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
+
+# find . -type f -not -path "./GNUmakefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+
 EXTRA_DIST = \
      ./.gitignore \
      ./.hugo_build.lock \
@@ -18,6 +30,7 @@ EXTRA_DIST = \
      ./layouts/shortcodes/has-math.html \
      ./layouts/shortcodes/md_include.html \
      ./layouts/shortcodes/mdlink.html \
+     ./makefile.hugo \
      ./markdown/_index.md \
      ./markdown/current-status.md \
      ./markdown/expr.md \
@@ -84,4 +97,3 @@ EXTRA_DIST = \
      ./static/x/x-index \
      ./static/x/z-index \
      $(empty)
-

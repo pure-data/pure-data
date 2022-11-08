@@ -579,6 +579,7 @@ AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
                 font/Makefile
+                hugo/GNUmakefile
                 linux/Makefile
                 mac/Makefile
                 man/Makefile
