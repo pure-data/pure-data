@@ -11,4 +11,7 @@ install: all
 clean:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
 
-distdir: all
+#find . -type f -not -path "./n" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+
+distdir: 
+	cp -R ../hugo $(distdir)/../

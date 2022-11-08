@@ -1,7 +1,7 @@
 #########################################
 ##### Files, Binaries, & Libs #####
 
-find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 
 # files that are included but not built
 EXTRA_DIST = \
