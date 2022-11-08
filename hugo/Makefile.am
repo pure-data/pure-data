@@ -22,7 +22,7 @@ clean-local:
 	rm -rf $(OUTDIR)
 
 live:
-	hugo server -D
+	hugo server -D --source $(srcdir)
 
 # find . -type f -not -path "./GNUmakefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 
