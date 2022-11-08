@@ -195,10 +195,6 @@ AC_PROG_GREP
 AC_PROG_SED
 AC_CHECK_TOOL([WINDRES], [windres], [:])
 
-# chek for hugo
-AC_CHECK_PROG(HUGO_CHECK,hugo,yes,no)
-AM_CONDITIONAL(HAVEHUGO, test x$HUGO_CHECK = xyes)
-
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h \
@@ -615,7 +611,6 @@ AC_MSG_NOTICE([
     Debug build:          $debug
     Universal build:      $universal
     Localizations:        $locales
-    HTML docs:            $HUGO_CHECK
     Source directory:     $srcdir
     Installation prefix:  $prefix
 
@@ -651,8 +646,6 @@ AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
  AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
 AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
  AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
-AS_IF([test x"$HUGO_CHECK" != x"yes"],
- AC_MSG_WARN([Hugo not installed. HTML docs will not be generated.]))
 
 # TODO portaudio
 
