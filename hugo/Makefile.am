@@ -10,7 +10,7 @@ automakehugo.yaml: Makefile
 
 hugo.stamp: automakehugo.yaml $(EXTRA_DIST)
 if HUGO
-	hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml --noBuildLock
+	hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
 endif
 	touch $@
 
