@@ -31,6 +31,9 @@
 #define MIN_SIZE 12
 
 #define POS_MARGIN 0.01
+
+typedef long unsigned int lui;
+
 /* ------------ knb  ----------------------- */
 typedef struct _knb
 {
@@ -66,12 +69,12 @@ static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
     char tag_object[128], tag[128], tag_select[128], tag_label[128];
     char *tags[] = {tag_object, tag, tag_select};
 
-    sprintf(tag_object, "%lxOBJ", x);
-    sprintf(tag_select, "%lxSELECT", x);
-    sprintf(tag_label, "%lxLABEL", x);
+    sprintf(tag_object, "%lxOBJ", (lui)x);
+    sprintf(tag_select, "%lxSELECT", (lui)x);
+    sprintf(tag_label, "%lxLABEL", (lui)x);
 
 
-    sprintf(tag, "%lxOUTLINE", x);
+    sprintf(tag, "%lxOUTLINE", (lui)x);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if ((!x->x_gui.x_fsf.x_snd_able) || (!x->x_gui.x_fsf.x_rcv_able))
     {
@@ -82,7 +85,7 @@ static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
             "-tags", 3, tags);
     }
 
-    sprintf(tag, "%lxOUT%d", x, 0);
+    sprintf(tag, "%lxOUT%d", (lui)x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if (!x->x_gui.x_fsf.x_snd_able)
     {
@@ -96,7 +99,7 @@ static void knb_draw_io(t_knb *x,t_glist *glist, int old_snd_rcv_flags)
         pdgui_vmess(0, "crss", canvas, "raise", tag_label, tag);
     }
 
-    sprintf(tag, "%lxIN%d", x, 0);
+    sprintf(tag, "%lxIN%d", (lui)x, 0);
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if (!x->x_gui.x_fsf.x_rcv_able)
     {
@@ -155,7 +158,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
         if (arcwidth > 0) aD = IEMGUI_ZOOM(x);
         else aD = (((realw + 1)/ 2) + arcwidth) * IEMGUI_ZOOM(x) ;
 
-        sprintf(tag, "%lxARC", x);
+        sprintf(tag, "%lxARC", (lui)x);
         pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
             x0 + aD, y0 + aD, x1 - aD, y1 - aD);
         pdgui_vmess(0, "crs sf sf", canvas, "itemconfigure", tag,
@@ -164,7 +167,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
 
         if (x->x_center_visible)
         {
-            sprintf(tag, "%lxCENTER", x);
+            sprintf(tag, "%lxCENTER", (lui)x);
             cD = (arcwidth + 1) * IEMGUI_ZOOM(x);
             pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
                 x0 + cD, y0 + cD, x1 - cD, y1 - cD);
@@ -176,7 +179,7 @@ static void knb_update_knob(t_knb *x, t_glist *glist)
     {
         float radius = x->x_gui.x_w / 2.0;
         float xc, yc, xp, yp;
-        sprintf(tag, "%lxWIPER", x);
+        sprintf(tag, "%lxWIPER", (lui)x);
         xc = (x0 + x1) / 2.0;
         yc = (y0 + y1) / 2.0;
         xp = xc + radius * cos(angle);
@@ -197,8 +200,8 @@ static void knb_update_ticks(t_knb *x, t_glist *glist)
     char *tags[] = {tag_object, tag};
     int divs = x->x_ticks;
 
-    sprintf(tag_object, "%lxOBJ", x);
-    sprintf(tag, "%lxTICKS", x);
+    sprintf(tag_object, "%lxOBJ", (lui)x);
+    sprintf(tag, "%lxTICKS", (lui)x);
 
     pdgui_vmess(0, "crs", canvas, "delete", tag);
     if (!x->x_ticks) return;
@@ -251,7 +254,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
     SETFLOAT (fontatoms+1, -iemgui->x_fontsize*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%lxLABEL", (lui)x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos+x->x_gui.x_ldx * zoom,
         ypos+x->x_gui.x_ldy * zoom);
@@ -261,7 +264,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         "-fill", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol));
 
     x->x_arc_visible = (x->x_arc_width != 0);
-    sprintf(tag, "%lxARC", x);
+    sprintf(tag, "%lxARC", (lui)x);
     pdgui_vmess(0, "crs rk rk rs ri", canvas, "itemconfigure", tag,
         "-outline", x->x_acol,
         "-fill", x->x_acol,
@@ -270,7 +273,7 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
 
     x->x_center_visible = (x->x_arc_width > 0) &&
         (x->x_arc_width  + 1 < x->x_gui.x_w / (2 * zoom));
-    sprintf(tag, "%lxCENTER", x);
+    sprintf(tag, "%lxCENTER", (lui)x);
     pdgui_vmess(0, "crs rk rk rs ri", canvas, "itemconfigure", tag,
         "-outline", x->x_gui.x_bcol,
         "-fill", x->x_gui.x_bcol,
@@ -278,13 +281,13 @@ static void knb_draw_config(t_knb *x,t_glist *glist)
         "-width", zoom);
 
     x->x_wiper_visible = (x->x_gui.x_fcol != x->x_gui.x_bcol);
-    sprintf(tag, "%lxWIPER", x);
+    sprintf(tag, "%lxWIPER", (lui)x);
     pdgui_vmess(0, "crs rk rs ri", canvas, "itemconfigure", tag,
         "-fill", x->x_gui.x_fcol,
         "-state", x->x_wiper_visible ? "normal" : "hidden",
         "-width", 3 * zoom);
 
-    sprintf(tag, "%lxBASE", x);
+    sprintf(tag, "%lxBASE", (lui)x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
         "-fill", x->x_gui.x_bcol);
 
@@ -304,28 +307,28 @@ static void knb_draw_new(t_knb *x, t_glist *glist)
     char tag[128], tag_object[128], tag_select[128];
     char *tags[] = {tag_object, tag, "label", "text"};
     char *seltags[] = {tag_object, tag, tag_select};
-    sprintf(tag_object, "%lxOBJ", x);
-    sprintf(tag_select, "%lxSELECT", x);
+    sprintf(tag_object, "%lxOBJ", (lui)x);
+    sprintf(tag_select, "%lxSELECT", (lui)x);
 
-    sprintf(tag, "%lxBASE", x);
+    sprintf(tag, "%lxBASE", (lui)x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
          0, 0, 0, 0, "-tags", 3, seltags);
 
     knb_draw_io(x, glist, 0);
 
-    sprintf(tag, "%lxARC", x);
+    sprintf(tag, "%lxARC", (lui)x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "arc",
          0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxCENTER", x);
+    sprintf(tag, "%lxCENTER", (lui)x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "oval",
          0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxWIPER", x);
+    sprintf(tag, "%lxWIPER", (lui)x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "line",
          0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%lxLABEL", (lui)x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
          0, 0,
          "-anchor", "w",
@@ -344,9 +347,9 @@ static void knb_draw_select(t_knb *x,t_glist *glist)
     if(x->x_gui.x_fsf.x_selected)
         lcol = col = IEM_GUI_COLOR_SELECTED;
 
-    sprintf(tag, "%lxSELECT", x);
+    sprintf(tag, "%lxSELECT", (lui)x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-outline", col);
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%lxLABEL", (lui)x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag, "-fill", lcol);
 }
 
@@ -521,7 +524,6 @@ static void knb_dialog(t_knb *x, t_symbol *s, int argc, t_atom *argv)
     int arcwidth = (int)atom_getintarg(20, argc, argv);
     int startangle = (int)atom_getintarg(21, argc, argv);
     int endangle = (int)atom_getintarg(22, argc, argv);
-
     int sr_flags;
 
     if (lilo != 0) lilo = 1;
