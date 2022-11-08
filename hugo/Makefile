@@ -1,5 +1,4 @@
 OUTDIR = "../doc/1.manual/html"
-INDEXFILE = "../doc/1.manual/index.htm"
 
 all:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;\
@@ -10,8 +9,3 @@ install: all
 
 clean:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
-
-#find . -type f -not -path "./n" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
-
-distdir: 
-	cp -R ../hugo $(distdir)/../

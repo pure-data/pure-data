@@ -149,7 +149,7 @@ endif
 .PHONY: pd externs all depend
 
 all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive externs \
-    makefile.dependencies hugo
+    makefile.dependencies
 
 bin: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive
 
@@ -187,11 +187,6 @@ externs:
 	make -C ../extra/pd~       MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/stdout    MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/bob~      MORECFLAGS="$(MORECFLAGS)" 
-
-hugo:
-	@if [ -x "$$(command -v hugo)" ]; then \
-	make -C ../hugo ; \
-	fi
 
 BINARYMODE=-m755
 
@@ -246,13 +241,7 @@ local-clean:
 extra-clean:
 	-rm -f `find ../extra/ -name "*.pd_*"`
 	-rm -f tags
-
-hugo-clean:
-	@if [ -x "$$(command -v hugo)" ]; then \
-	make -C ../hugo clean ; \
-	fi
-
-clean: extra-clean local-clean hugo-clean
+clean: extra-clean local-clean
 
 distclean: clean
 	-rm -f config.cache config.log config.status makefile tags \
