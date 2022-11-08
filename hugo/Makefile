@@ -5,7 +5,8 @@ all:
 	hugo; \
 	mv public $(OUTDIR); \
 
-install: all
+live:
+	hugo server
 
 clean:
 	if [ -d $(OUTDIR) ]; then rm -d -r $(OUTDIR); fi ;
