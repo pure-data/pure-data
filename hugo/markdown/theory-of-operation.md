@@ -9,9 +9,9 @@ title: theory of operation
 
 The purpose of this chapter is to describe Pd's design and how it is
 supposed to work. Practical details about how to obtain, install, and
-run Pd are described in the [next chapter]({{< mdlink "getting Pd to run" "">}}). 
-Links to more extensive guides (and to more theoretical information 
-about computer music) can be found in the 
+run Pd are described in the [next chapter]({{< mdlink "getting Pd to run" "">}}).
+Links to more extensive guides (and to more theoretical information
+about computer music) can be found in the
 [previous chapter]({{< mdlink "introduction" >}}).
 
 ### overview

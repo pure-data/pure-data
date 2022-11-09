@@ -20,13 +20,13 @@ consists of:
 
         Pd/
         ├── doc/
-            ├── 1.manual/ 
+            ├── 1.manual/
 
 -   "reference" (or 'help') patches, for all objects in Pd
 
         Pd/
         ├── doc/
-            ├── 5.reference/ 
+            ├── 5.reference/
 
 -   "example" patches showing how to do things
 
@@ -34,7 +34,7 @@ consists of:
         ├── doc/
             ├── 2.control.examples/
             ├── 3.audio.examples/
-            ├── 4.data.structures/ 
+            ├── 4.data.structures/
 
 -   sample C code on how to write externals
 
@@ -62,7 +62,7 @@ appear in subdirectories named "2.control.examples",
 in "7.stuff" might also be helpful.
 
 To get started writing your own C extensions, refer to "6.externs".
-For more about externals, please refer to the [externals]({{< mdlink "externals" "">}}) 
+For more about externals, please refer to the [externals]({{< mdlink "externals" "">}})
 section of this manual.
 
 ### other resources

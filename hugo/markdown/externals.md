@@ -205,7 +205,7 @@ A) macOS:
 
 B) Windows:
 
--   **Application-specific**: 
+-   **Application-specific**:
     `%ProgramFiles(x86)%\Pd\extra` (for 64-bit OS and 32-bit
     Pd) or `%ProgramFiles%\Pd\extra`; this is inside the Pd Application
     (usually in `C:\Program Files`). This folder needs to be set to
@@ -230,10 +230,10 @@ C) GNU/Linux:
 Since version 0.47-0, Pd Vanilla has its own external manager! This is a
 built in .tcl plug-in named "deken" (check
 <https://github.com/pure-data/deken> for reference). Open it by
-selecting the **Help => Find externals** tab. Then you can type 
+selecting the **Help => Find externals** tab. Then you can type
 and search for object name, library name or both. The wildcard '*' can be used
 to broaden the search, or an exact name can be used instead. All available versions of
-the library/external specific for your operating system will be shown to you. 
+the library/external specific for your operating system will be shown to you.
 See figure below.
 
 ![](x/img/deken.gif)

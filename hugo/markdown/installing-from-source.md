@@ -14,7 +14,7 @@ source distribution comes with two build systems:
     most users
 -   makefile: smaller & simpler, used for Pd binary downloads
 
-### Requirements 
+### Requirements
 
 Core build requirements:
 
@@ -33,7 +33,7 @@ Optional features:
 -   JACK: audio server support
 -   FFTW: use the optimized FFTW Fast Fourier Transform library
 
-### Autotools Build (recommended) 
+### Autotools Build (recommended)
 
 Building Pd using the GNU autotools involves the following steps for all
 platforms:
@@ -94,7 +94,7 @@ configure script settings on the commandline:
 
     # build Pd using a system installed PortAudio
     ./configure --without-local-portaudio
-	
+
 The default build will do some moderate optimization.
 This can be tuned with the "--enable-optimizations" flag, which will tell the
 compiler to optimize for speed more aggressively (even at the cost of incorrect
@@ -173,7 +173,7 @@ want to double check which architectures Pd was built with, use the
     ...
     Pd-0.47.1.app/Contents/Resources/bin/pd: Mach-O 64-bit executable x86_64
 
-### Linux & BSD 
+### Linux & BSD
 
 Platform requirements:
 
@@ -212,7 +212,7 @@ For more information and how to build on BSD see:
 
 {{< green-button "Show more on BSD" "more-bsd" "">}}
 
-### macOS 
+### macOS
 
 macOS is built on top of a BSD system and the bash commandline can be
 accessed with the Terminal application in the /Applications/Utility
@@ -343,7 +343,7 @@ and use the aforementioned aliases to provide the pd command.
 
 {{< green-button "Show more on macOS" "more-macos" "">}}
 
-### Windows 
+### Windows
 
 Pd on Windows can be built with either MinGW or Cygwin which provide the
 core build requirements: a compiler chain & shell environment.
@@ -372,13 +372,13 @@ Open an Msys2 shell and install the compiler chain, autotools, & gettext
 via:
 
     # 64 bit
-    pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang 
-              make autoconf automake libtool 
+    pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang
+              make autoconf automake libtool
               mingw-w64-x86_64-gettext
 
     # 32 bit
-    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang 
-              make autoconf automake libtool 
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang
+              make autoconf automake libtool
               mingw-w64-i686-gettext
 
 Install git if you want to clone the Pd sources from Github, etc:
@@ -413,8 +413,8 @@ For example, to build Pd without MMIO support:
     ./configure --disable-mmio
 
 Note: Because of license restrictions, Pd cannot distribute the ASIO SDK
-source files. If you want to build Pd with ASIO support, see 
-[Windows ASIO support]({{< mdlink "more-windows" "Windows ASIO Support">}}) 
+source files. If you want to build Pd with ASIO support, see
+[Windows ASIO support]({{< mdlink "more-windows" "Windows ASIO Support">}})
 for further instructions.
 
 Once built Pd is built, you can either:
@@ -439,18 +439,18 @@ outside your Cygwin/Msys2 environment (if at all).
 
 {{< green-button "Show more on Windows" "more-windows" "">}}
 
-### Double precision 
+### Double precision
 
 As of Pd 0.51-0 you can compile a "Double precision" Pd. On the
 autotools do:
 
     ./configure CPPFLAGS="-DPD_FLOATSIZE=64"
 
-### Other flags 
+### Other flags
 
 More flags to be documented here.
 
-### Cross-compilation for Windows on Linux 
+### Cross-compilation for Windows on Linux
 
 You can also build a Windows binary of Pd on a Linux system, using a
 cross-compilation toolchain.
@@ -532,7 +532,7 @@ If want to uninstall, simply run the "uninstall" makefile target:
     make -f makefile.gnu uninstall
 
 On macOS, you can build a clickable Pd .app bundle using the
-supplemental build scripts in the mac directory. See 
+supplemental build scripts in the mac directory. See
 [macOS resources]({{< mdlink "more-macos" "">}}) for more info.
 
 ### Reporting Bugs

@@ -13,15 +13,15 @@ This section tracks changes in Pd's current implementation.
 
 ------------------ 0.53-0 ------------------------------
 
-This is being released quickly to fix a bug in version 0.52, in which soundfile reading 
-was disrupted. There are some internal updates serious enough to warrant a version 
-number change, such as the unification of horizontal and vertical sliders/radio 
-buttons and the fact you can now change their orientation via a new 'orientation' 
+This is being released quickly to fix a bug in version 0.52, in which soundfile reading
+was disrupted. There are some internal updates serious enough to warrant a version
+number change, such as the unification of horizontal and vertical sliders/radio
+buttons and the fact you can now change their orientation via a new 'orientation'
 message, but no new features other than that.
 
 The IEMGUI default sizes increased, as part of an ongoing cleanup/rewrite.
 
-AS usual, there are many minor bug fixes (thanks to several developers) and updates 
+AS usual, there are many minor bug fixes (thanks to several developers) and updates
 to documentation by Alexandre Porres.
 
 The 'deken' plugin (external extension search tool) has been updated to a new version.
@@ -983,7 +983,7 @@ internal sample rate to reflect the overlap.
 
 Fixed a thread-safety problem in sys_microsleep().
 
------------------- 0.38.1 -------------------------- 
+------------------ 0.38.1 --------------------------
 
 Fixed two bugs that
 crashed Pd when deleting number boxes in certain situations.

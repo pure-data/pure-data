@@ -452,7 +452,7 @@ Pd. Possible options include:
     audio configuration flags:
     -r <n>           -- specify sample rate
     -audioindev ...  -- sound in device list; e.g., "2,1" for second and first
-    -audiooutdev ... -- sound out device list, same as above 
+    -audiooutdev ... -- sound out device list, same as above
     -audiodev ...    -- specify both -audioindev and -audiooutdev together
     -audioaddindev   -- add an audio input device by name
     -audioaddoutdev  -- add an audio output device by name
@@ -465,7 +465,7 @@ Pd. Possible options include:
     -sleepgrain <n>  -- specify number of milliseconds to sleep when idle
     -nodac           -- suppress audio output
     -noadc           -- suppress audio input
-    -noaudio         -- suppress audio input and output (-nosound is synonym) 
+    -noaudio         -- suppress audio input and output (-nosound is synonym)
     -callback        -- use callbacks if possible
     -nocallback      -- use polling-mode (true by default)
     -listdev         -- list audio and MIDI devices
@@ -515,7 +515,7 @@ Pd. Possible options include:
     -font-weight <name> -- specify default font weight (normal or bold)
     -verbose         -- extra printout on startup and when searching for files
     -noverbose       -- no extra printout
-    -version         -- don't run Pd; just print out which version it is 
+    -version         -- don't run Pd; just print out which version it is
     -d <n>           -- specify debug level
     -loadbang        -- do not suppress all loadbangs (true by default)
     -noloadbang      -- suppress all loadbangs
