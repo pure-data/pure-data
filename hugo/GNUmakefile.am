@@ -21,6 +21,9 @@ clean-local:
 	rm -rf _res
 	rm -rf $(OUTDIR)
 
+clean:
+	echo "leave html folder in place"
+
 live:
 	hugo server -D --source $(srcdir)
 
