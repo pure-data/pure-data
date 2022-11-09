@@ -33,6 +33,4 @@ Total in 111 ms
 ```
 now a `public` folder has been created. You can browse `index.html`
 
-You can also run command `hugo server` and browse files via `http://localhost:1313/` in your web-browser. If you edit the `.md` files on the `doc/1.manual/markdown` folder changes show-up live.
-
-this docs are also built (if  `hugo` is installed) when Pd is built via `makefile.gnu` or `autotools`
+You can also run command `hugo server` and browse files via `http://localhost:1313/` in your web-browser. If you edit the `.md` files on the `hugo/markdown` folder changes show-up live.
