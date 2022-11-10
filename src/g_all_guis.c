@@ -431,7 +431,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     }
     if(s)
     {
-        if(strcmp(s->s_name, iemgui->x_rcv->s_name))
+        if(!iemgui->x_rcv || strcmp(s->s_name, iemgui->x_rcv->s_name))
         {
             if(iemgui->x_fsf.x_rcv_able)
                 pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);
