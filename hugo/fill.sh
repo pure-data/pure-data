@@ -2,7 +2,9 @@
 
 rm ./GNUmakefile.am
 
-while read line; do echo $line >> GNUmakefile.am ; done < fill.pre
+#while read line; do echo $line >> GNUmakefile.am ; done < fill.pre
+
+cat fill.pre | while read; do echo "$REPLY" >> GNUmakefile.am; done
 
 find . -type f -not -path "./GNUmakefile*" | sort | awk '{print "    ", $1, "\\"}' >> GNUmakefile.am; echo '     $(empty)' >> GNUmakefile.am
 

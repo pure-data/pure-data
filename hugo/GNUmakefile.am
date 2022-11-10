@@ -6,35 +6,35 @@ OUTDIR = "$(abs_top_builddir)/doc/1.manual/html"
 hugodir = $(pkglibdir)/hugo
 
 automakehugo.yaml: GNUmakefile
-echo "resourceDir: '$(abs_builddir)/_res'" >$@
+	echo "resourceDir: '$(abs_builddir)/_res'" >$@
 
 hugo.stamp: automakehugo.yaml $(EXTRA_DIST)
 if HUGO
-hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
+	hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
 endif
-touch $@
+	touch $@
 
 all-local: hugo.stamp
 
 clean-local:
-rm -f automakehugo.yaml hugo.stamp
-rm -rf _res
-rm -rf $(OUTDIR)
+	rm -f automakehugo.yaml hugo.stamp
+	rm -rf _res
+	rm -rf $(OUTDIR)
 
 clean:
-echo "leave html folder in place"
+	echo "leave html folder in place"
 
 live:
-hugo server -D --source $(srcdir)
+	hugo server -D --source $(srcdir)
 
 EXTRA_DIST = \
-     ./.gitignore \
-     ./.hugo_build.lock \
-     ./Makefile \
-     ./README.md \
+     ./automakehugo.yaml \
      ./config.toml \
      ./fill.pre \
      ./fill.sh \
+     ./.gitignore \
+     ./.hugo_build.lock \
+     ./hugo.stamp \
      ./layouts/_default/baseof.html \
      ./layouts/_default/section.html \
      ./layouts/_default/single.html \
@@ -44,12 +44,14 @@ EXTRA_DIST = \
      ./layouts/shortcodes/has-math.html \
      ./layouts/shortcodes/md_include.html \
      ./layouts/shortcodes/mdlink.html \
-     ./markdown/_index.md \
+     ./Makefile \
+     ./Makefile.in \
      ./markdown/current-status.md \
      ./markdown/expr.md \
      ./markdown/externals.md \
      ./markdown/fudi.md \
      ./markdown/getting-pd-to-run.md \
+     ./markdown/_index.md \
      ./markdown/installing-from-source.md \
      ./markdown/introduction.md \
      ./markdown/more-bsd.md \
@@ -57,20 +59,21 @@ EXTRA_DIST = \
      ./markdown/more-windows.md \
      ./markdown/slop-tilde.md \
      ./markdown/theory-of-operation.md \
+     ./README.md \
      ./static/x/css/pdmanual.css \
      ./static/x/favicon.ico \
      ./static/x/img/deken.gif \
+     ./static/x/img/fig11.1.png \
+     ./static/x/img/fig11.2.png \
+     ./static/x/img/fig11.3.png \
+     ./static/x/img/fig11.4.png \
      ./static/x/img/fig1.1.png \
      ./static/x/img/fig1.2.jpg \
      ./static/x/img/fig1.3.jpg \
      ./static/x/img/fig1.4.png \
      ./static/x/img/fig1.5.jpg \
-     ./static/x/img/fig11.1.png \
-     ./static/x/img/fig11.2.png \
-     ./static/x/img/fig11.3.png \
-     ./static/x/img/fig11.4.png \
-     ./static/x/img/fig3.1.jpg \
      ./static/x/img/fig3.10.jpg \
+     ./static/x/img/fig3.1.jpg \
      ./static/x/img/fig3.2.jpg \
      ./static/x/img/fig3.3.jpg \
      ./static/x/img/fig3.4.jpg \
@@ -104,8 +107,8 @@ EXTRA_DIST = \
      ./static/x/slop-tilde/slop-compander-patch.png \
      ./static/x/slop-tilde/slop-peak-meter-graph.png \
      ./static/x/slop-tilde/slop-peak-meter-patch.png \
-     ./static/x/slop-tilde/slop-slew-limit.png \
      ./static/x/slop-tilde/slop-slew-limiting-patch.png \
+     ./static/x/slop-tilde/slop-slew-limit.png \
      ./static/x/slop-tilde/slop-tilde-1-curves.png \
      ./static/x/x-index \
      ./static/x/z-index \
