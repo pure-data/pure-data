@@ -2,7 +2,7 @@
 
 rm ./GNUmakefile.am
 
-cat fill.pre | while read; do echo "$REPLY" >> GNUmakefile.am; done
+cp ./fill.pre  ./GNUmakefile.am
 
 find . \
  -type f -not -path "./GNUmakefile*" \
@@ -11,6 +11,6 @@ find . \
  -type f -not -path "./hugo.stamp" \
  -type f -not -path "./.hugo_build.lock" \
  -type f -not -path "./.gitignore" \
- | sort | awk '{print "    ", $1, "\\"}' >> GNUmakefile.am; echo '     $(empty)' >> GNUmakefile.am
+ | sort | awk '{print "    ", $1, "\\"}' >> ./GNUmakefile.am; echo '     $(empty)' >> ./GNUmakefile.am
 
-truncate -s-1 GNUmakefile.am
+truncate -s-1 ./GNUmakefile.am
