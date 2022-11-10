@@ -27,7 +27,7 @@ echo "leave html folder in place"
 live:
 hugo server -D --source $(srcdir)
 
-EXTRA_DIST = 
+EXTRA_DIST = \
      ./.gitignore \
      ./.hugo_build.lock \
      ./Makefile \
