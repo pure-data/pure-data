@@ -400,6 +400,9 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
+    if(s && gensym("empty") == s)
+        s = 0;
+
     if(s) {
         iemgui->x_snd_unexpanded = s;
         iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
@@ -422,6 +425,9 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
         oldsndrcvable |= IEM_GUI_OLD_RCV_FLAG;
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
+
+    if(s && gensym("empty") == s)
+        s = 0;
 
     if(s) {
         iemgui->x_rcv_unexpanded = s;
