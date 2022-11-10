@@ -2,10 +2,13 @@
 
 rm ./GNUmakefile.am
 
-#while read line; do echo $line >> GNUmakefile.am ; done < fill.pre
-
 cat fill.pre | while read; do echo "$REPLY" >> GNUmakefile.am; done
 
-find . -type f -not -path "./GNUmakefile*" | sort | awk '{print "    ", $1, "\\"}' >> GNUmakefile.am; echo '     $(empty)' >> GNUmakefile.am
+find . \
+ -type f -not -path "./GNUmakefile*" \
+ -type f -not -path "./.hugo_build.lock" \
+ -type f -not -path "./hugo.stamp" \
+ -type f -not -path "./automakehugo.yaml" \
+ | sort | awk '{print "    ", $1, "\\"}' >> GNUmakefile.am; echo '     $(empty)' >> GNUmakefile.am
 
 truncate -s-1 GNUmakefile.am
