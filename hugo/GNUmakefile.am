@@ -33,6 +33,8 @@ EXTRA_DIST = \
      ./fill.pre \
      ./fill.sh \
      ./.gitignore \
+     ./.hugo_build.lock \
+     ./hugo.stamp \
      ./layouts/_default/baseof.html \
      ./layouts/_default/section.html \
      ./layouts/_default/single.html \
@@ -42,7 +44,6 @@ EXTRA_DIST = \
      ./layouts/shortcodes/has-math.html \
      ./layouts/shortcodes/md_include.html \
      ./layouts/shortcodes/mdlink.html \
-     ./Makefile \
      ./Makefile.in \
      ./markdown/current-status.md \
      ./markdown/expr.md \
