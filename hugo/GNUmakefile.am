@@ -6,32 +6,35 @@ OUTDIR = "$(abs_top_builddir)/doc/1.manual/html"
 hugodir = $(pkglibdir)/hugo
 
 automakehugo.yaml: GNUmakefile
-	echo "resourceDir: '$(abs_builddir)/_res'" >$@
+echo "resourceDir: '$(abs_builddir)/_res'" >$@
 
 hugo.stamp: automakehugo.yaml $(EXTRA_DIST)
 if HUGO
-	hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
+hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
 endif
-	touch $@
+touch $@
 
 all-local: hugo.stamp
 
 clean-local:
-	rm -f automakehugo.yaml hugo.stamp
-	rm -rf _res
-	rm -rf $(OUTDIR)
+rm -f automakehugo.yaml hugo.stamp
+rm -rf _res
+rm -rf $(OUTDIR)
 
 clean:
-	echo "leave html folder in place"
+echo "leave html folder in place"
 
 live:
-	hugo server -D --source $(srcdir)
+hugo server -D --source $(srcdir)
 
-# find . -type f -not -path "./GNUmakefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
-
-EXTRA_DIST = \
+EXTRA_DIST = 
+     ./.gitignore \
+     ./.hugo_build.lock \
+     ./Makefile \
      ./README.md \
      ./config.toml \
+     ./fill.pre \
+     ./fill.sh \
      ./layouts/_default/baseof.html \
      ./layouts/_default/section.html \
      ./layouts/_default/single.html \

@@ -1,0 +1,30 @@
+#########################################
+##### hugo #####
+
+AUTOMAKE_OPTIONS = foreign
+OUTDIR = "$(abs_top_builddir)/doc/1.manual/html"
+hugodir = $(pkglibdir)/hugo
+
+automakehugo.yaml: GNUmakefile
+	echo "resourceDir: '$(abs_builddir)/_res'" >$@
+
+hugo.stamp: automakehugo.yaml $(EXTRA_DIST)
+if HUGO
+	hugo --source $(srcdir) --destination $(OUTDIR) --config $(abs_builddir)/automakehugo.yaml,$(abs_srcdir)/config.toml $(HUGO_ROFLAGS)
+endif
+	touch $@
+
+all-local: hugo.stamp
+
+clean-local:
+	rm -f automakehugo.yaml hugo.stamp
+	rm -rf _res
+	rm -rf $(OUTDIR)
+
+clean:
+	echo "leave html folder in place"
+
+live:
+	hugo server -D --source $(srcdir)
+
+EXTRA_DIST = \
