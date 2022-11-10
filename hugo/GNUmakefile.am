@@ -28,6 +28,7 @@ live:
 	hugo server -D --source $(srcdir)
 
 EXTRA_DIST = \
+     ./automakehugo.yaml \
      ./config.toml \
      ./fill.pre \
      ./fill.sh \
