@@ -13,6 +13,7 @@ find . \
  -type f -not -path "./.gitignore" \
  -type f -not -path "./fill.pre" \
  -type f -not -path "./fill.sh" \
+ -type f -not -path "./public/*" \
  | sort | awk '{print "    ", $1, "\\"}' >> ./GNUmakefile.am; echo '     $(empty)' >> ./GNUmakefile.am
 
 truncate -s-1 ./GNUmakefile.am
