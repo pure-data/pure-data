@@ -29,8 +29,6 @@ live:
 
 EXTRA_DIST = \
      ./config.toml \
-     ./fill.pre \
-     ./fill.sh \
      ./layouts/_default/baseof.html \
      ./layouts/_default/section.html \
      ./layouts/_default/single.html \

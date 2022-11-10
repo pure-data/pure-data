@@ -51,7 +51,7 @@ empty=
 # these files go into libpddir defined above
 # to regenerate:
 # cd doc
-# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+# ./fill.sh
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
      ./1.manual/html/current-status.html \
@@ -70,17 +70,17 @@ nobase_dist_libpd_DATA = \
      ./1.manual/html/x/css/pdmanual.css \
      ./1.manual/html/x/favicon.ico \
      ./1.manual/html/x/img/deken.gif \
+     ./1.manual/html/x/img/fig11.1.png \
+     ./1.manual/html/x/img/fig11.2.png \
+     ./1.manual/html/x/img/fig11.3.png \
+     ./1.manual/html/x/img/fig11.4.png \
      ./1.manual/html/x/img/fig1.1.png \
      ./1.manual/html/x/img/fig1.2.jpg \
      ./1.manual/html/x/img/fig1.3.jpg \
      ./1.manual/html/x/img/fig1.4.png \
      ./1.manual/html/x/img/fig1.5.jpg \
-     ./1.manual/html/x/img/fig11.1.png \
-     ./1.manual/html/x/img/fig11.2.png \
-     ./1.manual/html/x/img/fig11.3.png \
-     ./1.manual/html/x/img/fig11.4.png \
-     ./1.manual/html/x/img/fig3.1.jpg \
      ./1.manual/html/x/img/fig3.10.jpg \
+     ./1.manual/html/x/img/fig3.1.jpg \
      ./1.manual/html/x/img/fig3.2.jpg \
      ./1.manual/html/x/img/fig3.3.jpg \
      ./1.manual/html/x/img/fig3.4.jpg \
@@ -114,8 +114,8 @@ nobase_dist_libpd_DATA = \
      ./1.manual/html/x/slop-tilde/slop-compander-patch.png \
      ./1.manual/html/x/slop-tilde/slop-peak-meter-graph.png \
      ./1.manual/html/x/slop-tilde/slop-peak-meter-patch.png \
-     ./1.manual/html/x/slop-tilde/slop-slew-limit.png \
      ./1.manual/html/x/slop-tilde/slop-slew-limiting-patch.png \
+     ./1.manual/html/x/slop-tilde/slop-slew-limit.png \
      ./1.manual/html/x/slop-tilde/slop-tilde-1-curves.png \
      ./1.manual/html/x/x-index \
      ./1.manual/html/x/z-index \
@@ -146,8 +146,8 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/22.random-walk.pd \
      ./2.control.examples/23.sequencing.pd \
      ./2.control.examples/24.loops.pd \
-     ./2.control.examples/dollarsign.pd \
      ./2.control.examples/dollarsign2.pd \
+     ./2.control.examples/dollarsign.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
      ./3.audio.examples/A01.sinewave.pd \
@@ -160,6 +160,7 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/A08.beating.pd \
      ./3.audio.examples/A09.frequency.mod.pd \
      ./3.audio.examples/A10.review.pd \
+     ./3.audio.examples/adsr.pd \
      ./3.audio.examples/B01.wavetables.pd \
      ./3.audio.examples/B02.two-wavetables.pd \
      ./3.audio.examples/B03.tabread4.pd \
@@ -176,6 +177,8 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/B14.sampler.rockafella.pd \
      ./3.audio.examples/B15.tabread4~-onset.pd \
      ./3.audio.examples/B16.long-varispeed.pd \
+     ./3.audio.examples/buttercoef3.pd \
+     ./3.audio.examples/butterworth3~.pd \
      ./3.audio.examples/C01.nyquist.pd \
      ./3.audio.examples/C02.sawtooth-foldover.pd \
      ./3.audio.examples/C03.zipper.noise.pd \
@@ -224,6 +227,8 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/F12.paf.pd \
      ./3.audio.examples/F13.paf.control.pd \
      ./3.audio.examples/F14.wave.packet.pd \
+     ./3.audio.examples/filter-graph1.pd \
+     ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/G01.delay.pd \
      ./3.audio.examples/G02.delay.loop.pd \
      ./3.audio.examples/G03.delay.variable.pd \
@@ -268,19 +273,14 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/J07.oversampling.pd \
      ./3.audio.examples/J08.classicsynth.pd \
      ./3.audio.examples/J09.bandlimited.pd \
-     ./3.audio.examples/adsr.pd \
-     ./3.audio.examples/buttercoef3.pd \
-     ./3.audio.examples/butterworth3~.pd \
-     ./3.audio.examples/filter-graph1.pd \
-     ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/osc-voice.pd \
      ./3.audio.examples/partial.pd \
+     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
-     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/reverb-echo.pd \
-     ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/sampvoice2.pd \
+     ./3.audio.examples/sampvoice.pd \
      ./3.audio.examples/shepvoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
      ./4.data.structures/01.scalars.pd \
@@ -333,8 +333,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
-     ./5.reference/czero_rev~-help.pd \
      ./5.reference/czero~-help.pd \
+     ./5.reference/czero_rev~-help.pd \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
      ./5.reference/delay-tilde-objects-help.pd \
@@ -343,8 +343,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/ds-text.txt \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
-     ./5.reference/expr-help.pd \
      ./5.reference/exp~-help.pd \
+     ./5.reference/expr-help.pd \
      ./5.reference/fft~-help.pd \
      ./5.reference/file-help.pd \
      ./5.reference/float-help.pd \
@@ -381,9 +381,9 @@ nobase_dist_libpd_DATA = \
      ./5.reference/osc-format-parse-help.pd \
      ./5.reference/osc~-help.pd \
      ./5.reference/pack-help.pd \
-     ./5.reference/pd-messages.pd \
      ./5.reference/pdcontrol-abs.pd \
      ./5.reference/pdcontrol-help.pd \
+     ./5.reference/pd-messages.pd \
      ./5.reference/phasor~-help.pd \
      ./5.reference/pipe-help.pd \
      ./5.reference/plot-help.pd \
@@ -401,8 +401,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
-     ./5.reference/rzero_rev~-help.pd \
      ./5.reference/rzero~-help.pd \
+     ./5.reference/rzero_rev~-help.pd \
      ./5.reference/samphold~-help.pd \
      ./5.reference/samplerate~-help.pd \
      ./5.reference/savepanel-help.pd \
@@ -429,18 +429,18 @@ nobase_dist_libpd_DATA = \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
      ./5.reference/tabplay~-help.pd \
-     ./5.reference/tabread-help.pd \
      ./5.reference/tabread4-help.pd \
      ./5.reference/tabread4~-help.pd \
+     ./5.reference/tabread-help.pd \
      ./5.reference/tabread~-help.pd \
      ./5.reference/tabsend-receive~-help.pd \
      ./5.reference/tabwrite-help.pd \
      ./5.reference/tabwrite~-help.pd \
+     ./5.reference/textfile-help.pd \
+     ./5.reference/textfile.txt \
      ./5.reference/text-help.pd \
      ./5.reference/text-object-help.pd \
      ./5.reference/text-object-help.txt \
-     ./5.reference/textfile-help.pd \
-     ./5.reference/textfile.txt \
      ./5.reference/threshold~-help.pd \
      ./5.reference/throw~-catch~-help.pd \
      ./5.reference/timer-help.pd \
@@ -479,32 +479,32 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/soundfile-tools/6.vocoder.pd \
      ./7.stuff/soundfile-tools/README.txt \
      ./7.stuff/synth/1.poly.synth.pd \
-     ./7.stuff/synth/README.txt \
      ./7.stuff/synth/gadsr.pd \
      ./7.stuff/synth/numset.pd \
-     ./7.stuff/synth/preset.pd \
      ./7.stuff/synth/preset1.txt \
      ./7.stuff/synth/preset2.txt \
      ./7.stuff/synth/preset3.txt \
      ./7.stuff/synth/preset4.txt \
+     ./7.stuff/synth/preset.pd \
+     ./7.stuff/synth/README.txt \
      ./7.stuff/synth/synthvoice.pd \
      ./7.stuff/tools/latency.pd \
      ./7.stuff/tools/load-meter.pd \
      ./7.stuff/tools/miditester.pd \
      ./7.stuff/tools/sizingtest.pd \
-     ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
+     ./7.stuff/tools/testtone.pd \
      ./8.topics/compander-limiter.htm \
      ./8.topics/expr.html \
      ./8.topics/fudi.html \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \
-     ./8.topics/slop-slew-limit.png \
      ./8.topics/slop-slew-limiting-patch.png \
+     ./8.topics/slop-slew-limit.png \
      ./8.topics/slop-tilde-1-curves.png \
      ./8.topics/slop-tilde.htm \
      ./sound/bell.aiff \
-     ./sound/voice.wav \
      ./sound/voice2.wav \
+     ./sound/voice.wav \
      $(empty)

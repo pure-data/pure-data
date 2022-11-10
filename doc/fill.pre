@@ -1,0 +1,55 @@
+#########################################
+##### Defaults & Paths #####
+
+AUTOMAKE_OPTIONS = foreign
+
+# default doc location is $(prefix)/doc/pd,
+# but we want $(prefix)/lib/pd/doc
+libpddir = $(pkglibdir)/doc
+
+# about text file, needed to write version string into
+ABOUT_FILE=1.manual/1.introduction.txt
+
+# location to pd header
+M_PD=$(top_srcdir)/src/m_pd.h
+
+# get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
+PD_MAJOR_VERSION = $(shell grep PD_MAJOR_VERSION $(M_PD) | \
+    sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
+PD_MINOR_VERSION = $(shell grep PD_MINOR_VERSION $(M_PD) | \
+    sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
+PD_BUGFIX_VERSION = $(shell grep PD_BUGFIX_VERSION $(M_PD) | \
+    sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
+PD_TEST_VERSION = $(shell grep PD_TEST_VERSION $(M_PD) | \
+    sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
+PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
+
+#########################################
+##### Targets #####
+
+# build version string & write into about file during install
+install-data-hook:
+	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
+	if test "x${PD_TEST_VERSION}" == "x" ; then \
+	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
+	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
+	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
+	else \
+	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
+	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
+	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
+	fi
+	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
+
+#########################################
+##### Files, Binaries, & Libs #####
+
+# empty var for data list footer
+empty=
+
+# this is at the end because its loooong
+# these files go into libpddir defined above
+# to regenerate:
+# cd doc
+# ./fill.sh
+nobase_dist_libpd_DATA = \
