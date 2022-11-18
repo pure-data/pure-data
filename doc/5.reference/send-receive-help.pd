@@ -22,8 +22,7 @@
 #X obj 599 193 value y;
 #X obj 525 214 send y;
 #X floatatom 525 186 5 0 0 0 - - - 0;
-#X obj 599 166 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 599 166 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X floatatom 599 226 5 0 0 0 - - - 0;
 #X text 29 620 see also:;
 #X text 72 14 - send messages without patch cords;
@@ -43,12 +42,10 @@
 #X text 407 39 - abbreviation;
 #X obj 155 619 receive~;
 #X floatatom 578 566 5 0 0 0 - x z 0;
-#X obj 539 518 hsl 128 15 0 127 0 0 x empty empty -2 -8 0 10 #dfdfdf
-#000000 #000000 0 1;
+#X obj 539 518 hsl 128 17 0 127 0 0 x empty empty -2 -8 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 676 224 send array;
 #X msg 676 178 0 -1 0 1 0 -1 0 1, f 9;
-#X text 489 454 Note that GUIs have built in send and receive names
-you can set via properties (right click and check it)., f 40;
+#X text 489 454 Note that GUIs have built in send and receive names you can set via properties (right click and check it)., f 40;
 #X text 691 619 updated for Pd version 0.52;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array array 7 float 2;
@@ -60,47 +57,36 @@ you can set via properties (right click and check it)., f 40;
 #X obj 809 442 value y;
 #X text 490 554 "receive x";
 #X text 676 517 "send x";
-#X text 625 560 send in GUIs can also send to value objects., f 22
-;
+#X text 625 560 send in GUIs can also send to value objects., f 22;
 #X text 496 572 "send z";
 #X floatatom 824 570 5 0 0 0 - - - 0;
 #X obj 824 541 value z;
-#X text 499 87 Interaction with other objects (check their help files):
-;
+#X text 499 87 Interaction with other objects (check their help files):;
 #X msg 836 410 send x;
 #N canvas 847 151 914 439 Dealing_with_"\$0" 0;
-#X text 36 33 '\$0' - the patch ID number used to force locality in
-Pd - is widely used in send and receive names \, specially in abstractions
-so each copy has local connections instead of global., f 67;
+#X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send and receive names \, specially in abstractions so each copy has local connections instead of global., f 67;
 #X obj 171 164 send \$0-x;
 #X obj 294 120 receive \$0-x;
 #X floatatom 294 161 5 0 0 0 - - - 0;
 #X floatatom 171 122 5 0 0 0 - - - 0;
 #X obj 126 381 send;
 #X symbolatom 171 368 10 0 0 0 - - - 0;
-#X obj 151 301 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 151 301 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X floatatom 83 330 5 0 0 0 - - - 0;
-#X obj 281 297 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 281 297 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X obj 151 331 symbol \$0-y;
 #X msg 281 370 \; \$1-y 80;
 #X floatatom 387 365 5 0 0 0 - - - 0;
 #X obj 387 324 receive \$0-y;
 #X obj 281 320 float \$0;
-#X text 61 216 Since "\$0" only works inside objects \, if you need
-to set a send name with it \, you need to use something like a symbol
-object. It's also common to pass "\$0" from a float object to a message
-that works as a send. Click on the bangs below.;
+#X text 61 216 Since "\$0" only works inside objects \, if you need to set a send name with it \, you need to use something like a symbol object. It's also common to pass "\$0" from a float object to a message that works as a send. Click on the bangs below.;
 #X floatatom 291 345 5 0 0 0 - - - 0;
 #X obj 590 237 float 1.5;
 #X msg 590 199 send \$1-x;
 #X obj 590 167 f \$0;
-#X obj 590 140 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 590 140 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X obj 718 183 value \$0-x;
-#X obj 718 154 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X obj 718 154 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X floatatom 718 218 5 0 0 0 - - - 0;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array \$0-array 515 float 0;
@@ -109,11 +95,7 @@ that works as a send. Click on the bangs below.;
 #X obj 587 351 send \$0-array;
 #X msg 587 319 sinesum 512 1;
 #X floatatom 820 183 5 0 0 0 - \$0-x - 0;
-#X text 559 24 Note that "\$0" is also used in send/receive names in
-GUIs \, array names and as well as variable names in value objects.
-In order to use the 'send' method from [float] \, [int] and [list store]
-objects \, you also need to pass the "\$0" value to the message.,
-f 45;
+#X text 559 24 Note that "\$0" is also used in send/receive names in GUIs \, array names and as well as variable names in value objects. In order to use the 'send' method from [float] \, [int] and [list store] objects \, you also need to pass the "\$0" value to the message., f 45;
 #X connect 2 0 3 0;
 #X connect 4 0 1 0;
 #X connect 7 0 10 0;
@@ -136,71 +118,44 @@ f 45;
 #X text 4 570 Open subpatch to see how to deal with '\$0' =>;
 #X obj 285 619 pd-messages;
 #N canvas 725 70 573 568 reference 0;
-#X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 235 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 272 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 319 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 166 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 53 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 86 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 235 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 272 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 319 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 166 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 47 17 send;
 #X obj 13 17 s;
 #X text 86 16 - send messages without patch cords;
 #X obj 15 375 r;
 #X obj 49 375 receive;
 #X text 107 374 - receive messages without patch cords;
-#X obj 8 412 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 451 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 501 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 538 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 8 412 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 451 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 501 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 7 538 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 66 95 any message -;
-#X text 168 95 sends to the corresponding receive object \, or any
-named object which name corresponds to the stored symbol. e.g: array
-\, value \, iemguis \, directly to a named patch \, etc..., f 50;
+#X text 168 95 sends to the corresponding receive object \, or any named object which name corresponds to the stored symbol. e.g: array \, value \, iemguis \, directly to a named patch \, etc..., f 50;
 #X text 163 245 NONE, f 49;
 #X text 131 280 symbol -;
 #X text 163 424 NONE, f 49;
 #X text 82 466 any message -;
 #X text 121 204 symbol - sets the send name.;
-#X text 179 466 outputs the messages destined to its receive name.
-, f 51;
+#X text 179 466 outputs the messages destined to its receive name., f 51;
 #X text 46 170 (if created without arguments);
 #X text 106 511 1) symbol -;
 #X text 189 511 receive name symbol (default: empty symbol).;
-#X text 193 280 send symbol (if given \, 2nd inlet is suppressed \,
-default: empty symbol)., f 35;
+#X text 193 280 send symbol (if given \, 2nd inlet is suppressed \, default: empty symbol)., f 35;
 #X restore 723 31 pd reference;
 #X text 820 32 <= click;
-#X obj 8 77 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 8 607 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 824 517 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X obj 809 411 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 23 225 [send] sends messages to [receive] objects with the
-same name (set by the argument). They work across windows too. Also
-\, you can use message boxes to send messages if they start with a
-semicolon as shown below:;
-#X text 22 378 If invoked without an argument \, [send] creates an
-inlet to let you set the target via "symbol" messages:, f 54;
-#X text 499 110 The [value] object receives floats from [send] objects
-with the same name as its variable name. You can also use [send] to
-send messages to arrays with the same name., f 55;
-#X text 479 262 The [receive] object can also get messages from [value]
-and the other objects below via their "send" messages. Note that [value]
-can also get these values from these objects (except [list store] because
-[value] can't deal with lists).;
+#X obj 8 77 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 8 607 cnv 1 900 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 824 517 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 809 411 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 23 225 [send] sends messages to [receive] objects with the same name (set by the argument). They work across windows too. Also \, you can use message boxes to send messages if they start with a semicolon as shown below:;
+#X text 22 378 If invoked without an argument \, [send] creates an inlet to let you set the target via "symbol" messages:, f 54;
+#X text 499 110 The [value] object receives floats from [send] objects with the same name as its variable name. You can also use [send] to send messages to arrays with the same name., f 55;
+#X text 479 262 The [receive] object can also get messages from [value] and the other objects below via their "send" messages. Note that [value] can also get these values from these objects (except [list store] because [value] can't deal with lists).;
 #X connect 4 0 10 0;
 #X connect 5 0 11 0;
 #X connect 6 0 12 0;
