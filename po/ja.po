@@ -2,13 +2,14 @@
 # This file is put in the public domain.
 # Hyun-Mook Lim <windshy8500@naver.com>, 2022.
 # Shozo KUZE <shozo@mathrax.com>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-11-05 05:05+0000\n"
-"Last-Translator: Shozo KUZE <shozo@mathrax.com>\n"
+"PO-Revision-Date: 2022-11-22 20:35+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/ja/>\n"
 "Language: ja\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 msgid "linear"
 msgstr "線形"
@@ -593,7 +594,7 @@ msgstr "警告: フォントファミリー '%1$s' が見つかりません、�
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "警告: フォント太さ '%1$s' が見つかりません"
+msgstr "警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
