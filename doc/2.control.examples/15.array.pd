@@ -12,7 +12,7 @@
 #X msg 803 37 \; array99 print;
 #X text 663 86 resize;
 #X text 567 462 write a text file;
-#X text 782 463 write a WAV format soundfile;
+#X text 784 463 write a WAV format soundfile;
 #X obj 154 635 tabread;
 #X obj 153 609 tabwrite;
 #X obj 345 609 tabread4~;
@@ -29,34 +29,24 @@
 #X text 494 184 Fourier synthesis (resizes table);
 #X obj 153 661 tabread4;
 #X obj 274 609 tabread~;
-#X text 37 56 Arrays in Pd provide a unified way to deal with lists
-of numbers \, treating them as either audio samples or control messages.
-To make an array \, select "Array" on the "Put" menu. Dialogs appear
-to help you choose the name \, number of elements \, and various flags.
-;
+#X text 37 56 Arrays in Pd provide a unified way to deal with lists of numbers \, treating them as either audio samples or control messages. To make an array \, select "Array" on the "Put" menu. Dialogs appear to help you choose the name \, number of elements \, and various flags.;
 #X obj 545 488 savepanel;
 #X msg 545 514 \; array99 write \$1;
 #X obj 759 489 savepanel;
 #X obj 759 542 soundfiler;
 #X msg 759 515 write \$1 array99;
-#X text 36 137 You can also change the array size using the "resize"
-message shown below. Arrays live in graphs and graphs may hold more
-than one array. However \, graphs containing more than one array won't
-know how to readjust themselves automatically when the arrays are resized.
-;
+#X text 36 137 You can also change the array size using the "resize" message shown below. Arrays live in graphs and graphs may hold more than one array. However \, graphs containing more than one array won't know how to readjust themselves automatically when the arrays are resized.;
 #X text 803 655 updated for Pd version 0.51;
 #X text 910 48 print info;
 #X obj 809 114 array size array99;
-#X obj 809 89 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000;
+#X obj 809 89 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X floatatom 809 139 5 0 0 0 - - - 0;
 #X obj 490 404 soundfiler;
 #X text 484 327 read a soundfile or text file;
 #X msg 490 351 read -resize ../sound/voice2.wav array99;
 #X msg 503 378 read -ascii -resize 15.file.txt array99;
 #X msg 821 383 \; array99 read 15.file.txt;
-#X text 820 326 simpler way to read a text file (but no resizing available)
-, f 21;
+#X text 820 326 simpler way to read a text file (but no resizing available), f 21;
 #X obj 566 619 soundfiler;
 #X text 567 594 see also:;
 #X obj 601 654 array;
@@ -65,13 +55,10 @@ know how to readjust themselves automatically when the arrays are resized.
 #X text 838 88 get size, f 14;
 #X text 650 645 many other operations!, f 11;
 #X obj 385 634 tabplay~;
-#X text 48 603 Objects are provided for reading and writing --->,
-f 13;
+#X text 48 603 Objects are provided for reading and writing --->, f 13;
 #X floatatom 630 87 4 0 0 0 - - - 0;
-#X obj 545 463 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X obj 759 465 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 545 463 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 759 465 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 531 54 <-- set to a constant value;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;

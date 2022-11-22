@@ -3,7 +3,7 @@
 #X msg 120 262 set \$1;
 #X floatatom 120 239 4 0 9 0 - - - 0;
 #X floatatom 78 253 4 0 9 0 - - - 0;
-#X obj 303 101 hdl 15 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
+#X obj 304 103 hdl 15 1 0 8 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
 #X obj 29 26 hdl 19 1 0 8 empty empty empty 0 -10 0 12 #fcfcfc #000000 #000000 0;
 #X text 187 25 - [hdl]: deprecated horizontal radio button;
 #N canvas 789 65 625 556 position 0;
@@ -58,7 +58,6 @@
 #X obj 218 394 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000 #000000 0 1;
 #X obj 238 394 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000 #000000 0 1;
 #X obj 258 394 tgl 15 0 empty empty empty 8 -8 0 10 #fcfcfc #000000 #000000 0 1;
-#X text 120 100 the new [hdradio] object:;
 #X text 35 57 WARNING: This object is still in Pd for backwards compatibility but has been deprecated in Pd 0.36. Just use the new [hradio] instead:, f 63;
 #X obj 78 302 hdl 20 1 0 8 empty empty empty 20 -8 0 10 #606060 #fcfcfc #fcac44 0;
 #X obj 91 340 print hdl;
@@ -325,7 +324,7 @@
 #X connect 27 0 12 0;
 #X coords 0 0 1 1 85 60 0;
 #X restore 175 257 pd colors;
-#N canvas 905 67 517 295 size 0;
+#N canvas 849 67 517 295 size 0;
 #X floatatom 74 58 3 10 60 0 - - - 0;
 #X obj 74 132 hdl 18 1 0 6 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
 #X msg 74 92 size \$1;
@@ -455,10 +454,11 @@
 #X restore 332 335 pd parameters;
 #X text 244 517 updated for Pd version 0.36;
 #X obj 121 518 all_guis;
-#X connect 0 0 25 0;
-#X connect 1 0 25 0;
+#X text 118 101 The new [hdradio] object:;
+#X connect 0 0 24 0;
+#X connect 1 0 24 0;
 #X connect 2 0 1 0;
-#X connect 3 0 25 0;
+#X connect 3 0 24 0;
 #X connect 13 0 12 0;
 #X connect 13 1 14 0;
 #X connect 13 2 15 0;
@@ -469,5 +469,5 @@
 #X connect 13 7 20 0;
 #X connect 13 8 21 0;
 #X connect 13 9 22 0;
-#X connect 25 0 13 0;
-#X connect 25 0 26 0;
+#X connect 24 0 13 0;
+#X connect 24 0 25 0;

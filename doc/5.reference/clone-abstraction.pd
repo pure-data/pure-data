@@ -8,13 +8,13 @@
 #X obj 92 94 t f b, f 7;
 #X obj 92 126 mtof;
 #X obj 240 264 float \$1;
-#X obj 240 241 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 240 238 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 240 317 print;
 #X text 23 16 This is the abstraction for the clone help patch. It plays tones at pitches sent to its inlet., f 49;
 #X floatatom 240 290 5 0 0 0 - - - 0;
 #X obj 138 151 vline~;
 #X msg 138 123 1 10 \, 0 4000 10;
-#X text 219 171 You can access the instance number within the patch., f 14;
+#X text 219 168 You can access the instance number within the patch., f 14;
 #X connect 0 0 6 0;
 #X connect 1 0 3 0;
 #X connect 3 0 2 0;

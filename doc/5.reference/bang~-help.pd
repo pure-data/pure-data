@@ -6,7 +6,6 @@
 #X msg 394 238 \; pd dsp \$1;
 #X msg 413 208 0;
 #X msg 394 114 1;
-#X text 425 112 <= click to test, f 8;
 #X text 74 222 inlet is inactive, f 8;
 #X obj 25 14 bang~;
 #X text 320 336 updated for Pd version 0.33;
@@ -32,6 +31,7 @@
 #X text 239 232 [bang~] only outputs when DSP is on., f 20;
 #X obj 148 336 metro;
 #X obj 196 336 bang;
+#X text 425 112 <-- click to test, f 9;
 #X connect 0 0 1 0;
 #X connect 2 0 5 0;
 #X connect 3 0 5 0;

@@ -19,7 +19,6 @@
 #X text 149 281 list sets filter's parameters;
 #X obj 21 14 biquad~;
 #X text 83 13 - a 2nd order (2-pole / 2-zero) filter;
-#X text 406 631 updated for Pd version 0.30.;
 #X obj 5 45 cnv 1 602 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 732 181 586 254 reference 0;
 #X obj 18 48 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -59,6 +58,7 @@
 #X text 327 560 <-- user-friendly filters;
 #X text 242 585 <-- not friendly;
 #X text 14 621 raw filters -->;
+#X text 407 631 updated for Pd version 0.3;
 #X connect 0 0 1 0;
 #X connect 2 0 9 0;
 #X connect 3 0 4 0;

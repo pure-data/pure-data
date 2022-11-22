@@ -41,7 +41,7 @@
 #X obj 7 460 cnv 1 490 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 103 167 outputs the stored values swapped;
 #X text 38 73 The [swap] object swaps the positions of two incoming numbers. The number coming in through the right inlet will be sent to the left outlet and the number coming in left will come out right. Only the left inlet is hot and triggers output on both outlets. Output order is right to left as in [trigger]., f 62;
-#X obj 78 168 bng 18 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 78 167 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 0 0 17 0;
 #X connect 1 0 4 0;
 #X connect 2 0 4 1;
