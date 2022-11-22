@@ -71,13 +71,13 @@ EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.txt)
 
 # these are the supported languages
 ALL_LINGUAS = \
-	af ar az \
-	be bg \
+	az \
+	bg \
 	de \
 	el en_ca es eu \
-	fi fr \
+	fr \
 	gu \
-	he hi hu hy \
+	hi hu \
 	it \
 	ja \
 	ko \
@@ -85,10 +85,9 @@ ALL_LINGUAS = \
 	pa pl pt_br pt_pt \
 	ru \
 	sq sv \
-	tr \
 	uk \
 	vi \
-	zh_cn zh_tw \
+	zh_tw \
 	$(empty)
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
