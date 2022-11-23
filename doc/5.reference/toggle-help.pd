@@ -1,6 +1,6 @@
 #N canvas 450 71 529 560 12;
 #X obj 85 250 bng 18 250 50 0 empty empty empty 8 -8 0 10 #dfdfdf #000000 #000000;
-#X obj 112 313 tgl 55 0 empty empty Big\ Toggle 63 26 2 16 #dcdcdc #b40000 #000084 0 1;
+#X obj 112 313 tgl 55 0 empty empty Big\ Toggle 63 26 2 16 #dcdcdc #b40000 #ff0400 0 1;
 #N canvas 568 187 676 290 old-behavior 0;
 #X floatatom 38 57 5 0 0 0 - - - 0;
 #X floatatom 89 217 5 0 0 0 - - - 0;

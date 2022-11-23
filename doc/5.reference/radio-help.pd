@@ -4,7 +4,7 @@
 #X msg 218 307 set \$1;
 #X floatatom 218 285 4 0 9 0 - - - 0;
 #X floatatom 174 300 4 -10 10 0 - - - 0;
-#X obj 174 360 hradio 20 1 0 6 empty empty Radio 65 -10 0 15 #b8b8b8 #0400fc #780000 0;
+#X obj 174 360 hradio 20 1 0 6 empty empty Radio 65 -10 0 15 #b8b8b8 #faff00 #780000 0;
 #N canvas 812 113 508 505 old-behavior 0;
 #X floatatom 114 432 5 0 0 0 - - - 0;
 #X msg 71 152 \; pd compatibility 0.45;
@@ -520,7 +520,7 @@
 #X text 167 18 - [hradio]: Radio Button;
 #X text 388 564 updated for Pd version 0.53;
 #X text 202 388 horizontal;
-#X obj 34 288 vradio 20 1 0 6 empty empty empty 65 -10 0 15 #7c7c7c #ff0400 #780000 0;
+#X obj 34 288 vradio 20 1 0 6 empty empty empty 65 -10 0 15 #ffc7c6 #ff0400 #780000 0;
 #X floatatom 34 412 4 0 0 0 - - - 0;
 #X obj 34 441 print vradio;
 #X text 76 375 the cells.;

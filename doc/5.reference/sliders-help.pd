@@ -37,7 +37,7 @@
 #X obj 202 451 print hsl;
 #X floatatom 202 296 5 0 0 0 - - - 0;
 #X floatatom 252 285 5 0 0 0 - - - 0;
-#X obj 205 363 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14 #dcdcdc #000000 #0400fc 0 1;
+#X obj 205 363 hsl 128 18 0 127 0 0 empty empty Slider 73 -11 0 14 #dcdcdc #000000 #ff0400 0 1;
 #X obj 35 14 hsl 128 18 0 127 0 0 empty empty empty -2 -8 0 10 #fcfcfc #000000 #000000 0 1;
 #X text 358 494 (c) musil@iem.kug.ac.at;
 #X text 394 510 IEM KUG \, Graz \, Austria \, 2002, f 14;

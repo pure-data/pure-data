@@ -464,7 +464,7 @@
 #X text 111 294 Loading arguments in properties:, f 17;
 #X text 46 23 All the parameters from the properties window can be set via messages as well. See examples and more details on each parameter in the subpatches below:, f 39;
 #X restore 392 193 pd properties;
-#X obj 181 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 13 #dcdcdc #fc0400 #0400fc;
+#X obj 181 240 bng 50 250 50 0 empty empty Big-Bang 58 24 0 16 #dcdcdc #fc0400 #ff0400;
 #X text 24 53 The bang button is a GUI (Graphical User Interface) object that sends a bang message when activated via clicks or messages sent to its inlet. Insert it from the Put menu (named as "Bang") or its shortcut. Alternatively \, create it by typing "bng" into an object box. Right click for properties (to set size \, colors \, labels \, etc)., f 67;
 #X text 306 455 updated for Pd version 0.51;
 #X obj 181 337 print Big-Bang;
