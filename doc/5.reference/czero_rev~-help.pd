@@ -159,12 +159,12 @@
 #X text 212 257 <-- filter coefficient (imaginary part);
 #X text 172 234 <-- filter coefficient (real part);
 #X text 131 209 <-- signal to filter (imaginary part);
-#X text 148 182 <-- set internal state (real &i maginary parts);
 #X text 95 154 <-- clear internal state (last samples) to zero;
 #X text 99 127 <-- signal to filter (real part);
 #X text 15 448 Pd also provides a suite of user-friendly filters. This and other raw filters are provided for situations which the user-friendly ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm for an introduction to the necessary theory (click) -->, f 69;
 #X text 41 324 The action of [czero_rev~] is:;
 #X text 94 347 y[n] = -a[n] * x[n] + x[n-1];
+#X text 148 182 <-- set internal state (real & imaginary parts);
 #X connect 0 0 43 0;
 #X connect 1 0 43 0;
 #X connect 3 0 43 1;
