@@ -1,4 +1,4 @@
-#N canvas 507 73 1918 1003 12;
+#N canvas 499 62 580 460 12;
 #X floatatom 85 198 0 0 0 0 - - - 0;
 #X obj 85 171 receive crackers;
 #X floatatom 245 203 0 0 0 0 - - - 0;

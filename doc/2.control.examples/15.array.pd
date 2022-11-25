@@ -9,7 +9,7 @@
 #X obj 492 89 / 100;
 #X msg 492 119 \; array99 const \$1;
 #X text 477 22 You can send messages to an array object:;
-#X msg 803 37 \; array99 print;
+#X msg 804 33 \; array99 print;
 #X text 663 86 resize;
 #X text 567 462 write a text file;
 #X text 784 463 write a WAV format soundfile;
@@ -37,9 +37,9 @@
 #X msg 759 515 write \$1 array99;
 #X text 36 137 You can also change the array size using the "resize" message shown below. Arrays live in graphs and graphs may hold more than one array. However \, graphs containing more than one array won't know how to readjust themselves automatically when the arrays are resized.;
 #X text 803 655 updated for Pd version 0.51;
-#X text 910 48 print info;
+#X text 911 42 print info;
 #X obj 809 114 array size array99;
-#X obj 809 89 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 809 88 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X floatatom 809 139 5 0 0 0 - - - 0;
 #X obj 490 404 soundfiler;
 #X text 484 327 read a soundfile or text file;
@@ -52,7 +52,7 @@
 #X obj 601 654 array;
 #X text 646 619 reading/writing;
 #X text 155 582 control:;
-#X text 838 88 get size, f 14;
+#X text 836 87 get size, f 9;
 #X text 650 645 many other operations!, f 11;
 #X obj 385 634 tabplay~;
 #X text 48 603 Objects are provided for reading and writing --->, f 13;
