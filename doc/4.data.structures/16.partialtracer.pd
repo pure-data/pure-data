@@ -9,8 +9,7 @@
 #N canvas 395 221 458 221 peak-template 0;
 #X obj 59 81 filledpolygon 3 3 3 0 0 0 amp 0 0;
 #X obj 58 41 struct peak-template float x float y float amp;
-#X text 55 131 This is a template for ploting FFT amplitude peaks \,
-where a polygon is drawn for all peaks., f 46;
+#X text 55 131 This is a template for ploting FFT amplitude peaks \, where a polygon is drawn for all peaks., f 46;
 #X restore 308 552 pd peak-template;
 #N canvas 90 25 851 337 peak-list 1;
 #X coords 0 337 1 336 0 0 0;
@@ -19,20 +18,13 @@ where a polygon is drawn for all peaks., f 46;
 #X coords 0 128.25 1 128 0 0 0;
 #X restore 453 570 pd trace-list;
 #N canvas 375 90 563 188 trace-template 0;
-#X text 65 101 This template describes a pitch/amplitude trace. The
-array "bazoo" holds the actual points. In this template \, y is always
-0 and x is the starting location in pixels. There are 5 pixels per
-point.;
-#X obj 84 26 struct trace-template float x float y float voiceno array
-bazoo point-template;
+#X text 65 101 This template describes a pitch/amplitude trace. The array "bazoo" holds the actual points. In this template \, y is always 0 and x is the starting location in pixels. There are 5 pixels per point.;
+#X obj 84 26 struct trace-template float x float y float voiceno array bazoo point-template;
 #X obj 88 68 plot bazoo 0 1 0 0 5;
 #X restore 308 573 pd trace-template;
 #N canvas 311 238 528 190 point-template 0;
-#X text 64 65 This template describes a single point on a pitch trace
-(cf. trace-template w describes the trace itself.);
-#X text 64 98 "y" is the field that is shown on the graph \; it's -
-4 * pitch. You also get an "amp" field in dB \, which you can't see
-as a plot (yet).;
+#X text 64 65 This template describes a single point on a pitch trace (cf. trace-template w describes the trace itself.);
+#X text 64 98 "y" is the field that is shown on the graph \; it's - 4 * pitch. You also get an "amp" field in dB \, which you can't see as a plot (yet).;
 #X obj 113 29 struct point-template float y float amp;
 #X restore 308 594 pd point-template;
 #X obj 54 472 line~;
@@ -135,8 +127,7 @@ as a plot (yet).;
 #X msg 314 141 traverse pd-trace-list \, next;
 #X obj 313 52 t b b b;
 #X msg 359 80 \; pd-trace-list sort;
-#X obj 245 179 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
+#X obj 245 179 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000 0 1;
 #X obj 314 250 get trace-template x;
 #X obj 314 278 f;
 #X obj 337 361 t b b b;
@@ -152,8 +143,7 @@ as a plot (yet).;
 #X text 90 341 voice sends us;
 #X text 89 356 a note-off when;
 #X text 92 368 done;
-#X text 299 543 message is: voice number \, on/off \, track ID \, pointer
-;
+#X text 299 543 message is: voice number \, on/off \, track ID \, pointer;
 #X obj 314 224 trigger pointer pointer;
 #X obj 285 601 outlet~;
 #X obj 93 417 pack f f;
@@ -262,8 +252,7 @@ as a plot (yet).;
 #X restore 146 519 pd test-signal;
 #X obj 737 269 tabwrite~ sample;
 #X text 165 10 SINUSOID TRACKING;
-#X obj 228 335 tgl 20 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000 0 1;
+#X obj 228 335 tgl 20 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #N canvas 307 190 576 435 sigmund 0;
 #X obj 206 284 spigot;
 #X obj 187 99 f;
@@ -274,21 +263,18 @@ as a plot (yet).;
 #X obj 382 73 r sample-rate;
 #X obj 382 98 * 0.001;
 #X obj 164 36 r snapshot;
-#X obj 245 260 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 245 260 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
 #X obj 57 276 s done-analysis;
 #X obj 303 133 s start-analysis;
 #X obj 164 69 t b b b;
 #X msg 187 161 list sample \$1 \$2 44100 0;
 #X obj 434 284 spigot;
-#X obj 473 260 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 473 260 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
 #X floatatom 74 80 5 1 50 0 - - - 0;
 #X msg 74 103 npeak \$1;
 #X obj 74 54 r nvoice;
 #X obj 408 386 outlet;
-#X obj 187 191 sigmund~ -t -npts 1024 -npeak 50 -maxfreq 8000 peaks
-tracks, f 32;
+#X obj 187 191 sigmund~ -t -npts 1024 -npeak 50 -maxfreq 8000 peaks tracks, f 32;
 #X obj 187 386 outlet;
 #X obj 206 310 print peaks;
 #X obj 434 310 print tracks;
@@ -329,8 +315,7 @@ tracks, f 32;
 #X obj 289 179 line~;
 #X obj 87 211 *~;
 #X obj 87 273 tabwrite~ sample;
-#X obj 289 31 bng 15 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000;
+#X obj 289 31 bng 15 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 145 105 0 \, 2 500;
 #X msg 289 137 0 \, 1 100;
 #X obj 363 92 del 500;
@@ -339,15 +324,10 @@ tracks, f 32;
 #X obj 543 242 r location;
 #X msg 543 267 set \$1;
 #X obj 543 292 s location-set;
-#X msg 543 352 set \$1;
-#X obj 543 327 r osc-speed;
-#X obj 543 377 s osc-speed-set;
 #X msg 543 437 set \$1;
 #X obj 543 412 r nvoice;
 #X obj 543 466 s nvoice-set;
 #X obj 542 132 loadbang;
-#X msg 542 157 \; osc-speed 10 \; nvoice 25 \; pd-trace-list clear
-;
 #N canvas 208 32 1115 470 make-trace 0;
 #X obj 731 286 setsize trace-template bazoo;
 #X obj 731 161 random 200;
@@ -472,6 +452,7 @@ tracks, f 32;
 #X connect 18 0 7 0;
 #X connect 20 0 21 0;
 #X restore 551 43 pd insample;
+#X msg 542 157 \; osc-speed-set 10 \; nvoice 25 \; pd-trace-list clear;
 #X connect 2 0 4 0;
 #X connect 3 0 4 1;
 #X connect 4 0 5 0;
@@ -493,28 +474,25 @@ tracks, f 32;
 #X connect 17 0 18 0;
 #X connect 19 0 21 0;
 #X connect 20 0 19 0;
-#X connect 22 0 24 0;
-#X connect 23 0 22 0;
-#X connect 25 0 26 0;
+#X connect 22 0 39 0;
+#X connect 24 0 25 0;
+#X connect 26 0 27 0;
+#X connect 27 0 35 0;
+#X connect 27 0 28 0;
+#X connect 27 1 37 0;
 #X connect 28 0 29 0;
-#X connect 30 0 31 0;
-#X connect 31 0 39 0;
+#X connect 30 0 31 1;
 #X connect 31 0 32 0;
-#X connect 31 1 41 0;
 #X connect 32 0 33 0;
-#X connect 34 0 35 1;
-#X connect 35 0 36 0;
-#X connect 36 0 37 0;
-#X connect 38 0 30 0;
-#X connect 39 0 28 0;
-#X connect 40 0 35 0;
+#X connect 34 0 26 0;
+#X connect 35 0 24 0;
+#X connect 36 0 31 0;
 #X restore 505 495 pd misc;
 #X floatatom 283 332 4 0 0 1 osc-speed osc-speed-set - 16;
 #X floatatom 102 283 4 1 50 0 nvoice nvoice-set nvoice 16;
 #X text 28 320 analysis;
 #X text 30 335 parameters;
-#X obj 658 315 bng 30 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 658 315 bng 30 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 610 513 \; location 0 \; clear-all bang;
 #N canvas 204 89 564 423 grain 0;
 #X floatatom 192 224 6 0 0 0 - - - 0;
@@ -574,8 +552,7 @@ tracks, f 32;
 #X connect 26 0 24 0;
 #X restore 36 365 pd grain;
 #X floatatom 815 456 10 0 0 0 - - - 0;
-#X obj 737 180 bng 20 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 737 180 bng 20 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 752 217 \; resize-sample 3000;
 #X obj 463 169 openpanel;
 #X obj 463 193 s read-sample;
@@ -606,8 +583,7 @@ tracks, f 32;
 #X connect 2 0 1 0;
 #X restore 790 49 pd set;
 #X obj 266 456 pack f 100;
-#X obj 463 144 bng 20 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 463 144 bng 20 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 715 607 updated for Pd version 0.52;
 #X obj 445 435 clone add-trace 50;
 #X text 638 14 SET AMPLITUDES \, dB \, 100-based;
@@ -617,14 +593,9 @@ tracks, f 32;
 #X text 222 312 step;
 #X floatatom 790 75 5 0 110 0 - - - 16;
 #X floatatom 680 75 5 0 110 0 - - - 16;
-#X text 14 34 This patch derives sinusoidal "tracks" from a sampled
-sound by using [sigmund~] and the data structure facilities. The number
-of tracks may range from 1 to 50 with the 'nvoice' number box (but
-note that the resynthesizer is limited to 50-voice polyphony.), f
-70;
+#X text 14 34 This patch derives sinusoidal "tracks" from a sampled sound by using [sigmund~] and the data structure facilities. The number of tracks may range from 1 to 50 with the 'nvoice' number box (but note that the resynthesizer is limited to 50-voice polyphony.), f 70;
 #X text 454 547 display:;
-#X obj 154 347 bng 22 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 154 347 bng 22 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 679 214 adc~ 1;
 #N canvas 365 100 520 318 add-peaks 0;
 #X obj 283 217 pointer;
@@ -653,18 +624,14 @@ note that the resynthesizer is limited to 50-voice polyphony.), f
 #X connect 11 2 8 0;
 #X connect 11 2 1 0;
 #X restore 378 466 pd add-peaks;
-#X msg 18 146 \; window-size 2048 \; sample-rate 44100 \; incr 10 \;
-pd dsp 1;
+#X msg 18 146 \; window-size 2048 \; sample-rate 44100 \; incr 10 \; pd dsp 1;
 #X text 462 406 <-- analysis;
 #X obj 54 447 pack f 100;
 #X obj 283 368 s osc-speed;
 #X obj 228 368 metro;
-#X obj 462 323 bng 22 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 462 323 bng 22 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 579 165 record a 3 seconds live sample -------->, f 21;
-#X text 181 257 To resynthesize \, "start" once \, set speed and turn
-on "step". To stop \, stop stepping and hit osc-stop. Note resynth
-amplitude control above., f 63;
+#X text 181 257 To resynthesize \, "start" once \, set speed and turn on "step". To stop \, stop stepping and hit osc-stop. Note resynth amplitude control above., f 63;
 #X text 486 323 osc-stop;
 #X text 23 120 1st: click here:;
 #X text 162 108 2nd: read a sample \, record to the right or;
