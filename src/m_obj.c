@@ -23,15 +23,6 @@ behavior for "gobjs" appears at the end of this file.  */
 #define snprintf _snprintf
 #endif
 
-union inletunion
-{
-    t_symbol *iu_symto;
-    t_gpointer *iu_pointerslot;
-    t_float *iu_floatslot;
-    t_symbol **iu_symslot;
-    t_float iu_floatsignalvalue;
-};
-
 struct _inlet
 {
     t_pd i_pd;
@@ -39,13 +30,14 @@ struct _inlet
     t_object *i_owner;
     t_pd *i_dest;
     t_symbol *i_symfrom;
-    union inletunion i_un;
+    union {
+        t_symbol *iu_symto;
+        t_gpointer *iu_pointerslot;
+        t_float *iu_floatslot;
+        t_symbol **iu_symslot;
+        t_float iu_floatsignalvalue;
+    };
 };
-
-#define i_symto i_un.iu_symto
-#define i_pointerslot i_un.iu_pointerslot
-#define i_floatslot i_un.iu_floatslot
-#define i_symslot i_un.iu_symslot
 
 static t_class *inlet_class, *pointerinlet_class, *floatinlet_class,
     *symbolinlet_class;
@@ -63,8 +55,8 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     x->i_owner = owner;
     x->i_dest = dest;
     if (s1 == &s_signal)
-        x->i_un.iu_floatsignalvalue = 0;
-    else x->i_symto = s2;
+        x->iu_floatsignalvalue = 0;
+    else x->iu_symto = s2;
     x->i_symfrom = s1;
     x->i_next = 0;
     if ((y = owner->ob_inlet))
@@ -79,7 +71,7 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
 t_inlet *signalinlet_new(t_object *owner, t_float f)
 {
     t_inlet *x = inlet_new(owner, &owner->ob_pd, &s_signal, &s_signal);
-    x->i_un.iu_floatsignalvalue = f;
+    x->iu_floatsignalvalue = f;
     return (x);
 }
 
@@ -96,7 +88,7 @@ extern t_class *vinlet_class;
 static void inlet_bang(t_inlet *x)
 {
     if (x->i_symfrom == &s_bang)
-        pd_vmess(x->i_dest, x->i_symto, "");
+        pd_vmess(x->i_dest, x->iu_symto, "");
     else if (!x->i_symfrom) pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
         inlet_list(x, &s_bang, 0, 0);
@@ -108,7 +100,7 @@ static void inlet_bang(t_inlet *x)
 static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
     if (x->i_symfrom == &s_pointer)
-        pd_vmess(x->i_dest, x->i_symto, "p", gp);
+        pd_vmess(x->i_dest, x->iu_symto, "p", gp);
     else if (!x->i_symfrom) pd_pointer(x->i_dest, gp);
     else if (x->i_symfrom == &s_list)
     {
@@ -122,9 +114,9 @@ static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 static void inlet_float(t_inlet *x, t_float f)
 {
     if (x->i_symfrom == &s_float)
-        pd_vmess(x->i_dest, x->i_symto, "f", (t_floatarg)f);
+        pd_vmess(x->i_dest, x->iu_symto, "f", (t_floatarg)f);
     else if (x->i_symfrom == &s_signal)
-        x->i_un.iu_floatsignalvalue = f;
+        x->iu_floatsignalvalue = f;
     else if (!x->i_symfrom)
         pd_float(x->i_dest, f);
     else if (x->i_symfrom == &s_list)
@@ -139,7 +131,7 @@ static void inlet_float(t_inlet *x, t_float f)
 static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
     if (x->i_symfrom == &s_symbol)
-        pd_vmess(x->i_dest, x->i_symto, "s", s);
+        pd_vmess(x->i_dest, x->iu_symto, "s", s);
     else if (!x->i_symfrom) pd_symbol(x->i_dest, s);
     else if (x->i_symfrom == &s_list)
     {
@@ -168,7 +160,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     t_atom at;
     if (x->i_symfrom == &s_list || x->i_symfrom == &s_float
         || x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
-            typedmess(x->i_dest, x->i_symto, argc, argv);
+            typedmess(x->i_dest, x->iu_symto, argc, argv);
     else if (!x->i_symfrom) pd_list(x->i_dest, s, argc, argv);
     else if (!argc)
       inlet_bang(x);
@@ -191,7 +183,7 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
         if (x->i_symfrom == &s_signal)
             typedmess(x->i_dest, s, argc, argv);
         else
-            typedmess(x->i_dest, x->i_symto, argc, argv);
+            typedmess(x->i_dest, x->iu_symto, argc, argv);
     }
     else if (!x->i_symfrom)
         typedmess(x->i_dest, s, argc, argv);
@@ -218,8 +210,8 @@ void inlet_free(t_inlet *x)
 
 static void pointerinlet_pointer(t_inlet *x, t_gpointer *gp)
 {
-    gpointer_unset(x->i_pointerslot);
-    *(x->i_pointerslot) = *gp;
+    gpointer_unset(x->iu_pointerslot);
+    *(x->iu_pointerslot) = *gp;
     if (gp->gp_stub) gp->gp_stub->gs_refcount++;
 }
 
@@ -229,7 +221,7 @@ t_inlet *pointerinlet_new(t_object *owner, t_gpointer *gp)
     x->i_owner = owner;
     x->i_dest = 0;
     x->i_symfrom = &s_pointer;
-    x->i_pointerslot = gp;
+    x->iu_pointerslot = gp;
     x->i_next = 0;
     if ((y = owner->ob_inlet))
     {
@@ -242,7 +234,7 @@ t_inlet *pointerinlet_new(t_object *owner, t_gpointer *gp)
 
 static void floatinlet_float(t_inlet *x, t_float f)
 {
-    *(x->i_floatslot) = f;
+    *(x->iu_floatslot) = f;
 }
 
 t_inlet *floatinlet_new(t_object *owner, t_float *fp)
@@ -251,7 +243,7 @@ t_inlet *floatinlet_new(t_object *owner, t_float *fp)
     x->i_owner = owner;
     x->i_dest = 0;
     x->i_symfrom = &s_float;
-    x->i_floatslot = fp;
+    x->iu_floatslot = fp;
     x->i_next = 0;
     if ((y = owner->ob_inlet))
     {
@@ -264,7 +256,7 @@ t_inlet *floatinlet_new(t_object *owner, t_float *fp)
 
 static void symbolinlet_symbol(t_inlet *x, t_symbol *s)
 {
-    *(x->i_symslot) = s;
+    *(x->iu_symslot) = s;
 }
 
 t_inlet *symbolinlet_new(t_object *owner, t_symbol **sp)
@@ -273,7 +265,7 @@ t_inlet *symbolinlet_new(t_object *owner, t_symbol **sp)
     x->i_owner = owner;
     x->i_dest = 0;
     x->i_symfrom = &s_symbol;
-    x->i_symslot = sp;
+    x->iu_symslot = sp;
     x->i_next = 0;
     if ((y = owner->ob_inlet))
     {
@@ -913,7 +905,7 @@ t_float *obj_findsignalscalar(const t_object *x, int m)
         if (i->i_symfrom == &s_signal)
     {
         if (m-- == 0)
-            return (&i->i_un.iu_floatsignalvalue);
+            return (&i->iu_floatsignalvalue);
     }
     return (0);
 }
