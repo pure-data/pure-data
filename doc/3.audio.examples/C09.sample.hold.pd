@@ -21,18 +21,13 @@
 #X msg 103 173 2 11;
 #X msg 179 173 3.7 8.8;
 #X msg 244 173 3.4 8.9;
-#X text 35 57 Another analog favorite \, the sample and hold unit freezes
-an audio signal on command. In the Pd version \, the second input of
-samphold~ triggers it \, and the first input becomes the output's new
-value whenever the trigger decreases from one sample to the next. This
-is ideal for updating values when a phasor wraps around.;
+#X text 35 57 Another analog favorite \, the sample and hold unit freezes an audio signal on command. In the Pd version \, the second input of samphold~ triggers it \, and the first input becomes the output's new value whenever the trigger decreases from one sample to the next. This is ideal for updating values when a phasor wraps around.;
 #X text 574 494 updated for Pd version 0.37;
 #X obj 144 471 output~;
 #X text 356 280 <= reset phase;
 #X obj 651 24 declare -stdpath ./;
 #X obj 144 225 unpack float float;
-#X obj 236 344 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 236 344 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 262 343 <-- graph output;
 #X obj 144 410 mtof~;
 #X connect 2 0 4 1;

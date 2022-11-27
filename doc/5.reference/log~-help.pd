@@ -57,8 +57,8 @@ for when you don't have a signal input., f 23;
 #X obj 3 349 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 40 61 [log~] computes the logarithm of the left inlet \, to
-the base 'e' (about 2.718) \, or to another base specified by the inlet
-or a creation argument., f 56;
+the base 'e' (about 2.718) \, or to another base specified by the right
+inlet or a creation argument., f 56;
 #X connect 12 0 13 0;
 #X connect 13 0 14 0;
 #X connect 13 0 21 0;

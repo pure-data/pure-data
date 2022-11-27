@@ -18,51 +18,37 @@
 #X obj 207 363 expr~;
 #X msg 157 243 \; pd dsp \$1;
 #X obj 58 227 loadbang;
-#X obj 157 218 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X text 178 217 DSP on/off;
+#X obj 157 214 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #N canvas 629 138 568 290 reference 0;
-#X obj 8 48 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 166 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 203 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 108 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 8 137 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 48 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 79 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 166 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 8 203 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 108 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 8 137 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X text 153 112 float - set lower limit., f 49;
 #X text 153 140 float - set upper limit., f 49;
 #X obj 31 16 clip~;
 #X text 78 16 - restrict a signal between two limits.;
 #X text 145 84 signal - signal value to clip., f 50;
 #X text 145 176 signal - the clipped signal., f 49;
-#X obj 7 260 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X text 133 213 1) float - initial lower limit (default 0)., f 49
-;
-#X text 133 232 2) float - initial upper limit (default 0)., f 49
-;
+#X obj 7 260 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X text 133 213 1) float - initial lower limit (default 0)., f 49;
+#X text 133 232 2) float - initial upper limit (default 0)., f 49;
 #X restore 350 14 pd reference;
 #X text 441 13 <= click;
-#X obj 4 47 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 4 47 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 56 15 - restrict a signal between two limits;
 #X obj 36 294 tabwrite~ clip;
 #X floatatom 131 138 5 -1 1 0 - - - 0;
 #X text 80 114 lower;
 #X text 130 114 upper;
-#X obj 4 350 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 133 61 The [clip~] object passes its signal input to its output
-\, clipping it to lie between two limits., f 50;
-#X connect 0 0 22 0;
+#X obj 4 350 cnv 1 505 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 133 61 The [clip~] object passes its signal input to its output \, clipping it to lie between two limits., f 50;
+#X connect 0 0 21 0;
 #X connect 1 0 0 0;
-#X connect 3 0 22 0;
+#X connect 3 0 21 0;
 #X connect 6 0 0 1;
 #X connect 15 0 3 0;
 #X connect 16 0 14 0;
-#X connect 23 0 0 2;
+#X connect 22 0 0 2;

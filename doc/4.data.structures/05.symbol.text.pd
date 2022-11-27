@@ -5,31 +5,25 @@
 #N canvas 971 72 304 326 data5 1;
 #X scalar template5a 50 50 banana \;;
 #X scalar template5a 150 120 banana \;;
-#X scalar template5b 50 220 \; 88 \\\; \;;
+#X scalar template5b 50 220 \; \;;
 #X restore 519 376 pd data5;
 #X symbolatom 78 354 10 0 0 0 - - - 0;
 #X msg 86 323 symbol apple;
 #X text 78 271 set symbol:;
 #X obj 78 385 set -symbol template5a sym;
 #N canvas 347 126 508 418 template5a 0;
-#X text 212 191 The instruction is to draw the "sym" variable in the
-20/25 coordinates., f 36;
+#X text 212 191 The instruction is to draw the "sym" variable in the 20/25 coordinates., f 36;
 #X obj 56 198 drawsymbol sym 20 25;
 #X obj 61 82 struct template5a float x float y symbol sym;
 #X obj 89 341 drawpolygon 0 10 0 0 105 0 105 55 0 55 0 0;
-#X text 67 35 Besides the usual x/y fields we now have a symbol field
-named "sym"., f 35;
-#X text 55 152 We now use the [drawsymbol] object \, which is actually
-the same as [dranumber]., f 41;
-#X text 97 298 We also have a [drawpolygon] that draws a frame around
-the symbol., f 34;
-#X text 51 241 Unlike floats fields \, you can't edit symbol values
-by click and typing directly on them.;
+#X text 67 35 Besides the usual x/y fields we now have a symbol field named "sym"., f 35;
+#X text 55 152 We now use the [drawsymbol] object \, which is actually the same as [dranumber]., f 41;
+#X text 97 298 We also have a [drawpolygon] that draws a frame around the symbol., f 34;
+#X text 51 241 Unlike floats fields \, you can't edit symbol values by click and typing directly on them.;
 #X restore 484 330 pd template5a;
 #N canvas 357 56 561 407 stuff 0;
 #X obj 356 189 pointer;
-#X obj 157 65 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 157 65 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X msg 356 148 traverse pd-data5 \, bang;
 #X obj 219 218 append template5a x y;
 #X msg 290 314 symbol banana;
@@ -71,19 +65,14 @@ by click and typing directly on them.;
 #N canvas 440 166 440 359 template5b 0;
 #X obj 66 69 struct template5b float x float y text bla;
 #X obj 41 192 drawtext bla 10 10;
-#X text 78 18 Besides the usual x/y fields we now have a text field
-named "bla"., f 35;
-#X text 45 112 The [drawtext] is again just another alias for [drawnumber]/[drawsymbol]
-and has a drawing instruction for it., f 46;
-#X text 180 184 draw the "bla" text variable in the 10/10 coordinates.
-, f 28;
+#X text 78 18 Besides the usual x/y fields we now have a text field named "bla"., f 35;
+#X text 45 112 The [drawtext] is again just another alias for [drawnumber]/[drawsymbol] and has a drawing instruction for it., f 46;
+#X text 180 184 draw the "bla" text variable in the 10/10 coordinates., f 28;
 #X obj 72 280 drawpolygon 600 5 0 0 160 0 160 60 0 60 0 0;
-#X text 102 235 We also have a [drawpolygon] to draw a frame around
-the text., f 32;
+#X text 102 235 We also have a [drawpolygon] to draw a frame around the text., f 32;
 #X restore 484 353 pd template5b;
-#X obj 81 485 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #dcdcdc #000000
-#000000 0;
-#X floatatom 81 537 3 0 0 0 - - - 0;
+#X obj 61 471 vradio 19 1 0 3 empty empty empty 0 -8 0 10 #dcdcdc #000000 #000000 0;
+#X floatatom 61 537 3 0 0 0 - - - 0;
 #X msg 128 508 1 2 3 4 a b c d e;
 #X msg 142 535 list a b c d e f g h i j;
 #X msg 108 482 symbol text;
@@ -92,36 +81,19 @@ the text., f 32;
 #X obj 307 578 r text-pointer;
 #X obj 128 609 text set -s template5b bla;
 #X msg 266 325 next;
-#X text 20 11 Besides floats \, scalars can have other data types \,
-namely: symbols \, text and arrays. This example shows how to deal
-with symbols and text. A text can have many lines with lists of one
-or more elements (symbols or floats)., f 82;
+#X text 20 11 Besides floats \, scalars can have other data types \, namely: symbols \, text and arrays. This example shows how to deal with symbols and text. A text can have many lines with lists of one or more elements (symbols or floats)., f 82;
 #X text 304 254 <-- send pointer to "get".;
 #X text 104 458 set text:;
-#X text 356 398 <-- recreate;
-#X obj 337 399 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X text 362 398 <-- recreate;
+#X obj 337 399 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 155 354 <-- type;
 #X text 408 429 <-- open to see how it works, f 15;
 #X obj 257 351 pointer template5a;
 #X text 433 288 <-- click here first;
-#X text 20 154 We now have two separate templates mixed in the same
-collection on [pd data5]. See that [pointer] can have an argument to
-specify a particular template \, we use it to traverse the two scalars
-containing symbols and clicking the "next" message now loops back to
-the beggining of the list when reaching its end. Another feature of
-[pointer] here is to use the "send" message to send the pointer to
-a [get] object., f 82;
+#X text 20 154 We now have two separate templates mixed in the same collection on [pd data5]. See that [pointer] can have an argument to specify a particular template \, we use it to traverse the two scalars containing symbols and clicking the "next" message now loops back to the beggining of the list when reaching its end. Another feature of [pointer] here is to use the "send" message to send the pointer to a [get] object., f 82;
 #X text 451 484 get symbol value;
-#X text 20 60 You can only set float fields when adding an item with
-[append]. We need to use the [set] object to set symbol values and
-the [text set] object to set texts. When setting a symbol with [set]
-\, you need the "-symbol" flag and you can't set floats and symbols
-with the same [set] object. For [text] \, you need to use the "-s"
-flag to deal with Data Structures. Check also the help file of [text]
-to see how to use [text get] to get values from text fields., f 82
-;
-#X text 37 492 set line, f 4;
+#X text 20 60 You can only set float fields when adding an item with [append]. We need to use the [set] object to set symbol values and the [text set] object to set texts. When setting a symbol with [set] \, you need the "-symbol" flag and you can't set floats and symbols with the same [set] object. For [text] \, you need to use the "-s" flag to deal with Data Structures. Check also the help file of [text] to see how to use [text get] to get values from text fields., f 82;
+#X text 20 481 set line, f 4;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
 #X connect 8 0 31 0;
