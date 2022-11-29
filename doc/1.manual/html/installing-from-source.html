@@ -217,21 +217,23 @@ Homebrew:</p>
 <pre><code>brew install automake autoconf libtool pkg-config gettext
 brew link --force gettext
 </code></pre>
-<p>By default, Pd is built for the current system architecture, usually 64
-bit. If you want to override this you can use the &ndash;enable-universal
-configure option which allows you to specify the desired architecture(s)
+<p>By default, Pd is built for the current system architecture, usually 
+64 bit. If you want to override this you can use the &ndash;enable-universal 
+configure option which allows you to specify the desired architecture(s) 
 when building Pd. For Intel/AMD processors, 32 bit is called &ldquo;i386&rdquo;
-and 64 bit is &ldquo;x86_64&rdquo;. By default, Pd is built for the architecture
-of the current system, however you may want a 32 bit Pd to work with
-existing 32 bit externals on a 64 bit system. You can override the
-defaults with &ndash;enable-universal: you want to override this you can use
-the &ndash;enable-universal configure option, as mentioned in the main
-Autotools Build section. On macOS, running this option without arguments
-will build a &ldquo;fat&rdquo; Pd for all architectures supported by the compiler:</p>
+and 64 bit is &ldquo;x86_64&rdquo;. For Apple Silicon processors (M1, M2, etc), 
+the 64 bit architecture is called &ldquo;arm64&rdquo;. By default, Pd is built 
+for the architecture of the current system, however you may want a 32 bit Pd 
+to work with existing 32 bit externals on a 64 bit system. You can override 
+the defaults with &ndash;enable-universal: you want to override this you can use 
+the &ndash;enable-universal configure option, as mentioned in the main Autotools 
+Build section. On macOS, running this option without arguments will build 
+a &ldquo;fat&rdquo; Pd for all architectures supported by the compiler:</p>
 <ul>
 <li>macOS 10.6: i386, x86_64, ppc</li>
 <li>macOS 10.7+: i386, x86_64</li>
 <li>macOS 10.15: x86_64</li>
+<li>macOS 11+: x86_64, arm64</li>
 </ul>
 <p>Note: a &ldquo;fat&rdquo; Pd may not work on all systems and/or be able to load
 both 32 or 64 bit externals. Additionally, you can specify multiple
@@ -244,12 +246,11 @@ architectures directly:</p>
 # may not work on all systems
 ./configure --enable-universal
 </code></pre>
-<p>The JACK audio server is supported by Pd on macOS. By default, Pd can
-use the Jack OS X runtime framework from
-<a href="http://www.jackosx.com">http://www.jackosx.com</a> if it
-is installed on the system. Optionally, Pd can also be built with Jack
-installed via Homebrew or Macports, however the runtime framework
-support must be disabled:</p>
+<p>The JACK audio server is supported by Pd on macOS. By default, Pd can use either
+the offical 64-bit builds for macOS 10.12+ from <a href="https://jackaudio.org">https://jackaudio.org</a> or the
+older, 32-bit Jack OS X runtime framework if one is installed on the system.
+Optionally, Pd can also be built with Jack installed via Homebrew or Macports,
+however the runtime framework support must be disabled:</p>
 <pre><code>brew install jack
 ./configure --disable-jack-framework --enable-jack
 </code></pre>
