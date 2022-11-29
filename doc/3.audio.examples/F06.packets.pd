@@ -53,15 +53,10 @@
 #X text 51 16 WINDOWED PACKETS;
 #X text 54 470 window;
 #X text 282 440 magnified phase;
-#X text 37 47 The simpler of two techniques for making slidable center
-frequencies is to synthesize enveloped sinusoidal wave packets. The
-packets should repeat at the fundamental frequency \, but the frequency
-of the packet itself controls the center frequency of the formant.
-The length of the packet varies inversely with bandwidth., f 68;
+#X text 37 47 The simpler of two techniques for making slidable center frequencies is to synthesize enveloped sinusoidal wave packets. The packets should repeat at the fundamental frequency \, but the frequency of the packet itself controls the center frequency of the formant. The length of the packet varies inversely with bandwidth., f 68;
 #X obj 106 596 output~;
 #X obj 106 552 hip~;
-#X obj 265 529 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 265 529 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 571 623 updated for Pd version 0.37;
 #X obj 106 479 *~ 0.5;
 #X text 767 200 -1;
@@ -70,17 +65,11 @@ The length of the packet varies inversely with bandwidth., f 68;
 #X text 771 243 1;
 #X text 768 544 -1;
 #X text 771 419 1;
-#X text 38 135 In the patch below \, the "clip~" followed by "cos~"
-and "+~ 1" is the enveloping ("windowing") function \, which appears
-in the top graph. The carrier \, on the other hand \, is a broken sinusoid
-made by amplifying the phasor~ (the "*~" controlled by "center freq.")
-and taking the cos~ of the result. The "breaks" in the sinusoid only
-occur when the enveloping signal is zero., f 68;
+#X text 38 135 In the patch below \, the "clip~" followed by "cos~" and "+~ 1" is the enveloping ("windowing") function \, which appears in the top graph. The carrier \, on the other hand \, is a broken sinusoid made by amplifying the phasor~ (the "*~" controlled by "center freq.") and taking the cos~ of the result. The "breaks" in the sinusoid only occur when the enveloping signal is zero., f 68;
 #X text 54 441 raised;
 #X text 54 456 cosine;
 #X text 150 242 fundamental frequency, f 11;
-#X text 307 476 desired center frequency but its phase is reset each
-fundamental period., f 24;
+#X text 307 476 desired center frequency but its phase is reset each fundamental period., f 24;
 #X text 253 253 center freq. (in tenths of fundamental), f 13;
 #X obj 618 15 declare -stdpath ./;
 #X text 287 527 <-- graph;

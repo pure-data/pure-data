@@ -400,6 +400,9 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
+    if(s && gensym("empty") == s)
+        s = 0;
+
     if(s) {
         iemgui->x_snd_unexpanded = s;
         iemgui->x_snd = canvas_realizedollar(iemgui->x_glist, s);
@@ -423,6 +426,9 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     if(iemgui->x_fsf.x_snd_able)
         oldsndrcvable |= IEM_GUI_OLD_SND_FLAG;
 
+    if(s && gensym("empty") == s)
+        s = 0;
+
     if(s) {
         iemgui->x_rcv_unexpanded = s;
         s = canvas_realizedollar(iemgui->x_glist, s);
@@ -431,7 +437,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
     }
     if(s)
     {
-        if(strcmp(s->s_name, iemgui->x_rcv->s_name))
+        if(!iemgui->x_rcv || strcmp(s->s_name, iemgui->x_rcv->s_name))
         {
             if(iemgui->x_fsf.x_rcv_able)
                 pd_unbind(&iemgui->x_obj.ob_pd, iemgui->x_rcv);

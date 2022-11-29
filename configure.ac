@@ -271,6 +271,7 @@ AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
 AC_SUBST([ALSA_LIBS])
+AC_SUBST([JACK_CFLAGS])
 AC_SUBST([JACK_LIBS])
 
 # pass include paths down to all Makefiles
@@ -381,11 +382,18 @@ AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
     [jack=$enableval], [jack=no])
 AS_IF([test x$jack_framework != xyes -a x$jack = xyes],[
-    AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
-    AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
-    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
-        [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
-        jack=no])
+    AS_IF([pkg-config --exists jack],[
+        AC_MSG_NOTICE([Using JACK as specified by pkg-config])
+        JACK_CFLAGS=$(pkg-config --cflags jack)
+        JACK_LIBS=$(pkg-config --libs jack)
+        jack=yes
+        ],[
+        AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
+        AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
+        AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
+            [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
+            jack=no])
+        ])
 ])
 
 ##### MMIO #####

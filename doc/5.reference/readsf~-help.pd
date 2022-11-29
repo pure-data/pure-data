@@ -11,74 +11,49 @@
 #X obj 298 369 env~ 16384;
 #X obj 379 369 env~ 16384;
 #X msg 54 187 open ../sound/bell.aiff 0 200 4 2 b;
-#X text 21 60 The readsf~ object reads a soundfile into its signal
-outputs. You must open the soundfile in advance (a couple of seconds
-before you'll need it) using the "open" message. The object immediately
-starts reading from the file \, but output will only appear after you
-send a "1" to start playback. A "0" stops it., f 91;
+#X text 21 60 The readsf~ object reads a soundfile into its signal outputs. You must open the soundfile in advance (a couple of seconds before you'll need it) using the "open" message. The object immediately starts reading from the file \, but output will only appear after you send a "1" to start playback. A "0" stops it., f 91;
 #X obj 96 477 soundfiler;
 #X text 17 476 see also:;
 #X obj 38 15 readsf~;
 #X text 95 14 - read a soundfile;
-#X text 313 177 Open takes a filename \, an onset in sample frames
-\, and \, as an override \, you may also supply a header size to skip
-\, a number of channels \, bytes per sample \, and endianness., f
-44;
+#X text 313 177 Open takes a filename \, an onset in sample frames \, and \, as an override \, you may also supply a header size to skip \, a number of channels \, bytes per sample \, and endianness., f 44;
 #X text 492 480 Updated for version 0.51;
-#X text 21 126 The wave \, aiff \, caf \, and next formats are parsed
-automatically \, although only uncompressed 2- or 3-byte integer ("pcm")
-and 4-byte floating point samples are accepted., f 91;
+#X text 21 126 The wave \, aiff \, caf \, and next formats are parsed automatically \, although only uncompressed 2- or 3-byte integer ("pcm") and 4-byte floating point samples are accepted., f 91;
 #X obj 54 372 output~;
 #X obj 185 477 writesf~;
-#X obj 471 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 502 324 - number of channels \; - per channel buffer size in
-bytes, f 22;
+#X obj 471 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 502 324 - number of channels \; - per channel buffer size in bytes, f 22;
 #X msg 68 215 open ../sound/bell.aiff;
 #X obj 517 261 declare -stdpath ./;
-#X obj 7 47 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 7 47 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 613 14 <= click;
 #N canvas 679 102 575 352 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 169 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 270 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 324 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 234 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 197 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
-;
+#X obj 8 52 cnv 5 550 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 169 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 270 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 324 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 234 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 197 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 30 18 readsf~;
 #X text 86 19 - read a soundfile;
 #X text 78 69 open <list> -;
-#X text 177 69 sets a filename \, an onset in samples \, header size
-to skip \, number of channels \, bytes per sample \, and endianness.
-, f 50;
+#X text 177 69 sets a filename \, an onset in samples \, header size to skip \, number of channels \, bytes per sample \, and endianness., f 50;
 #X text 120 118 float -;
 #X text 177 118 nonzero starts playback \, zero stops., f 50;
-#X text 121 139 print - prints information on Pd's terminal window.
-, f 58;
+#X text 121 139 print - prints information on Pd's terminal window., f 58;
 #X text 122 206 signal -;
 #X text 187 206 channel output of a given file., f 46;
 #X text 137 242 bang - when finishing playing file., f 54;
-#X text 107 278 1) float - sets number of output channels (default
-1 \, max 64)., f 62;
-#X text 107 297 2) float - per channel buffer size in bytes., f 62
-;
+#X text 107 278 1) float - sets number of output channels (default 1 \, max 64)., f 62;
+#X text 107 297 2) float - per channel buffer size in bytes., f 62;
 #X text 82 174 ('n' number of outlets specified by argument);
 #X restore 519 15 pd reference;
 #X floatatom 218 396 6 0 0 0 - - - 0;
 #X floatatom 298 396 6 0 0 0 - - - 0;
 #X floatatom 379 396 6 0 0 0 - - - 0;
 #X text 497 306 Arguments:;
-#X text 460 419 The last outlet gives a "bang" when the soundfile is
-done., f 30;
-#X obj 7 464 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X text 460 419 The last outlet gives a "bang" when the soundfile is done., f 30;
+#X obj 7 464 cnv 1 675 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 166 296 print information on the Pd window;
 #X text 123 241 nonzero starts playback;
 #X text 139 270 zero stops it;

@@ -40,22 +40,16 @@
 #X obj 183 409 tabread4~ table20;
 #X obj 420 307 tabwrite~ table20;
 #X msg 486 402 read ../sound/voice.wav table20;
-#X text 290 520 This example differs from the previous one in having
-samphold~ objects which allow the chunk size and especially the read
-point to change only at points where the phase wraps around. This removes
-signal discontinuities (when the chunk size changes) and doppler shift
-when the read point is changing., f 67;
+#X text 290 520 This example differs from the previous one in having samphold~ objects which allow the chunk size and especially the read point to change only at points where the phase wraps around. This removes signal discontinuities (when the chunk size changes) and doppler shift when the read point is changing., f 67;
 #X text 640 606 updated for Pd version 0.37;
 #X text 275 169 <= read point in 100ths of a second;
 #X text 217 127 <= chunk size (100ths of a second);
 #X text 155 64 <= frequency (Hz.);
 #X obj 397 58 declare -stdpath ./;
-#X obj 225 343 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 250 342 <-- graph table index;
-#X obj 435 280 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X text 250 343 <-- graph table index;
 #X text 459 279 <-- record;
+#X obj 435 280 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 225 343 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 1 0 25 0;
 #X connect 1 0 33 0;
 #X connect 2 0 26 0;
@@ -85,5 +79,5 @@ when the read point is changing., f 67;
 #X connect 29 0 12 0;
 #X connect 31 0 12 1;
 #X connect 33 0 23 0;
-#X connect 40 0 30 0;
 #X connect 42 0 32 0;
+#X connect 43 0 30 0;

@@ -1,4 +1,4 @@
-#N canvas 639 120 762 641 12;
+#N canvas 362 37 762 641 12;
 #X obj 209 79 inlet~;
 #X obj 459 111 loadbang;
 #X obj 265 471 +~;
@@ -41,8 +41,7 @@
 #X obj 260 365 * -1;
 #X obj 133 397 *~ 0;
 #X obj 348 282 sqrt;
-#X text 45 24 Allpass filter for mono reverberator. Arg 1 = delay name
-\; Arg2 = stage number \; Arg 3 = delay time, f 37;
+#X text 45 24 Allpass filter for mono reverberator. Arg 1 = delay name \; Arg2 = stage number \; Arg 3 = delay time, f 37;
 #X obj 260 274 f 0.7;
 #X obj 306 208 f 0;
 #X obj 488 166 f 8;
