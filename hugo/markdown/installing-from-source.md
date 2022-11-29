@@ -270,7 +270,7 @@ Note: a "fat" Pd may not work on all systems and/or be able to load
 both 32 or 64 bit externals. Additionally, you can specify multiple
 architectures directly:
 
-    # build a "fat" Pd for both 32 and 64 bit
+    # build a "fat" Pd for both 32 and 64 bit Intel
     # may not work on all systems
     ./configure --enable-universal=i386,x86_64
 
