@@ -277,7 +277,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
 
-    canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
+    canvas_objtext(gl, xpix, ypix, 0, 1, b);
     if(connectme)
         canvas_connect(gl, indx, 0, nobj, 0);
     else canvas_startmotion(glist_getcanvas(gl));
