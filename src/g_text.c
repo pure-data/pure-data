@@ -1108,7 +1108,7 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     if (glist_isvisible(glist))
     {
         char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
+        sprintf(buf, "%p.l", x);
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(glist),
             "move",
@@ -1124,7 +1124,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
     if (*x->a_label->s_name)
     {
         char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
+        sprintf(buf, "%p.l", x);
         if (vis)
         {
             int x1, y1;

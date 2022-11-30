@@ -1221,8 +1221,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag0, "curve%lx", x);
-    sprintf(tag , "curve%lx_data%lx", x, data);
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
@@ -1808,9 +1808,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
-    sprintf(tag , "plot%lx", data);
+    sprintf(tag , "plot%p", data);
         /* a tag that uniquely identifies the sub-plot */
-    sprintf(tag0, "plot%lx_array%lx_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
 
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
@@ -2736,7 +2736,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag, "drawnumber%lx", data);
+    sprintf(tag, "drawnumber%p", data);
     if (vis)
     {
         t_atom fontatoms[3];
