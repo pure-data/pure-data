@@ -21,7 +21,6 @@
 #X connect 8 0 0 0;
 #X restore 213 368 pd stuff;
 #X text 125 357 subpatches:;
-#X text 351 481 updated for Pd version 0.52.;
 #X text 28 77 The position \, border color and altitude of each triangle are numeric values which can control \, or be controlled by \, other elements of the patch., f 77;
 #N canvas 962 109 257 213 data1 1;
 #X scalar template1 50 100 30 9 \;;
@@ -61,4 +60,5 @@
 #X restore 213 343 pd template1;
 #X text 28 222 Scalars are described by "templates" \, which are defined in [struct] objects inside a given subwindow. In this case \, the subwindow is "template1" but it could hve any other name. The template in [struct] describes what form the data take and how it is shown. It's possible to mix data of many different templates in the same collection \, but each template needs its own distinct subwindow. The data is displayed in the [pd data1] subpatch., f 77;
 #X text 28 116 When the data window is locked (not in edit mode) you can drag the apex of either triangle up or down to change the altitude (you should see the cursor change when dragging is possible and why this happens is explained in the "template1" suboatch.) You can also right click and ask for properties \, so you can see the Data Structures of the selected scalar \, you can also change values in the properties window. In edit (unlocked) mode \, you can move the entire triangles around \, or cut \, copy \, and paste them., f 77;
-#X connect 5 0 6 0;
+#X text 368 481 updated for Pd version 0.52;
+#X connect 4 0 5 0;

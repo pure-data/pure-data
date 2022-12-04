@@ -199,6 +199,7 @@
 #X text 26 383 The npts and hop parameters are in samples \, and are powers of two. The example below specifies a huge hop of 4096 (to slow the output down) and to output "pitch" and "env" (the default outputs)., f 82;
 #X obj 72 574 sigmund~ -hop 4096 pitch env;
 #X text 8 53 [sigmund~] analyzes an incoming sound into sinusoidal components \, which may be reported individually or combined to form a pitch estimate. Possible outputs are specified as creation arguments:, f 87;
+#X obj 153 503 nbx 5 17 -1e+37 1e+37 0 1 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000 69 256;
 #X connect 1 0 39 0;
 #X connect 2 0 24 0;
 #X connect 3 0 6 0;
