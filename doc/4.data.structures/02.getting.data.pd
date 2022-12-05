@@ -37,7 +37,6 @@
 #X msg 41 236 traverse pd-data2;
 #X text 268 392 and outputs the values of x \, y \, z \, and q., f 22;
 #X obj 87 323 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 336 551 updated for Pd version 0.32.;
 #X text 31 83 You can send the [pointer] object a "traverse" message to point it to the head of the list. The argument "pd-data2" indicates the Pd window named "data2." The head of the list means \, not the first scalar in the list \, but the position before the first scalar \, which is a valid pointer in Pd but has no data or template., f 74;
 #X text 31 161 The "next" message tells the [pointer] object to go to the next scalar in the list and output it. If there are no more \, [pointer] outputs a bang at the right outlet., f 74;
 #X obj 87 347 print end;
@@ -54,6 +53,7 @@
 #X text 111 322 <-- bang when we reach the end of the list;
 #X text 198 377 <-- this takes incoming pointers;
 #X text 31 18 The simplest thing you can do with a collection of scalars (a list) is to traverse it and retrieve its field values. This is done using two objects \, [pointer] which does the traversal \, and [get] which \, given a pointer to a scalar \, extracts field values from it., f 74;
+#X text 346 551 updated for Pd version 0.32;
 #X connect 2 0 5 0;
 #X connect 2 1 12 0;
 #X connect 3 0 2 0;
@@ -62,4 +62,4 @@
 #X connect 5 2 8 0;
 #X connect 5 3 9 0;
 #X connect 10 0 2 0;
-#X connect 12 0 16 0;
+#X connect 12 0 15 0;

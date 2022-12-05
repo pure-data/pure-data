@@ -1,20 +1,22 @@
 # Bulgarian translation of Pure Data
 # This file is put in the public domain.
 # Rostislav Raykov <zbrox@i-space.org>, 2005.
-#
+# Max Neupert <abonnements@revolwear.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2005-05-20 17:51+0300\n"
-"Last-Translator: Rostislav Raykov <zbrox@i-space.org>\n"
-"Language-Team: Bulgarian <dict@fsa-bg.org>\n"
+"PO-Revision-Date: 2022-10-30 07:04+0000\n"
+"Last-Translator: Max Neupert <abonnements@revolwear.com>\n"
+"Language-Team: Bulgarian <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/bg/>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 msgid "linear"
 msgstr ""
@@ -157,13 +159,11 @@ msgstr ""
 msgid "Array"
 msgstr "Андора"
 
-#, fuzzy
 msgid "Name:"
-msgstr "Име"
+msgstr "Име:"
 
-#, fuzzy
 msgid "Size:"
-msgstr "Размер"
+msgstr "Размер:"
 
 #, fuzzy
 msgid "Save contents"
@@ -243,9 +243,8 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-#, fuzzy
 msgid "Channels:"
-msgstr "Отмяна"
+msgstr "Отмяна:"
 
 msgid "Output Devices"
 msgstr ""
@@ -317,9 +316,9 @@ msgstr ""
 msgid "Couldn't find '%1$s' in %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "Търсене из текста..."
+msgstr "Търсене из %s текста:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -339,13 +338,12 @@ msgstr ""
 msgid "Close"
 msgstr "Затваряне"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
-msgstr "Шрифт:"
+msgstr "%s Шрифт"
 
-#, fuzzy
 msgid "Font"
-msgstr "Шрифт:"
+msgstr "Шрифт"
 
 #, fuzzy
 msgid "Font Size"
@@ -374,9 +372,8 @@ msgstr "Съобщение"
 msgid "Send symbol:"
 msgstr ""
 
-#, fuzzy
 msgid "Receive symbol:"
-msgstr "Прозореца за получване на файлове"
+msgstr "Прозореца за получване на файлове:"
 
 msgid "Width:"
 msgstr ""
@@ -388,9 +385,8 @@ msgstr "Списъци"
 msgid "Lower:"
 msgstr ""
 
-#, fuzzy
 msgid "Upper:"
-msgstr "Потребител"
+msgstr "Потребител:"
 
 msgid "Label"
 msgstr ""
@@ -408,13 +404,11 @@ msgstr "Горе"
 msgid "Bottom"
 msgstr "Долу"
 
-#, fuzzy
 msgid "Background color"
-msgstr "Фон:"
+msgstr "Цвят на фона"
 
-#, fuzzy
 msgid "Foreground color"
-msgstr "Цвят:"
+msgstr "цвят на преден план"
 
 #, fuzzy
 msgid "Label color"
@@ -450,9 +444,8 @@ msgstr "$ Номер"
 msgid "Width (digits):"
 msgstr ""
 
-#, fuzzy
 msgid "Height:"
-msgstr "Дясно"
+msgstr "Дясно:"
 
 msgid "Output Range"
 msgstr ""
@@ -516,13 +509,11 @@ msgstr ""
 msgid "Colors"
 msgstr "Цветове"
 
-#, fuzzy
 msgid "Background"
-msgstr "Фон:"
+msgstr "Фон"
 
-#, fuzzy
 msgid "Front"
-msgstr "Шрифт:"
+msgstr "Шрифт"
 
 msgid "Compose color"
 msgstr ""
@@ -606,9 +597,8 @@ msgstr ""
 msgid "Defeat real-time scheduling"
 msgstr ""
 
-#, fuzzy
 msgid "Help Browser"
-msgstr "Разглеждане..."
+msgstr "Разглеждане"
 
 msgid "Associated Files"
 msgstr ""
@@ -699,9 +689,9 @@ msgstr ""
 msgid "ignoring '%s': doesn't look like a deken package"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Installing '%s'"
-msgstr "Търсене из текста..."
+msgstr "Търсене из '%s' текста"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -904,9 +894,8 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-#, fuzzy
 msgid "Search"
-msgstr "Търсене из текста..."
+msgstr "Търсене"
 
 #, tcl-format
 msgid "Install (%d)"
@@ -950,11 +939,10 @@ msgid "Install DEK file..."
 msgstr ""
 
 msgid "Preferences..."
-msgstr "Настройки"
+msgstr "Настройки..."
 
-#, fuzzy
 msgid "Search for: "
-msgstr "Търсене из текста..."
+msgstr "Търсене из текста: "
 
 msgid "libraries"
 msgstr ""
@@ -989,9 +977,8 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#, fuzzy
 msgid "Search Results"
-msgstr "Търсене из текста..."
+msgstr "Търсене из текста"
 
 msgid "Log"
 msgstr ""
@@ -1094,13 +1081,12 @@ msgstr ""
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Searching for '%s' failed!"
-msgstr "Търсене из текста..."
+msgstr ""
 
-#, fuzzy
 msgid "Search failed"
-msgstr "Търсене из текста..."
+msgstr ""
 
 msgid "Unable to perform search."
 msgstr ""
@@ -1226,9 +1212,8 @@ msgstr "Режим \"Редакция\""
 msgid "Undo"
 msgstr "Уганда"
 
-#, fuzzy
 msgid "Redo"
-msgstr "Червено:"
+msgstr "Червено"
 
 msgid "New"
 msgstr "Ново"
@@ -1236,9 +1221,8 @@ msgstr "Ново"
 msgid "Open"
 msgstr "Отваряне"
 
-#, fuzzy
 msgid "Message..."
-msgstr "Съобщение"
+msgstr "Съобщение..."
 
 msgid "Cut"
 msgstr ""
@@ -1287,16 +1271,14 @@ msgstr ""
 msgid "DSP On"
 msgstr ""
 
-#, fuzzy
 msgid "DSP Off"
-msgstr "Изкл."
+msgstr "DSP Изкл"
 
 msgid "Test Audio and MIDI..."
 msgstr ""
 
-#, fuzzy
 msgid "Load Meter"
-msgstr "Измервател на забавянето:"
+msgstr "Измервател на забавянето"
 
 msgid "Audio Settings..."
 msgstr ""
@@ -1458,9 +1440,8 @@ msgstr ""
 msgid "New..."
 msgstr ""
 
-#, fuzzy
 msgid "Edit..."
-msgstr "_Редактиране"
+msgstr "Редактиране..."
 
 #, fuzzy
 msgid "Delete"
