@@ -1336,6 +1336,8 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 
 static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
 {
+    if (x->x_mode != MODE_TABLE)
+        return;
     t_symbol *syminput = atom_getsymbolarg(0, argc, argv);
     int npts = atom_getfloatarg(1, argc, argv);
     int onset = atom_getfloatarg(2, argc, argv);
