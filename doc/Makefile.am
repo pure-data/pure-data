@@ -481,8 +481,8 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
-     ./8.topics/expr.html \
-     ./8.topics/fudi.html \
+     ./8.topics/expr.htm \
+     ./8.topics/fudi.htm \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \
