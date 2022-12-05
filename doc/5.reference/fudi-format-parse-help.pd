@@ -93,7 +93,7 @@
 #X obj 101 130 pdcontrol;
 #X msg 101 105 dir;
 #X text 205 94 this window opens the html reference link via the [pdcontrol] object., f 25;
-#X msg 101 159 browse \$1/../8.topics/fudi.html;
+#X msg 101 159 browse \$1/../8.topics/fudi.htm;
 #X connect 0 0 3 0;
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
