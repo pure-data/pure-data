@@ -43,8 +43,8 @@
 #X msg 636 403 0;
 #X obj 449 25 inlet;
 #X text 495 25 freq \, amp \, newflag;
-#X text 98 54 This abstraction is used inside [clone] for the 16.partialtracer example and uses peak information from [sigmund~] to create partial traces with data structures., f 34;
 #X text 697 334 reentrancy protection \, should go away, f 22;
+#X text 98 54 This abstraction is used inside [clone] for the 16.partialtracer example and uses tracks information from [sigmund~] to create partial traces with data structures., f 35;
 #X connect 0 0 1 2;
 #X connect 2 0 4 1;
 #X connect 2 0 37 0;
