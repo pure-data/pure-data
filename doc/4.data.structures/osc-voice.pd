@@ -1,6 +1,6 @@
 #N canvas 535 32 731 592 12;
-#X obj 262 307 element trace-template bazoo;
-#X obj 294 191 getsize trace-template bazoo;
+#X obj 262 307 element trace-template partial;
+#X obj 294 191 getsize trace-template partial;
 #X obj 497 506 line~;
 #X obj 125 30 inlet;
 #X obj 427 425 dbtorms;
@@ -32,7 +32,6 @@
 #X text 68 377 when done \, send track id back to poly object so it can reuse us, f 22;
 #X obj 262 542 outlet~;
 #X obj 497 469 pack float 10;
-#X floatatom 53 125 5 0 0 0 - - - 0;
 #X connect 0 0 10 0;
 #X connect 1 0 20 0;
 #X connect 1 0 21 1;
@@ -63,7 +62,6 @@
 #X connect 22 0 28 0;
 #X connect 23 0 27 0;
 #X connect 27 0 28 1;
-#X connect 27 0 33 0;
 #X connect 27 1 29 0;
 #X connect 28 0 25 0;
 #X connect 29 0 11 0;

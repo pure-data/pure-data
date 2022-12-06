@@ -1,13 +1,13 @@
 #N canvas 495 60 1019 651 12;
-#X obj 636 435 element trace-template bazoo;
+#X obj 636 435 element trace-template partial;
 #X obj 471 525 set point-template y amp;
 #X obj 654 202 r nframe;
 #X obj 211 396 pointer;
 #X text 272 393 current trace;
-#X obj 211 464 getsize trace-template bazoo;
+#X obj 211 464 getsize trace-template partial;
 #X obj 251 524 + 1;
-#X obj 251 548 setsize trace-template bazoo;
-#X obj 211 577 element trace-template bazoo;
+#X obj 251 548 setsize trace-template partial;
+#X obj 211 577 element trace-template partial;
 #X obj 211 498 t f f;
 #X obj 46 606 set point-template y amp;
 #X text 853 440 last trace in list;
