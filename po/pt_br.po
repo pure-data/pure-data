@@ -1,15 +1,16 @@
 # Brazilian Portuguese translation for Pure Data
 # This file is put in the public domain.
 # Alexandre Torres Porres <porres@gmail.com>, 2017, 2018, 2022.
+# Charles K. Neimog <charlesneimog@outlook.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-21 17:41+0000\n"
-"Last-Translator: porres <porres@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/pure-"
-"data/pure-data/pt_BR/>\n"
+"PO-Revision-Date: 2022-10-24 08:22+0000\n"
+"Last-Translator: Charles K. Neimog <charlesneimog@outlook.com>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"pure-data/pure-data/pt_BR/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -215,7 +216,7 @@ msgid "44.1k"
 msgstr "44.1k"
 
 msgid "96k"
-msgstr "96l"
+msgstr "96k"
 
 msgid "Block size:"
 msgstr "Tamanho do bloco:"
@@ -243,7 +244,7 @@ msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
-"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+"AVISO: marcadores desconhecidos de 'graphme' recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -308,7 +309,7 @@ msgstr "Mostrado último '%1$s' em %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr "Mostrando '%1$d' de %2$d ítens em %3$s"
+msgstr "Mostrando '%1$d' de %2$d itens em %3$s"
 
 msgid "Pd window"
 msgstr "Janela do Pd"
@@ -411,7 +412,7 @@ msgid "Value:"
 msgstr "Valor:"
 
 msgid "Number2"
-msgstr "Number2"
+msgstr "Número2"
 
 msgid "Width (digits):"
 msgstr "Largura (dígitos):"
@@ -426,19 +427,19 @@ msgid "Log height:"
 msgstr "Altura de Log:"
 
 msgid "Vslider"
-msgstr "Slider vertical"
+msgstr "Slider Vertical"
 
 msgid "Hslider"
-msgstr "Slider horizontal"
+msgstr "Slider Horizontal"
 
 msgid "Vradio"
-msgstr "Rádio vertical"
+msgstr "Rádio Vertical"
 
 msgid "Num cells:"
 msgstr "Número de células:"
 
 msgid "Hradio"
-msgstr "Rádio horizontal"
+msgstr "Rádio Horizontal"
 
 msgid "VU Meter"
 msgstr "VU Meter"
@@ -555,7 +556,7 @@ msgid "Edit library"
 msgstr "Editar biblioteca"
 
 msgid "Pd libraries to load on startup"
-msgstr "Bibliotecas de Pd para carregar na inicialização"
+msgstr "Bibliotecas de Pd a serem carregadas na inicialização"
 
 msgid "Startup flags:"
 msgstr "Flags de inicialização:"
@@ -590,11 +591,11 @@ msgstr "fonte detectada: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr "AVISO: família de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+msgstr "AVISO: família de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "AVISO: peso de fonte ’%1$s’ não encontrado, usando padrão (%2$s)"
+msgstr "AVISO: peso de fonte '%1$s' não encontrado, usando padrão (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -602,7 +603,7 @@ msgstr "usando fonte: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr "‘%1$s’ já carregado, ignorando: ‘%2$s’"
+msgstr "'%1$s' já carregado, ignorando: '%2$s'"
 
 #, tcl-format
 msgid "Loading plugin: %s"
@@ -672,7 +673,7 @@ msgid "1. Unzip %s."
 msgstr "1. Descompactar %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr "Você poderá ter que mudar a extensão de arquivo de .dek para .zip"
+msgstr "Talvez você precise alterar a extensão do arquivo de .dek para .zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
@@ -735,19 +736,19 @@ msgid "Installation options:"
 msgstr "Opções de instalação:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr "Tentar verificar o checksum das bibliotecas antes de (re)instalá-las"
+msgstr "Tente verificar o checksum das bibliotecas antes de (re)instalá-las"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr "Tentar remover bibliotecas antes de (re)instalá-las"
+msgstr "Tente remover as bibliotecas antes de (re)instalá-las"
 
 msgid "Show README of newly installed libraries (if present)"
-msgstr "Mostrar README de bibliotecas recém instaladas (se presente)"
+msgstr "Mostrar README de bibliotecas recém-instaladas (se houver)"
 
 msgid "Keep package files after installation"
 msgstr "Manter arquivos do pacote depois da instalação"
 
 msgid "Add newly installed libraries to Pd's search path"
-msgstr "Adicionar bibliotecas recém instaladas ao caminho de busca do Pd"
+msgstr "Adicionar bibliotecas recém-instaladas ao caminho de busca do Pd"
 
 msgid "Platform settings:"
 msgstr "Configurações da plataforma:"
@@ -806,7 +807,7 @@ msgstr "Desinstalando instalação prévia de '%s'"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr "Mover temporariamente %1$s para %2$s falhou."
+msgstr "A movimentação temporária de %1$s para %2$s falhou."
 
 #, tcl-format
 msgid "Installing package '%s'"
@@ -817,24 +818,24 @@ msgstr "Instalação completa!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr "Instalação de '%s' bem sucedida!"
+msgstr "Instalação de '%s' bem-sucedida!"
 
 msgid "Installation failed!"
-msgstr "Installation falhou!"
+msgstr "Instalação falhou!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
 msgstr "Falha ao instalar '%s'!"
 
 msgid "Package installation failed"
-msgstr "Falhou instalação do pacote"
+msgstr "Falha na instalação do pacote"
 
 #, tcl-format
 msgid ""
 "Failed to completely remove %1$s.\n"
 "Please manually remove the directory %2$s after quitting Pd."
 msgstr ""
-"Falha ao completamente remover %1$s.\n"
+"Falha ao remover completamente %1$s.\n"
 "Por favor remover manualmente o diretório %2$s depois de fechar o Pd."
 
 #, tcl-format
@@ -871,16 +872,16 @@ msgstr "Instalar"
 
 #, tcl-format
 msgid "%s%% of download completed"
-msgstr "download de %s%% completado"
+msgstr "download de %s%% concluído"
 
 msgid "Enter an exact library or object name."
-msgstr "Entre um nome exato de objeto ou biblioteca."
+msgstr "Digite o nome exato de um objeto ou biblioteca."
 
 msgid "e.g. 'freeverb~'"
-msgstr "e.g, 'freeverb~'"
+msgstr "p. ex., 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr "Usar a wildcard '*' para combinar com qualquer número de caracteres."
+msgstr "Use o curinga '*' para combinar com qualquer número de caracteres."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
 msgstr "e.g. '*-plugin' combinará com 'deken-plugin' (e mais)."
@@ -895,11 +896,10 @@ msgstr ""
 "vazia."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr "Click-direito num resultado de busca lhe dará mais opções..."
+msgstr "Click-direito no resultado da busca lhe dará mais opções..."
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr ""
-"Você também pode procurar por bibliotecas e objetos via seu web browser:"
+msgstr "Você também pode procurar por bibliotecas e objetos via seu navegador:"
 
 msgid "Find externals"
 msgstr "Procurar externals"
@@ -926,10 +926,10 @@ msgid "translations"
 msgstr "traduções"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Instale apenas externals enviados por quem você confia."
+msgstr "Apenas Instale externals enviados por quem você confia."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr "Desabilitando vista tabelada: Tcl/Tk incompatível detectado"
+msgstr "Desabilitando a visão por abas: Tcl/Tk incompatível detectado"
 
 msgid "Library"
 msgstr "Biblioteca"
@@ -974,13 +974,13 @@ msgid "No matching externals found."
 msgstr "Nenhum external encontrado."
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr "Tente usar o nome completo e.g. 'freeverb~'."
+msgstr "Tente usar o nome completo p. ex. 'freeverb~'."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr "Ou use wildcards como 'freeverb*'."
+msgstr "Ou use curingas como 'freeverb*'."
 
 msgid "Please select a (writable) installation directory!"
-msgstr "Por favor selecione um diretório de instalação (writable)!"
+msgstr "Por favor selecione um diretório de instalação (gravável)!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
@@ -988,7 +988,7 @@ msgstr "Instalar %1$s em %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr "Cancelando download de '%s': Nenhum diretório de instalação foi dado."
+msgstr "Cancelando download de '%s': Nenhum diretório de instalação fornecido."
 
 msgid "Installing to non-existant directory failed"
 msgstr "Falha ao instalar em um diretório não existente"
@@ -1001,7 +1001,7 @@ msgid "Directory does not exist!"
 msgstr "Diretório não existe!"
 
 msgid "Directory is not writable!"
-msgstr "Directório não é 'writable'!"
+msgstr "Directório não é 'gravável'!"
 
 #, tcl-format
 msgid "Downloading '%s'"
@@ -1012,7 +1012,7 @@ msgid "Commencing download of '%1$s' into '%2$s'..."
 msgstr "Começando download de '%1$s' em '%2$s'..."
 
 msgid "aborting."
-msgstr "abortando."
+msgstr "cancelando."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
@@ -1067,7 +1067,7 @@ msgid "Deselect package"
 msgstr "Desselecionar pacote"
 
 msgid "Open package webpage"
-msgstr "Abrir webpage do pacote"
+msgstr "Abrir a página do pacote na web"
 
 msgid "Copy package URL"
 msgstr "Copiar URL do pacote"

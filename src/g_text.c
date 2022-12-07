@@ -277,7 +277,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
 
-    canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
+    canvas_objtext(gl, xpix, ypix, 0, 1, b);
     if(connectme)
         canvas_connect(gl, indx, 0, nobj, 0);
     else canvas_startmotion(glist_getcanvas(gl));
@@ -791,8 +791,8 @@ static void gatom_symbol(t_gatom *x, t_symbol *s)
     "nofirstin" flag, the standard list behavior gets confused. */
 static void gatom_list(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
-    /* empty lists are like bang and output value for float and symbol, but clears list */
-    if (argc || x->a_flavor == A_LIST)
+    /* empty list is like a bang */
+    if (argc)
         gatom_set(x, s, argc, argv);
     gatom_bang(x);
 }
@@ -1108,7 +1108,7 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     if (glist_isvisible(glist))
     {
         char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
+        sprintf(buf, "%p.l", x);
         pdgui_vmess(0, "crs ii",
             glist_getcanvas(glist),
             "move",
@@ -1124,7 +1124,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
     if (*x->a_label->s_name)
     {
         char buf[MAXPDSTRING];
-        sprintf(buf, "%lx.l", x);
+        sprintf(buf, "%p.l", x);
         if (vis)
         {
             int x1, y1;

@@ -40,14 +40,14 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
     SETFLOAT (fontatoms+1, -(x->x_gui.x_fontsize)*zoom);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
 
-    sprintf(tag, "%lxRECT", x);
+    sprintf(tag, "%pRECT", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos, ypos, xpos + x->x_vis_w * zoom, ypos + x->x_vis_h * zoom);
     pdgui_vmess(0, "crs rk rk", canvas, "itemconfigure", tag,
         "-fill", x->x_gui.x_bcol,
         "-outline", x->x_gui.x_bcol);
 
-    sprintf(tag, "%lxBASE", x);
+    sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs iiii", canvas, "coords", tag,
         xpos + offset, ypos + offset,
         xpos + offset + x->x_gui.x_w, ypos + offset + x->x_gui.x_h);
@@ -55,7 +55,7 @@ static void my_canvas_draw_config(t_my_canvas* x, t_glist* glist)
         "-width", zoom,
         "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crs ii", canvas, "coords", tag,
         xpos + x->x_gui.x_ldx * zoom,
         ypos + x->x_gui.x_ldy * zoom);
@@ -70,17 +70,17 @@ static void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
     t_canvas *canvas = glist_getcanvas(glist);
     char tag_object[128], tag[128];
     char *tags[] = {tag_object, tag, "label", "text"};
-    sprintf(tag_object, "%lxOBJ", x);
+    sprintf(tag_object, "%pOBJ", x);
 
-    sprintf(tag, "%lxRECT", x);
+    sprintf(tag, "%pRECT", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxBASE", x);
+    sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crr iiii rS", canvas, "create", "rectangle",
         0, 0, 0, 0, "-tags", 2, tags);
 
-    sprintf(tag, "%lxLABEL", x);
+    sprintf(tag, "%pLABEL", x);
     pdgui_vmess(0, "crr ii rs rS", canvas, "create", "text",
         0, 0, "-anchor", "w", "-tags", 4, tags);
 
@@ -91,7 +91,7 @@ static void my_canvas_draw_select(t_my_canvas* x, t_glist* glist)
 {
     t_canvas *canvas = glist_getcanvas(glist);
     char tag[128];
-    sprintf(tag, "%lxBASE", x);
+    sprintf(tag, "%pBASE", x);
     pdgui_vmess(0, "crs rk", canvas, "itemconfigure", tag,
         "-outline", (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_bcol));
 }
