@@ -284,7 +284,8 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/13.array.controls.pd \
      ./4.data.structures/14.beat-patterns.pd \
      ./4.data.structures/15.sliderule.pd \
-     ./4.data.structures/16.partialtracer.pd \
+     ./4.data.structures/16.FFT-plot.pd \
+     ./4.data.structures/17.partialtracer.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
