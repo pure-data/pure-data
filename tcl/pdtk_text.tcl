@@ -46,7 +46,7 @@ proc pdtk_pastetext {tkcanvas} {
         # turn unicode-encoded stuff (\u...) into unicode characters
         # 'unescape' needs a trailing space...
         set buf [::pdtk_text::unescape "${buf} " ]
-        for {set i 0} {$i < [string length $buf]} {incr i 1} {
+        for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
             set cha [string index $buf $i]
             scan $cha %c keynum
             pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"

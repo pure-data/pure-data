@@ -18,26 +18,16 @@
 #X floatatom 185 347 0 0 0 0 - - - 0;
 #X obj 185 374 spigot;
 #X floatatom 185 401 0 0 0 0 - - - 0;
-#X text 242 369 if open \, messages coming in at left are sent to output.
-, f 28;
+#X text 242 369 if open \, messages coming in at left are sent to output., f 28;
 #X floatatom 119 493 0 0 0 0 - - - 0;
 #X floatatom 119 549 0 0 0 0 - - - 0;
 #X obj 119 521 moses 5;
 #X floatatom 165 549 0 0 0 0 - - - 0;
-#X text 46 20 Pd provides at least four objects for doing conditional
-computations. The [select] object tests its input against its argument(s)
-\, and outputs "bang" when they match. The [route] object works similarly
-but also copies data. In other words \, [route] takes a list \, tests
-its first element \, and conditionally passes on the rest of the list.
-;
-#X text 44 287 You also get [spigot] which turns a flow of messages
-on and off (like the Gate object in Max \, but with the inputs reversed):
-, f 54;
-#X obj 224 348 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X text 46 20 Pd provides at least four objects for doing conditional computations. The [select] object tests its input against its argument(s) \, and outputs "bang" when they match. The [route] object works similarly but also copies data. In other words \, [route] takes a list \, tests its first element \, and conditionally passes on the rest of the list.;
+#X text 44 287 You also get [spigot] which turns a flow of messages on and off (like the Gate object in Max \, but with the inputs reversed):, f 54;
+#X obj 224 348 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 245 347 <-- nonzero on right inlet to open;
-#X text 56 438 And finally \, [moses] sends numbers to the left if
-they're less than the argument \, right otherwise:, f 49;
+#X text 56 438 And finally \, [moses] sends numbers to the left if they're less than the argument \, right otherwise:, f 49;
 #X connect 1 0 3 0;
 #X connect 1 1 4 0;
 #X connect 1 2 5 0;

@@ -5,44 +5,32 @@
 #X floatatom 157 237 4 0 0 0 - - - 0;
 #X msg 125 64 bang;
 #X obj 182 88 + 1;
-#X text 41 18 Here's a simple counter. Click repeatedly on the "bang"
-message to see it:, f 41;
+#X text 41 18 Here's a simple counter. Click repeatedly on the "bang" message to see it:, f 41;
 #X obj 53 544 metro 500;
 #X obj 125 89 float;
 #X obj 125 262 float;
 #X obj 53 580 float;
-#X text 40 380 Thus \, the incremented value is stored for the next
-"bang" to spit out., f 45;
-#X text 182 264 same as:;
-#X floatatom 295 235 5 0 0 0 - - - 0;
-#X obj 267 262 f;
+#X text 40 380 Thus \, the incremented value is stored for the next "bang" to spit out., f 45;
+#X text 185 264 same as:;
+#X floatatom 278 234 5 0 0 0 - - - 0;
+#X obj 260 264 f;
 #X text 206 352 to its cold inlet.;
 #X text 41 352 above connects via;
 #X floatatom 125 286 4 0 0 0 - - - 0;
-#X floatatom 267 286 4 0 0 0 - - - 0;
+#X floatatom 260 288 4 0 0 0 - - - 0;
 #X floatatom 182 113 4 0 0 0 - - - 0;
-#X obj 125 236 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X obj 267 236 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
-#X text 26 139 The [float] (or just [f]) box is a storage element holding
-one floating-point number. The cold inlet (i.e. \, the one on the right)
-stores numbers. Sending the message "bang" to the hot inlet gets the
-number back out. Below \, we use the bang GUI instead of a message:
-, f 52;
+#X obj 125 236 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 250 235 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 26 139 The [float] (or just [f]) box is a storage element holding one floating-point number. The cold inlet (i.e. \, the one on the right) stores numbers. Sending the message "bang" to the hot inlet gets the number back out. Below \, we use the bang GUI instead of a message:, f 52;
 #X text 41 329 [float]'s outlet in the first example;
-#X obj 53 486 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X text 40 433 Here's a timed counter. Hit the "toggle" GUI object
-to start and stop it..., f 41;
+#X obj 53 486 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 40 433 Here's a timed counter. Hit the "toggle" GUI object to start and stop it..., f 41;
 #X text 76 485 <-- click toggle to turn on/off;
-#X text 205 635 updated for Pd version 0.52;
+#X text 205 641 updated for Pd version 0.52;
 #X floatatom 53 513 3 0 0 0 - - - 0;
 #X text 77 513 (toggle outputs "1" when on and "0" when off);
 #X text 132 542 <-- new object: a "metronome".;
-#X text 162 561 [metro] outputs "bang" messages at a regular interval.
-The "500" means every 500 milliseconds (i.e. \, twice a second).,
-f 32;
+#X text 162 561 [metro] outputs "bang" messages at a regular interval. The "500" means every 500 milliseconds (i.e. \, twice a second)., f 32;
 #X connect 1 0 0 0;
 #X connect 1 0 10 1;
 #X connect 3 0 9 1;

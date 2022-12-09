@@ -50,8 +50,7 @@ if {[tk windowingsystem] eq "win32" || \
     # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
-        set width [lindex [wm maxsize .] 0]
-        set height [lindex [wm maxsize .] 1]
+        foreach {width height} [wm maxsize .] {break}
 
         if {$w > $width} {
             set w $width
@@ -63,10 +62,10 @@ if {[tk windowingsystem] eq "win32" || \
             set y $::menubarsize
         }
 
-        set x [ expr $x % $width]
-        set y [ expr $y % $height]
-        if {$x < 0} {set x 0}
-        if {$y < 0} {set y 0}
+        set xmin [winfo vrootx .]
+        set ymin [winfo vrooty .]
+        set x [expr ($x - $xmin) % $width + $xmin]
+        set y [expr ($y - $ymin) % $height + $ymin]
 
         return [list ${x} ${y} ${w} ${h}]
     }
@@ -202,7 +201,7 @@ proc pdtk_canvas_saveas {mytoplevel initialfile initialdir destroyflag} {
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
     set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
-    set message [format {Do you want to save the changes you made in "%s"?} $filename]
+    set message [format [_ "Do you want to save the changes you made in '%s'?"] $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {

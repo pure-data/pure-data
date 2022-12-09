@@ -83,6 +83,8 @@ static char*get_escapebuffer(const char*s, int size)
 }
 static const char* str_escape(const char*s, int size)
 {
+    if(!s)
+        return s;
     if (!get_escapebuffer(s, size))
         return 0;
     return pdgui_strnescape(s_escbuffer, s_esclength, s, size);

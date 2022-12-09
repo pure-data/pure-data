@@ -62,7 +62,7 @@ void glist_deselectline(t_glist *x);
 static void _editor_selectlinecolor(t_glist*x, const char*color)
 {
     char tag[128];
-    sprintf(tag, "l%lx", x->gl_editor->e_selectline_tag);
+    sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
     pdgui_vmess(0, "crs rs",
         x, "itemconfigure", tag,
         "-fill", color);
@@ -465,7 +465,7 @@ void canvas_disconnect(t_canvas *x,
             sinkno == index2 && t.tr_inno == inno)
         {
             char tag[128];
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crs", x, "delete", tag);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
@@ -2602,7 +2602,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             char tag[128];
             char*tags[] = {tag, "cord"};
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
@@ -4412,7 +4412,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     {
         char tag[128];
         char*tags[] = {tag, "cord"};
-        sprintf(tag, "l%lx", oc);
+        sprintf(tag, "l%p", oc);
         pdgui_vmess(0, "crr iiii ri rS",
             glist_getcanvas(x), "create", "line",
             0, 0, 0, 0,

@@ -79,8 +79,7 @@
 #X obj 68 121 makenote 1;
 #X obj 379 233 + 20;
 #X obj 379 182 metro 300;
-#X obj 379 158 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000 0 1;
+#X obj 379 158 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 379 291 s \$0-note;
 #X obj 379 205 random 70;
 #X obj 108 256 vcf~ 3;
@@ -92,16 +91,7 @@
 #X obj 82 151 poly 1 1;
 #X floatatom 439 158 6 0 0 0 - - - 0;
 #X floatatom 446 241 5 0 0 0 - - - 0;
-#X text 54 404 Now that we can make reasonably high-quality classic
-waveforms using upsampling \, we combine an upsampled oscillator with
-a "vcf" filter and ADSR generators to control the filter resonant frequency
-and the amplitude to make the classic subtractive synthesis sound.
-Send an "s \$0-note" object a (pitch \, duration) pair to play a note.
-(Classic VC synths did not have velocity sensitive keyboards!) You
-can add controls to change the parameters of the ADSR envelopes and/or
-the vcf~ "Q" parameter. The oscillators' waveforms and tuning relationship
-is controlled by other parameters set within the "pd 16x" window.,
-f 64;
+#X text 54 404 Now that we can make reasonably high-quality classic waveforms using upsampling \, we combine an upsampled oscillator with a "vcf" filter and ADSR generators to control the filter resonant frequency and the amplitude to make the classic subtractive synthesis sound. Send an "s \$0-note" object a (pitch \, duration) pair to play a note. (Classic VC synths did not have velocity sensitive keyboards!) You can add controls to change the parameters of the ADSR envelopes and/or the vcf~ "Q" parameter. The oscillators' waveforms and tuning relationship is controlled by other parameters set within the "pd 16x" window., f 64;
 #X obj 68 92 unpack f f;
 #X obj 386 27 declare -stdpath ./;
 #X obj 379 265 pack f 200;

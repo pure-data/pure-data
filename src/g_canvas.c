@@ -451,7 +451,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
         canvas_addtolist(x);
-    /* post("canvas %lx, owner %lx", x, owner); */
+    /* post("canvas %p, owner %p", x, owner); */
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
@@ -944,7 +944,7 @@ static void canvas_drawlines(t_canvas *x)
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
         {
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crr iiii ri rS",
                 glist_getcanvas(x), "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
@@ -964,7 +964,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
             char tag[128];
-            sprintf(tag, "l%lx", oc);
+            sprintf(tag, "l%p", oc);
             pdgui_vmess(0, "crs iiii",
                 glist_getcanvas(x), "coords", tag,
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2);
@@ -977,7 +977,7 @@ static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
     char tag[128];
     if (!glist_isvisible(x))
         return;
-    sprintf(tag, "l%lx", oc);
+    sprintf(tag, "l%p", oc);
     pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
 }
 
