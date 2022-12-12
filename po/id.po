@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-12-12 04:50+0000\n"
+"PO-Revision-Date: 2022-12-13 18:49+0000\n"
 "Last-Translator: AtrashDingDong <drummerqueen666@hotmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -24,68 +24,68 @@ msgid "logarithmic"
 msgstr ""
 
 msgid "new-only"
-msgstr ""
+msgstr "baru-saja"
 
 msgid "new&old"
-msgstr ""
+msgstr "baru&lama"
 
 msgid "no scale"
-msgstr ""
+msgstr "jangan menyisiki"
 
 msgid "scale"
-msgstr "skala"
+msgstr "menyisiki"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
 msgstr ""
 
 msgid "Undo clear"
-msgstr ""
+msgstr "Batal penghapusan"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "Batal menghubungkan"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "Batal potongan"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "Batal memutuskan hubunkgan"
 
 msgid "Undo duplicate"
-msgstr ""
+msgstr "Batal duplikasi"
 
 msgid "Undo motion"
 msgstr ""
 
 msgid "Undo paste"
-msgstr ""
+msgstr "Batal tempel"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Batal ketikan"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "Ulang penghapusan"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "Ulang menghubungkan"
 
 msgid "Redo cut"
-msgstr ""
+msgstr "Ulang potongan"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "Ulang memutuskan hubungan"
 
 msgid "Redo duplicate"
-msgstr ""
+msgstr "Ulang duplikasi"
 
 msgid "Redo motion"
 msgstr ""
 
 msgid "Redo paste"
-msgstr ""
+msgstr "Ulang tempel"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Ulang ketikan"
 
 msgid "no Pd settings to clear"
 msgstr ""
@@ -115,31 +115,32 @@ msgid "File"
 msgstr ""
 
 msgid "Edit"
-msgstr ""
+msgstr "Sunting"
 
 msgid "Put"
-msgstr ""
+msgstr "Tambah"
 
 msgid "Find"
-msgstr ""
+msgstr "Mencari"
 
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
+#, fuzzy
 msgid "Window"
-msgstr ""
+msgstr "Jendela"
 
 msgid "Help"
-msgstr ""
+msgstr "Tolong"
 
 msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
-msgstr ""
+msgstr "Salin"
 
 msgid "Paste"
-msgstr ""
+msgstr "Tempel"
 
 msgid "Array Properties"
 msgstr ""
@@ -148,16 +149,17 @@ msgid "Array"
 msgstr ""
 
 msgid "Name:"
-msgstr ""
+msgstr "Nama:"
 
 msgid "Size:"
-msgstr ""
+msgstr "Ukuran:"
 
+#, fuzzy
 msgid "Save contents"
-msgstr ""
+msgstr "Simpan muatan"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "Menggambar sebagai:"
 
 msgid "Polygon"
 msgstr ""
@@ -172,13 +174,13 @@ msgid "Put array into:"
 msgstr ""
 
 msgid "New graph"
-msgstr ""
+msgstr "Grafik baru"
 
 msgid "Last graph"
-msgstr ""
+msgstr "Grafik sebelumnya"
 
 msgid "Options"
-msgstr ""
+msgstr "Pilihan"
 
 msgid "Open List View..."
 msgstr ""
@@ -187,19 +189,19 @@ msgid "Delete array"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "Membatalkan"
 
 msgid "Apply"
-msgstr ""
+msgstr "Menggunakan"
 
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "Pengaturan audio"
 
 msgid "Settings"
-msgstr ""
+msgstr "Pengaturan"
 
 msgid "Sample rate:"
 msgstr ""
@@ -208,13 +210,13 @@ msgid "Delay (msec):"
 msgstr ""
 
 msgid "48k"
-msgstr ""
+msgstr "48k"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44.1k"
 
 msgid "96k"
-msgstr ""
+msgstr "96k"
 
 msgid "Block size:"
 msgstr ""
@@ -238,16 +240,16 @@ msgid "Use Multiple Devices"
 msgstr ""
 
 msgid "Save All Settings"
-msgstr ""
+msgstr "Menyimpan semua pangaturan"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "Sifat kanvas"
 
 msgid "Scale"
-msgstr ""
+msgstr "Sisik"
 
 msgid "X units per pixel:"
 msgstr ""
@@ -271,7 +273,7 @@ msgid "X range: from"
 msgstr ""
 
 msgid "to"
-msgstr ""
+msgstr "sampai"
 
 msgid "Margin:"
 msgstr ""
@@ -314,8 +316,9 @@ msgstr ""
 msgid "Match whole word only"
 msgstr ""
 
+#, fuzzy
 msgid "Close"
-msgstr ""
+msgstr "Matikan"
 
 #, tcl-format
 msgid "%s Font"
@@ -331,16 +334,17 @@ msgid "Stretch"
 msgstr ""
 
 msgid "X and Y"
-msgstr ""
+msgstr "X dan Y"
 
 msgid "X only"
-msgstr ""
+msgstr "X saja"
 
 msgid "Y only"
-msgstr ""
+msgstr "Y saja"
 
+#, fuzzy
 msgid "GUI Box Properties"
-msgstr ""
+msgstr "Sifat kotak GUI"
 
 msgid "Messages"
 msgstr ""
@@ -352,31 +356,31 @@ msgid "Receive symbol:"
 msgstr ""
 
 msgid "Width:"
-msgstr ""
+msgstr "Lebar:"
 
 msgid "Limits"
-msgstr ""
+msgstr "Batasan"
 
 msgid "Lower:"
-msgstr ""
+msgstr "Paling rendah:"
 
 msgid "Upper:"
-msgstr ""
+msgstr "Paling tinggi:"
 
 msgid "Label"
 msgstr ""
 
 msgid "Left"
-msgstr ""
+msgstr "Kiri"
 
 msgid "Right"
-msgstr ""
+msgstr "Kanan"
 
 msgid "Top"
-msgstr ""
+msgstr "Atas"
 
 msgid "Bottom"
-msgstr ""
+msgstr "Bawah"
 
 msgid "Background color"
 msgstr ""
@@ -406,10 +410,10 @@ msgid "Non Zero Value"
 msgstr ""
 
 msgid "Value:"
-msgstr ""
+msgstr "Nilai:"
 
 msgid "Number2"
-msgstr ""
+msgstr "Angka2"
 
 msgid "Width (digits):"
 msgstr ""
@@ -442,7 +446,7 @@ msgid "VU Meter"
 msgstr ""
 
 msgid "Canvas"
-msgstr ""
+msgstr "Kanvas"
 
 msgid "Visible Rectangle (pix)"
 msgstr ""
@@ -473,16 +477,18 @@ msgid "Y offset:"
 msgstr ""
 
 msgid "Colors"
-msgstr ""
+msgstr "Warna"
 
 msgid "Background"
 msgstr ""
 
+#, fuzzy
 msgid "Front"
-msgstr ""
+msgstr "Depan"
 
+#, fuzzy
 msgid "Compose color"
-msgstr ""
+msgstr "Membuat warna"
 
 msgid "Test label"
 msgstr ""
@@ -494,10 +500,10 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "Pengaturan MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "Pengaturan ALSA MIDI"
 
 msgid "In Ports:"
 msgstr ""
@@ -546,7 +552,7 @@ msgid "Edit existing path [%s]"
 msgstr ""
 
 msgid "Add new library"
-msgstr ""
+msgstr "Tambah perpustakaan baru"
 
 msgid "Edit library"
 msgstr ""
@@ -1288,10 +1294,10 @@ msgid "Startup..."
 msgstr ""
 
 msgid "Audio..."
-msgstr ""
+msgstr "Audio..."
 
 msgid "MIDI..."
-msgstr ""
+msgstr "MIDI..."
 
 msgid "Zoom New Windows"
 msgstr ""
@@ -1300,16 +1306,16 @@ msgid "Save All Preferences"
 msgstr ""
 
 msgid "Save to..."
-msgstr ""
+msgstr "Simpan ke..."
 
 msgid "Load from..."
 msgstr ""
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Melupakan semua..."
 
 msgid "Preferences"
-msgstr ""
+msgstr "Preferensi"
 
 msgid "Open Recent"
 msgstr ""
@@ -1333,10 +1339,10 @@ msgid "the Pd window filtered %d lines"
 msgstr ""
 
 msgid "Audio on"
-msgstr ""
+msgstr "Audio hidup"
 
 msgid "Audio off"
-msgstr ""
+msgstr "Audio mati"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
@@ -1345,13 +1351,13 @@ msgid "Tcl:"
 msgstr ""
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Eror audio I/O"
 
 msgid "Log:"
 msgstr ""
@@ -1360,25 +1366,25 @@ msgid "fatal"
 msgstr ""
 
 msgid "error"
-msgstr ""
+msgstr "eror"
 
 msgid "normal"
-msgstr ""
+msgstr "biasa"
 
 msgid "debug"
 msgstr ""
 
 msgid "all"
-msgstr ""
+msgstr "semua"
 
 msgid "New..."
-msgstr ""
+msgstr "Baru..."
 
 msgid "Edit..."
 msgstr ""
 
 msgid "Delete"
-msgstr ""
+msgstr "Menghapus"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
