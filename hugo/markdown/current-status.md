@@ -11,6 +11,11 @@ This section tracks changes in Pd's current implementation.
 
 ### release notes
 
+------------------ 0.53-1 ------------------------------
+
+Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of
+the cleanup/rewrite for 0.53. Also more documentation by Alexandre Porres.
+
 ------------------ 0.53-0 ------------------------------
 
 This is being released quickly to fix a bug in version 0.52, in which soundfile reading
