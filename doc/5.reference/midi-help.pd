@@ -234,10 +234,10 @@
 #X obj 39 16 pgmin;
 #X obj 29 326 pgmout;
 #X text 93 325 - MIDI program output;
-#X text 146 112 float - program value., f 27;
-#X text 155 392 float - program value., f 27;
 #X text 92 15 - MIDI program input.;
 #X text 130 497 1) float - sets MIDI channel/port (default 1).;
+#X text 146 112 float - program value (from 1 to 128).;
+#X text 155 392 float - program value (from 1 to 128).;
 #X restore 383 131 pd reference;
 #X text 350 132 ==>;
 #X obj 242 131 pgmin;

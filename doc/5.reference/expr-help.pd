@@ -1065,12 +1065,12 @@
 #X obj 101 190 pdcontrol;
 #X obj 101 130 pdcontrol;
 #X msg 101 105 dir;
-#X msg 101 159 browse \$1/../8.topics/expr.html;
 #X text 205 94 this window opens the html reference link via the [pdcontrol] object., f 25;
+#X msg 101 159 browse \$1/../8.topics/expr.htm;
 #X connect 0 0 3 0;
-#X connect 2 0 4 0;
+#X connect 2 0 5 0;
 #X connect 3 0 2 0;
-#X connect 4 0 1 0;
+#X connect 5 0 1 0;
 #X restore 451 91 pd reference;
 #X obj 8 595 cnv 1 730 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 655 90 <= click;
@@ -1106,9 +1106,9 @@
 #X obj 531 633 mtof~;
 #X text 573 618 - acoustic conversions;
 #X text 338 328 <-- 1st inlet is an audio signal vector/block;
-#X text 474 57 <-- Open HTTML reference;
 #X text 256 443 'n' index for '$x#' is from 0 to minus "vector size - 1".;
 #X text 256 460 'n' index for '$x#' is from -1 to minus "vector size - 1".;
+#X text 474 57 <-- Open HTML reference;
 #X connect 18 0 17 2;
 #X connect 19 0 17 1;
 #X connect 20 0 17 0;

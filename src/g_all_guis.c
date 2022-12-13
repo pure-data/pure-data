@@ -825,16 +825,27 @@ void iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
     for(i=0; i<argc; i++)
         SETFLOAT(argv+i, -1); /* initialize */
 
-    if(!for_undo)
+    if(for_undo) {
+        static t_symbol*s_empty = 0;
+        if(!s_empty)s_empty = gensym("empty");
+        srl[0] = iemgui->x_snd_unexpanded;
+        srl[1] = iemgui->x_rcv_unexpanded;
+        srl[2] = iemgui->x_lab_unexpanded;
+        /* just in case one of the labels is NULL, set it to something valid */
+        for(i=0; i<3; i++)
+            if (!srl[i])
+                srl[i]=s_empty;
+    } else {
         iemgui_properties(iemgui, srl);
+    }
 
     if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
     if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
     if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
     if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
-    if(argc> 7) SETSYMBOL(argv+ 7, for_undo?iemgui->x_snd:srl[0]);
-    if(argc> 8) SETSYMBOL(argv+ 8, for_undo?iemgui->x_rcv:srl[1]);
-    if(argc> 9) SETSYMBOL(argv+ 9, for_undo?iemgui->x_lab:srl[2]);
+    if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
+    if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
+    if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
     if(argc>10) SETFLOAT (argv+10, iemgui->x_ldx);
     if(argc>11) SETFLOAT (argv+11, iemgui->x_ldy);
     if(argc>12) SETFLOAT (argv+12, iemgui->x_fsf.x_font_style);
