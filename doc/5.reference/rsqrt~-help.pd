@@ -1,6 +1,6 @@
 #N canvas 558 25 524 436 12;
 #X floatatom 245 123 7 0.1 100 0 - - - 0;
-#X floatatom 245 258 8 0 0 0 - - - 0;
+#X floatatom 245 258 10 0 0 0 - - - 0;
 #X obj 245 229 snapshot~;
 #X obj 22 14 rsqrt~;
 #X text 79 13 - signal reciprocal square root;
@@ -8,8 +8,8 @@
 #X text 305 401 updated for Pd version 0.47.;
 #X text 13 400 see also:;
 #X obj 92 400 sqrt~;
-#X text 398 330 - deprecated;
-#X obj 326 328 q8_rsqrt~;
+#X text 403 329 - deprecated;
+#X obj 331 327 q8_rsqrt~;
 #X msg 84 201 \; pd dsp \$1;
 #X obj 84 173 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 108 172 DSP on/off;
@@ -32,8 +32,8 @@
 #X obj 140 400 expr~;
 #X obj 307 167 loadbang;
 #X text 43 58 [rsqrt~] takes the approximate reciprocal square root of the incoming signal (the same as '1/sqrt(input) using a fast approximate algorithm which is probably accurate to about 120 dB (20 bits)., f 56;
-#X text 18 306 An older object \, [q8_rsqrt~] \, is included in Pd for back compatibility but should probably not be used. It only gives about 8 bit accuracy., f 41;
-#X text 308 258 <-- result;
+#X text 338 258 <-- result;
+#X text 23 305 An older object \, [q8_rsqrt~] \, is included Pd for back compatibility. It used to habe only gives 8 bit accuracy but now is the same as [rsqrt~]., f 41;
 #X connect 0 0 14 0;
 #X connect 2 0 1 0;
 #X connect 5 0 2 0;
