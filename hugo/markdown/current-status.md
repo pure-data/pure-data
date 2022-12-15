@@ -14,7 +14,7 @@ This section tracks changes in Pd's current implementation.
 ------------------ 0.53-1 ------------------------------
 
 Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of
-the cleanup/rewrite for 0.53. Also more documentation by Alexandre Porres.
+the cleanup/rewrite for 0.53. Also more documentation updates by Alexandre Porres.
 
 ------------------ 0.53-0 ------------------------------
 

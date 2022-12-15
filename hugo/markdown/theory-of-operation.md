@@ -17,12 +17,16 @@ about computer music) can be found in the
 ### overview
 
 Pd is a real-time graphical programming environment for audio and
-graphical processing. It resembles the Max/MSP system but is much
-simpler and more portable; also Pd has two features not (yet) showing up
-in Max/MSP: first, via Mark Dank's GEM package, Pd can be used for
-simultaneous computer animation and computer audio. Second, an
-experimental facility is provided for defining and accessing data
-structures.
+graphical processing. It resembles the MAX system but is much simpler and more portable.
+For example, with Peter Brinkmann's libpd you can have Pure Data as an embeddable
+audio synthesis library. Also Pd has an experimental facility not present in MAX
+that is provided for defining and accessing data structures.
+
+Even though it is light and portable, Pd has many external packages that
+expand its features, like Mark Dank's GEM package which expands Pd to be used
+for simultaneous computer animation and computer audio. Similarly, Zack Lee's Ofelia
+package allows you to use openFrameworks and Lua within Pd for creating audiovisual
+artwork or multimedia applications such as games.
 
 ### main window, canvases, and printout
 
