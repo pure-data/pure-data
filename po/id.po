@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-12-13 18:49+0000\n"
+"PO-Revision-Date: 2022-12-18 17:49+0000\n"
 "Last-Translator: AtrashDingDong <drummerqueen666@hotmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
 msgid "linear"
 msgstr ""
@@ -54,8 +54,9 @@ msgstr "Batal memutuskan hubunkgan"
 msgid "Undo duplicate"
 msgstr "Batal duplikasi"
 
+#, fuzzy
 msgid "Undo motion"
-msgstr ""
+msgstr "Batal kejadian"
 
 msgid "Undo paste"
 msgstr "Batal tempel"
@@ -78,8 +79,9 @@ msgstr "Ulang memutuskan hubungan"
 msgid "Redo duplicate"
 msgstr "Ulang duplikasi"
 
+#, fuzzy
 msgid "Redo motion"
-msgstr ""
+msgstr "Ulang kejadian"
 
 msgid "Redo paste"
 msgstr "Ulang tempel"
@@ -87,8 +89,9 @@ msgstr "Ulang tempel"
 msgid "Redo typing"
 msgstr "Ulang ketikan"
 
+#, fuzzy
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "tidak ada pengaturan Pd yang bisa dihapuskan"
 
 msgid "removed .pdsettings file"
 msgstr ""
@@ -752,8 +755,9 @@ msgstr ""
 msgid "Add newly installed libraries to Pd's search path"
 msgstr ""
 
+#, fuzzy
 msgid "Platform settings:"
-msgstr ""
+msgstr "Pengaturan OS"
 
 #, tcl-format
 msgid "Default platform: %s"
@@ -1232,10 +1236,10 @@ msgid "Load Meter"
 msgstr ""
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "Pengaturan Audio..."
 
 msgid "MIDI Settings..."
-msgstr ""
+msgstr "Pengaturan MIDI..."
 
 msgid "Minimize"
 msgstr ""
@@ -1281,11 +1285,13 @@ msgid ""
 "(takes effect when Pd is restarted)"
 msgstr ""
 
+#, fuzzy
 msgid "removed GUI settings"
-msgstr ""
+msgstr "pengaturan GUI dihapuskan"
 
+#, fuzzy
 msgid "no Pd-GUI settings to clear"
-msgstr ""
+msgstr "tidak ada pengaturan Pd-GUI yang bisa menghapus"
 
 msgid "Path..."
 msgstr ""
