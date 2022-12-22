@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-12-18 17:49+0000\n"
+"PO-Revision-Date: 2022-12-23 18:50+0000\n"
 "Last-Translator: AtrashDingDong <drummerqueen666@hotmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/id/>\n"
@@ -103,16 +103,19 @@ msgid "failed to erase Pd settings"
 msgstr ""
 
 msgid "erased Pd settings"
-msgstr ""
+msgstr "pengaturan Pd dihapus"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "tidak ada pengaturan Pd yang bisa menghapus"
 
+#, fuzzy
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
 msgstr ""
+"sedang melewat preferensi pemuatan... dikira Pd dihancurkan pas pembukaan"
 
+#, fuzzy
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(simpan preferensi lagi untuk diberlaku)"
 
 msgid "File"
 msgstr ""
@@ -165,13 +168,13 @@ msgid "Draw as:"
 msgstr "Menggambar sebagai:"
 
 msgid "Polygon"
-msgstr ""
+msgstr "Segibanyak"
 
 msgid "Points"
-msgstr ""
+msgstr "Titik"
 
 msgid "Bezier curve"
-msgstr ""
+msgstr "Lengkung Bezier"
 
 msgid "Put array into:"
 msgstr ""
@@ -206,11 +209,13 @@ msgstr "Pengaturan audio"
 msgid "Settings"
 msgstr "Pengaturan"
 
+#, fuzzy
 msgid "Sample rate:"
-msgstr ""
+msgstr "Kecepatan sampel:"
 
+#, fuzzy
 msgid "Delay (msec):"
-msgstr ""
+msgstr "Kelambatan (msec)"
 
 msgid "48k"
 msgstr "48k"
@@ -227,20 +232,25 @@ msgstr ""
 msgid "Use callbacks"
 msgstr ""
 
+#, fuzzy
 msgid "Input Devices"
-msgstr ""
+msgstr "Perangkat memasuk"
 
+#, fuzzy
 msgid "Channels:"
-msgstr ""
+msgstr "Kanal:"
 
+#, fuzzy
 msgid "Output Devices"
-msgstr ""
+msgstr "Perangkat keluar:"
 
+#, fuzzy
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(sama dengan perangkat memasuk)..."
 
+#, fuzzy
 msgid "Use Multiple Devices"
-msgstr ""
+msgstr "Pakai Banyak Perangkat"
 
 msgid "Save All Settings"
 msgstr "Menyimpan semua pangaturan"
@@ -288,53 +298,53 @@ msgid "Data Properties"
 msgstr ""
 
 msgid "Send"
-msgstr ""
+msgstr "Kirim"
 
 msgid "Done"
-msgstr ""
+msgstr "Sudah"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Ketemu '%1$s' di %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "Tidak bisa menemukan '%1$s' di %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "Mencari ini di %s:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Ini '%1$s' terakhir di %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
-
-msgid "Pd window"
-msgstr ""
-
-msgid "Match whole word only"
-msgstr ""
+msgstr "Ini hal ke-'%1$d' / %2$d hal di %3$s"
 
 #, fuzzy
+msgid "Pd window"
+msgstr "Jendela Pd"
+
+msgid "Match whole word only"
+msgstr "Mencocokkan dengan kata seluruh saja"
+
 msgid "Close"
 msgstr "Matikan"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "%s Fon"
 
 msgid "Font"
-msgstr ""
+msgstr "Fon"
 
 msgid "Font Size"
-msgstr ""
+msgstr "Kebesaran Fon"
 
 msgid "Stretch"
-msgstr ""
+msgstr "Melebarkan"
 
 msgid "X and Y"
 msgstr "X dan Y"
@@ -350,13 +360,13 @@ msgid "GUI Box Properties"
 msgstr "Sifat kotak GUI"
 
 msgid "Messages"
-msgstr ""
+msgstr "Pesan"
 
 msgid "Send symbol:"
-msgstr ""
+msgstr "Kirim simbol:"
 
 msgid "Receive symbol:"
-msgstr ""
+msgstr "Terima simbol:"
 
 msgid "Width:"
 msgstr "Lebar:"
@@ -371,7 +381,7 @@ msgid "Upper:"
 msgstr "Paling tinggi:"
 
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 msgid "Left"
 msgstr "Kiri"
@@ -386,16 +396,16 @@ msgid "Bottom"
 msgstr "Bawah"
 
 msgid "Background color"
-msgstr ""
+msgstr "Warna belakang"
 
 msgid "Foreground color"
-msgstr ""
+msgstr "Warna depan"
 
 msgid "Label color"
-msgstr ""
+msgstr "Warna label"
 
 msgid "Bang"
-msgstr ""
+msgstr "Bang"
 
 msgid "Flash Time (msec)"
 msgstr ""
@@ -410,7 +420,7 @@ msgid "Toggle"
 msgstr ""
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Nilai Bukan Nul"
 
 msgid "Value:"
 msgstr "Nilai:"
@@ -431,13 +441,13 @@ msgid "Log height:"
 msgstr ""
 
 msgid "Vslider"
-msgstr ""
+msgstr "Vtombolgeser"
 
 msgid "Hslider"
-msgstr ""
+msgstr "Htombolgeser"
 
 msgid "Vradio"
-msgstr ""
+msgstr "Vradio"
 
 msgid "Num cells:"
 msgstr ""
@@ -483,21 +493,19 @@ msgid "Colors"
 msgstr "Warna"
 
 msgid "Background"
-msgstr ""
+msgstr "Belakang"
 
-#, fuzzy
 msgid "Front"
 msgstr "Depan"
 
-#, fuzzy
 msgid "Compose color"
 msgstr "Membuat warna"
 
 msgid "Test label"
-msgstr ""
+msgstr "Label anju"
 
 msgid "Send a Pd message"
-msgstr ""
+msgstr "Mengirim sebuah pesan Pd"
 
 msgid "(use arrow keys for history)"
 msgstr ""
@@ -521,7 +529,7 @@ msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
-msgstr ""
+msgstr "Bertele-tele"
 
 msgid "Pd Documents Directory"
 msgstr ""
