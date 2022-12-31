@@ -3,7 +3,7 @@
 #X obj 294 195 getsize trace-template partial;
 #X obj 497 516 line~;
 #X obj 125 40 inlet;
-#X obj 427 435 dbtorms;
+#X obj 427 431 dbtorms;
 #X obj 262 465 mtof;
 #X obj 262 524 *~;
 #X obj 182 201 f;
@@ -15,8 +15,8 @@
 #X obj 539 360 get trace-template y;
 #X obj 262 435 +;
 #X obj 262 494 osc~;
-#X obj 616 447 r osc-speed;
-#X obj 294 229 - 1;
+#X obj 606 447 r osc-speed;
+#X obj 294 236 - 1;
 #X obj 72 275 >=;
 #X obj 72 329 sel 1;
 #X obj 125 69 route 1;
@@ -30,12 +30,13 @@
 #X obj 262 552 outlet~;
 #X obj 93 398 pack f 0;
 #X obj 72 299 change;
-#X obj 507 479 pack float float;
+#X obj 497 474 pack float float;
 #X obj 337 222 r osc-stop;
 #X msg 337 246 0;
-#X msg 497 309 0 10;
-#X obj 554 246 r osc-stop;
 #X text 314 41 This abstraction is used inside [clone] for the 17.partialtracer example and reads tracks information from [sigmund~] recorded into data structures to feed an oscillator bank., f 46;
+#X msg 447 474 0 10;
+#X obj 510 431 r osc-stop;
+#X msg 497 309 0;
 #X connect 0 0 10 0;
 #X connect 1 0 17 0;
 #X connect 1 0 18 1;
@@ -49,7 +50,7 @@
 #X connect 7 0 18 0;
 #X connect 8 0 7 1;
 #X connect 9 0 0 0;
-#X connect 9 1 34 0;
+#X connect 9 1 37 0;
 #X connect 10 0 14 0;
 #X connect 10 1 4 0;
 #X connect 11 0 7 1;
@@ -74,5 +75,6 @@
 #X connect 31 0 2 0;
 #X connect 32 0 33 0;
 #X connect 33 0 9 1;
-#X connect 34 0 2 0;
-#X connect 35 0 34 0;
+#X connect 35 0 2 0;
+#X connect 36 0 35 0;
+#X connect 37 0 31 0;
