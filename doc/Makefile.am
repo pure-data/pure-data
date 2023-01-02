@@ -361,7 +361,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/moses-help.pd \
      ./5.reference/namecanvas-help.pd \
      ./5.reference/nbx-help.pd \
-     ./5.reference/netreceive-help.pd \
      ./5.reference/netsend-receive-help.pd \
      ./5.reference/noise~-help.pd \
      ./5.reference/openpanel-help.pd \
