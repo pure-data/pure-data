@@ -810,7 +810,7 @@ static void gatom_ungrab(t_gatom *x, t_rtext *y) {
     char buf[MAXPDSTRING];
     sprintf(buf, "%sR", rtext_gettag(y));
     x->a_grabbed = 0;
-    pdgui_vmess("pdtk_canvas::set_color_types",
+    pdgui_vmess("pdtk_canvas::set_option_types",
         "ci crs ri rr",
         c, 1, c, "itemconfigure", buf,
         "-width", x->a_glist->gl_zoom,
@@ -1158,7 +1158,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
                 "text"
             };
             gatom_getwherelabel(x, glist, &x1, &y1);
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci rcS ff s ir",
                 c, 1, "pdtk_text_new", c, 3, tags,
                 (double)x1, (double)y1,
@@ -1364,7 +1364,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
         char buf[MAXPDSTRING];
         sprintf(buf, "%sR", rtext_gettag(y));
         if (x->te_type == T_TEXT)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crs rr",
                 glist, 1, glist,
                 "itemconfigure",
@@ -1379,7 +1379,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
 					case T_ATOM: outline = "atom_box_outline"; break;
 					default: outline = "obj_box_outline";
 				}
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crs rr",
                 glist, 1,
                 glist, "itemconfigure", buf,
@@ -1571,7 +1571,7 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[1] = "outlet";
         if (firsttime) {
             issignal = obj_issignaloutlet(ob,i);
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiii rS rr rr",
                 c, 2, c, "create", "rectangle",
                 onset, y2 - oh + glist->gl_zoom, onset + iow, y2,
@@ -1593,7 +1593,7 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
         tags[1] = "inlet";
         if (firsttime) {
             issignal = obj_issignalinlet(ob,i);
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiii rS rr rr",
                 c, 2, c, "create", "rectangle",
                 onset, y1, onset + iow, y1 + ih - glist->gl_zoom,
@@ -1634,7 +1634,7 @@ void text_drawborder(t_text *x, t_glist *glist,
             outline = "obj_box_outline";
         }
         if (firsttime)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiiiiiii rr ri rS rr rr",
                 c, 2, c, "create", "polygon",
                 x1, y1,  x2, y1,  x2, y2,  x1, y2,
@@ -1660,7 +1660,7 @@ void text_drawborder(t_text *x, t_glist *glist,
         if (corner > 10*glist->gl_zoom)
             corner = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiiiiiiiiiii ri rS rr rr",
                 c, 2, c, "create", "polygon",
                 x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,  x1, y2,
@@ -1682,7 +1682,7 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiiiiiiiii ri rS rr rr",
                 c, 2, c, "create", "polygon",
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner, x2, y2,  x1p, y2,
@@ -1708,7 +1708,7 @@ void text_drawborder(t_text *x, t_glist *glist,
         char *tags[] = {tagR, "atom"};
         corner = ((y2-y1)/4);
         if (firsttime)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiiiiiiiiiii ri rS rr rr",
                 c, 2, c, "create", "polygon",
                 x1p, y1p,  x2-corner, y1p,  x2, y1p+corner,  x2, y2-corner,  x2-corner, y2,  x1p, y2,
@@ -1734,7 +1734,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     {
         char *tags[] = {tagR, "commentbar"};
         if (firsttime)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiii rS rr",
                 c, 1, c, "create", "line",
                 x2, y1,  x2, y2,

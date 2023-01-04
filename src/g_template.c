@@ -1863,7 +1863,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if (i == nelem-1 || inextx != ixpix)
                 {
                     if(color < 0)
-                        pdgui_vmess("pdtk_canvas::set_color_types",
+                        pdgui_vmess("pdtk_canvas::set_option_types",
                             "ci crr iiii rf rS rr",
                             c, 1, c,
                             "create", "rectangle",
@@ -1987,7 +1987,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
                 if(color < 0)
-                    pdgui_vmess("pdtk_canvas::set_color_types",
+                    pdgui_vmess("pdtk_canvas::set_option_types",
                         "ci crr ri ri rS rr rr",
                         c, 2, c, "create", "polygon",
                         "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
@@ -2054,7 +2054,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if(ndrawn)
                 {
                     if(color < 0)
-                        pdgui_vmess("pdtk_canvas::set_color_types",
+                        pdgui_vmess("pdtk_canvas::set_option_types",
                             "ci crr iiii rf ri rS rr",
                             c, 1, c, "create", "line",
                             0, 0, 0, 0,

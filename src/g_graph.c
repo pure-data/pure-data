@@ -661,7 +661,7 @@ void glist_redraw(t_glist *x)
             {
                 char tagbuf[128];
                 sprintf(tagbuf, "l%p", oc);
-                pdgui_vmess("pdtk_canvas::set_color_types", "crs iiii",
+                pdgui_vmess("pdtk_canvas::set_option_types", "crs iiii",
                           glist_getcanvas(x),
                           "coords",
                           tagbuf,
@@ -689,7 +689,7 @@ static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2, cons
         const char *colorname)
 {
     t_canvas *c = glist_getcanvas(x->gl_owner);
-    pdgui_vmess("pdtk_canvas::set_color_types",
+    pdgui_vmess("pdtk_canvas::set_option_types",
               "ci crr iiii ri rS rr",
               c, 1, c,
               "create", "line",
@@ -711,7 +711,7 @@ static void _graph_create_text(
     SETSYMBOL(fontatoms+0, gensym(sys_font));
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess("pdtk_canvas::set_color_types",
+    pdgui_vmess("pdtk_canvas::set_option_types",
              "ci crr ii rs rr rA rS rr",
               c, 1, c,
               "create", "text",
@@ -736,7 +736,7 @@ static void _graph_create_name(
     SETSYMBOL(fontatoms+0, gensym(sys_font));
     SETFLOAT (fontatoms+1, fontsize);
     SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
-    pdgui_vmess("pdtk_canvas::set_color_types",
+    pdgui_vmess("pdtk_canvas::set_option_types",
              "ci crr ii rs rr rA rS rr",
               c, 1, c,
               "create", "text",
@@ -782,7 +782,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (x->gl_havewindow)
     {
         if (vis)
-            pdgui_vmess("pdtk_canvas::set_color_types",
+            pdgui_vmess("pdtk_canvas::set_option_types",
                 "ci crr iiiiiiiiii ri rr rS rr",
                 c, 1, c, "create", "polygon",
                 x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
@@ -810,7 +810,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         int fs = sys_hostfontsize(glist_getfont(x), glist_getzoom(x));
         const char *tags3[] = {tag, "label", "graph" };
             /* draw a rectangle around the graph */
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
                   "ci crr iiiiiiiiii ri rr rS rr",
                   c, 1, c, "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
@@ -1036,19 +1036,19 @@ static void graph_select(t_gobj *z, t_glist *glist, int state)
             rtext_select(y, state);
 
         sprintf(tag, "%sR",  rtext_gettag(y));
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
                   "ci crs rr",
                   glist, 1,
                   glist, "itemconfigure", tag,
                   "-fill", (state? "selected" : "graph_text"));
         sprintf(tag, "graph%lx&&!name", (t_int)z);
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
                   "ci crs rr",
                   c, 1,
                   c, "itemconfigure", tag,
                   "-fill", (state? "selected" : "graph_outline"));
         sprintf(tag, "graph%lx&&name", (t_int)z);
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
                   "ci crs rr",
                   c, 1,
                   c, "itemconfigure", tag,

@@ -63,7 +63,7 @@ static void _editor_selectlinecolor(t_glist*x, const char*color)
 {
     char tag[128];
     sprintf(tag, "l%p", x->gl_editor->e_selectline_tag);
-    pdgui_vmess("pdtk_canvas::set_color_types", "ci crs rs",
+    pdgui_vmess("pdtk_canvas::set_option_types", "ci crs rs",
         x, 1, x, "itemconfigure", tag,
         "-fill", color);
 
@@ -2407,7 +2407,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
-                        pdgui_vmess("pdtk_canvas::set_color_types",
+                        pdgui_vmess("pdtk_canvas::set_option_types",
                             "ci crr iiii ri rs rr",
                             x, 1, x, "create", "line",
                             xpos,ypos, xpos,ypos,
@@ -2555,7 +2555,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     if (doit)
     {
         if (!shiftmod) glist_noselect(x);
-        pdgui_vmess("pdtk_canvas::set_color_types", "ci crr iiii rs rr",
+        pdgui_vmess("pdtk_canvas::set_option_types", "ci crr iiii rs rr",
             x, 1, x, "create", "rectangle",
             xpos,ypos, xpos,ypos,
             "-tags", "x", "-outline", "selection_rectangle");
@@ -2627,7 +2627,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
             ly2 = y21;
-            pdgui_vmess("pdtk_canvas::set_color_types", "ci crr iiii ri rS",
+            pdgui_vmess("pdtk_canvas::set_option_types", "ci crr iiii ri rS",
                 c, 1, c, "create", "line",
                 lx1,ly1, lx2,ly2,
                 "-width", (obj_issignaloutlet(src, nout) ? 2 : 1) * x->gl_zoom,
@@ -4426,7 +4426,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
         char*tags[] = {tag, "cord"};
         t_canvas *c = glist_getcanvas (x);
         sprintf(tag, "l%p", oc);
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
             "ci crr iiii ri rS rr",
             c, 1, c, "create", "line",
             0, 0, 0, 0,

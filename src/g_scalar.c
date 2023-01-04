@@ -392,7 +392,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
         int x1, y1, x2, y2;
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
                   "ci crr iiiiiiiiii ri rs rr",
                   c, 1, c, "create", "line",
                   x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,

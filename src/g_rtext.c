@@ -446,7 +446,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             case T_MESSAGE: txtcolor = "msg_box_text"; break;
             case T_ATOM: txtcolor = "atom_box_text";
         }
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
             "ci rc S ii s i r",
             canvas, 1,
             "pdtk_text_new", canvas,
@@ -551,7 +551,7 @@ void rtext_select(t_rtext *x, int state)
 {
     t_canvas *c = glist_getcanvas(x->x_glist);
     if(state)
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
             "ci crs rr",
             c, 1, c, "itemconfigure", x->x_tag,
             "-fill", "selected");
@@ -569,7 +569,7 @@ void rtext_select(t_rtext *x, int state)
             case T_MESSAGE: txtcolor = "msg_box_text"; break;
             case T_ATOM: txtcolor = "atom_box_text";
         }
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
             "ci crs rr",
             c, 1, c, "itemconfigure", x->x_tag,
             "-fill", txtcolor);

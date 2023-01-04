@@ -525,10 +525,10 @@ proc ::pdtk_canvas::get_color {type {canv 0}} {
 	return $::pd_colors($type)
 }
 
-# proc for configuring color options
+# proc for configuring (color) options
 # takes a command, with list of alternating options and values to replace
 # options to replace must be at the end
-proc ::pdtk_canvas::set_color_types {canv num args} {
+proc ::pdtk_canvas::set_option_types {canv num args} {
     set last [expr {[llength $args] - 1}]
     for {set i $last} {$i > [expr {$last - $num*2}]} {incr i -2} {
         # pdwindow::post "color: [get_color [lindex $args $i]]\n"

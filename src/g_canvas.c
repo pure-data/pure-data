@@ -771,7 +771,7 @@ void canvas_drawredrect(t_canvas *x, int doit)
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        pdgui_vmess("pdtk_canvas::set_color_types",
+        pdgui_vmess("pdtk_canvas::set_option_types",
             "ci crr iiiiiiiiii rr ri rr rr",
             c, 1, c, "create", "line",
             x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
@@ -951,7 +951,7 @@ static void canvas_drawlines(t_canvas *x)
         {
             issignal = (outlet_getsymbol(t.tr_outlet) == &s_signal);
             sprintf(tag, "l%p", oc);
-            pdgui_vmess("pdtk_canvas::set_color_types", "ci crr iiii ri rS rr",
+            pdgui_vmess("pdtk_canvas::set_option_types", "ci crr iiii ri rS rr",
                 c, 1, c, "create", "line",
                 t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
                 "-width", (issignal ? 2 : 1) * x->gl_zoom,
