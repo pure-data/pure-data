@@ -91,7 +91,6 @@ void glist_deselectline(t_glist *x)
     {
         t_linetraverser t;
         t_outconnect *oc;
-        int issignal;
         x->gl_editor->e_selectedline = 0;
         linetraverser_start(&t, glist_getcanvas(x));
         do {

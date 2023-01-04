@@ -1824,7 +1824,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         t_canvas *c = glist_getcanvas(glist);
         t_float fcolor = fielddesc_getfloat(&x->x_outlinecolor, template, data, 1);
         int color = (fcolor < 0) ? fcolor : numbertocolor(fcolor);
-        
+
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;

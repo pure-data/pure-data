@@ -331,7 +331,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec,
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
     template_setfloat(template, gensym("v"), x->x_scalar->sc_vec, 1, 1);
-	template_setfloat(template, gensym("color"), x->x_scalar->sc_vec,
+    template_setfloat(template, gensym("color"), x->x_scalar->sc_vec,
         DEF_ARRAY_COLOR, 1);
 
            /* bashily unbind #A -- this would create garbage if #A were

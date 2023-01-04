@@ -533,7 +533,6 @@ proc ::pdtk_canvas::set_color_types {canv num args} {
     for {set i $last} {$i > [expr {$last - $num*2}]} {incr i -2} {
         # pdwindow::post "color: [get_color [lindex $args $i]]\n"
         set args [lreplace $args $i $i [get_color [lindex $args[set args {}] $i] $canv]]
-        
     }
     # pdwindow::post "second args: $args\n"
     {*}$args

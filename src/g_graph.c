@@ -782,13 +782,14 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (x->gl_havewindow)
     {
         if (vis)
-            pdgui_vmess(0, "crr iiiiiiiiii ri rr rr rS",
-                c, "create", "polygon",
+            pdgui_vmess("pdtk_canvas::set_color_types",
+                "ci crr iiiiiiiiii ri rr rS rr",
+                c, 1, c, "create", "polygon",
                 x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
                 "-width", glist_getzoom(x),
-                "-fill", "#c0c0c0",
                 "-joinstyle", "miter",
-                "-tags", 2, tags2);
+                "-tags", 2, tags2,
+                "-fill", "graph_open");
         else
             pdgui_vmess(0, "crs",
                 glist_getcanvas(x->gl_owner), "delete", tag);
