@@ -1,0 +1,118 @@
+#N canvas 551 56 593 461 12;
+#X obj 26 8 +;
+#X text 9 390 see also:;
+#X obj 87 351 +~;
+#X text 363 177 You can supply a creation argument to initialize the
+right inlet:, f 25;
+#X obj 430 266 min 20;
+#X obj 61 8 -;
+#X obj 95 8 *;
+#X obj 95 32 /;
+#X obj 26 32 max;
+#X obj 61 32 min;
+#X text 130 18 - binary arithmetic operators;
+#X text 348 424 last updated for Pd version 0.47;
+#X obj 87 377 div;
+#X obj 121 377 >;
+#X obj 156 377 &&;
+#X floatatom 138 296 5 0 0 0 - - - 0;
+#X floatatom 181 296 8 0 0 0 - - - 0;
+#X floatatom 298 296 5 0 0 0 - - - 0;
+#X floatatom 254 176 5 0 0 0 - - - 0;
+#X obj 254 203 t b f;
+#X text 64 147 set left and right inputs here;
+#X floatatom 254 296 5 0 0 0 - - - 0;
+#X obj 54 266 +;
+#X obj 96 266 -;
+#X obj 138 266 *;
+#X obj 181 266 /;
+#X obj 254 266 max;
+#X obj 298 266 min;
+#X floatatom 53 176 5 0 0 0 - - - 0;
+#X text 187 377 (etc) - other binary operators;
+#X obj 87 426 expr;
+#X text 128 426 - evaluation expressions, f 25;
+#X obj 87 401 sin;
+#X text 153 402 (etc) - math functions;
+#X obj 121 401 log;
+#X obj 376 266 + 3;
+#X obj 496 266 * 3;
+#X floatatom 96 296 5 0 0 0 - - - 0;
+#X floatatom 54 296 5 0 0 0 - - - 0;
+#X floatatom 430 296 5 0 0 0 - - - 0;
+#X floatatom 376 296 5 0 0 0 - - - 0;
+#X floatatom 496 296 5 0 0 0 - - - 0;
+#X floatatom 430 235 5 0 0 0 - - - 0;
+#X floatatom 496 235 5 0 0 0 - - - 0;
+#X floatatom 376 235 5 0 0 0 - - - 0;
+#X text 123 351 (etc) - binary signal operators;
+#N canvas 716 166 571 292 reference 0;
+#X obj 25 18 +;
+#X obj 60 18 -;
+#X obj 94 18 *;
+#X obj 129 18 /;
+#X obj 163 18 max;
+#X obj 196 18 min;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 87 cnv 1 550 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 8 183 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 224 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 263 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 8 142 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 127 94 bang - output the operation on the previously set values.
+;
+#X text 120 113 float - value to the left side of operation and output.
+, f 58;
+#X text 121 152 float - value to the right side of operation., f 58
+;
+#X text 122 193 float - the result of the operation., f 58;
+#X text 103 235 1) float - initialize value of right inlet (default
+0)., f 58;
+#X text 230 17 - binary arithmetic operators.;
+#X restore 483 35 pd reference;
+#X text 416 35 click =>;
+#X obj 6 61 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 6 336 cnv 1 580 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 47 77 The arithmetic binary operators perform the 4 arithmetic
+functions ([+] \, etc) or output the minimum or maximum of two numbers
+([min] \, [max]). All of these objects take a bang message to evaluate
+the operation with the previously set values., f 68;
+#X connect 4 0 39 0;
+#X connect 18 0 19 0;
+#X connect 19 0 22 0;
+#X connect 19 0 27 0;
+#X connect 19 0 26 0;
+#X connect 19 0 25 0;
+#X connect 19 0 24 0;
+#X connect 19 0 23 0;
+#X connect 19 1 22 1;
+#X connect 19 1 23 1;
+#X connect 19 1 24 1;
+#X connect 19 1 25 1;
+#X connect 19 1 26 1;
+#X connect 19 1 27 1;
+#X connect 22 0 38 0;
+#X connect 23 0 37 0;
+#X connect 24 0 15 0;
+#X connect 25 0 16 0;
+#X connect 26 0 21 0;
+#X connect 27 0 17 0;
+#X connect 28 0 22 0;
+#X connect 28 0 23 0;
+#X connect 28 0 24 0;
+#X connect 28 0 25 0;
+#X connect 28 0 26 0;
+#X connect 28 0 27 0;
+#X connect 35 0 40 0;
+#X connect 36 0 41 0;
+#X connect 42 0 4 0;
+#X connect 43 0 36 0;
+#X connect 44 0 35 0;

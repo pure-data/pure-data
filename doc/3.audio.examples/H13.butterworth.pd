@@ -3,14 +3,11 @@
 #X array \$0-tab1 100 float 0;
 #X coords 0 5 99 0 200 300 1 0 0;
 #X restore 549 81 graph;
-#X obj 65 307 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 65 361 3 0 0 0 - - -;
+#X floatatom 65 361 3 0 0 0 - - - 0;
 #X text 604 387 frequency;
 #N canvas 876 177 279 249 startup 0;
 #X obj 52 22 loadbang;
-#X obj 52 46 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 52 46 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
 #X obj 52 65 f \$0;
 #X text 38 174 This subpatch loads initial;
 #X text 38 193 values in number boxes.;
@@ -27,35 +24,28 @@
 #X text 526 463 updated for Pd version 0.39;
 #X text 69 27 BUTTERWORTH FILTER;
 #X obj 236 414 butterworth3~;
-#X floatatom 258 356 3 0 100 0 - #0-lf -;
-#X floatatom 305 355 3 85 150 0 - #0-hf -;
+#X floatatom 258 356 3 0 100 0 - \$0-lf - 0;
+#X floatatom 305 355 3 85 150 0 - \$0-hf - 0;
 #X obj 258 382 mtof;
 #X obj 305 382 mtof;
 #X text 724 383 5000;
 #X obj 65 328 filter-graph1 100 5000;
 #X text 246 334 poles;
 #X text 302 334 zeros;
-#X text 52 66 The butterworth filter can be configured for low-pass
-\, high-pass \, and shelving \, depending on the placement of the poles
-and zeros. For low-pass \, the poles are placed to set the cutoff frequency
-and the zeros are at -1 (the Nyquist). Leaving the poles fixed and
-moving the zeros then gives shelving filters. In this example \, the
-actual filtering is relegated to an abstraction (butterworth3~) which
-takes frequencies corresponding to the pole and zero placement., f
-60;
-#X text 52 193 The butterworth3~ abstraction computes filter coefficients
-using control messages \, and so it is not suitable for continuously
-time-varying Butterworth filters. For that \, it is often appropriate
-to use time-saving approximations \, but precisely which approximations
-to use will depend on the way the filter is to be used.;
-#X connect 1 0 18 0;
-#X connect 2 0 6 0;
-#X connect 12 0 6 3;
+#X text 52 66 The butterworth filter can be configured for low-pass \, high-pass \, and shelving \, depending on the placement of the poles and zeros. For low-pass \, the poles are placed to set the cutoff frequency and the zeros are at -1 (the Nyquist). Leaving the poles fixed and moving the zeros then gives shelving filters. In this example \, the actual filtering is relegated to an abstraction (butterworth3~) which takes frequencies corresponding to the pole and zero placement., f 60;
+#X text 52 193 The butterworth3~ abstraction computes filter coefficients using control messages \, and so it is not suitable for continuously time-varying Butterworth filters. For that \, it is often appropriate to use time-saving approximations \, but precisely which approximations to use will depend on the way the filter is to be used.;
+#X msg 393 399 \; pd dsp \$1;
+#X obj 393 375 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 65 301 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X connect 1 0 5 0;
+#X connect 11 0 5 3;
+#X connect 12 0 14 0;
 #X connect 13 0 15 0;
-#X connect 14 0 16 0;
-#X connect 15 0 12 1;
-#X connect 16 0 12 2;
-#X connect 18 0 2 0;
-#X connect 18 1 6 1;
-#X connect 18 1 12 0;
-#X connect 18 2 6 2;
+#X connect 14 0 11 1;
+#X connect 15 0 11 2;
+#X connect 17 0 1 0;
+#X connect 17 1 5 1;
+#X connect 17 1 11 0;
+#X connect 17 2 5 2;
+#X connect 23 0 22 0;
+#X connect 24 0 17 0;

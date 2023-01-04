@@ -5,7 +5,7 @@
 #X obj 71 210 cos~;
 #X obj 71 185 +~;
 #X obj 189 186 pack 0 50;
-#X floatatom 189 138 0 0 0 0 - - - 0;
+#X floatatom 189 138 4 0 0 0 - - - 0;
 #X obj 189 162 / 100;
 #X obj 71 160 phasor~;
 #X obj 71 315 output~;
@@ -23,22 +23,17 @@
 #X text 171 138 Fourier series;
 #X text 182 191 magnitude;
 #X text 180 176 calculate;
-#X text 97 28 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 97 28 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 161 106 signal to analyze;
 #X text 271 209 delay two samples;
 #X text 269 227 for better graphing;
 #X obj 133 532 samplerate~;
-#X obj 133 509 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 133 509 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
 #X floatatom 133 581 5 0 0 0 - - - 0;
 #X obj 133 555 / 256;
 #X obj 133 485 loadbang;
 #X obj 184 631 s fundamental;
-#X text 86 426 At load time \, calculate a good choice of fundamental
-frequency for showing spectra: the 16th bin in a 4096-point spectrum
-\, so SR*16/4096 or SR/256.;
+#X text 86 426 At load time \, calculate a good choice of fundamental frequency for showing spectra: the 16th bin in a 4096-point spectrum \, so SR*16/4096 or SR/256.;
 #X obj 319 311 metro 500;
 #X obj 309 281 inlet;
 #X text 362 279 toggle to graph repeatedly;
@@ -76,10 +71,8 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 28 1 20 0;
 #X connect 31 0 27 0;
 #X restore 115 264 pd fft;
-#X obj 135 240 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 175 264 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 134 240 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 175 264 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E09-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 80 1;
@@ -91,7 +84,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 420 145 ---- 0.02 seconds ----;
 #X text 384 327 2;
 #X text 415 327 4;
-#X text 354 316 0;
+#X text 353 327 0;
 #X text 392 342 -- partial number --;
 #X text 332 88 WAVEFORM;
 #X text 448 178 SPECTRUM;
@@ -110,16 +103,10 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X obj 71 136 *;
 #X obj 71 54 r cm;
 #X text 105 78 carrier harmonic #;
-#X text 113 391 This patch measures the spectrum of two-operator phase
-modulation. The carrier frequency is initially six times the modulation
-frequency \, but you can change it with the "carrier harmonic #" control.
-Changing the index changes the relative strengths of the harmonics.
-Past a certain index (which depends on the carrier frequency) the lower
-sidebands begin to reflect about the left edge of the spectrum \, causing
-complicated interference effects., f 71;
-#X text 157 240 <= graph once;
-#X text 196 263 <= repeatedly;
+#X text 113 391 This patch measures the spectrum of two-operator phase modulation. The carrier frequency is initially six times the modulation frequency \, but you can change it with the "carrier harmonic #" control. Changing the index changes the relative strengths of the harmonics. Past a certain index (which depends on the carrier frequency) the lower sidebands begin to reflect about the left edge of the spectrum \, causing complicated interference effects., f 71;
 #X obj 529 17 declare -stdpath ./;
+#X text 196 263 <-- repeatedly;
+#X text 156 240 <-- graph once;
 #X connect 0 0 3 1;
 #X connect 1 0 0 1;
 #X connect 2 0 9 0;

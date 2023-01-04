@@ -1,4 +1,4 @@
-#N canvas 566 95 631 544 12;
+#N canvas 558 52 631 544 12;
 #X declare -stdpath ./;
 #N canvas 352 24 545 673 fft-analysis 0;
 #X obj 92 534 *~;
@@ -38,20 +38,14 @@
 #X text 191 261 modulus of;
 #X text 187 281 filter input;
 #X text 188 300 amplitude;
-#X msg 356 522 \; pd dsp 1 \; window-size 1024 \; squelch 30 \; squelch-set
-set 30;
 #X text 114 152 filter input;
 #X text 363 239 control source;
 #X text 360 296 Fourier transform;
-#X text 43 19 Internal workings of the timbre stamping algorithm. First
-the "filter input" is treated as in the compressor patch \, multiplying
-each channel amplitude by one over its modulus (but limited by the
-"squelch" parameter.) It is then multiplied by the modulus of the channel
-amplitude for the control source (which is Fourier analyzed in parallel
-with the filter input.);
+#X text 43 19 Internal workings of the timbre stamping algorithm. First the "filter input" is treated as in the compressor patch \, multiplying each channel amplitude by one over its modulus (but limited by the "squelch" parameter.) It is then multiplied by the modulus of the channel amplitude for the control source (which is Fourier analyzed in parallel with the filter input.);
 #X text 148 440 multiply the two amplitude;
 #X text 146 457 factors (for compression;
 #X text 148 473 and to apply new timbre);
+#X msg 356 522 \; window-size 1024 \; squelch 30 \; squelch-set set 30;
 #X connect 0 0 11 1;
 #X connect 1 0 11 0;
 #X connect 2 0 4 1;
@@ -77,7 +71,7 @@ with the filter input.);
 #X connect 16 0 24 0;
 #X connect 18 0 16 0;
 #X connect 19 0 5 1;
-#X connect 20 0 37 0;
+#X connect 20 0 44 0;
 #X connect 21 0 22 0;
 #X connect 22 0 18 2;
 #X connect 23 0 29 0;
@@ -89,15 +83,14 @@ with the filter input.);
 #X connect 28 0 26 1;
 #X connect 29 0 18 0;
 #X connect 30 0 16 1;
-#X restore 101 421 pd fft-analysis;
-#X text 88 17 CORT&ZACK's SECRET;
+#X restore 103 421 pd fft-analysis;
 #X text 41 399 filter;
 #X text 43 414 input;
 #X text 223 415 source;
 #X text 224 396 control;
-#X floatatom 54 262 0 0 500 0 - squelch-set - 0;
+#X floatatom 54 262 4 0 500 0 - squelch-set - 0;
 #X obj 54 286 s squelch;
-#X obj 101 457 output~;
+#X obj 103 457 output~;
 #X msg 158 240 ../sound/bell.aiff;
 #X msg 164 262 ../sound/voice.wav;
 #X msg 169 285 ../sound/voice2.wav;
@@ -109,11 +102,7 @@ with the filter input.);
 #X text 347 218 control source;
 #X text 170 217 filter input;
 #X text 246 193 change input sounds;
-#X floatatom 433 383 5 0 0 0 - #0-samp-msec - 0;
-#X obj 101 371 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 210 372 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X floatatom 413 383 8 0 0 0 - \$0-samp-msec - 0;
 #N canvas 386 50 626 626 test-signals 0;
 #X obj 80 481 line~;
 #X obj 80 561 outlet~;
@@ -252,7 +241,7 @@ with the filter input.);
 #X connect 13 0 6 1;
 #X connect 15 0 9 1;
 #X connect 18 0 12 0;
-#X restore 313 404 pd insample2;
+#X restore 293 404 pd insample2;
 #N canvas 498 195 722 350 insample1 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array \$0-sample 155944 float 0;
@@ -293,8 +282,8 @@ with the filter input.);
 #X connect 15 0 12 1;
 #X connect 16 0 9 0;
 #X connect 18 0 11 0;
-#X restore 313 382 pd insample1;
-#X floatatom 432 406 5 0 0 0 - #0-samp2-msec - 0;
+#X restore 293 382 pd insample1;
+#X floatatom 412 406 8 0 0 0 - \$0-samp2-msec - 0;
 #N canvas 163 152 567 523 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
@@ -319,10 +308,7 @@ with the filter input.);
 #X obj 279 122 r window-hz;
 #X msg 352 154 0;
 #X obj 279 150 t f b;
-#X text 56 20 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 56 20 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -345,30 +331,26 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 19 0 1 0;
 #X connect 19 1 4 0;
 #X connect 19 1 18 0;
-#X restore 313 427 pd hann-window;
-#X text 488 386 sample lengths \,;
-#X text 489 401 msec;
-#X text 61 54 This is a Fourier-based "vocoder" (perhaps better called
-a "timbre stamp") like the one the Convolution brothers use. The "control
-source" is analyzed to get its spectral envelope \, which is then stamped
-onto the "filter input" by adjusting the amplitudes of its Fourier
-transform. The "filter input" is first whitened by the compression
-algorithm from the previous patch in this series. The best value of
-"squelch" to use depends critically on what kind of sounds are used
-for the filter input and the control source., f 67;
-#X text 381 472 updated for Pd version 0.39;
-#X text 118 370 <= record =>;
+#X restore 293 427 pd hann-window;
+#X text 475 383 sample lengths \,;
+#X text 479 406 msec;
+#X text 61 54 This is a Fourier-based "vocoder" (perhaps better called a "timbre stamp") like the one the Convolution brothers use. The "control source" is analyzed to get its spectral envelope \, which is then stamped onto the "filter input" by adjusting the amplitudes of its Fourier transform. The "filter input" is first whitened by the compression algorithm from the previous patch in this series. The best value of "squelch" to use depends critically on what kind of sounds are used for the filter input and the control source., f 67;
+#X text 387 475 updated for Pd version 0.39;
 #X obj 451 20 declare -stdpath ./;
-#X connect 0 0 8 0;
-#X connect 0 0 8 1;
-#X connect 6 0 7 0;
-#X connect 9 0 12 0;
-#X connect 10 0 12 0;
-#X connect 11 0 12 0;
-#X connect 13 0 16 0;
-#X connect 14 0 16 0;
-#X connect 15 0 16 0;
-#X connect 21 0 23 0;
-#X connect 22 0 23 1;
-#X connect 23 0 0 0;
-#X connect 23 1 0 1;
+#X obj 210 365 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X text 121 365 <- record ->;
+#X text 88 17 CORT&ZACK's SECRET;
+#X obj 101 366 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X connect 0 0 7 0;
+#X connect 0 0 7 1;
+#X connect 5 0 6 0;
+#X connect 8 0 11 0;
+#X connect 9 0 11 0;
+#X connect 10 0 11 0;
+#X connect 12 0 15 0;
+#X connect 13 0 15 0;
+#X connect 14 0 15 0;
+#X connect 20 0 0 0;
+#X connect 20 1 0 1;
+#X connect 30 0 20 1;
+#X connect 33 0 20 0;

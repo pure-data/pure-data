@@ -555,7 +555,14 @@ static void list_store_get(t_list_store *x, float f1, float f2)
     if (!outc)
         outc = 1; /* default */
     else if (outc < 0)
+    {
         outc = x->x_alist.l_n - onset; /* till the end of the list */
+        if (outc <= 0) /* onset out of range */
+        {
+            outlet_bang(x->x_out2);
+            return;
+        }
+    }
     if (onset < 0 || (onset + outc > x->x_alist.l_n))
     {
         outlet_bang(x->x_out2);

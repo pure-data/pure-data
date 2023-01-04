@@ -11,7 +11,6 @@ to this file... */
 
 #include "g_canvas.h"
 #include <stdio.h>
-#include <string.h>
 
 /* ---------------------- forward definitions ----------------- */
 
@@ -659,9 +658,15 @@ void glist_redraw(t_glist *x)
                 /* redraw all the lines */
             linetraverser_start(&t, x);
             while ((oc = linetraverser_next(&t)))
-                sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
-                    glist_getcanvas(x), oc,
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            {
+                char tagbuf[128];
+                sprintf(tagbuf, "l%p", oc);
+                pdgui_vmess("pdtk_canvas::set_color_types", "crs iiii",
+                          glist_getcanvas(x),
+                          "coords",
+                          tagbuf,
+                          t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            }
             canvas_drawredrect(x, 0);
             if (x->gl_goprect)
             {
@@ -680,6 +685,68 @@ void glist_redraw(t_glist *x)
 
 int garray_getname(t_garray *x, t_symbol **namep);
 
+static void _graph_create_line4(t_glist *x, int x1, int y1, int x2, int y2, const char**tags2,
+        const char *colorname)
+{
+    t_canvas *c = glist_getcanvas(x->gl_owner);
+    pdgui_vmess("pdtk_canvas::set_color_types",
+              "ci crr iiii ri rS rr",
+              c, 1, c,
+              "create", "line",
+              x1,y1, x2,y2,
+              "-width", glist_getzoom(x),
+              "-tags", 2, tags2,
+              "-fill", colorname);
+}
+
+static void _graph_create_text(
+    t_glist *x, int posX, int posY,
+    const char*name,
+    const char*anchor,
+    int fontsize,
+    int numtags, const char**tags, const char *colorname)
+{
+    t_atom fontatoms[3];
+    t_canvas *c = glist_getcanvas(x);
+    SETSYMBOL(fontatoms+0, gensym(sys_font));
+    SETFLOAT (fontatoms+1, fontsize);
+    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+    pdgui_vmess("pdtk_canvas::set_color_types",
+             "ci crr ii rs rr rA rS rr",
+              c, 1, c,
+              "create", "text",
+              posX, posY,
+              "-text", name,
+              "-anchor", anchor,
+              "-font", 3, fontatoms,
+              "-tags", numtags, tags,
+              "-fill", colorname);
+}
+
+static void _graph_create_name(
+    t_glist *x, int posX, int posY,
+    const char*name,
+    const char*anchor,
+    int fontsize,
+    const char *tag, int state)
+{
+    t_atom fontatoms[3];
+    const char *tags[3] = {tag, "name", "graph"};
+    t_canvas *c = glist_getcanvas(x);
+    SETSYMBOL(fontatoms+0, gensym(sys_font));
+    SETFLOAT (fontatoms+1, fontsize);
+    SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+    pdgui_vmess("pdtk_canvas::set_color_types",
+             "ci crr ii rs rr rA rS rr",
+              c, 1, c,
+              "create", "text",
+              posX, posY,
+              "-text", name,
+              "-anchor", anchor,
+              "-font", 3, fontatoms,
+              "-tags", 3, tags,
+              "-fill", state ? "selected" : "array_name");
+}
 
     /* Note that some code in here would also be useful for drawing
     graph decorations in toplevels... */
@@ -688,6 +755,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     t_glist *x = (t_glist *)gr;
     t_canvas *c = glist_getcanvas(x->gl_owner);
     char tag[50];
+    const char *tags2[] = {tag, "graph" };
     t_gobj *g;
     int x1, y1, x2, y2;
     int state = glist_isselected(parent_glist, gr);
@@ -714,18 +782,16 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (x->gl_havewindow)
     {
         if (vis)
-        {
-            sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d "
-                "-width %d -fill #c0c0c0 -joinstyle miter -tags "
-                "[list %s graph]\n",
-                c,
-                x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, glist_getzoom(x), tag);
-        }
+            pdgui_vmess(0, "crr iiiiiiiiii ri rr rr rS",
+                c, "create", "polygon",
+                x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                "-width", glist_getzoom(x),
+                "-fill", "#c0c0c0",
+                "-joinstyle", "miter",
+                "-tags", 2, tags2);
         else
-        {
-            sys_vgui(".x%lx.c delete %s\n",
-                c, tag);
-        }
+            pdgui_vmess(0, "crs",
+                glist_getcanvas(x->gl_owner), "delete", tag);
         return;
     }
         /* otherwise draw (or erase) us as a graph inside another glist. */
@@ -735,21 +801,22 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_float f;
         t_gobj *g;
         t_symbol *arrayname;
-        char selected[56];
-        sprintf(selected, "[::pdtk_canvas::get_color %s .x%lx]",
-            (state ? "selected" : "graph_outline"), (long)c);
+        const char *colorname = state ? "selected" : "graph_outline";
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
             (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ? "s" : "n");
         int fs = sys_hostfontsize(glist_getfont(x), glist_getzoom(x));
-
+        const char *tags3[] = {tag, "label", "graph" };
             /* draw a rectangle around the graph */
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-width %d -capstyle projecting -fill %s -tags [list %s graph]\n",
-            c, x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-            glist_getzoom(x), selected, tag);
-
+        pdgui_vmess("pdtk_canvas::set_color_types",
+                  "ci crr iiiiiiiiii ri rr rS rr",
+                  c, 1, c, "create", "line",
+                  x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+                  "-width", glist_getzoom(x),
+                  "-capstyle", "projecting",
+                  "-tags", 2, tags2,
+                  "-fill", colorname);
             /* if there's just one "garray" in the graph, write its name
                 along the top */
         for (i = (y1 < y2 ? y1 : y2)-1, g = x->gl_list; g; g = g->g_next)
@@ -757,14 +824,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 !garray_getname((t_garray *)g, &arrayname))
         {
             i -= glist_fontheight(x);
-            sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
-                "-font {{%s} -%d %s} -fill [::pdtk_canvas::get_color %s .x%lx] "
-                "-tags [list %s name graph]\n",
-                glist_getcanvas(x),  x1, i, arrayname->s_name, sys_font,
-                fs, sys_fontweight, (state ? "selected" : "array_name"),
-                glist_getcanvas(x), tag);
+            _graph_create_name(x,
+                x1, i,
+                arrayname->s_name,
+                "nw", -fs, tag, state);
         }
-
             /* draw ticks on horizontal borders.  If lperb field is
             zero, this is disabled. */
         if (x->gl_xtick.k_lperb)
@@ -778,32 +842,28 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                     f += x->gl_xtick.k_inc)
             {
                 int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, (int)glist_xtopixels(x, f), (int)upix,
+                _graph_create_line4(x,
+                    (int)glist_xtopixels(x, f), (int)upix,
                     (int)glist_xtopixels(x, f), (int)upix - tickpix,
-                    glist_getzoom(x), selected, tag);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, (int)glist_xtopixels(x, f), (int)lpix,
+                    tags2, colorname);
+                _graph_create_line4(x,
+                    (int)glist_xtopixels(x, f), (int)lpix,
                     (int)glist_xtopixels(x, f), (int)lpix + tickpix,
-                    glist_getzoom(x), selected, tag);
+                    tags2, colorname);
             }
             for (i = 1, f = x->gl_xtick.k_point - x->gl_xtick.k_inc;
                 f > 0.99 * x->gl_x1 + 0.01*x->gl_x2;
                     i++, f -= x->gl_xtick.k_inc)
             {
                 int tickpix = (i % x->gl_xtick.k_lperb ? 2 : 4);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, (int)glist_xtopixels(x, f), (int)upix,
+                _graph_create_line4(x,
+                    (int)glist_xtopixels(x, f), (int)upix,
                     (int)glist_xtopixels(x, f), (int)upix - tickpix,
-                    glist_getzoom(x), selected, tag);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, (int)glist_xtopixels(x, f), (int)lpix,
+                    tags2, colorname);
+                _graph_create_line4(x,
+                    (int)glist_xtopixels(x, f), (int)lpix,
                     (int)glist_xtopixels(x, f), (int)lpix + tickpix,
-                    glist_getzoom(x), selected, tag);
+                    tags2, colorname);
             }
         }
 
@@ -819,53 +879,46 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                     i++, f += x->gl_ytick.k_inc)
             {
                 int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, x1, (int)glist_ytopixels(x, f), x1 + tickpix,
-                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
-                    tag);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, x2, (int)glist_ytopixels(x, f), x2 - tickpix,
-                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
-                    tag);
+                _graph_create_line4(x,
+                    x1, (int)glist_ytopixels(x, f),
+                    x1 + tickpix, (int)glist_ytopixels(x, f),
+                    tags2, colorname);
+                _graph_create_line4(x,
+                    x2, (int)glist_ytopixels(x, f),
+                    x2 - tickpix, (int)glist_ytopixels(x, f),
+                    tags2, colorname);
             }
             for (i = 1, f = x->gl_ytick.k_point - x->gl_ytick.k_inc;
                 f > 0.99 * lbound + 0.01 * ubound;
                     i++, f -= x->gl_ytick.k_inc)
             {
                 int tickpix = (i % x->gl_ytick.k_lperb ? 2 : 4);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, x1, (int)glist_ytopixels(x, f), x1 + tickpix,
-                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
-                    tag);
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill "
-                    "%s -tags [list %s graph]\n",
-                    c, x2, (int)glist_ytopixels(x, f), x2 - tickpix,
-                    (int)glist_ytopixels(x, f), glist_getzoom(x), selected,
-                    tag);
+                _graph_create_line4(x,
+                    x1, (int)glist_ytopixels(x, f),
+                    x1 + tickpix, (int)glist_ytopixels(x, f),
+                    tags2, colorname);
+                _graph_create_line4(x,
+                    x2, (int)glist_ytopixels(x, f),
+                    x2 - tickpix, (int)glist_ytopixels(x, f),
+                    tags2, colorname);
             }
         }
             /* draw x labels */
         for (i = 0; i < x->gl_nxlabels; i++)
-            sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
-                "-anchor %s -fill %s -tags [list %s label graph]\n",
-                glist_getcanvas(x),
+            _graph_create_text(x,
                 (int)glist_xtopixels(x, atof(x->gl_xlabel[i]->s_name)),
                 (int)glist_ytopixels(x, x->gl_xlabely),
-                x->gl_xlabel[i]->s_name, sys_font,
-                fs, sys_fontweight, xlabelanchor, selected, tag);
-
+                x->gl_xlabel[i]->s_name,
+                xlabelanchor, -fs,
+                3, tags3, colorname);
             /* draw y labels */
         for (i = 0; i < x->gl_nylabels; i++)
-            sys_vgui(".x%lx.c create text %d %d -text {%s} -font {{%s} -%d %s} "
-                "-anchor %s -fill %s -tags [list %s label graph]\n",
-                glist_getcanvas(x),
+            _graph_create_text(x,
                 (int)glist_xtopixels(x, x->gl_ylabelx),
                 (int)glist_ytopixels(x, atof(x->gl_ylabel[i]->s_name)),
-                x->gl_ylabel[i]->s_name, sys_font,
-                fs, sys_fontweight, ylabelanchor, selected, tag);
+                x->gl_ylabel[i]->s_name,
+                ylabelanchor, -fs,
+                3, tags3, colorname);
 
             /* draw contents of graph as glist */
         for (g = x->gl_list; g; g = g->g_next)
@@ -873,8 +926,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     }
     else
     {
-        sys_vgui(".x%lx.c delete %s\n",
-            glist_getcanvas(x->gl_owner), tag);
+        pdgui_vmess(0, "crs", glist_getcanvas(x->gl_owner), "delete", tag);
         for (g = x->gl_list; g; g = g->g_next)
             gobj_vis(g, x, 0);
     }
@@ -972,26 +1024,34 @@ static void graph_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 static void graph_select(t_gobj *z, t_glist *glist, int state)
 {
     t_glist *x = (t_glist *)z;
+    t_canvas *c = glist_getcanvas(glist);
     if (!x->gl_isgraph)
         text_widgetbehavior.w_selectfn(z, glist, state);
     else
     {
         t_rtext *y = glist_findrtext(glist, &x->gl_obj);
+        char tag[80];
         if (canvas_showtext(x))
             rtext_select(y, state);
-        sys_vgui(".x%lx.c itemconfigure %sR -fill "
-            "[::pdtk_canvas::get_color %s .x%lx]\n",
-            glist, rtext_gettag(y), (state? "selected" : "graph_text"),
-            glist);
-        sys_vgui(".x%lx.c itemconfigure graph%lx&&!name -fill "
-            "[::pdtk_canvas::get_color %s .x%lx]\n",
-            glist_getcanvas(glist), z, (state? "selected" : "graph_outline"),
-            glist);
-        if (x->gl_list && pd_class(&x->gl_list->g_pd) == garray_class)
-            sys_vgui(".x%lx.c itemconfigure graph%lx&&name -fill "
-                "[::pdtk_canvas::get_color %s .x%lx]\n",
-				glist_getcanvas(glist), z, (state? "selected" : "array_name"),
-				glist);
+
+        sprintf(tag, "%sR",  rtext_gettag(y));
+        pdgui_vmess("pdtk_canvas::set_color_types",
+                  "ci crs rr",
+                  glist, 1,
+                  glist, "itemconfigure", tag,
+                  "-fill", (state? "selected" : "graph_text"));
+        sprintf(tag, "graph%lx&&!name", (t_int)z);
+        pdgui_vmess("pdtk_canvas::set_color_types",
+                  "ci crs rr",
+                  c, 1,
+                  c, "itemconfigure", tag,
+                  "-fill", (state? "selected" : "graph_outline"));
+        sprintf(tag, "graph%lx&&name", (t_int)z);
+        pdgui_vmess("pdtk_canvas::set_color_types",
+                  "ci crs rr",
+                  c, 1,
+                  c, "itemconfigure", tag,
+                  "-fill", (state? "selected" : "array_name"));
     }
 }
 

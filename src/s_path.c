@@ -38,7 +38,6 @@
 #include "s_utf8.h"
 #include <stdio.h>
 #include <fcntl.h>
-#include <ctype.h>
 
 #ifdef _LARGEFILE64_SOURCE
 # define open  open64
@@ -500,7 +499,7 @@ int sys_fclose(FILE *stream)
     search attempts. */
 void open_via_helppath(const char *name, const char *dir)
 {
-    char realname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
+    char realname[MAXPDSTRING], newname[MAXPDSTRING], dirbuf[MAXPDSTRING], *basename;
         /* make up a silly "dir" if none is supplied */
     const char *usedir = (*dir ? dir : "./");
     int fd;
@@ -510,6 +509,7 @@ void open_via_helppath(const char *name, const char *dir)
     realname[MAXPDSTRING-10] = 0;
     if (strlen(realname) > 3 && !strcmp(realname+strlen(realname)-3, ".pd"))
         realname[strlen(realname)-3] = 0;
+    strncpy(newname, realname, MAXPDSTRING-10);
     strcat(realname, "-help.pd");
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
@@ -522,11 +522,9 @@ void open_via_helppath(const char *name, const char *dir)
     if ((fd = do_open_via_path(usedir, realname, "", dirbuf, &basename,
         MAXPDSTRING, 0, STUFF->st_helppath)) >= 0)
             goto gotone;
-
-    post("sorry, couldn't find help patch for \"%s\"", name);
+    post("sorry, couldn't find help patch for \"%s\"", newname);
     return;
 gotone:
     close (fd);
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
-

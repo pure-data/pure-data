@@ -40,9 +40,11 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
 
     frame $mytoplevel.buttonframe
     pack $mytoplevel.buttonframe -side bottom -pady 2m
-    button $mytoplevel.buttonframe.send -text [_ "Send ($modkeyname-S)"] \
+    set label [_ "Send"]
+    button $mytoplevel.buttonframe.send -text "$label ($modkeyname-S)" \
         -command "::dialog_data::send $mytoplevel"
-    button $mytoplevel.buttonframe.ok -text [_ "Done ($modkeyname-D)"] \
+    set label [_ "Done"]
+    button $mytoplevel.buttonframe.ok -text "$label ($modkeyname-D)" \
         -command "::dialog_data::ok $mytoplevel"
     pack $mytoplevel.buttonframe.send -side left -expand 1 -padx 15 -ipadx 10
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -padx 15 -ipadx 10

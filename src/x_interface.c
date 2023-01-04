@@ -116,14 +116,12 @@ static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
     else if (argv->a_type == A_FLOAT)
     {
         int i;
+        /* print first (numeric) atom, to avoid a leading space */
         if (*x->x_sym->s_name)
-            print_startlogpost(x, "%s: ", x->x_sym->s_name);
+            print_startlogpost(x, "%s: %g", x->x_sym->s_name, atom_getfloat(argv));
         else
-        {
-            /* print first (numeric) atom, to avoid a trailing space */
             print_startlogpost(x, "%g", atom_getfloat(argv));
-            argc--; argv++;
-        }
+        argc--; argv++;
         for (i = 0; i < argc; i++)
         {
             char buf[MAXPDSTRING];

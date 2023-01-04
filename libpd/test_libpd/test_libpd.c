@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
         /* one input channel, two output channels,
            block size 64, one tick per buffer: */
     float inbuf[64], outbuf[128];
-    char *filename = "test2.pd", *dirname = ".";
+    char *filename = "test_libpd.pd", *dirname = ".";
 
     /* accept overrides from the commandline:
        $ pdtest_multi file.pd ../dir */

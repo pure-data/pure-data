@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Pure Data (Pd)
+Exec=pd-gui %F
+Categories=Audio;AudioVideo;Development;Music;Graphics
+Keywords=Audio;Video;Programming;Synthesis;Analysis
+Comment=Visual dataflow programming platform for multimedia
+Comment[ca]=Plataforma de programació visual per aplicacions multimèdia
+Comment[de]=Grafische Datenflussprogrammierung für Multimedia
+Comment[es]=Plataforma de programación visual para aplicaciones multimedia
+Comment[fr]=Plateforme de programmation visuelle pour applications multimédia
+Comment[it]=Piattaforma di programmazione visuale per applicazioni multimedia
+Comment[pt]=Plataforma de programação visuais para multimedia
+MimeType=text/x-puredata;
+GenericName=Dataflow IDE
+Type=Application
+Terminal=false
+Icon=puredata

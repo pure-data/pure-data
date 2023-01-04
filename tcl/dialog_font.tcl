@@ -22,13 +22,20 @@ namespace eval ::dialog_font:: {
 
 # this could probably just be apply, but keep the old one for tcl plugins that
 # might use apply for "stretch"
-proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
+proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
     if {$mytoplevel eq ".pdwindow"} {
         foreach font [font names] {
             font configure $font -size $myfontsize
         }
         if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
+            set font [lindex [${mytoplevel}.text.internal cget -font] 0]
+            if { ${font} eq {} } {
+                set font $::font_family
+            }
+            ${mytoplevel}.text.internal configure -font [list $font $myfontsize]
+        }
+        catch {
+            ttk::style configure Treeview -rowheight [expr {[font metrics TkDefaultFont -linespace] + 2}]
         }
 
         # repeat a "pack" command so the font dialog can resize itself
@@ -39,7 +46,16 @@ proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
 
     } else {
-        pdsend "$mytoplevel font $myfontsize 0 2"
+        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
+        pdsend "$mytoplevel dirty 1"
+    }
+}
+
+proc ::dialog_font::radio_apply {mytoplevel myfontsize} {
+    variable fontsize
+    if {$myfontsize != $fontsize} {
+        set fontsize $myfontsize
+        ::dialog_font::do_apply $mytoplevel $myfontsize 0 2
     }
 }
 
@@ -51,31 +67,18 @@ proc ::dialog_font::stretch_apply {gfxstub} {
         if {$stretchval == ""} {
             set stretchval 100
         }
+        if {$stretchval == 100} {
+            return
+        }
         pdsend "$gfxstub font $fontsize $stretchval $whichstretch"
+        pdsend "$gfxstub dirty 1"
     }
 }
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
-    if {$mytoplevel eq ".pdwindow"} {
-        foreach font [font names] {
-            font configure $font -size $myfontsize
-        }
-        if {[winfo exists ${mytoplevel}.text]} {
-            ${mytoplevel}.text.internal configure -font "-size $myfontsize"
-        }
-
-        # repeat a "pack" command so the font dialog can resize itself
-        if {[winfo exists .font]} {
-            pack .font.buttonframe -side bottom -fill x -pady 2m
-        }
-
-        ::pd_guiprefs::write menu-fontsize "$myfontsize"
-
-    } else {
-        variable stretchval
-        variable whichstretch
-        pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
-    }
+    variable stretchval
+    variable whichstretch
+    ::dialog_font::do_apply $mytoplevel $myfontsize $stretchval $whichstretch
 }
 
 proc ::dialog_font::cancel {gfxstub} {
@@ -123,6 +126,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     } else {
         create_dialog $gfxstub
     }
+    .font.fontsize.radio$fontsize select
 }
 
 proc ::dialog_font::create_dialog {gfxstub} {
@@ -156,7 +160,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
     # this is whacky Tcl at its finest, but I couldn't resist...
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
-            -variable ::dialog_font::fontsize \
             -command [format {::dialog_font::radio_apply \
                 $::dialog_font::canvaswindow %s} $size]
         pack .font.fontsize.radio$size -side top -anchor w

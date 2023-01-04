@@ -1,10 +1,10 @@
-#N canvas 364 23 714 753 12;
-#X floatatom 60 307 7 0 0 0 - - -;
+#N canvas 571 23 714 723 12;
+#X floatatom 60 307 7 0 0 0 - - - 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-real 64 float 2;
 #X coords 0 64 64 -64 256 200 1;
 #X restore 419 237 graph;
-#X floatatom 60 207 5 0 32 0 - - -;
+#X floatatom 60 207 5 0 32 0 - - - 0;
 #X obj 92 279 samplerate~;
 #X obj 60 254 t f b;
 #X obj 60 279 *;
@@ -17,14 +17,13 @@
 #X coords 0 64 64 -64 256 200 1;
 #X restore 419 470 graph;
 #X obj 85 412 f;
-#X floatatom 103 366 3 0 100 0 - - -;
+#X floatatom 103 366 3 0 100 0 - - - 0;
 #X obj 103 387 / 100;
 #X obj 60 230 / 64;
 #X text 591 218 real part;
 #X text 546 451 imaginary part;
 #X obj 97 592 loadbang;
 #X text 159 395 of a cycle;
-#X text 448 707 updated for PD version 0.39;
 #X obj 103 648 s \$0-snap;
 #X obj 85 334 r \$0-snap;
 #X text 159 381 hundredths;
@@ -39,17 +38,6 @@
 #X text 107 529 is a (real \, imaginary) pair for each;
 #X text 108 547 frequency from 0 to 63 (in units of;
 #X text 109 567 SR/64).;
-#X text 163 24 The "fft~" object has separate inlets for the real and
-imaginary parts of a complex-valued signal and outputs its Fourier
-transform \, again using separate outlets for the real and imaginary
-part. The transform is done on one block of samples (here the block
-size is 64 \, Pd's default.) The outputs give the complex amplitudes
-of the harmonics of the input signal \, from DC up. The harmonics are
-tuned to the fundamental frequency of the analysis \, 1/64th of the
-sample rate. If the frequency (in harmonics) is an integer \, the result
-is two harmonics symmetric about the Nyquist frequency. Fractional
-frequencies spill across harmonics. Changing the initial phase rotates
-energy from real to imaginary and back., f 67;
 #X text 49 66 ANALYSIS;
 #X text 50 48 FOURIER;
 #X msg 60 118 0;
@@ -59,11 +47,13 @@ energy from real to imaginary and back., f 67;
 #X text 173 345 from below;
 #X text 116 415 sync phase with snapshots;
 #X obj 59 470 fft~;
-#X msg 182 622 \; pd dsp 1;
-#X text 103 207 <= frequency (as multiple of SR/64 \, the fundamental)
-, f 26;
+#X text 103 207 <= frequency (as multiple of SR/64 \, the fundamental), f 26;
 #X text 139 365 <= phase in;
 #X text 127 307 <= frequency \, Hz.;
+#X msg 193 611 \; pd dsp \$1;
+#X obj 193 587 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 163 24 The [fft~] object has separate inlets for the real and imaginary parts of a complex-valued signal and outputs its Fourier transform \, again using separate outlets for the real and imaginary part. The transform is done on one block of samples (here the block size is 64 \, Pd's default.) The outputs give the complex amplitudes of the harmonics of the input signal \, from DC up. The harmonics are tuned to the fundamental frequency of the analysis \, 1/64th of the sample rate. If the frequency (in harmonics) is an integer \, the result is two harmonics symmetric about the Nyquist frequency. Fractional frequencies spill across harmonics. Changing the initial phase rotates energy from real to imaginary and back., f 67;
+#X text 448 707 updated for Pd version 0.39;
 #X connect 0 0 9 0;
 #X connect 2 0 14 0;
 #X connect 3 0 5 1;
@@ -72,17 +62,17 @@ energy from real to imaginary and back., f 67;
 #X connect 5 0 0 0;
 #X connect 6 0 7 0;
 #X connect 6 0 8 0;
-#X connect 6 0 20 0;
-#X connect 9 0 43 0;
+#X connect 6 0 19 0;
+#X connect 9 0 41 0;
 #X connect 11 0 9 1;
 #X connect 12 0 13 0;
 #X connect 13 0 11 1;
 #X connect 14 0 4 0;
 #X connect 17 0 6 0;
-#X connect 17 0 44 0;
-#X connect 21 0 11 0;
+#X connect 20 0 11 0;
+#X connect 35 0 2 0;
+#X connect 36 0 2 0;
 #X connect 37 0 2 0;
-#X connect 38 0 2 0;
-#X connect 39 0 2 0;
-#X connect 43 0 7 0;
-#X connect 43 1 8 0;
+#X connect 41 0 7 0;
+#X connect 41 1 8 0;
+#X connect 46 0 45 0;

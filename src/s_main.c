@@ -1492,50 +1492,62 @@ t_symbol *sys_decodedialog(t_symbol *s)
     return (gensym(buf));
 }
 
-    /* send the user-specified search path to pd-gui */
-void sys_set_searchpath(void)
+static void namelist2gui(const char*name, t_namelist*namelist)
 {
+    const size_t allocchunk = 32;
     int i;
     t_namelist *nl;
 
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_searchpath $::tmp_path\n");
+    size_t namesize = allocchunk;
+    const char**names=(const char**)getbytes(namesize*sizeof(const char*));
+
+    for (nl = namelist, i = 0; nl; nl = nl->nl_next, i++)
+    {
+        if(i>=namesize) {
+            size_t newsize = namesize + allocchunk;
+            const char**newnames = (const char**)resizebytes(
+                names,
+                namesize*sizeof(const char*),
+                newsize*sizeof(const char*));
+            if (!newnames)
+                break;
+            names = newnames;
+            namesize = newsize;
+        }
+        names[i] = nl->nl_string;
+    }
+    pdgui_vmess("set", "rS",
+              name,
+              i, names);
+    freebytes(names, namesize*sizeof(const char*));
+}
+
+    /* send the user-specified search path to pd-gui */
+void sys_set_searchpath(void)
+{
+    namelist2gui("::sys_searchpath", STUFF->st_searchpath);
 }
 
     /* send the temp paths from the commandline to pd-gui */
 void sys_set_temppath(void)
 {
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_temppath $::tmp_path\n");
+    namelist2gui("::sys_temppath", STUFF->st_temppath);
 }
 
     /* send the hard-coded search path to pd-gui */
 void sys_set_extrapath(void)
 {
-    int i;
-    t_namelist *nl;
-
-    sys_gui("set ::tmp_path {}\n");
-    for (nl = STUFF->st_staticpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::sys_staticpath $::tmp_path\n");
+    namelist2gui("::sys_staticpath", STUFF->st_staticpath);
 }
 
     /* start a search path dialog window */
 void glob_start_path_dialog(t_pd *dummy)
 {
-     char buf[MAXPDSTRING];
-
     sys_set_searchpath();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
-    gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_path_dialog", (void *)glob_start_path_dialog,
+        "ii", sys_usestdpath, sys_verbose);
 }
 
     /* new values from dialog window */
@@ -1582,22 +1594,19 @@ void sys_set_startup(void)
     t_namelist *nl;
     char obuf[MAXPDSTRING];
 
-    sys_vgui("set ::startup_flags [subst -nocommands {%s}]\n",
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    sys_gui("set ::startup_libraries {}\n");
-    for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
+    pdgui_vmess("set", "rs", "::startup_flags", (sys_flags ? sys_flags->s_name : ""));
+
+    namelist2gui("::startup_libraries", STUFF->st_externlist);
 }
 
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
-    char buf[MAXPDSTRING];
-    char obuf[MAXPDSTRING];
     sys_set_startup();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
-    gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_startup_dialog", (void *)glob_start_path_dialog,
+        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
 }
 
     /* new values from dialog window */

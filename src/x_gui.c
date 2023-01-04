@@ -46,10 +46,16 @@ static t_gfxstub *gfxstub_list;
     it so we can provide a name by which the GUI can send us back
     messages; e.g., "pdtk_canvas_dofont %s 10". */
 
+static t_symbol*gfxstub_symbol(t_gfxstub *x)
+{
+    char namebuf[80];
+    sprintf(namebuf, ".gfxstub%lx", (t_int)x);
+    return gensym(namebuf);
+}
+
 void gfxstub_new(t_pd *owner, void *key, const char *cmd)
 {
     char buf[4*MAXPDSTRING];
-    char namebuf[80];
     char sprintfbuf[MAXPDSTRING];
     char *afterpercent;
     t_int afterpercentlen;
@@ -66,9 +72,8 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
         return;
     }
     x = (t_gfxstub *)pd_new(gfxstub_class);
-    sprintf(namebuf, ".gfxstub%lx", (t_int)x);
 
-    s = gensym(namebuf);
+    s = gfxstub_symbol(x);
     pd_bind(&x->x_pd, s);
     x->x_owner = owner;
     x->x_sym = s;
@@ -112,7 +117,8 @@ void gfxstub_deleteforkey(void *key)
         {
             if (y->x_key == key)
             {
-                sys_vgui("destroy .gfxstub%lx\n", y);
+                t_symbol *s = gfxstub_symbol(y);
+                pdgui_vmess("destroy", "s", s->s_name);
                 y->x_owner = 0;
                 gfxstub_offlist(y);
                 didit = 1;
@@ -152,7 +158,8 @@ static void gfxstub_end(t_gfxstub *x)
 {
     canvas_dataproperties((t_canvas *)x->x_owner,
         (t_scalar *)x->x_key, gfxstub_binbuf);
-    binbuf_free(gfxstub_binbuf);
+    if(gfxstub_binbuf)
+        binbuf_free(gfxstub_binbuf);
     gfxstub_binbuf = 0;
 }
 
@@ -184,6 +191,50 @@ static void gfxstub_setup(void)
         gensym("cancel"), 0);
 }
 
+#include <stdarg.h>
+/* pdgui_*mess() are from s_inter_gui.c */
+void pdgui_vamess(const char* message, const char* format, va_list args);
+void pdgui_endmess(void);
+
+static void _pdguistub_vamess(const char*dest, const char*fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    pdgui_vamess(dest, fmt, args);
+    va_end(args);
+}
+void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...)
+{
+    t_symbol*s;
+    t_gfxstub *x;
+    va_list args;
+
+        /* if any exists with matching key, burn it. */
+    for (x = gfxstub_list; x; x = x->x_next)
+        if (x->x_key == key)
+            gfxstub_deleteforkey(key);
+    x = (t_gfxstub *)pd_new(gfxstub_class);
+    s = gfxstub_symbol(x);
+    pd_bind(&x->x_pd, s);
+    x->x_owner = owner;
+    x->x_sym = s;
+    x->x_key = key;
+    x->x_next = gfxstub_list;
+    gfxstub_list = x;
+
+    _pdguistub_vamess(destination, "s", s->s_name);
+    va_start(args, fmt);
+    pdgui_vamess(0, fmt, args);
+    va_end(args);
+    pdgui_endmess();
+
+
+}
+void pdgui_stub_deleteforkey(void *key)
+{
+    gfxstub_deleteforkey(key);
+}
+
 /* -------------------------- openpanel ------------------------------ */
 
 static t_class *openpanel_class;
@@ -211,7 +262,7 @@ static void *openpanel_new(t_floatarg mode)
 static void openpanel_symbol(t_openpanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    sys_vgui("pdtk_openpanel {%s} {%s} %d\n",
+    pdgui_vmess("pdtk_openpanel", "ssi",
         x->x_s->s_name, path, x->x_mode);
 }
 
@@ -275,7 +326,8 @@ static void *savepanel_new(void)
 static void savepanel_symbol(t_savepanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    sys_vgui("pdtk_savepanel {%s} {%s}\n", x->x_s->s_name, path);
+    pdgui_vmess("pdtk_savepanel", "ss",
+        x->x_s->s_name, path);
 }
 
 static void savepanel_bang(t_savepanel *x)
@@ -387,18 +439,19 @@ static void key_setup(void)
         (t_newmethod)key_new, (t_method)key_free,
         sizeof(t_key), CLASS_NOINLET, 0);
     class_addfloat(key_class, key_float);
+    class_sethelpsymbol(key_class, gensym("key-input"));
 
     keyup_class = class_new(gensym("keyup"),
         (t_newmethod)keyup_new, (t_method)keyup_free,
         sizeof(t_keyup), CLASS_NOINLET, 0);
     class_addfloat(keyup_class, keyup_float);
-    class_sethelpsymbol(keyup_class, gensym("key"));
+    class_sethelpsymbol(keyup_class, gensym("key-input"));
 
     keyname_class = class_new(gensym("keyname"),
         (t_newmethod)keyname_new, (t_method)keyname_free,
         sizeof(t_keyname), CLASS_NOINLET, 0);
     class_addlist(keyname_class, keyname_list);
-    class_sethelpsymbol(keyname_class, gensym("key"));
+    class_sethelpsymbol(keyname_class, gensym("key-input"));
 }
 
 /* ------------------------ pdcontrol --------------------------------- */
@@ -467,11 +520,7 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 
 static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
 {
-    char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING, "::pd_menucommands::menu_openfile {%s}\n",
-        s->s_name);
-    buf[MAXPDSTRING-1] = 0;
-    sys_gui(buf);
+    pdgui_vmess("::pd_menucommands::menu_openfile", "s", s->s_name);
 }
 
 static void pdcontrol_isvisible(t_pdcontrol *x)

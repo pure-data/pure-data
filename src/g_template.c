@@ -2,7 +2,6 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -1197,15 +1196,17 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
     return (ret);
 }
 
-static void numbertocolor(int n, char *s)
+static int numbertocolor(int n)
 {
-    int red, blue, green;
+    int red, green, blue, color = 0;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
     green = n % 10;
-    sprintf(s, "#%2.2x%2.2x%2.2x", rangecolor(red), rangecolor(blue),
-        rangecolor(green));
+    blue = ((n / 10) % 10);
+    color |= rangecolor(red)   << 16;
+    color |= rangecolor(blue)  <<  8;
+    color |= rangecolor(green) <<  0;
+    return color;
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist,
@@ -1215,18 +1216,22 @@ static void curve_vis(t_gobj *z, t_glist *glist,
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     t_fielddesc *f = x->x_vec;
-
+    char tag0[80], tag[80];
+    const char*tags[] = {tag, tag0, "curve"};
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
             t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
-            char outline[20], fill[20];
-            int pix[200];
+            int outline;
+            t_word pix[200];
+
             if (n > 100)
                 n = 100;
                 /* calculate the pixel values before we start printing
@@ -1235,41 +1240,48 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 have to allocate memory here. */
             for (i = 0, f = x->x_vec; i < n; i++, f += 2)
             {
-                pix[2*i] = glist_xtopixels(glist,
+                pix[2*i].w_float = glist_xtopixels(glist,
                     basex + fielddesc_getcoord(f, template, data, 1));
-                pix[2*i+1] = glist_ytopixels(glist,
+                pix[2*i+1].w_float = glist_ytopixels(glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
             if (glist->gl_isgraph)
                 width *= glist_getzoom(glist);
-            numbertocolor(
-                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
-                outline);
+            outline = numbertocolor(
+                fielddesc_getfloat(&x->x_outlinecolor, template, data, 1));
+
+            pdgui_vmess(0, "crr iiii rf ri rS",
+                glist_getcanvas(glist), "create",
+                (flags & CLOSED)?"polygon":"line",
+                0, 0, 0, 0,
+                "-width", width,
+                "-smooth", !!(flags & BEZ),
+                "-tags", 3, tags);
+
+            pdgui_vmess(0, "crs w",
+                glist_getcanvas(glist), "coords", tag,
+                2*n, pix);
+
             if (flags & CLOSED)
             {
-                numbertocolor(
-                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1),
-                    fill);
-                sys_vgui(".x%lx.c create polygon\\\n",
-                    glist_getcanvas(glist));
-            }
-            else sys_vgui(".x%lx.c create line\\\n", glist_getcanvas(glist));
-            for (i = 0; i < n; i++)
-                sys_vgui("%d %d\\\n", pix[2*i], pix[2*i+1]);
-            sys_vgui("-width %f\\\n", width);
-            if (flags & CLOSED) sys_vgui("-fill %s -outline %s\\\n",
-                fill, outline);
-            else sys_vgui("-fill %s\\\n", outline);
-            if (flags & BEZ) sys_vgui("-smooth 1\\\n");
-            sys_vgui("-tags curve%lx\n", data);
+                int fill = numbertocolor(
+                    fielddesc_getfloat(&x->x_fillcolor, template, data, 1));
+                pdgui_vmess(0, "crs rk rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", fill,
+                    "-outline", outline);
+            } else
+                pdgui_vmess(0, "crs rk",
+                    glist_getcanvas(glist), "itemconfigure", tag,
+                    "-fill", outline);
         }
         else post("warning: drawing shapes need at least two points to be graphed");
     }
     else
     {
-        if (n > 1) sys_vgui(".x%lx.c delete curve%lx\n",
-            glist_getcanvas(glist), data);
+        if (n > 1)
+            pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
@@ -1486,6 +1498,11 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
         }
         else if (*firstarg->s_name == '-')
         {
@@ -1762,13 +1779,15 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, usexloc, yval,
+    t_float linewidth, xloc, xinc, yloc, style, yval,
         vis, scalarvis, edit;
     double xsum;
     t_array *array;
     int nelem;
     char *elem;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
+    char tag[80], tag0[80];
+    const char*tags[] = {tag, tag0, "array"};
         /* even if the array is "invisible", if its visibility is
         set by an instance variable you have to explicitly erase it,
         because the flag could earlier have been on when we were getting
@@ -1789,26 +1808,30 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
+    sprintf(tag , "plot%p", data);
+        /* a tag that uniquely identifies the sub-plot */
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
+
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
-        char outline[56];
-        t_float color;
-        color = fielddesc_getfloat(&x->x_outlinecolor, template, data, 1);
-        if(color < 0)
-            sprintf(outline, "[::pdtk_canvas::get_color array_values .x%lx]",
-                (long)glist_getcanvas(glist));
-        else
-            numbertocolor(color, outline);
+         /* we use t_word because pdgui_vmess() has a convenient FLOATWORDS type
+          * FLOATARRAY is impractical (as it sends a list, and the GUI expects arguments)
+          */
+        t_word coordinates[1024*2];
+        t_canvas *c = glist_getcanvas(glist);
+        t_float fcolor = fielddesc_getfloat(&x->x_outlinecolor, template, data, 1);
+        int color = (fcolor < 0) ? fcolor : numbertocolor(fcolor);
+        
         if (style == PLOTSTYLE_POINTS)
         {
             t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
-                t_float yval, xpix, ypix, nextxloc;
+                t_float yval, xpix, ypix, nextxloc, usexloc;
                 int ixpix, inextx;
 
                 if (xonset >= 0)
@@ -1839,19 +1862,29 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(".x%lx.c create rectangle %d %d %d %d "
-                        "-fill %s -width 0 -tags [list plot%lx array]\n",
-                        glist_getcanvas(glist),
-                        ixpix, (int)glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, minyval)),
-                        inextx, (int)(glist_ytopixels(glist,
-                            basey + fielddesc_cvttocoord(yfielddesc, maxyval))
-                                + linewidth), outline, data);
+                    if(color < 0)
+                        pdgui_vmess("pdtk_canvas::set_color_types",
+                            "ci crr iiii rf rS rr",
+                            c, 1, c,
+                            "create", "rectangle",
+                            ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
+                            inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
+                            "-width", 0.,
+                            "-tags", 3, tags,
+                            "-fill", "array_values");
+                    else
+                        pdgui_vmess(0, "crr iiii rk rf rS",
+                            glist_getcanvas(glist), "create", "rectangle",
+                            ixpix , (int) glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, minyval)),
+                            inextx, (int)(glist_ytopixels(glist, basey + fielddesc_cvttocoord(yfielddesc, maxyval)) + linewidth),
+                            "-fill", color,
+                            "-width", 0.,
+                            "-tags", 3, tags);
                     ndrawn++;
                     minyval = 1e20;
                     maxyval = -1e20;
                 }
-                if (ndrawn > 2000 || ixpix >= 3000) break;
+                if (ndrawn > 2000) break;
             }
         }
         else
@@ -1860,15 +1893,15 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
+
+
             if (wonset >= 0)
             {
                     /* found "w" field which controls linewidth.  The trace is
                     a filled polygon with 2n points. */
-                sys_vgui(".x%lx.c create polygon \\\n",
-                    glist_getcanvas(glist));
-
                 for (i = 0, xsum = xloc; i < nelem; i++)
                 {
+                    t_float usexloc;
                     if (xonset >= 0)
                         usexloc = xloc + *(t_float *)((elem + elemsize * i)
                             + xonset);
@@ -1884,15 +1917,18 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + fielddesc_cvttocoord(yfielddesc,
-                                    yloc + yval) -
-                                        fielddesc_cvttocoord(wfielddesc,wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            - fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
                 lastpixel = -1;
                 for (i = nelem-1; i >= 0; i--)
@@ -1913,79 +1949,131 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix, glist_ytopixels(glist,
-                            basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                yval) +
-                                    fielddesc_cvttocoord(wfielddesc, wval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval)
+                            + fielddesc_cvttocoord(wfielddesc, wval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) goto ouch;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates))
+                        goto ouch;
                 }
+
                     /* TK will complain if there aren't at least 3 points.
                     There should be at least two already. */
                 if (ndrawn < 4)
                 {
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) +
-                                fielddesc_cvttocoord(wfielddesc, wval)));
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
-                        basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                            yval) -
-                                fielddesc_cvttocoord(wfielddesc, wval)));
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        - fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
+
+                    coordinates[ndrawn*2+0].w_float = ixpix + 10;
+                    coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                        glist,
+                        basey
+                        + yloc
+                        + fielddesc_cvttocoord(yfielddesc, yval)
+                        + fielddesc_cvttocoord(wfielddesc, wval));
+                    ndrawn++;
                 }
             ouch:
-                sys_vgui(" -width %d -fill %s -outline %s\\\n",
-                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
-                    outline, outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
+                if(color < 0)
+                    pdgui_vmess("pdtk_canvas::set_color_types",
+                        "ci crr ri ri rS rr rr",
+                        c, 2, c, "create", "polygon",
+                        "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags,
+                        "-fill", "array_values",
+                        "-outline", "array_values");
+                else
+                    pdgui_vmess(0, "crr ri rk rk ri rS",
+                        glist_getcanvas(glist), "create", "polygon",
+                        "-width", (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                        "-fill", color,
+                        "-outline", color,
+                        "-smooth", (style == PLOTSTYLE_BEZ),
+                        "-tags", 3, tags);
 
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                pdgui_vmess(0, "crs w",
+                    c, "coords", tag0,
+                    ndrawn*2, coordinates);
             }
             else if (linewidth > 0)
             {
                     /* no "w" field.  If the linewidth is positive, draw a
                     segmented line with the requested width; otherwise don't
                     draw the trace at all. */
-                sys_vgui(".x%lx.c create line \\\n", glist_getcanvas(glist));
-
-                for (xsum = xloc, i = 0; i < nelem; i++)
+                for (i = 0, xsum = xloc; i < nelem; i++)
                 {
                     t_float usexloc;
                     if (xonset >= 0)
-                        usexloc = xloc + *(t_float *)((elem + elemsize * i) +
-                            xonset);
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i)
+                            + xonset);
                     else usexloc = xsum, xsum += xinc;
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
                     yval = CLIP(yval);
+
+
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
-                                basey + yloc + fielddesc_cvttocoord(yfielddesc,
-                                    yval)));
+                        coordinates[ndrawn*2+0].w_float = ixpix;
+                        coordinates[ndrawn*2+1].w_float = glist_ytopixels(
+                            glist,
+                            basey
+                            + yloc
+                            + fielddesc_cvttocoord(yfielddesc, yval));
                         ndrawn++;
                     }
                     lastpixel = ixpix;
-                    if (ndrawn >= 1000) break;
+                    if (ndrawn*2 >= sizeof(coordinates)/sizeof(*coordinates)) break;
                 }
+
                     /* TK will complain if there aren't at least 2 points... */
-                if (ndrawn == 0) sys_vgui("0 0 0 0 \\\n");
-                else if (ndrawn == 1) sys_vgui("%d %f \\\n", ixpix + 10,
-                    glist_ytopixels(glist, basey + yloc +
-                        fielddesc_cvttocoord(yfielddesc, yval)));
+                if (ndrawn == 1)
+                {
+                    coordinates[2].w_float = ixpix + 10;
+                    coordinates[3].w_float = glist_ytopixels(glist, basey + yloc + fielddesc_cvttocoord(yfielddesc, yval));
+                    ndrawn = 2;
+                }
 
-                sys_vgui("-width %f\\\n", linewidth);
-                sys_vgui("-fill %s\\\n", outline);
-                if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
-
-                sys_vgui("-tags [list plot%lx array]\n", data);
+                if(ndrawn)
+                {
+                    if(color < 0)
+                        pdgui_vmess("pdtk_canvas::set_color_types",
+                            "ci crr iiii rf ri rS rr",
+                            c, 1, c, "create", "line",
+                            0, 0, 0, 0,
+                            "-width", linewidth,
+                            "-smooth", (style == PLOTSTYLE_BEZ),
+                            "-tags", 3, tags,
+                            "-fill", "array_values");
+                    else
+                        pdgui_vmess(0, "crr iiii rf rk ri rS",
+                            c, "create", "line",
+                            0, 0, 0, 0,
+                            "-width", linewidth,
+                            "-fill", color,
+                            "-smooth", (style == PLOTSTYLE_BEZ),
+                            "-tags", 3, tags);
+                    pdgui_vmess(0, "crs w",
+                        c, "coords", tag0,
+                        ndrawn*2, coordinates);
+                }
             }
         }
             /* We're done with the outline; now draw all the points.
@@ -2039,8 +2127,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
             }
         }
             /* and then the trace */
-        sys_vgui(".x%lx.c delete plot%lx\n",
-            glist_getcanvas(glist), data);
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
     }
 }
 
@@ -2495,6 +2582,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
+        }
         else break;
     }
         /* next argument is name of field to draw - we don't know its type yet
@@ -2507,7 +2605,7 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
-    else fielddesc_setfloat_const(&x->x_color, 1);
+    else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
     else x->x_label = &s_;
@@ -2574,10 +2672,21 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
         else
         {
             t_atom at;
-            if (type == DT_FLOAT)
+            switch(type)
+            {
+            default:
+                SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_FLOAT:
                 SETFLOAT(&at, ((t_word *)((char *)data + onset))->w_float);
-            else SETSYMBOL(&at, ((t_word *)((char *)data + onset))->w_symbol);
-            atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                atom_string(&at, buf + nchars, DRAWNUMBER_BUFSIZE - nchars);
+                break;
+            case DT_SYMBOL:
+                strncpy(buf + nchars,
+                    ((t_word *)((char *)data + onset))->w_symbol->s_name,
+                    DRAWNUMBER_BUFSIZE - nchars);
+            }
         }
     }
 }
@@ -2648,30 +2757,40 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
     int vis)
 {
     t_drawnumber *x = (t_drawnumber *)z;
+    char tag[80];
+    const char*tags[] = {tag, "label"};
 
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
+    sprintf(tag, "drawnumber%p", data);
     if (vis)
     {
+        t_atom fontatoms[3];
         t_atom at;
         int xloc = glist_xtopixels(glist,
             basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
         int yloc = glist_ytopixels(glist,
             basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-        char colorstring[20], buf[DRAWNUMBER_BUFSIZE];
-        numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
-            colorstring);
+        char buf[DRAWNUMBER_BUFSIZE];
+        int color = numbertocolor(
+            fielddesc_getfloat(&x->x_color, template, data, 1));
         drawnumber_getbuf(x, data, template, buf);
-        sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
-                glist_getcanvas(glist), xloc, yloc, colorstring, buf);
-        sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
-                sys_fontweight);
-        sys_vgui(" -tags [list drawnumber%lx label]\n", data);
+
+        SETSYMBOL(fontatoms+0, gensym(sys_font));
+        SETFLOAT (fontatoms+1,-sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)));
+        SETSYMBOL(fontatoms+2, gensym(sys_fontweight));
+        pdgui_vmess(0, "crr ii rs rk rs rA rS",
+            glist_getcanvas(glist), "create", "text",
+            xloc, yloc,
+            "-anchor", "nw",
+            "-fill", color,
+            "-text", buf,
+            "-font", 3, fontatoms,
+            "-tags", 2, tags);
     }
-    else sys_vgui(".x%lx.c delete drawnumber%lx\n",
-        glist_getcanvas(glist), data);
+    else
+        pdgui_vmess(0, "crs", glist_getcanvas(glist), "delete", tag);
 }
 
 static void drawnumber_motionfn(void *z, t_floatarg dx, t_floatarg dy,

@@ -43,9 +43,7 @@
 #X text 159 267 Fourier series;
 #X text 173 318 magnitude;
 #X text 173 303 calculate;
-#X text 52 23 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 52 23 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 88 99 signal to analyze, f 9;
 #X text 256 351 delay two samples;
 #X text 254 369 for better graphing;
@@ -88,10 +86,8 @@ until much later.;
 #X connect 27 0 2 0;
 #X connect 29 0 25 1;
 #X restore 240 432 pd fft;
-#X obj 259 380 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 279 405 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 259 380 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 279 405 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X text 551 534 updated for Pd version 0.37;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F10-spectrum 259 float 0;
@@ -99,20 +95,14 @@ until much later.;
 #X restore 485 293 graph;
 #X text 477 424 0;
 #X obj 199 400 +~;
-#X text 471 99 We can apply the two-cosine method to FM synthesis to
-get FM spectra which slide up and down: we just treat the cosines like
-carrier signals in an FM instrument. This doesn't work as well as you'd
-wish \, because the phases of the partials of the two FM instruments
-don't line up \, so that \, for indices of modulation above about 20%
-\, you get beating effects as the center frequency goes up and down.
-, f 43;
+#X text 471 99 We can apply the two-cosine method to FM synthesis to get FM spectra which slide up and down: we just treat the cosines like carrier signals in an FM instrument. This doesn't work as well as you'd wish \, because the phases of the partials of the two FM instruments don't line up \, so that \, for indices of modulation above about 20% \, you get beating effects as the center frequency goes up and down., f 43;
 #X text 539 434 -- frequency --;
 #X text 717 425 2700;
-#X text 281 380 <= graph once;
-#X text 300 404 <= repeatedly;
 #X text 97 34 center freq. (in tenths of fundamental), f 13;
 #X text 39 93 fundamental (= mod freq), f 12;
 #X obj 622 25 declare -stdpath ./;
+#X text 281 380 <-- graph once;
+#X text 300 404 <-- repeatedly;
 #X connect 0 0 6 1;
 #X connect 0 0 37 0;
 #X connect 1 0 24 0;

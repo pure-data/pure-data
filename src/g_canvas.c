@@ -10,10 +10,9 @@ to be different but are now unified except for some fossilized names.) */
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
-#include "s_utf8.h"
 #include "g_canvas.h"
+#include "s_utf8.h"
 #include <string.h>
-#include "g_all_guis.h"
 #include "g_undo.h"
 
 #ifdef _WIN32
@@ -76,7 +75,7 @@ void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
 
     /* here we add an extra check whether we're mapped, because some
        editing moves are carried out on invisible windows (notably, re-creating
-       abstractions when one is saved).  Should any other widget finctions also
+       abstractions when one is saved).  Should any other widget functions also
        be doing this?  */
 void gobj_select(t_gobj *x, t_glist *glist, int state)
 {
@@ -165,7 +164,7 @@ void canvas_updatewindowlist(void)
 {
             /* not if we're in a reload */
     if (!THISGUI->i_reloadingabstraction)
-        sys_gui("::pd_menus::update_window_menu\n");
+        pdgui_vmess("::pd_menus::update_window_menu", 0);
 }
 
     /* add a glist the list of "root" canvases (toplevels without parents.) */
@@ -452,7 +451,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
         canvas_addtolist(x);
-    /* post("canvas %lx, owner %lx", x, owner); */
+    /* post("canvas %p, owner %p", x, owner); */
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
@@ -740,8 +739,10 @@ void canvas_reflecttitle(t_canvas *x)
         strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
         namebuf[MAXPDSTRING-1] = 0;
     }
-    sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
-        x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
+    pdgui_vmess("pdtk_canvas_reflecttitle", "^ sss i",
+        x,
+        canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf,
+        x->gl_dirty);
 }
 
     /* mark a glist dirty or clean */
@@ -763,19 +764,24 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
 
 void canvas_drawredrect(t_canvas *x, int doit)
 {
+    t_canvas *c = glist_getcanvas(x);
     if (doit)
     {
         int x1 = x->gl_zoom * x->gl_xmargin,
             x2 = x1 + x->gl_zoom * x->gl_pixwidth,
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
-        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-fill [::pdtk_canvas::get_color gop_box .x%lx] "
-            "-width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-                glist_getcanvas(x), x->gl_zoom);
+        pdgui_vmess("pdtk_canvas::set_color_types",
+            "ci crr iiiiiiiiii rr ri rr rr",
+            c, 1, c, "create", "line",
+            x1,y1, x1,y2, x2,y2, x2,y1, x1,y1,
+            "-tags", "GOP",
+            "-width", x->gl_zoom,
+            "-capstyle", "projecting",
+            "-fill", "gop_box"); /* better: "-tags", 1, &"GOP" */
     }
-    else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
+    else
+        pdgui_vmess(0, "crs", c, "delete", "GOP");
 }
 
     /* the window becomes "mapped" (visible and not miniaturized) or
@@ -803,7 +809,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
             canvas_drawlines(x);
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);
-            sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+            pdgui_vmess("pdtk_canvas_getscroll", "c", x);
         }
     }
     else
@@ -816,7 +822,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
                 return;
             }
                 /* just clear out the whole canvas */
-            sys_vgui(".x%lx.c delete all\n", x);
+            pdgui_vmess(0, "crs", x, "delete", "all");
             x->gl_mapped = 0;
         }
     }
@@ -923,7 +929,7 @@ void canvas_free(t_canvas *x)
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
     gstub_cutoff(x->gl_stub);
-    gfxstub_deleteforkey(x);        /* probably unnecessary */
+    pdgui_stub_deleteforkey(x);        /* probably unnecessary */
     if (!x->gl_owner && !x->gl_isclone)
         canvas_takeofflist(x);
 }
@@ -934,20 +940,22 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int issignal;
     int zoom = x->gl_zoom; /* slight offset to hide thick line corners */
     {
+        char tag[128];
+        const char *tags[2] = {tag, "cord"};
+        int issignal;
+        t_canvas *c = glist_getcanvas(x);
         linetraverser_start(&t, x);
-        while ((oc = linetraverser_next(&t))) {
+        while ((oc = linetraverser_next(&t)))
+        {
             issignal = (outlet_getsymbol(t.tr_outlet) == &s_signal);
-            sys_vgui(
-                ".x%lx.c create line %d %d %d %d -width %d -fill "
-                "[::pdtk_canvas::get_color %s .x%lx] -tags [list l%lx cord]\n",
-                glist_getcanvas(x),
-                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
-                (issignal ? 2:1) * zoom,
-                (issignal ? "signal_cord" : "msg_cord"),
-                glist_getcanvas(x), oc);
+            sprintf(tag, "l%p", oc);
+            pdgui_vmess("pdtk_canvas::set_color_types", "ci crr iiii ri rS rr",
+                c, 1, c, "create", "line",
+                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2,
+                "-width", (issignal ? 2 : 1) * x->gl_zoom,
+                "-tags", 2, tags, "-fill", (issignal ? "signal_cord" : "msg_cord"));
         }
     }
 }
@@ -962,11 +970,22 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
-                glist_getcanvas(x), oc,
-                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+            char tag[128];
+            sprintf(tag, "l%p", oc);
+            pdgui_vmess(0, "crs iiii",
+                glist_getcanvas(x), "coords", tag,
+                t.tr_lx1,t.tr_ly1, t.tr_lx2,t.tr_ly2);
         }
     }
+}
+
+static void _canvas_delete_line(t_canvas*x, t_outconnect *oc)
+{
+    char tag[128];
+    if (!glist_isvisible(x))
+        return;
+    sprintf(tag, "l%p", oc);
+    pdgui_vmess(0, "crs", glist_getcanvas(x), "delete", tag);
 }
 
     /* kill all lines for the object */
@@ -979,11 +998,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            if (glist_isvisible(x))
-            {
-                sys_vgui(".x%lx.c delete l%lx\n",
-                    glist_getcanvas(x), oc);
-            }
+            _canvas_delete_line(x, oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1001,11 +1016,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
-            if (glist_isvisible(x))
-            {
-                sys_vgui(".x%lx.c delete l%lx\n",
-                    glist_getcanvas(x), oc);
-            }
+            _canvas_delete_line(x, oc);
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
         }
     }
@@ -1379,7 +1390,7 @@ static void canvas_start_dsp(void)
 {
     t_canvas *x;
     if (THISGUI->i_dspstate) ugen_stop();
-    else sys_gui("pdtk_pd_dsp ON\n");
+    else pdgui_vmess("pdtk_pd_dsp", "s", "ON");
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1395,7 +1406,7 @@ static void canvas_stop_dsp(void)
     if (THISGUI->i_dspstate)
     {
         ugen_stop();
-        sys_gui("pdtk_pd_dsp OFF\n");
+        pdgui_vmess("pdtk_pd_dsp", "s", "OFF");
         canvas_dspstate = THISGUI->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
@@ -1425,9 +1436,9 @@ void canvas_update_dsp(void)
     if (THISGUI->i_dspstate) canvas_start_dsp();
 }
 
-/* the "dsp" message to pd starts and stops DSP somputation, and, if
+/* the "dsp" message to pd starts and stops DSP computation, and, if
 appropriate, also opens and closes the audio device.  On exclusive-access
-APIs such as ALSA, MMIO, and ASIO (I think) it\s appropriate to close the
+APIs such as ALSA, MMIO, and ASIO (I think) it's appropriate to close the
 audio devices when not using them; but jack behaves better if audio I/O
 simply keeps running.  This is wasteful of CPU cycles but we do it anyway
 and can perhaps regard this is a design flaw in jack that we're working around
@@ -1796,24 +1807,25 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < argc; i++)
     {
         const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
-        if ((argc > i+1) && !strcmp(flag, "-path"))
+        const char *item = (argc > i+1)?atom_getsymbolarg(i+1, argc, argv)->s_name:0;
+        if ((item) && !strcmp(flag, "-path"))
         {
-            canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_path(x, e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
+        else if ((item) && !strcmp(flag, "-stdpath"))
         {
-            canvas_stdpath(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_stdpath(e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-lib"))
+        else if ((item) && !strcmp(flag, "-lib"))
         {
-            canvas_lib(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_lib(x, e, item);
             i++;
         }
-        else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
+        else if ((item) && !strcmp(flag, "-stdlib"))
         {
-            canvas_stdlib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_stdlib(e, item);
             i++;
         }
         else post("declare: %s: unknown declaration", flag);
@@ -2219,5 +2231,5 @@ void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
         return;
     }
     if (!glob_evalfile(ignore, name, dir))
-        sys_vgui("::pdwindow::busyrelease\n");
+        pdgui_vmess("::pdwindow::busyrelease", 0);
 }

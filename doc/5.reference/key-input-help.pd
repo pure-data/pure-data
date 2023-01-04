@@ -1,0 +1,71 @@
+#N canvas 544 41 523 358 12;
+#X obj 22 15 key;
+#X obj 51 15 keyup;
+#X obj 94 15 keyname;
+#X obj 125 66 key;
+#X floatatom 125 95 4 0 0 0 - - - 0;
+#X obj 275 66 keyname;
+#X symbolatom 321 95 10 0 0 0 - - - 0;
+#X text 289 332 updated for Pd version 0.32.;
+#X text 35 261 Caveat -- this only works if Pd actually gets the key
+events which can depend on the stacking order of windows and/or the
+pointer location \, depending on the system., f 65;
+#X obj 194 66 keyup;
+#X floatatom 194 95 4 0 0 0 - - - 0;
+#X floatatom 275 95 4 0 0 0 - - - 0;
+#X text 158 14 - grab keyboard input;
+#X obj 8 50 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#N canvas 753 101 572 451 reference 0;
+#X obj 9 97 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 135 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 172 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 206 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 22 15 key;
+#X obj 51 15 keyup;
+#X obj 94 15 keyname;
+#X text 158 14 - grab keyboard input;
+#X text 140 109 NONE, f 5;
+#X text 140 181 NONE, f 5;
+#X obj 22 65 key;
+#X obj 51 65 keyup;
+#X text 109 145 float - key number when pressed (key) and released
+(keyup);
+#X obj 9 277 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 9 315 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 9 396 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 427 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X text 140 289 NONE, f 5;
+#X text 140 404 NONE, f 5;
+#X obj 22 249 keyname;
+#X obj 10 365 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 10 338 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 119 373 symbol - key name.;
+#X text 126 343 float - <1> when key is pressed and <0> when released.
+;
+#X restore 338 15 pd reference;
+#X text 436 16 <= click;
+#X obj 8 322 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 35 134 [key] and [keyup] report the (system dependent) numbers
+of "printing" keys of the keyboard. [key] outputs when the keyboard
+key is pressed while [keyup] outputs it when you release the key. Check
+your system's preferences for 'autorepeat' as it affects the output
+of these objects., f 65;
+#X text 35 211 [keyname] gives the symbolic name of the key on the
+right outlet \, with a 1 or 0 in the left outlet if it's up or down
+\, and works with non-printing keys like "shift" or "F1"., f 65;
+#X connect 3 0 4 0;
+#X connect 5 0 11 0;
+#X connect 5 1 6 0;
+#X connect 9 0 10 0;

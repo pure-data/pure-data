@@ -1,4 +1,4 @@
-#N canvas 832 52 549 871 12;
+#N canvas 817 23 549 723 12;
 #X declare -stdpath ./;
 #X obj 109 552 mtof;
 #X obj 109 501 stripnote;
@@ -11,9 +11,9 @@
 #X text 224 497 off;
 #X text 304 525 recall pitch;
 #X text 156 7 MONOPHONIC MIDI SYNTH;
-#X obj 130 386 unpack;
-#X obj 86 305 notein;
-#X obj 86 332 pack;
+#X obj 130 384 unpack;
+#X obj 86 303 notein;
+#X obj 86 330 pack;
 #X obj 190 613 line~;
 #X msg 190 582 \$1 100;
 #X msg 260 583 0 1000;
@@ -24,10 +24,10 @@ and target values via number boxes.;
 #X text 41 46 This patch shows how to make a monophonic synthesizer
 that could be controlled from a MIDI or voltage-control keyboard--in
 this example we assume MIDI.;
-#X msg 232 335 55 64;
-#X msg 325 335 55 0;
-#X msg 184 335 48 64;
-#X msg 282 335 48 0;
+#X msg 232 333 55 64;
+#X msg 325 333 55 0;
+#X msg 184 333 48 64;
+#X msg 282 333 48 0;
 #X text 38 167 The note-off testing is complicated by the fact that
 we have to test both that the velocity is zero \, and further that
 the note-off pitch matches the pitch that is now playing (the most
@@ -45,7 +45,7 @@ recent note-on pitch.);
 #X obj 99 668 +~ 1;
 #X text 304 804 updated for Pd version 0.37;
 #X obj 172 717 cos~;
-#X msg 130 335 48 128;
+#X msg 130 333 48 128;
 #X text 114 529 pitch;
 #X text 303 481 test for note on or off;
 #X text 313 558 test against latest;
@@ -60,7 +60,7 @@ replacing the wavetable lookup.;
 #X text 218 713 The +~ 0.5 and *~ 2 are fudge factors.;
 #X text 218 674 This replaces the tabread4~;
 #X text 216 694 in the previous patch.;
-#X text 144 310 These buttons simulate MIDI input.;
+#X text 144 308 These buttons simulate MIDI input.;
 #X text 49 476 filter note-on messages, f 8;
 #X text 240 606 envelope generator now controls amplitude as well as
 grain size, f 31;

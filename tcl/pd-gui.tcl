@@ -527,29 +527,29 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "detected font: $::font_family\n"
+    set msg [_ "detected font: %s" ]
+    ::pdwindow::verbose 0 [format "${msg}\n" $::font_family ]
 }
 
 proc set_base_font {family weight} {
     if {[lsearch -exact [font families] $family] > -1} {
         set ::font_family $family
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font family '%s' not found, using default (%s)\n"] \
-                $family $::font_family]
+        set msg [_ "WARNING: font family '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $family $::font_family]
     }
     if {[lsearch -exact {bold normal} $weight] > -1} {
         set ::font_weight $weight
         set using_defaults 0
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font weight '%s' not found, using default (%s)\n"] \
-                $weight $::font_weight]
+        set msg [_ "WARNING: font weight '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
+    set msg [_ "using font: %1\$s %2\$s" ]
+    ::pdwindow::verbose 0 [ format "${msg}\n" $::font_family $::font_weight ]
 }
 
-# finds sizes of the chosen font that just fit into the requried metrics
+# finds sizes of the chosen font that just fit into the required metrics
 # e.g. if the metric requires the 'M' to be 15x10 pixels,
 # and the given font at size 12 is 15x7 and at size 16 it is 19x10,
 # then we would pick size 12.
@@ -644,9 +644,25 @@ proc pdtk_yesnodialog {mytoplevel message default} {
     }
     return 0
 }
-##### routine to ask user if OK and, if so, send a message on to Pd ######
+
+# routine to ask user if OK and, if so, send a message on to Pd ######
+# with built-informatting+ translation
+# modern usage:
+## pdtk_check .pdwindow {"Hello world!"} "pd dsp 1" no
+# legacy:
+## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
-    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
+    # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+    if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
+        set message [ list $message ]
+    }
+
+    if {[ catch {
+              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+          } ]} {
+           set msg [_ $message]
+       }
+    if {[ pdtk_yesnodialog $mytoplevel $msg $default ]} {
         pdsend $reply_to_pd
     }
 }
@@ -830,7 +846,12 @@ proc load_plugin_script {filename} {
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]
-    load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
+
+    if { $::port > 0 && $::host ne "" } { } else {
+        # only run the docsdir plugin if Pd is started via the GUI
+        # (to prevent a dialog from popping up on systems without keyboard/mouse)
+        load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
+    }
 
     # load other installed plugins
     foreach pathdir [concat $::sys_temppath $::sys_searchpath $::sys_staticpath] {
@@ -873,12 +894,18 @@ proc main {argc argv} {
     init_for_platform
 
     # ::host and ::port are parsed from argv by parse_args
-    if { $::port > 0 && $::host ne "" } {
-        # 'pd' started first and launched us, so get the port to connect to
-        ::pd_connect::to_pd $::port $::host
+    if { $::port > 0 } {
+        if { $::host ne "" } {
+            # 'pd' started a server and launched us, so connect to it as client
+            ::pd_connect::to_pd $::port $::host
+        } else {
+            # wait for a client 'pd' to connect to us; we're the server
+            # to do this, invoke as "pd-gui.tcl :1234" and start pd separately.
+            ::pd_connect::create_socket $::port
+        }
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
-        set ::port [::pd_connect::create_socket]
+        set ::port [::pd_connect::create_socket 0]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         set ::pd_startup_args \
         [string map {\{ "" \} ""} $::pd_startup_args]

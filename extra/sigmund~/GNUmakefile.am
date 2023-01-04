@@ -17,11 +17,11 @@ EXTRA_DIST = makefile
 dist_external_DATA = $(PATCHES) $(OTHERDATA)
 
 AUTOMAKE_OPTIONS = foreign
-AM_CFLAGS = @EXTERNAL_CFLAGS@
-AM_CPPFLAGS	+= -I$(top_srcdir)/src -DPD
+AM_CFLAGS = @EXTERNAL_CFLAGS@ @PD_CFLAGS@
+AM_CPPFLAGS	+= -I$(top_srcdir)/src -DPD @PD_CPPFLAGS@
 sigmund__la_LIBADD = $(LIBM)
 AM_LDFLAGS = -module -avoid-version -shared @EXTERNAL_LDFLAGS@ \
-    -shrext .@EXTERNAL_EXTENSION@ -L$(top_builddir)/src
+    -shrext .@EXTERNAL_EXTENSION@ -L$(top_builddir)/src @PD_LDFLAGS@
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 

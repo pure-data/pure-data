@@ -2,7 +2,6 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
@@ -41,7 +40,7 @@ t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_close(t_garray *x);
+static void garray_arrayviewlist_close(t_garray *x);
 /* } jsarlo */
 
 void array_resize(t_array *x, int n)
@@ -268,7 +267,7 @@ static void garray_fittograph(t_garray *x, int n, int style)
             glist_redraw(gl);
         }
             /* close any dialogs that might have the wrong info now... */
-        gfxstub_deleteforkey(gl);
+        pdgui_stub_deleteforkey(gl);
     }
 }
 
@@ -352,21 +351,21 @@ void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *)canvas;
     int gcount;
-    char cmdbuf[200], arraybuf[80];
+    char arraybuf[80];
     for (gcount = 1; gcount < 1000; gcount++)
     {
         sprintf(arraybuf, "array%d", gcount);
         if (!pd_findbyclass(gensym(arraybuf), garray_class))
             break;
     }
-    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount);
-    gfxstub_new(&x->gl_pd, x, cmdbuf);
+    pdgui_stub_vnew(&x->gl_pd,
+        "pdtk_array_dialog", x, "siii",
+        arraybuf, 100, 3, 1);
 }
 
     /* called from graph_dialog to set properties */
 void garray_properties(t_garray *x)
 {
-    char cmdbuf[200];
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
     int style = template_getfloat(template_findbyname(sc->sc_template),
@@ -376,14 +375,12 @@ void garray_properties(t_garray *x)
 
     if (!a)
         return;
-    gfxstub_deleteforkey(x);
-        /* create dialog window.  LATER fix this to escape '$'
-        properly; right now we just detect a leading '$' and escape
-        it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, "pdtk_array_dialog %%s {%s} %d %d 0\n",
-            x->x_name->s_name, a->a_n, x->x_saveit +
-            2 * filestyle);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
+    pdgui_stub_deleteforkey(x);
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_dialog", x,
+        "siii",
+        x->x_name->s_name,
+        a->a_n, x->x_saveit + 2 * filestyle, 0);
 }
 
     /* this is called back from the dialog window to create a garray.
@@ -479,87 +476,67 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 }
 
 /* jsarlo { */
-void garray_arrayviewlist_new(t_garray *x)
-{
-    int i, yonset=0, elemsize=0;
-    t_float yval;
-    char cmdbuf[200];
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
-
-    if (!a)
-    {
-        /* FIXME */
-        pd_error(0, "error in garray_arrayviewlist_new()");
-    }
-    x->x_listviewing = 1;
-    sprintf(cmdbuf,
-            "pdtk_array_listview_new %%s %s %d\n",
-            x->x_realname->s_name,
-            0);
-    gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
-    for (i = 0; i < ARRAYPAGESIZE && i < a->a_n; i++)
-    {
-        yval = *(t_float *)(a->a_vec +
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i,
-                 i,
-                 yval);
-    }
-}
-
-void garray_arrayviewlist_fillpage(t_garray *x,
-                                   t_float page,
+static void garray_arrayviewlist_fillpage(t_garray *x,
+                                   t_float fPage,
                                    t_float fTopItem)
 {
-    int i, yonset=0, elemsize=0, topItem;
-    t_float yval;
-    t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
+    int i, size=0, topItem=(int)fTopItem;
+    int pagesize=ARRAYPAGESIZE, page=(int)fPage, maxpage;
+    int offset, length;
+    t_word *data=0;
 
-    topItem = (int)fTopItem;
-    if (!a)
-    {
-        /* FIXME */
-        pd_error(0, "error in garray_arrayviewlist_new()");
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
     }
 
-    if (page < 0) {
-      page = 0;
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    else if ((page * ARRAYPAGESIZE) >= a->a_n) {
-      page = (int)(((int)a->a_n - 1)/ (int)ARRAYPAGESIZE);
-      sys_vgui("pdtk_array_listview_setpage %s %d\n",
-               x->x_realname->s_name,
-               (int)page);
-    }
-    sys_vgui(".%sArrayWindow.lb delete 0 %d\n",
+        /* make sure the requested page is within range */
+    maxpage = (size - 1) / pagesize;
+    if(page > maxpage)
+        page = maxpage;
+    if(page < 0)
+        page = 0;
+
+    pdgui_vmess("::dialog_array::listview_setpage", "s iii",
+        x->x_realname->s_name,
+        page, maxpage+1, pagesize);
+
+    offset = page*pagesize;
+    length = ((offset+pagesize) > size)?size-offset:pagesize;
+
+    pdgui_vmess("::dialog_array::listview_setdata", "siw",
              x->x_realname->s_name,
-             ARRAYPAGESIZE - 1);
-    for (i = page * ARRAYPAGESIZE;
-         (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
-         i++)
-    {
-        yval = *(t_float *)(a->a_vec + \
-               elemsize * i + yonset);
-        sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
-                 x->x_realname->s_name,
-                 i % ARRAYPAGESIZE,
-                 i,
-                 yval);
-    }
-    sys_vgui(".%sArrayWindow.lb yview %d\n",
+             offset,
+             length, data + offset);
+
+    pdgui_vmess("::dialog_array::listview_focus", "si",
              x->x_realname->s_name,
              topItem);
 }
 
-void garray_arrayviewlist_close(t_garray *x)
+static void garray_arrayviewlist_new(t_garray *x)
+{
+    int size=0;
+    t_word*data=0;
+
+    if(!garray_getfloatwords(x, &size, &data)) {
+        pd_error(x, "error in %s()", __FUNCTION__);
+        return;
+    }
+    x->x_listviewing = 1;
+
+    pdgui_stub_vnew(&x->x_gobj.g_pd,
+        "pdtk_array_listview_new", x,
+        "si",
+        x->x_realname->s_name, 0);
+
+    garray_arrayviewlist_fillpage(x, 0, 0);
+}
+
+static void garray_arrayviewlist_close(t_garray *x)
 {
     x->x_listviewing = 0;
-    sys_vgui("pdtk_array_listview_closeWindow %s\n",
+    pdgui_vmess("pdtk_array_listview_closeWindow", "s",
              x->x_realname->s_name);
 }
 /* } jsarlo */
@@ -574,7 +551,7 @@ static void garray_free(t_garray *x)
         garray_arrayviewlist_close(x);
     }
     /* } jsarlo */
-    gfxstub_deleteforkey(x);
+    pdgui_stub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
     while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
@@ -805,7 +782,7 @@ void garray_redraw(t_garray *x)
     else
     {
       if (x->x_listviewing)
-        sys_vgui("pdtk_array_listview_fillpage %s\n",
+          pdgui_vmess("pdtk_array_listview_fillpage", "s",
                  x->x_realname->s_name);
     }
     /* } jsarlo */

@@ -30,7 +30,48 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
-<P> ------------------ 0.52-0 ------------------------------
+<P> ------------------ 0.53-1 ------------------------------
+
+<P> Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of
+the cleanup/rewrite for 0.53. Also more documentation by Alexandre Porres.
+
+<P> ------------------ 0.53-0 ------------------------------
+
+<P> This is being released quickly to fix a bug in version 0.52, in which
+soundfile reading was disrupted. There are some internal updates serious enough
+to warrant a version number change, such as the unification of horizontal and
+vertical sliders/radio buttons and the fact you can now change their orientation
+via a new 'orientation' message, but no new features other than that.
+
+<P> The IEMGUI default sizes increased, as part of an ongoing cleanup/rewrite.
+
+<P> As usual, there are many minor bug fixes (thanks to several developers)
+and updates to documentation by Alexandre Porres.
+
+<P> The 'deken' plugin (external extension search tool) has been updated to a
+new version.
+
+<P> Many updated string translations.
+
+<P> ------------------ 0.52-2 ------------------------------
+
+<p> Many small bug fixes, and a few larger ones: under jack, Pd's delay adjusted
+upward to the jack blocksize if needed (to prevent a hang).
+
+<p> Many documentation fixes and improvements by Alexandre Porres
+
+<p> Reverted behavior when selecting and dragging a single text box, so that
+it now activates the text as traditional until 0.51.  Sometimes one behavior is
+wanted, sometimes the other, so there should be an easy-to-understand way for
+users to control this.  At the moment you can rectangle-select an object to
+displace it without selecting the text, which is perhaps adequate, perhaps not.
+
+<p> added an indirect way to open Pd's gui on one machine and the real-time
+program on another without using X windows (so that it can be easily done on
+MacOS and Windows).  Requires ssh expertise - see commit c0e320f2142.  (This
+was already included in pd-0.51-1 but not documented).
+
+<P> ------------------ 0.52-0 and 0.52-1 ------------------------------
 
 <P> The Macintosh compiled version is now compiled at IEM (as part of the
 continuous-integration setup available at git.iem.at/pd/pure-data/pipelines).
@@ -39,8 +80,9 @@ arm64 target (but not sure if the released binary will include that or not).
 
 <P> New "list" box, like number and symbol but allows lists in addition to
 single atoms.  You can scroll up and down on any of the numbers in a list as
-if it were a number box.  You can also double-click on (number, symbol, list)
-to activate a "real" editor you can copy/paste from/to.
+if it were a number box. All boxes (number, symbol, list) can now set different
+sizes and you can also double-click on them to activate a "real" editor you can
+copy/paste from/to.
 
 <P> A new "trace" object allows you to get backward and forward traces of
 message passing.
@@ -69,9 +111,7 @@ in ../pd/libpd.
 
 <P> Improved window positioning.
 
-<P> New methods for "list store" and added features to "array"
-
-<p> New method for garrays to set colors, line width, visiblity, display style
+<p> New method for garrays to set colors, line width, visibility, display style
 and disable mouse editing (documented in 2.control.examples/16.more.arrays.pd).
 Also added more flags to the "plot" object that plots arrays in data structures
 (by Christof Ressi).
@@ -79,8 +119,10 @@ Also added more flags to the "plot" object that plots arrays in data structures
 <p> "set", "send", "delete" and "insert" methods added to "list store" object,
 and new features added to "get" method (by Christof Ressi).
 
-<p> The [output~] abstraction, widely used in Pd's documentation is now part of
-'extra' - plus many documentation updates/improvements (by Alexandre Porres).
+<p> The output~ abstraction, widely used in Pd's documentation is now part of
+'extra' - plus several documentation updates/improvements to the help files and
+chapter 4 of the manual (by Alexandre Porres). Also, other updates to the manual
+by Lucas Cordiviola.
 
 <P> As usual, numerous bug fixes.
 
@@ -117,7 +159,7 @@ The pd~ source is also now updated to work (again) in Max/MSP, on Mac or PC.
 rates.  You can still run Pd at 3.14159 Hz if you want to but you'll have to
 type that one in.
 
-<P> On Macintosh tcl/tk is updgraded to 8.6.10 (should work on MacOS from
+<P> On Macintosh tcl/tk is upgraded to 8.6.10 (should work on MacOS from
 10.6 to 11.0 aka "Bug Sur").
 
 <P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full
@@ -2020,7 +2062,7 @@ Also, the array_write routine was fixed.
 notable new objects:
 
 <BR>
-- vcf~, a bandpass filter with a signal input for center frequency.
+- vcf~, a band-pass filter with a signal input for center frequency.
 <BR>
 - delread, delwrite, vd, as in ISPW Max.
 <BR>

@@ -1,4 +1,4 @@
-#N canvas 683 76 577 831 12;
+#N canvas 677 23 576 704 12;
 #X declare;
 #X obj 29 116 bang;
 #X text 129 116 - output a bang message;
@@ -240,30 +240,25 @@
 #X obj 28 3825 inlet~;
 #X obj 82 3825 outlet~;
 #X obj 29 3960 struct;
-#X text 199 3960 - define a data structure;
-#X obj 29 3984 drawcurve;
-#X obj 106 3984 filledcurve;
-#X obj 29 4008 drawpolygon;
-#X obj 121 4008 filledpolygon;
+#X obj 29 4008 drawcurve;
+#X obj 106 4008 filledcurve;
+#X obj 29 3984 drawpolygon;
+#X obj 121 3984 filledpolygon;
 #X obj 29 4059 plot;
 #X text 69 4059 - plot an array field;
 #X obj 29 4033 drawnumber;
 #X obj 30 4120 pointer;
 #X text 130 4120 - point to an object belonging to a template;
 #X obj 30 4144 get;
-#X text 130 4144 - get numeric fields;
 #X obj 30 4168 set;
-#X text 130 4168 - change numeric fields;
 #X obj 30 4192 element;
-#X text 130 4192 - get an array element;
 #X obj 30 4216 getsize;
 #X text 130 4216 - get the size of an array;
 #X obj 30 4240 setsize;
 #X text 130 4240 - change the size of an array;
 #X obj 30 4264 append;
-#X text 130 4264 - add an element to a list;
 #X obj 30 4288 scalar;
-#X text 151 4704 (use tabwrite~ now);
+#X text 150 4704 (use tabwrite~ now);
 #X obj 144 3576 czero_rev~;
 #X obj 31 2691 threshold~;
 #X text 131 2691 - detect signal thresholds;
@@ -394,9 +389,8 @@ as "switch" \, also switch subpatches on and off;
 #X obj 97 4673 pique;
 #X text 29 86 --------------------- GENERAL --------------------------
 ;
-#X obj 41 678 x_all_guis;
-#X text 120 678 <==;
-#X text 150 671 click and open for all Graphical User Interface (GUI)
+#X text 112 678 <==;
+#X text 142 671 click and open for all Graphical User Interface (GUI)
 objects in Pd, f 34;
 #X text 24 636 -------------------------- GUIs -------------------------
 ;
@@ -404,9 +398,6 @@ objects in Pd, f 34;
 #X text 56 24 The following is a list of built-in objects in Pd. Right-click
 (or control-click on a Macintosh) on any object to get its "help window".
 , f 50;
-#X text 201 3984 - draw a shape with bezier curve;
-#X text 231 4008 - draw a polygon shape;
-#X text 264 4032 - draw number/symbol/text;
 #X text 23 3930 --------------- DATA STRUCTURE TEMPLATES ------------------
 ;
 #X text 23 4090 -------------- ACCESSING DATA STRUCTURES -------------------
@@ -425,10 +416,20 @@ objects in Pd, f 34;
 #X text 22 2983 ------------ AUDIO GENERATORS AND TABLES -------------
 ;
 #X text 31 2540 ------------- GENERAL AUDIO TOOLS --------------;
-#X text 152 4671 (from 'extra': use sigmund~ now);
+#X text 150 4675 (from 'extra': use sigmund~ now);
 #X obj 33 4587 output~;
 #X text 128 4595 - simple stereo output (used in the documentation)
 ;
 #X text 127 748 - send a bang message after a time delay;
 #X text 127 772 - send a bang message periodically (a la metronome)
 ;
+#X obj 41 678 all_guis;
+#X text 130 4192 - get pointer to an array element;
+#X text 223 3984 - draw polygon shapes;
+#X text 101 3960 - define a data structure template;
+#X text 224 4008 - draw shapes with bezier curve;
+#X text 259 4032 - draw number/symbol/text fields;
+#X text 130 4144 - get field values (floats/symbols) from a scalar
+;
+#X text 130 4168 - set field values (floats/symbols) of a scalar;
+#X text 130 4264 - add a scalar to a Data Structure list;
