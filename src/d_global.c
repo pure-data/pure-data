@@ -7,8 +7,6 @@
 #include "m_pd.h"
 #include <string.h>
 
-#define DEFSENDVS 64    /* LATER get send to get this from canvas */
-
 /* ----------------------------- send~ ----------------------------- */
 static t_class *sigsend_class;
 
@@ -16,20 +14,24 @@ typedef struct _sigsend
 {
     t_object x_obj;
     t_symbol *x_sym;
-    int x_n;
+    t_canvas *x_canvas;
+    int x_length;
+    int x_nchans;
     t_sample *x_vec;
     t_float x_f;
 } t_sigsend;
 
-static void *sigsend_new(t_symbol *s)
+static void *sigsend_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigsend *x = (t_sigsend *)pd_new(sigsend_class);
     pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
-    x->x_n = DEFSENDVS;
-    x->x_vec = (t_sample *)getbytes(DEFSENDVS * sizeof(t_sample));
-    memset((char *)(x->x_vec), 0, DEFSENDVS * sizeof(t_sample));
+    if ((x->x_nchans = fnchans) < 1)
+        x->x_nchans = 1;
+    x->x_length = 1;
+    x->x_vec = (t_sample *)getbytes(x->x_nchans * sizeof(t_sample));
     x->x_f = 0;
+    x->x_canvas = canvas_getcurrent();
     return (x);
 }
 
@@ -47,24 +49,43 @@ static t_int *sigsend_perform(t_int *w)
     return (w+4);
 }
 
+static void sigsend_fixbuf(t_sigsend *x, int length)
+{
+    if (x->x_length != length)
+    {
+        x->x_vec = (t_sample *)resizebytes(x->x_vec,
+            x->x_length * x->x_nchans * sizeof(t_sample),
+            length * x->x_nchans * sizeof(t_sample));
+        x->x_length = length;
+    }
+}
+
 static void sigsend_dsp(t_sigsend *x, t_signal **sp)
 {
-    if (x->x_n == sp[0]->s_n)
-        dsp_add(sigsend_perform, 3, sp[0]->s_vec, x->x_vec, (t_int)sp[0]->s_n);
-    else pd_error(0, "sigsend %s: unexpected vector size", x->x_sym->s_name);
+    int usenchans = (x->x_nchans < sp[0]->s_nchans ?
+        x->x_nchans : sp[0]->s_nchans);
+    sigsend_fixbuf(x, sp[0]->s_length);
+    dsp_add(sigsend_perform, 3, sp[0]->s_vec, x->x_vec,
+        x->x_length * usenchans);
+    if (x->x_nchans > usenchans)
+        memset(x->x_vec + usenchans * x->x_length, 0,
+            (x->x_nchans - usenchans) * x->x_length * sizeof(t_sample));
 }
 
 static void sigsend_free(t_sigsend *x)
 {
     pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_n * sizeof(t_sample));
+    freebytes(x->x_vec, x->x_length * sizeof(t_sample));
 }
 
 static void sigsend_setup(void)
 {
     sigsend_class = class_new(gensym("send~"), (t_newmethod)sigsend_new,
-        (t_method)sigsend_free, sizeof(t_sigsend), 0, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)sigsend_new, gensym("s~"), A_DEFSYM, 0);
+        (t_method)sigsend_free, sizeof(t_sigsend), 0,
+            A_DEFSYM, A_DEFFLOAT, 0);
+    class_addcreator((t_newmethod)sigsend_new, gensym("s~"), 
+        A_DEFSYM, A_DEFFLOAT, 0);
+    class_setdspflags(sigsend_class, CLASS_MULTICHANNEL);
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);
     class_addmethod(sigsend_class, (t_method)sigsend_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -78,15 +99,20 @@ typedef struct _sigreceive
 {
     t_object x_obj;
     t_symbol *x_sym;
+    t_canvas *x_canvas;
     t_sample *x_wherefrom;
-    int x_n;
+    int x_length;
+    int x_nchans;
 } t_sigreceive;
 
-static void *sigreceive_new(t_symbol *s)
+static void *sigreceive_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigreceive *x = (t_sigreceive *)pd_new(sigreceive_class);
-    x->x_n = DEFSENDVS;             /* LATER find our vector size correctly */
+    x->x_length = 1;             /* this is changed in dsp routine */
+    if ((x->x_nchans = fnchans) < 1)
+        x->x_nchans = 1;
     x->x_sym = s;
+    x->x_canvas = canvas_getcurrent();
     x->x_wherefrom = 0;
     outlet_new(&x->x_obj, &s_signal);
     return (x);
@@ -143,11 +169,17 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
         sigsend_class);
     if (sender)
     {
-        if (sender->x_n == x->x_n)
-            x->x_wherefrom = sender->x_vec;
+        int length = canvas_getsignallength(sender->x_canvas);
+        sigsend_fixbuf(sender, length);
+        if (sender->x_nchans == x->x_nchans &&
+            length == x->x_length)
+                x->x_wherefrom = sender->x_vec;
         else
         {
-            pd_error(x, "receive~ %s: vector size mismatch", x->x_sym->s_name);
+            pd_error(x,
+                "receive~ %s: dimensions %dx%d don't match the send~ (%dx%d)",
+                x->x_sym->s_name, x->x_nchans, x->x_length,
+                    sender->x_nchans, sender->x_length);
             x->x_wherefrom = 0;
         }
     }
@@ -160,27 +192,25 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
 
 static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
 {
-    if (sp[0]->s_n != x->x_n)
-    {
-        pd_error(x, "receive~ %s: vector size mismatch", x->x_sym->s_name);
-    }
-    else
-    {
-        sigreceive_set(x, x->x_sym);
-        if (sp[0]->s_n&7)
-            dsp_add(sigreceive_perform, 3,
-                x, sp[0]->s_vec, (t_int)sp[0]->s_n);
-        else dsp_add(sigreceive_perf8, 3,
-            x, sp[0]->s_vec, (t_int)sp[0]->s_n);
-    }
+    int length = canvas_getsignallength(x->x_canvas);
+    x->x_length = length;
+    sigreceive_set(x, x->x_sym);
+    sp[0] = signal_new(length, x->x_nchans, canvas_getsr(x->x_canvas), 0);
+    if ((length * x->x_nchans) & 7)
+        dsp_add(sigreceive_perform, 3,
+            x, sp[0]->s_vec, (t_int)(length * x->x_nchans));
+    else dsp_add(sigreceive_perf8, 3,
+        x, sp[0]->s_vec, (t_int)(length * x->x_nchans));
 }
 
 static void sigreceive_setup(void)
 {
     sigreceive_class = class_new(gensym("receive~"),
         (t_newmethod)sigreceive_new, 0,
-        sizeof(t_sigreceive), 0, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)sigreceive_new, gensym("r~"), A_DEFSYM, 0);
+        sizeof(t_sigreceive), 0, A_DEFSYM, A_DEFFLOAT, 0);
+    class_addcreator((t_newmethod)sigreceive_new, gensym("r~"),
+        A_DEFSYM, A_DEFFLOAT, 0);
+    class_setdspflags(sigreceive_class, CLASS_MULTICHANNEL);
     class_addmethod(sigreceive_class, (t_method)sigreceive_set, gensym("set"),
         A_SYMBOL, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
@@ -189,6 +219,7 @@ static void sigreceive_setup(void)
 }
 
 /* ----------------------------- catch~ ----------------------------- */
+#define DEFSENDVS 64  /* get rid of this */
 static t_class *sigcatch_class;
 
 typedef struct _sigcatch

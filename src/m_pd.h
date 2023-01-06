@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 53
-#define PD_BUGFIX_VERSION 1
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 54
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "draft"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -449,6 +449,8 @@ EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
 EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN t_float canvas_getsr(t_canvas *x);
+EXTERN int canvas_getsignallength(t_canvas *x);
 
 /* ---------------- widget behaviors ---------------------- */
 
@@ -462,12 +464,34 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 /* -------------------- classes -------------- */
 
 #define CLASS_DEFAULT 0         /* flags for new classes below */
-#define CLASS_PD 1
-#define CLASS_GOBJ 2
-#define CLASS_PATCHABLE 3
-#define CLASS_NOINLET 8
-
+#define CLASS_PD 1              /* non-canvasable (bare) pd such as an inlet */
+#define CLASS_GOBJ 2            /* pd that can belong to a canvas */
+#define CLASS_PATCHABLE 3       /* pd that also can have inlets and outlets */
 #define CLASS_TYPEMASK 3
+
+#define CLASS_NOINLET 8             /* suppress left inlet */
+#define CLASS_MULTICHANNEL 0x10     /* can deal with multichannel sigs */
+#define CLASS_NOPROMOTESIG 0x20     /* don't promote scalars to signals */
+#define CLASS_NOPROMOTELEFT 0x40    /* not even the main (left) inlet */
+
+/*
+    Setting a tilde object's CLASS_MULTICHANNEL flag declares that it can
+    deal with multichannel inputs.  In this case the channel counts of
+    the inputs might not match; it's up to the dsp method to figure out what
+    to do.  Also, the output signal vectors aren't allocated.  The output
+    channel counts have to be specified by the object at DSP time.  If
+    the object can't put itself on the DSP chain it then has to create
+    outputs anyway and arrange to zero them.
+    
+    By default, if a tilde object's inputs are unconnected, Pd fills them
+    in by adding scalar-to-vector conversions to the DSP chain as needed before
+    calling the dsp method.  This behavior can be suppressed for the left
+    (main) inlet by setting CLASS_NOPROMOTELEFT and for one or more non-main
+    inlets by setting CLASS_NOPROMOTESIG.  Seeing this, the object can then
+    opt to supply a faster routine; for example, "+" can do a vector-scalar
+    add.  In any case, signal outputs are all vectors, and are allocated
+    automatically unless the CLASS_MULTICHANNEL flag is also set.
+*/
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
@@ -500,6 +524,8 @@ EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
+EXTERN void class_setdspflags(t_class *c, int flags);
+EXTERN int class_getdspflags(const t_class *c);
 
 EXTERN void class_setdsp(t_class *c, int flags);
 #define CLASS_DSP_BIGSIGNALS 1      /* use large signal structure */
@@ -612,14 +638,17 @@ typedef struct _signal
     int s_overlap;          /* number of times each sample appears */
     int s_refcount;         /* number of times signal is referenced */
     int s_isborrowed;       /* whether we're going to borrow our array */
+    int s_isscalar;         /* scalar for an unconnected signal input */
     struct _signal *s_borrowedfrom;     /* signal to borrow it from */
     struct _signal *s_nextfree;         /* next in freelist */
     struct _signal *s_nextused;         /* next in used list */
-    int s_vecsize;      /* allocated size of array in points */
+    int s_nalloc;      /* allocated size of array in points */
 } t_signal;
 
 typedef t_int *(*t_perfroutine)(t_int *args);
 
+EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
+    t_sample *scalarptr);
 EXTERN t_int *plus_perform(t_int *args);
 EXTERN t_int *zero_perform(t_int *args);
 EXTERN t_int *copy_perform(t_int *args);
