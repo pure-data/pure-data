@@ -78,7 +78,7 @@ ALL_LINGUAS = \
 	fr \
 	gu \
 	hi hu \
-	it \
+	id it \
 	ja \
 	ko \
 	nl \
