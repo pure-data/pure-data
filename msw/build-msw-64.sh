@@ -22,8 +22,6 @@ rm -rf pd-$pdversion
 git clone ~/pd pd-$pdversion
 cd pd-$pdversion
 
-git checkout 0.53-0
-
 #copy in the ASIO SDK and rename it ASIOSDK
 (cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
     rm -rf __MACOSX/; mv ASIOSDK2.3 ASIOSDK)
