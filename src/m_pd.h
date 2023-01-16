@@ -526,11 +526,6 @@ EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_set_extern_dir(t_symbol *s);
 EXTERN void class_setdspflags(t_class *c, int flags);
 EXTERN int class_getdspflags(const t_class *c);
-
-EXTERN void class_setdsp(t_class *c, int flags);
-#define CLASS_DSP_BIGSIGNALS 1      /* use large signal structure */
-#define CLASS_DSP_MANUALSCALARS 2   /* suppress promoting float to signal */
-
 EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
     class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
