@@ -198,11 +198,6 @@ static void block_set(t_block *x, t_floatarg fcalcsize, t_floatarg foverlap,
             vecsize *= 2;
     }
     else vecsize = 0;
-    if (vecsize && (vecsize != (1 << ilog2(vecsize))))
-    {
-        pd_error(x, "block~: vector size not a power of 2");
-        vecsize = 64;
-    }
     if (overlap != (1 << ilog2(overlap)))
     {
         pd_error(x, "block~: overlap not a power of 2");
@@ -253,8 +248,9 @@ int canvas_getsignallength(t_canvas *x)
     t_gobj *g;
     for (canvas = x; canvas; canvas = canvas->gl_owner)
         for (g = canvas->gl_list; g; g = g->g_next)
-            if (g->g_pd == block_class)
-                return (((t_block *)x)->x_vecsize);
+            if (g->g_pd == block_class &&
+                ((t_block *)g)->x_calcsize)
+                    return (((t_block *)x)->x_calcsize);
     return (DEFDACBLKSIZE);
 }
 
