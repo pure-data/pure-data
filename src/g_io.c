@@ -16,8 +16,6 @@ life elsewhere. */
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
-void signal_setborrowed(t_signal *sig, t_signal *sig2);
-void signal_makereusable(t_signal *sig);
 
 static int symbol2resamplemethod(t_symbol*s)
 {
@@ -25,7 +23,7 @@ static int symbol2resamplemethod(t_symbol*s)
     else if (s == gensym("lin"   )) return 2; /* up: linear interpolation */
     else if (s == gensym("linear")) return 2; /* up: linear interpolation */
     else if (s == gensym("pad"   )) return 0; /* up: zero pad */
-    return -1;  /* default: sample/hold unless version<0.44 (where it's zero-pad) */
+    return -1;  /* default: sample/hold except zero-pad if version<0.44 */
 }
 
 /* ------------------------- vinlet -------------------------- */
@@ -145,7 +143,7 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
     }
     else
     {
-        dsp_add(vinlet_perform, 3, x, outsig->s_vec, (t_int)outsig->s_vecsize);
+        dsp_add(vinlet_perform, 3, x, outsig->s_vec, (t_int)outsig->s_nalloc);
         x->x_read = x->x_buf;
     }
 }
@@ -200,7 +198,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         if (parentsigs)
         {
             insig = parentsigs[inlet_getsignalindex(x->x_inlet)];
-            parentvecsize = insig->s_vecsize;
+            parentvecsize = insig->s_nalloc;
             re_parentvecsize = parentvecsize * upsample / downsample;
         }
         else
@@ -272,10 +270,11 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
     resample_init(&x->x_updown);
 
     /* this should be though over:
-     * it might prove hard to provide consistency between labeled up- & downsampling methods
-     * maybe indices would be better...
+     * it might prove hard to provide consistency between labeled up- &
+     * downsampling methods - maybe indices would be better...
      *
-     * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
+     * up till now we provide several upsampling methods and 1 single
+     *  downsampling method (no filtering !)
      */
     x->x_updown.method = -1;
     while(argc-->0)
@@ -506,7 +505,7 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         if (parentsigs)
         {
             outsig = parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
-            parentvecsize = outsig->s_vecsize;
+            parentvecsize = outsig->s_nalloc;
             re_parentvecsize = parentvecsize * upsample / downsample;
         }
         else
@@ -597,7 +596,8 @@ static void *voutlet_newsig(t_symbol *s)
 static void voutlet_setup(void)
 {
     voutlet_class = class_new(gensym("outlet"), (t_newmethod)voutlet_new,
-        (t_method)voutlet_free, sizeof(t_voutlet), CLASS_NOINLET, A_DEFSYM, 0);
+        (t_method)voutlet_free, sizeof(t_voutlet),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, A_DEFSYM, 0);
     class_addcreator((t_newmethod)voutlet_newsig, gensym("outlet~"), A_DEFSYM, 0);
     class_addbang(voutlet_class, voutlet_bang);
     class_addpointer(voutlet_class, voutlet_pointer);
