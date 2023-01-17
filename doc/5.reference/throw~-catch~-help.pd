@@ -1,4 +1,4 @@
-#N canvas 455 25 520 568 12;
+#N canvas 490 41 520 568 12;
 #X floatatom 44 416 5 0 0 0 - - - 0;
 #X obj 374 214 sig~ 50;
 #X obj 44 386 snapshot~;
@@ -56,11 +56,11 @@
 #X text 426 27 <= click;
 #X obj 4 68 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 4 456 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
-#X text 23 79 A [throw~] object copies its input to a local buffer which all [catch~] objects of the same name read from. They may be in different windows or even different patches. Any number of [throw~] objects can add into one [catch~] object (but two [catch~] objects cannot share the same name.), f 61;
 #X obj 238 487 tabsend~;
 #X text 190 226 You can redirect [throw~] via a "set" message., f 16;
-#X text 38 466 [send~]/[receive~] only work for the default block size (64). for FFT applications check:, f 62;
 #X text 120 175 <- \$0 needs to be expanded from objects., f 23;
+#X text 38 466 [throw~]/[catch~] only work for the default block size (64). for FFT applications check:, f 62;
+#X text 25 78 A [throw~] object copies its input to a local buffer which all [catch~] objects of the same name read from in different windows or even different patches. Any number of [throw~] objects can add into one [catch~] object \, but two [catch~] objects cannot share the same name - for the opposite \, see [send~]/[receive~]., f 65;
 #X connect 1 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 23 0;
