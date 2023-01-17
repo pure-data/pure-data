@@ -345,11 +345,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                     tempio[i]->s_vec = sp[i]->s_vec + j * sp[i]->s_length;
                     tempio[i]->s_refcount = 1;
                 }
-                else
-                {
-                    sp[i]->s_refcount++;
-                    tempio[i] = sp[i];
-                }
+                else  tempio[i] = sp[i];
+                sp[i]->s_refcount++;
             }
             for (i = 0; i < nout; i++)
                 tempio[nin + i] = signal_newfromcontext(1, 1);
