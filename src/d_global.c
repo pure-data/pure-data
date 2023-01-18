@@ -163,10 +163,13 @@ static t_int *sigreceive_perf8(t_int *w)
     return (w+4);
 }
 
+    /* set receive symbol.  Also check our signal length (setting
+    x->x_length) and chase down the sender to verify length and nchans match */
 static void sigreceive_set(t_sigreceive *x, t_symbol *s)
 {
     t_sigsend *sender = (t_sigsend *)pd_findbyclass((x->x_sym = s),
         sigsend_class);
+    x->x_length = canvas_getsignallength(x->x_canvas);
     if (sender)
     {
         int length = canvas_getsignallength(sender->x_canvas);
@@ -192,15 +195,13 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
 
 static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
 {
-    int length = canvas_getsignallength(x->x_canvas);
-    x->x_length = length;
     sigreceive_set(x, x->x_sym);
-    sp[0] = signal_new(length, x->x_nchans, canvas_getsr(x->x_canvas), 0);
-    if ((length * x->x_nchans) & 7)
+    sp[0] = signal_new(x->x_length, x->x_nchans, canvas_getsr(x->x_canvas), 0);
+    if ((x->x_length * x->x_nchans) & 7)
         dsp_add(sigreceive_perform, 3,
-            x, sp[0]->s_vec, (t_int)(length * x->x_nchans));
+            x, sp[0]->s_vec, (t_int)(x->x_length * x->x_nchans));
     else dsp_add(sigreceive_perf8, 3,
-        x, sp[0]->s_vec, (t_int)(length * x->x_nchans));
+        x, sp[0]->s_vec, (t_int)(x->x_length * x->x_nchans));
 }
 
 static void sigreceive_setup(void)
