@@ -464,9 +464,12 @@ void canvas_disconnect(t_canvas *x,
         if (srcno == index1 && t.tr_outno == outno &&
             sinkno == index2 && t.tr_inno == inno)
         {
-            char tag[128];
-            sprintf(tag, "l%p", oc);
-            pdgui_vmess(0, "crs", x, "delete", tag);
+            if (glist_isvisible(x) && x->gl_havewindow)
+            {
+                char tag[128];
+                sprintf(tag, "l%p", oc);
+                pdgui_vmess(0, "crs", x, "delete", tag);
+            }
             obj_disconnect(t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
             break;
         }

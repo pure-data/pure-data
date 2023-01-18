@@ -52,6 +52,7 @@ proc pdtk_textwindow_dodirty {name} {
 
 proc pdtk_textwindow_setdirty {name flag} {
     if {[winfo exists $name]} {
+        if { ! $flag } { $name.text edit reset }
         catch {$name.text edit modified $flag}
     }
 }
