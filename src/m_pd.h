@@ -793,15 +793,15 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #define PD_USE_TE_XPIX
 
 #ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
-#if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
-/* a test for NANs and denormals.  Should only be necessary on i386. */
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+/* a test for NANs and denormals. Should only be necessary on i386. */
 #if PD_FLOATSIZE == 32
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui;
-}t_bigorsmall32;
+} t_bigorsmall32;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed float */
 {
@@ -820,11 +820,11 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 
 #elif PD_FLOATSIZE == 64
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui[2];
-}t_bigorsmall64;
+} t_bigorsmall64;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed double */
 {
@@ -860,6 +860,7 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     || (f) > -1e-150 && (f) < 1e-150 )
 #endif
 #endif /* _MSC_VER */
+
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
