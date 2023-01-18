@@ -145,7 +145,7 @@ static void pack_tilde_dsp(t_pack *x, t_signal **sp)
             sp[x->x_nchans]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
 }
 
-static void *pack_tilde_new(t_symbol *s, t_floatarg fnchans)
+static void *pack_tilde_new(t_floatarg fnchans)
 {
     t_pack *x = (t_pack *)pd_new(pack_tilde_class);
     int i;
@@ -197,7 +197,7 @@ static void unpack_tilde_dsp(t_unpack *x, t_signal **sp)
     }
 }
 
-static void *unpack_tilde_new(t_symbol *s, t_floatarg fnchans)
+static void *unpack_tilde_new(t_floatarg fnchans)
 {
     t_unpack *x = (t_unpack *)pd_new(unpack_tilde_class);
     int i;
