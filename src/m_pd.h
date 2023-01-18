@@ -482,7 +482,7 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
     channel counts have to be specified by the object at DSP time.  If
     the object can't put itself on the DSP chain it then has to create
     outputs anyway and arrange to zero them.
-    
+
     By default, if a tilde object's inputs are unconnected, Pd fills them
     in by adding scalar-to-vector conversions to the DSP chain as needed before
     calling the dsp method.  This behavior can be suppressed for the left

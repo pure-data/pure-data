@@ -83,7 +83,7 @@ static void sigsend_setup(void)
     sigsend_class = class_new(gensym("send~"), (t_newmethod)sigsend_new,
         (t_method)sigsend_free, sizeof(t_sigsend), 0,
             A_DEFSYM, A_DEFFLOAT, 0);
-    class_addcreator((t_newmethod)sigsend_new, gensym("s~"), 
+    class_addcreator((t_newmethod)sigsend_new, gensym("s~"),
         A_DEFSYM, A_DEFFLOAT, 0);
     class_setdspflags(sigsend_class, CLASS_MULTICHANNEL);
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);

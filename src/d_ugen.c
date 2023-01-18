@@ -490,7 +490,7 @@ void signal_makereusable(t_signal *sig)
 
     /* pop an audio signal from free list or create a new one.
     if "scalarp" is nonzero, it's a pointer to a scalar owned by the
-    tilde object; in this case we neither allocate nor free it.  
+    tilde object; in this case we neither allocate nor free it.
     Otherwise, if "length" is zero, return a "borrowed"
     signal whose buffer and size will be obtained later via
     signal_setborrowed(). */
@@ -834,10 +834,10 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         ((class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched)));
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
     t_ugenbox *u2;
-    
+
         /* if CLASS_MULTICHANNEL isn't set, check that all input signals
         are one-channel, and if not, just return without doing anything. */
-    
+
     for (i = 0, uin = u->u_in; i < u->u_nin; i++, uin++)
         if (uin->i_nconnect && uin->i_signal->s_nchans != 1 &&
             !(flags & CLASS_MULTICHANNEL))
@@ -927,7 +927,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             /* if any output signals aren't connected to anyone, free them
             now; otherwise they'll either get freed when the reference count
             goes back to zero, or even later as explained above. */
-            
+
         if (!(*sig)->s_refcount)
             signal_makereusable(*sig);
     }

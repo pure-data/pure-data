@@ -203,7 +203,7 @@ static t_int *siglop_perf_vector(t_int *w)
     t_sample *out = (t_sample *)(w[4]);
     int i, n = (int)w[5];
     t_sample last = x->x_last, coef;
-    
+
     for (i = 0; i < n; i++)
     {
         coef = *in2++ * x->x_conversion;
