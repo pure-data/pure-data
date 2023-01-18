@@ -2,7 +2,7 @@
 #X floatatom 271 357 5 0 0 0 - - - 0;
 #X obj 271 327 snapshot~;
 #X obj 356 282 metro 200;
-#X text 34 415 see also:;
+#X text 29 415 see also:;
 #X obj 356 250 loadbang;
 #X obj 53 255 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X msg 53 283 \; pd dsp \$1;
@@ -47,9 +47,10 @@
 #X text 93 23 - combine or split multichannel signals, f 21;
 #X floatatom 189 357 5 0 0 0 - - - 0;
 #X obj 189 327 snapshot~;
-#X obj 110 416 send~;
-#X obj 157 416 inlet~;
+#X obj 105 416 send~;
+#X obj 152 416 inlet~;
 #X text 37 83 A [pack~] object combines any number of ordinary \, one-channel signals into a combined multichannel signal \, while [unpack~] dies the reverse. The number of component signals is specified as a creation argument. (If the number of channels to an [unpack~] object doesn't match the number it expects \, it still generates the requested number of outputs \, adding zero signals as needed.), f 62;
+#X obj 208 416 clone;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X connect 2 0 10 0;
