@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "s_inter.h"
 #include <stdarg.h>
 #include <string.h>
 
@@ -408,6 +409,40 @@ void pdgui_endmess(void)
 /* TODO: shouldn't this have a pointer to t_pdinstance? */
 void pdgui_vmess(const char* message, const char* format, ...)
 {
+    if(!message) return;
+
+    // This call causes a circular loop, so ignore it
+    if (strncmp(message, "pdtk_canvas_raise", strlen("pdtk_canvas_raise")) == 0) {
+        return;
+    }
+
+    if (strncmp(message, "pdtk_savepanel", strlen("pdtk_savepanel")) == 0) {
+
+        va_list args;
+        va_start(args, format);
+
+        char const* symbol = va_arg(args, char const*);
+        char const* path = va_arg(args, char const*);
+
+        create_panel(0, path, symbol);
+    }
+    if (strncmp(message, "pdtk_openpanel", strlen("pdtk_openpanel")) == 0) {
+        va_list args;
+        va_start(args, format);
+
+        char const* symbol = va_arg(args, char const*);
+        char const* path = va_arg(args, char const*);
+
+        create_panel(1, path, symbol);
+    }
+    if (strncmp(message, "::pd_menucommands::menu_openfile", strlen("::pd_menucommands::menu_openfile")) == 0) {
+        va_list args;
+        va_start(args, format);
+        const char* str = va_arg(args, const char*);
+        trigger_open_file(str);
+        va_end(args);
+    }
+
     va_list args;
     if (!sys_havegui())return;
     if(!format)
@@ -420,4 +455,4 @@ void pdgui_vmess(const char* message, const char* format, ...)
     pdgui_vamess(message, format, args);
     va_end(args);
     pdgui_endmess();
-}
+    }
