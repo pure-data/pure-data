@@ -268,34 +268,55 @@ void pd_doloadbang(void)
     lastpopped = 0;
 }
 
+
+void plugdata_forward_message(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+
 void pd_bang(t_pd *x)
 {
     (*(*x)->c_bangmethod)(x);
+    
+    plugdata_forward_message(x, gensym("bang"), 0, NULL);
 }
 
 void pd_float(t_pd *x, t_float f)
 {
     (*(*x)->c_floatmethod)(x, f);
+    
+    t_atom fl_value;
+    SETFLOAT(&fl_value, f);
+    
+    plugdata_forward_message(x, gensym("float"), 1, &fl_value);
 }
 
 void pd_pointer(t_pd *x, t_gpointer *gp)
 {
     (*(*x)->c_pointermethod)(x, gp);
+    
+    plugdata_forward_message(x, gensym("pointer"), 0, NULL);
 }
 
 void pd_symbol(t_pd *x, t_symbol *s)
 {
     (*(*x)->c_symbolmethod)(x, s);
+    
+    t_atom sym_value;
+    SETSYMBOL(&sym_value, s);
+    
+    plugdata_forward_message(x, gensym("symbol"), 1, &sym_value);
 }
 
 void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     (*(*x)->c_listmethod)(x, &s_list, argc, argv);
+    
+    plugdata_forward_message(x, gensym("list"), argc, argv);
 }
 
 void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     (*(*x)->c_anymethod)(x, s, argc, argv);
+    
+    plugdata_forward_message(x, gensym("anything"), argc, argv);
 }
 
 void mess_init(void);

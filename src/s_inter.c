@@ -139,13 +139,11 @@ struct _instanceinter {
     unsigned char i_recvbuf[NET_MAXPACKETSIZE];
 
     pd_gui_callback gui_callback;
-    pd_panel_callback panel_callback;
-    pd_openfile_callback openfile_callback;
     pd_message_callback message_callback;
     void* callback_target;
 };
 
-void register_gui_triggers(t_pdinstance* instance, void* target, pd_gui_callback gui_callback, pd_panel_callback panel_callback, pd_openfile_callback openfile_callback, pd_message_callback message_callback)
+void register_gui_triggers(t_pdinstance* instance, void* target, pd_gui_callback gui_callback, pd_message_callback message_callback)
 {
 
 #if !PDINSTANCE
@@ -153,27 +151,10 @@ void register_gui_triggers(t_pdinstance* instance, void* target, pd_gui_callback
 #endif
 
     instance->pd_inter->gui_callback = gui_callback;
-    instance->pd_inter->panel_callback = panel_callback;
-    instance->pd_inter->openfile_callback = openfile_callback;
     instance->pd_inter->message_callback = message_callback;
     instance->pd_inter->callback_target = target;
 }
 
-
-void update_gui(void* obj_target)
-{
-    if (pd_this->pd_inter->gui_callback) {
-        pd_this->pd_inter->gui_callback(pd_this->pd_inter->callback_target, obj_target);
-    }
-}
-
-
-void create_panel(int openpanel, char const* path, char const* snd)
-{
-    if (pd_this->pd_inter->panel_callback) {
-        pd_this->pd_inter->panel_callback(pd_this->pd_inter->callback_target, openpanel, snd, path);
-    }
-}
 
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
@@ -843,32 +824,10 @@ void sys_vgui(char const* fmt, ...)
         trigger_open_file(str);
         va_end(args);
     }
-
-
-    /* disabled for now, could be used for dynamic patching
-     if(strncmp(fmt, "pdtk_canvas_reflecttitle", strlen("pdtk_canvas_reflecttitle")) == 0) {
-
-     va_list args;
-     va_start(args, fmt);
-
-     t_canvas* cnv = va_arg(args, t_canvas*);
-
-     }
-     if(strncmp(fmt, "pdtk_text_new", strlen("pdtk_text_new")) == 0) {
-
-     va_list args;
-     va_start(args, fmt);
-
-     t_canvas* cnv = va_arg(args, t_canvas*);
-
-     } */
-
-    update_gui(NULL);
 }
 
 void sys_gui(char const* s)
 {
-    update_gui(NULL);
 }
 static int sys_flushtogui(void)
 {
@@ -967,7 +926,12 @@ void sys_pretendguibytes(int n)
 
 void sys_queuegui(void* client, t_glist* glist, t_guicallbackfn f)
 {
-    update_gui(client);
+    t_pd* c_pd = (t_pd*)client;
+    
+    // redraw scalar
+    if (c_pd && !strcmp((*c_pd)->c_name->s_name, "scalar")) {
+        update_gui();
+    }
 }
 
 void sys_unqueuegui(void* client)
@@ -1751,9 +1715,34 @@ void pd_globalunlock(void) { }
 #endif /* PDTHREADS */
 
 
+void update_gui()
+{
+    if (INTER && INTER->callback_target && INTER->gui_callback) {
+        pd_this->pd_inter->gui_callback(INTER->callback_target, "repaint", NULL, NULL, NULL);
+    }
+}
+
+void create_panel(int openpanel, char const* path, char const* snd)
+{
+    if (INTER && INTER->callback_target && INTER->gui_callback) {
+        
+        t_atom args[3];
+        SETFLOAT(args, openpanel);
+        SETSYMBOL(args + 1, gensym(path));
+        SETSYMBOL(args + 2, gensym(snd));
+        
+        pd_this->pd_inter->gui_callback(INTER->callback_target, "openpanel", args, args + 1, args + 2);
+    }
+}
+
+
 void trigger_open_file(const char* file) {
-    if(INTER && INTER->callback_target) {
-        INTER->openfile_callback(INTER->callback_target, file);
+    if(INTER && INTER->callback_target && INTER->gui_callback) {
+        
+        t_atom args;
+        SETSYMBOL(&args, gensym(file));
+        
+        INTER->gui_callback(INTER->callback_target, "openfile", &args, NULL, NULL);
     }
 }
 
