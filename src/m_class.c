@@ -31,6 +31,8 @@ t_pd pd_canvasmaker;    /* factory for creating canvases */
 
 static t_symbol *class_extern_dir;
 
+void plugdata_forward_message(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+
 #ifdef PDINSTANCE
 static t_class *class_list = 0;
 PERTHREAD t_pdinstance *pd_this = NULL;
@@ -205,7 +207,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-    
+
     instanceno = x->pd_instanceno;
     inter = x->pd_inter;
     canvas_suspend_dsp();
@@ -968,6 +970,8 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_floatarg ad[MAXPDARG+1], *dp = ad;
     int narg = 0;
     t_pd *bonzo;
+
+    plugdata_forward_message(x, s, argc, argv);
 
         /* check for messages that are handled by fixed slots in the class
         structure. */
