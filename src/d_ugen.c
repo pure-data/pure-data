@@ -239,7 +239,7 @@ int canvas_getsignallength(t_canvas *x)
         for (g = canvas->gl_list; g; g = g->g_next)
             if (g->g_pd == block_class &&
                 ((t_block *)g)->x_calcsize)
-                    return (((t_block *)x)->x_calcsize);
+                    return (((t_block *)g)->x_calcsize);
     return (DEFDACBLKSIZE);
 }
 
