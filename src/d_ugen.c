@@ -552,14 +552,11 @@ t_signal *signal_newlike(const t_signal *sig)
     we create a new signal of the desired nchans and perform a vector
     transplant - this makes it possible to re-use space we earlier marked
     reusable. */
-void signal_setchansout(t_signal *sig, int nchans)
+void signal_setchansout(t_signal **sig, int nchans)
 {
-    t_signal *s2 = signal_new(sig->s_length, nchans, sig->s_sr, 0);
-    sig->s_nchans = s2->s_nchans;
-    sig->s_vec = s2->s_vec;
-    s2->s_nchans = 0;
-    s2->s_vec = 0;
-    signal_makereusable(s2);
+    t_signal *s2 = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+    signal_makereusable(*sig);
+    *sig = s2;
 }
 
 void signal_setborrowed(t_signal *sig, t_signal *sig2)
@@ -922,7 +919,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (nonewsigs)
             *sig = signal_new(0, 1, dc->dc_sr, 0);
         else *sig = signal_new(dc->dc_length,
-            (flags & CLASS_MULTICHANNEL ? 0 : 1)), dc->dc_sr, 0);
+            (flags & CLASS_MULTICHANNEL ? 0 : 1), dc->dc_sr, 0);
     }
         /* now call the DSP scheduling routine for the ugen.  This
         routine must fill in "borrowed" signal outputs in case it's either

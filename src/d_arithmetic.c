@@ -119,7 +119,7 @@ static void plus_dsp(t_plus *x, t_signal **sp)
     else if (bign0 > 1)
         outchans = sp[0]->s_nchans;
     else outchans = 1;
-    signal_setchansout(sp[2], outchans);
+    signal_setchansout(&sp[2], outchans);
     if (bign0 > 1)
     {
         if (bign1 > 1)
@@ -152,7 +152,7 @@ static void plus_dsp(t_plus *x, t_signal **sp)
 static void scalarplus_dsp(t_scalarplus *x, t_signal **sp)
 {
     t_int bign = sp[0]->s_length * sp[0]->s_nchans;
-    signal_setchansout(sp[1], sp[0]->s_nchans);
+    signal_setchansout(&sp[1], sp[0]->s_nchans);
     dsp_add((bign & 7 ? scalarplus_perform : scalarplus_perf8),
         4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
@@ -305,7 +305,7 @@ static void minus_dsp(t_minus *x, t_signal **sp)
     else if (bign0 > 1)
         outchans = sp[0]->s_nchans;
     else outchans = 1;
-    signal_setchansout(sp[2], outchans);
+    signal_setchansout(&sp[2], outchans);
     if (bign0 > 1)
     {
         if (bign1 > 1)
@@ -337,7 +337,7 @@ static void minus_dsp(t_minus *x, t_signal **sp)
 static void scalarminus_dsp(t_scalarminus *x, t_signal **sp)
 {
     t_int bign = sp[0]->s_length * sp[0]->s_nchans;
-    signal_setchansout(sp[1], sp[0]->s_nchans);
+    signal_setchansout(&sp[1], sp[0]->s_nchans);
     dsp_add((bign & 7 ? scalarminus_perform : scalarminus_perf8),
         4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
