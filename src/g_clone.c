@@ -311,7 +311,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             nout++;
         /* create output signals */
     for (i = 0; i < nout; i++)
-        sp[nin+i] = 
+        sp[nin+i] =
             signal_new(canvas_getsignallength(x->x_canvas),
                 (x->x_packout ? x->x_n : 1), canvas_getsr(x->x_canvas), 0);
     for (j = 0; j < x->x_n; j++)
@@ -568,7 +568,7 @@ int clone_get_n(t_gobj *x)
 t_glist *clone_get_instance(t_gobj *x, int n)
 {
     t_clone *c;
-    
+
     if (pd_class(&x->g_pd) != clone_class) return NULL;
 
     c = (t_clone *)x;

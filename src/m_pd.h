@@ -482,7 +482,7 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
     channel counts have to be specified by the object at DSP time.  If
     the object can't put itself on the DSP chain it then has to create
     outputs anyway and arrange to zero them.
-    
+
     By default, if a tilde object's inputs are unconnected, Pd fills them
     in by adding scalar-to-vector conversions to the DSP chain as needed before
     calling the dsp method.  This behavior can be suppressed for the left
@@ -644,9 +644,16 @@ typedef t_int *(*t_perfroutine)(t_int *args);
 
 EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
     t_sample *scalarptr);
+EXTERN t_signal *signal_newlike(const t_signal *sig);
+
 EXTERN t_int *plus_perform(t_int *args);
+EXTERN t_int *plus_perf8(t_int *args);
 EXTERN t_int *zero_perform(t_int *args);
+EXTERN t_int *zero_perf8(t_int *args);
 EXTERN t_int *copy_perform(t_int *args);
+EXTERN t_int *copy_perf8(t_int *args);
+EXTERN t_int *scalarcopy_perform(t_int *args);
+EXTERN t_int *scalarcopy_perf8(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
@@ -828,15 +835,15 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #define PD_USE_TE_XPIX
 
 #ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
-#if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
-/* a test for NANs and denormals.  Should only be necessary on i386. */
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+/* a test for NANs and denormals. Should only be necessary on i386. */
 #if PD_FLOATSIZE == 32
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui;
-}t_bigorsmall32;
+} t_bigorsmall32;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed float */
 {
@@ -855,11 +862,11 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 
 #elif PD_FLOATSIZE == 64
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui[2];
-}t_bigorsmall64;
+} t_bigorsmall64;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed double */
 {
@@ -895,6 +902,7 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     || (f) > -1e-150 && (f) < 1e-150 )
 #endif
 #endif /* _MSC_VER */
+
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 

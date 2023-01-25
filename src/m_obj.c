@@ -187,7 +187,7 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     {
         /* the "symto" field is undefined for signal inlets, so we don't
          attempt to translate the selector, just forward the original msg. */
-        
+
         if (x->i_symfrom == &s_signal)
             typedmess(x->i_dest, s, argc, argv);
         else
@@ -914,7 +914,7 @@ t_float *obj_findsignalscalar(const t_object *x, int m)
     {
         if (!m--)
             return (x->ob_pd->c_floatsignalin > 0 ?
-                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 
+                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) :
                     &obj_scalarzero);
     }
     for (i = x->ob_inlet; i; i = i->i_next)
