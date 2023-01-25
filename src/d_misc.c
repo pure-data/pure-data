@@ -211,7 +211,7 @@ static void unpack_tilde_setup(void)
     CLASS_MAINSIGNALIN(unpack_tilde_class, t_unpack, x_f);
     class_addmethod(unpack_tilde_class, (t_method)unpack_tilde_dsp,
         gensym("dsp"), 0);
-    class_sethelpsymbol(pack_tilde_class, gensym("pack-unpack-tilde"));
+    class_sethelpsymbol(unpack_tilde_class, gensym("pack-unpack-tilde"));
 }
 
 /* ------------------------ global setup routine ------------------------- */
