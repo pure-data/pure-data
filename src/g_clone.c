@@ -339,13 +339,17 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             {
                 if (x->x_distributein)
                 {
+                        /* distribute multi-channel signal over instances;
+                        wrap around if channel count is lower than instance count */
+                    int offset = j % sp[i]->s_nchans;
                     tempio[i] = signal_new(0, 1, sp[i]->s_sr, 0);
                     signal_setborrowed(tempio[i], sp[i]);
                     tempio[i]->s_nchans = 1;
-                    tempio[i]->s_vec = sp[i]->s_vec + j * sp[i]->s_length;
+                    tempio[i]->s_vec = sp[i]->s_vec + offset * sp[i]->s_length;
                     tempio[i]->s_refcount = 1;
                 }
-                else  tempio[i] = sp[i];
+                else
+                    tempio[i] = sp[i];
                 sp[i]->s_refcount++;
             }
             for (i = 0; i < nout; i++)
@@ -379,13 +383,17 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             {
                 if (x->x_distributein)
                 {
+                        /* distribute multi-channel signal over instances;
+                        wrap around if channel count is lower than instance count */
+                    int offset = j % sp[i]->s_nchans;
                     tempio[i] = signal_new(0, 1, sp[i]->s_sr, 0);
                     signal_setborrowed(tempio[i], sp[i]);
                     tempio[i]->s_nchans = 1;
-                    tempio[i]->s_vec = sp[i]->s_vec + j * sp[i]->s_length;
+                    tempio[i]->s_vec = sp[i]->s_vec + offset * sp[i]->s_length;
                     tempio[i]->s_refcount = 1;
                 }
-                else  tempio[i] = sp[i];
+                else
+                    tempio[i] = sp[i];
                 sp[i]->s_refcount++;
             }
             for (i = 0; i < nout; i++)
