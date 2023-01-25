@@ -194,7 +194,7 @@ static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
 {
     x->x_length = sp[0]->s_length;
     sigreceive_set(x, x->x_sym);
-    sp[0] = signal_swapforchans(sp[0], x->x_nchans);
+    signal_setchansout(sp[0], x->x_nchans);
     if ((x->x_length * x->x_nchans) & 7)
         dsp_add(sigreceive_perform, 3,
             x, sp[0]->s_vec, (t_int)(x->x_length * x->x_nchans));
@@ -272,7 +272,7 @@ static t_int *sigcatch_perform(t_int *w)
 static void sigcatch_dsp(t_sigcatch *x, t_signal **sp)
 {
     sigcatch_fixbuf(x, sp[0]->s_length);
-    sp[0] = signal_swapforchans(sp[0], x->x_nchans);
+    signal_setchansout(sp[0], x->x_nchans);
     dsp_add(sigcatch_perform, 3, x->x_vec, sp[0]->s_vec,
         x->x_length * x->x_nchans);
 }

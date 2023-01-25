@@ -451,7 +451,7 @@ void signal_makereusable(t_signal *sig)
     }
 #endif
     if (THIS->u_loud) post("free %lx: %d", sig, sig->s_isborrowed);
-    if (sig->s_isborrowed || sig->s_isscalar)
+    if (sig->s_isborrowed || sig->s_isscalar || !sig->s_nchans)
     {
         if (sig->s_isborrowed)
         {
@@ -491,7 +491,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
         /* figure out which free list to use, depending on size of vector */
     if (sr < 1)
         bug("signal_new");
-    if (length)
+    if (length && nchans)
     {
         int logn = ilog2(length*nchans);
             /* round up to a power of two */
@@ -512,7 +512,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     {
                  /* LATER figure out what to do if we ran out of space */
         ret = (t_signal *)t_getbytes(sizeof *ret);
-        if (!scalarptr && length)
+        if (!scalarptr && length && nchans)
             ret->s_vec = (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec));
         ret->s_nextused = THIS->u_signals;
         THIS->u_signals = ret;
@@ -546,18 +546,20 @@ t_signal *signal_newlike(const t_signal *sig)
     return (signal_new(sig->s_length, sig->s_nchans, sig->s_sr, 0));
 }
 
-    /* only use this in the context of dsp routines to reset number of channels
-    on output signal - we assume it's not borrowed or scalar and that nobody is
-    reading or writing to our s_vec earlier on teh DSP chain. */
-t_signal *signal_swapforchans(t_signal *sig, int nchans)
+    /* only use this in the context of dsp routines to set number of channels
+    on output signal - we assume it's currently a zero-channel signal we
+    just now greated for someone's dsp method.  This is a bit of a hack -
+    we create a new signal of the desired nchans and perform a vector
+    transplant - this makes it possible to re-use space we earlier marked
+    reusable. */
+void signal_setchansout(t_signal *sig, int nchans)
 {
-    if (nchans != sig->s_nchans)
-    {
-        t_signal *s2 = signal_new(sig->s_length, nchans, sig->s_sr, 0);
-        signal_makereusable(sig);
-        return (s2);
-    }
-    else return (sig);
+    t_signal *s2 = signal_new(sig->s_length, nchans, sig->s_sr, 0);
+    sig->s_nchans = s2->s_nchans;
+    sig->s_vec = s2->s_vec;
+    s2->s_nchans = 0;
+    s2->s_vec = 0;
+    signal_makereusable(s2);
 }
 
 void signal_setborrowed(t_signal *sig, t_signal *sig2)
@@ -910,12 +912,17 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         instead we create "borrowed" ones so that the refcount
         is known.  The subcanvas replaces the fake signal with one showing
         where the output data actually is, to avoid having to copy it.
-        Otherwise we just allocate a new output vector. */
+        Otherwise, we a allocate a new output vector.  If the
+        CLASS_MULTICHANNEL flag is set for the object, we make a zero-channel
+        one and expect the object to call signal_setchansout() to set
+        the numbner of channels.  If not, we can make a one-channel output
+        signal and the object doesn't have to do anytthing. */
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
         if (nonewsigs)
             *sig = signal_new(0, 1, dc->dc_sr, 0);
-        else *sig = signal_new(dc->dc_length, 1, dc->dc_sr, 0);
+        else *sig = signal_new(dc->dc_length,
+            (flags & CLASS_MULTICHANNEL ? 0 : 1)), dc->dc_sr, 0);
     }
         /* now call the DSP scheduling routine for the ugen.  This
         routine must fill in "borrowed" signal outputs in case it's either

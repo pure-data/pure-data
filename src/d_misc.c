@@ -136,7 +136,7 @@ static void pack_tilde_dsp(t_pack *x, t_signal **sp)
 {
     int i;
         /* create an n-channel output signal. sp has n+1 elements. */
-    sp[x->x_nchans] = signal_swapforchans(sp[x->x_nchans], x->x_nchans);
+    signal_setchansout(sp[x->x_nchans], x->x_nchans);
         /* add n copy operations to the DSP chain, one from each input */
     for (i = 0; i < x->x_nchans; i++)
          dsp_add_copy(sp[i]->s_vec,
