@@ -110,7 +110,7 @@ static void dsp_add_multi(t_sample *vec1, int n1, t_sample *vec2,
     element, it's a vector.  If both are one, and if length >1,
     we need two operations, one to add and one to copy the scalar result
     to a vector. */
-static void plus_dsp(t_plus *x, t_signal **sp, t_signal *nullsignal)
+static void plus_dsp(t_plus *x, t_signal **sp)
 {
     int bign0 = sp[0]->s_length * sp[0]->s_nchans,
         bign1 = sp[1]->s_length * sp[1]->s_nchans, outchans;
@@ -119,7 +119,7 @@ static void plus_dsp(t_plus *x, t_signal **sp, t_signal *nullsignal)
     else if (bign0 > 1)
         outchans = sp[0]->s_nchans;
     else outchans = 1;
-    sp[2] = signal_new(nullsignal->s_length, outchans, nullsignal->s_sr, 0);
+    sp[2] = signal_swapforchans(sp[2], outchans);
     if (bign0 > 1)
     {
         if (bign1 > 1)
@@ -144,7 +144,7 @@ static void plus_dsp(t_plus *x, t_signal **sp, t_signal *nullsignal)
                 to be allowed but the user should have used a control add. */
             dsp_add_plus(sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)1);
             dsp_add_scalarcopy(sp[2]->s_vec, sp[2]->s_vec,
-                (t_int)nullsignal->s_length);
+                (t_int)sp[2]->s_length);
         }
     }
 }
@@ -152,7 +152,7 @@ static void plus_dsp(t_plus *x, t_signal **sp, t_signal *nullsignal)
 static void scalarplus_dsp(t_scalarplus *x, t_signal **sp)
 {
     t_int bign = sp[0]->s_length * sp[0]->s_nchans;
-    sp[1] = signal_newlike(sp[0]);
+    sp[1] = signal_swapforchans(sp[1], sp[0]->s_nchans);
     dsp_add((bign & 7 ? scalarplus_perform : scalarplus_perf8),
         4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
@@ -296,7 +296,7 @@ t_int *reversescalarminus_perf8(t_int *w)
     return (w+5);
 }
 
-static void minus_dsp(t_minus *x, t_signal **sp, t_signal *nullsignal)
+static void minus_dsp(t_minus *x, t_signal **sp)
 {
     int bign0 = sp[0]->s_length * sp[0]->s_nchans,
         bign1 = sp[1]->s_length * sp[1]->s_nchans, outchans;
@@ -305,7 +305,7 @@ static void minus_dsp(t_minus *x, t_signal **sp, t_signal *nullsignal)
     else if (bign0 > 1)
         outchans = sp[0]->s_nchans;
     else outchans = 1;
-    sp[2] = signal_new(nullsignal->s_length, outchans, nullsignal->s_sr, 0);
+    sp[2] = signal_swapforchans(sp[2], outchans);
     if (bign0 > 1)
     {
         if (bign1 > 1)
@@ -329,7 +329,7 @@ static void minus_dsp(t_minus *x, t_signal **sp, t_signal *nullsignal)
             dsp_add(scalarminus_perform, 4,
                 sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)1);
             dsp_add_scalarcopy(sp[2]->s_vec, sp[2]->s_vec,
-                (t_int)nullsignal->s_length);
+                (t_int)sp[2]->s_length);
         }
     }
 }
@@ -337,7 +337,7 @@ static void minus_dsp(t_minus *x, t_signal **sp, t_signal *nullsignal)
 static void scalarminus_dsp(t_scalarminus *x, t_signal **sp)
 {
     t_int bign = sp[0]->s_length * sp[0]->s_nchans;
-    sp[1] = signal_newlike(sp[0]);
+    sp[1] = signal_swapforchans(sp[1], sp[0]->s_nchans);
     dsp_add((bign & 7 ? scalarminus_perform : scalarminus_perf8),
         4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
