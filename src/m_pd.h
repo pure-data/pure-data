@@ -644,7 +644,7 @@ typedef t_int *(*t_perfroutine)(t_int *args);
 
 EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
     t_sample *scalarptr);
-EXTERN void signal_setchansout(t_signal **sig, int nchans);
+EXTERN void signal_setoutchans(t_signal **sig, int nchans);
 
 EXTERN t_int *plus_perform(t_int *args);
 EXTERN t_int *plus_perf8(t_int *args);
