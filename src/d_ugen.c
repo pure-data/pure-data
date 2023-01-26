@@ -866,8 +866,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             t_float *scalar = obj_findsignalscalar(u->u_obj, i);
                 /* if the object can deal with it, we generate a signal that
                 consists only of a pointer to a scalar. */
-            if (i && (flags & CLASS_NOPROMOTESIG) ||
-                !i && (flags & CLASS_NOPROMOTELEFT))
+            if ((i && (flags & CLASS_NOPROMOTESIG)) ||
+                (!i && (flags & CLASS_NOPROMOTELEFT)))
                     uin->i_signal = signal_new(1, 1, DC_SR(dc), scalar);
             else
             {       /* otherwise we have to add a call to the DSP chain to
@@ -968,7 +968,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                         class_getname(u->u_obj->ob_pd),
                             s1->s_nchans, s1->s_length,
                             s2->s_nchans, s2->s_length);
-                    dsp_add_copy(s1->s_vec, s3->s_vec, s1->s_n);
+                    dsp_add_copy(s1->s_vec, s3->s_vec,
+                        s1->s_length * s1->s_nchans);
                 }
                 else
                 {
