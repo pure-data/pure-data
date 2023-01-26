@@ -451,7 +451,7 @@ void signal_makereusable(t_signal *sig)
     }
 #endif
     if (THIS->u_loud) post("free %lx: %d", sig, sig->s_isborrowed);
-    if (sig->s_isborrowed || sig->s_isscalar || !sig->s_nchans)
+    if (sig->s_isborrowed || sig->s_isscalar)
     {
         if (sig->s_isborrowed)
         {
@@ -491,7 +491,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
         /* figure out which free list to use, depending on size of vector */
     if (sr < 1)
         bug("signal_new");
-    if (length && nchans)
+    if (length)
     {
         int logn = ilog2(length*nchans);
             /* round up to a power of two */
@@ -512,7 +512,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     {
                  /* LATER figure out what to do if we ran out of space */
         ret = (t_signal *)t_getbytes(sizeof *ret);
-        if (!scalarptr && length && nchans)
+        if (!scalarptr && length)
             ret->s_vec = (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec));
         ret->s_nextused = THIS->u_signals;
         THIS->u_signals = ret;
@@ -546,19 +546,6 @@ t_signal *signal_newlike(const t_signal *sig)
     return (signal_new(sig->s_length, sig->s_nchans, sig->s_sr, 0));
 }
 
-    /* only use this in the context of dsp routines to set number of channels
-    on output signal - we assume it's currently a zero-channel signal we
-    just now greated for someone's dsp method.  This is a bit of a hack -
-    we create a new signal of the desired nchans and perform a vector
-    transplant - this makes it possible to re-use space we earlier marked
-    reusable. */
-void signal_setchansout(t_signal **sig, int nchans)
-{
-    t_signal *s2 = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
-    signal_makereusable(*sig);
-    *sig = s2;
-}
-
 void signal_setborrowed(t_signal *sig, t_signal *sig2)
 {
     if (!sig->s_isborrowed || sig->s_borrowedfrom)
@@ -571,6 +558,13 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     sig->s_nchans = sig2->s_nchans;
     sig->s_nalloc = sig2->s_nalloc;
     if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
+}
+
+    /* only use this in the context of dsp routines to set number of channels
+    on output signal - we assume it's currently a pointer to the null signal */
+void signal_setchansout(t_signal **sig, int nchans)
+{
+    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
 }
 
 static int signal_compatible(t_signal *s1, t_signal *s2)
@@ -623,22 +617,23 @@ struct _dspcontext
     int dc_ninlets;
     int dc_noutlets;
     t_signal **dc_iosigs;
-    int dc_length;
-    t_float dc_sr;
+    t_signal dc_nullsignal;   /* non-signal showing sample rate and length */
     t_float dc_srate;
     unsigned int dc_toplevel:1;     /* true if "iosigs" is invalid. */
     unsigned int dc_reblock:1;      /* true if we have to reblock in/outlets */
     unsigned int dc_switched:1;     /* true if we're switched */
     unsigned int dc_warnedmulti:1;  /* already warned about bad multi input */
 };
+#define DC_LENGTH(x) ((x)->dc_nullsignal.s_length)
+#define DC_SR(x) ((x)->dc_nullsignal.s_sr)
 
 #define t_dspcontext struct _dspcontext
 
     /* get a new signal for the current context - used by clone~ object */
 t_signal *signal_newfromcontext(int borrowed, int nchans)
 {
-    return (signal_new((borrowed? 0 : THIS->u_context->dc_length), nchans,
-        THIS->u_context->dc_sr, 0));
+    return (signal_new((borrowed? 0 : DC_LENGTH(THIS->u_context)), nchans,
+        DC_SR(THIS->u_context), 0));
 }
 
 void ugen_stop(void)
@@ -873,11 +868,11 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                 consists only of a pointer to a scalar. */
             if (i && (flags & CLASS_NOPROMOTESIG) ||
                 !i && (flags & CLASS_NOPROMOTELEFT))
-                    uin->i_signal = signal_new(1, 1, dc->dc_sr, scalar);
+                    uin->i_signal = signal_new(1, 1, DC_SR(dc), scalar);
             else
             {       /* otherwise we have to add a call to the DSP chain to
                     promote the scalar input to a vector. */
-                uin->i_signal = signal_new(dc->dc_length, 1, dc->dc_sr, 0);
+                uin->i_signal = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
                 dsp_add_scalarcopy(scalar, uin->i_signal->s_vec,
                     uin->i_signal->s_n);
             }
@@ -909,23 +904,21 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         instead we create "borrowed" ones so that the refcount
         is known.  The subcanvas replaces the fake signal with one showing
         where the output data actually is, to avoid having to copy it.
-        Otherwise, we a allocate a new output vector.  If the
-        CLASS_MULTICHANNEL flag is set for the object, we make a zero-channel
-        one and expect the object to call signal_setchansout() to set
-        the numbner of channels.  If not, we can make a one-channel output
-        signal and the object doesn't have to do anytthing. */
+        Otherwise, in case the CLASS_MULTICHANNEL flag is set for the object,
+        we pass "null" signal and expect teh DSP routine to replace it..
+        In any other case, we just allocate a new output vector. */
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
         if (nonewsigs)
-            *sig = signal_new(0, 1, dc->dc_sr, 0);
-        else *sig = signal_new(dc->dc_length,
-            (flags & CLASS_MULTICHANNEL ? 0 : 1), dc->dc_sr, 0);
+            *sig = signal_new(0, 1, DC_SR(dc), 0);
+        else if (flags & CLASS_MULTICHANNEL)
+            *sig = &dc->dc_nullsignal;
+        else *sig = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
     }
         /* now call the DSP scheduling routine for the ugen.  This
         routine must fill in "borrowed" signal outputs in case it's either
         a subcanvas or a signal inlet. */
-    (*getfn(&u->u_obj->ob_pd, gensym("dsp")))(&u->u_obj->ob_pd,
-        insig);
+    (*getfn(&u->u_obj->ob_pd, gensym("dsp")))(&u->u_obj->ob_pd, insig);
 
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
@@ -1065,8 +1058,8 @@ void ugen_done_graph(t_dspcontext *dc)
         /* figure out block size, calling frequency, sample rate */
     if (parent_context)
     {
-        parent_srate = parent_context->dc_sr;
-        parent_vecsize = parent_context->dc_length;
+        parent_srate = DC_SR(parent_context);
+        parent_vecsize = DC_LENGTH(parent_context);
     }
     else
     {
@@ -1114,8 +1107,9 @@ void ugen_done_graph(t_dspcontext *dc)
     }
     dc->dc_reblock = reblock;
     dc->dc_switched = switched;
-    dc->dc_sr = srate;
-    dc->dc_length = calcsize;
+    dc->dc_nullsignal.s_sr = srate;
+    dc->dc_nullsignal.s_length = calcsize;
+    dc->dc_nullsignal.s_nchans = 1;
 
         /* if we're reblocking or switched, we now have to create output
         signals to fill in for the "borrowed" ones we have now.  This
