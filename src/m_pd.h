@@ -646,9 +646,16 @@ typedef t_int *(*t_perfroutine)(t_int *args);
 
 EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
     t_sample *scalarptr);
+EXTERN void signal_setchansout(t_signal **sig, int nchans);
+
 EXTERN t_int *plus_perform(t_int *args);
+EXTERN t_int *plus_perf8(t_int *args);
 EXTERN t_int *zero_perform(t_int *args);
+EXTERN t_int *zero_perf8(t_int *args);
 EXTERN t_int *copy_perform(t_int *args);
+EXTERN t_int *copy_perf8(t_int *args);
+EXTERN t_int *scalarcopy_perform(t_int *args);
+EXTERN t_int *scalarcopy_perf8(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
