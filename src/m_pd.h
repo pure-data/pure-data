@@ -427,6 +427,8 @@ EXTERN t_symbol *outlet_getsymbol(t_outlet *x);
 EXTERN void outlet_free(t_outlet *x);
 EXTERN t_object *pd_checkobject(t_pd *x);
 
+EXTERN t_symbol* outconnect_get_path_data(t_outconnect* oc);
+EXTERN void outconnect_set_path_data(t_outconnect* oc, t_symbol* newsym);
 
 /* -------------------- canvases -------------- */
 

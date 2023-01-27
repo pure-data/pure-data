@@ -63,10 +63,10 @@ static void dereconnect(t_glist*cnv, t_object*org, t_object*replace)
                 dest_i = canvas_getindex(cnv, o2g(dest));
                 obj_disconnect(obj, nout, dest, which);
                 canvas_undo_add(cnv, UNDO_DISCONNECT, "disconnect",
-                    canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which));
+                                canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which, gensym("empty")));
                 obj_connect(obj, nout, replace, which);
                 canvas_undo_add(cnv, UNDO_CONNECT, "connect",
-                    canvas_undo_set_connect(cnv, obj_i, nout, replace_i, which));
+                    canvas_undo_set_connect(cnv, obj_i, nout, replace_i, which, gensym("empty")));
             }
         }
     }
@@ -108,10 +108,10 @@ static void stack_conn(t_glist*x, t_object*new, int*newoutlet, t_object*org,
     dest_i = canvas_getindex(x, o2g(dest));
     obj_disconnect(org, orgoutlet, dest, which);
     canvas_undo_add(x, UNDO_DISCONNECT, "disconnect",
-        canvas_undo_set_disconnect(x, org_i, orgoutlet, dest_i, which));
+        canvas_undo_set_disconnect(x, org_i, orgoutlet, dest_i, which, gensym("empty")));
     obj_connect(new, *newoutlet, dest, which);
     canvas_undo_add(x, UNDO_CONNECT, "connect",
-        canvas_undo_set_connect(x, new_i, *newoutlet, dest_i, which));
+        canvas_undo_set_connect(x, new_i, *newoutlet, dest_i, which, gensym("empty")));
     (*newoutlet)++;
 }
 static int has_fanout(t_object*obj)
@@ -225,10 +225,10 @@ static void triggerize_defanout(t_glist*x, int count, t_outconnect*conn,
     dest_i = canvas_getindex(x, o2g(dest));
     obj_disconnect(obj, nout, dest, which);
     canvas_undo_add(x, UNDO_DISCONNECT, "disconnect",
-        canvas_undo_set_disconnect(x, obj_i, nout, dest_i, which));
+        canvas_undo_set_disconnect(x, obj_i, nout, dest_i, which, gensym("empty")));
     obj_connect(trigger, count, dest, which);
     canvas_undo_add(x, UNDO_CONNECT, "connect",
-        canvas_undo_set_connect(x, trigger_i, count, dest_i, which));
+        canvas_undo_set_connect(x, trigger_i, count, dest_i, which, gensym("empty")));
 }
 
 static int triggerize_fanout(t_glist*x, t_object*obj)
@@ -308,7 +308,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             triggerize_defanout(x, count-1, conn, obj, stub, nout);
             obj_connect(obj, nout, stub, 0);
             canvas_undo_add(x, UNDO_CONNECT, "connect",
-                canvas_undo_set_connect(x, obj_i, nout, stub_i, 0));
+                canvas_undo_set_connect(x, obj_i, nout, stub_i, 0, gensym("empty")));
             glist_select(x, o2g(stub));
             didit++;
         }
@@ -428,15 +428,15 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
 
     obj_disconnect(g2o(src), src_out, g2o(dst), dst_in);
     canvas_undo_add(x, UNDO_DISCONNECT, "disconnect",
-        canvas_undo_set_disconnect(x, src_obj, src_out, dst_obj, dst_in));
+        canvas_undo_set_disconnect(x, src_obj, src_out, dst_obj, dst_in, gensym("empty")));
 
     obj_connect(g2o(src), src_out, stub, 0);
     canvas_undo_add(x, UNDO_CONNECT, "connect",
-        canvas_undo_set_connect(x, src_obj, src_out, new_obj, 0));
+        canvas_undo_set_connect(x, src_obj, src_out, new_obj, 0, gensym("empty")));
 
     obj_connect(stub, 0, g2o(dst), dst_in);
     canvas_undo_add(x, UNDO_CONNECT, "connect",
-        canvas_undo_set_connect(x, new_obj, 0, dst_obj, dst_in));
+        canvas_undo_set_connect(x, new_obj, 0, dst_obj, dst_in, gensym("empty")));
 
     glist_select(x, o2g(stub));
 
@@ -508,10 +508,10 @@ static int minimize_trigger(t_glist*cnv, t_object*obj)
             dest_i = canvas_getindex(cnv, o2g(dest));
             obj_disconnect(obj, nout, dest, which);
             canvas_undo_add(cnv, UNDO_DISCONNECT, "disconnect",
-                canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which));
+                canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which, gensym("empty")));
             obj_connect(stub, count, dest, which);
             canvas_undo_add(cnv, UNDO_CONNECT, "connect",
-                canvas_undo_set_connect(cnv, stub_i, count, dest_i, which));
+                canvas_undo_set_connect(cnv, stub_i, count, dest_i, which, gensym("empty")));
         }
         count++;
     }
@@ -554,10 +554,10 @@ static int expand_trigger(t_glist*cnv, t_object*obj)
             dest_i = canvas_getindex(cnv, o2g(dest));
             obj_disconnect(obj, nout, dest, which);
             canvas_undo_add(cnv, UNDO_DISCONNECT, "disconnect",
-                canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which));
+                canvas_undo_set_disconnect(cnv, obj_i, nout, dest_i, which, gensym("empty")));
             obj_connect(stub, nout+1, dest, which);
             canvas_undo_add(cnv, UNDO_CONNECT, "connect",
-                canvas_undo_set_connect(cnv, stub_i, nout+1, dest_i, which));
+                canvas_undo_set_connect(cnv, stub_i, nout+1, dest_i, which, gensym("empty")));
         }
     }
     binbuf_free(b);

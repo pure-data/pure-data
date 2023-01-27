@@ -262,6 +262,7 @@ typedef struct _linetraverser
     int tr_lx1, tr_ly1, tr_lx2, tr_ly2;
     t_outconnect *tr_nextoc;
     int tr_nextoutno;
+    t_symbol* outconnect_path_info;
 } t_linetraverser;
 
 struct _instancecanvas
@@ -539,7 +540,9 @@ EXTERN void canvas_noundo(t_canvas *x);
 EXTERN int canvas_getindex(t_canvas *x, t_gobj *y);
 
 EXTERN void canvas_connect(t_canvas *x,
-    t_floatarg fwhoout, t_floatarg foutno, t_floatarg fwhoin, t_floatarg finno);
+                           t_symbol *s, int argc, t_atom *argv);
+EXTERN void canvas_connect_expandargs(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno, t_floatarg fwhoin, t_floatarg finno, t_symbol* path_data);
+
 EXTERN void canvas_disconnect(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno);
 EXTERN int canvas_isconnected (t_canvas *x,

@@ -356,6 +356,7 @@ void linetraverser_start(t_linetraverser *t, t_canvas *x)
     t->tr_x = x;
     t->tr_nextoc = 0;
     t->tr_nextoutno = t->tr_nout = 0;
+    t->outconnect_path_info = gensym("empty");
 }
 
 t_outconnect *linetraverser_next(t_linetraverser *t)
@@ -386,6 +387,7 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
         rval = obj_starttraverseoutlet(t->tr_ob, &t->tr_outlet, outno);
         t->tr_outno = outno;
     }
+    
     t->tr_nextoc = obj_nexttraverseoutlet(rval, &t->tr_ob2,
         &t->tr_inlet, &t->tr_inno);
     t->tr_nin = obj_ninlets(t->tr_ob2);
@@ -412,7 +414,9 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
         t->tr_x21 = t->tr_y21 = t->tr_x22 = t->tr_y22 = 0;
         t->tr_lx1 = t->tr_ly1 = t->tr_lx2 = t->tr_ly2 = 0;
     }
-
+    
+    t->outconnect_path_info = outconnect_get_path_data(rval);
+    
     return (rval);
 }
 
@@ -2051,8 +2055,7 @@ void g_canvas_setup(void)
 
 /* -------------- connect method used in reading files ------------------ */
     class_addmethod(canvas_class, (t_method)canvas_connect,
-        gensym("connect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
-
+        gensym("connect"), A_GIMME, A_NULL);
 
 /* -------------- IEMGUI: button, toggle, slider, etc.  ------------ */
     class_addmethod(canvas_class, (t_method)canvas_bng, gensym("bng"),

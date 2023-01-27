@@ -703,8 +703,8 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     {
         int srcno = canvas_getindex(x, &t.tr_ob->ob_g);
         int sinkno = canvas_getindex(x, &t.tr_ob2->ob_g);
-        binbuf_addv(b, "ssiiii;", gensym("#X"), gensym("connect"),
-            srcno, t.tr_outno, sinkno, t.tr_inno);
+        binbuf_addv(b, "ssiiiis;", gensym("#X"), gensym("connect"),
+            srcno, t.tr_outno, sinkno, t.tr_inno, t.outconnect_path_info);
     }
         /* unless everything is the default (as in ordinary subpatches)
         print out a "coords" message to set up the coordinate systems */

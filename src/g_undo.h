@@ -108,13 +108,13 @@ EXTERN void canvas_undo_free(t_canvas *x);
 /* --------- 1. connect ---------- */
 
 EXTERN void *canvas_undo_set_connect(t_canvas *x,
-    int index1, int outno, int index2, int inno);
+    int index1, int outno, int index2, int inno, t_symbol* connection_path);
 EXTERN int canvas_undo_connect(t_canvas *x, void *z, int action);
 
 /* --------- 2. disconnect ------- */
 
 EXTERN void *canvas_undo_set_disconnect(t_canvas *x,
-    int index1, int outno, int index2, int inno);
+                                        int index1, int outno, int index2, int inno, t_symbol* connection_path);
 EXTERN int canvas_undo_disconnect(t_canvas *x, void *z, int action);
 
 /* --------- 3. cut -------------- */

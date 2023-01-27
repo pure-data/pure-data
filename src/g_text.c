@@ -252,7 +252,7 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         canvas_objtext(gl, xpix, ypix, 0, 1, b);
         if (connectme)
-            canvas_connect(gl, indx, 0, nobj, 0);
+            canvas_connect_expandargs(gl, indx, 0, nobj, 0, gensym("empty"));
         else canvas_startmotion(glist_getcanvas(gl));
         if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
@@ -279,7 +279,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 
     canvas_objtext(gl, xpix, ypix, 0, 1, b);
     if(connectme)
-        canvas_connect(gl, indx, 0, nobj, 0);
+        canvas_connect_expandargs(gl, indx, 0, nobj, 0, gensym("empty"));
     else canvas_startmotion(glist_getcanvas(gl));
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
@@ -550,7 +550,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         glist_select(gl, &x->m_text.te_g);
         gobj_activate(&x->m_text.te_g, gl, 1);
         if (connectme)
-            canvas_connect(gl, indx, 0, nobj, 0);
+            canvas_connect_expandargs(gl, indx, 0, nobj, 0, gensym("empty"));
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
@@ -1212,7 +1212,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         glist_noselect(gl);
         glist_select(gl, &x->a_text.te_g);
         if (connectme)
-            canvas_connect(gl, indx, 0, nobj, 0);
+            canvas_connect_expandargs(gl, indx, 0, nobj, 0, gensym("empty"));
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
