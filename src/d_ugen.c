@@ -40,6 +40,8 @@ struct _instanceugen
     int u_sortno;              /* number of DSP sortings so far */
         /* list of signals which can be reused, sorted by buffer size */
     t_signal *u_freelist[MAXLOGSIG+1];
+        /* list of reusable scalar signals */
+    t_signal *u_freescalar;
         /* list of reusable "borrowed" signals (which don't own sample buffers) */
     t_signal *u_freeborrowed;
     int u_phase;
@@ -424,6 +426,7 @@ static void signal_cleanup(void)
     }
     for (i = 0; i <= MAXLOGSIG; i++)
         THIS->u_freelist[i] = 0;
+    THIS->u_freescalar = 0;
     THIS->u_freeborrowed = 0;
 }
 
@@ -433,7 +436,7 @@ void signal_makereusable(t_signal *sig)
     int logn = ilog2(sig->s_nalloc);
 #if 1
     t_signal *s5;
-    for (s5 = THIS->u_freeborrowed; s5; s5 = s5->s_nextfree)
+    for (s5 = THIS->u_freescalar; s5; s5 = s5->s_nextfree)
     {
         if (s5 == sig)
         {
@@ -441,7 +444,7 @@ void signal_makereusable(t_signal *sig)
             return;
         }
     }
-    for (s5 = THIS->u_freelist[logn]; s5; s5 = s5->s_nextfree)
+    for (s5 = THIS->u_freeborrowed; s5; s5 = s5->s_nextfree)
     {
         if (s5 == sig)
         {
@@ -449,28 +452,36 @@ void signal_makereusable(t_signal *sig)
             return;
         }
     }
+    for (s5 = THIS->u_freelist[logn]; s5; s5 = s5->s_nextfree)
+    {
+        if (s5 == sig)
+        {
+            bug("signal_free 5");
+            return;
+        }
+    }
 #endif
     if (THIS->u_loud) post("free %lx: %d", sig, sig->s_isborrowed);
-    if (sig->s_isborrowed || sig->s_isscalar)
+    if (sig->s_isborrowed) /* borrowed signal */
     {
-        if (sig->s_isborrowed)
-        {
             /* if the signal is borrowed, decrement the borrowed-from signal's
                 reference count, possibly marking it reusable too */
-            t_signal *s2 = sig->s_borrowedfrom;
-            if ((s2 == sig) || !s2)
-                bug("signal_free");
-            s2->s_refcount--;
-            if (!s2->s_refcount)
-                signal_makereusable(s2);
-        }
+        t_signal *s2 = sig->s_borrowedfrom;
+        if ((s2 == sig) || !s2)
+            bug("signal_free");
+        s2->s_refcount--;
+        if (!s2->s_refcount)
+            signal_makereusable(s2);
         sig->s_nextfree = THIS->u_freeborrowed;
         THIS->u_freeborrowed = sig;
     }
-    else
+    else if (sig->s_isscalar) /* scalar signal */
     {
-            /* if it's a real signal (not borrowed), put it on the free list
-                so we can reuse it. */
+        sig->s_nextfree = THIS->u_freescalar;
+        THIS->u_freescalar = sig;
+    }
+    else /* vector signal */
+    {
         if (THIS->u_freelist[logn] == sig) bug("signal_free 2");
         sig->s_nextfree = THIS->u_freelist[logn];
         THIS->u_freelist[logn] = sig;
@@ -491,7 +502,11 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
         /* figure out which free list to use, depending on size of vector */
     if (sr < 1)
         bug("signal_new");
-    if (length)
+    if (!length) /* borrowed signal */
+        whichlist = &THIS->u_freeborrowed;
+    else if (scalarptr) /* scalar signal */
+        whichlist = &THIS->u_freescalar;
+    else /* vector signal */
     {
         int logn = ilog2(length*nchans);
             /* round up to a power of two */
@@ -502,8 +517,6 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
             bug("signal buffer too large");
         whichlist = THIS->u_freelist + logn;
     }
-    else
-        whichlist = &THIS->u_freeborrowed;
 
         /* try to reclaim one from the free list */
     if ((ret = *whichlist))
@@ -512,8 +525,8 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     {
                  /* LATER figure out what to do if we ran out of space */
         ret = (t_signal *)t_getbytes(sizeof *ret);
-        if (!scalarptr && length)
-            ret->s_vec = (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec));
+        ret->s_vec = allocsize ?
+            (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec)) : 0;
         ret->s_nextused = THIS->u_signals;
         THIS->u_signals = ret;
     }
