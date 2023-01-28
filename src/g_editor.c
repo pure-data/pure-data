@@ -483,7 +483,6 @@ int canvas_undo_disconnect(t_canvas *x, void *z, int action)
     t_undo_connect *buf = z;
     if (action == UNDO_UNDO)
     {
-        // TODO: save canvas path state!
         canvas_connect_expandargs(x, buf->u_index1, buf->u_outletno,
             buf->u_index2, buf->u_inletno, buf->u_path);
     }
