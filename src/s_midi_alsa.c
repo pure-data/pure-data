@@ -38,7 +38,7 @@ static int alsa_midiinfd[MAXMIDIINDEV];
 static int alsa_nmidiout;
 static int alsa_midioutfd[MAXMIDIOUTDEV];
 
-static snd_seq_t *midi_handle;
+static snd_seq_t *midi_handle = NULL;
 
 static snd_midi_event_t *midiev;
 
