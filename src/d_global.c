@@ -107,7 +107,7 @@ typedef struct _sigreceive
 static void *sigreceive_new(t_symbol *s, t_floatarg fnchans)
 {
     t_sigreceive *x = (t_sigreceive *)pd_new(sigreceive_class);
-    x->x_length = 1;             /* this is changed in dsp routine */
+    x->x_length = 0;             /* this is changed in dsp routine */
     if ((x->x_nchans = fnchans) < 1)
         x->x_nchans = 1;
     x->x_sym = s;
@@ -167,6 +167,7 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
 {
     t_sigsend *sender = (t_sigsend *)pd_findbyclass((x->x_sym = s),
         sigsend_class);
+    x->x_wherefrom = 0;
     if (sender)
     {
         int length = canvas_getsignallength(sender->x_canvas);
@@ -174,20 +175,15 @@ static void sigreceive_set(t_sigreceive *x, t_symbol *s)
         if (sender->x_nchans == x->x_nchans &&
             length == x->x_length)
                 x->x_wherefrom = sender->x_vec;
-        else
+        else if (x->x_length)
         {
             pd_error(x,
                 "receive~ %s: dimensions %dx%d don't match the send~ (%dx%d)",
                 x->x_sym->s_name, x->x_nchans, x->x_length,
                     sender->x_nchans, sender->x_length);
-            x->x_wherefrom = 0;
         }
     }
-    else
-    {
-        pd_error(x, "receive~ %s: no matching send", x->x_sym->s_name);
-        x->x_wherefrom = 0;
-    }
+    else pd_error(x, "receive~ %s: no matching send", x->x_sym->s_name);
 }
 
 static void sigreceive_dsp(t_sigreceive *x, t_signal **sp)
