@@ -919,7 +919,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         routine must fill in "borrowed" signal outputs in case it's either
         a subcanvas or a signal inlet. */
     mess1(&u->u_obj->ob_pd, gensym("dsp"), insig);
-    
+
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
         uout->o_signal = *sig;
