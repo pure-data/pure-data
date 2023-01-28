@@ -818,6 +818,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     t_siginlet *uin;
     t_sigoutconnect *oc;
     t_class *class = pd_class(&u->u_obj->ob_pd);
+    t_signal *freelater = 0, *stmp;
     int flags = class_getdspflags(class);
     int i, n;
         /* suppress creating new signals for the outputs of signal
@@ -895,7 +896,18 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (nofreesigs)
             (*sig)->s_refcount++;
         else if (!newrefcount)
-            signal_makereusable(*sig);
+        {
+                /* if scalar or borrowed, put on free-after-dsp-call list -
+                we can't reuse them yet because the "dsp" call below might
+                then reclaim and bash them while someone else still needs to
+                see the s_vec/s_length/s_nchans fields.  Otherwise, the signal
+                owns its s_vec array and, to maximize in-place reuse of s_vec
+                arrays, we mark it free now so that we can get it back when
+                creating output signals below. */
+            if ((*sig)->s_isscalar || (*sig)->s_isborrowed)
+                (*sig)->s_nextfree = freelater, freelater = *sig;
+            else signal_makereusable(*sig);
+        }
     }
         /* Create output signals.  These may re-inhabit space that was freed
         in the previous step (so tilde objects must be able to compute
@@ -945,7 +957,9 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u),
                 sig[0], sig[1], sig[2]);
     }
-
+        /* now we can act on delayed-free */
+    while ((stmp = freelater))
+        freelater = stmp->s_nextfree, signal_makereusable(stmp);
         /* pass it on and trip anyone whose last inlet was filled */
     for (uout = u->u_out, i = u->u_nout; i--; uout++)
     {
