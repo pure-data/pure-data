@@ -4381,7 +4381,7 @@ void canvas_connect_expandargs(t_canvas *x, t_floatarg fwhoout, t_floatarg foutn
 void canvas_connect(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_int whoout, outno, whoin, inno;
-    t_symbol* path_data;
+    t_symbol* path_data = gensym("empty");
     if(argc >= 4) {
         whoout = atom_getint(argv);
         outno = atom_getint(argv + 1);
