@@ -560,6 +560,13 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
 }
 
+    /* only use this in the context of dsp routines to set number of channels
+    on output signal - we assume it's currently a pointer to the null signal */
+void signal_setchansout(t_signal **sig, int nchans)
+{
+    *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
+}
+
 static int signal_compatible(t_signal *s1, t_signal *s2)
 {
     return (s1->s_length == s2->s_length && s1->s_nchans == s2->s_nchans
@@ -859,8 +866,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             t_float *scalar = obj_findsignalscalar(u->u_obj, i);
                 /* if the object can deal with it, we generate a signal that
                 consists only of a pointer to a scalar. */
-            if (i && (flags & CLASS_NOPROMOTESIG) ||
-                !i && (flags & CLASS_NOPROMOTELEFT))
+            if ((i && (flags & CLASS_NOPROMOTESIG)) ||
+                (!i && (flags & CLASS_NOPROMOTELEFT)))
                     uin->i_signal = signal_new(1, 1, DC_SR(dc), scalar);
             else
             {       /* otherwise we have to add a call to the DSP chain to
@@ -898,21 +905,20 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         is known.  The subcanvas replaces the fake signal with one showing
         where the output data actually is, to avoid having to copy it.
         Otherwise, in case the CLASS_MULTICHANNEL flag is set for the object,
-        we somply pass zero pointers and epect the object to do the work.
+        we pass "null" signal and expect teh DSP routine to replace it..
         In any other case, we just allocate a new output vector. */
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
         if (nonewsigs)
             *sig = signal_new(0, 1, DC_SR(dc), 0);
         else if (flags & CLASS_MULTICHANNEL)
-            *sig = 0;
+            *sig = &dc->dc_nullsignal;
         else *sig = signal_new(DC_LENGTH(dc), 1, DC_SR(dc), 0);
     }
         /* now call the DSP scheduling routine for the ugen.  This
         routine must fill in "borrowed" signal outputs in case it's either
         a subcanvas or a signal inlet. */
-    (*getfn(&u->u_obj->ob_pd, gensym("dsp")))(&u->u_obj->ob_pd,
-        insig, &dc->dc_nullsignal);
+    mess1(&u->u_obj->ob_pd, gensym("dsp"), insig);
 
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
@@ -962,7 +968,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                         class_getname(u->u_obj->ob_pd),
                             s1->s_nchans, s1->s_length,
                             s2->s_nchans, s2->s_length);
-                    dsp_add_copy(s1->s_vec, s3->s_vec, s1->s_n);
+                    dsp_add_copy(s1->s_vec, s3->s_vec,
+                        s1->s_length * s1->s_nchans);
                 }
                 else
                 {
