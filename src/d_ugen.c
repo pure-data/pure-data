@@ -618,7 +618,6 @@ struct _dspcontext
     int dc_noutlets;
     t_signal **dc_iosigs;
     t_signal dc_nullsignal;   /* non-signal showing sample rate and length */
-    t_float dc_srate;
     unsigned int dc_toplevel:1;     /* true if "iosigs" is invalid. */
     unsigned int dc_reblock:1;      /* true if we have to reblock in/outlets */
     unsigned int dc_switched:1;     /* true if we're switched */
@@ -1124,7 +1123,7 @@ void ugen_done_graph(t_dspcontext *dc)
     dc->dc_switched = switched;
     dc->dc_nullsignal.s_sr = srate;
     dc->dc_nullsignal.s_length = calcsize;
-    dc->dc_nullsignal.s_nchans = 1;
+    dc->dc_nullsignal.s_nchans = 0;
 
         /* if we're reblocking or switched, we now have to create output
         signals to fill in for the "borrowed" ones we have now.  This
