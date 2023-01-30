@@ -568,15 +568,19 @@ void sys_findprogdir(const char *progname)
     char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
+    ssize_t path_length = 0;
 #endif /* NOT _WIN32 */
-
     /* find out by what string Pd was invoked; put answer in "sbuf". */
 #ifdef _WIN32
     GetModuleFileName(NULL, sbuf2, sizeof(sbuf2));
     sbuf2[MAXPDSTRING-1] = 0;
     sys_unbashfilename(sbuf2, sbuf);
 #else
-    strncpy(sbuf, progname, MAXPDSTRING);
+    if (((path_length = readlink("/proc/self/exe", sbuf, sizeof(sbuf))) > 0)
+        && path_length < MAXPDSTRING)
+        sbuf[path_length] = 0;
+    else
+        strncpy(sbuf, progname, MAXPDSTRING);
     sbuf[MAXPDSTRING-1] = 0;
 #endif /* _WIN32 */
     lastslash = strrchr(sbuf, '/');
@@ -625,6 +629,7 @@ void sys_findprogdir(const char *progname)
 #ifdef _WIN32
     sys_libdir = gensym(sbuf2);
 #else
+
     strncpy(sbuf, sbuf2, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/lib/pd");
