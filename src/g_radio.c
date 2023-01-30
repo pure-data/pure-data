@@ -483,14 +483,20 @@ static void radio_float(t_radio *x, t_floatarg f)
 
 static void radio_click(t_radio *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
+    int selected = 0.;
     if (x->x_orientation == horizontal)
     {
         int xx = (int)xpos - (int)text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
-        radio_fout(x, (t_float)(xx / x->x_gui.x_w));
+        selected = xx / x->x_gui.x_w;
     } else {
         int yy =  (int)ypos - text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
-        radio_fout(x, (t_float)(yy / x->x_gui.x_h));
+        selected = yy / x->x_gui.x_h;
     }
+    if(selected >= x->x_number)
+        selected = x->x_number-1;
+    if(selected < 0)
+        selected = 0;
+    radio_fout(x, (t_float)selected);
 }
 
 static int radio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, int shift, int alt, int dbl, int doit)
