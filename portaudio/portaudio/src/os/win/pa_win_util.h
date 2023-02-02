@@ -1,12 +1,13 @@
-#ifndef PA_CPULOAD_H
-#define PA_CPULOAD_H
+#ifndef PA_WIN_UTIL_H
+#define PA_WIN_UTIL_H
+
 /*
  * $Id$
- * Portable Audio I/O Library CPU Load measurement functions
- * Portable CPU load measurement facility.
+ * Portable Audio I/O Library
+ * Win32 platform-specific support functions
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 2002 Ross Bencina
+ * Copyright (c) 1999-2008 Ross Bencina
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -39,34 +40,25 @@
  * license above.
  */
 
-/** @file
- @ingroup common_src
-
- @brief Functions to assist in measuring the CPU utilization of a callback
- stream. Used to implement the Pa_GetStreamCpuLoad() function.
-*/
-
+#include "portaudio.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
 
+/**
+ Convert a Windows error code into a PaError. Sets the host-api specific error
+ information if needed.
 
-typedef struct {
-    double samplingPeriod;
-    double measurementStartTime;
-    double averageLoad;
-} PaUtilCpuLoadMeasurer; /**< @todo need better name than measurer */
+ @param hostApiType The calling host api type. Used when reporting paUnanticipatedHostError
 
-void PaUtil_InitializeCpuLoadMeasurer( PaUtilCpuLoadMeasurer* measurer, double sampleRate );
-void PaUtil_BeginCpuLoadMeasurement( PaUtilCpuLoadMeasurer* measurer );
-void PaUtil_EndCpuLoadMeasurement( PaUtilCpuLoadMeasurer* measurer, unsigned long framesProcessed );
-void PaUtil_ResetCpuLoadMeasurer( PaUtilCpuLoadMeasurer* measurer );
-double PaUtil_GetCpuLoad( PaUtilCpuLoadMeasurer* measurer );
-
+ @param winError A Windows error code.
+*/
+void PaWinUtil_SetLastSystemErrorInfo( PaHostApiTypeId hostApiType, long winError );
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-#endif /* PA_CPULOAD_H */
+
+#endif /* PA_WIN_UTIL_H */
