@@ -23,7 +23,8 @@ behavior for "gobjs" appears at the end of this file.  */
 #define snprintf _snprintf
 #endif
 
-void plugdata_forward_message(t_outconnect* x, t_symbol *s, int argc, t_atom *argv);
+void plugdata_forward_message(void* x, t_symbol *s, int argc, t_atom *argv);
+int plugdata_debugging_enabled();
 
 union inletunion
 {
@@ -562,8 +563,8 @@ void outlet_bang(t_outlet *x)
         outlet_stackerror(x);
     else
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
+            if(plugdata_debugging_enabled()) plugdata_forward_message(oc, gensym("bang"), 0, NULL);
             pd_bang(oc->oc_to);
-            plugdata_forward_message(oc, gensym("bang"), 0, NULL);
         }
     --stackcount;
 }
@@ -578,8 +579,8 @@ void outlet_pointer(t_outlet *x, t_gpointer *gp)
     {
         gpointer = *gp;
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
+            if(plugdata_debugging_enabled()) plugdata_forward_message(oc, gensym("pointer"), 0, gp);
             pd_pointer(oc->oc_to, &gpointer);
-            plugdata_forward_message(oc, gensym("pointer"), 0, gp);
         }
     }
     --stackcount;
@@ -592,11 +593,12 @@ void outlet_float(t_outlet *x, t_float f)
         outlet_stackerror(x);
     else
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
+            if(plugdata_debugging_enabled()) {
+                t_atom value;
+                SETFLOAT(&value, f);
+                plugdata_forward_message(oc, gensym("float"), 1, &value);
+            }
             pd_float(oc->oc_to, f);
-            
-            t_atom value;
-            SETFLOAT(&value, f);
-            plugdata_forward_message(oc, gensym("float"), 1, &value);
         }
     --stackcount;
 }
@@ -608,11 +610,12 @@ void outlet_symbol(t_outlet *x, t_symbol *s)
         outlet_stackerror(x);
     else
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
+            if(plugdata_debugging_enabled()) {
+                t_atom value;
+                SETSYMBOL(&value, s);
+                plugdata_forward_message(oc, gensym("symbol"), 1, &value);
+            }
             pd_symbol(oc->oc_to, s);
-            
-            t_atom value;
-            SETSYMBOL(&value, s);
-            plugdata_forward_message(oc, gensym("symbol"), 1, &value);
         }
     --stackcount;
 }
@@ -624,7 +627,7 @@ void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
         outlet_stackerror(x);
     else
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
-            plugdata_forward_message(oc, s, argc, argv);
+            if(plugdata_debugging_enabled()) plugdata_forward_message(oc, s, argc, argv);
             pd_list(oc->oc_to, s, argc, argv);
         }
     --stackcount;
@@ -637,7 +640,7 @@ void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv)
         outlet_stackerror(x);
     else
         for (oc = x->o_connections; oc; oc = oc->oc_next) {
-            plugdata_forward_message(oc, s, argc, argv);
+            if(plugdata_debugging_enabled()) plugdata_forward_message(oc, s, argc, argv);
             typedmess(oc->oc_to, s, argc, argv);
         }
     --stackcount;
