@@ -10,4 +10,4 @@ void create_panel(int openpanel, char const* path, char const* snd);
 void trigger_open_file(const char* file);
 void update_gui();
 
-void plugdata_forward_message(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+void plugdata_forward_message(void *x, t_symbol *s, int argc, t_atom *argv);
