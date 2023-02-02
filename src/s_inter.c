@@ -1746,7 +1746,7 @@ void trigger_open_file(const char* file) {
     }
 }
 
-void plugdata_forward_message(void* x, t_symbol *s, int argc, t_atom *argv)
+void plugdata_forward_message(t_outconnect* x, t_symbol *s, int argc, t_atom *argv)
 {
     if(INTER && INTER->callback_target) {
         INTER->message_callback(INTER->callback_target, (void*)x, s, argc, argv);
