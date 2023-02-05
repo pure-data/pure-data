@@ -822,16 +822,11 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     int flags = class_getdspflags(class);
     int i, n;
         /* suppress creating new signals for the outputs of signal
-        inlets and subpatches; except in the case we're an inlet and "blocking"
-        is set.  We don't yet know if a subcanvas will be "blocking" so there
-        we delay new signal creation, which will be handled by calling
-        signal_setborrowed in the ugen_done_graph routine below. */
-    int nonewsigs = (class == canvas_class ||
-        ((class == vinlet_class) && !(dc->dc_reblock)));
+        inlets for non-reblocked canvases -- those will be borrowed. */
+    int nonewsigs = ((class == vinlet_class) && !dc->dc_reblock);
         /* when we encounter a subcanvas or outlet~ object, suppress freeing
         the input signals as they may be "borrowed" for the super or sub
-        patch; same exception as above, but also if we're "switched" we
-        have to do a copy rather than a borrow.  */
+        patch; except blocked or switched outlet~s. */
     int nofreesigs = (class == canvas_class || class == clone_class ||
         ((class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched)));
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
@@ -1124,7 +1119,7 @@ void ugen_done_graph(t_dspcontext *dc)
     dc->dc_switched = switched;
     dc->dc_nullsignal.s_sr = srate;
     dc->dc_nullsignal.s_length = calcsize;
-    dc->dc_nullsignal.s_nchans = 1;
+    dc->dc_nullsignal.s_nchans = -1;    /* fake so we can sanity check */
 
         /* if we're reblocking or switched, we now have to create output
         signals to fill in for the "borrowed" ones we have now.  This

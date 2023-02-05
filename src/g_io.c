@@ -325,14 +325,12 @@ typedef struct _voutlet
     int x_empty;            /* next to read out of buffer in epilog code */
     int x_write;            /* next to write in to buffer */
     int x_hop;              /* hopsize */
-        /* vice versa from the inlet, if we don't block, this holds the
-        parent's outlet signal, valid between the prolog and the dsp setup
+        /*  parent's outlet signal, valid between the prolog and the dsp setup
         routines.  */
-    t_signal *x_directsignal;
-        /* and here's a flag indicating that we aren't blocked but have to
-        do a copy (because we're switched). */
-    char x_justcopyout;
-  t_resample x_updown;
+    t_signal **x_parentsignal;
+    unsigned int x_justcopyout:1;   /* switched but not blocked */
+    unsigned int x_borrowed:1;      /* output is borrowed from our inlet */
+    t_resample x_updown;
 } t_voutlet;
 
 static void *voutlet_new(t_symbol *s)
@@ -446,37 +444,53 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
         /* no buffer means we're not a signal outlet */
     if (!x->x_buf)
         return;
+    t_signal **thisparent = (parentsigs?
+        &parentsigs[outlet_getsignalindex(x->x_parentoutlet)] : 0);
     x->x_updown.downsample=downsample;
     x->x_updown.upsample=upsample;
     x->x_justcopyout = (switched && !reblock);
+        /* check that the parent signal is indeed the null signal - this
+        will be replaced by a new signal we create here. */
+    if (parentsigs && (*thisparent)->s_nchans != -1)
+        bug("voutlet_dspprolog");
+    x->x_parentsignal = thisparent;
     if (reblock)
+        x->x_borrowed = 0;
+    else    /* OK, borrow it */
     {
-        x->x_directsignal = 0;
-    }
-    else
-    {
-        if (!parentsigs) bug("voutlet_dspprolog");
-        x->x_directsignal =
-            parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
+        x->x_borrowed = 1;
+        if (!parentsigs)
+            bug("voutlet_dspprolog");
+                /* create new borrowed signal to be set in dsp routine below */
+        *(x->x_parentsignal) = signal_new(0, 1, (*thisparent)->s_sr, 0);
     }
 }
 
 static void voutlet_dsp(t_voutlet *x, t_signal **sp)
 {
-    t_signal *insig;
     if (!x->x_buf) return;
-    insig = sp[0];
-    if (x->x_justcopyout)
-        dsp_add_copy(insig->s_vec, x->x_directsignal->s_vec, insig->s_n);
-    else if (x->x_directsignal)
+    if (x->x_borrowed)
     {
             /* if we're just going to make the signal available on the
             parent patch, hand it off to the parent signal. */
-        /* this is done elsewhere--> sp[0]->s_refcount++; */
-        signal_setborrowed(x->x_directsignal, sp[0]);
+        signal_setborrowed(*x->x_parentsignal, sp[0]);
     }
     else
-        dsp_add(voutlet_perform, 3, x, insig->s_vec, (t_int)insig->s_n);
+    {
+        signal_setchansout(x->x_parentsignal, sp[0]->s_nchans);
+        if (x->x_justcopyout)
+            dsp_add_copy(sp[0]->s_vec, (*x->x_parentsignal)->s_vec,
+                sp[0]->s_length * sp[0]->s_nchans);
+        else
+        {
+                /* FIXME - need an array of buffers and resampling structs */
+            pd_error(x,
+                "multichannel blocked outlet~ unimplemented; using mono");
+            dsp_add(voutlet_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
+            dsp_add_zero((*x->x_parentsignal)->s_vec + sp[0]->s_length,
+                sp[0]->s_length * (sp[0]->s_nchans - 1));
+        }
+    }
 }
 
         /* set up epilog DSP code.  If we're reblocking, this is the
@@ -548,15 +562,16 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         }
     }
         /* if we aren't blocked but we are switched, the epilog code just
-        copies zeros to the output.  In this case the blocking code actually
-        jumps over the epilog if the block is running. */
+        copies zeros to the output.  In this case the DSP chain contains a
+        function that causes DSP passes to jump over the epilog when the block
+        is switched on, so this only happens when switched off. */
     else if (switched)
     {
         if (parentsigs)
         {
             t_signal *outsig =
                 parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
-            dsp_add_zero(outsig->s_vec, outsig->s_n);
+            dsp_add_zero(outsig->s_vec, outsig->s_length * outsig->s_nchans);
         }
     }
 }
