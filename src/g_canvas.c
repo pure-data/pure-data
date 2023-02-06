@@ -1354,7 +1354,7 @@ void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
 #if 0
     {
         int i, n = obj_nsiginlets(&x->gl_obj) + obj_nsigoutlets(&x->gl_obj);
-        post("signals:");
+        post("signals for %x (toplevel %d):", x, toplevel);
         for (i = 0; i < n; i++)
         {
             if (sp[i])

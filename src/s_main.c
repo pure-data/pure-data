@@ -21,6 +21,10 @@
 #include <windows.h>
 #include <winbase.h>
 #endif
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
 #endif
@@ -569,16 +573,31 @@ void sys_findprogdir(const char *progname)
 #ifndef _WIN32
     struct stat statbuf;
 #endif /* NOT _WIN32 */
-
     /* find out by what string Pd was invoked; put answer in "sbuf". */
+    *sbuf2 = 0;
 #ifdef _WIN32
     GetModuleFileName(NULL, sbuf2, sizeof(sbuf2));
     sbuf2[MAXPDSTRING-1] = 0;
-    sys_unbashfilename(sbuf2, sbuf);
-#else
-    strncpy(sbuf, progname, MAXPDSTRING);
-    sbuf[MAXPDSTRING-1] = 0;
+#else /* !_WIN32 */
+    if(!*sbuf2) {
+        ssize_t path_length = readlink("/proc/self/exe", sbuf2, sizeof(sbuf2));
+        if (path_length > 0 && path_length < MAXPDSTRING)
+            sbuf2[path_length] = 0;
+    }
 #endif /* _WIN32 */
+#ifdef __APPLE__
+    if(!*sbuf2) {
+        uint32_t size = sizeof(sbuf2);
+        _NSGetExecutablePath(sbuf2, &size);
+    }
+#endif /* ! __APPLE__ */
+
+        /* fallback to just using argv[0] */
+    if(!*sbuf2)
+        strncpy(sbuf2, progname, MAXPDSTRING);
+    sbuf2[MAXPDSTRING-1] = 0;
+    sys_unbashfilename(sbuf2, sbuf);
+
     lastslash = strrchr(sbuf, '/');
     if (lastslash)
     {
@@ -625,6 +644,7 @@ void sys_findprogdir(const char *progname)
 #ifdef _WIN32
     sys_libdir = gensym(sbuf2);
 #else
+
     strncpy(sbuf, sbuf2, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/lib/pd");

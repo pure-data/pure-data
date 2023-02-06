@@ -64,7 +64,7 @@ static int stderr_isatty;
 #endif
 
 #ifndef PDGUIDIR
-#    define PDGUIDIR "tcl/"
+#define PDGUIDIR "tcl"
 #endif
 
 #define TEST_LOCKING 0
@@ -927,7 +927,7 @@ void sys_pretendguibytes(int n)
 void sys_queuegui(void* client, t_glist* glist, t_guicallbackfn f)
 {
     t_pd* c_pd = (t_pd*)client;
-    
+
     // redraw scalar
     if (c_pd && !strcmp((*c_pd)->c_name->s_name, "scalar")) {
         update_gui();
@@ -1239,8 +1239,9 @@ static int sys_do_startgui(char const* libdir)
                     sys_closesocket(sockfd);
                     return (1);
                 }
-                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
-                    wish_paths[i], libdir, PDGUIDIR, portno);
+
+                sprintf(cmdbuf, "\"%s\" \"%s/%s/pd-gui.tcl\" %d\n",
+                        wish_paths[i], libdir, PDGUIDIR, portno);
             }
 #    else  /* __APPLE__ */
             /* sprintf the wish command with needed environment variables.
@@ -1297,7 +1298,7 @@ static int sys_do_startgui(char const* libdir)
 
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
+        strcat(scriptbuf, "/" PDGUIDIR "/pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
 
         sprintf(portbuf, "%d", portno);
@@ -1725,12 +1726,12 @@ void update_gui()
 void create_panel(int openpanel, char const* path, char const* snd)
 {
     if (INTER && INTER->callback_target && INTER->gui_callback) {
-        
+
         t_atom args[3];
         SETFLOAT(args, openpanel);
         SETSYMBOL(args + 1, gensym(path));
         SETSYMBOL(args + 2, gensym(snd));
-        
+
         pd_this->pd_inter->gui_callback(INTER->callback_target, "openpanel", args, args + 1, args + 2);
     }
 }
@@ -1738,10 +1739,10 @@ void create_panel(int openpanel, char const* path, char const* snd)
 
 void trigger_open_file(const char* file) {
     if(INTER && INTER->callback_target && INTER->gui_callback) {
-        
+
         t_atom args;
         SETSYMBOL(&args, gensym(file));
-        
+
         INTER->gui_callback(INTER->callback_target, "openfile", &args, NULL, NULL);
     }
 }
