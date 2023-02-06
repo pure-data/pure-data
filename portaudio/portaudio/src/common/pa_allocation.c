@@ -79,7 +79,7 @@ static struct PaUtilAllocationGroupLink *AllocateLinks( long count,
     struct PaUtilAllocationGroupLink *result;
     int i;
 
-    result = (struct PaUtilAllocationGroupLink *)PaUtil_AllocateZeroInitializedMemory(
+    result = (struct PaUtilAllocationGroupLink *)PaUtil_AllocateMemory(
             sizeof(struct PaUtilAllocationGroupLink) * count );
     if( result )
     {
@@ -109,8 +109,7 @@ PaUtilAllocationGroup* PaUtil_CreateAllocationGroup( void )
     links = AllocateLinks( PA_INITIAL_LINK_COUNT_, 0, 0 );
     if( links != 0 )
     {
-        result = (PaUtilAllocationGroup*)PaUtil_AllocateZeroInitializedMemory(
-                sizeof(PaUtilAllocationGroup) );
+        result = (PaUtilAllocationGroup*)PaUtil_AllocateMemory( sizeof(PaUtilAllocationGroup) );
         if( result )
         {
             result->linkCount = PA_INITIAL_LINK_COUNT_;
@@ -144,7 +143,7 @@ void PaUtil_DestroyAllocationGroup( PaUtilAllocationGroup* group )
 }
 
 
-void* PaUtil_GroupAllocateZeroInitializedMemory( PaUtilAllocationGroup* group, long size )
+void* PaUtil_GroupAllocateMemory( PaUtilAllocationGroup* group, long size )
 {
     struct PaUtilAllocationGroupLink *links, *link;
     void *result = 0;
@@ -164,7 +163,7 @@ void* PaUtil_GroupAllocateZeroInitializedMemory( PaUtilAllocationGroup* group, l
 
     if( group->spareLinks )
     {
-        result = PaUtil_AllocateZeroInitializedMemory( size );
+        result = PaUtil_AllocateMemory( size );
         if( result )
         {
             link = group->spareLinks;
