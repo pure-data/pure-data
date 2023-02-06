@@ -48,7 +48,7 @@ echo "==== Downloading portaudio $VERSION"
 if [ -d $SRC ] ; then
     rm -rf $SRC
 fi
-git clone --depth 1 https://github.com/PortAudio/portaudio.git $SRC
+git clone https://github.com/PortAudio/portaudio.git $SRC
 if [[ "$VERSION" != "" ]] ; then
     cd $SRC && git checkout $VERSION && cd -
 fi
@@ -66,9 +66,10 @@ rm $SRC/include/pa_jack.h
 rm $SRC/include/pa_win_ds.h
 rm $SRC/include/pa_win_wasapi.h
 rm $SRC/include/pa_win_wdmks.h
-rm $SRC/src/hostapi/coreaudio/pa_mac_core_old.c
 rm $SRC/src/os/win/pa_win_wdmks_utils.*
 rm $SRC/src/os/win/pa_x86_plain_converters.*
+# some files removed in newer versions of pa...
+ rm -f $SRC/src/hostapi/coreaudio/pa_mac_core_old.c
 
 # copy what we need, namely the main headers and relevant sources
 copysrc include
