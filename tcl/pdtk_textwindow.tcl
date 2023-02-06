@@ -121,9 +121,12 @@ proc pdtk_textwindow_close {name ask} {
             if {[string equal -length 1 $title "*"]} {
                 set title [string range $title 1 end]
             }
-            set answer [tk_messageBox \-type yesnocancel \
-             \-icon question \
-             \-message [concat Save changes to \"$title\"?]]
+            set msg [format [_ "Accept changes to '%s'?"] $title]
+            set answer [tk_messageBox -type yesnocancel \
+             -icon question \
+             -message $msg \
+             -detail [_ "Accepting will update the contents in the associated object. You still have to save the patch to make the changes persistent." ] \
+            ]
             if {$answer == "yes"} {pdtk_textwindow_send $name}
             if {$answer != "cancel"} {pdsend [concat $name close]}
         } else {pdsend [concat $name close]}
