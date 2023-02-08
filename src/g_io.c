@@ -146,9 +146,11 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
     {
         int i;
         signal_setchansout(sp, x->x_nchans);
+        if (x->x_nchans > 1)
+            pd_error(x, "multichannel blocking inlet~ not working yet");
         for (i = 0; i < x->x_nchans; i++)
-            dsp_add(vinlet_perform, 3, x, sp[0]->s_vec + i * sp[0]->s_nalloc,
-                (t_int)(sp[0]->s_nalloc));
+            dsp_add(vinlet_perform, 3, x, sp[0]->s_vec + i * sp[0]->s_length,
+                (t_int)(sp[0]->s_length));
         x->x_read = 0;
     }
 }
@@ -321,6 +323,7 @@ typedef struct _voutlet
     t_canvas *x_canvas;
     t_outlet *x_parentoutlet;
     int x_buflength;
+    int x_bufnchans;
     t_sample *x_buf;        /* signal buffer; zero if not a signal */
     int x_empty;            /* next to read out of buffer in epilog code */
     int x_write;            /* next to write in to buffer */
@@ -378,7 +381,7 @@ static void voutlet_free(t_voutlet *x)
 {
     canvas_rmoutlet(x->x_canvas, x->x_parentoutlet);
     if (x->x_buf)
-        t_freebytes(x->x_buf, x->x_buflength * sizeof(*x->x_buf));
+        t_freebytes(x->x_buf, x->x_buflength * x->x_bufnchans * sizeof(*x->x_buf));
     resample_free(&x->x_updown);
 }
 
@@ -484,11 +487,16 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
         else
         {
                 /* FIXME - need an array of buffers and resampling structs */
-            pd_error(x,
-                "multichannel blocked outlet~ unimplemented; using mono");
-            dsp_add(voutlet_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
-            dsp_add_zero((*x->x_parentsignal)->s_vec + sp[0]->s_length,
-                sp[0]->s_length * (sp[0]->s_nchans - 1));
+            dsp_add(voutlet_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_length);
+            if (sp[0]->s_nchans > 1)
+            {
+                pd_error(x,
+                    "multichannel blocked outlet~ unimplemented; using mono");
+                if (sp[0]->s_nchans != (*x->x_parentsignal)->s_nchans)
+                    bug("voutlet_dsp");
+                dsp_add_zero((*x->x_parentsignal)->s_vec + (*x->x_parentsignal)->s_length,
+                    (*x->x_parentsignal)->s_length * ((*x->x_parentsignal)->s_nchans - 1));
+            }
         }
     }
 }
@@ -506,37 +514,41 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
     if (reblock)
     {
         t_signal *outsig;
-        int parentvecsize, bufsize, oldbufsize;
+        int parentvecsize, buflength, bufnchans;
         int re_parentvecsize;
         int bigperiod, epilogphase, blockphase;
         if (parentsigs)
         {
             outsig = parentsigs[outlet_getsignalindex(x->x_parentoutlet)];
-            parentvecsize = outsig->s_nalloc;
+            parentvecsize = outsig->s_length;
             re_parentvecsize = parentvecsize * upsample / downsample;
+            bufnchans = outsig->s_nchans;
         }
         else
         {
             outsig = 0;
             parentvecsize = 1;
             re_parentvecsize = 1;
+            bufnchans = 1;
         }
         bigperiod = myvecsize/re_parentvecsize;
         if (!bigperiod) bigperiod = 1;
         epilogphase = phase & (bigperiod - 1);
         blockphase = (phase + period - 1) & (bigperiod - 1) & (- period);
-        bufsize = re_parentvecsize;
-        if (bufsize < myvecsize) bufsize = myvecsize;
-        if (bufsize != (oldbufsize = x->x_buflength))
+        buflength = re_parentvecsize;
+        if (buflength < myvecsize)
+            buflength = myvecsize;
+        if (buflength != x->x_buflength || bufnchans != x->x_bufnchans)
         {
             t_sample *buf = x->x_buf;
-            t_freebytes(buf, oldbufsize * sizeof(*buf));
-            buf = (t_sample *)t_getbytes(bufsize * sizeof(*buf));
-            memset((char *)buf, 0, bufsize * sizeof(*buf));
-            x->x_buflength = bufsize;
+            t_freebytes(x->x_buf, x->x_buflength * x->x_bufnchans * sizeof(*buf));
+            buf = (t_sample *)t_getbytes(buflength * bufnchans * sizeof(*buf));
+            x->x_buflength = buflength;
+            x->x_bufnchans = bufnchans;
             x->x_buf = buf;
         }
-        if (re_parentvecsize * period > bufsize) bug("voutlet_dspepilog");
+        if (re_parentvecsize * period > buflength)
+            bug("voutlet_dspepilog");
         x->x_write = re_parentvecsize * blockphase;
         if (x->x_write == x->x_buflength)
             x->x_write = 0;
@@ -585,6 +597,7 @@ static void *voutlet_newsig(t_symbol *s)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     x->x_buf = (t_sample *)getbytes(0);
     x->x_buflength = 0;
+    x->x_bufnchans = 1;
 
     resample_init(&x->x_updown);
 
