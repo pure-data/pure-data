@@ -488,11 +488,11 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
 {
     int allocsize = 0;
     t_signal *ret, **whichlist;
-        /* figure out which free list to use, depending on size of vector */
     if (sr < 1)
         bug("signal_new");
-    if (length)
+    if (length && !scalarptr)
     {
+            /* figure out which free list to use, depending on size of vector */
         int logn = ilog2(length*nchans);
             /* round up to a power of two */
         if ((1<<logn) < length*nchans)
@@ -502,7 +502,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
             bug("signal buffer too large");
         whichlist = THIS->u_freelist + logn;
     }
-    else
+    else /* scalar or borrowed signal */
         whichlist = &THIS->u_freeborrowed;
 
         /* try to reclaim one from the free list */
@@ -512,7 +512,7 @@ t_signal *signal_new(int length, int nchans, t_float sr, t_sample *scalarptr)
     {
                  /* LATER figure out what to do if we ran out of space */
         ret = (t_signal *)t_getbytes(sizeof *ret);
-        if (!scalarptr && length)
+        if (allocsize)
             ret->s_vec = (t_sample *)getbytes(allocsize * sizeof (*ret->s_vec));
         ret->s_nextused = THIS->u_signals;
         THIS->u_signals = ret;
@@ -618,7 +618,6 @@ struct _dspcontext
     int dc_noutlets;
     t_signal **dc_iosigs;
     t_signal dc_nullsignal;   /* non-signal showing sample rate and length */
-    t_float dc_srate;
     unsigned int dc_toplevel:1;     /* true if "iosigs" is invalid. */
     unsigned int dc_reblock:1;      /* true if we have to reblock in/outlets */
     unsigned int dc_switched:1;     /* true if we're switched */

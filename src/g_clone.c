@@ -309,6 +309,9 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     for (i = nout = 0; i < x->x_nout; i++)
         if (x->x_outvec[0][i].o_signal)
             nout++;
+        /* create output signals */
+    for (i = 0; i < nout; i++)
+        signal_setchansout(&sp[nin+i], (x->x_packout ? x->x_n : 1));
     for (j = 0; j < x->x_n; j++)
     {
         if (obj_ninlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nin ||
