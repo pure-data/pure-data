@@ -471,7 +471,7 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
 
 static void voutlet_dsp(t_voutlet *x, t_signal **sp)
 {
-    if (!x->x_buf) return;
+    if (!x->x_buf || !x->x_parentsignal) return;
     if (x->x_borrowed)
     {
             /* if we're just going to make the signal available on the
