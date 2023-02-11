@@ -452,10 +452,6 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
     x->x_updown.downsample=downsample;
     x->x_updown.upsample=upsample;
     x->x_justcopyout = (switched && !reblock);
-        /* check that the parent signal is indeed the null signal - this
-        will be replaced by a new signal we create here. */
-    if (parentsigs && (*thisparent)->s_nchans != -1)
-        bug("voutlet_dspprolog");
     x->x_parentsignal = thisparent;
     if (reblock)
         x->x_borrowed = 0;
