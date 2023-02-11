@@ -6,22 +6,22 @@
 # Gravedad Cero <gravedadcerolabs@gmail.com>, 2022
 # Alex Nadzharov <anadjarov@gmail.com>, 2022
 # Fede Camara Halac <fch226@nyu.edu>, 2022.
-# umläute <dev@umlaeute.mur.at>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: 2022-11-05 05:05+0000\n"
+"PO-Revision-Date: 2023-02-13 12:36+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/pure-"
-"data/es/>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 msgid "linear"
 msgstr "Lineal"
@@ -1367,9 +1367,9 @@ msgstr "¿Desea guardar los cambios realizados en '%s'?"
 msgid "Properties"
 msgstr "Propiedades"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Accept changes to '%s'?"
-msgstr "¿Descartar cambios en '%s'?"
+msgstr "¿Aceptar cambios en '%s'?"
 
 msgid ""
 "Accepting will update the contents in the associated object. You still have "
