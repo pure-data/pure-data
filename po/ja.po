@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
 "PO-Revision-Date: 2022-11-22 20:35+0000\n"
 "Last-Translator: umläute <dev@umlaeute.mur.at>\n"
-"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/ja/>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -108,7 +108,8 @@ msgid "no Pd settings to erase"
 msgstr "Pd設定がないので削除できません"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr "環境設定の読み込みをスキップしています... Pdが起動時にクラッシュしたようです"
+msgstr ""
+"環境設定の読み込みをスキップしています... Pdが起動時にクラッシュしたようです"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(環境設定を再保存すると元に戻ります）"
@@ -508,7 +509,8 @@ msgid "Out Ports:"
 msgstr "出力ポート:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr "Pdの検索パス(オブジェクト、ヘルプ、オーディオ、テキスト、その他のファイル)"
+msgstr ""
+"Pdの検索パス(オブジェクト、ヘルプ、オーディオ、テキスト、その他のファイル)"
 
 msgid "Use standard paths"
 msgstr "標準パスを使用"
@@ -589,12 +591,14 @@ msgstr "検出されたフォント: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr "警告: フォントファミリー '%1$s' が見つかりません、デフォルト (%2$s) "
-"を使用します"
+msgstr ""
+"警告: フォントファミリー '%1$s' が見つかりません、デフォルト (%2$s) を使用し"
+"ます"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr "警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
+msgstr ""
+"警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
@@ -880,17 +884,20 @@ msgid "e.g. 'freeverb~'"
 msgstr "例) 'freeverb~'"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr "ワイルドカード '*' を使用すると、任意の数の文字と一致させることができます。"
+msgstr ""
+"ワイルドカード '*' を使用すると、任意の数の文字と一致させることができます。"
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr "例) '*-plugin' と入力すると 'deken-plugin' "
-"にマッチします（その他にもマッチします）。"
+msgstr ""
+"例) '*-plugin' と入力すると 'deken-plugin' にマッチします（その他にもマッチし"
+"ます）。"
 
 msgid "You can restrict the search to only-libraries or only-objects."
 msgstr "ライブラリのみ または オブジェクトのみに 検索を制限できます。"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
+msgstr ""
+"利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
 "い。"
 
 msgid "Right-clicking a search result will give you more options..."
@@ -963,8 +970,9 @@ msgstr "検索を実行できません。ネットに接続できていますか
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr "使用可能なパッケージが %1$d 個見つかりました (合計 %2$d "
-"個のパッケージのうち)。"
+msgstr ""
+"使用可能なパッケージが %1$d 個見つかりました (合計 %2$d 個のパッケージのう"
+"ち)。"
 
 msgid "It appears that there are no matching packages for your architecture."
 msgstr "お使いのアーキテクチャに対応するパッケージがないようです。"
@@ -987,8 +995,9 @@ msgstr "%1$s を %2$s にインストールしますか？"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr "'%s' のダウンロードをキャンセルしています: "
-"インストール先のディレクトリが指定されていません。"
+msgstr ""
+"'%s' のダウンロードをキャンセルしています: インストール先のディレクトリが指定"
+"されていません。"
 
 msgid "Installing to non-existant directory failed"
 msgstr "存在しないディレクトリのためインストールに失敗しました"
@@ -1029,7 +1038,8 @@ msgstr "チェックサムの不一致を無視する"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr "[deken] deken-plugin.tcl (Pd externals 検索) は %s からロードされました。"
+msgstr ""
+"[deken] deken-plugin.tcl (Pd externals 検索) は %s からロードされました。"
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -1091,8 +1101,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
-"\n"
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用します"
+"か？\n"
 "\n"
 "場所: %s\n"
 "\n"
@@ -1107,8 +1117,8 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
-"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
-"\n"
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用します"
+"か？\n"
 "\n"
 "場所: %s\n"
 "\n"
@@ -1353,6 +1363,15 @@ msgstr "'%s'で行った変更を保存しますか？"
 
 msgid "Properties"
 msgstr "プロパティ"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "'%s'の変更を保存しないで続けますか?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

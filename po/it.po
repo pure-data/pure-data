@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
 "PO-Revision-Date: 2022-10-30 07:04+0000\n"
 "Last-Translator: Valerio Orlandini <valeriorlandini@gmail.com>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/"
-"pure-data/it/>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pure-data/pure-"
+"data/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -740,7 +740,8 @@ msgid "Installation options:"
 msgstr "Opzioni di installazione:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr "Prova a verificare il checksum delle librierie prima di (re)installarle"
+msgstr ""
+"Prova a verificare il checksum delle librierie prima di (re)installarle"
 
 msgid "Try to remove libraries before (re)installing them"
 msgstr "Prova a rimuovere le librerie prima di (re)installarle"
@@ -900,7 +901,8 @@ msgstr ""
 "ricerca vuota."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr "Cliccando con il pulsante destro su un risultato ti darà più opzioni..."
+msgstr ""
+"Cliccando con il pulsante destro su un risultato ti darà più opzioni..."
 
 msgid "You can also search for libraries & objects via your web browser:"
 msgstr "Puoi anche cercare librerie e oggetti attraverso il tuo browser web:"
@@ -1363,6 +1365,15 @@ msgstr "Salvare le modifiche apportate a '%s'?"
 
 msgid "Properties"
 msgstr "Proprietà"
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Scartare le modifiche apportate a '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
+msgstr ""
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"POT-Creation-Date: 2023-02-11 22:56+0100\n"
 "PO-Revision-Date: 2022-10-20 12:48+0000\n"
 "Last-Translator: | || | | <aalderson@caramail.com>\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/pure-data/pure-"
@@ -1328,6 +1328,15 @@ msgid "Do you want to save the changes you made in '%s'?"
 msgstr ""
 
 msgid "Properties"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Accept changes to '%s'?"
+msgstr "Pominąć zmiany dla '%s'?"
+
+msgid ""
+"Accepting will update the contents in the associated object. You still have "
+"to save the patch to make the changes persistent."
 msgstr ""
 
 #, tcl-format
