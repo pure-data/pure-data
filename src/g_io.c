@@ -474,7 +474,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
             parent patch, hand it off to the parent signal. */
         signal_setborrowed(*x->x_parentsignal, sp[0]);
     }
-    else
+    else if (x->x_parentsignal)
     {
         signal_setchansout(x->x_parentsignal, sp[0]->s_nchans);
         if (x->x_justcopyout)
