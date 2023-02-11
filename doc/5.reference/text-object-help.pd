@@ -21,7 +21,7 @@
 #X text 247 146 read from a file;
 #X text 289 177 write to a file;
 #X text 91 121 clear;
-#X obj 128 250 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 128 249 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 93 485 t b p;
 #X obj 93 537 text get -s text t;
 #X msg 93 512 0;
@@ -213,7 +213,7 @@
 #X obj 179 539 scalar;
 #X obj 241 327 text size;
 #N canvas 573 102 592 354 size 0;
-#X obj 93 120 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 93 119 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 222 304 text define -k text-size;
 #A set 1 2 \; 3 4 5 \; 7 8 9 10 \; cis boom bah \, walk the dog \;;
 #X obj 93 243 text size text-size;
@@ -329,13 +329,13 @@
 #X text 113 350 convert to list;
 #X obj 241 351 text tolist;
 #N canvas 674 124 528 426 tolist 0;
-#X obj 68 158 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 68 156 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 68 223 text tolist text-1;
 #X obj 68 311 print;
 #X text 324 178 find another text by name or pointer, f 18;
 #X text 210 215 arguments: name of the text object or "-s struct-name", f 30;
 #X listbox 68 270 61 0 0 0 - - - 0;
-#X text 91 158 output list;
+#X text 91 156 output list;
 #X obj 5 51 cnv 1 512 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 446 18 <= click;
 #N canvas 756 178 573 352 reference 0;
@@ -689,7 +689,7 @@
 #X restore 553 14 pd reference;
 #X obj 42 16 text sequence;
 #X text 190 359 automatically sequence \, interpreting waits as delay times (see examples below)., f 42;
-#X obj 121 285 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 120 283 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 314 534 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 142 15 - sequencer/message-sender;
 #X text 26 60 [text sequence] outputs messages from a text buffer \, either to an outlet or as messages to named destinations. The text is interpreted as a sequence of lists \, and possibly some interspersed waiting instructions (called "waits" here). You can ask for one message at a time ("step" message) \, or to proceed without delay to the next wait ("bang") \, or to automatically sequence through a series of waits (with each wait specifying a delay in milliseconds), f 96;
@@ -856,7 +856,7 @@
 #X msg 277 143 list a b c;
 #X msg 286 171 10 20 300;
 #X text 81 352 To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 50;
-#X obj 454 346 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 454 342 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #N canvas 491 316 412 249 open 0;
 #X obj 58 49 inlet;
 #X obj 58 105 pdcontrol;

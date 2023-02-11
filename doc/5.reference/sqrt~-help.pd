@@ -20,20 +20,15 @@
 #X obj 113 424 exp~;
 #X obj 150 424 log~;
 #X obj 188 424 pow~;
-#X text 286 151 DSP on/off;
-#X obj 268 152 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X text 294 147 DSP on/off;
+#X obj 268 147 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X msg 268 177 \; pd dsp \$1;
 #X text 107 262 result;
 #N canvas 722 152 442 203 reference 0;
-#X obj 9 50 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 9 95 cnv 2 410 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 9 132 cnv 2 410 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 167 cnv 5 410 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 9 50 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 9 95 cnv 2 410 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 9 132 cnv 2 410 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 167 cnv 5 410 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 125 141 NONE, f 36;
 #X obj 41 13 sqrt~;
 #X text 91 14 - signal square root;
@@ -41,16 +36,10 @@
 #X text 105 105 signal - output of square root function.;
 #X restore 319 12 pd reference;
 #X text 416 12 <= click;
-#X obj 14 44 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 14 384 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 42 63 [sqrt~] takes the approximate square root of the incoming
-signal \, using a fast \, approximate algorithm which is probably accurate
-to about 120 dB (20 bits)., f 65;
-#X text 182 238 An older object \, [q8_sqrt~] \, is included in Pd
-for back compatibility but should probably not be used. It only gives
-about 8 bit accuracy., f 45;
+#X obj 14 44 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 14 384 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 42 63 [sqrt~] takes the approximate square root of the incoming signal \, using a fast \, approximate algorithm which is probably accurate to about 120 dB (20 bits)., f 65;
+#X text 182 238 An older object \, [q8_sqrt~] \, is included in Pd for back compatibility but should probably not be used. It only gives about 8 bit accuracy., f 45;
 #X obj 64 153 sig~ 4;
 #X connect 0 0 7 0;
 #X connect 1 0 31 0;

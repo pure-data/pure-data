@@ -121,10 +121,106 @@ static void bang_tilde_setup(void)
 }
 
 
+/* ------------------------ pack~ -------------------------- */
+
+static t_class *pack_tilde_class;
+
+typedef struct _pack
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_pack;
+
+static void pack_tilde_dsp(t_pack *x, t_signal **sp)
+{
+    int i;
+        /* create an n-channel output signal. sp has n+1 elements. */
+    signal_setchansout(&sp[x->x_nchans], x->x_nchans);
+        /* add n copy operations to the DSP chain, one from each input */
+    for (i = 0; i < x->x_nchans; i++)
+         dsp_add_copy(sp[i]->s_vec,
+            sp[x->x_nchans]->s_vec + i * sp[0]->s_length, sp[0]->s_length);
+}
+
+static void *pack_tilde_new(t_floatarg fnchans)
+{
+    t_pack *x = (t_pack *)pd_new(pack_tilde_class);
+    int i;
+    if ((x->x_nchans = fnchans) <= 0)
+        x->x_nchans = 2;
+    for (i = 1; i < x->x_nchans; i++)
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+static void pack_tilde_setup(void)
+{
+    pack_tilde_class = class_new(gensym("pack~"),
+        (t_newmethod)pack_tilde_new, 0, sizeof(t_pack), 0, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(pack_tilde_class, t_pack, x_f);
+    class_setdspflags(pack_tilde_class, CLASS_MULTICHANNEL);
+    class_addmethod(pack_tilde_class, (t_method)pack_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(pack_tilde_class, gensym("pack-unpack-tilde"));
+}
+
+/* ------------------------ unpack~ -------------------------- */
+
+static t_class *unpack_tilde_class;
+
+typedef struct _unpack
+{
+    t_object x_obj;
+    t_sample x_f;
+    int x_nchans;
+} t_unpack;
+
+static void unpack_tilde_dsp(t_unpack *x, t_signal **sp)
+{
+    int i, usenchans = (x->x_nchans < sp[0]->s_nchans ?
+        x->x_nchans : sp[0]->s_nchans);
+        /* create n one-channel output signals and add a copy operation
+        for each one tothe DSP chain */
+    for (i = 0; i < x->x_nchans; i++)
+    {
+        signal_setchansout(&sp[i+1], 1);
+        if (i < usenchans)
+            dsp_add_copy(sp[0]->s_vec + i * sp[0]->s_length,
+                sp[i+1]->s_vec, sp[0]->s_length);
+        else dsp_add_zero(sp[i+1]->s_vec, sp[0]->s_length);
+    }
+}
+
+static void *unpack_tilde_new(t_floatarg fnchans)
+{
+    t_unpack *x = (t_unpack *)pd_new(unpack_tilde_class);
+    int i;
+    if ((x->x_nchans = fnchans) <= 0)
+        x->x_nchans = 2;
+    for (i = 0; i < x->x_nchans; i++)
+        outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+static void unpack_tilde_setup(void)
+{
+    unpack_tilde_class = class_new(gensym("unpack~"),
+        (t_newmethod)unpack_tilde_new, 0, sizeof(t_unpack), 0, A_DEFFLOAT, 0);
+    class_setdspflags(unpack_tilde_class, CLASS_MULTICHANNEL);
+    CLASS_MAINSIGNALIN(unpack_tilde_class, t_unpack, x_f);
+    class_addmethod(unpack_tilde_class, (t_method)unpack_tilde_dsp,
+        gensym("dsp"), 0);
+    class_sethelpsymbol(unpack_tilde_class, gensym("pack-unpack-tilde"));
+}
+
 /* ------------------------ global setup routine ------------------------- */
 
 void d_misc_setup(void)
 {
     print_setup();
     bang_tilde_setup();
+    pack_tilde_setup();
+    unpack_tilde_setup();
 }

@@ -28,8 +28,9 @@ typedef struct _scalarplus
 
 static void *plus_new(t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc > 1) post("+~: extra arguments ignored");
-    if (argc)
+    if (argc > 1)
+        post("+~: extra arguments ignored");
+    if (argc)   /* argument implies we'll do a scalar add as in "+~ 1" */
     {
         t_scalarplus *x = (t_scalarplus *)pd_new(scalarplus_class);
         floatinlet_new(&x->x_obj, &x->x_g);
@@ -75,30 +76,98 @@ t_int *scalarplus_perf8(t_int *w)
     return (w+5);
 }
 
+    /* add a binary op operation (such as "+") to the DSP chain, in
+    which inputs may be of different sizes (but the output should have
+    the same size as teh larger input).  Whichever is shorter gets re-used
+    as many times as necessary to match the longer one; so one can add signals
+    with different numbers of channels. Two functions are passed, a general
+    one and another that is called if the block size is a multiple of 8. */
+
+static void dsp_add_multi(t_sample *vec1, int n1, t_sample *vec2,
+    int n2, t_sample *outvec, t_perfroutine func, t_perfroutine func8)
+{
+    int i;
+    if (n1 > n2)
+        for (i = (n1+n2-1)/n2; i--; )
+    {
+        t_int blocksize = (n2 < n1 - i*n2 ?
+            n2 : n1 - i*n2);
+        dsp_add((blocksize & 7 ? func : func8), 4,
+            vec1 + i * n2, vec2, outvec + i * n2, blocksize);
+    }
+    else for (i = (n1+n2-1)/n1; i--; )
+    {
+        t_int blocksize = (n1 < n2 - i*n1 ?
+            n1 : n2 - i*n1);
+        dsp_add((blocksize & 7 ? func : func8), 4,
+            vec1, vec2 + i*n1, outvec + i*n1, blocksize);
+    }
+}
+
+
+    /* either input could be a scalar (length=nchans=1), or a vector
+    (length >= 1, channels >= 1).  If either one is bigger than one
+    element, it's a vector.  If both are one, and if length >1,
+    we need two operations, one to add and one to copy the scalar result
+    to a vector. */
 static void plus_dsp(t_plus *x, t_signal **sp)
 {
-    dsp_add_plus(sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+    int bign0 = sp[0]->s_length * sp[0]->s_nchans,
+        bign1 = sp[1]->s_length * sp[1]->s_nchans, outchans;
+    if (bign1 > bign0)
+        outchans = sp[1]->s_nchans;
+    else if (bign0 > 1)
+        outchans = sp[0]->s_nchans;
+    else outchans = 1;
+    signal_setchansout(&sp[2], outchans);
+    if (bign0 > 1) /* first input is a vector */
+    {
+        if (bign1 > 1)
+                    /* general case: both inputs are vectors */
+            dsp_add_multi(sp[0]->s_vec, bign0, sp[1]->s_vec, bign1,
+                sp[2]->s_vec, plus_perform, plus_perf8);
+                    /* add a scalar to a vector */
+        else dsp_add((bign0 & 7 ? scalarplus_perform : scalarplus_perf8),
+            4, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)bign0);
+    }
+    else /* first input is scalar */
+    {
+        if (bign1 > 1)
+                /* second input is a vector: switch inputs and use
+                vector-scalar add */
+            dsp_add((bign0 & 7 ? scalarplus_perform : scalarplus_perf8),
+                4, sp[1]->s_vec, sp[0]->s_vec, sp[2]->s_vec, (t_int)bign1);
+        else
+        {
+                /* add two scalars to make a vector, needing two ops. This
+                happens when you make a "+" with no signal connections - it has
+                to be allowed but the user should have used a control add. */
+            dsp_add_plus(sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)1);
+            dsp_add_scalarcopy(sp[2]->s_vec, sp[2]->s_vec,
+                (t_int)sp[2]->s_length);
+        }
+    }
 }
 
 static void scalarplus_dsp(t_scalarplus *x, t_signal **sp)
 {
-    if (sp[0]->s_n&7)
-        dsp_add(scalarplus_perform, 4, sp[0]->s_vec, &x->x_g,
-            sp[1]->s_vec, (t_int)sp[0]->s_n);
-    else
-        dsp_add(scalarplus_perf8, 4, sp[0]->s_vec, &x->x_g,
-            sp[1]->s_vec, (t_int)sp[0]->s_n);
+    t_int bign = sp[0]->s_length * sp[0]->s_nchans;
+    signal_setchansout(&sp[1], sp[0]->s_nchans);
+    dsp_add((bign & 7 ? scalarplus_perform : scalarplus_perf8),
+        4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
 
 static void plus_setup(void)
 {
     plus_class = class_new(gensym("+~"), (t_newmethod)plus_new, 0,
-        sizeof(t_plus), 0, A_GIMME, 0);
+        sizeof(t_plus),
+            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
+                A_GIMME, 0);
     class_addmethod(plus_class, (t_method)plus_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(plus_class, t_plus, x_f);
     class_sethelpsymbol(plus_class, gensym("binops-tilde"));
     scalarplus_class = class_new(gensym("+~"), 0, 0,
-        sizeof(t_scalarplus), 0, 0);
+        sizeof(t_scalarplus), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(scalarplus_class, t_scalarplus, x_f);
     class_addmethod(scalarplus_class, (t_method)scalarplus_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -200,35 +269,90 @@ t_int *scalarminus_perf8(t_int *w)
     return (w+5);
 }
 
+t_int *reversescalarminus_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float f = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--) *out++ = f - *in++;
+    return (w+5);
+}
+
+t_int *reversescalarminus_perf8(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_float g = *(t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    for (; n; n -= 8, in += 8, out += 8)
+    {
+        t_sample f0 = in[0], f1 = in[1], f2 = in[2], f3 = in[3];
+        t_sample f4 = in[4], f5 = in[5], f6 = in[6], f7 = in[7];
+
+        out[0] = g - f0; out[1] = g - f1; out[2] = g - f2; out[3] = g - f3;
+        out[4] = g - f4; out[5] = g - f5; out[6] = g - f6; out[7] = g - f7;
+    }
+    return (w+5);
+}
+
 static void minus_dsp(t_minus *x, t_signal **sp)
 {
-    if (sp[0]->s_n&7)
-        dsp_add(minus_perform, 4,
-            sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
-    else
-        dsp_add(minus_perf8, 4,
-            sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)sp[0]->s_n);
+    int bign0 = sp[0]->s_length * sp[0]->s_nchans,
+        bign1 = sp[1]->s_length * sp[1]->s_nchans, outchans;
+    if (bign1 > bign0)
+        outchans = sp[1]->s_nchans;
+    else if (bign0 > 1)
+        outchans = sp[0]->s_nchans;
+    else outchans = 1;
+    signal_setchansout(&sp[2], outchans);
+    if (bign0 > 1) /* first input is a vector */
+    {
+        if (bign1 > 1)
+                    /* general case: both inputs are vectors */
+            dsp_add_multi(sp[0]->s_vec, bign0, sp[1]->s_vec, bign1,
+                sp[2]->s_vec, minus_perform, minus_perf8);
+                    /* add a scalar to a vector */
+        else dsp_add((bign0 & 7 ? scalarminus_perform : scalarminus_perf8),
+            4, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)bign0);
+    }
+    else /* first input is scalar */
+    {
+        if (bign1 > 1)
+                    /* second input is a vector: use reverse scalar version */
+            dsp_add((bign0 & 7 ? reversescalarminus_perform :
+                reversescalarminus_perf8),
+                    4, sp[1]->s_vec, sp[0]->s_vec, sp[2]->s_vec, (t_int)bign1);
+        else
+        {
+                /* subtract two scalars to make a vector, needing two ops */
+            dsp_add(scalarminus_perform, 4,
+                sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, (t_int)1);
+            dsp_add_scalarcopy(sp[2]->s_vec, sp[2]->s_vec,
+                (t_int)sp[2]->s_length);
+        }
+    }
 }
 
 static void scalarminus_dsp(t_scalarminus *x, t_signal **sp)
 {
-    if (sp[0]->s_n&7)
-        dsp_add(scalarminus_perform, 4, sp[0]->s_vec, &x->x_g,
-            sp[1]->s_vec, (t_int)sp[0]->s_n);
-    else
-        dsp_add(scalarminus_perf8, 4, sp[0]->s_vec, &x->x_g,
-            sp[1]->s_vec, (t_int)sp[0]->s_n);
+    t_int bign = sp[0]->s_length * sp[0]->s_nchans;
+    signal_setchansout(&sp[1], sp[0]->s_nchans);
+    dsp_add((bign & 7 ? scalarminus_perform : scalarminus_perf8),
+        4, sp[0]->s_vec, &x->x_g, sp[1]->s_vec, bign);
 }
 
 static void minus_setup(void)
 {
     minus_class = class_new(gensym("-~"), (t_newmethod)minus_new, 0,
-        sizeof(t_minus), 0, A_GIMME, 0);
+        sizeof(t_minus),
+            CLASS_MULTICHANNEL | CLASS_NOPROMOTESIG | CLASS_NOPROMOTELEFT,
+                A_GIMME, 0);
     CLASS_MAINSIGNALIN(minus_class, t_minus, x_f);
     class_addmethod(minus_class, (t_method)minus_dsp, gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(minus_class, gensym("binops-tilde"));
     scalarminus_class = class_new(gensym("-~"), 0, 0,
-        sizeof(t_scalarminus), 0, 0);
+        sizeof(t_scalarminus), CLASS_MULTICHANNEL, 0);
     CLASS_MAINSIGNALIN(scalarminus_class, t_scalarminus, x_f);
     class_addmethod(scalarminus_class, (t_method)scalarminus_dsp,
         gensym("dsp"), A_CANT, 0);

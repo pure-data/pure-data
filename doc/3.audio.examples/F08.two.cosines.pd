@@ -26,14 +26,9 @@
 #X text 461 589 updated for Pd version 0.37;
 #X obj 161 510 hip~;
 #X obj 161 559 output~;
-#X text 282 125 The other \, spiffier way is to make a sum of cosines
-to interpolate between adjacent harmonics. Suppose for example we want
-a center frequency of 5.3 (in units of the fundamental.) We just take
-partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f
-52;
+#X text 282 125 The other \, spiffier way is to make a sum of cosines to interpolate between adjacent harmonics. Suppose for example we want a center frequency of 5.3 (in units of the fundamental.) We just take partial 5 with amplitude 0.7 and partial 6 with amplitude 0.3:, f 52;
 #X obj 246 511 tabwrite~ F08-carrier;
-#X obj 246 486 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 246 486 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 64 245 phasor~ 100;
 #X text 100 71 center frequency (in;
 #X text 99 91 tenths of fundamental);

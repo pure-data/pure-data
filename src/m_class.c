@@ -488,11 +488,16 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_symbolmethod = pd_defaultsymbol;
     c->c_listmethod = pd_defaultlist;
     c->c_anymethod = pd_defaultanything;
+        /* set default widget behavior.  Things like IEM GUIs override
+        this; they're patchable but have bespoke widget behaviors */
     c->c_wb = (typeflag == CLASS_PATCHABLE ? &text_widgetbehavior : 0);
     c->c_pwb = 0;
     c->c_firstin = ((flags & CLASS_NOINLET) == 0);
     c->c_patchable = (typeflag == CLASS_PATCHABLE);
     c->c_gobj = (typeflag >= CLASS_GOBJ);
+    c->c_multichannel = (flags & CLASS_MULTICHANNEL) != 0;
+    c->c_nopromotesig = (flags & CLASS_NOPROMOTESIG) != 0;
+    c->c_nopromoteleft = (flags & CLASS_NOPROMOTELEFT) != 0;
     c->c_drawcommand = 0;
     c->c_floatsignalin = 0;
     c->c_externdir = class_extern_dir;
@@ -1241,3 +1246,18 @@ t_class *
 
     return 0;
 }
+
+void class_setdspflags(t_class *c, int flags)
+{
+    c->c_multichannel = (flags & CLASS_MULTICHANNEL) != 0;
+    c->c_nopromotesig = (flags & CLASS_NOPROMOTESIG) != 0;
+    c->c_nopromoteleft = (flags & CLASS_NOPROMOTELEFT) != 0;
+}
+
+int class_getdspflags(const t_class *c)
+{
+    return ((c->c_multichannel ? CLASS_MULTICHANNEL : 0) |
+            (c->c_nopromotesig ? CLASS_NOPROMOTESIG : 0) |
+            (c->c_nopromoteleft ? CLASS_NOPROMOTELEFT : 0) );
+}
+

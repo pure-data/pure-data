@@ -173,7 +173,7 @@ proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
     }
     set color [tk_chooseColor -title $title -initialcolor $color]
     if { $color ne "" } {
-        ::dialog_iemgui::preset_col $color
+        ::dialog_iemgui::preset_col $mytoplevel $color
     }
 }
 
