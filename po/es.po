@@ -7,13 +7,14 @@
 # Alex Nadzharov <anadjarov@gmail.com>, 2022
 # Fede Camara Halac <fch226@nyu.edu>, 2022.
 # umläute <dev@umlaeute.mur.at>, 2022, 2023.
+# gallegonovato <fran-carro@hotmail.es>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
 "PO-Revision-Date: 2023-02-13 12:36+0000\n"
-"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/es/>\n"
 "Language: es\n"
@@ -399,7 +400,7 @@ msgid "Label color"
 msgstr "Color de etiqueta"
 
 msgid "Bang"
-msgstr "Bang"
+msgstr "Estallido"
 
 msgid "Flash Time (msec)"
 msgstr "Duración del flash (mseg)"
@@ -1375,6 +1376,8 @@ msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"Al aceptar se actualizará el contenido en el objeto asociado. Todavía tiene "
+"que guardar el parche para que los cambios sean persistentes."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
