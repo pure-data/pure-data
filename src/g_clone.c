@@ -320,7 +320,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             for (i = 0; i < nout; i++)
             {
                     /* create dummy output signals */
-                signal_setchansout(&sp[nin+i], x->x_packout ? x->x_n : 1);
+                signal_setmultiout(&sp[nin+i], x->x_packout ? x->x_n : 1);
                 dsp_add_zero(sp[nin+i]->s_vec,
                     sp[nin+i]->s_length * sp[nin+i]->s_nchans);
             }
@@ -369,7 +369,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 t_sample *to, *from = tempio[nin + i]->s_vec;
                 if (j == 0) /* now we can the create the output signal */
                 {
-                    signal_setchansout(&sp[nin + i], nchans * x->x_n);
+                    signal_setmultiout(&sp[nin + i], nchans * x->x_n);
                     noutchans[i] = nchans;
                 }
                     /* NB: it is possible for instances to have different
@@ -429,7 +429,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 if (j == 0)
                 {
                         /* first instance: create output signal and copy content */
-                    signal_setchansout(&sp[nin + i], nchans);
+                    signal_setmultiout(&sp[nin + i], nchans);
                     dsp_add_copy(tempio[nin + i]->s_vec,
                         sp[nin + i]->s_vec, length * nchans);
                     noutchans[i] = nchans;

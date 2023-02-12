@@ -562,7 +562,7 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
 
     /* only use this in the context of dsp routines to set number of channels
     on output signal - we assume it's currently a pointer to the null signal */
-void signal_setchansout(t_signal **sig, int nchans)
+void signal_setmultiout(t_signal **sig, int nchans)
 {
     *sig = signal_new((*sig)->s_length, nchans, (*sig)->s_sr, 0);
 }

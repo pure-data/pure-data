@@ -124,7 +124,7 @@ static void any_binop_dsp(t_signal **sp,
     else if (bign0 > 1)
         outchans = sp[0]->s_nchans;
     else outchans = 1;
-    signal_setchansout(&sp[2], outchans);
+    signal_setmultiout(&sp[2], outchans);
     if (bign0 > 1) /* first input is a vector */
     {
         if (bign1 > 1)
@@ -159,7 +159,7 @@ static void any_binop_scalar_dsp(t_signal **sp, t_sample *g,
     t_perfroutine perf, t_perfroutine perf8)
 {
     t_int bign = sp[0]->s_length * sp[0]->s_nchans;
-    signal_setchansout(&sp[1], sp[0]->s_nchans);
+    signal_setmultiout(&sp[1], sp[0]->s_nchans);
     dsp_add(((bign & 7) || !perf8 ? perf : perf8),
         4, sp[0]->s_vec, g, sp[1]->s_vec, bign);
 }

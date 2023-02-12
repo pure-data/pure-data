@@ -145,7 +145,7 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
     else
     {
         int i;
-        signal_setchansout(sp, x->x_nchans);
+        signal_setmultiout(sp, x->x_nchans);
         if (x->x_nchans > 1)
             pd_error(x, "multichannel blocking inlet~ not working yet");
         for (i = 0; i < x->x_nchans; i++)
@@ -476,7 +476,7 @@ static void voutlet_dsp(t_voutlet *x, t_signal **sp)
     }
     else if (x->x_parentsignal)
     {
-        signal_setchansout(x->x_parentsignal, sp[0]->s_nchans);
+        signal_setmultiout(x->x_parentsignal, sp[0]->s_nchans);
         if (x->x_justcopyout)
             dsp_add_copy(sp[0]->s_vec, (*x->x_parentsignal)->s_vec,
                 sp[0]->s_length * sp[0]->s_nchans);
