@@ -427,11 +427,22 @@ static void signal_cleanup(void)
     THIS->u_freeborrowed = 0;
 }
 
+static void signal_dereference(t_signal *s)
+{
+    if (THIS->u_loud) post("dereference %lx: %d", s, s->s_refcount);
+    if (s->s_refcount <= 0)
+        bug("signal_dereference");
+    s->s_refcount--;
+    if (!s->s_refcount)
+        signal_makereusable(s);
+}
+
+
     /* mark the signal "reusable." */
 void signal_makereusable(t_signal *sig)
 {
     int logn = ilog2(sig->s_nalloc);
-#if 1
+#if 0
     t_signal *s5;
     for (s5 = THIS->u_freeborrowed; s5; s5 = s5->s_nextfree)
     {
@@ -460,9 +471,7 @@ void signal_makereusable(t_signal *sig)
             t_signal *s2 = sig->s_borrowedfrom;
             if ((s2 == sig) || !s2)
                 bug("signal_free");
-            s2->s_refcount--;
-            if (!s2->s_refcount)
-                signal_makereusable(s2);
+            signal_dereference(s2);
         }
         sig->s_nextfree = THIS->u_freeborrowed;
         THIS->u_freeborrowed = sig;
@@ -557,6 +566,7 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     sig->s_length = sig2->s_length;
     sig->s_nchans = sig2->s_nchans;
     sig->s_nalloc = sig2->s_nalloc;
+    sig2->s_refcount++;
     if (THIS->u_loud) post("set borrowed %lx: from %lx vec %lx",
         sig, sig2, sig->s_vec);
 }
@@ -646,7 +656,7 @@ void ugen_stop(void)
         for (sig = THIS->u_signals; sig; sig = sig->s_nextused)
         {
             if (sig->s_refcount)
-                post("signal %x refcount %s", sig, sig->s_refcount), done = 1;
+                post("signal %lx refcount %d", sig, sig->s_refcount), done = 1;
             count++;
         }
         if (!done)
@@ -667,7 +677,7 @@ void ugen_start(void)
 {
     ugen_stop();
     THIS->u_sortno++;
-    /* THIS->u_loud = 1; -- enable this for volumes of debugging output */
+    /*  THIS->u_loud = 1;  -- enable this for volumes of debugging output */
     THIS->u_dspchain = (t_int *)getbytes(sizeof(*THIS->u_dspchain));
     THIS->u_dspchain[0] = (t_int)dsp_done;
     THIS->u_dspchainsize = 1;
@@ -881,17 +891,8 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     outsig = insig + u->u_nin;
     for (sig = insig, uin = u->u_in, i = u->u_nin; i--; sig++, uin++)
     {
-        int newrefcount;
         *sig = uin->i_signal;
-        newrefcount = --(*sig)->s_refcount;
-            /* if the reference count went to zero, we free the signal now,
-            unless it's a subcanvas or outlet~; these might keep the
-            signal around to send to objects connected to them.  In this
-            case we increment the reference count; the corresponding decrement
-            is in signal_makereusable(). */
-        if (nofreesigs)
-            (*sig)->s_refcount++;
-        else if (!newrefcount)
+        if (1)
         {
                 /* if scalar or borrowed, put on free-after-dsp-call list -
                 we can't reuse them yet because the "dsp" call below might
@@ -900,20 +901,25 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                 owns its s_vec array and, to maximize in-place reuse of s_vec
                 arrays, we mark it free now so that we can get it back when
                 creating output signals below. */
-            if ((*sig)->s_isscalar || (*sig)->s_isborrowed)
-                (*sig)->s_nextfree = freelater, freelater = *sig;
-            else signal_makereusable(*sig);
+
+            if (nofreesigs || (*sig)->s_isscalar || (*sig)->s_isborrowed)
+            {
+                if ((*sig)->s_refcount > 1)
+                    (*sig)->s_refcount--;
+                else (*sig)->s_nextfree = freelater, freelater = *sig;
+            }
+            else signal_dereference(*sig);
         }
     }
         /* Create output signals.  These may re-inhabit space that was freed
         in the previous step (so tilde objects must be able to compute
         in place.)
-        We delay creating them for subcanvases and outlet~ objects;
-        instead we create "borrowed" ones so that the refcount
-        is known.  The subcanvas replaces the fake signal with one showing
+        We delay creating signals for subcanvases and outlet~ objects;
+        instead we create "borrowed" ones so that we can track the refcount.
+        The subcanvas/outlet~ later fixes the borrowed signal to show
         where the output data actually is, to avoid having to copy it.
         Otherwise, in case the CLASS_MULTICHANNEL flag is set for the object,
-        we pass "null" signal and expect teh DSP routine to replace it..
+        we pass "null" signal and expect the DSP routine to replace it..
         In any other case, we just allocate a new output vector. */
     for (sig = outsig, uout = u->u_out, i = u->u_nout; i--; sig++, uout++)
     {
@@ -954,9 +960,15 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                 insig[0], insig[1], insig[2]);
     }
         /* now we can act on delayed-free */
-    while ((stmp = freelater))
-        freelater = stmp->s_nextfree, signal_makereusable(stmp);
-        /* pass it on and trip anyone whose last inlet was filled */
+    while (freelater)
+    {
+        if (THIS->u_loud)
+            post("delayed deref %lx", freelater);
+        stmp = freelater->s_nextfree;
+        signal_dereference(freelater);
+        freelater = stmp;
+    }
+        /* pass it on and add anyone whose last inlet was filled */
     for (uout = u->u_out, i = u->u_nout; i--; uout++)
     {
         s1 = uout->o_signal;
@@ -1138,7 +1150,6 @@ void ugen_done_graph(t_dspcontext *dc)
             {
                 signal_setborrowed(*sigp,
                     signal_new(parent_vecsize, 1, parent_srate, 0));
-                (*sigp)->s_refcount++;
 
                 if (THIS->u_loud) post("set %lx->%lx", *sigp,
                     (*sigp)->s_borrowedfrom);
@@ -1221,7 +1232,6 @@ void ugen_done_graph(t_dspcontext *dc)
             {
                 t_signal *s3 = signal_new(parent_vecsize, 1, parent_srate, 0);
                 signal_setborrowed(*sigp, s3);
-                (*sigp)->s_refcount++;
                 dsp_add_zero(s3->s_vec, s3->s_n);
                 if (THIS->u_loud)
                     post("oops, belatedly set %lx->%lx", *sigp,

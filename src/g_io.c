@@ -244,11 +244,6 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
                 dsp_add(vinlet_doprolog, 3, x, x->x_updown.s_vec,
                     (t_int)re_parentvecsize);
             }
-
-            /* if the input signal's reference count is zero, we have
-               to free it here because we didn't in ugen_doit(). */
-            if (!insig->s_refcount)
-                signal_makereusable(insig);
         }
         else memset((char *)(x->x_buf), 0, bufsize * sizeof(*x->x_buf));
         x->x_directsignal = 0;
@@ -453,7 +448,7 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
     x->x_updown.upsample=upsample;
     x->x_justcopyout = (switched && !reblock);
     x->x_parentsignal = thisparent;
-    if (reblock)
+    if (switched || reblock)
         x->x_borrowed = 0;
     else    /* OK, borrow it */
     {
