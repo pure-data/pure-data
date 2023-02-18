@@ -557,7 +557,8 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     sig->s_length = sig2->s_length;
     sig->s_nchans = sig2->s_nchans;
     sig->s_nalloc = sig2->s_nalloc;
-    if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
+    if (THIS->u_loud) post("set borrowed %lx: from %lx vec %lx",
+        sig, sig2, sig->s_vec);
 }
 
     /* only use this in the context of dsp routines to set number of channels
@@ -666,6 +667,7 @@ void ugen_start(void)
 {
     ugen_stop();
     THIS->u_sortno++;
+    /* THIS->u_loud = 1; -- enable this for volumes of debugging output */
     THIS->u_dspchain = (t_int *)getbytes(sizeof(*THIS->u_dspchain));
     THIS->u_dspchain[0] = (t_int)dsp_done;
     THIS->u_dspchainsize = 1;
@@ -943,13 +945,13 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (u->u_nin + u->u_nout == 0) post("put %s %d",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u));
         else if (u->u_nin + u->u_nout == 1) post("put %s %d (%lx)",
-            class_getname(u->u_obj->ob_pd), ugen_index(dc, u), sig[0]);
+            class_getname(u->u_obj->ob_pd), ugen_index(dc, u), insig[0]);
         else if (u->u_nin + u->u_nout == 2) post("put %s %d (%lx %lx)",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u),
-                sig[0], sig[1]);
+                insig[0], insig[1]);
         else post("put %s %d (%lx %lx %lx ...)",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u),
-                sig[0], sig[1], sig[2]);
+                insig[0], insig[1], insig[2]);
     }
         /* now we can act on delayed-free */
     while ((stmp = freelater))
