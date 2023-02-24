@@ -688,7 +688,7 @@ EXTERN int canvas_dspstate;
 /*   up/downsampling */
 typedef struct _resample
 {
-  int method;       /* up/downsampling method ID */
+  int method;       /* unused */
 
   int downsample; /* downsampling factor */
   int upsample;   /* upsampling factor */
