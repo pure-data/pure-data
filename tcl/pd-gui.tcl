@@ -195,9 +195,6 @@ set focused_window .
 # store that last 5 files that were opened
 set recentfiles_list {}
 set total_recentfiles 5
-# keep track of the location of popup menu for PatchWindows, in canvas coords
-set popup_xcanvas 0
-set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
 # current state of the Edit Mode menu item
@@ -619,7 +616,6 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
-    ::pdtk_canvas::create_popup
     load_startup_plugins
     ::pdwindow::set_colors
     open_filestoopen

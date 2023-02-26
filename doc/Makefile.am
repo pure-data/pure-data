@@ -341,7 +341,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
      ./5.reference/gui-boxes-help.pd \
-     ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/inlet-outlet-help.pd \
@@ -362,8 +361,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/moses-help.pd \
      ./5.reference/namecanvas-help.pd \
      ./5.reference/nbx-help.pd \
-     ./5.reference/netreceive-help.pd \
-     ./5.reference/netsend-help.pd \
+     ./5.reference/netsend-receive-help.pd \
      ./5.reference/noise~-help.pd \
      ./5.reference/openpanel-help.pd \
      ./5.reference/osc-format-parse-help.pd \
@@ -438,7 +436,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \

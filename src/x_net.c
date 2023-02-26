@@ -532,6 +532,7 @@ static void netsend_setup(void)
     class_addlist(netsend_class, (t_method)netsend_send);
     class_addmethod(netsend_class, (t_method)netsend_timeout,
         gensym("timeout"), A_DEFFLOAT, 0);
+    class_sethelpsymbol(netsend_class, gensym("netsend-receive"));
 }
 
 /* ----------------------------- netreceive ------------------------- */
@@ -924,6 +925,7 @@ static void netreceive_setup(void)
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
     class_addlist(netreceive_class, (t_method)netreceive_send);
+    class_sethelpsymbol(netreceive_class, gensym("netsend-receive"));
 }
 
 void x_net_setup(void)

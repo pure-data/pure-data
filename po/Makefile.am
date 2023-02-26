@@ -134,8 +134,8 @@ $(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 		--exclude-file=$(EXCLUDE_FILE) \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
-	sed -E '/^"POT-Creation-Date/d' $(TEMPLATE) > $(TEMPLATE).nodate
+	sed -E -e '/^"POT-Creation-Date/d' -e '/^"Project-Id-Version/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
+	sed -E -e '/^"POT-Creation-Date/d' -e '/^"Project-Id-Version/d' $(TEMPLATE) > $(TEMPLATE).nodate
 	cmp $(TEMPLATE).new.nodate $(TEMPLATE).nodate || cat $(TEMPLATE).new > $(TEMPLATE)
 	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
