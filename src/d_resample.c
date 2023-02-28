@@ -103,8 +103,6 @@ t_int *upsampling_perform_linear(t_int *w)
 
 void resample_init(t_resample *x)
 {
-  x->method=-1;
-
   x->downsample=x->upsample=1;
 
   x->s_n = x->coefsize = x->bufsize = 0;
