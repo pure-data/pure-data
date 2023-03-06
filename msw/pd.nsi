@@ -148,7 +148,7 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
 SectionGroupEnd
 
 Section -Post
-  WriteUninstaller "$INSTDIR\uninst.exe" 
+  WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
