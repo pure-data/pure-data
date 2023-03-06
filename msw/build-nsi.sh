@@ -70,18 +70,18 @@ Helper script to build a proper Windows installer out of a
 Pd build tree.
 
 Usage:
-$0 <path_to_pd_build> <version> <wish-exec-name> [<arch>]
+$0 <path_to_pd_build> <version> [<wish-exec-name> [<arch>]]
 
    <path_to_pd_build>   input directory (containing 'bin/pd.exe')
    <version>            Pd-version to create installer for (e.g. '0.32-8')
-   <wishname>           name of wish executable (e.g., wish85.exe)
+   <wish-exec-name>     name of wish executable (e.g., 'wish85.exe')
    <arch>               architecture of Pd ('32' or '64')
 EOF
   cleanup 1
 }
 
 # show usage when invoked without args
-if [ "$#" -lt "3" ]
+if [ "$#" -lt "2" ]
 then
     usage
 fi
@@ -102,6 +102,18 @@ elif ! [ -f "$PDWINDIR/bin/pd.exe" ]
 then
   error "Could not find bin/pd.exe. Is this a Windows build?"
   cleanup 1
+fi
+
+# autodetect wishname if none is given
+if [ -z "${WISHNAME}" ]; then
+	WISHNAME=$(find "${PDWINDIR}/bin" -iname "wish*.exe" -quit)
+	if [ -n "${WISHNAME}" ]; then
+		WISHNAME=$(basename "${WISHNAME}")
+	fi
+fi
+if [ -z "${WISHNAME}" ]; then
+    error "Unable to automatically determine <wish-exec-name>."
+    cleanup 1
 fi
 
 # autodetect architecture if not given on the cmdline
