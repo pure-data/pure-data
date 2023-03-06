@@ -15,7 +15,13 @@
 ; and the string WISHNAME by, e.g., wish86.exe  .
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Pure Data (${ARCHI}-bit)"
+
+; App name
+!if ${ARCHI} == "32"
+    !define PRODUCT_NAME "Pure Data (32-bit)"
+!else
+    !define PRODUCT_NAME "Pure Data"
+!endif
 !define PRODUCT_VERSION "PDVERSION"
 !define WISH_NAME "WISHNAME"
 !define PRODUCT_PUBLISHER "Miller Puckette"
@@ -55,7 +61,9 @@
 ; set file associations page
 
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\pd.exe"
+Var SHORTPATH
+!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\WISHNAME"
+!define MUI_FINISHPAGE_RUN_PARAMETERS " $SHORTPATH\tcl\pd-gui.tcl"
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\doc\1.manual\index.htm"
 !insertmacro MUI_PAGE_FINISH
 
@@ -75,6 +83,12 @@ Function RefreshShellIcons
   ; By jerome tremblay - april 2003
   System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
   (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
+FunctionEnd
+
+; start Pd-GUI from the installer (this is to avoid whitespace in path)
+; make variable $SHORTPATH
+Function PdGuiFromInstaller
+  GetFullPathName /SHORT $SHORTPATH $INSTDIR
 FunctionEnd
 ; /Function
 
@@ -125,15 +139,17 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   ; Refresh Shell Icons
     Call RefreshShellIcons
   SectionEnd
+  
+  Section
+    ; make variable $SHORTPATH
+    Call PdGuiFromInstaller
+  SectionEnd
+
 SectionGroupEnd
 
 Section -Post
-  WriteUninstaller "$INSTDIR\uninst.exe"
-
-  
+  WriteUninstaller "$INSTDIR\uninst.exe" 
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR"
-
-  
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\pd.exe"
