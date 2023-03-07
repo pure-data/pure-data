@@ -258,37 +258,40 @@ proc pdtk_canvas_clickpaste {tkcanvas x y b} {
 # menu item is called, not when the command is mapped to the menu item.  This
 # is the same as the menubar in pd_menus.tcl but the opposite of the 'bind'
 # commands in pd_bindings.tcl
-proc ::pdtk_canvas::create_popup {} {
-    if { ! [winfo exists .popup]} {
+proc ::pdtk_canvas::create_popup {popupid actionwindow x y} {
+    if { ! [winfo exists $popupid]} {
         # the popup menu for the canvas
-        menu .popup -tearoff false
-        .popup add command -label [_ "Properties"] \
-            -command {::pdtk_canvas::done_popup $::focused_window 0}
-        .popup add command -label [_ "Open"]       \
-            -command {::pdtk_canvas::done_popup $::focused_window 1}
-        .popup add command -label [_ "Help"]       \
-            -command {::pdtk_canvas::done_popup $::focused_window 2}
+        menu $popupid -tearoff false
+
+        $popupid add command -label [_ "Properties"] \
+            -command "::pdtk_canvas::done_popup $actionwindow 0 $x $y"
+        $popupid add command -label [_ "Open"] \
+            -command "::pdtk_canvas::done_popup $actionwindow 1 $x $y"
+        $popupid add command -label [_ "Help"]       \
+            -command "::pdtk_canvas::done_popup $actionwindow 2 $x $y"
     }
 }
 
-proc ::pdtk_canvas::done_popup {mytoplevel action} {
-    pdsend "$mytoplevel done-popup $action $::popup_xcanvas $::popup_ycanvas"
+proc ::pdtk_canvas::done_popup {mytoplevel action x y} {
+    pdsend "$mytoplevel done-popup $action $x $y"
 }
 
 proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties hasopen} {
-    set ::popup_xcanvas $xcanvas
-    set ::popup_ycanvas $ycanvas
+    set toplevel [winfo toplevel $mytoplevel]
+    set tkcanvas [tkcanvas_name $toplevel]
+    set popup ${toplevel}.popup
+    destroy $popup
+    ::pdtk_canvas::create_popup ${popup} ${toplevel} ${xcanvas} ${ycanvas}
     if {$hasproperties} {
-        .popup entryconfigure [_ "Properties"] -state normal
+        ${popup} entryconfigure [_ "Properties"] -state normal
     } else {
-        .popup entryconfigure [_ "Properties"] -state disabled
+        ${popup} entryconfigure [_ "Properties"] -state disabled
     }
     if {$hasopen} {
-        .popup entryconfigure [_ "Open"] -state normal
+        ${popup} entryconfigure [_ "Open"] -state normal
     } else {
-        .popup entryconfigure [_ "Open"] -state disabled
+        ${popup} entryconfigure [_ "Open"] -state disabled
     }
-    set tkcanvas [tkcanvas_name $mytoplevel]
     set scrollregion [$tkcanvas cget -scrollregion]
     # get the canvas location that is currently the top left corner in the window
     set left_xview_pix [expr [lindex [$tkcanvas xview] 0] * [lindex $scrollregion 2]]
@@ -297,7 +300,7 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     # window, and subtract the area that is obscured by scrolling
     set xpopup [expr int($xcanvas + [winfo rootx $tkcanvas] - $left_xview_pix)]
     set ypopup [expr int($ycanvas + [winfo rooty $tkcanvas] - $top_yview_pix)]
-    tk_popup .popup $xpopup $ypopup 0
+    tk_popup ${popup} ${xpopup} ${ypopup} 0
 }
 
 if {[tk windowingsystem] eq "aqua" } {

@@ -66,7 +66,7 @@ static int stderr_isatty;
 #endif
 
 #ifndef PDGUIDIR
-#define PDGUIDIR "tcl/"
+#define PDGUIDIR "tcl"
 #endif
 
 #ifndef WISH
@@ -1310,7 +1310,7 @@ static int sys_do_startgui(const char *libdir)
                     sys_closesocket(sockfd);
                     return (1);
                 }
-                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
+                sprintf(cmdbuf, "\"%s\" \"%s/%s/pd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
             }
 #else /* __APPLE__ */
@@ -1370,7 +1370,7 @@ static int sys_do_startgui(const char *libdir)
 
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
+        strcat(scriptbuf, "/" PDGUIDIR "/pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
 
         sprintf(portbuf, "%d", portno);

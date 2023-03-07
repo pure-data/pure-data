@@ -12,7 +12,7 @@ AC_CANONICAL_HOST
 
 ########################################
 #### ohoh. automake<<1.16 does not like $(top_srcdir) in _SOURCES.
-AS_IF([test "x${am__api_version}" = "x1.15" ], [
+AS_IF([test "$( (echo 1.16; echo ${am__api_version}) | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | head -1)" != "1.16"], [
   enable_dependency_tracking=no
   AC_MSG_WARN([legacy automake detected: disabled dependency-tracking!
 	       to get rid of this warning and enable dependency-tracking,
