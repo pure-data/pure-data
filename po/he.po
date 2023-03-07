@@ -6,1067 +6,1075 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.53.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2023-02-11 22:56+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2023-03-09 09:40+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/he/>\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 
 msgid "linear"
-msgstr ""
+msgstr "קווי"
 
 msgid "logarithmic"
-msgstr ""
+msgstr "מעריכי"
 
 msgid "new-only"
-msgstr ""
+msgstr "חדש-בלבד"
 
 msgid "new&old"
-msgstr ""
+msgstr "חדש וישן"
 
 msgid "no scale"
-msgstr ""
+msgstr "ללא קנ״מ"
 
 msgid "scale"
-msgstr ""
+msgstr "קנ״מ"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "להתעלם מהשינויים ב־‚%s’?"
 
 msgid "Undo clear"
-msgstr ""
+msgstr "ביטול מחיקה"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "ביטול חיבור"
 
 msgid "Undo cut"
-msgstr ""
+msgstr "ביטול גזירה"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "ביטול ניתוק"
 
 msgid "Undo duplicate"
-msgstr ""
+msgstr "ביטול שכפול"
 
 msgid "Undo motion"
-msgstr ""
+msgstr "ביטול תנועה"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "ביטול הדבקה"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "ביטול הקלדה"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "חזרה על מחיקה"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "חזרה על חיבור"
 
 msgid "Redo cut"
-msgstr ""
+msgstr "חזרה על גזירה"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "חזרה על ניתוק"
 
 msgid "Redo duplicate"
-msgstr ""
+msgstr "חזרה על שכפול"
 
 msgid "Redo motion"
-msgstr ""
+msgstr "חזרה על תנועה"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "חזרה על הדבקה"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "חזרה על הקלדה"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "אין הגדרות Pd למחיקה"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "קובץ ‎.pdsettings הוסר"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "לא ניתן למחוק קובץ ‎.pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "מחיקת הגדרות Pd נכשלה"
 
 msgid "erased Pd settings"
-msgstr ""
+msgstr "הגדרות Pd נמחקו"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "אין הגדרות Pd למחיקה"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup"
-msgstr ""
+msgstr "מדלגים על טעינת ההעדפות… נראה ש־Pd קרס עם העלייה"
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(יש לשמור את ההעדפות מחדש כדי להחיל אותן)"
 
 msgid "File"
-msgstr ""
+msgstr "קובץ"
 
 msgid "Edit"
-msgstr ""
+msgstr "עריכה"
 
 msgid "Put"
-msgstr ""
+msgstr "השמה"
 
 msgid "Find"
-msgstr ""
+msgstr "איתור"
 
 msgid "Media"
-msgstr ""
+msgstr "מדיה"
 
 msgid "Window"
-msgstr ""
+msgstr "חלון"
 
 msgid "Help"
-msgstr ""
+msgstr "עזרה"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "הצגת קבצים ותיקיות מו&סתרים"
 
 msgid "Copy"
-msgstr ""
+msgstr "העתקה"
 
 msgid "Paste"
-msgstr ""
+msgstr "הדבקה"
 
 msgid "Array Properties"
-msgstr ""
+msgstr "מאפייני מערך"
 
 msgid "Array"
-msgstr ""
+msgstr "מערך"
 
 msgid "Name:"
-msgstr ""
+msgstr "שם:"
 
 msgid "Size:"
-msgstr ""
+msgstr "גודל:"
 
 msgid "Save contents"
-msgstr ""
+msgstr "שמירת תכנים"
 
 msgid "Draw as:"
-msgstr ""
+msgstr "ציור בתור:"
 
 msgid "Polygon"
-msgstr ""
+msgstr "מצולע"
 
 msgid "Points"
-msgstr ""
+msgstr "נקודות"
 
 msgid "Bezier curve"
-msgstr ""
+msgstr "עקומת בזייה"
 
 msgid "Put array into:"
-msgstr ""
+msgstr "השמת מערך לתוך:"
 
 msgid "New graph"
-msgstr ""
+msgstr "תרשים חדש"
 
 msgid "Last graph"
-msgstr ""
+msgstr "תרשים אחרון"
 
 msgid "Options"
-msgstr ""
+msgstr "אפשרויות"
 
 msgid "Open List View..."
-msgstr ""
+msgstr "פתיחת תצוגת רשימה…"
 
 msgid "Delete array"
-msgstr ""
+msgstr "מחיקת מערך"
 
 msgid "Cancel"
-msgstr ""
+msgstr "ביטול"
 
 msgid "Apply"
-msgstr ""
+msgstr "החלה"
 
 msgid "OK"
-msgstr ""
+msgstr "אישור"
 
 msgid "Audio Settings"
-msgstr ""
+msgstr "הגדרות שמע"
 
 msgid "Settings"
-msgstr ""
+msgstr "הגדרות"
 
 msgid "Sample rate:"
-msgstr ""
+msgstr "קצב דגימה:"
 
 msgid "Delay (msec):"
-msgstr ""
+msgstr "השהיה (מילישניות):"
 
 msgid "48k"
-msgstr ""
+msgstr "48000"
 
 msgid "44.1k"
-msgstr ""
+msgstr "44100"
 
 msgid "96k"
-msgstr ""
+msgstr "96000"
 
 msgid "Block size:"
-msgstr ""
+msgstr "גודל מקטע:"
 
 msgid "Use callbacks"
-msgstr ""
+msgstr "להשתמש בקריאות חוזרות"
 
 msgid "Input Devices"
-msgstr ""
+msgstr "התקני קלט"
 
 msgid "Channels:"
-msgstr ""
+msgstr "ערוצים:"
 
 msgid "Output Devices"
-msgstr ""
+msgstr "התקני פלט"
 
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(כמו התקן הקלט)…"
 
 msgid "Use Multiple Devices"
-msgstr ""
+msgstr "להשתמש במגוון התקנים"
 
 msgid "Save All Settings"
-msgstr ""
+msgstr "לשמור את כל ההגדרות"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "אזהרה: התקבלו דגלוני graphme לא ידועים ב־pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
-msgstr ""
+msgstr "מאפייני לוח ציור"
 
 msgid "Scale"
-msgstr ""
+msgstr "קנ״מ"
 
 msgid "X units per pixel:"
-msgstr ""
+msgstr "X יחידות לפיקסל:"
 
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Y יחידות לפיקסל:"
 
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "מראה בטלאי הורה"
 
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "תרשים על הורה"
 
 msgid "Hide object name and arguments"
-msgstr ""
+msgstr "הסתרת שם העצם והארגומנטים"
 
 msgid "Range and size"
-msgstr ""
+msgstr "טווח וגודל"
 
 msgid "X range: from"
-msgstr ""
+msgstr "טווח X: התחלה"
 
 msgid "to"
-msgstr ""
+msgstr "עד"
 
 msgid "Margin:"
-msgstr ""
+msgstr "גבול:"
 
 msgid "Y range: from"
-msgstr ""
+msgstr "טווח Y: התחלה"
 
 msgid "Data Properties"
-msgstr ""
+msgstr "מאפייני נתונים"
 
 msgid "Send"
-msgstr ""
+msgstr "שליחה"
 
 msgid "Done"
-msgstr ""
+msgstr "הסתיים"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "נמצא ‚%1$s’ ב־%2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "לא ניתן למצוא את ‚%1$s’ ב־%2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr ""
+msgstr "חיפוש ב־%s אחר:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "מוצג ה־‚%1$s’ האחרון ב־%2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
+msgstr "מוצגים ‚%1$d’ מתוך %2$d פריטים ב־%3$s"
 
 msgid "Pd window"
-msgstr ""
+msgstr "חלון Pd"
 
 msgid "Match whole word only"
-msgstr ""
+msgstr "לכידת מילים שלמות בלבד"
 
 msgid "Close"
-msgstr ""
+msgstr "סגירה"
 
 #, tcl-format
 msgid "%s Font"
-msgstr ""
+msgstr "גופן %s"
 
 msgid "Font"
-msgstr ""
+msgstr "גופן"
 
 msgid "Font Size"
-msgstr ""
+msgstr "גודל גופן"
 
 msgid "Stretch"
-msgstr ""
+msgstr "מתיחה"
 
 msgid "X and Y"
-msgstr ""
+msgstr "X ו־Y"
 
 msgid "X only"
-msgstr ""
+msgstr "X בלבד"
 
 msgid "Y only"
-msgstr ""
+msgstr "Y בלבד"
 
 msgid "GUI Box Properties"
-msgstr ""
+msgstr "מאפייני תיבה חזותית"
 
 msgid "Messages"
-msgstr ""
+msgstr "הודעות"
 
 msgid "Send symbol:"
-msgstr ""
+msgstr "שליחת סמל:"
 
 msgid "Receive symbol:"
-msgstr ""
+msgstr "קבלת סמל:"
 
 msgid "Width:"
-msgstr ""
+msgstr "רוחב:"
 
 msgid "Limits"
-msgstr ""
+msgstr "גבולות"
 
 msgid "Lower:"
-msgstr ""
+msgstr "תחתון:"
 
 msgid "Upper:"
-msgstr ""
+msgstr "עליון:"
 
 msgid "Label"
-msgstr ""
+msgstr "תווית"
 
 msgid "Left"
-msgstr ""
+msgstr "שמאל"
 
 msgid "Right"
-msgstr ""
+msgstr "ימין"
 
 msgid "Top"
-msgstr ""
+msgstr "עליון"
 
 msgid "Bottom"
-msgstr ""
+msgstr "תחתון"
 
 msgid "Background color"
-msgstr ""
+msgstr "צבע רקע"
 
 msgid "Foreground color"
-msgstr ""
+msgstr "צבע חזית"
 
 msgid "Label color"
-msgstr ""
+msgstr "צבע תווית"
 
 msgid "Bang"
-msgstr ""
+msgstr "חבטה"
 
 msgid "Flash Time (msec)"
-msgstr ""
+msgstr "זמן הבהוב (מילישניות)"
 
 msgid "Min:"
-msgstr ""
+msgstr "מזערי:"
 
 msgid "Max:"
-msgstr ""
+msgstr "מרבי:"
 
 msgid "Toggle"
-msgstr ""
+msgstr "בורר"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "ערך שאינו אפס"
 
 msgid "Value:"
-msgstr ""
+msgstr "ערך:"
 
 msgid "Number2"
-msgstr ""
+msgstr "מספר2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "רוחב (ספרות):"
 
 msgid "Height:"
-msgstr ""
+msgstr "גובה:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "טווח פלט"
 
 msgid "Log height:"
-msgstr ""
+msgstr "גובה יומן:"
 
 msgid "Vslider"
-msgstr ""
+msgstr "פס ברירה אנכי"
 
 msgid "Hslider"
-msgstr ""
+msgstr "פס ברירה אופקי"
 
 msgid "Vradio"
-msgstr ""
+msgstr "כפתור בחירה אנכי"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "מספר תאים:"
 
 msgid "Hradio"
-msgstr ""
+msgstr "כפתור בחירה אופקי"
 
 msgid "VU Meter"
-msgstr ""
+msgstr "מד עוצמת שמע"
 
 msgid "Canvas"
-msgstr ""
+msgstr "לוח ציור"
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "מלבן גלוי (פיקסלים)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr ""
+msgstr "מאפיינים של %s"
 
 msgid "Parameters"
-msgstr ""
+msgstr "משתנים"
 
 msgid "Init"
-msgstr ""
+msgstr "אתחול"
 
 msgid "No init"
-msgstr ""
+msgstr "בלי אתחול"
 
 msgid "Jump on click"
-msgstr ""
+msgstr "קפיצה בלחיצה"
 
 msgid "Steady on click"
-msgstr ""
+msgstr "עמידה בלחיצה"
 
 msgid "X offset:"
-msgstr ""
+msgstr "היסט ב־X:"
 
 msgid "Y offset:"
-msgstr ""
+msgstr "היסט ב־Y:"
 
 msgid "Colors"
-msgstr ""
+msgstr "צבעים"
 
 msgid "Background"
-msgstr ""
+msgstr "רקע"
 
 msgid "Front"
-msgstr ""
+msgstr "חזית"
 
 msgid "Compose color"
-msgstr ""
+msgstr "חיבור צבע"
 
 msgid "Test label"
-msgstr ""
+msgstr "תווית לבדיקה"
 
 msgid "Send a Pd message"
-msgstr ""
+msgstr "שליחת הודעת Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(ניתן להשתמש במקשי החצים להיסטוריה)"
 
 msgid "MIDI Settings"
-msgstr ""
+msgstr "הגדרות MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr ""
+msgstr "הגדרות ALSA MIDI"
 
 msgid "In Ports:"
-msgstr ""
+msgstr "פתחות כניסה:"
 
 msgid "Out Ports:"
-msgstr ""
+msgstr "פתחות יציאה:"
 
 msgid "Pd search path for objects, help, audio, text and other files"
-msgstr ""
+msgstr "נתיב חיפוש ב־Pd אחר עצמים, עזרה, שמע, טקסט וקבצים אחרים"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "להשתמש בנתיבים התקניים"
 
 msgid "Verbose"
-msgstr ""
+msgstr "פירוט"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "תיקיית מסמכי Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "עיון"
 
 msgid "Reset"
-msgstr ""
+msgstr "איפוס"
 
 msgid "Disable"
-msgstr ""
+msgstr "השבתה"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "תיקיית התקנה חיצונית"
 
 msgid "Clear"
-msgstr ""
+msgstr "פינוי"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "בחירת תיקיית מסמכי Pd:"
 
 msgid "Install externals to directory:"
-msgstr ""
+msgstr "התקנת חיצוניות לתיקייה:"
 
 msgid "Add a new path"
-msgstr ""
+msgstr "הוספת נתיב חדש"
 
 #, tcl-format
 msgid "Edit existing path [%s]"
-msgstr ""
+msgstr "עריכת נתיב קיים [%s]"
 
 msgid "Add new library"
-msgstr ""
+msgstr "הוספת ספרייה חדשה"
 
 msgid "Edit library"
-msgstr ""
+msgstr "עריכת ספרייה"
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "ספריות Pd לטעינה בהפעלה"
 
 msgid "Startup flags:"
-msgstr ""
+msgstr "דגלוני הפעלה:"
 
 msgid "Defeat real-time scheduling"
-msgstr ""
+msgstr "הבסת תזמון זמן־אמת"
 
 msgid "Help Browser"
-msgstr ""
+msgstr "דפדפן עזרה"
 
 msgid "Associated Files"
-msgstr ""
+msgstr "קבצים משויכים"
 
 msgid "Pd Files"
-msgstr ""
+msgstr "קובצי Pd"
 
 msgid "Max Patch Files"
-msgstr ""
+msgstr "קובצי טלאי של Max"
 
 msgid "Max Text Files"
-msgstr ""
+msgstr "קובצי טקסט של Max"
 
 msgid "Max Patch Files (.pat)"
-msgstr ""
+msgstr "קובצי טלאי של Max‏ (‎.pat)"
 
 msgid "Max Text Files (.mxt)"
-msgstr ""
+msgstr "קובצי טקסט של Max‏ (‎.mxt)"
 
 #, tcl-format
 msgid "detected font: %s"
-msgstr ""
+msgstr "גופן שזוהה: %s"
 
 #, tcl-format
 msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
-msgstr ""
+msgstr "אזהרה: משפחת הגופנים ‚%1$s’ לא נמצאה, נסוגים לברירת המחדל (%2$s)"
 
 #, tcl-format
 msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
-msgstr ""
+msgstr "אזהרה: משקל הגופן ‚%1$s’ לא נמצא, נסוגים לברירת המחדל (%2$s)"
 
 #, tcl-format
 msgid "using font: %1$s %2$s"
-msgstr ""
+msgstr "שימוש בגופן: %1$s %2$s"
 
 #, tcl-format
 msgid "'%1$s' already loaded, ignoring: '%2$s'"
-msgstr ""
+msgstr "‚%1$s’ כבר נטען, התעלמות: ‚%2$s’"
 
 #, tcl-format
 msgid "Loading plugin: %s"
-msgstr ""
+msgstr "תוסף נטען: %s"
 
 #, tcl-format
 msgid "UNHANDLED ERROR: %s"
-msgstr ""
+msgstr "שגיאה בלתי מטופלת: %s"
 
 #, tcl-format
 msgid "FAILED TO LOAD %s"
-msgstr ""
+msgstr "הטעינה של %s נכשלה"
 
 #, tcl-format
 msgid "Failed to read plugin %s ...skipping!"
-msgstr ""
+msgstr "קריאת התוסף ‚%s’ נכשלה …מדלגים!"
 
 #, tcl-format
 msgid "Failed to find plugins in %s ...skipping!"
-msgstr ""
+msgstr "איתור תוספים ב־ ‚%s’ נכשל …מדלגים!"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) שם הפקודה שגוי: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) שגיאה בלתי מטופלת: "
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken] הגרסה המותקנת [%1$s] > %2$s...מדלגים!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken] הגרסה המותקנת [%1$s] < %2$s...דורסים!"
 
 #, tcl-format
 msgid "[deken] installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken] הגרסה המותקנת [%1$s] == %2$s...מדלגים!"
 
 #, tcl-format
 msgid "installing deken package '%s'"
-msgstr ""
+msgstr "חבילת ה־deken ‏‚%s’ מותקנת"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a deken package"
-msgstr ""
+msgstr "‚%s’ בהתעלמות: לא נראית כמו חבילת deken"
 
 #, tcl-format
 msgid "Installing '%s'"
-msgstr ""
+msgstr "‚%s’ מותקנת"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "חילוץ ה־zip מתוך %1$s אל %2$s הושלם."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "לא ניתן לחלץ את החבילה אוטומטית."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "נא לבצע את השלבים הבאים ידנית:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. לחלץ את ה־zip‏ %s."
 
 msgid "You might need to change the file-extension from .dek to .zip"
-msgstr ""
+msgstr "יכול להיות שיש לשנות את סיומת הקובץ מ־‎.dek ל־‎.zip"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. להעתיק את התוכן ל־%s."
 
 #, tcl-format
 msgid "3. Remove %s. (optional)"
-msgstr ""
+msgstr "3. להסיר את %s (רשות)"
 
 #, tcl-format
 msgid "Removing '%s'"
-msgstr ""
+msgstr "‚%s’ בהליכי הסרה"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr ""
+msgstr "הסרת ההתקנה של %1$s מתוך %2$s נכשלה!"
 
 #, tcl-format
 msgid "Skipping SHA256 verification of '%s'."
-msgstr ""
+msgstr "אימות ה־SHA256 של ‚%s’ לא יתבצע."
 
 #, tcl-format
 msgid "SHA256 verification of '%s'"
-msgstr ""
+msgstr "אימות SHA256 של ‚%s’"
 
 #, tcl-format
 msgid "Unable to fetch reference SHA256 for '%s'."
-msgstr ""
+msgstr "לא ניתן למשוך SHA256 לסימוכין עבור ‚%s’."
 
 #, tcl-format
 msgid "Unable to perform SHA256 verification for '%s'."
-msgstr ""
+msgstr "לא ניתן לבצע אימות SHA256 עבור ‚%s’."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "לא ניתן להוריד מתוך %1$s ‏[%2$s]"
 
 #, tcl-format
 msgid "Unable to download from '%s'!"
-msgstr ""
+msgstr "לא ניתן להוריד מתוך ‚%s’!"
 
 msgid "Download failed"
-msgstr ""
+msgstr "ההורדה נכשלה"
 
 #, tcl-format
 msgid "Unable to remove stray file '%s'"
-msgstr ""
+msgstr "לא ניתן להסיר את הקובץ התועה ‚%s’"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to '%s'"
-msgstr ""
+msgstr "לא ניתן לשנות את שם הקובץ שירד לשם ‚%s’"
 
 msgid "Create"
-msgstr ""
+msgstr "יצירה"
 
 msgid "Check"
-msgstr ""
+msgstr "בדיקה"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "אפשרויות התקנה:"
 
 msgid "Try to verify the libraries' checksum before (re)installing them"
-msgstr ""
+msgstr "לנסות לאמת את סכומי הבדיקה של הספריות בטרם התקנתן (מחדש)"
 
 msgid "Try to remove libraries before (re)installing them"
-msgstr ""
+msgstr "לנסות להסיר ספריות בטרם התקנתן (מחדש)"
 
 msgid "Show README of newly installed libraries (if present)"
-msgstr ""
+msgstr "להציג README (הסברים) של ספריות חדשות שמותקנות (אם יש)"
 
 msgid "Keep package files after installation"
-msgstr ""
+msgstr "לשמור על קובצי החבילה לאחר ההתקנה"
 
 msgid "Add newly installed libraries to Pd's search path"
-msgstr ""
+msgstr "להוסיף ספריות חדשות שהותקנו לנתיב החיפוש של Pd"
 
 msgid "Platform settings:"
-msgstr ""
+msgstr "הגדרות פלטפורמה:"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "פלטפורמת ברירת המחדל: %s"
 
 msgid "User-defined platform:"
-msgstr ""
+msgstr "פלטפורמה בהגדרת המשתמש:"
 
 msgid "Hide foreign architectures"
-msgstr ""
+msgstr "הסתרת ארכיטקטורות זרות"
 
 msgid ""
 "Only show the newest version of a library\n"
 "(treats other versions like foreign architectures)"
 msgstr ""
+"להציג רק את הגרסה העדכנית ביותר של ספרייה\n"
+"(מתנהגת לגרסאות אחרות כמו ארכיטקטורות זרות)"
 
 #, tcl-format
 msgid "Deken %s Preferences"
-msgstr ""
+msgstr "העדפות Deken %s"
 
 #, tcl-format
 msgid "Platform re-detected: %s"
-msgstr ""
+msgstr "הפלטפורמה זוהתה מחדש: %s"
 
 msgid "Deken Packages"
-msgstr ""
+msgstr "חבילות Deken"
 
 msgid "ZIP Files"
-msgstr ""
+msgstr "קובצי Zip"
 
 msgid "TAR Files"
-msgstr ""
+msgstr "קובצי Tar"
 
 msgid "All Files"
-msgstr ""
+msgstr "כל הקבצים"
 
 #, tcl-format
 msgid "Checksum mismatch for '%s'"
-msgstr ""
+msgstr "חוסר התאמה לסכום בדיקה של ‚%s’"
 
 #, tcl-format
 msgid "SHA256 verification of '%s' failed!"
-msgstr ""
+msgstr "אימות ה־SHA256 של ‚%s’ נכשל!"
 
 msgid "SHA256 verification failed"
-msgstr ""
+msgstr "אימות ה־SHA256 נכשל"
 
 #, tcl-format
 msgid "Uninstalling previous installation of '%s'"
-msgstr ""
+msgstr "התקנות קודמות של ‚%s’ נמחקות"
 
 #, tcl-format
 msgid "Temporarily moving %1$s into %2$s failed."
-msgstr ""
+msgstr "העברת %1$s ל־%2$s באופן זמני נכשלה."
 
 #, tcl-format
 msgid "Installing package '%s'"
-msgstr ""
+msgstr "החבילה ‚%s’ מותקנת"
 
 msgid "Installation completed!"
-msgstr ""
+msgstr "ההתקנה הושלמה!"
 
 #, tcl-format
 msgid "Successfully installed '%s'!"
-msgstr ""
+msgstr "ההתקנה של ‚%s’ הצליחה!"
 
 msgid "Installation failed!"
-msgstr ""
+msgstr "ההתקנה נכשלה!"
 
 #, tcl-format
 msgid "Failed to install '%s'!"
-msgstr ""
+msgstr "התקנת ‚%s’ נכשלה!"
 
 msgid "Package installation failed"
-msgstr ""
+msgstr "התקנת החבילה נכשלה"
 
 #, tcl-format
 msgid ""
 "Failed to completely remove %1$s.\n"
 "Please manually remove the directory %2$s after quitting Pd."
 msgstr ""
+"הסרת %1$s לצמיתות נכשלה.\n"
+"נא להסיר את התיקייה %2$s לאחר יציאה מ־Pd."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
-msgstr ""
+msgstr "לא ניתן להוסיף את %s לנתיבי החיפוש"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
-msgstr ""
+msgstr "להוסיף את %s לנתיבי החיפוש של Pd?"
 
 #, tcl-format
 msgid "Added %s to search paths"
-msgstr ""
+msgstr "%s נוסף לנתיבי החיפוש"
 
 msgid "No packages selected for installation."
-msgstr ""
+msgstr "לא נבחרה חבילה להתקנה."
 
 #, tcl-format
 msgid "Processed %d packages selected for installation."
-msgstr ""
+msgstr "%d חבילות שנבחרו להתקנה עברו עיבוד."
 
 msgid "Show all"
-msgstr ""
+msgstr "להציג הכול"
 
 msgid "Search"
-msgstr ""
+msgstr "חיפוש"
 
 #, tcl-format
 msgid "Install (%d)"
-msgstr ""
+msgstr "התקנה (%d)"
 
 msgid "Install"
-msgstr ""
+msgstr "התקנה"
 
 #, tcl-format
 msgid "%s%% of download completed"
-msgstr ""
+msgstr "%s%% מההורדה הושלמו"
 
 msgid "Enter an exact library or object name."
-msgstr ""
+msgstr "נא למלא את השם המדויק של הספרייה או העצם."
 
 msgid "e.g. 'freeverb~'"
-msgstr ""
+msgstr "למשל: ‚freeverb~‎’"
 
 msgid "Use the '*' wildcard to match any number of characters."
-msgstr ""
+msgstr "אפשר להשתמש בתו הכוללני ‚*’ כדי לתפוס מספר כלשהו של תווים."
 
 msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
-msgstr ""
+msgstr "למשל: ‚‎*-plugin’ יתפוס את ‚deken-plugin’ (ועוד כמה דברים)."
 
 msgid "You can restrict the search to only-libraries or only-objects."
-msgstr ""
+msgstr "אפשר להגביל את החיפוש לספריות בלבד או עצמים בלבד."
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr ""
+msgstr "כדי לקבל רשימה של חיצוניות זמינות, כדאי לנסות חיפוש ריק."
 
 msgid "Right-clicking a search result will give you more options..."
-msgstr ""
+msgstr "לחיצה ימנית על תוצאת חיפוש תציג בפניך אפשרויות נוספות…"
 
 msgid "You can also search for libraries & objects via your web browser:"
-msgstr ""
+msgstr "אפשר גם לחפש אחר ספריות ועצמים דרך הדפדפן שלך:"
 
 msgid "Find externals"
-msgstr ""
+msgstr "איתור חיצוניות"
 
 msgid "Install DEK file..."
-msgstr ""
+msgstr "התקנת קובץ DEK…"
 
 msgid "Preferences..."
-msgstr ""
+msgstr "העדפות…"
 
 msgid "Search for: "
-msgstr ""
+msgstr "חיפוש אחר: "
 
 msgid "libraries"
-msgstr ""
+msgstr "ספריות"
 
 msgid "objects"
-msgstr ""
+msgstr "עצמים"
 
 msgid "both"
-msgstr ""
+msgstr "שניהם"
 
 msgid "translations"
-msgstr ""
+msgstr "תרגומים"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr ""
+msgstr "רצוי להתקין חיצוניות רק מאנשים מהימנים."
 
 msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
-msgstr ""
+msgstr "השבתת תצוגה בלשוניות: התגלו Tcl/Tk לא תואמים"
 
 msgid "Library"
-msgstr ""
+msgstr "ספרייה"
 
 msgid "Version"
-msgstr ""
+msgstr "גרסה"
 
 msgid "Description"
-msgstr ""
+msgstr "תיאור"
 
 msgid "Uploader"
-msgstr ""
+msgstr "מעלה"
 
 msgid "Date"
-msgstr ""
+msgstr "תאריך"
 
 msgid "Search Results"
-msgstr ""
+msgstr "תוצאות חיפוש"
 
 msgid "Log"
-msgstr ""
+msgstr "יומן"
 
 #, tcl-format
 msgid "Searching for \"%s\"..."
-msgstr ""
+msgstr "מתבצע חיפוש אחר „%s”…"
 
 #, tcl-format
 msgid "online? %s"
-msgstr ""
+msgstr "מקוון? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "לא ניתן לחפש. יש לך חיבור לאינטרנט?"
 
 #, tcl-format
 msgid "Found %1$d usable packages (of %2$d packages in total)."
-msgstr ""
+msgstr "נמצאו %1$d חבילות שמישות (מתוך %2$d חבילות בסך הכול)."
 
 msgid "It appears that there are no matching packages for your architecture."
-msgstr ""
+msgstr "נראה שאין חבילות שתואמות לארכיטקטורה שלך."
 
 msgid "No matching externals found."
-msgstr ""
+msgstr "לא נמצאו חיצוניות תואמות."
 
 msgid "Try using the full name e.g. 'freeverb~'."
-msgstr ""
+msgstr "כדאי לנסות להשתמש בשם המלא, למשל: ‚freeverb~‎’."
 
 msgid "Or use wildcards like 'freeverb*'."
-msgstr ""
+msgstr "או להשתמש בתווי הכללה כגון ‚freeverb*‎’."
 
 msgid "Please select a (writable) installation directory!"
-msgstr ""
+msgstr "נא לבחור תיקיית התקנה (פתוחה לכתיבה)!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
-msgstr ""
+msgstr "להתקין את %1$s אל %2$s?"
 
 #, tcl-format
 msgid "Cancelling download of '%s': No installation directory given."
-msgstr ""
+msgstr "ההורדה של ‚%s’ מבוטלת: לא סופקה תיקיית התקנה."
 
 msgid "Installing to non-existant directory failed"
-msgstr ""
+msgstr "התקנה לתיקייה שאינה קיימת נכשלה"
 
 #, tcl-format
 msgid "Unable to install to '%s'"
-msgstr ""
+msgstr "לא ניתן להתקין אל ‚%s’"
 
 msgid "Directory does not exist!"
-msgstr ""
+msgstr "התיקייה לא קיימת!"
 
 msgid "Directory is not writable!"
-msgstr ""
+msgstr "התיקייה נעולה לכתיבה!"
 
 #, tcl-format
 msgid "Downloading '%s'"
-msgstr ""
+msgstr "‚%s’ בהורדה"
 
 #, tcl-format
 msgid "Commencing download of '%1$s' into '%2$s'..."
-msgstr ""
+msgstr "מתחילה הורדה של ‚%1$s’ לתוך ‚%2$s’…"
 
 msgid "aborting."
-msgstr ""
+msgstr "מבוטל."
 
 #, tcl-format
 msgid "Downloading '%s' failed"
-msgstr ""
+msgstr "הורדת ‚%s’ נכשלה"
 
 msgid "Download failed!"
-msgstr ""
+msgstr "הורדה נכשלה!"
 
 msgid "Download completed! Verifying..."
-msgstr ""
+msgstr "ההורדה הושלמה! מתבצע אימות…"
 
 msgid "Ignoring checksum mismatch"
-msgstr ""
+msgstr "התעלמות מחוסר התאמה של סכום בדיקה"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
+msgstr "[deken] deken-plugin.tcl (חיפוש חיצוניות של Pd) נטען מתוך %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] התגלתה פלטפורמה: %s"
 
 #, tcl-format
 msgid "Searching on %s..."
-msgstr ""
+msgstr "מתבצע חיפוש ב־%s…"
 
 #, tcl-format
 msgid "Searching on %1$s returned %2$d results"
-msgstr ""
+msgstr "החיפוש ב־%1$s החזיר %2$d תוצאות"
 
 msgid "No usable servers for searching found..."
-msgstr ""
+msgstr "לא נמצאו שרתים שימושיים לחיפוש…"
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr ""
+msgstr "הועלה על ידי %1$s ‏@ %2$s"
 
 #, tcl-format
 msgid "Searching for '%s' failed!"
-msgstr ""
+msgstr "החיפוש אחר ‚%s’ נכשל!"
 
 msgid "Search failed"
-msgstr ""
+msgstr "החיפוש נכשל"
 
 msgid "Unable to perform search."
-msgstr ""
+msgstr "לא ניתן לבצע חיפוש."
 
 msgid "Select package for installation"
-msgstr ""
+msgstr "נא לבחור חבילה להתקנה"
 
 msgid "Deselect package"
-msgstr ""
+msgstr "ביטול בחירת חבילה"
 
 msgid "Open package webpage"
-msgstr ""
+msgstr "פתיחת אתר החבילה"
 
 msgid "Copy package URL"
-msgstr ""
+msgstr "העתקת כתובת החבילה"
 
 msgid "Copy SHA256 checksum URL"
-msgstr ""
+msgstr "העתקת כתובת סכום בדיקה ב־SHA256"
 
 msgid "Copy OpenGPG signature URL"
-msgstr ""
+msgstr "העתקת כתובת חתימת OpenPGP"
 
 #, tcl-format
 msgid "Uninstall '%s'"
-msgstr ""
+msgstr "הסרת ‚%s’"
 
 #, tcl-format
 msgid ""
@@ -1077,6 +1085,11 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"האם לאשר ל־Pd להשתמש בתיקיית המסמכים הקיימת לטובת טלאים וספריות חיצוניות?\n"
+"\n"
+"מיקום: ‎%s\n"
+"\n"
+"אפשר לשנות או להשבית את זה בהמשך בהעדפות הנתיב."
 
 #, tcl-format
 msgid ""
@@ -1087,6 +1100,11 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"האם לאשר ל־Pd ליצור תיקיית מסמכים לטובת טלאים וספריות חיצוניות?\n"
+"\n"
+"מיקום: ‎%s\n"
+"\n"
+"אפשר לשנות או להשבית את זה בהמשך בהעדפות הנתיב."
 
 #, tcl-format
 msgid ""
@@ -1096,296 +1114,305 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
+"לא ניתן למצוא מסמכי Pd:\n"
+"\n"
+"‎%s\n"
+"\n"
+"לבחור במיקום חדש?"
 
 #, tcl-format
 msgid "couldn't create Pd documents directory: %s"
-msgstr ""
+msgstr "לא ניתן ליצור ספריית מסמכי Pd‏: %s"
 
 #, tcl-format
 msgid "couldn't create \"externals\" directory in: %s"
-msgstr ""
+msgstr "לא ניתן ליצור תיקיית „externals” (חיצוניות) תחת: %s"
 
 msgid "refusing to delete empty domain"
-msgstr ""
+msgstr "עלה סירוב למחיקת שם תחום ריק"
 
 #, tcl-format
 msgid "Couldn't create preferences \"%1$s\" in %2$s"
-msgstr ""
+msgstr "לא ניתן ליצור העדפות „%1$s” תחת %2$s"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't exist"
-msgstr ""
+msgstr "התעלמות מ־‚%s’: לא קיים"
 
 msgid "About Pd"
-msgstr ""
+msgstr "על Pd"
 
 #, tcl-format
 msgid "couldn't read \"%s\" document"
-msgstr ""
+msgstr "לא ניתן לקרוא את המסמך „%s”"
 
 msgid "Save"
-msgstr ""
+msgstr "שמירה"
 
 msgid "Save As..."
-msgstr ""
+msgstr "שמירה בשם…"
 
 msgid "Print..."
-msgstr ""
+msgstr "הדפסה…"
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "הדבקה והחלפה"
 
 msgid "Duplicate"
-msgstr ""
+msgstr "שכפול"
 
 msgid "Zoom In"
-msgstr ""
+msgstr "התקרבות"
 
 msgid "Zoom Out"
-msgstr ""
+msgstr "התרחקות"
 
 msgid "Tidy Up"
-msgstr ""
+msgstr "סדר וניקיון"
 
 msgid "(Dis)Connect Selection"
-msgstr ""
+msgstr "חיבור/ניתוק בחירה"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "הפיכה לגורם הפעלה"
 
 msgid "Edit Mode"
-msgstr ""
+msgstr "מצב עריכה"
 
 msgid "Undo"
-msgstr ""
+msgstr "ביטול"
 
 msgid "Redo"
-msgstr ""
+msgstr "ביצוע חוזר"
 
 msgid "New"
-msgstr ""
+msgstr "חדש"
 
 msgid "Open"
-msgstr ""
+msgstr "פתיחה"
 
 msgid "Message..."
-msgstr ""
+msgstr "הודעה…"
 
 msgid "Cut"
-msgstr ""
+msgstr "גזירה"
 
 msgid "Select All"
-msgstr ""
+msgstr "בחירה בהכול"
 
 msgid "Clear Console"
-msgstr ""
+msgstr "מחיקת מסוף"
 
 msgid "Object"
-msgstr ""
+msgstr "עצם"
 
 msgid "Message"
-msgstr ""
+msgstr "הודעה"
 
 msgid "Number"
-msgstr ""
+msgstr "מספר"
 
 msgid "List"
-msgstr ""
+msgstr "רשימה"
 
 msgid "Symbol"
-msgstr ""
+msgstr "סמל"
 
 msgid "Comment"
-msgstr ""
+msgstr "הערה"
 
 msgid "Graph"
-msgstr ""
+msgstr "תרשים"
 
 msgid "Find..."
-msgstr ""
+msgstr "איתור…"
 
 msgid "Find Again"
-msgstr ""
+msgstr "איתור חוזר"
 
 msgid "Find Last Error"
-msgstr ""
+msgstr "איתור השגיאה האחרונה"
 
 msgid "DSP On"
-msgstr ""
+msgstr "DSP פעיל"
 
 msgid "DSP Off"
-msgstr ""
+msgstr "DSP כבוי"
 
 msgid "Test Audio and MIDI..."
-msgstr ""
+msgstr "בדיקת שמע ו־MIDI…"
 
 msgid "Load Meter"
-msgstr ""
+msgstr "מד עומס"
 
 msgid "Audio Settings..."
-msgstr ""
+msgstr "הגדרות שמע…"
 
 msgid "MIDI Settings..."
-msgstr ""
+msgstr "הגדרות MIDI…"
 
 msgid "Minimize"
-msgstr ""
+msgstr "מזעור"
 
 msgid "Zoom"
-msgstr ""
+msgstr "תקריב"
 
 msgid "Bring All to Front"
-msgstr ""
+msgstr "קידום של הכול לחזית"
 
 msgid "Next Window"
-msgstr ""
+msgstr "החלון הבא"
 
 msgid "Previous Window"
-msgstr ""
+msgstr "החלון הקודם"
 
 msgid "Parent Window"
-msgstr ""
+msgstr "חלון ההורה"
 
 msgid "HTML Manual..."
-msgstr ""
+msgstr "מדריך HTML…"
 
 msgid "Browser..."
-msgstr ""
+msgstr "דפדפן…"
 
 msgid "List of objects..."
-msgstr ""
+msgstr "רשימה של עצמים…"
 
 msgid "puredata.info"
-msgstr ""
+msgstr "האתר puredata.info"
 
 msgid "Check for updates"
-msgstr ""
+msgstr "חיפוש עדכונים"
 
 msgid "Report a bug"
-msgstr ""
+msgstr "דיווח על תקלה"
 
 msgid "Clear Menu"
-msgstr ""
+msgstr "מחיקת פריטי התפריט"
 
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"למחוק את כל ההעדפות?\n"
+"(ייכנס לתוקף עם הפעלה מחדש של Pd)"
 
 msgid "removed GUI settings"
-msgstr ""
+msgstr "הגדרות מנשק המשתמש הוסרו"
 
 msgid "no Pd-GUI settings to clear"
-msgstr ""
+msgstr "אין הגדרות מנשק משתמש של Pd למחיקה"
 
 msgid "Path..."
-msgstr ""
+msgstr "נתיב…"
 
 msgid "Startup..."
-msgstr ""
+msgstr "עלייה…"
 
 msgid "Audio..."
-msgstr ""
+msgstr "שמע…"
 
 msgid "MIDI..."
-msgstr ""
+msgstr "MIDI..."
 
 msgid "Zoom New Windows"
-msgstr ""
+msgstr "התקרבות על חלונות חדשים"
 
 msgid "Save All Preferences"
-msgstr ""
+msgstr "שמירת כל ההעדפות"
 
 msgid "Save to..."
-msgstr ""
+msgstr "שמירה אל…"
 
 msgid "Load from..."
-msgstr ""
+msgstr "טעינה מתוך…"
 
 msgid "Forget All..."
-msgstr ""
+msgstr "שיכחה של הכול…"
 
 msgid "Preferences"
-msgstr ""
+msgstr "העדפות"
 
 msgid "Open Recent"
-msgstr ""
+msgstr "לפתוח אחרונים"
 
 msgid "Quit"
-msgstr ""
+msgstr "יציאה"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr ""
+msgstr "לשמור את השינויים שבוצעו אל ‚%s’?"
 
 msgid "Properties"
-msgstr ""
+msgstr "מאפיינים"
 
 #, tcl-format
 msgid "Accept changes to '%s'?"
-msgstr ""
+msgstr "לקבל את השינויים ‚%s’?"
 
 msgid ""
 "Accepting will update the contents in the associated object. You still have "
 "to save the patch to make the changes persistent."
 msgstr ""
+"קבלת השינויים תעדכן את תוכן העצם המשויך. עדיין צריך לשמור את הטלאי כדי להפוך "
+"את השינויים לקבועים."
 
 #, tcl-format
 msgid "dropped %d lines from the Pd window"
-msgstr ""
+msgstr "הושמטו %d שורות מחלון ה־Pd"
 
 #, tcl-format
 msgid "the Pd window filtered %d lines"
-msgstr ""
+msgstr "חלון ה־Pd סינן %d שורות"
 
 msgid "Audio on"
-msgstr ""
+msgstr "שמע פעיל"
 
 msgid "Audio off"
-msgstr ""
+msgstr "שמע כבוי"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
+msgstr "(Tcl) חסרים סוגריים מרובעים סוגרים ']': "
 
 msgid "Tcl:"
-msgstr ""
+msgstr "Tcl:"
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
-msgstr ""
+msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "שגיאת קלט/פלט שמע"
 
 msgid "Log:"
-msgstr ""
+msgstr "יומן:"
 
 msgid "fatal"
-msgstr ""
+msgstr "מכריע"
 
 msgid "error"
-msgstr ""
+msgstr "שגיאה"
 
 msgid "normal"
-msgstr ""
+msgstr "רגיל"
 
 msgid "debug"
-msgstr ""
+msgstr "ניפוי שגיאות"
 
 msgid "all"
-msgstr ""
+msgstr "הכול"
 
 msgid "New..."
-msgstr ""
+msgstr "חדש…"
 
 msgid "Edit..."
-msgstr ""
+msgstr "עריכה…"
 
 msgid "Delete"
-msgstr ""
+msgstr "מחיקה"
 
 #, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
-msgstr ""
+msgstr "התעלמות מ־‚%s’ לא נראה כמו קובץ Pd"
