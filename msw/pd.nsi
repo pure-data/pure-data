@@ -17,10 +17,10 @@
 ; HM NIS Edit Wizard helper defines
 
 ; App name
-!if ${ARCHI} == "32"
-    !define PRODUCT_NAME "Pure Data (32-bit)"
-!else
+!if ${ARCHI} == "64"
     !define PRODUCT_NAME "Pure Data"
+!else
+    !define PRODUCT_NAME "Pure Data (${ARCHI}-bit)"
 !endif
 !define PRODUCT_VERSION "PDVERSION"
 !define WISH_NAME "WISHNAME"
