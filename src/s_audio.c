@@ -803,6 +803,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
             audio_nextsettings.a_chindevvec[0] =
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
             audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
+            audio_nextsettings.a_callback = 0;
             sys_reopen_audio();
         }
         glob_audio_properties(0, 0);
