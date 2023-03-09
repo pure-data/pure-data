@@ -70,9 +70,9 @@
 #X text 49 513 click to open --> (first copy only), f 17;
 #X text 40 173 Control inlets forward messages as shown below. Signal inlets can get non float messages with the 'fwd' argument in the same way \, but signals are sent to all the instances. Signal outlets output the sum of all instances' outputs \, and control outlets forward messages with the number of the instance prepended to them., f 95;
 #X obj 181 512 clone clone-abstraction 16;
-#X text 78 10 - make multiple copies of an abstraction.;
 #X text 40 49 [clone] creates any number of copies of an abstraction (a patch loaded as an object in another patch). By default "\$1" is set to the instance number within each copy (counted from 0 unless overridden by the "-s" flag. You can prevent '\$1' from reflecting the instance number with the "-x" flag. You can pass additional arguments to the copies that appear as \$2 and onward (or \$1 and onward with the "-x" flag)., f 95;
 #X text 40 125 [clone]'s inlets/outlets correspond to those of the contained patch \, and may be signal and/or control inlets/outlets. (In this example there's one control inlet and one signal outlet). You can click on the clone object to see the first of the created instances., f 95;
+#X text 78 10 - make multiple copies of an abstraction;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 21 1;

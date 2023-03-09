@@ -56,7 +56,6 @@
 #X obj 8 262 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X text 84 212 1) symbol -;
 #X obj 34 14 get;
-#X text 69 13 - get values from a scalar;
 #X text 124 59 pointer -;
 #X text 200 59 pointer to a Data Structure scalar., f 46;
 #X text 33 79 set <symbol \, symbol> -;
@@ -67,6 +66,7 @@
 #X text 98 233 2) list -;
 #X text 170 233 one or more field names (defines number of outlets).;
 #X text 94 127 ('n' outlets depends on number of arguments);
+#X text 69 13 - get field values (floats/symbols) from a scalar.;
 #X restore 354 13 pd reference;
 #X text 452 12 <= click;
 #X obj 5 587 cnv 1 530 1 empty empty empty 8 12 0 13 #000000 #000000 0;

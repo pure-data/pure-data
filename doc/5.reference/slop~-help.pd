@@ -535,7 +535,6 @@
 #X obj 101 564 lop~;
 #X obj 151 564 fexpr~;
 #X obj 24 44 slop~, f 7;
-#X text 84 43 - slew-limiting low-pass filter;
 #X obj 10 75 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 436 15 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 10 551 cnv 1 910 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -559,7 +558,6 @@
 #X obj 11 75 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 9 117 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 24 15 slop~, f 7;
-#X text 84 14 - slew-limiting low-pass filter;
 #X obj 11 141 cnv 1 550 1 empty empty 3rd: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 9 165 cnv 1 550 1 empty empty 4th: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 11 191 cnv 1 550 1 empty empty 5th: 8 12 0 13 #7c7c7c #000000 0;
@@ -577,6 +575,7 @@
 #X text 107 315 3) float - asymptotic downward cutoff frequency (default 0)., f 62;
 #X text 107 332 4) float - maximum upward slew of linear region (default 0)., f 62;
 #X text 107 349 5) float - asymptotic upward cutoff frequency (default 0)., f 62;
+#X text 84 14 - slew-limiting / low-pass filter;
 #X restore 739 44 pd reference;
 #X text 837 43 <= click;
 #X text 518 106 The [slop~] object is a low-pass filter whose frequency response (i.e. \, reaction speed) can vary according to the filter's state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise gates) \, and soft saturation. Examples below are explained in the HTML reference (linked above)., f 55;
@@ -586,6 +585,7 @@
 #X text 133 399 <- start metronome to graph output, f 18;
 #X text 459 14 <- Open HTML reference;
 #X text 704 564 updated for Pd version 0.5;
+#X text 84 43 - slew-limiting / low-pass filter;
 #X connect 0 0 12 0;
 #X connect 2 0 0 0;
 #X connect 4 0 3 0;
@@ -599,5 +599,5 @@
 #X connect 12 0 3 0;
 #X connect 14 0 12 3;
 #X connect 19 0 12 5;
-#X connect 33 0 35 0;
-#X connect 39 0 40 0;
+#X connect 32 0 34 0;
+#X connect 38 0 39 0;

@@ -1,28 +1,19 @@
 #N canvas 624 123 485 238 12;
 #X text 32 16 comment;
-#X text 100 16 - a comment box;
 #X text 273 201 updated for Pd version 0.52;
-#X obj 3 44 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 3 186 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 3 44 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 3 186 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 879 173 375 183 reference 0;
-#X obj 8 45 cnv 5 350 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 87 cnv 2 350 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 152 cnv 5 350 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 116 cnv 2 350 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
+#X obj 8 45 cnv 5 350 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 87 cnv 2 350 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 152 cnv 5 350 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 116 cnv 2 350 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X text 26 13 comment;
-#X text 94 13 - a comment box;
 #X text 141 58 NONE, f 6;
 #X text 141 93 NONE, f 6;
 #X text 141 123 NONE, f 6;
-#X restore 308 13 pd reference;
-#X text 402 13 <= click;
-#X text 16 60 This is Pd's help window for comments \, which don't
-do anything \, have no inlet/outlets or arguments. As other objects
-in Pd \, you can resize the line length by adjusting the size in edit
-mode. If you use semicolons \; lines \; get \; broken., f 63;
+#X text 94 13 - write text for comments.;
+#X restore 308 17 pd reference;
+#X text 402 16 <= click;
+#X text 16 60 This is Pd's help window for comments \, which don't do anything \, have no inlet/outlets or arguments. As other objects in Pd \, you can resize the line length by adjusting the size in edit mode. If you use semicolons \; lines \; get \; broken., f 63;
+#X text 100 16 - write text for comments;
