@@ -186,10 +186,13 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
 
 static int jack_srate(jack_nframes_t srate, void *arg)
 {
-    const t_float oldrate = STUFF->st_dacsr;
-    STUFF->st_dacsr = srate;
-    if (oldrate != STUFF->st_dacsr)
+    sys_lock();
+    if (srate != STUFF->st_dacsr)
+    {
+        STUFF->st_dacsr = srate;
         canvas_update_dsp();
+    }
+    sys_unlock();
     return 0;
 }
 
@@ -332,7 +335,9 @@ static int jack_connect_ports(char* client)
 
 static void pd_jack_error_callback(const char *desc)
 {
-    pd_error(0, "JACKerror: %s", desc);
+    sys_lock();
+    logpost(0, PD_DEBUG, "JACK error: %s", desc);
+    sys_unlock();
     return;
 }
 
