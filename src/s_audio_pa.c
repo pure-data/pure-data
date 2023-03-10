@@ -432,7 +432,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     {
         pa_callback = callbackfn;
         err = pa_open_callback(rate, inchans, outchans,
-            framesperbuf, nbuffers, pa_indev, pa_outdev, pa_lowlevel_callback);
+            framesperbuf, 0, pa_indev, pa_outdev, pa_lowlevel_callback);
     }
     else
     {
@@ -451,7 +451,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 nbuffers*framesperbuf*pa_outchans*sizeof(float), pa_outbuf, 0);
         }
         err = pa_open_callback(rate, inchans, outchans,
-            framesperbuf, nbuffers, pa_indev, pa_outdev, pa_fifo_callback);
+            framesperbuf, 0, pa_indev, pa_outdev, pa_fifo_callback);
 #else
         err = pa_open_callback(rate, inchans, outchans,
             framesperbuf, nbuffers, pa_indev, pa_outdev, 0);
