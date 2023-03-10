@@ -352,8 +352,9 @@ void sys_do_reopen_audio(void)
     {
         int blksize = (as.a_blocksize ? as.a_blocksize : 64);
         int nbufs = (double)sys_schedadvance / 1000000. * as.a_srate / blksize;
-            /* make sure that the delay is not smaller than the hardware blocksize */
-        if (nbufs < 1)
+            /* make sure that the delay is not smaller than the hardware blocksize.
+            NB: nbufs has no effect if callbacks are enabled. */
+        if (nbufs < 1 && !as.a_callback)
         {
             int delay = ((double)sys_schedadvance / 1000.) + 0.5;
             int limit = ceil(blksize * 1000. / (double)as.a_srate);
@@ -363,11 +364,11 @@ void sys_do_reopen_audio(void)
                  delay, blksize, limit);
         }
         outcome = pa_open_audio((as.a_nindev > 0 ? as.a_chindevvec[0] : 0),
-        (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
+            (as.a_noutdev > 0 ? as.a_choutdevvec[0] : 0), as.a_srate,
             STUFF->st_soundin, STUFF->st_soundout, blksize, nbufs,
-             (as.a_nindev > 0 ? as.a_indevvec[0] : 0),
-              (as.a_noutdev > 0 ? as.a_outdevvec[0] : 0),
-               (as.a_callback ? sched_audio_callbackfn : 0));
+            (as.a_nindev > 0 ? as.a_indevvec[0] : 0),
+            (as.a_noutdev > 0 ? as.a_outdevvec[0] : 0),
+            (as.a_callback ? sched_audio_callbackfn : 0));
     }
     else
 #endif
