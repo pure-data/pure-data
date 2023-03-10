@@ -444,7 +444,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
     advance_samples = sys_schedadvance * (double)STUFF->st_dacsr / 1.e6;
     advance_samples -= (advance_samples % DEFDACBLKSIZE);
         /* make sure that the delay is not smaller than the Jack blocksize! */
-    if (advance_samples < jack_blocksize)
+    if (!callback && advance_samples < jack_blocksize)
     {
         int delay = ((double)sys_schedadvance / 1000.) + 0.5;
         int limit = ceil(jack_blocksize * 1000. / (double)STUFF->st_dacsr);
