@@ -225,10 +225,10 @@ static int pa_fifo_callback(const void *inputBuffer,
 }
 #endif /* FAKEBLOCKING */
 
-PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
+PaError pa_open_callback(double samplerate, int inchannels, int outchannels,
     int framesperbuf, int nbuffers, int indeviceno, int outdeviceno, PaStreamCallback *callbackfn)
 {
-    long   bytesPerSample;
+    long bytesPerSample;
     PaError err;
     PaStreamParameters instreamparams, outstreamparams;
     PaStreamParameters*p_instreamparams=0, *p_outstreamparams=0;
@@ -253,13 +253,13 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 0;
 #else
     instreamparams.suggestedLatency = outstreamparams.suggestedLatency =
-        nbuffers*framesperbuf/sampleRate;
+        nbuffers * framesperbuf / samplerate;
 #endif /* FAKEBLOCKING */
 
-    if( inchannels>0 && indeviceno >= 0)
-        p_instreamparams=&instreamparams;
-    if( outchannels>0 && outdeviceno >= 0)
-        p_outstreamparams=&outstreamparams;
+    if (inchannels > 0 && indeviceno >= 0)
+        p_instreamparams = &instreamparams;
+    if (outchannels > 0 && outdeviceno >= 0)
+        p_outstreamparams = &outstreamparams;
 
 #ifdef _WIN32
         /* set WASAPI options */
@@ -284,59 +284,48 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     }
 #endif
 
-    err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, sampleRate);
-
-    if (paFormatIsSupported != err)
+    err = Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, samplerate);
+    if (err != paFormatIsSupported)
     {
         /* check whether we have to change the numbers of channel and/or samplerate */
         const PaDeviceInfo* info = 0;
-        double inRate=0, outRate=0;
+        double inrate = 0, outrate = 0;
 
-        if (inchannels>0)
+        if (inchannels > 0)
         {
-            if (NULL != (info = Pa_GetDeviceInfo( instreamparams.device )))
+            if ((info = Pa_GetDeviceInfo(instreamparams.device)) != NULL)
             {
-              inRate=info->defaultSampleRate;
-
-              if(info->maxInputChannels<inchannels)
-                instreamparams.channelCount=info->maxInputChannels;
+                inrate = info->defaultSampleRate;
+                if (info->maxInputChannels < inchannels)
+                    instreamparams.channelCount = info->maxInputChannels;
             }
         }
 
-        if (outchannels>0)
+        if (outchannels > 0)
         {
-            if (NULL != (info = Pa_GetDeviceInfo( outstreamparams.device )))
+            if ((info = Pa_GetDeviceInfo(outstreamparams.device)) != NULL)
             {
-              outRate=info->defaultSampleRate;
-
-              if(info->maxOutputChannels<outchannels)
-                outstreamparams.channelCount=info->maxOutputChannels;
+                outrate = info->defaultSampleRate;
+                if (info->maxOutputChannels < outchannels)
+                    outstreamparams.channelCount = info->maxOutputChannels;
             }
         }
 
         if (err == paInvalidSampleRate)
         {
-            double oldrate = sampleRate;
-            sampleRate = outRate > 0 ? outRate : inRate;
+            double oldrate = samplerate;
+            samplerate = outrate > 0 ? outrate : inrate;
             logpost(0, PD_NORMAL,
                 "warning: requested samplerate %d not supported, using %d.",
-                    (int)oldrate, (int)sampleRate);
+                    (int)oldrate, (int)samplerate);
         }
 
-        err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams,
-            sampleRate);
-        if (paFormatIsSupported != err)
-        goto error;
+        err = Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, samplerate);
+        if (err != paFormatIsSupported)
+            goto error;
     }
-    err = Pa_OpenStream(
-              &pa_stream,
-              p_instreamparams,
-              p_outstreamparams,
-              sampleRate,
-              framesperbuf,
-              paNoFlag,      /* portaudio will clip for us */
-              callbackfn,
-              0);
+    err = Pa_OpenStream(&pa_stream, p_instreamparams, p_outstreamparams,
+        samplerate, framesperbuf, paNoFlag, callbackfn, 0);
     if (err != paNoError)
         goto error;
 
@@ -348,7 +337,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
         pa_close_audio();
         goto error;
     }
-    STUFF->st_dacsr=sampleRate;
+    STUFF->st_dacsr = samplerate;
     return paNoError;
 error:
     pa_stream = NULL;
@@ -470,7 +459,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     }
     pa_started = 0;
     pa_nbuffers = nbuffers;
-    if ( err != paNoError )
+    if (err != paNoError)
     {
         pd_error(0, "error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */

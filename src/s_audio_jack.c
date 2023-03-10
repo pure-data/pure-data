@@ -94,7 +94,7 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
     if (infiforoom < nframes * STUFF->st_inchannels * sizeof(t_sample) ||
         outfiforoom < nframes * STUFF->st_outchannels * sizeof(t_sample))
     {
-        /* data late: output zeros, drop inputs, and leave FIFos untouched */
+        /* data late: output zeros, drop inputs, and leave FIFOs untouched */
         if (jack_started)
             jack_dio_error = 1;
         for (j = 0; j < STUFF->st_outchannels; j++)
@@ -184,8 +184,7 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
     return 0;
 }
 
-static int
-jack_srate (jack_nframes_t srate, void *arg)
+static int jack_srate(jack_nframes_t srate, void *arg)
 {
     const t_float oldrate = STUFF->st_dacsr;
     STUFF->st_dacsr = srate;
@@ -194,8 +193,7 @@ jack_srate (jack_nframes_t srate, void *arg)
     return 0;
 }
 
-static int
-jack_bsize (jack_nframes_t bufsize, void *arg)
+static int jack_bsize(jack_nframes_t bufsize, void *arg)
 {
     jack_blocksize = bufsize;
     return 0;
@@ -203,61 +201,60 @@ jack_bsize (jack_nframes_t bufsize, void *arg)
 
 void glob_audio_setapi(void *dummy, t_floatarg f);
 
-static void
-jack_shutdown (void *arg)
+static void jack_shutdown(void *arg)
 {
-  pd_error(0, "JACK: server shut down");
+    pd_error(0, "JACK: server shut down");
 
-  jack_deactivate (jack_client);
-  jack_client = NULL;
-  jack_blocksize = 0;
+    jack_deactivate (jack_client);
+    jack_client = NULL;
+    jack_blocksize = 0;
 
-  glob_audio_setapi(NULL, API_NONE); // set pd_whichapi 0
+    glob_audio_setapi(NULL, API_NONE); // set pd_whichapi 0
 }
 
-static int jack_xrun(void* arg) {
-  jack_dio_error = 1;
-  return 0;
+static int jack_xrun(void* arg)
+{
+    jack_dio_error = 1;
+    return 0;
 }
-
 
 static char** jack_get_clients(void)
 {
     const char **jack_ports;
-    int tmp_client_name_size = jack_client_name_size ? jack_client_name_size() : CLIENT_NAME_SIZE_FALLBACK;
+    int tmp_client_name_size = jack_client_name_size ?
+        jack_client_name_size() : CLIENT_NAME_SIZE_FALLBACK;
     char* tmp_client_name = (char*)getbytes(tmp_client_name_size);
     int i,j;
     int num_clients = 0;
     regex_t port_regex;
-    jack_ports = jack_get_ports( jack_client, "", "", 0 );
-    regcomp( &port_regex, "^[^:]*", REG_EXTENDED );
+    jack_ports = jack_get_ports(jack_client, "", "", 0);
+    regcomp(&port_regex, "^[^:]*", REG_EXTENDED);
 
     jack_client_names[0] = NULL;
 
     /* Build a list of clients from the list of ports */
-    for( i = 0; jack_ports[i] != NULL; i++ )
+    for (i = 0; jack_ports[i] != NULL; i++)
     {
         int client_seen;
         regmatch_t match_info;
 
-        if(num_clients>=MAX_CLIENTS)break;
-
+        if (num_clients >= MAX_CLIENTS) break;
 
         /* extract the client name from the port name, using a regex
          * that parses the clientname:portname syntax */
-        regexec( &port_regex, jack_ports[i], 1, &match_info, 0 );
-        memcpy( tmp_client_name, &jack_ports[i][match_info.rm_so],
-                match_info.rm_eo - match_info.rm_so );
+        regexec(&port_regex, jack_ports[i], 1, &match_info, 0);
+        memcpy(tmp_client_name, &jack_ports[i][match_info.rm_so],
+            match_info.rm_eo - match_info.rm_so);
         tmp_client_name[ match_info.rm_eo - match_info.rm_so ] = '\0';
 
         /* do we know about this port's client yet? */
         client_seen = 0;
 
-        for( j = 0; j < num_clients; j++ )
-            if( strcmp( tmp_client_name, jack_client_names[j] ) == 0 )
+        for (j = 0; j < num_clients; j++)
+            if (strcmp(tmp_client_name, jack_client_names[j]) == 0)
                 client_seen = 1;
 
-        if( client_seen == 0 )
+        if (client_seen == 0)
         {
             jack_client_names[num_clients] = (char*)getbytes(strlen(tmp_client_name) + 1);
 
@@ -266,19 +263,19 @@ static char** jack_get_clients(void)
              * it in spot 0 put it in spot 0 and move whatever
              * was already in spot 0 to the end. */
 
-            if( strcmp( "alsa_pcm", tmp_client_name ) == 0 && num_clients > 0 )
+            if (strcmp("alsa_pcm", tmp_client_name) == 0 && num_clients > 0)
             {
-              char* tmp;
-                /* alsa_pcm goes in spot 0 */
-              tmp = jack_client_names[ num_clients ];
-              jack_client_names[ num_clients ] = jack_client_names[0];
-              jack_client_names[0] = tmp;
-              strcpy( jack_client_names[0], tmp_client_name);
+                char* tmp;
+                    /* alsa_pcm goes in spot 0 */
+                tmp = jack_client_names[num_clients];
+                jack_client_names[num_clients] = jack_client_names[0];
+                jack_client_names[0] = tmp;
+                strcpy( jack_client_names[0], tmp_client_name);
             }
             else
             {
                 /* put the new client at the end of the client list */
-                strcpy( jack_client_names[ num_clients ], tmp_client_name );
+                strcpy(jack_client_names[num_clients], tmp_client_name);
             }
             num_clients++;
         }
@@ -286,8 +283,8 @@ static char** jack_get_clients(void)
 
     /*    for (i=0;i<num_clients;i++) post("client: %s",jack_client_names[i]); */
 
-    freebytes( tmp_client_name, tmp_client_name_size );
-    free( jack_ports );
+    freebytes(tmp_client_name, tmp_client_name_size);
+    free(jack_ports);
     return jack_client_names;
 }
 
@@ -304,28 +301,28 @@ static int jack_connect_ports(char* client)
 
     if (strlen(client) > 96)  return -1;
 
-    sprintf( regex_pattern, "%s:.*", client );
+    sprintf(regex_pattern, "%s:.*", client);
 
-    jack_ports = jack_get_ports( jack_client, regex_pattern,
-                                 NULL, JackPortIsOutput);
+    jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                NULL, JackPortIsOutput);
     if (jack_ports)
     {
         for (i=0;jack_ports[i] != NULL && i < STUFF->st_inchannels;i++)
             if (jack_connect (jack_client, jack_ports[i],
-               jack_port_name (input_port[i])))
-                  pd_error(0, "JACK: cannot connect input ports %s -> %s",
-                      jack_ports[i],jack_port_name (input_port[i]));
+                jack_port_name (input_port[i])))
+                    pd_error(0, "JACK: cannot connect input ports %s -> %s",
+                        jack_ports[i],jack_port_name (input_port[i]));
         free(jack_ports);
     }
-    jack_ports = jack_get_ports( jack_client, regex_pattern,
-                                 NULL, JackPortIsInput);
+    jack_ports = jack_get_ports(jack_client, regex_pattern,
+                                NULL, JackPortIsInput);
     if (jack_ports)
     {
         for (i=0;jack_ports[i] != NULL && i < STUFF->st_outchannels;i++)
-          if (jack_connect (jack_client, jack_port_name (output_port[i]),
-            jack_ports[i]))
-              pd_error(0,  "JACK: cannot connect output ports %s -> %s",
-                jack_port_name (output_port[i]),jack_ports[i]);
+            if (jack_connect (jack_client, jack_port_name(output_port[i]),
+                jack_ports[i]))
+                    pd_error(0,  "JACK: cannot connect output ports %s -> %s",
+                        jack_port_name (output_port[i]),jack_ports[i]);
 
         free(jack_ports);
     }
@@ -333,9 +330,10 @@ static int jack_connect_ports(char* client)
 }
 
 
-static void pd_jack_error_callback(const char *desc) {
-  pd_error(0, "JACKerror: %s", desc);
-  return;
+static void pd_jack_error_callback(const char *desc)
+{
+    pd_error(0, "JACKerror: %s", desc);
+    return;
 }
 
 int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
@@ -479,10 +477,10 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
             port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
         if (!output_port[j])
         {
-          pd_error(0, "JACK: can only register %d output ports (of %d requested)",
-            j, outchans);
-          STUFF->st_outchannels = outchans = j;
-          break;
+            pd_error(0, "JACK: can only register %d output ports (of %d requested)",
+                j, outchans);
+            STUFF->st_outchannels = outchans = j;
+            break;
         }
     }
 
