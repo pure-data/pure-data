@@ -62,7 +62,8 @@ static jack_port_t *output_port[MAX_JACK_PORTS];
 static jack_client_t *jack_client = NULL;
 static char * desired_client_name = NULL;
 char *jack_client_names[MAX_CLIENTS];
-static int jack_dio_error;
+static volatile int jack_dio_error;
+static volatile int jack_didshutdown;
 static t_audiocallback jack_callback;
 static int jack_should_autoconnect = 1;
 static int jack_blocksize = 0; /* should this be PERTHREAD? */
@@ -202,17 +203,18 @@ static int jack_bsize(jack_nframes_t bufsize, void *arg)
     return 0;
 }
 
-void glob_audio_setapi(void *dummy, t_floatarg f);
-
+    /* This callback function must be async-signal-safe, so the only thing
+    we can really do is set a flag and wake up the scheduler. The shutdown
+    is actually handled in jack_send_dacs() or sys_try_reopen_audio();
+    the latter is called by the callback scheduler once it has noticed that
+    audio processing has halted. */
 static void jack_shutdown(void *arg)
 {
-    pd_error(0, "JACK: server shut down");
-
-    jack_deactivate (jack_client);
-    jack_client = NULL;
-    jack_blocksize = 0;
-
-    glob_audio_setapi(NULL, API_NONE); // set pd_whichapi 0
+    jack_didshutdown = 1;
+#ifdef THREADSIGNAL
+        /* sem_post() is async-signal-safe */
+    sys_semaphore_post(jack_sem);
+#endif
 }
 
 static int jack_xrun(void* arg)
@@ -361,7 +363,7 @@ int jack_open_audio(int inchans, int outchans, t_audiocallback callback)
 #ifdef THREADSIGNAL
     jack_sem = sys_semaphore_create();
 #endif
-
+    jack_didshutdown = 0;
     jack_dio_error = 0;
 
     if ((inchans == 0) && (outchans == 0)) return 0;
@@ -547,6 +549,20 @@ void jack_close_audio(void)
 #endif
 }
 
+void sys_do_close_audio(void);
+
+int jack_reopen_audio(void)
+{
+        /* we don't actually try to reopen (yet?) */
+    if (jack_didshutdown)
+    {
+        pd_error(0, "JACK: server shutdown");
+        jack_didshutdown = 0;
+    }
+    sys_do_close_audio();
+    return 0;
+}
+
 int sched_idletask(void);
 
 int jack_send_dacs(void)
@@ -568,6 +584,11 @@ int jack_send_dacs(void)
         (sys_ringbuf_getwriteavailable(&jack_outring) <
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE*sizeof(t_sample))))
     {
+        if (jack_didshutdown)
+        {
+            jack_reopen_audio(); /* handle server shutdown */
+            return (SENDDACS_NO);
+        }
 #ifdef THREADSIGNAL
         if (sched_idletask())
             continue;

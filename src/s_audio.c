@@ -449,6 +449,10 @@ int sys_try_reopen_audio(void)
     if (sys_audioapiopened == API_PORTAUDIO)
         return pa_reopen_audio();
 #endif
+#ifdef USEAPI_JACK
+    if (sys_audioapiopened == API_JACK)
+        return jack_reopen_audio();
+#endif
         /* generic implementation: close audio and try to reopen it */
     sys_do_close_audio();
 

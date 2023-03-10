@@ -203,6 +203,7 @@ void alsa_getdevs(char *indevlist, int *nindevs,
 int jack_open_audio(int inchans, int outchans, t_audiocallback callback);
 void jack_close_audio(void);
 int jack_send_dacs(void);
+int jack_reopen_audio(void);
 void jack_reportidle(void);
 void jack_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
