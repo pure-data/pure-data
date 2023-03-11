@@ -61,7 +61,7 @@ static t_audiocallback pa_callback;
 
 static int pa_started;
 static int pa_nbuffers;
-static int pa_dio_error;
+static volatile int pa_dio_error;
 
 #ifdef FAKEBLOCKING
 #include "s_audio_paring.h"
@@ -458,6 +458,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
 #endif
     }
     pa_started = 0;
+    pa_dio_error = 0;
     pa_nbuffers = nbuffers;
     if (err != paNoError)
     {
@@ -625,6 +626,11 @@ int pa_send_dacs(void)
     if ((sys_getrealtime() - timeref) > 0.002)
         retval = SENDDACS_SLEPT;
 #endif /* FAKEBLOCKING */
+    if (pa_dio_error)
+    {
+        sys_log_error(ERR_RESYNC);
+        pa_dio_error = 0;
+    }
     pa_started = 1;
 
     memset(STUFF->st_soundout, 0,
