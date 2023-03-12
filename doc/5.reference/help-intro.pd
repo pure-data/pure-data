@@ -1,4 +1,4 @@
-#N canvas 455 33 591 628 12;
+#N canvas 506 31 591 628 12;
 #X declare;
 #X obj 56 2294 delay;
 #X obj 56 2341 metro;
@@ -137,8 +137,6 @@
 #X obj 56 4836 exp~;
 #X obj 56 4890 abs~;
 #X text 188 3441 - schedule delayed "note off" message for a note-on;
-#X msg 60 7378 scope~;
-#X msg 60 7407 template;
 #X obj 55 1513 textfile;
 #X obj 56 4729 sqrt~;
 #X obj 57 3518 oscparse;
@@ -161,8 +159,8 @@
 #X obj 200 3358 midirealtimein;
 #X obj 52 5969 delread4~;
 #X obj 56 4754 rsqrt~;
-#X obj 60 7437 q8_sqrt~;
-#X obj 60 7464 q8_rsqrt~;
+#X obj 60 7411 q8_sqrt~;
+#X obj 60 7438 q8_rsqrt~;
 #X obj 56 4647 expr~;
 #X obj 57 2773 expr;
 #X obj 103 4647 fexpr~;
@@ -318,7 +316,7 @@
 #X text 11 6054 ---------------------------- PATCH/SUBPATCH ---------------------------------, f 77;
 #X text 8 6424 ------------------------------ DATA STRUCTURES -------------------------------, f 79;
 #X text 13 6838 ----------------- "EXTRA" (patches and externs in pd/extra) ------------------, f 78;
-#X text 17 7581 ------------------------------------------------------------------------------, f 78;
+#X text 17 7555 ------------------------------------------------------------------------------, f 78;
 #X text 15 10 ------------------------------------------------------------------------------, f 78;
 #X text 16 1436 ------------------------------ TEXT MANAGEMENT ------------------------------, f 78;
 #X text 13 1857 ----------------------------- FILE MANAGEMENT ------------------------------, f 78;
@@ -379,13 +377,12 @@
 #X text 23 3624 ----------------------------------- MISC -----------------------------------, f 76;
 #X text 188 3541 - convert lists to OSC packets;
 #X text 188 3517 - parse OSC packets into Pd messages;
-#X text 185 7380 (use [tabwrite~] now);
-#X text 185 7407 (use [struct] now);
+#X text 185 7381 (use [struct] now);
 #X text 184 4170 - deluxe [line~];
 #X text 184 4267 - deluxe [snapshot~];
 #X text 124 179 <--------;
 #X text 13 7287 ------------------------ OBSOLETE / DEPRECATED -------------------------------, f 78;
-#X text 186 7438 (fast \, cheap 8 bits versions of square root functions \, use [srqt~]/[rsqrt~] instead), f 43;
+#X text 186 7412 (fast \, cheap 8 bits versions of square root functions \, use [srqt~]/[rsqrt~] instead), f 43;
 #X text 13 4973 ---------------------- SIGNAL ACOUSTIC CONVERSIONS --------------------------, f 77;
 #X obj 56 5004 mtof~;
 #X obj 56 5029 ftom~;
@@ -498,9 +495,10 @@
 #X text 233 7204 (used in the documentation);
 #X text 185 7319 - FFT frequency estimate (use [sigmund~] now);
 #X text 183 7349 - pitch/peaks estimate (use [sigmund~] now);
-#X obj 59 7494 %;
-#X text 187 7492 (use [mod] instead);
+#X obj 59 7468 %;
+#X text 187 7466 (use [mod] instead);
 #X text 30 2272 ----------------------------- TIME -----------------------------------------, f 76;
 #X text 30 2522 ------------------------------ LOGIC ---------------------------------------, f 76;
 #X text 24 2747 ------------------------------- MATH ----------------------------------------, f 77;
 #X text 23 3298 ------------------------------ MIDI/OSC -------------------------------------, f 77;
+#X obj 60 7380 template;
