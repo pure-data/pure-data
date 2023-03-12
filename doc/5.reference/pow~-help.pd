@@ -36,11 +36,11 @@
 #X obj 13 82 cnv 1 410 1 empty empty 1st: 8 12 0 13 #000000 #000000 0;
 #X obj 13 111 cnv 1 410 1 empty empty 2nd: 8 12 0 13 #000000 #000000 0;
 #X obj 37 17 pow~;
-#X text 79 16 - power function for signals;
 #X text 88 85 signal - input value to power function.;
 #X text 88 118 signal - set numeric power to raise to.;
 #X text 121 154 signal - output of power function.;
 #X text 130 191 1) float - initial numeric power.;
+#X text 79 16 - power function for signals.;
 #X restore 321 17 pd reference;
 #X text 416 17 <= click;
 #X obj 3 54 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000 0;

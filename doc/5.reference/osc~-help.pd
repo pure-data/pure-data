@@ -2,21 +2,20 @@
 #X declare -stdpath ./;
 #X floatatom 123 144 5 0 0 0 - - - 0;
 #X text 18 491 see also:;
-#X obj 149 491 cos~;
-#X obj 185 491 tabread4~;
+#X obj 215 491 cos~;
+#X obj 255 491 tabread4~;
 #X obj 27 18 osc~;
 #X text 62 18 - cosine wave oscillator;
-#X obj 171 255 metro 500;
-#X obj 89 491 phasor~;
+#X obj 171 249 metro 500;
+#X obj 90 491 phasor~;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-array 200 float 0;
 #X coords 0 -1 199 1 200 100 1;
 #X restore 91 349 graph;
 #X text 343 492 updated for Pd version 0.33;
-#X obj 153 287 tabwrite~ \$0-array;
-#X obj 65 257 output~;
-#X obj 171 227 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X obj 157 283 tabwrite~ \$0-array;
+#X obj 65 251 output~;
+#X obj 171 221 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 123 176 osc~ 440;
 #X msg 176 144 0;
 #X text 245 143 <= reset phase;
@@ -27,41 +26,29 @@
 #X obj 342 300 osc~;
 #X obj 392 410 declare -stdpath ./;
 #N canvas 731 147 586 252 reference 0;
-#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
-#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
+#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 47 18 osc~;
 #X text 82 18 - cosine wave oscillator;
-#X text 126 163 signal - cosine waveform (in the range of -1 to 1).
-, f 54;
+#X text 126 163 signal - cosine waveform (in the range of -1 to 1)., f 54;
 #X text 119 91 signal -;
-#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X text 126 124 float -;
 #X text 183 124 phase cycle reset (from 0 to 1)., f 46;
 #X text 183 91 frequency value in Hz., f 46;
-#X text 134 199 1) float - initial frequency value in Hz (default 0).
-;
+#X text 134 199 1) float - initial frequency value in Hz (default 0).;
 #X restore 379 17 pd reference;
 #X text 477 18 <= click;
-#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 7 473 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X text 40 62 The [osc~] object outputs a cosine wave. The frequency
-input can be either a float or a signal. The right inlet resets the
-phase with values from 0 to 1 (where '1' is the same as '0' and '0.5'
-is half the cycle)., f 67;
+#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 7 473 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 40 62 The [osc~] object outputs a cosine wave. The frequency input can be either a float or a signal. The right inlet resets the phase with values from 0 to 1 (where '1' is the same as '0' and '0.5' is half the cycle)., f 67;
 #X text 190 176 <-- creation argument sets initial frequency;
-#X text 195 227 <-- graph;
+#X text 195 221 <-- graph;
 #X text 353 275 <----- signal controlling;
+#X obj 149 491 tabosc4~;
 #X connect 0 0 13 0;
 #X connect 6 0 10 0;
 #X connect 12 0 6 0;
