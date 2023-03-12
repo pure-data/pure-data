@@ -244,6 +244,8 @@ void sys_set_audio_settings(t_audiosettings *a)
     a->a_blocksize = 1 << ilog2(a->a_blocksize);
     if (a->a_blocksize < DEFDACBLKSIZE || a->a_blocksize > MAXBLOCKSIZE)
         a->a_blocksize = DEFDACBLKSIZE;
+    if (a->a_callback && !cancallback)
+        a->a_callback = 0;
 
     audio_make_sane(&a->a_noutdev, a->a_outdevvec,
         &a->a_nchoutdev, a->a_choutdevvec, MAXAUDIOOUTDEV);
