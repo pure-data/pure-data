@@ -216,7 +216,10 @@ static float sched_fastforward;
 
 void glob_fastforward(void *dummy, t_floatarg f)
 {
-    sched_fastforward = TIMEUNITPERMSEC * f;
+    if (sched_useaudio == SCHED_AUDIO_CALLBACK)
+        pd_error(0, "'fast-forward' does not work with 'callbacks' (yet)");
+    else
+        sched_fastforward = TIMEUNITPERMSEC * f;
 }
 
 void dsp_tick(void);
