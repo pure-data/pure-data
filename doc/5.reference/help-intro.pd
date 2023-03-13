@@ -350,7 +350,6 @@
 #X text 185 531 - format a symbol name with a variable field;
 #X text 185 559 - send messages without patch cords;
 #X text 185 583 - receive messages without patch cords;
-#X text 14 262 ---------------------- GENERAL MESSAGE MANAGEMENT ----------------------------, f 78;
 #X text 107 50 The following is a list of built-in objects in Pd. Right-click (or control-click on a Macintosh) on any object to get its "help window"., f 50;
 #X obj 56 2552 select;
 #X obj 56 2610 spigot;
@@ -502,3 +501,4 @@
 #X text 24 2747 ------------------------------- MATH ----------------------------------------, f 77;
 #X text 23 3298 ------------------------------ MIDI/OSC -------------------------------------, f 77;
 #X obj 60 7380 template;
+#X text 14 262 ------------------------- GENERAL DATA MANAGEMENT ----------------------------, f 78;
