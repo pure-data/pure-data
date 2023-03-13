@@ -294,15 +294,27 @@ void sched_tick(void)
     sched_counter++;
 }
 
-int sched_get_sleepgrain( void)
+int sched_get_sleepgrain(void)
 {
-    return (sys_sleepgrain > 0 ? sys_sleepgrain :
-        (sys_schedadvance/4 > 5000 ? 5000 : (sys_schedadvance/4 < 100 ? 100 :
-            sys_schedadvance/4)));
+    if (sys_sleepgrain > 0)
+        return sys_sleepgrain;
+    else if (sched_useaudio == SCHED_AUDIO_POLL)
+    {
+        int sleepgrain = sys_schedadvance / 4;
+        if (sleepgrain > 5000)
+            sleepgrain = 5000;
+        else if (sleepgrain < 100)
+            sleepgrain = 100;
+        return sleepgrain;
+    }
+    else return 1000; /* default */
 }
 
     /* old stuff for extern binary compatibility -- remove someday */
-int *get_sys_sleepgrain(void) {return(&sys_sleepgrain);}
+int *get_sys_sleepgrain(void)
+{
+    return(&sys_sleepgrain);
+}
 
 /*
 Here is Pd's "main loop."  This routine dispatches clock timeouts and DSP
