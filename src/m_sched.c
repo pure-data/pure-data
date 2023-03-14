@@ -268,6 +268,11 @@ void sched_set_using_audio(int flag)
     pdgui_vmess("pdtk_pd_audio", "r", flag ? "on" : "off");
 }
 
+int sched_get_using_audio(void)
+{
+    return sched_useaudio;
+}
+
     /* take the scheduler forward one DSP tick, also handling clock timeouts */
 void sched_tick(void)
 {
@@ -372,7 +377,6 @@ int sched_idletask(void)
 static void m_pollingscheduler(void)
 {
     sys_lock();
-    sys_initmidiqueue();
         /* NB: we don't need to lock the scheduler mutex because sys_quit
         will only be modified from this thread */
     while (!sys_quit)   /* outer loop runs once per tick */
@@ -458,9 +462,6 @@ int sys_try_reopen_audio(void);
 
 static void m_callbackscheduler(void)
 {
-    sys_lock();
-    sys_initmidiqueue();
-    sys_unlock();
         /* wait in a loop until the audio callback asks us to quit. */
     pthread_mutex_lock(&sched_mutex);
     while (!sys_quit)
@@ -531,6 +532,9 @@ int m_mainloop(void)
             if (reopen)
                 sys_do_reopen_audio();
         }
+        sys_lock();
+        sys_initmidiqueue();
+        sys_unlock();
         if (sched_useaudio == SCHED_AUDIO_CALLBACK)
             m_callbackscheduler();
         else
