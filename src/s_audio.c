@@ -742,7 +742,8 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             as.a_blocksize = DEFDACBLKSIZE;
 
     sys_set_audio_settings(&as);
-    sys_reopen_audio();
+    if (canvas_dspstate || audio_shouldkeepopen())
+        sys_reopen_audio();
 }
 
 void sys_listdevs(void)
@@ -794,12 +795,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     int newapi = f;
     if (newapi)
     {
-        if (newapi == audio_nextsettings.a_api)
-        {
-            if (!audio_isopen() && audio_shouldkeepopen())
-                sys_reopen_audio();
-        }
-        else
+        if (newapi != audio_nextsettings.a_api)
         {
             audio_nextsettings.a_api = newapi;
                 /* bash device params back to default */
@@ -812,7 +808,8 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
                 audio_nextsettings.a_choutdevvec[0] = SYS_DEFAULTCH;
             audio_nextsettings.a_blocksize = DEFDACBLKSIZE;
             audio_nextsettings.a_callback = 0;
-            sys_reopen_audio();
+            if (canvas_dspstate || audio_shouldkeepopen())
+                sys_reopen_audio();
         }
         glob_audio_properties(0, 0);
     }
