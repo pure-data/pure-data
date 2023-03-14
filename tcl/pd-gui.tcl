@@ -791,6 +791,7 @@ proc load_plugin_script {filename} {
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]
+    load_plugin_script [file join $::sys_guidir object_browser.tcl]
 
     if { $::port > 0 && $::host ne "" } { } else {
         # only run the docsdir plugin if Pd is started via the GUI
