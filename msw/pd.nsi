@@ -14,7 +14,7 @@
 ; the string PDVERSION should be replaced by, e.g., 0.46-7
 ; and the string WISHNAME by, e.g., wish86.exe  .
 
-; for IF ELSE 
+; for IF ELSE
 !include LogicLib.nsh
 
 ; App name
@@ -149,22 +149,22 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   ; Refresh Shell Icons
     Call RefreshShellIcons
   SectionEnd
-  
+
   Section
     ; make variable $SHORTPATH
     Call PdGuiFromInstaller
   SectionEnd
-    
+
 SectionGroupEnd
 
 Section -Post
   SetShellVarContext all
   WriteUninstaller "$INSTDIR\uninst.exe"
 
-  
+
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR"
 
-  
+
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\pd.exe"
@@ -197,8 +197,8 @@ Section Uninstall
 
 ; file ext association
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-  
-  
+
+
   DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
 
 
