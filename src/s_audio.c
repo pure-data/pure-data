@@ -535,7 +535,10 @@ int sys_get_inchannels(void)
 keep jack audio open but close unused audio devices for any other API */
 int audio_shouldkeepopen(void)
 {
-    return (sys_audioapiopened == API_JACK);
+    if (sys_audioapiopened == API_NONE)
+        return (audio_nextsettings.a_api == API_JACK);
+    else
+        return (sys_audioapiopened == API_JACK);
 }
 
     /* get names of available audio devices for the specified API */
