@@ -36,7 +36,7 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 93 154 pd open;
-#X text 118 124 <-- open first examle of the 4.Data.Structure section;
+#X text 118 124 <-- open first example of the 4.Data.Structure section;
 #X connect 1 0 2 0;
 #X restore 360 135 pd pointer;
 #X obj 8 46 cnv 1 575 1 empty empty empty 8 12 0 13 #000000 #000000 0;

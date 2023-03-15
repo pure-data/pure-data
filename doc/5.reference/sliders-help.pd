@@ -449,7 +449,7 @@
 #X obj 670 209 vsl 18 128 0 127 0 1 \$0-slider \$0-slider empty 0 -9 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 439 110 Feedback protection: iemguis can have the same name for both the send and receive symbols. This works without 'stack overflow' errors because they have feedback protection. See example below., f 50;
 #X text 439 183 WARNING:;
-#X text 436 308 If you nees to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
+#X text 436 308 If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
 #X text 435 214 Feedback protection comes at a cost. You should NOT use inlets/outlets to either send values to get them from sliders \, just rely on the [send] and [receive] objects., f 29;
 #X connect 0 0 4 0;
 #X connect 1 0 4 0;
@@ -588,7 +588,7 @@
 #X text 195 150 log - sets mode to logarithmic., f 61;
 #X text 118 185 steady <float> - non zero sets to steady \, zero sets to jump on click., f 72;
 #X text 181 401 float - slider value., f 63;
-#X text 83 80 size <float \, float> - widht and height in pixels., f 77;
+#X text 83 80 size <float \, float> - width and height in pixels., f 77;
 #X text 83 99 orientation <float> - non zero sets to vertical \, zero sets to horizontal., f 77;
 #X text 185 17 - Sliders., f 44;
 #X restore 361 15 pd reference;

@@ -67,7 +67,7 @@
 #X text 262 273 go to (and output) "head" of empty list;
 #X text 299 359 click to clear list ->, f 13;
 #X text 78 10 - add a scalar to a Data Structure list;
-#X text 15 52 The [append] object adds a scalar to a Data Structure list. It needs a pointer in its the rightmost inlet to a scalar so it can append an item next to it. The pointer can also be to the "head" (beggining) of a list (which can be an empty list)., f 82;
+#X text 15 52 The [append] object adds a scalar to a Data Structure list. It needs a pointer in its the rightmost inlet to a scalar so it can append an item next to it. The pointer can also be to the "head" (beginning) of a list (which can be an empty list)., f 82;
 #X connect 0 0 22 3;
 #X connect 1 0 25 0;
 #X connect 2 0 4 1;

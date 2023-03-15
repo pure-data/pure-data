@@ -25,7 +25,7 @@
 #X obj 32 45 r \$0-set-amp;
 #X obj 129 45 r \$0-set-freq;
 #X text 636 116 This abstraction is merely for didactical purposes and doesn't do anything. This example shows how you can store multiple lists in a [savestate] object. A good practice is to differentiate the lists and use [route] to send them to the righr place., f 60;
-#X text 636 201 Another thing we have in this example is that this abstracion communicates with the parent patch by sending values to it. But since [savestate] outputs saved data before any outside connections are made we use [loadbang] objects to send the loaded messages to the owning patch., f 60;
+#X text 636 201 Another thing we have in this example is that this abstraction communicates with the parent patch by sending values to it. But since [savestate] outputs saved data before any outside connections are made we use [loadbang] objects to send the loaded messages to the owning patch., f 60;
 #X text 636 286 We're using [text] as a hint to store multiple lists.;
 #X obj 448 124 text sequence \$0-data;
 #X msg 448 97 line 0 \, bang;

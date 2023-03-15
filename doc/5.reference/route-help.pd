@@ -92,7 +92,7 @@
 #X connect 1 0 3 0;
 #X connect 2 0 1 0;
 #X restore 90 141 pd open;
-#X text 114 110 <-- open first examle of the 4.Data.Structure section;
+#X text 114 110 <-- open first example of the 4.Data.Structure section;
 #X text 35 17 The [route] object can also route a pointer or a list of pointers. A pointer can be the location of a Data Structure scalar somewhere or the head of a Data Structure list. To know more about Data Structures \, how to handle pointers and see examples \, please refer to the 4.Data.Structure section of the Pd's tutorials., f 70;
 #X text 44 189 You should use the "pointer" argument to route pointers \, and in this case [route] does indeed expect a pointer data type and nothing else. The 'pointer' selector is not removed in this case., f 65;
 #X text 44 244 In the case of a list of pointers \, the "list" argument should be given \, and this is another case where the 'list' selector is not trimmed!, f 65;

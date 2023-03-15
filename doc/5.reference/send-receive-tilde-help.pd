@@ -95,7 +95,7 @@
 #X restore 332 491 pd multi-channel;
 #X text 81 492 see multi channel example here -->;
 #X text 45 96 A [send~] object copies its input to a local buffer which all [receive~] objects of the same name read from. They may be in different windows or even different patches. Any number of [receive~] may be associated with one [send~] \, but it is an error to have two [send~] objects of the same name. [receive~] takes "set" messages to switch between different [send~] objects. Multi channel connections is supported., f 62;
-#X text 47 430 [send~]/[receive~] must have matching block sizes and numbers of channels. Block size is a proprty of the patch and number of channels is specified via a second argument (default 1)., f 62;
+#X text 47 430 [send~]/[receive~] must have matching block sizes and numbers of channels. Block size is a property of the patch and number of channels is specified via a second argument (default 1)., f 62;
 #X text 179 21 - one-to-many nonlocal signal(s) connection;
 #X connect 1 0 21 0;
 #X connect 2 0 0 0;

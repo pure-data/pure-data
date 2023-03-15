@@ -47,7 +47,7 @@
 #X text 458 335 --- 10 sec ---;
 #X text 82 22 Pd is mostly used to generate and process things in realtime \, nonetheless \, the "fast-forward" message allows you to 'render' an amount of audio faster than realtime (and as fast as your process can handle) - this is also called 'batch processing'. In this example we use it to record 6 seconds of amplitude modulation white noise into an array., f 76;
 #X text 439 367 start recording 2 seconds into the table, f 25;
-#X text 82 105 This is very useful if you want to process a pre recorded audio in a Pd patch or to generate an audio file with a generative (or automated) patch. You can also use [soundfiler] to export to a sound file or direcctly use [writesf~] instead. The 'fast-forward' message takes a time in milliseconds to fast forward to. Check the example, f 76;
+#X text 82 105 This is very useful if you want to process a pre recorded audio in a Pd patch or to generate an audio file with a generative (or automated) patch. You can also use [soundfiler] to export to a sound file or directly use [writesf~] instead. The 'fast-forward' message takes a time in milliseconds to fast forward to. Check the example, f 76;
 #X connect 0 0 17 0;
 #X connect 1 0 0 0;
 #X connect 2 0 5 0;

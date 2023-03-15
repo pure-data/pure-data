@@ -449,7 +449,7 @@
 #X obj 492 178 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 596 189 WARNING:;
 #X text 593 220 Feedback protection comes at a cost. You should NOT use inlets/outlets to either activate the bang or get the bang button \, just rely on the [send]/[receive] objects., f 29;
-#X text 593 314 If you nees to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
+#X text 593 314 If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
 #X connect 0 0 8 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;

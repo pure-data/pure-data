@@ -120,7 +120,7 @@
 #X obj 175 35 pow;
 #X text 236 235 The arc tangent ([atan]) takes two forms. The [atan2] version takes a coordinate pair (x \, y) and gives you an an angle in radians between -pi and pi. It also takes a bang message in the left inlet to evaluate the operation with the previously set values., f 47;
 #X text 432 111 <-- convert to radians, f 11;
-#X text 26 330 We also have wrap \, absolute value \, square root \, exponential \, logarithms and power functins \, all of which have corresponding signal versions. The [wrap] object wraps the input to a value between 0 and 1 \, including negative numbers (for instance \, -0.2 maps to 0.8.). As in the signal version [log~] \, [log] takes a base value via an argument or the right inlet \, but it defaults to "e". Like the signal version [pow~] \, [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 77;
+#X text 26 330 We also have wrap \, absolute value \, square root \, exponential \, logarithms and power functions \, all of which have corresponding signal versions. The [wrap] object wraps the input to a value between 0 and 1 \, including negative numbers (for instance \, -0.2 maps to 0.8.). As in the signal version [log~] \, [log] takes a base value via an argument or the right inlet \, but it defaults to "e". Like the signal version [pow~] \, [pow] has protection against NaNs (they become 0) \, and it raises a number on the left inlet to a numeric power (given by the right inlet or argument)., f 77;
 #X text 18 91 Unlike [cos~] \, which is a cosine wavetable reader \, these are control-rate trigonometric functions that take inputs in radians., f 44;
 #X connect 0 0 20 0;
 #X connect 2 0 41 0;

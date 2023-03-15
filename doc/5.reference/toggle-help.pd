@@ -419,7 +419,7 @@
 #X msg 679 172 1;
 #X text 437 96 Feedback protection: iemguis can have the same name for both the send and receive symbols. This works without 'stack overflow' errors because they have feedback protection. See example below., f 50;
 #X text 443 189 WARNING:;
-#X text 440 314 If you nees to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
+#X text 440 314 If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
 #X text 439 220 Feedback protection comes at a cost. You should NOT use inlets/outlets to either send values to get them from toggles \, just rely on the [send] and [receive] objects., f 29;
 #X connect 0 0 9 0;
 #X connect 1 0 9 0;

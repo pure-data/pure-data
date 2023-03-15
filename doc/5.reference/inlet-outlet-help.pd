@@ -60,7 +60,7 @@
 #X msg 294 509 \; pd compatibility 0.43;
 #X text 58 154 (DSP needs to be on);
 #X obj 185 215 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 36 444 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the default method was "pad". You can set "compatibility" to 0.43 in Pd's command line or by a message to get the old behavior. Alternatively you can just explicitly set the patch to specify "pad" \, which is preffered.;
+#X text 36 444 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the default method was "pad". You can set "compatibility" to 0.43 in Pd's command line or by a message to get the old behavior. Alternatively you can just explicitly set the patch to specify "pad" \, which is preferred.;
 #X obj 53 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 149 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 246 369 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
