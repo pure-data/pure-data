@@ -2,7 +2,8 @@
 package provide dialog_font 0.1
 
 namespace eval ::dialog_font:: {
-    variable fontsize 12
+    # fontsize is for detecting whether the user actually requested a change
+    variable fontsize 0
     variable stretchval 100
     variable whichstretch 1
     variable canvaswindow
