@@ -106,7 +106,7 @@ fi
 
 # autodetect wishname if none is given
 if [ -z "${WISHNAME}" ]; then
-	WISHNAME=$(find "${PDWINDIR}/bin" -iname "wish*.exe" -quit)
+	WISHNAME=$(find "${PDWINDIR}/bin" -iname "wish*.exe" -print -quit)
 	if [ -n "${WISHNAME}" ]; then
 		WISHNAME=$(basename "${WISHNAME}")
 	fi
