@@ -2,7 +2,7 @@
 package provide dialog_font 0.1
 
 namespace eval ::dialog_font:: {
-    variable fontsize 10
+    variable fontsize 12
     variable stretchval 100
     variable whichstretch 1
     variable canvaswindow
