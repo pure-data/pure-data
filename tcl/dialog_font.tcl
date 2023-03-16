@@ -45,6 +45,7 @@ proc ::dialog_font::do_apply {mytoplevel myfontsize stretchval whichstretch} {
         }
 
         ::pd_guiprefs::write menu-fontsize "$myfontsize"
+        set ::pdwindow::font:size $myfontsize
 
     } else {
         pdsend "$mytoplevel font $myfontsize $stretchval $whichstretch"
