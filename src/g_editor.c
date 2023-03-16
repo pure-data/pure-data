@@ -2644,7 +2644,7 @@ static t_object*_getobjectat(t_canvas *x, int posX, int posY, int*x1, int*y1, in
 }
 static int _getclosest(int numiolets, int posX, int x1, int x2)
 {
-    int width = x1-x2, closest;
+    int width = x2-x1, closest;
     if(!width)
         return 0;
 
