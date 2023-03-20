@@ -29,7 +29,7 @@
 #A saved 0 150;
 #X text 22 58 The [savestate] object is used inside abstractions to save their state as they are used in a calling (parent) patch. When the parent patch (such as this one \, which calls the example abstractions) is saved \, the included [savestate] object inside the abstractions sends a 'bang' message out its right outlet \, with which the abstraction may respond by presenting one or more 'list' messages back to the [savestate] object. These lists are saved as part of the calling patch. If the calling patch is reopened later \, the lists are sent out the left outlet of the [savestate] object. The abstraction can then use them to restore its state., f 58;
 #X text 233 385 Parameters for different copies of the abstraction are saved and restored independently., f 25;
-#X obj 151 390 output~;
+#X obj 106 392 output~;
 #X text 22 237 Open the abstractions below (right- or CTRL- click and select "open" in popup menu) to see how the [savestate] object is used from within., f 58;
 #X text 460 58 Multiple [savestate] objects aren't differentiated \, so they all receive all lists sent to any one of them and output them. Hence \, it's probably best to just use a single [savestate] object per abstraction., f 51;
 #X obj 463 269 savestate-ex2;

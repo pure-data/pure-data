@@ -1,4 +1,4 @@
-#N canvas 558 52 631 544 12;
+#N canvas 485 38 631 544 12;
 #X declare -stdpath ./;
 #N canvas 352 24 545 673 fft-analysis 0;
 #X obj 92 534 *~;
@@ -342,7 +342,6 @@
 #X text 88 17 CORT&ZACK's SECRET;
 #X obj 101 366 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X connect 0 0 7 0;
-#X connect 0 0 7 1;
 #X connect 5 0 6 0;
 #X connect 8 0 11 0;
 #X connect 9 0 11 0;

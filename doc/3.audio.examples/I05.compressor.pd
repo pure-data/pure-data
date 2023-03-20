@@ -1,4 +1,4 @@
-#N canvas 556 77 545 468 12;
+#N canvas 483 68 545 468 12;
 #X declare -stdpath ./;
 #N canvas 394 108 652 570 fft-analysis 0;
 #X obj 101 425 *~;
@@ -215,7 +215,6 @@
 #X obj 61 408 declare -stdpath ./;
 #X text 128 231 <- record;
 #X connect 0 0 4 0;
-#X connect 0 0 4 1;
 #X connect 1 0 2 0;
 #X connect 3 0 0 0;
 #X connect 10 0 3 0;

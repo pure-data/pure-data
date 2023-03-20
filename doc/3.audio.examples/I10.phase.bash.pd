@@ -1,4 +1,4 @@
-#N canvas 479 32 802 585 12;
+#N canvas 479 32 802 610 12;
 #X declare -stdpath ./;
 #X floatatom 468 293 4 0 0 0 - - - 0;
 #N canvas 575 55 791 659 fft 0;
@@ -106,7 +106,7 @@
 #X obj 641 376 s pitch;
 #X obj 428 480 output~;
 #X text 61 22 PHASE BASHING;
-#X text 554 494 updated for Pd version 0.39;
+#X text 566 500 updated for Pd version 0.39;
 #X floatatom 260 347 8 0 0 0 - \$0-samp-msec - 0;
 #X text 258 365 sample length \, msec;
 #X msg 259 249 ../sound/bell.aiff;
@@ -275,7 +275,7 @@
 #X text 108 366 ---analyze---;
 #X text 92 385 sample;
 #X obj 138 493 tabwrite~ \$0-nophase;
-#X obj 41 504 output~;
+#X obj 99 525 output~;
 #X msg 476 341 0 \, 400 4000;
 #X msg 481 368 0 \, 400 10000;
 #X text 55 55 This patch takes an incoming sound \, does an overlap-2 FFT analysis of it \, and bashes the phases of the spectra so that when regenerated the components will all have zero phase at the middle of each window. You can use the windows as waveforms and cross-fade them at will without getting phase modulation. This might be useful for making synthetic instruments that mimic the spectral variation of recorded sounds., f 46;
@@ -523,7 +523,6 @@
 #X connect 0 0 50 0;
 #X connect 1 0 27 0;
 #X connect 1 0 28 0;
-#X connect 1 0 28 1;
 #X connect 1 1 27 0;
 #X connect 2 0 6 0;
 #X connect 3 0 4 0;
@@ -538,7 +537,6 @@
 #X connect 29 0 5 0;
 #X connect 30 0 5 0;
 #X connect 37 0 7 0;
-#X connect 37 0 7 1;
 #X connect 50 0 5 0;
 #X connect 51 0 17 1;
 #X connect 52 0 17 0;

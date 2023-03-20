@@ -7,9 +7,7 @@
 #X obj 168 301 *~ 0.99;
 #X obj 91 306 +~;
 #X obj 168 252 inlet;
-#X text 70 29 Because of the feedback \, the delwrite~ has to be computed
-after the delread~. So we set the blocksize to 1 to minimize the resulting
-delay.;
+#X text 70 29 Because of the feedback \, the delwrite~ has to be computed after the delread~. So we set the blocksize to 1 to minimize the resulting delay.;
 #X text 351 284 this object sets the;
 #X text 350 301 block size for audio;
 #X text 349 320 computations in this;
@@ -21,12 +19,7 @@ delay.;
 #X text 169 228 time;
 #X text 349 338 window. Must be a;
 #X text 349 357 power of two.;
-#X text 70 82 The smaller the blocksize the more expensive the computations
-are \, so don't reduce it lower than you have to. Also \, it's a good
-idea to isolate the portion of the patch that requires the smaller
-block size \, and only run that portion that way. Here \, the pulses
-that excite the delay line are computed outside this window \, and
-the output level control as well.;
+#X text 70 82 The smaller the blocksize the more expensive the computations are \, so don't reduce it lower than you have to. Also \, it's a good idea to isolate the portion of the patch that requires the smaller block size \, and only run that portion that way. Here \, the pulses that excite the delay line are computed outside this window \, and the output level control as well.;
 #X connect 0 0 4 0;
 #X connect 3 0 4 1;
 #X connect 4 0 1 0;
@@ -41,19 +34,11 @@ the output level control as well.;
 #X obj 124 232 loadbang;
 #X obj 226 327 + 30;
 #X text 74 9 CONTROLLING DELAY WITH BLOCK~;
-#X text 51 43 In situations where a delay read feeds back to a delay
-write \, the minimum possible delay you can achieve is one block \,
-which by default is 64 samples \, or 1.45 msec at 44100 Hz. You can
-shorten the minimum delay by changing the block size. Do this in a
-subpatch (open it to see how).;
+#X text 51 43 In situations where a delay read feeds back to a delay write \, the minimum possible delay you can achieve is one block \, which by default is 64 samples \, or 1.45 msec at 44100 Hz. You can shorten the minimum delay by changing the block size. Do this in a subpatch (open it to see how).;
 #X obj 124 466 output~;
 #X obj 124 384 vline~;
 #X text 297 476 updated for Pd version 0.37-1;
-#X text 49 124 Here we use this principle to make a harpsichord-like
-sound by sending pulses into a recirculating delay line (which imitates
-the travel of the wave up and down the harpsichord string.) This is
-related to Karplus-Strong synthesis \, but the idea is probably much
-older than their paper.;
+#X text 49 124 Here we use this principle to make a harpsichord-like sound by sending pulses into a recirculating delay line (which imitates the travel of the wave up and down the harpsichord string.) This is related to Karplus-Strong synthesis \, but the idea is probably much older than their paper.;
 #X text 30 388 long., f 12;
 #X text 329 373 length of delay line is;
 #X text 330 391 1000/(frequency);
@@ -64,7 +49,6 @@ older than their paper.;
 #X msg 124 342 1 \, 0 0 1;
 #X obj 338 239 declare -stdpath ./;
 #X connect 0 0 9 0;
-#X connect 0 0 9 1;
 #X connect 1 0 0 1;
 #X connect 2 0 1 0;
 #X connect 3 0 20 0;

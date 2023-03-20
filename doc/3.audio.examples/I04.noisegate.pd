@@ -1,4 +1,4 @@
-#N canvas 575 45 564 552 12;
+#N canvas 496 32 564 552 12;
 #X declare -stdpath ./;
 #X floatatom 269 370 0 0 1000 0 - - - 0;
 #X floatatom 94 359 0 0 100 0 - - - 0;
@@ -57,15 +57,11 @@
 #X obj 235 258 expr 1/($f1+1);
 #X text 134 17 calculate a mask using N msec of background noise;
 #X text 43 354 current power (for each channel);
-#X text 367 430 average the current power into the last mask to get
-the new mask. The new value is weighted 1/n on the nth iteration.;
+#X text 367 430 average the current power into the last mask to get the new mask. The new value is weighted 1/n on the nth iteration.;
 #X text 390 312 weight to average in new power to mask;
 #X text 11 203 loop counting to desired;
 #X text 78 219 number of frames;
-#X text 72 39 This loops for "make-mask" milliseconds \, averaging
-power in each channel over that amount of time. This is done by a moving
-average whose weight is adjusted to average each new value equally
-with each of the accumulating ones.;
+#X text 72 39 This loops for "make-mask" milliseconds \, averaging power in each channel over that amount of time. This is done by a moving average whose weight is adjusted to average each new value equally with each of the accumulating ones.;
 #X connect 0 0 8 0;
 #X connect 1 0 12 0;
 #X connect 2 0 3 1;
@@ -101,8 +97,7 @@ with each of the accumulating ones.;
 #X text 193 355 ... but not less than zero;
 #X text 101 561 real inverse Fourier transform;
 #X text 196 498 normalize by 2/(3N) where N is window size;
-#X text 168 332 current power ("s") minus level-adjusted mask ("m")
-;
+#X text 168 332 current power ("s") minus level-adjusted mask ("m");
 #X text 156 175 compute power (call it "s") in each channel;
 #X obj 123 395 +~ 1e-20;
 #X text 203 395 protect against division by zero;
@@ -165,10 +160,7 @@ with each of the accumulating ones.;
 #X obj 279 122 r window-hz;
 #X msg 352 154 0;
 #X obj 279 150 t f b;
-#X text 56 20 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 56 20 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -195,8 +187,8 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X text 184 335 noise;
 #N canvas 324 211 733 427 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
-#X array \$0-sample 155944 float 0;
-#X coords 0 1 155943 -1 400 150 1;
+#X array \$0-sample 62079 float 0;
+#X coords 0 1 62078 -1 400 150 1;
 #X restore 282 77 graph;
 #X obj 65 65 r read-sample;
 #X obj 65 126 unpack s f;
@@ -255,14 +247,12 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X obj 89 114 loadbang;
 #X obj 89 160 metro 1000;
 #X obj 246 367 bp~ 10000 3;
-#X obj 89 139 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
+#X obj 89 139 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
 #X text 232 235 sample duration \, msec;
 #X text 95 71 looped sample playback;
 #X obj 89 344 tabread4~ \$0-sample;
 #X text 243 315 filtered noise;
-#X text 56 20 TEST SIGNAL: looped sample plus noise. The inlets control
-amplitude of each in dB., f 42;
+#X text 56 20 TEST SIGNAL: looped sample plus noise. The inlets control amplitude of each in dB., f 42;
 #X obj 89 265 pack float float;
 #X obj 89 238 float;
 #X connect 0 0 23 0;
@@ -302,31 +292,15 @@ amplitude of each in dB., f 42;
 #X array \$0-mask 512 float 0;
 #X coords 0 500 511 0 400 300 1;
 #X restore 113 97 graph;
-#X text 28 35 This table (1002-mask) is the average power measured
-in each channel of the spectrum \, presumed to represent the noise
-floor.;
+#X text 28 35 This table (1002-mask) is the average power measured in each channel of the spectrum \, presumed to represent the noise floor.;
 #X restore 354 489 pd mask-table;
 #X text 99 301 amplitudes (dB);
-#X text 50 47 This patch attempts to scrub the noise floor from a sample
-in two steps. First using the "make-mask" message (which is caught
-in the "fft-analysis" window) \, you estimate the background spectrum.
-You would normally do this at a moment when only the background noise
-is audible. Then \, turn on "masking" (to 15 by default \, but try
-other values) and the patch will try to clean the background noise
-out of a signal., f 65;
-#X text 50 153 For this demonstration \, you control the amplitudes
-of a looping sample and a filtered noise source. Normally you'd hit
-"calculate noise mask" with only the noise turned on \, then turn both
-the noise and the sampler on \, and also "masking" \, to see if the
-patch can clean the noise out of the signal. Open the "fft-analysis"
-window to see the algorithm \, or the "insample" window to change samples
-\, or "mask-table" to see the current mask (the average signal power
-of the noise to clean out of the signal)., f 65;
+#X text 50 47 This patch attempts to scrub the noise floor from a sample in two steps. First using the "make-mask" message (which is caught in the "fft-analysis" window) \, you estimate the background spectrum. You would normally do this at a moment when only the background noise is audible. Then \, turn on "masking" (to 15 by default \, but try other values) and the patch will try to clean the background noise out of a signal., f 65;
+#X text 50 153 For this demonstration \, you control the amplitudes of a looping sample and a filtered noise source. Normally you'd hit "calculate noise mask" with only the noise turned on \, then turn both the noise and the sampler on \, and also "masking" \, to see if the patch can clean the noise out of the signal. Open the "fft-analysis" window to see the algorithm \, or the "insample" window to change samples \, or "mask-table" to see the current mask (the average signal power of the noise to clean out of the signal)., f 65;
 #X obj 396 13 declare -stdpath ./;
 #X connect 0 0 6 0;
 #X connect 1 0 13 0;
 #X connect 2 0 16 0;
-#X connect 2 0 16 1;
 #X connect 7 0 13 1;
 #X connect 12 0 0 0;
 #X connect 13 0 2 0;

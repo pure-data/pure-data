@@ -1,4 +1,4 @@
-#N canvas 577 56 508 474 12;
+#N canvas 577 56 551 460 12;
 #X declare -stdpath ./;
 #N canvas 280 39 837 707 fft 0;
 #X obj 63 584 *~;
@@ -48,9 +48,7 @@
 #X text 135 199 1 if new signal;
 #X text 55 73 new;
 #X text 203 70 old;
-#X text 51 12 Choose whether to replace the "old" signal with the "new"
-one. The "new" one must be stronger than the old one and also must
-be stronger than its two neighboring channels;
+#X text 51 12 Choose whether to replace the "old" signal with the "new" one. The "new" one must be stronger than the old one and also must be stronger than its two neighboring channels;
 #X text 267 283 1 if we're louder than neighbor;
 #X connect 0 0 2 0;
 #X connect 0 0 9 0;
@@ -119,8 +117,7 @@ be stronger than its two neighboring channels;
 #X obj 296 225 *~;
 #X obj 261 275 outlet~;
 #X obj 380 271 outlet~;
-#X text 88 25 switch between two pairs of inputs. If first inlet is
-one \, take the left-hand pair \, otherwise the right-hand one.;
+#X text 88 25 switch between two pairs of inputs. If first inlet is one \, take the left-hand pair \, otherwise the right-hand one.;
 #X text 57 137 switch;
 #X text 134 73 pass this if one;
 #X text 311 74 pass this if zero;
@@ -159,20 +156,14 @@ one \, take the left-hand pair \, otherwise the right-hand one.;
 #X obj 337 107 tabreceive~ \$0-amp-imag;
 #X obj 319 621 tabsend~ \$0-amp-imag;
 #X obj 259 650 tabsend~ \$0-amp-real;
-#X text 314 15 previous output amplitude \, encoding both magnitude
-and phase, f 33;
-#X text 435 136 previous phase increment (unit-magnitude complex number)
-, f 31;
+#X text 314 15 previous output amplitude \, encoding both magnitude and phase, f 33;
+#X text 435 136 previous phase increment (unit-magnitude complex number), f 31;
 #X obj 442 199 +~ 1e-15;
 #X obj 322 81 +~ 1e-15;
 #X text 61 635 IFFT and output;
-#X text 491 457 normalize increments between 0 and 1 according to revtime.
-, f 29;
-#X text 352 564 propagate amplitudes by multiplying in the increments
-\, which advance the phase and drop magnitude according to revtime.
-, f 40;
-#X text 31 289 choose whether to punch in new (amplitude \, increment)
-pair, f 16;
+#X text 491 457 normalize increments between 0 and 1 according to revtime., f 29;
+#X text 352 564 propagate amplitudes by multiplying in the increments \, which advance the phase and drop magnitude according to revtime., f 40;
+#X text 31 289 choose whether to punch in new (amplitude \, increment) pair, f 16;
 #N canvas 650 183 602 327 switch 0;
 #X obj 61 160 inlet~;
 #X obj 149 96 inlet~;
@@ -187,8 +178,7 @@ pair, f 16;
 #X obj 296 225 *~;
 #X obj 261 275 outlet~;
 #X obj 380 271 outlet~;
-#X text 88 25 switch between two pairs of inputs. If first inlet is
-one \, take the left-hand pair \, otherwise the right-hand one.;
+#X text 88 25 switch between two pairs of inputs. If first inlet is one \, take the left-hand pair \, otherwise the right-hand one.;
 #X text 57 137 switch;
 #X text 134 73 pass this if one;
 #X text 311 74 pass this if zero;
@@ -282,20 +272,15 @@ one \, take the left-hand pair \, otherwise the right-hand one.;
 #X connect 57 1 13 0;
 #X connect 57 1 13 1;
 #X connect 57 1 7 0;
-#X restore 147 328 pd fft;
-#X floatatom 311 266 4 0 1000 0 - revtime-set - 0;
-#X floatatom 120 264 4 0 0 0 - - - 0;
+#X restore 169 320 pd fft;
+#X floatatom 368 263 4 0 1000 0 - revtime-set - 0;
+#X floatatom 44 256 4 0 0 0 - - - 0;
 #X text 38 11 PIANO REVERB;
-#X text 349 266 reverb time;
-#X obj 147 363 output~;
-#X obj 62 363 output~;
-#X text 25 45 This is a phase vocoder acting as a reverberator. The
-sound is more coherent (less "whispered") than a real room or a standard
-delay-based reverberator., f 60;
-#X text 25 99 The technique is to "punch" the incoming sound into channels
-where (1) there's a peak \, and (2) the incoming sound drowns out whatever
-might already be there. If the sound already in any channel is louder
-than the input the input for that channel is ignored.;
+#X text 406 263 reverb time;
+#X obj 169 355 output~;
+#X obj 44 355 output~;
+#X text 25 45 This is a phase vocoder acting as a reverberator. The sound is more coherent (less "whispered") than a real room or a standard delay-based reverberator., f 70;
+#X text 25 99 The technique is to "punch" the incoming sound into channels where (1) there's a peak \, and (2) the incoming sound drowns out whatever might already be there. If the sound already in any channel is louder than the input the input for that channel is ignored., f 70;
 #N canvas 464 229 262 333 test-sound 0;
 #X obj 46 25 inlet;
 #X obj 46 145 osc~;
@@ -305,8 +290,7 @@ than the input the input for that channel is ignored.;
 #X obj 46 170 cos~;
 #X obj 46 194 hip~ 20;
 #X obj 46 117 t f b;
-#X obj 115 91 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 115 91 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
 #X obj 160 172 pack 0 30;
 #X obj 160 117 del 20;
 #X obj 115 144 pack 1 20;
@@ -327,12 +311,10 @@ than the input the input for that channel is ignored.;
 #X connect 10 0 9 0;
 #X connect 11 0 2 0;
 #X connect 12 0 13 0;
-#X restore 120 291 pd test-sound;
-#X text 108 242 short tone;
-#X obj 311 290 s revtime;
-#X text 25 180 For each window \, the amplitude in each channel is
-propagated by a constant phase increment and multiplied downward by
-a gain that determines the "reverb time".;
+#X restore 44 283 pd test-sound;
+#X text 43 228 short tone;
+#X obj 368 287 s revtime;
+#X text 25 170 For each window \, the amplitude in each channel is propagated by a constant phase increment and multiplied downward by a gain that determines the "reverb time"., f 70;
 #N canvas 734 203 602 538 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
@@ -357,10 +339,7 @@ a gain that determines the "reverb time".;
 #X obj 317 123 r window-hz;
 #X msg 390 155 0;
 #X obj 317 151 t f b;
-#X text 94 21 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 94 21 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -383,7 +362,7 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 19 0 1 0;
 #X connect 19 1 4 0;
 #X connect 19 1 18 0;
-#X restore 309 320 pd hann-window;
+#X restore 366 317 pd hann-window;
 #N canvas 362 131 651 618 tables 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-last-real 2048 float 0;
@@ -409,15 +388,13 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X array \$0-inc-imag 2048 float 0;
 #X coords 0 1 2048 -1 200 150 1;
 #X restore 370 424 graph;
-#X restore 309 345 pd tables;
-#X text 273 402 Updated for Pd version 0.39;
-#X text 57 419 reverb in;
-#X text 139 420 reverb out;
+#X restore 366 342 pd tables;
+#X text 330 399 Updated for Pd version 0.39;
+#X text 61 420 reverb in;
+#X text 169 417 reverb out;
 #X obj 336 14 declare -stdpath ./;
 #X connect 0 0 5 0;
-#X connect 0 0 5 1;
 #X connect 1 0 11 0;
 #X connect 2 0 9 0;
 #X connect 9 0 0 0;
 #X connect 9 0 6 0;
-#X connect 9 0 6 1;

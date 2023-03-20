@@ -35,7 +35,6 @@
 #X text 662 276 12;
 #X text 694 276 14;
 #X obj 88 294 output~;
-#X obj 88 255 hip~;
 #N canvas 490 195 571 609 fft 0;
 #X obj 51 95 inlet~;
 #X obj 256 264 inlet;
@@ -99,6 +98,7 @@
 #X obj 593 22 declare -stdpath ./;
 #X text 186 232 <-- graph once;
 #X text 226 256 <-- repeatedly;
+#X obj 88 257 hip~ 5;
 #X connect 0 0 3 1;
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
@@ -112,11 +112,10 @@
 #X connect 9 0 10 0;
 #X connect 9 0 11 0;
 #X connect 10 0 29 0;
-#X connect 10 0 30 0;
+#X connect 10 0 43 0;
 #X connect 11 0 10 1;
-#X connect 29 0 28 0;
-#X connect 29 0 28 1;
-#X connect 31 0 30 1;
-#X connect 32 0 30 2;
-#X connect 33 0 3 0;
-#X connect 40 0 33 0;
+#X connect 30 0 29 1;
+#X connect 31 0 29 2;
+#X connect 32 0 3 0;
+#X connect 39 0 32 0;
+#X connect 43 0 28 0;

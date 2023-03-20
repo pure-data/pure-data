@@ -1,4 +1,4 @@
-#N canvas 643 40 620 640 12;
+#N canvas 457 34 620 640 12;
 #X declare -stdpath ./;
 #X floatatom 21 186 6 0 0 0 - - - 0;
 #X obj 265 435 print~;
@@ -74,7 +74,6 @@
 #X connect 30 0 5 0;
 #X connect 31 0 5 0;
 #X connect 32 0 20 0;
-#X connect 32 0 20 1;
 #X connect 35 0 36 1;
 #X connect 36 0 3 0;
 #X connect 36 0 6 0;

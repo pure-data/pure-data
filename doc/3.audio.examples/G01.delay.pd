@@ -27,19 +27,10 @@
 #X text 139 246 (msec);
 #X text 106 232 <= delay time;
 #X obj 461 26 declare -stdpath ./;
-#X text 274 67 You can delay a signal using the [delwrite~] and [delread~]
-objects. In this example \, a sample loops continuously and is added
-to a delayed copy of itself., f 55;
-#X text 274 122 The [delwrite~] object creates the delay line. You
-give it a name and a size in milliseconds. Each [delwrite~] should
-have a different name., f 55;
-#X text 274 173 The arguments of [delread~] are the name of a delwrite
-(of which there should be exactly one) and an optional delay time in
-milliseconds between 0 and the length of the delay line. Each [delwrite~]
-may have as many [delread~] objects as you wish \, which can then function
-as multiple delay taps., f 55;
-#X text 274 270 The [delread~] object always delays the signal an integer
-number of samples and does no interpolation.;
+#X text 274 67 You can delay a signal using the [delwrite~] and [delread~] objects. In this example \, a sample loops continuously and is added to a delayed copy of itself., f 55;
+#X text 274 122 The [delwrite~] object creates the delay line. You give it a name and a size in milliseconds. Each [delwrite~] should have a different name., f 55;
+#X text 274 173 The arguments of [delread~] are the name of a delwrite (of which there should be exactly one) and an optional delay time in milliseconds between 0 and the length of the delay line. Each [delwrite~] may have as many [delread~] objects as you wish \, which can then function as multiple delay taps., f 55;
+#X text 274 270 The [delread~] object always delays the signal an integer number of samples and does no interpolation.;
 #X connect 2 0 4 0;
 #X connect 4 0 10 1;
 #X connect 5 0 10 0;
@@ -47,4 +38,3 @@ number of samples and does no interpolation.;
 #X connect 6 0 5 0;
 #X connect 7 0 6 0;
 #X connect 10 0 9 0;
-#X connect 10 0 9 1;

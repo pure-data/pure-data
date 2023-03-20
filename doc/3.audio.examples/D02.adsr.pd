@@ -1,4 +1,4 @@
-#N canvas 521 50 540 694 12;
+#N canvas 479 23 540 694 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array adsr-output 44100 float 0;
@@ -21,7 +21,7 @@
 #X text 293 663 updated for Pd version 0.37;
 #X obj 75 251 osc~ 440;
 #X obj 57 276 *~;
-#X obj 41 315 output~;
+#X obj 57 311 output~;
 #X text 349 217 <= attack only;
 #X text 352 292 <= release only;
 #X obj 387 10 declare -stdpath ./;
@@ -34,6 +34,5 @@
 #X connect 14 0 17 0;
 #X connect 16 0 17 1;
 #X connect 17 0 18 0;
-#X connect 17 0 18 1;
 #X connect 22 0 6 0;
 #X connect 22 0 5 0;

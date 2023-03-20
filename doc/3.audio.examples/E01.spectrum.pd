@@ -115,7 +115,6 @@
 #X text 229 254 <-- click to graph;
 #X text 46 644 Here we're introducing a new feature: multiple signals connected to a signal inlet (as in the [*~ 1]) are added. This is the most convenient way to sum the six partials., f 96;
 #X connect 1 0 6 0;
-#X connect 1 0 6 1;
 #X connect 5 0 3 1;
 #X connect 5 0 7 0;
 #X connect 19 0 39 0;

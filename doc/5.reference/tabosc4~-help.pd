@@ -5,7 +5,7 @@
 #X obj 40 18 tabosc4~;
 #X text 186 370 message to switch tables;
 #X obj 308 270 loadbang;
-#X obj 81 502 output~;
+#X obj 81 492 output~;
 #X text 17 608 see also:;
 #X obj 91 597 osc~;
 #X msg 139 423 0;
@@ -21,7 +21,7 @@
 #X obj 81 455 tabosc4~ wave1;
 #X msg 101 363 set wave1;
 #X msg 111 389 set wave2;
-#X obj 189 514 declare -stdpath ./;
+#X obj 217 512 declare -stdpath ./;
 #N canvas 792 194 574 404 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
 #X text 394 262 <= array with local name, f 13;
@@ -106,6 +106,5 @@
 #X connect 8 0 18 1;
 #X connect 9 0 18 1;
 #X connect 18 0 5 0;
-#X connect 18 0 5 1;
 #X connect 19 0 18 0;
 #X connect 20 0 18 0;

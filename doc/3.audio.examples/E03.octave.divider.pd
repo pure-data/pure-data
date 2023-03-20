@@ -1,10 +1,10 @@
-#N canvas 257 23 731 710 12;
+#N canvas 333 23 731 710 12;
 #X declare -stdpath ./;
 #X obj 364 224 loadbang;
-#X obj 90 365 hip~ 5;
+#X obj 43 365 hip~ 5;
 #X obj 488 136 adc~ 1;
 #X obj 364 279 soundfiler;
-#X obj 68 409 output~;
+#X obj 43 426 output~;
 #X obj 488 193 tabwrite~ E03-table;
 #X msg 364 251 read ../sound/voice.wav E03-table;
 #X obj 157 231 osc~;
@@ -74,7 +74,6 @@
 #X text 133 288 <- and processed sounds;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
-#X connect 1 0 4 1;
 #X connect 2 0 5 0;
 #X connect 6 0 3 0;
 #X connect 7 0 8 1;
