@@ -1768,7 +1768,12 @@ void text_setto(t_text *x, t_glist *glist, const char *buf, int bufsize)
            (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
             &x->te_g, pos));
         binbuf_text(x->te_binbuf, buf, bufsize);
-
+            /* retext, so we see the binbuf representation
+             * rather than the literal text.
+             * otherwise, we are in for a surprise when the
+             * patch is reloaded/copied/duplicated/...
+             */
+        glist_retext(glist, x);
     }
 }
 
