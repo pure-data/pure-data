@@ -54,6 +54,28 @@
 #define THREADSIGNAL
 #endif
 
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+# define HAVE_ALLOCA 1
+#endif
+#ifdef ALLOCA
+# undef ALLOCA
+#endif
+#ifdef FREEA
+# undef FREEA
+#endif
+
+#if HAVE_ALLOCA
+# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
+            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
+# define FREEA(t, x, n, max) (                                  \
+        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
+#else
+# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
+# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
+#endif
+
+#define MAX_ALLOCA_SAMPLES 16*1024
+
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
@@ -139,6 +161,7 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
 #ifdef THREADSIGNAL
     sys_semaphore_post(jack_sem);
 #endif
+    FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
     return 0;
 }
 
