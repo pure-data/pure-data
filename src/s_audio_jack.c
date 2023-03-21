@@ -27,6 +27,29 @@
  * `JACK_CLIENT_NAME_SIZE` definitions I could find in the wild. */
 #define CLIENT_NAME_SIZE_FALLBACK 128
 
+
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+# define HAVE_ALLOCA 1
+#endif
+#ifdef ALLOCA
+# undef ALLOCA
+#endif
+#ifdef FREEA
+# undef FREEA
+#endif
+
+#if HAVE_ALLOCA
+# define ALLOCA(t, x, n, max) ((x) = (t *)((n) < (max) ?            \
+            alloca((n) * sizeof(t)) : getbytes((n) * sizeof(t))))
+# define FREEA(t, x, n, max) (                                  \
+        ((n) < (max) || (freebytes((x), (n) * sizeof(t)), 0)))
+#else
+# define ALLOCA(t, x, n, max) ((x) = (t *)getbytes((n) * sizeof(t)))
+# define FREEA(t, x, n, max) (freebytes((x), (n) * sizeof(t)))
+#endif
+
+#define MAX_ALLOCA_SAMPLES 16*1024
+
 static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static int jack_started = 0;
@@ -51,17 +74,19 @@ static PA_VOLATILE sys_ringbuf jack_inring;
     /* callback routine for non-callback client... throw samples into
         and read them out of a FIFO.  Since we don't know at compile time
         how many samples jack will treat us to, we interleave them in the
-        two FIFos.  So we have to mux/demux them both here and up at the
+        two FIFOs.  So we have to mux/demux them both here and up at the
         user level in jack_send_dacs(). */
 static int jack_polling_callback(jack_nframes_t nframes, void *unused)
 {
     unsigned long infiforoom = sys_ringbuf_getwriteavailable(&jack_inring),
         outfiforoom = sys_ringbuf_getreadavailable(&jack_outring);
-    t_sample *muxbuffer =  (t_sample *)alloca(sizeof (t_sample) * nframes *
+    const size_t muxbufsize = nframes *
         (STUFF->st_inchannels > STUFF->st_outchannels ?
-            STUFF->st_inchannels : STUFF->st_outchannels));
+            STUFF->st_inchannels : STUFF->st_outchannels);
+    t_sample *muxbuffer;
     int j;
     jack_default_audio_sample_t *jp;
+    ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
 
         /* even though the FIFO is lock-free we have to lock here
         to prevent a race condition in the waiting thread between
@@ -112,6 +137,7 @@ static int jack_polling_callback(jack_nframes_t nframes, void *unused)
     }
     pthread_cond_broadcast(&jack_sem);
     pthread_mutex_unlock(&jack_mutex);
+    FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
     return 0;
 }
 
@@ -525,6 +551,9 @@ int jack_send_dacs(void)
     t_sample *fp, *fp2, *jp;
     int j, ch;
     double timenow, timeref = sys_getrealtime();
+    const size_t muxbufsize = DEFDACBLKSIZE *
+        (STUFF->st_inchannels > STUFF->st_outchannels ?
+         STUFF->st_inchannels : STUFF->st_outchannels);
     if (!STUFF->st_inchannels && !STUFF->st_outchannels) return (SENDDACS_NO);
 
 #ifdef TESTCANSLEEP
@@ -553,9 +582,7 @@ int jack_send_dacs(void)
     }
     jack_started = 1;
 
-    muxbuffer =  (t_sample *)alloca(sizeof (t_sample) * DEFDACBLKSIZE *
-        (STUFF->st_inchannels > STUFF->st_outchannels ?
-            STUFF->st_inchannels : STUFF->st_outchannels));
+    ALLOCA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
     if (STUFF->st_inchannels)
     {
         sys_ringbuf_read(&jack_inring, muxbuffer,
@@ -585,6 +612,8 @@ int jack_send_dacs(void)
     memset(STUFF->st_soundout, 0,
         DEFDACBLKSIZE*sizeof(t_sample) * STUFF->st_outchannels);
             /* fprintf(stderr, "%g ", sys_getrealtime() - timeref); */
+
+    FREEA(t_sample, muxbuffer, muxbufsize, MAX_ALLOCA_SAMPLES);
     if ((timenow = sys_getrealtime()) - timeref > 0.0002)
         return (SENDDACS_SLEPT);
     else return (SENDDACS_YES);
