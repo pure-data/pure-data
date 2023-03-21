@@ -2359,6 +2359,11 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         else
         {
             int noutlet;
+            int out_activeminh = (OHEIGHT + 1)  * x->gl_zoom;
+            int out_activemaxh = (y2 - y1) / 4;
+            int out_activeheight = OHEIGHT * 2 * x->gl_zoom;
+            if (out_activeheight > out_activemaxh) out_activeheight = out_activemaxh;
+            if (out_activeheight < out_activeminh) out_activeheight = out_activeminh;
                 /* resize? only for "true" text boxes or canvases */
             if (xpos >= x2-4 && ypos < y2-4 && hitobj &&
                     (hitobj->te_pd->c_wb == &text_widgetbehavior ||
@@ -2384,7 +2389,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (hitobj && (noutlet = obj_noutlets(hitobj)) &&
-                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
+                ypos >= y2 - out_activeheight)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
