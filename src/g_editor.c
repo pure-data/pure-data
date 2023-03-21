@@ -2390,22 +2390,20 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
                 int closest = ((xpos-x1) * (nout1) + width/2)/width;
-                int hotspot = x1 +
-                    (width - iow) * closest / (nout1);
-                if (closest < noutlet &&
-                    xpos >= (hotspot - x->gl_zoom) &&
-                    xpos <= hotspot + (iow + x->gl_zoom))
+                if (noutlet == 1 || closest < noutlet)
                 {
                     if (doit)
                     {
                         int issignal = obj_issignaloutlet(hitobj, closest);
+                        int xout = x1 + IOMIDDLE * x->gl_zoom +
+                            (noutlet > 1 ? ((width - iow) * closest)/nout1 : 0);
                         x->gl_editor->e_onmotion = MA_CONNECT;
-                        x->gl_editor->e_xwas = xpos;
-                        x->gl_editor->e_ywas = ypos;
+                        x->gl_editor->e_xwas = xout;
+                        x->gl_editor->e_ywas = y2;
                         pdgui_vmess("::pdtk_canvas::cords_to_foreground", "ci", x, 0);
                         pdgui_vmess(0, "crr iiii ri rs",
                             x, "create", "line",
-                            xpos,ypos, xpos,ypos,
+                            x->gl_editor->e_xwas,x->gl_editor->e_ywas, xpos,ypos,
                             "-width", (issignal ? 2 : 1) * x->gl_zoom,
                             "-tags", "x");
                     }
