@@ -45,9 +45,10 @@ void glist_add(t_glist *x, t_gobj *y)
     }
     if (glist_isvisible(x))
         gobj_vis(y, x, 1);
-    if (class_isdrawcommand(y->g_pd))
+    t_canvas *c = glist_getcanvas(x);
+    if (class_isdrawcommand(y->g_pd) && c->gl_edit)
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
-            glist_getcanvas(x)->gl_name)), 0);
+            c->gl_name)), 0);
 }
 
     /* this is to protect against a hairy problem in which deleting
