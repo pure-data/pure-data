@@ -307,7 +307,7 @@ static void *sigthrow_new(t_symbol *s)
     t_sigthrow *x = (t_sigthrow *)pd_new(sigthrow_class);
     x->x_sym = s;
     x->x_whereto  = 0;
-    x->x_length = 1;
+    x->x_length = 64;
     x->x_f = 0;
     return (x);
 }
