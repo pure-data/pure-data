@@ -432,9 +432,9 @@
 #X obj 714 345 r \$0-radio;
 #X obj 672 254 vradio 19 1 0 8 \$0-radio \$0-radio empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
 #X text 459 119 Feedback protection: iemguis can have the same name for both the send and receive symbols. This works without 'stack overflow' errors because they have feedback protection. See example below., f 44;
-#X text 451 233 WARNING:;
-#X text 448 358 If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
-#X text 448 264 Feedback protection comes at a cost. You should NOT use inlets/outlets to either send values to get them from radio buttons \, just rely on the [send] and [receive] objects., f 29;
+#X text 442 222 WARNING:;
+#X text 448 349 You probably also just want to send it numbers \, not configuration changes (like colors). If you need to also use the inlet and/or outlet \, DON'T rely on feedback protection!, f 29;
+#X text 448 246 Feedback protection comes at a cost. You should NOT use inlets/outlets to either send values to or get them from radio buttons \, just rely on the [send] and [receive] objects., f 29;
 #X connect 0 0 6 0;
 #X connect 5 0 1 0;
 #X connect 7 0 11 0;
