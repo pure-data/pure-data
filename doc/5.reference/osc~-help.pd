@@ -1,63 +1,73 @@
-#N canvas 340 73 793 539 12;
-#X obj 275 309 *~;
-#X floatatom 199 132 0 0 0 0 - - -;
-#X obj 293 281 line~;
-#X msg 293 225 0.1 100;
-#X msg 312 250 0 100;
-#X text 364 220 on;
-#X text 361 249 off;
-#X text 350 278 envelope;
-#X text 350 291 generator;
-#X text 277 200 amplitude controls:;
-#X text 313 340 audio output;
-#X text 384 428 see also:;
-#X obj 540 429 cos~;
-#X obj 589 429 tabread4~;
-#X obj 64 14 osc~;
-#X text 99 14 - cosine wave oscillator;
-#X obj 159 310 metro 500;
-#X obj 159 285 r metro;
-#X text 111 361 graph the output;
-#X obj 470 429 phasor~;
-#X msg 537 79 \; metro 0;
-#X msg 536 20 \; pd dsp 1 \; metro 1;
-#X floatatom 643 250 0 0 0 0 - - -;
-#X obj 643 280 sig~;
-#X text 528 271 convert to;
-#X text 518 287 audio signal;
-#X text 524 310 oscillator;
-#X text 485 248 frequency control;
-#X obj 643 311 osc~;
-#X text 62 143 change frequency;
+#N canvas 495 23 567 530 12;
+#X declare -stdpath ./;
+#X floatatom 123 144 5 0 0 0 - - - 0;
+#X text 18 491 see also:;
+#X obj 149 491 cos~;
+#X obj 185 491 tabread4~;
+#X obj 27 18 osc~;
+#X text 62 18 - cosine wave oscillator;
+#X obj 171 255 metro 500;
+#X obj 89 491 phasor~;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-array 100 float 0;
-#X coords 0 -1 100 1 200 100 1;
-#X restore 118 402 graph;
-#X text 43 49 The osc~ object outputs a cosine wave. If no argument
-is supplied \, the input is taken to be an audio signal. With a floating-point
-argument \, osc~ takes floating-point messages to change frequency.
+#X array \$0-array 200 float 0;
+#X coords 0 -1 199 1 200 100 1;
+#X restore 91 349 graph;
+#X text 343 492 updated for Pd version 0.33;
+#X obj 153 287 tabwrite~ \$0-array;
+#X obj 65 257 output~;
+#X obj 171 227 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000
+#000000 0 1;
+#X obj 123 176 osc~ 440;
+#X msg 176 144 0;
+#X text 245 143 <= reset phase;
+#X msg 210 144 0.5;
+#X text 21 143 set frequency;
+#X obj 342 251 sig~ 440;
+#X text 402 292 the frequency;
+#X obj 342 300 osc~;
+#X obj 392 410 declare -stdpath ./;
+#N canvas 731 147 586 252 reference 0;
+#X obj 18 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 18 153 cnv 2 550 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
+0;
+#X obj 18 190 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 17 227 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 47 18 osc~;
+#X text 82 18 - cosine wave oscillator;
+#X text 126 163 signal - cosine waveform (in the range of -1 to 1).
+, f 54;
+#X text 119 91 signal -;
+#X obj 17 115 cnv 1 550 1 empty empty 2nd: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 17 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 126 124 float -;
+#X text 183 124 phase cycle reset (from 0 to 1)., f 46;
+#X text 183 91 frequency value in Hz., f 46;
+#X text 134 199 1) float - initial frequency value in Hz (default 0).
 ;
-#X text 516 341 invoked without argument to;
-#X text 518 365 specify audio signal input;
-#X text 64 129 incoming numbers;
-#X obj 199 161 osc~ 1000;
-#X text 524 471 updated for Pd version 0.33;
-#X text 257 139 v-- messages to right inlet set phase in cycles;
-#X obj 112 339 tabwrite~ \$0-array;
-#X text 272 161 <= creation argument sets initial frequency;
-#X obj 275 340 dac~;
-#X text 607 88 <= click to stop;
-#X text 613 35 <= click to start;
-#X connect 0 0 40 0;
-#X connect 0 0 40 1;
-#X connect 1 0 35 0;
-#X connect 2 0 0 1;
-#X connect 3 0 2 0;
-#X connect 4 0 2 0;
-#X connect 16 0 38 0;
-#X connect 17 0 16 0;
-#X connect 17 0 16 0;
-#X connect 22 0 23 0;
-#X connect 23 0 28 0;
-#X connect 35 0 0 0;
-#X connect 35 0 38 0;
+#X restore 379 17 pd reference;
+#X text 477 18 <= click;
+#X obj 8 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 7 473 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 40 62 The [osc~] object outputs a cosine wave. The frequency
+input can be either a float or a signal. The right inlet resets the
+phase with values from 0 to 1 (where '1' is the same as '0' and '0.5'
+is half the cycle)., f 67;
+#X text 190 176 <-- creation argument sets initial frequency;
+#X text 195 227 <-- graph;
+#X text 353 275 <----- signal controlling;
+#X connect 0 0 13 0;
+#X connect 6 0 10 0;
+#X connect 12 0 6 0;
+#X connect 13 0 10 0;
+#X connect 13 0 11 0;
+#X connect 13 0 11 1;
+#X connect 14 0 13 1;
+#X connect 16 0 13 1;
+#X connect 18 0 20 0;

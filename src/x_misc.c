@@ -7,8 +7,6 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
-#include <math.h>
-#include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
 #include <wtypes.h>
@@ -27,14 +25,15 @@
 #if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
-#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__)
+#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__) \
+    || defined(_WIN32)
 #include <time.h>
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -158,6 +157,7 @@ static void namecanvas_setup(void)
 }
 
 /* -------------------------- cputime ------------------------------ */
+#ifdef CLOCKHZ
 
 static t_class *cputime_class;
 
@@ -240,6 +240,7 @@ static void cputime_setup(void)
     class_addbang(cputime_class, cputime_bang);
     class_addmethod(cputime_class, (t_method)cputime_bang2, gensym("bang2"), 0);
 }
+#endif /* CLOCKHZ */
 
 /* -------------------------- realtime ------------------------------ */
 
@@ -473,6 +474,7 @@ void oscparse_setup(void)
     oscparse_class = class_new(gensym("oscparse"), (t_newmethod)oscparse_new,
         0, sizeof(t_oscparse), 0, A_GIMME, 0);
     class_addlist(oscparse_class, oscparse_list);
+    class_sethelpsymbol(oscparse_class, gensym("osc-format-parse"));
 }
 
 /* --------- oscformat - format simple OSC messages -------------- */
@@ -688,6 +690,7 @@ void oscformat_setup(void)
     class_addmethod(oscformat_class, (t_method)oscformat_format,
         gensym("format"), A_DEFSYM, 0);
     class_addlist(oscformat_class, oscformat_list);
+    class_sethelpsymbol(oscformat_class, gensym("osc-format-parse"));
 }
 
 
@@ -777,8 +780,9 @@ void fudiparse_setup(void) {
                               sizeof(t_fudiparse), CLASS_DEFAULT,
                               0);
   class_addlist(fudiparse_class, fudiparse_list);
+  class_sethelpsymbol(fudiparse_class, gensym("fudi-format-parse"));
 }
-/* --------- oscformat - format Pd (FUDI) messages to bytelists ------------ */
+/* --------- fudiformat - format Pd (FUDI) messages to bytelists ------------ */
 
 static t_class *fudiformat_class;
 
@@ -850,6 +854,7 @@ static void fudiformat_setup(void) {
                                sizeof(t_fudiformat), CLASS_DEFAULT,
                                A_DEFSYMBOL, 0);
   class_addanything(fudiformat_class, fudiformat_any);
+  class_sethelpsymbol(fudiformat_class, gensym("fudi-format-parse"));
 }
 
 
@@ -859,7 +864,9 @@ void x_misc_setup(void)
     random_setup();
     loadbang_setup();
     namecanvas_setup();
+#ifdef CLOCKHZ
     cputime_setup();
+#endif /* CLOCKHZ */
     realtime_setup();
     oscparse_setup();
     oscformat_setup();

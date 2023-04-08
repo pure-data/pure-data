@@ -11,10 +11,8 @@ int sys_main(int argc, char **argv);
 #include <windows.h>
 #include <stdio.h>
 
-int WINAPI WinMain(HINSTANCE hInstance,
-                               HINSTANCE hPrevInstance,
-                               LPSTR lpCmdLine,
-                               int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine, int nCmdShow)
 {
     __try {
         sys_main(__argc,__argv);

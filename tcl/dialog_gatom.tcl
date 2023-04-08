@@ -4,6 +4,7 @@ package provide dialog_gatom 0.1
 package require wheredoesthisgo
 
 namespace eval ::dialog_gatom:: {
+    variable sizes {0 8 10 12 16 24 36}
     namespace export pdtk_gatom_dialog
 }
 
@@ -20,19 +21,19 @@ proc ::dialog_gatom::escape {sym} {
         if {[string equal -length 1 $sym "-"]} {
             set ret [string replace $sym 0 0 "--"]
         } else {
-            set ret [string map {"$" "#"} $sym]
+            set ret $sym
         }
     }
-    return [unspace_text $ret]
+    return [string map {"$" {\$}} [unspace_text $ret]]
 }
 
 proc ::dialog_gatom::unescape {sym} {
     if {[string equal -length 1 $sym "-"]} {
         set ret [string replace $sym 0 0 ""]
     } else {
-        set ret [string map {"#" "$"} $sym]
+        set ret $sym
     }
-    return $ret
+    return [respace_text $ret]
 }
 
 proc ::dialog_gatom::apply {mytoplevel} {
@@ -45,7 +46,8 @@ proc ::dialog_gatom::apply {mytoplevel} {
         [::dialog_gatom::escape [$mytoplevel.gatomlabel.name.entry get]] \
         $gatomlabel_radio($mytoplevel) \
         [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]] \
-        [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]]"
+        [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]] \
+        $::dialog_gatom::fontsize"
 }
 
 proc ::dialog_gatom::cancel {mytoplevel} {
@@ -59,11 +61,11 @@ proc ::dialog_gatom::ok {mytoplevel} {
 
 # set up the panel with the info from pd
 proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper \
-                                     initgatomlabel_radio \
-                                     initgatomlabel initreceive initsend} {
+    initgatomlabel_radio  initgatomlabel initreceive initsend  fontsize} {
+
     global gatomlabel_radio
     set gatomlabel_radio($mytoplevel) $initgatomlabel_radio
-
+    set ::dialog_gatom::fontsize $fontsize
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -97,13 +99,55 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     global gatomlabel_radio
 
     toplevel $mytoplevel -class DialogWindow
-    wm title $mytoplevel [_ "Atom Box Properties"]
+    wm title $mytoplevel [_ "GUI Box Properties"]
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
     wm transient $mytoplevel $::focused_window
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "gatom"
+
+    frame $mytoplevel.buttonframe -pady 5
+    pack $mytoplevel.buttonframe -side bottom -pady 2m
+    button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
+        -command "::dialog_gatom::cancel $mytoplevel" -highlightcolor green
+    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
+            -command "::dialog_gatom::apply $mytoplevel"
+        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
+    }
+    button $mytoplevel.buttonframe.ok -text [_ "OK"] \
+        -command "::dialog_gatom::ok $mytoplevel" -default active
+    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
+
+    labelframe $mytoplevel.s_r -text [_ "Messages"] -padx 5 -pady 5 -borderwidth 1
+    pack $mytoplevel.s_r -side bottom -fill x
+    frame $mytoplevel.s_r.send
+    pack $mytoplevel.s_r.send -side top -anchor e
+    label $mytoplevel.s_r.send.label -text [_ "Send symbol:"]
+    entry $mytoplevel.s_r.send.entry -width 21
+    pack $mytoplevel.s_r.send.entry $mytoplevel.s_r.send.label -side right
+
+    frame $mytoplevel.s_r.receive
+    pack $mytoplevel.s_r.receive -side top -anchor e
+    label $mytoplevel.s_r.receive.label -text [_ "Receive symbol:"]
+    entry $mytoplevel.s_r.receive.entry -width 21
+    pack $mytoplevel.s_r.receive.entry $mytoplevel.s_r.receive.label -side right
+
+    labelframe $mytoplevel.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
+        -width [::msgcat::mcmax "Font Size"] -labelanchor n
+    pack $mytoplevel.fontsize -side right -padx 5
+    foreach size $::dialog_gatom::sizes {
+        if {$size eq 0} {
+            set sizetext "auto"
+        } else {
+            set sizetext $size
+        }
+        radiobutton $mytoplevel.fontsize.radio$size -value $size -text $sizetext \
+            -variable ::dialog_gatom::fontsize
+        pack $mytoplevel.fontsize.radio$size -side top -anchor w
+    }
 
     frame $mytoplevel.width -height 7
     pack $mytoplevel.width -side top
@@ -144,34 +188,6 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     pack $mytoplevel.gatomlabel.radio.right -side right -anchor w
     pack $mytoplevel.gatomlabel.radio.top -side top -anchor w
     pack $mytoplevel.gatomlabel.radio.bottom -side bottom -anchor w
-
-    labelframe $mytoplevel.s_r -text [_ "Messages"] -padx 5 -pady 5 -borderwidth 1
-    pack $mytoplevel.s_r -side top -fill x
-    frame $mytoplevel.s_r.send
-    pack $mytoplevel.s_r.send -side top -anchor e
-    label $mytoplevel.s_r.send.label -text [_ "Send symbol:"]
-    entry $mytoplevel.s_r.send.entry -width 21
-    pack $mytoplevel.s_r.send.entry $mytoplevel.s_r.send.label -side right
-
-    frame $mytoplevel.s_r.receive
-    pack $mytoplevel.s_r.receive -side top -anchor e
-    label $mytoplevel.s_r.receive.label -text [_ "Receive symbol:"]
-    entry $mytoplevel.s_r.receive.entry -width 21
-    pack $mytoplevel.s_r.receive.entry $mytoplevel.s_r.receive.label -side right
-
-    frame $mytoplevel.buttonframe -pady 5
-    pack $mytoplevel.buttonframe -side top -pady 2m
-    button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
-        -command "::dialog_gatom::cancel $mytoplevel" -highlightcolor green
-    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
-    if {$::windowingsystem ne "aqua"} {
-        button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
-            -command "::dialog_gatom::apply $mytoplevel"
-        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
-    }
-    button $mytoplevel.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_gatom::ok $mytoplevel" -default active
-    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # live widget updates on OSX in lieu of Apply button
     if {$::windowingsystem eq "aqua"} {

@@ -1,0 +1,139 @@
+#N canvas 639 41 626 641 12;
+#X declare -stdpath ./;
+#N canvas 370 154 908 498 guts 0;
+#X obj 403 27 inlet;
+#N canvas 673 237 352 261 audio-transformation 0;
+#X obj 97 41 inlet~;
+#X obj 97 188 outlet~;
+#X obj 158 109 line~;
+#X obj 97 143 vcf~, f 18;
+#X obj 158 41 inlet;
+#X obj 220 41 inlet;
+#X msg 158 77 \$1 100;
+#X connect 0 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 1 0;
+#X connect 4 0 6 0;
+#X connect 5 0 3 2;
+#X connect 6 0 2 0;
+#X restore 245 317 pd audio-transformation;
+#X obj 35 207 openpanel;
+#X obj 324 27 inlet;
+#X obj 35 292 soundfiler;
+#X msg 35 321 resize \$1;
+#X obj 35 358 send \$0-output;
+#X msg 35 267 read -resize \$1 \$2;
+#X obj 35 239 list append \$0-input;
+#X obj 729 238 savepanel;
+#X obj 246 202 spigot;
+#X msg 285 174 0;
+#X msg 350 174 1;
+#X msg 224 231 bang;
+#X obj 411 367 +~;
+#X msg 432 138 \; pd dsp 1;
+#X obj 729 311 soundfiler;
+#X obj 535 230 savepanel;
+#X obj 535 319 soundfiler;
+#X obj 411 447 outlet~;
+#X obj 224 389 tabwrite~ \$0-output;
+#X obj 429 278 tabplay~ \$0-output, f 9;
+#X obj 245 271 tabplay~ \$0-input, f 8;
+#X obj 729 262 list append \$0-output;
+#X msg 729 286 write \$1 \$1;
+#X msg 535 294 write -normalize \$1 \$2;
+#X obj 535 261 list append \$0-output;
+#X obj 535 203 r \$0-save;
+#X obj 729 212 r \$0-save-normalized;
+#X obj 429 241 r \$0-hear;
+#X obj 35 178 r \$0-read;
+#X obj 224 74 r \$0-run;
+#X obj 432 76 r \$0-start;
+#X connect 0 0 1 2;
+#X connect 0 0 10 0;
+#X connect 1 0 20 0;
+#X connect 1 0 14 0;
+#X connect 2 0 8 0;
+#X connect 3 0 10 0;
+#X connect 3 0 1 1;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 7 0 4 0;
+#X connect 8 0 7 0;
+#X connect 9 0 23 0;
+#X connect 10 0 11 0;
+#X connect 10 0 13 0;
+#X connect 11 0 10 1;
+#X connect 12 0 10 1;
+#X connect 13 0 20 0;
+#X connect 13 0 22 0;
+#X connect 14 0 19 0;
+#X connect 17 0 26 0;
+#X connect 21 0 14 1;
+#X connect 22 0 1 0;
+#X connect 23 0 24 0;
+#X connect 24 0 16 0;
+#X connect 25 0 18 0;
+#X connect 26 0 25 0;
+#X connect 27 0 17 0;
+#X connect 28 0 9 0;
+#X connect 29 0 21 0;
+#X connect 30 0 2 0;
+#X connect 31 0 11 0;
+#X connect 31 0 13 0;
+#X connect 31 0 15 0;
+#X connect 32 0 15 0;
+#X connect 32 0 12 0;
+#X restore 198 435 pd guts;
+#X floatatom 176 395 7 0 0 0 - - - 0;
+#X floatatom 244 395 5 0 10000 0 - - - 0;
+#X obj 176 365 mtof;
+#X floatatom 176 339 7 0 128 0 - - - 0;
+#X text 47 21 Bandpass filter. Read in a sample first \, then you can
+either set a frequency and hit the "run" button or else hit the "start..."
+button and start the transformation by dragging on the frequency or
+q control., f 71;
+#X text 445 456 input sample;
+#X text 446 479 output sample;
+#X obj 331 480 table \$0-output;
+#X obj 331 456 table \$0-input;
+#X text 71 102 Click below to:;
+#X obj 198 475 output~;
+#X obj 374 92 declare -stdpath ./;
+#X obj 179 313 hsl 128 15 24 90 0 0 empty empty empty -2 -8 0 10 #dfdfdf
+#000000 #000000 0 1;
+#X text 184 311 center frequency;
+#X obj 247 367 hsl 128 15 1 100 1 0 empty empty empty -2 -8 0 10 #dfdfdf
+#000000 #000000 0 1;
+#X text 121 380 set in Hz -->, f 6;
+#X text 86 324 set in MIDI units ---->, f 11;
+#X text 72 557 Note -- you can shift-click on the number boxes to change
+them in hundredths. You can also click and type numbers in \, followed
+by the "enter" key., f 67;
+#X obj 161 137 bng 18 250 50 0 \$0-read dummy Read -38 9 0 13 #dfdfdf
+#000000 #202020;
+#X obj 161 161 bng 18 250 50 0 \$0-run dummy Run -31 9 0 13 #dfdfdf
+#000000 #000000;
+#X obj 161 186 bng 18 250 50 0 \$0-start dummy Start -46 9 0 13 #dfdfdf
+#000000 #000000;
+#X obj 161 210 bng 18 250 50 0 \$0-hear dummy Hear -40 9 0 13 #dfdfdf
+#000000 #000000;
+#X obj 161 234 bng 18 250 50 0 \$0-save dummy Save -40 9 0 13 #dfdfdf
+#000000 #000000;
+#X obj 161 259 bng 18 250 50 0 \$0-save-normalized dummy Normalized
+-87 9 0 13 #dfdfdf #000000 #000000;
+#X text 190 136 (read an input file);
+#X text 190 160 (run the transformation);
+#X text 190 209 (hear the output sample);
+#X text 190 233 (save the output sample);
+#X text 190 258 (save the output sample normalized to 1);
+#X text 190 185 (start transformation when I change frequency or Q)
+;
+#X text 286 394 <-- set "Q";
+#X connect 0 0 11 0;
+#X connect 0 0 11 1;
+#X connect 1 0 0 0;
+#X connect 2 0 0 1;
+#X connect 3 0 1 0;
+#X connect 4 0 3 0;
+#X connect 13 0 4 0;
+#X connect 15 0 2 0;

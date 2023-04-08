@@ -9,11 +9,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <alsa/asoundlib.h>
 #include "m_pd.h"
 #include "s_stuff.h"
@@ -43,7 +38,7 @@ static int alsa_midiinfd[MAXMIDIINDEV];
 static int alsa_nmidiout;
 static int alsa_midioutfd[MAXMIDIOUTDEV];
 
-static snd_seq_t *midi_handle;
+static snd_seq_t *midi_handle = NULL;
 
 static snd_midi_event_t *midiev;
 
@@ -132,9 +127,9 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
     if (portno >= 0 && portno < alsa_nmidiout)
     {
         snd_seq_event_t ev;
-        snd_seq_ev_clear(&ev);
         int status = a & 0xf0;
         int channel = a & 0x0f;
+        snd_seq_ev_clear(&ev);
         status = (status >= MIDI_SYSEX) ? status : (status & 0xf0);
         switch (status)
         {
@@ -145,7 +140,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 snd_seq_ev_set_noteoff(&ev, channel, b, c);
                 break;
             case MIDI_POLYAFTERTOUCH:
-                snd_seq_ev_set_chanpress(&ev, channel, b);
+                snd_seq_ev_set_keypress(&ev, channel, b, c);
                 break;
             case MIDI_CONTROLCHANGE:
                 snd_seq_ev_set_controller(&ev, channel, b, c);
@@ -196,6 +191,7 @@ void sys_alsa_putmidibyte(int portno, int byte)
   static snd_midi_event_t *dev = NULL;
   int res;
   snd_seq_event_t ev;
+  if (!midi_handle) return;
   if (!dev) {
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
     //assert(dev);
@@ -223,6 +219,7 @@ void sys_alsa_poll_midi(void)
    int count, alsa_source;
    snd_seq_event_t *midievent = NULL;
 
+   if (!midi_handle) return;
    if (!alsa_nmidiout && !alsa_nmidiin) return;
 
    snd_midi_event_init(midiev);
@@ -237,7 +234,7 @@ void sys_alsa_poll_midi(void)
                for(i = 0; i < length; i++)
                    sys_midibytein(alsa_source, (buf[i] & 0xff));
            } else if (rslt == -ENOSPC) {
-               error("MIDI input queue overflow!");
+               pd_error(0, "MIDI input queue overflow!");
            }
        }
    }

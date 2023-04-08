@@ -1,4 +1,4 @@
-#N canvas 315 93 745 541 12;
+#N canvas 367 47 745 541 12;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array waveform13 11 float 1;
 #A 0 1 1 1 1 1 1 1 -1 -1 -1 -1;
@@ -12,11 +12,9 @@
 #X array wave-out13 441 float 0;
 #X coords 0 1.02 440 -1.02 300 140 1;
 #X restore 405 217 graph;
-#X msg 183 218 bang;
 #N canvas 601 297 474 197 other-stuff 0;
 #X obj 73 42 loadbang;
-#X msg 73 74 \; waveform13 0 1 1 1 1 1 1 1 -1 -1 -1 -1 \; waveform13
-xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10 \; pd dsp 1;
+#X msg 73 74 \; waveform13 0 1 1 1 1 1 1 1 -1 -1 -1 -1 \; waveform13 xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10;
 #X connect 0 0 1 0;
 #X restore 561 421 pd other-stuff;
 #X obj 162 249 tabwrite~ wave-out13;
@@ -28,19 +26,18 @@ xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10 \; pd dsp 1;
 #X obj 214 348 tabosc4~ waveform13;
 #X text 63 295 (this would be;
 #X text 64 315 equivalent to the;
-#X text 46 398 This patch demonstrates 4-point interpolation in tabread4~.
-The 11-point table \, waveform13 \, contains a transition from from
-1 to -1 \, which is "smoothed" as seen in wave-out13. There's no such
-transition at the wrap around point--the interpolation always happens
-between 4 consecutive samples of the table \, disregarding wraparound.
-, f 65;
+#X text 46 398 This patch demonstrates 4-point interpolation in tabread4~. The 11-point table \, waveform13 \, contains a transition from from 1 to -1 \, which is "smoothed" as seen in wave-out13. There's no such transition at the wrap around point--the interpolation always happens between 4 consecutive samples of the table \, disregarding wraparound., f 65;
 #X text 138 335 above) =>;
-#X text 229 219 <=click to graph;
 #X text 59 146 adjustment =>;
 #X text 59 97 generation =>;
-#X connect 2 0 9 0;
-#X connect 6 0 8 0;
-#X connect 9 0 8 0;
-#X connect 10 0 2 0;
-#X connect 11 0 10 0;
-#X connect 13 0 14 0;
+#X text 204 217 <-- click to graph;
+#X obj 179 218 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X msg 53 233 \; pd dsp \$1;
+#X obj 53 208 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X connect 2 0 8 0;
+#X connect 8 0 7 0;
+#X connect 9 0 2 0;
+#X connect 10 0 9 0;
+#X connect 12 0 13 0;
+#X connect 21 0 7 0;
+#X connect 23 0 22 0;

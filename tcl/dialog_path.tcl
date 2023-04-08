@@ -46,7 +46,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     global installpath
     ::scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
-        [_ "Pd search path for objects, help, fonts, and other files"] \
+        [_ "Pd search path for objects, help, audio, text and other files"] \
         450 300 1
     wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "path"
@@ -239,7 +239,7 @@ proc ::dialog_path::add {} {
 }
 
 proc ::dialog_path::edit {currentpath} {
-    return [::dialog_path::choosePath $currentpath "Edit existing path \[$currentpath\]"]
+    return [::dialog_path::choosePath $currentpath [format [_ "Edit existing path \[%s\]" ] $currentpath] ]
 }
 
 proc ::dialog_path::commit {new_path} {

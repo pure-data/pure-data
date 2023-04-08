@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 
-<HTML>
-  <HEAD>
-  <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	 <TITLE>Pd Documentation 2</TITLE>
-	<meta http-equiv="Content-Type" content="text/html">
-	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
-  </HEAD>
+<HTML lang="en">
+<HEAD>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<TITLE>Pd Manual 2</TITLE>
+<meta http-equiv="Content-Type" content="text/html">
+<link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+<link rel="icon" type="image/png" href="favicon.ico">
+</HEAD>
   
 
 <BODY>
 
-<H2>Pd Documentation chapter 2: theory of operation</H2>
+
+<div class="butt">
+
+</div>
+
+<div id=corpus>
+
+<H2>Pd Manual chapter 2: theory of operation</H2>
 
 <P>
 <A href="index.htm#s2"> back to table of contents</A>
@@ -24,27 +31,34 @@
 
 <P> The purpose of this chapter is to describe Pd's design and how it is
 supposed to work.  Practical details about how to obtain, install, and run Pd 
-are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive guidaes (and to
+are described in the <A href=x3.htm>next chapter</A>.  Links to more extensive guides (and to
 more theoretical information about computer music) can be found in the
 <A href=x1.htm>previous chapter</A>.
 
 <H3> <A id=s1> 2.1 overview </A> </H3>
 
 <P>Pd is a real-time graphical programming environment for audio and graphical
-processing.  It resembles the Max/MSP system but is much simpler and more
-portable; also Pd has two features not (yet) showing up in Max/MSP: first,
-via Mark Dank's GEM package, Pd can be used for simultaneous computer
-animation and computer audio.  Second, an experimental facility is provided
-for defining and accessing data structures.
+processing. It resembles the MAX system but is much simpler and more portable.
+For example, with Peter Brinkmann's libpd you can have Pure Data as an embeddable
+audio synthesis library. Also Pd has an experimental facility not present in MAX
+that is provided for defining and accessing data structures.
+
+<P>Even though it is light and portable, Pd has many external packages that
+expand its features, like Mark Dank's GEM package which expands Pd to be used
+for simultaneous computer animation and computer audio. Similarly, Zack Lee's Ofelia
+package allows you to use openFrameworks and Lua within Pd for creating audiovisual
+artwork or multimedia applications such as games.
 
 <H3> <A id=s1.1> 2.1.1. the main window, canvases, and printout </A> </H3>
 
 <P>When Pd is running, you'll see a main "Pd" window, and possibly one or more
-"canvases" or "patches".   The main Pd window looks like this:
+"canvases" or "patches". The main Pd window looks like this:
 
 <CENTER><P>
     <IMG src="fig1.1.png" ALT="pd window">
 </P></CENTER>
+
+<!-- cooment out:
 
 <P> There are peak level and clip indicators for audio input and output; these
 report peak levels over all input and all output channels.  Note that DC
@@ -71,8 +85,10 @@ computation runs late (so that the DAC FIFOs fill and/or the ADC FIFOs empty)
 or if audio input and output are not running at the same rate.  See
 <a href="x3.htm#s2"> audio and MIDI support </A>.
 
+-- end comment out -->
+
 <P> The bottom part of the Pd window is an area for printout from objects in
-patches, and/or for messages from Pd itself.
+patches, and/or for messages from Pd itself. The menus and console font size can be changed using the <b>Edit/Font</b> menu dialog when the Pd window is focused. Make your adjustments if you are having troubles reading on HiDPI screens.
 
 <P> Pd documents are called "patches" or "canvases."
 Each open document has one main window and any number of
@@ -139,7 +155,7 @@ creation arguments.
 function sporadically, as a result of one or more type of <I> event </I>. In
 this case, incoming MIDI note messages set off the control computation.  The
 result of the computation is, when the note happens to be a "note on" (and not
-a "note off", to compute the frequency in cycles per second and pass it on to
+a "note off"), to compute the frequency in cycles per second and pass it on to
 the oscillator ("osc~").
 
 <P> The second half of the patch, the osc~, *~, and dac~ objects, compute audio
@@ -193,9 +209,8 @@ control by clicking and dragging up and down, or by typing values in it.
 (There are also shift- and alt-click actions; see <A href="x2.htm#s2.7">
 getting help </A> to find out how to look this up).
 
-<P> You can also create a "symbol" box which is like a number box but deals
-in symbols like "cat."  You can type your own strings in (followed by "enter")
-or use it to display strings which arrive as messages to its inlet.
+<P> In addition to numbers, Pd defines GUI boxes to display and edit symbols
+or arbitrary lists of atoms.
 
 <H3> <A id="s1.4"> 2.1.4. patches and files </A> </H3>
 
@@ -269,13 +284,6 @@ into and out of "text" dialogs (created with the "edit text" menu item.)
 only click once, the entire text is selected and your typing will replace
 everything. Click again and drag to select a portion of the text to retype.
 
-<P> If there's
-more than a small amount of text (in a comment, for example) you might want to 
-select the text and choose "text editor" from the Edit menu, which opens a text
-editing window with a copy of the text in it.  Hitting "send" in that window is
-exactly equivalent to retyping the text into Pd; you can send it to more than
-one box in sequence if you want.
-
 <P> If you click a box and move the mouse without releasing the button this
 displaces the entire box.  If you wish to displace a box which is already
 selected, first de-select the box by clicking outside it; otherwise you will be
@@ -317,7 +325,7 @@ objects, or of the patch itself (by clicking outside any box.)
 
 <H3> <A id=s2.7> 2.2.8. miscellaneous </A> </H3>
 
-<P> Control-q "quits" Pd, but asks you to comfirm the quit.  To quit without
+<P> Control-q "quits" Pd, but asks you to confirm the quit.  To quit without
 having to confirm, use command-shift-Q.
 
 <H3> <A id="s3"> 2.3. messages </A> </H3>
@@ -331,8 +339,8 @@ Pd messages are sporadic, like MIDI messages or music N "Note cards."
 any number of arguments.  The selector is a symbol, which appears in the patch
 as a non-numeric string with no white space, semicolons, or commas.  The
 arguments may be symbols or numbers.  Numbers in Pd are kept in 32-bit floating
-point, so that they can represent integers exactly between -8388608 and
-8388608.  (In Max, there are separate data types for integers and floating
+point, so that they can represent integers exactly between −16777216 and
+16777216.  (In Max, there are separate data types for integers and floating
 point numbers; Pd uses only float.)
 
 <P> When a message is passed to something (which is often an inlet of a box 
@@ -803,21 +811,21 @@ next section) they are
 taken from the abstractions' creation arguments.
 
 <P>  Constructions such as "$1-x" are expanded by string concatenation.  This
-is the mechanism for making local variables.  In particular, $0 in an abstraction
-is a counter which is guaranteed to be unique to that abstraction, so sends and
-receives with names like "$0-bear" can be used as local send/receive pairs.
+is the mechanism for making local variables. In particular, $0 is a counter,
+where every patch gets its own value. In an abstraction this guarantees a unique
+ID number to that abstraction, so sends and receives with names like "$0-bear"
+can be used as local send/receive pairs. This is also useful for things like
+array names, value names and text names (as defined in the text object).
 
-<P>  Note that the expansion of variables such as $0 and $1 only works at the
-beginning of the symbol; so, for instance, "rats-$1" will not be expanded.
-Occasionally you may want to have double or triple substitutions; this can
+<P> Occasionally you may want to have double or triple substitutions; this can
 be done one stage at a time by nesting abstractions (with each subpatch
-adding its own $-variable to the beginning of a symbol and passing that on
+adding its own $-variable to a symbol and passing that on
 as argument to a further abstraction.)
 
 <P> For example, if you want to get dog-food, dog-ears, and cat-food, for
 example,   have an abstraction  "a1" that invokes an abstraction "a2" twice, as
 "a2   $1-food" and "a2 $1-ears", and then in a third patch call a1 twice,   as
-"a1 cat" and "a1 dog".  Inside the four "a2" copioes,   $1 will evaluate to
+"a1 cat" and "a1 dog".  Inside the four "a2" copies,   $1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
 
 <H3> <A id="s7"> 2.7. subpatches </A> </H3>
@@ -839,11 +847,11 @@ individually.
 
 <P> The objects, "inlet,", "inlet~," "outlet," and "outlet~,", when put in a
 subpatch, create inlets and outlets for the object box containing the subpatch.
-This works equally for one-off subpatches and abstractions.  The inlet~ and
-outlet~ versions create inlets and outlets for audio signals.  You can't mix
-messages and audio in a subpatch inlet or outlet; they must be one or the other
-exclusively.  Inlets and outlets appear on the invoking box in the same left-to-right
-order as they appear in the subpatch.
+This works equally for one-off subpatches and abstractions and only accept control 
+data messages. The inlet~ and outlet~ versions create inlets and outlets for audio 
+signals. Note you can also mix control messages in an inlet~ with the 'fwd' argument
+but a signal outlet only takes signals. Inlets and outlets appear on the invoking box 
+in the same left-to-right order as they appear in the subpatch.
 
 <H3> <A id="s7.1"> 2.7.1. abstractions </A> </H3>
 
@@ -975,7 +983,7 @@ new graph is created to hold the array, but it may also be housed in the
 most recently created graph instead.  Other properties may be specified there
 and/or changed later using the "properties" dialog.
 
-<P>  If you select "properties" on an array in a graph, you two dialogs, one
+<P>  If you select "properties" on an array in a graph, you get two dialogs, one
 for the array and one for the graph.  The array dialog looks like this:
 
 <CENTER><P>  <IMG src="fig8.5.jpg" ALT="array properties window">  </P></CENTER>
@@ -1020,7 +1028,7 @@ computer-based score editor. In this context, scores by Stockhausen (<I>
 Kontakte</I> and <I> Studie II</I>) and Yuasa (<I>Toward the Midnight Sun</I>)
 come most prominently to  mind, but also Xenakis's <I>Mycenae-alpha</I>, which,
 although it was realized using a computer, was scored on paper and only
-afterward laboriously transcribed into the computer.
+afterwards laboriously transcribed into the computer.
 
 <P>  Pd is designed to to offer an extremely unstructured environment for
 describing data structures and their graphical appearance.   The underlying
@@ -1096,16 +1104,16 @@ color is given as 0, or black.  The second one plots "pitch" using the color
 <H3> <A id="s9.1"> 2.9.1. Traversal </A> </H3>
 
 <P> Pd objects are provided to traverse lists and arrays, and to address
-elements of data structures for getting and setting.  Here is a patch showing
+elements of data structures for getting and setting. Here is a patch showing
 how these facilities could be used, for example, to sequence the graphical
 score shown above:
 
 <CENTER><P>  <IMG src="fig9.3.jpg" ALT="traversal example patch">  </P></CENTER>
 
 <P> Pd has no built-in sequencer, nor even any notion that "x" values should be
-used as a time axis.  (However, a "sort" function is provided, which reorders
+used as a time axis. (However, a "sort" function is provided, which reorders
 a list from left to right, on the assumption that users might often want to use Pd
-data collections as x-ordered sequences.)  Recording sequences of events into
+data collections as x-ordered sequences.) Recording sequences of events into
 lists, and/or playing the lists back as sequences, are functionalities that the
 user is expected to supply on top of Pd's offerings, which, it is hoped, would
 allow those functionalities within a much larger range of possibilities, to
@@ -1113,13 +1121,12 @@ include random re-orderings of events, score following, self-modifying scores,
 reactive improvisation, and perhaps much more.
 
 <P> Traversal of data is made possible by adding a new type of atom, "pointer",
-to  the two previously defined types that make up messages, to wit, numbers and
-symbols.  Unlike numbers and symbols, pointers have no printed form and thus
-can't be uttered in message boxes.  Traversal objects such as "pointer" and
-"get" (among several others) can generate or use pointers.  The pointer data
+to the two previously defined types that make up messages (numbers and symbols).
+Unlike numbers and symbols, pointers have no printed form and thus can't be
+uttered in message boxes. Traversal objects such as "pointer" and "get"
+(among several others) can generate or use pointers. The pointer data
 type is also integrated into pipe-fitting objects such as "pack",
-"unpack",
-and "route".
+"unpack", and "route".
 
 <P>  In the patch shown above, the topmost "pointer" object holds a pointer to
 the next object to "play" (by sending it to one of the "voice"
@@ -1218,7 +1225,7 @@ text representation for the data, which may be seen or changed in a dialog
 window or read and written to external text files.
 
 <P>  Since the graphical presentation of data objects is determined by drawing
-instructions, the drawing instructions are interpreted backwards to alter data
+instructions, the drawing instructions are interpreted backward to alter data
 as a result of mouse operations.  If a given graphical dimension is controlled
 by a variable, that variable is then controlled by dragging along that
 dimension; if the dimension is constant, it can't be altered by dragging.
@@ -1271,6 +1278,16 @@ and "set" objects.
 recently been implemented in its current form, and as (hopefully) the user base
 grows there will surely be occasions for many further extensions of the data
 handling primitives and the graphical presentation and editing functions.
+
+
+<P>
+<BR><BR>
+<A href="x3.htm"> next chapter </A><BR>
+<A href="index.htm#s2"> back to table of contents </A> 
+<BR><BR>
+</P>
+</div>
+
 
 </BODY>
 </HTML>

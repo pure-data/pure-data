@@ -1,4 +1,5 @@
 #N canvas 520 54 688 657 12;
+#X declare -stdpath ./;
 #X obj 55 377 osc~;
 #X obj 55 407 *~;
 #X obj 107 381 line~;
@@ -48,6 +49,7 @@ linear envelopes \, the other with quartic ones which sound more uniform.
 The message boxes sweep the amplitude and frequency up and down. You
 can compare the two to see that quartic-shaped changes sound more uniform
 than linear ones., f 68;
+#X obj 510 22 declare -stdpath ./;
 #X connect 0 0 1 0;
 #X connect 1 0 35 0;
 #X connect 1 0 35 1;

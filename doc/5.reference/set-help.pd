@@ -1,78 +1,130 @@
-#N struct help-set-template1 float x float y symbol s;
-#N canvas 525 23 540 746 12;
-#X text 75 652 see also:;
-#X obj 181 675 append;
-#X obj 239 675 getsize;
-#X obj 82 700 setsize;
-#X obj 207 699 element;
-#X msg 229 175 next;
-#X floatatom 36 195 5 0 0 0 - - -;
-#X floatatom 125 203 5 0 0 0 - - -;
-#X obj 215 200 pointer;
-#X text 292 133 output first scalar in list;
-#X text 275 175 output next item;
-#X text 237 228 First argument selects template.;
-#X text 238 243 Remaining args are names of fields.;
-#X obj 80 674 pointer;
-#X msg 215 151 traverse pd-help-set-data \, next;
-#N canvas 149 161 276 122 help-set-data 1;
-#X scalar help-set-template1 39 23 dog \;;
-#X scalar help-set-template1 99 73 cat \;;
-#X restore 355 642 pd help-set-data;
-#N canvas 541 405 409 179 help-set-template1 0;
-#X obj 44 81 filledpolygon 9 0 1 0 0 20 0 20 30 0 30;
-#X obj 42 28 struct help-set-template1 float x float y symbol s;
-#X obj 49 127 drawsymbol s 0 -15 0 s=;
-#X restore 355 664 pd help-set-template1;
-#X text 68 13 -- set values in a scalar;
-#X obj 36 226 set help-set-template1 x y;
-#X text 35 177 x value;
-#X text 123 184 y value;
-#X obj 148 674 get;
-#X obj 148 699 struct;
-#X obj 37 13 set;
-#X msg 291 365 next;
-#X obj 277 390 pointer;
-#X msg 277 341 traverse pd-help-set-data \, next;
-#X obj 56 422 set -symbol help-set-template1 s;
-#X symbolatom 56 396 10 0 0 0 - - -;
-#X msg 56 343 symbol monkey;
-#X msg 64 369 symbol fish;
-#X text 47 277 To set fields whose values are symbols \, give the set
-object the "-symbol" argument. (Unfortunately \, you can't mix symbols
-and numbers in the same "set" object.), f 61;
-#X text 30 37 "Set" takes a pointer to a scalar in its rightmost inlet
-\; the remaining inlets set numeric fields. Symbols are handled specially
-\, as shown below. Arrays are accessed using the "element" object \,
-and lists using "text" objects. Only the leftmost inlet is "hot".;
-#X text 331 695 updated for Pd version 0.47;
-#X text 55 451 You can use the template "-" as a wild card (this may
+#N struct set-template float x float y symbol s;
+#N canvas 609 23 568 698 12;
+#X text 15 648 see also:;
+#X obj 123 637 append;
+#X obj 181 637 getsize;
+#X obj 92 662 setsize;
+#X obj 157 661 element;
+#X msg 283 166 next;
+#X floatatom 110 168 5 0 200 0 - - - 0;
+#X floatatom 157 168 5 0 200 0 - - - 0;
+#X obj 268 192 pointer;
+#X text 322 167 output next item;
+#X text 285 231 Remaining args are names of fields.;
+#X obj 220 660 pointer;
+#X msg 268 139 traverse pd-set-data \, next;
+#N canvas 296 165 297 270 set-data 1;
+#X scalar set-template 70 32 monkey \;;
+#X scalar set-template 143 78 fish \;;
+#X coords 0 270 1 269 0 0 0;
+#X restore 407 562 pd set-data;
+#N canvas 637 400 495 262 set-template 0;
+#X obj 69 54 struct set-template float x float y symbol s;
+#X text 45 18 a struct with x/y coordinate fields and a 's' symbol
+field.;
+#X text 102 103 draw a filled polygon;
+#X text 100 179 drawing instruction for the 's' field;
+#X obj 98 130 filledpolygon 9 0 1 0 30 20 30 20 60 0 60;
+#X obj 138 210 drawsymbol s 25 50 0 s\ =\ ;
+#X restore 407 584 pd set-template;
+#X obj 110 218 set set-template x y, f 23;
+#X text 51 168 x value;
+#X text 197 167 y value;
+#X obj 92 636 get;
+#X obj 33 12 set;
+#X msg 340 335 next;
+#X obj 326 361 pointer;
+#X msg 326 309 traverse pd-set-data \, next;
+#X obj 148 392 set -symbol set-template s;
+#X symbolatom 148 364 10 0 0 0 - - - 0;
+#X msg 148 311 symbol monkey;
+#X msg 156 337 symbol fish;
+#X text 346 664 updated for Pd version 0.47;
+#X text 25 423 You can use the template "-" as a wild card (this may
 be slower than if you use a specific template name). Also \, if there
 are zero or one fields specified \, you can send a "set" message to
-set a new template name and field name:;
-#X obj 101 581 set - x;
-#X obj 233 629 set;
-#X floatatom 101 554 5 0 0 0 - - -;
-#X msg 158 529 traverse pd-help-set-data \, next;
-#X obj 158 553 pointer;
-#X floatatom 233 570 5 0 0 0 - - -;
-#X msg 297 566 set help-set-template1 x;
-#X msg 296 593 set - x;
+set a new template name and field name:, f 73;
+#X obj 122 570 set - x;
+#X obj 243 588 set;
+#X floatatom 122 543 5 0 0 0 - - - 0;
+#X msg 168 488 traverse pd-set-data \, next;
+#X obj 168 512 pointer;
+#X floatatom 243 529 5 0 0 0 - - - 0;
+#X msg 307 525 set set-template x;
+#X msg 306 552 set - x;
+#X text 284 216 First argument sets template.;
+#X text 49 138 output first scalar in list =>;
+#X obj 157 192 t b f;
+#X text 64 12 - set values in a scalar;
+#X text 486 10 <= click;
+#N canvas 743 102 571 442 reference 0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
+0;
+#X obj 8 260 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 8 297 cnv 2 550 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
+0;
+#X obj 7 416 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 7 166 cnv 1 550 1 empty empty 'n': 8 12 0 13 #7c7c7c #000000
+0;
+#X text 54 169 number of arguments set 'n' fields and we create 'n'
+inlets for them., f 70;
+#X obj 7 220 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 111 368 symbol - structure name., f 49;
+#X text 125 388 list - symbols for field names (each creates an inlet).
+;
+#X obj 28 18 set;
+#X text 59 18 - set values in a scalar;
+#X text 136 195 float/symbol - value in a scalar., f 42;
+#X text 113 230 pointer - a pointer to the scalar.;
+#X text 129 268 none;
+#X obj 7 88 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 26 122 set <symbol \, symbol> -;
+#X text 187 122 if none or just one field is given \, you can use 'set'
+to set struct name and field., f 47;
+#X obj 7 322 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
+0;
+#X obj 7 361 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
+0;
+#X text 111 332 "-symbol" - so you can set symbol values.;
+#X text 138 100 bang - set values with previously given data., f 54
+;
+#X restore 392 10 pd reference;
+#X obj 9 41 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 9 622 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X obj 242 638 text set;
+#X obj 312 638 array set;
+#X text 20 49 [set] takes a pointer to a scalar in its rightmost inlet.
+The remaining inlets set fields values for floats and symbols (no text
+\, in which case you should use [text set]). Arrays are accessed using
+the [element] object \, but you can also use [array set] instead. Only
+the leftmost inlet is "hot" and it also takes "bang" messages., f
+73;
+#X text 27 257 To set fields whose values are symbols \, give the set
+object the "-symbol" argument. (Unfortunately \, you can't mix symbols
+and numbers in the same [set] object.), f 73;
 #X connect 5 0 8 0;
-#X connect 6 0 18 0;
-#X connect 7 0 18 1;
-#X connect 8 0 18 2;
-#X connect 14 0 8 0;
-#X connect 24 0 25 0;
-#X connect 25 0 27 1;
-#X connect 26 0 25 0;
-#X connect 28 0 27 0;
-#X connect 29 0 28 0;
-#X connect 30 0 28 0;
-#X connect 37 0 35 0;
-#X connect 38 0 39 0;
-#X connect 39 0 36 1;
-#X connect 39 0 35 1;
-#X connect 40 0 36 0;
-#X connect 41 0 36 0;
-#X connect 42 0 36 0;
+#X connect 6 0 15 0;
+#X connect 7 0 39 0;
+#X connect 8 0 15 2;
+#X connect 12 0 8 0;
+#X connect 20 0 21 0;
+#X connect 21 0 23 1;
+#X connect 22 0 21 0;
+#X connect 24 0 23 0;
+#X connect 25 0 24 0;
+#X connect 26 0 24 0;
+#X connect 31 0 29 0;
+#X connect 32 0 33 0;
+#X connect 33 0 30 1;
+#X connect 33 0 29 1;
+#X connect 34 0 30 0;
+#X connect 35 0 30 0;
+#X connect 36 0 30 0;
+#X connect 39 0 15 0;
+#X connect 39 1 15 1;

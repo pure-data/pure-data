@@ -13,14 +13,14 @@
 
   modified by Bryan Jurish (moo) March 2009
   + removed some unneeded functions (escapes, printf etc), added others
+
+  modified by IOhannes m zmölnig (umlaeute) Nov 2021
+  + convert native strings to UTF-8
 */
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -46,7 +46,7 @@ static const char trailingBytesForUTF8[256] = {
 
 
 /* returns length of next utf-8 sequence */
-int u8_seqlen(char *s)
+int u8_seqlen(const char *s)
 {
     return trailingBytesForUTF8[(unsigned int)(unsigned char)s[0]] + 1;
 }
@@ -61,10 +61,10 @@ int u8_seqlen(char *s)
    for all the characters.
    if sz = srcsz+1 (i.e. 4*srcsz+4 bytes), there will always be enough space.
 */
-int u8_utf8toucs2(uint16_t *dest, int sz, char *src, int srcsz)
+int u8_utf8toucs2(uint16_t *dest, int sz, const char *src, int srcsz)
 {
     uint16_t ch;
-    char *src_end = src + srcsz;
+    const char *src_end = src + srcsz;
     int nb;
     int i=0;
 
@@ -105,7 +105,7 @@ int u8_utf8toucs2(uint16_t *dest, int sz, char *src, int srcsz)
    the NUL as well.
    the destination string will never be bigger than the source string.
 */
-int u8_ucs2toutf8(char *dest, int sz, uint16_t *src, int srcsz)
+int u8_ucs2toutf8(char *dest, int sz, const uint16_t *src, int srcsz)
 {
     uint16_t ch;
     int i = 0;
@@ -184,9 +184,9 @@ int u8_wc_toutf8_nul(char *dest, uint32_t ch)
 }
 
 /* charnum => byte offset */
-int u8_offset(char *str, int charnum)
+int u8_offset(const char *str, int charnum)
 {
-    char *string = str;
+    const char *string = str;
 
     while (charnum > 0 && *string != '\0') {
         if (*string++ & 0x80) {
@@ -207,11 +207,11 @@ int u8_offset(char *str, int charnum)
 }
 
 /* byte offset => charnum */
-int u8_charnum(char *s, int offset)
+int u8_charnum(const char *s, int offset)
 {
     int charnum = 0;
-    char *string = s;
-    char *const end = string + offset;
+    const char *string = s;
+    const char *const end = string + offset;
 
     while (string < end && *string != '\0') {
         if (*string++ & 0x80) {
@@ -231,7 +231,7 @@ int u8_charnum(char *s, int offset)
 }
 
 /* reads the next utf-8 sequence out of a string, updating an index */
-uint32_t u8_nextchar(char *s, int *i)
+uint32_t u8_nextchar(const char *s, int *i)
 {
     uint32_t ch = 0;
     int sz = 0;
@@ -247,7 +247,7 @@ uint32_t u8_nextchar(char *s, int *i)
 }
 
 /* number of characters */
-int u8_strlen(char *s)
+int u8_strlen(const char *s)
 {
     int count = 0;
     int i = 0;
@@ -258,7 +258,7 @@ int u8_strlen(char *s)
     return count;
 }
 
-void u8_inc(char *s, int *i)
+void u8_inc(const char *s, int *i)
 {
     if (s[(*i)++] & 0x80) {
         if (!isutf(s[*i])) {
@@ -273,9 +273,44 @@ void u8_inc(char *s, int *i)
     }
 }
 
-void u8_dec(char *s, int *i)
+void u8_dec(const char *s, int *i)
 {
     (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
            isutf(s[--(*i)]) || --(*i));
 }
 
+
+/* srcsz = number of source characters, or -1 if 0-terminated
+   sz = size of dest buffer in bytes
+
+   returns # characters converted
+*/
+#ifdef _WIN32
+#include <windows.h>
+#endif
+int u8_nativetoutf8(char *dest, int sz, const char *src, int srcsz)
+{
+    int len;
+#ifdef _WIN32
+    int res;
+    wchar_t*wbuf = 0;
+    if(srcsz < 0) {
+        len = MultiByteToWideChar(CP_OEMCP, 0, src, srcsz, wbuf, 0);
+    } else {
+        len = (srcsz < sz)?srcsz:sz;
+    }
+    wbuf = getbytes(len * sizeof(*wbuf));
+    res = MultiByteToWideChar(CP_OEMCP, 0, src, srcsz, wbuf, len);
+    if(res) {
+        res = WideCharToMultiByte(CP_UTF8, 0, wbuf, len, dest, sz, 0, 0);
+    }
+    freebytes(wbuf, len * sizeof(*wbuf));
+    return (res)?len:0;
+#endif
+        /* on other systems, we use UTF-8 for everything, so this is a no-op */
+    if(srcsz < 0)
+        srcsz = strlen(src) + 1;
+    len = (srcsz < sz)?srcsz:sz;
+    strncpy(dest, src, len);
+    return len;
+}

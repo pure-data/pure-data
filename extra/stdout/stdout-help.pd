@@ -1,38 +1,67 @@
-#N canvas 124 51 758 493 12;
-#X msg 126 203 walk the dog;
-#X msg 117 156 1;
-#X obj 117 240 stdout;
-#X obj 14 13 stdout;
-#X text 67 14 - write messages to standard output;
-#X msg 122 179 1 2;
-#X obj 119 431 pd~;
-#X text 44 431 see also:;
-#X text 34 39 Sends messages to Pd's standard output. This is useful
-in conjunction with the pd~ object \, which starts a pd sub-process.
-Messages sent to the sub-process standard output appear on the output
-of the pd~ object in the owning process. This might also be useful
-in other situations. Note that there's no corresponding "stdin" object
-- there seems to be no one canonical way such a thing should act.;
-#X msg 256 203 walk the dog;
-#X msg 247 156 1;
-#X msg 252 179 1 2;
-#X text 269 427 updated for Pd version 0.48;
-#X obj 247 240 stdout -cr;
-#X msg 383 178 100 111 117 98 108 101 32 32 115 112 97 99 101 44 32
+#N canvas 573 28 617 452 12;
+#X msg 77 206 walk the dog;
+#X msg 53 159 1;
+#X obj 68 243 stdout;
+#X obj 38 14 stdout;
+#X msg 68 182 1 2;
+#X obj 93 417 pd~;
+#X text 18 416 see also:;
+#X msg 207 206 walk the dog;
+#X msg 188 159 1;
+#X msg 198 182 1 2;
+#X text 386 416 updated for Pd version 0.48;
+#X obj 198 243 stdout -cr;
+#X msg 334 181 100 111 117 98 108 101 32 32 115 112 97 99 101 44 32
 80 100 10, f 32;
-#X obj 383 240 stdout -b;
-#X text 45 307 special flags:;
-#X text 76 332 -cr: omit trailing semicolon in output (like [print])
-;
-#X text 79 352 -b \, -binary: binary mode;
-#X text 79 392 -nf \, -noflush: do not fflush the output after each
-message;
-#X text 79 372 -f \, -flush: fflush the output after each message (default
+#X obj 334 243 stdout -b;
+#X text 45 282 special flags:;
+#X obj 6 43 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 515 12 <= click;
+#N canvas 627 114 663 251 reference 0;
+#X obj 6 40 cnv 5 640 5 empty empty INLET: 8 18 0 13 #202020 #000000
+0;
+#X obj 6 79 cnv 2 640 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
+0;
+#X obj 6 107 cnv 2 640 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
+0;
+#X obj 5 224 cnv 5 640 5 empty empty empty 8 18 0 13 #202020 #000000
+0;
+#X obj 5 135 cnv 1 640 1 empty empty flags: 8 12 0 13 #9f9f9f #000000
+0;
+#X obj 34 9 stdout;
+#X text 87 9 - write messages to standard output;
+#X text 119 50 anything - any message to be written/sent to standard
+output., f 62;
+#X text 148 84 NONE.;
+#X text 124 159 -b: -binary: sets to binary mode., f 65;
+#X text 117 141 -cr: omit trailing semicolon in output (like [print]).
+, f 66;
+#X text 124 177 -f: -flush: flush the output after each message (default
+on W32)., f 65;
+#X text 117 195 -nf: -noflush: do not flush the output after each message.
+, f 66;
+#X restore 421 13 pd reference;
+#X obj 6 403 cnv 1 600 1 empty empty empty 8 12 0 13 #000000 #000000
+0;
+#X text 77 324 -b: -binary: binary mode, f 65;
+#X text 70 360 -nf: -noflush: do not flush the output after each message
+, f 66;
+#X text 70 306 -cr: omit trailing semicolon in output (like [print])
+, f 66;
+#X text 91 14 - write messages to standard output;
+#X text 77 342 -f: -flush: flush the output after each message (default
 on W32), f 65;
+#X text 19 61 The [stdout] object is useful in conjunction with the
+pd~ object \, which starts a Pd sub-process. Messages sent to the sub-process
+standard output appear on the left output of the [pd~] object in the
+owning process. This might also be useful in other situations. Note
+that there's no corresponding "stdin" object - there seems to be no
+one canonical way such a thing should act., f 81;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
-#X connect 5 0 2 0;
-#X connect 9 0 13 0;
-#X connect 10 0 13 0;
-#X connect 11 0 13 0;
-#X connect 14 0 15 0;
+#X connect 4 0 2 0;
+#X connect 7 0 11 0;
+#X connect 8 0 11 0;
+#X connect 9 0 11 0;
+#X connect 12 0 13 0;

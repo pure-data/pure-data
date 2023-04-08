@@ -12,9 +12,8 @@
 #X text 571 371 0;
 #X text 553 294 pi;
 #X text 546 224 2pi;
-#X obj 81 252 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X floatatom 81 310 5 0 0 0 - - -;
+#X obj 81 249 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X floatatom 81 310 5 0 0 0 - - - 0;
 #X text 559 21 2;
 #X text 54 20 MEASURING FILTER FREQUENCY AND PHASE RESPONSE;
 #X text 581 404 updated for Pd version 0.39;
@@ -22,37 +21,31 @@
 #X text 569 170 0;
 #X text 752 173 44100;
 #N canvas 876 177 298 247 startup 0;
-#X obj 47 24 loadbang;
-#X obj 47 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 47 67 f \$0;
-#X text 61 174 This subpatch loads initial;
-#X text 64 194 values in number boxes.;
-#X msg 47 91 \; \$1-freq 3000 \; \$1-q 3;
+#X obj 47 27 loadbang;
+#X obj 47 51 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 47 80 f \$0;
+#X text 61 187 This subpatch loads initial;
+#X text 64 207 values in number boxes.;
+#X msg 47 104 \; \$1-freq 3000 \; \$1-q 3;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X restore 329 358 pd startup;
-#X floatatom 275 276 5 0 10000 0 - #0-freq -;
-#X floatatom 284 299 3 0 999 0 - #0-q -;
-#X text 36 59 You can use the "filter-graph1" and "filter-graph2" abstractions
-as shown to test filters. Connect them as shown with a filter between
-them. Try varying the parameters and/or substituting other filters.
-, f 64;
+#X floatatom 275 276 5 0 10000 0 - \$0-freq - 0;
+#X floatatom 284 299 4 0 999 0 - \$0-q - 0;
+#X text 36 59 You can use the "filter-graph1" and "filter-graph2" abstractions as shown to test filters. Connect them as shown with a filter between them. Try varying the parameters and/or substituting other filters., f 64;
 #X text 513 156 gain=0;
 #X text 512 356 phase=0;
 #X obj 81 275 filter-graph1 100 44100;
 #X obj 266 329 bp~;
 #X text 37 311 index;
-#X text 36 127 "filter-graph1" takes as arguments the number of points
-to graph and the frequency range. "filter-graph2" takes as arguments
-the name of a table to hold the (frequency dependent) gain \, and another
-\, if specified \, for the phase., f 64;
-#X text 36 193 You can edit this patch to replace "bp" with any other
-filter you're curious about., f 64;
-#X text 314 298 <= "Q";
+#X text 36 127 "filter-graph1" takes as arguments the number of points to graph and the frequency range. "filter-graph2" takes as arguments the name of a table to hold the (frequency dependent) gain \, and another \, if specified \, for the phase., f 64;
+#X text 36 193 You can edit this patch to replace "bp" with any other filter you're curious about., f 64;
+#X text 319 298 <= "Q";
 #X text 317 275 <= center frequency;
-#X text 100 251 <= compute;
+#X text 103 248 <= compute;
+#X msg 427 337 \; pd dsp \$1;
+#X obj 427 313 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X connect 7 0 21 0;
 #X connect 8 0 0 0;
 #X connect 16 0 22 1;
@@ -62,3 +55,4 @@ filter you're curious about., f 64;
 #X connect 21 1 22 0;
 #X connect 21 2 0 2;
 #X connect 22 0 0 3;
+#X connect 30 0 29 0;

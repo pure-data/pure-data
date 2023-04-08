@@ -1,0 +1,36 @@
+#N struct template12 float x float y array a template12a;
+#N struct template12a float x float amp float w1 float w2;
+#N canvas 325 78 528 289 12;
+#N canvas 401 128 496 337 template12 0;
+#X obj 51 22 struct template12 float x float y array a template12a
+;
+#X obj 48 273 filledpolygon 0 0 0 0 0 3 0 3 30 0 30 0 0;
+#X text 55 63 Graph (x \, amp) pairs (using "amp" as the "y" field):
+;
+#X text 51 127 Graph "w1" as width ("y" is zero);
+#X text 53 183 also "w2" \, at (5 \, 15) to disambiguate the one at
+(5 \, 0);
+#X text 45 250 Mark the scalar itself;
+#X obj 56 205 plot -w w2 a 0 0 5 15;
+#X obj 54 85 plot -y amp(0:100)(0:200) a 500 2 5 30;
+#X obj 55 142 plot -w w1 a 0 0 5 -10;
+#X restore 60 175 pd template12;
+#N canvas 872 124 344 205 data12 1;
+#X scalar template12 41 87 \; 16 0 0 0 \; 52 6 16 0 \; 133 23 0 12
+\; 268 4 0 0 \; \;;
+#X coords 0 205 1 204 0 0 0;
+#X restore 60 237 pd data12;
+#N canvas 364 422 481 86 template12a 0;
+#X obj 39 30 struct template12a float x float amp float w1 float w2
+;
+#X restore 60 204 pd template12a;
+#X text 27 15 You can control which variable is used as "x" \, "y"
+\, and "width" when plotting an array. In this example a single array
+"a" is plotted three times \, to show the values of the "amp" \, "w1"
+and "w2" fields. This is convenient when you want to have several variables
+in each point of the array and need several traces of the same array
+to visualize it all., f 63;
+#X text 26 120 In this example the array points have no "y" field at
+all \, so if no variable is supplied to use instead of "y" \, the array
+is flat along its "x" axis., f 63;
+#X text 269 232 updated for Pd version 0.39;

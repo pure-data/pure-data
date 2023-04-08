@@ -1,69 +1,56 @@
-#N canvas 400 23 524 751 12;
-#X floatatom 101 577 4 0 0 0 - - -;
-#X floatatom 335 330 3 0 999 0 - #0-osc2 -;
-#X obj 335 354 osc~;
-#X text 46 17 ENVELOPE FOLLOWER;
-#X text 39 54 An envelope follower measures the mean square power of
-an signal as it changes over time. (You can convert mean square power
-to RMS amplitude or to decibels if you wish.) The term "mean square"
-means simply that the signal should be squared \, and then averaged.
-The averaging is done using a low-pass filter such as lop~.;
-#X obj 261 511 lop~;
-#X floatatom 286 482 3 0 100 0 - #0-lop -;
-#X obj 260 386 +~;
-#X obj 260 355 osc~ 500;
-#X obj 261 448 *~;
-#X obj 261 574 snapshot~;
-#X floatatom 261 631 5 0 999 0 - - -;
-#X obj 261 604 sqrt;
-#X obj 101 604 dbtorms;
-#X floatatom 101 631 5 0 999 0 - - -;
+#N canvas 569 23 555 685 12;
+#X floatatom 68 557 6 0 0 0 - - - 0;
+#X floatatom 322 310 5 0 999 0 - \$0-osc2 - 12;
+#X obj 322 334 osc~;
+#X text 39 14 ENVELOPE FOLLOWER;
+#X text 32 41 An envelope follower measures the mean square power of an signal as it changes over time. (You can convert mean square power to RMS amplitude or to decibels if you wish.) The term "mean square" means simply that the signal should be squared \, and then averaged. The averaging is done using a low-pass filter such as lop~., f 70;
+#X obj 248 491 lop~;
+#X floatatom 273 462 4 0 100 0 - \$0-lop - 0;
+#X obj 247 366 +~;
+#X obj 247 335 osc~ 500;
+#X obj 248 428 *~;
+#X obj 248 554 snapshot~;
+#X floatatom 248 611 7 0 999 0 - - - 0;
+#X obj 248 584 sqrt;
+#X obj 68 584 dbtorms;
+#X floatatom 68 611 5 0 999 0 - - - 0;
 #N canvas 536 459 382 265 startup 0;
-#X obj 44 28 loadbang;
-#X obj 44 52 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
+#X obj 44 18 loadbang;
+#X obj 44 42 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 44 71 f \$0;
 #X text 57 199 This subpatch loads initial;
 #X text 60 217 values in number boxes.;
-#X msg 44 95 \; \$1-osc2 400 \; \$1-lop 10 \; \$1-metro 1 \; pd dsp
-1;
 #X obj 245 136 metro 250;
 #X obj 245 111 r \$0-metro;
 #X obj 245 160 s \$0-tick;
+#X msg 44 95 \; \$1-osc2 400 \; \$1-lop 10 \; \$1-metro 1;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 2 0 5 0;
-#X connect 6 0 8 0;
-#X connect 7 0 6 0;
-#X restore 103 381 pd startup;
-#X text 314 449 square the signal;
-#X text 349 543 take snapshot;
-#X text 307 603 convert to RMS;
-#X text 293 684 updated for Pd version 0.39;
-#X text 306 511 low-pass filter;
-#X text 313 630 output;
-#X obj 272 546 r \$0-tick;
-#X text 349 559 every 1/4 second;
-#X obj 101 431 r \$0-tick;
-#X obj 101 552 f;
-#X obj 119 510 env~;
-#X text 40 246 The env~ object at right \, which is a built-in envelope
-follower using a higher-quality low-pass filter than lop~ \, is shown
-for comparison. Its output is artificially slowed down to match the
-homemade one at left.;
-#X obj 335 408 *~;
-#X obj 353 383 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
-1;
-#X text 39 148 Here we're adding two oscillators so the result should
-be an RMS of one if the second oscillator is on \, 0.707 otherwise.
-Note two effects: first \, the more responsive the envelope follower
-\, the less accurate the result (but the faster it responds). Second
-\, if the two oscillators are tuned close to each other their beating
-affects the numbers coming out.;
-#X text 372 381 <= on/off;
-#X text 142 532 built-in envelope follower for comparison, f 12;
-#X text 317 478 <= responsiveness;
-#X text 96 328 frequency of second oscillator =>;
+#X connect 2 0 8 0;
+#X connect 5 0 7 0;
+#X connect 6 0 5 0;
+#X restore 78 361 pd startup;
+#X text 301 429 square the signal;
+#X text 336 523 take snapshot;
+#X text 294 583 convert to RMS;
+#X text 308 652 updated for Pd version 0.39;
+#X text 293 491 low-pass filter;
+#X text 309 610 output;
+#X obj 259 526 r \$0-tick;
+#X text 336 539 every 1/4 second;
+#X obj 68 411 r \$0-tick;
+#X obj 68 532 f;
+#X obj 86 490 env~;
+#X text 33 216 The env~ object at right \, which is a built-in envelope follower using a higher-quality low-pass filter than lop~ \, is shown for comparison. Its output is artificially slowed down to match the homemade one at left., f 70;
+#X obj 322 388 *~;
+#X obj 340 363 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
+#X text 32 122 Here we're adding two oscillators so the result should be an RMS of one if the second oscillator is on \, 0.707 otherwise. Note two effects: first \, the more responsive the envelope follower \, the less accurate the result (but the faster it responds). Second \, if the two oscillators are tuned close to each other their beating affects the numbers coming out., f 70;
+#X text 365 363 <= on/off;
+#X text 129 512 built-in envelope follower for comparison, f 12;
+#X text 308 462 <= responsiveness;
+#X text 83 308 frequency of second oscillator =>;
+#X msg 387 309 \; pd dsp \$1;
+#X obj 387 286 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X connect 0 0 13 0;
 #X connect 1 0 2 0;
 #X connect 2 0 28 0;
@@ -83,3 +70,4 @@ affects the numbers coming out.;
 #X connect 26 0 25 1;
 #X connect 28 0 7 1;
 #X connect 29 0 28 1;
+#X connect 36 0 35 0;

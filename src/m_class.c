@@ -33,7 +33,7 @@ static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
 static t_class *class_list = 0;
-PERTHREAD t_pdinstance *pd_this;
+PERTHREAD t_pdinstance *pd_this = NULL;
 t_pdinstance **pd_instances;
 int pd_ninstances;
 #else
@@ -60,6 +60,9 @@ void s_stuff_newpdinstance(void)
     STUFF->st_externlist = STUFF->st_searchpath =
         STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
+    STUFF->st_dacsr = DEFDACSAMPLERATE;
+    STUFF->st_printhook = sys_printhook;
+    STUFF->st_impdata = NULL;
 }
 
 void s_stuff_freepdinstance(void)
@@ -113,7 +116,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
 }
 
 static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
-    int nmethod, t_gotfn fn, t_symbol *sel, t_atomtype *args,
+    int nmethod, t_gotfn fn, t_symbol *sel, unsigned char *args,
         t_pdinstance *pdinstance)
 {
     int i;
@@ -126,9 +129,9 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
         nbuf[79] = 0;
         (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
         if (c == pd_objectmaker)
-            verbose(1, "warning: class '%s' overwritten; old one renamed '%s'",
+            logpost(NULL, PD_VERBOSE, "warning: class '%s' overwritten; old one renamed '%s'",
                 sel->s_name, nbuf);
-        else verbose(1, "warning: old method '%s' for class '%s' renamed '%s'",
+        else logpost(NULL, PD_VERBOSE, "warning: old method '%s' for class '%s' renamed '%s'",
             sel->s_name, c->c_name->s_name, nbuf);
     }
     (*methodlist) = t_resizebytes((*methodlist),
@@ -137,9 +140,7 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
     m = (*methodlist) + nmethod;
     m->me_name = sel;
     m->me_fun = (t_gotfn)fn;
-    i = 0;
-    while ((m->me_arg[i] = args[i]))
-        i++;
+    memcpy(m->me_arg, args, MAXPDARG+1);
 }
 
 #ifdef PDINSTANCE
@@ -198,13 +199,15 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
     t_canvas *canvas;
-    int i, instanceno = x->pd_instanceno;
+    int i, instanceno;
     t_class *c;
-    t_instanceinter *inter = x->pd_inter;
+    t_instanceinter *inter;
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
-
+    
+    instanceno = x->pd_instanceno;
+    inter = x->pd_inter;
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
@@ -443,10 +446,10 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         if (count == MAXPDARG)
         {
             if (s)
-                error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                pd_error(0, "class %s: sorry: only %d args typechecked; use A_GIMME",
                       s->s_name, MAXPDARG);
             else
-                error("unnamed class: sorry: only %d args typechecked; use A_GIMME",
+                pd_error(0, "unnamed class: sorry: only %d args typechecked; use A_GIMME",
                       MAXPDARG);
             break;
         }
@@ -485,17 +488,22 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_symbolmethod = pd_defaultsymbol;
     c->c_listmethod = pd_defaultlist;
     c->c_anymethod = pd_defaultanything;
+        /* set default widget behavior.  Things like IEM GUIs override
+        this; they're patchable but have bespoke widget behaviors */
     c->c_wb = (typeflag == CLASS_PATCHABLE ? &text_widgetbehavior : 0);
     c->c_pwb = 0;
     c->c_firstin = ((flags & CLASS_NOINLET) == 0);
     c->c_patchable = (typeflag == CLASS_PATCHABLE);
     c->c_gobj = (typeflag >= CLASS_GOBJ);
+    c->c_multichannel = (flags & CLASS_MULTICHANNEL) != 0;
+    c->c_nopromotesig = (flags & CLASS_NOPROMOTESIG) != 0;
+    c->c_nopromoteleft = (flags & CLASS_NOPROMOTELEFT) != 0;
     c->c_drawcommand = 0;
     c->c_floatsignalin = 0;
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
     c->c_classfreefn = 0;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     c->c_methods = (t_methodentry **)t_getbytes(
         pd_ninstances * sizeof(*c->c_methods));
     for (i = 0; i < pd_ninstances; i++)
@@ -514,7 +522,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 void class_free(t_class *c)
 {
     int i;
-#if PDINSTANCE
+#ifdef PDINSTANCE
     t_class *prev;
     if (class_list == c)
         class_list = c->c_next;
@@ -528,7 +536,7 @@ void class_free(t_class *c)
 #endif
     if (c->c_classfreefn)
         c->c_classfreefn(c);
-#if PDINSTANCE
+#ifdef PDINSTANCE
     for (i = 0; i < pd_ninstances; i++)
     {
         if(c->c_methods[i])
@@ -547,7 +555,7 @@ void class_setfreefn(t_class *c, t_classfreefn fn)
     c->c_classfreefn = fn;
 }
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 t_class *class_getfirst(void)
 {
     return class_list;
@@ -573,10 +581,10 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         if (count == MAXPDARG)
         {
             if(s)
-                error("class %s: sorry: only %d creation args allowed",
+                pd_error(0, "class %s: sorry: only %d creation args allowed",
                       s->s_name, MAXPDARG);
             else
-                error("unnamed class: sorry: only %d creation args allowed",
+                pd_error(0, "unnamed class: sorry: only %d creation args allowed",
                       MAXPDARG);
             break;
         }
@@ -636,7 +644,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     }
     else
     {
-        t_atomtype argvec[MAXPDARG+1];
+        unsigned char argvec[MAXPDARG+1];
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {
@@ -644,7 +652,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             argtype = va_arg(ap, t_atomtype);
         }
         if (argtype != A_NULL)
-            error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
+            pd_error(0, "%s_%s: only 5 arguments are typecheckable; use A_GIMME",
                 (c->c_name)?(c->c_name->s_name):"<anon>", sel?(sel->s_name):"<nomethod>");
         argvec[nargs] = 0;
 #ifdef PDINSTANCE
@@ -901,11 +909,11 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int fd;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
     if (tryingalready>MAXOBJDEPTH){
-      error("maximum object loading depth %d reached", MAXOBJDEPTH);
+      pd_error(0, "maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
     if (s == &s_anything){
-      error("object name \"%s\" not allowed", s->s_name);
+      pd_error(0, "object name \"%s\" not allowed", s->s_name);
       return;
     }
     pd_this->pd_newest = 0;
@@ -954,7 +962,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_method *f;
     t_class *c = *x;
     t_methodentry *m, *mlist;
-    t_atomtype *wp, wanttype;
+    unsigned char *wp, wanttype;
     int i;
     t_int ai[MAXPDARG+1], *ap = ai;
     t_floatarg ad[MAXPDARG+1], *dp = ad;
@@ -962,8 +970,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_pd *bonzo;
 
         /* check for messages that are handled by fixed slots in the class
-        structure.  We don't catch "pointer" though so that sending "pointer"
-        to pd_objectmaker doesn't require that we supply a pointer value. */
+        structure. */
     if (s == &s_float)
     {
         if (!argc) (*c->c_floatmethod)(x, 0.);
@@ -988,6 +995,15 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
             (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
         else
             (*c->c_symbolmethod)(x, &s_);
+        return;
+    }
+        /* pd_objectmaker doesn't require
+        an actual pointer value */
+    if (s == &s_pointer && x != &pd_objectmaker)
+    {
+        if (argc && argv->a_type == A_POINTER)
+            (*c->c_pointermethod)(x, argv->a_w.w_gpointer);
+        else goto badarg;
         return;
     }
 #ifdef PDINSTANCE
@@ -1230,3 +1246,18 @@ t_class *
 
     return 0;
 }
+
+void class_setdspflags(t_class *c, int flags)
+{
+    c->c_multichannel = (flags & CLASS_MULTICHANNEL) != 0;
+    c->c_nopromotesig = (flags & CLASS_NOPROMOTESIG) != 0;
+    c->c_nopromoteleft = (flags & CLASS_NOPROMOTELEFT) != 0;
+}
+
+int class_getdspflags(const t_class *c)
+{
+    return ((c->c_multichannel ? CLASS_MULTICHANNEL : 0) |
+            (c->c_nopromotesig ? CLASS_NOPROMOTESIG : 0) |
+            (c->c_nopromoteleft ? CLASS_NOPROMOTELEFT : 0) );
+}
+

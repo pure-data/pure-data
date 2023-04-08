@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 50
-#define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 54
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "test1"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -29,6 +29,7 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #endif /* _MSC_VER */
 
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
+#ifndef EXTERN
 #ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
@@ -38,13 +39,14 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #else
 #define EXTERN extern
 #endif /* _WIN32 */
+#endif /* EXTERN */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
-    structure whose elements are defined elsewhere.  On MSVC, when compiling
-    C (but not C++) code, you have to say "extern struct foo;".  So we make
-    a stupid macro: */
+    structure whose elements are defined elsewhere.  On very old MSVC versions,
+    when compiling C (but not C++) code, you have to say "extern struct foo;".
+    So we make a stupid macro: */
 #if defined(_MSC_VER) && !defined(_LANGUAGE_C_PLUS_PLUS) \
-    && !defined(__cplusplus)
+    && !defined(__cplusplus) && (_MSC_VER < 1700)
 #define EXTERN_STRUCT extern struct
 #else
 #define EXTERN_STRUCT struct
@@ -61,8 +63,10 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
-#ifdef _MSC_VER
+/* Microsoft Visual Studio is not C99, but since VS2015 has included most C99 headers:
+   https://docs.microsoft.com/en-us/previous-versions/hh409293(v=vs.140)#c-runtime-library
+   These definitions recreate stdint.h types, but only in pre-2015 Visual Studio: */
+#if defined(_MSC_VER) && _MSC_VER < 1900
 typedef signed __int8     int8_t;
 typedef signed __int16    int16_t;
 typedef signed __int32    int32_t;
@@ -445,6 +449,8 @@ EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
 EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN t_float canvas_getsr(t_canvas *x);
+EXTERN int canvas_getsignallength(t_canvas *x);
 
 /* ---------------- widget behaviors ---------------------- */
 
@@ -458,12 +464,34 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 /* -------------------- classes -------------- */
 
 #define CLASS_DEFAULT 0         /* flags for new classes below */
-#define CLASS_PD 1
-#define CLASS_GOBJ 2
-#define CLASS_PATCHABLE 3
-#define CLASS_NOINLET 8
-
+#define CLASS_PD 1              /* non-canvasable (bare) pd such as an inlet */
+#define CLASS_GOBJ 2            /* pd that can belong to a canvas */
+#define CLASS_PATCHABLE 3       /* pd that also can have inlets and outlets */
 #define CLASS_TYPEMASK 3
+
+#define CLASS_NOINLET 8             /* suppress left inlet */
+#define CLASS_MULTICHANNEL 0x10     /* can deal with multichannel sigs */
+#define CLASS_NOPROMOTESIG 0x20     /* don't promote scalars to signals */
+#define CLASS_NOPROMOTELEFT 0x40    /* not even the main (left) inlet */
+
+/*
+    Setting a tilde object's CLASS_MULTICHANNEL flag declares that it can
+    deal with multichannel inputs.  In this case the channel counts of
+    the inputs might not match; it's up to the dsp method to figure out what
+    to do.  Also, the output signal vectors aren't allocated.  The output
+    channel counts have to be specified by the object at DSP time.  If
+    the object can't put itself on the DSP chain it then has to create
+    outputs anyway and arrange to zero them.
+
+    By default, if a tilde object's inputs are unconnected, Pd fills them
+    in by adding scalar-to-vector conversions to the DSP chain as needed before
+    calling the dsp method.  This behavior can be suppressed for the left
+    (main) inlet by setting CLASS_NOPROMOTELEFT and for one or more non-main
+    inlets by setting CLASS_NOPROMOTESIG.  Seeing this, the object can then
+    opt to supply a faster routine; for example, "+" can do a vector-scalar
+    add.  In any case, signal outputs are all vectors, and are allocated
+    automatically unless the CLASS_MULTICHANNEL flag is also set.
+*/
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
@@ -495,8 +523,10 @@ EXTERN const char *class_gethelpname(const t_class *c);
 EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(const t_class *c);
-EXTERN void class_domainsignalin(t_class *c, int onset);
 EXTERN void class_set_extern_dir(t_symbol *s);
+EXTERN void class_setdspflags(t_class *c, int flags);
+EXTERN int class_getdspflags(const t_class *c);
+EXTERN void class_domainsignalin(t_class *c, int onset);
 #define CLASS_MAINSIGNALIN(c, type, field) \
     class_domainsignalin(c, (char *)(&((type *)0)->field) - (char *)0)
 
@@ -528,18 +558,32 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 #endif
 
 /* ------------   printing --------------------------------- */
+
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
+
+/* for logpost(); does *not* work with verbose()! */
+typedef enum {
+    PD_CRITICAL = 0,
+    PD_ERROR,
+    PD_NORMAL,
+    PD_DEBUG,
+    PD_VERBOSE
+} t_loglevel;
+
+EXTERN void logpost(const void *object, int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
+
+/* deprecated, use logpost() instead. */
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isabsolutepath(const char *dir);
@@ -578,22 +622,38 @@ typedef union _sampleint_union {
 
 typedef struct _signal
 {
-    int s_n;            /* number of points in the array */
-    t_sample *s_vec;    /* the array */
-    t_float s_sr;         /* sample rate */
-    int s_refcount;     /* number of times used */
-    int s_isborrowed;   /* whether we're going to borrow our array */
+    union
+    {
+        int s_length;       /* number of items per channel */
+        int s_n;            /* for source compatibility: pre-0.54 name */
+    };
+    t_sample *s_vec;        /* the samples, s_nchans vectors of s_length */
+    t_float s_sr;           /* samples per second per channel */
+    int s_nchans;           /* number of channels */
+    int s_overlap;          /* number of times each sample appears */
+    int s_refcount;         /* number of times signal is referenced */
+    int s_isborrowed;       /* whether we're going to borrow our array */
+    int s_isscalar;         /* scalar for an unconnected signal input */
     struct _signal *s_borrowedfrom;     /* signal to borrow it from */
     struct _signal *s_nextfree;         /* next in freelist */
     struct _signal *s_nextused;         /* next in used list */
-    int s_vecsize;      /* allocated size of array in points */
+    int s_nalloc;      /* allocated size of array in points */
 } t_signal;
 
 typedef t_int *(*t_perfroutine)(t_int *args);
 
+EXTERN t_signal *signal_new(int length, int nchans, t_float sr,
+    t_sample *scalarptr);
+EXTERN void signal_setmultiout(t_signal **sig, int nchans);
+
 EXTERN t_int *plus_perform(t_int *args);
+EXTERN t_int *plus_perf8(t_int *args);
 EXTERN t_int *zero_perform(t_int *args);
+EXTERN t_int *zero_perf8(t_int *args);
 EXTERN t_int *copy_perform(t_int *args);
+EXTERN t_int *copy_perf8(t_int *args);
+EXTERN t_int *scalarcopy_perform(t_int *args);
+EXTERN t_int *scalarcopy_perf8(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
@@ -628,7 +688,7 @@ EXTERN int canvas_dspstate;
 /*   up/downsampling */
 typedef struct _resample
 {
-  int method;       /* up/downsampling method ID */
+  int method;       /* unused */
 
   int downsample; /* downsampling factor */
   int upsample;   /* upsampling factor */
@@ -693,14 +753,62 @@ EXTERN int value_setfloat(t_symbol *s, t_float f);
 /* ------- GUI interface - functions to send strings to TK --------- */
 typedef void (*t_guicallbackfn)(t_gobj *client, t_glist *glist);
 
-EXTERN void sys_vgui(const char *fmt, ...);
-EXTERN void sys_gui(const char *s);
+EXTERN void sys_vgui(const char *fmt, ...); /* avoid this: use pdgui_vmess() instead */
+EXTERN void sys_gui(const char *s); /* avoid this: use pdgui_vmess() instead */
+
 EXTERN void sys_pretendguibytes(int n);
 EXTERN void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f);
 EXTERN void sys_unqueuegui(void *client);
     /* dialog window creation and destruction */
-EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd);
-EXTERN void gfxstub_deleteforkey(void *key);
+EXTERN void gfxstub_new(t_pd *owner, void *key, const char *cmd); /* avoid this: use pdgui_stub_vnew() instead */
+EXTERN void gfxstub_deleteforkey(void *key); /* avoid this: use pdgui_stub_deleteforkey() instead */
+
+/*
+ * send a message to the GUI, with a simplified formatting syntax
+ * <destination>: receiver on the GUI side (e.g. a Tcl/Tk 'proc')
+ * <fmt>: string of format specifiers
+ * <...>: values according to the format specifiers
+ *
+ * the <destination> can be a NULL pointer (in which case it is ignored)
+ * the user of NULL as a <destination> is discouraged
+
+ * depending on the format specifiers, one or more values are passed
+ *    'f' : <double:value>        : a floating point number
+ *    'i' : <int:value>           : an integer number
+ *    's' : <const char*:value>   : a string
+ *    'r' : <const char*:value>   : a raw string
+ *    'x' : <void*:value>         : a generic pointer
+ *    'o' : <t_object*:value>     : an graphical object
+ *    '^' : <t_canvas*:value>     : a toplevel window (legacy)
+ *    'c' : <t_canvas*:value>     : a canvas (on a window)
+ *    'F' : <int:size> <const t_float*:values>: array of t_float's
+ *    'S' : <int:size> <const char**:values>: array of strings
+ *    'R' : <int:size> <const char**:values>: array of raw strings
+ *    'a' : <int:size> <const t_atom*:values>: list of atoms
+ *    'A' : <int:size> <const t_atom*:values>: array of atoms
+ *    'w' : <int:size> <const t_word*:values>: list of floatwords
+ *    'W' : <int:size> <const t_word*:values>: array of floatwords
+ *    'm' : <t_symbol*s:recv> <int:argc> <t_atom*:argv>: a Pd message
+ *    'p' : <int:size> <const char*:values>  : a pascal string (explicit size; not \0-terminated)
+ *    'k' : <int:color>           : a color (or kolor, if you prefer)
+ *    ' ' : none                  : ignored
+ * the use of the specifiers 'x^' is discouraged
+ * raw-strings ('rR') should only be used for constant, well-known strings
+ */
+EXTERN void pdgui_vmess(const char* destination, const char* fmt, ...);
+
+
+/* improved dialog window creation
+ * this will insert a first argument to <destination> based on <key>
+ * which the GUI can then use to callback.
+ * gfxstub_new() ensures that the given receiver will be available,
+ * even if the <owner> has been removed in the meantime.
+ * see pdgui_vmess() for a description of <fmt> and the varargs
+ */
+
+EXTERN void pdgui_stub_vnew(t_pd *owner, const char* destination, void *key, const char* fmt, ...);
+EXTERN void pdgui_stub_deleteforkey(void *key);
+
 
 extern t_class *glob_pdobject;  /* object to send "pd" messages */
 
@@ -727,15 +835,15 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #define PD_USE_TE_XPIX
 
 #ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
-#if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
-/* a test for NANs and denormals.  Should only be necessary on i386. */
+#if defined(__i386__) || defined(__x86_64__) || defined(__arm__) || defined(__aarch64__)
+/* a test for NANs and denormals. Should only be necessary on i386. */
 #if PD_FLOATSIZE == 32
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui;
-}t_bigorsmall32;
+} t_bigorsmall32;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed float */
 {
@@ -754,11 +862,11 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 
 #elif PD_FLOATSIZE == 64
 
-typedef  union
+typedef union
 {
     t_float f;
     unsigned int ui[2];
-}t_bigorsmall64;
+} t_bigorsmall64;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed double */
 {
@@ -794,6 +902,7 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     || (f) > -1e-150 && (f) < 1e-150 )
 #endif
 #endif /* _MSC_VER */
+
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
@@ -900,6 +1009,17 @@ EXTERN int pd_getdspstate(void);
 /* x_text.c */
 EXTERN t_binbuf *text_getbufbyname(t_symbol *s); /* get binbuf from text obj */
 EXTERN void text_notifybyname(t_symbol *s);      /* notify it was modified */
+
+/* g_undo.c */
+/* store two message-sets to be sent to the object's <s> method for 'undo'ing
+ * resp. 'redo'ing the current state of an object.
+ * this creates an internal copy of the atom-lists (so the caller is responsible
+ * for freeing any dynamically allocated data)
+ * this is a no-op if called during 'undo' (resp. 'redo').
+ */
+EXTERN void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
+                                    int undo_argc, t_atom*undo_argv,
+                                    int redo_argc, t_atom*redo_argv);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

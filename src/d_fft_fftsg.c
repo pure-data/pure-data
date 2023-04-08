@@ -24,7 +24,7 @@ for another, more permissive-sounding copyright notice.  -MSP
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
-#elif defined(__linux__) || defined(__APPLE__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(HAVE_ALLOCA_H)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
@@ -49,43 +49,40 @@ static int ooura_init( int n)
         return (0);
     if (n > ooura_maxn)
     {
-        if (n > ooura_maxn)    /* recheck in case it got set while we waited */
+        if (ooura_maxn)
         {
-            if (ooura_maxn)
-            {
-                t_freebytes(ooura_bitrev, ooura_bitrevsize);
-                t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
-                t_freebytes(ooura_buffer, ooura_maxn * sizeof(FFTFLT));
-            }
-            ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
-            ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
-            ooura_bitrev[0] = 0;
-            if (!ooura_bitrev)
-            {
-                error("out of memory allocating FFT buffer");
-                ooura_maxn = 0;
-                return (0);
-            }
-            ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
-            if (!ooura_costab)
-            {
-                error("out of memory allocating FFT buffer");
-                t_freebytes(ooura_bitrev, ooura_bitrevsize);
-                ooura_maxn = 0;
-                return (0);
-            }
-            ooura_buffer = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT));
-            if (!ooura_buffer)
-            {
-                error("out of memory allocating FFT buffer");
-                t_freebytes(ooura_bitrev, ooura_bitrevsize);
-                t_freebytes(ooura_costab, n * sizeof(FFTFLT) / 2);
-                ooura_maxn = 0;
-                return (0);
-            }
-            ooura_maxn = n;
-            ooura_bitrev[0] = 0;
+            t_freebytes(ooura_bitrev, ooura_bitrevsize);
+            t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
+            t_freebytes(ooura_buffer, ooura_maxn * sizeof(FFTFLT));
         }
+        ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
+        ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
+        ooura_bitrev[0] = 0;
+        if (!ooura_bitrev)
+        {
+            pd_error(0, "out of memory allocating FFT buffer");
+            ooura_maxn = 0;
+            return (0);
+        }
+        ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
+        if (!ooura_costab)
+        {
+            pd_error(0, "out of memory allocating FFT buffer");
+            t_freebytes(ooura_bitrev, ooura_bitrevsize);
+            ooura_maxn = 0;
+            return (0);
+        }
+        ooura_buffer = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT));
+        if (!ooura_buffer)
+        {
+            pd_error(0, "out of memory allocating FFT buffer");
+            t_freebytes(ooura_bitrev, ooura_bitrevsize);
+            t_freebytes(ooura_costab, n * sizeof(FFTFLT) / 2);
+            ooura_maxn = 0;
+            return (0);
+        }
+        ooura_maxn = n;
+        ooura_bitrev[0] = 0;
     }
     return (1);
 }
