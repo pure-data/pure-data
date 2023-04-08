@@ -1,4 +1,4 @@
-#N canvas 610 211 809 559 12;
+#N canvas 395 65 809 559 12;
 #X obj 422 321 sqrt;
 #X text 242 160 trigger;
 #X text 134 263 relative frequency, f 9;
@@ -9,8 +9,7 @@
 #X msg 220 372 0 \$1;
 #X obj 422 348 sqrt;
 #X text 289 295 relative duration;
-#X obj 220 159 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 220 159 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X msg 422 375 \$1 5;
 #X obj 220 268 del 5;
 #X obj 422 294 * 0.1;
@@ -38,8 +37,7 @@
 #X obj 401 214 v amp_\$0;
 #X obj 51 270 v rfreq_\$0;
 #X obj 220 294 v rdur_\$0;
-#X text 462 319 take fourth root (square root twice) because we'll
-raise [line~] output to fourth power, f 30;
+#X text 462 319 take fourth root (square root twice) because we'll raise [line~] output to fourth power, f 30;
 #X obj 422 267 v amp_\$0;
 #X obj 221 115 route bang;
 #X obj 610 83 inlet;
@@ -50,9 +48,7 @@ raise [line~] output to fourth power, f 30;
 #X obj 238 322 r \$0-duration;
 #X obj 670 145 s \$0-duration;
 #X obj 670 115 * 100;
-#X text 107 16 partial -- sinusoidal partial for additive synthesis
-used as an abstraction in the additive synthesis example \, D07.additive.pd
-, f 64;
+#X text 107 16 partial -- sinusoidal partial for additive synthesis used as an abstraction in the additive synthesis example \, D07.additive.pd, f 64;
 #X connect 0 0 8 0;
 #X connect 3 0 30 0;
 #X connect 4 0 5 0;

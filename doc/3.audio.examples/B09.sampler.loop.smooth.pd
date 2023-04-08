@@ -26,33 +26,22 @@
 #X obj 82 164 *~ 0.5;
 #X obj 82 283 output~;
 #X obj 147 138 *~;
-#X text 26 360 Here we apply an amplitude envelope to protect against
-discontinuities at the loop point. The envelope is just a cosine wave
-from -90 degrees to +90 degrees \, (-pi/2 to pi/2 radians) \, i.e.
-\, the part that is zero or positive in sign. The "cos~" object's input
-is in cycles (units of 2pi radians) so -1/4 to +1/4 addresses the desired
-part of the waveform.;
+#X text 26 360 Here we apply an amplitude envelope to protect against discontinuities at the loop point. The envelope is just a cosine wave from -90 degrees to +90 degrees \, (-pi/2 to pi/2 radians) \, i.e. \, the part that is zero or positive in sign. The "cos~" object's input is in cycles (units of 2pi radians) so -1/4 to +1/4 addresses the desired part of the waveform.;
 #X obj 204 247 tabwrite~ cos-output;
-#X text 26 468 To see the envelope \, put the phasor on 2 Hz or so
-\, click the "graph" button \, and look at "cos-output." This is multiplied
-by the tabread4~ output so that it doesn't click when the phase wraps
-around., f 59;
-#X text 26 535 It is possible to get much more control over the shape
-of the envelope \, but this will be taken up later., f 59;
+#X text 26 468 To see the envelope \, put the phasor on 2 Hz or so \, click the "graph" button \, and look at "cos-output." This is multiplied by the tabread4~ output so that it doesn't click when the phase wraps around., f 59;
+#X text 26 535 It is possible to get much more control over the shape of the envelope \, but this will be taken up later., f 59;
 #X obj 147 189 tabread4~ table18;
 #X obj 512 429 tabwrite~ table18;
 #X msg 509 502 read ../sound/voice.wav table18;
-#X text 549 400 <-- click here to record to table;
+#X text 550 403 <-- click here to record to table;
 #X text 600 481 v-- re-read the original sound;
 #X text 613 562 updated for Pd version 0.37;
 #X obj 206 300 declare -stdpath ./;
-#X obj 204 220 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
 #X text 225 220 <-- click to graph envelope;
-#X obj 527 402 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
 #X text 131 49 <-- frequency (Hz.);
 #X text 213 86 <-- chunk size (100ths of a second);
+#X obj 204 220 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 527 402 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 2 0 26 0;
 #X connect 3 0 18 0;
 #X connect 3 0 18 1;
@@ -71,5 +60,5 @@ of the envelope \, but this will be taken up later., f 59;
 #X connect 19 0 7 0;
 #X connect 24 0 12 1;
 #X connect 26 0 13 0;
-#X connect 31 0 21 0;
-#X connect 33 0 25 0;
+#X connect 34 0 21 0;
+#X connect 35 0 25 0;

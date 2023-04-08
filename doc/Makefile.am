@@ -284,7 +284,8 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/13.array.controls.pd \
      ./4.data.structures/14.beat-patterns.pd \
      ./4.data.structures/15.sliderule.pd \
-     ./4.data.structures/16.partialtracer.pd \
+     ./4.data.structures/16.FFT-plot.pd \
+     ./4.data.structures/17.partialtracer.pd \
      ./4.data.structures/add-trace.pd \
      ./4.data.structures/beat-maker.pd \
      ./4.data.structures/data-array.pd \
@@ -340,7 +341,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
      ./5.reference/gui-boxes-help.pd \
-     ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/inlet-outlet-help.pd \
@@ -362,8 +362,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/moses-help.pd \
      ./5.reference/namecanvas-help.pd \
      ./5.reference/nbx-help.pd \
-     ./5.reference/netreceive-help.pd \
-     ./5.reference/netsend-help.pd \
+     ./5.reference/netsend-receive-help.pd \
      ./5.reference/noise~-help.pd \
      ./5.reference/openpanel-help.pd \
      ./5.reference/osc-format-parse-help.pd \
@@ -438,7 +437,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vsnapshot~-help.pd \
      ./5.reference/vu-help.pd \
@@ -482,8 +480,8 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
      ./8.topics/compander-limiter.htm \
-     ./8.topics/expr.html \
-     ./8.topics/fudi.html \
+     ./8.topics/expr.htm \
+     ./8.topics/fudi.htm \
      ./8.topics/slop-compander-patch.png \
      ./8.topics/slop-peak-meter-graph.png \
      ./8.topics/slop-peak-meter-patch.png \

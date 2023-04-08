@@ -231,7 +231,7 @@ endif
 ##### Jack Audio Connection Kit #####
 # TODO support Jack xrun
 if JACK
-pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
+pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN @JACK_CFLAGS@
 pd_SOURCES_standalone += s_audio_jack.c
 
 if JACK_FRAMEWORK

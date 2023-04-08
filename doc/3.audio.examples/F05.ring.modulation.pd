@@ -30,12 +30,8 @@
 #X obj 183 159 inlet;
 #X obj 99 460 outlet~;
 #X obj 99 416 *~ 0.5;
-#X text 57 23 This is a modified version of the pulse train generator
-from two examples back.;
-#X text 56 72 We have to add 1/2 and wrap so that the center of the
-pulse comes at phase zero (previously it was 1/2 cycle out of phase).
-This wasn't a problem before but now we have to be in phase with the
-oscillator we're multiplying with.;
+#X text 57 23 This is a modified version of the pulse train generator from two examples back.;
+#X text 56 72 We have to add 1/2 and wrap so that the center of the pulse comes at phase zero (previously it was 1/2 cycle out of phase). This wasn't a problem before but now we have to be in phase with the oscillator we're multiplying with.;
 #X text 262 160 otherwise it's the same as before.;
 #X obj 99 202 phasor~;
 #X obj 99 175 r freq;
@@ -72,9 +68,7 @@ oscillator we're multiplying with.;
 #X text 93 93 Fourier series;
 #X text 98 146 magnitude;
 #X text 96 131 calculate;
-#X text 21 3 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 21 3 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 83 61 signal to analyze;
 #X text 193 164 delay two samples;
 #X text 191 182 for better graphing;
@@ -112,10 +106,8 @@ until much later.;
 #X connect 21 0 15 0;
 #X connect 23 0 22 0;
 #X restore 137 254 pd fft;
-#X obj 156 228 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X obj 197 254 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000 0 1;
+#X obj 156 228 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 197 254 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X text 477 210 2;
 #X text 509 210 4;
 #X text 541 210 6;
@@ -127,20 +119,12 @@ until much later.;
 #X text 712 419 -1;
 #X text 156 196 modulating oscillator;
 #X text 64 16 RING MODULATED PULSE TRAINS;
-#X text 69 371 Now we take a pulse train and ring modulate it \, which
-effectively aliases the spectrum so that it is centered at any desired
-partial number. The "bandwidth" control still affects the shape of
-the peak \, independently of where it is centered. This generates a
-formant centered at the given partial., f 55;
+#X text 69 371 Now we take a pulse train and ring modulate it \, which effectively aliases the spectrum so that it is centered at any desired partial number. The "bandwidth" control still affects the shape of the peak \, independently of where it is centered. This generates a formant centered at the given partial., f 55;
 #X floatatom 107 127 0 0 100 0 - - - 0;
 #X obj 107 193 osc~;
 #X obj 107 165 *;
 #X obj 141 165 r freq;
-#X text 69 467 This patch is limited to making formants centered on
-harmonics. The center frequency thus can't be moved smoothly up and
-down at will (try shift-clicking on modulation frequency to make fractions).
-Next we'll look at two techniques for sliding a formant frequency without
-losing harmonicity., f 55;
+#X text 69 467 This patch is limited to making formants centered on harmonics. The center frequency thus can't be moved smoothly up and down at will (try shift-clicking on modulation frequency to make fractions). Next we'll look at two techniques for sliding a formant frequency without losing harmonicity., f 55;
 #X text 201 97 generator from before;
 #X obj 593 25 declare -stdpath ./;
 #X text 178 228 <-- graph once;

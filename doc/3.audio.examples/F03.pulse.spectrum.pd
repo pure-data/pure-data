@@ -14,14 +14,8 @@
 #X obj 193 209 +~ 1;
 #X obj 71 279 +~ 1;
 #X text 52 16 PULSE SPECTRUM MEASUREMENT;
-#X text 82 469 Here is a measured amplitude spectrum for the pulse
-train. Notice that \, other than a smallish spillover \, the energy
-sits in one "lobe" whose changing width justifies our calling the squeeze
-factor the "bandwidth.", f 68;
-#X text 82 530 The spectrum is in units of amplitude. The sidelobes
-\, although they look small \, are actually only about 34 dB down.
-You can design more complicated pulse trains \, little Blackman window
-functions \, which control the sidelobes much better., f 68;
+#X text 82 469 Here is a measured amplitude spectrum for the pulse train. Notice that \, other than a smallish spillover \, the energy sits in one "lobe" whose changing width justifies our calling the squeeze factor the "bandwidth.", f 68;
+#X text 82 530 The spectrum is in units of amplitude. The sidelobes \, although they look small \, are actually only about 34 dB down. You can design more complicated pulse trains \, little Blackman window functions \, which control the sidelobes much better., f 68;
 #X obj 71 375 output~;
 #X obj 71 336 hip~;
 #N canvas 424 208 569 608 fft 0;
@@ -36,9 +30,7 @@ functions \, which control the sidelobes much better., f 68;
 #X text 127 137 Fourier series;
 #X text 132 190 magnitude;
 #X text 130 175 calculate;
-#X text 60 26 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 60 26 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 105 104 signal to analyze;
 #X text 194 216 delay two samples;
 #X text 192 234 for better graphing;
@@ -76,10 +68,8 @@ until much later.;
 #X connect 21 0 23 0;
 #X connect 24 0 15 0;
 #X restore 134 332 pd fft;
-#X obj 153 301 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X obj 193 332 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000 0 1;
+#X obj 153 301 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 193 332 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 71 303 *~ 0.5;
 #X obj 71 104 phasor~;
 #N canvas 0 0 450 300 (subpatch) 0;

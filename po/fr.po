@@ -5,14 +5,13 @@
 # J. Lavoie <j.lavoie@net-c.ca>, 2022.
 # Serguei Mokhov <mokhov@cse.concordia.ca>, 2022.
 # cyrille henry <ch@nozoid.com>, 2009, 2017.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.53-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2022-10-19 23:59+0200\n"
-"PO-Revision-Date: 2022-10-20 12:48+0000\n"
-"Last-Translator: Alex Nadzharov <anadjarov@gmail.com>\n"
+"PO-Revision-Date: 2022-10-26 12:13+0000\n"
+"Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/pure-data/"
 "pure-data/fr/>\n"
 "Language: fr\n"
@@ -42,7 +41,7 @@ msgstr "Échelle"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Abandonner les modifications de '%s' ?"
+msgstr "Abandonner les modifications de « %s » ?"
 
 msgid "Undo clear"
 msgstr "Annuler l'effacement"
