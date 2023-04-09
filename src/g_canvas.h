@@ -649,7 +649,12 @@ EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
 EXTERN t_symbol *iemgui_put_in_braces(t_symbol *s);
 
 /*-------------  g_clone.c ------------- */
-extern t_class *clone_class;
+EXTERN t_class *clone_class;
+
+/*-------------  d_ugen.c ------------- */
+EXTERN void signal_setborrowed(t_signal *sig, t_signal *sig2);
+EXTERN void signal_makereusable(t_signal *sig);
+
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

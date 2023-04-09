@@ -41,17 +41,11 @@
 #X text 114 152 filter input;
 #X text 363 239 control source;
 #X text 360 296 Fourier transform;
-#X text 43 19 Internal workings of the timbre stamping algorithm. First
-the "filter input" is treated as in the compressor patch \, multiplying
-each channel amplitude by one over its modulus (but limited by the
-"squelch" parameter.) It is then multiplied by the modulus of the channel
-amplitude for the control source (which is Fourier analyzed in parallel
-with the filter input.);
+#X text 43 19 Internal workings of the timbre stamping algorithm. First the "filter input" is treated as in the compressor patch \, multiplying each channel amplitude by one over its modulus (but limited by the "squelch" parameter.) It is then multiplied by the modulus of the channel amplitude for the control source (which is Fourier analyzed in parallel with the filter input.);
 #X text 148 440 multiply the two amplitude;
 #X text 146 457 factors (for compression;
 #X text 148 473 and to apply new timbre);
-#X msg 356 522 \; window-size 1024 \; squelch 30 \; squelch-set set
-30;
+#X msg 356 522 \; window-size 1024 \; squelch 30 \; squelch-set set 30;
 #X connect 0 0 11 1;
 #X connect 1 0 11 0;
 #X connect 2 0 4 1;
@@ -90,7 +84,6 @@ with the filter input.);
 #X connect 29 0 18 0;
 #X connect 30 0 16 1;
 #X restore 103 421 pd fft-analysis;
-#X text 88 17 CORT&ZACK's SECRET;
 #X text 41 399 filter;
 #X text 43 414 input;
 #X text 223 415 source;
@@ -315,10 +308,7 @@ with the filter input.);
 #X obj 279 122 r window-hz;
 #X msg 352 154 0;
 #X obj 279 150 t f b;
-#X text 56 20 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 56 20 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -344,31 +334,23 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X restore 293 427 pd hann-window;
 #X text 475 383 sample lengths \,;
 #X text 479 406 msec;
-#X text 61 54 This is a Fourier-based "vocoder" (perhaps better called
-a "timbre stamp") like the one the Convolution brothers use. The "control
-source" is analyzed to get its spectral envelope \, which is then stamped
-onto the "filter input" by adjusting the amplitudes of its Fourier
-transform. The "filter input" is first whitened by the compression
-algorithm from the previous patch in this series. The best value of
-"squelch" to use depends critically on what kind of sounds are used
-for the filter input and the control source., f 67;
+#X text 61 54 This is a Fourier-based "vocoder" (perhaps better called a "timbre stamp") like the one the Convolution brothers use. The "control source" is analyzed to get its spectral envelope \, which is then stamped onto the "filter input" by adjusting the amplitudes of its Fourier transform. The "filter input" is first whitened by the compression algorithm from the previous patch in this series. The best value of "squelch" to use depends critically on what kind of sounds are used for the filter input and the control source., f 67;
 #X text 387 475 updated for Pd version 0.39;
 #X obj 451 20 declare -stdpath ./;
-#X obj 210 367 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X obj 101 366 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X text 120 365 <- record ->;
-#X connect 0 0 8 0;
-#X connect 0 0 8 1;
-#X connect 6 0 7 0;
-#X connect 9 0 12 0;
-#X connect 10 0 12 0;
-#X connect 11 0 12 0;
-#X connect 13 0 16 0;
-#X connect 14 0 16 0;
-#X connect 15 0 16 0;
-#X connect 21 0 0 0;
-#X connect 21 1 0 1;
-#X connect 31 0 21 1;
-#X connect 32 0 21 0;
+#X obj 210 365 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X text 121 365 <- record ->;
+#X text 88 17 CORT&ZACK's SECRET;
+#X obj 101 366 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X connect 0 0 7 0;
+#X connect 0 0 7 1;
+#X connect 5 0 6 0;
+#X connect 8 0 11 0;
+#X connect 9 0 11 0;
+#X connect 10 0 11 0;
+#X connect 12 0 15 0;
+#X connect 13 0 15 0;
+#X connect 14 0 15 0;
+#X connect 20 0 0 0;
+#X connect 20 1 0 1;
+#X connect 30 0 20 1;
+#X connect 33 0 20 0;

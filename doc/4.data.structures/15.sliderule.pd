@@ -319,14 +319,7 @@
 #X connect 49 2 7 0;
 #X restore 72 258 pd generator;
 #X text 53 5 FREQUENCY SHIFTER SLIDE RULE.;
-#X text 23 32 This might help you if you need to compute products of
-frequency shifting and/or FM spectra. Print and cut in half down the
-middle. If you know the pitches associated with two frequencies a and
-b \, align the pitch of a on the left side against the zero-frequency
-marker on the right side. Then find the pitch of b on the right \,
-and the matching pitch on the left corresponds to the frequency a+b.
-To get a-b \, find b on the left and look up the corresponding pitch
-on the right.;
+#X text 23 32 This might help you if you need to compute products of frequency shifting and/or FM spectra. Print and cut in half down the middle. If you know the pitches associated with two frequencies a and b \, align the pitch of a on the left side against the zero-frequency marker on the right side. Then find the pitch of b on the right \, and the matching pitch on the left corresponds to the frequency a+b. To get a-b \, find b on the left and look up the corresponding pitch on the right.;
 #X floatatom 230 232 5 0 0 0 - - - 0;
 #X obj 230 256 s shift;
 #X text 199 198 set the shift interactively:;

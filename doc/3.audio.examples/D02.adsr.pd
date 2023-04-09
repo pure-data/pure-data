@@ -14,13 +14,8 @@
 #X msg 261 157 \; trigger 0;
 #X text 365 501 -1;
 #X text 367 376 1;
-#X text 48 41 This patch introduces a simple "adsr" abstraction we'll
-use frequently. You can click on the "adsr" object to see what's inside.
-;
-#X text 53 557 The active ingredient of the ADSR envelope generator
-is a single line~ which gets passed messages to make the attack and
-release behavior. You can retrigger the ADSR envelope generator all
-you wish without having to wait for attacks or releases to finish;
+#X text 48 41 This patch introduces a simple "adsr" abstraction we'll use frequently. You can click on the "adsr" object to see what's inside.;
+#X text 53 557 The active ingredient of the ADSR envelope generator is a single line~ which gets passed messages to make the attack and release behavior. You can retrigger the ADSR envelope generator all you wish without having to wait for attacks or releases to finish;
 #X text 113 11 ENVELOPE GENERATOR ABSTRACTION;
 #X obj 58 154 adsr 1 100 200 50 300;
 #X text 293 663 updated for Pd version 0.37;
@@ -30,8 +25,7 @@ you wish without having to wait for attacks or releases to finish;
 #X text 349 217 <= attack only;
 #X text 352 292 <= release only;
 #X obj 387 10 declare -stdpath ./;
-#X obj 250 99 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 250 99 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 273 98 <-- attack and delayed release;
 #X connect 2 0 14 0;
 #X connect 4 0 3 0;

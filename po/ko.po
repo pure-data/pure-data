@@ -1,0 +1,1411 @@
+# Translation of Pure Data to Korean.
+# This file is put in the public domain.
+# Max Neupert <abonnements@revolwear.com>, 2022.
+# Hyun-Mook Lim <windshy8500@naver.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.53.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"PO-Revision-Date: 2022-10-21 17:41+0000\n"
+"Last-Translator: Hyun-Mook Lim <windshy8500@naver.com>\n"
+"Language-Team: Korean <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ko/>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.14.2-dev\n"
+
+msgid "linear"
+msgstr "선형"
+
+msgid "logarithmic"
+msgstr "로그"
+
+msgid "new-only"
+msgstr "새것만"
+
+msgid "new&old"
+msgstr "모두 포함"
+
+msgid "no scale"
+msgstr "축척 안함"
+
+msgid "scale"
+msgstr "축척"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "'%s' 파일의 변경 사항을 취소하시겠습니까?"
+
+msgid "Undo clear"
+msgstr "비우기 취소"
+
+msgid "Undo connect"
+msgstr "연결 취소"
+
+msgid "Undo cut"
+msgstr "잘라내기 취소"
+
+msgid "Undo disconnect"
+msgstr "끊기 취소"
+
+msgid "Undo duplicate"
+msgstr "복제 취소"
+
+msgid "Undo motion"
+msgstr "옮기기 취소"
+
+msgid "Undo paste"
+msgstr "붙여넣기 취소"
+
+msgid "Undo typing"
+msgstr "입력 취소"
+
+msgid "Redo clear"
+msgstr "되돌리기 취소"
+
+msgid "Redo connect"
+msgstr "연결 되돌리기"
+
+msgid "Redo cut"
+msgstr "자르기 되돌리기"
+
+msgid "Redo disconnect"
+msgstr "연결끊기 되돌리기"
+
+msgid "Redo duplicate"
+msgstr "복제 되돌리기"
+
+msgid "Redo motion"
+msgstr "작업 되돌리기"
+
+msgid "Redo paste"
+msgstr "붙여놓기 되돌리기"
+
+msgid "Redo typing"
+msgstr "글자입력 되돌리기"
+
+msgid "no Pd settings to clear"
+msgstr "초기화할 Pd 설정이 없습니다"
+
+msgid "removed .pdsettings file"
+msgstr ".pdsettings 파일을 제거하였습니다"
+
+msgid "couldn't delete .pdsettings file"
+msgstr ".pdsettings 파일을 제거하지 못했습니다"
+
+msgid "failed to erase Pd settings"
+msgstr "Pd 설정을 제거하는데 실패했습니다"
+
+msgid "erased Pd settings"
+msgstr "Pd 설정을 제거하였습니다"
+
+msgid "no Pd settings to erase"
+msgstr "제거할 Pd 설정이 없습니다"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr "환경설정 로드를 스킵합니다... Pd 기동 중에 충돌이 일어났을 수도 있습니다"
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(복구하기 위해 환경설정을 다시 저장하십시오)"
+
+msgid "File"
+msgstr "파일"
+
+msgid "Edit"
+msgstr "편집"
+
+msgid "Put"
+msgstr "넣기"
+
+msgid "Find"
+msgstr "찾기"
+
+msgid "Media"
+msgstr "장치"
+
+msgid "Window"
+msgstr "창"
+
+msgid "Help"
+msgstr "도움말"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "숨겨진 파일과 저장경로를 표시하기"
+
+msgid "Copy"
+msgstr "복사"
+
+msgid "Paste"
+msgstr "붙여넣기"
+
+msgid "Array Properties"
+msgstr "배열 속성"
+
+msgid "Array"
+msgstr "배열"
+
+msgid "Name:"
+msgstr "이름:"
+
+msgid "Size:"
+msgstr "크기:"
+
+msgid "Save contents"
+msgstr "항목을 저장하기"
+
+msgid "Draw as:"
+msgstr "그리기 형태:"
+
+msgid "Polygon"
+msgstr "폴리곤"
+
+msgid "Points"
+msgstr "점"
+
+msgid "Bezier curve"
+msgstr "베지어 곡선"
+
+msgid "Put array into:"
+msgstr "배열을 다음에 넣기:"
+
+msgid "New graph"
+msgstr "새 그래프"
+
+msgid "Last graph"
+msgstr "지난 그래프"
+
+msgid "Options"
+msgstr "옵션"
+
+msgid "Open List View..."
+msgstr "목록을 열기..."
+
+msgid "Delete array"
+msgstr "배열을 삭제하기"
+
+msgid "Cancel"
+msgstr "취소"
+
+msgid "Apply"
+msgstr "적용"
+
+msgid "OK"
+msgstr "확인"
+
+msgid "Audio Settings"
+msgstr "오디오 설정"
+
+msgid "Settings"
+msgstr "설정"
+
+msgid "Sample rate:"
+msgstr "샘플 레이트:"
+
+msgid "Delay (msec):"
+msgstr "딜레이 (밀리초):"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44.1k"
+
+msgid "96k"
+msgstr "96k"
+
+msgid "Block size:"
+msgstr "블록 크기:"
+
+msgid "Use callbacks"
+msgstr "콜백 사용"
+
+msgid "Input Devices"
+msgstr "입력 장치"
+
+msgid "Channels:"
+msgstr "채널:"
+
+msgid "Output Devices"
+msgstr "출력 장치"
+
+msgid "(same as input device)..."
+msgstr "(입력 장치와 동일)..."
+
+msgid "Use Multiple Devices"
+msgstr "다수의 장치를 사용하기"
+
+msgid "Save All Settings"
+msgstr "모든 설정을 저장"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "경고: pdtk_canvas_dialog에 알 수 없는 문자로 된 플래그가 수신되었습니다"
+
+msgid "Canvas Properties"
+msgstr "캔버스 속성"
+
+msgid "Scale"
+msgstr "크기"
+
+msgid "X units per pixel:"
+msgstr "픽셀 당 X값:"
+
+msgid "Y units per pixel:"
+msgstr "픽셀 당 Y값:"
+
+msgid "Appearance on parent patch"
+msgstr "현재 패치에서의 표시 방법"
+
+msgid "Graph-On-Parent"
+msgstr "그래프 상에 표시하기"
+
+msgid "Hide object name and arguments"
+msgstr "오프젝트 이름과 인자 숨기기"
+
+msgid "Range and size"
+msgstr "범위와 크기"
+
+msgid "X range: from"
+msgstr "X값 범위: 최소"
+
+msgid "to"
+msgstr "최대"
+
+msgid "Margin:"
+msgstr "여백:"
+
+msgid "Y range: from"
+msgstr "Y값 범위: 최소"
+
+msgid "Data Properties"
+msgstr "데이터 속성"
+
+msgid "Send"
+msgstr "보내기"
+
+msgid "Done"
+msgstr "완성"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "%2$s에서 '%1$s'을(를) 찾았습니다"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "%2$s에서 '%1$s'을(를) 찾지 못했습니다"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "%s에서 다음을 검색:"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "%2$s에서 '%1$s'을(를) 모두 찾았습니다"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "전체 %2$d개 중 '%1$d'번째 %3$s을(를) 찾았습니다"
+
+msgid "Pd window"
+msgstr "Pd 창"
+
+msgid "Match whole word only"
+msgstr "전체 단어를 포함"
+
+msgid "Close"
+msgstr "닫기"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s 폰트"
+
+msgid "Font"
+msgstr "폰트"
+
+msgid "Font Size"
+msgstr "폰트 크기"
+
+msgid "Stretch"
+msgstr "늘이기"
+
+msgid "X and Y"
+msgstr "X값과 Y값"
+
+msgid "X only"
+msgstr "X값"
+
+msgid "Y only"
+msgstr "Y값"
+
+msgid "GUI Box Properties"
+msgstr "GUI 상자 속성"
+
+msgid "Messages"
+msgstr "메시지"
+
+msgid "Send symbol:"
+msgstr "심볼 보내기:"
+
+msgid "Receive symbol:"
+msgstr "심볼 받기:"
+
+msgid "Width:"
+msgstr "넓이:"
+
+msgid "Limits"
+msgstr "제한"
+
+msgid "Lower:"
+msgstr "하단:"
+
+msgid "Upper:"
+msgstr "상단:"
+
+msgid "Label"
+msgstr "라벨"
+
+msgid "Left"
+msgstr "왼쪽"
+
+msgid "Right"
+msgstr "오른쪽"
+
+msgid "Top"
+msgstr "위"
+
+msgid "Bottom"
+msgstr "아래"
+
+msgid "Background color"
+msgstr "배경색"
+
+msgid "Foreground color"
+msgstr "전경색"
+
+msgid "Label color"
+msgstr "라벨색"
+
+msgid "Bang"
+msgstr "뱅"
+
+msgid "Flash Time (msec)"
+msgstr "점멸 시간 (밀리초)"
+
+msgid "Min:"
+msgstr "최소:"
+
+msgid "Max:"
+msgstr "최대:"
+
+msgid "Toggle"
+msgstr "토글"
+
+msgid "Non Zero Value"
+msgstr "0이 아닌 값"
+
+msgid "Value:"
+msgstr "값:"
+
+msgid "Number2"
+msgstr "넘버2"
+
+msgid "Width (digits):"
+msgstr "넓이 (숫자):"
+
+msgid "Height:"
+msgstr "높이:"
+
+msgid "Output Range"
+msgstr "출력 범위"
+
+msgid "Log height:"
+msgstr "로그값 크기:"
+
+msgid "Vslider"
+msgstr "수직 슬라이더"
+
+msgid "Hslider"
+msgstr "수평 슬라이더"
+
+msgid "Vradio"
+msgstr "수직 라디오"
+
+msgid "Num cells:"
+msgstr "셀 수:"
+
+msgid "Hradio"
+msgstr "수평 라디오"
+
+msgid "VU Meter"
+msgstr "VU 미터"
+
+msgid "Canvas"
+msgstr "캔버스"
+
+msgid "Visible Rectangle (pix)"
+msgstr "보이는 사각형 범위 (픽셀)"
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s 속성"
+
+msgid "Parameters"
+msgstr "매개변수"
+
+msgid "Init"
+msgstr "초기화"
+
+msgid "No init"
+msgstr "초기화 안함"
+
+msgid "Jump on click"
+msgstr "클릭으로 값 변경"
+
+msgid "Steady on click"
+msgstr "항상 값 유지"
+
+msgid "X offset:"
+msgstr "X값 오프셋:"
+
+msgid "Y offset:"
+msgstr "Y값 오프셋:"
+
+msgid "Colors"
+msgstr "색"
+
+msgid "Background"
+msgstr "배경"
+
+msgid "Front"
+msgstr "전경"
+
+msgid "Compose color"
+msgstr "색 만들기"
+
+msgid "Test label"
+msgstr "라벨 테스트"
+
+msgid "Send a Pd message"
+msgstr "Pd 메시지를 보내기"
+
+msgid "(use arrow keys for history)"
+msgstr "(이력을 보려면 화살표 키를 사용하십시오)"
+
+msgid "MIDI Settings"
+msgstr "MIDI 설정"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI 설정"
+
+msgid "In Ports:"
+msgstr "입력 포트:"
+
+msgid "Out Ports:"
+msgstr "출력 포트:"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr "오브젝트, 도움말, 오디오, 텍스트, 다른 파일들의 Pd 경로 검색"
+
+msgid "Use standard paths"
+msgstr "기본 경로 사용"
+
+msgid "Verbose"
+msgstr "상세 정보 표시"
+
+msgid "Pd Documents Directory"
+msgstr "Pd 문서 저장경로"
+
+msgid "Browse"
+msgstr "탐색"
+
+msgid "Reset"
+msgstr "초기화"
+
+msgid "Disable"
+msgstr "사용 안함"
+
+msgid "Externals Install Directory"
+msgstr "익스터널 설치 경로"
+
+msgid "Clear"
+msgstr "제거"
+
+msgid "Choose Pd documents directory:"
+msgstr "Pd 문서의 저장경로를 선택하십시오:"
+
+msgid "Install externals to directory:"
+msgstr "익스터널을 다음 저장경로에 설치:"
+
+msgid "Add a new path"
+msgstr "새 경로를 추가하기"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr "경로 [%s]를 수정하기"
+
+msgid "Add new library"
+msgstr "새 라이브러리를 추가하기"
+
+msgid "Edit library"
+msgstr "라이브러리를 편집하기"
+
+msgid "Pd libraries to load on startup"
+msgstr "기동과 함께 Pd 라이브러리를 로드하기"
+
+msgid "Startup flags:"
+msgstr "스타트업 플래그:"
+
+msgid "Defeat real-time scheduling"
+msgstr "실시간 스케쥴링 무시하기"
+
+msgid "Help Browser"
+msgstr "도움말 탐색"
+
+msgid "Associated Files"
+msgstr "연관된 파일"
+
+msgid "Pd Files"
+msgstr "Pd 파일"
+
+msgid "Max Patch Files"
+msgstr "맥스 패치 파일"
+
+msgid "Max Text Files"
+msgstr "맥스 텍스트 파일"
+
+msgid "Max Patch Files (.pat)"
+msgstr "맥스 패치 파일 (.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "맥스 텍스트 파일 (.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "다음 폰트를 감지: %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr "경고: 폰트 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 (%2$s)을(를) 사용합니다"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr "경고: 폰트 굵기 '%1$s'을(를) 찾지 못했습니다. 기본 폰트 굵기 (%2$s)을(를) "
+"사용합니다"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "폰트를 사용: %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "'%1$s'은(는) 이미 로드되었습니다. '%2$s'은(는) 무시되었습니다"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "플러그인을 로드: %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "해결될 수 없는 에러: %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "%s을(를) 로드하는 데 실패했습니다"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "플러그인 %s을(를) 읽지 못했습니다 ...스킵합니다!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "%s에서 플러그인을 찾는 데 실패했습니다 ...스킵합니다!"
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr "(Tcl) MISSING CLOSE-BRACE '}': "
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr "(Tcl) INVALID COMMAND NAME: "
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr "(Tcl) UNHANDLED ERROR: "
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr "[deken] 설치된 버젼 [%1$s] > %2$s...스킵합니다!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken] 설치된 버젼 [%1$s] < %2$s...덮어씌웁니다!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr "[deken] 설치된 버젼 [%1$s] == %2$s...스킵합니다!"
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr "deken 패키지 '%s'을(를) 설치하고 있습니다"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr "'%s' 무시: deken 패키지가 아닌 것 같습니다"
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr "'%s'을(를) 설치하고 있습니다"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s을(를) %2$s에서 성공적으로 압축을 풀었습니다."
+
+msgid "Unable to extract package automatically."
+msgstr "패키지를 자동으로 추출할 수 없습니다."
+
+msgid "Please perform the following steps manually:"
+msgstr "다음 단계를 수동으로 진행하십시오:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. %s의 압축을 해제합니다."
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr ".dek에서 .zip로 확장자를 변경해야 할 수도 있습니다"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. %s 안의 내용물을 복사하십시오."
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr "3. %s을(를) 제거하십시오 (선택)"
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr "'%s'을 제거합니다"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "%2$s에서 %1$s를 제거하는 데 실패했습니다!"
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr "'%s'의 SHA256 확인을 스킵합니다."
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr "'%s'의 SHA256 확인"
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr "'%s'의 SHA256 레퍼런스를 가져오지 못했습니다."
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr "'%s'의 SHA256 확인을 하지 못했습니다."
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "%1$s [%2$s]에서 다운로드하지 못했습니다"
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr "'%s'에서 다운로드 하지 못했습니다!"
+
+msgid "Download failed"
+msgstr "다운로드 실패"
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr "잔여 파일 '%s'을(를) 제거하지 못했습니다"
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr "다운로드 된 파일의 이름을 '%s'로 수정하지 못했습니다"
+
+msgid "Create"
+msgstr "생성"
+
+msgid "Check"
+msgstr "체크"
+
+msgid "Installation options:"
+msgstr "설치 옵션:"
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr "(재)설치 하기 전에 라이브러리의 검사합을 확인"
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr "(재)설치 하기 전에 라이브러리를 제거"
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr "(만약 존재한다면) 새로 설치 된 라이브러리의 README 파일을 표시"
+
+msgid "Keep package files after installation"
+msgstr "설치 후에도 패키지 파일을 유지"
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr "Pd의 검색 경로에 새로 설치된 라이브러리를 추가"
+
+msgid "Platform settings:"
+msgstr "플랫폼 설정:"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "기본 플랫폼: %s"
+
+msgid "User-defined platform:"
+msgstr "유저가 정의한 플랫폼:"
+
+msgid "Hide foreign architectures"
+msgstr "외부 구조를 숨김"
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+"가장 새로운 버젼의 라이브러리만 표시\n"
+"(다른 버젼은 외부 구조로서 취급합니다)"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Deken %s 환경설정"
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr "플랫폼 재탐지됨: %s"
+
+msgid "Deken Packages"
+msgstr "Deken 패키지"
+
+msgid "ZIP Files"
+msgstr "ZIP 파일"
+
+msgid "TAR Files"
+msgstr "TAR 파일"
+
+msgid "All Files"
+msgstr "모든 파일"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "'%s'에 대한 검사합 불일치"
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "'%s'의 SHA256 확인에 실패하였습니다!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 확인 실패"
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr "'%s'의 이전에 설치된 버젼을 제거하고 있습니다"
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr "%1$s을(를) %2$s로 옮기는데 일시적으로 실패하였습니다."
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr "패키지 '%s'을(를) 설치하고 있습니다"
+
+msgid "Installation completed!"
+msgstr "설치에 성공했습니다!"
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr "'%s'을(를) 성공적으로 설치했습니다!"
+
+msgid "Installation failed!"
+msgstr "설치에 실패했습니다!"
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr "'%s'을(를) 설치하는 데 실패했습니다!"
+
+msgid "Package installation failed"
+msgstr "패키지 설치 실패"
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+"%1$s을(를) 완전히 제거하는 데 실패했습니다.\n"
+"Pd를 종료한 뒤 저장경로 %2$s을(를) 수동으로 제거해 주십시오."
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "저장경로에 %s를 추가하지 못했습니다"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "Pd 검색경로에 %s을(를) 추가 하시겠습니까?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "검색경로에 %s을(를) 추가했습니다"
+
+msgid "No packages selected for installation."
+msgstr "설치할 패키지가 선택되지 않았습니다."
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr "선택된 %d 패키지의 설치가 진행중입니다."
+
+msgid "Show all"
+msgstr "모두 표시"
+
+msgid "Search"
+msgstr "검색"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr "설치 (%d)"
+
+msgid "Install"
+msgstr "설치"
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr "다운로드 %s%% 완료"
+
+msgid "Enter an exact library or object name."
+msgstr "정확한 라이브러리 혹은 오브젝트의 이름을 입력하십시오."
+
+msgid "e.g. 'freeverb~'"
+msgstr "예) 'freeverb~'"
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr "검색 결과와 글자를 일치시키기 위해 별표 '*'를 사용하십시오."
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr "예) '*-plugin'은 'deken-plugin'(혹은 그 외) 과 일치합니다."
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr "특정 라이브러리 혹은 특정 오브젝트를 검색하기 위해 설정을 제한할 수 있습니다."
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr "모든 사용 가능한 익스터널의 목록을 보려면 검색창을 공란으로 하고 \"모두 "
+"표시\"를 누르십시오."
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr "검색 결과에 오른쪽 마우스 클릭을 하면 더 많은 옵션이 표시됩니다..."
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr "웹브라우저를 통해 라이브러리와 오브젝트를 검색 할 수도 있습니다:"
+
+msgid "Find externals"
+msgstr "익스터널 찾기"
+
+msgid "Install DEK file..."
+msgstr "DEK 파일을 설치..."
+
+msgid "Preferences..."
+msgstr "환경설정..."
+
+msgid "Search for: "
+msgstr "다음을 검색: "
+
+msgid "libraries"
+msgstr "라이브러리"
+
+msgid "objects"
+msgstr "오브젝트"
+
+msgid "both"
+msgstr "전부"
+
+msgid "translations"
+msgstr "번역"
+
+msgid "Only install externals uploaded by people you trust."
+msgstr "오직 신뢰할 수 있는 사람들이 업로드한 익스터널만 설치하십시오."
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr "탭 뷰 사용 중지: 호환되지 않는 Tcl/Tk가 감지되었습니다"
+
+msgid "Library"
+msgstr "라이브러리"
+
+msgid "Version"
+msgstr "버젼"
+
+msgid "Description"
+msgstr "설명"
+
+msgid "Uploader"
+msgstr "업로더"
+
+msgid "Date"
+msgstr "날짜"
+
+msgid "Search Results"
+msgstr "검색 결과"
+
+msgid "Log"
+msgstr "로그"
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr "\"%s\"을(를) 검색하고 있습니다..."
+
+#, tcl-format
+msgid "online? %s"
+msgstr "온라인? %s"
+
+msgid "Unable to perform search. Are you online?"
+msgstr "검색을 할 수 없습니다. 온라인 환경에 있습니까?"
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr "(전체 %2$d개의 패키지 중) 사용 가능한 %1$d개의 패키지를 찾았습니다."
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr "일치하는 패키지를 찾을 수 없습니다."
+
+msgid "No matching externals found."
+msgstr "일치하는 익스터널을 찾을 수 없습니다."
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "전체 이름으로 검색을 시도하십시오. 예) 'freeverb~'."
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr "혹은 'freeverb*'와 같이 별표를 사용하십시오."
+
+msgid "Please select a (writable) installation directory!"
+msgstr "(사용 할 수 있는) 설치 경로를 선택하십시오!"
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr "%1$s을(를) %2$s에 설치 하겠습니까?"
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr "'%s'의 다운로드 취소됨: 설치 경로가 지정되지 않았습니다."
+
+msgid "Installing to non-existant directory failed"
+msgstr "존재하지 않는 설치경로이므로 설치에 실패하였습니다"
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr "'%s'에 설치하지 못했습니다"
+
+msgid "Directory does not exist!"
+msgstr "경로가 존재하지 않습니다!"
+
+msgid "Directory is not writable!"
+msgstr "경로에 쓸 수 없습니다!"
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr "'%s'을(를) 다운로드 하고 있습니다"
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr "'%1$s'을(를) '%2$s'에 다운로드 하고 있습니다..."
+
+msgid "aborting."
+msgstr "중지."
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr "'%s'을(를) 다운로드 하지 못했습니다"
+
+msgid "Download failed!"
+msgstr "다운로드에 실패했습니다!"
+
+msgid "Download completed! Verifying..."
+msgstr "다운로드에 성공했습니다! 확인 중입니다..."
+
+msgid "Ignoring checksum mismatch"
+msgstr "검사합의 불일치를 무시"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] deken-plugin.tcl (Pd 익스터널 검색)이 %s로부터 로드되었습니다."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] 플랫폼이 감지되었습니다: %s"
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr "%s에서 검색하고 있습니다..."
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr "%1$s의 검색결과에서 %2$d개의 결과가 반환되었습니다"
+
+msgid "No usable servers for searching found..."
+msgstr "사용 가능한 서버를 찾지 못했습니다..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "업로더: %1$s @ %2$s"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "'%s'를 검색하는 데 실패했습니다!"
+
+msgid "Search failed"
+msgstr "검색에 실패했습니다"
+
+msgid "Unable to perform search."
+msgstr "플랫폼을 검색하지 못했습니다."
+
+msgid "Select package for installation"
+msgstr "설치할 패키지를 선택하십시오"
+
+msgid "Deselect package"
+msgstr "패키지 선택 해제"
+
+msgid "Open package webpage"
+msgstr "패키지 웹페이지를 열기"
+
+msgid "Copy package URL"
+msgstr "패키지 URL을 복사"
+
+msgid "Copy SHA256 checksum URL"
+msgstr "SHA256 검사합 URL을 복사"
+
+msgid "Copy OpenGPG signature URL"
+msgstr "OpenGPG 서명 URL을 복사"
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr "'%s'을(를) 제거"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Pd에서 패치와 익스터널 라이브러리를 존재하는 저장 경로에서 사용 하시겠습니까?"
+"\n"
+"\n"
+"위치: %s\n"
+"\n"
+"나중에 경로 환경설정에서 이를 변경하거나 해제할 수 있습니다."
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Pd에서 패치와 익스터널 라이브러리를 저장 경로를 새로 만들어 사용 "
+"하시겠습니까?\n"
+"\n"
+"위치: %s\n"
+"\n"
+"나중에 경로 환경설정에서 이를 변경하거나 해제할 수 있습니다."
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"Pd 저장경로를 찾지 못했습니다:\n"
+"\n"
+"%s\n"
+"\n"
+"새 경로를 지정 하시겠습니까?"
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr "Pd 저장경로를 만들지 못했습니다: %s"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "\"externals\" 경로를 만들지 못했습니다: %s"
+
+msgid "refusing to delete empty domain"
+msgstr "비어있는 도메인 삭제가 거부되었습니다"
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "환경설정 \"%1$s\"에서 %2$s을(를) 만들지 못했습니다"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "'%s' 무시: 존재하지 않습니다"
+
+msgid "About Pd"
+msgstr "Pd에 대하여"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "\"%s\" 문서를 읽지 못했습니다"
+
+msgid "Save"
+msgstr "저장"
+
+msgid "Save As..."
+msgstr "다른 이름으로 저장..."
+
+msgid "Print..."
+msgstr "인쇄..."
+
+msgid "Paste Replace"
+msgstr "붙여넣기 대체"
+
+msgid "Duplicate"
+msgstr "복제"
+
+msgid "Zoom In"
+msgstr "확대"
+
+msgid "Zoom Out"
+msgstr "축소"
+
+msgid "Tidy Up"
+msgstr "선 정리"
+
+msgid "(Dis)Connect Selection"
+msgstr "선택된 오브젝트를 연결(해제)"
+
+msgid "Triggerize"
+msgstr "트리거"
+
+msgid "Edit Mode"
+msgstr "편집 모드"
+
+msgid "Undo"
+msgstr "되돌리기"
+
+msgid "Redo"
+msgstr "되돌리기 취소"
+
+msgid "New"
+msgstr "새로 만들기"
+
+msgid "Open"
+msgstr "열기"
+
+msgid "Message..."
+msgstr "메시지..."
+
+msgid "Cut"
+msgstr "잘라내기"
+
+msgid "Select All"
+msgstr "모두 선택"
+
+msgid "Clear Console"
+msgstr "콘솔 창 지우기"
+
+msgid "Object"
+msgstr "오브젝트"
+
+msgid "Message"
+msgstr "메시지"
+
+msgid "Number"
+msgstr "넘버"
+
+msgid "List"
+msgstr "목록"
+
+msgid "Symbol"
+msgstr "심볼"
+
+msgid "Comment"
+msgstr "코멘트"
+
+msgid "Graph"
+msgstr "그래프"
+
+msgid "Find..."
+msgstr "찾기..."
+
+msgid "Find Again"
+msgstr "다시 찾기"
+
+msgid "Find Last Error"
+msgstr "지난 에러 찾기"
+
+msgid "DSP On"
+msgstr "DSP 켜기"
+
+msgid "DSP Off"
+msgstr "DSP 끄기"
+
+msgid "Test Audio and MIDI..."
+msgstr "오디오와 MIDI 테스트..."
+
+msgid "Load Meter"
+msgstr "미터 로드"
+
+msgid "Audio Settings..."
+msgstr "오디오 설정..."
+
+msgid "MIDI Settings..."
+msgstr "MIDI 설정..."
+
+msgid "Minimize"
+msgstr "최소화"
+
+msgid "Zoom"
+msgstr "확대"
+
+msgid "Bring All to Front"
+msgstr "모두 앞으로 가져오기"
+
+msgid "Next Window"
+msgstr "다음 창"
+
+msgid "Previous Window"
+msgstr "이전 창"
+
+msgid "Parent Window"
+msgstr "부모 창"
+
+msgid "HTML Manual..."
+msgstr "HTML 매뉴얼..."
+
+msgid "Browser..."
+msgstr "탐색기..."
+
+msgid "List of objects..."
+msgstr "오브젝트 목록..."
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr "업데이트 체크"
+
+msgid "Report a bug"
+msgstr "버그 리포트"
+
+msgid "Clear Menu"
+msgstr "메뉴 초기화"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+"모든 환경설정을 제거 하겠습니까?\n"
+"(Pd 재시작 후 적용됩니다)"
+
+msgid "removed GUI settings"
+msgstr "GUI 설정을 제거하였습니다"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "초기화 할 Pd-GUI 설정이 없습니다"
+
+msgid "Path..."
+msgstr "경로..."
+
+msgid "Startup..."
+msgstr "시작..."
+
+msgid "Audio..."
+msgstr "오디오..."
+
+msgid "MIDI..."
+msgstr "MIDI..."
+
+msgid "Zoom New Windows"
+msgstr "새 창을 확대"
+
+msgid "Save All Preferences"
+msgstr "모든 환경설정을 저장"
+
+msgid "Save to..."
+msgstr "경로에 저장..."
+
+msgid "Load from..."
+msgstr "경로에서 로드..."
+
+msgid "Forget All..."
+msgstr "모두 잊기..."
+
+msgid "Preferences"
+msgstr "환경설정"
+
+msgid "Open Recent"
+msgstr "최근 패치를 열기"
+
+msgid "Quit"
+msgstr "종료"
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "'%s'에서 변경된 사항을 저장 하겠습니까?"
+
+msgid "Properties"
+msgstr "속성"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr "Pd 창에서 %d행이 누락되었습니다"
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr "Pd 창에서 %d행이 필터링 되었습니다"
+
+msgid "Audio on"
+msgstr "오디오 켜기"
+
+msgid "Audio off"
+msgstr "오디오 끄기"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr "(Tcl) MISSING CLOSE-BRACKET ']': "
+
+msgid "Tcl:"
+msgstr "Tcl:"
+
+msgid "Pd"
+msgstr "Pd"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio I/O error"
+msgstr "오디오 I/O 에러"
+
+msgid "Log:"
+msgstr "로그:"
+
+msgid "fatal"
+msgstr "치명적인 오류"
+
+msgid "error"
+msgstr "오류"
+
+msgid "normal"
+msgstr "평상시"
+
+msgid "debug"
+msgstr "디버그"
+
+msgid "all"
+msgstr "모두 표시"
+
+msgid "New..."
+msgstr "새로 만들기..."
+
+msgid "Edit..."
+msgstr "편집..."
+
+msgid "Delete"
+msgstr "삭제"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "'%s' 무시: Pd 파일이 아닌 것 같습니다"

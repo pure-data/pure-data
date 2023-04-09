@@ -1071,7 +1071,7 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
     if (x->x_mode == MODE_STREAM)
     {
         if (x->x_hop % sp[0]->s_n)
-            post("sigmund: adjusting hop size to %d",
+            post("sigmund~: adjusting hop size to %d",
                 (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
         if (x->x_infill % sp[0]->s_n) {
             if (x->x_inbuf) {
@@ -1303,7 +1303,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "sigmund: %s: unknown flag or argument missing",
+            pd_error(x, "sigmund~: %s: unknown flag or argument missing",
                 firstarg->s_name);
             argc--, argv++;
         }
@@ -1348,22 +1348,22 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     if (argc < 5)
     {
         post(
-         "sigmund: array-name, npts, array-onset, samplerate, loud");
+         "sigmund~: array-name, npts, array-onset, samplerate, loud");
         return;
     }
     if (npts < 64 || npts != (1 << ilog2(npts))) 
     {
-        pd_error(0, "sigmund: bad npoints");
+        pd_error(0, "sigmund~: bad npoints");
         return;
     }
     if (onset < 0)
     {
-        pd_error(0, "sigmund: negative onset");
+        pd_error(0, "sigmund~: negative onset");
         return;
     }
     if (srate <= 0)
     {
-        pd_error(0, "sigmund: bad samplerate");
+        pd_error(0, "sigmund~: bad samplerate");
         return;
     }
     bufsize = sizeof(t_float)*npts;
@@ -1372,7 +1372,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
     {
-        pd_error(0, "%s: array missing or too small", syminput->s_name);
+        pd_error(0, "sigmund~: '%s' array missing or too small", syminput->s_name);
         goto cleanup;
     }
     if (arraysize < npts)
@@ -1568,7 +1568,7 @@ static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
             x->x_dotracks = 1;
         }
         else if (s[0] != '@')
-            post("sigmund: ignoring unknown argument '%s'" ,s);
+            post("sigmund~: ignoring unknown argument '%s'" ,s);
     }
     if (!x->x_nvarout)
     {

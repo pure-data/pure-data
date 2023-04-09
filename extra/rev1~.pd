@@ -1,4 +1,4 @@
-#N canvas 764 148 599 451 12;
+#N canvas 582 125 599 451 12;
 #X obj 348 227 dbtorms;
 #X obj 348 191 min 100;
 #X obj 348 77 inlet;

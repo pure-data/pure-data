@@ -7,12 +7,11 @@
 #X text 668 396 frequency;
 #N canvas 876 177 279 294 startup 0;
 #X obj 45 37 loadbang;
-#X obj 45 61 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 45 80 f \$0;
-#X text 35 189 This subpatch loads initial;
-#X text 37 206 values in number boxes.;
-#X msg 45 104 \; \$1-pole 60 \; \$1-zero 20;
+#X obj 45 61 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 45 90 f \$0;
+#X text 35 199 This subpatch loads initial;
+#X text 37 216 values in number boxes.;
+#X msg 45 114 \; \$1-pole 60 \; \$1-zero 20;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
@@ -47,27 +46,12 @@
 #X obj 279 453 *;
 #X obj 326 469 *;
 #X obj 365 469 *;
-#X text 31 45 To get a peaking filter \, start with a shelving filter
-but rotate the pole and zero to the point on the unit circle you want
-to amplify or attenuate. The rpole~ and rzero~ filters are replaced
-with their complex-valued siblings \, cpole~ and czero~. These filters
-take a (real \, imaginary) pair to filter and another (real-imaginary)
-pair to specify the pole or zero. As for rpole~ and rzero~ \, the coefficients
-may change at audio rate., f 74;
-#X text 30 142 The outputs of cpole~ and czero~ are also in the form
-of a (real-imaginary) pair. Both outlets of cpole~ are connected to
-czero~ in this example \, but then since we want a real-valued filter
-\, we only take the real part of the (complex) output of czero~.,
-f 74;
-#X text 30 214 Here the pole and zero radii (p and q) control the center-frequency
-gain by the formula (1-q)/(1-p). The closer to 1 the radii \, the narrower
-the band affected. The non-peak gain \, (1+q)/(1+p) \, is close to
-1 as long as p and q are at least 50% or so., f 74;
+#X text 31 45 To get a peaking filter \, start with a shelving filter but rotate the pole and zero to the point on the unit circle you want to amplify or attenuate. The rpole~ and rzero~ filters are replaced with their complex-valued siblings \, cpole~ and czero~. These filters take a (real \, imaginary) pair to filter and another (real-imaginary) pair to specify the pole or zero. As for rpole~ and rzero~ \, the coefficients may change at audio rate., f 74;
+#X text 30 142 The outputs of cpole~ and czero~ are also in the form of a (real-imaginary) pair. Both outlets of cpole~ are connected to czero~ in this example \, but then since we want a real-valued filter \, we only take the real part of the (complex) output of czero~., f 74;
+#X text 30 214 Here the pole and zero radii (p and q) control the center-frequency gain by the formula (1-q)/(1-p). The closer to 1 the radii \, the narrower the band affected. The non-peak gain \, (1+q)/(1+p) \, is close to 1 as long as p and q are at least 50% or so., f 74;
 #X msg 464 473 \; pd dsp \$1;
-#X obj 464 449 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
-#X obj 67 346 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 464 449 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 67 344 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X connect 1 0 6 0;
 #X connect 4 0 9 0;
 #X connect 7 0 1 0;
