@@ -210,7 +210,7 @@ static void *bob_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            error("bob~ unknown flag ...");
+            pd_error(x, "bob~ unknown flag ...");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
