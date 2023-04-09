@@ -11,8 +11,7 @@
 #X text 398 330 - deprecated;
 #X obj 326 328 q8_rsqrt~;
 #X msg 84 201 \; pd dsp \$1;
-#X obj 84 173 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 108 172 DSP on/off;
+#X text 115 170 DSP on/off;
 #X obj 245 149 sig~ 2;
 #X obj 307 192 metro 200;
 #X obj 6 47 cnv 1 510 1 empty empty empty 8 12 0 13 #000000 #000000 0;
@@ -34,10 +33,11 @@
 #X text 43 58 [rsqrt~] takes the approximate reciprocal square root of the incoming signal (the same as '1/sqrt(input) using a fast approximate algorithm which is probably accurate to about 120 dB (20 bits)., f 56;
 #X text 18 306 An older object \, [q8_rsqrt~] \, is included in Pd for back compatibility but should probably not be used. It only gives about 8 bit accuracy., f 41;
 #X text 308 258 <-- result;
-#X connect 0 0 14 0;
+#X obj 84 166 set-dsp-tgl;
+#X connect 0 0 13 0;
 #X connect 2 0 1 0;
 #X connect 5 0 2 0;
-#X connect 12 0 11 0;
-#X connect 14 0 5 0;
-#X connect 15 0 2 0;
-#X connect 21 0 15 0;
+#X connect 13 0 5 0;
+#X connect 14 0 2 0;
+#X connect 20 0 14 0;
+#X connect 24 0 11 0;

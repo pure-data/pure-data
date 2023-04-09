@@ -1,0 +1,16 @@
+#N canvas 524 87 527 342 12;
+#X obj 243 102 r pd-dsp-started;
+#X obj 302 131 r pd-dsp-stopped;
+#X msg 302 160 set 0;
+#X msg 243 131 set 1;
+#X obj 243 194 s \$0-set-tgl;
+#X obj 243 224 r \$0-tgl;
+#X obj 243 268 outlet;
+#X obj 153 153 tgl 20 0 \$0-tgl \$0-set-tgl empty 0 -10 0 12 #dfdfdf #000000 #000000 0 1;
+#X text 89 39 This is a simple helper abstraction for the Pd docs that sets the toggle according to the DSP state., f 42;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 3 0 4 0;
+#X connect 5 0 6 0;
+#X coords 0 -1 1 1 26 28 2 150 150;

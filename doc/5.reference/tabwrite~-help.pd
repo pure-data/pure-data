@@ -3,7 +3,7 @@
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array buffer 1000 float 0;
 #X coords 0 1 999 -1 200 100 1 0 0;
-#X restore 405 228 graph;
+#X restore 430 233 graph;
 #X text 167 363 creation argument initializes array name;
 #X obj 169 455 tabread;
 #X obj 229 455 tabwrite;
@@ -20,10 +20,7 @@
 #X msg 80 330 set buffer;
 #X obj 43 202 osc~ 200;
 #X obj 182 482 soundfiler;
-#X msg 250 199 \; pd dsp \$1;
-#X obj 250 172 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 135 265 start at index 500 (middle of this table), f 22;
-#X text 272 171 DSP on/off;
 #N canvas 703 134 593 356 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
 #X text 431 244 <= array with local name, f 13;
@@ -93,9 +90,12 @@
 #X text 44 69 [tabwrite~] records an audio signal sequentially into an array. Sending it "bang" writes from beginning to end of the array. To avoid writing all the way to the end \, you can send a "stop" message at an appropriate later time. The "start" message allows setting the array location at which the first sample is written. (Starting and stopping occur on block boundaries \, typically multiples of 64 samples \, in the input signal.), f 80;
 #X obj 53 232 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 446 469 updated for Pd version 0.4;
+#X msg 319 205 \; pd dsp \$1;
+#X obj 319 170 set-dsp-tgl;
+#X text 350 174 DSP on/off;
 #X connect 8 0 14 0;
 #X connect 10 0 14 0;
 #X connect 15 0 14 0;
 #X connect 16 0 14 0;
-#X connect 19 0 18 0;
-#X connect 31 0 14 0;
+#X connect 28 0 14 0;
+#X connect 31 0 30 0;

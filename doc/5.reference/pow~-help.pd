@@ -25,9 +25,7 @@
 #X obj 81 449 +~;
 #X text 112 451 (etc.) - signal binary operators;
 #X obj 234 423 expr~;
-#X msg 330 140 \; pd dsp \$1;
-#X obj 330 114 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 355 114 DSP on/off;
+#X msg 337 148 \; pd dsp \$1;
 #N canvas 810 126 441 249 reference 0;
 #X obj 13 50 cnv 5 410 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 13 145 cnv 2 410 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
@@ -47,6 +45,8 @@
 #X obj 3 407 cnv 1 500 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 44 62 [pow~] raises a signal to a numeric power (given by another signal or argument/float). The inputs may be positive \, zero \, or negative.;
 #X text 297 420 updated for Pd version 0.42;
+#X obj 337 113 set-dsp-tgl;
+#X text 368 117 DSP on/off;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 2 0 17 0;
@@ -60,4 +60,4 @@
 #X connect 19 0 17 0;
 #X connect 20 0 7 0;
 #X connect 21 0 7 1;
-#X connect 27 0 26 0;
+#X connect 33 0 26 0;

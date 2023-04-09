@@ -40,8 +40,7 @@
 #X obj 100 583 expr~;
 #X text 148 583 - evaluate expressions on audio signals;
 #X text 376 556 - audio math objects;
-#X obj 481 282 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X msg 481 312 \; pd dsp \$1;
+#X msg 481 315 \; pd dsp \$1;
 #X text 246 17 - binary operators on audio signals;
 #N canvas 688 96 577 421 reference 0;
 #X obj 17 191 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
@@ -84,6 +83,8 @@
 #X array array1 100 float 0;
 #X coords 0 2 100 -2 350 200 1 0 0;
 #X restore 58 289 graph;
+#X obj 481 278 set-dsp-tgl;
+#X text 512 282 DSP on/off;
 #X connect 0 0 9 0;
 #X connect 1 0 10 0;
 #X connect 2 0 11 0;
@@ -103,10 +104,10 @@
 #X connect 25 0 0 1;
 #X connect 26 0 18 1;
 #X connect 26 0 19 1;
-#X connect 41 0 42 0;
-#X connect 48 0 9 0;
-#X connect 50 0 16 0;
-#X connect 51 0 10 0;
-#X connect 52 0 11 0;
-#X connect 53 0 8 0;
-#X connect 54 0 17 0;
+#X connect 47 0 9 0;
+#X connect 49 0 16 0;
+#X connect 50 0 10 0;
+#X connect 51 0 11 0;
+#X connect 52 0 8 0;
+#X connect 53 0 17 0;
+#X connect 56 0 41 0;

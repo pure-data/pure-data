@@ -19,9 +19,6 @@
 #X obj 113 424 exp~;
 #X obj 150 424 log~;
 #X obj 188 424 pow~;
-#X text 294 147 DSP on/off;
-#X obj 268 147 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X msg 268 177 \; pd dsp \$1;
 #X text 107 262 result;
 #N canvas 722 152 442 203 reference 0;
 #X obj 9 50 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -41,8 +38,11 @@
 #X text 182 238 An older object \, [q8_sqrt~] \, is included in Pd for back compatibility but should probably not be used. It only gives about 8 bit accuracy., f 45;
 #X obj 64 153 sig~ 4;
 #X text 100 12 - square root for signals;
+#X msg 267 168 \; pd dsp \$1;
+#X obj 267 133 set-dsp-tgl;
+#X text 298 137 DSP on/off;
 #X connect 0 0 6 0;
-#X connect 1 0 30 0;
+#X connect 1 0 27 0;
 #X connect 2 0 8 0;
 #X connect 3 0 0 0;
 #X connect 5 0 6 0;
@@ -50,5 +50,5 @@
 #X connect 8 0 9 0;
 #X connect 8 1 9 1;
 #X connect 9 0 7 0;
-#X connect 21 0 22 0;
-#X connect 30 0 5 0;
+#X connect 27 0 5 0;
+#X connect 30 0 29 0;

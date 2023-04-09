@@ -32,9 +32,6 @@
 #X obj 36 316 tabread4~ table2-ex;
 #X msg 87 219 set table2-ex;
 #X obj 55 355 loadbang;
-#X text 197 366 DSP on/off;
-#X msg 174 391 \; pd dsp \$1;
-#X obj 174 366 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 124 20 - 4-point-interpolating table lookup for signals;
 #N canvas 773 305 593 441 Dealing_with_"\$0" 0;
 #X text 36 33 '\$0' - the patch ID number used to force locality in Pd - is widely used in send/receive names as well as array names. This is specially useful in abstractions so each copy has local names instead of global., f 70;
@@ -117,6 +114,9 @@
 #X connect 2 0 0 0;
 #X restore 331 516 pd array-examples;
 #X text 58 70 [tabread4~] is used to build samplers and other table lookup algorithms. The interpolation scheme is 4-point polynomial as used in [delread4~] and [tabosc4~]., f 90;
+#X msg 162 403 \; pd dsp \$1;
+#X obj 162 368 set-dsp-tgl;
+#X text 193 372 DSP on/off;
 #X connect 1 0 5 0;
 #X connect 2 0 1 0;
 #X connect 3 0 22 0;
@@ -125,5 +125,5 @@
 #X connect 22 0 1 0;
 #X connect 23 0 22 0;
 #X connect 24 0 2 0;
-#X connect 27 0 26 0;
-#X connect 30 0 4 0;
+#X connect 27 0 4 0;
+#X connect 39 0 38 0;

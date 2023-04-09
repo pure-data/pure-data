@@ -5,10 +5,9 @@
 #X floatatom 264 255 7 0 0 0 - - - 0;
 #X obj 212 174 abs~;
 #X obj 264 174 loadbang;
-#X obj 68 170 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X msg 68 201 \; pd dsp \$1;
+#X msg 60 201 \; pd dsp \$1;
 #X obj 212 144 sig~ -10;
-#X text 91 171 DSP on/off;
+#X text 92 164 DSP on/off;
 #X obj 24 18 abs~;
 #X obj 93 316 abs;
 #X text 21 316 see also:;
@@ -30,10 +29,11 @@
 #X obj 8 303 cnv 1 480 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 38 65 The [abs~] object passes nonnegative values unchanged \, but replaces negative ones with their (positive) inverses., f 59;
 #X text 268 315 updated for Pd version 0.42;
+#X obj 60 160 set-dsp-tgl;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
-#X connect 2 0 8 0;
+#X connect 2 0 7 0;
 #X connect 4 0 1 0;
 #X connect 5 0 0 0;
-#X connect 6 0 7 0;
-#X connect 8 0 4 0;
+#X connect 7 0 4 0;
+#X connect 20 0 6 0;

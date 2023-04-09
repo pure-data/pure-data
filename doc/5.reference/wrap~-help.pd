@@ -14,9 +14,6 @@
 #X obj 117 335 wrap;
 #X text 89 15 - remainder modulo 1 for signals;
 #X obj 160 335 expr~;
-#X msg 161 212 \; pd dsp \$1;
-#X obj 161 185 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 184 185 On/off;
 #X obj 75 224 metro 200;
 #N canvas 817 164 442 195 reference 0;
 #X obj 9 49 cnv 5 410 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
@@ -33,10 +30,13 @@
 #X obj 10 49 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 10 319 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 34 59 [wrap~] wraps the input between 0 and 1 by giving the difference between the input and the largest integer not exceeding it (for positive numbers this is the fractional part)., f 72;
+#X msg 176 229 \; pd dsp \$1;
+#X obj 176 194 set-dsp-tgl;
+#X text 207 198 DSP on/off;
 #X connect 0 0 4 0;
-#X connect 2 0 18 0;
+#X connect 2 0 15 0;
 #X connect 3 0 1 0;
 #X connect 4 0 6 0;
 #X connect 6 0 3 0;
-#X connect 16 0 15 0;
-#X connect 18 0 3 0;
+#X connect 15 0 3 0;
+#X connect 22 0 21 0;

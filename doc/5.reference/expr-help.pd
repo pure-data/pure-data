@@ -614,7 +614,7 @@
 #X connect 21 0 10 0;
 #X restore 164 430 pd Acoustics;
 #X restore 505 549 pd All_functions \; and operators;
-#N canvas 398 62 968 659 [expr] 0;
+#N canvas 341 56 961 640 [expr] 0;
 #X obj 206 123 expr 1;
 #X floatatom 206 153 4 0 0 0 - - - 0;
 #X floatatom 307 151 4 0 0 0 - - - 0;
@@ -736,12 +736,13 @@
 #X obj 147 239 expr~ $v1 + $v2;
 #X text 22 105 Besides '$f#' \, '$i#' and '$s#' \, [expr~] takes '$v#' variables. Note that the first inlet of [expr~] needs to be of type '$v1'. You can still send floats to this left inlet as floats sent to audio inlets are promoted to signals., f 54;
 #X msg 290 55 \; pd dsp \$1;
-#X obj 290 29 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 359 404 a semicolon also creates more expressions and outlets (up to 100), f 24;
 #X text 58 33 make sure to turn on the audio for the [expr~] examples ----->, f 31;
 #X obj 165 270 bng 19 250 50 0 empty empty empty 0 -10 0 12 #dfdfdf #000000 #000000;
 #X obj 253 318 hsl 162 19 0 1 0 0 empty empty empty -2 -10 0 12 #dfdfdf #000000 #000000 0 1;
 #X obj 743 72 vsl 19 162 0 1 0 0 empty empty empty 0 -9 0 12 #dfdfdf #000000 #000000 0 1;
+#X obj 290 20 set-dsp-tgl;
+#X text 321 24 DSP on/off;
 #X connect 0 0 10 0;
 #X connect 3 0 18 1;
 #X connect 10 0 14 0;
@@ -760,10 +761,10 @@
 #X connect 24 0 15 1;
 #X connect 28 0 13 0;
 #X connect 31 0 20 0;
-#X connect 34 0 33 0;
-#X connect 37 0 20 0;
-#X connect 38 0 11 0;
-#X connect 39 0 3 0;
+#X connect 36 0 20 0;
+#X connect 37 0 11 0;
+#X connect 38 0 3 0;
+#X connect 39 0 33 0;
 #X restore 219 528 pd [expr~] Examples;
 #N canvas 240 37 1094 690 [fexpr~] 0;
 #X text 90 365 - $x1: same as $x1[0] \, $x2: same as $x2[0] (and so on)., f 60;
@@ -813,10 +814,9 @@
 #X text 83 623 - stop: stops the computation of [fexpr~], f 60;
 #X text 83 641 - start: starts the computation of [fexpr~], f 60;
 #X text 558 18 As noted \, [fexpr~] can be CPU expensive! By default \, [fexpr~] is on when it is loaded \, but you can save CPU and control when it is on or off with the 'start' and 'stop' messages. Below \, you need to click 'start' to get it running., f 73;
-#X msg 917 258 \; pd dsp \$1;
+#X msg 917 271 \; pd dsp \$1;
 #X obj 672 600 output~;
 #X obj 924 519 declare -stdpath ./;
-#X obj 917 230 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #N canvas 695 185 533 408 fractional-sample-index 0;
 #X msg 130 190 start;
 #X msg 78 189 stop;
@@ -925,6 +925,8 @@
 #X text 62 210 'n' index for '$x#' is from -1 to minus "vector size - 1".;
 #X text 23 63 Besides '$f#' \, '$i#' and '$s#' \, [fexpr~] takes '$x#' and '$y#' variables (and no '$v#' variables from [expr~]). Note that the first inlet of [fexpr~] needs to be of type '$x1' (cannot be '$f1' \, '$i1' or '$s1'). You can still send floats to this left inlet as floats sent to audio inlets are promoted to signals. The '$x#' and '$y#' types are input and output samples defined by 'n':, f 71;
 #X text 23 243 The vector (or 'block') size is defined by the [block~] or [switch~] objects. The default is 64 so it's from 0 to -63 for '$x#' and -1 to -63 for $y#. As such \, $x#[0] specifies the current sample input \, and $y#[-1] the last sample output., f 72;
+#X obj 917 234 set-dsp-tgl;
+#X text 948 238 DSP on/off;
 #X connect 4 0 9 0;
 #X connect 5 0 9 0;
 #X connect 6 0 5 0;
@@ -948,7 +950,7 @@
 #X connect 32 0 22 0;
 #X connect 40 0 29 0;
 #X connect 41 0 27 0;
-#X connect 50 0 47 0;
+#X connect 57 0 47 0;
 #X restore 212 555 pd [fexpr~] Examples;
 #X obj 92 608 +;
 #X obj 92 633 +~;

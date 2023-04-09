@@ -132,9 +132,7 @@
 #X msg 124 393 1 2 3;
 #X msg 172 393 poodle 50;
 #X text 308 266 (DSP needs to be on);
-#X obj 406 177 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
-#X text 430 178 DSP on/off;
-#X msg 406 206 \; pd dsp \$1;
+#X msg 394 208 \; pd dsp \$1;
 #N canvas 230 90 1105 510 reference 0;
 #X obj 8 52 cnv 5 530 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
 #X obj 7 170 cnv 5 530 5 empty empty empty 8 18 0 13 #202020 #000000 0;
@@ -246,6 +244,8 @@
 #X text 136 38 - control/signal outlet;
 #X text 227 181 signal in and out;
 #X obj 223 506 snake~;
+#X obj 394 170 set-dsp-tgl;
+#X text 425 174 DSP on/off;
 #X connect 5 0 13 1;
 #X connect 6 0 13 0;
 #X connect 11 0 4 0;
@@ -254,5 +254,5 @@
 #X connect 16 0 15 0;
 #X connect 17 0 15 0;
 #X connect 18 0 15 0;
-#X connect 20 0 22 0;
-#X connect 27 0 15 0;
+#X connect 25 0 15 0;
+#X connect 39 0 20 0;

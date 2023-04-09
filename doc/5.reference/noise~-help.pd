@@ -48,9 +48,10 @@
 #X text 132 527 see also:;
 #X obj 207 527 samphold~;
 #X msg 235 249 seed 7.31594e+08;
-#X msg 358 473 \; pd dsp \$1;
-#X obj 358 443 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X msg 345 473 \; pd dsp \$1;
 #X text 57 22 Pseudo random number generators aren't true random number generators. Instead \, an algorithm is used to provide a sequence of numbers that seems random. The same sequence can be reproduced if you set a "seed" value \, which can be any integer number., f 52;
+#X obj 345 438 set-dsp-tgl;
+#X text 376 442 DSP on/off;
 #X connect 0 0 2 0;
 #X connect 0 0 4 0;
 #X connect 0 0 13 0;
@@ -69,7 +70,7 @@
 #X connect 17 0 4 0;
 #X connect 17 0 2 0;
 #X connect 17 0 13 0;
-#X connect 19 0 18 0;
+#X connect 20 0 18 0;
 #X restore 352 198 pd more about seed;
 #X f 10;
 #X text 293 206 see -->;

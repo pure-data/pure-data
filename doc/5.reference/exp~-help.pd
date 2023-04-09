@@ -28,14 +28,15 @@
 #X text 478 12 <= click;
 #X obj 5 44 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X msg 322 182 \; pd dsp \$1;
-#X obj 322 156 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X text 44 63 [exp~] raises the Euler number 'e' (about 2.718) to the power of the input signal., f 63;
 #X text 56 12 - exponential function for signals.;
 #X obj 5 287 cnv 1 550 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 322 142 set-dsp-tgl;
+#X text 353 146 DSP on/off;
 #X connect 0 0 9 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 5 0;
 #X connect 4 0 0 0;
 #X connect 9 0 3 0;
-#X connect 19 0 18 0;
+#X connect 22 0 18 0;
