@@ -391,6 +391,14 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
     return iemgui_getcolorarg(index, argc, argv);
 }
 
+int iemgui_color_single(int ac, t_atom *av)
+{
+    if(ac < 3) return iemgui_compatible_colorarg(0, ac, av);
+    return (((int)atom_getfloatarg(0, ac, av) & 255) << 16)
+        + (((int)atom_getfloatarg(1, ac, av) & 255) << 8)
+        + ((int)atom_getfloatarg(2, ac, av) & 255);
+}
+
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     int sndable=1, oldsndrcvable=0;
@@ -584,6 +592,20 @@ void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
+    if((ac >= 2) && (av->a_type == A_SYMBOL))
+    {
+        t_symbol *name = atom_getsymbolarg(0, ac, av);
+        if(name == gensym("background")) {
+            iemgui->x_bcol = iemgui_color_single(ac - 1, av + 1);
+            ac = 0;
+        } else if(name == gensym("front")) {
+            iemgui->x_fcol = iemgui_color_single(ac - 1, av + 1);
+            ac = 0;
+        } else if(name == gensym("label")) {
+            iemgui->x_lcol = iemgui_color_single(ac - 1, av + 1);
+            ac = 0;
+        }
+    }
     if (ac >= 1)
         iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
     if (ac == 2 && pd_compatibilitylevel < 47)
