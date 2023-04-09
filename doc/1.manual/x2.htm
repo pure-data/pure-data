@@ -38,11 +38,16 @@ more theoretical information about computer music) can be found in the
 <H3> <A id=s1> 2.1 overview </A> </H3>
 
 <P>Pd is a real-time graphical programming environment for audio and graphical
-processing.  It resembles the Max/MSP system but is much simpler and more
-portable; also Pd has two features not (yet) showing up in Max/MSP: first,
-via Mark Dank's GEM package, Pd can be used for simultaneous computer
-animation and computer audio.  Second, an experimental facility is provided
-for defining and accessing data structures.
+processing. It resembles the MAX system but is much simpler and more portable.
+For example, with Peter Brinkmann's libpd you can have Pure Data as an embeddable
+audio synthesis library. Also Pd has an experimental facility not present in MAX
+that is provided for defining and accessing data structures.
+
+<P>Even though it is light and portable, Pd has many external packages that
+expand its features, like Mark Dank's GEM package which expands Pd to be used
+for simultaneous computer animation and computer audio. Similarly, Zack Lee's Ofelia
+package allows you to use openFrameworks and Lua within Pd for creating audiovisual
+artwork or multimedia applications such as games.
 
 <H3> <A id=s1.1> 2.1.1. the main window, canvases, and printout </A> </H3>
 
@@ -150,7 +155,7 @@ creation arguments.
 function sporadically, as a result of one or more type of <I> event </I>. In
 this case, incoming MIDI note messages set off the control computation.  The
 result of the computation is, when the note happens to be a "note on" (and not
-a "note off", to compute the frequency in cycles per second and pass it on to
+a "note off"), to compute the frequency in cycles per second and pass it on to
 the oscillator ("osc~").
 
 <P> The second half of the patch, the osc~, *~, and dac~ objects, compute audio
@@ -278,13 +283,6 @@ into and out of "text" dialogs (created with the "edit text" menu item.)
 <P> To change a text item, you can select it and then edit the text.  If you
 only click once, the entire text is selected and your typing will replace
 everything. Click again and drag to select a portion of the text to retype.
-
-<P> If there's
-more than a small amount of text (in a comment, for example) you might want to 
-select the text and choose "text editor" from the Edit menu, which opens a text
-editing window with a copy of the text in it.  Hitting "send" in that window is
-exactly equivalent to retyping the text into Pd; you can send it to more than
-one box in sequence if you want.
 
 <P> If you click a box and move the mouse without releasing the button this
 displaces the entire box.  If you wish to displace a box which is already
@@ -827,7 +825,7 @@ as argument to a further abstraction.)
 <P> For example, if you want to get dog-food, dog-ears, and cat-food, for
 example,   have an abstraction  "a1" that invokes an abstraction "a2" twice, as
 "a2   $1-food" and "a2 $1-ears", and then in a third patch call a1 twice,   as
-"a1 cat" and "a1 dog".  Inside the four "a2" copioes,   $1 will evaluate to
+"a1 cat" and "a1 dog".  Inside the four "a2" copies,   $1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
 
 <H3> <A id="s7"> 2.7. subpatches </A> </H3>
@@ -985,7 +983,7 @@ new graph is created to hold the array, but it may also be housed in the
 most recently created graph instead.  Other properties may be specified there
 and/or changed later using the "properties" dialog.
 
-<P>  If you select "properties" on an array in a graph, you two dialogs, one
+<P>  If you select "properties" on an array in a graph, you get two dialogs, one
 for the array and one for the graph.  The array dialog looks like this:
 
 <CENTER><P>  <IMG src="fig8.5.jpg" ALT="array properties window">  </P></CENTER>
@@ -1030,7 +1028,7 @@ computer-based score editor. In this context, scores by Stockhausen (<I>
 Kontakte</I> and <I> Studie II</I>) and Yuasa (<I>Toward the Midnight Sun</I>)
 come most prominently to  mind, but also Xenakis's <I>Mycenae-alpha</I>, which,
 although it was realized using a computer, was scored on paper and only
-afterward laboriously transcribed into the computer.
+afterwards laboriously transcribed into the computer.
 
 <P>  Pd is designed to to offer an extremely unstructured environment for
 describing data structures and their graphical appearance.   The underlying
@@ -1227,7 +1225,7 @@ text representation for the data, which may be seen or changed in a dialog
 window or read and written to external text files.
 
 <P>  Since the graphical presentation of data objects is determined by drawing
-instructions, the drawing instructions are interpreted backwards to alter data
+instructions, the drawing instructions are interpreted backward to alter data
 as a result of mouse operations.  If a given graphical dimension is controlled
 by a variable, that variable is then controlled by dragging along that
 dimension; if the dimension is constant, it can't be altered by dragging.

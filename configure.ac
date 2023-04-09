@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.52.2])
+AC_INIT([pd], [0.53.1])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -12,7 +12,7 @@ AC_CANONICAL_HOST
 
 ########################################
 #### ohoh. automake<<1.16 does not like $(top_srcdir) in _SOURCES.
-AS_IF([test "x${am__api_version}" = "x1.15" ], [
+AS_IF([test "$( (echo 1.16; echo ${am__api_version}) | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | head -1)" != "1.16"], [
   enable_dependency_tracking=no
   AC_MSG_WARN([legacy automake detected: disabled dependency-tracking!
 	       to get rid of this warning and enable dependency-tracking,
@@ -45,7 +45,7 @@ midi_backends=""
 
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer -O3"
+RELEASE_CFLAGS="-ffast-math -fno-finite-math-only -funroll-loops -fomit-frame-pointer -O3"
 
 # common flags applied to all pd binaries
 PD_CPPFLAGS=""
@@ -271,6 +271,7 @@ AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
 AC_SUBST([ALSA_LIBS])
+AC_SUBST([JACK_CFLAGS])
 AC_SUBST([JACK_LIBS])
 
 # pass include paths down to all Makefiles
@@ -373,11 +374,18 @@ AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
     [jack=$enableval], [jack=no])
 AS_IF([test x$jack_framework != xyes -a x$jack = xyes],[
-    AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
-    AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
-    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
-        [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
-        jack=no])
+    AS_IF([pkg-config --exists jack],[
+        AC_MSG_NOTICE([Using JACK as specified by pkg-config])
+        JACK_CFLAGS=$(pkg-config --cflags jack)
+        JACK_LIBS=$(pkg-config --libs jack)
+        jack=yes
+        ],[
+        AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
+        AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
+        AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
+            [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
+            jack=no])
+        ])
 ])
 
 ##### MMIO #####
@@ -575,6 +583,7 @@ AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
                 font/Makefile
+                linux/Makefile
                 mac/Makefile
                 man/Makefile
                 msw/Makefile

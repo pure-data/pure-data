@@ -1,0 +1,1415 @@
+# Translation of Pure Data to Japanese.
+# This file is put in the public domain.
+# Hyun-Mook Lim <windshy8500@naver.com>, 2022.
+# Shozo KUZE <shozo@mathrax.com>, 2022.
+# umläute <dev@umlaeute.mur.at>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.53.0\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2022-10-19 23:59+0200\n"
+"PO-Revision-Date: 2022-11-22 20:35+0000\n"
+"Last-Translator: umläute <dev@umlaeute.mur.at>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pure-data/"
+"pure-data/ja/>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15-dev\n"
+
+msgid "linear"
+msgstr "線形"
+
+msgid "logarithmic"
+msgstr "対数形"
+
+msgid "new-only"
+msgstr "新しいのみ"
+
+msgid "new&old"
+msgstr "新しい＆古い"
+
+msgid "no scale"
+msgstr "スケールなし"
+
+msgid "scale"
+msgstr "スケール"
+
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "'%s'の変更を保存しないで続けますか?"
+
+msgid "Undo clear"
+msgstr "クリアを取り消す"
+
+msgid "Undo connect"
+msgstr "接続を取り消す"
+
+msgid "Undo cut"
+msgstr "カットを取り消す"
+
+msgid "Undo disconnect"
+msgstr "切断を取り消す"
+
+msgid "Undo duplicate"
+msgstr "複製を取り消す"
+
+msgid "Undo motion"
+msgstr "移動を取り消す"
+
+msgid "Undo paste"
+msgstr "ペーストを取り消す"
+
+msgid "Undo typing"
+msgstr "タイピングを取り消す"
+
+msgid "Redo clear"
+msgstr "クリアをやり直す"
+
+msgid "Redo connect"
+msgstr "接続をやり直す"
+
+msgid "Redo cut"
+msgstr "カットをやり直す"
+
+msgid "Redo disconnect"
+msgstr "切断をやり直す"
+
+msgid "Redo duplicate"
+msgstr "複製をやり直す"
+
+msgid "Redo motion"
+msgstr "移動をやり直す"
+
+msgid "Redo paste"
+msgstr "ペーストをやり直す"
+
+msgid "Redo typing"
+msgstr "タイピングをやり直す"
+
+msgid "no Pd settings to clear"
+msgstr "Pd設定がないのでクリアできません"
+
+msgid "removed .pdsettings file"
+msgstr ".pdsettingsファイルを削除しました"
+
+msgid "couldn't delete .pdsettings file"
+msgstr ".pdsettingsファイルを削除できませんでした"
+
+msgid "failed to erase Pd settings"
+msgstr "Pd設定の消去に失敗しました"
+
+msgid "erased Pd settings"
+msgstr "Pd設定を削除しました"
+
+msgid "no Pd settings to erase"
+msgstr "Pd設定がないので削除できません"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup"
+msgstr "環境設定の読み込みをスキップしています... Pdが起動時にクラッシュしたようです"
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(環境設定を再保存すると元に戻ります）"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Put"
+msgstr "配置"
+
+msgid "Find"
+msgstr "探す"
+
+msgid "Media"
+msgstr "メディア"
+
+msgid "Window"
+msgstr "ウィンドウ"
+
+msgid "Help"
+msgstr "ヘルプ"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "ファイルやディレクトリの表示・非表示"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Paste"
+msgstr "ペースト"
+
+msgid "Array Properties"
+msgstr "配列のプロパティ"
+
+msgid "Array"
+msgstr "配列"
+
+msgid "Name:"
+msgstr "名前:"
+
+msgid "Size:"
+msgstr "サイズ:"
+
+msgid "Save contents"
+msgstr "コンテンツを保存"
+
+msgid "Draw as:"
+msgstr "描画形式:"
+
+msgid "Polygon"
+msgstr "ポリゴン"
+
+msgid "Points"
+msgstr "点"
+
+msgid "Bezier curve"
+msgstr "ベジェ曲線"
+
+msgid "Put array into:"
+msgstr "配列を入れるところ:"
+
+msgid "New graph"
+msgstr "新しいグラフ"
+
+msgid "Last graph"
+msgstr "最後のグラフ"
+
+msgid "Options"
+msgstr "オプション"
+
+msgid "Open List View..."
+msgstr "リストビューを開く..."
+
+msgid "Delete array"
+msgstr "配列の削除"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Apply"
+msgstr "適用する"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Audio Settings"
+msgstr "オーディオ設定"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Sample rate:"
+msgstr "サンプリングレート:"
+
+msgid "Delay (msec):"
+msgstr "遅延(msec):"
+
+msgid "48k"
+msgstr "48k"
+
+msgid "44.1k"
+msgstr "44.1k"
+
+msgid "96k"
+msgstr "96k"
+
+msgid "Block size:"
+msgstr "ブロックサイズ:"
+
+msgid "Use callbacks"
+msgstr "コールバックを使用する"
+
+msgid "Input Devices"
+msgstr "入力デバイス"
+
+msgid "Channels:"
+msgstr "チャンネル:"
+
+msgid "Output Devices"
+msgstr "出力デバイス"
+
+msgid "(same as input device)..."
+msgstr "(入力デバイスと同じ)..."
+
+msgid "Use Multiple Devices"
+msgstr "複数のデバイスを使用する"
+
+msgid "Save All Settings"
+msgstr "すべての設定を保存"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "警告: pdtk_canvas_dialog で受け取った未知のgraphmeフラグです"
+
+msgid "Canvas Properties"
+msgstr "キャンバスのプロパティ"
+
+msgid "Scale"
+msgstr "スケール"
+
+msgid "X units per pixel:"
+msgstr "X単位 (1pixelあたり):"
+
+msgid "Y units per pixel:"
+msgstr "Y単位 (1pixelあたり):"
+
+msgid "Appearance on parent patch"
+msgstr "親パッチでの表示"
+
+msgid "Graph-On-Parent"
+msgstr "グラフオンペアレント"
+
+msgid "Hide object name and arguments"
+msgstr "オブジェクト名と引数を隠す"
+
+msgid "Range and size"
+msgstr "範囲と大きさ"
+
+msgid "X range: from"
+msgstr "X範囲: はじまり"
+
+msgid "to"
+msgstr "おわり"
+
+msgid "Margin:"
+msgstr "余白:"
+
+msgid "Y range: from"
+msgstr "Y範囲: はじまり"
+
+msgid "Data Properties"
+msgstr "データプロパティ"
+
+msgid "Send"
+msgstr "送信"
+
+msgid "Done"
+msgstr "完了"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "%2$sで'%1$s'が見つかりました"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "%2$sで'%1$s'は見つかりませんでした"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "%s で検索:"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "最後の'%1$s'を%2$sで表示しました"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "%3$sの%2$d個のアイテムのうち'%1$d'を表示しています"
+
+msgid "Pd window"
+msgstr "Pd ウィンドウ"
+
+msgid "Match whole word only"
+msgstr "全単語の一致のみ"
+
+msgid "Close"
+msgstr "閉じる"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%sフォント"
+
+msgid "Font"
+msgstr "フォント"
+
+msgid "Font Size"
+msgstr "フォントサイズ"
+
+msgid "Stretch"
+msgstr "伸縮"
+
+msgid "X and Y"
+msgstr "XY方向"
+
+msgid "X only"
+msgstr "X方向のみ"
+
+msgid "Y only"
+msgstr "Y方向のみ"
+
+msgid "GUI Box Properties"
+msgstr "GUIボックスのプロパティ"
+
+msgid "Messages"
+msgstr "メッセージ"
+
+msgid "Send symbol:"
+msgstr "シンボルを送る:"
+
+msgid "Receive symbol:"
+msgstr "シンボルを受けとる:"
+
+msgid "Width:"
+msgstr "幅:"
+
+msgid "Limits"
+msgstr "制限"
+
+msgid "Lower:"
+msgstr "最小:"
+
+msgid "Upper:"
+msgstr "最大:"
+
+msgid "Label"
+msgstr "ラベル"
+
+msgid "Left"
+msgstr "左"
+
+msgid "Right"
+msgstr "右"
+
+msgid "Top"
+msgstr "上"
+
+msgid "Bottom"
+msgstr "下"
+
+msgid "Background color"
+msgstr "背景色"
+
+msgid "Foreground color"
+msgstr "前景色"
+
+msgid "Label color"
+msgstr "ラベルの色"
+
+msgid "Bang"
+msgstr "バン"
+
+msgid "Flash Time (msec)"
+msgstr "フラッシュ時間 (msec)"
+
+msgid "Min:"
+msgstr "最小:"
+
+msgid "Max:"
+msgstr "最大:"
+
+msgid "Toggle"
+msgstr "トグル"
+
+msgid "Non Zero Value"
+msgstr "ゼロでない値"
+
+msgid "Value:"
+msgstr "値:"
+
+msgid "Number2"
+msgstr "ナンバー2"
+
+msgid "Width (digits):"
+msgstr "幅(ケタ):"
+
+msgid "Height:"
+msgstr "高さ:"
+
+msgid "Output Range"
+msgstr "出力範囲"
+
+msgid "Log height:"
+msgstr "ログの高さ:"
+
+msgid "Vslider"
+msgstr "垂直スライダ"
+
+msgid "Hslider"
+msgstr "水平スライダ"
+
+msgid "Vradio"
+msgstr "垂直ラジオボタン"
+
+msgid "Num cells:"
+msgstr "セルの数:"
+
+msgid "Hradio"
+msgstr "水平ラジオボタン"
+
+msgid "VU Meter"
+msgstr "VUメータ"
+
+msgid "Canvas"
+msgstr "キャンバス"
+
+msgid "Visible Rectangle (pix)"
+msgstr "表示する矩形(pix)"
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s プロパティ"
+
+msgid "Parameters"
+msgstr "パラメータ"
+
+msgid "Init"
+msgstr "初期化"
+
+msgid "No init"
+msgstr "値を保持"
+
+msgid "Jump on click"
+msgstr "クリックでジャンプ"
+
+msgid "Steady on click"
+msgstr "クリックでジャンプしない"
+
+msgid "X offset:"
+msgstr "X方向オフセット:"
+
+msgid "Y offset:"
+msgstr "Y方向オフセット:"
+
+msgid "Colors"
+msgstr "カラー"
+
+msgid "Background"
+msgstr "背景"
+
+msgid "Front"
+msgstr "前景"
+
+msgid "Compose color"
+msgstr "カラー合成"
+
+msgid "Test label"
+msgstr "テストラベル"
+
+msgid "Send a Pd message"
+msgstr "Pdメッセージの送信"
+
+msgid "(use arrow keys for history)"
+msgstr "(矢印キーで履歴を使用できます)"
+
+msgid "MIDI Settings"
+msgstr "MIDI設定"
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI設定"
+
+msgid "In Ports:"
+msgstr "入力ポート:"
+
+msgid "Out Ports:"
+msgstr "出力ポート:"
+
+msgid "Pd search path for objects, help, audio, text and other files"
+msgstr "Pdの検索パス(オブジェクト、ヘルプ、オーディオ、テキスト、その他のファイル)"
+
+msgid "Use standard paths"
+msgstr "標準パスを使用"
+
+msgid "Verbose"
+msgstr "冗長モード"
+
+msgid "Pd Documents Directory"
+msgstr "Pd ドキュメントディレクトリ"
+
+msgid "Browse"
+msgstr "ブラウズ"
+
+msgid "Reset"
+msgstr "リセット"
+
+msgid "Disable"
+msgstr "無効にする"
+
+msgid "Externals Install Directory"
+msgstr "Externals インストールディレクトリ"
+
+msgid "Clear"
+msgstr "クリア"
+
+msgid "Choose Pd documents directory:"
+msgstr "Pd documentsディレクトリを選択:"
+
+msgid "Install externals to directory:"
+msgstr "Externalsをインストールするディレクトリ:"
+
+msgid "Add a new path"
+msgstr "新しいパスの追加"
+
+#, tcl-format
+msgid "Edit existing path [%s]"
+msgstr "既存のパス [%s] の編集"
+
+msgid "Add new library"
+msgstr "新規ライブラリの追加"
+
+msgid "Edit library"
+msgstr "ライブラリの編集"
+
+msgid "Pd libraries to load on startup"
+msgstr "起動時に読み込むPdライブラリ"
+
+msgid "Startup flags:"
+msgstr "起動時のフラグ:"
+
+msgid "Defeat real-time scheduling"
+msgstr "リアルタイムスケジューリングより優先"
+
+msgid "Help Browser"
+msgstr "ヘルプブラウザ"
+
+msgid "Associated Files"
+msgstr "関連するファイル"
+
+msgid "Pd Files"
+msgstr "Pdファイル"
+
+msgid "Max Patch Files"
+msgstr "Maxパッチファイル"
+
+msgid "Max Text Files"
+msgstr "Maxテキストファイル"
+
+msgid "Max Patch Files (.pat)"
+msgstr "Maxパッチファイル(.pat)"
+
+msgid "Max Text Files (.mxt)"
+msgstr "Maxテキストファイル(.mxt)"
+
+#, tcl-format
+msgid "detected font: %s"
+msgstr "検出されたフォント: %s"
+
+#, tcl-format
+msgid "WARNING: font family '%1$s' not found, using default (%2$s)"
+msgstr "警告: フォントファミリー '%1$s' が見つかりません、デフォルト (%2$s) "
+"を使用します"
+
+#, tcl-format
+msgid "WARNING: font weight '%1$s' not found, using default (%2$s)"
+msgstr "警告: フォント太さ '%1$s' が見つかりません、デフォルト (%2$s) を使用します"
+
+#, tcl-format
+msgid "using font: %1$s %2$s"
+msgstr "使用フォント: %1$s %2$s"
+
+#, tcl-format
+msgid "'%1$s' already loaded, ignoring: '%2$s'"
+msgstr "'%1$s' は既にロードされているため、無視: '%2$s'"
+
+#, tcl-format
+msgid "Loading plugin: %s"
+msgstr "プラグインをロードしています: %s"
+
+#, tcl-format
+msgid "UNHANDLED ERROR: %s"
+msgstr "未処理のエラー: %s"
+
+#, tcl-format
+msgid "FAILED TO LOAD %s"
+msgstr "%sのロードに失敗しました"
+
+#, tcl-format
+msgid "Failed to read plugin %s ...skipping!"
+msgstr "プラグイン %s の読み込みに失敗しました...スキップします!"
+
+#, tcl-format
+msgid "Failed to find plugins in %s ...skipping!"
+msgstr "プラグイン %s を見つけられませんでした...スキップします!"
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr "(Tcl) 閉じ括弧 '}' がありません: "
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr "(Tcl) 無効なコマンド名: "
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr "(Tcl) 未処理のエラー: "
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] > %2$s...skipping!"
+msgstr "[deken] インストールされたバージョン [%1$s] > %2$s...スキップします!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken] インストールされたバージョン [%1$s] < %2$s... 上書きします!"
+
+#, tcl-format
+msgid "[deken] installed version [%1$s] == %2$s...skipping!"
+msgstr "[deken] インストール済みバージョン [%1$s] == %2$s...スキップします!"
+
+#, tcl-format
+msgid "installing deken package '%s'"
+msgstr "deken パッケージ '%s' をインストールしています"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a deken package"
+msgstr "'%s'を無視: dekenパッケージではないようです"
+
+#, tcl-format
+msgid "Installing '%s'"
+msgstr "'%s'をインストールしています"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s を %2$s に展開できました。"
+
+msgid "Unable to extract package automatically."
+msgstr "パッケージの自動展開ができません。"
+
+msgid "Please perform the following steps manually:"
+msgstr "次の操作を手動で行ってください:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. %sを展開する。"
+
+msgid "You might need to change the file-extension from .dek to .zip"
+msgstr "ファイルの拡張子を.dekから.zipに変更する必要があるかもしれません"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. 展開した内容を%sにコピーします。"
+
+#, tcl-format
+msgid "3. Remove %s. (optional)"
+msgstr "3. %sを削除します。(オプション)"
+
+#, tcl-format
+msgid "Removing '%s'"
+msgstr "'%s'を削除しています"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "%2$s からの %1$s のアンインストールに失敗しました!"
+
+#, tcl-format
+msgid "Skipping SHA256 verification of '%s'."
+msgstr "'%s'のSHA256 検証をスキップします。"
+
+#, tcl-format
+msgid "SHA256 verification of '%s'"
+msgstr "'%s'のSHA256 検証"
+
+#, tcl-format
+msgid "Unable to fetch reference SHA256 for '%s'."
+msgstr "'%s' の参照 SHA256 を取得できません。"
+
+#, tcl-format
+msgid "Unable to perform SHA256 verification for '%s'."
+msgstr "'%s' の SHA256 検証を実行できません。"
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "%1$s [%2$s] からダウンロードできません"
+
+#, tcl-format
+msgid "Unable to download from '%s'!"
+msgstr "'%s' からダウンロードできません!"
+
+msgid "Download failed"
+msgstr "ダウンロードに失敗しました"
+
+#, tcl-format
+msgid "Unable to remove stray file '%s'"
+msgstr "不明なファイル '%s' を削除できません"
+
+#, tcl-format
+msgid "Unable to rename downloaded file to '%s'"
+msgstr "ダウンロードしたファイルの名前を '%s' に変更できません"
+
+msgid "Create"
+msgstr "作成"
+
+msgid "Check"
+msgstr "チェック"
+
+msgid "Installation options:"
+msgstr "インストールオプション:"
+
+msgid "Try to verify the libraries' checksum before (re)installing them"
+msgstr "ライブラリのチェックサムを確認してから(再)インストールしてみてください"
+
+msgid "Try to remove libraries before (re)installing them"
+msgstr "ライブラリを削除してから(再)インストールしてみてください"
+
+msgid "Show README of newly installed libraries (if present)"
+msgstr "新しくインストールされたライブラリのREADMEを表示(ある場合のみ)"
+
+msgid "Keep package files after installation"
+msgstr "インストール後もパッケージファイルを保持する"
+
+msgid "Add newly installed libraries to Pd's search path"
+msgstr "新しくインストールされたライブラリをPdの検索パスに追加する"
+
+msgid "Platform settings:"
+msgstr "プラットフォームの設定:"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "デフォルトのプラットフォーム: %s"
+
+msgid "User-defined platform:"
+msgstr "ユーザー定義プラットフォーム:"
+
+msgid "Hide foreign architectures"
+msgstr "異なるアーキテクチャのものを非表示"
+
+msgid ""
+"Only show the newest version of a library\n"
+"(treats other versions like foreign architectures)"
+msgstr ""
+"最新バージョンのライブラリのみを表示する \n"
+"(他のバージョンは異なるアーキテクチャのように扱います）"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Deken %s 設定"
+
+#, tcl-format
+msgid "Platform re-detected: %s"
+msgstr "再検出されたプラットフォーム: %s"
+
+msgid "Deken Packages"
+msgstr "Deken パッケージ"
+
+msgid "ZIP Files"
+msgstr "ZIP ファイル"
+
+msgid "TAR Files"
+msgstr "TAR ファイル"
+
+msgid "All Files"
+msgstr "全てのファイル"
+
+#, tcl-format
+msgid "Checksum mismatch for '%s'"
+msgstr "'%s' のチェックサムが一致しません"
+
+#, tcl-format
+msgid "SHA256 verification of '%s' failed!"
+msgstr "'%s' の SHA256 検証に失敗しました!"
+
+msgid "SHA256 verification failed"
+msgstr "SHA256 検証に失敗しました"
+
+#, tcl-format
+msgid "Uninstalling previous installation of '%s'"
+msgstr "以前インストールされた '%s' をアンインストールしています"
+
+#, tcl-format
+msgid "Temporarily moving %1$s into %2$s failed."
+msgstr "%1$s を %2$s に一時的に移動することができませんでした。"
+
+#, tcl-format
+msgid "Installing package '%s'"
+msgstr "パッケージ '%s' をインストールしています"
+
+msgid "Installation completed!"
+msgstr "インストール完了!"
+
+#, tcl-format
+msgid "Successfully installed '%s'!"
+msgstr "'%s' のインストールに成功しました!"
+
+msgid "Installation failed!"
+msgstr "インストールに失敗!"
+
+#, tcl-format
+msgid "Failed to install '%s'!"
+msgstr "'%s' のインストールに失敗しました!"
+
+msgid "Package installation failed"
+msgstr "パッケージのインストールに失敗しました"
+
+#, tcl-format
+msgid ""
+"Failed to completely remove %1$s.\n"
+"Please manually remove the directory %2$s after quitting Pd."
+msgstr ""
+"%1$s の完全な削除に失敗しました。 \n"
+"Pd を終了させた後、ディレクトリ %2$s を手動で削除してください。"
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "検索パスに %s を追加できません"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "Pdの検索パスに%sを追加しますか?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "検索パスに %s を追加しました"
+
+msgid "No packages selected for installation."
+msgstr "インストールするパッケージが選択されていません。"
+
+#, tcl-format
+msgid "Processed %d packages selected for installation."
+msgstr "インストール用に選択された %d 個のパッケージが処理されました。"
+
+msgid "Show all"
+msgstr "すべて表示"
+
+msgid "Search"
+msgstr "検索"
+
+#, tcl-format
+msgid "Install (%d)"
+msgstr "インストール (%d)"
+
+msgid "Install"
+msgstr "インストール"
+
+#, tcl-format
+msgid "%s%% of download completed"
+msgstr "ダウンロードの %s%% が完了しました"
+
+msgid "Enter an exact library or object name."
+msgstr "正確なライブラリ名またはオブジェクト名を入力してください。"
+
+msgid "e.g. 'freeverb~'"
+msgstr "例) 'freeverb~'"
+
+msgid "Use the '*' wildcard to match any number of characters."
+msgstr "ワイルドカード '*' を使用すると、任意の数の文字と一致させることができます。"
+
+msgid "e.g. '*-plugin' will match 'deken-plugin' (and more)."
+msgstr "例) '*-plugin' と入力すると 'deken-plugin' "
+"にマッチします（その他にもマッチします）。"
+
+msgid "You can restrict the search to only-libraries or only-objects."
+msgstr "ライブラリのみ または オブジェクトのみに 検索を制限できます。"
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr "利用可能なすべてのexternalsのリストを取得するには、空の検索を試してみてくださ"
+"い。"
+
+msgid "Right-clicking a search result will give you more options..."
+msgstr "検索結果を右クリックすると、さらに多くのオプションが表示されます..."
+
+msgid "You can also search for libraries & objects via your web browser:"
+msgstr "Webブラウザからライブラリやオブジェクトを検索することも可能です:"
+
+msgid "Find externals"
+msgstr "externals を探す"
+
+msgid "Install DEK file..."
+msgstr "DEKファイルをインストールする..."
+
+msgid "Preferences..."
+msgstr "環境設定..."
+
+msgid "Search for: "
+msgstr "検索: "
+
+msgid "libraries"
+msgstr "ライブラリ"
+
+msgid "objects"
+msgstr "オブジェクト"
+
+msgid "both"
+msgstr "ライブラリとオブジェクト"
+
+msgid "translations"
+msgstr "翻訳"
+
+msgid "Only install externals uploaded by people you trust."
+msgstr "信頼できる人がアップロードしたエクスターナルだけをインストールする。"
+
+msgid "Disabling tabbed view: incompatible Tcl/Tk detected"
+msgstr "タブ表示を無効にする: 互換性のないTcl/Tkが検出されました"
+
+msgid "Library"
+msgstr "ライブラリ"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Uploader"
+msgstr "アップローダ"
+
+msgid "Date"
+msgstr "日付"
+
+msgid "Search Results"
+msgstr "検索結果"
+
+msgid "Log"
+msgstr "ログ"
+
+#, tcl-format
+msgid "Searching for \"%s\"..."
+msgstr "\"%s\" を検索しています..."
+
+#, tcl-format
+msgid "online? %s"
+msgstr "ネットに接続できていますか? %s"
+
+msgid "Unable to perform search. Are you online?"
+msgstr "検索を実行できません。ネットに接続できていますか?"
+
+#, tcl-format
+msgid "Found %1$d usable packages (of %2$d packages in total)."
+msgstr "使用可能なパッケージが %1$d 個見つかりました (合計 %2$d "
+"個のパッケージのうち)。"
+
+msgid "It appears that there are no matching packages for your architecture."
+msgstr "お使いのアーキテクチャに対応するパッケージがないようです。"
+
+msgid "No matching externals found."
+msgstr "一致する externals は見つかりませんでした。"
+
+msgid "Try using the full name e.g. 'freeverb~'."
+msgstr "フルネーム(例えば'freeverb~'など)で試してみてください。"
+
+msgid "Or use wildcards like 'freeverb*'."
+msgstr "または、'freeverb*'のようなワイルドカードも使用できます。"
+
+msgid "Please select a (writable) installation directory!"
+msgstr "インストール先の(書き込み可能な)ディレクトリを選択してください!"
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr "%1$s を %2$s にインストールしますか？"
+
+#, tcl-format
+msgid "Cancelling download of '%s': No installation directory given."
+msgstr "'%s' のダウンロードをキャンセルしています: "
+"インストール先のディレクトリが指定されていません。"
+
+msgid "Installing to non-existant directory failed"
+msgstr "存在しないディレクトリのためインストールに失敗しました"
+
+#, tcl-format
+msgid "Unable to install to '%s'"
+msgstr "'%s' にインストールできません"
+
+msgid "Directory does not exist!"
+msgstr "ディレクトリが存在しません!"
+
+msgid "Directory is not writable!"
+msgstr "ディレクトリが書き込み禁止になっています!"
+
+#, tcl-format
+msgid "Downloading '%s'"
+msgstr "'%s' をダウンロード中です"
+
+#, tcl-format
+msgid "Commencing download of '%1$s' into '%2$s'..."
+msgstr "'%1$s' の '%2$s' へのダウンロードを開始します..."
+
+msgid "aborting."
+msgstr "中止します。"
+
+#, tcl-format
+msgid "Downloading '%s' failed"
+msgstr "'%s' のダウンロードに失敗しました"
+
+msgid "Download failed!"
+msgstr "ダウンロードに失敗しました!"
+
+msgid "Download completed! Verifying..."
+msgstr "ダウンロードが完了しました! 検証中しています..."
+
+msgid "Ignoring checksum mismatch"
+msgstr "チェックサムの不一致を無視する"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] deken-plugin.tcl (Pd externals 検索) は %s からロードされました。"
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] プラットフォームが検出されました: %s"
+
+#, tcl-format
+msgid "Searching on %s..."
+msgstr "%s で検索しています..."
+
+#, tcl-format
+msgid "Searching on %1$s returned %2$d results"
+msgstr "%1$s で検索すると %2$d の結果が得られました"
+
+msgid "No usable servers for searching found..."
+msgstr "検索に使用できるサーバーが見つかりません..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "アップローダ: %1$s @ %2$s"
+
+#, tcl-format
+msgid "Searching for '%s' failed!"
+msgstr "'%s' の検索に失敗しました!"
+
+msgid "Search failed"
+msgstr "検索に失敗しました"
+
+msgid "Unable to perform search."
+msgstr "検索を実行できません。"
+
+msgid "Select package for installation"
+msgstr "インストールするパッケージの選択"
+
+msgid "Deselect package"
+msgstr "パッケージの選択解除"
+
+msgid "Open package webpage"
+msgstr "パッケージのWebページを開く"
+
+msgid "Copy package URL"
+msgstr "パッケージのURLをコピーする"
+
+msgid "Copy SHA256 checksum URL"
+msgstr "SHA256 チェックサムURLをコピーする"
+
+msgid "Copy OpenGPG signature URL"
+msgstr "OpenGPG署名のURLをコピーする"
+
+#, tcl-format
+msgid "Uninstall '%s'"
+msgstr "アンインストール '%s'"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to use the existing documents directory for patches and "
+"external libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
+"\n"
+"\n"
+"場所: %s\n"
+"\n"
+"これは後で環境設定のパスの設定で変更したり無効にしたりできます。"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"パッチやexternalsのために、Pdに既存のドキュメントディレクトリを使用しますか？"
+"\n"
+"\n"
+"場所: %s\n"
+"\n"
+"これは後で環境設定のパスの設定で変更したり無効にしたりできます。"
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"Pd ドキュメントディレクトリが見つかりません。\n"
+"\n"
+"%s\n"
+"\n"
+"新しい場所を選択しますか?"
+
+#, tcl-format
+msgid "couldn't create Pd documents directory: %s"
+msgstr "Pd ドキュメントディレクトリを作成できませんでした: %s"
+
+#, tcl-format
+msgid "couldn't create \"externals\" directory in: %s"
+msgstr "\"externals\" ディレクトリを作成できませんでした: %s の中に"
+
+msgid "refusing to delete empty domain"
+msgstr "空のドメインの削除を拒否されました"
+
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "環境設定 \"%1$s\" を %2$s に作成できませんでした"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't exist"
+msgstr "無視 '%s': 存在しません"
+
+msgid "About Pd"
+msgstr "Pdについて"
+
+#, tcl-format
+msgid "couldn't read \"%s\" document"
+msgstr "\"%s \"ドキュメントを読み込みできません"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Save As..."
+msgstr "名前を付けて保存..."
+
+msgid "Print..."
+msgstr "プリント..."
+
+msgid "Paste Replace"
+msgstr "ペーストして置き換え"
+
+msgid "Duplicate"
+msgstr "複製"
+
+msgid "Zoom In"
+msgstr "ズームイン"
+
+msgid "Zoom Out"
+msgstr "ズームアウト"
+
+msgid "Tidy Up"
+msgstr "整理する"
+
+msgid "(Dis)Connect Selection"
+msgstr "選択箇所を接続・切断"
+
+msgid "Triggerize"
+msgstr "トリガーオブジェクトの自動生成"
+
+msgid "Edit Mode"
+msgstr "編集モード"
+
+msgid "Undo"
+msgstr "取り消し"
+
+msgid "Redo"
+msgstr "やり直し"
+
+msgid "New"
+msgstr "新規"
+
+msgid "Open"
+msgstr "開く"
+
+msgid "Message..."
+msgstr "メッセージ..."
+
+msgid "Cut"
+msgstr "カット"
+
+msgid "Select All"
+msgstr "すべてを選択"
+
+msgid "Clear Console"
+msgstr "コンソールクリア"
+
+msgid "Object"
+msgstr "オブジェクト"
+
+msgid "Message"
+msgstr "メッセージ"
+
+msgid "Number"
+msgstr "ナンバー"
+
+msgid "List"
+msgstr "リスト"
+
+msgid "Symbol"
+msgstr "シンボル"
+
+msgid "Comment"
+msgstr "コメント"
+
+msgid "Graph"
+msgstr "グラフ"
+
+msgid "Find..."
+msgstr "検索..."
+
+msgid "Find Again"
+msgstr "もう一度検索する"
+
+msgid "Find Last Error"
+msgstr "最後のエラーを検索する"
+
+msgid "DSP On"
+msgstr "DSP オン"
+
+msgid "DSP Off"
+msgstr "DSP オフ"
+
+msgid "Test Audio and MIDI..."
+msgstr "オーディオとMIDIをテストする..."
+
+msgid "Load Meter"
+msgstr "CPU負荷を計る"
+
+msgid "Audio Settings..."
+msgstr "オーディオ設定..."
+
+msgid "MIDI Settings..."
+msgstr "MIDI設定..."
+
+msgid "Minimize"
+msgstr "最小化"
+
+msgid "Zoom"
+msgstr "ズーム"
+
+msgid "Bring All to Front"
+msgstr "すべてを前面に"
+
+msgid "Next Window"
+msgstr "次のウインドウ"
+
+msgid "Previous Window"
+msgstr "前のウィンドウ"
+
+msgid "Parent Window"
+msgstr "親ウィンドウ"
+
+msgid "HTML Manual..."
+msgstr "HTMLマニュアル..."
+
+msgid "Browser..."
+msgstr "ブラウザ..."
+
+msgid "List of objects..."
+msgstr "オブジェクト一覧..."
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Check for updates"
+msgstr "アップデートを確認"
+
+msgid "Report a bug"
+msgstr "バグを報告する"
+
+msgid "Clear Menu"
+msgstr "メニュークリア"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+"すべての設定を削除しますか？\n"
+"(Pdを再起動すると反映されます）"
+
+msgid "removed GUI settings"
+msgstr "GUI設定の削除"
+
+msgid "no Pd-GUI settings to clear"
+msgstr "Pd-GUIの設定が存在しないのでクリアできません"
+
+msgid "Path..."
+msgstr "パス..."
+
+msgid "Startup..."
+msgstr "スタートアップ..."
+
+msgid "Audio..."
+msgstr "オーディオ..."
+
+msgid "MIDI..."
+msgstr "MIDI..."
+
+msgid "Zoom New Windows"
+msgstr "新しいウィンドウを拡大する"
+
+msgid "Save All Preferences"
+msgstr "すべての設定を保存"
+
+msgid "Save to..."
+msgstr "保存..."
+
+msgid "Load from..."
+msgstr "読込..."
+
+msgid "Forget All..."
+msgstr "全てを忘れる..."
+
+msgid "Preferences"
+msgstr "環境設定"
+
+msgid "Open Recent"
+msgstr "最近使った項目を開く"
+
+msgid "Quit"
+msgstr "終了"
+
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "'%s'で行った変更を保存しますか？"
+
+msgid "Properties"
+msgstr "プロパティ"
+
+#, tcl-format
+msgid "dropped %d lines from the Pd window"
+msgstr "Pd ウィンドウから%d行を削除しました"
+
+#, tcl-format
+msgid "the Pd window filtered %d lines"
+msgstr "Pd ウィンドウは%d行をフィルタリングしました"
+
+msgid "Audio on"
+msgstr "オーディオ オン"
+
+msgid "Audio off"
+msgstr "オーディオ オフ"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr "(Tcl) 閉じ括弧 ']' がありません: "
+
+msgid "Tcl:"
+msgstr "Tcl:"
+
+msgid "Pd"
+msgstr "Pd"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio I/O error"
+msgstr "オーディオ I/O エラー"
+
+msgid "Log:"
+msgstr "ログ:"
+
+msgid "fatal"
+msgstr "致命的"
+
+msgid "error"
+msgstr "エラー"
+
+msgid "normal"
+msgstr "通常"
+
+msgid "debug"
+msgstr "デバッグ"
+
+msgid "all"
+msgstr "全て"
+
+msgid "New..."
+msgstr "新規..."
+
+msgid "Edit..."
+msgstr "編集..."
+
+msgid "Delete"
+msgstr "削除"
+
+#, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
+msgstr "'%s'を無視: Pd ファイルではないようです"

@@ -1,48 +1,40 @@
 #N canvas 521 43 626 475 12;
-#X floatatom 43 182 0 0 0 0 - - - 0;
+#X floatatom 43 182 4 0 0 0 - - - 0;
 #X msg 392 182 symbol meat;
 #X msg 405 209 symbol hair;
 #X obj 23 17 makefilename;
 #X text 121 17 - format a "name" with a variable field;
-#X msg 66 232 set %d-zebra;
-#X text 76 181 <= numbers replace "%d" in string;
-#X text 174 208 <= "set" message replaces format, f 16;
+#X msg 66 234 set %d-zebra;
 #X text 499 208 <= symbols replace "%s", f 13;
-#X symbolatom 43 301 14 0 0 0 - - - 0;
-#X obj 43 338 print Integer;
+#X symbolatom 43 303 14 0 0 0 - - - 0;
+#X obj 43 340 print Integer;
 #X symbolatom 392 280 14 0 0 0 - - - 0;
 #X obj 392 313 print Symbol;
-#X text 221 260 <= argument is format string, f 14;
-#N canvas 703 91 509 425 multiple_substitutions 0;
+#N canvas 703 91 524 392 multiple_substitutions 0;
 #X msg 50 111 symbol aif;
 #X msg 63 138 symbol wav;
 #X msg 49 229 set \$1;
-#X floatatom 61 274 0 0 0 0 - - - 0;
-#X obj 49 306 makefilename not-set-yet;
+#X floatatom 73 263 4 0 0 0 - - - 0;
+#X obj 49 296 makefilename not-set-yet;
 #X symbolatom 49 197 14 0 0 0 - - - 0;
 #X text 43 21 MULTIPLE SUBSTITUTIONS:;
-#X symbolatom 49 335 14 0 0 0 - - - 0;
-#X obj 49 367 print Multiple;
-#X text 97 274 <= and then this number replaces "%d".;
-#X text 240 148 LITERAL %: You can format a string with a literal '%'
-if you escape it with another '%' (where "%%" becomes "%" \, "%%%%"
-becomes "%%" and so on), f 36;
+#X symbolatom 49 325 14 0 0 0 - - - 0;
+#X obj 49 357 print Multiple;
+#X text 240 148 LITERAL %: You can format a string with a literal '%' if you escape it with another '%' (where "%%" becomes "%" \, "%%%%" becomes "%%" and so on), f 36;
 #X obj 49 168 makefilename dog\ %%d.%s;
-#X text 107 229 <= this becomes "set dog %d.aif" \, for example.,
-f 35;
-#X text 38 46 You can connect two or more objects for multiple substitutions.
-For that \, you need to use a literal '%' to set the format string
-of another makefilename object., f 64;
-#X connect 0 0 11 0;
-#X connect 1 0 11 0;
+#X text 38 46 You can connect two or more [makefilename] objects for multiple substitutions. For that \, you need to use a literal '%' to set the format string of another [makefilename] object., f 64;
+#X text 109 263 <-- and then this number replaces "%d".;
+#X text 107 229 <-- this becomes "set dog %d.aif" \, for example., f 48;
+#X connect 0 0 10 0;
+#X connect 1 0 10 0;
 #X connect 2 0 4 0;
 #X connect 3 0 4 0;
 #X connect 4 0 7 0;
 #X connect 5 0 2 0;
 #X connect 7 0 8 0;
-#X connect 11 0 5 0;
+#X connect 10 0 5 0;
 #X restore 392 361 pd multiple_substitutions;
-#N canvas 696 335 479 517 possible_types_&_syntax 0;
+#N canvas 696 229 479 517 possible_types_&_syntax 0;
 #N canvas 640 222 489 460 %c 0;
 #X obj 147 214 list fromsymbol;
 #X floatatom 147 313 5 0 0 0 - - - 0;
@@ -56,11 +48,7 @@ of another makefilename object., f 64;
 #X text 209 167 <=;
 #X text 232 167 type a character to convert to float, f 23;
 #X obj 147 350 makefilename [%c];
-#X text 69 61 This pattern allows you to convert from a float to a
-character (symbols are converted to 0) and insert it into a symbol.
-By the way \, you can also perform the opposite conversion (from a
-character to a float) by using the [list fromsymbol] object., f 53
-;
+#X text 69 61 This pattern allows you to convert from a float to a character (symbols are converted to 0) and insert it into a symbol. By the way \, you can also perform the opposite conversion (from a character to a float) by using the [list fromsymbol] object., f 53;
 #X connect 0 0 1 0;
 #X connect 1 0 11 0;
 #X connect 2 0 0 0;
@@ -68,7 +56,7 @@ character to a float) by using the [list fromsymbol] object., f 53
 #X connect 6 0 1 0;
 #X connect 11 0 3 0;
 #X restore 80 69 pd %c;
-#N canvas 847 204 524 571 %d/%i 0;
+#N canvas 787 150 510 527 %d/%i 0;
 #X floatatom 244 368 0 0 0 0 - - - 0;
 #X symbolatom 94 464 12 0 0 0 - - - 0;
 #X text 56 35 %d or %i - signed decimal integer:;
@@ -81,9 +69,7 @@ character to a float) by using the [list fromsymbol] object., f 53
 #X msg 194 189 12.9;
 #X msg 286 288 1e+06;
 #X msg 294 322 -1e+07;
-#X text 54 64 Both '%d' and '%i' are the same. This pattern allows
-you to insert a signed (negative or positive) decimal integer into
-a symbol (symbols are converted to 0). Floats are truncated.;
+#X text 54 64 Both '%d' and '%i' are the same. This pattern allows you to insert a signed (negative or positive) decimal integer into a symbol (symbols are converted to 0). Floats are truncated.;
 #X obj 244 416 makefilename [%i];
 #X connect 0 0 8 0;
 #X connect 0 0 13 0;
@@ -105,13 +91,9 @@ a symbol (symbols are converted to 0). Floats are truncated.;
 #X msg 269 164 1.23456;
 #X msg 241 136 2.345e-05;
 #X msg 298 199 -18;
-#X text 54 26 %e or %E - scientific notation using "e" or "E" character:
-;
+#X text 54 26 %e or %E - scientific notation using "e" or "E" character:;
 #X obj 269 287 makefilename [%E];
-#X text 53 53 This pattern allows you to insert a number with scientific
-notation into a symbol (symbols are converted to 0). The '%e' or '%E'
-pattern specify respectively whether the exponential character is lower
-(e) or upper (E) case., f 71;
+#X text 53 53 This pattern allows you to insert a number with scientific notation into a symbol (symbols are converted to 0). The '%e' or '%E' pattern specify respectively whether the exponential character is lower (e) or upper (E) case., f 71;
 #X connect 0 0 3 0;
 #X connect 0 0 8 0;
 #X connect 3 0 1 0;
@@ -132,8 +114,7 @@ pattern specify respectively whether the exponential character is lower
 #X msg 191 231 0.997;
 #X text 70 29 %f - decimal floating point:;
 #X obj 166 310 makefilename [%f];
-#X text 68 63 This pattern allows you to format a float into a symbol
-(symbols are converted to 0)., f 43;
+#X text 68 63 This pattern allows you to format a float into a symbol (symbols are converted to 0)., f 43;
 #X connect 1 0 7 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
@@ -152,18 +133,10 @@ pattern specify respectively whether the exponential character is lower
 #X msg 346 282 1.1e+08;
 #X msg 278 191 -1800;
 #X msg 240 191 179;
-#X text 36 20 %g or %G - numbers with or without scientific notation:
-;
+#X text 36 20 %g or %G - numbers with or without scientific notation:;
 #X obj 304 416 makefilename [%G];
-#X text 34 53 This pattern allows you to insert a number with or without
-scientific notation into a symbol (symbols are converted to 0). The
-'%g' or '%G' pattern specify respectively whether the exponential character
-is lower (e) or upper (E) case. The scientific notation is only used
-if there's not enough digit resolution. The default precision is 6
-digits and we'll see how to change that later., f 78;
-#X text 34 130 Also \, the decimal point is not included on whole numbers.
-This means that \, unlike '%e' or '%E' \, not at all numbers are converted
-to scientific notation., f 78;
+#X text 34 53 This pattern allows you to insert a number with or without scientific notation into a symbol (symbols are converted to 0). The '%g' or '%G' pattern specify respectively whether the exponential character is lower (e) or upper (E) case. The scientific notation is only used if there's not enough digit resolution. The default precision is 6 digits and we'll see how to change that later., f 78;
+#X text 34 130 Also \, the decimal point is not included on whole numbers. This means that \, unlike '%e' or '%E' \, not at all numbers are converted to scientific notation., f 78;
 #X connect 0 0 4 0;
 #X connect 0 0 11 0;
 #X connect 3 0 0 0;
@@ -189,10 +162,7 @@ to scientific notation., f 78;
 #X msg 243 255 1e+09;
 #X text 52 27 %o - unsigned octal:;
 #X obj 208 385 makefilename [%o];
-#X text 53 59 This pattern allows you to insert an unsigned (only positive)
-octal integer into a symbol (symbols are converted to 0). Floats are
-truncated. Note that since this is an unsigned format \, sending negative
-numbers doesn't work., f 61;
+#X text 53 59 This pattern allows you to insert an unsigned (only positive) octal integer into a symbol (symbols are converted to 0). Floats are truncated. Note that since this is an unsigned format \, sending negative numbers doesn't work., f 61;
 #X connect 0 0 10 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
@@ -215,8 +185,7 @@ numbers doesn't work., f 61;
 #X msg 249 273 1e-07;
 #X text 186 133 <= send it a symbol;
 #X text 214 165 <= send it a float;
-#X text 73 65 This pattern allows you to insert a symbol \, but note
-it also works for float messages., f 49;
+#X text 73 65 This pattern allows you to insert a symbol \, but note it also works for float messages., f 49;
 #X text 76 31 %s - symbol string:;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
@@ -238,11 +207,7 @@ it also works for float messages., f 49;
 #X text 45 25 %u - unsigned decimal integer:;
 #X obj 185 376 makefilename [%u];
 #X msg 227 287 1e+09;
-#X text 43 60 This pattern is the same as "%d" or "%i" \, but it is
-unsigned (only positive) \, hence it allows you to insert a decimal
-integer into a symbol (symbols are converted to 0). Floats are truncated
-to integers. Note that since this is an unsigned format \, sending
-negative numbers doesn't work.;
+#X text 43 60 This pattern is the same as "%d" or "%i" \, but it is unsigned (only positive) \, hence it allows you to insert a decimal integer into a symbol (symbols are converted to 0). Floats are truncated to integers. Note that since this is an unsigned format \, sending negative numbers doesn't work.;
 #X connect 0 0 8 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
@@ -266,12 +231,7 @@ negative numbers doesn't work.;
 #X msg 212 189 9.9;
 #X text 70 11 %x or %X - unsigned hexadecimal:;
 #X obj 262 386 makefilename [%X];
-#X text 61 46 This pattern allows you to insert a signed (only positive)
-hexadecimal integer into a symbol (symbols are converted to 0). Floats
-are trunctaed. The '%x' or '%X' pattern specify respectively whether
-the the characters are lower or upper case. Note that since this is
-an unsigned format \, sending negative numbers doesn't work., f 61
-;
+#X text 61 46 This pattern allows you to insert a signed (only positive) hexadecimal integer into a symbol (symbols are converted to 0). Floats are truncated. The '%x' or '%X' pattern specify respectively whether the the characters are lower or upper case. Note that since this is an unsigned format \, sending negative numbers doesn't work., f 61;
 #X connect 0 0 7 0;
 #X connect 0 0 11 0;
 #X connect 3 0 0 0;
@@ -288,9 +248,7 @@ an unsigned format \, sending negative numbers doesn't work., f 61
 #X symbolatom 164 259 14 0 0 0 - - - 0;
 #X obj 164 210 makefilename [%p];
 #X text 57 44 %p - pointer representation:;
-#X text 54 77 This pattern formats to a platform specific pointer representation
-of an incoming symbol (floats are cast to int and also converted).
-, f 53;
+#X text 54 77 This pattern formats to a platform specific pointer representation of an incoming symbol (floats are cast to int and also converted)., f 53;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X restore 80 321 pd %p;
@@ -326,8 +284,7 @@ of an incoming symbol (floats are cast to int and also converted).
 #X msg 514 247 -1800;
 #X msg 476 247 179;
 #X obj 540 463 makefilename [%+G];
-#X text 65 38 The "+" flag prepends a plus sign for positive signed
-numeric types (%d/%i/%e/%E/%f/%g/%G):, f 47;
+#X text 65 38 The "+" flag prepends a plus sign for positive signed numeric types (%d/%i/%e/%E/%f/%g/%G):, f 47;
 #X connect 0 0 6 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
@@ -371,8 +328,7 @@ numeric types (%d/%i/%e/%E/%f/%g/%G):, f 47;
 #X symbolatom 55 399 14 0 0 0 - - - 0;
 #X obj 55 361 makefilename [%#x];
 #X obj 196 361 makefilename [%#X];
-#X text 25 22 The '#' flag presents an alternate form of some numeric
-types. For "%o" \, the number is preceded by a "0".;
+#X text 25 22 The '#' flag presents an alternate form of some numeric types. For "%o" \, the number is preceded by a "0".;
 #X floatatom 532 240 10 0 0 0 - - - 0;
 #X symbolatom 382 336 18 0 0 0 - - - 0;
 #X symbolatom 532 336 18 0 0 0 - - - 0;
@@ -381,10 +337,8 @@ types. For "%o" \, the number is preceded by a "0".;
 #X obj 382 288 makefilename [%#g];
 #X obj 532 288 makefilename [%G];
 #X msg 585 194 1e+08;
-#X text 44 222 For "%x" and "%X" \, the number is preceded by "0x"
-(if %x) or "0X" (if %X)., f 43;
-#X text 362 139 For %g and %G \, the decimal point and zeroes are not
-removed for integers when not in scientific notation., f 48;
+#X text 44 222 For "%x" and "%X" \, the number is preceded by "0x" (if %x) or "0X" (if %X)., f 43;
+#X text 362 139 For %g and %G \, the decimal point and zeroes are not removed for integers when not in scientific notation., f 48;
 #X connect 0 0 6 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
@@ -407,8 +361,7 @@ removed for integers when not in scientific notation., f 48;
 #X connect 23 0 19 0;
 #X connect 24 0 17 0;
 #X restore 271 415 pd #;
-#X text 50 20 This is a listing of possible printf pattern types. Open
-subpatches for more details and examples., f 51;
+#X text 50 20 This is a listing of possible printf pattern types. Open subpatches for more details and examples., f 51;
 #X text 163 444 width:;
 #N canvas 583 148 928 523 width 0;
 #X floatatom 102 171 0 0 0 0 - - - 0;
@@ -430,8 +383,7 @@ subpatches for more details and examples., f 51;
 #X msg 156 352 31;
 #X msg 234 352 1e+06;
 #X obj 194 426 makefilename [%05x];
-#X text 39 286 The width field takes an optional preceding '0' flag
-that fills the extra characters with zeroes instead of spaces.;
+#X text 39 286 The width field takes an optional preceding '0' flag that fills the extra characters with zeroes instead of spaces.;
 #X floatatom 539 176 0 0 0 0 - - - 0;
 #X symbolatom 539 240 12 0 0 0 - - - 0;
 #X msg 539 119 1;
@@ -454,19 +406,14 @@ that fills the extra characters with zeroes instead of spaces.;
 #X symbolatom 724 435 12 0 0 0 - - - 0;
 #X msg 724 314 1;
 #X msg 772 339 -1e+06;
-#X text 498 63 You can combine the width field with the preceding +/#
-flags where pertinent., f 40;
+#X text 498 63 You can combine the width field with the preceding +/# flags where pertinent., f 40;
 #X msg 592 315 100;
 #X msg 760 314 100;
 #X msg 686 314 31;
 #X msg 518 315 31;
 #X obj 556 404 makefilename [%#5x];
 #X obj 724 403 makefilename [%#08X];
-#X text 24 18 The width field takes an integer that sets the number
-of minimum characters and adds spaces to fill them. This works for
-all types but floating point numbers ('%f' and '%e'/'%E'). In the case
-of '%g'/'%G' \, the width field is valid only for the integer output.
-, f 62;
+#X text 24 18 The width field takes an integer that sets the number of minimum characters and adds spaces to fill them. This works for all types but floating point numbers ('%f' and '%e'/'%E'). In the case of '%g'/'%G' \, the width field is valid only for the integer output., f 62;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X connect 3 0 0 0;
@@ -519,15 +466,12 @@ of '%g'/'%G' \, the width field is valid only for the integer output.
 #X obj 231 189 makefilename [%.4s];
 #X msg 231 115 symbol abcde;
 #X msg 127 115 symbol abcd;
-#X text 61 260 In this case \, the width field can be preceded to set
-a minimum of characters filled with spaces., f 48;
+#X text 61 260 In this case \, the width field can be preceded to set a minimum of characters filled with spaces., f 48;
 #X msg 141 316 symbol ab;
 #X msg 219 316 symbol abc;
 #X msg 246 383 symbol abcde;
 #X msg 234 350 symbol abcd;
-#X text 54 33 For symbol srtrings (%s) \, the precisio sets a maximum
-character limit. Below \, we have a maximum of 4 characters \, hence
-\, the symbol "abcde" gets truncated., f 53;
+#X text 54 33 For symbol srtrings (%s) \, the precision sets a maximum character limit. Below \, we have a maximum of 4 characters \, hence \, the symbol "abcde" gets truncated., f 53;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
 #X connect 4 0 5 0;
@@ -547,13 +491,7 @@ character limit. Below \, we have a maximum of 4 characters \, hence
 #X msg 287 172 -3;
 #X obj 287 249 makefilename [%04d];
 #X msg 325 173 3;
-#X text 78 40 For integer types ('%d'/'%i'/'%o'/'%u'/'%x'/'%X'/'%p')
-\, the precision field does not set a maximum number of characters.
-Instead \, it sets a fixed number of digits and adds zeroes to the
-left as a fill. This is slightly different than setting a width field
-with a '0' flag. The difference is only observed for numbers of different
-sign as below. Note how the width field will suprress a zero to include
-a "-" character., f 61;
+#X text 78 40 For integer types ('%d'/'%i'/'%o'/'%u'/'%x'/'%X'/'%p') \, the precision field does not set a maximum number of characters. Instead \, it sets a fixed number of digits and adds zeroes to the left as a fill. This is slightly different than setting a width field with a '0' flag. The difference is only observed for numbers of different sign as below. Note how the width field will suppress a zero to include a "-" character., f 61;
 #X connect 1 0 0 0;
 #X connect 3 0 5 0;
 #X connect 3 0 1 0;
@@ -571,10 +509,7 @@ a "-" character., f 61;
 #X msg 110 212 -18;
 #X obj 98 300 makefilename [%.2E];
 #X msg 97 179 1.999e+07;
-#X text 62 34 For floats \, the precision field sets the maximum number
-of digits to the right of the decimal point. Note that there's a default
-of 6 digits. Also note that this affects the resolution and can cause
-the number to be rounded., f 78;
+#X text 62 34 For floats \, the precision field sets the maximum number of digits to the right of the decimal point. Note that there's a default of 6 digits. Also note that this affects the resolution and can cause the number to be rounded., f 78;
 #X symbolatom 250 443 18 0 0 0 - - - 0;
 #X floatatom 250 248 8 0 0 0 - - - 0;
 #X symbolatom 290 345 18 0 0 0 - - - 0;
@@ -618,61 +553,45 @@ the number to be rounded., f 78;
 #X connect 26 0 20 0;
 #X connect 27 0 19 0;
 #X restore 159 201 pd floats;
-#X text 41 23 The precision field behaves differently according to
-the type (strings \, integers of floats). The syntax of this field
-is specified by a "." and is followed by the precision number. See
-subpatches below for the examples., f 51;
+#X text 41 23 The precision field behaves differently according to the type (strings \, integers of floats). The syntax of this field is specified by a "." and is followed by the precision number. See subpatches below for the examples., f 51;
 #X restore 216 475 pd precision;
 #X text 127 236 - string;
-#X text 33 366 The types can be preceded by optional fields \, which
-can be combined and included in the order below:;
+#X text 33 366 The types can be preceded by optional fields \, which can be combined and included in the order below:;
 #X restore 392 391 pd possible_types_&_syntax;
 #X text 412 443 updated for Pd version 0.51;
 #X msg 58 209 set cat\ %d.wav;
-#X obj 43 261 makefilename dog\ %d.aif;
+#X obj 43 263 makefilename dog\ %d.aif;
 #X obj 392 246 makefilename dog\ %s.aif;
-#X text 283 390 More details =>;
 #X text 388 154 SUBSTITUTING A SYMBOL:;
 #X text 39 154 SUBSTITUTING AN INTEGER NUMBER:;
-#X text 21 65 The Makefilename object generates name symbols according
-to a format string \, for use as a series of filenames \, table names
-\, or whatnot. You can plug in a variable number or symbol by using
-different types in the string ("such as %s" \, "%c" \, "%d" \, "%X
-and others - see subpatch below with possible types). Each object can
-have only one variable pattern \, but you can cascade objects for multiple
-substitutions., f 82;
-#X text 163 297 (Note you can use backlashes to escape and insert a
-space character in the symbol), f 29;
+#X text 163 299 (Note you can use backlashes to escape and insert a space character in the symbol), f 29;
 #N canvas 684 79 565 234 reference 0;
-#X obj 8 52 cnv 5 540 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 7 213 cnv 5 540 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 114 cnv 5 540 5 empty empty OUTLET: 8 18 0 13 #202020 #000000
-0;
+#X obj 8 52 cnv 5 540 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 7 213 cnv 5 540 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 114 cnv 5 540 5 empty empty OUTLET: 8 18 0 13 #202020 #000000 0;
 #X obj 46 19 makefilename;
 #X text 144 19 - format a "name" with a variable field;
 #X text 81 63 float/symbol - to replace format specifiers., f 54;
 #X text 88 82 set <float> - sets the cell size in pixels., f 52;
 #X text 121 128 symbol - formatted symbol., f 47;
-#X obj 7 159 cnv 5 540 5 empty empty ARGUMENT: 8 18 0 13 #202020 #000000
-0;
-#X text 188 172 format strring with specifiers ('%c' \, '%d' \, '%i
-\, %e \, %E \, %f \, %g \, %G \, %o \, %s \, %u \, %x \, %X and %p).
-, f 48;
+#X obj 7 159 cnv 5 540 5 empty empty ARGUMENT: 8 18 0 13 #202020 #000000 0;
+#X text 188 172 format strring with specifiers ('%c' \, '%d' \, '%i \, %e \, %E \, %f \, %g \, %G \, %o \, %s \, %u \, %x \, %X and %p)., f 48;
 #X text 104 172 1) symbol -;
 #X restore 446 17 pd reference;
 #X text 538 17 <= click;
-#X obj 7 53 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 428 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X connect 0 0 18 0;
-#X connect 1 0 19 0;
-#X connect 2 0 19 0;
-#X connect 5 0 18 0;
+#X obj 7 53 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 6 428 cnv 1 610 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 21 65 The [makefilename] object generates name symbols according to a format string \, for use as a series of filenames \, table names \, or whatnot. You can plug in a variable number or symbol by using different types in the string ("such as %s" \, "%c" \, "%d" \, "%X and others - see subpatch below with possible types). Each object can have only one variable pattern \, but you can cascade objects for multiple substitutions., f 82;
+#X text 78 181 <-- numbers replace "%d" in string;
+#X text 174 208 <-- "set" message replaces format, f 18;
+#X text 221 262 <-- argument is format string, f 15;
+#X text 273 390 More details -->;
+#X connect 0 0 15 0;
+#X connect 1 0 16 0;
+#X connect 2 0 16 0;
+#X connect 5 0 15 0;
+#X connect 7 0 8 0;
 #X connect 9 0 10 0;
-#X connect 11 0 12 0;
-#X connect 17 0 18 0;
-#X connect 18 0 9 0;
-#X connect 19 0 11 0;
+#X connect 14 0 15 0;
+#X connect 15 0 7 0;
+#X connect 16 0 9 0;

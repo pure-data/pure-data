@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include <string.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
@@ -221,6 +222,31 @@ static void array_define_send(t_glist *x, t_symbol *s)
         gpointer_unset(&gp);
     }
     else bug("array_define_send");
+}
+
+void garray_properties(t_garray *x);
+
+static void array_define_done_popup(t_glist*x, t_float which, t_float xpos, t_float ypos)
+{
+    int iwhich = (int)which;
+    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
+    t_gobj *obj = 0;
+    if (!gl || !gl->gl_list || pd_class(&gl->gl_list->g_pd) != garray_class)
+        return;
+
+    obj = gl->gl_list;
+
+    switch(iwhich) {
+    case 0: /* properties */
+        garray_properties((t_garray *)obj);
+    break;
+    case 1: /* open */
+        typedmess(&(obj->g_pd), gensym("arrayviewlistnew"), 0, 0);
+        break;
+    case 2: /* help */
+        open_via_helppath(class_gethelpname(array_define_class), "");
+        break;
+    }
 }
 
 static void array_define_bang(t_glist *x)
@@ -879,6 +905,9 @@ void x_array_setup(void)
     class_addanything(array_define_class, array_define_anything);
     class_sethelpsymbol(array_define_class, gensym("array-object"));
     class_setsavefn(array_define_class, array_define_save);
+
+    class_addmethod(array_define_class, (t_method)array_define_done_popup,
+        gensym("done-popup"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 
     class_addmethod(array_define_class, (t_method)array_define_ignore,
         gensym("editmode"), A_GIMME, 0);

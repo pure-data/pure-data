@@ -1,4 +1,4 @@
-#N canvas 557 44 727 512 12;
+#N canvas 531 44 727 512 12;
 #X obj 37 19 pdcontrol;
 #X text 483 477 updated for Pd version 0.50.;
 #X obj 42 257 pdcontrol;
@@ -16,9 +16,9 @@
 #X text 130 331 open and shut the subpatch to test "isvisible" message
 , f 19;
 #X msg 58 158 dir;
-#X text 101 158 get directory this patch is in;
-#X msg 64 203 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
-#N canvas 689 91 541 437 args 0;
+#X text 91 157 get directory this patch is in;
+#X msg 69 200 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#N canvas 761 91 541 437 args 0;
 #X obj 103 254 print;
 #X text 161 141 <= get arguments;
 #X obj 103 175 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
@@ -39,19 +39,15 @@ inside another that contains arguments).;
 #X connect 3 0 2 0;
 #X connect 6 0 0 0;
 #X restore 367 422 pd args;
-#X text 244 121 open a URL in a browser;
+#X text 237 122 open a URL in a browser;
 #X msg 42 122 browse http://msp.ucsd.edu;
-#X text 307 184 Optional argument to specify this patch (0) \, owning
+#X text 312 181 Optional argument to specify this patch (0) \, owning
 patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 55;
 #X text 116 19 - communicate with pd and/or this patch;
 #X floatatom 280 383 5 0 0 0 - - - 0;
-#X text 152 422 get the patch's arguments =>;
-#X text 60 67 pdcontrol lets you open a URL in a web browser or communicate
-with the patch to get its owning directory \, arguments or its visible/invisible
-state., f 76;
 #X symbolatom 42 285 80 0 0 0 - - - 0;
 #X obj 13 55 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
@@ -85,10 +81,14 @@ sets a folder relative to the directory., f 68;
 #X obj 13 463 cnv 1 700 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #X text 329 384 1 if this patch is visible \, 0 if not., f 39;
-#X connect 2 0 18 0;
+#X text 60 67 [pdcontrol] lets you open a URL in a web browser or communicate
+with the patch to get its owning directory \, arguments or its visible/invisible
+state., f 76;
+#X text 152 422 get the patch's arguments -->;
+#X connect 2 0 16 0;
 #X connect 4 0 5 0;
 #X connect 5 0 15 0;
 #X connect 7 0 2 0;
 #X connect 9 0 2 0;
 #X connect 12 0 2 0;
-#X connect 18 0 3 0;
+#X connect 16 0 3 0;

@@ -18,7 +18,6 @@ objects use Posix-like threads. */
 #include <fcntl.h>
 #include <stdio.h>
 #include <pthread.h>
-#include <math.h>
 
 /* Supported sample formats: LPCM (16 or 24 bit int) & 32 bit float */
 
@@ -1332,7 +1331,13 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             (unsigned char *)sampbuf, nframes);
         framesread += nframes;
     }
-
+        /* warn if a file's bad size field is gobbling memory */
+    if (resize && framesread < (size_t)finalsize)
+    {
+        post("warning: soundfile %s header promised \
+%ld points but file was truncated to %ld",
+            filename, (long)finalsize, (long)framesread);
+    }
         /* zero out remaining elements of vectors */
     for (i = 0; i < argc; i++)
     {
@@ -1901,13 +1906,17 @@ static void *readsf_child_main(void *zz)
                 set EOF and signal once more */
             if (sf.sf_fd >= 0)
             {
+                    /* only set EOF if there is no pending "open" request!
+                    Otherwise, we might accidentally set EOF after it has been
+                    unset in readsf_open() and the stream would fail silently. */
+                if (x->x_requestcode != REQUEST_OPEN)
+                    x->x_eof = 1;
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_eof = 1;
-                x->x_sf.sf_fd = -1;
             }
             sfread_cond_signal(&x->x_answercondition);
         }
@@ -1915,12 +1924,12 @@ static void *readsf_child_main(void *zz)
         {
             if (sf.sf_fd >= 0)
             {
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_sf.sf_fd = -1;
             }
             if (x->x_requestcode == REQUEST_CLOSE)
                 x->x_requestcode = REQUEST_NOTHING;
@@ -1930,12 +1939,12 @@ static void *readsf_child_main(void *zz)
         {
             if (sf.sf_fd >= 0)
             {
+                x->x_sf.sf_fd = -1;
                     /* use cached sf */
                 pthread_mutex_unlock(&x->x_mutex);
                 sys_close(sf.sf_fd);
                 sf.sf_fd = -1;
                 pthread_mutex_lock(&x->x_mutex);
-                x->x_sf.sf_fd = -1;
             }
             x->x_requestcode = REQUEST_NOTHING;
             sfread_cond_signal(&x->x_answercondition);
@@ -2012,15 +2021,16 @@ static void readsf_tick(t_readsf *x)
 static t_int *readsf_perform(t_int *w)
 {
     t_readsf *x = (t_readsf *)(w[1]);
-    t_soundfile sf = {0};
     int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i;
     size_t j;
     t_sample *fp;
-    soundfile_copy(&sf, &x->x_sf);
     if (x->x_state == STATE_STREAM)
     {
         int wantbytes;
+        t_soundfile sf = {0};
         pthread_mutex_lock(&x->x_mutex);
+            /* copy with mutex locked! */
+        soundfile_copy(&sf, &x->x_sf);
         wantbytes = vecsize * sf.sf_bytesperframe;
         while (!x->x_eof && x->x_fifohead >= x->x_fifotail &&
                 x->x_fifohead < x->x_fifotail + wantbytes-1)
@@ -2045,9 +2055,6 @@ static t_int *readsf_perform(t_int *w)
             if (x->x_fileerror)
                 object_sferror(x, "readsf~", x->x_filename,
                     x->x_fileerror, &x->x_sf);
-            clock_delay(x->x_clock, 0);
-            x->x_state = STATE_IDLE;
-
                 /* if there's a partial buffer left, copy it out */
             xfersize = (x->x_fifohead - x->x_fifotail + 1) /
                        sf.sf_bytesperframe;
@@ -2057,13 +2064,13 @@ static t_int *readsf_perform(t_int *w)
                     (unsigned char *)(x->x_buf + x->x_fifotail), xfersize);
                 vecsize -= xfersize;
             }
-                /* then zero out the (rest of the) output */
+            pthread_mutex_unlock(&x->x_mutex);
+                /* send bang and zero out the (rest of the) output */
+            clock_delay(x->x_clock, 0);
+            x->x_state = STATE_IDLE;
             for (i = 0; i < noutlets; i++)
                 for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
                     *fp++ = 0;
-
-            sfread_cond_signal(&x->x_requestcondition);
-            pthread_mutex_unlock(&x->x_mutex);
             return w + 2;
         }
 
@@ -2318,7 +2325,7 @@ static void *writesf_child_main(void *zz)
                     continue;
             }
                 /* cache sf *after* closing as x->sf's type
-                    may have changed in readsf_open() */
+                    may have changed in writesf_open() */
             soundfile_copy(&sf, &x->x_sf);
 
                 /* open the soundfile with the mutex unlocked */
@@ -2531,14 +2538,15 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 static t_int *writesf_perform(t_int *w)
 {
     t_writesf *x = (t_writesf *)(w[1]);
-    t_soundfile sf = {0};
-    int vecsize = x->x_vecsize;
-    soundfile_copy(&sf, &x->x_sf);
     if (x->x_state == STATE_STREAM)
     {
         size_t roominfifo;
         size_t wantbytes;
+        int vecsize = x->x_vecsize;
+        t_soundfile sf = {0};
         pthread_mutex_lock(&x->x_mutex);
+            /* copy with mutex locked! */
+        soundfile_copy(&sf, &x->x_sf);
         wantbytes = vecsize * sf.sf_bytesperframe;
         roominfifo = x->x_fifotail - x->x_fifohead;
         if (roominfifo <= 0)
@@ -2627,6 +2635,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (argc)
         pd_error(x, "writesf~ open: extra argument(s) ignored");
     pthread_mutex_lock(&x->x_mutex);
+        /* make sure that the child thread has finished writing */
     while (x->x_requestcode != REQUEST_NOTHING)
     {
         sfread_cond_signal(&x->x_requestcondition);

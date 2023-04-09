@@ -332,6 +332,9 @@ static int wave_readheader(t_soundfile *sf)
         bytelimit = lseek(sf->sf_fd, 0, SEEK_END) - headersize;
         if (bytelimit > WAVEMAXBYTES || bytelimit < 0)
             bytelimit = WAVEMAXBYTES;
+    } else if (bytelimit & 1) {
+            /* the actual data chunk size is always even */
+        bytelimit++;
     }
 
         /* copy sample format back to caller */

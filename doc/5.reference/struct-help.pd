@@ -1,33 +1,28 @@
-#N canvas 527 75 606 283 12;
-#N canvas 273 255 491 176 help-template1 0;
-#X obj 60 21 struct struct-1 float x float y symbol dog array weasel
-struct-2, f 42;
-#X text 40 76 In this example \, the "struct-1" structure is defined
-in which "x" and "y" are "floats" \, i.e. \, numbers \, but "dog" is
-a symbol and "weasel" is an array of objects of structure "struct-2".
-, f 56;
-#X restore 179 162 pd help-template1;
-#N canvas 742 271 463 166 help-template2 0;
-#X text 26 74 Here is one which specifies only the floating point "y"
-\; it's used for the elements of the array shown in the other template.
-, f 57;
-#X obj 87 23 struct struct-2 float y;
-#X restore 318 162 pd help-template2;
-#X text 381 246 updated for Pd version 0.35;
+#N canvas 434 69 606 339 12;
+#N canvas 307 220 491 176 help-template1 0;
+#X obj 94 26 struct struct-1 float x float y text z symbol dog array
+weasel struct-2, f 42;
+#X text 55 77 In this example \, the "struct-1" structure is defined
+in which "x" and "y" are "floats" \, i.e. \, numbers \, but "z" is
+a text \, "dog" is a symbol and "weasel" is an array of objects of
+structure "struct-2"., f 56;
+#X restore 316 189 pd help-template1;
+#N canvas 570 245 463 166 help-template2 0;
+#X obj 120 26 struct struct-2 float y;
+#X text 26 74 Here is one which specifies only the floating point "y".
+It's used for the elements of the array shown in the other template.
+;
+#X restore 315 215 pd help-template2;
+#X text 381 276 updated for Pd version 0.35;
 #X obj 24 15 struct;
 #X text 83 16 - declare the fields in a data structure.;
-#X text 25 246 see also:;
-#X obj 99 247 drawpolygon;
-#X obj 190 247 drawtext;
-#X obj 260 247 plot;
+#X text 21 276 see also:;
+#X obj 95 277 drawpolygon;
+#X obj 186 277 drawtext;
+#X obj 256 277 plot;
 #X obj 6 47 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
-#X text 48 64 There should be one "struct" object in each Pd window
-you are using as a data structure template. The arguments specify the
-types and names of the fields. For array fields \, a third argument
-specifies the template that the array elements should belong to.,
-f 71;
-#X obj 6 227 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
+#X obj 6 257 cnv 1 590 1 empty empty empty 8 12 0 13 #000000 #000000
 0;
 #N canvas 549 137 633 263 reference 0;
 #X obj 8 52 cnv 5 600 5 empty empty INLETS: 8 18 0 13 #202020 #000000
@@ -50,3 +45,19 @@ and 'change').;
 #X text 145 65 NONE;
 #X restore 491 16 pd reference;
 #X text 426 16 click =>;
+#X text 48 64 A [struct] object is used to define a Data Structure
+template and its fields. There should be one [struct] object in each
+Pd window you are using as a data structure template. The arguments
+specify the types and names of the fields. The data types are: "float"
+\, "symbol" \, "text" and "array". Each type needs a field name and
+array fields need an extra argument that specifies the template that
+the array elements should belong to., f 71;
+#X obj 297 277 text;
+#X text 87 203 open subpatch for examples -->;
+#X obj 209 304 get;
+#X obj 241 304 set;
+#X obj 88 304 getsize;
+#X obj 149 304 setsize;
+#X obj 326 304 element;
+#X obj 274 304 scalar;
+#X obj 24 304 pointer;

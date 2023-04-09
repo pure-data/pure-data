@@ -4,36 +4,27 @@
 #X obj 27 13 sig~;
 #X obj 70 151 sig~;
 #X floatatom 70 119 6 0 0 0 - - - 0;
-#X text 44 57 In this example \, the sig~ object converts numbers to
-an audio signal \, which the snapshot~ converts back again.;
 #X obj 92 226 metro 200;
 #X text 266 366 updated for Pd version 0.33;
 #X text 120 119 <= Scroll to set value, f 12;
 #X obj 92 195 loadbang;
-#X text 338 129 DSP on/off;
+#X text 343 131 DSP on/off;
 #X obj 186 240 sig~ 10;
 #X obj 186 280 snapshot~;
 #X floatatom 186 206 6 0 0 0 - - - 0;
 #X floatatom 186 314 6 0 0 0 - - - 0;
 #X text 251 228 An argument initializes the signal value., f 15;
-#X obj 319 130 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
+#X obj 319 130 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X msg 319 157 \; pd dsp \$1;
 #X text 14 366 see also:;
 #X obj 90 365 snapshot~;
-#X obj 7 43 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 351 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 7 43 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 6 351 cnv 1 475 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 667 102 424 185 reference 0;
-#X obj 8 45 cnv 5 400 5 empty empty INLET: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 87 cnv 2 400 2 empty empty OUTLET: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 152 cnv 5 400 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 8 116 cnv 2 400 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000
-0;
+#X obj 8 45 cnv 5 400 5 empty empty INLET: 8 18 0 13 #202020 #000000 0;
+#X obj 8 87 cnv 2 400 2 empty empty OUTLET: 8 12 0 13 #202020 #000000 0;
+#X obj 7 152 cnv 5 400 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 8 116 cnv 2 400 2 empty empty ARGUMENT: 8 12 0 13 #202020 #000000 0;
 #X obj 31 13 sig~;
 #X text 67 13 - convert numbers to signals;
 #X text 109 58 float - number to convert to signal.;
@@ -42,13 +33,14 @@ an audio signal \, which the snapshot~ converts back again.;
 #X restore 315 14 pd reference;
 #X text 409 14 <= click;
 #X text 63 13 - convert numbers to signals;
+#X text 44 57 [sig~] object converts numbers to an audio signal. In this example \, the [snapshot~] converts back again.;
 #X connect 0 0 1 0;
 #X connect 3 0 0 0;
 #X connect 4 0 3 0;
-#X connect 6 0 0 0;
-#X connect 6 0 12 0;
-#X connect 9 0 6 0;
-#X connect 11 0 12 0;
-#X connect 12 0 14 0;
-#X connect 13 0 11 0;
-#X connect 16 0 17 0;
+#X connect 5 0 0 0;
+#X connect 5 0 11 0;
+#X connect 8 0 5 0;
+#X connect 10 0 11 0;
+#X connect 11 0 13 0;
+#X connect 12 0 10 0;
+#X connect 15 0 16 0;

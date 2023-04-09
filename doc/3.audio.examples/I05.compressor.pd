@@ -1,4 +1,4 @@
-#N canvas 499 127 545 468 12;
+#N canvas 556 77 545 468 12;
 #X declare -stdpath ./;
 #N canvas 394 108 652 570 fft-analysis 0;
 #X obj 101 425 *~;
@@ -22,22 +22,16 @@
 #X obj 119 237 +~ 1e-20;
 #X obj 119 274 q8_rsqrt~;
 #X obj 100 482 tabreceive~ \$0-hann;
-#X text 69 13 As in the previous patch \, this works by multiplying
-each channel of the Fourier analysis by a real number computed from
-the magnitude. If the magnitude is "m" \, the correction factor is
-1/m \, but only to an upper limit controlled by the "squelch" parameter.
-, f 68;
+#X text 69 13 As in the previous patch \, this works by multiplying each channel of the Fourier analysis by a real number computed from the magnitude. If the magnitude is "m" \, the correction factor is 1/m \, but only to an upper limit controlled by the "squelch" parameter., f 68;
 #X text 193 186 squared magnitude;
 #X text 187 238 protect against divide-by-zero;
 #X text 190 266 quick 8-bit-accurate reciprocal square root;
 #X text 188 282 (done by table lookup - about 0.25% accurate);
 #X text 200 393 normalize for 1024-point \, overlap-4 Hann;
 #X text 117 149 outputs complex amplitudes;
-#X msg 448 140 \; pd dsp 1 \; window-size 1024 \; squelch 10 \; squelch-set
-set 10;
 #X text 166 363 limit the gain to squelch * squelch/100;
-#X text 131 416 multiply gain by real and complex part of the amplitude
-, f 29;
+#X text 131 416 multiply gain by real and complex part of the amplitude, f 29;
+#X msg 448 140 \; window-size 1024 \; squelch 10 \; squelch-set set 10;
 #X connect 0 0 7 1;
 #X connect 1 0 7 0;
 #X connect 2 0 4 0;
@@ -57,7 +51,7 @@ set 10;
 #X connect 13 0 15 0;
 #X connect 14 0 2 1;
 #X connect 15 0 12 2;
-#X connect 16 0 28 0;
+#X connect 16 0 30 0;
 #X connect 17 0 0 1;
 #X connect 17 0 1 1;
 #X connect 18 0 19 0;
@@ -159,22 +153,15 @@ set 10;
 #X connect 18 0 13 0;
 #X restore 299 314 pd insample;
 #X text 291 420 updated for Pd version 0.39;
-#X text 53 49 Here we divide each complex channel in the Fourier analysis
-by its own magnitude to "flatten" the spectrum. The "squelch" control
-limits the amplitude boost the algorithm will apply. If infinite \,
-you'll get a white spectrum. If less \, the louder parts of the spectrum
-will be flattened but the quieter ones will only be boosted by the
-squelch value.;
-#X text 74 12 DYNAMIC RANGE COMPRESSION BY FOURIER ANALYSIS CHANNEL
-;
-#X floatatom 299 367 5 0 0 0 - #0-samp-msec - 0;
-#X obj 105 241 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X text 352 366 sample length \, msec;
+#X text 53 49 Here we divide each complex channel in the Fourier analysis by its own magnitude to "flatten" the spectrum. The "squelch" control limits the amplitude boost the algorithm will apply. If infinite \, you'll get a white spectrum. If less \, the louder parts of the spectrum will be flattened but the quieter ones will only be boosted by the squelch value.;
+#X text 74 12 DYNAMIC RANGE COMPRESSION BY FOURIER ANALYSIS CHANNEL;
+#X floatatom 299 367 8 0 0 0 - \$0-samp-msec - 0;
+#X obj 105 231 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X text 369 366 sample length \, msec;
 #X msg 293 189 ../sound/bell.aiff;
 #X msg 299 212 ../sound/voice.wav;
 #X msg 305 236 ../sound/voice2.wav;
-#X text 128 172 <- squelch;
+#X text 123 171 <- squelch;
 #X text 296 167 change input sound;
 #X obj 293 265 s read-sample;
 #N canvas 796 122 565 538 hann-window 0;
@@ -201,10 +188,7 @@ squelch value.;
 #X obj 279 122 r window-hz;
 #X msg 352 154 0;
 #X obj 279 150 t f b;
-#X text 56 20 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec)., f 56
-;
+#X text 56 20 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec)., f 56;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -228,8 +212,8 @@ and window-msec (analysis window size in seconds and msec)., f 56
 #X connect 19 1 4 0;
 #X connect 19 1 18 0;
 #X restore 299 336 pd hann-window;
-#X text 124 238 <= record;
 #X obj 61 408 declare -stdpath ./;
+#X text 128 231 <- record;
 #X connect 0 0 4 0;
 #X connect 0 0 4 1;
 #X connect 1 0 2 0;

@@ -1,4 +1,4 @@
-#N canvas 519 25 797 702 12;
+#N canvas 491 25 797 702 12;
 #X obj 603 526 t f f f;
 #X obj 626 557 + 1;
 #X obj 660 556 + 2;
@@ -15,18 +15,13 @@
 #X obj 45 16 pipe;
 #X text 84 15 - message "delay line";
 #X obj 63 380 print pipe;
-#X obj 96 240 bng 18 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 96 240 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X symbolatom 135 586 13 0 0 0 - - - 0;
 #X msg 136 491 symbol ahoy;
 #X msg 152 523 symbol cheers;
 #X obj 135 617 print;
-#X text 140 304 a single float creation argument initializes delay
-time (0 by default), f 37;
-#X text 120 234 bang outputs the last received message after the delay
-time, f 30;
-#X obj 574 525 bng 17 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
+#X text 140 304 a single float creation argument initializes delay time (0 by default), f 37;
+#X text 120 234 bang outputs the last received message after the delay time, f 30;
 #X obj 592 585 pipe 5 6 7 1000;
 #X obj 517 225 t f f b, f 12;
 #X msg 603 264 symbol stop;
@@ -36,25 +31,14 @@ time, f 30;
 #X text 690 295 delay time;
 #X floatatom 272 523 5 0 0 0 - - - 0;
 #X text 315 523 set delay time;
-#X text 24 60 The [pipe] object stores a sequence of messages and outputs
-them after a specified delay time in milliseconds. The output is scheduled
-when storing the incoming message. Thus changing the delay time doesn't
-affect the messages that are already scheduled., f 58;
+#X text 24 60 The [pipe] object stores a sequence of messages and outputs them after a specified delay time in milliseconds. The output is scheduled when storing the incoming message. Thus changing the delay time doesn't affect the messages that are already scheduled., f 58;
 #X obj 135 553 pipe s 1000, f 20;
-#X text 24 413 You can specify the data type with a first argument
-(which is a float by default). A symbol argument "s" \, "f" \, or "p"
-specifies a "symbol" \, "float" (number) \, or pointer type (untested).
-The delay time comes then as the last argument.;
+#X text 24 413 You can specify the data type with a first argument (which is a float by default). A symbol argument "s" \, "f" \, or "p" specifies a "symbol" \, "float" (number) \, or pointer type (untested). The delay time comes then as the last argument.;
 #X obj 517 324 pipe f f s 1000, f 19;
-#X text 466 67 You can specify compound messages (lists) by adding
-more than one argument. Again \, the delay time comes as the last argument
-and is also changed by the last inlet., f 42;
-#X text 493 405 A float value can be used to set a float type and also
-initialize its value. In the example below you can test the initialized
-values with the bang message., f 36;
+#X text 466 67 You can specify compound messages (lists) by adding more than one argument. Again \, the delay time comes as the last argument and is also changed by the last inlet., f 42;
+#X text 493 405 A float value can be used to set a float type and also initialize its value. In the example below you can test the initialized values with the bang message., f 36;
 #X msg 431 265 50 70 hey;
-#X text 466 132 A list input is possible in this example as Pd can
-distribute its elements to the inlets., f 42;
+#X text 466 132 A list input is possible in this example as Pd can distribute its elements to the inlets., f 42;
 #X floatatom 123 279 5 0 0 0 - - - 0;
 #X floatatom 63 152 5 0 0 0 - - - 0;
 #X floatatom 517 192 5 0 0 0 - - - 0;
@@ -65,79 +49,65 @@ distribute its elements to the inlets., f 42;
 #X floatatom 694 613 5 0 0 0 - - - 0;
 #X floatatom 63 346 5 0 0 0 - - - 0;
 #X floatatom 603 500 5 0 0 0 - - - 0;
-#X obj 11 49 cnv 1 780 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 11 49 cnv 1 780 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 785 120 578 440 reference 0;
-#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 249 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 8 319 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 408 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 7 215 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000
-0;
-#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 52 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 249 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 8 319 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 408 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 7 215 cnv 1 550 1 empty empty rightmost: 8 12 0 13 #7c7c7c #000000 0;
+#X obj 7 85 cnv 1 550 1 empty empty 1st: 8 12 0 13 #7c7c7c #000000 0;
 #X obj 45 16 pipe;
 #X text 84 15 - message "delay line".;
-#X text 132 92 bang - sends the last received data after the delay
-time.;
+#X text 132 92 bang - sends the last received data after the delay time.;
 #X text 125 112 flush - sends the scheduled messages immediately.;
 #X text 125 132 clear - forget all scheduled messages.;
 #X text 143 223 float - set the delay time in ms., f 49;
 #X text 83 253 'number of inlets depends on creation arguments);
-#X text 49 182 float/symbol/pointer - the type depends on the creation
-argument., f 65;
-#X obj 7 157 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
-;
+#X text 49 182 float/symbol/pointer - the type depends on the creation argument., f 65;
+#X obj 7 157 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
 #X text 33 160 - number of inlets depends on creation arguments);
-#X text 53 290 float/symbol/pointer - the type depends on the creation
-argument., f 65;
+#X text 53 290 float/symbol/pointer - the type depends on the creation argument., f 65;
 #X text 109 329 1) list -;
-#X text 181 330 (optional) symbols sets number of inlets and type (f
-default \, s \, p) and floats set float type and initial value., f
-49;
+#X text 181 330 (optional) symbols sets number of inlets and type (f default \, s \, p) and floats set float type and initial value., f 49;
 #X text 102 381 2) float - sets delay time in ms (default 0).;
-#X obj 6 281 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0
-;
+#X obj 6 281 cnv 1 550 1 empty empty n: 8 12 0 13 #7c7c7c #000000 0;
 #X restore 503 16 pd reference;
 #X text 597 15 <= click;
-#X obj 10 653 cnv 1 780 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 10 653 cnv 1 780 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 119 178 output all scheduled messages immediately;
 #X text 128 208 forget all scheduled messages;
-#X connect 0 0 24 0;
+#X obj 572 525 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X connect 0 0 23 0;
 #X connect 0 1 1 0;
 #X connect 0 2 2 0;
-#X connect 1 0 24 1;
-#X connect 2 0 24 2;
-#X connect 4 0 49 0;
+#X connect 1 0 23 1;
+#X connect 2 0 23 2;
+#X connect 4 0 48 0;
 #X connect 6 0 4 0;
 #X connect 7 0 4 0;
 #X connect 16 0 4 0;
 #X connect 17 0 20 0;
-#X connect 18 0 34 0;
-#X connect 19 0 34 0;
-#X connect 23 0 24 0;
-#X connect 24 0 46 0;
-#X connect 24 1 47 0;
-#X connect 24 2 48 0;
-#X connect 25 0 36 0;
-#X connect 25 1 27 0;
-#X connect 25 2 26 0;
-#X connect 26 0 36 2;
-#X connect 27 0 36 1;
-#X connect 29 0 36 3;
-#X connect 31 0 34 1;
-#X connect 34 0 17 0;
-#X connect 36 0 44 0;
-#X connect 36 1 45 0;
-#X connect 36 2 28 0;
-#X connect 39 0 36 0;
-#X connect 41 0 4 1;
-#X connect 42 0 4 0;
-#X connect 43 0 25 0;
-#X connect 49 0 15 0;
-#X connect 50 0 0 0;
+#X connect 18 0 33 0;
+#X connect 19 0 33 0;
+#X connect 23 0 45 0;
+#X connect 23 1 46 0;
+#X connect 23 2 47 0;
+#X connect 24 0 35 0;
+#X connect 24 1 26 0;
+#X connect 24 2 25 0;
+#X connect 25 0 35 2;
+#X connect 26 0 35 1;
+#X connect 28 0 35 3;
+#X connect 30 0 33 1;
+#X connect 33 0 17 0;
+#X connect 35 0 43 0;
+#X connect 35 1 44 0;
+#X connect 35 2 27 0;
+#X connect 38 0 35 0;
+#X connect 40 0 4 1;
+#X connect 41 0 4 0;
+#X connect 42 0 24 0;
+#X connect 48 0 15 0;
+#X connect 49 0 0 0;
+#X connect 56 0 23 0;

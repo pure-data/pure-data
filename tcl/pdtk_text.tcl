@@ -7,7 +7,7 @@ package provide pdtk_text 0.1
 namespace eval ::pdtk_text:: {
 # proc to sanitize the 'text'
     proc unescape {text} {
-        return [string range [subst -nocommands -novariables $text] 0 end-1]
+        return [subst -nocommands -novariables $text]
     }
 }
 
@@ -46,7 +46,7 @@ proc pdtk_pastetext {tkcanvas} {
         # turn unicode-encoded stuff (\u...) into unicode characters
         # 'unescape' needs a trailing space...
         set buf [::pdtk_text::unescape "${buf} " ]
-        for {set i 0} {$i < [string length $buf]} {incr i 1} {
+        for {set i 0} {$i < [expr [string length $buf] - 1]} {incr i 1} {
             set cha [string index $buf $i]
             scan $cha %c keynum
             pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"

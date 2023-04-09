@@ -1,7 +1,7 @@
-#N canvas 402 55 896 697 12;
+#N canvas 402 49 895 661 12;
 #X declare -stdpath ./;
 #X obj 264 151 line~;
-#X floatatom 170 105 0 0 0 0 - - - 0;
+#X floatatom 170 105 4 0 0 0 - - - 0;
 #X obj 246 344 cos~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array pulse-output 882 float 0;
@@ -9,7 +9,7 @@
 #X restore 600 357 graph;
 #X obj 170 132 phasor~ 0;
 #X obj 264 127 pack 0 50;
-#X floatatom 264 78 0 0 100 0 - - - 0;
+#X floatatom 264 78 4 0 100 0 - - - 0;
 #X text 167 84 frequency;
 #X obj 170 156 -~ 0.5;
 #X obj 246 219 *~;
@@ -39,19 +39,14 @@
 #X obj 264 178 +~ 1;
 #X obj 387 352 tabwrite~ clip-output;
 #X text 623 499 ---- 0.02 seconds ----;
-#X obj 365 209 bng 20 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 365 209 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 246 486 output~;
 #X obj 246 367 +~ 1;
 #X obj 246 390 *~ 0.5;
-#X text 612 598 updated for Pd version 0.37;
+#X text 625 582 updated for Pd version 0.37;
 #X text 19 367 add one (range now from 0 to 2);
 #X text 82 389 ...and now from 0 to 1;
-#X text 67 578 This patch computes a pulse train \, with an "index"
-control that essentially squeezes the pulses. If "bandwidth" is zero
-you get a pure cosine wave \, and for larger values of the bandwidth
-\, the cosine wave is squeezed to fill smaller portions of the waveform.
-;
+#X text 49 569 This patch computes a pulse train \, with an "index" control that essentially squeezes the pulses. If "bandwidth" is zero you get a pure cosine wave \, and for larger values of the bandwidth \, the cosine wave is squeezed to fill smaller portions of the waveform., f 75;
 #X text 261 59 index;
 #X text 807 77 0.5;
 #X text 807 131 -0.5;
@@ -59,8 +54,8 @@ you get a pure cosine wave \, and for larger values of the bandwidth
 #X text 804 321 -1;
 #X text 804 361 1;
 #X text 803 481 -1;
-#X text 389 209 <= click to graph;
-#X obj 697 17 declare -stdpath ./;
+#X obj 670 17 declare -stdpath ./;
+#X text 389 208 <-- click to graph;
 #X connect 0 0 27 0;
 #X connect 1 0 4 0;
 #X connect 2 0 32 0;
