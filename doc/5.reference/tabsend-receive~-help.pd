@@ -23,7 +23,7 @@
 #X text 115 22 - write a block of a signal to an array continuously;
 #X obj 27 46 tabreceive~;
 #X text 115 46 - read a block of a signal from an array continuously;
-#X text 206 416 creation argument: initializes table name, f 23;
+#X text 206 409 creation argument: initializes table name, f 23;
 #X text 169 359 'set' message to change table name, f 17;
 #X obj 59 416 tabreceive~ table-1;
 #X msg 78 382 set table-1;
@@ -116,9 +116,9 @@
 #X obj 49 195 tabsend~ \$0-buffer;
 #X obj 49 235 tabreceive~ \$0-buffer;
 #X obj 69 265 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
-#X text 45 17 Unlike [send~]/[receive~] and [throw~]/[catch~] \, you can use [tabsend~] and [tabreceive~] to work with with block sizes different than 64 samples. This is useful for working with FFT \, for instance. For that \, you need to change the block size with the [block~] object., f 59;
 #X text 427 229 <- click;
 #X text 214 113 <-;
+#X text 45 17 Like pairs of [send~]/[receive~] and delay lines \, [tabsend~] and [tabreceive~] work with any block sizes. The default block size is 64 but you can change it with the [block~] object.;
 #X connect 1 0 6 0;
 #X connect 7 0 4 0;
 #X connect 8 0 4 0;

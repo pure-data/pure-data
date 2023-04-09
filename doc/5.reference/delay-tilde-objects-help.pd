@@ -1,4 +1,4 @@
-#N canvas 348 50 951 558 12;
+#N canvas 348 50 951 563 12;
 #X declare -stdpath ./;
 #X text 750 224 creation argument: name of delay line, f 18;
 #X obj 44 65 delread4~;
@@ -21,7 +21,7 @@
 #X text 250 417 2nd argument: (initial) delay time in ms;
 #X obj 85 443 output~;
 #X text 597 77 The delay time is always at least one sample and at most the length of the delay line (specified by a corresponding delwrite~)., f 46;
-#X obj 627 436 ../3.audio.examples/G05.execution.order;
+#X obj 627 435 ../3.audio.examples/G05.execution.order;
 #X text 123 376 input (delay time in ms);
 #X msg 49 376 500;
 #X text 732 527 updated for Pd version 0.52;
@@ -31,7 +31,6 @@
 #X obj 491 70 vd~;
 #X obj 96 528 fexpr~;
 #X text 22 528 see also:;
-#X text 598 471 See also other examples in the "G" section to learn how to implement dealys with feedback., f 46;
 #X obj 9 514 cnv 1 935 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 7 102 cnv 1 570 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X text 488 21 <= click;
@@ -78,17 +77,19 @@
 #X text 406 70 --> a.k.a.:;
 #X text 12 112 The [delread~] and [delread4~] objects read from a delay line allocated in a [delwrite~] object with the same name. Note that in this help file we're using delay names with "\$0" (the patch ID number used to force locality in Pd). You can use more than one [delread~] and/or [delread4~] objects for the same [delwrite~] object. If the specified delay time in [delread~]/[delread4~] is longer than the size of the delay line or less than zero it is clipped to the length of the delay line., f 81;
 #X text 597 12 [delread4~] implements a 4-point interpolating delay tap. The delay in milliseconds of the tap is specified by an incoming signal for variable delay times., f 46;
-#X text 568 350 In case [delwrite~] runs later in the DSP loop than the [delread~] or [delread4~] objects \, the delay is constrained below by one vector length (usually 64 samples.) Open the file below as an example on how to control this to obtain very short delays., f 51;
+#X text 568 349 In case [delwrite~] runs later in the DSP loop than the [delread~] or [delread4~] objects \, the delay is constrained below by one vector length (usually 64 samples.) Open the file below as an example on how to control this to obtain very short delays., f 51;
 #X text 750 295 delread4~ ('vd' for 'variable delay'), f 19;
 #X text 784 275 -- old name of;
+#X text 588 468 See also other examples in the "G" section for more fun with delays \, such as feedback delays., f 46;
+#X obj 155 529 send~;
 #X connect 3 0 7 0;
 #X connect 5 0 3 0;
 #X connect 6 0 4 0;
 #X connect 8 0 5 0;
 #X connect 10 0 4 0;
-#X connect 23 0 37 0;
-#X connect 36 0 6 0;
-#X connect 37 0 19 0;
-#X connect 38 0 37 0;
+#X connect 23 0 36 0;
+#X connect 35 0 6 0;
+#X connect 36 0 19 0;
+#X connect 37 0 36 0;
+#X connect 38 0 8 0;
 #X connect 39 0 8 0;
-#X connect 40 0 8 0;
