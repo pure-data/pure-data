@@ -4,7 +4,7 @@
 #X text 210 283 clear;
 #X text 285 63 This is an experimental reverberator design composed of a series of allpass filters with exponentially growing delay times. Each allpass filter has a gain of 0.7. The reverb time is adjusted by adjusting the input gains of the allpass filters. The last unit is modified so that its first two "echos" mimic those of an allpass but its loop gain depends on reverb time., f 47;
 #X text 285 201 Reverb time is controlled by specifying the dB gain (100 normal) after one second \, so that 100 corresponds to infinite reverb time \, 70 to two seconds \, 40 to one second \, and 0 to 0, f 47;
-#X obj 156 307 rev1~;
+#X obj 156 311 rev1~;
 #X text 285 266 The "clear" button impolitely clears out all the delay lines \, You may immediately resume pumping the reverberator \, but the input signal should be cleanly enveloped. The output \, too \, must be enveloped and may not be opened until 5 msec after the "clear" message is sent., f 47;
 #X obj 29 68 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 188 283 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
