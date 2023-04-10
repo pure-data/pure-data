@@ -1,4 +1,4 @@
-#N canvas 515 37 605 539 12;
+#N canvas 467 38 605 539 12;
 #X text 157 10 PART 1 REVIEW;
 #X obj 77 122 tabwrite~;
 #X obj 77 96 line~;

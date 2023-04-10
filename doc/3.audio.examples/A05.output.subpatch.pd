@@ -1,4 +1,4 @@
-#N canvas 556 76 568 532 12;
+#N canvas 452 47 568 532 12;
 #X declare -stdpath ./;
 #X text 231 24 CONTROLLING OUTPUT AMPLITUDE;
 #X obj 84 28 osc~ 440;

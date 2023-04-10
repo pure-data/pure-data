@@ -17,7 +17,7 @@
 #X text 41 432 They are all summed using "+~" boxes. They could have been summed in any order ("+~" is commutative for practical purposes) but here they are added in pairs to emphasize the relationships between them.;
 #X text 40 499 In contrast to the previous example \, the oscillators are not tuned to the overtone series (ratios 1:2:3:4...) and so the frequencies 330 \, 440 \, and 587 are heard separately.;
 #X obj 57 569 declare -stdpath ./;
-#X text 298 578 updated for Pd version 0.4;
+#X text 298 578 updated for Pd version 0.40.;
 #X connect 1 0 0 0;
 #X connect 2 0 11 0;
 #X connect 3 0 11 1;
