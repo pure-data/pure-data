@@ -107,8 +107,10 @@ fi
 # autodetect wishname if none is given
 if [ -z "${WISHNAME}" ]; then
 	WISHNAME=$(find "${PDWINDIR}/bin" -iname "wish*.exe" -print -quit)
+
 	if [ -n "${WISHNAME}" ]; then
 		WISHNAME=$(basename "${WISHNAME}")
+		error "${WISHNAME}"
 	fi
 fi
 if [ -z "${WISHNAME}" ]; then
@@ -189,7 +191,7 @@ case $nsis_exit in
 esac
 
 # run the build
-if makensis -DARCHI=${PDARCH} ${NSIFILE}
+if makensis -DPDVER=${PDVERSION} -DWISHN=${WISHNAME} -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
