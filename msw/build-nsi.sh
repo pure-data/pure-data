@@ -110,7 +110,6 @@ if [ -z "${WISHNAME}" ]; then
 
 	if [ -n "${WISHNAME}" ]; then
 		WISHNAME=$(basename "${WISHNAME}")
-		error "${WISHNAME}"
 	fi
 fi
 if [ -z "${WISHNAME}" ]; then
@@ -189,6 +188,13 @@ case $nsis_exit in
      cleanup 1
      ;;
 esac
+
+# copy installer custom artwork
+cp "${SCRIPTDIR}/installer-art/big.bmp" ${OUTDIR}/big.bmp
+cp "${SCRIPTDIR}/installer-art/small.bmp" ${OUTDIR}/small.bmp
+cp "${SCRIPTDIR}/installer-art/small-un.bmp" ${OUTDIR}/small-un.bmp
+cp "${SCRIPTDIR}/installer-art/pd-un.ico" ${OUTDIR}/pd-un.ico
+cp "${SCRIPTDIR}/../tcl/pd.ico" ${OUTDIR}/pd.ico
 
 # run the build
 if makensis -DPDVER=${PDVERSION} -DWISHN=${WISHNAME} -DARCHI=${PDARCH} ${NSIFILE}

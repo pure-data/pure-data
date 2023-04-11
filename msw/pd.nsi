@@ -26,20 +26,16 @@
 !define PRODUCT_PUBLISHER "Miller Puckette"
 !define PRODUCT_WEB_SITE "http://www.puredata.info"
 
-
-
 ; MUI Settings / Icons
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
+!define MUI_ICON "pd.ico"
+!define MUI_UNICON "pd-un.ico"
+; MUI Settings / Wizard
+!define MUI_WELCOMEFINISHPAGE_BITMAP "big.bmp"
 ; MUI Settings / Header
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
-!define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-r.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-uninstall-r.bmp"
-; MUI Settings / Wizard
-!define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange-uninstall.bmp"
-
+!define MUI_HEADERIMAGE_BITMAP "small.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "small-un.bmp"
 
 Var INSTDIR_BASE
 
