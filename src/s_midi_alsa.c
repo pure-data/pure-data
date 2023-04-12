@@ -38,7 +38,7 @@ static int alsa_midiinfd[MAXMIDIINDEV];
 static int alsa_nmidiout;
 static int alsa_midioutfd[MAXMIDIOUTDEV];
 
-static snd_seq_t *midi_handle;
+static snd_seq_t *midi_handle = NULL;
 
 static snd_midi_event_t *midiev;
 
@@ -191,6 +191,7 @@ void sys_alsa_putmidibyte(int portno, int byte)
   static snd_midi_event_t *dev = NULL;
   int res;
   snd_seq_event_t ev;
+  if (!midi_handle) return;
   if (!dev) {
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
     //assert(dev);
@@ -218,6 +219,7 @@ void sys_alsa_poll_midi(void)
    int count, alsa_source;
    snd_seq_event_t *midievent = NULL;
 
+   if (!midi_handle) return;
    if (!alsa_nmidiout && !alsa_nmidiin) return;
 
    snd_midi_event_init(midiev);

@@ -323,7 +323,7 @@ cp $verbose $SRC/README.txt  $DEST/
 cp $verbose $SRC/LICENSE.txt $DEST/
 
 # install translations if they were built
-if [ -e $BUILD/po/af.msg ] ; then
+if [ -e $BUILD/po/es.msg ] ; then
     mkdir -p $DEST/po
     cp $verbose $BUILD/po/*.msg $DEST/po/
     # add locale entries to the plist based on available .msg files

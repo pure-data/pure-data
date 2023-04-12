@@ -1,7 +1,7 @@
-#N canvas 292 145 707 484 12;
+#N canvas 420 112 707 484 12;
 #X floatatom 211 98 4 0 0 0 - - adc-gain 0;
 #X text 289 17 latency measurement;
-#N canvas 196 23 928 723 guts 1;
+#N canvas 196 23 928 723 guts 0;
 #X obj 292 35 adc~ 1 2 3 4 5 6 7 8;
 #X obj 318 102 == 1;
 #X obj 293 126 *~ 0;
@@ -25,21 +25,7 @@
 #X obj 59 201 s inchannel-set;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array pulse 120 float 1;
-#A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618
--0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239
--0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055
--0.259767 -0.293732 -0.328561 -0.363831 -0.39909 -0.433862 -0.467657
--0.499977 -0.530324 -0.558209 -0.583156 -0.604713 -0.622461 -0.636015
--0.645036 -0.649234 -0.648374 -0.642282 -0.630843 -0.614012 -0.591808
--0.564318 -0.531698 -0.494168 -0.452014 -0.405579 -0.355267 -0.301528
--0.244862 -0.185805 -0.124926 -0.0628189 -9.26574e-05 0.0626345 0.124745
-0.185628 0.244691 0.301365 0.355113 0.405437 0.451883 0.494051 0.531595
-0.56423 0.591735 0.613955 0.630802 0.642256 0.648364 0.649239 0.645055
-0.636048 0.622507 0.604771 0.583224 0.558287 0.53041 0.500069 0.467754
-0.433963 0.399193 0.363935 0.328665 0.293834 0.259866 0.22715 0.196032
-0.166815 0.139751 0.115038 0.0928211 0.0731882 0.0561701 0.0417419
-0.0298239 0.0202844 0.012943 0.00757468 0.00391473 0.00166424 0.000496283
-6.24961e-05 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618 -0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239 -0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055 -0.259767 -0.293732 -0.328561 -0.363831 -0.39909 -0.433862 -0.467657 -0.499977 -0.530324 -0.558209 -0.583156 -0.604713 -0.622461 -0.636015 -0.645036 -0.649234 -0.648374 -0.642282 -0.630843 -0.614012 -0.591808 -0.564318 -0.531698 -0.494168 -0.452014 -0.405579 -0.355267 -0.301528 -0.244862 -0.185805 -0.124926 -0.0628189 -9.26574e-05 0.0626345 0.124745 0.185628 0.244691 0.301365 0.355113 0.405437 0.451883 0.494051 0.531595 0.56423 0.591735 0.613955 0.630802 0.642256 0.648364 0.649239 0.645055 0.636048 0.622507 0.604771 0.583224 0.558287 0.53041 0.500069 0.467754 0.433963 0.399193 0.363935 0.328665 0.293834 0.259866 0.22715 0.196032 0.166815 0.139751 0.115038 0.0928211 0.0731882 0.0561701 0.0417419 0.0298239 0.0202844 0.012943 0.00757468 0.00391473 0.00166424 0.000496283 6.24961e-05 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 119 -1 200 140 1;
 #X restore 25 399 graph;
 #X obj 52 587 t b b;
@@ -48,8 +34,7 @@
 #X obj 52 616 until;
 #X obj 123 676 t f f;
 #X obj 46 780 tabwrite pulse;
-#X obj 52 553 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000;
+#X obj 52 553 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 143 570 \; pulse const 0;
 #X msg 141 620 0;
 #X obj 44 676 sel 100;
@@ -57,8 +42,7 @@
 #X obj 67 712 * 0.06283;
 #X obj 615 264 metro 1000;
 #X obj 615 218 r metro-on;
-#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 705 326 vline~;
 #X obj 705 357 tabread4~ pulse;
 #X obj 687 31 r inchannel;
@@ -94,8 +78,7 @@
 #X obj 160 281 env~ 65536;
 #X floatatom 171 309 7 0 0 0 - - - 0;
 #X obj 401 380 bonk~;
-#X obj 378 409 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 378 409 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X obj 290 445 -~ 0.1;
 #X obj 291 602 -~ 1;
 #X obj 291 629 *~ -1;
@@ -251,14 +234,6 @@
 #X text 78 142 so that RMS amplitude in is between 60 and 70;
 #X text 80 121 (typically between -20 and 20);
 #X text 444 421 updated for Pd version 0.43;
-#X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
-#dfdfdf #000000 #000000;
-#X text 75 212 discontinuity: this flashes if there are audio errors
-, f 27;
-#X text 60 275 To use this patch \, connect your audio output back
-to the audio input (any input and output channel from 1 to 8 \, but
-the input channel should agree with the "inchannel" control at top).
-Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from
-60 to 70 will do.) The latency is measured once per second. If there
-are interruptions in the audio the button above should flash (whether
-or not the audio system reports the error).;
+#X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 75 212 discontinuity: this flashes if there are audio errors, f 27;
+#X text 60 275 To use this patch \, connect your audio output back to the audio input (any input and output channel from 1 to 8 \, but the input channel should agree with the "inchannel" control at top). Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from 60 to 70 will do.) The latency is measured once per second. If there are interruptions in the audio the button above should flash (whether or not the audio system reports the error).;

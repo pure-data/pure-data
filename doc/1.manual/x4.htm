@@ -319,26 +319,16 @@ or ~/pd-externals (deprecated but still usable).
 <p>Since version 0.47-0, Pd Vanilla has its own external manager! This is a
 built in .tcl plug-in named "deken" (check <a href="https://github.com/pure-data/deken"> https://github.com/pure-data/deken </a>
 for reference).  Open it by selecting the <b>Help => Find externals</b> tab. Then you
-can type the library’s name you’re looking for and hit ‘enter’ or click ‘search’.
-You can also look for an external name and the library that contains it might
-be shown. All available versions of the library specific for your operating
-system will be shown to you. See figure below.
+can type and search for object name, library name or both. The wildcard '*' can be used
+to broaden the search, or an exact name can be used instead. All available versions of
+the library/external specific for your operating system will be shown to you. See figure below.
 
 
-
-
-
-
-
-
-
-
-
-<p><img src=fig4.4.png >
+<p><img src=deken.gif >
 
 <br>
 
-<p>When you click on the version you want, by default Pd downloads it to
+<p>When you double-click on the version you want, by default Pd downloads it to
 "~/Documents/Pd/externals".
 <br>
 <br>
@@ -427,7 +417,7 @@ work for that abstraction and not the parent patch. Hence, [declare] allows a mu
 better control and management of paths. But you may want to permanently add a path
 in your own system if you know exactly what you have and what you need.
 
-<p>We’ve seen that even if you have a folder into “~/Documents/Pd/externals” you
+<p>We’ve seen that even if you have a folder in “~/Documents/Pd/externals” you
 still need to tell Pd to look for it. You can manually add a User Added Paths in
 Preferences => Path by clicking “New”.
 
@@ -494,7 +484,7 @@ and find it! Here’s an example:
 user added paths? This can be an option that some people may prefer for the simple fact that
 it's just clearer from which library folder we're loading the external. But there are some rare
 cases where this is the only way to guarantee you have loaded the correct external, which is a
-problem when you have too many libraries in your system and using more than one that has an external
+problem when you have too many libraries in your system and are using more than one that has an external
 with the same name. Hence, some external libraries like 'Cyclone' and 'ELSE' use this in the
 documentation of the help files to make sure you load the correct external.
 
@@ -513,7 +503,7 @@ declarations when you run into this rare issue.
 once they get loaded, all of its external objects are now part of Pd and have a priority in the search.
 Here's an example, the 'ceammc' library is a single binary pack and it included an object called [xfade~].
 The ELSE library has separate binaries for each object and also has one called [xfade~]. If you're using both
-libraries, ceammc's [xfade~] object will have priority and it deosn't help you to have [declare -path else].
+libraries, ceammc's [xfade~] object will have priority and it doesn't help you to have [declare -path else].
 You can then use [else/xfade~] to specifically call ELSE's [xfade~] instead.
 
 <p>It was mentioned how a library name prefix may also be possible in the context of single binary packs.
@@ -546,7 +536,7 @@ only created in object boxes when you require them.
 it and a native object. They're all seen equally now in Pd. Once a new separate binary or
 single binary pack is loaded, it's there for the duration of your Pd session. This means
 that if you replace the binaries, the objects won't be updated even if you recreate them.
-You can also even delete the binary as Pd now carried it for good. Hence, if you're working
+You can also even delete the binary as Pd now carries it for good. Hence, if you're working
 on the development of an object's binary and decide to change it, you have to exit and re-enter
 Pd to get the change to take.
 
@@ -564,12 +554,12 @@ the same name. If you first load cyclone's binary and zexy's later, zexy's objec
 with the same name (such as [>~]) will override and prevail.
 
 <p>And here's an interesting feature, you can also override internal Pd Vanilla
-objects with externals! Say you have an external called [phasor~]. It it's a
+objects with externals! Say you have an external called [phasor~]. If it's a
 single binary, you can force Pd to find it with slash declarations. Otherwise, if
 it's a binary pack, you can load as any other library and if it has objects with the
 same name as vanilla's internals, they get overridden! But Pd still keeps a copy of
 the old one and renames it by appending "_aliased", so you can still load the old
-"phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably don't want to mess overriding
+"phasor~", for instance, as <b>[phasor~_aliased]</b>. You probably don't want to mess with overriding
 internals, but it makes sense if you provide new versions with more features but fully
 backwards compatible.
 
@@ -590,7 +580,7 @@ right.
 <p><b>Third</b> is time to search the path relative to the patch.
 
 <p><b>Fourth</b> it goes to the user added paths, defined at "Preferences => Path". An order
-is also respeccted, from top to bottom.
+is also respected, from top to bottom.
 
 <p><b>Fifth</b> and last, it searches the "standard paths", which includes the 'extra' library
 provided by the Pd Vanilla distribution. Note you can use [declare -stdpath ./] to force

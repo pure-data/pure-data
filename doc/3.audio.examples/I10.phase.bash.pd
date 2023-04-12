@@ -1,4 +1,4 @@
-#N canvas 564 26 802 585 12;
+#N canvas 479 32 802 585 12;
 #X declare -stdpath ./;
 #X floatatom 468 293 4 0 0 0 - - - 0;
 #N canvas 575 55 791 659 fft 0;
@@ -98,7 +98,7 @@
 #X connect 33 0 27 0;
 #X connect 34 0 35 0;
 #X connect 35 0 29 0;
-#X restore 99 454 pd fft;
+#X restore 99 461 pd fft;
 #X floatatom 641 353 3 0 120 0 - pitch-set - 0;
 #X floatatom 638 296 4 0 0 0 - specshift-set - 0;
 #X obj 638 319 s specshift;
@@ -168,8 +168,8 @@
 #X connect 21 0 20 0;
 #X connect 24 0 5 0;
 #X connect 24 1 6 0;
-#X restore 99 426 pd test-signal;
-#N canvas 0 110 565 454 hann-window 0;
+#X restore 99 433 pd test-signal;
+#N canvas 248 155 565 454 hann-window 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
 #X coords 0 1 1023 0 300 100 1;
@@ -193,9 +193,7 @@
 #X obj 330 105 r window-hz;
 #X msg 382 130 0;
 #X obj 330 131 t f b;
-#X text 15 8 calculate Hann window table (variable window size) and
-constants window-hz (fundamental frequency of analysis) \, window-sec
-and window-msec (analysis window size in seconds and msec).;
+#X text 15 8 calculate Hann window table (variable window size) and constants window-hz (fundamental frequency of analysis) \, window-sec and window-msec (analysis window size in seconds and msec).;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -224,7 +222,7 @@ and window-msec (analysis window size in seconds and msec).;
 #X msg 91 278 2048;
 #X obj 79 325 s window-size;
 #X msg 96 300 4096;
-#N canvas 653 60 717 500 insample 0;
+#N canvas 649 60 717 500 insample 0;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-sample 62079 float 0;
 #X coords 0 1 62078 -1 400 150 1;
@@ -276,17 +274,11 @@ and window-msec (analysis window size in seconds and msec).;
 #X restore 272 436 pd insample;
 #X text 108 366 ---analyze---;
 #X text 92 385 sample;
-#X obj 138 486 tabwrite~ \$0-nophase;
-#X obj 41 497 output~;
+#X obj 138 493 tabwrite~ \$0-nophase;
+#X obj 41 504 output~;
 #X msg 476 341 0 \, 400 4000;
 #X msg 481 368 0 \, 400 10000;
-#X text 55 55 This patch takes an incoming sound \, does an overlap-2
-FFT analysis of it \, and bashes the phases of the spectra so that
-when regenerated the components will all have zero phase at the middle
-of each window. You can use the windows as waveforms and cross-fade
-them at will without getting phase modulation. This might be useful
-for making synthetic instruments that mimic the spectral variation
-of recorded sounds., f 46;
+#X text 55 55 This patch takes an incoming sound \, does an overlap-2 FFT analysis of it \, and bashes the phases of the spectra so that when regenerated the components will all have zero phase at the middle of each window. You can use the windows as waveforms and cross-fade them at will without getting phase modulation. This might be useful for making synthetic instruments that mimic the spectral variation of recorded sounds., f 46;
 #X text 459 271 (hundredths of sec);
 #X text 462 255 location in sample;
 #X text 563 334 normal speed, f 6;
@@ -394,10 +386,8 @@ of recorded sounds., f 46;
 #X obj 658 159 s specshift-set;
 #X obj 784 159 s pitch-set;
 #X text 117 28 OVERLAPPED \, WINDOWED SAMPLE PLAYBACK;
-#X text 655 70 - with controls for pitch \, location \, and spectral
-shift, f 28;
-#X text 682 218 analysis overlap was 2 so our block size is (window
-size)/2, f 20;
+#X text 655 70 - with controls for pitch \, location \, and spectral shift, f 28;
+#X text 682 218 analysis overlap was 2 so our block size is (window size)/2, f 20;
 #X obj 272 102 unpack float float;
 #X text 32 759 window shaped by raised cos, f 13;
 #X text 19 574 offset into ==> sample, f 9;
@@ -519,12 +509,7 @@ size)/2, f 20;
 #X text 618 272 (hundredths of;
 #X text 681 289 octave);
 #X text 181 384 live;
-#X text 400 58 You can save the analyses and needn't be running the
-FFT patch to do the resynthesis. You can read a sample \, select window
-size \, and press "sample" to analyze it \, or else analyze a "live"
-input. You'll hear the phase-bashed sample as the analysis runs. You
-can regenerate the sound with specified pitch \, sample location \,
-and spectral shift \, using the "playback" controls., f 44;
+#X text 400 58 You can save the analyses and needn't be running the FFT patch to do the resynthesis. You can read a sample \, select window size \, and press "sample" to analyze it \, or else analyze a "live" input. You'll hear the phase-bashed sample as the analysis runs. You can regenerate the sound with specified pitch \, sample location \, and spectral shift \, using the "playback" controls., f 44;
 #X text 137 242 analysis;
 #X text 134 228 (redo;
 #X text 137 258 after;
@@ -532,12 +517,10 @@ and spectral shift \, using the "playback" controls., f 44;
 #X text 138 289 window;
 #X text 139 303 size);
 #X obj 578 17 declare -stdpath ./;
-#X obj 194 404 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X obj 99 403 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
 #X obj 468 316 pack f 100;
-#X connect 0 0 52 0;
+#X obj 194 404 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 99 403 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X connect 0 0 50 0;
 #X connect 1 0 27 0;
 #X connect 1 0 28 0;
 #X connect 1 0 28 1;
@@ -556,6 +539,6 @@ and spectral shift \, using the "playback" controls., f 44;
 #X connect 30 0 5 0;
 #X connect 37 0 7 0;
 #X connect 37 0 7 1;
-#X connect 50 0 17 1;
-#X connect 51 0 17 0;
-#X connect 52 0 5 0;
+#X connect 50 0 5 0;
+#X connect 51 0 17 1;
+#X connect 52 0 17 0;

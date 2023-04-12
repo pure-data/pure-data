@@ -522,7 +522,10 @@ void sys_get_audio_devs(char *indevlist, int *nindevs,
     {
         pa_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
-        *cancallback = 1;
+        /* portaudio officially allows callbacks but it hangs Pd on MacOS
+        and perhaps on other platforms too - this would potentially reduce
+        latency but doesn't appear to be worth the danger. */
+        *cancallback = 0;
     }
     else
 #endif

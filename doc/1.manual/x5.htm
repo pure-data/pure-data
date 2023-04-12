@@ -30,14 +30,28 @@
 
 <H3> <A id="s1"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.53-1 ------------------------------
+
+<P> Bug fixes, mostly from Iohannes concerning iemguis regression bugs because of
+the cleanup/rewrite for 0.53. Also more documentation updates by Alexandre Porres.
+
 <P> ------------------ 0.53-0 ------------------------------
 
 <P> This is being released quickly to fix a bug in version 0.52, in which
-soundfile reading was disrupted.  There are some internal updates serious enough
-to warrant a version number change but they don't add any new features yet.
+soundfile reading was disrupted. There are some internal updates serious enough
+to warrant a version number change, such as the unification of horizontal and
+vertical sliders/radio buttons and the fact you can now change their orientation
+via a new 'orientation' message, but no new features other than that.
 
-<P> Also, there are many minor bug fixes (thanks to several developers)
+<P> The IEMGUI default sizes increased, as part of an ongoing cleanup/rewrite.
+
+<P> As usual, there are many minor bug fixes (thanks to several developers)
 and updates to documentation by Alexandre Porres.
+
+<P> The 'deken' plugin (external extension search tool) has been updated to a
+new version.
+
+<P> Many updated string translations.
 
 <P> ------------------ 0.52-2 ------------------------------
 
@@ -48,7 +62,7 @@ upward to the jack blocksize if needed (to prevent a hang).
 
 <p> Reverted behavior when selecting and dragging a single text box, so that
 it now activates the text as traditional until 0.51.  Sometimes one behavior is
-wanted, sometines the other, so there should be an easy-to-understand way for
+wanted, sometimes the other, so there should be an easy-to-understand way for
 users to control this.  At the moment you can rectangle-select an object to
 displace it without selecting the text, which is perhaps adequate, perhaps not.
 
@@ -145,7 +159,7 @@ The pd~ source is also now updated to work (again) in Max/MSP, on Mac or PC.
 rates.  You can still run Pd at 3.14159 Hz if you want to but you'll have to
 type that one in.
 
-<P> On Macintosh tcl/tk is updgraded to 8.6.10 (should work on MacOS from
+<P> On Macintosh tcl/tk is upgraded to 8.6.10 (should work on MacOS from
 10.6 to 11.0 aka "Bug Sur").
 
 <P> You can send "pd fast-forward <msecs>" to make Pd run its scheduler at full

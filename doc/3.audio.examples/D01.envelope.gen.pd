@@ -12,28 +12,17 @@
 #X obj 101 433 -~ 0.5;
 #X msg 138 355 10 200;
 #X obj 203 355 del 200;
-#X text 49 46 This patch uses an envelope generator to control a sound.
-When you hit "attack" two things happen. First \, the line~ object
-rises to 10 in 200 milliseconds. Then after a "delay" of the same 200
-msec \, the second message sends the line~ back down to 1 over another
-2500 msec. The "release" just ramps us down to zero at the end.;
+#X text 49 46 This patch uses an envelope generator to control a sound. When you hit "attack" two things happen. First \, the line~ object rises to 10 in 200 milliseconds. Then after a "delay" of the same 200 msec \, the second message sends the line~ back down to 1 over another 2500 msec. The "release" just ramps us down to zero at the end.;
 #X obj 171 586 output~;
 #X text 295 637 updated for Pd version 0.37;
 #X obj 186 498 +~ 0.5;
 #X obj 186 552 hip~ 5;
 #X msg 213 330 stop;
-#X text 48 143 You can hit the "attack" and/or "release" while something
-is still going on from a previous attack or release \, and the envelope
-generator does the "right thing". In particular \, the release button
-sends a "stop" to the "del" object \, in case it is still scheduled
-to go off from a previous attack.;
-#X text 50 227 The synthesis method is a form of waveshaping \, which
-is the subject of a later chapter.;
+#X text 48 143 You can hit the "attack" and/or "release" while something is still going on from a previous attack or release \, and the envelope generator does the "right thing". In particular \, the release button sends a "stop" to the "del" object \, in case it is still scheduled to go off from a previous attack.;
+#X text 50 227 The synthesis method is a form of waveshaping \, which is the subject of a later chapter.;
 #X obj 393 14 declare -stdpath ./;
-#X obj 203 298 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
-#X obj 274 299 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 203 298 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 274 299 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X connect 2 0 6 1;
 #X connect 3 0 2 0;
 #X connect 5 0 9 0;

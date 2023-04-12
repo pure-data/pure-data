@@ -33,17 +33,21 @@ proc ::pd_bindings::bind_capslock {tag seq_prefix seq_nocase script} {
 proc ::pd_bindings::class_bindings {} {
     # and the Pd window is in a class to itself
     bind PdWindow <FocusIn>           "::pd_bindings::window_focusin %W"
+    bind PdWindow <Destroy>           "::pd_bindings::window_destroy %W"
     # bind to all the windows dedicated to patch canvases
     bind PatchWindow <FocusIn>        "::pd_bindings::window_focusin %W"
     bind PatchWindow <Map>            "::pd_bindings::patch_map %W"
     bind PatchWindow <Unmap>          "::pd_bindings::patch_unmap %W"
     bind PatchWindow <Configure>      "::pd_bindings::patch_configure %W %w %h %x %y"
+    bind PatchWindow <Destroy>        "::pd_bindings::window_destroy %W"
     # dialog panel windows bindings, which behave differently than PatchWindows
     bind DialogWindow <Configure>     "::pd_bindings::dialog_configure %W"
     bind DialogWindow <FocusIn>       "::pd_bindings::dialog_focusin %W"
+    bind DialogWindow <Destroy>       "::pd_bindings::window_destroy %W"
     # help browser bindings
     bind HelpBrowser <Configure>      "::pd_bindings::dialog_configure %W"
     bind HelpBrowser <FocusIn>        "::pd_bindings::dialog_focusin %W"
+    bind HelpBrowser <Destroy>        "::pd_bindings::window_destroy %W"
 }
 
 proc ::pd_bindings::global_bindings {} {
@@ -380,6 +384,20 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
     ::pd_menus::configure_for_dialog $mytoplevel
     if {$mytoplevel eq ".find"} {::dialog_find::focus_find}
 }
+
+proc ::pd_bindings::window_destroy {winid} {
+    # make sure that ::focused_window does not refer to a non-existing window
+    if {$winid eq $::focused_window} {
+        set ::focused_window [wm transient $winid]
+    }
+    if {![winfo exists $::focused_window]} {
+        set ::focused_window [focus]
+        if {$::focused_window ne ""} {
+            set ::focused_window [winfo toplevel $::focused_window]
+        }
+    }
+}
+
 
 # (Shift-)Tab for cycling through selection
 proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift {keycode ""}} {

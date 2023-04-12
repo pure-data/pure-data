@@ -26,6 +26,7 @@ cd pd-$pdversion
 (cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
     rm -rf __MACOSX/; mv ASIOSDK2.3 ASIOSDK)
 
+
 #do an autotools build
 ./autogen.sh
 ./configure --host=x86_64-w64-mingw32 --with-wish=wish86.exe \

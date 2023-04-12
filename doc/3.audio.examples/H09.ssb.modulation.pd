@@ -45,15 +45,14 @@
 #N canvas 711 110 350 449 startup 0;
 #X obj 60 327 r readfile;
 #X obj 60 380 soundfiler;
-#X obj 55 25 loadbang;
-#X obj 55 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 55 15 loadbang;
+#X obj 55 41 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 55 72 f \$0;
 #X obj 95 238 /;
 #X msg 67 212 44100;
 #X obj 67 187 t b f, f 7;
 #X obj 67 163 r \$0-totsamps;
-#X obj 95 261 s \$0-loopf;
+#X obj 95 266 s \$0-loopf;
 #X msg 60 353 read -resize ../sound/bell.aiff \$1;
 #X msg 55 104 \; readfile symbol \$1-array \; \$1-totsamps 143718;
 #X connect 0 0 10 0;
@@ -74,21 +73,12 @@
 #X text 358 381 to form the real and;
 #X text 358 397 imaginary part of a;
 #X text 358 414 complex sinusoid;
-#X text 49 52 The signal sideband modulator gives you only one sideband
-for each frequency in the input signal (whereas ring modulation gave
-both a positive and negative sideband). You can set the shift frequency
-positive to shift all frequencies upward \, or negative to shift them
-downwards., f 60;
-#X text 48 132 The technique is to filter the input into two versions
-\, 90 degrees out of phase \, which can be interpreted as the real
-and imaginary part of a complex signal with positive frequencies only.
-You can then form the (complex) product of this with a (complex) sinusoid
-to modulate upward or downward in frequency.;
+#X text 49 52 The signal sideband modulator gives you only one sideband for each frequency in the input signal (whereas ring modulation gave both a positive and negative sideband). You can set the shift frequency positive to shift all frequencies upward \, or negative to shift them downwards., f 60;
+#X text 48 132 The technique is to filter the input into two versions \, 90 degrees out of phase \, which can be interpreted as the real and imaginary part of a complex signal with positive frequencies only. You can then form the (complex) product of this with a (complex) sinusoid to modulate upward or downward in frequency.;
 #X obj 172 392 hilbert~;
 #X text 272 457 <= complex multiplier;
 #X text 291 330 <= shift frequency;
-#X text 49 228 The "hilbert~" object is an abstraction in pd/extra.
-;
+#X text 49 228 The "hilbert~" object is an abstraction in pd/extra.;
 #X obj 396 19 declare -stdpath ./;
 #X connect 0 0 3 1;
 #X connect 1 0 2 0;

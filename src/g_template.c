@@ -1198,11 +1198,11 @@ static int rangecolor(int n)    /* 0 to 9 in 5 steps */
 
 static int numbertocolor(int n)
 {
-    int red, blue, green, color = 0;
+    int red, green, blue, color = 0;
     if (n < 0) n = 0;
     red = n / 100;
-    blue = ((n / 10) % 10);
     green = n % 10;
+    blue = ((n / 10) % 10);
     color |= rangecolor(red)   << 16;
     color |= rangecolor(blue)  <<  8;
     color |= rangecolor(green) <<  0;
@@ -1221,8 +1221,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag0, "curve%lx", x);
-    sprintf(tag , "curve%lx_data%lx", x, data);
+    sprintf(tag0, "curve%p", x);
+    sprintf(tag , "curve%p_data%p", x, data);
     if (vis)
     {
         if (n > 1)
@@ -1498,6 +1498,11 @@ static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             fielddesc_setfloatarg(&x->x_edit, 1, argv+1);
             argc -= 2; argv += 2;
+        }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
         }
         else if (*firstarg->s_name == '-')
         {
@@ -1803,9 +1808,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
-    sprintf(tag , "plot%lx", data);
+    sprintf(tag , "plot%p", data);
         /* a tag that uniquely identifies the sub-plot */
-    sprintf(tag0, "plot%lx_array%lx_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
+    sprintf(tag0, "plot%p_array%p_onset%+d%+d%+d", data, elem, wonset, xonset, yonset);
 
     if (glist->gl_isgraph)
         linewidth *= glist_getzoom(glist);
@@ -2550,6 +2555,17 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+            argc--; argv++;
+        }
+        else if (*firstarg->s_name == '-')
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                firstarg->s_name);
+            argc--; argv++;
+        }
         else break;
     }
         /* next argument is name of field to draw - we don't know its type yet
@@ -2562,7 +2578,7 @@ static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
     if (argc) fielddesc_setfloatarg(&x->x_yloc, argc--, argv++);
     else fielddesc_setfloat_const(&x->x_yloc, 0);
     if (argc) fielddesc_setfloatarg(&x->x_color, argc--, argv++);
-    else fielddesc_setfloat_const(&x->x_color, 1);
+    else fielddesc_setfloat_const(&x->x_color, 0);
     if (argc)
         x->x_label = atom_getsymbolarg(0, argc, argv);
     else x->x_label = &s_;
@@ -2720,7 +2736,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         /* see comment in plot_vis() */
     if (vis && !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return;
-    sprintf(tag, "drawnumber%lx", data);
+    sprintf(tag, "drawnumber%p", data);
     if (vis)
     {
         t_atom fontatoms[3];

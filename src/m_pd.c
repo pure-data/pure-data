@@ -164,20 +164,25 @@ void pd_unbind(t_pd *x, t_symbol *s)
         if ((e = b->b_list)->e_who == x)
         {
             b->b_list = e->e_next;
+            e->e_who = 0; e->e_next = 0;
             freebytes(e, sizeof(t_bindelem));
         }
         else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
             e->e_next = e2->e_next;
+            e2->e_who = 0; e2->e_next = 0;
             freebytes(e2, sizeof(t_bindelem));
             break;
         }
         if (!b->b_list->e_next)
         {
+
             s->s_thing = b->b_list->e_who;
             freebytes(b->b_list, sizeof(t_bindelem));
+            b->b_list = 0;
             pd_free(&b->b_pd);
+            b = 0;
         }
     }
     else pd_error(x, "%s: couldn't unbind", s->s_name);

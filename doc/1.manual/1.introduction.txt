@@ -15,5 +15,8 @@ or online:
 Information of all sorts (guides, development, meetings, more documentation, etc):
     http://puredata.info
 
+Code repository:
+    https://github.com/pure-data/pure-data
+
 The Pd mailing list archive lives in:
     https://lists.puredata.info/pipermail/pd-list

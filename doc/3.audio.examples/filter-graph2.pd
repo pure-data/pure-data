@@ -11,7 +11,7 @@
 #X obj 101 483 t b f b;
 #X obj 517 556 symbol \$2;
 #X obj 591 556 symbol;
-#X obj 517 526 t b b, f 7;
+#X obj 559 525 t b b;
 #X msg 517 611 0;
 #X msg 591 611 1;
 #X obj 517 583 sel symbol, f 11;
@@ -49,10 +49,7 @@
 #X text 646 563 is specified for phase;
 #X text 646 579 (don't compute it if;
 #X text 647 594 not.);
-#X text 53 30 filter-graph2: measures frequency and phase response
-of a filter \, which should be driven by a "filter-graph1" object.
-We need the three outputs of filter-graph1 \, plus the filter output.
-, f 64;
+#X text 53 30 filter-graph2: measures frequency and phase response of a filter \, which should be driven by a "filter-graph1" object. We need the three outputs of filter-graph1 \, plus the filter output., f 64;
 #X text 518 99 1: table name for frequency response;
 #X text 597 78 creation arguments:;
 #X text 518 115 2 (optional): table name for phase response;

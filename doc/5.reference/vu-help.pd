@@ -17,7 +17,7 @@
 #X text 29 459 see also:;
 #X text 238 311 This object is part of the "iemguis" library \, natively included in Pd version 0.34., f 28;
 #X text 249 483 updated for Pd version 0.51;
-#N canvas 689 106 613 643 position 0;
+#N canvas 689 103 613 643 position 0;
 #X floatatom 142 132 4 0 1000 0 - - - 0;
 #X obj 191 159 t b f;
 #X floatatom 191 132 5 0 500 0 - - - 0;
@@ -55,7 +55,7 @@
 #X connect 21 0 3 0;
 #X restore 334 266 pd position;
 #N canvas 431 187 353 319 properties 0;
-#N canvas 790 40 601 669 colors 0;
+#N canvas 765 40 601 669 colors 0;
 #X floatatom 83 261 3 0 29 0 - - - 0;
 #X floatatom 132 261 3 0 29 0 - - - 0;
 #X text 125 241 label;
@@ -296,7 +296,7 @@
 #X text 215 190 height;
 #X obj 130 335 vu 20 120 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X text 77 190 width;
-#X obj 171 128 hradio 15 1 0 4 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
+#X obj 171 128 hradio 19 1 0 4 empty empty empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
 #X obj 171 156 expr ($f1+2) * 40;
 #X text 44 40 The size message sets the object's size and takes width and height values (in number of pixels). The height value should be a multiple of 40 \, otherwise it gets truncated to a smaller value., f 51;
 #X obj 129 247 pack 20 120;
@@ -310,7 +310,7 @@
 #X connect 10 0 3 0;
 #X restore 175 77 pd size;
 #X text 39 17 All the parameters from the properties window can be set via messages as well. See examples in the subpatches below:, f 39;
-#N canvas 822 61 568 534 font/label 0;
+#N canvas 764 71 568 534 font/label 0;
 #X msg 94 293 label \$1;
 #X floatatom 241 175 4 0 3 0 - - - 0;
 #X obj 283 202 t b f;
@@ -318,10 +318,10 @@
 #X msg 241 272 label_font \$1 \$2;
 #X text 203 174 type;
 #X text 327 173 size;
-#X obj 241 112 vradio 15 1 0 3 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
-#X text 262 111 DejaVu Sans Mono;
-#X text 262 127 Helvetica;
-#X text 262 142 Times;
+#X obj 241 102 vradio 19 1 0 3 empty empty empty 0 -8 0 10 #dfdfdf #000000 #000000 0;
+#X text 262 101 DejaVu Sans Mono;
+#X text 262 121 Helvetica;
+#X text 262 141 Times;
 #X msg 106 261 symbol empty;
 #X floatatom 395 191 4 -200 100 0 - - - 0;
 #X obj 437 218 t b f;
@@ -383,7 +383,7 @@
 #N canvas 847 149 498 291 scale 0;
 #X obj 57 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0;
 #X msg 56 55 scale \$1;
-#X obj 56 18 tgl 18 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000 0 1;
+#X obj 56 18 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X obj 147 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 0 0;
 #X obj 164 102 vu 15 160 empty empty -1 -8 0 12 #404040 #000000 1 0;
 #X text 156 23 The 'scale' message toggles the dB-scale label on or off (on by default)., f 40;
@@ -432,7 +432,7 @@
 #X connect 18 0 6 0;
 #X connect 18 1 2 0;
 #X restore 229 237 pd vu;
-#X obj 128 162 tgl 18 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000 0 1;
+#X obj 128 162 tgl 19 0 empty empty empty 17 7 0 10 #dcdcdc #000000 #000000 0 1;
 #X floatatom 261 463 8 0 0 0 - - - 0;
 #X floatatom 251 492 8 0 0 0 - - - 0;
 #X text 323 463 Peak;

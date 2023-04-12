@@ -9,9 +9,8 @@
 #X obj 208 346 +~ 0.25;
 #X obj 112 570 snapshot~;
 #N canvas 536 459 382 265 startup 0;
-#X obj 22 24 loadbang;
-#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 22 14 loadbang;
+#X obj 22 38 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 22 67 f \$0;
 #X text 35 195 This subpatch loads initial;
 #X text 37 211 values in number boxes.;
@@ -39,16 +38,8 @@
 #X floatatom 112 662 5 0 0 0 - - - 0;
 #X text 37 259 signal to;
 #X text 51 273 analyze;
-#X text 36 47 Another method for picking out the strengths of partials
-in a sound is heterodyning. We guess the frequency of a partial (as
-in the previous patch) but this time we multiply by a complex exponential
-to frequency-shift the partial down to zero (DC).;
-#X text 32 129 Then a low-pass filter (applied separately on the real
-and imaginary parts) removes all but the DC component thus obtained.
-The result is two audio signals (which we take snapshots of) holding
-the real and imaginary parts of the complex amplitude of the partial
-we want. Compared to the previous method \, this had the advantage
-of reporting the phase of the partial as well as its frequency.;
+#X text 36 47 Another method for picking out the strengths of partials in a sound is heterodyning. We guess the frequency of a partial (as in the previous patch) but this time we multiply by a complex exponential to frequency-shift the partial down to zero (DC).;
+#X text 32 129 Then a low-pass filter (applied separately on the real and imaginary parts) removes all but the DC component thus obtained. The result is two audio signals (which we take snapshots of) holding the real and imaginary parts of the complex amplitude of the partial we want. Compared to the previous method \, this had the advantage of reporting the phase of the partial as well as its frequency.;
 #X text 272 335 modulate;
 #X text 269 371 to DC;
 #X text 268 353 test frequency;
@@ -61,8 +52,7 @@ of reporting the phase of the partial as well as its frequency.;
 #X text 208 294 <= test frequency;
 #X text 211 442 <= responsiveness;
 #X msg 378 289 \; pd dsp \$1;
-#X obj 378 263 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000 0 1;
+#X obj 378 263 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
 #X connect 2 0 10 0;
 #X connect 2 0 11 0;
 #X connect 3 0 5 0;

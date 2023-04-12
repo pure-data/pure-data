@@ -2,10 +2,7 @@
 #X declare -stdpath ./;
 #X floatatom 296 312 4 0 100 0 - - - 0;
 #X obj 74 471 +~;
-#X text 45 51 If you're writing to and reading from a delay line \,
-you have to get the write sorted before the read or else you'll never
-get less than a block's delay. This patch compares a "wrong" flanger
-with a "right" one:, f 64;
+#X text 45 51 If you're writing to and reading from a delay line \, you have to get the write sorted before the read or else you'll never get less than a block's delay. This patch compares a "wrong" flanger with a "right" one:, f 64;
 #X obj 109 557 *~;
 #X obj 109 523 -~;
 #N canvas 352 175 330 235 delay-writer 0;
@@ -29,8 +26,7 @@ with a "right" one:, f 64;
 #X obj 74 557 +~;
 #X obj 296 339 / 44.1;
 #X obj 74 601 output~;
-#X obj 147 522 tgl 17 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000 0 1;
+#X obj 147 522 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 296 365 pack 0 30;
 #N canvas 521 164 217 214 pulse 0;
 #X obj 52 148 outlet~;
@@ -45,25 +41,15 @@ with a "right" one:, f 64;
 #X restore 73 304 pd pulse;
 #X obj 114 354 delwrite~ G05-d1 1000;
 #X obj 296 391 line~;
-#X text 45 187 To hear the difference scroll the delay time between
-0 and 100 samples. The patch at left doesn't let you get below 64 samples
-\, but the patch at right can go all the way down to one sample.,
-f 64;
+#X text 45 187 To hear the difference scroll the delay time between 0 and 100 samples. The patch at left doesn't let you get below 64 samples \, but the patch at right can go all the way down to one sample., f 64;
 #X text 336 312 <= delay in samples;
-#X text 171 520 <= off to hear left-hand side \; on to hear right hand
-side.;
+#X text 171 520 <= off to hear left-hand side \; on to hear right hand side.;
 #X obj 295 584 declare -stdpath ./;
-#X text 54 19 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~
-;
+#X text 54 19 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/DELREAD4~;
 #X obj 296 428 delread4~ G05-d1;
-#X text 45 118 To get them to go off in the correct order \, put the
-[delread~] and [delread4~] objects in subpatches. The audio connections
-between the subpatches force the "reader" to be sorted after the "writer".
-DSP sorting in Pd follows the hierarchy of subpatches., f 64;
+#X text 45 118 To get them to go off in the correct order \, put the [delread~] and [delread4~] objects in subpatches. The audio connections between the subpatches force the "reader" to be sorted after the "writer". DSP sorting in Pd follows the hierarchy of subpatches., f 64;
 #X text 263 629 updated for Pd version 0.52;
-#X text 45 238 You can use the same strategy to avoid picking up unwanted
-64-sample delays in [send~]/[receive~] and [throw~]/[catch~] pairs.
-, f 64;
+#X text 45 238 You can use the same strategy to avoid picking up unwanted 64-sample delays in [send~]/[receive~] and [throw~]/[catch~] pairs., f 64;
 #X connect 0 0 8 0;
 #X connect 1 0 4 1;
 #X connect 1 0 7 0;

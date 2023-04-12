@@ -187,7 +187,7 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     {
         /* the "symto" field is undefined for signal inlets, so we don't
          attempt to translate the selector, just forward the original msg. */
-        
+
         if (x->i_symfrom == &s_signal)
             typedmess(x->i_dest, s, argc, argv);
         else
@@ -363,7 +363,7 @@ void outlet_setstacklim(void)
 {
     t_msgstack *m;
     while ((m = backtracer_stack))
-        backtracer_stack = m->m_next; t_freebytes(m, sizeof (*m));
+        backtracer_stack = m->m_next, t_freebytes(m, sizeof (*m));
     stackcount = 0;
     outlet_eventno++;
 }
@@ -900,14 +900,22 @@ int obj_issignaloutlet(const t_object *x, int m)
     return (o2 && (o2->o_sym == &s_signal));
 }
 
+    /* return a pointer to a scalar holding the inlet's value.  If we
+    can't find a value, return a pointer to a fixed location holding zero.
+    This should only happen for a left-hand signal inlet for which no
+    "MAINSIGNALIN" has been provided, in which case the object won't
+    promote scalars correctly.  Nonetheless we provide it so that at least
+    such a badly written object won't crash Pd. */
 t_float *obj_findsignalscalar(const t_object *x, int m)
 {
     t_inlet *i;
+    static float obj_scalarzero = 0;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)
             return (x->ob_pd->c_floatsignalin > 0 ?
-                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
+                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) :
+                    &obj_scalarzero);
     }
     for (i = x->ob_inlet; i; i = i->i_next)
         if (i->i_symfrom == &s_signal)
@@ -915,7 +923,7 @@ t_float *obj_findsignalscalar(const t_object *x, int m)
         if (m-- == 0)
             return (&i->i_un.iu_floatsignalvalue);
     }
-    return (0);
+    return (&obj_scalarzero);   /* this should never happen but OK wtf. */
 }
 
 /* and these are only used in g_io.c... */

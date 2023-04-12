@@ -351,100 +351,81 @@
 #X obj 664 101 r start;
 #X obj 664 169 pointer;
 #X msg 98 31 \; pd-output clear;
-#X obj 57 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 208 170 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 362 171 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 208 128 r add-pts1;
-#X obj 52 278 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 187 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 323 280 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 57 163 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 208 121 r add-pts1;
 #X obj 187 230 r add-pts1;
 #X obj 57 190 beat-maker 3 2 600;
 #X obj 208 189 beat-maker 5 2 570;
 #X obj 362 190 beat-maker 7 2 540;
-#X obj 463 279 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 602 277 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 56 363 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 191 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 328 365 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 191 335 r add-pts1;
-#X obj 52 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 197 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 334 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 191 340 r add-pts1;
 #X obj 197 447 r add-pts1;
-#X obj 472 495 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 53 301 beat-maker 2 3 480;
-#X obj 323 301 beat-maker 5 3 420;
-#X obj 463 301 beat-maker 7 3 390;
-#X obj 602 301 beat-maker 8 3 360;
-#X obj 55 387 beat-maker 3 4 300;
-#X obj 191 388 beat-maker 5 4 270;
-#X obj 328 388 beat-maker 7 4 240;
+#X obj 53 306 beat-maker 2 3 480;
+#X obj 323 306 beat-maker 5 3 420;
+#X obj 463 306 beat-maker 7 3 390;
+#X obj 602 306 beat-maker 8 3 360;
+#X obj 55 395 beat-maker 3 4 300;
+#X obj 191 396 beat-maker 5 4 270;
+#X obj 328 396 beat-maker 7 4 240;
 #X obj 52 520 beat-maker 4 5 180;
 #X obj 197 520 beat-maker 6 5 150;
-#X obj 334 520 beat-maker 7 5 120;
-#X obj 472 520 beat-maker 8 5 90;
-#X obj 187 301 beat-maker 4 3 450;
-#X msg 448 31 \; add-rect 40 30 2 580 \; add-rect 140 30 2 580 \; add-rect
-240 30 2 580 \; add-rect 340 30 2 450 \; add-rect 440 30 2 280 \; add-rect
-540 30 2 150 \;;
+#X obj 344 520 beat-maker 7 5 120;
+#X obj 492 520 beat-maker 8 5 90;
+#X obj 187 306 beat-maker 4 3 450;
+#X msg 448 31 \; add-rect 40 30 2 580 \; add-rect 140 30 2 580 \; add-rect 240 30 2 580 \; add-rect 340 30 2 450 \; add-rect 440 30 2 280 \; add-rect 540 30 2 150 \;;
 #X msg 324 31 \; add-pts1 bang \;;
 #X obj 534 159 r add-rect;
 #X obj 534 197 append rect x y w h;
 #X msg 664 134 traverse pd-output \, bang;
 #X msg 226 31 \; start bang;
-#X connect 0 0 41 0;
-#X connect 1 0 40 4;
-#X connect 3 0 11 0;
-#X connect 4 0 12 0;
-#X connect 5 0 13 0;
-#X connect 6 0 3 0;
-#X connect 6 0 4 0;
-#X connect 6 0 5 0;
-#X connect 7 0 25 0;
-#X connect 8 0 36 0;
-#X connect 9 0 26 0;
-#X connect 10 0 7 0;
-#X connect 10 0 8 0;
-#X connect 10 0 9 0;
-#X connect 10 0 14 0;
-#X connect 10 0 15 0;
-#X connect 14 0 27 0;
-#X connect 15 0 28 0;
-#X connect 16 0 29 0;
-#X connect 17 0 30 0;
-#X connect 18 0 31 0;
-#X connect 19 0 16 0;
-#X connect 19 0 17 0;
-#X connect 19 0 18 0;
-#X connect 20 0 32 0;
-#X connect 21 0 33 0;
-#X connect 22 0 34 0;
-#X connect 23 0 20 0;
-#X connect 23 0 21 0;
-#X connect 23 0 22 0;
-#X connect 23 0 24 0;
-#X connect 24 0 35 0;
-#X connect 39 0 40 0;
-#X connect 40 0 1 0;
-#X connect 41 0 1 0;
+#X obj 208 163 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 362 164 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 323 280 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 463 279 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 602 277 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 187 279 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 52 278 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 56 368 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 191 369 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 328 370 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 344 495 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 492 495 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 197 495 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 52 495 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X connect 0 0 27 0;
+#X connect 1 0 26 4;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 4 0 29 0;
+#X connect 4 0 30 0;
+#X connect 5 0 31 0;
+#X connect 5 0 32 0;
+#X connect 5 0 33 0;
+#X connect 5 0 34 0;
+#X connect 5 0 35 0;
+#X connect 9 0 36 0;
+#X connect 9 0 37 0;
+#X connect 9 0 38 0;
+#X connect 10 0 39 0;
+#X connect 10 0 40 0;
+#X connect 10 0 41 0;
+#X connect 10 0 42 0;
+#X connect 25 0 26 0;
+#X connect 26 0 1 0;
+#X connect 27 0 1 0;
+#X connect 29 0 7 0;
+#X connect 30 0 8 0;
+#X connect 31 0 12 0;
+#X connect 32 0 13 0;
+#X connect 33 0 14 0;
+#X connect 34 0 22 0;
+#X connect 35 0 11 0;
+#X connect 36 0 15 0;
+#X connect 37 0 16 0;
+#X connect 38 0 17 0;
+#X connect 39 0 20 0;
+#X connect 40 0 21 0;
+#X connect 41 0 19 0;
+#X connect 42 0 18 0;
 #X restore 115 93 pd generator;
-#X text 41 21 Example: computing and graphing beat patterns. I made
-this to make it easier to practice performing a-in-the-time-of-b time
-divisions., f 46;
+#X text 41 21 Example: computing and graphing beat patterns. I made this to make it easier to practice performing a-in-the-time-of-b time divisions., f 46;
 #X text 174 120 <-- template;

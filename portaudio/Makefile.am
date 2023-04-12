@@ -81,7 +81,6 @@ empty =
 # find portaudio -type file -name *.h | sort | awk '{print "   ", $1, "\\"}'; echo '     $(empty)'
 nobase_noinst_HEADERS = \
     portaudio/include/pa_asio.h \
-    portaudio/include/pa_jack.h \
     portaudio/include/pa_linux_alsa.h \
     portaudio/include/pa_mac_core.h \
     portaudio/include/pa_win_waveformat.h \

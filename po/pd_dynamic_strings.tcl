@@ -7,7 +7,6 @@
 # If these are changed in the src/*.c files, then need to be
 # manually updated here.
 
-puts [_ "Do you want to save the changes you made in '%s'?"]
 puts [_ "Discard changes to '%s'?"]
 
 puts [_ "Undo clear"]
@@ -29,7 +28,8 @@ puts [_ "Redo paste"]
 puts [_ "Redo typing"]
 
 # preferences feedback strings in s_file.c
-
+## these are post()ed, so they aren't really translated...
+## also, the '.pdsettings' is usually replaced with a full path
 puts [_ "no Pd settings to clear"]
 puts [_ "removed .pdsettings file"]
 puts [_ "couldn't delete .pdsettings file"]
@@ -42,7 +42,7 @@ puts [_ "(re-save preferences to reinstate them)"]
 # These are strings which, for some reason or another, are used in the Pd GUI
 # Tcl, but xgettext doesn't find them.
 
-# Menu Titles
+# Menu Titles (pd_menus.tcl)
 puts [_ "File"]
 puts [_ "Edit"]
 puts [_ "Put"]

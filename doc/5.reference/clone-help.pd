@@ -13,106 +13,66 @@
 #X text 531 676 updated for Pd version 0.47;
 #X text 376 512 creation arguments:;
 #X text 49 260 open or close copy number 5:, f 14;
-#X text 332 305 "next" forwards a message to the next instance (incrementing
-and repeating circularly)., f 31;
-#X text 340 364 "this" forwards a message to the previous instance
-sent to by "this" or "next", f 43;
+#X text 332 305 "next" forwards a message to the next instance (incrementing and repeating circularly)., f 31;
+#X text 340 364 "this" forwards a message to the previous instance sent to by "this" or "next", f 43;
 #X text 348 423 "set" sets the "next"/"this" counter, f 38;
 #X text 354 466 "all" broadcasts a message to all instances;
-#X text 379 532 optional "-s #" to set starting voice number \; optional
--x to avoid setting \$1 to voice number \; filename \; number of copies
-\; optional arguments to copies;
-#X text 56 620 note: for backwards compatibility \, you can also invoke
-this as "clone 16 clone-abstraction" (for instance) \, swapping the
-abstraction name and the number of voices., f 90;
+#X text 379 532 optional "-s #" to set starting voice number \; optional -x to avoid setting \$1 to voice number \; filename \; number of copies \; optional arguments to copies;
+#X text 56 620 note: for backwards compatibility \, you can also invoke this as "clone 16 clone-abstraction" (for instance) \, swapping the abstraction name and the number of voices., f 90;
 #X obj 181 550 output~;
 #X obj 30 9 clone;
 #X obj 181 350 pack f f;
 #X listbox 181 378 8 0 0 0 - - - 0;
 #X obj 70 565 declare -stdpath ./, f 11;
-#X obj 6 40 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
-#X obj 6 666 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 6 40 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X obj 6 666 cnv 1 740 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #X obj 210 302 + 1;
-#N canvas 746 101 576 485 reference 0;
-#X obj 8 43 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 8 76 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 8 243 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 461 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
+#N canvas 746 101 606 559 reference 0;
+#X obj 8 43 cnv 5 550 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 8 76 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
+#X obj 8 243 cnv 2 550 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 514 cnv 5 550 5 empty empty empty 8 18 0 13 #202020 #000000 0;
 #X obj 28 13 clone;
-#X obj 8 321 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000
-0;
-#X obj 7 346 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000
-0;
+#X obj 8 321 cnv 2 550 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
+#X obj 7 346 cnv 1 550 1 empty empty flags: 8 12 0 13 #7c7c7c #000000 0;
 #X text 104 84 list -;
 #X text 55 136 next <list> -;
 #X text 55 167 this <list> -;
-#X text 62 199 set <list> - sets the "next"/"this" counter., f 67
-;
+#X text 62 199 set <list> - sets the "next"/"this" counter., f 67;
 #X text 88 248 (depends on the abstraction);
-#X text 40 370 "-s <float>" - sets starting voice number (default 0).
-, f 70;
-#X text 96 353 "-x" - avoids including a first argument setting voice
-number., f 62;
-#X text 113 399 1) symbol - abstraction name., f 49;
-#X text 113 417 2) float - number of copies., f 49;
-#X obj 7 394 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000
-0;
-#X text 113 435 3) list - optional arguments to the abstraction.,
-f 49;
-#X text 153 85 first number sets the copy number and the rest of the
-list is sent to that instance's inlet., f 54;
-#X text 153 135 forwards a message to the next instance's inlet (incrementing
-and repeating circularly)., f 54;
-#X text 153 167 forwards a message to the previous instance's inlet
-sent to by "this" or "next"., f 54;
-#X text 62 217 all <list> - sends a message to all instances' inlet.
-, f 67;
+#X text 40 370 "-s <float>" - sets starting voice number (default 0)., f 70;
+#X text 96 353 "-x" - avoids including a first argument setting voice number., f 62;
+#X text 113 452 1) symbol - abstraction name., f 49;
+#X text 113 470 2) float - number of copies., f 49;
+#X obj 7 447 cnv 1 550 1 empty empty args: 8 12 0 13 #7c7c7c #000000 0;
+#X text 113 488 3) list - optional arguments to the abstraction., f 49;
+#X text 153 85 first number sets the copy number and the rest of the list is sent to that instance's inlet., f 54;
+#X text 153 135 forwards a message to the next instance's inlet (incrementing and repeating circularly)., f 54;
+#X text 153 167 forwards a message to the previous instance's inlet sent to by "this" or "next"., f 54;
+#X text 62 217 all <list> - sends a message to all instances' inlet., f 67;
 #X text 79 52 (number and type depends on the abstraction);
-#X text 71 291 signal outlets - output the sum of all instances' outputs.
-;
+#X text 71 291 signal outlets - output the sum of all instances' outputs.;
 #X text 90 116 signal -;
-#X text 153 117 for signal inlets \, audio is sent to all copies.,
-f 54;
-#X text 64 273 control outlets - output the message with a prepended
-copy number., f 67;
+#X text 153 117 for signal inlets \, audio is sent to all copies., f 54;
+#X text 64 273 control outlets - output the message with a prepended copy number., f 67;
 #X text 75 13 - make multiple copies of an abstraction.;
-#X obj 8 268 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000
-0;
+#X obj 8 268 cnv 1 550 1 empty empty 'n': 8 12 0 13 #9f9f9f #000000 0;
+#X text 103 387 -di - distribute multichannel input signals across cloned patches, f 65;
+#X text 103 402 -do - combine signal outputs to make a multichannel signal;
+#X text 110 418 -d - set both -di and -do flags;
 #X restore 566 9 pd reference;
 #X text 659 9 <= click;
-#X text 229 241 A list beginning with a number dispatches the rest
-of the list as a message to a copy of the abstraction defined by the
-first number., f 68;
+#X text 229 241 A list beginning with a number dispatches the rest of the list as a message to a copy of the abstraction defined by the first number., f 68;
 #X floatatom 269 309 5 36 110 0 - - - 0;
 #X floatatom 277 358 5 36 110 0 - - - 0;
 #X floatatom 288 408 5 0 15 0 - - - 0;
 #X floatatom 297 456 5 36 110 0 - - - 0;
 #X text 49 513 click to open --> (first copy only), f 17;
-#X text 40 173 Control inlets forward messages as shown below. Signal
-inlets can get non float messages with the 'fwd' argument in the same
-way \, but signals are sent to all the instances. Signal outlets output
-the sum of all instances' outputs \, and control outlets forward messages
-with the number of the instance prepended to them., f 95;
+#X text 40 173 Control inlets forward messages as shown below. Signal inlets can get non float messages with the 'fwd' argument in the same way \, but signals are sent to all the instances. Signal outlets output the sum of all instances' outputs \, and control outlets forward messages with the number of the instance prepended to them., f 95;
 #X obj 181 512 clone clone-abstraction 16;
 #X text 78 10 - make multiple copies of an abstraction.;
-#X text 40 49 [clone] creates any number of copies of an abstraction
-(a patch loaded as an object in another patch). By default "\$1" is
-set to the instance number within each copy (counted from 0 unless
-overridden by the "-s" flag. You can prevent '\$1' from reflecting
-the instance number with the "-x" flag. You can pass additional arguments
-to the copies that appear as \$2 and onward (or \$1 and onward with
-the "-x" flag)., f 95;
-#X text 40 125 [clone]'s inlets/outlets correspond to those of the
-contained patch \, and may be signal and/or control inlets/outlets.
-(In this example there's one control inlet and one signal outlet).
-You can click on the clone object to see the first of the created instances.
-, f 95;
+#X text 40 49 [clone] creates any number of copies of an abstraction (a patch loaded as an object in another patch). By default "\$1" is set to the instance number within each copy (counted from 0 unless overridden by the "-s" flag. You can prevent '\$1' from reflecting the instance number with the "-x" flag. You can pass additional arguments to the copies that appear as \$2 and onward (or \$1 and onward with the "-x" flag)., f 95;
+#X text 40 125 [clone]'s inlets/outlets correspond to those of the contained patch \, and may be signal and/or control inlets/outlets. (In this example there's one control inlet and one signal outlet). You can click on the clone object to see the first of the created instances., f 95;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 21 1;

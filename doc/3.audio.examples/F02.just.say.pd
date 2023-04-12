@@ -64,19 +64,13 @@
 #X text 253 197 you can;
 #X text 251 215 adjust these;
 #X text 253 235 values;
-#X text 269 286 We interrupt this series of patches to bring you an
-important message from Nancy Reagan. If \, anywhere \, at any time
-\, someone offers you an illicit drug \, just say one word in reply...
-, f 61;
-#X text 269 354 Now that I'm sure you've heard this important message
-\, we can return to the essentially frivolous occupation of making
-turn-of-the-millennium western art music., f 61;
+#X text 269 286 We interrupt this series of patches to bring you an important message from Nancy Reagan. If \, anywhere \, at any time \, someone offers you an illicit drug \, just say one word in reply..., f 61;
+#X text 269 354 Now that I'm sure you've heard this important message \, we can return to the essentially frivolous occupation of making turn-of-the-millennium western art music., f 61;
 #X obj 134 211 *~ 6;
 #X text 443 439 updated for Pd version 0.34;
 #X obj 116 407 output~;
 #X obj 488 18 declare -stdpath ./;
-#X obj 170 112 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 170 112 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X text 194 112 <-- click to graph;
 #X connect 0 0 5 0;
 #X connect 2 0 3 0;

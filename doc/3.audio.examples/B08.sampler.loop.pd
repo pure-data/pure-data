@@ -20,10 +20,7 @@
 #X obj 65 214 +~ 1;
 #X obj 591 254 adc~ 1;
 #X text 702 385 v-- re-read the original sample;
-#X text 161 491 In this patch you will frequently hear discontinuities
-at the looping point. If you're working in a studio \, you can sometimes
-find "good" loop points for samples. Another approach \, better for
-live situations \, is shown in the next patch., f 55;
+#X text 161 491 In this patch you will frequently hear discontinuities at the looping point. If you're working in a studio \, you can sometimes find "good" loop points for samples. Another approach \, better for live situations \, is shown in the next patch., f 55;
 #X obj 612 433 soundfiler;
 #X text 699 206 ---- 44103 samples ----;
 #X text 477 206 ---- 1 second ------;
@@ -32,29 +29,21 @@ live situations \, is shown in the next patch., f 55;
 #X obj 65 243 tabread4~ table17;
 #X obj 591 321 tabwrite~ table17;
 #X msg 612 408 read ../sound/voice.wav table17;
-#X text 162 352 This is a looping sampler in which you specify the
-number of loops per second (the frequency) and the size of the chunk
-to loop. If the frequency is less than about 20 \, you will hear repetition
-and the chunk size will sound like transposition. For frequencies above
-50 or so \, you hear a tone whose timbre is controlled by the chunk
-size (best kept below 10 or so.) Remember you can use the "shift" key
-on number boxes to make fine adjustments., f 55;
+#X text 162 352 This is a looping sampler in which you specify the number of loops per second (the frequency) and the size of the chunk to loop. If the frequency is less than about 20 \, you will hear repetition and the chunk size will sound like transposition. For frequencies above 50 or so \, you hear a tone whose timbre is controlled by the chunk size (best kept below 10 or so.) Remember you can use the "shift" key on number boxes to make fine adjustments., f 55;
 #X obj 760 15 declare -stdpath ./;
-#X obj 98 272 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000
-#000000;
 #X text 123 271 <-- click to display output;
-#X obj 604 288 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf
-#000000 #000000;
+#X obj 604 288 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X text 630 288 <-- click here to record your own sample;
 #X text 114 81 <-- frequency (Hz.);
 #X text 135 135 <-- chunk size (100ths of a second);
 #X text 111 186 <-- readjust phase for range 0 - (chunk size);
 #X text 110 214 <-- add one to avoid beginning of table;
 #X obj 65 107 phasor~;
+#X obj 98 272 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X connect 2 0 22 0;
 #X connect 4 0 18 0;
 #X connect 4 0 18 1;
-#X connect 5 0 33 0;
+#X connect 5 0 32 0;
 #X connect 8 0 9 0;
 #X connect 9 0 10 1;
 #X connect 10 0 11 0;
@@ -63,6 +52,6 @@ on number boxes to make fine adjustments., f 55;
 #X connect 20 0 4 0;
 #X connect 20 0 3 0;
 #X connect 22 0 15 0;
-#X connect 25 0 3 0;
-#X connect 27 0 21 0;
-#X connect 33 0 10 0;
+#X connect 26 0 21 0;
+#X connect 32 0 10 0;
+#X connect 33 0 3 0;

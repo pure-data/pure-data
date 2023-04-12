@@ -7,9 +7,8 @@
 #X obj 99 210 * 0.1;
 #X obj 99 179 int;
 #X text 76 279 CPU load in percent;
-#X obj 99 61 tgl 17 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000
-0 1;
-#X text 122 60 <-- on/off;
+#X obj 99 61 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 123 61 <-- on/off;
 #X connect 1 0 6 0;
 #X connect 2 0 8 0;
 #X connect 3 0 4 0;

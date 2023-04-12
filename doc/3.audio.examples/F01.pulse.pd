@@ -39,19 +39,14 @@
 #X obj 264 178 +~ 1;
 #X obj 387 352 tabwrite~ clip-output;
 #X text 623 499 ---- 0.02 seconds ----;
-#X obj 365 209 bng 17 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000
-#000000;
+#X obj 365 209 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
 #X obj 246 486 output~;
 #X obj 246 367 +~ 1;
 #X obj 246 390 *~ 0.5;
 #X text 625 582 updated for Pd version 0.37;
 #X text 19 367 add one (range now from 0 to 2);
 #X text 82 389 ...and now from 0 to 1;
-#X text 49 569 This patch computes a pulse train \, with an "index"
-control that essentially squeezes the pulses. If "bandwidth" is zero
-you get a pure cosine wave \, and for larger values of the bandwidth
-\, the cosine wave is squeezed to fill smaller portions of the waveform.
-, f 75;
+#X text 49 569 This patch computes a pulse train \, with an "index" control that essentially squeezes the pulses. If "bandwidth" is zero you get a pure cosine wave \, and for larger values of the bandwidth \, the cosine wave is squeezed to fill smaller portions of the waveform., f 75;
 #X text 261 59 index;
 #X text 807 77 0.5;
 #X text 807 131 -0.5;
