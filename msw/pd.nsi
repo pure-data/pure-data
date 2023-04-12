@@ -38,6 +38,7 @@
 !define MUI_HEADERIMAGE_UNBITMAP "small-un.bmp"
 
 Var INSTDIR_BASE
+Var CONTEXT
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
@@ -56,10 +57,12 @@ RequestExecutionLevel highest
         ${If} $0 == "Admin"
             ; If we're an admin, default to installing to C:\Program Files
             SetShellVarContext all
+            StrCpy $CONTEXT all
             StrCpy $INSTDIR_BASE "$PROGRAMFILES${ARCHI}"
         ${Else}
             ; If we're just a user, default to installing to ~\AppData\Local
             SetShellVarContext current
+            StrCpy $CONTEXT current
             StrCpy $INSTDIR_BASE "$LOCALAPPDATA"
         ${EndIf}
 
@@ -144,6 +147,12 @@ SectionGroup /e "${PRODUCT_NAME}"
     SectionEnd
 
     Section "Create Startmenu entry" StartMenu
+        ; ugly hack so the app shows up in "recently added"
+        ${If} $CONTEXT == "all"
+            SetShellVarContext all
+        ${Else}
+            SetShellVarContext current
+        ${EndIf}
         WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
         CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}\"
         CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url" "" "%SYSTEMROOT%\system32\shell32.dll" 14
