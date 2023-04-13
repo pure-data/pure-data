@@ -87,7 +87,7 @@ endif
 ifdef JACK
 CPPFLAGS += -DUSEAPI_JACK
 SYSSRC += s_audio_jack.c
-LIB += -ljack
+LIB += -L/usr/lib64/pipewire-0.3/jack -ljack
 HAVEAUDIOAPI=true
 endif
 ifeq ($(OSS), true)
