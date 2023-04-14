@@ -14,6 +14,7 @@
 
 
 !include "MUI2.nsh"
+!include "FileFunc.nsh"
 
 ; App name
 !if ${ARCHI} == "64"
@@ -28,14 +29,14 @@
 
 ; MUI Settings / Icons
 !define MUI_ICON "pd.ico"
-!define MUI_UNICON "pd-un.ico"
+!define MUI_UNICON "pd.ico"
 ; MUI Settings / Wizard
 !define MUI_WELCOMEFINISHPAGE_BITMAP "big.bmp"
 ; MUI Settings / Header
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
 !define MUI_HEADERIMAGE_BITMAP "small.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "small-un.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "small.bmp"
 
 Var INSTDIR_BASE
 Var CONTEXT
@@ -206,7 +207,7 @@ Section -Post
 
     ;WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoModify" 1
     ;WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
-    
+
     ${GetSize} "$INSTDIR" "/S=0M" $0 $1 $2
     IntOp $3 $0 * 1000
     IntFmt $4 "0x%08X" $3
