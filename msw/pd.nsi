@@ -206,7 +206,11 @@ Section -Post
 
     ;WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoModify" 1
     ;WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "NoRepair" 1
-
+    
+    ${GetSize} "$INSTDIR" "/S=0M" $0 $1 $2
+    IntOp $3 $0 * 1000
+    IntFmt $4 "0x%08X" $3
+    WriteRegDWORD SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "EstimatedSize" "$4"
 SectionEnd
 
 
