@@ -262,7 +262,6 @@ static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
         pd_error(x,
             "rifft~ inputs have different channel counts - ignoring extras");
     signal_setmultiout(&sp[2], nchans);
-    signal_setmultiout(&sp[3], nchans);
     for (ch = 0; ch < nchans; ch++)
     {
         t_sample *in1 = sp[0]->s_vec + ch * length;
