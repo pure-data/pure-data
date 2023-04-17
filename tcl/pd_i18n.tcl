@@ -56,7 +56,11 @@ proc ::pd_i18n::get_system_language {} {
     } else {
         set lang ""
     }
-    return [file rootname [string tolower $lang]]
+    set lang [file rootname [string tolower $lang]]
+    if { $lang == "c" } {
+        set lang "C"
+    }
+    return $lang
 }
 
 proc ::pd_i18n::load_locale {{lang ""}} {
