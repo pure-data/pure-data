@@ -85,6 +85,7 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
     # translate language-codes
     set polanguagelist [list \
         af [_ "Afrikaans" ] \
+        ar [_ "Arabic" ] \
         az [_ "Azerbaijani" ] \
         be [_ "Belarusian" ] \
         bg [_ "Bulgarian" ] \
@@ -97,19 +98,30 @@ proc ::pd_i18n::get_available_languages {{podir ""}} {
         en_us [_ "English (USA)" ] \
         es [_ "Spanish" ] \
         eu [_ "Basque" ] \
+        fi [_ "Finnish" ] \
         fr [_ "French" ] \
         gu [_ "Gujarati" ] \
         he [_ "Hebrew" ] \
         hi [_ "Hindi" ] \
         hu [_ "Hungarian" ] \
+        hy [_ "Armenian" ] \
         it [_ "Italian" ] \
+        id [_ "Indonesian" ] \
+        ja [_ "Japanese" ] \
+        ko [_ "Korean" ] \
+        nl [_ "Dutch" ] \
         pa [_ "Panjabi" ] \
+        pl [_ "Polish" ] \
         pt [_ "Portuguese" ] \
         pt_br [_ "Portuguese (Brazil)" ] \
         pt_pt [_ "Portuguese (Portugal)" ] \
+        ru [_ "Russian" ] \
         sq [_ "Albanian" ] \
         sv [_ "Swedish" ] \
+        tr [_ "Turkish" ] \
+        uk [_ "Ukrainian" ] \
         vi [_ "Vietnamese" ] \
+        zh_tw [_ "Chinese (Traditional)" ] \
     ]
 
     set polanguages [dict create]
