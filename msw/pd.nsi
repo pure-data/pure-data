@@ -51,6 +51,9 @@ RequestExecutionLevel highest
 
 !macro ONINIT un
     Function ${un}.onInit
+        ; avoid silent install if its not specifically set.
+        ; for later use with "winget" (Windows package manager) (tested).
+        SetSilent normal
         ; The value of SetShellVarContext detetmines whether SHCTX is HKLM or HKCU
         ; and whether SMPROGRAMS refers to all users or just the current user
         UserInfo::GetAccountType
