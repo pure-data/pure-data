@@ -70,12 +70,24 @@ RequestExecutionLevel highest
         ${If} $INSTDIR == ""
             ; This only happens in the installer, because the uninstaller already knows INSTDIR
             ReadRegStr $0 SHCTX "Software\${PRODUCT_NAME}" "${ARCHI}"
-
+            ReadRegStr $1 SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName"
+            ReadRegStr $2 SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString"
             ${If} $0 != ""
                 ; If we're already installed:
-                MessageBox MB_OK "Warning: system tells there is already a Pd installation on: \
-                 '$0'. Depending on your case you might want to run the uninstaller first \
-                 or proceed with the installation to a different location"
+                MessageBox MB_YESNO|MB_USERICON "System tells there is already a Pd installation on: \
+                '$0'. Depending on your case you might want to run the uninstaller first \
+                or proceed with the installation to a different location.$\r$\n$\r$\n\
+                Do you want to run the uninstaller for '$1' \
+                located at '$0'?$\r$\n$\r$\nnote: select 'yes' for a standard recommended \
+                upgrade/downgrade and then continue with the setup." IDYES true IDNO false
+                    true:
+                        ; run the uninstaller
+                        ; https://stackoverflow.com/questions/4676898/how-to-execute-an-nsis-uninstaller-from-within-an-another-nsis-installer-and-wai
+                        ExecWait '"$2" /S _?=$0'
+                        Goto next
+                    false:
+                        ; skip uninstaller
+                    next:
             ${Endif}
 
             ${If} ${ARCHI} != "64"
