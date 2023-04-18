@@ -402,10 +402,12 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     if {[winfo exists ${::dialog_preferences::audio_frame}]} {
         ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
         ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
-        return {}
+    } else {
+        ::dialog_audio::create $mytoplevel
     }
+}
 
-
+proc ::dialog_audio::create {mytoplevel} {
     # destroy leftover dialogs
     destroy $mytoplevel
     # create a dialog window
