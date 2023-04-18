@@ -371,43 +371,16 @@ proc ::dialog_audio::set_configuration { \
     set ::audio_use_callback ${use_callback}
     set ::audio_can_multidevice ${can_multidevice}
 }
-# start a dialog window to select audio devices and settings.  "multi"
-# is 0 if only one device is allowed; 1 if one apiece may be specified for
-# input and output; and 2 if we can select multiple devices.  "longform"
-# (which only makes sense if "multi" is 2) asks us to make controls for
-# opening several devices; if not, we get an extra button to turn longform
-# on and restart the dialog.
-#
-# sr, advance, callback and blocksize can be prefixed with '!', indicating
-# that these values must not be changed by the GUI
-proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
-        indev1 indev2 indev3 indev4 \
-        inchan1 inchan2 inchan3 inchan4 \
-        outdev1 outdev2 outdev3 outdev4 \
-        outchan1 outchan2 outchan3 outchan4 \
-        sr advance multi callback \
-        longform blocksize} {
-    # initialize variables
-    ::dialog_audio::set_configuration \
-        ${::audio_indevlist} \
-        [list $indev1 $indev2 $indev3 $indev4] \
-        [list $inchan1 $inchan2 $inchan3 $inchan4] \
-        ${::audio_outdevlist} \
-        [list $outdev1 $outdev2 $outdev3 $outdev4] \
-        [list $outchan1 $outchan2 $outchan3 $outchan4] \
-        $sr $blocksize $advance $callback $multi
 
+proc ::dialog_audio::create {mytoplevel} {
     # check if there's already an open gui-preference
     # where we can splat the new audio preferences into
     if {[winfo exists ${::dialog_preferences::audio_frame}]} {
         ::preferencewindow::removechildren ${::dialog_preferences::audio_frame}
         ::dialog_audio::fill_frame ${::dialog_preferences::audio_frame}
-    } else {
-        ::dialog_audio::create $mytoplevel
+        return {}
     }
-}
 
-proc ::dialog_audio::create {mytoplevel} {
     # destroy leftover dialogs
     destroy $mytoplevel
     # create a dialog window
@@ -475,6 +448,38 @@ proc ::dialog_audio::create {mytoplevel} {
     wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
     position_over_window $mytoplevel .pdwindow
     raise $mytoplevel
+}
+
+# legacy proc forthe audio-dialog
+# (LATER: just remove it)
+#
+# start a dialog window to select audio devices and settings.  "multi"
+# is 0 if only one device is allowed; 1 if one apiece may be specified for
+# input and output; and 2 if we can select multiple devices.  "longform"
+# (which only makes sense if "multi" is 2) asks us to make controls for
+# opening several devices; if not, we get an extra button to turn longform
+# on and restart the dialog.
+#
+# sr, advance, callback and blocksize can be prefixed with '!', indicating
+# that these values must not be changed by the GUI
+proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
+        indev1 indev2 indev3 indev4 \
+        inchan1 inchan2 inchan3 inchan4 \
+        outdev1 outdev2 outdev3 outdev4 \
+        outchan1 outchan2 outchan3 outchan4 \
+        sr advance multi callback \
+        longform blocksize} {
+    # initialize variables
+    ::dialog_audio::set_configuration \
+        ${::audio_indevlist} \
+        [list $indev1 $indev2 $indev3 $indev4] \
+        [list $inchan1 $inchan2 $inchan3 $inchan4] \
+        ${::audio_outdevlist} \
+        [list $outdev1 $outdev2 $outdev3 $outdev4] \
+        [list $outchan1 $outchan2 $outchan3 $outchan4] \
+        $sr $blocksize $advance $callback $multi
+
+    ::dialog_audio::create $mytoplevel
 }
 
 # for focus handling on OSX
