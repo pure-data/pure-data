@@ -1,8 +1,8 @@
 ;
-; to make this work outside of Miller's machines create a 'C:\tmp' dir and
+; to make this work outside of Miller's machines (and on Windows) create a 'C:\tmp' dir and
 ; remove all occurrences of '/tmp/' except on :
 ;
-; 		OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
+;   "OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
 ;
 ;
 ;
@@ -15,6 +15,7 @@
 
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
+!include "nsDialogs.nsh"
 
 ; App name
 !if ${ARCHI} == "64"
@@ -40,6 +41,10 @@
 
 Var INSTDIR_BASE
 Var CONTEXT
+Var PreUninstallerDisplayName
+Var PreUninstallerPath
+Var PreUninstallerUninstallString
+var ShowPreviousInstallationDetected
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
@@ -51,8 +56,7 @@ RequestExecutionLevel highest
 
 !macro ONINIT un
     Function ${un}.onInit
-        ; avoid silent install if its not specifically set.
-        ; for later use with "winget" (Windows package manager) (tested).
+        ; avoid silent install for later use with "winget" (Windows package manager) (tested).
         SetSilent normal
         ; The value of SetShellVarContext detetmines whether SHCTX is HKLM or HKCU
         ; and whether SMPROGRAMS refers to all users or just the current user
@@ -69,28 +73,14 @@ RequestExecutionLevel highest
             StrCpy $CONTEXT current
             StrCpy $INSTDIR_BASE "$LOCALAPPDATA"
         ${EndIf}
-
+        ; This only happens in the installer, because the uninstaller already knows INSTDIR
         ${If} $INSTDIR == ""
-            ; This only happens in the installer, because the uninstaller already knows INSTDIR
-            ReadRegStr $0 SHCTX "Software\${PRODUCT_NAME}" "${ARCHI}"
-            ReadRegStr $1 SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName"
-            ReadRegStr $2 SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString"
-            ${If} $0 != ""
-                ; If we're already installed:
-                MessageBox MB_YESNO|MB_USERICON "System tells there is already a Pd installation on: \
-                '$0'. Depending on your case you might want to run the uninstaller first \
-                or proceed with the installation to a different location.$\r$\n$\r$\n\
-                Do you want to run the uninstaller for '$1' \
-                located at '$0'?$\r$\n$\r$\nnote: select 'yes' for a standard recommended \
-                upgrade/downgrade and then continue with the setup." IDYES true IDNO false
-                    true:
-                        ; run the uninstaller
-                        ; https://stackoverflow.com/questions/4676898/how-to-execute-an-nsis-uninstaller-from-within-an-another-nsis-installer-and-wai
-                        ExecWait '"$2" /S _?=$0'
-                        Goto next
-                    false:
-                        ; skip uninstaller
-                    next:
+            ReadRegStr $PreUninstallerPath SHCTX "Software\${PRODUCT_NAME}" "${ARCHI}"
+            ReadRegStr $PreUninstallerDisplayName SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName"
+            ReadRegStr $PreUninstallerUninstallString SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString"
+            ${If} $PreUninstallerPath != ""
+                ; If we're already installed show the optional uninstall page:
+                StrCpy $ShowPreviousInstallationDetected "yes"
             ${Endif}
 
             ${If} ${ARCHI} != "64"
@@ -114,7 +104,7 @@ RequestExecutionLevel highest
 !insertmacro MUI_PAGE_WELCOME
 ; License page
 !include "/tmp/license_page.nsh"
-
+Page Custom PreviousInstallationDetected PreviousInstallationDetectedLeave
 !define MUI_COMPONENTSPAGE_NODESC
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -154,6 +144,31 @@ Function PdGuiFromInstaller
     GetFullPathName /SHORT $SHORTPATH $INSTDIR
 FunctionEnd
 
+Function PreviousInstallationDetected
+${If} $ShowPreviousInstallationDetected == "yes"
+    nsDialogs::Create 1018
+    Pop $0
+    ${NSD_CreateLabel} 0 0 100% 40% "System tells there is already a Pd installation:$\r$\n$\r$\n\
+        '$PreUninstallerDisplayName' on '$PreUninstallerPath' $\r$\n$\r$\n\
+        If you are going to upgrade or downgrade it is recommended that you run \
+        the uninstaller. If not, proceed the installation to a different location"
+    ${NSD_CreateRadioButton} 0 50% 50% 10% "Run the uninstaller (recommended)"
+    Pop $1
+    SendMessage $1 ${BM_CLICK} "" "" ; Must select a default
+    ${NSD_CreateRadioButton} 0 60% 50% 10% "continue"
+    Pop $2
+    nsDialogs::Show
+${EndIf}
+FunctionEnd
+
+Function PreviousInstallationDetectedLeave
+${NSD_GetState} $1 $3
+${If} $3 == ${BST_CHECKED}
+    ; run the uninstaller
+    ; https://stackoverflow.com/questions/4676898/how-to-execute-an-nsis-uninstaller-from-within-an-another-nsis-installer-and-wai
+    ExecWait '"$PreUninstallerUninstallString" /S _?=$PreUninstallerPath'
+${EndIf}
+FunctionEnd
 
 SectionGroup /e "${PRODUCT_NAME}"
 
@@ -164,6 +179,7 @@ SectionGroup /e "${PRODUCT_NAME}"
 
     Section "Create Startmenu entry" StartMenu
         ; ugly hack so the app shows up in "recently added"
+        ; should have been one "SetShellVarContext $CONTEXT" but it refuses to compile
         ${If} $CONTEXT == "all"
             SetShellVarContext all
         ${Else}
@@ -205,13 +221,10 @@ SectionGroup /e "${PRODUCT_NAME}"
 SectionGroupEnd
 
 
-
 Section -Post
 
     WriteUninstaller "$INSTDIR\uninst.exe"
-
     WriteRegStr SHCTX "Software\${PRODUCT_NAME}" "${ARCHI}" $INSTDIR
-
     ; These registry entries are necessary for the program to show up in the Add/Remove programs dialog
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "DisplayName" "$(^Name)"
     WriteRegStr SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -241,9 +254,7 @@ Function un.sure
 FunctionEnd
 
 Section Uninstall
-
     Call un.sure
-
     Delete "$INSTDIR\${PRODUCT_NAME}.url"
     Delete "$INSTDIR\uninst.exe"
     Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
