@@ -1,5 +1,7 @@
 package provide dialog_midi 0.1
 
+package require pdtcl_compat
+
 namespace eval ::dialog_midi:: {
     namespace export pdtk_midi_dialog
     namespace export pdtk_alsa_midi_dialog
@@ -245,15 +247,15 @@ proc ::dialog_midi::init_devicevars {} {
 }
 
 
-proc ::dialog_midi::decr2list {args} {
-    set result {}
-    foreach x $args {
-        set x [expr $x - 1]
-        if { $x >= 0 } {
-            lappend result $x
-        }
-    }
-    return $result
+proc ::dialog_midi::set_configuration {API inputdevices indevs outputdevices  outdevs} {
+    set ::pd_whichmidiapi $API
+
+    set ::midi_indevlist ${inputdevices}
+    # decrement indices by 1 (and filter out invalid(=negative) values)
+    set ::midi_indevices [lmap _ $indevs {set _ [expr int($_) - 1]; if {$_ < 0} continue; set _}]
+
+    set ::midi_outdevlist ${outputdevices}
+    set ::midi_outdevices [lmap _ $outdevs {set _ [expr int($_) - 1]; if {$_ < 0} continue; set _}]
 }
 
 # start a dialog window to select midi devices.  "longform" asks us to make
@@ -263,12 +265,18 @@ proc ::dialog_midi::decr2list {args} {
 proc ::dialog_midi::pdtk_midi_dialog {id \
       indev1 indev2 indev3 indev4 indev5 indev6 indev7 indev8 indev9 \
       outdev1 outdev2 outdev3 outdev4 outdev5 outdev6 outdev7 outdev8 outdev9 \
-      longform} {
+      {longform ignored}} {
 
-    # initialize variables
-    set ::midi_indevices [decr2list $indev1 $indev2 $indev3 $indev4 $indev5 $indev6 $indev7 $indev8 $indev9]
-    set ::midi_outdevices [decr2list $outdev1 $outdev2 $outdev3 $outdev4 $outdev5 $outdev6 $outdev7 $outdev8 $outdev9]
+    ::dialog_midi::set_configuration ${::pd_whichmidiapi} \
+        ${::midi_indevlist} \
+        [list $indev1 $indev2 $indev3 $indev4 $indev5 $indev6 $indev7 $indev8 $indev9] \
+        ${::midi_outdevlist} \
+        [list $outdev1 $outdev2 $outdev3 $outdev4 $outdev5 $outdev6 $outdev7 $outdev8 $outdev9]
 
+    ::dialog_midi::create $id
+}
+
+proc ::dialog_midi::create {id} {
     # check if there's already an open gui-preference
     # where we can splat the new midi preferences into
     if {[winfo exists ${::dialog_preferences::midi_frame}]} {
