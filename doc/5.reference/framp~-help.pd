@@ -5,55 +5,32 @@
 #X text 84 183 in Hz.;
 #X obj 30 236 rfft~;
 #X obj 30 148 / 64;
-#X msg 178 168 \; pd dsp 1;
+#X msg 177 168 \; pd dsp 1;
 #X obj 29 14 framp~;
-#X text 82 13 - estimate frequency and amplitude of FFT components
-;
+#X text 82 13 - estimate frequency and amplitude of FFT components;
 #X obj 28 270 framp~;
 #X obj 103 329 print~ frequency;
 #X obj 118 304 print~ amplitude;
 #X obj 30 204 osc~;
-#X text 304 87 Framp~ takes as input a rectangular-windowed FFT and
-outputs \, for each FFT channel \, the estimated amplitude and frequency
-of any component feeding that channel. A sinusoidal component should
-appear in four components (or three in the special case of a sinusoid
-exactly tuned to a bin.) Frequency output is in bins \, i.e. \, units
-of SR/N., f 50;
 #X text 75 65 frequency in bins (< 63);
 #X obj 30 90 t f b;
 #X obj 62 121 samplerate~;
 #X obj 30 120 *;
 #X text 465 369 updated for Pd version 0.47;
-#X text 304 198 The estimation is done according to the hop-1 trick
-described in Puckette&Brown \, Accuracy of Frequency Estimates Using
-the Phase Vocoder \, using a Hann window. A more sophisticated version
-of this technique is used in the sigmund~ object., f 50;
-#X obj 103 256 bng 20 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X text 129 257 <= print analysis;
-#X obj 178 144 tgl 17 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X text 201 143 DSP on/off;
-#X obj 11 48 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 103 256 bng 19 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 177 142 tgl 19 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X text 201 141 DSP on/off;
+#X obj 11 48 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000 0;
 #N canvas 791 141 463 297 reference 0;
 #X text 190 246 NONE;
-#X obj 20 51 cnv 5 430 5 empty empty INLETS: 8 18 0 13 #202020 #000000
-0;
-#X obj 19 270 cnv 5 430 5 empty empty empty 8 18 0 13 #202020 #000000
-0;
-#X obj 21 146 cnv 2 430 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000
-0;
-#X obj 18 81 cnv 1 430 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 19 169 cnv 1 430 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 18 112 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 19 200 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000
-0;
-#X obj 20 238 cnv 2 430 2 empty empty ARGUMENTS: 8 12 0 13 #202020
-#000000 0;
+#X obj 20 51 cnv 5 430 5 empty empty INLETS: 8 18 0 13 #202020 #000000 0;
+#X obj 19 270 cnv 5 430 5 empty empty empty 8 18 0 13 #202020 #000000 0;
+#X obj 21 146 cnv 2 430 2 empty empty OUTLETS: 8 12 0 13 #202020 #000000 0;
+#X obj 18 81 cnv 1 430 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 19 169 cnv 1 430 1 empty empty 1st: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 18 112 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 19 200 cnv 1 430 1 empty empty 2nd: 8 12 0 13 #9f9f9f #000000 0;
+#X obj 20 238 cnv 2 430 2 empty empty ARGUMENTS: 8 12 0 13 #202020 #000000 0;
 #X obj 33 17 framp~;
 #X text 100 87 signal - real part of FFT.;
 #X text 100 117 signal - imaginary part of FFT.;
@@ -62,20 +39,24 @@ of this technique is used in the sigmund~ object., f 50;
 #X text 86 16 - estimate frequency and amplitude of FFT.;
 #X restore 499 13 pd reference;
 #X text 597 14 <= click;
-#X obj 11 360 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000
-0;
+#X obj 11 360 cnv 1 667 1 empty empty empty 8 12 0 13 #000000 #000000 0;
+#X text 127 255 <-- print analysis;
+#X text 304 87 [framp~] takes as input a rectangular-windowed FFT and outputs \, for each FFT channel \, the estimated amplitude and frequency of any component feeding that channel. A sinusoidal component should appear in four components (or three in the special case of a sinusoid exactly tuned to a bin.) Frequency output is in bins \, i.e. \, units of SR/N., f 50;
+#X text 304 198 The estimation is done according to the hop-1 trick described in Puckette&Brown \, Accuracy of Frequency Estimates Using the Phase Vocoder \, using a Hann window. A more sophisticated version of this technique is used in the [sigmund~] object., f 50;
+#X text 32 373 see also:;
+#X obj 109 372 sigmund~;
 #X connect 1 0 12 0;
-#X connect 2 0 15 0;
+#X connect 2 0 14 0;
 #X connect 4 0 9 0;
 #X connect 4 1 9 1;
 #X connect 5 0 1 0;
 #X connect 9 0 10 0;
 #X connect 9 1 11 0;
 #X connect 12 0 4 0;
-#X connect 15 0 17 0;
-#X connect 15 1 16 0;
-#X connect 16 0 17 1;
-#X connect 17 0 5 0;
-#X connect 20 0 10 0;
-#X connect 20 0 11 0;
-#X connect 22 0 6 0;
+#X connect 14 0 16 0;
+#X connect 14 1 15 0;
+#X connect 15 0 16 1;
+#X connect 16 0 5 0;
+#X connect 18 0 10 0;
+#X connect 18 0 11 0;
+#X connect 19 0 6 0;

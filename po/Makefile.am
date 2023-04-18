@@ -71,8 +71,28 @@ LOCAL_TCLFILES = \
 FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
         $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
+EXCLUDE_FILE = $(addprefix $(top_srcdir)/po/, _exclude.txt)
+
 # these are the supported languages
-ALL_LINGUAS = af az be bg de el en en_ca es eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
+ALL_LINGUAS = \
+	az \
+	bg \
+	de \
+	el en en_ca es eu \
+	fr \
+	gu \
+	hi hu \
+	it \
+	ja \
+	ko \
+	nl \
+	pa pl pt_br pt_pt \
+	ru \
+	sq sv \
+	uk \
+	vi \
+	zh_tw \
+	$(empty)
 
 POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
@@ -84,8 +104,11 @@ libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
 # files that are included but not built
-EXTRA_DIST = $(POFILES) $(TEMPLATE) README.txt \
-             $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
+EXTRA_DIST = \
+    $(POFILES) $(TEMPLATE) README.txt \
+    _exclude.txt \
+    $(LOCAL_TCLFILES) \
+    $(empty)
 
 #########################################
 ##### Targets #####
@@ -103,19 +126,22 @@ template: $(TEMPLATE)
 # remove string file locations and header "POT-Creation-Date" to suppress
 # unnecessary changes, we really only want to update the .po files when a
 # translation string changes in a tcl file
-$(TEMPLATE): $(FILES)
+$(TEMPLATE): $(FILES) $(EXCLUDE_FILE)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
-		--sort-by-file --output=$(TEMPLATE) \
+		--sort-by-file --output=$(TEMPLATE).new \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
 		--foreign-user \
+		--no-location \
+		--exclude-file=$(EXCLUDE_FILE) \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-	sed -i.bak -E '/^#:/d' $(TEMPLATE)
-	sed -i.bak -E '/^"POT-Creation-Date/d' $(TEMPLATE)
-	rm -f $(TEMPLATE).bak
+	sed -E -e '/^"POT-Creation-Date/d' -e '/^"Project-Id-Version/d' $(TEMPLATE).new > $(TEMPLATE).new.nodate
+	sed -E -e '/^"POT-Creation-Date/d' -e '/^"Project-Id-Version/d' $(TEMPLATE) > $(TEMPLATE).nodate
+	cmp $(TEMPLATE).new.nodate $(TEMPLATE).nodate || cat $(TEMPLATE).new > $(TEMPLATE)
+	rm -f $(TEMPLATE).new $(TEMPLATE).new.nodate $(TEMPLATE).nodate
 
 # print the locations for translation strings in the .tcl source files
 locations:

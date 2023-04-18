@@ -67,8 +67,7 @@ static void dopost(const char *s)
     }
     else
     {
-        char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::post {%s}\n", pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::post", "s", s);
     }
 }
 
@@ -97,8 +96,8 @@ static void doerror(const void *object, const char *s)
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx 1 {%s}\n",
-            object, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::logpost", "ois",
+                  object, 1, s);
 }
 
 static void dologpost(const void *object, const int level, const char *s)
@@ -129,8 +128,8 @@ static void dologpost(const void *object, const int level, const char *s)
 #endif
     }
     else
-        sys_vgui("::pdwindow::logpost .x%lx %d {%s}\n",
-            object, level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
+        pdgui_vmess("::pdwindow::logpost", "ois",
+                  object, level, s);
 }
 
 void logpost(const void *object, int level, const char *fmt, ...)
@@ -273,7 +272,7 @@ void pd_error(const void *object, const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
-    static int saidit;
+    static int saidit = 0;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
@@ -286,9 +285,10 @@ void pd_error(const void *object, const char *fmt, ...)
     strncpy(error_string, buf, 256);
     error_string[255] = 0;
 
-    if (!saidit)
+    if (object && !saidit)
     {
-        logpost(NULL, 4,
+        if (sys_havegui())
+            logpost(NULL, 4,
                 "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }
@@ -310,13 +310,19 @@ void glob_findinstance(t_pd *dummy, t_symbol*s)
 {
     // revert s to (potential) pointer to object
     PD_LONGINTTYPE obj = 0;
-    if (sscanf(s->s_name, ".x%lx", &obj))
-    {
-        if (obj)
-        {
-            canvas_finderror((void *)obj);
-        }
-    }
+    const char*addr;
+    if(!s || !s->s_name)
+        return;
+    addr = s->s_name;
+    if (('.' != addr[0]) && ('0' != addr[0]))
+        return;
+    if (!sscanf(addr+1, "x%lx", &obj))
+        return;
+
+    if(!obj)
+        return;
+
+    canvas_finderror((void *)obj);
 }
 
 void bug(const char *fmt, ...)

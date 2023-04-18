@@ -21,6 +21,10 @@
 #include <windows.h>
 #include <winbase.h>
 #endif
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
 #endif
@@ -570,16 +574,31 @@ void sys_findprogdir(const char *progname)
 #ifndef _WIN32
     struct stat statbuf;
 #endif /* NOT _WIN32 */
-
     /* find out by what string Pd was invoked; put answer in "sbuf". */
+    *sbuf2 = 0;
 #ifdef _WIN32
     GetModuleFileName(NULL, sbuf2, sizeof(sbuf2));
     sbuf2[MAXPDSTRING-1] = 0;
-    sys_unbashfilename(sbuf2, sbuf);
-#else
-    strncpy(sbuf, progname, MAXPDSTRING);
-    sbuf[MAXPDSTRING-1] = 0;
+#else /* !_WIN32 */
+    if(!*sbuf2) {
+        ssize_t path_length = readlink("/proc/self/exe", sbuf2, sizeof(sbuf2));
+        if (path_length > 0 && path_length < MAXPDSTRING)
+            sbuf2[path_length] = 0;
+    }
 #endif /* _WIN32 */
+#ifdef __APPLE__
+    if(!*sbuf2) {
+        uint32_t size = sizeof(sbuf2);
+        _NSGetExecutablePath(sbuf2, &size);
+    }
+#endif /* ! __APPLE__ */
+
+        /* fallback to just using argv[0] */
+    if(!*sbuf2)
+        strncpy(sbuf2, progname, MAXPDSTRING);
+    sbuf2[MAXPDSTRING-1] = 0;
+    sys_unbashfilename(sbuf2, sbuf);
+
     lastslash = strrchr(sbuf, '/');
     if (lastslash)
     {
@@ -626,6 +645,7 @@ void sys_findprogdir(const char *progname)
 #ifdef _WIN32
     sys_libdir = gensym(sbuf2);
 #else
+
     strncpy(sbuf, sbuf2, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/lib/pd");
@@ -1503,7 +1523,7 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
     sys_gui_preferences();
     sys_gui_audiopreferences();
     sys_gui_midipreferences();
-    sys_gui("::dialog_preferences::create\n");
+    pdgui_vmess("::dialog_preferences::create", "");
 }
 
 
@@ -1511,7 +1531,10 @@ void glob_start_preference_dialog(t_pd *dummy, t_symbol*s)
 void glob_start_path_dialog(t_pd *dummy)
 {
     sys_gui_preferences();
-    sys_vgui("pdtk_path_dialog .path_dialog %d %d\n", sys_usestdpath, sys_verbose);
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_path_dialog", (void *)glob_start_path_dialog,
+        "ii", sys_usestdpath, sys_verbose);
 }
 
     /* new values from dialog window */
@@ -1554,10 +1577,11 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
-    char obuf[MAXPDSTRING];
     sys_gui_preferences();
-    sys_vgui("pdtk_startup_dialog .startup_dialog %d {%s}\n", sys_defeatrt,
-        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
+    pdgui_stub_vnew(
+        &glob_pdobject,
+        "pdtk_startup_dialog", (void *)glob_start_path_dialog,
+        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");    
 }
 
     /* new values from dialog window */

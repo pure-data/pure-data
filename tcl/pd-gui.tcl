@@ -198,9 +198,6 @@ set focused_window .
 # store that last 5 files that were opened
 set recentfiles_list {}
 set total_recentfiles 5
-# keep track of the location of popup menu for PatchWindows, in canvas coords
-set popup_xcanvas 0
-set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
 # current state of the Edit Mode menu item
@@ -454,26 +451,26 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "detected font: $::font_family\n"
+    set msg [_ "detected font: %s" ]
+    ::pdwindow::verbose 0 [format "${msg}\n" $::font_family ]
 }
 
 proc set_base_font {family weight} {
     if {[lsearch -exact [font families] $family] > -1} {
         set ::font_family $family
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font family '%s' not found, using default (%s)\n"] \
-                $family $::font_family]
+        set msg [_ "WARNING: font family '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $family $::font_family]
     }
     if {[lsearch -exact {bold normal} $weight] > -1} {
         set ::font_weight $weight
         set using_defaults 0
     } else {
-        ::pdwindow::post [format \
-            [_ "WARNING: font weight '%s' not found, using default (%s)\n"] \
-                $weight $::font_weight]
+        set msg [_ "WARNING: font weight '%1\$s' not found, using default (%2\$s)"]
+        ::pdwindow::post [format "${msg}\n" $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "using font: $::font_family $::font_weight\n"
+    set msg [_ "using font: %1\$s %2\$s" ]
+    ::pdwindow::verbose 0 [ format "${msg}\n" $::font_family $::font_weight ]
 }
 
 # finds sizes of the chosen font that just fit into the required metrics
@@ -544,7 +541,6 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
     ::pdwindow::create_window_finalize
-    ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
     set ::done_init 1
@@ -569,9 +565,25 @@ proc pdtk_yesnodialog {mytoplevel message default} {
     }
     return 0
 }
-##### routine to ask user if OK and, if so, send a message on to Pd ######
+
+# routine to ask user if OK and, if so, send a message on to Pd ######
+# with built-informatting+ translation
+# modern usage:
+## pdtk_check .pdwindow {"Hello world!"} "pd dsp 1" no
+# legacy:
+## pdtk_check .pdwindow "Hello world!" "pd dsp 1" no
 proc pdtk_check {mytoplevel message reply_to_pd default} {
-    if {[ pdtk_yesnodialog $mytoplevel $message $default ]} {
+    # example: 'pdtk_check . [list "Switch compatibility to %s?" $compat] [list pd compatibility $compat ] no'
+    if {[lindex $message 0] == [lindex [lindex $message 0] 0]} {
+        set message [ list $message ]
+    }
+
+    if {[ catch {
+              set msg [format [_ [ lindex $message 0 ] ] {*}[lrange $message 1 end] ]
+          } ]} {
+           set msg [_ $message]
+       }
+    if {[ pdtk_yesnodialog $mytoplevel $msg $default ]} {
         pdsend $reply_to_pd
     }
 }

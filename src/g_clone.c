@@ -47,6 +47,7 @@ typedef struct _out
 typedef struct _clone
 {
     t_object x_obj;
+    t_canvas *x_canvas; /* owning canvas */
     int x_n;            /* number of copies */
     t_copy *x_vec;      /* the copies */
     int x_nin;
@@ -56,9 +57,11 @@ typedef struct _clone
     t_symbol *x_s;      /* name of abstraction */
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
-    int x_phase;
+    int x_phase;        /* phase for round-robin input message forwarding */
     int x_startvoice;   /* number of first voice, 0 by default */
-    int x_suppressvoice; /* suppress voice number as $1 arg */
+    unsigned int x_suppressvoice:1; /* suppress voice number as $1 arg */
+    unsigned int x_distributein:1;  /* distribute input signals across clones */
+    unsigned int x_packout:1;       /* pack output signals */
 } t_clone;
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
@@ -291,13 +294,13 @@ static void clone_loadbang(t_clone *x, t_floatarg f)
 }
 
 void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp);
-t_signal *signal_newfromcontext(int borrowed);
+t_signal *signal_newfromcontext(int borrowed, int nchans);
 void signal_makereusable(t_signal *sig);
 
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
-    int i, j, nin, nout;
-    t_signal **tempsigs, **tempio;
+    int i, j, nin, nout, *noutchans;
+    t_signal **tempio;
     if (!x->x_n)
         return;
     for (i = nin = 0; i < x->x_nin; i++)
@@ -315,44 +318,153 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         {
             pd_error(x, "clone: can't do DSP until edited copy is saved");
             for (i = 0; i < nout; i++)
-                dsp_add_zero(sp[nin+i]->s_vec, sp[nin+i]->s_n);
+            {
+                    /* create dummy output signals */
+                signal_setmultiout(&sp[nin+i], x->x_packout ? x->x_n : 1);
+                dsp_add_zero(sp[nin+i]->s_vec,
+                    sp[nin+i]->s_length * sp[nin+i]->s_nchans);
+            }
             return;
         }
     }
-    tempsigs = (t_signal **)alloca((nin + 2 * nout) * sizeof(*tempsigs));
-    tempio = tempsigs + nout;
+    tempio = (nin + nout) > 0 ?
+        (t_signal **)alloca((nin + nout) * sizeof(*tempio)) : 0;
+    noutchans = nout > 0 ? (int *)alloca(nout * sizeof(*noutchans)) : 0;
         /* load input signals into signal vector to send subpatches */
-    for (i = 0; i < nin; i++)
+    if (x->x_packout)   /* pack individual mono outputs to a multichannel one */
     {
-            /* we already have one reference "counted" for our presumed
-            use of this input signal but add one for each additional copy. */
-        sp[i]->s_refcount += x->x_n-1;
-        tempio[i] = sp[i];
-    }
-        /* for first copy, write output to first nout temp sigs */
-    for (i = 0; i < nout; i++)
-        tempsigs[i] = signal_newfromcontext(0);
-
-    for (j = 0; j < x->x_n; j++)
-    {
-        for (i = 0; i < nout; i++)
-            tempio[nin + i] = signal_newfromcontext(1);
-        canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
-        for (i = 0; i < nout; i++)
+        for (j = 0; j < x->x_n; j++)
         {
-            if (j == 0)
-                dsp_add_copy(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
-                    tempsigs[i]->s_n);
-            else dsp_add_plus(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
-                    tempsigs[i]->s_vec, tempsigs[i]->s_n);
-            signal_makereusable(tempio[nin + i]);
+            for (i = 0; i < nin; i++)
+            {
+                if (x->x_distributein)
+                {
+                        /* distribute multi-channel signal over instances;
+                        wrap around if channel count is lower than instance
+                        count */
+                    int offset = j % sp[i]->s_nchans;
+                    tempio[i] = signal_new(0, 1, sp[i]->s_sr, 0);
+                    signal_setborrowed(tempio[i], sp[i]);
+                    tempio[i]->s_nchans = 1;
+                    tempio[i]->s_vec = sp[i]->s_vec + offset * sp[i]->s_length;
+                    tempio[i]->s_refcount = 1;
+                }
+                else
+                {
+                    tempio[i] = sp[i];
+                    sp[i]->s_refcount++;
+                }
+            }
+            for (i = 0; i < nout; i++)
+                tempio[nin + i] = signal_newfromcontext(1, 1);
+            canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
+            /* for (i = 0; i < nin; i++)
+                if (x->x_distributein)
+            {
+                if (--tempio[i]->s_refcount)
+                    bug("clone 3: %d", tempio[i]->s_refcount);
+                signal_makereusable(tempio[i]);
+            }   */
+            for (i = 0; i < nout; i++)
+            {
+                int nchans = tempio[nin + i]->s_nchans;
+                int length = tempio[nin + i]->s_length;
+                t_sample *to, *from = tempio[nin + i]->s_vec;
+                if (j == 0) /* now we can the create the output signal */
+                {
+                    signal_setmultiout(&sp[nin + i], nchans * x->x_n);
+                    noutchans[i] = nchans;
+                }
+                    /* NB: it is possible for instances to have different
+                    output channel counts. In this case we always take the
+                    channel count of the first instance. */
+                to = sp[nin + i]->s_vec + j * length * noutchans[i];
+                if (nchans == noutchans[i])
+                    dsp_add_copy(from, to, length * nchans);
+                else
+                {
+                    if (nchans > noutchans[i]) /* ignore extra channels */
+                        dsp_add_copy(from, to, noutchans[i] * length);
+                    else /* fill missing channels with zeros */
+                    {
+                        dsp_add_copy(from, to, nchans * length);
+                        dsp_add_zero(to + length * nchans,
+                            length * (noutchans[i] - nchans));
+                    }
+                #if 1
+                    pd_error(x, "warning: clone instance %d: channel count "
+                        "of outlet %d (%d) does not match first instance (%d)",
+                            j, i, nchans, noutchans[i]);
+                #endif
+                }
+                signal_makereusable(tempio[nin + i]);
+            }
         }
     }
-        /* copy to output signsls */
-    for (i = 0; i < nout; i++)
+    else    /* otherwise add the individual outputs */
     {
-        dsp_add_copy(tempsigs[i]->s_vec, sp[nin+i]->s_vec, tempsigs[i]->s_n);
-        signal_makereusable(tempsigs[i]);
+        for (j = 0; j < x->x_n; j++)
+        {
+            for (i = 0; i < nin; i++)
+            {
+                if (x->x_distributein)
+                {
+                        /* distribute multi-channel signal over instances;
+                        wrap around if channel count is lower than instance count */
+                    int offset = j % sp[i]->s_nchans;
+                    tempio[i] = signal_new(0, 1, sp[i]->s_sr, 0);
+                    signal_setborrowed(tempio[i], sp[i]);
+                    tempio[i]->s_nchans = 1;
+                    tempio[i]->s_vec = sp[i]->s_vec + offset * sp[i]->s_length;
+                    tempio[i]->s_refcount = 1;
+                }
+                else
+                {
+                    tempio[i] = sp[i];
+                    sp[i]->s_refcount++;
+                }
+            }
+            for (i = 0; i < nout; i++)
+                tempio[nin + i] = signal_newfromcontext(1, 1);
+            canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
+            for (i = 0; i < nout; i++)
+            {
+                int nchans = tempio[nin + i]->s_nchans;
+                int length = tempio[nin + i]->s_length;
+                if (j == 0)
+                {
+                        /* first instance: create output signal and copy content */
+                    signal_setmultiout(&sp[nin + i], nchans);
+                    dsp_add_copy(tempio[nin + i]->s_vec,
+                        sp[nin + i]->s_vec, length * nchans);
+                    noutchans[i] = nchans;
+                }
+                else /* add to existing signal */
+                {
+                    int nsamples = nchans > noutchans[i] ?
+                        noutchans[i] * length : nchans * length;
+                #if 1
+                    if (nchans != noutchans[i])
+                        pd_error(x, "warning: clone instance %d: channel count "
+                            "of outlet %d (%d) does not match first instance (%d)",
+                                j, i, nchans, noutchans[i]);
+                #endif
+                    dsp_add_plus(tempio[nin + i]->s_vec, sp[nin + i]->s_vec,
+                        sp[nin + i]->s_vec, nsamples);
+                }
+                signal_makereusable(tempio[nin + i]);
+            }
+            for (i = 0; i < nin; i++)
+                if (x->x_distributein && tempio[i]->s_refcount)
+                    bug("clone 3: %d", tempio[i]->s_refcount);
+        }
+    }
+    for (i = 0; i < nin; i++)
+    {
+        if (sp[i]->s_refcount <= 0)
+            bug("clone 2 %d", sp[i]->s_refcount);
+        if (!--sp[i]->s_refcount)
+            signal_makereusable(sp[i]);
     }
 }
 
@@ -362,10 +474,13 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     t_canvas *c;
     int wantn, dspstate, i, voicetovis = clone_voicetovis;
     t_out *outvec;
+    x->x_canvas = canvas_getcurrent();
     x->x_invec = 0;
     x->x_outvec = 0;
     x->x_startvoice = 0;
     x->x_suppressvoice = 0;
+    x->x_distributein = 0;
+    x->x_packout = 0;
     clone_voicetovis = -1;
     if (argc == 0)
     {
@@ -385,6 +500,12 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         }
         else if (!strcmp(argv[0].a_w.w_symbol->s_name, "-x"))
             x->x_suppressvoice = 1, argc--, argv++;
+        else if (!strcmp(argv[0].a_w.w_symbol->s_name, "-d"))
+            x->x_distributein = x->x_packout = 1, argc--, argv++;
+        else if (!strcmp(argv[0].a_w.w_symbol->s_name, "-di"))
+            x->x_distributein = 1, argc--, argv++;
+        else if (!strcmp(argv[0].a_w.w_symbol->s_name, "-do"))
+            x->x_packout = 1, argc--, argv++;
         else goto usage;
     }
     if (argc >= 2 && (wantn = atom_getfloatarg(0, argc, argv)) >= 0
@@ -452,7 +573,8 @@ fail:
 void clone_setup(void)
 {
     clone_class = class_new(gensym("clone"), (t_newmethod)clone_new,
-        (t_method)clone_free, sizeof(t_clone), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)clone_free, sizeof(t_clone),
+            CLASS_NOINLET | CLASS_MULTICHANNEL, A_GIMME, 0);
     class_addmethod(clone_class, (t_method)clone_click, gensym("click"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_loadbang, gensym("loadbang"),
@@ -492,7 +614,7 @@ int clone_get_n(t_gobj *x)
 t_glist *clone_get_instance(t_gobj *x, int n)
 {
     t_clone *c;
-    
+
     if (pd_class(&x->g_pd) != clone_class) return NULL;
 
     c = (t_clone *)x;

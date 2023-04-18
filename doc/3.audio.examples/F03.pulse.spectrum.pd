@@ -1,10 +1,10 @@
-#N canvas 689 141 643 693 12;
+#N canvas 602 31 641 655 12;
 #X declare -stdpath ./;
 #X obj 193 184 line~;
 #X obj 71 255 cos~;
 #X obj 193 160 pack 0 50;
-#X floatatom 147 59 0 0 100 0 - - - 0;
-#X obj 71 126 -~ 0.5;
+#X floatatom 147 59 4 0 100 0 - - - 0;
+#X obj 71 131 -~ 0.5;
 #X obj 71 168 *~;
 #X obj 147 85 / 10;
 #X obj 147 109 moses 0;
@@ -14,14 +14,8 @@
 #X obj 193 209 +~ 1;
 #X obj 71 279 +~ 1;
 #X text 52 16 PULSE SPECTRUM MEASUREMENT;
-#X text 82 469 Here is a measured amplitude spectrum for the pulse
-train. Notice that \, other than a smallish spillover \, the energy
-sits in one "lobe" whose changing width justifies our calling the squeeze
-factor the "bandwidth.";
-#X text 84 540 The spectrum is in units of amplitude. The sidelobes
-\, although they look small \, are actually only about 34 dB down.
-You can design more complicated pulse trains \, little Blackman window
-functions \, which control the sidelobes much better.;
+#X text 82 469 Here is a measured amplitude spectrum for the pulse train. Notice that \, other than a smallish spillover \, the energy sits in one "lobe" whose changing width justifies our calling the squeeze factor the "bandwidth.", f 68;
+#X text 82 530 The spectrum is in units of amplitude. The sidelobes \, although they look small \, are actually only about 34 dB down. You can design more complicated pulse trains \, little Blackman window functions \, which control the sidelobes much better., f 68;
 #X obj 71 375 output~;
 #X obj 71 336 hip~;
 #N canvas 424 208 569 608 fft 0;
@@ -36,9 +30,7 @@ functions \, which control the sidelobes much better.;
 #X text 127 137 Fourier series;
 #X text 132 190 magnitude;
 #X text 130 175 calculate;
-#X text 60 26 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 60 26 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 105 104 signal to analyze;
 #X text 194 216 delay two samples;
 #X text 192 234 for better graphing;
@@ -76,12 +68,10 @@ until much later.;
 #X connect 21 0 23 0;
 #X connect 24 0 15 0;
 #X restore 134 332 pd fft;
-#X obj 153 301 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 193 332 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X obj 153 301 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 193 332 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #X obj 71 303 *~ 0.5;
-#X obj 71 102 phasor~;
+#X obj 71 104 phasor~;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array F03-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
@@ -100,11 +90,11 @@ until much later.;
 #X text 492 205 10;
 #X text 524 205 12;
 #X text 556 205 14;
-#X text 406 635 updated for Pd version 0.37;
+#X text 393 617 updated for Pd version 0.37;
 #X obj 71 75 r freq;
-#X text 175 301 <= graph once;
-#X text 214 331 <= repeatedly;
 #X obj 469 25 declare -stdpath ./;
+#X text 214 331 <-- repeatedly;
+#X text 175 301 <-- graph once;
 #X connect 0 0 11 0;
 #X connect 1 0 12 0;
 #X connect 2 0 0 0;

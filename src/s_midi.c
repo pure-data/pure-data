@@ -22,7 +22,6 @@
 #endif
 #include <string.h>
 #include <stdio.h>
-#include <signal.h>
 
 /* channel voice messages */     /* dec, # */
 #define MIDI_NOTEOFF        0x80 /* 128, 2 */
@@ -606,7 +605,7 @@ void sys_open_midi(int nmidiindev, int *midiindev,
     sys_save_midi_params(nmidiindev, midiindev,
         nmidioutdev, midioutdev);
 
-    sys_vgui("set pd_whichmidiapi %d\n", sys_midiapi);
+    pdgui_vmess("set", "ri", "pd_whichmidiapi", sys_midiapi);
 
 }
 
@@ -688,45 +687,41 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
 
 extern t_class *glob_pdobject;
 
-
-void sys_gui_strarray(const char*varname, const char*strarray[], unsigned int size);
-void sys_gui_intarray(const char*varname, const int*intarray, unsigned int size);
-
 void sys_gui_midipreferences(void) {
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    char *indevs[1+MAXNDEV], *outdevs[1+MAXNDEV];
     int nindevs = 0, noutdevs = 0, i;
     char device[MAXPDSTRING];
 
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
-
-    const char *strarray[MAXNDEV];
+    float midiindevf[MAXMIDIINDEV], midioutdevf[MAXMIDIOUTDEV];
 
         /* query the current MIDI settings */
     sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
 
-        /* and send them over to the GUI */
-    sys_vgui("set ::pd_whichmidiapi %d\n", sys_midiapi);
+    indevs[0] = outdevs[0] = "none";
+    for (i = 0; i < nindevs; i++)
+        indevs[i+1] = indevlist + i * DEVDESCSIZE;
+    for (i = 0; i < noutdevs; i++)
+        outdevs[i+1] = outdevlist + i * DEVDESCSIZE;
 
-        /* notify GUI of available input devices */
-    for (i = 0; i < nindevs; i++) {
-        strarray[i] = indevlist + i*DEVDESCSIZE;
-    }
-    sys_gui_strarray("::midi_indevlist", strarray, nindevs);
-
-        /* notify GUI of available output devices */
-    for (i = 0; i < noutdevs; i++) {
-        strarray[i] = outdevlist + i*DEVDESCSIZE;
-    }
-    sys_gui_strarray("::midi_outdevlist", strarray, noutdevs);
+    pdgui_vmess("set", "rS", "::midi_indevlist",
+        nindevs+1, indevs); /* +1 for the leading 'none' */
+    pdgui_vmess("set", "rS", "::midi_outdevlist",
+        noutdevs+1, outdevs); /* +1 for the leading 'none' */
 
         /* notify GUI of used input/output devices */
-    sys_gui_intarray("::midi_indevices", midiindev, nindev);
-    sys_gui_intarray("::midi_outdevices", midioutdev, noutdev);
+    for (i=0; i<nindev; i++)
+        midiindevf[i] = (t_float)midiindev[i];
+    for (i=0; i<noutdev; i++)
+        midioutdevf[i] = (t_float)midioutdev[i];
+    pdgui_vmess("set", "rF", "::midi_indevices", nindev, midiindevf);
+    pdgui_vmess("set", "rF", "::midi_outdevices", noutdev, midioutdevf);
 }
 
     /* start an midi settings dialog window */
@@ -757,21 +752,22 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
             midioutdev[i] = 0;
     }
 
-    if(0) {
+    pdgui_stub_deleteforkey(0);
+    if (0) {
 #ifdef USEAPI_ALSA
     } else if (sys_midiapi == API_ALSA) {
-        sys_vgui("pdtk_alsa_midi_dialog .midi_preferences "
-            "%d %d %d %d %d %d %d %d "
-            "%d 1\n",
+        pdgui_stub_vnew(&glob_pdobject,
+            "pdtk_alsa_midi_dialog", (void *)glob_midi_properties,
+            "iiii iiii ii",
             midiindev[0], midiindev[1], midiindev[2], midiindev[3],
             midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],
-            (flongform != 0));
+            (flongform != 0), 1);
 #endif
     } else {
-        sys_vgui("pdtk_midi_dialog .midi_preferences "
-            "%d %d %d %d %d %d %d %d %d "
-            "%d %d %d %d %d %d %d %d %d "
-            "%d\n",
+        pdgui_stub_vnew(
+            &glob_pdobject,
+            "pdtk_midi_dialog", (void *)glob_midi_properties,
+            "iiiiiiiii iiiiiiiii i",
             midiindev[0], midiindev[1], midiindev[2], midiindev[3],
             midiindev[4], midiindev[5], midiindev[6], midiindev[7], midiindev[8],
             midioutdev[0], midioutdev[1], midioutdev[2], midioutdev[3],

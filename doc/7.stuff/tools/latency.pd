@@ -1,7 +1,7 @@
-#N canvas 292 145 707 484 12;
+#N canvas 420 112 707 484 12;
 #X floatatom 211 98 4 0 0 0 - - adc-gain 0;
 #X text 289 17 latency measurement;
-#N canvas 340 47 928 842 guts 0;
+#N canvas 196 23 928 723 guts 0;
 #X obj 292 35 adc~ 1 2 3 4 5 6 7 8;
 #X obj 318 102 == 1;
 #X obj 293 126 *~ 0;
@@ -25,21 +25,7 @@
 #X obj 59 201 s inchannel-set;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array pulse 120 float 1;
-#A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618
--0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239
--0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055
--0.259767 -0.293732 -0.328561 -0.363831 -0.39909 -0.433862 -0.467657
--0.499977 -0.530324 -0.558209 -0.583156 -0.604713 -0.622461 -0.636015
--0.645036 -0.649234 -0.648374 -0.642282 -0.630843 -0.614012 -0.591808
--0.564318 -0.531698 -0.494168 -0.452014 -0.405579 -0.355267 -0.301528
--0.244862 -0.185805 -0.124926 -0.0628189 -9.26574e-05 0.0626345 0.124745
-0.185628 0.244691 0.301365 0.355113 0.405437 0.451883 0.494051 0.531595
-0.56423 0.591735 0.613955 0.630802 0.642256 0.648364 0.649239 0.645055
-0.636048 0.622507 0.604771 0.583224 0.558287 0.53041 0.500069 0.467754
-0.433963 0.399193 0.363935 0.328665 0.293834 0.259866 0.22715 0.196032
-0.166815 0.139751 0.115038 0.0928211 0.0731882 0.0561701 0.0417419
-0.0298239 0.0202844 0.012943 0.00757468 0.00391473 0.00166424 0.000496283
-6.24961e-05 0 0 0 0 0 0 0 0 0 0;
+#A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618 -0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239 -0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055 -0.259767 -0.293732 -0.328561 -0.363831 -0.39909 -0.433862 -0.467657 -0.499977 -0.530324 -0.558209 -0.583156 -0.604713 -0.622461 -0.636015 -0.645036 -0.649234 -0.648374 -0.642282 -0.630843 -0.614012 -0.591808 -0.564318 -0.531698 -0.494168 -0.452014 -0.405579 -0.355267 -0.301528 -0.244862 -0.185805 -0.124926 -0.0628189 -9.26574e-05 0.0626345 0.124745 0.185628 0.244691 0.301365 0.355113 0.405437 0.451883 0.494051 0.531595 0.56423 0.591735 0.613955 0.630802 0.642256 0.648364 0.649239 0.645055 0.636048 0.622507 0.604771 0.583224 0.558287 0.53041 0.500069 0.467754 0.433963 0.399193 0.363935 0.328665 0.293834 0.259866 0.22715 0.196032 0.166815 0.139751 0.115038 0.0928211 0.0731882 0.0561701 0.0417419 0.0298239 0.0202844 0.012943 0.00757468 0.00391473 0.00166424 0.000496283 6.24961e-05 0 0 0 0 0 0 0 0 0 0;
 #X coords 0 1 119 -1 200 140 1;
 #X restore 25 399 graph;
 #X obj 52 587 t b b;
@@ -48,77 +34,74 @@
 #X obj 52 616 until;
 #X obj 123 676 t f f;
 #X obj 46 780 tabwrite pulse;
-#X obj 50 563 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000;
+#X obj 52 553 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
 #X msg 143 570 \; pulse const 0;
-#X msg 140 620 0;
+#X msg 141 620 0;
 #X obj 44 676 sel 100;
 #X obj 157 780 + 10;
 #X obj 67 712 * 0.06283;
 #X obj 615 264 metro 1000;
 #X obj 615 218 r metro-on;
-#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 #fcfcfc #000000
-#000000 0 1;
-#X obj 628 326 vline~;
-#X obj 627 357 tabread4~ pulse;
+#X obj 614 243 tgl 15 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000 0 1;
+#X obj 705 326 vline~;
+#X obj 705 357 tabread4~ pulse;
 #X obj 687 31 r inchannel;
 #X obj 291 186 hip~ 20;
-#X obj 411 516 *~ 1e+10;
-#X obj 411 543 clip~ 0 1;
-#X obj 411 567 *~ 1e+10;
-#X obj 412 603 lop~ 3;
-#X obj 413 627 clip~ 0 1;
-#X msg 355 574 clear;
-#X msg 629 295 0 \, 12000 10;
-#X obj 744 359 osc~ 220;
-#X obj 744 386 *~ 0.03;
-#X obj 649 526 +~;
+#X obj 290 472 *~ 1e+10;
+#X obj 290 499 clip~ 0 1;
+#X obj 290 523 *~ 1e+10;
+#X obj 290 553 lop~ 3;
+#X obj 291 577 clip~ 0 1;
+#X msg 564 502 clear;
+#X msg 705 295 0 \, 12000 10;
+#X obj 754 424 osc~ 220;
+#X obj 754 451 *~ 0.03;
+#X obj 704 476 +~;
 #X obj 650 581 dac~ 1 2 3 4 5 6 7 8;
-#X obj 431 268 bp~ 220 0.7;
-#X obj 693 622 env~ 65536;
-#X floatatom 693 649 4 0 0 0 - - - 0;
-#X floatatom 749 329 5 0 0 0 - - - 0;
+#X obj 401 278 bp~ 220 0.7;
+#X obj 810 532 env~ 65536;
+#X floatatom 820 559 4 0 0 0 - - - 0;
+#X floatatom 754 394 5 0 0 0 - - - 0;
 #X obj 704 414 +~;
-#X obj 430 292 rzero~ -1;
-#X obj 431 317 rzero~ -1;
-#X obj 431 343 *~ 0.15;
-#X obj 287 316 rzero~ 1;
-#X obj 288 341 rzero~ 1;
+#X obj 401 302 rzero~ -1;
+#X obj 401 327 rzero~ -1;
+#X obj 401 353 *~ 0.15;
+#X obj 290 316 rzero~ 1;
+#X obj 290 341 rzero~ 1;
 #X obj 45 747 expr -0.5 * (1-cos($f1)) * sin($f1);
-#X obj 288 292 bp~ 2000 0.7;
-#X obj 413 465 *~ 20;
-#X obj 629 382 *~ 0.1;
-#X obj 332 220 + 100;
-#X obj 332 245 dbtorms;
+#X obj 290 292 bp~ 2000 0.7;
+#X obj 290 421 *~ 20;
+#X obj 705 382 *~ 0.1;
+#X obj 351 215 + 100;
+#X obj 351 240 dbtorms;
 #X obj 290 246 *~ 1;
 #X obj 160 281 env~ 65536;
-#X floatatom 160 308 4 0 0 0 - - - 0;
-#X obj 431 370 bonk~;
-#X obj 431 395 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc
-#000000 #000000;
-#X obj 412 489 -~ 0.1;
-#X obj 414 656 -~ 1;
-#X obj 414 683 *~ -1;
-#X obj 565 747 phasor~;
-#X msg 616 714 0;
-#X obj 664 703 del 800;
-#X obj 665 728 snapshot~;
-#X floatatom 665 779 6 0 0 0 - - - 0;
-#X obj 666 756 * 1000;
-#X obj 87 328 s adc-db;
-#X obj 733 646 s dac-db;
-#X obj 728 774 s latency;
-#X obj 354 196 r adc-gain;
-#X msg 47 61 \; inchannel 1 \; metro-on 1 \; pd dsp 1;
-#X obj 474 397 s discontinuity;
-#X obj 496 514 *~ 1e+10;
-#X obj 496 541 clip~ 0 1;
-#X obj 496 565 *~ 1e+10;
-#X obj 497 601 lop~ 3;
-#X obj 498 625 clip~ 0 1;
-#X obj 497 487 -~ 0.1;
-#X obj 497 463 *~ 20;
-#X obj 514 709 *~;
+#X floatatom 171 309 7 0 0 0 - - - 0;
+#X obj 401 380 bonk~;
+#X obj 378 409 bng 17 250 50 0 empty empty empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X obj 290 445 -~ 0.1;
+#X obj 291 602 -~ 1;
+#X obj 291 629 *~ -1;
+#X obj 449 713 phasor~;
+#X msg 495 680 0;
+#X obj 612 703 del 800;
+#X obj 612 728 snapshot~;
+#X floatatom 611 778 6 0 0 0 - - - 0;
+#X obj 612 755 * 1000;
+#X obj 160 335 s adc-db;
+#X obj 810 583 s dac-db;
+#X obj 674 773 s latency;
+#X obj 351 191 r adc-gain;
+#X msg 46 61 \; inchannel 1 \; metro-on 1 \; pd dsp 1;
+#X obj 401 409 s discontinuity;
+#X obj 410 542 *~ 1e+10;
+#X obj 410 569 clip~ 0 1;
+#X obj 410 593 *~ 1e+10;
+#X obj 410 619 lop~ 3;
+#X obj 411 643 clip~ 0 1;
+#X obj 410 505 -~ 0.1;
+#X obj 410 481 *~ 20;
+#X obj 393 675 *~;
 #X connect 0 0 2 0;
 #X connect 0 1 3 0;
 #X connect 0 2 4 0;
@@ -251,14 +234,6 @@
 #X text 78 142 so that RMS amplitude in is between 60 and 70;
 #X text 80 121 (typically between -20 and 20);
 #X text 444 421 updated for Pd version 0.43;
-#X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
-#fcfcfc #000000 #000000;
-#X text 75 212 discontinuity: this flashes if there are audio errors
-, f 27;
-#X text 60 275 To use this patch \, connect your audio output back
-to the audio input (any input and output channel from 1 to 8 \, but
-the input channel should agree with the "inchannel" control at top).
-Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from
-60 to 70 will do.) The latency is measured once per second. If there
-are interruptions in the audio the button above should flash (whether
-or not the audio system reports the error).;
+#X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10 #dfdfdf #000000 #000000;
+#X text 75 212 discontinuity: this flashes if there are audio errors, f 27;
+#X text 60 275 To use this patch \, connect your audio output back to the audio input (any input and output channel from 1 to 8 \, but the input channel should agree with the "inchannel" control at top). Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from 60 to 70 will do.) The latency is measured once per second. If there are interruptions in the audio the button above should flash (whether or not the audio system reports the error).;

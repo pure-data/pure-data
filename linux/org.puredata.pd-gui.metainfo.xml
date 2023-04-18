@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.puredata.pd-gui</id>
+  <name>Pure Data (Pd)</name>
+  <summary>A real-time graphical programming environment for live interactive computer music</summary>
+
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>BSD-3-Clause</project_license>
+
+  <description>
+    <p>
+      Pure Data (or just &quot;Pd&quot;) is an open source visual programming language for multimedia. Pure Data is developed by Miller Puckette since 1996 and you can find it on his official website along with the official documentation and other related resources. This is the official &quot;Pd&quot; or &quot;main distribution&quot; and it is also known as &quot;Pd Vanilla&quot;.
+    </p>
+    <p>
+      Think of Pd as a <em>Modular Synthesizer</em> that is also a programming language.
+    </p>
+    <p>
+      Pd&apos;s audio and MIDI functions are built-in as well as networking (e.g. using Open Sound Control), but there are a number of external libraries that allow you to do graphics, interface hardware and much more...
+    </p>
+  </description>
+  <provides>
+    <binary>pd-gui</binary>
+  </provides>
+  <url type="homepage">https://puredata.info/</url>
+
+  <launchable type="desktop-id">org.puredata.pd-gui.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://screenshots.debian.net/shrine/screenshot/12081/simage/large-f07fad807ae33903b32a38d2c7cedd66.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.0"/>
+</component>

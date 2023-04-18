@@ -1,11 +1,10 @@
-#N canvas 367 23 909 727 12;
+#N canvas 367 23 909 712 12;
 #X declare -stdpath ./;
-#X floatatom 148 113 0 0 0 0 - - - 0;
+#X floatatom 148 113 5 0 0 0 - - - 0;
 #X obj 148 484 *~;
 #X obj 271 411 line~;
-#X floatatom 271 148 0 0 0 0 - - - 0;
+#X floatatom 271 148 5 0 0 0 - - - 0;
 #X text 73 41 PITCH SHIFTER;
-#X obj 271 385 pack 0 200;
 #X obj 271 122 r window;
 #X obj 148 87 r transpose;
 #X obj 148 169 exp;
@@ -13,7 +12,6 @@
 #X obj 148 285 /;
 #X obj 196 219 * 0.001;
 #X obj 370 472 line~;
-#X obj 370 447 pack 0 200;
 #X floatatom 370 396 0 0 0 0 - - - 0;
 #X obj 370 370 r delay;
 #X obj 148 510 +~;
@@ -25,8 +23,8 @@
 #X obj 307 519 +~;
 #X obj 244 546 cos~;
 #X obj 244 573 *~;
-#X msg 527 66 \; transpose 0 \; window 100 \; delay 0;
-#X obj 527 40 loadbang;
+#X msg 497 66 \; transpose 0 \; window 100 \; delay 0;
+#X obj 497 40 loadbang;
 #X obj 196 246 t b f;
 #X floatatom 148 311 6 0 0 0 - - - 0;
 #X obj 212 386 +~ 0.5;
@@ -80,12 +78,6 @@
 #X connect 16 0 17 0;
 #X connect 17 0 18 0;
 #X restore 279 43 pd test-input;
-#X text 481 186 This is a classic rotating-tape-head style pitch shifter
-using the vd~ variable delay object. There are two moving tape heads
-\, each of which is loudest at the middle of its trajectory \, and
-enveloped out at the moment it has to jump back (or forward) to start
-another scratch. Most of the brain work is in computing how fast the
-tape heads have to move to get the desired transposition., f 52;
 #X text 480 326 The "window size" is the total trajectory of the read
 points in the delay line \, in milliseconds. The delay times are controlled
 by a phasor~ object. The second delay time \, 180 degrees out of phase
@@ -100,65 +92,74 @@ the cosine waveform (phase -0.25 to +0.25) over the time the phase
 goes from one end to the other., f 52;
 #X obj 209 640 output~;
 #X obj 148 342 phasor~;
-#X text 643 631 updated for Pd version 0.37-1;
 #X obj 370 423 max 1.5;
 #X text 373 329 delay;
 #X text 370 347 (msec);
 #X obj 271 175 max 1;
 #X text 76 315 rotation freq, f 9;
-#X obj 148 536 vd~ G09-del;
-#X obj 307 548 vd~ G09-del;
 #X obj 279 74 delwrite~ G09-del 5000;
-#X text 304 148 <= window (msec);
 #X text 39 98 transposition;
 #X text 38 111 (halftones) =>;
-#X obj 690 43 declare -stdpath ./;
-#X connect 0 0 35 0;
-#X connect 1 0 16 0;
+#X obj 660 43 declare -stdpath ./;
+#X obj 307 548 delread4~ G09-del, f 9;
+#X obj 148 536 delread4~ G09-del, f 9;
+#X text 481 186 This is a classic rotating-tape-head style pitch shifter
+using the delread4~ variable delay object. There are two moving tape
+heads \, each of which is loudest at the middle of its trajectory \,
+and enveloped out at the moment it has to jump back (or forward) to
+start another scratch. Most of the brain work is in computing how fast
+the tape heads have to move to get the desired transposition., f 52
+;
+#X text 624 631 updated for Pd version 0.52;
+#X obj 370 447 pack f 200;
+#X obj 271 385 pack f 200;
+#X text 312 147 <-- window (msec);
+#X connect 0 0 33 0;
+#X connect 1 0 14 0;
 #X connect 2 0 1 1;
-#X connect 2 0 21 1;
-#X connect 3 0 51 0;
-#X connect 5 0 2 0;
-#X connect 6 0 3 0;
-#X connect 7 0 0 0;
-#X connect 8 0 9 0;
-#X connect 9 0 34 0;
-#X connect 10 0 28 0;
-#X connect 11 0 27 0;
-#X connect 12 0 16 1;
-#X connect 12 0 22 1;
+#X connect 2 0 19 1;
+#X connect 3 0 47 0;
+#X connect 5 0 3 0;
+#X connect 6 0 0 0;
+#X connect 7 0 8 0;
+#X connect 8 0 32 0;
+#X connect 9 0 26 0;
+#X connect 10 0 25 0;
+#X connect 11 0 14 1;
+#X connect 11 0 20 1;
+#X connect 12 0 44 0;
 #X connect 13 0 12 0;
-#X connect 14 0 48 0;
-#X connect 15 0 14 0;
-#X connect 16 0 53 0;
-#X connect 17 0 18 0;
+#X connect 14 0 54 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 42 0;
+#X connect 17 0 42 1;
 #X connect 18 0 19 0;
-#X connect 19 0 45 0;
-#X connect 19 0 45 1;
-#X connect 20 0 21 0;
-#X connect 20 0 32 0;
+#X connect 18 0 30 0;
+#X connect 19 0 20 0;
+#X connect 20 0 53 0;
 #X connect 21 0 22 0;
-#X connect 22 0 54 0;
-#X connect 23 0 24 0;
-#X connect 24 0 19 1;
-#X connect 26 0 25 0;
-#X connect 27 0 10 0;
-#X connect 27 1 10 1;
-#X connect 28 0 46 0;
-#X connect 29 0 20 0;
+#X connect 22 0 17 1;
+#X connect 24 0 23 0;
+#X connect 25 0 9 0;
+#X connect 25 1 9 1;
+#X connect 26 0 43 0;
+#X connect 27 0 18 0;
+#X connect 28 0 29 0;
+#X connect 29 0 15 0;
 #X connect 30 0 31 0;
-#X connect 31 0 17 0;
-#X connect 32 0 33 0;
-#X connect 33 0 23 0;
-#X connect 34 0 36 0;
-#X connect 35 0 8 0;
-#X connect 36 0 10 0;
-#X connect 40 0 55 0;
-#X connect 46 0 1 0;
-#X connect 46 0 30 0;
-#X connect 46 0 29 0;
-#X connect 48 0 13 0;
-#X connect 51 0 11 0;
-#X connect 51 0 5 0;
-#X connect 53 0 18 1;
-#X connect 54 0 24 1;
+#X connect 31 0 21 0;
+#X connect 32 0 34 0;
+#X connect 33 0 7 0;
+#X connect 34 0 9 0;
+#X connect 38 0 49 0;
+#X connect 43 0 1 0;
+#X connect 43 0 28 0;
+#X connect 43 0 27 0;
+#X connect 44 0 57 0;
+#X connect 47 0 10 0;
+#X connect 47 0 58 0;
+#X connect 53 0 22 1;
+#X connect 54 0 16 1;
+#X connect 57 0 11 0;
+#X connect 58 0 2 0;

@@ -5,20 +5,16 @@
 /* changes by Thomas Musil IEM KUG Graz Austria 2001 */
 /* all changes are labeled with      iemlib      */
 
-#include "m_pd.h"
-
 void g_array_setup(void);
 void g_canvas_setup(void);
 void g_guiconnect_setup(void);
 /* iemlib */
 void g_bang_setup(void);
-void g_hradio_setup(void);
-void g_hslider_setup(void);
 void g_mycanvas_setup(void);
 void g_numbox_setup(void);
+void g_radio_setup(void);
+void g_slider_setup(void);
 void g_toggle_setup(void);
-void g_vradio_setup(void);
-void g_vslider_setup(void);
 void g_vumeter_setup(void);
 /* iemlib */
 void g_io_setup(void);
@@ -64,13 +60,11 @@ void conf_init(void)
     g_guiconnect_setup();
 /* iemlib */
     g_bang_setup();
-    g_hradio_setup();
-    g_hslider_setup();
     g_mycanvas_setup();
     g_numbox_setup();
+    g_radio_setup();
+    g_slider_setup();
     g_toggle_setup();
-    g_vradio_setup();
-    g_vslider_setup();
     g_vumeter_setup();
 /* iemlib */
     g_io_setup();

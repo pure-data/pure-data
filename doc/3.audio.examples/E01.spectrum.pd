@@ -1,10 +1,10 @@
-#N canvas 616 23 764 821 12;
+#N canvas 408 23 764 723 12;
 #X declare -stdpath ./;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E01-signal 882 float 0;
 #X coords 0 5 882 -5 200 130 1;
 #X restore 460 67 graph;
-#X obj 133 311 hip~ 5;
+#X obj 134 325 hip~ 5;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E01-spectrum 128 float 0;
 #X coords 0 4300 127 -40 257 130 1;
@@ -22,24 +22,19 @@
 #X text 109 108 Fourier series;
 #X text 114 161 magnitude;
 #X text 112 146 calculate;
-#X text 38 9 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 38 9 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 109 77 signal to analyze;
 #X text 181 188 delay two samples;
 #X text 180 204 for better graphing;
 #X obj 106 433 samplerate~;
-#X obj 106 410 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 106 410 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
 #X floatatom 106 480 5 0 0 0 - - - 0;
 #X obj 106 456 / 256;
 #X obj 106 386 loadbang;
 #X floatatom 106 549 5 0 0 0 - - - 0;
 #X obj 114 502 s fundamental;
 #X obj 106 525 ftom;
-#X text 31 314 At load time \, calculate a good choice of fundamental
-frequency for showing spectra: the 16th bin in a 4096-point spectrum
-\, so SR*16/4096 or SR/256., f 62;
+#X text 31 314 At load time \, calculate a good choice of fundamental frequency for showing spectra: the 16th bin in a 4096-point spectrum \, so SR*16/4096 or SR/256., f 62;
 #X text 161 231 "bang" into this inlet to graph it;
 #X text 148 549 <= just out of curiosity \, here's the pitch;
 #X connect 0 0 2 0;
@@ -59,13 +54,12 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 19 0 18 0;
 #X connect 20 0 17 0;
 #X connect 23 0 21 0;
-#X restore 144 286 pd fft;
+#X restore 146 290 pd fft;
 #X text 480 199 ---- 0.02 seconds ----;
-#X obj 204 251 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 133 345 output~;
-#X obj 204 286 tabwrite~ E01-signal;
-#X text 533 780 updated for Pd version 0.37;
+#X obj 206 255 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 134 359 output~;
+#X obj 206 290 tabwrite~ E01-signal;
+#X text 542 690 updated for Pd version 0.37;
 #X text 447 389 1;
 #X text 481 389 2;
 #X text 513 389 3;
@@ -76,74 +70,50 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 415 389 0;
 #X text 462 408 -- partial number --;
 #X text 662 123 0;
-#X obj 135 56 r fundamental;
-#X obj 49 118 osc~;
-#X obj 67 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
-0 1;
-#X obj 49 168 *~;
-#X obj 92 118 osc~;
-#X obj 110 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 92 168 *~;
-#X obj 135 118 osc~;
-#X obj 153 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 135 168 *~;
-#X obj 135 95 * 2;
-#X obj 178 118 osc~;
-#X obj 196 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 178 168 *~;
-#X obj 221 118 osc~;
-#X obj 239 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 221 168 *~;
-#X obj 264 118 osc~;
-#X obj 282 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
-#X obj 264 168 *~;
-#X obj 49 95 * 0;
-#X obj 92 95 * 1;
-#X obj 178 95 * 3;
-#X obj 221 95 * 4;
-#X obj 264 95 * 5;
-#X text 325 159 for each;
-#X text 327 175 partial;
+#X obj 134 56 r fundamental;
+#X obj 48 118 osc~;
+#X obj 66 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 48 168 *~;
+#X obj 91 118 osc~;
+#X obj 109 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 91 168 *~;
+#X obj 134 118 osc~;
+#X obj 152 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 134 168 *~;
+#X obj 134 95 * 2;
+#X obj 177 118 osc~;
+#X obj 195 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 177 168 *~;
+#X obj 220 118 osc~;
+#X obj 238 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 220 168 *~;
+#X obj 263 118 osc~;
+#X obj 281 143 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000 0 1;
+#X obj 263 168 *~;
+#X obj 48 95 * 0;
+#X obj 91 95 * 1;
+#X obj 177 95 * 3;
+#X obj 220 95 * 4;
+#X obj 263 95 * 5;
+#X text 324 159 for each;
+#X text 326 175 partial;
 #X text 391 105 WAVEFORM;
 #X text 509 217 SPECTRUM;
-#X text 79 437 The next series of patches demonstrates various kinds
-of modulation: AM \, waveshaping \, and FM. We will need a tool for
-graphing spectra which is introduced here. In this patch the signal
-to be analyzed is a simple sum of up to six partials of a fundamental
-frequency (which is 172 Hz \, close to F below middle C \, if your
-sample rate happens to be 44100 Hz. The fundamental is chosen to agree
-with the analysis patch ("pd FFT") and is computed within it)., f
-75;
-#X text 80 545 The partials are numbered 0 through 5 \, where 0 means
-DC \, or zero frequency \, 1 is the fundamental \, and so on. The toggle
-switches allow you to turn them on and off separately. You have to
-press the "click to graph" button to update the two graphs., f 75
-;
+#X text 46 445 The next series of patches demonstrates various kinds of modulation: AM \, waveshaping \, and FM. We will need a tool for graphing spectra which is introduced here. In this patch the signal to be analyzed is a simple sum of up to six partials of a fundamental frequency (which is 172 Hz \, close to F below middle C \, if your sample rate happens to be 44100 Hz. The fundamental is chosen to agree with the analysis patch ("pd FFT") and is computed within it)., f 97;
+#X text 46 526 The partials are numbered 0 through 5 \, where 0 means DC \, or zero frequency \, 1 is the fundamental \, and so on. The toggle switches allow you to turn them on and off separately. You have to press the "click to graph" button to update the two graphs., f 97;
 #X text 676 374 0;
 #X text 674 253 1;
 #X text 675 312 0.5;
-#X text 80 611 The upper graph is just the (time domain) waveform \,
-about four periods long. The lower graph is the magnitude spectrum.
-Its peaks are the magnitudes of the partials. Note that a DC signal
-of amplitude one is considered a partial of magnitude 1 \, but the
-other partials \, which have peak amplitudes of 1 (and RMS 0.707) \,
-have peak magnitudes of only 0.5 in the spectrum., f 75;
+#X text 46 577 The upper graph is just the (time domain) waveform \, about four periods long. The lower graph is the magnitude spectrum. Its peaks are the magnitudes of the partials. Note that a DC signal of amplitude one is considered a partial of magnitude 1 \, but the other partials \, which have peak amplitudes of 1 (and RMS 0.707) \, have peak magnitudes of only 0.5 in the spectrum., f 97;
 #X obj 134 229 *~ 1;
 #X text 662 63 5;
 #X text 663 183 -5;
 #X text 174 228 sum;
 #X text 57 11 GRAPHING SPECTRA OF AUDIO SIGNALS;
-#X text 80 705 Here we're introducing a new feature: multiple signals
-connected to a signal inlet (as in the "*~ 1") are added. This is the
-most convenient way to sum the six partials., f 75;
-#X text 227 250 <= click to graph;
-#X text 306 143 <= On/Off;
+#X text 305 143 <= On/Off;
 #X obj 584 20 declare -stdpath ./;
+#X text 229 254 <-- click to graph;
+#X text 46 644 Here we're introducing a new feature: multiple signals connected to a signal inlet (as in the [*~ 1]) are added. This is the most convenient way to sum the six partials., f 96;
 #X connect 1 0 6 0;
 #X connect 1 0 6 1;
 #X connect 5 0 3 1;

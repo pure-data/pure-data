@@ -1,4 +1,4 @@
-#N canvas 507 97 858 573 12;
+#N canvas 444 69 858 573 12;
 #X declare -stdpath ./;
 #X obj 147 335 *~;
 #X obj 165 311 line~;
@@ -23,22 +23,17 @@
 #X text 162 116 Fourier series;
 #X text 167 169 magnitude;
 #X text 165 154 calculate;
-#X text 62 16 This subpatch computes the spectrum of the incoming signal
-with a (rectangular windowed) FFT. FFTs aren't properly introduced
-until much later.;
+#X text 62 16 This subpatch computes the spectrum of the incoming signal with a (rectangular windowed) FFT. FFTs aren't properly introduced until much later.;
 #X text 148 81 signal to analyze;
 #X text 258 184 delay two samples;
 #X text 256 202 for better graphing;
 #X obj 106 464 samplerate~;
-#X obj 106 441 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
+#X obj 106 441 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000;
 #X floatatom 106 511 5 0 0 0 - - - 0;
 #X obj 106 487 / 256;
 #X obj 106 417 loadbang;
 #X obj 162 561 s fundamental;
-#X text 74 350 At load time \, calculate a good choice of fundamental
-frequency for showing spectra: the 16th bin in a 4096-point spectrum
-\, so SR*16/4096 or SR/256.;
+#X text 74 350 At load time \, calculate a good choice of fundamental frequency for showing spectra: the 16th bin in a 4096-point spectrum \, so SR*16/4096 or SR/256.;
 #X obj 285 280 metro 500;
 #X obj 285 254 inlet;
 #X text 338 252 toggle to graph repeatedly;
@@ -46,8 +41,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X obj 106 533 t b f;
 #X obj 84 315 tabwrite~ E10-spectrum;
 #X obj 273 315 tabwrite~ E10-spectrum;
-#X text 162 585 set carrier multiplier and modulation multipliers after
-fundamental, f 38;
+#X text 162 585 set carrier multiplier and modulation multipliers after fundamental, f 38;
 #X msg 106 565 \; cm 8 \; m1 2 \; m2 3;
 #X connect 0 0 2 0;
 #X connect 0 0 27 0;
@@ -71,11 +65,9 @@ fundamental, f 38;
 #X connect 23 0 22 0;
 #X connect 26 0 30 0;
 #X connect 26 1 20 0;
-#X restore 176 454 pd fft;
-#X obj 195 398 bng 18 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000;
-#X obj 216 427 tgl 18 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
-#000000 0 1;
+#X restore 176 452 pd fft;
+#X obj 195 394 bng 19 250 50 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000;
+#X obj 215 423 tgl 19 0 empty empty empty 0 -6 0 8 #dfdfdf #000000 #000000 0 1;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array E10-spectrum 259 float 0;
 #X coords 0 2100 258 -20 259 130 1;
@@ -94,15 +86,15 @@ fundamental, f 38;
 #X text 610 247 10;
 #X text 642 247 12;
 #X text 674 247 14;
-#X floatatom 71 93 3 0 15 0 - - - 0;
+#X floatatom 71 93 4 0 15 0 - - - 0;
 #X obj 71 180 *;
-#X obj 71 68 r cm;
+#X obj 71 66 r cm;
 #X text 55 18 SPECTRUM OF COMPLEX PHASE MODULATION;
-#X text 74 114 carrier;
+#X text 74 115 carrier;
 #X obj 147 182 *;
-#X floatatom 147 95 3 0 15 0 - - - 0;
+#X floatatom 147 93 4 0 15 0 - - - 0;
 #X text 151 115 mod 1;
-#X obj 147 70 r m1;
+#X obj 147 66 r m1;
 #X text 194 241 index1;
 #X obj 250 337 *~;
 #X obj 268 313 line~;
@@ -111,20 +103,14 @@ fundamental, f 38;
 #X obj 268 266 / 100;
 #X obj 250 209 osc~;
 #X obj 250 184 *;
-#X floatatom 250 97 3 0 15 0 - - - 0;
-#X text 254 117 mod 2;
+#X floatatom 250 93 4 0 15 0 - - - 0;
+#X text 254 115 mod 2;
 #X text 302 241 index2;
-#X obj 250 72 r m2;
-#X text 380 346 Now we introduce a second modulator oscillator. The
-carrier is on the 8th harmonic and the two modulators are at 2 and
-3 times the fundamental. When either index of modulation is zero \,
-changing the other index gives the familiar 2-operator FM result. But
-if index2 is nonzero (try around 10 \, for example) then sliding index1
-upward from 0 introduces sidebands around each of the sidebands.,
-f 63;
-#X text 217 398 <= graph once;
-#X text 237 426 <= repeatedly;
+#X obj 250 66 r m2;
+#X text 380 346 Now we introduce a second modulator oscillator. The carrier is on the 8th harmonic and the two modulators are at 2 and 3 times the fundamental. When either index of modulation is zero \, changing the other index gives the familiar 2-operator FM result. But if index2 is nonzero (try around 10 \, for example) then sliding index1 upward from 0 introduces sidebands around each of the sidebands., f 63;
 #X obj 623 21 declare -stdpath ./;
+#X text 236 422 <-- repeatedly;
+#X text 217 394 <-- graph once;
 #X connect 0 0 3 1;
 #X connect 1 0 0 1;
 #X connect 2 0 9 0;
