@@ -652,65 +652,21 @@ void sys_gui_audiopreferences(void) {
     sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
     sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
 
-
         /* and send it over to the GUI */
-
-        /* input */
-    pdgui_vmess("set", "rS", "::audio_indevlist", num_devicesI, devicesI);
-    pdgui_vmess("set", "rF", "::audio_indevices", num_usedevsI, usedevsI);
-    pdgui_vmess("set", "rF", "::audio_indevicechannels", num_devchansI, devchansI);
-    
-        /* output */
-    pdgui_vmess("set", "rS", "::audio_outdevlist", num_devicesO, devicesO);
-    pdgui_vmess("set", "rF", "::audio_outdevices", num_usedevsO, usedevsO);
-    pdgui_vmess("set", "rF", "::audio_outdevicechannels", num_devchansO, devchansO);
-    
-        /* misc audio settings */
-    pdgui_vmess("set", "rs", "::audio_samplerate", srate);
-    pdgui_vmess("set", "ri", "::audio_advance", as.a_advance);
-    pdgui_vmess("set", "rs", "::audio_blocksize ", blocksize);
-    pdgui_vmess("set", "rs", "::audio_use_callback ", callback);
-    pdgui_vmess("set", "ri", "::audio_can_multidevice", canmulti);
+    pdgui_vmess("::dialog_audio::set_configuration", "SFF SFF ssi si",
+        num_devicesI, devicesI, num_usedevsI, usedevsI, num_devchansI, devchansI,
+        num_devicesO, devicesO, num_usedevsO, usedevsO, num_devchansO, devchansO,
+        srate, blocksize, as.a_advance,
+        callback, canmulti);
 }
 
     /* start an audio settings dialog window */
 void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
 {
-    t_audiosettings as;
-        /* these are all the devices on the system: */
-    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, canmulti = 0, cancallback = 0, i;
-    char srate[80], callback[80], blocksize[80];
-
     sys_gui_audiopreferences();
-
-    sys_get_audio_settings(&as);
-    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs, &canmulti,
-         &cancallback, MAXNDEV, DEVDESCSIZE, as.a_api);
-
-    if (as.a_nindev > 1 || as.a_noutdev > 1)
-        flongform = 1;
-
-        /* values that are fixed and must not be changed by the GUI are
-        prefixed with '!';  * the GUI will then display these values but
-        disable their widgets */
-    sprintf(srate, "%s%d", audio_isfixedsr(as.a_api)?"!":"", as.a_srate);
-    sprintf(callback, "%s%d", cancallback?"":"!", as.a_callback);
-    sprintf(blocksize, "%s%d", audio_isfixedblocksize(as.a_api)?"!":"", as.a_blocksize);
-
     pdgui_stub_deleteforkey(0);
-    pdgui_stub_vnew(&glob_pdobject,
-        "pdtk_audio_dialog", (void *)glob_audio_properties,
-        "iiii iiii iiii iiii  s ii s i s",
-        as.a_indevvec   [0], as.a_indevvec   [1], as.a_indevvec   [2], as.a_indevvec   [3],
-        as.a_chindevvec [0], as.a_chindevvec [1], as.a_chindevvec [2], as.a_chindevvec [3],
-        as.a_outdevvec  [0], as.a_outdevvec  [1], as.a_outdevvec  [2], as.a_outdevvec  [3],
-        as.a_choutdevvec[0], as.a_choutdevvec[1], as.a_choutdevvec[2], as.a_choutdevvec[3],
-        srate,
-        as.a_advance, canmulti,
-        callback,
-        (flongform != 0),
-        blocksize);
+    pdgui_stub_vnew(&glob_pdobject, "::dialog_audio::create",
+        (void *)glob_audio_properties, "");
 }
 
     /* new values from dialog window */
