@@ -64,7 +64,7 @@ proc ::scrollbox::my_edit { mytoplevel {initialvalue {}} } {
     entry $popup -textvariable ::scrollbox::entrytext($mytoplevel)
     $popup selection from 0
     $popup selection adjust end
-    place $popup -x $x -y $y
+    place $popup -x $x -y $y -relwidth 1.0
     focus $popup
 
     # override the Return/ESC bindings
