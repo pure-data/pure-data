@@ -13,6 +13,7 @@
 package provide pdtcl_compat 0.1
 namespace eval ::pdtcl_compat {
     namespace export dict
+    namespace export lmap
 }
 
 ## poor man's 'dict' implementation (for Tcl8.4)
@@ -94,6 +95,28 @@ proc ::pdtcl_compat::dict {command args} {
     }
 }
 
+## poor man's 'lmap' implementation (for Tcl8.4, Tcl8.5)
+# https://wiki.tcl-lang.org/page/lmap
+proc ::pdtcl_compat::lmap args {
+    set body [lindex $args end]
+    set args [lrange $args 0 end-1]
+    set n 0
+    set pairs [list]
+    foreach {varname listval} $args {
+        upvar 1 $varname var$n
+        lappend pairs var$n $listval
+        incr n
+    }
+    set temp [list]
+    eval foreach $pairs [list {
+        lappend temp [uplevel 1 $body]
+    }]
+    set temp
+}
+
 if { [catch {dict create} ] } {
     namespace import ::pdtcl_compat::dict
+}
+if { [catch {lmap _ {1 2 3} {list $_}} ] } {
+    namespace import ::pdtcl_compat::lmap
 }
