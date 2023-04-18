@@ -1,5 +1,7 @@
 package provide dialog_audio 0.1
 
+package require pdtcl_compat
+
 namespace eval ::dialog_audio:: {
     namespace export pdtk_audio_dialog
     variable referenceconfig ""
@@ -350,6 +352,25 @@ proc ::dialog_audio::init_devicevars {} {
 
 }
 
+proc ::dialog_audio::set_configuration { \
+        available_inputs indevices inchannels \
+        available_outputs outdevices outchannels \
+        samplerate blocksize advance \
+        use_callback can_multidevice} {
+    set ::audio_indevlist ${available_inputs}
+    set ::audio_indevices [lmap _ ${indevices} {expr int("${_}")}]
+    set ::audio_indevicechannels [lmap _ ${inchannels} {expr int("${_}")}]
+
+    set ::audio_outdevlist ${available_outputs}
+    set ::audio_outdevices  [lmap _ ${outdevices} {expr int("${_}")}]
+    set ::audio_outdevicechannels [lmap _ ${outchannels} {expr int("${_}")}]
+
+    set ::audio_samplerate ${samplerate}
+    set ::audio_blocksize ${blocksize}
+    set ::audio_advance ${advance}
+    set ::audio_use_callback ${use_callback}
+    set ::audio_can_multidevice ${can_multidevice}
+}
 # start a dialog window to select audio devices and settings.  "multi"
 # is 0 if only one device is allowed; 1 if one apiece may be specified for
 # input and output; and 2 if we can select multiple devices.  "longform"
@@ -366,17 +387,15 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         outchan1 outchan2 outchan3 outchan4 \
         sr advance multi callback \
         longform blocksize} {
-
     # initialize variables
-    set ::audio_indevices [list $indev1 $indev2 $indev3 $indev4]
-    set ::audio_indevicechannels  [list $inchan1 $inchan2 $inchan3 $inchan4]
-    set ::audio_outdevices [list $outdev1 $outdev2 $outdev3 $outdev4]
-    set ::audio_outdevicechannels  [list $outchan1 $outchan2 $outchan3 $outchan4]
-    set ::audio_samplerate $sr
-    set ::audio_advance $advance
-    set ::audio_blocksize $blocksize
-    set ::audio_use_callback $callback
-    set ::audio_can_multidevice $multi
+    ::dialog_audio::set_configuration \
+        ${::audio_indevlist} \
+        [list $indev1 $indev2 $indev3 $indev4] \
+        [list $inchan1 $inchan2 $inchan3 $inchan4] \
+        ${::audio_outdevlist} \
+        [list $outdev1 $outdev2 $outdev3 $outdev4] \
+        [list $outchan1 $outchan2 $outchan3 $outchan4] \
+        $sr $blocksize $advance $callback $multi
 
     # check if there's already an open gui-preference
     # where we can splat the new audio preferences into
