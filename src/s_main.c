@@ -1581,7 +1581,7 @@ void glob_start_startup_dialog(t_pd *dummy)
     pdgui_stub_vnew(
         &glob_pdobject,
         "pdtk_startup_dialog", (void *)glob_start_path_dialog,
-        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");    
+        "is", sys_defeatrt, sys_flags?sys_flags->s_name:"");
 }
 
     /* new values from dialog window */
