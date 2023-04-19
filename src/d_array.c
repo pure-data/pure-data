@@ -2,9 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/* sampling */
-
-/* LATER make tabread4 and tabread~ */
+/* reading and writing arrays */
 
 #include "m_pd.h"
 
