@@ -350,7 +350,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/line~-help.pd \
      ./5.reference/list-help.pd \
      ./5.reference/loadbang-help.pd \
-     ./5.reference/log~-help.pd \
      ./5.reference/lop~-help.pd \
      ./5.reference/makefilename-help.pd \
      ./5.reference/makenote-help.pd \
@@ -374,7 +373,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/plot-help.pd \
      ./5.reference/pointer-help.pd \
      ./5.reference/poly-help.pd \
-     ./5.reference/pow~-help.pd \
      ./5.reference/print-help.pd \
      ./5.reference/print~-help.pd \
      ./5.reference/qlist-help.pd \
