@@ -226,16 +226,14 @@
 #X obj 91 2954 cos;
 #X obj 123 2954 tan;
 #X obj 155 2954 atan;
-#X obj 194 2954 atan2;
-#X text 260 2966 - math functions;
+#X obj 193 2968 atan2;
+#X text 240 2966 - math functions;
 #X obj 121 2979 sqrt;
-#X obj 184 2979 log;
+#X obj 248 2867 log;
 #X obj 156 2979 exp;
 #X obj 93 2979 abs;
 #X obj 58 2979 wrap;
-#X obj 212 2979 pow;
-#X text 259 2866 - arithmetic operators;
-#X text 259 2912 - other operators;
+#X obj 276 2867 pow;
 #X obj 58 2900 >;
 #X obj 86 2900 >=;
 #X obj 142 2900 <=;
@@ -500,3 +498,5 @@
 #X text 14 262 ------------------------- GENERAL DATA MANAGEMENT ----------------------------, f 78;
 #X text 212 4684 - binary (two input) signal operators;
 #X text 184 4835 - exponential function;
+#X text 310 2866 - binary (two-input operators);
+#X text 261 2912 - other binary operators;
