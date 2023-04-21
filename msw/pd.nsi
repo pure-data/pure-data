@@ -4,15 +4,33 @@
 ;
 ;   "OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
 ;
-;
-;
-
 
 ; https://stackoverflow.com/questions/36185539/can-i-get-nsis-to-make-a-single-installer-that-handles-local-deployment-and-syst
 ; ./build-nsi.sh G:/gitportable/nsis/pd-0.53.1 0.53.1
 
 
+;####################################################
+;
+; NOTE: registry settings auto change for the 32bit Pd:
+;
+;   SHCTX "Software\${PRODUCT_NAME}"
+; turns
+;   SHCTX "Software\WOW6432Node\${PRODUCT_NAME}"
+;
+; all the "Uninstall" keys:
+;   SHCTX "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+;    ...
+; turns
+;   SHCTX "Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+;    ...
+;
+; all this is healthier and in concordance with the OS.
+; i.e read and write to the registry according to Pd<arch> and not to nsis<arch>
+; i.e when a Pd-64bit installer is made with a 32bit nsis avoid using the 32bit registry.
+;####################################################
 
+
+Unicode True
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
 !include "nsDialogs.nsh"
@@ -73,6 +91,14 @@ RequestExecutionLevel highest
             StrCpy $CONTEXT current
             StrCpy $INSTDIR_BASE "$LOCALAPPDATA"
         ${EndIf}
+        ; the installer .exe might be a 32bit app and Windows is treating it
+        ; "as is" but we might need to access the 64bit part of the registry.
+        ${If} ${ARCHI} == "64"
+            SetRegView 64
+        ${Else}
+            ; read "NOTE: registry settings" above
+            SetRegView 32
+        ${Endif}
         ; This only happens in the installer, because the uninstaller already knows INSTDIR
         ${If} $INSTDIR == ""
             ReadRegStr $PreUninstallerPath SHCTX "Software\${PRODUCT_NAME}" "${ARCHI}"
