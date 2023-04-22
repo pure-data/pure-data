@@ -1,11 +1,11 @@
 #N canvas 322 46 863 579 12;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array array1 13 float 0;
-#X coords 0 1 12 -1 300 100 1;
+#X array array1 78003 float 2;
+#X coords 0 1 78003 -1 300 100 1 0 0;
 #X restore 545 269 graph;
 #N canvas 0 22 450 300 (subpatch) 0;
-#X array array2 78003 float 0;
-#X coords 0 1 78002 -1 300 100 1;
+#X array array2 155944 float 2;
+#X coords 0 1 155944 -1 300 100 1;
 #X restore 545 387 graph;
 #X obj 32 382 soundfiler;
 #X msg 76 270 write -aiff /tmp/foo1 array2;
