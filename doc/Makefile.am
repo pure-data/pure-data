@@ -315,7 +315,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/change-help.pd \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \
-     ./5.reference/clone-abstraction.pd \
+     ./5.reference/clone-abs-a.pd \
+     ./5.reference/clone-abs-b.pd \
      ./5.reference/clone-help.pd \
      ./5.reference/cnv-help.pd \
      ./5.reference/cos~-help.pd \
