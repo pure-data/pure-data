@@ -119,10 +119,10 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
         *nameptr;
     const char**dllextent;
-    const char *classname, *cnameptr;
+    const char *classname, *cnameptr, *hexname;
     void *dlobj;
     t_xxx makeout = NULL;
-    int i, hexmunge = 0, fd;
+    int i, hexmunge = 0, tilde = 0, fd;
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
@@ -148,6 +148,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         {
             strcpy(symname+i, "_tilde");
             i += strlen(symname+i);
+            tilde = 1;
         }
         else /* anything you can't put in a C symbol is sprintf'ed in hex */
         {
@@ -159,6 +160,14 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     symname[i] = 0;
     if (hexmunge)
     {
+        if (tilde)
+        {
+            i -= 6;
+            filename[i] = '~';
+        }
+        strncpy(filename, symname, i);
+        filename[i+tilde] = 0;
+        hexname = filename;
         memmove(symname+6, symname, strlen(symname)+1);
         strncpy(symname, "setup_", 6);
     }
@@ -170,7 +179,9 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
+        if (hexmunge && (fd = sys_trytoopenone(path, hexname, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0
+         || (fd = sys_trytoopenone(path, objectname, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
                 goto gotone;
     }
